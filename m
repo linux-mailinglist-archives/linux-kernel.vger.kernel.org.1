@@ -2,123 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E68B82DC4D1
+	by mail.lfdr.de (Postfix) with ESMTP id 0BE442DC4CF
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 17:58:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726867AbgLPQ5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 11:57:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33502 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726837AbgLPQ5y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 11:57:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608137787;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uFK8uelp0EfnpwVsJ+unzlDIADvPHcDnDcvCpIi/i5Q=;
-        b=f9ulRqQUFsUC14Oxu/JvjLS5ZdS4uyHeHQeS8gifCA1Su2Al10J99fdUdE/UP7lKwQI92d
-        htjp6Jg0Pm1RC43rEiTgWRbl7kC2se+evh/O6P4UJ9JPjZyi7NpW1ASfaeKMwiY2KRT10x
-        bQgJzJgKeRLEtlriKBppTnNn51saX4Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-134-crZqldqkO2O1uPxUIhu4fA-1; Wed, 16 Dec 2020 11:56:25 -0500
-X-MC-Unique: crZqldqkO2O1uPxUIhu4fA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 59FF580400F;
-        Wed, 16 Dec 2020 16:56:20 +0000 (UTC)
-Received: from treble (ovpn-112-170.rdu2.redhat.com [10.10.112.170])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 860D160CD0;
-        Wed, 16 Dec 2020 16:56:07 +0000 (UTC)
-Date:   Wed, 16 Dec 2020 10:56:05 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     =?utf-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
-        xen-devel@lists.xenproject.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org, luto@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Deep Shah <sdeep@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [PATCH v2 00/12] x86: major paravirt cleanup
-Message-ID: <20201216165605.4h5q7os5dutjgdqi@treble>
-References: <20201120114630.13552-1-jgross@suse.com>
- <20201120125342.GC3040@hirez.programming.kicks-ass.net>
- <20201123134317.GE3092@hirez.programming.kicks-ass.net>
- <6771a12c-051d-1655-fb3a-cc45a3c82e29@suse.com>
- <20201215141834.GG3040@hirez.programming.kicks-ass.net>
- <20201215145408.GR3092@hirez.programming.kicks-ass.net>
- <20201216003802.5fpklvx37yuiufrt@treble>
- <20201216084059.GL3040@hirez.programming.kicks-ass.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201216084059.GL3040@hirez.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        id S1726861AbgLPQ5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 11:57:53 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33484 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726758AbgLPQ5x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 11:57:53 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5E07CAC7F;
+        Wed, 16 Dec 2020 16:57:11 +0000 (UTC)
+Date:   Wed, 16 Dec 2020 17:57:11 +0100
+Message-ID: <s5hmtydn0yg.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     tiwai@suse.com, Jaroslav Kysela <perex@perex.cz>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] ALSA: hda: Continue to probe when codec probe fails
+In-Reply-To: <s5hsg85n2km.wl-tiwai@suse.de>
+References: <20201214060621.1102931-1-kai.heng.feng@canonical.com>
+        <20201216124726.2842197-1-kai.heng.feng@canonical.com>
+        <s5h5z51oj12.wl-tiwai@suse.de>
+        <CAAd53p6kORC1GsW5zt+=0=J5ki43iriO-OqtFvf5W67LWhyyhA@mail.gmail.com>
+        <s5hzh2dn3oa.wl-tiwai@suse.de>
+        <CAAd53p6Ef2zFX_t3y1c6O7BmHnxYGtGSfgzXAMQSom1ainWXzg@mail.gmail.com>
+        <s5hsg85n2km.wl-tiwai@suse.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 09:40:59AM +0100, Peter Zijlstra wrote:
-> > So much algorithm.
+On Wed, 16 Dec 2020 17:22:17 +0100,
+Takashi Iwai wrote:
 > 
-> :-)
+> On Wed, 16 Dec 2020 17:07:45 +0100,
+> Kai-Heng Feng wrote:
+> > 
+> > On Wed, Dec 16, 2020 at 11:58 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > >
+> > > On Wed, 16 Dec 2020 16:50:20 +0100,
+> > > Kai-Heng Feng wrote:
+> > > >
+> > > > On Wed, Dec 16, 2020 at 11:41 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > > > >
+> > > > > On Wed, 16 Dec 2020 13:47:24 +0100,
+> > > > > Kai-Heng Feng wrote:
+> > > > > >
+> > > > > > Similar to commit 9479e75fca37 ("ALSA: hda: Keep the controller
+> > > > > > initialization even if no codecs found"), when codec probe fails, it
+> > > > > > doesn't enable runtime suspend, and can prevent graphics card from
+> > > > > > getting powered down:
+> > > > > > [    4.280991] snd_hda_intel 0000:01:00.1: no codecs initialized
+> > > > > >
+> > > > > > $ cat /sys/bus/pci/devices/0000:01:00.1/power/runtime_status
+> > > > > > active
+> > > > > >
+> > > > > > So mark there's no codec and continue probing to let runtime PM to work.
+> > > > > >
+> > > > > > BugLink: https://bugs.launchpad.net/bugs/1907212
+> > > > > > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > > > >
+> > > > > Hm, but if the probe fails, doesn't it mean something really wrong?
+> > > > > IOW, how does this situation happen?
+> > > >
+> > > > The HDA controller is forcely created by quirk_nvidia_hda(). So
+> > > > probably there's really not an HDA controller.
+> > >
+> > > I still don't understand how non-zero codec_mask is passed.
+> > > The non-zero codec_mask means that BIOS or whatever believes that
+> > > HD-audio codecs are present and let HD-audio controller reporting the
+> > > presence.  What error did you get at probing?
+> > 
+> > [    4.280991] snd_hda_intel 0000:01:00.1: no codecs initialized
+> > Full dmesg here:
+> > https://launchpadlibrarian.net/510351476/dmesg.log
 > 
-> It's not really hard, but it has a few pesky details (as always).
-
-It really hurt my brain to look at it.
-
-> > Could we make it easier by caching the shared
-> > per-alt-group CFI state somewhere along the way?
+> The actual problems are shown before that line.
 > 
-> Yes, but when I tried it grew the code required. Runtime costs would be
-> less, but I figured that since alternatives are typically few and small,
-> that wasn't a real consideration.
-
-Aren't alternatives going to be everywhere now with paravirt using them?
-
-> That is, it would basically cache the results of find_alt_unwind(), but
-> you still need find_alt_unwind() to generate that data, and so you gain
-> the code for filling and using the extra data structure.
+> [    4.178848] pci 0000:01:00.1: can't change power state from D3cold to D0 (config space inaccessible)
+> [    4.179502] snd_hda_intel 0000:01:00.1: can't change power state from D3cold to D0 (config space inaccessible)
+> [    4.179511] snd_hda_intel 0000:01:00.1: can't change power state from D3hot to D0 (config space inaccessible)
+> ....
+> [    4.280571] hdaudio hdaudioC1D0: no AFG or MFG node found
+> [    4.280633] hdaudio hdaudioC1D1: no AFG or MFG node found
+> [    4.280685] hdaudio hdaudioC1D2: no AFG or MFG node found
+> [    4.280736] hdaudio hdaudioC1D3: no AFG or MFG node found
+> [    4.280788] hdaudio hdaudioC1D4: no AFG or MFG node found
+> [    4.280839] hdaudio hdaudioC1D5: no AFG or MFG node found
+> [    4.280892] hdaudio hdaudioC1D6: no AFG or MFG node found
+> [    4.280943] hdaudio hdaudioC1D7: no AFG or MFG node found
 > 
-> Yes, computing it 3 times is naf, but meh.
-
-Haha, I loved this sentence.
-
-> > Thoughts?  This is all theoretical of course, I could try to do a patch
-> > tomorrow.
+> Could you check the codec_mask value read in
+> sound/hda/hdac_controller.c?  I guess it reads 0xff.
 > 
-> No real objection, I just didn't do it because 1) it works, and 2) even
-> moar lines.
+> If that's the case, it can be corrected by the patch below.
+> But, we should check the cause of the first error (inaccessible config
+> space) in anyway; this must be the primary reason of the whole chain
+> of errors.
 
-I'm kind of surprised it would need moar lines.  Let me play around with
-it and maybe I'll come around ;-)
+Now I took a deeper look at the code.  So we hit errors after errors:
+- The first problem is that quirk_nvidia_hda() enabled HD-audio even
+  if it's non-functional by some reason.  We may need additional
+  checks there.
 
--- 
-Josh
+- The second problem is that pci_enable_device() ignores the error
+  returned from pci_set_power_state() if it's -EIO.  And the
+  inaccessible access error returns -EIO, although it's rather a fatal
+  problem.  So the driver believes as the PCI device gets enabled
+  properly.
 
+- The third problem is that HD-audio driver blindly believes the
+  codec_mask read from the register even if it's a read failure as I
+  already showed.
+
+Ideally we should address in the first place.
+
+
+Takashi
