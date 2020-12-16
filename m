@@ -2,65 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC5DC2DC328
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:34:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7DAE2DC331
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:36:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726494AbgLPPdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 10:33:35 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:57492 "EHLO vps0.lunn.ch"
+        id S1726530AbgLPPfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 10:35:43 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60048 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726489AbgLPPdf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 10:33:35 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kpYnI-00CJAy-GG; Wed, 16 Dec 2020 16:32:48 +0100
-Date:   Wed, 16 Dec 2020 16:32:48 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bridge@lists.linux-foundation.org,
-        Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Tobias Waldekranz <tobias@waldekranz.com>,
-        Marek Behun <marek.behun@nic.cz>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Alexandra Winter <wintera@linux.ibm.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Ido Schimmel <idosch@idosch.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        UNGLinuxDriver@microchip.com
-Subject: Re: [PATCH v3 net-next 2/7] net: dsa: be louder when a non-legacy
- FDB operation fails
-Message-ID: <20201216153248.GB2901580@lunn.ch>
-References: <20201213140710.1198050-1-vladimir.oltean@nxp.com>
- <20201213140710.1198050-3-vladimir.oltean@nxp.com>
+        id S1726490AbgLPPfm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 10:35:42 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E5AFFAD6B;
+        Wed, 16 Dec 2020 15:35:00 +0000 (UTC)
+Date:   Wed, 16 Dec 2020 16:35:00 +0100
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
+        linux-kernel@vger.kernel.org, Ming Lei <ming.lei@redhat.com>
+Subject: Re: [PATCH v2] blk-mq: Remove 'running from the wrong CPU' warning
+Message-ID: <20201216153500.nevzjajj3wi7xio3@beryllium.lan>
+References: <20201130101921.52754-1-dwagner@suse.de>
+ <20201130171748.GC10078@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201213140710.1198050-3-vladimir.oltean@nxp.com>
+In-Reply-To: <20201130171748.GC10078@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 13, 2020 at 04:07:05PM +0200, Vladimir Oltean wrote:
-> The dev_close() call was added in commit c9eb3e0f8701 ("net: dsa: Add
-> support for learning FDB through notification") "to indicate inconsistent
-> situation" when we could not delete an FDB entry from the port.
+On Mon, Nov 30, 2020 at 05:17:48PM +0000, Christoph Hellwig wrote:
+> On Mon, Nov 30, 2020 at 11:19:21AM +0100, Daniel Wagner wrote:
+> > It's guaranteed that no request is in flight when a hctx is going
+> > offline. This warning is only triggered when the wq's CPU is hot
+> > plugged and the blk-mq is not synced up yet.
+> > 
+> > As this state is temporary and the request is still processed
+> > correctly, better remove the warning as this is the fast path.
+> > 
+> > Suggested-by: Ming Lei <ming.lei@redhat.com>
+> > Signed-off-by: Daniel Wagner <dwagner@suse.de>
 > 
-> bridge fdb del d8:58:d7:00:ca:6d dev swp0 self master
+> Looks good,
 > 
-> It is a bit drastic and at the same time not helpful if the above fails
-> to only print with netdev_dbg log level, but on the other hand to bring
-> the interface down.
-> 
-> So increase the verbosity of the error message, and drop dev_close().
-> 
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Jens, any chance you queue this one up?
 
-    Andrew
+Thanks,
+Daniel
