@@ -2,67 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A58AF2DC3C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 17:13:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F572DC3D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 17:15:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725942AbgLPQNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 11:13:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50070 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725287AbgLPQNm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 11:13:42 -0500
-Date:   Wed, 16 Dec 2020 08:13:00 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608135182;
-        bh=81uhZT7DVpYjdCreLCbeivUB0qv7WJTZEUE+d3HMhPQ=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CS9n6LgOFxRxJJKD8UykFv4WPBIK6VPZ1ifpmCAHqYrBHUDjJFoTZpA21uyfogBUC
-         iccS+Z4Mun1ToW6FjrqWQo28EmNs9gtRgsniTkyXQWE8DoEDkoda4EaaC63Wbth+w9
-         Ilkmgj7SRaZVWLzGaBYRFx5Y3xnp2w6Fn/au9GRbOphPj5X5sQNGQP8D9GZQ+KHgyl
-         Diu4iNG1UgY9F6GGZoI8162MAB5Zh8ODuEt9S260UqtFW/NT4fGrimre0+ogxEXlgI
-         1mMzL4XchcxpZvF453pHAjYH4AVzAP1Crs9GgIjzqSVnw1usbTNP7pn59dkLCnArE9
-         1SjlLygImfT+Q==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Lukasz Stelmach <l.stelmach@samsung.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, jim.cromie@gmail.com,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        =?UTF-8?B?QmFydMWCb21pZWogxbtvbG5pZXJr?= =?UTF-8?B?aWV3aWN6?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH v8 3/3] net: ax88796c: ASIX AX88796C SPI Ethernet
- Adapter Driver
-Message-ID: <20201216081300.3477c3fb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <dleftjczza7xgf.fsf%l.stelmach@samsung.com>
-References: <20201215174615.17c08e88@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CGME20201216122211eucas1p22314f0e8a28774545d168290ed57b355@eucas1p2.samsung.com>
-        <dleftjczza7xgf.fsf%l.stelmach@samsung.com>
+        id S1726279AbgLPQOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 11:14:51 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:44844 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726250AbgLPQOv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 11:14:51 -0500
+Received: by mail-il1-f199.google.com with SMTP id c76so28321875ilf.11
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 08:14:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=fqGqftTLTf6YHW3fpTIQwGEtnv8ndYKXLlm8NHrjXJE=;
+        b=FNtyTC2ZzBrLpjJGyfQ3f8lWRApdpkakdD0Mf0zYDz+WCAW5SBRCnqTOjK/qJJj9q2
+         vXunyG3utzDLtgyrLB2WfiMzeV5sg9uyKZE3U1EZZU7YCW48IU6DkmpO7aOz3vBKCWTF
+         b7BQuyma7VhxVzCDQ03OFLsTQrhiOzCnpw7oHePqCAJ0/k9Y/sWFwu3F3mxYTZ8kGRHy
+         pfbpVcfWaoVggVM7yc8rM/Rm73aOvBsk7KN5Cv+Y/aG7Q4VHMY3K4TBI6zjsPNZzEaf8
+         NrnajLON6+w88/6myiVDgEFQHvSqgQVbb4Wdtkrli9AGF5G7iN5Ia8rXvjCC8nf7oDMi
+         a3HQ==
+X-Gm-Message-State: AOAM533fQXTE+n9jNtSoTs1qTbby49QYMjDECfrbvBckO/Orwx93aVNC
+        iVPCMit3iJ4VRDdBuDZcIZQ2eCkOCJlEQwVmtMREmwLcJpYt
+X-Google-Smtp-Source: ABdhPJzlLn6SB3Z0XBVp4Gy7TfFgiSySYYJELjJ/W2BybVsCGusEDyBVA11ZXrEgUGG/GEj2wda7jdrlkenEwqFxcevpZ6tEBq9v
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a6b:fd03:: with SMTP id c3mr42757557ioi.64.1608135249913;
+ Wed, 16 Dec 2020 08:14:09 -0800 (PST)
+Date:   Wed, 16 Dec 2020 08:14:09 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000526d3505b6972a80@google.com>
+Subject: UBSAN: shift-out-of-bounds in mceusb_dev_printdata
+From:   syzbot <syzbot+6d31bf169a8265204b8d@syzkaller.appspotmail.com>
+To:     andreyknvl@google.com, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-usb@vger.kernel.org,
+        mchehab@kernel.org, sean@mess.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Dec 2020 13:21:52 +0100 Lukasz Stelmach wrote:
-> So, the only thing that's left is pskb_expand_head(). I need to wrap my
-> head around it. Can you tell me how a cloned skb is different and why
-> there may be separate branch for it?
+Hello,
 
-I think this driver needs to prepend and append some info to the packet
-data, right? Cloned skb is sharing the data with another skb, the
-metadata is separate but the packet data is shared, so you can't modify
-the data, you need to do a copy of the data. pskb_expand_head() should
-take care of cloned skbs so you can just call it upfront and it will
-make sure the skb is the right geometry for you.
+syzbot found the following issue on:
 
-BTW you should set netdev->needed_headroom and netdev->needed_tailroom
-to the correct values so the stack pre-allocates the needed spaces,
-when it can.
+HEAD commit:    5e60366d Merge tag 'fallthrough-fixes-clang-5.11-rc1' of g..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+console output: https://syzkaller.appspot.com/x/log.txt?x=11b1a46b500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5cea7506b7139727
+dashboard link: https://syzkaller.appspot.com/bug?extid=6d31bf169a8265204b8d
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13727b7f500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1565f123500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+6d31bf169a8265204b8d@syzkaller.appspotmail.com
+
+================================================================================
+UBSAN: shift-out-of-bounds in drivers/media/rc/mceusb.c:704:13
+shift exponent 230 is too large for 32-bit type 'unsigned int'
+CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.10.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
+ mceusb_dev_printdata.cold+0x19/0x1e drivers/media/rc/mceusb.c:704
+ mceusb_process_ir_data drivers/media/rc/mceusb.c:1275 [inline]
+ mceusb_dev_recv+0x3cb/0x1990 drivers/media/rc/mceusb.c:1376
+ __usb_hcd_giveback_urb+0x2b0/0x5c0 drivers/usb/core/hcd.c:1657
+ usb_hcd_giveback_urb+0x38c/0x430 drivers/usb/core/hcd.c:1728
+ dummy_timer+0x11f4/0x32a0 drivers/usb/gadget/udc/dummy_hcd.c:1971
+ call_timer_fn+0x1a5/0x690 kernel/time/timer.c:1417
+ expire_timers kernel/time/timer.c:1462 [inline]
+ __run_timers.part.0+0x692/0xa50 kernel/time/timer.c:1731
+ __run_timers kernel/time/timer.c:1712 [inline]
+ run_timer_softirq+0x80/0x120 kernel/time/timer.c:1744
+ __do_softirq+0x1b7/0x9c5 kernel/softirq.c:343
+ asm_call_irq_on_stack+0xf/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0x80/0xa0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:226 [inline]
+ __irq_exit_rcu+0x119/0x1b0 kernel/softirq.c:420
+ irq_exit_rcu+0x5/0x10 kernel/softirq.c:432
+ sysvec_apic_timer_interrupt+0x43/0xa0 arch/x86/kernel/apic/apic.c:1096
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:628
+RIP: 0010:native_save_fl arch/x86/include/asm/irqflags.h:29 [inline]
+RIP: 0010:arch_local_save_flags arch/x86/include/asm/irqflags.h:79 [inline]
+RIP: 0010:arch_irqs_disabled arch/x86/include/asm/irqflags.h:169 [inline]
+RIP: 0010:acpi_safe_halt drivers/acpi/processor_idle.c:111 [inline]
+RIP: 0010:acpi_idle_do_entry+0x1c9/0x250 drivers/acpi/processor_idle.c:516
+Code: 8d 61 7f fb 84 db 75 ac e8 04 5b 7f fb e8 4f 0f 85 fb e9 0c 00 00 00 e8 f5 5a 7f fb 0f 00 2d ce 86 87 00 e8 e9 5a 7f fb fb f4 <9c> 5b 81 e3 00 02 00 00 fa 31 ff 48 89 de e8 c4 62 7f fb 48 85 db
+RSP: 0018:ffffffff87407d60 EFLAGS: 00000293
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffffffff87431940 RSI: ffffffff85c0eb77 RDI: ffffffff85c0eb61
+RBP: ffff8881037c3064 R08: 0000000000000001 R09: 0000000000000001
+R10: ffffffff8145fae8 R11: 0000000000000000 R12: 0000000000000001
+R13: ffff8881037c3000 R14: ffff8881037c3064 R15: ffff888105c7d804
+ acpi_idle_enter+0x355/0x4f0 drivers/acpi/processor_idle.c:647
+ cpuidle_enter_state+0x1b1/0xc80 drivers/cpuidle/cpuidle.c:237
+ cpuidle_enter+0x4a/0xa0 drivers/cpuidle/cpuidle.c:351
+ call_cpuidle kernel/sched/idle.c:158 [inline]
+ cpuidle_idle_call kernel/sched/idle.c:239 [inline]
+ do_idle+0x3df/0x580 kernel/sched/idle.c:299
+ cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:396
+ start_kernel+0x498/0x4b9 init/main.c:1061
+ secondary_startup_64_no_verify+0xb0/0xbb
+================================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
