@@ -2,78 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5AA2DC5F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 19:10:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A43B2DC5F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 19:12:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729452AbgLPSKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 13:10:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45215 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729449AbgLPSKE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 13:10:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608142118;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=mamO1/NlN2O4Takc5K2x/wvpBK6RpZ5yuQxG16/89wI=;
-        b=OIdKkCKbFdOH+dHu+n+NbGvVBHwX1Rtabaw35AXcLtXkZuBzG0mHzW1HoQ2qOn5Hze4wVS
-        l6SOd+EUhb9HJENZjRBmwdiuBv1AGrHBP8HCkMfx3EJL4qS5/G2OZOu3rW/wQkPPyl3X9I
-        XxMnShdZgdC29pHCBcl6ae9Z7pTumws=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-356-wsnpYp6oP0Gt_w03dLWVEg-1; Wed, 16 Dec 2020 13:08:36 -0500
-X-MC-Unique: wsnpYp6oP0Gt_w03dLWVEg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A5253873233;
-        Wed, 16 Dec 2020 18:08:35 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 52CF45D9EF;
-        Wed, 16 Dec 2020 18:08:35 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     thomas.lendacky@amd.com
-Subject: [PATCH] KVM: SVM: fix 32-bit compilation
-Date:   Wed, 16 Dec 2020 13:08:34 -0500
-Message-Id: <20201216180834.1466389-1-pbonzini@redhat.com>
+        id S1729549AbgLPSLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 13:11:31 -0500
+Received: from foss.arm.com ([217.140.110.172]:39200 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727591AbgLPSLb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 13:11:31 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1BB6E31B;
+        Wed, 16 Dec 2020 10:10:45 -0800 (PST)
+Received: from e107158-lin.cambridge.arm.com (unknown [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7699D3F66B;
+        Wed, 16 Dec 2020 10:10:44 -0800 (PST)
+Date:   Wed, 16 Dec 2020 18:10:42 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: RCU stall leading to deadlock warning
+Message-ID: <20201216181042.wif34g5l5unbcm2q@e107158-lin.cambridge.arm.com>
+References: <20201216172939.ts72yy3ekalavlpm@e107158-lin.cambridge.arm.com>
+ <20201216175442.GK2657@paulmck-ThinkPad-P72>
+ <20201216180047.GA10686@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201216180047.GA10686@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VCPU_REGS_R8...VCPU_REGS_R15 are not defined on 32-bit x86,
-so cull them from the synchronization of the VMSA.
+On 12/16/20 10:00, Paul E. McKenney wrote:
+> On Wed, Dec 16, 2020 at 09:54:42AM -0800, Paul E. McKenney wrote:
+> > On Wed, Dec 16, 2020 at 05:29:39PM +0000, Qais Yousef wrote:
+> > > Hi Paul
+> > > 
+> > > We hit the below splat a couple of days ago in our testing. Sadly I can't
+> > > reproduce it. And it was on android-mainline branch..
+> > > 
+> > > It's the deadlock message that bothers me. I can't see how we could have ended
+> > > there. We detect a stall and when trying to dump the stack LOCKDEP spits the
+> > > warning.
+> > > 
+> > > Maybe should take this report with a pinch of salt since it wasn't on mainline.
+> > > I just thought it might be something worth sharing in case you can actually
+> > > spot something obvious that I can't see. If I got more info or a reproducer
+> > > I will share them.
+> > > 
+> > > The failure was triggered twice on that day running 2 different tests.
+> > 
+> > This looks like the same problem that Mark Rutland's recent patch series
+> > was fixing.  Do you have this series applied?
+> > 
+> > lore.kernel.org/lkml/20201126123602.23454-1-mark.rutland@arm.com
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/svm/sev.c | 2 ++
- 1 file changed, 2 insertions(+)
+Oh yeah I remember this one. Yes it could be relevant. I don't see the series
+in the tree. If it wasn't merged (which AFAICS it isn't), it won't appear
+there.
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 8b5ef0fe4490..e57847ff8bd2 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -529,6 +529,7 @@ static int sev_es_sync_vmsa(struct vcpu_svm *svm)
- 	save->rbp = svm->vcpu.arch.regs[VCPU_REGS_RBP];
- 	save->rsi = svm->vcpu.arch.regs[VCPU_REGS_RSI];
- 	save->rdi = svm->vcpu.arch.regs[VCPU_REGS_RDI];
-+#ifdef CONFIG_X86_64
- 	save->r8  = svm->vcpu.arch.regs[VCPU_REGS_R8];
- 	save->r9  = svm->vcpu.arch.regs[VCPU_REGS_R9];
- 	save->r10 = svm->vcpu.arch.regs[VCPU_REGS_R10];
-@@ -537,6 +538,7 @@ static int sev_es_sync_vmsa(struct vcpu_svm *svm)
- 	save->r13 = svm->vcpu.arch.regs[VCPU_REGS_R13];
- 	save->r14 = svm->vcpu.arch.regs[VCPU_REGS_R14];
- 	save->r15 = svm->vcpu.arch.regs[VCPU_REGS_R15];
-+#endif
- 	save->rip = svm->vcpu.arch.regs[VCPU_REGS_RIP];
- 
- 	/* Sync some non-GPR registers before encrypting */
--- 
-2.26.2
+> I would not expect the patch below to help given what your RCU CPU stall
+> warning looks like, but just in case...
 
+Thanks. If I manage to find a reproducer I will give it a go. Still no luck in
+triggering it in my test env :(
+
+Thanks
+
+--
+Qais Yousef
+
+> 
+> (Full disclosure: Peter fixed a bug of mine, filenames notwithstanding.)
+> 
+> 							Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+> commit f355d19f94bf4361d641fb3dbb9ece0fbac766f8
+> Author: Peter Zijlstra <peterz@infradead.org>
+> Date:   Sat Aug 29 10:22:24 2020 -0700
+> 
+>     sched/core: Allow try_invoke_on_locked_down_task() with irqs disabled
+>     
+>     The try_invoke_on_locked_down_task() function currently requires
+>     that interrupts be enabled, but it is called with interrupts
+>     disabled from rcu_print_task_stall(), resulting in an "IRQs not
+>     enabled as expected" diagnostic.  This commit therefore updates
+>     try_invoke_on_locked_down_task() to use raw_spin_lock_irqsave() instead
+>     of raw_spin_lock_irq(), thus allowing use from either context.
+>     
+>     Link: https://lore.kernel.org/lkml/000000000000903d5805ab908fc4@google.com/
+>     Link: https://lore.kernel.org/lkml/20200928075729.GC2611@hirez.programming.kicks-ass.net/
+>     Reported-by: syzbot+cb3b69ae80afd6535b0e@syzkaller.appspotmail.com
+>     Signed-off-by: Peter Zijlstra <peterz@infradead.org>
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index b2d6898..4abf041 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -2989,7 +2989,7 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+>  
+>  /**
+>   * try_invoke_on_locked_down_task - Invoke a function on task in fixed state
+> - * @p: Process for which the function is to be invoked.
+> + * @p: Process for which the function is to be invoked, can be @current.
+>   * @func: Function to invoke.
+>   * @arg: Argument to function.
+>   *
+> @@ -3007,12 +3007,11 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+>   */
+>  bool try_invoke_on_locked_down_task(struct task_struct *p, bool (*func)(struct task_struct *t, void *arg), void *arg)
+>  {
+> -	bool ret = false;
+>  	struct rq_flags rf;
+> +	bool ret = false;
+>  	struct rq *rq;
+>  
+> -	lockdep_assert_irqs_enabled();
+> -	raw_spin_lock_irq(&p->pi_lock);
+> +	raw_spin_lock_irqsave(&p->pi_lock, rf.flags);
+>  	if (p->on_rq) {
+>  		rq = __task_rq_lock(p, &rf);
+>  		if (task_rq(p) == rq)
+> @@ -3029,7 +3028,7 @@ bool try_invoke_on_locked_down_task(struct task_struct *p, bool (*func)(struct t
+>  				ret = func(p, arg);
+>  		}
+>  	}
+> -	raw_spin_unlock_irq(&p->pi_lock);
+> +	raw_spin_unlock_irqrestore(&p->pi_lock, rf.flags);
+>  	return ret;
+>  }
+>  
