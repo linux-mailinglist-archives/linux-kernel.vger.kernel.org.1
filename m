@@ -2,62 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FDDA2DC8CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 23:11:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BBE52DC8D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 23:14:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730162AbgLPWLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 17:11:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45828 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727772AbgLPWLW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 17:11:22 -0500
-Date:   Wed, 16 Dec 2020 22:10:36 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608156641;
-        bh=pMzv+JoqVSavT0fDnRVtzJjQVRMLsgeN6YHxEmEbm34=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q9uK919gpDoM6Dko6VXEW/KKv29xDOai5/JxFtDZQU1ToV9WqJ/GL48U+UbSjK6a9
-         u498mBRX6Ydu6cL0VLZm/zvfO/+MrChUtashGSbMVuuj9NHdB26C2YKtN4bNCCwkwF
-         HeK4hqcfusDZfkHRsxuk3JIeL4TlLSlxYB0FL0sDTtNrrgPB3EYKwNiQIoYz4ZDMhU
-         pBDwPyAyBB3jg7QFPJn4ofMUCGks8wHFZhYTJJIl59VK8vAmA5w12cYPaaW9yZid5f
-         Qp1pBeD8mxs8wiyDhBljbKRk0bzQvp1YCI5AYHjWrSw4qWixLIMRdxzuxxH/R4qNvi
-         xfQ2ClrLwS6gw==
-From:   Will Deacon <will@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     iommu <iommu@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Android Kernel Team <kernel-team@android.com>
-Subject: Re: [GIT PULL] IOMMU updates for 5.11
-Message-ID: <20201216221035.GA16915@willie-the-truck>
-References: <20201214234518.GA14575@willie-the-truck>
- <20201216185352.GA16598@willie-the-truck>
- <CAHk-=wijH15u2KfpON3VCECQODAVNJ6DtgQajDaKo+PB_c-L3g@mail.gmail.com>
+        id S1730169AbgLPWLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 17:11:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727778AbgLPWLy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 17:11:54 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D90BC0617A6
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 14:11:14 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id h186so7026123pfe.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 14:11:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6+IY/IhhJMCu4cpkdJjbEzKNedX2XzHTOgjr1hO/f3A=;
+        b=I3m+T/T7fSUvEZUF5nfeCwLL52FR+inHGLqrQw7CV8DBunzMGHyNrKfG2e2nYiNxv1
+         ANFA1aNgOHhlpWIdE8jO0Prdgc/z7gjL2ieMV1cOy7EPbfmYSGPgF9kcIfmqUps068Ep
+         2Y0DvCWzHZKQszMPO23a4g5R/VqJ5izwf7rSsONmF1DRGbJPC4RhP2ZSmtWq/9LbWFmd
+         VAJ1NZQNumwZtAb7F5WWAb7edx0bEmLChpM+53WscIJ5f8Ujm/NmQUEAz5UhmYEJYrm9
+         mtsIzAq3Lm0E9iHSbv3MA5ELuA0zRJVIOuQ9GDjnf2fwj7YC65Vm/xuRvSIqB8TZ7li2
+         QSdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6+IY/IhhJMCu4cpkdJjbEzKNedX2XzHTOgjr1hO/f3A=;
+        b=gg40pVQ0JSWdaiJuP1qds7vFimplHdBOu8B4ETe5eQvcNzUEpv3vqbOUspYpyedefZ
+         e/DO1whE6OMFlxsU5tEHKGt/XL0axaoO+9c9EMQWfy+TTo9Z+XSUxWPadx23xfKFwqQf
+         HcODNWMf62zHQS8wU3VGGszw/YdOLAhaTtofZ7ZBq4KTMeLbgU5nD2In5jxbvpFiOyxE
+         zqKZmSOkRUEbsfYySKv1mCBXKgUw3sd+WPjgCDHEmNKjvPA411ejTfJ2aHg4cmmtuZNT
+         ibErW/vZU/o9HdYcAUJzmi5b0MDT2hI1EV/qs3Dbo4MXx78Q6VCjWN8ctlZ/5fUVndC/
+         pHaw==
+X-Gm-Message-State: AOAM532EE/gcv9Su9Ictes/GdZieMr37/YHzewHwIQq2a6byfKAorq79
+        3aZ+VwSX1x6Oj7iC1QrMg1OnjA==
+X-Google-Smtp-Source: ABdhPJyPJpsa+CfyNpR7RGgAglOxbD05q6KtyRe/dyPaXJ+G51JaVd/sRigkF93fX6m3tpif3cE3kQ==
+X-Received: by 2002:a63:4703:: with SMTP id u3mr35072081pga.199.1608156673862;
+        Wed, 16 Dec 2020 14:11:13 -0800 (PST)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id v6sm3548560pfi.31.2020.12.16.14.11.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Dec 2020 14:11:13 -0800 (PST)
+Subject: Re: [PATCH] arm64: make _TIF_WORK_MASK bits contiguous
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        pr-tracker-bot@kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+References: <701d4747-bbbb-dbb4-d828-63d096fcc22a@kernel.dk>
+ <160815345901.27795.2544235487408028611.pr-tracker-bot@kernel.org>
+ <20201216220422.GA19075@C02TD0UTHF1T.local>
+ <CAHk-=wja217nCNOAS_bYB35kJRSgnv29fUAUGSGMCpf-aqeycg@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <c3cb5f34-5acf-ac1d-7773-908904be1d86@kernel.dk>
+Date:   Wed, 16 Dec 2020 15:11:09 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wijH15u2KfpON3VCECQODAVNJ6DtgQajDaKo+PB_c-L3g@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAHk-=wja217nCNOAS_bYB35kJRSgnv29fUAUGSGMCpf-aqeycg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 02:02:00PM -0800, Linus Torvalds wrote:
-> On Wed, Dec 16, 2020 at 10:54 AM Will Deacon <will@kernel.org> wrote:
-> >
-> > I'm hoping to wind down a bit next week (ho ho ho), so I just wanted to
-> > check whether this had got caught in your spam filters, whether you wanted
-> > me to change something or whether you're just snowed under in pull requests.
+On 12/16/20 3:06 PM, Linus Torvalds wrote:
+> On Wed, Dec 16, 2020 at 2:04 PM Mark Rutland <mark.rutland@arm.com> wrote:
+>>
+>> Unfortunately the merge resolution broke the build for arm64 -- could
+>> you please apply the fixup below? IIUC that matches what we did in
+>> linux-next, and builds fine locally.
 > 
-> No, it didn't get lost, and I just merged it. It's just that everybody
-> has been very good about sending their pull request early, so I've had
-> my hands busy, and I've gone roughly by subsystem (and today got
-> around to block drivers and iommus etc).
+> Oops. That was a bit too subtle. I didn't realize that the bits really
+> wanted to be contiguous, and it wasn't obvious at the point of
+> conflict.
+> 
+> Will apply your fix asap.
 
-Brill, cheers. I didn't realise you were going by subsystem, so that's
-why I was getting worried.
+Thanks (both Mark and Linus), I didn't know they had to be contiguous
+either as an immediate value...
 
-Will
+-- 
+Jens Axboe
+
