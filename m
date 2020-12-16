@@ -2,312 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9310A2DBCF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 09:48:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F9A22DBCE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 09:48:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726176AbgLPIrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 03:47:55 -0500
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:32468 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726155AbgLPIrz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 03:47:55 -0500
+        id S1726105AbgLPIp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 03:45:56 -0500
+Received: from mail-eopbgr50066.outbound.protection.outlook.com ([40.107.5.66]:15264
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725855AbgLPIpz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 03:45:55 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cl5vDct5R98ZOQjcaAGGhXQMZdZQ83N1E8Wq70oDep+oHeDBk8N4tqKLIXDVwdR9CPxaM9sEQPDtz53BEY9Qhuzr+PW2B9RP9bWGNqDMxQk745hxFj1bmpWtLb2zjdiK0/EI9JTGfEePI9ALBg6dXtEF2hGRhErrKzCDHJFvIc7n9Pbb1iZfo1NwZwWTK55jXxS/l2fsaPBcV/LlyxYkr93XllCfQ0+cetJ6VF1r+JLKt24t4686dtlfzq5LCD5K0SAOyOjU88Sok/Vn0d+ZY4NVVGEBfQz6x9ZYtLxK8KX2uCYoMSCehK4Ih9zlP8jBfJNTQgibv4WseheJQ6VyFw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZaVUqKGBq0XEepNHPCmSG/lcxU7nLfavFSaSPj8x3eA=;
+ b=eqce8ZFcbetFnaVeEt6H0bAx2+ubZPZeBc3mUIyxAVflgo8G8oiSattg+lK1ly1KD9msatdyPxpB/vjscJ0CESf7xSWbV0rng5UotUTgfXPHPo31EmKj/YNWGAy4Ebef1AscAa9hgMoRzSaKJ8yu/twIJHcXLcUoH1DsJiDUjJC3n2UiGsff5uv6np7TCzwrQmUsXdVXy7riyzus8VzKCYuS9iGSwckSXPVTOsmDVlY6UImhT8mt3wF26teUGF05z/Ybqy5xLa0jooxoko98ykitupLDZjg/QpHedpJuTwToXM+ChiBjboSshwFGzDPXc2IxqDuDxKFN29v4WMBhrg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fi.rohmeurope.com; dmarc=pass action=none
+ header.from=fi.rohmeurope.com; dkim=pass header.d=fi.rohmeurope.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1608108473; x=1639644473;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=XEjhfcWOE6sCpVcYRXwQLFfPVP/yv/3hCxGv89889MM=;
-  b=De5km9mMjCj3dP5GYZlYy4r6rDaZZvzqB+wBntmAfBCpOoGB1OVFmqA2
-   4NiWZiGqpmH6viBuNxy7OU0G398IOKTeMkq8KeIr43DLNKEEK+3gGD6Fd
-   wXfS4tbDRwTI4fl4Xup0zdV4EvZTZBEgpjUuk9WiA7W9qtlMmUOapxztG
-   A=;
-X-IronPort-AV: E=Sophos;i="5.78,424,1599523200"; 
-   d="scan'208";a="103481231"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-a70de69e.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 16 Dec 2020 08:47:09 +0000
-Received: from EX13D31EUA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1e-a70de69e.us-east-1.amazon.com (Postfix) with ESMTPS id 75544A1EE6;
-        Wed, 16 Dec 2020 08:46:57 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.102) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 16 Dec 2020 08:46:41 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <akpm@linux-foundation.org>
-CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        <brendanhiggins@google.com>, <cai@lca.pw>,
-        <colin.king@canonical.com>, <corbet@lwn.net>, <david@redhat.com>,
-        <dwmw@amazon.com>, <elver@google.com>, <fan.du@intel.com>,
-        <foersleo@amazon.de>, <gthelen@google.com>, <irogers@google.com>,
-        <jolsa@redhat.com>, <kirill@shutemov.name>, <mark.rutland@arm.com>,
-        <mgorman@suse.de>, <minchan@kernel.org>, <mingo@redhat.com>,
-        <namhyung@kernel.org>, <peterz@infradead.org>,
-        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
-        <rostedt@goodmis.org>, <rppt@kernel.org>, <sblbir@amazon.com>,
-        <shakeelb@google.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
-        <snu@amazon.de>, <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
-        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
-        <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
-        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [RFC v15.1 8/8] Docs/admin-guide/mm/damon: Document DAMON-based Operation Schemes
-Date:   Wed, 16 Dec 2020 09:44:04 +0100
-Message-ID: <20201216084404.23183-9-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201216084404.23183-1-sjpark@amazon.com>
-References: <20201216084404.23183-1-sjpark@amazon.com>
+ d=rohmsemiconductoreurope.onmicrosoft.com;
+ s=selector1-rohmsemiconductoreurope-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZaVUqKGBq0XEepNHPCmSG/lcxU7nLfavFSaSPj8x3eA=;
+ b=F2a8tcFQpujkLlMO89wH63fhbmNq7JJghpSywVWr4iDu7l4v6RDcOWOUKDem9xEDEJT22bbh5V08pmuWVHL6F7xG+IT1yNMBBbbUq3TjnAv205ROombXs6REuiRGHKZhYBKIzq7kAVC3g/mvvvgunzqkQfUWbvmsxe5OjT0F1NQ=
+Received: from HE1PR03MB3162.eurprd03.prod.outlook.com (2603:10a6:7:55::20) by
+ HE1PR0301MB2316.eurprd03.prod.outlook.com (2603:10a6:3:2a::24) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3654.25; Wed, 16 Dec 2020 08:45:04 +0000
+Received: from HE1PR03MB3162.eurprd03.prod.outlook.com
+ ([fe80::f1f1:eb1d:2bf5:eb87]) by HE1PR03MB3162.eurprd03.prod.outlook.com
+ ([fe80::f1f1:eb1d:2bf5:eb87%7]) with mapi id 15.20.3654.025; Wed, 16 Dec 2020
+ 08:45:03 +0000
+From:   "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+To:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "marek.vasut+renesas@gmail.com" <marek.vasut+renesas@gmail.com>,
+        "yoshihiro.shimoda.uh@renesas.com" <yoshihiro.shimoda.uh@renesas.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>
+CC:     linux-power <linux-power@fi.rohmeurope.com>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "khiem.nguyen.xt@renesas.com" <khiem.nguyen.xt@renesas.com>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 12/12] mfd: bd9571mwv: Add support for BD9574MWF
+Thread-Topic: [PATCH v3 12/12] mfd: bd9571mwv: Add support for BD9574MWF
+Thread-Index: AQHW035yi+35IDOo0Uu5Ax/VenPLNqn5aCkA
+Date:   Wed, 16 Dec 2020 08:45:03 +0000
+Message-ID: <6937e03fd87f12925d904c2cad0cf665efdc895f.camel@fi.rohmeurope.com>
+References: <1608104275-13174-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+         <1608104275-13174-13-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+In-Reply-To: <1608104275-13174-13-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+Reply-To: "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+Accept-Language: fi-FI, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none
+ header.from=fi.rohmeurope.com;
+x-originating-ip: [62.78.225.252]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e5e182da-ed02-40d3-5c7c-08d8a19ee1df
+x-ms-traffictypediagnostic: HE1PR0301MB2316:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <HE1PR0301MB23160F9E14DC3F2AF9864772ADC50@HE1PR0301MB2316.eurprd03.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4125;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: T2nUTWERzG4NVbxMKs40XMA+GC6132wSZPHWzLHhNWderQ2FevxwmFGdDyEJpdM+2l7QWJrxMkLigtmFp5AUGo07T4LPouKIbS1+MmlVvo6jou8MuPVJC3tBlCobDRzaXd0KK6lbREtARwul5hyE9Dqj1qd8s8co4sJFzwz8AqfIXP5DZgzhrgtvrC2tGKhZQznDYfKKR+S3FOcJc4rdIpUBInn1lXvAwSHCq0Wf/q1mnFSRMn+l9xc+EQOQW2tdgNpBXVq7V7+kMLgzH3HoXJftITVr6/zoN+rh+e6b4Pg7HhOgGv8JBg+Ywb8K6TYt1r7DF50CufMH7hbBwar8XA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR03MB3162.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(396003)(346002)(366004)(136003)(376002)(2616005)(66446008)(4001150100001)(64756008)(66556008)(8676002)(66946007)(3450700001)(7416002)(5660300002)(83380400001)(8936002)(6506007)(66476007)(478600001)(6486002)(6512007)(110136005)(86362001)(76116006)(54906003)(316002)(2906002)(4326008)(186003)(71200400001)(26005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?eW84cnd3aXg1MHJWd2hYZUFXcVhSUkVKa2FPTGozbG1Iam83QzJKZ2F5Wmpk?=
+ =?utf-8?B?Ums3YVR6NzZJRUc2TzN1RzNPUXFBbXdGb0hBYmJxMnRDUUIrdzVUajVWOVJI?=
+ =?utf-8?B?QVMvVmhhQmRjTVB5Ymt2K3UzM2I2OG9ZY0Z4dkpRZDZUeFc1NGpPRXk2Ykgx?=
+ =?utf-8?B?Sksvb3Vsdmc0T0pVN0Q1ejRUYnhhWnQxYTJCQitGQkNIMzdRRVJ6R0lISkpB?=
+ =?utf-8?B?RVhWU1d6SitDcXE0SzJzWEVRcGJxMFFPeUNsVTN5NWRTd3Mza1VjSGhKUnJ3?=
+ =?utf-8?B?TFA1aGlWMWlCQ1NQTmZRNnBndkM2VTV5ME9CNXh4VGQ4TXpSMG9KMDNQMkh0?=
+ =?utf-8?B?alNZSmQyUXFqeTk2a0NvLzFyZW5Gb3hTT0xqblVmVHRkd2k1b3Z4YVlZMzFM?=
+ =?utf-8?B?M1NvSHYwS0dRZ1l3dyt3NmUxSUVxR0VnUTBFUmhxTU9GamNxZzhZZUNpUGZD?=
+ =?utf-8?B?ekp0WGduSFpMRGtpM0paVjJtK1VSYjNGTlljczhzMWVBaDVzWHBFckZsd3g0?=
+ =?utf-8?B?bzFvbmdXRHZROTZtQnpleTViUkZMYm5OaVJtUDRLNnJNSWp2Ny9LTFc5dTlR?=
+ =?utf-8?B?RGtOM3NlZGNqL2RwbnRJdzBNUC9mcUhJcUFKWXJIcjFjeWh6WTNtZktSUENK?=
+ =?utf-8?B?OHFDUEcrTHk3YXRvaldaTzlDMEdKMmFXeGhmM2d2aEVvY1BtZnVHaWh5T1Zn?=
+ =?utf-8?B?NFpHazJyVlFBNGRWcytDeEVDWW9DSVovcWJFQzdkTHlHVnNWeVlSQURHbzNM?=
+ =?utf-8?B?M3BnbllZQTZ2MGhwcnl0V1R4YzJIUG1lZ2VsZzVnUVI1Zk5PSDJ5SXFJMEhB?=
+ =?utf-8?B?NzRpTWlTTnlYUHJmQ250ZDIxVTFtNXcyMS90dTVnd0lVKzdKbGtKbHhteUNW?=
+ =?utf-8?B?dnBvZ2Q3YVA0SHJ3d1ZqVTBuWHhtWjB3ZkZjUEVFdlRCWnV5YVk4OXFqWHVi?=
+ =?utf-8?B?ZDNXMWVHTE8vZ1FsK3J4enNDbnJ3NDFURW9PMkI1NDNic2ZHWkdDcmVEODdR?=
+ =?utf-8?B?V20xU2FVZ1ZKSno1MUIrVkxZL0VHYUNsZThMdTB0dm15aGc0cnk2dHZ1NTJB?=
+ =?utf-8?B?NEU5NzVzSlQ2d0VUMko4Y0lwOEw4WkJVYnpiOHBzV0cyTUxDMTgzSjVXRmJr?=
+ =?utf-8?B?aDBKd0hHblk5d3RYeEVYejB0TFR0UGJRbkh6amVBM0RzQ1RrcElObUNBeTJH?=
+ =?utf-8?B?bEVvYmNrQTVXdXZ4T285UkVKUTF3UEZ2eGZCeG9EaVZxeUtDTE1mRTh3cmdt?=
+ =?utf-8?B?enBHYXU2ZHBJUW1wSk5RMW9wT0Rub0UwTjhTWWxsbzZES2gzaytyQ3FEb2pG?=
+ =?utf-8?Q?mU0fAikweXVYncnURSbb/EXIaeR+2mlGzF?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <2C844266CD938843AA74FF94BB56FB9D@eurprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.102]
-X-ClientProxiedBy: EX13D22UWB003.ant.amazon.com (10.43.161.76) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+X-OriginatorOrg: fi.rohmeurope.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HE1PR03MB3162.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e5e182da-ed02-40d3-5c7c-08d8a19ee1df
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Dec 2020 08:45:03.7722
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 94f2c475-a538-4112-b5dd-63f17273d67a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: iGrH+m3VIodgst3AKmd3Il1r9hM0WHjsNDXW6I/otgFwDi1qeT7H4eb7moDgwA1b5Da2PqwwKmoF5iZ2yECkE58YrA58AEr1nSpgDTizc4ud3K8hM4TqbOKL2ZEhsP6R
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0301MB2316
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
-
-This commit add description of DAMON-based operation schemes in the
-DAMON documents.
-
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
- Documentation/admin-guide/mm/damon/guide.rst |  41 ++++++-
- Documentation/admin-guide/mm/damon/start.rst |  11 ++
- Documentation/admin-guide/mm/damon/usage.rst | 109 ++++++++++++++++++-
- Documentation/vm/damon/index.rst             |   1 -
- 4 files changed, 156 insertions(+), 6 deletions(-)
-
-diff --git a/Documentation/admin-guide/mm/damon/guide.rst b/Documentation/admin-guide/mm/damon/guide.rst
-index c51fb843efaa..1f9aa2ebbdb6 100644
---- a/Documentation/admin-guide/mm/damon/guide.rst
-+++ b/Documentation/admin-guide/mm/damon/guide.rst
-@@ -53,6 +53,11 @@ heats``.  If it shows a simple pattern consists of a small number of memory
- regions having high contrast of access temperature, you could consider manual
- `Program Modification`_.
- 
-+If the access pattern is very frequently changing so that you cannot figure out
-+what is the performance important region using your human eye, `Automated
-+DAMON-based Memory Operations`_ might help the case owing to its machine-level
-+microscope view.
-+
- If you still want to absorb more benefits, you should develop `Personalized
- DAMON Application`_ for your special case.
- 
-@@ -120,6 +125,36 @@ shows the visualized access patterns of streamcluster workload in PARSEC3
- benchmark suite.  We can easily identify the 100 MiB sized hot object.
- 
- 
-+Automated DAMON-based Memory Operations
-+---------------------------------------
-+
-+Though `Manual Program Optimization` works well in many cases and DAMON can
-+help it, modifying the source code is not a good option in many cases.  First
-+of all, the source code could be too old or unavailable.  And, many workloads
-+will have complex data access patterns that even hard to distinguish hot memory
-+objects and cold memory objects with the human eye.  Finding the mapping from
-+the visualized access pattern to the source code and injecting the hinting
-+system calls inside the code will also be quite challenging.
-+
-+By using DAMON-based operation schemes (DAMOS) via ``damo schemes``, you will
-+be able to easily optimize your workload in such a case.  Our example schemes
-+called 'efficient THP' and 'proactive reclamation' achieved significant speedup
-+and memory space saves against 25 realistic workloads [2]_.
-+
-+That said, note that you need careful tune of the schemes (e.g., target region
-+size and age) and monitoring attributes for the successful use of this
-+approach.  Because the optimal values of the parameters will be dependent on
-+each system and workload, misconfiguring the parameters could result in worse
-+memory management.
-+
-+For the tuning, you could measure the performance metrics such as IPC, TLB
-+misses, and swap in/out events and adjusts the parameters based on their
-+changes.  The total number and the total size of the regions that each scheme
-+is applied, which are provided via the debugfs interface and the programming
-+interface can also be useful.  Writing a program automating this optimal
-+parameter could be an option.
-+
-+
- Personalized DAMON Application
- ------------------------------
- 
-@@ -146,9 +181,9 @@ Referencing previously done successful practices could help you getting the
- sense for this kind of optimizations.  There is an academic paper [1]_
- reporting the visualized access pattern and manual `Program
- Modification`_ results for a number of realistic workloads.  You can also get
--the visualized access patterns [3]_ [4]_ [5]_ and automated DAMON-based memory
--operations results for other realistic workloads that collected with latest
--version of DAMON [2]_ .
-+the visualized access patterns [3]_ [4]_ [5]_ and
-+`Automated DAMON-based Memory Operations`_ results for other realistic
-+workloads that collected with latest version of DAMON [2]_ .
- 
- .. [1] https://dl.acm.org/doi/10.1145/3366626.3368125
- .. [2] https://damonitor.github.io/test/result/perf/latest/html/
-diff --git a/Documentation/admin-guide/mm/damon/start.rst b/Documentation/admin-guide/mm/damon/start.rst
-index deed2ea2321e..35cf4e4ca6aa 100644
---- a/Documentation/admin-guide/mm/damon/start.rst
-+++ b/Documentation/admin-guide/mm/damon/start.rst
-@@ -90,6 +90,17 @@ image files. ::
- You can show the images in a web page [1]_ .  Those made with other realistic
- workloads are also available [2]_ [3]_ [4]_.
- 
-+
-+Data Access Pattern Aware Memory Management
-+===========================================
-+
-+Below three commands make every memory region of size >=4K that doesn't
-+accessed for >=60 seconds in your workload to be swapped out. ::
-+
-+    $ echo "#min-size max-size min-acc max-acc min-age max-age action" > scheme
-+    $ echo "4K        max      0       0       60s     max     pageout" >> scheme
-+    $ damo schemes -c my_thp_scheme <pid of your workload>
-+
- .. [1] https://damonitor.github.io/doc/html/v17/admin-guide/mm/damon/start.html#visualizing-recorded-patterns
- .. [2] https://damonitor.github.io/test/result/visual/latest/rec.heatmap.1.png.html
- .. [3] https://damonitor.github.io/test/result/visual/latest/rec.wss_sz.png.html
-diff --git a/Documentation/admin-guide/mm/damon/usage.rst b/Documentation/admin-guide/mm/damon/usage.rst
-index a6606d27a559..96278227f925 100644
---- a/Documentation/admin-guide/mm/damon/usage.rst
-+++ b/Documentation/admin-guide/mm/damon/usage.rst
-@@ -219,11 +219,70 @@ Similar to that of ``heats --heatmap``, it also supports 'gnuplot' based simple
- visualization of the distribution via ``--plot`` option.
- 
- 
-+DAMON-based Operation Schemes
-+-----------------------------
-+
-+The ``schemes`` subcommand allows users to do DAMON-based memory management
-+optimizations in a few seconds.  Similar to ``record``, it receives monitoring
-+attributes and target.  However, in addition to those, ``schemes`` receives
-+data access pattern-based memory operation schemes, which describes what memory
-+operation action should be applied to memory regions showing specific data
-+access pattern.  Then, it starts the data access monitoring and automatically
-+applies the schemes to the targets.
-+
-+The operation schemes should be saved in a text file in below format and passed
-+to ``schemes`` subcommand via ``--schemes`` option. ::
-+
-+    min-size max-size min-acc max-acc min-age max-age action
-+
-+The format also supports comments, several units for size and age of regions,
-+and human readable action names.  Currently supported operation actions are
-+``willneed``, ``cold``, ``pageout``, ``hugepage`` and ``nohugepage``.  Each of
-+the actions works same to the madvise() system call hints having the name.
-+Please also note that the range is inclusive (closed interval), and ``0`` for
-+max values means infinite. Below example schemes are possible. ::
-+
-+    # format is:
-+    # <min/max size> <min/max frequency (0-100)> <min/max age> <action>
-+    #
-+    # B/K/M/G/T for Bytes/KiB/MiB/GiB/TiB
-+    # us/ms/s/m/h/d for micro-seconds/milli-seconds/seconds/minutes/hours/days
-+    # 'min/max' for possible min/max value.
-+
-+    # if a region keeps a high access frequency for >=100ms, put the region on
-+    # the head of the LRU list (call madvise() with MADV_WILLNEED).
-+    min    max      80      max     100ms   max willneed
-+
-+    # if a region keeps a low access frequency for >=200ms and <=one hour, put
-+    # the region on the tail of the LRU list (call madvise() with MADV_COLD).
-+    min     max     10      20      200ms   1h  cold
-+
-+    # if a region keeps a very low access frequency for >=60 seconds, swap out
-+    # the region immediately (call madvise() with MADV_PAGEOUT).
-+    min     max     0       10      60s     max pageout
-+
-+    # if a region of a size >=2MiB keeps a very high access frequency for
-+    # >=100ms, let the region to use huge pages (call madvise() with
-+    # MADV_HUGEPAGE).
-+    2M      max     90      100     100ms   max hugepage
-+
-+    # If a regions of a size >=2MiB keeps small access frequency for >=100ms,
-+    # avoid the region using huge pages (call madvise() with MADV_NOHUGEPAGE).
-+    2M      max     0       25      100ms   max nohugepage
-+
-+For example, you can make a running process named 'foo' to use huge pages for
-+memory regions keeping 2MB or larger size and having very high access frequency
-+for at least 100 milliseconds using below commands::
-+
-+    $ echo "2M max    90 max    100ms max    hugepage" > my_thp_scheme
-+    $ ./damo schemes --schemes my_thp_scheme `pidof foo`
-+
-+
- debugfs Interface
- =================
- 
--DAMON exports four files, ``attrs``, ``target_ids``, ``record``, and
--``monitor_on`` under its debugfs directory, ``<debugfs>/damon/``.
-+DAMON exports five files, ``attrs``, ``target_ids``, ``record``, ``schemes``
-+and ``monitor_on`` under its debugfs directory, ``<debugfs>/damon/``.
- 
- 
- Attributes
-@@ -280,6 +339,52 @@ saved in ``/damon.data``. ::
- The recording can be disabled by setting the buffer size zero.
- 
- 
-+Schemes
-+-------
-+
-+For usual DAMON-based data access aware memory management optimizations, users
-+would simply want the system to apply a memory management action to a memory
-+region of a specific size having a specific access frequency for a specific
-+time.  DAMON receives such formalized operation schemes from the user and
-+applies those to the target processes.  It also counts the total number and
-+size of regions that each scheme is applied.  This statistics can be used for
-+online analysis or tuning of the schemes.
-+
-+Users can get and set the schemes by reading from and writing to ``schemes``
-+debugfs file.  Reading the file also shows the statistics of each scheme.  To
-+the file, each of the schemes should be represented in each line in below form:
-+
-+    min-size max-size min-acc max-acc min-age max-age action
-+
-+Note that the ranges are closed interval.  Bytes for the size of regions
-+(``min-size`` and ``max-size``), number of monitored accesses per aggregate
-+interval for access frequency (``min-acc`` and ``max-acc``), number of
-+aggregate intervals for the age of regions (``min-age`` and ``max-age``), and a
-+predefined integer for memory management actions should be used.  The supported
-+numbers and their meanings are as below.
-+
-+ - 0: Call ``madvise()`` for the region with ``MADV_WILLNEED``
-+ - 1: Call ``madvise()`` for the region with ``MADV_COLD``
-+ - 2: Call ``madvise()`` for the region with ``MADV_PAGEOUT``
-+ - 3: Call ``madvise()`` for the region with ``MADV_HUGEPAGE``
-+ - 4: Call ``madvise()`` for the region with ``MADV_NOHUGEPAGE``
-+ - 5: Do nothing but count the statistics
-+
-+You can disable schemes by simply writing an empty string to the file.  For
-+example, below commands applies a scheme saying "If a memory region of size in
-+[4KiB, 8KiB] is showing accesses per aggregate interval in [0, 5] for aggregate
-+interval in [10, 20], page out the region", check the entered scheme again, and
-+finally remove the scheme. ::
-+
-+    # cd <debugfs>/damon
-+    # echo "4096 8192    0 5    10 20    2" > schemes
-+    # cat schemes
-+    4096 8192 0 5 10 20 2 0 0
-+    # echo > schemes
-+
-+The last two integers in the 4th line of above example is the total number and
-+the total size of the regions that the scheme is applied.
-+
- Turning On/Off
- --------------
- 
-diff --git a/Documentation/vm/damon/index.rst b/Documentation/vm/damon/index.rst
-index 17dca3c12aad..69aec1287aaf 100644
---- a/Documentation/vm/damon/index.rst
-+++ b/Documentation/vm/damon/index.rst
-@@ -28,4 +28,3 @@ workloads and systems.
-    design
-    eval
-    api
--   plans
--- 
-2.17.1
-
+DQpPbiBXZWQsIDIwMjAtMTItMTYgYXQgMTY6MzcgKzA5MDAsIFlvc2hpaGlybyBTaGltb2RhIHdy
+b3RlOg0KPiBGcm9tOiBLaGllbSBOZ3V5ZW4gPGtoaWVtLm5ndXllbi54dEByZW5lc2FzLmNvbT4N
+Cj4gDQo+IFRoZSBuZXcgUE1JQyBCRDk1NzRNV0YgaW5oZXJpdHMgZmVhdHVyZXMgZnJvbSBCRDk1
+NzFNV1YuDQo+IEFkZCB0aGUgc3VwcG9ydCBvZiBuZXcgUE1JQyB0byBleGlzdGluZyBiZDk1NzFt
+d3YgZHJpdmVyLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogS2hpZW0gTmd1eWVuIDxraGllbS5uZ3V5
+ZW4ueHRAcmVuZXNhcy5jb20+DQo+IFtzaGltb2RhOiByZWJhc2UgYW5kIHJlZmFjdG9yXQ0KPiBT
+aWduZWQtb2ZmLWJ5OiBZb3NoaWhpcm8gU2hpbW9kYSA8eW9zaGloaXJvLnNoaW1vZGEudWhAcmVu
+ZXNhcy5jb20+DQoNClJldmlld2VkLWJ5OiBNYXR0aSBWYWl0dGluZW4gPG1hdHRpLnZhaXR0aW5l
+bkBmaS5yb2htZXVyb3BlLmNvbT4NCg0KPiAtLS0NCj4gIGRyaXZlcnMvbWZkL2JkOTU3MW13di5j
+ICAgICAgIHwgODYNCj4gKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+LQ0KPiAgaW5jbHVkZS9saW51eC9tZmQvYmQ5NTcxbXd2LmggfCAxOCArKysrKysrLS0NCj4gIDIg
+ZmlsZXMgY2hhbmdlZCwgOTkgaW5zZXJ0aW9ucygrKSwgNSBkZWxldGlvbnMoLSkNCj4gDQo+IGRp
+ZmYgLS1naXQgYS9kcml2ZXJzL21mZC9iZDk1NzFtd3YuYyBiL2RyaXZlcnMvbWZkL2JkOTU3MW13
+di5jDQo+IGluZGV4IGNjZjFhNjAuLmY2NjBkZTYgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbWZk
+L2JkOTU3MW13di5jDQo+ICsrKyBiL2RyaXZlcnMvbWZkL2JkOTU3MW13di5jDQo+IEBAIC0xLDYg
+KzEsNiBAQA0KPiAgLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAtb25seQ0KPiAg
+LyoNCj4gLSAqIFJPSE0gQkQ5NTcxTVdWLU0gTUZEIGRyaXZlcg0KPiArICogUk9ITSBCRDk1NzFN
+V1YtTSBhbmQgQkQ5NTc0TVZGLU0gTUZEIGRyaXZlcg0KPiAgICoNCj4gICAqIENvcHlyaWdodCAo
+QykgMjAxNyBNYXJlayBWYXN1dCA8bWFyZWsudmFzdXQrcmVuZXNhc0BnbWFpbC5jb20+DQo+ICAg
+KiBDb3B5cmlnaHQgKEMpIDIwMjAgUmVuZXNhcyBFbGVjdHJvbmljcyBDb3Jwb3JhdGlvbg0KPiBA
+QCAtMTEsNiArMTEsNyBAQA0KPiAgI2luY2x1ZGUgPGxpbnV4L2kyYy5oPg0KPiAgI2luY2x1ZGUg
+PGxpbnV4L2ludGVycnVwdC5oPg0KPiAgI2luY2x1ZGUgPGxpbnV4L21mZC9jb3JlLmg+DQo+ICsj
+aW5jbHVkZSA8bGludXgvbWZkL3JvaG0tZ2VuZXJpYy5oPg0KPiAgI2luY2x1ZGUgPGxpbnV4L21v
+ZHVsZS5oPg0KPiAgDQo+ICAjaW5jbHVkZSA8bGludXgvbWZkL2JkOTU3MW13di5oPg0KPiBAQCAt
+MjgsNiArMjksNyBAQCBzdHJ1Y3QgYmQ5NTd4X2RhdGEgew0KPiAgCWludCBudW1fY2VsbHM7DQo+
+ICB9Ow0KPiAgDQo+ICsvKiBGb3IgQkQ5NTcxTVdWICovDQo+ICBzdGF0aWMgY29uc3Qgc3RydWN0
+IG1mZF9jZWxsIGJkOTU3MW13dl9jZWxsc1tdID0gew0KPiAgCXsgLm5hbWUgPSAiYmQ5NTcxbXd2
+LXJlZ3VsYXRvciIsIH0sDQo+ICAJeyAubmFtZSA9ICJiZDk1NzFtd3YtZ3BpbyIsIH0sDQo+IEBA
+IC0xMjQsNiArMTI2LDgxIEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgYmQ5NTd4X2RhdGEgYmQ5NTcx
+bXd2X2RhdGEgPQ0KPiB7DQo+ICAJLm51bV9jZWxscyA9IEFSUkFZX1NJWkUoYmQ5NTcxbXd2X2Nl
+bGxzKSwNCj4gIH07DQo+ICANCj4gKy8qIEZvciBCRDk1NzRNV0YgKi8NCj4gK3N0YXRpYyBjb25z
+dCBzdHJ1Y3QgbWZkX2NlbGwgYmQ5NTc0bXdmX2NlbGxzW10gPSB7DQo+ICsJeyAubmFtZSA9ICJi
+ZDk1NzRtd2YtcmVndWxhdG9yIiwgfSwNCj4gKwl7IC5uYW1lID0gImJkOTU3NG13Zi1ncGlvIiwg
+fSwNCj4gK307DQo+ICsNCj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3QgcmVnbWFwX3JhbmdlIGJkOTU3
+NG13Zl9yZWFkYWJsZV95ZXNfcmFuZ2VzW10gPSB7DQo+ICsJcmVnbWFwX3JlZ19yYW5nZShCRDk1
+NzFNV1ZfVkVORE9SX0NPREUsDQo+IEJEOTU3MU1XVl9QUk9EVUNUX1JFVklTSU9OKSwNCj4gKwly
+ZWdtYXBfcmVnX3JhbmdlKEJEOTU3MU1XVl9CS1VQX01PREVfQ05ULA0KPiBCRDk1NzFNV1ZfQktV
+UF9NT0RFX0NOVCksDQo+ICsJcmVnbWFwX3JlZ19yYW5nZShCRDk1NzFNV1ZfRFZGU19WSU5JVCwg
+QkQ5NTcxTVdWX0RWRlNfU0VUVk1BWCksDQo+ICsJcmVnbWFwX3JlZ19yYW5nZShCRDk1NzFNV1Zf
+RFZGU19TRVRWSUQsDQo+IEJEOTU3MU1XVl9EVkZTX01PTklWREFDKSwNCj4gKwlyZWdtYXBfcmVn
+X3JhbmdlKEJEOTU3MU1XVl9HUElPX0lOLCBCRDk1NzFNV1ZfR1BJT19JTiksDQo+ICsJcmVnbWFw
+X3JlZ19yYW5nZShCRDk1NzFNV1ZfR1BJT19JTlQsIEJEOTU3MU1XVl9HUElPX0lOVE1BU0spLA0K
+PiArCXJlZ21hcF9yZWdfcmFuZ2UoQkQ5NTcxTVdWX0lOVF9JTlRSRVEsIEJEOTU3MU1XVl9JTlRf
+SU5UTUFTSyksDQo+ICt9Ow0KPiArDQo+ICtzdGF0aWMgY29uc3Qgc3RydWN0IHJlZ21hcF9hY2Nl
+c3NfdGFibGUgYmQ5NTc0bXdmX3JlYWRhYmxlX3RhYmxlID0gew0KPiArCS55ZXNfcmFuZ2VzCT0g
+YmQ5NTc0bXdmX3JlYWRhYmxlX3llc19yYW5nZXMsDQo+ICsJLm5feWVzX3Jhbmdlcwk9IEFSUkFZ
+X1NJWkUoYmQ5NTc0bXdmX3JlYWRhYmxlX3llc19yYW5nZXMpLA0KPiArfTsNCj4gKw0KPiArc3Rh
+dGljIGNvbnN0IHN0cnVjdCByZWdtYXBfcmFuZ2UgYmQ5NTc0bXdmX3dyaXRhYmxlX3llc19yYW5n
+ZXNbXSA9IHsNCj4gKwlyZWdtYXBfcmVnX3JhbmdlKEJEOTU3MU1XVl9CS1VQX01PREVfQ05ULA0K
+PiBCRDk1NzFNV1ZfQktVUF9NT0RFX0NOVCksDQo+ICsJcmVnbWFwX3JlZ19yYW5nZShCRDk1NzFN
+V1ZfRFZGU19TRVRWSUQsIEJEOTU3MU1XVl9EVkZTX1NFVFZJRCksDQo+ICsJcmVnbWFwX3JlZ19y
+YW5nZShCRDk1NzFNV1ZfR1BJT19ESVIsIEJEOTU3MU1XVl9HUElPX09VVCksDQo+ICsJcmVnbWFw
+X3JlZ19yYW5nZShCRDk1NzFNV1ZfR1BJT19JTlRfU0VULA0KPiBCRDk1NzFNV1ZfR1BJT19JTlRN
+QVNLKSwNCj4gKwlyZWdtYXBfcmVnX3JhbmdlKEJEOTU3MU1XVl9JTlRfSU5UUkVRLCBCRDk1NzFN
+V1ZfSU5UX0lOVE1BU0spLA0KPiArfTsNCj4gKw0KPiArc3RhdGljIGNvbnN0IHN0cnVjdCByZWdt
+YXBfYWNjZXNzX3RhYmxlIGJkOTU3NG13Zl93cml0YWJsZV90YWJsZSA9IHsNCj4gKwkueWVzX3Jh
+bmdlcwk9IGJkOTU3NG13Zl93cml0YWJsZV95ZXNfcmFuZ2VzLA0KPiArCS5uX3llc19yYW5nZXMJ
+PSBBUlJBWV9TSVpFKGJkOTU3NG13Zl93cml0YWJsZV95ZXNfcmFuZ2VzKSwNCj4gK307DQo+ICsN
+Cj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3QgcmVnbWFwX3JhbmdlIGJkOTU3NG13Zl92b2xhdGlsZV95
+ZXNfcmFuZ2VzW10gPSB7DQo+ICsJcmVnbWFwX3JlZ19yYW5nZShCRDk1NzFNV1ZfRFZGU19NT05J
+VkRBQywNCj4gQkQ5NTcxTVdWX0RWRlNfTU9OSVZEQUMpLA0KPiArCXJlZ21hcF9yZWdfcmFuZ2Uo
+QkQ5NTcxTVdWX0dQSU9fSU4sIEJEOTU3MU1XVl9HUElPX0lOKSwNCj4gKwlyZWdtYXBfcmVnX3Jh
+bmdlKEJEOTU3MU1XVl9HUElPX0lOVCwgQkQ5NTcxTVdWX0dQSU9fSU5UKSwNCj4gKwlyZWdtYXBf
+cmVnX3JhbmdlKEJEOTU3MU1XVl9JTlRfSU5UUkVRLCBCRDk1NzFNV1ZfSU5UX0lOVFJFUSksDQo+
+ICt9Ow0KPiArDQo+ICtzdGF0aWMgY29uc3Qgc3RydWN0IHJlZ21hcF9hY2Nlc3NfdGFibGUgYmQ5
+NTc0bXdmX3ZvbGF0aWxlX3RhYmxlID0gew0KPiArCS55ZXNfcmFuZ2VzCT0gYmQ5NTc0bXdmX3Zv
+bGF0aWxlX3llc19yYW5nZXMsDQo+ICsJLm5feWVzX3Jhbmdlcwk9IEFSUkFZX1NJWkUoYmQ5NTc0
+bXdmX3ZvbGF0aWxlX3llc19yYW5nZXMpLA0KPiArfTsNCj4gKw0KPiArc3RhdGljIGNvbnN0IHN0
+cnVjdCByZWdtYXBfY29uZmlnIGJkOTU3NG13Zl9yZWdtYXBfY29uZmlnID0gew0KPiArCS5yZWdf
+Yml0cwk9IDgsDQo+ICsJLnZhbF9iaXRzCT0gOCwNCj4gKwkuY2FjaGVfdHlwZQk9IFJFR0NBQ0hF
+X1JCVFJFRSwNCj4gKwkucmRfdGFibGUJPSAmYmQ5NTc0bXdmX3JlYWRhYmxlX3RhYmxlLA0KPiAr
+CS53cl90YWJsZQk9ICZiZDk1NzRtd2Zfd3JpdGFibGVfdGFibGUsDQo+ICsJLnZvbGF0aWxlX3Rh
+YmxlCT0gJmJkOTU3NG13Zl92b2xhdGlsZV90YWJsZSwNCj4gKwkubWF4X3JlZ2lzdGVyCT0gMHhm
+ZiwNCj4gK307DQo+ICsNCj4gK3N0YXRpYyBzdHJ1Y3QgcmVnbWFwX2lycV9jaGlwIGJkOTU3NG13
+Zl9pcnFfY2hpcCA9IHsNCj4gKwkubmFtZQkJPSAiYmQ5NTc0bXdmIiwNCj4gKwkuc3RhdHVzX2Jh
+c2UJPSBCRDk1NzFNV1ZfSU5UX0lOVFJFUSwNCj4gKwkubWFza19iYXNlCT0gQkQ5NTcxTVdWX0lO
+VF9JTlRNQVNLLA0KPiArCS5hY2tfYmFzZQk9IEJEOTU3MU1XVl9JTlRfSU5UUkVRLA0KPiArCS5p
+bml0X2Fja19tYXNrZWQgPSB0cnVlLA0KPiArCS5udW1fcmVncwk9IDEsDQo+ICsJLmlycXMJCT0g
+YmQ5NTcxbXd2X2lycXMsDQo+ICsJLm51bV9pcnFzCT0gQVJSQVlfU0laRShiZDk1NzFtd3ZfaXJx
+cyksDQo+ICt9Ow0KPiArDQo+ICtzdGF0aWMgY29uc3Qgc3RydWN0IGJkOTU3eF9kYXRhIGJkOTU3
+NG13Zl9kYXRhID0gew0KPiArCS5wYXJ0X25hbWUgPSBCRDk1NzRNV0ZfUEFSVF9OQU1FLA0KPiAr
+CS5yZWdtYXBfY29uZmlnID0gJmJkOTU3NG13Zl9yZWdtYXBfY29uZmlnLA0KPiArCS5pcnFfY2hp
+cCA9ICZiZDk1NzRtd2ZfaXJxX2NoaXAsDQo+ICsJLmNlbGxzID0gYmQ5NTc0bXdmX2NlbGxzLA0K
+PiArCS5udW1fY2VsbHMgPSBBUlJBWV9TSVpFKGJkOTU3NG13Zl9jZWxscyksDQo+ICt9Ow0KPiAr
+DQo+ICBzdGF0aWMgaW50IGJkOTU3MW13dl9pZGVudGlmeShzdHJ1Y3QgZGV2aWNlICpkZXYsIHN0
+cnVjdCByZWdtYXANCj4gKnJlZ21hcCwNCj4gIAkJCSAgICAgIGNvbnN0IGNoYXIgKnBhcnRfbmFt
+ZSkNCj4gIHsNCj4gQEAgLTE4MSw2ICsyNTgsOSBAQCBzdGF0aWMgaW50IGJkOTU3MW13dl9wcm9i
+ZShzdHJ1Y3QgaTJjX2NsaWVudA0KPiAqY2xpZW50LA0KPiAgCWNhc2UgQkQ5NTcxTVdWX1BST0RV
+Q1RfQ09ERV9WQUw6DQo+ICAJCWRhdGEgPSAmYmQ5NTcxbXd2X2RhdGE7DQo+ICAJCWJyZWFrOw0K
+PiArCWNhc2UgQkQ5NTc0TVdGX1BST0RVQ1RfQ09ERV9WQUw6DQo+ICsJCWRhdGEgPSAmYmQ5NTc0
+bXdmX2RhdGE7DQo+ICsJCWJyZWFrOw0KPiAgCWRlZmF1bHQ6DQo+ICAJCWRldl9lcnIoZGV2LCAi
+VW5zdXBwb3J0ZWQgZGV2aWNlIDB4JXhcbiIsIHJldCk7DQo+ICAJCXJldHVybiAtRU5PRU5UOw0K
+PiBAQCAtMjEwLDEyICsyOTAsMTQgQEAgc3RhdGljIGludCBiZDk1NzFtd3ZfcHJvYmUoc3RydWN0
+IGkyY19jbGllbnQNCj4gKmNsaWVudCwNCj4gIA0KPiAgc3RhdGljIGNvbnN0IHN0cnVjdCBvZl9k
+ZXZpY2VfaWQgYmQ5NTcxbXd2X29mX21hdGNoX3RhYmxlW10gPSB7DQo+ICAJeyAuY29tcGF0aWJs
+ZSA9ICJyb2htLGJkOTU3MW13diIsIH0sDQo+ICsJeyAuY29tcGF0aWJsZSA9ICJyb2htLGJkOTU3
+NG13ZiIsIH0sDQo+ICAJeyAvKiBzZW50aW5lbCAqLyB9DQo+ICB9Ow0KPiAgTU9EVUxFX0RFVklD
+RV9UQUJMRShvZiwgYmQ5NTcxbXd2X29mX21hdGNoX3RhYmxlKTsNCj4gIA0KPiAgc3RhdGljIGNv
+bnN0IHN0cnVjdCBpMmNfZGV2aWNlX2lkIGJkOTU3MW13dl9pZF90YWJsZVtdID0gew0KPiAtCXsg
+ImJkOTU3MW13diIsIDAgfSwNCj4gKwl7ICJiZDk1NzFtd3YiLCBST0hNX0NISVBfVFlQRV9CRDk1
+NzEgfSwNCj4gKwl7ICJiZDk1NzRtd2YiLCBST0hNX0NISVBfVFlQRV9CRDk1NzQgfSwNCj4gIAl7
+IC8qIHNlbnRpbmVsICovIH0NCj4gIH07DQo+ICBNT0RVTEVfREVWSUNFX1RBQkxFKGkyYywgYmQ5
+NTcxbXd2X2lkX3RhYmxlKTsNCj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvbWZkL2JkOTU3
+MW13di5oDQo+IGIvaW5jbHVkZS9saW51eC9tZmQvYmQ5NTcxbXd2LmgNCj4gaW5kZXggNWFiOTc2
+YS4uMGZjNzc4OSAxMDA2NDQNCj4gLS0tIGEvaW5jbHVkZS9saW51eC9tZmQvYmQ5NTcxbXd2LmgN
+Cj4gKysrIGIvaW5jbHVkZS9saW51eC9tZmQvYmQ5NTcxbXd2LmgNCj4gQEAgLTEsNiArMSw2IEBA
+DQo+ICAvKiBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMC1vbmx5ICovDQo+ICAvKg0K
+PiAtICogUk9ITSBCRDk1NzFNV1YtTSBkcml2ZXINCj4gKyAqIFJPSE0gQkQ5NTcxTVdWLU0gYW5k
+IEJEOTU3NE1XRi1NIGRyaXZlcg0KPiAgICoNCj4gICAqIENvcHlyaWdodCAoQykgMjAxNyBNYXJl
+ayBWYXN1dCA8bWFyZWsudmFzdXQrcmVuZXNhc0BnbWFpbC5jb20+DQo+ICAgKiBDb3B5cmlnaHQg
+KEMpIDIwMjAgUmVuZXNhcyBFbGVjdHJvbmljcyBDb3Jwb3JhdGlvbg0KPiBAQCAtMTQsMTEgKzE0
+LDEyIEBADQo+ICAjaW5jbHVkZSA8bGludXgvZGV2aWNlLmg+DQo+ICAjaW5jbHVkZSA8bGludXgv
+cmVnbWFwLmg+DQo+ICANCj4gLS8qIExpc3Qgb2YgcmVnaXN0ZXJzIGZvciBCRDk1NzFNV1YgKi8N
+Cj4gKy8qIExpc3Qgb2YgcmVnaXN0ZXJzIGZvciBCRDk1NzFNV1YgYW5kIEJEOTU3NE1XRiAqLw0K
+PiAgI2RlZmluZSBCRDk1NzFNV1ZfVkVORE9SX0NPREUJCQkweDAwDQo+ICAjZGVmaW5lIEJEOTU3
+MU1XVl9WRU5ET1JfQ09ERV9WQUwJCTB4ZGINCj4gICNkZWZpbmUgQkQ5NTcxTVdWX1BST0RVQ1Rf
+Q09ERQkJCTB4MDENCj4gICNkZWZpbmUgQkQ5NTcxTVdWX1BST0RVQ1RfQ09ERV9WQUwJCTB4NjAN
+Cj4gKyNkZWZpbmUgQkQ5NTc0TVdGX1BST0RVQ1RfQ09ERV9WQUwJCTB4NzQNCj4gICNkZWZpbmUg
+QkQ5NTcxTVdWX1BST0RVQ1RfUkVWSVNJT04JCTB4MDINCj4gIA0KPiAgI2RlZmluZSBCRDk1NzFN
+V1ZfSTJDX0ZVU0FfTU9ERQkJCTB4MTANCj4gQEAgLTQ4LDYgKzQ5LDcgQEANCj4gICNkZWZpbmUg
+QkQ5NTcxTVdWX1ZEMzNfVklECQkJMHg0NA0KPiAgDQo+ICAjZGVmaW5lIEJEOTU3MU1XVl9EVkZT
+X1ZJTklUCQkJMHg1MA0KPiArI2RlZmluZSBCRDk1NzRNV0ZfVkQwOV9WSU5JVAkJCTB4NTENCj4g
+ICNkZWZpbmUgQkQ5NTcxTVdWX0RWRlNfU0VUVk1BWAkJCTB4NTINCj4gICNkZWZpbmUgQkQ5NTcx
+TVdWX0RWRlNfQk9PU1RWSUQJCQkweDUzDQo+ICAjZGVmaW5lIEJEOTU3MU1XVl9EVkZTX1NFVFZJ
+RAkJCTB4NTQNCj4gQEAgLTYxLDYgKzYzLDcgQEANCj4gICNkZWZpbmUgQkQ5NTcxTVdWX0dQSU9f
+SU5UX1NFVAkJCTB4NjQNCj4gICNkZWZpbmUgQkQ5NTcxTVdWX0dQSU9fSU5UCQkJMHg2NQ0KPiAg
+I2RlZmluZSBCRDk1NzFNV1ZfR1BJT19JTlRNQVNLCQkJMHg2Ng0KPiArI2RlZmluZSBCRDk1NzRN
+V0ZfR1BJT19NVVgJCQkweDY3DQo+ICANCj4gICNkZWZpbmUgQkQ5NTcxTVdWX1JFR19LRUVQKG4p
+CQkJKDB4NzAgKyAobikpDQo+ICANCj4gQEAgLTcwLDYgKzczLDggQEANCj4gICNkZWZpbmUgQkQ5
+NTcxTVdWX1BST1RfRVJST1JfU1RBVFVTMgkJMHg4Mw0KPiAgI2RlZmluZSBCRDk1NzFNV1ZfUFJP
+VF9FUlJPUl9TVEFUVVMzCQkweDg0DQo+ICAjZGVmaW5lIEJEOTU3MU1XVl9QUk9UX0VSUk9SX1NU
+QVRVUzQJCTB4ODUNCj4gKyNkZWZpbmUgQkQ5NTc0TVdGX1BST1RfRVJST1JfU1RBVFVTNQkJMHg4
+Ng0KPiArI2RlZmluZSBCRDk1NzRNV0ZfU1lTVEVNX0VSUk9SX1NUQVRVUwkJMHg4Nw0KPiAgDQo+
+ICAjZGVmaW5lIEJEOTU3MU1XVl9JTlRfSU5UUkVRCQkJMHg5MA0KPiAgI2RlZmluZSBCRDk1NzFN
+V1ZfSU5UX0lOVFJFUV9NRDFfSU5UCQlCSVQoMCkNCj4gQEAgLTgyLDkgKzg3LDE2IEBADQo+ICAj
+ZGVmaW5lIEJEOTU3MU1XVl9JTlRfSU5UUkVRX0JLVVBfVFJHX0lOVAlCSVQoNykNCj4gICNkZWZp
+bmUgQkQ5NTcxTVdWX0lOVF9JTlRNQVNLCQkJMHg5MQ0KPiAgDQo+ICsjZGVmaW5lIEJEOTU3NE1X
+Rl9TU0NHX0NOVAkJCTB4QTANCj4gKyNkZWZpbmUgQkQ5NTc0TVdGX1BPRkZCX01SQgkJCTB4QTEN
+Cj4gKyNkZWZpbmUgQkQ5NTc0TVdGX1NNUkJfV1JfUFJPVAkJCTB4QTINCj4gKyNkZWZpbmUgQkQ5
+NTc0TVdGX1NNUkJfQVNTRVJUCQkJMHhBMw0KPiArI2RlZmluZSBCRDk1NzRNV0ZfU01SQl9TVEFU
+VVMJCQkweEE0DQo+ICsNCj4gICNkZWZpbmUgQkQ5NTcxTVdWX0FDQ0VTU19LRVkJCQkweGZmDQo+
+ICANCj4gICNkZWZpbmUgQkQ5NTcxTVdWX1BBUlRfTkFNRQkJCSJCRDk1NzFNV1YiDQo+ICsjZGVm
+aW5lIEJEOTU3NE1XRl9QQVJUX05BTUUJCQkiQkQ5NTc0TVdGIg0KPiAgDQo+ICAvKiBEZWZpbmUg
+dGhlIEJEOTU3MU1XViBJUlEgbnVtYmVycyAqLw0KPiAgZW51bSBiZDk1NzFtd3ZfaXJxcyB7DQo+
+IEBAIC05Myw3ICsxMDUsNyBAQCBlbnVtIGJkOTU3MW13dl9pcnFzIHsNCj4gIAlCRDk1NzFNV1Zf
+SVJRX01EMl9FMiwNCj4gIAlCRDk1NzFNV1ZfSVJRX1BST1RfRVJSLA0KPiAgCUJEOTU3MU1XVl9J
+UlFfR1AsDQo+IC0JQkQ5NTcxTVdWX0lSUV8xMjhIX09GLA0KPiArCUJEOTU3MU1XVl9JUlFfMTI4
+SF9PRiwJLyogQktVUF9IT0xEIG9uIEJEOTU3NE1XRiAqLw0KPiAgCUJEOTU3MU1XVl9JUlFfV0RU
+X09GLA0KPiAgCUJEOTU3MU1XVl9JUlFfQktVUF9UUkcsDQo+ICB9Ow0KDQo=
