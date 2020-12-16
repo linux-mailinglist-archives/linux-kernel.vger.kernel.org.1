@@ -2,281 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C3622DBCAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 09:29:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D0C92DBCB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 09:32:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726434AbgLPI1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 03:27:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725988AbgLPI1E (ORCPT
+        id S1725845AbgLPIbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 03:31:53 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:2775 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725287AbgLPIbx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 03:27:04 -0500
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5D78C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 00:26:23 -0800 (PST)
-Received: by mail-qv1-xf2e.google.com with SMTP id et9so4666246qvb.10
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 00:26:23 -0800 (PST)
+        Wed, 16 Dec 2020 03:31:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1608107512; x=1639643512;
+  h=from:to:subject:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version;
+  bh=feN/j6fHXBd/7dblKDK7XggJnmkH/YLE2J9No8W5RhU=;
+  b=NH/pj7XuOuNHbobkfyZ2WfB/VZZGSmCiKZgjxiCnmasbuVHmsW798z2Q
+   dlzOueCGH+eYXMLg7M9RP/pelmDk6Lw6qjfCgd2lVHYh80e3qtw4uVQSt
+   GYNg6wB+1uPz7k/Z0a1Ep9ciOSGZ7L9DjB3Ko/XOf2LCh8aDT0d5t4uUb
+   QcTUbWDJnA/FZIlj236kzIP42qin0fSOjhIBcLloQ6fp+gICrsBMF/ODE
+   /3aGYudv+sIq/W0cc06uj3rMrGWymTn72AHvCNIYLZKF2RvL8aljNgKtk
+   e3wDe9os1JZMdTF8+mkcKNxU473s+8yVYGOPQG1h7mKQ0MQsQcj3BQivg
+   w==;
+IronPort-SDR: QgEZRcfGrfO0jMONnxvgrf6LkRs99hIlvqrfvCmMSasTWPhjTluGpZ0SJw7ovHkjZFjHSu3uPm
+ 6vlngNMWVYDlScqCv97GsA5yvCUqaaamo8Yh9ZK/I58kje6szETFrqmsUeLhij6rdkNWzx5gVn
+ 9lS1GmrmEHcpHPkXkq21qhF6bTDGiitXLbFg3sQL0bkl06qBoykze6AZ8i2wgzAFxO+LQXPDhQ
+ HT4fsak2YVuo1vr7nnc1rIDwnb8s44sAoXvrKTyEuFj2h9JK6n/sXT9ZvresIRC4dCeRtoLqad
+ 1og=
+X-IronPort-AV: E=Sophos;i="5.78,423,1599548400"; 
+   d="scan'208";a="97287848"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 16 Dec 2020 01:30:36 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 16 Dec 2020 01:30:36 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
+ via Frontend Transport; Wed, 16 Dec 2020 01:30:36 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LXCzu9hs11cCTZVuIHht8hjya+RPfY0+YyF96hj9TNiiVaUG5jmUm1Y6qD+m+B7a2CEMyeB47tO31Fn10fPA9f7mxkhBrJElt7YIxJPS+o6DIqfzQGtJRe9jPBwDwHJWNe1erGg1mkuNqaMly1Zx4dolWu7Z0LksW5lF2sknPr7HZZpN/GrhaIifEtowN6EJWEa00AxqFtvaTLBA4t/5jiITIV1L5onvbx4tyIKv13Kbmt6lUOwW4wPW5c4DCS+T9sjnVaq7H4BeIr+Xv4Q0bH+cDVq3bwNA6V3/DqtCw83Wq57fUVYIGqznKWkauUITOGZGPiSE1llxs8g78jvJkw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=feN/j6fHXBd/7dblKDK7XggJnmkH/YLE2J9No8W5RhU=;
+ b=J1kgQaxxqo3DLWLSizKErGkdi//xCcuLKdqndNQ8F5m2iCsgtYyhizpzHvzbnVJ9690rynlJFNxa5hciDjUbnVmzpW2OSj7WoBixbwRFU55MiCfeO30tzbKjhf1BtKl2e2CbmabQ4utDNETEaMoItuPszi1p9Btf0vcgqkpjdlzfOstaGYI+ekgGupI6hji60G6bUJdbxC2o1HGgBkDyFTyNlZvx+6yhzUOMCY05dwg6c715eZhjuZpGVvzcb1eJeWQ+hUI6I6MYToNxVhCBQwMUOHemMH/2mKvzkYz/hOCJxS1G6Hd2qP3N+syIpxhsP2mhpLxJnwlCGl9gKw+6xg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=r6hEt315SbG/e/8Vl1feLlxOu8fWYFzE3xspskEPV0M=;
-        b=PAemIqM91cN4sEqCaeiWNNUyh1N1ovjV599H+sWNHJa1c8NAk2V+QiNPvcBzIFR3qb
-         O+HDCfDZm7ee0RRjppMh2qU7nwAyUgKY2oUATo4Qjhc6Eg2B4NW7tKJESBievwdgPiJN
-         DgEsk9vucLGI6cJ7z5NhTD77BO4ECnEVlu/0jA5F7nys22QzVODCGz8XAogwVCaYA+eW
-         NaX3ZdaGAE9oAqPpFATpTr9Rb6oL1KvukplRNMXbJrfSNltM9rPPOElb3JTiUuhqzxPa
-         nhttJ44JsCyHL4gbUqx2Dl1cSRUkgYK34iA2OFbVGDjy5T7p5cofddEr3SurK5Ui7nob
-         dbZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=r6hEt315SbG/e/8Vl1feLlxOu8fWYFzE3xspskEPV0M=;
-        b=S3p56Yr09PwwwBWUBWDvxV3mSt7d8evl/tBvojz6LWzOVlbelwmMcVKeylc2JwgCox
-         8CKMytW1dS/eI/1BBBsjzVOHpWFnG/5sVlK67UlKIofOMESYYx3Q/RhNQXzndQlPpE7A
-         pLUYYAdt/dDl3D9VhJkxQr79JG+RaHnv2Mrc44/F3B5w/25uy26XJYHHwBJhOeuCdwsQ
-         e879WlKm/LL6izcUakn/166enz4antrifvgA4aT8GyUPaAgN4wWPCBpiWJ5JvYN5PVmq
-         q8xDE2Qtn96BVRD0Nn7f9Q1QD1+Ln2sd743yIxtl5LRGLuejlYbva6Usva3SLE8GELHz
-         ZDig==
-X-Gm-Message-State: AOAM533OvD5oxAPIuKykH9m1gGj+WT6H6i5kUOF/RvB4+4uDcfkpGDS1
-        fxZEm7RdpZ5+8ELSkw/mTMeTyA4xPoh4QyzaBzKytA==
-X-Google-Smtp-Source: ABdhPJyjxOxCdcR9YGZm5e8bCkOXaeazbRnJ4UrgFVb79qCVta3O7de+0oprK1imOqRrqYEwFxqpY/n7xshsNAzSaBg=
-X-Received: by 2002:a05:6214:1511:: with SMTP id e17mr12597116qvy.4.1608107181953;
- Wed, 16 Dec 2020 00:26:21 -0800 (PST)
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=feN/j6fHXBd/7dblKDK7XggJnmkH/YLE2J9No8W5RhU=;
+ b=YhvClDYnz1HsZ49nTzhZ5XcxZa0thcIeRJqYH6QQhx8ExxRMhR4wLZ2q3oU4Cel7+kKnCMAcIYe9FG0i/epe5sVX/nA3fS56vGF3/pzey/ROQOaoEo8wGVi286HSzFiU+2iSdRQgnbQWd1HVKFS9rWAYLGZa/X+nF6p32hce+bg=
+Received: from SA2PR11MB4874.namprd11.prod.outlook.com (2603:10b6:806:f9::23)
+ by SA2PR11MB5179.namprd11.prod.outlook.com (2603:10b6:806:112::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Wed, 16 Dec
+ 2020 08:30:34 +0000
+Received: from SA2PR11MB4874.namprd11.prod.outlook.com
+ ([fe80::6903:3212:cc9e:761]) by SA2PR11MB4874.namprd11.prod.outlook.com
+ ([fe80::6903:3212:cc9e:761%7]) with mapi id 15.20.3654.025; Wed, 16 Dec 2020
+ 08:30:34 +0000
+From:   <Tudor.Ambarus@microchip.com>
+To:     <bert@biot.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+        <vigneshr@ti.com>, <broonie@kernel.org>, <john.garry@huawei.com>,
+        <bbrezillon@kernel.org>, <gch981213@gmail.com>,
+        <vadivel.muruganx.ramuthevar@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH] Add spi-nor driver for Realtek RTL838x/RTL839x switch
+ SoCs
+Thread-Topic: [PATCH] Add spi-nor driver for Realtek RTL838x/RTL839x switch
+ SoCs
+Thread-Index: AQHW04W49GgU8cqC4Uy9lbOGcRI7vw==
+Date:   Wed, 16 Dec 2020 08:30:34 +0000
+Message-ID: <410ca5c2-96a0-ffd0-e1c0-316fe37ff4d5@microchip.com>
+References: <20201215214656.649896-1-bert@biot.com>
+In-Reply-To: <20201215214656.649896-1-bert@biot.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+authentication-results: biot.com; dkim=none (message not signed)
+ header.d=none;biot.com; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [79.115.63.137]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 5b4924f4-614c-464a-59ef-08d8a19cdb85
+x-ms-traffictypediagnostic: SA2PR11MB5179:
+x-microsoft-antispam-prvs: <SA2PR11MB51791C44F13A8EFEB818FA2BF0C50@SA2PR11MB5179.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:4125;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ikHOoWvZ6MTJ5NAauMZ2Re4MD5AF7GAikY3sP0skIVXEqxDNo+GuWHPMeWTnrPxLZMDbbqJYFX9linRmDWPXap0Jt9ESYMNunmmKlrrUVmvgakT9508qWTgdmkQj7DQOF99ImGegdPDGO8TlrI5tADqUsogvgKWP6F+PvCiN/SOu2v/Ym73z3I5dLHOK+rzxOI/TMNFMJ293UP6k7gNkNRQXhdKVHgalJoLKCujvmiFfMmbiZqqZC6CnQE1beRbboue7AULFsXKIRQOK+Hw/NnC5nluewbEeu0sTdyJZ0i63CEfF9/618HTjSTXyAjpfvDGxPFP7ofrspBnbjfTtxq5swnD/lfKiLuUtndrLLxy5kcA/4o5GpKJFFQBQvMx1qxmCZfP1eu4FiyD4/IS9g/jrVShZ6AdWUUKt4U9ihZtBywaobl/KOCwyOA0T7Vzx
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA2PR11MB4874.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(6029001)(376002)(366004)(39860400002)(136003)(396003)(346002)(5660300002)(66556008)(26005)(91956017)(478600001)(66476007)(64756008)(6486002)(66946007)(31686004)(921005)(66446008)(8936002)(6512007)(76116006)(7416002)(316002)(186003)(8676002)(86362001)(71200400001)(6506007)(110136005)(53546011)(31696002)(36756003)(2616005)(4744005)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?Y1kxTjlXOVZQdVR0Ky8xQ3JEdVdXdWN2UWFNL3VtaEFPTndReEtNaG9HWjBr?=
+ =?utf-8?B?Q3E5WTd5UVNxQkdiYTV5U2Z0d1VNTUp2TEtGVTFzNktpMlZRZFF3UUJjaG5V?=
+ =?utf-8?B?cit6UlVDTGw2cldjbUx0R3hsSjJqUFB4MEE4cWdiMWNQcUZNVjkrWktMUlJO?=
+ =?utf-8?B?Yko5TDNPaFlJSTMwUGc4NFY1NEhzcEUyWTd1dFZMai9ybFlkMG85VzVXTzJk?=
+ =?utf-8?B?blcxeHZUb3M5ckZqMlIzaUdCbWJ6Y093Q1VmK252aUpMK01FdTFtYkxDblNs?=
+ =?utf-8?B?QmZuZlh2M1E3K1I2ZFNLaDVHUVpkUXRJMlVwb2c0TFNJNnRCYm1waWRDNi9I?=
+ =?utf-8?B?R3RqVlducXdESk1nK3EzNk1abTgyT0Jaa0VacXFJRmtyVSt2UGxwVVN1S2k3?=
+ =?utf-8?B?ODREQmNieFFZbmdRZHo1N0Yxck9XL2Y3OWxFSEYzTk0zNFYwN05UVGN4SU9G?=
+ =?utf-8?B?WnZOdDk2R09ZZGtsMnY2emV6cFNLZU1hczhyQUs4QlRsUkI3Q1htODZmeS9a?=
+ =?utf-8?B?N3hGemEyb3BHTlZDdkd3ZWw1Mnc5NVBkWXJ0UGxjRWRwamZkNGQwKzBVQ3d3?=
+ =?utf-8?B?OE1qbE54aWNBK3hDUEJ3QXN6K2lzUXp3SjRnZ1ZpUTU2a3FWUkJ1SU14REtN?=
+ =?utf-8?B?dnBGeVhia0VObGhEK0kyVDBGcmtqWnhsSmtKOWNBVWltdWhIQS80cjAyOVFG?=
+ =?utf-8?B?RWxRNlgxVTBHMEdmZksvNGNGb0xscnVLdW13YkpYeXYrbmVXOUpMelVVRjNq?=
+ =?utf-8?B?RmdBV05HOFhqaFZ3Mk5NSjRrZGl6Skx3OVRFU2IvWitwVnR3THJRbkJ5a04y?=
+ =?utf-8?B?SnhjRVgzdTdkZUVkU0I2V1U5SW5nNjRBT3cyem1mbnYzTmM2b2NDRGVLOVA1?=
+ =?utf-8?B?VE9ZR25nNno4RXRMR2tXbzZlN1Bwayt0Y0dDY2dIcG84c3djbWpmdks1ZlJo?=
+ =?utf-8?B?WkQrTXBucW1JcUxkNzBsWEhtdEJEZW1pemN0VEdUWXdqNTlkN1hZeFBSRUgw?=
+ =?utf-8?B?dTFFNEFrYWFJQjJYZEVlQTBJS3FxRFBKVmhUamw4MmwzTFJuR1FDZFFHWXZk?=
+ =?utf-8?B?c1NhSlF1amRaSmJmdlYyOWNjUS81bFRIT0dKbmhQTEs2dTBsWmQ3YW1JVUR4?=
+ =?utf-8?B?VVJMU2plc2pkb1pVT0RRbldYdEowZXFidVo1NDF3RmQvcXhKY0JGdWJ0eU5l?=
+ =?utf-8?B?aWFZbDM1OU1GOFhEU2Y4LzhBWTJLL1dSMnNiaG1McGNSaFRsc09LcG9HUFU1?=
+ =?utf-8?B?bkI5STVaN0FvSDk0TUNsZUhXRUowOHpHY2hVanZqRDRHWnV2RFZZbG92Q2ZL?=
+ =?utf-8?Q?9o3ZtqUQ4XzA8=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <8BE5687CBD3F0C44AA9A030055AED382@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <1607576401-25609-1-git-send-email-vjitta@codeaurora.org>
- <CAG_fn=VKsrYx+YOGPnZw_Q5t6Fx7B59FSUuphj7Ou+DDFKQ+8Q@mail.gmail.com>
- <77e98f0b-c9c3-9380-9a57-ff1cd4022502@codeaurora.org> <CAG_fn=WbN6unD3ASkLUcEmZvALOj=dvC0yp6CcJFkV+3mmhwxw@mail.gmail.com>
- <6cc89f7b-bf40-2fd3-96ce-2a02d7535c91@codeaurora.org> <CAG_fn=VOHag5AUwFbOj_cV+7RDAk8UnjjqEtv2xmkSDb_iTYcQ@mail.gmail.com>
- <255400db-67d5-7f42-8dcb-9a440e006b9d@codeaurora.org> <f901afa5-7c46-ceba-2ae9-6186afdd99c0@codeaurora.org>
-In-Reply-To: <f901afa5-7c46-ceba-2ae9-6186afdd99c0@codeaurora.org>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Wed, 16 Dec 2020 09:26:10 +0100
-Message-ID: <CAG_fn=UjJQP_gfDm3eJTPY371QTwyDJKXBCN2gs4DvnLP2pbyQ@mail.gmail.com>
-Subject: Re: [PATCH v3] lib: stackdepot: Add support to configure STACK_HASH_SIZE
-To:     Vijayanand Jitta <vjitta@codeaurora.org>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        dan.j.williams@intel.com, broonie@kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Konovalov <andreyknvl@google.com>, qcai@redhat.com,
-        ylal@codeaurora.org, vinmenon@codeaurora.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4874.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5b4924f4-614c-464a-59ef-08d8a19cdb85
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Dec 2020 08:30:34.2287
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: uitgMLp/hl1NniDrmD4PTI84LE+KDRS0FE9nxnhe73Gn9sXFJ65YZ0vYY1BUgUHiDqLdy7GGr6S5ieWvvD5W1K+ZVCN7UjDsqKN+atXdUgs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5179
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 4:43 AM Vijayanand Jitta <vjitta@codeaurora.org> wr=
-ote:
->
->
->
-> On 12/14/2020 4:02 PM, Vijayanand Jitta wrote:
-> >
-> >
-> > On 12/14/2020 3:04 PM, Alexander Potapenko wrote:
-> >> On Mon, Dec 14, 2020 at 5:02 AM Vijayanand Jitta <vjitta@codeaurora.or=
-g> wrote:
-> >>>
-> >>>
-> >>>
-> >>> On 12/11/2020 6:55 PM, Alexander Potapenko wrote:
-> >>>> On Fri, Dec 11, 2020 at 1:45 PM Vijayanand Jitta <vjitta@codeaurora.=
-org> wrote:
-> >>>>>
-> >>>>>
-> >>>>>
-> >>>>> On 12/11/2020 2:06 PM, Alexander Potapenko wrote:
-> >>>>>> On Thu, Dec 10, 2020 at 6:01 AM <vjitta@codeaurora.org> wrote:
-> >>>>>>>
-> >>>>>>> From: Yogesh Lal <ylal@codeaurora.org>
-> >>>>>>>
-> >>>>>>> Add a kernel parameter stack_hash_order to configure STACK_HASH_S=
-IZE.
-> >>>>>>>
-> >>>>>>> Aim is to have configurable value for STACK_HASH_SIZE, so that on=
-e
-> >>>>>>> can configure it depending on usecase there by reducing the stati=
-c
-> >>>>>>> memory overhead.
-> >>>>>>>
-> >>>>>>> One example is of Page Owner, default value of STACK_HASH_SIZE le=
-ad
-> >>>>>>> stack depot to consume 8MB of static memory. Making it configurab=
-le
-> >>>>>>> and use lower value helps to enable features like CONFIG_PAGE_OWN=
-ER
-> >>>>>>> without any significant overhead.
-> >>>>>>
-> >>>>>> Can we go with a static CONFIG_ parameter instead?
-> >>>>>> Guess most users won't bother changing the default anyway, and for
-> >>>>>> CONFIG_PAGE_OWNER users changing the size at boot time is not stri=
-ctly
-> >>>>>> needed.
-> >>>>>>
-> >>>>> Thanks for review.
-> >>>>>
-> >>>>> One advantage of having run time parameter is we can simply set it =
-to a
-> >>>>> lower value at runtime if page_owner=3Doff thereby reducing the mem=
-ory
-> >>>>> usage or use default value if we want to use page owner so, we have=
- some
-> >>>>> some flexibility here. This is not possible with static parameter a=
-s we
-> >>>>> have to have some predefined value.
-> >>>>
-> >>>> If we are talking about a configuration in which page_owner is the
-> >>>> only stackdepot user in the system, then for page_owner=3Doff it
-> >>>> probably makes more sense to disable stackdepot completely instead o=
-f
-> >>>> setting it to a lower value. This is a lot easier to do in terms of
-> >>>> correctness.
-> >>>> But if there are other users (e.g. KASAN), their stackdepot usage ma=
-y
-> >>>> actually dominate that of page_owner.
-> >>>>
-> >>>>>>> -static struct stack_record *stack_table[STACK_HASH_SIZE] =3D {
-> >>>>>>> -       [0 ...  STACK_HASH_SIZE - 1] =3D NULL
-> >>>>>>> +static unsigned int stack_hash_order =3D 20;
-> >>>>>>
-> >>>>>> Please initialize with MAX_STACK_HASH_ORDER instead.
-> >>>>>>
-> >>>>>
-> >>>>> Sure, will update this.
-> >>>>>
-> >>>>
-> >>>>
-> >>>>>>> +
-> >>>>>>> +static int __init init_stackdepot(void)
-> >>>>>>> +{
-> >>>>>>> +       size_t size =3D (STACK_HASH_SIZE * sizeof(struct stack_re=
-cord *));
-> >>>>>>> +
-> >>>>>>> +       stack_table =3D vmalloc(size);
-> >>>>>>> +       memcpy(stack_table, stack_table_def, size);
-> >>>>>>
-> >>>>>> Looks like you are assuming stack_table_def already contains some =
-data
-> >>>>>> by this point.
-> >>>>>> But if STACK_HASH_SIZE shrinks this memcpy() above will just copy =
-some
-> >>>>>> part of the table, whereas the rest will be lost.
-> >>>>>> We'll need to:
-> >>>>>> - either explicitly decide we can afford losing this data (no idea=
- how
-> >>>>>> bad this can potentially be),
-> >>>>>> - or disallow storing anything prior to full stackdepot initializa=
-tion
-> >>>>>> (then we don't need stack_table_def),
-> >>>>>> - or carefully move all entries to the first part of the table.
-> >>>>>>
-> >>>>>> Alex
-> >>>>>>
-> >>>>>
-> >>>>> The hash for stack_table_def is computed using the run time paramet=
-er
-> >>>>> stack_hash_order, though stack_table_def is a bigger array it will =
-only
-> >>>>> use the entries that are with in the run time configured STACK_HASH=
-_SIZE
-> >>>>> range. so, there will be no data loss during copy.
-> >>>>
-> >>>> Do we expect any data to be stored into stack_table_def before
-> >>>> setup_stack_hash_order() is called?
-> >>>> If the answer is no, then we could probably drop stack_table_def and
-> >>>> allocate the table right in setup_stack_hash_order()?
-> >>>>
-> >>>
-> >>> Yes, we do see an allocation from stack depot even before init is cal=
-led
-> >>> from kasan, thats the reason for having stack_table_def.
-> >>> This is the issue reported due to that on v2, so i added stack_table_=
-def.
-> >>> https://lkml.org/lkml/2020/12/3/839
-> >>
-> >> But at that point STACK_HASH_SIZE is still equal to 1L <<
-> >> MAX_STACK_HASH_ORDER, isn't it?
-> >> Then we still need to take care of the records that fit into the
-> >> bigger array, but not the smaller one.
-> >>
-> >
-> > At this point early_param is already called which sets stack_hash_order=
-.
-> > So, STACK_HASH_SIZE will be set to this updated value and not
-> > MAX_STACK_HASH_SIZE.So, no additional entires in the bigger array.
-> >
-> > Thanks,
-> > Vijay
-> >
->
-> Let me know if there are any other concerns.
-
-I still think there are implicit assumptions that should at least be
-written down in the comments.
-As far as I understand the code, here is what happens here:
-
-0. No stacks are recorded.
-1. early_param is called to set stack_hash_order to a value
-potentially smaller than MAX_STACK_HASH_SIZE.
-2. KASAN (or other users) records some stacks into stack_table_def
-(capped at new STACK_HASH_SIZE)
-3. init_stackdepot() allocates a new stack_table and copies the
-contents of stack_table_def into it
-4. Further stacks are recorded into the new stack_table
-
-If this is how the things work, I agree we don't need to account for
-the part of stack_table_def past STACK_HASH_SIZE.
-Not allocating stack_table when setting stack_hash_order is probably
-also justified, as we don't have SLAB or vmalloc at that point.
-
-But I am still curious if a runtime parameter that disables the
-stackdepot completely will solve your problem.
-Allocating a small amount of memory when you actually don't want to
-allocate any sounds suboptimal.
-
-> Thanks,
-> Vijay
->
-> >>> Thanks,
-> >>> Vijay
-> >>>
-> >>>>> Thanks,
-> >>>>> Vijay
-> >>>>>
-> >>>>> --
-> >>>>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-> >>>>> member of Code Aurora Forum, hosted by The Linux Foundation
-> >>>>
-> >>>>
-> >>>>
-> >>>
-> >>> --
-> >>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-> >>> member of Code Aurora Forum, hosted by The Linux Foundation
-> >>
-> >>
-> >>
-> >
->
-> --
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-> member of Code Aurora Forum, hosted by The Linux Foundation
-
-
-
---=20
-Alexander Potapenko
-Software Engineer
-
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
-
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+T24gMTIvMTUvMjAgMTE6NDYgUE0sIEJlcnQgVmVybWV1bGVuIHdyb3RlOg0KPiBUaGlzIGRyaXZl
+ciBzdXBwb3J0cyB0aGUgc3BpZmxhc2ggY29yZSBpbiBhbGwgUlRMODM4eC9SVEw4Mzl4IFNvQ3Ms
+DQo+IGFuZCBsaWtlbHkgc29tZSBvbGRlciBtb2RlbHMgYXMgd2VsbCAoUlRMODE5NkMpLg0KPiAN
+CkNhbiB3ZSB1c2UgU1BJTUVNIGFuZCBtb3ZlIHRoaXMgdW5kZXIgZHJpdmVycy9zcGkvIGluc3Rl
+YWQ/DQoNCkNoZWVycywNCnRhDQoNCj4gU2lnbmVkLW9mZi1ieTogQmVydCBWZXJtZXVsZW4gPGJl
+cnRAYmlvdC5jb20+DQo+IC0tLQ0KPiAgZHJpdmVycy9tdGQvc3BpLW5vci9jb250cm9sbGVycy9L
+Y29uZmlnICAgICAgIHwgICA3ICsNCj4gIGRyaXZlcnMvbXRkL3NwaS1ub3IvY29udHJvbGxlcnMv
+TWFrZWZpbGUgICAgICB8ICAgMSArDQo+ICAuLi4vc3BpLW5vci9jb250cm9sbGVycy9ydGw4Mzgw
+LXNwaWZsYXNoLmMgICAgfCAzNDcgKysrKysrKysrKysrKysrKysrDQo+ICAuLi4vc3BpLW5vci9j
+b250cm9sbGVycy9ydGw4MzgwLXNwaWZsYXNoLmggICAgfCAgMzQgKysNCj4gIDQgZmlsZXMgY2hh
+bmdlZCwgMzg5IGluc2VydGlvbnMoKykNCj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL210
+ZC9zcGktbm9yL2NvbnRyb2xsZXJzL3J0bDgzODAtc3BpZmxhc2guYw0KPiAgY3JlYXRlIG1vZGUg
+MTAwNjQ0IGRyaXZlcnMvbXRkL3NwaS1ub3IvY29udHJvbGxlcnMvcnRsODM4MC1zcGlmbGFzaC5o
+DQoNCg==
