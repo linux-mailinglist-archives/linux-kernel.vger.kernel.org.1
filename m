@@ -2,234 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A2C22DB765
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:05:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 689DB2DB7B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:09:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726587AbgLPAEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 19:04:46 -0500
-Received: from foss.arm.com ([217.140.110.172]:43886 "EHLO foss.arm.com"
+        id S1727039AbgLPAIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 19:08:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725786AbgLPAEh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 19:04:37 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6E1F91FB;
-        Tue, 15 Dec 2020 16:03:51 -0800 (PST)
-Received: from localhost (unknown [10.1.198.32])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 027563F718;
-        Tue, 15 Dec 2020 16:03:50 -0800 (PST)
-Date:   Wed, 16 Dec 2020 00:03:49 +0000
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 3/3] arm64: topology: Make AMUs work with modular
- cpufreq drivers
-Message-ID: <20201216000349.GA5299@arm.com>
-References: <5ffc7b9ed03c6301ac2f710f609282959491b526.1608010334.git.viresh.kumar@linaro.org>
- <8f0fe23d1c9effed71d5660c939472d43726a61b.1608010334.git.viresh.kumar@linaro.org>
+        id S1726677AbgLPAIo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 19:08:44 -0500
+Date:   Tue, 15 Dec 2020 18:08:02 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608077283;
+        bh=mShOIZcVfxjT4nLnFffDxnJSP9Iv9yA/ljbz77OoHQc=;
+        h=From:To:Cc:Subject:In-Reply-To:From;
+        b=kAFX24Uv+AbU/MQSDcY5CdDRcWgkfXYpsucEb2nzFWxkF8qvL5xcu2T6ZeIkm7m5A
+         BSFCPPqYAUyOnE9cs8HOTrdVjhcHVsived7YJ7tlqktIZDbq+Ma7wcU+MIW0LvUkQS
+         pILt+5o0T9/elaOELq1fiBWusVll9JcHz+KEJVA9gnGWAm+SQ+JAccOh/vv1rBxd4Q
+         qOc3IEkpntdF19l9d7ZeKBdwcRjfNV7Q6Cw4Ug1m7Eu+l6AGa9syGkAMWG9ogwd6Nl
+         H3vlPaR0VhsDwddwboka8j4FKMDLVo2SqN/FSFIkujR8gV2YnAyTR7S9aw0R/4VoEW
+         Ogj35I5ahCOAw==
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Ian Kumlien <ian.kumlien@gmail.com>
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
+        Puranjay Mohan <puranjay12@gmail.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] PCI/ASPM: Use the path max in L1 ASPM latency check
+Message-ID: <20201216000802.GA342490@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8f0fe23d1c9effed71d5660c939472d43726a61b.1608010334.git.viresh.kumar@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAA85sZvUvUTtyKR8rTDwGa=1sNrhv4cA8LQ+6TXi20Sq9Yn8fw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Tuesday 15 Dec 2020 at 11:04:16 (+0530), Viresh Kumar wrote:
-> The AMU counters won't get used today if the cpufreq driver is built as
-> a module as the amu core requires everything to be ready by late init.
+On Tue, Dec 15, 2020 at 02:09:12PM +0100, Ian Kumlien wrote:
+> On Tue, Dec 15, 2020 at 1:40 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> >
+> > On Mon, Dec 14, 2020 at 11:56:31PM +0100, Ian Kumlien wrote:
+> > > On Mon, Dec 14, 2020 at 8:19 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> >
+> > > > If you're interested, you could probably unload the Realtek drivers,
+> > > > remove the devices, and set the PCI_EXP_LNKCTL_LD (Link Disable) bit
+> > > > in 02:04.0, e.g.,
+> > > >
+> > > >   # RT=/sys/devices/pci0000:00/0000:00:01.2/0000:01:00.0/0000:02:04.0
+> > > >   # echo 1 > $RT/0000:04:00.0/remove
+> > > >   # echo 1 > $RT/0000:04:00.1/remove
+> > > >   # echo 1 > $RT/0000:04:00.2/remove
+> > > >   # echo 1 > $RT/0000:04:00.4/remove
+> > > >   # echo 1 > $RT/0000:04:00.7/remove
+> > > >   # setpci -s02:04.0 CAP_EXP+0x10.w=0x0010
+> > > >
+> > > > That should take 04:00.x out of the picture.
+> > >
+> > > Didn't actually change the behaviour, I'm suspecting an errata for AMD pcie...
+> > >
+> > > So did this, with unpatched kernel:
+> > > [ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+> > > [  5]   0.00-1.00   sec  4.56 MBytes  38.2 Mbits/sec    0   67.9 KBytes
+> > > [  5]   1.00-2.00   sec  4.47 MBytes  37.5 Mbits/sec    0   96.2 KBytes
+> > > [  5]   2.00-3.00   sec  4.85 MBytes  40.7 Mbits/sec    0   50.9 KBytes
+> > > [  5]   3.00-4.00   sec  4.23 MBytes  35.4 Mbits/sec    0   70.7 KBytes
+> > > [  5]   4.00-5.00   sec  4.23 MBytes  35.4 Mbits/sec    0   48.1 KBytes
+> > > [  5]   5.00-6.00   sec  4.23 MBytes  35.4 Mbits/sec    0   45.2 KBytes
+> > > [  5]   6.00-7.00   sec  4.23 MBytes  35.4 Mbits/sec    0   36.8 KBytes
+> > > [  5]   7.00-8.00   sec  3.98 MBytes  33.4 Mbits/sec    0   36.8 KBytes
+> > > [  5]   8.00-9.00   sec  4.23 MBytes  35.4 Mbits/sec    0   36.8 KBytes
+> > > [  5]   9.00-10.00  sec  4.23 MBytes  35.4 Mbits/sec    0   48.1 KBytes
+> > > - - - - - - - - - - - - - - - - - - - - - - - - -
+> > > [ ID] Interval           Transfer     Bitrate         Retr
+> > > [  5]   0.00-10.00  sec  43.2 MBytes  36.2 Mbits/sec    0             sender
+> > > [  5]   0.00-10.00  sec  42.7 MBytes  35.8 Mbits/sec                  receiver
+> > >
+> > > and:
+> > > echo 0 > /sys/devices/pci0000:00/0000:00:01.2/0000:01:00.0/link/l1_aspm
+> >
+> > BTW, thanks a lot for testing out the "l1_aspm" sysfs file.  I'm very
+> > pleased that it seems to be working as intended.
 > 
-> Fix that properly by registering for cpufreq policy notifier. Note that
-> the amu core don't have any cpufreq dependency after the first time
-> CPUFREQ_CREATE_POLICY notifier is called for all the CPUs. And so we
-> don't need to do anything on the CPUFREQ_REMOVE_POLICY notifier. And for
-> the same reason we check if the CPUs are already parsed in the beginning
-> of amu_fie_setup() and skip if that is true. Alternatively we can shoot
-> a work from there to unregister the notifier instead, but that seemed
-> too much instead of this simple check.
+> It was nice to find it for easy disabling :)
 > 
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
-> V3:
-> - This is a new patch.
+> > > and:
+> > > [ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+> > > [  5]   0.00-1.00   sec   113 MBytes   951 Mbits/sec  153    772 KBytes
+> > > [  5]   1.00-2.00   sec   109 MBytes   912 Mbits/sec  276    550 KBytes
+> > > [  5]   2.00-3.00   sec   111 MBytes   933 Mbits/sec  123    625 KBytes
+> > > [  5]   3.00-4.00   sec   111 MBytes   933 Mbits/sec   31    687 KBytes
+> > > [  5]   4.00-5.00   sec   110 MBytes   923 Mbits/sec    0    679 KBytes
+> > > [  5]   5.00-6.00   sec   110 MBytes   923 Mbits/sec  136    577 KBytes
+> > > [  5]   6.00-7.00   sec   110 MBytes   923 Mbits/sec  214    645 KBytes
+> > > [  5]   7.00-8.00   sec   110 MBytes   923 Mbits/sec   32    628 KBytes
+> > > [  5]   8.00-9.00   sec   110 MBytes   923 Mbits/sec   81    537 KBytes
+> > > [  5]   9.00-10.00  sec   110 MBytes   923 Mbits/sec   10    577 KBytes
+> > > - - - - - - - - - - - - - - - - - - - - - - - - -
+> > > [ ID] Interval           Transfer     Bitrate         Retr
+> > > [  5]   0.00-10.00  sec  1.08 GBytes   927 Mbits/sec  1056             sender
+> > > [  5]   0.00-10.00  sec  1.07 GBytes   923 Mbits/sec                  receiver
+> > >
+> > > But this only confirms that the fix i experience is a side effect.
+> > >
+> > > The original code is still wrong :)
+> >
+> > What exactly is this machine?  Brand, model, config?  Maybe you could
+> > add this and a dmesg log to the buzilla?  It seems like other people
+> > should be seeing the same problem, so I'm hoping to grub around on the
+> > web to see if there are similar reports involving these devices.
 > 
-> Ionela,
+> ASUS Pro WS X570-ACE with AMD Ryzen 9 3900X
+
+Possible similar issues:
+
+  https://forums.unraid.net/topic/94274-hardware-upgrade-woes/
+  https://forums.servethehome.com/index.php?threads/upgraded-my-home-server-from-intel-to-amd-virtual-disk-stuck-in-degraded-unhealty-state.25535/ (Windows)
+
+> > https://bugzilla.kernel.org/show_bug.cgi?id=209725
+> >
+> > Here's one that is superficially similar:
+> > https://linux-hardware.org/index.php?probe=e5f24075e5&log=lspci_all
+> > in that it has a RP -- switch -- I211 path.  Interestingly, the switch
+> > here advertises <64us L1 exit latency instead of the <32us latency
+> > your switch advertises.  Of course, I can't tell if it's exactly the
+> > same switch.
 > 
-> I don't have a way to test the AMU stuff, will it be possible for you to
-> give it a try ?
+> Same chipset it seems
 > 
-
-My best AMU test setup is a hacked Juno :). A few runs with different
-"AMU settings" showed everything works nicely. I'll continue reviewing
-and testing tomorrow as I want to test with CPPC and on some models as
-well.
-
->  arch/arm64/kernel/topology.c | 88 +++++++++++++++++++-----------------
->  1 file changed, 46 insertions(+), 42 deletions(-)
+> I'm running bios version:
+>         Version: 2206
+>         Release Date: 08/13/2020
 > 
-> diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
-> index 57267d694495..0fc2b32ddb45 100644
-> --- a/arch/arm64/kernel/topology.c
-> +++ b/arch/arm64/kernel/topology.c
-> @@ -199,64 +199,33 @@ static int freq_inv_set_max_ratio(int cpu, u64 max_rate, u64 ref_rate)
->  	return 0;
->  }
->  
-> -static inline void
-> -enable_policy_freq_counters(int cpu, cpumask_var_t valid_cpus)
-> -{
-> -	struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
-> -
-> -	if (!policy) {
-> -		pr_debug("CPU%d: No cpufreq policy found.\n", cpu);
-> -		return;
-> -	}
-> -
-> -	if (cpumask_subset(policy->related_cpus, valid_cpus))
-> -		cpumask_or(amu_fie_cpus, policy->related_cpus,
-> -			   amu_fie_cpus);
-> -
-> -	cpufreq_cpu_put(policy);
-> -}
-> -
->  static DEFINE_STATIC_KEY_FALSE(amu_fie_key);
->  #define amu_freq_invariant() static_branch_unlikely(&amu_fie_key)
->  
-> -static int __init init_amu_fie(void)
-> +static void amu_fie_setup(const struct cpumask *cpus)
->  {
-> -	cpumask_var_t valid_cpus;
->  	bool invariant;
-> -	int ret = 0;
->  	int cpu;
->  
-> -	if (!zalloc_cpumask_var(&valid_cpus, GFP_KERNEL))
-> -		return -ENOMEM;
-> -
-> -	if (!zalloc_cpumask_var(&amu_fie_cpus, GFP_KERNEL)) {
-> -		ret = -ENOMEM;
-> -		goto free_valid_mask;
-> -	}
-> +	/* We are already set since the last insmod of cpufreq driver */
-> +	if (unlikely(cpumask_subset(cpus, amu_fie_cpus)))
-> +		return;
->  
-> -	for_each_present_cpu(cpu) {
-> +	for_each_cpu(cpu, cpus) {
->  		if (!freq_counters_valid(cpu) ||
->  		    freq_inv_set_max_ratio(cpu,
->  					   cpufreq_get_hw_max_freq(cpu) * 1000,
->  					   arch_timer_get_rate()))
-> -			continue;
-> -
-> -		cpumask_set_cpu(cpu, valid_cpus);
-> -		enable_policy_freq_counters(cpu, valid_cpus);
-> +			return;
->  	}
->  
-> -	/* Overwrite amu_fie_cpus if all CPUs support AMU */
-> -	if (cpumask_equal(valid_cpus, cpu_present_mask))
-> -		cpumask_copy(amu_fie_cpus, cpu_present_mask);
-> -
-> -	if (cpumask_empty(amu_fie_cpus))
-> -		goto free_valid_mask;
-> +	cpumask_or(amu_fie_cpus, amu_fie_cpus, cpus);
->  
->  	invariant = topology_scale_freq_invariant();
->  
->  	/* We aren't fully invariant yet */
->  	if (!invariant && !cpumask_equal(amu_fie_cpus, cpu_present_mask))
-> -		goto free_valid_mask;
-> +		return;
->  
->  	static_branch_enable(&amu_fie_key);
->  
-
-If we are cpufreq invariant, we'll reach this point and the following
-pr_info, even if not all CPUs have been checked, which (at this late
-hour) I think it's functionally fine.
-
-But we get prints like:
-
-[    2.665918] AMU: CPUs[0-3]: counters will be used for FIE.
-[    2.666293] AMU: CPUs[0-5]: counters will be used for FIE.
-
-For two policies this is fine (although confusing) but if we had more
-CPUs and more policies, it would be too many lines.
-
-I'm not sure if there's a better way of fixing this other than keeping
-track of all visited CPUs and printing this line when all online CPUs
-have been visited.
-
-> @@ -271,13 +240,48 @@ static int __init init_amu_fie(void)
->  	 */
->  	if (!invariant)
->  		rebuild_sched_domains_energy();
-> +}
-> +
-> +static int init_amu_fie_callback(struct notifier_block *nb, unsigned long val,
-> +				 void *data)
-> +{
-> +	struct cpufreq_policy *policy = data;
-> +
-> +	if (val == CPUFREQ_CREATE_POLICY)
-> +		amu_fie_setup(policy->related_cpus);
-> +
-
-Is is guaranteed that cpuinfo.max_freq is always set at this point?
-
-I have a vague recollection of a scenario where cpuinfo.max_freq could
-be populated later in case the driver needs to talk to firmware to
-obtain this value.
-
-The setup above will fail if the CPU's max frequency cannot be obtained.
-
-Thanks,
-Ionela.
-
-> +	/*
-> +	 * We don't need to handle CPUFREQ_REMOVE_POLICY event as the AMU
-> +	 * counters don't have any dependency on cpufreq driver once we have
-> +	 * initialized AMU support and enabled invariance. The AMU counters will
-> +	 * keep on working just fine in the absence of the cpufreq driver, and
-> +	 * for the CPUs for which there are no counters availalbe, the last set
-> +	 * value of freq_scale will remain valid as that is the frequency those
-> +	 * CPUs are running at.
-> +	 */
-> +
-> +	return 0;
-> +}
-> +
-> +static struct notifier_block init_amu_fie_notifier = {
-> +	.notifier_call = init_amu_fie_callback,
-> +};
-> +
-> +static int __init init_amu_fie(void)
-> +{
-> +	int ret;
-> +
-> +	if (!zalloc_cpumask_var(&amu_fie_cpus, GFP_KERNEL))
-> +		return -ENOMEM;
->  
-> -free_valid_mask:
-> -	free_cpumask_var(valid_cpus);
-> +	ret = cpufreq_register_notifier(&init_amu_fie_notifier,
-> +					CPUFREQ_POLICY_NOTIFIER);
-> +	if (ret)
-> +		free_cpumask_var(amu_fie_cpus);
->  
->  	return ret;
->  }
-> -late_initcall_sync(init_amu_fie);
-> +core_initcall(init_amu_fie);
->  
->  bool arch_freq_counters_available(const struct cpumask *cpus)
->  {
-> -- 
-> 2.25.0.rc1.19.g042ed3e048af
+> ANd latest is:
+> Version 3003
+> 2020/12/07
 > 
+> Will test upgrading that as well, but it could be that they report the
+> incorrect latency of the switch - I don't know how many things AGESA
+> changes but... It's been updated twice since my upgrade.
+
+I wouldn't be surprised if the advertised exit latencies are writable
+by the BIOS because it probably depends on electrical characteristics
+outside the switch.  If so, it's possible ASUS just screwed it up.
