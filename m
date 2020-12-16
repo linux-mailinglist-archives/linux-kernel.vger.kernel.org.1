@@ -2,90 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1E772DB891
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 02:41:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B512DB8A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 02:53:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725837AbgLPBlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 20:41:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725817AbgLPBlg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 20:41:36 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F2F2C061793;
-        Tue, 15 Dec 2020 17:40:56 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id f14so604785pju.4;
-        Tue, 15 Dec 2020 17:40:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=R9E1+JwqFZKk2AK8HE4565Hu+8+uiMrszjBFOFvVtpY=;
-        b=L7vskc4XkaDqTwgdyWWZVSyQln3KIZxUhxwyNTWQN70cy5scBLjNlcFHqXuOpd0dKp
-         1Gqxr34XBSXY2eQEVwTaf691lk370CwNJkg3pJlVJKPqUEXNujqTybcA2mHjkXHA8MsR
-         HO9BdAo4fxdz4K/H3bmYwp/rBhGOIm8MITWBOQRbMqvbqigeVjkwLGLVnza7XcrdZ9iU
-         XjwXpbdDcD+cx1IrqscI2fVCLtMGyQqS19AnZvMPtf4uNC28syYC2kj1hHuUFLwTRUCc
-         K+01bQMNKUX9NeoFonAQWdtkb4hWFAZA9h+LBGDp+A19iCR6lrf9If8v3/IFAlPrEeGJ
-         FFcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=R9E1+JwqFZKk2AK8HE4565Hu+8+uiMrszjBFOFvVtpY=;
-        b=BGngAaJvXDkTLXPJljYwqM+wSv8fhj+BVhdP6jqZmbVjyz84FEm2jQMmS7IvJTF9it
-         LW8nWWmczSZknLZppLRrNeJbUiwdFU4xKU6s/yJxWQHSDOqqCEuej/0I5zIVuWTcft/F
-         P5vEEEkl7I+9L8pLeRDioYb6D0ggLzR8H4zjZX43j321l1MuVDktQTjDUULjCAGD5QFb
-         sjc8WJQGETfxVWssl8LIAyJMGpcEB4/pxANv1BF1grvjsS87RHMmdiY48Qxv3zgLws71
-         U3lxwPBFZMopndY6Kmd08MIIr0B41hBJ9HuSEvDzehtwMVIocyAN+xeBoYwGvqCG4Xvd
-         XETg==
-X-Gm-Message-State: AOAM53054XrHWn5kHpd8j4+D8aSQl1pAlPVEHMKhxtXyVQSxlXorFD+R
-        DjPnqGA+I2OkQYRUrTP2iQpf9tjqyXQ=
-X-Google-Smtp-Source: ABdhPJzGBB8zm1dGi66063biQGA+g6PaPrxV3ix3fdH330cPAo2NNmaszgmTyB9+2+ZJDvbcNSEtgQ==
-X-Received: by 2002:a17:90a:7842:: with SMTP id y2mr1177166pjl.36.1608082855873;
-        Tue, 15 Dec 2020 17:40:55 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id w70sm262790pfd.65.2020.12.15.17.40.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 17:40:55 -0800 (PST)
-Date:   Tue, 15 Dec 2020 17:40:52 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     linux-input@vger.kernel.org
-Cc:     Anson Huang <Anson.Huang@nxp.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] Input: imx_keypad - add dependency on HAS_IOMEM
-Message-ID: <X9llpA3w1zlZCHXU@google.com>
+        id S1725782AbgLPBwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 20:52:30 -0500
+Received: from mga04.intel.com ([192.55.52.120]:46392 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725308AbgLPBwa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 20:52:30 -0500
+IronPort-SDR: Y21oJmEbqOJ70vq64bxOixpSPmPNQ64pEtyh51H2oPrFeQWmYQeIGc3CFkjGLx5PD+c0h6MpbQ
+ 8d2HXbxv/QmQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9836"; a="172415251"
+X-IronPort-AV: E=Sophos;i="5.78,423,1599548400"; 
+   d="scan'208";a="172415251"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 17:50:37 -0800
+IronPort-SDR: cFGv00aXiJSneHIaymsNL0HdVpZyc+g3cbTyNfrD6C6N2Sh644XRJhR7zb7s0lqwLZmcoDLNag
+ O2C504HU8Vzg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,423,1599548400"; 
+   d="scan'208";a="384063655"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.28]) ([10.239.159.28])
+  by fmsmga004.fm.intel.com with ESMTP; 15 Dec 2020 17:50:30 -0800
+Cc:     baolu.lu@linux.intel.com, alex.williamson@redhat.com,
+        bhelgaas@google.com, dan.j.williams@intel.com,
+        dmaengine@vger.kernel.org, eric.auger@redhat.com,
+        jacob.jun.pan@intel.com, jgg@mellanox.com, jing.lin@intel.com,
+        kvm@vger.kernel.org, kwankhede@nvidia.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        maz@kernel.org, mona.hossain@intel.com, netanelg@mellanox.com,
+        parav@mellanox.com, pbonzini@redhat.com, rafael@kernel.org,
+        samuel.ortiz@intel.com, sanjay.k.kumar@intel.com,
+        shahafs@mellanox.com, tony.luck@intel.com, vkoul@kernel.org,
+        yan.y.zhao@linux.intel.com, yi.l.liu@intel.com
+Subject: Re: [RFC PATCH 1/1] platform-msi: Add platform check for subdevice
+ irq domain
+To:     David Woodhouse <dwmw2@infradead.org>, tglx@linutronix.de,
+        ashok.raj@intel.com, kevin.tian@intel.com, dave.jiang@intel.com,
+        megha.dey@intel.com
+References: <20201210004624.345282-1-baolu.lu@linux.intel.com>
+ <dad0bf6e271532badd84f2a811449be566f537a9.camel@infradead.org>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <7729a278-1734-5f3e-6183-50670ddb8820@linux.intel.com>
+Date:   Wed, 16 Dec 2020 09:42:54 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <dad0bf6e271532badd84f2a811449be566f537a9.camel@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-devm_platform_ioremap_resource() depends on CONFIG_HAS_IOMEM, so let's add
-it to the dependencies when COMPILE_TEST is enabled.
+Hi David,
 
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: c8834032ffe2 ("Input: imx_keypad - add COMPILE_TEST support")
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
----
- drivers/input/keyboard/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 12/10/20 4:22 PM, David Woodhouse wrote:
+> On Thu, 2020-12-10 at 08:46 +0800, Lu Baolu wrote:
+>> +/*
+>> + * We want to figure out which context we are running in. But the hardware
+>> + * does not introduce a reliable way (instruction, CPUID leaf, MSR, whatever)
+>> + * which can be manipulated by the VMM to let the OS figure out where it runs.
+>> + * So we go with the below probably_on_bare_metal() function as a replacement
+>> + * for definitely_on_bare_metal() to go forward only for the very simple reason
+>> + * that this is the only option we have.
+>> + */
+>> +static const char * const possible_vmm_vendor_name[] = {
+>> +       "QEMU", "Bochs", "KVM", "Xen", "VMware", "VMW", "VMware Inc.",
+>> +       "innotek GmbH", "Oracle Corporation", "Parallels", "BHYVE",
+>> +       "Microsoft Corporation"
+>> +};
+> 
+> People do use SeaBIOS ("Bochs") on bare metal.
 
-diff --git a/drivers/input/keyboard/Kconfig b/drivers/input/keyboard/Kconfig
-index 2b321c17054a..94eab82086b2 100644
---- a/drivers/input/keyboard/Kconfig
-+++ b/drivers/input/keyboard/Kconfig
-@@ -446,7 +446,7 @@ config KEYBOARD_MPR121
- 
- config KEYBOARD_SNVS_PWRKEY
- 	tristate "IMX SNVS Power Key Driver"
--	depends on ARCH_MXC || COMPILE_TEST
-+	depends on ARCH_MXC || (COMPILE_TEST && HAS_IOMEM)
- 	depends on OF
- 	help
- 	  This is the snvs powerkey driver for the Freescale i.MX application
--- 
-2.29.2.729.g45daf8777d-goog
+Is there any unique way to distinguish between running on bare metal and
+VM?
 
+> 
+> You'll also see "Amazon EC2" on virt instances as well as bare metal
+> instances. Although in that case I believe the virt instances do have
+> the 'virtual machine' flag set in bit 4 of the BIOS Characteristics
+> Extension Byte 2, and the bare metal obviously don't.
+> 
 
--- 
-Dmitry
+So for Amazon EC2 case, we can use this byte to distinguish. Can you
+please point me to the references of this Extension Byte (reference
+code/spec or anything else) ?
+
+Best regards,
+baolu
