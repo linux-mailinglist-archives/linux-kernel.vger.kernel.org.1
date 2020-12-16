@@ -2,115 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFEB12DC675
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 19:28:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DADB02DC682
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 19:31:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730684AbgLPS1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 13:27:45 -0500
-Received: from mga12.intel.com ([192.55.52.136]:49884 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730673AbgLPS1p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 13:27:45 -0500
-IronPort-SDR: PmeavCPnRTxK/vQbrv3DsaHVo/60MyXfjWkxT3A6oKxQsoGZAiYysGUE6pdPZqY/m6BmrdO0dE
- OMQuHHsHW6/Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9837"; a="154345016"
-X-IronPort-AV: E=Sophos;i="5.78,425,1599548400"; 
-   d="scan'208";a="154345016"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2020 10:26:52 -0800
-IronPort-SDR: 0egVT9fGEg6D6S2xHs+u+Qgvx5PmLBSDI9FG/0d9ataW0YhQqtdGDtoyTHMLEoxDeZ9Z4NK9Hp
- gfpOyAfRN/7Q==
-X-IronPort-AV: E=Sophos;i="5.78,425,1599548400"; 
-   d="scan'208";a="352711684"
-Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.209.155.249]) ([10.209.155.249])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2020 10:26:51 -0800
-Subject: Re: [PATCH 2/3] x86/resctrl: Update PQR_ASSOC MSR synchronously when
- moving task to resource group
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     tglx@linutronix.de, fenghua.yu@intel.com, bp@alien8.de,
-        tony.luck@intel.com, kuo-lang.tseng@intel.com, shakeelb@google.com,
-        mingo@redhat.com, babu.moger@amd.com, james.morse@arm.com,
-        hpa@zytor.com, x86@kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-References: <cover.1607036601.git.reinette.chatre@intel.com>
- <c8eebc438e057e4bc2ce00256664b7bb0561b323.1607036601.git.reinette.chatre@intel.com>
- <jhjlfe4t6jq.mognet@arm.com> <e250875b-1c86-660c-b9f0-4060842939bf@intel.com>
- <jhj1rfptzqt.mognet@arm.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-Message-ID: <b75d780d-d067-12bf-b0e6-706dda200511@intel.com>
-Date:   Wed, 16 Dec 2020 10:26:50 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S1730813AbgLPS3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 13:29:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727867AbgLPS3x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 13:29:53 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48CA2C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 10:29:13 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id n26so34142333eju.6
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 10:29:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=erIoBEbKbiz5oRvHJ2Hn0NTy908E7i+ePDr/KDJfqn0=;
+        b=RQQ5ktXzQkitjNrDXhSj68Nk76iCrFiuj/7rR8NhYWibX+TJEUAZ1ABRoLCFSvSyhD
+         K+XSzAJ8+JptHtbXZgAMLd0C8CH7rASXoNDM/suXiZSey8fRstAT7j/a3LBA4Z/ItkcW
+         1KLlUTyufegGfHsfw6OASMbx35T/dOUZh2n2DtwPkjnY7UvC1lGopN435jaOCu9sLQRC
+         d+0ogLUP8B1gq+H/wdjWWd1r3jNt330yGJXpKDpBReCXvcZc0s9aGyzV4dq/pX7OCHL8
+         DrffsY8AoJZdbDgf3GUaosn01KgA5PC0mG+pQYhmh8NhXGU0wbK+OS4rc88M46Z8G6Pg
+         yO/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=erIoBEbKbiz5oRvHJ2Hn0NTy908E7i+ePDr/KDJfqn0=;
+        b=BxC9VpkEw2h1fwPVSgUOqYUTKqr7HNkeGaVG/c38nFowjcD9tvcPl/L5537vOiiBf1
+         6c3cm3vd7cI77N7RMQcjyefMgiOYPA1HlVW8QfTUzYVWroHTRliTRRHXrAI593r2h/6w
+         aZ22gUhPP1Fx+dH/N1OdZ+MpYjlyKs4SNtI9r8KqHLA7ImBzY/NjbAW/PnpiTz5Smjji
+         rkpZo47K8+WHJLpbQjyA0g1gkY7fR4D7a8xCwTOk6H0dfRRZTeOCq2IqvRROcIOgLF9X
+         vezk12lq1MvvJUALjJFX/EXL7i3zGoxWkDAJvVNj9EpdE9FjADrf1pVk1JTaurEc2kQy
+         +8Pw==
+X-Gm-Message-State: AOAM531ny8M6a0cZ3Ac4pgaYBtKFl6Rl9KXzruLS+cNmKDn1YZ7NvjMN
+        4bYmTnxQ19oRzAZgwHsiRUzS9BD1XShH3rvB
+X-Google-Smtp-Source: ABdhPJwYrZeKblL+48+EBX3qrAEooomDWvRk7xg3KKtcF9HUnU1fmEnVGyTYAjoEyim5ZUFQy/DxOg==
+X-Received: by 2002:a17:907:da7:: with SMTP id go39mr33278642ejc.58.1608143352040;
+        Wed, 16 Dec 2020 10:29:12 -0800 (PST)
+Received: from ryzen.localdomain (89-212-27-98.dynamic.t-2.net. [89.212.27.98])
+        by smtp.gmail.com with ESMTPSA id v9sm2032877ejk.48.2020.12.16.10.29.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Dec 2020 10:29:11 -0800 (PST)
+Date:   Wed, 16 Dec 2020 19:29:09 +0100
+From:   Amadej Kastelic <amadejkastelic7@gmail.com>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     perex@perex.cz, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/01] Add VID to support native DSD reproduction on FiiO
+ devices.
+Message-ID: <X9pR9X/uCqoij1b0@ryzen.localdomain>
+References: <X9j7wdXSr4XyK7Bd@ryzen.localdomain>
+ <s5h8s9xoj6o.wl-tiwai@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <jhj1rfptzqt.mognet@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s5h8s9xoj6o.wl-tiwai@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Valentin,
+On Wed, Dec 16, 2020 at 04:38:07PM +0100, Takashi Iwai wrote:
+> On Tue, 15 Dec 2020 19:09:05 +0100,
+> Amadej Kastelic wrote:
+> > 
+> > Message-Id: <c759bc50134ea434bfed0a183e0ce72984f5b609.camel@gmail.com>
+> > 
+> > Add VID to support native DSD reproduction on FiiO devices.
+> > 
+> > Tested-by: Amadej Kastelic <amadejkastelic7@gmail.com>
+> > Signed-off-by: Emilio Moretti <emilio.moretti@gmail.com>
+> 
+> Could you give your own sign-off, too?  Each person who submits the
+> patch needs the sign-off.  This is mandatory for merging to the
+> upstream.
+> 
+> 
+> thanks,
+> 
+> Takashi
 
-On 12/16/2020 9:41 AM, Valentin Schneider wrote:
-> 
-> On 14/12/20 18:41, Reinette Chatre wrote:
->>>> -	return ret;
->>>> +
->>>> +	/*
->>>> +	 * By now, the task's closid and rmid are set. If the task is current
->>>> +	 * on a CPU, the PQR_ASSOC MSR needs to be updated to make the resource
->>>> +	 * group go into effect. If the task is not current, the MSR will be
->>>> +	 * updated when the task is scheduled in.
->>>> +	 */
->>>> +	update_task_closid_rmid(tsk);
->>>
->>> We need the above writes to be compile-ordered before the IPI is sent.
->>> There *is* a preempt_disable() down in smp_call_function_single() that
->>> gives us the required barrier(), can we deem that sufficient or would we
->>> want one before update_task_closid_rmid() for the sake of clarity?
->>>
->>
->> Apologies, it is not clear to me why the preempt_disable() would be
->> insufficient. If it is not then there may be a few other areas (where
->> resctrl calls smp_call_function_xxx()) that needs to be re-evaluated.
-> 
-> So that's part paranoia and part nonsense from my end - the contents of
-> smp_call() shouldn't matter here.
-> 
-> If we distill the code to:
-> 
->    tsk->closid = x;
-> 
->    if (task_curr(tsk))
->        smp_call(...);
-> 
-> It is somewhat far fetched, but AFAICT this can be compiled as:
-> 
->    if (task_curr(tsk))
->        tsk->closid = x;
->        smp_call(...);
->    else
->        tsk->closid = x;
-> 
-> IOW, there could be a sequence where the closid write is ordered *after*
-> the task_curr() read.
-
-Could you please elaborate why it would be an issue is the closid write 
-is ordered after the task_curr() read? task_curr() does not depend on 
-the closid.
-
-> With
-> 
->    tsk->closid = x;
-> 
->    barrier();
-> 
->    if (task_curr(tsk))
->        smp_call(...);
-> 
-> that explicitely cannot happen.
-> 
-
-
-Reinette
+Signed-off-by: Amadej Kastelic <amadejkastelic7@gmail.com>
