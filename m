@@ -2,147 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 812892DBCD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 09:43:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D66B2DBCD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 09:45:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725962AbgLPIm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 03:42:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726414AbgLPIm6 (ORCPT
+        id S1726022AbgLPIpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 03:45:39 -0500
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:14929 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725855AbgLPIpj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 03:42:58 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9A75C0613D6;
-        Wed, 16 Dec 2020 00:42:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0Vl8v+K48CQ1CpDPZyiLdlZ3QZd1xhq2vGyfDmO1QSk=; b=d0ukNEGopW7xSAvf4l6oxB/hVo
-        FRyEdkJ6gVh6WhW3HqIsdfeYXWYQ1HLOyEXl/M8OOjMOALFor8DXrwW8OkhssqBZWj2qY+dOjn3WQ
-        w+eOTFIjqNLK3/OUKiTAiR7DfaZ2tzpDvvAr4qqHg7G/gm2EllebQ0U87v/0G0msGEUvStoO64DY+
-        jRApct0VEjBdukFFaWwT/w5fpgGG2r/xGFbqZ+y+RR+1foywG9EkTHpqpIVFJmYZHyDNnwWxdOg8q
-        B4pWQSqNEGAgqHIW+S7+CgCiPXoMiutaQwIno90DVH6FICQhR2vzciTHwxWeaxxT1doUmhnq8aMrv
-        PjYDhOMw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kpSMu-0005UY-Qg; Wed, 16 Dec 2020 08:41:09 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AB87E307697;
-        Wed, 16 Dec 2020 09:40:59 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 967842CADD880; Wed, 16 Dec 2020 09:40:59 +0100 (CET)
-Date:   Wed, 16 Dec 2020 09:40:59 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     =?iso-8859-1?Q?J=FCrgen_Gro=DF?= <jgross@suse.com>,
-        xen-devel@lists.xenproject.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org, luto@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Deep Shah <sdeep@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [PATCH v2 00/12] x86: major paravirt cleanup
-Message-ID: <20201216084059.GL3040@hirez.programming.kicks-ass.net>
-References: <20201120114630.13552-1-jgross@suse.com>
- <20201120125342.GC3040@hirez.programming.kicks-ass.net>
- <20201123134317.GE3092@hirez.programming.kicks-ass.net>
- <6771a12c-051d-1655-fb3a-cc45a3c82e29@suse.com>
- <20201215141834.GG3040@hirez.programming.kicks-ass.net>
- <20201215145408.GR3092@hirez.programming.kicks-ass.net>
- <20201216003802.5fpklvx37yuiufrt@treble>
+        Wed, 16 Dec 2020 03:45:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1608108337; x=1639644337;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=jGd3IHZtvo+hUqdl34pPlfX1XZZIx6RKYvIrj+lPFqo=;
+  b=bf7ufSnb2czjQyJrr9Vp7eaXMRT95jdFs9HceXLnixDCpjXFgwt+zBeI
+   LZLPueJkPWjQyD4w753wQuLcUEKbvcejl1lio3GHmaptW/sdKl80R3VpA
+   dXARlE7bGR2R0Voa+tBQtbh6JGDShkEeo0Mo2WUsyUUBfy8CWWmWKEWY8
+   k=;
+X-IronPort-AV: E=Sophos;i="5.78,424,1599523200"; 
+   d="scan'208";a="71552743"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-16425a8d.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 16 Dec 2020 08:44:49 +0000
+Received: from EX13D31EUA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1d-16425a8d.us-east-1.amazon.com (Postfix) with ESMTPS id 58FF1101080;
+        Wed, 16 Dec 2020 08:44:37 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.102) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 16 Dec 2020 08:44:20 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     <akpm@linux-foundation.org>
+CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
+        <aarcange@redhat.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
+        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
+        <brendanhiggins@google.com>, <cai@lca.pw>,
+        <colin.king@canonical.com>, <corbet@lwn.net>, <david@redhat.com>,
+        <dwmw@amazon.com>, <elver@google.com>, <fan.du@intel.com>,
+        <foersleo@amazon.de>, <gthelen@google.com>, <irogers@google.com>,
+        <jolsa@redhat.com>, <kirill@shutemov.name>, <mark.rutland@arm.com>,
+        <mgorman@suse.de>, <minchan@kernel.org>, <mingo@redhat.com>,
+        <namhyung@kernel.org>, <peterz@infradead.org>,
+        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
+        <rostedt@goodmis.org>, <rppt@kernel.org>, <sblbir@amazon.com>,
+        <shakeelb@google.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
+        <snu@amazon.de>, <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
+        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
+        <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
+        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [RFC v15.1 0/8] Implement Data Access Monitoring-based Memory Operation Schemes
+Date:   Wed, 16 Dec 2020 09:43:56 +0100
+Message-ID: <20201216084404.23183-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201216003802.5fpklvx37yuiufrt@treble>
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.102]
+X-ClientProxiedBy: EX13D22UWB003.ant.amazon.com (10.43.161.76) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 06:38:02PM -0600, Josh Poimboeuf wrote:
-> On Tue, Dec 15, 2020 at 03:54:08PM +0100, Peter Zijlstra wrote:
-> > The problem is that a single instance of unwind information (ORC) must
-> > capture and correctly unwind all alternatives. Since the trivially
-> > correct mandate is out, implement the straight forward brute-force
-> > approach:
-> > 
-> >  1) generate CFI information for each alternative
-> > 
-> >  2) unwind every alternative with the merge-sort of the previously
-> >     generated CFI information -- O(n^2)
-> > 
-> >  3) for any possible conflict: yell.
-> > 
-> >  4) Generate ORC with merge-sort
-> > 
-> > Specifically for 3 there are two possible classes of conflicts:
-> > 
-> >  - the merge-sort itself could find conflicting CFI for the same
-> >    offset.
-> > 
-> >  - the unwind can fail with the merged CFI.
-> 
-> So much algorithm.
+From: SeongJae Park <sjpark@amazon.de>
 
-:-)
+NOTE: This is only an RFC for future features of DAMON patchset[1], which is
+not merged in the mainline yet.  The aim of this RFC is to show how DAMON would
+be evolved once it is merged in.  So, if you have some interest in this RFC,
+please consider reviewing the DAMON patchset, either.
 
-It's not really hard, but it has a few pesky details (as always).
+Changes from Previous Version
+=============================
 
-> Could we make it easier by caching the shared
-> per-alt-group CFI state somewhere along the way?
+Only below minor changes made on v15 of this patchset.  Therefore I'm setting
+the version number to v15.1 rather than v16.
 
-Yes, but when I tried it grew the code required. Runtime costs would be
-less, but I figured that since alternatives are typically few and small,
-that wasn't a real consideration.
+- Rebase on v5.10 + DAMON v23[1]
+- Drop the dependency on Minchan's out-of-tree patch (It's merged in v5.10)
 
-That is, it would basically cache the results of find_alt_unwind(), but
-you still need find_alt_unwind() to generate that data, and so you gain
-the code for filling and using the extra data structure.
+Introduction
+============
 
-Yes, computing it 3 times is naf, but meh.
+DAMON[1] can be used as a primitive for data access aware memory management
+optimizations.  For that, users who want such optimizations should run DAMON,
+read the monitoring results, analyze it, plan a new memory management scheme,
+and apply the new scheme by themselves.  Such efforts will be inevitable for
+some complicated optimizations.
 
-> [ 'offset' is a byte offset from the beginning of the group.  It could
->   be calculated based on 'orig_insn' or 'orig_insn->alts', depending on
->   whether 'insn' is an original or a replacement. ]
+However, in many other cases, the users would simply want the system to apply a
+memory management action to a memory region of a specific size having a
+specific access frequency for a specific time.  For example, "page out a memory
+region larger than 100 MiB keeping only rare accesses more than 2 minutes", or
+"Do not use THP for a memory region larger than 2 MiB rarely accessed for more
+than 1 seconds".
 
-That's exactly what it already does ofcourse ;-)
+This RFC patchset makes DAMON to handle such data access monitoring-based
+Operation Schemes (DAMOS).  With this change, users can do the data access
+aware optimizations by simply specifying their schemes.
 
-> If the array entry is NULL, just update it with a pointer to the CFI.
-> If it's not NULL, make sure it matches the existing CFI, and WARN if it
-> doesn't.
-> 
-> Also, with this data structure, the ORC generation should also be a lot
-> more straightforward, just ignore the NULL entries.
+[1] https://lore.kernel.org/linux-mm/20201215115448.25633-1-sjpark@amazon.com
 
-Yeah, I suppose it gets rid of the memcmp-prev thing.
+Evaluations
+===========
 
-> Thoughts?  This is all theoretical of course, I could try to do a patch
-> tomorrow.
+We evaluated DAMON's overhead, monitoring quality and usefulness using 24
+realistic workloads on my QEMU/KVM based virtual machine running a kernel that
+v23 DAMON patchset is applied.
 
-No real objection, I just didn't do it because 1) it works, and 2) even
-moar lines.
+DAMON is lightweight.  It increases system memory usage by 0.42% and slows
+target workloads down by 0.39%.
+
+DAMON is accurate and useful for memory management optimizations.  An
+experimental DAMON-based operation scheme for THP, 'ethp', removes 81.45% of
+THP memory overheads while preserving 50.09% of THP speedup.  Another
+experimental DAMON-based 'proactive reclamation' implementation, 'prcl',
+reduces 91.45% of residential sets and 22.91% of system memory footprint while
+incurring only 2.43% runtime overhead in the best case (parsec3/freqmine).
+
+NOTE that the experimental THP optimization and proactive reclamation are not
+for production but only for proof of concepts.
+
+Please refer to the official document[1] or "Documentation/admin-guide/mm: Add
+a document for DAMON" patch in this patchset for detailed evaluation setup and
+results.
+
+[1] https://damonitor.github.io/doc/html/latest-damon/admin-guide/mm/damon/eval.html
+
+More Information
+================
+
+We prepared a showcase web site[1] that you can get more information.  There
+are
+
+- the official documentations[2],
+- the heatmap format dynamic access pattern of various realistic workloads for
+  heap area[3], mmap()-ed area[4], and stack[5] area,
+- the dynamic working set size distribution[6] and chronological working set
+  size changes[7], and
+- the latest performance test results[8].
+
+[1] https://damonitor.github.io/_index
+[2] https://damonitor.github.io/doc/html/latest-damos
+[3] https://damonitor.github.io/test/result/visual/latest/rec.heatmap.0.html
+[4] https://damonitor.github.io/test/result/visual/latest/rec.heatmap.1.html
+[5] https://damonitor.github.io/test/result/visual/latest/rec.heatmap.2.html
+[6] https://damonitor.github.io/test/result/visual/latest/rec.wss_sz.html
+[7] https://damonitor.github.io/test/result/visual/latest/rec.wss_time.html
+[8] https://damonitor.github.io/test/result/perf/latest/html/index.html
+
+Baseline and Complete Git Tree
+==============================
+
+The patches are based on the v5.10 plus v23 DAMON patchset[1].  You can also
+clone the complete git tree:
+
+    $ git clone git://github.com/sjp38/linux -b damos/rfc/v15.1
+
+The web is also available:
+https://github.com/sjp38/linux/releases/tag/damos/rfc/v15.1
+
+There are a couple of trees for entire DAMON patchset series that future
+features are included.  The first one[3] contains the changes for latest
+release, while the other one[4] contains the changes for next release.
+
+[1] https://lore.kernel.org/linux-doc/20201005105522.23841-1-sjpark@amazon.com/
+[2] https://lore.kernel.org/linux-mm/20200302193630.68771-2-minchan@kernel.org/
+[3] https://github.com/sjp38/linux/tree/damon/master
+[4] https://github.com/sjp38/linux/tree/damon/next
+
+Sequence Of Patches
+===================
+
+The 1st patch accounts age of each region.  The 2nd patch implements the
+core of the DAMON-based operation schemes feature.  The 3rd patch makes
+the default monitoring primitives for virtual address spaces to support the
+schemes.  From this point, the kernel space users can use DAMOS.  The 4th patch
+exports the feature to the user space via the debugfs interface.  The 5th patch
+implements schemes statistics feature for easier tuning of the schemes and
+runtime access pattern analysis.  The 6th patch adds selftests for these
+changes, and the 7th patch adds human friendly schemes support to the user
+space tool for DAMON.  Finally, the 8th patch documents this new feature.
+
+Patch History
+=============
+
+Changes from RFC v15
+(https://lore.kernel.org/linux-mm/20201006123931.5847-1-sjpark@amazon.com/)
+- Rebase on v5.10 + DAMON v23[1]
+- Drop the dependency on Minchan's out-of-tree patch (It's merged in v5.10)
+
+Changes from RFC v14
+(https://lore.kernel.org/linux-mm/20200804142430.15384-1-sjpark@amazon.com/)
+- s/snprintf()/scnprintf() (Marco Elver)
+- Place three parts of DAMON (core, primitives, and dbgfs) in different files
+
+Changes from RFC v13
+(https://lore.kernel.org/linux-mm/20200707093805.4775-1-sjpark@amazon.com/)
+- Drop loadable module support
+- Use dedicated valid action checker function
+- Rebase on v5.8 plus v19 DAMON
+
+Changes from RFC v12
+(https://lore.kernel.org/linux-mm/20200616073828.16509-1-sjpark@amazon.com/)
+ - Wordsmith the document, comment, commit messages
+ - Support a scheme of max access count 0
+ - Use 'unsigned long' for (min|max)_sz_region
+
+Changes from RFC v11
+(https://lore.kernel.org/linux-mm/20200609065320.12941-1-sjpark@amazon.com/)
+ - Refine the commit messages (David Hildenbrand)
+ - Clean up debugfs code
+
+Changes from RFC v10
+(https://lore.kernel.org/linux-mm/20200603071138.8152-1-sjpark@amazon.com/)
+ - Fix the wrong error handling for schemes debugfs file
+ - Handle the schemes stats from the user space tool
+ - Remove the schemes implementation plan from the document
+
+Changes from RFC v9
+(https://lore.kernel.org/linux-mm/20200526075702.27339-1-sjpark@amazon.com/)
+ - Rebase on v5.7
+ - Fix wrong comments and documents for schemes apply conditions
+
+Changes from RFC v8
+(https://lore.kernel.org/linux-mm/20200512115343.27699-1-sjpark@amazon.com/)
+ - Rewrite the document (Stefan Nuernberger)
+ - Make 'damon_for_each_*' argument order consistent (Leonard Foerster)
+ - Implement statistics for schemes
+ - Avoid races between debugfs readers and writers
+ - Reset age for only significant access frequency changes
+ - Add kernel-doc comments in damon.h
+
+Please refer to RFC v8 for previous history
+
+SeongJae Park (8):
+  mm/damon/core: Account age of target regions
+  mm/damon/core: Implement DAMON-based Operation Schemes (DAMOS)
+  mm/damon/vaddr: Support DAMON-based Operation Schemes
+  mm/damon/dbgfs: Support DAMON-based Operation Schemes
+  mm/damon/schemes: Implement statistics feature
+  selftests/damon: Add 'schemes' debugfs tests
+  tools/damon: Support more human friendly 'schemes' control
+  Docs/admin-guide/mm/damon: Document DAMON-based Operation Schemes
+
+ Documentation/admin-guide/mm/damon/guide.rst  |  41 ++++-
+ Documentation/admin-guide/mm/damon/start.rst  |  11 ++
+ Documentation/admin-guide/mm/damon/usage.rst  | 109 ++++++++++-
+ Documentation/vm/damon/index.rst              |   1 -
+ include/linux/damon.h                         |  92 +++++++++-
+ mm/damon/core.c                               | 125 +++++++++++++
+ mm/damon/dbgfs.c                              | 170 +++++++++++++++++-
+ mm/damon/vaddr.c                              |  58 ++++++
+ tools/damon/_convert_damos.py                 | 141 +++++++++++++++
+ tools/damon/_damon.py                         |  28 ++-
+ tools/damon/damo                              |   7 +
+ tools/damon/schemes.py                        | 110 ++++++++++++
+ .../testing/selftests/damon/debugfs_attrs.sh  |  29 +++
+ 13 files changed, 903 insertions(+), 19 deletions(-)
+ create mode 100755 tools/damon/_convert_damos.py
+ create mode 100644 tools/damon/schemes.py
+
+-- 
+2.17.1
+
