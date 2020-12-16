@@ -2,201 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A09242DBDF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:50:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9E4F2DBE06
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:53:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726255AbgLPJtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 04:49:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56791 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726243AbgLPJtT (ORCPT
+        id S1726206AbgLPJw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 04:52:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725862AbgLPJw6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 04:49:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608112072;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OnpaGqF6fBlhxGH2HmymIgB4u9qh1ujRtHG8EyWDWNA=;
-        b=S37JJaeN+tRTM5rwkgZRcuMNgV1z6SAGGXudiIYKPkJxOhu/nSVVNc3ErBSTi5BKH8ZMxI
-        9WRjqDx+QsZy42oWKrlbj56e9k6Aun3Jc0TcA/TgNcnhPK62BHJGgbxAj1eezFwaVkWs/7
-        sLi/+SrwMhx8z5IgX2VMXetBSwzgG/Y=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-279-lZy3PngKPFe3I7duVb69EQ-1; Wed, 16 Dec 2020 04:47:50 -0500
-X-MC-Unique: lZy3PngKPFe3I7duVb69EQ-1
-Received: by mail-wm1-f70.google.com with SMTP id b194so560260wmd.3
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 01:47:50 -0800 (PST)
+        Wed, 16 Dec 2020 04:52:58 -0500
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A899C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 01:52:18 -0800 (PST)
+Received: by mail-oi1-x236.google.com with SMTP id d203so5656176oia.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 01:52:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZogEmcLc5rbdYqJrg42XXZZlCeoansu9PVzcpVj+8x0=;
+        b=LbxiJVg9iuMrC04J5FR6G0SeDS1ekceFKjpSysGzpEGfeLx7OhNXUbsX0Chl2bRgav
+         vRXI9vDQAgyo3OLjYP52p21xAlavAS2De2+I8hztjG4zXhCmhLscT3nEKm8DCgk5vWMM
+         zC74C3pQnryZlVvlZjrJ9fn3zPC+ZW2lrMJc0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OnpaGqF6fBlhxGH2HmymIgB4u9qh1ujRtHG8EyWDWNA=;
-        b=B8qY9YPZovisdEy/fmaB65CLD5yIH9ArUVNpOpB7yTwrN1cXzw/QWUNFMkISA2UUsQ
-         MQqYRReuv2ci/7FWO+95y2rkYUA4oyTOY+//s4efJ3xnEsdnuUFLIDIVIrzPLr/S1Xoz
-         sT/PRZEejilWdTD0N33d0Pc7Yo3A4mgKr2pAYpZQDR/nCNQI2EAH+crMS4tw+PjuscTo
-         gzaaIp8gzGL/tnIXSgoJjPXHRppgyOJx8phdK/2vMNE0zDE/hLjmQS+9QPY3BQ0HdEXC
-         uyttZfeJQ1jxmjNxP6n6qHm4WFrDP0iqJWvnwiJGWsHGp0R9gqBo+4gO0Bibp7GSWCvX
-         zmbw==
-X-Gm-Message-State: AOAM533cFZLMeow8STtmPXGp/RhXzAWiQkbWaW7UE58617szZWfRimq1
-        shETpSkvoQ/XwoAgALsWgjri0jZUWPHOombHNB5MmqVgCoemASjKltqjpcD144Vo0dROUUh+/DI
-        W8FkltUihjU1N/3VJtL+z56mD
-X-Received: by 2002:adf:dc08:: with SMTP id t8mr37436431wri.195.1608112069510;
-        Wed, 16 Dec 2020 01:47:49 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzfV1vXW29xJdPdujDOdRLOpVukt+skk2qfzG8oqvVv1VkOHFftPxLfa9EpZYgdf+afl0EleA==
-X-Received: by 2002:adf:dc08:: with SMTP id t8mr37436406wri.195.1608112069274;
-        Wed, 16 Dec 2020 01:47:49 -0800 (PST)
-Received: from redhat.com (bzq-109-67-15-113.red.bezeqint.net. [109.67.15.113])
-        by smtp.gmail.com with ESMTPSA id l5sm2422805wrv.44.2020.12.16.01.47.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 01:47:48 -0800 (PST)
-Date:   Wed, 16 Dec 2020 04:47:45 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     eperezma@redhat.com, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lulu@redhat.com, eli@mellanox.com,
-        lingshan.zhu@intel.com, rob.miller@broadcom.com,
-        stefanha@redhat.com, sgarzare@redhat.com
-Subject: Re: [PATCH 00/21] Control VQ support in vDPA
-Message-ID: <20201216044051-mutt-send-email-mst@kernel.org>
-References: <20201216064818.48239-1-jasowang@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZogEmcLc5rbdYqJrg42XXZZlCeoansu9PVzcpVj+8x0=;
+        b=ATvnV9EtDNNlMzrlhngeIljR4JLYdz6G2j/+zb3ZDEXnS9AXGPOQT2tGiMc/oMRV/u
+         p43sZI0M91EdnUopi5huXSrFPdJQJTL5IqiDJfb822T7jidEC5oVvjuLp2/BO75i3oAE
+         QXGa4cmlg1lBPcu7emQ9RtQ+EJFx3SfbmmgaXGpd5QUYpCZNNAgoAbQe+1lis4MRd++2
+         m/zZ+I1jQWYYqNvKfdHOZkixoxLfFDn/UaEEuA89HZJa3y3nWEPYgZf0Gz/Ws6Hy1kSn
+         PYwRWShzNnTaq7agW1WQ2xM3e7Tv8kOr7ud2Ds8TgE4A60qlXXZ2JIGkY3MNmwXnQKxn
+         XD7A==
+X-Gm-Message-State: AOAM532ShDbRb/8yJRYq+zGA5m2Hi7kgM/9y1X7XWcg9/smGW2k+1KXG
+        1c4i9V0azirdh+ma2i1R1QqbqKMp6wrpBZz5EtCb2w==
+X-Google-Smtp-Source: ABdhPJxHxIMxN8kPWGkF6jhHKzTSWlN3X3jTWHffC5+00rr3o9QVMO/WAiT3F7UFc4CLj+SLlSPm9UpA89hcvmmx2wk=
+X-Received: by 2002:aca:54d8:: with SMTP id i207mr1560989oib.101.1608112337753;
+ Wed, 16 Dec 2020 01:52:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201216064818.48239-1-jasowang@redhat.com>
+References: <000000000000cb6db205b68a971c@google.com>
+In-Reply-To: <000000000000cb6db205b68a971c@google.com>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Wed, 16 Dec 2020 10:52:06 +0100
+Message-ID: <CAKMK7uEiS5SrBYv-2w2wWL=9G4ByoHvtiWVsPqekswZzOGmzjg@mail.gmail.com>
+Subject: Re: WARNING: suspicious RCU usage in modeset_lock
+To:     syzbot <syzbot+972b924c988834e868b2@syzkaller.appspotmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Peter Rosin <peda@axentia.se>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 02:47:57PM +0800, Jason Wang wrote:
-> Hi All:
-> 
-> This series tries to add the support for control virtqueue in vDPA.
-> 
-> Control virtqueue is used by networking device for accepting various
-> commands from the driver. It's a must to support multiqueue and other
-> configurations.
-> 
-> When used by vhost-vDPA bus driver for VM, the control virtqueue
-> should be shadowed via userspace VMM (Qemu) instead of being assigned
-> directly to Guest. This is because Qemu needs to know the device state
-> in order to start and stop device correctly (e.g for Live Migration).
-> 
-> This requies to isolate the memory mapping for control virtqueue
-> presented by vhost-vDPA to prevent guest from accesing it directly.
-> To achieve this, vDPA introduce two new abstractions:
-> 
-> - address space: identified through address space id (ASID) and a set
->                  of memory mapping in maintained
-> - virtqueue group: the minimal set of virtqueues that must share an
->                  address space
+On Wed, Dec 16, 2020 at 2:14 AM syzbot
+<syzbot+972b924c988834e868b2@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    94801e5c Merge tag 'pinctrl-v5.10-3' of git://git.kernel.o..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=130558c5500000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=ee8a1012a5314210
+> dashboard link: https://syzkaller.appspot.com/bug?extid=972b924c988834e868b2
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> userspace arch: i386
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+972b924c988834e868b2@syzkaller.appspotmail.com
+>
+> =============================
+> WARNING: suspicious RCU usage
+> 5.10.0-rc7-syzkaller #0 Not tainted
+> -----------------------------
+> kernel/sched/core.c:7270 Illegal context switch in RCU-sched read-side critical section!
+>
+> other info that might help us debug this:
+>
+>
+> rcu_scheduler_active = 2, debug_locks = 0
+> 7 locks held by syz-executor.1/9232:
+>  #0: ffffffff8b328c60 (console_lock){+.+.}-{0:0}, at: do_fb_ioctl+0x2e4/0x690 drivers/video/fbdev/core/fbmem.c:1106
+>  #1: ffff888041bd4078 (&fb_info->lock){+.+.}-{3:3}, at: lock_fb_info include/linux/fb.h:636 [inline]
+>  #1: ffff888041bd4078 (&fb_info->lock){+.+.}-{3:3}, at: do_fb_ioctl+0x2ee/0x690 drivers/video/fbdev/core/fbmem.c:1107
+>  #2: ffff888041adca78 (&helper->lock){+.+.}-{3:3}, at: drm_fb_helper_pan_display+0xce/0x970 drivers/gpu/drm/drm_fb_helper.c:1448
+>  #3: ffff8880159f01b8 (&dev->master_mutex){+.+.}-{3:3}, at: drm_master_internal_acquire+0x1d/0x70 drivers/gpu/drm/drm_auth.c:407
+>  #4: ffff888041adc898 (&client->modeset_mutex){+.+.}-{3:3}, at: drm_client_modeset_commit_locked+0x44/0x580 drivers/gpu/drm/drm_client_modeset.c:1143
+>  #5: ffffc90001c07730 (crtc_ww_class_acquire){+.+.}-{0:0}, at: drm_client_modeset_commit_atomic+0xb7/0x7c0 drivers/gpu/drm/drm_client_modeset.c:981
+>  #6: ffff888015986108 (crtc_ww_class_mutex){+.+.}-{3:3}, at: ww_mutex_lock_slow include/linux/ww_mutex.h:287 [inline]
+>  #6: ffff888015986108 (crtc_ww_class_mutex){+.+.}-{3:3}, at: modeset_lock+0x31c/0x650 drivers/gpu/drm/drm_modeset_lock.c:260
 
-How will this support the pretty common case where control vq
-is programmed by the kernel through the PF, and others by the VFs?
+Given that we managed to take all these locks without upsetting anyone
+the rcu section is very deep down. And looking at the backtrace below
+I just couldn't find anything.
+
+Best I can think of is that an interrupt of some sort leaked an rcu
+section, and we got shot here. But I'd assume the rcu debugging would
+catch this? Backtrace of the start of that rcu read side section would
+be really useful here, but I'm not seeing that in the logs. There's
+more stuff there, but it's just the usual "everything falls apart"
+stuff of little value to understanding how we got there.
+
+Adding some rcu people for more insights on what could have gone wrong here.
+-Daniel
+
+> stack backtrace:
+> CPU: 1 PID: 9232 Comm: syz-executor.1 Not tainted 5.10.0-rc7-syzkaller #0
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x107/0x163 lib/dump_stack.c:118
+>  ___might_sleep+0x25d/0x2b0 kernel/sched/core.c:7270
+>  __mutex_lock_common kernel/locking/mutex.c:935 [inline]
+>  __ww_mutex_lock.constprop.0+0xa9/0x2cc0 kernel/locking/mutex.c:1111
+>  ww_mutex_lock+0x3d/0x170 kernel/locking/mutex.c:1190
+>  modeset_lock+0x392/0x650 drivers/gpu/drm/drm_modeset_lock.c:263
+>  drm_modeset_lock drivers/gpu/drm/drm_modeset_lock.c:342 [inline]
+>  drm_modeset_lock+0x50/0x90 drivers/gpu/drm/drm_modeset_lock.c:338
+>  drm_atomic_get_plane_state+0x19d/0x510 drivers/gpu/drm/drm_atomic.c:481
+>  drm_client_modeset_commit_atomic+0x225/0x7c0 drivers/gpu/drm/drm_client_modeset.c:994
+>  drm_client_modeset_commit_locked+0x145/0x580 drivers/gpu/drm/drm_client_modeset.c:1145
+>  pan_display_atomic drivers/gpu/drm/drm_fb_helper.c:1395 [inline]
+>  drm_fb_helper_pan_display+0x28b/0x970 drivers/gpu/drm/drm_fb_helper.c:1455
+>  fb_pan_display+0x2f7/0x6c0 drivers/video/fbdev/core/fbmem.c:925
+>  fb_set_var+0x57f/0xda0 drivers/video/fbdev/core/fbmem.c:1043
+>  do_fb_ioctl+0x2f9/0x690 drivers/video/fbdev/core/fbmem.c:1108
+>  fb_compat_ioctl+0x17c/0xaf0 drivers/video/fbdev/core/fbmem.c:1315
+>  __do_compat_sys_ioctl+0x1d3/0x230 fs/ioctl.c:842
+>  do_syscall_32_irqs_on arch/x86/entry/common.c:78 [inline]
+>  __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:137
+>  do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:160
+>  entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+> RIP: 0023:0xf7fd8549
+> Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
+> RSP: 002b:00000000f55d20bc EFLAGS: 00000296 ORIG_RAX: 0000000000000036
+> RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000004601
+> RDX: 0000000020000240 RSI: 0000000000000000 RDI: 0000000000000000
+> RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> detected fb_set_par error, error code: -16
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
 
-I actually thought the way to support it is by exposing
-something like an "inject buffers" API which sends data to a given VQ.
-Maybe an ioctl, and maybe down the road uio ring can support batching
-these ....
 
-
-> 
-> Device needs to advertise the following attributes to vDPA:
-> 
-> - the number of address spaces supported in the device
-> - the number of virtqueue groups supported in the device
-> - the mappings from a specific virtqueue to its virtqueue groups
-> 
-> The mappings from virtqueue to virtqueue groups is fixed and defined
-> by vDPA device driver. E.g:
-> 
-> - For the device that has hardware ASID support, it can simply
->   advertise a per virtqueue virtqueue group.
-> - For the device that does not have hardware ASID support, it can
->   simply advertise a single virtqueue group that contains all
->   virtqueues. Or if it wants a software emulated control virtqueue, it
->   can advertise two virtqueue groups, one is for cvq, another is for
->   the rest virtqueues.
-> 
-> vDPA also allow to change the association between virtqueue group and
-> address space. So in the case of control virtqueue, userspace
-> VMM(Qemu) may use a dedicated address space for the control virtqueue
-> group to isolate the memory mapping.
-> 
-> The vhost/vhost-vDPA is also extend for the userspace to:
-> 
-> - query the number of virtqueue groups and address spaces supported by
->   the device
-> - query the virtqueue group for a specific virtqueue
-> - assocaite a virtqueue group with an address space
-> - send ASID based IOTLB commands
-> 
-> This will help userspace VMM(Qemu) to detect whether the control vq
-> could be supported and isolate memory mappings of control virtqueue
-> from the others.
-> 
-> To demonstrate the usage, vDPA simulator is extended to support
-> setting MAC address via a emulated control virtqueue.
-> 
-> Please review.
-> 
-> Changes since RFC:
-> 
-> - tweak vhost uAPI documentation
-> - switch to use device specific IOTLB really in patch 4
-> - tweak the commit log
-> - fix that ASID in vhost is claimed to be 32 actually but 16bit
->   actually
-> - fix use after free when using ASID with IOTLB batching requests
-> - switch to use Stefano's patch for having separated iov
-> - remove unused "used_as" variable
-> - fix the iotlb/asid checking in vhost_vdpa_unmap()
-> 
-> Thanks
-> 
-> Jason Wang (20):
->   vhost: move the backend feature bits to vhost_types.h
->   virtio-vdpa: don't set callback if virtio doesn't need it
->   vhost-vdpa: passing iotlb to IOMMU mapping helpers
->   vhost-vdpa: switch to use vhost-vdpa specific IOTLB
->   vdpa: add the missing comment for nvqs in struct vdpa_device
->   vdpa: introduce virtqueue groups
->   vdpa: multiple address spaces support
->   vdpa: introduce config operations for associating ASID to a virtqueue
->     group
->   vhost_iotlb: split out IOTLB initialization
->   vhost: support ASID in IOTLB API
->   vhost-vdpa: introduce asid based IOTLB
->   vhost-vdpa: introduce uAPI to get the number of virtqueue groups
->   vhost-vdpa: introduce uAPI to get the number of address spaces
->   vhost-vdpa: uAPI to get virtqueue group id
->   vhost-vdpa: introduce uAPI to set group ASID
->   vhost-vdpa: support ASID based IOTLB API
->   vdpa_sim: advertise VIRTIO_NET_F_MTU
->   vdpa_sim: factor out buffer completion logic
->   vdpa_sim: filter destination mac address
->   vdpasim: control virtqueue support
-> 
-> Stefano Garzarella (1):
->   vdpa_sim: split vdpasim_virtqueue's iov field in out_iov and in_iov
-> 
->  drivers/vdpa/ifcvf/ifcvf_main.c   |   9 +-
->  drivers/vdpa/mlx5/net/mlx5_vnet.c |  11 +-
->  drivers/vdpa/vdpa.c               |   8 +-
->  drivers/vdpa/vdpa_sim/vdpa_sim.c  | 292 ++++++++++++++++++++++++------
->  drivers/vhost/iotlb.c             |  23 ++-
->  drivers/vhost/vdpa.c              | 246 ++++++++++++++++++++-----
->  drivers/vhost/vhost.c             |  23 ++-
->  drivers/vhost/vhost.h             |   4 +-
->  drivers/virtio/virtio_vdpa.c      |   2 +-
->  include/linux/vdpa.h              |  42 ++++-
->  include/linux/vhost_iotlb.h       |   2 +
->  include/uapi/linux/vhost.h        |  25 ++-
->  include/uapi/linux/vhost_types.h  |  10 +-
->  13 files changed, 561 insertions(+), 136 deletions(-)
-> 
-> -- 
-> 2.25.1
-
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
