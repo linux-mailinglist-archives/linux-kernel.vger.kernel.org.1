@@ -2,70 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F41572DBAA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 06:33:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 775652DBAA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 06:33:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725824AbgLPFcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 00:32:20 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:37520 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725274AbgLPFcU (ORCPT
+        id S1725838AbgLPFct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 00:32:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725274AbgLPFct (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 00:32:20 -0500
-Date:   Wed, 16 Dec 2020 08:31:34 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        <netdev@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-kernel@vger.kernel.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Vyacheslav Mitrofanov 
-        <Vyacheslav.Mitrofanov@baikalelectronics.ru>,
-        "David S. Miller" <davem@davemloft.net>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [RFC] net: stmmac: Problem with adding the native GPIOs support
-Message-ID: <20201216053134.xlqxr4ncbukecxuu@mobilestation>
-References: <20201214092516.lmbezb6hrbda6hzo@mobilestation>
- <20201214153143.GB2841266@lunn.ch>
- <20201215082527.lqipjzastdlhzkqv@mobilestation>
- <20201215135837.GB2822543@lunn.ch>
- <20201215145253.sc6cmqetjktxn4xb@mobilestation>
- <20201216020355.GA2893264@lunn.ch>
+        Wed, 16 Dec 2020 00:32:49 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F10C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 21:32:09 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id y19so45235236lfa.13
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 21:32:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mlVLjTH9AOgJknupcrVpMVLnutgzPOfSo360c08jI34=;
+        b=HZjv4+pbrCO0fsRovVGZolbJ+O0SKz0aJ1PmlKs8Bn7+hjkeismNI0H1Bpc92aE2B5
+         lYwAGAsDs/BoaNTEV86IXWlcMZbBawrtfbCQjt3nB8JN7uAjo0dW3FhdS8KxPh+46sHd
+         RyOdnlE2y5Dr8NV3Ur9vWGQ71tEtQ/AHZYj5o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mlVLjTH9AOgJknupcrVpMVLnutgzPOfSo360c08jI34=;
+        b=Q0YjUkyVbBGy+UHVtpKP33J6XtQLEaw9KL6Nz9ui/J51sPiGEFeDYPvdBxDTzRbkUi
+         3DY6PtW6PgxFK4BN2RhSKq0qOt2xVoBpoOBFKbtWfxuw7gpzJqczjfdTeXj06in/e2CD
+         mnec16GZ/SyuDNne9zkVzBRu+EhVLVz4Nns1ecoDKwZsgs5ekaB/sfe5GVkzKlHaoP/t
+         Lt6pjzpIJijcI/SSNsNTDp9PH3dlvcVfqhSUvXcBJTVzmwwcZT/zzWpYvl1riPAmDvY4
+         fnCyphFPiUH18Ni2Vi3eRP5W6UI6u5GAaUcen1OPomqSSSC5/O9uL8Y1tU+HkPEfiTTQ
+         U/3g==
+X-Gm-Message-State: AOAM533tojQHXImMFdyrbf11/cCTt4tjXqguqy8LRljICP/xwWuPAVbR
+        MbZmdBjbsxcteR8B2qUshwaPXN/IzQC+eg==
+X-Google-Smtp-Source: ABdhPJzPbWuxsUwjj963K5xwRnRDC/B1IPwsatw4tTexIe5dMmmAMMD5o6hdpkhKaAT3yE67yHTG4w==
+X-Received: by 2002:a05:6512:247:: with SMTP id b7mr5871674lfo.171.1608096727242;
+        Tue, 15 Dec 2020 21:32:07 -0800 (PST)
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
+        by smtp.gmail.com with ESMTPSA id y3sm140350ljc.131.2020.12.15.21.32.06
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Dec 2020 21:32:06 -0800 (PST)
+Received: by mail-lf1-f52.google.com with SMTP id s26so10636666lfc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 21:32:06 -0800 (PST)
+X-Received: by 2002:a05:6512:3048:: with SMTP id b8mr12915520lfb.421.1608096726101;
+ Tue, 15 Dec 2020 21:32:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201216020355.GA2893264@lunn.ch>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+References: <CAHk-=wiXtdHJBXw+=0so3ZV8mvG0xEykxUta2sUWPB=hUWHmtQ@mail.gmail.com>
+ <20201216044918.jdmi32dz75uboybv@treble>
+In-Reply-To: <20201216044918.jdmi32dz75uboybv@treble>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 15 Dec 2020 21:31:50 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiGq=ZfYN1VOrFpX=2JzfPkB34HfxeXV0K8FJbMz-iY3Q@mail.gmail.com>
+Message-ID: <CAHk-=wiGq=ZfYN1VOrFpX=2JzfPkB34HfxeXV0K8FJbMz-iY3Q@mail.gmail.com>
+Subject: Re: New objtool warning..
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 03:03:55AM +0100, Andrew Lunn wrote:
-> > > From what you are saying, it sounds like from software you cannot
-> > > independently control the GPIO controller reset?
-> > 
-> > No. The hardware implements the default MAC reset behavior. So the
-> > GPIO controller gets reset synchronously with the MAC reset and that
-> > can't be changed.
-> 
+On Tue, Dec 15, 2020 at 8:49 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+>
+> But yeah, it _might_ be possible to make objtool a little smarter here.
+> Gimme the .o file and I can take a look tomorrow.
 
-> Is there pinmux support for these pins?  Can you disconnect them from
-> the MAC? Often pins can be connected to different internal IP
-> blocks. Maybe you can flip the pin mux, perform the MAC reset, and
-> then put the pinmux back to connect the pins to the MAC IP again?
+Hmm. I tried to send it to you, but then I get a bounce with
 
-Alas no. Pins multiplexing isn't implemented in the Baikal-T1 SoC at all.
-Each pin has been assigned with a single function. In this case DW GMAC
-GPO/GPI pins always serve as GPO/GPI and nothing else.
+  554 Email rejected due to security policies
 
--Sergey
+because apparently your redhat address doesn't allow object files.
 
-> 
->      Andrew
+Annoying.
+
+I'll try sending it as a tar-file instead ;)
+
+            Linus
