@@ -2,164 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D924A2DBB06
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 07:07:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AED22DBB09
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 07:09:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725914AbgLPGG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 01:06:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47346 "EHLO
+        id S1725919AbgLPGHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 01:07:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725769AbgLPGG7 (ORCPT
+        with ESMTP id S1725765AbgLPGHX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 01:06:59 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB722C061793;
-        Tue, 15 Dec 2020 22:06:18 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id j17so21325399ybt.9;
-        Tue, 15 Dec 2020 22:06:18 -0800 (PST)
+        Wed, 16 Dec 2020 01:07:23 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0EDEC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 22:06:42 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id q22so13289189eja.2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 22:06:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=bQSBU3DldQmZhqs8BiiflDFptJcD7jZrmoWAbiLUJhU=;
-        b=bLF8Zg/bSTck1Rd+5n691xW28veCVszy71v2IOmm9GH5VNg1dfDTm9OCbBpZFVHA4W
-         69Yqq12T3JRZbfDz6OpYxXIwYkC4NmkDtSvqAN7Hjkv64SOp8L46V2/pir+zj82iLPZT
-         qAcwwtT33M9OFI0pZzSA2mVoLf0TaxeXvtXrZUYKRvtL9l6PUAdm29bR8DpWocBY0dGQ
-         YgSPzYkqZA75IkfE+uxo82DKz+ULOGI6vWifIJjknmxH7tQJS2WbWJLWXOfdP68BL4Rd
-         jTvROBL5CiepbUY8CFor8xkEOfX8Z5FONKNHnOxw0FEWx6VTDFTVfLXc94mpt5cJViQX
-         62Jw==
+        bh=n9AP4hw+wrttYBnxzNOz611fczoKnvpoptmLkl3njAc=;
+        b=uCkxp1DtDR8O38TsTawozwXfHW0r0UfgemU5OYPTGeEoXsHQcs6LNadpYloE9x/u5f
+         UzoB0w61uo/f5r0fQD75m+h8ymUZ5cBJfnfQXSm9o70V7rL8ncPX+xEuy+l1eRTdGFut
+         iDa26evduTsVNkktkgOfTBS2qquBvk/BPIOJqyAr8txqpLT7gqT98eTLGrNaCMYeyRy7
+         TTlDUh9J9ZTIcMjMOFawduh7QAJqo+kB7z350mwq3ZCI+QDjFYQ+FOlR2xXG5ZuMc7LI
+         4CZ1LViaJARDUg0Gkc7kT44AvyiYfSS+MXWu9vPk5DmY+jnsNa4VkxKu3WKxPNYjIo7i
+         gShw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=bQSBU3DldQmZhqs8BiiflDFptJcD7jZrmoWAbiLUJhU=;
-        b=p8n+4nLSohveKtIaU22FrVrhhOt1+UNXOHsf6maWw2hjZ/txTRXk5Irhlzl1obmzer
-         kVjdmLO2i8TR2xGUrQ8sanjMrexPwBF3ISIusLpocURwxP9J+yYvCxY9FJxfVNxoass1
-         1bC0puB35G95adkJyL8zP6hMuT8ZcIbFjrsY1IprPJSmp7LvkxzawoWztWrhfC2Tykq8
-         HNFekp5ljhPTwyZ0IrU6Dndi9451Gr+dsRwdsRg3EBsqBkDTzsdNnZ0toc5FeXouV9NF
-         7dB/2JSwxnc2I1RTsw4+mjC1R2eOPT+5FZ+DaNHFJjpFQJ2F4xg4WSsEXI+eX/4gqPd8
-         xt1w==
-X-Gm-Message-State: AOAM531/uS+Is9tdAYy4yHtCir8zikpNuRoBwg12E+uPXUQ3Q3S2TeYb
-        3Eb/S5wxH1fknnVH+af0sTdETVXzbBfFHzYhTtE=
-X-Google-Smtp-Source: ABdhPJwP+8IZQgQaJ80ndOw3XeyHnKwU0qnA27GXZdW4AXYA2almMdZEH9ilfdSzFgKArCUYPf2VEQkSv3iuCI6MrtI=
-X-Received: by 2002:a25:be87:: with SMTP id i7mr46897305ybk.332.1608098778261;
- Tue, 15 Dec 2020 22:06:18 -0800 (PST)
+        bh=n9AP4hw+wrttYBnxzNOz611fczoKnvpoptmLkl3njAc=;
+        b=k0Jj4cQ2+ABr4ngnMBsQ1tRoNfECMLtpmFvis3yZ4a7ZsEw7LrqkqpDs6MIb3CC0L2
+         QgcZsHcYpVtyYcxOcqlQHMlGusDVqXXSrAQpYZExygQ5W2ERcKr8jU2RGZ0u780al+iE
+         GJvk9+yvcUfj63aPbHywVTtWCssDXfimZz61kZ3ytmCMAKnfDnESXhHEqLXSw7lq53vV
+         L9pkJhjJIAsIyWKnld2HG2MO3Vg2zsVpJe3s0SGy63TIaqOJvxPs/7nk70iNdjVFw+Mc
+         Vyse7L7f643gIC59td9w6MLu85qprZqsQwSa7wPiZDxsGaAo3X+jeVNKBAUKicStTExA
+         gG7A==
+X-Gm-Message-State: AOAM533ezDhwCVm0sJb1skYRJ/6mUF5jIsJa9+9/RO2Fk4Z9tKoFIjal
+        NKFItuhbhu1IdXfTunvBQfx10AgD2Gv4xsm7srogaQ==
+X-Google-Smtp-Source: ABdhPJzkiJK2xyrc2QwSC8CVZIupa2XWCcT1uQyhVvTVyuCsU8VdzP96S9LSL2lvAk84LlpkUpqQHdEZw7zDznsaLQ0=
+X-Received: by 2002:a17:907:c15:: with SMTP id ga21mr29965062ejc.472.1608098801569;
+ Tue, 15 Dec 2020 22:06:41 -0800 (PST)
 MIME-Version: 1.0
-References: <1607403341-57214-1-git-send-email-yash.shah@sifive.com>
- <1607403341-57214-8-git-send-email-yash.shah@sifive.com> <CAEUhbmURfwMYo6FTuL7TP7daSuhBOOpcZX-mfCxCTVS+QiaHqA@mail.gmail.com>
- <BY5PR13MB44539E6CDB009EFA6AB7CAFA82C50@BY5PR13MB4453.namprd13.prod.outlook.com>
-In-Reply-To: <BY5PR13MB44539E6CDB009EFA6AB7CAFA82C50@BY5PR13MB4453.namprd13.prod.outlook.com>
-From:   Bin Meng <bmeng.cn@gmail.com>
-Date:   Wed, 16 Dec 2020 14:06:07 +0800
-Message-ID: <CAEUhbmWrCpKraUpijggkiNXa40OAnN9YJF1iFWnrnrhJZN1joA@mail.gmail.com>
-Subject: Re: [PATCH v2 7/9] riscv: dts: add initial support for the SiFive
- FU740-C000 SoC
-To:     Yash Shah <yash.shah@openfive.com>
-Cc:     "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        Peter Korsgaard <peter@korsgaard.com>,
-        "Paul Walmsley ( Sifive)" <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>
+References: <20201201135929.66530-1-wanghai38@huawei.com>
+In-Reply-To: <20201201135929.66530-1-wanghai38@huawei.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 15 Dec 2020 22:06:30 -0800
+Message-ID: <CAPcyv4gAmPLQnNwenDoaGQ7Ah9-eEkuL2xSoqi_zyg1waZYg9Q@mail.gmail.com>
+Subject: Re: [PATCH] dax: fix memory leak when rmmod dax.ko
+To:     Wang Hai <wanghai38@huawei.com>
+Cc:     Vishal L Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yash,
-
-On Wed, Dec 16, 2020 at 1:24 PM Yash Shah <yash.shah@openfive.com> wrote:
+On Tue, Dec 1, 2020 at 5:54 AM Wang Hai <wanghai38@huawei.com> wrote:
 >
-> > -----Original Message-----
-> > From: Bin Meng <bmeng.cn@gmail.com>
-> > Sent: 10 December 2020 19:05
-> > To: Yash Shah <yash.shah@openfive.com>
-> > Cc: linux-spi@vger.kernel.org; linux-serial@vger.kernel.org; linux-
-> > pwm@vger.kernel.org; linux-i2c@vger.kernel.org; linux-kernel <linux-
-> > kernel@vger.kernel.org>; linux-riscv <linux-riscv@lists.infradead.org>;
-> > devicetree <devicetree@vger.kernel.org>; open list:GPIO SUBSYSTEM <linux-
-> > gpio@vger.kernel.org>; broonie@kernel.org; Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org>; Albert Ou <aou@eecs.berkeley.edu>;
-> > lee.jones@linaro.org; u.kleine-koenig@pengutronix.de; Thierry Reding
-> > <thierry.reding@gmail.com>; andrew@lunn.ch; Peter Korsgaard
-> > <peter@korsgaard.com>; Paul Walmsley ( Sifive)
-> > <paul.walmsley@sifive.com>; Palmer Dabbelt <palmer@dabbelt.com>; Rob
-> > Herring <robh+dt@kernel.org>; Bartosz Golaszewski
-> > <bgolaszewski@baylibre.com>; Linus Walleij <linus.walleij@linaro.org>
-> > Subject: Re: [PATCH v2 7/9] riscv: dts: add initial support for the SiFive FU740-
-> > C000 SoC
-> >
-> > [External Email] Do not click links or attachments unless you recognize the
-> > sender and know the content is safe
-> >
-> > On Tue, Dec 8, 2020 at 3:06 PM Yash Shah <yash.shah@sifive.com> wrote:
-> > >
-> > > Add initial support for the SiFive FU540-C000 SoC. FU740-C000 is built
-> >
-> > FU740-C000 Soc
-> >
-> > > around the SiFIve U7 Core Complex and a TileLink interconnect.
-> > >
-> > > This file is expected to grow as more device drivers are added to the
-> > > kernel.
-> > >
-> > > Signed-off-by: Yash Shah <yash.shah@sifive.com>
-> > > ---
-> > >  arch/riscv/boot/dts/sifive/fu740-c000.dtsi | 293
-> > > +++++++++++++++++++++++++++++
-> > >  1 file changed, 293 insertions(+)
-> > >  create mode 100644 arch/riscv/boot/dts/sifive/fu740-c000.dtsi
-> > >
-> > > diff --git a/arch/riscv/boot/dts/sifive/fu740-c000.dtsi
-> > > b/arch/riscv/boot/dts/sifive/fu740-c000.dtsi
-> > > new file mode 100644
-> > > index 0000000..eeb4f8c3
-> > > --- /dev/null
-> > > +++ b/arch/riscv/boot/dts/sifive/fu740-c000.dtsi
-> > > @@ -0,0 +1,293 @@
+> When I repeatedly modprobe and rmmod dax.ko, kmemleak report a
+> memory leak as follows:
 >
+> unreferenced object 0xffff9a5588c05088 (size 8):
+>   comm "modprobe", pid 261, jiffies 4294693644 (age 42.063s)
 > ...
+>   backtrace:
+>     [<00000000e007ced0>] kstrdup+0x35/0x70
+>     [<000000002ae73897>] kstrdup_const+0x3d/0x50
+>     [<000000002b00c9c3>] kvasprintf_const+0xbc/0xf0
+>     [<000000008023282f>] kobject_set_name_vargs+0x3b/0xd0
+>     [<00000000d2cbaa4e>] kobject_set_name+0x62/0x90
+>     [<00000000202e7a22>] bus_register+0x7f/0x2b0
+>     [<000000000b77792c>] 0xffffffffc02840f7
+>     [<000000002d5be5ac>] 0xffffffffc02840b4
+>     [<00000000dcafb7cd>] do_one_initcall+0x58/0x240
+>     [<00000000049fe480>] do_init_module+0x56/0x1e2
+>     [<0000000022671491>] load_module+0x2517/0x2840
+>     [<000000001a2201cb>] __do_sys_finit_module+0x9c/0xe0
+>     [<000000003eb304e7>] do_syscall_64+0x33/0x40
+>     [<0000000051c5fd06>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 >
-> > > +               plic0: interrupt-controller@c000000 {
-> > > +                       #interrupt-cells = <1>;
-> > > +                       #address-cells = <0>;
-> > > +                       compatible = "sifive,fu540-c000-plic",
-> > > + "sifive,plic-1.0.0";
-> >
-> > I don't see bindings updated for FU740 PLIC, like "sifive,fu740-c000-plic"?
+> When rmmod dax is executed, dax_bus_exit() is missing. This patch
+> can fix this bug.
 >
-> That's because it is not required. There won't be any difference in driver code for FU740 plic.
+> Fixes: 9567da0b408a ("device-dax: Introduce bus + driver model")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wang Hai <wanghai38@huawei.com>
 
-Are there any driver changes for the drivers that have an updated
-fu640-c000-* bindings? I don't see them in the linux-riscv list.
+Looks good, applied.
 
->
-> ...
->
-> > > +               eth0: ethernet@10090000 {
-> > > +                       compatible = "sifive,fu540-c000-gem";
-> >
-> > "sifive,fu740-c000-gem"?
-> >
->
-> Same reason as above.
->
-> Thanks for your review.
-
-Regards,
-Bin
+...with some fixups to the changelog to add Cc: stable and change the
+title to "device-dax/core: Fix..."
