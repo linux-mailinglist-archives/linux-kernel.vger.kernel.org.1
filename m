@@ -2,91 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BED002DBBD2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 08:06:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F13702DBBD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 08:09:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725994AbgLPHGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 02:06:40 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:9893 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725769AbgLPHGk (ORCPT
+        id S1726026AbgLPHHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 02:07:51 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:54488 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725769AbgLPHHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 02:06:40 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CwmNZ42FKz79Zl;
-        Wed, 16 Dec 2020 15:05:18 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 16 Dec 2020 15:05:48 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH net-next] net: rds: Change PF_INET to AF_INET
-Date:   Wed, 16 Dec 2020 15:06:20 +0800
-Message-ID: <20201216070620.16063-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+        Wed, 16 Dec 2020 02:07:51 -0500
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 15 Dec 2020 23:07:10 -0800
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 15 Dec 2020 23:07:07 -0800
+X-QCInternal: smtphost
+Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 16 Dec 2020 12:36:54 +0530
+Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
+        id 127FA2142E; Wed, 16 Dec 2020 12:36:52 +0530 (IST)
+From:   Dikshita Agarwal <dikshita@codeaurora.org>
+To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, Dikshita Agarwal <dikshita@codeaurora.org>
+Subject: [PATCH] venus: venc: set IDR period to FW only for H264 & HEVC
+Date:   Wed, 16 Dec 2020 12:36:50 +0530
+Message-Id: <1608102410-23390-1-git-send-email-dikshita@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By bsd codestyle, change PF_INET to AF_INET.
+HFI_PROPERTY_CONFIG_VENC_IDR_PERIOD is supported for only
+H264 & HEVC codec. There is no need to set it for VP8 since
+all key frames are treated as IDR frames for VP8.
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
 ---
- net/rds/rdma_transport.c | 4 ++--
- net/rds/tcp_listen.c     | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/media/platform/qcom/venus/venc.c | 23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
 
-diff --git a/net/rds/rdma_transport.c b/net/rds/rdma_transport.c
-index 5f741e51b4ba..04102dbc04d2 100644
---- a/net/rds/rdma_transport.c
-+++ b/net/rds/rdma_transport.c
-@@ -249,7 +249,7 @@ static int rds_rdma_listen_init(void)
- #endif
- 	struct sockaddr_in sin;
+diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
+index 3a2e449..618cf92 100644
+--- a/drivers/media/platform/qcom/venus/venc.c
++++ b/drivers/media/platform/qcom/venus/venc.c
+@@ -588,16 +588,19 @@ static int venc_set_properties(struct venus_inst *inst)
+ 			return ret;
+ 	}
  
--	sin.sin_family = PF_INET;
-+	sin.sin_family = AF_INET;
- 	sin.sin_addr.s_addr = htonl(INADDR_ANY);
- 	sin.sin_port = htons(RDS_PORT);
- 	ret = rds_rdma_listen_init_common(rds_rdma_cm_event_handler,
-@@ -259,7 +259,7 @@ static int rds_rdma_listen_init(void)
- 		return ret;
+-	/* IDR periodicity, n:
+-	 * n = 0 - only the first I-frame is IDR frame
+-	 * n = 1 - all I-frames will be IDR frames
+-	 * n > 1 - every n-th I-frame will be IDR frame
+-	 */
+-	ptype = HFI_PROPERTY_CONFIG_VENC_IDR_PERIOD;
+-	idrp.idr_period = 0;
+-	ret = hfi_session_set_property(inst, ptype, &idrp);
+-	if (ret)
+-		return ret;
++	if (inst->fmt_cap->pixfmt == V4L2_PIX_FMT_H264 ||
++	    inst->fmt_cap->pixfmt == V4L2_PIX_FMT_HEVC) {
++		/* IDR periodicity, n:
++		 * n = 0 - only the first I-frame is IDR frame
++		 * n = 1 - all I-frames will be IDR frames
++		 * n > 1 - every n-th I-frame will be IDR frame
++		 */
++		ptype = HFI_PROPERTY_CONFIG_VENC_IDR_PERIOD;
++		idrp.idr_period = 0;
++		ret = hfi_session_set_property(inst, ptype, &idrp);
++		if (ret)
++			return ret;
++	}
  
- #if IS_ENABLED(CONFIG_IPV6)
--	sin6.sin6_family = PF_INET6;
-+	sin6.sin6_family = AF_INET6;
- 	sin6.sin6_addr = in6addr_any;
- 	sin6.sin6_port = htons(RDS_CM_PORT);
- 	sin6.sin6_scope_id = 0;
-diff --git a/net/rds/tcp_listen.c b/net/rds/tcp_listen.c
-index 101cf14215a0..8dc71aee4691 100644
---- a/net/rds/tcp_listen.c
-+++ b/net/rds/tcp_listen.c
-@@ -281,7 +281,7 @@ struct socket *rds_tcp_listen_init(struct net *net, bool isv6)
- 
- 	if (isv6) {
- 		sin6 = (struct sockaddr_in6 *)&ss;
--		sin6->sin6_family = PF_INET6;
-+		sin6->sin6_family = AF_INET6;
- 		sin6->sin6_addr = in6addr_any;
- 		sin6->sin6_port = (__force u16)htons(RDS_TCP_PORT);
- 		sin6->sin6_scope_id = 0;
-@@ -289,7 +289,7 @@ struct socket *rds_tcp_listen_init(struct net *net, bool isv6)
- 		addr_len = sizeof(*sin6);
- 	} else {
- 		sin = (struct sockaddr_in *)&ss;
--		sin->sin_family = PF_INET;
-+		sin->sin_family = AF_INET;
- 		sin->sin_addr.s_addr = INADDR_ANY;
- 		sin->sin_port = (__force u16)htons(RDS_TCP_PORT);
- 		addr_len = sizeof(*sin);
+ 	if (ctr->num_b_frames) {
+ 		u32 max_num_b_frames = NUM_B_FRAMES_MAX;
 -- 
-2.22.0
+2.7.4
 
