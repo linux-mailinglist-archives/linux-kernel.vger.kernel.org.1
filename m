@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0BF22DBDE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:47:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 687682DBDEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:47:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726105AbgLPJpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 04:45:54 -0500
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:59058 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726155AbgLPJpx (ORCPT
+        id S1726200AbgLPJqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 04:46:46 -0500
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:44755 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726146AbgLPJqp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 04:45:53 -0500
+        Wed, 16 Dec 2020 04:46:45 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1608111952; x=1639647952;
+  t=1608112005; x=1639648005;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=Lj6+I9XWmZiqjVkd1Bor2fLoWLXqVAIP/n4Y2agFqYw=;
-  b=atRK9mOnWORakP4Go+AYUzvczOZW1Pb5cTR//Wb858Tcet/YyKuMHTfQ
-   D2Y1V9hvoYXaZ2k97fGQAoarzXfMSkfWvYw7z+cMSsAQaQkKXNlrC+0Bq
-   oB45eCOOtl8/8ULiGUrN8wKL+V5/9NRGo33U0apJUOJIhRKMQ1O65g0a6
-   8=;
+  bh=SUQT16FeXJgUgtw4aF8cUXAdkk10Wp5q3gpjNNGwgdo=;
+  b=rlCsFYIuIci2ZW7X0PmZ8goqe2ifqYHkqLCUiYIgHZG4EvIlY87fotWM
+   NDWNiHciA96qfC0kma41ECWMYezF12uAsVKrkrLAfNFshYIeB/K1MFyvJ
+   vh3tpuMKFsf8Im755hnuTyBJLBvdV4gRzNkyHY1ny6fLiMvlpa91V+PnD
+   I=;
 X-IronPort-AV: E=Sophos;i="5.78,424,1599523200"; 
-   d="scan'208";a="69443702"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2c-87a10be6.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 16 Dec 2020 09:45:07 +0000
-Received: from EX13D31EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2c-87a10be6.us-west-2.amazon.com (Postfix) with ESMTPS id DF141A1EBF;
-        Wed, 16 Dec 2020 09:44:55 +0000 (UTC)
+   d="scan'208";a="96475241"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2c-456ef9c9.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 16 Dec 2020 09:45:57 +0000
+Received: from EX13D31EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2c-456ef9c9.us-west-2.amazon.com (Postfix) with ESMTPS id 50515C1D11;
+        Wed, 16 Dec 2020 09:45:53 +0000 (UTC)
 Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.31) by
  EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 16 Dec 2020 09:44:36 +0000
+ id 15.0.1497.2; Wed, 16 Dec 2020 09:44:58 +0000
 From:   SeongJae Park <sjpark@amazon.com>
 To:     <akpm@linux-foundation.org>
 CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
@@ -53,9 +53,9 @@ CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
         <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
         <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [RFC v10 06/13] mm/damon/vaddr: Separate commonly usable functions
-Date:   Wed, 16 Dec 2020 10:42:14 +0100
-Message-ID: <20201216094221.11898-7-sjpark@amazon.com>
+Subject: [RFC v10 07/13] mm/damon: Implement primitives for physical address space monitoring
+Date:   Wed, 16 Dec 2020 10:42:15 +0100
+Message-ID: <20201216094221.11898-8-sjpark@amazon.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201216094221.11898-1-sjpark@amazon.com>
 References: <20201216094221.11898-1-sjpark@amazon.com>
@@ -70,309 +70,306 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: SeongJae Park <sjpark@amazon.de>
 
-This commit moves functions in the default virtual address spaces
-monitoring primitives that commonly usable from other address spaces
-like physical address space into a header file.  Those will be reused by
-the physical address space monitoring primitives in the following
-commit.
+This commit implements the primitives for the basic access monitoring of
+the physical memory address space.  By using this, users can easily
+monitor the accesses to the physical memory.
+
+Internally, it uses the PTE Accessed bit, as similar to that of the
+virtual memory support.  Also, it supports only user memory pages, as
+idle page tracking also does, for the same reason.  If the monitoring
+target physical memory address range contains non-user memory pages,
+access check of the pages will do nothing but simply treat the pages as
+not accessed.
+
+Users who want to use other access check primitives and/or monitor the
+non-user memory regions could implement and use their own callbacks.
 
 Signed-off-by: SeongJae Park <sjpark@amazon.de>
 ---
- mm/damon/Makefile       |   2 +-
- mm/damon/prmtv-common.c | 104 ++++++++++++++++++++++++++++++++++++++
- mm/damon/prmtv-common.h |  21 ++++++++
- mm/damon/vaddr.c        | 108 +---------------------------------------
- 4 files changed, 128 insertions(+), 107 deletions(-)
- create mode 100644 mm/damon/prmtv-common.c
- create mode 100644 mm/damon/prmtv-common.h
+ include/linux/damon.h |  10 ++
+ mm/damon/Kconfig      |   9 ++
+ mm/damon/Makefile     |   1 +
+ mm/damon/paddr.c      | 222 ++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 242 insertions(+)
+ create mode 100644 mm/damon/paddr.c
 
+diff --git a/include/linux/damon.h b/include/linux/damon.h
+index ed7e86207e53..ea2fd054b2ef 100644
+--- a/include/linux/damon.h
++++ b/include/linux/damon.h
+@@ -376,4 +376,14 @@ void damon_va_set_primitives(struct damon_ctx *ctx);
+ 
+ #endif	/* CONFIG_DAMON_VADDR */
+ 
++#ifdef CONFIG_DAMON_PADDR
++
++/* Monitoring primitives for the physical memory address space */
++void damon_pa_prepare_access_checks(struct damon_ctx *ctx);
++unsigned int damon_pa_check_accesses(struct damon_ctx *ctx);
++bool damon_pa_target_valid(void *t);
++void damon_pa_set_primitives(struct damon_ctx *ctx);
++
++#endif	/* CONFIG_DAMON_PADDR */
++
+ #endif	/* _DAMON_H */
+diff --git a/mm/damon/Kconfig b/mm/damon/Kconfig
+index 455995152697..89c06ac8c9eb 100644
+--- a/mm/damon/Kconfig
++++ b/mm/damon/Kconfig
+@@ -33,6 +33,15 @@ config DAMON_VADDR
+ 	  This builds the default data access monitoring primitives for DAMON
+ 	  that works for virtual address spaces.
+ 
++config DAMON_PADDR
++	bool "Data access monitoring primitives for the physical address space"
++	depends on DAMON && MMU
++	select PAGE_EXTENSION if !64BIT
++	select PAGE_IDLE_FLAG
++	help
++	  This builds the default data access monitoring primitives for DAMON
++	  that works for physical address spaces.
++
+ config DAMON_VADDR_KUNIT_TEST
+ 	bool "Test for DAMON primitives" if !KUNIT_ALL_TESTS
+ 	depends on DAMON_VADDR && KUNIT=y
 diff --git a/mm/damon/Makefile b/mm/damon/Makefile
-index fed4be3bace3..99b1bfe01ff5 100644
+index 99b1bfe01ff5..8d9b0df79702 100644
 --- a/mm/damon/Makefile
 +++ b/mm/damon/Makefile
-@@ -1,5 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
+@@ -2,4 +2,5 @@
  
  obj-$(CONFIG_DAMON)		:= core.o
--obj-$(CONFIG_DAMON_VADDR)	+= vaddr.o
-+obj-$(CONFIG_DAMON_VADDR)	+= prmtv-common.o vaddr.o
+ obj-$(CONFIG_DAMON_VADDR)	+= prmtv-common.o vaddr.o
++obj-$(CONFIG_DAMON_PADDR)	+= prmtv-common.o paddr.o
  obj-$(CONFIG_DAMON_DBGFS)	+= dbgfs.o
-diff --git a/mm/damon/prmtv-common.c b/mm/damon/prmtv-common.c
+diff --git a/mm/damon/paddr.c b/mm/damon/paddr.c
 new file mode 100644
-index 000000000000..6cdb96cbc9ef
+index 000000000000..b120f672cc57
 --- /dev/null
-+++ b/mm/damon/prmtv-common.c
-@@ -0,0 +1,104 @@
++++ b/mm/damon/paddr.c
+@@ -0,0 +1,222 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * Common Primitives for Data Access Monitoring
++ * DAMON Primitives for The Physical Address Space
 + *
 + * Author: SeongJae Park <sjpark@amazon.de>
 + */
 +
++#define pr_fmt(fmt) "damon-pa: " fmt
++
++#include <linux/rmap.h>
++
 +#include "prmtv-common.h"
 +
-+static void damon_ptep_mkold(pte_t *pte, struct mm_struct *mm,
-+			     unsigned long addr)
++/*
++ * This has no implementations for 'init_target_regions()' and
++ * 'update_target_regions()'.  Users should set the initial regions and update
++ * regions by themselves in the 'before_start' and 'after_aggregation'
++ * callbacks, respectively.  Or, they can implement and use their own version
++ * of the primitives.
++ */
++
++/*
++ * Get a page by pfn if it is in the LRU list.  Otherwise, returns NULL.
++ *
++ * The body of this function is stollen from the 'page_idle_get_page()'.  We
++ * steal rather than reuse it because the code is quite simple.
++ */
++static struct page *damon_pa_get_page(unsigned long pfn)
 +{
-+	bool referenced = false;
-+	struct page *page = pte_page(*pte);
++	struct page *page = pfn_to_online_page(pfn);
++	pg_data_t *pgdat;
 +
-+	if (pte_young(*pte)) {
-+		referenced = true;
-+		*pte = pte_mkold(*pte);
++	if (!page || !PageLRU(page) ||
++	    !get_page_unless_zero(page))
++		return NULL;
++
++	pgdat = page_pgdat(page);
++	spin_lock_irq(&pgdat->lru_lock);
++	if (unlikely(!PageLRU(page))) {
++		put_page(page);
++		page = NULL;
 +	}
-+
-+#ifdef CONFIG_MMU_NOTIFIER
-+	if (mmu_notifier_clear_young(mm, addr, addr + PAGE_SIZE))
-+		referenced = true;
-+#endif /* CONFIG_MMU_NOTIFIER */
-+
-+	if (referenced)
-+		set_page_young(page);
-+
-+	set_page_idle(page);
++	spin_unlock_irq(&pgdat->lru_lock);
++	return page;
 +}
 +
-+static void damon_pmdp_mkold(pmd_t *pmd, struct mm_struct *mm,
-+			     unsigned long addr)
++static bool __damon_pa_mkold(struct page *page, struct vm_area_struct *vma,
++		unsigned long addr, void *arg)
 +{
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+	bool referenced = false;
-+	struct page *page = pmd_page(*pmd);
-+
-+	if (pmd_young(*pmd)) {
-+		referenced = true;
-+		*pmd = pmd_mkold(*pmd);
-+	}
-+
-+#ifdef CONFIG_MMU_NOTIFIER
-+	if (mmu_notifier_clear_young(mm, addr,
-+				addr + ((1UL) << HPAGE_PMD_SHIFT)))
-+		referenced = true;
-+#endif /* CONFIG_MMU_NOTIFIER */
-+
-+	if (referenced)
-+		set_page_young(page);
-+
-+	set_page_idle(page);
-+#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
++	damon_va_mkold(vma->vm_mm, addr);
++	return true;
 +}
 +
-+void damon_va_mkold(struct mm_struct *mm, unsigned long addr)
++static void damon_pa_mkold(unsigned long paddr)
 +{
-+	pte_t *pte = NULL;
-+	pmd_t *pmd = NULL;
-+	spinlock_t *ptl;
++	struct page *page = damon_pa_get_page(PHYS_PFN(paddr));
++	struct rmap_walk_control rwc = {
++		.rmap_one = __damon_pa_mkold,
++		.anon_lock = page_lock_anon_vma_read,
++	};
++	bool need_lock;
 +
-+	if (follow_pte_pmd(mm, addr, NULL, &pte, &pmd, &ptl))
++	if (!page)
 +		return;
 +
-+	if (pte) {
-+		damon_ptep_mkold(pte, mm, addr);
-+		pte_unmap_unlock(pte, ptl);
-+	} else {
-+		damon_pmdp_mkold(pmd, mm, addr);
-+		spin_unlock(ptl);
++	if (!page_mapped(page) || !page_rmapping(page)) {
++		set_page_idle(page);
++		put_page(page);
++		return;
++	}
++
++	need_lock = !PageAnon(page) || PageKsm(page);
++	if (need_lock && !trylock_page(page)) {
++		put_page(page);
++		return;
++	}
++
++	rmap_walk(page, &rwc);
++
++	if (need_lock)
++		unlock_page(page);
++	put_page(page);
++}
++
++static void __damon_pa_prepare_access_check(struct damon_ctx *ctx,
++					    struct damon_region *r)
++{
++	r->sampling_addr = damon_rand(r->ar.start, r->ar.end);
++
++	damon_pa_mkold(r->sampling_addr);
++}
++
++void damon_pa_prepare_access_checks(struct damon_ctx *ctx)
++{
++	struct damon_target *t;
++	struct damon_region *r;
++
++	damon_for_each_target(t, ctx) {
++		damon_for_each_region(r, t)
++			__damon_pa_prepare_access_check(ctx, r);
 +	}
 +}
 +
-+bool damon_va_young(struct mm_struct *mm, unsigned long addr,
-+			unsigned long *page_sz)
-+{
-+	pte_t *pte = NULL;
-+	pmd_t *pmd = NULL;
-+	spinlock_t *ptl;
-+	bool young = false;
++struct damon_pa_access_chk_result {
++	unsigned long page_sz;
++	bool accessed;
++};
 +
-+	if (follow_pte_pmd(mm, addr, NULL, &pte, &pmd, &ptl))
++static bool damon_pa_accessed(struct page *page, struct vm_area_struct *vma,
++		unsigned long addr, void *arg)
++{
++	struct damon_pa_access_chk_result *result = arg;
++
++	result->accessed = damon_va_young(vma->vm_mm, addr, &result->page_sz);
++
++	/* If accessed, stop walking */
++	return !result->accessed;
++}
++
++static bool damon_pa_young(unsigned long paddr, unsigned long *page_sz)
++{
++	struct page *page = damon_pa_get_page(PHYS_PFN(paddr));
++	struct damon_pa_access_chk_result result = {
++		.page_sz = PAGE_SIZE,
++		.accessed = false,
++	};
++	struct rmap_walk_control rwc = {
++		.arg = &result,
++		.rmap_one = damon_pa_accessed,
++		.anon_lock = page_lock_anon_vma_read,
++	};
++	bool need_lock;
++
++	if (!page)
 +		return false;
 +
-+	*page_sz = PAGE_SIZE;
-+	if (pte) {
-+		young = pte_young(*pte);
-+		if (!young)
-+			young = !page_is_idle(pte_page(*pte));
-+		pte_unmap_unlock(pte, ptl);
-+		return young;
++	if (!page_mapped(page) || !page_rmapping(page)) {
++		if (page_is_idle(page))
++			result.accessed = false;
++		else
++			result.accessed = true;
++		put_page(page);
++		goto out;
 +	}
 +
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+	young = pmd_young(*pmd);
-+	if (!young)
-+		young = !page_is_idle(pmd_page(*pmd));
-+	spin_unlock(ptl);
-+	*page_sz = ((1UL) << HPAGE_PMD_SHIFT);
-+#endif	/* CONFIG_TRANSPARENT_HUGEPAGE */
++	need_lock = !PageAnon(page) || PageKsm(page);
++	if (need_lock && !trylock_page(page)) {
++		put_page(page);
++		return NULL;
++	}
 +
-+	return young;
++	rmap_walk(page, &rwc);
++
++	if (need_lock)
++		unlock_page(page);
++	put_page(page);
++
++out:
++	*page_sz = result.page_sz;
++	return result.accessed;
 +}
-diff --git a/mm/damon/prmtv-common.h b/mm/damon/prmtv-common.h
-new file mode 100644
-index 000000000000..a66a6139b4fc
---- /dev/null
-+++ b/mm/damon/prmtv-common.h
-@@ -0,0 +1,21 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
++
 +/*
-+ * Common Primitives for Data Access Monitoring
++ * Check whether the region was accessed after the last preparation
 + *
-+ * Author: SeongJae Park <sjpark@amazon.de>
++ * mm	'mm_struct' for the given virtual address space
++ * r	the region of physical address space that needs to be checked
 + */
++static void __damon_pa_check_access(struct damon_ctx *ctx,
++				    struct damon_region *r)
++{
++	static unsigned long last_addr;
++	static unsigned long last_page_sz = PAGE_SIZE;
++	static bool last_accessed;
 +
-+#include <linux/damon.h>
-+#include <linux/mm.h>
-+#include <linux/mmu_notifier.h>
-+#include <linux/page_idle.h>
-+#include <linux/random.h>
-+#include <linux/sched/mm.h>
-+#include <linux/slab.h>
++	/* If the region is in the last checked page, reuse the result */
++	if (ALIGN_DOWN(last_addr, last_page_sz) ==
++				ALIGN_DOWN(r->sampling_addr, last_page_sz)) {
++		if (last_accessed)
++			r->nr_accesses++;
++		return;
++	}
 +
-+/* Get a random number in [l, r) */
-+#define damon_rand(l, r) (l + prandom_u32_max(r - l))
++	last_accessed = damon_pa_young(r->sampling_addr, &last_page_sz);
++	if (last_accessed)
++		r->nr_accesses++;
 +
-+void damon_va_mkold(struct mm_struct *mm, unsigned long addr);
-+bool damon_va_young(struct mm_struct *mm, unsigned long addr,
-+			unsigned long *page_sz);
-diff --git a/mm/damon/vaddr.c b/mm/damon/vaddr.c
-index 2075f07f728b..915b12329c6e 100644
---- a/mm/damon/vaddr.c
-+++ b/mm/damon/vaddr.c
-@@ -8,22 +8,14 @@
- #define pr_fmt(fmt) "damon-va: " fmt
- 
- #include <asm-generic/mman-common.h>
--#include <linux/damon.h>
--#include <linux/mm.h>
--#include <linux/mmu_notifier.h>
--#include <linux/page_idle.h>
--#include <linux/random.h>
--#include <linux/sched/mm.h>
--#include <linux/slab.h>
++	last_addr = r->sampling_addr;
++}
 +
-+#include "prmtv-common.h"
- 
- #ifdef CONFIG_DAMON_VADDR_KUNIT_TEST
- #undef DAMON_MIN_REGION
- #define DAMON_MIN_REGION 1
- #endif
- 
--/* Get a random number in [l, r) */
--#define damon_rand(l, r) (l + prandom_u32_max(r - l))
--
- /*
-  * 't->id' should be the pointer to the relevant 'struct pid' having reference
-  * count.  Caller must put the returned task, unless it is NULL.
-@@ -370,71 +362,6 @@ void damon_va_update_regions(struct damon_ctx *ctx)
- 	}
- }
- 
--static void damon_ptep_mkold(pte_t *pte, struct mm_struct *mm,
--			     unsigned long addr)
--{
--	bool referenced = false;
--	struct page *page = pte_page(*pte);
--
--	if (pte_young(*pte)) {
--		referenced = true;
--		*pte = pte_mkold(*pte);
--	}
--
--#ifdef CONFIG_MMU_NOTIFIER
--	if (mmu_notifier_clear_young(mm, addr, addr + PAGE_SIZE))
--		referenced = true;
--#endif /* CONFIG_MMU_NOTIFIER */
--
--	if (referenced)
--		set_page_young(page);
--
--	set_page_idle(page);
--}
--
--static void damon_pmdp_mkold(pmd_t *pmd, struct mm_struct *mm,
--			     unsigned long addr)
--{
--#ifdef CONFIG_TRANSPARENT_HUGEPAGE
--	bool referenced = false;
--	struct page *page = pmd_page(*pmd);
--
--	if (pmd_young(*pmd)) {
--		referenced = true;
--		*pmd = pmd_mkold(*pmd);
--	}
--
--#ifdef CONFIG_MMU_NOTIFIER
--	if (mmu_notifier_clear_young(mm, addr,
--				addr + ((1UL) << HPAGE_PMD_SHIFT)))
--		referenced = true;
--#endif /* CONFIG_MMU_NOTIFIER */
--
--	if (referenced)
--		set_page_young(page);
--
--	set_page_idle(page);
--#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
--}
--
--static void damon_va_mkold(struct mm_struct *mm, unsigned long addr)
--{
--	pte_t *pte = NULL;
--	pmd_t *pmd = NULL;
--	spinlock_t *ptl;
--
--	if (follow_pte_pmd(mm, addr, NULL, &pte, &pmd, &ptl))
--		return;
--
--	if (pte) {
--		damon_ptep_mkold(pte, mm, addr);
--		pte_unmap_unlock(pte, ptl);
--	} else {
--		damon_pmdp_mkold(pmd, mm, addr);
--		spin_unlock(ptl);
--	}
--}
--
- /*
-  * Functions for the access checking of the regions
-  */
-@@ -463,37 +390,6 @@ void damon_va_prepare_access_checks(struct damon_ctx *ctx)
- 	}
- }
- 
--static bool damon_va_young(struct mm_struct *mm, unsigned long addr,
--			unsigned long *page_sz)
--{
--	pte_t *pte = NULL;
--	pmd_t *pmd = NULL;
--	spinlock_t *ptl;
--	bool young = false;
--
--	if (follow_pte_pmd(mm, addr, NULL, &pte, &pmd, &ptl))
--		return false;
--
--	*page_sz = PAGE_SIZE;
--	if (pte) {
--		young = pte_young(*pte);
--		if (!young)
--			young = !page_is_idle(pte_page(*pte));
--		pte_unmap_unlock(pte, ptl);
--		return young;
--	}
--
--#ifdef CONFIG_TRANSPARENT_HUGEPAGE
--	young = pmd_young(*pmd);
--	if (!young)
--		young = !page_is_idle(pmd_page(*pmd));
--	spin_unlock(ptl);
--	*page_sz = ((1UL) << HPAGE_PMD_SHIFT);
--#endif	/* CONFIG_TRANSPARENT_HUGEPAGE */
--
--	return young;
--}
--
- /*
-  * Check whether the region was accessed after the last preparation
-  *
++unsigned int damon_pa_check_accesses(struct damon_ctx *ctx)
++{
++	struct damon_target *t;
++	struct damon_region *r;
++	unsigned int max_nr_accesses = 0;
++
++	damon_for_each_target(t, ctx) {
++		damon_for_each_region(r, t) {
++			__damon_pa_check_access(ctx, r);
++			max_nr_accesses = max(r->nr_accesses, max_nr_accesses);
++		}
++	}
++
++	return max_nr_accesses;
++}
++
++bool damon_pa_target_valid(void *t)
++{
++	return true;
++}
++
++void damon_pa_set_primitives(struct damon_ctx *ctx)
++{
++	ctx->primitive.init_target_regions = NULL;
++	ctx->primitive.update_target_regions = NULL;
++	ctx->primitive.prepare_access_checks = damon_pa_prepare_access_checks;
++	ctx->primitive.check_accesses = damon_pa_check_accesses;
++	ctx->primitive.reset_aggregated = NULL;
++	ctx->primitive.target_valid = damon_pa_target_valid;
++	ctx->primitive.cleanup = NULL;
++	ctx->primitive.apply_scheme = NULL;
++}
 -- 
 2.17.1
 
