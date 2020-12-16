@@ -2,87 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A512DC364
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:48:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F14E2DC369
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:50:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726544AbgLPPsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 10:48:17 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:48342 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726490AbgLPPsR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 10:48:17 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BGFlXhA063332;
-        Wed, 16 Dec 2020 09:47:33 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1608133653;
-        bh=C6JSxO3a7ViYCM/ckqr/jQXBVjXS0ZvS2smJlEBUfl4=;
-        h=From:To:CC:Subject:Date;
-        b=t9NV3jQ7XDvy6SLwBxM4JlALktTr51L1hp4opRW09IWlpr+kxkIGBxXd8H0IvKNN4
-         i9NHvhgoQ1xKo98hN2rTYobX13pZeybRG32UQkN9urQGxO1rwQy0/zhtqjDeLwDOKg
-         mjcOWtJsPvSUH2NVb/VaKDw4SazybTDwvY2xTPi0=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BGFlX5C086881
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 16 Dec 2020 09:47:33 -0600
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 16
- Dec 2020 09:47:33 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 16 Dec 2020 09:47:32 -0600
-Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BGFlV58045030;
-        Wed, 16 Dec 2020 09:47:31 -0600
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-To:     <vkoul@kernel.org>
-CC:     <dan.j.williams@intel.com>, <linux-kernel@vger.kernel.org>,
-        <dmaengine@vger.kernel.org>, <vigneshr@ti.com>,
-        <grygorii.strashko@ti.com>
-Subject: [PATCH] dmaengine: ti: k3-udma: Fix pktdma rchan TPL level setup
-Date:   Wed, 16 Dec 2020 17:48:33 +0200
-Message-ID: <20201216154833.20821-1-peter.ujfalusi@ti.com>
-X-Mailer: git-send-email 2.29.2
+        id S1726490AbgLPPtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 10:49:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45048 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725812AbgLPPtm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 10:49:42 -0500
+Date:   Wed, 16 Dec 2020 12:49:14 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608133741;
+        bh=1uBKVHJd8VxnuyjpoJ4tyy/dpjzMoXI6BFG/eU1uIWg=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sKkpw6yb0sWw4IDVGdIvhvb750zynZAqhC99loh5kUDvydFcDsdBP5gTGP6exh07U
+         +Y28MDB5bO1lJCAx+0xkeShRaudDxpgc7spxLcCoLtN5AH1NqVTsybfQF2ObZv+AH3
+         Dj9ryWvdJxRDvPEETGAyinMa8DrvvcYKWh+FFqhw3PqP4Uud3U4N9ruwTf7DXwYKnI
+         o0S0w2nJ7Tmz9/FNO5stpZrA7EFPRI/goRQxrFkq8mY8LYyDCMEtHobLhxGLIw6UUG
+         Mqz5xWzBAMG1QqiJRuy/YR6obgc9wncEn6ugBvz//MH+Jn2iWfSlgZl6VHuwCQJeut
+         HzGxesNFqSsmQ==
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     mingo@kernel.org, jolsa@redhat.com, linux-kernel@vger.kernel.org,
+        namhyung@kernel.org, eranian@google.com, ak@linux.intel.com,
+        mark.rutland@arm.com, will@kernel.org, mpe@ellerman.id.au
+Subject: Re: [PATCH V2 02/12] perf record: Support new sample type for data
+ page size
+Message-ID: <20201216154914.GB297512@kernel.org>
+References: <20201130172803.2676-1-kan.liang@linux.intel.com>
+ <20201130172803.2676-3-kan.liang@linux.intel.com>
+ <20201207170759.GB129853@kernel.org>
+ <124d0414-f834-e2f0-8359-50488add60d1@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <124d0414-f834-e2f0-8359-50488add60d1@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of initializing the rchan_tpl the initial commit re-initialized
-the tchan_tpl.
+Em Mon, Dec 07, 2020 at 03:25:07PM -0500, Liang, Kan escreveu:
+> 
+> 
+> On 12/7/2020 12:07 PM, Arnaldo Carvalho de Melo wrote:
+> > Em Mon, Nov 30, 2020 at 09:27:53AM -0800, kan.liang@linux.intel.com escreveu:
+> > > From: Kan Liang <kan.liang@linux.intel.com>
+> > > 
+> > > Support new sample type PERF_SAMPLE_DATA_PAGE_SIZE for page size.
+> > > 
+> > > Add new option --data-page-size to record sample data page size.
+> > 
+> > So, trying this on a kernel without this feature I get:
+> > 
+> > [acme@five perf]$ perf record --data-page-size sleep 1
+> > Error:
+> > The sys_perf_event_open() syscall returned with 22 (Invalid argument) for event (cycles:u).
+> > /bin/dmesg | grep -i perf may provide additional information.
+> > 
+> > [acme@five perf]$
+> > 
+> > I'm adding the following patch right after yours, next time please test
+> > this and provide a similar error message.
+> > 
+> 
+> Sorry, I missed it.
+> 
+> Besides the PERF_SAMPLE_DATA_PAGE_SIZE, I think we have to fix the
+> PERF_SAMPLE_CODE_PAGE_SIZE as well.
+> Should I send a separate patch to fix it?
 
-Fixes: d2abc982333c0 ("dmaengine: ti: k3-udma: Initial support for K3 PKTDMA")
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- drivers/dma/ti/k3-udma.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+I've got back to this and what I have is out in acme/perf/core, so you can
+continue from there.
 
-diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
-index d4ab7f144c75..aa6186a1223d 100644
---- a/drivers/dma/ti/k3-udma.c
-+++ b/drivers/dma/ti/k3-udma.c
-@@ -4774,9 +4774,9 @@ static int pktdma_setup_resources(struct udma_dev *ud)
- 		ud->tchan_tpl.levels = 1;
+I had to add the patch below to fix 'perf test "Sample parsing"'.
+
+- Arnaldo
+
+commit eec7b53d59167a1063e704f86ec0aa36ff765e1a
+Author: Arnaldo Carvalho de Melo <acme@redhat.com>
+Date:   Wed Dec 16 12:45:10 2020 -0300
+
+    perf test: Make sample-parsing test aware of PERF_SAMPLE_{CODE,DATA}_PAGE_SIZE
+    
+    To fix this:
+    
+      $ perf test -v "Sample parsing".
+      27: Sample parsing                                                  :
+      --- start ---
+      test child forked, pid 586013
+      sample format has changed, some new PERF_SAMPLE_ bit was introduced - test needs updating
+      test child finished with -1
+      ---- end ----
+      Sample parsing: FAILED!
+      $
+    
+    This patchset is still not completely merged, so when adding the
+    PERF_SAMPLE_CODE_PAGE_SIZE to 'struct perf_sample' we need to add the
+    bits added in this patch for 'perf_sample.data_page_size'.
+    
+    Fixes: 251cc77b8176de37 ("tools headers UAPI: Update tools's copy of linux/perf_event.h")
+    Cc: Adrian Hunter <adrian.hunter@intel.com>
+    Cc: Ian Rogers <irogers@google.com>
+    Cc: Jiri Olsa <jolsa@kernel.org>
+    Cc: Kan Liang <kan.liang@linux.intel.com>
+    Cc: Namhyung Kim <namhyung@kernel.org>
+    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+
+diff --git a/tools/perf/tests/sample-parsing.c b/tools/perf/tests/sample-parsing.c
+index a0bdaf390ac8ea78..2393916f6128a6fb 100644
+--- a/tools/perf/tests/sample-parsing.c
++++ b/tools/perf/tests/sample-parsing.c
+@@ -154,6 +154,9 @@ static bool samples_same(const struct perf_sample *s1,
+ 	if (type & PERF_SAMPLE_CGROUP)
+ 		COMP(cgroup);
+ 
++	if (type & PERF_SAMPLE_DATA_PAGE_SIZE)
++		COMP(data_page_size);
++
+ 	if (type & PERF_SAMPLE_AUX) {
+ 		COMP(aux_sample.size);
+ 		if (memcmp(s1->aux_sample.data, s2->aux_sample.data,
+@@ -234,6 +237,7 @@ static int do_test(u64 sample_type, u64 sample_regs, u64 read_format)
+ 		},
+ 		.phys_addr	= 113,
+ 		.cgroup		= 114,
++		.data_page_size = 115,
+ 		.aux_sample	= {
+ 			.size	= sizeof(aux_data),
+ 			.data	= (void *)aux_data,
+@@ -340,7 +344,7 @@ int test__sample_parsing(struct test *test __maybe_unused, int subtest __maybe_u
+ 	 * were added.  Please actually update the test rather than just change
+ 	 * the condition below.
+ 	 */
+-	if (PERF_SAMPLE_MAX > PERF_SAMPLE_CGROUP << 1) {
++	if (PERF_SAMPLE_MAX > PERF_SAMPLE_CODE_PAGE_SIZE << 1) {
+ 		pr_debug("sample format has changed, some new PERF_SAMPLE_ bit was introduced - test needs updating\n");
+ 		return -1;
  	}
- 
--	ud->tchan_tpl.levels = ud->tchan_tpl.levels;
--	ud->tchan_tpl.start_idx[0] = ud->tchan_tpl.start_idx[0];
--	ud->tchan_tpl.start_idx[1] = ud->tchan_tpl.start_idx[1];
-+	ud->rchan_tpl.levels = ud->tchan_tpl.levels;
-+	ud->rchan_tpl.start_idx[0] = ud->tchan_tpl.start_idx[0];
-+	ud->rchan_tpl.start_idx[1] = ud->tchan_tpl.start_idx[1];
- 
- 	ud->tchan_map = devm_kmalloc_array(dev, BITS_TO_LONGS(ud->tchan_cnt),
- 					   sizeof(unsigned long), GFP_KERNEL);
--- 
-Peter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-
