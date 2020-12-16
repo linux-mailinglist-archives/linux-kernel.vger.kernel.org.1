@@ -2,70 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D60E02DBE37
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 11:06:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FDBD2DBE39
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 11:08:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726130AbgLPKG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 05:06:28 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:36972 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726016AbgLPKG2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 05:06:28 -0500
-Received: from [10.130.0.80] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Ax+cn129lfUjgBAA--.3304S3;
-        Wed, 16 Dec 2020 18:05:41 +0800 (CST)
-To:     linux-mips@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Juxin Gao <gaojuxin@loongson.cn>,
-        Archer Yan <ayan@wavecomp.com>,
-        David Daney <david.daney@cavium.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: [QUESTION] support perf record --call-graph dwarf for mips
-Message-ID: <97fb66bf-51f8-a491-9eb4-10b2314cf82f@loongson.cn>
-Date:   Wed, 16 Dec 2020 18:05:40 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S1726216AbgLPKGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 05:06:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726016AbgLPKGv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 05:06:51 -0500
+Date:   Wed, 16 Dec 2020 11:07:12 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1608113171;
+        bh=e6bhXWnqJJogoI0fJCOUs72QqeMzbdl+y1fGMDoIG+s=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=U1Lg8Xy+6EY/Q10jzZz420/6yyvgMxkp+yn1o4qsFtReokZFzZcAwPdjj7q0ghwsg
+         PeXiV0Od2uhle3mid4hX5z7s4hTsvmZoig7rIMcmGeDm5ZpNuqkfpmWTFK4np734pv
+         5HencNwrqxRi7pVxEWy4uvE/7CbUuMiJD81ln92U=
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Daejun Park <daejun7.park@samsung.com>
+Cc:     "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>
+Subject: Re: [PATCH v14 0/3] scsi: ufs: Add Host Performance Booster Support
+Message-ID: <X9ncUJH/vHO7Luqi@kroah.com>
+References: <CGME20201215082235epcms2p88c9d8fd4dc773f6a4901dab241063306@epcms2p5>
+ <20201216024444epcms2p5e69281911dd675306c473df3d2cef8b2@epcms2p5>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9Ax+cn129lfUjgBAA--.3304S3
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYT7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E
-        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
-        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8I
-        cVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87
-        Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE
-        6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJwAm72
-        CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0
-        xIA0c2IEe2xFo4CEbIxvr21lc2xSY4AK67AK6r4DMxAIw28IcxkI7VAKI48JMxC20s026x
-        CaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_
-        JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r
-        1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_
-        WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r
-        4UJbIYCTnIWIevJa73UjIFyTuYvjfU52NtDUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201216024444epcms2p5e69281911dd675306c473df3d2cef8b2@epcms2p5>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Dec 16, 2020 at 11:44:44AM +0900, Daejun Park wrote:
+> NAND flash memory-based storage devices use Flash Translation Layer (FTL)
+> to translate logical addresses of I/O requests to corresponding flash
+> memory addresses. Mobile storage devices typically have RAM with
+> constrained size, thus lack in memory to keep the whole mapping table.
+> Therefore, mapping tables are partially retrieved from NAND flash on
+> demand, causing random-read performance degradation.
+> 
+> To improve random read performance, JESD220-3 (HPB v1.0) proposes HPB
+> (Host Performance Booster) which uses host system memory as a cache for the
+> FTL mapping table. By using HPB, FTL data can be read from host memory
+> faster than from NAND flash memory. 
+> 
+> The current version only supports the DCM (device control mode).
+> This patch consists of 3 parts to support HPB feature.
+> 
+> 1) HPB probe and initialization process
+> 2) READ -> HPB READ using cached map information
+> 3) L2P (logical to physical) map management
+> 
+> In the HPB probe and init process, the device information of the UFS is
+> queried. After checking supported features, the data structure for the HPB
+> is initialized according to the device information.
+> 
+> A read I/O in the active sub-region where the map is cached is changed to
+> HPB READ by the HPB.
+> 
+> The HPB manages the L2P map using information received from the
+> device. For active sub-region, the HPB caches through ufshpb_map
+> request. For the in-active region, the HPB discards the L2P map.
+> When a write I/O occurs in an active sub-region area, associated dirty
+> bitmap checked as dirty for preventing stale read.
+> 
+> HPB is shown to have a performance improvement of 58 - 67% for random read
+> workload. [1]
+> 
+> We measured the total start-up time of popular applications and observed
+> the difference by enabling the HPB.
+> Popular applications are 12 game apps and 24 non-game apps. Each target
+> applications were launched in order. The cycle consists of running 36
+> applications in sequence. We repeated the cycle for observing performance
+> improvement by L2P mapping cache hit in HPB.
+> 
+> The Following is experiment environment:
+>  - kernel version: 4.4.0 
+>  - UFS 2.1 (64GB)
+> 
+> Result:
+> +-------+----------+----------+-------+
+> | cycle | baseline | with HPB | diff  |
+> +-------+----------+----------+-------+
+> | 1     | 272.4    | 264.9    | -7.5  |
+> | 2     | 250.4    | 248.2    | -2.2  |
+> | 3     | 226.2    | 215.6    | -10.6 |
+> | 4     | 230.6    | 214.8    | -15.8 |
+> | 5     | 232.0    | 218.1    | -13.9 |
+> | 6     | 231.9    | 212.6    | -19.3 |
+> +-------+----------+----------+-------+
 
-In the current upstream mainline kernel, perf record --call-graph dwarf
-is not supported for architecture mips64. I find the following related
-patches about this feature by David Daney <david.daney@cavium.com> and
-Archer Yan <ayan@wavecomp.com> in Sep 2019.
+I feel this was burried in the 00 email, shouldn't it go into the 01
+commit changelog so that you can see this?
 
-[1/2] Support mips unwinding and dwarf-regs
-https://lore.kernel.org/patchwork/patch/1126521/
+But why does the "cycle" matter here?
 
-[2/2] Support extracting off-line stack traces from user-space with perf
-https://lore.kernel.org/patchwork/patch/1126520/
+Can you run a normal benchmark, like fio, on here so we can get some
+numbers we know how to compare to other systems with, and possible
+reproduct it ourselves?  I'm sure fio will easily show random read
+performance increases, right?
 
-Is this a work in progress?
-Could you please give me some feedback?
-Thank you for your help.
+thanks,
 
-Thanks,
-Tiezhu
-
+greg k-h
