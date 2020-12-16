@@ -2,98 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A04392DC154
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:33:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C0A2DC156
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:33:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726187AbgLPNbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 08:31:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726028AbgLPNbs (ORCPT
+        id S1726227AbgLPNc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 08:32:26 -0500
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:38303 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726209AbgLPNc0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 08:31:48 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92742C061794;
-        Wed, 16 Dec 2020 05:31:07 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id b73so24773966edf.13;
-        Wed, 16 Dec 2020 05:31:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=d+w8p1hzrw/ls07i5nfaa8a3bNY5NFoTiVu/ZKJ+PtA=;
-        b=nQ95Txz7ziGayxFVNJEhc1V2iOc1O3J/EYnFTs+bUbQeHTQzPm4ziqFsKlpeju95+U
-         99tMR4wq2AsiV1WTOqdsRnKNsL6GZl/y9W7ZVc4pVSiOx2RJnDkapS1g5vnci48XAaR1
-         GWWnSSd1i6LFymrJSCrfLzmvjBvgbF/XZfK4H1Uon11n3ZUEx9i+/pREF7B7+APzk7VL
-         C+5ECm5NYv17JK3k4VXpRgwZO91fRNRBu9VLC4vxMcQlXjeRIIgBWEEm6mQpS1ZN74nO
-         akeUSXmRTEq6H9AOXXatsHwPfCp3k13GpHzl8iOCaUtBlAbH/0mMdcJTkFUyiIbmY88f
-         fPJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=d+w8p1hzrw/ls07i5nfaa8a3bNY5NFoTiVu/ZKJ+PtA=;
-        b=ksG8rl4Lyx8o2WClEHe7V6A2aOpSNsrZiML6IdJw+Pg9hCszlDqqssn6n9QshPZCZB
-         khWk03G/OMfJpWWjYrjHxkSjL3IBGDXS7uIc3YVId/2lhwyyrJel0yO29nICRPwvkJCp
-         6TJuHXsjmRDKqc8Y12ijvOHpjEWXH6A4B7lup25PRnu37jGJ0Q9/HXXofvgFkDJ8x9e8
-         /7gtDC24eenjQPisp3kBSvoLvzl4PvUTacl2IScsytDjXhfPUqyNGUIHGgN1yoodW9gy
-         2KM55DtXjUBuj1He5KAEKdujLS3mAWGops/uWqA5myPCQZ1k5a21F1MK7Nl/wuMUV/As
-         9eNg==
-X-Gm-Message-State: AOAM533Ma67kp3JMpeImpvsLh4FyStyVb0Suv+0sS2k2oCoK4QzQ6BVJ
-        UVtXs661/AeEmuNt4rbMGdFUoX1yuBYe2A==
-X-Google-Smtp-Source: ABdhPJwk2MeyR+kZNhWlaHUVyaOmxIxb9tzpi3eF28ZsPJ6qdmvsioYvqf/okh+sZhL4+et3QHAl3Q==
-X-Received: by 2002:a50:ed04:: with SMTP id j4mr6873304eds.84.1608125466334;
-        Wed, 16 Dec 2020 05:31:06 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
-        by smtp.googlemail.com with ESMTPSA id l14sm21088598edq.35.2020.12.16.05.31.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 16 Dec 2020 05:31:05 -0800 (PST)
-Message-ID: <7f91342a001ef00f3b311952515dfb17747b7148.camel@gmail.com>
-Subject: Re: [PATCH v4 1/3] scsi: ufs: Protect some contexts from unexpected
- clock scaling
-From:   Bean Huo <huobean@gmail.com>
-To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Wed, 16 Dec 2020 14:31:04 +0100
-In-Reply-To: <1607877104-8916-2-git-send-email-cang@codeaurora.org>
-References: <1607877104-8916-1-git-send-email-cang@codeaurora.org>
-         <1607877104-8916-2-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Wed, 16 Dec 2020 08:32:26 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 41B975C01E2;
+        Wed, 16 Dec 2020 08:31:20 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Wed, 16 Dec 2020 08:31:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=ekw93FdzSF2s1qfpjDiIGy8uby/
+        sFvzW7j4sAmUJEYg=; b=Ga47zo+YQa1qZPG8PcSk4OKj2uv11rbhvRrhCs6aZc8
+        btZnQrqgcv501KY4XM4WCohWADU3L30a53ycsoszxtb3lYF/+VOuZWDX5JE7IJFx
+        RBsIeTEHqKBkLtJKBuRWf3QD9g/ONPXFZrTt1NHTpiacKKUooCs+Hou8jIHGFBuH
+        JOPOW6cjs6Vunh88tDF68Jmr5e9OPCGdQPD6yM4okaaCbNyKHUcnMUDQqhmWrMdL
+        Npq5x1HUZcZjG/KVR4MzV+RbZRiKqlkJJOETDF4HZuAEf3TpVTZhXsgF3SipvU4C
+        bNnsZ604jsOG6tjeh721DznfdE6VKBoQm1YYjelHm2w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=ekw93F
+        dzSF2s1qfpjDiIGy8uby/sFvzW7j4sAmUJEYg=; b=iGsa9pS0Pf5l3k3dQzdS0E
+        bLUrNUiL4G/00dGunmDiK598PbP/9k4ZDGXoWWjOwEIMzTl0IkIsrBeyfFpbmrM9
+        uovWrWDzDs/TC7OL3dxUFtxiNlIrfKyac3I1b3yzkTrfF+y5KgmggX8T55Z32Vpj
+        CZiw9mauc0IK1pFOQi2qTaShUJrPv5Y/vvLtjjluiuse0zqg+HPIi5f5DGZtZzrD
+        hugC8Gt3D6iZdDyX3H/FKg89W+zSrqsqhn88Wor9UGfzzA+bQyky+Heaug0xp4q7
+        MBfu24dZkSkHdXIqH7EPWmrQqfL+4fm6CYB/I30RCr8o+VWahbf7SI4Tjq/569QA
+        ==
+X-ME-Sender: <xms:JwzaX2NTZpZRaaQ8SnQc0-XLbCqLU03r-SY-XF6o1Ion-dXmbZ1iHw>
+    <xme:JwzaX0-Ptvl2iqBTeDJ25tIck1vM6nZ9EJ4e1d6t6Ts6BSf86EJJCoZBu6rkcbRt5
+    Q40uZ3pWdOw58P4m9M>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudelvddgheehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:JwzaX9RWsO1V2NDM5sknuj-yP-XRLUV7IYipg9EEAu5rCI1h6kPS0g>
+    <xmx:JwzaX2vcasqlrKYW-_TMy0bfm5agKwUVZE2znraXeU-GGcMvilhC7A>
+    <xmx:JwzaX-e_b2oj0dT_clGstvC-ON48IUpSV43WvAI0sDAxodk3jL8s7g>
+    <xmx:KAzaX95Nr_sjuxfbosuY4_WPEPTOSFF4OrvP3aa66c5V8URmkhfxoA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 1FA7224005B;
+        Wed, 16 Dec 2020 08:31:19 -0500 (EST)
+Date:   Wed, 16 Dec 2020 14:31:17 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     mchehab@kernel.org, wens@csie.org, jernej.skrabec@siol.net,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] media/platform/sunxi: convert comma to semicolon
+Message-ID: <20201216133117.7cvw76coipjl7c2a@gilmour>
+References: <20201216132212.15152-1-zhengyongjun3@huawei.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="xet5grrlfq2wrz4o"
+Content-Disposition: inline
+In-Reply-To: <20201216132212.15152-1-zhengyongjun3@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-12-13 at 08:31 -0800, Can Guo wrote:
-> In contexts like suspend, shutdown and error handling, we need to
-> suspend
-> devfreq to make sure these contexts won't be disturbed by clock
-> scaling.
-> However, suspending devfreq is not enough since users can still
-> trigger a
-> clock scaling by manipulating the sysfs node clkscale_enable and
-> devfreq
-> sysfs nodes like min/max_freq and governor. Add one more flag in
-> struct
-> clk_scaling such that these contexts can prevent clock scaling from
-> being
-> invoked through above sysfs nodes.
-> 
-> Signed-off-by: Can Guo <cang@codeaurora.org>
-looks good to me.
 
-Reviewed-by: Bean Huo <beanhuo@micron.com>
+--xet5grrlfq2wrz4o
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Dec 16, 2020 at 09:22:12PM +0800, Zheng Yongjun wrote:
+> Replace a comma between expression statements by a semicolon.
+>=20
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+
+Acked-by: Maxime Ripard <mripard@kernel.org>
+
+Thanks!
+Maxime
+
+--xet5grrlfq2wrz4o
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX9oMJQAKCRDj7w1vZxhR
+xZycAQCfzzrMzr6V5ubsNMXHINmKWKtrt5+9IFPw07P1JeHEMgEAjh+xRQkE2Nn5
+IFqsYL7IbW8Ws3FTVmvdIYRv117YGQE=
+=iFpT
+-----END PGP SIGNATURE-----
+
+--xet5grrlfq2wrz4o--
