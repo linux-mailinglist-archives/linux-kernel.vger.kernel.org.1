@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E58E02DC96E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 00:12:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D48F2DC96F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 00:12:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728537AbgLPXLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 18:11:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56398 "EHLO mail.kernel.org"
+        id S1728699AbgLPXLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 18:11:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56422 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727896AbgLPXLc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 18:11:32 -0500
-Subject: Re: [GIT PULL] Backlight for v5.11
+        id S1728529AbgLPXLd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 18:11:33 -0500
+Subject: Re: [GIT PULL] LEDs changes for v5.11-rc1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608160252;
-        bh=6CckuZx2mu4pWgTwasf5JzchTW6QGXz+Nt8y1gurH2c=;
+        s=k20201202; t=1608160253;
+        bh=atO6XRT3h09vgDVfNPOGFhIdV4mbhGmhbDSF+zCvlaw=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=rCDGZuduCbrJ3yZHW3UScJcNHUSF2Yv97d5UGMRGwDW8+LkQDMdkK9cvXeQ7dYRxD
-         u/pYZNDhLU0qAGw/nzwkA4qiMV0gJLbJZGGG3tSpF9nztddMMB6Oh3kQByGPmU0KI+
-         ULbcdZIa5DiO/+oWkh2Z9TSdgrAEyOOgZl8dDjRAwViCg6UwpTPcqngAh9qk/oyLPk
-         C91qy9oc7F5nRNO8S24W1KVg2xYu5PKJ2YZcBrtukNjM8cdTn5W/gUTUGuUTIAF94M
-         UceyREMnHjmG4oXqKXaHvt9G41zBK+xEguIcx9WSPPnbYJ6Hqpf09j0uGsSSOJ3zz3
-         o3dm8uHpF7JkA==
+        b=mBFJtb/eez46OcznP7mypXvmwntO4MKzUtw7rbE4YlfuNg0Lc0qEaLqwm9+imoNkx
+         lXdBnD8Pc4B6v4omoyUYjYXaoLLgZw9F5LAVtFjipjmvlWoo+7ijsk5epmHTRuwp9o
+         HUpukw8IQXskmBnKAkOnK84BDV+7XiDKgG2BoJOBex+qvR6F+lE8SbRR1PVt3qwnOd
+         OBp9h8qNNyltz3spgbwjYSSq7JxgV3iZNjOu6Oct8B0F86Sime6ogMDEUMFaaOWwhl
+         WATirM5mjeC/fr0DqWKH0gIjMEf0F5sTd/2uGzNCakKc5gDdh+df/K+53aFGjw7EM4
+         ylOnpFNE1rDwA==
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201216074908.GD4776@dell>
-References: <20201216074908.GD4776@dell>
+In-Reply-To: <20201216154155.GA10814@duo.ucw.cz>
+References: <20201216154155.GA10814@duo.ucw.cz>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201216074908.GD4776@dell>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/lee/backlight.git backlight-next-5.11
-X-PR-Tracked-Commit-Id: 789eb04b6c569e3e5007afd040bef5d7216d2f3a
+X-PR-Tracked-Message-Id: <20201216154155.GA10814@duo.ucw.cz>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git/ tags/leds-5.11-rc1
+X-PR-Tracked-Commit-Id: 98650b0874171cc443251f7b369d3b1544db9d4e
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 84e010ec8f8668c579b78a27b0e81a49ac6c837a
-Message-Id: <160816025230.24445.10876264573086428170.pr-tracker-bot@kernel.org>
-Date:   Wed, 16 Dec 2020 23:10:52 +0000
-To:     Lee Jones <lee.jones@linaro.org>
+X-PR-Merge-Commit-Id: 945433be3677955255fabecbf1076c17864ff9da
+Message-Id: <160816025307.24445.2437579460406974044.pr-tracker-bot@kernel.org>
+Date:   Wed, 16 Dec 2020 23:10:53 +0000
+To:     Pavel Machek <pavel@ucw.cz>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>
+        kernel list <linux-kernel@vger.kernel.org>,
+        jacek.anaszewski@gmail.com, linux-leds@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 16 Dec 2020 07:49:08 +0000:
+The pull request you sent on Wed, 16 Dec 2020 16:41:55 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/lee/backlight.git backlight-next-5.11
+> git://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git/ tags/leds-5.11-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/84e010ec8f8668c579b78a27b0e81a49ac6c837a
+https://git.kernel.org/torvalds/c/945433be3677955255fabecbf1076c17864ff9da
 
 Thank you!
 
