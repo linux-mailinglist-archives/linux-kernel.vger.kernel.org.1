@@ -2,116 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AB152DC2D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:12:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48FB42DC2DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:13:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726266AbgLPPLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 10:11:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34106 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726162AbgLPPLu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 10:11:50 -0500
-X-Gm-Message-State: AOAM5335Yn7BBxuAdGP5ljlcsdO8QrCdM2b0/TqqwbHYPD8t2h+GaUZb
-        SNBMF15s/EnakevHp/vXCdpfzaWaLC2XP8CMwg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608131469;
-        bh=qJnz4jINEHnwylSMSs8ygzcSuobmntS82hFNu7/S1oQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=lRAsTNDWesqlzQ3DfHEKOK3sUEih3R8sZvgqKu7FOxscR2Jx2o64DlAWsbq5aOfPs
-         L/+MntDsLzLCCDpILOstBBLRMb061S5uGGRj1DM4HAXGtO2W8YYjN43oWvKR77qeSg
-         MNsoGkyZOHXa+SJtpvYX2kJAqkdZh+G6x7z/V/PZaGr/U5pDDY/6s8Vzq52gVAv8Op
-         NSiBaxK3AQKLvK5wc6xNwdNWW5tDbPLKIxvHwb1WwEvNUPv4Wm5bU609c4aYdqnJ5A
-         6lYHM1a2YCCahcw8rHFeKVsYCj75XkJSHfpaJTy+R5RO+Z/sY/Rwc/1xIbUMzWQTOK
-         O4UFAPVEjkZvg==
-X-Google-Smtp-Source: ABdhPJwS/YraW4qyb0Dm3f675N42jAY1oC2Y8j8EzHOplVWPvcJ8f3cI6/ZgJvdjQ83rFs2emQdjBQ/MA4j9o6AQcBc=
-X-Received: by 2002:a7b:cf30:: with SMTP id m16mr3796965wmg.145.1608131467393;
- Wed, 16 Dec 2020 07:11:07 -0800 (PST)
+        id S1726274AbgLPPMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 10:12:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725896AbgLPPMw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 10:12:52 -0500
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EEE6C061794;
+        Wed, 16 Dec 2020 07:12:12 -0800 (PST)
+Received: by mail-qk1-x72e.google.com with SMTP id i67so15233319qkf.11;
+        Wed, 16 Dec 2020 07:12:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=e8UBHhFg+dlyjUuWALZhGhLIm76hEru3ETvVso2v0Xo=;
+        b=pUc3eRmZd45iQpeNK/64AmkrzUhbIBAM7pKzZyYLjQeKyB92dntNljnfvCDG7UOutC
+         m/WplD/grRAc7RqIf6063SJhpGRrhLVYsa9EmZMmHYKsibbOpNo+pejGfsc60bR5sK3u
+         JIiiMJnAt/e0LnjeULzz4tUefO9MJl5Uu91PouXkDceaxnRZvddl2dX1yMBiPDJWMG5B
+         PDW6Zg21tN16gCA2MkTzQgcFZKUV4Tx+84qwNpxl1l8c52lXa52B3/snRWQwGIpQaZPy
+         2uyKK9OID73/SM8cyaK+p6T52VS1GXnZf8lAoAUK+vqxq9+awrc6NDtSziLwoUTrHPwg
+         Swlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=e8UBHhFg+dlyjUuWALZhGhLIm76hEru3ETvVso2v0Xo=;
+        b=UxDzIxJiQzmXCj9AuA8mQMhm6tV4OJTCC/U33kT05S26XQZBk75g05XrPxqAFjWBCT
+         TV50CVvPteFl1CtVHbuBjyKPi86i30ePKBHV61QXeTeplRyVW5tR2YJ4Kz0HjxjMAEPM
+         1xLihIcbhPgmCVlX8c83kaEMxnP6fjx63UL7XW0TkMyPKrrPvLd0IQGQmfYXdqMRYFGf
+         NuR5700XBYDFuXMFZEEaN3zujXzqcb3gHtqieIdLs+I2gJTHcHYwHVOYKSx4RDyMMqhL
+         7UiZKhWEbKnP8np+b5rkqu81xRxZJsypdSsTRsSu+8XtIopWFSRogF5RR2xig/7q99An
+         TLIA==
+X-Gm-Message-State: AOAM532K8mehH6mWtmugF8sHqI6NcO4Bw3T1hHDnLONpWC4Zg0CqEpLI
+        dORXySV00+8vSBQLfxD+/TA=
+X-Google-Smtp-Source: ABdhPJx2/ZfJDb661nknanAm+DlY7sFbTIbgs412PIO0Y3vFbW3msA4JbTx1zcL0vP4tXf8Lha4ubg==
+X-Received: by 2002:a37:a8a:: with SMTP id 132mr44425530qkk.327.1608131531351;
+        Wed, 16 Dec 2020 07:12:11 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:cbde])
+        by smtp.gmail.com with ESMTPSA id u4sm1069961qtv.49.2020.12.16.07.12.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Dec 2020 07:12:10 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 16 Dec 2020 10:11:36 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Qinglang Miao <miaoqinglang@huawei.com>
+Cc:     Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] cgroup: Fix memory leak when parsing multiple source
+ parameters
+Message-ID: <X9ojqIbV/SxSrNy7@mtj.duckdns.org>
+References: <20201209121322.77665-1-miaoqinglang@huawei.com>
+ <20201210012943.92845-1-miaoqinglang@huawei.com>
 MIME-Version: 1.0
-References: <1607746317-4696-1-git-send-email-yongqiang.niu@mediatek.com> <1607746317-4696-11-git-send-email-yongqiang.niu@mediatek.com>
-In-Reply-To: <1607746317-4696-11-git-send-email-yongqiang.niu@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Wed, 16 Dec 2020 23:10:53 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_9JNdL-huHYKq=W5gRMUHVRWeUzDunNa7q_d7DPp4P2pg@mail.gmail.com>
-Message-ID: <CAAOTY_9JNdL-huHYKq=W5gRMUHVRWeUzDunNa7q_d7DPp4P2pg@mail.gmail.com>
-Subject: Re: [PATCH v2, 10/17] drm/mediatek: fix aal size config
-To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
-Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        DTML <devicetree@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201210012943.92845-1-miaoqinglang@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Yongqiang:
+On Thu, Dec 10, 2020 at 09:29:43AM +0800, Qinglang Miao wrote:
+> A memory leak is found in cgroup1_parse_param() when multiple source
+> parameters overwrite fc->source in the fs_context struct without free.
+> 
+> unreferenced object 0xffff888100d930e0 (size 16):
+>   comm "mount", pid 520, jiffies 4303326831 (age 152.783s)
+>   hex dump (first 16 bytes):
+>     74 65 73 74 6c 65 61 6b 00 00 00 00 00 00 00 00  testleak........
+>   backtrace:
+>     [<000000003e5023ec>] kmemdup_nul+0x2d/0xa0
+>     [<00000000377dbdaa>] vfs_parse_fs_string+0xc0/0x150
+>     [<00000000cb2b4882>] generic_parse_monolithic+0x15a/0x1d0
+>     [<000000000f750198>] path_mount+0xee1/0x1820
+>     [<0000000004756de2>] do_mount+0xea/0x100
+>     [<0000000094cafb0a>] __x64_sys_mount+0x14b/0x1f0
+> 
+> Fix this bug by permitting a single source parameter and rejecting with
+> an error all subsequent ones.
+> 
+> Fixes: 8d2451f4994f ("cgroup1: switch to option-by-option parsing")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 
-Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2020=E5=B9=B412=E6=9C=
-=8812=E6=97=A5 =E9=80=B1=E5=85=AD =E4=B8=8B=E5=8D=8812:22=E5=AF=AB=E9=81=93=
-=EF=BC=9A
->
-> fix aal size config
->
-> Fixes: 0664d1392c26 (drm/mediatek: Add AAL engine basic function)
-> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-> ---
->  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/dr=
-m/mediatek/mtk_drm_ddp_comp.c
-> index be61d11..e7d481e0 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> @@ -33,8 +33,13 @@
->  #define DISP_REG_UFO_START                     0x0000
->
->  #define DISP_AAL_EN                            0x0000
-> +#define DISP_AAL_CFG                           0x0020
-> +#define AAL_RELAY_MODE                                 BIT(0)
-> +#define AAL_ENGINE_EN                                  BIT(1)
->  #define DISP_AAL_SIZE                          0x0030
->
-> +#define DISP_AAL_OUTPUT_SIZE                   0x04d8
-> +
->  #define DISP_CCORR_EN                          0x0000
->  #define CCORR_EN                               BIT(0)
->  #define DISP_CCORR_CFG                         0x0020
-> @@ -184,7 +189,11 @@ static void mtk_aal_config(struct mtk_ddp_comp *comp=
-, unsigned int w,
->                            unsigned int h, unsigned int vrefresh,
->                            unsigned int bpc, struct cmdq_pkt *cmdq_pkt)
->  {
-> -       mtk_ddp_write(cmdq_pkt, h << 16 | w, comp, DISP_AAL_SIZE);
-> +       mtk_ddp_write(cmdq_pkt, w << 16 | h, comp, DISP_AAL_SIZE);
-> +       mtk_ddp_write(cmdq_pkt, w << 16 | h, comp, DISP_AAL_OUTPUT_SIZE);
-> +
-> +       mtk_ddp_write_mask(NULL, AAL_RELAY_MODE, comp, DISP_AAL_CFG,
+Applied to cgroup/for-5.11.
 
-cmdq_pkt
+Thanks.
 
-> +                          AAL_RELAY_MODE | AAL_ENGINE_EN);
-
-This patch is to fix size config, so move this statement to another patch.
-
-Regards,
-Chun-Kuang.
-
->  }
->
->  static void mtk_aal_start(struct mtk_ddp_comp *comp)
-> --
-> 1.8.1.1.dirty
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+-- 
+tejun
