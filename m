@@ -2,112 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27C762DB85C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 02:19:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 790042DB85F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 02:19:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726074AbgLPBSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 20:18:37 -0500
-Received: from out01.mta.xmission.com ([166.70.13.231]:42548 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725815AbgLPBSg (ORCPT
+        id S1725837AbgLPBSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 20:18:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725815AbgLPBSi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 20:18:36 -0500
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kpLRw-00GrHg-Qm; Tue, 15 Dec 2020 18:17:52 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kpLRv-0000rD-Rq; Tue, 15 Dec 2020 18:17:52 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Date:   Tue, 15 Dec 2020 19:17:06 -0600
-Message-ID: <874kkm8s8d.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 15 Dec 2020 20:18:38 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E867C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 17:17:58 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id c12so15966120pgm.4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 17:17:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=9gQ8rHC/bTzmKtSLzhN4/DmZNBfAaJGJNaoibLypAoU=;
+        b=QigsSQbqE1PF4dZencpayPsN4OS7GNSPnGpcxyjJu5ahVdqBsHr/nGm9/ycJrCe8KS
+         4Lc6KM/1wh4Pj1qHZNoTyXOrda5O2PxK7A9kA0vNivJN1Lv7FDUK+A7K3S4vLXCIwpsH
+         Dqz8vGAqHWQq63qNvzh9IKKg7QJZ1DabNG9+E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=9gQ8rHC/bTzmKtSLzhN4/DmZNBfAaJGJNaoibLypAoU=;
+        b=Nrvx5I3UF+u1yaKC0ftqTwuqesE1IezzA1tFYKIHJTsLaE4ptVLyONoMiCOzrwPjGu
+         Bf3Z+4pEZTVmPnu05AVgg6hhFopRAHg4D/c4ekSXp6pKb71hhGngErQ8HCCjBxXWcvzM
+         QzsOPEFk38bpaXF9Bucq0InkpxTkoKbWOUjE2kdZg0EI3qH7aczxrY3hSWxVDjltLW0m
+         Fz+oF2YoAYllrbCPu0gdk1wx7Z5C++koRcQsq+18QjNvaYBYAw4JVGxfP/qaRgbEVMkz
+         i+OkU7grB/5U5yzj1r1tVZhQaCTgZLn4P3Wz4D93PFEfVcv+ddZatnV3QEOlpkJR2gDS
+         BDiA==
+X-Gm-Message-State: AOAM5323yIe9qVCCF0VQMpJzYgSaKTJmiUR5DwlkbhklAFn8Ge5oaqfr
+        Uq9XCZkkQ/7WUZZHDP5eW3himQ==
+X-Google-Smtp-Source: ABdhPJz/U+WbLMkQJ+D+MaXIlkWgTHNA6zgW9tPyw+ooD0QD3gl7bc/jZrZEHmL84jLP/mHEYHvCqw==
+X-Received: by 2002:a05:6a00:a91:b029:19d:9421:847 with SMTP id b17-20020a056a000a91b029019d94210847mr21362633pfl.72.1608081477348;
+        Tue, 15 Dec 2020 17:17:57 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id er23sm118141pjb.12.2020.12.15.17.17.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Dec 2020 17:17:56 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1kpLRv-0000rD-Rq;;;mid=<874kkm8s8d.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+XzvTS2z4UYMtPKAdnvA4HmL32/JfDSRM=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa04.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.8 required=8.0 tests=ALL_TRUSTED,BAYES_20,
-        DCC_CHECK_NEGATIVE,TR_XM_SB_Phish,T_TooManySym_01,XMSubMetaSxObfu_03,
-        XMSubMetaSx_00,XMSubPhish11 autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 BAYES_20 BODY: Bayes spam probability is 5 to 20%
-        *      [score: 0.1138]
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa04 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
-        *  1.0 XMSubMetaSx_00 1+ Sexy Words
-        *  1.5 XMSubPhish11 Phishy Language Subject
-        *  0.0 TR_XM_SB_Phish Phishing flag in subject of message
-X-Spam-DCC: XMission; sa04 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Linus Torvalds <torvalds@linux-foundation.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 388 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 12 (3.1%), b_tie_ro: 11 (2.7%), parse: 1.00
-        (0.3%), extract_message_metadata: 4.0 (1.0%), get_uri_detail_list:
-        1.61 (0.4%), tests_pri_-1000: 4.4 (1.1%), tests_pri_-950: 1.49 (0.4%),
-        tests_pri_-900: 1.16 (0.3%), tests_pri_-90: 110 (28.4%), check_bayes:
-        108 (27.8%), b_tokenize: 6 (1.6%), b_tok_get_all: 6 (1.6%),
-        b_comp_prob: 2.1 (0.5%), b_tok_touch_all: 90 (23.2%), b_finish: 1.06
-        (0.3%), tests_pri_0: 216 (55.6%), check_dkim_signature: 1.28 (0.3%),
-        check_dkim_adsp: 4.4 (1.1%), poll_dns_idle: 0.43 (0.1%), tests_pri_10:
-        4.4 (1.1%), tests_pri_500: 23 (6.0%), rewrite_mail: 0.00 (0.0%)
-Subject: [GIT PULL] exec-update-lock for v5.11
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAD=FV=XSrqzDFHGpW3b_Sx+bA8u8MMGqdfMJnXkKhkWL6H952A@mail.gmail.com>
+References: <20201214162937.1.I99ee04f0cb823415df59bd4f550d6ff5756e43d6@changeid> <20201214162937.2.Ibade998ed587e070388b4bf58801f1107a40eb53@changeid> <160800104145.1580929.10562113130948868794@swboyd.mtv.corp.google.com> <CAD=FV=UT0+BKrUPbATGCbO1fmwwmrKbSy5c+mW-61wS1y6TtJw@mail.gmail.com> <160807113302.1580929.9178584426202538854@swboyd.mtv.corp.google.com> <CAD=FV=XSrqzDFHGpW3b_Sx+bA8u8MMGqdfMJnXkKhkWL6H952A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] spi: spi-geni-qcom: Really ensure the previous xfer is done before new one
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Mark Brown <broonie@kernel.org>, msavaliy@qti.qualcomm.com,
+        Akash Asthana <akashast@codeaurora.org>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Alok Chauhan <alokc@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>
+To:     Doug Anderson <dianders@chromium.org>
+Date:   Tue, 15 Dec 2020 17:17:55 -0800
+Message-ID: <160808147515.1580929.1688687061880694586@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Quoting Doug Anderson (2020-12-15 15:34:59)
+> On Tue, Dec 15, 2020 at 2:25 PM Stephen Boyd <swboyd@chromium.org> wrote:
+> >
+> > Quoting Doug Anderson (2020-12-15 09:25:51)
+> > > In general when we're starting a new transfer we assume that we can
+> > > program the hardware willy-nilly.  If there's some chance something
+> > > else is happening (or our interrupt could go off) then it breaks that
+> > > whole model.
+> >
+> > Right. I thought this patch was making sure that the hardware wasn't in
+> > the process of doing something else when we setup the transfer. I'm
+> > saying that only checking the irq misses the fact that maybe the
+> > transfer hasn't completed yet or a pending irq hasn't come in yet, but
+> > the fifo status would tell us that the fifo is transferring something or
+> > receiving something. If an RX can't happen, then the code should clearly
+> > show that an RX irq isn't expected, and mask out that bit so it is
+> > ignored or explicitly check for it and call WARN_ON() if the bit is set.
+> >
+> > I'm wondering why we don't check the FIFO status and the irq bits to
+> > make sure that some previous cancelled operation isn't still pending
+> > either in the FIFO or as an irq. While this patch will fix the scenario
+> > where the irq is delayed but pending in the hardware it won't cover the
+> > case that the hardware itself is wedged, for example because the
+> > sequencer just decided to stop working entirely.
+>=20
+> It also won't catch the case where the SoC decided that all GPIOs are
+> inverted and starts reporting highs for lows and lows for highs, nor
+> does it handle the case where the CPU suddenly switches to Big Endian
+> mode for no reason.  :-P
+>=20
+> ...by that, I mean I'm not trying to catch the case where the hardware
+> itself is behaving in a totally unexpected way.  I have seen no
+> instances where the hardware wedges nor where the sequencer stops
+> working and until I see them happen I'm not inclined to add code for
+> them.  Without seeing them actually happen I'm not really sure what
+> the right way to recover would be.  We've already tried "cancel" and
+> "abort" and then waited at least 1 second.  If you know of some sort
+> of magic "unwedge" then we should add it into handle_fifo_timeout().
 
-Linus,
+I am not aware of an "unwedge" command. Presumably the cancel/abort
+stuff makes the FIFO state "sane" so there's nothing to see in the FIFO
+status registers. I wonder if we should keep around some "did we cancel
+last time?" flag and only check the isr if we canceled out and timed
+out to boot? That would be a cheap and easy check to make sure that we
+don't check this each transaction.
 
-Please pull the exec-update-lock-for-v5.11 branch from the git tree:
+>=20
+> However, super delayed interrupts due to software not servicing the
+> interrupt in time is something that really happens, if rarely.  Adding
+> code to account for that seems worth it and is easy to test...
+>=20
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git exec-update-lock-for-v5.11
-
-   HEAD: f7cfd871ae0c5008d94b6f66834e7845caa93c15 exec: Transform exec_update_mutex into a rw_semaphore   
-
-These changes are on top of:
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/rwsem
-
-and have a slight conflict with 78af4dc949da ("perf: Break deadlock
-involving exec_update_mutex") which moves where the lock is taken
-in perf_event_open.
-
-The key point of this is to transform exec_update_mutex into a
-rw_semaphore so readers can be separated from writers.  This makes it
-easier to understand what the holders of the lock are doing, and makes
-it harder to contend or deadlock on the lock.  The real deadlock fix
-wound up in perf_event_open.
-
-Eric W. Biederman (3):
-      rwsem: Implement down_read_killable_nested
-      rwsem: Implement down_read_interruptible
-      exec: Transform exec_update_mutex into a rw_semaphore
-
- fs/exec.c                    | 12 ++++++------
- fs/proc/base.c               | 10 +++++-----
- include/linux/rwsem.h        |  3 +++
- include/linux/sched/signal.h | 11 ++++++-----
- init/init_task.c             |  2 +-
- kernel/events/core.c         | 12 ++++++------
- kernel/fork.c                |  6 +++---
- kernel/kcmp.c                | 30 +++++++++++++++---------------
- kernel/locking/rwsem.c       | 40 ++++++++++++++++++++++++++++++++++++++++
- kernel/pid.c                 |  4 ++--
- 10 files changed, 87 insertions(+), 43 deletions(-)
-
-Eric
+Agreed. The function name is wrong then as the device is not "busy". So
+maybe spi_geni_isr_pending()? That would clearly describe what's being
+checked.
