@@ -2,66 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E944B2DC112
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:21:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 769AE2DC11C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:21:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726351AbgLPNUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 08:20:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37994 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725825AbgLPNUY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 08:20:24 -0500
-Date:   Wed, 16 Dec 2020 14:20:44 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1608124783;
-        bh=D3eLwlDXOdShqlBUzATTq6VzotPEnEQLnnlHUjpS0z0=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q9YmKR9x/pE7uzjjHPMDP4PkI2ksfgKoJorWLqxT0xtcrfm2qLpqsQiRp8sprjBxh
-         jVYZAhXfAkJ96d9FfkvNdJwyTx8yMqO/sE5eJw7qRXwR/2lNovbCVZnrLL6ObjRSQs
-         P9i/DoawNb1ckOqc0XDpF+xx8GwQ5/f+GuNmhixw=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 5.9 000/105] 5.9.15-rc1 review
-Message-ID: <X9oJrEnq46raimPh@kroah.com>
-References: <20201214172555.280929671@linuxfoundation.org>
- <f70996b9-9c9d-6a6d-2468-b00443d83905@linuxfoundation.org>
+        id S1726320AbgLPNVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 08:21:09 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:9895 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725825AbgLPNVI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 08:21:08 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Cwwhg0fgHz7DyD;
+        Wed, 16 Dec 2020 21:19:47 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 16 Dec 2020 21:20:17 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <crope@iki.fi>, <mchehab@kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH -next] media: dvb-frontends: convert comma to semicolon
+Date:   Wed, 16 Dec 2020 21:20:47 +0800
+Message-ID: <20201216132047.15044-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f70996b9-9c9d-6a6d-2468-b00443d83905@linuxfoundation.org>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 04:53:20PM -0700, Shuah Khan wrote:
-> On 12/14/20 10:27 AM, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.9.15 release.
-> > There are 105 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Wed, 16 Dec 2020 17:25:32 +0000.
-> > Anything received after that time might be too late.
-> > 
-> > The whole patch series can be found in one patch at:
-> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.9.15-rc1.gz
-> > or in the git tree and branch at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.9.y
-> > and the diffstat can be found below.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> > 
-> 
-> Compiled and booted on my test system. No dmesg regressions.
-> 
-> Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+Replace a comma between expression statements by a semicolon.
 
-Thanks for testing and letting me know.
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ drivers/media/dvb-frontends/m88ds3103.c |  2 +-
+ drivers/media/dvb-frontends/rtl2832.c   | 14 +++++++-------
+ drivers/media/dvb-frontends/ts2020.c    | 10 +++++-----
+ 3 files changed, 13 insertions(+), 13 deletions(-)
 
-gre gk-h
+diff --git a/drivers/media/dvb-frontends/m88ds3103.c b/drivers/media/dvb-frontends/m88ds3103.c
+index ad6d9d564a87..bde0ea64a89b 100644
+--- a/drivers/media/dvb-frontends/m88ds3103.c
++++ b/drivers/media/dvb-frontends/m88ds3103.c
+@@ -1795,7 +1795,7 @@ static int m88ds3103_probe(struct i2c_client *client,
+ 	/* create regmap */
+ 	dev->regmap_config.reg_bits = 8,
+ 	dev->regmap_config.val_bits = 8,
+-	dev->regmap_config.lock_arg = dev,
++	dev->regmap_config.lock_arg = dev;
+ 	dev->regmap = devm_regmap_init_i2c(client, &dev->regmap_config);
+ 	if (IS_ERR(dev->regmap)) {
+ 		ret = PTR_ERR(dev->regmap);
+diff --git a/drivers/media/dvb-frontends/rtl2832.c b/drivers/media/dvb-frontends/rtl2832.c
+index e5bffaaeed38..01dcc7f1b9b2 100644
+--- a/drivers/media/dvb-frontends/rtl2832.c
++++ b/drivers/media/dvb-frontends/rtl2832.c
+@@ -1056,13 +1056,13 @@ static int rtl2832_probe(struct i2c_client *client,
+ 	dev->sleeping = true;
+ 	INIT_DELAYED_WORK(&dev->i2c_gate_work, rtl2832_i2c_gate_work);
+ 	/* create regmap */
+-	dev->regmap_config.reg_bits =  8,
+-	dev->regmap_config.val_bits =  8,
+-	dev->regmap_config.volatile_reg = rtl2832_volatile_reg,
+-	dev->regmap_config.max_register = 5 * 0x100,
+-	dev->regmap_config.ranges = regmap_range_cfg,
+-	dev->regmap_config.num_ranges = ARRAY_SIZE(regmap_range_cfg),
+-	dev->regmap_config.cache_type = REGCACHE_NONE,
++	dev->regmap_config.reg_bits =  8;
++	dev->regmap_config.val_bits =  8;
++	dev->regmap_config.volatile_reg = rtl2832_volatile_reg;
++	dev->regmap_config.max_register = 5 * 0x100;
++	dev->regmap_config.ranges = regmap_range_cfg;
++	dev->regmap_config.num_ranges = ARRAY_SIZE(regmap_range_cfg);
++	dev->regmap_config.cache_type = REGCACHE_NONE;
+ 	dev->regmap = regmap_init_i2c(client, &dev->regmap_config);
+ 	if (IS_ERR(dev->regmap)) {
+ 		ret = PTR_ERR(dev->regmap);
+diff --git a/drivers/media/dvb-frontends/ts2020.c b/drivers/media/dvb-frontends/ts2020.c
+index 234607b02edb..3e383912bcfd 100644
+--- a/drivers/media/dvb-frontends/ts2020.c
++++ b/drivers/media/dvb-frontends/ts2020.c
+@@ -569,11 +569,11 @@ static int ts2020_probe(struct i2c_client *client,
+ 
+ 	/* create regmap */
+ 	mutex_init(&dev->regmap_mutex);
+-	dev->regmap_config.reg_bits = 8,
+-	dev->regmap_config.val_bits = 8,
+-	dev->regmap_config.lock = ts2020_regmap_lock,
+-	dev->regmap_config.unlock = ts2020_regmap_unlock,
+-	dev->regmap_config.lock_arg = dev,
++	dev->regmap_config.reg_bits = 8;
++	dev->regmap_config.val_bits = 8;
++	dev->regmap_config.lock = ts2020_regmap_lock;
++	dev->regmap_config.unlock = ts2020_regmap_unlock;
++	dev->regmap_config.lock_arg = dev;
+ 	dev->regmap = regmap_init_i2c(client, &dev->regmap_config);
+ 	if (IS_ERR(dev->regmap)) {
+ 		ret = PTR_ERR(dev->regmap);
+-- 
+2.22.0
+
