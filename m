@@ -2,101 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A15CF2DC5EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 19:07:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6BC22DC5F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 19:07:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729247AbgLPSG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 13:06:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45676 "EHLO
+        id S1729276AbgLPSH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 13:07:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729237AbgLPSG6 (ORCPT
+        with ESMTP id S1727485AbgLPSH1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 13:06:58 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B3FCC061794;
-        Wed, 16 Dec 2020 10:06:17 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id x20so31119699lfe.12;
-        Wed, 16 Dec 2020 10:06:17 -0800 (PST)
+        Wed, 16 Dec 2020 13:07:27 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94525C06179C;
+        Wed, 16 Dec 2020 10:06:46 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id y128so3610272ybf.10;
+        Wed, 16 Dec 2020 10:06:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+jz7pMhRZX2EwuvPuR9wM0+Uj3dSUg56oG6Xr4iEnbc=;
-        b=t/U67GEjLVQ7gylijqiRc4cdBz7et0h3wFy5eS507Do0evLWYZY5169V0p6jdDmXUh
-         kqdYv1ZoASsECRBcNfymgbe7WZ3/rG1n6YHvymYq4so6kCkklV7wArkrWO6sdozeKZd7
-         NdB9RZcyqJ0xromQsHnWGq2fu+u0JNxce2ZsaMmgkfcDePRxQ9z5dEg7c6yZ6uq3h2fK
-         h5HCtvxqNZLi616TkPxFgh1Vgf2yGMoi+tV0anf9m1aaXNgDoGRdR6vhceL6cPEhssvZ
-         fhKR0ZfREmmZumsb+pjIEvJKGhqKmK6urJdprRFwEm5Jhf44U0iw+FJzH6DArig1NHe1
-         QnAg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VodWZpWl/+uWOhTMN//0IR82qShPVli3GP+B85kzebI=;
+        b=HgkKI4G/HgYCipvAAw6VhORa1cxXlRphEmiOOjtS8+2DFX+gWbUH4AgXZu1fKdwTSn
+         pSEwp3kHpSA4r7/4NxgDyoYMq0tKm/y85UCWN67D5z6XUY7lDLG22Qdtq6qYxvnvjbww
+         vpE5oMNJc7B6/xs9K2YdOq33yJV9YQTkCdIkFNfCYtqUjqu2RcgHZjRislkx1bLKOdB2
+         vKCiFImSSimyu3dWk69QIb5gQzSytCf8ye7F1iUMJgLBIAaX58tad+2YxLXOWsY63wv+
+         euV/PCLRJ3Ri7H7MY6D5AmdYQsejL4SNlH/xxbqY4xjMgJhgB1qJalD8gL2wA6C0a8Cg
+         N7rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+jz7pMhRZX2EwuvPuR9wM0+Uj3dSUg56oG6Xr4iEnbc=;
-        b=EoCwlXKVFTxFqyCfFZ6RQ7YC/Ighc83iKiaGbERGkYzeuRsoTyRHltD0pUCJqxOPFS
-         gJBVNNG+SE8XiF8GQauOPDld9kdGoIrk+DNIJnNmhu5cjjcQDwevYrUIo0MCTmxcm2LZ
-         oe4DXu5Sdk9nL3h73AuexmBpHneUBoEb9mX5WzWn8xFmYoznoHvJ4GPK9u563QTpS4T/
-         wVVkvzMNE1Y7nGbjNICx6iaMkY9XKEwbrR8DpdJjHvwrpC2wt5XbSR/47bt05SOZ5/kj
-         fRFc3rAYJxvQIxWfU83jKfzglGb2siGYR8LkGzwKx6B3wbl9UhphXJEV/HExu3WAWVFZ
-         erKA==
-X-Gm-Message-State: AOAM530VAGO7wkzRn7rTs8OQIvqPZGnDXCUmCks445LWEiPxYC02diTQ
-        4Xik/MFc0QbnNHR7jayiD9DSQ/HiOYM=
-X-Google-Smtp-Source: ABdhPJx6qvDuq/zm57OJu6zRHlAZFZC4Bhxuf5+/GiAbjP2wP1EKNrgU8hX9VhRcKdMKLIR1iUF2Sg==
-X-Received: by 2002:a05:6512:789:: with SMTP id x9mr8638236lfr.487.1608141974630;
-        Wed, 16 Dec 2020 10:06:14 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id i18sm358368lja.102.2020.12.16.10.06.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Dec 2020 10:06:13 -0800 (PST)
-Subject: Re: [PATCH v1 3/8] usb: chipidea: tegra: Remove MODULE_ALIAS
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Felipe Balbi <balbi@kernel.org>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Peter Geis <pgwipeout@gmail.com>, linux-tegra@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201215202113.30394-1-digetx@gmail.com>
- <20201215202113.30394-4-digetx@gmail.com> <X9pKz8O4ESRShKzh@ulmo>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <d06ee91a-2ae6-3c17-0952-0fd9df432141@gmail.com>
-Date:   Wed, 16 Dec 2020 21:06:13 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VodWZpWl/+uWOhTMN//0IR82qShPVli3GP+B85kzebI=;
+        b=WBpr3s+nT07obq2vNyYuYfh8SSiFdX5lUAYG9YpKX7Nt/pYZBJ8r8/9BL1MTk09Nwh
+         +Y5D0m8utIxUdYEj6HfhVlsKdDG+vBUnsOVHoVsT73oU5fPIy0LZffOHNzMYJ4k+c1Vy
+         4AX/JX7BaVchwO59f6hBUkXkmAkS1ieYsi2DOmSZ3WWWbE2DJqXUokbkg3gs19lyDjjG
+         FqKdBF57qucwKoFw5yc6t008eDZCwkIurWI+6e+NVGCs/bKLxiNjQ8B0qTvOxUQybfQY
+         gZvjBuFZ843okEnVIATNXlpnOxLEG2/LcFQQtN1pQR+9/noYj8i+5TQ2Azid8LgB4drT
+         bFxA==
+X-Gm-Message-State: AOAM531ajL0MXaNg7ZM43zUEltXWJ0T0oNKrikzNEFKh4Z8x/+r3UBvJ
+        u1vgvhd72kIJ3BYbbn2fHQa/L28AcyYFcmhNJJg=
+X-Google-Smtp-Source: ABdhPJy3g5GfYo5WT+IeLrwHD6qpe8ngg3vhanZs6hYwZjszn/hqZ+Z9uHSwjKHHvo6ZnPgPboPTG5wVZW+geoDjMwc=
+X-Received: by 2002:a25:aea8:: with SMTP id b40mr52596024ybj.347.1608142005891;
+ Wed, 16 Dec 2020 10:06:45 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <X9pKz8O4ESRShKzh@ulmo>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CAEf4BzYBvz4TDayTE=Bc_bjqvOGaavmmw1sJhOCKhq9DwUpd4A@mail.gmail.com>
+ <20201215182011.15755-1-kamal@canonical.com>
+In-Reply-To: <20201215182011.15755-1-kamal@canonical.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 16 Dec 2020 10:06:35 -0800
+Message-ID: <CAEf4BzYgnDWRswYJPnMdtACs7K5mckbfHX2i68YXhha4q=ywFw@mail.gmail.com>
+Subject: Re: [PATCH v2] selftests/bpf: clarify build error if no vmlinux
+To:     Kamal Mostafa <kamal@canonical.com>
+Cc:     linux- stable <stable@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-16.12.2020 20:58, Thierry Reding пишет:
-> On Tue, Dec 15, 2020 at 11:21:08PM +0300, Dmitry Osipenko wrote:
->> The module alias is provided by the OF core for the OF drivers, it
->> overrides the alias set by the drivers. Hence remove the unneeded macro
->> in order to keep the driver code cleaner.
-> 
-> This is slightly misleading because that manual MODULE_ALIAS is there
-> for legacy reasons and created that alias to bind against a platform
-> device created from board files back in the day.
-> 
-> Depending on how I interpret the commit message, it also sounds like
-> you're suggesting that the OF core will automatically add this alias.
-> However, what the OF core adds is an alias based on the OF device ID
-> table, which is completely different.
-> 
-> We don't support board files anymore and to my knowledge the aliases
-> generated from the OF device ID table are enough to have the driver
-> autoloaded, so this patch is correct. Perhaps make it clearer in the
-> commit message why this is no longer needed. With that:
-> 
-> Acked-by: Thierry Reding <treding@nvidia.com>
+On Tue, Dec 15, 2020 at 10:20 AM Kamal Mostafa <kamal@canonical.com> wrote:
+>
+> If Makefile cannot find any of the vmlinux's in its VMLINUX_BTF_PATHS list,
+> it tries to run btftool incorrectly, with VMLINUX_BTF unset:
+>
+>     bpftool btf dump file $(VMLINUX_BTF) format c
+>
+> Such that the keyword 'format' is misinterpreted as the path to vmlinux.
+> The resulting build error message is fairly cryptic:
+>
+>       GEN      vmlinux.h
+>     Error: failed to load BTF from format: No such file or directory
+>
+> This patch makes the failure reason clearer by yielding this instead:
+>
+>     Makefile:...: *** cannot find a vmlinux for VMLINUX_BTF at any of
+>     "{paths}".  Stop.
+>
+> Fixes: acbd06206bbb ("selftests/bpf: Add vmlinux.h selftest exercising tracing of syscalls")
+> Cc: stable@vger.kernel.org # 5.7+
+> Signed-off-by: Kamal Mostafa <kamal@canonical.com>
+> ---
 
-Alright, thanks.
+Applied to bpf tree, thanks. This conflicted with a67079b03165
+("selftests/bpf: fix bpf_testmod.ko recompilation logic"), I resolved
+the conflict and capitalized "Cannot" in the error message.
 
+>
+> [v2] moves the check to right after the VMLINUX_BTF definition.
+>
+>  tools/testing/selftests/bpf/Makefile | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index 542768f5195b..7ba631f495f7 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -146,6 +146,9 @@ VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)                                \
+>                      /sys/kernel/btf/vmlinux                            \
+>                      /boot/vmlinux-$(shell uname -r)
+>  VMLINUX_BTF ?= $(abspath $(firstword $(wildcard $(VMLINUX_BTF_PATHS))))
+> +ifeq ($(VMLINUX_BTF),)
+> +$(error cannot find a vmlinux for VMLINUX_BTF at any of "$(VMLINUX_BTF_PATHS)")
+> +endif
+>
+>  DEFAULT_BPFTOOL := $(SCRATCH_DIR)/sbin/bpftool
+>
+> --
+> 2.17.1
+>
