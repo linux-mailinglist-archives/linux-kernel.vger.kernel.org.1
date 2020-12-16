@@ -2,136 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D06432DC1FA
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 15:16:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AC5E2DC208
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 15:19:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726405AbgLPOPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 09:15:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52132 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725550AbgLPOPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 09:15:38 -0500
-Date:   Wed, 16 Dec 2020 14:14:51 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608128097;
-        bh=JRmLTb9vVZmeLkgH4oxPhqDkLovLa+K8GzZyXFI9EE0=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WjUgPkf8XDXt4DYW+AjZ4fewGswVEaSmREuXLaDK8Sk72wiegW3C9XREP/6e1HJVT
-         oc99CN2JiS2wcdGl1bJDf/Wyl9GVLZINhG77zdYoz76pmblOmm6uk35loVLU5b55Z7
-         ewmEefl+zvKUCBxlnD0uAfrkwG+gP1R36LaK1MPg7zTZcP6fakpxs/aJEM49+GA2hH
-         OG7yNYfsmiXUzH5CFo/na4JA0Fdr/HS/1n11/nGGL6XUMWfa9lYt5neDWQ3MBdCGC0
-         875f4M1Yw4rf01dhatRfHoMf28EcK6u1E2yhM5ROfyi8DO6BcPwVopcUpzDvrw72Xw
-         nPFfJDHtdKnxg==
-From:   Will Deacon <will@kernel.org>
-To:     Qais Yousef <qais.yousef@arm.com>, surenb@google.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH v5 00/15] An alternative series for asymmetric AArch32
- systems
-Message-ID: <20201216141450.GA16421@willie-the-truck>
-References: <20201208132835.6151-1-will@kernel.org>
- <20201216111646.omrxyhbobejzqprh@e107158-lin.cambridge.arm.com>
+        id S1726463AbgLPOTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 09:19:33 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:2339 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726396AbgLPOTd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 09:19:33 -0500
+Received: from dggeme753-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4CwxzR6sjgz13VMK;
+        Wed, 16 Dec 2020 22:17:39 +0800 (CST)
+Received: from [10.174.177.7] (10.174.177.7) by dggeme753-chm.china.huawei.com
+ (10.3.19.99) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1913.5; Wed, 16
+ Dec 2020 22:18:43 +0800
+Subject: Re: [PATCH] use x86 cpu park to speedup smp_init in kexec situation
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>
+CC:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        <hewenliang4@huawei.com>, <hushiyuan@huawei.com>,
+        <luolongjun@huawei.com>, <hejingxian@huawei.com>
+References: <87eejqu5q5.fsf@nanos.tec.linutronix.de>
+ <f2a4d172-fa17-9f98-ad8f-d69f84ad0df5@huawei.com>
+ <87v9d2rrdq.fsf@nanos.tec.linutronix.de>
+From:   "shenkai (D)" <shenkai8@huawei.com>
+Message-ID: <06977da1-d148-0079-0e85-32d657d1a1de@huawei.com>
+Date:   Wed, 16 Dec 2020 22:18:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201216111646.omrxyhbobejzqprh@e107158-lin.cambridge.arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <87v9d2rrdq.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.7]
+X-ClientProxiedBy: dggeme712-chm.china.huawei.com (10.1.199.108) To
+ dggeme753-chm.china.huawei.com (10.3.19.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Qais,
+在 2020/12/16 18:12, Thomas Gleixner 写道:
+> Kai,
+>
+> On Wed, Dec 16 2020 at 16:45, shenkai wrote:
+>> 在 2020/12/16 5:20, Thomas Gleixner 写道:
+>>>
+>> Thanks for your and Andy's precious comments. I would like to take a try on
+>>
+>> reconstructing this patch to make it more decent and generic.
+>>> It would be interesting to see the numbers just with play_dead() using
+>>> hlt() or mwait(eax=0, 0) for the kexec case and no other change at all.
+> Can you please as a first step look into this and check if the time
+> changes?
+>
+> Thanks,
+>
+>          tglx
+> .
 
-On Wed, Dec 16, 2020 at 11:16:46AM +0000, Qais Yousef wrote:
-> On 12/08/20 13:28, Will Deacon wrote:
-> > Changes in v5 include:
-> > 
-> >   * Teach cpuset_cpus_allowed() about task_cpu_possible_mask() so that
-> >     we can avoid returning incompatible CPUs for a given task. This
-> >     means that sched_setaffinity() can be used with larger masks (like
-> >     the online mask) from userspace and also allows us to take into
-> >     account the cpuset hierarchy when forcefully overriding the affinity
-> >     for a task on execve().
-> > 
-> >   * Honour task_cpu_possible_mask() when attaching a task to a cpuset,
-> >     so that the resulting affinity mask does not contain any incompatible
-> >     CPUs (since it would be rejected by set_cpus_allowed_ptr() otherwise).
-> > 
-> >   * Moved overriding of the affinity mask into the scheduler core rather
-> >     than munge affinity masks directly in the architecture backend.
-> > 
-> >   * Extended comments and documentation.
-> > 
-> >   * Some renaming and cosmetic changes.
-> > 
-> > I'm pretty happy with this now, although it still needs review and will
-> > require rebasing to play nicely with the SCA changes in -next.
-> 
-> I still have concerns about the cpuset v1 handling. Specifically:
-> 
-> 	1. Attaching a 32bit task to 64bit only cpuset is allowed.
-> 
-> 	   I think the right behavior here is to prevent that as the
-> 	   intersection will appear as offline cpus for the 32bit tasks. So it
-> 	   shouldn't be allowed to move there.
+After some tests, the conclusion that time cost is from deep C-state 
+turns out to be wrong
 
-Suren or Quantin can correct me if I'm wrong I'm here, but I think Android
-relies on this working so it's not an option for us to prevent the attach.
-I also don't think it really achieves much, since as you point out, the same
-problem exists in other cases such as execve() of a 32-bit binary, or
-hotplugging off all 32-bit CPUs within a mixed cpuset. Allowing the attach
-and immediately reparenting would probably be better, but see below.
+Sorry for that.
 
-> 	2. Modifying cpuset.cpus could result with empty set for 32bit tasks.
-> 
-> 	   It is a variation of the above, it's just the cpuset transforms into
-> 	   64bit only after we attach.
-> 
-> 	   I think the right behavior here is to move the 32bit tasks to the
-> 	   nearest ancestor like we do when all cpuset.cpus are hotplugged out.
-> 
-> 	   We could too return an error if the new set will result an empty set
-> 	   for the 32bit tasks. In a similar manner to how it fails if you
-> 	   write a cpu that is offline.
-> 
-> 	3. If a 64bit task belongs to 64bit-only-cpuset execs a 32bit binary,
-> 	   the 32 tasks will inherit the cgroup setting.
-> 
-> 	   Like above, we should move this to the nearest ancestor.
+Here is what I do:
 
-I considered this when I was writing the patches, but the reality is that
-by allowing 32-bit tasks to attach to a 64-bit only cpuset (which is required
-by Android), we have no choice but to expose a new ABI to userspace. This is
-all gated behind a command-line option, so I think that's fine, but then why
-not just have the same behaviour as cgroup v2? I don't see the point in
-creating two new ABIs (for cgroup v1 and v2 respectively) if we don't need
-to. If it was _identical_ to the hotplug case, then we would surely just
-follow the existing behaviour, but it's really quite different in this
-situation because the cpuset is not empty.
+In kexec case, first let APs spinwait like what I did  in that patch, 
+but wake APs up by
 
-One thing we should definitely do though is add this to the documentation
-for the command-line option.
+sending apic INIT and SIPI  interrupts as normal procedure instead of 
+writing to some
 
-> To simplify the problem for v1, we could say that asym ISA tasks can only live
-> in the root cpuset for v1. This will simplify the solution too since we will
-> only need to ensure that these tasks are moved to the root group on exec and
-> block any future move to anything else. Of course this dictates that such
-> systems must use cpuset v2 if they care. Not a terrible restriction IMO.
+address and there is no acceleration (time cost is still 210ms).
 
-Sadly, I think Android is still on cgroup v1 for cpuset, but Suren will know
-better the status of cgroup v2 for cpusets. If it's just around the corner,
-then maybe we could simplify things here. Suren?
+So can we say that the main time cost is from apic INIT and SIPI 
+interrupts and the handling
 
-Will
+of them instead of deep C-state?
+
+
+I didn't test with play_dead() because in kexec case, one new kernel 
+will be started and APs can't be
+
+waken up by normal interrupts like in hibernate case for the irq vectors 
+are gone with the old kernel.
+
+Or maybe I didn't get the point correctly?
+
+
+Best regards
+
+Kai
+
+
+
