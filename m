@@ -2,273 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AF702DBF31
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 12:07:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24AD12DBF32
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 12:07:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726000AbgLPLGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 06:06:41 -0500
-Received: from honk.sigxcpu.org ([24.134.29.49]:35088 "EHLO honk.sigxcpu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725562AbgLPLGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 06:06:41 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id AC877FB03;
-        Wed, 16 Dec 2020 12:05:59 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id lVGFOItGAl-R; Wed, 16 Dec 2020 12:05:57 +0100 (CET)
-Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id 64DC543BC5; Wed, 16 Dec 2020 12:05:54 +0100 (CET)
-From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-power@fi.rohmeurope.com,
+        id S1726089AbgLPLGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 06:06:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725283AbgLPLGy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 06:06:54 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E902C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 03:06:14 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id w5so16626634pgj.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 03:06:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=JOOQpcp04fe7Ai/Scwmonj/jlQhNtKVes7u2TT8U0X4=;
+        b=S/e3+RcHwRHNREai4eV3qePPu5aVF50Zv73xS38GVyJ01iu3wrbAQ5c791t/5IkcYM
+         1WPdO8T0vOZqxG/6jTyKhnHhI2uOROTX3RiXlVB9SbQVUYH2gXbnBLABWzBmd+5ozCpZ
+         yxT/GVm88oUEFKTpSUp9IVwXH5+3kepB5F+fYJ9ilSVWa7dDYXwEBdW96fWGC9XX9Muj
+         CK36MiA+sqFVH3fEUnJ4Brul5Fn8uHNVDUhWFFJyUsUoNNm9yDI9gRoK1sttDIa116l5
+         0pV9CICzrSs71tWCCUqmHKmFT6qM82MP9M4MxqnLKpbpZhqdJnzPySpObjgQg5rXk8W0
+         KxPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=JOOQpcp04fe7Ai/Scwmonj/jlQhNtKVes7u2TT8U0X4=;
+        b=MnIDZAQUnTI4tQc9fE958DM8LXVbkbg72yHEWNIh7+SjI/fCsOwBm/jztCtBisk8PB
+         nQShulQpZzFaW1pyLxSTsHv7nMSc1ev/TAld79Ys416xiIVt/GiddxVxGz/lRxfcPy84
+         y3upFLzrT/hDtTbb8oxdp1TJtt6NqfONlU+1q9pQvSJup9cwjDKHkYQj2nV9xaYXnr1C
+         VBUn50t0DKurBeOhjg+qn/fXnCU1kRVDDtecNfZLBxIYYYxmQdXA+Xn6as/ZqA1fhhj6
+         v0bMVyEy1zgitqUFcynjip810J6lE0KsYx3f47mnhskQ0LviDvGwOxrrNhHAJa7cdqjP
+         Zvrw==
+X-Gm-Message-State: AOAM5328bchona6nB3PVg9An3LWO080OcYOyLnlgDLDp+mmVxKXe+CtQ
+        UABGEkp9smcAhP5U8p2VUwM=
+X-Google-Smtp-Source: ABdhPJzgryV5EFyPEgVKa/Ym7NmyHZP5f5iQ8HNSLMTnXY9UjxcdOzvVstG7QN5HnbmPU2WH/SttAQ==
+X-Received: by 2002:aa7:8d86:0:b029:19e:cb57:2849 with SMTP id i6-20020aa78d860000b029019ecb572849mr26379440pfr.54.1608116773633;
+        Wed, 16 Dec 2020 03:06:13 -0800 (PST)
+Received: from Asurada (c-73-162-191-63.hsd1.ca.comcast.net. [73.162.191.63])
+        by smtp.gmail.com with ESMTPSA id fw12sm1729790pjb.43.2020.12.16.03.06.12
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 16 Dec 2020 03:06:13 -0800 (PST)
+Date:   Wed, 16 Dec 2020 03:06:06 -0800
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     timur@kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
+        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] regulators: bd718x7: Add enable times
-Date:   Wed, 16 Dec 2020 12:05:54 +0100
-Message-Id: <d2b3d053d28ea0f35e7526b523287358c8fe20c2.1608116704.git.agx@sigxcpu.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1608116704.git.agx@sigxcpu.org>
-References: <cover.1608116704.git.agx@sigxcpu.org>
+Subject: Re: [PATCH] ASoC: imx-hdmi: Fix warning of the uninitialized
+ variable ret
+Message-ID: <20201216110605.GA2156@Asurada>
+References: <1608115464-18710-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1608115464-18710-1-git-send-email-shengjiu.wang@nxp.com>
+User-Agent: Mutt/1.5.22 (2013-10-16)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the typical startup times from the data sheet so boards get a
-reasonable default. Not setting any enable time can lead to board hangs
-when e.g. clocks are enabled too soon afterwards.
+On Wed, Dec 16, 2020 at 06:44:24PM +0800, Shengjiu Wang wrote:
+> From: shengjiu wang <shengjiu.wang@nxp.com>
+> 
+> When condition ((hdmi_out && hdmi_in) || (!hdmi_out && !hdmi_in))
+> is true, then goto fail, the uninitialized variable ret will be
+> returned.
+> 
+> Signed-off-by: shengjiu wang <shengjiu.wang@nxp.com>
+> Reported-by: kernel test robot <lkp@intel.com>
 
-This fixes gpu power domain resume on the Librem 5.
-
-Signed-off-by: Guido Günther <agx@sigxcpu.org>
----
- drivers/regulator/bd718x7-regulator.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
-
-diff --git a/drivers/regulator/bd718x7-regulator.c b/drivers/regulator/bd718x7-regulator.c
-index e6d5d98c3cea..d6d34aa4ee2e 100644
---- a/drivers/regulator/bd718x7-regulator.c
-+++ b/drivers/regulator/bd718x7-regulator.c
-@@ -613,6 +613,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
- 			.vsel_mask = DVS_BUCK_RUN_MASK,
- 			.enable_reg = BD718XX_REG_BUCK1_CTRL,
- 			.enable_mask = BD718XX_BUCK_EN,
-+			.enable_time = 144,
- 			.owner = THIS_MODULE,
- 			.of_parse_cb = buck_set_hw_dvs_levels,
- 		},
-@@ -646,6 +647,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
- 			.vsel_mask = DVS_BUCK_RUN_MASK,
- 			.enable_reg = BD718XX_REG_BUCK2_CTRL,
- 			.enable_mask = BD718XX_BUCK_EN,
-+			.enable_time = 162,
- 			.owner = THIS_MODULE,
- 			.of_parse_cb = buck_set_hw_dvs_levels,
- 		},
-@@ -680,6 +682,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
- 			.linear_range_selectors = bd71847_buck3_volt_range_sel,
- 			.enable_reg = BD718XX_REG_1ST_NODVS_BUCK_CTRL,
- 			.enable_mask = BD718XX_BUCK_EN,
-+			.enable_time = 162,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -706,6 +709,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
- 			.vsel_range_mask = BD71847_BUCK4_RANGE_MASK,
- 			.linear_range_selectors = bd71847_buck4_volt_range_sel,
- 			.enable_mask = BD718XX_BUCK_EN,
-+			.enable_time = 240,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -727,6 +731,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
- 			.vsel_mask = BD718XX_3RD_NODVS_BUCK_MASK,
- 			.enable_reg = BD718XX_REG_3RD_NODVS_BUCK_CTRL,
- 			.enable_mask = BD718XX_BUCK_EN,
-+			.enable_time = 220,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -750,6 +755,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
- 			.vsel_mask = BD718XX_4TH_NODVS_BUCK_MASK,
- 			.enable_reg = BD718XX_REG_4TH_NODVS_BUCK_CTRL,
- 			.enable_mask = BD718XX_BUCK_EN,
-+			.enable_time = 200,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -775,6 +781,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
- 			.linear_range_selectors = bd718xx_ldo1_volt_range_sel,
- 			.enable_reg = BD718XX_REG_LDO1_VOLT,
- 			.enable_mask = BD718XX_LDO_EN,
-+			.enable_time = 440,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -796,6 +803,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
- 			.n_voltages = ARRAY_SIZE(ldo_2_volts),
- 			.enable_reg = BD718XX_REG_LDO2_VOLT,
- 			.enable_mask = BD718XX_LDO_EN,
-+			.enable_time = 370,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -818,6 +826,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
- 			.vsel_mask = BD718XX_LDO3_MASK,
- 			.enable_reg = BD718XX_REG_LDO3_VOLT,
- 			.enable_mask = BD718XX_LDO_EN,
-+			.enable_time = 310,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -840,6 +849,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
- 			.vsel_mask = BD718XX_LDO4_MASK,
- 			.enable_reg = BD718XX_REG_LDO4_VOLT,
- 			.enable_mask = BD718XX_LDO_EN,
-+			.enable_time = 400,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -865,6 +875,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
- 			.linear_range_selectors = bd71847_ldo5_volt_range_sel,
- 			.enable_reg = BD718XX_REG_LDO5_VOLT,
- 			.enable_mask = BD718XX_LDO_EN,
-+			.enable_time = 530,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -889,6 +900,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
- 			.vsel_mask = BD718XX_LDO6_MASK,
- 			.enable_reg = BD718XX_REG_LDO6_VOLT,
- 			.enable_mask = BD718XX_LDO_EN,
-+			.enable_time = 400,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -942,6 +954,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.vsel_mask = DVS_BUCK_RUN_MASK,
- 			.enable_reg = BD718XX_REG_BUCK1_CTRL,
- 			.enable_mask = BD718XX_BUCK_EN,
-+			.enable_time = 160,
- 			.owner = THIS_MODULE,
- 			.of_parse_cb = buck_set_hw_dvs_levels,
- 		},
-@@ -975,6 +988,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.vsel_mask = DVS_BUCK_RUN_MASK,
- 			.enable_reg = BD718XX_REG_BUCK2_CTRL,
- 			.enable_mask = BD718XX_BUCK_EN,
-+			.enable_time = 180,
- 			.owner = THIS_MODULE,
- 			.of_parse_cb = buck_set_hw_dvs_levels,
- 		},
-@@ -1005,6 +1019,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.vsel_mask = DVS_BUCK_RUN_MASK,
- 			.enable_reg = BD71837_REG_BUCK3_CTRL,
- 			.enable_mask = BD718XX_BUCK_EN,
-+			.enable_time = 180,
- 			.owner = THIS_MODULE,
- 			.of_parse_cb = buck_set_hw_dvs_levels,
- 		},
-@@ -1033,6 +1048,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.vsel_mask = DVS_BUCK_RUN_MASK,
- 			.enable_reg = BD71837_REG_BUCK4_CTRL,
- 			.enable_mask = BD718XX_BUCK_EN,
-+			.enable_time = 180,
- 			.owner = THIS_MODULE,
- 			.of_parse_cb = buck_set_hw_dvs_levels,
- 		},
-@@ -1065,6 +1081,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.linear_range_selectors = bd71837_buck5_volt_range_sel,
- 			.enable_reg = BD718XX_REG_1ST_NODVS_BUCK_CTRL,
- 			.enable_mask = BD718XX_BUCK_EN,
-+			.enable_time = 160,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -1088,6 +1105,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.vsel_mask = BD71837_BUCK6_MASK,
- 			.enable_reg = BD718XX_REG_2ND_NODVS_BUCK_CTRL,
- 			.enable_mask = BD718XX_BUCK_EN,
-+			.enable_time = 240,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -1109,6 +1127,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.vsel_mask = BD718XX_3RD_NODVS_BUCK_MASK,
- 			.enable_reg = BD718XX_REG_3RD_NODVS_BUCK_CTRL,
- 			.enable_mask = BD718XX_BUCK_EN,
-+			.enable_time = 220,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -1132,6 +1151,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.vsel_mask = BD718XX_4TH_NODVS_BUCK_MASK,
- 			.enable_reg = BD718XX_REG_4TH_NODVS_BUCK_CTRL,
- 			.enable_mask = BD718XX_BUCK_EN,
-+			.enable_time = 200,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -1157,6 +1177,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.linear_range_selectors = bd718xx_ldo1_volt_range_sel,
- 			.enable_reg = BD718XX_REG_LDO1_VOLT,
- 			.enable_mask = BD718XX_LDO_EN,
-+			.enable_time = 440,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -1178,6 +1199,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.n_voltages = ARRAY_SIZE(ldo_2_volts),
- 			.enable_reg = BD718XX_REG_LDO2_VOLT,
- 			.enable_mask = BD718XX_LDO_EN,
-+			.enable_time = 370,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -1200,6 +1222,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.vsel_mask = BD718XX_LDO3_MASK,
- 			.enable_reg = BD718XX_REG_LDO3_VOLT,
- 			.enable_mask = BD718XX_LDO_EN,
-+			.enable_time = 310,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -1222,6 +1245,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.vsel_mask = BD718XX_LDO4_MASK,
- 			.enable_reg = BD718XX_REG_LDO4_VOLT,
- 			.enable_mask = BD718XX_LDO_EN,
-+			.enable_time = 400,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -1246,6 +1270,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.vsel_mask = BD71837_LDO5_MASK,
- 			.enable_reg = BD718XX_REG_LDO5_VOLT,
- 			.enable_mask = BD718XX_LDO_EN,
-+			.enable_time = 310,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -1272,6 +1297,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.vsel_mask = BD718XX_LDO6_MASK,
- 			.enable_reg = BD718XX_REG_LDO6_VOLT,
- 			.enable_mask = BD718XX_LDO_EN,
-+			.enable_time = 400,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -1296,6 +1322,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.vsel_mask = BD71837_LDO7_MASK,
- 			.enable_reg = BD71837_REG_LDO7_VOLT,
- 			.enable_mask = BD718XX_LDO_EN,
-+			.enable_time = 530,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
--- 
-2.29.2
-
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
