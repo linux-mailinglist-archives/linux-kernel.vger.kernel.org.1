@@ -2,75 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 657392DC0C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:08:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD6B2DC0C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:08:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726058AbgLPNHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 08:07:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60970 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726050AbgLPNHa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 08:07:30 -0500
-Date:   Wed, 16 Dec 2020 13:06:37 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608124009;
-        bh=2o4+x2xBpkUDsQk9fVbcAXekKG36oLQ96Pl/Mx9ftA4=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FMpS6Duk/70/6S0AYleGL9L0gUVqwpUbIcXzJeEilviKg+ZUPKiRf0Bltz83gQidH
-         GKCx/F3x6aIKNXmTOxFCx0MmqIQ8CnWIJ9WcGwP07h9WKG4WRC9SWxThBFfq6aDweY
-         38BgawvBT120iLv9RCSC/d565uC50APSRE1WIt6cOqCiTngItg640oVJcdWVTaRavX
-         pFPo0C/Re3/KgSaoPFcDaom97IRF1TNi+gyD79JiKtwC+JJ0KFAL/u241kTNQKHRrM
-         SqZS0TP2cEbkeJYvWc0GdUaJuuoCTtp3sJtHKlA20fBRpGYaxMy59TUX385n/jipme
-         umMDXSfZOpvqg==
-From:   Mark Brown <broonie@kernel.org>
-To:     Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
-Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-power@fi.rohmeurope.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/1] regulators: bd718x7: Add enable times
-Message-ID: <20201216130637.GC4861@sirena.org.uk>
-References: <cover.1608116704.git.agx@sigxcpu.org>
+        id S1726039AbgLPNHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 08:07:09 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9214 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725274AbgLPNHI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 08:07:08 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CwwNJ5KvRzkq4d;
+        Wed, 16 Dec 2020 21:05:36 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 16 Dec 2020 21:06:18 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <agross@kernel.org>, <bjorn.andersson@linaro.org>,
+        <dan.j.williams@intel.com>, <vkoul@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <dmaengine@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH -next] qcom: bam_dma: Delete useless kfree code
+Date:   Wed, 16 Dec 2020 21:06:49 +0800
+Message-ID: <20201216130649.13979-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="H8ygTp4AXg6deix2"
-Content-Disposition: inline
-In-Reply-To: <cover.1608116704.git.agx@sigxcpu.org>
-X-Cookie: Why are you so hard to ignore?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The parameter of kfree function is NULL, so kfree code is useless, delete it.
+Therefore, goto expression is no longer needed, so simplify it.
 
---H8ygTp4AXg6deix2
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ drivers/dma/qcom/bam_dma.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-On Wed, Dec 16, 2020 at 12:05:53PM +0100, Guido G=FCnther wrote:
-> Use the typical startup times from the data sheet so boards get a
-> reasonable default. Not setting any enable time can lead to board hangs
-> when e.g. clocks are enabled too soon afterwards.
+diff --git a/drivers/dma/qcom/bam_dma.c b/drivers/dma/qcom/bam_dma.c
+index 4eeb8bb27279..78df217b3f6c 100644
+--- a/drivers/dma/qcom/bam_dma.c
++++ b/drivers/dma/qcom/bam_dma.c
+@@ -630,7 +630,7 @@ static struct dma_async_tx_descriptor *bam_prep_slave_sg(struct dma_chan *chan,
+ 			     GFP_NOWAIT);
+ 
+ 	if (!async_desc)
+-		goto err_out;
++		return NULL;
+ 
+ 	if (flags & DMA_PREP_FENCE)
+ 		async_desc->flags |= DESC_FLAG_NWD;
+@@ -670,10 +670,6 @@ static struct dma_async_tx_descriptor *bam_prep_slave_sg(struct dma_chan *chan,
+ 	}
+ 
+ 	return vchan_tx_prep(&bchan->vc, &async_desc->vd, flags);
+-
+-err_out:
+-	kfree(async_desc);
+-	return NULL;
+ }
+ 
+ /**
+-- 
+2.22.0
 
-Please don't send cover letters for single patches, if there is anything
-that needs saying put it in the changelog of the patch or after the ---
-if it's administrative stuff.  This reduces mail volume and ensures that=20
-any important information is recorded in the changelog rather than being
-lost.=20
-
---H8ygTp4AXg6deix2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/aBl0ACgkQJNaLcl1U
-h9DFLQgAgidhdlKm5CZH5IyNEEXGlT5vTlfHc7HyVTaMCKWNuZi1zw/mEaT/yAls
-fHIuDxK1GdV4TdSc3n2Dmn8ysd1lhybr6f8YcHAYffQ5C13XDx05q+PS1Q21SF5E
-OGj+5Hu+8gEurYBPHA1nVC9twQiCEju3ucQZl1AP6Jd22MN+34oAeuX4J+Vdu+cN
-DcoFup6U5skdDts2zRxPLQEK0CO6ZkVfw5e7ht+wRyehv3RzNzHO9IMPy4NR2JwZ
-ag1EtFP0nab13C9d0m6dJjIJZKRnLYDl7N+e3MQvnBz7wyMYelgQp1B3KpgxAfh3
-9Hoe3zJzDJ0WseHy1HAl9wx2wzSEaQ==
-=xxHz
------END PGP SIGNATURE-----
-
---H8ygTp4AXg6deix2--
