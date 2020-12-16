@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33C2B2DC7A1
+	by mail.lfdr.de (Postfix) with ESMTP id A08332DC7A2
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 21:17:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728771AbgLPURN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1728799AbgLPURN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 16 Dec 2020 15:17:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37042 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:37056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728738AbgLPURM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728740AbgLPURM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 16 Dec 2020 15:17:12 -0500
-Subject: Re: [GIT PULL] xen: branch for v5.11-rc1
+Subject: Re: [GIT PULL] MIPS changes for v5.11
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1608149792;
-        bh=WmvOvSHb+S4MEfDf4FDvtuOcycVfyBfLfxYt/7dEbqE=;
+        bh=1ZIRO/JLFjIU/rGRnebA0VxyVMF2zEJbHUWQdJHlEYw=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=sbTo8Pu/8B6VP/I4Q+uo+QgmEF37N3agNCMau5MSMHQEmJziEF+dKx4UNeyUmiOCV
-         n6YAtpOMungGOeyPit3YKcMbQVmgPgwqsX4YMy3AQFa5Pp+2eT3xf9sfxkvfot69LY
-         vhg8kwpqwS+a2puZcXn0K0oigK0c9LZMGFiFY2yTo55SjnKZmwA4JqIEz8FnLWgHGz
-         Y34krmmS4Y166UqNGYsOozBQX6wOfizY4RSVSfT4f1nfDlAOJTCIpHYmHtHYNo5I7n
-         6aEqAJAk+69iud3uhDPmecICoHN/YuM3aDUjCjr2IvcNR0PM/J21htvoll5C22YCRa
-         z3q3KzcUXrlNw==
+        b=PdWjfAugyHiClUVJ0lSEF5zGXxIR72ip3beRak8toqzPlozgQfwct8FOOmJr+KjoP
+         y1gPLAEMuvN7tssaRfXVloQRJPir0EYKhPHT+7bQYyBKmMlP9kcWMKcHvjywO10Fqk
+         djuvNddw22PgQ0uLDSI3Ka4RWnPXPRE3YTshnK8vx6venTHnDHk34N4NG7hcyGTc/x
+         M1Z2s2CqMB1YWWA0CbhrPJ2+hiyUmNqAZcUIM6QZ6+i0H21msEtQ0fyXybue1sW471
+         lrUfkpbs7MHSBbUxi6rnKaP4Y7iYd7rIGxthbafuES5qzaDV7kgTl5dWruVQWeZy7z
+         0jwrojKSjaVog==
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201215122606.6874-1-jgross@suse.com>
-References: <20201215122606.6874-1-jgross@suse.com>
-X-PR-Tracked-List-Id: Xen developer discussion <xen-devel.lists.xenproject.org>
-X-PR-Tracked-Message-Id: <20201215122606.6874-1-jgross@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.11-rc1-tag
-X-PR-Tracked-Commit-Id: 1c728719a4da6e654afb9cc047164755072ed7c9
+In-Reply-To: <20201216110634.GA7546@alpha.franken.de>
+References: <20201216110634.GA7546@alpha.franken.de>
+X-PR-Tracked-List-Id: <linux-mips.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201216110634.GA7546@alpha.franken.de>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_5.11
+X-PR-Tracked-Commit-Id: ad4fddef5f2345aa9214e979febe2f47639c10d9
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 7acfd4274e26e05a4f12ad31bf331fef11ebc6a3
-Message-Id: <160814979215.31129.10861518322757012100.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 8312f41f08edc641aa927d31fb71319694ae9c42
+Message-Id: <160814979248.31129.6242302841839462611.pr-tracker-bot@kernel.org>
 Date:   Wed, 16 Dec 2020 20:16:32 +0000
-To:     Juergen Gross <jgross@suse.com>
-Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        xen-devel@lists.xenproject.org, boris.ostrovsky@oracle.com
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     torvalds@linux-foundation.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 15 Dec 2020 13:26:06 +0100:
+The pull request you sent on Wed, 16 Dec 2020 12:06:34 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.11-rc1-tag
+> git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_5.11
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/7acfd4274e26e05a4f12ad31bf331fef11ebc6a3
+https://git.kernel.org/torvalds/c/8312f41f08edc641aa927d31fb71319694ae9c42
 
 Thank you!
 
