@@ -2,203 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2939D2DBE11
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:57:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1457D2DBE19
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:58:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726105AbgLPJ41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 04:56:27 -0500
-Received: from mail-db8eur05on2061.outbound.protection.outlook.com ([40.107.20.61]:12801
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726026AbgLPJ41 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 04:56:27 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H7oNo4KXTpCbU4RTd/bmKE429+OEYK5PoxjJ0Dy9/JSLV7mZMbs2PRxyROUBwIzWmlaVe7Z4qlNdVMQffsGuxgEaFZzduYWlfpntZEEUlovAPN+R4ntRRXzrxP5xqjV1gVYIhwt0w85EihOfjBee2gGUf27Rpa6uX/NJTo5O9kL2dezakiAVmymKxIFNAM5wYluL7hFiTViQSvT+qEVrwixEPD/0Kpg53f4de1yaGJt21jJk//Th07APBj90Tn4xxaOqCYJk8fomDbqcpn7UUM1XYUp7t+SQG5AXZclyXreH06cEUBLAsDyNmwSpjU+Gt3VOlxN9tColt8UfUzdRug==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6HMquhw8b5PmFByzqLuRsF7L39OQOcF3rc4/lL2ZRKY=;
- b=HMKMAZ8Zr1lRK5AQwWcIsdNVHH0pZp8xfwiUmM3+6Q78EPaScvGW9ymkW8UoBVPm/l2ZO6uZfvhspUeocTmPAMrmdD2cg519BWa+wsqOfiW3/yDTj4RTeTaX4Xxp6P4vUH04vGhXXKpe7UKuSgQURZ2aKOaERf/K474qlIgDd+3YjTDI5Ad0vAtw/IjzYvuJCnkMM0BycN4oLvzYIfldZPpQ/5TzrJ8SLU5AKN7bhigWY+McO8CujLHNxmsMS139cuU3quWQ0l5vlrP8yIaV80fm/Sy/+9ym4wFj5TFMixngeGvGjhkqUTaj/vDvmqZKNWeKwzla0qA15p8ORHJXXQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6HMquhw8b5PmFByzqLuRsF7L39OQOcF3rc4/lL2ZRKY=;
- b=jvU/79291BSHv27xSSsPlrWS257j62Jt+Tw7oMUf09mo9vwjlJCkSO+2brSqxuqOyq/a+C5WRTvytOFNNkxIKtgm7GCWNbHha7C5kLFWE7Cfgxlx9OPiaAcO31QdYMWyGzRb/yhLHfDcBjgdi+KB3BZJ4W2caF1JetCTfbqqv/M=
-Received: from AM6PR04MB6053.eurprd04.prod.outlook.com (2603:10a6:20b:b9::10)
- by AM5PR04MB3201.eurprd04.prod.outlook.com (2603:10a6:206:e::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.20; Wed, 16 Dec
- 2020 09:55:34 +0000
-Received: from AM6PR04MB6053.eurprd04.prod.outlook.com
- ([fe80::78fe:9b7a:a2ac:9631]) by AM6PR04MB6053.eurprd04.prod.outlook.com
- ([fe80::78fe:9b7a:a2ac:9631%7]) with mapi id 15.20.3654.025; Wed, 16 Dec 2020
- 09:55:34 +0000
-From:   "Alice Guo (OSS)" <alice.guo@oss.nxp.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        "Alice Guo (OSS)" <alice.guo@oss.nxp.com>
-CC:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH v7 1/4] dt-bindings: soc: imx8m: add DT Binding doc for
- soc unique ID
-Thread-Topic: [PATCH v7 1/4] dt-bindings: soc: imx8m: add DT Binding doc for
- soc unique ID
-Thread-Index: AQHW0r2T16pUmRKNaE+vcoTiMv9Y1qn33wMAgAGYjSA=
-Date:   Wed, 16 Dec 2020 09:55:34 +0000
-Message-ID: <AM6PR04MB6053AE68690ADF805D5A0809E2C50@AM6PR04MB6053.eurprd04.prod.outlook.com>
-References: <20201215083551.6067-1-alice.guo@oss.nxp.com>
- <20201215091118.GB9386@kozik-lap>
-In-Reply-To: <20201215091118.GB9386@kozik-lap>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [119.31.174.71]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 1fc62710-c867-4833-be50-08d8a1a8bb82
-x-ms-traffictypediagnostic: AM5PR04MB3201:
-x-ms-exchange-sharedmailbox-routingagent-processed: True
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM5PR04MB32013CC81F7E3B3498C2FF14A3C50@AM5PR04MB3201.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: kCtOchORJL8RxvT/gNdZuNWFr+h0IFsKI5bONJi6PGfjmoUTh3U/1Eds/l4SeVVplZjWcI6NWRZB/Js4Zfavkc3/ARCJ+WxGc3luuPDgKkyeFUX21mVpoGhrZQAx/TncDbWZoDln2cVyTD5tKfzRwmrt6/PQXZp/yffXt1mHHZHMCUhStshqiRhMGGr4gGxrhmFECYJaKNor+3P3gQfDWiz2KU2fZ8n6hCoQF6G7cKsaq9oiGkmwF7T013oI5xp6Sc+r+pas6WWBfgoej175unEBxocoona0ZlTp0xqEzKPzPGYdSWr9OHZrpDY7v229nyiq4D4dBUewY81glFWA5X5otxmlJN10QEtAJNzB3xGwXcvI625EvenZeWABj51fOKBYFHyqmFJiFoftC67R2145ixQVp9OZFhshRRmZg9RmBScd8HwFQXvCiuIJYFJwq7lP8aALgjYcFjknmDyx1g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB6053.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(346002)(366004)(39860400002)(136003)(7696005)(83380400001)(76116006)(110136005)(53546011)(316002)(26005)(86362001)(52536014)(71200400001)(186003)(2906002)(8936002)(55016002)(9686003)(5660300002)(54906003)(966005)(66946007)(66476007)(66556008)(8676002)(64756008)(478600001)(4326008)(66446008)(33656002)(6506007)(32563001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?RzZnNXRyb254UmxiZENzSGdlMkxXSzhJMHRyS0RLNHppRi8vdW5ZdkVaSmNt?=
- =?utf-8?B?U2VzR2J5TGNyYnNjR3Q3ZkJOVkZ5NkpPMWtwckZUandCTUVCMk13WUZQUE9T?=
- =?utf-8?B?SVJES0p3Z1owcGRjdk43QWtkSVJYUGNaemt3aForQWpMb0JlY3pVbEpyUXBB?=
- =?utf-8?B?VGVjUVgxaHh4ZGcyUUQ4bEMyL3Q4ajdEUXMzVnd4S1EyaEdTUXlRTG5NTUJk?=
- =?utf-8?B?ZFdZWjNmYzBEZ1NUKys4RHBZM25KMUVqZThEaHFrWVV1ZXFmeGVOVU16dmpy?=
- =?utf-8?B?ZlZsekdPTDZNb2JrSFZzblJBZU0zdC92djhrcFBqZW05TjM2MytDK2FseE5D?=
- =?utf-8?B?Sk1pVENRYktGRkR2aUtFZGNHQ2lpRzhQWmM0c0N4dW81bmxYbXN5YlpERWxx?=
- =?utf-8?B?SmlXdVQ3TUNQMmlVSTVVelVpcXhiQm1rbTBoLzhwYWhxdFBWakJ3TTNINHJL?=
- =?utf-8?B?NEg2dFJQZ3pMYWxTc01CQVVUOUZGaUdxRVhOZzhpajNLQ3pWTVFhakM0U2FZ?=
- =?utf-8?B?TUV6MUJVUTU0RElaK1FNMHpONXN2MU9MT2crU1lHYzF1b3lFYUV3ellKbm9l?=
- =?utf-8?B?OFZSUVVlcEd5N2dSTThaWEtHbnhDVnRwLzdVa0ZCMFdxTk9DV2laOGYzNnRD?=
- =?utf-8?B?eURTRUZjQ3drVUMra2dQaHR0VnNwcE5aU2dlYWkvTXdHMldYa1psaHU2OXVN?=
- =?utf-8?B?T0lOQ1l6bThLZXBQbGE5VWpMa0RVU1Z5WEJBWE1nWEFRUTQyOEdsWW9QZkwv?=
- =?utf-8?B?TXN5SldQUldrOXVydC8yRnczUXBkK0JtcmpNOXJ1RmFUamtkNTlLQW9MWVJp?=
- =?utf-8?B?MERTRktGSE81MzZUenZnOHVnc2t4RnErSHhxbDFDU0c3TWZ6Z0hjVXhITWt4?=
- =?utf-8?B?amI5d0NRM3Q1YTNRUmV1NGhrNVJBY3VuNDJXbStMYnNkWS9SdlVWNnRKczM2?=
- =?utf-8?B?eEFTK2xNVkR5OVJqWklydXgrYUtwUDB5RlZLN0JpTjlJenJiNW14Nlo5L1dL?=
- =?utf-8?B?UlJyMGF0Rjh6RzB6WWh0a25YZkVtTGtpU2MrTFZMTXpKbzc3eFBWWHZtNUpZ?=
- =?utf-8?B?cTJRblR5dXNYcUozTjNacEZYUzBKemNTU2tjVGtMYlA1MDdBdlJTKzBzT2xj?=
- =?utf-8?B?UXY4d2l5YS9uN0diN1hxaDVobmF0ZDBaSHNuOFJnaFV3N0VQK0hLK0d5VmVS?=
- =?utf-8?B?WWoxaGNPM2ZxV21sQkVnRStBTmpYdms2cWdoZTNjSS9qTmQ5a09kNHVJZXVI?=
- =?utf-8?B?R2xDU1JXMDNzSDNBdGU0dkkrVGZWbWZwZWJ1OXh0YUFGcldRaEhjYVBoK3F1?=
- =?utf-8?Q?6L/6eQEGCPoYM=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1725835AbgLPJ6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 04:58:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725862AbgLPJ6T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 04:58:19 -0500
+Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0133C06179C
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 01:57:39 -0800 (PST)
+Received: by mail-vk1-xa35.google.com with SMTP id o195so3397981vka.9
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 01:57:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z8l/M62PtF0n4E+Kud8Gg3Jd1DOjZBf39zGElGBuB24=;
+        b=AlXNurBzvCes2S+jJ6ZwyzsHWU1hC9h79/NVgkR3+pA2YUoEIzSqG8aT8oTBSjnBau
+         Kog2h0BlmDosvDB6sfsv+3EMrP7Boq1vy7er7a6irCY6woskcZ24oCGUB/0d3B10CBp9
+         7qnKLZyfD2zWyATd8IgvBvpNQjbNWDRsJxoLjwiSyY0lKku+1nJOC2eX9vV5s/OAqa61
+         NAxSEKYpqCANH4Ih3voMhXmuWHVfFfBJPKCt1iKgKSFh2b+h1CPaJcgRV/5ISzaxFjSA
+         GwTtBo9Igo8GAlwFEcy8oOwK42r0udYTSOBwfwvOiHiuyMVASOD1K7lyodfzSZrt7273
+         LPcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z8l/M62PtF0n4E+Kud8Gg3Jd1DOjZBf39zGElGBuB24=;
+        b=KFSa8YZ9gvl4uI47DVQQf9n4LSHsHQ2MT6hW1EMEHvhYatMINFy127UhnrHs9p2+RY
+         0rq2YHrg+IyxP1WsJPxJYCN0YI5Wm4jOwcsKRP/lC1JTcZqYun9vZCCF831fANpaUl1F
+         zwYrVHx1SZiv4mzi8AuknjuMnSoms+92jO8SPG4h45GpBuQUOCAeZkIr2gHGFTC8FTcA
+         ecRaCIwxuxpHgPL9wPVwSd9bnkPJKD4Viz0TnGvczzLhwA1/30GYC9wQn60uo8B3sMIo
+         DuTipUKUcHdANEw5fxkPSmVcoHIUIV3zp8R0wNooWZT7+Lbu/nrgAviMY70uNlSkBfPp
+         FWmw==
+X-Gm-Message-State: AOAM530gmgLREh5BB8LNlTHVt5srBbQcEu3od90SRSMB3uS2CI9FN/kS
+        QV9TCKe08zbiaGvdcKWOLyz8emmkSI0mWAAk7aOtow==
+X-Google-Smtp-Source: ABdhPJx+FZqJiksVy6CgwhfBkpsL80w1Kco02FyzpBcsAo+m3en7wDsW+z+cvIWqAzoq7lHcn5Ofn/4zHVT0pBlf6I0=
+X-Received: by 2002:a1f:4582:: with SMTP id s124mr11891652vka.7.1608112658664;
+ Wed, 16 Dec 2020 01:57:38 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB6053.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1fc62710-c867-4833-be50-08d8a1a8bb82
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Dec 2020 09:55:34.4291
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ySGqZQexFMns3iGW2e9qxyCwpkx3sfMzX85sfDZ9KRZcyPJ2deq+T4aOfc1Z5F7eGIFXSRj6RykmQ2ThL4bb1Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM5PR04MB3201
+References: <20201207115753.21728-1-bbudiredla@marvell.com>
+ <20201207115753.21728-2-bbudiredla@marvell.com> <CAPDyKFqQwvG6vkwqPZutXjdV0hVrKp3MiqRRMZZ4C8Zr2Of9rg@mail.gmail.com>
+ <CY4PR1801MB2070FD9FB1AB7166651198D1DEC60@CY4PR1801MB2070.namprd18.prod.outlook.com>
+ <CAPDyKFqMsMdqw=Uwzby0tNNvPieRT2i6PAmHu_9XRRVy1MykuQ@mail.gmail.com> <CY4PR1801MB207090582E5E763F3672153BDEC60@CY4PR1801MB2070.namprd18.prod.outlook.com>
+In-Reply-To: <CY4PR1801MB207090582E5E763F3672153BDEC60@CY4PR1801MB2070.namprd18.prod.outlook.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 16 Dec 2020 10:57:02 +0100
+Message-ID: <CAPDyKFpvRgsE3biXZncbR_qfU4+9Z1mf7fCB=aAchH7hTsq+Vw@mail.gmail.com>
+Subject: Re: [EXT] Re: [PATCH 1/2] mmc: Support kmsg dumper based on pstore/blk
+To:     Bhaskara Budiredla <bbudiredla@marvell.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogS3J6eXN6dG9mIEtvemxv
-d3NraSA8a3J6a0BrZXJuZWwub3JnPg0KPiBTZW50OiAyMDIw5bm0MTLmnIgxNeaXpSAxNzoxMQ0K
-PiBUbzogQWxpY2UgR3VvIChPU1MpIDxhbGljZS5ndW9Ab3NzLm54cC5jb20+DQo+IENjOiByb2Jo
-K2R0QGtlcm5lbC5vcmc7IHNoYXduZ3VvQGtlcm5lbC5vcmc7IHMuaGF1ZXJAcGVuZ3V0cm9uaXgu
-ZGU7DQo+IGtlcm5lbEBwZW5ndXRyb25peC5kZTsgZmVzdGV2YW1AZ21haWwuY29tOyBkZXZpY2V0
-cmVlQHZnZXIua2VybmVsLm9yZzsNCj4gbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQu
-b3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBkbC1saW51eC1pbXgNCj4gPGxpbnV4
-LWlteEBueHAuY29tPg0KPiBTdWJqZWN0OiBSZTogW1BBVENIIHY3IDEvNF0gZHQtYmluZGluZ3M6
-IHNvYzogaW14OG06IGFkZCBEVCBCaW5kaW5nIGRvYyBmb3Igc29jDQo+IHVuaXF1ZSBJRA0KPiAN
-Cj4gT24gVHVlLCBEZWMgMTUsIDIwMjAgYXQgMDQ6MzU6NDhQTSArMDgwMCwgQWxpY2UgR3VvIChP
-U1MpIHdyb3RlOg0KPiA+IEZyb206IEFsaWNlIEd1byA8YWxpY2UuZ3VvQG54cC5jb20+DQo+ID4N
-Cj4gPiBBZGQgRFQgQmluZGluZyBkb2MgZm9yIHRoZSBVbmlxdWUgSUQgb2YgaS5NWCA4TSBzZXJp
-ZXMuDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBBbGljZSBHdW8gPGFsaWNlLmd1b0BueHAuY29t
-Pg0KPiA+IC0tLQ0KPiA+DQo+ID4gQ2hhbmdlcyBmb3Igdjc6DQo+ID4gIC0gY2hhbmdlIHRvIGEg
-c2VwYXJhdGUgc2NoZW1hIGZpbGUNCj4gPiBDaGFuZ2VzIGZvciB2NjoNCj4gPiAgLSBub25lDQo+
-ID4gQ2hhbmdlcyBmb3IgdjU6DQo+ID4gIC0gY29ycmVjdCB0aGUgZXJyb3Igb2YgdXNpbmcgYWxs
-T2YNCj4gPiBDaGFuZ2VzIGZvciB2NDoNCj4gPiAgLSB1c2UgYWxsT2YgdG8gbGltaXQgbmV3IHZl
-cnNpb24gRFRTIGZpbGVzIGZvciBpLk1YOE0gdG8gaW5jbHVkZQ0KPiA+ICAgICJmc2wsaW14OG0q
-LXNvYyIsIG52bWVtLWNlbGxzIGFuZCBudm1lbS1jZWxscy1uYW1lcyBDaGFuZ2VzIGZvciB2MzoN
-Cj4gPiAgLSBwdXQgaXQgaW50byBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvYXJt
-L2ZzbC55YW1sDQo+ID4gIC0gbW9kaWZ5IHRoZSBkZXNjcmlwdGlvbiBvZiBudm1lbS1jZWxscw0K
-PiA+ICAtIHVzZSAibWFrZSBBUkNIPWFybTY0IGR0YnNfY2hlY2siIHRvIG1ha2Ugc3VyZSBpdCBp
-cyByaWdodCBDaGFuZ2VzDQo+ID4gZm9yIHYyOg0KPiA+ICAtIHJlbW92ZSB0aGUgc3ViamVjdCBw
-cmVmaXggIkxGLTI1NzEtMSINCj4gPg0KPiA+ICAuLi4vYmluZGluZ3Mvc29jL2lteC9pbXg4bS1z
-b2MueWFtbCAgICAgICAgICAgfCA1NA0KPiArKysrKysrKysrKysrKysrKysrDQo+ID4gIDEgZmls
-ZSBjaGFuZ2VkLCA1NCBpbnNlcnRpb25zKCspDQo+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NA0KPiA+
-IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb2MvaW14L2lteDhtLXNvYy55YW1s
-DQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
-L3NvYy9pbXgvaW14OG0tc29jLnlhbWwNCj4gPiBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9i
-aW5kaW5ncy9zb2MvaW14L2lteDhtLXNvYy55YW1sDQo+ID4gbmV3IGZpbGUgbW9kZSAxMDA2NDQN
-Cj4gPiBpbmRleCAwMDAwMDAwMDAwMDAuLmEyZjdkYzBjOWIzNQ0KPiA+IC0tLSAvZGV2L251bGwN
-Cj4gPiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc29jL2lteC9pbXg4
-bS1zb2MueWFtbA0KPiA+IEBAIC0wLDAgKzEsNTQgQEANCj4gPiArIyBTUERYLUxpY2Vuc2UtSWRl
-bnRpZmllcjogKEdQTC0yLjAgT1IgQlNELTItQ2xhdXNlKSAlWUFNTCAxLjINCj4gPiArLS0tDQo+
-ID4gKyRpZDogaHR0cDovL2RldmljZXRyZWUub3JnL3NjaGVtYXMvc29jL2lteC9pbXg4bS1zb2Mu
-eWFtbCMNCj4gPiArJHNjaGVtYTogaHR0cDovL2RldmljZXRyZWUub3JnL21ldGEtc2NoZW1hcy9j
-b3JlLnlhbWwjDQo+ID4gKw0KPiA+ICt0aXRsZTogTlhQIGkuTVg4TSBTZXJpZXMgU29DDQo+ID4g
-Kw0KPiA+ICttYWludGFpbmVyczoNCj4gPiArICAtIEFsaWNlIEd1byA8YWxpY2UuZ3VvQG54cC5j
-b20+DQo+ID4gKw0KPiA+ICtkZXNjcmlwdGlvbjogfA0KPiA+ICsgIE5YUCBpLk1YOE0gc2VyaWVz
-IFNvQ3MgY29udGFpbiBmdXNlIGVudHJpZXMgZnJvbSB3aGljaCBTb0MgVW5pcXVlDQo+ID4gK0lE
-IGNhbiBiZQ0KPiA+ICsgIG9idGFpbmVkLg0KPiA+ICsNCj4gPiArc2VsZWN0Og0KPiANCj4gTWht
-LCB0aGVyZSBhcmUgb3RoZXIgY29tcGF0aWJsZXMgaGVyZSBzbyBpbmRlZWQsIHNlbGVjdCBpcyBu
-ZWVkZWQuDQo+IA0KPiA+ICsgIHByb3BlcnRpZXM6DQo+ID4gKyAgICBjb21wYXRpYmxlOg0KPiA+
-ICsgICAgICBjb250YWluczoNCj4gPiArICAgICAgICBlbnVtOg0KPiA+ICsgICAgICAgICAgLSBm
-c2wsaW14OG1tDQo+ID4gKyAgICAgICAgICAtIGZzbCxpbXg4bW4NCj4gPiArICAgICAgICAgIC0g
-ZnNsLGlteDhtcA0KPiA+ICsgICAgICAgICAgLSBmc2wsaW14OG1xDQo+ID4gKyAgcmVxdWlyZWQ6
-DQo+ID4gKyAgICAtIGNvbXBhdGlibGUNCj4gDQo+IFRoaXMgZG9lcyBub3Qgd29yayAtIGRvZXMg
-bm90IG1hdGNoIGFueXRoaW5nLiBJdCBzZWVtcyB5b3UgbWlzc2VkIHByb3Blcg0KPiAicmVxdWly
-ZWQiIGZvciB0aGUgbWF0Y2hlZCBub2RlLg0KPiANCj4gUHJvdmlkZSBhbHNvIGFuIGV4YW1wbGUu
-DQo+IA0KPiBCZXN0IHJlZ2FyZHMsDQo+IEtyenlzenRvZg0KPiANCg0KSGksIEtyenlzenRvZg0K
-VGhhbmsgeW91IGZvciB5b3VyIGFkdmljZS4gTXkgb3BpbmlvbiBpcyBkaWZmZXJlbnQgZnJvbSB5
-b3Vycy4NCg0KSSBkaWQgdGhlIGZvd2xsb3dpbmcgdGVzdDoNCi0tLSBhL0RvY3VtZW50YXRpb24v
-ZGV2aWNldHJlZS9iaW5kaW5ncy9zb2MvaW14L2lteDhtLXNvYy55YW1sDQorKysgYi9Eb2N1bWVu
-dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc29jL2lteC9pbXg4bS1zb2MueWFtbA0KQEAgLTIy
-LDYgKzIyLDcgQEAgc2VsZWN0Og0KICAgICAgICAgICAtIGZzbCxpbXg4bW4NCiAgICAgICAgICAg
-LSBmc2wsaW14OG1wDQogICAgICAgICAgIC0gZnNsLGlteDhtcQ0KKyAgICAgICAgICAtIGZzbCxs
-eDIxNjBhDQogICByZXF1aXJlZDoNCiAgICAgLSBjb21wYXRpYmxlDQoNCuKenCAgbGludXgtbmV4
-dCBnaXQ6KG1hc3Rlcikg4pyXIG1ha2UgQVJDSD1hcm02NCBkdGJzX2NoZWNrIERUX1NDSEVNQV9G
-SUxFUz1Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc29jL2lteC9pbXg4bS1zb2Mu
-eWFtbA0KLi4uDQovaG9tZS9ueGY1NTEwNC92aXJ0dWFsaXphdGlvbi91cHN0cmVhbS9saW51eC1u
-ZXh0L2FyY2gvYXJtNjQvYm9vdC9kdHMvZnJlZXNjYWxlL2ZzbC1seDIxNjBhLWNsZWFyZm9nLWN4
-LmR0LnlhbWw6IC86IHNvYzpjb21wYXRpYmxlOjA6ICdzaW1wbGUtYnVzJyBpcyBub3Qgb25lIG9m
-IFsnZnNsLGlteDhtbS1zb2MnLCAnZnNsLGlteDhtbi1zb2MnLCAnZnNsLGlteDhtcC1zb2MnLCAn
-ZnNsLGlteDhtcS1zb2MnXQ0KICAgICAgICBGcm9tIHNjaGVtYTogL2hvbWUvbnhmNTUxMDQvdmly
-dHVhbGl6YXRpb24vdXBzdHJlYW0vbGludXgtbmV4dC9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
-YmluZGluZ3Mvc29jL2lteC9pbXg4bS1zb2MueWFtbA0KLi4uDQoNClNvLCBJIHRoaW5rIGl0IHdv
-cmtzIGFuZCBjYW4gbWF0Y2ggc3R1ZmYuIEkgZG8gbm90IHVuZGVyc3RhbmQgd2hhdCBwcm9wZXIg
-IiByZXF1aXJlZCIgSSBtaXNzZWQuIFBsZWFzZSBnaXZlIG1lIHNvbWUgdGlwcy4gVGhhbmsgeW91
-Lg0KDQpCZXN0IHJlZ2FyZHMsDQpBbGljZQ0KDQo+IA0KPiA+ICsNCj4gPiArcHJvcGVydGllczoN
-Cj4gPiArICBzb2M6DQo+ID4gKyAgICB0eXBlOiBvYmplY3QNCj4gPiArICAgIHByb3BlcnRpZXM6
-DQo+ID4gKyAgICAgIGNvbXBhdGlibGU6DQo+ID4gKyAgICAgICAgaXRlbXM6DQo+ID4gKyAgICAg
-ICAgICAtIGVudW06DQo+ID4gKyAgICAgICAgICAgICAgLSBmc2wsaW14OG1tLXNvYw0KPiA+ICsg
-ICAgICAgICAgICAgIC0gZnNsLGlteDhtbi1zb2MNCj4gPiArICAgICAgICAgICAgICAtIGZzbCxp
-bXg4bXAtc29jDQo+ID4gKyAgICAgICAgICAgICAgLSBmc2wsaW14OG1xLXNvYw0KPiA+ICsgICAg
-ICAgICAgLSBjb25zdDogc2ltcGxlLWJ1cw0KPiA+ICsNCj4gPiArICAgICAgbnZtZW0tY2VsbHM6
-DQo+ID4gKyAgICAgICAgbWF4SXRlbXM6IDENCj4gPiArICAgICAgICBkZXNjcmlwdGlvbjogUGhh
-bmRsZSB0byB0aGUgU09DIFVuaXF1ZSBJRCBwcm92aWRlZCBieSBhIG52bWVtDQo+ID4gKyBub2Rl
-DQo+ID4gKw0KPiA+ICsgICAgICBudm1lbS1jZWxscy1uYW1lczoNCj4gPiArICAgICAgICBjb25z
-dDogc29jX3VuaXF1ZV9pZA0KPiA+ICsNCj4gPiArICAgIHJlcXVpcmVkOg0KPiA+ICsgICAgICAt
-IGNvbXBhdGlibGUNCj4gPiArICAgICAgLSBudm1lbS1jZWxscw0KPiA+ICsgICAgICAtIG52bWVt
-LWNlbGwtbmFtZXMNCj4gPiArDQo+ID4gK2FkZGl0aW9uYWxQcm9wZXJ0aWVzOiB0cnVlDQo+ID4g
-Ky4uLg0KPiA+IC0tDQo+ID4gMi4xNy4xDQo+ID4NCg==
+[...]
+
+> >> >
+> >> >It looks like the above I/O read/write interface for pstore is
+> >> >intended to be used when the platform is up and running and not during a
+> >panic, correct?
+> >> >
+> >> >If so, I don't get why it can't use the regular block interface, as
+> >> >any other file system does, for example?
+> >> >
+> >>
+> >> The pstore read and write operations are used as part of pstore file
+> >> system mounting to retrieve the stored logs from MMC platform backend
+> >> and to manage pstore read/write counters. Sleeping would be allowed
+> >> during this time. Whereas, pstore PANIC write will be called if there happens
+> >a crash in the system. Sleeping is NOT allowed at this time.
+> >>
+> >> It seems you are mixing the sleeping paths of the mmcpstore with that of
+> >atomic path.
+> >
+> >No, I am not mixing them, but questioning them.
+> >
+> >For the non atomic path, I don't understand why the pstore file system
+> >mounting, etc, deserves to be managed through its own specific ops?
+> >Are there any specific reasons for this that I am missing?
+> >
+>
+> Seems generic way is undergoing some changes. Kees already ACKed
+> the mmcpstore registration through block device registration.
+>
+> >In principle, for non atomic path, I would rather see that the pstore file system
+> >should be able to be mounted on top of any generic block device partition -
+> >without requiring the block device driver to implement specific pstore ops.
+> >
+>
+> Scope to answer this is out of mmcpstore driver. Pstore/blk driver have to
+> answer this.
+
+Yep, I am open to discuss this more.
+
+>
+> >>
+> >>
+> >> >> +
+> >> >> +static void mmcpstore_panic_write_req(const char *buf,
+> >> >> +               unsigned int nsects, unsigned int sect_offset) {
+> >> >> +       struct mmcpstore_context *cxt = &oops_cxt;
+> >> >> +       struct mmc_request *mrq = cxt->mrq;
+> >> >> +       struct mmc_card *card = cxt->card;
+> >> >> +       struct mmc_host *host = card->host;
+> >> >> +       struct scatterlist sg;
+> >> >> +       u32 opcode;
+> >> >> +
+> >> >> +       opcode = (nsects > 1) ? MMC_WRITE_MULTIPLE_BLOCK :
+> >> >MMC_WRITE_BLOCK;
+> >> >> +       mmc_prep_req(mrq, sect_offset, nsects, &sg, opcode,
+> >> >MMC_DATA_WRITE);
+> >> >> +       sg_init_one(&sg, buf, (nsects << SECTOR_SHIFT));
+> >> >> +       mmc_set_data_timeout(mrq->data, cxt->card);
+> >> >> +
+> >> >> +       mmc_claim_host(host);
+> >> >
+> >> >So, this will use several locks, which may be a problem, right?
+> >> >
+> >>
+> >> No, as said above locks are present on host driver will be dropped in
+> >> CONFIG_MMC_PSTORE path.
+> >
+> >Please have a look at the code implementing mmc_claim_host(). It's not just a
+> >simple spin_lock, but there is also a wait_queue and runtime PM being
+> >managed from there.
+> >
+> >>
+> >> >Moreover, if there is an ongoing I/O request (or any other active
+> >> >command/request for that matter), then the host is already claimed by
+> >> >the mmc core. Normally, we would then wait for that request to be
+> >> >completed, to trigger the release of the host and then allow us to claim it
+> >here.
+> >> >
+> >> >However, because of the kernel panic, I assume it's quite likely that
+> >> >any ongoing request will not be completed at all, as IRQs may not
+> >> >work, for example.
+> >> >
+> >> >In other words, we may be hanging here forever waiting to claim the host.
+> >> >Unless we are lucky, because of no ongoing request, although we would
+> >> >still have to succeed walking through all the locking, etc, in
+> >mmc_claim_host().
+> >> >
+>
+> I agree with your concerns about spin_lock, wait_queue and runtime PM in
+> mmc_claim_host(), but not the ongoing requests presence. They must
+> have terminated cleanly through host->ops->req_cleanup_pending(host)
+> before reaching mmc_claim_host().
+>
+> I will come up with something to address these in the next patch.
+>
+> >>
+> >> host->ops->req_cleanup_pending(host) was introduced to clean up the
+> >> host->ops->queued
+> >> and ongoing requests/commands. Terminating ongoing requests is not a
+> >> complicated thing for the host drivers.
+> >
+> >Well, I don't agree. Resetting the host controller should not be a big problem,
+> >but I am more worried about what state this will bring the eMMC/SD card in.
+> >
+>
+> I am not sure why are you saying host controller reset. No ware host controller
+> reset was performed as part of these patches.
+>
+> >It sounds to me that the only option is to try to rely on the
+> >mmc_claim_host() to actually succeed. This makes it certain that there is no
+> >ongoing request that needs to be terminated. Otherwise, things will just fall
+> >apart.
+> >
+>
+> Agree. Seems I need to create an alternate path to forcefully gain access to the host
+> for the case of panic write. As you pointed out mmc_claim_host(), mmc_release_host()
+> and runtime PM can create issues.
+>
+> >The question is, can/should we rely on mmc_claim_host() to succeed in this
+> >path? Maybe it will work, in cases when there is no ongoing request, as it
+> >means the host should be available to be immediately claimed. Although,
+> >then the problem ends up with runtime PM, as if the host is available for
+> >claiming, it's likely that the host is runtime suspended...
+> >
+>
+> An extra check can be added to see if host was runtime suspended ahead
+> of panic write attempt.
+
+What if that is the case, should we just return an error?
+
+Moreover, even the device belonging to the mmc card can be runtime
+suspended too. So if that is the case, we should return an error too?
+
+[...]
+
+> >> >[...]
+> >> >
+> >> >Having said the above, I am not entirely convinced that it makes
+> >> >sense to support this, at all.
+> >> >
+> >> >Not only, will the support be highly fragile from the mmc core point
+> >> >of view, but there is also a significant complexity for an mmc host
+> >> >driver to support this (at least in general).
+> >> >
+> >>
+> >> I am not sure if the comments on host driver complexity is true.
+> >> Terminating ongoing requests and introducing polling functions on host
+> >> drivers should be straight forward. None those would disturb the core
+> >> functionality. They are completely independent.
+> >
+> >I think you are underestimating the part with terminating ongoing requests. It
+> >sounds to me that you really haven't been terminating any requests at all, but
+> >rather just doing a reset of the mmc controller (which is what I observed in
+> >patch2).
+> >
+>
+> No, it's not true. I am not doing any reset. Please point me to specific code snippet
+> where you have observed this.
+
+I was looking at patch2 and the ->req_cleanup_pending() callback that
+you have assigned to cvm_req_cleanup_pending().
+
+In there you clear a potentially running DMA job, which is *kind* of a
+reset of the controller. More importantly, it's definitely *not*
+terminating an ongoing request, in a way that you can expect the
+eMMC/SD card to be ready for new communications afterwards. This is my
+main point.
+
+Kind regards
+Uffe
