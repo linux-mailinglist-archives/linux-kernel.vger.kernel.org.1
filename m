@@ -2,147 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E82042DB7C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:24:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37C082DB7CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:29:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725790AbgLPAYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 19:24:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51074 "EHLO
+        id S1725877AbgLPA21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 19:28:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725786AbgLPAX7 (ORCPT
+        with ESMTP id S1725790AbgLPA2Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 19:23:59 -0500
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A70C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 16:23:19 -0800 (PST)
-Received: by mail-pf1-x449.google.com with SMTP id n8so14294531pfa.8
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 16:23:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=NldisNtyKDZkpWuNU4L0OQjMrO2hlrQAL2PRPxrtX6A=;
-        b=J5mnM7lVskfzO/TiL8JO8rOh9edruYozjmmO+VhEnaY/kIBOpmfhI1dkNW4m6V0A4G
-         3g/oxJzm5KfCvfRGhSv95kFGzvsZXKgzbQ1PqAjiYa7RAr7nVDqjrReO8OaD6duCUImv
-         co4QWcXpV9daHa1Kfl32lySTGL+2kg/ToRmn83aBM6l/+D9Yy9yHRklFq+6ca4Kiqcsq
-         hPGDDA5l7TY2JkOSHUHoxiGmfRIiqNW5VLBviv+ScyRVdl6HSmUrfLvXIWadaHJYDxvD
-         JCXl6WIUQCsCCOwoEbSM7swZUosuUNPxXjlnKIHTRIX/+TpA7BNrqIeijf9afdJx+RTD
-         9IUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=NldisNtyKDZkpWuNU4L0OQjMrO2hlrQAL2PRPxrtX6A=;
-        b=Yc4gCy7gE7pkBt3JrjKOm5m1plCQQRhSsFv3pAPhwvUQaL3nQwLWel1eBnaxXnwps9
-         KQJyZuL7rhDLL4+l/7B4GDjJaqEF0JNe+VQSUs5wang8sz1592A+sYdOemSfIGDr2qUa
-         gz3zAhlCZnTMjL8FzrvNQp5jRYkiQpkT36y40iD0y1Z8xSlYfLQHEViiIqT0jzY3YyCa
-         JsWfB8X4U96AiyiMwwldACUs9FdjjUUTCosOpiu9gbLxTw9r5PKW/mNHsP8ESDdtfguq
-         m0hkWXNgKGkTSlXW6MB+LluFbmnfkHuM3rzMmPF9llVwH2GWETof5FpgT5rInUni9C3b
-         8cYQ==
-X-Gm-Message-State: AOAM532yuds5H3RqVLrOnE2QxVTdf5H9iCJU87vuoNESyrxVle4hYw6H
-        by4EqxEcxCirYZUJ3kRlmuxSCGLWacA7rg==
-X-Google-Smtp-Source: ABdhPJxXgM45sPXTYHJabH46VueKuzZGwYP1kBcW5DLNGE49xW53pHsLHbDprPXcGIZnh/bOR/mpyY0VCKCL7g==
-Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:a28c:fdff:fee3:28c6])
- (user=dlatypov job=sendgmr) by 2002:a62:2cc3:0:b029:197:dda8:476a with SMTP
- id s186-20020a622cc30000b0290197dda8476amr2336689pfs.37.1608078198857; Tue,
- 15 Dec 2020 16:23:18 -0800 (PST)
-Date:   Tue, 15 Dec 2020 16:22:46 -0800
-Message-Id: <20201216002246.3580422-1-dlatypov@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.684.gfbc64c5ab5-goog
-Subject: [PATCH] Documentation: kunit: include example of a parameterized test
-From:   Daniel Latypov <dlatypov@google.com>
-To:     davidgow@google.com, brendanhiggins@google.com
-Cc:     elver@google.com, 98.arpi@gmail.com, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
-        Daniel Latypov <dlatypov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 15 Dec 2020 19:28:25 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77881C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 16:27:45 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1608078463;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9oM6XJd59woVYfiyCB+uESYOvCyhYxaqi5O1krN5wgo=;
+        b=v7rJUlwY4m0n0Vbhn6TAQAHlty9gsG6bryBhjGqOnxsTvKe7StHa9KJ8mXKH8irj9gsZph
+        7v4YugnH4H9EVR4s/yBeOfEAV5qu2owOUcuT7sW/Rxq8QN95u7m/osCMOvzvBtI9UJAbnn
+        ANJ7MHlNrBSCWiu1ofwR8QDoDhSq1NJ0mFNlSZ9cgDGlITfnhTUaQteDBpP61DWiVD/3cI
+        JY62weSHJ4sLEAb0UauwVlwmdJdHGL0z/n9ROTCLoOYtzmQtM3I2SVzwPmZBXTPRZYJQHP
+        5vmPbIosMPAm7SJJRR5wHDIlP8fGzQ/cs5qlHExUkbtb9mByfNkbo8FjZc/j3Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1608078463;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9oM6XJd59woVYfiyCB+uESYOvCyhYxaqi5O1krN5wgo=;
+        b=ccIALfQ05CQjLixNenK1GYtU+/2cMyW4jv3ajGXGKWvk3xHzRQ4H2yGhfjidzb0+nliMQP
+        nH2Lw7tx1Ic3BnCw==
+To:     paulmck@kernel.org, Peter Zijlstra <peterz@infradead.org>
+Cc:     Marco Elver <elver@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        syzbot+23a256029191772c2f02@syzkaller.appspotmail.com,
+        syzbot+56078ac0b9071335a745@syzkaller.appspotmail.com,
+        syzbot+867130cb240c41f15164@syzkaller.appspotmail.com
+Subject: Re: [patch 3/3] tick: Annotate tick_do_timer_cpu data races
+In-Reply-To: <20201208150309.GP2657@paulmck-ThinkPad-P72>
+References: <20201206211253.919834182@linutronix.de> <20201206212002.876987748@linutronix.de> <20201207120943.GS3021@hirez.programming.kicks-ass.net> <87y2i94igo.fsf@nanos.tec.linutronix.de> <CANpmjNNQiTbnkkj+ZHS5xxQuQfnWN_JGwSnN-_xqfa=raVrXHQ@mail.gmail.com> <20201207194406.GK2657@paulmck-ThinkPad-P72> <20201208081129.GQ2414@hirez.programming.kicks-ass.net> <20201208150309.GP2657@paulmck-ThinkPad-P72>
+Date:   Wed, 16 Dec 2020 01:27:43 +0100
+Message-ID: <873606tx1c.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit fadb08e7c750 ("kunit: Support for Parameterized Testing")
-introduced support but lacks documentation for how to use it.
+On Tue, Dec 08 2020 at 07:03, Paul E. McKenney wrote:
 
-This patch builds on commit 1f0e943df68a ("Documentation: kunit: provide
-guidance for testing many inputs") to show a minimal example of the new
-feature.
+> On Tue, Dec 08, 2020 at 09:11:29AM +0100, Peter Zijlstra wrote:
+>> On Mon, Dec 07, 2020 at 11:44:06AM -0800, Paul E. McKenney wrote:
+>> 
+>> > Also, in this particular case, why data_race() rather than READ_ONCE()?
+>> > Do we really expect the compiler to be able to optimize this case
+>> > significantly without READ_ONCE()?
 
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
----
- Documentation/dev-tools/kunit/usage.rst | 57 +++++++++++++++++++++++++
- 1 file changed, 57 insertions(+)
+There is probably not much optimization potential for the compiler if
+data_race() is used vs. READ/WRITE_ONCE() in this code.
 
-diff --git a/Documentation/dev-tools/kunit/usage.rst b/Documentation/dev-tools/kunit/usage.rst
-index d9fdc14f0677..650f99590df5 100644
---- a/Documentation/dev-tools/kunit/usage.rst
-+++ b/Documentation/dev-tools/kunit/usage.rst
-@@ -522,6 +522,63 @@ There's more boilerplate involved, but it can:
-   * E.g. if we wanted to also test ``sha256sum``, we could add a ``sha256``
-     field and reuse ``cases``.
- 
-+* be converted to a "parameterized test", see below.
-+
-+Parameterized Testing
-+~~~~~~~~~~~~~~~~~~~~~
-+
-+The table-driven testing pattern is common enough that KUnit has special
-+support for it.
-+
-+Reusing the same ``cases`` array from above, we can write the test as a
-+"parameterized test" with the following.
-+
-+.. code-block:: c
-+
-+	// This is copy-pasted from above.
-+	struct sha1_test_case {
-+		const char *str;
-+		const char *sha1;
-+	};
-+	struct sha1_test_case cases[] = {
-+		{
-+			.str = "hello world",
-+			.sha1 = "2aae6c35c94fcfb415dbe95f408b9ce91ee846ed",
-+		},
-+		{
-+			.str = "hello world!",
-+			.sha1 = "430ce34d020724ed75a196dfc2ad67c77772d169",
-+		},
-+	};
-+
-+	// Need a helper function to generate a name for each test case.
-+	static void case_to_desc(const struct sha1_test_case *t, char *desc)
-+	{
-+		strcpy(desc, t->str);
-+	}
-+	// Creates `sha1_gen_params()` to iterate over `cases`.
-+	KUNIT_ARRAY_PARAM(sha1, cases, case_to_desc);
-+
-+	// Looks no different from a normal test.
-+	static void sha1_test(struct kunit *test)
-+	{
-+		// This function can just contain the body of the for-loop.
-+		// The former `cases[i]` is accessible under test->param_value.
-+		char out[40];
-+		struct sha1_test_case *test_param = (struct sha1_test_case *)(test->param_value);
-+
-+		sha1sum(test_param->str, out);
-+		KUNIT_EXPECT_STREQ_MSG(test, (char *)out, test_param->sha1,
-+				      "sha1sum(%s)", test_param->str);
-+	}
-+
-+	// Instead of KUNIT_CASE, we use KUNIT_CASE_PARAM and pass in the
-+	// function declared by KUNIT_ARRAY_PARAM.
-+	static struct kunit_case sha1_test_cases[] = {
-+		KUNIT_CASE_PARAM(sha1_test, sha1_gen_params),
-+		{}
-+	};
-+
- .. _kunit-on-non-uml:
- 
- KUnit on non-UML architectures
+>> It's about intent and how the code reads. READ_ONCE() is something
+>> completely different from data_race(). data_race() is correct here.
+>
+> Why?
 
-base-commit: 5f6b99d0287de2c2d0b5e7abcb0092d553ad804a
--- 
-2.29.2.684.gfbc64c5ab5-goog
+Lemme answer that to the extent why _I_ chose data_race() - aside of my
+likely confusion over our IRC conversation.
+
+The code does not really care about the compiler trying to be clever or
+not as it is designed to be tolerant of all sorts of concurrency
+including competing writes. It does not care about multiple reloads
+either.  It neither cares about invented stores as long as these
+invented stores are not storing phantasy values.
+
+The only thing it cares about is store/load tearing, but there is no
+'clever' way to use that because of the only valid transitions of
+'cpunr' which comes from smp_processor_id() to TICK_DO_TIMER_NONE which
+is the only constant involved or the other way round (which is
+intentionally subject to competing stores).
+
+If the compiler is free to store the 32bit value as 4 seperate bytes or
+does invented stores with phantasy values, then there is surely a reason
+to switch to READ/WRITE_ONCE(), but that'd be a really daft reason.
+
+So my intent was to document that this code does not care about anything
+else than what I'd consider to be plain compiler bugs.
+
+My conclusion might be wrong as usual :)
+
+Thanks,
+
+        tglx
+
+
+
 
