@@ -2,56 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 923D52DC1B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:57:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 778C72DC1B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:57:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726343AbgLPN43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 08:56:29 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:57346 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726137AbgLPN43 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 08:56:29 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kpXHK-00CISQ-2Q; Wed, 16 Dec 2020 14:55:42 +0100
-Date:   Wed, 16 Dec 2020 14:55:42 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bridge@lists.linux-foundation.org,
-        Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Tobias Waldekranz <tobias@waldekranz.com>,
-        Marek Behun <marek.behun@nic.cz>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Alexandra Winter <wintera@linux.ibm.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Ido Schimmel <idosch@idosch.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        UNGLinuxDriver@microchip.com
-Subject: Re: [PATCH v3 net-next 1/7] net: bridge: notify switchdev of
- disappearance of old FDB entry upon migration
-Message-ID: <20201216135542.GI2893264@lunn.ch>
-References: <20201213140710.1198050-1-vladimir.oltean@nxp.com>
- <20201213140710.1198050-2-vladimir.oltean@nxp.com>
+        id S1726422AbgLPN5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 08:57:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726137AbgLPN5E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 08:57:04 -0500
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48E19C06179C
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 05:56:24 -0800 (PST)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1kpXHx-00A5EI-JL; Wed, 16 Dec 2020 14:56:21 +0100
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     Jan Kiszka <jan.kiszka@siemens.com>,
+        Kieran Bingham <kbingham@kernel.org>,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH] gdb: lx-symbols: store the abspath()
+Date:   Wed, 16 Dec 2020 14:56:16 +0100
+Message-Id: <20201216145616.3dc582daca12.I10ebbdb7e9b80ab1a5cddebf53d073be8232d656@changeid>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201213140710.1198050-2-vladimir.oltean@nxp.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 13, 2020 at 04:07:04PM +0200, Vladimir Oltean wrote:
-> Currently the bridge emits atomic switchdev notifications for
-> dynamically learnt FDB entries. Monitoring these notifications works
-> wonders for switchdev drivers that want to keep their hardware FDB in
-> sync with the bridge's FDB.
+From: Johannes Berg <johannes.berg@intel.com>
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+If we store the relative path, the user might later cd to a
+different directory, and that would break the automatic symbol
+resolving that happens when a module is loaded into the target
+kernel. Fix this by storing the abspath() of each path given,
+just like we already do for the cwd (os.getcwd() is absolute.)
 
-    Andrew
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+---
+ scripts/gdb/linux/symbols.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/gdb/linux/symbols.py b/scripts/gdb/linux/symbols.py
+index 1be9763cf8bb..e651c335deb6 100644
+--- a/scripts/gdb/linux/symbols.py
++++ b/scripts/gdb/linux/symbols.py
+@@ -164,7 +164,7 @@ lx-symbols command."""
+             saved_state['breakpoint'].enabled = saved_state['enabled']
+ 
+     def invoke(self, arg, from_tty):
+-        self.module_paths = [os.path.expanduser(p) for p in arg.split()]
++        self.module_paths = [os.path.abspath(os.path.expanduser(p)) for p in arg.split()]
+         self.module_paths.append(os.getcwd())
+ 
+         # enforce update
+-- 
+2.26.2
+
