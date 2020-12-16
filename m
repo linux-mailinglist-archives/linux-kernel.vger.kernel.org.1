@@ -2,102 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E79582DBC79
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 09:14:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64FD62DBC84
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 09:19:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725819AbgLPINt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 03:13:49 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:41520 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725287AbgLPINt (ORCPT
+        id S1725864AbgLPIS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 03:18:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725274AbgLPIS7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 03:13:49 -0500
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BG8AEoY026748;
-        Wed, 16 Dec 2020 03:12:51 -0500
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 35cun8wc9a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Dec 2020 03:12:51 -0500
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 0BG8CoEE001938
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 16 Dec 2020 03:12:50 -0500
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.721.2; Wed, 16 Dec 2020
- 03:12:49 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Wed, 16 Dec 2020 03:12:49 -0500
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0BG8CkZw028714;
-        Wed, 16 Dec 2020 03:12:46 -0500
-From:   Mircea Caprioru <mircea.caprioru@analog.com>
-To:     <jic23@kernel.org>
-CC:     <Michael.Hennerich@analog.com>, <alexandru.ardelean@analog.com>,
-        <lars@metafoo.de>, <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        Dragos Bogdan <dragos.bogdan@analog.com>,
-        Mircea Caprioru <mircea.caprioru@analog.com>
-Subject: [PATCH] iio: adc: ad7476: Add LTC2314-14 support
-Date:   Wed, 16 Dec 2020 10:17:10 +0200
-Message-ID: <20201216081710.89047-1-mircea.caprioru@analog.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 16 Dec 2020 03:18:59 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D75B8C0613D6;
+        Wed, 16 Dec 2020 00:18:18 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id 3so1520187wmg.4;
+        Wed, 16 Dec 2020 00:18:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=OsOzas/w/eSfqOtHOGgepo3zxkPHG/qg3EkWGzcgIY8=;
+        b=WesLM46cYqkvDM11I0wuqigkm5AWitGsfCK7aWBAgxMicsGw6+HNROPhOlCWYL+iEJ
+         WiDhj9N+GG03RaFy4poJjsDtzf5XwkjDgOeeSXXsgOENSBA0pG/eWY3o9XGRIcLeqfHS
+         pHW2ts22TPRs1ra5hjHSqEov/Qw+eMVbMcueZ3mMZA+P7+NDc5eYsAsMVme8AQUKKqgN
+         Cfpkb245c7TRWR+rVWSEUYIk1KBXNRIiE/TRkSNy8TZtNiXW5V4gEP87FX/2DodreYcB
+         M/rDiCOCjxyhJfLX/aOklf0FK8yTfNrMMEDlP+FCURLVxfr7HRP2DQk6Ke6JsFAq5bqJ
+         Nejw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to:user-agent;
+        bh=OsOzas/w/eSfqOtHOGgepo3zxkPHG/qg3EkWGzcgIY8=;
+        b=sD57vdezXni8rOh4zHo1BIeHATw/d14GscKaAV7dLiNDh+AkTKY4kP0bF8Ck3S2mYl
+         IU4WOuvH/XPIkYWzEa5QdIxIfS6PbSQiwbemjtef2P5+R/yjcDcGyQCRU3Q8QUvLUOsA
+         qW05ea2LJv3fDbzHF06VN9+twdrgntVArzh2Qld5JfWAKjfn/K0lwENUmu0cy4YMoKLo
+         IXKzT8C4SpSHPAxl3kqtgM6SWUVTcRXJto59MYHwwXy4xAnfHPH+FyzGzjaxNNduwSeR
+         NZ84by2u9AZrirWR/mehRZIdItdDwLYO3DrEUMUwYlrZ9hZLPcquYRz+h+9RjV97D1tH
+         aJ5Q==
+X-Gm-Message-State: AOAM532EtyOZkg2TnhANbrOxNLLLOJLIK8uxXsUucfjfdxx4kSo5gGxx
+        2XOy0hQw58gY8Byt8WbInU8=
+X-Google-Smtp-Source: ABdhPJzHeFoP5KZ4/1PKPsAcS1CL9F0trZ83qjPMopC7aPN6AW/HZ02O8UE++K+AEq681Fu5ROling==
+X-Received: by 2002:a1c:6208:: with SMTP id w8mr2068448wmb.96.1608106697688;
+        Wed, 16 Dec 2020 00:18:17 -0800 (PST)
+Received: from gmail.com ([81.168.73.77])
+        by smtp.gmail.com with ESMTPSA id i16sm1908890wrx.89.2020.12.16.00.18.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 16 Dec 2020 00:18:17 -0800 (PST)
+Date:   Wed, 16 Dec 2020 08:18:14 +0000
+From:   Martin Habets <habetsm.xilinx@gmail.com>
+To:     Ivan Babrou <ivan@cloudflare.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@cloudflare.com,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Subject: Re: [PATCH net-next] sfc: reduce the number of requested xdp ev
+ queues
+Message-ID: <20201216081814.jcwq6xzdxur5xm4l@gmail.com>
+Mail-Followup-To: Ivan Babrou <ivan@cloudflare.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@cloudflare.com, Edward Cree <ecree.xilinx@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+References: <20201215012907.3062-1-ivan@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-16_02:2020-12-15,2020-12-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- impostorscore=0 malwarescore=0 phishscore=0 spamscore=0 clxscore=1011
- bulkscore=0 adultscore=0 mlxscore=0 priorityscore=1501 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012160052
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201215012907.3062-1-ivan@cloudflare.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dragos Bogdan <dragos.bogdan@analog.com>
+On Mon, Dec 14, 2020 at 05:29:06PM -0800, Ivan Babrou wrote:
+> Without this change the driver tries to allocate too many queues,
+> breaching the number of available msi-x interrupts on machines
+> with many logical cpus and default adapter settings:
+> 
+> Insufficient resources for 12 XDP event queues (24 other channels, max 32)
+> 
+> Which in turn triggers EINVAL on XDP processing:
+> 
+> sfc 0000:86:00.0 ext0: XDP TX failed (-22)
+> 
+> Signed-off-by: Ivan Babrou <ivan@cloudflare.com>
 
-The LTC2314-14 is a 14-bit, 4.5Msps, serial sampling A/D converter that draws only
-6.2mA from a wide range analog supply adjustable from 2.7V to 5.25V.
+Acked-by: Martin Habets <habetsm.xilinx@gmail.com>
 
-Signed-off-by: Dragos Bogdan <dragos.bogdan@analog.com>
-Signed-off-by: Mircea Caprioru <mircea.caprioru@analog.com>
----
- drivers/iio/adc/ad7476.c | 4 ++++
- 1 file changed, 4 insertions(+)
+> ---
+>  drivers/net/ethernet/sfc/efx_channels.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/sfc/efx_channels.c b/drivers/net/ethernet/sfc/efx_channels.c
+> index a4a626e9cd9a..1bfeee283ea9 100644
+> --- a/drivers/net/ethernet/sfc/efx_channels.c
+> +++ b/drivers/net/ethernet/sfc/efx_channels.c
+> @@ -17,6 +17,7 @@
+>  #include "rx_common.h"
+>  #include "nic.h"
+>  #include "sriov.h"
+> +#include "workarounds.h"
+>  
+>  /* This is the first interrupt mode to try out of:
+>   * 0 => MSI-X
+> @@ -137,6 +138,7 @@ static int efx_allocate_msix_channels(struct efx_nic *efx,
+>  {
+>  	unsigned int n_channels = parallelism;
+>  	int vec_count;
+> +	int tx_per_ev;
+>  	int n_xdp_tx;
+>  	int n_xdp_ev;
+>  
+> @@ -149,9 +151,9 @@ static int efx_allocate_msix_channels(struct efx_nic *efx,
+>  	 * multiple tx queues, assuming tx and ev queues are both
+>  	 * maximum size.
+>  	 */
+> -
+> +	tx_per_ev = EFX_MAX_EVQ_SIZE / EFX_TXQ_MAX_ENT(efx);
+>  	n_xdp_tx = num_possible_cpus();
+> -	n_xdp_ev = DIV_ROUND_UP(n_xdp_tx, EFX_MAX_TXQ_PER_CHANNEL);
+> +	n_xdp_ev = DIV_ROUND_UP(n_xdp_tx, tx_per_ev);
+>  
+>  	vec_count = pci_msix_vec_count(efx->pci_dev);
+>  	if (vec_count < 0)
+> -- 
+> 2.29.2
 
-diff --git a/drivers/iio/adc/ad7476.c b/drivers/iio/adc/ad7476.c
-index 66c55ae67791..d0c42c2d433b 100644
---- a/drivers/iio/adc/ad7476.c
-+++ b/drivers/iio/adc/ad7476.c
-@@ -67,6 +67,7 @@ enum ad7476_supported_device_ids {
- 	ID_ADS7866,
- 	ID_ADS7867,
- 	ID_ADS7868,
-+	ID_LTC2314_14,
- };
- 
- static void ad7091_convst(struct ad7476_state *st)
-@@ -248,6 +249,8 @@ static const struct ad7476_chip_info ad7476_chip_info_tbl[] = {
- 	},
- 	[ID_ADS7868] = {
- 		.channel[0] = ADS786X_CHAN(8),
-+	[ID_LTC2314_14] = {
-+		.channel[0] = AD7940_CHAN(14),
- 		.channel[1] = IIO_CHAN_SOFT_TIMESTAMP(1),
- 	},
- };
-@@ -365,6 +368,7 @@ static const struct spi_device_id ad7476_id[] = {
- 	{"ads7866", ID_ADS7866},
- 	{"ads7867", ID_ADS7867},
- 	{"ads7868", ID_ADS7868},
-+	{"ltc2314-14", ID_LTC2314_14},
- 	{}
- };
- MODULE_DEVICE_TABLE(spi, ad7476_id);
 -- 
-2.17.1
-
+Martin Habets <habetsm.xilinx@gmail.com>
