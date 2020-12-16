@@ -2,325 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B43C2DBCD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 09:42:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 812892DBCD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 09:43:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726268AbgLPIkb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 16 Dec 2020 03:40:31 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:31522 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726253AbgLPIka (ORCPT
+        id S1725962AbgLPIm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 03:42:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726414AbgLPIm6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 03:40:30 -0500
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-471-77gKQr0kNFWI-fAD2sEx_Q-1; Wed, 16 Dec 2020 03:39:34 -0500
-X-MC-Unique: 77gKQr0kNFWI-fAD2sEx_Q-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3674310054FF;
-        Wed, 16 Dec 2020 08:39:32 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.193.13])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 71D9727C3D;
-        Wed, 16 Dec 2020 08:39:29 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexei Budankov <abudankov@huawei.com>
-Subject: [PATCH 4/4] perf tools: Add evlist control command
-Date:   Wed, 16 Dec 2020 09:39:14 +0100
-Message-Id: <20201216083914.47215-5-jolsa@kernel.org>
-In-Reply-To: <20201216083914.47215-1-jolsa@kernel.org>
-References: <20201216083914.47215-1-jolsa@kernel.org>
+        Wed, 16 Dec 2020 03:42:58 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9A75C0613D6;
+        Wed, 16 Dec 2020 00:42:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=0Vl8v+K48CQ1CpDPZyiLdlZ3QZd1xhq2vGyfDmO1QSk=; b=d0ukNEGopW7xSAvf4l6oxB/hVo
+        FRyEdkJ6gVh6WhW3HqIsdfeYXWYQ1HLOyEXl/M8OOjMOALFor8DXrwW8OkhssqBZWj2qY+dOjn3WQ
+        w+eOTFIjqNLK3/OUKiTAiR7DfaZ2tzpDvvAr4qqHg7G/gm2EllebQ0U87v/0G0msGEUvStoO64DY+
+        jRApct0VEjBdukFFaWwT/w5fpgGG2r/xGFbqZ+y+RR+1foywG9EkTHpqpIVFJmYZHyDNnwWxdOg8q
+        B4pWQSqNEGAgqHIW+S7+CgCiPXoMiutaQwIno90DVH6FICQhR2vzciTHwxWeaxxT1doUmhnq8aMrv
+        PjYDhOMw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kpSMu-0005UY-Qg; Wed, 16 Dec 2020 08:41:09 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AB87E307697;
+        Wed, 16 Dec 2020 09:40:59 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 967842CADD880; Wed, 16 Dec 2020 09:40:59 +0100 (CET)
+Date:   Wed, 16 Dec 2020 09:40:59 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     =?iso-8859-1?Q?J=FCrgen_Gro=DF?= <jgross@suse.com>,
+        xen-devel@lists.xenproject.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org, luto@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Deep Shah <sdeep@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [PATCH v2 00/12] x86: major paravirt cleanup
+Message-ID: <20201216084059.GL3040@hirez.programming.kicks-ass.net>
+References: <20201120114630.13552-1-jgross@suse.com>
+ <20201120125342.GC3040@hirez.programming.kicks-ass.net>
+ <20201123134317.GE3092@hirez.programming.kicks-ass.net>
+ <6771a12c-051d-1655-fb3a-cc45a3c82e29@suse.com>
+ <20201215141834.GG3040@hirez.programming.kicks-ass.net>
+ <20201215145408.GR3092@hirez.programming.kicks-ass.net>
+ <20201216003802.5fpklvx37yuiufrt@treble>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201216003802.5fpklvx37yuiufrt@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding new evlist control event to display all evlist events.
-When it is received, perf will scan and print current evlist
-into perf record terminal.
+On Tue, Dec 15, 2020 at 06:38:02PM -0600, Josh Poimboeuf wrote:
+> On Tue, Dec 15, 2020 at 03:54:08PM +0100, Peter Zijlstra wrote:
+> > The problem is that a single instance of unwind information (ORC) must
+> > capture and correctly unwind all alternatives. Since the trivially
+> > correct mandate is out, implement the straight forward brute-force
+> > approach:
+> > 
+> >  1) generate CFI information for each alternative
+> > 
+> >  2) unwind every alternative with the merge-sort of the previously
+> >     generated CFI information -- O(n^2)
+> > 
+> >  3) for any possible conflict: yell.
+> > 
+> >  4) Generate ORC with merge-sort
+> > 
+> > Specifically for 3 there are two possible classes of conflicts:
+> > 
+> >  - the merge-sort itself could find conflicting CFI for the same
+> >    offset.
+> > 
+> >  - the unwind can fail with the merged CFI.
+> 
+> So much algorithm.
 
-The interface string for control file is:
-  evlist [-v|-g|-F]
+:-)
 
-The syntax follows perf evlist command:
-  -F  Show just the sample frequency used for each event.
-  -v  Show all fields.
-  -g  Show event group information.
+It's not really hard, but it has a few pesky details (as always).
 
-Example session:
+> Could we make it easier by caching the shared
+> per-alt-group CFI state somewhere along the way?
 
-  terminal 1:
-    # mkfifo control ack
-    # perf record --control=fifo:control,ack -e '{cycles,instructions}'
+Yes, but when I tried it grew the code required. Runtime costs would be
+less, but I figured that since alternatives are typically few and small,
+that wasn't a real consideration.
 
-  terminal 2:
-    # echo evlist > control
+That is, it would basically cache the results of find_alt_unwind(), but
+you still need find_alt_unwind() to generate that data, and so you gain
+the code for filling and using the extra data structure.
 
-  terminal 1:
-    # perf record --control=fifo:control,ack -e '{cycles,instructions}'
-    ...
-    cycles
-    instructions
-    dummy:HG
+Yes, computing it 3 times is naf, but meh.
 
-  terminal 2:
-    # echo 'evlist -v' > control
+> [ 'offset' is a byte offset from the beginning of the group.  It could
+>   be calculated based on 'orig_insn' or 'orig_insn->alts', depending on
+>   whether 'insn' is an original or a replacement. ]
 
-  terminal 1:
-    ...
-    cycles: size: 120, { sample_period, sample_freq }: 4000, sample_type:            \
-    IP|TID|TIME|ID|CPU|PERIOD, read_format: ID, disabled: 1, inherit: 1, freq: 1,    \
-    sample_id_all: 1, exclude_guest: 1
-    instructions: size: 120, config: 0x1, { sample_period, sample_freq }: 4000,      \
-    sample_type: IP|TID|TIME|ID|CPU|PERIOD, read_format: ID, inherit: 1, freq: 1,    \
-    sample_id_all: 1, exclude_guest: 1
-    dummy:HG: type: 1, size: 120, config: 0x9, { sample_period, sample_freq }: 4000, \
-    sample_type: IP|TID|TIME|ID|CPU|PERIOD, read_format: ID, inherit: 1, mmap: 1,    \
-    comm: 1, freq: 1, task: 1, sample_id_all: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, \
-     bpf_event: 1
+That's exactly what it already does ofcourse ;-)
 
-  terminal 2:
-    # echo 'evlist -g' > control
+> If the array entry is NULL, just update it with a pointer to the CFI.
+> If it's not NULL, make sure it matches the existing CFI, and WARN if it
+> doesn't.
+> 
+> Also, with this data structure, the ORC generation should also be a lot
+> more straightforward, just ignore the NULL entries.
 
-  terminal 1:
-    ...
-    {cycles,instructions}
-    dummy:HG
+Yeah, I suppose it gets rid of the memcmp-prev thing.
 
-  terminal 2:
-    # echo 'evlist -F' > control
+> Thoughts?  This is all theoretical of course, I could try to do a patch
+> tomorrow.
 
-  terminal 1:
-    ...
-    cycles: sample_freq=4000
-    instructions: sample_freq=4000
-    dummy:HG: sample_freq=4000
-
-This new evlist command is handy to get real event names when
-wildcards are used.
-
-Adding evsel_fprintf.c object to python/perf.so build, because
-it's now evlist.c dependency.
-
-Adding PYTHON_PERF define for python/perf.so compilation, so we
-can use it to compile in only evsel__fprintf from evsel_fprintf.c
-object.
-
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/perf/Documentation/perf-record.txt | 15 ++++++---
- tools/perf/builtin-record.c              |  1 +
- tools/perf/builtin-stat.c                |  1 +
- tools/perf/util/evlist.c                 | 41 ++++++++++++++++++++++++
- tools/perf/util/evlist.h                 |  2 ++
- tools/perf/util/evsel_fprintf.c          |  2 ++
- tools/perf/util/python-ext-sources       |  1 +
- tools/perf/util/setup.py                 |  2 +-
- 8 files changed, 59 insertions(+), 6 deletions(-)
-
-diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
-index 55d2d335b8a8..ab3c00030baf 100644
---- a/tools/perf/Documentation/perf-record.txt
-+++ b/tools/perf/Documentation/perf-record.txt
-@@ -637,11 +637,16 @@ ctl-fifo / ack-fifo are opened and used as ctl-fd / ack-fd as follows.
- Listen on ctl-fd descriptor for command to control measurement.
- 
- Available commands:
--  'enable'       : enable events
--  'disable'      : disable events
--  'enable name'  : enable event 'name'
--  'disable name' : disable event 'name'
--  'snapshot'     : AUX area tracing snapshot).
-+  'enable'           : enable events
-+  'disable'          : disable events
-+  'enable name'      : enable event 'name'
-+  'disable name'     : disable event 'name'
-+  'snapshot'         : AUX area tracing snapshot).
-+
-+  'evlist [-v|-g|-F] : display all events
-+                       -F  Show just the sample frequency used for each event.
-+                       -v  Show all fields.
-+                       -g  Show event group information.
- 
- Measurements can be started with events disabled using --delay=-1 option. Optionally
- send control command completion ('ack\n') to ack-fd descriptor to synchronize with the
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index e9874832dc27..d4be9f923a17 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -1945,6 +1945,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 			case EVLIST_CTL_CMD_UNSUPPORTED:
- 			case EVLIST_CTL_CMD_ENABLE:
- 			case EVLIST_CTL_CMD_DISABLE:
-+			case EVLIST_CTL_CMD_EVLIST:
- 			default:
- 				break;
- 			}
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 4c43c5e14fd4..b0180c62c4da 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -588,6 +588,7 @@ static void process_evlist(struct evlist *evlist, unsigned int interval)
- 		case EVLIST_CTL_CMD_SNAPSHOT:
- 		case EVLIST_CTL_CMD_ACK:
- 		case EVLIST_CTL_CMD_UNSUPPORTED:
-+		case EVLIST_CTL_CMD_EVLIST:
- 		default:
- 			break;
- 		}
-diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-index 7e0bcd1d1516..16b588002611 100644
---- a/tools/perf/util/evlist.c
-+++ b/tools/perf/util/evlist.c
-@@ -24,6 +24,7 @@
- #include "bpf-event.h"
- #include "util/string2.h"
- #include "util/perf_api_probe.h"
-+#include "util/evsel_fprintf.h"
- #include <signal.h>
- #include <unistd.h>
- #include <sched.h>
-@@ -1925,6 +1926,9 @@ static int evlist__ctlfd_recv(struct evlist *evlist, enum evlist_ctl_cmd *cmd,
- 				    (sizeof(EVLIST_CTL_CMD_SNAPSHOT_TAG)-1))) {
- 			*cmd = EVLIST_CTL_CMD_SNAPSHOT;
- 			pr_debug("is snapshot\n");
-+		} else if (!strncmp(cmd_data, EVLIST_CTL_CMD_EVLIST_TAG,
-+				    (sizeof(EVLIST_CTL_CMD_EVLIST_TAG)-1))) {
-+			*cmd = EVLIST_CTL_CMD_EVLIST;
- 		}
- 	}
- 
-@@ -2004,6 +2008,40 @@ static int evlist__ctlfd_enable(struct evlist *evlist, char *cmd_data, bool enab
- 	return 0;
- }
- 
-+static int evlist__ctlfd_list(struct evlist *evlist, char *cmd_data)
-+{
-+	struct perf_attr_details details = { .verbose = false, };
-+	struct evsel *evsel;
-+	char *arg;
-+	int err;
-+
-+	err = get_cmd_arg(cmd_data,
-+			  sizeof(EVLIST_CTL_CMD_EVLIST_TAG) - 1,
-+			  &arg);
-+	if (err < 0) {
-+		pr_info("failed: wrong command\n");
-+		return -1;
-+	}
-+
-+	if (err) {
-+		if (!strcmp(arg, "-v")) {
-+			details.verbose = true;
-+		} else if (!strcmp(arg, "-g")) {
-+			details.event_group = true;
-+		} else if (!strcmp(arg, "-F")) {
-+			details.freq = true;
-+		} else {
-+			pr_info("failed: wrong command\n");
-+			return -1;
-+		}
-+	}
-+
-+	evlist__for_each_entry(evlist, evsel)
-+		evsel__fprintf(evsel, &details, stderr);
-+
-+	return 0;
-+}
-+
- int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd)
- {
- 	int err = 0;
-@@ -2024,6 +2062,9 @@ int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd)
- 				err = evlist__ctlfd_enable(evlist, cmd_data,
- 							   *cmd == EVLIST_CTL_CMD_ENABLE);
- 				break;
-+			case EVLIST_CTL_CMD_EVLIST:
-+				err = evlist__ctlfd_list(evlist, cmd_data);
-+				break;
- 			case EVLIST_CTL_CMD_SNAPSHOT:
- 				break;
- 			case EVLIST_CTL_CMD_ACK:
-diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
-index 1aae75895dea..e79c64d81d21 100644
---- a/tools/perf/util/evlist.h
-+++ b/tools/perf/util/evlist.h
-@@ -330,6 +330,7 @@ struct evsel *evlist__reset_weak_group(struct evlist *evlist, struct evsel *evse
- #define EVLIST_CTL_CMD_DISABLE_TAG "disable"
- #define EVLIST_CTL_CMD_ACK_TAG     "ack\n"
- #define EVLIST_CTL_CMD_SNAPSHOT_TAG "snapshot"
-+#define EVLIST_CTL_CMD_EVLIST_TAG "evlist"
- 
- #define EVLIST_CTL_CMD_MAX_LEN 64
- 
-@@ -339,6 +340,7 @@ enum evlist_ctl_cmd {
- 	EVLIST_CTL_CMD_DISABLE,
- 	EVLIST_CTL_CMD_ACK,
- 	EVLIST_CTL_CMD_SNAPSHOT,
-+	EVLIST_CTL_CMD_EVLIST,
- };
- 
- int evlist__parse_control(const char *str, int *ctl_fd, int *ctl_fd_ack, bool *ctl_fd_close);
-diff --git a/tools/perf/util/evsel_fprintf.c b/tools/perf/util/evsel_fprintf.c
-index fb498a723a00..bfedd7b23521 100644
---- a/tools/perf/util/evsel_fprintf.c
-+++ b/tools/perf/util/evsel_fprintf.c
-@@ -100,6 +100,7 @@ int evsel__fprintf(struct evsel *evsel, struct perf_attr_details *details, FILE
- 	return ++printed;
- }
- 
-+#ifndef PYTHON_PERF
- int sample__fprintf_callchain(struct perf_sample *sample, int left_alignment,
- 			      unsigned int print_opts, struct callchain_cursor *cursor,
- 			      struct strlist *bt_stop_list, FILE *fp)
-@@ -239,3 +240,4 @@ int sample__fprintf_sym(struct perf_sample *sample, struct addr_location *al,
- 
- 	return printed;
- }
-+#endif /* PYTHON_PERF */
-diff --git a/tools/perf/util/python-ext-sources b/tools/perf/util/python-ext-sources
-index a9d9c142eb7c..71b753523fac 100644
---- a/tools/perf/util/python-ext-sources
-+++ b/tools/perf/util/python-ext-sources
-@@ -10,6 +10,7 @@ util/python.c
- util/cap.c
- util/evlist.c
- util/evsel.c
-+util/evsel_fprintf.c
- util/perf_event_attr_fprintf.c
- util/cpumap.c
- util/memswap.c
-diff --git a/tools/perf/util/setup.py b/tools/perf/util/setup.py
-index c5e3e9a68162..483f05004e68 100644
---- a/tools/perf/util/setup.py
-+++ b/tools/perf/util/setup.py
-@@ -43,7 +43,7 @@ class install_lib(_install_lib):
- 
- cflags = getenv('CFLAGS', '').split()
- # switch off several checks (need to be at the end of cflags list)
--cflags += ['-fno-strict-aliasing', '-Wno-write-strings', '-Wno-unused-parameter', '-Wno-redundant-decls' ]
-+cflags += ['-fno-strict-aliasing', '-Wno-write-strings', '-Wno-unused-parameter', '-Wno-redundant-decls', '-DPYTHON_PERF' ]
- if not cc_is_clang:
-     cflags += ['-Wno-cast-function-type' ]
- 
--- 
-2.26.2
-
+No real objection, I just didn't do it because 1) it works, and 2) even
+moar lines.
