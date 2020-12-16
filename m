@@ -2,118 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1477E2DC6A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 19:39:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72D972DC6A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 19:41:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731418AbgLPSiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 13:38:17 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:65094 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727992AbgLPSiR (ORCPT
+        id S1731543AbgLPSk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 13:40:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731566AbgLPSk4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 13:38:17 -0500
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BGIWwYh033401;
-        Wed, 16 Dec 2020 13:36:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=z/EvkYWrRq94vvURrlO5qTnLAmj3+tT1mz2pOM4Sso0=;
- b=H1KXYhuyHUZiU2DzzCf45ZB3ixJLhLll9ymuecuvHzO6BOBMS1VirE4vGbjWfoEf5RHN
- FTOYMMC8JnfzNODYyqIlGUMpUQ5FwIbxvLsIiUPcIyCDxC3/Qngq4aT0LB6owye8/Xsl
- 2vNi/hfJoph8Z7s28JG+ziZuZVl+DNpM2l25PrEIsEuDI7i6dP71B3OJWPcaMSrUQRlE
- DbcR1TYUh9LTArBiBMKcmH1+c/9vY5u25WS5OK/5j7kWcihzzJa4K7teIgvdA+fLvauw
- EPOa4mYEMs+/qhofIh3FtoLGEkV9uXHoINi9BJMw+T+XyoAK38cW8TDZ9PYrPb4/zwdM 8Q== 
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35fpv51hgh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Dec 2020 13:36:54 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BGIX3Ww031231;
-        Wed, 16 Dec 2020 18:36:51 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03fra.de.ibm.com with ESMTP id 35cng8esde-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Dec 2020 18:36:51 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BGIZY6R33947924
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Dec 2020 18:35:34 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6917EAE055;
-        Wed, 16 Dec 2020 18:35:34 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 21A6DAE057;
-        Wed, 16 Dec 2020 18:35:34 +0000 (GMT)
-Received: from osiris (unknown [9.171.70.243])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed, 16 Dec 2020 18:35:34 +0000 (GMT)
-Date:   Wed, 16 Dec 2020 19:35:32 +0100
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>
-Subject: Re: __local_bh_enable_ip() vs lockdep
-Message-ID: <20201216183532.GA7724@osiris>
-References: <20201215190152.GA22285@osiris>
- <20201215144724.40ab7612@gandalf.local.home>
- <20201216175259.GP3040@hirez.programming.kicks-ass.net>
+        Wed, 16 Dec 2020 13:40:56 -0500
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4B1C06179C
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 10:40:16 -0800 (PST)
+Received: by mail-oi1-x22f.google.com with SMTP id d189so28627625oig.11
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 10:40:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HX05UPZbfakFNT6esS7y3dkO3JZ1/EyRxqvrW/rwkR0=;
+        b=Id04pE4Gmxa9hBuBqHwF8Xbry18NqejeslL5cyHb6hce0goJ400yI9vdlvE+V15keZ
+         WP2j2syjVqDSpvFPkcpTd/GoAMxvp+MX9muiMBc2qb1qToKQl6ziCmkN0epXCUlM+Z1m
+         Z43Dc7XI1U9P9jrmJq1c0cAX7tSgbappxv4JzElnZMNXObJPhftw2tJWP1Qx2pqmgoj/
+         1ciRv2EY1s7O1OIzspukAox5chn9O3pNeCBtEjG/rhj9U/KLcE/DzJbJFjMV4fcZql04
+         C7IPfm+ZY8YPPfjhkTxMjvCqRlyvtMO10XjIKda/6cgDY/tG5nT3LMIQ9HOzzrBE6Plo
+         tjyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HX05UPZbfakFNT6esS7y3dkO3JZ1/EyRxqvrW/rwkR0=;
+        b=cisx5uFdsmpQYgzEaeUskMlSByspw9vT6oX8uhLNdYMvaXcryGR/WIkD3LXYuFd2XY
+         6nI7tGoMJUA95qiwQ6SGL18/BCfEWEj4BS+bczv7ddj2NgiycSSmA0A230bJ5lf2joaR
+         TQX71CGkFrSuBq3dorX9jO0gbFe79om8xaTYIDXWNWxISylXjHQXBWqCQ6ur37OPrKSv
+         IH6YQcV9g+ylgIRvWQ19Kt4ik2XdZi/tfigJYp08kl/KX9wflNPGljA54F8xeR9fs+Rw
+         AAlopnPGvRwj7/Ztz359vKtpVogQEjvtjd2S0T4gLfYqhw2CTv4bJIbn68XeWiOq6i0G
+         9Otw==
+X-Gm-Message-State: AOAM533Tgdus+3lumSVhttnV/7R7wD1jB6xvUMtBk9nBL2txFNLzo4te
+        zakSz/M4IhaGuhM8kU7LZ/JIzw==
+X-Google-Smtp-Source: ABdhPJwCWVwMv4ymBqD9ZXT8j0l8JfNX+uns7F5dvspx+SMuq1kGfuY/gyqCID5dDV52iAV35xBF4w==
+X-Received: by 2002:aca:54d8:: with SMTP id i207mr2694795oib.101.1608144015474;
+        Wed, 16 Dec 2020 10:40:15 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id o135sm642714ooo.38.2020.12.16.10.40.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Dec 2020 10:40:14 -0800 (PST)
+Date:   Wed, 16 Dec 2020 12:40:13 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>
+Subject: Re: [PATCH] gpiolib: Allow name duplicates of "" and "NC"
+Message-ID: <X9pUjU6hPI1cKS3H@builder.lan>
+References: <20201215170308.2037624-1-bjorn.andersson@linaro.org>
+ <CACRpkdZKKetFFm8AanVnzV9SyZhuurLHT_ZTak27-vGEdqVgEw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201216175259.GP3040@hirez.programming.kicks-ass.net>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-16_07:2020-12-15,2020-12-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1015
- bulkscore=0 adultscore=0 impostorscore=0 phishscore=0 malwarescore=0
- lowpriorityscore=0 mlxlogscore=747 suspectscore=0 priorityscore=1501
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012160115
+In-Reply-To: <CACRpkdZKKetFFm8AanVnzV9SyZhuurLHT_ZTak27-vGEdqVgEw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 06:52:59PM +0100, Peter Zijlstra wrote:
-> On Tue, Dec 15, 2020 at 02:47:24PM -0500, Steven Rostedt wrote:
-> > On Tue, 15 Dec 2020 20:01:52 +0100
-> > Heiko Carstens <hca@linux.ibm.com> wrote:
-> > 
-> > > Hello,
-> > > 
-> > > the ftrace stack tracer kernel selftest is able to trigger the warning
-> > > below from time to time. This looks like there is an ordering problem
-> > > in __local_bh_enable_ip():
-> > > first there is a call to lockdep_softirqs_on() and afterwards
-> > > preempt_count_sub() is ftraced before it was able to modify
-> > > preempt_count:
-> > 
-> > Don't run ftrace stack tracer when debugging lockdep. ;-)
-> > 
-> >   /me runs!
-> 
-> Ha!, seriously though; that seems like something we've encountered
-> before, but my google-fu is failing me.
-> 
-> Do you remember what, if anything, was the problem with this?
+On Wed 16 Dec 06:46 CST 2020, Linus Walleij wrote:
 
-Actually this looks like:
-1a63dcd8765b ("softirq: Reorder trace_softirqs_on to prevent lockdep splat")
-
-I can give it a test, but it looks quite obvious that your patch will
-make the problem go away.
-
-> diff --git a/kernel/softirq.c b/kernel/softirq.c
-> index d5bfd5e661fc..9d71046ea247 100644
-> --- a/kernel/softirq.c
-> +++ b/kernel/softirq.c
-> @@ -186,7 +186,7 @@ void __local_bh_enable_ip(unsigned long ip, unsigned int cnt)
->  	 * Keep preemption disabled until we are done with
->  	 * softirq processing:
->  	 */
-> -	preempt_count_sub(cnt - 1);
-> +	__preempt_count_sub(cnt - 1);
->  
->  	if (unlikely(!in_interrupt() && local_softirq_pending())) {
->  		/*
+> On Tue, Dec 15, 2020 at 6:02 PM Bjorn Andersson
+> <bjorn.andersson@linaro.org> wrote:
 > 
+> > Not all GPIO pins are exposed to the world and this is typically
+> > described by not giving these lines particular names, commonly "" or
+> > "NC".
+> >
+> > With the recent introduction of '2cd64ae98f35 ("gpiolib: Disallow
+> > identical line names in the same chip")' any gpiochip with multiple such
+> > pins will refuse to probe.
+> >
+> > Fix this by treating "" and "NC" as "no name specified" in
+> > gpio_name_to_desc()
+> >
+> > Fixes: 2cd64ae98f35 ("gpiolib: Disallow identical line names in the same chip")
+> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > ---
+> >
+> > The introduction of 2cd64ae98f35 breaks pretty much all Qualcomm boards and
+> > grepping the DT tree indicates that other vendors will have the same problem.
+> >
+> > In addition to this the am335x-* boards will also needs "[NC]", "[ethernet]",
+> > "[emmc"], "[i2c0]", "[SYSBOOT]" and "[JTAG]" added to this list to allow
+> > booting v5.11 with the past and present dtb/dts files.
+> 
+> I pushed this patch yesterday that fixes the obvious "(empty string)" problem:
+> https://lore.kernel.org/linux-gpio/20201215123755.438369-1-linus.walleij@linaro.org/T/#u
+> 
+
+Unfortunately we've almost consistently used "NC" for the Qualcomm
+platforms, so that seems to fix only a single platform :(
+
+> But I see this is for device tree line naming only, right?
+> 
+
+Yes.
+
+> I think I will conjure a patch allowing identical naming only for
+> device property naming (like from device tree) but emitting a
+> warning so that people fix it to something unique moving
+> forward.
+> 
+
+I'm not against emitting a dev_err() when we hit duplicates, remove the
+return and then update the various dts files to use "" for things that
+doesn't have a name.
+
+Regarding special handling of the DT case, I think (beyond making all
+these boards boot again) it would be nice to make
+gpiochip_set_desc_names() take the list of names and a length and use
+the same function in both code paths...
+
+
+PS. strlen(names[i]) is O(N), strcmp(names[i], "") is O(1).
+
+Regards,
+Bjorn
