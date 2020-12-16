@@ -2,162 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 620042DBF0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 11:54:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 021472DBF11
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 11:57:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725838AbgLPKxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 05:53:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34978 "EHLO
+        id S1725778AbgLPK5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 05:57:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726231AbgLPKxd (ORCPT
+        with ESMTP id S1725283AbgLPK5E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 05:53:33 -0500
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0960C0617A6
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 02:52:52 -0800 (PST)
-Received: by mail-vs1-xe36.google.com with SMTP id x26so12703246vsq.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 02:52:52 -0800 (PST)
+        Wed, 16 Dec 2020 05:57:04 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54707C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 02:56:23 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id 23so47200975lfg.10
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 02:56:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OcdgUIQqjs3RtDACLXfZjl4mmwIoYl81Jwxqo+UNCiM=;
-        b=CpKF2QRGJ9/+xPrIUghOQ1TwlBNr4/OA6GaIcoRO7a8YsSkJu8dbyrG2nJxEoGeYWC
-         JFuyMFM8e12AvhHCo3UZqN1LbolpVx0TNxPPQCdiluy64/QbXFIbIzUdPWnw26LMfUzR
-         v50qXRzTwVj+rZDjM1EHkhWZrERbY551D3orOTuiYmp21wYIcSqL7v9lHaF7n4IauflA
-         oHFVA9Q9gybjyYKFySENSFIq2s0XEptu3gpWXcqOpiLQuL2pp0hTcpQTs90VZ+dr7ant
-         gLv7Jxk/QyXY9OX67JMB2fEn39dPUIbNpIRaHqtT1w3D0lq0ciUMl8s2ZxUDYH6q+Y5C
-         AXuA==
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8Ee6BEPzW0avC5vdfdajiCFDdnJS72+HuNB+ehIuHbk=;
+        b=hFL8jZdRErw+2q0idCTbKwvhfx1cxsgiZna0h3pK9Iqi/2E6wv+Hp9XLgECsN0cdVq
+         CTrl4XrF4+1l3LXlIc5YVVX3ycdD0E4bYGTgXA/ofj7HLD80VxwL7UipS2uHkOy8nKG6
+         3d34JFGFEm4o4yIRjEcYtxiYTAyE1dq5Yy4zD2mJxTUyBj80indDaHOpSymMmYUwkvfP
+         jXJNAjngb1zAGUzXfwjYkM76vaLVewW/rSyPc1LHYV/X4YSF40GWng8Ihweixkg2F9d2
+         3fhZgwiYGKffpQHKzLGbiW1IGHQvx9zOxCzH13ALA7vxmuiBLHu+Rywe9GIf+Ya3+ZAj
+         g7tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OcdgUIQqjs3RtDACLXfZjl4mmwIoYl81Jwxqo+UNCiM=;
-        b=iOtL6qyG+4TS3h7jpiatuBIOLpWOWcwjojQYhTiymWhpoGXMa6+IKg3QXCt1uqDJEg
-         mq60N2nN7CPIlvwymgAavTf8IXDvqz9jLtddk6Q2vKo+APMkbMPpkav+bKXZTDbh3sPz
-         YL1qL2IQyFm/zY+ZLCPcKhoMmjPAV9vLp81ziqrutWwRZJNSdTmlHB+xrrxGMKABnqtA
-         Ky1jt0NI/HltNANGzyK1yuJ525ofXbOAasGZfkyOEyiA21H5OllfXpFGY/+UbizzTyUN
-         xgpkp2zjsNb/NPKRwLdzU/+7tbKISn1QR5Reh9UCwHhJl2d+eMtnAqqvPjtzhAWB/Tby
-         83Dg==
-X-Gm-Message-State: AOAM531/qK9Xda5sfxsLLXSPSSvecWpeeA+l0xMVFAhgjp2Wj7onYQT+
-        RlMO3RQVoNQh/75B5F/m7f3hsX4xTWEs4oMY6kDCPw==
-X-Google-Smtp-Source: ABdhPJyK8dJGL5HyKczS71lN0bZuwXImCPPf/CUpMVSCT4DSSRjV1o4K+skZ2KoaoA0JUOs/UBqxA2LUlx4iFI0Y04Y=
-X-Received: by 2002:a67:fe85:: with SMTP id b5mr29650848vsr.19.1608115971860;
- Wed, 16 Dec 2020 02:52:51 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8Ee6BEPzW0avC5vdfdajiCFDdnJS72+HuNB+ehIuHbk=;
+        b=VxFGOSwekkKz6fr4ZBoUNtyno71Sgka/N7GddrCswI3cn5UyAwYQyTiM95G8KxPl5+
+         I3VHBkxjWP/RQxCVTv0vO1Zw0usF6k7RccYotY09F/TElDmIggmdrE+OqqcfSgzC2tkn
+         NimmtFYBnokfyETXB6bzBfpCLIWcDfR3sfzTdn8WMlac25GR+sZBPcjhJGjYQp9bbejR
+         lonxiomXUZlg0D9P+sFUVpE1GRV7QR5uVz8obXJDui+0FPIw86VrcbTuIVoGIlI/ox8Y
+         tGh47u/GiuC87ERdAanrLvtvRgbbotZIRv9THvPor9mbfE9XgvvDF2iVSggx5fQ0jRS4
+         AeAg==
+X-Gm-Message-State: AOAM531sSrQ1V4u5Eb1nvFGKvNmHfRHp87UsRKWt0EOcfv1NsRWD868n
+        eXPZwIPN07zHbcPVUu450JqSsw==
+X-Google-Smtp-Source: ABdhPJwjBm4DQ8Kg+Djp6Z8MIUqAiwyOQ9W99Mg2Nb+MDWSBFOIbtMD8LyGy1mcdwghm3XdFhqmN0A==
+X-Received: by 2002:a2e:7813:: with SMTP id t19mr14943140ljc.87.1608116181872;
+        Wed, 16 Dec 2020 02:56:21 -0800 (PST)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id d24sm185353lfl.30.2020.12.16.02.56.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Dec 2020 02:56:21 -0800 (PST)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 92CA41033F0; Wed, 16 Dec 2020 13:56:23 +0300 (+03)
+Date:   Wed, 16 Dec 2020 13:56:23 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Lorenzo Stoakes <lstoakes@gmail.com>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/mm: increase pgt_buf size for 5-level page tables
+Message-ID: <20201216105623.e65a43mhegoqgldt@box>
+References: <20201215205641.34096-1-lstoakes@gmail.com>
 MIME-Version: 1.0
-References: <20201207115753.21728-1-bbudiredla@marvell.com>
- <20201207115753.21728-2-bbudiredla@marvell.com> <CAPDyKFqQwvG6vkwqPZutXjdV0hVrKp3MiqRRMZZ4C8Zr2Of9rg@mail.gmail.com>
- <CY4PR1801MB2070FD9FB1AB7166651198D1DEC60@CY4PR1801MB2070.namprd18.prod.outlook.com>
- <CAPDyKFqMsMdqw=Uwzby0tNNvPieRT2i6PAmHu_9XRRVy1MykuQ@mail.gmail.com>
- <CY4PR1801MB207090582E5E763F3672153BDEC60@CY4PR1801MB2070.namprd18.prod.outlook.com>
- <CAPDyKFpvRgsE3biXZncbR_qfU4+9Z1mf7fCB=aAchH7hTsq+Vw@mail.gmail.com> <CY4PR1801MB2070AE5FDA2AC539DD85D3CCDEC50@CY4PR1801MB2070.namprd18.prod.outlook.com>
-In-Reply-To: <CY4PR1801MB2070AE5FDA2AC539DD85D3CCDEC50@CY4PR1801MB2070.namprd18.prod.outlook.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 16 Dec 2020 11:52:15 +0100
-Message-ID: <CAPDyKFoWh8Ms3hqgWwkQgx2a9PZa+GLcYhgXX68K0ZC5JJAzHw@mail.gmail.com>
-Subject: Re: [EXT] Re: [PATCH 1/2] mmc: Support kmsg dumper based on pstore/blk
-To:     Bhaskara Budiredla <bbudiredla@marvell.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201215205641.34096-1-lstoakes@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[...]
+On Tue, Dec 15, 2020 at 08:56:41PM +0000, Lorenzo Stoakes wrote:
+> pgt_buf is used to allocate page tables on initial direct page mapping
+> bootstrapping us into being able to allocate these before the direct
+> mapping makes further pages available.
+> 
+> INIT_PGD_PAGE_COUNT is set to 6 pages (doubled for KASLR) - 3 (PUD, PMD,
+> PTE) for the 1 MiB ISA mapping and 3 more for the first direct mapping
+> assignment in each case providing 2 MiB of address space.
+> 
+> This has not been updated for 5-level page tables which additionally has a
+> P4D page table level above PUD.
+> 
+> In most instances this will not have a material impact as the first 4 page
+> levels allocated for the ISA mapping will provide sufficient address space
+> to encompass all further address mappings. If the first direct mapping is
+> within 512 GiB of the ISA mapping we need only add a PMD and PTE in the
+> instance where we are using 4 KiB page tables (e.g. CONFIG_DEBUG_PAGEALLOC
+> is enabled) and only a PMD if we can use 2 MiB pages (the first allocation
+> is limited to PMD_SIZE so we can't use a GiB page there).
+> 
+> However if we have more than 512 GiB of RAM and are allocating 4 KiB page
+> size we require 3 further page tables and if we have more than 256 TiB of
+> RAM at 4 KiB or 2 MiB page size we require a further 3 or 4 page tables
+> respectively.
+> 
+> This patch updates INIT_PGD_PAGE_COUNT to reflect this.
+> 
+> Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
 
-> >>
-> >> Agree. Seems I need to create an alternate path to forcefully gain
-> >> access to the host for the case of panic write. As you pointed out
-> >> mmc_claim_host(), mmc_release_host() and runtime PM can create issues.
-> >>
-> >> >The question is, can/should we rely on mmc_claim_host() to succeed in
-> >> >this path? Maybe it will work, in cases when there is no ongoing
-> >> >request, as it means the host should be available to be immediately
-> >> >claimed. Although, then the problem ends up with runtime PM, as if
-> >> >the host is available for claiming, it's likely that the host is runtime
-> >suspended...
-> >> >
-> >>
-> >> An extra check can be added to see if host was runtime suspended ahead
-> >> of panic write attempt.
-> >
-> >What if that is the case, should we just return an error?
-> >
-> Yes.
->
-> >Moreover, even the device belonging to the mmc card can be runtime
-> >suspended too. So if that is the case, we should return an error too?
-> >
->
-> Yes, same here.
->
-> Assuming ->req_cleanup_pending() properly terminates the ongoing DMA transfers,
-> mmc_claim_host() and mmc_release_host() can be dropped in panic write case
-> as it has then exclusive access from then on.
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
-Again, I think you have misunderstood how it works from the core point of view.
-
-->req_cleanup_pending() will never be able to terminate a request in a
-proper way, without involving the mmc core's knowledge about the
-eMMC/SD protocol.
-
-Yes, it could clean up from an ongoing DMA transfer, but that doesn't
-bring the eMMC/SD card back into a state where it can accept new
-requests.
-
->
->
-> >[...]
-> >
-> >> >> >[...]
-> >> >> >
-> >> >> >Having said the above, I am not entirely convinced that it makes
-> >> >> >sense to support this, at all.
-> >> >> >
-> >> >> >Not only, will the support be highly fragile from the mmc core
-> >> >> >point of view, but there is also a significant complexity for an
-> >> >> >mmc host driver to support this (at least in general).
-> >> >> >
-> >> >>
-> >> >> I am not sure if the comments on host driver complexity is true.
-> >> >> Terminating ongoing requests and introducing polling functions on
-> >> >> host drivers should be straight forward. None those would disturb
-> >> >> the core functionality. They are completely independent.
-> >> >
-> >> >I think you are underestimating the part with terminating ongoing
-> >> >requests. It sounds to me that you really haven't been terminating
-> >> >any requests at all, but rather just doing a reset of the mmc
-> >> >controller (which is what I observed in patch2).
-> >> >
-> >>
-> >> No, it's not true. I am not doing any reset. Please point me to
-> >> specific code snippet where you have observed this.
-> >
-> >I was looking at patch2 and the ->req_cleanup_pending() callback that you
-> >have assigned to cvm_req_cleanup_pending().
-> >
-> >In there you clear a potentially running DMA job, which is *kind* of a reset of
-> >the controller. More importantly, it's definitely *not* terminating an ongoing
-> >request, in a way that you can expect the eMMC/SD card to be ready for new
-> >communications afterwards. This is my main point.
-> >
->
-> I am not sure that clearing an ongoing DMA will reset the controller. These are host
-> controller specific. The idea is: To drop ongoing transfers, whatever a host software
-> has to do it will does through this cleanup function. We may not generalize this,
-> providing a hook and letting each host controller handling it seems better.
-
-I fully understand the approach, but again, it doesn't work. Sorry.
-
-As I said, the only thing that *could* work is to call
-mmc_claim_host() in the panic write hook -  and hope for the best. If
-it succeeds, there is nothing to cleanup or terminate.
-
-Kind regards
-Uffe
+-- 
+ Kirill A. Shutemov
