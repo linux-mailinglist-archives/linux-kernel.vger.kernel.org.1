@@ -2,111 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E422DC8B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 23:05:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 195B02DC8BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 23:08:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730079AbgLPWFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 17:05:16 -0500
-Received: from foss.arm.com ([217.140.110.172]:50108 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730068AbgLPWFP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 17:05:15 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E71A730E;
-        Wed, 16 Dec 2020 14:04:29 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.25.150])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2E0F83F718;
-        Wed, 16 Dec 2020 14:04:27 -0800 (PST)
-Date:   Wed, 16 Dec 2020 22:04:22 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
+        id S1730131AbgLPWHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 17:07:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730119AbgLPWHq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 17:07:46 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A459C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 14:07:05 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id l11so52341958lfg.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 14:07:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AaCAgi3Re6gjp+QMDCuTI+O0mC7cGhx8CTtxCOQii7o=;
+        b=GnPxGwEvz7knuiGph4kvac0mci3Kt5xudz6jSN/cD3t3NNAl/j2NdbCSLmSbw1LIUv
+         sCyea2BLmSjagA897k6d4CB9oEcfnfw5h67haxUgRQ6oN27GfPLhWIwzEpNf1rq9Xy3+
+         Nl2huR078qCtIBIXA6M4z7HISX/52mz5H8wLA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AaCAgi3Re6gjp+QMDCuTI+O0mC7cGhx8CTtxCOQii7o=;
+        b=MFU6jO4yUtwJM9cyurGOwAfSJMGAProkpe5RzJfz5GKel2LmeDrTV+IyvjJ+tccQNH
+         YxbI6g/MZ/PpsLdoj6tsEjcMNG/mEACjWfJJjrgC/KiCmepaNbW1zecg8/dsdrU6oXOB
+         StzWx3i1e7wUCg+2F3zktzcCw5ikqOE5ZeUbNQQ9d7ZLdEKw46rOwcHRFbOzs66QFE79
+         dX+I3y5pqNcqJkU8wc7HoaZPSh8VriR16VmgTA6wnyVLiiM2IZ97fg7nmmtabExlsDUH
+         rQJ8cCrFh0yb9g2LOQwsEC9FnVhpU6Cvel7XxwPc8g95n3FICzfLP/2GJkyHPc3i5p6J
+         PzLA==
+X-Gm-Message-State: AOAM530Rv67+nxE9hbJXXKDUqErG5H/tiJSSL/hpTQf8diDqsInSOgM/
+        FIP6dg27knPub7p9LO7mlZTwKmRqlsNjDg==
+X-Google-Smtp-Source: ABdhPJxaib+vj1UJf47LEBu3XkfNjmHRUG8vM38KSw7j4IDrAGXla9zZeLRYuG+VyAoeuzr2Nc1HCQ==
+X-Received: by 2002:ac2:4946:: with SMTP id o6mr12948160lfi.412.1608156423606;
+        Wed, 16 Dec 2020 14:07:03 -0800 (PST)
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
+        by smtp.gmail.com with ESMTPSA id s6sm362392lfd.229.2020.12.16.14.07.02
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Dec 2020 14:07:02 -0800 (PST)
+Received: by mail-lf1-f46.google.com with SMTP id m25so52259659lfc.11
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 14:07:02 -0800 (PST)
+X-Received: by 2002:ac2:4987:: with SMTP id f7mr13161846lfl.41.1608156422226;
+ Wed, 16 Dec 2020 14:07:02 -0800 (PST)
+MIME-Version: 1.0
+References: <701d4747-bbbb-dbb4-d828-63d096fcc22a@kernel.dk>
+ <160815345901.27795.2544235487408028611.pr-tracker-bot@kernel.org> <20201216220422.GA19075@C02TD0UTHF1T.local>
+In-Reply-To: <20201216220422.GA19075@C02TD0UTHF1T.local>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 16 Dec 2020 14:06:46 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wja217nCNOAS_bYB35kJRSgnv29fUAUGSGMCpf-aqeycg@mail.gmail.com>
+Message-ID: <CAHk-=wja217nCNOAS_bYB35kJRSgnv29fUAUGSGMCpf-aqeycg@mail.gmail.com>
+Subject: Re: [PATCH] arm64: make _TIF_WORK_MASK bits contiguous (was: Re: [GIT
+ PULL] TIF_NOTIFY_SIGNAL for all archs)
+To:     Mark Rutland <mark.rutland@arm.com>
 Cc:     Jens Axboe <axboe@kernel.dk>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        pr-tracker-bot@kernel.org, catalin.marinas@arm.com, will@kernel.org
-Subject: [PATCH] arm64: make _TIF_WORK_MASK bits contiguous (was: Re: [GIT
- PULL] TIF_NOTIFY_SIGNAL for all archs)
-Message-ID: <20201216220422.GA19075@C02TD0UTHF1T.local>
-References: <701d4747-bbbb-dbb4-d828-63d096fcc22a@kernel.dk>
- <160815345901.27795.2544235487408028611.pr-tracker-bot@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <160815345901.27795.2544235487408028611.pr-tracker-bot@kernel.org>
+        pr-tracker-bot@kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Wed, Dec 16, 2020 at 2:04 PM Mark Rutland <mark.rutland@arm.com> wrote:
+>
+> Unfortunately the merge resolution broke the build for arm64 -- could
+> you please apply the fixup below? IIUC that matches what we did in
+> linux-next, and builds fine locally.
 
-On Wed, Dec 16, 2020 at 09:17:39PM +0000, pr-tracker-bot@kernel.org wrote:
-> > git://git.kernel.dk/linux-block.git tags/tif-task_work.arch-2020-12-14
-> 
-> has been merged into torvalds/linux.git:
-> https://git.kernel.org/torvalds/c/005b2a9dc819a1265a8c765595f8f6d88d6173d9
+Oops. That was a bit too subtle. I didn't realize that the bits really
+wanted to be contiguous, and it wasn't obvious at the point of
+conflict.
 
-Unfortunately the merge resolution broke the build for arm64 -- could
-you please apply the fixup below? IIUC that matches what we did in
-linux-next, and builds fine locally.
+Will apply your fix asap.
 
-Thanks,
-Mark.
-
----->8----
-From da1826cc5132bb9d46aebdb47fa033f94825a697 Mon Sep 17 00:00:00 2001
-From: Mark Rutland <mark.rutland@arm.com>
-Date: Wed, 16 Dec 2020 21:32:48 +0000
-Subject: [PATCH] arm64: make _TIF_WORK_MASK bits contiguous
-
-We need the bits of _TIF_WORK_MASK to be contiguous in order to to use
-this as an immediate argument to an AND instruction in entry.S.
-
-We happened to change these bits in commits:
-
-  b5a5a01d8e9a44ec ("arm64: uaccess: remove addr_limit_user_check()")
-  192caabd4dd92c98 ("arm64: add support for TIF_NOTIFY_SIGNAL")
-
-... which each worked in isolation, but the merge resolution in commit:
-
-  005b2a9dc819a126 ("Merge tag 'tif-task_work.arch-2020-12-14' of git://git.kernel.dk/linux-block")
-
-... happened to make the bits non-contiguous.
-
-Fix this by moving TIF_NOTIFY_SIGNAL to be bit 6, which is contiguous
-with the rest of _TIF_WORK_MASK.
-
-Otherwise, we'll get a build-time failure as below:
-
-| arch/arm64/kernel/entry.S: Assembler messages:
-| arch/arm64/kernel/entry.S:733: Error: immediate out of range at operand 3 -- `and x2,x19,#((1<<1)|(1<<0)|(1<<2)|(1<<3)|(1<<4)|(1<<5)|(1<<7))'
-| scripts/Makefile.build:360: recipe for target 'arch/arm64/kernel/entry.o' failed
-| make[2]: *** [arch/arm64/kernel/entry.o] Error 1
-| scripts/Makefile.build:496: recipe for target 'arch/arm64/kernel' failed
-| make[1]: *** [arch/arm64/kernel] Error 2
-| Makefile:1805: recipe for target 'arch/arm64' failed
-| make: *** [arch/arm64] Error 2
-
-Fixes: 005b2a9dc819a126 ("Merge tag 'tif-task_work.arch-2020-12-14' of git://git.kernel.dk/linux-block")
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
----
- arch/arm64/include/asm/thread_info.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm64/include/asm/thread_info.h b/arch/arm64/include/asm/thread_info.h
-index b24056a0b02b..9f4e3b266f21 100644
---- a/arch/arm64/include/asm/thread_info.h
-+++ b/arch/arm64/include/asm/thread_info.h
-@@ -64,7 +64,7 @@ void arch_release_task_struct(struct task_struct *tsk);
- #define TIF_FOREIGN_FPSTATE	3	/* CPU's FP state is not current's */
- #define TIF_UPROBE		4	/* uprobe breakpoint or singlestep */
- #define TIF_MTE_ASYNC_FAULT	5	/* MTE Asynchronous Tag Check Fault */
--#define TIF_NOTIFY_SIGNAL	7	/* signal notifications exist */
-+#define TIF_NOTIFY_SIGNAL	6	/* signal notifications exist */
- #define TIF_SYSCALL_TRACE	8	/* syscall trace active */
- #define TIF_SYSCALL_AUDIT	9	/* syscall auditing */
- #define TIF_SYSCALL_TRACEPOINT	10	/* syscall tracepoint for ftrace */
--- 
-2.11.0
-
+             Linus
