@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48CEE2DC548
+	by mail.lfdr.de (Postfix) with ESMTP id D96662DC549
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 18:26:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727058AbgLPR0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 12:26:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39396 "EHLO
+        id S1727071AbgLPR0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 12:26:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726837AbgLPR0b (ORCPT
+        with ESMTP id S1726837AbgLPR0w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 12:26:31 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8F8BC061794;
-        Wed, 16 Dec 2020 09:25:51 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id m6so7287785pfm.6;
-        Wed, 16 Dec 2020 09:25:51 -0800 (PST)
+        Wed, 16 Dec 2020 12:26:52 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FF4CC06179C;
+        Wed, 16 Dec 2020 09:26:12 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id v29so18080159pgk.12;
+        Wed, 16 Dec 2020 09:26:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8pBBpGCrWJiaWjE3XLL6nqRK2b1pyGH5vU9yrJT3Xz4=;
-        b=oDc8K4JzHHVW6ZlZ9oTzL1LcJT4OkV858GTApazxYXwmZChU2X0AQ52+Bd791m7+1h
-         tpSca/0Ih05RUchgsVO2krKIynuUqMS/b2UM3EKFdL3peld4YjPpKcx/6/XfNy42B7yx
-         m0DoSEh9qZReOaZ5bh8NZBB7PuLhZJu6+nN5P0nuQe0rtnS7I/2XgYPHjY7JYFkgHQ4b
-         i9f7+EyofuqvUI/os9d2/HRCo15yk9FwQDmKOo7n1DOuG/YkAzwYZqbV8AmBapK+djiT
-         RyhbfoFEakH9Qa6h9ZJDdQJym5guFxZoI4AKcOk7ikSlV/v/BCsrdNwxC6QT6TVP5J4+
-         JhDA==
+        bh=MyaxQ/0Ypp97j+N3JeTntdQSRue+zRsuAOm9Q0a3RKo=;
+        b=RGI1+8U77XKDkvTuHNnf1dIHCt0bGmSU7NqQxOxSVsUcc5H4plGnZZt390AXoU8tIS
+         KNPXsGko/6GR4F5I5wxYbPhtjbV4etN70C4pR74n3iOzr8bqh2osc9VyKdjmAUfH0qJn
+         DUefcX2K2mIWWsDhkWBiMBEJRwcMLf6TqfGfI5LMjLLJ8L2X8Xw5acoJSgb/MknZluBc
+         WO3VjeaLgxBFMVT2HK48Y5sKAcOq1vc7yFYL3UQK5wRpVYSpdryE1Uo3Bn4ODjyzPEbD
+         LEayrmjVLQLUIVg1SK+W09pehY4teQMXHuQ3mPFveP35cmJl806JEzLQW2qoF/PHek+Y
+         kSTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=8pBBpGCrWJiaWjE3XLL6nqRK2b1pyGH5vU9yrJT3Xz4=;
-        b=W0alqQT2nmEhhO/s19X4RbCXgxahXbQwQjWOMGvH8QN0SzGCbQVNdTa3A75OAxvO+X
-         DjJM5BCsHp/O09fiMlePLwQnmM+Q5Ao6ba6zd8rT7Yfdx4kzCx8UNUSidp7XQjFw48Ww
-         qO7AYzEoq5Ce6lW/RqJ3qYifwEq6n05j9jDuV3ZcFH3m9IjHUTpjOkcc0jlJ9qFw5IuC
-         zb1+PoOGdu9zjHXT4es2lDLZIzdlZwnSbsVE5nd4EoGLl056CG0BguDrdhvfbXUX5xLU
-         RbWlNkIGZd+1bIEIuzfrKcm6VetXYHyNN8RtOJ6lsVCvDiSQSMegE7nkAziGUqhGhLtL
-         2+Ww==
-X-Gm-Message-State: AOAM532kjg+Zjcof+PbxAuxaVPG6HpaZC4UjFKLS4so5UAaJ8vr1i2lc
-        Vq1gtPseL6zYts6YvZtfegE=
-X-Google-Smtp-Source: ABdhPJwAUebQekBfuPpP/LUc3OdzdXQLpVnoLJwQU5s6NN0p2ZBu8XA34d+1PoMBg07Nch1VmDb9gg==
-X-Received: by 2002:a63:924f:: with SMTP id s15mr3448064pgn.360.1608139550996;
-        Wed, 16 Dec 2020 09:25:50 -0800 (PST)
+        bh=MyaxQ/0Ypp97j+N3JeTntdQSRue+zRsuAOm9Q0a3RKo=;
+        b=teEhAXy4J6vbMNj80lVkLRllBVFB4IheHdjPu64F7I8DBdYpncIh0YvyyIbcT50xp3
+         M6JH+Fu5qg8MzjAVkVzY+jz4b0VpU7RkKORelxhWCBgpCzFAxgRSyS9QfIXF29XZzrO0
+         JFr6BnoNupyWry541AnmVpZTBawaPeHtNLHzW2ioKlgSb25JAHwgwYRbZi9hcnKuuyaU
+         sX1FSKGeBWNllLj+z8IMB8jSAejzaNEGxWIPsGdZ3OBkchmw2hLncaJPoNECYCO8RDdi
+         XGAL3mzWWrAgrVggv05QG//FSaBTuLVvq7MrBI8bVKUDG399PT1E5+XRIq4PEJLYkAS2
+         38jQ==
+X-Gm-Message-State: AOAM531ZE3O1WTmwLzstl8OnNz1kNW/iv1bGosJLgf03bbop8GD9Iobp
+        T2Mu8go2hTlDJb/Jz+Xc99E=
+X-Google-Smtp-Source: ABdhPJyQSrO6GiC+cpqr8VDrBmoWugaAizj58mVAaD9aGCuU9xxovjRTs4pQNJkv6wTOey3ZHZmFfA==
+X-Received: by 2002:a62:ca:0:b029:19e:67a9:f0f2 with SMTP id 193-20020a6200ca0000b029019e67a9f0f2mr32941373pfa.60.1608139572130;
+        Wed, 16 Dec 2020 09:26:12 -0800 (PST)
 Received: from [10.67.48.230] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id s24sm2989356pfh.47.2020.12.16.09.25.49
+        by smtp.googlemail.com with ESMTPSA id q9sm3309011pgb.82.2020.12.16.09.26.10
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Dec 2020 09:25:49 -0800 (PST)
-Subject: Re: [PATCH 1/2] phy: phy-brcm-usb: improve getting OF matching data
+        Wed, 16 Dec 2020 09:26:11 -0800 (PST)
+Subject: Re: [PATCH 2/2] phy: phy-brcm-usb: specify init function format at
+ struct level
 To:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
         Kishon Vijay Abraham I <kishon@ti.com>,
         Vinod Koul <vkoul@kernel.org>
@@ -59,6 +60,7 @@ Cc:     Al Cooper <alcooperx@gmail.com>,
         linux-kernel@vger.kernel.org,
         =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
 References: <20201216143305.12179-1-zajec5@gmail.com>
+ <20201216143305.12179-2-zajec5@gmail.com>
 From:   Florian Fainelli <f.fainelli@gmail.com>
 Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
  mQGiBEjPuBIRBACW9MxSJU9fvEOCTnRNqG/13rAGsj+vJqontvoDSNxRgmafP8d3nesnqPyR
@@ -114,12 +116,12 @@ Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
  caxTGgc5zzQHeX67eMzrGomG3ZnIxmd1sAbgvJUDaD2GrYlulfwGWwWyTNbWRvMighVdPkSF
  6XFgQaosWxkV0OELLy2N485YrTr2Uq64VKyxpncLh50e2RnyAJ9Za0Dx0yyp44iD1OvHtkEI
  M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
-Message-ID: <6785d046-7da4-d3bb-14d6-2b18f8e1c870@gmail.com>
-Date:   Wed, 16 Dec 2020 09:25:48 -0800
+Message-ID: <97a31854-86a9-a2fa-7876-26ddd94ddd4c@gmail.com>
+Date:   Wed, 16 Dec 2020 09:26:09 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201216143305.12179-1-zajec5@gmail.com>
+In-Reply-To: <20201216143305.12179-2-zajec5@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -130,8 +132,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On 12/16/20 6:33 AM, Rafał Miłecki wrote:
 > From: Rafał Miłecki <rafal@milecki.pl>
 > 
-> 1. Use of_device_get_match_data() helper to simplify the code
-> 2. Check for NULL as a good practice
+> This is slightly cleaner solution that assures noone assings a wrong
+> function to the pointer.
 > 
 > Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 
