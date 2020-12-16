@@ -2,198 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D302C2DC962
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 00:06:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79B492DC96D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 00:12:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727475AbgLPXGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 18:06:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27286 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726736AbgLPXGT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 18:06:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608159892;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=M8zxnr7i+jdGAjTWJZWwGdbyVDDkRpBRiYVJz3+O7Nw=;
-        b=YY93ikVvF8qJpHzuq9fLWiuvgkl7b6/OTpM5W7jMG56WGZa8Ha9tyee3D/ehikJZC5ArB9
-        1HavXcUz+MlyQ+VV0N03vJQxkmuhPnGmcQ1acd32uycYT7gjsmMiTbvyCIRwcnaU47Hmyw
-        wbNBOIdambi0HurCxU77kqBg2Pq6spM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-60-oiWHXeL9Mmeeo5neLVXCUw-1; Wed, 16 Dec 2020 18:04:47 -0500
-X-MC-Unique: oiWHXeL9Mmeeo5neLVXCUw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F08D6800D53;
-        Wed, 16 Dec 2020 23:04:45 +0000 (UTC)
-Received: from [10.10.115.31] (ovpn-115-31.rdu2.redhat.com [10.10.115.31])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D5E7E1971D;
-        Wed, 16 Dec 2020 23:04:44 +0000 (UTC)
-Subject: Re: [PATCH] kbuild: add extra-y to targets-for-modules
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Artem Savkov <artem.savkov@gmail.com>
-Cc:     WANG Chao <chao.wang@ucloud.cn>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-References: <20201103054425.59251-1-chao.wang@ucloud.cn>
- <CAK7LNARnmJRy1NPBDkgNsoe_TqpD=HJhmri4YHjXjscGZ-neWw@mail.gmail.com>
- <20201123150452.GA68187@MacBook-Pro-2>
- <CAK7LNASH7Pj9eUdxF-sp1_Ap+uA9jEtsXa--pUDDw_pNVLtviA@mail.gmail.com>
- <20201208092035.GA96434@MacBook-Pro-2.local>
- <20201208143117.GA3333762@wtfbox.lan>
- <CAK7LNAS=wdCObfX3x8CQmXf8HsrKAjz+v+XVUCxVg63pxy8MXg@mail.gmail.com>
-From:   Joe Lawrence <joe.lawrence@redhat.com>
-Message-ID: <f2d1888b-5b8e-a513-61c7-f41fc3f3f7a3@redhat.com>
-Date:   Wed, 16 Dec 2020 18:04:44 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
-MIME-Version: 1.0
-In-Reply-To: <CAK7LNAS=wdCObfX3x8CQmXf8HsrKAjz+v+XVUCxVg63pxy8MXg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        id S1728373AbgLPXLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 18:11:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56388 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727512AbgLPXLc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 18:11:32 -0500
+Subject: Re: [GIT PULL] MFD for v5.11
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608160252;
+        bh=QI3tuDbOwBctAbTU058tSP05dcrLiMaxVHhf5v6SgdU=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=sR4cOZeUu914mvkRyw5TdogK/BiuTm0PPu2x1SrIcPF73AcMmdIMZg38j4Ui2X8p6
+         BIhoj6BYWKV7CJkKHSXV4P9F9q3jHaAPVIbA23Fgofnlk653kIV4mu5TtxpQemVMIJ
+         RpXy/hI0e+3ofvZDsmets0Subwr1b9by8NaZV+5b8e5VZm4MBvZ5jBJ3dxICXS6zJN
+         /4/GqZCLlhxkf4/WofTJIo6NMd6/jLD6LeVIyMghDySobgp9wA8H8pzS/6zIRmjJGi
+         jmDf0cOYfAOFchgC8sq5Ka+GMtoX0eyUqu42Nv/V+r+Uk2MN7VH1mLQDyLRTwwmtTZ
+         EJ4EgmFseLj1g==
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20201216074534.GC4776@dell>
+References: <20201216074534.GC4776@dell>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201216074534.GC4776@dell>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git mfd-next-5.11
+X-PR-Tracked-Commit-Id: 0cd3aa995740eabf8af1c794ac1d9ae314c928c3
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 278f54c46164e9859090dde7e4ceede830c6beb6
+Message-Id: <160816025192.24445.10695627888322975816.pr-tracker-bot@kernel.org>
+Date:   Wed, 16 Dec 2020 23:10:51 +0000
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/16/20 1:14 AM, Masahiro Yamada wrote:
-> On Tue, Dec 8, 2020 at 11:31 PM Artem Savkov <artem.savkov@gmail.com> wrote:
->>
->> On Tue, Dec 08, 2020 at 05:20:35PM +0800, WANG Chao wrote:
->>> Sorry for the late reply.
->>>
->>> On 11/25/20 at 10:42P, Masahiro Yamada wrote:
->>>> On Tue, Nov 24, 2020 at 12:05 AM WANG Chao <chao.wang@ucloud.cn> wrote:
->>>>>
->>>>> On 11/23/20 at 02:23P, Masahiro Yamada wrote:
->>>>>> On Tue, Nov 3, 2020 at 3:23 PM WANG Chao <chao.wang@ucloud.cn> wrote:
->>>>>>>
->>>>>>> extra-y target doesn't build for 'make M=...' since commit 6212804f2d78
->>>>>>> ("kbuild: do not create built-in objects for external module builds").
->>>>>>>
->>>>>>> This especially breaks kpatch, which is using 'extra-y := kpatch.lds'
->>>>>>> and 'make M=...' to build livepatch patch module.
->>>>>>>
->>>>>>> Add extra-y to targets-for-modules so that such kind of build works
->>>>>>> properly.
->>>>>>>
->>>>>>> Signed-off-by: WANG Chao <chao.wang@ucloud.cn>
->>>>>>> ---
->>>>>>>   scripts/Makefile.build | 2 +-
->>>>>>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>>>
->>>>>>> diff --git a/scripts/Makefile.build b/scripts/Makefile.build
->>>>>>> index ae647379b579..0113a042d643 100644
->>>>>>> --- a/scripts/Makefile.build
->>>>>>> +++ b/scripts/Makefile.build
->>>>>>> @@ -86,7 +86,7 @@ ifdef need-builtin
->>>>>>>   targets-for-builtin += $(obj)/built-in.a
->>>>>>>   endif
->>>>>>>
->>>>>>> -targets-for-modules := $(patsubst %.o, %.mod, $(filter %.o, $(obj-m)))
->>>>>>> +targets-for-modules := $(extra-y) $(patsubst %.o, %.mod, $(filter %.o, $(obj-m)))
->>>>>>>
->>>>>>>   ifdef need-modorder
->>>>>>>   targets-for-modules += $(obj)/modules.order
->>>>>>> --
->>>>>>> 2.29.1
->>>>>>>
->>>>>>
->>>>>> NACK.
->>>>>>
->>>>>> Please fix your Makefile.
->>>>>>
->>>>>> Hint:
->>>>>> https://patchwork.kernel.org/project/linux-kbuild/patch/20201123045403.63402-6-masahiroy@kernel.org/
->>>>>>
->>>>>>
->>>>>> Probably what you should use is 'targets'.
->>>>>
->>>>> I tried with 'targets' and 'always-y'. Both doesn't work for me.
->>>>>
->>>>> I narraw it down to the following example:
->>>>>
->>>>> cat > Makefile << _EOF_
->>>>> obj-m += foo.o
->>>>>
->>>>> ldflags-y += -T $(src)/kpatch.lds
->>>>> always-y += kpatch.lds
->>>>>
->>>>> foo-objs += bar.o
->>>>>
->>>>> all:
->>>>>          make -C /lib/modules/$(shell uname -r)/build M=$(PWD)
->>>>> clean:
->>>>>          make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
->>>>> _EOF_
->>>>>
->>>>> Take a look into scripts/Makefile.build:488:
->>>>>
->>>>> __build: $(if $(KBUILD_BUILTIN), $(targets-for-builtin)) \
->>>>>           $(if $(KBUILD_MODULES), $(targets-for-modules)) \
->>>>>           $(subdir-ym) $(always-y)
->>>>>          @:
->>>>>
->>>>> 'always-y' is built after 'targets-for-modules'. This makes
->>>>> 'targets-for-modules' fails because kpatch.lds isn't there.
->>>>
->>>>
->>>> Heh, you rely on the targets built from left to right,
->>>> and you have never thought Make supports the parallel option -j.
->>>
->>> You're right. I missed that.
->>>
->>>>
->>>>
->>>> You need to specify the dependency if you expect objects
->>>> are built in the particular order.
->>>>
->>>> However, in this case, using ldflags-y looks wrong
->>>> in the first place.
->>>>
->>>> The linker script is used when combining the object
->>>> as well as the final link of *.ko
->>
->> We want linker script to be used on both those steps, otherwise modpost
->> fails.
-> 
-> 
-> In that case, does the following work?
-> (untested)
-> 
-> 
-> 
-> diff --git a/kmod/patch/Makefile b/kmod/patch/Makefile
-> index e017b17..02d4c66 100644
-> --- a/kmod/patch/Makefile
-> +++ b/kmod/patch/Makefile
-> @@ -12,7 +12,9 @@ endif
-> 
->   obj-m += $(KPATCH_NAME).o
->   ldflags-y += -T $(src)/kpatch.lds
-> -extra-y := kpatch.lds
-> +targets += kpatch.lds
-> +
-> +$(obj)/$(KPATCH_NAME).o: $(obj)/kpatch.lds
-> 
->   $(KPATCH_NAME)-objs += patch-hook.o output.o
-> 
+The pull request you sent on Wed, 16 Dec 2020 07:45:34 +0000:
 
-Hi Masahiro,
+> git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git mfd-next-5.11
 
-Yeah this is more or less what Artem came up with:
-https://github.com/dynup/kpatch/pull/1149
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/278f54c46164e9859090dde7e4ceede830c6beb6
 
-though we hadn't added kpatch.lds to targets.  Is there documentation 
-somewhere on what effect "targets" has for out-of-tree builds?
+Thank you!
 
-Thanks,
-
--- Joe
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
