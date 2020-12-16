@@ -2,168 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 649242DC2AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:04:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD1292DC2B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:05:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726072AbgLPPDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 10:03:47 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:36536 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726031AbgLPPDq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 10:03:46 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BGF1qVw044683;
-        Wed, 16 Dec 2020 09:01:52 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1608130912;
-        bh=PPPWoLxhLgX8Ti9lzpXYC7Vt5i4usJeVSwnKRKTXbYI=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=dPDsgeW2AZzHpCZlfom40pD8p5I3BqXbfjpPnP0AThfYpJCXkAoPJjY+dIv1IZEDN
-         OXIglDIHCELWri8LH1dGiDbnvcRjtuQeUIrJ95NFFXUO5M8P74ox0xGicHE0SRw+E1
-         xp3LPNZ94u61O/dRFzZW8MhWGDmYYn0SBGL1Y0ps=
-Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BGF1qhr108499
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 16 Dec 2020 09:01:52 -0600
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 16
- Dec 2020 09:01:52 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 16 Dec 2020 09:01:52 -0600
-Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BGF1mbG022107;
-        Wed, 16 Dec 2020 09:01:49 -0600
-Subject: Re: [PATCH v5] PCI: cadence: Retrain Link to work around Gen2
- training defect.
-To:     Rob Herring <robh@kernel.org>
-CC:     Tom Joseph <tjoseph@cadence.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Nadeem Athani <nadeem@cadence.com>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Milind Parab <mparab@cadence.com>,
-        Swapnil Kashinath Jakhade <sjakhade@cadence.com>,
-        Parshuram Raju Thombare <pthombar@cadence.com>
-References: <20201215070009.27937-1-kishon@ti.com>
- <CAL_JsqJzi7JkMcd4NZewA=w8q6BsCkrhW3JcED63R=EyE3v29Q@mail.gmail.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <1ec78477-dadc-cbef-406f-568f44b6c62d@ti.com>
-Date:   Wed, 16 Dec 2020 20:31:48 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726218AbgLPPFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 10:05:07 -0500
+Received: from mga12.intel.com ([192.55.52.136]:31627 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726073AbgLPPFH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 10:05:07 -0500
+IronPort-SDR: Qeshe+Fw/hno/jPWPBgMSRDWz64lUetrovBvhpfyrACjRqwV9NcYNqX+e/xaKfw1uL0E+oKZsx
+ iVGjSpWquMUA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9836"; a="154307638"
+X-IronPort-AV: E=Sophos;i="5.78,424,1599548400"; 
+   d="scan'208";a="154307638"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2020 07:03:20 -0800
+IronPort-SDR: NPbfqqy1nk5QuQ/LyglqwVb1BVA5suFYSkwrsoPbLzKkoT82dcvFzQgvNkC9rMnBIBaxs36yBD
+ 8LaqNqcXOJaQ==
+X-IronPort-AV: E=Sophos;i="5.78,424,1599548400"; 
+   d="scan'208";a="342094155"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2020 07:03:17 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id AAA3320726; Wed, 16 Dec 2020 17:03:15 +0200 (EET)
+Date:   Wed, 16 Dec 2020 17:03:15 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Guennadi Liakhovetski <g.liakhovetski@gmx.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] media: dt-bindings: Convert video-interfaces.txt
+ properties to schemas
+Message-ID: <20201216150315.GL26370@paasikivi.fi.intel.com>
+References: <20201210211625.3070388-1-robh@kernel.org>
+ <20201210211625.3070388-2-robh@kernel.org>
+ <alpine.DEB.2.20.2012161113060.15676@axis700.grange>
+ <20201216141210.GB651087@robh.at.kernel.org>
+ <X9oYs43PzXbIXXs8@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqJzi7JkMcd4NZewA=w8q6BsCkrhW3JcED63R=EyE3v29Q@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X9oYs43PzXbIXXs8@pendragon.ideasonboard.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+Hi Rob and Laurent,
 
-On 15/12/20 9:23 pm, Rob Herring wrote:
-> On Tue, Dec 15, 2020 at 1:00 AM Kishon Vijay Abraham I <kishon@ti.com> wrote:
->>
->> From: Nadeem Athani <nadeem@cadence.com>
->>
->> Cadence controller will not initiate autonomous speed change if strapped as
->> Gen2. The Retrain Link bit is set as quirk to enable this speed change.
->>
->> Signed-off-by: Nadeem Athani <nadeem@cadence.com>
->> [kishon@ti.com: Enable the workaround for TI's J721E SoC]
->> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
->> ---
->> Hi Lorenzo,
->> The previous version of the patch can be found at [1].
->> I slightly re-worked the patch from Nadeem
->> *) Removed additional Link Up Check
->> *) Removed quirk from pcie-cadence-plat.c
->> *) Also removed additional compatible
->>    "cdns,cdns-pcie-host-quirk-retrain" added in that series
->> *) Enabled the quirk for J721E
->> [1] -> http://lore.kernel.org/r/20201211144236.3825-1-nadeem@cadence.com
->>
->>  drivers/pci/controller/cadence/pci-j721e.c    |  3 +
->>  .../controller/cadence/pcie-cadence-host.c    | 67 ++++++++++++++-----
->>  drivers/pci/controller/cadence/pcie-cadence.h | 11 ++-
->>  3 files changed, 62 insertions(+), 19 deletions(-)
->>
->> diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
->> index dac1ac8a7615..baf729850cb1 100644
->> --- a/drivers/pci/controller/cadence/pci-j721e.c
->> +++ b/drivers/pci/controller/cadence/pci-j721e.c
->> @@ -64,6 +64,7 @@ enum j721e_pcie_mode {
->>
->>  struct j721e_pcie_data {
->>         enum j721e_pcie_mode    mode;
->> +       bool                    quirk_retrain_flag;
->>  };
->>
->>  static inline u32 j721e_pcie_user_readl(struct j721e_pcie *pcie, u32 offset)
->> @@ -280,6 +281,7 @@ static struct pci_ops cdns_ti_pcie_host_ops = {
->>
->>  static const struct j721e_pcie_data j721e_pcie_rc_data = {
->>         .mode = PCI_MODE_RC,
->> +       .quirk_retrain_flag = true,
->>  };
->>
->>  static const struct j721e_pcie_data j721e_pcie_ep_data = {
->> @@ -388,6 +390,7 @@ static int j721e_pcie_probe(struct platform_device *pdev)
->>
->>                 bridge->ops = &cdns_ti_pcie_host_ops;
->>                 rc = pci_host_bridge_priv(bridge);
->> +               rc->quirk_retrain_flag = data->quirk_retrain_flag;
->>
->>                 cdns_pcie = &rc->pcie;
->>                 cdns_pcie->dev = dev;
->> diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c b/drivers/pci/controller/cadence/pcie-cadence-host.c
->> index 811c1cb2e8de..773c0d1137ed 100644
->> --- a/drivers/pci/controller/cadence/pcie-cadence-host.c
->> +++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
->> @@ -77,6 +77,50 @@ static struct pci_ops cdns_pcie_host_ops = {
->>         .write          = pci_generic_config_write,
->>  };
->>
->> +static int cdns_pcie_host_wait_for_link(struct cdns_pcie *pcie)
->> +{
->> +       struct device *dev = pcie->dev;
->> +       int retries;
->> +
->> +       /* Check if the link is up or not */
->> +       for (retries = 0; retries < LINK_WAIT_MAX_RETRIES; retries++) {
->> +               if (cdns_pcie_link_up(pcie)) {
->> +                       dev_info(dev, "Link up\n");
->> +                       return 0;
->> +               }
->> +               usleep_range(LINK_WAIT_USLEEP_MIN, LINK_WAIT_USLEEP_MAX);
->> +       }
->> +
->> +       return -ETIMEDOUT;
->> +}
->> +
->> +static void cdns_pcie_retrain(struct cdns_pcie *pcie)
->> +{
->> +       u32 lnk_cap_sls, pcie_cap_off = CDNS_PCIE_RP_CAP_OFFSET;
->> +       u16 lnk_stat, lnk_ctl;
->> +
->> +       /*
->> +        * Set retrain bit if current speed is 2.5 GB/s,
->> +        * but the PCIe root port support is > 2.5 GB/s.
+On Wed, Dec 16, 2020 at 04:24:51PM +0200, Laurent Pinchart wrote:
+> Hi Rob,
 > 
-> If you don't have the retrain quirk, wouldn't this condition never
-> happen and then the function is just a nop? So this could just be
-> called unconditionally.
+> On Wed, Dec 16, 2020 at 08:12:10AM -0600, Rob Herring wrote:
+> > On Wed, Dec 16, 2020 at 11:18:03AM +0100, Guennadi Liakhovetski wrote:
+> > > Hi Rob,
+> > > 
+> > > Sorry for the delay! I didn't realise my ack was required for this patch.
+> > > I won't object against the licence change, but please don't add me as a
+> > > maintainer of
+> > 
+> > Okay, so that's an Ack?
+> > 
+> > > 
+> > > On Thu, 10 Dec 2020, Rob Herring wrote:
+> > > 
+> > > [snip]
+> > > 
+> > > > diff --git a/Documentation/devicetree/bindings/media/video-interfaces.yaml b/Documentation/devicetree/bindings/media/video-interfaces.yaml
+> > > > new file mode 100644
+> > > > index 000000000000..7415a4df1576
+> > > > --- /dev/null
+> > > > +++ b/Documentation/devicetree/bindings/media/video-interfaces.yaml
+> > > > @@ -0,0 +1,344 @@
+> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > > +%YAML 1.2
+> > > > +---
+> > > > +$id: http://devicetree.org/schemas/media/video-interfaces.yaml#
+> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > +
+> > > > +title: Common bindings for video receiver and transmitter interface endpoints
+> > > > +
+> > > > +maintainers:
+> > > > +  - Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+> > > 
+> > > I did commit the original version of
+> > > Documentation/devicetree/bindings/media/video-interfaces.txt but that was
+> > > more than 8 years ago, I haven't worked in media / V4L for several years
+> > > now, so, I don't think I can meaningfully maintain that file now.
+> > 
+> > Okay, I'll drop you.
+> > 
+> > Anyone else want to sign up? Laurent?
+> 
+> I'll likely regret this, but yes, you can sign me up :-)
 
-Yeah, but only for the quirk we have to retrain to go to GEN2 speed
-mode. Else the HW will automatically retrain and go to GEN2.
+Please add me, too.
 
-Thank You,
-Kishon
+-- 
+Regards,
+
+Sakari Ailus
