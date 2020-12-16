@@ -2,75 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E01B12DBE2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 11:03:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 002E62DBE33
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 11:06:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726107AbgLPKDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 05:03:16 -0500
-Received: from correo.us.es ([193.147.175.20]:53430 "EHLO mail.us.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726025AbgLPKDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 05:03:15 -0500
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 21C0D2EFED4
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 11:02:17 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 1262BDA8F4
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 11:02:17 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 065BADA797; Wed, 16 Dec 2020 11:02:17 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
-        autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id C4EF2DA798;
-        Wed, 16 Dec 2020 11:02:14 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Wed, 16 Dec 2020 11:02:12 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 98A1642EF4E0;
-        Wed, 16 Dec 2020 11:02:14 +0100 (CET)
-Date:   Wed, 16 Dec 2020 11:02:30 +0100
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] netfilter: nftables: fix incorrect increment of
- loop counter
-Message-ID: <20201216100230.GA10280@salvia>
-References: <20201214234015.85072-1-colin.king@canonical.com>
+        id S1726119AbgLPKEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 05:04:02 -0500
+Received: from mail-wr1-f52.google.com ([209.85.221.52]:33886 "EHLO
+        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725889AbgLPKEC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 05:04:02 -0500
+Received: by mail-wr1-f52.google.com with SMTP id q18so15053994wrn.1;
+        Wed, 16 Dec 2020 02:03:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g/Wzze2NIBSL2f+axZbs4XLUQ1J8xddIwrjpMIqAZg4=;
+        b=cIRHMR4dUG/P9eO9xLSPSVyn8HTLp+ZI3PNSp6iLmjMppC3QhhzrCZWmiWL8rDqbXj
+         xEvZIG0KIuTM0IzLPel7d+DAmMxojl4cFhtVhQ+zF0PGDq1lNiCDYRlsFrczY+eQSwWl
+         smBwgiQur6rf3lPjTOaVBOPaw0RIwZEg+3j+MLw1E6zfVBwpGRYgMsSTJDUkufOg5Lrs
+         /0rnepa8qMdP+yC2fUbHQLWoOIMbHYK9Z15g4kLXHcgeMR3c2HJBge9NxpNME/viBsPv
+         YUk+o2EEzlTgc74UFA7aT+qdqr/vCbAgKzrKqCt1tRTZU8vbPV6V4j8Rg5PGWOq20HGf
+         qF/w==
+X-Gm-Message-State: AOAM531OmE3nosSnBWy8v9gdKL5dcYlvIW5K7/GALkoYVE1+H+YxXeD5
+        6QK1w8Guo5R1kJ8Cvuk3v5yPBRHz5uWxcQ==
+X-Google-Smtp-Source: ABdhPJxD1ueQpGR9/wck7OlgddXafTJE+ngtoIBX1JQ9dKcH54wv9WbaRfgT0MlTBjsXepkMheXDQQ==
+X-Received: by 2002:adf:eb07:: with SMTP id s7mr37381501wrn.414.1608113000866;
+        Wed, 16 Dec 2020 02:03:20 -0800 (PST)
+Received: from rhea.home.vuxu.org ([2a01:4f8:c010:17cd:6824:5476:f6ff:db68])
+        by smtp.gmail.com with ESMTPSA id l7sm2106047wme.4.2020.12.16.02.03.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Dec 2020 02:03:19 -0800 (PST)
+Received: from localhost (rhea.home.vuxu.org [local])
+        by rhea.home.vuxu.org (OpenSMTPD) with ESMTPA id 876ad974;
+        Wed, 16 Dec 2020 10:03:17 +0000 (UTC)
+From:   Leah Neukirchen <leah@vuxu.org>
+To:     bpf@vger.kernel.org
+Cc:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, leah@vuxu.org
+Subject: [PATCH] bpf: Remove unnecessary <argp.h> include from preload/iterators
+Date:   Wed, 16 Dec 2020 11:03:06 +0100
+Message-Id: <20201216100306.30942-1-leah@vuxu.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201214234015.85072-1-colin.king@canonical.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 11:40:15PM +0000, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The intention of the err_expr cleanup path is to iterate over the
-> allocated expr_array objects and free them, starting from i - 1 and
-> working down to the start of the array. Currently the loop counter
-> is being incremented instead of decremented and also the index i is
-> being used instead of k, repeatedly destroying the same expr_array
-> element.  Fix this by decrementing k and using k as the index into
-> expr_array.
+This program does not use argp (which is a glibcism).
+Instead include <errno.h> directly, which was pulled in by <argp.h>.
 
-Applied to nf.git, thanks.
+Signed-off-by: Leah Neukirchen <leah@vuxu.org>
+---
+ kernel/bpf/preload/iterators/iterators.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/preload/iterators/iterators.c b/kernel/bpf/preload/iterators/iterators.c
+index b7ff8793917..5d872a70547 100644
+--- a/kernel/bpf/preload/iterators/iterators.c
++++ b/kernel/bpf/preload/iterators/iterators.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright (c) 2020 Facebook */
+-#include <argp.h>
++#include <errno.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+-- 
+2.29.2
+
