@@ -2,225 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B8DA2DC1C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 15:04:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D23A2DC1C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 15:04:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726305AbgLPODD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 09:03:03 -0500
-Received: from sender11-of-o51.zoho.eu ([31.186.226.237]:21191 "EHLO
-        sender11-of-o51.zoho.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725550AbgLPODC (ORCPT
+        id S1726411AbgLPOD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 09:03:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46726 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726396AbgLPOD2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 09:03:02 -0500
-ARC-Seal: i=1; a=rsa-sha256; t=1608127300; cv=none; 
-        d=zohomail.eu; s=zohoarc; 
-        b=iMY5TCgeWZxD9lM1y7NZ8EbK4XqM0Gv12cVg1b/t7z1zgBKfqQHhqqqxDyhi+PqocWSBmQ6Hh5Mt2RcLBdJtLABgul5Z6aL+uXIC+BTY2EhZi0LbIRAJ4tO5BmHmFgzg2eb1vGw8h0DlyGYF3cr5o0Rpn+4V5AfEVrKnR0uv21k=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
-        t=1608127300; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=9Hb9C4lOvs26EP2K3tmPCljJvyG4eovRqKOYQcynrcc=; 
-        b=UhQcte0uVXLxNd4JIBD9W0BIPg/iulI8XG0LxICJMEbIVrov/oRSi0KjI9FVrrUJ/wu7swg+mzJi7edzEkV0QviFgG8nWw4/wid4eftSUFhaGquQWpqscGlnLPa+nGeOOIKWIYk06ZJKf1ZJ4LaPH9RoNAS6ETryJzn5RVcHZfM=
-ARC-Authentication-Results: i=1; mx.zohomail.eu;
-        dkim=pass  header.i=shytyi.net;
-        spf=pass  smtp.mailfrom=dmytro@shytyi.net;
-        dmarc=pass header.from=<dmytro@shytyi.net> header.from=<dmytro@shytyi.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1608127300;
-        s=hs; d=shytyi.net; i=dmytro@shytyi.net;
-        h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=9Hb9C4lOvs26EP2K3tmPCljJvyG4eovRqKOYQcynrcc=;
-        b=TUN7Y40BCBpPkba7drkkP6+bVbS3OQZwE5ZOeRMnZ/nhhHQXb3v9J12RZjpV9EEJ
-        CvbQWsxmI0x020oDKH7bZSJvcks9pITJt7wQ2sO+HsOqF/edQ4GvFx1QVDSr0UQPHyx
-        7v9KqDzlj8tLO9cH+CF4EOiJKDk1LKfez2+25oqU=
-Received: from mail.zoho.eu by mx.zoho.eu
-        with SMTP id 1608127293590923.5571308599448; Wed, 16 Dec 2020 15:01:33 +0100 (CET)
-Date:   Wed, 16 Dec 2020 15:01:33 +0100
-From:   Dmytro Shytyi <dmytro@shytyi.net>
-To:     "David Miller" <davem@davemloft.net>
-Cc:     "kuba" <kuba@kernel.org>, "yoshfuji" <yoshfuji@linux-ipv6.org>,
-        "kuznet" <kuznet@ms2.inr.ac.ru>,
-        "liuhangbin" <liuhangbin@gmail.com>,
-        "netdev" <netdev@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>
-Message-ID: <1766bdb2894.11cec656f187711.2683040319761227283@shytyi.net>
-In-Reply-To: <20201215.160049.2258791262841288557.davem@davemloft.net>
-References: <175e1fdb250.1207dca53446410.2492811916841931466@shytyi.net>
-        <175e4f98e19.bcccf9b7450965.5991300381666674110@shytyi.net>
-        <176458a838e.100a4c464143350.2864106687411861504@shytyi.net> <20201215.160049.2258791262841288557.davem@davemloft.net>
-Subject: Re: [PATCH net-next V8] net: Variable SLAAC: SLAAC with prefixes of
- arbitrary length in PIO
+        Wed, 16 Dec 2020 09:03:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608127321;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sIT/U1zUcAUrkDXkv6VWKg26my/iL2ARrpTxUVfDaBY=;
+        b=aVvtPF6pslDACg2vLTTIA8v/5k3XaojwsvqPml+v2IGFf4Y23teAfnA4spUzdDqKm7iYVR
+        HP0nABIPvrmA2aXEBdzyuCMePm9a3Sp31Kb80EDZURpTBvvQ8I1rQw1qKKPijGDRGkhTzK
+        7jUc2BGTObGn1/Xxf5Vo+zq0tP4llhU=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-318-HxUpXYxVPR2XCfuOtyjs7w-1; Wed, 16 Dec 2020 09:01:58 -0500
+X-MC-Unique: HxUpXYxVPR2XCfuOtyjs7w-1
+Received: by mail-ed1-f71.google.com with SMTP id y19so10122151edw.16
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 06:01:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sIT/U1zUcAUrkDXkv6VWKg26my/iL2ARrpTxUVfDaBY=;
+        b=L0phnOQdVc17bV6XefysN/Cr6gEjxFoQv6TIxyru+SZlU9gWPWnRXSK8z7OWVB/3M+
+         uJaNqvmSvpG4hy4cHpGLeNWMr/vJuEQpxWyUpBYHLbRLeAmqpPSkoVBpdWMchjY8y3Cg
+         eMwZEENwaLUGMM50rPVZDcWRm35mrMVFEIyBQY8dnAGKtRwPkXysByTanRqmJJT5rpY5
+         oHGv4MW48Fx4DlZaT9KZR1O+Q8WXcv/8EEjDwBmlOZYCHEGcfIpTRT+hV/UaS4NY3jN6
+         vnKBNLAN0jYPxQ2Tr7ebc96oZDbVyEYjPYHZeVviiKCHwrtpgl3S5pEaGuB3HgrbmuTE
+         +LKQ==
+X-Gm-Message-State: AOAM531AM+CEL0lPvtC1DEdzqYBADydGSOabbDKOn2yVNExcRcOR7bZd
+        MIKiexkDnnyiPKDCXkmr+CaCi4uAv/6DdFVQ9WkRFASm83dhV+tWf+LlnbILaAhizplOtGtokFG
+        C1eM/ry8FKG5ag62LT5H6n/tB6V+n7hvrXDqPzLb8MOTQE45sXQg2LZWXNc5TKCuB4BTgSNbRLt
+        7/
+X-Received: by 2002:a17:906:f8d4:: with SMTP id lh20mr31195346ejb.442.1608127316826;
+        Wed, 16 Dec 2020 06:01:56 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy0Axzb73vQVIPuNbLIMIUfjTGEA8B8FRAq8n/DMjmv0ieDm2eccR281AAMjRXzok73L6ofkg==
+X-Received: by 2002:a17:906:f8d4:: with SMTP id lh20mr31195324ejb.442.1608127316575;
+        Wed, 16 Dec 2020 06:01:56 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id g18sm20649849edt.2.2020.12.16.06.01.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Dec 2020 06:01:55 -0800 (PST)
+Subject: Re: [PATCH] platform/surface: SURFACE_PLATFORMS should depend on ACPI
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201216133752.1321978-1-geert@linux-m68k.org>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <aa101c72-2d15-efa8-5b44-479315e24a93@redhat.com>
+Date:   Wed, 16 Dec 2020 15:01:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201216133752.1321978-1-geert@linux-m68k.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Importance: Medium
-User-Agent: Zoho Mail
-X-Mailer: Zoho Mail
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello David,
+Hi,
 
-Thank you for your comment. 
-Asnwers in-line.
+On 12/16/20 2:37 PM, Geert Uytterhoeven wrote:
+> All Microsoft Surface platform-specific device drivers depend on ACPI,
+> but the gatekeeper symbol SURFACE_PLATFORMS does not.  Hence when the
+> user is configuring a kernel without ACPI support, he is still asked
+> about Microsoft Surface drivers, even though this question is
+> irrelevant.
+> 
+> Fix this by moving the dependency on ACPI from the individual driver
+> symbols to SURFACE_PLATFORMS.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Take care,
-                              
-Dmytro SHYTYI
+Thanks, patch looks good to me:
+
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+
+Maximilian, can I have your ack or reviewed-by for this
+(assuming you agree with this change) ?
+
+Regards,
+
+Hans
+
+> ---
 
 
----- On Wed, 16 Dec 2020 01:00:49 +0100 David Miller <davem@davemloft.net> wrote ----
-
- > From: Dmytro Shytyi <dmytro@shytyi.net> 
- > Date: Wed, 09 Dec 2020 04:27:54 +0100 
- >  
- > > Variable SLAAC [Can be activated via sysctl]: 
- > > SLAAC with prefixes of arbitrary length in PIO (randomly 
- > > generated hostID or stable privacy + privacy extensions). 
- > > The main problem is that SLAAC RA or PD allocates a /64 by the Wireless 
- > > carrier 4G, 5G to a mobile hotspot, however segmentation of the /64 via 
- > > SLAAC is required so that downstream interfaces can be further subnetted. 
- > > Example: uCPE device (4G + WI-FI enabled) receives /64 via Wireless, and 
- > > assigns /72 to VNF-Firewall, /72 to WIFI, /72 to VNF-Router, /72 to 
- > > Load-Balancer and /72 to wired connected devices. 
- > > IETF document that defines problem statement: 
- > > draft-mishra-v6ops-variable-slaac-problem-stmt 
- > > IETF document that specifies variable slaac: 
- > > draft-mishra-6man-variable-slaac 
- > > 
- > > Signed-off-by: Dmytro Shytyi <dmytro@shytyi.net> 
- > > --- 
- > > diff --git a/include/linux/ipv6.h b/include/linux/ipv6.h 
- > > index dda61d150a13..67ca3925463c 100644 
- > > --- a/include/linux/ipv6.h 
- > > +++ b/include/linux/ipv6.h 
- > > @@ -75,6 +75,7 @@ struct ipv6_devconf { 
- > >      __s32        disable_policy; 
- > >      __s32           ndisc_tclass; 
- > >      __s32        rpl_seg_enabled; 
- > > +    __s32        variable_slaac; 
- > > 
- > >      struct ctl_table_header *sysctl_header; 
- > >  }; 
- > > diff --git a/include/uapi/linux/ipv6.h b/include/uapi/linux/ipv6.h 
- > > index 13e8751bf24a..f2af4f9fba2d 100644 
- > > --- a/include/uapi/linux/ipv6.h 
- > > +++ b/include/uapi/linux/ipv6.h 
- > > @@ -189,7 +189,8 @@ enum { 
- > >      DEVCONF_ACCEPT_RA_RT_INFO_MIN_PLEN, 
- > >      DEVCONF_NDISC_TCLASS, 
- > >      DEVCONF_RPL_SEG_ENABLED, 
- > > -    DEVCONF_MAX 
- > > +    DEVCONF_MAX, 
- > > +    DEVCONF_VARIABLE_SLAAC 
- > >  }; 
- > > 
- > > 
- > > diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c 
- > > index eff2cacd5209..07afe4ce984e 100644 
- > > --- a/net/ipv6/addrconf.c 
- > > +++ b/net/ipv6/addrconf.c 
- > > @@ -236,6 +236,7 @@ static struct ipv6_devconf ipv6_devconf __read_mostly = { 
- > >      .addr_gen_mode        = IN6_ADDR_GEN_MODE_EUI64, 
- > >      .disable_policy        = 0, 
- > >      .rpl_seg_enabled    = 0, 
- > > +    .variable_slaac        = 0, 
- > >  }; 
- > > 
- > >  static struct ipv6_devconf ipv6_devconf_dflt __read_mostly = { 
- > > @@ -291,6 +292,7 @@ static struct ipv6_devconf ipv6_devconf_dflt __read_mostly = { 
- > >      .addr_gen_mode        = IN6_ADDR_GEN_MODE_EUI64, 
- > >      .disable_policy        = 0, 
- > >      .rpl_seg_enabled    = 0, 
- > > +    .variable_slaac        = 0, 
- > >  }; 
- > > 
- > >  /* Check if link is ready: is it up and is a valid qdisc available */ 
- > > @@ -1340,9 +1342,15 @@ static int ipv6_create_tempaddr(struct inet6_ifaddr *ifp, bool block) 
- > >          goto out; 
- > >      } 
- > >      in6_ifa_hold(ifp); 
- > > -    memcpy(addr.s6_addr, ifp->addr.s6_addr, 8); 
- > > -    ipv6_gen_rnd_iid(&addr); 
- > > 
- > > +    if (ifp->prefix_len == 64) { 
- > > +        memcpy(addr.s6_addr, ifp->addr.s6_addr, 8); 
- > > +        ipv6_gen_rnd_iid(&addr); 
- > > +    } else if (ifp->prefix_len > 0 && ifp->prefix_len <= 128 && 
- > > +           idev->cnf.variable_slaac) { 
- > > +        get_random_bytes(addr.s6_addr, 16); 
- > > +        ipv6_addr_prefix_copy(&addr, &ifp->addr, ifp->prefix_len); 
- > > +    } 
- > >      age = (now - ifp->tstamp) / HZ; 
- > > 
- > >      regen_advance = idev->cnf.regen_max_retry * 
- > > @@ -2569,6 +2577,37 @@ static bool is_addr_mode_generate_stable(struct inet6_dev *idev) 
- > >             idev->cnf.addr_gen_mode == IN6_ADDR_GEN_MODE_RANDOM; 
- > >  } 
- > > 
- > > +static struct inet6_ifaddr *ipv6_cmp_rcvd_prsnt_prfxs(struct inet6_ifaddr *ifp, 
- > > +                              struct inet6_dev *in6_dev, 
- > > +                              struct net *net, 
- > > +                              const struct prefix_info *pinfo) 
- > > +{ 
- > > +    struct inet6_ifaddr *result_base = NULL; 
- > > +    struct inet6_ifaddr *result = NULL; 
- > > +    bool prfxs_equal; 
- > > + 
- > > +    result_base = result; 
- >  
- > This is NULL, are you sure you didn't mewan to init this to 'ifp' 
- >  or similar instead? 
-
-[Dmytro] I put the entire function to comment below the instructions.
-[Dmytro]:
-+static struct inet6_ifaddr *ipv6_cmp_rcvd_prsnt_prfxs(struct inet6_ifaddr *ifp,
-+                         struct inet6_dev *in6_dev,
-+                         struct net *net,
-+                         const struct prefix_info *pinfo)
-+{
-+    struct inet6_ifaddr *result_base = NULL;
-+    struct inet6_ifaddr *result = NULL;
-+    bool prfxs_equal;
-+
-+    result_base = result;
-+    rcu_read_lock();
-+    list_for_each_entry_rcu(ifp, &in6_dev->addr_list, if_list) {
-+        if (!net_eq(dev_net(ifp->idev->dev), net))
-+            continue;
-+        prfxs_equal =
-+            ipv6_prefix_equal(&pinfo->prefix, &ifp->addr, pinfo->prefix_len);
-+        if (prfxs_equal && pinfo->prefix_len == ifp->prefix_len) {
-+            result = ifp;
-+            in6_ifa_hold(ifp);
-+            break;
-+        }
-+    }
-+    rcu_read_unlock();
-+    if (result_base != result)
-+        ifp = result;
-+    else
-+        ifp = NULL;
-+
-+    return ifp;
-+}
-+
-
-[Dmytro]:
-1st initial stage is :
-+    result_base = result;
-
-2nd stage is (as you mention, 'result' will be assigned to 'ifp', in the process):
-+            result = ifp;
-
-3rd stage is to compare if  "result_base" and "result" are not equal (and take required action).
- if (result_base != result)
-+        ifp = result;
-+    else
-+        ifp = NULL;
-
-Looks more/less ok for me.
-
-Thanks.
-
- > Thanks. 
- > 
+>  drivers/platform/surface/Kconfig | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/platform/surface/Kconfig b/drivers/platform/surface/Kconfig
+> index 33040b0b3b799c2d..2c941cdac9eedc6f 100644
+> --- a/drivers/platform/surface/Kconfig
+> +++ b/drivers/platform/surface/Kconfig
+> @@ -5,6 +5,7 @@
+>  
+>  menuconfig SURFACE_PLATFORMS
+>  	bool "Microsoft Surface Platform-Specific Device Drivers"
+> +	depends on ACPI
+>  	default y
+>  	help
+>  	  Say Y here to get to see options for platform-specific device drivers
+> @@ -29,20 +30,19 @@ config SURFACE3_WMI
+>  
+>  config SURFACE_3_BUTTON
+>  	tristate "Power/home/volume buttons driver for Microsoft Surface 3 tablet"
+> -	depends on ACPI && KEYBOARD_GPIO && I2C
+> +	depends on KEYBOARD_GPIO && I2C
+>  	help
+>  	  This driver handles the power/home/volume buttons on the Microsoft Surface 3 tablet.
+>  
+>  config SURFACE_3_POWER_OPREGION
+>  	tristate "Surface 3 battery platform operation region support"
+> -	depends on ACPI && I2C
+> +	depends on I2C
+>  	help
+>  	  This driver provides support for ACPI operation
+>  	  region of the Surface 3 battery platform driver.
+>  
+>  config SURFACE_GPE
+>  	tristate "Surface GPE/Lid Support Driver"
+> -	depends on ACPI
+>  	depends on DMI
+>  	help
+>  	  This driver marks the GPEs related to the ACPI lid device found on
+> @@ -52,7 +52,7 @@ config SURFACE_GPE
+>  
+>  config SURFACE_PRO3_BUTTON
+>  	tristate "Power/home/volume buttons driver for Microsoft Surface Pro 3/4 tablet"
+> -	depends on ACPI && INPUT
+> +	depends on INPUT
+>  	help
+>  	  This driver handles the power/home/volume buttons on the Microsoft Surface Pro 3/4 tablet.
+>  
+> 
 
