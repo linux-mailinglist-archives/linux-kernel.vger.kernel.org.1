@@ -2,382 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F8D2DC7D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 21:39:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFCA32DC7D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 21:38:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729018AbgLPUij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 15:38:39 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:16030 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726902AbgLPUii (ORCPT
+        id S1729004AbgLPUgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 15:36:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729008AbgLPUgn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 15:38:38 -0500
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BGKZ8gH052306;
-        Wed, 16 Dec 2020 15:37:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=6ONDTD88Y2woxlSYkiG7e/QtbZeqdt2OttqDfJjtHT0=;
- b=suuywsWiORwuqCz5SDFznH1krs6JC2SDV7bewl4dTirUu2MPb2gtdZ7Sx+84wPp5a+0e
- ps9bsW15DeoSoAcvChK+VQ0VgIIk2HdWlllTPr8MKbYjPtzyKOhFLTWO4XiSP7js/pRv
- EjEPnNHs5nyK79m/1CeqRofIgRYHjchVY1vuhCRauTBEc020Pfuezph2sPMwhTG2vONC
- I7YAjsoGNTiIUtUzXsbhVLFzeMfDi+JFLoY1J1/r4w0DKwUqGlT7pRrKdzoLmTd/2oyO
- 45yFVM/d39Pdm2Qpr0oXJJUhhnmKY5hROWwnvmVP1gBDy3cU7Xd83yNx96wTlIdZ//8f hg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35fp0bpdgh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Dec 2020 15:37:51 -0500
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BGKZEHB053261;
-        Wed, 16 Dec 2020 15:37:51 -0500
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35fp0bpdg6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Dec 2020 15:37:51 -0500
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BGKRL3F029329;
-        Wed, 16 Dec 2020 20:32:50 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma04dal.us.ibm.com with ESMTP id 35cng9k0gq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Dec 2020 20:32:50 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BGKWjoo11665926
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Dec 2020 20:32:45 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E3C53BE056;
-        Wed, 16 Dec 2020 20:32:44 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 73E39BE053;
-        Wed, 16 Dec 2020 20:32:43 +0000 (GMT)
-Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.193.150])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed, 16 Dec 2020 20:32:43 +0000 (GMT)
-Subject: Re: [PATCH v12 14/17] s390/zcrypt: Notify driver on config changed
- and scan complete callbacks
-To:     Harald Freudenberger <freude@linux.ibm.com>,
-        h@d06av26.portsmouth.uk.ibm.com
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, borntraeger@de.ibm.com, cohuck@redhat.com,
-        mjrosato@linux.ibm.com, alex.williamson@redhat.com,
-        kwankhede@nvidia.com, fiuczy@linux.ibm.com, frankja@linux.ibm.com,
-        david@redhat.com, hca@linux.ibm.com, gor@linux.ibm.com
-References: <20201124214016.3013-1-akrowiak@linux.ibm.com>
- <20201124214016.3013-15-akrowiak@linux.ibm.com>
- <20201130101836.0399547c.pasic@linux.ibm.com>
- <e36c3f95-e015-3664-aa64-fc6b863d08a4@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <de06ed50-599e-8a6c-0ff5-d2265851506c@linux.ibm.com>
-Date:   Wed, 16 Dec 2020 15:32:42 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
-MIME-Version: 1.0
-In-Reply-To: <e36c3f95-e015-3664-aa64-fc6b863d08a4@linux.ibm.com>
+        Wed, 16 Dec 2020 15:36:43 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B7AAC061285
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 12:35:32 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id s2so13600377plr.9
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 12:35:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=p8XQW4cjugdKIwxwILtgQ7d/G6qN5cGSPlZP2CvVqWE=;
+        b=Ae5GMZR0GgdREbYr5rQL+Y6zzEpSs9tfB6yohEkPmZ5E1lcGrwEUU+HoYpy8Fa8RgS
+         VAC13qOduFHPKeiR1uI3szWbNbAMgObaU2YT4T5QDUIVeeNt/aWuFqWwmNoFQU+dbuKc
+         Z4kviXMMEEyOlqoT1cOyXnBeLIM94mPlS7K4BqE88Z1EPMuSbXOerl74LIqQcUk3lq1x
+         IuZLG+a2gM8sI3Kubb4gc8EsYnlFD7BfAuCcDovqJRqZIt64oGZvU2nE05Gw8ENVYU+7
+         2iJ9ZB22yeKFfkxjzay9AvrLAPhog7Axgffdf7X2RUP/HL3sTl2xBH7DvYyONUShZ1Bv
+         Lbeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=p8XQW4cjugdKIwxwILtgQ7d/G6qN5cGSPlZP2CvVqWE=;
+        b=pXLad7Fo2jPbLkvF55Fgxn4oys668GCOyfhc0EURrkhxkxx4XxKD5NAPOZofcvpTgj
+         Meqd8QejovGUJEed0clhz4IvD4hXsg7aWS8effQgWIZfvKNaPllmF7R2zgrRPGOkYjns
+         xJ4Ky6esOHgGBATGZ6bOeW1Et9ox/UrHHv7EtCWG9KwcnUqe2VAjzpXCwAHCkT1yWIAQ
+         cFNO3hpPsPJs8t+AelFUdMfRMmgSy8oygXghHL+iS90CpbtXvrdvajt0GEcu/dXscR5e
+         GehAAJqnqO4CxmkE60UMkLj0FTFnk/PFKpCP7PGYd16w8KLSQIIXmFYN9JIpB0msiz5W
+         3ntw==
+X-Gm-Message-State: AOAM530AYb55ekgcn3DiFOdWb5BGueLIgnD+J+2R4WtiK2ekbqzA80h8
+        U85Shy6uIm9rjj7BBVp8jQrfhg==
+X-Google-Smtp-Source: ABdhPJzSD8U4wMSXgHoibwCGxFPKpPyA9oDYq8beROKHNnGC6MmYee5AX3iL50+jC56MZu8jjmPTdw==
+X-Received: by 2002:a17:90a:df13:: with SMTP id gp19mr4545800pjb.235.1608150930853;
+        Wed, 16 Dec 2020 12:35:30 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id u25sm3329042pfn.170.2020.12.16.12.35.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Dec 2020 12:35:29 -0800 (PST)
+Date:   Wed, 16 Dec 2020 12:35:29 -0800 (PST)
+X-Google-Original-Date: Wed, 16 Dec 2020 10:42:26 PST (-0800)
+Subject:     Re: [dm-devel] [PATCH v1 0/5] dm: dm-user: New target that proxies BIOs to userspace
+In-Reply-To: <CABmKtjfdDS-iO+jLkwt7x-oDHt9V1p-cpYHjL5EV2NKwHxqN1Q@mail.gmail.com>
+CC:     josef@toxicpanda.com, linux-raid@vger.kernel.org,
+        bvanassche@acm.org, snitzer@redhat.com, linux-doc@vger.kernel.org,
+        shuah@kernel.org, corbet@lwn.net, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>, song@kernel.org,
+        dm-devel@redhat.com, michael.christie@oracle.com,
+        linux-kselftest@vger.kernel.org, kernel-team@android.com,
+        agk@redhat.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     ruby.wktk@gmail.com
+Message-ID: <mhng-cc7f1629-3ff7-4efe-8dc6-806b4d8e28c5@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-16_08:2020-12-15,2020-12-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 suspectscore=0 bulkscore=0 adultscore=0 clxscore=1015
- malwarescore=0 mlxscore=0 spamscore=0 mlxlogscore=999 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012160124
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 15 Dec 2020 22:17:06 PST (-0800), ruby.wktk@gmail.com wrote:
+> Hi my name is Akira Hayakawa. I am maintaining an out-of-tree DM target
+> named dm-writeboost.
+>
+> Sorry to step in. But this is a very interesting topic at least to me.
+>
+> I have been looking for something like dm-user because I believe we should
+> be able to implement virtual block devices in Rust language.
+>
+> I know proxying IO requests to userland always causes some overhead but for
+> some type of device that performance doesn't matter or some research
+> prototyping or pseudo device for testing, this way should be developed. Of
+> course, implementation in Rust will give us opportunities to develop more
+> complicated software in high quality.
+>
+> I noticed this thread few days ago then I started to prototype this library
+> https://github.com/akiradeveloper/userland-io
+>
+> It is what I want but the transport is still NBD which I don't like so
+> much. If dm-user is available, I will implement a transport using dm-user.
 
+Great, I'm glad to hear that.  Obviously this is still in the early days and
+we're talking about high-level ABI design here, so things are almost certainly
+going to change, but it's always good to have people pushing on stuff.
 
-On 12/9/20 2:20 AM, Harald Freudenberger wrote:
-> On 30.11.20 10:18, h@d06av26.portsmouth.uk.ibm.com wrote:
->> On Tue, 24 Nov 2020 16:40:13 -0500
->> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
->>
->>> This patch intruduces an extension to the ap bus to notify device drivers
->>> when the host AP configuration changes - i.e., adapters, domains or
->>> control domains are added or removed. To that end, two new callbacks are
->>> introduced for AP device drivers:
->>>
->>>    void (*on_config_changed)(struct ap_config_info *new_config_info,
->>>                              struct ap_config_info *old_config_info);
->>>
->>>       This callback is invoked at the start of the AP bus scan
->>>       function when it determines that the host AP configuration information
->>>       has changed since the previous scan. This is done by storing
->>>       an old and current QCI info struct and comparing them. If there is any
->>>       difference, the callback is invoked.
->>>
->>>       Note that when the AP bus scan detects that AP adapters, domains or
->>>       control domains have been removed from the host's AP configuration, it
->>>       will remove the associated devices from the AP bus subsystem's device
->>>       model. This callback gives the device driver a chance to respond to
->>>       the removal of the AP devices from the host configuration prior to
->>>       calling the device driver's remove callback. The primary purpose of
->>>       this callback is to allow the vfio_ap driver to do a bulk unplug of
->>>       all affected adapters, domains and control domains from affected
->>>       guests rather than unplugging them one at a time when the remove
->>>       callback is invoked.
->>>
->>>    void (*on_scan_complete)(struct ap_config_info *new_config_info,
->>>                             struct ap_config_info *old_config_info);
->>>
->>>       The on_scan_complete callback is invoked after the ap bus scan is
->>>       complete if the host AP configuration data has changed.
->>>
->>>       Note that when the AP bus scan detects that adapters, domains or
->>>       control domains have been added to the host's configuration, it will
->>>       create new devices in the AP bus subsystem's device model. The primary
->>>       purpose of this callback is to allow the vfio_ap driver to do a bulk
->>>       plug of all affected adapters, domains and control domains into
->>>       affected guests rather than plugging them one at a time when the
->>>       probe callback is invoked.
->>>
->>> Please note that changes to the apmask and aqmask do not trigger
->>> these two callbacks since the bus scan function is not invoked by changes
->>> to those masks.
->>>
->>> Signed-off-by: Harald Freudenberger <freude@linux.ibm.com>
->>> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
->>> ---
->>>   drivers/s390/crypto/ap_bus.c          | 83 ++++++++++++++++++++++++++-
->>>   drivers/s390/crypto/ap_bus.h          | 12 ++++
->>>   drivers/s390/crypto/vfio_ap_private.h | 14 ++++-
->>>   3 files changed, 106 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/drivers/s390/crypto/ap_bus.c b/drivers/s390/crypto/ap_bus.c
->>> index 593573740981..3a63f6b33d8a 100644
->>> --- a/drivers/s390/crypto/ap_bus.c
->>> +++ b/drivers/s390/crypto/ap_bus.c
->>> @@ -75,6 +75,7 @@ DEFINE_MUTEX(ap_perms_mutex);
->>>   EXPORT_SYMBOL(ap_perms_mutex);
->>>   
->>>   static struct ap_config_info *ap_qci_info;
->>> +static struct ap_config_info *ap_qci_info_old;
->>>   
->>>   /*
->>>    * AP bus related debug feature things.
->>> @@ -1440,6 +1441,52 @@ static int __match_queue_device_with_queue_id(struct device *dev, const void *da
->>>   		&& AP_QID_QUEUE(to_ap_queue(dev)->qid) == (int)(long) data;
->>>   }
->>>   
->>> +/* Helper function for notify_config_changed */
->>> +static int __drv_notify_config_changed(struct device_driver *drv, void *data)
->>> +{
->>> +	struct ap_driver *ap_drv = to_ap_drv(drv);
->>> +
->>> +	if (try_module_get(drv->owner)) {
->>> +		if (ap_drv->on_config_changed)
->>> +			ap_drv->on_config_changed(ap_qci_info,
->>> +						  ap_qci_info_old);
->>> +		module_put(drv->owner);
->>> +	}
->>> +
->>> +	return 0;
->>> +}
->>> +
->>> +/* Notify all drivers about an qci config change */
->>> +static inline void notify_config_changed(void)
->>> +{
->>> +	bus_for_each_drv(&ap_bus_type, NULL, NULL,
->>> +			 __drv_notify_config_changed);
->>> +}
->>> +
->>> +/* Helper function for notify_scan_complete */
->>> +static int __drv_notify_scan_complete(struct device_driver *drv, void *data)
->>> +{
->>> +	struct ap_driver *ap_drv = to_ap_drv(drv);
->>> +
->>> +	if (try_module_get(drv->owner)) {
->>> +		if (ap_drv->on_scan_complete)
->>> +			ap_drv->on_scan_complete(ap_qci_info,
->>> +						 ap_qci_info_old);
->>> +		module_put(drv->owner);
->>> +	}
->>> +
->>> +	return 0;
->>> +}
->>> +
->>> +/* Notify all drivers about bus scan complete */
->>> +static inline void notify_scan_complete(void)
->>> +{
->>> +	bus_for_each_drv(&ap_bus_type, NULL, NULL,
->>> +			 __drv_notify_scan_complete);
->>> +}
->>> +
->>> +
->>> +
->>>   /*
->>>    * Helper function for ap_scan_bus().
->>>    * Remove card device and associated queue devices.
->>> @@ -1718,15 +1765,43 @@ static inline void ap_scan_adapter(int ap)
->>>   	put_device(&ac->ap_dev.device);
->>>   }
->>>   
->>> +static int ap_get_configuration(void)
->> I believe this was Haralds request. I'm OO contaminated, but
->> the signature and the semantic does not mash well with my understanding
->> of a 'getter'. Especially the return value being actually a boolean and
->> 'configuration changed/still the same'. From the signature it looks more
->> like the usual C-stlyle try to do something and return 0 if OK, otherwise
->> error code != 0.
->>
->> Since it's Haralds dominion, I'm not asking you to change this, but we
->> could at least document the return value (maybe also the behavior).
-> Well, no. This function comes from Tony. And you can see a mixture of
-> bool and int return values within the AP code. Historically there was no bool
-> and it was very long frowned upon using bool within the kernel.
-> However, long term I'd like to use bool for all these true/false functions and
-> so Tony if you need to touch this anyway you could change to bool here.
-
-I will change the return code to a bool.
+Just be warned: we've only had two people write userspaces for this (one of
+which was me, and all that is test code) so I'd be shocked if you manage to
+avoid running into bugs.
 
 >
-> Tony, as you anyway need to rebase here - the ap code has significant changed in this corner -
-> should I pull these changes within the ap bus code from your patch series and push them
-> into the development branch after some adaptions to the current code ?
-
-This can be done, however I worry about creating pre-reqs for this patch
-series. Are the changes you are talking about not yet in the code base?
-In other words, if rebasing this off of our master branch not enough?
-If that is the case and you want to pull these changes into your code,
-that may be fine. I will be posting v13 before I leave for Christmas
-vacation and I have no reason to expect, based on the review history for
-this series, that the next review will be the final one. I will not be 
-returning
-until late in the first week of January, so that should give enough time 
-for all
-of this to resolve itself.
-
->>> +{
->>> +	int cfg_chg = 0;
->>> +
->>> +	if (ap_qci_info) {
->>> +		if (!ap_qci_info_old) {
->>> +			ap_qci_info_old = kzalloc(sizeof(*ap_qci_info_old),
->>> +						  GFP_KERNEL);
->>> +			if (!ap_qci_info_old)
->>> +				return 0;
->>> +		} else {
->>> +			memcpy(ap_qci_info_old, ap_qci_info,
->>> +			       sizeof(struct ap_config_info));
->>> +		}
->>> +		ap_fetch_qci_info(ap_qci_info);
->>> +		cfg_chg = memcmp(ap_qci_info,
->>> +				 ap_qci_info_old,
->>> +				 sizeof(struct ap_config_info)) != 0;
->>> +	}
->>> +
->>> +	return cfg_chg;
->>> +}
->>> +
->>>   /**
->>>    * ap_scan_bus(): Scan the AP bus for new devices
->>>    * Runs periodically, workqueue timer (ap_config_time)
->>>    */
->>>   static void ap_scan_bus(struct work_struct *unused)
->>>   {
->>> -	int ap;
->>> +	int ap, config_changed = 0;
->>>   
->>> -	ap_fetch_qci_info(ap_qci_info);
->>> +	/* config change notify */
->>> +	config_changed = ap_get_configuration();
->>> +	if (config_changed)
->>> +		notify_config_changed();
->>> +	memcpy(ap_qci_info_old, ap_qci_info,
->>> +	       sizeof(struct ap_config_info));
->> Why is this memcpy needed? Isn't that already take care of in
->> ap_get_configuration()?
+> - Akira
+>
+> On Tue, Dec 15, 2020 at 7:00 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>
+>> On Thu, 10 Dec 2020 09:03:21 PST (-0800), josef@toxicpanda.com wrote:
+>> > On 12/9/20 10:38 PM, Bart Van Assche wrote:
+>> >> On 12/7/20 10:55 AM, Palmer Dabbelt wrote:
+>> >>> All in all, I've found it a bit hard to figure out what sort of
+>> interest
+>> >>> people
+>> >>> have in dm-user: when I bring this up I seem to run into people who've
+>> done
+>> >>> similar things before and are vaguely interested, but certainly nobody
+>> is
+>> >>> chomping at the bit.  I'm sending it out in this early state to try and
+>> >>> figure
+>> >>> out if it's interesting enough to keep going.
+>> >>
+>> >> Cc-ing Josef and Mike since their nbd contributions make me wonder
+>> >> whether this new driver could be useful to their use cases?
+>> >>
+>> >
+>> > Sorry gmail+imap sucks and I can't get my email client to get at the
+>> original
+>> > thread.  However here is my take.
 >>
->>>   	ap_select_domain();
->>>   
->>>   	AP_DBF_DBG("%s running\n", __func__);
->>> @@ -1735,6 +1810,10 @@ static void ap_scan_bus(struct work_struct *unused)
->>>   	for (ap = 0; ap <= ap_max_adapter_id; ap++)
->>>   		ap_scan_adapter(ap);
->>>   
->>> +	/* scan complete notify */
->>> +	if (config_changed)
->>> +		notify_scan_complete();
->>> +
->>>   	/* check if there is at least one queue available with default domain */
->>>   	if (ap_domain_index >= 0) {
->>>   		struct device *dev =
->>> diff --git a/drivers/s390/crypto/ap_bus.h b/drivers/s390/crypto/ap_bus.h
->>> index 65edd847c65a..fbfbf6991718 100644
->>> --- a/drivers/s390/crypto/ap_bus.h
->>> +++ b/drivers/s390/crypto/ap_bus.h
->>> @@ -146,6 +146,18 @@ struct ap_driver {
->>>   	int (*probe)(struct ap_device *);
->>>   	void (*remove)(struct ap_device *);
->>>   	int (*in_use)(unsigned long *apm, unsigned long *aqm);
->>> +	/*
->>> +	 * Called at the start of the ap bus scan function when
->>> +	 * the crypto config information (qci) has changed.
->>> +	 */
->>> +	void (*on_config_changed)(struct ap_config_info *new_config_info,
->>> +				  struct ap_config_info *old_config_info);
->>> +	/*
->>> +	 * Called at the end of the ap bus scan function when
->>> +	 * the crypto config information (qci) has changed.
->>> +	 */
->>> +	void (*on_scan_complete)(struct ap_config_info *new_config_info,
->>> +				 struct ap_config_info *old_config_info);
->>>   };
->>>   
->>>   #define to_ap_drv(x) container_of((x), struct ap_driver, driver)
->>> diff --git a/drivers/s390/crypto/vfio_ap_private.h b/drivers/s390/crypto/vfio_ap_private.h
->>> index 15b7cd74843b..7bd7e35eb2e0 100644
->>> --- a/drivers/s390/crypto/vfio_ap_private.h
->>> +++ b/drivers/s390/crypto/vfio_ap_private.h
->> These changes probably belong to some next patch...
+>> and I guess I then have to apoligize for missing your email ;).  Hopefully
+>> that
+>> was the problem, but who knows.
 >>
->> With the things I just brought up clarified, you can slap a:
->> Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
->> over it next time.
+>> > 1) The advantages of using dm-user of NBD that you listed aren't actually
+>> > problems for NBD.  We have NBD working in production where you can hand
+>> off the
+>> > sockets for the server without ending in timeouts, it was actually the
+>> main
+>> > reason we wrote our own server so we could use the FD transfer stuff to
+>> restart
+>> > the server without impacting any clients that had the device in use.
 >>
->>> @@ -36,14 +36,21 @@
->>>    *		driver, be it using @mdev_list or writing the state of a
->>>    *		single ap_matrix_mdev device. It's quite coarse but we don't
->>>    *		expect much contention.
->>> + ** @ap_add:	a bitmap specifying the APIDs added to the host AP configuration
->>> + *		as notified by the AP bus via the on_cfg_chg callback.
->>> + * @aq_add:	a bitmap specifying the APQIs added to the host AP configuration
->>> + *		as notified by the AP bus via the on_cfg_chg callback.
->>>    */
->>>   struct ap_matrix_dev {
->>>   	struct device device;
->>>   	atomic_t available_instances;
->>> -	struct ap_config_info info;
->>> +	struct ap_config_info config_info;
->>> +	struct ap_config_info config_info_prev;
->>>   	struct list_head mdev_list;
->>>   	struct mutex lock;
->>>   	struct ap_driver  *vfio_ap_drv;
->>> +	DECLARE_BITMAP(ap_add, AP_DEVICES);
->>> +	DECLARE_BITMAP(aq_add, AP_DEVICES);
->>>   };
->>>   
->>>   extern struct ap_matrix_dev *matrix_dev;
->>> @@ -90,6 +97,8 @@ struct ap_matrix_mdev {
->>>   	struct kvm_s390_module_hook pqap_hook;
->>>   	struct mdev_device *mdev;
->>>   	DECLARE_HASHTABLE(qtable, 8);
->>> +	DECLARE_BITMAP(ap_add, AP_DEVICES);
->>> +	DECLARE_BITMAP(aq_add, AP_DEVICES);
->>>   };
->>>   
->>>   extern int vfio_ap_mdev_register(void);
->>> @@ -109,4 +118,7 @@ void vfio_ap_mdev_remove_queue(struct ap_device *queue);
->>>   
->>>   int vfio_ap_mdev_resource_in_use(unsigned long *apm, unsigned long *aqm);
->>>   
->>> +void vfio_ap_on_cfg_changed(struct ap_config_info *new_config_info,
->>> +			    struct ap_config_info *old_config_info);
->>> +
->>>   #endif /* _VFIO_AP_PRIVATE_H_ */
-
+>> OK.  So you just send the FD around using one of the standard mechanisms to
+>> orchestrate the handoff?  I guess that might work for our use case,
+>> assuming
+>> whatever the security side of things was doing was OK with the old FD.
+>> TBH I'm
+>> not sure how all that works and while we thought about doing that sort of
+>> transfer scheme we decided to just open it again -- not sure how far we
+>> were
+>> down the dm-user rabbit hole at that point, though, as this sort of arose
+>> out
+>> of some other ideas.
+>>
+>> > 2) The extra copy is a big deal, in fact we already have too many copies
+>> in our
+>> > existing NBD setup and are actively looking for ways to avoid those.
+>> >
+>> > Don't take this as I don't think dm-user is a good idea, but I think at
+>> the very
+>> > least it should start with the very best we have to offer, starting with
+>> as few
+>> > copies as possible.
+>>
+>> I was really experting someone to say that.  It does seem kind of silly to
+>> build
+>> out the new interface, but not go all the way to a ring buffer.  We just
+>> didn't
+>> really have any way to justify the extra complexity as our use cases aren't
+>> that high performance.   I kind of like to have benchmarks for this sort of
+>> thing, though, and I didn't have anyone who had bothered avoiding the last
+>> copy
+>> to compare against.
+>>
+>> > If you are using it currently in production then cool, there's clearly a
+>> usecase
+>> > for it.  Personally as I get older and grouchier I want less things in
+>> the
+>> > kernel, so if this enables us to eventually do everything NBD related in
+>> > userspace with no performance drop then I'd be down.  I don't think you
+>> need to
+>> > make that your primary goal, but at least polishing this up so it could
+>> > potentially be abused in the future would make it more compelling for
+>> merging.
+>> > Thanks,
+>>
+>> Ya, it's in Android already and we'll be shipping it as part of the new OTA
+>> flow for the next release.  The rules on deprecation are a bit different
+>> over
+>> there, though, so it's not like we're wed to it.  The whole point of
+>> bringing
+>> this up here was to try and get something usable by everyone, and while I'd
+>> eventually like to get whatever's in Android into the kernel proper we'd
+>> really
+>> planned on supporting an extra Android-only ABI for a cycle at least.
+>>
+>> I'm kind of inclined to take a crack at the extra copy, to at least see if
+>> building something that eliminates it is viable.  I'm not really sure if
+>> it is
+>> (or at least, if it'll net us a meaningful amount of performance), but
+>> it'd at
+>> least be interesting to try.
+>>
+>> It'd be nice to have some benchmark target, though, as otherwise this stuff
+>> hangs on forever.  My workloads are in selftests later on in the patch
+>> set, but
+>> I'm essentially using tmpfs as a baseline to compare against ext4+dm-user
+>> with
+>> some FIO examples as workloads.  Our early benchmark numbers indicated
+>> this was
+>> way faster than we needed, so I didn't even bother putting together a
+>> proper
+>> system to run on so I don't really have any meaningful numbers there.  Is
+>> there
+>> an NBD server that's fast that I should be comparing against?
+>>
+>> I haven't gotten a whole lot of feedback, so I'm inclined to at least have
+>> some
+>> reasonable performance numbers before bothering with a v2.
+>>
+>> --
+>> dm-devel mailing list
+>> dm-devel@redhat.com
+>> https://www.redhat.com/mailman/listinfo/dm-devel
