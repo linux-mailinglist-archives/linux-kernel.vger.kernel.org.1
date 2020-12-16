@@ -2,145 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1585A2DC99B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 00:35:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF6A22DC9AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 00:41:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730889AbgLPXd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 18:33:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31609 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730834AbgLPXdw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 18:33:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608161546;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Iyvu3tczAymPkwWycdPC/BAXXExR62UHIGSUwLXdNqs=;
-        b=GATxJoVUWJWG8NY/0HNJrGYtwdvgP1PJEF/mYjKxrTBr15zQ1SbeexTq50SXG2fkoTRB7x
-        KXN79Z3HTksxGMBrJxeJQZvAWMzz//aJwYtIaH5HV8TX9pzHVyMYVqpdc0UIH0YoTUkW3g
-        mtg/rBen9MrNU5+g8PJuydVhInNuCEo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-501-5DZe-w98PwK_bJ9o0z2SMw-1; Wed, 16 Dec 2020 18:32:22 -0500
-X-MC-Unique: 5DZe-w98PwK_bJ9o0z2SMw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2F3C21842142;
-        Wed, 16 Dec 2020 23:32:20 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-112-114.rdu2.redhat.com [10.10.112.114])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 09B795D9D2;
-        Wed, 16 Dec 2020 23:32:20 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 8098A225FCD; Wed, 16 Dec 2020 18:32:19 -0500 (EST)
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org
-Cc:     jlayton@kernel.org, vgoyal@redhat.com, amir73il@gmail.com,
-        sargun@sargun.me, miklos@szeredi.hu, willy@infradead.org,
-        jack@suse.cz, neilb@suse.com, viro@zeniv.linux.org.uk
-Subject: [PATCH 3/3] overlayfs: Check writeback errors w.r.t upper in ->syncfs()
-Date:   Wed, 16 Dec 2020 18:31:49 -0500
-Message-Id: <20201216233149.39025-4-vgoyal@redhat.com>
-In-Reply-To: <20201216233149.39025-1-vgoyal@redhat.com>
-References: <20201216233149.39025-1-vgoyal@redhat.com>
+        id S1730824AbgLPXku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 18:40:50 -0500
+Received: from aposti.net ([89.234.176.197]:42568 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727769AbgLPXkt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 18:40:49 -0500
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>, od@zcrc.me,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Paul Cercueil <paul@crapouillou.net>, stable@vger.kernel.org
+Subject: [PATCH] MIPS: boot: Fix unaligned access with CONFIG_MIPS_RAW_APPENDED_DTB
+Date:   Wed, 16 Dec 2020 23:39:56 +0000
+Message-Id: <20201216233956.280068-1-paul@crapouillou.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Check for writeback error on overlay super block w.r.t "struct file"
-passed in ->syncfs().
+The compressed payload is not necesarily 4-byte aligned, at least when
+compiling with Clang. In that case, the 4-byte value appended to the
+compressed payload that corresponds to the uncompressed kernel image
+size must be read using get_unaligned_le().
 
-As of now real error happens on upper sb. So this patch first propagates
-error from upper sb to overlay sb and then checks error w.r.t struct
-file passed in.
+This fixes Clang-built kernels not booting on MIPS (tested on a Ingenic
+JZ4770 board).
 
-Jeff, I know you prefer that I should rather file upper file and check
-error directly on on upper sb w.r.t this real upper file.  While I was
-implementing that I thought what if file is on lower (and has not been
-copied up yet). In that case shall we not check writeback errors and
-return back to user space? That does not sound right though because,
-we are not checking for writeback errors on this file. Rather we
-are checking for any error on superblock. Upper might have an error
-and we should report it to user even if file in question is a lower
-file. And that's why I fell back to this approach. But I am open to
-change it if there are issues in this method.
-
-Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+Fixes: b8f54f2cde78 ("MIPS: ZBOOT: copy appended dtb to the end of the kernel")
+Cc: <stable@vger.kernel.org> # v4.7
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 ---
- fs/overlayfs/ovl_entry.h |  2 ++
- fs/overlayfs/super.c     | 15 ++++++++++++---
- 2 files changed, 14 insertions(+), 3 deletions(-)
+ arch/mips/boot/compressed/decompress.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/overlayfs/ovl_entry.h b/fs/overlayfs/ovl_entry.h
-index 1b5a2094df8e..a08fd719ee7b 100644
---- a/fs/overlayfs/ovl_entry.h
-+++ b/fs/overlayfs/ovl_entry.h
-@@ -79,6 +79,8 @@ struct ovl_fs {
- 	atomic_long_t last_ino;
- 	/* Whiteout dentry cache */
- 	struct dentry *whiteout;
-+	/* Protects multiple sb->s_wb_err update from upper_sb . */
-+	spinlock_t errseq_lock;
- };
+diff --git a/arch/mips/boot/compressed/decompress.c b/arch/mips/boot/compressed/decompress.c
+index c61c641674e6..47c07990432b 100644
+--- a/arch/mips/boot/compressed/decompress.c
++++ b/arch/mips/boot/compressed/decompress.c
+@@ -117,7 +117,7 @@ void decompress_kernel(unsigned long boot_heap_start)
+ 		dtb_size = fdt_totalsize((void *)&__appended_dtb);
  
- static inline struct vfsmount *ovl_upper_mnt(struct ovl_fs *ofs)
-diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
-index b4d92e6fa5ce..e7bc4492205e 100644
---- a/fs/overlayfs/super.c
-+++ b/fs/overlayfs/super.c
-@@ -291,7 +291,7 @@ int ovl_syncfs(struct file *file)
- 	struct super_block *sb = file->f_path.dentry->d_sb;
- 	struct ovl_fs *ofs = sb->s_fs_info;
- 	struct super_block *upper_sb;
--	int ret;
-+	int ret, ret2;
+ 		/* last four bytes is always image size in little endian */
+-		image_size = le32_to_cpup((void *)&__image_end - 4);
++		image_size = get_unaligned_le32((void *)&__image_end - 4);
  
- 	ret = 0;
- 	down_read(&sb->s_umount);
-@@ -310,10 +310,18 @@ int ovl_syncfs(struct file *file)
- 	ret = sync_filesystem(upper_sb);
- 	up_read(&upper_sb->s_umount);
- 
-+	/* Update overlay sb->s_wb_err */
-+	if (errseq_check(&upper_sb->s_wb_err, sb->s_wb_err)) {
-+		/* Upper sb has errors since last time */
-+		spin_lock(&ofs->errseq_lock);
-+		errseq_check_and_advance(&upper_sb->s_wb_err, &sb->s_wb_err);
-+		spin_unlock(&ofs->errseq_lock);
-+	}
- 
-+	ret2 = errseq_check_and_advance(&sb->s_wb_err, &file->f_sb_err);
- out:
- 	up_read(&sb->s_umount);
--	return ret;
-+	return ret ? ret : ret2;
- }
- 
- /**
-@@ -1903,6 +1911,7 @@ static int ovl_fill_super(struct super_block *sb, void *data, int silent)
- 	if (!cred)
- 		goto out_err;
- 
-+	spin_lock_init(&ofs->errseq_lock);
- 	/* Is there a reason anyone would want not to share whiteouts? */
- 	ofs->share_whiteout = true;
- 
-@@ -1975,7 +1984,7 @@ static int ovl_fill_super(struct super_block *sb, void *data, int silent)
- 
- 		sb->s_stack_depth = ovl_upper_mnt(ofs)->mnt_sb->s_stack_depth;
- 		sb->s_time_gran = ovl_upper_mnt(ofs)->mnt_sb->s_time_gran;
--
-+		sb->s_wb_err = errseq_sample(&ovl_upper_mnt(ofs)->mnt_sb->s_wb_err);
- 	}
- 	oe = ovl_get_lowerstack(sb, splitlower, numlower, ofs, layers);
- 	err = PTR_ERR(oe);
+ 		/* copy dtb to where the booted kernel will expect it */
+ 		memcpy((void *)VMLINUX_LOAD_ADDRESS_ULL + image_size,
 -- 
-2.25.4
+2.29.2
 
