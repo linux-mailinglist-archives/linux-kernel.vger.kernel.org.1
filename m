@@ -2,126 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 790042DB85F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 02:19:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE3042DB864
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 02:22:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725837AbgLPBSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 20:18:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725815AbgLPBSi (ORCPT
+        id S1726490AbgLPBWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 20:22:39 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8018 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725952AbgLPBWi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 20:18:38 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E867C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 17:17:58 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id c12so15966120pgm.4
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 17:17:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=9gQ8rHC/bTzmKtSLzhN4/DmZNBfAaJGJNaoibLypAoU=;
-        b=QigsSQbqE1PF4dZencpayPsN4OS7GNSPnGpcxyjJu5ahVdqBsHr/nGm9/ycJrCe8KS
-         4Lc6KM/1wh4Pj1qHZNoTyXOrda5O2PxK7A9kA0vNivJN1Lv7FDUK+A7K3S4vLXCIwpsH
-         Dqz8vGAqHWQq63qNvzh9IKKg7QJZ1DabNG9+E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=9gQ8rHC/bTzmKtSLzhN4/DmZNBfAaJGJNaoibLypAoU=;
-        b=Nrvx5I3UF+u1yaKC0ftqTwuqesE1IezzA1tFYKIHJTsLaE4ptVLyONoMiCOzrwPjGu
-         Bf3Z+4pEZTVmPnu05AVgg6hhFopRAHg4D/c4ekSXp6pKb71hhGngErQ8HCCjBxXWcvzM
-         QzsOPEFk38bpaXF9Bucq0InkpxTkoKbWOUjE2kdZg0EI3qH7aczxrY3hSWxVDjltLW0m
-         Fz+oF2YoAYllrbCPu0gdk1wx7Z5C++koRcQsq+18QjNvaYBYAw4JVGxfP/qaRgbEVMkz
-         i+OkU7grB/5U5yzj1r1tVZhQaCTgZLn4P3Wz4D93PFEfVcv+ddZatnV3QEOlpkJR2gDS
-         BDiA==
-X-Gm-Message-State: AOAM5323yIe9qVCCF0VQMpJzYgSaKTJmiUR5DwlkbhklAFn8Ge5oaqfr
-        Uq9XCZkkQ/7WUZZHDP5eW3himQ==
-X-Google-Smtp-Source: ABdhPJz/U+WbLMkQJ+D+MaXIlkWgTHNA6zgW9tPyw+ooD0QD3gl7bc/jZrZEHmL84jLP/mHEYHvCqw==
-X-Received: by 2002:a05:6a00:a91:b029:19d:9421:847 with SMTP id b17-20020a056a000a91b029019d94210847mr21362633pfl.72.1608081477348;
-        Tue, 15 Dec 2020 17:17:57 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id er23sm118141pjb.12.2020.12.15.17.17.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 17:17:56 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        Tue, 15 Dec 2020 20:22:38 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BG10x1x028450;
+        Tue, 15 Dec 2020 20:21:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=0+BnuKA8p1Jrwe6PPrdqKhHIW1sVQdnh7AMkQ8h2wWA=;
+ b=PUxN2HawcIcUXGlDLWk/G/PbfI4DzbDsJevw+pjpQgSAhet6dX4KQar6jHYFPsaVhrW9
+ 5I/MiCEeXMQDi5hxudlQ7QgptKQUT9cYAouWEycYjQjXTODYbAT1Yat7GGH+dI08AyVP
+ MNtWC0FzIh/QX5PzoSwXTYJvKL5NYfv+2qr79FcfDk33OcbkhlcPHjljUSM6XX0XWEV6
+ xXytFGWKxzNiiWzFcbk9Ey406fUiVMKKUNpgbfnuIJeX0d85U2ba9wMAu0DlNEdTn1dX
+ c/tI9hdo8NNg6GIwXnZ8I9XggHcXtI/wrF0WuSU4Oal7NpmZP4wp3PM3MEtupoTB/tjE 4w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35f5qe42ve-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Dec 2020 20:21:50 -0500
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BG1Ln4l094992;
+        Tue, 15 Dec 2020 20:21:49 -0500
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35f5qe42v2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Dec 2020 20:21:49 -0500
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BG1D8sk027041;
+        Wed, 16 Dec 2020 01:21:48 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma05fra.de.ibm.com with ESMTP id 35cng89y8e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Dec 2020 01:21:47 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BG1LjWR31457654
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Dec 2020 01:21:45 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E93EBAE045;
+        Wed, 16 Dec 2020 01:21:44 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4931AAE053;
+        Wed, 16 Dec 2020 01:21:44 +0000 (GMT)
+Received: from oc2783563651 (unknown [9.171.86.205])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Wed, 16 Dec 2020 01:21:44 +0000 (GMT)
+Date:   Wed, 16 Dec 2020 02:21:40 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        stable@vger.kernel.org, gregkh@linuxfoundation.org,
+        sashal@kernel.org, cohuck@redhat.com, kwankhede@nvidia.com,
+        pbonzini@redhat.com, alex.williamson@redhat.com,
+        pasic@linux.vnet.ibm.com
+Subject: Re: [PATCH v3] s390/vfio-ap: clean up vfio_ap resources when KVM
+ pointer invalidated
+Message-ID: <20201216022140.02741788.pasic@linux.ibm.com>
+In-Reply-To: <44ffb312-964a-95c3-d691-38221cee2c0a@de.ibm.com>
+References: <20201214165617.28685-1-akrowiak@linux.ibm.com>
+        <20201215115746.3552e873.pasic@linux.ibm.com>
+        <44ffb312-964a-95c3-d691-38221cee2c0a@de.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAD=FV=XSrqzDFHGpW3b_Sx+bA8u8MMGqdfMJnXkKhkWL6H952A@mail.gmail.com>
-References: <20201214162937.1.I99ee04f0cb823415df59bd4f550d6ff5756e43d6@changeid> <20201214162937.2.Ibade998ed587e070388b4bf58801f1107a40eb53@changeid> <160800104145.1580929.10562113130948868794@swboyd.mtv.corp.google.com> <CAD=FV=UT0+BKrUPbATGCbO1fmwwmrKbSy5c+mW-61wS1y6TtJw@mail.gmail.com> <160807113302.1580929.9178584426202538854@swboyd.mtv.corp.google.com> <CAD=FV=XSrqzDFHGpW3b_Sx+bA8u8MMGqdfMJnXkKhkWL6H952A@mail.gmail.com>
-Subject: Re: [PATCH 2/2] spi: spi-geni-qcom: Really ensure the previous xfer is done before new one
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Mark Brown <broonie@kernel.org>, msavaliy@qti.qualcomm.com,
-        Akash Asthana <akashast@codeaurora.org>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Alok Chauhan <alokc@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>
-To:     Doug Anderson <dianders@chromium.org>
-Date:   Tue, 15 Dec 2020 17:17:55 -0800
-Message-ID: <160808147515.1580929.1688687061880694586@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-15_13:2020-12-15,2020-12-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
+ impostorscore=0 spamscore=0 mlxlogscore=999 adultscore=0
+ lowpriorityscore=0 suspectscore=0 clxscore=1015 priorityscore=1501
+ mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012160001
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Doug Anderson (2020-12-15 15:34:59)
-> On Tue, Dec 15, 2020 at 2:25 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> >
-> > Quoting Doug Anderson (2020-12-15 09:25:51)
-> > > In general when we're starting a new transfer we assume that we can
-> > > program the hardware willy-nilly.  If there's some chance something
-> > > else is happening (or our interrupt could go off) then it breaks that
-> > > whole model.
-> >
-> > Right. I thought this patch was making sure that the hardware wasn't in
-> > the process of doing something else when we setup the transfer. I'm
-> > saying that only checking the irq misses the fact that maybe the
-> > transfer hasn't completed yet or a pending irq hasn't come in yet, but
-> > the fifo status would tell us that the fifo is transferring something or
-> > receiving something. If an RX can't happen, then the code should clearly
-> > show that an RX irq isn't expected, and mask out that bit so it is
-> > ignored or explicitly check for it and call WARN_ON() if the bit is set.
-> >
-> > I'm wondering why we don't check the FIFO status and the irq bits to
-> > make sure that some previous cancelled operation isn't still pending
-> > either in the FIFO or as an irq. While this patch will fix the scenario
-> > where the irq is delayed but pending in the hardware it won't cover the
-> > case that the hardware itself is wedged, for example because the
-> > sequencer just decided to stop working entirely.
->=20
-> It also won't catch the case where the SoC decided that all GPIOs are
-> inverted and starts reporting highs for lows and lows for highs, nor
-> does it handle the case where the CPU suddenly switches to Big Endian
-> mode for no reason.  :-P
->=20
-> ...by that, I mean I'm not trying to catch the case where the hardware
-> itself is behaving in a totally unexpected way.  I have seen no
-> instances where the hardware wedges nor where the sequencer stops
-> working and until I see them happen I'm not inclined to add code for
-> them.  Without seeing them actually happen I'm not really sure what
-> the right way to recover would be.  We've already tried "cancel" and
-> "abort" and then waited at least 1 second.  If you know of some sort
-> of magic "unwedge" then we should add it into handle_fifo_timeout().
+On Tue, 15 Dec 2020 19:10:20 +0100
+Christian Borntraeger <borntraeger@de.ibm.com> wrote:
 
-I am not aware of an "unwedge" command. Presumably the cancel/abort
-stuff makes the FIFO state "sane" so there's nothing to see in the FIFO
-status registers. I wonder if we should keep around some "did we cancel
-last time?" flag and only check the isr if we canceled out and timed
-out to boot? That would be a cheap and easy check to make sure that we
-don't check this each transaction.
+> 
+> 
+> On 15.12.20 11:57, Halil Pasic wrote:
+> > On Mon, 14 Dec 2020 11:56:17 -0500
+> > Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+> > 
+> >> The vfio_ap device driver registers a group notifier with VFIO when the
+> >> file descriptor for a VFIO mediated device for a KVM guest is opened to
+> >> receive notification that the KVM pointer is set (VFIO_GROUP_NOTIFY_SET_KVM
+> >> event). When the KVM pointer is set, the vfio_ap driver takes the
+> >> following actions:
+> >> 1. Stashes the KVM pointer in the vfio_ap_mdev struct that holds the state
+> >>    of the mediated device.
+> >> 2. Calls the kvm_get_kvm() function to increment its reference counter.
+> >> 3. Sets the function pointer to the function that handles interception of
+> >>    the instruction that enables/disables interrupt processing.
+> >> 4. Sets the masks in the KVM guest's CRYCB to pass AP resources through to
+> >>    the guest.
+> >>
+> >> In order to avoid memory leaks, when the notifier is called to receive
+> >> notification that the KVM pointer has been set to NULL, the vfio_ap device
+> >> driver should reverse the actions taken when the KVM pointer was set.
+> >>
+> >> Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
+> >> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> >> ---
+> >>  drivers/s390/crypto/vfio_ap_ops.c | 29 ++++++++++++++++++++---------
+> >>  1 file changed, 20 insertions(+), 9 deletions(-)
+> >>
+> >> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+> >> index e0bde8518745..cd22e85588e1 100644
+> >> --- a/drivers/s390/crypto/vfio_ap_ops.c
+> >> +++ b/drivers/s390/crypto/vfio_ap_ops.c
+> >> @@ -1037,8 +1037,6 @@ static int vfio_ap_mdev_set_kvm(struct ap_matrix_mdev *matrix_mdev,
+> >>  {
+> >>  	struct ap_matrix_mdev *m;
+> >>
+> >> -	mutex_lock(&matrix_dev->lock);
+> >> -
+> >>  	list_for_each_entry(m, &matrix_dev->mdev_list, node) {
+> >>  		if ((m != matrix_mdev) && (m->kvm == kvm)) {
+> >>  			mutex_unlock(&matrix_dev->lock);
+> >> @@ -1049,7 +1047,6 @@ static int vfio_ap_mdev_set_kvm(struct ap_matrix_mdev *matrix_mdev,
+> >>  	matrix_mdev->kvm = kvm;
+> >>  	kvm_get_kvm(kvm);
+> >>  	kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
+> >> -	mutex_unlock(&matrix_dev->lock);
+> >>
+> >>  	return 0;
+> >>  }
+> >> @@ -1083,35 +1080,49 @@ static int vfio_ap_mdev_iommu_notifier(struct notifier_block *nb,
+> >>  	return NOTIFY_DONE;
+> >>  }
+> >>
+> >> +static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
+> >> +{
+> >> +	kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
+> >> +	matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
+> > 
+> > 
+> > This patch LGTM. The only concern I have with it is whether a
+> > different cpu is guaranteed to observe the above assignment as
+> > an atomic operation. I think we didn't finish this discussion
+> > at v1, or did we?
+> 
+> You mean just this assigment:
+> >> +	matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
+> should either have the old or the new value, but not halve zero halve old?
+>
 
->=20
-> However, super delayed interrupts due to software not servicing the
-> interrupt in time is something that really happens, if rarely.  Adding
-> code to account for that seems worth it and is easy to test...
->=20
+Yes that is the assignment I was referring to. Old value will work as well because
+kvm holds a reference to this module while in the pqap_hook.
+ 
+> Normally this should be ok (and I would consider this a compiler bug if
+> this is split into 2 32 bit zeroes) But if you really want to be sure then we
+> can use WRITE_ONCE.
 
-Agreed. The function name is wrong then as the device is not "busy". So
-maybe spi_geni_isr_pending()? That would clearly describe what's being
-checked.
+Just my curiosity: what would make this a bug? Is it the s390 elf ABI,
+or some gcc feature, or even the C standard? Also how exactly would
+WRITE_ONCE, also access via volatile help in this particular situation?
+
+I agree, if the member is properly aligned, (which it is),
+normally/probably we are fine on s390x (which is also a given). 
+
+> I think we take this via the s390 tree? I can add the WRITE_ONCE when applying?
+
+Yes that works fine with me.
+
+Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
