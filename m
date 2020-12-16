@@ -2,48 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 472762DBDD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:44:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32E452DBDF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:47:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726025AbgLPJoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 04:44:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52464 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725889AbgLPJoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 04:44:20 -0500
-Date:   Wed, 16 Dec 2020 10:44:41 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1608111820;
-        bh=660qYIfVRVWxXtwPu2TkAHoXad8Rf9XKFmlXmuCsho8=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0tnZWtFCpBAZLTEQ9XwwxzAXFAreJS5H6KHnaGfzmhomc8gHAfsQ41HtoFWNDKcnr
-         taR3qJMEhF64ppdPOM9kWon8p0FTMUVUD5LGyT/ZuHZ1pyqYyRRmXZbB1H8BvpnnYz
-         w/TQd5m0fj+7wDROirot6+xXkNCVYukozOvNqvws=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     jaegeuk@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, chao@kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] f2fs: fix out-of-repair __setattr_copy()
-Message-ID: <X9nXCdp1ssMHKdNI@kroah.com>
-References: <20201216091523.21411-1-yuchao0@huawei.com>
+        id S1726221AbgLPJrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 04:47:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725890AbgLPJrP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 04:47:15 -0500
+Received: from orcam.me.uk (unknown [IPv6:2001:4190:8020::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 70A4FC0613D6;
+        Wed, 16 Dec 2020 01:46:35 -0800 (PST)
+Received: from bugs.linux-mips.org (eddie.linux-mips.org [IPv6:2a01:4f8:201:92aa::3])
+        by orcam.me.uk (Postfix) with ESMTPS id 8A9112BE0EC;
+        Wed, 16 Dec 2020 09:46:33 +0000 (GMT)
+Date:   Wed, 16 Dec 2020 09:44:53 +0000 (GMT)
+From:   "Maciej W. Rozycki" <macro@linux-mips.org>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-mips@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCHSET] saner elf compat
+In-Reply-To: <20201216030154.GL3579531@ZenIV.linux.org.uk>
+Message-ID: <alpine.LFD.2.21.2012160924010.2104409@eddie.linux-mips.org>
+References: <20201203214529.GB3579531@ZenIV.linux.org.uk> <CAHk-=wiRNT+-ahz2KRUE7buYJMZ84bp=h_vGLrAaOKW3n_xyXQ@mail.gmail.com> <20201203230336.GC3579531@ZenIV.linux.org.uk> <alpine.LFD.2.21.2012071741280.2104409@eddie.linux-mips.org>
+ <20201216030154.GL3579531@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201216091523.21411-1-yuchao0@huawei.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 05:15:23PM +0800, Chao Yu wrote:
-> __setattr_copy() was copied from setattr_copy() in fs/attr.c, there is
-> two missing patches doesn't cover this inner function, fix it.
+On Wed, 16 Dec 2020, Al Viro wrote:
+
+> >  It may be worth pushing through GDB's gdb.threads/tls-core.exp test case, 
+> > making sure no UNSUPPORTED results have been produced due to resource 
+> > limits preventing a core from being dumped (and no FAILs, of course), with 
+> > o32/n32 native GDB.  This should guarantee our output is still as expected 
+> > by an interpreter.  Sadly I'm currently not set up for such testing though 
+> > eventually I mean to.
 > 
-> Commit 7fa294c8991c ("userns: Allow chown and setgid preservation")
-> Commit 23adbe12ef7d ("fs,userns: Change inode_capable to capable_wrt_inode_uidgid")
+> Umm...  What triple does one use for n32 gdb?
 
-Are these lines supposed to be "Fixes:" instead of "Commit "?
+ I don't think there's a standardised one, just configure with CC/CXX set 
+for n32 compilation, e.g.:
 
-thanks,
+$ /path/to/configure CC="gcc -mabi=n32" CXX="g++ -mabi=n32"
 
-greg k-h
+(and any other options set as usually).  This has to be with CC/CXX rather 
+than CFLAGS/CXXFLAGS so that it is guaranteed to be never overridden with 
+any logic that might do any fiddling with compilation options.  This will 
+set up the test suite accordingly.
+
+ NB this may already be the compiler's default, depending on how it was 
+configured, i.e. if `--with-abi=n32' was used, in which case no extra 
+options will be required.  I don't know if any standard MIPS distribution 
+does it though; 64-bit MIPS/Debian might.  This will be reported with `gcc 
+--help -v', somewhere along the way.
+
+ Let me know if there are issues with this approach.
+
+  Maciej
+
