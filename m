@@ -2,69 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED362DBA26
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 05:36:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67BB22DBA19
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 05:34:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725865AbgLPEfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 23:35:09 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:49574 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725820AbgLPEfI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 23:35:08 -0500
-X-UUID: 612f3495170f4f59bf1ef0a07a052f7c-20201216
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=MbWUyAPZzTNL6x8OSUcYZnRyRZFOEMoj2KWEeYv8KIQ=;
-        b=AzYllHLMi1rCNajcsGKOTIXAnIZYGnGy+mU+iC8t6CMiET0llRMYX3rmKyc75Xt2Nk3yklqczVItpKDQt/eN3HDTUUSdxG09g9IE7bCB9l4eAUgJVsShqaX2XxYXyZ+XDxR7s2OoFb7DGva3gPgIke/9fUmL1Yx1mCBZKDaj75c=;
-X-UUID: 612f3495170f4f59bf1ef0a07a052f7c-20201216
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <hsin-hsiung.wang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1891120541; Wed, 16 Dec 2020 12:34:21 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 16 Dec 2020 12:34:20 +0800
-Received: from [172.21.77.4] (172.21.77.4) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 16 Dec 2020 12:34:19 +0800
-Message-ID: <1608093259.2412.1.camel@mtksdaap41>
-Subject: Re: [PATCH v2 3/8] dt-bindings: regulator: Add document for MT6359
- regulator
-From:   Hsin-hsiung Wang <hsin-hsiung.wang@mediatek.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
-        Wen Su <wen.su@mediatek.com>
-Date:   Wed, 16 Dec 2020 12:34:19 +0800
-In-Reply-To: <20200923162458.GE5707@sirena.org.uk>
-References: <1600688895-9238-1-git-send-email-hsin-hsiung.wang@mediatek.com>
-         <1600688895-9238-4-git-send-email-hsin-hsiung.wang@mediatek.com>
-         <20200923162458.GE5707@sirena.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S1725813AbgLPEen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 23:34:43 -0500
+Received: from mga01.intel.com ([192.55.52.88]:54885 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725275AbgLPEem (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 23:34:42 -0500
+IronPort-SDR: gmtwRNuKblF27Emdn4XF5LPYWaC4c/4FucmA8LlNiO8tZoFva/LjF+1vSXvZIjkyUUJz3XItJz
+ nuRfL5BUfX7Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9836"; a="193384735"
+X-IronPort-AV: E=Sophos;i="5.78,423,1599548400"; 
+   d="scan'208";a="193384735"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 20:34:02 -0800
+IronPort-SDR: WJjQtyuMpJ2SeXJO6hFto7Vp8uSNt7LvgTu+RsugfHraPPw4MILtcB3qQe6mOVnIIn2zph4KIB
+ 6PYGzaK1HjyQ==
+X-IronPort-AV: E=Sophos;i="5.78,423,1599548400"; 
+   d="scan'208";a="559520854"
+Received: from chenyu-office.sh.intel.com ([10.239.158.173])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 20:34:00 -0800
+Date:   Wed, 16 Dec 2020 12:36:41 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Muchowski, MaciejX" <maciejx.muchowski@intel.com>,
+        "Paczynski, Lukasz" <lukasz.paczynski@intel.com>
+Subject: Re: [PATCH] xhci: Introduce max wait timeout in xhci_handshake()
+Message-ID: <20201216043641.GA15845@chenyu-office.sh.intel.com>
+References: <20201215132240.4094-1-yu.c.chen@intel.com>
+ <X9i8grY9BRbbCqNZ@kroah.com>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X9i8grY9BRbbCqNZ@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksDQoNCk9uIFdlZCwgMjAyMC0wOS0yMyBhdCAxNzoyNCArMDEwMCwgTWFyayBCcm93biB3cm90
-ZToNCj4gT24gTW9uLCBTZXAgMjEsIDIwMjAgYXQgMDc6NDg6MTBQTSArMDgwMCwgSHNpbi1Ic2l1
-bmcgV2FuZyB3cm90ZToNCj4gDQo+ID4gK1JlcXVpcmVkIHByb3BlcnRpZXM6DQo+ID4gKy0gY29t
-cGF0aWJsZTogIm1lZGlhdGVrLG10NjM1OS1yZWd1bGF0b3IiDQo+IA0KPiBUaGUgY29tcGF0aWJs
-ZSBpc24ndCB1c2VkIGJ5IHRoZSBkcml2ZXIgKHdoaWNoIGlzIGdvb2QhKSBzbyBzaG91bGQgYmUN
-Cj4gZHJvcHBlZCBmcm9tIHRoZSBiaW5kaW5nIGRvY3VtZW50Lg0KVGhhbmtzIGZvciB5b3VyIGNv
-bW1lbnRzLCBidXQgSSBoYXZlIGEgcXVlc3Rpb24gYWJvdXQgaXQuDQpXaGVuIEkgcmVtb3ZlIHRo
-ZSBjb21wYXRpYmxlIG5hbWUgaW4gdGhlIGR0cywgdGhlcmUgd2lsbCBiZSBzb21lIGVycm9yDQpt
-ZXNzYWdlOg0KWyAgICAwLjQzNzU2Ml0gbXQ2MzU5LXJlZ3VsYXRvcjogRmFpbGVkIHRvIGxvY2F0
-ZSBvZl9ub2RlIFtpZDogLTFdDQpbICAgIDAuNDQwNjEyXSBtdDYzNTktc291bmQ6IEZhaWxlZCB0
-byBsb2NhdGUgb2Zfbm9kZSBbaWQ6IC0xXQ0KDQpEbyB5b3UgbWVhbiB0aGF0IHdlIGRvbid0IG5l
-ZWQgYW55IGNvbXBhdGlibGUgbmFtZSBpbiBkdHMsIG1mZCBhbmQNCnJlZ3VsYXRvciBkcml2ZXI/
-DQo=
+Hi Greg,
+thanks for taking a look at this.
+On Tue, Dec 15, 2020 at 02:39:14PM +0100, Greg KH wrote:
+> On Tue, Dec 15, 2020 at 09:22:40PM +0800, Chen Yu wrote:
+> > The time to finish a xhci_handshake() is platform specific
+> > and sometimes during suspend resume test the followng
+> > errors were encountered:
+> > [53455.418330] ACPI: Waking up from system sleep state S4
+> > [66838.490856] xhci_hcd 0000:00:14.0: xHCI dying, ignoring interrupt.
+> >                Shouldn't IRQs be disabled?
+> > After changing the poll time granularity from 1 usec to 20 usec in
+> > xhci_handshake() this issue was not reproduced. While tuning on the
+> > poll time granularity might be painful on different platforms, it is
+> > applicable to introduce a module parameter to allow the xhci driver to wait
+> > for at max 16 ms.
+> > 
+> > Reported-by: "Muchowski, MaciejX" <maciejx.muchowski@intel.com>
+> 
+> I doubt the "X" is part of this person's name, please just spell it out
+> without the "," please.
+> 
+Okay, will do.
+> > Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> > ---
+> >  drivers/usb/host/xhci.c | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+> > index d4a8d0efbbc4..b8be9f3cc987 100644
+> > --- a/drivers/usb/host/xhci.c
+> > +++ b/drivers/usb/host/xhci.c
+> > @@ -38,6 +38,10 @@ static unsigned long long quirks;
+> >  module_param(quirks, ullong, S_IRUGO);
+> >  MODULE_PARM_DESC(quirks, "Bit flags for quirks to be enabled as default");
+> >  
+> > +static int wait_handshake;
+> > +module_param(wait_handshake, int, 0644);
+> > +MODULE_PARM_DESC(wait_handshake, "Force wait for completion of handshake");
+> 
+> This is not the 1990's, we are not adding new module parameters that no
+> one will know how to change.
+>
+Okay.
+> Make this dynamic, and per-device, and work properly instead.  This can
+> not handle multiple controllers in the system at all :(
+>
+Okay. After checking the error log, enlarging the timeout might not be enough
+and I'll dig into it a little deeper and send feedback.
 
+thanks,
+Chenyu
+> thanks,
+> 
+> greg k-h
