@@ -2,239 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1457D2DBE19
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:58:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 978192DBE20
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 11:00:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725835AbgLPJ6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 04:58:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbgLPJ6T (ORCPT
+        id S1726130AbgLPJ7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 04:59:44 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49026 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726119AbgLPJ7n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 04:58:19 -0500
-Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0133C06179C
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 01:57:39 -0800 (PST)
-Received: by mail-vk1-xa35.google.com with SMTP id o195so3397981vka.9
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 01:57:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z8l/M62PtF0n4E+Kud8Gg3Jd1DOjZBf39zGElGBuB24=;
-        b=AlXNurBzvCes2S+jJ6ZwyzsHWU1hC9h79/NVgkR3+pA2YUoEIzSqG8aT8oTBSjnBau
-         Kog2h0BlmDosvDB6sfsv+3EMrP7Boq1vy7er7a6irCY6woskcZ24oCGUB/0d3B10CBp9
-         7qnKLZyfD2zWyATd8IgvBvpNQjbNWDRsJxoLjwiSyY0lKku+1nJOC2eX9vV5s/OAqa61
-         NAxSEKYpqCANH4Ih3voMhXmuWHVfFfBJPKCt1iKgKSFh2b+h1CPaJcgRV/5ISzaxFjSA
-         GwTtBo9Igo8GAlwFEcy8oOwK42r0udYTSOBwfwvOiHiuyMVASOD1K7lyodfzSZrt7273
-         LPcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z8l/M62PtF0n4E+Kud8Gg3Jd1DOjZBf39zGElGBuB24=;
-        b=KFSa8YZ9gvl4uI47DVQQf9n4LSHsHQ2MT6hW1EMEHvhYatMINFy127UhnrHs9p2+RY
-         0rq2YHrg+IyxP1WsJPxJYCN0YI5Wm4jOwcsKRP/lC1JTcZqYun9vZCCF831fANpaUl1F
-         zwYrVHx1SZiv4mzi8AuknjuMnSoms+92jO8SPG4h45GpBuQUOCAeZkIr2gHGFTC8FTcA
-         ecRaCIwxuxpHgPL9wPVwSd9bnkPJKD4Viz0TnGvczzLhwA1/30GYC9wQn60uo8B3sMIo
-         DuTipUKUcHdANEw5fxkPSmVcoHIUIV3zp8R0wNooWZT7+Lbu/nrgAviMY70uNlSkBfPp
-         FWmw==
-X-Gm-Message-State: AOAM530gmgLREh5BB8LNlTHVt5srBbQcEu3od90SRSMB3uS2CI9FN/kS
-        QV9TCKe08zbiaGvdcKWOLyz8emmkSI0mWAAk7aOtow==
-X-Google-Smtp-Source: ABdhPJx+FZqJiksVy6CgwhfBkpsL80w1Kco02FyzpBcsAo+m3en7wDsW+z+cvIWqAzoq7lHcn5Ofn/4zHVT0pBlf6I0=
-X-Received: by 2002:a1f:4582:: with SMTP id s124mr11891652vka.7.1608112658664;
- Wed, 16 Dec 2020 01:57:38 -0800 (PST)
+        Wed, 16 Dec 2020 04:59:43 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BG9ZnE9119310;
+        Wed, 16 Dec 2020 04:59:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=+Ch0kvmh8WM3BN+PdWT2eAMfO/wmfKVj7HkwjL1Qf/M=;
+ b=tNQQQ0j1zyN9DDC0c4Zhld6lElrWedeu4sG4aKDBuprCFePTyL4yX2ubjmNhev3Jpq2Y
+ dp/IOraWCWK9noz3ULVUI87zMudyxq1WS1+lOl4T3aBMB/fiLiC0Z/OLgkYV9778E2qX
+ CGv7wtPx/d9WIg9G/Uwggqb3GkChwZinfqE/SfKpV3Cjptjo4gI+AN9SxHlhrcmCvyn/
+ WxpvM64uhH6G2xSaR+QJYC+Ur/WjapPI/qHKGI7TdmprW4BSN9I3bHTiPaanl0G76BEx
+ RAfVSLEMmrYtUWP4su3o/CR3eduoGRvXPgytGpYWIdCf13lVx9upNu6F+25niccsRjOQ 7Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35ffg10wda-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Dec 2020 04:59:00 -0500
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BG9x08W005199;
+        Wed, 16 Dec 2020 04:59:00 -0500
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35ffg10wcr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Dec 2020 04:59:00 -0500
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BG9s9JO005072;
+        Wed, 16 Dec 2020 09:58:57 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04fra.de.ibm.com with ESMTP id 35cng8a5jd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Dec 2020 09:58:57 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BG9wsom31654334
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Dec 2020 09:58:54 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C84E111C052;
+        Wed, 16 Dec 2020 09:58:54 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1441111C058;
+        Wed, 16 Dec 2020 09:58:54 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.82.131])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 16 Dec 2020 09:58:54 +0000 (GMT)
+Subject: Re: [PATCH v3] s390/vfio-ap: clean up vfio_ap resources when KVM
+ pointer invalidated
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        stable@vger.kernel.org, gregkh@linuxfoundation.org,
+        sashal@kernel.org, cohuck@redhat.com, kwankhede@nvidia.com,
+        pbonzini@redhat.com, alex.williamson@redhat.com,
+        pasic@linux.vnet.ibm.com
+References: <20201214165617.28685-1-akrowiak@linux.ibm.com>
+ <20201215115746.3552e873.pasic@linux.ibm.com>
+ <44ffb312-964a-95c3-d691-38221cee2c0a@de.ibm.com>
+ <20201216022140.02741788.pasic@linux.ibm.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <ae6e5c7a-0159-035e-2bd3-0a749f81a7c0@de.ibm.com>
+Date:   Wed, 16 Dec 2020 10:58:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+In-Reply-To: <20201216022140.02741788.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20201207115753.21728-1-bbudiredla@marvell.com>
- <20201207115753.21728-2-bbudiredla@marvell.com> <CAPDyKFqQwvG6vkwqPZutXjdV0hVrKp3MiqRRMZZ4C8Zr2Of9rg@mail.gmail.com>
- <CY4PR1801MB2070FD9FB1AB7166651198D1DEC60@CY4PR1801MB2070.namprd18.prod.outlook.com>
- <CAPDyKFqMsMdqw=Uwzby0tNNvPieRT2i6PAmHu_9XRRVy1MykuQ@mail.gmail.com> <CY4PR1801MB207090582E5E763F3672153BDEC60@CY4PR1801MB2070.namprd18.prod.outlook.com>
-In-Reply-To: <CY4PR1801MB207090582E5E763F3672153BDEC60@CY4PR1801MB2070.namprd18.prod.outlook.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 16 Dec 2020 10:57:02 +0100
-Message-ID: <CAPDyKFpvRgsE3biXZncbR_qfU4+9Z1mf7fCB=aAchH7hTsq+Vw@mail.gmail.com>
-Subject: Re: [EXT] Re: [PATCH 1/2] mmc: Support kmsg dumper based on pstore/blk
-To:     Bhaskara Budiredla <bbudiredla@marvell.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-16_04:2020-12-15,2020-12-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
+ lowpriorityscore=0 spamscore=0 bulkscore=0 malwarescore=0 phishscore=0
+ mlxlogscore=999 suspectscore=0 priorityscore=1501 clxscore=1015
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012160061
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[...]
+On 16.12.20 02:21, Halil Pasic wrote:
+> On Tue, 15 Dec 2020 19:10:20 +0100
+> Christian Borntraeger <borntraeger@de.ibm.com> wrote:
+> 
+>>
+>>
+>> On 15.12.20 11:57, Halil Pasic wrote:
+>>> On Mon, 14 Dec 2020 11:56:17 -0500
+>>> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+>>>
+>>>> The vfio_ap device driver registers a group notifier with VFIO when the
+>>>> file descriptor for a VFIO mediated device for a KVM guest is opened to
+>>>> receive notification that the KVM pointer is set (VFIO_GROUP_NOTIFY_SET_KVM
+>>>> event). When the KVM pointer is set, the vfio_ap driver takes the
+>>>> following actions:
+>>>> 1. Stashes the KVM pointer in the vfio_ap_mdev struct that holds the state
+>>>>    of the mediated device.
+>>>> 2. Calls the kvm_get_kvm() function to increment its reference counter.
+>>>> 3. Sets the function pointer to the function that handles interception of
+>>>>    the instruction that enables/disables interrupt processing.
+>>>> 4. Sets the masks in the KVM guest's CRYCB to pass AP resources through to
+>>>>    the guest.
+>>>>
+>>>> In order to avoid memory leaks, when the notifier is called to receive
+>>>> notification that the KVM pointer has been set to NULL, the vfio_ap device
+>>>> driver should reverse the actions taken when the KVM pointer was set.
+>>>>
+>>>> Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
+>>>> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+>>>> ---
+>>>>  drivers/s390/crypto/vfio_ap_ops.c | 29 ++++++++++++++++++++---------
+>>>>  1 file changed, 20 insertions(+), 9 deletions(-)
+>>>>
+>>>> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+>>>> index e0bde8518745..cd22e85588e1 100644
+>>>> --- a/drivers/s390/crypto/vfio_ap_ops.c
+>>>> +++ b/drivers/s390/crypto/vfio_ap_ops.c
+>>>> @@ -1037,8 +1037,6 @@ static int vfio_ap_mdev_set_kvm(struct ap_matrix_mdev *matrix_mdev,
+>>>>  {
+>>>>  	struct ap_matrix_mdev *m;
+>>>>
+>>>> -	mutex_lock(&matrix_dev->lock);
+>>>> -
+>>>>  	list_for_each_entry(m, &matrix_dev->mdev_list, node) {
+>>>>  		if ((m != matrix_mdev) && (m->kvm == kvm)) {
+>>>>  			mutex_unlock(&matrix_dev->lock);
+>>>> @@ -1049,7 +1047,6 @@ static int vfio_ap_mdev_set_kvm(struct ap_matrix_mdev *matrix_mdev,
+>>>>  	matrix_mdev->kvm = kvm;
+>>>>  	kvm_get_kvm(kvm);
+>>>>  	kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
+>>>> -	mutex_unlock(&matrix_dev->lock);
+>>>>
+>>>>  	return 0;
+>>>>  }
+>>>> @@ -1083,35 +1080,49 @@ static int vfio_ap_mdev_iommu_notifier(struct notifier_block *nb,
+>>>>  	return NOTIFY_DONE;
+>>>>  }
+>>>>
+>>>> +static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
+>>>> +{
+>>>> +	kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
+>>>> +	matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
+>>>
+>>>
+>>> This patch LGTM. The only concern I have with it is whether a
+>>> different cpu is guaranteed to observe the above assignment as
+>>> an atomic operation. I think we didn't finish this discussion
+>>> at v1, or did we?
+>>
+>> You mean just this assigment:
+>>>> +	matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
+>> should either have the old or the new value, but not halve zero halve old?
+>>
+> 
+> Yes that is the assignment I was referring to. Old value will work as well because
+> kvm holds a reference to this module while in the pqap_hook.
+>  
+>> Normally this should be ok (and I would consider this a compiler bug if
+>> this is split into 2 32 bit zeroes) But if you really want to be sure then we
+>> can use WRITE_ONCE.
+> 
+> Just my curiosity: what would make this a bug? Is it the s390 elf ABI,
+> or some gcc feature, or even the C standard? Also how exactly would
+> WRITE_ONCE, also access via volatile help in this particular situation?
 
-> >> >
-> >> >It looks like the above I/O read/write interface for pstore is
-> >> >intended to be used when the platform is up and running and not during a
-> >panic, correct?
-> >> >
-> >> >If so, I don't get why it can't use the regular block interface, as
-> >> >any other file system does, for example?
-> >> >
-> >>
-> >> The pstore read and write operations are used as part of pstore file
-> >> system mounting to retrieve the stored logs from MMC platform backend
-> >> and to manage pstore read/write counters. Sleeping would be allowed
-> >> during this time. Whereas, pstore PANIC write will be called if there happens
-> >a crash in the system. Sleeping is NOT allowed at this time.
-> >>
-> >> It seems you are mixing the sleeping paths of the mmcpstore with that of
-> >atomic path.
-> >
-> >No, I am not mixing them, but questioning them.
-> >
-> >For the non atomic path, I don't understand why the pstore file system
-> >mounting, etc, deserves to be managed through its own specific ops?
-> >Are there any specific reasons for this that I am missing?
-> >
->
-> Seems generic way is undergoing some changes. Kees already ACKed
-> the mmcpstore registration through block device registration.
->
-> >In principle, for non atomic path, I would rather see that the pstore file system
-> >should be able to be mounted on top of any generic block device partition -
-> >without requiring the block device driver to implement specific pstore ops.
-> >
->
-> Scope to answer this is out of mmcpstore driver. Pstore/blk driver have to
-> answer this.
+I think its a tricky things and not strictly guaranteed, but there is a lot
+of code that relies on the atomicity of word sizes. see for example the discussion
+here
+https://lore.kernel.org/lkml/CAHk-=wgC4+kV9AiLokw7cPP429rKCU+vjA8cWAfyOjC3MtqC4A@mail.gmail.com/
 
-Yep, I am open to discuss this more.
+WRITE_ONCE will not change the guarantees a lot, but it is mostly a documentation
+that we assume atomic access here.
 
->
-> >>
-> >>
-> >> >> +
-> >> >> +static void mmcpstore_panic_write_req(const char *buf,
-> >> >> +               unsigned int nsects, unsigned int sect_offset) {
-> >> >> +       struct mmcpstore_context *cxt = &oops_cxt;
-> >> >> +       struct mmc_request *mrq = cxt->mrq;
-> >> >> +       struct mmc_card *card = cxt->card;
-> >> >> +       struct mmc_host *host = card->host;
-> >> >> +       struct scatterlist sg;
-> >> >> +       u32 opcode;
-> >> >> +
-> >> >> +       opcode = (nsects > 1) ? MMC_WRITE_MULTIPLE_BLOCK :
-> >> >MMC_WRITE_BLOCK;
-> >> >> +       mmc_prep_req(mrq, sect_offset, nsects, &sg, opcode,
-> >> >MMC_DATA_WRITE);
-> >> >> +       sg_init_one(&sg, buf, (nsects << SECTOR_SHIFT));
-> >> >> +       mmc_set_data_timeout(mrq->data, cxt->card);
-> >> >> +
-> >> >> +       mmc_claim_host(host);
-> >> >
-> >> >So, this will use several locks, which may be a problem, right?
-> >> >
-> >>
-> >> No, as said above locks are present on host driver will be dropped in
-> >> CONFIG_MMC_PSTORE path.
-> >
-> >Please have a look at the code implementing mmc_claim_host(). It's not just a
-> >simple spin_lock, but there is also a wait_queue and runtime PM being
-> >managed from there.
-> >
-> >>
-> >> >Moreover, if there is an ongoing I/O request (or any other active
-> >> >command/request for that matter), then the host is already claimed by
-> >> >the mmc core. Normally, we would then wait for that request to be
-> >> >completed, to trigger the release of the host and then allow us to claim it
-> >here.
-> >> >
-> >> >However, because of the kernel panic, I assume it's quite likely that
-> >> >any ongoing request will not be completed at all, as IRQs may not
-> >> >work, for example.
-> >> >
-> >> >In other words, we may be hanging here forever waiting to claim the host.
-> >> >Unless we are lucky, because of no ongoing request, although we would
-> >> >still have to succeed walking through all the locking, etc, in
-> >mmc_claim_host().
-> >> >
->
-> I agree with your concerns about spin_lock, wait_queue and runtime PM in
-> mmc_claim_host(), but not the ongoing requests presence. They must
-> have terminated cleanly through host->ops->req_cleanup_pending(host)
-> before reaching mmc_claim_host().
->
-> I will come up with something to address these in the next patch.
->
-> >>
-> >> host->ops->req_cleanup_pending(host) was introduced to clean up the
-> >> host->ops->queued
-> >> and ongoing requests/commands. Terminating ongoing requests is not a
-> >> complicated thing for the host drivers.
-> >
-> >Well, I don't agree. Resetting the host controller should not be a big problem,
-> >but I am more worried about what state this will bring the eMMC/SD card in.
-> >
->
-> I am not sure why are you saying host controller reset. No ware host controller
-> reset was performed as part of these patches.
->
-> >It sounds to me that the only option is to try to rely on the
-> >mmc_claim_host() to actually succeed. This makes it certain that there is no
-> >ongoing request that needs to be terminated. Otherwise, things will just fall
-> >apart.
-> >
->
-> Agree. Seems I need to create an alternate path to forcefully gain access to the host
-> for the case of panic write. As you pointed out mmc_claim_host(), mmc_release_host()
-> and runtime PM can create issues.
->
-> >The question is, can/should we rely on mmc_claim_host() to succeed in this
-> >path? Maybe it will work, in cases when there is no ongoing request, as it
-> >means the host should be available to be immediately claimed. Although,
-> >then the problem ends up with runtime PM, as if the host is available for
-> >claiming, it's likely that the host is runtime suspended...
-> >
->
-> An extra check can be added to see if host was runtime suspended ahead
-> of panic write attempt.
 
-What if that is the case, should we just return an error?
-
-Moreover, even the device belonging to the mmc card can be runtime
-suspended too. So if that is the case, we should return an error too?
-
-[...]
-
-> >> >[...]
-> >> >
-> >> >Having said the above, I am not entirely convinced that it makes
-> >> >sense to support this, at all.
-> >> >
-> >> >Not only, will the support be highly fragile from the mmc core point
-> >> >of view, but there is also a significant complexity for an mmc host
-> >> >driver to support this (at least in general).
-> >> >
-> >>
-> >> I am not sure if the comments on host driver complexity is true.
-> >> Terminating ongoing requests and introducing polling functions on host
-> >> drivers should be straight forward. None those would disturb the core
-> >> functionality. They are completely independent.
-> >
-> >I think you are underestimating the part with terminating ongoing requests. It
-> >sounds to me that you really haven't been terminating any requests at all, but
-> >rather just doing a reset of the mmc controller (which is what I observed in
-> >patch2).
-> >
->
-> No, it's not true. I am not doing any reset. Please point me to specific code snippet
-> where you have observed this.
-
-I was looking at patch2 and the ->req_cleanup_pending() callback that
-you have assigned to cvm_req_cleanup_pending().
-
-In there you clear a potentially running DMA job, which is *kind* of a
-reset of the controller. More importantly, it's definitely *not*
-terminating an ongoing request, in a way that you can expect the
-eMMC/SD card to be ready for new communications afterwards. This is my
-main point.
-
-Kind regards
-Uffe
+> 
+> I agree, if the member is properly aligned, (which it is),
+> normally/probably we are fine on s390x (which is also a given). 
+> 
+>> I think we take this via the s390 tree? I can add the WRITE_ONCE when applying?
+> 
+> Yes that works fine with me.
+> 
+> Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
+> 
