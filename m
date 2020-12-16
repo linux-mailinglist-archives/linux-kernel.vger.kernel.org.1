@@ -2,299 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D5B52DC8C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 23:11:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0866E2DC8C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 23:11:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730187AbgLPWJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 17:09:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730182AbgLPWJj (ORCPT
+        id S1730194AbgLPWKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 17:10:05 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:5648 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730182AbgLPWKF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 17:09:39 -0500
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7BB2C0617A6
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 14:08:58 -0800 (PST)
-Received: by mail-qv1-xf49.google.com with SMTP id l3so18837187qvr.10
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 14:08:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=1mGpJFgZ/dA1gcKRRTqgg7tDYVACZ/ZcxD4vIZllu8c=;
-        b=oeavvbL9yr68L9PpVVEYjMVCjSFIEnOPQN5C+XeSWmOiIWOzprieFODe7bRMVJ1AG8
-         2S2qYd1lXREqrc/enjVFtc9+HPUHqjm3+n/WRcGNTG44XiZIAnvHo1XRlZKAhK4k9SvC
-         2UEjy1AxTk+E+yKcloKX6sPU3jSk5ubxumwzlWX7f2An6/ePe8K+lKjKsCU6IS784s6U
-         +pLBDowtSvI8FAklGvdE87LkNWHhQEMd8zrSzrpjMJznz/8H67d6hWgXFb/j3b94kqy/
-         dSjXhMnnBfc3y65+1IUVpIY9B4lgxh5EdCb8BXgU985tZUzyMz7+zriA9A1O3OF9aodZ
-         C0bA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=1mGpJFgZ/dA1gcKRRTqgg7tDYVACZ/ZcxD4vIZllu8c=;
-        b=mIFVfP8KiGyAz46+PyeEzLc7dP7dEPAovkknWhJBbcYpcTTd0I3IwS6oVh6C6pBckw
-         GsyFQUlwLLSFAWKQM+Aa6DWn9p1ShUoao/CAFHCtkZKEOrDUrHWSxL0XxZ9O2vr5WALL
-         CvGm9D2AzScZWXd+rc05ol4aQkA7vRjF+LqKH6EwXazyv8DDkN5z8suE1UqjrCTB6raf
-         s28SS1A6UZGKdgcVWAsE+Nkvk03AXQtwS7uvSdAlS9uEtVlR7hkzh++5sMqFd2fsJXTO
-         bUAe4KK2qm5cQ4WGhzk29dC7NfP6B8e3PN6RVdaxuf9jLrotGVDqTA3OTdeS5G1Jan8c
-         th2g==
-X-Gm-Message-State: AOAM531PZZGzi7IOpxlcqQJvE/sNMC6GQXy6XyZtLZTdntzsj6WE5VWF
-        mZ5GsZZzxg1J0aWbnq7DfBnUkhTRZk4hMikHawA=
-X-Google-Smtp-Source: ABdhPJxuDztsJ/xViU2UmS0E0zAaFOD3/ZBN/KWAT0KcdPr9PwterDhdshBPNhZNFmTc7KN0Q7/w829FunN5ENxOuzg=
-Sender: "willmcvicker via sendgmr" <willmcvicker@willmcvicker.c.googlers.com>
-X-Received: from willmcvicker.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:2dd0])
- (user=willmcvicker job=sendgmr) by 2002:ad4:476c:: with SMTP id
- d12mr44270048qvx.20.1608156537788; Wed, 16 Dec 2020 14:08:57 -0800 (PST)
-Date:   Wed, 16 Dec 2020 22:08:50 +0000
-Message-Id: <20201216220850.659584-1-willmcvicker@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.684.gfbc64c5ab5-goog
-Subject: [PATCH v4] modules: introduce the MODULE_SCMVERSION config
-From:   Will McVicker <willmcvicker@google.com>
-To:     Jessica Yu <jeyu@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Saravana Kannan <saravanak@google.com>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        kernel-team@android.com, Will McVicker <willmcvicker@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 16 Dec 2020 17:10:05 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BGM2FKA059508;
+        Wed, 16 Dec 2020 17:09:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=nXRqNJk9VOFOyqSyFPQz+bIalFtwhVOu2Cj8xAFeNEk=;
+ b=BHC/ed03bX+2e7jJdMiMZG99uvl5UnDSi3LttHOrVAjnUBYcSc3gA9U6b+2DmMNW+25I
+ R4WxA7Gk/LdKWHYlF3UfsMCZoHatZ3MEgPbh9fm+aDFElRjJI02nIysREsc4B+dX0nlb
+ WJh3BMrn/JNJxaZK8blQgqn+NMvlcByKCfUCsIisTIwH5hhRAhynqMLyW7e+tb4IPeV+
+ SyFnhkuo39fH/2CIURL66KTNImmB1xuodprhzzj7TwqAHyqinrc+aWtc0NKDi9Gy/5YS
+ Y1Uvpl47TFiQDOWci4XpD0/DK7L+Owk68rQknbbtPzti+NxxkSXQPscmkQJqObjGdM1q eQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 35ftm5gbq7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Dec 2020 17:09:22 -0500
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BGM2FJY059548;
+        Wed, 16 Dec 2020 17:09:22 -0500
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 35ftm5gbph-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Dec 2020 17:09:22 -0500
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BGM78CA008669;
+        Wed, 16 Dec 2020 22:09:20 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04ams.nl.ibm.com with ESMTP id 35cng84qdj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Dec 2020 22:09:20 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BGM9Hf930343674
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Dec 2020 22:09:17 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 83B7C4203F;
+        Wed, 16 Dec 2020 22:09:17 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 047D24204B;
+        Wed, 16 Dec 2020 22:09:16 +0000 (GMT)
+Received: from oc2783563651 (unknown [9.171.26.143])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Wed, 16 Dec 2020 22:09:15 +0000 (GMT)
+Date:   Wed, 16 Dec 2020 23:09:14 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        hca@linux.ibm.com, gor@linux.ibm.com
+Subject: Re: [PATCH v12 11/17] s390/vfio-ap: allow assignment of unavailable
+ AP queues to mdev device
+Message-ID: <20201216230914.63c0223c.pasic@linux.ibm.com>
+In-Reply-To: <b94f220b-37c4-abce-432d-5304d22f65b9@linux.ibm.com>
+References: <20201124214016.3013-1-akrowiak@linux.ibm.com>
+        <20201124214016.3013-12-akrowiak@linux.ibm.com>
+        <20201129021717.5683e779.pasic@linux.ibm.com>
+        <b94f220b-37c4-abce-432d-5304d22f65b9@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-16_09:2020-12-15,2020-12-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ lowpriorityscore=0 mlxlogscore=999 suspectscore=0 clxscore=1015
+ malwarescore=0 spamscore=0 bulkscore=0 adultscore=0 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012160134
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Config MODULE_SCMVERSION introduces a new module attribute --
-`scmversion` -- which can be used to identify a given module's SCM
-version.  This is very useful for developers that update their kernel
-independently from their kernel modules or vice-versa since the SCM
-version provided by UTS_RELEASE (`uname -r`) will now differ from the
-module's vermagic attribute.
+On Wed, 16 Dec 2020 15:14:47 -0500
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-For example, we have a CI setup that tests new kernel changes on the
-hikey960 and db845c devices without updating their kernel modules. When
-these tests fail, we need to be able to identify the exact device
-configuration the test was using. By including MODULE_SCMVERSION, we can
-identify the exact kernel and modules' SCM versions for debugging the
-failures.
+> 
+> 
+> On 11/28/20 8:17 PM, Halil Pasic wrote:
+> > On Tue, 24 Nov 2020 16:40:10 -0500
+> > Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+> >
+> >> The current implementation does not allow assignment of an AP adapter or
+> >> domain to an mdev device if each APQN resulting from the assignment
+> >> does not reference an AP queue device that is bound to the vfio_ap device
+> >> driver. This patch allows assignment of AP resources to the matrix mdev as
+> >> long as the APQNs resulting from the assignment:
+> >>     1. Are not reserved by the AP BUS for use by the zcrypt device drivers.
+> >>     2. Are not assigned to another matrix mdev.
+> >>
+> >> The rationale behind this is twofold:
+> >>     1. The AP architecture does not preclude assignment of APQNs to an AP
+> >>        configuration that are not available to the system.
+> >>     2. APQNs that do not reference a queue device bound to the vfio_ap
+> >>        device driver will not be assigned to the guest's CRYCB, so the
+> >>        guest will not get access to queues not bound to the vfio_ap driver.
+> >>
+> >> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> > Again code looks good. I'm still worried about all the incremental
+> > changes (good for review) and their testability.
+> 
+> I'm not sure what your concern is here. Is there an expectation
+> that each patch needs to be testable by itself, or whether the
+> functionality in each patch can be easily tested en masse?
 
-Additionally, by exposing the SCM version via the sysfs node
-/sys/module/MODULENAME/scmversion, one can also verify the SCM versions
-of the modules loaded from the initramfs. Currently, modinfo can only
-retrieve module attributes from the module's ko on disk and not from the
-actual module that is loaded in RAM.
+I was referring to the testability of each patch in the following
+sense: can you (at least theoretically) write a testsuite, that has
+perfect coverage, and no false positives for each prefix of the
+series applied. 
 
-You can retrieve the SCM version in two ways,
+BTW I don't consider this a showstopper. 
 
-1) By using modinfo:
-    > modinfo -F scmversion MODULENAME
-2) By module sysfs node:
-    > cat /sys/module/MODULENAME/scmversion
+> 
+> I'm not sure some of these changes can be tested with an
+> automated test because the test code would have to be able to
+> dynamically change the host's AP configuration and I don't know
+> if there is currently a way to do this programmatically. In order to
+> test the effects of dynamic host crypto configuration manually, one
+> needs access to an SE or HMC with DPM.
+> 
 
-Signed-off-by: Will McVicker <willmcvicker@google.com>
----
-Changelog since v3:
-- Dropped [PATCH v2 1/2] scripts/setlocalversion: allow running in a subdir
+Nested should also give you this: you can change G2 which is a host
+to G3.
 
- Documentation/ABI/stable/sysfs-module | 18 ++++++++++++++++++
- include/linux/module.h                |  1 +
- init/Kconfig                          | 12 ++++++++++++
- kernel/module.c                       |  2 ++
- scripts/Makefile.modpost              | 22 ++++++++++++++++++++++
- scripts/mod/modpost.c                 | 24 +++++++++++++++++++++++-
- 6 files changed, 78 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/ABI/stable/sysfs-module b/Documentation/ABI/stable/sysfs-module
-index 6272ae5fb366..2ba731767737 100644
---- a/Documentation/ABI/stable/sysfs-module
-+++ b/Documentation/ABI/stable/sysfs-module
-@@ -32,3 +32,21 @@ Description:
- 		Note: If the module is built into the kernel, or if the
- 		CONFIG_MODULE_UNLOAD kernel configuration value is not enabled,
- 		this file will not be present.
-+
-+What:		/sys/module/MODULENAME/scmversion
-+Date:		November 2020
-+KernelVersion:	5.11
-+Contact:	Will McVicker <willmcvicker@google.com>
-+Description:	This read-only file will appear if modpost was supplied with an
-+		SCM version for the module. It can be enabled with the config
-+		MODULE_SCMVERSION. The SCM version is retrieved by
-+		scripts/setlocalversion, which means that the presence of this
-+		file depends on CONFIG_LOCALVERSION_AUTO=y or LOCALVERSION=.
-+		When read, the SCM version that the module was compiled with is
-+		returned. The SCM version is returned in the following format::
-+
-+		===
-+		Git:		g[a-f0-9]\+(-dirty)\?
-+		Mercurial:	hg[a-f0-9]\+(-dirty)\?
-+		Subversion:	svn[0-9]\+
-+		===
-diff --git a/include/linux/module.h b/include/linux/module.h
-index c4e7a887f469..6bd710308863 100644
---- a/include/linux/module.h
-+++ b/include/linux/module.h
-@@ -372,6 +372,7 @@ struct module {
- 	struct module_attribute *modinfo_attrs;
- 	const char *version;
- 	const char *srcversion;
-+	const char *scmversion;
- 	struct kobject *holders_dir;
- 
- 	/* Exported symbols */
-diff --git a/init/Kconfig b/init/Kconfig
-index b77c60f8b963..d9ae12f16ba2 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -2131,6 +2131,18 @@ config MODULE_SRCVERSION_ALL
- 	  the version).  With this option, such a "srcversion" field
- 	  will be created for all modules.  If unsure, say N.
- 
-+config MODULE_SCMVERSION
-+	bool "SCM version for modules"
-+	depends on LOCALVERSION_AUTO
-+	help
-+	  This enables the module attribute "scmversion" which can be used
-+	  by developers to identify the SCM version of a given module, e.g.
-+	  git sha1 or hg sha1. The SCM version can be queried by modinfo or
-+	  via the sysfs node: /sys/modules/MODULENAME/scmversion. This is
-+	  useful when the kernel or kernel modules are updated separately
-+	  since that causes the vermagic of the kernel and the module to
-+	  differ.
-+
- config MODULE_SIG
- 	bool "Module signature verification"
- 	select MODULE_SIG_FORMAT
-diff --git a/kernel/module.c b/kernel/module.c
-index c3a9e972d3b2..6967cd3abf9b 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -836,6 +836,7 @@ static struct module_attribute modinfo_##field = {                    \
- 
- MODINFO_ATTR(version);
- MODINFO_ATTR(srcversion);
-+MODINFO_ATTR(scmversion);
- 
- static char last_unloaded_module[MODULE_NAME_LEN+1];
- 
-@@ -1298,6 +1299,7 @@ static struct module_attribute *modinfo_attrs[] = {
- 	&module_uevent,
- 	&modinfo_version,
- 	&modinfo_srcversion,
-+	&modinfo_scmversion,
- 	&modinfo_initstate,
- 	&modinfo_coresize,
- 	&modinfo_initsize,
-diff --git a/scripts/Makefile.modpost b/scripts/Makefile.modpost
-index f54b6ac37ac2..f1126b60adb7 100644
---- a/scripts/Makefile.modpost
-+++ b/scripts/Makefile.modpost
-@@ -66,6 +66,7 @@ ifeq ($(KBUILD_EXTMOD),)
- 
- input-symdump := vmlinux.symvers
- output-symdump := Module.symvers
-+module_srcpath := $(srctree)
- 
- else
- 
-@@ -77,6 +78,17 @@ src := $(obj)
- include $(if $(wildcard $(KBUILD_EXTMOD)/Kbuild), \
-              $(KBUILD_EXTMOD)/Kbuild, $(KBUILD_EXTMOD)/Makefile)
- 
-+# Get the external module's source path. KBUILD_EXTMOD could either be an
-+# absolute path or relative path from $(srctree). This makes sure that we
-+# aren't using a relative path from a separate working directory (O= or
-+# KBUILD_OUTPUT) since that may not be the actual module's SCM project path.
-+# So check the path relative to $(srctree) first.
-+ifneq ($(realpath $(srctree)/$(KBUILD_EXTMOD) 2>/dev/null),)
-+	module_srcpath := $(srctree)/$(KBUILD_EXTMOD)
-+else
-+	module_srcpath := $(KBUILD_EXTMOD)
-+endif
-+
- # modpost option for external modules
- MODPOST += -e
- 
-@@ -85,6 +97,16 @@ output-symdump := $(KBUILD_EXTMOD)/Module.symvers
- 
- endif
- 
-+ifeq ($(CONFIG_MODULE_SCMVERSION),y)
-+# Get the SCM version of the module. Sed verifies setlocalversion returns
-+# a proper revision based on the SCM type, e.g. git, mercurial, or svn.
-+module_scmversion := $(shell $(srctree)/scripts/setlocalversion $(module_srcpath) | \
-+	sed -n 's/.*-\(\(g\|hg\)[a-fA-F0-9]\+\(-dirty\)\?\|svn[0-9]\+\).*/\1/p')
-+ifneq ($(module_scmversion),)
-+MODPOST += -v$(module_scmversion)
-+endif
-+endif
-+
- # modpost options for modules (both in-kernel and external)
- MODPOST += \
- 	$(addprefix -i ,$(wildcard $(input-symdump))) \
-diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index f882ce0d9327..db71e0c9ab20 100644
---- a/scripts/mod/modpost.c
-+++ b/scripts/mod/modpost.c
-@@ -30,6 +30,8 @@ static int have_vmlinux = 0;
- static int all_versions = 0;
- /* If we are modposting external module set to 1 */
- static int external_module = 0;
-+#define MODULE_SCMVERSION_SIZE 64
-+static char module_scmversion[MODULE_SCMVERSION_SIZE];
- /* Only warn about unresolved symbols */
- static int warn_unresolved = 0;
- /* How a symbol is exported */
-@@ -2272,6 +2274,20 @@ static void add_intree_flag(struct buffer *b, int is_intree)
- 		buf_printf(b, "\nMODULE_INFO(intree, \"Y\");\n");
- }
- 
-+/**
-+ * add_scmversion() - Adds the MODULE_INFO macro for the scmversion.
-+ * @b: Buffer to append to.
-+ *
-+ * This function fills in the module attribute `scmversion` for the kernel
-+ * module. This is useful for determining a given module's SCM version on
-+ * device via /sys/modules/<module>/scmversion and/or using the modinfo tool.
-+ */
-+static void add_scmversion(struct buffer *b)
-+{
-+	if (module_scmversion[0] != '\0')
-+		buf_printf(b, "\nMODULE_INFO(scmversion, \"%s\");\n", module_scmversion);
-+}
-+
- /* Cannot check for assembler */
- static void add_retpoline(struct buffer *b)
- {
-@@ -2559,7 +2575,7 @@ int main(int argc, char **argv)
- 	struct dump_list *dump_read_start = NULL;
- 	struct dump_list **dump_read_iter = &dump_read_start;
- 
--	while ((opt = getopt(argc, argv, "ei:mnT:o:awENd:")) != -1) {
-+	while ((opt = getopt(argc, argv, "ei:mnT:o:awENd:v:")) != -1) {
- 		switch (opt) {
- 		case 'e':
- 			external_module = 1;
-@@ -2597,6 +2613,11 @@ int main(int argc, char **argv)
- 		case 'd':
- 			missing_namespace_deps = optarg;
- 			break;
-+		case 'v':
-+			if (!optarg)
-+				fatal("'-v' requires an argument defining the SCM version.");
-+			strncpy(module_scmversion, optarg, sizeof(module_scmversion) - 1);
-+			break;
- 		default:
- 			exit(1);
- 		}
-@@ -2645,6 +2666,7 @@ int main(int argc, char **argv)
- 		add_depends(&buf, mod);
- 		add_moddevtable(&buf, mod);
- 		add_srcversion(&buf, mod);
-+		add_scmversion(&buf);
- 
- 		sprintf(fname, "%s.mod.c", mod->name);
- 		write_if_changed(&buf, fname);
--- 
-2.29.2.684.gfbc64c5ab5-goog
-
+Regards,
+Halil
