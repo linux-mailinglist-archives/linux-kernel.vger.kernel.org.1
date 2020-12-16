@@ -2,155 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A12A2DB9DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 04:54:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 569572DB9DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 04:56:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725788AbgLPDyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 22:54:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725730AbgLPDyH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 22:54:07 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26115C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 19:53:27 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id f9so15747258pfc.11
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 19:53:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=au0l4ODmUzLyBniSivZ0fFaGBE1KkNQntC4U8UGGvjw=;
-        b=HitdVFCAOtsQCu8zvH8qmYCPYzX3PeWE6fktkqoxytKqigp9RNcBtKks+keo8Yodhe
-         7n2W+zAZoxAU4Tv95vdUIkIlQdX026OWKMsoJ3ppouGncBTXSDspdPZOCIrOikVZDyU8
-         4jRAVH5o5rPy3FMNBjZjWHRGTxZN/ZhutryDrs7J7hZvQTTx+0V1XZ/YuUyYYG6J5l3Z
-         sBGcqxKFdhI1BPQlkPIA3xbuPw8Ei4eAmwXNRW3dpQrUt/nhnSQVAG49+VgbfX5v0xQp
-         ehKe8JCYXykuOj/3p2DI8pyPmKR7kJdfjaGrJ+tUNMC+pSiHLi+oNmry3uWmDnXCrC9X
-         vjAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=au0l4ODmUzLyBniSivZ0fFaGBE1KkNQntC4U8UGGvjw=;
-        b=FTYQzaFaqoyoewJBVkwZwxsIzvrGS5SDGat98SHz40K9Snji1ufXH2hx+BLzzUrka8
-         qTL+B70MpqBPOzN0Ti85+OqqM5qpyQdi/gymce5KX0g2MeC8+bgJT568zMiUJq1oR9Zg
-         Hvs/0hPJ69O7WA0ZHLRBzE/qSmRQGCE6nSiNMsUgbq+7kZosoyw7AaWL6Vwncivy2/jP
-         qCvVk65B06DikSffFcvlWrTKFg2SEoTEc2+fAawU4bkUqk3+uUgCoFXv1inmB47OOjEL
-         f2Rczit0V7GAnKJpXJYiF6eQvfRzItDgI2pWtfTHele4/ZQECuKg53nAyuo/vN8ZB2Vl
-         k97Q==
-X-Gm-Message-State: AOAM533kO7+buZ11US99fSTqZwyESA3HoW4LtuOBq9D0yWRJGmgf3Jn2
-        xxxItoygY1q0soP+LYadd0DQWRn94FgOuNUAkshLeQ==
-X-Google-Smtp-Source: ABdhPJxhomQrUSLQh8uMb9UuwA9CmbPbyO9SWshT6Q/hiYWWgqBvJj56FQvMJ2tmDKyx4NK5BlBrXhKdVumTZXHNy/0=
-X-Received: by 2002:aa7:979d:0:b029:1a4:3b76:a559 with SMTP id
- o29-20020aa7979d0000b02901a43b76a559mr15688095pfp.49.1608090806411; Tue, 15
- Dec 2020 19:53:26 -0800 (PST)
+        id S1725837AbgLPDzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 22:55:12 -0500
+Received: from mail-eopbgr760115.outbound.protection.outlook.com ([40.107.76.115]:1443
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725550AbgLPDzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 22:55:12 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DQN9zJwPHeHEccWqLfe176WtQkttJAMn6Wqp9bZzZholuP0PTp4nAWZWiu251iaHHjbgWiRtB9l4FecBgVBgMp9QlofU5k/afBgbrVw8Kd4TxgBpcien++8Y7vnx+ef5ndmiKQhHTZSHtLRBVFc2tSZBdg3bQRAZB+oDSJdhalf3CYQACtxAq3gAo4tU8rc9smLY5gnMgsI9gWBFh0uuVM8m8Xog3Szb8NL8P4aF0THD8k1UIpuXoORNHIVPg0qjnT4ulA4dwNubrLYp27XMmB6YIetxFNTqpD5trMwPQY+ROjGlELIK+xj2hlPDHPsjdNtDkn1xOsNRqzSXFbjQ2A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bgUyZvlB+b1KHI0Lo6uDSrawrtZQUb2GXWRAKAkqxf4=;
+ b=aM8zXmUVXgAfNfAvfX2ReOwTLWRPmnPRhg1zo+mzUCLqjuVLaV2ahBuGOI45ggqZcyzl6FMsm4Hn35YGWZJ9FqeM0LUmUQcxRpsrfPMozR2KlU6yp6YAbPGyo5VGS/xY+fCpD2VONE7DInhtJocQnMQvcxQ6bM2s60C9ya4Q400CXlz5QCBPxWBtbEAXST5kVLmdbFL3WXikO693n1xSMclq43O/34WWF69qRArNNrWaJPgn2LMwruPoLRMUadtFLB57JZnn1BxdLWOq1gx1NEh6rdM4hHPyTwsFjE4zFELRv/zoDSZtzQz4g/DTD+P/Mw9uMJWve1nrX2MBs+egYg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bgUyZvlB+b1KHI0Lo6uDSrawrtZQUb2GXWRAKAkqxf4=;
+ b=FJYvSyNq2xK6yUPxMa2Z62TlrTBJabmzZAkRPNhiU0c/BEWSCdTFjkiQASBV5F73lvA7kkx0WwYYiLsHZgiCbB1SJpaMjAczzXM9YUkCM/tWYfQADlRUyAMZMhlfC8KAbeGhQSqmp7uXC1d+ZMTzxV0RmKySci6LhsbUgK+mnLI=
+Received: from (2603:10b6:303:74::12) by
+ MWHPR21MB0639.namprd21.prod.outlook.com (2603:10b6:300:127::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.8; Wed, 16 Dec
+ 2020 03:54:29 +0000
+Received: from MW4PR21MB1857.namprd21.prod.outlook.com
+ ([fe80::f133:55b5:4633:c485]) by MW4PR21MB1857.namprd21.prod.outlook.com
+ ([fe80::f133:55b5:4633:c485%5]) with mapi id 15.20.3700.012; Wed, 16 Dec 2020
+ 03:54:29 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: static_branch_enable() does not work from a __init function?
+Thread-Topic: static_branch_enable() does not work from a __init function?
+Thread-Index: AdbTW3KiWdYv++9aQjWyNkn3nWo7IA==
+Date:   Wed, 16 Dec 2020 03:54:29 +0000
+Message-ID: <MW4PR21MB1857CC85A6844C89183C93E9BFC59@MW4PR21MB1857.namprd21.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=cad3edbe-6569-47e6-bb9d-60ae53f80dbc;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-12-16T03:24:57Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none
+ header.from=microsoft.com;
+x-originating-ip: [2601:600:a280:7f70:4162:5057:b066:2876]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 3348ac3c-2b72-40ad-c6eb-08d8a1764a48
+x-ms-traffictypediagnostic: MWHPR21MB0639:
+x-microsoft-antispam-prvs: <MWHPR21MB06395EC916A8D3B5C2C9ACFDBFC59@MWHPR21MB0639.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 3EjMyWU2L1RJW96YgT8YjYOBipnvsIi77Rz1zM98skxPX2xRaOf2rgV7nS2w+C+IUhV4BWwaBVWQcQI3/sMfFtA4/ulNdcmGaaENNgixAoPeF5wXx5eIqWFaw7oAeHMC/A26Wl1QjW3AHBB7zY2TfUEGnCmDPLhF6Khf8lvC7gsqhuMN37q95rqwJdsjJbM9g+aJJVr7gUWKRpNKvIw616nCjV1WO1bmUYSYq9qsMWogGa1KkwhWMSgNArreKYl3CSHox2/o7EVseE5qEuaNReiNot2vTThbzsBQ4Rz081pT+6an7Z7aQ6G6KO/89GsgVt03cJLX2C2R+h9zVJ+b6c5rIltN8KttlgpMpGld7gBvijVQWLHbHzqwWIOrmAJ4mNu8sgKgnlKH3H/R3phA+Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR21MB1857.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(396003)(39860400002)(366004)(8676002)(2906002)(8990500004)(82950400001)(5660300002)(82960400001)(4326008)(7696005)(8936002)(186003)(6506007)(10290500003)(66556008)(76116006)(66946007)(66476007)(64756008)(86362001)(33656002)(478600001)(9686003)(52536014)(71200400001)(55016002)(110136005)(316002)(66446008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?p7BQdwWZgLtd8IBsqmqyS7uJZe3VOLQ2tvEqPTPcC9JAhzaGQhMjdc8AlAv8?=
+ =?us-ascii?Q?AMJMjVMLAzv/hgddM6cJzoOtFiC89p+pk6cl6OLtX9U5ktYwHq8z5a/zyuMV?=
+ =?us-ascii?Q?u0BZhJWbqu/1MHFx3t5HynRAFGVjQdKjgpQ+TaJq02MHVLITdLdEzfakRkhp?=
+ =?us-ascii?Q?WrR6vyM8+I3SdFdfdbACwK8L8IuB+4oGyB9Egs1XIx4khHzFFM7h/kFjga69?=
+ =?us-ascii?Q?dzCSc4onIViYsbOiG5unrYMkYswvb8gADsImtL5PbVuWoT2fyxiG0bYJD95M?=
+ =?us-ascii?Q?0+CLFT/uK+2HaMT3/FaiKUpheBX14vIUX+QmTuaVgXgl85QB3W0rTsXzmTsk?=
+ =?us-ascii?Q?x6ImelwwDnbDv73FXbyom8f++1zFWcIulymMsv8JYKJjhLGxVad/BJp7lSj5?=
+ =?us-ascii?Q?y9WyFlKvZWS1fYSf5AHuFSjUqLiR4QaZWdxb2TDHzyUtPzWQbewRdrpkHGYb?=
+ =?us-ascii?Q?iNr7DySy2RnLv2BAdbY4LNRTOG2aZ9VYy/M1CJDoa8vxHZRku0g3AoVbyxXU?=
+ =?us-ascii?Q?YUCroya9eqeQQG8UOB8SNrsaE616cqZWni0508O9VEnKFtaeSzaIFCzeh32J?=
+ =?us-ascii?Q?m0oMCEJqj6Tw9CAMImO6GAJMtKHd4gjxJxlhQkg4AJhH9XpZolWdrOR/HzyZ?=
+ =?us-ascii?Q?xiFI83XBXpa5NH445XhPMjsYWXU/tKpjZCXs4Lgo40RiJPh9UxNEe02Sn/sG?=
+ =?us-ascii?Q?M+4qoxRbrLjlRFpEno7lar6QV/QIL/0voVa3d4i5R+HGqpPmqKlesrIgphac?=
+ =?us-ascii?Q?bHhHnwVg1pg1N0BOiKvTBToM3usG5n+fOlmvlRnu8xvuZV3sWkLFoeN2RL+H?=
+ =?us-ascii?Q?ni7gHIoQg/SCVc1q8BGd4FmVfJrdyZ9B2wJ7CVeEGiem0XgrxWEebamkR1UC?=
+ =?us-ascii?Q?9FEyn25WrlOBYCLrn7oyNx/GanHS+/IH4zRBJPQzVA49JMsXhPDJAhaqVjpf?=
+ =?us-ascii?Q?zaS/4spa4g6pkcOLyZhL+nemTcuzLU/92pVOfsaZQcxf6UjmWP68n1ZO8IDc?=
+ =?us-ascii?Q?OXRgD7j93GUCJOJ0HkqfdWUmPY3RoZsVJdUM2DmghxWq+Ac=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20201213154534.54826-1-songmuchun@bytedance.com>
- <20201213154534.54826-3-songmuchun@bytedance.com> <7cfe44aa-3753-82d9-6630-194f1532e186@oracle.com>
- <e9abb112-7654-6157-6782-9ccb4a9cd87e@oracle.com>
-In-Reply-To: <e9abb112-7654-6157-6782-9ccb4a9cd87e@oracle.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 16 Dec 2020 11:52:50 +0800
-Message-ID: <CAMZfGtU9c3DmZzrGxh2oo-GMjamP5VFLerZf_FCCx7A8KO6NQA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v9 02/11] mm/hugetlb: Introduce a new
- config HUGETLB_PAGE_FREE_VMEMMAP
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR21MB1857.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3348ac3c-2b72-40ad-c6eb-08d8a1764a48
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Dec 2020 03:54:29.6157
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: mlutSdxVVDh7kyesKZDsh2rc7LB2FVoQ+wtM1DOOuVi5LKNKW9sFUvaYo/EpKbmjKIT64eKvYzEMsW3hR413Ug==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR21MB0639
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 11:45 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->
-> On 12/15/20 5:03 PM, Mike Kravetz wrote:
-> > On 12/13/20 7:45 AM, Muchun Song wrote:
-> >> diff --git a/fs/Kconfig b/fs/Kconfig
-> >> index 976e8b9033c4..4c3a9c614983 100644
-> >> --- a/fs/Kconfig
-> >> +++ b/fs/Kconfig
-> >> @@ -245,6 +245,21 @@ config HUGETLBFS
-> >>  config HUGETLB_PAGE
-> >>      def_bool HUGETLBFS
-> >>
-> >> +config HUGETLB_PAGE_FREE_VMEMMAP
-> >> +    def_bool HUGETLB_PAGE
-> >> +    depends on X86_64
-> >> +    depends on SPARSEMEM_VMEMMAP
-> >> +    depends on HAVE_BOOTMEM_INFO_NODE
-> >> +    help
-> >> +      When using HUGETLB_PAGE_FREE_VMEMMAP, the system can save up some
-> >> +      memory from pre-allocated HugeTLB pages when they are not used.
-> >> +      6 pages per HugeTLB page of the pmd level mapping and (PAGE_SIZE - 2)
-> >> +      pages per HugeTLB page of the pud level mapping.
-> >> +
-> >> +      When the pages are going to be used or freed up, the vmemmap array
-> >> +      representing that range needs to be remapped again and the pages
-> >> +      we discarded earlier need to be rellocated again.
-> >
-> > I see the previous discussion with David about wording here.  How about
-> > leaving the functionality description general, and provide a specific
-> > example for x86_64?  As mentioned we can always update when new arch support
-> > is added.  Suggested text?
-> >
-> >       The option HUGETLB_PAGE_FREE_VMEMMAP allows for the freeing of
-> >       some vmemmap pages associated with pre-allocated HugeTLB pages.
-> >       For example, on X86_64 6 vmemmap pages of size 4KB each can be
-> >       saved for each 2MB HugeTLB page.  4094 vmemmap pages of size 4KB
-> >       each can be saved for each 1GB HugeTLB page.
-> >
-> >       When a HugeTLB page is allocated or freed, the vmemmap array
-> >       representing the range associated with the page will need to be
-> >       remapped.  When a page is allocated, vmemmap pages are freed
-> >       after remapping.  When a page is freed, previously discarded
-> >       vmemmap pages must be allocated before before remapping.
->
-> Sorry, I am slowly coming up to speed with discussions when I was away.
->
-> It appears vmemmap is not being mapped with huge pages if the boot option
-> hugetlb_free_vmemmap is on.   Is that correct?
+Hi,
+The below init_module() prints "foo: false". This is strange since
+static_branch_enable() is called before the static_branch_unlikely().
+This strange behavior happens to v5.10 and an old v5.4 kernel.
 
-Right.
+If I remove the "__init" marker from the init_module() function, then
+I get the expected output of "foo: true"! I guess here I'm missing
+something with Static Keys?
 
->
-> If that is correct, we should document the trade off of increased page
-> table pages needed to map vmemmap vs the savings from freeing struct page
-> pages.  If a user/sysadmin only uses a small number of hugetlb pages (as
-> a percentage of system memory) they could end up using more memory with
-> hugetlb_free_vmemmap on as opposed to off.  Perhaps, it should be part of
-> the documentation for hugetlb_free_vmemmap?  If this is true, and people
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/jump_label.h>
 
-Right, it is better to document it around hugetlb_free_vmemmap.
-This should be a part of pathe #8. Thanks.
+static DEFINE_STATIC_KEY_FALSE(enable_foo);
+
+int __init init_module(void)
+{
+        static_branch_enable(&enable_foo);
+
+        if (static_branch_unlikely(&enable_foo))
+                printk("foo: true\n");
+        else
+                printk("foo: false\n");
+
+        return 0;
+}
+
+void cleanup_module(void)
+{
+        static_branch_disable(&enable_foo);
+}
+
+MODULE_LICENSE("GPL");
 
 
-> think this should be documented, I can try to come up with something.
->
-> --
-> Mike Kravetz
+PS, I originally found: in arch/x86/kvm/vmx/vmx.c: vmx_init(), it looks
+like the line "static_branch_enable(&enable_evmcs);" does not take effect
+in a v5.4-based kernel, but does take effect in the v5.10 kernel in the
+same x86-64 virtual machine on Hyper-V, so I made the above test module
+to test static_branch_enable(), and found that static_branch_enable() in
+the test module does not work with both v5.10 and my v5.4 kernel, if the
+__init marker is used.
+
+Thanks,
+-- Dexuan
 
 
-
--- 
-Yours,
-Muchun
