@@ -2,99 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42C032DB84B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 02:14:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C9112DB852
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 02:14:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726053AbgLPBNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 20:13:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53508 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725827AbgLPBNX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 20:13:23 -0500
-Date:   Tue, 15 Dec 2020 17:12:42 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608081163;
-        bh=PNXJnCiJbDnff7lia+DRPKNBg3Kqv5ZuJwUxkXEkup4=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CdaDQBja4CP2DgQPFyJB8GuaXfxgUszMZDVvPx3+pBx3jb3tBIzzzhz6U+1X7FJUV
-         jiVuoyRAmCaKjCoYnxrZcJUeDzJTbxL52ojVEfBqn8SH92hNNqqniQX6xog+oxOUgx
-         YKxmbU7/6Up8vSG3sSfrYikPfinT98941W0Ncxg/dm/EDLkZW/brOCLDyfcGZJ38la
-         E5MRONu2NHWG9rVXpxqSP17MwhBSFO+fWt+go/VTQf8bpRZvHizlQ6GigeNy41l6He
-         PlXCD6UjPXzaketvvvki9lA25AO197BIxh4JnGEJFh8d/5H5G4ZRnLJDYdfxBdyUuF
-         YEWIoZWM2+g1w==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     patchwork-bot+netdevbpf@kernel.org
-Cc:     Sergej Bauer <sbauer@blackbox.su>, andrew@lunn.ch,
-        Markus.Elfring@web.de, thesven73@gmail.com,
-        bryan.whitehead@microchip.com, UNGLinuxDriver@microchip.com,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] lan743x: fix for potential NULL pointer dereference
- with bare card
-Message-ID: <20201215171242.622435e8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <160807555409.8012.8873780215201516945.git-patchwork-notify@kernel.org>
-References: <20201215161252.8448-1-sbauer@blackbox.su>
-        <160807555409.8012.8873780215201516945.git-patchwork-notify@kernel.org>
+        id S1726658AbgLPBOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 20:14:53 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:53447 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726306AbgLPBOx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 20:14:53 -0500
+Received: by mail-il1-f197.google.com with SMTP id q2so18086486ilt.20
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 17:14:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=KqSiQgWhoD3U6R5hjEeNhCbfIfoF5Ak040X4OCRefZg=;
+        b=RfnqvtcnoOXehXrZMBXO9vjpTKC0LuYv91VB+vQox3es1zdAPXgCM0idi2ODErSKjD
+         KUm0hkgWl7d9VIaEJSgZuNXo+29IowRlyI9HlvHcjCjgBed7fJNoDL5pMuRsRtcS9Y6H
+         TuQYyToUtCRsWrI1TyjmK3JpTRrWkMoYorkWHWwdDYyxw0Oeljw0dm5L4K2F/o06+rhD
+         /QM0OKjUMxojv/b/WchhBrWlObORFb9IPprBuS9Y0sPnYOsOA/3a0Rc5K7sO002OaEh4
+         Vqq0B1+Od8KWOpPbtKM6fuhbFsoTlBxOTWiFsOlzCjkn8a/x9yDCXhy2xdPdTwv2PeVx
+         rfaw==
+X-Gm-Message-State: AOAM531pA5PnhK3M/HELg/LSHigc4fYDmd9x0cXugrSr89Jrm8vtPDMJ
+        YCaILR3DIHx3zCuzhDMsB6RZiia+NQDw1QZAHfjxk3TyXnnz
+X-Google-Smtp-Source: ABdhPJxRF4JnudYyVFdlpAzdNt/B5IVfef+TzU8B6YH08NhU0AOnllFroZDBsTTM1pVIHe4xLihNAz1VQMDxFLHqe3WV0FX66gtc
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a5d:8483:: with SMTP id t3mr27239384iom.35.1608081251984;
+ Tue, 15 Dec 2020 17:14:11 -0800 (PST)
+Date:   Tue, 15 Dec 2020 17:14:11 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000cb6db205b68a971c@google.com>
+Subject: WARNING: suspicious RCU usage in modeset_lock
+From:   syzbot <syzbot+972b924c988834e868b2@syzkaller.appspotmail.com>
+To:     b.zolnierkie@samsung.com, daniel.vetter@ffwll.ch,
+        dri-devel@lists.freedesktop.org, geert@linux-m68k.org,
+        gustavoars@kernel.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, natechancellor@gmail.com,
+        peda@axentia.se, penguin-kernel@i-love.sakura.ne.jp,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Dec 2020 23:39:14 +0000 patchwork-bot+netdevbpf@kernel.org
-wrote:
-> Hello:
-> 
-> This patch was applied to bpf/bpf.git (refs/heads/master):
-> 
-> On Tue, 15 Dec 2020 19:12:45 +0300 you wrote:
-> > This is the 4th revision of the patch fix for potential null pointer dereference
-> > with lan743x card.
-> > 
-> > The simpliest way to reproduce: boot with bare lan743x and issue "ethtool ethN"
-> > command where ethN is the interface with lan743x card. Example:
-> > 
-> > $ sudo ethtool eth7
-> > dmesg:
-> > [  103.510336] BUG: kernel NULL pointer dereference, address: 0000000000000340
-> > ...
-> > [  103.510836] RIP: 0010:phy_ethtool_get_wol+0x5/0x30 [libphy]
-> > ...
-> > [  103.511629] Call Trace:
-> > [  103.511666]  lan743x_ethtool_get_wol+0x21/0x40 [lan743x]
-> > [  103.511724]  dev_ethtool+0x1507/0x29d0
-> > [  103.511769]  ? avc_has_extended_perms+0x17f/0x440
-> > [  103.511820]  ? tomoyo_init_request_info+0x84/0x90
-> > [  103.511870]  ? tomoyo_path_number_perm+0x68/0x1e0
-> > [  103.511919]  ? tty_insert_flip_string_fixed_flag+0x82/0xe0
-> > [  103.511973]  ? inet_ioctl+0x187/0x1d0
-> > [  103.512016]  dev_ioctl+0xb5/0x560
-> > [  103.512055]  sock_do_ioctl+0xa0/0x140
-> > [  103.512098]  sock_ioctl+0x2cb/0x3c0
-> > [  103.512139]  __x64_sys_ioctl+0x84/0xc0
-> > [  103.512183]  do_syscall_64+0x33/0x80
-> > [  103.512224]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > [  103.512274] RIP: 0033:0x7f54a9cba427
-> > ...
-> > 
-> > [...]  
-> 
-> Here is the summary with links:
->   - [v4] lan743x: fix for potential NULL pointer dereference with bare card
->     https://git.kernel.org/bpf/bpf/c/e9e13b6adc33
-> 
-> You are awesome, thank you!
-> --
-> Deet-doot-dot, I am a bot.
-> https://korg.docs.kernel.org/patchwork/pwbot.html
-> 
+Hello,
 
-Heh the bot got confused, I think.
+syzbot found the following issue on:
 
-What I meant when I said "let's wait for the merge window" was that
-the patch will not hit upstream until the merge window. It's now in
-Linus's tree. I'll make a submission of stable patches to Greg at the
-end of the week and I'll include this patch.
+HEAD commit:    94801e5c Merge tag 'pinctrl-v5.10-3' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=130558c5500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ee8a1012a5314210
+dashboard link: https://syzkaller.appspot.com/bug?extid=972b924c988834e868b2
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+userspace arch: i386
 
-Thanks!
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+972b924c988834e868b2@syzkaller.appspotmail.com
+
+=============================
+WARNING: suspicious RCU usage
+5.10.0-rc7-syzkaller #0 Not tainted
+-----------------------------
+kernel/sched/core.c:7270 Illegal context switch in RCU-sched read-side critical section!
+
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 2, debug_locks = 0
+7 locks held by syz-executor.1/9232:
+ #0: ffffffff8b328c60 (console_lock){+.+.}-{0:0}, at: do_fb_ioctl+0x2e4/0x690 drivers/video/fbdev/core/fbmem.c:1106
+ #1: ffff888041bd4078 (&fb_info->lock){+.+.}-{3:3}, at: lock_fb_info include/linux/fb.h:636 [inline]
+ #1: ffff888041bd4078 (&fb_info->lock){+.+.}-{3:3}, at: do_fb_ioctl+0x2ee/0x690 drivers/video/fbdev/core/fbmem.c:1107
+ #2: ffff888041adca78 (&helper->lock){+.+.}-{3:3}, at: drm_fb_helper_pan_display+0xce/0x970 drivers/gpu/drm/drm_fb_helper.c:1448
+ #3: ffff8880159f01b8 (&dev->master_mutex){+.+.}-{3:3}, at: drm_master_internal_acquire+0x1d/0x70 drivers/gpu/drm/drm_auth.c:407
+ #4: ffff888041adc898 (&client->modeset_mutex){+.+.}-{3:3}, at: drm_client_modeset_commit_locked+0x44/0x580 drivers/gpu/drm/drm_client_modeset.c:1143
+ #5: ffffc90001c07730 (crtc_ww_class_acquire){+.+.}-{0:0}, at: drm_client_modeset_commit_atomic+0xb7/0x7c0 drivers/gpu/drm/drm_client_modeset.c:981
+ #6: ffff888015986108 (crtc_ww_class_mutex){+.+.}-{3:3}, at: ww_mutex_lock_slow include/linux/ww_mutex.h:287 [inline]
+ #6: ffff888015986108 (crtc_ww_class_mutex){+.+.}-{3:3}, at: modeset_lock+0x31c/0x650 drivers/gpu/drm/drm_modeset_lock.c:260
+
+stack backtrace:
+CPU: 1 PID: 9232 Comm: syz-executor.1 Not tainted 5.10.0-rc7-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ___might_sleep+0x25d/0x2b0 kernel/sched/core.c:7270
+ __mutex_lock_common kernel/locking/mutex.c:935 [inline]
+ __ww_mutex_lock.constprop.0+0xa9/0x2cc0 kernel/locking/mutex.c:1111
+ ww_mutex_lock+0x3d/0x170 kernel/locking/mutex.c:1190
+ modeset_lock+0x392/0x650 drivers/gpu/drm/drm_modeset_lock.c:263
+ drm_modeset_lock drivers/gpu/drm/drm_modeset_lock.c:342 [inline]
+ drm_modeset_lock+0x50/0x90 drivers/gpu/drm/drm_modeset_lock.c:338
+ drm_atomic_get_plane_state+0x19d/0x510 drivers/gpu/drm/drm_atomic.c:481
+ drm_client_modeset_commit_atomic+0x225/0x7c0 drivers/gpu/drm/drm_client_modeset.c:994
+ drm_client_modeset_commit_locked+0x145/0x580 drivers/gpu/drm/drm_client_modeset.c:1145
+ pan_display_atomic drivers/gpu/drm/drm_fb_helper.c:1395 [inline]
+ drm_fb_helper_pan_display+0x28b/0x970 drivers/gpu/drm/drm_fb_helper.c:1455
+ fb_pan_display+0x2f7/0x6c0 drivers/video/fbdev/core/fbmem.c:925
+ fb_set_var+0x57f/0xda0 drivers/video/fbdev/core/fbmem.c:1043
+ do_fb_ioctl+0x2f9/0x690 drivers/video/fbdev/core/fbmem.c:1108
+ fb_compat_ioctl+0x17c/0xaf0 drivers/video/fbdev/core/fbmem.c:1315
+ __do_compat_sys_ioctl+0x1d3/0x230 fs/ioctl.c:842
+ do_syscall_32_irqs_on arch/x86/entry/common.c:78 [inline]
+ __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:137
+ do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:160
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7fd8549
+Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
+RSP: 002b:00000000f55d20bc EFLAGS: 00000296 ORIG_RAX: 0000000000000036
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000004601
+RDX: 0000000020000240 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+detected fb_set_par error, error code: -16
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
