@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8ED92DC135
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:26:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66CCB2DC13A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:28:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726080AbgLPN0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 08:26:34 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9625 "EHLO
+        id S1726203AbgLPN1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 08:27:18 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9219 "EHLO
         szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726148AbgLPN0e (ORCPT
+        with ESMTP id S1726132AbgLPN1S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 08:26:34 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cwwpx5QfMz15ZnH;
-        Wed, 16 Dec 2020 21:25:13 +0800 (CST)
+        Wed, 16 Dec 2020 08:27:18 -0500
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CwwqZ53x5zkqKJ;
+        Wed, 16 Dec 2020 21:25:46 +0800 (CST)
 Received: from ubuntu.network (10.175.138.68) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 16 Dec 2020 21:25:43 +0800
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 16 Dec 2020 21:26:25 +0800
 From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <minyard@acm.org>, <openipmi-developer@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>
+To:     <linus.walleij@linaro.org>, <bgolaszewski@baylibre.com>,
+        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
 CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] char: ipmi: convert comma to semicolon
-Date:   Wed, 16 Dec 2020 21:26:15 +0800
-Message-ID: <20201216132615.15529-1-zhengyongjun3@huawei.com>
+Subject: [PATCH -next] gpio: convert comma to semicolon
+Date:   Wed, 16 Dec 2020 21:26:57 +0800
+Message-ID: <20201216132657.15582-1-zhengyongjun3@huawei.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -39,26 +39,29 @@ Replace a comma between expression statements by a semicolon.
 
 Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/char/ipmi/bt-bmc.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpio/gpio-sl28cpld.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/char/ipmi/bt-bmc.c b/drivers/char/ipmi/bt-bmc.c
-index a395e2e70dc5..6e3d247b55d1 100644
---- a/drivers/char/ipmi/bt-bmc.c
-+++ b/drivers/char/ipmi/bt-bmc.c
-@@ -462,9 +462,9 @@ static int bt_bmc_probe(struct platform_device *pdev)
- 	mutex_init(&bt_bmc->mutex);
- 	init_waitqueue_head(&bt_bmc->queue);
+diff --git a/drivers/gpio/gpio-sl28cpld.c b/drivers/gpio/gpio-sl28cpld.c
+index 889b8f5622c2..52404736ac86 100644
+--- a/drivers/gpio/gpio-sl28cpld.c
++++ b/drivers/gpio/gpio-sl28cpld.c
+@@ -65,13 +65,13 @@ static int sl28cpld_gpio_irq_init(struct platform_device *pdev,
+ 	if (!irq_chip)
+ 		return -ENOMEM;
  
--	bt_bmc->miscdev.minor	= MISC_DYNAMIC_MINOR,
--	bt_bmc->miscdev.name	= DEVICE_NAME,
--	bt_bmc->miscdev.fops	= &bt_bmc_fops,
-+	bt_bmc->miscdev.minor	= MISC_DYNAMIC_MINOR;
-+	bt_bmc->miscdev.name	= DEVICE_NAME;
-+	bt_bmc->miscdev.fops	= &bt_bmc_fops;
- 	bt_bmc->miscdev.parent = dev;
- 	rc = misc_register(&bt_bmc->miscdev);
- 	if (rc) {
+-	irq_chip->name = "sl28cpld-gpio-irq",
++	irq_chip->name = "sl28cpld-gpio-irq";
+ 	irq_chip->irqs = sl28cpld_gpio_irqs;
+ 	irq_chip->num_irqs = ARRAY_SIZE(sl28cpld_gpio_irqs);
+ 	irq_chip->num_regs = 1;
+ 	irq_chip->status_base = base + GPIO_REG_IP;
+ 	irq_chip->mask_base = base + GPIO_REG_IE;
+-	irq_chip->mask_invert = true,
++	irq_chip->mask_invert = true;
+ 	irq_chip->ack_base = base + GPIO_REG_IP;
+ 
+ 	ret = devm_regmap_add_irq_chip_fwnode(dev, dev_fwnode(dev),
 -- 
 2.22.0
 
