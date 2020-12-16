@@ -2,98 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50ACE2DC7A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 21:17:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E102DC7A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 21:17:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728809AbgLPURU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 15:17:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727435AbgLPURT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 15:17:19 -0500
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4966C0617A6;
-        Wed, 16 Dec 2020 12:16:38 -0800 (PST)
-Received: by mail-oi1-x22a.google.com with SMTP id 9so21992657oiq.3;
-        Wed, 16 Dec 2020 12:16:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=8hhKgEMfi2vfO+dxs0RWimNTAfYCwpDzMcSrcMDjMJQ=;
-        b=vSoWwTahrDjLBCS8tUkmb5burHL4qSghHNtQF1M0iMKTLNkI2sb+TIBJT+eAik+sOz
-         gHx8n2hIH/hjwWs1k+IiuEiE8S2USF6+o9VflXevzldR25Xi+W+0r6crVG6TeJhjpdIX
-         EZp/pWuu+3Zaj6pMzqL10pE1/DUujYc4EsTWHaaawRyrUZOgD28t2PfGYNCSdA8AN/Oh
-         cKZZ5aqt/nMBTi0pzCE2r7uFz9Cw5W9jOJmDmx+lG1RKEgpi3zsVi/BT6feIS36pPHvP
-         zkGrlxkLE9vT0SqJgEDr4nTNz+zHhdqrPzAHoDslUHGSt3YT1uN/No584UJfzzZ1RxMX
-         DwiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8hhKgEMfi2vfO+dxs0RWimNTAfYCwpDzMcSrcMDjMJQ=;
-        b=L8Q4m7zgMCLp/Y+Rl5Xuw0AQuaaS3bTQ4HfgX+UDJdmf+A1Nw7hkaRs6JbGwKUEEJ+
-         rtgxIuQBqSlLRG7kjgWtMpKYoMgtkN3q32+RzbmnXtGY9qxTZorJ8glTwYBlgsxRvGxp
-         U8nDyShIGQduFxJvNvIpMO0QrQo9NCJ+ztOf1OpbnbBSvCcrFxS/FUXswO7Qmejh3hux
-         SDex+EG8DkPtPpWwhFb39Nt34Bbq/rhdP/8FF7V97NgERTytmjSB3VElxnC6DFUf4Wxp
-         VmB5QyMPvjLz5p6it3r4iHqkUYGfShIPdBzFV2CR0mAQhpBwTc/NTPhUCHAy8t3tgFVz
-         qfJQ==
-X-Gm-Message-State: AOAM530ngC7YzUKb0g4QzzGNuQnhsDbM+38Uifbu2wTQldbSTeZ/1W7b
-        UFuoi8evhzwQ37sn0LkIivxdWNKNEHs=
-X-Google-Smtp-Source: ABdhPJx6z0Cs44O4U5z7AXt0W9f8JDuw5m1gCBUo2jIU0d+Z7EB9GOpD8lm8naczamIQ6CfAoqM6+w==
-X-Received: by 2002:a05:6808:3ac:: with SMTP id n12mr2952915oie.142.1608149798188;
-        Wed, 16 Dec 2020 12:16:38 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id k63sm634145oia.14.2020.12.16.12.16.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 16 Dec 2020 12:16:37 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 16 Dec 2020 12:16:36 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     wim@linux-watchdog.org, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] watchdog: convert comma to semicolon
-Message-ID: <20201216201636.GA68047@roeck-us.net>
-References: <20201216132733.15635-1-zhengyongjun3@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201216132733.15635-1-zhengyongjun3@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1728739AbgLPURR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 15:17:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37066 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727440AbgLPURR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 15:17:17 -0500
+Subject: Re: [GIT PULL] arch/microblaze patches for 5.11-rc1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608149796;
+        bh=kiHk/KDlV8iqTBeIP26YgDcvrsfzhKcYL0m7arQ6yCo=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=NiJyDGGoxQaSLNDrtbDaOJPExtm2qDa+STBvy5ng9sBHwqae+Q0ktMnnorNgcPObU
+         q1B64uPTiRRnEtncOaRUMPT4ELRQjG1ajNovElGFCb4AoQ7HG50GYWj+fz5aLJOKND
+         VZqOpMIi1tmKHvi5vRyb95I9bEsv4s8AzevUrsqPYIzDsIZI70xW5YLeYiNIYJ+7ub
+         1OATsyi9osI4oh1XbReQu2mjY+1tS5kYQPpb3tRyuQ9gtqxfa7YS04lRoIrENw5KhS
+         91z8SwXLbcOaokKdViukDHDwWLU+9xfaoV6NNpavG3tpJa1Gkz5mfNVoWMqUEhKW4w
+         o4xph7pmEp+JA==
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <e14ec382-aaa4-b7d4-3134-1d79bcd1e28f@monstr.eu>
+References: <e14ec382-aaa4-b7d4-3134-1d79bcd1e28f@monstr.eu>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <e14ec382-aaa4-b7d4-3134-1d79bcd1e28f@monstr.eu>
+X-PR-Tracked-Remote: git://git.monstr.eu/linux-2.6-microblaze.git tags/microblaze-v5.11
+X-PR-Tracked-Commit-Id: 05cdf457477d6603b207d91873f0a3d4c7f8c1cd
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 66fc6a6254c7a138aef7806bd933c218e1aefcfc
+Message-Id: <160814979663.31129.14370093842462210521.pr-tracker-bot@kernel.org>
+Date:   Wed, 16 Dec 2020 20:16:36 +0000
+To:     Michal Simek <monstr@monstr.eu>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 09:27:33PM +0800, Zheng Yongjun wrote:
-> Replace a comma between expression statements by a semicolon.
-> 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+The pull request you sent on Wed, 16 Dec 2020 11:21:47 +0100:
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> git://git.monstr.eu/linux-2.6-microblaze.git tags/microblaze-v5.11
 
-Guenter
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/66fc6a6254c7a138aef7806bd933c218e1aefcfc
 
-> ---
->  drivers/watchdog/mpc8xxx_wdt.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/watchdog/mpc8xxx_wdt.c b/drivers/watchdog/mpc8xxx_wdt.c
-> index 3fc457bc16db..2f7ded32e878 100644
-> --- a/drivers/watchdog/mpc8xxx_wdt.c
-> +++ b/drivers/watchdog/mpc8xxx_wdt.c
-> @@ -175,8 +175,8 @@ static int mpc8xxx_wdt_probe(struct platform_device *ofdev)
->  
->  	spin_lock_init(&ddata->lock);
->  
-> -	ddata->wdd.info = &mpc8xxx_wdt_info,
-> -	ddata->wdd.ops = &mpc8xxx_wdt_ops,
-> +	ddata->wdd.info = &mpc8xxx_wdt_info;
-> +	ddata->wdd.ops = &mpc8xxx_wdt_ops;
->  
->  	ddata->wdd.timeout = WATCHDOG_TIMEOUT;
->  	watchdog_init_timeout(&ddata->wdd, timeout, dev);
-> -- 
-> 2.22.0
-> 
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
