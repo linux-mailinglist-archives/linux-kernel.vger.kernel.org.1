@@ -2,130 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93EC42DC307
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:25:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5644C2DC30E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:26:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726371AbgLPPYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 10:24:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35503 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726167AbgLPPYy (ORCPT
+        id S1726394AbgLPPZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 10:25:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726167AbgLPPZZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 10:24:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608132208;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y8bGZBwnTpNbARrYz124sdWvgtnobEQBNsq3VmZPC0s=;
-        b=djjdhExT6UPd2CrmYaJabCq35p3f38R7cjvsO4+lFj0u4ecOtHIfERmUX2s7uqNtML03n+
-        GwmSsVkXVKd9/3yHwbGBmkmme/CFXk7j3qTYeCgj2abRFwSgLASNbQNt2U37eBfkgz1644
-        t/Maryxh1MJ2gqkEayyGl0OhxgdCHfc=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-375-dlaED02ePjq3JzjP-otBeg-1; Wed, 16 Dec 2020 10:23:26 -0500
-X-MC-Unique: dlaED02ePjq3JzjP-otBeg-1
-Received: by mail-ej1-f69.google.com with SMTP id q11so7491944ejd.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 07:23:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Y8bGZBwnTpNbARrYz124sdWvgtnobEQBNsq3VmZPC0s=;
-        b=T2Rg0oD9EyxheHWmOwU0Dsq69df7CqNZ3eEYMTYIViKNP2mDaHhO1VdNbq+BFkINTk
-         NPAkvaf6/oMReOOaQiaSDK8deXDzn4Aw5gpHL0KMVcJ9el5Qll7jzcgkxKiTFgYkpuhz
-         UZpTrSMYyL+UUVbnMT+DnViWoQzdpFWdgV8jRzb6YnzwDOVPA0M4O/Xc3J39AAxfR7wy
-         i7Je9vluCT+GgoaFTWFqiXxVg5V3HVnOpTgjKXiLYeNPAaOkc+qmqViBjriRPJjIVnep
-         i9EmkRiBbFxlRKXlUbMOVRxOylS7TvtjTOpr7DzBA3xmdGGyOFhbSEoFWFfYOMb8MMlz
-         yBZA==
-X-Gm-Message-State: AOAM530NCuSmNJ2VEPJFZLcEa1tLPcS2N/XHH3pvBTrbdqJlok5a4zD/
-        +KF9eItduv41t65joSZktOCz2wLgxow2lhMatbNhH3tIt/ftJy2KIQwppRKwvMctdvnLvVa13sq
-        fL46KwI67MJm1tIBEOLGKwjTG
-X-Received: by 2002:a17:906:7f11:: with SMTP id d17mr31213662ejr.534.1608132205034;
-        Wed, 16 Dec 2020 07:23:25 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyq9p3k0wcFSTVZbYtjn8uIyhUmE2cpCRqBSIw40bvFGpNXL3zgfsmLt+0rXpaWivsMCtZ8RA==
-X-Received: by 2002:a17:906:7f11:: with SMTP id d17mr31213642ejr.534.1608132204821;
-        Wed, 16 Dec 2020 07:23:24 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id zn5sm1641200ejb.111.2020.12.16.07.23.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Dec 2020 07:23:23 -0800 (PST)
-Subject: Re: [PATCH v2] KVM: SVM: use vmsave/vmload for saving/restoring
- additional host state
-To:     Michael Roth <michael.roth@amd.com>,
-        Andy Lutomirski <luto@amacapital.net>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
-        Andy Lutomirski <luto@kernel.org>
-References: <20201214220213.np7ytcxmm6xcyllm@amd.com>
- <98F09A9A-A768-4B01-A1FA-5EE681146BC5@amacapital.net>
- <20201215181747.jhozec5gpa4ud5qt@amd.com>
- <20201216151203.utpaitooaer7mdfa@amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f22e2410-d4e3-f5fd-8e40-4225a83851c0@redhat.com>
-Date:   Wed, 16 Dec 2020 16:23:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 16 Dec 2020 10:25:25 -0500
+Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45D02C061794;
+        Wed, 16 Dec 2020 07:24:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
+         s=20161220; h=Content-Transfer-Encoding:Content-Type:Message-ID:References:
+        In-Reply-To:Subject:Cc:To:From:Date:MIME-Version:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=vmqbyA8EPHg3fkGc3cFk+tYUFuWETWmEPKbASEwl98M=; b=dpq+wRoEBlDe/HuUCkI1/JE9v4
+        frdZRNgEtT95AObxVEmFcYsUgtgT4GTh5VeT5kjzhtwkL1o3D/nwZ+HkdiPzGinLXVEeJAPV9xDy0
+        X0yQTvIqcNVjahufvZbwWs9j9avf8XWTUuYAQ0nyK8SgKzaV0nLqGr4v5TH48l1UN9U76k7C6DsEI
+        PnrrK9ZDjEu2IF8mAgqPC6KfJF41OsYp1ZCp5a4DR3gXPbRBKc7EhyNTqZPYFtzaEUgJxw2uQ5Wr1
+        vcnD0PB3XEABhLnhoTKDY5YkOD44iL39L98w6QrghILxqzbM26qz/kioWdW8xUySKLSx1C/r1M69S
+        wGXA7EqQ==;
+Received: from webng-gw.kapsi.fi ([91.232.154.200] helo=roundcube.kapsi.fi)
+        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <jyri.sarha@iki.fi>)
+        id 1kpYfO-0004eY-98; Wed, 16 Dec 2020 17:24:38 +0200
 MIME-Version: 1.0
-In-Reply-To: <20201216151203.utpaitooaer7mdfa@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Date:   Wed, 16 Dec 2020 17:24:35 +0200
+From:   Jyri Sarha <jyri.sarha@iki.fi>
+To:     Tomi Valkeinen <tomi.valkeinen@ti.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, jyri.sarha@iki.fi, tomba@kernel.org,
+        Sekhar Nori <nsekhar@ti.com>,
+        Nikhil Devshatwar <nikhil.nd@ti.com>
+Subject: Re: [PATCH] MAINTAINERS: Update addresses for TI display drivers
+In-Reply-To: <20201216075917.17481-1-tomi.valkeinen@ti.com>
+References: <20201216075917.17481-1-tomi.valkeinen@ti.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <65682d92313a1ceec15969ca97ecf451@iki.fi>
+X-Sender: jyri.sarha@iki.fi
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 91.232.154.200
+X-SA-Exim-Mail-From: jyri.sarha@iki.fi
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/12/20 16:12, Michael Roth wrote:
-> It looks like it does save us ~20-30 cycles vs. vmload, but maybe not
-> enough to justify the added complexity. Additionally, since we still
-> need to call vmload when we exit to userspace, it ends up being a bit
-> slower for this particular workload at least. So for now I'll plan on
-> sticking to vmload'ing after vmexit and moving that to the asm code
-> if there are no objections.
-
-Yeah, agreed.  BTW you can use "./x86/run x86/vmexit.flat" from 
-kvm-unit-tests to check the numbers for a wide range of vmexit paths.
-
-Paolo
-
-> current v2 patch, sample 1
->    ioctl entry: 1204722748832
->    pre-run:     1204722749408 ( +576)
->    post-run:    1204722750784 (+1376)
->    ioctl exit:  1204722751360 ( +576)
->    total cycles:         2528
+On 2020-12-16 9:59, Tomi Valkeinen wrote:
+> Update the maintainer email addresses for TI display drivers.
 > 
-> current v2 patch, sample 2
->    ioctl entry: 1204722754784
->    pre-vmrun:   1204722755360 ( +576)
->    post-vmrun:  1204722756720 (+1360)
->    ioctl exit:  1204722757312 ( +592)
->    total cycles          2528
-> 
-> wrgsbase, sample 1
->    ioctl entry: 1346624880336
->    pre-vmrun:   1346624880912 ( +576)
->    post-vmrun:  1346624882256 (+1344)
->    ioctl exit:  1346624882912 ( +656)
->    total cycles          2576
-> 
-> wrgsbase, sample 2
->    ioctl entry: 1346624886272
->    pre-vmrun:   1346624886832 ( +560)
->    post-vmrun:  1346624888176 (+1344)
->    ioctl exit:  1346624888816 ( +640)
->    total cycles:         2544
-> 
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
 
+Acked-by: Jyri Sarha <jyri.sarha@iki.fi>
+
+> ---
+>  MAINTAINERS | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 281de213ef47..c21471497a18 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -5932,8 +5932,8 @@
+> F:	Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml
+>  F:	drivers/gpu/drm/stm
+> 
+>  DRM DRIVERS FOR TI KEYSTONE
+> -M:	Jyri Sarha <jsarha@ti.com>
+> -M:	Tomi Valkeinen <tomi.valkeinen@ti.com>
+> +M:	Jyri Sarha <jyri.sarha@iki.fi>
+> +M:	Tomi Valkeinen <tomba@kernel.org>
+>  L:	dri-devel@lists.freedesktop.org
+>  S:	Maintained
+>  T:	git git://anongit.freedesktop.org/drm/drm-misc
+> @@ -5943,15 +5943,15 @@
+> F:	Documentation/devicetree/bindings/display/ti/ti,k2g-dss.yaml
+>  F:	drivers/gpu/drm/tidss/
+> 
+>  DRM DRIVERS FOR TI LCDC
+> -M:	Jyri Sarha <jsarha@ti.com>
+> -R:	Tomi Valkeinen <tomi.valkeinen@ti.com>
+> +M:	Jyri Sarha <jyri.sarha@iki.fi>
+> +R:	Tomi Valkeinen <tomba@kernel.org>
+>  L:	dri-devel@lists.freedesktop.org
+>  S:	Maintained
+>  F:	Documentation/devicetree/bindings/display/tilcdc/
+>  F:	drivers/gpu/drm/tilcdc/
+> 
+>  DRM DRIVERS FOR TI OMAP
+> -M:	Tomi Valkeinen <tomi.valkeinen@ti.com>
+> +M:	Tomi Valkeinen <tomba@kernel.org>
+>  L:	dri-devel@lists.freedesktop.org
+>  S:	Maintained
+>  F:	Documentation/devicetree/bindings/display/ti/
