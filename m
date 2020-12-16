@@ -2,162 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 066022DC1BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:59:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAA7E2DC1C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 15:00:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726336AbgLPN6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 08:58:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726096AbgLPN6D (ORCPT
+        id S1726334AbgLPN7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 08:59:48 -0500
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:45628 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726242AbgLPN7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 08:58:03 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E91EC06179C
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 05:57:23 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id 11so16638652pfu.4
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 05:57:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4NFYln1tQq7qRd53FFec7AJR736UPrWCWegNdBpKreM=;
-        b=h3itCcTAanIF02P8vHFCLTU7a+J8XQTdKKylTJSMbH4TlDhD8tvSXYLMx83aIV/gP1
-         GWlqP0rvuhNzRIchF1C7iCNIGioJFOboQPbV0CSxNE1iUav1kWAAaM7xxROFEfpOuguU
-         Gn/EQecbr9eUQfaWVvxyVHGUyzBvGuJTg6r1/smVgh3aEbpOLG7Imbzp/CUDubL92Qll
-         0O72vzma8nznU7W1+rVOpzo5Npi+Fj7z6EZpDPCDHtTsFCJxNktc5MWvXUtn70il/iHh
-         XQ2ZSAG/7Sh2jWE6RfJp3W+JPbJLklo/172lKkxasBMOHXLEee2UKQt8wIDkg2Fo2k8A
-         0fdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4NFYln1tQq7qRd53FFec7AJR736UPrWCWegNdBpKreM=;
-        b=HHzo8FIe4x3SNY3MXKBVHkX1YZRDKJgtmya9hvWUSiWQcL/gtcGjeb8YzDjIaJUPci
-         Ja55sM+QTlcqZNfOYSCd73Lgswu2yCIejKlGzsnH72tYh2KN7wedRoye8AYm0FEKANf+
-         GklSiAT5Z6nTozGU69KRemFCk6BKELp2j+0a0qClUDyWjazJzdaEs7HbCh17jLjaYd4N
-         fh4e/0otXp6RwT78F/UDdKZbTgTBNZ47mwQnpLN+LrulxasZibP62Tm/vrlQ42ma4ExT
-         fmpT+4ZZkBEHFbU1ziMSROXIHvf6pXdsHinB5IhqKlUwvaOzuBUxFQPQUncCGpNhuCfL
-         sQiA==
-X-Gm-Message-State: AOAM531Fra19aLTQjXLjcrzk4+HI9BzmZxSd1Jg+hYbBUDo7ULMxXnz0
-        aEQfHW+xmSu+QJTciNTNhp1r9jG+S3yqliWJlQqMRw==
-X-Google-Smtp-Source: ABdhPJzrI2SmuZDGD4lFuVbK3J5ap+2Z3rXF7FUlRnyx4P+kAVGPOBalOHu8fTh7tWhC5GwG9+DhfeSUOzynzWLTE4w=
-X-Received: by 2002:aa7:8701:0:b029:19e:561:d476 with SMTP id
- b1-20020aa787010000b029019e0561d476mr1724030pfo.2.1608127043137; Wed, 16 Dec
- 2020 05:57:23 -0800 (PST)
-MIME-Version: 1.0
-References: <20201213154534.54826-1-songmuchun@bytedance.com>
- <20201213154534.54826-10-songmuchun@bytedance.com> <20201216134354.GD29394@linux>
-In-Reply-To: <20201216134354.GD29394@linux>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 16 Dec 2020 21:56:47 +0800
-Message-ID: <CAMZfGtV2bYKPhyeR_pbckA6svs3qWpzmnhoeYkn=U1hw4Nwatg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v9 09/11] mm/hugetlb: Introduce
- nr_free_vmemmap_pages in the struct hstate
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 16 Dec 2020 08:59:48 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R981e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=teawaterz@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0UIqAOne_1608127134;
+Received: from localhost(mailfrom:teawaterz@linux.alibaba.com fp:SMTPD_---0UIqAOne_1608127134)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 16 Dec 2020 21:59:00 +0800
+From:   Hui Zhu <teawater@gmail.com>
+To:     wufengguang@huawei.com, linux-kernel@vger.kernel.org
+Cc:     Hui Zhu <teawaterz@linux.alibaba.com>
+Subject: [PATCH] usemem: Add option init-time
+Date:   Wed, 16 Dec 2020 21:58:45 +0800
+Message-Id: <20201216135845.20327-1-teawater@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 9:44 PM Oscar Salvador <osalvador@suse.de> wrote:
->
-> On Sun, Dec 13, 2020 at 11:45:32PM +0800, Muchun Song wrote:
-> > All the infrastructure is ready, so we introduce nr_free_vmemmap_pages
-> > field in the hstate to indicate how many vmemmap pages associated with
-> > a HugeTLB page that we can free to buddy allocator. And initialize it
-> "can be freed to buddy allocator"
->
-> > in the hugetlb_vmemmap_init(). This patch is actual enablement of the
-> > feature.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
->
-> With below nits addressed you can add:
->
-> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+From: Hui Zhu <teawaterz@linux.alibaba.com>
 
-Thanks.
+This commit add a new option init-time to remove the initialization time
+from the run time and show the initialization time.
 
->
-> >  static int __init early_hugetlb_free_vmemmap_param(char *buf)
-> >  {
-> > +     /* We cannot optimize if a "struct page" crosses page boundaries. */
-> > +     if (!is_power_of_2(sizeof(struct page)))
-> > +             return 0;
-> > +
->
-> I wonder if we should report a warning in case someone wants to enable this
-> feature and stuct page size it not power of 2.
-> In case someone wonders why it does not work for him/her.
->
-> > +void __init hugetlb_vmemmap_init(struct hstate *h)
-> > +{
-> > +     unsigned int nr_pages = pages_per_huge_page(h);
-> > +     unsigned int vmemmap_pages;
-> > +
-> > +     if (!hugetlb_free_vmemmap_enabled)
-> > +             return;
-> > +
-> > +     vmemmap_pages = (nr_pages * sizeof(struct page)) >> PAGE_SHIFT;
-> > +     /*
-> > +      * The head page and the first tail page are not to be freed to buddy
-> > +      * system, the others page will map to the first tail page. So there
-> > +      * are the remaining pages that can be freed.
-> "the other pages will map to the first tail page, so they can be freed."
-> > +      *
-> > +      * Could RESERVE_VMEMMAP_NR be greater than @vmemmap_pages? It is true
-> > +      * on some architectures (e.g. aarch64). See Documentation/arm64/
-> > +      * hugetlbpage.rst for more details.
-> > +      */
-> > +     if (likely(vmemmap_pages > RESERVE_VMEMMAP_NR))
-> > +             h->nr_free_vmemmap_pages = vmemmap_pages - RESERVE_VMEMMAP_NR;
-> > +
-> > +     pr_info("can free %d vmemmap pages for %s\n", h->nr_free_vmemmap_pages,
-> > +             h->name);
->
-> Maybe specify this is hugetlb code:
->
-> pr_info("%s: blabla", __func__, ...)
-> or
-> pr_info("hugetlb: blalala", ...);
->
-> although I am not sure whether we need that at all, or maybe just use
-> pr_debug().
+Signed-off-by: Hui Zhu <teawaterz@linux.alibaba.com>
+---
+ usemem.c | 29 +++++++++++++++++++++++++++--
+ 1 file changed, 27 insertions(+), 2 deletions(-)
 
-The pr_info can tell the user whether the feature is enabled. From this
-point of view, it makes sense. Right?
-
-Thanks.
-
->
-> --
-> Oscar Salvador
-> SUSE L3
-
-
-
+diff --git a/usemem.c b/usemem.c
+index 823647e..6d1d575 100644
+--- a/usemem.c
++++ b/usemem.c
+@@ -96,6 +96,7 @@ int opt_bind_interval = 0;
+ unsigned long opt_delay = 0;
+ int opt_read_again = 0;
+ int opt_punch_holes = 0;
++int opt_init_time = 0;
+ int nr_task;
+ int nr_thread;
+ int nr_cpu;
+@@ -155,6 +156,7 @@ void usage(int ok)
+ 	"    -U|--hugetlb        allocate hugetlbfs page\n"
+ 	"    -Z|--read-again     read memory again after access the memory\n"
+ 	"    --punch-holes       free every other page after allocation\n"
++	"    --init-time         remove the initialization time from the run time and show the initialization time\n"
+ 	"    -h|--help           show this message\n"
+ 	,		ourname);
+ 
+@@ -193,7 +195,8 @@ static const struct option opts[] = {
+ 	{ "delay"	, 1, NULL, 'e' },
+ 	{ "hugetlb"	, 0, NULL, 'U' },
+ 	{ "read-again"	, 0, NULL, 'Z' },
+-	{ "punch-holes" , 0, NULL,   0 },
++	{ "punch-holes"	, 0, NULL,   0 },
++	{ "init-time"	, 0, NULL,   0 },
+ 	{ "help"	, 0, NULL, 'h' },
+ 	{ NULL		, 0, NULL, 0 }
+ };
+@@ -945,6 +948,8 @@ int main(int argc, char *argv[])
+ 		case 0:
+ 			if (strcmp(opts[opt_index].name, "punch-holes") == 0) {
+ 				opt_punch_holes = 1;
++			} else if (strcmp(opts[opt_index].name, "init-time") == 0) { 
++				opt_init_time = 1;
+ 			} else
+ 				usage(1);
+ 			break;
+@@ -1128,7 +1133,7 @@ int main(int argc, char *argv[])
+ 	if (optind != argc - 1)
+ 		usage(0);
+ 
+-	if (!opt_write_signal_read)
++	if (!opt_write_signal_read || opt_init_time)
+ 		gettimeofday(&start_time, NULL);
+ 
+ 	opt_bytes = memparse(argv[optind], NULL);
+@@ -1263,5 +1268,25 @@ int main(int argc, char *argv[])
+ 	if (!nr_task)
+ 		nr_task = 1;
+ 
++	if (opt_init_time) {
++		struct timeval stop;
++		char buf[1024];
++		size_t len;
++		unsigned long delta_us;
++
++		gettimeofday(&stop, NULL);
++		delta_us = (stop.tv_sec - start_time.tv_sec) * 1000000 +
++			(stop.tv_usec - start_time.tv_usec);
++		len = snprintf(buf, sizeof(buf),
++			"the initialization time is %lu secs %lu usecs\n",
++			delta_us / 1000000, delta_us % 1000000);
++		fflush(stdout);
++		if (write(1, buf, len) != len)
++			fprintf(stderr, "WARNING: statistics output may be incomplete.\n");
++
++		if (!opt_write_signal_read)
++			gettimeofday(&start_time, NULL);
++	}
++
+ 	return do_tasks();
+ }
 -- 
-Yours,
-Muchun
+2.17.1
+
