@@ -2,175 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B92872DBEC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 11:37:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CA132DBECC
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 11:39:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726159AbgLPKgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 05:36:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725820AbgLPKgg (ORCPT
+        id S1726290AbgLPKhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 05:37:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28890 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726278AbgLPKhh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 05:36:36 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B61AEC061794
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 02:35:55 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id b73so24234277edf.13
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 02:35:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eY8G+T0bh4LN6y+cxgn4OGYQRTzOO5yifrdrjlzP4xo=;
-        b=uevDLfBCO9sybtFyuI9g0Jolsd9EIBafOCpuddeg/PnCFSM0EIJre/eAALMhnVHa1v
-         83YoKSEg+yR8N+zEKwZfM7aMKPgHaCtkF/tcxOzNRi5oANZuwiXZpP3j13oNGY09WA5v
-         yXWleMUI961UX04vP2i+JyTBwDg3gmTwFBaJG21MyjvPIvS0q42WPOr9DxCrikyW+maS
-         mLTgJuAGMEVcbKP4H62TiepZhlR8xOao/xrd8/bwY3yyBlt1asvDICr7SDTW2gcOQTnG
-         8YPueB0fePMYSHsf+E2QxDnkCb5EsA562nE6n44yZbys+7ZFEl/PaVizHAPgH7MdhjAV
-         a70w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eY8G+T0bh4LN6y+cxgn4OGYQRTzOO5yifrdrjlzP4xo=;
-        b=G6WgWVRkFOQ4EPi7oBYskkEqby7UGiRfIrCm3ybP0XmSGjQGJq/OCd29MXxpTiLn1g
-         ue6+KH/8x0OYCRNf7XbR6JhDMChKAARheaIkzz9gJTVTlB1dl8Knjo05FIsdkhbpbVt+
-         tmNCB0eTJX1kcYCeVpiMm6/dYEsrZSWwipH1kSuLscXJjJmRBAW1W7G+xA3DPPMcCh8i
-         MPEEku2uvBHAeag3cSKkYRjnU4xMEYxPn9SpLJP31M7QzFQgKBRCHG6v/GpNdLR+n5RQ
-         MEOLy/3tfCfUYUDcN+HHI7Xa241kx7v3ggPbI1ZI6ppKCPWznUxZ3E/k77SApwuKKqKD
-         CFzw==
-X-Gm-Message-State: AOAM531iJGdWAhEg9U+rI3yxZBzYd6M8zeP8rpLPhl6R/sln1T+4QkTu
-        TbcXifQuU23bnbGbcuHEJxu2tEMdR9P+6b6K6w8UfQ==
-X-Google-Smtp-Source: ABdhPJyahnUh0rw5wbWB1tMgwq0uvYik/i1xvch+qmo0s2+lLe+wAf2QZmn9/oHa2jA6RYanoM46HmiqgQq+MjTAhu8=
-X-Received: by 2002:aa7:cc15:: with SMTP id q21mr29018379edt.213.1608114954502;
- Wed, 16 Dec 2020 02:35:54 -0800 (PST)
+        Wed, 16 Dec 2020 05:37:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608114971;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=t9CKeWnWAx3u5eiNFnwtMWhwXN3PXTOPoJxw+acCycA=;
+        b=D7vAADOETkmzX7MpmZt4RyiXhLVq49rfKFzzElh5ICu4C2qf/jNWwROPhR/Yai/A/6Spru
+        /hLARqnbA7DEbokqBBUUDKNLg5fETqMqHvzZzKzrMIZNM24l7wC+LK/9wDboowln9ATZ7s
+        VVDmEiCY2z/zcehJeeqFL0n4N1kI6Dw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-508-njN3WV6WMg-q2N8opfkSmQ-1; Wed, 16 Dec 2020 05:36:06 -0500
+X-MC-Unique: njN3WV6WMg-q2N8opfkSmQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 83CB58030AC;
+        Wed, 16 Dec 2020 10:36:03 +0000 (UTC)
+Received: from [10.36.112.243] (ovpn-112-243.ams2.redhat.com [10.36.112.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7449860C43;
+        Wed, 16 Dec 2020 10:35:55 +0000 (UTC)
+Subject: Re: [RFC PATCH v1 3/4] KVM: arm64: GICv4.1: Restore VLPI's pending
+ state to physical side
+To:     Shenming Lu <lushenming@huawei.com>, Marc Zyngier <maz@kernel.org>
+Cc:     James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christoffer Dall <christoffer.dall@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>, Neo Jia <cjia@nvidia.com>,
+        wanghaibin.wang@huawei.com, yuzenghui@huawei.com
+References: <20201123065410.1915-1-lushenming@huawei.com>
+ <20201123065410.1915-4-lushenming@huawei.com>
+ <5c724bb83730cdd5dcf7add9a812fa92@kernel.org>
+ <b03edcf2-2950-572f-fd31-601d8d766c80@huawei.com>
+ <2d2bcae4f871d239a1af50362f5c11a4@kernel.org>
+ <49610291-cf57-ff78-d0ac-063af24efbb4@huawei.com>
+ <48c10467-30f3-9b5c-bbcb-533a51516dc5@huawei.com>
+ <2ad38077300bdcaedd2e3b073cd36743@kernel.org>
+ <9b80d460-e149-20c8-e9b3-e695310b4ed1@huawei.com>
+ <274dafb2e21f49326a64bb575e668793@kernel.org>
+ <59ec07e5-c017-8644-b96f-e87fe600c490@huawei.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <f8b398df-9945-9ce6-18e6-970637a1bb51@redhat.com>
+Date:   Wed, 16 Dec 2020 11:35:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <20201211164801.7838-1-nsaenzjulienne@suse.de> <20201211164801.7838-3-nsaenzjulienne@suse.de>
-In-Reply-To: <20201211164801.7838-3-nsaenzjulienne@suse.de>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Wed, 16 Dec 2020 11:35:43 +0100
-Message-ID: <CAMpxmJX5t=LWpLkY=uYNK9r4rmStuSfmGc7=zcnu4_oHkQevWQ@mail.gmail.com>
-Subject: Re: [PATCH v6 02/11] firmware: raspberrypi: Introduce devm_rpi_firmware_get()
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        linux-devicetree <devicetree@vger.kernel.org>, wahrenst@gmx.net,
-        Linux Input <linux-input@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        devel@driverdev.osuosl.org, Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <59ec07e5-c017-8644-b96f-e87fe600c490@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 5:48 PM Nicolas Saenz Julienne
-<nsaenzjulienne@suse.de> wrote:
->
-> It'll simplify the firmware handling for most consumers.
->
-> Suggested-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
->
-> Changes since v4:
->  - Rearrange function calls for clarity, same functionality
->
-> Changes since v2:
-> - Create devm_rpi_firmware_get()
->
->  drivers/firmware/raspberrypi.c             | 29 ++++++++++++++++++++++
->  include/soc/bcm2835/raspberrypi-firmware.h |  8 ++++++
->  2 files changed, 37 insertions(+)
->
-> diff --git a/drivers/firmware/raspberrypi.c b/drivers/firmware/raspberrypi.c
-> index b65e4c495772..250e01680742 100644
-> --- a/drivers/firmware/raspberrypi.c
-> +++ b/drivers/firmware/raspberrypi.c
-> @@ -243,6 +243,13 @@ void rpi_firmware_put(struct rpi_firmware *fw)
->  }
->  EXPORT_SYMBOL_GPL(rpi_firmware_put);
->
-> +static void devm_rpi_firmware_put(void *data)
-> +{
-> +       struct rpi_firmware *fw = data;
-> +
-> +       rpi_firmware_put(fw);
-> +}
-> +
->  static int rpi_firmware_probe(struct platform_device *pdev)
->  {
->         struct device *dev = &pdev->dev;
-> @@ -331,6 +338,28 @@ struct rpi_firmware *rpi_firmware_get(struct device_node *firmware_node)
->  }
->  EXPORT_SYMBOL_GPL(rpi_firmware_get);
->
-> +/**
-> + * devm_rpi_firmware_get - Get pointer to rpi_firmware structure.
-> + * @firmware_node:    Pointer to the firmware Device Tree node.
-> + *
-> + * Returns NULL is the firmware device is not ready.
-> + */
-> +struct rpi_firmware *devm_rpi_firmware_get(struct device *dev,
-> +                                          struct device_node *firmware_node)
-> +{
-> +       struct rpi_firmware *fw;
-> +
-> +       fw = rpi_firmware_get(firmware_node);
-> +       if (!fw)
-> +               return NULL;
-> +
-> +       if (devm_add_action_or_reset(dev, devm_rpi_firmware_put, fw))
-> +               return NULL;
-> +
-> +       return fw;
-> +}
-> +EXPORT_SYMBOL_GPL(devm_rpi_firmware_get);
-> +
->  static const struct of_device_id rpi_firmware_of_match[] = {
->         { .compatible = "raspberrypi,bcm2835-firmware", },
->         {},
-> diff --git a/include/soc/bcm2835/raspberrypi-firmware.h b/include/soc/bcm2835/raspberrypi-firmware.h
-> index fdfef7fe40df..73ad784fca96 100644
-> --- a/include/soc/bcm2835/raspberrypi-firmware.h
-> +++ b/include/soc/bcm2835/raspberrypi-firmware.h
-> @@ -142,6 +142,8 @@ int rpi_firmware_property_list(struct rpi_firmware *fw,
->                                void *data, size_t tag_size);
->  void rpi_firmware_put(struct rpi_firmware *fw);
->  struct rpi_firmware *rpi_firmware_get(struct device_node *firmware_node);
-> +struct rpi_firmware *devm_rpi_firmware_get(struct device *dev,
-> +                                          struct device_node *firmware_node);
->  #else
->  static inline int rpi_firmware_property(struct rpi_firmware *fw, u32 tag,
->                                         void *data, size_t len)
-> @@ -160,6 +162,12 @@ static inline struct rpi_firmware *rpi_firmware_get(struct device_node *firmware
->  {
->         return NULL;
->  }
-> +
-> +static inline struct rpi_firmware *devm_rpi_firmware_get(struct device *dev,
-> +                                       struct device_node *firmware_node)
-> +{
-> +       return NULL;
-> +}
->  #endif
->
->  #endif /* __SOC_RASPBERRY_FIRMWARE_H__ */
-> --
-> 2.29.2
->
+Hi Shenming,
 
-Reviewed-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On 12/1/20 1:15 PM, Shenming Lu wrote:
+> On 2020/12/1 19:50, Marc Zyngier wrote:
+>> On 2020-12-01 11:40, Shenming Lu wrote:
+>>> On 2020/12/1 18:55, Marc Zyngier wrote:
+>>>> On 2020-11-30 07:23, Shenming Lu wrote:
+>>>>
+>>>> Hi Shenming,
+>>>>
+>>>>> We are pondering over this problem these days, but still don't get a
+>>>>> good solution...
+>>>>> Could you give us some advice on this?
+>>>>>
+>>>>> Or could we move the restoring of the pending states (include the sync
+>>>>> from guest RAM and the transfer to HW) to the GIC VM state change handler,
+>>>>> which is completely corresponding to save_pending_tables (more symmetric?)
+>>>>> and don't expose GICv4...
+>>>>
+>>>> What is "the GIC VM state change handler"? Is that a QEMU thing?
+>>>
+>>> Yeah, it is a a QEMU thing...
+>>>
+>>>> We don't really have that concept in KVM, so I'd appreciate if you could
+>>>> be a bit more explicit on this.
+>>>
+>>> My thought is to add a new interface (to QEMU) for the restoring of
+>>> the pending states, which is completely corresponding to
+>>> KVM_DEV_ARM_VGIC_SAVE_PENDING_TABLES...
+>>> And it is called from the GIC VM state change handler in QEMU, which
+>>> is happening after the restoring (call kvm_vgic_v4_set_forwarding())
+>>> but before the starting (running) of the VFIO device.
+>>
+>> Right, that makes sense. I still wonder how much the GIC save/restore
+>> stuff differs from other architectures that implement similar features,
+>> such as x86 with VT-D.
+> 
+> I am not familiar with it...
+> 
+>>
+>> It is obviously too late to change the userspace interface, but I wonder
+>> whether we missed something at the time.
+> 
+> The interface seems to be really asymmetrical?...
+
+in qemu d5aa0c229a ("hw/intc/arm_gicv3_kvm: Implement pending table
+save") commit message, it is traced:
+
+"There is no explicit restore as the tables are implicitly sync'ed
+on ITS table restore and on LPI enable at redistributor level."
+
+At that time there was no real justification behind adding the RESTORE
+fellow attr.
+
+Maybe a stupid question but isn't it possible to unset the forwarding
+when saving and rely on VFIO to automatically restore it when resuming
+on destination?
+
+Thanks
+
+Eric
+
+
+> 
+> Or is there a possibility that we could know which irq is hw before the VFIO
+> device calls kvm_vgic_v4_set_forwarding()?
+> 
+> Thanks,
+> Shenming
+> 
+>>
+>> Thanks,
+>>
+>>         M.
+> 
+
