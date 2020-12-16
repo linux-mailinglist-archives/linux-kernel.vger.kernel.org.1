@@ -2,78 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6376E2DC89B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 23:02:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52FF42DC89D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 23:02:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729999AbgLPWBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 17:01:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53824 "EHLO
+        id S1730012AbgLPWCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 17:02:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729840AbgLPWBo (ORCPT
+        with ESMTP id S1730003AbgLPWCE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 17:01:44 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF473C061794;
-        Wed, 16 Dec 2020 14:01:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ytTtA1pALsETtIdSlU2w2vhrdzWxtF525/d1jU/Olhk=; b=OQkDQdH5oa7t9KfGEUOOkn/7wF
-        csKPl20Zi97hVOEgPUOkonLH7r0yJsPh15fKEEJaZwhwusE22H4ajnaZlnArkECHS9yjyyXBctJ1g
-        UH9Ez31bSdeOnlkfRRumx6yYLXHKEyazefcQsWkq3m+xZOjqFxeqbtG7OO99lElWCuUsvCReeFqro
-        Qgc+wnoKZE4xrJ+F9DmTVYh4PRv5MNLSqPTIv2JZyXVoJEiyZTNd4o6lrOzldOo1RXeIdMhGbYLKN
-        l93vPP6ee2QUMMq4FTdWqUb3D74+tFIWfkVsjEgkvi3LJUUlrGbvX61qoEvuWiHd6sD/Yqb6fk+YZ
-        iu+fQmDg==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kpeqy-000365-QT; Wed, 16 Dec 2020 22:01:00 +0000
-Date:   Wed, 16 Dec 2020 22:01:00 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 23/25] mm: Add flush_dcache_folio
-Message-ID: <20201216220100.GY2443@casper.infradead.org>
-References: <20201216182335.27227-24-willy@infradead.org>
- <202012170425.x32aFRjm-lkp@intel.com>
+        Wed, 16 Dec 2020 17:02:04 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38CA0C06179C;
+        Wed, 16 Dec 2020 14:01:24 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id qw4so34924607ejb.12;
+        Wed, 16 Dec 2020 14:01:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=EiZS2jXqj3U/+bdFehgqn+1nrKy1cgYv0KO/vHHQS08=;
+        b=cDRIqcZapUQGM4gSz/SBJ+14e98uEFBbn3SY+Xf0zqNnDvqwiV0d4JtnC5l8MrQHtF
+         LG4JzeVu/7lvWH9aIvsXOAhTSSO5jVbaZZDkfV+yJAaw+pTsepydC2fEP+DqVERwlVKN
+         M+MT/9cG18dRZbiUQJ+0BxWqlt6fJJCh8WRuqDoBtaZyiWAT8Umx1RCbbfvzs+vrjzw9
+         dnp8eWMo4//2H851Vx2lk1A0Zx6FzWD8bHfavu+OSfBYHwmfTTl5yAaj5FLTDcDBnQ03
+         pOcxhVQrI1X/TbAcamZzaq2KI7uDpD1ickvbEtyLbbwHYzfEWf/lG1+hugGPnIJ3EtJv
+         Imog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=EiZS2jXqj3U/+bdFehgqn+1nrKy1cgYv0KO/vHHQS08=;
+        b=i0dxGxZLKDEDCi6dujYwpN/zQeBWk9hakAiSirOKAM/6yGeqCUUEj8no+/JJr9o+Uv
+         I+MNnz+NmAHHmgCBg1WCKHSYY2U/KVyY4LNP49KpWpK6PcdCGADDtfubiqDXbN/lwbeK
+         pEvAh67HdOUq6bF8QAcwsqKEnhZ4a0J6EDRQtuVkz1NEvDF/SkYB1m0EMFDxArEGBf99
+         19twoF96GqST/itRmbIuEpUMgYrLjJteuOA8SYZ5+VKQyLUPxBBHfN5+nHxZ+ySvHd9W
+         HQvEyNNu8Addd545TJkGOIDjBoBkaDvyo12rmS61LrN5rnorvxragZxAlEQbZrqmw8dB
+         NSuA==
+X-Gm-Message-State: AOAM5306Uz65UccpVctyLYL/rwu0iKb8qFHAcWa34mW64o8kYQuMfjsL
+        m5nVcn/J/qN3yEyX3aoszwE=
+X-Google-Smtp-Source: ABdhPJyiDZru9D09+aCuFMyDiW6uun0k5DawczBTTUZkhfU5NzuGcWMPJIulKg1St7zcjEvrlls2LQ==
+X-Received: by 2002:a17:906:aec6:: with SMTP id me6mr13935125ejb.542.1608156082817;
+        Wed, 16 Dec 2020 14:01:22 -0800 (PST)
+Received: from localhost (ip1f10d3e8.dynamic.kabel-deutschland.de. [31.16.211.232])
+        by smtp.gmail.com with ESMTPSA id bq20sm2316995ejb.64.2020.12.16.14.01.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 16 Dec 2020 14:01:21 -0800 (PST)
+Date:   Wed, 16 Dec 2020 23:01:10 +0100
+From:   Oliver Graute <oliver.graute@gmail.com>
+To:     konstantin@linuxfoundation.org
+Cc:     corbet@lwn.net, miguel.ojeda.sandonis@gmail.com,
+        grandmaster@al2klimov.de, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: PGP pathfinder service is no longer maintained
+Message-ID: <20201216220110.GA12262@ripley>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202012170425.x32aFRjm-lkp@intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 04:59:21AM +0800, kernel test robot wrote:
-> All errors (new ones prefixed by >>):
-> 
->    In file included from arch/powerpc/include/asm/cacheflush.h:111,
->                     from include/linux/highmem.h:12,
->                     from include/linux/pagemap.h:11,
->                     from include/linux/blkdev.h:14,
->                     from include/linux/blk-cgroup.h:23,
->                     from include/linux/writeback.h:14,
->                     from include/linux/memcontrol.h:22,
->                     from include/linux/swap.h:9,
->                     from include/linux/suspend.h:5,
->                     from arch/powerpc/kernel/asm-offsets.c:23:
->    include/asm-generic/cacheflush.h: In function 'flush_dcache_folio':
-> >> include/asm-generic/cacheflush.h:64:33: error: subscripted value is neither array nor pointer nor vector
->       64 |   flush_dcache_page(&folio->page[--n]);
+Hello,
 
-Thanks.  Apparently I need to compile on more than just x86 ;-)
+Unfortunately the site https://pgp.cs.uu.nl/ is not maintained anymore
+and the "Finding paths to Linus" link in the Kernel Maintainer PGP guide
+is dead. Is there any alternative sites to find a way through the web of
+trust?
 
-This compiles on aargh64:
+Best Regards,
 
-@@ -61,7 +61,8 @@ static inline void flush_dcache_folio(struct folio *folio)
-        unsigned int n = folio_nr_pages(folio);
- 
-        do {
--               flush_dcache_page(&folio->page[--n]);
-+               n--;
-+               flush_dcache_page(&folio->page + n);
-        } while (n);
- }
- #endif
-
-I'll fold it into my git tree.
+Oliver
