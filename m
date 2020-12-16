@@ -2,254 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7532C2DC728
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 20:33:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBCBC2DC6D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 20:02:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388784AbgLPTdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 14:33:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57348 "EHLO mail.kernel.org"
+        id S1730411AbgLPTBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 14:01:22 -0500
+Received: from mga14.intel.com ([192.55.52.115]:53480 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727567AbgLPTdF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 14:33:05 -0500
-Date:   Wed, 16 Dec 2020 18:53:53 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608144837;
-        bh=7kSA0fGVRPL0+93Hus9Q/C+bSPiTblgyl89oto0tsBk=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sQHgGx9TsDIiyofJdSuxy+kB2pCxTxnm3QK+qZPmftFiSt9pNp/yz5n1iLCJXaPcN
-         wPl1iLa6V5mcFLKksqlgbCJAcB1ZIpY1DG9Kzk/SfyIsxytzFcK+zA8Ux8jT7U6luD
-         Tncuec61/2TnpHJCAj9Wksf06NdHMZa2dcgjbZ/nTOm43kpiAOq5c1nBK0fo4p0drL
-         WZGxLnYLKNpbu8tJhIx/Jd/u3ugYBhF1uf+rn1KgWeMmv8dO+NnNb4Ry57ZHyh0q3U
-         70d+6Ugy327YtuD7cizXEb2gZk1K3RS4QfgnYaCKngOW6F3h3g0ZhquahY4ahx5MTI
-         OMqBkeKh11w3Q==
-From:   Will Deacon <will@kernel.org>
-To:     torvalds@linux-foundation.org
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>, kernel-team@android.com
-Subject: Re: [GIT PULL] IOMMU updates for 5.11
-Message-ID: <20201216185352.GA16598@willie-the-truck>
-References: <20201214234518.GA14575@willie-the-truck>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201214234518.GA14575@willie-the-truck>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1731692AbgLPTBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 14:01:22 -0500
+IronPort-SDR: 9H8kWyBZHjjW20RGJWD3AKTz+D83xU3viaXRemuk+8qTxtIsG9+lcvjAx0hlMpeypgBtdGP3Ee
+ E1fnOhELi/KA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9837"; a="174349539"
+X-IronPort-AV: E=Sophos;i="5.78,425,1599548400"; 
+   d="scan'208";a="174349539"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2020 10:59:36 -0800
+IronPort-SDR: NtYD+WDc9ezASTqGqykq5+5yWwBqoGyO9Kq+T9/cybdQy66DyLW4ZxPyZJfremee0ZVbgMHOC3
+ Co+GdTDrF60A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,425,1599548400"; 
+   d="scan'208";a="342165145"
+Received: from labuser-ice-lake-client-platform.jf.intel.com ([10.54.55.65])
+  by orsmga006.jf.intel.com with ESMTP; 16 Dec 2020 10:59:36 -0800
+From:   kan.liang@linux.intel.com
+To:     acme@kernel.org, mingo@kernel.org, jolsa@redhat.com
+Cc:     linux-kernel@vger.kernel.org, namhyung@kernel.org,
+        eranian@google.com, ak@linux.intel.com, mark.rutland@arm.com,
+        will@kernel.org, mpe@ellerman.id.au,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH V3 0/9] Add the page size in the perf record (user tools)
+Date:   Wed, 16 Dec 2020 10:57:56 -0800
+Message-Id: <20201216185805.9981-1-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi again, Linus,
+From: Kan Liang <kan.liang@linux.intel.com>
 
-On Mon, Dec 14, 2020 at 11:45:18PM +0000, Will Deacon wrote:
-> Hi Linus,
-> 
-> Please pull these IOMMU updates for 5.11: there's a good mixture of
-> improvements to the core code and driver changes across the board.
-> Summary in the tag and merge commits.
-> 
-> One thing worth pointing out is that this includes a quirk to work
-> around behaviour in the i915 driver (see 65f746e8285f ("iommu: Add quirk
-> for Intel graphic devices in map_sg")), which otherwise interacts badly
-> with the conversion of the intel IOMMU driver over to the DMA-IOMMU APU
-> but has being fixed properly in the DRM tree. We'll revert the quirk
-> later this cycle once we've confirmed that things don't fall apart
-> without it.
+Changes since V2:
+- Rebase on top of acme perf/core branch
+  commit eec7b53d5916 ("perf test: Make sample-parsing test aware of PERF_SAMPLE_{CODE,DATA}_PAGE_SIZE")
+- Use unit_number__scnprintf() in get_page_size_name()
+- Emit warning about kernel not supporting the code page size sample_type bit
 
-I'm hoping to wind down a bit next week (ho ho ho), so I just wanted to
-check whether this had got caught in your spam filters, whether you wanted
-me to change something or whether you're just snowed under in pull requests.
+Changes since V1:
+- Fix the compile warning with GCC 10
+- Add Acked-by from Namhyung Kim
 
-Cheers,
+Current perf can report both virtual addresses and physical addresses,
+but not the page size. Without the page size information of the utilized
+page, users cannot decide whether to promote/demote large pages to
+optimize memory usage.
 
-Will
+The kernel patches have been merged into tip perf/core branch,
+commit 8d97e71811aa ("perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE")
+commit 76a5433f95f3 ("perf/x86/intel: Support PERF_SAMPLE_DATA_PAGE_SIZE")
+commit 4cb6a42e4c4b ("powerpc/perf: Support PERF_SAMPLE_DATA_PAGE_SIZE")
+commit 995f088efebe ("perf/core: Add support for PERF_SAMPLE_CODE_PAGE_SIZE")
+commit 51b646b2d9f8 ("perf,mm: Handle non-page-table-aligned hugetlbfs")
 
-> --->8
-> 
-> The following changes since commit 4165bf015ba9454f45beaad621d16c516d5c5afe:
-> 
->   iommu/amd: Set DTE[IntTabLen] to represent 512 IRTEs (2020-12-07 11:00:24 +0000)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/iommu-updates-v5.11
-> 
-> for you to fetch changes up to 5ae9a046a452d60b6a6c076f6df7e3f8e34f918f:
-> 
->   iommu/amd: Add sanity check for interrupt remapping table length macros (2020-12-11 12:47:22 +0000)
-> 
-> ----------------------------------------------------------------
-> IOMMU updates for 5.11
-> 
-> - IOVA allocation optimisations and removal of unused code
-> 
-> - Introduction of DOMAIN_ATTR_IO_PGTABLE_CFG for parameterising the
->   page-table of an IOMMU domain
-> 
-> - Support for changing the default domain type in sysfs
-> 
-> - Optimisation to the way in which identity-mapped regions are created
-> 
-> - Driver updates:
->   * Arm SMMU updates, including continued work on Shared Virtual Memory
->   * Tegra SMMU updates, including support for PCI devices
->   * Intel VT-D updates, including conversion to the IOMMU-DMA API
-> 
-> - Cleanup, kerneldoc and minor refactoring
-> 
-> ----------------------------------------------------------------
-> Bjorn Andersson (3):
->       iommu/arm-smmu: Allow implementation specific write_s2cr
->       iommu/arm-smmu-qcom: Read back stream mappings
->       iommu/arm-smmu-qcom: Implement S2CR quirk
-> 
-> Chen Jun (1):
->       iommu: Modify the description of iommu_sva_unbind_device
-> 
-> Christoph Hellwig (1):
->       dma-iommu: remove __iommu_dma_mmap
-> 
-> Christophe JAILLET (1):
->       iommu/vt-d: Avoid GFP_ATOMIC where it is not needed
-> 
-> Cong Wang (1):
->       iommu: avoid taking iova_rbtree_lock twice
-> 
-> Jean-Philippe Brucker (4):
->       iommu/ioasid: Add ioasid references
->       iommu/sva: Add PASID helpers
->       iommu/arm-smmu-v3: Implement iommu_sva_bind/unbind()
->       iommu/arm-smmu-v3: Hook up ATC invalidation to mm ops
-> 
-> John Garry (3):
->       iommu: Delete split_and_remove_iova()
->       iommu: Stop exporting alloc_iova_mem()
->       iommu: Stop exporting free_iova_mem()
-> 
-> Jordan Crouse (2):
->       iommu/arm-smmu-qcom: Add implementation for the adreno GPU SMMU
->       dt-bindings: arm-smmu: Add compatible string for Adreno GPU SMMU
-> 
-> Kaixu Xia (1):
->       iommu/arm-smmu-v3: Assign boolean values to a bool variable
-> 
-> Keqian Zhu (1):
->       iommu: Defer the early return in arm_(v7s/lpae)_map
-> 
-> Kunkun Jiang (1):
->       iommu/io-pgtable-arm: Remove unused 'level' parameter from iopte_type() macro
-> 
-> Lu Baolu (6):
->       iommu: Add quirk for Intel graphic devices in map_sg
->       iommu/vt-d: Update domain geometry in iommu_ops.at(de)tach_dev
->       iommu/vt-d: Cleanup after converting to dma-iommu ops
->       iommu: Move def_domain type check for untrusted device into core
->       iommu: Fix htmldocs warnings in sysfs-kernel-iommu_groups
->       iommu/vt-d: Remove set but not used variable
-> 
-> Lukas Bulwahn (1):
->       iommu/vt-d: include conditionally on CONFIG_INTEL_IOMMU_SVM
-> 
-> Nicolin Chen (5):
->       iommu/tegra-smmu: Unwrap tegra_smmu_group_get
->       iommu/tegra-smmu: Expand mutex protection range
->       iommu/tegra-smmu: Use fwspec in tegra_smmu_(de)attach_dev
->       iommu/tegra-smmu: Rework tegra_smmu_probe_device()
->       iommu/tegra-smmu: Add PCI support
-> 
-> Rob Clark (1):
->       iommu/arm-smmu: Add a way for implementations to influence SCTLR
-> 
-> Robin Murphy (2):
->       iommu/arm-smmu: Use new devm_krealloc()
->       iommu/io-pgtable: Remove tlb_flush_leaf
-> 
-> Sai Prakash Ranjan (4):
->       iommu/arm-smmu: Add support for pagetable config domain attribute
->       iommu/arm-smmu: Move non-strict mode to use io_pgtable_domain_attr
->       iommu: arm-smmu-impl: Use table to list QCOM implementations
->       iommu: arm-smmu-impl: Add a space before open parenthesis
-> 
-> Sai Praneeth Prakhya (3):
->       iommu: Add support to change default domain of an iommu group
->       iommu: Take lock before reading iommu group default domain type
->       iommu: Document usage of "/sys/kernel/iommu_groups/<grp_id>/type" file
-> 
-> Suravee Suthikulpanit (1):
->       iommu/amd: Add sanity check for interrupt remapping table length macros
-> 
-> Tom Murphy (4):
->       iommu: Handle freelists when using deferred flushing in iommu drivers
->       iommu: Add iommu_dma_free_cpu_cached_iovas()
->       iommu: Allow the dma-iommu api to use bounce buffers
->       iommu/vt-d: Convert intel iommu driver to the iommu ops
-> 
-> Vijayanand Jitta (2):
->       iommu/iova: Retry from last rb tree node if iova search fails
->       iommu/iova: Free global iova rcache on iova alloc failure
-> 
-> Will Deacon (10):
->       Merge branch 'stable/for-linus-5.10-rc2' of git://git.kernel.org/.../konrad/swiotlb into for-next/iommu/vt-d
->       Merge branch 'for-next/iommu/io-pgtable-domain-attr' into for-next/iommu/arm-smmu
->       Merge branch 'for-next/iommu/arm-smmu' into for-next/iommu/core
->       Merge branch 'for-next/iommu/default-domains' into for-next/iommu/core
->       Merge branch 'for-next/iommu/iova' into for-next/iommu/core
->       Merge branch 'for-next/iommu/misc' into for-next/iommu/core
->       Merge branch 'for-next/iommu/svm' into for-next/iommu/core
->       Merge branch 'for-next/iommu/tegra-smmu' into for-next/iommu/core
->       Merge branch 'for-next/iommu/vt-d' into for-next/iommu/core
->       Merge branch 'for-next/iommu/fixes' into for-next/iommu/core
-> 
-> Yang Yingliang (1):
->       iommu: return error code when it can't get group
-> 
-> Yong Wu (1):
->       iommu: Improve the performance for direct_mapping
-> 
->  .../ABI/testing/sysfs-kernel-iommu_groups          |  30 +
->  Documentation/admin-guide/kernel-parameters.txt    |   5 -
->  .../devicetree/bindings/iommu/arm,smmu.yaml        |   9 +-
->  drivers/gpu/drm/msm/msm_iommu.c                    |   1 -
->  drivers/gpu/drm/panfrost/panfrost_mmu.c            |   7 -
->  drivers/iommu/Kconfig                              |   7 +
->  drivers/iommu/Makefile                             |   1 +
->  drivers/iommu/amd/amd_iommu_types.h                |  19 +-
->  drivers/iommu/amd/init.c                           |   6 +-
->  drivers/iommu/amd/iommu.c                          |   2 +-
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c    | 244 +++++-
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c        |  59 +-
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h        |  30 +
->  drivers/iommu/arm/arm-smmu/arm-smmu-impl.c         |  13 +-
->  drivers/iommu/arm/arm-smmu/arm-smmu-nvidia.c       |  17 +-
->  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c         | 270 +++++-
->  drivers/iommu/arm/arm-smmu/arm-smmu.c              |  76 +-
->  drivers/iommu/arm/arm-smmu/arm-smmu.h              |   5 +-
->  drivers/iommu/arm/arm-smmu/qcom_iommu.c            |   8 -
->  drivers/iommu/dma-iommu.c                          | 244 +++++-
->  drivers/iommu/intel/Kconfig                        |   1 +
->  drivers/iommu/intel/iommu.c                        | 919 +++------------------
->  drivers/iommu/intel/svm.c                          |   6 +-
->  drivers/iommu/io-pgtable-arm-v7s.c                 |  11 +-
->  drivers/iommu/io-pgtable-arm.c                     |  29 +-
->  drivers/iommu/ioasid.c                             |  38 +-
->  drivers/iommu/iommu-sva-lib.c                      |  86 ++
->  drivers/iommu/iommu-sva-lib.h                      |  15 +
->  drivers/iommu/iommu.c                              | 276 ++++++-
->  drivers/iommu/iova.c                               | 100 ++-
->  drivers/iommu/ipmmu-vmsa.c                         |   1 -
->  drivers/iommu/msm_iommu.c                          |   7 -
->  drivers/iommu/mtk_iommu.c                          |   1 -
->  drivers/iommu/tegra-smmu.c                         | 240 ++----
->  drivers/xen/swiotlb-xen.c                          |   3 +-
->  include/linux/dma-iommu.h                          |   8 +
->  include/linux/io-pgtable.h                         |  19 +-
->  include/linux/ioasid.h                             |  10 +-
->  include/linux/iommu.h                              |   2 +
->  include/linux/iova.h                               |  21 -
->  include/linux/swiotlb.h                            |  10 +-
->  kernel/dma/swiotlb.c                               |  22 +-
->  42 files changed, 1613 insertions(+), 1265 deletions(-)
->  create mode 100644 drivers/iommu/iommu-sva-lib.c
->  create mode 100644 drivers/iommu/iommu-sva-lib.h
+and Peter's perf/core branch
+commit 524680ce47a1 ("mm/gup: Provide gup_get_pte() more generic")
+commit 44a35d6937d2 ("mm: Introduce pXX_leaf_size()")
+commit 2f1e2f091ad0 ("perf/core: Fix arch_perf_get_page_size()")
+commit 7649e44aacdd ("arm64/mm: Implement pXX_leaf_size() support")
+commit 1df1ae7e262c ("sparc64/mm: Implement pXX_leaf_size() support")
+
+This patch set is to enable the page size support in user tools.
+
+Kan Liang (6):
+  perf script: Support data page size
+  perf sort: Add sort option for data page size
+  perf mem: Factor out a function to generate sort order
+  perf mem: Clean up output format
+  perf mem: Support data page size
+  perf tools: Add support for PERF_SAMPLE_CODE_PAGE_SIZE
+
+Stephane Eranian (3):
+  perf script: Add support for PERF_SAMPLE_CODE_PAGE_SIZE
+  perf report: Add support for PERF_SAMPLE_CODE_PAGE_SIZE
+  perf test: Add test case for PERF_SAMPLE_CODE_PAGE_SIZE
+
+ tools/perf/Documentation/perf-mem.txt     |   3 +
+ tools/perf/Documentation/perf-record.txt  |   3 +
+ tools/perf/Documentation/perf-report.txt  |   2 +
+ tools/perf/Documentation/perf-script.txt  |   5 +-
+ tools/perf/builtin-mem.c                  | 150 ++++++++++++----------
+ tools/perf/builtin-record.c               |   2 +
+ tools/perf/builtin-script.c               |  26 +++-
+ tools/perf/tests/sample-parsing.c         |   4 +
+ tools/perf/util/event.h                   |   4 +
+ tools/perf/util/evsel.c                   |  18 ++-
+ tools/perf/util/evsel.h                   |   1 +
+ tools/perf/util/hist.c                    |   5 +
+ tools/perf/util/hist.h                    |   2 +
+ tools/perf/util/machine.c                 |   7 +-
+ tools/perf/util/map_symbol.h              |   1 +
+ tools/perf/util/perf_event_attr_fprintf.c |   2 +-
+ tools/perf/util/record.h                  |   1 +
+ tools/perf/util/session.c                 |  16 +++
+ tools/perf/util/sort.c                    |  56 ++++++++
+ tools/perf/util/sort.h                    |   3 +
+ tools/perf/util/synthetic-events.c        |   8 ++
+ 21 files changed, 243 insertions(+), 76 deletions(-)
+
+-- 
+2.17.1
+
