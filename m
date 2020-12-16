@@ -2,114 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27BEE2DB7BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:18:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13C0F2DB7C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:20:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726061AbgLPAR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 19:17:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41562 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725777AbgLPARY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 19:17:24 -0500
-Date:   Wed, 16 Dec 2020 09:16:40 +0900
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608077803;
-        bh=9BcpfwUUEyZI0V0MWDNfgQ0ICTZaQgyMU8JVSZMrkxY=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=sb3mjZGtkVqfuy5bTwXWQmvWXSmzWJvOWpSGZtNHc+2ZxMXkykhGE/If9pU9f4BYU
-         lc/yVK720ZtQkhy74CCjSiSS+TSxWdO9863oV/sfAIItXGl1lnSfCQaZCPM6fDyaZ8
-         GZikC90vItREcKIcP6LlWalszL4syPbFxOb9lCDWzM9Ix1H1NiU4waGT1q7DL/OcmT
-         Lw6be7lhUPzYcMOYBsXiU7lTAiyg1EgqXxvLIioa/UwfhZIx/ZzIr7lzOfVcfAFV8m
-         NB3I/KzrbB++eoyK/IB0zltUK+kb0z5kSxhR+/KwS6aLIe3X/cAYEpxFq+ob8eL4gu
-         Eaj1akgyzdsuw==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [BUG] perf probe can't remove probes
-Message-Id: <20201216091640.402d51e22dff04fff8ba6d79@kernel.org>
-In-Reply-To: <20201126172603.GD53384@kernel.org>
-References: <20201125172755.GA53351@kernel.org>
-        <20201126092125.402257a8776637d6bd2e090c@kernel.org>
-        <20201126172603.GD53384@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726500AbgLPASy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 19:18:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725777AbgLPASu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 19:18:50 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 027C4C061793
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 16:18:10 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id a9so43992601lfh.2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 16:18:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qSxsSZiOCbgtfRHvrrIs2XX2MVFXaSUOKKGOgV0Mcrk=;
+        b=TFKlJ8Q4glsD4AXv5lM6i64JQSQQPxQxGpCL70H0GW/XQAWPmkhmcOURnWERPAqish
+         sxMunE0mxSSFvqSEkt03mIL06y9I3pUtR7PXy7YeIb0qfCODPdczUlJdYuHfB//sEJ97
+         U2AsSzqIO9Raypy2Wl8Iue3unVB0rltOBVyEA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qSxsSZiOCbgtfRHvrrIs2XX2MVFXaSUOKKGOgV0Mcrk=;
+        b=YV36Ed+bd8NvRR6vmdGsTD9pWlKrXankg9wtLs9FHTDWmwO5jHLjLyknIsgoZz7RFD
+         3v5JDcfa9Bs7hEHxkNLMxR0rBXt3sLlsu+gMGPkRV6M+xI8MfH3q8fs96uXofbKxbbet
+         Z82Gh/ZKDjRaHbVrzkxcWIgiDVGPKbZiRDn4OE0KBBKwTybCXOd3D4Kr/r4ZXyLVxFeX
+         Z3fcA9E0dm5EO9bIWkLtRliedLtqWvsZf/bxa4VtE9UPkquHCh/oDkzv5aXkCDTUbtCc
+         THQCQuigVy3zKzd3saJqHRZOur1zAa3FE81GIsE4XzdA10kzsaR+Cx768Si+himw0KdF
+         Rp1A==
+X-Gm-Message-State: AOAM533a8p2mygK9h/aLtRkLddUWvvfQNJTe5wq7UeOX0czHzNFBsNuK
+        RRq1I0lChSLX0i9gXiz8mOoLGv2lnKh+mQ==
+X-Google-Smtp-Source: ABdhPJzAVMy1ooAY6EkxkLrq/A8hVDfQkuCAUp7Xg8Bxu6CR9I6Jey6xY3n/N9VyR5gMOlDUHsGohg==
+X-Received: by 2002:a19:6415:: with SMTP id y21mr5379562lfb.120.1608077888149;
+        Tue, 15 Dec 2020 16:18:08 -0800 (PST)
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
+        by smtp.gmail.com with ESMTPSA id v23sm52363ljd.78.2020.12.15.16.18.06
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Dec 2020 16:18:07 -0800 (PST)
+Received: by mail-lf1-f54.google.com with SMTP id u18so43978805lfd.9
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 16:18:06 -0800 (PST)
+X-Received: by 2002:a2e:8995:: with SMTP id c21mr12994128lji.251.1608077886478;
+ Tue, 15 Dec 2020 16:18:06 -0800 (PST)
+MIME-Version: 1.0
+References: <f70a7a27-de9d-35aa-53d4-91da3677af6d@redhat.com>
+In-Reply-To: <f70a7a27-de9d-35aa-53d4-91da3677af6d@redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 15 Dec 2020 16:17:50 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiMs5Q9VwEP_gfGmUR3R+_xDRA5pprbgznaFuq48pY+wQ@mail.gmail.com>
+Message-ID: <CAHk-=wiMs5Q9VwEP_gfGmUR3R+_xDRA5pprbgznaFuq48pY+wQ@mail.gmail.com>
+Subject: Re: [GIT PULL] platform-drivers-x86 for 5.11-1
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Andy Shevchenko <andy@infradead.org>,
+        Mark Gross <mark.gross@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Nov 2020 14:26:03 -0300
-Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+On Mon, Dec 14, 2020 at 4:43 AM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> - New Intel PMT telemetry and crashlog drivers
 
-> Em Thu, Nov 26, 2020 at 09:21:25AM +0900, Masami Hiramatsu escreveu:
-> > Hi Arnaldo,
-> > 
-> > On Wed, 25 Nov 2020 14:27:55 -0300
-> > Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> > 
-> > > 
-> > > Masami, have you stumbled on this already?
-> > > 
-> > > [root@seventh ~]# perf probe security_locked_down%return 'ret=$retval'
-> > > Added new event:
-> > >   probe:security_locked_down__return (on security_locked_down%return with ret=$retval)
-> > > 
-> > > You can now use it in all perf tools, such as:
-> > > 
-> > > 	perf record -e probe:security_locked_down__return -aR sleep 1
-> > > 
-> > > [root@seventh ~]# perf probe security_locked_down what
-> > > Added new event:
-> > >   probe:security_locked_down (on security_locked_down with what)
-> > > 
-> > > You can now use it in all perf tools, such as:
-> > > 
-> > > 	perf record -e probe:security_locked_down -aR sleep 1
-> > > 
-> > > [root@seventh ~]#
-> > > 
-> > > 
-> > > [root@seventh ~]# uname -r
-> > > 5.10.0-rc3.bpfsign+
-> > > [root@seventh ~]# perf probe -l
-> > >   probe:security_locked_down (on security_locked_down@git/bpf/security/security.c with what)
-> > >   probe:security_locked_down__return (on security_locked_down%return@git/bpf/security/security.c with ret)
-> > > [root@seventh ~]# perf probe -D '*:*'
-> > > Semantic error :There is non-digit char in line number.
-> > > 
-> > >  Usage: perf probe [<options>] 'PROBEDEF' ['PROBEDEF' ...]
-> > >     or: perf probe [<options>] --add 'PROBEDEF' [--add 'PROBEDEF' ...]
-> > >     or: perf probe [<options>] --del '[GROUP:]EVENT' ...
-> > >     or: perf probe --list [GROUP:]EVENT ...
-> > >     or: perf probe [<options>] --line 'LINEDESC'
-> > >     or: perf probe [<options>] --vars 'PROBEPOINT'
-> > >     or: perf probe [<options>] --funcs
-> > > 
-> > >     -D, --definition <[EVENT=]FUNC[@SRC][+OFF|%return|:RL|;PT]|SRC:AL|SRC;PT [[NAME=]ARG ...]>
-> > >                           Show trace event definition of given traceevent for k/uprobe_events.
-> > 
-> > As you can see, "-D" is showing definition. Not delete. (*)
-> > Delete is "-d" or "--del".
-> 
-> Yeah, I was in a hurry and looked at just the first line right after the
-> command, didn't want to forget reporting it so sent the "bug" report,
-> d0h, sorry about the noise, using -d or --del works.
-> 
-> But having both -d and -D, in retrospect, wasn't such a good idea :-\
+These have _very_ annoying Kconfig setups.
 
-Sorry for confusing :(
+First it asks about INTEL_PMT support.
 
-Hmm, would we better to remove -D and keep only --definition?
-But it is already there, I think we should keep this option
-for backward compatibility.
+If you say no, it then asks about INTEL_PMT_CLASS, INTEL_PMT_TELEMETRY
+and INTEL_PMT_CRASHLOG support.
 
-Thank you,
+I've pulled this, but I really wish the PMT support understood that
+whole "No means no" thing.
 
+Please?
 
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+              Linus
