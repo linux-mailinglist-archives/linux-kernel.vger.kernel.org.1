@@ -2,93 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43DE12DC259
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 15:37:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 540B62DC257
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 15:37:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726452AbgLPOhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 09:37:03 -0500
-Received: from out01.mta.xmission.com ([166.70.13.231]:47568 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726332AbgLPOhD (ORCPT
+        id S1726423AbgLPOhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 09:37:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726332AbgLPOhB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 09:37:03 -0500
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kpXuf-000cXw-J7; Wed, 16 Dec 2020 07:36:21 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kpXud-0000Ij-TV; Wed, 16 Dec 2020 07:36:20 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <871rfqad5g.fsf@x220.int.ebiederm.org>
-        <CAHk-=wijn40PoFccpQZExuyWnz2i+wmBx+9gw5nKJPVQVmzb5g@mail.gmail.com>
-Date:   Wed, 16 Dec 2020 08:35:34 -0600
-In-Reply-To: <CAHk-=wijn40PoFccpQZExuyWnz2i+wmBx+9gw5nKJPVQVmzb5g@mail.gmail.com>
-        (Linus Torvalds's message of "Tue, 15 Dec 2020 19:32:37 -0800")
-Message-ID: <87wnxh7r9l.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 16 Dec 2020 09:37:01 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D697C06179C
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 06:36:21 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id y17so23375913wrr.10
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 06:36:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=1+xRvYA1pxFKx0XtDQ31iUMNpTfOzpYfWa3N+b1f36w=;
+        b=D9tZo391U+Yk9iuy7EGvkpos9GG2gaP6lh8G8kbYcZbhPLW/ucCrLf5oSkYvVz4jUC
+         kMqFUxBTvQCoj3KkuS6V35VGK9KegHusQzeK/hJ5FgEbt6klGf6JYtJ87MA0cuE8vPBP
+         z8l0pVPZx/rNU6cfqxJIHMGSCWMAt4kScBC7o59D/2QzFJ7BPLD+jqxiTEIu6flAkXi5
+         o6ilk+OtnZ58GRjv3g4aexcHpEoZ7S5WZ56bCKpMVHoCkBGWMhiVGT7U9Q2Mon1Bp0WB
+         Fqn4DXcKrjIiKuamW7vmZ0GpkHkyHYFMsDvYschETw0d9ilE1GSKbSyBlhkmqaidaZbu
+         h6YQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=1+xRvYA1pxFKx0XtDQ31iUMNpTfOzpYfWa3N+b1f36w=;
+        b=JMYwR1onfnGFGTuQpgQUMccpqqCncn1f4VCYOF6QpOvFPU4LZNyfWVZll6Fw8apfer
+         vhWURdAlxcWXldoFSRoSAfAN10Ii5ZXd0xTPBLY3BtYvNzh72H7Z6uqSOyMZwTC3lK77
+         RmsKpRt/WChqwYapRlXof9ihBEtkMxoObeg2xmA3ccyHIbLeVL7Ow61+POndb/TuGzl9
+         Ft+OEJV6X4F4uJQSydNVlZHAgtbU4WUU0ECUj162MwQebXjxjbYg7X4mjFncJijqAbzI
+         wQ18434CboZLIehAcNopzdhEWKVfC0uhLx3Y6wctglG1JV6pXYaXipuFWt1wGEMrsQV9
+         FgAA==
+X-Gm-Message-State: AOAM531SRplbBuvLfI0tcgFGIoqPCa9n7aINuXhwSGjdPFdnF/xOipJJ
+        ZopE4HUoohzkocAi/itqN8M4HQ==
+X-Google-Smtp-Source: ABdhPJylSqFMc/S45ragP2Y9ol6Qr2fab8KKBxJIm8g8W2JghL0Rj2OlBZ6f2z6RYm4SALaC6v22ig==
+X-Received: by 2002:a5d:554e:: with SMTP id g14mr38990021wrw.264.1608129379055;
+        Wed, 16 Dec 2020 06:36:19 -0800 (PST)
+Received: from dell ([91.110.221.200])
+        by smtp.gmail.com with ESMTPSA id h20sm3675336wrb.21.2020.12.16.06.36.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Dec 2020 06:36:18 -0800 (PST)
+Date:   Wed, 16 Dec 2020 14:36:16 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     daniel.thompson@linaro.org, jingoohan1@gmail.com,
+        b.zolnierkie@samsung.com, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] backlight: sky81452-backlight: convert comma to
+ semicolon
+Message-ID: <20201216143616.GF207743@dell>
+References: <20201214133458.3729-1-zhengyongjun3@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1kpXud-0000Ij-TV;;;mid=<87wnxh7r9l.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/+NlWkphSa3CpPRKjAGDxjWeL4PNaJD4A=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa01.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.1 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        XMSubMetaSxObfu_03,XMSubMetaSx_00 autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4913]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa01 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
-        *  1.0 XMSubMetaSx_00 1+ Sexy Words
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa01 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Linus Torvalds <torvalds@linux-foundation.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 834 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 3.5 (0.4%), b_tie_ro: 2.4 (0.3%), parse: 0.59
-        (0.1%), extract_message_metadata: 10 (1.2%), get_uri_detail_list: 0.51
-        (0.1%), tests_pri_-1000: 12 (1.4%), tests_pri_-950: 0.98 (0.1%),
-        tests_pri_-900: 0.77 (0.1%), tests_pri_-90: 114 (13.7%), check_bayes:
-        112 (13.5%), b_tokenize: 3.1 (0.4%), b_tok_get_all: 3.8 (0.5%),
-        b_comp_prob: 1.04 (0.1%), b_tok_touch_all: 102 (12.2%), b_finish: 0.66
-        (0.1%), tests_pri_0: 100 (12.0%), check_dkim_signature: 0.35 (0.0%),
-        check_dkim_adsp: 2.0 (0.2%), poll_dns_idle: 575 (69.0%), tests_pri_10:
-        1.59 (0.2%), tests_pri_500: 588 (70.6%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [GIT PULL] exec fixes for v5.11-rc1
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201214133458.3729-1-zhengyongjun3@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> writes:
+On Mon, 14 Dec 2020, Zheng Yongjun wrote:
 
-> On Tue, Dec 15, 2020 at 3:00 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->>
->> There is a minor conflict with parallel changes to the bpf task_iter
->> code.  The changes don't fundamentally conflict but both are removing
->> code from same areas of the same function.
->
-> Ok, that was somewhat confusing.
->
-> I think I got it right, but I'd appreciate you giving my resolution a
-> second look. Just to be safe.
+> Replace a comma between expression statements by a semicolon.
+> 
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> ---
+>  drivers/video/backlight/sky81452-backlight.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-I have read through the merge commit and everything looks correct.
+Applied, thanks.
 
-Eric
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
