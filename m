@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8002DC11A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:21:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E8F92DC11E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:21:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726375AbgLPNU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 08:20:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38240 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726264AbgLPNU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 08:20:56 -0500
-Date:   Wed, 16 Dec 2020 14:21:16 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1608124815;
-        bh=Eq7A2BL0FI2mKs5iwlVvM21Z7VyRHX2MIWDxFYx1UJQ=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fKujheRxg2tIC5U8jHMy6cHhM2DT5mNxX1v+OYD5HEmLyVcU2DKerCW204TlWENvv
-         Gaq+6PJlubWCBfDzavcwoBkK2jYJxW6rqEpj5uf/bqipf1xxNGqeQe6sRhiCfA0Esc
-         h+DEFtp4RYgkhPSh3e4+DUqkhxzc4sQCtC3ymwE0=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 5.9 000/105] 5.9.15-rc1 review
-Message-ID: <X9oJzPFCn8mlIRNE@kroah.com>
-References: <20201214172555.280929671@linuxfoundation.org>
- <20201215203201.GB188376@roeck-us.net>
+        id S1726323AbgLPNVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 08:21:41 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9622 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725550AbgLPNVl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 08:21:41 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CwwjK6sdjz15cRM;
+        Wed, 16 Dec 2020 21:20:21 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 16 Dec 2020 21:20:51 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <p.zabel@pengutronix.de>, <mchehab@kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH -next] media/platform/coda: convert comma to semicolon
+Date:   Wed, 16 Dec 2020 21:21:23 +0800
+Message-ID: <20201216132123.15099-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201215203201.GB188376@roeck-us.net>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 12:32:01PM -0800, Guenter Roeck wrote:
-> On Mon, Dec 14, 2020 at 06:27:34PM +0100, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.9.15 release.
-> > There are 105 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Wed, 16 Dec 2020 17:25:32 +0000.
-> > Anything received after that time might be too late.
-> > 
-> 
-> Build results:
-> 	total: 154 pass: 154 fail: 0
-> Qemu test results:
-> 	total: 427 pass: 427 fail: 0
-> 
-> Tested-by: Guenter Roeck <linux@roeck-us.net>
+Replace a comma between expression statements by a semicolon.
 
-Thanks for testing them all and letting me know.
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ drivers/media/platform/coda/coda-common.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-greg k-h
+diff --git a/drivers/media/platform/coda/coda-common.c b/drivers/media/platform/coda/coda-common.c
+index 87a2c706f747..547ad34b1424 100644
+--- a/drivers/media/platform/coda/coda-common.c
++++ b/drivers/media/platform/coda/coda-common.c
+@@ -2861,7 +2861,7 @@ static int coda_register_device(struct coda_dev *dev, int i)
+ 	strscpy(vfd->name, dev->devtype->vdevs[i]->name, sizeof(vfd->name));
+ 	vfd->fops	= &coda_fops;
+ 	vfd->ioctl_ops	= &coda_ioctl_ops;
+-	vfd->release	= video_device_release_empty,
++	vfd->release	= video_device_release_empty;
+ 	vfd->lock	= &dev->dev_mutex;
+ 	vfd->v4l2_dev	= &dev->v4l2_dev;
+ 	vfd->vfl_dir	= VFL_DIR_M2M;
+-- 
+2.22.0
+
