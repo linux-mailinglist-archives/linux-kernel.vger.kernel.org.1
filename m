@@ -2,102 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 469BB2DB8AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 02:57:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BEC52DB8B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 03:01:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725796AbgLPB5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 20:57:36 -0500
-Received: from mga04.intel.com ([192.55.52.120]:46638 "EHLO mga04.intel.com"
+        id S1725320AbgLPCAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 21:00:53 -0500
+Received: from mga06.intel.com ([134.134.136.31]:63970 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725320AbgLPB5f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 20:57:35 -0500
-IronPort-SDR: tj621VfwVxWq66F8R1TQGLpLx0p7wX8Ucs3yf9zL+F+F9rRGAv8ihiSOvH2yzRClxi+icnkDRw
- 5aB50NXOa9fQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9836"; a="172415834"
+        id S1725275AbgLPCAx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 21:00:53 -0500
+IronPort-SDR: 5pgIPjkuAJGtA6Gb4APRdWTHsyfTjNbzJLMeFcOwVH/JFr75IwFGADjS6XEqtneYFxMqZlTuAa
+ ZuhZkFqkNIqA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9836"; a="236566446"
 X-IronPort-AV: E=Sophos;i="5.78,423,1599548400"; 
-   d="scan'208";a="172415834"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 17:55:45 -0800
-IronPort-SDR: Pg1VhJNtwxPPaY6JBu/qH0cJlUEndiFXtRPXSpkyQkH98HZkG9xQXfqVaR4ONNp2qL0sy0mhJx
- X6f+e4d/50wQ==
-X-ExtLoop1: 1
+   d="scan'208";a="236566446"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 17:59:07 -0800
+IronPort-SDR: MfgFO6vskrlsq0llruAwsIxdFDUI2kw90H+sMbFRiefTX04/rZTPoczbwKalmEUCqzgregLjJz
+ wv2jZIeUi+3A==
 X-IronPort-AV: E=Sophos;i="5.78,423,1599548400"; 
-   d="scan'208";a="384064484"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.28]) ([10.239.159.28])
-  by fmsmga004.fm.intel.com with ESMTP; 15 Dec 2020 17:55:39 -0800
-Cc:     baolu.lu@linux.intel.com, tglx@linutronix.de, ashok.raj@intel.com,
-        kevin.tian@intel.com, dave.jiang@intel.com, megha.dey@intel.com,
-        alex.williamson@redhat.com, bhelgaas@google.com,
-        dan.j.williams@intel.com, dmaengine@vger.kernel.org,
-        eric.auger@redhat.com, jacob.jun.pan@intel.com, jgg@mellanox.com,
-        jing.lin@intel.com, kvm@vger.kernel.org, kwankhede@nvidia.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        maz@kernel.org, mona.hossain@intel.com, netanelg@mellanox.com,
-        parav@mellanox.com, pbonzini@redhat.com, rafael@kernel.org,
-        samuel.ortiz@intel.com, sanjay.k.kumar@intel.com,
-        shahafs@mellanox.com, tony.luck@intel.com, vkoul@kernel.org,
-        yan.y.zhao@linux.intel.com, yi.l.liu@intel.com
-Subject: Re: [RFC PATCH 1/1] platform-msi: Add platform check for subdevice
- irq domain
-To:     Bjorn Helgaas <helgaas@kernel.org>
-References: <20201210185738.GA49060@bjorn-Precision-5520>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <f473fce5-2751-c103-4195-4d7858ac6b47@linux.intel.com>
-Date:   Wed, 16 Dec 2020 09:48:03 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+   d="scan'208";a="337918692"
+Received: from spandruv-desk.jf.intel.com ([10.54.75.21])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 17:59:07 -0800
+Message-ID: <46cad4d0f14b33e77d2cead3b87177cfaa3e03cc.camel@linux.intel.com>
+Subject: Re: [PATCH] thermal: int340x: Support Alder Lake
+From:   srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     rui.zhang@intel.com, daniel.lezcano@linaro.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 15 Dec 2020 17:59:06 -0800
+In-Reply-To: <20201117194802.503337-1-srinivas.pandruvada@linux.intel.com>
+References: <20201117194802.503337-1-srinivas.pandruvada@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-In-Reply-To: <20201210185738.GA49060@bjorn-Precision-5520>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
-
-On 12/11/20 2:57 AM, Bjorn Helgaas wrote:
-> On Thu, Dec 10, 2020 at 08:46:24AM +0800, Lu Baolu wrote:
->> The pci_subdevice_msi_create_irq_domain() should fail if the underlying
->> platform is not able to support IMS (Interrupt Message Storage). Otherwise,
->> the isolation of interrupt is not guaranteed.
->>
->> For x86, IMS is only supported on bare metal for now. We could enable it
->> in the virtualization environments in the future if interrupt HYPERCALL
->> domain is supported or the hardware has the capability of interrupt
->> isolation for subdevices.
+On Tue, 2020-11-17 at 11:48 -0800, Srinivas Pandruvada wrote:
+> Add ACPI IDs for thermal drivers for Alder Lake support.
 > 
->> + * We want to figure out which context we are running in. But the hardware
->> + * does not introduce a reliable way (instruction, CPUID leaf, MSR, whatever)
->> + * which can be manipulated by the VMM to let the OS figure out where it runs.
->> + * So we go with the below probably_on_bare_metal() function as a replacement
->> + * for definitely_on_bare_metal() to go forward only for the very simple reason
->> + * that this is the only option we have.
->> + */
->> +static const char * const possible_vmm_vendor_name[] = {
->> +	"QEMU", "Bochs", "KVM", "Xen", "VMware", "VMW", "VMware Inc.",
->> +	"innotek GmbH", "Oracle Corporation", "Parallels", "BHYVE",
->> +	"Microsoft Corporation"
->> +};
->> +
->> +static bool probably_on_bare_metal(void)
+This patch was not in PULL request.
+It is simple patch, adding ids. Can we send as part of second PULL?
+
+Thanks,
+Srinivas
+
+> Signed-off-by: Srinivas Pandruvada <
+> srinivas.pandruvada@linux.intel.com>
+> ---
+>  drivers/thermal/intel/int340x_thermal/int3400_thermal.c | 1 +
+>  drivers/thermal/intel/int340x_thermal/int3403_thermal.c | 1 +
+>  2 files changed, 2 insertions(+)
 > 
-> What is the point of a function called probably_on_bare_metal()?
-> *Probably*?  The caller can't really do anything with the fact that
-> we're not 100% sure this gives the correct answer.  Just call it
-> "on_bare_metal()" or something and accept the fact that it might be
-> wrong sometimes.
+> diff --git a/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
+> b/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
+> index 0966551cbaaa..823354a1a91a 100644
+> --- a/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
+> +++ b/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
+> @@ -584,6 +584,7 @@ static int int3400_thermal_remove(struct
+> platform_device *pdev)
+>  static const struct acpi_device_id int3400_thermal_match[] = {
+>  	{"INT3400", 0},
+>  	{"INTC1040", 0},
+> +	{"INTC1041", 0},
+>  	{}
+>  };
+>  
+> diff --git a/drivers/thermal/intel/int340x_thermal/int3403_thermal.c
+> b/drivers/thermal/intel/int340x_thermal/int3403_thermal.c
+> index ec1d58c4ceaa..c3c4c4d34542 100644
+> --- a/drivers/thermal/intel/int340x_thermal/int3403_thermal.c
+> +++ b/drivers/thermal/intel/int340x_thermal/int3403_thermal.c
+> @@ -284,6 +284,7 @@ static int int3403_remove(struct platform_device
+> *pdev)
+>  static const struct acpi_device_id int3403_device_ids[] = {
+>  	{"INT3403", 0},
+>  	{"INTC1043", 0},
+> +	{"INTC1046", 0},
+>  	{"", 0},
+>  };
+>  MODULE_DEVICE_TABLE(acpi, int3403_device_ids);
 
-Agreed. we can use on_bare_metal() and add comments and kernel messages
-to let users and developers know that we're not 100% sure. People should
-help to make it more accurate by reporting exceptions.
-
-> 
-> This patch goes with IMS support, which somebody else is handling, so
-> I assume you don't need anything from the PCI side.
-
-Yes. This is a followup of previous discussion.
-
-Best regards,
-baolu
