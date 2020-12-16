@@ -2,59 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF6A22DC9AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 00:41:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A7842DC9B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 00:46:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730824AbgLPXku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 18:40:50 -0500
-Received: from aposti.net ([89.234.176.197]:42568 "EHLO aposti.net"
+        id S1730805AbgLPXqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 18:46:31 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:58412 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727769AbgLPXkt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 18:40:49 -0500
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>, od@zcrc.me,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Paul Cercueil <paul@crapouillou.net>, stable@vger.kernel.org
-Subject: [PATCH] MIPS: boot: Fix unaligned access with CONFIG_MIPS_RAW_APPENDED_DTB
-Date:   Wed, 16 Dec 2020 23:39:56 +0000
-Message-Id: <20201216233956.280068-1-paul@crapouillou.net>
+        id S1726110AbgLPXq3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 18:46:29 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kpgUL-00CNnY-V0; Thu, 17 Dec 2020 00:45:45 +0100
+Date:   Thu, 17 Dec 2020 00:45:45 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Michael Walle <michael@walle.cc>
+Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexandru Marginean <alexandru.marginean@nxp.com>
+Subject: Re: [PATCH net-next 0/4] enetc: code cleanups
+Message-ID: <20201216234545.GA2943708@lunn.ch>
+References: <20201215212200.30915-1-michael@walle.cc>
+ <20201216192539.3xfxmhpejrmayfge@skbuf>
+ <d5335485b0d62e7c399d342136ac6921@walle.cc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d5335485b0d62e7c399d342136ac6921@walle.cc>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The compressed payload is not necesarily 4-byte aligned, at least when
-compiling with Clang. In that case, the 4-byte value appended to the
-compressed payload that corresponds to the uncompressed kernel image
-size must be read using get_unaligned_le().
+> Ah, I thought it will be picked up automatically after the merge
+> window is closed, no?
 
-This fixes Clang-built kernels not booting on MIPS (tested on a Ingenic
-JZ4770 board).
+Nope. With netdev, if it is not merged in about 3 days, it needs to be
+reposted. And it might need a rebased after the merge window closes
+and net-next reopens.
 
-Fixes: b8f54f2cde78 ("MIPS: ZBOOT: copy appended dtb to the end of the kernel")
-Cc: <stable@vger.kernel.org> # v4.7
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
- arch/mips/boot/compressed/decompress.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/mips/boot/compressed/decompress.c b/arch/mips/boot/compressed/decompress.c
-index c61c641674e6..47c07990432b 100644
---- a/arch/mips/boot/compressed/decompress.c
-+++ b/arch/mips/boot/compressed/decompress.c
-@@ -117,7 +117,7 @@ void decompress_kernel(unsigned long boot_heap_start)
- 		dtb_size = fdt_totalsize((void *)&__appended_dtb);
- 
- 		/* last four bytes is always image size in little endian */
--		image_size = le32_to_cpup((void *)&__image_end - 4);
-+		image_size = get_unaligned_le32((void *)&__image_end - 4);
- 
- 		/* copy dtb to where the booted kernel will expect it */
- 		memcpy((void *)VMLINUX_LOAD_ADDRESS_ULL + image_size,
--- 
-2.29.2
-
+	  Andrew
