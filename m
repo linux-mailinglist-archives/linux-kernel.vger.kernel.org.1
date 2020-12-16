@@ -2,89 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D88A2DC2E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:14:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B10412DC2E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:15:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726031AbgLPPNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 10:13:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726209AbgLPPNS (ORCPT
+        id S1726369AbgLPPPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 10:15:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57567 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726348AbgLPPPl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 10:13:18 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06A91C0617A7
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 07:12:38 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id v14so2690069wml.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 07:12:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=oZtd/MZOojyUezV9z23Z9fCQqGnROjf33vmuahV/KQE=;
-        b=FQuIx6ZoOsiK6mH/H9Df1fctAVBWHZwPWW96tJo7ckm4t5qoqYxpxM6tM9X5GCXYtg
-         +sgbVkjpHSJ2XL5iRefLFQ8JtKSUuhnfDubWxYpYURLGuUAJ7KMqXB+8ccdQUniEU81E
-         67jdrBIPgV+5Dtr7kmc6SJEH2BW3VtXMAjd/b7fey5W7n9OvZOY4mMUq+DUfo8S1FUa9
-         ZvkabfMbsxM0SSlJk7LLsSvA5OS+9fedthITD+NuO05X1UdC6wKW2GREsY6PQ9EBo6n2
-         yID/Ojxp9+P40XmmXLBl3H7KJ8WhYGBx8z9Cx1xs2PZ73m6ahku02hhGRF0NPdCgx7gK
-         P5Bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=oZtd/MZOojyUezV9z23Z9fCQqGnROjf33vmuahV/KQE=;
-        b=qhDoIB3vz+XJ4JTW++mbQ4BJPqcRiHr4AEPaPQAklyeLZnLETjtXspUkwOGNGFEDKA
-         WVHH//61C9xt6dgRQWa7mAic7mOMTLUtXeTXNiRl3rVnJJC2QAiuFjGa8Yi8zPn9pDCg
-         Eo2EhDIwmpGKZC1xl4hH5uUKtsZbHkwQzxLlSnP5lMGfqdD16IBfjJ8OIwylpGtAEbAO
-         ie3tSxP/n3lF0hxwarplJ967pgk2QO7jksmVxYR+FQzV+kiGlnHX5of4D0VPQHiXUosO
-         L0DzMyc4BqzcFi46nDWa/ecHdZbPP1XbBv/awELaGFY3RdHFHiEgEs/4GQIHrSg0uB0w
-         H4Sg==
-X-Gm-Message-State: AOAM533mU/shp0UTCGhzMBNWSvahbu58A5BfBQWuUPcCDtXNvMfLprSc
-        a3NW4EiVslh3M+ZQZwedn9vQdA==
-X-Google-Smtp-Source: ABdhPJyHng1RS764CO1pKAO40j3F2Kr655xLIpX0rld1GEblfmjJ1VPqwxbssYrwFdlZn0+hQSJ9qA==
-X-Received: by 2002:a1c:96cb:: with SMTP id y194mr3787778wmd.62.1608131556713;
-        Wed, 16 Dec 2020 07:12:36 -0800 (PST)
-Received: from dell ([91.110.221.200])
-        by smtp.gmail.com with ESMTPSA id t16sm3742983wri.42.2020.12.16.07.12.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 07:12:36 -0800 (PST)
-Date:   Wed, 16 Dec 2020 15:12:34 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Cc:     marek.vasut+renesas@gmail.com, matti.vaittinen@fi.rohmeurope.com,
-        lgirdwood@gmail.com, broonie@kernel.org, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, khiem.nguyen.xt@renesas.com,
-        linux-power@fi.rohmeurope.com, linux-gpio@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 10/12] mfd: bd9571mwv: Use devm_regmap_add_irq_chip()
-Message-ID: <20201216151234.GL207743@dell>
-References: <1608104275-13174-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
- <1608104275-13174-11-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+        Wed, 16 Dec 2020 10:15:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608131654;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OfDj4DJaoB++2KIjkmOLDB1ZfXvWoRXRp8J5NFncySc=;
+        b=RDZiiyHCYIF1sB+nn5MQPeM3/CeElXoBvRhbspBij/iUsgFwwRaZUrdUuomuYjBdRfUPaW
+        EuQrTATjgltx6SWGK/vsWyy729JIDCpFxPhb8NAJBs/NwNTjXf6WcSIgKZEciqkmxGsxRu
+        v/g1cmSEj95ydw6pZY4q7mFLt7Dq3Bg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-575-r1I8TnV4MYmAaZJGsd23gQ-1; Wed, 16 Dec 2020 10:14:12 -0500
+X-MC-Unique: r1I8TnV4MYmAaZJGsd23gQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6E0CD800D53;
+        Wed, 16 Dec 2020 15:14:10 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-112-114.rdu2.redhat.com [10.10.112.114])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4C4AB19CAC;
+        Wed, 16 Dec 2020 15:14:10 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id C3283220BCF; Wed, 16 Dec 2020 10:14:09 -0500 (EST)
+Date:   Wed, 16 Dec 2020 10:14:09 -0500
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Linux fsdevel mailing list <linux-fsdevel@vger.kernel.org>,
+        linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, miklos@szeredi.hu, amir73il@gmail.com,
+        willy@infradead.org, jack@suse.cz, sargun@sargun.me
+Subject: Re: [PATCH] vfs, syncfs: Do not ignore return code from ->sync_fs()
+Message-ID: <20201216151409.GA3177@redhat.com>
+References: <20201216143802.GA10550@redhat.com>
+ <132c8c1e1ab82f5a640ff1ede6bb844885d46e68.camel@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1608104275-13174-11-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+In-Reply-To: <132c8c1e1ab82f5a640ff1ede6bb844885d46e68.camel@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Dec 2020, Yoshihiro Shimoda wrote:
-
-> Use dev_regmap_add_irq_chip() to simplify the code.
+On Wed, Dec 16, 2020 at 09:57:49AM -0500, Jeff Layton wrote:
+> On Wed, 2020-12-16 at 09:38 -0500, Vivek Goyal wrote:
+> > I see that current implementation of __sync_filesystem() ignores the
+> > return code from ->sync_fs(). I am not sure why that's the case.
+> > 
+> > Ignoring ->sync_fs() return code is problematic for overlayfs where
+> > it can return error if sync_filesystem() on upper super block failed.
+> > That error will simply be lost and sycnfs(overlay_fd), will get
+> > success (despite the fact it failed).
+> > 
+> > I am assuming that we want to continue to call __sync_blockdev()
+> > despite the fact that there have been errors reported from
+> > ->sync_fs(). So I wrote this simple patch which captures the
+> > error from ->sync_fs() but continues to call __sync_blockdev()
+> > and returns error from sync_fs() if there is one.
+> > 
+> > There might be some very good reasons to not capture ->sync_fs()
+> > return code, I don't know. Hence thought of proposing this patch.
+> > Atleast I will get to know the reason. I still need to figure
+> > a way out how to propagate overlay sync_fs() errors to user
+> > space.
+> > 
+> > Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+> > ---
+> >  fs/sync.c |    8 ++++++--
+> >  1 file changed, 6 insertions(+), 2 deletions(-)
+> > 
+> > Index: redhat-linux/fs/sync.c
+> > ===================================================================
+> > --- redhat-linux.orig/fs/sync.c	2020-12-16 09:15:49.831565653 -0500
+> > +++ redhat-linux/fs/sync.c	2020-12-16 09:23:42.499853207 -0500
+> > @@ -30,14 +30,18 @@
+> >   */
+> >  static int __sync_filesystem(struct super_block *sb, int wait)
+> >  {
+> > +	int ret, ret2;
+> > +
+> >  	if (wait)
+> >  		sync_inodes_sb(sb);
+> >  	else
+> >  		writeback_inodes_sb(sb, WB_REASON_SYNC);
+> >  
+> > 
+> >  	if (sb->s_op->sync_fs)
+> > -		sb->s_op->sync_fs(sb, wait);
+> > -	return __sync_blockdev(sb->s_bdev, wait);
+> > +		ret = sb->s_op->sync_fs(sb, wait);
+> > +	ret2 = __sync_blockdev(sb->s_bdev, wait);
+> > +
+> > +	return ret ? ret : ret2;
+> >  }
+> >  
+> > 
+> >  /*
+> > 
 > 
-> Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-> ---
->  drivers/mfd/bd9571mwv.c | 27 ++++++---------------------
->  1 file changed, 6 insertions(+), 21 deletions(-)
+> I posted a patchset that took a similar approach a couple of years ago,
+> and we decided not to go with it [1].
+> 
+> While it's not ideal to ignore the error here, I think this is likely to
+> break stuff.
 
-For my own reference (apply this as-is to your sign-off block):
+So one side affect I see is that syncfs() might start returning errors
+in some cases which were not reported at all. I am wondering will that
+count as breakage.
 
-  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+> What may be better is to just make sync_fs void return, so
+> people don't think that returned errors there mean anything.
 
--- 
-Lee Jones [æŽç¼æ–¯]
-Senior Technical Lead - Developer Services
-Linaro.org â”‚ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+May be. 
+
+But then question remains that how do we return error to user space
+in syncfs(fd) for overlayfs. I will not be surprised if other
+filesystems want to return errors as well.
+
+Shall I create new helpers and call these in case of syncfs(). But
+that too will start returning new errors on syncfs(). So it does
+not solve that problem (if it is a problem).
+
+Or we can define a new super block op say ->sync_fs2() and call that
+first and in that case capture return code. That way it will not
+impact existing cases and overlayfs can possibly make use of
+->sync_fs2() and return error. IOW, impact will be limited to
+only file systems which chose to implement ->sync_fs2().
+
+Thanks
+Vivek
+
+> 
+> [1]: https://lore.kernel.org/linux-fsdevel/20180518123415.28181-1-jlayton@kernel.org/
+> -- 
+> Jeff Layton <jlayton@kernel.org>
+> 
+
