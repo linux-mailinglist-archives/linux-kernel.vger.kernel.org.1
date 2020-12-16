@@ -2,157 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 754D72DC19D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:52:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2383E2DC1A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:54:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726433AbgLPNv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 08:51:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45750 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726362AbgLPNv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 08:51:26 -0500
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jiri Kosina <trivial@kernel.org>
-Subject: [PATCH RFC] x86/sgx: Add trivial NUMA allocation
-Date:   Wed, 16 Dec 2020 15:50:31 +0200
-Message-Id: <20201216135031.21518-1-jarkko@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S1726407AbgLPNxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 08:53:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725550AbgLPNxA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 08:53:00 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30DC2C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 05:52:20 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id r4so12962310pls.11
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 05:52:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MByjt13D8dTyrL9LXVO8Wl4qrEzL2nVUzZj2LIZjinw=;
+        b=xEkeeDNDwEctBCEW9+sGNx6t6X+u7em43nG+lu0z1gifW1MLYSuSRYohoEK1GimBgo
+         5ysElzKFdJdmrlfMoN8ewUO4Mbc2vtErLMpfDT2aRJ5HH4ehchKTb570hxvzmaG2tFbB
+         DywlXF+1AZePbf8VAlGJzwcs8HhJoSiXSJQEbUnZlKp23eQqeDeujY3ojoCn0ybg7s9W
+         fzzYP908pt2emtJw6hmoNyAI6I5AAWl8zqcAXweTum3yZgh5QXY51iqO+k8NTADI2Hc5
+         dJNmh3EeznSKLV1uleZNGocmGHCFSDOofG/skh/EHGrVyRmuqGtje5nrrcR/sZu+CDEl
+         Yj8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MByjt13D8dTyrL9LXVO8Wl4qrEzL2nVUzZj2LIZjinw=;
+        b=faTgfkTvCyEmv6PDvUcFWHFYgN4psbfcM5sSWr3sBu4ZLOvm0Zuyczr6+O3OMTERF4
+         ei8UJMfsln2eoKcKP1Dx7B21jSxfRYNFmgL4pEcYPzGtCO83lsfW7G1iQC+3r2zxWzVB
+         7O0E8S5gAI+3YcREevtbWAAha5gVsreRIu6UnMLjDURKGOu7UMROOdFk3TTtQyidUe3t
+         vkjkN1ik/cvsUxnRLjrYrxZt9F+tPiQWFLvJEtTnLHxaFLtfhcDNrJ+2P+J/GxnGgp/s
+         ndhZLBUroKCWUfwJ5xLHn1rZBIb/PDJ0I6Z8g2dKcEk7LDtSThi40nApJ4yajk3uVY0S
+         7Nug==
+X-Gm-Message-State: AOAM530vws31M/QLySAnlEb+tl1yKUgOuWiXxXBUZSe8LAV9Z1hiPVPr
+        hy+HgLte4wOS+7fz0rU5/RB3eoHXnxp7UPWFMAyARw==
+X-Google-Smtp-Source: ABdhPJxx5e3AsxCiCIXYZp2OHM5MtCHWVOP/WNUpVGJcXgHZNqGgFqJxEOwTYxQekrQT8Wj7ZuvNdf7qNno8pHo21lo=
+X-Received: by 2002:a17:90a:5405:: with SMTP id z5mr3286702pjh.13.1608126739730;
+ Wed, 16 Dec 2020 05:52:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201213154534.54826-1-songmuchun@bytedance.com>
+ <20201213154534.54826-7-songmuchun@bytedance.com> <20201216132847.GB29394@linux>
+In-Reply-To: <20201216132847.GB29394@linux>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 16 Dec 2020 21:51:43 +0800
+Message-ID: <CAMZfGtWfXYn5Na=qQJHEZJO3wTOrf1m=-xarxTLp_pYpZoqjWw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v9 06/11] mm/hugetlb: Set the PageHWPoison
+ to the raw error page
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Create a pointer array for each NUMA node with the references to the
-contained EPC sections. Use this in __sgx_alloc_epc_page() to knock the
-current NUMA node before the others.
+On Wed, Dec 16, 2020 at 9:28 PM Oscar Salvador <osalvador@suse.de> wrote:
+>
+> On Sun, Dec 13, 2020 at 11:45:29PM +0800, Muchun Song wrote:
+> > Because we reuse the first tail vmemmap page frame and remap it
+> > with read-only, we cannot set the PageHWPosion on a tail page.
+> > So we can use the head[4].private to record the real error page
+> > index and set the raw error page PageHWPoison later.
+>
+> Maybe the following is better?
+>
+> "Since the first page of tail page structs is remapped read-only,
+>  we cannot modify any tail struct page, and so we cannot set
+>  the HWPoison flag on a tail page.
+>  We can make use of head[4].private to record the real hwpoisoned
+>  page index.
+>  Right before freeing the page the real raw page will be retrieved
+>  and marked as HWPoison.
+> "
+>
+> I think it is slighly clearer, but whatever.
 
-Suggested-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
----
- arch/x86/kernel/cpu/sgx/main.c | 66 +++++++++++++++++++++++++++++++---
- 1 file changed, 61 insertions(+), 5 deletions(-)
+Thank you.
 
-diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index c519fc5f6948..0da510763c47 100644
---- a/arch/x86/kernel/cpu/sgx/main.c
-+++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -13,6 +13,13 @@
- #include "encl.h"
- #include "encls.h"
- 
-+struct sgx_numa_node {
-+	struct sgx_epc_section *sections[SGX_MAX_EPC_SECTIONS];
-+	int nr_sections;
-+};
-+
-+static struct sgx_numa_node sgx_numa_nodes[MAX_NUMNODES];
-+static int sgx_nr_numa_nodes;
- struct sgx_epc_section sgx_epc_sections[SGX_MAX_EPC_SECTIONS];
- static int sgx_nr_epc_sections;
- static struct task_struct *ksgxd_tsk;
-@@ -473,6 +480,25 @@ static struct sgx_epc_page *__sgx_alloc_epc_page_from_section(struct sgx_epc_sec
- 	return page;
- }
- 
-+static struct sgx_epc_page *__sgx_alloc_epc_page_from_node(int nid)
-+{
-+	struct sgx_numa_node *node = &sgx_numa_nodes[nid];
-+	struct sgx_epc_section *section;
-+	struct sgx_epc_page *page;
-+	int i;
-+
-+	for (i = 0; i < node->nr_sections; i++) {
-+		section = node->sections[i];
-+
-+		page = __sgx_alloc_epc_page_from_section(section);
-+		if (page)
-+			return page;
-+	}
-+
-+	return NULL;
-+}
-+
-+
- /**
-  * __sgx_alloc_epc_page() - Allocate an EPC page
-  *
-@@ -485,14 +511,19 @@ static struct sgx_epc_page *__sgx_alloc_epc_page_from_section(struct sgx_epc_sec
-  */
- struct sgx_epc_page *__sgx_alloc_epc_page(void)
- {
--	struct sgx_epc_section *section;
- 	struct sgx_epc_page *page;
-+	int nid = numa_node_id();
- 	int i;
- 
--	for (i = 0; i < sgx_nr_epc_sections; i++) {
--		section = &sgx_epc_sections[i];
-+	page = __sgx_alloc_epc_page_from_node(nid);
-+	if (page)
-+		return page;
- 
--		page = __sgx_alloc_epc_page_from_section(section);
-+	for (i = 0; i < sgx_nr_numa_nodes; i++) {
-+		if (i == nid)
-+			continue;
-+
-+		page = __sgx_alloc_epc_page_from_node(i);
- 		if (page)
- 			return page;
- 	}
-@@ -661,11 +692,28 @@ static inline u64 __init sgx_calc_section_metric(u64 low, u64 high)
- 	       ((high & GENMASK_ULL(19, 0)) << 32);
- }
- 
-+static int __init sgx_pfn_to_nid(unsigned long pfn)
-+{
-+	pg_data_t *pgdat;
-+	int nid;
-+
-+	for (nid = 0; nid < nr_node_ids; nid++) {
-+		pgdat = NODE_DATA(nid);
-+
-+		if (pfn >= pgdat->node_start_pfn &&
-+		    pfn < (pgdat->node_start_pfn + pgdat->node_spanned_pages))
-+			return nid;
-+	}
-+
-+	return 0;
-+}
-+
- static bool __init sgx_page_cache_init(void)
- {
- 	u32 eax, ebx, ecx, edx, type;
-+	struct sgx_numa_node *node;
- 	u64 pa, size;
--	int i;
-+	int i, nid;
- 
- 	for (i = 0; i < ARRAY_SIZE(sgx_epc_sections); i++) {
- 		cpuid_count(SGX_CPUID, i + SGX_CPUID_EPC, &eax, &ebx, &ecx, &edx);
-@@ -690,6 +738,14 @@ static bool __init sgx_page_cache_init(void)
- 		}
- 
- 		sgx_nr_epc_sections++;
-+
-+		nid = sgx_pfn_to_nid(PFN_DOWN(pa));
-+		node = &sgx_numa_nodes[nid];
-+
-+		node->sections[node->nr_sections] = &sgx_epc_sections[i];
-+		node->nr_sections++;
-+
-+		sgx_nr_numa_nodes = max(sgx_nr_numa_nodes, nid + 1);
- 	}
- 
- 	if (!sgx_nr_epc_sections) {
+>
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>
+> I do not quite like the name hwpoison_subpage_deliver, but I cannot
+> come up with a better one myself, so:
+>
+> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+
+Thanks for your review.
+
+>
+> --
+> Oscar Salvador
+> SUSE L3
+
+
+
 -- 
-2.27.0
-
+Yours,
+Muchun
