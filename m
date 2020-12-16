@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD5A2DBDF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:50:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33F552DBDF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:50:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726239AbgLPJs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 04:48:27 -0500
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:20180 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726232AbgLPJs1 (ORCPT
+        id S1726247AbgLPJsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 04:48:53 -0500
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:2567 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726243AbgLPJsx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 04:48:27 -0500
+        Wed, 16 Dec 2020 04:48:53 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1608112106; x=1639648106;
+  t=1608112133; x=1639648133;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=OfAxiI1TGWAm938TQnf2Mv9tv9ZVjwG7ArzBDalULAM=;
-  b=MnHFZ8OUvK3NEZpXj/k1Xd4IEFpCwdUZeL2jH7tgX0jo4bOxoz7WWwDW
-   KA7Sv2fBcdXbR5CELDPwiGw3Ei3J0dhtI6djFIZ3fbKM+kH0Y7EpmVy9Y
-   9xPuqQOoB3CSG32wwSO6H+jgNMv8FQmc3eaeg+UngL8cXHm2taue9ESU8
-   4=;
+  bh=LG3J7fvqAIYDCK52FqgXfz7XsABi7oMW6Ndy9IE+r0A=;
+  b=aMYh2sjT5zr2Y881uon5Jg6TPV0Y4OzwhnQt7jw8YtJvhZlgEM5t9ld0
+   +QYCaR2TmWW01WOJ53H3nBFVje/641QOf0s76Uw8k+atUvvLtLn0ET/Sl
+   qM3OKTkmfzyezw8VEjEpADVFq87j9toWfDsmVaUQSsW+UTeuGD3iPtv7V
+   U=;
 X-IronPort-AV: E=Sophos;i="5.78,424,1599523200"; 
-   d="scan'208";a="71565777"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-41350382.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 16 Dec 2020 09:47:43 +0000
+   d="scan'208";a="73004863"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-538b0bfb.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 16 Dec 2020 09:48:02 +0000
 Received: from EX13D31EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2a-41350382.us-west-2.amazon.com (Postfix) with ESMTPS id A18FAC28E8;
-        Wed, 16 Dec 2020 09:47:39 +0000 (UTC)
+        by email-inbound-relay-2a-538b0bfb.us-west-2.amazon.com (Postfix) with ESMTPS id 3797AA1CD2;
+        Wed, 16 Dec 2020 09:47:59 +0000 (UTC)
 Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.31) by
  EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 16 Dec 2020 09:47:21 +0000
+ id 15.0.1497.2; Wed, 16 Dec 2020 09:47:41 +0000
 From:   SeongJae Park <sjpark@amazon.com>
 To:     <akpm@linux-foundation.org>
 CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
@@ -53,9 +53,9 @@ CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
         <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
         <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [RFC v10 12/13] mm/damon/paddr: Separate commonly usable functions
-Date:   Wed, 16 Dec 2020 10:42:20 +0100
-Message-ID: <20201216094221.11898-13-sjpark@amazon.com>
+Subject: [RFC v10 13/13] mm/damon: Implement primitives for page granularity idleness monitoring
+Date:   Wed, 16 Dec 2020 10:42:21 +0100
+Message-ID: <20201216094221.11898-14-sjpark@amazon.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201216094221.11898-1-sjpark@amazon.com>
 References: <20201216094221.11898-1-sjpark@amazon.com>
@@ -70,306 +70,218 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: SeongJae Park <sjpark@amazon.de>
 
-This commit moves functions in the default physical address space
-monitoring primitives that commonly usable from other use cases like
-page granularity idleness monitoring to prmtv-common.
+The lightweight and upper-bound limited monitoring overhead of DAMON is
+available due to its core mechanisms, namely region-based sampling and
+adaptive regions adjustment.  However, there could be some use cases
+that don't need such fancy mechanisms.  The page-granularity idleness
+monitoring is a good example.  Because the metadata for DAMON's overhead
+control mechanism only wastes memory in such cases, DAMON allows users
+to eliminate such overhead using arbitrary type monitoring targets.
+
+This commit implements a monitoring primitive supporting the
+page-granularity idleness monitoring using the arbitrary type target
+feature.  It's almost same to Idle Page Tracking, but incur much less
+kernel - user context changes compared to it.
+
+Nevertheless, this patch provides only kernel space API.  This feature
+will be exported to the user space via the debugfs interface in near
+future.
 
 Signed-off-by: SeongJae Park <sjpark@amazon.de>
 ---
- mm/damon/paddr.c        | 122 ----------------------------------------
- mm/damon/prmtv-common.c | 122 ++++++++++++++++++++++++++++++++++++++++
- mm/damon/prmtv-common.h |   4 ++
- 3 files changed, 126 insertions(+), 122 deletions(-)
+ include/linux/damon.h        | 27 ++++++++++++++
+ include/trace/events/damon.h | 19 ++++++++++
+ mm/damon/Kconfig             |  9 +++++
+ mm/damon/Makefile            |  1 +
+ mm/damon/paddr.c             |  2 --
+ mm/damon/pgidle.c            | 69 ++++++++++++++++++++++++++++++++++++
+ 6 files changed, 125 insertions(+), 2 deletions(-)
+ create mode 100644 mm/damon/pgidle.c
 
-diff --git a/mm/damon/paddr.c b/mm/damon/paddr.c
-index b120f672cc57..143ddc0e5917 100644
---- a/mm/damon/paddr.c
-+++ b/mm/damon/paddr.c
-@@ -19,69 +19,6 @@
-  * of the primitives.
-  */
+diff --git a/include/linux/damon.h b/include/linux/damon.h
+index ea2fd054b2ef..220e59299f19 100644
+--- a/include/linux/damon.h
++++ b/include/linux/damon.h
+@@ -386,4 +386,31 @@ void damon_pa_set_primitives(struct damon_ctx *ctx);
  
--/*
-- * Get a page by pfn if it is in the LRU list.  Otherwise, returns NULL.
-- *
-- * The body of this function is stollen from the 'page_idle_get_page()'.  We
-- * steal rather than reuse it because the code is quite simple.
-- */
--static struct page *damon_pa_get_page(unsigned long pfn)
--{
--	struct page *page = pfn_to_online_page(pfn);
--	pg_data_t *pgdat;
--
--	if (!page || !PageLRU(page) ||
--	    !get_page_unless_zero(page))
--		return NULL;
--
--	pgdat = page_pgdat(page);
--	spin_lock_irq(&pgdat->lru_lock);
--	if (unlikely(!PageLRU(page))) {
--		put_page(page);
--		page = NULL;
--	}
--	spin_unlock_irq(&pgdat->lru_lock);
--	return page;
--}
--
--static bool __damon_pa_mkold(struct page *page, struct vm_area_struct *vma,
--		unsigned long addr, void *arg)
--{
--	damon_va_mkold(vma->vm_mm, addr);
--	return true;
--}
--
--static void damon_pa_mkold(unsigned long paddr)
--{
--	struct page *page = damon_pa_get_page(PHYS_PFN(paddr));
--	struct rmap_walk_control rwc = {
--		.rmap_one = __damon_pa_mkold,
--		.anon_lock = page_lock_anon_vma_read,
--	};
--	bool need_lock;
--
--	if (!page)
--		return;
--
--	if (!page_mapped(page) || !page_rmapping(page)) {
--		set_page_idle(page);
--		put_page(page);
--		return;
--	}
--
--	need_lock = !PageAnon(page) || PageKsm(page);
--	if (need_lock && !trylock_page(page)) {
--		put_page(page);
--		return;
--	}
--
--	rmap_walk(page, &rwc);
--
--	if (need_lock)
--		unlock_page(page);
--	put_page(page);
--}
--
- static void __damon_pa_prepare_access_check(struct damon_ctx *ctx,
- 					    struct damon_region *r)
- {
-@@ -101,65 +38,6 @@ void damon_pa_prepare_access_checks(struct damon_ctx *ctx)
- 	}
- }
+ #endif	/* CONFIG_DAMON_PADDR */
  
--struct damon_pa_access_chk_result {
--	unsigned long page_sz;
--	bool accessed;
--};
--
--static bool damon_pa_accessed(struct page *page, struct vm_area_struct *vma,
--		unsigned long addr, void *arg)
--{
--	struct damon_pa_access_chk_result *result = arg;
--
--	result->accessed = damon_va_young(vma->vm_mm, addr, &result->page_sz);
--
--	/* If accessed, stop walking */
--	return !result->accessed;
--}
--
--static bool damon_pa_young(unsigned long paddr, unsigned long *page_sz)
--{
--	struct page *page = damon_pa_get_page(PHYS_PFN(paddr));
--	struct damon_pa_access_chk_result result = {
--		.page_sz = PAGE_SIZE,
--		.accessed = false,
--	};
--	struct rmap_walk_control rwc = {
--		.arg = &result,
--		.rmap_one = damon_pa_accessed,
--		.anon_lock = page_lock_anon_vma_read,
--	};
--	bool need_lock;
--
--	if (!page)
--		return false;
--
--	if (!page_mapped(page) || !page_rmapping(page)) {
--		if (page_is_idle(page))
--			result.accessed = false;
--		else
--			result.accessed = true;
--		put_page(page);
--		goto out;
--	}
--
--	need_lock = !PageAnon(page) || PageKsm(page);
--	if (need_lock && !trylock_page(page)) {
--		put_page(page);
--		return NULL;
--	}
--
--	rmap_walk(page, &rwc);
--
--	if (need_lock)
--		unlock_page(page);
--	put_page(page);
--
--out:
--	*page_sz = result.page_sz;
--	return result.accessed;
--}
--
- /*
-  * Check whether the region was accessed after the last preparation
-  *
-diff --git a/mm/damon/prmtv-common.c b/mm/damon/prmtv-common.c
-index 6cdb96cbc9ef..6c2e760e086c 100644
---- a/mm/damon/prmtv-common.c
-+++ b/mm/damon/prmtv-common.c
-@@ -102,3 +102,125 @@ bool damon_va_young(struct mm_struct *mm, unsigned long addr,
- 
- 	return young;
- }
++#ifdef CONFIG_DAMON_PGIDLE
 +
 +/*
-+ * Get a page by pfn if it is in the LRU list.  Otherwise, returns NULL.
++ * struct damon_pfns_range - Represents a pfn range of [@start, @end).
++ * @start:	Start pfn of the range (inclusive).
++ * @end:	End pfn of the range (exclusive).
 + *
-+ * The body of this function is stollen from the 'page_idle_get_page()'.  We
-+ * steal rather than reuse it because the code is quite simple.
++ * In case of the page granularity idleness monitoring, an instance of this
++ * struct is pointed by &damon_ctx.arbitrary_target.
 + */
-+static struct page *damon_pa_get_page(unsigned long pfn)
++struct damon_pfns_range {
++	unsigned long start;
++	unsigned long end;
++};
++
++bool damon_pgi_is_idle(unsigned long pfn, unsigned long *pg_size);
++
++/* Monitoring primitives for page granularity idleness monitoring */
++
++void damon_pgi_prepare_access_checks(struct damon_ctx *ctx);
++unsigned int damon_pgi_check_accesses(struct damon_ctx *ctx);
++bool damon_pgi_target_valid(void *t);
++void damon_pgi_set_primitives(struct damon_ctx *ctx);
++
++#endif	/* CONFIG_DAMON_PGIDLE */
++
++
+ #endif	/* _DAMON_H */
+diff --git a/include/trace/events/damon.h b/include/trace/events/damon.h
+index 2f422f4f1fb9..f0c9f1d801cf 100644
+--- a/include/trace/events/damon.h
++++ b/include/trace/events/damon.h
+@@ -37,6 +37,25 @@ TRACE_EVENT(damon_aggregated,
+ 			__entry->start, __entry->end, __entry->nr_accesses)
+ );
+ 
++TRACE_EVENT(damon_pgi,
++
++	TP_PROTO(unsigned long pfn, bool accessed),
++
++	TP_ARGS(pfn, accessed),
++
++	TP_STRUCT__entry(
++		__field(unsigned long, pfn)
++		__field(bool, accessed)
++	),
++
++	TP_fast_assign(
++		__entry->pfn = pfn;
++		__entry->accessed = accessed;
++	),
++
++	TP_printk("pfn=%lu accessed=%u", __entry->pfn, __entry->accessed)
++);
++
+ #endif /* _TRACE_DAMON_H */
+ 
+ /* This part must be outside protection */
+diff --git a/mm/damon/Kconfig b/mm/damon/Kconfig
+index 38f4cfce72dd..eeefb5b633b6 100644
+--- a/mm/damon/Kconfig
++++ b/mm/damon/Kconfig
+@@ -42,6 +42,15 @@ config DAMON_PADDR
+ 	  This builds the default data access monitoring primitives for DAMON
+ 	  that works for physical address spaces.
+ 
++config DAMON_PGIDLE
++	bool "Data access monitoring primitives for page granularity idleness"
++	depends on DAMON && MMU
++	select PAGE_EXTENSION if !64BIT
++	select PAGE_IDLE_FLAG
++	help
++	  This builds the default data access monitoring primitives for DAMON
++	  that works for page granularity idleness monitoring.
++
+ config DAMON_VADDR_KUNIT_TEST
+ 	bool "Test for DAMON primitives" if !KUNIT_ALL_TESTS
+ 	depends on DAMON_VADDR && KUNIT=y
+diff --git a/mm/damon/Makefile b/mm/damon/Makefile
+index 8d9b0df79702..017799e5670a 100644
+--- a/mm/damon/Makefile
++++ b/mm/damon/Makefile
+@@ -3,4 +3,5 @@
+ obj-$(CONFIG_DAMON)		:= core.o
+ obj-$(CONFIG_DAMON_VADDR)	+= prmtv-common.o vaddr.o
+ obj-$(CONFIG_DAMON_PADDR)	+= prmtv-common.o paddr.o
++obj-$(CONFIG_DAMON_PGIDLE)	+= prmtv-common.o pgidle.o
+ obj-$(CONFIG_DAMON_DBGFS)	+= dbgfs.o
+diff --git a/mm/damon/paddr.c b/mm/damon/paddr.c
+index 143ddc0e5917..95d7f3b745a9 100644
+--- a/mm/damon/paddr.c
++++ b/mm/damon/paddr.c
+@@ -7,8 +7,6 @@
+ 
+ #define pr_fmt(fmt) "damon-pa: " fmt
+ 
+-#include <linux/rmap.h>
+-
+ #include "prmtv-common.h"
+ 
+ /*
+diff --git a/mm/damon/pgidle.c b/mm/damon/pgidle.c
+new file mode 100644
+index 000000000000..dd8297371eaf
+--- /dev/null
++++ b/mm/damon/pgidle.c
+@@ -0,0 +1,69 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * DAMON Primitives for Page Granularity Idleness Monitoring
++ *
++ * Author: SeongJae Park <sjpark@amazon.de>
++ */
++
++#define pr_fmt(fmt) "damon-pgi: " fmt
++
++#include <linux/rmap.h>
++
++#include "prmtv-common.h"
++
++#include <trace/events/damon.h>
++
++bool damon_pgi_is_idle(unsigned long pfn, unsigned long *pg_size)
 +{
-+	struct page *page = pfn_to_online_page(pfn);
-+	pg_data_t *pgdat;
-+
-+	if (!page || !PageLRU(page) ||
-+	    !get_page_unless_zero(page))
-+		return NULL;
-+
-+	pgdat = page_pgdat(page);
-+	spin_lock_irq(&pgdat->lru_lock);
-+	if (unlikely(!PageLRU(page))) {
-+		put_page(page);
-+		page = NULL;
-+	}
-+	spin_unlock_irq(&pgdat->lru_lock);
-+	return page;
++	return damon_pa_young(PFN_PHYS(pfn), pg_size);
 +}
 +
-+static bool __damon_pa_mkold(struct page *page, struct vm_area_struct *vma,
-+		unsigned long addr, void *arg)
++/*
++ * This has no implementations for 'init_target_regions()' and
++ * 'update_target_regions()'.  Users should set the initial regions and update
++ * regions by themselves in the 'before_start' and 'after_aggregation'
++ * callbacks, respectively.  Or, they can implement and use their own version
++ * of the primitives.
++ */
++
++void damon_pgi_prepare_access_checks(struct damon_ctx *ctx)
 +{
-+	damon_va_mkold(vma->vm_mm, addr);
++	struct damon_pfns_range *target = ctx->arbitrary_target;
++	unsigned long pfn;
++
++	for (pfn = target->start; pfn < target->end; pfn++)
++		damon_pa_mkold(PFN_PHYS(pfn));
++}
++
++unsigned int damon_pgi_check_accesses(struct damon_ctx *ctx)
++{
++	struct damon_pfns_range *target = ctx->arbitrary_target;
++	unsigned long pfn;
++	unsigned long pg_size = 0;
++
++	for (pfn = target->start; pfn < target->end; pfn++) {
++		pg_size = 0;
++		trace_damon_pgi(pfn, damon_pa_young(PFN_PHYS(pfn), &pg_size));
++		if (pg_size > PAGE_SIZE)
++			pfn += pg_size / PAGE_SIZE - 1;
++	}
++
++	return 0;
++}
++
++bool damon_pgi_target_valid(void *target)
++{
 +	return true;
 +}
 +
-+void damon_pa_mkold(unsigned long paddr)
++void damon_pgi_set_primitives(struct damon_ctx *ctx)
 +{
-+	struct page *page = damon_pa_get_page(PHYS_PFN(paddr));
-+	struct rmap_walk_control rwc = {
-+		.rmap_one = __damon_pa_mkold,
-+		.anon_lock = page_lock_anon_vma_read,
-+	};
-+	bool need_lock;
-+
-+	if (!page)
-+		return;
-+
-+	if (!page_mapped(page) || !page_rmapping(page)) {
-+		set_page_idle(page);
-+		put_page(page);
-+		return;
-+	}
-+
-+	need_lock = !PageAnon(page) || PageKsm(page);
-+	if (need_lock && !trylock_page(page)) {
-+		put_page(page);
-+		return;
-+	}
-+
-+	rmap_walk(page, &rwc);
-+
-+	if (need_lock)
-+		unlock_page(page);
-+	put_page(page);
++	ctx->primitive.init_target_regions = NULL;
++	ctx->primitive.update_target_regions = NULL;
++	ctx->primitive.prepare_access_checks = damon_pgi_prepare_access_checks;
++	ctx->primitive.check_accesses = damon_pgi_check_accesses;
++	ctx->primitive.reset_aggregated = NULL;
++	ctx->primitive.target_valid = damon_pgi_target_valid;
++	ctx->primitive.cleanup = NULL;
++	ctx->primitive.apply_scheme = NULL;
 +}
-+
-+struct damon_pa_access_chk_result {
-+	unsigned long page_sz;
-+	bool accessed;
-+};
-+
-+static bool damon_pa_accessed(struct page *page, struct vm_area_struct *vma,
-+		unsigned long addr, void *arg)
-+{
-+	struct damon_pa_access_chk_result *result = arg;
-+
-+	result->accessed = damon_va_young(vma->vm_mm, addr, &result->page_sz);
-+
-+	/* If accessed, stop walking */
-+	return !result->accessed;
-+}
-+
-+bool damon_pa_young(unsigned long paddr, unsigned long *page_sz)
-+{
-+	struct page *page = damon_pa_get_page(PHYS_PFN(paddr));
-+	struct damon_pa_access_chk_result result = {
-+		.page_sz = PAGE_SIZE,
-+		.accessed = false,
-+	};
-+	struct rmap_walk_control rwc = {
-+		.arg = &result,
-+		.rmap_one = damon_pa_accessed,
-+		.anon_lock = page_lock_anon_vma_read,
-+	};
-+	bool need_lock;
-+
-+	if (!page)
-+		return false;
-+
-+	if (!page_mapped(page) || !page_rmapping(page)) {
-+		if (page_is_idle(page))
-+			result.accessed = false;
-+		else
-+			result.accessed = true;
-+		put_page(page);
-+		goto out;
-+	}
-+
-+	need_lock = !PageAnon(page) || PageKsm(page);
-+	if (need_lock && !trylock_page(page)) {
-+		put_page(page);
-+		return NULL;
-+	}
-+
-+	rmap_walk(page, &rwc);
-+
-+	if (need_lock)
-+		unlock_page(page);
-+	put_page(page);
-+
-+out:
-+	*page_sz = result.page_sz;
-+	return result.accessed;
-+}
-diff --git a/mm/damon/prmtv-common.h b/mm/damon/prmtv-common.h
-index a66a6139b4fc..fbe9452bd040 100644
---- a/mm/damon/prmtv-common.h
-+++ b/mm/damon/prmtv-common.h
-@@ -10,6 +10,7 @@
- #include <linux/mmu_notifier.h>
- #include <linux/page_idle.h>
- #include <linux/random.h>
-+#include <linux/rmap.h>
- #include <linux/sched/mm.h>
- #include <linux/slab.h>
- 
-@@ -19,3 +20,6 @@
- void damon_va_mkold(struct mm_struct *mm, unsigned long addr);
- bool damon_va_young(struct mm_struct *mm, unsigned long addr,
- 			unsigned long *page_sz);
-+
-+void damon_pa_mkold(unsigned long paddr);
-+bool damon_pa_young(unsigned long paddr, unsigned long *page_sz);
 -- 
 2.17.1
 
