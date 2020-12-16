@@ -2,153 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADE6B2DC7DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 21:43:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1C422DC7E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 21:45:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728700AbgLPUmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 15:42:49 -0500
-Received: from mga03.intel.com ([134.134.136.65]:26387 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726979AbgLPUmt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 15:42:49 -0500
-IronPort-SDR: QPD30WIQKrfJgosEkOHLaew8PMjHkRNoZplib9QY9/+37fhU+cChhY+8YCfQETsAN3dgIwHgPN
- PeF5ZlcnQbCQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9837"; a="175237331"
-X-IronPort-AV: E=Sophos;i="5.78,425,1599548400"; 
-   d="scan'208";a="175237331"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2020 12:42:07 -0800
-IronPort-SDR: a1N5veaUEZSYSkyI6dbDQnr7U8r0v/vdWeIKvhMygGCuxuuB0VtYyvISwgHNU1GfpkxDG1wwGo
- jLHB4ak/king==
-X-IronPort-AV: E=Sophos;i="5.78,425,1599548400"; 
-   d="scan'208";a="369339256"
-Received: from ticela-or-085.amr.corp.intel.com (HELO intel.com) ([10.252.135.213])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2020 12:42:06 -0800
-Date:   Wed, 16 Dec 2020 12:42:05 -0800
-From:   Ben Widawsky <ben.widawsky@intel.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     linux-cxl@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [RFC PATCH 11/14] cxl/mem: Add a "RAW" send command
-Message-ID: <20201216204205.acum2sf652aspah3@intel.com>
-References: <20201209002418.1976362-1-ben.widawsky@intel.com>
- <20201209002418.1976362-12-ben.widawsky@intel.com>
- <CAPcyv4hRJRP+55QHxQYsAoE7V601+YMWgtEvzLimKRO8b4Jrjg@mail.gmail.com>
+        id S1729036AbgLPUoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 15:44:07 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:40716 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728811AbgLPUoG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 15:44:06 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BGKeMpi024579;
+        Wed, 16 Dec 2020 20:43:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=8g83cshHTOeHPycQMAVV7DPppJWYoxT4WZ0MJJjcpek=;
+ b=TAohFtw9gk5julYBPCdorya+Thi8CMZMW1LJUgIA2U5W1TOt4HpuS4+lDRZ+r77nJG0J
+ HvtVgBpyTznIXAqtGuGzfj6KRfvpwwJyW+2YlLZC0KWOheYiB8hFyO+A/qImX6gJm71T
+ 1gUmE07cGqyNe5UlyBqkBvbkWgpxS0TUlsgdQRZlNtjsltviPbWuYDXzjm4dOGIZrZQo
+ 2zkhPOxnvCH5hDDKA3V6MRoD/bj0vEIooqVwa3tcz8X9+XJmJGOivWzelqH85bNuCgU8
+ 8bpwbL1fDSqBJTckMZOle+cf9Z/gTauxIEXlC0qYKQhSfbIEqNHrDVIWFOgHajs9ou8b 4A== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 35cn9rje0p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 16 Dec 2020 20:43:15 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BGKaD0Y048865;
+        Wed, 16 Dec 2020 20:43:15 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 35d7sycgrj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Dec 2020 20:43:14 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BGKhCTc024166;
+        Wed, 16 Dec 2020 20:43:12 GMT
+Received: from revolver (/23.233.25.87)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 16 Dec 2020 12:43:12 -0800
+Date:   Wed, 16 Dec 2020 15:42:52 -0500
+From:   "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@google.com>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        Rik van Riel <riel@surriel.com>
+Subject: Re: [PATCH v2] mm/mmap: Don't unlock VMAs in remap_file_pages()
+Message-ID: <20201216204252.vh3zadk4ghbzufqz@revolver>
+Mail-Followup-To: "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
+        David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Andrew Morton <akpm@google.com>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        Rik van Riel <riel@surriel.com>
+References: <20201215155441.1497432-1-Liam.Howlett@Oracle.com>
+ <413ffbe0-959d-c2ad-95d8-80104adac089@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPcyv4hRJRP+55QHxQYsAoE7V601+YMWgtEvzLimKRO8b4Jrjg@mail.gmail.com>
+In-Reply-To: <413ffbe0-959d-c2ad-95d8-80104adac089@redhat.com>
+User-Agent: NeoMutt/20200320
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9837 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0
+ mlxlogscore=999 spamscore=0 mlxscore=0 suspectscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012160128
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9837 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
+ impostorscore=0 lowpriorityscore=0 clxscore=1011 spamscore=0
+ malwarescore=0 priorityscore=1501 phishscore=0 mlxscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012160128
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-12-09 14:38:49, Dan Williams wrote:
-> On Tue, Dec 8, 2020 at 4:24 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
-> >
-> > The CXL memory device send interface will have a number of supported
-> > commands. The raw command is not such a command. Raw commands allow
-> > userspace to send a specified opcode to the underlying hardware and
-> > bypass all driver checks on the command. This is useful for a couple of
-> > usecases, mainly:
-> > 1. Undocumented vendor specific hardware commands
-> > 2. Prototyping new hardware commands not yet supported by the driver
-> >
-> > While this all sounds very powerful it comes with a couple of caveats:
-> > 1. Bug reports using raw commands will not get the same level of
-> >    attention as bug reports using supported commands (via taint).
-> > 2. Supported commands will be rejected by the RAW command.
-> >
-> > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+
+Thank you for looking at this.  I appreciate the scrutiny.
+
+* David Hildenbrand <david@redhat.com> [201216 09:58]:
+> On 15.12.20 16:54, Liam R. Howlett wrote:
+> > do_mmap() will unlock the necessary VMAs.  There is also a bug in the
+> > loop which will evaluate as false and not unlock any VMAs anyways.
+> 
+> If there is a BUG, do we have a Fixes: tag? Also
+
+The bug would never show up as it is masked by do_mmap() unlocking the
+necessary range.  Although there is a bug in this code, the code does
+not cause an issue as it won't execute so should I have a Fixes tag?
+The code works and what I've done is remove a chunk of code that never
+runs.
+
+> 
+> 1. Can we fix the bug separately first?
+
+I think it is safer to remove unexecuted code than enable it and then
+remove it.
+
+> 2. Can we have a better description on what the bug actually is
+> "evaluate as false"? What is the result of the bug?
+
+The bug is in the for loop test expression that I removed in the patch.
+Here is the long explaination of why the loop has never run.
+
+
+Line 2982: if (start + size <= start
+Line 2983: 	goto out;
+
+size is positive.
+
+Line 2992: vma = find_vma(mm, start);
+Look up the first VMA which satisfies start < vm_end
+
+Line 2997: if (start < vma->vm_start)
+Line 2998: 	goto out;
+
+So now vma->vm_start >= start.
+If vma->vm_start > start, then there are no VMAs in that area, otherwise
+it would have been returned by find_vma().
+So we can say that vma->vm_start == start.
+
+Line 3033: for (tmp = vma; tmp->vm_start >= start + size;
+Line 3034:                 tmp = tmp->vm_next) {
+This is the for loop with the error in the test expression.
+
+tmp->vm_start == start which cannot be >= (start + size).
+
+I believe the intention was to loop through vmas in the range of start
+to (start + size) and unlock them.
+
+
+The result of the bug is no VMA is unlocked in this fuction.  But that
+doesn't matter as they are unlocked later in the call chain - which is
+why this code works as intended.
+
+
+> 
+> CCing some people that might know if this is actually a sane change.
+> Skimming over do_mmap(), it's not immediately clear to me that
+> "do_mmap() will unlock the necessary VMAs".
+
+Ah, yes.  That is understandable.
+
+do_mmap() L1583 -> mmap_region() L1752 -> munmap_vma_range() ->
+do_munmap() -> __do_munmap() loop at 2891 to unlock the range.
+
+Would you like me to add this call chain to the changelog?
+
+> 
+> > 
+> > Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
 > > ---
-> >  drivers/cxl/mem.c            | 32 ++++++++++++++++++++++++++++++++
-> >  include/uapi/linux/cxl_mem.h | 14 ++++++++++++--
-> >  2 files changed, 44 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> > index 0bf03afc0c80..a2cea7ac7cc6 100644
-> > --- a/drivers/cxl/mem.c
-> > +++ b/drivers/cxl/mem.c
-> > @@ -115,6 +115,7 @@ struct cxl_mem_command {
-> >
-> >  static struct cxl_mem_command mem_commands[] = {
-> >         CXL_CMD(INVALID, NONE, 0, 0, "Reserved", false, 0),
-> > +       CXL_CMD(RAW, TAINT, ~0, ~0, "Raw", true, 0),
-> 
-> Why is the taint indication in the ABI? It seems like it only needs to
-> be documented.
-> 
+> >  mm/mmap.c | 18 +-----------------
+> >  1 file changed, 1 insertion(+), 17 deletions(-)
+> > 
+> > diff --git a/mm/mmap.c b/mm/mmap.c
+> > index 5c8b4485860de..f7fecb77f84fd 100644
+> > --- a/mm/mmap.c
+> > +++ b/mm/mmap.c
+> > @@ -3025,25 +3025,9 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned long, start, unsigned long, size,
+> >  
+> >  	flags &= MAP_NONBLOCK;
+> >  	flags |= MAP_SHARED | MAP_FIXED | MAP_POPULATE;
+> > -	if (vma->vm_flags & VM_LOCKED) {
+> > -		struct vm_area_struct *tmp;
+> > +	if (vma->vm_flags & VM_LOCKED)
+> >  		flags |= MAP_LOCKED;
+> >  
+> > -		/* drop PG_Mlocked flag for over-mapped range */
+> > -		for (tmp = vma; tmp->vm_start >= start + size;
+         This should probably be less than ---^
 
-It's removed per the previous patch discussion.
-
-> >  };
-> >
-> >  static int cxl_mem_wait_for_doorbell(struct cxl_mem *cxlm)
-> > @@ -326,6 +327,20 @@ static int cxl_mem_count_commands(void)
-> >         return n;
-> >  };
-> >
-> > +static struct cxl_mem_command *cxl_mem_find_command(u16 opcode)
-> > +{
-> > +       int i;
-> > +
-> > +       for (i = 0; i < ARRAY_SIZE(mem_commands); i++) {
-> > +               struct cxl_mem_command *c = &mem_commands[i];
-> > +
-> > +               if (c->opcode == opcode)
-> > +                       return c;
-> > +       }
-> > +
-> > +       return NULL;
-> > +};
-> > +
-> >  /**
-> >   * handle_mailbox_cmd_from_user() - Dispatch a mailbox command.
-> >   * @cxlmd: The CXL memory device to communicate with.
-> > @@ -421,6 +436,23 @@ static int cxl_validate_cmd_from_user(struct cxl_send_command __user *user_cmd,
-> >         c = &mem_commands[cmd.id];
-> >         info = &c->info;
-> >
-> > +       /* Checks are bypassed for raw commands but along comes the taint! */
-> > +       if (cmd.id == CXL_MEM_COMMAND_ID_RAW) {
-> > +               struct cxl_mem_command temp =
-> > +                       CXL_CMD(RAW, NONE, cmd.size_in, cmd.size_out, "Raw",
-> > +                               true, cmd.raw.opcode);
+> > -				tmp = tmp->vm_next) {
+> > -			/*
+> > -			 * Split pmd and munlock page on the border
+> > -			 * of the range.
+> > -			 */
+> > -			vma_adjust_trans_huge(tmp, start, start + size, 0);
+> > -
+> > -			munlock_vma_pages_range(tmp,
+> > -					max(tmp->vm_start, start),
+> > -					min(tmp->vm_end, start + size));
+> > -		}
+> > -	}
+> > -
+> >  	file = get_file(vma->vm_file);
+> >  	ret = do_mmap(vma->vm_file, start, size,
+> >  			prot, flags, pgoff, &populate, NULL);
+> > 
 > 
-> Oh, I thought CXL_CMD() was only used to populate the mem_commands
-> array. Feels out of place to use it here when all it is doing is
-> updating the size_{in,out} and opcode fields. Mainly I'm interested in
-> CXL_CMD() enforcing that the command-id is the mem_commands index.
 > 
-
-Agreed and removed.
-
-> > +
-> > +               if (cmd.raw.rsvd)
-> > +                       return -EINVAL;
-> > +
-> > +               if (cxl_mem_find_command(cmd.raw.opcode))
-> > +                       return -EPERM;
-> > +
-> > +               add_taint(TAINT_WARN, LOCKDEP_STILL_OK);
+> -- 
+> Thanks,
 > 
-> TAINT_WARN seems the wrong value, especially since no WARN has
-> occurred. I feel that this is more in the spirit of
-> TAINT_PROPRIETARY_MODULE, TAINT_OVERRIDDEN_ACPI_TABLE, and
-> TAINT_OOT_MODULE. How about a new TAINT_RAW_PASSTHROUGH? I could use
-> this for the acpi/nfit driver as well to disclaim responsibility for
-> system errors that can result from not using the nominal
-> kernel-provided commands.
-
-I like it.
+> David / dhildenb
+> 
+> 
