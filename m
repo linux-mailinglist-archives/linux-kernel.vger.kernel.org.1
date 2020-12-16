@@ -2,72 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347DE2DC35C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:44:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B3512DC361
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:45:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726563AbgLPPnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 10:43:43 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:57586 "EHLO vps0.lunn.ch"
+        id S1726596AbgLPPpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 10:45:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726490AbgLPPnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 10:43:43 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kpYxA-00CJG5-V9; Wed, 16 Dec 2020 16:43:00 +0100
-Date:   Wed, 16 Dec 2020 16:43:00 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bridge@lists.linux-foundation.org,
-        Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Tobias Waldekranz <tobias@waldekranz.com>,
-        Marek Behun <marek.behun@nic.cz>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Alexandra Winter <wintera@linux.ibm.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Ido Schimmel <idosch@idosch.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        UNGLinuxDriver@microchip.com
-Subject: Re: [PATCH v3 net-next 7/7] net: dsa: ocelot: request DSA to fix up
- lack of address learning on CPU port
-Message-ID: <20201216154300.GF2901580@lunn.ch>
-References: <20201213140710.1198050-1-vladimir.oltean@nxp.com>
- <20201213140710.1198050-8-vladimir.oltean@nxp.com>
+        id S1726558AbgLPPpd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 10:45:33 -0500
+Message-ID: <b7ac787b170e18b620bfb6879eaf567831a0ae34.camel@kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608133491;
+        bh=v9fCkxQ1kFDtqu3dVw7nrxy1yEcuOz69fru/wDPmqqc=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=cPgWuUkNSR6hXQns5m1H0OPb0/4euciYabofWAi/ZxE1m7iymaJB8wzwSkz/zq7ve
+         P8ktEyPHUa6J7gti1C4x5K2bCzBfDYbG0fX885qQQvBt4bbBDUXsC+BFUz8ET93ENT
+         GN3ybcD6aeUyGeDmq/D1sBYuOyAFSiNLapZBGBC5jvdBH3su5UFUTtKKGvNrMZp1gv
+         4rOdwtoXwJX/EFPsdIGQ4+LBFWEH/Pp03wFOM/4D87+1UbolP8AWl2mcaln1Q0t5ib
+         DBwEUiV/pY6lN5vt1+c6bCc/cO/1ec3QwJ5G9S/UKmjCr0b5fV/kmzJQe6YNuoX7tW
+         WzXLsWrOUtTYw==
+Subject: Re: [PATCH] vfs, syncfs: Do not ignore return code from ->sync_fs()
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     Linux fsdevel mailing list <linux-fsdevel@vger.kernel.org>,
+        linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, miklos@szeredi.hu, amir73il@gmail.com,
+        willy@infradead.org, jack@suse.cz, sargun@sargun.me
+Date:   Wed, 16 Dec 2020 10:44:49 -0500
+In-Reply-To: <20201216151409.GA3177@redhat.com>
+References: <20201216143802.GA10550@redhat.com>
+         <132c8c1e1ab82f5a640ff1ede6bb844885d46e68.camel@kernel.org>
+         <20201216151409.GA3177@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.38.2 (3.38.2-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201213140710.1198050-8-vladimir.oltean@nxp.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 13, 2020 at 04:07:10PM +0200, Vladimir Oltean wrote:
-> Given the following setup:
+On Wed, 2020-12-16 at 10:14 -0500, Vivek Goyal wrote:
+> On Wed, Dec 16, 2020 at 09:57:49AM -0500, Jeff Layton wrote:
+> > On Wed, 2020-12-16 at 09:38 -0500, Vivek Goyal wrote:
+> > > I see that current implementation of __sync_filesystem() ignores the
+> > > return code from ->sync_fs(). I am not sure why that's the case.
+> > > 
+> > > Ignoring ->sync_fs() return code is problematic for overlayfs where
+> > > it can return error if sync_filesystem() on upper super block failed.
+> > > That error will simply be lost and sycnfs(overlay_fd), will get
+> > > success (despite the fact it failed).
+> > > 
+> > > I am assuming that we want to continue to call __sync_blockdev()
+> > > despite the fact that there have been errors reported from
+> > > ->sync_fs(). So I wrote this simple patch which captures the
+> > > error from ->sync_fs() but continues to call __sync_blockdev()
+> > > and returns error from sync_fs() if there is one.
+> > > 
+> > > There might be some very good reasons to not capture ->sync_fs()
+> > > return code, I don't know. Hence thought of proposing this patch.
+> > > Atleast I will get to know the reason. I still need to figure
+> > > a way out how to propagate overlay sync_fs() errors to user
+> > > space.
+> > > 
+> > > Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+> > > ---
+> > >  fs/sync.c |    8 ++++++--
+> > >  1 file changed, 6 insertions(+), 2 deletions(-)
+> > > 
+> > > Index: redhat-linux/fs/sync.c
+> > > ===================================================================
+> > > --- redhat-linux.orig/fs/sync.c	2020-12-16 09:15:49.831565653 -0500
+> > > +++ redhat-linux/fs/sync.c	2020-12-16 09:23:42.499853207 -0500
+> > > @@ -30,14 +30,18 @@
+> > >   */
+> > >  static int __sync_filesystem(struct super_block *sb, int wait)
+> > >  {
+> > > +	int ret, ret2;
+> > > +
+> > >  	if (wait)
+> > >  		sync_inodes_sb(sb);
+> > >  	else
+> > >  		writeback_inodes_sb(sb, WB_REASON_SYNC);
+> > >  
+> > > 
+> > >  	if (sb->s_op->sync_fs)
+> > > -		sb->s_op->sync_fs(sb, wait);
+> > > -	return __sync_blockdev(sb->s_bdev, wait);
+> > > +		ret = sb->s_op->sync_fs(sb, wait);
+> > > +	ret2 = __sync_blockdev(sb->s_bdev, wait);
+> > > +
+> > > +	return ret ? ret : ret2;
+> > >  }
+> > >  
+> > > 
+> > >  /*
+> > > 
+> > 
+> > I posted a patchset that took a similar approach a couple of years ago,
+> > and we decided not to go with it [1].
+> > 
+> > While it's not ideal to ignore the error here, I think this is likely to
+> > break stuff.
 > 
-> ip link add br0 type bridge
-> ip link set eno0 master br0
-> ip link set swp0 master br0
-> ip link set swp1 master br0
-> ip link set swp2 master br0
-> ip link set swp3 master br0
+> So one side affect I see is that syncfs() might start returning errors
+> in some cases which were not reported at all. I am wondering will that
+> count as breakage.
 > 
-> Currently, packets received on a DSA slave interface (such as swp0)
-> which should be routed by the software bridge towards a non-switch port
-> (such as eno0) are also flooded towards the other switch ports (swp1,
-> swp2, swp3) because the destination is unknown to the hardware switch.
+> > What may be better is to just make sync_fs void return, so
+> > people don't think that returned errors there mean anything.
 > 
-> This patch addresses the issue by monitoring the addresses learnt by the
-> software bridge on eno0, and adding/deleting them as static FDB entries
-> on the CPU port accordingly.
+> May be. 
 > 
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+> But then question remains that how do we return error to user space
+> in syncfs(fd) for overlayfs. I will not be surprised if other
+> filesystems want to return errors as well.
+> 
+> Shall I create new helpers and call these in case of syncfs(). But
+> that too will start returning new errors on syncfs(). So it does
+> not solve that problem (if it is a problem).
+> 
+> Or we can define a new super block op say ->sync_fs2() and call that
+> first and in that case capture return code. That way it will not
+> impact existing cases and overlayfs can possibly make use of
+> ->sync_fs2() and return error. IOW, impact will be limited to
+> only file systems which chose to implement ->sync_fs2().
+> 
+> Thanks
+> Vivek
+> 
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Sure, it's possible to add a sb->sync_fs2, but the problem is that
+sync_fs is a superblock op, and is missing a lot of important context
+about how it got called.
 
-    Andrew
+syncfs(2) syscall takes a file descriptor argument. I'd add a new f_op-
+>syncfs vector and turn most of the current guts of the syncfs syscall
+into a generic_syncfs() that gets called when f_op->syncfs isn't
+defined.
+
+Overlayfs could then add a ->syncfs op that would give it control over
+what error gets returned. With that, you could basically leave the old
+sb->sync_fs routine alone.
+
+I think that's probably the safest approach for allowing overlayfs to
+propagate syncfs errors from the upper layer to the overlay.
+
+-- 
+Jeff Layton <jlayton@kernel.org>
+
