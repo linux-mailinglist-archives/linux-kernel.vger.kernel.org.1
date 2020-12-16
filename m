@@ -2,139 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D3F52DC151
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:33:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A04392DC154
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:33:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726133AbgLPNbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 08:31:46 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44052 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726028AbgLPNbq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 08:31:46 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0B194AC7B;
-        Wed, 16 Dec 2020 13:31:04 +0000 (UTC)
-Date:   Wed, 16 Dec 2020 14:30:59 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        mhocko@suse.com, song.bao.hua@hisilicon.com, david@redhat.com,
-        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, naoya.horiguchi@nec.com
-Subject: Re: [PATCH v9 06/11] mm/hugetlb: Set the PageHWPoison to the raw
- error page
-Message-ID: <20201216133059.GC29394@linux>
-References: <20201213154534.54826-1-songmuchun@bytedance.com>
- <20201213154534.54826-7-songmuchun@bytedance.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201213154534.54826-7-songmuchun@bytedance.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726187AbgLPNbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 08:31:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726028AbgLPNbs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 08:31:48 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92742C061794;
+        Wed, 16 Dec 2020 05:31:07 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id b73so24773966edf.13;
+        Wed, 16 Dec 2020 05:31:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=d+w8p1hzrw/ls07i5nfaa8a3bNY5NFoTiVu/ZKJ+PtA=;
+        b=nQ95Txz7ziGayxFVNJEhc1V2iOc1O3J/EYnFTs+bUbQeHTQzPm4ziqFsKlpeju95+U
+         99tMR4wq2AsiV1WTOqdsRnKNsL6GZl/y9W7ZVc4pVSiOx2RJnDkapS1g5vnci48XAaR1
+         GWWnSSd1i6LFymrJSCrfLzmvjBvgbF/XZfK4H1Uon11n3ZUEx9i+/pREF7B7+APzk7VL
+         C+5ECm5NYv17JK3k4VXpRgwZO91fRNRBu9VLC4vxMcQlXjeRIIgBWEEm6mQpS1ZN74nO
+         akeUSXmRTEq6H9AOXXatsHwPfCp3k13GpHzl8iOCaUtBlAbH/0mMdcJTkFUyiIbmY88f
+         fPJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=d+w8p1hzrw/ls07i5nfaa8a3bNY5NFoTiVu/ZKJ+PtA=;
+        b=ksG8rl4Lyx8o2WClEHe7V6A2aOpSNsrZiML6IdJw+Pg9hCszlDqqssn6n9QshPZCZB
+         khWk03G/OMfJpWWjYrjHxkSjL3IBGDXS7uIc3YVId/2lhwyyrJel0yO29nICRPwvkJCp
+         6TJuHXsjmRDKqc8Y12ijvOHpjEWXH6A4B7lup25PRnu37jGJ0Q9/HXXofvgFkDJ8x9e8
+         /7gtDC24eenjQPisp3kBSvoLvzl4PvUTacl2IScsytDjXhfPUqyNGUIHGgN1yoodW9gy
+         2KM55DtXjUBuj1He5KAEKdujLS3mAWGops/uWqA5myPCQZ1k5a21F1MK7Nl/wuMUV/As
+         9eNg==
+X-Gm-Message-State: AOAM533Ma67kp3JMpeImpvsLh4FyStyVb0Suv+0sS2k2oCoK4QzQ6BVJ
+        UVtXs661/AeEmuNt4rbMGdFUoX1yuBYe2A==
+X-Google-Smtp-Source: ABdhPJwk2MeyR+kZNhWlaHUVyaOmxIxb9tzpi3eF28ZsPJ6qdmvsioYvqf/okh+sZhL4+et3QHAl3Q==
+X-Received: by 2002:a50:ed04:: with SMTP id j4mr6873304eds.84.1608125466334;
+        Wed, 16 Dec 2020 05:31:06 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.googlemail.com with ESMTPSA id l14sm21088598edq.35.2020.12.16.05.31.04
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 16 Dec 2020 05:31:05 -0800 (PST)
+Message-ID: <7f91342a001ef00f3b311952515dfb17747b7148.camel@gmail.com>
+Subject: Re: [PATCH v4 1/3] scsi: ufs: Protect some contexts from unexpected
+ clock scaling
+From:   Bean Huo <huobean@gmail.com>
+To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Wed, 16 Dec 2020 14:31:04 +0100
+In-Reply-To: <1607877104-8916-2-git-send-email-cang@codeaurora.org>
+References: <1607877104-8916-1-git-send-email-cang@codeaurora.org>
+         <1607877104-8916-2-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 13, 2020 at 11:45:29PM +0800, Muchun Song wrote:
-> Because we reuse the first tail vmemmap page frame and remap it
-> with read-only, we cannot set the PageHWPosion on a tail page.
-> So we can use the head[4].private to record the real error page
-> index and set the raw error page PageHWPoison later.
+On Sun, 2020-12-13 at 08:31 -0800, Can Guo wrote:
+> In contexts like suspend, shutdown and error handling, we need to
+> suspend
+> devfreq to make sure these contexts won't be disturbed by clock
+> scaling.
+> However, suspending devfreq is not enough since users can still
+> trigger a
+> clock scaling by manipulating the sysfs node clkscale_enable and
+> devfreq
+> sysfs nodes like min/max_freq and governor. Add one more flag in
+> struct
+> clk_scaling such that these contexts can prevent clock scaling from
+> being
+> invoked through above sysfs nodes.
 > 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Signed-off-by: Can Guo <cang@codeaurora.org>
+looks good to me.
 
-+CC Naoya
+Reviewed-by: Bean Huo <beanhuo@micron.com>
 
-> ---
->  mm/hugetlb.c | 48 ++++++++++++++++++++++++++++++++++++++++--------
->  1 file changed, 40 insertions(+), 8 deletions(-)
-> 
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 542e6cb81321..29de425f879a 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1347,6 +1347,43 @@ static inline void __update_and_free_page(struct hstate *h, struct page *page)
->  		schedule_work(&hpage_update_work);
->  }
->  
-> +static inline void hwpoison_subpage_deliver(struct hstate *h, struct page *head)
-> +{
-> +	struct page *page;
-> +
-> +	if (!PageHWPoison(head) || !free_vmemmap_pages_per_hpage(h))
-> +		return;
-> +
-> +	page = head + page_private(head + 4);
-> +
-> +	/*
-> +	 * Move PageHWPoison flag from head page to the raw error page,
-> +	 * which makes any subpages rather than the error page reusable.
-> +	 */
-> +	if (page != head) {
-> +		SetPageHWPoison(page);
-> +		ClearPageHWPoison(head);
-> +	}
-> +}
-> +
-> +static inline void hwpoison_subpage_set(struct hstate *h, struct page *head,
-> +					struct page *page)
-> +{
-> +	if (!PageHWPoison(head))
-> +		return;
-> +
-> +	if (free_vmemmap_pages_per_hpage(h)) {
-> +		set_page_private(head + 4, page - head);
-> +	} else if (page != head) {
-> +		/*
-> +		 * Move PageHWPoison flag from head page to the raw error page,
-> +		 * which makes any subpages rather than the error page reusable.
-> +		 */
-> +		SetPageHWPoison(page);
-> +		ClearPageHWPoison(head);
-> +	}
-> +}
-> +
->  static void update_and_free_page(struct hstate *h, struct page *page)
->  {
->  	if (hstate_is_gigantic(h) && !gigantic_page_runtime_supported())
-> @@ -1363,6 +1400,7 @@ static void __free_hugepage(struct hstate *h, struct page *page)
->  	int i;
->  
->  	alloc_huge_page_vmemmap(h, page);
-> +	hwpoison_subpage_deliver(h, page);
->  
->  	for (i = 0; i < pages_per_huge_page(h); i++) {
->  		page[i].flags &= ~(1 << PG_locked | 1 << PG_error |
-> @@ -1840,14 +1878,8 @@ int dissolve_free_huge_page(struct page *page)
->  		int nid = page_to_nid(head);
->  		if (h->free_huge_pages - h->resv_huge_pages == 0)
->  			goto out;
-> -		/*
-> -		 * Move PageHWPoison flag from head page to the raw error page,
-> -		 * which makes any subpages rather than the error page reusable.
-> -		 */
-> -		if (PageHWPoison(head) && page != head) {
-> -			SetPageHWPoison(page);
-> -			ClearPageHWPoison(head);
-> -		}
-> +
-> +		hwpoison_subpage_set(h, head, page);
->  		list_del(&head->lru);
->  		h->free_huge_pages--;
->  		h->free_huge_pages_node[nid]--;
-> -- 
-> 2.11.0
-> 
-
--- 
-Oscar Salvador
-SUSE L3
