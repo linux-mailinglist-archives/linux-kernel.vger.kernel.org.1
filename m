@@ -2,222 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5346A2DBA1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 05:34:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ED362DBA26
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 05:36:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725840AbgLPEey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 23:34:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725820AbgLPEet (ORCPT
+        id S1725865AbgLPEfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 23:35:09 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:49574 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725820AbgLPEfI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 23:34:49 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8986C0611CE
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 20:34:00 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id l8so28870843ybj.16
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 20:34:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=H6oukORhheDnararZMVSLVS5MfCtjn2TReqMYdz//rs=;
-        b=dewBId72j4Q+66k04q7ARK2ruJj2pFjDWlzRQkgD6HKKP80USGD/BZHBHf0jb6409i
-         wWMxujOqzAoSOQkk1nI9PVMls1QskNhsm+XrbYlzs8YE2p0SQseFT83cvikAlt189JG9
-         TzEvhCtXbhwmM1UUS4k+mMuL/xlhTrS2zzZG2cs2+bKK2h/PFg+D9ZS9Aaf3PgPQq+Ou
-         0QEZDLfKj5fP1g+DOt6S7+GLpfn6F4QPSZiOZDVRlpYdRwZGFtYyQ+R9jYIqaXgN0xzq
-         YV8btaPuD/1/FWMoZVK6orEBQbCyjjmXgObaQdrHNE+DU6RcwB4N5f9cY9vbybzD6kTQ
-         iXIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=H6oukORhheDnararZMVSLVS5MfCtjn2TReqMYdz//rs=;
-        b=ZnwVZtVk6onZC/hHVOwV8dC6UhvyMEJjeBp28csEw4Wj6Qw7QTFBe06zJTVoULulmT
-         21Z6i0sqaDwF3CHLvXIrnav8CbIfCpPHMrhd7jp4n89rbYHIdW1KHjiPAK9oJESW4EeL
-         RBD/PirgUs0Lxx80pPnaE0kLTZnj4rvuiUVv5nAWi08g7J7paxk2BkYNWBKvOL2v9cLI
-         qNvO2ow7LohsZvmWPwN8GXQjC1tkO1WcZJeFej325xyueImRNAn26rdB2fW3nZxhDw1o
-         yflhEv4x+FTLna3oBfyZgAtctim48eh1s4bXRAgQDykD0HWEeIAmZHwTYkhdrNGMCeKL
-         1Gtg==
-X-Gm-Message-State: AOAM533hVSY8ZZ0r1mcvlUuMJWSxxmzSfuQXUH+L/YNfc+S0Y8CYgObH
-        xiCaMAGrdvf6n1nnorCmdxpEzU0W3Fbw
-X-Google-Smtp-Source: ABdhPJygPsThs7t8w8aspuQ1QS4H+ejOBvDGGMQdDCbRPZNdtsI5BJ9rT2FV8/VgjjsRuIjdYvEv7Fgw8uvF
-Sender: "apusaka via sendgmr" <apusaka@apusaka-p920.tpe.corp.google.com>
-X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:b:f693:9fff:fef4:2347])
- (user=apusaka job=sendgmr) by 2002:a25:d452:: with SMTP id
- m79mr33555844ybf.417.1608093239940; Tue, 15 Dec 2020 20:33:59 -0800 (PST)
-Date:   Wed, 16 Dec 2020 12:33:35 +0800
-In-Reply-To: <20201216043335.2185278-1-apusaka@google.com>
-Message-Id: <20201216123317.v3.5.I96e97067afe1635dbda036b881ba2a01f37cd343@changeid>
-Mime-Version: 1.0
-References: <20201216043335.2185278-1-apusaka@google.com>
-X-Mailer: git-send-email 2.29.2.684.gfbc64c5ab5-goog
-Subject: [PATCH v3 5/5] Bluetooth: advmon offload MSFT handle filter enablement
-From:   Archie Pusaka <apusaka@google.com>
-To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>
-Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        Yun-Hao Chung <howardchung@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+        Tue, 15 Dec 2020 23:35:08 -0500
+X-UUID: 612f3495170f4f59bf1ef0a07a052f7c-20201216
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=MbWUyAPZzTNL6x8OSUcYZnRyRZFOEMoj2KWEeYv8KIQ=;
+        b=AzYllHLMi1rCNajcsGKOTIXAnIZYGnGy+mU+iC8t6CMiET0llRMYX3rmKyc75Xt2Nk3yklqczVItpKDQt/eN3HDTUUSdxG09g9IE7bCB9l4eAUgJVsShqaX2XxYXyZ+XDxR7s2OoFb7DGva3gPgIke/9fUmL1Yx1mCBZKDaj75c=;
+X-UUID: 612f3495170f4f59bf1ef0a07a052f7c-20201216
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <hsin-hsiung.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1891120541; Wed, 16 Dec 2020 12:34:21 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 16 Dec 2020 12:34:20 +0800
+Received: from [172.21.77.4] (172.21.77.4) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 16 Dec 2020 12:34:19 +0800
+Message-ID: <1608093259.2412.1.camel@mtksdaap41>
+Subject: Re: [PATCH v2 3/8] dt-bindings: regulator: Add document for MT6359
+ regulator
+From:   Hsin-hsiung Wang <hsin-hsiung.wang@mediatek.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
+        Wen Su <wen.su@mediatek.com>
+Date:   Wed, 16 Dec 2020 12:34:19 +0800
+In-Reply-To: <20200923162458.GE5707@sirena.org.uk>
+References: <1600688895-9238-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+         <1600688895-9238-4-git-send-email-hsin-hsiung.wang@mediatek.com>
+         <20200923162458.GE5707@sirena.org.uk>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Archie Pusaka <apusaka@chromium.org>
-
-Implements the feature to disable/enable the filter used for
-advertising monitor on MSFT controller, effectively have the same
-effect as "remove all monitors" and "add all previously removed
-monitors".
-
-This feature would be needed when suspending, where we would not want
-to get packets from anything outside the allowlist. Note that the
-integration with the suspending part is not included in this patch.
-
-Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
-Reviewed-by: Yun-Hao Chung <howardchung@google.com>
-
----
-
-(no changes since v1)
-
- net/bluetooth/msft.c | 67 ++++++++++++++++++++++++++++++++++++++++++++
- net/bluetooth/msft.h |  6 ++++
- 2 files changed, 73 insertions(+)
-
-diff --git a/net/bluetooth/msft.c b/net/bluetooth/msft.c
-index 7e33a85c3f1c..055cc5a260df 100644
---- a/net/bluetooth/msft.c
-+++ b/net/bluetooth/msft.c
-@@ -69,6 +69,17 @@ struct msft_rp_le_cancel_monitor_advertisement {
- 	__u8 sub_opcode;
- } __packed;
- 
-+#define MSFT_OP_LE_SET_ADVERTISEMENT_FILTER_ENABLE	0x05
-+struct msft_cp_le_set_advertisement_filter_enable {
-+	__u8 sub_opcode;
-+	__u8 enable;
-+} __packed;
-+
-+struct msft_rp_le_set_advertisement_filter_enable {
-+	__u8 status;
-+	__u8 sub_opcode;
-+} __packed;
-+
- struct msft_monitor_advertisement_handle_data {
- 	__u8  msft_handle;
- 	__u16 mgmt_handle;
-@@ -85,6 +96,7 @@ struct msft_data {
- 
- 	struct {
- 		u8 reregistering:1;
-+		u8 filter_enabled:1;
- 	} flags;
- };
- 
-@@ -193,6 +205,7 @@ void msft_do_open(struct hci_dev *hdev)
- 
- 	if (msft_monitor_supported(hdev)) {
- 		msft->flags.reregistering = true;
-+		msft_set_filter_enable(hdev, true);
- 		reregister_monitor_on_restart(hdev, 0);
- 	}
- }
-@@ -398,6 +411,40 @@ static void msft_le_cancel_monitor_advertisement_cb(struct hci_dev *hdev,
- 	hci_remove_adv_monitor_complete(hdev, status);
- }
- 
-+static void msft_le_set_advertisement_filter_enable_cb(struct hci_dev *hdev,
-+						       u8 status, u16 opcode,
-+						       struct sk_buff *skb)
-+{
-+	struct msft_cp_le_set_advertisement_filter_enable *cp;
-+	struct msft_rp_le_set_advertisement_filter_enable *rp;
-+	struct msft_data *msft = hdev->msft_data;
-+
-+	rp = (struct msft_rp_le_set_advertisement_filter_enable *)skb->data;
-+	if (skb->len < sizeof(*rp))
-+		return;
-+
-+	/* Error 0x0C would be returned if the filter enabled status is
-+	 * already set to whatever we were trying to set.
-+	 * Although the default state should be disabled, some controller set
-+	 * the initial value to enabled. Because there is no way to know the
-+	 * actual initial value before sending this command, here we also treat
-+	 * error 0x0C as success.
-+	 */
-+	if (status != 0x00 && status != 0x0C)
-+		return;
-+
-+	hci_dev_lock(hdev);
-+
-+	cp = hci_sent_cmd_data(hdev, hdev->msft_opcode);
-+	msft->flags.filter_enabled = cp->enable;
-+
-+	if (status == 0x0C)
-+		bt_dev_warn(hdev, "MSFT filter_enable is already %s",
-+			    cp->enable ? "on" : "off");
-+
-+	hci_dev_unlock(hdev);
-+}
-+
- static bool msft_monitor_rssi_valid(struct adv_monitor *monitor)
- {
- 	struct adv_rssi_thresholds *r = &monitor->rssi;
-@@ -534,3 +581,23 @@ int msft_remove_monitor(struct hci_dev *hdev, struct adv_monitor *monitor,
- 
- 	return err;
- }
-+
-+int msft_set_filter_enable(struct hci_dev *hdev, bool enable)
-+{
-+	struct msft_cp_le_set_advertisement_filter_enable cp;
-+	struct hci_request req;
-+	struct msft_data *msft = hdev->msft_data;
-+	int err;
-+
-+	if (!msft)
-+		return -EOPNOTSUPP;
-+
-+	cp.sub_opcode = MSFT_OP_LE_SET_ADVERTISEMENT_FILTER_ENABLE;
-+	cp.enable = enable;
-+
-+	hci_req_init(&req, hdev);
-+	hci_req_add(&req, hdev->msft_opcode, sizeof(cp), &cp);
-+	err = hci_req_run_skb(&req, msft_le_set_advertisement_filter_enable_cb);
-+
-+	return err;
-+}
-diff --git a/net/bluetooth/msft.h b/net/bluetooth/msft.h
-index 6f126a1f1688..f8e4d3a6d641 100644
---- a/net/bluetooth/msft.h
-+++ b/net/bluetooth/msft.h
-@@ -20,6 +20,7 @@ __u64 msft_get_features(struct hci_dev *hdev);
- int msft_add_monitor_pattern(struct hci_dev *hdev, struct adv_monitor *monitor);
- int msft_remove_monitor(struct hci_dev *hdev, struct adv_monitor *monitor,
- 			u16 handle);
-+int msft_set_filter_enable(struct hci_dev *hdev, bool enable);
- 
- #else
- 
-@@ -45,4 +46,9 @@ static inline int msft_remove_monitor(struct hci_dev *hdev,
- 	return -EOPNOTSUPP;
- }
- 
-+static inline int msft_set_filter_enable(struct hci_dev *hdev, bool enable)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
- #endif
--- 
-2.29.2.684.gfbc64c5ab5-goog
+SGksDQoNCk9uIFdlZCwgMjAyMC0wOS0yMyBhdCAxNzoyNCArMDEwMCwgTWFyayBCcm93biB3cm90
+ZToNCj4gT24gTW9uLCBTZXAgMjEsIDIwMjAgYXQgMDc6NDg6MTBQTSArMDgwMCwgSHNpbi1Ic2l1
+bmcgV2FuZyB3cm90ZToNCj4gDQo+ID4gK1JlcXVpcmVkIHByb3BlcnRpZXM6DQo+ID4gKy0gY29t
+cGF0aWJsZTogIm1lZGlhdGVrLG10NjM1OS1yZWd1bGF0b3IiDQo+IA0KPiBUaGUgY29tcGF0aWJs
+ZSBpc24ndCB1c2VkIGJ5IHRoZSBkcml2ZXIgKHdoaWNoIGlzIGdvb2QhKSBzbyBzaG91bGQgYmUN
+Cj4gZHJvcHBlZCBmcm9tIHRoZSBiaW5kaW5nIGRvY3VtZW50Lg0KVGhhbmtzIGZvciB5b3VyIGNv
+bW1lbnRzLCBidXQgSSBoYXZlIGEgcXVlc3Rpb24gYWJvdXQgaXQuDQpXaGVuIEkgcmVtb3ZlIHRo
+ZSBjb21wYXRpYmxlIG5hbWUgaW4gdGhlIGR0cywgdGhlcmUgd2lsbCBiZSBzb21lIGVycm9yDQpt
+ZXNzYWdlOg0KWyAgICAwLjQzNzU2Ml0gbXQ2MzU5LXJlZ3VsYXRvcjogRmFpbGVkIHRvIGxvY2F0
+ZSBvZl9ub2RlIFtpZDogLTFdDQpbICAgIDAuNDQwNjEyXSBtdDYzNTktc291bmQ6IEZhaWxlZCB0
+byBsb2NhdGUgb2Zfbm9kZSBbaWQ6IC0xXQ0KDQpEbyB5b3UgbWVhbiB0aGF0IHdlIGRvbid0IG5l
+ZWQgYW55IGNvbXBhdGlibGUgbmFtZSBpbiBkdHMsIG1mZCBhbmQNCnJlZ3VsYXRvciBkcml2ZXI/
+DQo=
 
