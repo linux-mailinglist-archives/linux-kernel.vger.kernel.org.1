@@ -2,99 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C83E2DC078
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 13:47:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F7B42DC07D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 13:49:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725985AbgLPMrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 07:47:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725943AbgLPMrk (ORCPT
+        id S1726010AbgLPMrr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 16 Dec 2020 07:47:47 -0500
+Received: from mail-ej1-f51.google.com ([209.85.218.51]:39770 "EHLO
+        mail-ej1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725903AbgLPMrr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 07:47:40 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4175EC0617A6
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 04:47:00 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id u18so47982678lfd.9
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 04:47:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VOVajqeL58osbRPPaomgTK8n6oUgfCbxRdg+Fy/mnXs=;
-        b=i4hQCSzgyarWqSRx8lwW55w7AT8SqV+QL34hqfbK2tNFgrtNkuHa4lUZ5EZtsUhapF
-         wBSlb1/HKs4lWTrub+/WG9KZYknYDRJ1tpNK4ysCbZrhEfB2ChKXyoOpgiNpcYgK9Lcz
-         qE7O6CpmzUPvK1X/riZptbyzZtI8f1EqX5+i/ebuyHXyfJPNRcRXyDTD788s9+9G035L
-         rnc1jLJ75WIbpFq817pOLonid0xYqguLJkrGOwU78TJj8DJz2UtX0OuxYo843MGQeGe1
-         by6jGqr1SImmXps3YZhXbI9pqWCmteSDK19Gn/BMgdqdwqM0j2Zx/iRvQ1qItoPCaphm
-         alCg==
+        Wed, 16 Dec 2020 07:47:47 -0500
+Received: by mail-ej1-f51.google.com with SMTP id n26so32492516eju.6;
+        Wed, 16 Dec 2020 04:47:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VOVajqeL58osbRPPaomgTK8n6oUgfCbxRdg+Fy/mnXs=;
-        b=COLytuUyAbJeGQ9M3hQTwXu3RJtIhg4JQYOhaLsoSIeHFDsBQczpq2R2RNsqAuui2e
-         kl0MyUjo9dggZdYYWw2P9WOFKBTiOMxXuaQk1d29gFxP7/cvwJwYkkHvpvQELOh9gOnj
-         Nk5ZqnDGa/kk1dLL6zPuDCK9m8sEtarE0V2JSAlsf5cJ9zntDWB2gTxmlOHajHS6cNo0
-         RevthuIfc1koTKcR8yzrYHJLZa+0gMzbp9i7P1vyLztq7UbTdPITE82GvWIZ6ljnLs/H
-         RMvQvMSljiH+2bjYxzEdFGuHyv01ZDEpOVg5+0cp5H0b0mTUwvg0wuJp+y7sCm31mqmq
-         qG4Q==
-X-Gm-Message-State: AOAM53140bfhlsSv6QvE7N/+wqwCj6rWOh0/o1y8hEmWONR4PhxBXiGR
-        ti1qJ470D51zrB18QwPNC24qDDQdHE391OjXZNTx2A==
-X-Google-Smtp-Source: ABdhPJx/ESz87W3XJ6XGTijh+mpw6fi1H7wcl/u92ThLJDNcAiIGewSSl41QCClJfIgduJfJv7cNsCBzlSMsg4LFAMs=
-X-Received: by 2002:a19:8bc6:: with SMTP id n189mr2718938lfd.291.1608122818612;
- Wed, 16 Dec 2020 04:46:58 -0800 (PST)
-MIME-Version: 1.0
-References: <20201215170308.2037624-1-bjorn.andersson@linaro.org>
-In-Reply-To: <20201215170308.2037624-1-bjorn.andersson@linaro.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 16 Dec 2020 13:46:47 +0100
-Message-ID: <CACRpkdZKKetFFm8AanVnzV9SyZhuurLHT_ZTak27-vGEdqVgEw@mail.gmail.com>
-Subject: Re: [PATCH] gpiolib: Allow name duplicates of "" and "NC"
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=mjY8Os39M4leEEPHTfeQTINO8VNbMA4I5Bxao3MHur4=;
+        b=bBwxP85W/hQ4uMxOWUWfHS02LwSJLBeErtUn956U9uKb6q98knXbMiQajpnvYKrW3Q
+         1zGR3FWCIHioWcWRPC2rqPAmPy3NVDFzVQ/RxbbndsRm9AaUI4HRiS4rnxWfIYMitswY
+         2OYksPTsyyzFmahDLlzzAumVPcf3ZsyV+wSqLBQOKjWpcDDys/lBAcf+/1jlneuF/1F8
+         fNm9AKiAg3MyyCzGSVbPi4Btit8OgBNWKT5UgBQTZaoq0ypYTURwJ3+ck4cpGJPM+PnD
+         nFvoaxXzIRf/sm1wamxW0g9Xn9mc6InHpyKTaKZndCWB4OPLR2AEC0M9tCPakxT6JN5Q
+         Hf3Q==
+X-Gm-Message-State: AOAM533MWAWYyLApUamS4uNJyKqag+ozMOXvdJdAJKdqcYa0FkXKKQ6W
+        giX/JM/FC4zEBOAK8CRuhq0=
+X-Google-Smtp-Source: ABdhPJxUQINFO4W9ye268ixQRaS+0Zf01qYWyeDzWJ0ixBIEYF4tEhSFWniMLmNrOzQ9QWhRxeOYnQ==
+X-Received: by 2002:a17:906:718b:: with SMTP id h11mr30432291ejk.241.1608122824654;
+        Wed, 16 Dec 2020 04:47:04 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id i8sm20536770eds.72.2020.12.16.04.47.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Dec 2020 04:47:03 -0800 (PST)
+Date:   Wed, 16 Dec 2020 13:47:02 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     "Alice Guo (OSS)" <alice.guo@oss.nxp.com>
+Cc:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: Re: [PATCH v7 1/4] dt-bindings: soc: imx8m: add DT Binding doc for
+ soc unique ID
+Message-ID: <20201216124702.GA28244@kozik-lap>
+References: <20201215083551.6067-1-alice.guo@oss.nxp.com>
+ <20201215091118.GB9386@kozik-lap>
+ <AM6PR04MB6053AE68690ADF805D5A0809E2C50@AM6PR04MB6053.eurprd04.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <AM6PR04MB6053AE68690ADF805D5A0809E2C50@AM6PR04MB6053.eurprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 6:02 PM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
+On Wed, Dec 16, 2020 at 09:55:34AM +0000, Alice Guo (OSS) wrote:
+> 
+> 
+> > -----Original Message-----
+> > From: Krzysztof Kozlowski <krzk@kernel.org>
+> > Sent: 2020年12月15日 17:11
+> > To: Alice Guo (OSS) <alice.guo@oss.nxp.com>
+> > Cc: robh+dt@kernel.org; shawnguo@kernel.org; s.hauer@pengutronix.de;
+> > kernel@pengutronix.de; festevam@gmail.com; devicetree@vger.kernel.org;
+> > linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org; dl-linux-imx
+> > <linux-imx@nxp.com>
+> > Subject: Re: [PATCH v7 1/4] dt-bindings: soc: imx8m: add DT Binding doc for soc
+> > unique ID
+> > 
+> > On Tue, Dec 15, 2020 at 04:35:48PM +0800, Alice Guo (OSS) wrote:
+> > > From: Alice Guo <alice.guo@nxp.com>
+> > >
+> > > Add DT Binding doc for the Unique ID of i.MX 8M series.
+> > >
+> > > Signed-off-by: Alice Guo <alice.guo@nxp.com>
+> > > ---
+> > >
+> > > Changes for v7:
+> > >  - change to a separate schema file
+> > > Changes for v6:
+> > >  - none
+> > > Changes for v5:
+> > >  - correct the error of using allOf
+> > > Changes for v4:
+> > >  - use allOf to limit new version DTS files for i.MX8M to include
+> > >    "fsl,imx8m*-soc", nvmem-cells and nvmem-cells-names Changes for v3:
+> > >  - put it into Documentation/devicetree/bindings/arm/fsl.yaml
+> > >  - modify the description of nvmem-cells
+> > >  - use "make ARCH=arm64 dtbs_check" to make sure it is right Changes
+> > > for v2:
+> > >  - remove the subject prefix "LF-2571-1"
+> > >
+> > >  .../bindings/soc/imx/imx8m-soc.yaml           | 54
+> > +++++++++++++++++++
+> > >  1 file changed, 54 insertions(+)
+> > >  create mode 100644
+> > > Documentation/devicetree/bindings/soc/imx/imx8m-soc.yaml
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/soc/imx/imx8m-soc.yaml
+> > > b/Documentation/devicetree/bindings/soc/imx/imx8m-soc.yaml
+> > > new file mode 100644
+> > > index 000000000000..a2f7dc0c9b35
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/soc/imx/imx8m-soc.yaml
+> > > @@ -0,0 +1,54 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause) %YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/soc/imx/imx8m-soc.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: NXP i.MX8M Series SoC
+> > > +
+> > > +maintainers:
+> > > +  - Alice Guo <alice.guo@nxp.com>
+> > > +
+> > > +description: |
+> > > +  NXP i.MX8M series SoCs contain fuse entries from which SoC Unique
+> > > +ID can be
+> > > +  obtained.
+> > > +
+> > > +select:
+> > 
+> > Mhm, there are other compatibles here so indeed, select is needed.
+> > 
+> > > +  properties:
+> > > +    compatible:
+> > > +      contains:
+> > > +        enum:
+> > > +          - fsl,imx8mm
+> > > +          - fsl,imx8mn
+> > > +          - fsl,imx8mp
+> > > +          - fsl,imx8mq
+> > > +  required:
+> > > +    - compatible
+> > 
+> > This does not work - does not match anything. It seems you missed proper
+> > "required" for the matched node.
+> > 
+> > Provide also an example.
+> > 
+> > Best regards,
+> > Krzysztof
+> > 
+> 
+> Hi, Krzysztof
+> Thank you for your advice. My opinion is different from yours.
+> 
+> I did the fowllowing test:
+> --- a/Documentation/devicetree/bindings/soc/imx/imx8m-soc.yaml
+> +++ b/Documentation/devicetree/bindings/soc/imx/imx8m-soc.yaml
+> @@ -22,6 +22,7 @@ select:
+>            - fsl,imx8mn
+>            - fsl,imx8mp
+>            - fsl,imx8mq
+> +          - fsl,lx2160a
+>    required:
+>      - compatible
+> 
+> ➜  linux-next git:(master) ✗ make ARCH=arm64 dtbs_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/soc/imx/imx8m-soc.yaml
+> ...
+> /home/nxf55104/virtualization/upstream/linux-next/arch/arm64/boot/dts/freescale/fsl-lx2160a-clearfog-cx.dt.yaml: /: soc:compatible:0: 'simple-bus' is not one of ['fsl,imx8mm-soc', 'fsl,imx8mn-soc', 'fsl,imx8mp-soc', 'fsl,imx8mq-soc']
+>         From schema: /home/nxf55104/virtualization/upstream/linux-next/Documentation/devicetree/bindings/soc/imx/imx8m-soc.yaml
+> ...
+> 
+> So, I think it works and can match stuff. I do not understand what proper " required" I missed. Please give me some tips. Thank you.
 
-> Not all GPIO pins are exposed to the world and this is typically
-> described by not giving these lines particular names, commonly "" or
-> "NC".
->
-> With the recent introduction of '2cd64ae98f35 ("gpiolib: Disallow
-> identical line names in the same chip")' any gpiochip with multiple such
-> pins will refuse to probe.
->
-> Fix this by treating "" and "NC" as "no name specified" in
-> gpio_name_to_desc()
->
-> Fixes: 2cd64ae98f35 ("gpiolib: Disallow identical line names in the same chip")
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->
-> The introduction of 2cd64ae98f35 breaks pretty much all Qualcomm boards and
-> grepping the DT tree indicates that other vendors will have the same problem.
->
-> In addition to this the am335x-* boards will also needs "[NC]", "[ethernet]",
-> "[emmc"], "[i2c0]", "[SYSBOOT]" and "[JTAG]" added to this list to allow
-> booting v5.11 with the past and present dtb/dts files.
+I applied the bindings (only) and run dtbs_check - everything passed
+fine but it shouldn't. The DTS do not have soc compatibles.
 
-I pushed this patch yesterday that fixes the obvious "(empty string)" problem:
-https://lore.kernel.org/linux-gpio/20201215123755.438369-1-linus.walleij@linaro.org/T/#u
+Best regards,
+Krzysztof
 
-But I see this is for device tree line naming only, right?
-
-I think I will conjure a patch allowing identical naming only for
-device property naming (like from device tree) but emitting a
-warning so that people fix it to something unique moving
-forward.
-
-Yours,
-Linus Walleij
