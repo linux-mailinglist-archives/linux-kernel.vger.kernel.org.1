@@ -2,104 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B03192DBEF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 11:46:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8230B2DBEF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 11:48:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725838AbgLPKpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 05:45:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725535AbgLPKpo (ORCPT
+        id S1725601AbgLPKsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 05:48:10 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:44651 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725294AbgLPKsK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 05:45:44 -0500
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE39C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 02:45:03 -0800 (PST)
-Received: by mail-vs1-xe31.google.com with SMTP id h6so12664964vsr.6
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 02:45:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=j4w2SA5vPpjO5u4tlq8Tsp94JRz6/I+Ka0PxbTOuLso=;
-        b=cfvgrCVgPuNBVhsKCsTpEL1k/uCT97mg050CjQLRuVWf7JMltHg8VjQvXSREDLcyZx
-         Ke64bF84W5J7QAGc3WEvd/DBYcNZwvKxxNTt/h5YtwI91om5FI2tsT2bs98TtM+dOe/d
-         lCQMnizyBbthfwLP13QycbJj431UFsb9AN5bfM8rLl3mrgvjKTQfR4yy17v54Rh8rln+
-         ZXJ9eYqzusM2PTkhnJ/jEZCNkRQQA+wVZ2qyjA22eBzAOX4Unrwjp8oR/e+R+3B885su
-         3Q7fhe/SdyIUIGRDDrxv5Yfm+eOiiYDqzqADICX0dh/IIjoo8zBBvgK2hv5jfvLhaAnv
-         gQMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j4w2SA5vPpjO5u4tlq8Tsp94JRz6/I+Ka0PxbTOuLso=;
-        b=KRHjSG85IzWgj4rh+CnmIUGkjHBPycqIoF6JhUmg1Z8jrhxT4E1Jh69nX58ITfNhYy
-         7ZjHJn4xg+QYX7t4Znjp5gNA6yTZavYN9ZzQNPiGs6GtE/mgcXSoM4NBzfeJy4E4Fu56
-         t+uGrNGk0n2zyOddI9Rxvw+KpaHvNTa6id/Da39Rrw7ezIe1MoFdbPVsDs584HPT1UWX
-         R+S+MJS49rySZCovNB6terTpRX6FQLDGKgphnbgAijfPA0oulUeyRofI6W76TfSyhYNc
-         gH3cLHoIzpr0FdcSSdqL7XpMPZAYdtNGPe80fLHiJJEqAkkvwyY+F3N0tUcPUn6DtDxL
-         ibBA==
-X-Gm-Message-State: AOAM531ADC/Y+7Gg8QS/7StBNCdKiRDI7RguPjOSKdYVJKzMSeXNteww
-        M2/rhVw2VHK2rL5bFL+sldvXcRbLRszk088HasK1CA==
-X-Google-Smtp-Source: ABdhPJy3B48WTkBRNGWmS9WFf7NJdY1I0lQO7A89L/9gNufMHNDNc4jsr+zcHAfIGie4X/bZ2j/u5bD165YzLHymoCI=
-X-Received: by 2002:a05:6102:2127:: with SMTP id f7mr32024818vsg.48.1608115502915;
- Wed, 16 Dec 2020 02:45:02 -0800 (PST)
+        Wed, 16 Dec 2020 05:48:10 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-67-gwAtZaUrOoSmidhCQASlBA-1; Wed, 16 Dec 2020 10:46:30 +0000
+X-MC-Unique: gwAtZaUrOoSmidhCQASlBA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 16 Dec 2020 10:46:31 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 16 Dec 2020 10:46:31 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Josh Poimboeuf' <jpoimboe@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: RE: New objtool warning..
+Thread-Topic: New objtool warning..
+Thread-Index: AQHW02c7Acg2sePkwUO0NIL6ZTUF/an5igcA
+Date:   Wed, 16 Dec 2020 10:46:31 +0000
+Message-ID: <6c4054c4fa3a4f6ab381411ffc9a8f01@AcuMS.aculab.com>
+References: <CAHk-=wiXtdHJBXw+=0so3ZV8mvG0xEykxUta2sUWPB=hUWHmtQ@mail.gmail.com>
+ <20201216044918.jdmi32dz75uboybv@treble>
+In-Reply-To: <20201216044918.jdmi32dz75uboybv@treble>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20201207115753.21728-1-bbudiredla@marvell.com>
- <20201207115753.21728-2-bbudiredla@marvell.com> <CAPDyKFqQwvG6vkwqPZutXjdV0hVrKp3MiqRRMZZ4C8Zr2Of9rg@mail.gmail.com>
- <CY4PR1801MB2070FD9FB1AB7166651198D1DEC60@CY4PR1801MB2070.namprd18.prod.outlook.com>
- <CAPDyKFqMsMdqw=Uwzby0tNNvPieRT2i6PAmHu_9XRRVy1MykuQ@mail.gmail.com> <202012151232.843EB2CB49@keescook>
-In-Reply-To: <202012151232.843EB2CB49@keescook>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 16 Dec 2020 11:44:26 +0100
-Message-ID: <CAPDyKFp=T2uqWsSTij_K=yXSffpPOKcWTqNrVxfatkncCZzaMQ@mail.gmail.com>
-Subject: Re: [EXT] Re: [PATCH 1/2] mmc: Support kmsg dumper based on pstore/blk
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Bhaskara Budiredla <bbudiredla@marvell.com>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Dec 2020 at 21:37, Kees Cook <keescook@chromium.org> wrote:
->
-> On Tue, Dec 15, 2020 at 12:42:58PM +0100, Ulf Hansson wrote:
-> > In principle, for non atomic path, I would rather see that the pstore
-> > file system should be able to be mounted on top of any generic block
-> > device partition - without requiring the block device driver to
-> > implement specific pstore ops.
-> > [...]
-> > Exactly. That's why I wonder if it's really worth it to support the
-> > panic writes at all.
->
-> pstore/blk already provides the generic hooking -- but it can't do
-> the panic write part (which that's very device/driver-specific). The
-> design was for individual backing devices to provide that directly
-> (which would needed read/write support too). And for those that don't
-> have panic/read/write support, they could still use the generic hooks
-> but they wouldn't be able to reliably (or at all?) catch panics (just
-> console writes, ftrace, pmsg, etc).
+RnJvbTogSm9zaCBQb2ltYm9ldWYNCj4gU2VudDogMTYgRGVjZW1iZXIgMjAyMCAwNDo0OQ0KPiAN
+Cj4gT24gVHVlLCBEZWMgMTUsIDIwMjAgYXQgMDg6MjI6MjNQTSAtMDgwMCwgTGludXMgVG9ydmFs
+ZHMgd3JvdGU6DQo+ID4gSSBvbmx5IHNlZSB0aGlzIG9uIG15IGxhcHRvcCwgYnV0IHRoYXQncyBw
+cm9iYWJseSBiZWNhdXNlIG15IGRlc2t0b3ANCj4gPiBpcyBidWlsdCB1c2luZyBjbGFuZy4gU28g
+aXQncyBhIGdjYyBjb2RlIGdlbmVyYXRpb24gaW50ZXJhY3Rpb24sIEkNCj4gPiBzdXNwZWN0Li4N
+Cj4gPg0KPiA+IEFueXdheSwgdGhlIG5ldyB3YXJuaW5nIGlzDQo+ID4NCj4gPiAgICAgZHJpdmVy
+cy9ncHUvZHJtL2RybV9lZGlkLm86IHdhcm5pbmc6IG9ianRvb2w6IGRvX2N2dF9tb2RlKCkgZmFs
+bHMNCj4gPiB0aHJvdWdoIHRvIG5leHQgZnVuY3Rpb24gZHJtX21vZGVfZGV0YWlsZWQuaXNyYS4w
+KCkNCj4gPg0KPiA+IGFuZCBnb29nbGluZyBhcm91bmQgYSBiaXQgSSBzZWUgdGhhdCAwZGF5IGVu
+ZGVkIHVwIHJlcG9ydGluZyBpdCBvbiB0aGUNCj4gPiBsaW51eC1uZXh0IGxpc3RzLCBhbmQgYmxh
+bWVzIGNvbW1pdCA5OTFmY2I3N2Y0OTAgKCJkcm0vZWRpZDogRml4DQo+ID4gdW5pbml0aWFsaXpl
+ZCB2YXJpYWJsZSBpbiBkcm1fY3Z0X21vZGVzKCkiKS4NCj4gPg0KPiA+IFRoYXQgcHJlc3VtYWJs
+eSB0aGVuIG1ha2VzIGdjYyBnZW5lcmF0ZSB0aGF0IG9kZCBjb2RlLg0KPiA+DQo+ID4gVGhhdCAi
+dW5yZWFjaGFibGUoKSIgaXMgYmVjYXVzZSB0aGUgY29tcGlsZXIgaXNuJ3Qgc21hcnQgZW5vdWdo
+IHRvIHNlZQ0KPiA+IHRoYXQgeWVzLCB0aGVyZSByZWFsbHkgYXJlIGNhc2Ugc3RhdGVtZW50cyBm
+b3IgZXZlcnkgc2luZ2xlIHBvc3NpYmxlDQo+ID4gY2FzZS4gT2ggd2VsbC4gTWF5YmUgdGhlIGNv
+ZGUgc2hvdWxkIGp1c3QgbWFrZSBvbmUgb2YgdGhlIHBvc3NpYmxlDQo+ID4gY2FzZXMgYWxzbyBi
+ZSB0aGUgImRlZmF1bHQ6IiBjYXNlLCBhbmQgdGhhdCBtaWdodCBmaXggaXQuDQo+ID4NCj4gPiBC
+dXQgbWF5YmUgdGhpcyBpcyB3b3J0aCBsb29raW5nIGludG8gZm9yIG9ianRvb2wgdG9vPw0KPiA+
+DQo+ID4gQW55d2F5LCBJIHNlZSBpdCB3aXRoIGdjYy0xMC4yLjEgYXMgcGVyIGN1cnJlbnQgRjMy
+LiBIb2xsZXIgaWYgeW91DQo+ID4gY2FuJ3QgcmVwcm9kdWNlIGl0LCBJIGNhbiBzZW5kIHRoZSBv
+YmplY3QgZmlsZSBhcm91bmQuDQo+IA0KPiBJIGNhbid0IHJlY3JlYXRlIHdpdGggbXkgY29tcGls
+ZXIsIGJ1dCBJIHRoaW5rIEkndmUgc2VlbiBvbmUgbGlrZSB0aGlzDQo+IGJlZm9yZS4gIEkgc3Vz
+cGVjdCBzL3VucmVhY2hhYmxlKCkvQlVHKCkvIHdvdWxkIGZpeCBpdD8NCg0KVGhlbiBhIHNtYXJ0
+KGVyKSBjb21waWxlciB3aWxsIHJlcG9ydCB0aGF0IHRoZSBCVUcoKSBpcyB1bnJlYWNoYWJsZS4N
+Cg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2Fk
+LCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5v
+OiAxMzk3Mzg2IChXYWxlcykNCg==
 
-I understand the motivation behind pstore's hook for panic-writes.
-It's a special thing and perhaps it's easier to support this via a
-specific hook, rather than adopting the regular block device request
-path to cope with some special I/O request. On the other hand, in the
-discussion I have had with Bhaskara, I have pointed out several severe
-implications for mmc to support these panic writes (and believe me,
-there are even more than those I have brought up). So I am starting to
-think that, perhaps there is a better option.
-
-In any case, I didn't catch *why* pstore needs to force block device
-drivers to implement specific pstore hooks to support the pstore file
-system. I don't think this is the way it should work, for many
-reasons. The pstore file system should be able to be extended, to
-support the regular block device request path, no?
-
-Kind regards
-Uffe
