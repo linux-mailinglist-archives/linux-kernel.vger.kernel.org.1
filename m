@@ -2,104 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5644C2DC30E
+	by mail.lfdr.de (Postfix) with ESMTP id C2B442DC30F
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:26:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726394AbgLPPZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 10:25:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726167AbgLPPZZ (ORCPT
+        id S1726413AbgLPP0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 10:26:37 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:47316 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726162AbgLPP0h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 10:25:25 -0500
-Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45D02C061794;
-        Wed, 16 Dec 2020 07:24:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
-         s=20161220; h=Content-Transfer-Encoding:Content-Type:Message-ID:References:
-        In-Reply-To:Subject:Cc:To:From:Date:MIME-Version:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=vmqbyA8EPHg3fkGc3cFk+tYUFuWETWmEPKbASEwl98M=; b=dpq+wRoEBlDe/HuUCkI1/JE9v4
-        frdZRNgEtT95AObxVEmFcYsUgtgT4GTh5VeT5kjzhtwkL1o3D/nwZ+HkdiPzGinLXVEeJAPV9xDy0
-        X0yQTvIqcNVjahufvZbwWs9j9avf8XWTUuYAQ0nyK8SgKzaV0nLqGr4v5TH48l1UN9U76k7C6DsEI
-        PnrrK9ZDjEu2IF8mAgqPC6KfJF41OsYp1ZCp5a4DR3gXPbRBKc7EhyNTqZPYFtzaEUgJxw2uQ5Wr1
-        vcnD0PB3XEABhLnhoTKDY5YkOD44iL39L98w6QrghILxqzbM26qz/kioWdW8xUySKLSx1C/r1M69S
-        wGXA7EqQ==;
-Received: from webng-gw.kapsi.fi ([91.232.154.200] helo=roundcube.kapsi.fi)
-        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <jyri.sarha@iki.fi>)
-        id 1kpYfO-0004eY-98; Wed, 16 Dec 2020 17:24:38 +0200
+        Wed, 16 Dec 2020 10:26:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1608132398; x=1639668398;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=jjmAvvsvgXwVOcNoqn+MyJ+R7DS7LF4RrbQk/wuM1LM=;
+  b=01co3IvLj68nOUgq/Dt8TAAPqVVjIN1Uw3+CpfdW6S3VerQFaSHmYqoW
+   E5rAN5m0R40P7lebbPO7FT4qLVQ6yHoykgNrNt1CLpIg5NAKxQlttP+7u
+   796oT41fGkFFhQ2Pl+r9pSmHNIBZExAJBoKwIInlum0B0FYGPaSdKSSZS
+   INjJNXYrLWK4qjgyZ3QdC9d3OVpERxPleKmBalE57+kuy5h5alohcUbbG
+   VSA23Tb/E+HLLxLzCNe8RuYjCITVctUxB/wa0rboYuxG6KIzqCjlKH935
+   KP/pFH3So0OWzCzC0c8lCQ538Qclx5V/wthVevv3lBrjvcREth73ji1eY
+   A==;
+IronPort-SDR: mGcyzO3m+F9USQkKWa1zZWX8/Q/lN0tp3uhMYP/qLKoG0O+Qb/2m/lkpnl9cyCeDMupzGlDcF+
+ YEoVuHLtal4KC4KreIV2oZUebeg2BFLDVZP7iJuvwtHyhxn2ySToQwYIt9msAktvGhD+KVYs0I
+ sE1Bzvx52Juiehks+qKyBDJ34XCGDanMSW4hSFKnJyeS7PaumHm1CZ3YYvvyJHOEqkiN2KgtwQ
+ iLvUJjQ0Q/yg4WjFmm8FOBrU4nRzPkV4MZKPYmw6Bfis1Z1gS7xabEynxpIrkjSi9z7c3Hwlpw
+ kng=
+X-IronPort-AV: E=Sophos;i="5.78,424,1599548400"; 
+   d="scan'208";a="102440223"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 16 Dec 2020 08:25:21 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 16 Dec 2020 08:25:20 -0700
+Received: from training-HP-280-G1-MT-PC.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Wed, 16 Dec 2020 08:25:17 -0700
+From:   Divya Koppera <Divya.Koppera@microchip.com>
+To:     <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <marex@denx.de>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <UNGLinuxDriver@microchip.com>
+Subject: [PATCH v3 net-next 0/2] net: phy: mchp: Add support for 1588 driver and interrupt support 
+Date:   Wed, 16 Dec 2020 20:55:13 +0530
+Message-ID: <20201216152513.6402-1-Divya.Koppera@microchip.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Date:   Wed, 16 Dec 2020 17:24:35 +0200
-From:   Jyri Sarha <jyri.sarha@iki.fi>
-To:     Tomi Valkeinen <tomi.valkeinen@ti.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, jyri.sarha@iki.fi, tomba@kernel.org,
-        Sekhar Nori <nsekhar@ti.com>,
-        Nikhil Devshatwar <nikhil.nd@ti.com>
-Subject: Re: [PATCH] MAINTAINERS: Update addresses for TI display drivers
-In-Reply-To: <20201216075917.17481-1-tomi.valkeinen@ti.com>
-References: <20201216075917.17481-1-tomi.valkeinen@ti.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <65682d92313a1ceec15969ca97ecf451@iki.fi>
-X-Sender: jyri.sarha@iki.fi
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 91.232.154.200
-X-SA-Exim-Mail-From: jyri.sarha@iki.fi
-X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-16 9:59, Tomi Valkeinen wrote:
-> Update the maintainer email addresses for TI display drivers.
-> 
-> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+This patch add support for Linkup/Linkdown suport for LAN8814 phy
+and 1588 Driver support for the same phy.
 
-Acked-by: Jyri Sarha <jyri.sarha@iki.fi>
+v2->v3
+-Split the patch into 2 patches, one is linkup/linkdown interrupt
+ and the other is 1588 driver support.
 
-> ---
->  MAINTAINERS | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 281de213ef47..c21471497a18 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -5932,8 +5932,8 @@
-> F:	Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml
->  F:	drivers/gpu/drm/stm
-> 
->  DRM DRIVERS FOR TI KEYSTONE
-> -M:	Jyri Sarha <jsarha@ti.com>
-> -M:	Tomi Valkeinen <tomi.valkeinen@ti.com>
-> +M:	Jyri Sarha <jyri.sarha@iki.fi>
-> +M:	Tomi Valkeinen <tomba@kernel.org>
->  L:	dri-devel@lists.freedesktop.org
->  S:	Maintained
->  T:	git git://anongit.freedesktop.org/drm/drm-misc
-> @@ -5943,15 +5943,15 @@
-> F:	Documentation/devicetree/bindings/display/ti/ti,k2g-dss.yaml
->  F:	drivers/gpu/drm/tidss/
-> 
->  DRM DRIVERS FOR TI LCDC
-> -M:	Jyri Sarha <jsarha@ti.com>
-> -R:	Tomi Valkeinen <tomi.valkeinen@ti.com>
-> +M:	Jyri Sarha <jyri.sarha@iki.fi>
-> +R:	Tomi Valkeinen <tomba@kernel.org>
->  L:	dri-devel@lists.freedesktop.org
->  S:	Maintained
->  F:	Documentation/devicetree/bindings/display/tilcdc/
->  F:	drivers/gpu/drm/tilcdc/
-> 
->  DRM DRIVERS FOR TI OMAP
-> -M:	Tomi Valkeinen <tomi.valkeinen@ti.com>
-> +M:	Tomi Valkeinen <tomba@kernel.org>
->  L:	dri-devel@lists.freedesktop.org
->  S:	Maintained
->  F:	Documentation/devicetree/bindings/display/ti/
+v1->v2
+-Fixed warnings
+ Reported-by: kernel test robot <lkp@intel.com>
+
+Divya Koppera (2):
+  net: phy: mchp: Add interrupt support for Link up and Link down to
+    LAN8814 phy
+  net: phy: mchp: Add 1588 support for LAN8814 Quad PHY
+
+ drivers/net/phy/micrel.c | 1007 +++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 1006 insertions(+), 1 deletion(-)
+
+-- 
+2.17.1
+
