@@ -2,799 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4BBA2DC4F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 18:02:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93BEA2DC4F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 18:03:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726949AbgLPRBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 12:01:54 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:42662 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726825AbgLPRBy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 12:01:54 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2586745E;
-        Wed, 16 Dec 2020 18:01:03 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1608138063;
-        bh=eT87L/cuAuWYKdjmlwzLo0Ss4rOuBxsca/KiZ5SmJwo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dmSZZIoqaLeWNbuS6th4782sL7N64Z+Q0HWMIzVoKJa61h3xQx6R6710S/PyREedW
-         kRhgi4+P6j53hj3PixUvEvRMUzlYDXuBmgX0iLZdrnZKWCIl3uKNn2JDRuCEaN8xJx
-         /DPz+eVcG78hbo40TVaMkRc/1QBMHBJgJuQ8JkeM=
-Date:   Wed, 16 Dec 2020 19:00:56 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
-Cc:     kieran.bingham+renesas@ideasonboard.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Hyun Kwon <hyunk@xilinx.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        sergei.shtylyov@gmail.com
-Subject: Re: [PATCH v6 1/5] media: i2c: Add driver for RDACM21 camera module
-Message-ID: <X9o9SMCkTjW+6t4U@pendragon.ideasonboard.com>
-References: <20201215170957.92761-1-jacopo+renesas@jmondi.org>
- <20201215170957.92761-2-jacopo+renesas@jmondi.org>
+        id S1726897AbgLPRCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 12:02:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58662 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726721AbgLPRCp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 12:02:45 -0500
+X-Gm-Message-State: AOAM533OsBuIwTVqNzlRfibVm9AM5mXA1Jrppwlm6E1QzO+eBrr/DI4J
+        msXruEgaccDdvN19H/j+Gx/1O4evZBLJAFQPVA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608138125;
+        bh=VBS+XyYIAtbNDwU+cmCPanVpoUqZR1mv6ycLNrXxZBY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=QFJfJLApbDhJSrONIxuRt4PjNmiDL6K0c+kndXsVsgyCzI5J4+8XWUEoexyeq/n4k
+         UfTp1eVqGT8jp4IuHBj4TteTEwva6qE6FnWaf+60DfU7DLGCZrKr4cxiDd465pWIVB
+         5P/3zBIeprmQ2lj1Zk6nWA3tITRH6cmSeTBQSBwHAeDJUxF/ZQRygfFSVuoQUEVUSz
+         OX5Kis9T8tDsa/Fy3zQ3Au7g52labeOhatCI8pi3uN1w7Fuv5JoQxUoCHh6kAraVyT
+         RLJ9eXlEWKDH8Q9xi9mXA02uUVReDurP0R0hcJkRE7C1qF9m+Gkq/czpUhQsiJ/gZL
+         cGcM+bwv5BMiw==
+X-Google-Smtp-Source: ABdhPJwfBr+Ojyy/rdG7+RXLa3aiN3AHwkzpE4F8CAmQgz+1+Lg0018Kseqh6Fj0+lO1mgh7hvjY43lOg4SpyyYyakI=
+X-Received: by 2002:a17:907:2111:: with SMTP id qn17mr30621135ejb.525.1608138123502;
+ Wed, 16 Dec 2020 09:02:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201215170957.92761-2-jacopo+renesas@jmondi.org>
+References: <20201215070009.27937-1-kishon@ti.com> <CAL_JsqJzi7JkMcd4NZewA=w8q6BsCkrhW3JcED63R=EyE3v29Q@mail.gmail.com>
+ <1ec78477-dadc-cbef-406f-568f44b6c62d@ti.com>
+In-Reply-To: <1ec78477-dadc-cbef-406f-568f44b6c62d@ti.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 16 Dec 2020 11:01:51 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLepmopGObX_r+7gtR+keaNtEAA3WA1j697T4jAWP8DHA@mail.gmail.com>
+Message-ID: <CAL_JsqLepmopGObX_r+7gtR+keaNtEAA3WA1j697T4jAWP8DHA@mail.gmail.com>
+Subject: Re: [PATCH v5] PCI: cadence: Retrain Link to work around Gen2
+ training defect.
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Tom Joseph <tjoseph@cadence.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Nadeem Athani <nadeem@cadence.com>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Milind Parab <mparab@cadence.com>,
+        Swapnil Kashinath Jakhade <sjakhade@cadence.com>,
+        Parshuram Raju Thombare <pthombar@cadence.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
+On Wed, Dec 16, 2020 at 9:01 AM Kishon Vijay Abraham I <kishon@ti.com> wrote:
+>
+> Hi Rob,
+>
+> On 15/12/20 9:23 pm, Rob Herring wrote:
+> > On Tue, Dec 15, 2020 at 1:00 AM Kishon Vijay Abraham I <kishon@ti.com> wrote:
+> >>
+> >> From: Nadeem Athani <nadeem@cadence.com>
+> >>
+> >> Cadence controller will not initiate autonomous speed change if strapped as
+> >> Gen2. The Retrain Link bit is set as quirk to enable this speed change.
+> >>
+> >> Signed-off-by: Nadeem Athani <nadeem@cadence.com>
+> >> [kishon@ti.com: Enable the workaround for TI's J721E SoC]
+> >> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> >> ---
+> >> Hi Lorenzo,
+> >> The previous version of the patch can be found at [1].
+> >> I slightly re-worked the patch from Nadeem
+> >> *) Removed additional Link Up Check
+> >> *) Removed quirk from pcie-cadence-plat.c
+> >> *) Also removed additional compatible
+> >>    "cdns,cdns-pcie-host-quirk-retrain" added in that series
+> >> *) Enabled the quirk for J721E
+> >> [1] -> http://lore.kernel.org/r/20201211144236.3825-1-nadeem@cadence.com
+> >>
+> >>  drivers/pci/controller/cadence/pci-j721e.c    |  3 +
+> >>  .../controller/cadence/pcie-cadence-host.c    | 67 ++++++++++++++-----
+> >>  drivers/pci/controller/cadence/pcie-cadence.h | 11 ++-
+> >>  3 files changed, 62 insertions(+), 19 deletions(-)
+> >>
+> >> diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
+> >> index dac1ac8a7615..baf729850cb1 100644
+> >> --- a/drivers/pci/controller/cadence/pci-j721e.c
+> >> +++ b/drivers/pci/controller/cadence/pci-j721e.c
+> >> @@ -64,6 +64,7 @@ enum j721e_pcie_mode {
+> >>
+> >>  struct j721e_pcie_data {
+> >>         enum j721e_pcie_mode    mode;
+> >> +       bool                    quirk_retrain_flag;
+> >>  };
+> >>
+> >>  static inline u32 j721e_pcie_user_readl(struct j721e_pcie *pcie, u32 offset)
+> >> @@ -280,6 +281,7 @@ static struct pci_ops cdns_ti_pcie_host_ops = {
+> >>
+> >>  static const struct j721e_pcie_data j721e_pcie_rc_data = {
+> >>         .mode = PCI_MODE_RC,
+> >> +       .quirk_retrain_flag = true,
+> >>  };
+> >>
+> >>  static const struct j721e_pcie_data j721e_pcie_ep_data = {
+> >> @@ -388,6 +390,7 @@ static int j721e_pcie_probe(struct platform_device *pdev)
+> >>
+> >>                 bridge->ops = &cdns_ti_pcie_host_ops;
+> >>                 rc = pci_host_bridge_priv(bridge);
+> >> +               rc->quirk_retrain_flag = data->quirk_retrain_flag;
+> >>
+> >>                 cdns_pcie = &rc->pcie;
+> >>                 cdns_pcie->dev = dev;
+> >> diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c b/drivers/pci/controller/cadence/pcie-cadence-host.c
+> >> index 811c1cb2e8de..773c0d1137ed 100644
+> >> --- a/drivers/pci/controller/cadence/pcie-cadence-host.c
+> >> +++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
+> >> @@ -77,6 +77,50 @@ static struct pci_ops cdns_pcie_host_ops = {
+> >>         .write          = pci_generic_config_write,
+> >>  };
+> >>
+> >> +static int cdns_pcie_host_wait_for_link(struct cdns_pcie *pcie)
+> >> +{
+> >> +       struct device *dev = pcie->dev;
+> >> +       int retries;
+> >> +
+> >> +       /* Check if the link is up or not */
+> >> +       for (retries = 0; retries < LINK_WAIT_MAX_RETRIES; retries++) {
+> >> +               if (cdns_pcie_link_up(pcie)) {
+> >> +                       dev_info(dev, "Link up\n");
+> >> +                       return 0;
+> >> +               }
+> >> +               usleep_range(LINK_WAIT_USLEEP_MIN, LINK_WAIT_USLEEP_MAX);
+> >> +       }
+> >> +
+> >> +       return -ETIMEDOUT;
+> >> +}
+> >> +
+> >> +static void cdns_pcie_retrain(struct cdns_pcie *pcie)
+> >> +{
+> >> +       u32 lnk_cap_sls, pcie_cap_off = CDNS_PCIE_RP_CAP_OFFSET;
+> >> +       u16 lnk_stat, lnk_ctl;
+> >> +
+> >> +       /*
+> >> +        * Set retrain bit if current speed is 2.5 GB/s,
+> >> +        * but the PCIe root port support is > 2.5 GB/s.
+> >
+> > If you don't have the retrain quirk, wouldn't this condition never
+> > happen and then the function is just a nop? So this could just be
+> > called unconditionally.
+>
+> Yeah, but only for the quirk we have to retrain to go to GEN2 speed
+> mode. Else the HW will automatically retrain and go to GEN2.
 
-Thank you for the patch.
+Again, so you don't need a flag for this. Comparing the speed is
+enough. IOW, all you need is:
 
-On Tue, Dec 15, 2020 at 06:09:53PM +0100, Jacopo Mondi wrote:
-> The RDACM21 is a GMSL camera supporting 1280x1080 resolution images
-> developed by IMI based on an Omnivision OV10640 sensor, an Omnivision
-> OV490 ISP and a Maxim MAX9271 GMSL serializer.
-> 
-> The driver uses the max9271 library module, to maximize code reuse with
-> other camera module drivers using the same serializer, such as rdacm20.
-> 
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> ---
->  MAINTAINERS                 |  12 +
->  drivers/media/i2c/Kconfig   |  13 +
->  drivers/media/i2c/Makefile  |   2 +
->  drivers/media/i2c/rdacm21.c | 595 ++++++++++++++++++++++++++++++++++++
->  4 files changed, 622 insertions(+)
->  create mode 100644 drivers/media/i2c/rdacm21.c
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 4be038f0a59d..a011df5a14d7 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -14809,6 +14809,18 @@ F:	drivers/media/i2c/max9271.c
->  F:	drivers/media/i2c/max9271.h
->  F:	drivers/media/i2c/rdacm20.c
->  
-> +RDACM21 Camera Sensor
-> +M:	Jacopo Mondi <jacopo+renesas@jmondi.org>
-> +M:	Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> +M:	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-> +M:	Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-> +L:	linux-media@vger.kernel.org
-> +S:	Maintained
-> +F:	Documentation/devicetree/bindings/media/i2c/rdacm2x-gmsl.yaml
-> +F:	drivers/media/i2c/max9271.c
-> +F:	drivers/media/i2c/max9271.h
-> +F:	drivers/media/i2c/rdacm21.c
-> +
->  RDC R-321X SoC
->  M:	Florian Fainelli <florian@openwrt.org>
->  S:	Maintained
-> diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
-> index 2b9d81e4794a..d500edb8638b 100644
-> --- a/drivers/media/i2c/Kconfig
-> +++ b/drivers/media/i2c/Kconfig
-> @@ -1212,6 +1212,19 @@ config VIDEO_RDACM20
->  	  This camera should be used in conjunction with a GMSL
->  	  deserialiser such as the MAX9286.
->  
-> +config VIDEO_RDACM21
-> +	tristate "IMI RDACM21 camera support"
-> +	depends on I2C
-> +	select V4L2_FWNODE
-> +	select VIDEO_V4L2_SUBDEV_API
-> +	select MEDIA_CONTROLLER
-> +	help
-> +	  This driver supports the IMI RDACM21 GMSL camera, used in
-> +	  ADAS systems.
-> +
-> +	  This camera should be used in conjunction with a GMSL
-> +	  deserialiser such as the MAX9286.
-> +
->  config VIDEO_RJ54N1
->  	tristate "Sharp RJ54N1CB0C sensor support"
->  	depends on I2C && VIDEO_V4L2
-> diff --git a/drivers/media/i2c/Makefile b/drivers/media/i2c/Makefile
-> index a3149dce21bb..85b1edc62508 100644
-> --- a/drivers/media/i2c/Makefile
-> +++ b/drivers/media/i2c/Makefile
-> @@ -124,6 +124,8 @@ obj-$(CONFIG_VIDEO_IMX355)	+= imx355.o
->  obj-$(CONFIG_VIDEO_MAX9286)	+= max9286.o
->  rdacm20-camera_module-objs	:= rdacm20.o max9271.o
->  obj-$(CONFIG_VIDEO_RDACM20)	+= rdacm20-camera_module.o
-> +rdacm21-camera_module-objs	:= rdacm21.o max9271.o
-> +obj-$(CONFIG_VIDEO_RDACM21)	+= rdacm21-camera_module.o
->  obj-$(CONFIG_VIDEO_ST_MIPID02) += st-mipid02.o
->  
->  obj-$(CONFIG_SDR_MAX2175) += max2175.o
-> diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
-> new file mode 100644
-> index 000000000000..5f9267e26258
-> --- /dev/null
-> +++ b/drivers/media/i2c/rdacm21.c
-> @@ -0,0 +1,595 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * IMI RDACM21 GMSL Camera Driver
-> + *
-> + * Copyright (C) 2017-2020 Jacopo Mondi
-> + * Copyright (C) 2017-2019 Kieran Bingham
-> + * Copyright (C) 2017-2019 Laurent Pinchart
-> + * Copyright (C) 2017-2019 Niklas Söderlund
-> + * Copyright (C) 2016 Renesas Electronics Corporation
-> + * Copyright (C) 2015 Cogent Embedded, Inc.
-> + */
-> +
-> +#include <linux/delay.h>
-> +#include <linux/fwnode.h>
-> +#include <linux/init.h>
-> +#include <linux/i2c.h>
-> +#include <linux/module.h>
-> +#include <linux/slab.h>
-> +#include <linux/videodev2.h>
-> +
-> +#include <media/v4l2-async.h>
-> +#include <media/v4l2-ctrls.h>
-> +#include <media/v4l2-subdev.h>
-> +#include "max9271.h"
-> +
-> +#define OV10640_ID_LOW			0xa6
-> +
-> +#define OV490_I2C_ADDRESS		0x24
-> +
-> +#define OV490_PAGE_HIGH_REG		0xfffd
-> +#define OV490_PAGE_LOW_REG		0xfffe
-> +
-> +#define OV490_DVP_CTRL3			0x80286009
-> +
-> +#define OV490_ODS_CTRL_FRAME_OUTPUT_EN	0x0c
-> +#define OV490_ODS_CTRL			0x8029d000
-> +
-> +#define OV490_ID_VAL			0x0490
-> +#define OV490_ID(_p, _v)		((((_p) & 0xff) << 8) | ((_v) & 0xff))
-> +#define OV490_PID			0x8080300a
-> +#define OV490_VER			0x8080300b
-> +
-> +#define OV490_ISP_HSIZE_LOW		0x80820060
-> +#define OV490_ISP_HSIZE_HIGH		0x80820061
-> +#define OV490_ISP_VSIZE_LOW		0x80820062
-> +#define OV490_ISP_VSIZE_HIGH		0x80820063
-> +
-> +#define OV10640_PIXEL_RATE		(55000000)
+if (current speed < advertised speed)
+  do retrain
 
-No need for parentheses.
+The question is the condition ever true and you don't want to do a
+retrain? I could see higher speeds being unstable or something, but
+then 'advertised speed' would be lowered in that case (to prevent auto
+retraining, right?) and the condition would be false.
 
-At some point we should move the sensor and ISP-related code to a
-separate driver, but that can wait.
-
-> +
-> +struct rdacm21_device {
-> +	struct device			*dev;
-> +	struct max9271_device		*serializer;
-> +	struct i2c_client		*isp;
-> +	struct v4l2_subdev		sd;
-> +	struct media_pad		pad;
-> +	struct v4l2_mbus_framefmt	fmt;
-> +	struct v4l2_ctrl_handler	ctrls;
-> +	u32				addrs[32];
-
-Do we need 32 addresses ? 2 seem enough.
-
-> +	u16				last_page;
-> +};
-> +
-> +static inline struct rdacm21_device *sd_to_rdacm21(struct v4l2_subdev *sd)
-> +{
-> +	return container_of(sd, struct rdacm21_device, sd);
-> +}
-> +
-> +static inline struct rdacm21_device *i2c_to_rdacm21(struct i2c_client *client)
-> +{
-> +	return sd_to_rdacm21(i2c_get_clientdata(client));
-> +}
-
-As this is used in the remove handler only you could inline it there, up
-to you.
-
-> +
-> +static const struct ov490_reg {
-> +	u16 reg;
-> +	u8 val;
-> +} ov490_regs_wizard[] = {
-> +	{0xfffd, 0x80},
-> +	{0xfffe, 0x82},
-> +	{0x0071, 0x11},
-> +	{0x0075, 0x11},
-> +	{0xfffe, 0x29},
-> +	{0x6010, 0x01},
-> +	/*
-> +	 * OV490 EMB line disable in YUV and RAW data,
-> +	 * NOTE: EMB line is still used in ISP and sensor
-> +	 */
-> +	{0xe000, 0x14},
-> +	{0xfffe, 0x28},
-> +	{0x6000, 0x04},
-> +	{0x6004, 0x00},
-> +	/*
-> +	 * PCLK polarity - useless due to silicon bug.
-> +	 * Use 0x808000bb register instead.
-> +	 */
-> +	{0x6008, 0x00},
-> +	{0xfffe, 0x80},
-> +	{0x0091, 0x00},
-> +	/* bit[3]=0 - PCLK polarity workaround. */
-> +	{0x00bb, 0x1d},
-> +	/* Ov490 FSIN: app_fsin_from_fsync */
-> +	{0xfffe, 0x85},
-> +	{0x0008, 0x00},
-> +	{0x0009, 0x01},
-> +	/* FSIN0 source. */
-> +	{0x000A, 0x05},
-> +	{0x000B, 0x00},
-> +	/* FSIN0 delay. */
-> +	{0x0030, 0x02},
-> +	{0x0031, 0x00},
-> +	{0x0032, 0x00},
-> +	{0x0033, 0x00},
-> +	/* FSIN1 delay. */
-> +	{0x0038, 0x02},
-> +	{0x0039, 0x00},
-> +	{0x003A, 0x00},
-> +	{0x003B, 0x00},
-> +	/* FSIN0 length. */
-> +	{0x0070, 0x2C},
-> +	{0x0071, 0x01},
-> +	{0x0072, 0x00},
-> +	{0x0073, 0x00},
-> +	/* FSIN1 length. */
-> +	{0x0074, 0x64},
-> +	{0x0075, 0x00},
-> +	{0x0076, 0x00},
-> +	{0x0077, 0x00},
-> +	{0x0000, 0x14},
-> +	{0x0001, 0x00},
-> +	{0x0002, 0x00},
-> +	{0x0003, 0x00},
-> +	/*
-> +	 * Load fsin0,load fsin1,load other,
-> +	 * It will be cleared automatically.
-> +	 */
-> +	{0x0004, 0x32},
-> +	{0x0005, 0x00},
-> +	{0x0006, 0x00},
-> +	{0x0007, 0x00},
-> +	{0xfffe, 0x80},
-> +	/* Sensor FSIN. */
-> +	{0x0081, 0x00},
-> +	/* ov10640 FSIN enable */
-> +	{0xfffe, 0x19},
-> +	{0x5000, 0x00},
-> +	{0x5001, 0x30},
-> +	{0x5002, 0x8c},
-> +	{0x5003, 0xb2},
-> +	{0xfffe, 0x80},
-> +	{0x00c0, 0xc1},
-> +	/* ov10640 HFLIP=1 by default */
-> +	{0xfffe, 0x19},
-> +	{0x5000, 0x01},
-> +	{0x5001, 0x00},
-> +	{0xfffe, 0x80},
-> +	{0x00c0, 0xdc},
-> +};
-> +
-> +static int ov490_read(struct rdacm21_device *dev, u16 reg, u8 *val)
-> +{
-> +	u8 buf[2] = { reg >> 8, reg };
-> +	int ret;
-> +
-> +	ret = i2c_master_send(dev->isp, buf, 2);
-> +	if (ret == 2)
-> +		ret = i2c_master_recv(dev->isp, val, 1);
-> +
-> +	if (ret < 0) {
-> +		dev_dbg(dev->dev, "%s: register 0x%04x read failed (%d)\n",
-> +			__func__, reg, ret);
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int ov490_write(struct rdacm21_device *dev, u16 reg, u8 val)
-> +{
-> +	u8 buf[3] = { reg >> 8, reg, val };
-> +	int ret;
-> +
-> +	ret = i2c_master_send(dev->isp, buf, 3);
-> +	if (ret < 0) {
-> +		dev_err(dev->dev, "%s: register 0x%04x write failed (%d)\n",
-> +			__func__, reg, ret);
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int ov490_set_page(struct rdacm21_device *dev, u16 reg)
-
-s/reg/page/
-
-> +{
-> +	bool page_new = false;
-> +	u8 page_high = reg >> 8;
-> +	u8 page_low = reg;
-> +	int ret;
-> +
-
-If you add
-
-	if (page == dev->last_page)
-		return 0;
-
-here, you can drop the page_new variable.
-
-> +	if (page_high != (dev->last_page >> 8)) {
-> +		ret = ov490_write(dev, OV490_PAGE_HIGH_REG, page_high);
-> +		if (ret)
-> +			return ret;
-> +		page_new = true;
-> +	}
-> +
-> +	if (page_low != (u8)dev->last_page) {
-> +		ret = ov490_write(dev, OV490_PAGE_LOW_REG, page_low);
-> +		if (ret)
-> +			return ret;
-> +		page_new = true;
-> +	}
-> +
-> +	if (page_new) {
-> +		dev->last_page = reg;
-> +		usleep_range(100, 150);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int ov490_read_reg(struct rdacm21_device *dev, u32 reg, u8 *val)
-> +{
-> +	int ret;
-> +
-> +	ret = ov490_set_page(dev, reg >> 16);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = ov490_read(dev, (u16)reg, val);
-> +	if (ret)
-> +		return ret;
-> +
-> +	dev_dbg(dev->dev, "%s: 0x%08x = 0x%02x\n", __func__, reg, *val);
-> +
-> +	return 0;
-> +}
-> +
-> +static int ov490_write_reg(struct rdacm21_device *dev, u32 reg, u8 val)
-> +{
-> +	int ret;
-> +
-> +	ret = ov490_set_page(dev, reg >> 16);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = ov490_write(dev, (u16)reg, val);
-> +	if (ret)
-> +		return ret;
-> +
-> +	dev_dbg(dev->dev, "%s: 0x%08x = 0x%02x\n", __func__, reg, val);
-> +
-> +	return 0;
-> +}
-> +
-> +static int rdacm21_s_stream(struct v4l2_subdev *sd, int enable)
-> +{
-> +	struct rdacm21_device *dev = sd_to_rdacm21(sd);
-> +
-> +	/*
-> +	 * Enable serial link now that the ISP provides a valid pixel clock
-> +	 * to start serializing video data on the GMSL link.
-> +	 */
-> +	return max9271_set_serial_link(dev->serializer, enable);
-> +}
-> +
-> +static int rdacm21_enum_mbus_code(struct v4l2_subdev *sd,
-> +				  struct v4l2_subdev_pad_config *cfg,
-> +				  struct v4l2_subdev_mbus_code_enum *code)
-> +{
-> +	if (code->pad || code->index > 0)
-> +		return -EINVAL;
-> +
-> +	code->code = MEDIA_BUS_FMT_YUYV8_1X16;
-> +
-> +	return 0;
-> +}
-> +
-> +static int rdacm21_get_fmt(struct v4l2_subdev *sd,
-> +			   struct v4l2_subdev_pad_config *cfg,
-> +			   struct v4l2_subdev_format *format)
-> +{
-> +	struct v4l2_mbus_framefmt *mf = &format->format;
-> +	struct rdacm21_device *dev = sd_to_rdacm21(sd);
-> +
-> +	if (format->pad)
-> +		return -EINVAL;
-> +
-> +	mf->width		= dev->fmt.width;
-> +	mf->height		= dev->fmt.height;
-> +	mf->code		= MEDIA_BUS_FMT_YUYV8_1X16;
-> +	mf->colorspace		= V4L2_COLORSPACE_SRGB;
-> +	mf->field		= V4L2_FIELD_NONE;
-> +	mf->ycbcr_enc		= V4L2_YCBCR_ENC_601;
-> +	mf->quantization	= V4L2_QUANTIZATION_FULL_RANGE;
-> +	mf->xfer_func		= V4L2_XFER_FUNC_NONE;
-> +
-> +	return 0;
-> +}
-> +
-> +static struct v4l2_subdev_video_ops rdacm21_video_ops = {
-
-static const
-
-> +	.s_stream	= rdacm21_s_stream,
-> +};
-> +
-> +static const struct v4l2_subdev_pad_ops rdacm21_subdev_pad_ops = {
-> +	.enum_mbus_code = rdacm21_enum_mbus_code,
-> +	.get_fmt	= rdacm21_get_fmt,
-> +	.set_fmt	= rdacm21_get_fmt,
-> +};
-> +
-> +static struct v4l2_subdev_ops rdacm21_subdev_ops = {
-
-static const
-
-> +	.video		= &rdacm21_video_ops,
-> +	.pad		= &rdacm21_subdev_pad_ops,
-> +};
-> +
-> +static int ov490_initialize(struct rdacm21_device *dev)
-> +{
-> +	unsigned int ov490_pid_retry = 20;
-> +	unsigned int timeout;
-> +	u8 pid, ver, val;
-> +	unsigned int i;
-> +	int ret;
-> +
-> +	/* Read OV490 Id to test communications. */
-> +pid_retry:
-
-Could we use a for or while loop instead of a goto ?
-
-> +	ret = ov490_read_reg(dev, OV490_PID, &pid);
-> +	if (ret < 0) {
-> +		/* Give OV490 a few more cycles to exit from reset. */
-> +		if (ov490_pid_retry--) {
-> +			usleep_range(1000, 2000);
-> +			goto pid_retry;
-> +		}
-> +
-> +		dev_err(dev->dev, "OV490 PID read failed (%d)\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = ov490_read_reg(dev, OV490_VER, &ver);
-> +	if (ret < 0) {
-> +		dev_err(dev->dev, "OV490 VERSION read failed (%d)\n", ret);
-
-There's already an error message printed in the read function, you can
-drop this one.
-
-> +		return ret;
-> +	}
-> +
-> +	if (OV490_ID(pid, ver) != OV490_ID_VAL) {
-> +		dev_err(dev->dev, "OV490 ID mismatch: (0x%04x)\n",
-
-s/://
-
-> +			OV490_ID(pid, ver));
-> +		return -ENODEV;
-> +	}
-> +
-> +	/* Wait for firmware boot by reading streamon status. */
-> +	for (timeout = 300; timeout > 0; timeout--) {
-> +		ov490_read_reg(dev, OV490_ODS_CTRL, &val);
-> +		if (val == OV490_ODS_CTRL_FRAME_OUTPUT_EN)
-> +			break;
-> +		mdelay(1);
-
-A sleep is better than a delay.
-
-> +	}
-> +	if (!timeout) {
-> +		dev_err(dev->dev, "Timeout firmware boot wait\n");
-> +		return -ENODEV;
-> +	}
-> +	dev_dbg(dev->dev, "Firmware booted in %u msec\n", 300 - timeout);
-
-That won't be a very accurate time measurement.
-
-> +
-> +	/* Read OV10640 Id to test communications. */
-> +	ov490_write(dev, 0xfffd, 0x80);
-> +	ov490_write(dev, 0xfffe, 0x19);
-
-The page is handled in ov490_write_reg(), can't we write
-
-	ov490_write_reg(dev, 0x80195000, 0x01);
-	ov490_write_reg(dev, 0x80195001, 0x30);
-	ov490_write_reg(dev, 0x80195002, 0x0a);
-
-to simplify the code ? Same below.
-
-> +	usleep_range(100, 150);
-> +
-> +	ov490_write(dev, 0x5000, 0x01);
-> +	ov490_write(dev, 0x5001, 0x30);
-> +	ov490_write(dev, 0x5002, 0x0a);
-> +
-> +	ov490_write(dev, 0xfffe, 0x80);
-> +	usleep_range(100, 150);
-> +	ov490_write(dev, 0xc0, 0xc1);
-> +	ov490_write(dev, 0xfffe, 0x19);
-> +	usleep_range(1000, 1500);
-> +	ov490_read(dev, 0x5000, &val);
-> +	if (val != OV10640_ID_LOW) {
-> +		dev_err(dev->dev, "OV10640 ID mismatch: (0x%02x)\n", val);
-> +		return -ENODEV;
-> +	}
-> +
-> +	dev_dbg(dev->dev, "OV10640 ID = 0x%2x\n", val);
-> +
-> +	for (i = 0; i < ARRAY_SIZE(ov490_regs_wizard); ++i) {
-> +		ret = ov490_write(dev, ov490_regs_wizard[i].reg,
-> +				  ov490_regs_wizard[i].val);
-> +		if (ret < 0) {
-> +			dev_err(dev->dev,
-> +				"%s: register %u (0x%04x) write failed (%d)\n",
-> +				__func__, i, ov490_regs_wizard[i].reg, ret);
-> +
-> +			return -EIO;
-> +		}
-> +
-> +		usleep_range(100, 150);
-> +	}
-> +
-> +	/*
-> +	 * The ISP is programmed with the content of a serial flash memory.
-> +	 * Read the firmware configuration to reflect it through the V4L2 APIs.
-> +	 */
-> +	ov490_read_reg(dev, OV490_ISP_HSIZE_HIGH, &val);
-> +	dev->fmt.width = (val & 0xf) << 8;
-> +	ov490_read_reg(dev, OV490_ISP_HSIZE_LOW, &val);
-> +	dev->fmt.width |= (val & 0xff);
-> +
-> +	ov490_read_reg(dev, OV490_ISP_VSIZE_HIGH, &val);
-> +	dev->fmt.height = (val & 0xf) << 8;
-> +	ov490_read_reg(dev, OV490_ISP_VSIZE_LOW, &val);
-> +	dev->fmt.height |= val & 0xff;
-> +
-> +	/* Set bus width to 12 bits with [0:11] ordering. */
-> +	ov490_write_reg(dev, OV490_DVP_CTRL3, 0x10);
-> +
-> +	dev_info(dev->dev, "Identified RDACM21 camera module\n");
-> +
-> +	return 0;
-> +}
-> +
-> +static int rdacm21_initialize(struct rdacm21_device *dev)
-> +{
-> +	int ret;
-> +
-> +	/* Verify communication with the MAX9271: ping to wakeup. */
-> +	dev->serializer->client->addr = MAX9271_DEFAULT_ADDR;
-> +	i2c_smbus_read_byte(dev->serializer->client);
-> +
-> +	/* Serial link disabled during config as it needs a valid pixel clock. */
-> +	ret = max9271_set_serial_link(dev->serializer, false);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Set GPO high to hold OV490 in reset during max9271 configuration. */
-> +	ret = max9271_set_gpios(dev->serializer, MAX9271_GPO);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Configure I2C bus at 105Kbps speed and configure GMSL link. */
-> +	ret = max9271_configure_i2c(dev->serializer,
-> +				    MAX9271_I2CSLVSH_469NS_234NS |
-> +				    MAX9271_I2CSLVTO_1024US |
-> +				    MAX9271_I2CMSTBT_105KBPS);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = max9271_configure_gmsl_link(dev->serializer);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = max9271_set_address(dev->serializer, dev->addrs[0]);
-> +	if (ret)
-> +		return ret;
-> +	dev->serializer->client->addr = dev->addrs[0];
-> +
-> +	/*
-> +	 * Release OV490 from reset and program address translation
-> +	 * before performing OV490 configuration.
-> +	 */
-> +	ret = max9271_clear_gpios(dev->serializer, MAX9271_GPO);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = max9271_set_translation(dev->serializer, dev->addrs[1],
-> +				      OV490_I2C_ADDRESS);
-> +	if (ret)
-> +		return ret;
-> +	dev->isp->addr = dev->addrs[1];
-> +
-> +	ret = ov490_initialize(dev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/*
-> +	 * Set reverse channel high threshold to increase noise immunity.
-> +	 *
-> +	 * This should be compensated by increasing the reverse channel
-> +	 * amplitude on the remote deserializer side.
-> +	 */
-> +	ret = max9271_set_high_threshold(dev->serializer, true);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return 0;
-> +}
-> +
-> +static int rdacm21_probe(struct i2c_client *client)
-> +{
-> +	struct rdacm21_device *dev;
-> +	struct fwnode_handle *ep;
-> +	int ret;
-> +
-> +	dev = devm_kzalloc(&client->dev, sizeof(*dev), GFP_KERNEL);
-> +	if (!dev)
-> +		return -ENOMEM;
-> +	dev->dev = &client->dev;
-> +
-> +	dev->serializer = devm_kzalloc(&client->dev, sizeof(*dev->serializer),
-> +				       GFP_KERNEL);
-
-Does this need to be allocated dynamically, can't the serializer field
-be embedded ?
-
-> +	if (!dev->serializer)
-> +		return -ENOMEM;
-> +
-> +	dev->serializer->client = client;
-> +
-> +	ret = of_property_read_u32_array(client->dev.of_node, "reg",
-> +					 dev->addrs, 2);
-> +	if (ret < 0) {
-> +		dev_err(dev->dev, "Invalid DT reg property: %d\n", ret);
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* Create the dummy I2C client for the sensor. */
-> +	dev->isp = i2c_new_dummy_device(client->adapter, OV490_I2C_ADDRESS);
-> +	if (IS_ERR(dev->isp))
-> +		return PTR_ERR(dev->isp);
-> +
-> +	ret = rdacm21_initialize(dev);
-> +	if (ret < 0)
-> +		goto error;
-> +
-> +	/* Initialize and register the subdevice. */
-> +	v4l2_i2c_subdev_init(&dev->sd, client, &rdacm21_subdev_ops);
-> +	dev->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
-> +
-> +	v4l2_ctrl_handler_init(&dev->ctrls, 1);
-> +	v4l2_ctrl_new_std(&dev->ctrls, NULL, V4L2_CID_PIXEL_RATE,
-> +			  OV10640_PIXEL_RATE, OV10640_PIXEL_RATE, 1,
-> +			  OV10640_PIXEL_RATE);
-> +	dev->sd.ctrl_handler = &dev->ctrls;
-> +
-> +	ret = dev->ctrls.error;
-> +	if (ret)
-> +		goto error_free_ctrls;
-> +
-> +	dev->pad.flags = MEDIA_PAD_FL_SOURCE;
-> +	dev->sd.entity.flags |= MEDIA_ENT_F_CAM_SENSOR;
-> +	ret = media_entity_pads_init(&dev->sd.entity, 1, &dev->pad);
-> +	if (ret < 0)
-> +		goto error_free_ctrls;
-> +
-> +	ep = fwnode_graph_get_next_endpoint(dev_fwnode(&client->dev), NULL);
-> +	if (!ep) {
-> +		dev_err(&client->dev,
-> +			"Unable to get endpoint in node %pOF\n",
-> +			client->dev.of_node);
-> +		ret = -ENOENT;
-> +		goto error_free_ctrls;
-> +	}
-> +	dev->sd.fwnode = ep;
-> +
-> +	ret = v4l2_async_register_subdev(&dev->sd);
-> +	if (ret)
-> +		goto error_put_node;
-> +
-> +	return 0;
-> +
-> +error_put_node:
-> +	fwnode_handle_put(dev->sd.fwnode);
-> +error_free_ctrls:
-> +	v4l2_ctrl_handler_free(&dev->ctrls);
-> +error:
-> +	i2c_unregister_device(dev->isp);
-> +
-> +	return ret;
-> +}
-> +
-> +static int rdacm21_remove(struct i2c_client *client)
-> +{
-> +	struct rdacm21_device *dev = i2c_to_rdacm21(client);
-> +
-> +	fwnode_handle_put(dev->sd.fwnode);
-
-Maybe this should go after unregistration of the subdev, to avoid a
-use-after-free ? I'd move it to the end.
-
-> +	v4l2_async_unregister_subdev(&dev->sd);
-> +	v4l2_ctrl_handler_free(&dev->ctrls);
-> +	i2c_unregister_device(dev->isp);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id rdacm21_of_ids[] = {
-> +	{ .compatible = "imi,rdacm21" },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, rdacm21_of_ids);
-> +
-> +static struct i2c_driver rdacm21_i2c_driver = {
-> +	.driver	= {
-> +		.name	= "rdacm21",
-> +		.of_match_table = rdacm21_of_ids,
-> +	},
-> +	.probe_new	= rdacm21_probe,
-> +	.remove		= rdacm21_remove,
-> +};
-> +
-> +module_i2c_driver(rdacm21_i2c_driver);
-> +
-> +MODULE_DESCRIPTION("GMSL Camera driver for RDACM21");
-> +MODULE_AUTHOR("Jacopo Mondi, Kieran Bingham, Laurent Pinchart, Niklas Söderlund, Vladimir Barinov");
-
-Did I author any code in this driver ?
-
-> +MODULE_LICENSE("GPL v2");
-
--- 
-Regards,
-
-Laurent Pinchart
+Rob
