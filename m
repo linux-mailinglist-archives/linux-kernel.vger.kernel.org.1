@@ -2,111 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 481162DC5D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 19:00:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 863E32DC5CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 18:59:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728758AbgLPSAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 13:00:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44624 "EHLO
+        id S1728674AbgLPR7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 12:59:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728754AbgLPSAM (ORCPT
+        with ESMTP id S1728665AbgLPR7Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 13:00:12 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 521E3C0617A6;
-        Wed, 16 Dec 2020 09:59:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Be2nf2w/Vps/TTeCXTZLGMYhjE3HrJ1GdzWfCzB412A=; b=nqy3TkxWRSI/ZUAfRjb7CiyHmI
-        z2b0gw+/xmF3V4bRP9jBf1OEn4etLAnhng4c/UhOWUSeqB05jwPIj8Rh9uZ21hQ4ee6X60bTP9wEA
-        RT0YNjOtLitpMmmclOBcDf+B6m0wbgQvaR8LEckSrcfDteNXNOq2baniPg2yh03WmdTFSO9hIdNUI
-        8E2mfDpBotw+GKCLBHJG9i8cSzTmpu4Cs3K+bLZySIc078PNlokD2esyT5D92TUH4gAPARyY3Bs4M
-        CQ1YkaXuVJJC+yhROI4pG+byk+ORTk/MtIQmn4cU/HodbcrIdCOQPphC4Beha/FAi9+e3UzMniGn2
-        1KoBKrug==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kpb4K-0005dO-H8; Wed, 16 Dec 2020 17:58:32 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id ACE52300DAE;
-        Wed, 16 Dec 2020 18:58:28 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8D62420274B26; Wed, 16 Dec 2020 18:58:28 +0100 (CET)
-Date:   Wed, 16 Dec 2020 18:58:28 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     =?iso-8859-1?Q?J=FCrgen_Gro=DF?= <jgross@suse.com>,
-        xen-devel@lists.xenproject.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org, luto@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Deep Shah <sdeep@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [PATCH v2 00/12] x86: major paravirt cleanup
-Message-ID: <20201216175828.GQ3040@hirez.programming.kicks-ass.net>
-References: <20201120114630.13552-1-jgross@suse.com>
- <20201120125342.GC3040@hirez.programming.kicks-ass.net>
- <20201123134317.GE3092@hirez.programming.kicks-ass.net>
- <6771a12c-051d-1655-fb3a-cc45a3c82e29@suse.com>
- <20201215141834.GG3040@hirez.programming.kicks-ass.net>
- <20201215145408.GR3092@hirez.programming.kicks-ass.net>
- <20201216003802.5fpklvx37yuiufrt@treble>
- <20201216084059.GL3040@hirez.programming.kicks-ass.net>
- <20201216165605.4h5q7os5dutjgdqi@treble>
+        Wed, 16 Dec 2020 12:59:24 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5DDFC061794;
+        Wed, 16 Dec 2020 09:58:43 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id d13so5802243wrc.13;
+        Wed, 16 Dec 2020 09:58:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ve7Jlmsbnt71qFPD+2Sf0aXqbo6JYS08Pd/ri6fw8PA=;
+        b=pazg4ExcI+iYTGqgJ2XKlS5Ye6XroB2V+9nQmzXQumBArkmTT7HgNpogJHY+UW0NkP
+         4D6gKVcvdHIH7JR3HBzP3+AkKHFbGTxPfDDoYd6yRtnODhiK1CdmTB0ax3fGShF4aydA
+         atYYpA76CsQFSDMVopqpbjduLhAhQdXB34cRsu4u42Pi7UMFAl08L26sWN6PgVSisga3
+         vSUiiaf21b+zRbzbiMbYywGIKXjBu1iKENu17eIzeXcx+Ox4lu1VoZitc3gQmBF0sZKT
+         ccd9/9MT6ewsGhHEmgt6Z9WxWHn7ITVl0mP+234VpjlS6QtpWTBK5T6OCRITbNm5sNh7
+         cpYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ve7Jlmsbnt71qFPD+2Sf0aXqbo6JYS08Pd/ri6fw8PA=;
+        b=dhpUvQdrJhsvSghr188lgHEzaEAATOzljb30nLuAgErq4GJyNlpqM4SJqtoUDXKyKm
+         yAsUJfcVc0tufAU+Zje6MX9n7qVmhB2fm7bPtPsqqH6lRF+sxppm1skbIsPmd1lSuM4U
+         SfLatQwbDnlsy5LqeFES0Ncjven08qflq3okHFPN772FP/TNXVT/V/uYRLv2ixeVfcW2
+         0b3ayMnG96Dl8u/j1Aw2urbQ5R0AKVRnYIsDmlOCuhkBlyBTe3ewvUk1JrVK4tF3bpVE
+         3XK4ii0jwHp82AGBFRc5BIlpm18lwztytIDfE/WjRU7EDjpuMybbGYi825DN08i/1GDa
+         dcpw==
+X-Gm-Message-State: AOAM531AjRWXI5ZCuun3lGo3QXxWFWHBxgjGFN+sf1bGLNw9e6Os2x6W
+        8t7uMPX5hD+XseYcQmh6eV0=
+X-Google-Smtp-Source: ABdhPJwuqcwT52lvkN/36+bqBTg7pVS4wVcVKDbjpp8nEqI5DYuxdaDIssSyUBxLGc8tzMHT8CVVIQ==
+X-Received: by 2002:adf:ec86:: with SMTP id z6mr39532180wrn.17.1608141522538;
+        Wed, 16 Dec 2020 09:58:42 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id b83sm3624733wmd.48.2020.12.16.09.58.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Dec 2020 09:58:41 -0800 (PST)
+Date:   Wed, 16 Dec 2020 18:58:39 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Felipe Balbi <balbi@kernel.org>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Peter Geis <pgwipeout@gmail.com>, linux-tegra@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 3/8] usb: chipidea: tegra: Remove MODULE_ALIAS
+Message-ID: <X9pKz8O4ESRShKzh@ulmo>
+References: <20201215202113.30394-1-digetx@gmail.com>
+ <20201215202113.30394-4-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Z0OHV5uZms33lmlV"
 Content-Disposition: inline
-In-Reply-To: <20201216165605.4h5q7os5dutjgdqi@treble>
+In-Reply-To: <20201215202113.30394-4-digetx@gmail.com>
+User-Agent: Mutt/2.0.3 (a51f058f) (2020-12-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 10:56:05AM -0600, Josh Poimboeuf wrote:
-> On Wed, Dec 16, 2020 at 09:40:59AM +0100, Peter Zijlstra wrote:
 
-> > > Could we make it easier by caching the shared
-> > > per-alt-group CFI state somewhere along the way?
-> > 
-> > Yes, but when I tried it grew the code required. Runtime costs would be
-> > less, but I figured that since alternatives are typically few and small,
-> > that wasn't a real consideration.
-> 
-> Aren't alternatives going to be everywhere now with paravirt using them?
+--Z0OHV5uZms33lmlV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-What I meant was, they're either 2-3 wide and only a few instructions
-long. Which greatly bounds the actual complexity of the algorithm,
-however daft.
+On Tue, Dec 15, 2020 at 11:21:08PM +0300, Dmitry Osipenko wrote:
+> The module alias is provided by the OF core for the OF drivers, it
+> overrides the alias set by the drivers. Hence remove the unneeded macro
+> in order to keep the driver code cleaner.
 
-> > No real objection, I just didn't do it because 1) it works, and 2) even
-> > moar lines.
-> 
-> I'm kind of surprised it would need moar lines.  Let me play around with
-> it and maybe I'll come around ;-)
+This is slightly misleading because that manual MODULE_ALIAS is there
+for legacy reasons and created that alias to bind against a platform
+device created from board files back in the day.
 
-Please do, it could be getting all the niggly bits right exhausted my
-brain enough to miss the obvious ;-)
+Depending on how I interpret the commit message, it also sounds like
+you're suggesting that the OF core will automatically add this alias.
+However, what the OF core adds is an alias based on the OF device ID
+table, which is completely different.
+
+We don't support board files anymore and to my knowledge the aliases
+generated from the OF device ID table are enough to have the driver
+autoloaded, so this patch is correct. Perhaps make it clearer in the
+commit message why this is no longer needed. With that:
+
+Acked-by: Thierry Reding <treding@nvidia.com>
+
+> Tested-by: Matt Merhar <mattmerhar@protonmail.com>
+> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+> Tested-by: Peter Geis <pgwipeout@gmail.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/usb/chipidea/ci_hdrc_tegra.c | 1 -
+>  1 file changed, 1 deletion(-)
+>=20
+> diff --git a/drivers/usb/chipidea/ci_hdrc_tegra.c b/drivers/usb/chipidea/=
+ci_hdrc_tegra.c
+> index 7455df0ede49..10eaaba2a3f0 100644
+> --- a/drivers/usb/chipidea/ci_hdrc_tegra.c
+> +++ b/drivers/usb/chipidea/ci_hdrc_tegra.c
+> @@ -128,5 +128,4 @@ module_platform_driver(tegra_udc_driver);
+> =20
+>  MODULE_DESCRIPTION("NVIDIA Tegra USB device mode driver");
+>  MODULE_AUTHOR("Thierry Reding <treding@nvidia.com>");
+> -MODULE_ALIAS("platform:tegra-udc");
+>  MODULE_LICENSE("GPL v2");
+> --=20
+> 2.29.2
+>=20
+
+--Z0OHV5uZms33lmlV
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl/aSs8ACgkQ3SOs138+
+s6Hp9xAAmYiXTCzXpMmKBqImnY/r3t/354dNZtckaGz6ftNA2mJ1alINNk/j2tdY
+eIjXeJDTDspOXD9zI8wZ2k0jWT22r4wfN9FH9c6CQVrOocLQtxfKSna6FnFID+I0
+c1xlLy/kp5R1HDYjR1VfukXDVx9pPGXrBgNjaZMOdTPNFhE2LwWxrIIElygoVUm1
+TpDY+pzdHxlUr58iTcn5IoCmUPzlolhp1oKxU7aVEjcQ52Hp5Om0VNeasm/ce7fV
+it5nKw0Pbml64iP6S3sC2kcD1QZuH/1M77zoxS6fCbdOUo9UOFwj7eeaX/5MqNtQ
+DG0LdqXXpcfLpAymmNRPbH+VsjzLteXVmDQK0THLJHUJU2bR+MnHfZckUkSCKCkU
+oQpRc5xGnMGF7hJ+5U0DAIF4EQqRyII4wPB/cxsVXZ2ZqRdSWuheHNE4ol4nUvUO
+A7OJbMdoE3q5icb8lKhMcxHov64MYGjtgcpUTliS5PvhecCFDC/x1ak9zhGGiTUT
+gRWUI5YWfyI1Abc3M0Sk1pB9hUXS3uCUp/JBCdaUBiwj4t+2Mww1fa8rS1Ctgq/1
+rwYIWeWgXNaIDymU1FrP/wbEKd3ReqjXu5d0JJhtWm+OZKa0KhPnupBlfkYgMh52
+eHKZd78291zRyhHeK//SKDi3Qq0dAkUMHE4q7kYEYZACP/uCBKA=
+=OSNs
+-----END PGP SIGNATURE-----
+
+--Z0OHV5uZms33lmlV--
