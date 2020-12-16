@@ -2,100 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 815C72DBCFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 09:50:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 651D12DBD02
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 09:52:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726214AbgLPItw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 03:49:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44106 "EHLO
+        id S1726177AbgLPIwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 03:52:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726159AbgLPItw (ORCPT
+        with ESMTP id S1726090AbgLPIwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 03:49:52 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3C9CC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 00:49:11 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id v14so1560013wml.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 00:49:11 -0800 (PST)
+        Wed, 16 Dec 2020 03:52:05 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53739C0613D6;
+        Wed, 16 Dec 2020 00:51:25 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id y19so46298907lfa.13;
+        Wed, 16 Dec 2020 00:51:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=l4pG1Pz6PU6BYg+Ons56js1u6LMgRJqpxucbIg8sLcU=;
-        b=JV7DcFcoPU8Q06Eo6cBJlSHy15JlVZIYxasCySaRNv0rB8RyGK8UzkJaFagpeQai8s
-         FtmmCynbYdCGGdpl21trfNc79mILT3t4PsbQJXX354R9ck8vxaqDGqEX7MYv104kD+ig
-         +tXdvD5d05Q5IZFaXqzsLvFHRrN44Ilm93YISFq4vlzgHk45rBX8HjRn8g49kOJcuuSa
-         CMqZIArqYsEq6Q/1qb/Z2+xLxCHyMEsQJYFZ7PMIB9EpR/RKwkszxQFLzx6jzJibBt5y
-         DpaLxzQzwP6zTdod2WbOs2zBm411sViebUWooQfuKC69Wc7DdKn0kwjGq2i8Tmau09CO
-         YX4g==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QG4Uaqo8uO7H73fa66bH2JISMVZAevQOHDtHNchgdOo=;
+        b=UFsbkOElzLctLTQNleHj6bb8r3w0+VfwUJcCloVNFZ4/X4ksm+hMcUZzDsoE1B049e
+         ME94nwfjq0rzigxr03ybjvnttwzGD/NKUM9V2quf12/SkTOxrzzddWmKiIZcW7htoGNR
+         ilNags+h0o5NX7Yb2YLxQIECLsWwY8/6b7uf5l7jbRP7OUKCrGNIHP09L2KUkeIKU3J8
+         MvLaAhoFoe85KlanbwEoAiILrxK24QTHcgltNntrN7wer+28NKqh3WWo4/WUPM76yvci
+         EiJ7Jq1KtwO+B4eVD1nF2zjzVehqdvSa9dyCQaZVr/uUXuLO7blCuUAxvvqlB5+NeC4+
+         VpiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=l4pG1Pz6PU6BYg+Ons56js1u6LMgRJqpxucbIg8sLcU=;
-        b=jvNrqMTeJ/QMbGn7SCsDtFN5Doom6Rtb9hjEiJJfkQFMjo/G8eXdh15NzJYXdsxn2G
-         AGTKQVB8t6hEDRTdBs6UzbUsG+x7C7i+tjD3CmIt7CIOPEKdPyMz5brf3EM18srES91i
-         24i4XTnRuxUQ/XvQrr4yOWf1IIehEsGYXO2Fx4bj9AL6n5NEBr0ipQPcN6nSYJ4NDozg
-         RUfyukR4Z3YcAnzgV6g5G3LqFXNOUzXDqqtVPJBSjaZHDQGfvAHhmHw7WKR2ODq0VUpq
-         /+LHNrC71ZuZY2H/Hafx3GfWWT162zDKP0PSp5mtOqjnljVcWgesz3J+VxpU0LwILOVz
-         BTtg==
-X-Gm-Message-State: AOAM532AWPXU4IjCKwAsidHMfu42d+oDzYEukeOtAOnOU3Cpfn4aEtau
-        jYVk4Sr21hqKR2FM3fH3xfP5qQ==
-X-Google-Smtp-Source: ABdhPJynNviiVsoHEVLV5Stk9nh4YhwIKNs2V/N5RfPELL4AjIonhzQgP5UtN3WBhFivqikNHqKIGA==
-X-Received: by 2002:a1c:c305:: with SMTP id t5mr2193290wmf.63.1608108550701;
-        Wed, 16 Dec 2020 00:49:10 -0800 (PST)
-Received: from dell ([91.110.221.200])
-        by smtp.gmail.com with ESMTPSA id x13sm2112513wrp.80.2020.12.16.00.49.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 00:49:09 -0800 (PST)
-Date:   Wed, 16 Dec 2020 08:49:07 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     mazziesaccount@gmail.com,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Cong Pham <cpham2403@gmail.com>, rostokus@gmail.com,
-        fan.chen@mediatek.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [RFC PATCH v2 3/6] mfd: prepare to support BD718xx-charger
-Message-ID: <20201216084907.GF4776@dell>
-References: <cover.1607085199.git.matti.vaittinen@fi.rohmeurope.com>
- <ebcd976ba60a8cf417787b8b0643f12dcc68cf0a.1607085199.git.matti.vaittinen@fi.rohmeurope.com>
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=QG4Uaqo8uO7H73fa66bH2JISMVZAevQOHDtHNchgdOo=;
+        b=DUIkgFwdM330WeXpxr31TY6FBFF+cv9OtAKLnVQplQvG9tfo/3y381RJwoAtO7VNdO
+         +la/E1o00AKXHiIPl8XWbdUAPX4VHRTS7GyfbT1ESqUtA5KHQGzrFu/+reGhFtTnSSIV
+         33WXukpedEpPKWWVLqT2mE1WIS4xXOZPiPf9/wREll3Uc+xZON9UPPSfQ754s30Ppje5
+         5QLJqGQaw1X6wtKzcEq9whc2VoaAn6vIrEoxynTvvx6P0SVOxxka+cJwr4oAcmD/SFrO
+         sqcsNGOPfIg4rbu57fUbf1mIiW3xdFvUSlznx8H2i7nPFksay0jQM2z6e5jO4CXTctge
+         KRXw==
+X-Gm-Message-State: AOAM533gKp3EpM8taKwQB+tMRw413kyFYLuV0/wgl1zJBZThK1Xz+UbR
+        eWAGNwrlQ4b67GTOEOSz7ryotMSS6f+/zg==
+X-Google-Smtp-Source: ABdhPJyTDRDtDhJdXEaa/ZFEeJBJZs2It8VC9dK5YUHfO89weTio/nBFAAS7caZY/i/GLEBp5kEuMQ==
+X-Received: by 2002:a19:ad4b:: with SMTP id s11mr5470676lfd.427.1608108683711;
+        Wed, 16 Dec 2020 00:51:23 -0800 (PST)
+Received: from [192.168.1.100] ([31.173.86.97])
+        by smtp.gmail.com with ESMTPSA id z26sm191974lja.125.2020.12.16.00.51.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Dec 2020 00:51:23 -0800 (PST)
+Subject: Re: [PATCH v1 1/8] usb: phy: tegra: Add delay after power up
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Felipe Balbi <balbi@kernel.org>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Peter Geis <pgwipeout@gmail.com>
+Cc:     linux-tegra@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201215202113.30394-1-digetx@gmail.com>
+ <20201215202113.30394-2-digetx@gmail.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Organization: Brain-dead Software
+Message-ID: <ce6b80f9-986d-b293-fd33-e4ee4fe1458e@gmail.com>
+Date:   Wed, 16 Dec 2020 11:51:14 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ebcd976ba60a8cf417787b8b0643f12dcc68cf0a.1607085199.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <20201215202113.30394-2-digetx@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 04 Dec 2020, Matti Vaittinen wrote:
+Hello!
 
-> Add definitions for ROHM BD718(27/28/78) PMIC's charger blocks.
+On 15.12.2020 23:21, Dmitry Osipenko wrote:
+
+> The PHY hardware needs the delay of 2ms after power up, otherwise initial
+> interrupt may be lost if USB controller is accessed before PHY is settled
+> down. Previously this issue was masked by implicit delays, but now it pops
+> up after squashing the older ehci-tegra driver into the ChipIdea driver.
 > 
-> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> Tested-by: Matt Merhar <mattmerhar@protonmail.com>
+> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+> Tested-by: Peter Geis <pgwipeout@gmail.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 > ---
+>   drivers/usb/phy/phy-tegra-usb.c | 3 +++
+>   1 file changed, 3 insertions(+)
 > 
-> This patch was not in v1. This brings in some charger registers
-> for the BD71828 charger driver which is in following patches. Patch
-> split here reflects the subsystem change (for non RFC submitted for
-> inclusion this would probably be Lee's territory). Now provided in
-> this RFC series to give more context
-> 
->  include/linux/mfd/rohm-bd71828.h | 65 ++++++++++++++++++++++++++++++++
->  include/linux/mfd/rohm-generic.h |  2 +
->  2 files changed, 67 insertions(+)
+> diff --git a/drivers/usb/phy/phy-tegra-usb.c b/drivers/usb/phy/phy-tegra-usb.c
+> index 03a333797382..cee9c9dbb775 100644
+> --- a/drivers/usb/phy/phy-tegra-usb.c
+> +++ b/drivers/usb/phy/phy-tegra-usb.c
+> @@ -784,6 +784,9 @@ static int tegra_usb_phy_power_on(struct tegra_usb_phy *phy)
+>   
+>   	phy->powered_on = true;
+>   
+> +	/* let PHY to settle down */
 
-For my own reference (apply this as-is to your sign-off block):
+    Let the PHY settle down.
 
-  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+> +	usleep_range(2000, 2500);
+> +
+>   	return 0;
+>   }
+>   
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+MBR, Sergei
