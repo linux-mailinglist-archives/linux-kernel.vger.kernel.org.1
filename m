@@ -2,97 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E2142DBBFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 08:37:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD912DBC08
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 08:39:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725997AbgLPHfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 02:35:53 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52374 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725274AbgLPHfx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 02:35:53 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1608104106; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=i6r+QjOa5VJLHtoN/qARO5iLDlJY4rWyvupxvYJjs5Y=;
-        b=rLc88kV0JCaUwwc1S8gEYimH+HZ87tj2RbeJO9Yr8OLBWHAWZ5UOAoP+6zSwYAqpdsdkpj
-        H1YRTgtbGNnv8Qb7momflhyYN3BVTWpgZXHZWSSsBkrexT6cedC+PPvP7mQ5+7EkwhqziU
-        ZayQBENXMHFX+7lhBelNshlmACiJrms=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 22244ACF1;
-        Wed, 16 Dec 2020 07:35:06 +0000 (UTC)
-Date:   Wed, 16 Dec 2020 08:35:05 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Hui Su <sh_def@163.com>
-Cc:     hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/memcontrol: remove the unnecessary rcu_read_[un]lock
-Message-ID: <20201216073505.GQ32193@dhcp22.suse.cz>
-References: <20201216055213.GA63520@rlk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201216055213.GA63520@rlk>
+        id S1725892AbgLPHiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 02:38:51 -0500
+Received: from relmlor1.renesas.com ([210.160.252.171]:37257 "EHLO
+        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725846AbgLPHiv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 02:38:51 -0500
+X-IronPort-AV: E=Sophos;i="5.78,423,1599490800"; 
+   d="scan'208";a="66149391"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+  by relmlie5.idc.renesas.com with ESMTP; 16 Dec 2020 16:38:19 +0900
+Received: from localhost.localdomain (unknown [10.166.252.89])
+        by relmlir6.idc.renesas.com (Postfix) with ESMTP id A18E141F1D7E;
+        Wed, 16 Dec 2020 16:38:19 +0900 (JST)
+From:   Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+To:     marek.vasut+renesas@gmail.com, lee.jones@linaro.org,
+        matti.vaittinen@fi.rohmeurope.com, lgirdwood@gmail.com,
+        broonie@kernel.org, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com
+Cc:     khiem.nguyen.xt@renesas.com, linux-power@fi.rohmeurope.com,
+        linux-gpio@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Subject: [PATCH v3 00/12] treewide: bd9571mwv: Add support for BD9574MWF
+Date:   Wed, 16 Dec 2020 16:37:43 +0900
+Message-Id: <1608104275-13174-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 16-12-20 13:52:13, Hui Su wrote:
-> the rcu_read_lock and rcu_read_unlock is unnecessary in:
-> 	lock_page_lruvec()
-> 	lock_page_lruvec_irq()
-> 	lock_page_lruvec_irqsave()
+Add BD9574MWF support into bd9571mwv gpio, mfd and regulator drivers.
+Latest Ebisu-4D boards has this chip instead of BD9571MWV so that
+we need this patch series to detect this chip at runtime.
 
-Please add an explanation why it is unnecessary.
+Note that the patch [1/12] is a bug-fix patch for mfd driver.
 
-> Signed-off-by: Hui Su <sh_def@163.com>
-> ---
->  mm/memcontrol.c | 6 ------
->  1 file changed, 6 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index e3c7ca7dc174..a19f820e8a3f 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -1396,10 +1396,8 @@ struct lruvec *lock_page_lruvec(struct page *page)
->  	struct lruvec *lruvec;
->  	struct pglist_data *pgdat = page_pgdat(page);
->  
-> -	rcu_read_lock();
->  	lruvec = mem_cgroup_page_lruvec(page, pgdat);
->  	spin_lock(&lruvec->lru_lock);
-> -	rcu_read_unlock();
->  
->  	lruvec_memcg_debug(lruvec, page);
->  
-> @@ -1411,10 +1409,8 @@ struct lruvec *lock_page_lruvec_irq(struct page *page)
->  	struct lruvec *lruvec;
->  	struct pglist_data *pgdat = page_pgdat(page);
->  
-> -	rcu_read_lock();
->  	lruvec = mem_cgroup_page_lruvec(page, pgdat);
->  	spin_lock_irq(&lruvec->lru_lock);
-> -	rcu_read_unlock();
->  
->  	lruvec_memcg_debug(lruvec, page);
->  
-> @@ -1426,10 +1422,8 @@ struct lruvec *lock_page_lruvec_irqsave(struct page *page, unsigned long *flags)
->  	struct lruvec *lruvec;
->  	struct pglist_data *pgdat = page_pgdat(page);
->  
-> -	rcu_read_lock();
->  	lruvec = mem_cgroup_page_lruvec(page, pgdat);
->  	spin_lock_irqsave(&lruvec->lru_lock, *flags);
-> -	rcu_read_unlock();
->  
->  	lruvec_memcg_debug(lruvec, page);
->  
-> -- 
-> 2.29.2
+Changes from v2:
+ - Use devm_mfd_add_devices() to remove the mfd device in unload.
+ - Update commit descriptions in patch 4 and 8.
+ - Use regmap_get_device() to simplify in patch 4.
+ - Remove "struct bd9571mwv" and bd9571mwv_remove().
+ - Add Reviewed-by in patch 3 to 9.
+ - Use devm_regmap_add_irq_chip() to simplify in patch 10.
+ https://patchwork.kernel.org/project/linux-renesas-soc/list/?series=400477
+
+Changes from v1:
+ - Document BD9574MWF on the dt-binding.
+ - Add ROHM_CHIP_TYPE_BD957[14] into rohm-generic.h.
+ - To simplify gpio and regulator drivers, using regmap instead of
+   using struct bd9571mwv.
+ - Remove BD9574MWF definitions to make gpio and regulator driver
+   simple to support for BD9574MWF.
+ - Add BD9574MWF support for gpio and regulator drivers.
+ - Add missing regmap ranges for BD9574MWF.
+ - Rename "part_number" with "part_name".
+ https://patchwork.kernel.org/project/linux-renesas-soc/list/?series=398059
+
+Khiem Nguyen (2):
+  mfd: bd9571mwv: Make the driver more generic
+  mfd: bd9571mwv: Add support for BD9574MWF
+
+Yoshihiro Shimoda (10):
+  mfd: bd9571mwv: Use devm_mfd_add_devices()
+  dt-bindings: mfd: bd9571mwv: Document BD9574MWF
+  mfd: rohm-generic: Add BD9571 and BD9574
+  regulator: bd9571mwv: rid of using struct bd9571mwv
+  regulator: bd9571mwv: Add BD9574MWF support
+  gpio: bd9571mwv: Use the SPDX license identifier
+  gpio: bd9571mwv: rid of using struct bd9571mwv
+  gpio: bd9571mwv: Add BD9574MWF support
+  mfd: bd9571mwv: Use the SPDX license identifier
+  mfd: bd9571mwv: Use devm_regmap_add_irq_chip()
+
+ .../devicetree/bindings/mfd/bd9571mwv.txt          |   4 +-
+ drivers/gpio/gpio-bd9571mwv.c                      |  35 ++--
+ drivers/mfd/bd9571mwv.c                            | 206 +++++++++++++++------
+ drivers/regulator/bd9571mwv-regulator.c            |  59 +++---
+ include/linux/mfd/bd9571mwv.h                      |  46 ++---
+ include/linux/mfd/rohm-generic.h                   |   2 +
+ 6 files changed, 216 insertions(+), 136 deletions(-)
 
 -- 
-Michal Hocko
-SUSE Labs
+2.7.4
+
