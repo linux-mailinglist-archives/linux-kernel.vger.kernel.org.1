@@ -2,79 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 617DE2DC22E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 15:31:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B28352DC245
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 15:33:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726516AbgLPObO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 09:31:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56008 "EHLO mail.kernel.org"
+        id S1726556AbgLPOcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 09:32:45 -0500
+Received: from mout.gmx.net ([212.227.15.15]:54813 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726398AbgLPObO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 09:31:14 -0500
-Date:   Wed, 16 Dec 2020 11:30:47 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608129034;
-        bh=Gm2OmL7sloFp1/bWPP0VoHXKQ0hOgQx7X5GHfkx5RNI=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HKhqYHkkk9WUO+fFdwda3W58t5Hn9VmzMizNQpLl0K/tkIxaOzAzteEPzslvfnX7/
-         ZegbNRtnnk/Qpb1697ZlI41FtvNrCXadYupXMj+x0doMjGSrDA3ysag4jdXGj73Moc
-         qUv6WkBYDAdmC/q/DMRN+jpyb8vhZFCmXQkZBIlGufCjukSc7lazLm7Chy2ZMuV61C
-         Km+TW8Z1G75XWSOW5A6/RTamjsbx7HPovlRf0qs63tpJDFdAxwwdbDCorMSpnwGxdj
-         jHNTV5+pW80FEpGftrRQ0IEZvhyPWNEeLZHIJ0GSWbBVW1JIwPaeYrIDCh+bYrfiiM
-         +OJZ1r4YfN3HA==
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Ralf Baechle <ralf@linux-mips.org>
-Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Juxin Gao <gaojuxin@loongson.cn>,
-        Archer Yan <ayan@wavecomp.com>,
-        David Daney <david.daney@cavium.com>
-Subject: Re: [QUESTION] support perf record --call-graph dwarf for mips
-Message-ID: <20201216143047.GC294100@kernel.org>
-References: <97fb66bf-51f8-a491-9eb4-10b2314cf82f@loongson.cn>
- <90c7db1a-8e1a-e253-79ca-f93dbac014c2@flygoat.com>
+        id S1726503AbgLPOco (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 09:32:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1608129069;
+        bh=2jyEv3qgNqQilJm226okSZdj9maeO61pcUjpdKq1hZw=;
+        h=X-UI-Sender-Class:Subject:From:To:Date:In-Reply-To:References;
+        b=PBwHL2KPGHv+qZKSghCn+exSfauerWHPYJGqD4L9lBcqyCUAvj9i24XnU4uQh9RSa
+         xFvw8SRT3Tird9EG/8VcjDaPRlHOazThgo6P83pJOOjuqenAz83kgo1D1kQeY6QqYC
+         X00Wd05BTJVJSxJAk42s8qWWSLqtYktPatGPB1Ro=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.217.61]) by mail.gmx.com (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MeU0k-1kHaaf23Ii-00aR7h; Wed, 16
+ Dec 2020 15:31:09 +0100
+Message-ID: <19b5ee604512d09bc4b059b7e59d73681937048a.camel@gmx.de>
+Subject: Re: regression: 9a56493f6942 "uts: Use generic ns_common::count"
+ broke makedumpfile 1.6.7
+From:   Mike Galbraith <efault@gmx.de>
+To:     Kirill Tkhai <ktkhai@virtuozzo.com>,
+        LKML <linux-kernel@vger.kernel.org>, egorenar@linux.ibm.com,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Date:   Wed, 16 Dec 2020 15:31:07 +0100
+In-Reply-To: <60200005-a9a2-4994-b730-e22fd8f01ae4@virtuozzo.com>
+References: <7b13506084a015d0256222cdd278fe461cdd4a74.camel@gmx.de>
+         <6933cde2-7d43-7d7e-066c-1c4a13c752dd@virtuozzo.com>
+         <ad3bfa510282d3122069dafe98666aa2d6b5b0ff.camel@gmx.de>
+         <60200005-a9a2-4994-b730-e22fd8f01ae4@virtuozzo.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <90c7db1a-8e1a-e253-79ca-f93dbac014c2@flygoat.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:UajaVc1oxya0dY2+2pkATNvejcVBW3YDJa1eg/fBMoh1fQRNg99
+ XsSndfMb6SesgWa4xpgW0zyamj1KcAHm+/ZQmRVHVGG9jC0LK3cPoGN16XLsByn6yWLCv8d
+ 4rSvJASlDSPxccrWGTQmZYIVImr8g9n7/m4g/A3C0aFSbyJXgwlmU0mYADoLfIwLswT22SO
+ 4y9eDT5Ls1PD9Q4Q2Bdzw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:9S/GW+3yx6M=:QesAjsfqrKxVEvKvmz0hpN
+ iBv3U19PekKVuIlB47SLqn4BJpggqzdePT1r6LrJXNI1pa8IYC50fXZz7sFgnPP8yqr52a7LK
+ ol1JMTJZ++9suocwUBKUi8rtrQTvkrBF13ECzpQH9QO2l3WMPUactXTW5BfW7uQ9JETEEI0Lb
+ finW9J28b+AhFcUqh/hdRHKeIKlaWc7uGky4CQ43amvdnlY1W8IAU8nTY4EmFdpwQs25VegQb
+ VAs/y2YfvlgyJTaCgzY+ToSgCNLOE+5E3N/HTb7HGvUDfyQ1ghUe9w6c+la7l+zLqOI4u6s55
+ aderfG0Jlf/MX4Q6zjmkEdcN9atwUbnUsbQkIvlBWhqOPil/i2R/nuWMUF3kkkxdxw2Di3Tpk
+ zZ+wXXnMINwQqCABvaalulIPm4AEsdjgKZdzV1f6JBqa3QagFsOIIL2/sjP1KZ64Jl9woJ/eF
+ N5ayXTEucA0BGSUcd1Psa/xgcHXu0L8/bzuUWVEW+SRfjqKaXpMCTkQnM2yPnH3EYxCtMKns/
+ PMMYHV2hzewtqhSdy5tou78NhFzCjWySet1YP7G2/KiSc81bJweD8mVjW4d+hoOFcl8+K2WP+
+ YCG83SRoWze+hNYGb8Y/9OGXq/4NfygtwYtu7J3C0q8QuBAycaypOw2gw9AFEFtYfF1QFlfDe
+ Xzths3kqnCPMSptqXKq0cjZ+E9K1X0vU2bh919gR4tRbAvgnamrekRmHEpYVAfAUckf5cXObr
+ F0ZoAe0xrz2MjAVVbuDkxUN1cmVrdcm18bP0mGGn+1igXOVZlKgEe2VGwKqHaVTSzM7GcVg1O
+ 66t/Va2b4NeoUlV3LQHHWTJvKua5Wkmc7aW09Y7mFLBpmHZ0JCSK9l6PN26e9qatXlw9P3s4M
+ FtuIrkOntxg2J0ZR4GmQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Dec 16, 2020 at 07:14:02PM +0800, Jiaxun Yang escreveu:
-> 
-> 
-> 在 2020/12/16 下午6:05, Tiezhu Yang 写道:
-> > Hi,
-> > 
-> > In the current upstream mainline kernel, perf record --call-graph dwarf
-> > is not supported for architecture mips64. I find the following related
-> > patches about this feature by David Daney <david.daney@cavium.com> and
-> > Archer Yan <ayan@wavecomp.com> in Sep 2019.
- 
-> AFAIK ddaney left Cavium at 2018 and Wave Computing Shanghai is defuncted...
- 
-> Feel free to take over if you like, there is no licenses issue, just
-> remember to credit
-> others properly.
+On Wed, 2020-12-16 at 17:23 +0300, Kirill Tkhai wrote:
+>
+> Does this regression only cause that one error message "check_release: C=
+an't get the kernel version"
+> is printed instead of another: "The kernel version is not supported."?
 
-Ralf, can you take a look at the kernel part? The user space part seems
-ok.
+The thing does indeed mutter about the kernel version, with or without
+9a56493f6942 reverted, but it work despite the muttering with
+9a56493f6942 reverted.
 
-- Arnaldo
-> 
-> > [1/2] Support mips unwinding and dwarf-regs
-> > https://lore.kernel.org/patchwork/patch/1126521/
-> > 
-> > [2/2] Support extracting off-line stack traces from user-space with perf
-> > https://lore.kernel.org/patchwork/patch/1126520/
-> > 
-> > Is this a work in progress?
-> > Could you please give me some feedback?
-> > Thank you for your help.
-> > 
-> > Thanks,
-> > Tiezhu
+	-Mike
+
