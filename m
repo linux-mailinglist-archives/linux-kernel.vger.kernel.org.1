@@ -2,129 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3762DBD44
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:07:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E2222DBD47
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:10:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726158AbgLPJGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 04:06:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46762 "EHLO
+        id S1726200AbgLPJIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 04:08:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726155AbgLPJGw (ORCPT
+        with ESMTP id S1725858AbgLPJIX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 04:06:52 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F36C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 01:06:12 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id lj6so1150403pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 01:06:12 -0800 (PST)
+        Wed, 16 Dec 2020 04:08:23 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70F14C0613D6;
+        Wed, 16 Dec 2020 01:07:43 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id u18so46471856lfd.9;
+        Wed, 16 Dec 2020 01:07:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/LTVme937VtvznUzgXCFKra0V5ujtw9RVW2fQT/fpGM=;
-        b=mDBei55fmyby8jT4M8mMuUX77lNkp1PNZvvEQxKaYMb5v5QjYkRSIQUillYBCNyx5Z
-         YFv/Pt0JZIQ6ZmVNHIRyWZL0/yvCD5LrKZm5GPzVlc211x2dCbF2WOowNJauegOnAM6Z
-         GQv/+BkQi5KZtuavtocHAMYdj6HtWu7K0J5c+7g7Saz3jTsmdFJ56y9JuY1gyRBltncQ
-         51Yh4lE37Wb6dkxWZiV5TQKzfY4Zsx0xfysJU2KuLis+G6H1Qqrk3Z5R+fXE9V/6OA7p
-         tE/MDOe/2vMQR64fUf7JJXBf7JbOhy7i2D4/Y9I2ZcZNUzQ9qPoPQVRwEf0urHHRC68L
-         LGYw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NNBEaxSKyg6BSbKPVjzc/TIpBoY4OtnDFb6TyTjRFWo=;
+        b=aZ8zaFrnLaOnI6oU3DAY8sUSN+NpLw0ZzIP7s7DG6mt5uSH9i15EI7DFruntjV511F
+         26x1kBmJfXeaVvDBZMRevup3zDxmxYa3eEhmMO+R7nIkgUy3X6r8HJ6KfVgKpESykA1h
+         lVwTN5fwAXCw1JwQBZq1B7SorU4rjBpwr2wCuGT2DCowUReLIvYq7/fZOkYfTyzGw29f
+         h0xybH50slwEoTfbyKur1be81M0jjVaSPJbr5aWvSO6KssE/bwV59ObUDrjawJQtmPyr
+         UIJlR1Ta91/V4M1ibJWrHriCv8OY+sLFPSuB8VM93BffEVqwL/I4aY1lUUrOs4z7JAqu
+         Ql2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=/LTVme937VtvznUzgXCFKra0V5ujtw9RVW2fQT/fpGM=;
-        b=XH87+3aCH/X0bvaWTFiN8rBp5gFGAizQfAjSqkU3/AIg4NNbPcaok7xraCw2IbvIV0
-         o19P2a9JV0Xd6xDz7wAlwNoQvbnU65qi1wmWVjd5stsiO5DnRIbeuth2iNLaIa0no031
-         nVWbNDG/AL0hMEOfuxGQ+Y1z2aq9/udYx7755R1fqYuPyzvi6wGVeNSnYt2san4e7kW+
-         Cu1rD2q7PuMMIq4kjyYbOR2nQyvzDNqMTO9EMNOLxhw52P70X2Dp3H5/C/0uEFfmGDHz
-         Q7MR7a2T6KxtmYYhLpIiWDVxSShPOER0M5NJmP+dYLr++0LZRwP4Y7JiStVXtCpSoqSB
-         oHrA==
-X-Gm-Message-State: AOAM530GzIXrJQ6UeyZlMN3/gB75VnakYsodc9v4wM3SZPYaJwNV69Sg
-        6fn7AbNDQYbCWE6xjOoZY5I=
-X-Google-Smtp-Source: ABdhPJzOH9KBAyUlSqhwr3GMzBF+alTL7dTZB920rZi5G6McmpSZs9LmLBK3gLIOF+cWurgzIM47yw==
-X-Received: by 2002:a17:902:c195:b029:db:c725:2522 with SMTP id d21-20020a170902c195b02900dbc7252522mr30748256pld.83.1608109572285;
-        Wed, 16 Dec 2020 01:06:12 -0800 (PST)
-Received: from balhae.roam.corp.google.com ([101.235.31.111])
-        by smtp.gmail.com with ESMTPSA id j14sm1423897pjm.10.2020.12.16.01.06.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 01:06:11 -0800 (PST)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Andi Kleen <ak@linux.intel.com>
-Subject: [PATCH 3/3] tools/lib/fs: Cache cgroupfs mount point
-Date:   Wed, 16 Dec 2020 18:05:56 +0900
-Message-Id: <20201216090556.813996-3-namhyung@kernel.org>
-X-Mailer: git-send-email 2.29.2.684.gfbc64c5ab5-goog
-In-Reply-To: <20201216090556.813996-1-namhyung@kernel.org>
-References: <20201216090556.813996-1-namhyung@kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NNBEaxSKyg6BSbKPVjzc/TIpBoY4OtnDFb6TyTjRFWo=;
+        b=hXz5RXLx5aCfbNt2ms9l998Wt9Pun9Q8PMVFCNdzSVXEp7QpB4cD/VktHnA3+nIWZr
+         Q90kgYT5C8iGBbuMWceJ8IW71auxeCUOIC8msJmlSs8SMm2fSlq7T699GeoAn965cHfB
+         s+DqQPhSrhuWleICmVf39TdwfIA+iKEclMRuim9fXD9lFov8D0xgbs/oJDA9M7Cw4RgW
+         ehanIhz6ww+JvqcdeVhmI8p0/MozGG/Y5VPzZdXtfoLU9CO5930iwcoBlaVJEWQP4uVR
+         HKm+uP8fnkeuN5uVMR+kgdSuGGYrT1RaFf9NP7SztMElHSsyM9H2lYvrBtWgoMoDDdsi
+         G0Eg==
+X-Gm-Message-State: AOAM533kX33tHiPZUirLl0fvAeisdqDUpff2bkuZp0yAsHVgmy7COOjF
+        ErePbHRGTyQhL6SYPIjUmgafnX96Wv4=
+X-Google-Smtp-Source: ABdhPJyipB2RS6fU2xboJkuum0669AsrgUEWRwkMmXq+kj4o7jPRQ16tHxUCkadwBTCsUQUIGrYf1g==
+X-Received: by 2002:a2e:a58e:: with SMTP id m14mr14663545ljp.1.1608109661675;
+        Wed, 16 Dec 2020 01:07:41 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id o11sm151686lfi.267.2020.12.16.01.07.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Dec 2020 01:07:41 -0800 (PST)
+Subject: Re: [PATCH v1 5/8] usb: chipidea: tegra: Support host mode
+To:     Peter Chen <peter.chen@nxp.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Felipe Balbi <balbi@kernel.org>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201215202113.30394-1-digetx@gmail.com>
+ <20201215202113.30394-6-digetx@gmail.com>
+ <20201216060732.GB5595@b29397-desktop>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <bb617167-e6a4-221e-5e3b-c9d7a1b50c87@gmail.com>
+Date:   Wed, 16 Dec 2020 12:07:40 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
+In-Reply-To: <20201216060732.GB5595@b29397-desktop>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently it parses the /proc file everytime it opens a file in the
-cgroupfs.  Save the last result to avoid it (assuming it won't be
-changed between the accesses).
+16.12.2020 09:08, Peter Chen пишет:
+> On 20-12-15 23:21:10, Dmitry Osipenko wrote:
+>> From: Peter Geis <pgwipeout@gmail.com>
+>>  
+>>  struct tegra_usb_soc_info {
+>>  	unsigned long flags;
+>> +	unsigned int txfifothresh;
+>> +	enum usb_dr_mode dr_mode;
+>> +};
+>> +
+>> +static const struct tegra_usb_soc_info tegra20_ehci_soc_info = {
+>> +	.flags = CI_HDRC_REQUIRES_ALIGNED_DMA |
+>> +		 CI_HDRC_OVERRIDE_PHY_CONTROL,
+>> +	.dr_mode = USB_DR_MODE_HOST,
+>> +	.txfifothresh = 10,
+>> +};
+>> +
+>> +static const struct tegra_usb_soc_info tegra30_ehci_soc_info = {
+>> +	.flags = CI_HDRC_REQUIRES_ALIGNED_DMA |
+>> +		 CI_HDRC_OVERRIDE_PHY_CONTROL
+>> +	.dr_mode = USB_DR_MODE_HOST,
+>> +	.txfifothresh = 16,
+>>  };
+>>  
+>>  static const struct tegra_usb_soc_info tegra_udc_soc_info = {
+>> -	.flags = CI_HDRC_REQUIRES_ALIGNED_DMA,
+>> +	.flags = CI_HDRC_REQUIRES_ALIGNED_DMA |
+>> +		 CI_HDRC_OVERRIDE_PHY_CONTROL,
+>> +	.dr_mode = USB_DR_MODE_UNKNOWN,
+>>  };
+> 
+> What's the usage for this dr_mode? Does these three SoCs only supports
+> single mode, it usually sets dr_mode at board dts file to indicate
+> USB role for this board.
 
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/lib/api/fs/cgroup.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+All Tegra SoCs have three USB controllers.  Only one of these three
+controllers supports peripheral / OTG modes, the other two controllers
+are fixed to the host mode and device trees do not specify the dr_mode
+for the host controllers.
 
-diff --git a/tools/lib/api/fs/cgroup.c b/tools/lib/api/fs/cgroup.c
-index 262a4229e293..1573dae4259d 100644
---- a/tools/lib/api/fs/cgroup.c
-+++ b/tools/lib/api/fs/cgroup.c
-@@ -8,6 +8,14 @@
- #include <string.h>
- #include "fs.h"
- 
-+struct cgroupfs_cache_entry {
-+	char	subsys[32];
-+	char	mountpoint[PATH_MAX];
-+};
-+
-+/* just cache last used one */
-+static struct cgroupfs_cache_entry cached;
-+
- int cgroupfs_find_mountpoint(char *buf, size_t maxlen, const char *subsys)
- {
- 	FILE *fp;
-@@ -16,6 +24,14 @@ int cgroupfs_find_mountpoint(char *buf, size_t maxlen, const char *subsys)
- 	char *p, *path;
- 	char mountpoint[PATH_MAX];
- 
-+	if (!strcmp(cached.subsys, subsys)) {
-+		if (strlen(cached.mountpoint) < maxlen) {
-+			strcpy(buf, cached.mountpoint);
-+			return 0;
-+		}
-+		return -1;
-+	}
-+
- 	fp = fopen("/proc/mounts", "r");
- 	if (!fp)
- 		return -1;
-@@ -75,6 +91,9 @@ int cgroupfs_find_mountpoint(char *buf, size_t maxlen, const char *subsys)
- 	free(line);
- 	fclose(fp);
- 
-+	strncpy(cached.subsys, subsys, sizeof(cached.subsys) - 1);
-+	strcpy(cached.mountpoint, mountpoint);
-+
- 	if (mountpoint[0] && strlen(mountpoint) < maxlen) {
- 		strcpy(buf, mountpoint);
- 		return 0;
--- 
-2.29.2.684.gfbc64c5ab5-goog
+Hence we need to enforce the dr_mode=host for the host-mode controllers.
 
+For UDC the default mode is "unknown" because actual mode comes from a
+board's device tree.
+
+>>  static const struct of_device_id tegra_usb_of_match[] = {
+>>  	{
+>> +		.compatible = "nvidia,tegra20-ehci",
+>> +		.data = &tegra20_ehci_soc_info,
+>> +	}, {
+>> +		.compatible = "nvidia,tegra30-ehci",
+>> +		.data = &tegra30_ehci_soc_info,
+>> +	}, {
+>>  		.compatible = "nvidia,tegra20-udc",
+>>  		.data = &tegra_udc_soc_info,
+> 
+> Your compatible indicates this controller is single USB role, is it
+> on purpose?
+
+Yes, the "tegra20/30-ehci" controllers are fixed to the host-mode in
+hardware.
+
+...
+>> +static int tegra_usb_internal_port_reset(struct ehci_hcd *ehci,
+>> +					 u32 __iomem *portsc_reg,
+>> +					 unsigned long *flags)
+>> +{
+>> +	u32 saved_usbintr, temp;
+>> +	unsigned int i, tries;
+>> +	int retval = 0;
+>> +
+>> +	saved_usbintr = ehci_readl(ehci, &ehci->regs->intr_enable);
+>> +	/* disable USB interrupt */
+>> +	ehci_writel(ehci, 0, &ehci->regs->intr_enable);
+>> +	spin_unlock_irqrestore(&ehci->lock, *flags);
+>> +
+>> +	/*
+>> +	 * Here we have to do Port Reset at most twice for
+>> +	 * Port Enable bit to be set.
+>> +	 */
+>> +	for (i = 0; i < 2; i++) {
+>> +		temp = ehci_readl(ehci, portsc_reg);
+>> +		temp |= PORT_RESET;
+>> +		ehci_writel(ehci, temp, portsc_reg);
+>> +		mdelay(10);
+> 
+> Needs accurate delay? How about usleep_range?
+
+To be hones I don't know for sure whether hub_control() could be used
+from interrupt context.  This mdelay is borrowed from the older
+ehci-tegra driver.
+
+Are you suggesting that it should be safe to sleep here?
+
+...
+>>  static int tegra_usb_probe(struct platform_device *pdev)
+>>  {
+>>  	const struct tegra_usb_soc_info *soc;
+>> @@ -83,24 +292,49 @@ static int tegra_usb_probe(struct platform_device *pdev)
+>>  		return err;
+>>  	}
+>>  
+>> +	if (device_property_present(&pdev->dev, "nvidia,needs-double-reset"))
+>> +		usb->needs_double_reset = true;
+>> +
+>> +	err = tegra_usb_reset_controller(&pdev->dev);
+>> +	if (err) {
+>> +		dev_err(&pdev->dev, "failed to reset controller: %d\n", err);
+>> +		goto fail_power_off;
+>> +	}
+>> +
+>> +	/*
+>> +	 * USB controller registers shan't be touched before PHY is
+> 
+> %s/shan't/shouldn't
+
+ok
+
+...
+>>  static int ehci_ci_portpower(struct usb_hcd *hcd, int portnum, bool enable)
+>>  {
+>>  	struct ehci_hcd *ehci = hcd_to_ehci(hcd);
+>> @@ -160,14 +166,14 @@ static int host_start(struct ci_hdrc *ci)
+>>  		pinctrl_select_state(ci->platdata->pctl,
+>>  				     ci->platdata->pins_host);
+>>  
+>> +	ci->hcd = hcd;
+>> +
+>>  	ret = usb_add_hcd(hcd, 0, 0);
+>>  	if (ret) {
+>>  		goto disable_reg;
+>>  	} else {
+>>  		struct usb_otg *otg = &ci->otg;
+>>  
+>> -		ci->hcd = hcd;
+>> -
+> 
+> Why this changed?
+
+The ci->hcd is used by tegra_usb_notify_event() to handle reset event
+and the reset happens once usb_add_hcd() is invoked.  Hence we need to
+pre-assign the hcd pointer, otherwise there will be a NULL dereference.
