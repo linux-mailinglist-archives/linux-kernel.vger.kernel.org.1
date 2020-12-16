@@ -2,181 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7B42DC07D
+	by mail.lfdr.de (Postfix) with ESMTP id E4EA92DC07E
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 13:49:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726010AbgLPMrr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 16 Dec 2020 07:47:47 -0500
-Received: from mail-ej1-f51.google.com ([209.85.218.51]:39770 "EHLO
-        mail-ej1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725903AbgLPMrr (ORCPT
+        id S1725903AbgLPMr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 07:47:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725778AbgLPMr6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 07:47:47 -0500
-Received: by mail-ej1-f51.google.com with SMTP id n26so32492516eju.6;
-        Wed, 16 Dec 2020 04:47:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=mjY8Os39M4leEEPHTfeQTINO8VNbMA4I5Bxao3MHur4=;
-        b=bBwxP85W/hQ4uMxOWUWfHS02LwSJLBeErtUn956U9uKb6q98knXbMiQajpnvYKrW3Q
-         1zGR3FWCIHioWcWRPC2rqPAmPy3NVDFzVQ/RxbbndsRm9AaUI4HRiS4rnxWfIYMitswY
-         2OYksPTsyyzFmahDLlzzAumVPcf3ZsyV+wSqLBQOKjWpcDDys/lBAcf+/1jlneuF/1F8
-         fNm9AKiAg3MyyCzGSVbPi4Btit8OgBNWKT5UgBQTZaoq0ypYTURwJ3+ck4cpGJPM+PnD
-         nFvoaxXzIRf/sm1wamxW0g9Xn9mc6InHpyKTaKZndCWB4OPLR2AEC0M9tCPakxT6JN5Q
-         Hf3Q==
-X-Gm-Message-State: AOAM533MWAWYyLApUamS4uNJyKqag+ozMOXvdJdAJKdqcYa0FkXKKQ6W
-        giX/JM/FC4zEBOAK8CRuhq0=
-X-Google-Smtp-Source: ABdhPJxUQINFO4W9ye268ixQRaS+0Zf01qYWyeDzWJ0ixBIEYF4tEhSFWniMLmNrOzQ9QWhRxeOYnQ==
-X-Received: by 2002:a17:906:718b:: with SMTP id h11mr30432291ejk.241.1608122824654;
-        Wed, 16 Dec 2020 04:47:04 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id i8sm20536770eds.72.2020.12.16.04.47.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 04:47:03 -0800 (PST)
-Date:   Wed, 16 Dec 2020 13:47:02 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     "Alice Guo (OSS)" <alice.guo@oss.nxp.com>
-Cc:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
+        Wed, 16 Dec 2020 07:47:58 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B3A9C0617A7;
+        Wed, 16 Dec 2020 04:47:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=nRkl1ftL5o4b/KrhceyfWd4kfXLiLhPAekED99MnXJw=; b=fwQGBMQF6zSKMb09Y7Tj+nntNV
+        6l2x04XDkAUFLqOu3QKP/NpoC8wmaSIJo6MNdzg3NOXUhVEeGOiyJAYsupv8drHiTapDvcNqj5a25
+        b8NpMotmuihhYqNZF22q0VVRvI7rG7GMp9ERCl+iMXManVw+Cg2iv6Go6fE/S/a8mPirgKnOyXxwF
+        aKiIqOJ7nX+ixnBUE9rz6le572Svc3+bWS4ZCGqz6H+pA6jpWuHp31kLXaMz78sYkQmvTCyV3eMZ5
+        ML2yQ9tFnvYK2Y0hHg6t8nD9+tfV6StbMk18NyxCIryZXVZ1FPS0NQLsfeOxkAmxyKDKm29BFLFwU
+        Ww9eopkA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kpWD3-0001aH-7u; Wed, 16 Dec 2020 12:47:13 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 47203304D28;
+        Wed, 16 Dec 2020 13:47:09 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CBB7B203C64AC; Wed, 16 Dec 2020 13:47:08 +0100 (CET)
+Date:   Wed, 16 Dec 2020 13:47:08 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Jessica Yu <jeyu@kernel.org>
+Cc:     Dexuan Cui <decui@microsoft.com>, Ingo Molnar <mingo@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: Re: [PATCH v7 1/4] dt-bindings: soc: imx8m: add DT Binding doc for
- soc unique ID
-Message-ID: <20201216124702.GA28244@kozik-lap>
-References: <20201215083551.6067-1-alice.guo@oss.nxp.com>
- <20201215091118.GB9386@kozik-lap>
- <AM6PR04MB6053AE68690ADF805D5A0809E2C50@AM6PR04MB6053.eurprd04.prod.outlook.com>
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: static_branch_enable() does not work from a __init function?
+Message-ID: <20201216124708.GZ3021@hirez.programming.kicks-ass.net>
+References: <MW4PR21MB1857CC85A6844C89183C93E9BFC59@MW4PR21MB1857.namprd21.prod.outlook.com>
+ <20201216092649.GM3040@hirez.programming.kicks-ass.net>
+ <20201216115524.GA13751@linux-8ccs>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <AM6PR04MB6053AE68690ADF805D5A0809E2C50@AM6PR04MB6053.eurprd04.prod.outlook.com>
+In-Reply-To: <20201216115524.GA13751@linux-8ccs>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 09:55:34AM +0000, Alice Guo (OSS) wrote:
+On Wed, Dec 16, 2020 at 12:55:25PM +0100, Jessica Yu wrote:
+> +++ Peter Zijlstra [16/12/20 10:26 +0100]:
+> [snip]
+> > > PS, I originally found: in arch/x86/kvm/vmx/vmx.c: vmx_init(), it looks
+> > > like the line "static_branch_enable(&enable_evmcs);" does not take effect
+> > > in a v5.4-based kernel, but does take effect in the v5.10 kernel in the
+> > > same x86-64 virtual machine on Hyper-V, so I made the above test module
+> > > to test static_branch_enable(), and found that static_branch_enable() in
+> > > the test module does not work with both v5.10 and my v5.4 kernel, if the
+> > > __init marker is used.
 > 
+> Because the jump label code currently does not allow you to update if
+> the entry resides in an init section. By marking the module init
+> section __init you place it in the .init.text section.
+> jump_label_add_module() detects this (by calling within_module_init())
+> and marks the entry by calling jump_entry_set_init(). Then you have
+> the following sequence of calls (roughly):
 > 
-> > -----Original Message-----
-> > From: Krzysztof Kozlowski <krzk@kernel.org>
-> > Sent: 2020年12月15日 17:11
-> > To: Alice Guo (OSS) <alice.guo@oss.nxp.com>
-> > Cc: robh+dt@kernel.org; shawnguo@kernel.org; s.hauer@pengutronix.de;
-> > kernel@pengutronix.de; festevam@gmail.com; devicetree@vger.kernel.org;
-> > linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org; dl-linux-imx
-> > <linux-imx@nxp.com>
-> > Subject: Re: [PATCH v7 1/4] dt-bindings: soc: imx8m: add DT Binding doc for soc
-> > unique ID
-> > 
-> > On Tue, Dec 15, 2020 at 04:35:48PM +0800, Alice Guo (OSS) wrote:
-> > > From: Alice Guo <alice.guo@nxp.com>
-> > >
-> > > Add DT Binding doc for the Unique ID of i.MX 8M series.
-> > >
-> > > Signed-off-by: Alice Guo <alice.guo@nxp.com>
-> > > ---
-> > >
-> > > Changes for v7:
-> > >  - change to a separate schema file
-> > > Changes for v6:
-> > >  - none
-> > > Changes for v5:
-> > >  - correct the error of using allOf
-> > > Changes for v4:
-> > >  - use allOf to limit new version DTS files for i.MX8M to include
-> > >    "fsl,imx8m*-soc", nvmem-cells and nvmem-cells-names Changes for v3:
-> > >  - put it into Documentation/devicetree/bindings/arm/fsl.yaml
-> > >  - modify the description of nvmem-cells
-> > >  - use "make ARCH=arm64 dtbs_check" to make sure it is right Changes
-> > > for v2:
-> > >  - remove the subject prefix "LF-2571-1"
-> > >
-> > >  .../bindings/soc/imx/imx8m-soc.yaml           | 54
-> > +++++++++++++++++++
-> > >  1 file changed, 54 insertions(+)
-> > >  create mode 100644
-> > > Documentation/devicetree/bindings/soc/imx/imx8m-soc.yaml
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/soc/imx/imx8m-soc.yaml
-> > > b/Documentation/devicetree/bindings/soc/imx/imx8m-soc.yaml
-> > > new file mode 100644
-> > > index 000000000000..a2f7dc0c9b35
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/soc/imx/imx8m-soc.yaml
-> > > @@ -0,0 +1,54 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause) %YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/soc/imx/imx8m-soc.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: NXP i.MX8M Series SoC
-> > > +
-> > > +maintainers:
-> > > +  - Alice Guo <alice.guo@nxp.com>
-> > > +
-> > > +description: |
-> > > +  NXP i.MX8M series SoCs contain fuse entries from which SoC Unique
-> > > +ID can be
-> > > +  obtained.
-> > > +
-> > > +select:
-> > 
-> > Mhm, there are other compatibles here so indeed, select is needed.
-> > 
-> > > +  properties:
-> > > +    compatible:
-> > > +      contains:
-> > > +        enum:
-> > > +          - fsl,imx8mm
-> > > +          - fsl,imx8mn
-> > > +          - fsl,imx8mp
-> > > +          - fsl,imx8mq
-> > > +  required:
-> > > +    - compatible
-> > 
-> > This does not work - does not match anything. It seems you missed proper
-> > "required" for the matched node.
-> > 
-> > Provide also an example.
-> > 
-> > Best regards,
-> > Krzysztof
-> > 
+> static_branch_enable
+>  static_key_enable
+>    static_key_enable_cpuslocked
+>      jump_label_update
+>        jump_label_can_update
+>          jump_entry_is_init returns true, so bail out
 > 
-> Hi, Krzysztof
-> Thank you for your advice. My opinion is different from yours.
+> Judging from the comment in jump_label_can_update(), this seems to be
+> intentional behavior:
 > 
-> I did the fowllowing test:
-> --- a/Documentation/devicetree/bindings/soc/imx/imx8m-soc.yaml
-> +++ b/Documentation/devicetree/bindings/soc/imx/imx8m-soc.yaml
-> @@ -22,6 +22,7 @@ select:
->            - fsl,imx8mn
->            - fsl,imx8mp
->            - fsl,imx8mq
-> +          - fsl,lx2160a
->    required:
->      - compatible
+> static bool jump_label_can_update(struct jump_entry *entry, bool init)
+> {
+>        /*
+>         * Cannot update code that was in an init text area.
+>         */
+>        if (!init && jump_entry_is_init(entry))
+>                return false;
 > 
-> ➜  linux-next git:(master) ✗ make ARCH=arm64 dtbs_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/soc/imx/imx8m-soc.yaml
-> ...
-> /home/nxf55104/virtualization/upstream/linux-next/arch/arm64/boot/dts/freescale/fsl-lx2160a-clearfog-cx.dt.yaml: /: soc:compatible:0: 'simple-bus' is not one of ['fsl,imx8mm-soc', 'fsl,imx8mn-soc', 'fsl,imx8mp-soc', 'fsl,imx8mq-soc']
->         From schema: /home/nxf55104/virtualization/upstream/linux-next/Documentation/devicetree/bindings/soc/imx/imx8m-soc.yaml
-> ...
-> 
-> So, I think it works and can match stuff. I do not understand what proper " required" I missed. Please give me some tips. Thank you.
 
-I applied the bindings (only) and run dtbs_check - everything passed
-fine but it shouldn't. The DTS do not have soc compatibles.
-
-Best regards,
-Krzysztof
-
+Only because we're having .init=false, incorrectly. See the other email.
