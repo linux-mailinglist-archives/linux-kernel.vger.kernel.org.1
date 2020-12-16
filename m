@@ -2,95 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A05E2DB9FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 05:19:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A0F2DB9F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 05:17:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725822AbgLPETB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 23:19:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725789AbgLPETB (ORCPT
+        id S1725792AbgLPERH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 23:17:07 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:35592 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725274AbgLPERH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 23:19:01 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D07C2C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 20:18:20 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id v3so12199151plz.13
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 20:18:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IQRIGP+PG0ZGJkN4c+NOuc/o2U0jNbHtsQVJKi1bUrA=;
-        b=IaQ61WqqgZR/LZ5nzcnqn65kMZT/iS1vgHrAtwE8ZwXmgbY9wNxV619VptREtFKSZc
-         apIe9BOoBBRAdXEqsw38cCXAmZooQxG3P6xADa/euQaVI5mtKueBdc7E+pl4yiS698ES
-         yBq74qWOadPpsi6UIr0QZxtFnKOvwwwXdR8qFONAxnZuz5JiMBNEvspOA0rFzfh/zU9Z
-         fcsszAHXXXzhvY4imvOTJnDY0xW8drcPA0/wnWtoZTmJKwZ3tSYt1pfpMZyv+QMkuhOe
-         tBy22Wp0dF3hE4LIaE3ld/WlVaqE0boAV99jgdT1bxVJ1DdUpGKAkiGaz2VkroT6zr1E
-         LUJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IQRIGP+PG0ZGJkN4c+NOuc/o2U0jNbHtsQVJKi1bUrA=;
-        b=lsZDhCudDDMiPwF9vVJM1RQ/GAC+r+sm1urI40BgaGE9KCjsvRBbU1HuMQ720QrSQh
-         YXi7JxQgta23+otZL2y0mHNXlcPUeXx8QV60UEaCDo29KEK1qePJbEpsOQDf8nHuDke8
-         hUcLyzBoPLlG1DCIxuo072zF46yflCzF2t9mSklH3IDWf2yQIo3qFEOFlnnnPFuqqT2r
-         vV3tXzu2GpqpzCNkzhTbK75FAkR5+oHCfxO+dRsHxeagHC4qkJGtroR3lf5uungRpKfI
-         WYomtrUYwmrZyXtkDlrDa8ogLnK20T4aylpvduNDsDBMkLTdkiEn/iPGLf0cnbjtAVfR
-         IjMw==
-X-Gm-Message-State: AOAM532hPnttNuydO9I7V14mA3xSDZTjSzP2qzv+rIRGccf4hUqYdSPX
-        zBWsJCys74PkpBLQkHb1PcWFqg==
-X-Google-Smtp-Source: ABdhPJywXM77ofwOhEKYkaEuA6j1U7P/GCEIQi4ZkFGZ+MZBzU+URw8DsUa7qttMpW/CqoWuOipkIA==
-X-Received: by 2002:a17:902:850c:b029:da:e4a6:3641 with SMTP id bj12-20020a170902850cb02900dae4a63641mr920477plb.57.1608092300343;
-        Tue, 15 Dec 2020 20:18:20 -0800 (PST)
-Received: from localhost.localdomain (111-240-118-79.dynamic-ip.hinet.net. [111.240.118.79])
-        by smtp.googlemail.com with ESMTPSA id 37sm442703pjz.41.2020.12.15.20.18.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 20:18:19 -0800 (PST)
-From:   Chris Chiu <chiu@endlessos.org>
-To:     cezary.rojewski@intel.com, pierre-louis.bossart@linux.intel.com,
-        yang.jie@linux.intel.com
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linux@endlessos.org, Chris Chiu <chiu@endlessos.org>
-Subject: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirks for DeeQ X5-Z8300
-Date:   Wed, 16 Dec 2020 12:16:01 +0800
-Message-Id: <20201216041601.5993-1-chiu@endlessos.org>
-X-Mailer: git-send-email 2.20.1
+        Tue, 15 Dec 2020 23:17:07 -0500
+X-UUID: 6104fe90c71244d4bf6ab001d6aceba2-20201216
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=xXViU+jCjnJBc17OQ5s/hqIlGucncZm+jcbPh2ljq70=;
+        b=tSx7Gtmm6IUOoYX6WZCw+4cFEwWz15+T1HLaatGCwOEHCNKkCTOQOmp36z66n3B19wHA7j6ZkTunbwgZqKhibh7r9bLLmK46CvgVL/+H1YVvJ8ppCeTJ3i+nHujBi/9KIJ52LxrnapEbjmfTejJurc1qMFMjB/enNNGp7sMdxbk=;
+X-UUID: 6104fe90c71244d4bf6ab001d6aceba2-20201216
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1544996646; Wed, 16 Dec 2020 12:16:23 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 16 Dec 2020 12:16:20 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 16 Dec 2020 12:16:20 +0800
+Message-ID: <1608092181.10163.30.camel@mtkswgap22>
+Subject: Re: [PATCH v5 5/7] scsi: ufs: Group UFS WB related flags to struct
+ ufs_dev_info
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Bean Huo <huobean@gmail.com>
+CC:     <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
+        <asutoshd@codeaurora.org>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <beanhuo@micron.com>,
+        <bvanassche@acm.org>, <tomas.winkler@intel.com>,
+        <cang@codeaurora.org>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Date:   Wed, 16 Dec 2020 12:16:21 +0800
+In-Reply-To: <20201215230519.15158-6-huobean@gmail.com>
+References: <20201215230519.15158-1-huobean@gmail.com>
+         <20201215230519.15158-6-huobean@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-TM-SNTS-SMTP: CA0EF9279DBA7005060E63A6DCBB892D5B96BF7D5720714D28D33363D007E1BC2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DeeQ X5-Z8300 is a laptop empowered by Intel Atom Cherry Trail. Add
-quirks to select the correct input map, jack-detect options to enable
-jack sensing and internal/headset microphones.
-
-Signed-off-by: Chris Chiu <chiu@endlessos.org>
----
- sound/soc/intel/boards/bytcr_rt5651.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 688b5e0a49e3..9df09e26b05a 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -507,6 +507,14 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
- 					BYT_RT5651_SSP0_AIF1 |
- 					BYT_RT5651_MONO_SPEAKER),
- 	},
-+	{
-+		.callback = byt_rt5651_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "DeeQ"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "X5-Z8300"),
-+		},
-+		.driver_data = (void *)(BYT_RT5651_IN1_IN2_MAP | BYT_RT5651_JD1_1),
-+	},
- 	{}
- };
- 
--- 
-2.20.1
+T24gV2VkLCAyMDIwLTEyLTE2IGF0IDAwOjA1ICswMTAwLCBCZWFuIEh1byB3cm90ZToNCj4gRnJv
+bTogQmVhbiBIdW8gPGJlYW5odW9AbWljcm9uLmNvbT4NCj4gDQo+IFVGUyBkZXZpY2UtcmVsYXRl
+ZCBmbGFncyBzaG91bGQgYmUgZ3JvdXBlZCBpbiB1ZnNfZGV2X2luZm8uIFRha2UNCj4gd2JfZW5h
+YmxlZCBhbmQgd2JfYnVmX2ZsdXNoX2VuYWJsZWQgb3V0IGZyb20gdGhlIHN0cnVjdCB1ZnNfaGJh
+LA0KPiBncm91cCB0aGVtIHRvIHN0cnVjdCB1ZnNfZGV2X2luZm8sIGFuZCBhbGlnbiB0aGUgbmFt
+ZXMgb2YgdGhlIHN0cnVjdHVyZQ0KPiBtZW1iZXJzIHZlcnRpY2FsbHkuDQo+IA0KPiBTaWduZWQt
+b2ZmLWJ5OiBCZWFuIEh1byA8YmVhbmh1b0BtaWNyb24uY29tPg0KDQpBY2tlZC1ieTogU3Rhbmxl
+eSBDaHUgPHN0YW5sZXkuY2h1QG1lZGlhdGVrLmNvbT4NCg==
 
