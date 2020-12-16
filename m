@@ -2,96 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50A082DB878
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 02:36:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E772DB891
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 02:41:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725766AbgLPBgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 20:36:03 -0500
-Received: from 95-31-39-132.broadband.corbina.ru ([95.31.39.132]:39080 "EHLO
-        blackbox.su" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725208AbgLPBgC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 20:36:02 -0500
-Received: from metabook.localnet (metabook.metanet [192.168.2.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by blackbox.su (Postfix) with ESMTPSA id 8C4CC8195C;
-        Wed, 16 Dec 2020 04:35:20 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=blackbox.su; s=mail;
-        t=1608082520; bh=ox/5CkOm2k8D24Kavof+L3UZuPtQ5hNrYwo5IIXSXXE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nuV7RuZyM5/b4/d7VqnwgSBaMowFY2GalAmJWX8/zUEWByzLjorfFuuMH+fox/J83
-         nCG93CQyeHIIVEVEbpmem48avXNkP75OQC6b4nkwKDB4C81NYFY9cTJoGgLzAnKVP2
-         R0oAGmm3o8WhYYRro7f3ZP0UQq/k1Tj2Ep0py1N9D1wyg09/e9TgCd95j8LGpLa2c+
-         ZUnG6qByAxEbmgwIsaqjIvOjY94GALWjpbi6r/0mf+JAnRp2FaxeslRYhgpEbqSNOU
-         dOO3RDiiBChB7hbe79AofDsp2UnlfNjQkDvAAOScRUxD7d1bUowyDTzEeSDmKcGIoV
-         BvynJgb1zg54A==
-From:   Sergej Bauer <sbauer@blackbox.su>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     patchwork-bot+netdevbpf@kernel.org, andrew@lunn.ch,
-        Markus.Elfring@web.de, thesven73@gmail.com,
-        bryan.whitehead@microchip.com, UNGLinuxDriver@microchip.com,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] lan743x: fix for potential NULL pointer dereference with bare card
-Date:   Wed, 16 Dec 2020 04:35:04 +0300
-Message-ID: <1721393.xWxZJfhTyO@metabook>
-In-Reply-To: <20201215171242.622435e8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20201215161252.8448-1-sbauer@blackbox.su> <160807555409.8012.8873780215201516945.git-patchwork-notify@kernel.org> <20201215171242.622435e8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S1725837AbgLPBlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 20:41:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725817AbgLPBlg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 20:41:36 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F2F2C061793;
+        Tue, 15 Dec 2020 17:40:56 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id f14so604785pju.4;
+        Tue, 15 Dec 2020 17:40:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=R9E1+JwqFZKk2AK8HE4565Hu+8+uiMrszjBFOFvVtpY=;
+        b=L7vskc4XkaDqTwgdyWWZVSyQln3KIZxUhxwyNTWQN70cy5scBLjNlcFHqXuOpd0dKp
+         1Gqxr34XBSXY2eQEVwTaf691lk370CwNJkg3pJlVJKPqUEXNujqTybcA2mHjkXHA8MsR
+         HO9BdAo4fxdz4K/H3bmYwp/rBhGOIm8MITWBOQRbMqvbqigeVjkwLGLVnza7XcrdZ9iU
+         XjwXpbdDcD+cx1IrqscI2fVCLtMGyQqS19AnZvMPtf4uNC28syYC2kj1hHuUFLwTRUCc
+         K+01bQMNKUX9NeoFonAQWdtkb4hWFAZA9h+LBGDp+A19iCR6lrf9If8v3/IFAlPrEeGJ
+         FFcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=R9E1+JwqFZKk2AK8HE4565Hu+8+uiMrszjBFOFvVtpY=;
+        b=BGngAaJvXDkTLXPJljYwqM+wSv8fhj+BVhdP6jqZmbVjyz84FEm2jQMmS7IvJTF9it
+         LW8nWWmczSZknLZppLRrNeJbUiwdFU4xKU6s/yJxWQHSDOqqCEuej/0I5zIVuWTcft/F
+         P5vEEEkl7I+9L8pLeRDioYb6D0ggLzR8H4zjZX43j321l1MuVDktQTjDUULjCAGD5QFb
+         sjc8WJQGETfxVWssl8LIAyJMGpcEB4/pxANv1BF1grvjsS87RHMmdiY48Qxv3zgLws71
+         U3lxwPBFZMopndY6Kmd08MIIr0B41hBJ9HuSEvDzehtwMVIocyAN+xeBoYwGvqCG4Xvd
+         XETg==
+X-Gm-Message-State: AOAM53054XrHWn5kHpd8j4+D8aSQl1pAlPVEHMKhxtXyVQSxlXorFD+R
+        DjPnqGA+I2OkQYRUrTP2iQpf9tjqyXQ=
+X-Google-Smtp-Source: ABdhPJzGBB8zm1dGi66063biQGA+g6PaPrxV3ix3fdH330cPAo2NNmaszgmTyB9+2+ZJDvbcNSEtgQ==
+X-Received: by 2002:a17:90a:7842:: with SMTP id y2mr1177166pjl.36.1608082855873;
+        Tue, 15 Dec 2020 17:40:55 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id w70sm262790pfd.65.2020.12.15.17.40.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Dec 2020 17:40:55 -0800 (PST)
+Date:   Tue, 15 Dec 2020 17:40:52 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     linux-input@vger.kernel.org
+Cc:     Anson Huang <Anson.Huang@nxp.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] Input: imx_keypad - add dependency on HAS_IOMEM
+Message-ID: <X9llpA3w1zlZCHXU@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, December 16, 2020 4:12:42 AM MSK Jakub Kicinski wrote:
-> On Tue, 15 Dec 2020 23:39:14 +0000 patchwork-bot+netdevbpf@kernel.org
-> 
-> wrote:
-> > Hello:
-> > 
-> > This patch was applied to bpf/bpf.git (refs/heads/master):
-> > 
-> > On Tue, 15 Dec 2020 19:12:45 +0300 you wrote:
-> > > This is the 4th revision of the patch fix for potential null pointer
-> > > dereference with lan743x card.
-> > > 
-> > > The simpliest way to reproduce: boot with bare lan743x and issue
-> > > "ethtool ethN" command where ethN is the interface with lan743x card.
-> > > Example:
-> > > 
-> > > $ sudo ethtool eth7
-> > > dmesg:
-...
-> > > [...]
-> > 
-> > Here is the summary with links:
-> >   - [v4] lan743x: fix for potential NULL pointer dereference with bare
-> >   card
-> >   
-> >     https://git.kernel.org/bpf/bpf/c/e9e13b6adc33
-> > 
-> > You are awesome, thank you!
-> > --
-> > Deet-doot-dot, I am a bot.
-> > https://korg.docs.kernel.org/patchwork/pwbot.html
-> 
-> Heh the bot got confused, I think.
-> 
-> What I meant when I said "let's wait for the merge window" was that
-> the patch will not hit upstream until the merge window. It's now in
-> Linus's tree. I'll make a submission of stable patches to Greg at the
-> end of the week and I'll include this patch.
-> 
-> Thanks!
+devm_platform_ioremap_resource() depends on CONFIG_HAS_IOMEM, so let's add
+it to the dependencies when COMPILE_TEST is enabled.
 
-I think, firstly the bot was confused by me :-\
-I should have asked you what exactly did you mean with "let's wait for the 
-merge window"...
-That's completely my fault, sorry for that.
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: c8834032ffe2 ("Input: imx_keypad - add COMPILE_TEST support")
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+---
+ drivers/input/keyboard/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-                                Regards,
-                                        Sergej.
+diff --git a/drivers/input/keyboard/Kconfig b/drivers/input/keyboard/Kconfig
+index 2b321c17054a..94eab82086b2 100644
+--- a/drivers/input/keyboard/Kconfig
++++ b/drivers/input/keyboard/Kconfig
+@@ -446,7 +446,7 @@ config KEYBOARD_MPR121
+ 
+ config KEYBOARD_SNVS_PWRKEY
+ 	tristate "IMX SNVS Power Key Driver"
+-	depends on ARCH_MXC || COMPILE_TEST
++	depends on ARCH_MXC || (COMPILE_TEST && HAS_IOMEM)
+ 	depends on OF
+ 	help
+ 	  This is the snvs powerkey driver for the Freescale i.MX application
+-- 
+2.29.2.729.g45daf8777d-goog
 
 
-
+-- 
+Dmitry
