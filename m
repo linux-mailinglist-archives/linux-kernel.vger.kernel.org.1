@@ -2,146 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D09D02DB7DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:41:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3A112DB7D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:41:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726133AbgLPAki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 19:40:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22929 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725827AbgLPAkd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 19:40:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608079147;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BCyr+zCzlSHQ1KjMAt3Zb/a+qisNyayFH7/e91jTxqk=;
-        b=Snze6ynPda7VvaiqdJe7E9l3GeM58gKaIloPQs+ANvI1sEK34ZibQBIx+MxhhjuvUcDIDP
-        EeD3idBJARoX/pc3LR7k5Wn75nvXJMwOIqNEM5KXsQ5nSvEudETMIJVoQF+/OSHxgDM98H
-        84Aiayq3rfDJ8KNllsHRt/GplGB9CO8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-99-wYBKR5ESPACLwIRJr6G_JA-1; Tue, 15 Dec 2020 19:39:03 -0500
-X-MC-Unique: wYBKR5ESPACLwIRJr6G_JA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B14061054F8E;
-        Wed, 16 Dec 2020 00:38:10 +0000 (UTC)
-Received: from treble (ovpn-112-170.rdu2.redhat.com [10.10.112.170])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 44CAF5DD87;
-        Wed, 16 Dec 2020 00:38:04 +0000 (UTC)
-Date:   Tue, 15 Dec 2020 18:38:02 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     =?utf-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
-        xen-devel@lists.xenproject.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org, luto@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Deep Shah <sdeep@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [PATCH v2 00/12] x86: major paravirt cleanup
-Message-ID: <20201216003802.5fpklvx37yuiufrt@treble>
-References: <20201120114630.13552-1-jgross@suse.com>
- <20201120125342.GC3040@hirez.programming.kicks-ass.net>
- <20201123134317.GE3092@hirez.programming.kicks-ass.net>
- <6771a12c-051d-1655-fb3a-cc45a3c82e29@suse.com>
- <20201215141834.GG3040@hirez.programming.kicks-ass.net>
- <20201215145408.GR3092@hirez.programming.kicks-ass.net>
+        id S1726055AbgLPAkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 19:40:31 -0500
+Received: from mga11.intel.com ([192.55.52.93]:12775 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725827AbgLPAk3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 19:40:29 -0500
+IronPort-SDR: S1WsKScjU/i8O0rFJnkelcYIqJkGjFz1VZC1VyjZLqZeQbxRV8+YbXVM86OeRlvMfXhQPRfBAQ
+ HWmN67qGSQ9w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9836"; a="171466991"
+X-IronPort-AV: E=Sophos;i="5.78,423,1599548400"; 
+   d="scan'208";a="171466991"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 16:39:48 -0800
+IronPort-SDR: 6Vu2rS5oUT4CK/NAqcRjLJHLdL9bgUIiVCzUGnwYpvx/ENQPO3oPTBvpyI1pGTkfFhBU1DEL3s
+ tHPAAdlTEnPw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,423,1599548400"; 
+   d="scan'208";a="337188972"
+Received: from lkp-server02.sh.intel.com (HELO a947d92d0467) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 15 Dec 2020 16:39:47 -0800
+Received: from kbuild by a947d92d0467 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kpKr4-00014E-J7; Wed, 16 Dec 2020 00:39:46 +0000
+Date:   Wed, 16 Dec 2020 08:39:32 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ d1c29f5debd4633eb0e9ea1bc00aaad48b077a9b
+Message-ID: <5fd95744.QS+bcGCSYVVQY1sR%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201215145408.GR3092@hirez.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 03:54:08PM +0100, Peter Zijlstra wrote:
-> The problem is that a single instance of unwind information (ORC) must
-> capture and correctly unwind all alternatives. Since the trivially
-> correct mandate is out, implement the straight forward brute-force
-> approach:
-> 
->  1) generate CFI information for each alternative
-> 
->  2) unwind every alternative with the merge-sort of the previously
->     generated CFI information -- O(n^2)
-> 
->  3) for any possible conflict: yell.
-> 
->  4) Generate ORC with merge-sort
-> 
-> Specifically for 3 there are two possible classes of conflicts:
-> 
->  - the merge-sort itself could find conflicting CFI for the same
->    offset.
-> 
->  - the unwind can fail with the merged CFI.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
+branch HEAD: d1c29f5debd4633eb0e9ea1bc00aaad48b077a9b  Merge branch 'efi/core'
 
-So much algorithm.  Could we make it easier by caching the shared
-per-alt-group CFI state somewhere along the way?
+elapsed time: 720m
 
-For example:
+configs tested: 123
+configs skipped: 2
 
-struct alt_group_info {
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-	/* first original insn in the group */
-	struct instruction *orig_insn;
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                     decstation_defconfig
+arm64                            alldefconfig
+powerpc                       holly_defconfig
+powerpc                 mpc837x_mds_defconfig
+arm                    vt8500_v6_v7_defconfig
+riscv                    nommu_k210_defconfig
+mips                            ar7_defconfig
+powerpc                       ppc64_defconfig
+arm                          ep93xx_defconfig
+powerpc                        warp_defconfig
+nios2                         10m50_defconfig
+mips                       bmips_be_defconfig
+arm                            qcom_defconfig
+ia64                      gensparse_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                        sh7785lcr_defconfig
+xtensa                  cadence_csp_defconfig
+arm                        clps711x_defconfig
+powerpc                     ep8248e_defconfig
+arm                       netwinder_defconfig
+arm                           h5000_defconfig
+powerpc                     kmeter1_defconfig
+arm                      integrator_defconfig
+arm                  colibri_pxa300_defconfig
+arc                 nsimosci_hs_smp_defconfig
+sh                        edosk7760_defconfig
+c6x                                 defconfig
+m68k                           sun3_defconfig
+arm                     davinci_all_defconfig
+powerpc                 linkstation_defconfig
+m68k                            mac_defconfig
+powerpc64                        alldefconfig
+arm                           sunxi_defconfig
+arm                            zeus_defconfig
+mips                         tb0287_defconfig
+powerpc                     sequoia_defconfig
+mips                  decstation_64_defconfig
+arm                       omap2plus_defconfig
+powerpc                 mpc834x_itx_defconfig
+sh                        sh7763rdp_defconfig
+xtensa                          iss_defconfig
+sh                           sh2007_defconfig
+sh                        dreamcast_defconfig
+powerpc                 mpc85xx_cds_defconfig
+arm                           corgi_defconfig
+parisc                           alldefconfig
+mips                      pic32mzda_defconfig
+mips                           xway_defconfig
+arm                         mv78xx0_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a003-20201215
+x86_64               randconfig-a006-20201215
+x86_64               randconfig-a002-20201215
+x86_64               randconfig-a005-20201215
+x86_64               randconfig-a004-20201215
+x86_64               randconfig-a001-20201215
+i386                 randconfig-a001-20201215
+i386                 randconfig-a004-20201215
+i386                 randconfig-a003-20201215
+i386                 randconfig-a002-20201215
+i386                 randconfig-a006-20201215
+i386                 randconfig-a005-20201215
+i386                 randconfig-a014-20201215
+i386                 randconfig-a013-20201215
+i386                 randconfig-a012-20201215
+i386                 randconfig-a011-20201215
+i386                 randconfig-a015-20201215
+i386                 randconfig-a016-20201215
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-	/* max # of bytes in the group (cfi array size) */
-	unsigned long nbytes;
+clang tested configs:
+x86_64               randconfig-a016-20201215
+x86_64               randconfig-a012-20201215
+x86_64               randconfig-a013-20201215
+x86_64               randconfig-a015-20201215
+x86_64               randconfig-a014-20201215
+x86_64               randconfig-a011-20201215
 
-	/* byte-offset-addressed array of CFI pointers */
-	struct cfi_state **cfi;
-};
-
-We could change 'insn->alt_group' to be a pointer to a shared instance
-of the above struct, so that all original and replacement instructions
-in a group have a pointer to it.
-
-Starting out, 'cfi' array is all NULLs.  Then when updating CFI, check
-'insn->alt_group.cfi[offset]'.
-
-[ 'offset' is a byte offset from the beginning of the group.  It could
-  be calculated based on 'orig_insn' or 'orig_insn->alts', depending on
-  whether 'insn' is an original or a replacement. ]
-
-If the array entry is NULL, just update it with a pointer to the CFI.
-If it's not NULL, make sure it matches the existing CFI, and WARN if it
-doesn't.
-
-Also, with this data structure, the ORC generation should also be a lot
-more straightforward, just ignore the NULL entries.
-
-Thoughts?  This is all theoretical of course, I could try to do a patch
-tomorrow.
-
--- 
-Josh
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
