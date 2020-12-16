@@ -2,117 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB1CE2DBC80
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 09:17:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E79582DBC79
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 09:14:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725837AbgLPIQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 03:16:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26304 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725274AbgLPIQQ (ORCPT
+        id S1725819AbgLPINt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 03:13:49 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:41520 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725287AbgLPINt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 03:16:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608106489;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XuEItb8Kt7vU3EOR493LqE4OTCNJ41od+JQ7yAldRu0=;
-        b=LOKHYcHo4BuONkiWBLsNWoDDeVOH98AJNFOlwSqKSu5e1VMKG3ToMcUfqTN9nfDrKfjkCp
-        IeZHl5iquxMR8qcHc6HK5qBFE1UBZjrgMaDkLWsloLPkvUU9tRP5UcNS0fmRZjn4Py8cVW
-        nJPKlJLf1rT6KzWxvZZrDlHkN0RfOn0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-31-p4F0q_6TPLW5bQWSeYBIJQ-1; Wed, 16 Dec 2020 03:14:45 -0500
-X-MC-Unique: p4F0q_6TPLW5bQWSeYBIJQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C88A21005504;
-        Wed, 16 Dec 2020 08:14:43 +0000 (UTC)
-Received: from krava (unknown [10.40.193.13])
-        by smtp.corp.redhat.com (Postfix) with SMTP id E37095D9E3;
-        Wed, 16 Dec 2020 08:14:40 +0000 (UTC)
-Date:   Wed, 16 Dec 2020 09:14:39 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Alexei Budankov <abudankov@huawei.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH 4/8] perf daemon: Add daemon command
-Message-ID: <20201216081439.GA4153@krava>
-References: <20201212104358.412065-1-jolsa@kernel.org>
- <20201212104358.412065-5-jolsa@kernel.org>
- <1e467abe-4613-765f-5138-6215b711f9fb@huawei.com>
- <20201215194354.GH698181@krava>
- <c3981c21-e970-6e27-af2a-364cbcdc6f2e@huawei.com>
+        Wed, 16 Dec 2020 03:13:49 -0500
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BG8AEoY026748;
+        Wed, 16 Dec 2020 03:12:51 -0500
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 35cun8wc9a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Dec 2020 03:12:51 -0500
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 0BG8CoEE001938
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 16 Dec 2020 03:12:50 -0500
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.721.2; Wed, 16 Dec 2020
+ 03:12:49 -0500
+Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Wed, 16 Dec 2020 03:12:49 -0500
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0BG8CkZw028714;
+        Wed, 16 Dec 2020 03:12:46 -0500
+From:   Mircea Caprioru <mircea.caprioru@analog.com>
+To:     <jic23@kernel.org>
+CC:     <Michael.Hennerich@analog.com>, <alexandru.ardelean@analog.com>,
+        <lars@metafoo.de>, <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        Dragos Bogdan <dragos.bogdan@analog.com>,
+        Mircea Caprioru <mircea.caprioru@analog.com>
+Subject: [PATCH] iio: adc: ad7476: Add LTC2314-14 support
+Date:   Wed, 16 Dec 2020 10:17:10 +0200
+Message-ID: <20201216081710.89047-1-mircea.caprioru@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c3981c21-e970-6e27-af2a-364cbcdc6f2e@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-16_02:2020-12-15,2020-12-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ impostorscore=0 malwarescore=0 phishscore=0 spamscore=0 clxscore=1011
+ bulkscore=0 adultscore=0 mlxscore=0 priorityscore=1501 mlxlogscore=999
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012160052
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 10:54:43AM +0300, Alexei Budankov wrote:
-> 
-> On 15.12.2020 22:43, Jiri Olsa wrote:
-> > On Tue, Dec 15, 2020 at 06:40:26PM +0300, Alexei Budankov wrote:
-> >> Hi,
-> >>
-> >> On 12.12.2020 13:43, Jiri Olsa wrote:
-> >>> Adding daemon command that allows to run record sessions
-> >>> on background. Each session represents one perf record
-> >>> process and is configured in config file.
-> >>>
-> >>> Example:
-> >>>
-> >>>   # cat config.daemon
-> >>>   [daemon]
-> >>>   base=/opt/perfdata
-> >>
-> >> It could probably make sense to consider using locations at /var/
-> >> directory, similar to other already existing daemon processes in
-> >> system so admin and user experience would be easily reusabe for
-> >> performance monitoring daemon (service).
-> > 
-> > hm, you can specify any /var path in there if you like,
-> > do you suggest to hardcode it?
-> 
-> This thing: https://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard
-> Since Perf is a part of OS it would better use some standardized locations.
+From: Dragos Bogdan <dragos.bogdan@analog.com>
 
-sure, user is free to configure that
+The LTC2314-14 is a 14-bit, 4.5Msps, serial sampling A/D converter that draws only
+6.2mA from a wide range analog supply adjustable from 2.7V to 5.25V.
 
-SNIP
+Signed-off-by: Dragos Bogdan <dragos.bogdan@analog.com>
+Signed-off-by: Mircea Caprioru <mircea.caprioru@analog.com>
+---
+ drivers/iio/adc/ad7476.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-> >>> +	start = current = time(NULL);
-> >>> +
-> >>> +	do {
-> >>> +		usleep(500);
-> >>
-> >> This polling design is actually sub-optimal because it induces redundant
-> >> noise in a system. Ideally it should be implemented in async fashion so
-> >> kernel would atomically notify daemon process on event happened in some
-> >> of record processes e.g. using of poll-like() system call.
-> > 
-> > ok, any suggestion?
-> 
-> Possibly, checking SIGCHLDs via signalfd [1] OR using pidfd [2] on kernel v5.3+
-> 
-> [1] https://man7.org/linux/man-pages/man2/signalfd.2.html
-> [2] https://man7.org/linux/man-pages/man2/pidfd_open.2.html
-
-will check, thanks
-
-jirka
+diff --git a/drivers/iio/adc/ad7476.c b/drivers/iio/adc/ad7476.c
+index 66c55ae67791..d0c42c2d433b 100644
+--- a/drivers/iio/adc/ad7476.c
++++ b/drivers/iio/adc/ad7476.c
+@@ -67,6 +67,7 @@ enum ad7476_supported_device_ids {
+ 	ID_ADS7866,
+ 	ID_ADS7867,
+ 	ID_ADS7868,
++	ID_LTC2314_14,
+ };
+ 
+ static void ad7091_convst(struct ad7476_state *st)
+@@ -248,6 +249,8 @@ static const struct ad7476_chip_info ad7476_chip_info_tbl[] = {
+ 	},
+ 	[ID_ADS7868] = {
+ 		.channel[0] = ADS786X_CHAN(8),
++	[ID_LTC2314_14] = {
++		.channel[0] = AD7940_CHAN(14),
+ 		.channel[1] = IIO_CHAN_SOFT_TIMESTAMP(1),
+ 	},
+ };
+@@ -365,6 +368,7 @@ static const struct spi_device_id ad7476_id[] = {
+ 	{"ads7866", ID_ADS7866},
+ 	{"ads7867", ID_ADS7867},
+ 	{"ads7868", ID_ADS7868},
++	{"ltc2314-14", ID_LTC2314_14},
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(spi, ad7476_id);
+-- 
+2.17.1
 
