@@ -2,82 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AA5B2DB97D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 03:57:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D692D2DB8BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 03:05:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725822AbgLPC45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 21:56:57 -0500
-Received: from mga03.intel.com ([134.134.136.65]:9465 "EHLO mga03.intel.com"
+        id S1725780AbgLPCEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 21:04:42 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:56562 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725710AbgLPC45 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 21:56:57 -0500
-IronPort-SDR: l/GbeQzpI/RUt2XvSSFs08soNGP+wKjlqV95/u4oYn6QpEbA5JVDaRcae8dzHCx+lki1hLoa4y
- DkhKje1WWsjg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9836"; a="175099207"
-X-IronPort-AV: E=Sophos;i="5.78,423,1599548400"; 
-   d="scan'208";a="175099207"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 18:56:02 -0800
-IronPort-SDR: +VwLccgiubthbN3MImiBbjdrCD7vWyJpzM1SJMs6x1PVBVDNKi3fXXqnXmKzhl3/SuVjKXn43O
- YFZvj0pk4JnA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,423,1599548400"; 
-   d="scan'208";a="451538814"
-Received: from icx-2s.bj.intel.com ([10.240.192.119])
-  by fmsmga001.fm.intel.com with ESMTP; 15 Dec 2020 18:55:59 -0800
-From:   Yang Zhong <yang.zhong@intel.com>
-To:     linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        tony.luck@intel.com, pbonzini@redhat.com, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, kyung.min.park@intel.com, yang.zhong@intel.com
-Subject: [PATCH 2/2] KVM: Expose AVX_VNNI instruction to guset
-Date:   Wed, 16 Dec 2020 10:01:29 +0800
-Message-Id: <20201216020129.19875-3-yang.zhong@intel.com>
-X-Mailer: git-send-email 2.29.2.334.gfaefdd61ec
-In-Reply-To: <20201216020129.19875-1-yang.zhong@intel.com>
-References: <20201216020129.19875-1-yang.zhong@intel.com>
+        id S1725765AbgLPCEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 21:04:42 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kpMAV-00CD9O-GZ; Wed, 16 Dec 2020 03:03:55 +0100
+Date:   Wed, 16 Dec 2020 03:03:55 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Alexandre Torgue <alexandre.torgue@st.com>, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-kernel@vger.kernel.org,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Vyacheslav Mitrofanov 
+        <Vyacheslav.Mitrofanov@baikalelectronics.ru>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [RFC] net: stmmac: Problem with adding the native GPIOs support
+Message-ID: <20201216020355.GA2893264@lunn.ch>
+References: <20201214092516.lmbezb6hrbda6hzo@mobilestation>
+ <20201214153143.GB2841266@lunn.ch>
+ <20201215082527.lqipjzastdlhzkqv@mobilestation>
+ <20201215135837.GB2822543@lunn.ch>
+ <20201215145253.sc6cmqetjktxn4xb@mobilestation>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201215145253.sc6cmqetjktxn4xb@mobilestation>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Expose AVX (VEX-encoded) versions of the Vector Neural Network
-Instructions to guest.
+> > From what you are saying, it sounds like from software you cannot
+> > independently control the GPIO controller reset?
+> 
+> No. The hardware implements the default MAC reset behavior. So the
+> GPIO controller gets reset synchronously with the MAC reset and that
+> can't be changed.
 
-The bit definition:
-CPUID.(EAX=7,ECX=1):EAX[bit 4] AVX_VNNI
+Is there pinmux support for these pins?  Can you disconnect them from
+the MAC? Often pins can be connected to different internal IP
+blocks. Maybe you can flip the pin mux, perform the MAC reset, and
+then put the pinmux back to connect the pins to the MAC IP again?
 
-The following instructions are available when this feature is
-present in the guest.
-  1. VPDPBUS: Multiply and Add Unsigned and Signed Bytes
-  2. VPDPBUSDS: Multiply and Add Unsigned and Signed Bytes with Saturation
-  3. VPDPWSSD: Multiply and Add Signed Word Integers
-  4. VPDPWSSDS: Multiply and Add Signed Integers with Saturation
-
-This instruction is currently documented in the latest "extensions"
-manual (ISE). It will appear in the "main" manual (SDM) in the future.
-
-Signed-off-by: Yang Zhong <yang.zhong@intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
----
- arch/x86/kvm/cpuid.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 83637a2ff605..4229b67f0a8d 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -433,7 +433,7 @@ void kvm_set_cpu_caps(void)
- 		kvm_cpu_cap_set(X86_FEATURE_SPEC_CTRL_SSBD);
- 
- 	kvm_cpu_cap_mask(CPUID_7_1_EAX,
--		F(AVX512_BF16)
-+		F(AVX_VNNI) | F(AVX512_BF16)
- 	);
- 
- 	kvm_cpu_cap_mask(CPUID_D_1_EAX,
--- 
-2.29.2.334.gfaefdd61ec
-
+     Andrew
