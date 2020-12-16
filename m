@@ -2,153 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F082DBB32
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 07:29:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DCFB2DBB3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 07:31:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725890AbgLPG3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 01:29:07 -0500
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:39937 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725812AbgLPG3H (ORCPT
+        id S1725934AbgLPG3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 01:29:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725932AbgLPG3j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 01:29:07 -0500
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 0BG6Rpx8005555;
-        Wed, 16 Dec 2020 15:27:51 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 0BG6Rpx8005555
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1608100071;
-        bh=gpPjJysJvaYX+2trqIsbs8noZs8c0RM6aINeItaGmPw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=0c+nKeAQjjbSB++0kQUYMHQpU9UW2GCAGu7KnG9yXVMEE6ezXEq3ujrRSicv4tuqL
-         HZi8cKRd6RKRTKeZj9pAmKQJbvuWU9Ul6RzEvhONegK3zJARWxard8pLxUun/cvEWr
-         2YOQsTea3NmpjNryFqPEoBhxVai/1jaHnTcKXh/tAnBIrPPznwuDxG7L4vhKcy+P4h
-         VvFwU3vTZsKNk1mVP20lX21kvwXaaF7VUuMG6N4a5Rlw3c4WVpOTY6NZURgB49/HPX
-         H8dGCCOxIPYpO6tz1DEwY2N2DQMyBGZKyF81Op5vAaA2jE7BuXvjV+aVKaIX+dmRfl
-         f7RypZy50cWjQ==
-X-Nifty-SrcIP: [209.85.210.181]
-Received: by mail-pf1-f181.google.com with SMTP id h186so5492939pfe.0;
-        Tue, 15 Dec 2020 22:27:51 -0800 (PST)
-X-Gm-Message-State: AOAM530aGKc8C9xIBB3IEIEK0uZsD1VQnoY6pxk735ykaj+Jq/ns9Ihq
-        NXZPKsP+1ogii0ZQ/FZRDP+ud6J6REHvY6zGgmI=
-X-Google-Smtp-Source: ABdhPJwth77/SETECJKEfVmNAa0dfNH92VGQl4pH/8wML5QfD2H392sTXSa/KkknYFgE4i1vMyDcAxRaS93kJVAUNxE=
-X-Received: by 2002:a62:e519:0:b029:197:bcec:7c0c with SMTP id
- n25-20020a62e5190000b0290197bcec7c0cmr31336197pff.63.1608100070724; Tue, 15
- Dec 2020 22:27:50 -0800 (PST)
+        Wed, 16 Dec 2020 01:29:39 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39FD1C06179C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 22:28:59 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id l11so45592950lfg.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 22:28:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AmV1wFnXNrktUuhZFvYQnPEu2QKlJsSJQQOZ1Zyh7xM=;
+        b=lAVqaQeWHY5VqKu2s/415dGgQkLKEZ0JOdiOhKdd2A7K5cFeF4RLB8INfoKgQIP4jw
+         kNBqtAC1Wxwzwat0rQcNyDwvOiJNEdegE6BLoL5mx4Z4OG36A4v06a2zfkUdOJu3eXvW
+         p+RNbcIu1fcoQjx0O7bheapnrCKluNvHXsrmkDAFSDeiYBpMrDwdfVSt9a4Y3MI+nbQK
+         MWMphNBPy8Jo98jmfan3hRzBr3c6RmkS+GaFTpxFIXd3u/XM9MujzoB7hIzXBkSImRV5
+         FN04fc5UOWAp8fsVOYdCaG2XN5weABfI3dvJqH8+D8g3C39VgG3fWFc2OxcbJZDmF3Ef
+         40/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AmV1wFnXNrktUuhZFvYQnPEu2QKlJsSJQQOZ1Zyh7xM=;
+        b=WL2+7RKN3BTgRlez7xDthlSCfScbsOhJGESxjiLINM5+om0uK+Z8OITAgH7cosWlCJ
+         YClmqdCGCht5yZHtutM9hWEqNyxHa1llNomFG9bEOuJpRLyoSxzCyk8+xMCnO8xZA947
+         PV3JbSrTQbXxiN2PtKnaQGoRARtzaWb86Nej8ajQgBK00xLPmeuMPbGnQS/JIzoWxZsA
+         GydE+fmO34VgOZfuNoxIUreAWg7MjMr+1Tr0/CgjeTvSbdQ231/IoNK7KPXA0HA4hFYq
+         Ij7D+sOTqm+9Yaxels4C8t54r+LoDKwgvoKTDcWvkG6lOaPZ69CZy9wdNMAn5p3GVtlA
+         a9WQ==
+X-Gm-Message-State: AOAM532S5KfsYtf/JQWGsPY7IiWO6Jfyw0b+tsonNPPZqxIuRYEVbx+F
+        21XH5uPN7dOxPtnMY+rU+z4x6/7zKAECIBbuMbawlg==
+X-Google-Smtp-Source: ABdhPJyA7aVZZT+npeB4dB88zypsKHi05NxwR3e9rhXfg2LJaLUy+/AlI/f/XPHx1St8ksTEeGzM74ODceLOSrDdJpU=
+X-Received: by 2002:a2e:9ad3:: with SMTP id p19mr13563371ljj.286.1608100137480;
+ Tue, 15 Dec 2020 22:28:57 -0800 (PST)
 MIME-Version: 1.0
-References: <20201201103418.675850-1-masahiroy@kernel.org>
-In-Reply-To: <20201201103418.675850-1-masahiroy@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 16 Dec 2020 15:27:13 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQQwFY75fqfzU4EFJLbTP1KUmAAnL8iJfSMwV7pjhvF+A@mail.gmail.com>
-Message-ID: <CAK7LNAQQwFY75fqfzU4EFJLbTP1KUmAAnL8iJfSMwV7pjhvF+A@mail.gmail.com>
-Subject: Re: [PATCH 1/5] modpost: rename merror() to error()
-To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Cc:     Quentin Perret <qperret@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+References: <20201216002246.3580422-1-dlatypov@google.com>
+In-Reply-To: <20201216002246.3580422-1-dlatypov@google.com>
+From:   David Gow <davidgow@google.com>
+Date:   Wed, 16 Dec 2020 14:28:45 +0800
+Message-ID: <CABVgOSmy7av=7QjGmgELhVDDUtQxJ9Tb5aeNJBNQ5M3VUW80+A@mail.gmail.com>
+Subject: Re: [PATCH] Documentation: kunit: include example of a parameterized test
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Marco Elver <elver@google.com>,
+        Arpitha Raghunandan <98.arpi@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000007adbe905b68efdaf"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 7:34 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> The log function names, warn(), merror(), fatal() are inconsistent.
->
-> Commit 2a11665945d5 ("kbuild: distinguish between errors and warnings
-> in modpost") intentionally chose merror() to avoid the conflict with
-> the library function error(). See man page of error(3).
->
-> But, we are already causing the conflict with warn() because it is also
-> a library function. See man page of warn(3). err() would be a problem
-> for the same reason.
->
-> The common technique to work around name conflicts is to use macros.
->
->     #define error __error
->     void __error(const char *fmt, ...)
->     {
->             <our own implementation>
->     }
->
->     #define warn __warn
->     void __warn(const char *fmt, ...)
->     {
->             <our own implementation>
->     }
->
-> In this way, we can implement our own warn() and error(), still we can
-> include <error.h> and <err.h> with no problem.
->
-> And, commit 93c95e526a4e ("modpost: rework and consolidate logging
-> interface") already did that.
->
-> Since the log functions are all macros, we can use error() without
-> causing "conflicting types" errors.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+--0000000000007adbe905b68efdaf
+Content-Type: text/plain; charset="UTF-8"
 
-This series, applied to linux-kbuild.
-
-
+On Wed, Dec 16, 2020 at 8:23 AM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> Commit fadb08e7c750 ("kunit: Support for Parameterized Testing")
+> introduced support but lacks documentation for how to use it.
+>
+> This patch builds on commit 1f0e943df68a ("Documentation: kunit: provide
+> guidance for testing many inputs") to show a minimal example of the new
+> feature.
+>
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
 > ---
->
->  scripts/mod/modpost.c | 10 +++++-----
->  scripts/mod/modpost.h |  2 +-
->  2 files changed, 6 insertions(+), 6 deletions(-)
->
-> diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-> index f882ce0d9327..337f6ca4bda3 100644
-> --- a/scripts/mod/modpost.c
-> +++ b/scripts/mod/modpost.c
-> @@ -403,8 +403,8 @@ static void sym_update_namespace(const char *symname, const char *namespace)
->          * actually an assertion.
->          */
->         if (!s) {
-> -               merror("Could not update namespace(%s) for symbol %s\n",
-> -                      namespace, symname);
-> +               error("Could not update namespace(%s) for symbol %s\n",
-> +                     namespace, symname);
->                 return;
->         }
->
-> @@ -2226,7 +2226,7 @@ static int check_modname_len(struct module *mod)
->         else
->                 mod_name++;
->         if (strlen(mod_name) >= MODULE_NAME_LEN) {
-> -               merror("module name is too long [%s.ko]\n", mod->name);
-> +               error("module name is too long [%s.ko]\n", mod->name);
->                 return 1;
->         }
->
-> @@ -2319,8 +2319,8 @@ static int add_versions(struct buffer *b, struct module *mod)
->                         continue;
->                 }
->                 if (strlen(s->name) >= MODULE_NAME_LEN) {
-> -                       merror("too long symbol \"%s\" [%s.ko]\n",
-> -                              s->name, mod->name);
-> +                       error("too long symbol \"%s\" [%s.ko]\n",
-> +                             s->name, mod->name);
->                         err = 1;
->                         break;
->                 }
-> diff --git a/scripts/mod/modpost.h b/scripts/mod/modpost.h
-> index 3aa052722233..f453504ad4df 100644
-> --- a/scripts/mod/modpost.h
-> +++ b/scripts/mod/modpost.h
-> @@ -202,5 +202,5 @@ enum loglevel {
->  void modpost_log(enum loglevel loglevel, const char *fmt, ...);
->
->  #define warn(fmt, args...)     modpost_log(LOG_WARN, fmt, ##args)
-> -#define merror(fmt, args...)   modpost_log(LOG_ERROR, fmt, ##args)
-> +#define error(fmt, args...)    modpost_log(LOG_ERROR, fmt, ##args)
->  #define fatal(fmt, args...)    modpost_log(LOG_FATAL, fmt, ##args)
-> --
-> 2.27.0
->
 
+This looks good to me. Thanks!
 
--- 
-Best Regards
-Masahiro Yamada
+Reviewed-by: David Gow <davidgow@google.com>
+
+-- David
+
+--0000000000007adbe905b68efdaf
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIPnAYJKoZIhvcNAQcCoIIPjTCCD4kCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+ggz2MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+6ATY1rl7H5KHpxPHHrSGMEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwgZoGCCsGAQUF
+BwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9nc2F0
+bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNv
+bS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouseLHIb
+0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vY2Ev
+Z3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQCGZt7Kw+clplWDUcyH
+Vga1sfYg4uoC6PbkLullW57eVhnlS6kzSfBa9s7SJDNBFSijZBudxEH2/4o80/bgcOy2885DjBWz
+xIHwcOe7cUxRPfvIjjEWw8xcvUHyf9I1j3BpTmeXOqYIXmqFDtFOBK20+IuUIeel3BQz/ysWBJbX
+06V0h2+mTthoiR9VB7Gs8/Ke0fxNK6KNsqsKqS7s5lxF786QyDGkUvEw+ttoyhY7fL9IHm2HeM5Z
+/7SQGzhj5ZL7KCV+4b11Mu2fEBkPOnUjkh2ltL8irXc2AHkp86iROexPXajhUIqHIXT0aoXUXSTI
+dcl5F5gYy4SVinoF3iPIMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xv
+YmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAyMDIw
+AhABFerwMCZ+gKzahpx3ewIGMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCBGpezK
+0yRjL2mmkMJqoaJAfOQBoo0FbqmsN4TxSJIucDAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwG
+CSqGSIb3DQEJBTEPFw0yMDEyMTYwNjI4NTdaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUDBAEq
+MAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsGCSqG
+SIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEASqTXD1+bncF+hfGltTzrwaPJ
+AoT+MzakJ/MIh1ofXT2Yd0V6dLm5SeVpcfiCUI/5YGubh5Lkj/hfP79TQTjGY8/S86xztGUaJH2r
+1gtizoOvCxYRP17CZqt9VjI0iew8r1c4e5eTV4ej/j9gHECD9UHwTcg8F3cAd8P77+mpwNVaszmQ
+3I4xhOg2BW+5m6AcavT8c2yYET5A6h2th6fzDYGfLfJaOLwR5bIEUw2o6FQ4+a/RDs1aiLI5ImMq
+jCiM6EfHrVqpS7QfsA/DMEndNYANNR0i56sh/qblVMwZyVR/bJtTr4Kyi9DwGUtZk0eSjUMtE3fj
+yPxDyTyju0gBUQ==
+--0000000000007adbe905b68efdaf--
