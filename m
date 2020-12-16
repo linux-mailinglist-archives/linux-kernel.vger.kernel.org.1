@@ -2,82 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F0312DC574
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 18:39:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77E422DC57F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 18:42:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727250AbgLPRjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 12:39:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727242AbgLPRjg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 12:39:36 -0500
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5D54C06179C;
-        Wed, 16 Dec 2020 09:38:55 -0800 (PST)
-Received: by mail-vs1-xe2c.google.com with SMTP id s85so13397953vsc.3;
-        Wed, 16 Dec 2020 09:38:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ivcK08caZZpoN1ZixfR4m9AZkXskR+IDVI5I3mZZ1W0=;
-        b=Q2WhlXpSOrFAkTIkgLomhRbAzVNJqXIUKy94qMUMY36tCt+P6iNHZKbt/cVcgoYXJC
-         t3T3ZnnwH5Al6wB6BFQ+1WTKkSfqdT06cn4Fm3K4ngN0bJX9vvtEu4gar1QKoYnwSKhe
-         KheBc3UDbmplodeawzH8TtMN9qepBrwI+vwkXobEdD95X5TjyUAfJs4+53Ru7/LslhLZ
-         uXwz9hEtXIsL7WmhZCWSsMs20Ek5QE57Oiq4nrabuIgfmH2YhmKzo02OcDfe5mj+cYaO
-         DxIkrv0Jkm2I9yY1YIuAYA8I85NfbLlFhYdtjra7Ke6Lu4o2QYnV8K+V99vw/CIYTfmn
-         xc3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ivcK08caZZpoN1ZixfR4m9AZkXskR+IDVI5I3mZZ1W0=;
-        b=kD7FY0G5VnzbHy7iR0jnl21Jx6+stktrq6qHuYlr7QjHtSjMrteYS7I4abAdcVV2aW
-         e9+cnDibVjgJyu26WTdnsBjfK/R2o/zw2EX1mOaWd13NeVjZQAX4PnaJaY0nG2dkizBM
-         0eE1ZRJqQL00Go3k0Mdfhn6scUHsCPcxF4a0Yw2Ovihz/+p2GMkO3CpWAj299VfwawgH
-         s4QcZ1I/CPm9JoErWguR0x0gFFWSkNN0jKDCaCRmqvr+r/NxWQoSw9Ej9DG4h7CgKF/D
-         kh0or3/LWkerjMaX2q2VN3IHPKF99JnyJvrAxaXxfcPtvO8XBrjElycFKxDnsGDBKrRp
-         kcEg==
-X-Gm-Message-State: AOAM533fPDY1Erx7QLbwyDLh2sTVD2TRjiLKTxUSsyyY1zddl1UrnyLp
-        R3/Decied3iFWdnbnFLIICd+fE+LuyPQrLq4M+yMNdvmbrk=
-X-Google-Smtp-Source: ABdhPJwMPTgBMnfNCuaCTKzi+sbAcAtDhCA5OB3Cih3KNZ+T+fXP4wmG9GCoVvDZ53HAtUnRf4jTwdTDsDjszoMOJKs=
-X-Received: by 2002:a67:507:: with SMTP id 7mr26156541vsf.42.1608140334981;
- Wed, 16 Dec 2020 09:38:54 -0800 (PST)
+        id S1727479AbgLPRmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 12:42:15 -0500
+Received: from foss.arm.com ([217.140.110.172]:37754 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727451AbgLPRmP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 12:42:15 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 15F541FB;
+        Wed, 16 Dec 2020 09:41:29 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3AE3E3F66E;
+        Wed, 16 Dec 2020 09:41:27 -0800 (PST)
+References: <cover.1607036601.git.reinette.chatre@intel.com> <jhjk0tot6jg.mognet@arm.com> <07ccc96d-a875-af0e-5169-24b1f84c46da@intel.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+Cc:     tglx@linutronix.de, fenghua.yu@intel.com, bp@alien8.de,
+        tony.luck@intel.com, kuo-lang.tseng@intel.com, shakeelb@google.com,
+        mingo@redhat.com, babu.moger@amd.com, james.morse@arm.com,
+        hpa@zytor.com, x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] x86/resctrl: Fix a few issues in moving a task to a resource group
+In-reply-to: <07ccc96d-a875-af0e-5169-24b1f84c46da@intel.com>
+Date:   Wed, 16 Dec 2020 17:41:22 +0000
+Message-ID: <jhj3605tzr1.mognet@arm.com>
 MIME-Version: 1.0
-References: <20201215161954.5950-1-TheSven73@gmail.com> <20201216090316.1c273267@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201216090316.1c273267@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Wed, 16 Dec 2020 12:38:43 -0500
-Message-ID: <CAGngYiUCpMoROFCXaE+Mkaf-EnWa_WT3a1mo1g+hK+TNYEFZHg@mail.gmail.com>
-Subject: Re: [PATCH net v4] lan743x: fix rx_napi_poll/interrupt ping-pong
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Bryan Whitehead <bryan.whitehead@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        David S Miller <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Eric Dumazet <edumazet@google.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jakub,
 
-On Wed, Dec 16, 2020 at 12:03 PM Jakub Kicinski <kuba@kernel.org> wrote:
+On 14/12/20 18:38, Reinette Chatre wrote:
+>> Thinking a bit more (too much?) about it, we could limit ourselves to
+>> wrapping only reads not protected by the rdtgroup_mutex: the only two
+>> task_struct {closid, rmid} writers are
+>> - rdtgroup_move_task()
+>> - rdt_move_group_tasks()
+>> and they are both invoked while holding said mutex. Thus, a reader holding
+>> the mutex cannot race with a write, so load tearing ought to be safe.
 >
-> Applied, thanks Sven.
+> The reads that are not protected by the rdtgroup_mutex can be found in
+> __resctrl_sched_in(). It thus sounds to me like your proposed changes to
+> this function found in your patch [1] is what is needed?
+
+Right.
+
+> It is not clear
+> to me how the pairing would work in this case though. If I understand
+> correctly the goal is for the  write to the closid/rmid in the functions
+> you mention above to be paired with the reads in resctrl_sched_in() and
+> it is not clear how adding a single READ_ONCE would accomplish this
+> pairing by itself.
 >
-> I'll leave it out of our stable submission, and expect Sasha's
-> autoselection bot to pick it up. This should give us more time
-> for testing before the patch makes its way to stable trees.
-> Let's see how this idea works out for us in practice.
 
-Thank you !
+So all the writes would need WRITE_ONCE(), but not all reads would require
+a READ_ONCE() (those that can't race with writes shouldn't need them).
 
-While I believe that this patch is sound, I can also understand
-your caution: it's not a simple bug-fix, and I also don't
-have the opportunity to test this on x86.
+I'll go and update that patch so that you can bundle it with v2 of this
+series.
+
+> It is also not entirely clear to me what the problematic scenario could
+> be. If I understand correctly, the risk is (as you explained in your
+> commit message), that a CPU could have its {closid, rmid} fields read
+> locally (resctrl_sched_in()) while they are concurrently being written
+> to from another CPU (in rdtgroup_move_task() and rdt_move_group_tasks()
+> as you state above). If this happens then a task being moved may be
+> scheduled in with its old closid/rmid.
+
+Worse, it may be scheduled with a mangled closid/rmid if the read in
+resctrl_sched_in() is torn (i.e. compiled as a sequence of multiple
+smaller-sized loads). This one of the things READ_ONCE() / WRITE_ONCE()
+try to address.
+
+> The update of closid/rmid in
+> rdtgroup_move_task()/rdt_move_group_tasks() is followed by
+> smp_call_function_xx() where the registers are updated with preemption
+> disabled and thus protected against __switch_to. If a task was thus
+> incorrectly scheduled in with old closid/rmid, would it not be corrected
+> at this point?
+>
+
+Excluding load/store tearing, then yes, the above works fine.
+
+> Thank you
+>
+> Reinette
+>
+>
+> [1]
+> https://lore.kernel.org/lkml/20201123022433.17905-4-valentin.schneider@arm.com/
