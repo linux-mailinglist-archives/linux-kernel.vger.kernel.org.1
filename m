@@ -2,206 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE4E2DBBCA
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 08:03:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D522DBBCF
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 08:05:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725901AbgLPHCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 02:02:19 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36638 "EHLO mx2.suse.de"
+        id S1725968AbgLPHEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 02:04:52 -0500
+Received: from mga07.intel.com ([134.134.136.100]:18954 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725769AbgLPHCT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 02:02:19 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1608102092; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7hLPFvKf0KQ27daJnHMmIn6IkafDM/HKPtdm/WK3604=;
-        b=DgJMjfvVtLQrPPlGp7CIbNRypFymSBqQzHQ6whX/d5Ra5ZVv7ui2d8Jll/j54vb3lSx6LQ
-        PhlUhpLghfaejmbh9K30IdcMMKoYg0ZydYNxGc+kZqljep9GQaJ5htAX3awTbCo1FOK62+
-        ru1FMTj1DRPHMa3g1dwuo7L7nGMDlMo=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 325C3AD18;
-        Wed, 16 Dec 2020 07:01:32 +0000 (UTC)
-Subject: Re: [PATCH 0/2] Remove Xen PVH dependency on PCI
-To:     Jason Andryuk <jandryuk@gmail.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org
-Cc:     "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-References: <20201014175342.152712-1-jandryuk@gmail.com>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <5aa9a54c-207e-6cf6-7fbb-37782c016161@suse.com>
-Date:   Wed, 16 Dec 2020 08:01:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <20201014175342.152712-1-jandryuk@gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="BsaiQXjF7kB1T2vSWMShDAGTM0x5njbvC"
+        id S1725951AbgLPHEw (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 02:04:52 -0500
+IronPort-SDR: qIjE2qitZNLw1Z27kUBu/KeIjXesWb3J01eNtMM7pWZyvYY7j92VXM0eYsFlLFUAns6Jyj8Zoz
+ FI2l8cbBGvMA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9836"; a="239113897"
+X-IronPort-AV: E=Sophos;i="5.78,423,1599548400"; 
+   d="scan'208";a="239113897"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 23:03:05 -0800
+IronPort-SDR: okn4Mi24VcvQfo5Vdb1oLnNHNuI4rdXbz5ACQRJrafDv4/WljHRf+BLHrAqMLZsCskdhcyY7RL
+ /iMIJXqfcQfQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,423,1599548400"; 
+   d="scan'208";a="559632470"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
+  by fmsmga005.fm.intel.com with ESMTP; 15 Dec 2020 23:03:02 -0800
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH] perf stat: Fix wrong skipping for per-die aggregation
+Date:   Wed, 16 Dec 2020 15:01:46 +0800
+Message-Id: <20201216070146.11769-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---BsaiQXjF7kB1T2vSWMShDAGTM0x5njbvC
-Content-Type: multipart/mixed; boundary="u1wK4B18JdUdPmsfAj57AHy2IhYDrXhYt";
- protected-headers="v1"
-From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-To: Jason Andryuk <jandryuk@gmail.com>,
- Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- Stefano Stabellini <sstabellini@kernel.org>, xen-devel@lists.xenproject.org
-Cc: "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Message-ID: <5aa9a54c-207e-6cf6-7fbb-37782c016161@suse.com>
-Subject: Re: [PATCH 0/2] Remove Xen PVH dependency on PCI
-References: <20201014175342.152712-1-jandryuk@gmail.com>
-In-Reply-To: <20201014175342.152712-1-jandryuk@gmail.com>
+Uncore becomes die-scope on Xeon Cascade Lake-AP and perf has supported
+--per-die aggregation yet.
 
---u1wK4B18JdUdPmsfAj57AHy2IhYDrXhYt
-Content-Type: multipart/mixed;
- boundary="------------C4653AF006164DD645B3036F"
-Content-Language: en-US
+One issue is found in check_per_pkg() for uncore events running on
+AP system. On cascade Lake-AP, we have:
 
-This is a multi-part message in MIME format.
---------------C4653AF006164DD645B3036F
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+S0-D0
+S0-D1
+S1-D0
+S1-D1
 
-On 14.10.20 19:53, Jason Andryuk wrote:
-> A Xen PVH domain doesn't have a PCI bus or devices, so it doesn't need
-> PCI support built in.  Currently, XEN_PVH depends on XEN_PVHVM which
-> depends on PCI.
->=20
-> The first patch introduces XEN_PVHVM_GUEST as a toplevel item and
-> changes XEN_PVHVM to a hidden variable.  This allows XEN_PVH to depend
-> on XEN_PVHVM without PCI while XEN_PVHVM_GUEST depends on PCI.
->=20
-> The second patch moves XEN_512GB to clean up the option nesting.
->=20
-> Jason Andryuk (2):
->    xen: Remove Xen PVH/PVHVM dependency on PCI
->    xen: Kconfig: nest Xen guest options
->=20
->   arch/x86/xen/Kconfig | 38 ++++++++++++++++++++++----------------
->   drivers/xen/Makefile |  2 +-
->   2 files changed, 23 insertions(+), 17 deletions(-)
->=20
+But in check_per_pkg(), S0-D1 and S1-D1 are skipped because the
+mask bits for S0 and S1 have been set for S0-D0 and S1-D0. It doesn't
+check die_id. So the counting for S0-D1 and S1-D1 are set to zero.
+That's not correct.
 
-Series applied to: xen/tip.git for-linus-5.11
+root@lkp-csl-2ap4 ~# ./perf stat -a -I 1000 -e llc_misses.mem_read --per-die -- sleep 5
+     1.001460963 S0-D0           1            1317376 Bytes llc_misses.mem_read
+     1.001460963 S0-D1           1             998016 Bytes llc_misses.mem_read
+     1.001460963 S1-D0           1             970496 Bytes llc_misses.mem_read
+     1.001460963 S1-D1           1            1291264 Bytes llc_misses.mem_read
+     2.003488021 S0-D0           1            1082048 Bytes llc_misses.mem_read
+     2.003488021 S0-D1           1            1919040 Bytes llc_misses.mem_read
+     2.003488021 S1-D0           1             890752 Bytes llc_misses.mem_read
+     2.003488021 S1-D1           1            2380800 Bytes llc_misses.mem_read
+     3.005613270 S0-D0           1            1126080 Bytes llc_misses.mem_read
+     3.005613270 S0-D1           1            2898176 Bytes llc_misses.mem_read
+     3.005613270 S1-D0           1             870912 Bytes llc_misses.mem_read
+     3.005613270 S1-D1           1            3388608 Bytes llc_misses.mem_read
+     4.007627598 S0-D0           1            1124608 Bytes llc_misses.mem_read
+     4.007627598 S0-D1           1            3884416 Bytes llc_misses.mem_read
+     4.007627598 S1-D0           1             921088 Bytes llc_misses.mem_read
+     4.007627598 S1-D1           1            4451840 Bytes llc_misses.mem_read
+     5.001479927 S0-D0           1             963328 Bytes llc_misses.mem_read
+     5.001479927 S0-D1           1            4831936 Bytes llc_misses.mem_read
+     5.001479927 S1-D0           1             895104 Bytes llc_misses.mem_read
+     5.001479927 S1-D1           1            5496640 Bytes llc_misses.mem_read
 
+From above output, we can see S0-D1 and S1-D1 don't report the interval
+values, they are continued to grow. That's because check_per_pkg() wrongly
+decides to use zero counts for S0-D1 and S1-D1.
 
-Juergen
+So in check_per_pkg(), we should use a pair of die_id + socket_id to
+decide if this cpu counts needs to skip. Only considering socket_id is
+not enough.
 
---------------C4653AF006164DD645B3036F
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+Now with this patch,
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+root@lkp-csl-2ap4 ~# ./perf stat -a -I 1000 -e llc_misses.mem_read --per-die -- sleep 5
+     1.001622560 S0-D0           1            1210176 Bytes llc_misses.mem_read
+     1.001622560 S0-D1           1             950208 Bytes llc_misses.mem_read
+     1.001622560 S1-D0           1             968704 Bytes llc_misses.mem_read
+     1.001622560 S1-D1           1            1113280 Bytes llc_misses.mem_read
+     2.004399430 S0-D0           1            1258560 Bytes llc_misses.mem_read
+     2.004399430 S0-D1           1            1011008 Bytes llc_misses.mem_read
+     2.004399430 S1-D0           1            1036544 Bytes llc_misses.mem_read
+     2.004399430 S1-D1           1            1237376 Bytes llc_misses.mem_read
+     3.006535657 S0-D0           1            1036608 Bytes llc_misses.mem_read
+     3.006535657 S0-D1           1             906560 Bytes llc_misses.mem_read
+     3.006535657 S1-D0           1             994112 Bytes llc_misses.mem_read
+     3.006535657 S1-D1           1            1025472 Bytes llc_misses.mem_read
+     4.008934402 S0-D0           1            1005120 Bytes llc_misses.mem_read
+     4.008934402 S0-D1           1             882368 Bytes llc_misses.mem_read
+     4.008934402 S1-D0           1             961408 Bytes llc_misses.mem_read
+     4.008934402 S1-D1           1             988352 Bytes llc_misses.mem_read
+     5.001605406 S0-D0           1            1930240 Bytes llc_misses.mem_read
+     5.001605406 S0-D1           1            1134272 Bytes llc_misses.mem_read
+     5.001605406 S1-D0           1            1531136 Bytes llc_misses.mem_read
+     5.001605406 S1-D1           1            2230848 Bytes llc_misses.mem_read
 
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
+On no-die system, die_id is 0, this patch keeps original behavior unchanged.
 
---------------C4653AF006164DD645B3036F--
+Reported-by: Huang Ying <ying.huang@intel.com>
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+---
+ tools/perf/util/cpumap.h |  2 ++
+ tools/perf/util/stat.c   | 21 +++++++++++++++++----
+ 2 files changed, 19 insertions(+), 4 deletions(-)
 
---u1wK4B18JdUdPmsfAj57AHy2IhYDrXhYt--
+diff --git a/tools/perf/util/cpumap.h b/tools/perf/util/cpumap.h
+index 3a442f021468..58604c047121 100644
+--- a/tools/perf/util/cpumap.h
++++ b/tools/perf/util/cpumap.h
+@@ -7,6 +7,8 @@
+ #include <internal/cpumap.h>
+ #include <perf/cpumap.h>
+ 
++#define CPU_MAP_MAX_DIE	256
++
+ struct perf_record_cpu_map_data;
+ 
+ struct perf_cpu_map *perf_cpu_map__empty_new(int nr);
+diff --git a/tools/perf/util/stat.c b/tools/perf/util/stat.c
+index 1e125e39ff84..b3fc6e261fe0 100644
+--- a/tools/perf/util/stat.c
++++ b/tools/perf/util/stat.c
+@@ -282,9 +282,9 @@ static void zero_per_pkg(struct evsel *counter)
+ static int check_per_pkg(struct evsel *counter,
+ 			 struct perf_counts_values *vals, int cpu, bool *skip)
+ {
+-	unsigned long *mask = counter->per_pkg_mask;
++	unsigned long *mask = counter->per_pkg_mask, *l;
+ 	struct perf_cpu_map *cpus = evsel__cpus(counter);
+-	int s;
++	int s, d;
+ 
+ 	*skip = false;
+ 
+@@ -295,7 +295,7 @@ static int check_per_pkg(struct evsel *counter,
+ 		return 0;
+ 
+ 	if (!mask) {
+-		mask = zalloc(cpu__max_cpu());
++		mask = zalloc(cpu__max_cpu() * CPU_MAP_MAX_DIE);
+ 		if (!mask)
+ 			return -ENOMEM;
+ 
+@@ -317,7 +317,20 @@ static int check_per_pkg(struct evsel *counter,
+ 	if (s < 0)
+ 		return -1;
+ 
+-	*skip = test_and_set_bit(s, mask) == 1;
++	d = cpu_map__get_die(cpus, cpu, NULL);
++	if (d < 0)
++		return -1;
++
++	/*
++	 * On multi-die system, die_id < 256. We use a pair
++	 * of socket + die to identify the used bit.
++	 * On no-die system, die_id is 0, l = &mask[0]. It doesn't
++	 * change original "test_and_set_bit(s, mask)" behavior.
++	 */
++	d &= 0xff;
++	l = &mask[d];
++
++	*skip = test_and_set_bit(s, l) == 1;
+ 	return 0;
+ }
+ 
+-- 
+2.17.1
 
---BsaiQXjF7kB1T2vSWMShDAGTM0x5njbvC
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAl/ZsMsFAwAAAAAACgkQsN6d1ii/Ey/A
-4gf9ESVC95o0zgF1KYkEqsfbAijfO6wWfJ+jEUzU+qL0rSkdsxXW3J9tfeRQTAdZAhaEro4hg3B2
-QMHD5XpFjgwc+NLftcpf3S3a3hR4giHmttHDF8rnc7PaaMZLuDJyJ2ZbRp4jGROg+iOKYfghyzS3
-MIzbQUp3tH/cWhCY5kctQkpb3r1rEr6axWtThSXxAdysRLG08f9Mw7ShO0Y1NQ537VRIWjSSRMXE
-soYapjCPRZ/nRQWpvpe0bSFRTHOQszD6EBh4f6RZEgSZRb7LCEwuJKTeXrO5ESrnowNJNox2Gyus
-bNeru9g3AjpYJa2tltvb0SrIjQuotZlbBOoFriCplA==
-=Z21z
------END PGP SIGNATURE-----
-
---BsaiQXjF7kB1T2vSWMShDAGTM0x5njbvC--
