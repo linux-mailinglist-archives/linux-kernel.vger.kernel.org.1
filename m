@@ -2,82 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F421C2DB805
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:55:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B42482DB807
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:57:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726018AbgLPAzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 19:55:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55966 "EHLO
+        id S1726323AbgLPA4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 19:56:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725275AbgLPAzh (ORCPT
+        with ESMTP id S1726190AbgLPA4H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 19:55:37 -0500
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA746C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 16:54:56 -0800 (PST)
-Received: by mail-io1-xd43.google.com with SMTP id t8so22367947iov.8
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 16:54:56 -0800 (PST)
+        Tue, 15 Dec 2020 19:56:07 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C99F0C061793
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 16:55:26 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id m25so44113750lfc.11
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 16:55:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6ZtJqbgGcAblNJKpwbS3K6/u1SXDXbpWZAiwdGSMCSg=;
-        b=Xy2Mg3RLj4cox03P2zL9aaeEiQo4rPz366y9A1Uw1sVBWPdsCfaE9XzzcbV2qqiWHl
-         DgL3h7ocEauz5GltUn1Gxnz+EFdB2Bi6vdBhnE5bJqUwZOYA9wgAXM0zP9RoLXN9t3T1
-         udYKALRDu3PAkUK/6RMUtSUF4IyjKN7pCADFvKfofTHnONSFrDvzkyW62Lpd3g1cQDSB
-         dqCAiMfsK134v0EnTGYCmirzbW1gb+vNGV7jU/Y+N8u0M0pYZXQIK7mttoWUTPGVGdsy
-         s40vgWLX+byl2IVeXCYfTjjHmIHU3RTiCtWTb2cmn90SUt2E4LRwsTk4nMFEOgDZVfa+
-         xRlQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uQk7Me9L6JQEViwMKHK4s1W79BskuSvqSCotSZKyK7s=;
+        b=Rdv6r1sJKTWN/kV8kd4ZFiG+HqLd4HL5W/5psvTlYYi+13FaL+oNKTG5usrScHYBxb
+         LE9leDS+K9oYxrG3Ihj01Nwoeov3emncoTT1wM9oh+i4Ln1pGRIdQNgmgUPqPniGK9pa
+         IN3Mf7/Q0KAV7olZl10qnGo7UyDJKrEwLudZ4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6ZtJqbgGcAblNJKpwbS3K6/u1SXDXbpWZAiwdGSMCSg=;
-        b=jmfksRGkam4H2+jqRtrbPDWWvcobuwT4tpZZBqWOzwk/6uOcivnYq21p6p7Wx0fQJo
-         hflSdD1AmBBVC8PHU8FFXJJh72IM5t8L+3zn9mHCRekm3+MTwmlVx/WwwkR/3sQXfhgg
-         xmL+lQASRz+HKkUvp25AElXbrQDwiWIPvi7WTszmPEzBRsV9zL2M2OueKCNWohobglgt
-         Pm7VEWMfMpdzCzne/LJcPrN7kVxQ4lJYx+atcAGGcpdcJ8aWup1sT2x7yxrU3jvtnw7p
-         euk+EuGtujBAAEZPJJqy37mZKXe27AIYuiP15T0gT4HNuIAaLwMvZFVyahdoSMcUzUve
-         viRg==
-X-Gm-Message-State: AOAM533FJPXmfqy2zjDojpsJQuVpgJOjtyKSlRm4OZoobhrY1iOfemyx
-        SsPMYoOic5N5+bqDISjlJnTCRQ==
-X-Google-Smtp-Source: ABdhPJyP8I7tgzzXbJLVToXhgBExxn8NrvHnma47sZvIFSUx0ZUEqxZQBxv8iGUm9mCUG4Is4z4gvg==
-X-Received: by 2002:a02:3907:: with SMTP id l7mr42148584jaa.0.1608080096185;
-        Tue, 15 Dec 2020 16:54:56 -0800 (PST)
-Received: from google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
-        by smtp.gmail.com with ESMTPSA id 12sm119037ily.42.2020.12.15.16.54.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 16:54:55 -0800 (PST)
-Date:   Tue, 15 Dec 2020 17:54:51 -0700
-From:   Yu Zhao <yuzhao@google.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 07/11] mm: VM_BUG_ON lru page flags
-Message-ID: <X9la29qelClATtpP@google.com>
-References: <20201207220949.830352-1-yuzhao@google.com>
- <20201207220949.830352-8-yuzhao@google.com>
- <20201207222429.GC7338@casper.infradead.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uQk7Me9L6JQEViwMKHK4s1W79BskuSvqSCotSZKyK7s=;
+        b=D9ig29G+Xr+R5vnP0P+yrTFRZE526eqqGq53220a/4DsU46YFBC6ivgZXejKttv3C7
+         elwElgSlpEtONl0jbQkZCJ4eVey1lswuJU5DBVmUoiUr7WnO1Xh/VggYaSdJCozfd/Qw
+         ZsWdMMsfpscEi8DknwCF8cPOhIi0x5qpOOvFgHmE2QOjmqg+vHXGoOiojNjQaGevNDfT
+         aVPCiDUb/NXbs6iWIS3PrpeeNwlpi7meRJD2QLF99BomG1DFVLZksoLgGRVZ616YCTlQ
+         C27DJdUbwSUAvHjCcfVOdJpco/SRvZrLbkhbcFNbUcABvI1p6ZbAdGasUkF5JRP9VS9k
+         dFqw==
+X-Gm-Message-State: AOAM5322hczCgH4m+0qJJPyjcJS13Gj1PMjR39sDaETr3wDYD/0bJ7W2
+        RqtXdjL7e8/0Kii1DeOqfZLV9FSHWZbiiw==
+X-Google-Smtp-Source: ABdhPJyBXi4Y4ww7ojYeUsVIiJaxDI8TcpgjDZfJsrLgPtQXtzhCYbdUWCZ8JIVjyT3Jn8WvfXNOpA==
+X-Received: by 2002:a19:2247:: with SMTP id i68mr11939070lfi.613.1608080124786;
+        Tue, 15 Dec 2020 16:55:24 -0800 (PST)
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
+        by smtp.gmail.com with ESMTPSA id z23sm27334lfi.1.2020.12.15.16.55.22
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Dec 2020 16:55:23 -0800 (PST)
+Received: by mail-lf1-f51.google.com with SMTP id a9so44155695lfh.2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 16:55:22 -0800 (PST)
+X-Received: by 2002:a2e:9d89:: with SMTP id c9mr14176203ljj.220.1608080122327;
+ Tue, 15 Dec 2020 16:55:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201207222429.GC7338@casper.infradead.org>
+References: <feef4f9a-4ed8-8a2e-d330-88e7f516faae@gmail.com>
+ <b416e106-c11d-1471-de3d-fb9d5b1b6747@softwarecrafters.com>
+ <223477a0-0b92-3a01-46bb-c06f7d5d5901@gmail.com> <0df0ac9e-e881-88c7-cea9-5154077c95a9@gmail.com>
+In-Reply-To: <0df0ac9e-e881-88c7-cea9-5154077c95a9@gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 15 Dec 2020 16:55:06 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whppaJf=UoODaUP=tBjc9FjwSOX3hLBhZRgaGQKSKVW4A@mail.gmail.com>
+Message-ID: <CAHk-=whppaJf=UoODaUP=tBjc9FjwSOX3hLBhZRgaGQKSKVW4A@mail.gmail.com>
+Subject: Re: [Bug 210655] ptrace.2: documentation is incorrect about access
+ checking threads in same thread group
+To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Cc:     Ted Estes <ted@softwarecrafters.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Oleg Nesterov <oleg@tv-sign.ru>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Kees Cook <keescook@chromium.org>, Jann Horn <jann@thejh.net>,
+        linux-man <linux-man@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Markus Gutschke <markus@google.com>,
+        Roland McGrath <roland@redhat.com>,
+        Andreas Hobein <ah2@delair.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 10:24:29PM +0000, Matthew Wilcox wrote:
-> On Mon, Dec 07, 2020 at 03:09:45PM -0700, Yu Zhao wrote:
-> > Move scattered VM_BUG_ONs to two essential places that cover all
-> > lru list additions and deletions.
-> 
-> I'd like to see these converted into VM_BUG_ON_PGFLAGS so you have
-> to take that extra CONFIG step to enable checking them.
+On Tue, Dec 15, 2020 at 2:48 PM Alejandro Colomar (man-pages)
+<alx.manpages@gmail.com> wrote:
+>
+> 1) Remove that paragraph, as if that behavior had never existed.
 
-Right. I'll make sure it won't slip my mind again in v2.
+If it's been 15 years since that paragraph was relevant, I think just
+removing it is the right thing to do.
+
+             Linus
