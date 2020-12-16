@@ -2,79 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF33D2DC84A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 22:25:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF5A2DC852
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 22:28:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726492AbgLPVYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 16:24:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725966AbgLPVYj (ORCPT
+        id S1726132AbgLPV1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 16:27:35 -0500
+Received: from mail109.syd.optusnet.com.au ([211.29.132.80]:43700 "EHLO
+        mail109.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725601AbgLPV1f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 16:24:39 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 406DCC06179C
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 13:23:59 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1608153837;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CD16dqcpUQKgPHdjRPxV49zv42Pzi+VzliQWGRIcOig=;
-        b=Ub79IKit15RTidyWUv8Baw+gzGr16YVFpOAJYNYJYpcP31+3cDwOqhsw2K627j1h9eB4GR
-        AijKH7ZN66d2Zzx8uV9BadaibM/uFX7h3nuF+HgQJsnF1iD7OjDEbHlIK+uRpYlSdAPzBX
-        uC6A2CTZqgNASCcsi/+yeANejrFr0M41QNqile2Ic/UTkSlCGHVro15P7pUnujEikTznmj
-        b1UhWNffTZSZOTPtOOhdmFeZUr4OHbGmcHpRA5dxaq2m3jJ/6Jhd0VWpFek0jGwpyNvi/U
-        7wEfnRWgeV9H93Iz8COTQN/WTZY165A8nA8MAwnZUQJvzF1+y9UoI394lDK4Iw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1608153837;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CD16dqcpUQKgPHdjRPxV49zv42Pzi+VzliQWGRIcOig=;
-        b=CkPhA/jVIBdYmM5JCZCqTEyofHJZe/vHpvWQqgv/pPq7LCxUf6w9v42sFICL2cEcoKJJTW
-        kjpWYIgfWRuhqrDA==
-To:     paulmck@kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Marco Elver <elver@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        syzbot+23a256029191772c2f02@syzkaller.appspotmail.com,
-        syzbot+56078ac0b9071335a745@syzkaller.appspotmail.com,
-        syzbot+867130cb240c41f15164@syzkaller.appspotmail.com
-Subject: Re: [patch 3/3] tick: Annotate tick_do_timer_cpu data races
-In-Reply-To: <20201216211931.GL2657@paulmck-ThinkPad-P72>
-References: <20201206211253.919834182@linutronix.de> <20201206212002.876987748@linutronix.de> <20201207120943.GS3021@hirez.programming.kicks-ass.net> <87y2i94igo.fsf@nanos.tec.linutronix.de> <CANpmjNNQiTbnkkj+ZHS5xxQuQfnWN_JGwSnN-_xqfa=raVrXHQ@mail.gmail.com> <20201207194406.GK2657@paulmck-ThinkPad-P72> <20201208081129.GQ2414@hirez.programming.kicks-ass.net> <20201208150309.GP2657@paulmck-ThinkPad-P72> <873606tx1c.fsf@nanos.tec.linutronix.de> <20201216211931.GL2657@paulmck-ThinkPad-P72>
-Date:   Wed, 16 Dec 2020 22:23:57 +0100
-Message-ID: <87czz9savm.fsf@nanos.tec.linutronix.de>
+        Wed, 16 Dec 2020 16:27:35 -0500
+Received: from dread.disaster.area (pa49-179-6-140.pa.nsw.optusnet.com.au [49.179.6.140])
+        by mail109.syd.optusnet.com.au (Postfix) with ESMTPS id 66BF9D7FD6B;
+        Thu, 17 Dec 2020 08:26:49 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1kpeJs-004h5o-Hy; Thu, 17 Dec 2020 08:26:48 +1100
+Date:   Thu, 17 Dec 2020 08:26:48 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-raid@vger.kernel.org,
+        darrick.wong@oracle.com, dan.j.williams@intel.com, hch@lst.de,
+        song@kernel.org, rgoldwyn@suse.de, qi.fuli@fujitsu.com,
+        y-goto@fujitsu.com
+Subject: Re: [RFC PATCH v3 4/9] mm, fsdax: Refactor memory-failure handler
+ for dax mapping
+Message-ID: <20201216212648.GN632069@dread.disaster.area>
+References: <20201215121414.253660-1-ruansy.fnst@cn.fujitsu.com>
+ <20201215121414.253660-5-ruansy.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201215121414.253660-5-ruansy.fnst@cn.fujitsu.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=Ubgvt5aN c=1 sm=1 tr=0 cx=a_idp_d
+        a=uDU3YIYVKEaHT0eX+MXYOQ==:117 a=uDU3YIYVKEaHT0eX+MXYOQ==:17
+        a=kj9zAlcOel0A:10 a=zTNgK-yGK50A:10 a=omOdbC7AAAAA:8 a=7-415B0cAAAA:8
+        a=eyTjK9YyoW615e0u8fsA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16 2020 at 13:19, Paul E. McKenney wrote:
-> On Wed, Dec 16, 2020 at 01:27:43AM +0100, Thomas Gleixner wrote:
->> So my intent was to document that this code does not care about anything
->> else than what I'd consider to be plain compiler bugs.
->> 
->> My conclusion might be wrong as usual :)
->
-> Given that there is no optimization potential, then the main reason to use
-> data_race() instead of *_ONCE() is to prevent KCSAN from considering the
-> accesses when looking for data races.  But that is mostly for debugging
-> accesses, in cases when these accesses are not really part of the
-> concurrent algorithm.
->
-> So if I understand the situation correctly, I would be using *ONCE().
+On Tue, Dec 15, 2020 at 08:14:09PM +0800, Shiyang Ruan wrote:
+> The current memory_failure_dev_pagemap() can only handle single-mapped
+> dax page for fsdax mode.  The dax page could be mapped by multiple files
+> and offsets if we let reflink feature & fsdax mode work together.  So,
+> we refactor current implementation to support handle memory failure on
+> each file and offset.
+> 
+> Signed-off-by: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+> ---
+.....
+>  static const char *action_name[] = {
+> @@ -1147,6 +1148,60 @@ static int try_to_split_thp_page(struct page *page, const char *msg)
+>  	return 0;
+>  }
+>  
+> +int mf_dax_mapping_kill_procs(struct address_space *mapping, pgoff_t index, int flags)
+> +{
+> +	const bool unmap_success = true;
+> +	unsigned long pfn, size = 0;
+> +	struct to_kill *tk;
+> +	LIST_HEAD(to_kill);
+> +	int rc = -EBUSY;
+> +	loff_t start;
+> +	dax_entry_t cookie;
+> +
+> +	/*
+> +	 * Prevent the inode from being freed while we are interrogating
+> +	 * the address_space, typically this would be handled by
+> +	 * lock_page(), but dax pages do not use the page lock. This
+> +	 * also prevents changes to the mapping of this pfn until
+> +	 * poison signaling is complete.
+> +	 */
+> +	cookie = dax_lock(mapping, index, &pfn);
+> +	if (!cookie)
+> +		goto unlock;
 
-Could this be spelled out somewhere in Documentation/ please?
+Why do we need to prevent the inode from going away here? This
+function gets called by XFS after doing an xfs_iget() call to grab
+the inode that owns the block. Hence the the inode (and the mapping)
+are guaranteed to be referenced and can't go away. Hence for the
+filesystem based callers, this whole "dax_lock()" thing can go away.
 
-Thanks,
+So, AFAICT, the dax_lock() stuff is only necessary when the
+filesystem can't be used to resolve the owner of physical page that
+went bad....
 
-        tglx
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
