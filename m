@@ -2,116 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3F532DC514
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 18:11:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F892DC520
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 18:15:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727053AbgLPRKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 12:10:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726918AbgLPRKg (ORCPT
+        id S1727009AbgLPRPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 12:15:13 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:42806 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726745AbgLPRPN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 12:10:36 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 122C7C061794;
-        Wed, 16 Dec 2020 09:09:56 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id s26so15526567lfc.8;
-        Wed, 16 Dec 2020 09:09:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OX+O9r/Bxythf+A2cZ1Ss4Q6ixNHsz0FLz+1QoE716M=;
-        b=Yqmywf7CMdjhYyKHA49glyd9HzHFHG7CSRrkTKH4WLzroQSgXC2WKoz9vNpSwDumA4
-         IKEDSzce0MqHsZgo2FTG9JI6hW46DwfKF9mC3DrDxQXEm9yH8BZEdLFdGmvOHPega2l+
-         HC2IO9DCUckxPsLQuOV6ND4eQgJL4qR7rEbII4zTv3dyLcWH4rSjENXcL0qRsDNnuAiy
-         VyEyW+WiaajOsGTV+SIm1fCNbSuWnBoWAfszW+tpzSTxayzSFOzGBSLtNNda93yHIALL
-         q1vX3XM4a5PFRHIix6G+Ql8GNUDkrAMJaPsHVGtkudA3MrpVYANJmpTuj6dDZ29CTG2U
-         /iKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OX+O9r/Bxythf+A2cZ1Ss4Q6ixNHsz0FLz+1QoE716M=;
-        b=ivmAxfso0vY/4D1fcKRsfyWY5H4JcGhIJecwzrWKT0Fbm4YyeXFGmeW3BlkvscmViz
-         u2CzQdukxlMaOI6QCeRYXv5WrVDvKIg2jPJf5Sy/MFh62RVQoN/uvTd3M9VdtbW3eB23
-         pcvBdG8uMeOdqayygaaZbRg1iZHM5ZUSxnE33oGKv7VvnS5gEaDHuULmySkcqwIuwS5M
-         BHOxy4WAsI1zpoYwgp+DjwtdAHpBsg2taqtIyZHXCnP6vDmFkhumP3xB3a+i4Un9z4Pg
-         H4W6+Zs/DZW7U/pKXp9XXL7Z20JuMOEW+KV/2tM1ECGzDiT1YGksJSUoWjHM4QbXSomg
-         xODQ==
-X-Gm-Message-State: AOAM530+grGKpbSVyqr3Ao5r0LwKXLeWD7bG4M+uRBMTs2YaSEPdXqdm
-        LGyIfKx6SGTT6uhOMIYSVQnn95j3enc=
-X-Google-Smtp-Source: ABdhPJzelYML5WFsrqEixCDjFDSNy/gZeyvn1d+5aBKu5AO12zKQ9KJn2JgqYQdsxJwqqomlDxafDg==
-X-Received: by 2002:a05:6512:4cf:: with SMTP id w15mr13265723lfq.656.1608138593227;
-        Wed, 16 Dec 2020 09:09:53 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id z14sm349678ljc.41.2020.12.16.09.09.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Dec 2020 09:09:52 -0800 (PST)
-Subject: Re: [PATCH v1 7/8] usb: host: ehci-tegra: Remove the driver
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Peter Geis <pgwipeout@gmail.com>, linux-tegra@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201215202113.30394-1-digetx@gmail.com>
- <20201215202113.30394-8-digetx@gmail.com>
- <20201216164511.GB238371@rowland.harvard.edu>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <33d576a4-5ace-e1a1-d829-77266025aa9b@gmail.com>
-Date:   Wed, 16 Dec 2020 20:09:51 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        Wed, 16 Dec 2020 12:15:13 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5304A2CF;
+        Wed, 16 Dec 2020 18:14:30 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1608138870;
+        bh=lQp49HTuWeMjvxFa2zqwz6oMJLl3H9JlTDtZ44pM+cY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XkaTb6qITxI537hN6t/JnLWql/DUCV+v0LvkoXm2zza7x+8k94Mj3MJQkkblhEVUC
+         BLa2DbsYJgNCHamKu7T4WlHj5AU8VN/uTksS3EhFo5axyjRW7MQuTAqtglBbd4xNNs
+         q7nB2RZ6am6J8BZB5HcCQ2ULltPNubfXqMDH4tmc=
+Date:   Wed, 16 Dec 2020 19:14:23 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
+Cc:     kieran.bingham+renesas@ideasonboard.com,
+        laurent.pinchart+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Hyun Kwon <hyunk@xilinx.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        sergei.shtylyov@gmail.com
+Subject: Re: [PATCH v6 4/5] media: i2c: max9286: Make channel amplitude
+ programmable
+Message-ID: <X9pAbzfmwHnj+GaN@pendragon.ideasonboard.com>
+References: <20201215170957.92761-1-jacopo+renesas@jmondi.org>
+ <20201215170957.92761-5-jacopo+renesas@jmondi.org>
 MIME-Version: 1.0
-In-Reply-To: <20201216164511.GB238371@rowland.harvard.edu>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+In-Reply-To: <20201215170957.92761-5-jacopo+renesas@jmondi.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-16.12.2020 19:45, Alan Stern пишет:
-> On Tue, Dec 15, 2020 at 11:21:12PM +0300, Dmitry Osipenko wrote:
->> The ChipIdea driver now provides USB2 host mode support for NVIDIA Tegra
->> SoCs. The ehci-tegra driver is obsolete now, remove it.
->>
->> Tested-by: Matt Merhar <mattmerhar@protonmail.com>
->> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
->> Tested-by: Peter Geis <pgwipeout@gmail.com>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  drivers/usb/host/Kconfig      |   9 -
->>  drivers/usb/host/Makefile     |   1 -
->>  drivers/usb/host/ehci-tegra.c | 604 ----------------------------------
->>  3 files changed, 614 deletions(-)
->>  delete mode 100644 drivers/usb/host/ehci-tegra.c
->>
->> diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
->> index 31e59309da1f..9c9e6ff9c43a 100644
->> --- a/drivers/usb/host/Kconfig
->> +++ b/drivers/usb/host/Kconfig
->> @@ -266,15 +266,6 @@ config USB_EHCI_HCD_AT91
->>  	  Enables support for the on-chip EHCI controller on
->>  	  Atmel chips.
->>  
->> -config USB_EHCI_TEGRA
->> -	tristate "NVIDIA Tegra HCD support"
->> -	depends on ARCH_TEGRA
->> -	select USB_EHCI_ROOT_HUB_TT
->> -	select USB_TEGRA_PHY
->> -	help
->> -	  This driver enables support for the internal USB Host Controllers
->> -	  found in NVIDIA Tegra SoCs. The controllers are EHCI compliant.
-> 
-> For people upgrading from earlier kernel versions, do you think it
-> would help to add a pointer here telling them which Kconfig option
-> they need to enable now in order to get this functionality?
+Hi Jacopo,
 
-Could you please clarify what do you mean by the "pointer"?
+Thank you for the patch.
+
+On Tue, Dec 15, 2020 at 06:09:56PM +0100, Jacopo Mondi wrote:
+> Instrument the function that configures the reverse channel with a
+> programmable amplitude value.
+> 
+> This change serves to prepare to adjust the reverse channel amplitude
+> depending on the remote end high-threshold configuration.
+> 
+> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> ---
+>  drivers/media/i2c/max9286.c | 22 ++++++++++++++++------
+>  1 file changed, 16 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
+> index 1cfc8801c0b2..021309c6dd6f 100644
+> --- a/drivers/media/i2c/max9286.c
+> +++ b/drivers/media/i2c/max9286.c
+> @@ -336,19 +336,29 @@ static void max9286_configure_i2c(struct max9286_priv *priv, bool localack)
+>  	usleep_range(3000, 5000);
+>  }
+>  
+> -static void max9286_reverse_channel_setup(struct max9286_priv *priv)
+> +static void max9286_reverse_channel_setup(struct max9286_priv *priv,
+> +					  unsigned int chan_amplitude)
+>  {
+> +	/* Reverse channel transmission time: default to 1. */
+> +	u8 chan_config = MAX9286_REV_TRF(1);
+> +
+>  	/*
+>  	 * Reverse channel setup.
+>  	 *
+>  	 * - Enable custom reverse channel configuration (through register 0x3f)
+>  	 *   and set the first pulse length to 35 clock cycles.
+> -	 * - Increase the reverse channel amplitude to 170mV to accommodate the
+> -	 *   high threshold enabled by the serializer driver.
+> +	 * - Adjust reverse channel amplitude: values > 130 are programmed
+> +	 *   using the additional +100mV REV_AMP_X boost flag
+>  	 */
+>  	max9286_write(priv, 0x3f, MAX9286_EN_REV_CFG | MAX9286_REV_FLEN(35));
+> -	max9286_write(priv, 0x3b, MAX9286_REV_TRF(1) | MAX9286_REV_AMP(70) |
+> -		      MAX9286_REV_AMP_X);
+> +
+> +	if (chan_amplitude > 100) {
+> +		/* It is not possible to express values (100 < x < 130) */
+> +		chan_amplitude = chan_amplitude < 130
+> +			       ? 30 : chan_amplitude - 100;
+
+This could also be written
+
+		chan_amplitude = min(30, chan_amplitude - 100);
+
+With or without the change,
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> +		chan_config |= MAX9286_REV_AMP_X;
+> +	}
+> +	max9286_write(priv, 0x3b, chan_config | MAX9286_REV_AMP(chan_amplitude));
+>  	usleep_range(2000, 2500);
+>  }
+>  
+> @@ -957,7 +967,7 @@ static int max9286_setup(struct max9286_priv *priv)
+>  	 * only. This should be disabled after the mux is initialised.
+>  	 */
+>  	max9286_configure_i2c(priv, true);
+> -	max9286_reverse_channel_setup(priv);
+> +	max9286_reverse_channel_setup(priv, 170);
+>  
+>  	/*
+>  	 * Enable GMSL links, mask unused ones and autodetect link
+
+-- 
+Regards,
+
+Laurent Pinchart
