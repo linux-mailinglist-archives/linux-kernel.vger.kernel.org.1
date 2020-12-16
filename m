@@ -2,82 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7050F2DBAF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 07:03:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEB4F2DBAF3
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 07:03:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725869AbgLPGBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 01:01:37 -0500
-Received: from mail.thorsis.com ([92.198.35.195]:33564 "EHLO mail.thorsis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725769AbgLPGBh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 01:01:37 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.thorsis.com (Postfix) with ESMTP id 6597110A6;
-        Wed, 16 Dec 2020 07:00:56 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at mail.thorsis.com
-Received: from mail.thorsis.com ([127.0.0.1])
-        by localhost (mail.thorsis.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id AJkWkZtv3C8R; Wed, 16 Dec 2020 07:00:56 +0100 (CET)
-Received: by mail.thorsis.com (Postfix, from userid 109)
-        id 7A3EC13C; Wed, 16 Dec 2020 07:00:54 +0100 (CET)
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NO_RECEIVED,
-        NO_RELAYS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.2
-Date:   Wed, 16 Dec 2020 07:00:48 +0100 (CET)
-From:   Alexander Dahl <ada@thorsis.com>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>, pavel@ucw.cz,
-        dmurphy@ti.com, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Message-ID: <998881507.2525.1608098449122@seven.thorsis.com>
-In-Reply-To: <20201214134545.4884-1-zhengyongjun3@huawei.com>
-References: <20201214134545.4884-1-zhengyongjun3@huawei.com>
-Subject: Re: [PATCH -next] leds: leds-ariel: convert comma to semicolon
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Originating-Client: open-xchange-appsuite
+        id S1725877AbgLPGCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 01:02:45 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:37622 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725765AbgLPGCp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 01:02:45 -0500
+Date:   Wed, 16 Dec 2020 09:02:00 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Rob Herring <robh@kernel.org>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hovold <johan@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Joao Pinto <jpinto@synopsys.com>,
+        Lars Persson <larper@axis.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Vyacheslav Mitrofanov 
+        <Vyacheslav.Mitrofanov@baikalelectronics.ru>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <netdev@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 06/25] dt-bindings: net: dwmac: Add Tx/Rx clock sources
+Message-ID: <20201216060200.azftg2denbvtmrip@mobilestation>
+References: <20201214091616.13545-1-Sergey.Semin@baikalelectronics.ru>
+ <20201214091616.13545-7-Sergey.Semin@baikalelectronics.ru>
+ <20201215173204.GA4072234@robh.at.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201215173204.GA4072234@robh.at.kernel.org>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-> Zheng Yongjun <zhengyongjun3@huawei.com> hat am 14.12.2020 14:45 geschrieben:
+On Tue, Dec 15, 2020 at 11:32:04AM -0600, Rob Herring wrote:
+> On Mon, Dec 14, 2020 at 12:15:56PM +0300, Serge Semin wrote:
+> > Generic DW *MAC can be connected to an external Tramit and Receive clock
 > 
->  
-> Replace a comma between expression statements by a semicolon.
-> 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> ---
->  drivers/leds/leds-ariel.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/leds/leds-ariel.c b/drivers/leds/leds-ariel.c
-> index bb68ba23a7d4..49e1bddaa15e 100644
-> --- a/drivers/leds/leds-ariel.c
-> +++ b/drivers/leds/leds-ariel.c
-> @@ -96,14 +96,14 @@ static int ariel_led_probe(struct platform_device *pdev)
->  		return -ENOMEM;
->  
->  	leds[0].ec_index = EC_BLUE_LED;
-> -	leds[0].led_cdev.name = "blue:power",
-> +	leds[0].led_cdev.name = "blue:power";
->  	leds[0].led_cdev.default_trigger = "default-on";
->  
->  	leds[1].ec_index = EC_AMBER_LED;
-> -	leds[1].led_cdev.name = "amber:status",
-> +	leds[1].led_cdev.name = "amber:status";
->  
->  	leds[2].ec_index = EC_GREEN_LED;
-> -	leds[2].led_cdev.name = "green:status",
-> +	leds[2].led_cdev.name = "green:status";
->  	leds[2].led_cdev.default_trigger = "default-on";
->  
->  	for (i = 0; i < NLEDS; i++) {
 
-Reviewed-by: Alexander Dahl <ada@thorsis.com>
+> s/Tramit/Transmit/
 
-Greets
-Alex
+Thanks. I'll fix it in v2.
+
+-Sergey
+
+> 
+> > generators. Add the corresponding clocks description and clock-names to
+> > the generic bindings schema so new DW *MAC-based bindings wouldn't declare
+> > its own names of the same clocks.
+> > 
+> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > ---
+> >  .../devicetree/bindings/net/snps,dwmac.yaml        | 14 ++++++++++++++
+> >  1 file changed, 14 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> > index e1ebe5c8b1da..74820f491346 100644
+> > --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> > +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> > @@ -126,6 +126,18 @@ properties:
+> >            MCI, CSR and SMA interfaces run on this clock. If it's omitted,
+> >            the CSR interfaces are considered as synchronous to the system
+> >            clock domain.
+> > +      - description:
+> > +          GMAC Tx clock or so called Transmit clock. The clock is supplied
+> > +          by an external with respect to the DW MAC clock generator.
+> > +          The clock source and its frequency depends on the DW MAC xMII mode.
+> > +          In case if it's supplied by PHY/SerDes this property can be
+> > +          omitted.
+> > +      - description:
+> > +          GMAC Rx clock or so called Receive clock. The clock is supplied
+> > +          by an external with respect to the DW MAC clock generator.
+> > +          The clock source and its frequency depends on the DW MAC xMII mode.
+> > +          In case if it's supplied by PHY/SerDes or it's synchronous to
+> > +          the Tx clock this property can be omitted.
+> >        - description:
+> >            PTP reference clock. This clock is used for programming the
+> >            Timestamp Addend Register. If not passed then the system
+> > @@ -139,6 +151,8 @@ properties:
+> >        enum:
+> >          - stmmaceth
+> >          - pclk
+> > +        - tx
+> > +        - rx
+> >          - ptp_ref
+> >  
+> >    resets:
+> > -- 
+> > 2.29.2
+> > 
