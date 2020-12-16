@@ -2,53 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0525B2DB822
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 02:02:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AB7E2DB829
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 02:02:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726757AbgLPBBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 20:01:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51028 "EHLO mail.kernel.org"
+        id S1726714AbgLPBBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 20:01:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726188AbgLPBBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726632AbgLPBBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Dec 2020 20:01:25 -0500
-Subject: Re: [PULL REQUEST] i2c for 5.11
+Subject: Re: [git pull] Input updates for v5.11-rc0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608080406;
-        bh=dh57t8ycMg1BldQpqYnhVXBzF9bbHjhvlNHEy8QoaBs=;
+        s=k20201202; t=1608080407;
+        bh=vPy0wd2Ub/J5W/JoWBT/kLaGAB4GuHngRtoBWaD8fCo=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=PXx3OMww0f40VXtd8P5eI0aaSAjEWdzRZxl2b7L1C9oleJQ4CLQncDofwQADAK7D1
-         lGbJQ7S2ZGYElyXWp8AUWR/J2Jc+JNq0+eWrYNP/N+cfAMDnpav1mPtnR9SNT14+/0
-         wdO0ERiZhIgZAtAxS1gHfmV12EhqA+uDAZShg/cTtruFAzyGNpomsuT67k+CTXRrHj
-         97rKw2J9csHX9RQseeQLRbbAhKpD/3R5epSAnYRwTFja5S9NFNCBa22A8S1sWnuhTw
-         V4fKjPaaRB3A/FS0TIJ9bT0KD6dtxhJPmgJS9xy7S8dUHbU/wiE2+6zufuDMOMcFbp
-         GJK8PqNm3N+ZQ==
+        b=PBevrwnusNmbAPb9/QmaYPetdcQlY+w8DM/3LraRExQ2MnzuJqH9ZISMC+EvN3tpH
+         CH6lQ5lngTS4iXW2a9wwKe/lGqvefNPy48cq8HVqXybK0iJt+wntp1QRFsa43NA4/8
+         KPji3z9ZVmGS7FUStqir1wZUSUFvKS1C+skvJOfIZRjWwT9L69VvwuS2vKpWfLNJRg
+         cYfDyIU64W3N1wOTq6bB1Zs//d88G5b6BkVkqK9B94Q7aY0zz1UiDYNsEZJA5ZRFtn
+         FhgGH1MPw/E6Ox6PTzkxjkvWARet/x4BVlX99P3nxlXI/3TMWhyzRysZxi9ZE2/dJ2
+         eMQBxwU9tAhMw==
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201214215335.GA4651@kunai>
-References: <20201214215335.GA4651@kunai>
+In-Reply-To: <X9gXHwIQvxomBHFt@google.com>
+References: <X9gXHwIQvxomBHFt@google.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201214215335.GA4651@kunai>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-5.11
-X-PR-Tracked-Commit-Id: 4e970a0ada5299d017a4263074f725227c2d2852
+X-PR-Tracked-Message-Id: <X9gXHwIQvxomBHFt@google.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git for-linus
+X-PR-Tracked-Commit-Id: 4b4193256c8d3bc3a5397b5cd9494c2ad386317d
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 9d0d886799e49e0f6d51e70c823416919544fdb7
-Message-Id: <160808040670.29502.5434390905614605187.pr-tracker-bot@kernel.org>
-Date:   Wed, 16 Dec 2020 01:00:06 +0000
-To:     Wolfram Sang <wsa@kernel.org>
+X-PR-Merge-Commit-Id: ee249d30fadec7677364063648f5547e243bf93f
+Message-Id: <160808040732.29502.12165143792878246683.pr-tracker-bot@kernel.org>
+Date:   Wed, 16 Dec 2020 01:00:07 +0000
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 14 Dec 2020 22:53:35 +0100:
+The pull request you sent on Mon, 14 Dec 2020 17:53:35 -0800:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-5.11
+> git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git for-linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/9d0d886799e49e0f6d51e70c823416919544fdb7
+https://git.kernel.org/torvalds/c/ee249d30fadec7677364063648f5547e243bf93f
 
 Thank you!
 
