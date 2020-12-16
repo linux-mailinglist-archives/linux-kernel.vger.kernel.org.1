@@ -2,122 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26FA2DC5D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 19:02:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B045B2DC5DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 19:06:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728897AbgLPSCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 13:02:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728894AbgLPSCC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 13:02:02 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DB10C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 10:01:22 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id o144so22763862ybc.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 10:01:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sFOQJYvSJRifdqFPCviPjYdpzbh1IqtzJ4CNX1jyZLI=;
-        b=Hj/GUH41mTJHNxqAeETQGhZSsXDas2vhqQGy5vEVE+8XPsyeZQXoTbiv6A1bOwFWwe
-         xyC8RHG8tX+yWSeya5GYsDpESSvp4ubeJuE97dg93F+kNgOo5l3eEjWBOH4foLMhsiCY
-         Bhb2czRuz3O+8AybDHUi3PWFmWVpYvCoj3IyGeQQhTLvRJWFhDCBd5pbFLcsM0LqkM38
-         PyEOUF2lhkUneMzERDNZh4Wgq12uQ5r2BQh82fOmoU/FNqSfgjJWy0Az4mUKjYaazyoD
-         OzhHuhw04vsaPxtvDmXPcUKQqqVmHDl51y+xsZkfuwbKomlX6IgVvaZtdOZCdtenyjcu
-         Bv1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sFOQJYvSJRifdqFPCviPjYdpzbh1IqtzJ4CNX1jyZLI=;
-        b=X39b8CTxrmUsotzuEdZnyOHtDXFUwJx+ubSg5MXMIkJ+CARjB5pc8G+P2kqmSSATuB
-         Frg8RoFVYG1kJyvhbOUWyyk/E4CBeUlvnjsOaslvvRFMsRKeXKFQ0/oB50cEKaO+wmf1
-         NWfitVwuhTiQr20PbZzXTL4KkOxTkCu8H76brvCVGH2zJim8MPTEBP6jNWISqGU3jN37
-         O3AOFrUZdxBY6kPxKUq2E+d2QSmuIElZywyfWqxDLPnUx59dZzO8kx3cnZXs5XDbRrzi
-         Zn9vlUCs1u03mV7D7J3Tid53gjwCvimvxdOCfSoOh0/gB2htDETyOKn0iU3lrDvXTyAY
-         dY7A==
-X-Gm-Message-State: AOAM533kvf/csCrPhB4v2sAsvDSs7FH66+tP3Wy0qAjab3cqnQEXhqJ9
-        0Bk4VCJQ2C1UKTUYy31NZ4NzqJqrFjfkDdH3NUcruA==
-X-Google-Smtp-Source: ABdhPJwmDODLaLqYbUxaJy1G1Zah31SwTkbkqXj6YB9o3+5QCGCr7BwzqWerCJnYse2Bcrarf+9RkIP5DPRevF1+zT8=
-X-Received: by 2002:a25:15c8:: with SMTP id 191mr51030977ybv.256.1608141681760;
- Wed, 16 Dec 2020 10:01:21 -0800 (PST)
+        id S1729092AbgLPSE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 13:04:58 -0500
+Received: from mga09.intel.com ([134.134.136.24]:50061 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729093AbgLPSE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 13:04:58 -0500
+IronPort-SDR: u5X6ejdl/IZEhdZ53meiMpEJE5m94SyXjABEjcG9Msqe71hrEvP2smXvH8gvX5rFig51jYlnG5
+ +0dgCNVH3JHQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9837"; a="175253845"
+X-IronPort-AV: E=Sophos;i="5.78,425,1599548400"; 
+   d="scan'208";a="175253845"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2020 10:04:17 -0800
+IronPort-SDR: kPKm6I0J06AiEJAX1qZmPODrrFQ0D7zfx6ENmHcFnLEbKvvM6Qz3g0VmCXqxifRc1eMQTpaR7M
+ FcUa0pbnuDIg==
+X-IronPort-AV: E=Sophos;i="5.78,425,1599548400"; 
+   d="scan'208";a="369211441"
+Received: from rmclaugh-mobl.amr.corp.intel.com (HELO [10.212.95.29]) ([10.212.95.29])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2020 10:04:16 -0800
+Subject: Re: [PATCH] x86/mm: increase pgt_buf size for 5-level page tables
+To:     Lorenzo Stoakes <lstoakes@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>
+Cc:     linux-kernel@vger.kernel.org
+References: <20201215205641.34096-1-lstoakes@gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <13deefab-de94-4e68-67f8-e03f99bcb115@intel.com>
+Date:   Wed, 16 Dec 2020 10:04:16 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201214173731.302520-1-suzuki.poulose@arm.com> <20201214173731.302520-19-suzuki.poulose@arm.com>
-In-Reply-To: <20201214173731.302520-19-suzuki.poulose@arm.com>
-From:   Mike Leach <mike.leach@linaro.org>
-Date:   Wed, 16 Dec 2020 18:01:11 +0000
-Message-ID: <CAJ9a7VjKBg4YTDfGDG0eeQ2jUjN1wid0YzHOS-t9GvEWqT0gtQ@mail.gmail.com>
-Subject: Re: [PATCH v5 18/25] coresight: etm4x: Expose trcdevarch via trcidr
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Jonathan Zhou <jonathan.zhouwen@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201215205641.34096-1-lstoakes@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suzuki
+On 12/15/20 12:56 PM, Lorenzo Stoakes wrote:
+> +#ifndef CONFIG_X86_5LEVEL
+> +#define INIT_PGD_PAGE_TABLES    3
+> +#else
+> +#define INIT_PGD_PAGE_TABLES    4
+> +#endif
+> +
+>  #ifndef CONFIG_RANDOMIZE_MEMORY
+> -#define INIT_PGD_PAGE_COUNT      6
+> +#define INIT_PGD_PAGE_COUNT      (2 * INIT_PGD_PAGE_TABLES)
+>  #else
+> -#define INIT_PGD_PAGE_COUNT      12
+> +#define INIT_PGD_PAGE_COUNT      (4 * INIT_PGD_PAGE_TABLES)
+>  #endif
+> +
 
-On Mon, 14 Dec 2020 at 17:38, Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
->
-> Expose the TRCDEVARCH register via the sysfs for component
-> detection. Given that the TRCIDR1 may not completely identify
-> the ETM component and instead need to use TRCDEVARCH, expose
-> this via sysfs for tools to use it for identification.
->
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
->  drivers/hwtracing/coresight/coresight-etm4x-sysfs.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
-> index 009818675928..277fd5bff811 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
-> @@ -2395,6 +2395,7 @@ coresight_etm4x_cross_read(trcidr10, TRCIDR10);
->  coresight_etm4x_cross_read(trcidr11, TRCIDR11);
->  coresight_etm4x_cross_read(trcidr12, TRCIDR12);
->  coresight_etm4x_cross_read(trcidr13, TRCIDR13);
-> +coresight_etm4x_cross_read(trcdevarch, TRCDEVARCH);
->
->  static struct attribute *coresight_etmv4_trcidr_attrs[] = {
->         &dev_attr_trcidr0.attr,
-> @@ -2410,6 +2411,7 @@ static struct attribute *coresight_etmv4_trcidr_attrs[] = {
->         &dev_attr_trcidr11.attr,
->         &dev_attr_trcidr12.attr,
->         &dev_attr_trcidr13.attr,
-> +       &dev_attr_trcdevarch.attr,
->         NULL,
->  };
->
+Lorenzo, thanks for the patch.  That was a very nice changelog, and it
+all seems sane to me, especially with Kirill's ack.
 
-It makes far more sense for this to appear in the 'mgmt' group, per
-the grouping in the Coresight spec. This would place it alongside the
-other CoreSight management registers, including DEVID, and DEVTYPE
-which is used with DEVARCH in the CoreSight UCI, . This is also
-consistent with the CTI which places all three of these registers in
-the 'mgmt' section.
-
-Regards
-
-Mike
-
-
-> --
-> 2.24.1
->
-
-
--- 
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+Acked-by: Dave Hansen <dave.hansen@intel.com>
