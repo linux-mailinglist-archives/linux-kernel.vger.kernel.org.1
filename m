@@ -2,90 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B3EC2DC7F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 21:52:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5D52DC7FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 21:53:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728803AbgLPUvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 15:51:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42776 "EHLO
+        id S1728811AbgLPUxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 15:53:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726979AbgLPUvM (ORCPT
+        with ESMTP id S1727034AbgLPUxf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 15:51:12 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60DEDC06179C
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 12:50:31 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id a9so51822570lfh.2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 12:50:31 -0800 (PST)
+        Wed, 16 Dec 2020 15:53:35 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71779C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 12:52:54 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id x20so32314041lfe.12
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 12:52:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=PZCfkcYMGxMQOjZ1U7fNGaLgqn49lE+Qv0BMwOMYjtA=;
-        b=s7Iuv56nKYyJc+2lxZqKpSQZfxsBaa7/PehQ/HWHkG7BlW9wNp4i2FINLABCSthJgg
-         1ljseudxh5H2ZrbZFrzDW43CTz1f1PZ7EyJ5MXSOTQ3uFqYBogKQUhVnWIaAsYPEiBVh
-         2JONfO3a0c6BsRXty92zWsfVeEhVXqxeBQa2jRJQJdpMClZ+gk2oAdpcbnEwfMoA249N
-         d+6fLGLwIbEeYpwucCm+svzSx/9ttrpKlFe/NV3ng3TWCJ8AlsPSZydWIp22dMiiiDGQ
-         d7MITmxoV3ADcy8C687k9kHg4jgbznwwyUQTIUefFpaG2BJNKFzlnRBla5Z0jKlK9QeN
-         baTw==
+        bh=vkdNbAXJT7PhCwQlg2OILB1sS2zw/a+6Z3NYSr5wu6w=;
+        b=yFad8AE/AQK6llfX6tOw1g5IO0dT9I4sS8IBJVb3uQ7r/hEeNTRfkdl+9cQZ+jWPLE
+         qqu50D4RVFNN6os+efS0By1w6nQ4ps9AjqGArnaE6ntl16cZYncDvgVlwuiH0dbuKCFw
+         BryDmTWBboRR7BllifqkUAszd82CCmbXiFjsHwJB7YAAcrXbKWt0QkwgUKyUUd9YnRtg
+         d2DAjXG3Srywp6TfpxUfdxDmJAHQMeNw5c4Y81YBcKLya0gxv3pzS21fpUCUrzLfvKTU
+         X7v4ytEoKQytHmrfWe+f+eB+76Ef+FDIHzf2D3oSbEVXTp9fjVYzzei7Bu4ZiNLl0w3H
+         LELQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=PZCfkcYMGxMQOjZ1U7fNGaLgqn49lE+Qv0BMwOMYjtA=;
-        b=iqt9bgFdZ0RNNvqb/HFyqxdn2SJtEfZPtubxr5Dm67q5HLD1nMq7Co2e64SP3t+zSx
-         ascYmJ8RyoNs3CI+AQk6diwTsj/5J9FVIGqa7nfnydrvxOXSnDIgVyVb/Vz4OvsIE85p
-         oRCZunb1LDTK0uKCl8N8qOUNxU0Z+7A1x3XmhauM5DWLSVI2CAth45AYqbUeh+GBsr7K
-         VfySp/lQ2qli9AJJghYdUgliwqo0higVzeoYl4XX7zkwIpjIfSjbA7hKPdFFqv26J/BY
-         WIGBvBfs8N/xuHLc45fIiuOXnCj/7ehDAI6XX9HIau+ZsQGNEPhE1q+NY0OuFdlRxwyA
-         jFtA==
-X-Gm-Message-State: AOAM5310zJ2D3tUYv+DNVXX74yGb596ZURYP2yqpnoJJIr957eNLEx9y
-        FCroZmIOB2gYEsq4bthWGMnX+8WYMU9ao+7zjw1idw==
-X-Google-Smtp-Source: ABdhPJycXkEsBfIRswToh++8+wbRiMtEI7XWI0ozQFtSyALkYUjm5qKd7ywPaMo2fJAsnTrZ3d+tfkpDi+tK8WC+V0M=
-X-Received: by 2002:a05:6512:74e:: with SMTP id c14mr14455860lfs.529.1608151829815;
- Wed, 16 Dec 2020 12:50:29 -0800 (PST)
+        bh=vkdNbAXJT7PhCwQlg2OILB1sS2zw/a+6Z3NYSr5wu6w=;
+        b=V8HufXKBmPfGLTPuZO9+2B9yCpD5I4Mrtj/Z1wyDT38Y1JotsfWW6fpiL/hoWE8G/v
+         8n6Il3fZ6B6vlIMc6tl87HtLawigHAVn9wbs9NXbxALkzbSaai0CrWkVF6mwhnCLgLnt
+         e5w+vsJyi3Wvgb4fMdA/0qke+W0XVTvv2PUUiHk79pfgH5J1YermXrtO0nb2mxDLE16D
+         VxThTUArdB3KFoCH8lVouHaBQRXGtCkzAY2x3lkQSe53AoCGAXOVgE1nW71MBuWUfePO
+         Kt2ERp0/sxdU8dAlCfD01XIhtl08icECHDASSJvjeAx+aK4YIj9kxhdFqL0E/TGft+77
+         8R/g==
+X-Gm-Message-State: AOAM532hUVKjhQsTeihh2yZPJrVJ5zLOOFENGzHsTukJfShhymIrHTPo
+        ZuYtuq29b4YI44uPqj650R/h006qpW4HK8DZzTQH9YxwRo8=
+X-Google-Smtp-Source: ABdhPJwNTG6XhtSllHr7QZCJ9dxFjH2Ugc2EnjaDWzXT1+chx7RIEQDXqYx/2BQcvfCH6W+E6YGshpge9V7PWgEKBrU=
+X-Received: by 2002:a19:495d:: with SMTP id l29mr9093794lfj.465.1608151972803;
+ Wed, 16 Dec 2020 12:52:52 -0800 (PST)
 MIME-Version: 1.0
-References: <20201215170308.2037624-1-bjorn.andersson@linaro.org>
- <CACRpkdZKKetFFm8AanVnzV9SyZhuurLHT_ZTak27-vGEdqVgEw@mail.gmail.com> <X9pUjU6hPI1cKS3H@builder.lan>
-In-Reply-To: <X9pUjU6hPI1cKS3H@builder.lan>
+References: <5fd76cf2.1c69fb81.6f19b.b16a@mx.google.com> <483b08f2-09c3-e753-d2ce-4e34fee627f3@collabora.com>
+ <CACRpkdbozXM3FHQB9+GcPJZdNT+Vi1223m2uEqqJ21ukY1A4Gw@mail.gmail.com>
+ <8e5e0251-9450-5c93-cd2e-c44779a72b0c@collabora.com> <CACRpkdb8Bgie3dJME5qQwu_33b6zVYzAayJnHJUCzrkntpNNXw@mail.gmail.com>
+ <600ff528-71b0-ac02-0266-ddc5e3b6fcf4@collabora.com>
+In-Reply-To: <600ff528-71b0-ac02-0266-ddc5e3b6fcf4@collabora.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 16 Dec 2020 21:50:19 +0100
-Message-ID: <CACRpkdbXRHCDGX-YBbNY7cMob0dZNhi1ETA3QnC71ZtOYB30JQ@mail.gmail.com>
-Subject: Re: [PATCH] gpiolib: Allow name duplicates of "" and "NC"
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Date:   Wed, 16 Dec 2020 21:52:41 +0100
+Message-ID: <CACRpkdbb84M4k-te0uwfDxX4PR05Z=SXZC8nM_HH=GbkNoCf7A@mail.gmail.com>
+Subject: Re: linusw/devel bisection: baseline.bootrr.mediatek-mt8173-pinctrl-probed
+ on mt8173-elm-hana
+To:     Guillaume Tucker <guillaume.tucker@collabora.com>
 Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>
+        open list <linux-kernel@vger.kernel.org>,
+        "kernelci-results@groups.io" <kernelci-results@groups.io>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Johan Hovold <johan@kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 7:40 PM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
-
-> > I think I will conjure a patch allowing identical naming only for
-> > device property naming (like from device tree) but emitting a
-> > warning so that people fix it to something unique moving
-> > forward.
+On Wed, Dec 16, 2020 at 6:30 PM Guillaume Tucker
+<guillaume.tucker@collabora.com> wrote:
+> On 16/12/2020 12:41, Linus Walleij wrote:
+> > On Wed, Dec 16, 2020 at 11:10 AM Guillaume Tucker
+> > <guillaume.tucker@collabora.com> wrote:
 > >
+> >>> It seems we need to teach the core to ignore the name (empty string).
+> >>
+> >> OK great, I see you've sent a patch for that.  I'll check if we
+> >> can confirm it fixes the issue (something I'd like to also
+> >> automate...).
+> >
+> > Yups would love to hear if this solves it, it should be in today's
+> > -next.
 >
-> I'm not against emitting a dev_err() when we hit duplicates, remove the
-> return and then update the various dts files to use "" for things that
-> doesn't have a name.
+> Yes in fact it appears to be all fixed on your for-next branch:
 >
-> Regarding special handling of the DT case, I think (beyond making all
-> these boards boot again) it would be nice to make
-> gpiochip_set_desc_names() take the list of names and a length and use
-> the same function in both code paths...
->
-> PS. strlen(names[i]) is O(N), strcmp(names[i], "") is O(1).
+>   https://kernelci.org/test/case/id/5fda32f92738afa48dc94ce1/
 
-OK I'll think of something. I'm pulling these patches out of the stuff
-for this merge window because they are clearly immature,
-nobody else is telling me so I have to realize it myself, it takes
-like three days for me to do that...
+We found other problems with my rushed patches so I pulled them
+out anyways, I will tighten them up and make a better job for
+the next kernel cycle.
+
+Thanks for your help!
 
 Yours,
 Linus Walleij
