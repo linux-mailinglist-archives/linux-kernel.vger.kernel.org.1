@@ -2,106 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAA8B2DC06E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 13:43:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4434F2DC06F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 13:43:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725948AbgLPMmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 07:42:18 -0500
-Received: from honk.sigxcpu.org ([24.134.29.49]:37096 "EHLO honk.sigxcpu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725933AbgLPMmR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 07:42:17 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 4FBE6FB03;
-        Wed, 16 Dec 2020 13:41:35 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id XPKuVr8ci4UN; Wed, 16 Dec 2020 13:41:33 +0100 (CET)
-Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id 68FEB43FDC; Wed, 16 Dec 2020 13:41:33 +0100 (CET)
-Date:   Wed, 16 Dec 2020 13:41:33 +0100
-From:   Guido =?iso-8859-1?Q?G=FCnther?= <guido.gunther@puri.sm>
-To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-Cc:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        linux-power <linux-power@fi.rohmeurope.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "angus.ainslie@puri.sm" <angus.ainslie@puri.sm>
-Subject: Re: [PATCH 1/1] regulators: bd718x7: Add enable times
-Message-ID: <20201216124133.GA31109@bogon.m.sigxcpu.org>
-References: <cover.1608116704.git.agx@sigxcpu.org>
- <d2b3d053d28ea0f35e7526b523287358c8fe20c2.1608116704.git.agx@sigxcpu.org>
- <7d4903f67ff81a9a749e75f24af0aea903213c43.camel@fi.rohmeurope.com>
+        id S1726018AbgLPMmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 07:42:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725837AbgLPMmg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 07:42:36 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A0DC061794
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 04:41:56 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id o19so22326513lfo.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 04:41:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JdWZ2Pk1OFPUwPBsoB678Mi8MqbdY4ggPgKtXlI/SK4=;
+        b=tmT2NwDjj8bfQbdMkIGY2YjDPKm0YLTfWJZk10f+bQMuSILDTxEAVs0VdfmbkUqMHC
+         Tjd1yn1ZkdF2HBjgzVPs1dz6rd4Aygot+krES5typbxrzS4egI/+z08allpO3l3TOeb+
+         RQLxJoPUyVfnJeoG7i3Q0r7saNMLmY5bPb3WqJ54uiBdCytn1MzufdJ0DLscPiHqKmAg
+         FJ4K+AYpxPJ3Hke98FrPCPIhGxC0fMCwko8Q0qlKApJP3bDLlGmtYhM/onpb95d6K9Mc
+         f3BUudJp4PQrUDe6crxuDhyR7vw7xiAk/j15gqvx57gDdNaGVMpKqBfrbgrIv6AKVrLm
+         NUCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JdWZ2Pk1OFPUwPBsoB678Mi8MqbdY4ggPgKtXlI/SK4=;
+        b=q5EbCMmdqUURtqHJ4A2bsFfj5GQVZaEw3SEoIM3OEdFkapajWe5cFnYs5GmVTqzqf4
+         k7uAEpAkvfLQOW+3u703wMw4A0DIY0HMr5ycA/grWquNPgIX0loOyVX3N52OVms8coG5
+         fa94ZOsd3lYKUwGlcVefgT2gT2FO3aZH3gW0AfjXyYTR5Xx+tCsDaKq6jN7e2B3H4oQ2
+         uNujF/Olibed0/WSWJgnBTaxTaIQn3F1hTSZWViNb/6lSpI8Ee2AuhqQTDnFBtuZOg7O
+         HURDRJQ2oXjvcfk+sW2m+pUBBpdydBtzButLA/yKemLsCMJRPituwwcIpyksOe3Cc4Ge
+         gy/w==
+X-Gm-Message-State: AOAM530bwpVSh1n/AEvnmRCPA/aAbt0hiVEAvk7/xdOg9h686VpvlsAq
+        46pY2psHrROE5FL4acu4bnM7sLJ1cpRrPg+T6vnRiQ==
+X-Google-Smtp-Source: ABdhPJyZMYbSapCUAF75EOCuZAjdXjhZ+BEiBYaZzhIBzbUzf7PgwgU03PMTn0yH5XnqH4CgTnhtc/1VsDlALIWtp7Q=
+X-Received: by 2002:a2e:b047:: with SMTP id d7mr9572843ljl.467.1608122514851;
+ Wed, 16 Dec 2020 04:41:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7d4903f67ff81a9a749e75f24af0aea903213c43.camel@fi.rohmeurope.com>
+References: <5fd76cf2.1c69fb81.6f19b.b16a@mx.google.com> <483b08f2-09c3-e753-d2ce-4e34fee627f3@collabora.com>
+ <CACRpkdbozXM3FHQB9+GcPJZdNT+Vi1223m2uEqqJ21ukY1A4Gw@mail.gmail.com> <8e5e0251-9450-5c93-cd2e-c44779a72b0c@collabora.com>
+In-Reply-To: <8e5e0251-9450-5c93-cd2e-c44779a72b0c@collabora.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 16 Dec 2020 13:41:43 +0100
+Message-ID: <CACRpkdb8Bgie3dJME5qQwu_33b6zVYzAayJnHJUCzrkntpNNXw@mail.gmail.com>
+Subject: Re: linusw/devel bisection: baseline.bootrr.mediatek-mt8173-pinctrl-probed
+ on mt8173-elm-hana
+To:     Guillaume Tucker <guillaume.tucker@collabora.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "kernelci-results@groups.io" <kernelci-results@groups.io>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Johan Hovold <johan@kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matti,
-On Wed, Dec 16, 2020 at 12:29:20PM +0000, Vaittinen, Matti wrote:
-> Hello Guido,
-> 
-> Thanks for looking at this!
-> 
-> On Wed, 2020-12-16 at 12:05 +0100, Guido Günther wrote:
-> > Use the typical startup times from the data sheet so boards get a
-> > reasonable default. Not setting any enable time can lead to board
-> > hangs
-> > when e.g. clocks are enabled too soon afterwards.
-> > 
-> > This fixes gpu power domain resume on the Librem 5.
-> > 
-> > Signed-off-by: Guido Günther <agx@sigxcpu.org>
-> > ---
-> >  drivers/regulator/bd718x7-regulator.c | 27
-> > +++++++++++++++++++++++++++
-> >  1 file changed, 27 insertions(+)
-> > 
-> > diff --git a/drivers/regulator/bd718x7-regulator.c
-> > b/drivers/regulator/bd718x7-regulator.c
-> > index e6d5d98c3cea..d6d34aa4ee2e 100644
-> > --- a/drivers/regulator/bd718x7-regulator.c
-> > +++ b/drivers/regulator/bd718x7-regulator.c
-> > @@ -613,6 +613,7 @@ static struct bd718xx_regulator_data
-> > bd71847_regulators[] = {
-> >  			.vsel_mask = DVS_BUCK_RUN_MASK,
-> >  			.enable_reg = BD718XX_REG_BUCK1_CTRL,
-> >  			.enable_mask = BD718XX_BUCK_EN,
-> > +			.enable_time = 144,
-> 
-> Where are these values obtained from? I have a feeling they might be
-> board / load specific. If this is the case - can the "regulator-enable-
-> ramp-delay" from device-tree be used instead to avoid hard-coding board
-> specific values in the driver? Although, sane defaults would probably
-> not be a bad idea - if I read code correctly then the constrains from
-> DT can be used to override these values.
+On Wed, Dec 16, 2020 at 11:10 AM Guillaume Tucker
+<guillaume.tucker@collabora.com> wrote:
 
-They're the 'typical values' from the data sheet and it's basically all
-about setting a default for "regulator-enable-ramp-delay" to avoid
-having every board do the same. If that's not the right thing todo let
-me know and i add these to each of our boards (which is where i
-basically started from but then figured that this would be busywork
-and every board would hit that problem).
+> > It seems we need to teach the core to ignore the name (empty string).
+>
+> OK great, I see you've sent a patch for that.  I'll check if we
+> can confirm it fixes the issue (something I'd like to also
+> automate...).
 
-> I'd prefer well named defines over raw numeric values though.
+Yups would love to hear if this solves it, it should be in today's
+-next.
 
-So s.th. like
-
-BD71837_BUCK1_STARTUP_TIME 144
-
-(using the terminology from the datasheet)? If that works I'll send a
-v2.
-
-Cheers,
- --Guido
-
-> 
-> Best Regards
->     Matti Vaittinen
-> 
-> 
+Yours,
+Linus Walleij
