@@ -2,113 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 259E42DC560
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 18:30:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AD222DC563
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 18:31:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727129AbgLPRa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 12:30:29 -0500
-Received: from foss.arm.com ([217.140.110.172]:37152 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726741AbgLPRa2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 12:30:28 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E6BAD1FB;
-        Wed, 16 Dec 2020 09:29:42 -0800 (PST)
-Received: from e107158-lin.cambridge.arm.com (unknown [10.1.194.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4DCA43F66E;
-        Wed, 16 Dec 2020 09:29:42 -0800 (PST)
-Date:   Wed, 16 Dec 2020 17:29:39 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: RCU stall leading to deadlock warning
-Message-ID: <20201216172939.ts72yy3ekalavlpm@e107158-lin.cambridge.arm.com>
+        id S1726899AbgLPRb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 12:31:28 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:41228 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726796AbgLPRb2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 12:31:28 -0500
+Received: from [IPv6:2a00:5f00:102:0:b08e:75ff:fe3e:2a49] (unknown [IPv6:2a00:5f00:102:0:b08e:75ff:fe3e:2a49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: gtucker)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 3C2DD1F41293;
+        Wed, 16 Dec 2020 17:30:46 +0000 (GMT)
+Subject: Re: linusw/devel bisection:
+ baseline.bootrr.mediatek-mt8173-pinctrl-probed on mt8173-elm-hana
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "kernelci-results@groups.io" <kernelci-results@groups.io>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Johan Hovold <johan@kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+References: <5fd76cf2.1c69fb81.6f19b.b16a@mx.google.com>
+ <483b08f2-09c3-e753-d2ce-4e34fee627f3@collabora.com>
+ <CACRpkdbozXM3FHQB9+GcPJZdNT+Vi1223m2uEqqJ21ukY1A4Gw@mail.gmail.com>
+ <8e5e0251-9450-5c93-cd2e-c44779a72b0c@collabora.com>
+ <CACRpkdb8Bgie3dJME5qQwu_33b6zVYzAayJnHJUCzrkntpNNXw@mail.gmail.com>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <600ff528-71b0-ac02-0266-ddc5e3b6fcf4@collabora.com>
+Date:   Wed, 16 Dec 2020 17:30:43 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
+In-Reply-To: <CACRpkdb8Bgie3dJME5qQwu_33b6zVYzAayJnHJUCzrkntpNNXw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul
+On 16/12/2020 12:41, Linus Walleij wrote:
+> On Wed, Dec 16, 2020 at 11:10 AM Guillaume Tucker
+> <guillaume.tucker@collabora.com> wrote:
+> 
+>>> It seems we need to teach the core to ignore the name (empty string).
+>>
+>> OK great, I see you've sent a patch for that.  I'll check if we
+>> can confirm it fixes the issue (something I'd like to also
+>> automate...).
+> 
+> Yups would love to hear if this solves it, it should be in today's
+> -next.
 
-We hit the below splat a couple of days ago in our testing. Sadly I can't
-reproduce it. And it was on android-mainline branch..
+Yes in fact it appears to be all fixed on your for-next branch:
 
-It's the deadlock message that bothers me. I can't see how we could have ended
-there. We detect a stall and when trying to dump the stack LOCKDEP spits the
-warning.
+  https://kernelci.org/test/case/id/5fda32f92738afa48dc94ce1/
 
-Maybe should take this report with a pinch of salt since it wasn't on mainline.
-I just thought it might be something worth sharing in case you can actually
-spot something obvious that I can't see. If I got more info or a reproducer
-I will share them.
+Today's linux-next was not tested in the Collabora lab because of
+some infrastructure problem, but that's resolved now so it should
+be in tomorrow's results.
 
-The failure was triggered twice on that day running 2 different tests.
-
-[  310.073379] LTP: starting leapsec01
-[  345.070123] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-[  345.076717] rcu:     0-...!: (1 ticks this GP) idle=798/0/0x0 softirq=19187/19187 fqs=0  (false positive?)
-[  345.087533]    (detected by 2, t=6502 jiffies, g=57249, q=184)
-[  345.093284]
-[  345.094797] ============================================
-[  345.100139] WARNING: possible recursive locking detected
-[  345.105485] 5.10.0-rc7-02296-g3f43bd6f2c3b-ab89 #1 Not tainted
-[  345.111349] --------------------------------------------
-[  345.116693] swapper/2/0 is trying to acquire lock:
-[  345.121515] ffffa00013b50c58 (rcu_node_0){-.-.}-{2:2}, at: rcu_dump_cpu_stacks+0x7c/0x14c
-[  345.129813]
-[  345.129813] but task is already holding lock:
-[  345.135678] ffffa00013b50c58 (rcu_node_0){-.-.}-{2:2}, at: rcu_sched_clock_irq+0x68c/0x11c0
-[  345.144143]
-[  345.144143] other info that might help us debug this:
-[  345.150702]  Possible unsafe locking scenario:
-[  345.150702]
-[  345.156651]        CPU0
-[  345.159119]        ----
-[  345.161585]   lock(rcu_node_0);
-[  345.164779]   lock(rcu_node_0);
-[  345.167973]
-[  345.167973]  *** DEADLOCK ***
-[  345.167973]
-[  345.173923]  May be due to missing lock nesting notation
-[  345.173923]
-[  345.180746] 1 lock held by swapper/2/0:
-[  345.184607]  #0: ffffa00013b50c58 (rcu_node_0){-.-.}-{2:2}, at: rcu_sched_clock_irq+0x68c/0x11c0
-[  345.193517]
-[  345.193517] stack backtrace:
-[  345.197910] CPU: 2 PID: 0 Comm: swapper/2 Not tainted 5.10.0-rc7-02296-g3f43bd6f2c3b-ab89 #1
-[  345.206389] Hardware name: ARM LTD ARM Juno Development Platform/ARM Juno Development Platform, BIOS EDK II Oct 19 2019
-[  345.217215] Call trace:
-[  345.219691]  dump_backtrace+0x0/0x2b8
-[  345.223383]  show_stack+0x18/0x68
-[  345.226731]  dump_stack+0x110/0x188
-[  345.230255]  __lock_acquire+0x23f0/0x2410
-[  345.234300]  lock_acquire+0x3b8/0x730
-[  345.237997]  _raw_spin_lock_irqsave+0x80/0x168
-[  345.242476]  rcu_dump_cpu_stacks+0x7c/0x14c
-[  345.246693]  rcu_sched_clock_irq+0xfd4/0x11c0
-[  345.251087]  update_process_times+0x84/0xe0
-[  345.255306]  tick_sched_handle.isra.0+0x68/0x98
-[  345.259871]  tick_sched_timer+0x60/0xd8
-[  345.263742]  __hrtimer_run_queues+0x534/0x9e0
-[  345.268134]  hrtimer_interrupt+0x1a8/0x398
-[  345.272264]  tick_receive_broadcast+0x60/0x88
-[  345.276657]  ipi_handler+0x250/0x4b8
-[  345.280270]  handle_percpu_devid_fasteoi_ipi+0x138/0x4f0
-[  345.285619]  generic_handle_irq+0x4c/0x68
-[  345.289661]  __handle_domain_irq+0x9c/0x118
-[  345.293880]  gic_handle_irq+0xdc/0x118
-[  345.297661]  el1_irq+0xc8/0x180
-[  345.300835]  cpuidle_enter_state+0x16c/0x810
-[  345.305139]  cpuidle_enter+0x4c/0x78
-[  345.308749]  call_cpuidle+0x44/0x88
-[  345.312271]  do_idle+0x2d4/0x338
-[  345.315532]  cpu_startup_entry+0x24/0x68
-[  345.319491]  secondary_start_kernel+0x1d4/0x2d8
-
-Thanks
-
---
-Qais Yousef
+Best wishes,
+Guillaume
