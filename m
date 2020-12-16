@@ -2,192 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EEE12DBF55
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 12:27:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA312DBF57
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 12:27:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725730AbgLPL0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 06:26:13 -0500
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:41350 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725274AbgLPL0M (ORCPT
+        id S1725817AbgLPL1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 06:27:03 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:42866 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725274AbgLPL1C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 06:26:12 -0500
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BGBMmWJ005254;
-        Wed, 16 Dec 2020 05:25:23 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=Z/vY/iQ2I+iiJtMr3mHJg0NgckGDdZkXzcZBFOYHIpQ=;
- b=BWPlQ8k/efhEWeFJfSgyZmKAMWt4+aKSms9lYhOuxzeUS7B6qt4rYeSnvB/54yK9f9e5
- AlJFgi6n7bIbGl6LZGFZ4Ye36OIiSbmvVUwa6QDYvoQ5Cj+F8EZ1eeO/KhsOc57iEnQw
- yBTAhK7A5S2PNRBOLpR9aBtT1jPy6mjq2+nvClG+eMpCZkqsabCmTDgjgP+60H9lVhfu
- kZVl3/iiQCG1pFCdW3nn0zbT10GDV8uIYQpqJeZ6JGdW9MYcu7WN3ebVVRW32sP0nipT
- TJ5LZ91zQ58iJGo9s6RDyKCBM3gqUDbC3vvWLJxO8DcRYFLA4cJ8A5tWQpbfm2KPkeVs iQ== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 35cv56n9b7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 16 Dec 2020 05:25:23 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 16 Dec
- 2020 11:25:21 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Wed, 16 Dec 2020 11:25:21 +0000
-Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.64.236])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E96E22AB;
-        Wed, 16 Dec 2020 11:25:14 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <broonie@kernel.org>
-CC:     <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH] ASoC: wm_adsp: Improve handling of raw byte streams
-Date:   Wed, 16 Dec 2020 11:25:12 +0000
-Message-ID: <20201216112512.26503-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
+        Wed, 16 Dec 2020 06:27:02 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kpUwb-0003B8-76; Wed, 16 Dec 2020 11:26:09 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: atmel: fix spelling mistake in Kconfig "programable" -> "programmable"
+Date:   Wed, 16 Dec 2020 11:26:08 +0000
+Message-Id: <20201216112608.11385-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 spamscore=0
- clxscore=1015 impostorscore=0 priorityscore=1501 phishscore=0 mlxscore=0
- mlxlogscore=644 suspectscore=0 bulkscore=0 malwarescore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012160073
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the register map is 16-bit or 32-bit big-endian, the 24-bit
-DSP words appear padded and with the bytes swapped. When reading a
-raw stream of bytes, the pad bytes must be removed and the data bytes
-swapped back to their original order.
+From: Colin Ian King <colin.king@canonical.com>
 
-The previous implementation of this assumed that the be32_to_cpu() in
-wm_adsp_read_data_block() would swap back to little-endian. But this is
-obviously only true on a little-endian CPU. It also made two walks
-through the data, once to endian-swap and again to strip the pad bytes.
+There are a couple of spelling mistakes in the Kconfig help text. Fix them.
 
-This patch re-works the code so that the endian-swap and unpad are done
-together in a single walk, and it is not dependent on the endianness of
-the CPU. The data_word_size argument to wm_adsp_remove_padding() has been
-dropped because currently this is always 3.
-
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- sound/soc/codecs/wm_adsp.c | 55 +++++++++++++++++++++-----------------
- 1 file changed, 30 insertions(+), 25 deletions(-)
+ sound/soc/atmel/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index bcf18bf15a02..7c52ada10af3 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -3662,12 +3662,12 @@ int wm_adsp_compr_get_caps(struct snd_soc_component *component,
- }
- EXPORT_SYMBOL_GPL(wm_adsp_compr_get_caps);
+diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
+index 142373ec411a..9fe9471f4514 100644
+--- a/sound/soc/atmel/Kconfig
++++ b/sound/soc/atmel/Kconfig
+@@ -143,7 +143,7 @@ config SND_MCHP_SOC_SPDIFTX
+ 	  - sama7g5
  
--static int wm_adsp_read_data_block(struct wm_adsp *dsp, int mem_type,
--				   unsigned int mem_addr,
--				   unsigned int num_words, u32 *data)
-+static int wm_adsp_read_raw_data_block(struct wm_adsp *dsp, int mem_type,
-+				       unsigned int mem_addr,
-+				       unsigned int num_words, __be32 *data)
- {
- 	struct wm_adsp_region const *mem = wm_adsp_find_region(dsp, mem_type);
--	unsigned int i, reg;
-+	unsigned int reg;
- 	int ret;
+ 	  This S/PDIF TX driver is compliant with IEC-60958 standard and
+-	  includes programable User Data and Channel Status fields.
++	  includes programmable User Data and Channel Status fields.
  
- 	if (!mem)
-@@ -3680,16 +3680,22 @@ static int wm_adsp_read_data_block(struct wm_adsp *dsp, int mem_type,
- 	if (ret < 0)
- 		return ret;
+ config SND_MCHP_SOC_SPDIFRX
+ 	tristate "Microchip ASoC driver for boards using S/PDIF RX"
+@@ -157,5 +157,5 @@ config SND_MCHP_SOC_SPDIFRX
+ 	  - sama7g5
  
--	for (i = 0; i < num_words; ++i)
--		data[i] = be32_to_cpu(data[i]) & 0x00ffffffu;
--
- 	return 0;
- }
- 
- static inline int wm_adsp_read_data_word(struct wm_adsp *dsp, int mem_type,
- 					 unsigned int mem_addr, u32 *data)
- {
--	return wm_adsp_read_data_block(dsp, mem_type, mem_addr, 1, data);
-+	__be32 raw;
-+	int ret;
-+
-+	ret = wm_adsp_read_raw_data_block(dsp, mem_type, mem_addr, 1, &raw);
-+	if (ret)
-+		return ret;
-+
-+	*data = be32_to_cpu(raw) & 0x00ffffffu;
-+
-+	return 0;
- }
- 
- static int wm_adsp_write_data_word(struct wm_adsp *dsp, int mem_type,
-@@ -3722,18 +3728,22 @@ static inline int wm_adsp_buffer_write(struct wm_adsp_compr_buf *buf,
- 				       buf->host_buf_ptr + field_offset, data);
- }
- 
--static void wm_adsp_remove_padding(u32 *buf, int nwords, int data_word_size)
-+static void wm_adsp_remove_padding(u32 *buf, int nwords)
- {
--	u8 *pack_in = (u8 *)buf;
-+	const __be32 *pack_in = (__be32 *)buf;
- 	u8 *pack_out = (u8 *)buf;
--	int i, j;
-+	int i;
- 
--	/* Remove the padding bytes from the data read from the DSP */
-+	/*
-+	 * DSP words from the register map have pad bytes and the data bytes
-+	 * are in swapped order. This swaps back to the original little-endian
-+	 * order and strips the pad bytes.
-+	 */
- 	for (i = 0; i < nwords; i++) {
--		for (j = 0; j < data_word_size; j++)
--			*pack_out++ = *pack_in++;
--
--		pack_in += sizeof(*buf) - data_word_size;
-+		u32 word = be32_to_cpu(*pack_in++);
-+		*pack_out++ = (u8)word;
-+		*pack_out++ = (u8)(word >> 8);
-+		*pack_out++ = (u8)(word >> 16);
- 	}
- }
- 
-@@ -3917,12 +3927,7 @@ static int wm_adsp_buffer_parse_coeff(struct wm_coeff_ctl *ctl)
- 		return -EINVAL;
- 	}
- 
--	for (i = 0; i < ARRAY_SIZE(coeff_v1.name); i++)
--		coeff_v1.name[i] = be32_to_cpu(coeff_v1.name[i]);
--
--	wm_adsp_remove_padding((u32 *)&coeff_v1.name,
--			       ARRAY_SIZE(coeff_v1.name),
--			       WM_ADSP_DATA_WORD_SIZE);
-+	wm_adsp_remove_padding((u32 *)&coeff_v1.name, ARRAY_SIZE(coeff_v1.name));
- 
- 	buf->name = kasprintf(GFP_KERNEL, "%s-dsp-%s", ctl->dsp->part,
- 			      (char *)&coeff_v1.name);
-@@ -4261,12 +4266,12 @@ static int wm_adsp_buffer_capture_block(struct wm_adsp_compr *compr, int target)
- 		return 0;
- 
- 	/* Read data from DSP */
--	ret = wm_adsp_read_data_block(buf->dsp, mem_type, adsp_addr,
--				      nwords, compr->raw_buf);
-+	ret = wm_adsp_read_raw_data_block(buf->dsp, mem_type, adsp_addr,
-+					  nwords, compr->raw_buf);
- 	if (ret < 0)
- 		return ret;
- 
--	wm_adsp_remove_padding(compr->raw_buf, nwords, WM_ADSP_DATA_WORD_SIZE);
-+	wm_adsp_remove_padding(compr->raw_buf, nwords);
- 
- 	/* update read index to account for words read */
- 	buf->read_index += nwords;
+ 	  This S/PDIF RX driver is compliant with IEC-60958 standard and
+-	  includes programable User Data and Channel Status fields.
++	  includes programmable User Data and Channel Status fields.
+ endif
 -- 
-2.20.1
+2.29.2
 
