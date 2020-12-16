@@ -2,100 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B943E2DC193
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:50:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 754D72DC19D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:52:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726426AbgLPNth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 08:49:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726422AbgLPNth (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 08:49:37 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 683EBC061794;
-        Wed, 16 Dec 2020 05:48:57 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id hk16so1634736pjb.4;
-        Wed, 16 Dec 2020 05:48:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jVpMaa65XdUi0ZF2chjG5GMbEJ9ODIn4ft7XMeRkbY0=;
-        b=unncvyMdNNks6o+nJ8eLUqBGOOiVyMLMlDWHVN9FF/wwwdj6WLzh+ax0l35ig/b7YC
-         JRd0QjdO5cB+K31pRBA23nUxIaFUJAhmlgLmy1YevjsN7DJ1RiLy5lyOaexZNZ7ZxdSD
-         DbrIUbFfoAjgBP/f8jJKcoycJ/rTDOaLWYdqHRFiXXGDa9vXDPIwDsEPp6w6Wrvj8cSr
-         /IvvR+uvMXUC/hHK6WmUidtx+ZPfqUQm6YXVw04R1TXY/NrLNqzgXrV3Cu2c8bmubZYc
-         Zge4KpHA7uKc1QVtM/PDTLvGuB4wKMP/ry/1Di304RaPC6gx5UP8MOrMqfWjdo6b7yXN
-         0BYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jVpMaa65XdUi0ZF2chjG5GMbEJ9ODIn4ft7XMeRkbY0=;
-        b=CzRxnYt8ZEQNQ6+rZrK8N/EiHuBYW0l0+xZUAMA7eny4yAJFLf1k5dDHu+r1oY3yTk
-         2wWaM1mKgvWcrSFv6ldRFcpmWGJAhux85RhdQtlhSZs5wRseQigkVP3UkJZTLopHzMHq
-         7m5xouxfIwbZiQ06lhMpqHNTK7m6qq/KRHmhbEF1RVdo2T4odfEm8nGRSipap1WrXywI
-         XORn3cVV4L6Fh/dYtcUSIVrzBcFDlo5uTmyDHScJ+YvopoM+Ee8Qu3a0rgb6dTPF6QuQ
-         Vm7Pmsgi9Ja5ufq9c6l3YqGjou4AJQ9P9j0BURFOtzkokysvwZKuLqifCHK6WwYZ0udS
-         f3BA==
-X-Gm-Message-State: AOAM532+gAFqzIBMdfgavHDl7d5VvjRkF30OxeCGVJA2YX+qBmsjeSo1
-        dySm7i6wU2+tmEyBmvzqC917HHvf/Ez56n6LKQw=
-X-Google-Smtp-Source: ABdhPJyAABLpvk+ZRkJGYvaZMZCswconILHy3E5pbCnpNvDl+ZAEXJJMK5TjY/ccnYShkp+jTG7/BKQwg4KGvCfQvy0=
-X-Received: by 2002:a17:902:e98c:b029:da:cb88:f11d with SMTP id
- f12-20020a170902e98cb02900dacb88f11dmr31419433plb.17.1608126536383; Wed, 16
- Dec 2020 05:48:56 -0800 (PST)
-MIME-Version: 1.0
-References: <20201216131107.14339-1-zhengyongjun3@huawei.com>
-In-Reply-To: <20201216131107.14339-1-zhengyongjun3@huawei.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 16 Dec 2020 15:49:44 +0200
-Message-ID: <CAHp75VdzQJrzgUOpxseNvv9ZhSrh1Gnu7W-5CQM-kXh4o5fsGg@mail.gmail.com>
-Subject: Re: [PATCH -next] platform: intel-mid: device_libs: convert comma to semicolon
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
+        id S1726433AbgLPNv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 08:51:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45750 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726362AbgLPNv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 08:51:26 -0500
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        "H. Peter Anvin" <hpa@zytor.com>, Jiri Kosina <trivial@kernel.org>
+Subject: [PATCH RFC] x86/sgx: Add trivial NUMA allocation
+Date:   Wed, 16 Dec 2020 15:50:31 +0200
+Message-Id: <20201216135031.21518-1-jarkko@kernel.org>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 3:11 PM Zheng Yongjun <zhengyongjun3@huawei.com> wrote:
->
-> Replace a comma between expression statements by a semicolon.
+Create a pointer array for each NUMA node with the references to the
+contained EPC sections. Use this in __sgx_alloc_epc_page() to knock the
+current NUMA node before the others.
 
-Acked-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Suggested-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+---
+ arch/x86/kernel/cpu/sgx/main.c | 66 +++++++++++++++++++++++++++++++---
+ 1 file changed, 61 insertions(+), 5 deletions(-)
 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> ---
->  arch/x86/platform/intel-mid/device_libs/platform_bt.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/x86/platform/intel-mid/device_libs/platform_bt.c b/arch/x86/platform/intel-mid/device_libs/platform_bt.c
-> index 31dda18bb370..2930b6e9473e 100644
-> --- a/arch/x86/platform/intel-mid/device_libs/platform_bt.c
-> +++ b/arch/x86/platform/intel-mid/device_libs/platform_bt.c
-> @@ -88,8 +88,8 @@ static int __init bt_sfi_init(void)
->         memset(&info, 0, sizeof(info));
->         info.fwnode     = ddata->dev->fwnode;
->         info.parent     = ddata->dev;
-> -       info.name       = ddata->name,
-> -       info.id         = PLATFORM_DEVID_NONE,
-> +       info.name       = ddata->name;
-> +       info.id         = PLATFORM_DEVID_NONE;
->
->         pdev = platform_device_register_full(&info);
->         if (IS_ERR(pdev))
-> --
-> 2.22.0
->
-
-
+diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+index c519fc5f6948..0da510763c47 100644
+--- a/arch/x86/kernel/cpu/sgx/main.c
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -13,6 +13,13 @@
+ #include "encl.h"
+ #include "encls.h"
+ 
++struct sgx_numa_node {
++	struct sgx_epc_section *sections[SGX_MAX_EPC_SECTIONS];
++	int nr_sections;
++};
++
++static struct sgx_numa_node sgx_numa_nodes[MAX_NUMNODES];
++static int sgx_nr_numa_nodes;
+ struct sgx_epc_section sgx_epc_sections[SGX_MAX_EPC_SECTIONS];
+ static int sgx_nr_epc_sections;
+ static struct task_struct *ksgxd_tsk;
+@@ -473,6 +480,25 @@ static struct sgx_epc_page *__sgx_alloc_epc_page_from_section(struct sgx_epc_sec
+ 	return page;
+ }
+ 
++static struct sgx_epc_page *__sgx_alloc_epc_page_from_node(int nid)
++{
++	struct sgx_numa_node *node = &sgx_numa_nodes[nid];
++	struct sgx_epc_section *section;
++	struct sgx_epc_page *page;
++	int i;
++
++	for (i = 0; i < node->nr_sections; i++) {
++		section = node->sections[i];
++
++		page = __sgx_alloc_epc_page_from_section(section);
++		if (page)
++			return page;
++	}
++
++	return NULL;
++}
++
++
+ /**
+  * __sgx_alloc_epc_page() - Allocate an EPC page
+  *
+@@ -485,14 +511,19 @@ static struct sgx_epc_page *__sgx_alloc_epc_page_from_section(struct sgx_epc_sec
+  */
+ struct sgx_epc_page *__sgx_alloc_epc_page(void)
+ {
+-	struct sgx_epc_section *section;
+ 	struct sgx_epc_page *page;
++	int nid = numa_node_id();
+ 	int i;
+ 
+-	for (i = 0; i < sgx_nr_epc_sections; i++) {
+-		section = &sgx_epc_sections[i];
++	page = __sgx_alloc_epc_page_from_node(nid);
++	if (page)
++		return page;
+ 
+-		page = __sgx_alloc_epc_page_from_section(section);
++	for (i = 0; i < sgx_nr_numa_nodes; i++) {
++		if (i == nid)
++			continue;
++
++		page = __sgx_alloc_epc_page_from_node(i);
+ 		if (page)
+ 			return page;
+ 	}
+@@ -661,11 +692,28 @@ static inline u64 __init sgx_calc_section_metric(u64 low, u64 high)
+ 	       ((high & GENMASK_ULL(19, 0)) << 32);
+ }
+ 
++static int __init sgx_pfn_to_nid(unsigned long pfn)
++{
++	pg_data_t *pgdat;
++	int nid;
++
++	for (nid = 0; nid < nr_node_ids; nid++) {
++		pgdat = NODE_DATA(nid);
++
++		if (pfn >= pgdat->node_start_pfn &&
++		    pfn < (pgdat->node_start_pfn + pgdat->node_spanned_pages))
++			return nid;
++	}
++
++	return 0;
++}
++
+ static bool __init sgx_page_cache_init(void)
+ {
+ 	u32 eax, ebx, ecx, edx, type;
++	struct sgx_numa_node *node;
+ 	u64 pa, size;
+-	int i;
++	int i, nid;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(sgx_epc_sections); i++) {
+ 		cpuid_count(SGX_CPUID, i + SGX_CPUID_EPC, &eax, &ebx, &ecx, &edx);
+@@ -690,6 +738,14 @@ static bool __init sgx_page_cache_init(void)
+ 		}
+ 
+ 		sgx_nr_epc_sections++;
++
++		nid = sgx_pfn_to_nid(PFN_DOWN(pa));
++		node = &sgx_numa_nodes[nid];
++
++		node->sections[node->nr_sections] = &sgx_epc_sections[i];
++		node->nr_sections++;
++
++		sgx_nr_numa_nodes = max(sgx_nr_numa_nodes, nid + 1);
+ 	}
+ 
+ 	if (!sgx_nr_epc_sections) {
 -- 
-With Best Regards,
-Andy Shevchenko
+2.27.0
+
