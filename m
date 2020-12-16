@@ -2,51 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B492DC96D
+	by mail.lfdr.de (Postfix) with ESMTP id 0D8872DC96C
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 00:12:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728373AbgLPXLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1727893AbgLPXLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 16 Dec 2020 18:11:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56388 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:56376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727512AbgLPXLc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726312AbgLPXLc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 16 Dec 2020 18:11:32 -0500
-Subject: Re: [GIT PULL] MFD for v5.11
+Subject: Re: [GIT PULL] memblock: debug enhancements
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608160252;
-        bh=QI3tuDbOwBctAbTU058tSP05dcrLiMaxVHhf5v6SgdU=;
+        s=k20201202; t=1608160251;
+        bh=qQUg28ueUZHU0ojUz/H9tqiaUIwXSE9t5lC+GOyVQNk=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=sR4cOZeUu914mvkRyw5TdogK/BiuTm0PPu2x1SrIcPF73AcMmdIMZg38j4Ui2X8p6
-         BIhoj6BYWKV7CJkKHSXV4P9F9q3jHaAPVIbA23Fgofnlk653kIV4mu5TtxpQemVMIJ
-         RpXy/hI0e+3ofvZDsmets0Subwr1b9by8NaZV+5b8e5VZm4MBvZ5jBJ3dxICXS6zJN
-         /4/GqZCLlhxkf4/WofTJIo6NMd6/jLD6LeVIyMghDySobgp9wA8H8pzS/6zIRmjJGi
-         jmDf0cOYfAOFchgC8sq5Ka+GMtoX0eyUqu42Nv/V+r+Uk2MN7VH1mLQDyLRTwwmtTZ
-         EJ4EgmFseLj1g==
+        b=Ko3g05qmKyzOBwBMlPhhCbbdby3KDH7wcl0gJ7q5Uot43RpbxDCCyyO8hvRA58nd6
+         JKaI2UB9Lt/G2scG7894oAbYySE8bvwEJv8RewjfX4p6v/nEHKztPOjpAzFMvHjwzI
+         vs+yQzbUZ9sMIUW+oGahqlb7ms3wTAB9XakxYwB05SKLSAZa6wDbP6ClVc53GMDdpz
+         fzfHpwgUzX3oH7g8W7cbjszJWLSEDQxUCUFFW9dcOtHxESq+LEnpPp7f8epkH1rzms
+         5YGyWu/AEkg6CfFDOAYHSw4YarWl9xmMtYFQr/e7bMJ2t1rYDQwV7W6Bq5T8OcPIlj
+         80XYFRXXkhkUw==
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201216074534.GC4776@dell>
-References: <20201216074534.GC4776@dell>
+In-Reply-To: <20201214131731.GA247200@kernel.org>
+References: <20201214131731.GA247200@kernel.org>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201216074534.GC4776@dell>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git mfd-next-5.11
-X-PR-Tracked-Commit-Id: 0cd3aa995740eabf8af1c794ac1d9ae314c928c3
+X-PR-Tracked-Message-Id: <20201214131731.GA247200@kernel.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/rppt/memblock.git/ tags/memblock-v5.11-rc1
+X-PR-Tracked-Commit-Id: 5bdba520c1b318578caffd325515b35d187f8a0e
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 278f54c46164e9859090dde7e4ceede830c6beb6
-Message-Id: <160816025192.24445.10695627888322975816.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: fff875a18382f1983b4a27be9282e697dbccb3db
+Message-Id: <160816025139.24445.6413430286923393867.pr-tracker-bot@kernel.org>
 Date:   Wed, 16 Dec 2020 23:10:51 +0000
-To:     Lee Jones <lee.jones@linaro.org>
+To:     Mike Rapoport <rppt@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Faiyaz Mohammed <faiyazm@codeaurora.org>,
+        vinmenon@codeaurora.org, Mike Rapoport <rppt@linux.ibm.com>,
+        Mike Rapoport <rppt@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 16 Dec 2020 07:45:34 +0000:
+The pull request you sent on Mon, 14 Dec 2020 15:17:31 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git mfd-next-5.11
+> https://git.kernel.org/pub/scm/linux/kernel/git/rppt/memblock.git/ tags/memblock-v5.11-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/278f54c46164e9859090dde7e4ceede830c6beb6
+https://git.kernel.org/torvalds/c/fff875a18382f1983b4a27be9282e697dbccb3db
 
 Thank you!
 
