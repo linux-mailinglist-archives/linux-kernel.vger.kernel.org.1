@@ -2,75 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4790C2DC0F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:17:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E514E2DC100
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:18:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726292AbgLPNQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 08:16:41 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9535 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgLPNQl (ORCPT
+        id S1726235AbgLPNRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 08:17:30 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:60973 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726224AbgLPNR3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 08:16:41 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CwwbX40Dpzhmwh;
-        Wed, 16 Dec 2020 21:15:20 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 16 Dec 2020 21:15:49 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH net-next] mscc: ocelot_vcap: Delete unused variable payload
-Date:   Wed, 16 Dec 2020 21:16:22 +0800
-Message-ID: <20201216131622.14773-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        Wed, 16 Dec 2020 08:17:29 -0500
+X-UUID: bea846b11c0f45cba0aa92489afaf1ce-20201216
+X-UUID: bea846b11c0f45cba0aa92489afaf1ce-20201216
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 932496842; Wed, 16 Dec 2020 21:16:43 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 16 Dec 2020 21:16:38 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 16 Dec 2020 21:16:39 +0800
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>
+CC:     <beanhuo@micron.com>, <asutoshd@codeaurora.org>,
+        <cang@codeaurora.org>, <matthias.bgg@gmail.com>,
+        <bvanassche@acm.org>, <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
+        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
+        <alice.chao@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
+Subject: [PATCH v2 0/4] scsi: ufs: Cleanup and refactor clock scaling
+Date:   Wed, 16 Dec 2020 21:16:35 +0800
+Message-ID: <20201216131639.4128-1-stanley.chu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 6911A1B75C51CE1585C5596884292F91209385E11FA99098B076F220C13A7F152000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable `payload` is set but not used, so delete it.
+Hi,
+This series cleans up and refactors clk-scaling feature, and shall not change any functionality.
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- drivers/net/ethernet/mscc/ocelot_vcap.c | 4 ----
- 1 file changed, 4 deletions(-)
+This series is based on Can's series "Three changes related with UFS clock scaling" in 5.10/scsi-fixes branch in Martin's tree.
 
-diff --git a/drivers/net/ethernet/mscc/ocelot_vcap.c b/drivers/net/ethernet/mscc/ocelot_vcap.c
-index d8c778ee6f1b..c474b63bf228 100644
---- a/drivers/net/ethernet/mscc/ocelot_vcap.c
-+++ b/drivers/net/ethernet/mscc/ocelot_vcap.c
-@@ -671,12 +671,10 @@ static void is1_entry_set(struct ocelot *ocelot, int ix,
- {
- 	const struct vcap_props *vcap = &ocelot->vcap[VCAP_IS1];
- 	struct ocelot_vcap_key_vlan *tag = &filter->vlan;
--	struct ocelot_vcap_u64 payload;
- 	struct vcap_data data;
- 	int row = ix / 2;
- 	u32 type;
- 
--	memset(&payload, 0, sizeof(payload));
- 	memset(&data, 0, sizeof(data));
- 
- 	/* Read row */
-@@ -811,11 +809,9 @@ static void es0_entry_set(struct ocelot *ocelot, int ix,
- {
- 	const struct vcap_props *vcap = &ocelot->vcap[VCAP_ES0];
- 	struct ocelot_vcap_key_vlan *tag = &filter->vlan;
--	struct ocelot_vcap_u64 payload;
- 	struct vcap_data data;
- 	int row = ix;
- 
--	memset(&payload, 0, sizeof(payload));
- 	memset(&data, 0, sizeof(data));
- 
- 	/* Read row */
+However this series may not be required to be merged to 5.10. The choice of base branch is simply making these patches easy to be reviewed because this series is based on clk-scaling fixes by Can. If this series is decided not being merged to 5.10, then I would rebase it to 5.11/scsi-queue.
+
+Changes since v1:
+  - Refactor ufshcd_clk_scaling_suspend() in patch [3/4]
+  - Change function name from ufshcd_clk_scaling_pm() to ufshcd_clk_scaling_suspend() in patch [3/4]
+  - Refine patch titles
+
+Stanley Chu (4):
+  scsi: ufs: Refactor cancelling clkscaling works
+  scsi: ufs: Remove redundant null checking of devfreq instance
+  scsi: ufs: Cleanup and refactor clk-scaling feature
+  scsi: ufs: Fix build warning by incorrect function description
+
+ drivers/scsi/ufs/ufshcd.c | 90 +++++++++++++++++++--------------------
+ 1 file changed, 43 insertions(+), 47 deletions(-)
+
 -- 
-2.22.0
+2.18.0
 
