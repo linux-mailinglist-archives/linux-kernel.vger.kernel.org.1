@@ -2,70 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF1972DC062
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 13:38:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D07282DC066
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 13:38:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725910AbgLPMgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 07:36:49 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:44723 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725385AbgLPMgt (ORCPT
+        id S1725922AbgLPMhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 07:37:14 -0500
+Received: from mail-oo1-f53.google.com ([209.85.161.53]:38386 "EHLO
+        mail-oo1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725274AbgLPMhO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 07:36:49 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kpW2G-0007cd-IZ; Wed, 16 Dec 2020 12:36:04 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Sunil Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        George Cherian <george.cherian@marvell.com>,
-        netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] octeontx2-af: Fix undetected unmap PF error check
-Date:   Wed, 16 Dec 2020 12:36:04 +0000
-Message-Id: <20201216123604.15369-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.29.2
+        Wed, 16 Dec 2020 07:37:14 -0500
+Received: by mail-oo1-f53.google.com with SMTP id i18so5666903ooh.5;
+        Wed, 16 Dec 2020 04:36:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gNmIFhL3IA2YySUy5Ex3F/eKMw1MQCTRrjCKuFE3zsI=;
+        b=PFZqi83Csq72eEcxOurRet2ZmXbAPfxO5NgxRI6RgQmzBiZ3rtPtz8lXTpYnKtt4kM
+         6/E5U8PdAV3SrPoqnk4D2pIcepCrE14flisO/J87fw5yNpeTHGIFZvG38y2u7f1bsZom
+         Ev8mg8x9Apl2NlIxZAvat28Au3Ia0CXSWk7hPPzxiDvUwWRVN3jnNEUVnWSpn7IGU224
+         aWAA8OLfwGxDJgaNCSco/3PlmOPxtnrPCUPYWQY/Uq6a4W3FclpAKwg3qf3ActyOJo0q
+         eo4Z/OQ3krnD6JQhPMG/ccKMeZhiH3wJ+Lzs7w1GpLrVD6KtrsoFe4FLFTfImnoB2bKI
+         jMAQ==
+X-Gm-Message-State: AOAM53002y3xnUlr8qVm8BD1qL1KhC0oqxHF0cdE4WHboN8uLDWcdECj
+        h27LQ25cDdSD82F4CWhzsqlHXV4MUcQT9bBK1Zr7bWG/
+X-Google-Smtp-Source: ABdhPJz5gSJ0pvws1OiEx7u0oWXkdp7ivnWsEjRXTBTRiDHy9EzbZvcQ2YmSi80r4Rn2zzeThNggmQ2EQZVWvScT16w=
+X-Received: by 2002:a4a:ca14:: with SMTP id w20mr25302230ooq.11.1608122193481;
+ Wed, 16 Dec 2020 04:36:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20201216092321.413262-1-tudor.ambarus@microchip.com>
+In-Reply-To: <20201216092321.413262-1-tudor.ambarus@microchip.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 16 Dec 2020 13:36:22 +0100
+Message-ID: <CAMuHMdW5pV0P9B8AKSw82DXBL7jBa4mHHJJcwtbSCP26o5dMJw@mail.gmail.com>
+Subject: Re: [PATCH] spi: Fix the clamping of spi->max_speed_hz
+To:     Tudor Ambarus <tudor.ambarus@microchip.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Wed, Dec 16, 2020 at 10:23 AM Tudor Ambarus
+<tudor.ambarus@microchip.com> wrote:
+> If spi->controller->max_speed_hz is zero, a non-zero spi->max_speed_hz
+> will be overwritten by zero. Make sure spi->controller->max_speed_hz
+> is not zero when clamping spi->max_speed_hz.
+>
+> Put the spi->controller->max_speed_hz non-zero check higher in the if,
+> so that we avoid a superfluous init to zero when both spi->max_speed_hz
+> and spi->controller->max_speed_hz are zero.
+>
+> Fixes: 9326e4f1e5dd ("spi: Limit the spi device max speed to controller's max speed")
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-Currently the check for an unmap PF error is always going to be false
-because intr_val is a 32 bit int and is being bit-mask checked against
-1ULL << 32.  Fix this by making intr_val a u64 to match the type at it
-is copied from, namely npa_event_context->npa_af_rvu_ge.
+Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Addresses-Coverity: ("Operands don't affect result")
-Fixes: f1168d1e207c ("octeontx2-af: Add devlink health reporters for NPA")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Gr{oetje,eeting}s,
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c
-index 3f9d0ab6d5ae..bc0e4113370e 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c
-@@ -275,7 +275,8 @@ static int rvu_npa_report_show(struct devlink_fmsg *fmsg, void *ctx,
- 			       enum npa_af_rvu_health health_reporter)
- {
- 	struct rvu_npa_event_ctx *npa_event_context;
--	unsigned int intr_val, alloc_dis, free_dis;
-+	unsigned int alloc_dis, free_dis;
-+	u64 intr_val;
- 	int err;
- 
- 	npa_event_context = ctx;
+                        Geert
+
 -- 
-2.29.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
