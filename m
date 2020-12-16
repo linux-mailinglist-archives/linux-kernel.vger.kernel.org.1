@@ -2,98 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A27B2DC0ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:16:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1334E2DC0EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:16:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726272AbgLPNPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 08:15:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57026 "EHLO
+        id S1726278AbgLPNPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 08:15:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726137AbgLPNPu (ORCPT
+        with ESMTP id S1726137AbgLPNPv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 08:15:50 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF048C0617A6;
-        Wed, 16 Dec 2020 05:15:09 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id h205so4694093lfd.5;
-        Wed, 16 Dec 2020 05:15:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=M2hDyNKbfINfDFRORNR8XoQ5cqYbb7cXlIAuvUco70E=;
-        b=r1M6lNd1dK0MDMzthu2JU42zFfdRbmIN1RJ77QVCrgshlM6fY4gK2LkLmUCVsnFFPH
-         B41sKXEpCiTzWKMCUCByEYPil5XYC8LpsLVXecRDUQtjsd5sG1LLfPFI8/mH3haIYGE7
-         mFRPI+YVVckUZEExAPpY6WkVKQa7/LbGf7kCzujSEcLsAgCK2ckYiJfKAcT3BG8XZs5m
-         pb7ijRc209Zo2xvjrj7YE8w3levq+OSz5sL4d3ZSK0y5HqGkLnHfGfAQRrlu4b5Uyjdu
-         9zmO8rtCt38jSbb+eQUf7fh8oFxhfv/g39zxdU0RPor/kKcGtQvK/zXv/AJk0K4/vD6U
-         KVOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=M2hDyNKbfINfDFRORNR8XoQ5cqYbb7cXlIAuvUco70E=;
-        b=W80/d05wSXsbz1qPnSOMwqcRAFjsFp1K04mdFCggHprUYNyXphTWgqNyBszlru1+wc
-         N3oKUfH6XK8rd5fUegb+yDTtoAvw3nA3q+LNQQZO4hgxcyx8xIXBY7qHAmvmrPBtDdMB
-         GKuXZ2LCRN/tfewHVSXD7yV9M/FP9Sv5UmSKFzkBaNwQvmj9U19FFLTUSfYBAq4UmTs9
-         exQPfnFWhUNgGupaMrJw9RrUotUANR6tsCibWT9uEBc2KojSU/yIKIm4r8GDUQSYhaXM
-         PxaNLWM8JVCPn8UdJH1/Xtl6l5Vj/16rN4nJKzm87qIUfaDumBdYRX7oVbP8mOmv0jkD
-         HUPA==
-X-Gm-Message-State: AOAM530u1j0Yn7VT2Tl/CZMNe1QDissNkd/ZjGvpnJaUnni2h3YAyiWj
-        mU+hiY2+QgZaLNqizmHWclc=
-X-Google-Smtp-Source: ABdhPJyXWA0QgL3q7AEk+SqALSfLxFwcsmvaBfVABbY0fFhfid17DwJcUij17H+RJ1GE318GRMK9lQ==
-X-Received: by 2002:a19:770c:: with SMTP id s12mr6889155lfc.367.1608124507954;
-        Wed, 16 Dec 2020 05:15:07 -0800 (PST)
-Received: from localhost.lan (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
-        by smtp.gmail.com with ESMTPSA id n84sm220899lfd.176.2020.12.16.05.15.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 05:15:07 -0800 (PST)
-From:   =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Al Cooper <alcooperx@gmail.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH 3/3] phy: phy-brcm-usb: support BCM4908 binding
-Date:   Wed, 16 Dec 2020 14:14:51 +0100
-Message-Id: <20201216131451.16900-3-zajec5@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201216131451.16900-1-zajec5@gmail.com>
-References: <20201216131451.16900-1-zajec5@gmail.com>
+        Wed, 16 Dec 2020 08:15:51 -0500
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21098C0617A7
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 05:15:10 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by baptiste.telenet-ops.be with bizsmtp
+        id 51F22400B4C55Sk011F2XH; Wed, 16 Dec 2020 14:15:07 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kpWdx-00BAa1-VX; Wed, 16 Dec 2020 14:15:01 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kpWdw-005XVU-SW; Wed, 16 Dec 2020 14:15:00 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Mark Gross <mgross@linux.intel.com>,
+        Mike Healy <mikex.healy@intel.com>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] crypto: CRYPTO_DEV_KEEMBAY_OCS_AES_SM4 should depend on ARCH_KEEMBAY
+Date:   Wed, 16 Dec 2020 14:14:59 +0100
+Message-Id: <20201216131459.1320396-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafał Miłecki <rafal@milecki.pl>
+The Intel Keem Bay Offload and Crypto Subsystem (OCS) is only present on
+Intel Keem Bay SoCs.  Hence add a dependency on ARCH_KEEMBAY, to prevent
+asking the user about this driver when configuring a kernel without
+Intel Keem Bay platform support.
 
-BCM4908 seems to have slightly different registers but work when
-programmed just like the STB one.
+While at it, fix a misspelling of "cipher".
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+Fixes: 88574332451380f4 ("crypto: keembay - Add support for Keem Bay OCS AES/SM4")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- drivers/phy/broadcom/phy-brcm-usb.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/crypto/keembay/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/phy/broadcom/phy-brcm-usb.c b/drivers/phy/broadcom/phy-brcm-usb.c
-index 99fbc7e4138b..63f922a5f29b 100644
---- a/drivers/phy/broadcom/phy-brcm-usb.c
-+++ b/drivers/phy/broadcom/phy-brcm-usb.c
-@@ -285,6 +285,10 @@ static const struct match_chip_info chip_info_7445 = {
- };
+diff --git a/drivers/crypto/keembay/Kconfig b/drivers/crypto/keembay/Kconfig
+index 3c16797b25b9497d..6f62c838a3fa0b2e 100644
+--- a/drivers/crypto/keembay/Kconfig
++++ b/drivers/crypto/keembay/Kconfig
+@@ -1,12 +1,12 @@
+ config CRYPTO_DEV_KEEMBAY_OCS_AES_SM4
+ 	tristate "Support for Intel Keem Bay OCS AES/SM4 HW acceleration"
+-	depends on OF || COMPILE_TEST
++	depends on ARCH_KEEMBAY || COMPILE_TEST
+ 	select CRYPTO_SKCIPHER
+ 	select CRYPTO_AEAD
+ 	select CRYPTO_ENGINE
+ 	help
+ 	  Support for Intel Keem Bay Offload and Crypto Subsystem (OCS) AES and
+-	  SM4 cihper hardware acceleration for use with Crypto API.
++	  SM4 cipher hardware acceleration for use with Crypto API.
  
- static const struct of_device_id brcm_usb_dt_ids[] = {
-+	{
-+		.compatible = "brcm,bcm4908-usb-phy",
-+		.data = &chip_info_7445,
-+	},
- 	{
- 		.compatible = "brcm,bcm7216-usb-phy",
- 		.data = &chip_info_7216,
+ 	  Provides HW acceleration for the following transformations:
+ 	  cbc(aes), ctr(aes), ccm(aes), gcm(aes), cbc(sm4), ctr(sm4), ccm(sm4)
 -- 
-2.26.2
+2.25.1
 
