@@ -2,73 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBAE72DC081
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 13:49:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FF4D2DC084
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 13:49:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726038AbgLPMsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 07:48:23 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:45041 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725778AbgLPMsX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 07:48:23 -0500
-Received: from 1.general.khfeng.us.vpn ([10.172.68.174] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kpWDN-0008Rc-4O; Wed, 16 Dec 2020 12:47:34 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     tiwai@suse.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        alsa-devel@alsa-project.org (moderated list:SOUND),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] ALSA: hda: Continue to probe when codec probe fails
-Date:   Wed, 16 Dec 2020 20:47:24 +0800
-Message-Id: <20201216124726.2842197-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201214060621.1102931-1-kai.heng.feng@canonical.com>
-References: <20201214060621.1102931-1-kai.heng.feng@canonical.com>
+        id S1725835AbgLPMtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 07:49:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54698 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725562AbgLPMtH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 07:49:07 -0500
+Date:   Wed, 16 Dec 2020 12:48:14 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608122906;
+        bh=I2RXJuZVaBdYqyNFhrNGMiFxtnaDICcJLQbR4uuu/Vw=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TmLjvThZ+fmNU1KOFK5yU2ZY27eBh4BLeMXWgSN4xj1/g9DaNXo8DnpEEwpgcbBwU
+         w+yHxP6+hh9criBMRf0zy2gpzWEBiELOrvasOFOOlxuWQZD4E5/EN4h0DtMc0fVOQF
+         xLMmZ20Mxf0hiXolD08zZe1nYZMI356+/qPeZuGTkQHBSa3+vXRuhjei4IcBGtOTNQ
+         BdTsKftBo46Cq0jR7sejZWFTQSZWoqCRYJzuEke7JOft93wb0BHOIPMp0rC5tahucB
+         hRvq29EvHeiyJMz3dOll6e7SX/mY4tSRaEKsrPIF3jDPw8oqaKG9/Ux1A/EW7nMbVs
+         MOhsOcoAWLHdw==
+From:   Mark Brown <broonie@kernel.org>
+To:     Guido =?iso-8859-1?Q?G=FCnther?= <guido.gunther@puri.sm>
+Cc:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "angus.ainslie@puri.sm" <angus.ainslie@puri.sm>
+Subject: Re: [PATCH 1/1] regulators: bd718x7: Add enable times
+Message-ID: <20201216124814.GA4861@sirena.org.uk>
+References: <cover.1608116704.git.agx@sigxcpu.org>
+ <d2b3d053d28ea0f35e7526b523287358c8fe20c2.1608116704.git.agx@sigxcpu.org>
+ <7d4903f67ff81a9a749e75f24af0aea903213c43.camel@fi.rohmeurope.com>
+ <20201216124133.GA31109@bogon.m.sigxcpu.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="6c2NcOVqGQ03X4Wi"
+Content-Disposition: inline
+In-Reply-To: <20201216124133.GA31109@bogon.m.sigxcpu.org>
+X-Cookie: Why are you so hard to ignore?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similar to commit 9479e75fca37 ("ALSA: hda: Keep the controller
-initialization even if no codecs found"), when codec probe fails, it
-doesn't enable runtime suspend, and can prevent graphics card from
-getting powered down:
-[    4.280991] snd_hda_intel 0000:01:00.1: no codecs initialized
 
-$ cat /sys/bus/pci/devices/0000:01:00.1/power/runtime_status
-active
+--6c2NcOVqGQ03X4Wi
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-So mark there's no codec and continue probing to let runtime PM to work.
+On Wed, Dec 16, 2020 at 01:41:33PM +0100, Guido G=FCnther wrote:
+> On Wed, Dec 16, 2020 at 12:29:20PM +0000, Vaittinen, Matti wrote:
 
-BugLink: https://bugs.launchpad.net/bugs/1907212
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- sound/pci/hda/hda_intel.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > > +			.enable_time =3D 144,
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 6852668f1bcb..872a703dee43 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2328,7 +2328,7 @@ static int azx_probe_continue(struct azx *chip)
- 	if (bus->codec_mask) {
- 		err = azx_probe_codecs(chip, azx_max_codecs[chip->driver_type]);
- 		if (err < 0)
--			goto out_free;
-+			bus->codec_mask = 0;
- 	}
- 
- #ifdef CONFIG_SND_HDA_PATCH_LOADER
--- 
-2.29.2
+> > Where are these values obtained from? I have a feeling they might be
+> > board / load specific. If this is the case - can the "regulator-enable-
+> > ramp-delay" from device-tree be used instead to avoid hard-coding board
+> > specific values in the driver? Although, sane defaults would probably
+> > not be a bad idea - if I read code correctly then the constrains from
+> > DT can be used to override these values.
 
+> They're the 'typical values' from the data sheet and it's basically all
+> about setting a default for "regulator-enable-ramp-delay" to avoid
+> having every board do the same. If that's not the right thing todo let
+> me know and i add these to each of our boards (which is where i
+> basically started from but then figured that this would be busywork
+> and every board would hit that problem).
+
+If it's a DCDC they're *probably* generic values rather than board
+specific, they tend to be more predictable as they're regulating much
+more actively than LDOs.
+
+--6c2NcOVqGQ03X4Wi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/aAg0ACgkQJNaLcl1U
+h9Cw4Af/b+jlrUhFYORWueTn4r4j6Oci8BvjZHp+zFMQXl80PX7yfyJD8+qU9S9o
+jd7nG0M+YkCqbzcqQLVBEuFfVJpy0xEFR09a/ScTz5HVvtANuxGec+1rUubww1+s
+eh37NA+xpKLh1SVogtwok7q4Ubj2bBCx590kCxB1hPSx4+LpovV5zQ566+rGWYku
+NsJM04YVOImDr65rza441AF2b5cEBWlNK+zokTcrVJf/J4ue8KquddsV5l/Dln/+
+PAN7zMu/PmDAk8avjfIE9GhXH6BbDRxnzyY7APxQTaZgpkWbeLMhoCT0nLzWuz25
+4X0IuYMoV8RsXP6zOZ8vbyimE7IFyw==
+=zhwQ
+-----END PGP SIGNATURE-----
+
+--6c2NcOVqGQ03X4Wi--
