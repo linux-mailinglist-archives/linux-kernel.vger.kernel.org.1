@@ -2,55 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E1E02DC79F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 21:17:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33C2B2DC7A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 21:17:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727007AbgLPURL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 15:17:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37030 "EHLO mail.kernel.org"
+        id S1728771AbgLPURN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 15:17:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727431AbgLPURL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 15:17:11 -0500
-Subject: Re: [GIT PULL] Hyper-V commits for 5.11
+        id S1728738AbgLPURM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 15:17:12 -0500
+Subject: Re: [GIT PULL] xen: branch for v5.11-rc1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608149790;
-        bh=jgfQaAoV4ebctupq/4HVG22n4AjqmhxSDgj6TUeBExU=;
+        s=k20201202; t=1608149792;
+        bh=WmvOvSHb+S4MEfDf4FDvtuOcycVfyBfLfxYt/7dEbqE=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=FNQCO/qqDDRjrIfp/ewDHW1ehzQfiRNUsMOU8bIPnwSmZyTY89N2n+bfwYk5KJRyL
-         5qPAEiHvlIZysUC+vlia267yv1Wu04yA10PmdNr/Vyqg6zNtG5TW2PcGpj2cyH1AbG
-         bfTelrIhTWPvuuzR3MAMfyVqcYZrl0pIr85nonsflKt5ybDqGNFhfINFGCx7nDqAy/
-         PLCqbGRAiRCMJEmVMqjT7EPmUqem2FTGlNFv8f02TPtUcsQrQE5JZvAgD+bycCvftj
-         B3BdJ/emKHv+iJosFUvkuYuWEatMWf0uJOYLvmpAsiCq751xfjYWjStbVv42T4KFCQ
-         LD1/VwboYTbyQ==
+        b=sbTo8Pu/8B6VP/I4Q+uo+QgmEF37N3agNCMau5MSMHQEmJziEF+dKx4UNeyUmiOCV
+         n6YAtpOMungGOeyPit3YKcMbQVmgPgwqsX4YMy3AQFa5Pp+2eT3xf9sfxkvfot69LY
+         vhg8kwpqwS+a2puZcXn0K0oigK0c9LZMGFiFY2yTo55SjnKZmwA4JqIEz8FnLWgHGz
+         Y34krmmS4Y166UqNGYsOozBQX6wOfizY4RSVSfT4f1nfDlAOJTCIpHYmHtHYNo5I7n
+         6aEqAJAk+69iud3uhDPmecICoHN/YuM3aDUjCjr2IvcNR0PM/J21htvoll5C22YCRa
+         z3q3KzcUXrlNw==
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201214132833.vtqxw46vemhez5mb@liuwe-devbox-debian-v2>
-References: <20201214132833.vtqxw46vemhez5mb@liuwe-devbox-debian-v2>
-X-PR-Tracked-List-Id: <linux-hyperv.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201214132833.vtqxw46vemhez5mb@liuwe-devbox-debian-v2>
-X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-next-signed-20201214
-X-PR-Tracked-Commit-Id: d1df458cbfdb0c3384c03c7fbcb1689bc02a746c
+In-Reply-To: <20201215122606.6874-1-jgross@suse.com>
+References: <20201215122606.6874-1-jgross@suse.com>
+X-PR-Tracked-List-Id: Xen developer discussion <xen-devel.lists.xenproject.org>
+X-PR-Tracked-Message-Id: <20201215122606.6874-1-jgross@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.11-rc1-tag
+X-PR-Tracked-Commit-Id: 1c728719a4da6e654afb9cc047164755072ed7c9
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 571b12dd1ad41f371448b693c0bd2e64968c7af4
-Message-Id: <160814979077.31129.4542093654981235311.pr-tracker-bot@kernel.org>
-Date:   Wed, 16 Dec 2020 20:16:30 +0000
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Wei Liu <wei.liu@kernel.org>, kys@microsoft.com,
-        sthemmin@microsoft.com, haiyangz@microsoft.com,
-        Michael Kelley <mikelley@microsoft.com>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
+X-PR-Merge-Commit-Id: 7acfd4274e26e05a4f12ad31bf331fef11ebc6a3
+Message-Id: <160814979215.31129.10861518322757012100.pr-tracker-bot@kernel.org>
+Date:   Wed, 16 Dec 2020 20:16:32 +0000
+To:     Juergen Gross <jgross@suse.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        xen-devel@lists.xenproject.org, boris.ostrovsky@oracle.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 14 Dec 2020 13:28:33 +0000:
+The pull request you sent on Tue, 15 Dec 2020 13:26:06 +0100:
 
-> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-next-signed-20201214
+> git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.11-rc1-tag
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/571b12dd1ad41f371448b693c0bd2e64968c7af4
+https://git.kernel.org/torvalds/c/7acfd4274e26e05a4f12ad31bf331fef11ebc6a3
 
 Thank you!
 
