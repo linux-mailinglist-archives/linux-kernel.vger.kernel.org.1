@@ -2,201 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BE432DC2C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:09:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F26D32DC2C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:09:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726246AbgLPPJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 10:09:00 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42654 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725905AbgLPPJA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 10:09:00 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1608131293; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=w/LCdZXIaYEqdPWTafIHwV5LuovOn8Myg6gt0HNuGek=;
-        b=RAvuIbRikVWYshQsmVw+fzBP2clgf1+1xfnUEYHdqONk093Uh4btLyY3TcLDAb4ynAxa72
-        y8RCT1Bc6LZA5OkWYLeGYsXNvWUwpnaKDMKKVmdG1gQouDnkVEdiciF4egZFokTHUL4A+I
-        H1c+RVl3AZDqPM7m9OPOEbyfxFUEYLo=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9647BAC7B;
-        Wed, 16 Dec 2020 15:08:13 +0000 (UTC)
-Subject: Re: [PATCH] xen: Kconfig: remove X86_64 depends from XEN_512GB
-To:     Jason Andryuk <jandryuk@gmail.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-References: <20201216140838.16085-1-jandryuk@gmail.com>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <19c5737a-8cb8-2cbb-a836-2e09cd6ff79f@suse.com>
-Date:   Wed, 16 Dec 2020 16:08:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1726254AbgLPPJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 10:09:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726145AbgLPPJd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 10:09:33 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FCF9C0617A7
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 07:08:53 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id c5so19860041wrp.6
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 07:08:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=x22bCBMzRAxFz6sSBgolhRVuawQUHRVdIXtYqh/jdUI=;
+        b=XXoR12nJ/51Cdim76vK0ddjmXjI2P2QPShPNZJAD1L68GyLqMQ+x5KY7Z4ZiUGR4Eh
+         63fwF6dD1wegZWqANU6Q4TY36xZPy/+NsCxL99Wwj9TmX+W9HuK1eLXMQUBp8QsSj3Z5
+         mmBKV2NdOQ4ODcsojdjTNR+GmuJARx3mWE6r42cO/+aC9KK14D7Hlr4IN5LnALmkqmjP
+         6wuvgC+dzwzxjcll5T8pYAZRaEhnq4LOxr6snOHVzfRGFhPOmGuJCCtH7F8NNRE4J+Eo
+         rxd9Vb33IxAcqrTroVKqzpNN9Cpmel7w4fRS+42axL58mjVr3yinPEP9J9JhmvyZ2a2I
+         GuLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=x22bCBMzRAxFz6sSBgolhRVuawQUHRVdIXtYqh/jdUI=;
+        b=gThYx2bJwcb2DWolQLfWATxyVTH2F7jVRxu+PHEqBoyi7Egp/KLtiXqTI7NpufeBfy
+         tN/IpwW4lebLfg0/saf4bW/XGOfMS4gM/WZpcHbqnZshGhWLldnjnjfq1qh1woYOEYFj
+         9mAcx511gvq18Q9HxxaDX5gOpv9wLIKxAb+SOvcD4orGYvfAOse0arfvmJtXertWVCFm
+         ddYPRNQOT/V3t2NG+L7Sc4DUBOyrnDpOPQw6fjkpGtlxsThYvtP4N2HQOcWO5NXqOZgu
+         /y6JPR5mH7CcMq6dOAP5xgpZrDIqPoQ/y85e1q/WThFu2F9U7aN2j9a7E+8rUNjYMYbX
+         YgJQ==
+X-Gm-Message-State: AOAM532XpR3lN+RaYRC9Oc83ulMZHFDnFcs41K9dRAESNCVmSz140hBh
+        fX2xg8joGx3WEv8x+Uc6S7YyyQ==
+X-Google-Smtp-Source: ABdhPJyiTo068uJu57j2aTnPUqS3Rd6f/mMiS8boAbDC3unxQbp0sz3qKJbUoHZr6Tip0sLgPwYC8w==
+X-Received: by 2002:a5d:6a4f:: with SMTP id t15mr7763158wrw.62.1608131331785;
+        Wed, 16 Dec 2020 07:08:51 -0800 (PST)
+Received: from dell ([91.110.221.200])
+        by smtp.gmail.com with ESMTPSA id u7sm1846111wmu.47.2020.12.16.07.08.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Dec 2020 07:08:50 -0800 (PST)
+Date:   Wed, 16 Dec 2020 15:08:49 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Cc:     marek.vasut+renesas@gmail.com, matti.vaittinen@fi.rohmeurope.com,
+        lgirdwood@gmail.com, broonie@kernel.org, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, khiem.nguyen.xt@renesas.com,
+        linux-power@fi.rohmeurope.com, linux-gpio@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 01/12] mfd: bd9571mwv: Use devm_mfd_add_devices()
+Message-ID: <20201216150849.GI207743@dell>
+References: <1608104275-13174-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+ <1608104275-13174-2-git-send-email-yoshihiro.shimoda.uh@renesas.com>
 MIME-Version: 1.0
-In-Reply-To: <20201216140838.16085-1-jandryuk@gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="Qep4h0WpqmdaARs5zQrlcUILe1KLr2JQI"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1608104275-13174-2-git-send-email-yoshihiro.shimoda.uh@renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Qep4h0WpqmdaARs5zQrlcUILe1KLr2JQI
-Content-Type: multipart/mixed; boundary="5brQ8hbWiGtQoYq2N0FdQc4MtWIWA1haU";
- protected-headers="v1"
-From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-To: Jason Andryuk <jandryuk@gmail.com>,
- Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- Stefano Stabellini <sstabellini@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>, xen-devel@lists.xenproject.org,
- linux-kernel@vger.kernel.org
-Message-ID: <19c5737a-8cb8-2cbb-a836-2e09cd6ff79f@suse.com>
-Subject: Re: [PATCH] xen: Kconfig: remove X86_64 depends from XEN_512GB
-References: <20201216140838.16085-1-jandryuk@gmail.com>
-In-Reply-To: <20201216140838.16085-1-jandryuk@gmail.com>
+On Wed, 16 Dec 2020, Yoshihiro Shimoda wrote:
 
---5brQ8hbWiGtQoYq2N0FdQc4MtWIWA1haU
-Content-Type: multipart/mixed;
- boundary="------------5C8EAC7837D2E9928E630D93"
-Content-Language: en-US
+> To remove mfd devices when unload this driver, should use
+> devm_mfd_add_devices() instead.
+> 
+> Fixes: d3ea21272094 ("mfd: Add ROHM BD9571MWV-M MFD PMIC driver")
+> Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+> ---
+>  drivers/mfd/bd9571mwv.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 
-This is a multi-part message in MIME format.
---------------5C8EAC7837D2E9928E630D93
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+For my own reference (apply this as-is to your sign-off block):
 
-On 16.12.20 15:08, Jason Andryuk wrote:
-> commit bfda93aee0ec ("xen: Kconfig: nest Xen guest options")
-> accidentally re-added X86_64 as a dependency to XEN_512GB.  It was
-> originally removed in commit a13f2ef168cb ("x86/xen: remove 32-bit Xen
-> PV guest support").  Remove it again.
->=20
-> Fixes: bfda93aee0ec ("xen: Kconfig: nest Xen guest options")
-> Reported-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-> Signed-off-by: Jason Andryuk <jandryuk@gmail.com>
+  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
 
-Reviewed-by: Juergen Gross <jgross@suse.com>
-
-
-Juergen
-
---------------5C8EAC7837D2E9928E630D93
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------5C8EAC7837D2E9928E630D93--
-
---5brQ8hbWiGtQoYq2N0FdQc4MtWIWA1haU--
-
---Qep4h0WpqmdaARs5zQrlcUILe1KLr2JQI
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAl/aItwFAwAAAAAACgkQsN6d1ii/Ey9f
-EQf/ciD4Sdt+gLFHjNayQ4U8Cm0YjGZd4z5hW4kR5U6OAkMFC+n2wlmhL+M4YnE1a0r7ngl0QTV7
-gpMAdB8wz8xiQGD5oAaFGYhOmEnL17L9evOPYwS4nvXsPmsGrIRy2xCURw9Bx2ldDYmR1e3jx4MA
-sDMEUDlLC1ps29qQCFhBpdazLFlX3xDEnBeomfL6oCvyjBskAzc2iNrrd9JPnpyI7LIGMe6+0dE6
-aS5v4uaZVwjShm/MKOCOT0JZnF2mZFPUiduasCnLeo1KFakL0G481sjXGWPaId7fBUx604PcnSv8
-FL6QmN6COGPt6YVOI9uuq9E3wPF/DcCzLNmgHIMfwQ==
-=E9pp
------END PGP SIGNATURE-----
-
---Qep4h0WpqmdaARs5zQrlcUILe1KLr2JQI--
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
