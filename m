@@ -2,93 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC632DC70F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 20:26:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6F5F2DC70E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 20:26:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388267AbgLPTZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 14:25:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388265AbgLPTZE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S2388257AbgLPTZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 16 Dec 2020 14:25:04 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22DACC061794
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 11:24:24 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id h205so7718405lfd.5
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 11:24:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=A5unv63hTW90lYarXreqDfKtY8TgaxsOtvfjiNaWmbA=;
-        b=OW0QDcDnkHj1AWJrcP0n+bBngFcR3AdI0EttDOiKT9Gz4Jg+az99LILX0BNLAC2BRO
-         ak/dskVtkdq1Kvh+n6BpI/v3lbLKY+IBCLpgaVdmHIXi6Oe5VsETLABAgq5JYLLHKVRq
-         ND+Oa8Si0KJg6eci7zOnAewqYIYJGUFLNAASs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=A5unv63hTW90lYarXreqDfKtY8TgaxsOtvfjiNaWmbA=;
-        b=ENmh1QEzxmuT5zgJ8vit5/LO+yMUG3Wk42WOTh3GrizJl0nl/VpHP6EmriE74gZmtH
-         Pnk+GTJm9pDiEO/pwxJcwTOmzu/h4rxLcpEvQ/rbpdQGp6Tq0X//YObXlVii7vPFjd4k
-         3GE5sUVoM62pUPOn7Vlj8s2I3YWeDms8dS39AXAo1n3FhX/iBTkK1ZOMFOoH/td/PQo9
-         1OIOtrYp6PpvmihWguokLOSrxJiOAc0ww3eGgpHbiBNanykyvhA3eEpMMmLa1RiTQwuw
-         B8RwxTCpH9AckTDm/Sb2KBmdi3SC8cnPPJE6YZveHTM0ZkBwV+j5DGfP9sHSq85qEwll
-         oSxg==
-X-Gm-Message-State: AOAM532sh9muOhr+dGFYKeI8z10ECfaLbl5Pw/5LbsGxUQyE6U8x0/87
-        XNyMpzINdAUDmYTEdbg4co6xzeb38TcUjA==
-X-Google-Smtp-Source: ABdhPJxq5xVpY/cnL1QI3Etuer4coyb9bn+AhkZWcG6x100z3JTSeq/Le9jFj9+ZRwj+LaKUl5/Kjw==
-X-Received: by 2002:a2e:9ac1:: with SMTP id p1mr8587019ljj.389.1608146661544;
-        Wed, 16 Dec 2020 11:24:21 -0800 (PST)
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
-        by smtp.gmail.com with ESMTPSA id v11sm381035ljg.128.2020.12.16.11.24.20
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Dec 2020 11:24:20 -0800 (PST)
-Received: by mail-lf1-f52.google.com with SMTP id x20so31696297lfe.12
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 11:24:20 -0800 (PST)
-X-Received: by 2002:ac2:41d9:: with SMTP id d25mr12638043lfi.377.1608146660209;
- Wed, 16 Dec 2020 11:24:20 -0800 (PST)
+Received: from mail-eopbgr150053.outbound.protection.outlook.com ([40.107.15.53]:54689
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388256AbgLPTZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 14:25:04 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HHBwDx17o3uJhTqsSdgU+Rupe6MF/szgGEqUvCmB10zRyf1vLzABeElHaZ1QZemf4qo76D6ESym22QKuc8myE0sivoMALr8ObkAmp9bQy2tl3M80RiP7oPCSRJuZ4+jyQ4YXnPeT/ZwgPy2Sf77+V214ZWNjVWslOuKVfxYzmxRWMlbegvZCfyxClqer617V5NMaQueLM57kegn/0XeOiyINpiPeWfVcT8WKGIkZ+L64T1QjLvTPqCwu+THwgPTt2Rt8eFPThO6tqXrmh9cCpLem+iPSdHzYGwr/f2mRttfvzcwX9WeT27SOe4M2pGtMo53PJHE/35kkWiMvd80aLQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cUP3DrZhBahVM/FZFsAWYJEX1HxIz8fxv7OEaI/V6jU=;
+ b=bdMZnuzKVsF8vpXh4g9UUQkBqQtFaG0SGMh7cIC9gIUwEgaYwTA9OP8rqVEig3wvODSgOt0h1FoBQuUcxKDRisaMXEoPlV7ktfoj4iTPODhjGgaDLwlW90sVOchO4A6zmp+eiQxZ5btq5xhiRXzAT8Wh9jKU4yCWTw3rIMDYqX0x/mWcByirXSbGlrgzZUi7DVcRoPcZpSOP4zNt9S6sXquIABPg5JptOIqfCfeaYKdIAVWWeoqT1rw2pEXMzw3s/UUvU4+/g72C2VRwyRUHZBm56D2d3eVs2vvbSzPdkaKHc1MnLEw/My57jMJA4QMD6Or6eiimRRMGF0FtHp8uLw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cUP3DrZhBahVM/FZFsAWYJEX1HxIz8fxv7OEaI/V6jU=;
+ b=QEvCGWyXV2NPlxg5784PgUJIZhfgitrfgzSq/u+zxNEUTiLNYZ4PGvMiJGOs4lZFJl83QBMtQxjWxVop/+QuFeen4OioZRB6AwLc/qqat3uItW4LwT25E0AM2xATJmd1sT3JkFT35U/6RffCSpiyGBNSND828/DJdDJTd/YfIGw=
+Received: from VI1PR04MB5696.eurprd04.prod.outlook.com (2603:10a6:803:e7::13)
+ by VE1PR04MB6637.eurprd04.prod.outlook.com (2603:10a6:803:126::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Wed, 16 Dec
+ 2020 19:24:30 +0000
+Received: from VI1PR04MB5696.eurprd04.prod.outlook.com
+ ([fe80::2dd6:8dc:2da7:ad84]) by VI1PR04MB5696.eurprd04.prod.outlook.com
+ ([fe80::2dd6:8dc:2da7:ad84%5]) with mapi id 15.20.3654.025; Wed, 16 Dec 2020
+ 19:24:30 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Michael Walle <michael@walle.cc>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexandru Marginean <alexandru.marginean@nxp.com>
+Subject: Re: [PATCH net-next 3/4] enetc: drop MDIO_DATA() macro
+Thread-Topic: [PATCH net-next 3/4] enetc: drop MDIO_DATA() macro
+Thread-Index: AQHW0yhcfXCVFqFSBkOjDaWUaL1Ar6n6G9SA
+Date:   Wed, 16 Dec 2020 19:24:29 +0000
+Message-ID: <20201216192429.y2mlwlwankmd4wu4@skbuf>
+References: <20201215212200.30915-1-michael@walle.cc>
+ <20201215212200.30915-4-michael@walle.cc>
+In-Reply-To: <20201215212200.30915-4-michael@walle.cc>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: walle.cc; dkim=none (message not signed)
+ header.d=none;walle.cc; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [188.25.2.120]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 80321b6f-6224-4099-53fd-08d8a1f835ef
+x-ms-traffictypediagnostic: VE1PR04MB6637:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VE1PR04MB66373118CA6869987BAA54F2E0C50@VE1PR04MB6637.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:741;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: f9wQk/KwPs0Gd/do/G7tdURW8WYtd3exniFF9TQgUrlMrtZ/hqoVD6YHt0FHh/iTnR9VLuqcBiX8TbCuoyXLc4HxOFRwqvMmrwCBrFv5CIC32ec9XmtuqMauBbYIWr6FzmCGAyWvNiDsfnx0XcVot87m853JTYnmjM5/XF5p4235NQ55Rrr3FbT8lN6vXHzM5tg80yjYMBGWM8y9ZdvdAjUqoYGNJ07A7O69MxKoEry/huNliwV7S59Q1fWPsIOt2V24RjL2UUfs+7nQMqtUVQODiheJ0dUgB5jsxPU1A+WWqzZF2nJ5sT+Kxy3rWm+T
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5696.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(396003)(376002)(346002)(39860400002)(136003)(366004)(91956017)(86362001)(1076003)(76116006)(558084003)(478600001)(54906003)(2906002)(186003)(71200400001)(26005)(4326008)(5660300002)(6506007)(6486002)(33716001)(6916009)(316002)(44832011)(6512007)(8936002)(9686003)(66476007)(64756008)(66446008)(66946007)(66556008)(8676002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?Pm28MgcVwdiI+1GBXURST/UbPNWi23nQp0tlQSBDcRZd7p2vrRJ3kABltzYC?=
+ =?us-ascii?Q?bXlVGzEiygVp+dpj5sZIYL/Ob1906Itaz8HTpzzB6ckF5B/Ogu/OO7ch4QKe?=
+ =?us-ascii?Q?U2vrTQEzWbJWvAiDck5G2tE5SFN8Q3wYBJKIUchiMQZ3FnP2eC2Eg5sjOq3u?=
+ =?us-ascii?Q?PvaY+0M/TgPGVESB3qIHX8xDjQJ+ojSuOdI7PW6D3OOsBKIF1ie434Tbo8Jh?=
+ =?us-ascii?Q?D1PJU1kqOjiLP+mxwGJ10e65rq04Ggu2bx7hdG0hdnbtnly7pVnCCSOG37ee?=
+ =?us-ascii?Q?3WRzJIrmqHKqPrkbD933LSapArMigdXexGYcELW+rcr6tzY9Vjbsag/ru9YA?=
+ =?us-ascii?Q?0HcA4r1YcXAiLCNoejb4FO7gx7IYb7NVmoAPMcCw+RXXa08NBOtxHc4K16tv?=
+ =?us-ascii?Q?0oad43Jypb30IemyleEhYNR//RYofGW0VqFRCG22F9HLBeGyfcsPWSgf1iD/?=
+ =?us-ascii?Q?BKy8Qzzj9vv7wp2Tn5OG13Dkf+xjypey2ld141na7rg+i9A97p0WmO45bRXl?=
+ =?us-ascii?Q?rYAtGQQrRL9tYPs1GTfQF2nwRH41/rJ9gaadzvyToQd+JGyxwkTHUYmQuiE7?=
+ =?us-ascii?Q?KUlrEZuCdvH6TIQ6s2TXOEuy4V4RfEO5B4CGrxTKZfygy5o4ynys5WARB1Hn?=
+ =?us-ascii?Q?XuChfgWu5CK+rz0rH4Wt/5Ow9XeRApk5FYP4rk9OyBmSONZvOYxSXDxQeSdU?=
+ =?us-ascii?Q?tEpFs+eNmnuiZaRIp5TM3NNyxxUoLlKTd4l7YZNkHiHa3W9LQHaxBNjRCgUb?=
+ =?us-ascii?Q?QnhpGrO9o3EUqx+m97a9W3GNVeZmwkFWGnSiPdlXHXGhgxZHAb7yI9uYAcHx?=
+ =?us-ascii?Q?FmlhzsFvY8uGppxuAG6ChQ+OoAUvySOkFCPwkvPQagV71el48ZuE9N9wjfNM?=
+ =?us-ascii?Q?XcDa48j7nm6dA0oXjnWrMUJ7B0kVTfIZJCW+i/M9DvDPpaCulbnMA/RbwJlO?=
+ =?us-ascii?Q?yltsEADwanxI2U0cBNu/0ES0Zkn9zqdPx8O1qYnzTwzqNylOzRHMW3yIMvbB?=
+ =?us-ascii?Q?I3Kh?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <01ABDBD5845578468157DB32436C584E@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <202012151215.E7AA7D6@keescook>
-In-Reply-To: <202012151215.E7AA7D6@keescook>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 16 Dec 2020 11:24:04 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgg1-Cp=WmE2nGXfDuE8TLKDCQibRdhxbu9MnooLGDHWg@mail.gmail.com>
-Message-ID: <CAHk-=wgg1-Cp=WmE2nGXfDuE8TLKDCQibRdhxbu9MnooLGDHWg@mail.gmail.com>
-Subject: Re: [GIT PULL] gcc-plugins updates for v5.11-rc1
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5696.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 80321b6f-6224-4099-53fd-08d8a1f835ef
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Dec 2020 19:24:30.0574
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: MnRQWFMCYhMHxjXTpDQh70RISiEN4jBCuYyiYfXt1s1+5wG6njLKWjEn1tkxCRXHf6Cd6D2UTYQVAx2LZxrFTw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6637
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 12:15 PM Kees Cook <keescook@chromium.org> wrote:
->
-> Please pull these gcc-plugins updates for v5.11-rc1.
+On Tue, Dec 15, 2020 at 10:21:59PM +0100, Michael Walle wrote:
+> value is u16, masking with 0xffff is a nop. Drop it.
+>=20
+> Signed-off-by: Michael Walle <michael@walle.cc>
+> ---
 
-Hmm, I pulled this and then did an allmodconfig build.
-
-I expected that to be a full rebuild, since the plugins got
-recompiled, but it turned out to just take 16 seconds because it only
-compiled the plugins, not any of the object files.
-
-I'm doing a _proper_ full build with this after doing a
-
-   git clean -dqfx
-
-to actually clean everything out, but it did make me go "Umm".
-
-Maybe we don't care. I guess the plugins are all supposed to be stable
-in the sense that any updates don't change the generated code. But it
-does strike me as a honking big hole for verification of plugin
-changes.
-
-So I don't think this necessarily requires any changes to our Kbuild
-infrastructure, but I thought I'd mention it since this clearly didn't
-match my naive expectations.
-
-              Linus
+Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Tested-by: Vladimir Oltean <vladimir.oltean@nxp.com>=
