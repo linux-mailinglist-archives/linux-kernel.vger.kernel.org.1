@@ -2,120 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AD122DC703
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 20:24:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FC632DC70F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 20:26:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388237AbgLPTYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 14:24:41 -0500
-Received: from mail-eopbgr150053.outbound.protection.outlook.com ([40.107.15.53]:54689
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726793AbgLPTYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 14:24:41 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=P7THJ0SkLq6jsWfH3PgTa/0hRAzviabsLa5v6VTukbuzpIiDunmuQMkZjDT3X5mvlMzweL8PD9EwneZQ3gTG54ZmHMJ0vt+DU3t4E9azxO8ypk/ZzSFejhsva9BgbBVuvuFM/D060Ap+uER77l3C0q54wj7MODXNBV4l5jxkdxArdhleNeVLx5UCtHzJ75kmDP86s8ZMoTdW1twmY27hSTQb4qLb7o8CbIDkxstwZ9zCGkMR+rSq81to02ZYBVqZVfsPGFVJx60K7aaFFdVEgiwnnXGHX07lKxuGcjOmviDm9an1lfn+8UVJzAWi9G4CeC5SWLHCLLlmbKOwvkuLzA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bXovhGZRmc82T2G0PGK9ztPAhwOy+aiSYmDKJMeWV1M=;
- b=Kg+WZc4NEEXmBg4xMtY85A+BJ5d8AiKhSq3ELpvwnKue+odo0if395ctNbE9suzhAzd1EkDyua7BwlnvJyFi0ZGTzUXQQympXwbBYmXCbcp6Pr0YO+sCNOEQMiImZhKZx86sI9J377iW8bef9BP8xF4KutB8u+h1BD91pt+9otOH30owJrUmBrURjxo4jnsIGe1LhMBHVJI/xeOnRLGZAKuIKGVSb10ygtX+BxwxDFc4q49GzI4uynw9Q6IH7rHmYmyRbeM0w6HBBbTvIXKAOCcgrchc1pZFOjKSont5uTfyLS73YVv5hGraJ2ROse1+hfXAcYSzcqc1yb9RLWgEwA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bXovhGZRmc82T2G0PGK9ztPAhwOy+aiSYmDKJMeWV1M=;
- b=TpkjjeTcM7OAEra/S5xxUbBn/yC4o4A+XWlZ4aRB8UlwUv4Lwc6ufJdwI1ESUy+WYbdLCdGkBAFUHngKoudvPkGPN8jOFVZ64sIWN+tLQeM8Hfu5pW4rVJT2ikmelKzy7WEGf1NZdyGtzW0r3t4dGpzDOFiQIni0NJhmJlG/fTQ=
-Received: from VI1PR04MB5696.eurprd04.prod.outlook.com (2603:10a6:803:e7::13)
- by VE1PR04MB6637.eurprd04.prod.outlook.com (2603:10a6:803:126::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Wed, 16 Dec
- 2020 19:23:53 +0000
-Received: from VI1PR04MB5696.eurprd04.prod.outlook.com
- ([fe80::2dd6:8dc:2da7:ad84]) by VI1PR04MB5696.eurprd04.prod.outlook.com
- ([fe80::2dd6:8dc:2da7:ad84%5]) with mapi id 15.20.3654.025; Wed, 16 Dec 2020
- 19:23:53 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Michael Walle <michael@walle.cc>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexandru Marginean <alexandru.marginean@nxp.com>
-Subject: Re: [PATCH net-next 2/4] enetc: don't use macro magic for the
- readx_poll_timeout() callback
-Thread-Topic: [PATCH net-next 2/4] enetc: don't use macro magic for the
- readx_poll_timeout() callback
-Thread-Index: AQHW0yhblkGDTU2usESJSSfLKz7Y86n6G6gA
-Date:   Wed, 16 Dec 2020 19:23:53 +0000
-Message-ID: <20201216192352.5kbjxyhpwgmubm76@skbuf>
-References: <20201215212200.30915-1-michael@walle.cc>
- <20201215212200.30915-3-michael@walle.cc>
-In-Reply-To: <20201215212200.30915-3-michael@walle.cc>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: walle.cc; dkim=none (message not signed)
- header.d=none;walle.cc; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [188.25.2.120]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: e79a0923-ea5b-49eb-12dd-08d8a1f8202a
-x-ms-traffictypediagnostic: VE1PR04MB6637:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VE1PR04MB66376BEDD4053FB1DCC06262E0C50@VE1PR04MB6637.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4125;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 2T2yFttM6VdmqlfZCTRaQVokbKIn2xyex7jHYYRtB2YB5Ox5kN5Uy9YMyw2mc9qJJTxuzMbyp8YI3ZJE9Fvb6OKVa5NwrqxnufwD3aRVSLYtAWwDZkGSDy1oTTisoyaSZVk0qjrME6RF0+abL4UxwO9ts6E5ZovJAcnPrBKuIjfm11UAisV/W8KzCicsBX8n67XALD9CmBPiCYPQm+rOzBSbzJifdGUPt/ButYtbspZgKe0ZDpXiua26BBrBlV7Q7UXFO3JTN2ioc21Lmawa4X7QhS8Lzh+kKIDHGG0lVnM7Nu1MDCZR73ly+5r9qzvBT5cdtGD/2MVyEsgFSA8whw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5696.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(396003)(376002)(346002)(39860400002)(136003)(366004)(91956017)(86362001)(1076003)(76116006)(4744005)(478600001)(54906003)(2906002)(186003)(71200400001)(26005)(4326008)(5660300002)(6506007)(6486002)(33716001)(6916009)(316002)(44832011)(6512007)(8936002)(9686003)(66476007)(64756008)(66446008)(66946007)(66556008)(8676002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?Y/GD5vf/IVQmzQciAzEof3RQVxZ4i8gwiEQ8beT9ugMbNefeMbo6tWmL+rvW?=
- =?us-ascii?Q?5fYKXOgHJjgP9Yui1YkjcA7O/1eOmojbNP2fLBkUXcFRTY0hsfffhmKTSO9N?=
- =?us-ascii?Q?uXys8mHa9Ut4HIDou/loOdk/PkjlPmAGCfmbGHOtEg3Kq1gr8DLWSnrUJHog?=
- =?us-ascii?Q?mRwc5kOBffInXw9Jdt2OM2h8jxoTTm8Sd0bYgTdHVOY8OE4+lfQ6XizZtaXX?=
- =?us-ascii?Q?ycCarxY15uxT0soimuMAHsVhUosvTRZsZjD1TcPaFyBsuazdCpxv1KQkj1kP?=
- =?us-ascii?Q?6PsJ9LTGIotp0T7Q9ExROOHZrM+qAOmR++1akLhxkEJ9htfYZtZxrMF8AgTk?=
- =?us-ascii?Q?pa5On1LPaqirvJQuMyVaqolTRrkKLVVedrWeBD0WEoQaD+siNevbb0yo0fc/?=
- =?us-ascii?Q?50MCjoSRqoWXcsX2FRgHABntFNjVW9CKFaOPyPAXDMDyq/D75GtO+XtFiD/h?=
- =?us-ascii?Q?v1aPkHRal1dLzDROUV1X0l0R9SzZE/6ndz+s4XuKX7Jn5vfMo6ny4sD1/flS?=
- =?us-ascii?Q?IEUzz01mcGnxXpEpXXrZ/RnKHmFdsrPSP7tssvHla70FcBp++eh9GKKgJCgm?=
- =?us-ascii?Q?x3Hze2Icw1y2DniMEJqr7z3SJBzhJNbT537mh2mj3gq81IEeImwzuGKusQEf?=
- =?us-ascii?Q?gyN6UhnnFyFEhkyMrSpO3WZWOg39AIQTzwyN8bDPDObvwG/anxTsRUPctP3F?=
- =?us-ascii?Q?5cIWaQIRxhKTWkuGHsU5lQXMhrz5SY+1cT/VDDYGAqK1i2Vl1rCbZ15+AvSb?=
- =?us-ascii?Q?MXXljCn8Fcz/M9IJoSlJsabuTW92oOjGyAcp0/zqgtJ8V+B5Kfo4J6GK+5b5?=
- =?us-ascii?Q?9QRQ6FmNxd6+oPhgYc4LNYG4LBG46J9Rc1eEE1kHVmppgRa3I79+Vf2fKGCi?=
- =?us-ascii?Q?0RC/9AhIdRjn23GQkzSTU5PGmUMoArKx4nA5v4xzf+zNMeaw7hB7oQIp2kGE?=
- =?us-ascii?Q?t8L8SA15IhcsqOG8RLP0fSeK16XV7HJBGZMw6/DwqJK+hz3wk0KTDpycOF6S?=
- =?us-ascii?Q?cDu/?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <6C776EAD5DA8864692279F44EC1D5607@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S2388267AbgLPTZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 14:25:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388265AbgLPTZE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 14:25:04 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22DACC061794
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 11:24:24 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id h205so7718405lfd.5
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 11:24:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A5unv63hTW90lYarXreqDfKtY8TgaxsOtvfjiNaWmbA=;
+        b=OW0QDcDnkHj1AWJrcP0n+bBngFcR3AdI0EttDOiKT9Gz4Jg+az99LILX0BNLAC2BRO
+         ak/dskVtkdq1Kvh+n6BpI/v3lbLKY+IBCLpgaVdmHIXi6Oe5VsETLABAgq5JYLLHKVRq
+         ND+Oa8Si0KJg6eci7zOnAewqYIYJGUFLNAASs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A5unv63hTW90lYarXreqDfKtY8TgaxsOtvfjiNaWmbA=;
+        b=ENmh1QEzxmuT5zgJ8vit5/LO+yMUG3Wk42WOTh3GrizJl0nl/VpHP6EmriE74gZmtH
+         Pnk+GTJm9pDiEO/pwxJcwTOmzu/h4rxLcpEvQ/rbpdQGp6Tq0X//YObXlVii7vPFjd4k
+         3GE5sUVoM62pUPOn7Vlj8s2I3YWeDms8dS39AXAo1n3FhX/iBTkK1ZOMFOoH/td/PQo9
+         1OIOtrYp6PpvmihWguokLOSrxJiOAc0ww3eGgpHbiBNanykyvhA3eEpMMmLa1RiTQwuw
+         B8RwxTCpH9AckTDm/Sb2KBmdi3SC8cnPPJE6YZveHTM0ZkBwV+j5DGfP9sHSq85qEwll
+         oSxg==
+X-Gm-Message-State: AOAM532sh9muOhr+dGFYKeI8z10ECfaLbl5Pw/5LbsGxUQyE6U8x0/87
+        XNyMpzINdAUDmYTEdbg4co6xzeb38TcUjA==
+X-Google-Smtp-Source: ABdhPJxq5xVpY/cnL1QI3Etuer4coyb9bn+AhkZWcG6x100z3JTSeq/Le9jFj9+ZRwj+LaKUl5/Kjw==
+X-Received: by 2002:a2e:9ac1:: with SMTP id p1mr8587019ljj.389.1608146661544;
+        Wed, 16 Dec 2020 11:24:21 -0800 (PST)
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
+        by smtp.gmail.com with ESMTPSA id v11sm381035ljg.128.2020.12.16.11.24.20
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Dec 2020 11:24:20 -0800 (PST)
+Received: by mail-lf1-f52.google.com with SMTP id x20so31696297lfe.12
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 11:24:20 -0800 (PST)
+X-Received: by 2002:ac2:41d9:: with SMTP id d25mr12638043lfi.377.1608146660209;
+ Wed, 16 Dec 2020 11:24:20 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5696.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e79a0923-ea5b-49eb-12dd-08d8a1f8202a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Dec 2020 19:23:53.5155
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: OdNfvulMPS8dEjNuBjgNOjypKe2cDUu+VY4VOO+Wy7PKiywwaEGfkHljItvL8ge84q9UAfjgVwvgNXo0wrpguQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6637
+References: <202012151215.E7AA7D6@keescook>
+In-Reply-To: <202012151215.E7AA7D6@keescook>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 16 Dec 2020 11:24:04 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgg1-Cp=WmE2nGXfDuE8TLKDCQibRdhxbu9MnooLGDHWg@mail.gmail.com>
+Message-ID: <CAHk-=wgg1-Cp=WmE2nGXfDuE8TLKDCQibRdhxbu9MnooLGDHWg@mail.gmail.com>
+Subject: Re: [GIT PULL] gcc-plugins updates for v5.11-rc1
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 10:21:58PM +0100, Michael Walle wrote:
-> The macro enetc_mdio_rd_reg() is just used in that particular case and
-> has a hardcoded parameter name "mdio_priv". Define a specific function
-> to use for readx_poll_timeout() instead. Also drop the TIMEOUT macro
-> since it is used just once.
->=20
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> ---
+On Tue, Dec 15, 2020 at 12:15 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> Please pull these gcc-plugins updates for v5.11-rc1.
 
-Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Tested-by: Vladimir Oltean <vladimir.oltean@nxp.com>=
+Hmm, I pulled this and then did an allmodconfig build.
+
+I expected that to be a full rebuild, since the plugins got
+recompiled, but it turned out to just take 16 seconds because it only
+compiled the plugins, not any of the object files.
+
+I'm doing a _proper_ full build with this after doing a
+
+   git clean -dqfx
+
+to actually clean everything out, but it did make me go "Umm".
+
+Maybe we don't care. I guess the plugins are all supposed to be stable
+in the sense that any updates don't change the generated code. But it
+does strike me as a honking big hole for verification of plugin
+changes.
+
+So I don't think this necessarily requires any changes to our Kbuild
+infrastructure, but I thought I'd mention it since this clearly didn't
+match my naive expectations.
+
+              Linus
