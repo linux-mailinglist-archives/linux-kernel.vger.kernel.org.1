@@ -2,175 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD8CA2DBCE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 09:48:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEE7F2DBCF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 09:48:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726142AbgLPIqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 03:46:37 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2094 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725972AbgLPIqh (ORCPT
+        id S1726466AbgLPIrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 03:47:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726463AbgLPIri (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 03:46:37 -0500
-Received: from dggeme761-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4CwpbP6N4MzVfx0;
-        Wed, 16 Dec 2020 16:44:49 +0800 (CST)
-Received: from [10.174.177.7] (10.174.177.7) by dggeme761-chm.china.huawei.com
- (10.3.19.107) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1913.5; Wed, 16
- Dec 2020 16:45:52 +0800
-Subject: Re: [PATCH] use x86 cpu park to speedup smp_init in kexec situation
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>
-CC:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        <hewenliang4@huawei.com>, <hushiyuan@huawei.com>,
-        <luolongjun@huawei.com>, <hejingxian@huawei.com>
-References: <87eejqu5q5.fsf@nanos.tec.linutronix.de>
-From:   "shenkai (D)" <shenkai8@huawei.com>
-Message-ID: <f2a4d172-fa17-9f98-ad8f-d69f84ad0df5@huawei.com>
-Date:   Wed, 16 Dec 2020 16:45:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Wed, 16 Dec 2020 03:47:38 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 211C8C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 00:46:58 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id t16so22341303wra.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 00:46:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=9GJhtWvkN8uUb7ynAdpBmqYLfCoza+J+r/kjTFChiOc=;
+        b=wUexLWyl2AzNh1zKZK2tao7lVeXqGTPB5iui2JyWbGKuAgcMoe3fdIr+BWFLtIihxZ
+         TMY311bRGX0tBlBziH6Whd8XkeBL8ql//Or01RTgyo3hwsgtzQ3rAITJyLI4dJLlHfyt
+         W1dH5FJ6gfjf9e/byPX+jt+drRDNA6A2NDCm9acx6GFyK2f4HDx9y7oNKOYPID7S4gGb
+         pNfdza5p2AI7f7XFoMi1rjVvx/lSxqQWa2ogujGLZeeY2zZSI2PRW3Xm9n+2rXErK/oz
+         zfUIyTl3fPQj4a8VGGketE0HcN0LYBw0RE7Cq7fqL4NDMTxEA0QTu0cE/0TZvdaC6eu2
+         Y/fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=9GJhtWvkN8uUb7ynAdpBmqYLfCoza+J+r/kjTFChiOc=;
+        b=ex40u9KcVZEuXo1l/l/UNYnsGHykl/+xTo740hUvMrbte34WncOpv5XkGt+cHqEngw
+         EU3LPYn9C5EEONX6LbHmxg41wH8k8TUCbkXsWfhkF4r51nND5gTioJN2ivW3yVwdvH2u
+         e2gVgFUaa9h4Xuh9aE6hziXISs7UAfwlFPvmQ8Orgu4FEUAv/4/tdwRE8GXiGDFdgzIv
+         B/iSo0n6Z02lVi3YH4GuFjNwROoPfgfnAROV4Etc/5Nj0cviv41AijyNej6npsy0NmeV
+         ubFItGj8HZ2SbKZwVeRjJp9+0heipe2rfY0ZTdWgRE2dlayVpCOUylmmA7X91oszMHNE
+         lhVQ==
+X-Gm-Message-State: AOAM531QahzpCeG2Vv5aIEsAvy3BQZH5L+YZ70L2dANgsZJlsZlcIZmV
+        CDcc8CwxtixdJcgymMk2MQJklg==
+X-Google-Smtp-Source: ABdhPJzXjHLJD+FA7MdN6U8osxDEQIz10uhFHPIwm2rxdL6lbmTXanBlxLUQr+LeL1Rll1rXttBILg==
+X-Received: by 2002:adf:a495:: with SMTP id g21mr5942641wrb.198.1608108416851;
+        Wed, 16 Dec 2020 00:46:56 -0800 (PST)
+Received: from dell ([91.110.221.200])
+        by smtp.gmail.com with ESMTPSA id h16sm2106272wrq.29.2020.12.16.00.46.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Dec 2020 00:46:55 -0800 (PST)
+Date:   Wed, 16 Dec 2020 08:46:54 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Thor Thayer <thor.thayer@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mfd: altera-sysmgr: Fix physical address storing more
+Message-ID: <20201216084654.GE4776@dell>
+References: <20201203225252.1476897-1-arnd@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <87eejqu5q5.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.7]
-X-ClientProxiedBy: dggeme707-chm.china.huawei.com (10.1.199.103) To
- dggeme761-chm.china.huawei.com (10.3.19.107)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20201203225252.1476897-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-‘⁄ 2020/12/16 5:20, Thomas Gleixner –¥µ¿:
-> On Tue, Dec 15 2020 at 08:31, Andy Lutomirski wrote:
->> On Tue, Dec 15, 2020 at 6:46 AM shenkai (D) <shenkai8@huawei.com> wrote:
->>> From: shenkai <shenkai8@huawei.com>
->>> Date: Tue, 15 Dec 2020 01:58:06 +0000
->>> Subject: [PATCH] use x86 cpu park to speedup smp_init in kexec situation
->>>
->>> In kexec reboot on x86 machine, APs will be halted and then waked up
->>> by the apic INIT and SIPI interrupt. Here we can let APs spin instead
->>> of being halted and boot APs by writing to specific address. In this way
->>> we can accelerate smp_init procedure for we don't need to pull APs up
->>> from a deep C-state.
->>>
->>> This is meaningful in many situations where users are sensitive to reboot
->>> time cost.
->> I like the concept.
-> No. This is the wrong thing to do. We are not optimizing for _one_
-> special case.
->
-> We can optimize it for all operations where all the non boot CPUs have
-> to brought up, be it cold boot, hibernation resume or kexec.
->
-> Aside of that this is not a magic X86 special problem. Pretty much all
-> architectures have the same issue and it can be solved very simple,
-> which has been discussed before and I outlined the solution years ago,
-> but nobody sat down and actually made it work.
->
-> Since the rewrite of the CPU hotplug infrastructure to a state machine
-> it's pretty obvious that the bringup of APs can changed from the fully
-> serialized:
->
->       for_each_present_cpu(cpu) {
->       	if (!cpu_online(cpu))
->             cpu_up(cpu, CPUHP_ONLINE);
->       }
->
-> to
->
->       for_each_present_cpu(cpu) {
->       	if (!cpu_online(cpu))
->             cpu_up(cpu, CPUHP_KICK_CPU);
->       }
->
->       for_each_present_cpu(cpu) {
->       	if (!cpu_active(cpu))
->             cpu_up(cpu, CPUHP_ONLINE);
->       }
->
-> The CPUHP_KICK_CPU state does not exist today, but it's just the logical
-> consequence of the state machine. It's basically splitting __cpu_up()
-> into:
->
-> __cpu_kick()
-> {
->      prepare();
->      arch_kick_remote_cpu();     -> Send IPI/NMI, Firmware call .....
-> }
->      
-> __cpu_wait_online()
-> {
->      wait_until_cpu_online();
->      do_further_stuff();
-> }
->
-> There is some more to it than just blindly splitting it up at the
-> architecture level.
->
-> All __cpu_up() implementations across arch/ have a lot of needlessly
-> duplicated and pointlessly differently implemented code which can move
-> completely into the core.
->
-> So actually we want to split this further up:
->
->     CPUHP_PREPARE_CPU_UP:	Generic preparation step where all
->                                  the magic cruft which is duplicated
->                                  across architectures goes to
->
->     CPUHP_KICK_CPU:		Architecture specific prepare and kick
->
->     CPUHP_WAIT_ONLINE:           Generic wait function for CPU coming
->                                  online: wait_for_completion_timeout()
->                                  which releases the upcoming CPU and
->                                  invokes an optional arch_sync_cpu_up()
->                                  function which finalizes the bringup.
-> and on the AP side:
->
->     CPU comes up, does all the low level setup, sets online, calls
->     complete() and the spinwaits for release.
->
-> Once the control CPU comes out of the completion it releases the
-> spinwait.
->
-> That works for all bringup situations and not only for kexec and the
-> simple trick is that by the time the last CPU has been kicked in the
-> first step, the first kicked CPU is already spinwaiting for release.
->
-> By the time the first kicked CPU has completed the process, i.e. reached
-> the active state, then the next CPU is spinwaiting and so on.
->
-> If you look at the provided time saving:
->
->     Mainline:		210ms
->     Patched:		 80ms
-> -----------------------------
->     Delta                130ms
->
-> i.e. it takes ~ 1.8ms to kick and wait for the AP to come up and ~ 1.1ms
-> per CPU for the whole bringup. It does not completly add up, but it has
-> a clear benefit for everything.
->
-> Also the changelog says that the delay is related to CPUs in deep
-> C-states. If CPUs are brought down for kexec then it's trivial enough to
-> limit the C-states or just not use mwait() at all.
->
-> It would be interesting to see the numbers just with play_dead() using
-> hlt() or mwait(eax=0, 0) for the kexec case and no other change at all.
->
-> Thanks,
->
->          tglx
->
-Thanks for your and Andy's precious comments. I would like to take a try on
+On Thu, 03 Dec 2020, Arnd Bergmann wrote:
 
-reconstructing this patch to make it more decent and generic.
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> A recent fix improved the way the resource gets passed to
+> the low-level accessors, but left one warning that appears
+> in configurations with a resource_size_t that is wider than
+> a pointer:
+> 
+> In file included from drivers/mfd/altera-sysmgr.c:19:
+> drivers/mfd/altera-sysmgr.c: In function 'sysmgr_probe':
+> drivers/mfd/altera-sysmgr.c:148:40: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
+>   148 |   regmap = devm_regmap_init(dev, NULL, (void *)res->start,
+>       |                                        ^
+> include/linux/regmap.h:646:6: note: in definition of macro '__regmap_lockdep_wrapper'
+>   646 |   fn(__VA_ARGS__, &_key,     \
+>       |      ^~~~~~~~~~~
+> drivers/mfd/altera-sysmgr.c:148:12: note: in expansion of macro 'devm_regmap_init'
+>   148 |   regmap = devm_regmap_init(dev, NULL, (void *)res->start,
+>       |            ^~~~~~~~~~~~~~~~
+> 
+> I had tried a different approach that would store the address
+> in the private data as a phys_addr_t, but the easiest solution
+> now seems to be to add a double cast to shut up the warning.
+> 
+> As the address is passed to an inline assembly, it is guaranteed
+> to not be wider than a register anyway.
+> 
+> Fixes: d9ca7801b6e5 ("mfd: altera-sysmgr: Fix physical address storing hacks")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/mfd/altera-sysmgr.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 
+Applied, thanks.
 
-Thanks again
-
-Kai
+-- 
+Lee Jones [ÊùéÁêºÊñØ]
+Senior Technical Lead - Developer Services
+Linaro.org ‚îÇ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
