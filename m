@@ -2,137 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8685C2DBB58
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 07:42:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 440C82DBB4F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 07:40:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725907AbgLPGmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 01:42:19 -0500
-Received: from mga09.intel.com ([134.134.136.24]:45939 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725829AbgLPGmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 01:42:19 -0500
-IronPort-SDR: kT5yhFgpi3AFoylWmRqPMMJeFBHZUCPPqaUDgcWZfxUZ9e8nZW2Yp6xlH/wUh9J6EdhDtgg0XV
- 7MNRmpQ/UOtQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9836"; a="175161937"
-X-IronPort-AV: E=Sophos;i="5.78,423,1599548400"; 
-   d="scan'208";a="175161937"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 22:41:37 -0800
-IronPort-SDR: 32UK3iTs3RAweF3HuMC+nE8+yi4Kko0oCnzInVsklJhB9ETr7rsI1SmZTvWFXCTEYaCO6L9T6Y
- bkw80XDkR7nA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,423,1599548400"; 
-   d="scan'208";a="412333987"
-Received: from ipsg-l-lixuzha.sh.intel.com ([10.239.153.22])
-  by orsmga001.jf.intel.com with ESMTP; 15 Dec 2020 22:41:35 -0800
-From:   Zhang Lixu <lixu.zhang@intel.com>
-To:     jikos@kernel.org, linux-input@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, srinivas.pandruvada@linux.intel.com,
-        benjamin.tissoires@redhat.com, Zhang Lixu <lixu.zhang@intel.com>,
-        Wei Jiang <wei.w.jiang@intel.com>, Even Xu <even.xu@intel.com>
-Subject: [PATCH 2/2] hid: intel-ish-hid: ipc: Address EHL Sx resume issues
-Date:   Wed, 16 Dec 2020 14:36:40 +0800
-Message-Id: <20201216063640.4086068-3-lixu.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201216063640.4086068-1-lixu.zhang@intel.com>
-References: <20201216063640.4086068-1-lixu.zhang@intel.com>
+        id S1725890AbgLPGkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 01:40:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725274AbgLPGkc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 01:40:32 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1216C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 22:39:51 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id x22so1261045wmc.5
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 22:39:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=D2WX4BJNgPr14mjH5ANRJS9xRn9sZjWoS3pkajHG8ik=;
+        b=t9Jk6TN+Xdn7N2J4C9Ul6oyPqO8ZAgwiJ/3y8T8GedM5a5cf5xYyPdM9pHU0GfS7oa
+         ct0gLiBiaOAt2BNf+5bXAPAdKD1RrerKcVhA2LzMPJQoAIcvwAeqVXr/mKmXP226mkYb
+         ahRQNGQOED2ZwbPTBjEGCy9rsybOSXLtHfTC+QblOyZdctdEvz/KZVgmg5GLm7odTL6v
+         UHdN8qIvbWte8niqnnvElbF7jmWMiMNUYcALmRKh7Q3ZL1rqldfcTWIvq6U2vSjnNYzV
+         YCtLRY86IUmdsBuPF4qzayylXHbqTRqVMl/E5C86IQ/yOrH0GC3PHps/hu4S3fn6vo6C
+         kTnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=D2WX4BJNgPr14mjH5ANRJS9xRn9sZjWoS3pkajHG8ik=;
+        b=EHGQjChkDxZWp8tX54zdO+NIlOmvTBdkBqPTHPFTv1PJKJFbt71A7MrDvQTqaGMAWr
+         fItVeBQUTdL5/jrc7/0cJRePiNWXRPTW48Eu3RbNuCzTVzoXtyIvSqnRpl1TqzLHX6aY
+         TDkTM1Rtm+OvlR5EB3WKSiktEJhz0Sm/j/ygmjeXPEgLcC7CV8KL82UALu6TNqgtnTWL
+         NGl8ShF5VJ1/TEkp9CqVXuakCoKRWSoKR9dfSxca7UGAbR89xlFk/eL2WuwzC4OCZLFG
+         UsCtbt5sbKKpKsdojSumRAtZnpSRBFw5hqdsS12S2gv6hq5IqcdDJzKNLiZMC1MTVrW7
+         yYEw==
+X-Gm-Message-State: AOAM530lf1xv2vISMi4UZQDi7dPdidElXSV+neOy9cwKSA64wJAht+qV
+        YbYCsBYqQewcO+ITDuaFimATV5sBS939PpJDGr+sgQ==
+X-Google-Smtp-Source: ABdhPJza0WaG4LzV9VqnXDbFNlAIslEWZ15sdQNLzO6N6ZZqXpkshRy9WqBSeh0M06scmtdZwHOPfU+RfMG2qA3C50A=
+X-Received: by 2002:a1c:7f52:: with SMTP id a79mr1654697wmd.157.1608100790213;
+ Tue, 15 Dec 2020 22:39:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201203121839.308-1-jiangyifei@huawei.com>
+In-Reply-To: <20201203121839.308-1-jiangyifei@huawei.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Wed, 16 Dec 2020 12:09:38 +0530
+Message-ID: <CAAhSdy2zdwfOGFUtakhbeDUJBapz6fWPnQptT7nCdyFMSoLyGg@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/3] Implement guest time scaling in RISC-V KVM
+To:     Yifei Jiang <jiangyifei@huawei.com>
+Cc:     Anup Patel <anup.patel@wdc.com>, Atish Patra <atish.patra@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zhanghailiang <zhang.zhanghailiang@huawei.com>,
+        KVM General <kvm@vger.kernel.org>,
+        yinyipeng <yinyipeng1@huawei.com>,
+        "Zhangxiaofeng (F)" <victor.zhangxiaofeng@huawei.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        kvm-riscv@lists.infradead.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "Wubin (H)" <wu.wubin@huawei.com>,
+        "dengkai (A)" <dengkai1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When OOB is disabled, FW will be power gated when system is in S3/S4/S5
-which is the same behavior with legacy ISH FW.
-When OOB is enabled, FW will always power on which is totally different
-comparing to legacy ISH FW.
+On Thu, Dec 3, 2020 at 5:51 PM Yifei Jiang <jiangyifei@huawei.com> wrote:
+>
+> This series implements guest time scaling based on RDTIME instruction
+> emulation so that we can allow migrating Guest/VM across Hosts with
+> different time frequency.
+>
+> Why not through para-virt. From arm's experience[1], para-virt implementation
+> doesn't really solve the problem for the following two main reasons:
+> - RDTIME not only be used in linux, but also in firmware and userspace.
+> - It is difficult to be compatible with nested virtualization.
 
-So NO_D3 flag is not enough to check FW's status after resume.
-Here we can use IPC FW status register to check host link status.
-If it is false, it means FW get reset after power gated, need go through
-the whole initialization flow; If it is true, it means FW is alive, just
-set host ready bit to let fw know host is up.
+I think this approach is rather incomplete. Also, I don't see how para-virt
+time scaling will be difficult for nested virtualization.
 
-Co-developed-by: Wei Jiang <wei.w.jiang@intel.com>
-Signed-off-by: Wei Jiang <wei.w.jiang@intel.com>
-Signed-off-by: Even Xu <even.xu@intel.com>
-Signed-off-by: Zhang Lixu <lixu.zhang@intel.com>
----
- drivers/hid/intel-ish-hid/ipc/hw-ish.h  |  1 +
- drivers/hid/intel-ish-hid/ipc/ipc.c     | 27 +++++++++++++++++++++++++
- drivers/hid/intel-ish-hid/ipc/pci-ish.c |  6 +++++-
- 3 files changed, 33 insertions(+), 1 deletion(-)
+If trap-n-emulate TIME CSR for Guest Linux then it will have significant
+performance impact of systems where TIME CSR is implemented in HW.
 
-diff --git a/drivers/hid/intel-ish-hid/ipc/hw-ish.h b/drivers/hid/intel-ish-hid/ipc/hw-ish.h
-index 1fb294ca463e..111ad259ba74 100644
---- a/drivers/hid/intel-ish-hid/ipc/hw-ish.h
-+++ b/drivers/hid/intel-ish-hid/ipc/hw-ish.h
-@@ -81,5 +81,6 @@ struct ishtp_device *ish_dev_init(struct pci_dev *pdev);
- int ish_hw_start(struct ishtp_device *dev);
- void ish_device_disable(struct ishtp_device *dev);
- int ish_disable_dma(struct ishtp_device *dev);
-+void ish_set_host_ready(struct ishtp_device *dev);
- 
- #endif /* _ISHTP_HW_ISH_H_ */
-diff --git a/drivers/hid/intel-ish-hid/ipc/ipc.c b/drivers/hid/intel-ish-hid/ipc/ipc.c
-index a45ac7fa417b..47bbeb8b492b 100644
---- a/drivers/hid/intel-ish-hid/ipc/ipc.c
-+++ b/drivers/hid/intel-ish-hid/ipc/ipc.c
-@@ -193,6 +193,33 @@ static void ish_clr_host_rdy(struct ishtp_device *dev)
- 	ish_reg_write(dev, IPC_REG_HOST_COMM, host_status);
- }
- 
-+static bool ish_chk_host_rdy(struct ishtp_device *dev)
-+{
-+	uint32_t host_status = ish_reg_read(dev, IPC_REG_HOST_COMM);
-+
-+	return (host_status & IPC_HOSTCOMM_READY_BIT);
-+}
-+
-+/**
-+ * ish_set_host_ready() - reconfig ipc host registers
-+ * @dev: ishtp device pointer
-+ *
-+ * Set host to ready state
-+ * This API is called in some case:
-+ *    fw is still on, but ipc is powered down.
-+ *    such as OOB case.
-+ *
-+ * Return: 0 for success else error fault code
-+ */
-+void ish_set_host_ready(struct ishtp_device *dev)
-+{
-+	if (ish_chk_host_rdy(dev))
-+		return;
-+
-+	ish_set_host_rdy(dev);
-+	set_host_ready(dev);
-+}
-+
- /**
-  * _ishtp_read_hdr() - Read message header
-  * @dev: ISHTP device pointer
-diff --git a/drivers/hid/intel-ish-hid/ipc/pci-ish.c b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
-index c9c5488e44cb..8cb40696984a 100644
---- a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
-+++ b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
-@@ -259,11 +259,15 @@ static void __maybe_unused ish_resume_handler(struct work_struct *work)
- {
- 	struct pci_dev *pdev = to_pci_dev(ish_resume_device);
- 	struct ishtp_device *dev = pci_get_drvdata(pdev);
-+	uint32_t fwsts = dev->ops->get_fw_status(dev);
- 	int ret;
- 
--	if (ish_should_leave_d0i3(pdev) && !dev->suspend_flag) {
-+	if (ish_should_leave_d0i3(pdev) && !dev->suspend_flag
-+			&& IPC_IS_ISH_ILUP(fwsts)) {
- 		disable_irq_wake(pdev->irq);
- 
-+		ish_set_host_ready(dev);
-+
- 		ishtp_send_resume(dev);
- 
- 		/* Waiting to get resume response */
--- 
-2.25.1
+Best approach will be to have VDSO-style para-virt time-scale SBI calls
+(similar to what KVM x86 does). If the Guest software (Linux/Bootloader)
+does not enable para-virt time-scaling then we trap-n-emulate TIME CSR
+(this series).
 
+Please propose VDSO-style para-virt time-scale SBI call and expand this
+this series to provide both:
+1. VDSO-style para-virt time-scaling
+2. Trap-n-emulation of TIME CSR when #1 is disabled
+
+Regards,
+Anup
+
+>
+> [1] https://lore.kernel.org/patchwork/cover/1288153/
+>
+> Yifei Jiang (3):
+>   RISC-V: KVM: Change the method of calculating cycles to nanoseconds
+>   RISC-V: KVM: Support dynamic time frequency from userspace
+>   RISC-V: KVM: Implement guest time scaling
+>
+>  arch/riscv/include/asm/csr.h            |  3 ++
+>  arch/riscv/include/asm/kvm_vcpu_timer.h | 13 +++++--
+>  arch/riscv/kvm/vcpu_exit.c              | 35 +++++++++++++++++
+>  arch/riscv/kvm/vcpu_timer.c             | 51 ++++++++++++++++++++++---
+>  4 files changed, 93 insertions(+), 9 deletions(-)
+>
+> --
+> 2.19.1
+>
+>
+> --
+> kvm-riscv mailing list
+> kvm-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/kvm-riscv
