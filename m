@@ -2,95 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4EA92DC07E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 13:49:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBAE72DC081
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 13:49:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725903AbgLPMr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 07:47:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725778AbgLPMr6 (ORCPT
+        id S1726038AbgLPMsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 07:48:23 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:45041 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725778AbgLPMsX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 07:47:58 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B3A9C0617A7;
-        Wed, 16 Dec 2020 04:47:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=nRkl1ftL5o4b/KrhceyfWd4kfXLiLhPAekED99MnXJw=; b=fwQGBMQF6zSKMb09Y7Tj+nntNV
-        6l2x04XDkAUFLqOu3QKP/NpoC8wmaSIJo6MNdzg3NOXUhVEeGOiyJAYsupv8drHiTapDvcNqj5a25
-        b8NpMotmuihhYqNZF22q0VVRvI7rG7GMp9ERCl+iMXManVw+Cg2iv6Go6fE/S/a8mPirgKnOyXxwF
-        aKiIqOJ7nX+ixnBUE9rz6le572Svc3+bWS4ZCGqz6H+pA6jpWuHp31kLXaMz78sYkQmvTCyV3eMZ5
-        ML2yQ9tFnvYK2Y0hHg6t8nD9+tfV6StbMk18NyxCIryZXVZ1FPS0NQLsfeOxkAmxyKDKm29BFLFwU
-        Ww9eopkA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kpWD3-0001aH-7u; Wed, 16 Dec 2020 12:47:13 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 47203304D28;
-        Wed, 16 Dec 2020 13:47:09 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CBB7B203C64AC; Wed, 16 Dec 2020 13:47:08 +0100 (CET)
-Date:   Wed, 16 Dec 2020 13:47:08 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Jessica Yu <jeyu@kernel.org>
-Cc:     Dexuan Cui <decui@microsoft.com>, Ingo Molnar <mingo@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: static_branch_enable() does not work from a __init function?
-Message-ID: <20201216124708.GZ3021@hirez.programming.kicks-ass.net>
-References: <MW4PR21MB1857CC85A6844C89183C93E9BFC59@MW4PR21MB1857.namprd21.prod.outlook.com>
- <20201216092649.GM3040@hirez.programming.kicks-ass.net>
- <20201216115524.GA13751@linux-8ccs>
+        Wed, 16 Dec 2020 07:48:23 -0500
+Received: from 1.general.khfeng.us.vpn ([10.172.68.174] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1kpWDN-0008Rc-4O; Wed, 16 Dec 2020 12:47:34 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     tiwai@suse.com
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        alsa-devel@alsa-project.org (moderated list:SOUND),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] ALSA: hda: Continue to probe when codec probe fails
+Date:   Wed, 16 Dec 2020 20:47:24 +0800
+Message-Id: <20201216124726.2842197-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201214060621.1102931-1-kai.heng.feng@canonical.com>
+References: <20201214060621.1102931-1-kai.heng.feng@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201216115524.GA13751@linux-8ccs>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 12:55:25PM +0100, Jessica Yu wrote:
-> +++ Peter Zijlstra [16/12/20 10:26 +0100]:
-> [snip]
-> > > PS, I originally found: in arch/x86/kvm/vmx/vmx.c: vmx_init(), it looks
-> > > like the line "static_branch_enable(&enable_evmcs);" does not take effect
-> > > in a v5.4-based kernel, but does take effect in the v5.10 kernel in the
-> > > same x86-64 virtual machine on Hyper-V, so I made the above test module
-> > > to test static_branch_enable(), and found that static_branch_enable() in
-> > > the test module does not work with both v5.10 and my v5.4 kernel, if the
-> > > __init marker is used.
-> 
-> Because the jump label code currently does not allow you to update if
-> the entry resides in an init section. By marking the module init
-> section __init you place it in the .init.text section.
-> jump_label_add_module() detects this (by calling within_module_init())
-> and marks the entry by calling jump_entry_set_init(). Then you have
-> the following sequence of calls (roughly):
-> 
-> static_branch_enable
->  static_key_enable
->    static_key_enable_cpuslocked
->      jump_label_update
->        jump_label_can_update
->          jump_entry_is_init returns true, so bail out
-> 
-> Judging from the comment in jump_label_can_update(), this seems to be
-> intentional behavior:
-> 
-> static bool jump_label_can_update(struct jump_entry *entry, bool init)
-> {
->        /*
->         * Cannot update code that was in an init text area.
->         */
->        if (!init && jump_entry_is_init(entry))
->                return false;
-> 
+Similar to commit 9479e75fca37 ("ALSA: hda: Keep the controller
+initialization even if no codecs found"), when codec probe fails, it
+doesn't enable runtime suspend, and can prevent graphics card from
+getting powered down:
+[    4.280991] snd_hda_intel 0000:01:00.1: no codecs initialized
 
-Only because we're having .init=false, incorrectly. See the other email.
+$ cat /sys/bus/pci/devices/0000:01:00.1/power/runtime_status
+active
+
+So mark there's no codec and continue probing to let runtime PM to work.
+
+BugLink: https://bugs.launchpad.net/bugs/1907212
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+ sound/pci/hda/hda_intel.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 6852668f1bcb..872a703dee43 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2328,7 +2328,7 @@ static int azx_probe_continue(struct azx *chip)
+ 	if (bus->codec_mask) {
+ 		err = azx_probe_codecs(chip, azx_max_codecs[chip->driver_type]);
+ 		if (err < 0)
+-			goto out_free;
++			bus->codec_mask = 0;
+ 	}
+ 
+ #ifdef CONFIG_SND_HDA_PATCH_LOADER
+-- 
+2.29.2
+
