@@ -2,152 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B10412DC2E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:15:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 312B42DC2EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:17:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726369AbgLPPPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 10:15:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57567 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726348AbgLPPPl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 10:15:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608131654;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OfDj4DJaoB++2KIjkmOLDB1ZfXvWoRXRp8J5NFncySc=;
-        b=RDZiiyHCYIF1sB+nn5MQPeM3/CeElXoBvRhbspBij/iUsgFwwRaZUrdUuomuYjBdRfUPaW
-        EuQrTATjgltx6SWGK/vsWyy729JIDCpFxPhb8NAJBs/NwNTjXf6WcSIgKZEciqkmxGsxRu
-        v/g1cmSEj95ydw6pZY4q7mFLt7Dq3Bg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-575-r1I8TnV4MYmAaZJGsd23gQ-1; Wed, 16 Dec 2020 10:14:12 -0500
-X-MC-Unique: r1I8TnV4MYmAaZJGsd23gQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6E0CD800D53;
-        Wed, 16 Dec 2020 15:14:10 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-112-114.rdu2.redhat.com [10.10.112.114])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4C4AB19CAC;
-        Wed, 16 Dec 2020 15:14:10 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id C3283220BCF; Wed, 16 Dec 2020 10:14:09 -0500 (EST)
-Date:   Wed, 16 Dec 2020 10:14:09 -0500
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Linux fsdevel mailing list <linux-fsdevel@vger.kernel.org>,
-        linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, miklos@szeredi.hu, amir73il@gmail.com,
-        willy@infradead.org, jack@suse.cz, sargun@sargun.me
-Subject: Re: [PATCH] vfs, syncfs: Do not ignore return code from ->sync_fs()
-Message-ID: <20201216151409.GA3177@redhat.com>
-References: <20201216143802.GA10550@redhat.com>
- <132c8c1e1ab82f5a640ff1ede6bb844885d46e68.camel@kernel.org>
+        id S1725933AbgLPPQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 10:16:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35454 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725812AbgLPPQf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 10:16:35 -0500
+Date:   Wed, 16 Dec 2020 12:16:05 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608131753;
+        bh=WHJXa4tUefpynUWX4FwjUN1RDWe/oDz+W61Wx+LLppg=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dJwjwKdROKDc3o7AdFbOw2a/Cu9qkviIeZf5QBtY39QmMDqjXgm7RcZ/ZiDlhTHv7
+         BPbjaTPXC/kP4aqU5TOW+9SFuZAy+9NIysnCcIb0MP53L5YQVDS4zCGdFaw9eE7q9/
+         1NuRmD9akUDd4eRfoLIyGtvhh1PV+BpiSBy5bkm0OFeg/Nze0oQBujolHXv9JtU+cm
+         u81VsqAfM2MY4K1px14NiE7nmL9G5epxhtnZDZkerO7OTxMqpL9b8kJjkdzrRv+k2l
+         iuaEWCVzW1NGZnCG9D283pOCWXwLF5y9W6bIE+w+rBXa0d1S3x4GZBv4E7UYr9lhKJ
+         KqZEmIlyvCzOg==
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Ralf Baechle <ralf@linux-mips.org>
+Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Juxin Gao <gaojuxin@loongson.cn>,
+        Archer Yan <ayan@wavecomp.com>,
+        David Daney <david.daney@cavium.com>
+Subject: Re: [QUESTION] support perf record --call-graph dwarf for mips
+Message-ID: <20201216151605.GA297512@kernel.org>
+References: <97fb66bf-51f8-a491-9eb4-10b2314cf82f@loongson.cn>
+ <90c7db1a-8e1a-e253-79ca-f93dbac014c2@flygoat.com>
+ <20201216143047.GC294100@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <132c8c1e1ab82f5a640ff1ede6bb844885d46e68.camel@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20201216143047.GC294100@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 09:57:49AM -0500, Jeff Layton wrote:
-> On Wed, 2020-12-16 at 09:38 -0500, Vivek Goyal wrote:
-> > I see that current implementation of __sync_filesystem() ignores the
-> > return code from ->sync_fs(). I am not sure why that's the case.
+Em Wed, Dec 16, 2020 at 11:30:47AM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Wed, Dec 16, 2020 at 07:14:02PM +0800, Jiaxun Yang escreveu:
 > > 
-> > Ignoring ->sync_fs() return code is problematic for overlayfs where
-> > it can return error if sync_filesystem() on upper super block failed.
-> > That error will simply be lost and sycnfs(overlay_fd), will get
-> > success (despite the fact it failed).
 > > 
-> > I am assuming that we want to continue to call __sync_blockdev()
-> > despite the fact that there have been errors reported from
-> > ->sync_fs(). So I wrote this simple patch which captures the
-> > error from ->sync_fs() but continues to call __sync_blockdev()
-> > and returns error from sync_fs() if there is one.
-> > 
-> > There might be some very good reasons to not capture ->sync_fs()
-> > return code, I don't know. Hence thought of proposing this patch.
-> > Atleast I will get to know the reason. I still need to figure
-> > a way out how to propagate overlay sync_fs() errors to user
-> > space.
-> > 
-> > Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
-> > ---
-> >  fs/sync.c |    8 ++++++--
-> >  1 file changed, 6 insertions(+), 2 deletions(-)
-> > 
-> > Index: redhat-linux/fs/sync.c
-> > ===================================================================
-> > --- redhat-linux.orig/fs/sync.c	2020-12-16 09:15:49.831565653 -0500
-> > +++ redhat-linux/fs/sync.c	2020-12-16 09:23:42.499853207 -0500
-> > @@ -30,14 +30,18 @@
-> >   */
-> >  static int __sync_filesystem(struct super_block *sb, int wait)
-> >  {
-> > +	int ret, ret2;
-> > +
-> >  	if (wait)
-> >  		sync_inodes_sb(sb);
-> >  	else
-> >  		writeback_inodes_sb(sb, WB_REASON_SYNC);
-> >  
-> > 
-> >  	if (sb->s_op->sync_fs)
-> > -		sb->s_op->sync_fs(sb, wait);
-> > -	return __sync_blockdev(sb->s_bdev, wait);
-> > +		ret = sb->s_op->sync_fs(sb, wait);
-> > +	ret2 = __sync_blockdev(sb->s_bdev, wait);
-> > +
-> > +	return ret ? ret : ret2;
-> >  }
-> >  
-> > 
-> >  /*
-> > 
+> > åœ¨ 2020/12/16 ä¸‹åˆ6:05, Tiezhu Yang å†™é“:
+> > > Hi,
+> > > 
+> > > In the current upstream mainline kernel, perf record --call-graph dwarf
+> > > is not supported for architecture mips64. I find the following related
+> > > patches about this feature by David Daney <david.daney@cavium.com> and
+> > > Archer Yan <ayan@wavecomp.com> in Sep 2019.
+>  
+> > AFAIK ddaney left Cavium at 2018 and Wave Computing Shanghai is defuncted...
+>  
+> > Feel free to take over if you like, there is no licenses issue, just
+> > remember to credit
+> > others properly.
 > 
-> I posted a patchset that took a similar approach a couple of years ago,
-> and we decided not to go with it [1].
-> 
-> While it's not ideal to ignore the error here, I think this is likely to
-> break stuff.
+> Ralf, can you take a look at the kernel part? The user space part seems
+> ok.
 
-So one side affect I see is that syncfs() might start returning errors
-in some cases which were not reported at all. I am wondering will that
-count as breakage.
+I take that back, but made some progress in getting that old patch
+closer to what we have now in tools/perf/, see below.
 
-> What may be better is to just make sync_fs void return, so
-> people don't think that returned errors there mean anything.
+Someone with a mips system should try to refresh the kernel bits and
+then see if the patch below works.
 
-May be. 
+- Arnaldo
 
-But then question remains that how do we return error to user space
-in syncfs(fd) for overlayfs. I will not be surprised if other
-filesystems want to return errors as well.
 
-Shall I create new helpers and call these in case of syncfs(). But
-that too will start returning new errors on syncfs(). So it does
-not solve that problem (if it is a problem).
+commit e59de40addb092d7167fa1dd7c6640d0fab41ede
+Author: David Daney <david.daney@cavium.com>
+Date:   Wed Sep 11 08:26:37 2019 +0000
 
-Or we can define a new super block op say ->sync_fs2() and call that
-first and in that case capture return code. That way it will not
-impact existing cases and overlayfs can possibly make use of
-->sync_fs2() and return error. IOW, impact will be limited to
-only file systems which chose to implement ->sync_fs2().
+    perf mips: Support mips unwinding and dwarf-regs.
+    
+    Map perf APIs(perf_reg_name/get_arch_regstr/unwind__arch_reg_id)
+    with MIPS specific registers.
+    
+    [ayan@wavecomp.com: repick this patch for unwinding userstack
+    backtrace by perf and libunwind on MIPS based CPU.]
+    
+    Committer notes:
+    
+    Some header fixups, replace CONFIG_LIBUNWIND with CONFIG_LOCAL_LIBUNWIND
+    to cope with:
+    
+      9d8e14d306ef2f5d ("perf unwind: Separate local/remote libunwind config")
+    
+    Signed-off-by: David Daney <david.daney@cavium.com>
+    Cc: Jiri Olsa <jolsa@redhat.com>
+    Cc: linux-kernel@vger.kernel.org
+    Cc: Peter Zijlstra <a.p.zijlstra@chello.nl>
+    Cc: Paul Mackerras <paulus@samba.org>
+    Cc: Ingo Molnar <mingo@redhat.com>
+    Link: https://lore.kernel.org/r/20190911082548.31546-1-ayan@wavecomp.com
+    Signed-off-by: Archer Yan <ayan@wavecomp.com>
+    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-Thanks
-Vivek
-
-> 
-> [1]: https://lore.kernel.org/linux-fsdevel/20180518123415.28181-1-jlayton@kernel.org/
-> -- 
-> Jeff Layton <jlayton@kernel.org>
-> 
-
+diff --git a/tools/perf/arch/mips/Makefile b/tools/perf/arch/mips/Makefile
+new file mode 100644
+index 0000000000000000..6e1106fab26e4015
+--- /dev/null
++++ b/tools/perf/arch/mips/Makefile
+@@ -0,0 +1,4 @@
++# SPDX-License-Identifier: GPL-2.0
++ifndef NO_DWARF
++PERF_HAVE_DWARF_REGS := 1
++endif
+diff --git a/tools/perf/arch/mips/include/perf_regs.h b/tools/perf/arch/mips/include/perf_regs.h
+new file mode 100644
+index 0000000000000000..36a28bc1734787ce
+--- /dev/null
++++ b/tools/perf/arch/mips/include/perf_regs.h
+@@ -0,0 +1,83 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef ARCH_PERF_REGS_H
++#define ARCH_PERF_REGS_H
++
++#include <stdlib.h>
++#include <linux/types.h>
++#include <asm/perf_regs.h>
++
++#define PERF_REG_IP PERF_REG_MIPS_PC
++#define PERF_REG_SP PERF_REG_MIPS_R29
++
++#define PERF_REGS_MASK ((1ULL << PERF_REG_MIPS_MAX) - 1)
++
++static inline const char *perf_reg_name(int id)
++{
++	switch (id) {
++	case PERF_REG_MIPS_PC:
++		return "PC";
++	case PERF_REG_MIPS_R1:
++		return "$1";
++	case PERF_REG_MIPS_R2:
++		return "$2";
++	case PERF_REG_MIPS_R3:
++		return "$3";
++	case PERF_REG_MIPS_R4:
++		return "$4";
++	case PERF_REG_MIPS_R5:
++		return "$5";
++	case PERF_REG_MIPS_R6:
++		return "$6";
++	case PERF_REG_MIPS_R7:
++		return "$7";
++	case PERF_REG_MIPS_R8:
++		return "$8";
++	case PERF_REG_MIPS_R9:
++		return "$9";
++	case PERF_REG_MIPS_R10:
++		return "$10";
++	case PERF_REG_MIPS_R11:
++		return "$11";
++	case PERF_REG_MIPS_R12:
++		return "$12";
++	case PERF_REG_MIPS_R13:
++		return "$13";
++	case PERF_REG_MIPS_R14:
++		return "$14";
++	case PERF_REG_MIPS_R15:
++		return "$15";
++	case PERF_REG_MIPS_R16:
++		return "$16";
++	case PERF_REG_MIPS_R17:
++		return "$17";
++	case PERF_REG_MIPS_R18:
++		return "$18";
++	case PERF_REG_MIPS_R19:
++		return "$19";
++	case PERF_REG_MIPS_R20:
++		return "$20";
++	case PERF_REG_MIPS_R21:
++		return "$21";
++	case PERF_REG_MIPS_R22:
++		return "$22";
++	case PERF_REG_MIPS_R23:
++		return "$23";
++	case PERF_REG_MIPS_R24:
++		return "$24";
++	case PERF_REG_MIPS_R25:
++		return "$25";
++	case PERF_REG_MIPS_R28:
++		return "$28";
++	case PERF_REG_MIPS_R29:
++		return "$29";
++	case PERF_REG_MIPS_R30:
++		return "$30";
++	case PERF_REG_MIPS_R31:
++		return "$31";
++	default:
++		break;
++	}
++	return NULL;
++}
++
++#endif /* ARCH_PERF_REGS_H */
+diff --git a/tools/perf/arch/mips/util/Build b/tools/perf/arch/mips/util/Build
+new file mode 100644
+index 0000000000000000..7b0c0457154a22c5
+--- /dev/null
++++ b/tools/perf/arch/mips/util/Build
+@@ -0,0 +1,2 @@
++perf-$(CONFIG_DWARF) += dwarf-regs.o
++perf-$(CONFIG_LOCAL_LIBUNWIND) += unwind-libunwind.o
+diff --git a/tools/perf/arch/mips/util/dwarf-regs.c b/tools/perf/arch/mips/util/dwarf-regs.c
+new file mode 100644
+index 0000000000000000..165e0179ea11d9b2
+--- /dev/null
++++ b/tools/perf/arch/mips/util/dwarf-regs.c
+@@ -0,0 +1,37 @@
++/*
++ * dwarf-regs.c : Mapping of DWARF debug register numbers into register names.
++ *
++ * Copyright (C) 2013 Cavium, Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ */
++
++#include <libio.h>
++#include <dwarf-regs.h>
++
++static const char *mips_gpr_names[32] = {
++	"$0", "$1", "$2", "$3", "$4", "$5", "$6", "$7", "$8", "$9",
++	"$10", "$11", "$12", "$13", "$14", "$15", "$16", "$17", "$18", "$19",
++	"$20", "$21", "$22", "$23", "$24", "$25", "$26", "$27", "$28", "$29",
++	"$30", "$31"
++};
++
++const char *get_arch_regstr(unsigned int n)
++{
++	if (n < 32)
++		return mips_gpr_names[n];
++	if (n == 64)
++		return "hi";
++	if (n == 65)
++		return "lo";
++	return NULL;
++}
+diff --git a/tools/perf/arch/mips/util/unwind-libunwind.c b/tools/perf/arch/mips/util/unwind-libunwind.c
+new file mode 100644
+index 0000000000000000..7af25427943f451a
+--- /dev/null
++++ b/tools/perf/arch/mips/util/unwind-libunwind.c
+@@ -0,0 +1,21 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <errno.h>
++#include <libunwind.h>
++#include "perf_regs.h"
++#include "../../util/unwind.h"
++
++int unwind__arch_reg_id(int regnum)
++{
++	switch (regnum) {
++	case UNW_MIPS_R1 ... UNW_MIPS_R25:
++		return regnum - UNW_MIPS_R1 + PERF_REG_MIPS_R1;
++	case UNW_MIPS_R28 ... UNW_MIPS_R31:
++		return regnum - UNW_MIPS_R28 + PERF_REG_MIPS_R28;
++	case UNW_MIPS_PC:
++		return PERF_REG_MIPS_PC;
++	default:
++		pr_err("unwind: invalid reg id %d\n", regnum);
++		return -EINVAL;
++	}
++}
