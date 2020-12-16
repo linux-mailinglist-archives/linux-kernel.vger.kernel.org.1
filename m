@@ -2,118 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05DF12DBCEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 09:48:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD8CA2DBCE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 09:48:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726146AbgLPIrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 03:47:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37583 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725829AbgLPIrC (ORCPT
+        id S1726142AbgLPIqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 03:46:37 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2094 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725972AbgLPIqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 03:47:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608108336;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IYnxKZ4kumZ9glZzuqGoRnqAJc8ZF8TPj7iOOqqewlI=;
-        b=H6/rzTlujHuetl0EeAqoXDL16pYcRinh+0MzUkhL9F+pEz6e/+sQcVSE1NNxLeOZMhvWJE
-        eUsOGj8yg7X75KeDoUHxY4ej4kRFIYOoyhQ27ySv1NCcJ8YbilTJrdjABmPjn4eVN1JiLa
-        Ge54JoWCA9Ea2vHds75aEV/3duwUi7c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-214-sUjnykzeM-CadnGgUikm8w-1; Wed, 16 Dec 2020 03:45:33 -0500
-X-MC-Unique: sUjnykzeM-CadnGgUikm8w-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 12004107ACE8;
-        Wed, 16 Dec 2020 08:45:32 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A33C35D9E3;
-        Wed, 16 Dec 2020 08:45:25 +0000 (UTC)
-Date:   Wed, 16 Dec 2020 09:45:24 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Edward Cree <ecree.xilinx@gmail.com>
-Cc:     brouer@redhat.com, Ivan Babrou <ivan@cloudflare.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@cloudflare.com,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: Re: [PATCH net-next] sfc: reduce the number of requested xdp ev
- queues
-Message-ID: <20201216094524.0c6e521c@carbon>
-In-Reply-To: <205ba636-f180-3003-a41c-828e1fe1a13b@gmail.com>
-References: <20201215012907.3062-1-ivan@cloudflare.com>
-        <20201215104327.2be76156@carbon>
-        <205ba636-f180-3003-a41c-828e1fe1a13b@gmail.com>
+        Wed, 16 Dec 2020 03:46:37 -0500
+Received: from dggeme761-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4CwpbP6N4MzVfx0;
+        Wed, 16 Dec 2020 16:44:49 +0800 (CST)
+Received: from [10.174.177.7] (10.174.177.7) by dggeme761-chm.china.huawei.com
+ (10.3.19.107) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1913.5; Wed, 16
+ Dec 2020 16:45:52 +0800
+Subject: Re: [PATCH] use x86 cpu park to speedup smp_init in kexec situation
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>
+CC:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        <hewenliang4@huawei.com>, <hushiyuan@huawei.com>,
+        <luolongjun@huawei.com>, <hejingxian@huawei.com>
+References: <87eejqu5q5.fsf@nanos.tec.linutronix.de>
+From:   "shenkai (D)" <shenkai8@huawei.com>
+Message-ID: <f2a4d172-fa17-9f98-ad8f-d69f84ad0df5@huawei.com>
+Date:   Wed, 16 Dec 2020 16:45:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <87eejqu5q5.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.7]
+X-ClientProxiedBy: dggeme707-chm.china.huawei.com (10.1.199.103) To
+ dggeme761-chm.china.huawei.com (10.3.19.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Dec 2020 18:49:55 +0000
-Edward Cree <ecree.xilinx@gmail.com> wrote:
-
-> On 15/12/2020 09:43, Jesper Dangaard Brouer wrote:
-> > On Mon, 14 Dec 2020 17:29:06 -0800
-> > Ivan Babrou <ivan@cloudflare.com> wrote:
-> >   
-> >> Without this change the driver tries to allocate too many queues,
-> >> breaching the number of available msi-x interrupts on machines
-> >> with many logical cpus and default adapter settings:
-> >>
-> >> Insufficient resources for 12 XDP event queues (24 other channels, max 32)
-> >>
-> >> Which in turn triggers EINVAL on XDP processing:
-> >>
-> >> sfc 0000:86:00.0 ext0: XDP TX failed (-22)  
-> > 
-> > I have a similar QA report with XDP_REDIRECT:
-> >   sfc 0000:05:00.0 ens1f0np0: XDP redirect failed (-22)
-> > 
-> > Here we are back to the issue we discussed with ixgbe, that NIC / msi-x
-> > interrupts hardware resources are not enough on machines with many
-> > logical cpus.
-> > 
-> > After this fix, what will happen if (cpu >= efx->xdp_tx_queue_count) ?  
+ÔÚ 2020/12/16 5:20, Thomas Gleixner Ð´µÀ:
+> On Tue, Dec 15 2020 at 08:31, Andy Lutomirski wrote:
+>> On Tue, Dec 15, 2020 at 6:46 AM shenkai (D) <shenkai8@huawei.com> wrote:
+>>> From: shenkai <shenkai8@huawei.com>
+>>> Date: Tue, 15 Dec 2020 01:58:06 +0000
+>>> Subject: [PATCH] use x86 cpu park to speedup smp_init in kexec situation
+>>>
+>>> In kexec reboot on x86 machine, APs will be halted and then waked up
+>>> by the apic INIT and SIPI interrupt. Here we can let APs spin instead
+>>> of being halted and boot APs by writing to specific address. In this way
+>>> we can accelerate smp_init procedure for we don't need to pull APs up
+>>> from a deep C-state.
+>>>
+>>> This is meaningful in many situations where users are sensitive to reboot
+>>> time cost.
+>> I like the concept.
+> No. This is the wrong thing to do. We are not optimizing for _one_
+> special case.
 >
-> Same as happened before: the "failed -22".  But this fix will make that
->  less likely to happen, because it ties more TXQs to each EVQ, and it's
->  the EVQs that are in short supply.
+> We can optimize it for all operations where all the non boot CPUs have
+> to brought up, be it cold boot, hibernation resume or kexec.
 >
-
-So, what I hear is that this fix is just pampering over the real issue.
-
-I suggest that you/we detect the situation, and have a code path that
-will take a lock (per 16 packets bulk) and solve the issue.
-
-If you care about maximum performance you can implement this via
-changing the ndo_xdp_xmit pointer to the fallback function when needed,
-to avoid having a to check for the fallback mode in the fast-path.
-
+> Aside of that this is not a magic X86 special problem. Pretty much all
+> architectures have the same issue and it can be solved very simple,
+> which has been discussed before and I outlined the solution years ago,
+> but nobody sat down and actually made it work.
 >
-> (Strictly speaking, I believe the limitation is a software one, that
->  comes from the driver's channel structures having been designed a
->  decade ago when 32 cpus ought to be enough for anybody... AFAIR the
->  hardware is capable of giving us something like 1024 evqs if we ask
->  for them, it just might not have that many msi-x vectors for us.)
-> Anyway, the patch looks correct, so
-> Acked-by: Edward Cree <ecree.xilinx@gmail.com>
+> Since the rewrite of the CPU hotplug infrastructure to a state machine
+> it's pretty obvious that the bringup of APs can changed from the fully
+> serialized:
+>
+>       for_each_present_cpu(cpu) {
+>       	if (!cpu_online(cpu))
+>             cpu_up(cpu, CPUHP_ONLINE);
+>       }
+>
+> to
+>
+>       for_each_present_cpu(cpu) {
+>       	if (!cpu_online(cpu))
+>             cpu_up(cpu, CPUHP_KICK_CPU);
+>       }
+>
+>       for_each_present_cpu(cpu) {
+>       	if (!cpu_active(cpu))
+>             cpu_up(cpu, CPUHP_ONLINE);
+>       }
+>
+> The CPUHP_KICK_CPU state does not exist today, but it's just the logical
+> consequence of the state machine. It's basically splitting __cpu_up()
+> into:
+>
+> __cpu_kick()
+> {
+>      prepare();
+>      arch_kick_remote_cpu();     -> Send IPI/NMI, Firmware call .....
+> }
+>      
+> __cpu_wait_online()
+> {
+>      wait_until_cpu_online();
+>      do_further_stuff();
+> }
+>
+> There is some more to it than just blindly splitting it up at the
+> architecture level.
+>
+> All __cpu_up() implementations across arch/ have a lot of needlessly
+> duplicated and pointlessly differently implemented code which can move
+> completely into the core.
+>
+> So actually we want to split this further up:
+>
+>     CPUHP_PREPARE_CPU_UP:	Generic preparation step where all
+>                                  the magic cruft which is duplicated
+>                                  across architectures goes to
+>
+>     CPUHP_KICK_CPU:		Architecture specific prepare and kick
+>
+>     CPUHP_WAIT_ONLINE:           Generic wait function for CPU coming
+>                                  online: wait_for_completion_timeout()
+>                                  which releases the upcoming CPU and
+>                                  invokes an optional arch_sync_cpu_up()
+>                                  function which finalizes the bringup.
+> and on the AP side:
+>
+>     CPU comes up, does all the low level setup, sets online, calls
+>     complete() and the spinwaits for release.
+>
+> Once the control CPU comes out of the completion it releases the
+> spinwait.
+>
+> That works for all bringup situations and not only for kexec and the
+> simple trick is that by the time the last CPU has been kicked in the
+> first step, the first kicked CPU is already spinwaiting for release.
+>
+> By the time the first kicked CPU has completed the process, i.e. reached
+> the active state, then the next CPU is spinwaiting and so on.
+>
+> If you look at the provided time saving:
+>
+>     Mainline:		210ms
+>     Patched:		 80ms
+> -----------------------------
+>     Delta                130ms
+>
+> i.e. it takes ~ 1.8ms to kick and wait for the AP to come up and ~ 1.1ms
+> per CPU for the whole bringup. It does not completly add up, but it has
+> a clear benefit for everything.
+>
+> Also the changelog says that the delay is related to CPUs in deep
+> C-states. If CPUs are brought down for kexec then it's trivial enough to
+> limit the C-states or just not use mwait() at all.
+>
+> It would be interesting to see the numbers just with play_dead() using
+> hlt() or mwait(eax=0, 0) for the kexec case and no other change at all.
+>
+> Thanks,
+>
+>          tglx
+>
+Thanks for your and Andy's precious comments. I would like to take a try on
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+reconstructing this patch to make it more decent and generic.
 
+
+Thanks again
+
+Kai
