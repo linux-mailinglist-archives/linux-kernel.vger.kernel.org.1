@@ -2,98 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC522DC21E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 15:26:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 489EF2DC220
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 15:27:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726499AbgLPOZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 09:25:41 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:41542 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726332AbgLPOZk (ORCPT
+        id S1726482AbgLPO0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 09:26:34 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:47956 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726137AbgLPO0e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 09:25:40 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4D07245E;
-        Wed, 16 Dec 2020 15:24:58 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1608128698;
-        bh=wvcHjQoGe/khtxCSJuApgP2sP/PWMbdlprUUmhRo/xA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Sr9KxOZiWkDDUzpY+vaKXFoJLTHAnycQ3qz+HJ0PGYiwvR6f+zBZp6KPmhOY4xPXL
-         KjKW/tpxhzOqtOMz+1hrulPLVWnXe4fI8CCyl++UZuUOeCkF3zcM5RXbU1iahc1xRe
-         IbfGuroGNQqrg+RVXjFnhj8vte3ijApLiB/Y2zmo=
-Date:   Wed, 16 Dec 2020 16:24:51 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Guennadi Liakhovetski <g.liakhovetski@gmx.de>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] media: dt-bindings: Convert video-interfaces.txt
- properties to schemas
-Message-ID: <X9oYs43PzXbIXXs8@pendragon.ideasonboard.com>
-References: <20201210211625.3070388-1-robh@kernel.org>
- <20201210211625.3070388-2-robh@kernel.org>
- <alpine.DEB.2.20.2012161113060.15676@axis700.grange>
- <20201216141210.GB651087@robh.at.kernel.org>
+        Wed, 16 Dec 2020 09:26:34 -0500
+Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1kpXkV-0006dp-LP; Wed, 16 Dec 2020 14:25:51 +0000
+Date:   Wed, 16 Dec 2020 15:25:50 +0100
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Kirill Tkhai <ktkhai@virtuozzo.com>
+Cc:     Mike Galbraith <efault@gmx.de>,
+        LKML <linux-kernel@vger.kernel.org>, egorenar@linux.ibm.com
+Subject: Re: regression: 9a56493f6942 "uts: Use generic ns_common::count"
+ broke makedumpfile 1.6.7
+Message-ID: <20201216142550.lhmksmdoovivylrz@wittgenstein>
+References: <7b13506084a015d0256222cdd278fe461cdd4a74.camel@gmx.de>
+ <6933cde2-7d43-7d7e-066c-1c4a13c752dd@virtuozzo.com>
+ <ad3bfa510282d3122069dafe98666aa2d6b5b0ff.camel@gmx.de>
+ <60200005-a9a2-4994-b730-e22fd8f01ae4@virtuozzo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201216141210.GB651087@robh.at.kernel.org>
+In-Reply-To: <60200005-a9a2-4994-b730-e22fd8f01ae4@virtuozzo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-On Wed, Dec 16, 2020 at 08:12:10AM -0600, Rob Herring wrote:
-> On Wed, Dec 16, 2020 at 11:18:03AM +0100, Guennadi Liakhovetski wrote:
-> > Hi Rob,
+On Wed, Dec 16, 2020 at 05:23:30PM +0300, Kirill Tkhai wrote:
+> On 16.12.2020 16:32, Mike Galbraith wrote:
+> > On Wed, 2020-12-16 at 15:35 +0300, Kirill Tkhai wrote:
+> >> Hi, Alexander,
+> >>
+> >> On 16.12.2020 14:02, Mike Galbraith wrote:
+> >>> Greetings,
+> >>>
+> >>> With this commit, bisected and confirmed, kdump stops working here,
+> >>> makedumpfile saying "check_release: Can't get the kernel version".
+> >>
+> >> hasn't your commit 55d9e11398a4 "kdump: append uts_namespace.name offset to VMCOREINFO"
+> >> fixed this issue?
 > > 
-> > Sorry for the delay! I didn't realise my ack was required for this patch.
-> > I won't object against the licence change, but please don't add me as a
-> > maintainer of
+> > FWIW, I applied the below, but it didn't help.
+> > 
+> > ---
+> >  kernel/crash_core.c |    1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > --- a/kernel/crash_core.c
+> > +++ b/kernel/crash_core.c
+> > @@ -447,6 +447,7 @@ static int __init crash_save_vmcoreinfo_
+> >  	VMCOREINFO_PAGESIZE(PAGE_SIZE);
+> > 
+> >  	VMCOREINFO_SYMBOL(init_uts_ns);
+> > +	VMCOREINFO_OFFSET(uts_namespace, name);
+> >  	VMCOREINFO_SYMBOL(node_online_map);
+> >  #ifdef CONFIG_MMU
+> >  	VMCOREINFO_SYMBOL_ARRAY(swapper_pg_dir);
 > 
-> Okay, so that's an Ack?
+> As I see, makedumpfile hardcodes recent supported kernel version.
+> (I downloaded makedumpfile from here: https://github.com/makedumpfile/makedumpfile)
 > 
-> > 
-> > On Thu, 10 Dec 2020, Rob Herring wrote:
-> > 
-> > [snip]
-> > 
-> > > diff --git a/Documentation/devicetree/bindings/media/video-interfaces.yaml b/Documentation/devicetree/bindings/media/video-interfaces.yaml
-> > > new file mode 100644
-> > > index 000000000000..7415a4df1576
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/media/video-interfaces.yaml
-> > > @@ -0,0 +1,344 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/media/video-interfaces.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Common bindings for video receiver and transmitter interface endpoints
-> > > +
-> > > +maintainers:
-> > > +  - Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-> > 
-> > I did commit the original version of
-> > Documentation/devicetree/bindings/media/video-interfaces.txt but that was
-> > more than 8 years ago, I haven't worked in media / V4L for several years
-> > now, so, I don't think I can meaningfully maintain that file now.
+> #define LATEST_VERSION          KERNEL_VERSION(5, 9, 4) /* linux-5.9.4 */
+> int32_t         
+> get_kernel_version(char *release)
+> {
+> 	...
+>         if ((version < OLDEST_VERSION) || (LATEST_VERSION < version)) {
+>                 MSG("The kernel version is not supported.\n");
+>                 MSG("The makedumpfile operation may be incomplete.\n");
+>         }
+> 	...
+> }
 > 
-> Okay, I'll drop you.
+> So, in case of you revert the patch, makedumpfile also should fail:
 > 
-> Anyone else want to sign up? Laurent?
+> root@qemu:~# ./makedumpfile/makedumpfile -g VMCOREINFO -x ./vmlinux 
+> The kernel version is not supported.
+> The makedumpfile operation may be incomplete.
+> 
+> The vmcoreinfo is saved to VMCOREINFO.
+> 
+> makedumpfile Completed.
+> 
+> Does this regression only cause that one error message "check_release: Can't get the kernel version"
+> is printed instead of another: "The kernel version is not supported."?
 
-I'll likely regret this, but yes, you can sign me up :-)
-
--- 
-Regards,
-
-Laurent Pinchart
+(I take it you're debugging this now, Kirill. Thank you!)
