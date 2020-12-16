@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66CCB2DC13A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:28:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC2B22DC13D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:28:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726203AbgLPN1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 08:27:18 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9219 "EHLO
+        id S1726256AbgLPN2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 08:28:03 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9626 "EHLO
         szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726132AbgLPN1S (ORCPT
+        with ESMTP id S1726132AbgLPN2D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 08:27:18 -0500
+        Wed, 16 Dec 2020 08:28:03 -0500
 Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CwwqZ53x5zkqKJ;
-        Wed, 16 Dec 2020 21:25:46 +0800 (CST)
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CwwrS404xz15cYN;
+        Wed, 16 Dec 2020 21:26:32 +0800 (CST)
 Received: from ubuntu.network (10.175.138.68) by
  DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 16 Dec 2020 21:26:25 +0800
+ 14.3.498.0; Wed, 16 Dec 2020 21:27:01 +0800
 From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <linus.walleij@linaro.org>, <bgolaszewski@baylibre.com>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+To:     <wim@linux-watchdog.org>, <linux@roeck-us.net>,
+        <linux-watchdog@vger.kernel.org>, <linux-kernel@vger.kernel.org>
 CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] gpio: convert comma to semicolon
-Date:   Wed, 16 Dec 2020 21:26:57 +0800
-Message-ID: <20201216132657.15582-1-zhengyongjun3@huawei.com>
+Subject: [PATCH -next] watchdog: convert comma to semicolon
+Date:   Wed, 16 Dec 2020 21:27:33 +0800
+Message-ID: <20201216132733.15635-1-zhengyongjun3@huawei.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -39,29 +39,24 @@ Replace a comma between expression statements by a semicolon.
 
 Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/gpio/gpio-sl28cpld.c | 4 ++--
+ drivers/watchdog/mpc8xxx_wdt.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpio/gpio-sl28cpld.c b/drivers/gpio/gpio-sl28cpld.c
-index 889b8f5622c2..52404736ac86 100644
---- a/drivers/gpio/gpio-sl28cpld.c
-+++ b/drivers/gpio/gpio-sl28cpld.c
-@@ -65,13 +65,13 @@ static int sl28cpld_gpio_irq_init(struct platform_device *pdev,
- 	if (!irq_chip)
- 		return -ENOMEM;
+diff --git a/drivers/watchdog/mpc8xxx_wdt.c b/drivers/watchdog/mpc8xxx_wdt.c
+index 3fc457bc16db..2f7ded32e878 100644
+--- a/drivers/watchdog/mpc8xxx_wdt.c
++++ b/drivers/watchdog/mpc8xxx_wdt.c
+@@ -175,8 +175,8 @@ static int mpc8xxx_wdt_probe(struct platform_device *ofdev)
  
--	irq_chip->name = "sl28cpld-gpio-irq",
-+	irq_chip->name = "sl28cpld-gpio-irq";
- 	irq_chip->irqs = sl28cpld_gpio_irqs;
- 	irq_chip->num_irqs = ARRAY_SIZE(sl28cpld_gpio_irqs);
- 	irq_chip->num_regs = 1;
- 	irq_chip->status_base = base + GPIO_REG_IP;
- 	irq_chip->mask_base = base + GPIO_REG_IE;
--	irq_chip->mask_invert = true,
-+	irq_chip->mask_invert = true;
- 	irq_chip->ack_base = base + GPIO_REG_IP;
+ 	spin_lock_init(&ddata->lock);
  
- 	ret = devm_regmap_add_irq_chip_fwnode(dev, dev_fwnode(dev),
+-	ddata->wdd.info = &mpc8xxx_wdt_info,
+-	ddata->wdd.ops = &mpc8xxx_wdt_ops,
++	ddata->wdd.info = &mpc8xxx_wdt_info;
++	ddata->wdd.ops = &mpc8xxx_wdt_ops;
+ 
+ 	ddata->wdd.timeout = WATCHDOG_TIMEOUT;
+ 	watchdog_init_timeout(&ddata->wdd, timeout, dev);
 -- 
 2.22.0
 
