@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F34062DB9C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 04:46:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD8622DB9CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 04:46:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725852AbgLPDpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 22:45:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38028 "EHLO mail.kernel.org"
+        id S1725855AbgLPDpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 22:45:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725802AbgLPDpb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1725829AbgLPDpb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Dec 2020 22:45:31 -0500
-Subject: Re: [GIT PULL] exec fixes for v5.11-rc1
+Subject: Re: [GIT PULL] exec-update-lock for v5.11
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1608090253;
-        bh=QytAumS65RD1XJRcPCbdnHPnbErfLwbpcEp50UY8hl4=;
+        bh=1/Q4eD2GubnygRb5hRQu3SJRBZ29CglRgcUI2qVNxxg=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=A9SEzPvmQOzPb1Xz/tGuYduLjjN8E9tfFj/lIPQTh6kzrR45Yj2TBbrpbsWU0KCc9
-         sSjUpGUA8NIa/blFqwNV/2v3wpyjU+zZ0F9wF6Lw0ew0OMCF3EQ2YJLA/2uhTMe0a1
-         B+3oTQ5Lt+PH8c08pSvghOGNLmbTopT9zA/86JF6MT0WUFScga4ernh8lm/cW2xaTz
-         rJ13eK5DvKrpvZ9wR0g2yAEOpD3cnkpCXa4Bx+Zzq5gDPht/DVOdIiq4FVv5N00SoH
-         EwO0M/eO5xKTkcAb5vkVOAjQLog8iXmwk8q4p+CxKE+zemXpMa80dFR9FRzcIC4CIr
-         UM5+bAxIC6OsQ==
+        b=EpJC4mIQXggBUP69lDiGChsZ2lrMWTc3M9IS3fEGBU0Eu7ssKl4JnXfxYlkak1h1q
+         NJgWgN+ZrfKNschvLKJ4jMjySMsJTQssQ01SckfQjFM7vVDRwYQ1pko+fiQWJk6fP/
+         RErbQNsn/G+jBGyEtkoergjz6yOE+cZmyMnxH7Fu5Yofg1Ky+esGAcyabLhQSwG0nL
+         r5I6r0Pcr4LCUmoT+qiQHPJCC8wu2FXnxwJY15wCcIQdiIA/mIoz7KXe/BohtjQOc9
+         WPPbXgipRnGHgz54p7/b5EHJ4WhUo4vD86LwIR/JJb3HlB5p8QEXRIX6WHkLs/OZDL
+         jLzxlKx1b26rA==
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <871rfqad5g.fsf@x220.int.ebiederm.org>
-References: <871rfqad5g.fsf@x220.int.ebiederm.org>
+In-Reply-To: <874kkm8s8d.fsf@x220.int.ebiederm.org>
+References: <874kkm8s8d.fsf@x220.int.ebiederm.org>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <871rfqad5g.fsf@x220.int.ebiederm.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git exec-for-v5.11
-X-PR-Tracked-Commit-Id: 9ee1206dcfb9d56503c0de9f8320f7b29c795867
+X-PR-Tracked-Message-Id: <874kkm8s8d.fsf@x220.int.ebiederm.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git exec-update-lock-for-v5.11
+X-PR-Tracked-Commit-Id: f7cfd871ae0c5008d94b6f66834e7845caa93c15
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: faf145d6f3f3d6f2c066f65602ba9d0a03106915
-Message-Id: <160809025361.9893.8363263679895919837.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: d01e7f10dae29eba0f9ada82b65d24e035d5b2f9
+Message-Id: <160809025389.9893.1709323272760026475.pr-tracker-bot@kernel.org>
 Date:   Wed, 16 Dec 2020 03:44:13 +0000
 To:     "Eric W. Biederman" <ebiederm@xmission.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+        linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 15 Dec 2020 16:59:55 -0600:
+The pull request you sent on Tue, 15 Dec 2020 19:17:06 -0600:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git exec-for-v5.11
+> git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git exec-update-lock-for-v5.11
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/faf145d6f3f3d6f2c066f65602ba9d0a03106915
+https://git.kernel.org/torvalds/c/d01e7f10dae29eba0f9ada82b65d24e035d5b2f9
 
 Thank you!
 
