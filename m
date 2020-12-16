@@ -2,156 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 863872DC780
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 21:04:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB54A2DC783
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 21:04:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727245AbgLPUDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 15:03:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56563 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726877AbgLPUDd (ORCPT
+        id S1728688AbgLPUDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 15:03:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728689AbgLPUDh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 15:03:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608148926;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ho9PPYv+1UwQ5JBc1uUgDPq/AaB5ido8rQiNgCpjGCU=;
-        b=XeCNQitnGV2mDjzVIJ00YIp9Gc0VPLcoH3h8MhbScU1w1vc4cIVnXzPo+jTVRiAUgRiEde
-        DC4ji0FaGSyi+8aHHsALqhiDA7+dWY3vB+jdt5AvprTtA7KorT3TfqcfbsehzZe/RbzaZ3
-        ddytzNjhfuA4sh6B0jnbl23gS8AAs4I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-190-4eBTrRGZMgKkNSx8aLLC-A-1; Wed, 16 Dec 2020 15:02:03 -0500
-X-MC-Unique: 4eBTrRGZMgKkNSx8aLLC-A-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0213F8015F4;
-        Wed, 16 Dec 2020 20:02:02 +0000 (UTC)
-Received: from treble (ovpn-112-170.rdu2.redhat.com [10.10.112.170])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7D3EE60BF3;
-        Wed, 16 Dec 2020 20:02:01 +0000 (UTC)
-Date:   Wed, 16 Dec 2020 14:01:58 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org
-Subject: Re: New objtool warning..
-Message-ID: <20201216200158.akf356yrw44o2rlb@treble>
-References: <CAHk-=wiXtdHJBXw+=0so3ZV8mvG0xEykxUta2sUWPB=hUWHmtQ@mail.gmail.com>
- <20201216044918.jdmi32dz75uboybv@treble>
- <CAHk-=wjMoZesNgi1yWzY3nikyR11PUxHgov561UNom5mL1R4rA@mail.gmail.com>
- <CAHk-=whpp_eo-5d0ZLpx=0X91J0ZNReZ_9riNf96z2dy24z=hw@mail.gmail.com>
+        Wed, 16 Dec 2020 15:03:37 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEAE7C0617A6
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 12:02:56 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id m12so51539304lfo.7
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 12:02:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+T1M0djTrVYMWMJ7UcJwx0tkQ79zd8SuUMW71DQVsS0=;
+        b=q+DyxhaxnPb/nH8qJzxHDRUDbs6pwrBVZw6PzpLeFo3wtldBNCEn4e64bSK0nhLF5X
+         QvBT/wceHb8MK7Fm6YtVe7alN3zuwE0T3jaFFX9VRfhZKifVX3CDGzSjGXXVAJJpXSLk
+         BYqUA0lzyEkYCfA/0WuODCJH5mOGW4V8P0cbCJlM2NdsPkwY5ZpUVEVBumz8vq3xmZQm
+         PQyEwimqMI9kswHp6aDK7UXpsBu5joatambFWqpECUHqscsjIaEKpGZiYFMen0Kf3XVW
+         Q8YKf8+FVjWvyXB/rJ0RfDFFi19z72HtGBVwOT5yFzE5kLAsEpDIgG2ZzYj5KaG1wkfA
+         IjGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+T1M0djTrVYMWMJ7UcJwx0tkQ79zd8SuUMW71DQVsS0=;
+        b=iEeAeAl7Oza25VwhA3Rhli2/i9IhKnhXtfDJsvavbnT8d1qVJZw/KqEaDpt/VY/xUc
+         gtgprzlzvvNHa4BksDDvOHRgw8KdzT24/DalgZoG5S0umLD/S+xb/eW82p9Ht32X1x9h
+         WJaI90FKH0hUaiFsAMRKNxzpL+GUJ/AiyioTwHYTiZdRDEuWHnHiTxzHKtr2euwMmR4v
+         V59dIQWXc7L7BPZncOGdHkq252paS80MnkWrzsvink7YOIzYYtmhEKgOSqMxhDECKaNJ
+         BC3EnKSTyFgUuidXmDwtKiStfxszgOUVErEcfxqlbDx3u6zWqX/TTluywWp4PGOOMQOS
+         QDeQ==
+X-Gm-Message-State: AOAM530NAsrlMvocRKBr/Js4NNbNgaGc1QFL5zsbbXo3yk+2d/gEo4cc
+        CusFMIm2G23AklzVgXhlHX0amCumMtyzEP99IYf3QA==
+X-Google-Smtp-Source: ABdhPJwIsp1KYDGfDYl/qLLsUR1dFSzUtaS6n+MO1KkOUvZ4UrkSMNj8fmCA+zqoeFpXCBoAmALBMZNzzSZUYt5+MhQ=
+X-Received: by 2002:a19:4813:: with SMTP id v19mr14625283lfa.655.1608148974571;
+ Wed, 16 Dec 2020 12:02:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whpp_eo-5d0ZLpx=0X91J0ZNReZ_9riNf96z2dy24z=hw@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20201209205413.3391139-1-vipinsh@google.com> <X9E6eZaIFDhzrqWO@mtj.duckdns.org>
+ <4f7b9c3f-200e-6127-1d94-91dd9c917921@de.ibm.com> <5f8d4cba-d3f-61c2-f97-fdb338fec9b8@google.com>
+ <X9onUwvKovJeHpKR@mtj.duckdns.org>
+In-Reply-To: <X9onUwvKovJeHpKR@mtj.duckdns.org>
+From:   Vipin Sharma <vipinsh@google.com>
+Date:   Wed, 16 Dec 2020 12:02:37 -0800
+Message-ID: <CAHVum0dS+QxWFSK+evxQtZDHkZZx9pr0m_jEDHc9ovd5jQcfaA@mail.gmail.com>
+Subject: Re: [Patch v3 0/2] cgroup: KVM: New Encryption IDs cgroup controller
+To:     Tejun Heo <tj@kernel.org>
+Cc:     David Rientjes <rientjes@google.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Brijesh <brijesh.singh@amd.com>, Jon <jon.grimm@amd.com>,
+        Eric <eric.vantassell@amd.com>, pbonzini@redhat.com,
+        Sean Christopherson <seanjc@google.com>, lizefan@huawei.com,
+        hannes@cmpxchg.org, Janosch Frank <frankja@linux.ibm.com>,
+        corbet@lwn.net, joro@8bytes.org, vkuznets@redhat.com,
+        wanpengli@tencent.com, Jim Mattson <jmattson@google.com>,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        Matt Gingell <gingell@google.com>,
+        Dionna Glaze <dionnaglaze@google.com>, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 09:32:29PM -0800, Linus Torvalds wrote:
-> > The asm code looks like this:
-> >
-> >         cmpb    $4, %al #, _30
-> >         jne     .L176   #,
-> > ...
-> >         cmpb    $12, %al        #, _30
-> >         jne     .L176   #,
-> > ...
-> > .L176:
-> > # drivers/gpu/drm/drm_edid.c:3118:                      unreachable();
-> > #APP
-> > # 3118 "drivers/gpu/drm/drm_edid.c" 1
-> >         320:    #
-> >         .pushsection .discard.unreachable
-> >         .long 320b - .  #
-> >         .popsection
-> > # 0 "" 2
-> > #NO_APP
-> >    .. this falls through..
-> >
-> > So you *should* find that label that then falls through in that
-> > ".discard.unreachable" section, and so it should be possible to teach
-> > objdump about that (insane) unreachable code that way. No?
+On Wed, Dec 9, 2020 at 12:59 PM Tejun Heo <tj@kernel.org> wrote:
+> * I don't have an overall objection. In terms of behavior, the only thing
+>   which stood out was input rejection depending on the current usage. The
+>   preferred way of handling that is rejecting future allocations rather than
+>   failing configuration as that makes it impossible e.g. to lower limit and
+>   drain existing usages from outside the container.
 
-So this is kind of tricky, because the unreachable() annotation usually
-means "the previous instruction is a dead end".  Most of the time, the
-next instruction -- the one actually pointed to by the annotation -- is
-actually reachable from another path.
+Thanks. In next version of the patch I will remove rejection of max value
+based on current usage.
 
+On Wed, Dec 16, 2020 at 7:27 AM Tejun Heo <tj@kernel.org> wrote:
+> On Thu, Dec 10, 2020 at 03:44:35PM -0800, David Rientjes wrote:
+> > Concern with a single misc controller would be that any subsystem that
+> > wants to use it has to exactly fit this support: current, max, stat,
+> > nothing more.  The moment a controller needs some additional support, and
+> > its controller is already implemented in previous kernel versionv as a
+> > part of "misc," we face a problem.
+>
+> Yeah, that's a valid concern, but given the history, there doesn't seem to
+> be much need beyond that for these use cases and the limited need seems
+> inherent to the way the resources are defined and consumed. So yeah, it can
+> either way.
 
-For example, here's a typical usage of unreachable():
+I think a misc controller should be able support other "Resource Distribution
+Models" mentioned in the cgroup v2 documentation besides limits. There might be
+use cases in future which want to use weight, protection or allocation models.
+If that happens it will be more difficult to support these different resources.
+This will also mean the same hierarchy might get charged differently by the
+same controller.
 
-	je not_a_bug
-	ud2
+I like the idea of having a separate controller to keep the code simple and
+easier for maintenance.
 
-	.pushsection .discard.unreachable
-	.long not_a_bug - .
-	.popsection
+If you decide to have a separate misc controller please let me know what will
+be the overall expectations and I can change my patch to reflect that,
+otherwise I can send out a new patch with just removal of max input rejection.
 
-not_a_bug:
-	... normal non-buggy code ...
+My understanding with a "misc" controller is it will be something like
+- cgroup v2
+  cgroup/misc.encryption_ids.{sev, tdx, seid}.{stat, max, current}
 
-The 'not_a_bug' label is pointed to by the unreachable annotation, but
-it's actually reachable.
+- cgroup v1
+  cgroup/misc/misc.encryption_ids.{sev, tdx, seid}.{stat, max, current}
 
-
-In your .o, .discard.unreachable points to 0xbb3, so objtool marks the
-previous instruction (0xbae) as a dead end:
-
-     bae:       e9 30 ff ff ff          jmpq   ae3 <do_cvt_mode+0xd3>
-     bb3:       66 66 2e 0f 1f 84 00    data16 nopw %cs:0x0(%rax,%rax,1)
-     bba:       00 00 00 00
-     bbe:       66 90                   xchg   %ax,%ax
-
-And there's another path to 0xbb3 from the switch statement, so objtool
-assumes it's reachable.
-
-So maybe we need to make objtool's unreachable logic a little more
-nuanced: If the previous instruction is an unconditional jump, then
-consider *the annotated instruction itself* to be a dead end.
-
-I'm not quite able to convince myself this wouldn't produce false
-positives.  It did immediately produce one false positive in
-no_context(), but that should be easily fixable (see patch).
-
-I can run it through more testing, if you don't see any obvious problems
-with it.
-
-
-diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index f1f1b5a0956a..c888821bb40c 100644
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -699,7 +699,6 @@ no_context(struct pt_regs *regs, unsigned long error_code,
- 		 */
- 		asm volatile ("movq %[stack], %%rsp\n\t"
- 			      "call handle_stack_overflow\n\t"
--			      "1: jmp 1b"
- 			      : ASM_CALL_CONSTRAINT
- 			      : "D" ("kernel stack overflow (page fault)"),
- 				"S" (regs), "d" (address),
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index c6ab44543c92..267e8b88ca3a 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -370,9 +370,12 @@ static int add_dead_ends(struct objtool_file *file)
- 			return -1;
- 		}
- 		insn = find_insn(file, reloc->sym->sec, reloc->addend);
--		if (insn)
--			insn = list_prev_entry(insn, list);
--		else if (reloc->addend == reloc->sym->sec->len) {
-+		if (insn) {
-+			struct instruction *prev = list_prev_entry(insn, list);
-+			if (prev->type != INSN_JUMP_UNCONDITIONAL)
-+				insn = prev;
-+
-+		} else if (reloc->addend == reloc->sym->sec->len) {
- 			insn = find_last_insn(file, reloc->sym->sec);
- 			if (!insn) {
- 				WARN("can't find unreachable insn at %s+0x%x",
-
+Thanks
+Vipin
