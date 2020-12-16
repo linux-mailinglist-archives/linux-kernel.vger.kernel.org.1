@@ -2,78 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40BC22DC6E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 20:06:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B6372DC72C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 20:33:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733066AbgLPTFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 14:05:23 -0500
-Received: from mga14.intel.com ([192.55.52.115]:53480 "EHLO mga14.intel.com"
+        id S2388756AbgLPTdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 14:33:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733062AbgLPTFX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 14:05:23 -0500
-IronPort-SDR: tt3KIfISsY5/O1UCTTbl5ppIE6pQbwgiakHvA6/E+BzXhWHsUYFuyZ2Ueyp61Cys96R+LvqL1P
- WVaFKegBDXhg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9837"; a="174349573"
-X-IronPort-AV: E=Sophos;i="5.78,425,1599548400"; 
-   d="scan'208";a="174349573"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2020 10:59:44 -0800
-IronPort-SDR: RMDUHJCfg8R+cV8l5SagF/rfk2k1iB8CJ2icUv4IEzh5j8IL4wTfixdzqsnkuSzEqQEXyirG9I
- cHA4qU6jogjA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,425,1599548400"; 
-   d="scan'208";a="342165180"
-Received: from labuser-ice-lake-client-platform.jf.intel.com ([10.54.55.65])
-  by orsmga006.jf.intel.com with ESMTP; 16 Dec 2020 10:59:44 -0800
-From:   kan.liang@linux.intel.com
-To:     acme@kernel.org, mingo@kernel.org, jolsa@redhat.com
-Cc:     linux-kernel@vger.kernel.org, namhyung@kernel.org,
-        eranian@google.com, ak@linux.intel.com, mark.rutland@arm.com,
-        will@kernel.org, mpe@ellerman.id.au
-Subject: [PATCH V3 9/9] perf test: Add test case for PERF_SAMPLE_CODE_PAGE_SIZE
-Date:   Wed, 16 Dec 2020 10:58:05 -0800
-Message-Id: <20201216185805.9981-10-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201216185805.9981-1-kan.liang@linux.intel.com>
-References: <20201216185805.9981-1-kan.liang@linux.intel.com>
+        id S2388771AbgLPTdF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 14:33:05 -0500
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com
+Cc:     cang@codeaurora.org, alim.akhtar@samsung.com, avri.altman@wdc.com,
+        bvanassche@acm.org, martin.petersen@oracle.com,
+        stanley.chu@mediatek.com, Jaegeuk Kim <jaegeuk@google.com>
+Subject: [PATCH] scsi: ufs: fix livelock on ufshcd_clear_ua_wlun
+Date:   Wed, 16 Dec 2020 11:02:25 -0800
+Message-Id: <20201216190225.2769012-1-jaegeuk@kernel.org>
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephane Eranian <eranian@google.com>
+From: Jaegeuk Kim <jaegeuk@google.com>
 
-Extend sample-parsing test cases to support new sample type
-PERF_SAMPLE_CODE_PAGE_SIZE.
+This fixes the below livelock which is caused by calling a scsi command before
+ufshcd_scsi_unblock_requests() in ufshcd_ungate_work().
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Signed-off-by: Stephane Eranian <eranian@google.com>
+Workqueue: ufs_clk_gating_0 ufshcd_ungate_work
+Call trace:
+ __switch_to+0x298/0x2bc
+ __schedule+0x59c/0x760
+ schedule+0xac/0xf0
+ schedule_timeout+0x44/0x1b4
+ io_schedule_timeout+0x44/0x68
+ wait_for_common_io+0x7c/0x100
+ wait_for_completion_io+0x14/0x20
+ blk_execute_rq+0x94/0xd0
+ __scsi_execute+0x100/0x1c0
+ ufshcd_clear_ua_wlun+0x124/0x1c8
+ ufshcd_host_reset_and_restore+0x1d0/0x2cc
+ ufshcd_link_recovery+0xac/0x134
+ ufshcd_uic_hibern8_exit+0x1e8/0x1f0
+ ufshcd_ungate_work+0xac/0x130
+ process_one_work+0x270/0x47c
+ worker_thread+0x27c/0x4d8
+ kthread+0x13c/0x320
+ ret_from_fork+0x10/0x18
+
+Fixes: 1918651f2d7e ("scsi: ufs: Clear UAC for RPMB after ufshcd resets")
+Signed-off-by: Jaegeuk Kim <jaegeuk@google.com>
 ---
- tools/perf/tests/sample-parsing.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/scsi/ufs/ufshcd.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/tests/sample-parsing.c b/tools/perf/tests/sample-parsing.c
-index 2393916f6128..e93d0689a27b 100644
---- a/tools/perf/tests/sample-parsing.c
-+++ b/tools/perf/tests/sample-parsing.c
-@@ -157,6 +157,9 @@ static bool samples_same(const struct perf_sample *s1,
- 	if (type & PERF_SAMPLE_DATA_PAGE_SIZE)
- 		COMP(data_page_size);
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index e221add25a7e..b0998db1b781 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -1603,6 +1603,7 @@ static void ufshcd_ungate_work(struct work_struct *work)
+ 	}
+ unblock_reqs:
+ 	ufshcd_scsi_unblock_requests(hba);
++	ufshcd_clear_ua_wluns(hba);
+ }
  
-+	if (type & PERF_SAMPLE_CODE_PAGE_SIZE)
-+		COMP(code_page_size);
+ /**
+@@ -6913,7 +6914,7 @@ static int ufshcd_host_reset_and_restore(struct ufs_hba *hba)
+ 
+ 	/* Establish the link again and restore the device */
+ 	err = ufshcd_probe_hba(hba, false);
+-	if (!err)
++	if (!err && !hba->clk_gating.is_suspended)
+ 		ufshcd_clear_ua_wluns(hba);
+ out:
+ 	if (err)
+@@ -8745,6 +8746,7 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 		ufshcd_resume_clkscaling(hba);
+ 	hba->clk_gating.is_suspended = false;
+ 	hba->dev_info.b_rpm_dev_flush_capable = false;
++	ufshcd_clear_ua_wluns(hba);
+ 	ufshcd_release(hba);
+ out:
+ 	if (hba->dev_info.b_rpm_dev_flush_capable) {
+@@ -8855,6 +8857,8 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 		cancel_delayed_work(&hba->rpm_dev_flush_recheck_work);
+ 	}
+ 
++	ufshcd_clear_ua_wluns(hba);
 +
- 	if (type & PERF_SAMPLE_AUX) {
- 		COMP(aux_sample.size);
- 		if (memcmp(s1->aux_sample.data, s2->aux_sample.data,
-@@ -238,6 +241,7 @@ static int do_test(u64 sample_type, u64 sample_regs, u64 read_format)
- 		.phys_addr	= 113,
- 		.cgroup		= 114,
- 		.data_page_size = 115,
-+		.code_page_size = 116,
- 		.aux_sample	= {
- 			.size	= sizeof(aux_data),
- 			.data	= (void *)aux_data,
+ 	/* Schedule clock gating in case of no access to UFS device yet */
+ 	ufshcd_release(hba);
+ 
 -- 
-2.17.1
+2.29.2.729.g45daf8777d-goog
 
