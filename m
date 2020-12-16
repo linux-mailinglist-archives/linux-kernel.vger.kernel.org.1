@@ -2,56 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E392DC083
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 13:49:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5F232DC086
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 13:53:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726004AbgLPMtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 07:49:00 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59574 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725878AbgLPMtA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 07:49:00 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DF734AC91;
-        Wed, 16 Dec 2020 12:48:18 +0000 (UTC)
-Date:   Wed, 16 Dec 2020 13:48:18 +0100 (CET)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        clang-built-linux@googlegroups.com,
-        Arnd Bergmann <arnd@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH] objtool: Fix seg fault with Clang non-section symbols
-In-Reply-To: <ba6b6c0f0dd5acbba66e403955a967d9fdd1726a.1607983452.git.jpoimboe@redhat.com>
-Message-ID: <alpine.LSU.2.21.2012161347400.24446@pobox.suse.cz>
-References: <ba6b6c0f0dd5acbba66e403955a967d9fdd1726a.1607983452.git.jpoimboe@redhat.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1725778AbgLPMw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 07:52:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725274AbgLPMw4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 07:52:56 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D558C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 04:52:16 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id t22so7138397pfl.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 04:52:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=endlessos.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KpZvtsYiFNOwRZla8T0Qhj6+pqcPtnaeSWOjOiatGIs=;
+        b=iUVT+lVTwy1dlwOKp9+69djqcL7Ube77r0wZRnaf7G5Eaz1vexgoRK4oq6P+81DuG1
+         SQoONEvfTAuJsY1yy6L3mzkBeE3cjGFR8HG5E4NQJza3m3NqOVMkCSjZrohVgVT7ILFg
+         iI1u7Ga/Bcuw4WOjRWYLMDP+Jdu8sy5mc4+A0HgD7Q8StEj0Ef5RRfvX075v2GuHTdem
+         WsrGOrWMoqJ28pwgpmIqU5D69b5etAFJXtwShUVlE6sStVNpQ8V/hTOlaZgrsuDqRvVr
+         vjswLygwPTwloMVvZstQ+X+Pyhvwo7tuUrUZ3AeC8B9xVOX3O347T++H+lD7MVZ8Q81O
+         yHtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KpZvtsYiFNOwRZla8T0Qhj6+pqcPtnaeSWOjOiatGIs=;
+        b=o4Zj+5GethhhZOCmp1I+ZUSPelZMKBQ8p75wIdmuIuH4b/3753LzBJrQ4z+jojsDSR
+         karpC+0WnaE45y4bynQiIHY2tj8dSKNXbDuHC2y6Eknk/7S3sTE20wOLKV+tPIG7QItD
+         aZAJ6wslM7snFabjdt+ooR9lyR55vF6AqcDMO1AxSPvwNja6RSmISBuOhDubh1y+8FdE
+         KMO5vdmhDlPXMsWZk9NRUgw1ZyJCIb9SM9kTX/GtHRRVyuuOHoNxOZdERgxF1i2BwCft
+         P1x2Ba9AexVlsh8rPlYnoM5m6enevhSC2LEi6eeoj+vN6kKd/d82vrn4vRqLLXH4g9U/
+         v4Ng==
+X-Gm-Message-State: AOAM533AY+R+RyXF2LmG4NR7PrERW/t4MlrMtlxnqA42oXqQKIKmrZd4
+        rEQ+J8DydMC8pn0a/4u7rVUrVw==
+X-Google-Smtp-Source: ABdhPJzflfKak82tuSvOYbXdaImhee7Mip7Lv10SjwSDydRA7ub3KjzoYpOwwE8NX+zsZX3EgvJ1jw==
+X-Received: by 2002:a05:6a00:22ce:b029:197:9168:80fb with SMTP id f14-20020a056a0022ceb0290197916880fbmr2610695pfj.38.1608123135610;
+        Wed, 16 Dec 2020 04:52:15 -0800 (PST)
+Received: from localhost.localdomain (2001-b011-3814-b22f-bb79-0f7b-8e3f-1374.dynamic-ip6.hinet.net. [2001:b011:3814:b22f:bb79:f7b:8e3f:1374])
+        by smtp.googlemail.com with ESMTPSA id ck20sm2197595pjb.20.2020.12.16.04.52.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Dec 2020 04:52:14 -0800 (PST)
+From:   Chris Chiu <chiu@endlessos.org>
+To:     tiwai@suse.com, kailang@realtek.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        linux@endlessos.org, Chris Chiu <chiu@endlessos.org>,
+        Jian-Hong Pan <jhp@endlessos.org>
+Subject: [PATCH] ALSA: hda/realtek: Remove dummy lineout on Acer TravelMate P648/P658
+Date:   Wed, 16 Dec 2020 20:52:00 +0800
+Message-Id: <20201216125200.27053-1-chiu@endlessos.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Dec 2020, Josh Poimboeuf wrote:
+Acer TravelMate laptops P648/P658 series with codec ALC282 only have
+one physical jack for headset but there's a confusing lineout pin on
+NID 0x1b reported. Audio applications hence misunderstand that there
+are a speaker and a lineout, and take the lineout as the default audio
+output.
 
-> The Clang assembler likes to strip section symbols, which means objtool
-> can't reference some text code by its section.  This confuses objtool
-> greatly, causing it to seg fault.
-> 
-> The fix is similar to what was done before, for ORC reloc generation:
-> 
->   e81e07244325 ("objtool: Support Clang non-section symbols in ORC generation")
-> 
-> Factor out that code into a common helper and use it for static call
-> reloc generation as well.
-> 
-> Reported-by: Arnd Bergmann <arnd@kernel.org>
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1207
-> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Add a new quirk to remove the useless lineout and enable the pin 0x18
+for jack sensing and headset microphone.
 
-Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+Signed-off-by: Chris Chiu <chiu@endlessos.org>
+Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+---
+ sound/pci/hda/patch_realtek.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-M
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 8616c5624870..e7edcdbc6ca3 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6366,6 +6366,7 @@ enum {
+ 	ALC287_FIXUP_HP_GPIO_LED,
+ 	ALC256_FIXUP_HP_HEADSET_MIC,
+ 	ALC236_FIXUP_DELL_AIO_HEADSET_MIC,
++	ALC282_FIXUP_ACER_DISABLE_LINEOUT,
+ };
+ 
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -7789,6 +7790,16 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC255_FIXUP_DELL1_MIC_NO_PRESENCE
+ 	},
++	[ALC282_FIXUP_ACER_DISABLE_LINEOUT] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x1b, 0x411111f0 },
++			{ 0x18, 0x01a1913c }, /* use as headset mic, without its own jack detect */
++			{ },
++		},
++		.chained = true,
++		.chain_id = ALC269_FIXUP_HEADSET_MODE
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -8560,6 +8571,22 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+ 		{0x12, 0x90a60140},
+ 		{0x19, 0x04a11030},
+ 		{0x21, 0x04211020}),
++	SND_HDA_PIN_QUIRK(0x10ec0282, 0x1025, "Acer", ALC282_FIXUP_ACER_DISABLE_LINEOUT,
++		ALC282_STANDARD_PINS,
++		{0x12, 0x90a609c0},
++		{0x18, 0x03a11830},
++		{0x19, 0x04a19831},
++		{0x1a, 0x0481303f},
++		{0x1b, 0x04211020},
++		{0x21, 0x0321101f}),
++	SND_HDA_PIN_QUIRK(0x10ec0282, 0x1025, "Acer", ALC282_FIXUP_ACER_DISABLE_LINEOUT,
++		ALC282_STANDARD_PINS,
++		{0x12, 0x90a60940},
++		{0x18, 0x03a11830},
++		{0x19, 0x04a19831},
++		{0x1a, 0x0481303f},
++		{0x1b, 0x04211020},
++		{0x21, 0x0321101f}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0283, 0x1028, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 		ALC282_STANDARD_PINS,
+ 		{0x12, 0x90a60130},
+-- 
+2.20.1
+
