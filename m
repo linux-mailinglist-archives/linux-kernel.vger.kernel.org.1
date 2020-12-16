@@ -2,81 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 113242DC366
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:49:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A512DC364
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:48:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726570AbgLPPsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 10:48:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726490AbgLPPsg (ORCPT
+        id S1726544AbgLPPsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 10:48:17 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:48342 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726490AbgLPPsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 10:48:36 -0500
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E184C06179C
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 07:47:55 -0800 (PST)
-Received: by mail-io1-xd29.google.com with SMTP id w18so10520415iot.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 07:47:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dsUdMt3elLnLhHpjUMmHSgKb+jK8/Q+XkCcYb65d6H8=;
-        b=a8xk4VHLbgY/7YE6M65uEnOLeFyG51dM1svLyeiQa03r90JVHp/sqG8zxiSW2xr+jj
-         VS0HoFwJl9YrbUcXiIGWXyaW7nb1CMarpOhhiHv6p42J1WLHYb9yxA7X46KWhSBlY25W
-         +851g4fafLZS8U7PqZLOUUNoHFhci0jt2gZMfvWiDbUG9AbRzUchxo5LBejw9AjIMNb0
-         LikQ/MyYy4eRic/LRbx7gGPqtmX33BMdO2DqXl4wSHDbRZ00yes5C69kQ0gaY+j23KR+
-         /FWZhuuD+ThiryH+Ull3tW8XC565HQIoHif1EzJX3HYeina0iszQlh92suDQ6Th2K3mY
-         PtAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dsUdMt3elLnLhHpjUMmHSgKb+jK8/Q+XkCcYb65d6H8=;
-        b=IFaPKQdVIAUt/UB9KePnZ7GzKdrJTvSfkELpZj1IkJcr+U0vrhNkrXya4ogsePo2Ic
-         m9XowO62GeiWpPZIVnizWX7Mcm52yLbKEC5yfPYaONkfIGyXoV39joNume90n8kzwZ1b
-         0rM+6CClrFYZnHfdYzBd3NjtyQUxW0kIT+ec10fH7Cy34rfYgc5w73MbH/+jDVlNpDze
-         ZSW7Nbd3v/4aj9ijRHaqVUJx+bGT8F7bPdaEW1MWxF5PhmGN4Rro5GklWauIN9TOW+S7
-         Au1WOcAqD/1z9tf7dFPQnOGGCyqAHdpzBndQLgZTgdzLeHMKNPIkdfyQm/7kQSLVD/Gp
-         98vQ==
-X-Gm-Message-State: AOAM533z5HH0hWJHdPmEs9PHs/UUM7TWhSBX7xQB/WDNX2inwUq/GEnT
-        MEz0QX2AJsiXkdMeLesrdNoORQ==
-X-Google-Smtp-Source: ABdhPJwxGQ7xFQdW/UJttZzPjXJn5YuaIjYFK48rzhEyhZICoqU1gykblinNwbreDVZ++HEW18syMg==
-X-Received: by 2002:a05:6638:2a5:: with SMTP id d5mr43495814jaq.92.1608133674293;
-        Wed, 16 Dec 2020 07:47:54 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id v22sm1489979ila.84.2020.12.16.07.47.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Dec 2020 07:47:53 -0800 (PST)
-Subject: Re: [PATCH v2] blk-mq: Remove 'running from the wrong CPU' warning
-To:     Daniel Wagner <dwagner@suse.de>, linux-block@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Ming Lei <ming.lei@redhat.com>
-References: <20201130101921.52754-1-dwagner@suse.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <65f4cd1b-d629-7bf3-36c9-e503efb53c97@kernel.dk>
-Date:   Wed, 16 Dec 2020 08:47:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 16 Dec 2020 10:48:17 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BGFlXhA063332;
+        Wed, 16 Dec 2020 09:47:33 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1608133653;
+        bh=C6JSxO3a7ViYCM/ckqr/jQXBVjXS0ZvS2smJlEBUfl4=;
+        h=From:To:CC:Subject:Date;
+        b=t9NV3jQ7XDvy6SLwBxM4JlALktTr51L1hp4opRW09IWlpr+kxkIGBxXd8H0IvKNN4
+         i9NHvhgoQ1xKo98hN2rTYobX13pZeybRG32UQkN9urQGxO1rwQy0/zhtqjDeLwDOKg
+         mjcOWtJsPvSUH2NVb/VaKDw4SazybTDwvY2xTPi0=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BGFlX5C086881
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 16 Dec 2020 09:47:33 -0600
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 16
+ Dec 2020 09:47:33 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 16 Dec 2020 09:47:32 -0600
+Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BGFlV58045030;
+        Wed, 16 Dec 2020 09:47:31 -0600
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+To:     <vkoul@kernel.org>
+CC:     <dan.j.williams@intel.com>, <linux-kernel@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>, <vigneshr@ti.com>,
+        <grygorii.strashko@ti.com>
+Subject: [PATCH] dmaengine: ti: k3-udma: Fix pktdma rchan TPL level setup
+Date:   Wed, 16 Dec 2020 17:48:33 +0200
+Message-ID: <20201216154833.20821-1-peter.ujfalusi@ti.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20201130101921.52754-1-dwagner@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/20 3:19 AM, Daniel Wagner wrote:
-> It's guaranteed that no request is in flight when a hctx is going
-> offline. This warning is only triggered when the wq's CPU is hot
-> plugged and the blk-mq is not synced up yet.
-> 
-> As this state is temporary and the request is still processed
-> correctly, better remove the warning as this is the fast path.
+Instead of initializing the rchan_tpl the initial commit re-initialized
+the tchan_tpl.
 
-Applied, thanks.
+Fixes: d2abc982333c0 ("dmaengine: ti: k3-udma: Initial support for K3 PKTDMA")
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+ drivers/dma/ti/k3-udma.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
+index d4ab7f144c75..aa6186a1223d 100644
+--- a/drivers/dma/ti/k3-udma.c
++++ b/drivers/dma/ti/k3-udma.c
+@@ -4774,9 +4774,9 @@ static int pktdma_setup_resources(struct udma_dev *ud)
+ 		ud->tchan_tpl.levels = 1;
+ 	}
+ 
+-	ud->tchan_tpl.levels = ud->tchan_tpl.levels;
+-	ud->tchan_tpl.start_idx[0] = ud->tchan_tpl.start_idx[0];
+-	ud->tchan_tpl.start_idx[1] = ud->tchan_tpl.start_idx[1];
++	ud->rchan_tpl.levels = ud->tchan_tpl.levels;
++	ud->rchan_tpl.start_idx[0] = ud->tchan_tpl.start_idx[0];
++	ud->rchan_tpl.start_idx[1] = ud->tchan_tpl.start_idx[1];
+ 
+ 	ud->tchan_map = devm_kmalloc_array(dev, BITS_TO_LONGS(ud->tchan_cnt),
+ 					   sizeof(unsigned long), GFP_KERNEL);
 -- 
-Jens Axboe
+Peter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
