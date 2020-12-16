@@ -2,83 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 459912DC2FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:22:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ABA12DC301
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:22:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726414AbgLPPVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 10:21:37 -0500
-Received: from relay.sw.ru ([185.231.240.75]:38542 "EHLO relay3.sw.ru"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725825AbgLPPVh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 10:21:37 -0500
-Received: from [192.168.15.178]
-        by relay3.sw.ru with esmtp (Exim 4.94)
-        (envelope-from <ktkhai@virtuozzo.com>)
-        id 1kpYbK-00DHdZ-4I; Wed, 16 Dec 2020 18:20:26 +0300
-Subject: Re: regression: 9a56493f6942 "uts: Use generic ns_common::count"
- broke makedumpfile 1.6.7
-To:     Mike Galbraith <efault@gmx.de>,
-        LKML <linux-kernel@vger.kernel.org>, egorenar@linux.ibm.com,
-        Christian Brauner <christian.brauner@ubuntu.com>
-References: <7b13506084a015d0256222cdd278fe461cdd4a74.camel@gmx.de>
- <6933cde2-7d43-7d7e-066c-1c4a13c752dd@virtuozzo.com>
- <ad3bfa510282d3122069dafe98666aa2d6b5b0ff.camel@gmx.de>
- <60200005-a9a2-4994-b730-e22fd8f01ae4@virtuozzo.com>
- <19b5ee604512d09bc4b059b7e59d73681937048a.camel@gmx.de>
- <c3132ac7e0536a30aefc833df16f5a24de7e4529.camel@gmx.de>
-From:   Kirill Tkhai <ktkhai@virtuozzo.com>
-Message-ID: <61ae6135-dca7-db73-f048-0a35f69cb5c4@virtuozzo.com>
-Date:   Wed, 16 Dec 2020 18:20:36 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S1726454AbgLPPWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 10:22:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725812AbgLPPWW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 10:22:22 -0500
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE43DC06179C;
+        Wed, 16 Dec 2020 07:21:41 -0800 (PST)
+Received: by mail-qt1-x82a.google.com with SMTP id 2so7571282qtt.10;
+        Wed, 16 Dec 2020 07:21:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yTJEIFfXmE7r1WzgPDDfxuwJ1vDzxVqAGMd8dIJWkqg=;
+        b=RHINyEilxFbQ2dMUhCn4il3bqkR75NLZBoLqvyWMdAlsGs8dFiPTilCHeYEtHnU7o6
+         WXivhsb9UTWoGU0EbbCPdfdF6IazN+BPd0fNwxd7/Jr1Z2l+1VYbkvECoqypY2Ml3gCH
+         0rDKcid/tAhBlTgJUnGD1DF/+yocFbf9DhDTP/5WP0jvIctXrtfEttnmuVMsTtAFChbA
+         zoM7tl2ORn4JMvk0L+n9roKII9GEe7HJ+hLzMq59NykeLj+MQe8RXmjIUxwt0lMxNTGk
+         rEzWS9yZEryfgohy7zW6IdesWmpy5lAe3u/J6472rK151b27j1CHAUfg3Hj1uM0YFGp1
+         rxdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=yTJEIFfXmE7r1WzgPDDfxuwJ1vDzxVqAGMd8dIJWkqg=;
+        b=HclDaV+gwXwU3KkDgpElOdLZp3Z5V3gCQrY+pZOGH0giaxDtc30SeJPd5ldgeBuBUk
+         rfcTL/FLuiJgu7p6Xt4c+QvHZkM0nxZopg1+nx+JhzpVYYtxI93agW4IaexIFvNQe2SN
+         TH3YOMe8vyMBt5nlIlaKoUHEk7ZCe8ZNmZX/6TVz6GXBdfKkIdbT3u+Tnc2cN5nDkQHP
+         7MV7YO1zpic7ts2ni3/X4J7dqbknx2H7taQKEp0tBJpX1r1tU3B3ZJ6gi6PIzVGFpOfn
+         hw+FnryhdpB4t+20DMhmabrnTT7lt+TyUVdeXpF1OEQG/MhNKZAmW7mFlu1+UkTibutH
+         yS3w==
+X-Gm-Message-State: AOAM533G0OzR2kgnrbei0ezmDs7oxZatzHJ4nOvvPzjDj93dVgQMOAEM
+        3cb4DD4QHjf9GdmhFBlyj7GE9BOMNV2RCQ==
+X-Google-Smtp-Source: ABdhPJwmJgJHwe2hsYK48BoUi+lAmB4B469oaZDaQnd/Etj04dkkrOT1WqjcXuq8zkylZ9PfCBZi3g==
+X-Received: by 2002:aed:36a5:: with SMTP id f34mr41791784qtb.1.1608132100968;
+        Wed, 16 Dec 2020 07:21:40 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:cbde])
+        by smtp.gmail.com with ESMTPSA id p6sm1167951qtl.21.2020.12.16.07.21.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Dec 2020 07:21:39 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 16 Dec 2020 10:21:06 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] blk-iocost: Use alloc_percpu_gfp() to simplify the
+ code
+Message-ID: <X9ol4gE65kD6qIyh@mtj.duckdns.org>
+References: <1ba7a38d5a6186b1e71432ef424c23ba1904a365.1607591591.git.baolin.wang@linux.alibaba.com>
+ <aa518c5b5c7185e660a1c8515c10d9513fe92132.1607591591.git.baolin.wang@linux.alibaba.com>
+ <X9Iv/MlqQI00wZRn@mtj.duckdns.org>
+ <33480f8a-89a3-3ed9-6fd0-95b2944ccbdd@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <c3132ac7e0536a30aefc833df16f5a24de7e4529.camel@gmx.de>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <33480f8a-89a3-3ed9-6fd0-95b2944ccbdd@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.12.2020 17:49, Mike Galbraith wrote:
-> On Wed, 2020-12-16 at 15:31 +0100, Mike Galbraith wrote:
->> On Wed, 2020-12-16 at 17:23 +0300, Kirill Tkhai wrote:
->>>
->>> Does this regression only cause that one error message "check_release: Can't get the kernel version"
->>> is printed instead of another: "The kernel version is not supported."?
->>
->> The thing does indeed mutter about the kernel version, with or without
->> 9a56493f6942 reverted, but it work despite the muttering with
->> 9a56493f6942 reverted.
+Hello,
+
+On Fri, Dec 11, 2020 at 03:13:29PM +0800, Baolin Wang wrote:
+> Thanks for teaching me this, at least I did not get this from the local_ops
+> Documentation before. Just out of curiosity, these local[64]_t variables are
+> also allocated from budy allocator ultimately, why they can not be
+> initialized to zeros on some ARCHs with __GFP_ZERO? Could you elaborate on
+> about this restriction? Thanks.
+
+* It's highly unlikely but theoretically possible that some arch might need
+  more than raw value to implement local semantics.
+
+* People might wanna add debug annotations which may require more than just
+  the raw value.
+
+> By the way, seems the kyber-iosched has the same issue, since the 'struct
+> kyber_cpu_latency' also contains an atomic_t variable.
 > 
-> makedumpfile 1.6.7 source only claims to work up to linux-5.4.8, but
-> actually does work all the way up until 9a56493f6942.
-> 
-> If the answer here is that v1,6,7 has reached EOL, that's fine, I'll
-> just carry a revert until I can cobble together an updated package.
+> 	kqd->cpu_latency = alloc_percpu_gfp(struct kyber_cpu_latency,
+> 					    GFP_KERNEL | __GFP_ZERO);
+> 	if (!kqd->cpu_latency)
+> 		goto err_kqd;
 
-I think, since there is no a makedumpfile version working, this is a regression,
-and it should be workarounded it in kernel.
+Yeah, the lines become blurry when all existing usages are fine with zeroing
+and we do end up needing to clean up those when the need arises (e.g. we
+used to zero some spinlocks too). It's just a better form to stick with
+initializers when they are provided.
 
-We may consider a patch like the below till updated makedumpfile is not published:
+Thanks.
 
-diff --git a/include/linux/utsname.h b/include/linux/utsname.h
-index 2b1737c9b244..d6bcad448f52 100644
---- a/include/linux/utsname.h
-+++ b/include/linux/utsname.h
-@@ -8,6 +8,7 @@
- #include <linux/ns_common.h>
- #include <linux/err.h>
- #include <uapi/linux/utsname.h>
-+#include <linux/kref.h>
- 
- enum uts_proc {
- 	UTS_PROC_OSTYPE,
-@@ -21,6 +22,7 @@ struct user_namespace;
- extern struct user_namespace init_user_ns;
- 
- struct uts_namespace {
-+	struct kref unused;
- 	struct new_utsname name;
- 	struct user_namespace *user_ns;
- 	struct ucounts *ucounts;
+-- 
+tejun
