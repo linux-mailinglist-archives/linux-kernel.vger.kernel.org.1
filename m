@@ -2,65 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D96662DC549
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 18:26:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39D1D2DC54E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 18:28:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727071AbgLPR0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 12:26:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39448 "EHLO
+        id S1727092AbgLPR1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 12:27:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726837AbgLPR0w (ORCPT
+        with ESMTP id S1726837AbgLPR1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 12:26:52 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FF4CC06179C;
-        Wed, 16 Dec 2020 09:26:12 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id v29so18080159pgk.12;
-        Wed, 16 Dec 2020 09:26:12 -0800 (PST)
+        Wed, 16 Dec 2020 12:27:11 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F777C0617A6;
+        Wed, 16 Dec 2020 09:26:31 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id c12so17002550pfo.10;
+        Wed, 16 Dec 2020 09:26:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MyaxQ/0Ypp97j+N3JeTntdQSRue+zRsuAOm9Q0a3RKo=;
-        b=RGI1+8U77XKDkvTuHNnf1dIHCt0bGmSU7NqQxOxSVsUcc5H4plGnZZt390AXoU8tIS
-         KNPXsGko/6GR4F5I5wxYbPhtjbV4etN70C4pR74n3iOzr8bqh2osc9VyKdjmAUfH0qJn
-         DUefcX2K2mIWWsDhkWBiMBEJRwcMLf6TqfGfI5LMjLLJ8L2X8Xw5acoJSgb/MknZluBc
-         WO3VjeaLgxBFMVT2HK48Y5sKAcOq1vc7yFYL3UQK5wRpVYSpdryE1Uo3Bn4ODjyzPEbD
-         LEayrmjVLQLUIVg1SK+W09pehY4teQMXHuQ3mPFveP35cmJl806JEzLQW2qoF/PHek+Y
-         kSTg==
+        bh=mlKPhWZ3s5+RVAHyC44dZAy1Ftsjx87zQFXnEBf66F0=;
+        b=RnsDllEQIfwGIHs9NlNMK4I1FUTN+mTxmSU6JRt9U9uj9+JBb2fBijI7emqnjt9MTt
+         Phqq/DJwsIakQGryE+VW5bS78buH0VUKOodtJBxGqgNU2/fv7mTWlrWgWM3bxfdYh6X4
+         4FWcni82zuuII3lfRMqCpNpxPgUg1NIv4JlLq6iIXSEXKhLmv/DpRrcXscCwaBnW7raO
+         t9NZkKjRBWgmntMisgF6jFYM3r/O1CsY9gPCNFeOO5g6EIJJ+V+QgHKFQQ0pFH34Xk8t
+         5s8Vc+jWoSBUJfiMFKUv/IJqIJRwsYBjk43anvaGzpEr3gWgeXeZI9oSsASbr3VNBDbr
+         UPSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=MyaxQ/0Ypp97j+N3JeTntdQSRue+zRsuAOm9Q0a3RKo=;
-        b=teEhAXy4J6vbMNj80lVkLRllBVFB4IheHdjPu64F7I8DBdYpncIh0YvyyIbcT50xp3
-         M6JH+Fu5qg8MzjAVkVzY+jz4b0VpU7RkKORelxhWCBgpCzFAxgRSyS9QfIXF29XZzrO0
-         JFr6BnoNupyWry541AnmVpZTBawaPeHtNLHzW2ioKlgSb25JAHwgwYRbZi9hcnKuuyaU
-         sX1FSKGeBWNllLj+z8IMB8jSAejzaNEGxWIPsGdZ3OBkchmw2hLncaJPoNECYCO8RDdi
-         XGAL3mzWWrAgrVggv05QG//FSaBTuLVvq7MrBI8bVKUDG399PT1E5+XRIq4PEJLYkAS2
-         38jQ==
-X-Gm-Message-State: AOAM531ZE3O1WTmwLzstl8OnNz1kNW/iv1bGosJLgf03bbop8GD9Iobp
-        T2Mu8go2hTlDJb/Jz+Xc99E=
-X-Google-Smtp-Source: ABdhPJyQSrO6GiC+cpqr8VDrBmoWugaAizj58mVAaD9aGCuU9xxovjRTs4pQNJkv6wTOey3ZHZmFfA==
-X-Received: by 2002:a62:ca:0:b029:19e:67a9:f0f2 with SMTP id 193-20020a6200ca0000b029019e67a9f0f2mr32941373pfa.60.1608139572130;
-        Wed, 16 Dec 2020 09:26:12 -0800 (PST)
+        bh=mlKPhWZ3s5+RVAHyC44dZAy1Ftsjx87zQFXnEBf66F0=;
+        b=HyIPuituWa/sGP5PIOsNvSAs+Ib7VxJ+h9nTxkDTWaBKHAerT59iKmZPdk8y2nBfJ0
+         bgSyf9axyxNwUCkC73hwa0MlPjFaam7xG1XhGL3x70Npezlj2APz30bYJTiYocLZcTIg
+         jE3VnL0cn2+Xq8MVDgR8VyOoPHA3fw+1uzfMqmHv7TBFdHE2HeNKD8PZUdY2XdBKG/V8
+         bED6Zo0ORGaKERzU+qB66yWHIpPfeKPYNgp7ESYBy/NQUkuI8/XNG+BGKT2248p9rvmj
+         9oPBaI7OkpIactL8GjVEI15rV2Oarauc6yylt/dZEJBC8I1F7+SEoHdvwrbTiPZjx6By
+         X5Qw==
+X-Gm-Message-State: AOAM5325/8uepk83sccIngHbar98KPOoh6PXBNjkE97xAou4ISOd83Xl
+        0WTM19kKNwCcn047hZZxBaQGXJE0FSo=
+X-Google-Smtp-Source: ABdhPJwmNd/P/V4mF99C82yImERNJUVAa1Jht2k6fZgoAvw3bkYNd5AtWABLlpimOtyXpHHhbW3noA==
+X-Received: by 2002:a63:d650:: with SMTP id d16mr33602987pgj.277.1608139590703;
+        Wed, 16 Dec 2020 09:26:30 -0800 (PST)
 Received: from [10.67.48.230] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id q9sm3309011pgb.82.2020.12.16.09.26.10
+        by smtp.googlemail.com with ESMTPSA id s13sm3272347pfd.99.2020.12.16.09.26.28
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Dec 2020 09:26:11 -0800 (PST)
-Subject: Re: [PATCH 2/2] phy: phy-brcm-usb: specify init function format at
- struct level
+        Wed, 16 Dec 2020 09:26:29 -0800 (PST)
+Subject: Re: [PATCH 3/3] phy: phy-brcm-usb: support BCM4908 binding
 To:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
         Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     Al Cooper <alcooperx@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
+        Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Al Cooper <alcooperx@gmail.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-References: <20201216143305.12179-1-zajec5@gmail.com>
- <20201216143305.12179-2-zajec5@gmail.com>
+References: <20201216131451.16900-1-zajec5@gmail.com>
+ <20201216131451.16900-3-zajec5@gmail.com>
 From:   Florian Fainelli <f.fainelli@gmail.com>
 Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
  mQGiBEjPuBIRBACW9MxSJU9fvEOCTnRNqG/13rAGsj+vJqontvoDSNxRgmafP8d3nesnqPyR
@@ -116,12 +115,12 @@ Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
  caxTGgc5zzQHeX67eMzrGomG3ZnIxmd1sAbgvJUDaD2GrYlulfwGWwWyTNbWRvMighVdPkSF
  6XFgQaosWxkV0OELLy2N485YrTr2Uq64VKyxpncLh50e2RnyAJ9Za0Dx0yyp44iD1OvHtkEI
  M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
-Message-ID: <97a31854-86a9-a2fa-7876-26ddd94ddd4c@gmail.com>
-Date:   Wed, 16 Dec 2020 09:26:09 -0800
+Message-ID: <48497032-51ee-d68b-db4d-add064330dba@gmail.com>
+Date:   Wed, 16 Dec 2020 09:26:27 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201216143305.12179-2-zajec5@gmail.com>
+In-Reply-To: <20201216131451.16900-3-zajec5@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -129,11 +128,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/16/20 6:33 AM, Rafał Miłecki wrote:
+On 12/16/20 5:14 AM, Rafał Miłecki wrote:
 > From: Rafał Miłecki <rafal@milecki.pl>
 > 
-> This is slightly cleaner solution that assures noone assings a wrong
-> function to the pointer.
+> BCM4908 seems to have slightly different registers but work when
+> programmed just like the STB one.
 > 
 > Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 
