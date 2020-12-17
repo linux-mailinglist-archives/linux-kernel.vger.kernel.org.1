@@ -2,76 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A00372DDA6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 21:57:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22F552DDA73
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 21:59:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731643AbgLQU5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 15:57:14 -0500
-Received: from smtprelay0090.hostedemail.com ([216.40.44.90]:46748 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731327AbgLQU5N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 15:57:13 -0500
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave08.hostedemail.com (Postfix) with ESMTP id CDD30182D5853
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 20:56:32 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id DAC05181D341E;
-        Thu, 17 Dec 2020 20:55:51 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:968:973:988:989:1260:1277:1311:1313:1314:1345:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3865:3867:3868:3870:3872:5007:7901:10004:10400:10848:11026:11658:11914:12043:12296:12297:12438:12555:12760:13069:13071:13311:13357:13439:14096:14097:14180:14659:14721:21080:21324:21451:21627:30054,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: thing75_04036b127437
-X-Filterd-Recvd-Size: 1795
-Received: from XPS-9350.home (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf16.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 17 Dec 2020 20:55:51 +0000 (UTC)
-Message-ID: <fddfd9cbf1b454b1259e8559cd535433c9d0e91a.camel@perches.com>
-Subject: ntfs: extern vs inline?
-From:   Joe Perches <joe@perches.com>
-To:     Anton Altaparmakov <anton@tuxera.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Date:   Thu, 17 Dec 2020 12:55:49 -0800
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1731561AbgLQU6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 15:58:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45178 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731468AbgLQU6q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 15:58:46 -0500
+Subject: Re: [GIT PULL]: dmaengine update for v5.11-rc1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608238685;
+        bh=mrBLX+cK6VCW6FcHITR3WVuyKE87cU3HxvbfVPh8g1s=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=lrr+14Po8WY9ICPdR8kNvVHwR6HGxsieW2wZULSBbXmOBTDR4w6N5AzZHtgzFPzVi
+         1gsLSSnRKxPsPue0wepfmsn8wdGDawr62ppTVXjspY7rfAmowuEDHBYygnY/Jk9WUq
+         4aV6fZf3Y/1qyVY7X5s1r7JaH64+9iXOGCb+dBRYjRrn/Ym6/DTkFBE1pbwHwx7cgS
+         hZ7ekGQKLFjJWBTzrjj4MxDqEIk95yE3SL35DihHzohIdNZodDGFnCzHzlMjgkAbl9
+         fbPMWHF+/d0YjU9pE5lEfNbABBX94IAdifpA5URYQhJPt+/kS1oZWnXGnJslni6GYW
+         usZ/kK9mjF3SQ==
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20201217172427.GG8403@vkoul-mobl>
+References: <20201217172427.GG8403@vkoul-mobl>
+X-PR-Tracked-List-Id: <dmaengine.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201217172427.GG8403@vkoul-mobl>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git tags/dmaengine-5.11-rc1
+X-PR-Tracked-Commit-Id: 115ff12aecfd55376d704fa2c0a2d117e5827f9f
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 6daa90439e91bb9a71864b02f7d0af8587ea889a
+Message-Id: <160823868538.27370.7017031706746627158.pr-tracker-bot@kernel.org>
+Date:   Thu, 17 Dec 2020 20:58:05 +0000
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dma <dmaengine@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Anton.
+The pull request you sent on Thu, 17 Dec 2020 22:54:27 +0530:
 
-I was looking around for bare inline uses and found this in
-fs/ntfs/inode.[ch]:
+> git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git tags/dmaengine-5.11-rc1
 
-$ git grep -w ntfs_new_extent_inode
-fs/ntfs/inode.c:inline ntfs_inode *ntfs_new_extent_inode(struct super_block *sb,
-fs/ntfs/inode.h:extern ntfs_inode *ntfs_new_extent_inode(struct super_block *sb,
-fs/ntfs/mft.c:  ni = ntfs_new_extent_inode(base_ni->vol->sb, mft_no);
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/6daa90439e91bb9a71864b02f7d0af8587ea889a
 
-It seems odd for the function declaration to be extern but the definition
-to be inline.
+Thank you!
 
-mft.c doesn't include inode.c, so the compiler shouldn't be able to inline it.
-
-Likely the inline use in inode.c should be removed.
----
- fs/ntfs/inode.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)fs/
-
-diff --git a/fs/ntfs/inode.c b/fs/ntfs/inode.c
-index f7e4cbc26eaf..33386e8818de 100644
---- a/fs/ntfs/inode.c
-+++ b/fs/ntfs/inode.c
-@@ -399,8 +399,7 @@ void __ntfs_init_inode(struct super_block *sb, ntfs_inode *ni)
-  */
- static struct lock_class_key extent_inode_mrec_lock_key;
- 
--inline ntfs_inode *ntfs_new_extent_inode(struct super_block *sb,
--		unsigned long mft_no)
-+ntfs_inode *ntfs_new_extent_inode(struct super_block *sb, unsigned long mft_no)
- {
- 	ntfs_inode *ni = ntfs_alloc_extent_inode();
- 
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
