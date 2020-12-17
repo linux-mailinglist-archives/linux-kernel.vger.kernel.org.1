@@ -2,163 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B33E52DDB90
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 23:44:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7329B2DDBA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 23:56:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731972AbgLQWn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 17:43:59 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:49096 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726796AbgLQWn7 (ORCPT
+        id S1732135AbgLQWyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 17:54:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726796AbgLQWyS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 17:43:59 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1608244996;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/S3rCsR4wz25bQqtxLvPPE+bxBFLx2igc0E9oZoBixU=;
-        b=wRinoYpzeL4ipkhvpMBgUpezoNqnN4BwXIz6yCt/nstpu+1cIIa6AhqenWWWDuIGhiMkOk
-        CgBSGq+EQLUSN9blubISX09j3JB1cUFFvM2gc/4yVDkCmqEjWMRmnRN92OKprWuQFH8G+K
-        NkwxrRjg1k0PiQEkjqiHBNmoHeasdsNX94jSGQkWfCKi19W1Rbw3cvPUrm9IpD7TwUC+nV
-        ACdc6YScpXoHcP5diNMP4a5qX4wgyfeDV4LsY8msOVkwEM82YjXZOFroP2V/QtN6nSvTIX
-        30LaegIh2ac27qxKzekW++HDO7k8ZZdzcFJWCHEJnmZDQHdeC3vadvqArXeZTA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1608244996;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/S3rCsR4wz25bQqtxLvPPE+bxBFLx2igc0E9oZoBixU=;
-        b=++W/DH+pERsrf2PJVkJS5SNOxNLygeL5yW5v2CfziX3B5GGLBVUk7yuB5f3LQe/a8v69Ue
-        IAySbYQONXjuIgAQ==
-To:     ira.weiny@intel.com, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>, Fenghua Yu <fenghua.yu@intel.com>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-doc@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH V3 04/10] x86/pks: Preserve the PKRS MSR on context switch
-In-Reply-To: <871rfoscz4.fsf@nanos.tec.linutronix.de>
-References: <20201106232908.364581-1-ira.weiny@intel.com> <20201106232908.364581-5-ira.weiny@intel.com> <871rfoscz4.fsf@nanos.tec.linutronix.de>
-Date:   Thu, 17 Dec 2020 23:43:16 +0100
-Message-ID: <87mtycqcjf.fsf@nanos.tec.linutronix.de>
+        Thu, 17 Dec 2020 17:54:18 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C9BC061794
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 14:53:38 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id e2so108226pgi.5
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 14:53:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fRqpnsxfl7qHr4VGqHrEfBZUN2xnW4XoVy0GlNX3IEw=;
+        b=M7tyJ75ZEoEHtHRFHXWzjAukeGU6uZWu4hbrVNbxb4pviOUrB3bQahQtCfSC+9p2m0
+         YDbKmXSabg6qZDYR7dqyDdhad3kdv7qLeVSxCaRhSh8fTvXp8w00pJZo8oMSmq2YxgXl
+         fNBAwH8sxrhgbeSxvMpB24u/EOf+k1SOiNXGw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fRqpnsxfl7qHr4VGqHrEfBZUN2xnW4XoVy0GlNX3IEw=;
+        b=uT+kNxRyaKBTZ5M8RSANKajUbeYHtbuIl3CwJNJMrtQqWaWX09B5aP3YfoUmZSZnne
+         iCuaWjF80W6IMweziG1w38QMmH9K4Rb9/PZRdHxr+mlC7J2v9tE6X2y8Da1OaP4SFaCd
+         iKCaoJPXo4ZZcGVNVsJ3jMFjVpNLDnqTgnTMKcYWMUc2jcleLZrzII028FfqFjX5nMdn
+         S51+uoXRnO8EwBEL21Wa7uQUXMxjtIvVJT7w+DUBSIRF/G4Hgz6OLLMe2MeSwpnb9H8J
+         aT5qqSE97xkuDLC2tPNJ30P0IOya7qZCZFojd3uYDrri55CU9NKAI+wZ7v4L8hgmsypC
+         9qDg==
+X-Gm-Message-State: AOAM5328lOBXS6wkNLkDIUJnDviWRWN+RCqxW3YB1AuIuNbStyHxXBu9
+        NTmAakMMJIkoOwNAY45hC4ykTg==
+X-Google-Smtp-Source: ABdhPJyOQPClQLF1y6Xhcm5nUIsJcSrkwCk6ErtPzkEBtpkBszZYYYcHnTdPbU3QjM4VER8TSicGxw==
+X-Received: by 2002:aa7:8701:0:b029:19e:561:d476 with SMTP id b1-20020aa787010000b029019e0561d476mr1477814pfo.2.1608245617759;
+        Thu, 17 Dec 2020 14:53:37 -0800 (PST)
+Received: from localhost ([2620:15c:202:201:de4a:3eff:fe75:1314])
+        by smtp.gmail.com with ESMTPSA id c14sm6559544pfd.37.2020.12.17.14.53.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Dec 2020 14:53:37 -0800 (PST)
+From:   Miao-chen Chou <mcchou@chromium.org>
+To:     Bluetooth Kernel Mailing List <linux-bluetooth@vger.kernel.org>
+Cc:     Alain Michaud <alainm@chromium.org>,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH v2 1/4] Bluetooth: Keep MSFT ext info throughout a hci_dev's life cycle
+Date:   Thu, 17 Dec 2020 14:53:15 -0800
+Message-Id: <20201217145149.v2.1.Id9bc5434114de07512661f002cdc0ada8b3d6d02@changeid>
+X-Mailer: git-send-email 2.29.2.684.gfbc64c5ab5-goog
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17 2020 at 15:50, Thomas Gleixner wrote:
-> On Fri, Nov 06 2020 at 15:29, ira weiny wrote:
->
->> +void write_pkrs(u32 new_pkrs)
->> +{
->> +	u32 *pkrs;
->> +
->> +	if (!static_cpu_has(X86_FEATURE_PKS))
->> +		return;
->> +
->> +	pkrs = get_cpu_ptr(&pkrs_cache);
->
-> So this is called from various places including schedule and also from
-> the low level entry/exit code. Why do we need to have an extra
-> preempt_disable/enable() there via get/put_cpu_ptr()?
->
-> Just because performance in those code paths does not matter?
->
->> +	if (*pkrs != new_pkrs) {
->> +		*pkrs = new_pkrs;
->> +		wrmsrl(MSR_IA32_PKRS, new_pkrs);
->> +	}
->> +	put_cpu_ptr(pkrs);
+This moves msft_do_close() from hci_dev_do_close() to
+hci_unregister_dev() to avoid clearing MSFT extension info. This also
+avoids retrieving MSFT info upon every msft_do_open() if MSFT extension
+has been initialized.
 
-Which made me look at the other branch of your git repo just because I
-wanted to know about the 'other' storage requirements and I found this
-gem:
+The following test steps were performed.
+(1) boot the test device and verify the MSFT support debug log in syslog
+(2) restart bluetoothd and verify msft_do_close() doesn't get invoked
 
-> update_global_pkrs()
-> ...
->	/*
->	 * If we are preventing access from the old value.  Force the
->	 * update on all running threads.
->	 */
->	if (((old_val == 0) && protection) ||
->	    ((old_val & PKR_WD_BIT) && (protection & PKEY_DISABLE_ACCESS))) {
->		int cpu;
->
->		for_each_online_cpu(cpu) {
->			u32 *ptr = per_cpu_ptr(&pkrs_cache, cpu);
->
->			*ptr = update_pkey_val(*ptr, pkey, protection);
->			wrmsrl_on_cpu(cpu, MSR_IA32_PKRS, *ptr);
->			put_cpu_ptr(ptr);
+Signed-off-by: Miao-chen Chou <mcchou@chromium.org>
+Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Reviewed-by: Archie Pusaka <apusaka@chromium.org>
+---
 
-1) per_cpu_ptr() -> put_cpu_ptr() is broken as per_cpu_ptr() is not
-   disabling preemption while put_cpu_ptr() enables it which wreckages
-   the preemption count. 
+(no changes since v1)
 
-   How was that ever tested at all with any debug option enabled?
+ net/bluetooth/hci_core.c | 4 ++--
+ net/bluetooth/msft.c     | 3 ++-
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-   Answer: Not at all
-
-2) How is that sequence:
-
-	ptr = per_cpu_ptr(&pkrs_cache, cpu);
-	*ptr = update_pkey_val(*ptr, pkey, protection);
-	wrmsrl_on_cpu(cpu, MSR_IA32_PKRS, *ptr);
-
-   supposed to be correct vs. a concurrent modification of the
-   pkrs_cache of the remote CPU?
-
-   Answer: Not at all
-
-Also doing a wrmsrl_on_cpu() on _each_ online CPU is insane at best.
-
-  A smp function call on a remote CPU takes ~3-5us when the remote CPU
-  is not idle and can immediately respond. If the remote CPU is deep in
-  idle it can take up to 100us depending on C-State it is in.
-
-  Even if the remote CPU is not not idle and just has interrupts
-  disabled for a few dozen of microseconds this adds up.
-
-  So on a 256 CPU system depending on the state of the remote CPUs this
-  stalls the CPU doing the update for anything between 1 and 25ms worst
-  case.
-
-  Of course that also violates _all_ CPU isolation mechanisms.
-
-  What for?
-
-  Just for the theoretical chance that _all_ remote CPUs have
-  seen that global permission and have it still active?
-
-  You're not serious about that, right?
-
-The only use case for this in your tree is: kmap() and the possible
-usage of that mapping outside of the thread context which sets it up.
-
-The only hint for doing this at all is:
-
-    Some users, such as kmap(), sometimes requires PKS to be global.
-
-'sometime requires' is really _not_ a technical explanation.
-
-Where is the explanation why kmap() usage 'sometimes' requires this
-global trainwreck in the first place and where is the analysis why this
-can't be solved differently?
-
-Detailed use case analysis please.
-
-Thanks,
-
-        tglx
-
-
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index 9d2c9a1c552fd..8471be105a2ac 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -1780,8 +1780,6 @@ int hci_dev_do_close(struct hci_dev *hdev)
+ 
+ 	hci_sock_dev_event(hdev, HCI_DEV_DOWN);
+ 
+-	msft_do_close(hdev);
+-
+ 	if (hdev->flush)
+ 		hdev->flush(hdev);
+ 
+@@ -3869,6 +3867,8 @@ void hci_unregister_dev(struct hci_dev *hdev)
+ 	unregister_pm_notifier(&hdev->suspend_notifier);
+ 	cancel_work_sync(&hdev->suspend_prepare);
+ 
++	msft_do_close(hdev);
++
+ 	hci_dev_do_close(hdev);
+ 
+ 	if (!test_bit(HCI_INIT, &hdev->flags) &&
+diff --git a/net/bluetooth/msft.c b/net/bluetooth/msft.c
+index 4b39534a14a18..d9d2269bc93ef 100644
+--- a/net/bluetooth/msft.c
++++ b/net/bluetooth/msft.c
+@@ -76,7 +76,8 @@ void msft_do_open(struct hci_dev *hdev)
+ {
+ 	struct msft_data *msft;
+ 
+-	if (hdev->msft_opcode == HCI_OP_NOP)
++	/* Skip if opcode is not supported or MSFT has been initiatlized */
++	if (hdev->msft_opcode == HCI_OP_NOP || hdev->msft_data)
+ 		return;
+ 
+ 	bt_dev_dbg(hdev, "Initialize MSFT extension");
+-- 
+2.29.2.684.gfbc64c5ab5-goog
 
