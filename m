@@ -2,159 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 089812DD2EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 15:22:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45AC12DD2E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 15:21:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728579AbgLQOVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 09:21:36 -0500
-Received: from mga01.intel.com ([192.55.52.88]:50332 "EHLO mga01.intel.com"
+        id S1728552AbgLQOVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 09:21:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727385AbgLQOVf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 09:21:35 -0500
-IronPort-SDR: DPRK4vC76mlpRcImIyYo/w5I86O9bK1Q6a+4Mirc8/V3q+Z/k6GaBxfM2Vlb9eNeXWRmHLuxYE
- v2v0eAWsJFpw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9837"; a="193650969"
-X-IronPort-AV: E=Sophos;i="5.78,428,1599548400"; 
-   d="scan'208";a="193650969"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2020 06:19:22 -0800
-IronPort-SDR: fOAH7ukgB26MJsFvhANElmPwBaaoiLsDLhTTvLtxkCq8qNiEcBZRoQdlDOoDr3/LopDYw0CZkZ
- j8ZxR6ZQ/Icg==
-X-IronPort-AV: E=Sophos;i="5.78,428,1599548400"; 
-   d="scan'208";a="342505216"
-Received: from apstasen-mobl.amr.corp.intel.com ([10.212.63.173])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2020 06:19:18 -0800
-Message-ID: <d581bfe77c2fc4ff266bb155cf610f176c786e2e.camel@linux.intel.com>
-Subject: Re: [PATCH] cpufreq: intel_pstate: Use the latest guaranteed freq
- during verify
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Len Brown <lenb@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Thu, 17 Dec 2020 06:19:13 -0800
-In-Reply-To: <CAJZ5v0ghXA=mao_S-VH-x0_0uvGYK_oWj10f-A=u0w82tXDg5Q@mail.gmail.com>
-References: <20201217104215.2544837-1-srinivas.pandruvada@linux.intel.com>
-         <CAJZ5v0ghXA=mao_S-VH-x0_0uvGYK_oWj10f-A=u0w82tXDg5Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 (3.38.2-1.fc33) 
+        id S1726999AbgLQOVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 09:21:08 -0500
+Date:   Thu, 17 Dec 2020 15:20:23 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608214827;
+        bh=m2pqAub9e3jm+t7rOT5d+cVkmAc4UUU8rn/uGWbiZVI=;
+        h=From:To:Cc:Subject:From;
+        b=Rto5tdOSaelgG9X4QSfEqOo0/LIYdRpE8fXUO1IkUrDmyLyG3vPnHbCHEz+Au3Igf
+         mtDeRaFmpl1iqK3K6eRptN+PCY8Zge9BaYTF/KxNoZLv7TH2eEVp1BmP1J13E2x5gj
+         JOVer9v81ScDUR2drq7qYIQcieyjeiSDnnc9Ub36vgU2cIHLs7Cs/OqGC/NNoEVM3X
+         kwMktDBbVK1j8oU8GPqQRDvrZJ919/8FbkbwDcb+/pjJrUp0aedxVOiXTMCy0osCnr
+         hgOeaJ34vU9A5bH7q/kfOye8QNFI0ujrtBzfvx1KKwD7efg475aWU+5oLveaJV/v+0
+         kJ6mOF48V4hEw==
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Modules updates for v5.11
+Message-ID: <20201217142020.GA19116@linux-8ccs>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-12-17 at 14:58 +0100, Rafael J. Wysocki wrote:
-> On Thu, Dec 17, 2020 at 11:44 AM Srinivas Pandruvada
-> <srinivas.pandruvada@linux.intel.com> wrote:
-> > 
-> > This change tries to address an issue, when BIOS disabled turbo
-> > but HWP_CAP guaranteed is changed later and user space wants to
-> > take
-> > advantage of this increased guaranteed performance.
-> > 
-> > The HWP_CAP.GUARANTEED value is not a static value. It can be
-> > changed
-> > by some out of band agent or during Intel Speed Select performance
-> > level change. The HWP_CAP.MAX still shows max possible performance
-> > when
-> > BIOS disabled turbo. So guaranteed can still change as long as this
-> > is
-> > same or below HWP_CAP.MAX.
-> > 
-> > When guaranteed is changed, the sysfs base_frequency attributes
-> > shows
-> > the latest guaranteed frequency. This attribute can be used by user
-> > space software to update scaling min/max frequency.
-> > 
-> > Currently the setpolicy callback already uses the latest HWP_CAP
-> > values when setting HWP_REQ. But the verify callback will still
-> > restrict
-> > the user settings to the to old guaranteed value. So if the
-> > guaranteed
-> > is increased, user space can't take advantage of it.
-> > 
-> > To solve this similar to setpolicy callback, read the latest
-> > HWP_CAP
-> > values and use it to restrict the maximum setting. This is done by
-> > calling intel_pstate_get_hwp_max(), which already accounts for user
-> > and BIOS turbo disable to get the current max performance.
-> > 
-> > This issue is side effect of fixing the issue of scaling frequency
-> > limits by the
-> >  'commit eacc9c5a927e ("cpufreq: intel_pstate:
-> >  Fix intel_pstate_get_hwp_max() for turbo disabled")'
-> > The fix resulted in correct setting of reduced scaling frequencies,
-> > but this resulted in capping HWP.REQ to HWP_CAP.GUARANTEED in this
-> > case.
-> > 
-> > Cc: 5.8+ <stable@vger.kernel.org> # 5.8+
-> > Signed-off-by: Srinivas Pandruvada <
-> > srinivas.pandruvada@linux.intel.com>
-> > ---
-> >  drivers/cpufreq/intel_pstate.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> > 
-> > diff --git a/drivers/cpufreq/intel_pstate.c
-> > b/drivers/cpufreq/intel_pstate.c
-> > index 2a4db856222f..7081d1edb22b 100644
-> > --- a/drivers/cpufreq/intel_pstate.c
-> > +++ b/drivers/cpufreq/intel_pstate.c
-> > @@ -2199,6 +2199,12 @@ static void
-> > intel_pstate_clear_update_util_hook(unsigned int cpu)
-> > 
-> >  static int intel_pstate_get_max_freq(struct cpudata *cpu)
-> >  {
-> > +       if (hwp_active) {
-> > +               int turbo_max, max_state;
-> > +
-> > +               intel_pstate_get_hwp_max(cpu->cpu, &turbo_max,
-> > &max_state);
-> 
-> This would cause intel_pstate_get_hwp_max() to be called twice in
-> intel_pstate_update_perf_limits() which is not perfect.
+Hi Linus,
 
-We can optimize by using cached value.
+Please pull below to receive modules updates for the v5.11 merge window.
+A summary can be found in the signed tag.
 
+Thank you,
 
-diff --git a/drivers/cpufreq/intel_pstate.c
-b/drivers/cpufreq/intel_pstate.c
-index 7081d1edb22b..d345c9ef240c 100644
---- a/drivers/cpufreq/intel_pstate.c
-+++ b/drivers/cpufreq/intel_pstate.c
-@@ -2223,7 +2223,11 @@ static void
-intel_pstate_update_perf_limits(struct cpudata *cpu,
-         * rather than pure ratios.
-         */
-        if (hwp_active) {
--               intel_pstate_get_hwp_max(cpu->cpu, &turbo_max,
-&max_state);
-+               if (global.no_turbo || global.turbo_disabled)
-+                       max_state = HWP_GUARANTEED_PERF(cpu-
->hwp_cap_cached);
-+               else
-+                       max_state = HWP_HIGHEST_PERF(cpu-
->hwp_cap_cached);
-+               turbo_max = HWP_HIGHEST_PERF(cpu->hwp_cached);
-        } else {
-                max_state = global.no_turbo || global.turbo_disabled ?
-                        cpu->pstate.max_pstate : cpu-
->pstate.turbo_pstate;
+Jessica
 
+---
+The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
 
-Thanks,
-Srinivas
+  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
 
+are available in the Git repository at:
 
-> 
-> > +               return max_state * cpu->pstate.scaling;
-> > +       }
-> >         return global.turbo_disabled || global.no_turbo ?
-> >                         cpu->pstate.max_freq : cpu-
-> > >pstate.turbo_freq;
-> >  }
-> > --
+  https://git.kernel.org/pub/scm/linux/kernel/git/jeyu/linux.git/ tags/modules-for-v5.11
 
+for you to fetch changes up to 38dc717e97153e46375ee21797aa54777e5498f3:
 
+  module: delay kobject uevent until after module init call (2020-12-09 09:42:47 +0100)
+
+----------------------------------------------------------------
+Modules updates for v5.11
+
+Summary of modules changes for the 5.11 merge window:
+
+- Fix a race condition between systemd/udev and the module loader.
+  The module loader was sending a uevent before the module was fully
+  initialized (i.e., before its init function has been called). This means
+  udev can start processing the module uevent before the module has
+  finished initializing, and some udev rules expect that the module has
+  initialized already upon receiving the uevent. This resulted in some
+  systemd mount units failing if udev processes the event faster than the
+  module can finish init. This is fixed by delaying the uevent until after
+  the module has called its init routine.
+
+- Make the linker array sections for kernel params and module version
+  attributes more robust by switching to use the alignment of the type in
+  question. Namely, linker section arrays will be constructed using the
+  alignment required by the struct (using __alignof__()) as opposed to a
+  specific value such as sizeof(void *) or sizeof(long). This is less
+  likely to cause breakages should the size of the type ever change (from
+  Johan Hovold)
+
+- Fix module state inconsistency by setting it back to GOING when a module
+  fails to load and is on its way out (from Miroslav Benes)
+
+- Some comment and code cleanups (from Sergey Shtylyov)
+
+Signed-off-by: Jessica Yu <jeyu@kernel.org>
+
+----------------------------------------------------------------
+Jessica Yu (1):
+      module: delay kobject uevent until after module init call
+
+Johan Hovold (7):
+      module: drop version-attribute alignment
+      module: simplify version-attribute handling
+      params: drop redundant "unused" attributes
+      params: use type alignment for kernel parameters
+      params: clean up module-param macros
+      init: use type alignment for kernel parameters
+      module: drop semicolon from version macro
+
+Miroslav Benes (1):
+      module: set MODULE_STATE_GOING state when a module fails to load
+
+Sergey Shtylyov (6):
+      module: merge repetitive strings in module_sig_check()
+      module: avoid *goto*s in module_sig_check()
+      module: only handle errors with the *switch* statement in module_sig_check()
+      module: fix up 'kernel-doc' comments
+      module: add more 'kernel-doc' comments
+      module: fix comment style
+
+ include/linux/init.h        |   2 +-
+ include/linux/module.h      |  28 +++----
+ include/linux/moduleparam.h |  12 +--
+ kernel/module.c             | 200 ++++++++++++++++++++++++++------------------
+ kernel/params.c             |  10 +--
+ 5 files changed, 142 insertions(+), 110 deletions(-)
