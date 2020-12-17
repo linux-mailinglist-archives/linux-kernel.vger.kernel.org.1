@@ -2,142 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3062DD15D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 13:19:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E75822DD128
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 13:15:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728630AbgLQMS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 07:18:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728572AbgLQMS0 (ORCPT
+        id S1727298AbgLQMPB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 17 Dec 2020 07:15:01 -0500
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:39774 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726155AbgLQMPA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 07:18:26 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5FB8C061794
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 04:17:45 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id c22so4766002pgg.13
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 04:17:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zLKc/ylYHo2GjStF5CCHYeuxj4GTbCnD5ZdkK0cu8t0=;
-        b=tU0IqBKmVMhKyj8NikbXTGBgiH4IX66VEr+KuEmc56agJmFGIoS8nRvEgWiFkEl+e9
-         YBV1WexgvQzmd4fe5vXEwSmCKv9BTBhzFhOvrjzuTGPMvlJyChkbB3dyCUR6Hvw04dI2
-         P8su279ZRwIpSIDybEf+3GhBGemvcfwgfcpArJHAKGhSV6rPG/VCddE2bOsbDS1f5hXq
-         wJjLzhqMWpecu2tjJsgWxMwaxRVxMm422EcTHtDm+TWtmB5viZkTY1Mbup0C8/8oefLl
-         3cGBiBBMjF1MLZI0m6WkVkkiemo/iv1tBvaBleCfjBxXNTRasnRiRjumo7mVdMrMp9vQ
-         vOfg==
+        Thu, 17 Dec 2020 07:15:00 -0500
+Received: by mail-ot1-f44.google.com with SMTP id d8so27023166otq.6;
+        Thu, 17 Dec 2020 04:14:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zLKc/ylYHo2GjStF5CCHYeuxj4GTbCnD5ZdkK0cu8t0=;
-        b=MRh7XQRwIfMiiTsdjzMmXvbPhEhuCUPbxc4md8v+qlLv9actTU0dj72xhHXsj9v5Tn
-         FqtrJcowNBPqHxlm/8JMMW5SxZUdz8Su5CInfl2m8/MDa9+aQJHoF0XX6SgtGhF0EDt8
-         tqq+V/PFk8NsRG9fYHxzx3Lm/ToW6uw/B5nrRGAxdXIxr+EzXzNOp33P9zRBRNunbAYd
-         OHNsmiklanwTB8Ipp/5y+uCAExda3mrY3TZ4n6AM4gQ6MqrkzvdAEzX95QIbVEVYWLhT
-         G7ExfHOqXPJiLMMQDMBgLbIRSlDPdvwBkoW7FAp52RLdzy98HdkAPQfI9fJR2cIl+Bdh
-         zFLQ==
-X-Gm-Message-State: AOAM5327nkuchZgZOa31daEcYAES8iyQwslf72wvbdE7i8TqDwA9famt
-        rHTntD3+MM+u9HqPBh76tZuYcw==
-X-Google-Smtp-Source: ABdhPJwNWAF94v1/MjPZmdhFmgA8vL4MblAFVKgbyIhGzQw5FgVtgMkV10xLyk+9ehHM6GKpzQ0SgQ==
-X-Received: by 2002:a62:ae0c:0:b029:1a5:819d:9ac5 with SMTP id q12-20020a62ae0c0000b02901a5819d9ac5mr18177290pff.26.1608207465486;
-        Thu, 17 Dec 2020 04:17:45 -0800 (PST)
-Received: from localhost.localdomain ([139.177.225.237])
-        by smtp.gmail.com with ESMTPSA id n15sm2775691pgl.31.2020.12.17.04.17.33
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 17 Dec 2020 04:17:44 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        osalvador@suse.de, mhocko@suse.com, song.bao.hua@hisilicon.com,
-        david@redhat.com, naoya.horiguchi@nec.com
-Cc:     duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v10 11/11] mm/hugetlb: Optimize the code with the help of the compiler
-Date:   Thu, 17 Dec 2020 20:13:03 +0800
-Message-Id: <20201217121303.13386-12-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20201217121303.13386-1-songmuchun@bytedance.com>
-References: <20201217121303.13386-1-songmuchun@bytedance.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=g+ZQ9Hep/ihbUcAAKgQBrtb6DKWZjd1MMpk6GQGQBFo=;
+        b=TwUE/sAaDxSik4eC4+AwHfhs259wcfDFaqZ9iAEraBl2QkccsjfTrFTz3utu1eAtxe
+         Z0QtTCQVWqfSQV4KSrzJPi3sYXIZQ9iOrgZKZ+4n3He0ShWxke3P6LN05fBagccHvcBQ
+         r2OUQ1tdC6f7OivbGm+kTXTRufY4ouXz4j/wneC71NeHmY2l4RXdmwhBLZjDHYSyYSIJ
+         KcssnimozOGMCMvU7FRpDf4gYdPodv3BTeIBgKghLNwiDoYMCBCOnsYrG1JwmlqtcgVa
+         YAk3Kar9SihjT7kmv3ntqhFSkAFfWk7FHKnANOJksbpUek993z5QavpMwDRPwQRTZOGc
+         u+HQ==
+X-Gm-Message-State: AOAM532KaE/4c9ToIExUavd/+ExtHVxSGbk8aB2uXujvKXjrpdm1hZBy
+        sBBSuvmzsVjHsIp7TS5jL27+xagesoMkuAJFzJzSSEJ3c/A=
+X-Google-Smtp-Source: ABdhPJz59bsLl40yU/AMrbYd1pTjEH6DKHmAPNcgiQuY6xiSJuPFg3psehvXyIwiQfTmcEKRkCfg14X04prnuLoQcg4=
+X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr29145891otc.145.1608207259025;
+ Thu, 17 Dec 2020 04:14:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1602431034.git.yifeifz2@illinois.edu> <4706b0ff81f28b498c9012fd3517fe88319e7c42.1602431034.git.yifeifz2@illinois.edu>
+In-Reply-To: <4706b0ff81f28b498c9012fd3517fe88319e7c42.1602431034.git.yifeifz2@illinois.edu>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 17 Dec 2020 13:14:07 +0100
+Message-ID: <CAMuHMdVU1BhmwMiHKDYmnyRHtQfeMtwtwkFLQwinfBPto-rtOQ@mail.gmail.com>
+Subject: Re: [PATCH v5 seccomp 5/5] seccomp/cache: Report cache data through /proc/pid/seccomp_cache
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     containers@lists.linux-foundation.org,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We cannot optimize if a "struct page" crosses page boundaries. If
-it is true, we can optimize the code with the help of a compiler.
-When free_vmemmap_pages_per_hpage() returns zero, most functions are
-optimized by the compiler.
+Hi Yifei,
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- include/linux/hugetlb.h | 3 ++-
- mm/hugetlb_vmemmap.c    | 7 +++++++
- mm/hugetlb_vmemmap.h    | 5 +++--
- 3 files changed, 12 insertions(+), 3 deletions(-)
+On Sun, Oct 11, 2020 at 8:08 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> From: YiFei Zhu <yifeifz2@illinois.edu>
+>
+> Currently the kernel does not provide an infrastructure to translate
+> architecture numbers to a human-readable name. Translating syscall
+> numbers to syscall names is possible through FTRACE_SYSCALL
+> infrastructure but it does not provide support for compat syscalls.
+>
+> This will create a file for each PID as /proc/pid/seccomp_cache.
+> The file will be empty when no seccomp filters are loaded, or be
+> in the format of:
+> <arch name> <decimal syscall number> <ALLOW | FILTER>
+> where ALLOW means the cache is guaranteed to allow the syscall,
+> and filter means the cache will pass the syscall to the BPF filter.
+>
+> For the docker default profile on x86_64 it looks like:
+> x86_64 0 ALLOW
+> x86_64 1 ALLOW
+> x86_64 2 ALLOW
+> x86_64 3 ALLOW
+> [...]
+> x86_64 132 ALLOW
+> x86_64 133 ALLOW
+> x86_64 134 FILTER
+> x86_64 135 FILTER
+> x86_64 136 FILTER
+> x86_64 137 ALLOW
+> x86_64 138 ALLOW
+> x86_64 139 FILTER
+> x86_64 140 ALLOW
+> x86_64 141 ALLOW
+> [...]
+>
+> This file is guarded by CONFIG_SECCOMP_CACHE_DEBUG with a default
+> of N because I think certain users of seccomp might not want the
+> application to know which syscalls are definitely usable. For
+> the same reason, it is also guarded by CAP_SYS_ADMIN.
+>
+> Suggested-by: Jann Horn <jannh@google.com>
+> Link: https://lore.kernel.org/lkml/CAG48ez3Ofqp4crXGksLmZY6=fGrF_tWyUCg7PBkAetvbbOPeOA@mail.gmail.com/
+> Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
 
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index 7295f6b3d55e..adc17765e0e9 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -791,7 +791,8 @@ extern bool hugetlb_free_vmemmap_enabled;
- 
- static inline bool is_hugetlb_free_vmemmap_enabled(void)
- {
--	return hugetlb_free_vmemmap_enabled;
-+	return hugetlb_free_vmemmap_enabled &&
-+	       is_power_of_2(sizeof(struct page));
- }
- #else
- static inline bool is_hugetlb_free_vmemmap_enabled(void)
-diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-index ad123b760245..987248a004f0 100644
---- a/mm/hugetlb_vmemmap.c
-+++ b/mm/hugetlb_vmemmap.c
-@@ -242,6 +242,13 @@ void __init hugetlb_vmemmap_init(struct hstate *h)
- 	BUILD_BUG_ON(NR_USED_SUBPAGE >=
- 		     RESERVE_VMEMMAP_SIZE / sizeof(struct page));
- 
-+	/*
-+	 * The compiler can help us to optimize this function to null
-+	 * when the size of the struct page is not power of 2.
-+	 */
-+	if (!is_power_of_2(sizeof(struct page)))
-+		return;
-+
- 	if (!hugetlb_free_vmemmap_enabled)
- 		return;
- 
-diff --git a/mm/hugetlb_vmemmap.h b/mm/hugetlb_vmemmap.h
-index 8fd9ae113dbd..e8de41295d4d 100644
---- a/mm/hugetlb_vmemmap.h
-+++ b/mm/hugetlb_vmemmap.h
-@@ -17,11 +17,12 @@ void hugetlb_vmemmap_init(struct hstate *h);
- 
- /*
-  * How many vmemmap pages associated with a HugeTLB page that can be freed
-- * to the buddy allocator.
-+ * to the buddy allocator. The checking of the is_power_of_2() aims to let
-+ * the compiler help us optimize the code as much as possible.
-  */
- static inline unsigned int free_vmemmap_pages_per_hpage(struct hstate *h)
- {
--	return h->nr_free_vmemmap_pages;
-+	return is_power_of_2(sizeof(struct page)) ? h->nr_free_vmemmap_pages : 0;
- }
- #else
- static inline void alloc_huge_page_vmemmap(struct hstate *h, struct page *head)
+> @@ -2311,3 +2314,59 @@ static int __init seccomp_sysctl_init(void)
+>  device_initcall(seccomp_sysctl_init)
+>
+>  #endif /* CONFIG_SYSCTL */
+> +
+> +#ifdef CONFIG_SECCOMP_CACHE_DEBUG
+> +/* Currently CONFIG_SECCOMP_CACHE_DEBUG implies SECCOMP_ARCH_NATIVE */
+
+Should there be a dependency on SECCOMP_ARCH_NATIVE?
+Should all architectures that implement seccomp have this?
+
+E.g. mips does select HAVE_ARCH_SECCOMP_FILTER, but doesn't
+have SECCOMP_ARCH_NATIVE?
+
+(noticed with preliminary out-of-tree seccomp implementation for m68k,
+ which doesn't have SECCOMP_ARCH_NATIVE
+
+> +static void proc_pid_seccomp_cache_arch(struct seq_file *m, const char *name,
+> +                                       const void *bitmap, size_t bitmap_size)
+> +{
+> +       int nr;
+> +
+> +       for (nr = 0; nr < bitmap_size; nr++) {
+> +               bool cached = test_bit(nr, bitmap);
+> +               char *status = cached ? "ALLOW" : "FILTER";
+> +
+> +               seq_printf(m, "%s %d %s\n", name, nr, status);
+> +       }
+> +}
+> +
+> +int proc_pid_seccomp_cache(struct seq_file *m, struct pid_namespace *ns,
+> +                          struct pid *pid, struct task_struct *task)
+> +{
+> +       struct seccomp_filter *f;
+> +       unsigned long flags;
+> +
+> +       /*
+> +        * We don't want some sandboxed process to know what their seccomp
+> +        * filters consist of.
+> +        */
+> +       if (!file_ns_capable(m->file, &init_user_ns, CAP_SYS_ADMIN))
+> +               return -EACCES;
+> +
+> +       if (!lock_task_sighand(task, &flags))
+> +               return -ESRCH;
+> +
+> +       f = READ_ONCE(task->seccomp.filter);
+> +       if (!f) {
+> +               unlock_task_sighand(task, &flags);
+> +               return 0;
+> +       }
+> +
+> +       /* prevent filter from being freed while we are printing it */
+> +       __get_seccomp_filter(f);
+> +       unlock_task_sighand(task, &flags);
+> +
+> +       proc_pid_seccomp_cache_arch(m, SECCOMP_ARCH_NATIVE_NAME,
+> +                                   f->cache.allow_native,
+
+error: ‘struct action_cache’ has no member named ‘allow_native’
+
+struct action_cache is empty if SECCOMP_ARCH_NATIVE is not
+defined (so there are checks for it).
+
+> +                                   SECCOMP_ARCH_NATIVE_NR);
+> +
+> +#ifdef SECCOMP_ARCH_COMPAT
+> +       proc_pid_seccomp_cache_arch(m, SECCOMP_ARCH_COMPAT_NAME,
+> +                                   f->cache.allow_compat,
+> +                                   SECCOMP_ARCH_COMPAT_NR);
+> +#endif /* SECCOMP_ARCH_COMPAT */
+> +
+> +       __put_seccomp_filter(f);
+> +       return 0;
+> +}
+> +#endif /* CONFIG_SECCOMP_CACHE_DEBUG */
+> --
+> 2.28.0
+>
+
+
 -- 
-2.11.0
+Gr{oetje,eeting}s,
 
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
