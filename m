@@ -2,155 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C81032DCDA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 09:30:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B77E82DCDA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 09:30:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727425AbgLQI3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 03:29:12 -0500
-Received: from mail-eopbgr70050.outbound.protection.outlook.com ([40.107.7.50]:17632
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726160AbgLQI3L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 03:29:11 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ffSyFEDr+9YgCsb7PTKyjViye1CcHBy33ENqb2QfZOPJHIpLJssx3yLSBTAuPNiXOUnVINfj8alwCm2RXX/r3FPVnSVqHrr3Id5feqE35BThQ9ujelfhc2yAfb77nSQnBdHKaKZR0ZoA7qIXt2BG/MwbH0H7TGt03eI7zgF0ceL0h/2Gv3BVi8rpCzVenf9jOk3cGMK6ltwapYZ/2yOksHw2jrNleja1/4iy74GZcL1ip/IBiFt9ArXpkA1AqKvT5Fy7v01jX+s4d1Q0tpMo0JmRbg8o7G403VwVI5vMjyWZcUwZtb7p/6ZmJJCgF3IWB0BD3wgqv+K85GuPLY8yew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MydZuylGKOYhvw0U16zsCggDRgIx3owZPAw59mNCzNQ=;
- b=eUP1P8eWYtreuFux9HunpD9o87r0QVPcTrLrpujkvqgETyl44KhSugqZCa/fJ1Zmt/VDtgUxmzUPQkcPg+IzHuKFN9IdpIHcLFGjJq7KqQel2QNj2ZWMR558UVBKvCBKy4gUFq8PP6f5KNMC7E6E4YbDCW9nYOuMr4ANV/tG7uFyZb85Wp2stGKMU3+e5FfPdMyQoBzh0IMuxMaxO8dYVZMfMdYmcITxqYn94ohIMuN7aOq/Cu3xijMTKjmFZJwmtKUK9Se+5We4+ELRoDRJ53Fdrhpg8c2a02I3KVkLHUGcsWbLCGiDiRjdCbOFOa6be2gSqNGz2YSHL6T4mBju7Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MydZuylGKOYhvw0U16zsCggDRgIx3owZPAw59mNCzNQ=;
- b=IY94xYyG+O+PXByHcavIpi9MVWy04JQssNAmQENUlJq+078DNFMDFkG2EDNrUR/upjWaktZ9653elYicJiWhWn1tKg3cKLkP7RShtntuV4LP6XXOrZ/PlwrvfJv61yBnlwviCbRLzO9DasfFOsZ/YvmE3YDulJNKKYC3DtoiMn4=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oss.nxp.com;
-Received: from AM0PR04MB5636.eurprd04.prod.outlook.com (2603:10a6:208:130::22)
- by AM8PR04MB7891.eurprd04.prod.outlook.com (2603:10a6:20b:237::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.19; Thu, 17 Dec
- 2020 08:28:20 +0000
-Received: from AM0PR04MB5636.eurprd04.prod.outlook.com
- ([fe80::a891:518d:935c:30dd]) by AM0PR04MB5636.eurprd04.prod.outlook.com
- ([fe80::a891:518d:935c:30dd%6]) with mapi id 15.20.3654.020; Thu, 17 Dec 2020
- 08:28:20 +0000
-Date:   Thu, 17 Dec 2020 13:58:04 +0530
-From:   Calvin Johnson <calvin.johnson@oss.nxp.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, "linux.cj" <linux.cj@gmail.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        netdev <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [net-next PATCH v2 04/14] net: phy: Introduce fwnode_get_phy_id()
-Message-ID: <20201217082804.GB19657@lsv03152.swis.in-blr01.nxp.com>
-References: <20201215164315.3666-1-calvin.johnson@oss.nxp.com>
- <20201215164315.3666-5-calvin.johnson@oss.nxp.com>
- <CAHp75VcHrBtAY3KDugBYEo9=YuDwbh+QLdOU8yiKb2VyaU2x9A@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VcHrBtAY3KDugBYEo9=YuDwbh+QLdOU8yiKb2VyaU2x9A@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [14.142.151.118]
-X-ClientProxiedBy: SG2PR04CA0130.apcprd04.prod.outlook.com
- (2603:1096:3:16::14) To AM0PR04MB5636.eurprd04.prod.outlook.com
- (2603:10a6:208:130::22)
+        id S1727599AbgLQI3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 03:29:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727437AbgLQI3d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 03:29:33 -0500
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B556BC061794
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 00:28:52 -0800 (PST)
+Received: by mail-qt1-x829.google.com with SMTP id c14so19588343qtn.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 00:28:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CsVAueeXj8ac4FEysIBmoE/5UC3DLYLDLVv7MpYAfsY=;
+        b=lrtCWtebJhRyBEnvqhAKBWJjkYlCDj9Wa+OmmQZ7pLzpr6GVtZ9HxmUlPX36ujGq00
+         8xpZWSUywbnVVXTvV9OcjlZJ/vctiDLJKQKuPj0z+z36BG1/AOsXQlhqnBWX6Me2eBek
+         Uex2+D37iSdoW0jlwNoC7vtRqxNLltHtlGqHVbAjywuDituTFp48GWKL02J4raQw9odE
+         YpMvWg5UTuVV3HJXQjQb824qhaJK0IyYCHIgTDcCjVFRL7zoWVJBKGoZdR0k1x5pTkiP
+         7ePsoNx5XlNQOJS3wd7DKPmRK+9C75gm6fjzXujoH7W2ToB5eozxjpyXwqQorTlYi6H0
+         Vzdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CsVAueeXj8ac4FEysIBmoE/5UC3DLYLDLVv7MpYAfsY=;
+        b=saU5EYxXH2jPhcZbXU+LKAXwX2izKxplnbhALbsE2ux2ZLrQuCXZvUuCqxd67UNeBK
+         DCDTNSF4KDI9cTSYS7yapLJ7kWV/sZ58Ignb2nLICerjVOLxkJY0g7wWaA/QWPnGgdJP
+         OqfXBlhi1JThLv7IAPP6bdIG+XpZc1NfQYTHNTdRSXTbXDA6V5kGTtFifxUi+dg7w389
+         S6Xv7bpj8qUhV44sPb35gxRkkhgIr4J1zZBSbBnxHAkhDtTLlV7IcVLLbFQ1gtobCL+T
+         fm5zzxBPjn+i0hD2FsrORV6n/ip3bCScpq8klPhuWPdgKG0LJHfd+6zxjCAMvTkSWMMB
+         6Ufg==
+X-Gm-Message-State: AOAM531xAKGBO7ahp+0QsS0RbriLqBvmvuxh94eKltXiPlrBPrRnSFHI
+        odvVi+RR/n2u0y7s9kc8pFni35MDTHP24tkmHs35+A==
+X-Google-Smtp-Source: ABdhPJyL42ijAI2pbo8QbK4c5g3rkG2w3VdIj4dHWraqoD+WwDhV5nkWDxRgxwHqLEeb7uNWwWpDpXWuf0An0cVTSL4=
+X-Received: by 2002:ac8:4e1c:: with SMTP id c28mr47105022qtw.67.1608193731597;
+ Thu, 17 Dec 2020 00:28:51 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from lsv03152.swis.in-blr01.nxp.com (14.142.151.118) by SG2PR04CA0130.apcprd04.prod.outlook.com (2603:1096:3:16::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Thu, 17 Dec 2020 08:28:11 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: d3fbc94b-8bd5-46b8-2c38-08d8a265b61a
-X-MS-TrafficTypeDiagnostic: AM8PR04MB7891:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM8PR04MB789168DFB65A26023EDE9DC6D2C40@AM8PR04MB7891.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PSg1uidOuWftp9xap8h6LmcPJdLBWD2KhUVff9Vsap5/a4Gadr5rsuizV8l3nEaQyeY89s7VdRBuY9mlCpp26F9NSkjdAHRq8K/7JDIg+xA1HQq87Lau/9F7ybFM+TqS60fXkpbFDgoLlKAYcZ0N6ep8/kyvbCeKAB1HDJWvzcpVJ9XTLxiCwCoI7/WZBTe77Rg8IshoBRXglFIZFrCccosa5uMXbC7G2MLchQapuJNp/kSdTDuo2zTj4oGofp7drnaS+YTbfOEViRU3/vP/1isvCZC844vDQ7a4dFJYAZJEKkknMpaGsmim4BPpWj7mpTxLeCDZPEjnheKs/2IhHJPGhtqDETYGjNZ4OmNq77hlN+mp9hVUHZRIsI4LU6xT
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5636.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(366004)(39860400002)(346002)(396003)(7696005)(53546011)(16526019)(66476007)(8676002)(5660300002)(4326008)(86362001)(52116002)(66556008)(1076003)(33656002)(4744005)(2906002)(6666004)(316002)(6506007)(8936002)(54906003)(26005)(6916009)(1006002)(956004)(44832011)(478600001)(66946007)(9686003)(55016002)(186003)(55236004)(7416002)(110426006);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?x3gInD5jJAONIC789sblHqo89ZsKKrsskKFmuiT1Mqkx5F3FFOSsSfRG2a51?=
- =?us-ascii?Q?ijR/RgPNmKLyu9LniE08dcIP4bGxGOgRczyVC3ICMkVwXP15Zhtin/V02Za1?=
- =?us-ascii?Q?58cbCYjsC0JBzqYVi0vr9ZCdOaESyWYnCxN9D781SZIjldmSMshjQyqwwU5Q?=
- =?us-ascii?Q?f/MUNPDQXEWhZGa/8RvgnGn16NmhzREIQF+IGxPlJ/wrxa6sS7ZTte217a+4?=
- =?us-ascii?Q?YT/ctwk9Rwq8UoOrVQPVtE13D5+VBbGRCrcx7tQC44XrwaOPUOjNVBhnZM8+?=
- =?us-ascii?Q?UrPO6dOoN7okT/ibwUYhR5M2slPuMJmdQ2amNzQ1EyA+geBJvQAHa28vSYNO?=
- =?us-ascii?Q?YqiGJio8Kqo19ep09tgfbaMlHeFDZhzCkAVXUsEymaq/cfBP1/EjmNntjfh9?=
- =?us-ascii?Q?BKb3rPRpo9kI3TcHWWZVdmYnwmNpBuqDQCgQ1cNxeEYLzIMY1zboTHnjOPnz?=
- =?us-ascii?Q?AaPgsIGVR0I3/jIuqfmcxZSYXC1pczd3LC/wx9kYewuuEbfZbCxHjDEdz19w?=
- =?us-ascii?Q?3aAl4Gdd8+/MIC56dYeD8YWtIfw5cbsZKlxc2qmO8bZRw4R3N2+KlsuQgfAe?=
- =?us-ascii?Q?dYzBD5FjRC24hCEQtqlDX8NnmSuI8EVCSlqvb8GReOq349KtxjvRwMPdDPMq?=
- =?us-ascii?Q?/W3Dbu/rvMhVOkdWSLrGz3NuT9MInQz+5Z0zn07ntwKvnrkRbf/NEbTH1P23?=
- =?us-ascii?Q?7vH4xxriUP6pzRPLnJQ5cuqUtDCnWaVQje9mmCNfKn4Vwvs7rVQ/kPEeoz1T?=
- =?us-ascii?Q?lKb38gudiys+CS00uelS5/jwQDz7/QjHfn7+KqCWlOl120U/isjOrjEHLMZI?=
- =?us-ascii?Q?9k7sa0g9wM5LadCiBNvz/YEKx6oB7+/YeP4W+bNCDjcGmTroQ+gDlAbPbbdX?=
- =?us-ascii?Q?G7yO6ZKy6QoY5gM5FF72N2EgrOK30mE47xcH8ZKIxhUfmfQE5BWQaZCBQJjn?=
- =?us-ascii?Q?r2St5df243fQ5gwQ8Nn43OlLjGmPT9kSMwpqFOvPQSQNxrH6SKolh/zA2D12?=
- =?us-ascii?Q?4rG5?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5636.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Dec 2020 08:28:20.2391
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-Network-Message-Id: d3fbc94b-8bd5-46b8-2c38-08d8a265b61a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: m4qtuilQgTAkztOG+BIT0d7sOyqFqDrswpPtL4Ca6J71EzXCUVqQrxiVLBydm0iYHUrnlWEa/yTJWCtsJaAwNg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7891
+References: <000000000000cb6db205b68a971c@google.com> <CAKMK7uEiS5SrBYv-2w2wWL=9G4ByoHvtiWVsPqekswZzOGmzjg@mail.gmail.com>
+ <20201216161621.GH2657@paulmck-ThinkPad-P72>
+In-Reply-To: <20201216161621.GH2657@paulmck-ThinkPad-P72>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 17 Dec 2020 09:28:40 +0100
+Message-ID: <CACT4Y+ZAuZ2PQaQz7GpeCFfbhdDi2hpOYm_xnMR4ANBC7sht3A@mail.gmail.com>
+Subject: Re: WARNING: suspicious RCU usage in modeset_lock
+To:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        syzbot <syzbot+972b924c988834e868b2@syzkaller.appspotmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Peter Rosin <peda@axentia.se>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 07:28:10PM +0200, Andy Shevchenko wrote:
-> On Tue, Dec 15, 2020 at 6:44 PM Calvin Johnson
-> <calvin.johnson@oss.nxp.com> wrote:
+On Wed, Dec 16, 2020 at 5:16 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Wed, Dec 16, 2020 at 10:52:06AM +0100, Daniel Vetter wrote:
+> > On Wed, Dec 16, 2020 at 2:14 AM syzbot
+> > <syzbot+972b924c988834e868b2@syzkaller.appspotmail.com> wrote:
+> > >
+> > > Hello,
+> > >
+> > > syzbot found the following issue on:
+> > >
+> > > HEAD commit:    94801e5c Merge tag 'pinctrl-v5.10-3' of git://git.kernel.o..
+> > > git tree:       upstream
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=130558c5500000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=ee8a1012a5314210
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=972b924c988834e868b2
+> > > compiler:       gcc (GCC) 10.1.0-syz 20200507
+> > > userspace arch: i386
+> > >
+> > > Unfortunately, I don't have any reproducer for this issue yet.
+> > >
+> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > Reported-by: syzbot+972b924c988834e868b2@syzkaller.appspotmail.com
+> > >
+> > > =============================
+> > > WARNING: suspicious RCU usage
+> > > 5.10.0-rc7-syzkaller #0 Not tainted
+> > > -----------------------------
+> > > kernel/sched/core.c:7270 Illegal context switch in RCU-sched read-side critical section!
+> > >
+> > > other info that might help us debug this:
+> > >
+> > >
+> > > rcu_scheduler_active = 2, debug_locks = 0
+> > > 7 locks held by syz-executor.1/9232:
+> > >  #0: ffffffff8b328c60 (console_lock){+.+.}-{0:0}, at: do_fb_ioctl+0x2e4/0x690 drivers/video/fbdev/core/fbmem.c:1106
+> > >  #1: ffff888041bd4078 (&fb_info->lock){+.+.}-{3:3}, at: lock_fb_info include/linux/fb.h:636 [inline]
+> > >  #1: ffff888041bd4078 (&fb_info->lock){+.+.}-{3:3}, at: do_fb_ioctl+0x2ee/0x690 drivers/video/fbdev/core/fbmem.c:1107
+> > >  #2: ffff888041adca78 (&helper->lock){+.+.}-{3:3}, at: drm_fb_helper_pan_display+0xce/0x970 drivers/gpu/drm/drm_fb_helper.c:1448
+> > >  #3: ffff8880159f01b8 (&dev->master_mutex){+.+.}-{3:3}, at: drm_master_internal_acquire+0x1d/0x70 drivers/gpu/drm/drm_auth.c:407
+> > >  #4: ffff888041adc898 (&client->modeset_mutex){+.+.}-{3:3}, at: drm_client_modeset_commit_locked+0x44/0x580 drivers/gpu/drm/drm_client_modeset.c:1143
+> > >  #5: ffffc90001c07730 (crtc_ww_class_acquire){+.+.}-{0:0}, at: drm_client_modeset_commit_atomic+0xb7/0x7c0 drivers/gpu/drm/drm_client_modeset.c:981
+> > >  #6: ffff888015986108 (crtc_ww_class_mutex){+.+.}-{3:3}, at: ww_mutex_lock_slow include/linux/ww_mutex.h:287 [inline]
+> > >  #6: ffff888015986108 (crtc_ww_class_mutex){+.+.}-{3:3}, at: modeset_lock+0x31c/0x650 drivers/gpu/drm/drm_modeset_lock.c:260
 > >
-> > Extract phy_id from compatible string. This will be used by
-> > fwnode_mdiobus_register_phy() to create phy device using the
-> > phy_id.
-> 
-> ...
-> 
-> > +       if (sscanf(cp, "ethernet-phy-id%4x.%4x", &upper, &lower) == 2) {
-> > +               *phy_id = ((upper & 0xFFFF) << 16) | (lower & 0xFFFF);
-> > +               return 0;
-> > +       }
-> > +       return -EINVAL;
-> 
-> Perhaps traditional pattern, i.e.
->        if (sscanf(cp, "ethernet-phy-id%4x.%4x", &upper, &lower) != 2)
->                return -EINVAL;
-> 
->        *phy_id = ((upper & 0xFFFF) << 16) | (lower & 0xFFFF);
->        return 0;
-> 
-> And perhaps GENMASK() ?
+> > Given that we managed to take all these locks without upsetting anyone
+> > the rcu section is very deep down. And looking at the backtrace below
+> > I just couldn't find anything.
+> >
+> > Best I can think of is that an interrupt of some sort leaked an rcu
+> > section, and we got shot here. But I'd assume the rcu debugging would
+> > catch this? Backtrace of the start of that rcu read side section would
+> > be really useful here, but I'm not seeing that in the logs. There's
+> > more stuff there, but it's just the usual "everything falls apart"
+> > stuff of little value to understanding how we got there.
+>
+> In my experience, lockdep will indeed complain if an interrupt handler
+> returns while in an RCU read-side critical section.
+>
+> > Adding some rcu people for more insights on what could have gone wrong here.
+> > -Daniel
+> >
+> > > stack backtrace:
+> > > CPU: 1 PID: 9232 Comm: syz-executor.1 Not tainted 5.10.0-rc7-syzkaller #0
+> > > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> > > Call Trace:
+> > >  __dump_stack lib/dump_stack.c:77 [inline]
+> > >  dump_stack+0x107/0x163 lib/dump_stack.c:118
+> > >  ___might_sleep+0x25d/0x2b0 kernel/sched/core.c:7270
+> > >  __mutex_lock_common kernel/locking/mutex.c:935 [inline]
+> > >  __ww_mutex_lock.constprop.0+0xa9/0x2cc0 kernel/locking/mutex.c:1111
+> > >  ww_mutex_lock+0x3d/0x170 kernel/locking/mutex.c:1190
+>
+> Acquiring a mutex while under the influence of rcu_read_lock() will
+> definitely get you this lockdep complaint, and rightfully so.
+>
+> If you need to acquire a mutex with RCU-like protection, one approach
+> is to use SRCU.  But usually this indicates (as you suspected) that
+> someone forgot to invoke rcu_read_unlock().
+>
+> One way to locate this is to enlist the aid of lockdep.  You can do this
+> by putting something like this in the callers:
+>
+>         RCU_LOCKDEP_WARN(lock_is_held(&rcu_bh_lock_map) ||
+>                          lock_is_held(&rcu_lock_map) ||
+>                          lock_is_held(&rcu_sched_lock_map),
+>                          "We are in an RCU read-side critical section");
+>
+> This will get you a lockdep complaint much like the one above if the
+> caller is in any sort of RCU read-side critical section.  You can push
+> this up the call stack one level at a time or just sprinkle it up the
+> stack in one go.
+>
+> The complaint is specifically about RCU-sched, so you could focus on
+> that using this instead:
+>
+>         RCU_LOCKDEP_WARN(lock_is_held(&rcu_sched_lock_map),
+>                          "We are in an RCU-sched read-side critical section");
+>
+> This of course assumes that this is reproducible.  :-/
+>
+> But even if it isn't reproducible, for example, if the mutex is only
+> acquired occasionally, these RCU_LOCKDEP_WARN() calls can be used to
+> check assumptions about state.
 
-Sure. Will rewrite accordingly.
 
-Thanks
-Calvin
+There is another recent claim of a false "suspicious RCU usage":
+https://lore.kernel.org/lkml/20201216205536.GX2443@casper.infradead.org/
+
+Can this be wrong accounting by lock debugging?
+
+
+
+>                                                         Thanx, Paul
+>
+> > >  modeset_lock+0x392/0x650 drivers/gpu/drm/drm_modeset_lock.c:263
+> > >  drm_modeset_lock drivers/gpu/drm/drm_modeset_lock.c:342 [inline]
+> > >  drm_modeset_lock+0x50/0x90 drivers/gpu/drm/drm_modeset_lock.c:338
+> > >  drm_atomic_get_plane_state+0x19d/0x510 drivers/gpu/drm/drm_atomic.c:481
+> > >  drm_client_modeset_commit_atomic+0x225/0x7c0 drivers/gpu/drm/drm_client_modeset.c:994
+> > >  drm_client_modeset_commit_locked+0x145/0x580 drivers/gpu/drm/drm_client_modeset.c:1145
+> > >  pan_display_atomic drivers/gpu/drm/drm_fb_helper.c:1395 [inline]
+> > >  drm_fb_helper_pan_display+0x28b/0x970 drivers/gpu/drm/drm_fb_helper.c:1455
+> > >  fb_pan_display+0x2f7/0x6c0 drivers/video/fbdev/core/fbmem.c:925
+> > >  fb_set_var+0x57f/0xda0 drivers/video/fbdev/core/fbmem.c:1043
+> > >  do_fb_ioctl+0x2f9/0x690 drivers/video/fbdev/core/fbmem.c:1108
+> > >  fb_compat_ioctl+0x17c/0xaf0 drivers/video/fbdev/core/fbmem.c:1315
+> > >  __do_compat_sys_ioctl+0x1d3/0x230 fs/ioctl.c:842
+> > >  do_syscall_32_irqs_on arch/x86/entry/common.c:78 [inline]
+> > >  __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:137
+> > >  do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:160
+> > >  entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+> > > RIP: 0023:0xf7fd8549
+> > > Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
+> > > RSP: 002b:00000000f55d20bc EFLAGS: 00000296 ORIG_RAX: 0000000000000036
+> > > RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000004601
+> > > RDX: 0000000020000240 RSI: 0000000000000000 RDI: 0000000000000000
+> > > RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+> > > R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+> > > R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> > > detected fb_set_par error, error code: -16
+> > >
+> > >
+> > > ---
+> > > This report is generated by a bot. It may contain errors.
+> > > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> > >
+> > > syzbot will keep track of this issue. See:
+> > > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
