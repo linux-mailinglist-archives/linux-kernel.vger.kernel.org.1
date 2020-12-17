@@ -2,63 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E992DCE21
+	by mail.lfdr.de (Postfix) with ESMTP id B29532DCE22
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 10:16:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726571AbgLQJPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 04:15:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725871AbgLQJPn (ORCPT
+        id S1727026AbgLQJPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 04:15:52 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:17656 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725871AbgLQJPv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 04:15:43 -0500
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 649C9C061794
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 01:15:03 -0800 (PST)
-Received: by mail-qv1-xf33.google.com with SMTP id bd6so12933876qvb.9
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 01:15:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=+LUeY1J08nuX4Bq5E5+c3ALMy1RM6+T7HOQCSOdCx20=;
-        b=o3a4Nu4Fd4S2WSW1QhLDK6AYYwli5lTTnC0lRbCrL89CGDlo2/5XBi8KIbD4s9aVsh
-         vgqZO417sZ3c6D/3TGqGo3Lhd/sLOHoKRfa0GkQYHfLBOxOFAQw9Nqo+f3Su2cQ5ogRA
-         mPgb+QQUdQu4Mbq0d32XWcZTbbhDirwsk/7+pTjC4S9suEpj95Qj9xpTDhXAk2cNVT9y
-         zhi1DBSfd8tw4TSHQaO44l1I0tlNz0LnFpjaEqIpfc5JFg5BHzRbOoOYkqxXtAAJbno/
-         LEHBqMndhWauJ//oIkAcK2qXjGMQ1MC3EnROxzqYpEhS2YvFoxgMvkzZXHPeVTMCUSWZ
-         0fkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=+LUeY1J08nuX4Bq5E5+c3ALMy1RM6+T7HOQCSOdCx20=;
-        b=ubRFlLUMk8dViHEaY9GG/xYXzeGeuYz25ZeRztnuCuBi2+WAIJM+U/QiIyYhyIEheE
-         9J+GT2fCfxRy05UgTaguTbFJ8x0Amy6N9mxKXevmP2tS4P/CZkZ7UnFfAtnRVEE/M8Lu
-         vTB0lAM3Kw2Tr5KSlqwYgxbS6RcLPAdMm9khzdda1vkXzCmg5cdmcRsMaHsVoP4VEgJR
-         WDkV6ocD8cuSPUMCR4D2hMVsgz254Y3sbdlYh/ra4w+nTxg01QHauJzo7/6DKkzcbSjQ
-         7RCjSsuASh02MHwiXQqJpEZRa9sAurLm19A4NoI/m6PSMMcGvOD7FADOCxV61kVIYQuE
-         MKYA==
-X-Gm-Message-State: AOAM530V6cY44gL7NFbHFhxfr+sszNerlrEgiI54hZpttVE3GtrRn+SW
-        nsYlY7v1oBCGszBJw2YqaglEqp7RSGyBEZw8oMNnoA==
-X-Google-Smtp-Source: ABdhPJzn0swR8GnFh1ua9u4y9JH1ZK2RUNaxSPWDsLdZwF5sS4McqD5nSeGNIvmz9DkuSHwl55iG/ZM8E1jrr/NhFu4=
-X-Received: by 2002:ad4:4e09:: with SMTP id dl9mr45831950qvb.44.1608196502281;
- Thu, 17 Dec 2020 01:15:02 -0800 (PST)
+        Thu, 17 Dec 2020 04:15:51 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fdb219f0004>; Thu, 17 Dec 2020 01:15:11 -0800
+Received: from [10.2.61.104] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 17 Dec
+ 2020 09:15:11 +0000
+Subject: Re: [PATCH 18/25] btrfs: Use readahead_batch_length
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>
+CC:     <linux-kernel@vger.kernel.org>
+References: <20201216182335.27227-1-willy@infradead.org>
+ <20201216182335.27227-19-willy@infradead.org>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <a5b979d7-1086-fe6c-6e82-f20ecb56d24c@nvidia.com>
+Date:   Thu, 17 Dec 2020 01:15:10 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:84.0) Gecko/20100101
+ Thunderbird/84.0
 MIME-Version: 1.0
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 17 Dec 2020 10:14:51 +0100
-Message-ID: <CACT4Y+Z7WEM30RrZkQKc=_RYLGVjBh6vveSFBv8eza7tKAvgsg@mail.gmail.com>
-Subject: KASAN: use-after-free Read in eth_type_trans
-To:     syzbot+6745e272378d071cac7f@syzkaller.appspotmail.com,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Greg Euteneier <geuteneier@google.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201216182335.27227-19-willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1608196511; bh=R8d+cbbN++Nu/JZ/Spif9ERgIOOHw66AVM7XM2f2jHA=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=J69MPPJWk8j7pB65gpW8AA5TpJ/a788fkD4dUvEE72a6NPnSq4BlCvo70SCDdPXBl
+         FEuy3YBxdv7OBPHkVdMjiWVHRCsuY8svj9NIs+/u6A+0IwyR2omdysyQ1/yWoDjLM5
+         cSQtmxfpLEDYN/AKdaYy1KqUuGriJhXmJqiFdoU2Rd7vHVgJBduKeyRClj/8zOIGBe
+         8y9PcBdazubCwir8jCdmxFYhflsG6IgwkvQYr23J/xB/T0tGWlpFcitEneNqCoOXK/
+         2Cw2majMmD6ZT/ahUy9+7mn4hhqb74gg8w8JBLllaA7jDyHZOtZyGdbxNsZHFtJN3z
+         +ThHTRn5nXDRA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg claims this bug:
-https://syzkaller.appspot.com/bug?extid=e0c166ed4b16ffd653e0
-was fixed by the following commit, so let's close it.
+On 12/16/20 10:23 AM, Matthew Wilcox (Oracle) wrote:
+> Implement readahead_batch_length() to determine the number of bytes in
+> the current batch of readahead pages and use it in btrfs.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>   fs/btrfs/extent_io.c    | 6 ++----
+>   include/linux/pagemap.h | 9 +++++++++
+>   2 files changed, 11 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 6e3b72e63e42..42936a83a91b 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -4436,10 +4436,8 @@ void extent_readahead(struct readahead_control *rac)
+>   	int nr;
+>   
+>   	while ((nr = readahead_page_batch(rac, pagepool))) {
+> -		u64 contig_start = page_offset(pagepool[0]);
+> -		u64 contig_end = page_offset(pagepool[nr - 1]) + PAGE_SIZE - 1;
+> -
+> -		ASSERT(contig_start + nr * PAGE_SIZE - 1 == contig_end);
+> +		u64 contig_start = readahead_pos(rac);
+> +		u64 contig_end = contig_start + readahead_batch_length(rac);
 
-#syz fix: tun: correct header offsets in napi frags mode
+Something in this tiny change is breaking btrfs: it hangs my Fedora 33 test
+system (which changed over to btrfs) on boot. I haven't quite figured out
+what's really wrong, but git bisect lands here, *and* turning the whole
+extent_readahead() function into a no-op (on top of the whole series)
+allows everything to work once again.
+
+Sorry for not actually solving the root cause, but I figured you'd be able
+to jump straight to the answer, with the above information, so I'm sending
+it out early.
+
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
