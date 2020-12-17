@@ -2,70 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3322DD41C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:25:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D5D92DD424
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:28:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728997AbgLQPZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 10:25:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728425AbgLQPZV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 10:25:21 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE63BC0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 07:24:41 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id f9so19212510pfc.11
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 07:24:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kIz7GYcd9kc7NiTcGubc3hHNTjDCxZzzCffmZhlzieY=;
-        b=HdoR+iFCYRI8AX3ZC7L1wYTUXMHVnCkfMb7AsbGtq49mvOe4eaYbBaXdPeS/tOggjh
-         iaGCtAS6t/o/Dw6Km6dwfoP5Kn4RuOjK3o0f7FbZMYEwR5xRRpoh45/UEPDl0xYQxPwQ
-         rQ3ilEs3t8z2AMU7jLByMRyXgtvAe5MCCqWUjZnRO/EutWuf2E9G8vKVIo7AWHN8FXnU
-         xQ3cAH1mArHyt/2iHI9koyx5v1B/Tn5ruroIIn5q13cbbGDaM2CckDP0Zw0+5LbcwKpb
-         QIITTuK0z3KpzYvw8oEGE7wj71OzKAsgh9qTnSqUSqY9IPOA+7TjA/8YF2ebPkMJYwnq
-         c4Gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kIz7GYcd9kc7NiTcGubc3hHNTjDCxZzzCffmZhlzieY=;
-        b=HH+XzpHDDWByUoGjL3wHpQ79QKEy1LiP18WDooQBTQmcFAShRmhjzzAW9k53d521yU
-         oz/jPxYKBHs0mthI5Z0lNeHuRlbBb1TNzUV6A2RmOg0XBnIk5LPap6GcXzDDkb4QthVy
-         IqlppRTy5Or7ZogAAYIAN4yNuOATGThmwVggjX9F5zS+U8SVihMelTOx66+3ouJSOrCe
-         1uXx8x0gGtW7sAh49CJBX2Txd+I/CDPeF00UNnQpJdsLZSzICQnSQVEdm1w3pzXHTKe4
-         yXlcF7/YDnmBhhKFOMr3KieBnVzzUXeFaQA1fV9srUNhoCeADHQut4mBCRchMEx4JFN4
-         gx9Q==
-X-Gm-Message-State: AOAM532zs5qlsb8gUKXcGVg1fPi5Sz5rBtsSKPhve/JHrH8wYlES8FX4
-        QxQJYp2pnrJSua2Ao3X5LfjcIw==
-X-Google-Smtp-Source: ABdhPJzOVkjbRMywF5FZEc40FxzXtgaCv38qyhyJ7q4OV4GZm3JysAsFd7f3WjwnxMINhtTfcXvOCA==
-X-Received: by 2002:a63:2347:: with SMTP id u7mr18664863pgm.189.1608218681110;
-        Thu, 17 Dec 2020 07:24:41 -0800 (PST)
-Received: from google.com (139.60.82.34.bc.googleusercontent.com. [34.82.60.139])
-        by smtp.gmail.com with ESMTPSA id h12sm6466839pgs.7.2020.12.17.07.24.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 07:24:40 -0800 (PST)
-Date:   Thu, 17 Dec 2020 15:24:37 +0000
-From:   Satya Tangirala <satyat@google.com>
-To:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH v2 2/3] fscrypt: Add metadata encryption support
-Message-ID: <X9t4NXGM7cbxsimQ@google.com>
-References: <20201217150435.1505269-1-satyat@google.com>
- <20201217150435.1505269-3-satyat@google.com>
+        id S1728164AbgLQP1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 10:27:36 -0500
+Received: from cmta19.telus.net ([209.171.16.92]:48861 "EHLO cmta19.telus.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725468AbgLQP1g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 10:27:36 -0500
+Received: from dougxps ([173.180.45.4])
+        by cmsmtp with SMTP
+        id pvB3kJJksc2CmpvB5kByfT; Thu, 17 Dec 2020 08:26:54 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=telus.net; s=neo;
+        t=1608218814; bh=gn1Ozcf+oE/XsOrDMBv0LVfF/+YtnXFYm4e/X6F1zAw=;
+        h=From:To:Cc:References:In-Reply-To:Subject:Date;
+        b=1qsfysUuhVWf/4b6YiFVsos2QN83/rLyLZ0dw0Tob3fuuRZL+1FLY+wo/SIuVdQRF
+         cRigyjTy6oJ3LX36STCR7g2uBws7pO/fONnf8DH03OzasCFlf+n8+9L5bm04DtOmyN
+         C4uNcfoChj2vO7TBd2AyBQ/ngH/DDlxGqOt0XB81PXummEs7apU08dSKfwsbPL88/c
+         iaOGWGz2EXJXjPPRXnJTgO/LQAceK8aSN8YsAMHunwHEqqCx07KQwKwU5iz6AbJeK+
+         XAfxm9rzekxEGsObLkKY53Cc/NrWI7eA5/7gLV4SGl3SJ3ifCzToh3yMchqjP5At6s
+         wPFwhdOkajLfQ==
+X-Telus-Authed: none
+X-Authority-Analysis: v=2.4 cv=NMEQR22g c=1 sm=1 tr=0 ts=5fdb78be
+ a=zJWegnE7BH9C0Gl4FFgQyA==:117 a=zJWegnE7BH9C0Gl4FFgQyA==:17
+ a=Pyq9K9CWowscuQLKlpiwfMBGOR0=:19 a=kj9zAlcOel0A:10 a=8MYkT9o3-EtoCmCZqnsA:9
+ a=CjuIK1q_8ugA:10
+From:   "Doug Smythies" <dsmythies@telus.net>
+To:     "'Rafael J. Wysocki'" <rjw@rjwysocki.net>
+Cc:     "'LKML'" <linux-kernel@vger.kernel.org>,
+        "'Viresh Kumar'" <viresh.kumar@linaro.org>,
+        "'Srinivas Pandruvada'" <srinivas.pandruvada@linux.intel.com>,
+        "'Peter Zijlstra'" <peterz@infradead.org>,
+        "'Giovanni Gherdovich'" <ggherdovich@suse.com>,
+        "'Linux PM'" <linux-pm@vger.kernel.org>
+References: <20360841.iInq7taT2Z@kreacher> <3827230.0GnL3RTcl1@kreacher>
+In-Reply-To: <3827230.0GnL3RTcl1@kreacher>
+Subject: RE: [PATCH v2 0/3] cpufreq: Allow drivers to receive more information from the governor
+Date:   Thu, 17 Dec 2020 07:26:49 -0800
+Message-ID: <000901d6d489$0c26dd50$247497f0$@net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201217150435.1505269-3-satyat@google.com>
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Office Outlook 12.0
+Content-Language: en-ca
+Thread-Index: AdbSVRA1dBdX0amaSX+eUEzc0wtxAAAF+Myg
+X-CMAE-Envelope: MS4xfGMNTiXTXTj89gw47y4v0BflAT2x3pkJKtIlYplihKOM21/ediYlkECoDDERqDUTsKlfLXZ54a4BgYvlaYdn1lYRJ/CggHJsRXnE793CaCoiExApGz92
+ CRdZZxItuloaqyKtG68ZcsBuUj0uS0ZRRdxHo5Rfva/RFcyEXKMmIymzf4HwKPL70Lv6o9k+0ebJzQ4Mdt25oKhPxX77uOhm16tuhmCyD8lcxoY3Rs8n/+ws
+ DHUwkr1Hc9NeFJgBocdu/I1Vq3xsE8JKWK80ACsBuYtxeJFRwqePNoG3nxH9mQLPN8yYNlA0k4pRLi6f1ftlfH6ZvshB5qnm/6rGPpMdVwqQPWf6o5G3UZ+q
+ rSuzb0zqa/rjItHZ1cZ/JrnLsajFWVdGewlFJKUBHyIkiLhMhno=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm not yet done with the xfstests that Eric asked for - I'll send them
-out as soon as they're done.
+On 2020.12.14 12:02 Rafael J. Wysocki wrote:
+
+> Hi,
+
+Hi Rafael,
+
+V2 test results below are new, other results are partially re-stated:
+
+For readers that do not want to read on, I didn't find anything different than with
+the other versions. This was more just due diligence.
+
+Legend:
+
+hwp: Kernel 5.10-rc6, HWP enabled; intel_cpufreq
+rfc (or rjw): Kernel 5.10-rc6 + this patch set, HWP enabled; intel_cpu-freq; schedutil
+no-hwp: Kernel 5.10-rc6, HWP disabled; intel_cpu-freq
+acpi (or acpi-cpufreq): Kernel 5.10-rc6, HWP disabled; acpi-cpufreq; schedutil
+patch: Kernel 5.10-rc7 + V1 patch set, HWP enabled; intel_cpu-freq; schedutil
+v2: Kernel 5.10-rc7 + V2 patch set, HWP enabled; intel_cpu-freq; schedutil
+
+Fixed work packet, fixed period, periodic workflow, load sweep up/down:
+
+load work/sleep frequency: 73 Hertz:
+
+hwp: Average: 12.00822 watts
+rjw: Average: 10.18089 watts
+no-hwp: Average: 10.21947 watts
+acpi-cpufreq: Average:  9.06585 watts
+patch: Average: 10.26060 watts
+v2: Average: 10.50444
+
+load work/sleep frequency: 113 Hertz:
+
+hwp: Average: 12.01056
+rjw: Average: 10.12303
+no-hwp: Average: 10.08228
+acpi-cpufreq: Average:  9.02215
+patch: Average: 10.27055
+v2: Average: 10.31097
+
+load work/sleep frequency: 211 Hertz:
+
+hwp: Average: 12.16067
+rjw: Average: 10.24413
+no-hwp: Average: 10.12463
+acpi-cpufreq: Average:  9.19175
+patch: Average: 10.33000
+v2: Average: 10.39811
+
+load work/sleep frequency: 347 Hertz:
+
+hwp: Average: 12.34169
+rjw: Average: 10.79980
+no-hwp: Average: 10.57296
+acpi-cpufreq: Average:  9.84709
+patch: Average: 10.67029
+v2: Average: 10.93143
+
+load work/sleep frequency: 401 Hertz:
+
+hwp: Average: 12.42562
+rjw: Average: 11.12465
+no-hwp: Average: 11.24203
+acpi-cpufreq: Average: 10.78670
+patch: Average: 10.94514
+v2: Average: 11.50324
+
+
+Serialized single threaded via PIDs per second method:
+A.K.A fixed work packet, variable period
+Results:
+
+Execution times (seconds. Less is better):
+
+no-hwp:
+
+performance: Samples: 382  ; Average: 10.54450  ; Stand Deviation:  0.01564 ; Maximum: 10.61000 ; Minimum: 10.50000
+
+schedutil: Samples: 293  ; Average: 13.73416  ; Stand Deviation:  0.73395 ; Maximum: 15.46000 ; Minimum: 11.68000
+acpi: Samples: 253  ; Average: 15.94889  ; Stand Deviation:  1.28219 ; Maximum: 18.66000 ; Minimum: 12.04000
+
+hwp:
+
+schedutil: Samples: 380  ; Average: 10.58287  ; Stand Deviation:  0.01864 ; Maximum: 10.64000 ; Minimum: 10.54000
+patch: Samples: 276  ; Average: 14.57029 ; Stand Deviation:  0.89771 ; Maximum: 16.04000 ; Minimum: 11.68000
+rfc: Samples: 271  ; Average: 14.86037  ; Stand Deviation:  0.84164 ; Maximum: 16.04000 ; Minimum: 12.21000
+v2: Samples: 274  ; Average: 14.67978  ; Stand Deviation:  1.03378 ; Maximum: 16.07000 ; Minimum: 11.43000
+
+Power (watts. More indicates higher CPU frequency and better performance. Sample time = 1 second.):
+
+no-hwp:
+
+performance: Samples: 4000  ; Average: 25.41355  ; Stand Deviation:  0.22156 ; Maximum: 26.01996 ; Minimum: 24.08807
+
+schedutil: Samples: 4000  ; Average: 12.58863  ; Stand Deviation:  5.48600 ; Maximum: 25.50934 ; Minimum:  7.54559
+acpi: Samples: 4000  ; Average:  9.57924  ; Stand Deviation:  5.41157 ; Maximum: 25.06366 ; Minimum:  5.51129
+
+hwp:
+
+schedutil: Samples: 4000  ; Average: 25.24245  ; Stand Deviation:  0.19539 ; Maximum: 25.93671 ; Minimum: 24.14746
+patch: Samples: 4000  ; Average: 11.07225  ; Stand Deviation:  5.63142 ; Maximum: 24.99493 ; Minimum:  3.67548
+rfc: Samples: 4000  ; Average: 10.35842  ; Stand Deviation:  4.77915 ; Maximum: 24.95953 ; Minimum:  7.26202
+v2: Samples: 4000  ; Average: 10.98284  ; Stand Deviation:  5.48859 ; Maximum: 25.76331 ; Minimum:  7.53790
+
+
