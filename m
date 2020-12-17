@@ -2,126 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AC682DCFC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 11:52:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 343B12DCFCD
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 11:55:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727896AbgLQKve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 05:51:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725988AbgLQKvd (ORCPT
+        id S1727416AbgLQKyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 05:54:36 -0500
+Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:43629 "EHLO
+        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726983AbgLQKyf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 05:51:33 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0F55C061794
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 02:50:53 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id d2so18791565pfq.5
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 02:50:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=qhek/ZoXr5kvoklgOpzW0vQKDjV39nf+N7ITPqoLerA=;
-        b=WS89X/8FFmpCi5bwBCSX9QFDkSmgpIqTzO34KCS1AP8+WG0FM5JJ7oxFvd82olqQXu
-         4X58anbQaijN2t+X+RLeynAQrUsiS0MEiotfzfp14Iz7OenR6phxoI4y6hqNhEVB+Cqh
-         tpRyYckBMp4lWdpFJRMdIsaWH18i/z+w0J5NLAMQ+7gm1xe9VGQPNIEG57gLWcy2x6mz
-         nbt4qHfp9Nf34kqrgbWPK1xIxaq959Q3iIhBAXgprhnR7VjOLm6afUq8PyOgTeMQLHr0
-         25a44xe8bR6SS2RRUOXHx5aiUyyo2kZBTiOn5xlrhz2C3FtjMw0RhmaW722yAd+CEyoy
-         ZwOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qhek/ZoXr5kvoklgOpzW0vQKDjV39nf+N7ITPqoLerA=;
-        b=lKuWPJ1vpLAeVee4NEwe5NcQ/jnH+MhSvpW/RfSdQxzDpffRyZzPK2k/RToWAzWXl4
-         eDTRtWUas+9qqbOpezlCKyM5ngKR22G801bPON7ap/dByPFJyGsfWJs1AOF+FUjJK4O9
-         y3BoUzw+fj2xRk1s6LlvqjI0ZRz/RQXDVOD/sxKZuQoWPqlEkkjEc1mCCaHYQzm8iq4m
-         cS3kW0FgQEO+n8EblZ2PV2eByfuB97G2/qdcpxUct2Ek6AGi0VtCqwQ2ScpPUJcmym6m
-         JpBgDh5b9RJESLzxPI2KqPBIM1ioAqTQiZt3F4ADS86k7HY/T4/wCyzz7eg4R5lCz0zl
-         Jm2w==
-X-Gm-Message-State: AOAM532qjC9FBZyj3lo1Ab+nW0RKac9AtSZtHeBPpUgSXK+Frjf2GISQ
-        RCQKG6x9L08TAFq0S0icN0zrhA==
-X-Google-Smtp-Source: ABdhPJzvvlJ7sLr17pfkVjIYEg4FrUdZcBcrQruW8+GjQ2aJwlJLm8UPgkV/9DySu+mUNt+K3a0UJA==
-X-Received: by 2002:a62:8895:0:b029:19e:92ec:6886 with SMTP id l143-20020a6288950000b029019e92ec6886mr25683245pfd.12.1608202253313;
-        Thu, 17 Dec 2020 02:50:53 -0800 (PST)
-Received: from localhost ([122.172.20.109])
-        by smtp.gmail.com with ESMTPSA id e6sm4666385pjr.34.2020.12.17.02.50.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 17 Dec 2020 02:50:51 -0800 (PST)
-Date:   Thu, 17 Dec 2020 16:20:49 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 3/3] arm64: topology: Make AMUs work with modular
- cpufreq drivers
-Message-ID: <20201217105049.z3aqhl4mo56hhqvk@vireshk-i7>
-References: <5ffc7b9ed03c6301ac2f710f609282959491b526.1608010334.git.viresh.kumar@linaro.org>
- <8f0fe23d1c9effed71d5660c939472d43726a61b.1608010334.git.viresh.kumar@linaro.org>
- <20201216000349.GA5299@arm.com>
- <20201216043805.bx6laemhfm2eaufv@vireshk-i7>
- <20201216193724.GA375@arm.com>
+        Thu, 17 Dec 2020 05:54:35 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id pqukkWOvhynrEpqunktAgK; Thu, 17 Dec 2020 11:53:52 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1608202432; bh=pqOm4Mt+OtXECc6KvRmlRk/K/jqE4ItBI7LIXf66kj8=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=T5Lxpfws1Po/qw43sUq17iXCqo7hDHcvrqRSrXhodEJnU/Vp8w+mCNb7Podev7eK5
+         qpOx0GK7YsaenPAH6N8douDLtLfYuDGeWLq70vKpvKGIxRuNAkV6xewSlKzB56fbVj
+         Z6hvj/dFZv26C/i4FZ3ftz8Jm43LNqajPL3BfqIfNrR7MR4pE67RLXQpbXmw+HVznR
+         oltxiLynqM1rs84nF7rtmyYz2dAzWp5D1lW8sgxleyYBWbVf4OpMx8XOBA6IQGwTIJ
+         ti3laM1bF38Lj5wNovuSZLWeQv/KGLyDwegMPoTmv7JIv2J9gE/czfOFzynY6sYapK
+         AiMRkqvym9RJA==
+Subject: Re: [PATCH 00/15] drm/vc4: hdmi: Add CEC support for the BCM2711
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Eric Anholt <eric@anholt.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Jason Cooper <jason@lakedaemon.net>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        linux-rpi-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org
+References: <20201210134648.272857-1-maxime@cerno.tech>
+ <23bdb67a-fb55-42d4-9130-ade1b0396768@xs4all.nl>
+ <20201217104946.srurfmuphqzz4c4w@gilmour>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <cc3e0adf-ba44-7593-40ec-3d2c1efcba02@xs4all.nl>
+Date:   Thu, 17 Dec 2020 11:53:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201216193724.GA375@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20201217104946.srurfmuphqzz4c4w@gilmour>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfIUSp/ZairFgVbf4QlE3fdEYEV4fqOe2zUw/3ZnPt+PbqHMIVjwML22PZ0ehEIxEiDRgCRbI3Z9gyPtotlm4L1ty3yDx8CNhHeyD9tz5xBcogunQEVZ3
+ 7QUVEXG1gfR60UqS9WtQEGxmI2phsxaXo+RB+/7k+yQLBqMSqKxkXQ+6rEm95z2svyJ0iWVc5tK+iZuR8fi7YJNowGE4qgAFi55M2fTPbBRZ0WOcVxM6WSEh
+ ZfvFb9zijNpZ6OBk3kszh8GGnIVFA/L23YCqovIlf7JH1XcFFkKYuzBKOAnRB296vNsSaN7aUqtCEQ9Rxd/h+yeUFrYMrrGPkyBjDbWWmMC4CIQb72Kw0SCU
+ 6bWg5WLbh5Kg/7ODMxkovOz7R5pKKxgdtJl047mtovQzrvr3vrN4nIsq2j58hNgRkX+vgBVC9mUcCempJgOBx2NJ1IlS1Owt2uqfQzdywIn4fYlzSdR0BV8C
+ trHzufCjZJ9O/Jx9pElVWZr5DQ/BzPZvAdccURVuowZYpNvAx9CMqRADo7l2pYnPaqrh1sM3pmNsunEqshyVQVBVw0XWkbDfw8aEGC9cBuLsdDj3kfn16EGs
+ T4EyR3NLREx09a+okgCXAhivE9Mov15vJCRx0hgvmDsZK/UNuV+zsHfCXBKRxRH8nAj3nvbJVxSiAr3QfSQ//rOWaxCAJOYEpMIdOLmQLHqKZkm+kduZBU/d
+ QcXpDmmCJmlgV8vIl+xFJ+d+Ksz5IHST1OkD6t1LejGvDhtu3ZN8mOcuRR7q4fOtvPhbAKeW5OEDYX6g+5XWL+jyPJ8sgfb6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16-12-20, 19:37, Ionela Voinescu wrote:
-> I did not yet test this, but reading this comment made me wonder..
+On 17/12/2020 11:49, Maxime Ripard wrote:
+> Hi Hans,
 > 
-> arch_scale_freq_invariant() (or topology_scale_freq_invariant()) is also
-> called from schedutil when obtaining the next frequency.
+> On Wed, Dec 16, 2020 at 01:35:43PM +0100, Hans Verkuil wrote:
+>> Hi Maxime,
+>>
+>> On 10/12/2020 14:46, Maxime Ripard wrote:
+>>> Hi,
+>>>
+>>> Here's a series introducing the CEC support for the BCM2711 found on the
+>>> RaspberryPi4.
+>>>
+>>> The BCM2711 HDMI controller uses a similar layout for the CEC registers, the
+>>> main difference being that the interrupt handling part is now shared between
+>>> both HDMI controllers.
+>>>
+>>> This series is mainly about fixing a couple of bugs, reworking the driver to
+>>> support having two different interrupts, one for each direction, provided by an
+>>> external irqchip, and enables the irqchip driver for the controller we have.
+>>>
+>>> This has been tested on an RPi3 and RPi4, but requires the latest firmware.
+>>> It's is based on the 10 and 12 bpc series.
+>>
+>> This series looks good to me. Before I give my Acked-by for this series, can you
+>> confirm that it is possible to transmit the Image View On message on both outputs
+>> of the RPi4 when the HPD is low?
+>>
+>> See section "CEC Without HPD" in https://hverkuil.home.xs4all.nl/cec-status.txt
+>> on how to test this with a Pulse-Eight device.
+>>
+>> This should work.
 > 
-> So if we had a system that only partly supports AMUs but had at some
-> point a cpufreq driver that provided FIE for the other CPUs, when we
-> unregister the driver, the cpufreq_freq_invariance static key is
-> disabled. Therefore, none of the conditions for system invariance is
-> now accomplished and arch_scale_freq_invariant() will return false.
-> This will be broken as utilization is still scaled, but the algorithm
-> for computing the next frequency in schedutil will not take this into
-> account.
+> This is the output on the RPi4:
+> 
+> # cec-ctl --playback
+> Driver Info:
+> 	Driver Name                : vc4_hdmi
+> 	Adapter Name               : vc4
+> 	Capabilities               : 0x0000010e
+> 		Logical Addresses
+> 		Transmit
+> 		Passthrough
+> 	Driver version             : 5.10.0
+> 	Available Logical Addresses: 1
+> 	Physical Address           : f.f.f.f
+> 	Logical Address Mask       : 0x0000
+> 	CEC Version                : 2.0
+> 	Vendor ID                  : 0x000c03 (HDMI)
+> 	OSD Name                   : Playback
+> 	Logical Addresses          : 1 (Allow RC Passthrough)
+> 
+> 	  Logical Address          : Not Allocated
+> 	    Primary Device Type    : Playback
+> 	    Logical Address Type   : Playback
+> 	    All Device Types       : Playback
+> 	    RC TV Profile          : None
+> 	    Device Features        :
+> 		None
+> 
+> # cec-ctl -t0 --image-view-on
+> Driver Info:
+> 	Driver Name                : vc4_hdmi
+> 	Adapter Name               : vc4
+> 	Capabilities               : 0x0000010e
+> 		Logical Addresses
+> 		Transmit
+> 		Passthrough
+> 	Driver version             : 5.10.0
+> 	Available Logical Addresses: 1
+> 	Physical Address           : f.f.f.f
+> 	Logical Address Mask       : 0x0000
+> 	CEC Version                : 2.0
+> 	Vendor ID                  : 0x000c03 (HDMI)
+> 	OSD Name                   : Playback
+> 	Logical Addresses          : 1 (Allow RC Passthrough)
+> 
+> 	  Logical Address          : Not Allocated
+> 	    Primary Device Type    : Playback
+> 	    Logical Address Type   : Playback
+> 	    All Device Types       : Playback
+> 	    RC TV Profile          : None
+> 	    Device Features        :
+> 		None
+> 
+> 
+> Transmit from Unregistered to TV (15 to 0):
+> CEC_MSG_IMAGE_VIEW_ON (0x04)
+> 	Sequence: 1 Tx Timestamp: 77.631s
+> 
+> 
+> And this is the output on my desktop with the Pulse-Eight:
+> $ sudo cec-ctl -p0.0.0.0 --tv
+> Driver Info:
+> 	Driver Name                : pulse8-cec
+> 	Adapter Name               : serio0
+> 	Capabilities               : 0x0000003f
+> 		Physical Address
+> 		Logical Addresses
+> 		Transmit
+> 		Passthrough
+> 		Remote Control Support
+> 		Monitor All
+> 	Driver version             : 5.9.8
+> 	Available Logical Addresses: 1
+> 	Connector Info             : None
+> 	Physical Address           : 0.0.0.0
+> 	Logical Address Mask       : 0x0001
+> 	CEC Version                : 2.0
+> 	Vendor ID                  : 0x000c03 (HDMI)
+> 	OSD Name                   : 'TV  '
+> 	Logical Addresses          : 1 (Allow RC Passthrough)
+> 
+> 	  Logical Address          : 0 (TV)
+> 	    Primary Device Type    : TV
+> 	    Logical Address Type   : TV
+> 	    All Device Types       : TV
+> 	    RC TV Profile          : None
+> 	    Device Features        :
+> 		None
+> 
+> $ sudo cec-ctl -M
+> Driver Info:
+> 	Driver Name                : pulse8-cec
+> 	Adapter Name               : serio0
+> 	Capabilities               : 0x0000003f
+> 		Physical Address
+> 		Logical Addresses
+> 		Transmit
+> 		Passthrough
+> 		Remote Control Support
+> 		Monitor All
+> 	Driver version             : 5.9.8
+> 	Available Logical Addresses: 1
+> 	Connector Info             : None
+> 	Physical Address           : 0.0.0.0
+> 	Logical Address Mask       : 0x0001
+> 	CEC Version                : 2.0
+> 	Vendor ID                  : 0x000c03 (HDMI)
+> 	OSD Name                   : 'TV  '
+> 	Logical Addresses          : 1 (Allow RC Passthrough)
+> 
+> 	  Logical Address          : 0 (TV)
+> 	    Primary Device Type    : TV
+> 	    Logical Address Type   : TV
+> 	    All Device Types       : TV
+> 	    RC TV Profile          : None
+> 	    Device Features        :
+> 		None
+> 
+> 
+> 
+> Initial Event: State Change: PA: 0.0.0.0, LA mask: 0x0001, Conn Info: no
+> Received from Unregistered to TV (15 to 0): IMAGE_VIEW_ON (0x04)
+> 
+> So it looks like it's working as expected?
 
-I think the best and the easiest solution for this is:
+Yes, it looks good. Make sure you test this for both outputs of the RPi4. If it
+works for both, then you can add my
 
-bool arch_freq_counters_available(const struct cpumask *cpus)
-{
-        return amu_freq_invariant();
-}
+Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
-But we probably need to rename it to something like arch_is_fie().
+for this series.
+
+Very nice work, thank you for doing this!
+
+Regards,
+
+	Hans
 
 > 
-> [..]
-> > > > +	ret = cpufreq_register_notifier(&init_amu_fie_notifier,
-> > > > +					CPUFREQ_POLICY_NOTIFIER);
+> Maxime
 > 
-> The above makes the use of AMUs for FIE tightly coupled with cpufreq.
-> 
-> Initially I made cpufreq_get_hw_max_freq(cpu) a weak function for the
-> possible platforms that might not use a cpufreq driver and might want to
-> provide this function to still benefit from the use of counters for
-> frequency invariance.
-> 
-> But I'm starting to believe that supporting all these corner-cases in
-> advance just introduces messiness.
-> 
-> So feel free to remove the 'weak' state of cpufreq_get_hw_max_freq() as
-> well, so we don't keep wondering why we had that in the first place.
-> It would not make any sense keeping that in light of these changes.
 
-Will do it in a separate patch then.
-
-> P.S. I will be on holiday starting tomorrow until beginning of January.
-> Were you intending this for 5.11, or can I take more time to review
-> future versions and continue testing?
-
-I wanted to  :)
-
--- 
-viresh
