@@ -2,77 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F2152DCDA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 09:29:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C81032DCDA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 09:30:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727384AbgLQI2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 03:28:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44584 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726291AbgLQI2D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 03:28:03 -0500
-Date:   Thu, 17 Dec 2020 10:27:14 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608193642;
-        bh=frpXPBgDVHFosWMul7jo1G7mud658hMgY0gDjD8FzmM=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I+KHhrtBFQ9uN0v4rQDUWJEj9kiScJue0SpkR9fQkMH9UKQGlUABKYKefZtQ+bPjv
-         3V5k70FQljpXOTht4ob7nI6+AV3BBE6XgBpe73zONGlsqUNtyww7a9gqPGsgoX9Tw7
-         i2sYigy713Xw4EIQfA1Em1mwBHoXD3mAOQ8CfgB9soeWQgHE9mPQbe4wNzAGSm1q3c
-         lr06/CQWkYksKnHiOfUZQhUJ87VdxY8WAg6A7w/AzrjdDUJJem8luZ+HP39EjE3u0f
-         k32RgbCJz4SdDdXtFEHDmj0+krI96a+9D+wEVlOXoQqWnBEBbFxtnXtIwu41eJezH8
-         /HlnIE7BBm1Tg==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Atish Patra <atish.patra@wdc.com>
-Cc:     linux-kernel@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        linux-riscv@lists.infradead.org,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Bin Meng <bmeng.cn@gmail.com>
-Subject: Re: [PATCH] RISC-V: Fix usage of memblock_enforce_memory_limit
-Message-ID: <20201217082714.GA366777@kernel.org>
-References: <20201217074855.1948743-1-atish.patra@wdc.com>
-MIME-Version: 1.0
+        id S1727425AbgLQI3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 03:29:12 -0500
+Received: from mail-eopbgr70050.outbound.protection.outlook.com ([40.107.7.50]:17632
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726160AbgLQI3L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 03:29:11 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ffSyFEDr+9YgCsb7PTKyjViye1CcHBy33ENqb2QfZOPJHIpLJssx3yLSBTAuPNiXOUnVINfj8alwCm2RXX/r3FPVnSVqHrr3Id5feqE35BThQ9ujelfhc2yAfb77nSQnBdHKaKZR0ZoA7qIXt2BG/MwbH0H7TGt03eI7zgF0ceL0h/2Gv3BVi8rpCzVenf9jOk3cGMK6ltwapYZ/2yOksHw2jrNleja1/4iy74GZcL1ip/IBiFt9ArXpkA1AqKvT5Fy7v01jX+s4d1Q0tpMo0JmRbg8o7G403VwVI5vMjyWZcUwZtb7p/6ZmJJCgF3IWB0BD3wgqv+K85GuPLY8yew==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MydZuylGKOYhvw0U16zsCggDRgIx3owZPAw59mNCzNQ=;
+ b=eUP1P8eWYtreuFux9HunpD9o87r0QVPcTrLrpujkvqgETyl44KhSugqZCa/fJ1Zmt/VDtgUxmzUPQkcPg+IzHuKFN9IdpIHcLFGjJq7KqQel2QNj2ZWMR558UVBKvCBKy4gUFq8PP6f5KNMC7E6E4YbDCW9nYOuMr4ANV/tG7uFyZb85Wp2stGKMU3+e5FfPdMyQoBzh0IMuxMaxO8dYVZMfMdYmcITxqYn94ohIMuN7aOq/Cu3xijMTKjmFZJwmtKUK9Se+5We4+ELRoDRJ53Fdrhpg8c2a02I3KVkLHUGcsWbLCGiDiRjdCbOFOa6be2gSqNGz2YSHL6T4mBju7Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MydZuylGKOYhvw0U16zsCggDRgIx3owZPAw59mNCzNQ=;
+ b=IY94xYyG+O+PXByHcavIpi9MVWy04JQssNAmQENUlJq+078DNFMDFkG2EDNrUR/upjWaktZ9653elYicJiWhWn1tKg3cKLkP7RShtntuV4LP6XXOrZ/PlwrvfJv61yBnlwviCbRLzO9DasfFOsZ/YvmE3YDulJNKKYC3DtoiMn4=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oss.nxp.com;
+Received: from AM0PR04MB5636.eurprd04.prod.outlook.com (2603:10a6:208:130::22)
+ by AM8PR04MB7891.eurprd04.prod.outlook.com (2603:10a6:20b:237::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.19; Thu, 17 Dec
+ 2020 08:28:20 +0000
+Received: from AM0PR04MB5636.eurprd04.prod.outlook.com
+ ([fe80::a891:518d:935c:30dd]) by AM0PR04MB5636.eurprd04.prod.outlook.com
+ ([fe80::a891:518d:935c:30dd%6]) with mapi id 15.20.3654.020; Thu, 17 Dec 2020
+ 08:28:20 +0000
+Date:   Thu, 17 Dec 2020 13:58:04 +0530
+From:   Calvin Johnson <calvin.johnson@oss.nxp.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Grant Likely <grant.likely@arm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
+        Jon <jon@solid-run.com>, "linux.cj" <linux.cj@gmail.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        netdev <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [net-next PATCH v2 04/14] net: phy: Introduce fwnode_get_phy_id()
+Message-ID: <20201217082804.GB19657@lsv03152.swis.in-blr01.nxp.com>
+References: <20201215164315.3666-1-calvin.johnson@oss.nxp.com>
+ <20201215164315.3666-5-calvin.johnson@oss.nxp.com>
+ <CAHp75VcHrBtAY3KDugBYEo9=YuDwbh+QLdOU8yiKb2VyaU2x9A@mail.gmail.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201217074855.1948743-1-atish.patra@wdc.com>
+In-Reply-To: <CAHp75VcHrBtAY3KDugBYEo9=YuDwbh+QLdOU8yiKb2VyaU2x9A@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [14.142.151.118]
+X-ClientProxiedBy: SG2PR04CA0130.apcprd04.prod.outlook.com
+ (2603:1096:3:16::14) To AM0PR04MB5636.eurprd04.prod.outlook.com
+ (2603:10a6:208:130::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from lsv03152.swis.in-blr01.nxp.com (14.142.151.118) by SG2PR04CA0130.apcprd04.prod.outlook.com (2603:1096:3:16::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Thu, 17 Dec 2020 08:28:11 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: d3fbc94b-8bd5-46b8-2c38-08d8a265b61a
+X-MS-TrafficTypeDiagnostic: AM8PR04MB7891:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM8PR04MB789168DFB65A26023EDE9DC6D2C40@AM8PR04MB7891.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PSg1uidOuWftp9xap8h6LmcPJdLBWD2KhUVff9Vsap5/a4Gadr5rsuizV8l3nEaQyeY89s7VdRBuY9mlCpp26F9NSkjdAHRq8K/7JDIg+xA1HQq87Lau/9F7ybFM+TqS60fXkpbFDgoLlKAYcZ0N6ep8/kyvbCeKAB1HDJWvzcpVJ9XTLxiCwCoI7/WZBTe77Rg8IshoBRXglFIZFrCccosa5uMXbC7G2MLchQapuJNp/kSdTDuo2zTj4oGofp7drnaS+YTbfOEViRU3/vP/1isvCZC844vDQ7a4dFJYAZJEKkknMpaGsmim4BPpWj7mpTxLeCDZPEjnheKs/2IhHJPGhtqDETYGjNZ4OmNq77hlN+mp9hVUHZRIsI4LU6xT
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5636.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(366004)(39860400002)(346002)(396003)(7696005)(53546011)(16526019)(66476007)(8676002)(5660300002)(4326008)(86362001)(52116002)(66556008)(1076003)(33656002)(4744005)(2906002)(6666004)(316002)(6506007)(8936002)(54906003)(26005)(6916009)(1006002)(956004)(44832011)(478600001)(66946007)(9686003)(55016002)(186003)(55236004)(7416002)(110426006);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?x3gInD5jJAONIC789sblHqo89ZsKKrsskKFmuiT1Mqkx5F3FFOSsSfRG2a51?=
+ =?us-ascii?Q?ijR/RgPNmKLyu9LniE08dcIP4bGxGOgRczyVC3ICMkVwXP15Zhtin/V02Za1?=
+ =?us-ascii?Q?58cbCYjsC0JBzqYVi0vr9ZCdOaESyWYnCxN9D781SZIjldmSMshjQyqwwU5Q?=
+ =?us-ascii?Q?f/MUNPDQXEWhZGa/8RvgnGn16NmhzREIQF+IGxPlJ/wrxa6sS7ZTte217a+4?=
+ =?us-ascii?Q?YT/ctwk9Rwq8UoOrVQPVtE13D5+VBbGRCrcx7tQC44XrwaOPUOjNVBhnZM8+?=
+ =?us-ascii?Q?UrPO6dOoN7okT/ibwUYhR5M2slPuMJmdQ2amNzQ1EyA+geBJvQAHa28vSYNO?=
+ =?us-ascii?Q?YqiGJio8Kqo19ep09tgfbaMlHeFDZhzCkAVXUsEymaq/cfBP1/EjmNntjfh9?=
+ =?us-ascii?Q?BKb3rPRpo9kI3TcHWWZVdmYnwmNpBuqDQCgQ1cNxeEYLzIMY1zboTHnjOPnz?=
+ =?us-ascii?Q?AaPgsIGVR0I3/jIuqfmcxZSYXC1pczd3LC/wx9kYewuuEbfZbCxHjDEdz19w?=
+ =?us-ascii?Q?3aAl4Gdd8+/MIC56dYeD8YWtIfw5cbsZKlxc2qmO8bZRw4R3N2+KlsuQgfAe?=
+ =?us-ascii?Q?dYzBD5FjRC24hCEQtqlDX8NnmSuI8EVCSlqvb8GReOq349KtxjvRwMPdDPMq?=
+ =?us-ascii?Q?/W3Dbu/rvMhVOkdWSLrGz3NuT9MInQz+5Z0zn07ntwKvnrkRbf/NEbTH1P23?=
+ =?us-ascii?Q?7vH4xxriUP6pzRPLnJQ5cuqUtDCnWaVQje9mmCNfKn4Vwvs7rVQ/kPEeoz1T?=
+ =?us-ascii?Q?lKb38gudiys+CS00uelS5/jwQDz7/QjHfn7+KqCWlOl120U/isjOrjEHLMZI?=
+ =?us-ascii?Q?9k7sa0g9wM5LadCiBNvz/YEKx6oB7+/YeP4W+bNCDjcGmTroQ+gDlAbPbbdX?=
+ =?us-ascii?Q?G7yO6ZKy6QoY5gM5FF72N2EgrOK30mE47xcH8ZKIxhUfmfQE5BWQaZCBQJjn?=
+ =?us-ascii?Q?r2St5df243fQ5gwQ8Nn43OlLjGmPT9kSMwpqFOvPQSQNxrH6SKolh/zA2D12?=
+ =?us-ascii?Q?4rG5?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5636.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Dec 2020 08:28:20.2391
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-Network-Message-Id: d3fbc94b-8bd5-46b8-2c38-08d8a265b61a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: m4qtuilQgTAkztOG+BIT0d7sOyqFqDrswpPtL4Ca6J71EzXCUVqQrxiVLBydm0iYHUrnlWEa/yTJWCtsJaAwNg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7891
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 11:48:55PM -0800, Atish Patra wrote:
-> memblock_enforce_memory_limit accepts the maximum memory size not the last
-> address. Fix the function invocation correctly.
+On Tue, Dec 15, 2020 at 07:28:10PM +0200, Andy Shevchenko wrote:
+> On Tue, Dec 15, 2020 at 6:44 PM Calvin Johnson
+> <calvin.johnson@oss.nxp.com> wrote:
+> >
+> > Extract phy_id from compatible string. This will be used by
+> > fwnode_mdiobus_register_phy() to create phy device using the
+> > phy_id.
 > 
-> Fixes: 1bd14a66ee52 ("RISC-V: Remove any memblock representing unusable memory area")
+> ...
 > 
-> Signed-off-by: Atish Patra <atish.patra@wdc.com>
+> > +       if (sscanf(cp, "ethernet-phy-id%4x.%4x", &upper, &lower) == 2) {
+> > +               *phy_id = ((upper & 0xFFFF) << 16) | (lower & 0xFFFF);
+> > +               return 0;
+> > +       }
+> > +       return -EINVAL;
+> 
+> Perhaps traditional pattern, i.e.
+>        if (sscanf(cp, "ethernet-phy-id%4x.%4x", &upper, &lower) != 2)
+>                return -EINVAL;
+> 
+>        *phy_id = ((upper & 0xFFFF) << 16) | (lower & 0xFFFF);
+>        return 0;
+> 
+> And perhaps GENMASK() ?
 
-Acked-by: Mike Rapoport <rppt@linux.ibm.com>
+Sure. Will rewrite accordingly.
 
-> ---
->  arch/riscv/mm/init.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index 8e577f14f120..e4133c20744c 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -174,7 +174,7 @@ void __init setup_bootmem(void)
->  	 * Make sure that any memory beyond mem_start + (-PAGE_OFFSET) is removed
->  	 * as it is unusable by kernel.
->  	 */
-> -	memblock_enforce_memory_limit(mem_start - PAGE_OFFSET);
-> +	memblock_enforce_memory_limit(-PAGE_OFFSET);
->  
->  	/* Reserve from the start of the kernel to the end of the kernel */
->  	memblock_reserve(vmlinux_start, vmlinux_end - vmlinux_start);
-> -- 
-> 2.25.1
-> 
-
--- 
-Sincerely yours,
-Mike.
+Thanks
+Calvin
