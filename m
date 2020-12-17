@@ -2,173 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBD702DD23F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 14:37:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E36012DD245
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 14:39:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728277AbgLQNhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 08:37:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56302 "EHLO
+        id S1728115AbgLQNif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 08:38:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726613AbgLQNha (ORCPT
+        with ESMTP id S1726488AbgLQNie (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 08:37:30 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C46F8C061794;
-        Thu, 17 Dec 2020 05:36:49 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id r4so1855335wmh.5;
-        Thu, 17 Dec 2020 05:36:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=5CRO4FUtq0sCZEnT1huEajDQ5nORtucKY9OtwSA93+c=;
-        b=OUwvfsJDlTFH3NVScDvxwySVRCCdqXWQn2gnulj6dTGEy0K66Qd5pffEBsMkq23Sph
-         CFeHvRm4DNyFpbsJQtxH/KBU0R+dvhXR2cnXX61bageQHV+RWzqP85paF8iElqeG6d6E
-         u6HunBPlmgmo8F63qvf4yVoKcQI5WhsAzzba5rA/P/3Kcm3P5Ows25sNDpC2idlsqe80
-         jdWOkh5Pc4wgI+3W1FUBd5+/R2xX9G/xN9ag1u7u/eWkpWDAEPqVAbFEu0Ork10Yw1x0
-         X4SiJI34sLUhOCLzA5IOpNjGdloVPLbGGoX2cLztoV/todXbtXM/hkrzC+APjjWAtk+i
-         7aCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5CRO4FUtq0sCZEnT1huEajDQ5nORtucKY9OtwSA93+c=;
-        b=mrDf5Zd9aHwTs+Qpuwuu+H9ka5+c76VO1sg+m7Ivx3erOMTs0cILiOvcPB0HOIuNq8
-         Iilu6mTLI28MvaJ4vHaccb0o0cI7jrvi8SkoICc1wnlM6UTCM4IErrY2TyoxwZR3rvsh
-         u60tDio6neG6BT0Z1u6PF5GjtPqSyEBekt9KgZ79kqgZrlrx5lYvSzq7CVaocNUt9ytc
-         +AFzivIaHzSFALg/xBju/1oPk+KJQ9ayRBkrL1Y0lB79+SXK6GCEJUtJrYaPuM1RGerK
-         01tgSdoAMbGSos/ZRLGNPIkc6LgF1ahVDydALMkY7xvKDy+kyFXKRCxcaj4dDpajnncD
-         Nk2Q==
-X-Gm-Message-State: AOAM532DpvllaasawwRF5qbRNTcZ6/a0yjh8x2XBvimdp1QeLhB0wTEC
-        5a6JPLbFMqBVfft4LV/clMw=
-X-Google-Smtp-Source: ABdhPJwqqtN1jhnli6wK+Pq5dDDPT6Byc5wprmfaD1IS1+vn3OzcjD8eMZUicw3W+oYuJBa1Mkc/lg==
-X-Received: by 2002:a05:600c:21d1:: with SMTP id x17mr8571783wmj.160.1608212208560;
-        Thu, 17 Dec 2020 05:36:48 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id c190sm7699161wme.19.2020.12.17.05.36.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 05:36:46 -0800 (PST)
-Date:   Thu, 17 Dec 2020 14:36:44 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Felipe Balbi <balbi@kernel.org>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Ion Agorria <ion@agorria.com>, linux-tegra@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/8] usb: chipidea: tegra: Rename UDC to USB
-Message-ID: <X9te7ObUU1Fcy2ut@ulmo>
-References: <20201217094007.19336-1-digetx@gmail.com>
- <20201217094007.19336-5-digetx@gmail.com>
+        Thu, 17 Dec 2020 08:38:34 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43E89C061794
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 05:37:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2j5SyKzfkhG4+GIahrgxga1F7ov7IQkTMlGIU7JUGvY=; b=vkTdn2bb30CJwK/BdkiV6Uy2AR
+        RCKfmt6VVw14hlI3aSS75HbTuHigTWD9OEJCfpFJx186/bPmddtVGN5Bt0Wpmnj1UTLSTmhv0HCQL
+        8OQHH0eM2pYtPVvTLYYo8CkayLhFUHbAjAIjq42XGcPDcNqWFKvtcvzxW6WF7sZ0iYsPGkVwf2Iav
+        DAfkktx4G5Zc7lvR5S4hyoe5kuklqFajQzdU9vY7PsrZUI9tWMP9O/U/7w43HJrEig1Stqg540+4E
+        eJb5JBH/74ea8m8pEXIj0bWtmDoK1AyX5TQ7a4oSaFtp9d3R5qSitFPIZnd7okQDmUd/D24eyYrjQ
+        9ber0chw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kptT1-0006T8-FQ; Thu, 17 Dec 2020 13:37:15 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 01CBB300DAE;
+        Thu, 17 Dec 2020 14:36:56 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D6C072020D9ED; Thu, 17 Dec 2020 14:36:56 +0100 (CET)
+Date:   Thu, 17 Dec 2020 14:36:56 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Huaixin Chang <changhuaixin@linux.alibaba.com>
+Cc:     linux-kernel@vger.kernel.org, bsegall@google.com,
+        dietmar.eggemann@arm.com, juri.lelli@redhat.com, mgorman@suse.de,
+        mingo@redhat.com, pauld@redhead.com, pjt@google.com,
+        rostedt@goodmis.org, vincent.guittot@linaro.org,
+        khlebnikov@yandex-team.ru, xiyou.wangcong@gmail.com,
+        shanpeic@linux.alibaba.com
+Subject: Re: [PATCH 1/4] sched/fair: Introduce primitives for CFS bandwidth
+ burst
+Message-ID: <20201217133656.GX3040@hirez.programming.kicks-ass.net>
+References: <20201217074620.58338-1-changhuaixin@linux.alibaba.com>
+ <20201217074620.58338-2-changhuaixin@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="2QB7O1hFTgaD5tHU"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201217094007.19336-5-digetx@gmail.com>
-User-Agent: Mutt/2.0.3 (a51f058f) (2020-12-04)
+In-Reply-To: <20201217074620.58338-2-changhuaixin@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Dec 17, 2020 at 03:46:17PM +0800, Huaixin Chang wrote:
+> In this patch, we introduce the notion of CFS bandwidth burst. Unused
+> "quota" from pervious "periods" might be accumulated and used in the
+> following "periods". The maximum amount of accumulated bandwidth is
+> bounded by "burst". And the maximun amount of CPU a group can consume in
+> a given period is "buffer" which is equivalent to "quota" + "burst in
+> case that this group has done enough accumulation.
 
---2QB7O1hFTgaD5tHU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Oh man, Juri, wasn't there a paper about statistical bandwidth
+accounting somewhere? Where, if you replace every utilization by a
+statistical variable, the end result is still useful?
 
-On Thu, Dec 17, 2020 at 12:40:03PM +0300, Dmitry Osipenko wrote:
-> Rename all occurrences in the code from "udc" to "usb" and change the
-> Kconfig entry in order to show that this driver supports USB modes other
-> than device-only mode. The follow up patch will add host-mode support and
-> it will be cleaner to perform the renaming separately, i.e. in this patch.
->=20
-> Tested-by: Matt Merhar <mattmerhar@protonmail.com>
-> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-> Tested-by: Peter Geis <pgwipeout@gmail.com>
-> Tested-by: Ion Agorria <ion@agorria.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/usb/chipidea/Kconfig         |  2 +-
->  drivers/usb/chipidea/ci_hdrc_tegra.c | 78 ++++++++++++++--------------
->  2 files changed, 40 insertions(+), 40 deletions(-)
->=20
-> diff --git a/drivers/usb/chipidea/Kconfig b/drivers/usb/chipidea/Kconfig
-> index 8bafcfc6080d..8685ead6ccc7 100644
-> --- a/drivers/usb/chipidea/Kconfig
-> +++ b/drivers/usb/chipidea/Kconfig
-> @@ -53,7 +53,7 @@ config USB_CHIPIDEA_GENERIC
->  	default USB_CHIPIDEA
-> =20
->  config USB_CHIPIDEA_TEGRA
-> -	tristate "Enable Tegra UDC glue driver" if EMBEDDED
-> +	tristate "Enable Tegra USB glue driver" if EMBEDDED
->  	depends on OF
->  	depends on USB_CHIPIDEA_UDC
->  	default USB_CHIPIDEA
-> diff --git a/drivers/usb/chipidea/ci_hdrc_tegra.c b/drivers/usb/chipidea/=
-ci_hdrc_tegra.c
-> index 10eaaba2a3f0..d8efa80aa1c2 100644
-> --- a/drivers/usb/chipidea/ci_hdrc_tegra.c
-> +++ b/drivers/usb/chipidea/ci_hdrc_tegra.c
-> @@ -12,7 +12,7 @@
-> =20
->  #include "ci.h"
-> =20
-> -struct tegra_udc {
-> +struct tegra_usb {
->  	struct ci_hdrc_platform_data data;
->  	struct platform_device *dev;
-> =20
-> @@ -20,15 +20,15 @@ struct tegra_udc {
->  	struct clk *clk;
->  };
-> =20
-> -struct tegra_udc_soc_info {
-> +struct tegra_usb_soc_info {
->  	unsigned long flags;
->  };
-> =20
-> -static const struct tegra_udc_soc_info tegra_udc_soc_info =3D {
-> +static const struct tegra_usb_soc_info tegra_udc_soc_info =3D {
->  	.flags =3D CI_HDRC_REQUIRES_ALIGNED_DMA,
->  };
-> =20
-> -static const struct of_device_id tegra_udc_of_match[] =3D {
-> +static const struct of_device_id tegra_usb_of_match[] =3D {
->  	{
->  		.compatible =3D "nvidia,tegra20-udc",
+That is, instead of something like; \Sum u_i <= 1, you get something
+like: \Sum {avg(u),var(u)}_i <= {1, sqrt(\Sum var_i^2)} and you can
+still proof bounded tardiness etc.. (assuming a gaussian distribution).
 
-Do we perhaps also want to add a new tegra20-usb compatible string here
-and deprecate the old one since this now no longer properly describes
-the device.
-
-In either case, this looks fine:
-
-Acked-by: Thierry Reding <treding@nvidia.com>
-
---2QB7O1hFTgaD5tHU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl/bXuwACgkQ3SOs138+
-s6FKBQ//TBLMtbsou6bbuudeuQEKvYa0tffjko5YwU5sr/g3gDENC3MRSPt7XqFg
-4VUhcMXqJV2GOhmvf12SzEIx4L/pFwU41nvJdI5WQGj1IbvWZI3xvwj/HIJZFvBE
-KE5l59EJ6rO8a06fxRBEIADDZ/htTXnC3dLTpT8aNL6Rhs7rGshRwzYnoLjgy8nH
-Me9zmlbmfjUUB3wxWMEvzZImI3qB1xrKr3D6v2i/v7wAvese3jGP0mezjOScHpUe
-udFeKz3ssmyoUoOkZml4yvGt88AMe+a33R1lXNmdawNoHFWhh5jqCRTCHOnLwc8M
-SFmAWMUV84sLcSaZoiBB8uJLdnVWjx3tI3/4+qkPVER2nYCVpjPcxuEKf+uDCQUs
-7fWIt43/vxT9ULWLaFs7xVlRcE4gSkAn8wXc+5dOT+VF8DO/XluLCqNZd/TYXe1r
-F7ZXJS/neZ+2axQ9mTzBDfOMf1+sA5wRb68ckfhReoTosLrko9OAicWwbkFguVBs
-fj7Ivtmn5oiXzrIK0tNDZnFMYM8UiJhe3TUOdGJNp5w5p6q+C7vwLo8282AOtJtZ
-fuAdby9e0IDua3I6KUZrMIw341w0LhOs4nZYwNSBf26XSxfZVGUfHR53ZkgiBxSv
-7pA62Lx5o/sMqZTxaEuPDUk4Nfs3wFIil5z6CMv+uc1QtOzo9Do=
-=7nxN
------END PGP SIGNATURE-----
-
---2QB7O1hFTgaD5tHU--
+The proposed seems close to that, but not quite, and I'm afraid it's not
+quite strong enough to still provide any guarantees.
