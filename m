@@ -2,99 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A732DD400
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:21:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A49E92DD402
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:21:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728577AbgLQPTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 10:19:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37440 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725468AbgLQPTp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 10:19:45 -0500
-Date:   Thu, 17 Dec 2020 07:19:04 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608218344;
-        bh=RSVecaGULUl9bn8yun7uAthvTLRzL5v+XNCje+IERvk=;
-        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=lSJ9bzossl6Kp+UBFKCu+RKSFSGjYPefsQRn5dzasZK1nmrEJnIBlUcglwH7E2p51
-         edaPnwofd6wPzu6LRoVSddXNaVlVfoicuo4Xh7kkviKlw1YDxh0ZHhomin4SljSpvv
-         VjMOuLPywMqnywH9BLlaBaROj6AVswVl1odJMOBjh4r9QzQzIg8u8HyfcbZMv7Hkt3
-         NbrOu2VRbEpBO66H6v/Z9w4YiSiaFjUt9MV0ijenVcueC92bkAPQcZWTlfOGUoqopD
-         9EeVJSjCzdFt1+Iz1SbPUShWjNyMsZtRT8XnYU8vKE0eOFnUvvwyT2acc96PU6wfg7
-         3xtgLjVfNkpAQ==
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        syzbot <syzbot+51ce7a5794c3b12a70d1@syzkaller.appspotmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: WARNING: suspicious RCU usage in count
-Message-ID: <20201217151904.GQ2657@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <0000000000009867cb05b699f5b6@google.com>
- <20201216205536.GX2443@casper.infradead.org>
- <CACT4Y+b7tNcnTQpUpO58rHcMCqe6UpQab_TxxYF_nxBZ1xDw9Q@mail.gmail.com>
+        id S1728531AbgLQPUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 10:20:44 -0500
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:54354 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727246AbgLQPUn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 10:20:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1608218443; x=1639754443;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   in-reply-to:content-transfer-encoding;
+  bh=VOFDcpN/HdhneyE9MEhTVbZj3lArp/QwANe0Gz7bY0U=;
+  b=sWjci4LvY/lZ72Bv1bsiLD7Yvyqzrj1AozE3C6tKAnokv1pOTINeaCmF
+   cZKVltnNkgoS83WH0CrwOXvFOnAT7Ah9Am3HFZO+1MOkIHBjVX+c42Aub
+   PMJxoo6vKfMZRahL8xry6aWirlOOCkSlIz78C3Qw+jiKYpenl91j6GjSL
+   g=;
+X-IronPort-AV: E=Sophos;i="5.78,428,1599523200"; 
+   d="scan'208";a="103910716"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-303d0b0e.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 17 Dec 2020 15:19:55 +0000
+Received: from EX13D31EUA004.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1e-303d0b0e.us-east-1.amazon.com (Postfix) with ESMTPS id 620CFA06B0;
+        Thu, 17 Dec 2020 15:19:54 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.162.211) by
+ EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 17 Dec 2020 15:19:49 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     =?UTF-8?q?J=C3=BCrgen=20Gro=C3=9F?= <jgross@suse.com>
+CC:     SeongJae Park <sjpark@amazon.com>, <stable@vger.kernel.org>,
+        SeongJae Park <sjpark@amazon.de>, <doebel@amazon.de>,
+        <aams@amazon.de>, <mku@amazon.de>, <julien@xen.org>,
+        <wipawel@amazon.de>, <linux-kernel@vger.kernel.org>,
+        "Author Redacted" <security@xen.org>
+Subject: Re: [PATCH 4/5] xen/xenbus: Count pending messages for each watch
+Date:   Thu, 17 Dec 2020 16:19:31 +0100
+Message-ID: <20201217151931.8078-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+b7tNcnTQpUpO58rHcMCqe6UpQab_TxxYF_nxBZ1xDw9Q@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <76711b5d-4166-19ff-e817-694675051f90@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.43.162.211]
+X-ClientProxiedBy: EX13D27UWB001.ant.amazon.com (10.43.161.169) To
+ EX13D31EUA004.ant.amazon.com (10.43.165.161)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 09:26:44AM +0100, Dmitry Vyukov wrote:
-> On Wed, Dec 16, 2020 at 9:55 PM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Wed, Dec 16, 2020 at 11:34:10AM -0800, syzbot wrote:
-> > > Unfortunately, I don't have any reproducer for this issue yet.
-> > >
-> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > Reported-by: syzbot+51ce7a5794c3b12a70d1@syzkaller.appspotmail.com
-> > >
-> > > =============================
-> > > WARNING: suspicious RCU usage
-> > > 5.10.0-rc7-syzkaller #0 Not tainted
-> > > -----------------------------
-> > > kernel/sched/core.c:7270 Illegal context switch in RCU-bh read-side critical section!
-> > >
-> > > other info that might help us debug this:
-> > >
-> > >
-> > > rcu_scheduler_active = 2, debug_locks = 0
-> > > no locks held by udevd/9038.
-> > >
-> > > stack backtrace:
-> > > CPU: 3 PID: 9038 Comm: udevd Not tainted 5.10.0-rc7-syzkaller #0
-> > > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-> > > Call Trace:
-> > >  __dump_stack lib/dump_stack.c:77 [inline]
-> > >  dump_stack+0x107/0x163 lib/dump_stack.c:118
-> > >  ___might_sleep+0x220/0x2b0 kernel/sched/core.c:7270
-> > >  count.constprop.0+0x164/0x270 fs/exec.c:449
-> > >  do_execveat_common+0x2fd/0x7c0 fs/exec.c:1893
-> > >  do_execve fs/exec.c:1983 [inline]
-> > >  __do_sys_execve fs/exec.c:2059 [inline]
-> > >  __se_sys_execve fs/exec.c:2054 [inline]
-> > >  __x64_sys_execve+0x8f/0xc0 fs/exec.c:2054
-> > >  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-> >
-> > This must be the victim of something else.  There's no way this call
-> > trace took the RCU read lock.
+On Thu, 17 Dec 2020 15:50:34 +0100 "Jürgen Groß" <jgross@suse.com> wrote:
+
+> [-- Attachment #1.1.1: Type: text/plain, Size: 3509 bytes --]
 > 
-> +lockdep maintainers for lockdep false positive then and +Paul for rcu
+> On 17.12.20 09:17, SeongJae Park wrote:
+> > From: SeongJae Park <sjpark@amazon.de>
+> > 
+> > This commit adds a counter of pending messages for each watch in the
+> > struct.  It is used to skip unnecessary pending messages lookup in
+> > 'unregister_xenbus_watch()'.  It could also be used in 'will_handle'
+> > callback.
+> > 
+> > This is part of XSA-349
+> > 
+> > This is upstream commit 3dc86ca6b4c8cfcba9da7996189d1b5a358a94fc
+> > 
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> > Reported-by: Michael Kurth <mku@amazon.de>
+> > Reported-by: Pawel Wieczorkiewicz <wipawel@amazon.de>
+> > Signed-off-by: Author Redacted <security@xen.org>
+> > Reviewed-by: Juergen Gross <jgross@suse.com>
+> > Signed-off-by: Juergen Gross <jgross@suse.com>
+> > ---
+> >   drivers/xen/xenbus/xenbus_xs.c | 30 ++++++++++++++++++------------
+> >   include/xen/xenbus.h           |  2 ++
+> >   2 files changed, 20 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/drivers/xen/xenbus/xenbus_xs.c b/drivers/xen/xenbus/xenbus_xs.c
+> > index 0ea1c259f2f1..420d478e1708 100644
+> > --- a/drivers/xen/xenbus/xenbus_xs.c
+> > +++ b/drivers/xen/xenbus/xenbus_xs.c
+> > @@ -701,6 +701,8 @@ int register_xenbus_watch(struct xenbus_watch *watch)
+> >   
+> >   	sprintf(token, "%lX", (long)watch);
+> >   
+> > +	watch->nr_pending = 0;
+> > +
+> 
+> I'm missing the incrementing of nr_pending, which was present in the
+> upstream patch.
 
-Note that this was "RCU-bh" rather than "RCU", so it might be something
-like local_bh_disable() rather than rcu_read_lock() that might_sleep()
-is complaining about.
+Oops, it should be in this patch, but I mistakenly put it in the fifth patch.
 
-> There is another recent claim of a false "suspicious RCU usage":
-> https://lore.kernel.org/lkml/CAKMK7uEiS5SrBYv-2w2wWL=9G4ByoHvtiWVsPqekswZzOGmzjg@mail.gmail.com/
+  67 --- a/drivers/xen/xenbus/xenbus_xs.c
+  68 +++ b/drivers/xen/xenbus/xenbus_xs.c
+  69 @@ -917,6 +917,7 @@ static int process_msg(void)
+  70                                          msg->u.watch.vec_size))) {
+  71                         spin_lock(&watch_events_lock);
+  72                         list_add_tail(&msg->list, &watch_events);
+  73 +                       msg->u.watch.handle->nr_pending++;
+  74                         wake_up(&watch_events_waitq);
+  75                         spin_unlock(&watch_events_lock);
+  76                 } else {
+  77 --
 
-That one does look familiar.  ;-)
+And I just realized I even didn't post the fifth patch.
 
-							Thanx, Paul
+I will fix this and post new version (v3) soon.
+
+Thank you for catching this, Juergen.
+
+
+Thanks,
+SeongJae Park
