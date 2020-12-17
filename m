@@ -2,61 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71A932DD6B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:01:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ECDC2DD6BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:03:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729391AbgLQSA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 13:00:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55664 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726773AbgLQSA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 13:00:26 -0500
-Date:   Thu, 17 Dec 2020 09:59:43 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608227985;
-        bh=jNtML/03RYnflOWL8WR+rzcFTOWO7gE/3Mgtcxp5w/E=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kQgX/CnWq7XOhpDBIzoGnNVs1wX8YxfjImlPjcb/Yr6sMl6Y+9IWySlm2KIMyTaAr
-         CQlsqumlZ8cJNbkiy2TbJs5PplEUuU0Svw1lRJSqNsxxWxLZ8VsG00ZS92pszhdJMM
-         NQcxTTRmjgxyvCKZJ5e8Lms0/fKg+437IHm0mtzz29fLhUu5463K3CHDb3uUHNy2jR
-         rj5nfcW/wij3uJFOpHP8LoOdQqo6twmfJAiOEk2v0cDiV6cco9rciJUapbquUSU5BW
-         uHCLmJtRbww+V1g/Zi9G5eXv75SKNyT4uCYzzjNfltSVN3jQuJipPEDcnKVYTp6dqp
-         C6PPxIkZb3New==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Holger Assmann <h.assmann@pengutronix.de>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Rayagond Kokatanur <rayagond@vayavyalabs.com>,
-        kernel@pengutronix.de, Michael Olbrich <m.olbrich@pengutronix.de>,
-        Jose Abreu <Jose.Abreu@synopsys.com>, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Richard Cochran <richardcochran@gmail.com>
-Subject: Re: [PATCH 1/2] net: stmmac: retain PTP-clock at hwtstamp_set
-Message-ID: <20201217095943.6b17db4f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <ae5371c0-ea53-6885-a25b-b44e9fe0b615@pengutronix.de>
-References: <20201216113239.2980816-1-h.assmann@pengutronix.de>
-        <20201216171334.1e36fbff@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <ae5371c0-ea53-6885-a25b-b44e9fe0b615@pengutronix.de>
+        id S1728953AbgLQSCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 13:02:16 -0500
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:35266 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726773AbgLQSCP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 13:02:15 -0500
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BHHpgXL007072;
+        Thu, 17 Dec 2020 12:01:01 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=z4AX9nY0wUY3aYEqQYqhIIm+lM+tibJFtoRM2hd5E50=;
+ b=n3cCEJrW5L8PEzwS3mJoSxLM/unZpbet3UP8SGQWlwtM740MacQuujj29N0VmbATqOin
+ XzTkrGRqacWcGKU4g6lBGt/92ju5cIKcx9vOOJ78xknAtSGDVtCj9R5t021Vdfbc+Qcd
+ 4OYnPSD4x2n7xDEJ/pD2MxUY/J0fnqJlFFPAs2+OgJrAvJw/RCpNNs2Txp906CbYzUHa
+ ODPtk79CWohqZxTgLljLXmD7kYi9098UrGnl2sxjnYkMoqpd1LAg2aXuEfrADCF99Dkt
+ hCUOJAjsZ+oNRvJYWrtYgErBQCUpPeYzbB+pTGrVJC1Qbr/kPRmwyeGcjipjgH0xgox4 9Q== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 35cu5ry5ne-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 17 Dec 2020 12:01:01 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 17 Dec
+ 2020 18:01:00 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Thu, 17 Dec 2020 18:01:00 +0000
+Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.64.236])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id BA74511CA;
+        Thu, 17 Dec 2020 18:00:59 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <pmladek@suse.com>, <rostedt@goodmis.org>,
+        <sergey.senozhatsky@gmail.com>, <shuah@kernel.org>
+CC:     <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH v3 1/4] lib: vsprintf: scanf: Negative number must have field width > 1
+Date:   Thu, 17 Dec 2020 18:00:54 +0000
+Message-ID: <20201217180057.23786-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0 mlxscore=0
+ mlxlogscore=384 suspectscore=0 spamscore=0 clxscore=1015 malwarescore=0
+ impostorscore=0 priorityscore=1501 bulkscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012170123
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Dec 2020 09:25:48 +0100 Ahmad Fatoum wrote:
-> On 17.12.20 02:13, Jakub Kicinski wrote:
-> >> +			netdev_warn(priv->dev, "HW Timestamping init failed: %pe\n",
-> >> +					ERR_PTR(ret));  
-> > 
-> > why convert to ERR_PTR and use %pe and not just %d?  
-> 
-> To get a symbolic error name if support is compiled in (note the `e' after %p).
+If a signed number field starts with a '-' the field width must be > 1,
+or unlimited, to allow at least one digit after the '-'.
 
-Cool, GTK. Kind of weird we there is no equivalent int decorator, tho.
-Do you happen to know why?
+This patch adds a check for this. If a signed field starts with '-'
+and field_width == 1 the scanf will quit.
+
+It is ok for a signed number field to have a field width of 1 if it
+starts with a digit. In that case the single digit can be converted.
+
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ lib/vsprintf.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+index 14c9a6af1b23..8954ff94a53c 100644
+--- a/lib/vsprintf.c
++++ b/lib/vsprintf.c
+@@ -3433,8 +3433,12 @@ int vsscanf(const char *buf, const char *fmt, va_list args)
+ 		str = skip_spaces(str);
+ 
+ 		digit = *str;
+-		if (is_sign && digit == '-')
++		if (is_sign && digit == '-') {
++			if (field_width == 1)
++				break;
++
+ 			digit = *(str + 1);
++		}
+ 
+ 		if (!digit
+ 		    || (base == 16 && !isxdigit(digit))
+-- 
+2.20.1
+
