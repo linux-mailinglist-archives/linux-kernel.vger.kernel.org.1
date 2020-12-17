@@ -2,176 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CD582DD9AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 21:10:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA7F82DD9B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 21:13:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730198AbgLQUJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 15:09:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728176AbgLQUJk (ORCPT
+        id S1730228AbgLQUMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 15:12:20 -0500
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:55639 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728208AbgLQUMT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 15:09:40 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE06C0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 12:09:00 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id g24so8616123qtq.12
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 12:09:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=poochiereds-net.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=X1/L04rRK1r1xMrcrDJaqbKTKoWzz7Zr0eA57HFr5cM=;
-        b=jJL+yjx8YbWWUZPFTC1PKVtMou5mdkUyv3jdwAwVThCEh5AOh4Cbgi6f5FSWR8eC5r
-         DeNJK8ViUAxqKzKk8YLPluOphmh7uoBMJ66aq9uUVEBEEornFm9CE+0rnlaJ3oamgZJl
-         nVh/ZqPVQYTCzhZZCY1oA+S6ZYPEWrwKeo3DtvN6LHen37g+/EtuaWVIYxXZ46lDZ9xi
-         EC1IqzcSmM2CWdObOixhdQG6/b94ptd6Cix6bcnPeuV7gBAj2khupWVSK9HbiPHELRPr
-         syJw3Xx2AcdXUDEYV2T1v9Y3WQ/v2TIhVtL+OfJMtYFUtS098zNmfSOosUmQ/CFg+aub
-         +QtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=X1/L04rRK1r1xMrcrDJaqbKTKoWzz7Zr0eA57HFr5cM=;
-        b=kEvjGwynsM9RNlR6tt61w4jYN1KNa9R0n7O7ZPrAWLFU5pKGay7f3yQ3nOj56+jl1k
-         rf4ZMPY6ESxliMu8usWBByd6tFiyP35dtxLLT1qxjBR0/EPv1EE9HcY8QLcEikSVHwse
-         9NwiFTD6R3o8ZmBWkMnsozQIEbXUtu78kc9GQ97ACDrtuKFxKEuzKKhv+rymjK1sFz70
-         /J5oU2yQFTJ0gBv7Juejy14m4NvNWsyGgPuiJIf78okxRFlUv6BcBk9lmXp0cjFaOmrx
-         /1AZu+vjbhSuh6y5qb7g29BUzD7NX4TTTYmriu3sonQK5vh1XX6jEX2UnV/Pby7Em8JC
-         nfzg==
-X-Gm-Message-State: AOAM5327jLHni9AZD5UoTbM8duoorKdEy601PpagV7nmeOh+wnDAU4up
-        wsxr6v1nq7oOQjj/I8wSgEJ0mg==
-X-Google-Smtp-Source: ABdhPJxu4L/8qyzeODf5Urcw5HICzchlDzqWjrqdy5QmrUNwBvVSZIXxNC3Ri776/21NpBENaeGeog==
-X-Received: by 2002:ac8:4cc1:: with SMTP id l1mr505404qtv.128.1608235739180;
-        Thu, 17 Dec 2020 12:08:59 -0800 (PST)
-Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net. [68.20.15.154])
-        by smtp.gmail.com with ESMTPSA id p13sm2688454qtp.66.2020.12.17.12.08.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 12:08:58 -0800 (PST)
-Date:   Thu, 17 Dec 2020 15:08:56 -0500
-From:   Jeffrey Layton <jlayton@poochiereds.net>
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, jlayton@kernel.org,
-        amir73il@gmail.com, sargun@sargun.me, miklos@szeredi.hu,
-        willy@infradead.org, jack@suse.cz, neilb@suse.com,
-        viro@zeniv.linux.org.uk
-Subject: Re: [PATCH 3/3] overlayfs: Check writeback errors w.r.t upper in
- ->syncfs()
-Message-ID: <20201217200856.GA707519@tleilax.poochiereds.net>
-References: <20201216233149.39025-1-vgoyal@redhat.com>
- <20201216233149.39025-4-vgoyal@redhat.com>
+        Thu, 17 Dec 2020 15:12:19 -0500
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201217201127euoutp0275dbebf5288d7b555edea522d427699d~RmgTFSw9Y0255602556euoutp025;
+        Thu, 17 Dec 2020 20:11:27 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201217201127euoutp0275dbebf5288d7b555edea522d427699d~RmgTFSw9Y0255602556euoutp025
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1608235887;
+        bh=oLVaYH5sGYHTpc7LtynFuW/NM4L7YplTU1DshzGd7+g=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=m4e/1cdMXTM19oPuRsdlocelz9nipoSI42VcA4uPhAOX22ZzV5pk4+e9cVStGCj8F
+         g8/coWm43I1ve2/kg/qcB4roRSAAyLDsJp05dLqE2CbyrwjT0pVj+rCehDiO0hLX8c
+         6gxfhhQuRDJVZkF7TL+ice2vjPFMBADMy9x7SrbY=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20201217201121eucas1p239445214fde7606fe72772cfa8e1736b~RmgOMC1w82757427574eucas1p2M;
+        Thu, 17 Dec 2020 20:11:21 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 27.11.27958.96BBBDF5; Thu, 17
+        Dec 2020 20:11:21 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20201217201121eucas1p1147efa18e8ae36db188cae200bc21e4d~RmgNVKap53222332223eucas1p1x;
+        Thu, 17 Dec 2020 20:11:21 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201217201121eusmtrp19a048490110a66b3cdbf80fb8a5bf0de~RmgNUX7ww1667416674eusmtrp1d;
+        Thu, 17 Dec 2020 20:11:21 +0000 (GMT)
+X-AuditID: cbfec7f2-efdff70000006d36-81-5fdbbb693de2
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 1D.2B.16282.86BBBDF5; Thu, 17
+        Dec 2020 20:11:20 +0000 (GMT)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20201217201120eusmtip28c607a2c357b105d9e281aa2962dfe45~RmgNHEn3j2581525815eusmtip2N;
+        Thu, 17 Dec 2020 20:11:20 +0000 (GMT)
+From:   Lukasz Stelmach <l.stelmach@samsung.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>, jim.cromie@gmail.com,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolni?= =?utf-8?Q?erkiewicz?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH v9 3/3] net: ax88796c: ASIX AX88796C SPI Ethernet
+ Adapter Driver
+Date:   Thu, 17 Dec 2020 21:11:10 +0100
+In-Reply-To: <20201217110851.4a059426@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        (Jakub Kicinski's message of "Thu, 17 Dec 2020 11:08:51 -0800")
+Message-ID: <dleftjk0tg6vmp.fsf%l.stelmach@samsung.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201216233149.39025-4-vgoyal@redhat.com>
+Content-Type: multipart/signed; boundary="=-=-="; micalg="pgp-sha256";
+        protocol="application/pgp-signature"
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrIKsWRmVeSWpSXmKPExsWy7djPc7qZu2/HGyx+aGBx/u4hZouNM9az
+        Wsw538JiMf/IOVaLRe9nsFpce3uH1aL/8Wtmi/PnN7BbXNjWx2qx6fE1VovLu+awWcw4v4/J
+        4tDUvYwWa4/cZbc4tkDMonXvEXYHAY/L1y4ye2xZeZPJY+esu+wem1Z1snlsXlLvsXPHZyaP
+        vi2rGD0+b5IL4IjisklJzcksSy3St0vgynj85QpTwSmBitW951gaGKfydTFyckgImEi07/zE
+        BGILCaxglDh+PqmLkQvI/sIo8XjuB2YI5zOjxPrZLWwwHc+b2tkgEssZJTafmAxV9ZxRYtWX
+        J4xdjBwcbAJ6EmvXRoA0iAioSLRsnskCUsMscJFFYn33ZxaQhLBAmMThRU/AbBYBVYk9R+ax
+        ghRxCkxjlLi1+S5YglfAXOLfqp1gtqiApcSWF/fZIeKCEidnQjQzC+RKzDz/hhGkWULgHKfE
+        /8cP2CFudZF4eXAZlC0s8er4FihbRuL05B4WkEslBOolJk8yg+jtYZTYNucHC0SNtcSdc7+g
+        fnaUaD/9lxGink/ixltBiL18EpO2TWeGCPNKdLQJQVSrSKzr3wM1RUqi99UKRgjbQ+JQ1y1E
+        yK3umMk0gVFhFpJ3ZiF5ZxbQWGYBTYn1u/QhwtoSyxa+ZoawbSXWrXvPsoCRdRWjeGppcW56
+        arFhXmq5XnFibnFpXrpecn7uJkZgSjz97/inHYxzX33UO8TIxMF4iFEFqPnRhtUXGKVY8vLz
+        UpVEeOPib8cL8aYkVlalFuXHF5XmpBYfYpTmYFES5101e028kEB6YklqdmpqQWoRTJaJg1Oq
+        gcmty2oCi/+ZAwkvZq55xOzPevXkwbyTLXwnWl5JX405ZD7H4V7YvR63c9z7n+n3pao7y/nM
+        2avxRUCc+wfv/KNvs4JW/Thm+a00/jX7An3LrRFTI6VEjPSnrq4IP3ZeqezCth3G93jt9Xlv
+        LO2SbdywK2OpY82Kd98KWB0eat25ldNs/FGoQL23wzhAV8Y91tAl0DGJI763NcF7wuNleUv7
+        X1x4lWi6V2HvCa35h6wq2oQ2SH113jNp9XUhr39/bmb3lc7KmSLycers86Ir/C7wc0j//O5f
+        Y3VEoHwNN2+u7eJJO9dO12T+4XyG0bxwJ/+Wa1sNc/x2m90KDHSOKrlwUcJoXcTNEJepVku+
+        WiuxFGckGmoxFxUnAgAsPDKTBAQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrBIsWRmVeSWpSXmKPExsVy+t/xe7oZu2/HG3yZbGVx/u4hZouNM9az
+        Wsw538JiMf/IOVaLRe9nsFpce3uH1aL/8Wtmi/PnN7BbXNjWx2qx6fE1VovLu+awWcw4v4/J
+        4tDUvYwWa4/cZbc4tkDMonXvEXYHAY/L1y4ye2xZeZPJY+esu+wem1Z1snlsXlLvsXPHZyaP
+        vi2rGD0+b5IL4IjSsynKLy1JVcjILy6xVYo2tDDSM7S00DMysdQzNDaPtTIyVdK3s0lJzcks
+        Sy3St0vQy3j85QpTwSmBitW951gaGKfydTFyckgImEg8b2pnA7GFBJYySuy5q9TFyAEUl5JY
+        OTcdokRY4s+1LqASLqCSp4wSj1efYgOpYRPQk1i7NgKkRkRARaJl80wWkBpmgSssEqs+trCC
+        JIQFQiTeL53HCDE/WKJx7SGwOIuAqsSeI/NYQRo4BaYxStzafJcFJMErYC7xb9VOMFtUwFJi
+        y4v77BBxQYmTM5+AxZkFsiW+rn7OPIFRYBaS1CwkqVlA9zELaEqs36UPEdaWWLbwNTOEbSux
+        bt17lgWMrKsYRVJLi3PTc4uN9IoTc4tL89L1kvNzNzECo3nbsZ9bdjCufPVR7xAjEwfjIUYV
+        oM5HG1ZfYJRiycvPS1US4Y2Lvx0vxJuSWFmVWpQfX1Sak1p8iNEU6LeJzFKiyfnANJNXEm9o
+        ZmBqaGJmaWBqaWasJM5rcmRNvJBAemJJanZqakFqEUwfEwenVANT6zKm5IDNXkd3M3EHTlLd
+        b7zHI3KF9rX9HNs3u2cVOc86pFT/yvvqpb8CqgyV6829xPIl7IpV+gKu8t4QvM969/76P3ev
+        C22/dXLP2/jQiutnHbVW5vpx/rdfe/3a8z0ekkzXq5Oitz0Ns3mftOCc9rtgyehlj66LcLj/
+        FdrkxMntc3Rr5k8TuY1cP0v/6q3w3tLmkC924d3zOU7Hrqdv3OZ9TH92/Ve+g6emx/q+5fY+
+        /Sf6N8sL5k/p8mk21hbKBibTeedlSoocOPtZvOnY64kmm99cYS99xVvlW3Tv8EVP/xMN6cE3
+        cxYZXH77YOYcvaqsXSvmnys3ecTj2DnZ4+QScecpqxQuCUyuZo2IVmIpzkg01GIuKk4EAHta
+        tGF7AwAA
+X-CMS-MailID: 20201217201121eucas1p1147efa18e8ae36db188cae200bc21e4d
+X-Msg-Generator: CA
+X-RootMTR: 20201217201121eucas1p1147efa18e8ae36db188cae200bc21e4d
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201217201121eucas1p1147efa18e8ae36db188cae200bc21e4d
+References: <20201217110851.4a059426@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CGME20201217201121eucas1p1147efa18e8ae36db188cae200bc21e4d@eucas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 06:31:49PM -0500, Vivek Goyal wrote:
-> Check for writeback error on overlay super block w.r.t "struct file"
-> passed in ->syncfs().
-> 
-> As of now real error happens on upper sb. So this patch first propagates
-> error from upper sb to overlay sb and then checks error w.r.t struct
-> file passed in.
-> 
-> Jeff, I know you prefer that I should rather file upper file and check
-> error directly on on upper sb w.r.t this real upper file.  While I was
-> implementing that I thought what if file is on lower (and has not been
-> copied up yet). In that case shall we not check writeback errors and
-> return back to user space? That does not sound right though because,
-> we are not checking for writeback errors on this file. Rather we
-> are checking for any error on superblock. Upper might have an error
-> and we should report it to user even if file in question is a lower
-> file. And that's why I fell back to this approach. But I am open to
-> change it if there are issues in this method.
-> 
-> Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
-> ---
->  fs/overlayfs/ovl_entry.h |  2 ++
->  fs/overlayfs/super.c     | 15 ++++++++++++---
->  2 files changed, 14 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/overlayfs/ovl_entry.h b/fs/overlayfs/ovl_entry.h
-> index 1b5a2094df8e..a08fd719ee7b 100644
-> --- a/fs/overlayfs/ovl_entry.h
-> +++ b/fs/overlayfs/ovl_entry.h
-> @@ -79,6 +79,8 @@ struct ovl_fs {
->  	atomic_long_t last_ino;
->  	/* Whiteout dentry cache */
->  	struct dentry *whiteout;
-> +	/* Protects multiple sb->s_wb_err update from upper_sb . */
-> +	spinlock_t errseq_lock;
->  };
->  
->  static inline struct vfsmount *ovl_upper_mnt(struct ovl_fs *ofs)
-> diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
-> index b4d92e6fa5ce..e7bc4492205e 100644
-> --- a/fs/overlayfs/super.c
-> +++ b/fs/overlayfs/super.c
-> @@ -291,7 +291,7 @@ int ovl_syncfs(struct file *file)
->  	struct super_block *sb = file->f_path.dentry->d_sb;
->  	struct ovl_fs *ofs = sb->s_fs_info;
->  	struct super_block *upper_sb;
-> -	int ret;
-> +	int ret, ret2;
->  
->  	ret = 0;
->  	down_read(&sb->s_umount);
-> @@ -310,10 +310,18 @@ int ovl_syncfs(struct file *file)
->  	ret = sync_filesystem(upper_sb);
->  	up_read(&upper_sb->s_umount);
->  
-> +	/* Update overlay sb->s_wb_err */
-> +	if (errseq_check(&upper_sb->s_wb_err, sb->s_wb_err)) {
-> +		/* Upper sb has errors since last time */
-> +		spin_lock(&ofs->errseq_lock);
-> +		errseq_check_and_advance(&upper_sb->s_wb_err, &sb->s_wb_err);
-> +		spin_unlock(&ofs->errseq_lock);
-> +	}
+--=-=-=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-So, the problem here is that the resulting value in sb->s_wb_err is
-going to end up with the REPORTED flag set (using the naming in my
-latest set). So, a later opener of a file on sb->s_wb_err won't see it.
+It was <2020-12-17 czw 11:08>, when Jakub Kicinski wrote:
+> On Thu, 17 Dec 2020 12:53:30 +0100 =C5=81ukasz Stelmach wrote:
+>> ASIX AX88796[1] is a versatile ethernet adapter chip, that can be
+>> connected to a CPU with a 8/16-bit bus or with an SPI. This driver
+>> supports SPI connection.
+>>=20
+>> The driver has been ported from the vendor kernel for ARTIK5[2]
+>> boards. Several changes were made to adapt it to the current kernel
+>> which include:
+>>=20
+>> + updated DT configuration,
+>> + clock configuration moved to DT,
+>> + new timer, ethtool and gpio APIs,
+>> + dev_* instead of pr_* and custom printk() wrappers,
+>> + removed awkward vendor power managemtn.
+>> + introduced ethtool tunable to control SPI compression
+>>=20
 
-For instance, suppose you call sync() on the box and does the above
-check and advance. Then, you open the file and call syncfs() and get
-back no error because REPORTED flag was set when you opened. That error
-will then be lost.
+[...]
 
->  
-> +	ret2 = errseq_check_and_advance(&sb->s_wb_err, &file->f_sb_err);
->  out:
->  	up_read(&sb->s_umount);
-> -	return ret;
-> +	return ret ? ret : ret2;
->  }
->  
->  /**
-> @@ -1903,6 +1911,7 @@ static int ovl_fill_super(struct super_block *sb, void *data, int silent)
->  	if (!cred)
->  		goto out_err;
->  
-> +	spin_lock_init(&ofs->errseq_lock);
->  	/* Is there a reason anyone would want not to share whiteouts? */
->  	ofs->share_whiteout = true;
->  
-> @@ -1975,7 +1984,7 @@ static int ovl_fill_super(struct super_block *sb, void *data, int silent)
->  
->  		sb->s_stack_depth = ovl_upper_mnt(ofs)->mnt_sb->s_stack_depth;
->  		sb->s_time_gran = ovl_upper_mnt(ofs)->mnt_sb->s_time_gran;
-> -
-> +		sb->s_wb_err = errseq_sample(&ovl_upper_mnt(ofs)->mnt_sb->s_wb_err);
+>>=20
+>> The other ax88796 driver is for NE2000 compatible AX88796L chip. These
+>> chips are not compatible. Hence, two separate drivers are required.
+>>=20
+>> Signed-off-by: =C5=81ukasz Stelmach <l.stelmach@samsung.com>
+>> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+>
+> drivers/net/ethernet/asix/ax88796c_main.c: In function =E2=80=98ax88796c_=
+tx_fixup=E2=80=99:
+> drivers/net/ethernet/asix/ax88796c_main.c:248:6: warning: variable =E2=80=
+=98tol_len=E2=80=99 set but not used [-Wunused-but-set-variable]
+>   248 |  u16 tol_len, pkt_len;
+>       |      ^~~~~~~
 
-This will mark the error on the upper_sb as REPORTED, and that's not
-really that's the case if you're just using it set s_wb_err in the
-overlay. You might want to use errseq_peek in this situation.
+Done. Thanks.
 
->  	}
->  	oe = ovl_get_lowerstack(sb, splitlower, numlower, ofs, layers);
->  	err = PTR_ERR(oe);
-> -- 
-> 2.25.4
-> 
+=2D-=20
+=C5=81ukasz Stelmach
+Samsung R&D Institute Poland
+Samsung Electronics
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEXpuyqjq9kGEVr9UQsK4enJilgBAFAl/bu14ACgkQsK4enJil
+gBDPsQf8CSIAfSlfu6USnUeTjFPC7ww9FQ4bu869KBTSUDJHn4bzc+dJuyfb1yMq
+34k2THjWDp8sWNDCoF4A0fWZbrBIwsg1vPFA+ave1KHxCe5mp1J4VzctqN1sIWmU
+woW98UNIfgWdmS/Cb5TRh0In94a3yY/YypPICSPBbs6zuWIIrCHEJKUt1LEzgTx7
+Q6nY0UeCs4Skpbaki/xDo3+uB6bXoRT/kQvnroy3DMCn8qBaX9N961BZUyzYYEg1
+Upja6i+Md4k6UCCunktMtnlHfloXwO3TtVGpisq9eb0Ey/1+pJzD8wNKTOggLBsB
+UhmtvRkvloftPEQSgBlGicJ4kNzBfg==
+=Toi6
+-----END PGP SIGNATURE-----
+--=-=-=--
