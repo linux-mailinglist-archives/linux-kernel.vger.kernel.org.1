@@ -2,254 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A672DCD4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 09:00:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 048782DCD59
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 09:07:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727422AbgLQIAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 03:00:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55823 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727149AbgLQIAO (ORCPT
+        id S1726832AbgLQIG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 03:06:56 -0500
+Received: from regular1.263xmail.com ([211.150.70.206]:57986 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725468AbgLQIG4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 03:00:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608191926;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JmBCaUjbHLpjmsXXP5mR8OruWxjhXsJuZma5+OS6WPo=;
-        b=cDNDsBFZVz9tcpTaqeS6JCotEBO+KadpvJXNNlXc9Eu0ibrHnP+U5vHVuaW0NaIuaz3kb2
-        cKKsGy1hl9KkfN2Jo3uDhrFsqyTgX5aHZa1296ohEkFDwpW8jQk/eqWJCpdPN2ILd1MtOb
-        ovfV/De/9xRPlMmRNIogCtQC3uJ11FI=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-367-5k8BhOk6OaSPLSFMuKBabQ-1; Thu, 17 Dec 2020 02:58:44 -0500
-X-MC-Unique: 5k8BhOk6OaSPLSFMuKBabQ-1
-Received: by mail-wm1-f70.google.com with SMTP id z12so2733634wmf.9
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 23:58:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=JmBCaUjbHLpjmsXXP5mR8OruWxjhXsJuZma5+OS6WPo=;
-        b=BKpk0I4Z5K4vP4XgRriZJuDyrn0ayns2eOY59jx2GUEESDa38xIRYWPRXK1fQ6UQRc
-         F+J4PJexLKW0GLM/lrBrwemiG9FK86Nu4qvfyd1mj7b0OXTykaT+qOJ8U0ohIByC7VWv
-         ISc9OZqxbRvbZVvnMo206lipWS4cjLeog8C5gg6Jdkfx2V+SOscceh1ZbHFtUOqILmA9
-         U0QHyN8If9S+b4/u+87woy7MPHV9MNY1vbzDy9IAE+zJ0Wz+PBNC/7VplHCSacuEMdXw
-         LXDp28mxHW7yDu+2wPQS8GfJl0Dlt0IdzQRYETG0tkbeZj8YMAHRm9ZsHI+tBA2o+6bq
-         QBcg==
-X-Gm-Message-State: AOAM533QsYPI4mmh4LoVLFZ3yrKzcMqpXLpmBXHoBHaW/4dPc389UF3O
-        uRlHp33LeO6RgZYEDx2XtiBwxqEiMHS9drfxLtvv+bEGVExjjYr2GA7YAWjw9K3P/njh23zoYeL
-        YXBStTRCcVKt1SbDrzWiXx0YC
-X-Received: by 2002:a1c:2155:: with SMTP id h82mr7121035wmh.132.1608191923189;
-        Wed, 16 Dec 2020 23:58:43 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyhEUK8QeXERK5SumhSOpAygm9J8Ze/SsCUqZ/IdpzrStxMOOBC7oYG4r9hpI2MahKfIwFPxg==
-X-Received: by 2002:a1c:2155:: with SMTP id h82mr7121011wmh.132.1608191922870;
-        Wed, 16 Dec 2020 23:58:42 -0800 (PST)
-Received: from redhat.com (bzq-79-178-32-166.red.bezeqint.net. [79.178.32.166])
-        by smtp.gmail.com with ESMTPSA id a65sm6701518wmc.35.2020.12.16.23.58.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 23:58:41 -0800 (PST)
-Date:   Thu, 17 Dec 2020 02:58:37 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     eperezma@redhat.com, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lulu@redhat.com, eli@mellanox.com,
-        lingshan.zhu@intel.com, rob.miller@broadcom.com,
-        stefanha@redhat.com, sgarzare@redhat.com
-Subject: Re: [PATCH 00/21] Control VQ support in vDPA
-Message-ID: <20201217025410-mutt-send-email-mst@kernel.org>
-References: <20201216064818.48239-1-jasowang@redhat.com>
- <20201216044051-mutt-send-email-mst@kernel.org>
- <aa061fcb-9395-3a1b-5d6e-76b5454dfb6c@redhat.com>
+        Thu, 17 Dec 2020 03:06:56 -0500
+Received: from localhost (unknown [192.168.167.16])
+        by regular1.263xmail.com (Postfix) with ESMTP id E85301B45;
+        Thu, 17 Dec 2020 16:00:40 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+Received: from localhost.localdomain (unknown [14.18.236.70])
+        by smtp.263.net (postfix) whith ESMTP id P20583T140370614691584S1608192035441421_;
+        Thu, 17 Dec 2020 16:00:41 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <5d8c97d87a7ceca7d76a7914649cd65e>
+X-RL-SENDER: yili@winhong.com
+X-SENDER: yili@winhong.com
+X-LOGIN-NAME: yili@winhong.com
+X-FST-TO: colyli@suse.de
+X-SENDER-IP: 14.18.236.70
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Yi Li <yili@winhong.com>
+To:     colyli@suse.de
+Cc:     yilikernel@gmail.com, kent.overstreet@gmail.com,
+        linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yi Li <yili@winhong.com>, Li bing <libing@winhong.com>
+Subject: [PATCH] bcache: fix UUID room exhausted fake issue.
+Date:   Thu, 17 Dec 2020 16:00:30 +0800
+Message-Id: <20201217080030.1226023-1-yili@winhong.com>
+X-Mailer: git-send-email 2.25.3
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <aa061fcb-9395-3a1b-5d6e-76b5454dfb6c@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 11:30:18AM +0800, Jason Wang wrote:
-> 
-> On 2020/12/16 下午5:47, Michael S. Tsirkin wrote:
-> > On Wed, Dec 16, 2020 at 02:47:57PM +0800, Jason Wang wrote:
-> > > Hi All:
-> > > 
-> > > This series tries to add the support for control virtqueue in vDPA.
-> > > 
-> > > Control virtqueue is used by networking device for accepting various
-> > > commands from the driver. It's a must to support multiqueue and other
-> > > configurations.
-> > > 
-> > > When used by vhost-vDPA bus driver for VM, the control virtqueue
-> > > should be shadowed via userspace VMM (Qemu) instead of being assigned
-> > > directly to Guest. This is because Qemu needs to know the device state
-> > > in order to start and stop device correctly (e.g for Live Migration).
-> > > 
-> > > This requies to isolate the memory mapping for control virtqueue
-> > > presented by vhost-vDPA to prevent guest from accesing it directly.
-> > > To achieve this, vDPA introduce two new abstractions:
-> > > 
-> > > - address space: identified through address space id (ASID) and a set
-> > >                   of memory mapping in maintained
-> > > - virtqueue group: the minimal set of virtqueues that must share an
-> > >                   address space
-> > How will this support the pretty common case where control vq
-> > is programmed by the kernel through the PF, and others by the VFs?
-> 
-> 
-> In this case, the VF parent need to provide a software control vq and decode
-> the command then send them to VF.
+The UUID room will be exhausted fake when loop attach/dettach backing dev.
+
+Using zero_uuid to the UUID room after dettach normaly.
+And attach dev can request UUID room successfully.
+
+Signed-off-by: Yi Li <yili@winhong.com>
+Signed-off-by: Li bing <libing@winhong.com>
+---
+ drivers/md/bcache/super.c | 20 +++++---------------
+ 1 file changed, 5 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+index 0e06d721cd8e..f7ad1e26b013 100644
+--- a/drivers/md/bcache/super.c
++++ b/drivers/md/bcache/super.c
+@@ -34,10 +34,7 @@ static const char bcache_magic[] = {
+ 	0x82, 0x65, 0xf5, 0x7f, 0x48, 0xba, 0x6d, 0x81
+ };
+ 
+-static const char invalid_uuid[] = {
+-	0xa0, 0x3e, 0xf8, 0xed, 0x3e, 0xe1, 0xb8, 0x78,
+-	0xc8, 0x50, 0xfc, 0x5e, 0xcb, 0x16, 0xcd, 0x99
+-};
++static const char zero_uuid[16] = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
+ 
+ static struct kobject *bcache_kobj;
+ struct mutex bch_register_lock;
+@@ -515,13 +512,6 @@ static struct uuid_entry *uuid_find(struct cache_set *c, const char *uuid)
+ 	return NULL;
+ }
+ 
+-static struct uuid_entry *uuid_find_empty(struct cache_set *c)
+-{
+-	static const char zero_uuid[16] = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
+-
+-	return uuid_find(c, zero_uuid);
+-}
+-
+ /*
+  * Bucket priorities/gens:
+  *
+@@ -803,7 +793,7 @@ static void bcache_device_detach(struct bcache_device *d)
+ 		struct uuid_entry *u = d->c->uuids + d->id;
+ 
+ 		SET_UUID_FLASH_ONLY(u, 0);
+-		memcpy(u->uuid, invalid_uuid, 16);
++		memcpy(u->uuid, zero_uuid, 16);
+ 		u->invalidated = cpu_to_le32((u32)ktime_get_real_seconds());
+ 		bch_uuid_write(d->c);
+ 	}
+@@ -1211,7 +1201,7 @@ int bch_cached_dev_attach(struct cached_dev *dc, struct cache_set *c,
+ 	if (u &&
+ 	    (BDEV_STATE(&dc->sb) == BDEV_STATE_STALE ||
+ 	     BDEV_STATE(&dc->sb) == BDEV_STATE_NONE)) {
+-		memcpy(u->uuid, invalid_uuid, 16);
++		memcpy(u->uuid, zero_uuid, 16);
+ 		u->invalidated = cpu_to_le32((u32)ktime_get_real_seconds());
+ 		u = NULL;
+ 	}
+@@ -1223,7 +1213,7 @@ int bch_cached_dev_attach(struct cached_dev *dc, struct cache_set *c,
+ 			return -ENOENT;
+ 		}
+ 
+-		u = uuid_find_empty(c);
++		u = uuid_find(c, zero_uuid);
+ 		if (!u) {
+ 			pr_err("Not caching %s, no room for UUID\n",
+ 			       dc->backing_dev_name);
+@@ -1554,7 +1544,7 @@ int bch_flash_dev_create(struct cache_set *c, uint64_t size)
+ 	if (!test_bit(CACHE_SET_RUNNING, &c->flags))
+ 		return -EPERM;
+ 
+-	u = uuid_find_empty(c);
++	u = uuid_find(c, zero_uuid);
+ 	if (!u) {
+ 		pr_err("Can't create volume, no room for UUID\n");
+ 		return -EINVAL;
+-- 
+2.25.3
 
 
-But how does that tie to the address space infrastructure?
-
-
-
-> 
-> > 
-> > 
-> > I actually thought the way to support it is by exposing
-> > something like an "inject buffers" API which sends data to a given VQ.
-> > Maybe an ioctl, and maybe down the road uio ring can support batching
-> > these ....
-> 
-> 
-> So the virtuqueue allows the request to be processed asynchronously (e.g
-> driver may choose to use interrupt for control vq). This means we need to
-> support that in uAPI level.
-
-I don't think we need to make it async, just a regular ioctl will do.
-In fact no guest uses the asynchronous property.
-
-
-> And if we manage to do that, it's just another
-> type of virtqueue.
-> 
-> For virtio-vDPA, this also means the extensions for queue processing which
-> is a functional duplication.
-
-I don't see why, just send it to the actual control vq :)
-
-> Using what proposed in this series, we don't
-> need any changes for kernel virtio drivers.
-> 
-> What's more important, this series could be used for future features that
-> requires DMA isolation between virtqueues:
-> 
-> - report dirty pages via virtqueue
-> - sub function level device slicing
-
-
-I agree these are nice to have, but I am not sure basic control vq must
-be tied to that.
-
-> ...
-> 
-> Thanks
-> 
-> 
-> > 
-> > 
-> > > Device needs to advertise the following attributes to vDPA:
-> > > 
-> > > - the number of address spaces supported in the device
-> > > - the number of virtqueue groups supported in the device
-> > > - the mappings from a specific virtqueue to its virtqueue groups
-> > > 
-> > > The mappings from virtqueue to virtqueue groups is fixed and defined
-> > > by vDPA device driver. E.g:
-> > > 
-> > > - For the device that has hardware ASID support, it can simply
-> > >    advertise a per virtqueue virtqueue group.
-> > > - For the device that does not have hardware ASID support, it can
-> > >    simply advertise a single virtqueue group that contains all
-> > >    virtqueues. Or if it wants a software emulated control virtqueue, it
-> > >    can advertise two virtqueue groups, one is for cvq, another is for
-> > >    the rest virtqueues.
-> > > 
-> > > vDPA also allow to change the association between virtqueue group and
-> > > address space. So in the case of control virtqueue, userspace
-> > > VMM(Qemu) may use a dedicated address space for the control virtqueue
-> > > group to isolate the memory mapping.
-> > > 
-> > > The vhost/vhost-vDPA is also extend for the userspace to:
-> > > 
-> > > - query the number of virtqueue groups and address spaces supported by
-> > >    the device
-> > > - query the virtqueue group for a specific virtqueue
-> > > - assocaite a virtqueue group with an address space
-> > > - send ASID based IOTLB commands
-> > > 
-> > > This will help userspace VMM(Qemu) to detect whether the control vq
-> > > could be supported and isolate memory mappings of control virtqueue
-> > > from the others.
-> > > 
-> > > To demonstrate the usage, vDPA simulator is extended to support
-> > > setting MAC address via a emulated control virtqueue.
-> > > 
-> > > Please review.
-> > > 
-> > > Changes since RFC:
-> > > 
-> > > - tweak vhost uAPI documentation
-> > > - switch to use device specific IOTLB really in patch 4
-> > > - tweak the commit log
-> > > - fix that ASID in vhost is claimed to be 32 actually but 16bit
-> > >    actually
-> > > - fix use after free when using ASID with IOTLB batching requests
-> > > - switch to use Stefano's patch for having separated iov
-> > > - remove unused "used_as" variable
-> > > - fix the iotlb/asid checking in vhost_vdpa_unmap()
-> > > 
-> > > Thanks
-> > > 
-> > > Jason Wang (20):
-> > >    vhost: move the backend feature bits to vhost_types.h
-> > >    virtio-vdpa: don't set callback if virtio doesn't need it
-> > >    vhost-vdpa: passing iotlb to IOMMU mapping helpers
-> > >    vhost-vdpa: switch to use vhost-vdpa specific IOTLB
-> > >    vdpa: add the missing comment for nvqs in struct vdpa_device
-> > >    vdpa: introduce virtqueue groups
-> > >    vdpa: multiple address spaces support
-> > >    vdpa: introduce config operations for associating ASID to a virtqueue
-> > >      group
-> > >    vhost_iotlb: split out IOTLB initialization
-> > >    vhost: support ASID in IOTLB API
-> > >    vhost-vdpa: introduce asid based IOTLB
-> > >    vhost-vdpa: introduce uAPI to get the number of virtqueue groups
-> > >    vhost-vdpa: introduce uAPI to get the number of address spaces
-> > >    vhost-vdpa: uAPI to get virtqueue group id
-> > >    vhost-vdpa: introduce uAPI to set group ASID
-> > >    vhost-vdpa: support ASID based IOTLB API
-> > >    vdpa_sim: advertise VIRTIO_NET_F_MTU
-> > >    vdpa_sim: factor out buffer completion logic
-> > >    vdpa_sim: filter destination mac address
-> > >    vdpasim: control virtqueue support
-> > > 
-> > > Stefano Garzarella (1):
-> > >    vdpa_sim: split vdpasim_virtqueue's iov field in out_iov and in_iov
-> > > 
-> > >   drivers/vdpa/ifcvf/ifcvf_main.c   |   9 +-
-> > >   drivers/vdpa/mlx5/net/mlx5_vnet.c |  11 +-
-> > >   drivers/vdpa/vdpa.c               |   8 +-
-> > >   drivers/vdpa/vdpa_sim/vdpa_sim.c  | 292 ++++++++++++++++++++++++------
-> > >   drivers/vhost/iotlb.c             |  23 ++-
-> > >   drivers/vhost/vdpa.c              | 246 ++++++++++++++++++++-----
-> > >   drivers/vhost/vhost.c             |  23 ++-
-> > >   drivers/vhost/vhost.h             |   4 +-
-> > >   drivers/virtio/virtio_vdpa.c      |   2 +-
-> > >   include/linux/vdpa.h              |  42 ++++-
-> > >   include/linux/vhost_iotlb.h       |   2 +
-> > >   include/uapi/linux/vhost.h        |  25 ++-
-> > >   include/uapi/linux/vhost_types.h  |  10 +-
-> > >   13 files changed, 561 insertions(+), 136 deletions(-)
-> > > 
-> > > -- 
-> > > 2.25.1
 
