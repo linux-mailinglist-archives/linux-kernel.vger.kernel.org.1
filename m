@@ -2,205 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADC612DD453
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:40:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF82B2DD326
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 15:41:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728122AbgLQPjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 10:39:11 -0500
-Received: from www381.your-server.de ([78.46.137.84]:42322 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726291AbgLQPjL (ORCPT
+        id S1728583AbgLQOl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 09:41:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726291AbgLQOlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 10:39:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=y7d7zmNBQjtcQn+6PwWL2fufKcxV2hcFWsNHT3w68OE=; b=XmTNJs+/28EyPwFcRV/h+lu5sr
-        ThGpyC647Cxbwv51m0rwAiMixd3aie9hUB0Gw/AkcvBEuf6PysybElZpvHKaxOBdJ9xf+9Us0k3IS
-        seYLgIhfqou0FdY1XC7jqsUqvSzyZMWTo3eMDvS+VkerJtWBM9FB1gVj2EDJQTNU+y+2cO0Q9KUsB
-        vcDHIuiia/49ztdigE6MsRjHuzt2qe9jD1pvxWJ+PvtIOlSsGlM8OnRGtTfO9PsuLVaJ/TfH5TF2s
-        /fan+YQtTn7T0HwPA/VUdTtZHibHQBVhJNjQj791NUN9Fg+7lb0hJoTkiGnGlwGVbFwJfVLFvhNn3
-        y5mHd/3A==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1kpvMG-0006mU-8D; Thu, 17 Dec 2020 16:38:24 +0100
-Received: from [62.216.202.54] (helo=[192.168.178.20])
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1kpvMG-000SiN-1k; Thu, 17 Dec 2020 16:38:24 +0100
-Subject: Re: [PATCH v1 ] ALSA: core: memalloc: add page alignment for iram
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     alsa-devel@alsa-project.org, gustavoars@kernel.org,
-        linux-kernel@vger.kernel.org, shengjiu.wang@nxp.com,
-        tiwai@suse.com, pierre-louis.bossart@linux.intel.com,
-        xiang@kernel.org, Robin Gong <yibin.gong@nxp.com>,
-        akpm@linux-foundation.org
-References: <1608221747-3474-1-git-send-email-yibin.gong@nxp.com>
- <05c824e5-0c33-4182-26fa-b116a42b10d6@metafoo.de>
- <s5h5z50n4dd.wl-tiwai@suse.de>
- <70074f62-954a-9b40-ab4a-cb438925060c@metafoo.de>
- <s5hmtyclmig.wl-tiwai@suse.de>
- <8e103a2b-1097-6d54-7266-34743321efac@metafoo.de>
- <s5hwnxgjysq.wl-tiwai@suse.de>
- <1fc18b56-effa-9dbc-8263-00c632e163e7@metafoo.de>
- <s5hmtycjwam.wl-tiwai@suse.de>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <98fd6adb-5bae-56ce-c52b-f778f92f6a2d@metafoo.de>
-Date:   Thu, 17 Dec 2020 16:38:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Thu, 17 Dec 2020 09:41:25 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 513E1C061794;
+        Thu, 17 Dec 2020 06:40:45 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id w6so19185002pfu.1;
+        Thu, 17 Dec 2020 06:40:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=enLPOtX+RwuUEW41weEYdgVO7wJosn5W764QBKADpC0=;
+        b=MIwIlFomCfpcfTP7hoYKE80dMrXthuwfQfIE41Eh9iO9XuLzVC0MHAVozM9FFECa4u
+         4auSn9F6mNrNxMIow8KyfmaaUqNnMwtiJ920yky/TQomMa2FqHvTDSCDrBMBKlMXG5gk
+         JsrjEq79Q0zxgvWEEH3w99F88LWoPr8/8A3UCCSaBvFhfE3NIBoU5sm7aSRlG6JbuRpr
+         Do2E8DA14oXXi9EOclDV2pGwUg6m+RPSTg7zzZYx+Bti4MpgiqDH80cibISlp4Dybgs8
+         mfWQZmMbFrv3yCD7xTNjUxBWuiQ/2p4egc0gxipwIPMiszEbN3gxHjL256OVu04uNZyA
+         qSWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=enLPOtX+RwuUEW41weEYdgVO7wJosn5W764QBKADpC0=;
+        b=J7ZZYeLzzxGogyT83B1+y7a5S1ZSuKwXFEYDa1n7DS1caOBWPrXJM4SNFa9Tp8wZ7z
+         TSm1dg8qIxJqxi383QYeUfK6y9c6oTpfHhWr4n+dkw+NmK9J6CSfcOJRGI710vIUg7vB
+         ecgJaex1ONLI7zAXJ1GVKpO/9Ku9atmfgCO0D5qwoeyNk3RNeTxSgMDKkL18enbpHQ0H
+         AVFmKg9eqAOPjk7VRYW3hi6lOrxlDiIBkXXVgTCzbea6RopADYRwV6bIFYANBEF6CCMv
+         GBIdYoWxaN6Fx65+vqxhnafq6Ugy4FZ9RrNAkWIRf4let5jsX84Z291dOt2iJqTnHDST
+         eVjw==
+X-Gm-Message-State: AOAM532C7YFqSMLSpwcpxZ+iRVB8EziYRW1Q9Gj4Uwk5J12K7sBhowV0
+        FUeHYIqwwVXjLLfYMdURYekDYo96leX8PA==
+X-Google-Smtp-Source: ABdhPJyHFpraaFLk+3QhMHDpQ4btopHivgWaat0v6SLM6H6sHi26qZvrt5X38vYkRmFQBca9pqKJcw==
+X-Received: by 2002:a65:534d:: with SMTP id w13mr37761820pgr.107.1608216044599;
+        Thu, 17 Dec 2020 06:40:44 -0800 (PST)
+Received: from localhost ([47.251.4.198])
+        by smtp.gmail.com with ESMTPSA id p16sm5294396pju.47.2020.12.17.06.40.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 17 Dec 2020 06:40:44 -0800 (PST)
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>, stable@vger.kernel.org
+Subject: [PATCH V3] kvm: check tlbs_dirty directly
+Date:   Thu, 17 Dec 2020 23:41:18 +0800
+Message-Id: <20201217154118.16497-1-jiangshanlai@gmail.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
+In-Reply-To: <X9kEAh7z1rmlmyhZ@google.com>
+References: <X9kEAh7z1rmlmyhZ@google.com>
 MIME-Version: 1.0
-In-Reply-To: <s5hmtycjwam.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26020/Thu Dec 17 15:34:34 2020)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/17/20 4:18 PM, Takashi Iwai wrote:
-> On Thu, 17 Dec 2020 15:57:02 +0100,
-> Lars-Peter Clausen wrote:
->> On 12/17/20 3:24 PM, Takashi Iwai wrote:
->>> On Thu, 17 Dec 2020 14:16:48 +0100,
->>> Lars-Peter Clausen wrote:
->>>> On 12/17/20 12:06 PM, Takashi Iwai wrote:
->>>>> On Thu, 17 Dec 2020 11:59:23 +0100,
->>>>> Lars-Peter Clausen wrote:
->>>>>> On 12/17/20 10:55 AM, Takashi Iwai wrote:
->>>>>>> On Thu, 17 Dec 2020 10:43:45 +0100,
->>>>>>> Lars-Peter Clausen wrote:
->>>>>>>> On 12/17/20 5:15 PM, Robin Gong wrote:
->>>>>>>>> Since mmap for userspace is based on page alignment, add page alignment
->>>>>>>>> for iram alloc from pool, otherwise, some good data located in the same
->>>>>>>>> page of dmab->area maybe touched wrongly by userspace like pulseaudio.
->>>>>>>>>
->>>>>>>> I wonder, do we also have to align size to be a multiple of PAGE_SIZE
->>>>>>>> to avoid leaking unrelated data?
->>>>>>> Hm, a good question.  Basically the PCM buffer size itself shouldn't
->>>>>>> be influenced by that (i.e. no hw-constraint or such is needed), but
->>>>>>> the padding should be cleared indeed.  I somehow left those to the
->>>>>>> allocator side, but maybe it's safer to clear the whole buffer in
->>>>>>> sound/core/memalloc.c commonly.
->>>>>> What I meant was that most of the APIs that we use to allocate memory
->>>>>> work on a PAGE_SIZE granularity. I.e. if you request a buffer that
->>>>>> where the size is not a multiple of PAGE_SIZE internally they will
->>>>>> still allocate a buffer that is a multiple of PAGE_SIZE and mark the
->>>>>> unused bytes as reserved.
->>>>>>
->>>>>> But I believe that is not the case gen_pool_dma_alloc(). It will
->>>>>> happily allocate those extra bytes to some other allocation request.
->>>>>>
->>>>>> That we need to zero out the reserved bytes even for those other APIs
->>>>>> is a very good additional point!
->>>>>>
->>>>>> I looked at this a few years ago and I'm pretty sure that we cleared
->>>>>> out the allocated area, but I can't find that anymore in the current
->>>>>> code. Which is not so great I guess.
->>>>> IIRC, we used GFP_ZERO in the past for the normal page allocations,
->>>>> but this was dropped as it's no longer supported or so.
->>>>>
->>>>> Also, we clear out the PCM buffer in hw_params call, but this is for
->>>>> the requested size, not the actual allocated size, hence the padding
->>>>> bytes will remain uncleared.
->>>> Ah! That memset() in hw_params is new.
->>>>> So I believe it's safer to add an extra memset() like my test patch.
->>>> Yea, we definitely want that.
->>>>
->>>> Do we care about leaking audio samples from a previous
->>>> application. I.e. application 'A' allocates a buffer plays back some
->>>> data and then closes the device again. Application 'B' then opens the
->>>> same audio devices allocates a slightly smaller buffer, so that it
->>>> still uses the same number of pages. The buffer from the previous
->>>> allocation get reused, but the remainder of the last page wont get
->>>> cleared in hw_params().
->>> That's true.  On the second though, it might be better to extend that
->>> memset() in hw_params to assure clearing the whole allocated buffer.
->>> We can check runtime->dma_buffer_p->bytes for the actual size.
->>>
->>> Also, in the PCM memory allocator, we make sure that the allocation is
->>> performed for page size.
->>>
->>>
->>> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
->>> index 47b155a49226..6aabad070abf 100644
->>> --- a/sound/core/pcm_native.c
->>> +++ b/sound/core/pcm_native.c
->>> @@ -755,8 +755,15 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
->>>    		runtime->boundary *= 2;
->>>      	/* clear the buffer for avoiding possible kernel info leaks */
->>> -	if (runtime->dma_area && !substream->ops->copy_user)
->>> -		memset(runtime->dma_area, 0, runtime->dma_bytes);
->>> +	if (runtime->dma_area && !substream->ops->copy_user) {
->>> +		size_t size;
->>> +
->>> +		if (runtime->dma_buffer_p)
->>> +			size = runtime->dma_buffer_p->bytes;
->>> +		else
->>> +			size = runtime->dma_bytes;
->> I'm not sure.
->>
->> Not all drivers use snd_pcm_lib_malloc_pages() and
->> runtime->dma_buffer_p->bytes might not be a multiple of PAGE_SIZE.
-> The runtime->dma_buffer_p->bytes is assured to be page-aligned by the
-> change in pcm_memory.c in this patch.  But it's true that non-standard
-> allocations won't cover the whole pages...
->
->> On the other hand if it is mmap-able, the underlying buffer must be a
->> multiple of PAGE_SIZE. So a simple memset(..., PAGE_ALIGN(size))
->> should work.
->>
->> But we'd risk breaking drivers that do not reserve the remainder of
->> the page and use it for something else.
->>
->> Maybe what we need is a check that runtime->dma_area is page aligned
->> and runtime->dma_bytes is a multiple of PAGE_SIZE. With a warning at
->> first and then turn this into a error a year later or so.
-> OK, how about the following instead?
-> Just check SNDRV_PCM_INFO_MMAP in runtime->info; if this is set, the
-> buffer size must be aligned with the page size, and we are safe to
-> extend the size to clear.
->
-> So the revised fix is much simpler, something like below.
+From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-I think this will work for the leaking data issue.
+In kvm_mmu_notifier_invalidate_range_start(), tlbs_dirty is used as:
+        need_tlb_flush |= kvm->tlbs_dirty;
+with need_tlb_flush's type being int and tlbs_dirty's type being long.
 
-But it will not help with the original issue that 
-gen_pool_dma_alloc_align() does not reserve the remainder of the page 
-and could give it out to other allocations. We'd need a separate patch 
-for that.
+It means that tlbs_dirty is always used as int and the higher 32 bits
+is useless.  We need to check tlbs_dirty in a correct way and this
+change checks it directly without propagating it to need_tlb_flush.
 
->
->
-> thanks,
->
-> Takashi
->
-> ---
-> --- a/sound/core/pcm_native.c
-> +++ b/sound/core/pcm_native.c
-> @@ -755,8 +755,13 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
->   		runtime->boundary *= 2;
->   
->   	/* clear the buffer for avoiding possible kernel info leaks */
-> -	if (runtime->dma_area && !substream->ops->copy_user)
-> -		memset(runtime->dma_area, 0, runtime->dma_bytes);
-> +	if (runtime->dma_area && !substream->ops->copy_user) {
-> +		size_t size = runtime->dma_bytes;
-> +
-> +		if (runtime->info & SNDRV_PCM_INFO_MMAP)
-> +			size = PAGE_ALIGN(size);
-> +		memset(runtime->dma_area, 0, size);
-> +	}
->   
->   	snd_pcm_timer_resolution_change(substream);
->   	snd_pcm_set_state(substream, SNDRV_PCM_STATE_SETUP);
+Note: it's _extremely_ unlikely this neglecting of higher 32 bits can
+cause problems in practice.  It would require encountering tlbs_dirty
+on a 4 billion count boundary, and KVM would need to be using shadow
+paging or be running a nested guest.
 
+Cc: stable@vger.kernel.org
+Fixes: a4ee1ca4a36e ("KVM: MMU: delay flush all tlbs on sync_page path")
+Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+---
+Changed from V1:
+        Update the patch and the changelog as Sean Christopherson suggested.
+
+Changed from v2:
+	don't change the type of need_tlb_flush
+
+ virt/kvm/kvm_main.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 2541a17ff1c4..3083fb53861d 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -482,9 +482,8 @@ static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
+ 	kvm->mmu_notifier_count++;
+ 	need_tlb_flush = kvm_unmap_hva_range(kvm, range->start, range->end,
+ 					     range->flags);
+-	need_tlb_flush |= kvm->tlbs_dirty;
+ 	/* we've to flush the tlb before the pages can be freed */
+-	if (need_tlb_flush)
++	if (need_tlb_flush || kvm->tlbs_dirty)
+ 		kvm_flush_remote_tlbs(kvm);
+ 
+ 	spin_unlock(&kvm->mmu_lock);
+-- 
+2.19.1.6.gb485710b
 
