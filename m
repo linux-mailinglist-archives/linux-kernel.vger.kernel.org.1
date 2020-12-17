@@ -2,104 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D3802DCE9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 10:44:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E13FB2DCEBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 10:48:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727685AbgLQJnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 04:43:11 -0500
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:55282 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726580AbgLQJnI (ORCPT
+        id S1728058AbgLQJqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 04:46:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728021AbgLQJqL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 04:43:08 -0500
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BH9ZiOc008430;
-        Thu, 17 Dec 2020 01:40:20 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0220; bh=kzVNG9l2wMsHpkgpX4GfYITXE8UzXLYNc9dS0IWK3gM=;
- b=ASa7COd2kRBXR+LuTtRrJsykOMjNUgaivErYq3Z4qK8WLKxQiW4Ortp2tdxs3KjkWKpq
- ZuR1/z5EZxXZOkQZwVIVWjFuaI7fzvILpZfD0WzqiCGmFY48oWW3ZG58Cr67Xu5wM+hU
- tAM5yCOSZwv/Zt6NB6tr/npn3cucNeZqHGTb0Cb7aZBx6aUeoE6c9QyLHcgjftVKf75U
- trKeJM1ZEGmDNhx5oBCjGlri8jE1P1pzWk87rGoVAJcYEJoBR4pkqXYCSlRw8hO9twN2
- DMceeWdNRKUlnhLfhQ89qH7WomagX9fD/kbIhLekPK2WqRNa/PJdHI1GSFQ5yDMeVc9E 8g== 
-Received: from sc-exch02.marvell.com ([199.233.58.182])
-        by mx0a-0016f401.pphosted.com with ESMTP id 35g4rp018j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 17 Dec 2020 01:40:20 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH02.marvell.com
- (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 17 Dec
- 2020 01:40:19 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 17 Dec 2020 01:40:19 -0800
-Received: from stefan-pc.marvell.com (unknown [10.5.25.21])
-        by maili.marvell.com (Postfix) with ESMTP id B0B753F7041;
-        Thu, 17 Dec 2020 01:40:16 -0800 (PST)
-From:   <stefanc@marvell.com>
-To:     <netdev@vger.kernel.org>
-CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
-        <nadavh@marvell.com>, <ymarkman@marvell.com>,
-        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
-        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
-        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>
-Subject: [PATCH net v2 2/2] net: mvpp2: disable force link UP during port init procedure
-Date:   Thu, 17 Dec 2020 11:40:07 +0200
-Message-ID: <1608198007-10143-2-git-send-email-stefanc@marvell.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1608198007-10143-1-git-send-email-stefanc@marvell.com>
-References: <1608198007-10143-1-git-send-email-stefanc@marvell.com>
+        Thu, 17 Dec 2020 04:46:11 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA41FC0611CA;
+        Thu, 17 Dec 2020 01:44:55 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id x20so36201089lfe.12;
+        Thu, 17 Dec 2020 01:44:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=NiGZvLOgQKcEvFh0a0FUmNFhvqrnqyE23ruUDRJZB2I=;
+        b=bJaUBEUrRVNaJKSroeHcNR2iyhlfdtISVv6VtoBzpoW3h3EcNNEgHIyolw+N+AqEha
+         eAvslM6vlg3iMHRuWw61bGtmaIXs/X5F7aOOUsG8G78kVqL0A//2gZHj75VGS3Ji6v0O
+         ead0dq+cfpWnzAgTg38/KQXUhJksqh5VFniDEODXICymN8uDK609I0QDIvOe9anLZKOu
+         0b3H/DJ9OJ3oXubtoeqi79o+IG1vKyGFIHmzN/OjJ9SEEyvsekpmJU9ylpP1rRnQs1lA
+         zTs6+bCdG2NbHHG0S+24Ai4zZatvCsc4BcIbniHOIi4tCGBhi6AXLmKpAvNpFU43OYNj
+         nIyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=NiGZvLOgQKcEvFh0a0FUmNFhvqrnqyE23ruUDRJZB2I=;
+        b=D3mYUgIZvgm/DWdj4sehFJIhp4krIL80PxSKfNCnQa8oP1IQ6QgsdXOOtsWZchSMz+
+         a56F27p7Yy2LeGykyzW9hjTlDBjq7yhDkNjtUOZNYjZHvketSQzdCu4rEJwV/i8Dt9RO
+         cFo36izIkWXyoDvtpI+/XFiLbDePRPm7XOWqEKkUSPXnffKDr452JDMX2kmsN5/WebMY
+         pDF/fHGGUhj/guRxdHA6koKPeonR3QfbzAqo8EnKlqKNkHh1VW3BrjSkEbgdC4/4PlrN
+         LgUo6dTmnY+WW+5Ak1GgjhdWGgS89GjoD+W0JfEchxB/tOznt2lMsA3tFRrg9aPVpX76
+         86Lw==
+X-Gm-Message-State: AOAM530n3W6eDj8UZ5y9r5cl8vUYzfo8naCaMPFtqet4i8fjjzn5PZff
+        DU7fBnOm2H7GCmGMCZvkCAY=
+X-Google-Smtp-Source: ABdhPJwfhFCIk0ELGALVWMZvc0K7fA4ZP/K9n5/OyHwpd8iph3OXAtKks+B0Z+CSUfMjckENyxUVLw==
+X-Received: by 2002:a05:6512:333c:: with SMTP id l28mr13790532lfe.164.1608198294237;
+        Thu, 17 Dec 2020 01:44:54 -0800 (PST)
+Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.gmail.com with ESMTPSA id u19sm613917lji.2.2020.12.17.01.44.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Dec 2020 01:44:53 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Felipe Balbi <balbi@kernel.org>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Peter Geis <pgwipeout@gmail.com>, Ion Agorria <ion@agorria.com>
+Cc:     linux-tegra@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 8/8] ARM: tegra_defconfig: Enable USB_CHIPIDEA and remove USB_EHCI_TEGRA
+Date:   Thu, 17 Dec 2020 12:40:07 +0300
+Message-Id: <20201217094007.19336-9-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201217094007.19336-1-digetx@gmail.com>
+References: <20201217094007.19336-1-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-17_07:2020-12-15,2020-12-17 signatures=0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Chulski <stefanc@marvell.com>
+The ehci-tegra driver was superseded by the generic ChipIdea USB driver,
+update the tegra's defconfig accordingly.
 
-Force link UP can be enabled by bootloader during tftpboot
-and breaks NFS support.
-Force link UP disabled during port init procedure.
-
-Signed-off-by: Stefan Chulski <stefanc@marvell.com>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ arch/arm/configs/tegra_defconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-index d2b0506..0ad3177 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -5479,7 +5479,7 @@ static int mvpp2_port_init(struct mvpp2_port *port)
- 	struct mvpp2 *priv = port->priv;
- 	struct mvpp2_txq_pcpu *txq_pcpu;
- 	unsigned int thread;
--	int queue, err;
-+	int queue, err, val;
- 
- 	/* Checks for hardware constraints */
- 	if (port->first_rxq + port->nrxqs >
-@@ -5493,6 +5493,18 @@ static int mvpp2_port_init(struct mvpp2_port *port)
- 	mvpp2_egress_disable(port);
- 	mvpp2_port_disable(port);
- 
-+	if (mvpp2_is_xlg(port->phy_interface)) {
-+		val = readl(port->base + MVPP22_XLG_CTRL0_REG);
-+		val &= ~MVPP22_XLG_CTRL0_FORCE_LINK_PASS;
-+		val |= MVPP22_XLG_CTRL0_FORCE_LINK_DOWN;
-+		writel(val, port->base + MVPP22_XLG_CTRL0_REG);
-+	} else {
-+		val = readl(port->base + MVPP2_GMAC_AUTONEG_CONFIG);
-+		val &= ~MVPP2_GMAC_FORCE_LINK_PASS;
-+		val |= MVPP2_GMAC_FORCE_LINK_DOWN;
-+		writel(val, port->base + MVPP2_GMAC_AUTONEG_CONFIG);
-+	}
-+
- 	port->tx_time_coal = MVPP2_TXDONE_COAL_USEC;
- 
- 	port->txqs = devm_kcalloc(dev, port->ntxqs, sizeof(*port->txqs),
+diff --git a/arch/arm/configs/tegra_defconfig b/arch/arm/configs/tegra_defconfig
+index 74739a52a8ad..ae0709265493 100644
+--- a/arch/arm/configs/tegra_defconfig
++++ b/arch/arm/configs/tegra_defconfig
+@@ -237,12 +237,13 @@ CONFIG_USB=y
+ CONFIG_USB_XHCI_HCD=y
+ CONFIG_USB_XHCI_TEGRA=y
+ CONFIG_USB_EHCI_HCD=y
+-CONFIG_USB_EHCI_TEGRA=y
+ CONFIG_USB_ACM=y
+ CONFIG_USB_WDM=y
+ CONFIG_USB_STORAGE=y
+ CONFIG_USB_CHIPIDEA=y
+ CONFIG_USB_CHIPIDEA_UDC=y
++CONFIG_USB_CHIPIDEA_HOST=y
++CONFIG_USB_CHIPIDEA_TEGRA=y
+ CONFIG_USB_GADGET=y
+ CONFIG_MMC=y
+ CONFIG_MMC_BLOCK_MINORS=16
 -- 
-1.9.1
+2.29.2
 
