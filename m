@@ -2,124 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD5E2DCDDA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 09:45:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B05EF2DCDDB
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 09:45:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727392AbgLQIo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 03:44:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726703AbgLQIo3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 03:44:29 -0500
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2981C061794
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 00:43:48 -0800 (PST)
-Received: by mail-il1-x12d.google.com with SMTP id t9so25135082ilf.2
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 00:43:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UyvM0JTI1ydl5VSsasQuRjR8gmnzoIsqUBzYnVc9TT4=;
-        b=DhBrBRowc9Z5HNcivJKgo5Rgre54UgzfTuKotHhpYXeHMfLn/rSA6EWV22SH84v1Au
-         G8H2yxl6OMBVCvcSb1o6KoKt7WWxlqZBmsxvIVA0nrcPm20JiGHJzZXEPt9IwlF4z+mx
-         Pb5kzGLNCjg2bLlDY2NTZcdtfAc61ZNxfiUXw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UyvM0JTI1ydl5VSsasQuRjR8gmnzoIsqUBzYnVc9TT4=;
-        b=uWd/KHOoKLJe9QN9NccNz9Ko5sBTIQWQXhz/Z3QzAKiS2X7nmxTtK3pGeY9r+f337k
-         ZJMjsE8lTuOz2/CA2irArKDUcqtR0+gLhpcDnUbfVUhgGUg9IYADkbl+vaUUvtIVEc6X
-         erwZxRWQVz2yUMpfSgkOs1TxrPAuJF0hB89K2tMnWvQNj9xYLF+xziddcY9CNlAMTAd0
-         AFxRTS5ZAW5Z3BhiTLs7i2hW0BoVu9q9bQ8ZzM02WMncmvcWD/QYqjO7U/wA33jp3iIp
-         RffgapDU4ZToLkvRb/H9YJOjkEbMAckuXOJoR/vS52QCMB2pjKcdj5RkcZzVPef4+ZBj
-         YXsA==
-X-Gm-Message-State: AOAM531YfXSiIMCaP+LdJoRP4u3/qbiCFgz8uVbR/kW0FTz6ig5VPRYP
-        oU6IsBBQi/l5Hl8KPtdiIbgg45cn0uJQv1EOG3OCGhEzHWWF
-X-Google-Smtp-Source: ABdhPJy89vpEbfhvusOQEEUbjElFUDT8Yr3qx6v/ayUMzdxTaapyCNKahoiHA8EKbt1mYqkk6bBjHQk9hLVRf7+bJ2U=
-X-Received: by 2002:a92:d84a:: with SMTP id h10mr47862427ilq.77.1608194628256;
- Thu, 17 Dec 2020 00:43:48 -0800 (PST)
+        id S1727169AbgLQIpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 03:45:15 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58638 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726595AbgLQIpO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 03:45:14 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 53BB4AC7B;
+        Thu, 17 Dec 2020 08:44:32 +0000 (UTC)
+Message-ID: <93832374535cb46419e921f5ee02ecabfe2cc83d.camel@suse.de>
+Subject: Re: [PATCH] arm64: Kconfig: select ZONE_DMA
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, catalin.marinas@arm.com,
+        will@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>
+Date:   Thu, 17 Dec 2020 09:44:31 +0100
+In-Reply-To: <20201217080802.29023-1-peng.fan@oss.nxp.com>
+References: <20201217080802.29023-1-peng.fan@oss.nxp.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-eWZy3Scs/7uuot7vpnD0"
+User-Agent: Evolution 3.38.2 
 MIME-Version: 1.0
-References: <20201217074855.1948743-1-atish.patra@wdc.com> <CAEUhbmV-AirwmVDN9xWi8eLwH53PFdoc+eU3sKzosA19Xd36Ag@mail.gmail.com>
-In-Reply-To: <CAEUhbmV-AirwmVDN9xWi8eLwH53PFdoc+eU3sKzosA19Xd36Ag@mail.gmail.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Thu, 17 Dec 2020 00:43:37 -0800
-Message-ID: <CAOnJCUJSKn-QNwKCcHXc+kYtuwFQE2qatnOtGfqTOG0_Jzt4og@mail.gmail.com>
-Subject: Re: [PATCH] RISC-V: Fix usage of memblock_enforce_memory_limit
-To:     Bin Meng <bmeng.cn@gmail.com>
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <anup.patel@wdc.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Mike Rapoport <rppt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 12:12 AM Bin Meng <bmeng.cn@gmail.com> wrote:
->
-> Hi Atish,
->
-> On Thu, Dec 17, 2020 at 3:49 PM Atish Patra <atish.patra@wdc.com> wrote:
-> >
-> > memblock_enforce_memory_limit accepts the maximum memory size not the last
-> > address. Fix the function invocation correctly.
-> >
-> > Fixes: 1bd14a66ee52 ("RISC-V: Remove any memblock representing unusable memory area")
-> >
-> > Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> > ---
-> >  arch/riscv/mm/init.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
->
-> Thank you for working on this.
->
-> Tested with QEMU 5.2.0 on 32-bit 'virt' and 'sifive_u', with
-> fw_jump.bin used as the -bios.
 
-fw_dynamic should also work unless you are using more than 1G of memory.
-Linux kernel can only support 1G of memory for RV32. The current
-Kconfig is bit misleading and
-I will send a patch to update the description.
+--=-eWZy3Scs/7uuot7vpnD0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-However, kernel should be able to ignore any memory beyond what it can
-address and continue.
-I will investigate more.
+Hi Peng,
+sorry for the inconvenience, this is most probably related to these changes=
+:
+https://lore.kernel.org/linux-arm-kernel/20201119175400.9995-1-nsaenzjulien=
+ne@suse.de/
 
-> 32-bit 'virt' boots, but 32-bit 'sifive_u' still does not boot, which
-> should be another issue because reverting the original 1bd14a66ee52 it
-> still does not help 'sifive_u'.
->
+On Thu, 2020-12-17 at 16:08 +0800, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+>=20
+> ZONE_DMA should not be disabled, otherwise arm64_dma_phys_limit is
+> left uninitialized and cause swiotlb have IO TLB above 4GB which
+> might crash some platforms
+>=20
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>=20
+> Not sure whether need to address code to initialize the variables or
+> force select ZONE_DMA
 
-Are you using more than 1G of memory ? Let me know if the kernel boots
-if you use 1G.
+What is the cause for the swiotlb related crashes? I assume it's DMA into a=
+n
+address too high for the bus, but it might be something else.
 
-> Tested-by: Bin Meng <bin.meng@windriver.com>
->
-> I believe the following tag should also be added and patch cc'ed to
-> stable-kernel:
->
-> Reported-by: Bin Meng <bin.meng@windriver.com>
-> Cc: <stable@vger.kernel.org> # 5.10
->
-> Regards,
-> Bin
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+I figure you have a setup with ZONE_DMA32, ZONE_NORMAL and !ZONE_DMA.
 
+First of all, I'd suggest you try arm64's defaults (all zones enabled), the
+series I mention above should fix most of the issues we've had with
+ZONE_DMA/ZONE_DMA32 in the past. We now parse DT/ACPI and only create two
+distinct DMA zones if really needed. Otherwise ZONE_DMA spans the whole 32 =
+bit
+address space.
 
+That said, IMO we're not doing the right thing in the !ZONE_DMA && ZONE_DMA=
+32
+case, and this should fix it (I didn't test it):
 
--- 
+- #define ARCH_LOW_ADDRESS_LIMIT	(arm64_dma_phys_limit - 1)
++ #define ARCH_LOW_ADDRESS_LIMIT	(arm64_dma_phys_limit ? : arm64_dma32_phys=
+_limit)
+
 Regards,
-Atish
+Nicolas
+
+
+
+
+
+--=-eWZy3Scs/7uuot7vpnD0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl/bGm8ACgkQlfZmHno8
+x/4iTQgAoAfA95ea1Tklzkk7Ocxe3cSd4ZsszNphIXPEqhdkTgF364hsAjI8zp2x
+2kyzDNFVod0ECra/DvplsR0itivTsthkblZMoLX7spaxNDpprEHL90Gg523KOTX/
+uiChxY6xvsW8JZk8Ufp6/xxuKF8i2+s15joq3geJALzvGoac2P+K9aLuEZXctluN
+S5WCkbdYoLxoAyUCRY58rZXl//lnvnKzfHcrA/eWgUhVed1euwFQznDnl75Lcjfb
+8sdh9mEanNsFZgd+Dok54O8hyb4p9Yd1P1nfCnE85C14oSiL4IVHRfXcQmdoQvl+
+MP/U1Ndyh+6CR2M5lOcLYDhjtEIqcQ==
+=1qYh
+-----END PGP SIGNATURE-----
+
+--=-eWZy3Scs/7uuot7vpnD0--
+
