@@ -2,164 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD4AC2DCB53
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 04:35:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E2C82DCB5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 04:43:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728028AbgLQDdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 22:33:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48306 "EHLO
+        id S1727887AbgLQDlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 22:41:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727646AbgLQDdL (ORCPT
+        with ESMTP id S1727301AbgLQDlt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 22:33:11 -0500
-Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com [IPv6:2607:f8b0:4864:20::a36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ABD8C0617B0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 19:32:31 -0800 (PST)
-Received: by mail-vk1-xa36.google.com with SMTP id f71so6236010vka.12
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 19:32:31 -0800 (PST)
+        Wed, 16 Dec 2020 22:41:49 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15FA0C0617A7
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 19:41:09 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id t8so18168346pfg.8
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 19:41:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i0dXdbd/aDqH0L0akSfum/a82QDR0PNqAiGj7kNkxzY=;
-        b=nmcNBLJn7rGIxREEdMgLbDzAcaa7yoZgZiYQqqww7eRc75zOlGn+rnl6cCy/C90Zyf
-         Z8ra9u8iJ17Q1qheW2211VygZHh+5z6D8yI2utNQRkA+M51/KOzm5/aoQLiv/ZUgtC75
-         9reRhxRbdLqRqW4uoEIZQHr1iW0a8m6I7M28Y=
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=wtn+d89VGS+lb6YZs3crTsqm+4MYQQeuZrVND99qLUo=;
+        b=gxsXJfxefjaJMNcfm/gip5a68ZfkTRF/+SaT23czhOKHRpv2H0mW6QKhSUgUIDGX0Q
+         OEJhCP9EYH9ybW0XbeVqnMBkEuPPOc2srd7DXn+4Aj7ep0L6r1YWGIIgBwxaU//H25fZ
+         TaXQjot+OnMi/KZKM+mLD5aTKHeoIR+22VGIA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i0dXdbd/aDqH0L0akSfum/a82QDR0PNqAiGj7kNkxzY=;
-        b=tLJzgo8ILjTKonx9KpGSO/LEqWF4phKoFdM2roEoMeHiYJQ9yfA7NdWyoAo+IOwPhB
-         hJLPkt7xJmCANN6L0g4IHJR5UuBxuIAlfjMrpjIhnerEh9IKiKTtsPiaTBjbxn8x/cTD
-         TwywcpRVzCMDZSNy4uxBtb1G0i28c76UMrDOvRU/Opu1o704CKP3UL8NeOCwCFrBP/M8
-         MBmU4zrAI4yryh2gcobnRErrmHFxmDYgmBtDSaQl8XyUOZfsP/Z3XIcarkWRdG5H4499
-         +F6Lq6OZ7OTSW2lOWAePdwCaIAdjCB1WBAIZKgpsaVmsMPKGtNweoTUUXSeZATDCX5CY
-         CDxw==
-X-Gm-Message-State: AOAM532eQu5R21AxFaMmnEkYCYHwo2tzakGkgIT1XuY9BRI3vmt2vzdC
-        Mx62ApVRSlk6pJ4COHaP/cHMIq1a73itGd/z1X4kw7aSPQyJSA==
-X-Google-Smtp-Source: ABdhPJxG8j8XJ1SqHErfbCzPG0T3l2CVDLcimchU9VMoiykTd1ToLEP3PofVT6brx3T5Nw9CV5lBN8DNQySE5dwozYU=
-X-Received: by 2002:a1f:96cd:: with SMTP id y196mr37615948vkd.18.1608175950440;
- Wed, 16 Dec 2020 19:32:30 -0800 (PST)
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=wtn+d89VGS+lb6YZs3crTsqm+4MYQQeuZrVND99qLUo=;
+        b=azU7ZRijQ68s2c40UEWLRs7XaNzvQnnnmIgKw9H02S4OCrm+V2UvIiCcXotg2YtQnk
+         RQwAx856R0bDnjjyIRJFvG55CODdb4W1Gt9hSigEHTqQ2dxaDCPmrkT3CLpsdVb8S5gH
+         rYl0KleHMwCyRxbHlRIzy+tc5S/EPS99mhQvGmxWzWE7wRb3SB5NS3JrjhdGbpirtDLJ
+         H3rymVAx1RfIXjmSl554cH4GMiTGPlikhNF+MJ5InZJ3ALLzSBj9SsKSikF5DdZNtfzM
+         3UfIUsOMdCKJIwSsdZ7OwQtUVAyPEUomD64Mbcz1sY+eiryjxANPQzM4qBLkCDrNi9h2
+         5iCQ==
+X-Gm-Message-State: AOAM530o7eDlSYyKlWz6ybzwiY/qG9vdyTsjoKyNK46VUlWsbHczWI2P
+        eGR2D4DA0NCSF9uw1Hnt9ScibQ==
+X-Google-Smtp-Source: ABdhPJwFTXpdmhGAc2Si0XCM0EJX3RHY29n+XsEKZTFk1jmA2KYSQ5YV01gpec+/X0YqqltMv+FQsw==
+X-Received: by 2002:a63:9dcf:: with SMTP id i198mr16768044pgd.242.1608176468464;
+        Wed, 16 Dec 2020 19:41:08 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id 3sm4053170pfh.166.2020.12.16.19.41.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Dec 2020 19:41:07 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20201216115125.5886-1-chunfeng.yun@mediatek.com>
- <20201216115125.5886-2-chunfeng.yun@mediatek.com> <CANMq1KDBmuoBNeizm9+f1yJgqF9oMqU5k26KfZrSdjrPQm_LwA@mail.gmail.com>
- <1608171557.23328.53.camel@mhfsdcap03>
-In-Reply-To: <1608171557.23328.53.camel@mhfsdcap03>
-From:   Nicolas Boichat <drinkcat@chromium.org>
-Date:   Thu, 17 Dec 2020 11:32:19 +0800
-Message-ID: <CANMq1KA4L4PPRgHTmeisfSWu4qgjgNVFZRvxeuAOyq2_TimELA@mail.gmail.com>
-Subject: Re: [PATCH 2/3] usb: xhci-mtk: fix UAS issue by XHCI_BROKEN_STREAMS quirk
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-usb@vger.kernel.org,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Ikjoon Jang <ikjn@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201216144114.v2.1.I99ee04f0cb823415df59bd4f550d6ff5756e43d6@changeid>
+References: <20201216144114.v2.1.I99ee04f0cb823415df59bd4f550d6ff5756e43d6@changeid>
+Subject: Re: [PATCH v2 1/4] spi: spi-geni-qcom: Fix geni_spi_isr() NULL dereference in timeout case
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     msavaliy@qti.qualcomm.com, akashast@codeaurora.org,
+        Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Alok Chauhan <alokc@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Dilip Kota <dkota@codeaurora.org>,
+        Girish Mahadevan <girishm@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org
+To:     Douglas Anderson <dianders@chromium.org>,
+        Mark Brown <broonie@kernel.org>
+Date:   Wed, 16 Dec 2020 19:41:06 -0800
+Message-ID: <160817646614.1580929.10863822116174167513@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 10:19 AM Chunfeng Yun <chunfeng.yun@mediatek.com> wrote:
->
-> On Wed, 2020-12-16 at 20:28 +0800, Nicolas Boichat wrote:
-> > On Wed, Dec 16, 2020 at 7:53 PM Chunfeng Yun <chunfeng.yun@mediatek.com> wrote:
-> > >
-> > > The 0.96 xHCI controller on some platforms does not support
-> > > bulk stream even HCCPARAMS says supporting, due to MaxPSASize
-> > > is set a non-zero default value by mistake, here use
-> > > XHCI_BROKEN_STREAMS quirk to fix it.
-> > >
-> > > Fixes: 94a631d91ad3 ("usb: xhci-mtk: check hcc_params after adding primary hcd")
-> > > Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-> > > ---
-> > >  drivers/usb/host/xhci-mtk.c | 7 ++++++-
-> > >  drivers/usb/host/xhci-mtk.h | 1 +
-> > >  2 files changed, 7 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/usb/host/xhci-mtk.c b/drivers/usb/host/xhci-mtk.c
-> > > index 8f321f39ab96..08dab974d847 100644
-> > > --- a/drivers/usb/host/xhci-mtk.c
-> > > +++ b/drivers/usb/host/xhci-mtk.c
-> > > @@ -395,6 +395,9 @@ static void xhci_mtk_quirks(struct device *dev, struct xhci_hcd *xhci)
-> > >         xhci->quirks |= XHCI_SPURIOUS_SUCCESS;
-> > >         if (mtk->lpm_support)
-> > >                 xhci->quirks |= XHCI_LPM_SUPPORT;
-> > > +
-> > > +       if (mtk->broken_streams)
-> > > +               xhci->quirks |= XHCI_BROKEN_STREAMS;
-> > >  }
-> > >
-> > >  /* called during probe() after chip reset completes */
-> > > @@ -460,6 +463,8 @@ static int xhci_mtk_probe(struct platform_device *pdev)
-> > >                 return ret;
-> > >
-> > >         mtk->lpm_support = of_property_read_bool(node, "usb3-lpm-capable");
-> > > +       mtk->broken_streams =
-> > > +               of_property_read_bool(node, "mediatek,broken_streams_quirk");
-> >
-> > Would it be better to add a data field to struct of_device_id
-> > mtk_xhci_of_match, and enable this quirk on mediatek,mt8173-xhci only?
-> This is the common issue for all SoCs (before 2016.06) with 0.96 xHCI
-> when the controller don't support bulk stream. If enable this quirk only
-> for mt8173, then for other SoCs, the compatible need include
-> "mediatek,mt8173-xhci" in dts, this may be not flexible for some cases,
-> e.g. a new SoC has the broken stream as mt8173, but also has another
-> different quirk, the way you suggested will not handle it.
+Quoting Douglas Anderson (2020-12-16 14:41:49)
+> In commit 7ba9bdcb91f6 ("spi: spi-geni-qcom: Don't keep a local state
+> variable") we changed handle_fifo_timeout() so that we set
+> "mas->cur_xfer" to NULL to make absolutely sure that we don't mess
+> with the buffers from the previous transfer in the timeout case.
+>=20
+> Unfortunately, this caused the IRQ handler to dereference NULL in some
+> cases.  One case:
+>=20
+>   CPU0                           CPU1
+>   ----                           ----
+>                                  setup_fifo_xfer()
+>                                   geni_se_setup_m_cmd()
+>                                  <hardware starts transfer>
+>                                  <transfer completes in hardware>
+>                                  <hardware sets M_RX_FIFO_WATERMARK_EN in=
+ m_irq>
+>                                  ...
+>                                  handle_fifo_timeout()
+>                                   spin_lock_irq(mas->lock)
+>                                   mas->cur_xfer =3D NULL
+>                                   geni_se_cancel_m_cmd()
+>                                   spin_unlock_irq(mas->lock)
+>=20
+>   geni_spi_isr()
+>    spin_lock(mas->lock)
+>    if (m_irq & M_RX_FIFO_WATERMARK_EN)
+>     geni_spi_handle_rx()
+>      mas->cur_xfer NULL dereference!
+>=20
+> tl;dr: Seriously delayed interrupts for RX/TX can lead to timeout
+> handling setting mas->cur_xfer to NULL.
+>=20
+> Let's check for the NULL transfer in the TX and RX cases and reset the
+> watermark or clear out the fifo respectively to put the hardware back
+> into a sane state.
+>=20
+> NOTE: things still could get confused if we get timeouts all the way
+> through handle_fifo_timeout() and then start a new transfer because
+> interrupts from the old transfer / cancel / abort could still be
+> pending.  A future patch will help this corner case.
+>=20
+> Fixes: 561de45f72bd ("spi: spi-geni-qcom: Add SPI driver support for GENI=
+ based QUP")
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
 
-It can, we do this regularly for many other components. One example:
-https://elixir.bootlin.com/linux/latest/source/drivers/i2c/busses/i2c-mt65xx.c#L402
+Minor nits below.
 
-> And I plan to remove "mediatek,mt8173-xhci" in mtk_xhci_of_match after
-> converting the binding to YMAL.
->
-> >
-> > (IMHO usb3-lpm-capable detection should also be done in the same way)
-> I prefer to provide a property for common issues, and use the way you
-> suggested for the issue only happened at a specific SoC.
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 
-Understand, it's just different approaches, there seems to be
-precedent (at least in this driver/binding) for using properties, so
-I'll let the USB maintainers speak up ,-)
+> diff --git a/drivers/spi/spi-geni-qcom.c b/drivers/spi/spi-geni-qcom.c
+> index 25810a7eef10..bf55abbd39f1 100644
+> --- a/drivers/spi/spi-geni-qcom.c
+> +++ b/drivers/spi/spi-geni-qcom.c
+> @@ -354,6 +354,12 @@ static bool geni_spi_handle_tx(struct spi_geni_maste=
+r *mas)
+>         unsigned int bytes_per_fifo_word =3D geni_byte_per_fifo_word(mas);
+>         unsigned int i =3D 0;
+> =20
+> +       /* Stop the watermark IRQ if nothing to send */
+> +       if (!mas->cur_xfer) {
+> +               writel(0, se->base + SE_GENI_TX_WATERMARK_REG);
+> +               return false;
+> +       }
+> +
+>         max_bytes =3D (mas->tx_fifo_depth - mas->tx_wm) * bytes_per_fifo_=
+word;
+>         if (mas->tx_rem_bytes < max_bytes)
+>                 max_bytes =3D mas->tx_rem_bytes;
+> @@ -396,6 +402,14 @@ static void geni_spi_handle_rx(struct spi_geni_maste=
+r *mas)
+>                 if (rx_last_byte_valid && rx_last_byte_valid < 4)
+>                         rx_bytes -=3D bytes_per_fifo_word - rx_last_byte_=
+valid;
+>         }
+> +
+> +       /* Clear out the FIFO and bail if nowhere to put it */
+> +       if (mas->cur_xfer =3D=3D NULL) {
 
->
-> Thank you
->
-> >
-> > Thanks,
-> >
-> > >         /* optional property, ignore the error if it does not exist */
-> > >         of_property_read_u32(node, "mediatek,u3p-dis-msk",
-> > >                              &mtk->u3p_dis_msk);
-> > > @@ -546,7 +551,7 @@ static int xhci_mtk_probe(struct platform_device *pdev)
-> > >         if (ret)
-> > >                 goto put_usb3_hcd;
-> > >
-> > > -       if (HCC_MAX_PSA(xhci->hcc_params) >= 4)
-> > > +       if (!mtk->broken_streams && HCC_MAX_PSA(xhci->hcc_params) >= 4)
-> > >                 xhci->shared_hcd->can_do_streams = 1;
-> > >
-> > >         ret = usb_add_hcd(xhci->shared_hcd, irq, IRQF_SHARED);
-> > > diff --git a/drivers/usb/host/xhci-mtk.h b/drivers/usb/host/xhci-mtk.h
-> > > index a93cfe817904..86aa4978915e 100644
-> > > --- a/drivers/usb/host/xhci-mtk.h
-> > > +++ b/drivers/usb/host/xhci-mtk.h
-> > > @@ -147,6 +147,7 @@ struct xhci_hcd_mtk {
-> > >         struct phy **phys;
-> > >         int num_phys;
-> > >         bool lpm_support;
-> > > +       bool broken_streams;
-> > >         /* usb remote wakeup */
-> > >         bool uwk_en;
-> > >         struct regmap *uwk;
-> > > --
-> > > 2.18.0
->
+This is still =3D=3D NULL though. :(
+
+> +               while (i++ < DIV_ROUND_UP(rx_bytes, bytes_per_fifo_word))
+
+A for loop is also fine, but I think it would push the 80 character
+limit which is probably OK. I'm happy either way, but a for loop is
+usually easier to reason about. I suggested while to fit within 80
+characters :/
+
+		for (i =3D 0; i < DIV_ROUND_UP(rx_bytes, bytes_per_fifo_word); i++)
+
+> +                       readl(se->base + SE_GENI_RX_FIFOn);
+> +               return;
+> +       }
