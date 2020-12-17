@@ -2,112 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F3A2DCFA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 11:43:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 766E52DCFAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 11:45:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727738AbgLQKnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 05:43:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726160AbgLQKnT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 05:43:19 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68DB3C0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 02:42:39 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id i7so8360603pgc.8
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 02:42:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1ISaOxv2M3y6rzTF7V0ZUu/XvyKLY1Lh8tc0RjKV/bE=;
-        b=JdIliH6SeXTydvTW28vuoACmBG9WQrqrb7eKRimd1Cl9Rh8HMO0wnx7XJRZaA7s0sN
-         dgXttyNW31CGIl4D9+NBOs8ygxpG55qZVW0OepUVtuNnw3MCLFVAP8MXJfyAaEmEMArH
-         ud1l8hYWYRDL5TTsIuEMt8tTHpvlXlQG80iRvj6OkWGBKjMjpHnHEcRqFIr6t4P4hGRg
-         92iWo0ce2iAyOZv/ULkYH33m4ThMTdyKMzWezF9P85dqlZkW/btdOv1Jfr18pK85a3JX
-         DuIGt2ihK02S2meZ+b1yNUwpJafxowwwPbj1PT3Hc/3fWv9yv5zlIYE8AG2IVjjmPq/N
-         XxFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1ISaOxv2M3y6rzTF7V0ZUu/XvyKLY1Lh8tc0RjKV/bE=;
-        b=P6sGkvVCxH/s4wZQ2TsXtaNi7eer6Aohw/2WImueijcYqFChDv8oGcLoGnruSFFxJJ
-         BM/Adb//jBIs7wmcYmxDchDnDRjlg0KES5iVhD/m+I8jelx4O/GxkZ2C4imVHrINSDXe
-         FxzxX0emwXEZyGoFDQqtpXCDnUCLyxmzPSnuJfOiEPuz/GCpNPDNPSW1xZVd7zedJGZk
-         9IxdThR3sUGJGUeFLBJKI2O1lxwtNUY9OTGyl/ujVzzJjbkXVYFHcaN/9Je1wbTUKoIE
-         ZOjvdwQDR++DNmN6wP5cEjhrD/5rOOTOxKaifO7UI2mJtP7lMhmKPJu244eTakR6ks8E
-         IvXQ==
-X-Gm-Message-State: AOAM531r/w5t+0kT/z1oMfnXXO8TwaADayRbHc2rYkMY/4i8srzt0dMe
-        /D4lPz49rg7MSxuVIBsEjaSnNumoY+b3nU7ILjFfyw==
-X-Google-Smtp-Source: ABdhPJyQqONmSuuKMNSnMEKXcxXk9UVbNjaPbYGZ8ABrFQ0kIzVpoir8YmisZWEI9RBFKOOPGshygmfRmOp3NTZUEXA=
-X-Received: by 2002:a63:50a:: with SMTP id 10mr9159315pgf.273.1608201758996;
- Thu, 17 Dec 2020 02:42:38 -0800 (PST)
+        id S1727876AbgLQKoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 05:44:03 -0500
+Received: from mga07.intel.com ([134.134.136.100]:55396 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726488AbgLQKoC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 05:44:02 -0500
+IronPort-SDR: s66Y0Qk9giK0z/AgtkyfiFdB7QDjPdkR55qHGR1BFoH4mTu/pZQtWU5j+3zZF5I1pi4mVHtCYw
+ NF8MzyS70YJA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9837"; a="239317982"
+X-IronPort-AV: E=Sophos;i="5.78,426,1599548400"; 
+   d="scan'208";a="239317982"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2020 02:42:16 -0800
+IronPort-SDR: 7hufJF96aVJs3jdNcuUbOOcQhj+zIz9abFidDLlL7O18bylSQpbmgUbdGXdS42E6ofOkj9CHhu
+ cfpUQ/uSa8Ow==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,426,1599548400"; 
+   d="scan'208";a="392483698"
+Received: from spandruv-desk.jf.intel.com ([10.54.75.21])
+  by FMSMGA003.fm.intel.com with ESMTP; 17 Dec 2020 02:42:15 -0800
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     lenb@kernel.org, rjw@rjwysocki.net, viresh.kumar@linaro.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        srinivas.pandruvada@linux.intel.com
+Subject: [PATCH] cpufreq: intel_pstate: Use the latest guaranteed freq during verify
+Date:   Thu, 17 Dec 2020 02:42:15 -0800
+Message-Id: <20201217104215.2544837-1-srinivas.pandruvada@linux.intel.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-References: <20201213154534.54826-1-songmuchun@bytedance.com>
- <20201213154534.54826-12-songmuchun@bytedance.com> <20201217103154.GA8481@linux>
-In-Reply-To: <20201217103154.GA8481@linux>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 17 Dec 2020 18:42:02 +0800
-Message-ID: <CAMZfGtUesG88wnwN6XEXWSyDFgWFGqNS153sUkXqxZu-U0h9DA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v9 11/11] mm/hugetlb: Optimize the code
- with the help of the compiler
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 6:32 PM Oscar Salvador <osalvador@suse.de> wrote:
->
-> On Sun, Dec 13, 2020 at 11:45:34PM +0800, Muchun Song wrote:
-> >  static inline unsigned int free_vmemmap_pages_per_hpage(struct hstate *h)
-> >  {
-> > -     return h->nr_free_vmemmap_pages;
-> > +     return h->nr_free_vmemmap_pages && is_power_of_2(sizeof(struct page));
->
-> This is wrong as it will return either true or false, but not what we want:
+This change tries to address an issue, when BIOS disabled turbo
+but HWP_CAP guaranteed is changed later and user space wants to take
+advantage of this increased guaranteed performance.
 
-Yeah, very thanks for pointing that out.
+The HWP_CAP.GUARANTEED value is not a static value. It can be changed
+by some out of band agent or during Intel Speed Select performance
+level change. The HWP_CAP.MAX still shows max possible performance when
+BIOS disabled turbo. So guaranteed can still change as long as this is
+same or below HWP_CAP.MAX.
 
->
->         static inline unsigned long free_vmemmap_pages_size_per_hpage(struct hstate *h)
->         {
->                 return (unsigned long)free_vmemmap_pages_per_hpage(h) << PAGE_SHIFT;
->         }
->
-> the above will compute to 4096, which is wrong for obvious reasons.
+When guaranteed is changed, the sysfs base_frequency attributes shows
+the latest guaranteed frequency. This attribute can be used by user
+space software to update scaling min/max frequency.
 
-You are right. It is my mistake. Thanks Oscar.
+Currently the setpolicy callback already uses the latest HWP_CAP
+values when setting HWP_REQ. But the verify callback will still restrict
+the user settings to the to old guaranteed value. So if the guaranteed
+is increased, user space can't take advantage of it.
 
->
-> --
-> Oscar Salvador
-> SUSE L3
+To solve this similar to setpolicy callback, read the latest HWP_CAP
+values and use it to restrict the maximum setting. This is done by
+calling intel_pstate_get_hwp_max(), which already accounts for user
+and BIOS turbo disable to get the current max performance.
 
+This issue is side effect of fixing the issue of scaling frequency
+limits by the
+ 'commit eacc9c5a927e ("cpufreq: intel_pstate:
+ Fix intel_pstate_get_hwp_max() for turbo disabled")'
+The fix resulted in correct setting of reduced scaling frequencies,
+but this resulted in capping HWP.REQ to HWP_CAP.GUARANTEED in this case.
 
+Cc: 5.8+ <stable@vger.kernel.org> # 5.8+
+Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+---
+ drivers/cpufreq/intel_pstate.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
+diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+index 2a4db856222f..7081d1edb22b 100644
+--- a/drivers/cpufreq/intel_pstate.c
++++ b/drivers/cpufreq/intel_pstate.c
+@@ -2199,6 +2199,12 @@ static void intel_pstate_clear_update_util_hook(unsigned int cpu)
+ 
+ static int intel_pstate_get_max_freq(struct cpudata *cpu)
+ {
++	if (hwp_active) {
++		int turbo_max, max_state;
++
++		intel_pstate_get_hwp_max(cpu->cpu, &turbo_max, &max_state);
++		return max_state * cpu->pstate.scaling;
++	}
+ 	return global.turbo_disabled || global.no_turbo ?
+ 			cpu->pstate.max_freq : cpu->pstate.turbo_freq;
+ }
 -- 
-Yours,
-Muchun
+2.29.2
+
