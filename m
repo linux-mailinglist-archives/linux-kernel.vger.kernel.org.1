@@ -2,156 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17D462DDC18
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 00:50:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BD3D2DDC25
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 00:50:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732461AbgLQXpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 18:45:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37454 "EHLO
+        id S1732526AbgLQXqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 18:46:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732406AbgLQXpT (ORCPT
+        with ESMTP id S1732192AbgLQXqd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 18:45:19 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADBB5C0611CE
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 15:44:28 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id n4so343892iow.12
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 15:44:28 -0800 (PST)
+        Thu, 17 Dec 2020 18:46:33 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5B72C061794
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 15:45:52 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id g3so423055plp.2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 15:45:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YEsoTw48HMH8u6aKM5ZpQGVmiSJ4UnL8pOP47zgvLqg=;
-        b=AIS4fbcrDeyed9MR+yN2RrrrnUxX9oiei4nj/N9mZ4k332HAQBBeKxZQ2t6Phuhqji
-         JTUeuxE7UwMIi4tMkfeHX1gl8RBiuU4vYPe7Kgqd84BwrrX2J1IPSI7LKg0+cwmt7e6Q
-         0nmYSu2TD6tpiGu6AUoTRb9Xsyt8+XdYqe8XU=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=W3RRTT7yNXDH2vqGzUOSfFsa20THnjHR3wCjzZigjJg=;
+        b=k3RC/895s3C+nXmkdzWMvvxjauP7XUKEgdQ9Ae0BcDG4xPBC8hvzZoYurw2xIWhHP3
+         ZfJ/QjphW+RtwQRxUK5YELqIBgAW6Up/T04VX+sZrpiEaZBHSQotn9UIdPaOSccGcmZI
+         LB+IiC8tpZ6ij1UgYn3pG6Tf+R9P2KtxxtBMKUhu+5BEzXbc7kDeou5Hp5i/VTrj7AeU
+         vREbM5ZOEc6hibgnN8sGA6PLE5/dw+RTLSHXLrTRHtelpDblCKUTgsN7YbTWJpLin1Um
+         0AqLvyXdpGUSqw0jiBcXG86WNd4MahW0hBZYa5hzq7Adg9GDp3Y4Ldufi7ukB5XrTFwU
+         r6dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YEsoTw48HMH8u6aKM5ZpQGVmiSJ4UnL8pOP47zgvLqg=;
-        b=C6qItO+TWdQvvAemir1NDYUGts5D2avqttVRysDZXbtANEBWnSBOtd/LoyJXAmcoIN
-         k7TE9fE5zNkNYqWm7Se+tzZmXtHCuhANNqebM4BCzwit9FWaKECFj19JOXZrjvYmF3TL
-         hnVi5A0XQb/j8SKmyCc/OolkF55rdbpWNNi6wtXo86IDKFhMBb0NZAG/vRMCunoZjmkJ
-         pvsUrJvqDRdJyuJrC0sacJxqrfTfG5gbUneWiBFODyaozDNtrNXT3EKii3N4oYUmh0bG
-         LAq1tVGf5j73sdhrCSoLGn+kQvPKulZyruogFJuJeSpYrQ3adLf554dM/LXTAyYUM45v
-         JzHg==
-X-Gm-Message-State: AOAM5330LOxXrmAjbzOsbXgNEYiT8MiP8Hc2dAeBeQ3SIMul18Ayg93L
-        YTX9TfF+xnd8oGnvychNqiZqQs/R/N+j552XMSEF
-X-Google-Smtp-Source: ABdhPJxj1CDRaWz46oHY3Jchfo7ka+jUSepiJY1e2m3W1CRcmz+5I8hUc4CDF0PrQrRT7sznVrdT0Tr5pQOCXQETvRk=
-X-Received: by 2002:a6b:2c52:: with SMTP id s79mr1494649ios.53.1608248668030;
- Thu, 17 Dec 2020 15:44:28 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=W3RRTT7yNXDH2vqGzUOSfFsa20THnjHR3wCjzZigjJg=;
+        b=cbGX7+Sd5Ze+luwRy9ZQ/lf4GoyLKJhvd4w523Kv8/Kh8xbOJLl4dioG+5Wt+QYR6K
+         Y+QJ8sXBKoSXeQTAZ7zVtirsze+EqoZdBU67ZRQIds6o7vjo0kY8peq+uE1gXVewmHa3
+         eFWOz+fGEEfW+SkZ2+1FGAovAN4GYrMjX0Yb/kQfHDhckKlR90eXLpaR+z0TJT2espqp
+         c1UfjoFWR5uPnSB1V7xnVfPj27W+tXHINc3Pp5AR1Uyi+kmazximMrgxh2Kc1krT6hhi
+         MbRCo4QeLrt+PzwcRRSDRL9OKgNGrV++SHsB71ezE/Fq4TTuSVFU5zLLry77M3jmxSSn
+         DA7g==
+X-Gm-Message-State: AOAM532LZ2zlh6/Ja/yw+UHeNff9hMi2MdfgKf8xElxprb21fRQhva6j
+        kISyo+yHPc5cY1I/6iiJn7E=
+X-Google-Smtp-Source: ABdhPJwZTMSyP5GW6egO5piE86RNO6/POneclQsd7v2mo1RWSf20PgSfV0+k3U4vYgYMnnPl6urrzg==
+X-Received: by 2002:a17:902:988c:b029:da:60e0:10ec with SMTP id s12-20020a170902988cb02900da60e010ecmr1272639plp.83.1608248751989;
+        Thu, 17 Dec 2020 15:45:51 -0800 (PST)
+Received: from localhost.localdomain (c-24-16-167-223.hsd1.wa.comcast.net. [24.16.167.223])
+        by smtp.gmail.com with ESMTPSA id z5sm6935088pgv.53.2020.12.17.15.45.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Dec 2020 15:45:51 -0800 (PST)
+From:   Daniel West <daniel.west.dev@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     hverkuil-cisco@xs4all.nl, mchehab+huawei@kernel.org,
+        christian.gromm@microchip.com, masahiroy@kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        daniel.west.dev@gmail.com
+Subject: [PATCH] staging: most: video: fixed a parentheses coding style issue.
+Date:   Thu, 17 Dec 2020 15:45:01 -0800
+Message-Id: <20201217234501.351725-1-daniel.west.dev@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20201217074855.1948743-1-atish.patra@wdc.com> <CAEUhbmV-AirwmVDN9xWi8eLwH53PFdoc+eU3sKzosA19Xd36Ag@mail.gmail.com>
- <CAOnJCUJSKn-QNwKCcHXc+kYtuwFQE2qatnOtGfqTOG0_Jzt4og@mail.gmail.com> <CAEUhbmUXXH2P=jagTx88J86ec=C9eur9fkfGM=OdN7oqmD7W0g@mail.gmail.com>
-In-Reply-To: <CAEUhbmUXXH2P=jagTx88J86ec=C9eur9fkfGM=OdN7oqmD7W0g@mail.gmail.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Thu, 17 Dec 2020 15:44:17 -0800
-Message-ID: <CAOnJCUJJCSjCYfALAUXJoZbChi617Nd_Yeu6o4q_jyvoofQE3Q@mail.gmail.com>
-Subject: Re: [PATCH] RISC-V: Fix usage of memblock_enforce_memory_limit
-To:     Bin Meng <bmeng.cn@gmail.com>
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <anup.patel@wdc.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Mike Rapoport <rppt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 12:53 AM Bin Meng <bmeng.cn@gmail.com> wrote:
->
-> Hi Atish,
->
-> On Thu, Dec 17, 2020 at 4:43 PM Atish Patra <atishp@atishpatra.org> wrote:
-> >
-> > On Thu, Dec 17, 2020 at 12:12 AM Bin Meng <bmeng.cn@gmail.com> wrote:
-> > >
-> > > Hi Atish,
-> > >
-> > > On Thu, Dec 17, 2020 at 3:49 PM Atish Patra <atish.patra@wdc.com> wrote:
-> > > >
-> > > > memblock_enforce_memory_limit accepts the maximum memory size not the last
-> > > > address. Fix the function invocation correctly.
-> > > >
-> > > > Fixes: 1bd14a66ee52 ("RISC-V: Remove any memblock representing unusable memory area")
-> > > >
-> > > > Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> > > > ---
-> > > >  arch/riscv/mm/init.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > >
-> > > Thank you for working on this.
-> > >
-> > > Tested with QEMU 5.2.0 on 32-bit 'virt' and 'sifive_u', with
-> > > fw_jump.bin used as the -bios.
-> >
-> > fw_dynamic should also work unless you are using more than 1G of memory.
-> > Linux kernel can only support 1G of memory for RV32. The current
->
-> I have always been using -m 2G for testing both 32-bit and 64-bit.
-> 32-bit 'virt' with 2G memory boots the 32-bit kernel fine.
->
+Fixed a coding style issue.
 
-2GB issue with fw_dynamic is fixed with this patch.
+Signed-off-by: Daniel West <daniel.west.dev@gmail.com>
+---
+ drivers/staging/most/video/video.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-https://www.mail-archive.com/qemu-devel@nongnu.org/msg768341.html
-
-> $ qemu-system-riscv32 -nographic -M virt -m 2G -smp 4 -kernel
-> arch/riscv/boot/Image -bios fw_jump.bin
->
-> > Kconfig is bit misleading and
-> > I will send a patch to update the description.
-> >
-> > However, kernel should be able to ignore any memory beyond what it can
-> > address and continue.
-> > I will investigate more.
-> >
-> > > 32-bit 'virt' boots, but 32-bit 'sifive_u' still does not boot, which
-> > > should be another issue because reverting the original 1bd14a66ee52 it
-> > > still does not help 'sifive_u'.
-> > >
-> >
-> > Are you using more than 1G of memory ? Let me know if the kernel boots
-> > if you use 1G.
->
-> Kernel does not boot with 1G memory on 32-bit 'sifive_u', either with
-> fw_jump.bin or fw_dynamic.bin.
->
-> $ qemu-system-riscv32 -nographic -M sifive_u -m 1G -smp 5 -kernel
-> arch/riscv/boot/Image -bios fw_jump.bin
->
-
-This happened because of the incorrect loading address. It is already
-fixed by Alistair.
-https://www.mail-archive.com/qemu-devel@nongnu.org/msg768279.html
-
-> >
-> > > Tested-by: Bin Meng <bin.meng@windriver.com>
-> > >
-
-Thanks for testing it.
-
-> > > I believe the following tag should also be added and patch cc'ed to
-> > > stable-kernel:
-> > >
-> > > Reported-by: Bin Meng <bin.meng@windriver.com>
-> > > Cc: <stable@vger.kernel.org> # 5.10
->
-
-Sure. I will add that and resend it.
-
-> Regards,
-> Bin
-
-
-
+diff --git a/drivers/staging/most/video/video.c b/drivers/staging/most/video/video.c
+index 829df899b993..c58192ab0c2a 100644
+--- a/drivers/staging/most/video/video.c
++++ b/drivers/staging/most/video/video.c
+@@ -365,8 +365,8 @@ static const struct video_device comp_videodev_template = {
+ 
+ /**************************************************************************/
+ 
+-static struct most_video_dev *get_comp_dev(
+-	struct most_interface *iface, int channel_idx)
++static struct most_video_dev *get_comp_dev
++	(struct most_interface *iface, int channel_idx)
+ {
+ 	struct most_video_dev *mdev;
+ 	unsigned long flags;
 -- 
-Regards,
-Atish
+2.25.1
+
