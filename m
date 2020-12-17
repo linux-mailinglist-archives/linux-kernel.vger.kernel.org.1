@@ -2,104 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE87A2DDBB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 23:59:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF0CA2DDBB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 00:02:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732307AbgLQW63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 17:58:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729405AbgLQW62 (ORCPT
+        id S1732079AbgLQXAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 18:00:45 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:54902 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730054AbgLQXAo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 17:58:28 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4933C061794;
-        Thu, 17 Dec 2020 14:57:47 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id g24so392870edw.9;
-        Thu, 17 Dec 2020 14:57:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=UrAnooqpz/XiDtTxpipQwqwJFdvUo8ZMv3C6cGNI3ZA=;
-        b=logRTKSZ/hzvgSk7JdSe4LJcP0fB++cmt5mqedJAqkraDfhuyoPIZW5OkW8/h4XRb7
-         lDv5kz2zu+LgDzHLLW3zme+sZoxsj8Sw9CvtE8KVXJU6p6e3VRtQNtP//U9qX4hrx7Y4
-         vOLgLfYeeqcqp1b1f+IkeSAoCg35MvNpYHcxtY37ezvBt+JSCyG+kYzRqV/GH6oW5bDF
-         xDoRPxdGQxsZQi/bTEPnvz9d6h/tb0R+hDI7xlNv9EqJlGrDnYMkRY+6RyGoobAdc3cu
-         OEhMAgWNxcXd9ZdZALAXoAKXU1DaFZpYt7nBI+4nS/dUVXvADxm+wPkhjlD9cJUIuagD
-         oYmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=UrAnooqpz/XiDtTxpipQwqwJFdvUo8ZMv3C6cGNI3ZA=;
-        b=c+3I+UmF36Fg2JYUBFGopGKtLREHz6NriKxsOGCDgT16vSwnThi23umtpyMqzh1VQj
-         lymO4v8TPgLC3Meoripeszv0sljwzKgjirJC/Bvw+wOxyMLieZ0SXdNp1Nn0JlP1kuEh
-         HDs5tyWN4B2VfJBfZcl3D+LGeng/fA4aiDyjmK0sxLTDnkzUM/l6rgfdOandRkQNRS7/
-         3r5r6dqrdCMu5KvDrSrgistR8Lmq+3Ce8KpKN23zYvkwZ/4834LclIrxx+XL/OvxQt8f
-         izY2gl3uJWw7a5np2oz82l8RuJfMRQQm8S6Rqb2t0gTTfLpN2AAXoTojEyR/VenEiIXf
-         bDLA==
-X-Gm-Message-State: AOAM533rrWhXq977fS82Pfos9utB1Ob1PUH3BnU9q4wauo4ynZKC+G9+
-        1B4W31BjyuAFCMQkE4jXwSE=
-X-Google-Smtp-Source: ABdhPJxCYj6F5aGktG6RiD8QJxhSwnqDUJeTo47Q4OqGsWS66fVzRFgFMdRnbgXRYd2jcgJ+l84PZQ==
-X-Received: by 2002:a50:e80c:: with SMTP id e12mr1643558edn.288.1608245864965;
-        Thu, 17 Dec 2020 14:57:44 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
-        by smtp.googlemail.com with ESMTPSA id u16sm25026385eds.10.2020.12.17.14.57.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 17 Dec 2020 14:57:44 -0800 (PST)
-Message-ID: <fbb752c30a921f251b7df130c942e20548ca0997.camel@gmail.com>
-Subject: Re: [PATCH V2] scsi: ufs-debugfs: Add error counters
-From:   Bean Huo <huobean@gmail.com>
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Can Guo <cang@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>
-Date:   Thu, 17 Dec 2020 23:57:43 +0100
-In-Reply-To: <750889b4-19b7-3c0b-c614-a8dddc2dcab2@intel.com>
-References: <20201216185145.25800-1-adrian.hunter@intel.com>
-         <920b01c29525ff1cf894a2cf9c809750533ddc13.camel@gmail.com>
-         <750889b4-19b7-3c0b-c614-a8dddc2dcab2@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Thu, 17 Dec 2020 18:00:44 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 821971C0B7D; Thu, 17 Dec 2020 23:59:46 +0100 (CET)
+Date:   Thu, 17 Dec 2020 23:59:43 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     'Marek Behun' <marek.behun@nic.cz>,
+        Abanoub Sameh <abanoubsameh8@gmail.com>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Abanoub Sameh <abanoubsameh@protonmail.com>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] leds: led-core: Get rid of enum led_brightness
+Message-ID: <20201217225942.GA8241@amd>
+References: <20201211014840.1554095-1-abanoubsameh@protonmail.com>
+ <20201211135628.1fe1af79@nic.cz>
+ <2ae41868b2604a489927b5903529afb4@AcuMS.aculab.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="ZPt4rx8FFjLCG7dd"
+Content-Disposition: inline
+In-Reply-To: <2ae41868b2604a489927b5903529afb4@AcuMS.aculab.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-12-17 at 11:49 +0200, Adrian Hunter wrote:
-> > 
-> > The purpose of patch is acceptable, but I don't know why you choose
-> > using ufshcd_core_* here. 
-> 
-> Do you mean you would like a different function name?  'ufshcd_init'
-> is used
-> already.  The module is called ufshcd-core, so ufshcd_core_* seems
-> appropriate.
-> 
-> > Also. I don't know if module_init()  is a proper way here.
-> 
-> Can you be more specific?  It is normal to do module initialization
-> in
-> module_init().
 
-Hi Adrian
-My concern that ufs_debugfs_init() is called in module_init(), but your
-another debugfs initialization function ufs_debugfs_hba_init(hba)
-called in the UFS host probe path. 
+--ZPt4rx8FFjLCG7dd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-If these two (module_init() and module_platform_driver())
-initializaiton sequence always as your expectation: ufs_debugfs_init()-
-->ufs_debugfs_hba_init(), that is fine, otherwise, it is better just
-group them, make it simpler.
+Hi!
 
+> > On Fri, 11 Dec 2020 03:48:40 +0200
+> > Abanoub Sameh <abanoubsameh8@gmail.com> wrote:
+> >=20
+> > > This gets rid of enum led_brightness in the main led files,
+> > > because it is deprecated, and an int can be used instead,
+> > > or maybe even a uint8_t since it only goes up to 255.
+> > > Next we can also patch the other files to get rid of it completely.
+> >=20
+> > 1. unsigned int should be used IMO
+> >   - using int may force all implementers to check for negative value
+> >     and return -EINVAL, which is stupid
+> >   - some LED controllers may offer more than 8bit brightness value, so
+> >     no uint8_t
+>=20
+> More than 8 bits would be good.
+> While not really relevant for actual 'brightness' it allows
+> for 'strange' things be encoded in the brightness field.
 
-Thanks,
-Bean
- 
+I have headlamp which can do 0.1lumens to 750lumens. Some go down to
+0.01 lumens. More than 8 bits definitely makes sense.
 
+Display backlights also need great ranges.
+
+> While extra parameters could be added, they are only really usable
+> by code that knows they are present.
+> So encoding in the 'brightness' sort of makes sense.
+
+No.
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--ZPt4rx8FFjLCG7dd
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl/b4t4ACgkQMOfwapXb+vLCvwCfQaX9fJwM0k0zZHrmFS8c8AS7
+udMAniG4GbiBy7E61PVgFrlWfMn5E7+k
+=LUnF
+-----END PGP SIGNATURE-----
+
+--ZPt4rx8FFjLCG7dd--
