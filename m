@@ -2,147 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5882F2DDAC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 22:21:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D2222DDAC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 22:21:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729854AbgLQVVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 16:21:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726983AbgLQVVK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 16:21:10 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8D06C061285
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 13:19:53 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id a12so27989354wrv.8
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 13:19:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XsBwmgyFbdlnXiRdAhxB0KnsdRP9EX0fo8+7p/onVeM=;
-        b=NyRQdJQ0TIiT6H5yuKllL5V1o0PMFLt7UrTUtmH/FewUN6IbxVKuEto8NkC2CLuJq0
-         EYevYM/zZ/UNBngzu6G93EgAGA43alT1OUSBO2eHb0uZO56DXAsCGLdnR/Vs9w6H3oT2
-         A59Irsjd3PGIB1rGOaQCDkvqK1ZcPEBjVRf5ZR2e9VZIvLYMkpL9oA1nRXpC5CJj8hO/
-         wedNTokq3HhmiyhkviQNxhYAeRfhaswc/0hj0/uPVKZMCjcbJ7W4dBGEOkcSrtExG12h
-         3KIFmdEMMLGNW2R0kHOelk52IHkiN9yqwVHqN4ZyOzJa8k5A+avRgs9jLGBhjHltfj8E
-         IEoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XsBwmgyFbdlnXiRdAhxB0KnsdRP9EX0fo8+7p/onVeM=;
-        b=bTNxkVhc1d/S3877aR60Z8d0JAVXgXzoEFXkO/Xm/5j+dCTI522P5+jWgxoQG4S/eL
-         Gr8s4+o0YeWcBw9KB4/Urd8pdYaazFL4pZjI6FGwXQLWwSlSjPCXPM095tD40Ir0yl3I
-         MDW6hD8uzy+EMNSix5uTUyDJLgMFiqxcNLUh6WFuNtbOmdVUc0yTzwp4eapIEnkIMTc4
-         2+TaAMmFOWXBqJusnetHUiWfA9tALgTZwGeg/LHMZny6mMuVsZqmC45RpqWWim2tx8fZ
-         h8ozUBT0pEyAwjIv/xUCaQU+yxT/IGRNFKKOXJ4TVhDn5G5kijZnD4nDz7AValfisKJm
-         zQMw==
-X-Gm-Message-State: AOAM533PZxgCehVQUnwfUF3Zz15d02LnYfKFCvbDnCucVYmRAFEnVUNW
-        flIcnCWu7zjrX/GfaY22+rtZSA==
-X-Google-Smtp-Source: ABdhPJz9z6Hdbu62U7P0AH8ARVxVDI3D8QgrHz9wPCZhkt1X0+MQdkHm0xs8xAdE9USd0/9DVxv2OQ==
-X-Received: by 2002:adf:f101:: with SMTP id r1mr806378wro.112.1608239992221;
-        Thu, 17 Dec 2020 13:19:52 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:ccb6:ce78:2bcd:4ead? ([2a01:e34:ed2f:f020:ccb6:ce78:2bcd:4ead])
-        by smtp.googlemail.com with ESMTPSA id m8sm9617258wmc.27.2020.12.17.13.19.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Dec 2020 13:19:51 -0800 (PST)
-Subject: Re: [PATCH v2 47/48] ARM: tegra: ventana: Support CPU voltage scaling
- and thermal throttling
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20201217180638.22748-1-digetx@gmail.com>
- <20201217180638.22748-48-digetx@gmail.com>
- <91139f8b-0b83-dd8a-ba53-8e7a499e6344@linaro.org>
- <b39ebfc1-42b3-1fa7-efe4-6ecbc8cfcb50@gmail.com>
- <776e0e84-e395-2bfb-f1ee-c34864b1cf16@linaro.org>
- <ce603c74-3a20-7331-36a7-d7bc43ce36b6@gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <6afaf91c-d0ce-265d-4b71-0ea8da19918b@linaro.org>
-Date:   Thu, 17 Dec 2020 22:19:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <ce603c74-3a20-7331-36a7-d7bc43ce36b6@gmail.com>
-Content-Type: text/plain; charset=utf-8
+        id S1729584AbgLQVUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 16:20:49 -0500
+Received: from mail-mw2nam10on2125.outbound.protection.outlook.com ([40.107.94.125]:19168
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729108AbgLQVUs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 16:20:48 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KUxG/qOQ/uOTGRYWzrktTbpHWAuqTdLaaCwoe0aGitiBod7dSpkhQbccCjIgdVROdg8tatJ3FxHgC9urWo9LUr63AZ9lnK7yVFmVPVJgKVmbonFR/cMR8zcM/oTDWStsMLwxziZTYuBrE0Mzz3mNt6wximkDCuWwfddSpNp/2Ha1AH5QkjOOw6a9QgScN/wW3xnPCVLNkkJhjUh5MTVK7cfWTddOWU2AD1r3nCBQHtoVQ5iJRJUhCDrFrmswUcMJUm9EMkXowiGB8zlg8i8qyWVaQel+5dvRWTIvvFhe4hh9T1Rpy1XbxNOVBAX4EtX2uVmE8Eqrgz28SCJkXYu5og==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DZNd+hdmfl8lkNXfWfxl6brY4aG0rBK4TkDdgw8mrKk=;
+ b=Ywv+0KDmKBTrP0qNB34ZJhQbk0u/d7dF/uWU5Ia300hceCQ4T0N3UvxTjSDMY/EfzoXJROQXwOHh6f9tmlkHspls4ovlV5FTQ6t3S1/kbRceWm0W2BxcBC67AZnI/fzO5/LyJsCSei6wPEhjdNbSTzYtNDZykoX6dfK3q3k6pMtRQZmbVjt+HFLm8DeJqpJpXo5u0SyQne1MTyAFagE7PY9mKYDM873aKpzw4G+2flHPTPW3PG/IhXs8QZxiXF3THvUnW2CxEVvNv/HY1ZfipagCLV21jrKx69B9T0lzxtaK/L1dvCW6bzf/MwDX/Ms6Y3UoG/qjpxaUHZGy/rAGNw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=hammerspace.com; dmarc=pass action=none
+ header.from=hammerspace.com; dkim=pass header.d=hammerspace.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hammerspace.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DZNd+hdmfl8lkNXfWfxl6brY4aG0rBK4TkDdgw8mrKk=;
+ b=QuL52x4ccVp1V1jH5mQ7kk/FX0DkzE8IfUO7vH6xZ6+aW+SIXTT5zhjIOuMZMlJSsTwdwFed1GFz4pz+AbXFE02kN8fpTNBcoA8zyVQajEz++6c43aWiedfFuxJP5+9yu/l7ao0ZNgOY96oq/cafo/zybAnWjbRam3fa7gu0clA=
+Received: from MN2PR13MB3957.namprd13.prod.outlook.com (2603:10b6:208:263::11)
+ by MN2PR13MB3485.namprd13.prod.outlook.com (2603:10b6:208:161::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.19; Thu, 17 Dec
+ 2020 21:19:55 +0000
+Received: from MN2PR13MB3957.namprd13.prod.outlook.com
+ ([fe80::e989:f666:131a:e210]) by MN2PR13MB3957.namprd13.prod.outlook.com
+ ([fe80::e989:f666:131a:e210%8]) with mapi id 15.20.3700.018; Thu, 17 Dec 2020
+ 21:19:54 +0000
+From:   Trond Myklebust <trondmy@hammerspace.com>
+To:     "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        "konstantin@linuxfoundation.org" <konstantin@linuxfoundation.org>
+CC:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] Please pull NFS client changes for 5.11
+Thread-Topic: [GIT PULL] Please pull NFS client changes for 5.11
+Thread-Index: AQHW1J8iUwXTPNIWjkGM7oCEKx5v/an7vFYAgAAPIAA=
+Date:   Thu, 17 Dec 2020 21:19:54 +0000
+Message-ID: <faf1df209849d1a8f242f50a709ca52f01f33ef3.camel@hammerspace.com>
+References: <a47c68f255f9fd9361f0c17ccf1273d905fd0bd1.camel@hammerspace.com>
+         <CAHk-=wi74uq4CGeWtSYfMcdgWdpkiwbM5u7ULryCOPM1ZAdFXw@mail.gmail.com>
+In-Reply-To: <CAHk-=wi74uq4CGeWtSYfMcdgWdpkiwbM5u7ULryCOPM1ZAdFXw@mail.gmail.com>
+Accept-Language: en-US, en-GB
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linux-foundation.org; dkim=none (message not signed)
+ header.d=none;linux-foundation.org; dmarc=none action=none
+ header.from=hammerspace.com;
+x-originating-ip: [68.36.133.222]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 6f01c597-e134-4461-2fc1-08d8a2d17fc8
+x-ms-traffictypediagnostic: MN2PR13MB3485:
+x-microsoft-antispam-prvs: <MN2PR13MB348514D79B07E7F3B6EBA2ACB8C40@MN2PR13MB3485.namprd13.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 4B9EwvBzcAe0xaCg/+Nw6MfMtBJet4HQnaOLK4f9fQ61UEnfLjVLCYnEnfX9ppkPgoTsMfJrG5V3CGluHMjDasZqlS8Me6zL27nZWjuZQr4HL14k6J51WO4ewFCWesovHjtBX+iHJ2c8pC+fbkvIw+tugQ3N95PwvST4rWesWFkRR/S8+Pf1Ehi5l69dwvBVq/lod4ZefnrR3eSUcPm7D6tNXCEHbhHtnGkS1f3vT+IXOeQqlswqt3aVhouol9AREMKL62sSoy9Mg5gfVtdaJaCbWP9kMq2NXr5E/GNeiMRLI5ZAvIIVDnfrr6tuYIEUVMLZjYOnjJuZZ4KeXstiAzxRsx3lrV5A94t33H71BKc=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR13MB3957.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(376002)(136003)(39840400004)(346002)(8676002)(64756008)(6506007)(5660300002)(2616005)(4001150100001)(6486002)(86362001)(478600001)(71200400001)(8936002)(316002)(186003)(110136005)(83380400001)(4326008)(4744005)(26005)(54906003)(6512007)(66556008)(91956017)(66476007)(53546011)(66446008)(66946007)(36756003)(2906002)(76116006);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?d0tnb0tQR2hPUENsM2pDd1FnYWg2UGxvZWp4OEtSSmUwcEU1N2lnM3pOTTlY?=
+ =?utf-8?B?RHN5L05GMDlkQVErM1psTnp5VjNYUUlQdHdRZi9QL0VBQlltN2s4Wm1zazR2?=
+ =?utf-8?B?SmRQbm1UdmZkUjhIcml0K0NJWjJWaUQ3cGN0VFJWd3poZk9hRnN2OEhQVlhX?=
+ =?utf-8?B?ejBXOWsyZXZOUU1KOFRTdFhJZ0hXWEJVeStXKzNVeEFaVU8xRzRZWjA0NUJy?=
+ =?utf-8?B?TG5SbklON2p2MzNDQjZDOHlnMm9mK2ZadisyWjdIT0o0RFpMWU51ZC9JRmZ6?=
+ =?utf-8?B?NkIrTWhvOEhpZndJZUREMU9IZ04yVXowL2ZBMW14dmlXUENVVjE4Mno0VGpK?=
+ =?utf-8?B?YzBYTmNoc2xSTGFiWHl5RTlMYWszcGlhT1EyaXF0T2JIU0dhR2ljcnZjYTE0?=
+ =?utf-8?B?L1ZFMzBhZ1cvWkI3cWVXeHZSM0pRaUV4SXlkWTdRTFIxQ2o5SkRvMTNxVHNX?=
+ =?utf-8?B?bXJuMkhqdmFUZGtGZGw4b2U1TFdLcUZOb2pxYU9yaVg1Q2ZteWFvVndYV1g0?=
+ =?utf-8?B?OG5sbGpzL2FyZWlqMkVpUnBqTXhNbHN0cU1RYjFkVU5PTmd0ZncydVFWVmxo?=
+ =?utf-8?B?dkFhZ2pWS1BBUkVuTkFvVXdxd2FBYmEzYVNaN3dqRkJLNzZhWjVLQmpwc1Vu?=
+ =?utf-8?B?b2xvOWFiaE52TFd0Ry83Q1VLdzhIU2srcjRPVTlROEtobktGRDFNV2Zrb0RQ?=
+ =?utf-8?B?cTJHd2xEcVNEL2pTN2piSlFOVjFIcjQ5MHJBK2ZuclcxSjluVkFmd3orR21M?=
+ =?utf-8?B?cVh3eERNR1p5THhkNGRtN0tPQWxuTDM5UjVuM2R0QmpjUmtSR3ZsR3duWjZj?=
+ =?utf-8?B?bEZaS1hRTjI2S1RiaEV5NEJFbEVCazhzRHNRcTVvdjd5b2MxTGxpc0t6TXA5?=
+ =?utf-8?B?cVF0YlBQdG5GYmkyMElzRWRoRTRsSWVINkxlWUJMYm1uSGVEd3VPNW9QdWtL?=
+ =?utf-8?B?eTViMWRNN0FCMmFRUXpKSW9VRDdOcUNFY1pueWRRVXFzTXNZSUNoSHFGY2pG?=
+ =?utf-8?B?RGlrWVQ4NzVnZy91ekZXbkc4Q3d1QjNsWGtDL2RwNkM3bFdzWW9NcE15a3BW?=
+ =?utf-8?B?YVJ4M2hRZVh5aXN6WGdJbTkyYmpEZTRVOXJVUlVCaW4xdHRqbHZna2VJc0Nq?=
+ =?utf-8?B?NUw5SFJ5dy9vNFY5QUdacWxxbUwxQ2dYQXFYWUxwSmVydWVXcjcrMTZVc3dy?=
+ =?utf-8?B?ZXBLU1hHVEhCRnVDT2lNaFV6M0cwY3dZRGpuZ2tGR1BVamo4eWN1VDl4b2NS?=
+ =?utf-8?B?bmdWdXlxeWtobHMyRUR5NDNnNU9xQjNOQW9ETXRQVnRzTThCYTNuUDgwVCta?=
+ =?utf-8?Q?KmizMrIe2cQT7akbDeTo3zkMBONWLaopoR?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <8646D5B5BBD5DC4691A3100176AAD755@namprd13.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: hammerspace.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR13MB3957.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6f01c597-e134-4461-2fc1-08d8a2d17fc8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Dec 2020 21:19:54.7440
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 0d4fed5c-3a70-46fe-9430-ece41741f59e
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: d986UiRvICQnRnvyK+YS0/e94F4knC/TbePRQk3Q/9YFot3T/WUUtAJayhiW+Iaaok83PbcVnV2m8+TuQYQoyg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR13MB3485
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/12/2020 21:28, Dmitry Osipenko wrote:
-> 17.12.2020 22:36, Daniel Lezcano пишет:
->>>>> +					type = "critical";
->>>>> +				};
->>>>> +			};
->>>>> +
->>>>> +			cooling-maps {
->>>>> +				map0 {
->>>>> +					trip = <&trip0>;
->>>>> +					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
->>>> You should add all CPUs here.
->>>
->>> All CPU cores are coupled on Tegra in regards to CPUFreq, hence I think
->>> it won't make any difference if secondary CPU cores will be added here,
->>> isn't it?
->> The explanation is in the description of commit ef4734500407ce4d
-> 
-> I think that really only makes sense if CPU cores have independent clock
-> rate management. 
-
-ATM I did not see any ARM platform having a clock line per CPU but I may
-be wrong.
-
-> IIRC, I actually made some research about this in the
-> past and intentionally removed the secondary cores from the
-> cooling-device since they didn't make any difference for a coupled CPU
-> cores.
-> 
-> That commit also says:
-> 
-> "But as soon as this CPU ordering changes and any other CPU is used to
-> bring up the cooling device, we will start seeing failures."
-> 
-> I don't quite understand to what "failures" that commit referrers. I
-> tried to change the cpu0 to cpu1 in the cooling-device and don't see any
-> failures. Could you please clarify this?
-> 
-> In general it should be fine to add all the cores to the cooling-device
-> and I'll do it in v3, but I want to make it clear why this is needed.
-
-AFAIR, if CPU0 is unplugged the cooling device can not rebind to CPU1.
-And if CPU0 is plugged in again, the cooling device fails to initialize.
-
-And, if the CPUs are mapped with the physical CPU0 to Linux numbering
-CPU1, the cooling device mapping will fail.
-
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+T24gVGh1LCAyMDIwLTEyLTE3IGF0IDEyOjI1IC0wODAwLCBMaW51cyBUb3J2YWxkcyB3cm90ZToN
+Cj4gT24gVGh1LCBEZWMgMTcsIDIwMjAgYXQgMTA6MDUgQU0gVHJvbmQgTXlrbGVidXN0DQo+IDx0
+cm9uZG15QGhhbW1lcnNwYWNlLmNvbT4gd3JvdGU6DQo+ID4gDQo+ID4gwqAgZ2l0Oi8vZ2l0Lmxp
+bnV4LW5mcy5vcmcvcHJvamVjdHMvdHJvbmRteS9saW51eC1uZnMuZ2l0IHRhZ3MvbmZzLQ0KPiA+
+IGZvci0NCj4gPiA1LjExLTENCj4gPiANCj4gPiBmb3IgeW91IHRvIGZldGNoIGNoYW5nZXMgdXAg
+dG8NCj4gPiA1MjEwNGYyNzRlMmQ3ZjEzNGQzNGJhYjExY2FkYTg5MTNkNDU0NGUyOg0KPiANCj4g
+cHItdHJhY2tlci1ib3QgZG9lc24ndCBzZWVtIHRvIGhhdmUgcmVhY3RlZCB0byB0aGlzIGVtYWls
+Lg0KPiANCj4gSSBzdXNwZWN0IGl0J3MgYmVjYXVzZSBvZiB0aGUgb2RkIGFuZCB1bmZvcnR1bmF0
+ZSBsaW5lIGJyZWFrcyBpbiBpdCwNCj4gYnV0IHdobyBrbm93cy4gTWF5YmUgaXQncyBqdXN0IGRl
+bGF5ZWQgKGJ1dCB0aGUgb3RoZXIgZmlsZXN5c3RlbQ0KPiBwdWxscw0KPiBzZWVtIHRvIGhhdmUg
+YmVlbiB0cmFja2VkKS4NCj4gDQo+IEFueXdheSwgaXQncyBwdWxsZWQsIGV2ZW4gaWYgdGhlIGF1
+dG9tYXRpb24gc2VlbXMgdG8gbm90IGhhdmUNCj4gbm90aWNlZC4NCj4gDQo+IMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqAgTGludXMNCg0KVGhhbmtzISBNdWNoIGFwcHJlY2lhdGVkLg0KDQotLSANClRy
+b25kIE15a2xlYnVzdA0KTGludXggTkZTIGNsaWVudCBtYWludGFpbmVyLCBIYW1tZXJzcGFjZQ0K
+dHJvbmQubXlrbGVidXN0QGhhbW1lcnNwYWNlLmNvbQ0KDQoNCg==
