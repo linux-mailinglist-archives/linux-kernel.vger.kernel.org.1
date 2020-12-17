@@ -2,105 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B05EF2DCDDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 09:45:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33FF82DCE6F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 10:33:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727169AbgLQIpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 03:45:15 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58638 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726595AbgLQIpO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 03:45:14 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 53BB4AC7B;
-        Thu, 17 Dec 2020 08:44:32 +0000 (UTC)
-Message-ID: <93832374535cb46419e921f5ee02ecabfe2cc83d.camel@suse.de>
-Subject: Re: [PATCH] arm64: Kconfig: select ZONE_DMA
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, catalin.marinas@arm.com,
-        will@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>
-Date:   Thu, 17 Dec 2020 09:44:31 +0100
-In-Reply-To: <20201217080802.29023-1-peng.fan@oss.nxp.com>
-References: <20201217080802.29023-1-peng.fan@oss.nxp.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-eWZy3Scs/7uuot7vpnD0"
-User-Agent: Evolution 3.38.2 
+        id S1726702AbgLQJc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 04:32:29 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:9900 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726155AbgLQJc0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 04:32:26 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CxRZK57hgz7Fwt;
+        Thu, 17 Dec 2020 17:31:05 +0800 (CST)
+Received: from huawei.com (10.44.142.101) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Thu, 17 Dec 2020
+ 17:31:36 +0800
+From:   Zhuling <zhuling8@huawei.com>
+To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+CC:     <luanjianhai@huawei.com>, <luchunhua@huawei.com>,
+        <zhuling8@huawei.com>
+Subject: [PATCH] Modify hardcode to SECCOMP_MODE_FILTER
+Date:   Thu, 17 Dec 2020 16:46:32 +0800
+Message-ID: <20201217084632.67251-1-zhuling8@huawei.com>
+X-Mailer: git-send-email 2.9.5
 MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.44.142.101]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: zhuling <zhuling8@huawei.com>
 
---=-eWZy3Scs/7uuot7vpnD0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+    bpf/seccomp: modify hardcode 2 to SECCOMP_MODE_FILTER
 
-Hi Peng,
-sorry for the inconvenience, this is most probably related to these changes=
-:
-https://lore.kernel.org/linux-arm-kernel/20201119175400.9995-1-nsaenzjulien=
-ne@suse.de/
+    while the hardcode 2 has been define in seccomp_bpf.c, we should use
+the definitions(SECCOMP_MODE_FILTER) instead of hardcode 2.
 
-On Thu, 2020-12-17 at 16:08 +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
->=20
-> ZONE_DMA should not be disabled, otherwise arm64_dma_phys_limit is
-> left uninitialized and cause swiotlb have IO TLB above 4GB which
-> might crash some platforms
->=20
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->=20
-> Not sure whether need to address code to initialize the variables or
-> force select ZONE_DMA
+Signed-off-by: zhuling <zhuling8@huawei.com>
+---
+ samples/bpf/tracex5_user.c | 2 +-
+ samples/seccomp/dropper.c  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-What is the cause for the swiotlb related crashes? I assume it's DMA into a=
-n
-address too high for the bus, but it might be something else.
+diff --git a/samples/bpf/tracex5_user.c b/samples/bpf/tracex5_user.c
+index c17d3fb..417753f 100644
+--- a/samples/bpf/tracex5_user.c
++++ b/samples/bpf/tracex5_user.c
+@@ -28,7 +28,7 @@ static void install_accept_all_seccomp(void)
+ 		.len = (unsigned short)(sizeof(filter)/sizeof(filter[0])),
+ 		.filter = filter,
+ 	};
+-	if (prctl(PR_SET_SECCOMP, 2, &prog))
++	if (prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, &prog))
+ 		perror("prctl");
+ }
 
-I figure you have a setup with ZONE_DMA32, ZONE_NORMAL and !ZONE_DMA.
-
-First of all, I'd suggest you try arm64's defaults (all zones enabled), the
-series I mention above should fix most of the issues we've had with
-ZONE_DMA/ZONE_DMA32 in the past. We now parse DT/ACPI and only create two
-distinct DMA zones if really needed. Otherwise ZONE_DMA spans the whole 32 =
-bit
-address space.
-
-That said, IMO we're not doing the right thing in the !ZONE_DMA && ZONE_DMA=
-32
-case, and this should fix it (I didn't test it):
-
-- #define ARCH_LOW_ADDRESS_LIMIT	(arm64_dma_phys_limit - 1)
-+ #define ARCH_LOW_ADDRESS_LIMIT	(arm64_dma_phys_limit ? : arm64_dma32_phys=
-_limit)
-
-Regards,
-Nicolas
-
-
-
-
-
---=-eWZy3Scs/7uuot7vpnD0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl/bGm8ACgkQlfZmHno8
-x/4iTQgAoAfA95ea1Tklzkk7Ocxe3cSd4ZsszNphIXPEqhdkTgF364hsAjI8zp2x
-2kyzDNFVod0ECra/DvplsR0itivTsthkblZMoLX7spaxNDpprEHL90Gg523KOTX/
-uiChxY6xvsW8JZk8Ufp6/xxuKF8i2+s15joq3geJALzvGoac2P+K9aLuEZXctluN
-S5WCkbdYoLxoAyUCRY58rZXl//lnvnKzfHcrA/eWgUhVed1euwFQznDnl75Lcjfb
-8sdh9mEanNsFZgd+Dok54O8hyb4p9Yd1P1nfCnE85C14oSiL4IVHRfXcQmdoQvl+
-MP/U1Ndyh+6CR2M5lOcLYDhjtEIqcQ==
-=1qYh
------END PGP SIGNATURE-----
-
---=-eWZy3Scs/7uuot7vpnD0--
+diff --git a/samples/seccomp/dropper.c b/samples/seccomp/dropper.c
+index cc0648e..08f8e7f 100644
+--- a/samples/seccomp/dropper.c
++++ b/samples/seccomp/dropper.c
+@@ -46,7 +46,7 @@ static int install_filter(int nr, int arch, int error)
+ 		perror("prctl(NO_NEW_PRIVS)");
+ 		return 1;
+ 	}
+-	if (prctl(PR_SET_SECCOMP, 2, &prog)) {
++	if (prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, &prog)) {
+ 		perror("prctl(PR_SET_SECCOMP)");
+ 		return 1;
+ 	}
+--
+2.9.5
 
