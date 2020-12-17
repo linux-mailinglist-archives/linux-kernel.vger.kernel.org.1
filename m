@@ -2,149 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D89F12DCC7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 07:31:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 426BB2DCC7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 07:31:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726839AbgLQG3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 01:29:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726503AbgLQG3a (ORCPT
+        id S1727013AbgLQG3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 01:29:45 -0500
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:34243 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725930AbgLQG3o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 01:29:30 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E57B6C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 22:28:49 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id t16so25386035wra.3
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 22:28:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Uw0qn01yEipuE4KQo4q/I//7O4Z5qhvsoEs4F9itwqk=;
-        b=VJEC/6EOmgFyFKHDv7NxjcSOxbitydIzcOYkIbzqE+DlWxlizfKe5e4ZWTxitA4pjT
-         mhyCgnuIZY28r45HXehI6gk/xqbL/nLipe38jbK+hHwshuM6wGD6doQ23fitAES7Y5Mg
-         +uicIE+cJAxcIMPlsG5WUAJ03mL780xvp1pTP6Q33zNwdrx77qbWEU0He2TjGA7gKTVw
-         /HMert+f/4zgGvMT69ibNddye0lPOzhef285rGCmDr8cs4DUsHPuQPbar0T6fdME2unT
-         AIssadyUx9iBEXc/LO7rTLciI+N6En2ddm7nw8LX1UYM/hPBLjdftjzfZDmkAKX0F3G7
-         qu3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Uw0qn01yEipuE4KQo4q/I//7O4Z5qhvsoEs4F9itwqk=;
-        b=ai8DFKHiHwG6IhE51PdhzKBeJUnlz4+vYl78Zq8ulZVeZFRTQxiG4X5SQdUJGtj6C2
-         EIMaB+q/CckerQ6SZuXTViwDQfQftFCF12SBMFELygIoollkvRGtwdtDJb3emmrivjUy
-         78ykycO8Kmdp5wx9uXIlDX9YYrZ6ZvQDSaSUNQ7SV4tTxgADVIcmwn5Od6zegel+IdjC
-         OFoYkNzb5BsPeCh+lRslhZ9uZQtlqyE/7N8n3Ejzd24xP+SWGrhRfJbZ5BMrUEYEZlGj
-         FyvflPwXUJjGNnJwzNaa74r9UXwq8rX05ylBmHwkOGOuZH/FvCLOOujqYW14SAzhy/hZ
-         +AlQ==
-X-Gm-Message-State: AOAM5318UbQica8x4PrsfljB25DAk89iClalTKdhLfsl+NdnSnSd7l4n
-        4IF3N76y1SeoPZO/0JkQVe7iLQ==
-X-Google-Smtp-Source: ABdhPJyunrsUCrTcQ8XdR1MnBNLU7dkhvUJngbHOgEo/eLy44Cv0qPXsVg4Nn9LpC9RRWGWk25BnHg==
-X-Received: by 2002:a5d:4683:: with SMTP id u3mr42264872wrq.19.1608186528506;
-        Wed, 16 Dec 2020 22:28:48 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:601a:58a2:ee98:f8a1? ([2a01:e34:ed2f:f020:601a:58a2:ee98:f8a1])
-        by smtp.googlemail.com with ESMTPSA id w3sm6634432wma.3.2020.12.16.22.28.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Dec 2020 22:28:47 -0800 (PST)
-Subject: Re: [PATCH 3/5] thermal/drivers/acpi: Use hot and critical ops
-To:     rui.zhang@intel.com
-Cc:     kai.heng.feng@canonical.com, lukasz.luba@arm.com,
-        srinivas.pandruvada@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        "open list:ACPI THERMAL DRIVER" <linux-acpi@vger.kernel.org>
-References: <20201210121514.25760-1-daniel.lezcano@linaro.org>
- <20201210121514.25760-3-daniel.lezcano@linaro.org>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <c20d9077-66e8-f947-6422-c48e2f679cc5@linaro.org>
-Date:   Thu, 17 Dec 2020 07:28:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201210121514.25760-3-daniel.lezcano@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Thu, 17 Dec 2020 01:29:44 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UItliQ7_1608186540;
+Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UItliQ7_1608186540)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 17 Dec 2020 14:29:01 +0800
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     akpm@linux-foundation.org
+Cc:     Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] mm/memcg: revise the using condition of lock_page_lruvec function series
+Date:   Thu, 17 Dec 2020 14:28:50 +0800
+Message-Id: <1608186532-81218-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/2020 13:15, Daniel Lezcano wrote:
-> The acpi driver wants to do a netlink notification in case of a hot or
-> critical trip point. Implement the corresponding ops to be used for
-> the thermal zone and use them instead of the notify ops.
-> 
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+The series function could be used under lock_page_memcg(), add this and
+a bit style changes following commit_charge().
 
-Is there any comment on this patch ?
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: cgroups@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+---
+ mm/memcontrol.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-> ---
->  drivers/acpi/thermal.c | 30 ++++++++++++++----------------
->  1 file changed, 14 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/acpi/thermal.c b/drivers/acpi/thermal.c
-> index 12c0ece746f0..b5e4bc9e3282 100644
-> --- a/drivers/acpi/thermal.c
-> +++ b/drivers/acpi/thermal.c
-> @@ -677,27 +677,24 @@ static int thermal_get_trend(struct thermal_zone_device *thermal,
->  	return 0;
->  }
->  
-> -
-> -static int thermal_notify(struct thermal_zone_device *thermal, int trip,
-> -			   enum thermal_trip_type trip_type)
-> +static void acpi_thermal_zone_device_hot(struct thermal_zone_device *thermal)
->  {
-> -	u8 type = 0;
->  	struct acpi_thermal *tz = thermal->devdata;
->  
-> -	if (trip_type == THERMAL_TRIP_CRITICAL)
-> -		type = ACPI_THERMAL_NOTIFY_CRITICAL;
-> -	else if (trip_type == THERMAL_TRIP_HOT)
-> -		type = ACPI_THERMAL_NOTIFY_HOT;
-> -	else
-> -		return 0;
-> -
->  	acpi_bus_generate_netlink_event(tz->device->pnp.device_class,
-> -					dev_name(&tz->device->dev), type, 1);
-> +					dev_name(&tz->device->dev),
-> +					ACPI_THERMAL_NOTIFY_HOT, 1);
-> +}
->  
-> -	if (trip_type == THERMAL_TRIP_CRITICAL && nocrt)
-> -		return 1;
-> +static void acpi_thermal_zone_device_critical(struct thermal_zone_device *thermal)
-> +{
-> +	struct acpi_thermal *tz = thermal->devdata;
->  
-> -	return 0;
-> +	acpi_bus_generate_netlink_event(tz->device->pnp.device_class,
-> +					dev_name(&tz->device->dev),
-> +					ACPI_THERMAL_NOTIFY_CRITICAL, 1);
-> +
-> +	thermal_zone_device_critical(thermal);
->  }
->  
->  static int acpi_thermal_cooling_device_cb(struct thermal_zone_device *thermal,
-> @@ -812,7 +809,8 @@ static struct thermal_zone_device_ops acpi_thermal_zone_ops = {
->  	.get_trip_temp = thermal_get_trip_temp,
->  	.get_crit_temp = thermal_get_crit_temp,
->  	.get_trend = thermal_get_trend,
-> -	.notify = thermal_notify,
-> +	.hot = acpi_thermal_zone_device_hot,
-> +	.critical = acpi_thermal_zone_device_critical,
->  };
->  
->  static int acpi_thermal_register_thermal_zone(struct acpi_thermal *tz)
-> 
-
-
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index b80328f52fb4..e6b50d068b2f 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1345,10 +1345,11 @@ void lruvec_memcg_debug(struct lruvec *lruvec, struct page *page)
+  * lock_page_lruvec - lock and return lruvec for a given page.
+  * @page: the page
+  *
+- * This series functions should be used in either conditions:
+- * PageLRU is cleared or unset
+- * or page->_refcount is zero
+- * or page is locked.
++ * This series functions should be used in any one of following conditions:
++ * - PageLRU is cleared or unset
++ * - page->_refcount is zero
++ * - page is locked.
++ * - lock_page_memcg()
+  */
+ struct lruvec *lock_page_lruvec(struct page *page)
+ {
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.29.GIT
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
