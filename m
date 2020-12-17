@@ -2,111 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79D242DD908
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 20:03:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2685C2DD91B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 20:09:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730150AbgLQTD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 14:03:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45116 "EHLO mail.kernel.org"
+        id S1730171AbgLQTIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 14:08:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726548AbgLQTD1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 14:03:27 -0500
-X-Gm-Message-State: AOAM5330Er0zcEDZSEio7RK8QLxckxDN5K+6kb5j9ojyLtC3D/tpKbgB
-        tupso4K7wP7kx+jqik6BLAbymMi86N2V7JcaXg==
+        id S1725468AbgLQTIh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 14:08:37 -0500
+Date:   Thu, 17 Dec 2020 11:07:54 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608231767;
-        bh=TpIN8ZujmZBne/W8VVXWhgdTUE6iKXCG0iLPVPoLCvA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ePoiBG6Vvg+8oR4Ewrug1ffkgjbPsl5vxgStaBSOi0vDpHsTwSRO3MgslfAMt4Hm2
-         dsju36hhJyIr3qei3kCcJxOvYMmcB7lHzD2Zt8fimLpUa/ven2MouzhxU1LPQXJSkR
-         iiUuyhU+n8uymVBJKxtrikQBUNmt/6Nx57BUXFnxMoJ3pexp5gDfJZBBg6XZBlGH8n
-         nXxHIYzjFsJD/yuT4B1fyf0AL49uTWoV5kFwtSek/jf2nDi3WbZguqM4RV6V6yG02v
-         D3vkHOL5bZ8OIk82sb0qNQvj1ZRiIYLjIjYsDERVSRRUmOBSdgqcmQ7tDoV8KkQIUO
-         acvKVNf1n24pA==
-X-Google-Smtp-Source: ABdhPJwij9UAj8Asg4g1z8ySIrQKSq6BjyTMCXkBOSSr/Fa2MwhtOoY1wR1gADgGKO2CYzTGqSzHD5NCeoQlaRrQwXU=
-X-Received: by 2002:a17:906:6713:: with SMTP id a19mr448322ejp.468.1608231765415;
- Thu, 17 Dec 2020 11:02:45 -0800 (PST)
+        s=k20201202; t=1608232076;
+        bh=+dRzdq8awJ0/1o0rLgSQkpay+Vk7ovTPqC3kYo+boG8=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GTGQnXcVbdz2nfgFZg859yyPH/zauxBwumjTnpAVCfAp0xGcD0s/UdUbjugkimSEH
+         PO2DmmJiznRmm/u+HRaOlddyY9pW1vsbfrCNwlO0pOH5x8ep1l73HMgQ2lsetsdZt+
+         GmirCp5NSBf0l7j7q2jsIoXO+5TmOzq5tHFDfGmF25tPoChrTrJ3AvCxuhPmt2fUzC
+         K1C1GKbcOiFxxdvSJ3ay6ZxPbiwhnyxfEPVR6VODWY8MTRt3LpPp8D3JFoFlCjL65q
+         4V+cdNrb14p/qpAmOjjOuPqVkXqv4VA7MTyL71ybKESFozi9QpdHx6G0X2AgPtNl69
+         2RBwhhkQciuyQ==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     =?UTF-8?B?xYF1a2Fzeg==?= Stelmach <l.stelmach@samsung.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, jim.cromie@gmail.com,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        =?UTF-8?B?QmFydMWCb21pZWogxbtvbG5pZXJr?= =?UTF-8?B?aWV3aWN6?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH v9 0/3] AX88796C SPI Ethernet Adapter
+Message-ID: <20201217110754.179466f6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201217115330.28431-1-l.stelmach@samsung.com>
+References: <CGME20201217115341eucas1p11b7d1ffe89f9411223523eb5b5da170a@eucas1p1.samsung.com>
+        <20201217115330.28431-1-l.stelmach@samsung.com>
 MIME-Version: 1.0
-References: <20201204092752.GE74177@piout.net> <20201211215611.24392-1-rasmus.villemoes@prevas.dk>
- <20201211215611.24392-2-rasmus.villemoes@prevas.dk> <CAL_JsqJ-5gwycTRQCdX=ZsefEJ=F1GyTjjDW6QB1PBynibFzLg@mail.gmail.com>
- <b3c05d29-3ed6-d5f5-d1dd-0ddec1f89276@prevas.dk> <CAL_Jsq+HeeFUR1Yv37X4OnkEPvSiAc2B86=Nshxz7tmvpKk+zw@mail.gmail.com>
- <20201217181209.sibyhlfvlpjaewrv@pengutronix.de>
-In-Reply-To: <20201217181209.sibyhlfvlpjaewrv@pengutronix.de>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 17 Dec 2020 13:02:32 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+z10xMig6HgOBK4bEK9_-MMv_ootBaBZeLuJ7TWEYm=g@mail.gmail.com>
-Message-ID: <CAL_Jsq+z10xMig6HgOBK4bEK9_-MMv_ootBaBZeLuJ7TWEYm=g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: rtc: add reset-source property
-To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
-        <linux-rtc@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>,
-        Bruno Thomsen <bruno.thomsen@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 12:12 PM Uwe Kleine-K=C3=B6nig
-<u.kleine-koenig@pengutronix.de> wrote:
->
-> On Thu, Dec 17, 2020 at 10:51:08AM -0600, Rob Herring wrote:
-> > On Fri, Dec 11, 2020 at 5:10 PM Rasmus Villemoes
-> > <rasmus.villemoes@prevas.dk> wrote:
-> > >
-> > > On 11/12/2020 23.30, Rob Herring wrote:
-> > > > On Fri, Dec 11, 2020 at 3:56 PM Rasmus Villemoes
-> > > > <rasmus.villemoes@prevas.dk> wrote:
-> > > >>
-> > > >> Some RTCs, e.g. the pcf2127, can be used as a hardware watchdog. B=
-ut
-> > > >> if the reset pin is not actually wired up, the driver exposes a
-> > > >> watchdog device that doesn't actually work.
-> > > >>
-> > > >> Provide a standard binding that can be used to indicate that a giv=
-en
-> > > >> RTC can perform a reset of the machine, similar to wakeup-source.
-> > > >
-> > > > Why not use the watchdog 'timeout-sec' property?
-> > >
-> > > Wouldn't that be overloading that property? AFAIU, that is used to as=
-k
-> > > the kernel to program an initial timeout value into the watchdog devi=
-ce.
-> > > But what if one doesn't want to start the watchdog device at kernel
-> > > boot, but just indicate that the RTC has that capability?
-> >
-> > Yeah, I guess you're right.
->
-> I agree, too. The initial suggestion looks fine.
->
-> > > It's quite possible that if it can act as a watchdog device (and
-> > > has-watchdog was also suggested), one would also want timeout-sec and
-> > > other watchdog bindings to apply. But that can be added later, by tho=
-se
-> > > who actually want that.
-> > >
-> > > For now, I'd really like to get my board booting again (or rather, no=
-t
-> > > get reset by the real watchdog just because the pcf2127 driver now
-> > > exposes something as /dev/wathdog0, pushing the real one to
-> > > /dev/wathcdog1 which doesn't get pinged from userspace).
-> >
-> > I'm wondering how you solve which wdog to ping when there are multiple
-> > without relying on numbering. I guess 'reset-source' will solve that
-> > even if that's not your current fix. So I guess I'm fine with this.
->
-> I guess you'd need some udev magic that ensures that the right watchdog
-> always gets the same number.
+On Thu, 17 Dec 2020 12:53:27 +0100 =C5=81ukasz Stelmach wrote:
+> This is a driver for AX88796C Ethernet Adapter connected in SPI mode as
+> found on ARTIK5 evaluation board. The driver has been ported from a
+> v3.10.9 vendor kernel for ARTIK5 board.
 
-Why involve udev and keep the magic numbering important? Provide
-enough details on watchdogs' features so an intelligent decision can
-be made. It's the same thing every time folks try to number things in
-DT.
+# Form letter - net-next is closed
 
-Rob
+We have already sent the networking pull request for 5.11 and therefore
+net-next is closed for new drivers, features, code refactoring and
+optimizations. We are currently accepting bug fixes only.
+
+Please repost when net-next reopens after 5.11-rc1 is cut.
+
+Look out for the announcement on the mailing list or check:
+http://vger.kernel.org/~davem/net-next.html
+
+RFC patches sent for review only are obviously welcome at any time.
