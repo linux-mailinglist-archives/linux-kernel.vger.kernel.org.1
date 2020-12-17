@@ -2,373 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 728682DCB9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 05:07:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 810EA2DCB9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 05:09:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727892AbgLQEH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 23:07:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53678 "EHLO
+        id S1726532AbgLQEJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 23:09:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726908AbgLQEH0 (ORCPT
+        with ESMTP id S1726074AbgLQEJR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 23:07:26 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A05C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 20:06:46 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id lb18so2911855pjb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 20:06:46 -0800 (PST)
+        Wed, 16 Dec 2020 23:09:17 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6F40C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 20:08:36 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id s26so19268738lfc.8
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 20:08:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CuQTsm5m78rhlvOaQpHCZ0Hy/MeDPaNHg0VT5s/kHYM=;
-        b=1LoQvEKMIYgQcUpFFzzAuB3i3uLtLEzZI2cxrr21ZhixUFJoeznemU9MvY7i+2t7Xq
-         Ap3/zHcE4UUBJCwwbGrXrEfVHf/gwgI/gKcytUrP1zHoe9hszsNNBWGfMHHun7kC/fo2
-         CRvXpyevmVDetwvl104xCgbVhMOJ1dX9i/cYwFeIleppDtziIDTtEbE0oTgPviLFznLw
-         qWae2+cJl38TL13fpZeZNoPT3drlSOEjYj1sKcN+PcNoaJohUj8ww0O6Lb0sr42owa1L
-         y8H1u1Wbz/WX5iGCRHmcUw5ARlJDsEanRzdRhmX4JxLpg/XNBJHR2u1BNYUt8Ol9k8NU
-         aR1Q==
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=lwhMxOuuXMCFtk8usWo2pFVVrawVM2WG3MRduFpv4wU=;
+        b=ciyzGsfNzMSFTEGXyOYE0sJ5/bN04Q75Zrn9u9xZU8sEHs6t1DW/iQ2xBjODCRM6rp
+         lp/WIhNZ1r2MrC/1eCJh65kj+FFOmuSS337TBCN4hXoAQALfqgppHJnFIpGBH9UNtQ3A
+         nTJYQVq44WaN9NlNE6AO5/K6F9wl+xRLOqVAg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CuQTsm5m78rhlvOaQpHCZ0Hy/MeDPaNHg0VT5s/kHYM=;
-        b=onQA83p9g7qQzb1l6E+BX8ojlAIb/+xHkr1nheX/doFrQxoX5qA6LYN78y9/bnFANU
-         E7RsYYib4qDaBGWdVShszZ+V1fa81YALYY8SymuN6Qy2iKpHG5WBcjwRJegRhoboZXfm
-         ELCjTv+h6BBaTmI0YxFlED9vDulXH1Gz9ds7DdG2qJUu0A8irtf8vhZhxROb4FnSPTXX
-         3c9LBlvNY/ZzTykjxdAnF55JfbKP80W64sImZoS+rkCfcIlE6Og+sxU4jJ3U3Mi/H+bF
-         9J3YXcKjo/ybX2JtmEIXFz0gEjG/OM0TyUIqqT9udpNgcslacm/9vx1hlgWBRfP4/YeV
-         9VjQ==
-X-Gm-Message-State: AOAM533qcHFReugXv5Lm81IK4fmrRD3ym5OQvLQxBTN+NtBIPLX93GFj
-        8MDN/cgwc8IrY5DySusxSl7xiDSzbKxrSbU0fSMgFA==
-X-Google-Smtp-Source: ABdhPJyaPTdCa5ikXoniElng2cjsW6oqyjFvGVlQ86dsmp5zc7Oapc7xBkAFMeQCq7H+mZ58wjmyxm3fUwnsF58z4uA=
-X-Received: by 2002:a17:90a:5405:: with SMTP id z5mr6219952pjh.13.1608178006045;
- Wed, 16 Dec 2020 20:06:46 -0800 (PST)
+         :message-id:subject:to;
+        bh=lwhMxOuuXMCFtk8usWo2pFVVrawVM2WG3MRduFpv4wU=;
+        b=X/yiZQz6s/rgG4npwec3P0S8YJexqNrnYB35ismaGy+lVUqbrqCFuShikWV67Ef6yE
+         vuG6zDcdcPKlKdGEMXBMEDPA5m+oy24UnPWFgQVWR7rSQZ37TRM4k+kN4XhIBnuBTU8j
+         TpLK1MAoqIpySasq/xTxHLZ+yTl3I8vztfaowoevL/NIK07Fc1ZiBwesqdG0IActvaH3
+         5KnlzGwY3axWtKTVWayD1yYhPWQcY2GaS+5SPZXiDTu4kt0YSpV+daiFKrhRdy2b3mHV
+         TXE4g1KW5uUKf95B9q4tsovhXGhJx9bit19fZeQmIUofvNMARPplBHGT0+bb5stMBw/f
+         Tlhw==
+X-Gm-Message-State: AOAM5319qu0eqJpInntE1USBA0P5vZOlpB8d8dZUJ7TBJUdNsH4mMjiy
+        nmxN7sKT1k3v28Eb5WNJ/m/3WEN3WpbpeXnQbaqDE1XFgqlOMF8YNe6F/CMcuRYbxTo7GsfvPBp
+        X+huBwBXUxu7FIgkZ+/rDlvpOKqXINYA=
+X-Google-Smtp-Source: ABdhPJxyTWcdhRdum/asRPjQnQUlaFhSIdbrXR2n+h0GrPjO4V/PObFy/wT9vtHB5Y+CWLToKiZyWQ9mUW1GGnoZ49I=
+X-Received: by 2002:a2e:874c:: with SMTP id q12mr15247391ljj.424.1608178114926;
+ Wed, 16 Dec 2020 20:08:34 -0800 (PST)
 MIME-Version: 1.0
-References: <20201213154534.54826-1-songmuchun@bytedance.com>
- <20201213154534.54826-4-songmuchun@bytedance.com> <5936a766-505a-eab0-42a6-59aab2585880@oracle.com>
-In-Reply-To: <5936a766-505a-eab0-42a6-59aab2585880@oracle.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 17 Dec 2020 12:06:09 +0800
-Message-ID: <CAMZfGtXmQrdLeMs4dz60aPuLzNogEdN35EAeLRT-26gZtW64vA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v9 03/11] mm/hugetlb: Free the vmemmap
- pages associated with each HugeTLB page
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+References: <38a23afc-57da-a01f-286c-15f8b3d61705@broadcom.com>
+ <1605316659-3422-1-git-send-email-dphadke@linux.microsoft.com>
+ <CAHO=5PFzd9KTR93ntUvAX5dqzxqJQpVXEirs5uoXdvcnZ7hL4g@mail.gmail.com>
+ <20201202143505.GA874@kunai> <23a2f2e8-06ad-c728-98eb-91b164572ba4@broadcom.com>
+In-Reply-To: <23a2f2e8-06ad-c728-98eb-91b164572ba4@broadcom.com>
+From:   Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
+Date:   Thu, 17 Dec 2020 09:38:23 +0530
+Message-ID: <CAHO=5PE=BRADou_Hn8qP3mgWiSwDezPCxDjuqa0v1MxMOJRyHQ@mail.gmail.com>
+Subject: Re: [PATCH v3 5/6] i2c: iproc: handle master read request
+To:     Ray Jui <ray.jui@broadcom.com>, Wolfram Sang <wsa@kernel.org>,
+        Dhananjay Phadke <dphadke@linux.microsoft.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lori Hikichi <lori.hikichi@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000004dabdd05b6a12546"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 6:08 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+--0000000000004dabdd05b6a12546
+Content-Type: text/plain; charset="UTF-8"
+
+On Wed, Dec 2, 2020 at 11:14 PM Ray Jui <ray.jui@broadcom.com> wrote:
 >
-> On 12/13/20 7:45 AM, Muchun Song wrote:
-> > Every HugeTLB has more than one struct page structure. We __know__ that
-> > we only use the first 4(HUGETLB_CGROUP_MIN_ORDER) struct page structures
-> > to store metadata associated with each HugeTLB.
+>
+>
+> On 12/2/2020 6:35 AM, Wolfram Sang wrote:
 > >
-> > There are a lot of struct page structures associated with each HugeTLB
-> > page. For tail pages, the value of compound_head is the same. So we can
-> > reuse first page of tail page structures. We map the virtual addresses
-> > of the remaining pages of tail page structures to the first tail page
-> > struct, and then free these page frames. Therefore, we need to reserve
-> > two pages as vmemmap areas.
+> >> All review comments are scattered now, please let me know what has to be
+> >> done further,
+> >> Are we going to change the tasklet to irq thread ?
+> >> Are we going to remove batching 64 packets if transaction > 64B and use rx
+> >> fifo threshold ?
+> >>
+> >> I don't see any issue with current code but if it has to change we need a
+> >> valid reason for the same.
+> >> If nothing to be done, please acknowledge the patch.
 > >
-> > When we allocate a HugeTLB page from the buddy, we can free some vmemmap
-> > pages associated with each HugeTLB page. It is more appropriate to do it
-> > in the prep_new_huge_page().
+> > Valid request. Has there been any news?
 > >
-> > The free_vmemmap_pages_per_hpage(), which indicates how many vmemmap
-> > pages associated with a HugeTLB page can be freed, returns zero for
-> > now, which means the feature is disabled. We will enable it once all
-> > the infrastructure is there.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  include/linux/bootmem_info.h |  27 +++++-
-> >  include/linux/mm.h           |   2 +
-> >  mm/Makefile                  |   1 +
-> >  mm/hugetlb.c                 |   3 +
-> >  mm/hugetlb_vmemmap.c         | 209 +++++++++++++++++++++++++++++++++++++++++++
-> >  mm/hugetlb_vmemmap.h         |  20 +++++
-> >  mm/sparse-vmemmap.c          | 170 +++++++++++++++++++++++++++++++++++
-> >  7 files changed, 431 insertions(+), 1 deletion(-)
-> >  create mode 100644 mm/hugetlb_vmemmap.c
-> >  create mode 100644 mm/hugetlb_vmemmap.h
 >
-> > diff --git a/mm/sparse-vmemmap.c b/mm/sparse-vmemmap.c
-> > index 16183d85a7d5..78c527617e8d 100644
-> > --- a/mm/sparse-vmemmap.c
-> > +++ b/mm/sparse-vmemmap.c
-> > @@ -27,8 +27,178 @@
-> >  #include <linux/spinlock.h>
-> >  #include <linux/vmalloc.h>
-> >  #include <linux/sched.h>
-> > +#include <linux/pgtable.h>
-> > +#include <linux/bootmem_info.h>
-> > +
-> >  #include <asm/dma.h>
-> >  #include <asm/pgalloc.h>
-> > +#include <asm/tlbflush.h>
-> > +
-> > +/*
-> > + * vmemmap_rmap_walk - walk vmemmap page table
->
-> I am not sure if 'rmap' should be part of these names.  rmap today is mostly
-> about reverse mapping lookup.  Did you use rmap for 'remap', or because this
-> code is patterned after the page table walking rmap code?  Just think the
-> naming could cause some confusion.
+> Sorry for the delay. I just replied.
 
-Yeah. I should use "remap" to avoid confusion.
+This patch is tested and validated with all corner cases and its working.
+Can we merge this and take up any improvement as part of separate patch?
+
+Thanks,
+Rayagonda
 
 >
-> > + *
-> > + * @rmap_pte:                called for each non-empty PTE (lowest-level) entry.
-> > + * @reuse:           the page which is reused for the tail vmemmap pages.
-> > + * @vmemmap_pages:   the list head of the vmemmap pages that can be freed.
-> > + */
-> > +struct vmemmap_rmap_walk {
-> > +     void (*rmap_pte)(pte_t *pte, unsigned long addr,
-> > +                      struct vmemmap_rmap_walk *walk);
-> > +     struct page *reuse;
-> > +     struct list_head *vmemmap_pages;
-> > +};
-> > +
-> > +/*
-> > + * The index of the pte page table which is mapped to the tail of the
-> > + * vmemmap page.
-> > + */
-> > +#define VMEMMAP_TAIL_PAGE_REUSE              -1
 >
-> That is the index/offset from the range to be remapped.  See comments below.
-
-You are right. I need to update the comment.
-
+> Thanks,
 >
-> > +
-> > +static void vmemmap_pte_range(pmd_t *pmd, unsigned long addr,
-> > +                           unsigned long end, struct vmemmap_rmap_walk *walk)
-> > +{
-> > +     pte_t *pte;
-> > +
-> > +     pte = pte_offset_kernel(pmd, addr);
-> > +     do {
-> > +             BUG_ON(pte_none(*pte));
-> > +
-> > +             if (!walk->reuse)
-> > +                     walk->reuse = pte_page(pte[VMEMMAP_TAIL_PAGE_REUSE]);
->
-> It may be just me, but I don't like the pte[-1] here.  It certainly does work
-> as designed because we want to remap all pages in the range to the page before
-> the range (at offset -1).  But, we do not really validate this 'reuse' page.
-> There is the BUG_ON(pte_none(*pte)) as a sanity check, but we do nothing similar
-> for pte[-1].  Based on the usage for HugeTLB pages, we can be confident that
-> pte[-1] is actually a pte.  In discussions with Oscar, you mentioned another
-> possible use for these routines.
-
-Yeah, we should add a BUG_ON for pte[-1].
-
->
-> Don't change anything based on my opinion only.  I would like to see what
-> others think as well.
->
-> > +
-> > +             if (walk->rmap_pte)
-> > +                     walk->rmap_pte(pte, addr, walk);
-> > +     } while (pte++, addr += PAGE_SIZE, addr != end);
-> > +}
-> > +
-> > +static void vmemmap_pmd_range(pud_t *pud, unsigned long addr,
-> > +                           unsigned long end, struct vmemmap_rmap_walk *walk)
-> > +{
-> > +     pmd_t *pmd;
-> > +     unsigned long next;
-> > +
-> > +     pmd = pmd_offset(pud, addr);
-> > +     do {
-> > +             BUG_ON(pmd_none(*pmd));
-> > +
-> > +             next = pmd_addr_end(addr, end);
-> > +             vmemmap_pte_range(pmd, addr, next, walk);
-> > +     } while (pmd++, addr = next, addr != end);
-> > +}
-> > +
-> > +static void vmemmap_pud_range(p4d_t *p4d, unsigned long addr,
-> > +                           unsigned long end, struct vmemmap_rmap_walk *walk)
-> > +{
-> > +     pud_t *pud;
-> > +     unsigned long next;
-> > +
-> > +     pud = pud_offset(p4d, addr);
-> > +     do {
-> > +             BUG_ON(pud_none(*pud));
-> > +
-> > +             next = pud_addr_end(addr, end);
-> > +             vmemmap_pmd_range(pud, addr, next, walk);
-> > +     } while (pud++, addr = next, addr != end);
-> > +}
-> > +
-> > +static void vmemmap_p4d_range(pgd_t *pgd, unsigned long addr,
-> > +                           unsigned long end, struct vmemmap_rmap_walk *walk)
-> > +{
-> > +     p4d_t *p4d;
-> > +     unsigned long next;
-> > +
-> > +     p4d = p4d_offset(pgd, addr);
-> > +     do {
-> > +             BUG_ON(p4d_none(*p4d));
-> > +
-> > +             next = p4d_addr_end(addr, end);
-> > +             vmemmap_pud_range(p4d, addr, next, walk);
-> > +     } while (p4d++, addr = next, addr != end);
-> > +}
-> > +
-> > +static void vmemmap_remap_range(unsigned long start, unsigned long end,
-> > +                             struct vmemmap_rmap_walk *walk)
-> > +{
-> > +     unsigned long addr = start;
-> > +     unsigned long next;
-> > +     pgd_t *pgd;
-> > +
-> > +     VM_BUG_ON(!IS_ALIGNED(start, PAGE_SIZE));
-> > +     VM_BUG_ON(!IS_ALIGNED(end, PAGE_SIZE));
-> > +
-> > +     pgd = pgd_offset_k(addr);
-> > +     do {
-> > +             BUG_ON(pgd_none(*pgd));
-> > +
-> > +             next = pgd_addr_end(addr, end);
-> > +             vmemmap_p4d_range(pgd, addr, next, walk);
-> > +     } while (pgd++, addr = next, addr != end);
-> > +
-> > +     flush_tlb_kernel_range(start, end);
-> > +}
-> > +
-> > +/*
-> > + * Free a vmemmap page. A vmemmap page can be allocated from the memblock
-> > + * allocator or buddy allocator. If the PG_reserved flag is set, it means
-> > + * that it allocated from the memblock allocator, just free it via the
-> > + * free_bootmem_page(). Otherwise, use __free_page().
-> > + */
-> > +static inline void free_vmemmap_page(struct page *page)
-> > +{
-> > +     if (PageReserved(page))
-> > +             free_bootmem_page(page);
-> > +     else
-> > +             __free_page(page);
-> > +}
-> > +
-> > +/* Free a list of the vmemmap pages */
-> > +static void free_vmemmap_page_list(struct list_head *list)
-> > +{
-> > +     struct page *page, *next;
-> > +
-> > +     list_for_each_entry_safe(page, next, list, lru) {
-> > +             list_del(&page->lru);
-> > +             free_vmemmap_page(page);
-> > +     }
-> > +}
-> > +
-> > +static void vmemmap_remap_reuse_pte(pte_t *pte, unsigned long addr,
-> > +                                 struct vmemmap_rmap_walk *walk)
->
-> See vmemmap_remap_reuse rename suggestion below.  I would suggest reuse
-> be dropped from the name here and just be called 'vmemmap_remap_pte'.
-
-OK. Will do that.
-
->
-> > +{
-> > +     /*
-> > +      * Make the tail pages are mapped with read-only to catch
-> > +      * illegal write operation to the tail pages.
-> > +      */
-> > +     pgprot_t pgprot = PAGE_KERNEL_RO;
-> > +     pte_t entry = mk_pte(walk->reuse, pgprot);
-> > +     struct page *page;
-> > +
-> > +     page = pte_page(*pte);
-> > +     list_add(&page->lru, walk->vmemmap_pages);
-> > +
-> > +     set_pte_at(&init_mm, addr, pte, entry);
-> > +}
-> > +
-> > +/**
-> > + * vmemmap_remap_reuse - remap the vmemmap virtual address range
->
-> My original commnet here was:
->
-> Not sure if the word '_reuse' is best in this function name.  To me, the name
-> implies this routine will reuse vmemmap pages.  Perhaps, it makes more sense
-> to rename as 'vmemmap_remap_free'?  It will first remap, then free vmemmap.
-
-The vmemmap_remap_free is also a good name to me.
-In the next patch, we can use vmemmap_remap_alloc for
-allocating vmemmap pages. Looks very symmetrical. :-)
-
-Thanks Mike.
-
->
-> But, then I looked at the code above and perhaps you are using the word
-> '_reuse' because the page before the range will be reused?  The vmemmap
-
-Yeah. You are right.
-
-> page at offset VMEMMAP_TAIL_PAGE_REUSE (-1).
->
-> > + *                       [start, start + size) to the page which
-> > + *                       [start - PAGE_SIZE, start) is mapped.
-> > + * @start:   start address of the vmemmap virtual address range
-> > + * @end:     size of the vmemmap virtual address range
->
->       ^^^^ should be @size:
-
-Oh, Yeah. Forgot to update it. Thanks.
-
->
-> --
-> Mike Kravetz
->
-> > + */
-> > +void vmemmap_remap_reuse(unsigned long start, unsigned long size)
-> > +{
-> > +     unsigned long end = start + size;
-> > +     LIST_HEAD(vmemmap_pages);
-> > +
-> > +     struct vmemmap_rmap_walk walk = {
-> > +             .rmap_pte       = vmemmap_remap_reuse_pte,
-> > +             .vmemmap_pages  = &vmemmap_pages,
-> > +     };
-> > +
-> > +     vmemmap_remap_range(start, end, &walk);
-> > +     free_vmemmap_page_list(&vmemmap_pages);
-> > +}
-> >
-> >  /*
-> >   * Allocate a block of memory to be used to back the virtual memory map
-> >
-
-
+> Ray
 
 -- 
-Yours,
-Muchun
+This electronic communication and the information and any files transmitted 
+with it, or attached to it, are confidential and are intended solely for 
+the use of the individual or entity to whom it is addressed and may contain 
+information that is confidential, legally privileged, protected by privacy 
+laws, or otherwise restricted from disclosure to anyone else. If you are 
+not the intended recipient or the person responsible for delivering the 
+e-mail to the intended recipient, you are hereby notified that any use, 
+copying, distributing, dissemination, forwarding, printing, or copying of 
+this e-mail is strictly prohibited. If you received this e-mail in error, 
+please return the e-mail to the sender, delete it from your computer, and 
+destroy any printed copy of it.
+
+--0000000000004dabdd05b6a12546
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+xVUYGnc0GLrYeHC2X4wJbUsgi+UFM/rVW0RKe5Sg4xmLXWc/rBhXDBVPeFVdN2dYsk5MyDRM/fXj
+cAA+xTX+SQGoND8CAwEAAaOCAdcwggHTMA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEw
+gY4wTQYIKwYBBQUHMAKGQWh0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVy
+c29uYWxzaWduMnNoYTJnM29jc3AuY3J0MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFs
+c2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0
+MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNV
+HRMEAjAAMEQGA1UdHwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJz
+b25hbHNpZ24yc2hhMmczLmNybDArBgNVHREEJDAigSByYXlhZ29uZGEua29rYXRhbnVyQGJyb2Fk
+Y29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJ
+nXsLYTAdBgNVHQ4EFgQU1rE7oQJ7FiSTADFOqokePoGwIq4wDQYJKoZIhvcNAQELBQADggEBAD8I
+VcITGu1E61LQLR1zygqFw8ByKPgiiprMuQB74Viskl7pAZigzYJB8H3Mpd2ljve+GRo8yvbBC76r
+Gi5WdS06XI5vuImDJ2g6QUt754rj7xEYftM5Gy9ZMslKNvSiPPh1/ACx5w7ecD1ZK0YLMKGATeBD
+XybduRFIEPZBAjgJ5LOYT2ax3ZesfAkan1XJ97yLA93edgTTO2cbUAADTIMFWm4lI/e14wdGmK0I
+FtqJWw6DATg5ePiAAn+S0JoIL1xqKsZi2ioNqm02QMFb7RbB3yEGb/7ZLAGcPW666o5GSLsUnPPq
+YOfL/3X6tVfGeoi3IgfI+z76/lXk8vOQzQQxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkw
+FwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2ln
+biAyIENBIC0gU0hBMjU2IC0gRzMCDDw+ri+StHzo6PJZ/DANBglghkgBZQMEAgEFAKCB1DAvBgkq
+hkiG9w0BCQQxIgQgwOJKP4ubqyLDxs30hM29dpxdSunNmOqXGSN+ITyt7wMwGAYJKoZIhvcNAQkD
+MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAxMjE3MDQwODM1WjBpBgkqhkiG9w0BCQ8x
+XDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsG
+CSqGSIb3DQEBCjALBgkqhkiG9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAF8j
+/HGmVa0W++Z0x5z/TMW1xY4bDP7yQ2kB+coBdvw4IZAEeUdAjXV5RXr+NsItQB8RUTkgA8SQ3r0L
+px4Kke6+2MHKI5bHKIjwrdrG1l6g4njGN6n5swP0IgdCTkGu13Vuta1SxFDwWsn5HGoJhcz57vYI
+jTpkzEFNo6p5AU9Ix/VD8WWtRbApSXs5jvuZZEe2T38VbVTV2dwvYBT7WVUKzhX9wasCzjx/ad5+
+hDQZydpUhf8q2v2xzDAiuOau7oCgMrzhzBdwHQ8oT05CGzrLtF0bykZrn8yBQIgJa/Ow24HwLLG4
+SuiUll76KtaCK8yewbRl4pzyMMYxpXowOCk=
+--0000000000004dabdd05b6a12546--
