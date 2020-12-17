@@ -2,59 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F17E2DDAF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 22:47:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 377942DDAF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 22:47:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730779AbgLQVpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 16:45:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59762 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730128AbgLQVpg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730270AbgLQVpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 17 Dec 2020 16:45:36 -0500
-Subject: Re: [GIT PULL] tracing: Updates for 5.11
+Received: from mail.kernel.org ([198.145.29.99]:59736 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729166AbgLQVpg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 16:45:36 -0500
+Subject: Re: [GIT PULL] Modules updates for v5.11
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608241496;
-        bh=ad3cNyUr1BovzCmzMxAPlVk8WI1uQ7CDeqj0q9rGpE0=;
+        s=k20201202; t=1608241495;
+        bh=DHyQFU02RIIfj94rDftGfvDePAwe2t/e2cg+8Dz9oqE=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=ElCFjKild2tkZwUgrEKVekqK1qU/LszGx8OOSUEvLTCUknMJ3A4TbU5Xq5owvhgA2
-         KXFRW1KV0yGRCkr4kylYZeCfrif1UZiwfJe+Od+feO+6QTlxri4koEdWHW8xL6BAI9
-         u7hC75LkXo5lfL0FKoP/hvWl9BZ+mu97bWWNyYE589f8ek8krPf6FDs2XcC2GdTxgh
-         mjn8rWFFRtlfLWjz2q6iaHXbagGLcKhZsxfKnnvXFwX5jjGI6h/y/ktai6b9aNoT2F
-         eTyaOGLG5sjPaFHWcKUy/tP5CQ7l/ojvdwMPjkaTGbgM0Db3Z23WR5e/hceOlXecuq
-         OCXaKJ7pDYadg==
+        b=ZLVnpvLJuDsfTvMFJHyRu4vcOzpalBz/0ksWNP0+/3Hr5gmBC0Sf9+dgmp0/Q9vF6
+         GxNfmw+VCySVxmiqX2SBjF7LY15QBnQMBVNdTIuSdThlWzPEud0/HE/RCjh9gYNko6
+         6py7SG+SIMIHkp7EK20y5i/2CI2/U9Q90BOx/18asNqvWnhIv2wt0b8DPLHsbW3TgF
+         zci4waELYPjUTc2sYocCRcCBXQlPWYx26Q4Q9MVkuWG99tl5VqWe7bNMyFuSsA1lJ5
+         I8ma9LM3PFDwZCfpL73HQbALG2n3Ye2RjkFgKozSx7AvUQLdeeziIXgBWJ2N/NJhCS
+         YoGlWcvv2nVjQ==
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201217140852.45d70612@gandalf.local.home>
-References: <20201217140852.45d70612@gandalf.local.home>
+In-Reply-To: <20201217142020.GA19116@linux-8ccs>
+References: <20201217142020.GA19116@linux-8ccs>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201217140852.45d70612@gandalf.local.home>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.11
-X-PR-Tracked-Commit-Id: f6a694665f132cbf6e2222dd2f173dc35330a8aa
+X-PR-Tracked-Message-Id: <20201217142020.GA19116@linux-8ccs>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/jeyu/linux.git/ tags/modules-for-v5.11
+X-PR-Tracked-Commit-Id: 38dc717e97153e46375ee21797aa54777e5498f3
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 09c0796adf0c793462fda1d7c8c43324551405c7
-Message-Id: <160824149592.19561.9457076918689812198.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 312dcaf967219effe0483785f24e4072a5bed9a5
+Message-Id: <160824149557.19561.500717393705428036.pr-tracker-bot@kernel.org>
 Date:   Thu, 17 Dec 2020 21:44:55 +0000
-To:     Steven Rostedt <rostedt@goodmis.org>
+To:     Jessica Yu <jeyu@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Kaixu Xia <kaixuxia@tencent.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Qiujun Huang <hqjagain@gmail.com>
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 17 Dec 2020 14:08:52 -0500:
+The pull request you sent on Thu, 17 Dec 2020 15:20:23 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.11
+> https://git.kernel.org/pub/scm/linux/kernel/git/jeyu/linux.git/ tags/modules-for-v5.11
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/09c0796adf0c793462fda1d7c8c43324551405c7
+https://git.kernel.org/torvalds/c/312dcaf967219effe0483785f24e4072a5bed9a5
 
 Thank you!
 
