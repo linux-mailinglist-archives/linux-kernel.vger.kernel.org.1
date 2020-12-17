@@ -2,111 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 238642DD4A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:54:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D6152DD4AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:56:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729033AbgLQPxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 10:53:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728575AbgLQPx1 (ORCPT
+        id S1729097AbgLQPyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 10:54:51 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:45797 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729037AbgLQPyv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 10:53:27 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C035C0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 07:52:47 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id x126so10469313pfc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 07:52:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7OV9R4drFVeTku6dunPe0dURgcLywII3vMyOLzHOjbo=;
-        b=yIBLJwwwDEHWJYBXBXaDOCOIOlu1mzIWwwnbbYQQfRQ7LMkU8qv2JkgGg26nogIKSs
-         gxn3EeARR2JyL2paSPPTy8ZZOLVboX9eX3dPocdwjayLq4ljEaMz9tUUS7eoFsq61rpO
-         vQfCxyF+sy1wilxSU4GP9nCyRGicjzMz1xnoQ5CSZOMcjYmsIGmlIfL59XL6Sj/+js1P
-         llf3TuHQXpH+jtwajIkC0hNlgujwNjiNEXG1kNvJwQVxRQj34fRA2bjR1G1wYaPUkZUf
-         aD3n/TscPNVA97au0sGrkDHWaARlvnOewXs22G5Iewdj4dM7VdJHL6fzM0jp1uJZ1kDq
-         N8Ug==
+        Thu, 17 Dec 2020 10:54:51 -0500
+Received: by mail-io1-f71.google.com with SMTP id x7so27586523ion.12
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 07:54:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7OV9R4drFVeTku6dunPe0dURgcLywII3vMyOLzHOjbo=;
-        b=YaaffwmJs3VfZL9BUJpLlgB8wPTUosVnxTqTlmqqGx15a91Mdl6Cwrxx+UuSfMgiGn
-         jmu4sYO4uUuCkwkfQiMi7sFbaLYyE/re5+7yDYm16rOmBb2IlHCy3rxy3TmLRtkSUvUm
-         uMyLiM/EB1lBt9kPPTHFC5GDx7fA6RA8f6S/MQ5uZh/2Tz+T8OT3cAIUTtB4MrEdWBc1
-         s3YVK8UBskcsEAYv83RoUo3CiHfcVd9mG+bc4YWL8Ir2jnZS7Pp8kidj1bqcEa0hxwKZ
-         Nqx0j+d8T7F3fODS4Lp8NbMoW/2L1J8n71mFl9ueoyOPA6ZSco+5gJ07lGmxPpeb0ACn
-         SBRg==
-X-Gm-Message-State: AOAM532SQEyTzYA8uURcIONs2igjZ0AoJ2CKbJVqxYOL6mm3ZNXhksXu
-        VQUv7PD14siBC4cLlDuAsnKLJUQFhe6+vpgDsQN5KA==
-X-Google-Smtp-Source: ABdhPJyTI/Q5bVzBSZ27aLlJM/iDQhjOE7mhc5Lg63MoMB/+jhXY3WlVE+4+B5+ELdOXR7SAXo9VOCUMfJ9+AK6tiv8=
-X-Received: by 2002:aa7:979d:0:b029:1a4:3b76:a559 with SMTP id
- o29-20020aa7979d0000b02901a43b76a559mr22509754pfp.49.1608220366075; Thu, 17
- Dec 2020 07:52:46 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=m1z8Xry1KKXh3W2b7n7wksWhEKpKfj57GIAa8FsV6s0=;
+        b=CmpfGuSfKsd/BPX0oTBbnuLgl/HH8myxZgSftdxcLehmGLMHPTjKK57Mgl5vvtC7lM
+         7GZO2j36qVVgDYjsfPwjVZkf8xuEDR4//f8rEEFdkG62lSgxUjsM08HfIq85mn6u+qLz
+         FM91Cb8ZLc2yV3sfkMa7FZt+l7oNkESiHmsEeN8H54H01CXlvP4nQe3N6tHE8neb9w1Q
+         r1S5teGbxRgCi0Ri6ikMAI+3Za3mXAQUp4g4LV6xqkeo/vJppvxVS55j9Sst8PAKnBdW
+         P2gwFvConHdoA1RvHdjTifztgwocCwFkGP9tYiegw/6mirYv5gUziSem9L4+Ojnf2xC/
+         Helw==
+X-Gm-Message-State: AOAM531JCwj3CwkLwi8OXWmv3IKYqHGVh5dmTaQIciM5ER74Ff5BwTxg
+        vdsr09QN3/iOzgKo3oZigeQzOry0c/Dg6lomvUXuBfPPnCMe
+X-Google-Smtp-Source: ABdhPJzbE94LOGk1THU2x4Jf2Zkz2gwX7nSM8+VQ5wQ+7znn7/l7XiAsGgXqGMUEE78kWNwYfaWXy3BV4KevWWLPy0mfdwuEu+7L
 MIME-Version: 1.0
-References: <20201217121303.13386-1-songmuchun@bytedance.com> <20201217145953.GA13874@linux>
-In-Reply-To: <20201217145953.GA13874@linux>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 17 Dec 2020 23:52:09 +0800
-Message-ID: <CAMZfGtX__Ys+ccGyMBYTO+i+0u+btaK1NF6tSafTP3B53zm+cg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v10 00/11] Free some vmemmap pages of
- HugeTLB page
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>, naoya.horiguchi@nec.com,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+X-Received: by 2002:a02:91c2:: with SMTP id s2mr48568855jag.48.1608220449935;
+ Thu, 17 Dec 2020 07:54:09 -0800 (PST)
+Date:   Thu, 17 Dec 2020 07:54:09 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a3962305b6ab0077@google.com>
+Subject: KASAN: null-ptr-deref Read in filp_close
+From:   syzbot <syzbot+96cfd2b22b3213646a93@syzkaller.appspotmail.com>
+To:     christian.brauner@ubuntu.com, gscrivan@redhat.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 11:00 PM Oscar Salvador <osalvador@suse.de> wrote:
->
-> On Thu, Dec 17, 2020 at 08:12:52PM +0800, Muchun Song wrote:
-> > In this case, for the 1GB HugeTLB page, we can save 4088 pages(There are
-> > 4096 pages for struct page structs, we reserve 2 pages for vmemmap and 8
-> > pages for page tables. So we can save 4088 pages). This is a very substantial
-> > gain. On our server, run some SPDK/QEMU applications which will use 1024GB
-> > hugetlbpage. With this feature enabled, we can save ~16GB(1G hugepage)/~11GB
-> > (2MB hugepage, the worst case is 10GB while the best is 12GB) memory.
->
-> Is the above really true?
-> We no longer need to allocate pagetables, so the savings go up to 4094, right?
+Hello,
 
-Yeah, you are right. I forget to update this.
+syzbot found the following issue on:
 
->
-> I will be off for a few days but I expect to get back to this and review the
-> missing bits when I am back.
->
+HEAD commit:    5e60366d Merge tag 'fallthrough-fixes-clang-5.11-rc1' of g..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15f15413500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=db720fe37a6a41d8
+dashboard link: https://syzkaller.appspot.com/bug?extid=96cfd2b22b3213646a93
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10e1a00b500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1128e41f500000
 
-Thanks.
+The issue was bisected to:
 
-> --
-> Oscar Salvador
-> SUSE L3
+commit 582f1fb6b721facf04848d2ca57f34468da1813e
+Author: Giuseppe Scrivano <gscrivan@redhat.com>
+Date:   Wed Nov 18 10:47:45 2020 +0000
+
+    fs, close_range: add flag CLOSE_RANGE_CLOEXEC
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16e85613500000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=15e85613500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=11e85613500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+96cfd2b22b3213646a93@syzkaller.appspotmail.com
+Fixes: 582f1fb6b721 ("fs, close_range: add flag CLOSE_RANGE_CLOEXEC")
+
+==================================================================
+BUG: KASAN: null-ptr-deref in instrument_atomic_read include/linux/instrumented.h:71 [inline]
+BUG: KASAN: null-ptr-deref in atomic64_read include/asm-generic/atomic-instrumented.h:837 [inline]
+BUG: KASAN: null-ptr-deref in atomic_long_read include/asm-generic/atomic-long.h:29 [inline]
+BUG: KASAN: null-ptr-deref in filp_close+0x22/0x170 fs/open.c:1274
+Read of size 8 at addr 0000000000000077 by task syz-executor511/8522
+
+CPU: 1 PID: 8522 Comm: syz-executor511 Not tainted 5.10.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ __kasan_report mm/kasan/report.c:549 [inline]
+ kasan_report.cold+0x5/0x37 mm/kasan/report.c:562
+ check_memory_region_inline mm/kasan/generic.c:186 [inline]
+ check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
+ instrument_atomic_read include/linux/instrumented.h:71 [inline]
+ atomic64_read include/asm-generic/atomic-instrumented.h:837 [inline]
+ atomic_long_read include/asm-generic/atomic-long.h:29 [inline]
+ filp_close+0x22/0x170 fs/open.c:1274
+ close_files fs/file.c:402 [inline]
+ put_files_struct fs/file.c:417 [inline]
+ put_files_struct+0x1cc/0x350 fs/file.c:414
+ exit_files+0x12a/0x170 fs/file.c:435
+ do_exit+0xb4f/0x2a00 kernel/exit.c:818
+ do_group_exit+0x125/0x310 kernel/exit.c:920
+ get_signal+0x428/0x2100 kernel/signal.c:2792
+ arch_do_signal_or_restart+0x2a8/0x1eb0 arch/x86/kernel/signal.c:811
+ handle_signal_work kernel/entry/common.c:147 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
+ exit_to_user_mode_prepare+0x124/0x200 kernel/entry/common.c:201
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+ syscall_exit_to_user_mode+0x19/0x50 kernel/entry/common.c:302
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x447039
+Code: Unable to access opcode bytes at RIP 0x44700f.
+RSP: 002b:00007f1b1225cdb8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: 0000000000000001 RBX: 00000000006dbc28 RCX: 0000000000447039
+RDX: 00000000000f4240 RSI: 0000000000000081 RDI: 00000000006dbc2c
+RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+R13: 00007fff223b6bef R14: 00007f1b1225d9c0 R15: 00000000006dbc2c
+==================================================================
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
--- 
-Yours,
-Muchun
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
