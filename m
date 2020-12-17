@@ -2,71 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD50F2DDAF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 22:47:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54B642DDAF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 22:47:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729062AbgLQVoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 16:44:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59430 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728127AbgLQVoy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 16:44:54 -0500
-Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-5.11-1 tag
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608241454;
-        bh=yDaT+y9l9aimHmbslfpMN97U03h9cNNDggqbUiQNKdM=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=NuekjydNQHdI8Kh22vra0jetIyqGpz3oOxuZkIJWRj2km8Fo7w0Go3KEhEnSIZkNY
-         OQUTkGH/4GNzm+8VJuQLEUCLuWehIu7cmSnIgst6AxFIsUBedwWO542rwy7vPou/gJ
-         2B75oZUjrTXdMNPPkXzIePextDmbvx2lbvZahGlFihC/Z9ZmnZxm6wMt0Pp6ro/2mV
-         w7of5cBA/qKV3U+YyW/snJ01MziMzidPwpLOvAu+NY/Se3I6gG1ygK29vePNXDifcx
-         Eb8hy+oogjxFsNifl7WFkHlh26248FdY8fT5t5Yxm+8yUGGsaX3mm9lWRvhy8HYw0r
-         QSIK4z6hy9l6g==
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <87r1noy325.fsf@mpe.ellerman.id.au>
-References: <87r1noy325.fsf@mpe.ellerman.id.au>
-X-PR-Tracked-List-Id: Linux on PowerPC Developers Mail List <linuxppc-dev.lists.ozlabs.org>
-X-PR-Tracked-Message-Id: <87r1noy325.fsf@mpe.ellerman.id.au>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.11-1
-X-PR-Tracked-Commit-Id: c1bea0a840ac75dca19bc6aa05575a33eb9fd058
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 8a5be36b9303ae167468d4f5e1b3c090b9981396
-Message-Id: <160824145406.19561.14544299547675584528.pr-tracker-bot@kernel.org>
-Date:   Thu, 17 Dec 2020 21:44:14 +0000
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        ego@linux.vnet.ibm.com, clombard@linux.vnet.ibm.com,
-        david@redhat.com, aik@ozlabs.ru, jniethe5@gmail.com,
-        srikar@linux.vnet.ibm.com, bala24@linux.ibm.com, oohall@gmail.com,
-        miaoqinglang@huawei.com, ardb@kernel.org, ajd@linux.ibm.com,
-        leobras.c@gmail.com, maddy@linux.ibm.com,
-        aneesh.kumar@linux.ibm.com, vincent.stehle@laposte.net,
-        tiwai@suse.de, ganeshgr@linux.ibm.com,
-        u.kleine-koenig@pengutronix.de, harish@linux.ibm.com,
-        longman@redhat.com, mathieu.desnoyers@efficios.com,
-        nathanl@linux.ibm.com, ravi.bangoria@linux.ibm.com,
-        Kees Cook <keescook@chromium.org>, amodra@gmail.com,
-        npiggin@gmail.com, oss@buserror.net, kaixuxia@tencent.com,
-        clg@kaod.org, oleg@redhat.com, ldufour@linux.ibm.com,
-        tangyouling@loongson.cn, po-hsu.lin@canonical.com, dja@axtens.net,
-        atrajeev@linux.vnet.ibm.com, zhangxiaoxu5@huawei.com,
-        linux-kernel@vger.kernel.org, tyreld@linux.ibm.com,
-        fbarrat@linux.ibm.com, colin.king@canonical.com,
-        linuxppc-dev@lists.ozlabs.org, morbo@google.com
+        id S1729761AbgLQVpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 16:45:04 -0500
+Received: from lithops.sigma-star.at ([195.201.40.130]:55216 "EHLO
+        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728127AbgLQVpE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 16:45:04 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 569D4627AFCE;
+        Thu, 17 Dec 2020 22:44:22 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id MUWZ5Ib-p4CA; Thu, 17 Dec 2020 22:44:21 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id AE3CB627AFF0;
+        Thu, 17 Dec 2020 22:44:21 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Ho1x2lLklSZJ; Thu, 17 Dec 2020 22:44:21 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 8BD42627AFCE;
+        Thu, 17 Dec 2020 22:44:21 +0100 (CET)
+Date:   Thu, 17 Dec 2020 22:44:21 +0100 (CET)
+From:   Richard Weinberger <richard@nod.at>
+To:     torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>
+Message-ID: <2026739641.140019.1608241461469.JavaMail.zimbra@nod.at>
+Subject: [GIT PULL] JFFS2, UBI and UBIFS updates for 5.11-rc1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
+Thread-Index: GQILcsYmmMsZqedHlVTLw1jJcSYSlA==
+Thread-Topic: JFFS2, UBI and UBIFS updates for 5.11-rc1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 18 Dec 2020 00:28:34 +1100:
+Linus,
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.11-1
+The following changes since commit b65054597872ce3aefbc6a666385eabdf9e288da:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/8a5be36b9303ae167468d4f5e1b3c090b9981396
+  Linux 5.10-rc6 (2020-11-29 15:50:50 -0800)
 
-Thank you!
+are available in the Git repository at:
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+  git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-5.11-rc1
+
+for you to fetch changes up to b80a974b8c58164ed57b0f025a47b8f003198d9e:
+
+  ubifs: ubifs_dump_node: Dump all branches of the index node (2020-12-13 22:12:42 +0100)
+
+----------------------------------------------------------------
+This pull request contains changes for JFFS2, UBI and UBIFS:
+
+JFFS2:
+- Fix for a remount regression
+- Fix for an abnormal GC exit
+- Fix for a possible NULL pointer issue while mounting
+
+UBI:
+- Add support ECC-ed NOR flash
+- Removal of dead code
+
+UBIFS:
+- Make node dumping debug code more reliable
+- Various cleanups: less ifdefs, less typos
+- Fix for an info leak
+
+----------------------------------------------------------------
+Chengguang Xu (1):
+      ubifs: Code cleanup by removing ifdef macro surrounding
+
+Chengsong Ke (2):
+      ubifs: Fix the printing type of c->big_lpt
+      ubifs: Remove the redundant return in dbg_check_nondata_nodes_order
+
+Fangping Liang (1):
+      ubifs: Fixed print foramt mismatch in ubifs
+
+Jamie Iles (1):
+      jffs2: Fix NULL pointer dereference in rp_size fs option parsing
+
+Pratyush Yadav (1):
+      ubi: Do not zero out EC and VID on ECC-ed NOR flashes
+
+Randy Dunlap (2):
+      ubifs: Delete duplicated words + other fixes
+      jffs2: Fix if/else empty body warnings
+
+Richard Weinberger (1):
+      ubifs: wbuf: Don't leak kernel memory to flash
+
+Tom Rix (1):
+      jffs2: remove trailing semicolon in macro definition
+
+Wang ShaoBo (1):
+      ubifs: Fix error return code in ubifs_init_authentication()
+
+Zhe Li (1):
+      jffs2: Fix GC exit abnormally
+
+Zhihao Cheng (5):
+      ubifs: Limit dumping length by size of memory which is allocated for the node
+      Revert "ubifs: Fix out-of-bounds memory access caused by abnormal value of node_len"
+      ubifs: Pass node length in all node dumping callers
+      ubifs: ubifs_dump_sleb: Remove unused function
+      ubifs: ubifs_dump_node: Dump all branches of the index node
+
+k00524021 (1):
+      ubi: Remove useless code in bytes_str_to_int
+
+lizhe (2):
+      jffs2: Fix ignoring mounting options problem during remounting
+      jffs2: Allow setting rp_size to zero during remounting
+
+ drivers/mtd/ubi/build.c |   6 +--
+ drivers/mtd/ubi/io.c    |   9 +++-
+ fs/jffs2/debug.h        |  23 +++++-----
+ fs/jffs2/jffs2_fs_sb.h  |   1 +
+ fs/jffs2/nodelist.h     |   4 +-
+ fs/jffs2/readinode.c    |  16 +++++++
+ fs/jffs2/super.c        |  32 ++++++++++---
+ fs/ubifs/auth.c         |   4 +-
+ fs/ubifs/commit.c       |   4 +-
+ fs/ubifs/debug.c        | 116 ++++++++++++++++++++++++++++--------------------
+ fs/ubifs/debug.h        |   5 +--
+ fs/ubifs/dir.c          |   4 +-
+ fs/ubifs/file.c         |   8 +---
+ fs/ubifs/io.c           |  52 ++++++++++------------
+ fs/ubifs/journal.c      |   3 +-
+ fs/ubifs/lpt.c          |   4 +-
+ fs/ubifs/master.c       |   4 +-
+ fs/ubifs/orphan.c       |   6 ++-
+ fs/ubifs/recovery.c     |   6 +--
+ fs/ubifs/replay.c       |   6 +--
+ fs/ubifs/sb.c           |   2 +-
+ fs/ubifs/scan.c         |   4 +-
+ fs/ubifs/super.c        |   6 +--
+ fs/ubifs/tnc.c          |  10 ++---
+ fs/ubifs/tnc_misc.c     |   7 ++-
+ fs/ubifs/ubifs.h        |  10 +++--
+ 26 files changed, 203 insertions(+), 149 deletions(-)
