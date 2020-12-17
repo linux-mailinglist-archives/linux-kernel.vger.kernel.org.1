@@ -2,148 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BC6E2DCA0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 01:39:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 711582DCA13
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 01:43:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727807AbgLQAjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 19:39:18 -0500
-Received: from mga03.intel.com ([134.134.136.65]:41740 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727126AbgLQAjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 19:39:18 -0500
-IronPort-SDR: XGMrxkwFhYQpZI6EHZkhVsJOQMmV0Sw2gq+cPR67QzZ8iYbJ3cdR5tRVSZ3N6yepNaMrVuAKMv
- KYkv8gBXHyFg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9837"; a="175266136"
-X-IronPort-AV: E=Sophos;i="5.78,425,1599548400"; 
-   d="scan'208";a="175266136"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2020 16:38:36 -0800
-IronPort-SDR: NimDuO3JSSCaVpcE48OB6QWQniCI0fiXPNzekJI5l7NmE3AKdZihNJaKV633ov9z2pi3EL+dvK
- tZn+LkRliH4A==
-X-IronPort-AV: E=Sophos;i="5.78,425,1599548400"; 
-   d="scan'208";a="369434314"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2020 16:38:36 -0800
-Date:   Wed, 16 Dec 2020 16:38:36 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH V3.1] entry: Pass irqentry_state_t by reference
-Message-ID: <20201217003835.GZ1563847@iweiny-DESK2.sc.intel.com>
-References: <20201106232908.364581-6-ira.weiny@intel.com>
- <20201124060956.1405768-1-ira.weiny@intel.com>
- <CALCETrUHwZPic89oExMMe-WyDY8-O3W68NcZvse3=PGW+iW5=w@mail.gmail.com>
- <20201216013202.GY1563847@iweiny-DESK2.sc.intel.com>
- <CALCETrWoh5BYnU16adT7i6tsQ77PGaLN_qyZnCy-WfO3UJoykw@mail.gmail.com>
+        id S1727934AbgLQAj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 19:39:59 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:30370 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727123AbgLQAj6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 19:39:58 -0500
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BH0Wdsg023948;
+        Wed, 16 Dec 2020 19:39:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=nDQtUXaiie9KSzxBEHKUAZ1YWKsyM8GQpyLFa12KJ5s=;
+ b=p8ioIYisxb9LEW00kqqJJ+992VxlJyV/m9PEdHcw5vLrZLyjlPsnvHH1rfhk4tK4Tarl
+ E+hNiHQkO3JqtV0o/odQRF2kBXYt6WvY2Ccj8U+T4J5b5hWyFsA3cLSFWfshES8au1hl
+ O+lIbNyNUJjzZwm6uYj8TmeTWAdOcJIvF2iQOgMIgWGuPevxDlG2rSk2jpwhw0QzlMIN
+ 0y74GWxaBk0G94Qpmt3eO2S+smpHJ3tzxDWhJGE76WqufF8TnOH415v8p+xqCaslT2gj
+ 6xGfQ6gGhOp28C1iVpL9Yv7E7MavTCAEXuE3dhrXxCq2DL/LcWnQG7cQuJFjsNyp/rDr Iw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35ftvvb3r7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Dec 2020 19:39:14 -0500
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BH0Wr6E025243;
+        Wed, 16 Dec 2020 19:39:13 -0500
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35ftvvb3qw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Dec 2020 19:39:13 -0500
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BH0bLrQ022424;
+        Thu, 17 Dec 2020 00:39:12 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma04dal.us.ibm.com with ESMTP id 35cng9mnwv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Dec 2020 00:39:12 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BH0dBm421430632
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 17 Dec 2020 00:39:11 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8483ABE053;
+        Thu, 17 Dec 2020 00:39:11 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 511A4BE04F;
+        Thu, 17 Dec 2020 00:39:10 +0000 (GMT)
+Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.193.150])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu, 17 Dec 2020 00:39:10 +0000 (GMT)
+Subject: Re: [PATCH v3] s390/vfio-ap: clean up vfio_ap resources when KVM
+ pointer invalidated
+To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     stable@vger.kernel.org, gregkh@linuxfoundation.org,
+        sashal@kernel.org, borntraeger@de.ibm.com, cohuck@redhat.com,
+        kwankhede@nvidia.com, pbonzini@redhat.com,
+        alex.williamson@redhat.com, pasic@linux.vnet.ibm.com
+References: <20201214165617.28685-1-akrowiak@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <7732abbb-ded8-e17e-858b-e79737bba8a6@linux.ibm.com>
+Date:   Wed, 16 Dec 2020 19:39:09 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrWoh5BYnU16adT7i6tsQ77PGaLN_qyZnCy-WfO3UJoykw@mail.gmail.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20201214165617.28685-1-akrowiak@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-16_12:2020-12-15,2020-12-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ mlxlogscore=999 suspectscore=0 mlxscore=0 priorityscore=1501 bulkscore=0
+ lowpriorityscore=0 impostorscore=0 phishscore=0 spamscore=0 clxscore=1015
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012160149
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 06:09:02PM -0800, Andy Lutomirski wrote:
-> On Tue, Dec 15, 2020 at 5:32 PM Ira Weiny <ira.weiny@intel.com> wrote:
-> >
-> > On Fri, Dec 11, 2020 at 02:14:28PM -0800, Andy Lutomirski wrote:
-> > > On Mon, Nov 23, 2020 at 10:10 PM <ira.weiny@intel.com> wrote:
-> 
-> > > IOW we have:
-> > >
-> > > struct extended_pt_regs {
-> > >   bool rcu_whatever;
-> > >   other generic fields here;
-> > >   struct arch_extended_pt_regs arch_regs;
-> > >   struct pt_regs regs;
-> > > };
-> > >
-> > > and arch_extended_pt_regs has unsigned long pks;
-> > >
-> > > and instead of passing a pointer to irqentry_state_t to the generic
-> > > entry/exit code, we just pass a pt_regs pointer.  And we have a little
-> > > accessor like:
-> > >
-> > > struct extended_pt_regs *extended_regs(struct pt_regs *) { return
-> > > container_of(...); }
-> > >
-> > > And we tell eBPF that extended_pt_regs is NOT ABI, and we will change
-> > > it whenever we feel like just to keep you on your toes, thank you very
-> > > much.
-> > >
-> > > Does this seem reasonable?
-> >
-> > Conceptually yes.  But I'm failing to see how this implementation can be made
-> > generic for the generic fields.  The pks fields, assuming they stay x86
-> > specific, would be reasonable to add in PUSH_AND_CLEAR_REGS.  But the
-> > rcu/lockdep field is generic.  Wouldn't we have to modify every architecture to
-> > add space for the rcu/lockdep bool?
-> >
-> > If not, where is a generic place that could be done?  Basically I'm missing how
-> > the effective stack structure can look like this:
-> >
-> > > struct extended_pt_regs {
-> > >   bool rcu_whatever;
-> > >   other generic fields here;
-> > >   struct arch_extended_pt_regs arch_regs;
-> > >   struct pt_regs regs;
-> > > };
-> >
-> > It seems more reasonable to make it look like:
-> >
-> > #ifdef CONFIG_ARCH_HAS_SUPERVISOR_PKEYS
-> > struct extended_pt_regs {
-> >         unsigned long pkrs;
-> >         struct pt_regs regs;
-> > };
-> > #endif
-> >
-> > And leave the rcu/lockdep bool passed by value as before (still in C).
-> 
-> We could certainly do this,
 
-I'm going to start with this basic support.  Because I have 0 experience in
-most of these architectures.
 
-> but we could also allocate some generic
-> space.  PUSH_AND_CLEAR_REGS would get an extra instruction like:
-> 
-> subq %rsp, $GENERIC_PTREGS_SIZE
-> 
-> or however this should be written.  That field would be defined in
-> asm-offsets.c.  And yes, all the generic-entry architectures would
-> need to get onboard.
+On 12/14/20 11:56 AM, Tony Krowiak wrote:
+> The vfio_ap device driver registers a group notifier with VFIO when the
+> file descriptor for a VFIO mediated device for a KVM guest is opened to
+> receive notification that the KVM pointer is set (VFIO_GROUP_NOTIFY_SET_KVM
+> event). When the KVM pointer is set, the vfio_ap driver takes the
+> following actions:
+> 1. Stashes the KVM pointer in the vfio_ap_mdev struct that holds the state
+>     of the mediated device.
+> 2. Calls the kvm_get_kvm() function to increment its reference counter.
+> 3. Sets the function pointer to the function that handles interception of
+>     the instruction that enables/disables interrupt processing.
+> 4. Sets the masks in the KVM guest's CRYCB to pass AP resources through to
+>     the guest.
+>
+> In order to avoid memory leaks, when the notifier is called to receive
+> notification that the KVM pointer has been set to NULL, the vfio_ap device
+> driver should reverse the actions taken when the KVM pointer was set.
+>
+> Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
+> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> ---
+>   drivers/s390/crypto/vfio_ap_ops.c | 29 ++++++++++++++++++++---------
+>   1 file changed, 20 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+> index e0bde8518745..cd22e85588e1 100644
+> --- a/drivers/s390/crypto/vfio_ap_ops.c
+> +++ b/drivers/s390/crypto/vfio_ap_ops.c
+> @@ -1037,8 +1037,6 @@ static int vfio_ap_mdev_set_kvm(struct ap_matrix_mdev *matrix_mdev,
+>   {
+>   	struct ap_matrix_mdev *m;
+>   
+> -	mutex_lock(&matrix_dev->lock);
+> -
+>   	list_for_each_entry(m, &matrix_dev->mdev_list, node) {
+>   		if ((m != matrix_mdev) && (m->kvm == kvm)) {
+>   			mutex_unlock(&matrix_dev->lock);
 
-What do you mean by 'generic-entry' architectures?  I thought they all used the
-generic entry code?
+This unlock needs to be removed.
 
-Regardless I would need to start another thread on this topic with any of those
-architecture maintainers to see what the work load would be for this.  I don't
-think I can do it on my own.
+> @@ -1049,7 +1047,6 @@ static int vfio_ap_mdev_set_kvm(struct ap_matrix_mdev *matrix_mdev,
+>   	matrix_mdev->kvm = kvm;
+>   	kvm_get_kvm(kvm);
+>   	kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
+> -	mutex_unlock(&matrix_dev->lock);
+>   
+>   	return 0;
+>   }
+> @@ -1083,35 +1080,49 @@ static int vfio_ap_mdev_iommu_notifier(struct notifier_block *nb,
+>   	return NOTIFY_DONE;
+>   }
+>   
+> +static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
+> +{
+> +	kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
+> +	matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
+> +	vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
+> +	kvm_put_kvm(matrix_mdev->kvm);
+> +	matrix_mdev->kvm = NULL;
+> +}
+> +
+>   static int vfio_ap_mdev_group_notifier(struct notifier_block *nb,
+>   				       unsigned long action, void *data)
+>   {
+> -	int ret;
+> +	int ret, notify_rc = NOTIFY_DONE;
+>   	struct ap_matrix_mdev *matrix_mdev;
+>   
+>   	if (action != VFIO_GROUP_NOTIFY_SET_KVM)
+>   		return NOTIFY_OK;
+>   
+>   	matrix_mdev = container_of(nb, struct ap_matrix_mdev, group_notifier);
+> +	mutex_lock(&matrix_dev->lock);
+>   
+>   	if (!data) {
+> -		matrix_mdev->kvm = NULL;
+> -		return NOTIFY_OK;
+> +		if (matrix_mdev->kvm)
+> +			vfio_ap_mdev_unset_kvm(matrix_mdev);
+> +		notify_rc = NOTIFY_OK;
+> +		goto notify_done;
+>   	}
+>   
+>   	ret = vfio_ap_mdev_set_kvm(matrix_mdev, data);
+>   	if (ret)
+> -		return NOTIFY_DONE;
+> +		goto notify_done;
+>   
+>   	/* If there is no CRYCB pointer, then we can't copy the masks */
+>   	if (!matrix_mdev->kvm->arch.crypto.crycbd)
+> -		return NOTIFY_DONE;
+> +		goto notify_done;
+>   
+>   	kvm_arch_crypto_set_masks(matrix_mdev->kvm, matrix_mdev->matrix.apm,
+>   				  matrix_mdev->matrix.aqm,
+>   				  matrix_mdev->matrix.adm);
+>   
+> -	return NOTIFY_OK;
+> +notify_done:
+> +	mutex_unlock(&matrix_dev->lock);
+> +	return notify_rc;
+>   }
+>   
+>   static void vfio_ap_irq_disable_apqn(int apqn)
 
-FWIW I think it is a bit unfair to hold up the PKS support in x86 for making
-these generic fields part of the stack frame.  So perhaps that could be made a
-follow on to the PKS series?
-
-> 
-> If we wanted to be fancy, we could split the generic area into
-> initialize-to-zero and uninitialized for debugging purposes, but that
-> might be more complication than is worthwhile.
-
-Ok, agreed, but this is step 3 or 4 at the earliest.
-
-Ira
