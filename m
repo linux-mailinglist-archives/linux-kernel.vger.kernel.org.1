@@ -2,108 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FFF02DCD9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 09:29:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2152DCDA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 09:29:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727247AbgLQI1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 03:27:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726291AbgLQI1g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 03:27:36 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73803C061794
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 00:26:56 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id 2so9713379qtt.10
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 00:26:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=r10KxsklhI6BT5Va29sBPPYNglRSuXlM/i3DYLAMZzY=;
-        b=Ti0LZzZHTd2OBNRxuO7VzTlzSTIKJIrRIQWL0GmLBJ8fSN7lUJre1poReDHopOEFXt
-         k3C4/0HOxJgSxD1J3RQ3ld+BXNfiq6InrTrM+KbCKZzZm3V6VFSKj17RIEDnc/2jLVud
-         z45OmoZgB435B5wHpW0uJz+QmFfRYcUeg6hZ445QDtWAxjUarfexws98wRAybb10Zo+4
-         1Dnb7N2j1DCsiRZSRPWd/uFHuQ5OBK4xPPDPtTr3wG1eQ0JTVB4O2388kPjomnp66kOD
-         wruOpZNaHpnmdlfH3eXvVQT3YOjsvcrOqf4V8rw0jn0luz8TNkPpr5/kq9cFrCbtMDaA
-         RObQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r10KxsklhI6BT5Va29sBPPYNglRSuXlM/i3DYLAMZzY=;
-        b=EFKWeWWTn9eKWsp7GhaaRKbWR8G62QvXoNf8LnpNyIzCaO5thWHvGOHm28j9JmO8wU
-         Rb6Yt2IMwL8TvKRetM1kqWKcPSGGL0FnPX3Ou2++Kq37AMpATeujJXsNHyw58Glf7/AE
-         qXYfqIFigYcpmhZVueDBf7CieE3hcEpH7IjjZMDCtF2usgU/mAU2ZH6f14scexNmJUBk
-         KmM9Ll8MmBxdu0D97kCtxrUpamjoF+Ckw6YTq1Xrf3p+soWSEzNWHFB9CTFm/gU0yNqk
-         G4rOgiBbrum91lOPNH4E40nHCDxg0TCGKvUFyj+2Vym7BFb6w5M5MkmKu7Fqmbu6J18K
-         RZ+Q==
-X-Gm-Message-State: AOAM530M1AEL2Bhds6FOQYr7G16tUD61xnIixl0JAup1BUBzcvqXUyeX
-        LYLw2w+EvBnYbs5+zhV/TWHKDVvdWHiWV4wClh4oUA==
-X-Google-Smtp-Source: ABdhPJw9QMH1oAX6S/6XlhMO0vVAw3X+UXwzwgQWQy9lVVd4lt5RmLBdmRoB865lrnDxEkrO8xLFbwuo75I7vuwFcPo=
-X-Received: by 2002:ac8:5ac3:: with SMTP id d3mr46889586qtd.66.1608193615455;
- Thu, 17 Dec 2020 00:26:55 -0800 (PST)
+        id S1727384AbgLQI2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 03:28:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44584 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726291AbgLQI2D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 03:28:03 -0500
+Date:   Thu, 17 Dec 2020 10:27:14 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608193642;
+        bh=frpXPBgDVHFosWMul7jo1G7mud658hMgY0gDjD8FzmM=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=I+KHhrtBFQ9uN0v4rQDUWJEj9kiScJue0SpkR9fQkMH9UKQGlUABKYKefZtQ+bPjv
+         3V5k70FQljpXOTht4ob7nI6+AV3BBE6XgBpe73zONGlsqUNtyww7a9gqPGsgoX9Tw7
+         i2sYigy713Xw4EIQfA1Em1mwBHoXD3mAOQ8CfgB9soeWQgHE9mPQbe4wNzAGSm1q3c
+         lr06/CQWkYksKnHiOfUZQhUJ87VdxY8WAg6A7w/AzrjdDUJJem8luZ+HP39EjE3u0f
+         k32RgbCJz4SdDdXtFEHDmj0+krI96a+9D+wEVlOXoQqWnBEBbFxtnXtIwu41eJezH8
+         /HlnIE7BBm1Tg==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Atish Patra <atish.patra@wdc.com>
+Cc:     linux-kernel@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        linux-riscv@lists.infradead.org,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Bin Meng <bmeng.cn@gmail.com>
+Subject: Re: [PATCH] RISC-V: Fix usage of memblock_enforce_memory_limit
+Message-ID: <20201217082714.GA366777@kernel.org>
+References: <20201217074855.1948743-1-atish.patra@wdc.com>
 MIME-Version: 1.0
-References: <0000000000009867cb05b699f5b6@google.com> <20201216205536.GX2443@casper.infradead.org>
-In-Reply-To: <20201216205536.GX2443@casper.infradead.org>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 17 Dec 2020 09:26:44 +0100
-Message-ID: <CACT4Y+b7tNcnTQpUpO58rHcMCqe6UpQab_TxxYF_nxBZ1xDw9Q@mail.gmail.com>
-Subject: Re: WARNING: suspicious RCU usage in count
-To:     Matthew Wilcox <willy@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     syzbot <syzbot+51ce7a5794c3b12a70d1@syzkaller.appspotmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201217074855.1948743-1-atish.patra@wdc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 9:55 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Wed, Dec 16, 2020 at 11:34:10AM -0800, syzbot wrote:
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+51ce7a5794c3b12a70d1@syzkaller.appspotmail.com
-> >
-> > =============================
-> > WARNING: suspicious RCU usage
-> > 5.10.0-rc7-syzkaller #0 Not tainted
-> > -----------------------------
-> > kernel/sched/core.c:7270 Illegal context switch in RCU-bh read-side critical section!
-> >
-> > other info that might help us debug this:
-> >
-> >
-> > rcu_scheduler_active = 2, debug_locks = 0
-> > no locks held by udevd/9038.
-> >
-> > stack backtrace:
-> > CPU: 3 PID: 9038 Comm: udevd Not tainted 5.10.0-rc7-syzkaller #0
-> > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-> > Call Trace:
-> >  __dump_stack lib/dump_stack.c:77 [inline]
-> >  dump_stack+0x107/0x163 lib/dump_stack.c:118
-> >  ___might_sleep+0x220/0x2b0 kernel/sched/core.c:7270
-> >  count.constprop.0+0x164/0x270 fs/exec.c:449
-> >  do_execveat_common+0x2fd/0x7c0 fs/exec.c:1893
-> >  do_execve fs/exec.c:1983 [inline]
-> >  __do_sys_execve fs/exec.c:2059 [inline]
-> >  __se_sys_execve fs/exec.c:2054 [inline]
-> >  __x64_sys_execve+0x8f/0xc0 fs/exec.c:2054
-> >  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->
-> This must be the victim of something else.  There's no way this call
-> trace took the RCU read lock.
+On Wed, Dec 16, 2020 at 11:48:55PM -0800, Atish Patra wrote:
+> memblock_enforce_memory_limit accepts the maximum memory size not the last
+> address. Fix the function invocation correctly.
+> 
+> Fixes: 1bd14a66ee52 ("RISC-V: Remove any memblock representing unusable memory area")
+> 
+> Signed-off-by: Atish Patra <atish.patra@wdc.com>
 
-+lockdep maintainers for lockdep false positive then and +Paul for rcu
+Acked-by: Mike Rapoport <rppt@linux.ibm.com>
 
-There is another recent claim of a false "suspicious RCU usage":
-https://lore.kernel.org/lkml/CAKMK7uEiS5SrBYv-2w2wWL=9G4ByoHvtiWVsPqekswZzOGmzjg@mail.gmail.com/
+> ---
+>  arch/riscv/mm/init.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index 8e577f14f120..e4133c20744c 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -174,7 +174,7 @@ void __init setup_bootmem(void)
+>  	 * Make sure that any memory beyond mem_start + (-PAGE_OFFSET) is removed
+>  	 * as it is unusable by kernel.
+>  	 */
+> -	memblock_enforce_memory_limit(mem_start - PAGE_OFFSET);
+> +	memblock_enforce_memory_limit(-PAGE_OFFSET);
+>  
+>  	/* Reserve from the start of the kernel to the end of the kernel */
+>  	memblock_reserve(vmlinux_start, vmlinux_end - vmlinux_start);
+> -- 
+> 2.25.1
+> 
+
+-- 
+Sincerely yours,
+Mike.
