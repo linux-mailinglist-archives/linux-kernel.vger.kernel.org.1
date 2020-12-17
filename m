@@ -2,136 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C9022DD26F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 14:49:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E82772DD27B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 14:56:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728323AbgLQNtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 08:49:22 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:57812 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725871AbgLQNtT (ORCPT
+        id S1727437AbgLQN4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 08:56:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725871AbgLQN4A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 08:49:19 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BHDmW4b039970;
-        Thu, 17 Dec 2020 07:48:32 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1608212912;
-        bh=cCMFbeoGOeXh5a3ALIlrjnmqak/HdGsLUEWJEk/pIfs=;
-        h=Subject:From:To:CC:References:Date:In-Reply-To;
-        b=j4DMop5tNzX/qPSpMLunjtr4Q5T+8mMnGR1k/oVUhuXiVzr9iN6MvHbuMxAhTcfKV
-         4o3fXex9+mR3uITdr4bnBaHR8hQ0xGwkgHOz49LnjUXFD/9lwepge9+mGjaN+lADxH
-         /0giRgy6ffLxFPJ+I8u0AfIehRF6RSKl5C/MD3H4=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BHDmWUO021827
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 17 Dec 2020 07:48:32 -0600
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 17
- Dec 2020 07:48:32 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 17 Dec 2020 07:48:32 -0600
-Received: from [10.250.232.169] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BHDmT8N111397;
-        Thu, 17 Dec 2020 07:48:30 -0600
-Subject: Re: [PATCH RFC 1/2] Documentation: devicetree: Add property for
- ignoring the dummy bits sent before read transfer
-From:   Aswath Govindraju <a-govindraju@ti.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Vadym Kochan <vadym.kochan@plvision.eu>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>
-References: <20201209175708.16252-1-a-govindraju@ti.com>
- <20201209175708.16252-2-a-govindraju@ti.com>
- <20201211033301.GA3581630@robh.at.kernel.org>
- <70d6c152-5d8d-9ad6-ce06-95a9f599c492@ti.com>
- <20201214222339.GA2471866@robh.at.kernel.org>
- <76e73cc7-fdb7-45bb-6270-1f668969ad50@ti.com>
-Message-ID: <96eada83-cf24-e02a-60a6-d81907a1bba0@ti.com>
-Date:   Thu, 17 Dec 2020 19:18:28 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 17 Dec 2020 08:56:00 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B5D4C061794;
+        Thu, 17 Dec 2020 05:55:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/xHuHZVNJiJuB1/wE9ThBTiKge7RljSzOXowcSsCUnQ=; b=ZdApPT+uTR97j2wNolGGi0gLIu
+        tjIfiom1cLqE2++kuNnVek0RmaLJeVwv6sCyqdVQGr1W6pMo+/VpjWxBTbr1wdNJProsbSf+LVl5k
+        3tGDDSw84fDoW/zibD25DAUhHNmUT4xBbADU6IWtEa+6hx+B1qG4VejZL7YSyMgPteoMtwiS+zlX5
+        D+4Q69bXWdXu0klpAocgsgtzHnH/0BLlhZ37zXho5bwgS0V94yTce8xKb44rLdNKoxDAVusOS2cCC
+        ByPAbjZ1DVsf1EVLdRVw2aHv+T65lY1GgcIf5VxAhA51UlexSHmlSSptXFrtMAWrnQ36SQVOOXnq3
+        VimrJ9QQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kptkU-0007V5-29; Thu, 17 Dec 2020 13:55:18 +0000
+Date:   Thu, 17 Dec 2020 13:55:17 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/25] Page folios
+Message-ID: <20201217135517.GF15600@casper.infradead.org>
+References: <20201216182335.27227-1-willy@infradead.org>
+ <9e764222-a274-0a99-5e41-7cfa9ea15b86@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <76e73cc7-fdb7-45bb-6270-1f668969ad50@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9e764222-a274-0a99-5e41-7cfa9ea15b86@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-On 15/12/20 9:42 pm, Aswath Govindraju wrote:
-> Hi Rob,
-> On 15/12/20 3:53 am, Rob Herring wrote:
->> On Fri, Dec 11, 2020 at 08:34:57PM +0530, Aswath Govindraju wrote:
->>> Hi,
->>> On 11/12/20 9:03 am, Rob Herring wrote:
->>>> On Wed, Dec 09, 2020 at 11:27:07PM +0530, Aswath Govindraju wrote:
->>>>> Dummy zero bits are sent before data during a read transfer. This causes
->>>>> the data read to be shifted to the right. To fix this send zero bits after
->>>>> the address during a read transfer.
->>>>>
->>>>> Add property to send zero bits after the address during a read transfer.
->>>>
->>>> When is this necessary? Why can't it be implied by the compatible 
->>>> string which should be specific to the chip model?
->>>>
->>>
->>> This is necessary for 93AA46A/B/C, 93LC46A/B/C, 93C46A/B/C eeproms, as
->>> it can be seen in section 2.7 of [1]. We were not sure if these were the
->>> only devices supported by the driver(eeprom_93xx46.c). So, in order to
->>> apply this only to the above listed devices, we thought that it would be
->>> better to apply this change when required by introducing a DT property.
->>>
->>> May I know how has this case been handled till now ??
->>>
->>
->> No idea. From the at93c46d (which has a compatible string) datasheet it 
->> looks like it has the same thing.
->>
->>> If this is required by all the devices then we can drop the property and
->>> include the zero bit by default.
->>
->> Looks like you need a combination of compatible strings for the above  
->> devices and a property for the ORG pin state on the C devices. I assume 
->> s/w needs to know if x8 or x16?
->>
-> Yes, there are separate properties for indicating different types of
-> types of eeproms.
+On Thu, Dec 17, 2020 at 01:47:57PM +0100, David Hildenbrand wrote:
+> On 16.12.20 19:23, Matthew Wilcox (Oracle) wrote:
+> > One of the great things about compound pages is that when you try to
+> > do various operations on a tail page, it redirects to the head page and
+> > everything Just Works.  One of the awful things is how much we pay for
+> > that simplicity.  Here's an example, end_page_writeback():
+> > 
+> >         if (PageReclaim(page)) {
+> >                 ClearPageReclaim(page);
+> >                 rotate_reclaimable_page(page);
+> >         }
+> >         get_page(page);
+> >         if (!test_clear_page_writeback(page))
+> >                 BUG();
+> > 
+> >         smp_mb__after_atomic();
+> >         wake_up_page(page, PG_writeback);
+> >         put_page(page);
+> > 
+> > That all looks very straightforward, but if you dive into the disassembly,
+> > you see that there are four calls to compound_head() in this function
+> > (PageReclaim(), ClearPageReclaim(), get_page() and put_page()).  It's
+> > all for nothing, because if anyone does call this routine with a tail
+> > page, wake_up_page() will VM_BUG_ON_PGFLAGS(PageTail(page), page).
+> > 
+> > I'm not really a CPU person, but I imagine there's some kind of dependency
+> > here that sucks too:
+> > 
+> >     1fd7:       48 8b 57 08             mov    0x8(%rdi),%rdx
+> >     1fdb:       48 8d 42 ff             lea    -0x1(%rdx),%rax
+> >     1fdf:       83 e2 01                and    $0x1,%edx
+> >     1fe2:       48 0f 44 c7             cmove  %rdi,%rax
+> >     1fe6:       f0 80 60 02 fb          lock andb $0xfb,0x2(%rax)
+> > 
+> > Sure, it's going to be cache hot, but that cmove has to execute before
+> > the lock andb.
+> > 
+> > I would like to introduce a new concept that I call a Page Folio.
+> > Or just struct folio to its friends.  Here it is,
+> > struct folio {
+> >         struct page page;
+> > };
+> > 
+> > A folio is a struct page which is guaranteed not to be a tail page.
+> > So it's either a head page or a base (order-0) page.  That means
+> > we don't have to call compound_head() on it and we save massively.
+> > end_page_writeback() reduces from four calls to compound_head() to just
+> > one (at the beginning of the function) and it shrinks from 213 bytes
+> > to 126 bytes (using distro kernel config options).  I think even that one
+> > can be eliminated, but I'm going slowly at this point and taking the
+> > safe route of transforming a random struct page pointer into a struct
+> > folio pointer by calling page_folio().  By the end of this exercise,
+> > end_page_writeback() will become end_folio_writeback().
+> > 
+> > This is going to be a ton of work, and massively disruptive.  It'll touch
+> > every filesystem, and a good few device drivers!  But I think it's worth
+> > it.  Not every routine benefits as much as end_page_writeback(), but it
+> > makes everything a little better.  At 29 bytes per call to lock_page(),
+> > unlock_page(), put_page() and get_page(), that's on the order of 60kB of
+> > text for allyesconfig.  More when you add on all the PageFoo() calls.
+> > With the small amount of work I've done here, mm/filemap.o shrinks its
+> > text segment by over a kilobyte from 33687 to 32318 bytes (and also 192
+> > bytes of data).
 > 
-
-Here I was saying about x8 or x16 using the data-size property. ORG pin
-state is implied through data-size property and an additional property
-is not required for ORG pin state.
-
-> So, do you think that it is better to add it as a seperate property??
+> Just wondering, as the primary motivation here is "minimizing CPU work",
+> did you run any benchmarks that revealed a visible performance improvement?
 > 
+> Otherwise, we're left with a concept that's hard to grasp first (folio -
+> what?!) and "a ton of work, and massively disruptive", saving some kb of
+> code - which does not sound too appealing to me.
+> 
+> (I like the idea of abstracting which pages are actually worth looking
+> at directly instead of going via a tail page - tail pages act somewhat
+> like a proxy for the head page when accessing flags)
 
+My primary motivation here isn't minimising CPU work at all.  It's trying
+to document which interfaces are expected to operate on an entire
+compound page and which are expected to operate on a PAGE_SIZE page.
+Today, we have a horrible mishmash of
 
-These are the available options to my knowledge,
+ - This is a head page, I shall operate on 2MB of data
+ - This is a tail page, I shall operate on 2MB of data
+ - This is not a head page, I shall operate on 4kB of data
+ - This is a head page, I shall operate on 4kB of data
+ - This is a head|tail page, I shall operate on the size of the compound page.
 
-1) As you mentioned earlier all the eeprom's supported by the driver
-send a dummy bit before the read data. This can be thought of a bug and
-add this change as a fix for it. This might a problem for users who are
-already using this driver and working around it using user space tools.
-
-2) Add a special compatible string "eeprom-93xx46B", to add the extra
-dummy cycle and not add an additional property.
-
-3) Add an additional property as proposed in this patch and use when
-required.
-
-Are there any other suggestions on solving this issue??
-
-Thanks,
-Aswath
-
+You might say "Well, why not lead with that?", but I don't know which
+advantages people are going to find most compelling.  Even if someone
+doesn't believe in the advantages of using folios in the page cache,
+looking at the assembler output is, I think, compelling.
