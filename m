@@ -2,108 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17FFE2DD42F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:29:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ABD62DD42D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:29:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729137AbgLQP3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 10:29:40 -0500
-Received: from foss.arm.com ([217.140.110.172]:42328 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726291AbgLQP3j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 10:29:39 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F1967106F;
-        Thu, 17 Dec 2020 07:28:52 -0800 (PST)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.84.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 293A63F66B;
-        Thu, 17 Dec 2020 07:28:48 -0800 (PST)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-mm@kvack.org, akpm@linux-foundation.org, david@redhat.com,
-        hca@linux.ibm.com, catalin.marinas@arm.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        id S1729102AbgLQP3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 10:29:36 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:46956 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726291AbgLQP3d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 10:29:33 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1608218931;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EIcpuCdPdjtUIDDq5V1Kd6Nd1DvDsLvtJ/iV0ZcMRgA=;
+        b=3/uIVXk04WU6Kuue5KdK/PZzRT3PQRQci3lkMWxtnm0m12Qkt5QmdLW1qQQiqnAFp2hZp5
+        QzFq2fC1v1lLeWxspvs7ZktqDZYepiYqq++tBMgUhzKOe2wtg66cawjCw02bRBA1+2Djdc
+        4KqVMkPy5/ypITooF8IgTBcIQjsKSpTImchFsyfvoJm7nqCiKy3U5DR28Hag30uG9YGgov
+        RUvtLmBoVLaNPRF+SFiF/2wkaVq1oYPqBJmTNbWB4E7TQFmDGdSdnkPdaiSRXTI2qchLhb
+        YTBG4YlbqP+sIR9BHSNaYY0o6m7NSpXCZrdp1Gbc1GfXIGh0T78z8Dt66x3VyQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1608218931;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EIcpuCdPdjtUIDDq5V1Kd6Nd1DvDsLvtJ/iV0ZcMRgA=;
+        b=9yQmqCVKnv9+iECxfpPNtEbdep6NKjLzINPHlJVMXIR0uStpoRGsed4or02lEAiC+4QayK
+        TZlxdiWrObB1IHAQ==
+To:     ira.weiny@intel.com, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     Ira Weiny <ira.weiny@intel.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: [PATCH V2 3/3] s390/mm: Define arch_get_mappable_range()
-Date:   Thu, 17 Dec 2020 20:58:32 +0530
-Message-Id: <1608218912-28932-4-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1608218912-28932-1-git-send-email-anshuman.khandual@arm.com>
-References: <1608218912-28932-1-git-send-email-anshuman.khandual@arm.com>
+        Andrew Morton <akpm@linux-foundation.org>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH V3 06/10] x86/entry: Preserve PKRS MSR across exceptions
+In-Reply-To: <20201106232908.364581-7-ira.weiny@intel.com>
+References: <20201106232908.364581-1-ira.weiny@intel.com> <20201106232908.364581-7-ira.weiny@intel.com>
+Date:   Thu, 17 Dec 2020 16:28:51 +0100
+Message-ID: <87y2hwqwng.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This overrides arch_get_mappabble_range() on s390 platform which will be
-used with recently added generic framework. It modifies the existing range
-check in vmem_add_mapping() using arch_get_mappable_range(). It also adds a
-VM_BUG_ON() check that would ensure that memhp_range_allowed() has already
-been called on the hotplug path.
+On Fri, Nov 06 2020 at 15:29, ira weiny wrote:
+> +#ifdef CONFIG_ARCH_HAS_SUPERVISOR_PKEYS
+> +/*
+> + * PKRS is a per-logical-processor MSR which overlays additional protection for
+> + * pages which have been mapped with a protection key.
+> + *
+> + * The register is not maintained with XSAVE so we have to maintain the MSR
+> + * value in software during context switch and exception handling.
+> + *
+> + * Context switches save the MSR in the task struct thus taking that value to
+> + * other processors if necessary.
+> + *
+> + * To protect against exceptions having access to this memory we save the
+> + * current running value and set the PKRS value for the duration of the
+> + * exception.  Thus preventing exception handlers from having the elevated
+> + * access of the interrupted task.
+> + */
+> +noinstr void irq_save_set_pkrs(irqentry_state_t *irq_state, u32 val)
+> +{
+> +	if (!cpu_feature_enabled(X86_FEATURE_PKS))
+> +		return;
+> +
+> +	irq_state->thread_pkrs = current->thread.saved_pkrs;
+> +	write_pkrs(INIT_PKRS_VALUE);
 
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: linux-s390@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- arch/s390/mm/init.c |  1 +
- arch/s390/mm/vmem.c | 15 ++++++++++++++-
- 2 files changed, 15 insertions(+), 1 deletion(-)
+Why is this noinstr? Just because it's called from a noinstr function?
 
-diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
-index 77767850d0d0..e0e78234ae57 100644
---- a/arch/s390/mm/init.c
-+++ b/arch/s390/mm/init.c
-@@ -291,6 +291,7 @@ int arch_add_memory(int nid, u64 start, u64 size,
- 	if (WARN_ON_ONCE(params->pgprot.pgprot != PAGE_KERNEL.pgprot))
- 		return -EINVAL;
- 
-+	VM_BUG_ON(!memhp_range_allowed(start, size, 1));
- 	rc = vmem_add_mapping(start, size);
- 	if (rc)
- 		return rc;
-diff --git a/arch/s390/mm/vmem.c b/arch/s390/mm/vmem.c
-index b239f2ba93b0..e10e563ad2b4 100644
---- a/arch/s390/mm/vmem.c
-+++ b/arch/s390/mm/vmem.c
-@@ -4,6 +4,7 @@
-  *    Author(s): Heiko Carstens <heiko.carstens@de.ibm.com>
-  */
- 
-+#include <linux/memory_hotplug.h>
- #include <linux/memblock.h>
- #include <linux/pfn.h>
- #include <linux/mm.h>
-@@ -532,11 +533,23 @@ void vmem_remove_mapping(unsigned long start, unsigned long size)
- 	mutex_unlock(&vmem_mutex);
- }
- 
-+struct range arch_get_mappable_range(void)
-+{
-+	struct range memhp_range;
-+
-+	memhp_range.start = 0;
-+	memhp_range.end =  VMEM_MAX_PHYS;
-+	return memhp_range;
-+}
-+
- int vmem_add_mapping(unsigned long start, unsigned long size)
- {
-+	struct range range;
- 	int ret;
- 
--	if (start + size > VMEM_MAX_PHYS ||
-+	range = arch_get_mappable_range();
-+	if (start < range.start ||
-+	    start + size > range.end ||
- 	    start + size < start)
- 		return -ERANGE;
- 
--- 
-2.20.1
+Of course the function itself violates the noinstr constraints:
 
+  vmlinux.o: warning: objtool: write_pkrs()+0x36: call to do_trace_write_msr() leaves .noinstr.text section
+
+There is absolutely no reason to have this marked noinstr.
+
+Thanks,
+
+        tglx
