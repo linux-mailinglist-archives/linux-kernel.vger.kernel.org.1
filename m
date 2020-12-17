@@ -2,132 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 048782DCD59
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 09:07:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E4F82DCD5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 09:08:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726832AbgLQIG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 03:06:56 -0500
-Received: from regular1.263xmail.com ([211.150.70.206]:57986 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbgLQIG4 (ORCPT
+        id S1727152AbgLQIIG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 17 Dec 2020 03:08:06 -0500
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:45267 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726890AbgLQIIC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 03:06:56 -0500
-Received: from localhost (unknown [192.168.167.16])
-        by regular1.263xmail.com (Postfix) with ESMTP id E85301B45;
-        Thu, 17 Dec 2020 16:00:40 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-Received: from localhost.localdomain (unknown [14.18.236.70])
-        by smtp.263.net (postfix) whith ESMTP id P20583T140370614691584S1608192035441421_;
-        Thu, 17 Dec 2020 16:00:41 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <5d8c97d87a7ceca7d76a7914649cd65e>
-X-RL-SENDER: yili@winhong.com
-X-SENDER: yili@winhong.com
-X-LOGIN-NAME: yili@winhong.com
-X-FST-TO: colyli@suse.de
-X-SENDER-IP: 14.18.236.70
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Yi Li <yili@winhong.com>
-To:     colyli@suse.de
-Cc:     yilikernel@gmail.com, kent.overstreet@gmail.com,
-        linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yi Li <yili@winhong.com>, Li bing <libing@winhong.com>
-Subject: [PATCH] bcache: fix UUID room exhausted fake issue.
-Date:   Thu, 17 Dec 2020 16:00:30 +0800
-Message-Id: <20201217080030.1226023-1-yili@winhong.com>
-X-Mailer: git-send-email 2.25.3
+        Thu, 17 Dec 2020 03:08:02 -0500
+Received: by mail-ot1-f45.google.com with SMTP id h18so26457054otq.12;
+        Thu, 17 Dec 2020 00:07:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=tkFy9mJST+o3B7vG/V4z83NcOP4SSGZ/hCmmqk0Qf38=;
+        b=qjJU7mTtQ3K2xGVROfza7KU5p9WDz3UfFLiqTTW58tWuSdUFIuTgQqrfe7Ayym+3VX
+         fdi20DDHLAgqGenjb+HZ8IUehPaGdHGF0kBwvKXvnR7pRpyt823tQL9qUMwMcizTMiP2
+         s7Y7MaQI3SMGTh+ze7r5Xy4jwRD8k7fyM4uwjO4yJFjLGgjlywzD42GcngXhGAyrGllA
+         18KrdRSY8uHlsFWeUxRexoIoAZMXAvKehzO7ay0ygc8wdP2SJBN2+71gF9rPaGA3v79I
+         AMZ5GMnTpYbF68LS71XsxDR7ynO1NNsFrVsvuzggwko/WY6DfkpXzdH7S5JKg9O+pu2v
+         U5yQ==
+X-Gm-Message-State: AOAM5309519cNfy4lU5hojL0krzvYpOs7GW342i94GO2rDyOEgoFmsWZ
+        9WOcfFqVSHxneA7A7qVxNTmwPAInVi7IAkFdFXl+c4ua
+X-Google-Smtp-Source: ABdhPJwAIeans41vmhpNH6kitcJUMZ09kGre2a0cti8wiz7KJJCmpMW2MsMcjCcCKvXFBXJyiOzAYiss5fsTrJlJG/8=
+X-Received: by 2002:a05:6830:1f5a:: with SMTP id u26mr28576107oth.250.1608192441465;
+ Thu, 17 Dec 2020 00:07:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+References: <20201216163103.GA59351@roeck-us.net> <CAGMNF6V-w47SDAUgVAtG+Xrp0ECNOvVV1Xy5=FsXTwqc-c3NbQ@mail.gmail.com>
+ <20201216201747.GB68047@roeck-us.net>
+In-Reply-To: <20201216201747.GB68047@roeck-us.net>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 17 Dec 2020 09:07:10 +0100
+Message-ID: <CAMuHMdWRGs+q1vFr+H__nq-frU-ohwvEca32s721W7h=WQH=5g@mail.gmail.com>
+Subject: Re: [PATCH] hwmon: SENSORS_SBTSI should depend on X86
+To:     Kun Yi <kunyi@google.com>, Guenter Roeck <linux@roeck-us.net>
+Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The UUID room will be exhausted fake when loop attach/dettach backing dev.
+Hi Kun, Günter,
 
-Using zero_uuid to the UUID room after dettach normaly.
-And attach dev can request UUID room successfully.
+On Wed, Dec 16, 2020 at 9:17 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> On Wed, Dec 16, 2020 at 09:27:28AM -0800, Kun Yi wrote:
+> > On Wed, Dec 16, 2020 at 8:31 AM Guenter Roeck <linux@roeck-us.net> wrote:
+> > >
+> > > On Wed, Dec 16, 2020 at 02:46:41PM +0100, Geert Uytterhoeven wrote:
+> > > > The AMD SB Temperature Sensor Interface (SB-TSI) is only present on AMD
+> > > > X86 SoCs.  Hence add a dependency on X86, to prevent asking the user
+> > > > about this driver when configuring a kernel without AMD X86 platform
+> > > > support.
+> >
+> > Sorry, I think there is some confusion. AMD SoC is a 'remote sensor',
+> > or the client, whereas the device using the SB-TSI hwmon driver is the
+> > master.
+> > In industry, a typical scenario is ARM-based Board Management
+> > Controllers (BMCs) using SB-TSI to monitor the host CPU temperature.
 
-Signed-off-by: Yi Li <yili@winhong.com>
-Signed-off-by: Li bing <libing@winhong.com>
----
- drivers/md/bcache/super.c | 20 +++++---------------
- 1 file changed, 5 insertions(+), 15 deletions(-)
+Thanks for the explanation!
 
-diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-index 0e06d721cd8e..f7ad1e26b013 100644
---- a/drivers/md/bcache/super.c
-+++ b/drivers/md/bcache/super.c
-@@ -34,10 +34,7 @@ static const char bcache_magic[] = {
- 	0x82, 0x65, 0xf5, 0x7f, 0x48, 0xba, 0x6d, 0x81
- };
- 
--static const char invalid_uuid[] = {
--	0xa0, 0x3e, 0xf8, 0xed, 0x3e, 0xe1, 0xb8, 0x78,
--	0xc8, 0x50, 0xfc, 0x5e, 0xcb, 0x16, 0xcd, 0x99
--};
-+static const char zero_uuid[16] = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
- 
- static struct kobject *bcache_kobj;
- struct mutex bch_register_lock;
-@@ -515,13 +512,6 @@ static struct uuid_entry *uuid_find(struct cache_set *c, const char *uuid)
- 	return NULL;
- }
- 
--static struct uuid_entry *uuid_find_empty(struct cache_set *c)
--{
--	static const char zero_uuid[16] = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
--
--	return uuid_find(c, zero_uuid);
--}
--
- /*
-  * Bucket priorities/gens:
-  *
-@@ -803,7 +793,7 @@ static void bcache_device_detach(struct bcache_device *d)
- 		struct uuid_entry *u = d->c->uuids + d->id;
- 
- 		SET_UUID_FLASH_ONLY(u, 0);
--		memcpy(u->uuid, invalid_uuid, 16);
-+		memcpy(u->uuid, zero_uuid, 16);
- 		u->invalidated = cpu_to_le32((u32)ktime_get_real_seconds());
- 		bch_uuid_write(d->c);
- 	}
-@@ -1211,7 +1201,7 @@ int bch_cached_dev_attach(struct cached_dev *dc, struct cache_set *c,
- 	if (u &&
- 	    (BDEV_STATE(&dc->sb) == BDEV_STATE_STALE ||
- 	     BDEV_STATE(&dc->sb) == BDEV_STATE_NONE)) {
--		memcpy(u->uuid, invalid_uuid, 16);
-+		memcpy(u->uuid, zero_uuid, 16);
- 		u->invalidated = cpu_to_le32((u32)ktime_get_real_seconds());
- 		u = NULL;
- 	}
-@@ -1223,7 +1213,7 @@ int bch_cached_dev_attach(struct cached_dev *dc, struct cache_set *c,
- 			return -ENOENT;
- 		}
- 
--		u = uuid_find_empty(c);
-+		u = uuid_find(c, zero_uuid);
- 		if (!u) {
- 			pr_err("Not caching %s, no room for UUID\n",
- 			       dc->backing_dev_name);
-@@ -1554,7 +1544,7 @@ int bch_flash_dev_create(struct cache_set *c, uint64_t size)
- 	if (!test_bit(CACHE_SET_RUNNING, &c->flags))
- 		return -EPERM;
- 
--	u = uuid_find_empty(c);
-+	u = uuid_find(c, zero_uuid);
- 	if (!u) {
- 		pr_err("Can't create volume, no room for UUID\n");
- 		return -EINVAL;
+> Ah, good point. I'll drop this patch.
+
+Agreed.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.25.3
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
