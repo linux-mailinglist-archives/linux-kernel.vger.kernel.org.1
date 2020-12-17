@@ -2,112 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF82B2DD326
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 15:41:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1830E2DD469
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:43:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728583AbgLQOl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 09:41:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726291AbgLQOlZ (ORCPT
+        id S1728957AbgLQPms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 10:42:48 -0500
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:50852 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726012AbgLQPmp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 09:41:25 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 513E1C061794;
-        Thu, 17 Dec 2020 06:40:45 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id w6so19185002pfu.1;
-        Thu, 17 Dec 2020 06:40:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=enLPOtX+RwuUEW41weEYdgVO7wJosn5W764QBKADpC0=;
-        b=MIwIlFomCfpcfTP7hoYKE80dMrXthuwfQfIE41Eh9iO9XuLzVC0MHAVozM9FFECa4u
-         4auSn9F6mNrNxMIow8KyfmaaUqNnMwtiJ920yky/TQomMa2FqHvTDSCDrBMBKlMXG5gk
-         JsrjEq79Q0zxgvWEEH3w99F88LWoPr8/8A3UCCSaBvFhfE3NIBoU5sm7aSRlG6JbuRpr
-         Do2E8DA14oXXi9EOclDV2pGwUg6m+RPSTg7zzZYx+Bti4MpgiqDH80cibISlp4Dybgs8
-         mfWQZmMbFrv3yCD7xTNjUxBWuiQ/2p4egc0gxipwIPMiszEbN3gxHjL256OVu04uNZyA
-         qSWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=enLPOtX+RwuUEW41weEYdgVO7wJosn5W764QBKADpC0=;
-        b=J7ZZYeLzzxGogyT83B1+y7a5S1ZSuKwXFEYDa1n7DS1caOBWPrXJM4SNFa9Tp8wZ7z
-         TSm1dg8qIxJqxi383QYeUfK6y9c6oTpfHhWr4n+dkw+NmK9J6CSfcOJRGI710vIUg7vB
-         ecgJaex1ONLI7zAXJ1GVKpO/9Ku9atmfgCO0D5qwoeyNk3RNeTxSgMDKkL18enbpHQ0H
-         AVFmKg9eqAOPjk7VRYW3hi6lOrxlDiIBkXXVgTCzbea6RopADYRwV6bIFYANBEF6CCMv
-         GBIdYoWxaN6Fx65+vqxhnafq6Ugy4FZ9RrNAkWIRf4let5jsX84Z291dOt2iJqTnHDST
-         eVjw==
-X-Gm-Message-State: AOAM532C7YFqSMLSpwcpxZ+iRVB8EziYRW1Q9Gj4Uwk5J12K7sBhowV0
-        FUeHYIqwwVXjLLfYMdURYekDYo96leX8PA==
-X-Google-Smtp-Source: ABdhPJyHFpraaFLk+3QhMHDpQ4btopHivgWaat0v6SLM6H6sHi26qZvrt5X38vYkRmFQBca9pqKJcw==
-X-Received: by 2002:a65:534d:: with SMTP id w13mr37761820pgr.107.1608216044599;
-        Thu, 17 Dec 2020 06:40:44 -0800 (PST)
-Received: from localhost ([47.251.4.198])
-        by smtp.gmail.com with ESMTPSA id p16sm5294396pju.47.2020.12.17.06.40.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 17 Dec 2020 06:40:44 -0800 (PST)
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>, stable@vger.kernel.org
-Subject: [PATCH V3] kvm: check tlbs_dirty directly
-Date:   Thu, 17 Dec 2020 23:41:18 +0800
-Message-Id: <20201217154118.16497-1-jiangshanlai@gmail.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
-In-Reply-To: <X9kEAh7z1rmlmyhZ@google.com>
-References: <X9kEAh7z1rmlmyhZ@google.com>
+        Thu, 17 Dec 2020 10:42:45 -0500
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BHFPi96001634;
+        Thu, 17 Dec 2020 09:41:47 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=GJuPaWXDibxU2/dULc9tTJBurZLFeQMjY985Dgp9j4E=;
+ b=TcIAf6XNA7au7X+Rgn7vi+65Lo5Oq+IWBErpF7GoTEqmbVeznU15A9wCM5T0dDPivBTK
+ UiOR1U33X5PdHs4dUpIcHI1dvjK/7fxH+7Xs/uBBB92j4L8mDqu2NSbJEuIsVCSHTtpp
+ 7cOWQusHsOT9g+38e8HyBq3WQ0Q3JB8dEI7Vyc+JhmGHTwSYz5ZEpm5iF67AY7vUvATp
+ LUdokZNZUEttX/7R6KvO/OgC0RMigqCoYEY8SSmv14OyjvRxS3MNJoNrk2JUM0145CZg
+ ioYqFNev04MROC+OBhXT0k26tWFcWzHohPjhI9QoEwhYB/P/sFDMGXgshl+X5XpFFIvd Dg== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 35cu5rxy90-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 17 Dec 2020 09:41:47 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 17 Dec
+ 2020 15:41:45 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Thu, 17 Dec 2020 15:41:45 +0000
+Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.64.236])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0995A11CB;
+        Thu, 17 Dec 2020 15:41:45 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <broonie@kernel.org>, <robh+dt@kernel.org>,
+        <kuninori.morimoto.gx@renesas.com>, <nsaenzjulienne@suse.de>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <bcm-kernel-feedback-list@broadcom.com>,
+        <linux-rpi-kernel@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH v3 0/6] Add support for Rpi4b + Cirrus Lochnagar2 and CS47L15
+Date:   Thu, 17 Dec 2020 15:41:36 +0000
+Message-ID: <20201217154142.24301-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0 mlxscore=0
+ mlxlogscore=999 suspectscore=0 spamscore=0 clxscore=1011 malwarescore=0
+ impostorscore=0 priorityscore=1501 bulkscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012170108
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
+This set of patches provides support for using the Raspberry Pi 4b with
+a Cirrus Logic Lochnagar 2 audio development platform plus Cirrus Logic
+CS47L15 codec.
 
-In kvm_mmu_notifier_invalidate_range_start(), tlbs_dirty is used as:
-        need_tlb_flush |= kvm->tlbs_dirty;
-with need_tlb_flush's type being int and tlbs_dirty's type being long.
+Patches are needed to audio-graph-card to enable support for setting the
+component sysclks and plls. These are not specific to CS47L15 - several
+Cirrus and non-Cirrus codecs also require component clock setup, typically
+for larger codecs with multiple internal clocking options and clock domains.
 
-It means that tlbs_dirty is always used as int and the higher 32 bits
-is useless.  We need to check tlbs_dirty in a correct way and this
-change checks it directly without propagating it to need_tlb_flush.
+The codec sysclks and plls cannot be placed under the clock framework because
+they are typically I2C/SPI/Soundwire-connected peripherals and access to the
+registers would cause a nested get of the bus clock. The clock framework does
+not support this and it would result in a deadlock.
 
-Note: it's _extremely_ unlikely this neglecting of higher 32 bits can
-cause problems in practice.  It would require encountering tlbs_dirty
-on a 4 billion count boundary, and KVM would need to be using shadow
-paging or be running a nested guest.
+Richard Fitzgerald (6):
+  of: base: Add of_count_phandle_with_fixed_args()
+  ASoC: audio-graph-card: Add plls and sysclks DT bindings
+  ASoC: audio-graph-card: Support setting component plls and sysclks
+  ASoC: madera: Allow codecs to be selected from kernel config
+  ASoC: madera: Export clock config defines to dt-bindings
+  ARM: dts: Add dts for RPi4b + Cirrus Logic Lochnagar2 + CS47L15
 
-Cc: stable@vger.kernel.org
-Fixes: a4ee1ca4a36e ("KVM: MMU: delay flush all tlbs on sync_page path")
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
----
-Changed from V1:
-        Update the patch and the changelog as Sean Christopherson suggested.
+ .../bindings/sound/audio-graph-card.txt       |  72 ++++++
+ MAINTAINERS                                   |   1 +
+ arch/arm/boot/dts/Makefile                    |   1 +
+ ...bcm2711-rpi4b-cirrus-lochnagar-cs47l15.dts | 186 ++++++++++++++
+ .../dts/bcm2711-rpi4b-cirrus-lochnagar.dtsi   | 201 +++++++++++++++
+ drivers/of/base.c                             |  73 ++++--
+ include/dt-bindings/sound/madera.h            |  60 +++++
+ include/linux/of.h                            |   9 +
+ include/sound/simple_card_utils.h             |  25 ++
+ sound/soc/codecs/Kconfig                      |  10 +-
+ sound/soc/codecs/madera.h                     |  56 +----
+ sound/soc/generic/audio-graph-card.c          |  16 +-
+ sound/soc/generic/simple-card-utils.c         | 236 ++++++++++++++++++
+ 13 files changed, 861 insertions(+), 85 deletions(-)
+ create mode 100644 arch/arm/boot/dts/bcm2711-rpi4b-cirrus-lochnagar-cs47l15.dts
+ create mode 100644 arch/arm/boot/dts/bcm2711-rpi4b-cirrus-lochnagar.dtsi
 
-Changed from v2:
-	don't change the type of need_tlb_flush
-
- virt/kvm/kvm_main.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 2541a17ff1c4..3083fb53861d 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -482,9 +482,8 @@ static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
- 	kvm->mmu_notifier_count++;
- 	need_tlb_flush = kvm_unmap_hva_range(kvm, range->start, range->end,
- 					     range->flags);
--	need_tlb_flush |= kvm->tlbs_dirty;
- 	/* we've to flush the tlb before the pages can be freed */
--	if (need_tlb_flush)
-+	if (need_tlb_flush || kvm->tlbs_dirty)
- 		kvm_flush_remote_tlbs(kvm);
- 
- 	spin_unlock(&kvm->mmu_lock);
 -- 
-2.19.1.6.gb485710b
+2.20.1
 
