@@ -2,106 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F24B2DCBBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 05:32:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1424C2DCBB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 05:30:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727024AbgLQEbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 23:31:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54477 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726124AbgLQEbe (ORCPT
+        id S1726674AbgLQEaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 23:30:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726098AbgLQEaf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 23:31:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608179407;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QdO71qRUUAyY5eL/yMHU3bjLmoNw6kNHGPr/hpOtBbg=;
-        b=Y8WJxYxO5YpQFOP/vmlq+VN7pMoE5pfQVafgPa8VfmZ8pDc2hpgubo+ZJbZmmHbDSyWotv
-        cD2Ij2KKktOUOlSPzflZSp4MuxF1JACun0bpd1RKSAYaQxLVZ0rKs6Ktki3qF91bZLw0QK
-        MREmxlBYSEQB/dc1Meb8Vn9nK0XF+YI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-456-ZG7HCQpgMceVHl9ij-eGrQ-1; Wed, 16 Dec 2020 23:30:02 -0500
-X-MC-Unique: ZG7HCQpgMceVHl9ij-eGrQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E65A6100F340;
-        Thu, 17 Dec 2020 04:30:00 +0000 (UTC)
-Received: from [10.72.12.223] (ovpn-12-223.pek2.redhat.com [10.72.12.223])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2210F19814;
-        Thu, 17 Dec 2020 04:29:49 +0000 (UTC)
-Subject: Re: [PATCH v4 04/18] vdpa_sim: make IOTLB entries limit configurable
-To:     Stefano Garzarella <sgarzare@redhat.com>,
-        virtualization@lists.linux-foundation.org
-Cc:     Oren Duer <oren@nvidia.com>, Laurent Vivier <lvivier@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Shahaf Shuler <shahafs@nvidia.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>, Eli Cohen <elic@nvidia.com>,
-        linux-kernel@vger.kernel.org
-References: <20201215144256.155342-1-sgarzare@redhat.com>
- <20201215144256.155342-5-sgarzare@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <648d7b72-134c-0dfb-8d91-8c2eda51e86c@redhat.com>
-Date:   Thu, 17 Dec 2020 12:29:27 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 16 Dec 2020 23:30:35 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 272BCC0617A7
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 20:29:55 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id t22so8834141pfl.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 20:29:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=dAJEzuEkVABPDPs6E6lM9hmUPqMeI4fJJlXgghYJKkA=;
+        b=CMuombnSQlI8vHlOndLTmVhKeL92d2nC6WxM5vvjNMNacDMpr9WvKMda+3zu2Q9qE5
+         LF2cl39XMp/UaOIOV0aFQtmFNWRst6ajbcmRy7WelkkraDJwIxuU3LhetMflhVq8OpFX
+         k/kjHrxnH8ygbeFPSG0HmO5CaZuSgX3pijvUU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=dAJEzuEkVABPDPs6E6lM9hmUPqMeI4fJJlXgghYJKkA=;
+        b=LZgSbyQV5nb/I1RDo6fEG8bVBCcJ5LNGDVS+pw/ZHcgSjNAJzO2YrvPBTV3YGB4NSD
+         /y51esVrYZj/MxLl/L6K+CtGTyYuS2ey1nQdEWXJIu1W56wfTrsdSX9Oc7pVh9qomMHh
+         dE1ZWm+Oy5uEAaeoKi8cPiJhkCA0nzMYGweZaY9HlL6Niw/WJyTmxynwAQK9n4101YJW
+         1zju+QkZwCH4gWAZU9UWlqEEVmRXDfSgtQ0hfJorhz1XYaVkLmCBxfIYHf4YsLdvGK7F
+         oRCHcIQqBwNLLJLDZVri0MKbHvXs9gyw7QHfOuAvPe3iA/i+P3ueKlqnq9a7V1FeDz7v
+         2VbA==
+X-Gm-Message-State: AOAM5306N9OTn3lw9Vc2i4fvRecisSTB3WNS/1ePu5XdkRxlH1NV4g4C
+        F/PcGTu6mxwKzZ1ZNp3MuHUa+Q==
+X-Google-Smtp-Source: ABdhPJzxQcPXL/SXdnCSj5SquGqgTE40wlQAR6R4baJeWmw4z3nSc9tAjEWL4mDTx/RhO+QrrRG9vQ==
+X-Received: by 2002:a65:4785:: with SMTP id e5mr8123157pgs.0.1608179394623;
+        Wed, 16 Dec 2020 20:29:54 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id b2sm3901860pfo.164.2020.12.16.20.29.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Dec 2020 20:29:53 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20201215144256.155342-5-sgarzare@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201216144114.v2.3.I07afdedcc49655c5d26880f8df9170aac5792378@changeid>
+References: <20201216144114.v2.1.I99ee04f0cb823415df59bd4f550d6ff5756e43d6@changeid> <20201216144114.v2.3.I07afdedcc49655c5d26880f8df9170aac5792378@changeid>
+Subject: Re: [PATCH v2 3/4] spi: spi-geni-qcom: Don't try to set CS if an xfer is pending
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     msavaliy@qti.qualcomm.com, akashast@codeaurora.org,
+        Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org
+To:     Douglas Anderson <dianders@chromium.org>,
+        Mark Brown <broonie@kernel.org>
+Date:   Wed, 16 Dec 2020 20:29:52 -0800
+Message-ID: <160817939232.1580929.12113046418592056259@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Quoting Douglas Anderson (2020-12-16 14:41:51)
+> If we get a timeout sending then this happens:
+> * spi_transfer_wait() will get a timeout.
+> * We'll set the chip select
+> * We'll call handle_err() =3D> handle_fifo_timeout().
+>=20
+> Unfortunately that won't work so well on geni.  If we got a timeout
+> transferring then it's likely that our interrupt handler is blocked,
+> but we need that same interrupt handler to adjust the chip select.
+> Trying to set the chip select doesn't crash us but ends up confusing
+> our state machine and leads to messages like:
+>   Premature done. rx_rem =3D 32 bpw8
+>=20
+> Let's just drop the chip select request in this case.  Sure, we might
+> leave the chip select in the wrong state but it's likely it was going
+> to fail anyway and this avoids getting the driver even more confused
+> about what it's doing.
+>=20
+> The SPI core in general assumes that setting chip select is a simple
+> operation that doesn't fail.  Yet another reason to just reconfigure
+> the chip select line as GPIOs.
 
-On 2020/12/15 下午10:42, Stefano Garzarella wrote:
-> Some devices may require a higher limit for the number of IOTLB
-> entries, so let's make it configurable through a module parameter.
->
-> By default, it's initialized with the current limit (2048).
->
-> Suggested-by: Jason Wang <jasowang@redhat.com>
-> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-
-
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-
-> ---
->   drivers/vdpa/vdpa_sim/vdpa_sim.c | 7 ++++++-
->   1 file changed, 6 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> index 07ccc8609784..d716bfaadb3b 100644
-> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> @@ -31,6 +31,11 @@ static int batch_mapping = 1;
->   module_param(batch_mapping, int, 0444);
->   MODULE_PARM_DESC(batch_mapping, "Batched mapping 1 -Enable; 0 - Disable");
->   
-> +static int max_iotlb_entries = 2048;
-> +module_param(max_iotlb_entries, int, 0444);
-> +MODULE_PARM_DESC(max_iotlb_entries,
-> +		 "Maximum number of iotlb entries. 0 means unlimited. (default: 2048)");
-> +
->   static char *macaddr;
->   module_param(macaddr, charp, 0);
->   MODULE_PARM_DESC(macaddr, "Ethernet MAC address");
-> @@ -371,7 +376,7 @@ static struct vdpasim *vdpasim_create(void)
->   	if (!vdpasim->vqs)
->   		goto err_iommu;
->   
-> -	vdpasim->iommu = vhost_iotlb_alloc(2048, 0);
-> +	vdpasim->iommu = vhost_iotlb_alloc(max_iotlb_entries, 0);
->   	if (!vdpasim->iommu)
->   		goto err_iommu;
->   
-
+BTW, we could peek at the irq bit for the CS change and ignore the irq
+handler entirely. That would be one way to make sure the cs change went
+through, and would avoid an irq delay/scheduling problem for this simple
+operation. Maybe using the irq path is worse in general here?
