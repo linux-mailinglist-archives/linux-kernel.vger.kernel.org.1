@@ -2,119 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E49AF2DD8B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:51:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 285F32DD8BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:51:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729923AbgLQSuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 13:50:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727063AbgLQSuL (ORCPT
+        id S1730320AbgLQSvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 13:51:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37500 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727063AbgLQSvr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 13:50:11 -0500
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFCA6C0617B0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 10:49:19 -0800 (PST)
-Received: by mail-il1-x12f.google.com with SMTP id 2so26771001ilg.9
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 10:49:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=02u8Dsl66xAX2x9VDf8pp+9Zcn9sUu8zZbuiELaOrQI=;
-        b=kGaH8z++E1wZGQJ9CCiZbeEc0HDauNPgBP49gLWN3u6pFPH9ObzqiDACq4jVDSMc3a
-         Z7zlUL83yMcehtTiADp8DrEkHYk4OH8ZrvlOhusWqKD2GmrOmVGeaXZgPozedoDQhD++
-         FHJ5Mmzl1KzXWcYnVviciNBwaBI5L3Mf8TSWJMc/IkaABwvvlBrdOPSElMLwNn+l5D7M
-         v/BWsRE1lsIITadNCcrTY3hztPACfshPNQo2FN/gqpaSZyhtsuJUzBGgjODdLXVTjTLo
-         SLApV0OOv4Br+FEx+of+NS1P85uTmYt2KGYa6Eytut0QOoLyIKrGi4q5wizcRJq5LW4q
-         5u9Q==
+        Thu, 17 Dec 2020 13:51:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608231019;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=m17n6pRoAJlyX0rXnx9LJXxN3142fqufykus9jh5mfY=;
+        b=PxO7vblkiGvobCLm/+m5jCnIC0h/97o5aPYIeeugQm+q1i5xsqSV3k5BO+ONEwFqCGvUZm
+        4U91kM6SFgYLwvGg9zv/LPIRjY1fsUOviZNgRega+5Bq99N12XKNswDIHBtYW4Je4EhuQM
+        e+taqp6Ood6s3jhfcW/VFU8tifk1fFU=
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
+ [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-144-KVxI1d8tNVSk6Ew6OVIN1A-1; Thu, 17 Dec 2020 13:50:16 -0500
+X-MC-Unique: KVxI1d8tNVSk6Ew6OVIN1A-1
+Received: by mail-oo1-f72.google.com with SMTP id m1so8622797ooj.23
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 10:50:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=02u8Dsl66xAX2x9VDf8pp+9Zcn9sUu8zZbuiELaOrQI=;
-        b=iEkLAodOSROxXsuQnaGOEMxfKioyZz8XmqOVGgogPhAjGTubTnFrinUM35XXJhXyV0
-         B07IUuJQ5Hp3NxfHaCMzjmqkLqSttoF51FHJrIyFPhzXW39SMtm025UPGsz4R6/DP++a
-         xGj8peo2xv6HG2uuI9gyIm4/9XgK4TAGJhWJ4ml/Ob2cMj/oaZVLZlUFMr6AHVsbRbRO
-         Htn2VhOwt58QUK2ri15Szzy0jHs7r585YOmHhmJFJ95njB96R1RJYO6LBDuokbQQfeol
-         h4utpR0J4+pz1IuFf52hp9JW6I1TgqjU39x0DdmZakNuGnhCcW4gQTy95JQ3tXK7NF1z
-         YE5A==
-X-Gm-Message-State: AOAM531OltZ+P1b1YIMjuPDN46yAjR2CgFO1blN/15d9hF/Ma6bYJBkV
-        ZR9y6shrkygpfu6bB8/dskldusWTb675MQ==
-X-Google-Smtp-Source: ABdhPJypnBerzrbgejyDPVHVJFaOpXd3A78ixxGRC7wyAyxHKRMtOJ30OOGcqiHkuyGew8iKxIhmBQ==
-X-Received: by 2002:a92:ba82:: with SMTP id t2mr196649ill.139.1608230959056;
-        Thu, 17 Dec 2020 10:49:19 -0800 (PST)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id x17sm3601844ilj.67.2020.12.17.10.49.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Dec 2020 10:49:18 -0800 (PST)
-Subject: Re: [PATCH] remoteproc: Create a separate workqueue for recovery
- tasks
-To:     rishabhb@codeaurora.org
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tsoni@codeaurora.org, psodagud@codeaurora.org,
-        sidgup@codeaurora.org
-References: <1607806087-27244-1-git-send-email-rishabhb@codeaurora.org>
- <X9k+xmg9SULEbJXe@builder.lan>
- <dc9940f0-7fe3-d1da-acb5-580ae7366c9b@linaro.org>
- <87c3f902b94bc243fc28e0ce79303dd4@codeaurora.org>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <35e2106f-d738-4018-50f2-17afcbc627f7@linaro.org>
-Date:   Thu, 17 Dec 2020 12:49:17 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=m17n6pRoAJlyX0rXnx9LJXxN3142fqufykus9jh5mfY=;
+        b=JCuVUgtG3oMSQi1/wbThF+pAPv2hz4UKCYQaW+cf+YON/OJ5Z0rq44jq89Ti01Ja0Y
+         ih0fqZqLcaWY2sJAjTebHYHkqlWlbzcwexR0k1dcGPikIn+lRmqEBbnEQSLSwdMom0np
+         4O8iWGggd8kuUtmaCGjwEcW6vrCh7DMjKtveI7nFPCYEBbEC6TCo69Ps0Ev3PLs339fr
+         qLfn18O0PKc/ozGu9br2TNulrVMvsB5PVcxgOc7YdqlSu5IPdEkcZEgxO2qN4V7hx8x+
+         toD+DTL4BSFOKOSN5H6yykJpzIMJaewNSP8NxPnGG3SWW/RLWSvtw66V892GWW1rF6Uj
+         WFxA==
+X-Gm-Message-State: AOAM530nCvuhG3tfJCCFXmtwhNJbyYAQxdBo9/WQWk0n3X/U2nNTDIrP
+        ab/upsAMkMP22pd+B0uRh+320azN85EQomENiO0px6w2u4OScab+jZASJjGsymChH7SuDsIb6Cu
+        GCVqndRh/lSF/1iWHF5ep0ksuBShjYLR3wAhOtoHW
+X-Received: by 2002:aca:3151:: with SMTP id x78mr379923oix.39.1608231015187;
+        Thu, 17 Dec 2020 10:50:15 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzNlhTb57ULvIdjLfhzmPnA7qNvu4sEFEkQ8SCGM9vojdVTBu8xR5n2N1ayfmYWyNU7wrsUO5g1sdD5TAMJMfE=
+X-Received: by 2002:aca:3151:: with SMTP id x78mr379905oix.39.1608231014915;
+ Thu, 17 Dec 2020 10:50:14 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <87c3f902b94bc243fc28e0ce79303dd4@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <5979380e28f4ba8023e88f96d3a9291381a8457e.camel@gmx.de>
+ <a1b925758cbc5517d4ff6df3cf2a9b6614fd5535.camel@gmx.de> <1f88b926bedcad0d6e35c7f5b63bbb038c8c6c09.camel@gmx.de>
+ <6f99d3ca-a7ff-69e9-8ca1-9d016a8d3f48@amd.com> <23bc1073395db9ccf55ecca45198375f4d5d6250.camel@gmx.de>
+ <7cb43d5b-4e6a-defc-1ab6-5f713ad5a963@amd.com>
+In-Reply-To: <7cb43d5b-4e6a-defc-1ab6-5f713ad5a963@amd.com>
+From:   David Airlie <airlied@redhat.com>
+Date:   Fri, 18 Dec 2020 04:50:02 +1000
+Message-ID: <CAMwc25q6dXVidvhXBQzGY0BjNqs13ceDUFuoFv8vSB9pEP6ecg@mail.gmail.com>
+Subject: Re: [bisected] Re: drm, qxl: post 5.11 merge warning+explosion
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Mike Galbraith <efault@gmx.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        virtualization <virtualization@lists.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/17/20 12:21 PM, rishabhb@codeaurora.org wrote:
-> On 2020-12-17 08:12, Alex Elder wrote:
->> On 12/15/20 4:55 PM, Bjorn Andersson wrote:
->>> On Sat 12 Dec 14:48 CST 2020, Rishabh Bhatnagar wrote:
->>>
->>>> Create an unbound high priority workqueue for recovery tasks.
->>
->> I have been looking at a different issue that is caused by
->> crash notification.
->>
->> What happened was that the modem crashed while the AP was
->> in system suspend (or possibly even resuming) state.  And
->> there is no guarantee that the system will have called a
->> driver's ->resume callback when the crash notification is
->> delivered.
->>
->> In my case (in the IPA driver), handling a modem crash
->> cannot be done while the driver is suspended; i.e. the
->> activities in its ->resume callback must be completed
->> before we can recover from the crash.
->>
->> For this reason I might like to change the way the
->> crash notification is handled, but what I'd rather see
->> is to have the work queue not run until user space
->> is unfrozen, which would guarantee that all drivers
->> that have registered for a crash notification will
->> be resumed when the notification arrives.
->>
->> I'm not sure how that interacts with what you are
->> looking for here.  I think the workqueue could still
->> be unbound, but its work would be delayed longer before
->> any notification (and recovery) started.
->>
->>                     -Alex
->>
->>
-> In that case, maybe adding a "WQ_FREEZABLE" flag might help?
+Yes this looks correct, please add my rb and get into a fixes queue somewhe=
+re.
 
-Yes, exactly.  But how does that affect whatever you were
-trying to do with your patch?
+Dave.
 
-					-Alex
+On Fri, Dec 18, 2020 at 2:39 AM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
+>
+> Am 17.12.20 um 17:26 schrieb Mike Galbraith:
+> > On Thu, 2020-12-17 at 17:24 +0100, Christian K=C3=B6nig wrote:
+> >> Hi Mike,
+> >>
+> >> what exactly is the warning from qxl you are seeing?
+> > [    1.815561] WARNING: CPU: 7 PID: 355 at drivers/gpu/drm/ttm/ttm_pool=
+.c:365 ttm_pool_alloc+0x41b/0x540 [ttm]
+>
+> Yeah, that is an expected result.
+>
+> Looks like qxl does something quite odd here, it allocates an
+> dma_address array but doesn't have a device to fill them.
+>
+> On the other hand I don't see qxl using the allocated dma_addresses.
+> Dave do you have an idea why qxl is doing that?
+>
+> Mike can you test the attached patch?
+>
+> Thanks in advance,
+> Christian.
+>
+> > [    1.815561] Modules linked in: ext4(E) crc16(E) mbcache(E) jbd2(E) a=
+ta_generic(E) ata_piix(E) virtio_console(E) virtio_rng(E) virtio_blk(E) qxl=
+(E) drm_ttm_helper(E) ttm(E) drm_kms_helper(E) syscopyarea(E) sysfillrect(E=
+) sysimgblt(E) ahci(E) fb_sys_fops(E) cec(E) libahci(E) uhci_hcd(E) ehci_pc=
+i(E) rc_core(E) ehci_hcd(E) crc32c_intel(E) serio_raw(E) virtio_pci(E) virt=
+io_ring(E) 8139cp(E) virtio(E) libata(E) drm(E) usbcore(E) mii(E) sg(E) dm_=
+multipath(E) dm_mod(E) scsi_dh_rdac(E) scsi_dh_emc(E) scsi_dh_alua(E) scsi_=
+mod(E) autofs4(E)
+> > [    1.815589] CPU: 7 PID: 355 Comm: kworker/7:2 Tainted: G            =
+E     5.10.0.g489e9fe-master #26
+> > [    1.815590] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), B=
+IOS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
+> > [    1.815614] Workqueue: events drm_fb_helper_dirty_work [drm_kms_help=
+er]
+> > [    1.815621] RIP: 0010:ttm_pool_alloc+0x41b/0x540 [ttm]
+> > [    1.815623] Code: fc ff ff 89 ea 48 8d 04 d5 00 00 00 00 48 29 d0 48=
+ 8d 3c c5 00 1c 40 a0 e9 d7 fc ff ff 85 c0 0f 89 2f fc ff ff e9 28 fc ff ff=
+ <0f> 0b e9 35 fc ff ff 89 e9 49 8b 7d 00 b8 00 10 00 00 48 d3 e0 45
+> > [    1.815623] RSP: 0018:ffff888105d3b818 EFLAGS: 00010246
+> > [    1.815625] RAX: 0000000000000000 RBX: ffff888106978800 RCX: 0000000=
+000000000
+> > [    1.815626] RDX: ffff888105d3bc68 RSI: 0000000000000001 RDI: ffff888=
+106238820
+> > [    1.815626] RBP: ffff888106238758 R08: ffffc90000296000 R09: 8000000=
+00000016b
+> > [    1.815627] R10: 0000000000000001 R11: ffffc90000296000 R12: 0000000=
+000000000
+> > [    1.815628] R13: ffff888106238820 R14: 0000000000000000 R15: ffff888=
+106978800
+> > [    1.815628] FS:  0000000000000000(0000) GS:ffff888237dc0000(0000) kn=
+lGS:0000000000000000
+> > [    1.815632] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [    1.815633] CR2: 00007eff52a0d5b8 CR3: 0000000002010003 CR4: 0000000=
+0001706e0
+> > [    1.815633] Call Trace:
+> > [    1.815644]  ttm_tt_populate+0xb1/0xc0 [ttm]
+> > [    1.815647]  ttm_bo_move_memcpy+0x4a5/0x500 [ttm]
+> > [    1.815652]  qxl_bo_move+0x230/0x2f0 [qxl]
+> > [    1.815655]  ttm_bo_handle_move_mem+0x79/0x140 [ttm]
+> > [    1.815657]  ttm_bo_evict+0x124/0x250 [ttm]
+> > [    1.815693]  ? drm_mm_insert_node_in_range+0x55c/0x580 [drm]
+> > [    1.815696]  ttm_mem_evict_first+0x110/0x3d0 [ttm]
+> > [    1.815698]  ttm_bo_mem_space+0x261/0x270 [ttm]
+> > [    1.815702]  ? qxl_ttm_debugfs_init+0xb0/0xb0 [qxl]
+> > [    1.815705]  ttm_bo_validate+0x117/0x150 [ttm]
+> > [    1.815756]  ttm_bo_init_reserved+0x2c8/0x3c0 [ttm]
+> > [    1.815772]  qxl_bo_create+0x134/0x1d0 [qxl]
+> > [    1.815775]  ? qxl_ttm_debugfs_init+0xb0/0xb0 [qxl]
+> > [    1.815791]  qxl_alloc_bo_reserved+0x2c/0x90 [qxl]
+> > [    1.815794]  qxl_image_alloc_objects+0xa3/0x120 [qxl]
+> > [    1.815797]  qxl_draw_dirty_fb+0x155/0x450 [qxl]
+> > [    1.815815]  ? _cond_resched+0x15/0x40
+> > [    1.815819]  ? ww_mutex_lock_interruptible+0x12/0x60
+> > [    1.815822]  qxl_framebuffer_surface_dirty+0x14f/0x1a0 [qxl]
+> > [    1.815841]  drm_fb_helper_dirty_work+0x11d/0x180 [drm_kms_helper]
+> > [    1.815853]  process_one_work+0x1f5/0x3c0
+> > [    1.815866]  ? process_one_work+0x3c0/0x3c0
+> > [    1.815867]  worker_thread+0x2d/0x3d0
+> > [    1.815868]  ? process_one_work+0x3c0/0x3c0
+> > [    1.815872]  kthread+0x117/0x130
+> > [    1.815876]  ? kthread_park+0x90/0x90
+> > [    1.815880]  ret_from_fork+0x1f/0x30
+> > [    1.815886] ---[ end trace 51e464c1e89a1728 ]---
+> > [    1.815894] BUG: kernel NULL pointer dereference, address: 000000000=
+0000230
+> > [    1.815895] #PF: supervisor read access in kernel mode
+> > [    1.815895] #PF: error_code(0x0000) - not-present page
+> > [    1.815896] PGD 0 P4D 0
+> > [    1.815898] Oops: 0000 [#1] SMP NOPTI
+> > [    1.815900] CPU: 7 PID: 355 Comm: kworker/7:2 Tainted: G        W   =
+E     5.10.0.g489e9fe-master #26
+> > [    1.815901] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), B=
+IOS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
+> > [    1.815916] Workqueue: events drm_fb_helper_dirty_work [drm_kms_help=
+er]
+> > [    1.815921] RIP: 0010:dma_map_page_attrs+0xf/0x1c0
+> > [    1.815922] Code: 1f 17 5b 01 48 85 c0 75 e3 31 c0 c3 66 66 2e 0f 1f=
+ 84 00 00 00 00 00 0f 1f 40 00 0f 1f 44 00 00 41 55 41 54 55 53 48 83 ec 08=
+ <48> 8b 87 30 02 00 00 48 85 c0 48 0f 44 05 e7 16 5b 01 41 83 f8 02
+> > [    1.815923] RSP: 0018:ffff888105d3b7e8 EFLAGS: 00010296
+> > [    1.815924] RAX: 0000000000001000 RBX: 0000000000000001 RCX: 0000000=
+000001000
+> > [    1.815924] RDX: 0000000000000000 RSI: ffffea0004171e40 RDI: 0000000=
+000000000
+> > [    1.815925] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000=
+000000000
+> > [    1.815925] R10: ffffea0004171e40 R11: ffffc90000296000 R12: 0000000=
+000000001
+> > [    1.815926] R13: ffff888106238820 R14: ffff888105d07100 R15: ffff888=
+106978800
+> > [    1.815926] FS:  0000000000000000(0000) GS:ffff888237dc0000(0000) kn=
+lGS:0000000000000000
+> > [    1.815928] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [    1.815929] CR2: 0000000000000230 CR3: 0000000002010003 CR4: 0000000=
+0001706e0
+> > [    1.815929] Call Trace:
+> > [    1.815937]  ttm_pool_alloc+0x448/0x540 [ttm]
+> > [    1.815940]  ttm_tt_populate+0xb1/0xc0 [ttm]
+> > [    1.815942]  ttm_bo_move_memcpy+0x4a5/0x500 [ttm]
+> > [    1.815945]  qxl_bo_move+0x230/0x2f0 [qxl]
+> > [    1.815947]  ttm_bo_handle_move_mem+0x79/0x140 [ttm]
+> > [    1.815949]  ttm_bo_evict+0x124/0x250 [ttm]
+> > [    1.815982]  ? drm_mm_insert_node_in_range+0x55c/0x580 [drm]
+> > [    1.815984]  ttm_mem_evict_first+0x110/0x3d0 [ttm]
+> > [    1.815988]  ttm_bo_mem_space+0x261/0x270 [ttm]
+> > [    1.890133]  ? qxl_ttm_debugfs_init+0xb0/0xb0 [qxl]
+> > [    1.890138]  ttm_bo_validate+0x117/0x150 [ttm]
+> > [    1.891740]  ttm_bo_init_reserved+0x2c8/0x3c0 [ttm]
+> > [    1.891744]  qxl_bo_create+0x134/0x1d0 [qxl]
+> > [    1.893398]  ? qxl_ttm_debugfs_init+0xb0/0xb0 [qxl]
+> > [    1.893400]  qxl_alloc_bo_reserved+0x2c/0x90 [qxl]
+> > [    1.893402]  qxl_image_alloc_objects+0xa3/0x120 [qxl]
+> > [    1.893405]  qxl_draw_dirty_fb+0x155/0x450 [qxl]
+> > [    1.896515]  ? _cond_resched+0x15/0x40
+> > [    1.896517]  ? ww_mutex_lock_interruptible+0x12/0x60
+> > [    1.896520]  qxl_framebuffer_surface_dirty+0x14f/0x1a0 [qxl]
+> > [    1.896533]  drm_fb_helper_dirty_work+0x11d/0x180 [drm_kms_helper]
+> > [    1.896537]  process_one_work+0x1f5/0x3c0
+> > [    1.900535]  ? process_one_work+0x3c0/0x3c0
+> > [    1.900536]  worker_thread+0x2d/0x3d0
+> > [    1.900538]  ? process_one_work+0x3c0/0x3c0
+> > [    1.902704]  kthread+0x117/0x130
+> > [    1.902706]  ? kthread_park+0x90/0x90
+> > [    1.902709]  ret_from_fork+0x1f/0x30
+> > [    1.902711] Modules linked in: ext4(E) crc16(E) mbcache(E) jbd2(E) a=
+ta_generic(E) ata_piix(E) virtio_console(E) virtio_rng(E) virtio_blk(E) qxl=
+(E) drm_ttm_helper(E) ttm(E) drm_kms_helper(E) syscopyarea(E) sysfillrect(E=
+) sysimgblt(E) ahci(E) fb_sys_fops(E) cec(E) libahci(E) uhci_hcd(E) ehci_pc=
+i(E) rc_core(E) ehci_hcd(E) crc32c_intel(E) serio_raw(E) virtio_pci(E) virt=
+io_ring(E) 8139cp(E) virtio(E) libata(E) drm(E) usbcore(E) mii(E) sg(E) dm_=
+multipath(E) dm_mod(E) scsi_dh_rdac(E) scsi_dh_emc(E) scsi_dh_alua(E) scsi_=
+mod(E) autofs4(E)
+> > [    1.904797] Dumping ftrace buffer:
+> > [    1.911038]    (ftrace buffer empty)
+> > [    1.911041] CR2: 0000000000000230
+> >
+> >
+> >
+>
 
-. . .
