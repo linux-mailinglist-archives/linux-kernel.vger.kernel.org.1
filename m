@@ -2,128 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E836F2DD97C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 20:44:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B7AB2DD981
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 20:48:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729582AbgLQToR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 14:44:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726930AbgLQToQ (ORCPT
+        id S1729069AbgLQTrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 14:47:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59344 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726930AbgLQTrJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 14:44:16 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41568C0617A7;
-        Thu, 17 Dec 2020 11:43:36 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id y19so60548558lfa.13;
-        Thu, 17 Dec 2020 11:43:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vBbSjsodA5VnvSxw1TcN/8LkcmQmCADHxuYEw3lfmLg=;
-        b=MT4y8l3J9ocjk6Hc0STooTDAPzHBBzhr5mtr8lvMMQpSeneVErMF0X3WWNHntnBPgC
-         tX8kloAcV9FY5s5UD2NLMnVFkblwLe5o+iasZnQS/5pLrieH8pAANDBCdgxF4LiWhQ7O
-         JFbDFX7V189JKvOSNOUe/5ZCeVvTFXWFisxMOcnVjyC4nbyJlu1d0nM7TKzmPBFxxazq
-         t3q4e9K1reapQrj8xPi/apdGRsRpiAOxtjqq+9zbiaYvWXJREYz9Otpf2O1nl9vd8DPm
-         u7pllNNXj2gxSvtcaSsce+kdeeRUh+DVCeC6a0Tu2HyAmMcxxAcdW9Z/p1yumDu4edFc
-         KlRQ==
+        Thu, 17 Dec 2020 14:47:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608234341;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nb7PGJmbWoZK6Xb8BUPoFwHqAOTqo6YECVOzq5JXhKw=;
+        b=OZ8MX8FkJkSQTRAyYdR0VmHYbeVwH6pOvGq6PR7jZUXkDB1P0P5La5xiTR+zJQsq4TgQlK
+        nFdR5KKz0/tyD33GuUr0/PKPy+Iuy5nlWYioEbL8Ksve12EREYfTDxmFhZVrnlIyw2qyyd
+        0eVtTf7PvU17hZnOACv7RDiyn4BmpGw=
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
+ [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-71-N_tUJTlBPleZYiErNoR_UA-1; Thu, 17 Dec 2020 14:45:36 -0500
+X-MC-Unique: N_tUJTlBPleZYiErNoR_UA-1
+Received: by mail-oo1-f72.google.com with SMTP id x37so5264722ooi.6
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 11:45:36 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vBbSjsodA5VnvSxw1TcN/8LkcmQmCADHxuYEw3lfmLg=;
-        b=eQLRRwNLc07NECNOumJiwbw7Xa2h+Ekx9Pgf/HTCkqmq7Rqm9YkJ3q1t8PWc2qyW/U
-         rk4ZQC9QFNrg5YzZQbYioSMI7ONORrsFraStMlQAuiq0H8a1e4/TVJwhWTTHK8CYU2kD
-         qqdxcTGqOpLOQQMvLeW7gqYOx7PuXD7CmFYWJUuzD6/t81LR10ukRMa9ulkfDaBKUtZx
-         RQEg4ByOyLA+jewLozGvtRalFujgFIpu4X/aPu9kJBAH6f4Oe4dg/R8a3LWpvlaU5eE7
-         p6Ep3rglyP9Y6W6JEE8iEimOgPn4adwpucZ6hf1MfD1+7THJG/O8ncs0cEeXtVQ/3aHe
-         yOmA==
-X-Gm-Message-State: AOAM533dGNxFC18d6x+QXDj/gWGfYwy0OKROAEsV7VocC7nPI61Kf+OG
-        VwT8cp/zQOurdkPXy7BzMNdjaZCX168=
-X-Google-Smtp-Source: ABdhPJxnGQ1MMMAXLX6lUBIwTM9S5CIfD2NcABUoD+/8oUn1unMYw0duaT1V+CzLuLSE8cBN8bA2VQ==
-X-Received: by 2002:a19:e8e:: with SMTP id 136mr133364lfo.272.1608234214562;
-        Thu, 17 Dec 2020 11:43:34 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id u25sm579622lfm.111.2020.12.17.11.43.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Dec 2020 11:43:34 -0800 (PST)
-Subject: Re: [PATCH v2 7/8] usb: host: ehci-tegra: Remove the driver
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Ion Agorria <ion@agorria.com>, linux-tegra@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201217094007.19336-1-digetx@gmail.com>
- <20201217094007.19336-8-digetx@gmail.com>
- <20201217155003.GA280158@rowland.harvard.edu>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <dae2cf1c-68ae-19e7-d5aa-74266aa5239f@gmail.com>
-Date:   Thu, 17 Dec 2020 22:43:33 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nb7PGJmbWoZK6Xb8BUPoFwHqAOTqo6YECVOzq5JXhKw=;
+        b=lm6aYvmJS+S3yqi2ciMrLcdQMpBb79vtGaVz1GseHOMDSdT6RO01VDaGp20scgfjcx
+         o7vS8WygCDxmCyUHRWEQaFY+YlydxSskkuAEzcAH0ZthNzow0fBt1R93aX2MREOBs5B7
+         tclXbRUNrdLbn+m12ef26p/CsPmBOPJ3JBpE4ej8aHI1e3oGFd/VGyfcCfDlKT1kasNX
+         ihbZ/1YP/brCbfitO/gTcpk6jRf+5xLOIWjco3nlwxULCbWbZ8ygWFrew+aBgln+9NIC
+         26rTAioWJr5DcT+IMtcG5HKqE0usKikWFxpRX0+MDaiqEeOQTOR66S7aviBVCkE1FJZB
+         KfTw==
+X-Gm-Message-State: AOAM5300YSD+UzLL6brZM5gzGUNk/2lmqP/Oe9uFy8T6HLfCw1FsFA1/
+        dNbKcOdm8zMTZiZhlt2hJWAs7NJ0YMjrbHzF5W2accvR2sCRiTSGbBk+MwbVKalKJ0ZHDlL4TUJ
+        sGuyzJXP0r2E9/XQu8zlGwRKRljqCsLT+Y+Sv6KSX
+X-Received: by 2002:a05:6830:1e7a:: with SMTP id m26mr430206otr.78.1608234335174;
+        Thu, 17 Dec 2020 11:45:35 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz2YI+h68BoCVXr+rm+2y69SlTL2FYCdSbdD7vZiTQ9kM/YLLB5HULRWDfjGeXF4EHNix6ZkJub+YE6igQEA+c=
+X-Received: by 2002:a05:6830:1e7a:: with SMTP id m26mr430192otr.78.1608234334946;
+ Thu, 17 Dec 2020 11:45:34 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201217155003.GA280158@rowland.harvard.edu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <fe612bbbeedd0ee0d03d04c7341ea62406b957c7.camel@gmx.de> <136aa09d13fab723e0460b73608ed3950699f2b6.camel@gmx.de>
+In-Reply-To: <136aa09d13fab723e0460b73608ed3950699f2b6.camel@gmx.de>
+From:   David Airlie <airlied@redhat.com>
+Date:   Fri, 18 Dec 2020 05:45:22 +1000
+Message-ID: <CAMwc25rTv0=LuAUoHqC9+Eh6rdaywwrigMza6yKbwbRiEwLZGg@mail.gmail.com>
+Subject: Re: [bisected] Re: regression: nouveau fifo: fault 01 ==> channel 1:
+ killed ==> dead desktop
+To:     Mike Galbraith <efault@gmx.de>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        nouveau <nouveau@lists.freedesktop.org>
+Content-Type: multipart/mixed; boundary="0000000000004046b105b6ae3c0b"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-17.12.2020 18:50, Alan Stern пишет:
-> On Thu, Dec 17, 2020 at 12:40:06PM +0300, Dmitry Osipenko wrote:
->> The ChipIdea driver now provides USB2 host mode support for NVIDIA Tegra
->> SoCs. The ehci-tegra driver is obsolete now, remove it and redirect the
->> older Kconfig entry to the CI driver.
->>
->> Tested-by: Matt Merhar <mattmerhar@protonmail.com>
->> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
->> Tested-by: Peter Geis <pgwipeout@gmail.com>
->> Tested-by: Ion Agorria <ion@agorria.com>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  drivers/usb/host/Kconfig      |   8 +-
->>  drivers/usb/host/Makefile     |   1 -
->>  drivers/usb/host/ehci-tegra.c | 604 ----------------------------------
->>  3 files changed, 6 insertions(+), 607 deletions(-)
->>  delete mode 100644 drivers/usb/host/ehci-tegra.c
->>
->> diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
->> index 31e59309da1f..318315602337 100644
->> --- a/drivers/usb/host/Kconfig
->> +++ b/drivers/usb/host/Kconfig
->> @@ -269,9 +269,13 @@ config USB_EHCI_HCD_AT91
->>  config USB_EHCI_TEGRA
->>  	tristate "NVIDIA Tegra HCD support"
->>  	depends on ARCH_TEGRA
->> -	select USB_EHCI_ROOT_HUB_TT
->> -	select USB_TEGRA_PHY
->> +	select USB_CHIPIDEA
->> +	select USB_CHIPIDEA_HOST
->> +	select USB_CHIPIDEA_TEGRA
->>  	help
->> +	  This option is deprecated now and the driver was removed, use
->> +	  USB_CHIPIDEA_TEGRA instead.
->> +
->>  	  This driver enables support for the internal USB Host Controllers
->>  	  found in NVIDIA Tegra SoCs. The controllers are EHCI compliant.
-> 
-> It doesn't really make sense to say "... the driver was removed..."
-> and then in the next paragraph say "This driver enables...".  You
-> should change the second paragraph to begin: "Enable support for...".
-> 
-> That's a minor matter, though, and you can easily fix it in the next
-> patch version.  Everything else is okay.
-> 
-> Acked-by: Alan Stern <stern@rowland.harvard.edu>
+--0000000000004046b105b6ae3c0b
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Okay, thanks.
+Hi Mike,
+
+Thanks for the report,
+
+Does the attached patch help?
+
+Dave.
+
+On Thu, Dec 17, 2020 at 11:30 PM Mike Galbraith <efault@gmx.de> wrote:
+>
+> On Wed, 2020-12-16 at 14:31 +0100, Mike Galbraith wrote:
+> > When the below new to 5.11 cycle badness happens, it's time to reboot.
+> >
+> > ...
+> > [   27.467260] NFSD: Using UMH upcall client tracking operations.
+> > [   27.467273] NFSD: starting 90-second grace period (net f00000a0)
+> > [   27.965138] Bridge firewalling registered
+> > [   39.096604] fuse: init (API version 7.32)
+> > [  961.579832] nouveau 0000:01:00.0: fifo: fault 01 [WRITE] at 00000000=
+0069f000 engine 15 [CE0] client 01 [HUB/CE0] reason 02 [PTE] on channel 1 [=
+00ff73d000 DRM]
+> > [  961.579840] nouveau 0000:01:00.0: fifo: channel 1: killed
+> > [  961.579844] nouveau 0000:01:00.0: fifo: runlist 0: scheduled for rec=
+overy
+> > [  961.579850] nouveau 0000:01:00.0: fifo: runlist 4: scheduled for rec=
+overy
+> > [  961.579853] nouveau 0000:01:00.0: fifo: engine 4: scheduled for reco=
+very
+> >
+> > Box is aging generic i4790 desktop box with...
+> > 01:00.0 VGA compatible controller: NVIDIA Corporation GM204 [GeForce GT=
+X 980] (rev a1)
+>
+> Bisection was straight forward.  A post bisect test revert was equally
+> straight forward, and seems to confirm the fingered commit.
+>
+> 0c8c0659d7475b6304b67374caf15b56cf0be4f9 is the first bad commit
+> commit 0c8c0659d7475b6304b67374caf15b56cf0be4f9
+> Author: Dave Airlie <airlied@redhat.com>
+> Date:   Thu Oct 29 13:59:20 2020 +1000
+>
+>     drm/nouveau/ttm: use multihop
+>
+>     This removes the code to move resources directly between
+>     SYSTEM and VRAM in favour of using the core ttm mulithop code.
+>
+>     Signed-off-by: Dave Airlie <airlied@redhat.com>
+>     Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+>     Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
+>     Link: https://patchwork.freedesktop.org/patch/msgid/20201109005432.86=
+1936-4-airlied@gmail.com
+>
+>  drivers/gpu/drm/nouveau/nouveau_bo.c | 112 ++++-------------------------=
+------
+>  1 file changed, 13 insertions(+), 99 deletions(-)
+>
+> git bisect start 'drivers/gpu'
+> # good: [2c85ebc57b3e1817b6ce1a6b703928e113a90442] Linux 5.10
+> git bisect good 2c85ebc57b3e1817b6ce1a6b703928e113a90442
+> # bad: [accefff5b547a9a1d959c7e76ad539bf2480e78b] Merge tag 'arm-soc-omap=
+-genpd-5.11' of git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc
+> git bisect bad accefff5b547a9a1d959c7e76ad539bf2480e78b
+> # bad: [d635a69dd4981cc51f90293f5f64268620ed1565] Merge tag 'net-next-5.1=
+1' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next
+> git bisect bad d635a69dd4981cc51f90293f5f64268620ed1565
+> # bad: [0ca2ce81eb8ee30f3ba8ac7967fef9cfbb44dbdb] Merge tag 'arm64-upstre=
+am' of git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux
+> git bisect bad 0ca2ce81eb8ee30f3ba8ac7967fef9cfbb44dbdb
+> # good: [f8aab60422c371425365d386dfd51e0c6c5b1041] drm/amdgpu: Initialise=
+ drm_gem_object_funcs for imported BOs
+> git bisect good f8aab60422c371425365d386dfd51e0c6c5b1041
+> # bad: [fab0fca1da5cdc48be051715cd9787df04fdce3a] Merge tag 'media/v5.11-=
+1' of git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media
+> git bisect bad fab0fca1da5cdc48be051715cd9787df04fdce3a
+> # bad: [bcc68bd8161261ceeb1a4ab02b5265758944f90d] Merge tag 'auxdisplay-f=
+or-linus-v5.11' of git://github.com/ojeda/linux
+> git bisect bad bcc68bd8161261ceeb1a4ab02b5265758944f90d
+> # bad: [22f8c80566c4a29a0d8b5ebf24aa1fd1679b39e5] Merge tag 'drm-misc-nex=
+t-2020-11-18' of ssh://git.freedesktop.org/git/drm/drm-misc into drm-next
+> git bisect bad 22f8c80566c4a29a0d8b5ebf24aa1fd1679b39e5
+> # bad: [a1ac250a82a5e97db71f14101ff7468291a6aaef] fbcon: Avoid using FNTC=
+HARCNT() and hard-coded built-in font charcount
+> git bisect bad a1ac250a82a5e97db71f14101ff7468291a6aaef
+> # good: [a39855076c859b7f6c58ed4da8f195a2a6cd3c7b] drm/cma-helper: Make d=
+efault object functions the default
+> git bisect good a39855076c859b7f6c58ed4da8f195a2a6cd3c7b
+> # bad: [5f1f10998e7f0ba98a8efc27009cd9a11cff6616] drm/atmel-hlcdc/atmel_h=
+lcdc_plane: Staticise local function 'atmel_hlcdc_plane_setup_scaler()'
+> git bisect bad 5f1f10998e7f0ba98a8efc27009cd9a11cff6616
+> # good: [55c8bcaeccaa5c6d9e7a432ebd0a1717f488a3f4] drm: mxsfb: Implement =
+.format_mod_supported
+> git bisect good 55c8bcaeccaa5c6d9e7a432ebd0a1717f488a3f4
+> # bad: [0c8c0659d7475b6304b67374caf15b56cf0be4f9] drm/nouveau/ttm: use mu=
+ltihop
+> git bisect bad 0c8c0659d7475b6304b67374caf15b56cf0be4f9
+> # good: [23d6ab1d4c503660632e7b18cbb571d62d9bf792] drm: remove pgprot_dec=
+rypted() before calls to io_remap_pfn_range()
+> git bisect good 23d6ab1d4c503660632e7b18cbb571d62d9bf792
+> # good: [ebdf565169af006ee3be8c40eecbfc77d28a3b84] drm/ttm: add multihop =
+infrastrucutre (v3)
+> git bisect good ebdf565169af006ee3be8c40eecbfc77d28a3b84
+> # good: [f5a89a5cae812a39993be32e74c8ed7856b1e2b2] drm/amdgpu/ttm: use mu=
+ltihop
+> git bisect good f5a89a5cae812a39993be32e74c8ed7856b1e2b2
+> # first bad commit: [0c8c0659d7475b6304b67374caf15b56cf0be4f9] drm/nouvea=
+u/ttm: use multihop
+>
+
+--0000000000004046b105b6ae3c0b
+Content-Type: text/x-patch; charset="US-ASCII"; 
+	name="0001-drm-nouveau-fix-multihop-when-move-doesn-t-work.patch"
+Content-Disposition: attachment; 
+	filename="0001-drm-nouveau-fix-multihop-when-move-doesn-t-work.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_kit96sa90>
+X-Attachment-Id: f_kit96sa90
+
+RnJvbSA3ZTNlZWY5M2NkZjgyMjhkNGY5YjhlZjJmZGRkMTcwZWVkYzZhMGIwIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBEYXZlIEFpcmxpZSA8YWlybGllZEByZWRoYXQuY29tPgpEYXRl
+OiBGcmksIDE4IERlYyAyMDIwIDA1OjQzOjE1ICsxMDAwClN1YmplY3Q6IFtQQVRDSF0gZHJtL25v
+dXZlYXU6IGZpeCBtdWx0aWhvcCB3aGVuIG1vdmUgZG9lc24ndCB3b3JrLgoKQXMgcGVyIHRoZSBy
+YWRlb24vYW1kZ3B1IGZpeCBkb24ndCB1c2UgbXVsdGlob3AgaXMgaHcgbW92ZXMKYXJlbid0IGVu
+YWJsZWQuCgpSZXBvcnRlZC1ieTogTWlrZSBHYWxicmFpdGggPGVmYXVsdEBnbXguZGU+CkZpeGVz
+OiAwYzhjMDY1OWQ3NCAoImRybS9ub3V2ZWF1L3R0bTogdXNlIG11bHRpaG9wIikKU2lnbmVkLW9m
+Zi1ieTogRGF2ZSBBaXJsaWUgPGFpcmxpZWRAcmVkaGF0LmNvbT4KLS0tCiBkcml2ZXJzL2dwdS9k
+cm0vbm91dmVhdS9ub3V2ZWF1X2JvLmMgfCAzMSArKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0t
+CiAxIGZpbGUgY2hhbmdlZCwgMTYgaW5zZXJ0aW9ucygrKSwgMTUgZGVsZXRpb25zKC0pCgpkaWZm
+IC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL25vdXZlYXUvbm91dmVhdV9iby5jIGIvZHJpdmVycy9n
+cHUvZHJtL25vdXZlYXUvbm91dmVhdV9iby5jCmluZGV4IDEzODZiMGZjMTY0MC4uYzg1YjFhZjA2
+YjdiIDEwMDY0NAotLS0gYS9kcml2ZXJzL2dwdS9kcm0vbm91dmVhdS9ub3V2ZWF1X2JvLmMKKysr
+IGIvZHJpdmVycy9ncHUvZHJtL25vdXZlYXUvbm91dmVhdV9iby5jCkBAIC05NDIsMTYgKzk0Miw2
+IEBAIG5vdXZlYXVfYm9fbW92ZShzdHJ1Y3QgdHRtX2J1ZmZlcl9vYmplY3QgKmJvLCBib29sIGV2
+aWN0LAogCXN0cnVjdCBub3V2ZWF1X2RybV90aWxlICpuZXdfdGlsZSA9IE5VTEw7CiAJaW50IHJl
+dCA9IDA7CiAKLQlpZiAoKG9sZF9yZWctPm1lbV90eXBlID09IFRUTV9QTF9TWVNURU0gJiYKLQkg
+ICAgIG5ld19yZWctPm1lbV90eXBlID09IFRUTV9QTF9WUkFNKSB8fAotCSAgICAob2xkX3JlZy0+
+bWVtX3R5cGUgPT0gVFRNX1BMX1ZSQU0gJiYKLQkgICAgIG5ld19yZWctPm1lbV90eXBlID09IFRU
+TV9QTF9TWVNURU0pKSB7Ci0JCWhvcC0+ZnBmbiA9IDA7Ci0JCWhvcC0+bHBmbiA9IDA7Ci0JCWhv
+cC0+bWVtX3R5cGUgPSBUVE1fUExfVFQ7Ci0JCWhvcC0+ZmxhZ3MgPSAwOwotCQlyZXR1cm4gLUVN
+VUxUSUhPUDsKLQl9CiAKIAlpZiAobmV3X3JlZy0+bWVtX3R5cGUgPT0gVFRNX1BMX1RUKSB7CiAJ
+CXJldCA9IG5vdXZlYXVfdHRtX3R0X2JpbmQoYm8tPmJkZXYsIGJvLT50dG0sIG5ld19yZWcpOwpA
+QCAtOTk1LDE0ICs5ODUsMjUgQEAgbm91dmVhdV9ib19tb3ZlKHN0cnVjdCB0dG1fYnVmZmVyX29i
+amVjdCAqYm8sIGJvb2wgZXZpY3QsCiAKIAkvKiBIYXJkd2FyZSBhc3Npc3RlZCBjb3B5LiAqLwog
+CWlmIChkcm0tPnR0bS5tb3ZlKSB7CisJCWlmICgob2xkX3JlZy0+bWVtX3R5cGUgPT0gVFRNX1BM
+X1NZU1RFTSAmJgorCQkgICAgIG5ld19yZWctPm1lbV90eXBlID09IFRUTV9QTF9WUkFNKSB8fAor
+CQkgICAgKG9sZF9yZWctPm1lbV90eXBlID09IFRUTV9QTF9WUkFNICYmCisJCSAgICAgbmV3X3Jl
+Zy0+bWVtX3R5cGUgPT0gVFRNX1BMX1NZU1RFTSkpIHsKKwkJCWhvcC0+ZnBmbiA9IDA7CisJCQlo
+b3AtPmxwZm4gPSAwOworCQkJaG9wLT5tZW1fdHlwZSA9IFRUTV9QTF9UVDsKKwkJCWhvcC0+Zmxh
+Z3MgPSAwOworCQkJcmV0dXJuIC1FTVVMVElIT1A7CisJCX0KIAkJcmV0ID0gbm91dmVhdV9ib19t
+b3ZlX20ybWYoYm8sIGV2aWN0LCBjdHgsCiAJCQkJCSAgIG5ld19yZWcpOwotCQlpZiAoIXJldCkK
+LQkJCWdvdG8gb3V0OwotCX0KKwl9IGVsc2UKKwkJcmV0ID0gLUVOT0RFVjsKIAotCS8qIEZhbGxi
+YWNrIHRvIHNvZnR3YXJlIGNvcHkuICovCi0JcmV0ID0gdHRtX2JvX21vdmVfbWVtY3B5KGJvLCBj
+dHgsIG5ld19yZWcpOworCWlmIChyZXQpIHsKKwkJLyogRmFsbGJhY2sgdG8gc29mdHdhcmUgY29w
+eS4gKi8KKwkJcmV0ID0gdHRtX2JvX21vdmVfbWVtY3B5KGJvLCBjdHgsIG5ld19yZWcpOworCX0K
+IAogb3V0OgogCWlmIChkcm0tPmNsaWVudC5kZXZpY2UuaW5mby5mYW1pbHkgPCBOVl9ERVZJQ0Vf
+SU5GT19WMF9URVNMQSkgewotLSAKMi4yNy4wCgo=
+--0000000000004046b105b6ae3c0b--
 
