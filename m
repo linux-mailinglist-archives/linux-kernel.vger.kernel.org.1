@@ -2,149 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DF9D2DCA15
+	by mail.lfdr.de (Postfix) with ESMTP id E639E2DCA16
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 01:43:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726561AbgLQAls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 19:41:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725871AbgLQAlr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 19:41:47 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA8E6C0617A6
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 16:41:06 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id z62so32540522yba.23
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 16:41:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc:content-transfer-encoding;
-        bh=nQgcH8JHZsnhKqD6NfgVnumKz059kSgcZknDGcmmB+s=;
-        b=EPE7cvqG1CwG1U3Og2cZeOASwzVU7A+l3tQlQ2Q1Qj+umQaGHp3C5Fzz5bGK0Crd04
-         /n0YTZKkbnJr55TZON2xRNoUuFq97eIpqlag40vlkNDS9th2edu7BRoJnTUF+LPOl8rU
-         5QaH44QM+D7Kwn3CKIxtIUPM9XYOv/kqIUwu885gR114fRktV2zSCPew4FsWlE4Rnrqj
-         Sef/7Zkk91vRjq1xBxnjAM/t8D+kC9wSde//oqYHh2BBIY2f/0vJh1lY1ypqnmuM7/Hi
-         +/2Bf97sUoUrVjttz+wvnStPfEKtpMxMUPz5lBve+Tqg6wmZ2Ta5IY6wJaVGLQbdGFHN
-         YyZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc:content-transfer-encoding;
-        bh=nQgcH8JHZsnhKqD6NfgVnumKz059kSgcZknDGcmmB+s=;
-        b=A59oayArtaTLEWiOUH3Rz8sHJojJIXB2XW9F/8XffF/tHlGM8jqAmUDlYcBdTlnTqV
-         kk4BQj2vjKcRpRZUVcZu5d3y7FedewH1hEfrhlM/gNoulCaA9GFqCeTv0+ZlT6PqUxLt
-         ESd2XQmKX60daOOX+49SIsgQjLTKruqn/MbLfRr44boUByAyuSq+vLYl4LQymvmUIqAa
-         VwGvy3O3BLk0cnhnfeELY2zuZqAsMIIkH9penhKyVC4UkdH74vzykYKxYHbL81kFl+4g
-         /MCEVKfG1Ma8YaiKUqQr+9bKLQaCukuYQW3HoEI12nxfbLoT6RjzA4gv78y7xlZIanZQ
-         UlWg==
-X-Gm-Message-State: AOAM533l6NOM13GghF96e6p6HXFkKuU3p2VyCvkUOmIpNwNoj/X5BZrx
-        Te25k3f/fvUjwrqlf6B9N1Ce4CgU3EJnfalOYK4=
-X-Google-Smtp-Source: ABdhPJzDCsUbB7yanWIFRkse1AcPCUp2lzaL4KZ94TktWtsEANgAnit5Tri5D+L2KDcRYZoHWgMFew1sqgzoawDx0kU=
-Sender: "ndesaulniers via sendgmr" 
-        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:a25:ed7:: with SMTP id
- 206mr50304845ybo.136.1608165666117; Wed, 16 Dec 2020 16:41:06 -0800 (PST)
-Date:   Wed, 16 Dec 2020 16:40:51 -0800
-In-Reply-To: <CAKwvOdkP8vHidFPWczC24XwNHhQaXovQiQ43Yb6Csp_+kPR9XQ@mail.gmail.com>
-Message-Id: <20201217004051.1247544-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-References: <CAKwvOdkP8vHidFPWczC24XwNHhQaXovQiQ43Yb6Csp_+kPR9XQ@mail.gmail.com>
-X-Mailer: git-send-email 2.29.2.684.gfbc64c5ab5-goog
-Subject: [PATCH] arm64: link with -z norelro for LLD or aarch64-elf
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     kernel-team <kernel-team@android.com>,
-        Peter Smith <Peter.Smith@arm.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        stable <stable@vger.kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "=?UTF-8?q?F=C4=81ng-ru=C3=AC=20S=C3=B2ng?=" <maskray@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Alan Modra <amodra@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "kernelci . org bot" <bot@kernelci.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1726669AbgLQAnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 19:43:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45106 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726259AbgLQAnC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 19:43:02 -0500
+Date:   Wed, 16 Dec 2020 16:42:20 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608165741;
+        bh=rLt1BcYdaZR7V8OTDL/7lAbV+wFHd9ZgRllzEyTqVz0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gdQC0lKHr55Ny2fDADgD1tmwN78PgX/WArDolyAgxTyGsioExJsQxt0NhheOpN7AT
+         sFeMymxe4Y6x/YWWZRousLwTxCnrIQUtIvKOcGmsRoWI3cm7RXLqwamsKzPjCEaXjc
+         RN0thh2MYUcppvRYsS9CJQj+E+DRNlskK8cRA1vkjJoEsRGU2GjMVNGWOBDOgMTjUx
+         0PhFs1TStfLEw97M5RBPPMPcKtp8LbDjVZeLVvN33LkVVr3r+ygjoXkxZCYkIRiZdD
+         QPNT6PoFrN6X7ninL+wJR53EldRXAThhLiefgE1IgKcoYWi+436ltm5WEfLOlRL1Jf
+         8dvEkwABYfiXA==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     <stefanc@marvell.com>
+Cc:     <netdev@vger.kernel.org>, <thomas.petazzoni@bootlin.com>,
+        <davem@davemloft.net>, <nadavh@marvell.com>,
+        <ymarkman@marvell.com>, <linux-kernel@vger.kernel.org>,
+        <linux@armlinux.org.uk>, <mw@semihalf.com>, <andrew@lunn.ch>,
+        <rmk+kernel@armlinux.org.uk>
+Subject: Re: [PATCH net 1/2] net: mvpp2: Fix GoP port 3 Networking Complex
+ Control configurations
+Message-ID: <20201216164220.71e5fd1a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1608039133-16345-1-git-send-email-stefanc@marvell.com>
+References: <1608039133-16345-1-git-send-email-stefanc@marvell.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With newer GNU binutils, linking with BFD produces warnings for vmlinux:
-aarch64-linux-gnu-ld: warning: -z norelro ignored
+On Tue, 15 Dec 2020 15:32:12 +0200 stefanc@marvell.com wrote:
+> From: Stefan Chulski <stefanc@marvell.com>
+> 
+> During GoP port 2 Networking Complex Control mode of operation configurations,
+> also GoP port 3 mode of operation was wrongly set mode.
+> Patch removes these configurations.
+> GENCONF_CTRL0_PORTX naming also fixed.
 
-BFD can produce this warning when the target emulation mode does not
-support RELRO relocation types, and -z relro or -z norelro is passed.
-
-Alan Modra clarifies:
-  The default linker emulation for an aarch64-linux ld.bfd is
-  -maarch64linux, the default for an aarch64-elf linker is
-  -maarch64elf.  They are not equivalent.  If you choose -maarch64elf
-  you get an emulation that doesn't support -z relro.
-
-The ARCH=3Darm64 kernel prefers -maarch64elf, but may fall back to
--maarch64linux based on the toolchain configuration.
-
-LLD will always create RELRO relocation types regardless of target
-emulation.
-
-To avoid the above warning when linking with BFD, pass -z norelro only
-when linking with LLD or with -maarch64linux.
-
-Cc: Alan Modra <amodra@gmail.com>
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: F=C4=81ng-ru=C3=AC S=C3=B2ng <maskray@google.com>
-Fixes: 3b92fa7485eb ("arm64: link with -z norelro regardless of CONFIG_RELO=
-CATABLE")
-Reported-by: kernelci.org bot <bot@kernelci.org>
-Reported-by: Quentin Perret <qperret@google.com>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- arch/arm64/Makefile | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-index 6be9b3750250..90309208bb28 100644
---- a/arch/arm64/Makefile
-+++ b/arch/arm64/Makefile
-@@ -10,7 +10,7 @@
- #
- # Copyright (C) 1995-2001 by Russell King
-=20
--LDFLAGS_vmlinux	:=3D--no-undefined -X -z norelro
-+LDFLAGS_vmlinux	:=3D--no-undefined -X
-=20
- ifeq ($(CONFIG_RELOCATABLE), y)
- # Pass --no-apply-dynamic-relocs to restore pre-binutils-2.27 behaviour
-@@ -115,16 +115,20 @@ KBUILD_CPPFLAGS	+=3D -mbig-endian
- CHECKFLAGS	+=3D -D__AARCH64EB__
- # Prefer the baremetal ELF build target, but not all toolchains include
- # it so fall back to the standard linux version if needed.
--KBUILD_LDFLAGS	+=3D -EB $(call ld-option, -maarch64elfb, -maarch64linuxb)
-+KBUILD_LDFLAGS	+=3D -EB $(call ld-option, -maarch64elfb, -maarch64linuxb -=
-z norelro)
- UTS_MACHINE	:=3D aarch64_be
- else
- KBUILD_CPPFLAGS	+=3D -mlittle-endian
- CHECKFLAGS	+=3D -D__AARCH64EL__
- # Same as above, prefer ELF but fall back to linux target if needed.
--KBUILD_LDFLAGS	+=3D -EL $(call ld-option, -maarch64elf, -maarch64linux)
-+KBUILD_LDFLAGS	+=3D -EL $(call ld-option, -maarch64elf, -maarch64linux -z =
-norelro)
- UTS_MACHINE	:=3D aarch64
- endif
-=20
-+ifeq ($(CONFIG_LD_IS_LLD), y)
-+KBUILD_LDFLAGS	+=3D -z norelro
-+endif
-+
- CHECKFLAGS	+=3D -D__aarch64__
-=20
- ifeq ($(CONFIG_DYNAMIC_FTRACE_WITH_REGS),y)
---=20
-2.29.2.684.gfbc64c5ab5-goog
-
+Can we get a Fixes tag?
