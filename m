@@ -2,218 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1E172DCB4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 04:32:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD4AC2DCB53
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 04:35:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728006AbgLQDcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 22:32:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41753 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727665AbgLQDcB (ORCPT
+        id S1728028AbgLQDdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 22:33:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727646AbgLQDdL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 22:32:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608175833;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HO6KkKBsPBYL8yo5xJcOwAGMsGPxSzjnmDq5FDQ+Bkg=;
-        b=hOLLwjVxfFh4wOWnIKO3spOSkNsD979sSlXIm4JCbsftlObLnZtp7fswaH8tzqNcuYpzMC
-        pRqsn0HQ9DoxErO7tWKHmx9bQ8sLAlLbkgwUnSZmlVvsrgiN4bbKFB3sz0nIUT8TXkUJY2
-        j3oLUkL3FyRNc3ePLWWass8OfUwLI7A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-19-XOc3xLNlML-NxSqRAwwukw-1; Wed, 16 Dec 2020 22:30:32 -0500
-X-MC-Unique: XOc3xLNlML-NxSqRAwwukw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3B86910054FF;
-        Thu, 17 Dec 2020 03:30:30 +0000 (UTC)
-Received: from [10.72.12.223] (ovpn-12-223.pek2.redhat.com [10.72.12.223])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4301860C15;
-        Thu, 17 Dec 2020 03:30:20 +0000 (UTC)
-Subject: Re: [PATCH 00/21] Control VQ support in vDPA
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     eperezma@redhat.com, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lulu@redhat.com, eli@mellanox.com,
-        lingshan.zhu@intel.com, rob.miller@broadcom.com,
-        stefanha@redhat.com, sgarzare@redhat.com
-References: <20201216064818.48239-1-jasowang@redhat.com>
- <20201216044051-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <aa061fcb-9395-3a1b-5d6e-76b5454dfb6c@redhat.com>
-Date:   Thu, 17 Dec 2020 11:30:18 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 16 Dec 2020 22:33:11 -0500
+Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com [IPv6:2607:f8b0:4864:20::a36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ABD8C0617B0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 19:32:31 -0800 (PST)
+Received: by mail-vk1-xa36.google.com with SMTP id f71so6236010vka.12
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 19:32:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i0dXdbd/aDqH0L0akSfum/a82QDR0PNqAiGj7kNkxzY=;
+        b=nmcNBLJn7rGIxREEdMgLbDzAcaa7yoZgZiYQqqww7eRc75zOlGn+rnl6cCy/C90Zyf
+         Z8ra9u8iJ17Q1qheW2211VygZHh+5z6D8yI2utNQRkA+M51/KOzm5/aoQLiv/ZUgtC75
+         9reRhxRbdLqRqW4uoEIZQHr1iW0a8m6I7M28Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i0dXdbd/aDqH0L0akSfum/a82QDR0PNqAiGj7kNkxzY=;
+        b=tLJzgo8ILjTKonx9KpGSO/LEqWF4phKoFdM2roEoMeHiYJQ9yfA7NdWyoAo+IOwPhB
+         hJLPkt7xJmCANN6L0g4IHJR5UuBxuIAlfjMrpjIhnerEh9IKiKTtsPiaTBjbxn8x/cTD
+         TwywcpRVzCMDZSNy4uxBtb1G0i28c76UMrDOvRU/Opu1o704CKP3UL8NeOCwCFrBP/M8
+         MBmU4zrAI4yryh2gcobnRErrmHFxmDYgmBtDSaQl8XyUOZfsP/Z3XIcarkWRdG5H4499
+         +F6Lq6OZ7OTSW2lOWAePdwCaIAdjCB1WBAIZKgpsaVmsMPKGtNweoTUUXSeZATDCX5CY
+         CDxw==
+X-Gm-Message-State: AOAM532eQu5R21AxFaMmnEkYCYHwo2tzakGkgIT1XuY9BRI3vmt2vzdC
+        Mx62ApVRSlk6pJ4COHaP/cHMIq1a73itGd/z1X4kw7aSPQyJSA==
+X-Google-Smtp-Source: ABdhPJxG8j8XJ1SqHErfbCzPG0T3l2CVDLcimchU9VMoiykTd1ToLEP3PofVT6brx3T5Nw9CV5lBN8DNQySE5dwozYU=
+X-Received: by 2002:a1f:96cd:: with SMTP id y196mr37615948vkd.18.1608175950440;
+ Wed, 16 Dec 2020 19:32:30 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201216044051-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20201216115125.5886-1-chunfeng.yun@mediatek.com>
+ <20201216115125.5886-2-chunfeng.yun@mediatek.com> <CANMq1KDBmuoBNeizm9+f1yJgqF9oMqU5k26KfZrSdjrPQm_LwA@mail.gmail.com>
+ <1608171557.23328.53.camel@mhfsdcap03>
+In-Reply-To: <1608171557.23328.53.camel@mhfsdcap03>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Thu, 17 Dec 2020 11:32:19 +0800
+Message-ID: <CANMq1KA4L4PPRgHTmeisfSWu4qgjgNVFZRvxeuAOyq2_TimELA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] usb: xhci-mtk: fix UAS issue by XHCI_BROKEN_STREAMS quirk
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-usb@vger.kernel.org,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Ikjoon Jang <ikjn@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Dec 17, 2020 at 10:19 AM Chunfeng Yun <chunfeng.yun@mediatek.com> wrote:
+>
+> On Wed, 2020-12-16 at 20:28 +0800, Nicolas Boichat wrote:
+> > On Wed, Dec 16, 2020 at 7:53 PM Chunfeng Yun <chunfeng.yun@mediatek.com> wrote:
+> > >
+> > > The 0.96 xHCI controller on some platforms does not support
+> > > bulk stream even HCCPARAMS says supporting, due to MaxPSASize
+> > > is set a non-zero default value by mistake, here use
+> > > XHCI_BROKEN_STREAMS quirk to fix it.
+> > >
+> > > Fixes: 94a631d91ad3 ("usb: xhci-mtk: check hcc_params after adding primary hcd")
+> > > Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> > > ---
+> > >  drivers/usb/host/xhci-mtk.c | 7 ++++++-
+> > >  drivers/usb/host/xhci-mtk.h | 1 +
+> > >  2 files changed, 7 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/usb/host/xhci-mtk.c b/drivers/usb/host/xhci-mtk.c
+> > > index 8f321f39ab96..08dab974d847 100644
+> > > --- a/drivers/usb/host/xhci-mtk.c
+> > > +++ b/drivers/usb/host/xhci-mtk.c
+> > > @@ -395,6 +395,9 @@ static void xhci_mtk_quirks(struct device *dev, struct xhci_hcd *xhci)
+> > >         xhci->quirks |= XHCI_SPURIOUS_SUCCESS;
+> > >         if (mtk->lpm_support)
+> > >                 xhci->quirks |= XHCI_LPM_SUPPORT;
+> > > +
+> > > +       if (mtk->broken_streams)
+> > > +               xhci->quirks |= XHCI_BROKEN_STREAMS;
+> > >  }
+> > >
+> > >  /* called during probe() after chip reset completes */
+> > > @@ -460,6 +463,8 @@ static int xhci_mtk_probe(struct platform_device *pdev)
+> > >                 return ret;
+> > >
+> > >         mtk->lpm_support = of_property_read_bool(node, "usb3-lpm-capable");
+> > > +       mtk->broken_streams =
+> > > +               of_property_read_bool(node, "mediatek,broken_streams_quirk");
+> >
+> > Would it be better to add a data field to struct of_device_id
+> > mtk_xhci_of_match, and enable this quirk on mediatek,mt8173-xhci only?
+> This is the common issue for all SoCs (before 2016.06) with 0.96 xHCI
+> when the controller don't support bulk stream. If enable this quirk only
+> for mt8173, then for other SoCs, the compatible need include
+> "mediatek,mt8173-xhci" in dts, this may be not flexible for some cases,
+> e.g. a new SoC has the broken stream as mt8173, but also has another
+> different quirk, the way you suggested will not handle it.
 
-On 2020/12/16 下午5:47, Michael S. Tsirkin wrote:
-> On Wed, Dec 16, 2020 at 02:47:57PM +0800, Jason Wang wrote:
->> Hi All:
->>
->> This series tries to add the support for control virtqueue in vDPA.
->>
->> Control virtqueue is used by networking device for accepting various
->> commands from the driver. It's a must to support multiqueue and other
->> configurations.
->>
->> When used by vhost-vDPA bus driver for VM, the control virtqueue
->> should be shadowed via userspace VMM (Qemu) instead of being assigned
->> directly to Guest. This is because Qemu needs to know the device state
->> in order to start and stop device correctly (e.g for Live Migration).
->>
->> This requies to isolate the memory mapping for control virtqueue
->> presented by vhost-vDPA to prevent guest from accesing it directly.
->> To achieve this, vDPA introduce two new abstractions:
->>
->> - address space: identified through address space id (ASID) and a set
->>                   of memory mapping in maintained
->> - virtqueue group: the minimal set of virtqueues that must share an
->>                   address space
-> How will this support the pretty common case where control vq
-> is programmed by the kernel through the PF, and others by the VFs?
+It can, we do this regularly for many other components. One example:
+https://elixir.bootlin.com/linux/latest/source/drivers/i2c/busses/i2c-mt65xx.c#L402
 
+> And I plan to remove "mediatek,mt8173-xhci" in mtk_xhci_of_match after
+> converting the binding to YMAL.
+>
+> >
+> > (IMHO usb3-lpm-capable detection should also be done in the same way)
+> I prefer to provide a property for common issues, and use the way you
+> suggested for the issue only happened at a specific SoC.
 
-In this case, the VF parent need to provide a software control vq and 
-decode the command then send them to VF.
-
+Understand, it's just different approaches, there seems to be
+precedent (at least in this driver/binding) for using properties, so
+I'll let the USB maintainers speak up ,-)
 
 >
+> Thank you
 >
-> I actually thought the way to support it is by exposing
-> something like an "inject buffers" API which sends data to a given VQ.
-> Maybe an ioctl, and maybe down the road uio ring can support batching
-> these ....
-
-
-So the virtuqueue allows the request to be processed asynchronously (e.g 
-driver may choose to use interrupt for control vq). This means we need 
-to support that in uAPI level. And if we manage to do that, it's just 
-another type of virtqueue.
-
-For virtio-vDPA, this also means the extensions for queue processing 
-which is a functional duplication. Using what proposed in this series, 
-we don't need any changes for kernel virtio drivers.
-
-What's more important, this series could be used for future features 
-that requires DMA isolation between virtqueues:
-
-- report dirty pages via virtqueue
-- sub function level device slicing
-
-...
-
-Thanks
-
-
+> >
+> > Thanks,
+> >
+> > >         /* optional property, ignore the error if it does not exist */
+> > >         of_property_read_u32(node, "mediatek,u3p-dis-msk",
+> > >                              &mtk->u3p_dis_msk);
+> > > @@ -546,7 +551,7 @@ static int xhci_mtk_probe(struct platform_device *pdev)
+> > >         if (ret)
+> > >                 goto put_usb3_hcd;
+> > >
+> > > -       if (HCC_MAX_PSA(xhci->hcc_params) >= 4)
+> > > +       if (!mtk->broken_streams && HCC_MAX_PSA(xhci->hcc_params) >= 4)
+> > >                 xhci->shared_hcd->can_do_streams = 1;
+> > >
+> > >         ret = usb_add_hcd(xhci->shared_hcd, irq, IRQF_SHARED);
+> > > diff --git a/drivers/usb/host/xhci-mtk.h b/drivers/usb/host/xhci-mtk.h
+> > > index a93cfe817904..86aa4978915e 100644
+> > > --- a/drivers/usb/host/xhci-mtk.h
+> > > +++ b/drivers/usb/host/xhci-mtk.h
+> > > @@ -147,6 +147,7 @@ struct xhci_hcd_mtk {
+> > >         struct phy **phys;
+> > >         int num_phys;
+> > >         bool lpm_support;
+> > > +       bool broken_streams;
+> > >         /* usb remote wakeup */
+> > >         bool uwk_en;
+> > >         struct regmap *uwk;
+> > > --
+> > > 2.18.0
 >
->
->> Device needs to advertise the following attributes to vDPA:
->>
->> - the number of address spaces supported in the device
->> - the number of virtqueue groups supported in the device
->> - the mappings from a specific virtqueue to its virtqueue groups
->>
->> The mappings from virtqueue to virtqueue groups is fixed and defined
->> by vDPA device driver. E.g:
->>
->> - For the device that has hardware ASID support, it can simply
->>    advertise a per virtqueue virtqueue group.
->> - For the device that does not have hardware ASID support, it can
->>    simply advertise a single virtqueue group that contains all
->>    virtqueues. Or if it wants a software emulated control virtqueue, it
->>    can advertise two virtqueue groups, one is for cvq, another is for
->>    the rest virtqueues.
->>
->> vDPA also allow to change the association between virtqueue group and
->> address space. So in the case of control virtqueue, userspace
->> VMM(Qemu) may use a dedicated address space for the control virtqueue
->> group to isolate the memory mapping.
->>
->> The vhost/vhost-vDPA is also extend for the userspace to:
->>
->> - query the number of virtqueue groups and address spaces supported by
->>    the device
->> - query the virtqueue group for a specific virtqueue
->> - assocaite a virtqueue group with an address space
->> - send ASID based IOTLB commands
->>
->> This will help userspace VMM(Qemu) to detect whether the control vq
->> could be supported and isolate memory mappings of control virtqueue
->> from the others.
->>
->> To demonstrate the usage, vDPA simulator is extended to support
->> setting MAC address via a emulated control virtqueue.
->>
->> Please review.
->>
->> Changes since RFC:
->>
->> - tweak vhost uAPI documentation
->> - switch to use device specific IOTLB really in patch 4
->> - tweak the commit log
->> - fix that ASID in vhost is claimed to be 32 actually but 16bit
->>    actually
->> - fix use after free when using ASID with IOTLB batching requests
->> - switch to use Stefano's patch for having separated iov
->> - remove unused "used_as" variable
->> - fix the iotlb/asid checking in vhost_vdpa_unmap()
->>
->> Thanks
->>
->> Jason Wang (20):
->>    vhost: move the backend feature bits to vhost_types.h
->>    virtio-vdpa: don't set callback if virtio doesn't need it
->>    vhost-vdpa: passing iotlb to IOMMU mapping helpers
->>    vhost-vdpa: switch to use vhost-vdpa specific IOTLB
->>    vdpa: add the missing comment for nvqs in struct vdpa_device
->>    vdpa: introduce virtqueue groups
->>    vdpa: multiple address spaces support
->>    vdpa: introduce config operations for associating ASID to a virtqueue
->>      group
->>    vhost_iotlb: split out IOTLB initialization
->>    vhost: support ASID in IOTLB API
->>    vhost-vdpa: introduce asid based IOTLB
->>    vhost-vdpa: introduce uAPI to get the number of virtqueue groups
->>    vhost-vdpa: introduce uAPI to get the number of address spaces
->>    vhost-vdpa: uAPI to get virtqueue group id
->>    vhost-vdpa: introduce uAPI to set group ASID
->>    vhost-vdpa: support ASID based IOTLB API
->>    vdpa_sim: advertise VIRTIO_NET_F_MTU
->>    vdpa_sim: factor out buffer completion logic
->>    vdpa_sim: filter destination mac address
->>    vdpasim: control virtqueue support
->>
->> Stefano Garzarella (1):
->>    vdpa_sim: split vdpasim_virtqueue's iov field in out_iov and in_iov
->>
->>   drivers/vdpa/ifcvf/ifcvf_main.c   |   9 +-
->>   drivers/vdpa/mlx5/net/mlx5_vnet.c |  11 +-
->>   drivers/vdpa/vdpa.c               |   8 +-
->>   drivers/vdpa/vdpa_sim/vdpa_sim.c  | 292 ++++++++++++++++++++++++------
->>   drivers/vhost/iotlb.c             |  23 ++-
->>   drivers/vhost/vdpa.c              | 246 ++++++++++++++++++++-----
->>   drivers/vhost/vhost.c             |  23 ++-
->>   drivers/vhost/vhost.h             |   4 +-
->>   drivers/virtio/virtio_vdpa.c      |   2 +-
->>   include/linux/vdpa.h              |  42 ++++-
->>   include/linux/vhost_iotlb.h       |   2 +
->>   include/uapi/linux/vhost.h        |  25 ++-
->>   include/uapi/linux/vhost_types.h  |  10 +-
->>   13 files changed, 561 insertions(+), 136 deletions(-)
->>
->> -- 
->> 2.25.1
-
