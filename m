@@ -2,156 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 035082DD1D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 14:07:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FA022DD1DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 14:08:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728018AbgLQNG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 08:06:29 -0500
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:44507 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726773AbgLQNG2 (ORCPT
+        id S1728123AbgLQNHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 08:07:23 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:52180 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728103AbgLQNHW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 08:06:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1608210389; x=1639746389;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=L+iPJy9r/41c1x3RGh3ZKA/4/rrTzk+owrFyYlVX9Iw=;
-  b=n08Q5fTy7XsqzlXcHyykpEY31c7LqAL2LwCdcuGRZTSLpr6R6+GgGdaa
-   kX5ZHPUyw1M7K4ZArkRPBpl12/mKUx1Krn3af0yB1oIKJoh8XgdMw9MNJ
-   02YlpnNu9H9lQZhBNdaLOs+aFPGVMCy+eztm5GQ4YOo25ZghL3lKE2XFP
-   c=;
-X-IronPort-AV: E=Sophos;i="5.78,428,1599523200"; 
-   d="scan'208";a="69710441"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-c7f73527.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 17 Dec 2020 13:05:41 +0000
-Received: from EX13D31EUA004.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1e-c7f73527.us-east-1.amazon.com (Postfix) with ESMTPS id E9D44405248;
-        Thu, 17 Dec 2020 13:05:39 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.160.66) by
- EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 17 Dec 2020 13:05:35 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <stable@vger.kernel.org>
-CC:     SeongJae Park <sjpark@amazon.de>, <doebel@amazon.de>,
-        <aams@amazon.de>, <mku@amazon.de>, <jgross@suse.com>,
-        <julien@xen.org>, <wipawel@amazon.de>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 4/5] xen/xenbus: Count pending messages for each watch
-Date:   Thu, 17 Dec 2020 14:05:00 +0100
-Message-ID: <20201217130501.12702-5-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201217130501.12702-1-sjpark@amazon.com>
-References: <20201217130501.12702-1-sjpark@amazon.com>
+        Thu, 17 Dec 2020 08:07:22 -0500
+X-UUID: f6d17a4188d240178986101ccd917f1b-20201217
+X-UUID: f6d17a4188d240178986101ccd917f1b-20201217
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <lecopzer.chen@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1322829987; Thu, 17 Dec 2020 21:06:37 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 17 Dec 2020 21:06:34 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 17 Dec 2020 21:06:33 +0800
+From:   Lecopzer Chen <lecopzer.chen@mediatek.com>
+To:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <matthias.bgg@gmail.com>, <will@kernel.org>,
+        <alexandru.elisei@arm.com>, <sumit.garg@linaro.org>,
+        <linux-mediatek@lists.infradead.org>, <yj.chiang@mediatek.com>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>
+Subject: [PATCH] kernel/watchdog_hld.c: Fix access percpu in preemptible context
+Date:   Thu, 17 Dec 2020 21:06:17 +0800
+Message-ID: <20201217130617.32202-1-lecopzer.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.43.160.66]
-X-ClientProxiedBy: EX13D39UWA002.ant.amazon.com (10.43.160.20) To
- EX13D31EUA004.ant.amazon.com (10.43.165.161)
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+commit 367c820ef08082 ("arm64: Enable perf events based hard lockup detector")
+reinitilizes lockup detector after arm64 PMU is initialized and provide
+another chance for access smp_processor_id() in preemptible context.
+Since hardlockup_detector_event_create() use many percpu relative variable,
+just try to fix this by get/put_cpu()
 
-This commit adds a counter of pending messages for each watch in the
-struct.  It is used to skip unnecessary pending messages lookup in
-'unregister_xenbus_watch()'.  It could also be used in 'will_handle'
-callback.
+    BUG: using smp_processor_id() in preemptible [00000000] code: swapper/0/1
+    caller is debug_smp_processor_id+0x20/0x2c
+    CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.10.0+ #276
+    Hardware name: linux,dummy-virt (DT)
+    Call trace:
+      dump_backtrace+0x0/0x3c0
+      show_stack+0x20/0x6c
+      dump_stack+0x2f0/0x42c
+      check_preemption_disabled+0x1cc/0x1dc
+      debug_smp_processor_id+0x20/0x2c
+      hardlockup_detector_event_create+0x34/0x18c
+      hardlockup_detector_perf_init+0x2c/0x134
+      watchdog_nmi_probe+0x18/0x24
+      lockup_detector_init+0x44/0xa8
+      armv8_pmu_driver_init+0x54/0x78
+      do_one_initcall+0x184/0x43c
+      kernel_init_freeable+0x368/0x380
+      kernel_init+0x1c/0x1cc
+      ret_from_fork+0x10/0x30
 
-This is part of XSA-349
 
-This is upstream commit 3dc86ca6b4c8cfcba9da7996189d1b5a358a94fc
+Fixes: 367c820ef08082 ("arm64: Enable perf events based hard lockup detector")
+Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+Cc: Sumit Garg <sumit.garg@linaro.org>
 
-Cc: stable@vger.kernel.org
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
-Reported-by: Michael Kurth <mku@amazon.de>
-Reported-by: Pawel Wieczorkiewicz <wipawel@amazon.de>
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Juergen Gross <jgross@suse.com>
 ---
- drivers/xen/xenbus/xenbus_xs.c | 30 ++++++++++++++++++------------
- include/xen/xenbus.h           |  2 ++
- 2 files changed, 20 insertions(+), 12 deletions(-)
+ kernel/watchdog_hld.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/xen/xenbus/xenbus_xs.c b/drivers/xen/xenbus/xenbus_xs.c
-index 0ea1c259f2f1..420d478e1708 100644
---- a/drivers/xen/xenbus/xenbus_xs.c
-+++ b/drivers/xen/xenbus/xenbus_xs.c
-@@ -701,6 +701,8 @@ int register_xenbus_watch(struct xenbus_watch *watch)
+diff --git a/kernel/watchdog_hld.c b/kernel/watchdog_hld.c
+index 247bf0b1582c..c591a1ea8eb3 100644
+--- a/kernel/watchdog_hld.c
++++ b/kernel/watchdog_hld.c
+@@ -165,7 +165,7 @@ static void watchdog_overflow_callback(struct perf_event *event,
  
- 	sprintf(token, "%lX", (long)watch);
- 
-+	watch->nr_pending = 0;
-+
- 	down_read(&xs_state.watch_mutex);
- 
- 	spin_lock(&watches_lock);
-@@ -750,12 +752,15 @@ void unregister_xenbus_watch(struct xenbus_watch *watch)
- 
- 	/* Cancel pending watch events. */
- 	spin_lock(&watch_events_lock);
--	list_for_each_entry_safe(msg, tmp, &watch_events, list) {
--		if (msg->u.watch.handle != watch)
--			continue;
--		list_del(&msg->list);
--		kfree(msg->u.watch.vec);
--		kfree(msg);
-+	if (watch->nr_pending) {
-+		list_for_each_entry_safe(msg, tmp, &watch_events, list) {
-+			if (msg->u.watch.handle != watch)
-+				continue;
-+			list_del(&msg->list);
-+			kfree(msg->u.watch.vec);
-+			kfree(msg);
-+		}
-+		watch->nr_pending = 0;
- 	}
- 	spin_unlock(&watch_events_lock);
- 
-@@ -802,7 +807,6 @@ void xs_suspend_cancel(void)
- 
- static int xenwatch_thread(void *unused)
+ static int hardlockup_detector_event_create(void)
  {
--	struct list_head *ent;
- 	struct xs_stored_msg *msg;
+-	unsigned int cpu = smp_processor_id();
++	unsigned int cpu = get_cpu();
+ 	struct perf_event_attr *wd_attr;
+ 	struct perf_event *evt;
  
- 	for (;;) {
-@@ -815,13 +819,15 @@ static int xenwatch_thread(void *unused)
- 		mutex_lock(&xenwatch_mutex);
+@@ -176,11 +176,13 @@ static int hardlockup_detector_event_create(void)
+ 	evt = perf_event_create_kernel_counter(wd_attr, cpu, NULL,
+ 					       watchdog_overflow_callback, NULL);
+ 	if (IS_ERR(evt)) {
++		put_cpu();
+ 		pr_debug("Perf event create on CPU %d failed with %ld\n", cpu,
+ 			 PTR_ERR(evt));
+ 		return PTR_ERR(evt);
+ 	}
+ 	this_cpu_write(watchdog_ev, evt);
++	put_cpu();
+ 	return 0;
+ }
  
- 		spin_lock(&watch_events_lock);
--		ent = watch_events.next;
--		if (ent != &watch_events)
--			list_del(ent);
-+		msg = list_first_entry_or_null(&watch_events,
-+				struct xs_stored_msg, list);
-+		if (msg) {
-+			list_del(&msg->list);
-+			msg->u.watch.handle->nr_pending--;
-+		}
- 		spin_unlock(&watch_events_lock);
- 
--		if (ent != &watch_events) {
--			msg = list_entry(ent, struct xs_stored_msg, list);
-+		if (msg) {
- 			msg->u.watch.handle->callback(
- 				msg->u.watch.handle,
- 				(const char **)msg->u.watch.vec,
-diff --git a/include/xen/xenbus.h b/include/xen/xenbus.h
-index 1772507dc2c9..ed9e7e3307b7 100644
---- a/include/xen/xenbus.h
-+++ b/include/xen/xenbus.h
-@@ -58,6 +58,8 @@ struct xenbus_watch
- 	/* Path being watched. */
- 	const char *node;
- 
-+	unsigned int nr_pending;
-+
- 	/*
- 	 * Called just before enqueing new event while a spinlock is held.
- 	 * The event will be discarded if this callback returns false.
 -- 
-2.17.1
+2.25.1
 
