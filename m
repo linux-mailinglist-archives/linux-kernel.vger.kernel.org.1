@@ -2,128 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CBB72DD53E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 17:31:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3514A2DD540
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 17:31:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729076AbgLQQ3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 11:29:00 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:54649 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728158AbgLQQ27 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 11:28:59 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1608222520; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=wqAa7MT3zFP0xLdtRumGFpC0UDBG0GZ5SyJfKIcwDoU=; b=LxtldRppDGKA0VrkKRpE9fuwhb7Fn/KJ9Vgq+YiUqDgMRJmBZeDmIVOLtUMyf7Sxn6FC+nIb
- J37y+o4yRTQXdSfcrswXNVo4t1YSAFxNt2dDbk8tF/jYry8WmVME09F6l73CwXmAj3lJRdTq
- lO72uf70C0O4cdAB6fkfKPRMnFc=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5fdb871c253011a4b80b296b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Dec 2020 16:28:12
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 65459C43462; Thu, 17 Dec 2020 16:28:11 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D3532C433C6;
-        Thu, 17 Dec 2020 16:28:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D3532C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Brian Norris <briannorris@chromium.org>
-Cc:     Xiaohui Zhang <ruc_zhangxiaohui@163.com>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        "\<netdev\@vger.kernel.org\>" <netdev@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] mwifiex: Fix possible buffer overflows in mwifiex_config_scan
-References: <20201208150951.35866-1-ruc_zhangxiaohui@163.com>
-        <CA+ASDXPVu5S0Vm0aOcyqLN090u3BwA_nV358YwkpXuU223Ug9g@mail.gmail.com>
-Date:   Thu, 17 Dec 2020 18:28:05 +0200
-In-Reply-To: <CA+ASDXPVu5S0Vm0aOcyqLN090u3BwA_nV358YwkpXuU223Ug9g@mail.gmail.com>
-        (Brian Norris's message of "Tue, 8 Dec 2020 11:12:00 -0800")
-Message-ID: <87v9d0s8h6.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S1729116AbgLQQ3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 11:29:23 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55254 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727543AbgLQQ3W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 11:29:22 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id F1A76AC90;
+        Thu, 17 Dec 2020 16:28:40 +0000 (UTC)
+Date:   Thu, 17 Dec 2020 17:28:40 +0100
+Message-ID: <s5hh7okjt1j.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Lars-Peter Clausen <lars@metafoo.de>
+Cc:     alsa-devel@alsa-project.org, gustavoars@kernel.org,
+        linux-kernel@vger.kernel.org, shengjiu.wang@nxp.com,
+        tiwai@suse.com, pierre-louis.bossart@linux.intel.com,
+        xiang@kernel.org, Robin Gong <yibin.gong@nxp.com>,
+        akpm@linux-foundation.org
+Subject: Re: [PATCH v1 ] ALSA: core: memalloc: add page alignment for iram
+In-Reply-To: <98fd6adb-5bae-56ce-c52b-f778f92f6a2d@metafoo.de>
+References: <1608221747-3474-1-git-send-email-yibin.gong@nxp.com>
+        <05c824e5-0c33-4182-26fa-b116a42b10d6@metafoo.de>
+        <s5h5z50n4dd.wl-tiwai@suse.de>
+        <70074f62-954a-9b40-ab4a-cb438925060c@metafoo.de>
+        <s5hmtyclmig.wl-tiwai@suse.de>
+        <8e103a2b-1097-6d54-7266-34743321efac@metafoo.de>
+        <s5hwnxgjysq.wl-tiwai@suse.de>
+        <1fc18b56-effa-9dbc-8263-00c632e163e7@metafoo.de>
+        <s5hmtycjwam.wl-tiwai@suse.de>
+        <98fd6adb-5bae-56ce-c52b-f778f92f6a2d@metafoo.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Brian Norris <briannorris@chromium.org> writes:
+On Thu, 17 Dec 2020 16:38:22 +0100,
+Lars-Peter Clausen wrote:
+> 
+> >> Maybe what we need is a check that runtime->dma_area is page aligned
+> >> and runtime->dma_bytes is a multiple of PAGE_SIZE. With a warning at
+> >> first and then turn this into a error a year later or so.
+> > OK, how about the following instead?
+> > Just check SNDRV_PCM_INFO_MMAP in runtime->info; if this is set, the
+> > buffer size must be aligned with the page size, and we are safe to
+> > extend the size to clear.
+> >
+> > So the revised fix is much simpler, something like below.
+> 
+> I think this will work for the leaking data issue.
+> 
+> But it will not help with the original issue that
+> gen_pool_dma_alloc_align() does not reserve the remainder of the page
+> and could give it out to other allocations. We'd need a separate patch
+> for that.
 
-> On Tue, Dec 8, 2020 at 7:14 AM Xiaohui Zhang <ruc_zhangxiaohui@163.com> wrote:
->>
->> From: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
->>
->> mwifiex_config_scan() calls memcpy() without checking
->> the destination size may trigger a buffer overflower,
->> which a local user could use to cause denial of service
->> or the execution of arbitrary code.
->> Fix it by putting the length check before calling memcpy().
->
-> ^^ That's not really what you're doing any more, for the record. But
-> then, describing "what" is not really the point of a commit message
-> (that's what the code is for), so maybe that's not that important.
->
->> Signed-off-by: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
->> ---
->>  drivers/net/wireless/marvell/mwifiex/scan.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/net/wireless/marvell/mwifiex/scan.c b/drivers/net/wireless/marvell/mwifiex/scan.c
->> index c2a685f63..34293fd80 100644
->> --- a/drivers/net/wireless/marvell/mwifiex/scan.c
->> +++ b/drivers/net/wireless/marvell/mwifiex/scan.c
->> @@ -931,7 +931,7 @@ mwifiex_config_scan(struct mwifiex_private *priv,
->>                                 wildcard_ssid_tlv->max_ssid_length = 0xfe;
->>
->>                         memcpy(wildcard_ssid_tlv->ssid,
->> -                              user_scan_in->ssid_list[i].ssid, ssid_len);
->> +                              user_scan_in->ssid_list[i].ssid, min_t(u32, ssid_len, 1));
->
-> This *looks* like it should be wrong, because SSIDs are clearly longer
-> than 1 byte in many cases, but you *are* right that this is what the
-> struct is defined as:
->
-> struct mwifiex_ie_types_wildcard_ssid_params {
-> ...
->     u8 ssid[1];
-> };
->
-> This feels like something that could use some confirmation from
-> NXP/ex-Marvell folks if possible, but if not that, at least some
-> creative testing. Did you actually test this patch, to make sure
-> non-wildcard scans still work?
->
-> Also, even if this is correct, it seems like it would be more correct
-> to use 'sizeof(wildcard_ssid_tlv->ssid)' instead of a magic number 1.
+That can be fixed by the pcm_memory.c change in the previous patch.
+Recited below.
 
-Xiaohui, please respond to Brian's comments. If you ignore review
-comments I have a hard time trusting your patches.
+Of course it won't cover the non-standard allocation case, but then
+it's rather the responsibility of such driver.
 
-Also when you submit a new version you should mark it as v2. See more in
-the wiki link below.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+Takashi
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+---
+--- a/sound/core/pcm_memory.c
++++ b/sound/core/pcm_memory.c
+@@ -36,6 +36,7 @@ static int do_alloc_pages(struct snd_card *card, int type, struct device *dev,
+ {
+ 	int err;
+ 
++	size = PAGE_ALIGN(size)
+ 	if (max_alloc_per_card &&
+ 	    card->total_pcm_alloc_bytes + size > max_alloc_per_card)
+ 		return -ENOMEM;
+@@ -187,7 +188,7 @@ static void snd_pcm_lib_preallocate_proc_write(struct snd_info_entry *entry,
+ 				buffer->error = -ENOMEM;
+ 				return;
+ 			}
+-			substream->buffer_bytes_max = size;
++			substream->buffer_bytes_max = new_dmab.bytes;
+ 		} else {
+ 			substream->buffer_bytes_max = UINT_MAX;
+ 		}
