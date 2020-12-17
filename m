@@ -2,209 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E1A42DD853
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:30:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61F462DD858
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:30:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731126AbgLQS3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 13:29:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45262 "EHLO
+        id S1731141AbgLQSaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 13:30:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730693AbgLQS3s (ORCPT
+        with ESMTP id S1729580AbgLQSaL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 13:29:48 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E71C0611C5
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 10:29:01 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id r7so27583899wrc.5
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 10:29:01 -0800 (PST)
+        Thu, 17 Dec 2020 13:30:11 -0500
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D1E1C061794
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 10:29:31 -0800 (PST)
+Received: by mail-io1-xd35.google.com with SMTP id o6so15351102iob.10
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 10:29:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=linuxfoundation.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=q8aRgUoihX8Avz9ruuy2QvIzzYrzaxUTGheCXawpxLo=;
-        b=xl1+B8fgQHVTz0DkWK6xdRV/uEVFC82QHBw49Alo1pZRQNVZfyPx/dg+9bxRxn3y5j
-         wOqiffyVmnYbj1EgpecnWAs09QIW7EF/7NIcncaJdZmmY7+vczFoazIVy/Eg+65pjOtM
-         gbZSGEAdgwAa1cWspO2xP3t3GCTb/mkxr1zZPv3grz2TSux4ttuJEbJVzOWrxUZiqiYa
-         EyespBuebZDUnKpi2lIbacdsmhJeRja5SjUmsnxUg4sTGmUV//8S1eWH9DFS0ELLtHED
-         LuXIIy4cz1c19ZN2cy4JbGpV1+1UqvirDLHJkG8A4GrB16/yngcSjT40kjaVP9H2ytUQ
-         kfsg==
+        bh=TruuQuU7MOzIt57XJTFiqLwruTywKiNa+UyvVCpYR7k=;
+        b=gok08EU6Rra3/VdbBGIJF+OIaszNIe/jgdNKNhoREVmm0+alu1rTyEvNoCOiwFeuqs
+         WfGp9okjOAMMARoQ+ZAZ/c9IrsbHV2WTOp14q8sRH2uPlTZcTmo39ptQMMDW4mYbgwTx
+         MXbly6u3SZ3sdOjZzU15f9EMfgWhcFeynQmis=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=q8aRgUoihX8Avz9ruuy2QvIzzYrzaxUTGheCXawpxLo=;
-        b=clkKvxoW4Zb8fcR7hla6j2Whsb4KEk0MS6d2Zldz6hBFK2ViwazdUkyZDY9n89Vij+
-         8ZbdYKV3/p0M0+pB+6iVNl3iHhW/nZsIKM1pYck78JjaJT79ZpaoyM/bgrBmqcXUEzga
-         Ye1JL8d+/meHTmw/LDgbIyYfZ40DX5Nk/71grMHxEPufOojmvp2UCDtkQkSSp/Z+BlCn
-         UDiwNQa5eqX/067B2kO/Hrxi3Tt180bmEkycgz3u/FvM1fxhGuSoaNeBE2fZnFZUvM2n
-         z93dgR8+e9G1Lst+BDOIryvBBpab7Sd2DG7/MBMAq4IW49mz77rXDNClfESqnT5q4Wu7
-         6CfA==
-X-Gm-Message-State: AOAM533AArX2PznBTVjmHAkZMcqzDPvt6ehzqep28Ow2D3A5I2X80MsJ
-        67jl6AWkBGSTcthW6uqaoiMC/w==
-X-Google-Smtp-Source: ABdhPJzsRtqGVStuVvpkZl1+aZoPEJq0l19ZzD3Ifm+FDKdUgsJB+PBHx04WPNMgDSSCFiYkBdKpYg==
-X-Received: by 2002:a5d:61ca:: with SMTP id q10mr144253wrv.124.1608229740327;
-        Thu, 17 Dec 2020 10:29:00 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:ccb6:ce78:2bcd:4ead? ([2a01:e34:ed2f:f020:ccb6:ce78:2bcd:4ead])
-        by smtp.googlemail.com with ESMTPSA id f7sm15260897wmc.1.2020.12.17.10.28.58
+        bh=TruuQuU7MOzIt57XJTFiqLwruTywKiNa+UyvVCpYR7k=;
+        b=lI9PliABA9zk786IdD2irGWGY/17hlseJgPeX+4mqgY46JTNwVPYLxqFpWAdhq1LZu
+         TuEOyBL9F5LR+AB3szvmZYA6CrbQQCMlFzF95ujYevl1vvXjAvzOJ2FU2VjaXB22fHmc
+         lQjiOT6wt6erYntLT4sYCLfZ4uIt0gWXN27AH/RgmQd09catmdKhZJqDHN2NTYOLfeS0
+         LIyfzjuYAcer5Wqv1owLHtFkqTlgN1P7foOJ+gTko1lN1tcDaKJ5mlEXkoH/WFsnRysR
+         Y8ZMfNoL4uorzR2/LD0LRoRyGW7Z/Km+AGzZC8wD6PdUpCW/jbCjYb/Y2Kpy/0XsqzbI
+         Xyfw==
+X-Gm-Message-State: AOAM531oqeEHJ0UCEoDUjuzF7AAtXCctvc42svzV/s40GYMxzqDaqMVk
+        2PT6YH3xJgEluUxZhUIrnYGskw==
+X-Google-Smtp-Source: ABdhPJzuzyfhbvjL83eLIzbSyMBtT/9HNWofLh4R5gDLHAm4IDRhU1bh137A8g68GUnhH/U/ToTWHA==
+X-Received: by 2002:a05:6602:314b:: with SMTP id m11mr344157ioy.165.1608229770490;
+        Thu, 17 Dec 2020 10:29:30 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id n11sm1288961ioh.37.2020.12.17.10.29.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Dec 2020 10:28:59 -0800 (PST)
-Subject: Re: [PATCH v2 48/48] ARM: tegra: cardhu: Support CPU voltage scaling
- and thermal throttling
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20201217180638.22748-1-digetx@gmail.com>
- <20201217180638.22748-49-digetx@gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <c0cb782a-bd26-917a-8f39-db8b6f460472@linaro.org>
-Date:   Thu, 17 Dec 2020 19:28:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 17 Dec 2020 10:29:29 -0800 (PST)
+Subject: Re: [PATCH] selftests/vDSO: add additional binaries to .gitignore
+To:     Tobias Klauser <tklauser@distanz.ch>, Shuah Khan <shuah@kernel.org>
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20201217163140.22635-1-tklauser@distanz.ch>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <c3887a01-ac7e-21f3-8ca9-8b02b214da74@linuxfoundation.org>
+Date:   Thu, 17 Dec 2020 11:29:29 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <20201217180638.22748-49-digetx@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201217163140.22635-1-tklauser@distanz.ch>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/12/2020 19:06, Dmitry Osipenko wrote:
-> Enable CPU voltage scaling and thermal throttling on Tegra30 Cardhu board.
+On 12/17/20 9:31 AM, Tobias Klauser wrote:
+> Add the test binaries introduced by commit 693f5ca08ca0 ("kselftest:
+> Extend vDSO selftest"), commit 03f55c7952c9 ("kselftest: Extend vDSO
+> selftest to clock_getres") and commit c7e5789b24d3 ("kselftest: Move
+> test_vdso to the vDSO test suite") to .gitignore.
 > 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
 > ---
-
-Same comments as 47/48
-
-
-
->  arch/arm/boot/dts/tegra30-cardhu.dtsi | 61 ++++++++++++++++++++++++++-
->  1 file changed, 60 insertions(+), 1 deletion(-)
+>   tools/testing/selftests/vDSO/.gitignore | 3 +++
+>   1 file changed, 3 insertions(+)
 > 
-> diff --git a/arch/arm/boot/dts/tegra30-cardhu.dtsi b/arch/arm/boot/dts/tegra30-cardhu.dtsi
-> index d74c9ca78a7f..08c0ea4e6228 100644
-> --- a/arch/arm/boot/dts/tegra30-cardhu.dtsi
-> +++ b/arch/arm/boot/dts/tegra30-cardhu.dtsi
-> @@ -1,6 +1,9 @@
->  // SPDX-License-Identifier: GPL-2.0
->  #include <dt-bindings/input/input.h>
-> +#include <dt-bindings/thermal/thermal.h>
->  #include "tegra30.dtsi"
-> +#include "tegra30-cpu-opp.dtsi"
-> +#include "tegra30-cpu-opp-microvolt.dtsi"
->  
->  /**
->   * This file contains common DT entry for all fab version of Cardhu.
-> @@ -339,12 +342,13 @@ ldo8_reg: ldo8 {
->  			};
->  		};
->  
-> -		temperature-sensor@4c {
-> +		nct1008: temperature-sensor@4c {
->  			compatible = "onnn,nct1008";
->  			reg = <0x4c>;
->  			vcc-supply = <&sys_3v3_reg>;
->  			interrupt-parent = <&gpio>;
->  			interrupts = <TEGRA_GPIO(CC, 2) IRQ_TYPE_LEVEL_LOW>;
-> +			#thermal-sensor-cells = <1>;
->  		};
->  
->  		vdd_core: tps62361@60 {
-> @@ -438,6 +442,29 @@ clk32k_in: clock@0 {
->  		#clock-cells = <0>;
->  	};
->  
-> +	cpus {
-> +		cpu0: cpu@0 {
-> +			cpu-supply = <&vddctrl_reg>;
-> +			operating-points-v2 = <&cpu0_opp_table>;
-> +			#cooling-cells = <2>;
-> +		};
-> +
-> +		cpu@1 {
-> +			cpu-supply = <&vddctrl_reg>;
-> +			operating-points-v2 = <&cpu0_opp_table>;
-> +		};
-> +
-> +		cpu@2 {
-> +			cpu-supply = <&vddctrl_reg>;
-> +			operating-points-v2 = <&cpu0_opp_table>;
-> +		};
-> +
-> +		cpu@3 {
-> +			cpu-supply = <&vddctrl_reg>;
-> +			operating-points-v2 = <&cpu0_opp_table>;
-> +		};
-> +	};
-> +
->  	panel: panel {
->  		compatible = "chunghwa,claa101wb01";
->  		ddc-i2c-bus = <&panelddc>;
-> @@ -617,6 +644,38 @@ sound {
->  					 <&tegra_car TEGRA30_CLK_EXTERN1>;
->  	};
->  
-> +	thermal-zones {
-> +		cpu-thermal {
-> +			polling-delay-passive = <1000>; /* milliseconds */
-> +			polling-delay = <5000>; /* milliseconds */
-> +
-> +			thermal-sensors = <&nct1008 1>;
-> +
-> +			trips {
-> +				trip0: cpu-alert0 {
-> +					/* throttle at 57C until temperature drops to 56.8C */
-> +					temperature = <57000>;
-> +					hysteresis = <200>;
-> +					type = "passive";
-> +				};
-> +
-> +				trip1: cpu-crit {
-> +					/* shut down at 60C */
-> +					temperature = <60000>;
-> +					hysteresis = <2000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +
-> +			cooling-maps {
-> +				map0 {
-> +					trip = <&trip0>;
-> +					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +			};
-> +		};
-> +	};
-> +
->  	gpio-keys {
->  		compatible = "gpio-keys";
->  
+> diff --git a/tools/testing/selftests/vDSO/.gitignore b/tools/testing/selftests/vDSO/.gitignore
+> index 5eb64d41e541..a8dc51af5a9c 100644
+> --- a/tools/testing/selftests/vDSO/.gitignore
+> +++ b/tools/testing/selftests/vDSO/.gitignore
+> @@ -1,5 +1,8 @@
+>   # SPDX-License-Identifier: GPL-2.0-only
+>   vdso_test
+> +vdso_test_abi
+> +vdso_test_clock_getres
+> +vdso_test_correctness
+>   vdso_test_gettimeofday
+>   vdso_test_getcpu
+>   vdso_standalone_test_x86
 > 
 
+Thanks for the patch.
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+Applied to linux-kselftest next
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+thanks,
+-- Shuah
