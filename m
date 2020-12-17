@@ -2,227 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BFF12DD92F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 20:13:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E88D62DD93B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 20:18:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730980AbgLQTMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 14:12:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730436AbgLQTMQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 14:12:16 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DEBAC0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 11:11:36 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id 4so29765plk.5
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 11:11:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to;
-        bh=w6Y5dVodJg7NGyGrDapL29dhygM6+dpwE6U7NTYVpEw=;
-        b=PH29CFyJ7NmEDPEhcZ4IfhjFnpwMoKiiJcH2wKmlWxzokjoy1JYGFOEqGL7B7pBG0h
-         IEmg7mxmADzNXNT/eyoW59YkcAQZf4p0RuK9DDEXf4HOFWl9GAzUE6qTQD5ONOCdf/i3
-         Y6fc3TTxHBUVlrQH+hxaD8G6FM2Jg8TGGAg1I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to;
-        bh=w6Y5dVodJg7NGyGrDapL29dhygM6+dpwE6U7NTYVpEw=;
-        b=R+EEWKnAdTw2vHcW2rr7SRmK70o/IuAnoTFA97ObDmTJ2yrNaNU3wfTl4pAuQx+vtd
-         aZhHwX2oF2Unt2pe+gv9bbd0WSEUDLiihVDIxjJSj1BsX12uUyXFpAyql1fM3OUetWjZ
-         6GJM4Y5a4eOT7p8rqadtJ8DpCwGARr03bHtLvR7ZQ0KygZcl1a1hvnjVKW/EPj1hoywl
-         qhmRC38B5tK3h+sk3ssvdeIrfaFhdyCQR9B/na2Ny00khukhN/D9gw8aaPG9RHT8p3rL
-         qnQWp8+FODaTw5xh7N37ni/xPCVBloQTeBr/Xrhvsk13vGwmFs6sSgKfCFm5yi24++O7
-         XJLQ==
-X-Gm-Message-State: AOAM533ojWYgEQnG67zrjz6hevdNB8szdQTo5Zw+gQ5PhYSWfW5nWcYa
-        ciDkoNx2WsrOMk+Wd6tnYEleaa4Ajp/azGh7IHDMqstmwSH1cf741vDaFH1+UioCHnTAoBMOr9m
-        vld+kt0IXHaszG70=
-X-Google-Smtp-Source: ABdhPJxRZPGqiK4LSHHy1mDhb5ERt2GuK652RVIc1YuV8SPbmhNggvO8A43AEZStOSI8cVB/zq9ORQ==
-X-Received: by 2002:a17:90a:6486:: with SMTP id h6mr656107pjj.142.1608232295586;
-        Thu, 17 Dec 2020 11:11:35 -0800 (PST)
-Received: from [10.136.50.213] ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id i130sm6352463pfe.94.2020.12.17.11.11.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Dec 2020 11:11:34 -0800 (PST)
-Subject: Re: [PATCH v3 5/6] i2c: iproc: handle master read request
-To:     Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Dhananjay Phadke <dphadke@linux.microsoft.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lori Hikichi <lori.hikichi@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>
-References: <38a23afc-57da-a01f-286c-15f8b3d61705@broadcom.com>
- <1605316659-3422-1-git-send-email-dphadke@linux.microsoft.com>
- <CAHO=5PFzd9KTR93ntUvAX5dqzxqJQpVXEirs5uoXdvcnZ7hL4g@mail.gmail.com>
- <20201202143505.GA874@kunai>
- <23a2f2e8-06ad-c728-98eb-91b164572ba4@broadcom.com>
- <CAHO=5PE=BRADou_Hn8qP3mgWiSwDezPCxDjuqa0v1MxMOJRyHQ@mail.gmail.com>
-From:   Ray Jui <ray.jui@broadcom.com>
-Message-ID: <35541129-df37-fa6f-5dae-34eb34a78731@broadcom.com>
-Date:   Thu, 17 Dec 2020 11:11:31 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S1728677AbgLQTR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 14:17:29 -0500
+Received: from mout.gmx.net ([212.227.15.18]:54759 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725468AbgLQTR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 14:17:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1608232553;
+        bh=1UqtUnci8L99aTh0jhHVHURTwDiqLJkkk1Q10J4YL1I=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=Ut71v9p9AO2P4WBGZ5pHYh5iifZsk5OCvd4shKPOu3B6RZP6T8KnBmrKRWTwBS6ZR
+         wTT7ZQipc71yFivn+dEigRvKwXZFaxeXV0QPYvCwwr7g0hT044eUIMnyxBA9LboPxf
+         E8l4YdavGoScpA38lI4mloT47bA/jx0Oqel2gLsI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.20.60] ([92.116.140.151]) by mail.gmx.com (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mv2xO-1jz77J1cPY-00r1FT; Thu, 17
+ Dec 2020 20:15:53 +0100
+Subject: Re: [PATCH] checkpatch: add new warning when lookup_symbol_name() is
+ used
+To:     Joe Perches <joe@perches.com>, Andy Whitcroft <apw@canonical.com>,
+        linux-kernel@vger.kernel.org
+References: <20201217171111.GA8295@ls3530.fritz.box>
+ <816c1571b4132f991089b40a759cf68afcf4af43.camel@perches.com>
+ <e0b41739-f72d-be5c-cfaa-39ced0e2ab6f@gmx.de>
+ <f650d87a5c65e3da44a129297c3254b7da48767c.camel@perches.com>
+From:   Helge Deller <deller@gmx.de>
+Autocrypt: addr=deller@gmx.de; keydata=
+ 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
+ c2TFWAS8k6RLkk41ZUU8ENX8+qZx/Q==
+Message-ID: <0f8f1a51-a048-a49b-dde2-90f67f5df7f2@gmx.de>
+Date:   Thu, 17 Dec 2020 20:15:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <CAHO=5PE=BRADou_Hn8qP3mgWiSwDezPCxDjuqa0v1MxMOJRyHQ@mail.gmail.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000bb290d05b6adc2e2"
+In-Reply-To: <f650d87a5c65e3da44a129297c3254b7da48767c.camel@perches.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:sJFhoqOy3BT93iOWSLj3NVEtmqvbwkB1s+Sxcl0xnN9FmC2AvpO
+ NezGbrrtqDMP6cosWhsa7jWdN3FcFwMsTXMjiCVPrsc1L64Wr0zSW0y/P6iKZcqyxfZKaBz
+ 4NXlFx9tK3dyTWzcog+/3GNoRH15RhXJn1AVATCrgWmMq9dprZTpg1ShXsdkcy2pGuhSyQS
+ jPUrWNPMnkx1n9CnsKqaw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:2ISBKH05e38=:8BauULtSGZyDA/BDhKIFmM
+ KkjlZb7QsNatuPMxGRmaGNKtXeZZYEAo92paKaqBgV839lRgEZRTDmK8YxQIZWwuC5Pcspr47
+ QFe8gJT+RDZoCkd93CQwNqAeMu8YnDni5qyqZWQJTKk8GRCN0tPA8e3hMPNwrLYktWup97JG2
+ USRfCZWCenk3HfjgZCcW6+3xAxtSdiuXwIuoXMi6c/J0n4T6bZNI2LY5/xZHMeudGaS3uDekm
+ jIB5IFjGgU194tOaBQolTRwjaEJjFdVkJtJdMoI1j1S7V0TG12JRwdr4MD3ANUKCfOtIy4eA+
+ pKnIWBldis8YWnqvfGePMylgDbDxX7FLLOQPYkRU4URIDEPAoljPv34+hztchs7A0jUJPCWYs
+ kXTOSI4DPl/oxNEaJATwAMhwYgjdY5PRiLpVb5O/Enjk9uxRf2fh53Vc6odZhspuuzQg8/MaR
+ TdGWUyG0omDXbNAyfyzpnWwdSrQgFYbjg1wsx6oOdw758Mdz9FXkQzhxnSPjxabZ0AZXJw8wD
+ lK4GMkP1jHiJloTsGiqsLE7WLMt+fQjDXtRrJAnImgkrZLVbujukKFpu76POVDq3gsLWRs/cL
+ v3BJSeUGtoWZgn/4uYSR0S4HayIkb/hikR7vVsjCR8r9c9myoBHcDiDnjkAI3yYwuQ3J308Qe
+ 03g2r67Bkd9CicMK/Qo0iGsg/Ic9Raa6BgyRUYIz8fudLSzoN4I8SgX3YpS/zYMDDmrIUpgug
+ loU0z/YXSY0zIDj85hOPqmxZAUDYwfRxCcrrO/9AECER+4VpKnDWy26vidQZONzhGvs48gK1N
+ ZfgMXLezfW20Qrvd/Kamwl36TDR36K4mOAfDQktW6YvQv3B7CljkqXlS0rZQY8EcmAbYScpVr
+ wIdnEusDOIM6ph9jcd4g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000bb290d05b6adc2e2
-Content-Type: text/plain; charset="UTF-8"
-Content-Language: en-US
-
-
-
-On 12/16/2020 8:08 PM, Rayagonda Kokatanur wrote:
-> On Wed, Dec 2, 2020 at 11:14 PM Ray Jui <ray.jui@broadcom.com> wrote:
->>
->>
->>
->> On 12/2/2020 6:35 AM, Wolfram Sang wrote:
->>>
->>>> All review comments are scattered now, please let me know what has to be
->>>> done further,
->>>> Are we going to change the tasklet to irq thread ?
->>>> Are we going to remove batching 64 packets if transaction > 64B and use rx
->>>> fifo threshold ?
+On 12/17/20 7:15 PM, Joe Perches wrote:
+> On Thu, 2020-12-17 at 18:42 +0100, Helge Deller wrote:
+>> On 12/17/20 6:27 PM, Joe Perches wrote:
+>>> On Thu, 2020-12-17 at 18:11 +0100, Helge Deller wrote:
+>>>> In most cases people use lookup_symbol_name() to resolve a kernel sym=
+bol
+>>>> and then print it via printk().
 >>>>
->>>> I don't see any issue with current code but if it has to change we need a
->>>> valid reason for the same.
->>>> If nothing to be done, please acknowledge the patch.
+>>>> In such cases using the %ps, %pS, %pSR or %pB printk formats are easi=
+er
+>>>> to use and thus should be preferred.
+>>> []
+>>>> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+>>> []
+>>>> @@ -4317,6 +4317,12 @@ sub process {
+>>>> =C2=A0			     "LINUX_VERSION_CODE should be avoided, code should be f=
+or the version to which it is merged\n" . $herecurr);
+>>>> =C2=A0		}
+>>>>
+>>>> +# avoid lookup_symbol_name()
+>>>> +		if ($line =3D~ /\blookup_symbol_name\b/) {
+>>>> +			WARN("PREFER_PRINTK_FORMAT",
+>>>> +			     "If possible prefer %ps or %pS printk format string to print=
+ symbol name instead of using lookup_symbol_name()\n" . $herecurr);
+>>>> +		}
+>>>> +
+>>>> =C2=A0# check for uses of printk_ratelimit
+>>>> =C2=A0		if ($line =3D~ /\bprintk_ratelimit\s*\(/) {
+>>>> =C2=A0			WARN("PRINTK_RATELIMITED",
 >>>
->>> Valid request. Has there been any news?
+>>> Huh?  nak.
 >>>
+>>> lookup_symbol_name is used in the kernel a grand total of 3 times.
 >>
->> Sorry for the delay. I just replied.
-> 
-> This patch is tested and validated with all corner cases and its working.
-> Can we merge this and take up any improvement as part of separate patch?
-> 
+>> Yes, there were much more in the past which got fixed by patches I subm=
+itted.
+>
+> Hi Helge.
+>
+> Much more may be a bit of an overstatement.
+>
+> I found 3 instances of lookup_symbol_name removals in 2 patches.
+>
+> commit 36dbca148bf8e3b8658982aa2256bdc7ef040256
+> -		lookup_symbol_name((ulong)pm_power_off, symname);
+> -		lookup_symbol_name((ulong)pm_power_off, symname);
+> commit da88f9b3113620dcd30fc203236aa53d5430ee98
+> -	if (lookup_symbol_name((unsigned long)sym, symname) < 0)
+>
+> There's a tension between adding tests and newbies that consider
+> checkpatch warnings as dicta that must be followed so there would
+> be patches submitted eventually against the existing correct uses.
+>
+> So thanks, but given the very few existing all correct uses of
+> this function and the low probability of new uses I'd prefer not
+> to apply this.
 
-I think that makes sense, and I'm okay with these patches going in as
-they are now.
+Ok.
 
-Acked-by: Ray Jui <ray.jui@broadcom.com>
-
-But please help to collect precise FIFO access timing (later when you
-have time), that would allow us to know if the current defer-to-tasklet
-(instead of thread) based approach makes sense or not.
-
-Thanks,
-
-Ray
-
-> Thanks,
-> Rayagonda
-> 
->>
->>
->> Thanks,
->>
->> Ray
-
--- 
-This electronic communication and the information and any files transmitted 
-with it, or attached to it, are confidential and are intended solely for 
-the use of the individual or entity to whom it is addressed and may contain 
-information that is confidential, legally privileged, protected by privacy 
-laws, or otherwise restricted from disclosure to anyone else. If you are 
-not the intended recipient or the person responsible for delivering the 
-e-mail to the intended recipient, you are hereby notified that any use, 
-copying, distributing, dissemination, forwarding, printing, or copying of 
-this e-mail is strictly prohibited. If you received this e-mail in error, 
-please return the e-mail to the sender, delete it from your computer, and 
-destroy any printed copy of it.
-
---000000000000bb290d05b6adc2e2
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-Gp3tsmw0Vz7IMJs6DQIm7T8CfIzeId1IIHcH02MbpO7m1Btzyz625FoBWF8CAwEAAaOCAcswggHH
-MA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEwgY4wTQYIKwYBBQUHMAKGQWh0dHA6Ly9z
-ZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVyc29uYWxzaWduMnNoYTJnM29jc3AuY3J0
-MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24y
-c2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3
-dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEQGA1UdHwQ9MDswOaA3oDWG
-M2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hhMmczLmNybDAfBgNV
-HREEGDAWgRRyYXkuanVpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSME
-GDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQUvUTLkCwFvnpejW/KGvdaDA31b+sw
-DQYJKoZIhvcNAQELBQADggEBACMny/9Y1OPK7qwiBKBMt478eBgXnTlJ0J0HNebYcxN/l7fKIKMb
-/eX/AQKIDsHeshmV2ekPU4yY/04veXx3QTgmE1bb4ksKEFEbU0LXlVPrnlgNn8M75cPymegn/2yU
-r1+htd2eve3obmKc5Lrl0GP+4m72XxAOL687Aw5vRa4Lf294s+x4d+VRwUjoFTj9zyLhexWQuJv/
-yX1HjSkrlIsRwi6DN0/ieL04O9aD1UNPlCC6akGnv4tgwlESh51M564qhonlfSW6La+L/aTIuQc0
-88lq8s/VMBBGdc7176/v5TbNwEC/c5QYbp2n76rAmKKjhjwWmBk64yLT7CoIxk0xggJvMIICawIB
-ATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQDEypH
-bG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDCUMagLNLily51ao1jAN
-BglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgkPrb1RD5WUP263ql6Wto8CVLc+OK0Hmt
-J4JsADT/q0swGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAxMjE3
-MTkxMTM2WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJYIZI
-AWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcwCwYJYIZIAWUDBAIB
-MA0GCSqGSIb3DQEBAQUABIIBACAn+tFxym7EMdEJK+wKafXHyTJ0JL7EN4pkeaJUythQk0/UqONs
-RQP4rqRjF4AhMwZMGki2/OD5aCGf/yzoDLTKd6OeaBHT3JGsO2g2TNF8gvsmbQt9sutGTaFynk3n
-YtPyIJRGD30XgUzry6DYbJksDUo2aGLd/3v/OHPhMXEyypJlX7LqOVP3x4yDHecsvcgfWq1hFQU2
-IpaKHccGcM3Jx8zeRzxRqpIlFqHrmr3kDFsVleM54KzOAHRa58JAexzhrkVnOanuDjaqDOgnqLHH
-3nRtZrYZs4Fbjv9Us4b42YVpHIGLzLWP5Z1W85pZxsZ0knC5opksaId3LL6o1gM=
---000000000000bb290d05b6adc2e2--
+Thanks!
+Helge
