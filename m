@@ -2,166 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5065B2DD364
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 15:58:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8F162DD375
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 15:59:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728110AbgLQO5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 09:57:49 -0500
-Received: from www381.your-server.de ([78.46.137.84]:54778 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726983AbgLQO5s (ORCPT
+        id S1728564AbgLQO7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 09:59:42 -0500
+Received: from mail-oo1-f53.google.com ([209.85.161.53]:43720 "EHLO
+        mail-oo1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728531AbgLQO7k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 09:57:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=+wEP/J/NPkJK/JzQ5t+YuRXzjvZxB21EzmXcGJJV1Rw=; b=KehhMYv5lvjMPqm7/hKCKrNFIQ
-        8+gVJR04x6S4u0RXCp29xmXw5XsDR9/VFoDOvRtyOY0ma7bljJZtvHvFSzfAXJ1K/I9WGMWjKh4nX
-        Y2D4fH/a+Ag3EhOvYrCbPU0DP9oO1pUqL5b9u7x1ObTp8mgLgtRHXPdXmBQhOARrGiQxjSFH1NiUH
-        gj3id8yJ+Ja7REuXmmmuQPqwq78OqmIEANjGEbeLOttX8YfEJE5pyB3vkT1oa/XEFsPywH6b5ZGBn
-        eo/kgxJvF1Olgd8yquXjHSRc4Lpl4BvxIV86nxQbqET1XxiKiZrGimKqTEyGRGgiyhCkTFs6LW4gv
-        9E4yuwjw==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1kpuiE-0000Pj-LJ; Thu, 17 Dec 2020 15:57:02 +0100
-Received: from [62.216.202.54] (helo=[192.168.178.20])
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1kpuiE-000WcE-Du; Thu, 17 Dec 2020 15:57:02 +0100
-Subject: Re: [PATCH v1 ] ALSA: core: memalloc: add page alignment for iram
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     alsa-devel@alsa-project.org, gustavoars@kernel.org,
-        linux-kernel@vger.kernel.org, shengjiu.wang@nxp.com,
-        tiwai@suse.com, pierre-louis.bossart@linux.intel.com,
-        xiang@kernel.org, Robin Gong <yibin.gong@nxp.com>,
-        akpm@linux-foundation.org
-References: <1608221747-3474-1-git-send-email-yibin.gong@nxp.com>
- <05c824e5-0c33-4182-26fa-b116a42b10d6@metafoo.de>
- <s5h5z50n4dd.wl-tiwai@suse.de>
- <70074f62-954a-9b40-ab4a-cb438925060c@metafoo.de>
- <s5hmtyclmig.wl-tiwai@suse.de>
- <8e103a2b-1097-6d54-7266-34743321efac@metafoo.de>
- <s5hwnxgjysq.wl-tiwai@suse.de>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <1fc18b56-effa-9dbc-8263-00c632e163e7@metafoo.de>
-Date:   Thu, 17 Dec 2020 15:57:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Thu, 17 Dec 2020 09:59:40 -0500
+Received: by mail-oo1-f53.google.com with SMTP id y14so3561873oom.10;
+        Thu, 17 Dec 2020 06:59:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5VjKnDqQoi4q0yPvGH6QyQ5V2T/NqP9kdac1+AUhHgA=;
+        b=DaddrN3FV4i2u/J6rbxP08/NigG4ojsM9wSiDprGjVfaPA2S5Rv5IGjHUPYf3zjCNS
+         1tGguPu6u1B6RmEtsyNRB2pFc+TUiJ6F68dXATIEOmrwMWCcQOC/bRbyhrXGGXrMJqkf
+         MN9oHyVQ6p0b4aMo2QFGiyYA1Srl0gkQXN5TQLnuKIlRTfH5+BqFPe8S3icAkWGtzKCt
+         dykxY77O/rWyDI06Kg96lRebkH1cfIFlntmgPl/YqbPCeog1ICvDv2d8LEHwR+JexK9h
+         s5Ps36zP3ZmsCSkfncwltnQXBNRDtBh9mALg7ntO9xEWxImIyM6/WQjBanxzZsgnvBNu
+         O2rw==
+X-Gm-Message-State: AOAM531RcTPzT4m5EBIHpYEvJS2mA9w6dqcPqqFR1Lc3XnrjhjNyxsFC
+        WW+KjS14yJyatMLYA5iGQQ==
+X-Google-Smtp-Source: ABdhPJyJnrB34C0qZ7LoDwE1P5GLi9fASSOpxm3PgAm6Kqnhbc7Yqv3DkfJjQ88pgai4kxPkB1yH/Q==
+X-Received: by 2002:a4a:ded4:: with SMTP id w20mr28734536oou.49.1608217139053;
+        Thu, 17 Dec 2020 06:58:59 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id s9sm1124774oie.53.2020.12.17.06.58.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Dec 2020 06:58:58 -0800 (PST)
+Received: (nullmailer pid 3949962 invoked by uid 1000);
+        Thu, 17 Dec 2020 14:58:57 -0000
+Date:   Thu, 17 Dec 2020 08:58:57 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Mian Yousaf Kaukab <ykaukab@suse.de>
+Cc:     Vidya Sagar <vidyas@nvidia.com>, lorenzo.pieralisi@arm.com,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: dwc: tegra194: issue with card containing a bridge
+Message-ID: <20201217145857.GA3941403@robh.at.kernel.org>
+References: <20201215102442.GA20517@suse.de>
+ <9a8abc90-cf18-b0c8-3bcb-efbe03f0ca4c@nvidia.com>
+ <20201215132504.GA20914@suse.de>
+ <20201215154147.GA3885265@robh.at.kernel.org>
+ <20201215205235.GC20914@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <s5hwnxgjysq.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26019/Wed Dec 16 15:36:02 2020)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201215205235.GC20914@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/17/20 3:24 PM, Takashi Iwai wrote:
-> On Thu, 17 Dec 2020 14:16:48 +0100,
-> Lars-Peter Clausen wrote:
->> On 12/17/20 12:06 PM, Takashi Iwai wrote:
->>> On Thu, 17 Dec 2020 11:59:23 +0100,
->>> Lars-Peter Clausen wrote:
->>>> On 12/17/20 10:55 AM, Takashi Iwai wrote:
->>>>> On Thu, 17 Dec 2020 10:43:45 +0100,
->>>>> Lars-Peter Clausen wrote:
->>>>>> On 12/17/20 5:15 PM, Robin Gong wrote:
->>>>>>> Since mmap for userspace is based on page alignment, add page alignment
->>>>>>> for iram alloc from pool, otherwise, some good data located in the same
->>>>>>> page of dmab->area maybe touched wrongly by userspace like pulseaudio.
->>>>>>>
->>>>>> I wonder, do we also have to align size to be a multiple of PAGE_SIZE
->>>>>> to avoid leaking unrelated data?
->>>>> Hm, a good question.  Basically the PCM buffer size itself shouldn't
->>>>> be influenced by that (i.e. no hw-constraint or such is needed), but
->>>>> the padding should be cleared indeed.  I somehow left those to the
->>>>> allocator side, but maybe it's safer to clear the whole buffer in
->>>>> sound/core/memalloc.c commonly.
->>>> What I meant was that most of the APIs that we use to allocate memory
->>>> work on a PAGE_SIZE granularity. I.e. if you request a buffer that
->>>> where the size is not a multiple of PAGE_SIZE internally they will
->>>> still allocate a buffer that is a multiple of PAGE_SIZE and mark the
->>>> unused bytes as reserved.
->>>>
->>>> But I believe that is not the case gen_pool_dma_alloc(). It will
->>>> happily allocate those extra bytes to some other allocation request.
->>>>
->>>> That we need to zero out the reserved bytes even for those other APIs
->>>> is a very good additional point!
->>>>
->>>> I looked at this a few years ago and I'm pretty sure that we cleared
->>>> out the allocated area, but I can't find that anymore in the current
->>>> code. Which is not so great I guess.
->>> IIRC, we used GFP_ZERO in the past for the normal page allocations,
->>> but this was dropped as it's no longer supported or so.
->>>
->>> Also, we clear out the PCM buffer in hw_params call, but this is for
->>> the requested size, not the actual allocated size, hence the padding
->>> bytes will remain uncleared.
->> Ah! That memset() in hw_params is new.
->>> So I believe it's safer to add an extra memset() like my test patch.
->> Yea, we definitely want that.
->>
->> Do we care about leaking audio samples from a previous
->> application. I.e. application 'A' allocates a buffer plays back some
->> data and then closes the device again. Application 'B' then opens the
->> same audio devices allocates a slightly smaller buffer, so that it
->> still uses the same number of pages. The buffer from the previous
->> allocation get reused, but the remainder of the last page wont get
->> cleared in hw_params().
-> That's true.  On the second though, it might be better to extend that
-> memset() in hw_params to assure clearing the whole allocated buffer.
-> We can check runtime->dma_buffer_p->bytes for the actual size.
->
-> Also, in the PCM memory allocator, we make sure that the allocation is
-> performed for page size.
->
->
-> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-> index 47b155a49226..6aabad070abf 100644
-> --- a/sound/core/pcm_native.c
-> +++ b/sound/core/pcm_native.c
-> @@ -755,8 +755,15 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
->   		runtime->boundary *= 2;
->   
->   	/* clear the buffer for avoiding possible kernel info leaks */
-> -	if (runtime->dma_area && !substream->ops->copy_user)
-> -		memset(runtime->dma_area, 0, runtime->dma_bytes);
-> +	if (runtime->dma_area && !substream->ops->copy_user) {
-> +		size_t size;
-> +
-> +		if (runtime->dma_buffer_p)
-> +			size = runtime->dma_buffer_p->bytes;
-> +		else
-> +			size = runtime->dma_bytes;
+On Tue, Dec 15, 2020 at 09:52:35PM +0100, Mian Yousaf Kaukab wrote:
+> On Tue, Dec 15, 2020 at 09:41:47AM -0600, Rob Herring wrote:
+> > On Tue, Dec 15, 2020 at 02:25:04PM +0100, Mian Yousaf Kaukab wrote:
+> > > On Tue, Dec 15, 2020 at 05:45:59PM +0530, Vidya Sagar wrote:
+> > > > Thanks Mian for bringing it to our notice.
+> > > > Have you tried removing the dw_pcie_setup_rc(pp); call from pcie-tegra194.c
+> > > > file on top of linux-next? and does that solve the issue?
+> > > > 
+> > > > diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c
+> > > > b/drivers/pci/controller/dwc/pcie-tegra194.c
+> > > > index 5597b2a49598..1c9e9c054592 100644
+> > > > --- a/drivers/pci/controller/dwc/pcie-tegra194.c
+> > > > +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
+> > > > @@ -907,7 +907,7 @@ static void tegra_pcie_prepare_host(struct pcie_port
+> > > > *pp)
+> > > >                 dw_pcie_writel_dbi(pci, CFG_TIMER_CTRL_MAX_FUNC_NUM_OFF,
+> > > > val);
+> > > >         }
+> > > > 
+> > > > -       dw_pcie_setup_rc(pp);
+> > > > +       //dw_pcie_setup_rc(pp);
+> > > I still see the same issue with this change.
+> > > Reverting b9ac0f9dc8ea works though.
+> > > > 
+> > > >         clk_set_rate(pcie->core_clk, GEN4_CORE_CLK_FREQ);
+> > > > 
+> > > > I took a quick look at the dw_pcie_setup_rc() implementation and I'm not
+> > > > sure why calling it second time should create any issue for the enumeration
+> > > > of devices behind a switch. Perhaps I need to spend more time to debug that
+> > > > part.
+> > > > In any case, since dw_pcie_setup_rc() is already part of
+> > > > dw_pcie_host_init(), I think it can be removed from
+> > > > tegra_pcie_prepare_host() implemention.
+> > 
+> > I think the 2nd time is making the link go down is my guess. Tegra was 
+> > odd in that its start/stop link functions don't do link handling, so I 
+> > didn't implement those functions and left the link handling in the Tegra 
+> > driver.
+> > 
+> > Can you try the below patch. It needs some more work as it breaks 
+> > endpoint mode.
 
-I'm not sure.
+[...]
 
-Not all drivers use snd_pcm_lib_malloc_pages() and 
-runtime->dma_buffer_p->bytes might not be a multiple of PAGE_SIZE.
+> Boot is ok with this patch. Some improvement in lspci as well:
 
-On the other hand if it is mmap-able, the underlying buffer must be a 
-multiple of PAGE_SIZE. So a simple memset(..., PAGE_ALIGN(size)) should 
-work.
+Some improvement? Meaning not completely working still?
 
-But we'd risk breaking drivers that do not reserve the remainder of the 
-page and use it for something else.
+> # lspci
+> 0001:00:00.0 PCI bridge: NVIDIA Corporation Device 1ad2 (rev a1)
+> 0001:01:00.0 SATA controller: Marvell Technology Group Ltd. Device 9171 (rev 13)
+> 0005:00:00.0 PCI bridge: NVIDIA Corporation Device 1ad0 (rev a1)
+> 0005:01:00.0 PCI bridge: PLX Technology, Inc. Device 3380 (rev ab)
 
-Maybe what we need is a check that runtime->dma_area is page aligned and 
-runtime->dma_bytes is a multiple of PAGE_SIZE. With a warning at first 
-and then turn this into a error a year later or so.
+This patch was closer to the original flow, but would not have worked if 
+DLFE disabled mode was needed.
 
-> +		memset(runtime->dma_area, 0, size);
-> +	}
->   
->   	snd_pcm_timer_resolution_change(substream);
->   	snd_pcm_set_state(substream, SNDRV_PCM_STATE_SETUP);
+Please give this patch a try:
 
-
+8<--------------------------------------------------------
+diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
+index 5597b2a49598..0515897b2f3a 100644
+--- a/drivers/pci/controller/dwc/pcie-tegra194.c
++++ b/drivers/pci/controller/dwc/pcie-tegra194.c
+@@ -853,12 +853,14 @@ static void config_gen3_gen4_eq_presets(struct tegra_pcie_dw *pcie)
+ 	dw_pcie_writel_dbi(pci, GEN3_RELATED_OFF, val);
+ }
+ 
+-static void tegra_pcie_prepare_host(struct pcie_port *pp)
++static int tegra_pcie_dw_host_init(struct pcie_port *pp)
+ {
+ 	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+ 	struct tegra_pcie_dw *pcie = to_tegra_pcie(pci);
+ 	u32 val;
+ 
++	pp->bridge->ops = &tegra_pci_ops;
++
+ 	if (!pcie->pcie_cap_base)
+ 		pcie->pcie_cap_base = dw_pcie_find_capability(&pcie->pci,
+ 							      PCI_CAP_ID_EXP);
+@@ -907,10 +909,24 @@ static void tegra_pcie_prepare_host(struct pcie_port *pp)
+ 		dw_pcie_writel_dbi(pci, CFG_TIMER_CTRL_MAX_FUNC_NUM_OFF, val);
+ 	}
+ 
+-	dw_pcie_setup_rc(pp);
+-
+ 	clk_set_rate(pcie->core_clk, GEN4_CORE_CLK_FREQ);
+ 
++	return 0;
++}
++
++static int tegra_pcie_dw_start_link(struct dw_pcie *pci)
++{
++	u32 val, offset, speed, tmp;
++	struct tegra_pcie_dw *pcie = to_tegra_pcie(pci);
++	struct pcie_port *pp = &pci->pp;
++	bool retry = true;
++
++	if (pcie->mode == DW_PCIE_EP_TYPE) {
++		enable_irq(pcie->pex_rst_irq);
++		return 0;
++	}
++
++retry_link:
+ 	/* Assert RST */
+ 	val = appl_readl(pcie, APPL_PINMUX);
+ 	val &= ~APPL_PINMUX_PEX_RST;
+@@ -929,19 +945,10 @@ static void tegra_pcie_prepare_host(struct pcie_port *pp)
+ 	appl_writel(pcie, val, APPL_PINMUX);
+ 
+ 	msleep(100);
+-}
+-
+-static int tegra_pcie_dw_host_init(struct pcie_port *pp)
+-{
+-	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+-	struct tegra_pcie_dw *pcie = to_tegra_pcie(pci);
+-	u32 val, tmp, offset, speed;
+-
+-	pp->bridge->ops = &tegra_pci_ops;
+-
+-	tegra_pcie_prepare_host(pp);
+ 
+ 	if (dw_pcie_wait_for_link(pci)) {
++		if (!retry)
++			return 0;
+ 		/*
+ 		 * There are some endpoints which can't get the link up if
+ 		 * root port has Data Link Feature (DLF) enabled.
+@@ -975,10 +982,11 @@ static int tegra_pcie_dw_host_init(struct pcie_port *pp)
+ 		val &= ~PCI_DLF_EXCHANGE_ENABLE;
+ 		dw_pcie_writel_dbi(pci, offset, val);
+ 
+-		tegra_pcie_prepare_host(pp);
++		tegra_pcie_dw_host_init(pp);
++		dw_pcie_setup_rc(pp);
+ 
+-		if (dw_pcie_wait_for_link(pci))
+-			return 0;
++		retry = false;
++		goto retry_link;
+ 	}
+ 
+ 	speed = dw_pcie_readw_dbi(pci, pcie->pcie_cap_base + PCI_EXP_LNKSTA) &
+@@ -998,15 +1006,6 @@ static int tegra_pcie_dw_link_up(struct dw_pcie *pci)
+ 	return !!(val & PCI_EXP_LNKSTA_DLLLA);
+ }
+ 
+-static int tegra_pcie_dw_start_link(struct dw_pcie *pci)
+-{
+-	struct tegra_pcie_dw *pcie = to_tegra_pcie(pci);
+-
+-	enable_irq(pcie->pex_rst_irq);
+-
+-	return 0;
+-}
+-
+ static void tegra_pcie_dw_stop_link(struct dw_pcie *pci)
+ {
+ 	struct tegra_pcie_dw *pcie = to_tegra_pcie(pci);
