@@ -2,96 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E72542DD265
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 14:48:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8182C2DD26A
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 14:49:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728403AbgLQNq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 08:46:56 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:57894 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727437AbgLQNqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 08:46:55 -0500
-Received: from zn.tnic (p200300ec2f10f600957b9387e8d7e202.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:f600:957b:9387:e8d7:e202])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 80B2A1EC03FA;
-        Thu, 17 Dec 2020 14:46:14 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1608212774;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=l016qJSbwqpQ92hh6C1qMYdgWn16MEkigDSPdbp2ry8=;
-        b=dZaXdjDPwZfFZvbG/Zn8j2TMlyKIkkxTj/8G5QgN8ZAgL3dzd3VInR7yjS9u2ZGAaJRiPE
-        1nwHdIE/Blum+Q0kc5EdrnnHBIksFXZ8q6Y34PQliVYcW6r6+8VLS5VF6ZgM3xkaV86mcm
-        YySK55cd0EtADPG4lM9ma6HM7/y9PeQ=
-From:   Borislav Petkov <bp@alien8.de>
-To:     X86 ML <x86@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] x86/build: Realign archhelp
-Date:   Thu, 17 Dec 2020 14:46:08 +0100
-Message-Id: <20201217134608.31811-2-bp@alien8.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201217134608.31811-1-bp@alien8.de>
-References: <20201217134608.31811-1-bp@alien8.de>
+        id S1728130AbgLQNse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 08:48:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727656AbgLQNsd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 08:48:33 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 166DDC061794;
+        Thu, 17 Dec 2020 05:47:53 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id 23so57462916lfg.10;
+        Thu, 17 Dec 2020 05:47:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RQQZWATGx9Cd9i1SGEZJb8vdX4uN6McAm/OXt010CwM=;
+        b=usrS9/X19WJNJE8tTPznZiyGQ0vhFySggMlc9YeT0s6XcIDl1dLOkz6RZj6uoiSgkw
+         5Y31qJ85Y6/qOqSqJQ1JQ3XUR99iXNgQUnIFTtO74ap5eRIDlv7hq6eQKHlYIP/4iRqS
+         kD1MmFetx/sNic5eBl0OTBseCT6rjU0skJARBRBHqoFN+jQyhi+JEUwrVFeaGGc0xlyB
+         EA8GCGsRI5rUS0eJSyiW5JtuIqFrLdR3dsCGWFTvOxctK1ZWgj5mvGTzehejVDjYvte3
+         xmrBS2oY0MTtFQ20AEgJ2KHVJUkTalyr+glQSeQnsw5ktGtwGELo9K3ZyFtUN6I5iyer
+         wrGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RQQZWATGx9Cd9i1SGEZJb8vdX4uN6McAm/OXt010CwM=;
+        b=a4Ew0G52H0CjtnHdV3XTUdt6TKMtSZKMqzN7OLFdmp9ebC/PXzS7axcV2s1Rll5VD7
+         DAy0kavId40hiolwPtW/nyTUaS6C5lNJpZekS1wsyvS5sQM31d+r+7xmkn3K9AZYNB0U
+         0R5eIsdbkSfzW+RxOU62DysWAasuxEY5kKlcclHbDCd9f3WUEQjDmO/Lxpl2gUPmg5Ct
+         H/RLKA8K09AU1l4yxzy+w4OzzbSClclibNH+wbnhRqnp4KcMPSrEb/Q5VdnaVuwY2vQ1
+         hX7R6+GQeAJ+4UyQ0imFWLKOHtNmVNN1pgHWQkZ6t4WXvQyRwguPhXsgpUBEFOTHWoNF
+         jntw==
+X-Gm-Message-State: AOAM5339/+QA6uLJiWOxC6YJt+mihaZCXU/skj3qZmNZ2zRlelLH0GHp
+        ifWmQVR0p3OG11fm0bA0PEH4wl/cf2E=
+X-Google-Smtp-Source: ABdhPJzG17Emu1MTKnWWJvYGQc2YlnLBE7nkVNKRt1ypoqbop6IRJ12yLj6k28JXsShAJRIBlMyEZQ==
+X-Received: by 2002:a05:6512:706:: with SMTP id b6mr16181992lfs.115.1608212871402;
+        Thu, 17 Dec 2020 05:47:51 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id d12sm673175ljl.111.2020.12.17.05.47.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Dec 2020 05:47:50 -0800 (PST)
+Subject: Re: [PATCH v2 2/8] usb: phy: tegra: Support waking up from a low
+ power mode
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Felipe Balbi <balbi@kernel.org>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Ion Agorria <ion@agorria.com>, linux-tegra@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201217094007.19336-1-digetx@gmail.com>
+ <20201217094007.19336-3-digetx@gmail.com> <X9teRPo/MadN79NI@ulmo>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <3c204a61-86ae-1bbe-1442-527831f15232@gmail.com>
+Date:   Thu, 17 Dec 2020 16:47:50 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
+In-Reply-To: <X9teRPo/MadN79NI@ulmo>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@suse.de>
+17.12.2020 16:33, Thierry Reding пишет:
+>> +	/* PHY won't resume if reset is asserted */
+>> +	if (phy->wakeup_enabled)
+>> +		goto chrg_cfg0;
+>>  
+>>  	val = readl_relaxed(base + USB_SUSP_CTRL);
+>>  	val |= UTMIP_RESET;
+>>  	writel_relaxed(val, base + USB_SUSP_CTRL);
+>>  
+>> +chrg_cfg0:
+> I found this diffcult to read until I realized that it was basically
+> just the equivalent of this:
+> 
+> 	if (!phy->wakeup_enabled) {
+> 		val = readl_relaxed(base + USB_SUSP_CTRL);
+> 		val |= UTMIP_RESET;
+> 		writel_relaxed(val, base + USB_SUSP_CTRL);
+> 	}
+> 
+>>  	val = readl_relaxed(base + UTMIP_BAT_CHRG_CFG0);
+>>  	val |= UTMIP_PD_CHRG;
+>>  	writel_relaxed(val, base + UTMIP_BAT_CHRG_CFG0);
+>>  
+>> +	if (phy->wakeup_enabled)
+>> +		goto xcvr_cfg1;
+>> +
+>>  	val = readl_relaxed(base + UTMIP_XCVR_CFG0);
+>>  	val |= UTMIP_FORCE_PD_POWERDOWN | UTMIP_FORCE_PD2_POWERDOWN |
+>>  	       UTMIP_FORCE_PDZI_POWERDOWN;
+>>  	writel_relaxed(val, base + UTMIP_XCVR_CFG0);
+>>  
+>> +xcvr_cfg1:
+> Similarly, I think this is more readable as:
+> 
+> 	if (!phy->wakeup_enabled) {
+> 		val = readl_relaxed(base + UTMIP_XCVR_CFG0);
+> 		val |= UTMIP_FORCE_PD_POWERDOWN | UTMIP_FORCE_PD2_POWERDOWN |
+> 		       UTMIP_FORCE_PDZI_POWERDOWN;
+> 		writel_relaxed(val, base + UTMIP_XCVR_CFG0);
+> 	}
+> 
+>>  	val = readl_relaxed(base + UTMIP_XCVR_CFG1);
+>>  	val |= UTMIP_FORCE_PDDISC_POWERDOWN | UTMIP_FORCE_PDCHRP_POWERDOWN |
+>>  	       UTMIP_FORCE_PDDR_POWERDOWN;
+>>  	writel_relaxed(val, base + UTMIP_XCVR_CFG1);
+>>  
+>> +	if (phy->wakeup_enabled) {
+> Which then also matches the style of this conditional here.
 
-Realign help text vertically and add spacing so that target help text
-is properly separated.
+I'll change it in v3, thanks.
 
-No functional changes.
-
-Signed-off-by: Borislav Petkov <bp@suse.de>
----
- arch/x86/Makefile | 29 +++++++++++++++--------------
- 1 file changed, 15 insertions(+), 14 deletions(-)
-
-diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index 3dae5c90c159..32dcdddc1089 100644
---- a/arch/x86/Makefile
-+++ b/arch/x86/Makefile
-@@ -292,19 +292,20 @@ archclean:
- 	$(Q)$(MAKE) $(clean)=arch/x86/tools
- 
- define archhelp
--  echo  '* bzImage      - Compressed kernel image (arch/x86/boot/bzImage)'
--  echo  '  install      - Install kernel using'
--  echo  '                  (your) ~/bin/$(INSTALLKERNEL) or'
--  echo  '                  (distribution) /sbin/$(INSTALLKERNEL) or'
--  echo  '                  install to $$(INSTALL_PATH) and run lilo'
--  echo  '  fdimage      - Create 1.4MB boot floppy image (arch/x86/boot/fdimage)'
--  echo  '  fdimage144   - Create 1.4MB boot floppy image (arch/x86/boot/fdimage)'
--  echo  '  fdimage288   - Create 2.8MB boot floppy image (arch/x86/boot/fdimage)'
--  echo  '  isoimage     - Create a boot CD-ROM image (arch/x86/boot/image.iso)'
--  echo  '                  bzdisk/fdimage*/isoimage also accept:'
--  echo  '                  FDARGS="..."  arguments for the booted kernel'
--  echo  '                  FDINITRD=file initrd for the booted kernel'
--  echo  '  kvm_guest.config - Enable Kconfig items for running this kernel as a KVM guest'
--  echo  '  xen.config	  - Enable Kconfig items for running this kernel as a Xen guest'
-+  echo  '* bzImage		- Compressed kernel image (arch/x86/boot/bzImage)'
-+  echo  '  install		- Install kernel using (your) ~/bin/$(INSTALLKERNEL) or'
-+  echo  '			  (distribution) /sbin/$(INSTALLKERNEL) or install to '
-+  echo  '			  $$(INSTALL_PATH) and run lilo'
-+  echo  ''
-+  echo  '  fdimage		- Create 1.4MB boot floppy image (arch/x86/boot/fdimage)'
-+  echo  '  fdimage144		- Create 1.4MB boot floppy image (arch/x86/boot/fdimage)'
-+  echo  '  fdimage288		- Create 2.8MB boot floppy image (arch/x86/boot/fdimage)'
-+  echo  '  isoimage		- Create a boot CD-ROM image (arch/x86/boot/image.iso)'
-+  echo  '			  bzdisk/fdimage*/isoimage also accept:'
-+  echo  '			  FDARGS="..."  arguments for the booted kernel'
-+  echo  '                  	  FDINITRD=file initrd for the booted kernel'
-+  echo  ''
-+  echo  '  kvm_guest.config	- Enable Kconfig items for running this kernel as a KVM guest'
-+  echo  '  xen.config		- Enable Kconfig items for running this kernel as a Xen guest'
- 
- endef
--- 
-2.29.2
 
