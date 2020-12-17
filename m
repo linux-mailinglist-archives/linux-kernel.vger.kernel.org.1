@@ -2,130 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 223D62DCDB1
+	by mail.lfdr.de (Postfix) with ESMTP id 8E3732DCDB2
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 09:35:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727458AbgLQIef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 03:34:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38012 "EHLO
+        id S1727482AbgLQIfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 03:35:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726908AbgLQIee (ORCPT
+        with ESMTP id S1726488AbgLQIfK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 03:34:34 -0500
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D9C0C061794
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 00:33:54 -0800 (PST)
-Received: by mail-oi1-x230.google.com with SMTP id l207so31377706oib.4
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 00:33:54 -0800 (PST)
+        Thu, 17 Dec 2020 03:35:10 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BF0CC0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 00:34:30 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id g185so4906637wmf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 00:34:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=thhaLAgz45LXgVBC1/MqGvib+cCHCRwUvsuzHaYFmDY=;
-        b=Z6ySiqnaq/KVj1rPuvXEBmxhjzhgTIM1jas9qc78gT9zkl9CCnAb80b2nzXnrjQJRg
-         d9/z0MT0RF16htAcEbZVWhjnmik6I0d+iGAgpit9+ZEjPBZmRmbfT7CGu2oGquxHF7V7
-         yqn8HnzyhmZNkNS09pm5jPANdyxcsvTHmU8LzAp08ebxEQcHq8D4kdzKj++uwLlsdyNs
-         umKYbpp9jjDoy/roRg0YfmRtMZEnr9wQdGJjGc6bFMQgDbKtk7rIThufxD8LyYx/xi4o
-         o32ToztJzw0mPz5EoyWQfsJQG+VqAflbXZTeDYR3CrWzhBSpXf2qjCrsOCdCzST4qUf2
-         u85g==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=S/cF24D4J6cwZf31EM96gFXc7xDWWLJL3b20a73K+Mk=;
+        b=jbRLwFboY615xgwu29uVtZxijSNHCHMkFkl+dfhrnrQR4hK+xrrHbXI35Zn59D/Qw8
+         Z8PIvv0Knb85w8ZSUDBElGmBRJfWfmLYgslaTPzlFM4vhVT21NG2od4lvM9XTKqoplIq
+         HOZ5/fVkqOfZRBEJloaAQlcEZKXOBbY9STZwe0m6AbNQFTNSpSR07VAGo4zhyJIDUz3Y
+         diqKeVaiYekK1x4C9isGLeFycUpFILhKX7SqISQ7pV1lHfWEVY150WqKTzEDnsexr0wA
+         AgF4dPz4hGQ0s//weQKqWihjqqIYTPEl2SngQ3zZtXzM7Bp4WWn0MLyRG1KRulThW14F
+         20fQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=thhaLAgz45LXgVBC1/MqGvib+cCHCRwUvsuzHaYFmDY=;
-        b=KsqAUkX4TDKikDjq6xJ/pfAyWOdlWUowZQ6rSv3KKLC6U9aOTppnOavzrb2UimErg2
-         ViusEgCeMw7expab2TstAzcAE4v8MOSxHX8Si6BZmuKcV86s21nVrk+2jZd4jGInDLpG
-         cJsbWxaGGMlVCukOzTKH2SBpXlHLF6iGxUxDOBfGDQ/y+IPICfgb/5ZgOODw/qoBGOfa
-         s9ki7j7PwPkOexDR4snIlTRihzogTpcNhRxlkldEJ0FBxmmpj7XxI2Eg3ZKfwJMPmyqS
-         eCGrmBfNmfoOCrDS3zcBs+Peni8gAWbGHLo31SM/wQ+e1Uo0z28TmEdr2xBioTrlwMvi
-         1J/Q==
-X-Gm-Message-State: AOAM530XogzURQfeka/nL/yJpALmL/uxpk9WGyD1x2i5yCBxg6iVygmC
-        BUHmGqb5W1mCoAfqTC1GW753Jpx1Ps27VM2+ZRmJTdRODq4=
-X-Google-Smtp-Source: ABdhPJxNwoJ0n2s/fs9/89qrJClbc3VAPOR1wn2caoplsOdhVwNb8aOC+BdB0OaR9QCmO1vNglZ4SvsRt9bhqYGNa9Y=
-X-Received: by 2002:a54:4817:: with SMTP id j23mr4290303oij.158.1608194033914;
- Thu, 17 Dec 2020 00:33:53 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=S/cF24D4J6cwZf31EM96gFXc7xDWWLJL3b20a73K+Mk=;
+        b=M680KRYaqXvD/Rf9QVlkoqthPd/EOZbHwD6/4NqdwT3R/u09y4GEsVmSTDOLc5HQ0P
+         TToJ9COs8eTcf99kOAwG3dLQGpVUbscRQrQ5M1raGjPtcRCRMntPlGRYrCbb4WjNvvYf
+         Xfnl5L3ukpd3U+GZrJJNQP8DSq6wlrBoqzqN2E87gGHelX+0Nnj4xskry2LgNluv6za5
+         AcSjQ8EFRJLVV887tOlhxM7d7DU34qAXnX9VNYzu0nB+XAhLZa9BxxtXZJZKYKiMAV21
+         gmrw9Kr+XUEuFrJZNHY2Hc1NqraMSx+Nh8k9andDeEDfd8LIqMC6QkTKnR8YjpxU2S5h
+         pDdw==
+X-Gm-Message-State: AOAM532JMlAF1EZnPZub0+JNePtVJqYU7iuTD+6LRwHtdPfOnE9lTmtR
+        x2PRM5oSByanzeqquPfl9kajsw==
+X-Google-Smtp-Source: ABdhPJxvUdE/0aYj/DoCgrKUtfPlErQ8D2icT9fnVxgwxcjpTUEm2L25byl0nlyrDC3iKQgrL9ueEg==
+X-Received: by 2002:a05:600c:2042:: with SMTP id p2mr7504535wmg.152.1608194069003;
+        Thu, 17 Dec 2020 00:34:29 -0800 (PST)
+Received: from dell.default ([91.110.221.200])
+        by smtp.gmail.com with ESMTPSA id b19sm6573309wmj.37.2020.12.17.00.34.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Dec 2020 00:34:28 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Gene Chen <gene_chen@richtek.com>,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH 1/1] mfd: Standardise MFD_CELL_* helper names
+Date:   Thu, 17 Dec 2020 08:34:20 +0000
+Message-Id: <20201217083420.411569-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <202012171008.TsSBPhT7-lkp@intel.com>
-In-Reply-To: <202012171008.TsSBPhT7-lkp@intel.com>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Thu, 17 Dec 2020 09:33:43 +0100
-Message-ID: <CAMhs-H_nHshVFvBvi1KmVEPTxX7bpNpp0jL9+UY9c9z-iqf5gQ@mail.gmail.com>
-Subject: Re: drivers/pinctrl/ralink/pinctrl-rt2880.c:365:12: warning: no
- previous prototype for 'rt2880_pinmux_init'
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Start all helpers with "MFD_CELL_".
 
-On Thu, Dec 17, 2020 at 3:17 AM kernel test robot <lkp@intel.com> wrote:
->
-> Hi Sergio,
->
-> First bad commit (maybe != root cause):
->
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   accefff5b547a9a1d959c7e76ad539bf2480e78b
-> commit: 518b466a21ad7fa1e338fa4ed9d180ef439d3bc0 pinctrl: ralink: add a pinctrl driver for the rt2880 family
-> date:   9 days ago
-> config: mips-randconfig-r025-20201217 (attached as .config)
-> compiler: mipsel-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=518b466a21ad7fa1e338fa4ed9d180ef439d3bc0
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 518b466a21ad7fa1e338fa4ed9d180ef439d3bc0
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=mips
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All warnings (new ones prefixed by >>):
->
-> >> drivers/pinctrl/ralink/pinctrl-rt2880.c:365:12: warning: no previous prototype for 'rt2880_pinmux_init' [-Wmissing-prototypes]
->      365 | int __init rt2880_pinmux_init(void)
->          |            ^~~~~~~~~~~~~~~~~~
->
->
-> vim +/rt2880_pinmux_init +365 drivers/pinctrl/ralink/pinctrl-rt2880.c
->
-> 0317d60de869786 drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c John Crispin       2018-03-15  364
-> 1d2d116a93f0e9b drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c Sergio Paracuellos 2018-07-09 @365  int __init rt2880_pinmux_init(void)
-> 1d2d116a93f0e9b drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c Sergio Paracuellos 2018-07-09  366  {
-> 1d2d116a93f0e9b drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c Sergio Paracuellos 2018-07-09  367      return platform_driver_register(&rt2880_pinmux_driver);
-> 1d2d116a93f0e9b drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c Sergio Paracuellos 2018-07-09  368  }
-> 1d2d116a93f0e9b drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c Sergio Paracuellos 2018-07-09  369
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>
+Cc: Gene Chen <gene_chen@richtek.com>
+Cc: linux-mediatek@lists.infradead.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/mfd/ab8500-core.c  | 42 +++++++++++++++++++-------------------
+ drivers/mfd/db8500-prcmu.c |  6 +++---
+ drivers/mfd/mt6360-core.c  | 12 +++++------
+ include/linux/mfd/core.h   |  6 +++---
+ 4 files changed, 33 insertions(+), 33 deletions(-)
 
-Yes, there is no such prototype for this global. This should be
-declared 'static' instead as it is only used from this driver code
-using 'core_initcall_sync'.
-Will send a patch with this change. CC'ed Linus because this driver is
-in his subsystem now.
+diff --git a/drivers/mfd/ab8500-core.c b/drivers/mfd/ab8500-core.c
+index a3bac9da8cbbc..ba8da061af0ef 100644
+--- a/drivers/mfd/ab8500-core.c
++++ b/drivers/mfd/ab8500-core.c
+@@ -610,52 +610,52 @@ int ab8500_suspend(struct ab8500 *ab8500)
+ }
+ 
+ static const struct mfd_cell ab8500_bm_devs[] = {
+-	OF_MFD_CELL("ab8500-charger", NULL, &ab8500_bm_data,
++	MFD_CELL_OF("ab8500-charger", NULL, &ab8500_bm_data,
+ 		    sizeof(ab8500_bm_data), 0, "stericsson,ab8500-charger"),
+-	OF_MFD_CELL("ab8500-btemp", NULL, &ab8500_bm_data,
++	MFD_CELL_OF("ab8500-btemp", NULL, &ab8500_bm_data,
+ 		    sizeof(ab8500_bm_data), 0, "stericsson,ab8500-btemp"),
+-	OF_MFD_CELL("ab8500-fg", NULL, &ab8500_bm_data,
++	MFD_CELL_OF("ab8500-fg", NULL, &ab8500_bm_data,
+ 		    sizeof(ab8500_bm_data), 0, "stericsson,ab8500-fg"),
+-	OF_MFD_CELL("ab8500-chargalg", NULL, &ab8500_bm_data,
++	MFD_CELL_OF("ab8500-chargalg", NULL, &ab8500_bm_data,
+ 		    sizeof(ab8500_bm_data), 0, "stericsson,ab8500-chargalg"),
+ };
+ 
+ static const struct mfd_cell ab8500_devs[] = {
+ #ifdef CONFIG_DEBUG_FS
+-	OF_MFD_CELL("ab8500-debug",
++	MFD_CELL_OF("ab8500-debug",
+ 		    NULL, NULL, 0, 0, "stericsson,ab8500-debug"),
+ #endif
+-	OF_MFD_CELL("ab8500-sysctrl",
++	MFD_CELL_OF("ab8500-sysctrl",
+ 		    NULL, NULL, 0, 0, "stericsson,ab8500-sysctrl"),
+-	OF_MFD_CELL("ab8500-ext-regulator",
++	MFD_CELL_OF("ab8500-ext-regulator",
+ 		    NULL, NULL, 0, 0, "stericsson,ab8500-ext-regulator"),
+-	OF_MFD_CELL("ab8500-regulator",
++	MFD_CELL_OF("ab8500-regulator",
+ 		    NULL, NULL, 0, 0, "stericsson,ab8500-regulator"),
+-	OF_MFD_CELL("ab8500-clk",
++	MFD_CELL_OF("ab8500-clk",
+ 		    NULL, NULL, 0, 0, "stericsson,ab8500-clk"),
+-	OF_MFD_CELL("ab8500-gpadc",
++	MFD_CELL_OF("ab8500-gpadc",
+ 		    NULL, NULL, 0, 0, "stericsson,ab8500-gpadc"),
+-	OF_MFD_CELL("ab8500-rtc",
++	MFD_CELL_OF("ab8500-rtc",
+ 		    NULL, NULL, 0, 0, "stericsson,ab8500-rtc"),
+-	OF_MFD_CELL("ab8500-acc-det",
++	MFD_CELL_OF("ab8500-acc-det",
+ 		    NULL, NULL, 0, 0, "stericsson,ab8500-acc-det"),
+-	OF_MFD_CELL("ab8500-poweron-key",
++	MFD_CELL_OF("ab8500-poweron-key",
+ 		    NULL, NULL, 0, 0, "stericsson,ab8500-poweron-key"),
+-	OF_MFD_CELL("ab8500-pwm",
++	MFD_CELL_OF("ab8500-pwm",
+ 		    NULL, NULL, 0, 1, "stericsson,ab8500-pwm"),
+-	OF_MFD_CELL("ab8500-pwm",
++	MFD_CELL_OF("ab8500-pwm",
+ 		    NULL, NULL, 0, 2, "stericsson,ab8500-pwm"),
+-	OF_MFD_CELL("ab8500-pwm",
++	MFD_CELL_OF("ab8500-pwm",
+ 		    NULL, NULL, 0, 3, "stericsson,ab8500-pwm"),
+-	OF_MFD_CELL("ab8500-denc",
++	MFD_CELL_OF("ab8500-denc",
+ 		    NULL, NULL, 0, 0, "stericsson,ab8500-denc"),
+-	OF_MFD_CELL("pinctrl-ab8500",
++	MFD_CELL_OF("pinctrl-ab8500",
+ 		    NULL, NULL, 0, 0, "stericsson,ab8500-gpio"),
+-	OF_MFD_CELL("abx500-temp",
++	MFD_CELL_OF("abx500-temp",
+ 		    NULL, NULL, 0, 0, "stericsson,abx500-temp"),
+-	OF_MFD_CELL("ab8500-usb",
++	MFD_CELL_OF("ab8500-usb",
+ 		    NULL, NULL, 0, 0, "stericsson,ab8500-usb"),
+-	OF_MFD_CELL("ab8500-codec",
++	MFD_CELL_OF("ab8500-codec",
+ 		    NULL, NULL, 0, 0, "stericsson,ab8500-codec"),
+ };
+ 
+diff --git a/drivers/mfd/db8500-prcmu.c b/drivers/mfd/db8500-prcmu.c
+index a5983d515db03..167faac9b75bf 100644
+--- a/drivers/mfd/db8500-prcmu.c
++++ b/drivers/mfd/db8500-prcmu.c
+@@ -2954,12 +2954,12 @@ static const struct mfd_cell common_prcmu_devs[] = {
+ };
+ 
+ static const struct mfd_cell db8500_prcmu_devs[] = {
+-	OF_MFD_CELL("db8500-prcmu-regulators", NULL,
++	MFD_CELL_OF("db8500-prcmu-regulators", NULL,
+ 		    &db8500_regulators, sizeof(db8500_regulators), 0,
+ 		    "stericsson,db8500-prcmu-regulator"),
+-	OF_MFD_CELL("cpuidle-dbx500",
++	MFD_CELL_OF("cpuidle-dbx500",
+ 		    NULL, NULL, 0, 0, "stericsson,cpuidle-dbx500"),
+-	OF_MFD_CELL("db8500-thermal",
++	MFD_CELL_OF("db8500-thermal",
+ 		    NULL, NULL, 0, 0, "stericsson,db8500-thermal"),
+ };
+ 
+diff --git a/drivers/mfd/mt6360-core.c b/drivers/mfd/mt6360-core.c
+index 4661c1b29a726..480722acf706b 100644
+--- a/drivers/mfd/mt6360-core.c
++++ b/drivers/mfd/mt6360-core.c
+@@ -292,17 +292,17 @@ static const struct resource mt6360_ldo_resources[] = {
+ };
+ 
+ static const struct mfd_cell mt6360_devs[] = {
+-	OF_MFD_CELL("mt6360_adc", mt6360_adc_resources,
++	MFD_CELL_OF("mt6360_adc", mt6360_adc_resources,
+ 		    NULL, 0, 0, "mediatek,mt6360_adc"),
+-	OF_MFD_CELL("mt6360_chg", mt6360_chg_resources,
++	MFD_CELL_OF("mt6360_chg", mt6360_chg_resources,
+ 		    NULL, 0, 0, "mediatek,mt6360_chg"),
+-	OF_MFD_CELL("mt6360_led", mt6360_led_resources,
++	MFD_CELL_OF("mt6360_led", mt6360_led_resources,
+ 		    NULL, 0, 0, "mediatek,mt6360_led"),
+-	OF_MFD_CELL("mt6360_pmic", mt6360_pmic_resources,
++	MFD_CELL_OF("mt6360_pmic", mt6360_pmic_resources,
+ 		    NULL, 0, 0, "mediatek,mt6360_pmic"),
+-	OF_MFD_CELL("mt6360_ldo", mt6360_ldo_resources,
++	MFD_CELL_OF("mt6360_ldo", mt6360_ldo_resources,
+ 		    NULL, 0, 0, "mediatek,mt6360_ldo"),
+-	OF_MFD_CELL("mt6360_tcpc", NULL,
++	MFD_CELL_OF("mt6360_tcpc", NULL,
+ 		    NULL, 0, 0, "mediatek,mt6360_tcpc"),
+ };
+ 
+diff --git a/include/linux/mfd/core.h b/include/linux/mfd/core.h
+index 4b35baa14d308..2009c4b936d9d 100644
+--- a/include/linux/mfd/core.h
++++ b/include/linux/mfd/core.h
+@@ -28,13 +28,13 @@
+ 		.id = (_id),						\
+ 	}
+ 
+-#define OF_MFD_CELL_REG(_name, _res, _pdata, _pdsize, _id, _compat, _of_reg) \
++#define MFD_CELL_OF_REG(_name, _res, _pdata, _pdsize, _id, _compat, _of_reg) \
+ 	MFD_CELL_ALL(_name, _res, _pdata, _pdsize, _id, _compat, _of_reg, true, NULL)
+ 
+-#define OF_MFD_CELL(_name, _res, _pdata, _pdsize, _id, _compat) \
++#define MFD_CELL_OF(_name, _res, _pdata, _pdsize, _id, _compat) \
+ 	MFD_CELL_ALL(_name, _res, _pdata, _pdsize, _id, _compat, 0, false, NULL)
+ 
+-#define ACPI_MFD_CELL(_name, _res, _pdata, _pdsize, _id, _match) \
++#define MFD_CELL_ACPI(_name, _res, _pdata, _pdsize, _id, _match) \
+ 	MFD_CELL_ALL(_name, _res, _pdata, _pdsize, _id, NULL, 0, false, _match)
+ 
+ #define MFD_CELL_BASIC(_name, _res, _pdata, _pdsize, _id) \
+-- 
+2.25.1
 
->
-> :::::: The code at line 365 was first introduced by commit
-> :::::: 1d2d116a93f0e9bf0bca72da76a96edef8a1d36d Revert "staging: mt7621-pinctrl: replace core_initcall_sync with builtin_platform_driver"
-
-Not really, it was there from the very beginning but I made a change
-to try to use this in a later stage in the boot process without
-success. Thus, this commit is the revert for that one.
-
->
-> :::::: TO: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> :::::: CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
-Best regards,
-    Sergio Paracuellos
