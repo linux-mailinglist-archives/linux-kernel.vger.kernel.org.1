@@ -2,75 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3896B2DD3F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:17:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA5AF2DD3F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:19:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728063AbgLQPQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 10:16:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726012AbgLQPQt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 10:16:49 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F26FC0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 07:16:09 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id q4so9581313plr.7
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 07:16:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=N0X1DCRxzloLcq/I12JrF6wjku1BEW6h4ePAndekIaw=;
-        b=s1yiqE9QLy0+JQiZIk1aZzccQ+uRiZHhNx0Fttnf8TQNySsbgwfOXZcDayNIbHABQ2
-         JcQV4o+eApR1pEh8bZgVUABWjLVErV2zCfb9wsjVttbxSRWgw18xcvqEg8PYX/i2EIT0
-         2k6ROrX8kcB6QHpfuHKYVi6pW6fribJgrLqADDZImEVnohh+Nk2Cim+33/eFG2Zh6LhR
-         FrR9kjSajTzGJiapkuZ6/km8EPRv6lCuB4LdzU1QPa54GobhOXKwIwkh5v3HZMb1Ozcf
-         1bp4XBJkGrczRdGslpVrTqRn5BYARI1Iyj6fv4Yc4FSVVZA7HMVugYpWcEFX8f8DzeUc
-         pJGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=N0X1DCRxzloLcq/I12JrF6wjku1BEW6h4ePAndekIaw=;
-        b=cYFrIJG40+zvOKPyMyPe+Wvh+gRbtOfypNrwH93iVxr91ixGAc0vHYFG/bccQ7q6/n
-         23L3vaZjjLn5t5vj9vltFRW9YYzNmkJ9UlddJB4lX2sfBZJNLn8XRpqLZbjvAnNChoFp
-         iYTEIrHWPK+dX5i797KNapW8eD4767bwuONydwDG9Qn6+Xp9cuHvxNUCEyyQpKe6yNpX
-         BF3gGf8fnwayexuEQd+EUULFOopORJvGlGnOhJJl1YpmAA1AfHC/rA5+3NgKAZN6YgAv
-         Rjl0qOuSmnrE/yPlsyFgD3d9xzOXHrBvV/hPvlYIQeOQxiFoDIYIrEolu3InwCowhWe8
-         2Z5w==
-X-Gm-Message-State: AOAM532VbkhNssOIvTg8CkGrv8Au+VSl2FKA54nSUljT0/qwS9UBZJIc
-        4gM4g7we8OViQ+FJwEyu1AruPA==
-X-Google-Smtp-Source: ABdhPJzQYg4oUBNvdjWLc8LfDykAYEzEOhexJBoTKWfgUrSF2bq7qGnn3gDCM/TCEpYCQTCi0SIYaA==
-X-Received: by 2002:a17:902:7292:b029:dc:ac9:25b5 with SMTP id d18-20020a1709027292b02900dc0ac925b5mr11849098pll.2.1608218168617;
-        Thu, 17 Dec 2020 07:16:08 -0800 (PST)
-Received: from google.com (139.60.82.34.bc.googleusercontent.com. [34.82.60.139])
-        by smtp.gmail.com with ESMTPSA id 19sm6248598pfu.85.2020.12.17.07.16.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 07:16:08 -0800 (PST)
-Date:   Thu, 17 Dec 2020 15:16:04 +0000
-From:   Satya Tangirala <satyat@google.com>
-To:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH v2 0/3] add support for metadata encryption to F2FS
-Message-ID: <X9t2NKf/h7XjzOQA@google.com>
-References: <20201217150435.1505269-1-satyat@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201217150435.1505269-1-satyat@google.com>
+        id S1728157AbgLQPTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 10:19:08 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37286 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726983AbgLQPTI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 10:19:08 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E20EEAC7B;
+        Thu, 17 Dec 2020 15:18:25 +0000 (UTC)
+Date:   Thu, 17 Dec 2020 16:18:25 +0100
+Message-ID: <s5hmtycjwam.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Lars-Peter Clausen <lars@metafoo.de>
+Cc:     alsa-devel@alsa-project.org, gustavoars@kernel.org,
+        linux-kernel@vger.kernel.org, shengjiu.wang@nxp.com,
+        tiwai@suse.com, pierre-louis.bossart@linux.intel.com,
+        xiang@kernel.org, Robin Gong <yibin.gong@nxp.com>,
+        akpm@linux-foundation.org
+Subject: Re: [PATCH v1 ] ALSA: core: memalloc: add page alignment for iram
+In-Reply-To: <1fc18b56-effa-9dbc-8263-00c632e163e7@metafoo.de>
+References: <1608221747-3474-1-git-send-email-yibin.gong@nxp.com>
+        <05c824e5-0c33-4182-26fa-b116a42b10d6@metafoo.de>
+        <s5h5z50n4dd.wl-tiwai@suse.de>
+        <70074f62-954a-9b40-ab4a-cb438925060c@metafoo.de>
+        <s5hmtyclmig.wl-tiwai@suse.de>
+        <8e103a2b-1097-6d54-7266-34743321efac@metafoo.de>
+        <s5hwnxgjysq.wl-tiwai@suse.de>
+        <1fc18b56-effa-9dbc-8263-00c632e163e7@metafoo.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 03:04:32PM +0000, Satya Tangirala wrote:
-> Changes to the userspace
-> tools (that are required to test out metadata encryption with F2FS) are
-> also being sent out - I'll post a link as a reply to this mail once it's
-> out.
+On Thu, 17 Dec 2020 15:57:02 +0100,
+Lars-Peter Clausen wrote:
+> 
+> On 12/17/20 3:24 PM, Takashi Iwai wrote:
+> > On Thu, 17 Dec 2020 14:16:48 +0100,
+> > Lars-Peter Clausen wrote:
+> >> On 12/17/20 12:06 PM, Takashi Iwai wrote:
+> >>> On Thu, 17 Dec 2020 11:59:23 +0100,
+> >>> Lars-Peter Clausen wrote:
+> >>>> On 12/17/20 10:55 AM, Takashi Iwai wrote:
+> >>>>> On Thu, 17 Dec 2020 10:43:45 +0100,
+> >>>>> Lars-Peter Clausen wrote:
+> >>>>>> On 12/17/20 5:15 PM, Robin Gong wrote:
+> >>>>>>> Since mmap for userspace is based on page alignment, add page alignment
+> >>>>>>> for iram alloc from pool, otherwise, some good data located in the same
+> >>>>>>> page of dmab->area maybe touched wrongly by userspace like pulseaudio.
+> >>>>>>>
+> >>>>>> I wonder, do we also have to align size to be a multiple of PAGE_SIZE
+> >>>>>> to avoid leaking unrelated data?
+> >>>>> Hm, a good question.  Basically the PCM buffer size itself shouldn't
+> >>>>> be influenced by that (i.e. no hw-constraint or such is needed), but
+> >>>>> the padding should be cleared indeed.  I somehow left those to the
+> >>>>> allocator side, but maybe it's safer to clear the whole buffer in
+> >>>>> sound/core/memalloc.c commonly.
+> >>>> What I meant was that most of the APIs that we use to allocate memory
+> >>>> work on a PAGE_SIZE granularity. I.e. if you request a buffer that
+> >>>> where the size is not a multiple of PAGE_SIZE internally they will
+> >>>> still allocate a buffer that is a multiple of PAGE_SIZE and mark the
+> >>>> unused bytes as reserved.
+> >>>>
+> >>>> But I believe that is not the case gen_pool_dma_alloc(). It will
+> >>>> happily allocate those extra bytes to some other allocation request.
+> >>>>
+> >>>> That we need to zero out the reserved bytes even for those other APIs
+> >>>> is a very good additional point!
+> >>>>
+> >>>> I looked at this a few years ago and I'm pretty sure that we cleared
+> >>>> out the allocated area, but I can't find that anymore in the current
+> >>>> code. Which is not so great I guess.
+> >>> IIRC, we used GFP_ZERO in the past for the normal page allocations,
+> >>> but this was dropped as it's no longer supported or so.
+> >>>
+> >>> Also, we clear out the PCM buffer in hw_params call, but this is for
+> >>> the requested size, not the actual allocated size, hence the padding
+> >>> bytes will remain uncleared.
+> >> Ah! That memset() in hw_params is new.
+> >>> So I believe it's safer to add an extra memset() like my test patch.
+> >> Yea, we definitely want that.
+> >>
+> >> Do we care about leaking audio samples from a previous
+> >> application. I.e. application 'A' allocates a buffer plays back some
+> >> data and then closes the device again. Application 'B' then opens the
+> >> same audio devices allocates a slightly smaller buffer, so that it
+> >> still uses the same number of pages. The buffer from the previous
+> >> allocation get reused, but the remainder of the last page wont get
+> >> cleared in hw_params().
+> > That's true.  On the second though, it might be better to extend that
+> > memset() in hw_params to assure clearing the whole allocated buffer.
+> > We can check runtime->dma_buffer_p->bytes for the actual size.
+> >
+> > Also, in the PCM memory allocator, we make sure that the allocation is
+> > performed for page size.
+> >
+> >
+> > diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+> > index 47b155a49226..6aabad070abf 100644
+> > --- a/sound/core/pcm_native.c
+> > +++ b/sound/core/pcm_native.c
+> > @@ -755,8 +755,15 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
+> >   		runtime->boundary *= 2;
+> >     	/* clear the buffer for avoiding possible kernel info leaks */
+> > -	if (runtime->dma_area && !substream->ops->copy_user)
+> > -		memset(runtime->dma_area, 0, runtime->dma_bytes);
+> > +	if (runtime->dma_area && !substream->ops->copy_user) {
+> > +		size_t size;
+> > +
+> > +		if (runtime->dma_buffer_p)
+> > +			size = runtime->dma_buffer_p->bytes;
+> > +		else
+> > +			size = runtime->dma_bytes;
+> 
+> I'm not sure.
+> 
+> Not all drivers use snd_pcm_lib_malloc_pages() and
+> runtime->dma_buffer_p->bytes might not be a multiple of PAGE_SIZE.
 
-The userspace changes are at
-https://lore.kernel.org/linux-f2fs-devel/20201217151013.1513045-1-satyat@google.com/
+The runtime->dma_buffer_p->bytes is assured to be page-aligned by the
+change in pcm_memory.c in this patch.  But it's true that non-standard
+allocations won't cover the whole pages...
+
+> On the other hand if it is mmap-able, the underlying buffer must be a
+> multiple of PAGE_SIZE. So a simple memset(..., PAGE_ALIGN(size))
+> should work.
+> 
+> But we'd risk breaking drivers that do not reserve the remainder of
+> the page and use it for something else.
+> 
+> Maybe what we need is a check that runtime->dma_area is page aligned
+> and runtime->dma_bytes is a multiple of PAGE_SIZE. With a warning at
+> first and then turn this into a error a year later or so.
+
+OK, how about the following instead?
+Just check SNDRV_PCM_INFO_MMAP in runtime->info; if this is set, the
+buffer size must be aligned with the page size, and we are safe to
+extend the size to clear.
+
+So the revised fix is much simpler, something like below.
+
+
+thanks,
+
+Takashi
+
+---
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -755,8 +755,13 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		runtime->boundary *= 2;
+ 
+ 	/* clear the buffer for avoiding possible kernel info leaks */
+-	if (runtime->dma_area && !substream->ops->copy_user)
+-		memset(runtime->dma_area, 0, runtime->dma_bytes);
++	if (runtime->dma_area && !substream->ops->copy_user) {
++		size_t size = runtime->dma_bytes;
++
++		if (runtime->info & SNDRV_PCM_INFO_MMAP)
++			size = PAGE_ALIGN(size);
++		memset(runtime->dma_area, 0, size);
++	}
+ 
+ 	snd_pcm_timer_resolution_change(substream);
+ 	snd_pcm_set_state(substream, SNDRV_PCM_STATE_SETUP);
