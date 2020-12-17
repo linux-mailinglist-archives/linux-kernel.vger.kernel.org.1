@@ -2,115 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E02182DD398
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:02:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5320F2DD38E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:02:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729026AbgLQPCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 10:02:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58352 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727769AbgLQPCG (ORCPT
+        id S1728802AbgLQPBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 10:01:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728086AbgLQPBk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 10:02:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608217239;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZrUawnXtjtGun/f0FYscqL21akIuvo9XyiO75S1bCyI=;
-        b=e8n13cGwGBbXy2eCVCdZfQbKWhBjzn53OKy/YCie2PY4lyy7qnUGz6qR2nN8hI7/myLUZl
-        hGg+MkzmahQyQJu5sTol+HKudtjFHfQHLAqKIksomDd0LWnth1sRarKlPYEnbzQNF5gmx3
-        KDRqB8V5IQsWH//3Of5ACgkhLYFOht0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-596-OuBLCoJNOXS57Vl_F-3VSQ-1; Thu, 17 Dec 2020 10:00:35 -0500
-X-MC-Unique: OuBLCoJNOXS57Vl_F-3VSQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3C6F7800D53;
-        Thu, 17 Dec 2020 15:00:31 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-112-107.rdu2.redhat.com [10.10.112.107])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E69035D9D7;
-        Thu, 17 Dec 2020 15:00:29 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 78420220BCF; Thu, 17 Dec 2020 10:00:29 -0500 (EST)
-Date:   Thu, 17 Dec 2020 10:00:29 -0500
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, jlayton@kernel.org,
-        amir73il@gmail.com, sargun@sargun.me, miklos@szeredi.hu,
-        willy@infradead.org, jack@suse.cz, neilb@suse.com,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 1/3] vfs: add new f_op->syncfs vector
-Message-ID: <20201217150029.GA3630@redhat.com>
-References: <20201216233149.39025-1-vgoyal@redhat.com>
- <20201216233149.39025-2-vgoyal@redhat.com>
- <20201217004935.GN3579531@ZenIV.linux.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201217004935.GN3579531@ZenIV.linux.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        Thu, 17 Dec 2020 10:01:40 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92CADC0617A7;
+        Thu, 17 Dec 2020 07:01:00 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id f17so20486218pge.6;
+        Thu, 17 Dec 2020 07:01:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=UER7F44VA6+CVzOh95HoaBZK/JzVvCMaSOED9S3uJJU=;
+        b=arFz/JT1mmmCBByLiELMCkMGGUJ5eD9gy5ohK7x7YjZwxdRwwarqml3g+3n80rdhoY
+         lFKClPTqiyUH8s/OEpE+KkBxNogJYOebb/UJJ4XcgWXEe8W4bvKKmLgM2KnFj34EUC4X
+         38aTFtFbYDnTrbRm+WZUQUu9Tsi1RyMjF5dHCADb5mOWtaPQzdveH+J7DvuzUnfWb0Lm
+         TVRBlcpWHMMfuCDnAj0DtER0kCe73rnTu+vBi0QdcFZFQV5+pmRfGgtUBEKuThhDHx+2
+         o57mY9bGSHE7OLvyKOPnMem5L/zOPWXROzO5UcdbB79gpKbKl2ryyXmLGwkFc1POfp6f
+         aRHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=UER7F44VA6+CVzOh95HoaBZK/JzVvCMaSOED9S3uJJU=;
+        b=V3Ny/IFbKX4GBopTrzwZn39/PGjP9jS128uARIJpKOrO1K+xeSoUdRJuVnieUZg/I7
+         FqMmexxh9WTipmFi5AKSZufzJ523wOOIcAOfMtcVX0qYpi6Z/ptzgND/vqgrQLu6mVBm
+         pavbiGGpyfmodC7XRr3eVl9KjCd8a+CA2DoSIpT1O7PwU8VXwrwVQCvL7tJ1SYnM+nJI
+         CgzYzX1aThOFFSvqWC0TKGV1AsNx7n8PDtp7pkxvrC22pJP8giVtK2WVH+ST++hutS7K
+         xKJ87u9Jkmqs8nzRd3gtDiLQQnkpR/Z8p1NgDJub7y5IK1/774MYnMtrXqOME4E+DyV2
+         plJQ==
+X-Gm-Message-State: AOAM531cPyfItb/R6OOT2j1UO7FQ6HnVkd9APBHhLsODBYB6PhUgCwVT
+        0opnMOyn1ASlI4Av7l1pHqk=
+X-Google-Smtp-Source: ABdhPJx5DP5kKYy4bW+Smpn5gDOcd0+HeLhTsQqwtg8bxX2HBah3tReDiTHgyJ46nO10A/DqJrdghQ==
+X-Received: by 2002:a63:e20:: with SMTP id d32mr11975752pgl.94.1608217259818;
+        Thu, 17 Dec 2020 07:00:59 -0800 (PST)
+Received: from localhost.localdomain (1-171-2-187.dynamic-ip.hinet.net. [1.171.2.187])
+        by smtp.gmail.com with ESMTPSA id o140sm6189074pfd.26.2020.12.17.07.00.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 17 Dec 2020 07:00:58 -0800 (PST)
+From:   cy_huang <u0084500@gmail.com>
+To:     lee.jones@linaro.org, lgirdwood@gmail.com, broonie@kernel.org,
+        daniel.thompson@linaro.org, jingoohan1@gmail.com,
+        b.zolnierkie@samsung.com
+Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ChiYuan Huang <cy_huang@richtek.com>
+Subject: [PATCH v5 1/6] mfd: rt4831: Adds support for Richtek RT4831 core
+Date:   Thu, 17 Dec 2020 23:00:39 +0800
+Message-Id: <1608217244-314-1-git-send-email-u0084500@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 12:49:35AM +0000, Al Viro wrote:
-> [Christoph added to Cc...]
-> On Wed, Dec 16, 2020 at 06:31:47PM -0500, Vivek Goyal wrote:
-> > Current implementation of __sync_filesystem() ignores the return code
-> > from ->sync_fs(). I am not sure why that's the case. There must have
-> > been some historical reason for this.
-> > 
-> > Ignoring ->sync_fs() return code is problematic for overlayfs where
-> > it can return error if sync_filesystem() on upper super block failed.
-> > That error will simply be lost and sycnfs(overlay_fd), will get
-> > success (despite the fact it failed).
-> > 
-> > If we modify existing implementation, there is a concern that it will
-> > lead to user space visible behavior changes and break things. So
-> > instead implement a new file_operations->syncfs() call which will
-> > be called in syncfs() syscall path. Return code from this new
-> > call will be captured. And all the writeback error detection
-> > logic can go in there as well. Only filesystems which implement
-> > this call get affected by this change. Others continue to fallback
-> > to existing mechanism.
-> 
-> That smells like a massive source of confusion down the road.  I'd just
-> looked through the existing instances; many always return 0, but quite
-> a few sometimes try to return an error:
-> fs/btrfs/super.c:2412:  .sync_fs        = btrfs_sync_fs,
-> fs/exfat/super.c:204:   .sync_fs        = exfat_sync_fs,
-> fs/ext4/super.c:1674:   .sync_fs        = ext4_sync_fs,
-> fs/f2fs/super.c:2480:   .sync_fs        = f2fs_sync_fs,
-> fs/gfs2/super.c:1600:   .sync_fs                = gfs2_sync_fs,
-> fs/hfsplus/super.c:368: .sync_fs        = hfsplus_sync_fs,
-> fs/nilfs2/super.c:689:  .sync_fs        = nilfs_sync_fs,
-> fs/ocfs2/super.c:139:   .sync_fs        = ocfs2_sync_fs,
-> fs/overlayfs/super.c:399:       .sync_fs        = ovl_sync_fs,
-> fs/ubifs/super.c:2052:  .sync_fs       = ubifs_sync_fs,
-> is the list of such.  There are 4 method callers:
-> dquot_quota_sync(), dquot_disable(), __sync_filesystem() and
-> sync_fs_one_sb().  For sync_fs_one_sb() we want to ignore the
-> return value; for __sync_filesystem() we almost certainly
-> do *not* - it ends with return __sync_blockdev(sb->s_bdev, wait),
-> after all.  The question for that one is whether we want
-> __sync_blockdev() called even in case of ->sync_fs() reporting
-> a failure, and I suspect that it's safer to call it anyway and
-> return the first error value we'd got.
+From: ChiYuan Huang <cy_huang@richtek.com>
 
-I posted V1 patch to do exactly above. In __sync_filesystem(), capture
-return code from ->sync_fs() but continue to call __sync_blockdev() and
-and return error code from ->sync_fs() if there is one otherwise
-return error code from __sync_blockdev().
+This adds support Richtek RT4831 core. It includes four channel WLED driver
+and Display Bias Voltage outputs.
 
-https://lore.kernel.org/linux-fsdevel/20201216143802.GA10550@redhat.com/
+Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+---
+since v5
+- Rename file name from rt4831-core.c to rt4831.c
+- Change RICHTEK_VID to RICHTEK_VENDOR_ID.
+- Change gpio_desc nameing from 'enable' to 'enable_gpio' in probe.
+- Change variable 'val' to the meaningful name 'chip_id'.
+- Refine the error log when vendor id is not matched.
+- Remove of_match_ptr.
 
-Thanks
-Vivek
+since v2
+- Refine Kconfig descriptions.
+- Add copyright.
+- Refine error logs in probe.
+- Refine comment lines in remove and shutdown.
+---
+ drivers/mfd/Kconfig  |  10 +++++
+ drivers/mfd/Makefile |   1 +
+ drivers/mfd/rt4831.c | 124 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 135 insertions(+)
+ create mode 100644 drivers/mfd/rt4831.c
 
-> No idea about quota situation.
-> 
+diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+index 8b99a13..dfb2640 100644
+--- a/drivers/mfd/Kconfig
++++ b/drivers/mfd/Kconfig
+@@ -1088,6 +1088,16 @@ config MFD_RDC321X
+ 	  southbridge which provides access to GPIOs and Watchdog using the
+ 	  southbridge PCI device configuration space.
+ 
++config MFD_RT4831
++	tristate "Richtek RT4831 four channel WLED and Display Bias Voltage"
++	depends on I2C
++	select MFD_CORE
++	select REGMAP_I2C
++	help
++	  This enables support for the Richtek RT4831 that includes 4 channel
++	  WLED driving and Display Bias Voltage. It's commonly used to provide
++	  power to the LCD display and LCD backlight.
++
+ config MFD_RT5033
+ 	tristate "Richtek RT5033 Power Management IC"
+ 	depends on I2C
+diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+index 1780019..28d247b 100644
+--- a/drivers/mfd/Makefile
++++ b/drivers/mfd/Makefile
+@@ -235,6 +235,7 @@ obj-$(CONFIG_MFD_MENF21BMC)	+= menf21bmc.o
+ obj-$(CONFIG_MFD_HI6421_PMIC)	+= hi6421-pmic-core.o
+ obj-$(CONFIG_MFD_HI655X_PMIC)   += hi655x-pmic.o
+ obj-$(CONFIG_MFD_DLN2)		+= dln2.o
++obj-$(CONFIG_MFD_RT4831)	+= rt4831.o
+ obj-$(CONFIG_MFD_RT5033)	+= rt5033.o
+ obj-$(CONFIG_MFD_SKY81452)	+= sky81452.o
+ 
+diff --git a/drivers/mfd/rt4831.c b/drivers/mfd/rt4831.c
+new file mode 100644
+index 00000000..2bf8364
+--- /dev/null
++++ b/drivers/mfd/rt4831.c
+@@ -0,0 +1,124 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Copyright (c) 2020 Richtek Technology Corp.
++ *
++ * Author: ChiYuan Huang <cy_huang@richtek.com>
++ */
++
++#include <linux/gpio/consumer.h>
++#include <linux/i2c.h>
++#include <linux/kernel.h>
++#include <linux/mfd/core.h>
++#include <linux/module.h>
++#include <linux/regmap.h>
++
++#define RT4831_REG_REVISION	0x01
++#define RT4831_REG_ENABLE	0x08
++#define RT4831_REG_I2CPROT	0x15
++
++#define RICHTEK_VENDOR_ID	0x03
++#define RT4831_VID_MASK		GENMASK(1, 0)
++#define RT4831_RESET_MASK	BIT(7)
++#define RT4831_I2CSAFETMR_MASK	BIT(0)
++
++static const struct mfd_cell rt4831_subdevs[] = {
++	OF_MFD_CELL("rt4831-backlight", NULL, NULL, 0, 0, "richtek,rt4831-backlight"),
++	MFD_CELL_NAME("rt4831-regulator")
++};
++
++static bool rt4831_is_accessible_reg(struct device *dev, unsigned int reg)
++{
++	if (reg >= RT4831_REG_REVISION && reg <= RT4831_REG_I2CPROT)
++		return true;
++	return false;
++}
++
++static const struct regmap_config rt4831_regmap_config = {
++	.reg_bits = 8,
++	.val_bits = 8,
++	.max_register = RT4831_REG_I2CPROT,
++
++	.readable_reg = rt4831_is_accessible_reg,
++	.writeable_reg = rt4831_is_accessible_reg,
++};
++
++static int rt4831_probe(struct i2c_client *client)
++{
++	struct gpio_desc *enable_gpio;
++	struct regmap *regmap;
++	unsigned int chip_id;
++	int ret;
++
++	enable_gpio = devm_gpiod_get_optional(&client->dev, "enable", GPIOD_OUT_HIGH);
++	if (IS_ERR(enable_gpio)) {
++		dev_err(&client->dev, "Failed to get 'enable' GPIO\n");
++		return PTR_ERR(enable_gpio);
++	}
++
++	regmap = devm_regmap_init_i2c(client, &rt4831_regmap_config);
++	if (IS_ERR(regmap)) {
++		dev_err(&client->dev, "Failed to initialize regmap\n");
++		return PTR_ERR(regmap);
++	}
++
++	ret = regmap_read(regmap, RT4831_REG_REVISION, &chip_id);
++	if (ret) {
++		dev_err(&client->dev, "Failed to get H/W revision\n");
++		return ret;
++	}
++
++	if ((chip_id & RT4831_VID_MASK) != RICHTEK_VENDOR_ID) {
++		dev_err(&client->dev, "Chip vendor ID 0x%02x not matched\n", chip_id);
++		return -ENODEV;
++	}
++
++	/*
++	 * Used to prevent the abnormal shutdown.
++	 * If SCL/SDA both keep low for one second to reset HW.
++	 */
++	ret = regmap_update_bits(regmap, RT4831_REG_I2CPROT, RT4831_I2CSAFETMR_MASK,
++				 RT4831_I2CSAFETMR_MASK);
++	if (ret) {
++		dev_err(&client->dev, "Failed to enable I2C safety timer\n");
++		return ret;
++	}
++
++	return devm_mfd_add_devices(&client->dev, PLATFORM_DEVID_AUTO, rt4831_subdevs,
++				    ARRAY_SIZE(rt4831_subdevs), NULL, 0, NULL);
++}
++
++static int rt4831_remove(struct i2c_client *client)
++{
++	struct regmap *regmap = dev_get_regmap(&client->dev, NULL);
++
++	/* Disable WLED and DSV outputs */
++	return regmap_update_bits(regmap, RT4831_REG_ENABLE, RT4831_RESET_MASK, RT4831_RESET_MASK);
++}
++
++static void rt4831_shutdown(struct i2c_client *client)
++{
++	struct regmap *regmap = dev_get_regmap(&client->dev, NULL);
++
++	/* Disable WLED and DSV outputs */
++	regmap_update_bits(regmap, RT4831_REG_ENABLE, RT4831_RESET_MASK, RT4831_RESET_MASK);
++}
++
++static const struct of_device_id __maybe_unused rt4831_of_match[] = {
++	{ .compatible = "richtek,rt4831", },
++	{}
++};
++MODULE_DEVICE_TABLE(of, rt4831_of_match);
++
++static struct i2c_driver rt4831_driver = {
++	.driver = {
++		.name = "rt4831",
++		.of_match_table = rt4831_of_match,
++	},
++	.probe_new = rt4831_probe,
++	.remove = rt4831_remove,
++	.shutdown = rt4831_shutdown,
++};
++module_i2c_driver(rt4831_driver);
++
++MODULE_AUTHOR("ChiYuan Huang <cy_huang@richtek.com>");
++MODULE_LICENSE("GPL v2");
+-- 
+2.7.4
 
