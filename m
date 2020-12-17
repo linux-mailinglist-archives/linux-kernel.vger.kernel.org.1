@@ -2,196 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 743762DCF6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 11:22:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 691A82DCF74
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 11:27:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727207AbgLQKWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 05:22:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54528 "EHLO
+        id S1726615AbgLQK0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 05:26:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbgLQKWK (ORCPT
+        with ESMTP id S1725950AbgLQK0u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 05:22:10 -0500
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D57BC061794;
-        Thu, 17 Dec 2020 02:21:30 -0800 (PST)
-Received: by mail-ot1-x32c.google.com with SMTP id f16so26719399otl.11;
-        Thu, 17 Dec 2020 02:21:30 -0800 (PST)
+        Thu, 17 Dec 2020 05:26:50 -0500
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 919DEC061794
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 02:26:10 -0800 (PST)
+Received: by mail-qv1-xf2b.google.com with SMTP id bd6so12999011qvb.9
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 02:26:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9fmCagwmO0CnAeob5/vidWI9EjHv0fIAy+mJaEfTvxA=;
-        b=AYA4Cu98I2vSXxCLrK3T/kDlns03u2SXZ6kBj4/eP51H2zVF05BW4aTxcsMgYTns70
-         AQSJb3AnvTAkqI+V4uJaXqsRhZGjMrCpr64o/M1pK/KPDgkzZEQk7HVNpvjUUOiqMc5S
-         i70iEURiq1hVzBId3mDmA3yPXANE55OexzqY4b8l+QZv0CqIYUADs2KVmbWqAWRKOq0U
-         aii+yM4LRB2LRRLJw3jO/1saG2CprHXRYuOqhPLjA4rercZ3tPHi5E9G/rgvTQ3YYJWZ
-         Q2Xhchvc2Lp5cganSXq8esdibnLiPNOmx5B0IuHtDeRK96CRRjrTaxiWzxzVfSJwCHCh
-         vfkA==
+        bh=7dPMjrwUyVJ0SctrZbQ7QI+UYy17WeAuqUz3oRrGTfU=;
+        b=YjBwGZ/ZowFcu1nU6IrRb8tl/pkkMdBn8V1gJ42p94EX1pGmEurG735ueO/5zZcpVQ
+         a562shO7G5LPjfRei2CoR6R4JzTQmGO1mpAl81SP/lbx9sLBs7BGrHqWEoigd9y4gTc1
+         u/BfUw6eVyPKuFVpkjvwHfKhLgS3L0TCD+W5YU0/YMwiHLXlfp+TTVPNsPJg3ZLsJmP/
+         Xn+fqGt+kAlapzniITfUbYAU7VYLbqn7LP3x0ADwfala5zJ17IOsRipH5zsddhPAMMr5
+         ebPlWHJT2vpcYkJ9MitZhe1NWm6Jp2laoi24TD3icAX5DxauBSzf6bkvekMtNUOE0J4U
+         WvOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9fmCagwmO0CnAeob5/vidWI9EjHv0fIAy+mJaEfTvxA=;
-        b=VjtfKBD5I4SwGuAhrRkolxClMKEuocer9damHlOK9pHQmoHXJeny9j1p1aoKZSt/Wr
-         zPrvVpBWMFXoWbZsFu4k3Cr+LPuEbUkh78231afJqN7JX9zPoRuDKHwxb6hM0/PiYA88
-         2WAvw91diRTHcBfKwPgJ/+85q+27HAl6dup8Re6pO+nbS32Q5mBkuuCj7Zuk/cMtuLiR
-         IExE7ht473+04SZliHRy5S7f/bF0B8UPIgPztBmZl/pLY0QqWvLQZh1SeINLm7sXePvW
-         4CB5JRgtNIAoe4nBKizNtYpIV7Amvk4dVFcL3JjLviBSPvY7/8bLSxLvZsETAQoJy91k
-         1Qfg==
-X-Gm-Message-State: AOAM533l6lMW30+EwaS6q49Dree+1b2WFGRjO6XwvDoWrKvZpCt+u9yr
-        qVWtx9I9M3elFbtxVO2DzzQEUIBuydoZjfhmuBE=
-X-Google-Smtp-Source: ABdhPJw9v2AlpigQ+z2cm/dNLrJsBXjYvT8vPM4qgw8CtUPyrwIRun/XFksLuzELcwRn+vnWPjEUgcm4c8saBqFc1yQ=
-X-Received: by 2002:a05:6830:2144:: with SMTP id r4mr3235078otd.72.1608200489934;
- Thu, 17 Dec 2020 02:21:29 -0800 (PST)
+        bh=7dPMjrwUyVJ0SctrZbQ7QI+UYy17WeAuqUz3oRrGTfU=;
+        b=RZJPIRavatFvOVv1X+n87WoJj+Qy6JXyAx96zJtjnghG7XvAgs48cOMuBMJcQ0IrKf
+         /Dppnb/aVzAabigbubnAmqhIiRgmS9ioJqi5tbTsZMeB66BlDtKibwQ/u4oR/5dVIYqL
+         NurOxO5QCFW6Caf0yzyMElmYncXgwb3AJDcmimu7bSDztqjWX+7nyerBUGhtwV7jl/bq
+         G7vJ9jk4Xk0nkDdiQTlxzKBDy7jhA2dyK9r6+bv/vwO+qYdBpWPdVkCNt18oG49fL0Sx
+         pvNMZFgYA/dF6KUglcVJqq6M8z/ao4iVZ7erONo13ALF2T/jdGD6aYeqfoAMobT6GHLC
+         B10w==
+X-Gm-Message-State: AOAM530Mi0Tpr+WmEkkVv1U3iDI2dNQ9MZR6Xp07rNEY7zYMByKYuEwo
+        3fwdq+BFso/e05cOIIbL7QIZk/z7IXs4jE1Hu5ftgg==
+X-Google-Smtp-Source: ABdhPJw6ViU81q3fKrlMj3BtsesB+w3yMtZcZratkm0amrb8si5yL+lPzc+hmJVrlYzF8GfTlPe/QxCEqS+JjKUZP/U=
+X-Received: by 2002:a0c:b20d:: with SMTP id x13mr48172339qvd.18.1608200769366;
+ Thu, 17 Dec 2020 02:26:09 -0800 (PST)
 MIME-Version: 1.0
-References: <20201122095556.21597-1-sergio.paracuellos@gmail.com>
- <20201122095556.21597-4-sergio.paracuellos@gmail.com> <160819619591.1580929.9915856168932644762@swboyd.mtv.corp.google.com>
- <CAMhs-H_6x7rTLPd8sABvzBqNJE2WeRJUGxG5VoqW4EvGy1hhPA@mail.gmail.com> <160819993289.1580929.17666667936736079931@swboyd.mtv.corp.google.com>
-In-Reply-To: <160819993289.1580929.17666667936736079931@swboyd.mtv.corp.google.com>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Thu, 17 Dec 2020 11:21:19 +0100
-Message-ID: <CAMhs-H8Pun8XwchyFbReQxHY7be4Vgque1iu1yVC+C3XkcwmGg@mail.gmail.com>
-Subject: Re: [PATCH v4 3/6] clk: ralink: add clock driver for mt7621 SoC
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        John Crispin <john@phrozen.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Chuanhong Guo <gch981213@gmail.com>,
-        Weijie Gao <hackpascal@gmail.com>,
-        COMMON CLK FRAMEWORK <linux-clk@vger.kernel.org>,
-        evicetree@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:MIPS <linux-mips@vger.kernel.org>, open list:STAGING
-        SUBSYSTEM <devel@driverdev.osuosl.org>, NeilBrown" <neil@brown.name>
+References: <1607576401-25609-1-git-send-email-vjitta@codeaurora.org>
+In-Reply-To: <1607576401-25609-1-git-send-email-vjitta@codeaurora.org>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 17 Dec 2020 11:25:57 +0100
+Message-ID: <CACT4Y+bO+w50rgbAMPcMMTdyvRRe1nc97Hp-Gm81Ky2s6fOnMQ@mail.gmail.com>
+Subject: Re: [PATCH v3] lib: stackdepot: Add support to configure STACK_HASH_SIZE
+To:     Vijayanand Jitta <vjitta@codeaurora.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Cc:     Minchan Kim <minchan@kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Konovalov <andreyknvl@google.com>, qcai@redhat.com,
+        ylal@codeaurora.org, vinmenon@codeaurora.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 11:12 AM Stephen Boyd <sboyd@kernel.org> wrote:
+On Thu, Dec 10, 2020 at 6:04 AM <vjitta@codeaurora.org> wrote:
 >
-> Quoting Sergio Paracuellos (2020-12-17 01:54:18)
-> >
-> > On Thu, Dec 17, 2020 at 10:09 AM Stephen Boyd <sboyd@kernel.org> wrote:
-> > >
-> > > Quoting Sergio Paracuellos (2020-11-22 01:55:53)
-> > > > diff --git a/drivers/clk/ralink/Makefile b/drivers/clk/ralink/Makefile
-> > > > new file mode 100644
-> > > > index 000000000000..cf6f9216379d
-> > > > --- /dev/null
-> > > > +++ b/drivers/clk/ralink/Makefile
-> > > > @@ -0,0 +1,2 @@
-> > > > +# SPDX-License-Identifier: GPL-2.0
-> > > > +obj-$(CONFIG_CLK_MT7621) += clk-mt7621.o
-> > > > diff --git a/drivers/clk/ralink/clk-mt7621.c b/drivers/clk/ralink/clk-mt7621.c
-> > > > new file mode 100644
-> > > > index 000000000000..4e929f13fe7c
-> > > > --- /dev/null
-> > > > +++ b/drivers/clk/ralink/clk-mt7621.c
-> > > > @@ -0,0 +1,435 @@
-> > > > +// SPDX-License-Identifier: GPL-2.0
-> > > > +/*
-> > > > + * Mediatek MT7621 Clock Driver
-> > > > + * Author: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> > > > + */
-> > > > +
-> > > > +#include <linux/bitops.h>
-> > > > +#include <linux/clk-provider.h>
-> > > > +#include <linux/mfd/syscon.h>
-> > > > +#include <linux/module.h>
-> > > > +#include <linux/slab.h>
-> > > > +#include <linux/regmap.h>
-> > > > +#include <asm/mach-ralink/ralink_regs.h>
-> > >
-> > > Is it possible to drop this include? Doing so would make this portable
-> > > and compilable on more architectures so us cross compilers can check
-> > > build stuff and make changes easily.
-> >
-> > No, this is not possible. This old arch makes some global functions
-> > there to properly access different registers in the palmbus. It is not
-> > also well documented so it is really difficult to make something
-> > better with this.
-> > This is needed to use 'rt_memc_r32'
-> > (arch/mips/include/asm/mach-ralink/ralink_regs.h) for reading
-> > MEMC_REG_CPU_PLL.
-> >
-> > This is a not documented register and is not in the syscon related
-> > part and we need it to derive the clock frequency for the XTAL clock.
+> From: Yogesh Lal <ylal@codeaurora.org>
 >
-> Ok.
+> Add a kernel parameter stack_hash_order to configure STACK_HASH_SIZE.
 >
-> > > > +static int mt7621_gate_ops_init(struct device_node *np,
-> > > > +                                struct mt7621_gate *sclk)
-> > > > +{
-> > > > +       struct clk_init_data init = {
-> > > > +               .flags = CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED,
-> > >
-> > > Why ignore unused? Are they CLK_IS_CRITICAL? Can they be enabled at
-> > > driver probe instead of here? Or left out of the kernel entirely if they
-> > > shouldn't be turned off?
-> >
-> > Because all the platform drivers are not changed to use this gates yet
-> > and all gates are enabled by default (related registers are set to all
-> > ones),  kernel disables all the stuff because they are not being
-> > referenced, but yes, you are right, I think I can call
-> > clk_prepare_enable for all of them at init time and avoid this
-> > 'CLK_IGNORE_UNUSED' flag to don't break anything of the current other
-> > upstream code.
+> Aim is to have configurable value for STACK_HASH_SIZE, so that one
+> can configure it depending on usecase there by reducing the static
+> memory overhead.
 >
-> Does something crash if they're turned off? We have CLK_IS_CRITICAL for
-> that. The CLK_IGNORE_UNUSED flag is sort of deprecated now.
+> One example is of Page Owner, default value of STACK_HASH_SIZE lead
+> stack depot to consume 8MB of static memory. Making it configurable
+> and use lower value helps to enable features like CONFIG_PAGE_OWNER
+> without any significant overhead.
+>
+> Suggested-by: Minchan Kim <minchan@kernel.org>
+> Signed-off-by: Yogesh Lal <ylal@codeaurora.org>
+> Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
+> ---
+>  lib/stackdepot.c | 31 +++++++++++++++++++++++++++----
+>  1 file changed, 27 insertions(+), 4 deletions(-)
+>
+> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+> index 81c69c0..e0eebfd 100644
+> --- a/lib/stackdepot.c
+> +++ b/lib/stackdepot.c
+> @@ -30,6 +30,7 @@
+>  #include <linux/stackdepot.h>
+>  #include <linux/string.h>
+>  #include <linux/types.h>
+> +#include <linux/vmalloc.h>
+>
+>  #define DEPOT_STACK_BITS (sizeof(depot_stack_handle_t) * 8)
+>
+> @@ -141,14 +142,36 @@ static struct stack_record *depot_alloc_stack(unsigned long *entries, int size,
+>         return stack;
+>  }
+>
+> -#define STACK_HASH_ORDER 20
+> -#define STACK_HASH_SIZE (1L << STACK_HASH_ORDER)
+> +#define MAX_STACK_HASH_ORDER 20
+> +#define MAX_STACK_HASH_SIZE (1L << MAX_STACK_HASH_ORDER)
+> +#define STACK_HASH_SIZE (1L << stack_hash_order)
+>  #define STACK_HASH_MASK (STACK_HASH_SIZE - 1)
+>  #define STACK_HASH_SEED 0x9747b28c
+>
+> -static struct stack_record *stack_table[STACK_HASH_SIZE] = {
+> -       [0 ...  STACK_HASH_SIZE - 1] = NULL
+> +static unsigned int stack_hash_order = 20;
+> +static struct stack_record *stack_table_def[MAX_STACK_HASH_SIZE] __initdata = {
+> +       [0 ...  MAX_STACK_HASH_SIZE - 1] = NULL
+>  };
+> +static struct stack_record **stack_table __refdata = stack_table_def;
+> +
+> +static int __init setup_stack_hash_order(char *str)
+> +{
+> +       kstrtouint(str, 0, &stack_hash_order);
+> +       if (stack_hash_order > MAX_STACK_HASH_ORDER)
+> +               stack_hash_order = MAX_STACK_HASH_ORDER;
+> +       return 0;
+> +}
+> +early_param("stack_hash_order", setup_stack_hash_order);
+> +
+> +static int __init init_stackdepot(void)
+> +{
+> +       size_t size = (STACK_HASH_SIZE * sizeof(struct stack_record *));
+> +
+> +       stack_table = vmalloc(size);
+> +       memcpy(stack_table, stack_table_def, size);
 
-Well, as drivers are not getting into account gates and not referenced
-real hw bits are disabled by kernel because nobody requested them so
-for example my uart gets down and cannot really see anything :). I
-think call to 'clk_prepare_enable' should be enough since by default
-all of them are setting up in registers, so call that will also
-reference them...
+Can interrupts happen at this point in time? If yes, they can
+use/modify stack_table_def concurrently.
 
+> +       return 0;
+> +}
+> +early_initcall(init_stackdepot);
 >
-> > > > +
-> > > > +#define CLK_BASE(_name, _parent, _recalc) {                            \
-> > > > +       .init = &(struct clk_init_data) {                               \
-> > > > +               .name = _name,                                          \
-> > > > +               .ops = &(const struct clk_ops) {                        \
-> > > > +                       .recalc_rate = _recalc,                         \
-> > > > +               },                                                      \
-> > > > +               .parent_names = (const char *const[]) { _parent },      \
-> > >
-> > > Please use clk_parent_data instead
-> >
-> > parent can also be NULL here and num_parents zero, but I will search
-> > what do you really mean with this 'clk_parent_data' :).
->
-> Heh, 'git grep clk_parent_data -- drivers/clk/' should give some clues.
-
-Thanks, will do!
-
->
-> > > > +free_clk_prov:
-> > > > +       kfree(clk_prov);
-> > > > +}
-> > > > +
-> > > > +CLK_OF_DECLARE(mt7621_clk, "mediatek,mt7621-clk", mt7621_clk_init);
-> > >
-> > > Any reason to use this vs. a platform driver?
-> >
-> > We need clocks available in 'plat_time_init' before setting up the
-> > timer for the GIC, so to maintain all the clock driver in a simple
-> > file and using only one device tree node and no separate the gates
-> > into another platform driver, I think this is the only way to go, but
-> > please correct me if I am wrong.
->
-> We can register the few clks like that early with
-> CLK_OF_DECLARE_DRIVER() and then have a platform driver register the
-> rest of the clks that aren't required early. This lets us hook into the
-> driver framework better while still getting those few clks to turn on
-> early enough for the timers.
-
-I see. I will explore the way to do this as you are suggesting here, thanks!
-
-Best regards,
-    Sergio Paracuellos
+>  /* Calculate hash for a stack */
+>  static inline u32 hash_stack(unsigned long *entries, unsigned int size)
+> --
+> 2.7.4
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
