@@ -2,78 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 634B42DCF80
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 11:30:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 620CE2DCF7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 11:30:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727649AbgLQK3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 05:29:40 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:34951 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726488AbgLQK3j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 05:29:39 -0500
-X-UUID: 93d1136e26624109865faab7044a0562-20201217
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=NJ+Woh3w6z3vlb9GDrGYWFJxOWvffKrwn6YuBZHwOtc=;
-        b=Ppqa+J3vMg1YMA91Ftz9KtwxAUJaoiiFnP8wTshgK0X34nG1coQ+oZlNT88mVpfbxQ3V8Bf7KXY4uqsNYKqS5kdTuhOWhZ8NG8xZOgVweGQGAw6GKw0A/I6FDgHH20KShSDgMiPI+reX8+jpwWC+ImwKF1SupzQkKbzA7I38NRo=;
-X-UUID: 93d1136e26624109865faab7044a0562-20201217
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <kuan-ying.lee@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1630589223; Thu, 17 Dec 2020 18:28:51 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 17 Dec 2020 18:28:47 +0800
-Received: from [172.21.84.99] (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 17 Dec 2020 18:28:47 +0800
-Message-ID: <1608200928.31376.37.camel@mtksdccf07>
-Subject: Re: [PATCH 1/1] kasan: fix memory leak of kasan quarantine
-From:   Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-To:     Andrey Ryabinin <aryabinin@virtuozzo.com>
-CC:     Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
-        <stable@vger.kernel.org>
-Date:   Thu, 17 Dec 2020 18:28:48 +0800
-In-Reply-To: <1608031683-24967-2-git-send-email-Kuan-Ying.Lee@mediatek.com>
-References: <1608031683-24967-1-git-send-email-Kuan-Ying.Lee@mediatek.com>
-         <1608031683-24967-2-git-send-email-Kuan-Ying.Lee@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        id S1727445AbgLQK3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 05:29:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52380 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726488AbgLQK3g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 05:29:36 -0500
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608200936;
+        bh=Zvlk7cg75+RskE+8n7nwk68d2niVjCId0sFpNAT3Mco=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=qqVRVVw5n4r9xsCU400ird2sgTJpGKHlkn0LWj8OXl+oYB9Du68dS7NfnQpHY/a2b
+         WKmOH0VSoYD4+fOzaTk3rALFmEM/mWhmVUkdbtjEd1/p/5c82BELpH9bsco8moDcl+
+         fdgANs4cSNGN6B6w8c7crx++TmBAgJ+bRu5/xPYG4pak41uPnVuwIMRAnEUZWOgtQ6
+         8dtKXij+jvN1OK5ZxoyAvvRjoZVz2fyzzby30BGwqj4Sxcx32/51yGewzeYHtEPt6N
+         IvCT6oAj4GxeOpD6NvDU44Q38BzJHT3wCc6N7ywEuQkullQfX685gOYrLoC7Fk317X
+         pMDhJFqpo3S8A==
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 2752E72A10EB865FFDCC2B6C40094E72E1BF4CF53284D1973037E26C5DE696AE2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201207045527.1607-2-thunder.leizhen@huawei.com>
+References: <20201207045527.1607-1-thunder.leizhen@huawei.com> <20201207045527.1607-2-thunder.leizhen@huawei.com>
+Subject: Re: [PATCH 1/1] dt-bindings: clock: imx8qxp-lpcg: eliminate yamllint warnings
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>
+To:     Fabio Estevam <festevam@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Thu, 17 Dec 2020 02:28:53 -0800
+Message-ID: <160820093389.1580929.3915867007740168331@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIwLTEyLTE1IGF0IDE5OjI4ICswODAwLCBLdWFuLVlpbmcgTGVlIHdyb3RlOg0K
-PiBXaGVuIGNwdSBpcyBnb2luZyBvZmZsaW5lLCBzZXQgcS0+b2ZmbGluZSBhcyB0cnVlDQo+IGFu
-ZCBpbnRlcnJ1cHQgaGFwcGVuZWQuIFRoZSBpbnRlcnJ1cHQgbWF5IGNhbGwgdGhlDQo+IHF1YXJh
-bnRpbmVfcHV0LiBCdXQgcXVhcmFudGluZV9wdXQgZG8gbm90IGZyZWUgdGhlDQo+IHRoZSBvYmpl
-Y3QuIFRoZSBvYmplY3Qgd2lsbCBjYXVzZSBtZW1vcnkgbGVhay4NCj4gDQo+IEFkZCBxbGlua19m
-cmVlKCkgdG8gZnJlZSB0aGUgb2JqZWN0Lg0KPiANCj4gU2lnbmVkLW9mZi1ieTogS3Vhbi1ZaW5n
-IExlZSA8S3Vhbi1ZaW5nLkxlZUBtZWRpYXRlay5jb20+DQo+IENjOiBBbmRyZXkgUnlhYmluaW4g
-PGFyeWFiaW5pbkB2aXJ0dW96em8uY29tPg0KPiBDYzogQWxleGFuZGVyIFBvdGFwZW5rbyA8Z2xp
-ZGVyQGdvb2dsZS5jb20+DQo+IENjOiBEbWl0cnkgVnl1a292IDxkdnl1a292QGdvb2dsZS5jb20+
-DQo+IENjOiBBbmRyZXcgTW9ydG9uIDxha3BtQGxpbnV4LWZvdW5kYXRpb24ub3JnPg0KPiBDYzog
-TWF0dGhpYXMgQnJ1Z2dlciA8bWF0dGhpYXMuYmdnQGdtYWlsLmNvbT4NCj4gQ2M6IDxzdGFibGVA
-dmdlci5rZXJuZWwub3JnPiAgICBbNS4xMC1dDQo+IC0tLQ0KPiAgbW0va2FzYW4vcXVhcmFudGlu
-ZS5jIHwgMSArDQo+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykNCj4gDQo+IGRpZmYg
-LS1naXQgYS9tbS9rYXNhbi9xdWFyYW50aW5lLmMgYi9tbS9rYXNhbi9xdWFyYW50aW5lLmMNCj4g
-aW5kZXggMGUzZjg0OTQ2MjhmLi5jYWM3YzYxN2RmNzIgMTAwNjQ0DQo+IC0tLSBhL21tL2thc2Fu
-L3F1YXJhbnRpbmUuYw0KPiArKysgYi9tbS9rYXNhbi9xdWFyYW50aW5lLmMNCj4gQEAgLTE5MSw2
-ICsxOTEsNyBAQCB2b2lkIHF1YXJhbnRpbmVfcHV0KHN0cnVjdCBrYXNhbl9mcmVlX21ldGEgKmlu
-Zm8sIHN0cnVjdCBrbWVtX2NhY2hlICpjYWNoZSkNCj4gIA0KPiAgCXEgPSB0aGlzX2NwdV9wdHIo
-JmNwdV9xdWFyYW50aW5lKTsNCj4gIAlpZiAocS0+b2ZmbGluZSkgew0KPiArCQlxbGlua19mcmVl
-KCZpbmZvLT5xdWFyYW50aW5lX2xpbmssIGNhY2hlKTsNCj4gIAkJbG9jYWxfaXJxX3Jlc3RvcmUo
-ZmxhZ3MpOw0KPiAgCQlyZXR1cm47DQo+ICAJfQ0KDQpTb3JyeS4NCg0KUGxlYXNlIGlnbm9yZSB0
-aGlzIHBhdGNoLg0KDQpUaGFua3MuDQo=
+Quoting Zhen Lei (2020-12-06 20:55:27)
+> Eliminate the following yamllint warnings:
+> ./Documentation/devicetree/bindings/clock/imx8qxp-lpcg.yaml
+> :32:13:[warning] wrong indentation: expected 14 but found 12 (indentation)
+> :35:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+>=20
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
 
+Reviewed-by: Stephen Boyd <sboyd@kernel.org>
