@@ -2,250 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 470052DDB2B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 23:06:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB2D2DDB2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 23:06:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732082AbgLQWDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 17:03:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732021AbgLQWDV (ORCPT
+        id S1732096AbgLQWEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 17:04:39 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25899 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727132AbgLQWEi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 17:03:21 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A1A9C0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 14:02:41 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id jx16so247235ejb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 14:02:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9vdnsUgYkB36Ep59teaQpHG5J09HGP1/qSDhF8tulqw=;
-        b=IyWl6xJfaeIwBHp2Vnyb602iv3sW5tz1Z1AonhBzz//6kqX6ut9KC3FJr8VW8yMCoO
-         WRkzbAJo3tcX4BE4tIWUTt9b5IMTegSH0DxRJYvoOCTmYk3N7ZxBLzBGTWkXrzz85kmB
-         uJQ1gHlb6oGRhyKkKvoevO32Bd/V8u31wI7z/0YmWJEKPv/Yu/8MTwjHgTtwebJGBHfz
-         mMzBZBYMFhrvEj93oVEq2KK1wAh2W8sOEFebz96Puan3tNp4aIGxmiPOsd45rAIxLcmF
-         AozEgbPb4M4QG2zOLYiatpVfuSqNk0lpaAu4P2+j5Wt4pNPzxaptN2sOKJyjbtCayXCs
-         OsAA==
+        Thu, 17 Dec 2020 17:04:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608242592;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=C0sgbGiFG7XgKZ99IeYyXSL6vj+ZYcARGRfsHU94m7Y=;
+        b=iWfJx2GUrHUBWNMxuc1gCqS15JYhvKtJbClq/zd4TCJeF5KU/7dYRNdksHcWxvgWFrHfuo
+        U8PSX0oUSovbv9t613i/yUzDvYRVLlLwfpSf082v4vxYUtB8dbx212gix/l5Fw2xJxiW2n
+        9VPC334D4yGUdITFOTzKJb5oi2xHJCo=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-352-34ybj2CaNRO62ZmuCVfwIg-1; Thu, 17 Dec 2020 17:03:10 -0500
+X-MC-Unique: 34ybj2CaNRO62ZmuCVfwIg-1
+Received: by mail-qk1-f197.google.com with SMTP id v66so188461qkh.16
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 14:03:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9vdnsUgYkB36Ep59teaQpHG5J09HGP1/qSDhF8tulqw=;
-        b=p6PUPjo/kvoZSDVWvTEt8vKFxqZPy4vOI4Q45JMOD9YwsM0QjttOX72WcYyiRiyGor
-         lyMTZcF1xHpfVqJhRFoMnXDLnebtWQmpwvG4SPv9xXKGR/BK3lbQ80gyVEYziFdECvCV
-         FzXu6xIvIaqpOj/9u46Fs8p1+Xbop0+ylzEEWWAmc09AUFPZKJ9P4Yjw4GTfFtDuPcTF
-         9K+xZFJf/Z1D2jpBKdeGcWgUCpp7RPjDCw6TqBDCFd6fiL6gpiqLhw/ymwnobK22lrqy
-         Lj5WQV70EQbO78DT57JT/RQZZSWWtUUFML50sjG4S0aMPF9TqB4aPK8A2CAKlLwnj75S
-         KxmQ==
-X-Gm-Message-State: AOAM533mi2zmeRLUr20BAmnfzIbLmgPBWIwaBbajwMlBCK//Fc3teuQh
-        Ubxq+GTN9RrJMUi2Sj9p8ipV+aQZi5cfrRpVRUzueA==
-X-Google-Smtp-Source: ABdhPJyrI5y+cymaIqjTdtLsBCNiORBZzKUiI7EZcr4ephYPlGDRI1t9oCp94abQkVwD0TaI9OLg1Gw6Z/Sgo+obFp8=
-X-Received: by 2002:a17:906:ce51:: with SMTP id se17mr1122204ejb.314.1608242559864;
- Thu, 17 Dec 2020 14:02:39 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=C0sgbGiFG7XgKZ99IeYyXSL6vj+ZYcARGRfsHU94m7Y=;
+        b=syd3JYNlw4/1NhBwmWOklRnARSPJ7+TeQkfCCknQUKs/bZM//Jhg4ycGp+jJkdJD7T
+         glaJxIvjIVJ3l8KqZ7fyrEDWiKUnoDjbapHseiyhfCi8nS1tc3MTn3tFWtHIGrwHWRd7
+         76daDnWP207A19UcCqKSShUR7OEJZn7rep0a9N0iS5bcJmwjzENyLGRPG5stE28WjYu5
+         /pHBHykbMfuwNLhQLIcA3jazA6TLlDLy8Jr4IIm4xUGYGLps/a4uS+3i07GfSe52F1he
+         M5rf3FE1qM3/8FFe3xzKSZlu+Xc0ArCi4hcxR1fGoqH4ws7e8l+lB8tmGxPRCYcSuwZb
+         gzDg==
+X-Gm-Message-State: AOAM530ac71M3Wp6ZDnaUfDEhOruAQ1zELvNY/OOMgn9X+IV3xKdqshY
+        B8/Wda5oxQRx9LmCBrKZx1DloOa5nP8fHWwksK/od+Ihp5WaNYxOH7XEy8c5NhNCBWlaGoM+sNd
+        8G/FlRDKqU7yFIACA67bfDrUyy7mL6YFhA4Af7TBNeDl5VjijIXqpNtYAS/LeHtoCPNMWGbo=
+X-Received: by 2002:a37:a1d6:: with SMTP id k205mr1573196qke.384.1608242589758;
+        Thu, 17 Dec 2020 14:03:09 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxmkx2if7Kw2NwuxIsapTJwjnUAUWq9916p4JEscDmDC0JfDUcetA9R7rcyXDUDXWXhtiYy9g==
+X-Received: by 2002:a37:a1d6:: with SMTP id k205mr1573171qke.384.1608242589530;
+        Thu, 17 Dec 2020 14:03:09 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id x134sm2488905qka.1.2020.12.17.14.03.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Dec 2020 14:03:08 -0800 (PST)
+Subject: Re: [PATCH] atm: ambassador: remove h from printk format specifier
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     3chas3@gmail.com, linux-atm-general@lists.sourceforge.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201215142228.1847161-1-trix@redhat.com>
+ <20201216164510.770454d8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <6ada03ed-1ecb-493b-96f8-5f9548a46a5e@redhat.com>
+ <20201217092816.7b739b8c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <ae7d363b-99ec-d75f-bae3-add3ee4789bd@redhat.com>
+Date:   Thu, 17 Dec 2020 14:03:07 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201217185243.3288048-1-pasha.tatashin@soleen.com>
- <20201217185243.3288048-9-pasha.tatashin@soleen.com> <20201217205048.GL5487@ziepe.ca>
-In-Reply-To: <20201217205048.GL5487@ziepe.ca>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Thu, 17 Dec 2020 17:02:03 -0500
-Message-ID: <CA+CK2bA4F+SipkReJzFjCSC-8kZdK4yrwCQZM+TvCTrqV2CGHg@mail.gmail.com>
-Subject: Re: [PATCH v4 08/10] mm/gup: limit number of gup migration failures,
- honor failures
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201217092816.7b739b8c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
 
-Thank you for your comments. My replies below.
-
-On Thu, Dec 17, 2020 at 3:50 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+On 12/17/20 9:28 AM, Jakub Kicinski wrote:
+> On Thu, 17 Dec 2020 05:17:24 -0800 Tom Rix wrote:
+>> On 12/16/20 4:45 PM, Jakub Kicinski wrote:
+>>> On Tue, 15 Dec 2020 06:22:28 -0800 trix@redhat.com wrote:  
+>>>> From: Tom Rix <trix@redhat.com>
+>>>>
+>>>> See Documentation/core-api/printk-formats.rst.
+>>>> h should no longer be used in the format specifier for printk.
+>>>>
+>>>> Signed-off-by: Tom Rix <trix@redhat.com>  
+>>> That's for new code I assume?
+>>>
+>>> What's the harm in leaving this ancient code be?  
+>> This change is part of a tree wide cleanup.
+> What's the purpose of the "clean up"? Why is it making the code better?
 >
-> On Thu, Dec 17, 2020 at 01:52:41PM -0500, Pavel Tatashin wrote:
-> > +/*
-> > + * Verify that there are no unpinnable (movable) pages, if so return true.
-> > + * Otherwise an unpinnable pages is found return false, and unpin all pages.
-> > + */
-> > +static bool check_and_unpin_pages(unsigned long nr_pages, struct page **pages,
-> > +                               unsigned int gup_flags)
-> > +{
-> > +     unsigned long i, step;
-> > +
-> > +     for (i = 0; i < nr_pages; i += step) {
-> > +             struct page *head = compound_head(pages[i]);
-> > +
-> > +             step = compound_nr(head) - (pages[i] - head);
+> This is a quote from your change:
 >
-> You can't assume that all of a compound head is in the pages array,
-> this assumption would only work inside the page walkers if the page
-> was found in a PMD or something.
-
-I am not sure I understand your comment. The compound head is not
-taken from the pages array, and not assumed to be in it. It is exactly
-the same logic as that we currently have:
-https://soleen.com/source/xref/linux/mm/gup.c?r=a00cda3f#1565
-
+> -  PRINTK (KERN_NOTICE, "debug bitmap is %hx", debug &= DBG_MASK);
+> +  PRINTK (KERN_NOTICE, "debug bitmap is %x", debug &= DBG_MASK);
 >
-> > +     if (gup_flags & FOLL_PIN) {
-> > +             unpin_user_pages(pages, nr_pages);
->
-> So we throw everything away? Why? That isn't how the old algorithm worked
+> Are you sure that the use of %hx is the worst part of that line?
 
-It is exactly like the old algorithm worked: if there are pages to be
-migrated (not pinnable pages) we unpinned everything.
-See here:
-https://soleen.com/source/xref/linux/mm/gup.c?r=a00cda3f#1603
+In this case, it means this bit of code is compliant with the %h checker in checkpatch.
 
-If cma_pages_list is not empty unpin everything. The list is not empty
-if we isolated some pages, we isolated some pages if there are some
-pages which are not pinnable. Now, we do exactly the same thing, but
-cleaner, and handle errors. We must unpin everything because if we
-fail, no pages should stay pinned, and also if we migrated some pages,
-the pages array must be updated, so we need to call
-__get_user_pages_locked() pin and repopulated pages array.
+why you are seeing this change for %hx and not the horrible debug &= or the old PRINTK macro is because the change was mechanical.
+
+leveraging the clang build and a special fixit for %h, an allyesconfig for x86_64 cleans this problem from most of the tree in about an hour.  atm/ was just one of the places it hit, there are about 100 more.
+
+If you want the debug &= fixed, i can do that.
+
+The macro is a treewide problem and i can add that to the treewide cleanups i am planning.
+
+Tom
 
 >
-> > @@ -1654,22 +1664,55 @@ static long __gup_longterm_locked(struct mm_struct *mm,
-> >                                 struct vm_area_struct **vmas,
-> >                                 unsigned int gup_flags)
-> >  {
-> > -     unsigned long flags = 0;
-> > +     int migrate_retry = 0;
-> > +     int isolate_retry = 0;
-> > +     unsigned int flags;
-> >       long rc;
-> >
-> > -     if (gup_flags & FOLL_LONGTERM)
-> > -             flags = memalloc_pin_save();
-> > +     if (!(gup_flags & FOLL_LONGTERM))
-> > +             return __get_user_pages_locked(mm, start, nr_pages, pages, vmas,
-> > +                                            NULL, gup_flags);
-> >
-> > -     rc = __get_user_pages_locked(mm, start, nr_pages, pages, vmas, NULL,
-> > -                                  gup_flags);
-> > +     /*
-> > +      * Without FOLL_WRITE fault handler may return zero page, which can
-> > +      * be in a movable zone, and also will fail to isolate during migration,
-> > +      * thus the longterm pin will fail.
-> > +      */
-> > +     gup_flags &= FOLL_WRITE;
+>> drivers/atm status is listed as Maintained in MAINTAINERS so changes
+>> like this should be ok.
+>>
+>> Should drivers/atm status be changed?
+> Up to Chas, but AFAIU we're probably only a few years away from ATM as 
+> a whole walking into the light. So IMHO "Obsolete" would be justified.
 >
-> Is &= what you mean here? |= right?
 
-Right, I meant |=.
-
->
-> Seems like we've ended up in a weird place if FOLL_LONGTERM always
-> includes FOLL_WRITE. Putting the zero page in ZONE_MOVABLE seems like
-> a bad idea, no?
-
-I am not sure, I just found this problem during testing, and this is
-the solution I am proposing. I am worried about limiting the zero page
-to a non movable zone, but let's see what others think about this.
-
->
-> > +     /*
-> > +      * Migration may fail, we retry before giving up. Also, because after
-> > +      * migration pages[] becomes outdated, we unpin and repin all pages
-> > +      * in the range, so pages array is repopulated with new values.
-> > +      * Also, because of this we cannot retry migration failures in a loop
-> > +      * without pinning/unpinnig pages.
-> > +      */
->
-> The old algorithm made continuous forward progress and only went back
-> to the first migration point.
-
-That is not right, the old code went back to the beginning. Making
-continuous progress is possible, but we won't see any performance
-betnefit from it, because migration failures is already exception
-scenarios where machine is under memory stress. The truth is if we
-fail to migrate it is unlikely will succeed if we retry right away, so
-giving some time between retries may be even beneficial.  Also with
-continious progress we need to take care of some corner cases where we
-need to unpin already succeeded pages in case if forward progress is
-not possible. Also, adjust pages array, start address etc.
-
->
-> > +     for (; ; ) {
->
-> while (true)?
-
-Hm, the same thing? :)
-
->
-> > +             rc = __get_user_pages_locked(mm, start, nr_pages, pages, vmas,
-> > +                                          NULL, gup_flags);
->
-> > +             /* Return if error or if all pages are pinnable */
-> > +             if (rc <= 0 || check_and_unpin_pages(rc, pages, gup_flags))
-> > +                     break;
->
-> So we sweep the pages list twice now?
-
-Yes, but O(N) is the same. No new operation is added. Before we had
-something like this:
-
-while (npages)
-     check if pinnable
-            isolate
-while (npages)
-   unpin
-migrate
-while (npages)
-  pin
-
-Now:
-while(npages)
-    check if pinnable
-while(npages)
-   unpin
-while(npages)
-    isolate
-migrate
-   pin
-
->
-> > +             /* Some pages are not pinnable, migrate them */
-> > +             rc = migrate_movable_pages(rc, pages);
-> > +
-> > +             /*
-> > +              * If there is an error, and we tried maximum number of times
-> > +              * bail out. Notice: we return an error code, and all pages are
-> > +              * unpinned
-> > +              */
-> > +             if (rc < 0 && migrate_retry++ >= PINNABLE_MIGRATE_MAX) {
-> > +                     break;
-> > +             } else if (rc > 0 && isolate_retry++ >= PINNABLE_ISOLATE_MAX) {
-> > +                     rc = -EBUSY;
->
-> I don't like this at all. It shouldn't be so flakey
->
-> Can you do migration without the LRU?
-
-I do not think it is possible, we must isolate pages before migration.
-
-Pasha
