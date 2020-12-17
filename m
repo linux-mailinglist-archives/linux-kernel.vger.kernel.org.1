@@ -2,218 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D54E02DCD9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 09:29:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FFF02DCD9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 09:29:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727346AbgLQI2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 03:28:01 -0500
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:45874 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726291AbgLQI2B (ORCPT
+        id S1727247AbgLQI1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 03:27:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726291AbgLQI1g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 03:28:01 -0500
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 0BH8QiaC006418;
-        Thu, 17 Dec 2020 17:26:44 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 0BH8QiaC006418
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1608193605;
-        bh=jcaLNZ1NT1WQYPfq0kRysSDeg/UOI3ok/TD4QabVH5o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=PZEjpZX4q/Vx98PKPIcKvzac/iauNiBwLcjmNV1Nobc4HhjzF7bzb/0mz7qE/qyaD
-         CmXdo5+x+68mgLC8h+kNEInQH0mnltzOEz8IN+3NCx6zm/hjNrpJuOKumKLT4jbSkR
-         BKHlNK/C52RCWgNLrAoanOWQBMZU0iKZYNtymrJQm92MJ+KU3qD6aPrETeWiVB0IrE
-         Zlb6XTFLHT+hKrD+BydaK8o9fPZXFD4yL8ycteP+sw1+wfEVAAGdJirR1dNryKRMyY
-         byNX3PFyUT2DDiBWNHEwpJy9epgzlnVmSnAyfeBexWZKYEnAE3u/CHYht6LKbz1Ve5
-         9Q3Hh9gR5wc0w==
-X-Nifty-SrcIP: [209.85.214.179]
-Received: by mail-pl1-f179.google.com with SMTP id x18so8629479pln.6;
-        Thu, 17 Dec 2020 00:26:44 -0800 (PST)
-X-Gm-Message-State: AOAM532q6/yvBvuF7KtpOOi85B2mF4d6htqMNIlJkp210RKGJuhW4Q/x
-        R4O+tEsMMSmqDhSpwbF0BwaC+fZn/U/jR68yt5g=
-X-Google-Smtp-Source: ABdhPJyxwEOJhCIKr9ZHuv411/T9wbF+A/Kkwu+5u25hgnhiD+Z4n6mM9vnkQuv4PXISoA+X5+2ezfYW/qYRREcuXRY=
-X-Received: by 2002:a17:90a:d18c:: with SMTP id fu12mr6790562pjb.153.1608193603736;
- Thu, 17 Dec 2020 00:26:43 -0800 (PST)
+        Thu, 17 Dec 2020 03:27:36 -0500
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73803C061794
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 00:26:56 -0800 (PST)
+Received: by mail-qt1-x82d.google.com with SMTP id 2so9713379qtt.10
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 00:26:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=r10KxsklhI6BT5Va29sBPPYNglRSuXlM/i3DYLAMZzY=;
+        b=Ti0LZzZHTd2OBNRxuO7VzTlzSTIKJIrRIQWL0GmLBJ8fSN7lUJre1poReDHopOEFXt
+         k3C4/0HOxJgSxD1J3RQ3ld+BXNfiq6InrTrM+KbCKZzZm3V6VFSKj17RIEDnc/2jLVud
+         z45OmoZgB435B5wHpW0uJz+QmFfRYcUeg6hZ445QDtWAxjUarfexws98wRAybb10Zo+4
+         1Dnb7N2j1DCsiRZSRPWd/uFHuQ5OBK4xPPDPtTr3wG1eQ0JTVB4O2388kPjomnp66kOD
+         wruOpZNaHpnmdlfH3eXvVQT3YOjsvcrOqf4V8rw0jn0luz8TNkPpr5/kq9cFrCbtMDaA
+         RObQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=r10KxsklhI6BT5Va29sBPPYNglRSuXlM/i3DYLAMZzY=;
+        b=EFKWeWWTn9eKWsp7GhaaRKbWR8G62QvXoNf8LnpNyIzCaO5thWHvGOHm28j9JmO8wU
+         Rb6Yt2IMwL8TvKRetM1kqWKcPSGGL0FnPX3Ou2++Kq37AMpATeujJXsNHyw58Glf7/AE
+         qXYfqIFigYcpmhZVueDBf7CieE3hcEpH7IjjZMDCtF2usgU/mAU2ZH6f14scexNmJUBk
+         KmM9Ll8MmBxdu0D97kCtxrUpamjoF+Ckw6YTq1Xrf3p+soWSEzNWHFB9CTFm/gU0yNqk
+         G4rOgiBbrum91lOPNH4E40nHCDxg0TCGKvUFyj+2Vym7BFb6w5M5MkmKu7Fqmbu6J18K
+         RZ+Q==
+X-Gm-Message-State: AOAM530M1AEL2Bhds6FOQYr7G16tUD61xnIixl0JAup1BUBzcvqXUyeX
+        LYLw2w+EvBnYbs5+zhV/TWHKDVvdWHiWV4wClh4oUA==
+X-Google-Smtp-Source: ABdhPJw9QMH1oAX6S/6XlhMO0vVAw3X+UXwzwgQWQy9lVVd4lt5RmLBdmRoB865lrnDxEkrO8xLFbwuo75I7vuwFcPo=
+X-Received: by 2002:ac8:5ac3:: with SMTP id d3mr46889586qtd.66.1608193615455;
+ Thu, 17 Dec 2020 00:26:55 -0800 (PST)
 MIME-Version: 1.0
-References: <20201103054425.59251-1-chao.wang@ucloud.cn> <CAK7LNARnmJRy1NPBDkgNsoe_TqpD=HJhmri4YHjXjscGZ-neWw@mail.gmail.com>
- <20201123150452.GA68187@MacBook-Pro-2> <CAK7LNASH7Pj9eUdxF-sp1_Ap+uA9jEtsXa--pUDDw_pNVLtviA@mail.gmail.com>
- <20201208092035.GA96434@MacBook-Pro-2.local> <20201208143117.GA3333762@wtfbox.lan>
- <CAK7LNAS=wdCObfX3x8CQmXf8HsrKAjz+v+XVUCxVg63pxy8MXg@mail.gmail.com> <f2d1888b-5b8e-a513-61c7-f41fc3f3f7a3@redhat.com>
-In-Reply-To: <f2d1888b-5b8e-a513-61c7-f41fc3f3f7a3@redhat.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 17 Dec 2020 17:26:07 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATmfzt0kTF0BWkSRaZV3p01mvN4OSGPZsCp+KHghCWf0Q@mail.gmail.com>
-Message-ID: <CAK7LNATmfzt0kTF0BWkSRaZV3p01mvN4OSGPZsCp+KHghCWf0Q@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: add extra-y to targets-for-modules
-To:     Joe Lawrence <joe.lawrence@redhat.com>
-Cc:     Artem Savkov <artem.savkov@gmail.com>,
-        WANG Chao <chao.wang@ucloud.cn>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+References: <0000000000009867cb05b699f5b6@google.com> <20201216205536.GX2443@casper.infradead.org>
+In-Reply-To: <20201216205536.GX2443@casper.infradead.org>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 17 Dec 2020 09:26:44 +0100
+Message-ID: <CACT4Y+b7tNcnTQpUpO58rHcMCqe6UpQab_TxxYF_nxBZ1xDw9Q@mail.gmail.com>
+Subject: Re: WARNING: suspicious RCU usage in count
+To:     Matthew Wilcox <willy@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     syzbot <syzbot+51ce7a5794c3b12a70d1@syzkaller.appspotmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 8:04 AM Joe Lawrence <joe.lawrence@redhat.com> wrote:
+On Wed, Dec 16, 2020 at 9:55 PM Matthew Wilcox <willy@infradead.org> wrote:
 >
-> On 12/16/20 1:14 AM, Masahiro Yamada wrote:
-> > On Tue, Dec 8, 2020 at 11:31 PM Artem Savkov <artem.savkov@gmail.com> wrote:
-> >>
-> >> On Tue, Dec 08, 2020 at 05:20:35PM +0800, WANG Chao wrote:
-> >>> Sorry for the late reply.
-> >>>
-> >>> On 11/25/20 at 10:42P, Masahiro Yamada wrote:
-> >>>> On Tue, Nov 24, 2020 at 12:05 AM WANG Chao <chao.wang@ucloud.cn> wrote:
-> >>>>>
-> >>>>> On 11/23/20 at 02:23P, Masahiro Yamada wrote:
-> >>>>>> On Tue, Nov 3, 2020 at 3:23 PM WANG Chao <chao.wang@ucloud.cn> wrote:
-> >>>>>>>
-> >>>>>>> extra-y target doesn't build for 'make M=...' since commit 6212804f2d78
-> >>>>>>> ("kbuild: do not create built-in objects for external module builds").
-> >>>>>>>
-> >>>>>>> This especially breaks kpatch, which is using 'extra-y := kpatch.lds'
-> >>>>>>> and 'make M=...' to build livepatch patch module.
-> >>>>>>>
-> >>>>>>> Add extra-y to targets-for-modules so that such kind of build works
-> >>>>>>> properly.
-> >>>>>>>
-> >>>>>>> Signed-off-by: WANG Chao <chao.wang@ucloud.cn>
-> >>>>>>> ---
-> >>>>>>>   scripts/Makefile.build | 2 +-
-> >>>>>>>   1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>>>>>
-> >>>>>>> diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-> >>>>>>> index ae647379b579..0113a042d643 100644
-> >>>>>>> --- a/scripts/Makefile.build
-> >>>>>>> +++ b/scripts/Makefile.build
-> >>>>>>> @@ -86,7 +86,7 @@ ifdef need-builtin
-> >>>>>>>   targets-for-builtin += $(obj)/built-in.a
-> >>>>>>>   endif
-> >>>>>>>
-> >>>>>>> -targets-for-modules := $(patsubst %.o, %.mod, $(filter %.o, $(obj-m)))
-> >>>>>>> +targets-for-modules := $(extra-y) $(patsubst %.o, %.mod, $(filter %.o, $(obj-m)))
-> >>>>>>>
-> >>>>>>>   ifdef need-modorder
-> >>>>>>>   targets-for-modules += $(obj)/modules.order
-> >>>>>>> --
-> >>>>>>> 2.29.1
-> >>>>>>>
-> >>>>>>
-> >>>>>> NACK.
-> >>>>>>
-> >>>>>> Please fix your Makefile.
-> >>>>>>
-> >>>>>> Hint:
-> >>>>>> https://patchwork.kernel.org/project/linux-kbuild/patch/20201123045403.63402-6-masahiroy@kernel.org/
-> >>>>>>
-> >>>>>>
-> >>>>>> Probably what you should use is 'targets'.
-> >>>>>
-> >>>>> I tried with 'targets' and 'always-y'. Both doesn't work for me.
-> >>>>>
-> >>>>> I narraw it down to the following example:
-> >>>>>
-> >>>>> cat > Makefile << _EOF_
-> >>>>> obj-m += foo.o
-> >>>>>
-> >>>>> ldflags-y += -T $(src)/kpatch.lds
-> >>>>> always-y += kpatch.lds
-> >>>>>
-> >>>>> foo-objs += bar.o
-> >>>>>
-> >>>>> all:
-> >>>>>          make -C /lib/modules/$(shell uname -r)/build M=$(PWD)
-> >>>>> clean:
-> >>>>>          make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
-> >>>>> _EOF_
-> >>>>>
-> >>>>> Take a look into scripts/Makefile.build:488:
-> >>>>>
-> >>>>> __build: $(if $(KBUILD_BUILTIN), $(targets-for-builtin)) \
-> >>>>>           $(if $(KBUILD_MODULES), $(targets-for-modules)) \
-> >>>>>           $(subdir-ym) $(always-y)
-> >>>>>          @:
-> >>>>>
-> >>>>> 'always-y' is built after 'targets-for-modules'. This makes
-> >>>>> 'targets-for-modules' fails because kpatch.lds isn't there.
-> >>>>
-> >>>>
-> >>>> Heh, you rely on the targets built from left to right,
-> >>>> and you have never thought Make supports the parallel option -j.
-> >>>
-> >>> You're right. I missed that.
-> >>>
-> >>>>
-> >>>>
-> >>>> You need to specify the dependency if you expect objects
-> >>>> are built in the particular order.
-> >>>>
-> >>>> However, in this case, using ldflags-y looks wrong
-> >>>> in the first place.
-> >>>>
-> >>>> The linker script is used when combining the object
-> >>>> as well as the final link of *.ko
-> >>
-> >> We want linker script to be used on both those steps, otherwise modpost
-> >> fails.
+> On Wed, Dec 16, 2020 at 11:34:10AM -0800, syzbot wrote:
+> > Unfortunately, I don't have any reproducer for this issue yet.
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+51ce7a5794c3b12a70d1@syzkaller.appspotmail.com
+> >
+> > =============================
+> > WARNING: suspicious RCU usage
+> > 5.10.0-rc7-syzkaller #0 Not tainted
+> > -----------------------------
+> > kernel/sched/core.c:7270 Illegal context switch in RCU-bh read-side critical section!
+> >
+> > other info that might help us debug this:
 > >
 > >
-> > In that case, does the following work?
-> > (untested)
+> > rcu_scheduler_active = 2, debug_locks = 0
+> > no locks held by udevd/9038.
 > >
-> >
-> >
-> > diff --git a/kmod/patch/Makefile b/kmod/patch/Makefile
-> > index e017b17..02d4c66 100644
-> > --- a/kmod/patch/Makefile
-> > +++ b/kmod/patch/Makefile
-> > @@ -12,7 +12,9 @@ endif
-> >
-> >   obj-m += $(KPATCH_NAME).o
-> >   ldflags-y += -T $(src)/kpatch.lds
-> > -extra-y := kpatch.lds
-> > +targets += kpatch.lds
-> > +
-> > +$(obj)/$(KPATCH_NAME).o: $(obj)/kpatch.lds
-> >
-> >   $(KPATCH_NAME)-objs += patch-hook.o output.o
-> >
+> > stack backtrace:
+> > CPU: 3 PID: 9038 Comm: udevd Not tainted 5.10.0-rc7-syzkaller #0
+> > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> > Call Trace:
+> >  __dump_stack lib/dump_stack.c:77 [inline]
+> >  dump_stack+0x107/0x163 lib/dump_stack.c:118
+> >  ___might_sleep+0x220/0x2b0 kernel/sched/core.c:7270
+> >  count.constprop.0+0x164/0x270 fs/exec.c:449
+> >  do_execveat_common+0x2fd/0x7c0 fs/exec.c:1893
+> >  do_execve fs/exec.c:1983 [inline]
+> >  __do_sys_execve fs/exec.c:2059 [inline]
+> >  __se_sys_execve fs/exec.c:2054 [inline]
+> >  __x64_sys_execve+0x8f/0xc0 fs/exec.c:2054
+> >  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
 >
-> Hi Masahiro,
->
-> Yeah this is more or less what Artem came up with:
-> https://github.com/dynup/kpatch/pull/1149
->
-> though we hadn't added kpatch.lds to targets.  Is there documentation
-> somewhere on what effect "targets" has for out-of-tree builds?
->
-> Thanks,
->
-> -- Joe
->
+> This must be the victim of something else.  There's no way this call
+> trace took the RCU read lock.
 
++lockdep maintainers for lockdep false positive then and +Paul for rcu
 
-Please try the rebuild without changing any source code.
-
-If kpatch.lds is needlessly rebuilt, you need to add
-it to 'targets'.
-
-
-In linux-next, this is documented.
-
-Documentation/kbuild/makefile.rst:
-
-        Any target that utilizes if_changed must be listed in $(targets),
-        otherwise the command line check will fail, and the target will
-        always be built.
-
-
-
-
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+There is another recent claim of a false "suspicious RCU usage":
+https://lore.kernel.org/lkml/CAKMK7uEiS5SrBYv-2w2wWL=9G4ByoHvtiWVsPqekswZzOGmzjg@mail.gmail.com/
