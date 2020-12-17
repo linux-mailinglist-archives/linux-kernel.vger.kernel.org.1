@@ -2,83 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD3482DCA2B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 01:51:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B07482DCA31
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 01:53:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726894AbgLQAuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 19:50:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725974AbgLQAue (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 19:50:34 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71559C061794;
-        Wed, 16 Dec 2020 16:49:54 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kphU7-001mxp-VM; Thu, 17 Dec 2020 00:49:36 +0000
-Date:   Thu, 17 Dec 2020 00:49:35 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, jlayton@kernel.org,
-        amir73il@gmail.com, sargun@sargun.me, miklos@szeredi.hu,
-        willy@infradead.org, jack@suse.cz, neilb@suse.com,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 1/3] vfs: add new f_op->syncfs vector
-Message-ID: <20201217004935.GN3579531@ZenIV.linux.org.uk>
-References: <20201216233149.39025-1-vgoyal@redhat.com>
- <20201216233149.39025-2-vgoyal@redhat.com>
+        id S1726928AbgLQAwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 19:52:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47600 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726199AbgLQAwW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 19:52:22 -0500
+Date:   Wed, 16 Dec 2020 16:51:40 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608166301;
+        bh=uCTZv7DXr0LdTQFOKkxi/CJL6ZUHauiKogCjuGGFHpo=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=H1HN4UPsMFXuNW6YNAbm4H3FjXINRbhbsKZf95j96+Xv3nCpIS+0XYsT4ylhP3jHW
+         3E7n8vovaB+U2vkAIcrq2MKPTO80OdIUPpZ3F2/HUtXq50fkx7De/Vwa5Z+0p7nN6f
+         xOwkhL5dHqSVW6N2jhLIDBUY4LxMwQ75DM81cVQ/8JDErdTbaMq63/NOi8xHuHayNQ
+         DuVOqbe8fIF6JcGYCOpQSMNtNm3+0SRBCFW9vcMrgPShSR2JRf37AUHTS0KLNHzPYS
+         Rjc/djeYWi3LfXNPUt3+Mh27gj6FSQUcKcdsRpVJiq8aUnKFKNdfjRzoAjd3Zg+9Op
+         5BGnWpk4QzLrg==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next] net: rds: Change PF_INET to AF_INET
+Message-ID: <20201216165140.320c68f6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201216070620.16063-1-zhengyongjun3@huawei.com>
+References: <20201216070620.16063-1-zhengyongjun3@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201216233149.39025-2-vgoyal@redhat.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Christoph added to Cc...]
-On Wed, Dec 16, 2020 at 06:31:47PM -0500, Vivek Goyal wrote:
-> Current implementation of __sync_filesystem() ignores the return code
-> from ->sync_fs(). I am not sure why that's the case. There must have
-> been some historical reason for this.
+On Wed, 16 Dec 2020 15:06:20 +0800 Zheng Yongjun wrote:
+> By bsd codestyle, change PF_INET to AF_INET.
 > 
-> Ignoring ->sync_fs() return code is problematic for overlayfs where
-> it can return error if sync_filesystem() on upper super block failed.
-> That error will simply be lost and sycnfs(overlay_fd), will get
-> success (despite the fact it failed).
-> 
-> If we modify existing implementation, there is a concern that it will
-> lead to user space visible behavior changes and break things. So
-> instead implement a new file_operations->syncfs() call which will
-> be called in syncfs() syscall path. Return code from this new
-> call will be captured. And all the writeback error detection
-> logic can go in there as well. Only filesystems which implement
-> this call get affected by this change. Others continue to fallback
-> to existing mechanism.
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 
-That smells like a massive source of confusion down the road.  I'd just
-looked through the existing instances; many always return 0, but quite
-a few sometimes try to return an error:
-fs/btrfs/super.c:2412:  .sync_fs        = btrfs_sync_fs,
-fs/exfat/super.c:204:   .sync_fs        = exfat_sync_fs,
-fs/ext4/super.c:1674:   .sync_fs        = ext4_sync_fs,
-fs/f2fs/super.c:2480:   .sync_fs        = f2fs_sync_fs,
-fs/gfs2/super.c:1600:   .sync_fs                = gfs2_sync_fs,
-fs/hfsplus/super.c:368: .sync_fs        = hfsplus_sync_fs,
-fs/nilfs2/super.c:689:  .sync_fs        = nilfs_sync_fs,
-fs/ocfs2/super.c:139:   .sync_fs        = ocfs2_sync_fs,
-fs/overlayfs/super.c:399:       .sync_fs        = ovl_sync_fs,
-fs/ubifs/super.c:2052:  .sync_fs       = ubifs_sync_fs,
-is the list of such.  There are 4 method callers:
-dquot_quota_sync(), dquot_disable(), __sync_filesystem() and
-sync_fs_one_sb().  For sync_fs_one_sb() we want to ignore the
-return value; for __sync_filesystem() we almost certainly
-do *not* - it ends with return __sync_blockdev(sb->s_bdev, wait),
-after all.  The question for that one is whether we want
-__sync_blockdev() called even in case of ->sync_fs() reporting
-a failure, and I suspect that it's safer to call it anyway and
-return the first error value we'd got.  No idea about quota
-situation.
+# Form letter - net-next is closed
 
+We have already sent the networking pull request for 5.11 and therefore
+net-next is closed for new drivers, features, code refactoring and
+optimizations. We are currently accepting bug fixes only.
+
+Please repost when net-next reopens after 5.11-rc1 is cut.
+
+Look out for the announcement on the mailing list or check:
+http://vger.kernel.org/~davem/net-next.html
+
+RFC patches sent for review only are obviously welcome at any time.
