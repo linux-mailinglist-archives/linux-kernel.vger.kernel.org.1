@@ -2,123 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 550FE2DDAD3
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 22:29:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6692DDADC
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 22:31:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728573AbgLQV2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 16:28:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727160AbgLQV2s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 16:28:48 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8926DC0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 13:28:07 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id x20so5824lfe.12
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 13:28:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=SSIVpe7jm3PpvfvuYlK4lk4ab/L4ijmkXEeEUB0a0Fg=;
-        b=UoCWImIdpfhQRjsXwp+xbm74AwS0IOdcLdhH3MC6+tEzq9GrZT3lKQE4T9c1bN8Mk3
-         2w+uQFsfwV2jOrgDGDh7uteiAvFsZ+AZ+tWjt5KD3SRTFnaipLFe0MjA5JWi8GaKidxj
-         sFgo2ttqOS9avGMnlFJyeanDeZLtvLoby2XHZqIhLQxkkCaxQYTpfW3WytQ8p+2+02sQ
-         vZ28EdmgDC8lfu6170fIyI6yvSZiVMYNN23HPu1xVnMYkYVa37Pzslikax8l+xfnT3O2
-         SGWMiM6YIUTTsPywygrfWtAb5e33c/fVz/Z4wnu14SGu5F5HbdaNbSeCK5x0bq6ihfEr
-         SXtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=SSIVpe7jm3PpvfvuYlK4lk4ab/L4ijmkXEeEUB0a0Fg=;
-        b=HGNTQlIT/Nny44NFjxUKlDXmda8o5z4RZTFO7Zq+I8/I3Gb5EzxmSDBJC/w4IC+JTy
-         92Agg0eTvT5Jllv1n5Db51dyxVNNOBcFKJ9LLkCsauqx5IjBYmjTf5dHf40zuvjsu6HK
-         G2l1JyM/FSChdrF6snVd+J1GF9wTu8KI6GGAhs5Qr6jEoLM4QezpoZa8WlAWcUhv6cav
-         SCfGt6htD5EXEgIR16S+ZcNEl/0/C5Gg3FQDcvuNbb+Zj3OphQfz5/SRjL6FADmWuqjB
-         FqODDQuCXR0TbzDb3Yl1u2IjzWzH2YCjgy7CThdGlkbnllZDa34RjBzjXkvnzuBNsUco
-         DAbQ==
-X-Gm-Message-State: AOAM531E6Is9tJLLQXcUSsuQTo7Fsy/OijcKn7UHSlnDJbeiXR+BGHVl
-        p7Py0T3gS5bsc7mz4dHEhok=
-X-Google-Smtp-Source: ABdhPJyTRHP5YK+nJ4MdLwOvBt3GnK9fuUe0ed7bMnTuDLPaPAh4GVOz5l6TpyKFFKbQaEyEj0CneA==
-X-Received: by 2002:a2e:9410:: with SMTP id i16mr507980ljh.183.1608240486031;
-        Thu, 17 Dec 2020 13:28:06 -0800 (PST)
-Received: from grain.localdomain ([5.18.199.94])
-        by smtp.gmail.com with ESMTPSA id v23sm794825ljd.78.2020.12.17.13.28.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 13:28:04 -0800 (PST)
-Received: by grain.localdomain (Postfix, from userid 1000)
-        id E9BDB1A020F; Fri, 18 Dec 2020 00:28:03 +0300 (MSK)
-Date:   Fri, 18 Dec 2020 00:28:03 +0300
-From:   Cyrill Gorcunov <gorcunov@gmail.com>
-To:     Keno Fischer <keno@juliacomputing.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>, mkoutny@suse.com,
-        ktkhai@virtuozzo.com, Andrey Vagin <avagin@gmail.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>, CriuML <criu@openvz.org>
-Subject: Re: brk checks in PR_SET_MM code
-Message-ID: <20201217212803.GE14556@grain>
-References: <CABV8kRwoHAAdez8k60O+AJ9E3g5_PM0F6tpbpB9dC115_FD3Eg@mail.gmail.com>
- <20201217074202.GD14556@grain>
+        id S1729113AbgLQVbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 16:31:22 -0500
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:41855 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728336AbgLQVbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 16:31:22 -0500
+Received: from [192.168.0.8] (ip5f5aeed4.dynamic.kabel-deutschland.de [95.90.238.212])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: buczek)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 5679C2000C03F;
+        Thu, 17 Dec 2020 22:30:38 +0100 (CET)
+Subject: Re: v5.10.1 xfs deadlock
+To:     Brian Foster <bfoster@redhat.com>
+Cc:     linux-xfs@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        it+linux-xfs@molgen.mpg.de
+References: <b8da4aed-ee44-5d9f-88dc-3d32f0298564@molgen.mpg.de>
+ <20201217194317.GD2507317@bfoster>
+From:   Donald Buczek <buczek@molgen.mpg.de>
+Message-ID: <39b92850-f2ff-e4b6-0b2e-477ab3ec3c87@molgen.mpg.de>
+Date:   Thu, 17 Dec 2020 22:30:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201217074202.GD14556@grain>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+In-Reply-To: <20201217194317.GD2507317@bfoster>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 10:42:02AM +0300, Cyrill Gorcunov wrote:
-> On Wed, Dec 16, 2020 at 08:29:30PM -0500, Keno Fischer wrote:
-> > Hi all,
-> > 
-> > The code in prctl(PR_SET_MM, ...) performs a number of sanity checks,
-> > among them
-> > 
-> > ```
-> > /*
-> >  * @brk should be after @end_data in traditional maps.
-> >  */
-> > if (prctl_map->start_brk <= prctl_map->end_data ||
-> >     prctl_map->brk <= prctl_map->end_data)
-> > goto out;
-> > ```
-> > 
+On 17.12.20 20:43, Brian Foster wrote:
+> On Thu, Dec 17, 2020 at 06:44:51PM +0100, Donald Buczek wrote:
+>> Dear xfs developer,
+>>
+>> I was doing some testing on a Linux 5.10.1 system with two 100 TB xfs filesystems on md raid6 raids.
+>>
+>> The stress test was essentially `cp -a`ing a Linux source repository with two threads in parallel on each filesystem.
+>>
+>> After about on hour, the processes to one filesystem (md1) blocked, 30 minutes later the process to the other filesystem (md0) did.
+>>
+>>      root      7322  2167  0 Dec16 pts/1    00:00:06 cp -a /jbod/M8068/scratch/linux /jbod/M8068/scratch/1/linux.018.TMP
+>>      root      7329  2169  0 Dec16 pts/1    00:00:05 cp -a /jbod/M8068/scratch/linux /jbod/M8068/scratch/2/linux.019.TMP
+>>      root     13856  2170  0 Dec16 pts/1    00:00:08 cp -a /jbod/M8067/scratch/linux /jbod/M8067/scratch/2/linux.028.TMP
+>>      root     13899  2168  0 Dec16 pts/1    00:00:05 cp -a /jbod/M8067/scratch/linux /jbod/M8067/scratch/1/linux.027.TMP
+>>
+>> Some info from the system (all stack traces, slabinfo) is available here: https://owww.molgen.mpg.de/~buczek/2020-12-16.info.txt
+>>
+>> It stands out, that there are many (549 for md0, but only 10 for md1)  "xfs-conv" threads all with stacks like this
+>>
+>>      [<0>] xfs_log_commit_cil+0x6cc/0x7c0
+>>      [<0>] __xfs_trans_commit+0xab/0x320
+>>      [<0>] xfs_iomap_write_unwritten+0xcb/0x2e0
+>>      [<0>] xfs_end_ioend+0xc6/0x110
+>>      [<0>] xfs_end_io+0xad/0xe0
+>>      [<0>] process_one_work+0x1dd/0x3e0
+>>      [<0>] worker_thread+0x2d/0x3b0
+>>      [<0>] kthread+0x118/0x130
+>>      [<0>] ret_from_fork+0x22/0x30
+>>
+>> xfs_log_commit_cil+0x6cc is
+>>
+>>    xfs_log_commit_cil()
+>>      xlog_cil_push_background(log)
+>>        xlog_wait(&cil->xc_push_wait, &cil->xc_push_lock);
+>>
+>> Some other threads, including the four "cp" commands are also blocking at xfs_log_commit_cil+0x6cc
+>>
+>> There are also single "flush" process for each md device with this stack signature:
+>>
+>>      [<0>] xfs_map_blocks+0xbf/0x400
+>>      [<0>] iomap_do_writepage+0x15e/0x880
+>>      [<0>] write_cache_pages+0x175/0x3f0
+>>      [<0>] iomap_writepages+0x1c/0x40
+>>      [<0>] xfs_vm_writepages+0x59/0x80
+>>      [<0>] do_writepages+0x4b/0xe0
+>>      [<0>] __writeback_single_inode+0x42/0x300
+>>      [<0>] writeback_sb_inodes+0x198/0x3f0
+>>      [<0>] __writeback_inodes_wb+0x5e/0xc0
+>>      [<0>] wb_writeback+0x246/0x2d0
+>>      [<0>] wb_workfn+0x26e/0x490
+>>      [<0>] process_one_work+0x1dd/0x3e0
+>>      [<0>] worker_thread+0x2d/0x3b0
+>>      [<0>] kthread+0x118/0x130
+>>      [<0>] ret_from_fork+0x22/0x30
+>>
+>> xfs_map_blocks+0xbf is the
+>>
+>>      xfs_ilock(ip, XFS_ILOCK_SHARED);
+>>
+>> in xfs_map_blocks().
+>>
+>> The system is low on free memory
+>>
+>>      MemTotal:       197587764 kB
+>>      MemFree:          2196496 kB
+>>      MemAvailable:   189895408 kB
+>>
+>> but responsive.
+>>
+>> I have an out of tree driver for the HBA ( smartpqi 2.1.6-005 pulled from linux-scsi) , but it is unlikely that this blocking is related to that, because the md block devices itself are responsive (`xxd /dev/md0` )
+>>
+>> I can keep the system in the state for a while. Is there an idea what was going from or an idea what data I could collect from the running system to help? I have full debug info and could walk lists or retrieve data structures with gdb.
+>>
 > 
-> Thanks for pointing, Keno! I don't remember the details right now,
-> gimme some time and once I refresh my memory I'll reply with
-> details.
+> It might be useful to dump the values under /sys/fs/xfs/<dev>/log/* for
+> each fs to get an idea of the state of the logs as well...
 
-Indeed, when loaded via ld directly we've got a different layout:
 
-# /lib64/ld-linux-x86-64.so.2 ~/t
+root@deadbird:~# for f in /sys/fs/xfs/*/log/*; do echo $f : $(cat $f);done
+/sys/fs/xfs/md0/log/log_head_lsn : 5:714808
+/sys/fs/xfs/md0/log/log_tail_lsn : 5:581592
+/sys/fs/xfs/md0/log/reserve_grant_head : 5:365981696
+/sys/fs/xfs/md0/log/write_grant_head : 5:365981696
+/sys/fs/xfs/md1/log/log_head_lsn : 3:2963880
+/sys/fs/xfs/md1/log/log_tail_lsn : 3:2772656
+/sys/fs/xfs/md1/log/reserve_grant_head : 3:1517506560
+/sys/fs/xfs/md1/log/write_grant_head : 3:1517506560
+/sys/fs/xfs/sda1/log/log_head_lsn : 233:106253
+/sys/fs/xfs/sda1/log/log_tail_lsn : 233:106251
+/sys/fs/xfs/sda1/log/reserve_grant_head : 233:54403812
+/sys/fs/xfs/sda1/log/write_grant_head : 233:54403812
+/sys/fs/xfs/sda2/log/log_head_lsn : 84:5653
+/sys/fs/xfs/sda2/log/log_tail_lsn : 84:5651
+/sys/fs/xfs/sda2/log/reserve_grant_head : 84:2894336
+/sys/fs/xfs/sda2/log/write_grant_head : 84:2894336
 
-start_code	7fc25b0a4000
-end_code	7fc25b0c4524
-start_stack	7fffcc6b2400
-start_data	7fc25b0ce4c0
-end_data	7fc25b0cff98
-start_brk	55555710c000
-sbrk(0)		55555710c000
 
-Note though that as far as I understand the layout is provided by
-ld loader. I contrast the regular load
 
-# ~/t
+> 
+> Brian
+> 
+>> Best
+>>    Donald
+>>
+> 
 
-start_code	401000
-end_code	401a15
-start_stack	7ffce4577dd0
-start_data	403e10
-end_data	40408c
-start_brk	b5b000
-sbrk(0)		b5b000
-
-I fear we've not been using ld's loaded programs in c/r procedure much
-that's why it has not been noted earlier. Need to think how to fix it.
-Using the whole memory map for verification procedure is a correct way
-thus the commit you mention is doing exactly what it should but we need
-to figure out how to deal with fdpic loaded files... I'll back once I
-figure it out (hopefully more-less soon). Thanks a huge for report!
+-- 
+Donald Buczek
+buczek@molgen.mpg.de
+Tel: +49 30 8413 1433
