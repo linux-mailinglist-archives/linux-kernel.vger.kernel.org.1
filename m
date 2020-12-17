@@ -2,105 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44F8C2DCF6A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 11:21:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 743762DCF6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 11:22:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727833AbgLQKUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 05:20:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49628 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726548AbgLQKUe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 05:20:34 -0500
-Date:   Thu, 17 Dec 2020 11:19:49 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608200393;
-        bh=jY4ps8uCooV8u+Tl4ow1NrBJT3axma8765wOmVWvCms=;
-        h=From:To:cc:Subject:In-Reply-To:References:From;
-        b=bDzAOWdWkiylXciUAaXTaWJ++rWAkAoqv4JbnLXdT1Q2S3NQAPZSx2AR1UAdDQuKP
-         plVmdqMipkq79AQxGlHyQrZ82ER/9coeZTqg9p5pWz4c53qaYYYkbLprnbiwZGyKna
-         Urf5313gKOa2uE6rM1MmzTo3m4tkfq4ko3mpjm9mdxZ9grcSKL6gDbMoajBvs9zlmo
-         1X6RE+vuche5ZWwgj2rGZJ9wZh77iZ7qZrW3MGzKBZN9XFr2x7XuOoa8wqZjNkPQsO
-         Ip5vEm8C878kjvG6+Xkg5sehQ9vzuGdKMB4TcOmsbxpSlCVmTXgBzG0tdlvkCNB7T4
-         Furjq/TRPR0gA==
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Will McVicker <willmcvicker@google.com>
-cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        security@kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Will Coster <willcoster@google.com>, stable@vger.kernel.org
-Subject: Re: [PATCH v1] HID: make arrays usage and value to be the same
-In-Reply-To: <X9e5vl+nw4GQNYEw@google.com>
-Message-ID: <nycvar.YFH.7.76.2012171119240.25826@cbobk.fhfr.pm>
-References: <20201205004848.2541215-1-willmcvicker@google.com> <X9e5vl+nw4GQNYEw@google.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1727207AbgLQKWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 05:22:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725468AbgLQKWK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 05:22:10 -0500
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D57BC061794;
+        Thu, 17 Dec 2020 02:21:30 -0800 (PST)
+Received: by mail-ot1-x32c.google.com with SMTP id f16so26719399otl.11;
+        Thu, 17 Dec 2020 02:21:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9fmCagwmO0CnAeob5/vidWI9EjHv0fIAy+mJaEfTvxA=;
+        b=AYA4Cu98I2vSXxCLrK3T/kDlns03u2SXZ6kBj4/eP51H2zVF05BW4aTxcsMgYTns70
+         AQSJb3AnvTAkqI+V4uJaXqsRhZGjMrCpr64o/M1pK/KPDgkzZEQk7HVNpvjUUOiqMc5S
+         i70iEURiq1hVzBId3mDmA3yPXANE55OexzqY4b8l+QZv0CqIYUADs2KVmbWqAWRKOq0U
+         aii+yM4LRB2LRRLJw3jO/1saG2CprHXRYuOqhPLjA4rercZ3tPHi5E9G/rgvTQ3YYJWZ
+         Q2Xhchvc2Lp5cganSXq8esdibnLiPNOmx5B0IuHtDeRK96CRRjrTaxiWzxzVfSJwCHCh
+         vfkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9fmCagwmO0CnAeob5/vidWI9EjHv0fIAy+mJaEfTvxA=;
+        b=VjtfKBD5I4SwGuAhrRkolxClMKEuocer9damHlOK9pHQmoHXJeny9j1p1aoKZSt/Wr
+         zPrvVpBWMFXoWbZsFu4k3Cr+LPuEbUkh78231afJqN7JX9zPoRuDKHwxb6hM0/PiYA88
+         2WAvw91diRTHcBfKwPgJ/+85q+27HAl6dup8Re6pO+nbS32Q5mBkuuCj7Zuk/cMtuLiR
+         IExE7ht473+04SZliHRy5S7f/bF0B8UPIgPztBmZl/pLY0QqWvLQZh1SeINLm7sXePvW
+         4CB5JRgtNIAoe4nBKizNtYpIV7Amvk4dVFcL3JjLviBSPvY7/8bLSxLvZsETAQoJy91k
+         1Qfg==
+X-Gm-Message-State: AOAM533l6lMW30+EwaS6q49Dree+1b2WFGRjO6XwvDoWrKvZpCt+u9yr
+        qVWtx9I9M3elFbtxVO2DzzQEUIBuydoZjfhmuBE=
+X-Google-Smtp-Source: ABdhPJw9v2AlpigQ+z2cm/dNLrJsBXjYvT8vPM4qgw8CtUPyrwIRun/XFksLuzELcwRn+vnWPjEUgcm4c8saBqFc1yQ=
+X-Received: by 2002:a05:6830:2144:: with SMTP id r4mr3235078otd.72.1608200489934;
+ Thu, 17 Dec 2020 02:21:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20201122095556.21597-1-sergio.paracuellos@gmail.com>
+ <20201122095556.21597-4-sergio.paracuellos@gmail.com> <160819619591.1580929.9915856168932644762@swboyd.mtv.corp.google.com>
+ <CAMhs-H_6x7rTLPd8sABvzBqNJE2WeRJUGxG5VoqW4EvGy1hhPA@mail.gmail.com> <160819993289.1580929.17666667936736079931@swboyd.mtv.corp.google.com>
+In-Reply-To: <160819993289.1580929.17666667936736079931@swboyd.mtv.corp.google.com>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Thu, 17 Dec 2020 11:21:19 +0100
+Message-ID: <CAMhs-H8Pun8XwchyFbReQxHY7be4Vgque1iu1yVC+C3XkcwmGg@mail.gmail.com>
+Subject: Re: [PATCH v4 3/6] clk: ralink: add clock driver for mt7621 SoC
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        John Crispin <john@phrozen.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        Weijie Gao <hackpascal@gmail.com>,
+        COMMON CLK FRAMEWORK <linux-clk@vger.kernel.org>,
+        evicetree@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:MIPS <linux-mips@vger.kernel.org>, open list:STAGING
+        SUBSYSTEM <devel@driverdev.osuosl.org>, NeilBrown" <neil@brown.name>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Dec 2020, Will McVicker wrote:
+On Thu, Dec 17, 2020 at 11:12 AM Stephen Boyd <sboyd@kernel.org> wrote:
+>
+> Quoting Sergio Paracuellos (2020-12-17 01:54:18)
+> >
+> > On Thu, Dec 17, 2020 at 10:09 AM Stephen Boyd <sboyd@kernel.org> wrote:
+> > >
+> > > Quoting Sergio Paracuellos (2020-11-22 01:55:53)
+> > > > diff --git a/drivers/clk/ralink/Makefile b/drivers/clk/ralink/Makefile
+> > > > new file mode 100644
+> > > > index 000000000000..cf6f9216379d
+> > > > --- /dev/null
+> > > > +++ b/drivers/clk/ralink/Makefile
+> > > > @@ -0,0 +1,2 @@
+> > > > +# SPDX-License-Identifier: GPL-2.0
+> > > > +obj-$(CONFIG_CLK_MT7621) += clk-mt7621.o
+> > > > diff --git a/drivers/clk/ralink/clk-mt7621.c b/drivers/clk/ralink/clk-mt7621.c
+> > > > new file mode 100644
+> > > > index 000000000000..4e929f13fe7c
+> > > > --- /dev/null
+> > > > +++ b/drivers/clk/ralink/clk-mt7621.c
+> > > > @@ -0,0 +1,435 @@
+> > > > +// SPDX-License-Identifier: GPL-2.0
+> > > > +/*
+> > > > + * Mediatek MT7621 Clock Driver
+> > > > + * Author: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > > > + */
+> > > > +
+> > > > +#include <linux/bitops.h>
+> > > > +#include <linux/clk-provider.h>
+> > > > +#include <linux/mfd/syscon.h>
+> > > > +#include <linux/module.h>
+> > > > +#include <linux/slab.h>
+> > > > +#include <linux/regmap.h>
+> > > > +#include <asm/mach-ralink/ralink_regs.h>
+> > >
+> > > Is it possible to drop this include? Doing so would make this portable
+> > > and compilable on more architectures so us cross compilers can check
+> > > build stuff and make changes easily.
+> >
+> > No, this is not possible. This old arch makes some global functions
+> > there to properly access different registers in the palmbus. It is not
+> > also well documented so it is really difficult to make something
+> > better with this.
+> > This is needed to use 'rt_memc_r32'
+> > (arch/mips/include/asm/mach-ralink/ralink_regs.h) for reading
+> > MEMC_REG_CPU_PLL.
+> >
+> > This is a not documented register and is not in the syscon related
+> > part and we need it to derive the clock frequency for the XTAL clock.
+>
+> Ok.
+>
+> > > > +static int mt7621_gate_ops_init(struct device_node *np,
+> > > > +                                struct mt7621_gate *sclk)
+> > > > +{
+> > > > +       struct clk_init_data init = {
+> > > > +               .flags = CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED,
+> > >
+> > > Why ignore unused? Are they CLK_IS_CRITICAL? Can they be enabled at
+> > > driver probe instead of here? Or left out of the kernel entirely if they
+> > > shouldn't be turned off?
+> >
+> > Because all the platform drivers are not changed to use this gates yet
+> > and all gates are enabled by default (related registers are set to all
+> > ones),  kernel disables all the stuff because they are not being
+> > referenced, but yes, you are right, I think I can call
+> > clk_prepare_enable for all of them at init time and avoid this
+> > 'CLK_IGNORE_UNUSED' flag to don't break anything of the current other
+> > upstream code.
+>
+> Does something crash if they're turned off? We have CLK_IS_CRITICAL for
+> that. The CLK_IGNORE_UNUSED flag is sort of deprecated now.
 
-> > The HID subsystem allows an "HID report field" to have a different
-> > number of "values" and "usages" when it is allocated. When a field
-> > struct is created, the size of the usage array is guaranteed to be at
-> > least as large as the values array, but it may be larger. This leads to
-> > a potential out-of-bounds write in
-> > __hidinput_change_resolution_multipliers() and an out-of-bounds read in
-> > hidinput_count_leds().
-> > 
-> > To fix this, let's make sure that both the usage and value arrays are
-> > the same size.
-> > 
-> > Signed-off-by: Will McVicker <willmcvicker@google.com>
-> > ---
-> >  drivers/hid/hid-core.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
-> > index 56172fe6995c..8a8b2b982f83 100644
-> > --- a/drivers/hid/hid-core.c
-> > +++ b/drivers/hid/hid-core.c
-> > @@ -90,7 +90,7 @@ EXPORT_SYMBOL_GPL(hid_register_report);
-> >   * Register a new field for this report.
-> >   */
-> >  
-> > -static struct hid_field *hid_register_field(struct hid_report *report, unsigned usages, unsigned values)
-> > +static struct hid_field *hid_register_field(struct hid_report *report, unsigned usages)
-> >  {
-> >  	struct hid_field *field;
-> >  
-> > @@ -101,7 +101,7 @@ static struct hid_field *hid_register_field(struct hid_report *report, unsigned
-> >  
-> >  	field = kzalloc((sizeof(struct hid_field) +
-> >  			 usages * sizeof(struct hid_usage) +
-> > -			 values * sizeof(unsigned)), GFP_KERNEL);
-> > +			 usages * sizeof(unsigned)), GFP_KERNEL);
-> >  	if (!field)
-> >  		return NULL;
-> >  
-> > @@ -300,7 +300,7 @@ static int hid_add_field(struct hid_parser *parser, unsigned report_type, unsign
-> >  	usages = max_t(unsigned, parser->local.usage_index,
-> >  				 parser->global.report_count);
-> >  
-> > -	field = hid_register_field(report, usages, parser->global.report_count);
-> > +	field = hid_register_field(report, usages);
-> >  	if (!field)
-> >  		return 0;
-> >  
-> > -- 
-> > 2.29.2.576.ga3fc446d84-goog
-> > 
-> 
-> Hi Jiri and Benjamin,
-> 
-> This is a friendly reminder in case this got lost in your inbox.
+Well, as drivers are not getting into account gates and not referenced
+real hw bits are disabled by kernel because nobody requested them so
+for example my uart gets down and cannot really see anything :). I
+think call to 'clk_prepare_enable' should be enough since by default
+all of them are setting up in registers, so call that will also
+reference them...
 
-Hi Will,
+>
+> > > > +
+> > > > +#define CLK_BASE(_name, _parent, _recalc) {                            \
+> > > > +       .init = &(struct clk_init_data) {                               \
+> > > > +               .name = _name,                                          \
+> > > > +               .ops = &(const struct clk_ops) {                        \
+> > > > +                       .recalc_rate = _recalc,                         \
+> > > > +               },                                                      \
+> > > > +               .parent_names = (const char *const[]) { _parent },      \
+> > >
+> > > Please use clk_parent_data instead
+> >
+> > parent can also be NULL here and num_parents zero, but I will search
+> > what do you really mean with this 'clk_parent_data' :).
+>
+> Heh, 'git grep clk_parent_data -- drivers/clk/' should give some clues.
 
-I am planning to merge it once the merge window is over.
+Thanks, will do!
 
--- 
-Jiri Kosina
-SUSE Labs
+>
+> > > > +free_clk_prov:
+> > > > +       kfree(clk_prov);
+> > > > +}
+> > > > +
+> > > > +CLK_OF_DECLARE(mt7621_clk, "mediatek,mt7621-clk", mt7621_clk_init);
+> > >
+> > > Any reason to use this vs. a platform driver?
+> >
+> > We need clocks available in 'plat_time_init' before setting up the
+> > timer for the GIC, so to maintain all the clock driver in a simple
+> > file and using only one device tree node and no separate the gates
+> > into another platform driver, I think this is the only way to go, but
+> > please correct me if I am wrong.
+>
+> We can register the few clks like that early with
+> CLK_OF_DECLARE_DRIVER() and then have a platform driver register the
+> rest of the clks that aren't required early. This lets us hook into the
+> driver framework better while still getting those few clks to turn on
+> early enough for the timers.
 
+I see. I will explore the way to do this as you are suggesting here, thanks!
+
+Best regards,
+    Sergio Paracuellos
