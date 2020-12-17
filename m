@@ -2,107 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A0752DD3EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:16:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3896B2DD3F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:17:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729074AbgLQPP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 10:15:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43418 "EHLO
+        id S1728063AbgLQPQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 10:16:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727660AbgLQPP1 (ORCPT
+        with ESMTP id S1726012AbgLQPQt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 10:15:27 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C9D2C0617A7;
-        Thu, 17 Dec 2020 07:14:47 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id p14so17504810qke.6;
-        Thu, 17 Dec 2020 07:14:47 -0800 (PST)
+        Thu, 17 Dec 2020 10:16:49 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F26FC0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 07:16:09 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id q4so9581313plr.7
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 07:16:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=YutvZo+Sqq4bs2edgHCuJ/pn2rMAD01S5REOBc6/o+I=;
-        b=WpzeRVE8GeNTmyAeUx+h8k/UAYGJcXK7iXQWcFf/4Z9Hb3OjtynqgZ4vRI1uzidkgi
-         LS6jdGRi7YAZ69Bmeuaf+Yhpkw16M/zM5h/vaVw0slBlqRPIuTMyeFzGUmU6dYFDN+Dg
-         Xsj+cFRmyHHDNFn7Ti9LP9cU3Czd8i1hL00qXjh8dSZPPRh8/AnUbAK3iHFW+HvwfxlI
-         k1sVJOjSjitJqAApbZLIiFBVo2EXaz3OR32bv7n9Wo45faU25HMe7fCpB6m7M7iTKOhA
-         T3H122EXNAYP3Yelnga0X1AXT1YLFJqefGbLS+fS7j7+6fkV3j/dHI8JCD5PcPhlChds
-         Y2vg==
+        bh=N0X1DCRxzloLcq/I12JrF6wjku1BEW6h4ePAndekIaw=;
+        b=s1yiqE9QLy0+JQiZIk1aZzccQ+uRiZHhNx0Fttnf8TQNySsbgwfOXZcDayNIbHABQ2
+         JcQV4o+eApR1pEh8bZgVUABWjLVErV2zCfb9wsjVttbxSRWgw18xcvqEg8PYX/i2EIT0
+         2k6ROrX8kcB6QHpfuHKYVi6pW6fribJgrLqADDZImEVnohh+Nk2Cim+33/eFG2Zh6LhR
+         FrR9kjSajTzGJiapkuZ6/km8EPRv6lCuB4LdzU1QPa54GobhOXKwIwkh5v3HZMb1Ozcf
+         1bp4XBJkGrczRdGslpVrTqRn5BYARI1Iyj6fv4Yc4FSVVZA7HMVugYpWcEFX8f8DzeUc
+         pJGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=YutvZo+Sqq4bs2edgHCuJ/pn2rMAD01S5REOBc6/o+I=;
-        b=tze0CfA1SMrN2OzWzCxLsiMUjCsNHUNT7swiIBUH0liwyx/DcVWSI+yDa9S6ylL3El
-         V0iK9Eu+MZQZhOlhhV8yuNF6G0rWHjsBjUnog9cqCcVHpoEVjyQRNJBO/JDldLzEIAou
-         lQHcwfQQQbw9dNvQ+fOcPXcQY6L+kdz1yGKhYFJyOQtZeJOcEQTeo1HADhM+kIsoGSUo
-         1FaTikJt1wJKJINC7DzjN4Zt7LwI0GtUQKFqKScrshBQfT/3zRVp5XAiWvf/EUiTKpub
-         6W5iA0Kogj/Fbxao2d+dPGUccZ4+PjzC1jF3bxOPcP9fZPyqvvc4ZBkPr8yovrgAq68P
-         YA/g==
-X-Gm-Message-State: AOAM5338W9wzKvhebXpVISVWujPvzxShcUafhqjJwLt7Xr+Y9vSNH08Y
-        w+QDW7MGK6ZM+Yoa0BHG5Hk=
-X-Google-Smtp-Source: ABdhPJyTwoD81Esa8u7MV1gN/LMdQ0z/+OpwOYTq3xqoiS+W2B+m79lTwTs9sCFzkZ7eOGnWGZZy5A==
-X-Received: by 2002:a05:620a:406:: with SMTP id 6mr30366893qkp.494.1608218086697;
-        Thu, 17 Dec 2020 07:14:46 -0800 (PST)
-Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
-        by smtp.gmail.com with ESMTPSA id j203sm3538634qke.134.2020.12.17.07.14.45
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=N0X1DCRxzloLcq/I12JrF6wjku1BEW6h4ePAndekIaw=;
+        b=cYFrIJG40+zvOKPyMyPe+Wvh+gRbtOfypNrwH93iVxr91ixGAc0vHYFG/bccQ7q6/n
+         23L3vaZjjLn5t5vj9vltFRW9YYzNmkJ9UlddJB4lX2sfBZJNLn8XRpqLZbjvAnNChoFp
+         iYTEIrHWPK+dX5i797KNapW8eD4767bwuONydwDG9Qn6+Xp9cuHvxNUCEyyQpKe6yNpX
+         BF3gGf8fnwayexuEQd+EUULFOopORJvGlGnOhJJl1YpmAA1AfHC/rA5+3NgKAZN6YgAv
+         Rjl0qOuSmnrE/yPlsyFgD3d9xzOXHrBvV/hPvlYIQeOQxiFoDIYIrEolu3InwCowhWe8
+         2Z5w==
+X-Gm-Message-State: AOAM532VbkhNssOIvTg8CkGrv8Au+VSl2FKA54nSUljT0/qwS9UBZJIc
+        4gM4g7we8OViQ+FJwEyu1AruPA==
+X-Google-Smtp-Source: ABdhPJzQYg4oUBNvdjWLc8LfDykAYEzEOhexJBoTKWfgUrSF2bq7qGnn3gDCM/TCEpYCQTCi0SIYaA==
+X-Received: by 2002:a17:902:7292:b029:dc:ac9:25b5 with SMTP id d18-20020a1709027292b02900dc0ac925b5mr11849098pll.2.1608218168617;
+        Thu, 17 Dec 2020 07:16:08 -0800 (PST)
+Received: from google.com (139.60.82.34.bc.googleusercontent.com. [34.82.60.139])
+        by smtp.gmail.com with ESMTPSA id 19sm6248598pfu.85.2020.12.17.07.16.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 07:14:45 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 17 Dec 2020 10:14:13 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Ian Kent <raven@themaw.net>
-Cc:     Fox Chen <foxhlchen@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        akpm@linux-foundation.org, dhowells@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        miklos@szeredi.hu, ricklind@linux.vnet.ibm.com,
-        sfr@canb.auug.org.au, viro@zeniv.linux.org.uk
-Subject: Re: [PATCH v2 0/6] kernfs: proposed locking and concurrency
- improvement
-Message-ID: <X9t1xVTZ/ApIvPMg@mtj.duckdns.org>
-References: <bde0b6c32f2b055c1ad1401b45c4adf61aab6876.camel@themaw.net>
- <CAC2o3DJdHuQxY7Rn5uXUprS7i8ri1qB=wOUM2rdZkWt4yJHv1w@mail.gmail.com>
- <3e97846b52a46759c414bff855e49b07f0d908fc.camel@themaw.net>
- <CAC2o3DLGtx15cgra3Y92UBdQRBKGckqOkDmwBV-aV-EpUqO5SQ@mail.gmail.com>
- <efb7469c7bad2f6458c9a537b8e3623e7c303c21.camel@themaw.net>
- <da4f730bbbb20c0920599ca5afc316e2c092b7d8.camel@themaw.net>
- <CAC2o3DJsvB6kj=S6D3q+_OBjgez9Q9B5s3-_gjUjaKmb2MkTHQ@mail.gmail.com>
- <c4002127c72c07a00e8ba0fae6b0ebf5ba8e08e7.camel@themaw.net>
- <a39b73a53778094279522f1665be01ce15fb21f4.camel@themaw.net>
- <c8a6c9adc3651e64cf694f580a8cb3d87d7cb893.camel@themaw.net>
+        Thu, 17 Dec 2020 07:16:08 -0800 (PST)
+Date:   Thu, 17 Dec 2020 15:16:04 +0000
+From:   Satya Tangirala <satyat@google.com>
+To:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH v2 0/3] add support for metadata encryption to F2FS
+Message-ID: <X9t2NKf/h7XjzOQA@google.com>
+References: <20201217150435.1505269-1-satyat@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c8a6c9adc3651e64cf694f580a8cb3d87d7cb893.camel@themaw.net>
+In-Reply-To: <20201217150435.1505269-1-satyat@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Dec 17, 2020 at 03:04:32PM +0000, Satya Tangirala wrote:
+> Changes to the userspace
+> tools (that are required to test out metadata encryption with F2FS) are
+> also being sent out - I'll post a link as a reply to this mail once it's
+> out.
 
-On Thu, Dec 17, 2020 at 07:48:49PM +0800, Ian Kent wrote:
-> > What could be done is to make the kernfs node attr_mutex
-> > a pointer and dynamically allocate it but even that is too
-> > costly a size addition to the kernfs node structure as
-> > Tejun has said.
-> 
-> I guess the question to ask is, is there really a need to
-> call kernfs_refresh_inode() from functions that are usually
-> reading/checking functions.
-> 
-> Would it be sufficient to refresh the inode in the write/set
-> operations in (if there's any) places where things like
-> setattr_copy() is not already called?
-> 
-> Perhaps GKH or Tejun could comment on this?
-
-My memory is a bit hazy but invalidations on reads is how sysfs namespace is
-implemented, so I don't think there's an easy around that. The only thing I
-can think of is embedding the lock into attrs and doing xchg dance when
-attaching it.
-
-Thanks.
-
--- 
-tejun
+The userspace changes are at
+https://lore.kernel.org/linux-f2fs-devel/20201217151013.1513045-1-satyat@google.com/
