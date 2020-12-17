@@ -2,106 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90A512DDA2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 21:35:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 154A32DDA2E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 21:37:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731617AbgLQUeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 15:34:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731595AbgLQUef (ORCPT
+        id S1730351AbgLQUgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 15:36:48 -0500
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:41185 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728174AbgLQUgr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 15:34:35 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 484DFC06138C;
-        Thu, 17 Dec 2020 12:33:55 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id r4so163543wmh.5;
-        Thu, 17 Dec 2020 12:33:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=gQGWPM/sf8+J1RLMjv3ZaWA/7DvHetdsTdc1DOQtFJQ=;
-        b=qQikXu51Qi9p3EQTAoWNtLzcEEHx9Kz0wZB/60aM5LTsJCBfmY6s87JDfUxpYcF5Cm
-         U1sIg7LPP64Rn1Ox2oOwk8xsX4H47lWqfM9K95gsaz96Onhi/hWiRDXiCNqP3AoWBNZm
-         XeZnXJMbAy/tkoIpb7DcKMJnIjSkz54Rvm19/BdeTj5HW6fflJf05Yt5CcN+811CS2x6
-         1N1KQo9awFYDJvAqDDIjJmbAaqZ3VaYg3cnzGfTQDFGKblBXTl0qAU0TQpbJAI+4Wf54
-         wtx94CGODvCKpaY9PJWPZeYaz/42GwxhSIaGI/HoLkinsD4rvyJx6tIiMvIXJaAekrpr
-         k+kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=gQGWPM/sf8+J1RLMjv3ZaWA/7DvHetdsTdc1DOQtFJQ=;
-        b=GQnSiu5jwwEXsx794a4EYLK1R9wq9qdL7JimL3GxKi+jt8mqLmsKf/G+UuMieBUXRx
-         IZJu16rqxqXObpt3jsQMNTbpSDTQVwH+1PSetctNTbYGZvdepn9aSnh+BFFuGuJbOAoJ
-         jS5R/30k8x9Q8iY3g2F/GzznJjxBlo9iKLQPGCcZF48i3njhhHNVIN3ab95hvMu28MBd
-         OL9P5CptlJWQrPGU8MTF9WdSKcAACtVCcx0vtyCezKz1uHuL8JSVQgQR7HuF3PTr4EhS
-         Bd0cXA5tvCWTydTEnD9nnq4NkcYpDWuZxqGQdkA2r/hR+bvYbJbku91KyiZ0Mg0PeHkq
-         1d8Q==
-X-Gm-Message-State: AOAM531Qet9EQSFA+ReI+4/9yXqM15/YMbrpljnxNEqTGp8N1FDflRGh
-        23CQH6SDlXZjD6FwRr3TOfWIEqvOrtYbvd79
-X-Google-Smtp-Source: ABdhPJzHhkG60AUjmunNTz3OqiaOhMWdwUPpzrmUPPmz9Ttw2uRDJTCtpDLdFCTPRlwZsVlESFHdVw==
-X-Received: by 2002:a1c:770d:: with SMTP id t13mr1036395wmi.153.1608237233745;
-        Thu, 17 Dec 2020 12:33:53 -0800 (PST)
-Received: from localhost.localdomain (host-95-239-64-30.retail.telecomitalia.it. [95.239.64.30])
-        by smtp.gmail.com with ESMTPSA id a62sm11729128wmh.40.2020.12.17.12.33.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 12:33:53 -0800 (PST)
-From:   "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
-Cc:     "K . Y . Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Saruhan Karademir <skarade@microsoft.com>,
-        Juan Vazquez <juvazq@microsoft.com>,
-        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org
-Subject: [PATCH 3/3] scsi: storvsc: Validate length of incoming packet in storvsc_on_channel_callback()
-Date:   Thu, 17 Dec 2020 21:33:21 +0100
-Message-Id: <20201217203321.4539-4-parri.andrea@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201217203321.4539-1-parri.andrea@gmail.com>
-References: <20201217203321.4539-1-parri.andrea@gmail.com>
+        Thu, 17 Dec 2020 15:36:47 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 8926061D;
+        Thu, 17 Dec 2020 15:36:01 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Thu, 17 Dec 2020 15:36:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:in-reply-to:references:message-id
+        :mime-version:content-type:content-transfer-encoding; s=fm2; bh=
+        t45ozTPrybNr/M6UAAkmifuRs0gYvsMvaHr/n/mLT2I=; b=Z7teO4R3T3WPJTpG
+        8xk2fDEqmAw+IwuFi/TBmMSi+AMevjqsYeXg1JmF6geHZJ2pGot5vOa+juqsQwSa
+        CXK2ftWdIf9G6Xk28/f3nCWGOrx0RlONUnpnBcDZ0eMQyGKMk5ADL/4wrn9chuZ6
+        wpL8QuqF6osNYVvU3rU3WXJAjVmufksPcxPzkLU9dDl1tAiHp+ImpyKfYGkyiopp
+        ja93y2kNmodPQWtPRiPQ2JlBdoJ0F8+2zwjfEecL7PwRq9ZwHRkdaLCswoClMebv
+        0IsBj4KHNThWGgUGEAfl/9jTujz8Os+8OGWsbjnU26xjEsKRmZIkmy0L+1YnVQYx
+        DRiwiQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=t45ozTPrybNr/M6UAAkmifuRs0gYvsMvaHr/n/mLT
+        2I=; b=iVLkFi5Q/Bn+3ECOoCstXXeQ/TPXFMFInTj8dizz1k7CUuL9P/SR7BiaH
+        Iu0U5YaQmuAHTjiaiFUXgM9qSxZQxh3ndORX5NangGecikL6U0XV/CkMWm6wKRiv
+        7Gm57mgAz0DwjJ6hbOeQHYm2Vqfsp5rAp2Zvew7oT3PeG5rSTT+oBZEQNSmjFwXd
+        zPit0fb0Jejxvz5W6s3Mpb+q8ICXs9M0RmdjUyXXEcrqlbssTr0URPUSqKkAagGO
+        wf+gcfq6M2eRlH+8sGGXFlzXvUxcu1/bWmN8uQ0xflZ9P5lO8OV5vpINzzkqbhMW
+        wyw3xPL7KQKVrwu79GpJGZ61h6cGQ==
+X-ME-Sender: <xms:MMHbXwoKB5NFgQL6oJ0uC8GYwCQmrkYBRLe9Os5zmomaZIfGN54J0Q>
+    <xme:MMHbX2peMiIX0IltVOpNTSWbASfe1y8mzPRC1tFaPNOm76Nh1AxF5WUVwUXN8vjhA
+    lb5Rxz6dh90oA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudelgedgudefhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvufgfjghfkfggtgfgsehtqhhmtddtreejnecuhfhrohhmpefirhgv
+    ghcumfdqjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepie
+    dvudegfeehtedvgfffgfdvfeduhfehleegjedvveekvdegteegleffieeghfdtnecukfhp
+    peekgedrvdeguddrudelhedrleeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
+    hmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
+X-ME-Proxy: <xmx:MMHbX1PHXb3DTEHb-BfBEVQOLI6mrAhYT5cbEuUQlBGP7KrLPHX0uQ>
+    <xmx:MMHbX37caeER4Z6ylswyjkrq5zfRzUkhY5D5D-WBe-IL0yNGUx-3Qw>
+    <xmx:MMHbX_7Zl9oPmvlZlXkcRmwj66IUEM3-lhx7d2tXOTUj4ly__OiNpg>
+    <xmx:McHbX_HoeH4EeNUkiGoZ1EHJ3VZT4VGkaIbKZVxQgI5JjZ7U7d6Emg>
+Received: from [127.0.0.1] (unknown [84.241.195.96])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 6EB6024005E;
+        Thu, 17 Dec 2020 15:36:00 -0500 (EST)
+Date:   Thu, 17 Dec 2020 21:35:57 +0100
+From:   Greg K-H <greg@kroah.com>
+To:     Young Hsieh <youngh@uber.com>, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+CC:     x86@kernel.org
+Subject: Re: Question for AMD patches
+User-Agent: K-9 Mail for Android
+In-Reply-To: <83E7490A-EFB0-42C2-BD9D-B5E6E5BF440D@uber.com>
+References: <1B44E762-F9F2-4E2B-BFEF-6F032BE8841E@uber.com> <83E7490A-EFB0-42C2-BD9D-B5E6E5BF440D@uber.com>
+Message-ID: <B23EF613-CE1A-482E-8AAE-7AB6FBA8B1D8@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Check that the packet is of the expected size at least, don't copy data
-past the packet.
+What exact commits are you referring to?
 
-Reported-by: Saruhan Karademir <skarade@microsoft.com>
-Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
-Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: linux-scsi@vger.kernel.org
----
- drivers/scsi/storvsc_drv.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+And you do know about the rules for stable kernel patches, right?
 
-diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
-index 8714355cb63e7..4b8bde2750fac 100644
---- a/drivers/scsi/storvsc_drv.c
-+++ b/drivers/scsi/storvsc_drv.c
-@@ -1250,6 +1250,12 @@ static void storvsc_on_channel_callback(void *context)
- 		request = (struct storvsc_cmd_request *)
- 			((unsigned long)desc->trans_id);
- 
-+		if (hv_pkt_datalen(desc) < sizeof(struct vstor_packet) -
-+				stor_device->vmscsi_size_delta) {
-+			dev_err(&device->device, "Invalid packet len\n");
-+			continue;
-+		}
-+
- 		if (request == &stor_device->init_request ||
- 		    request == &stor_device->reset_request) {
- 			memcpy(&request->vstor_packet, packet,
--- 
-2.25.1
+greg k-h
 
+On December 17, 2020 9:05:45 PM GMT+01:00, Young Hsieh <youngh@uber=2Ecom>=
+ wrote:
+>Hello,=20
+>
+>This is Young Hsieh from Uber and currently I am in Uber infra team and i=
+n charge of server system design=2E Nice to e-meet you!  :)
+>
+>We are working on AMD Milan platform with Debian, and notice there are so=
+me patches for performance and security improvements, which are not impleme=
+nted in LTS kernels (4=2E14/4=2E19/5=2E4) yet=2E On our side, we prefer to =
+use the general LTS kernel release instead of a customized kernel, in case =
+we will not align on major fixes down the road=2E So would like to know if =
+there is any plan to backport these patches and if so, what is the timeline=
+?  Thanks a lot again for any advice=2E =20
+>
+>Cheers,
+>****************************************
+>Young Hsieh
+>Uber Hardware Engineer
+>****************************************
