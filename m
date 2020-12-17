@@ -2,190 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89A262DD76D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:14:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 911D72DD6DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:08:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731402AbgLQSJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 13:09:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731168AbgLQSJ1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 13:09:27 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53BD2C061A4D;
-        Thu, 17 Dec 2020 10:08:17 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id l11so59864645lfg.0;
-        Thu, 17 Dec 2020 10:08:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=dKHTaUqpc9+qnQDklHnbuyOfX2r5BRRRR5K6s2ucz2U=;
-        b=Z/3072D8/T/ty624y/Y3fzZ4jDHFKHMiM8Puk81C8hVAIESVtNYFGrhY1j91vcZIjE
-         X9pYxViGd/drXaOMeiO03C94pqe0NUAIdPEzUPg7/baXADcPcw0MywpuMA/Af8v2L3JF
-         YYJPps/fM0KR2BDKsk6Jh/nu6atzjZi+/Qjyh1NdEhRzIxzuzNvI0ZekJYPghXXJV2Kx
-         V10TKhm0SSOl8Cihy6JHBf3ogDQRcQ0CbbCJogpbFv704LJOPOZyq5ADGrMW4TfZ9+M8
-         ZS2aqdaM/ACpx1+4CmVJGtjLu2NfZZYPG13hiBP/iVkg3oJvV1O/9KFPXJDqaEV+LQIb
-         JiAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=dKHTaUqpc9+qnQDklHnbuyOfX2r5BRRRR5K6s2ucz2U=;
-        b=UJRB4QLjc/eSV67gm2DMcLV0oBReR809rnjGNZzD1CvM6JlaFnrWYVFMDSyf0Ko04q
-         dT9AknZNi23QqlzO29FpKHzHuyb1bu1OP1ClKVi2tJ3ZlsC1evizEXRT/8iTPJbklYNt
-         GsDcMGqy23/Ge1LTlbR6wAmzm5pgncbP/Cct+ScaveD2se1q+HB7jH27sa2AHSiXDwj7
-         ii8SHtM3EJdsPxTaAPM2WhifXB+wBaIizSHCpQmoYam68j4Za/kPes0hSkC9z3QTLZQ7
-         GtljYMNZrJLb6uncA2M/Ku6+YO6EyDoLfgonU7UlX2HnNpuC4zb9xv4akH+a1qzk50hI
-         64UQ==
-X-Gm-Message-State: AOAM530s5AzlHyaXhXBOSh3LbQdnJ+GHLiODbzS7YXlLUDl01wHRX2Oe
-        ZCcl2xkV9mtb2zpxkQhcRss=
-X-Google-Smtp-Source: ABdhPJyA0nTTMUEGxiyKEV0G3HcIN8F0c417daftUmLQYrZ/StuJHmuOFKZCKF5VoAB7IsqXITN4Aw==
-X-Received: by 2002:a2e:8512:: with SMTP id j18mr213822lji.31.1608228495787;
-        Thu, 17 Dec 2020 10:08:15 -0800 (PST)
-Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.gmail.com with ESMTPSA id u5sm655596lff.78.2020.12.17.10.08.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 10:08:15 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Subject: [PATCH v2 48/48] ARM: tegra: cardhu: Support CPU voltage scaling and thermal throttling
-Date:   Thu, 17 Dec 2020 21:06:38 +0300
-Message-Id: <20201217180638.22748-49-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201217180638.22748-1-digetx@gmail.com>
-References: <20201217180638.22748-1-digetx@gmail.com>
+        id S1729949AbgLQSIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 13:08:07 -0500
+Received: from mail.pqgruber.com ([52.59.78.55]:56262 "EHLO mail.pqgruber.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729539AbgLQSIH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 13:08:07 -0500
+Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
+        by mail.pqgruber.com (Postfix) with ESMTPSA id A92FCC727E0;
+        Thu, 17 Dec 2020 19:07:23 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
+        s=mail; t=1608228444;
+        bh=6rJlKq2DWIbfniJ3C4O+G5aooIQVr7ghDtYBp96MzWk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CaVE0WhobI121PWcpT83je40U3SxtTmb6OdBx5k3ZDdfgJzW4C1FYX/ES/KvDRLSV
+         LD4kguTW4cGsrQ/HX6RvtfGzbEJhNPed8yt1MKLT9YIslIC5acAB/2fUglqcLYDLUX
+         cRKpIBaOqq972dpoKk72GzUXBBMsKQxJWZqH2690=
+Date:   Thu, 17 Dec 2020 19:07:22 +0100
+From:   Clemens Gruber <clemens.gruber@pqgruber.com>
+To:     Sven Van Asbroeck <thesven73@gmail.com>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        David Jander <david@protonic.nl>
+Subject: Re: [PATCH v5 7/7] pwm: pca9685: Restrict period change for
+ prescaler users
+Message-ID: <X9ueWvQs7PhvoQT7@workstation.tuxnet>
+References: <20201215212228.185517-1-clemens.gruber@pqgruber.com>
+ <20201215212228.185517-7-clemens.gruber@pqgruber.com>
+ <CAGngYiWHrq0f=bQSRpkHtU6Uo4UJ8XoNTxdT6o8njE3cH3H2Mw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGngYiWHrq0f=bQSRpkHtU6Uo4UJ8XoNTxdT6o8njE3cH3H2Mw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable CPU voltage scaling and thermal throttling on Tegra30 Cardhu board.
+Hi Sven,
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- arch/arm/boot/dts/tegra30-cardhu.dtsi | 61 ++++++++++++++++++++++++++-
- 1 file changed, 60 insertions(+), 1 deletion(-)
+On Wed, Dec 16, 2020 at 11:03:39PM -0500, Sven Van Asbroeck wrote:
+> Hi Clemens, see below.
+> 
+> On Wed, Dec 16, 2020 at 7:53 AM Clemens Gruber
+> <clemens.gruber@pqgruber.com> wrote:
+> >
+> > Previously, the last used PWM channel could change the global prescale
+> > setting, even if other channels were already in use.
+> >
+> > Fix it by only allowing the first user of the prescaler to change the
+> > global chip-wide prescale setting. If there is more than one channel in
+> > use, the prescale settings resulting from the chosen periods must match.
+> >
+> > PWMs that are disabled or have a duty cycle of 0% or 100% are not
+> > considered to be using the prescaler as they have the full OFF or full
+> > ON bits set. This also applies to channels used as GPIOs.
+> >
+> > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
+> > ---
+> >  drivers/pwm/pwm-pca9685.c | 51 +++++++++++++++++++++++++++++++++------
+> >  1 file changed, 44 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/drivers/pwm/pwm-pca9685.c b/drivers/pwm/pwm-pca9685.c
+> > index ff916980de49..438492d4aed4 100644
+> > --- a/drivers/pwm/pwm-pca9685.c
+> > +++ b/drivers/pwm/pwm-pca9685.c
+> > @@ -23,11 +23,11 @@
+> >  #include <linux/bitmap.h>
+> >
+> >  /*
+> > - * Because the PCA9685 has only one prescaler per chip, changing the period of
+> > - * one channel affects the period of all 16 PWM outputs!
+> > - * However, the ratio between each configured duty cycle and the chip-wide
+> > - * period remains constant, because the OFF time is set in proportion to the
+> > - * counter range.
+> > + * Because the PCA9685 has only one prescaler per chip, only the first channel
+> > + * that uses the prescaler is allowed to change the prescale register.
+> > + * PWM channels requested afterwards must use a period that results in the same
+> > + * prescale setting as the one set by the first requested channel, unless they
+> > + * use duty cycles of 0% or 100% (prescaler not used for full OFF/ON).
+> >   */
+> >
+> >  #define PCA9685_MODE1          0x00
+> > @@ -80,6 +80,8 @@ struct pca9685 {
+> >         struct pwm_chip chip;
+> >         struct regmap *regmap;
+> >         bool staggered_outputs;
+> > +       struct mutex prescaler_users_lock;
+> 
+> Keep things simple by re-using the "struct mutex lock" below?
+> This code isn't performance-intensive, so having a single lock for
+> pwm/gpio requests + pwm_apply() is probably ok.
 
-diff --git a/arch/arm/boot/dts/tegra30-cardhu.dtsi b/arch/arm/boot/dts/tegra30-cardhu.dtsi
-index d74c9ca78a7f..08c0ea4e6228 100644
---- a/arch/arm/boot/dts/tegra30-cardhu.dtsi
-+++ b/arch/arm/boot/dts/tegra30-cardhu.dtsi
-@@ -1,6 +1,9 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <dt-bindings/input/input.h>
-+#include <dt-bindings/thermal/thermal.h>
- #include "tegra30.dtsi"
-+#include "tegra30-cpu-opp.dtsi"
-+#include "tegra30-cpu-opp-microvolt.dtsi"
- 
- /**
-  * This file contains common DT entry for all fab version of Cardhu.
-@@ -339,12 +342,13 @@ ldo8_reg: ldo8 {
- 			};
- 		};
- 
--		temperature-sensor@4c {
-+		nct1008: temperature-sensor@4c {
- 			compatible = "onnn,nct1008";
- 			reg = <0x4c>;
- 			vcc-supply = <&sys_3v3_reg>;
- 			interrupt-parent = <&gpio>;
- 			interrupts = <TEGRA_GPIO(CC, 2) IRQ_TYPE_LEVEL_LOW>;
-+			#thermal-sensor-cells = <1>;
- 		};
- 
- 		vdd_core: tps62361@60 {
-@@ -438,6 +442,29 @@ clk32k_in: clock@0 {
- 		#clock-cells = <0>;
- 	};
- 
-+	cpus {
-+		cpu0: cpu@0 {
-+			cpu-supply = <&vddctrl_reg>;
-+			operating-points-v2 = <&cpu0_opp_table>;
-+			#cooling-cells = <2>;
-+		};
-+
-+		cpu@1 {
-+			cpu-supply = <&vddctrl_reg>;
-+			operating-points-v2 = <&cpu0_opp_table>;
-+		};
-+
-+		cpu@2 {
-+			cpu-supply = <&vddctrl_reg>;
-+			operating-points-v2 = <&cpu0_opp_table>;
-+		};
-+
-+		cpu@3 {
-+			cpu-supply = <&vddctrl_reg>;
-+			operating-points-v2 = <&cpu0_opp_table>;
-+		};
-+	};
-+
- 	panel: panel {
- 		compatible = "chunghwa,claa101wb01";
- 		ddc-i2c-bus = <&panelddc>;
-@@ -617,6 +644,38 @@ sound {
- 					 <&tegra_car TEGRA30_CLK_EXTERN1>;
- 	};
- 
-+	thermal-zones {
-+		cpu-thermal {
-+			polling-delay-passive = <1000>; /* milliseconds */
-+			polling-delay = <5000>; /* milliseconds */
-+
-+			thermal-sensors = <&nct1008 1>;
-+
-+			trips {
-+				trip0: cpu-alert0 {
-+					/* throttle at 57C until temperature drops to 56.8C */
-+					temperature = <57000>;
-+					hysteresis = <200>;
-+					type = "passive";
-+				};
-+
-+				trip1: cpu-crit {
-+					/* shut down at 60C */
-+					temperature = <60000>;
-+					hysteresis = <2000>;
-+					type = "critical";
-+				};
-+			};
-+
-+			cooling-maps {
-+				map0 {
-+					trip = <&trip0>;
-+					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+				};
-+			};
-+		};
-+	};
-+
- 	gpio-keys {
- 		compatible = "gpio-keys";
- 
--- 
-2.29.2
+Yes, I think this could work. Good idea.
 
+> 
+> > +       DECLARE_BITMAP(prescaler_users, PCA9685_MAXCHAN + 1);
+> 
+> Rename to pwms_use_prescale ?
+
+Yes, fine with me.
+
+> 
+> >  #if IS_ENABLED(CONFIG_GPIOLIB)
+> >         struct mutex lock;
+> >         struct gpio_chip gpio;
+> > @@ -92,6 +94,18 @@ static inline struct pca9685 *to_pca(struct pwm_chip *chip)
+> >         return container_of(chip, struct pca9685, chip);
+> >  }
+> >
+> > +/* This function is supposed to be called with the prescaler_users_lock held */
+> > +static inline bool pca9685_may_change_prescaler(struct pca9685 *pca, int channel)
+> 
+> Drop the inline? Only the compiler knows if inlining this function makes sense
+> on a platform (armv7, x86, etc). Compilers are usually better at this then
+> humans...
+
+You're probably right. I will drop the inline.
+
+> 
+> Rename to pca9685_prescaler_can_change() ?
+
+Sounds good!
+
+> 
+> > +{
+> > +       /*
+> > +        * A PWM channel may only change the prescaler if there are no users of
+> > +        * the prescaler yet or that same channel is the only one in use.
+> > +        */
+> > +       return bitmap_empty(pca->prescaler_users, PCA9685_MAXCHAN + 1) ||
+> > +               (bitmap_weight(pca->prescaler_users, PCA9685_MAXCHAN + 1) == 1 &&
+> > +                test_bit(channel, pca->prescaler_users));
+> > +}
+> 
+> I found this logic expression quite complex to read. Perhaps simplify by using
+> a few steps? For example:
+> 
+> /* if prescaler not in use, we can always change it */
+> if (empty) return true;
+> /* if more than one pwm is using the prescaler, we can never change it */
+> if (weight > 1) return false;
+> /* one pwm is using the prescaler, we can only change it if it's us */
+> return test_bit(us);
+
+Good point, I will simplify it!
+
+> 
+> > +
+> >  static void pca9685_pwm_set_duty(struct pca9685 *pca, int channel, unsigned int duty)
+> >  {
+> >         unsigned int on, off;
+> > @@ -337,16 +351,25 @@ static int pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+> >         duty = PCA9685_COUNTER_RANGE * state->duty_cycle;
+> >         duty = DIV_ROUND_CLOSEST_ULL(duty, state->period);
+> >
+> > +       mutex_lock(&pca->prescaler_users_lock);
+> > +
+> >         if (!state->enabled || duty < 1) {
+> >                 pca9685_pwm_set_duty(pca, pwm->hwpwm, 0);
+> > -               return 0;
+> > +               goto prescaler_unused;
+> >         } else if (duty == PCA9685_COUNTER_RANGE) {
+> >                 pca9685_pwm_set_duty(pca, pwm->hwpwm, duty);
+> > -               return 0;
+> > +               goto prescaler_unused;
+> >         }
+> >
+> >         regmap_read(pca->regmap, PCA9685_PRESCALE, &val);
+> >         if (prescale != val) {
+> > +               if (!pca9685_may_change_prescaler(pca, pwm->hwpwm)) {
+> > +                       mutex_unlock(&pca->prescaler_users_lock);
+> > +                       dev_err(chip->dev,
+> > +                               "prescaler not set: already in use with different setting!\n");
+> > +                       return -EBUSY;
+> > +               }
+> > +
+> >                 /*
+> >                  * Putting the chip briefly into SLEEP mode
+> >                  * at this point won't interfere with the
+> > @@ -364,6 +387,14 @@ static int pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+> >         }
+> >
+> >         pca9685_pwm_set_duty(pca, pwm->hwpwm, duty);
+> > +
+> > +       set_bit(pwm->hwpwm, pca->prescaler_users);
+> > +       mutex_unlock(&pca->prescaler_users_lock);
+> > +       return 0;
+> > +
+> > +prescaler_unused:
+> > +       clear_bit(pwm->hwpwm, pca->prescaler_users);
+> > +       mutex_unlock(&pca->prescaler_users_lock);
+> >         return 0;
+> >  }
+> 
+> The need for the mutex makes this function quite "messy": we have to guard all
+> the exits, and that's easy to forget.
+
+I agree.
+
+> 
+> Maybe simplify the function by moving the mutex to a helper?
+> Example:
+> 
+> static int __pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+>      const struct pwm_state *state)
+> {
+>  ... just do stuff and don't worry about the mutex
+> }
+> 
+> static int pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+>      const struct pwm_state *state)
+> {
+>     /* document why we serialize pwm_apply */
+>     mutex_lock();
+>     __pca9685_pwm_apply(chip, pwm, state);
+>     mutex_unlock();
+> }
+
+Also a good idea!
+
+As always, great review! Thank you!
+
+> 
+> >
+> > @@ -422,7 +453,11 @@ static void pca9685_pwm_free(struct pwm_chip *chip, struct pwm_device *pwm)
+> >  {
+> >         struct pca9685 *pca = to_pca(chip);
+> >
+> > +       mutex_lock(&pca->prescaler_users_lock);
+> > +       clear_bit(pwm->hwpwm, pca->prescaler_users);
+> >         pca9685_pwm_set_duty(pca, pwm->hwpwm, 0);
+> > +       mutex_unlock(&pca->prescaler_users_lock);
+> > +
+> >         pm_runtime_put(chip->dev);
+> >         pca9685_pwm_clear_inuse(pca, pwm->hwpwm);
+> >  }
+> > @@ -463,6 +498,8 @@ static int pca9685_pwm_probe(struct i2c_client *client,
+> >
+> >         i2c_set_clientdata(client, pca);
+> >
+> > +       mutex_init(&pca->prescaler_users_lock);
+> > +
+> >         regmap_read(pca->regmap, PCA9685_MODE2, &reg);
+> >
+> >         if (device_property_read_bool(&client->dev, "invert"))
+> > --
+> > 2.29.2
+> >
