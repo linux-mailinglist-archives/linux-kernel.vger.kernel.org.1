@@ -2,79 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C33B2DD082
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 12:39:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D9552DD088
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 12:40:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727351AbgLQLiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 06:38:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726840AbgLQLix (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 06:38:53 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64725C061794;
-        Thu, 17 Dec 2020 03:38:13 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id h205so13007676lfd.5;
-        Thu, 17 Dec 2020 03:38:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RZrFgFox88GscJTzprvpE24EKAbg6Vl9s4wji6xqGr8=;
-        b=kmnrCqqnXaiD+iili8Eg1WIT7TbWInxvWY5G6wV7xNW7f8Tjp1/lFuVKVagoP8tuoG
-         2Ml64aESf81U/v/Sj3w8REorf14EUry9+h+VgiDDeNsJvxNMXHrmnpaLKHU2t4GHsSqE
-         2dlVxD4EN2aYW4eeagHqo4IsRnlXYiSP5Yu6R8Y3JMABJQ9Xbw7KEdN0Z0iNFouamu2q
-         QAS5/AlFyQD3KEvu3fWxyBSmId9B9vFVw0U5wc6JNSh5uexP1Pfngy8Nc+bKrGX+3X25
-         2w9ljAiKultGDKtvZA2wpmh0LzXCcZKeF4Jv1lsfh/7fK555VDEITf2STu1AVHDUNjMK
-         Mc7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RZrFgFox88GscJTzprvpE24EKAbg6Vl9s4wji6xqGr8=;
-        b=Xt/VV+U1TzCNf+KQ9BpgpTdXsPIqrNXAdbA9rn6L3AbF61QxgY037f8Xm+/tQ+G9fU
-         fNJxJy42BX1QTnWr+StrKTtH3ZD7vKoGQj+TGKoXUNOyPPRLdqcyx1SRyoXqVNTG6C3J
-         GojbCIXrfrqJ/2A1EdOp/olS7CJQybju6NF6sMND3FfoHfqkR77VKOxtrLaY35X5oyHs
-         E3mOZZT/jckv/NYUr11nmDjPORG4F1YhSV7R1+zELJ9zjxjCY27OgkSK886AAKygvBp+
-         6/Ml5pao+jKCdaD8rjoGn3sihq5ReLQe2kztK/uHdWOibWceDBpsSd57z6LX3wrALG/e
-         T5/Q==
-X-Gm-Message-State: AOAM532Pi9cN124earSQphGxcnbTrKx07dyEqv3L8J1mJ/RHEdJ6LSCQ
-        /kWUhQEn/92X56BItvkP0CKLDaXaAcRenNnndTE=
-X-Google-Smtp-Source: ABdhPJwSojLD9W4YcmNB2NeQRlOUH49d3KXyRl/9UWmyxBpBfw4WNxQBGaKHB61MLYkW/CXj4KUKwxf9aI2roUXmJVw=
-X-Received: by 2002:a2e:8416:: with SMTP id z22mr17240339ljg.347.1608205091903;
- Thu, 17 Dec 2020 03:38:11 -0800 (PST)
-MIME-Version: 1.0
-References: <20201217104905.25369-1-sebastien.szymanski@armadeus.com>
-In-Reply-To: <20201217104905.25369-1-sebastien.szymanski@armadeus.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Thu, 17 Dec 2020 08:38:00 -0300
-Message-ID: <CAOMZO5Dc-i5GdCYB6YrNXUt5HsOoaUCXPiZT630JF8+9pQ9fXA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] ARM: dts: opos6ul: add ksz8081 phy properties
-To:     =?UTF-8?Q?S=C3=A9bastien_Szymanski?= 
-        <sebastien.szymanski@armadeus.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>
+        id S1727617AbgLQLkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 06:40:04 -0500
+Received: from mga01.intel.com ([192.55.52.88]:39362 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725950AbgLQLkE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 06:40:04 -0500
+IronPort-SDR: gwF42mwfUe7+aNoPFak9/3MSFPr8iKP8XwJfz0U4VmMdM47oew2FrKmpgX5Wc+3NtTF74I863E
+ BmCI+a0kRPAw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9837"; a="193627701"
+X-IronPort-AV: E=Sophos;i="5.78,426,1599548400"; 
+   d="scan'208";a="193627701"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2020 03:38:18 -0800
+IronPort-SDR: rS1dboMDN0OT6i+6FVNVvoiE84tOwqhHGfp6zqCghlG+KnaMBBNBrp0aoIYQv6WEN2EnzogLgb
+ stQSQoV0Yv6A==
+X-IronPort-AV: E=Sophos;i="5.78,426,1599548400"; 
+   d="scan'208";a="369798936"
+Received: from pvelur-mobl1.amr.corp.intel.com ([10.209.179.212])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2020 03:38:13 -0800
+Message-ID: <2b101b07aa18e06a32b26add651a3d2e009e6d18.camel@linux.intel.com>
+Subject: Re: [PATCH 3/5] thermal/drivers/acpi: Use hot and critical ops
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>, rui.zhang@intel.com
+Cc:     kai.heng.feng@canonical.com, lukasz.luba@arm.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        "open list:ACPI THERMAL DRIVER" <linux-acpi@vger.kernel.org>
+Date:   Thu, 17 Dec 2020 03:38:08 -0800
+In-Reply-To: <c20d9077-66e8-f947-6422-c48e2f679cc5@linaro.org>
+References: <20201210121514.25760-1-daniel.lezcano@linaro.org>
+         <20201210121514.25760-3-daniel.lezcano@linaro.org>
+         <c20d9077-66e8-f947-6422-c48e2f679cc5@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.38.2 (3.38.2-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 7:49 AM S=C3=A9bastien Szymanski
-<sebastien.szymanski@armadeus.com> wrote:
->
-> Set clock mode and the LED mode in the device tree instead of relying on
-> the fixup in mach-imx6ul.
->
-> Signed-off-by: S=C3=A9bastien Szymanski <sebastien.szymanski@armadeus.com=
->
+On Thu, 2020-12-17 at 07:28 +0100, Daniel Lezcano wrote:
+> On 10/12/2020 13:15, Daniel Lezcano wrote:
+> > The acpi driver wants to do a netlink notification in case of a hot
+> > or
+> > critical trip point. Implement the corresponding ops to be used for
+> > the thermal zone and use them instead of the notify ops.
+> > 
+> > Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> 
+> Is there any comment on this patch ?
 
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Looks good to me.
+
+Thanks,
+Srinivas
+
+> 
+> > ---
+> >  drivers/acpi/thermal.c | 30 ++++++++++++++----------------
+> >  1 file changed, 14 insertions(+), 16 deletions(-)
+> > 
+> > diff --git a/drivers/acpi/thermal.c b/drivers/acpi/thermal.c
+> > index 12c0ece746f0..b5e4bc9e3282 100644
+> > --- a/drivers/acpi/thermal.c
+> > +++ b/drivers/acpi/thermal.c
+> > @@ -677,27 +677,24 @@ static int thermal_get_trend(struct
+> > thermal_zone_device *thermal,
+> >         return 0;
+> >  }
+> >  
+> > -
+> > -static int thermal_notify(struct thermal_zone_device *thermal, int
+> > trip,
+> > -                          enum thermal_trip_type trip_type)
+> > +static void acpi_thermal_zone_device_hot(struct
+> > thermal_zone_device *thermal)
+> >  {
+> > -       u8 type = 0;
+> >         struct acpi_thermal *tz = thermal->devdata;
+> >  
+> > -       if (trip_type == THERMAL_TRIP_CRITICAL)
+> > -               type = ACPI_THERMAL_NOTIFY_CRITICAL;
+> > -       else if (trip_type == THERMAL_TRIP_HOT)
+> > -               type = ACPI_THERMAL_NOTIFY_HOT;
+> > -       else
+> > -               return 0;
+> > -
+> >         acpi_bus_generate_netlink_event(tz->device-
+> > >pnp.device_class,
+> > -                                       dev_name(&tz->device->dev),
+> > type, 1);
+> > +                                       dev_name(&tz->device->dev),
+> > +                                       ACPI_THERMAL_NOTIFY_HOT,
+> > 1);
+> > +}
+> >  
+> > -       if (trip_type == THERMAL_TRIP_CRITICAL && nocrt)
+> > -               return 1;
+> > +static void acpi_thermal_zone_device_critical(struct
+> > thermal_zone_device *thermal)
+> > +{
+> > +       struct acpi_thermal *tz = thermal->devdata;
+> >  
+> > -       return 0;
+> > +       acpi_bus_generate_netlink_event(tz->device-
+> > >pnp.device_class,
+> > +                                       dev_name(&tz->device->dev),
+> > +                                       ACPI_THERMAL_NOTIFY_CRITICA
+> > L, 1);
+> > +
+> > +       thermal_zone_device_critical(thermal);
+> >  }
+> >  
+> >  static int acpi_thermal_cooling_device_cb(struct
+> > thermal_zone_device *thermal,
+> > @@ -812,7 +809,8 @@ static struct thermal_zone_device_ops
+> > acpi_thermal_zone_ops = {
+> >         .get_trip_temp = thermal_get_trip_temp,
+> >         .get_crit_temp = thermal_get_crit_temp,
+> >         .get_trend = thermal_get_trend,
+> > -       .notify = thermal_notify,
+> > +       .hot = acpi_thermal_zone_device_hot,
+> > +       .critical = acpi_thermal_zone_device_critical,
+> >  };
+> >  
+> >  static int acpi_thermal_register_thermal_zone(struct acpi_thermal
+> > *tz)
+> > 
+> 
+> 
+
+
