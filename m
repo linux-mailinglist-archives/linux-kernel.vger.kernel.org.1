@@ -2,107 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B82A52DCCC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 07:53:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13F172DCCCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 07:56:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727358AbgLQGxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 01:53:02 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9628 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726569AbgLQGxB (ORCPT
+        id S1727145AbgLQGz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 01:55:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726547AbgLQGz1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 01:53:01 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CxN2M5Ghnz15YMZ;
-        Thu, 17 Dec 2020 14:51:39 +0800 (CST)
-Received: from [10.174.176.199] (10.174.176.199) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 17 Dec 2020 14:52:10 +0800
-Subject: Re: [PATCH] tick/nohz: Make the idle_exittime update correctly
-To:     Frederic Weisbecker <frederic@kernel.org>
-CC:     <fweisbec@gmail.com>, <tglx@linutronix.de>, <mingo@kernel.org>,
-        <linux-kernel@vger.kernel.org>, Shiyuan Hu <hushiyuan@huawei.com>,
-        Hewenliang <hewenliang4@huawei.com>
-References: <2e194669-c074-069c-4fda-ad5bc313a611@huawei.com>
- <bc6f830d-21da-b334-9dfd-54dcf2d4f7a0@huawei.com>
- <20201215144757.GA9391@lothringen>
-From:   Yunfeng Ye <yeyunfeng@huawei.com>
-Message-ID: <e1a3b328-6684-77d8-8d28-9baa36980403@huawei.com>
-Date:   Thu, 17 Dec 2020 14:51:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        Thu, 17 Dec 2020 01:55:27 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27528C0617B0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 22:54:47 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id r4so14608678pls.11
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 22:54:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kYkx9ybV2ueAWfRQVHDx3D5vcB/QAf7LUwizku++lx4=;
+        b=R0gTUZ/+FhatN0Ola7XCwP06109oq3LSjiDLx745S1G4yZuUoGIKOIdEOfFNnMrxQe
+         jIu36Ii/UWnyJrMJwV8/Cb8hef91r3E4XiUWyVhOZdHJOl5WdnKDs8fwvjq2wIihNj7Y
+         Rx951XBU/s4mHFmnPyHjCFleq1NoZJ+xgzlJHgnpP9RF6X/OPreeu3W+YELbsOnRgC3X
+         AUrlEEHRed6m+LTcbfmVz9akeJA9Cw8r0C/iJC1Wd3K4jjIkwHQvgz1GoMPzQBj41d8U
+         rmisL0fl/QSjgMo8J1g3wDk6vnaRmE7v/rxG7ZQUtxbQYK7zW7Wpgf7WTQmeJdzhvWa8
+         5RmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kYkx9ybV2ueAWfRQVHDx3D5vcB/QAf7LUwizku++lx4=;
+        b=Wl9AMdBU3O8M9FGpVu8tdaZOgFT0M7066Qxri/yKK5SK090veW8BNNfIFE6cWh0aSJ
+         s8SuvNnpqVjLTKcEHawaDpy73dht6baJJhFILpgF2HkmmTp2jCo10GuoyFj4IkyF2erJ
+         mccRai0ospjbs01mMjmFs2BHzrmncmLfFHXkNl/Js18jmJLHFwyMyb7jmTno0DQKMAE2
+         HYpwpI9WWDM0Exlrj2zph5CSHDf+OX8M8xTkgIHPNvZIXW6XXW/1NbetQ3v5xl29krfe
+         77ApHWMrrBLijB0PmA+iugbkLjJZNV+6hSA9oAjKSNgbCyorljnRaHjT0h4fWsM0/g5V
+         45/A==
+X-Gm-Message-State: AOAM531nRTUkKC/b+Hva7ehX7ypXAceIUe0OMuqdXDFjwFffo9964wal
+        Mht+BkkAyuTlYR9tzoKFPoBQbetyIDQ9mKPuQLw77/rVhOVWy6HU
+X-Google-Smtp-Source: ABdhPJxIo3Bkh6if9eAbNjiecVSukBNUK6FsdvhRNKiiTT/IlqPDPu9KgseS7K+gDKV5spUiE1CR0WiMXQaInL/1jZE=
+X-Received: by 2002:a17:902:8503:b029:dc:44f:62d8 with SMTP id
+ bj3-20020a1709028503b02900dc044f62d8mr13771103plb.34.1608188086569; Wed, 16
+ Dec 2020 22:54:46 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201215144757.GA9391@lothringen>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.199]
-X-CFilter-Loop: Reflected
+References: <20201213154534.54826-1-songmuchun@bytedance.com>
+ <20201213154534.54826-4-songmuchun@bytedance.com> <5936a766-505a-eab0-42a6-59aab2585880@oracle.com>
+ <20201216222549.GC3207@localhost.localdomain> <49f6a0f1-c6fa-4642-2db0-69f090e8a392@oracle.com>
+In-Reply-To: <49f6a0f1-c6fa-4642-2db0-69f090e8a392@oracle.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 17 Dec 2020 14:54:10 +0800
+Message-ID: <CAMZfGtXwU7LcTZw7iKFNksVTYx8Bhd=9Nct+zfNy_ibuFiF6ew@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v9 03/11] mm/hugetlb: Free the vmemmap
+ pages associated with each HugeTLB page
+To:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Oscar Salvador <osalvador@suse.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Dec 17, 2020 at 6:52 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>
+> On 12/16/20 2:25 PM, Oscar Salvador wrote:
+> > On Wed, Dec 16, 2020 at 02:08:30PM -0800, Mike Kravetz wrote:
+> >>> + * vmemmap_rmap_walk - walk vmemmap page table
+> >>> +
+> >>> +static void vmemmap_pte_range(pmd_t *pmd, unsigned long addr,
+> >>> +                         unsigned long end, struct vmemmap_rmap_walk *walk)
+> >>> +{
+> >>> +   pte_t *pte;
+> >>> +
+> >>> +   pte = pte_offset_kernel(pmd, addr);
+> >>> +   do {
+> >>> +           BUG_ON(pte_none(*pte));
+> >>> +
+> >>> +           if (!walk->reuse)
+> >>> +                   walk->reuse = pte_page(pte[VMEMMAP_TAIL_PAGE_REUSE]);
+> >>
+> >> It may be just me, but I don't like the pte[-1] here.  It certainly does work
+> >> as designed because we want to remap all pages in the range to the page before
+> >> the range (at offset -1).  But, we do not really validate this 'reuse' page.
+> >> There is the BUG_ON(pte_none(*pte)) as a sanity check, but we do nothing similar
+> >> for pte[-1].  Based on the usage for HugeTLB pages, we can be confident that
+> >> pte[-1] is actually a pte.  In discussions with Oscar, you mentioned another
+> >> possible use for these routines.
+> >
+> > Without giving it much of a thought, I guess we could duplicate the
+> > BUG_ON for the pte outside the loop, and add a new one for pte[-1].
+> > Also, since walk->reuse seems to not change once it is set, we can take
+> > it outside the loop? e.g:
+> >
+> >       pte *pte;
+> >
+> >       pte = pte_offset_kernel(pmd, addr);
+> >       BUG_ON(pte_none(*pte));
+> >       BUG_ON(pte_none(pte[VMEMMAP_TAIL_PAGE_REUSE]));
+> >       walk->reuse = pte_page(pte[VMEMMAP_TAIL_PAGE_REUSE]);
+> >       do {
+> >               ....
+> >       } while...
+> >
+> > Or I am not sure whether we want to keep it inside the loop in case
+> > future cases change walk->reuse during the operation.
+> > But to be honest, I do not think it is realistic of all future possible
+> > uses of this, so I would rather keep it simple for now.
+>
+> I was thinking about possibly passing the 'reuse' address as another parameter
+> to vmemmap_remap_reuse().  We could add this addr to the vmemmap_rmap_walk
+> struct and set walk->reuse when we get to the pte for that address.  Of
+> course this would imply that the addr would need to be part of the range.
+
+Maybe adding another one parameter is unnecessary.  How about doing
+this in the vmemmap_remap_reuse?
+
+The 'reuse' address just is start + PAGE_SIZE.
+
+void vmemmap_remap_free(unsigned long start, unsigned long size)
+{
+         unsigned long end = start + size;
+         unsigned long reuse_addr = start + PAGE_SIZE;
+         LIST_HEAD(vmemmap_pages);
+
+         struct vmemmap_remap_walk walk = {
+                  .remap_pte = vmemmap_remap_pte,
+                  .vmemmap_pages = &vmemmap_pages,
+                  .reuse_addr = reuse_addr.
+         };
+
+}
+
+>
+> Ideally, we would walk the page table to get to the reuse page.  My concern
+> was not explicitly about adding the BUG_ON.  In more general use, *pte could
+> be the first entry on a pte page.  And, then pte[-1] may not even be a pte.
+>
+> Again, I don't think this matters for the current HugeTLB use case.  Just a
+> little concerned if code is put to use for other purposes.
+> --
+> Mike Kravetz
 
 
-On 2020/12/15 22:47, Frederic Weisbecker wrote:
-> On Tue, Dec 15, 2020 at 08:06:34PM +0800, Yunfeng Ye wrote:
->> The idle_exittime field of tick_sched is used to record the time when
->> the idle state was left. but currently the idle_exittime is updated in
->> the function tick_nohz_restart_sched_tick(), which is not always in idle
->> state when nohz_full is configured.
->>
->>   tick_irq_exit
->>     tick_nohz_irq_exit
->>       tick_nohz_full_update_tick
->>         tick_nohz_restart_sched_tick
->>           ts->idle_exittime = now;
->>
->> So move to tick_nohz_stop_idle() to make the idle_exittime update
->> correctly.
->>
->> Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
->> ---
->>  kernel/time/tick-sched.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
->> index 749ec2a583de..be2e5d772d50 100644
->> --- a/kernel/time/tick-sched.c
->> +++ b/kernel/time/tick-sched.c
->> @@ -591,6 +591,7 @@ static void tick_nohz_stop_idle(struct tick_sched *ts, ktime_t now)
->>  {
->>  	update_ts_time_stats(smp_processor_id(), ts, now, NULL);
->>  	ts->idle_active = 0;
->> +	ts->idle_exittime = now;
-> 
-> This changes a bit the meaning of idle_exittime then since this is also called
-> from idle interrupt entry.
-> 
-> __tick_nohz_idle_restart_tick() would be a better place.
-> 
-So is it necessary to modify the comment "@idle_exittime:      Time when the idle state was left" ?
 
-On the other hand, if the patch "nohz: Update tick instead of restarting tick in tick_nohz_idle_exit()"
-(https://www.spinics.net/lists/kernel/msg3747039.html ) applied, __tick_nohz_idle_restart_tick will not
-be called always, So is it put here also a better place?
-
-Thanks.
-
-> Thanks.
-> 
->>
->>  	sched_clock_idle_wakeup_event();
->>  }
->> @@ -901,7 +902,6 @@ static void tick_nohz_restart_sched_tick(struct tick_sched *ts, ktime_t now)
->>  	 * Cancel the scheduled timer and restore the tick
->>  	 */
->>  	ts->tick_stopped  = 0;
->> -	ts->idle_exittime = now;
->>
->>  	tick_nohz_restart(ts, now);
->>  }
->> -- 
->> 2.18.4
->>
-> .
-> 
+-- 
+Yours,
+Muchun
