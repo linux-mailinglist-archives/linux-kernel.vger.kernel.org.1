@@ -2,116 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E75782DD5A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 18:05:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC1FD2DD5A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 18:05:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728683AbgLQRDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 12:03:50 -0500
-Received: from smtprelay0116.hostedemail.com ([216.40.44.116]:47858 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726613AbgLQRDt (ORCPT
+        id S1729053AbgLQRD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 12:03:57 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:32895 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726613AbgLQRDv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 12:03:49 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 3C7751E1C;
-        Thu, 17 Dec 2020 17:03:08 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:966:967:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2196:2198:2199:2200:2393:2525:2553:2560:2563:2682:2685:2828:2859:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3354:3622:3653:3865:3866:3867:3868:3870:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:4385:4560:4605:5007:6117:6119:7514:7807:7903:8784:9025:10004:10400:10848:11026:11232:11473:11658:11914:12043:12114:12262:12296:12297:12438:12555:12679:12740:12895:13019:13161:13229:13439:13894:14096:14097:14181:14659:14721:21080:21365:21433:21451:21627:21939:30034:30054:30056:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: board56_600c13927436
-X-Filterd-Recvd-Size: 3691
-Received: from XPS-9350.home (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf19.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 17 Dec 2020 17:03:07 +0000 (UTC)
-Message-ID: <94d6a56174c56ef13c9794186fdbfcc12c376c00.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: fix false positive for COMMIT_LOG_LONG_LINE
- with URLs
-From:   Joe Perches <joe@perches.com>
-To:     Aditya Srivastava <yashsri421@gmail.com>
-Cc:     lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 17 Dec 2020 09:03:06 -0800
-In-Reply-To: <20201217134221.16178-1-yashsri421@gmail.com>
-References: <20201217134221.16178-1-yashsri421@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Thu, 17 Dec 2020 12:03:51 -0500
+Received: by mail-io1-f71.google.com with SMTP id t23so27818666ioh.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 09:03:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=pxFfrTkIii6iJjyvF009RrzuDe3n5utIm9WDPVKtgGg=;
+        b=R3LrjwThgAAFoLmhWwzL9RQAL+H+iMCE1RGPD2/T0XiCOS+Daz4pTJ1BXkD4pBxqLG
+         v44UNWFIGPku4rvW64t0pM2yGd2wYUkpYbrNVTmRelP5/VGs0wHpR9TvsGuKUjrBo2px
+         yRx0uTET+6KIl0/o4rOcD4tw7GX8IQxCtr1dPTZmbMX1ealR/z2jEi9iWTknlwrdbPBw
+         leJ0LvriiFf2fCq+H3EFb+GHq+httkiWg5ttiZ+uErrgsUKEbho7AiCpKZkbe8kXhKrl
+         ZY0anT974hht7BiEagiOxOtvzwPlTv6dhZjkV5/GogbYFLeILMEozIjcJfrQZgbzMV4t
+         Z0ig==
+X-Gm-Message-State: AOAM530j0M5dnxprjGYrhxFHpX3c/jJJs9NkCFBaJqSQdKW05W/jRdAs
+        z2EjA+KUV6k/XCITOxuV8TrwLs5Ih0AB+0JgN1CyIHfQ81jk
+X-Google-Smtp-Source: ABdhPJxqR3ejZ43331MFX9g47oKWaI79oYRHV//M9fr5YfFFU9oGUJkfsG/FNkdZk9dJJoqH5l+ELqKb/RrIyR37uB47tGG2WqIn
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:cb82:: with SMTP id z2mr51635770ilo.195.1608224590079;
+ Thu, 17 Dec 2020 09:03:10 -0800 (PST)
+Date:   Thu, 17 Dec 2020 09:03:10 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000692e2f05b6abf7c5@google.com>
+Subject: general protection fault in bond_ipsec_add_sa
+From:   syzbot <syzbot+cfd446c119a93741a3c2@syzkaller.appspotmail.com>
+To:     andy@greyhouse.net, davem@davemloft.net, j.vosburgh@gmail.com,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        vfalico@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-12-17 at 19:12 +0530, Aditya Srivastava wrote:
-> Currently checkpatch warns for long line in commit messages even for
-> URL lines.
-> 
-> An evaluation over v4.13..v5.8 showed that out of ~11000 warnings for
-> this class, around 790 are due to the line containing link.
-> 
-> E.g. running checkpatch on commit 3cde818cd02b ("ASoC: topology:
-> Consolidate how dtexts and dvalues are freed") reports this warning:
-> 
-> WARNING: Possible unwrapped commit description (prefer a maximum 75 chars per line)
-> https://mailman.alsa-project.org/pipermail/alsa-devel/2019-January/144761.html
-> 
-> Avoid giving users warning for character limit, instead suggest them to
-> prefix the URLs with "Link:"
-> 
-> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
-> ---
->  scripts/checkpatch.pl | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -3032,8 +3032,14 @@ sub process {
->  		      $line =~ /^\s*(?:Fixes:|Link:|$signature_tags)/i ||
->  					# A Fixes: or Link: line or signature tag line
->  		      $commit_log_possible_stack_dump)) {
-> -			WARN("COMMIT_LOG_LONG_LINE",
-> -			     "Possible unwrapped commit description (prefer a maximum 75 chars per line)\n" . $herecurr);
-> +			if ($line =~ /(?:http|https|ftp):\/\//) {
-> +				WARN("COMMIT_LOG_LONG_LINE",
-> +				     "Consider prefixing the URL with 'Link:'\n" . $herecurr);
-> +			}
-> +			else {
-> +				WARN("COMMIT_LOG_LONG_LINE",
-> +				     "Possible unwrapped commit description (prefer a maximum 75 chars per line)\n" . $herecurr);
-> +			}
+Hello,
 
-NAK.
+syzbot found the following issue on:
 
-Aditya, you've submitted several patches to checkpatch and
-you should know better by now what coding style is necessary
-for acceptance.
+HEAD commit:    6bff9bb8 Merge tag 'scsi-fixes' of git://git.kernel.org/pu..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14aba80f500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a438b63f5a7f3806
+dashboard link: https://syzkaller.appspot.com/bug?extid=cfd446c119a93741a3c2
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-			} else {
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Make the URI/URL check follow the styles allowed by RFC 3986.
-Look at the long_line check around line 3500 introduced by
-commit 2e4bbbc550be336cbb3defc67430fc0700aa1426
-Author: Andreas Brauchli <a.brauchli@elementarea.net>
-Date:   Tue Feb 6 15:38:45 2018 -0800
-checkpatch: allow long lines containing URL
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+cfd446c119a93741a3c2@syzkaller.appspotmail.com
 
-Also likely the URI should not be allowed to exceed the line
-maximum unless it's the first non-whitespace of the line and
-not starting after some other word in the line.
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 3 PID: 10570 Comm: syz-executor.0 Not tainted 5.10.0-rc7-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+RIP: 0010:bond_ipsec_add_sa+0x9e/0x240 drivers/net/bonding/bond_main.c:396
+Code: 04 31 ff 89 c3 89 c6 e8 f0 2c d8 fc 85 db 0f 85 f6 00 00 00 e8 93 34 d8 fc 4c 89 ea 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 5f 01 00 00 48 8d bd d0 02 00 00 49 8b 5d 00 48
+RSP: 0018:ffffc90002e47498 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: 0000000000000001 RCX: ffffc90006ee9000
+RDX: 0000000000000000 RSI: ffffffff8497d16d RDI: 0000000000000001
+RBP: ffff888016539c00 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88806c230000
+R13: 0000000000000000 R14: ffff888016539ee0 R15: ffff888016539ee4
+FS:  00007f5eca4f9700(0000) GS:ffff88802cd00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000007120d0 CR3: 0000000050d1d000 CR4: 0000000000350ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ xfrm_dev_state_add+0x2da/0x7b0 net/xfrm/xfrm_device.c:268
+ xfrm_state_construct net/xfrm/xfrm_user.c:655 [inline]
+ xfrm_add_sa+0x2166/0x34f0 net/xfrm/xfrm_user.c:684
+ xfrm_user_rcv_msg+0x42f/0x8b0 net/xfrm/xfrm_user.c:2752
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
+ xfrm_netlink_rcv+0x6b/0x90 net/xfrm/xfrm_user.c:2764
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:671
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45dcd9
+Code: bd b1 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 8b b1 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f5eca4f8c78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045dcd9
+RDX: 0000000000000000 RSI: 0000000020000180 RDI: 0000000000000003
+RBP: 00000000004aae00 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000075bf40
+R13: 00007ffcc1582edf R14: 00007f5eca4d9000 R15: 0000000000000003
+Modules linked in:
+---[ end trace f71849d5db08409b ]---
+RIP: 0010:bond_ipsec_add_sa+0x9e/0x240 drivers/net/bonding/bond_main.c:396
+Code: 04 31 ff 89 c3 89 c6 e8 f0 2c d8 fc 85 db 0f 85 f6 00 00 00 e8 93 34 d8 fc 4c 89 ea 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 5f 01 00 00 48 8d bd d0 02 00 00 49 8b 5d 00 48
+RSP: 0018:ffffc90002e47498 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: 0000000000000001 RCX: ffffc90006ee9000
+RDX: 0000000000000000 RSI: ffffffff8497d16d RDI: 0000000000000001
+RBP: ffff888016539c00 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88806c230000
+R13: 0000000000000000 R14: ffff888016539ee0 R15: ffff888016539ee4
+FS:  00007f5eca4f9700(0000) GS:ffff88802cd00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
 
-Lastly, this sets $commit_log_long_line even for lines that
-are now nominally exempted from the long line check.
 
-The number of nominal fixes you showed above is not correct.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Retrospective testing of checkpatch using --git history
-should be aware of changes to checkpatch.
-
-This should count only lines from 75 to 80 chars for the
-commit range you tested and only for 75 to 100 for commits
-after checkpatch changed its allowed long line maximum in
-commit bdc48fa11e46f867ea4d75fa59ee87a7f48be144
-checkpatch/coding-style: deprecate 80-column warning
-
-
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
