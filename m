@@ -2,163 +2,1011 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 604852DD8A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:48:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E13382DD89F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:48:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730513AbgLQSrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 13:47:04 -0500
-Received: from out03.mta.xmission.com ([166.70.13.233]:32902 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729602AbgLQSrD (ORCPT
+        id S1730264AbgLQSqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 13:46:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730167AbgLQSqX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 13:47:03 -0500
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kpyI6-003Dnp-MZ; Thu, 17 Dec 2020 11:46:18 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kpyI5-002lI8-Ei; Thu, 17 Dec 2020 11:46:18 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     "Alejandro Colomar \(man-pages\)" <alx.manpages@gmail.com>
-Cc:     Oleg Nesterov <oleg@tv-sign.ru>, Jann Horn <jannh@google.com>,
-        Ted Estes <ted@softwarecrafters.com>,
-        Jann Horn <jann@thejh.net>, Pavel Emelyanov <xemul@openvz.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>
-References: <feef4f9a-4ed8-8a2e-d330-88e7f516faae@gmail.com>
-        <X9lBp3BHbwcTmDqb@pc.thejh.net>
-        <0e5189c0-9e9b-ac34-825c-619a9a6ef682@gmail.com>
-        <d38c5e8b-1653-d89a-a0c8-b95cb1844fba@gmail.com>
-        <CAG48ez0y21uWBDuaczLMxLPpFTKABrgm+-aqLb-0a4rHuOCX-g@mail.gmail.com>
-        <5062fe43-ca37-134f-89ad-57fbd8c312ba@softwarecrafters.com>
-        <CAG48ez2g=U-H56g6VebQCiSXGg+bVvhBA5yfwymNxVYAGEJJcA@mail.gmail.com>
-        <1abbf267-d522-0586-e5a5-c71f4d7b0fa4@gmail.com>
-Date:   Thu, 17 Dec 2020 12:45:29 -0600
-In-Reply-To: <1abbf267-d522-0586-e5a5-c71f4d7b0fa4@gmail.com> (Alejandro
-        Colomar's message of "Wed, 16 Dec 2020 10:22:09 +0100")
-Message-ID: <87eejouv92.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 17 Dec 2020 13:46:23 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6CBCC0617A7;
+        Thu, 17 Dec 2020 10:45:43 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id n3so3650172pjm.1;
+        Thu, 17 Dec 2020 10:45:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=zjte24JVXdyrFJeICpV/hpXMmkjC+payZ5DIYCx7ku0=;
+        b=nr7fyLKTqA+eV0sdgqnCCJq7PmiZ9e/75byqI+xC1RsCHBvdeWR5oyglelAmCWVpO8
+         tugD3Gpj7AwmIwtxmOb66IqlTsKmjrEIT2572s7vDlU+9lhD/1OHQ4mElFVl9hPQMKHX
+         /9XrFC3H8FuM2OXG5J4X99FFvnTyWYvGNyNvXda8KCAncu1rW1KrKEuCCNpTNkJa+VNk
+         pzXzIGQAagEMBFHuJ40SwOURobbVmD+fsMVOcq0h+gjTmzLcFI9I5yL/ab4YJhVaGpTl
+         xsjKtm+lJCRRq27VYy86yxxehlksA4AES6gFF6SRX6AySSnK7L/l/NfsvNgEpLMAR75V
+         c48w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=zjte24JVXdyrFJeICpV/hpXMmkjC+payZ5DIYCx7ku0=;
+        b=A3gBv+AN68uM+3A+dd+6fFGgfueo4wL43Wk3XhPgNwsZkq0DmjiOikuOLAvjCdiRzG
+         aC4WaNLp/o0n0O75x6JVH+a1deAs2Xlz51cWE7ci/LnTMGJpmk2Qd2VfOlokd5nY0NxL
+         RO72X/lqQa0PViKjf5wPj5uJLTNL5kFbXyG86v5M3pElQKFF5Sj1TkKQnuxTB5jj8mt4
+         6DWL+RRFYxZwRuJFuWytar2OFdqQq/7zO9x6JFU03fYbq73z3P8VvtsWK9fZK5ZFDze1
+         WojFJbyBrKTuFu+GgdehTff9tqht8Rjk6uExjVfOGBRU/MUH7e/ImekF6hd8p7XRCNit
+         ddKw==
+X-Gm-Message-State: AOAM531aIIuvBX2O3JOXwpTLZNxZ7YoNsKp+8MHlCtRTv5HvgMYBoNMy
+        2YcODyjZ7V1Pf0MhF+jxsRo=
+X-Google-Smtp-Source: ABdhPJynB7wovn3fwtZRzZWG4DrS7K67YMvHVfbB7akFXNO7B2oKxKaPfXBYoit1odQAKKzNQi0pKQ==
+X-Received: by 2002:a17:90a:6a48:: with SMTP id d8mr539784pjm.130.1608230742936;
+        Thu, 17 Dec 2020 10:45:42 -0800 (PST)
+Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
+        by smtp.gmail.com with ESMTPSA id w200sm6533580pfc.14.2020.12.17.10.45.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Dec 2020 10:45:41 -0800 (PST)
+Date:   Thu, 17 Dec 2020 10:45:39 -0800
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Divya Koppera <Divya.Koppera@microchip.com>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, kuba@kernel.org, marex@denx.de,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        UNGLinuxDriver@microchip.com
+Subject: Re: [PATCH v4 net-next 2/2] net: phy: mchp: Add 1588 support for
+ LAN8814 Quad PHY
+Message-ID: <20201217184539.GA24873@hoboy.vegasvil.org>
+References: <20201217124150.8444-1-Divya.Koppera@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1kpyI5-002lI8-Ei;;;mid=<87eejouv92.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX190iekfNeZPMseo2lks32NWzQGjeRDvFXU=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.7 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong,XM_B_SpammyWords
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4748]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;"Alejandro Colomar \(man-pages\)" <alx.manpages@gmail.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 673 ms - load_scoreonly_sql: 0.31 (0.0%),
-        signal_user_changed: 15 (2.2%), b_tie_ro: 12 (1.8%), parse: 1.74
-        (0.3%), extract_message_metadata: 21 (3.1%), get_uri_detail_list: 2.9
-        (0.4%), tests_pri_-1000: 6 (0.9%), tests_pri_-950: 1.33 (0.2%),
-        tests_pri_-900: 1.08 (0.2%), tests_pri_-90: 240 (35.6%), check_bayes:
-        237 (35.2%), b_tokenize: 12 (1.7%), b_tok_get_all: 11 (1.7%),
-        b_comp_prob: 3.7 (0.6%), b_tok_touch_all: 205 (30.5%), b_finish: 1.28
-        (0.2%), tests_pri_0: 370 (55.0%), check_dkim_signature: 0.63 (0.1%),
-        check_dkim_adsp: 6 (0.9%), poll_dns_idle: 0.41 (0.1%), tests_pri_10:
-        2.2 (0.3%), tests_pri_500: 11 (1.6%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [Bug 210655] ptrace.2: documentation is incorrect about access checking threads in same thread group
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201217124150.8444-1-Divya.Koppera@microchip.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Alejandro Colomar (man-pages)" <alx.manpages@gmail.com> writes:
+On Thu, Dec 17, 2020 at 06:11:50PM +0530, Divya Koppera wrote:
 
-> [CC += Thomas, Ingo, Peter, Darren]
->
-> Hi Oleg,
->
-> On 12/16/20 3:33 AM, Jann Horn wrote:
->> On Wed, Dec 16, 2020 at 3:21 AM Ted Estes <ted@softwarecrafters.com> wrote:
->>> On 12/15/2020 6:01 PM, Jann Horn wrote:
->>>> On Wed, Dec 16, 2020 at 12:25 AM Alejandro Colomar (man-pages)
->>>> <alx.manpages@gmail.com> wrote:
->>>>> On 12/16/20 12:23 AM, Alejandro Colomar (man-pages) wrote:
->>>>>> On 12/16/20 12:07 AM, Jann Horn wrote:
->>>>>>> As the comment explains, you can't actually *attach*
->>>>>>> to another task in the same thread group; but that's
->>>>>>> not because of the ptrace-style access check rules,
->>>>>>> but because specifically *attaching* to another task
->>>>>>> in the same thread group doesn't work.
->>>> As I said, attaching indeed doesn't work. But that's not what "Ptrace
->>>> access mode checking" means. As the first sentence of that section
->>>> says:
->>>>
->>>> | Various parts of the kernel-user-space API (not just ptrace()
->>>> | operations), require so-called "ptrace access mode" checks,
->>>> | whose outcome determines whether an operation is
->>>> | permitted (or, in a  few cases,  causes  a "read" operation
->>>> | to return sanitized data).
->>>>
->>>> You can find these places by grepping for \bptrace_may_access\b -
->>>> operations like e.g. the get_robust_list() syscall will always succeed
->>>> when inspecting other tasks in the caller's thread group thanks to
->>>> this rule.
->>>
->>> Ah, yes.  I missed that back reference while trying to digest that
->>> rather meaty man page.  A grep on the man page source tree does show a
->>> number of references to "ptrace access mode".
->>>
->>> That said, the ptrace(2) man page also directly references the ptrace
->>> access mode check under both PTRACE_ATTACH and PTACE_SEIZE:
->>>
->>> | Permission to perform a PTRACE_ATTACH is governed by a ptrace | access
->>> mode PTRACE_MODE_ATTACH_REALCREDS check; see below. As confirmed, the
->>> "same thread group" rule does not apply to either of those operations. A
->>> re-wording of rule 1 similar to this might help avoid confusion: 1. If
->>> the calling thread and the target thread are in the same thread group:
->>> a. For ptrace() called with PTRACE_ATTACH or PTRACE_SEIZE, access is
->>> NEVER allowed. b. For all other so-called "ptrace access mode checks",
->>> access is ALWAYS allowed. --Ted
->> 
->> Yeah, maybe. OTOH I'm not sure whether it really makes sense to
->> explain this as being part of a security check, or whether it should
->> be explained separately as a restriction on PTRACE_ATTACH and
->> PTRACE_SEIZE (with a note like "(irrelevant for ptrace attachment)" on
->> rule 1). But I don't feel strongly about it either way.
->> 
->
-> As you are the maintainer for ptrace,
-> could you confirm the above from Jan?
-> And maybe suggest what you would do with the manual page.
->
-> I'd like to get confirmation that there are still other functions that
-> require "ptrace access mode" other than ptrace() itself, where it's
-> valid that the calling thread and the target thread are in the same
-> group.
+> +struct lan8814_ptphdr {
+> +	u8 tsmt; /* transportSpecific | messageType */
+> +	u8 ver;  /* reserved0 | versionPTP */
+> +	__be16 msglen;
+> +	u8 domain;
+> +	u8 rsrvd1;
+> +	__be16 flags;
+> +	__be64 correction;
+> +	__be32 rsrvd2;
+> +	__be64 clk_identity;
+> +	__be16 src_port_id;
+> +	__be16 seq_id;
+> +	u8 ctrl;
+> +	u8 log_interval;
+> +} __attribute__((__packed__));
 
-Large swaths of proc are governed by those checks.
+Please use the new 'struct ptp_header' from ptp_classify.h instead.
 
-In general in the kernel whenever you are accessing another process to
-perform an operation (especially reading) it will probably use
-"ptrace access mode" checks.
+> +struct kszphy_ptp_priv {
+> +	struct mii_timestamper mii_ts;
+> +	struct phy_device *phydev;
+> +	struct lan8814_ptp ptp;
+> +	int hwts_tx_en;
+> +	int hwts_rx_en;
+> +	int layer;
+> +	int version;
+> +};
+> +
+>  struct kszphy_priv {
+> +	struct kszphy_ptp_priv ptp_priv;
+>  	const struct kszphy_type *type;
+>  	int led_mode;
+>  	bool rmii_ref_clk_sel;
+> @@ -171,6 +313,38 @@ static const struct kszphy_type ksz9021_type = {
+>  	.interrupt_level_mask	= BIT(14),
+>  };
+>  
+> +static void lan8814_ptp_clock_get(struct phy_device *phydev,
+> +				  u32 *seconds, u32 *nano_seconds,
+> +				  u32 *sub_nano_seconds);
+> +
+> +static int lan8814_read_page_reg(struct phy_device *phydev,
+> +				 int page, u32 addr)
+> +{
+> +	u32 data;
+> +
+> +	phy_write(phydev, KSZ_EXT_PAGE_ACCESS_CONTROL, page);
+> +	phy_write(phydev, KSZ_EXT_PAGE_ACCESS_ADDRESS_DATA, addr);
+> +	phy_write(phydev, KSZ_EXT_PAGE_ACCESS_CONTROL, (page | 0x4000));
 
-You can see this by with "git grep ptrace_may_access" on the kernel source.
+What prevents concurrent reads from happening?  Nothing, AFAICT.
 
-Eric
+> +	data = phy_read(phydev, KSZ_EXT_PAGE_ACCESS_ADDRESS_DATA);
+> +
+> +	return data;
+> +}
+> +
+> +static int lan8814_write_page_reg(struct phy_device *phydev,
+> +				  int page, u16 addr, u16 val)
+> +{
+> +	phy_write(phydev, KSZ_EXT_PAGE_ACCESS_CONTROL, page);
+
+Consider caching the page value in order to make a sequence of
+reads/writes more efficient.  (example in dp83640.c)
+
+> +	phy_write(phydev, KSZ_EXT_PAGE_ACCESS_ADDRESS_DATA, addr);
+> +	phy_write(phydev, KSZ_EXT_PAGE_ACCESS_CONTROL, (page | 0x4000));
+
+Again, this needs some kind of serialization.  Maybe not here but
+rather in the callers... you need to sort that out.
+
+> +	val = phy_write(phydev, KSZ_EXT_PAGE_ACCESS_ADDRESS_DATA, val);
+> +	if (val != 0) {
+> +		phydev_err(phydev, "Error: phy_write has returned error %d\n",
+> +			   val);
+> +		return val;
+> +	}
+> +	return 0;
+> +}
+> +
+>  static int kszphy_extended_write(struct phy_device *phydev,
+>  				u32 regnum, u16 val)
+>  {
+> @@ -185,10 +359,156 @@ static int kszphy_extended_read(struct phy_device *phydev,
+>  	return phy_read(phydev, MII_KSZPHY_EXTREG_READ);
+>  }
+>  
+> +static void lan8814_ptp_tx_ts_get(struct phy_device *phydev,
+> +				  u32 *seconds, u32 *nano_seconds,
+> +				  u32 *seq_id);
+> +
+> +static struct lan8814_ptphdr *get_ptp_header_l4(struct sk_buff *skb,
+> +						struct iphdr *iphdr,
+> +						struct udphdr *udphdr)
+> +{
+> +	if (iphdr->version != 4 || iphdr->protocol != IPPROTO_UDP)
+> +		return NULL;
+> +
+> +	return (struct lan8814_ptphdr *)(((unsigned char *)udphdr) + UDP_HLEN);
+> +}
+> +
+> +static struct lan8814_ptphdr *get_ptp_header_tx(struct sk_buff *skb)
+> +{
+> +	struct ethhdr *ethhdr = eth_hdr(skb);
+> +	struct udphdr *udphdr;
+> +	struct iphdr *iphdr;
+> +
+> +	if (ethhdr->h_proto == htons(ETH_P_1588))
+> +		return (struct lan8814_ptphdr *)(((unsigned char *)ethhdr) +
+> +				skb_mac_header_len(skb));
+> +
+> +	if (ethhdr->h_proto != htons(ETH_P_IP))
+> +		return NULL;
+> +
+> +	iphdr = ip_hdr(skb);
+> +	udphdr = udp_hdr(skb);
+> +
+> +	return get_ptp_header_l4(skb, iphdr, udphdr);
+
+Use ptp_parse_header() from ptp_classify.h
+
+> +}
+> +
+> +static int get_sig(struct sk_buff *skb, u8 *sig)
+> +{
+> +	struct lan8814_ptphdr *ptphdr = get_ptp_header_tx(skb);
+> +	struct ethhdr *ethhdr = eth_hdr(skb);
+> +	unsigned int i;
+> +
+> +	if (!ptphdr)
+> +		return -EOPNOTSUPP;
+> +
+> +	sig[0] = (__force u16)ptphdr->seq_id >> 8;
+> +	sig[1] = (__force u16)ptphdr->seq_id & GENMASK(7, 0);
+> +	sig[2] = ptphdr->domain;
+> +	sig[3] = ptphdr->tsmt & GENMASK(3, 0);
+> +
+> +	memcpy(&sig[4], ethhdr->h_dest, ETH_ALEN);
+> +
+> +	/* Fill the last bytes of the signature to reach a 16B signature */
+> +	for (i = 10; i < 16; i++)
+> +		sig[i] = ptphdr->tsmt & GENMASK(3, 0);
+> +
+> +	return 0;
+> +}
+> +
+> +static void lan8814_dequeue_skb(struct lan8814_ptp *ptp)
+> +{
+> +	struct kszphy_ptp_priv *priv = container_of(ptp, struct kszphy_ptp_priv, ptp);
+> +	struct phy_device *phydev = priv->phydev;
+> +	struct skb_shared_hwtstamps shhwtstamps;
+> +	struct sk_buff *skb;
+> +	u8 skb_sig[16];
+> +	int len;
+> +	u32 reg, cnt;
+> +	u32 seconds, nsec, seq_id;
+> +
+> +	reg = lan8814_read_page_reg(phydev, 5, PTP_CAP_INFO);
+> +	cnt = PTP_CAP_INFO_TX_TS_CNT_GET_(reg);
+> +
+> +	/* FIFO is Empty*/
+> +	if (cnt == 0)
+> +		return;
+> +
+> +	len = skb_queue_len(&ptp->tx_queue);
+> +	if (len < 1)
+> +		return;
+> +
+> +	while (len--) {
+> +		skb = __skb_dequeue(&ptp->tx_queue);
+> +		if (!skb)
+> +			return;
+> +
+> +		/* Can't get the signature of the packet, won't ever
+> +		 * be able to have one so let's dequeue the packet.
+> +		 */
+> +		if (get_sig(skb, skb_sig) < 0) {
+> +			kfree_skb(skb);
+> +			continue;
+> +		}
+> +
+> +		lan8814_ptp_tx_ts_get(phydev, &seconds, &nsec, &seq_id);
+> +
+> +		/* Check if we found the signature we were looking for. */
+> +		if (memcmp(skb_sig, &seq_id, sizeof(seq_id))) {
+> +			memset(&shhwtstamps, 0, sizeof(shhwtstamps));
+> +			shhwtstamps.hwtstamp = ktime_set(seconds, nsec);
+> +			skb_complete_tx_timestamp(skb, &shhwtstamps);
+> +
+> +			return;
+> +		}
+> +
+> +		/* Valid signature but does not match the one of the
+> +		 * packet in the FIFO right now, reschedule it for later
+> +		 * packets.
+> +		 */
+> +		__skb_queue_tail(&ptp->tx_queue, skb);
+> +	}
+> +}
+> +
+> +static void lan8814_get_tx_ts(struct lan8814_ptp *ptp)
+> +{
+> +	u32 reg;
+> +	struct kszphy_ptp_priv *priv = container_of(ptp, struct kszphy_ptp_priv, ptp);
+> +	struct phy_device *phydev = priv->phydev;
+> +
+> +	do {
+> +		lan8814_dequeue_skb(ptp);
+> +
+> +		/* If other timestamps are available in the FIFO, process them. */
+> +		reg = lan8814_read_page_reg(phydev, 5, PTP_CAP_INFO);
+> +	} while (PTP_CAP_INFO_TX_TS_CNT_GET_(reg) > 1);
+> +}
+> +
+> +static irqreturn_t lan8814_handle_ptp_interrupt(struct phy_device *phydev)
+> +{
+> +	struct kszphy_ptp_priv *lan8814 = phydev->priv;
+> +	int rc;
+> +
+> +	rc = lan8814_read_page_reg(phydev, 5, PTP_TSU_INT_STS);
+> +
+> +	if (!(rc & PTP_TSU_INT_STS_PTP_TX_TS_EN))
+> +		return IRQ_NONE;
+> +
+> +	lan8814_get_tx_ts(&lan8814->ptp);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+>  static irqreturn_t lan8814_handle_interrupt(struct phy_device *phydev)
+>  {
+>  	int irq_status;
+>  
+> +	irq_status = lan8814_read_page_reg(phydev, 4, LAN8814_INTR_STS_REG);
+> +	if (irq_status < 0)
+> +		return IRQ_NONE;
+> +
+> +	if (irq_status & LAN8814_INTR_STS_REG_1588_TSU0)
+> +		return lan8814_handle_ptp_interrupt(phydev);
+> +
+>  	irq_status = phy_read(phydev, LAN8814_INTS);
+>  	if (irq_status < 0)
+>  		return IRQ_NONE;
+> @@ -199,10 +519,20 @@ static irqreturn_t lan8814_handle_interrupt(struct phy_device *phydev)
+>  	return IRQ_HANDLED;
+>  }
+>  
+> +static int lan8814_config_ts_intr(struct phy_device *phydev)
+> +{
+> +	return lan8814_write_page_reg(phydev, 5, PTP_TSU_INT_EN, PTP_TSU_INT_EN_PTP_TX_TS_EN |
+> +					  PTP_TSU_INT_EN_PTP_TX_TS_OVRFL_EN);
+> +}
+> +
+>  static int lan8814_config_intr(struct phy_device *phydev)
+>  {
+>  	int temp;
+>  
+> +	lan8814_write_page_reg(phydev, 4, LAN8814_INTR_CTRL_REG,
+> +			       LAN8814_INTR_CTRL_REG_POLARITY |
+> +			       LAN8814_INTR_CTRL_REG_INTR_ENABLE);
+> +
+>  	/* enable / disable interrupts */
+>  	if (phydev->interrupts == PHY_INTERRUPT_ENABLED)
+>  		temp = LAN8814_INTC_ALL;
+> @@ -1187,6 +1517,534 @@ static int kszphy_resume(struct phy_device *phydev)
+>  	return 0;
+>  }
+>  
+> +static bool lan8814_ptp_is_enable(struct phy_device *phydev)
+> +{
+> +	if (phy_read(phydev, PTP_CMD_CTL) & PTP_CMD_CTL_PTP_ENABLE_)
+> +		return true;
+> +
+> +	return false;
+> +}
+> +
+> +static void lan8814_ptp_rx_ts_get(struct phy_device *phydev,
+> +				  u32 *seconds, u32 *nano_seconds, u32 *seq_id)
+> +{
+> +	if (seconds) {
+
+No need to check this.  The one and only caller provides a pointer.
+
+> +		(*seconds) = lan8814_read_page_reg(phydev, 5, PTP_RX_INGRESS_SEC_HI);
+> +		(*seconds) = ((*seconds) << 16) |
+> +			     lan8814_read_page_reg(phydev, 5, PTP_RX_INGRESS_SEC_LO);
+> +	}
+> +
+> +	if (nano_seconds) {
+
+same here.
+
+> +		(*nano_seconds) = lan8814_read_page_reg(phydev, 5, PTP_RX_INGRESS_NS_HI);
+> +		(*nano_seconds) = (((*nano_seconds) & 0x3fff) << 16)
+> +				   | lan8814_read_page_reg(phydev, 5, PTP_RX_INGRESS_NS_LO);
+> +	}
+> +
+> +	if (seq_id)
+
+and here.
+
+> +		(*seq_id) = lan8814_read_page_reg(phydev, 5, PTP_RX_MSG_HEADER2);
+> +}
+> +
+> +static void lan8814_ptp_tx_ts_get(struct phy_device *phydev,
+> +				  u32 *seconds, u32 *nano_seconds, u32 *seq_id)
+> +{
+> +	if (seconds) {
+
+ditto.
+
+> +		(*seconds) = lan8814_read_page_reg(phydev, 5, PTP_TX_EGRESS_SEC_HI);
+> +		(*seconds) = ((*seconds) << 16) |
+> +			     lan8814_read_page_reg(phydev, 5, PTP_TX_EGRESS_SEC_LO);
+> +	}
+> +
+> +	if (nano_seconds) {
+> +		(*nano_seconds) = lan8814_read_page_reg(phydev, 5, PTP_TX_EGRESS_NS_HI);
+> +		(*nano_seconds) = (((*nano_seconds) & 0x3fff) << 16) |
+> +			lan8814_read_page_reg(phydev, 5, PTP_TX_EGRESS_NS_LO);
+> +	}
+> +
+> +	if (seq_id)
+> +		(*seq_id) = lan8814_read_page_reg(phydev, 5, PTP_TX_MSG_HEADER2);
+> +}
+> +
+> +static int lan8814_ts_info(struct mii_timestamper *mii_ts, struct ethtool_ts_info *info)
+> +{
+> +	struct kszphy_ptp_priv *lan8814 = container_of(mii_ts, struct kszphy_ptp_priv, mii_ts);
+> +
+> +	info->so_timestamping =
+> +		SOF_TIMESTAMPING_TX_HARDWARE |
+> +		SOF_TIMESTAMPING_RX_HARDWARE |
+> +		SOF_TIMESTAMPING_RAW_HARDWARE;
+> +
+> +	info->phc_index = ptp_clock_index(lan8814->ptp.ptp_clock);
+> +
+> +	info->tx_types =
+> +		(1 << HWTSTAMP_TX_OFF) |
+> +		(1 << HWTSTAMP_TX_ON) |
+> +		(1 << HWTSTAMP_TX_ONESTEP_SYNC);
+> +
+> +	info->rx_filters =
+> +		(1 << HWTSTAMP_FILTER_NONE) |
+> +		(1 << HWTSTAMP_FILTER_PTP_V1_L4_EVENT) |
+> +		(1 << HWTSTAMP_FILTER_PTP_V2_L4_EVENT) |
+> +		(1 << HWTSTAMP_FILTER_PTP_V2_L2_EVENT) |
+> +		(1 << HWTSTAMP_FILTER_PTP_V2_EVENT);
+> +
+> +	return 0;
+> +}
+> +
+> +static int lan8814_hwtstamp(struct mii_timestamper *mii_ts, struct ifreq *ifr)
+> +{
+> +	struct kszphy_ptp_priv *lan8814 = container_of(mii_ts, struct kszphy_ptp_priv, mii_ts);
+> +	struct hwtstamp_config config;
+> +	int txcfg, rxcfg;
+> +
+> +	if (copy_from_user(&config, ifr->ifr_data, sizeof(config)))
+> +		return -EFAULT;
+> +
+> +	lan8814->hwts_tx_en = config.tx_type;
+> +
+> +	lan8814->ptp.rx_filter = config.rx_filter;
+> +	lan8814->ptp.tx_type = config.tx_type;
+> +
+> +	switch (config.rx_filter) {
+> +	case HWTSTAMP_FILTER_NONE:
+> +		lan8814->hwts_rx_en = 0;
+> +		lan8814->layer = 0;
+> +		lan8814->version = 0;
+> +		break;
+> +	case HWTSTAMP_FILTER_PTP_V2_L4_EVENT:
+> +	case HWTSTAMP_FILTER_PTP_V2_L4_SYNC:
+> +	case HWTSTAMP_FILTER_PTP_V2_L4_DELAY_REQ:
+> +		lan8814->hwts_rx_en = 1;
+> +		lan8814->layer = PTP_CLASS_L4;
+> +		lan8814->version = PTP_CLASS_V2;
+> +		break;
+> +	case HWTSTAMP_FILTER_PTP_V2_L2_EVENT:
+> +	case HWTSTAMP_FILTER_PTP_V2_L2_SYNC:
+> +	case HWTSTAMP_FILTER_PTP_V2_L2_DELAY_REQ:
+> +		lan8814->hwts_rx_en = 1;
+> +		lan8814->layer = PTP_CLASS_L2;
+> +		lan8814->version = PTP_CLASS_V2;
+> +		break;
+> +	case HWTSTAMP_FILTER_PTP_V2_EVENT:
+> +	case HWTSTAMP_FILTER_PTP_V2_SYNC:
+> +	case HWTSTAMP_FILTER_PTP_V2_DELAY_REQ:
+> +		lan8814->hwts_rx_en = 1;
+> +		lan8814->layer = PTP_CLASS_L4 | PTP_CLASS_L2;
+> +		lan8814->version = PTP_CLASS_V2;
+> +		break;
+> +	default:
+> +		return -ERANGE;
+> +	}
+> +
+> +	lan8814_write_page_reg(lan8814->phydev, 5, PTP_RX_PARSE_CONFIG, 0);
+> +	lan8814_write_page_reg(lan8814->phydev, 5, PTP_TX_PARSE_CONFIG, 0);
+> +
+> +	if (lan8814->hwts_rx_en && (lan8814->layer & PTP_CLASS_L2))
+> +		rxcfg = PTP_RX_PARSE_CONFIG_LAYER2_EN_;
+> +
+> +	if (lan8814->hwts_tx_en && (lan8814->layer & PTP_CLASS_L2))
+> +		txcfg = PTP_TX_PARSE_CONFIG_LAYER2_EN_;
+> +
+> +	if (lan8814->hwts_rx_en && (lan8814->layer & PTP_CLASS_L4))
+> +		rxcfg |= PTP_RX_PARSE_CONFIG_IPV4_EN_;
+> +
+> +	if (lan8814->hwts_tx_en && (lan8814->layer & PTP_CLASS_L4))
+> +		txcfg |= PTP_TX_PARSE_CONFIG_IPV4_EN_;
+> +
+> +	if (lan8814_ptp_is_enable(lan8814->phydev))
+> +		lan8814_write_page_reg(lan8814->phydev, 4, PTP_CMD_CTL,
+> +				       PTP_CMD_CTL_PTP_DISABLE_);
+
+Huh?  If the PTP mode is enabled, you now disable it?
+
+> +	lan8814_write_page_reg(lan8814->phydev, 5, PTP_RX_PARSE_CONFIG, rxcfg);
+> +	lan8814_write_page_reg(lan8814->phydev, 5, PTP_TX_PARSE_CONFIG, txcfg);
+> +	lan8814_write_page_reg(lan8814->phydev, 5, PTP_RX_TIMESTAMP_EN, 0x3);
+> +	lan8814_write_page_reg(lan8814->phydev, 5, PTP_TX_TIMESTAMP_EN, 0x3);
+> +	lan8814_write_page_reg(lan8814->phydev, 5, PTP_TX_PARSE_L2_ADDR_EN, 0);
+> +	lan8814_write_page_reg(lan8814->phydev, 5, PTP_RX_PARSE_L2_ADDR_EN, 0);
+> +
+> +	lan8814_write_page_reg(lan8814->phydev, 4, PTP_CMD_CTL, PTP_CMD_CTL_PTP_ENABLE_);
+> +	if (lan8814->hwts_tx_en == HWTSTAMP_TX_ONESTEP_SYNC) {
+> +		lan8814_write_page_reg(lan8814->phydev, 5, PTP_TX_MOD,
+> +				       PTP_TX_MOD_TX_PTP_SYNC_TS_INSERT_);
+> +	} else if (lan8814->hwts_tx_en == HWTSTAMP_TX_ON) {
+> +		/* Enabling 2 step offloading and all option for TS insertion/correction fields */
+> +		lan8814_write_page_reg(lan8814->phydev, 5, PTP_TX_MOD, 0x800);
+> +		lan8814_config_ts_intr(lan8814->phydev);
+> +	}
+
+Again, there is no protection here against concurrent changes from
+user space.
+
+> +
+> +	return copy_to_user(ifr->ifr_data, &config, sizeof(config)) ? -EFAULT : 0;
+> +}
+> +
+> +static bool lan8814_rxtstamp(struct mii_timestamper *mii_ts, struct sk_buff *skb, int type)
+> +{
+> +	struct kszphy_ptp_priv *lan8814 = container_of(mii_ts, struct kszphy_ptp_priv, mii_ts);
+> +	struct skb_shared_hwtstamps *shhwtstamps = NULL;
+> +	u32 seconds, nsec, seq_id;
+> +
+> +	if (!lan8814->hwts_rx_en)
+> +		return false;
+> +
+> +	if (!skb)
+
+Remove the useless check.  skb is guaranteed to be non-null.
+
+> +		return false;
+> +
+> +	if ((type & lan8814->version) == 0 || (type & lan8814->layer) == 0)
+> +		return false;
+> +
+> +	if (lan8814->ptp.rx_filter == HWTSTAMP_FILTER_NONE ||
+> +	    type == PTP_CLASS_NONE)
+
+Isn't this test redundant?  You just checked (type & lan8814->version),
+and lan8814->version depends on lan8814->ptp.rx_filter.
+
+> +		return false;
+> +
+> +	lan8814_ptp_rx_ts_get(lan8814->phydev, &seconds, &nsec, &seq_id);
+
+This read the time stamp unconditionally.  Can't that fail?
+What happens when the time stamp doesn't match the skb?
+
+> +	/* Saving timestamp and sending through skbuff */
+> +	shhwtstamps = skb_hwtstamps(skb);
+> +	memset(shhwtstamps, 0, sizeof(*shhwtstamps));
+> +	shhwtstamps->hwtstamp = ktime_set(seconds, nsec);
+> +
+> +	netif_rx_ni(skb);
+> +
+> +	return true;
+> +}
+> +
+> +static int is_sync(struct sk_buff *skb, int type)
+> +{
+> +	u8 *data = skb->data, *msgtype;
+> +	unsigned int offset = 0;
+
+Please use ptp_parse_header() and ptp_get_msgtype();
+
+> +	if (type & PTP_CLASS_VLAN)
+> +		offset += VLAN_HLEN;
+> +
+> +	switch (type & PTP_CLASS_PMASK) {
+> +	case PTP_CLASS_IPV4:
+> +		offset += ETH_HLEN + IPV4_HLEN(data + offset) + UDP_HLEN;
+> +		break;
+> +	case PTP_CLASS_IPV6:
+> +		offset += ETH_HLEN + IP6_HLEN + UDP_HLEN;
+> +		break;
+> +	case PTP_CLASS_L2:
+> +		offset += ETH_HLEN;
+> +		break;
+> +	default:
+> +		return 0;
+> +	}
+> +
+> +	if (type & PTP_CLASS_V1)
+> +		offset += OFF_PTP_CONTROL;
+> +
+> +	if (skb->len < offset + 1)
+> +		return 0;
+> +
+> +	msgtype = data + offset;
+> +
+> +	return (*msgtype & 0xf) == 0;
+> +}
+> +
+> +static void lan8814_txtstamp(struct mii_timestamper *mii_ts,
+> +			     struct sk_buff *skb, int type)
+> +{
+> +	struct kszphy_ptp_priv *lan8814 = container_of(mii_ts, struct kszphy_ptp_priv, mii_ts);
+> +
+> +	switch (lan8814->hwts_tx_en) {
+> +	case HWTSTAMP_TX_ONESTEP_SYNC:
+> +		if (is_sync(skb, type)) {
+> +			kfree_skb(skb);
+> +			return;
+> +		}
+> +		break;
+> +
+> +	case HWTSTAMP_TX_ON:
+> +		skb_shinfo(skb)->tx_flags |= SKBTX_IN_PROGRESS;
+> +		skb_queue_tail(&lan8814->ptp.tx_queue, skb);
+> +		break;
+> +
+> +	case HWTSTAMP_TX_OFF:
+> +	default:
+> +		kfree_skb(skb);
+> +		break;
+> +	}
+> +}
+> +
+> +static void lan8814_ptp_clock_set(struct phy_device *phydev,
+> +				  u32 seconds, u32 nano_seconds,
+> +				 u32 sub_nano_seconds)
+> +{
+> +	u32 sec_low, sec_high, nsec_low, nsec_high, snsec_low, snsec_high;
+> +
+> +	sec_low = seconds & 0xffff;
+> +	sec_high = ((seconds >> 16) & 0xffff);
+> +	nsec_low = nano_seconds & 0xffff;
+> +	nsec_high = ((nano_seconds >> 16) & 0x3fff);
+> +	snsec_low = sub_nano_seconds & 0xffff;
+> +	snsec_high = ((sub_nano_seconds >> 16) & 0xffff);
+> +
+> +	lan8814_write_page_reg(phydev, 4, PTP_CLOCK_SET_SEC_LO, sec_low);
+> +	lan8814_write_page_reg(phydev, 4, PTP_CLOCK_SET_SEC_MID, sec_high);
+> +	lan8814_write_page_reg(phydev, 4, PTP_CLOCK_SET_NS_LO, nsec_low);
+> +	lan8814_write_page_reg(phydev, 4, PTP_CLOCK_SET_NS_HI, nsec_high);
+> +	lan8814_write_page_reg(phydev, 4, PTP_CLOCK_SET_SUBNS_LO, snsec_low);
+> +	lan8814_write_page_reg(phydev, 4, PTP_CLOCK_SET_SUBNS_HI, snsec_high);
+> +
+> +	lan8814_write_page_reg(phydev, 4, PTP_CMD_CTL, PTP_CMD_CTL_PTP_CLOCK_LOAD_);
+
+Needs protection against concurrent calls to clock_settime();
+
+> +}
+> +
+> +static void lan8814_ptp_clock_get(struct phy_device *phydev,
+> +				  u32 *seconds, u32 *nano_seconds,
+> +				  u32 *sub_nano_seconds)
+> +{
+> +	lan8814_write_page_reg(phydev, 4, PTP_CMD_CTL, PTP_CMD_CTL_PTP_CLOCK_READ_);
+> +
+> +	if (seconds) {
+> +		(*seconds) = lan8814_read_page_reg(phydev, 4, PTP_CLOCK_READ_SEC_MID);
+> +		(*seconds) = ((*seconds) << 16) |
+> +			     lan8814_read_page_reg(phydev, 4, PTP_CLOCK_READ_SEC_LO);
+> +	}
+> +
+> +	if (nano_seconds) {
+> +		(*nano_seconds) = lan8814_read_page_reg(phydev, 4, PTP_CLOCK_READ_NS_HI);
+> +		(*nano_seconds) = (((*nano_seconds) & 0x3fff) << 16) |
+> +				  lan8814_read_page_reg(phydev, 4, PTP_CLOCK_READ_NS_LO);
+> +	}
+> +
+> +	if (sub_nano_seconds) {
+> +		(*sub_nano_seconds) = lan8814_read_page_reg(phydev, 4,
+> +								PTP_CLOCK_READ_SUBNS_HI);
+> +		(*sub_nano_seconds) = ((*sub_nano_seconds) << 16) |
+> +				       lan8814_read_page_reg(phydev, 4,
+> +							     PTP_CLOCK_READ_SUBNS_LO);
+> +	}
+> +}
+> +
+> +static int lan8814_ptpci_gettime64(struct ptp_clock_info *ptpci,
+> +				   struct timespec64 *ts)
+> +{
+> +	struct lan8814_ptp *ptp =
+> +		container_of(ptpci, struct lan8814_ptp, ptp_clock_info);
+> +	struct kszphy_ptp_priv *priv =
+> +		container_of(ptp, struct kszphy_ptp_priv, ptp);
+> +	struct phy_device *phydev = priv->phydev;
+> +	u32 nano_seconds = 0;
+> +	u32 seconds = 0;
+> +
+> +	lan8814_ptp_clock_get(phydev, &seconds, &nano_seconds, NULL);
+> +	ts->tv_sec = seconds;
+> +	ts->tv_nsec = nano_seconds;
+> +
+> +	return 0;
+> +}
+> +
+> +static void lan8814_ptp_clock_step(struct phy_device *phydev,
+> +				   s64 time_step_ns)
+> +{
+> +	u32 nano_seconds_step	= 0;
+> +	u64 abs_time_step_ns	= 0;
+> +	u32 unsigned_seconds	= 0;
+> +	u32 nano_seconds	= 0;
+> +	u32 remainder		= 0;
+> +	s32 seconds		= 0;
+> +
+> +	if (time_step_ns >  15000000000LL) {
+> +		/* convert to clock set */
+> +		lan8814_ptp_clock_get(phydev, &unsigned_seconds,	&nano_seconds, NULL);
+> +		unsigned_seconds += div_u64_rem(time_step_ns, 1000000000LL,
+> +				&remainder);
+> +		nano_seconds += remainder;
+> +		if (nano_seconds >= 1000000000) {
+> +			unsigned_seconds++;
+> +			nano_seconds -= 1000000000;
+> +		}
+> +		lan8814_ptp_clock_set(phydev, unsigned_seconds,
+> +				      nano_seconds, 0);
+> +		return;
+> +	} else if (time_step_ns < -15000000000LL) {
+> +		/* convert to clock set */
+> +		time_step_ns = -time_step_ns;
+> +
+> +		lan8814_ptp_clock_get(phydev, &unsigned_seconds,
+> +				      &nano_seconds, NULL);
+> +		unsigned_seconds -= div_u64_rem(time_step_ns, 1000000000LL,
+> +				&remainder);
+> +		nano_seconds_step = remainder;
+> +		if (nano_seconds < nano_seconds_step) {
+> +			unsigned_seconds--;
+> +			nano_seconds += 1000000000;
+> +		}
+> +		nano_seconds -= nano_seconds_step;
+> +		lan8814_ptp_clock_set(phydev, unsigned_seconds,
+> +				      nano_seconds, 0);
+> +		return;
+> +	}
+> +
+> +	/* do clock step */
+> +	if (time_step_ns >= 0) {
+> +		abs_time_step_ns = (u64)(time_step_ns);
+> +		seconds = (s32)div_u64_rem(abs_time_step_ns, 1000000000,
+> +				&remainder);
+> +		nano_seconds = (u32)remainder;
+> +	} else {
+> +		abs_time_step_ns = (u64)(-time_step_ns);
+> +		seconds = -((s32)div_u64_rem(abs_time_step_ns, 1000000000,
+> +					&remainder));
+> +		nano_seconds = (u32)remainder;
+> +		if (nano_seconds > 0) {
+> +			/* subtracting nano seconds is not allowed
+> +			 * convert to subtracting from seconds,
+> +			 * and adding to nanoseconds
+> +			 */
+> +			seconds--;
+> +			nano_seconds = (1000000000 - nano_seconds);
+> +		}
+> +	}
+> +
+> +	if (nano_seconds > 0) {
+> +		/* add 8 ns to cover the likely normal increment */
+> +		nano_seconds += 8;
+> +	}
+> +
+> +	if (nano_seconds >= 1000000000) {
+> +		/* carry into seconds */
+> +		seconds++;
+> +		nano_seconds -= 1000000000;
+> +	}
+> +
+> +	while (seconds) {
+> +		if (seconds > 0) {
+> +			u32 adjustment_value = (u32)seconds;
+> +			u16 adjustment_value_lo, adjustment_value_hi;
+> +
+> +			adjustment_value_lo = adjustment_value & 0xffff;
+> +			adjustment_value_hi = (adjustment_value >> 16) & 0x3fff;
+> +
+> +			if (adjustment_value > 0xF)
+> +				adjustment_value = 0xF;
+> +			lan8814_write_page_reg(phydev, 4, PTP_LTC_STEP_ADJ_LO,
+> +					       adjustment_value_lo);
+> +			lan8814_write_page_reg(phydev, 4, PTP_LTC_STEP_ADJ_HI,
+> +					       PTP_LTC_STEP_ADJ_DIR_ |
+> +					       adjustment_value_hi);
+> +			seconds -= ((s32)adjustment_value);
+> +		} else {
+> +			u32 adjustment_value = (u32)(-seconds);
+> +			u16 adjustment_value_lo, adjustment_value_hi;
+> +
+> +			adjustment_value_lo = adjustment_value & 0xffff;
+> +			adjustment_value_hi = (adjustment_value >> 16) & 0x3fff;
+> +			if (adjustment_value > 0xF)
+> +				adjustment_value = 0xF;
+> +			lan8814_write_page_reg(phydev, 4, PTP_LTC_STEP_ADJ_LO,
+> +					       adjustment_value_lo);
+> +			lan8814_write_page_reg(phydev, 4, PTP_LTC_STEP_ADJ_HI,
+> +					       PTP_LTC_STEP_ADJ_DIR_ |
+> +					       adjustment_value_hi);
+> +			seconds += ((s32)adjustment_value);
+> +		}
+> +		lan8814_write_page_reg(phydev, 4, PTP_CMD_CTL,
+> +				       PTP_CMD_CTL_PTP_LTC_STEP_SEC_);
+> +	}
+> +	if (nano_seconds) {
+> +		u16 nano_seconds_lo;
+> +		u16 nano_seconds_hi;
+> +
+> +		nano_seconds_lo = nano_seconds & 0xffff;
+> +		nano_seconds_hi = (nano_seconds >> 16) & 0x3fff;
+> +
+> +		lan8814_write_page_reg(phydev, 4, PTP_LTC_STEP_ADJ_LO,
+> +				       nano_seconds_lo);
+> +		lan8814_write_page_reg(phydev, 4, PTP_LTC_STEP_ADJ_HI,
+> +				       PTP_LTC_STEP_ADJ_DIR_ |
+> +				       nano_seconds_hi);
+> +		lan8814_write_page_reg(phydev, 4, PTP_CMD_CTL,
+> +				       PTP_CMD_CTL_PTP_LTC_STEP_NSEC_);
+> +	}
+> +}
+> +
+> +static int lan8814_ptpci_adjtime(struct ptp_clock_info *ptpci, s64 delta)
+> +{
+> +	struct lan8814_ptp *ptp =
+> +		container_of(ptpci, struct lan8814_ptp, ptp_clock_info);
+> +	struct kszphy_ptp_priv *priv =
+> +		container_of(ptp, struct kszphy_ptp_priv, ptp);
+> +	struct phy_device *phydev = priv->phydev;
+> +
+> +	lan8814_ptp_clock_step(phydev, delta);
+> +
+> +	return 0;
+> +}
+> +
+> +static int lan8814_ptpci_adjfine(struct ptp_clock_info *ptpci, long scaled_ppm)
+> +{
+> +	struct lan8814_ptp *ptp =
+> +		container_of(ptpci, struct lan8814_ptp, ptp_clock_info);
+> +	struct kszphy_ptp_priv *priv = container_of(ptp, struct kszphy_ptp_priv, ptp);
+> +	struct phy_device *phydev = priv->phydev;
+> +	u32 kszphy_rate_adj = 0;
+> +	u16 kszphy_rate_adj_lo = 0, kszphy_rate_adj_hi = 0;
+> +	bool positive = true;
+> +	u64 u64_delta = 0;
+> +
+> +	if ((scaled_ppm < (-LAN8814_PTP_MAX_FINE_ADJ_IN_SCALED_PPM)) ||
+> +	    scaled_ppm > LAN8814_PTP_MAX_FINE_ADJ_IN_SCALED_PPM) {
+> +		return -EINVAL;
+> +	}
+> +	if (scaled_ppm > 0) {
+> +		u64_delta = (u64)scaled_ppm;
+> +		positive = true;
+> +	} else {
+> +		u64_delta = (u64)(-scaled_ppm);
+> +		positive = false;
+> +	}
+> +	u64_delta = (u64_delta << 13);
+> +	kszphy_rate_adj = div_u64(u64_delta, 15625);
+> +
+> +	kszphy_rate_adj_lo = kszphy_rate_adj & 0xffff;
+> +	kszphy_rate_adj_hi = (kszphy_rate_adj >> 16) & 0x3fff;
+> +
+> +	if (positive)
+> +		kszphy_rate_adj_hi |= PTP_CLOCK_RATE_ADJ_DIR_;
+> +
+> +	lan8814_write_page_reg(phydev, 4, PTP_CLOCK_RATE_ADJ_HI_, kszphy_rate_adj_hi);
+> +	lan8814_write_page_reg(phydev, 4, PTP_CLOCK_RATE_ADJ_LO_, kszphy_rate_adj_lo);
+> +
+> +	return 0;
+> +}
+> +
+> +static void lan8814_ptp_reset(struct phy_device *phydev)
+> +{
+> +	if (lan8814_ptp_is_enable(phydev))
+> +		lan8814_write_page_reg(phydev, 4, PTP_CMD_CTL, PTP_CMD_CTL_PTP_DISABLE_);
+> +
+> +	lan8814_write_page_reg(phydev, 4, LTC_HARD_RESET, LTC_HARD_RESET_);
+> +	lan8814_write_page_reg(phydev, 5, TSU_HARD_RESET, TSU_HARD_RESET_);
+> +}
+> +
+> +static void lan8814_ptp_enable(struct phy_device *phydev)
+> +{
+> +	if (lan8814_ptp_is_enable(phydev))
+> +		return;
+> +
+> +	lan8814_write_page_reg(phydev, 4, PTP_CMD_CTL, PTP_CMD_CTL_PTP_ENABLE_);
+> +}
+> +
+> +static void lan8814_ptp_sync_to_system_clock(struct phy_device *phydev)
+> +{
+> +	struct timespec64 ts;
+> +
+> +	ktime_get_clocktai_ts64(&ts);
+> +
+> +	lan8814_ptp_clock_set(phydev, ts.tv_sec, ts.tv_nsec, 0);
+> +}
+> +
+> +static void lan8814_ptp_init(struct phy_device *phydev)
+> +{
+> +	u32 temp;
+> +
+> +	lan8814_ptp_reset(phydev);
+> +	lan8814_ptp_sync_to_system_clock(phydev);
+> +	temp = lan8814_read_page_reg(phydev, 5, PTP_TX_MOD);
+> +	temp |= PTP_TX_MOD_BAD_UDPV4_CHKSUM_FORCE_FCS_DIS_;
+> +	lan8814_write_page_reg(phydev, 5, PTP_TX_MOD, temp);
+> +	lan8814_write_page_reg(phydev, 4, PTP_OPERATING_MODE,
+> +			       PTP_OPERATING_MODE_STANDALONE);
+> +	lan8814_ptp_enable(phydev);
+> +}
+> +
+>  static int kszphy_probe(struct phy_device *phydev)
+>  {
+>  	const struct kszphy_type *type = phydev->drv->driver_data;
+> @@ -1248,6 +2106,88 @@ static int kszphy_probe(struct phy_device *phydev)
+>  	return 0;
+>  }
+>  
+> +static int lan8814_probe(struct phy_device *phydev)
+> +{
+> +	struct kszphy_priv *priv;
+> +	struct clk *clk;
+> +	const struct kszphy_type *type = phydev->drv->driver_data;
+> +	const struct device_node *np = phydev->mdio.dev.of_node;
+> +
+> +	priv = devm_kzalloc(&phydev->mdio.dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	skb_queue_head_init(&priv->ptp_priv.ptp.tx_queue);
+> +
+> +	priv->ptp_priv.phydev = phydev;
+> +
+> +	priv->type = type;
+> +
+> +	priv->ptp_priv.mii_ts.rxtstamp = lan8814_rxtstamp;
+> +	priv->ptp_priv.mii_ts.txtstamp = lan8814_txtstamp;
+> +	priv->ptp_priv.mii_ts.hwtstamp = lan8814_hwtstamp;
+> +	priv->ptp_priv.mii_ts.ts_info  = lan8814_ts_info;
+> +
+> +	phydev->mii_ts = &priv->ptp_priv.mii_ts;
+> +
+> +	phydev->priv = priv;
+> +
+> +	lan8814_ptp_init(phydev);
+> +
+> +	priv->ptp_priv.ptp.flags |= PTP_FLAG_ISR_ENABLED;
+> +
+> +	if (!IS_ENABLED(CONFIG_PTP_1588_CLOCK))
+> +		return 0;
+> +
+> +	clk = devm_clk_get(&phydev->mdio.dev, "rmii-ref");
+> +	/* NOTE: clk may be NULL if building without CONFIG_HAVE_CLK */
+> +	if (!IS_ERR_OR_NULL(clk)) {
+> +		unsigned long rate = clk_get_rate(clk);
+> +		bool rmii_ref_clk_sel_25_mhz;
+> +
+> +		priv->rmii_ref_clk_sel = type->has_rmii_ref_clk_sel;
+> +		rmii_ref_clk_sel_25_mhz = of_property_read_bool(np,
+> +				"micrel,rmii-reference-clock-select-25-mhz");
+> +
+> +		if (rate > 24500000 && rate < 25500000) {
+> +			priv->rmii_ref_clk_sel_val = rmii_ref_clk_sel_25_mhz;
+> +		} else if (rate > 49500000 && rate < 50500000) {
+> +			priv->rmii_ref_clk_sel_val = !rmii_ref_clk_sel_25_mhz;
+> +		} else {
+> +			phydev_err(phydev, "Clock rate out of range: %ld\n",
+> +				   rate);
+> +			return -EINVAL;
+> +		}
+> +	}
+> +
+> +	priv->ptp_priv.ptp.ptp_clock_info.owner = THIS_MODULE;
+> +	snprintf(priv->ptp_priv.ptp.ptp_clock_info.name, 30, "%s",
+> +		 phydev->drv->name);
+> +	priv->ptp_priv.ptp.ptp_clock_info.max_adj = LAN8814_PTP_MAX_FREQ_ADJ_IN_PPB;
+> +	priv->ptp_priv.ptp.ptp_clock_info.n_alarm = 0;
+> +	priv->ptp_priv.ptp.ptp_clock_info.n_ext_ts = 0;
+> +	priv->ptp_priv.ptp.ptp_clock_info.n_per_out = 1;
+> +	priv->ptp_priv.ptp.ptp_clock_info.n_pins = 0;
+> +	priv->ptp_priv.ptp.ptp_clock_info.pps = 0;
+> +	priv->ptp_priv.ptp.ptp_clock_info.pin_config = NULL;
+> +	priv->ptp_priv.ptp.ptp_clock_info.adjfine = lan8814_ptpci_adjfine;
+> +	priv->ptp_priv.ptp.ptp_clock_info.adjtime = lan8814_ptpci_adjtime;
+> +	priv->ptp_priv.ptp.ptp_clock_info.gettime64 = lan8814_ptpci_gettime64;
+
+Don't forget about settime64()!
+
+Thanks,
+Richard
+
+
+> +	priv->ptp_priv.ptp.ptp_clock_info.getcrosststamp = NULL;
+> +
+> +	priv->ptp_priv.ptp.ptp_clock = ptp_clock_register(&priv->ptp_priv.ptp.ptp_clock_info,
+> +							  &phydev->mdio.dev);
+> +
+> +	if (IS_ERR_OR_NULL(priv->ptp_priv.ptp.ptp_clock))
+> +		phydev_err(phydev, "ptp_clock_register failed %lu\n",
+> +			   PTR_ERR(priv->ptp_priv.ptp.ptp_clock));
+> +
+> +	priv->ptp_priv.ptp.flags |= PTP_FLAG_PTP_CLOCK_REGISTERED;
+> +	phydev_info(phydev, "successfully registered ptp clock\n");
+> +
+> +	return 0;
+> +}
+> +
+>  static struct phy_driver ksphy_driver[] = {
+>  {
+>  	.phy_id		= PHY_ID_KS8737,
+> @@ -1415,7 +2355,7 @@ static struct phy_driver ksphy_driver[] = {
+>  	.phy_id_mask	= MICREL_PHY_ID_MASK,
+>  	.name		= "Microchip INDY Gigabit Quad PHY",
+>  	.driver_data	= &ksz9021_type,
+> -	.probe		= kszphy_probe,
+> +	.probe		= lan8814_probe,
+>  	.soft_reset	= genphy_soft_reset,
+>  	.read_status	= ksz9031_read_status,
+>  	.get_sset_count	= kszphy_get_sset_count,
+> -- 
+> 2.17.1
+> 
