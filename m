@@ -2,151 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7DCE2DD67A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 18:44:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 728942DD681
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 18:45:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729275AbgLQRnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 12:43:50 -0500
-Received: from mail.pqgruber.com ([52.59.78.55]:55938 "EHLO mail.pqgruber.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727388AbgLQRnu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 12:43:50 -0500
-Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
-        by mail.pqgruber.com (Postfix) with ESMTPSA id 73C5EC727E0;
-        Thu, 17 Dec 2020 18:43:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
-        s=mail; t=1608226985;
-        bh=6TcCAg/WkHdSeIZq4U3n4mVZZNVmTV0MBy/nU7U8pJI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pftSHLPuTEHcNXYRK6B9oKpV4ijhodMf306IaV4P5rAwytxQ+hubaSK51zpMofj1G
-         n5U3tejvgpyZUW851vTqTH2IbOavclEgSJCgg8zKJruu4zWEqem6jzMtYG4fS9FnYE
-         rO/wKqevpp+PIwMjr8BCDaJ9hWXw9njs4HWC9GqQ=
-Date:   Thu, 17 Dec 2020 18:43:04 +0100
-From:   Clemens Gruber <clemens.gruber@pqgruber.com>
-To:     Sven Van Asbroeck <thesven73@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        id S1729418AbgLQRpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 12:45:35 -0500
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:52449 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728487AbgLQRpf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 12:45:35 -0500
+Received: from [192.168.0.8] (ip5f5aeed4.dynamic.kabel-deutschland.de [95.90.238.212])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: buczek)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 1ABDA20647B5E;
+        Thu, 17 Dec 2020 18:44:52 +0100 (CET)
+To:     linux-xfs@vger.kernel.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pwm@vger.kernel.org, u.kleine-koenig@pengutronix.de
-Subject: Re: [PATCH v5 2/7] pwm: pca9685: Support hardware readout
-Message-ID: <X9uYqGboZg5DuEtf@workstation.tuxnet>
-References: <20201216125320.5277-1-clemens.gruber@pqgruber.com>
- <20201216125320.5277-2-clemens.gruber@pqgruber.com>
- <CAGngYiWkKZGkQ4TTTy8bQYvnGBK45V0A0JCe_+M5V+vuVU+zkQ@mail.gmail.com>
+        it+linux-xfs@molgen.mpg.de
+From:   Donald Buczek <buczek@molgen.mpg.de>
+Subject: v5.10.1 xfs deadlock
+Message-ID: <b8da4aed-ee44-5d9f-88dc-3d32f0298564@molgen.mpg.de>
+Date:   Thu, 17 Dec 2020 18:44:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGngYiWkKZGkQ4TTTy8bQYvnGBK45V0A0JCe_+M5V+vuVU+zkQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 11:00:59PM -0500, Sven Van Asbroeck wrote:
-> On Wed, Dec 16, 2020 at 7:53 AM Clemens Gruber
-> <clemens.gruber@pqgruber.com> wrote:
-> >
-> > Implements .get_state to read-out the current hardware state.
-> >
-> 
-> I am not convinced that we actually need this.
-> 
-> Looking at the pwm core, .get_state() is only called right after .request(),
-> to initialize the cached value of the state. The core then uses the cached
-> value throughout, it'll never read out the h/w again, until the next .request().
-> 
-> In our case, we know that the state right after request is always disabled,
-> because:
-> - we disable all pwm channels on probe (in PATCH v5 4/7)
-> - .free() disables the pwm channel
-> 
-> Conclusion: .get_state() will always return "pwm disabled", so why do we
-> bother reading out the h/w?
+Dear xfs developer,
 
-If there are no plans for the PWM core to call .get_state more often in
-the future, we could just read out the period and return 0 duty and
-disabled.
+I was doing some testing on a Linux 5.10.1 system with two 100 TB xfs filesystems on md raid6 raids.
 
-Thierry, Uwe, what's your take on this?
+The stress test was essentially `cp -a`ing a Linux source repository with two threads in parallel on each filesystem.
 
-> Of course, if we choose to leave the pwm enabled after .free(), then
-> .get_state() can even be left out! Do we want that? Genuine question, I do
-> not know the answer.
+After about on hour, the processes to one filesystem (md1) blocked, 30 minutes later the process to the other filesystem (md0) did.
 
-I do not think we should leave it enabled after free. It is less
-complicated if we know that unrequested channels are not in use.
+     root      7322  2167  0 Dec16 pts/1    00:00:06 cp -a /jbod/M8068/scratch/linux /jbod/M8068/scratch/1/linux.018.TMP
+     root      7329  2169  0 Dec16 pts/1    00:00:05 cp -a /jbod/M8068/scratch/linux /jbod/M8068/scratch/2/linux.019.TMP
+     root     13856  2170  0 Dec16 pts/1    00:00:08 cp -a /jbod/M8067/scratch/linux /jbod/M8067/scratch/2/linux.028.TMP
+     root     13899  2168  0 Dec16 pts/1    00:00:05 cp -a /jbod/M8067/scratch/linux /jbod/M8067/scratch/1/linux.027.TMP
 
-> 
-> > The hardware readout may return slightly different values than those
-> > that were set in apply due to the limited range of possible prescale and
-> > counter register values.
-> >
-> > Also note that although the datasheet mentions 200 Hz as default
-> > frequency when using the internal 25 MHz oscillator, the calculated
-> > period from the default prescaler register setting of 30 is 5079040ns.
-> >
-> > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
-> > ---
-> >  drivers/pwm/pwm-pca9685.c | 41 +++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 41 insertions(+)
-> >
-> > diff --git a/drivers/pwm/pwm-pca9685.c b/drivers/pwm/pwm-pca9685.c
-> > index 1b5b5fb93b43..b3398963c0ff 100644
-> > --- a/drivers/pwm/pwm-pca9685.c
-> > +++ b/drivers/pwm/pwm-pca9685.c
-> > @@ -331,6 +331,46 @@ static int pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
-> >         return 0;
-> >  }
-> >
-> > +static void pca9685_pwm_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
-> > +                                 struct pwm_state *state)
-> > +{
-> > +       struct pca9685 *pca = to_pca(chip);
-> > +       unsigned long long duty;
-> > +       unsigned int val;
-> > +
-> > +       /* Calculate (chip-wide) period from prescale value */
-> > +       regmap_read(pca->regmap, PCA9685_PRESCALE, &val);
-> > +       state->period = (PCA9685_COUNTER_RANGE * 1000 / PCA9685_OSC_CLOCK_MHZ) *
-> > +                       (val + 1);
-> > +
-> > +       /* The (per-channel) polarity is fixed */
-> > +       state->polarity = PWM_POLARITY_NORMAL;
-> > +
-> > +       if (pwm->hwpwm >= PCA9685_MAXCHAN) {
-> > +               /*
-> > +                * The "all LEDs" channel does not support HW readout
-> > +                * Return 0 and disabled for backwards compatibility
-> > +                */
-> > +               state->duty_cycle = 0;
-> > +               state->enabled = false;
-> > +               return;
-> > +       }
-> > +
-> > +       duty = pca9685_pwm_get_duty(pca, pwm->hwpwm);
-> > +
-> > +       state->enabled = !!duty;
-> > +       if (!state->enabled) {
-> > +               state->duty_cycle = 0;
-> > +               return;
-> > +       } else if (duty == PCA9685_COUNTER_RANGE) {
-> > +               state->duty_cycle = state->period;
-> > +               return;
-> > +       }
-> > +
-> > +       duty *= state->period;
-> > +       state->duty_cycle = duty / PCA9685_COUNTER_RANGE;
-> > +}
-> > +
-> >  static int pca9685_pwm_request(struct pwm_chip *chip, struct pwm_device *pwm)
-> >  {
-> >         struct pca9685 *pca = to_pca(chip);
-> > @@ -353,6 +393,7 @@ static void pca9685_pwm_free(struct pwm_chip *chip, struct pwm_device *pwm)
-> >
-> >  static const struct pwm_ops pca9685_pwm_ops = {
-> >         .apply = pca9685_pwm_apply,
-> > +       .get_state = pca9685_pwm_get_state,
-> >         .request = pca9685_pwm_request,
-> >         .free = pca9685_pwm_free,
-> >         .owner = THIS_MODULE,
-> > --
-> > 2.29.2
-> >
+Some info from the system (all stack traces, slabinfo) is available here: https://owww.molgen.mpg.de/~buczek/2020-12-16.info.txt
+
+It stands out, that there are many (549 for md0, but only 10 for md1)  "xfs-conv" threads all with stacks like this
+
+     [<0>] xfs_log_commit_cil+0x6cc/0x7c0
+     [<0>] __xfs_trans_commit+0xab/0x320
+     [<0>] xfs_iomap_write_unwritten+0xcb/0x2e0
+     [<0>] xfs_end_ioend+0xc6/0x110
+     [<0>] xfs_end_io+0xad/0xe0
+     [<0>] process_one_work+0x1dd/0x3e0
+     [<0>] worker_thread+0x2d/0x3b0
+     [<0>] kthread+0x118/0x130
+     [<0>] ret_from_fork+0x22/0x30
+
+xfs_log_commit_cil+0x6cc is
+
+   xfs_log_commit_cil()
+     xlog_cil_push_background(log)
+       xlog_wait(&cil->xc_push_wait, &cil->xc_push_lock);
+
+Some other threads, including the four "cp" commands are also blocking at xfs_log_commit_cil+0x6cc
+
+There are also single "flush" process for each md device with this stack signature:
+
+     [<0>] xfs_map_blocks+0xbf/0x400
+     [<0>] iomap_do_writepage+0x15e/0x880
+     [<0>] write_cache_pages+0x175/0x3f0
+     [<0>] iomap_writepages+0x1c/0x40
+     [<0>] xfs_vm_writepages+0x59/0x80
+     [<0>] do_writepages+0x4b/0xe0
+     [<0>] __writeback_single_inode+0x42/0x300
+     [<0>] writeback_sb_inodes+0x198/0x3f0
+     [<0>] __writeback_inodes_wb+0x5e/0xc0
+     [<0>] wb_writeback+0x246/0x2d0
+     [<0>] wb_workfn+0x26e/0x490
+     [<0>] process_one_work+0x1dd/0x3e0
+     [<0>] worker_thread+0x2d/0x3b0
+     [<0>] kthread+0x118/0x130
+     [<0>] ret_from_fork+0x22/0x30
+
+xfs_map_blocks+0xbf is the
+
+     xfs_ilock(ip, XFS_ILOCK_SHARED);
+
+in xfs_map_blocks().
+
+The system is low on free memory
+
+     MemTotal:       197587764 kB
+     MemFree:          2196496 kB
+     MemAvailable:   189895408 kB
+
+but responsive.
+
+I have an out of tree driver for the HBA ( smartpqi 2.1.6-005 pulled from linux-scsi) , but it is unlikely that this blocking is related to that, because the md block devices itself are responsive (`xxd /dev/md0` )
+
+I can keep the system in the state for a while. Is there an idea what was going from or an idea what data I could collect from the running system to help? I have full debug info and could walk lists or retrieve data structures with gdb.
+
+Best
+   Donald
