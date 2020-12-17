@@ -2,200 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E75822DD128
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 13:15:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A53AD2DD136
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 13:17:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727298AbgLQMPB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 17 Dec 2020 07:15:01 -0500
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:39774 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726155AbgLQMPA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 07:15:00 -0500
-Received: by mail-ot1-f44.google.com with SMTP id d8so27023166otq.6;
-        Thu, 17 Dec 2020 04:14:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=g+ZQ9Hep/ihbUcAAKgQBrtb6DKWZjd1MMpk6GQGQBFo=;
-        b=TwUE/sAaDxSik4eC4+AwHfhs259wcfDFaqZ9iAEraBl2QkccsjfTrFTz3utu1eAtxe
-         Z0QtTCQVWqfSQV4KSrzJPi3sYXIZQ9iOrgZKZ+4n3He0ShWxke3P6LN05fBagccHvcBQ
-         r2OUQ1tdC6f7OivbGm+kTXTRufY4ouXz4j/wneC71NeHmY2l4RXdmwhBLZjDHYSyYSIJ
-         KcssnimozOGMCMvU7FRpDf4gYdPodv3BTeIBgKghLNwiDoYMCBCOnsYrG1JwmlqtcgVa
-         YAk3Kar9SihjT7kmv3ntqhFSkAFfWk7FHKnANOJksbpUek993z5QavpMwDRPwQRTZOGc
-         u+HQ==
-X-Gm-Message-State: AOAM532KaE/4c9ToIExUavd/+ExtHVxSGbk8aB2uXujvKXjrpdm1hZBy
-        sBBSuvmzsVjHsIp7TS5jL27+xagesoMkuAJFzJzSSEJ3c/A=
-X-Google-Smtp-Source: ABdhPJz59bsLl40yU/AMrbYd1pTjEH6DKHmAPNcgiQuY6xiSJuPFg3psehvXyIwiQfTmcEKRkCfg14X04prnuLoQcg4=
-X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr29145891otc.145.1608207259025;
- Thu, 17 Dec 2020 04:14:19 -0800 (PST)
+        id S1727871AbgLQMQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 07:16:49 -0500
+Received: from foss.arm.com ([217.140.110.172]:60956 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726291AbgLQMQn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 07:16:43 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B49E831B;
+        Thu, 17 Dec 2020 04:15:57 -0800 (PST)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 458A53F66B;
+        Thu, 17 Dec 2020 04:15:55 -0800 (PST)
+Date:   Thu, 17 Dec 2020 12:15:52 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH v5 07/15] cpuset: Don't use the cpu_possible_mask as a
+ last resort for cgroup v1
+Message-ID: <20201217121552.ds7g2icvqp5nvtha@e107158-lin.cambridge.arm.com>
+References: <20201208132835.6151-1-will@kernel.org>
+ <20201208132835.6151-8-will@kernel.org>
 MIME-Version: 1.0
-References: <cover.1602431034.git.yifeifz2@illinois.edu> <4706b0ff81f28b498c9012fd3517fe88319e7c42.1602431034.git.yifeifz2@illinois.edu>
-In-Reply-To: <4706b0ff81f28b498c9012fd3517fe88319e7c42.1602431034.git.yifeifz2@illinois.edu>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 17 Dec 2020 13:14:07 +0100
-Message-ID: <CAMuHMdVU1BhmwMiHKDYmnyRHtQfeMtwtwkFLQwinfBPto-rtOQ@mail.gmail.com>
-Subject: Re: [PATCH v5 seccomp 5/5] seccomp/cache: Report cache data through /proc/pid/seccomp_cache
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     containers@lists.linux-foundation.org,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201208132835.6151-8-will@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yifei,
-
-On Sun, Oct 11, 2020 at 8:08 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
-> From: YiFei Zhu <yifeifz2@illinois.edu>
->
-> Currently the kernel does not provide an infrastructure to translate
-> architecture numbers to a human-readable name. Translating syscall
-> numbers to syscall names is possible through FTRACE_SYSCALL
-> infrastructure but it does not provide support for compat syscalls.
->
-> This will create a file for each PID as /proc/pid/seccomp_cache.
-> The file will be empty when no seccomp filters are loaded, or be
-> in the format of:
-> <arch name> <decimal syscall number> <ALLOW | FILTER>
-> where ALLOW means the cache is guaranteed to allow the syscall,
-> and filter means the cache will pass the syscall to the BPF filter.
->
-> For the docker default profile on x86_64 it looks like:
-> x86_64 0 ALLOW
-> x86_64 1 ALLOW
-> x86_64 2 ALLOW
-> x86_64 3 ALLOW
-> [...]
-> x86_64 132 ALLOW
-> x86_64 133 ALLOW
-> x86_64 134 FILTER
-> x86_64 135 FILTER
-> x86_64 136 FILTER
-> x86_64 137 ALLOW
-> x86_64 138 ALLOW
-> x86_64 139 FILTER
-> x86_64 140 ALLOW
-> x86_64 141 ALLOW
-> [...]
->
-> This file is guarded by CONFIG_SECCOMP_CACHE_DEBUG with a default
-> of N because I think certain users of seccomp might not want the
-> application to know which syscalls are definitely usable. For
-> the same reason, it is also guarded by CAP_SYS_ADMIN.
->
-> Suggested-by: Jann Horn <jannh@google.com>
-> Link: https://lore.kernel.org/lkml/CAG48ez3Ofqp4crXGksLmZY6=fGrF_tWyUCg7PBkAetvbbOPeOA@mail.gmail.com/
-> Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
-
-> @@ -2311,3 +2314,59 @@ static int __init seccomp_sysctl_init(void)
->  device_initcall(seccomp_sysctl_init)
->
->  #endif /* CONFIG_SYSCTL */
+On 12/08/20 13:28, Will Deacon wrote:
+> If the scheduler cannot find an allowed CPU for a task,
+> cpuset_cpus_allowed_fallback() will widen the affinity to cpu_possible_mask
+> if cgroup v1 is in use.
+> 
+> In preparation for allowing architectures to provide their own fallback
+> mask, just return early if we're not using cgroup v2 and allow
+> select_fallback_rq() to figure out the mask by itself.
+> 
+> Cc: Li Zefan <lizefan@huawei.com>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Reviewed-by: Quentin Perret <qperret@google.com>
+> Signed-off-by: Will Deacon <will@kernel.org>
+> ---
+>  kernel/cgroup/cpuset.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 57b5b5d0a5fd..e970737c3ed2 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -3299,9 +3299,11 @@ void cpuset_cpus_allowed(struct task_struct *tsk, struct cpumask *pmask)
+>  
+>  void cpuset_cpus_allowed_fallback(struct task_struct *tsk)
+>  {
+> +	if (!is_in_v2_mode())
+> +		return; /* select_fallback_rq will try harder */
 > +
-> +#ifdef CONFIG_SECCOMP_CACHE_DEBUG
-> +/* Currently CONFIG_SECCOMP_CACHE_DEBUG implies SECCOMP_ARCH_NATIVE */
+>  	rcu_read_lock();
+> -	do_set_cpus_allowed(tsk, is_in_v2_mode() ?
+> -		task_cs(tsk)->cpus_allowed : cpu_possible_mask);
+> +	do_set_cpus_allowed(tsk, task_cs(tsk)->cpus_allowed);
 
-Should there be a dependency on SECCOMP_ARCH_NATIVE?
-Should all architectures that implement seccomp have this?
+Why is it safe to return that for cpuset v2? task_cs(tsk)->cpus_allowed is the
+original user configured settings of the cpuset.cpus; which could have empty
+intersection with task_cpu_possible_mask(), no?
 
-E.g. mips does select HAVE_ARCH_SECCOMP_FILTER, but doesn't
-have SECCOMP_ARCH_NATIVE?
+do_set_cpus_allowed() will call set_cpus_allowed_common() which will end up
+copying the mask as-is.
 
-(noticed with preliminary out-of-tree seccomp implementation for m68k,
- which doesn't have SECCOMP_ARCH_NATIVE
+So unless I missed something there's a risk a 32bit task ends up having a 64bit
+only cpu_mask when using cpuset v2.
 
-> +static void proc_pid_seccomp_cache_arch(struct seq_file *m, const char *name,
-> +                                       const void *bitmap, size_t bitmap_size)
-> +{
-> +       int nr;
-> +
-> +       for (nr = 0; nr < bitmap_size; nr++) {
-> +               bool cached = test_bit(nr, bitmap);
-> +               char *status = cached ? "ALLOW" : "FILTER";
-> +
-> +               seq_printf(m, "%s %d %s\n", name, nr, status);
-> +       }
-> +}
-> +
-> +int proc_pid_seccomp_cache(struct seq_file *m, struct pid_namespace *ns,
-> +                          struct pid *pid, struct task_struct *task)
-> +{
-> +       struct seccomp_filter *f;
-> +       unsigned long flags;
-> +
-> +       /*
-> +        * We don't want some sandboxed process to know what their seccomp
-> +        * filters consist of.
-> +        */
-> +       if (!file_ns_capable(m->file, &init_user_ns, CAP_SYS_ADMIN))
-> +               return -EACCES;
-> +
-> +       if (!lock_task_sighand(task, &flags))
-> +               return -ESRCH;
-> +
-> +       f = READ_ONCE(task->seccomp.filter);
-> +       if (!f) {
-> +               unlock_task_sighand(task, &flags);
-> +               return 0;
-> +       }
-> +
-> +       /* prevent filter from being freed while we are printing it */
-> +       __get_seccomp_filter(f);
-> +       unlock_task_sighand(task, &flags);
-> +
-> +       proc_pid_seccomp_cache_arch(m, SECCOMP_ARCH_NATIVE_NAME,
-> +                                   f->cache.allow_native,
+Thanks
 
-error: ‘struct action_cache’ has no member named ‘allow_native’
+--
+Qais Yousef
 
-struct action_cache is empty if SECCOMP_ARCH_NATIVE is not
-defined (so there are checks for it).
-
-> +                                   SECCOMP_ARCH_NATIVE_NR);
-> +
-> +#ifdef SECCOMP_ARCH_COMPAT
-> +       proc_pid_seccomp_cache_arch(m, SECCOMP_ARCH_COMPAT_NAME,
-> +                                   f->cache.allow_compat,
-> +                                   SECCOMP_ARCH_COMPAT_NR);
-> +#endif /* SECCOMP_ARCH_COMPAT */
-> +
-> +       __put_seccomp_filter(f);
-> +       return 0;
-> +}
-> +#endif /* CONFIG_SECCOMP_CACHE_DEBUG */
-> --
-> 2.28.0
->
-
-
--- 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+>  	rcu_read_unlock();
+>  
+>  	/*
+> -- 
+> 2.29.2.576.ga3fc446d84-goog
+> 
