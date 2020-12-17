@@ -2,93 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1D532DCCDA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 08:16:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB71C2DCCE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 08:19:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727004AbgLQHP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 02:15:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54240 "EHLO
+        id S1727095AbgLQHSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 02:18:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726533AbgLQHPy (ORCPT
+        with ESMTP id S1725468AbgLQHSY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 02:15:54 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E909AC061794;
-        Wed, 16 Dec 2020 23:15:12 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id 6so21714399ejz.5;
-        Wed, 16 Dec 2020 23:15:12 -0800 (PST)
+        Thu, 17 Dec 2020 02:18:24 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62BCEC061794
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 23:17:44 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id n10so11679681pgl.10
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 23:17:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=bGy7gLBy2hFyYL8nSs16yQL0Na8VVi6rxjiUYpw2umY=;
-        b=hYJDilWH5PI0sM/ctM4XmnHMmy/VC9X9ze3GqvZytzsEnHTTT7JfJPcRe0wc+Oro2O
-         UamTbMbmnYThx+VozwRfDpwHQv80X+SUNy+FUvJq/kDc0PfMhxlvc/XykW+jxX/oX5x4
-         JdmtEAOqaV+dV64JeZyEX9AaQbAACElDz0SYbXsmsDQYnG977McOlzeSG1FNY3eUu1vd
-         0tQQkZyrBLDXRKR81yY0dPHkJKAsFYssk3Un1qjxZoTM+Mnt3rS6rq3lh51KYkaPAhDA
-         imCfA3ObkPTwWN9ln0DVugoDXF0b39MdTWFTj9r2uFy5L1krm+H91Ij/B9pBOpdICMtH
-         0cIw==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TEO3/oQXoRDhA5Aynf5tOUBOZITapi4dUktMPWEGVZE=;
+        b=ndhZNq/pSBaAgASPaZht6Nko7YjlzT6/xcqnnYlTyx6Yzm41/zdeDh2EXZOVRR8jOU
+         L6jYs1DdTbipR0GET9I8bg6eOds5218HKB8ugQgwO1v0QJMjeVeuIy4L8tiJN5v56VcL
+         9jW6pcdLX16EGoR01wxXTe2H4BP6IELYAp5gg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=bGy7gLBy2hFyYL8nSs16yQL0Na8VVi6rxjiUYpw2umY=;
-        b=L4teNoQNRq0eHZiFQgfq51esAe8Dbj1ZbiYklV0pc8X5WH9o8u1rJSGwMU0a9VSTS9
-         5WyRxzaVjT3pXNOTqMKgTm0rWR2qjaBzlJbsdfehamj1oCsJ6yjzCCeZ8oTcHxjbZx3c
-         hquucjLgXE6tamE96kBIXHj9TASGEadfbKJ1J0B8YlTYCYIoWvyBho5vGXn7vNC0Dcii
-         kwbhrp2BeXegMPpx0pVTriEx2s4hKlVgHzfkr2AX2onoOBzSNb5ZFKX91UH6lC6KpiOq
-         DeV3/5diDbwMMYvQ+yYGIHhE2yxTR4GLR1+VHwY2bk8NhPUWcIBZtpibs0HEaQOd9SpE
-         5/jg==
-X-Gm-Message-State: AOAM531k5zyXZ8n3TRkR2RGa4Dx8aJHJhWYE3fYikPf03crruJ0BlDD5
-        Y+hHBPIHqpl39fw5DQspy4jN25gQALQnyA==
-X-Google-Smtp-Source: ABdhPJy1nSlTGWTs/AOPSz2icN7kkMpTQo4NU2ITDs0u8lTrYvpAd6c6H96zc8hAOhvnq6hRAJqxKw==
-X-Received: by 2002:a17:907:20dc:: with SMTP id qq28mr33410118ejb.403.1608189311050;
-        Wed, 16 Dec 2020 23:15:11 -0800 (PST)
-Received: from felia.fritz.box ([2001:16b8:2dfe:900:8cfe:59ae:f146:5d09])
-        by smtp.gmail.com with ESMTPSA id mc25sm2961331ejb.58.2020.12.16.23.15.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 23:15:10 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-pm@vger.kernel.org
-Cc:     Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
-        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: include governors into CPU IDLE TIME MANAGEMENT FRAMEWORK
-Date:   Thu, 17 Dec 2020 08:15:01 +0100
-Message-Id: <20201217071501.31267-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TEO3/oQXoRDhA5Aynf5tOUBOZITapi4dUktMPWEGVZE=;
+        b=VM0yCac3f7wwkmsfGlcrvlDqjBRhVFne7PNhjg33WQAH24xah+oTZlhUMpRkWw1pVP
+         gSDjOQ/w98kulShy67eAtDdtu6YUhT3Aht4VKJ1ZWlQz4dgsZVo1YDflPOhNsz8g1mbj
+         5ZSRMQrDxUuV//JA2OxXRPwbTecidFkt4PId0CdudgR/mexq1cElcrY+i/tkllipLfqJ
+         8WzJQCBPEQLy7waNtF81vk/Ke5SRxew9HkSgvQRvC71HJZa0bpUWG4R6DlgAgHGPeWXQ
+         8pIkvACjVk9lI2As6TA6yVBdXK/jSLCpDw4k34zjdoUNvsVBPOgjJSUIDEqVHXSb1W3h
+         RlWg==
+X-Gm-Message-State: AOAM531UiTpsfDbL8X6n/5OLKz207B41Z8yaIs67e+PsrEmhA8VyweNz
+        Nh5qK32mfXuGTTBcpUpk8E+qDQ==
+X-Google-Smtp-Source: ABdhPJyfnhMZrex/tPAF6iMu7BaBNlY7Znatxxe8jrhqGqXY7JjT4xdxaIdYGm2/h8qhP/AaVc152g==
+X-Received: by 2002:a62:1716:0:b029:19d:b78b:ef02 with SMTP id 22-20020a6217160000b029019db78bef02mr8043307pfx.11.1608189463855;
+        Wed, 16 Dec 2020 23:17:43 -0800 (PST)
+Received: from localhost ([2620:15c:202:201:de4a:3eff:fe75:1314])
+        by smtp.gmail.com with ESMTPSA id q26sm4723632pfl.219.2020.12.16.23.17.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Dec 2020 23:17:43 -0800 (PST)
+From:   Miao-chen Chou <mcchou@chromium.org>
+To:     Bluetooth Kernel Mailing List <linux-bluetooth@vger.kernel.org>
+Cc:     Alain Michaud <alainm@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH v1 1/4] Bluetooth: Keep MSFT extension info throughout a hci_dev's life cycle
+Date:   Wed, 16 Dec 2020 23:17:27 -0800
+Message-Id: <20201216231652.v1.1.Id9bc5434114de07512661f002cdc0ada8b3d6d02@changeid>
+X-Mailer: git-send-email 2.29.2.684.gfbc64c5ab5-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current pattern in the file entry does not make the files in the
-governors subdirectory to be a part of the CPU IDLE TIME MANAGEMENT
-FRAMEWORK.
+This moves msft_do_close() from hci_dev_do_close() to
+hci_unregister_dev() to avoid clearing MSFT extension info. This also
+avoids retrieving MSFT info upon every msft_do_open() if MSFT extension
+has been initialized.
 
-Adjust the file pattern to include files in governors.
+The following test steps were performed.
+(1) boot the test device and verify the MSFT support debug log in syslog
+(2) restart bluetoothd and verify msft_do_close() doesn't get invoked
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Signed-off-by: Miao-chen Chou <mcchou@chromium.org>
+Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Reviewed-by: Archie Pusaka <apusaka@chromium.org>
 ---
-applies cleanly on current master and next-20201215
 
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/bluetooth/hci_core.c | 4 ++--
+ net/bluetooth/msft.c     | 3 ++-
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 952731d1e43c..ac679aa00e0d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4596,7 +4596,7 @@ B:	https://bugzilla.kernel.org
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git
- F:	Documentation/admin-guide/pm/cpuidle.rst
- F:	Documentation/driver-api/pm/cpuidle.rst
--F:	drivers/cpuidle/*
-+F:	drivers/cpuidle/
- F:	include/linux/cpuidle.h
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index 9d2c9a1c552fd..8471be105a2ac 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -1780,8 +1780,6 @@ int hci_dev_do_close(struct hci_dev *hdev)
  
- CPU POWER MONITORING SUBSYSTEM
+ 	hci_sock_dev_event(hdev, HCI_DEV_DOWN);
+ 
+-	msft_do_close(hdev);
+-
+ 	if (hdev->flush)
+ 		hdev->flush(hdev);
+ 
+@@ -3869,6 +3867,8 @@ void hci_unregister_dev(struct hci_dev *hdev)
+ 	unregister_pm_notifier(&hdev->suspend_notifier);
+ 	cancel_work_sync(&hdev->suspend_prepare);
+ 
++	msft_do_close(hdev);
++
+ 	hci_dev_do_close(hdev);
+ 
+ 	if (!test_bit(HCI_INIT, &hdev->flags) &&
+diff --git a/net/bluetooth/msft.c b/net/bluetooth/msft.c
+index 4b39534a14a18..d9d2269bc93ef 100644
+--- a/net/bluetooth/msft.c
++++ b/net/bluetooth/msft.c
+@@ -76,7 +76,8 @@ void msft_do_open(struct hci_dev *hdev)
+ {
+ 	struct msft_data *msft;
+ 
+-	if (hdev->msft_opcode == HCI_OP_NOP)
++	/* Skip if opcode is not supported or MSFT has been initiatlized */
++	if (hdev->msft_opcode == HCI_OP_NOP || hdev->msft_data)
+ 		return;
+ 
+ 	bt_dev_dbg(hdev, "Initialize MSFT extension");
 -- 
-2.17.1
+2.29.2.684.gfbc64c5ab5-goog
 
