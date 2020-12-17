@@ -2,91 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE0022DD69F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 18:55:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D8D2DD6A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 18:59:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729148AbgLQRyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 12:54:06 -0500
-Received: from ms.lwn.net ([45.79.88.28]:60270 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726548AbgLQRyG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 12:54:06 -0500
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 1746B2E6;
-        Thu, 17 Dec 2020 17:53:25 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 1746B2E6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1608227605; bh=jKZ1GzV4hDFyMBVEKA263kBGGBD1geznHekza+FysnA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=aZMtYT+89Wga5d/MpnF4YqfKyR9YzklJG+iy1uSWhMe5/Py/Uz+aywt02n8WvxDyd
-         tnJ3wjA72OFJ1VE7S9N8wPkcW6dUzmGXAWskKroEQgDOAvKvP6xUHDVddv5uh3hxMe
-         la7Lgl08SUwjjYAp69IngsOBkFvbhzFOWpQGPCtiOkKK0fOOVhmzWWsef9J85eYcbq
-         HcIl0kmCh8BAqXa+z/5TGFAK8ULNsdv217iTYALsTLi5Cx2LMOzYFBQB3RXAS4qzH8
-         IQKUEYhv1AWMSkHcMQEU/7n6Wv+ZFn3XDvdT6V/P5aPSVm8mW8Ewlj0FPsipmk5VER
-         UneKDQoVwhvSg==
-Date:   Thu, 17 Dec 2020 10:53:23 -0700
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-        Paul McKenney <paulmck@linux.vnet.ibm.com>,
-        john.stultz@linaro.org, acme@redhat.com, frederic@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Marc Zyngier <marc.zyngier@arm.com>, daniel.lezcano@linaro.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [patch 0/2] Documentation/process: Add subsystem/tree handbook
-Message-ID: <20201217105323.4d882a7d@lwn.net>
-In-Reply-To: <20201217150537.GC23634@zn.tnic>
-References: <20181107171010.421878737@linutronix.de>
-        <20181107124855.328133e7@lwn.net>
-        <CAPcyv4goT+7t1foOhEYgGTz2kRV2Oou8QOs38D13rdC-TpfX+Q@mail.gmail.com>
-        <alpine.DEB.2.21.1811072134060.1666@nanos.tec.linutronix.de>
-        <20181108074920.4c601ee3@lwn.net>
-        <alpine.DEB.2.21.1811081637550.1549@nanos.tec.linutronix.de>
-        <20201217150537.GC23634@zn.tnic>
-Organization: LWN.net
+        id S1728191AbgLQR7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 12:59:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727253AbgLQR7E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 12:59:04 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B614CC0617A7;
+        Thu, 17 Dec 2020 09:58:23 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id 81so28306095ioc.13;
+        Thu, 17 Dec 2020 09:58:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Jy9Wo6K2J/ZSSCkdeQ2xq3mmopXJVycRBgl/dvb3y3M=;
+        b=ZWHmreiH5rqp0TCgo6Tc0AUX6gwk++F5zyVRI2cszk+zlJBORCLTYuPAP1EaF5Ws+J
+         t1/87AfU+EwrH7w2NFaRQMGrNTmzc1GBXhOFzSCU1SzTUd/H7qJEEZPicbDYG+FE1BiB
+         rfCUhlHFH9+cTlKreuUCB9pzkCIcOyUAHoINRYsEmWSuoNh2XLnz0yOKgXGinmEbjFHw
+         6nz38TBwwuhGK2H9ueOUyJsWIWRR1gDwsiP8SYZcLDR/rD+LQXGtYfezzSqfwqPovsL2
+         2LPXLq7Spblx2sCfdJaJqwCKSicmgi/wbkYDY50dO8WsF8pC+h6oTcE9UVeMJt2jz2Q8
+         BWdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Jy9Wo6K2J/ZSSCkdeQ2xq3mmopXJVycRBgl/dvb3y3M=;
+        b=on685f5O7eDYJjWX/wGY4zp3qXcUxBzvidCsZPGwIDJx7CsfqxrSs4qym57d+X3Lxr
+         QwxC/DuANKWDG67LFJVZLgJTZPWWrPbc//c3t18g/t5O6L2apRkrcbbF659rvHkLMO6q
+         ExPkml++uvs9jvtUz/mK2Jodymn/SK/kI28hMgnPiuP6xQpNeJlRP8Z6RhnGlkWImixO
+         UbP9THgtBi+913StxVH+uUH53bd2M03WxsaHHeVvf084ktaap1UTWGwjB26To6Bk5clM
+         XXunDIDB02YQ7+8YmWYKF4uVq1QUizTApQdBfPun46GZMOKo655KGubIa/im0Lv1PYHt
+         /fhA==
+X-Gm-Message-State: AOAM531ZgC5/2LwxOehExM1lE7NqxKRDMyWM6ooIvUugN7KoCq2DdUbX
+        1KY2np+M0rky9fPvDY7RcuMaI5UBxBIFbyilIG4=
+X-Google-Smtp-Source: ABdhPJxdAlerYP+JuD9biEEY39A4kN8rW0oldiaXIBGS0l5gLJQZoPQTKREgpdu4SWSftFhfVFo5D82LYpvmLPxAnkE=
+X-Received: by 2002:a6b:f401:: with SMTP id i1mr261498iog.142.1608227903009;
+ Thu, 17 Dec 2020 09:58:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+References: <20201213183759.223246-1-aford173@gmail.com> <20201213183759.223246-7-aford173@gmail.com>
+ <CAMuHMdU+d7SZc9gh_3WS+bqd4EhXYh=kv0XvYrgUUckdQ7o5jw@mail.gmail.com> <CAHCN7xJf2T3uFLDtJxvjFYzCksWq02+CUY51_WmnU44YDJKy9Q@mail.gmail.com>
+In-Reply-To: <CAHCN7xJf2T3uFLDtJxvjFYzCksWq02+CUY51_WmnU44YDJKy9Q@mail.gmail.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Thu, 17 Dec 2020 11:58:11 -0600
+Message-ID: <CAHCN7xKdVv==YLtSa3n2hQk2T+f+FkLqKDNTYkP_3ynnY+xRCg@mail.gmail.com>
+Subject: Re: [PATCH 06/18] arm64: dts: renesas: beacon: Configure Audio CODEC clocks
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Dec 2020 16:05:37 +0100
-Borislav Petkov <bp@alien8.de> wrote:
+On Thu, Dec 17, 2020 at 7:33 AM Adam Ford <aford173@gmail.com> wrote:
+>
+> On Thu, Dec 17, 2020 at 5:12 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> >
+> > Hi Adam,
+> >
+> > CC alsa-devel
+> >
+> > On Sun, Dec 13, 2020 at 7:38 PM Adam Ford <aford173@gmail.com> wrote:
+> > > With the newly added configurable clock options, the audio CODEC can
+> > > configure the mclk automatically.  Add the reference to the versaclock.
+> > > Since the devices on I2C5 can communicate at 400KHz, let's also increase
+> > > that too
+> > >
+> > > Signed-off-by: Adam Ford <aford173@gmail.com>
+> >
+> > Thanks for your patch!
+> >
+> > > --- a/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
+> > > +++ b/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
+> > > @@ -424,13 +424,15 @@ &i2c0 {
+> > >
+> > >  &i2c5 {
+> > >         status = "okay";
+> > > -       clock-frequency = <100000>;
+> > > +       clock-frequency = <400000>;
+> > >         pinctrl-0 = <&i2c5_pins>;
+> > >         pinctrl-names = "default";
+> > >
+> > >         codec: wm8962@1a {
+> > >                 compatible = "wlf,wm8962";
+> > >                 reg = <0x1a>;
+> > > +               clocks = <&versaclock6_bb 3>;
+> > > +               clock-names = "mclk";
+> >
+> > While the driver does get the (nameless) clock, the DT bindings lack any
+> > mention of a clocks property.  It would be good to update the bindings.
+>
+> Agreed.  I'll push an update to add the clocks property.
+>
 
-> So, that thing.
-> 
-> I have this ontop of 5.10 along with most comments integrated.
-> 
-> Now, I'm thinking if I start sending those pieces which belong into the
-> main process documentation, the bikeshedding that is going to ensue is
-> going to be insane. And we have day jobs too, you know. :)
-> 
-> Thus, I'm also thinking that I should do this piecemeal and once we've
-> all agreed on one aspect and you've applied it, Jon, I'll carve out and
-> send the next. Rinse and repeat.
-> 
-> How does that sound, makes sense?
+I pushed a change to add the optional clock information to the
+bindings txt file [1].
+> >
+> > Note that arch/arm/boot/dts/imx6-logicpd-baseboard.dtsi and
+> > arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi (both by your
+> > hand) use "xclk" instead of "mclk"?
+>
+> On the schematics for the two imx boards, it's labeled as xclk, so it
+> was named as such.  For this board, the schematic names it mclk. The
+> driver doesn't care about the clock-names property, so I'll just
+> remove them.
 
-Gee...a response from a two-year-old thread...it's taking me a while to
-page all of that back in :)
+I pushed patches to remove these nodes from the other boards [2].
+I'll remove them if V2 of the patch series for the Renesas board.
 
-I'd love to see this work get in, I still feel bad about my part in
-stalling it before.
+adam
+[1] - https://patchwork.kernel.org/project/alsa-devel/patch/20201217162740.1452000-1-aford173@gmail.com/
+[2] - https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=403739
 
-Piecemeal could certainly work, or we could just try the whole thing and
-see what happens.  We got Thorsten's reporting-issues tome in without much
-trouble, after all, and that's bikeshed territory if anything is.  But
-whatever works is fine; send stuff and I'll gladly look at it.
-
-Thanks,
-
-jon
+>
+> adam
+> >
+> > >                 DCVDD-supply = <&reg_audio>;
+> > >                 DBVDD-supply = <&reg_audio>;
+> > >                 AVDD-supply = <&reg_audio>;
+> >
+> > Gr{oetje,eeting}s,
+> >
+> >                         Geert
+> >
+> > --
+> > Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> >
+> > In personal conversations with technical people, I call myself a hacker. But
+> > when I'm talking to journalists I just say "programmer" or something like that.
+> >                                 -- Linus Torvalds
