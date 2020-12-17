@@ -2,96 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB89C2DDC32
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 00:58:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9946E2DDC39
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 01:00:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731131AbgLQX47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 18:56:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46954 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726796AbgLQX47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 18:56:59 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>
-Cc:     linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH] checkpatch: add warning for non-lore mailing list URLs
-Date:   Thu, 17 Dec 2020 17:56:15 -0600
-Message-Id: <20201217235615.43328-1-helgaas@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        id S1732168AbgLQX7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 18:59:00 -0500
+Received: from smtprelay0247.hostedemail.com ([216.40.44.247]:43314 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732037AbgLQX7A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 18:59:00 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 6BBEA181D337B;
+        Thu, 17 Dec 2020 23:58:19 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:857:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3866:3872:4321:5007:8879:10004:10400:10848:11026:11232:11657:11658:11914:12043:12296:12297:12438:12683:12740:12895:13069:13311:13357:13439:13894:14110:14659:14721:21080:21627:21773:21796:30036:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: limit53_2f0fb3827438
+X-Filterd-Recvd-Size: 1969
+Received: from XPS-9350.home (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf10.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 17 Dec 2020 23:58:17 +0000 (UTC)
+Message-ID: <04c331f6bfce57c253cb86208ebd28f6363e04c0.camel@perches.com>
+Subject: Re: [PATCH] staging: most: video: fixed a parentheses coding style
+ issue.
+From:   Joe Perches <joe@perches.com>
+To:     Daniel West <daniel.west.dev@gmail.com>, gregkh@linuxfoundation.org
+Cc:     hverkuil-cisco@xs4all.nl, mchehab+huawei@kernel.org,
+        christian.gromm@microchip.com, masahiroy@kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Date:   Thu, 17 Dec 2020 15:58:16 -0800
+In-Reply-To: <20201217234501.351725-1-daniel.west.dev@gmail.com>
+References: <20201217234501.351725-1-daniel.west.dev@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Helgaas <bhelgaas@google.com>
+On Thu, 2020-12-17 at 15:45 -0800, Daniel West wrote:
+> Fixed a coding style issue.
 
-The lkml.org, marc.info, spinics.net, etc archives are not quite as useful
-as lore.kernel.org because they use different styles, add advertising, and
-may disappear in the future.  The lore archives are more consistent and
-more likely to stick around, so prefer https://lore.kernel.org URLs when
-they exist.
+It may pass checkpatch without warning, but it's uncommon kernel coding style.
 
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
----
-Sample commits for testing with "checkpatch -g":
+> diff --git a/drivers/staging/most/video/video.c b/drivers/staging/most/video/video.c
+[]
+> @@ -365,8 +365,8 @@ static const struct video_device comp_videodev_template = {
+>  
+> 
+>  /**************************************************************************/
+>  
+> 
+> -static struct most_video_dev *get_comp_dev(
+> -	struct most_interface *iface, int channel_idx)
+> +static struct most_video_dev *get_comp_dev
+> +	(struct most_interface *iface, int channel_idx)
 
-  bd82d4bd2188 www.spinics.net/lists/arm-kernel/msg716956.html
-  fdec2a9ef853 www.spinics.net/lists/kvm-arm
-  1cdca16c043a www.spinics.net/lists/linux-mmc
-  48ea02184a9d www.spinics.net/lists/linux-pci
-  f32ae8a5f131 www.spinics.net/lists/netdev
-  b7dca6dd1e59 lkml.org
-  265df32eae58 lkml.org/lkml/
-  4a9ceb7dbadf marc.info/?l=linux-kernel&m=155656897409107&w=2.
-  c03914b7aa31 marc.info/?l=linux-mm
-  f108c887d089 marc.info/?l=linux-netdev
-  7424edbb5590 marc.info/?t=156200975600004&r=1&w=2
-  dabac6e460ce https://marc.info/?l=linux-rdma&m=152296522708522&w=2
-  b02f6a2ef0a1 www.mail-archive.com/linux-kernel@vger.kernel.org
-  5e91bf5ce9b8 lists.infradead.org/pipermail/linux-snps-arc/2019-May
-  3cde818cd02b mailman.alsa-project.org/pipermail/alsa-devel/2019-January/144761.html
-  a5448fdc469d http://lists.infradead.org/pipermail/linux-nvme/2019-June/024721.html
----
- scripts/checkpatch.pl | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+This would be better using any of:
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 00085308ed9d..ac8e99285b2a 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -564,6 +564,17 @@ sub find_standard_signature {
- 	return "";
- }
- 
-+our $obsolete_archives = qr{(?xi:
-+	freedesktop.org/archives/dri-devel|
-+	lists.infradead.org|
-+	lkml.org|
-+	mail-archive.com|
-+	mailman.alsa-project.org/pipermail|
-+	marc.info|
-+	ozlabs.org/pipermail|
-+	spinics.net
-+)};
-+
- our @typeListMisordered = (
- 	qr{char\s+(?:un)?signed},
- 	qr{int\s+(?:(?:un)?signed\s+)?short\s},
-@@ -3101,6 +3112,12 @@ sub process {
- 			}
- 		}
- 
-+# Check for mailing list archives other than lore.kernel.org
-+		if ($line =~ /(http|https):\/\/\S*$obsolete_archives/) {
-+			WARN("PREFER_LORE_ARCHIVE",
-+			     "Use lore.kernel.org archive links when possible; see https://lore.kernel.org/lists.html\n" . $herecurr);
-+		}
-+
- # Check for added, moved or deleted files
- 		if (!$reported_maintainer_file && !$in_commit_log &&
- 		    ($line =~ /^(?:new|deleted) file mode\s*\d+\s*$/ ||
--- 
-2.25.1
+(most common)
+
+static struct most_video_dev *get_comp_dev(struct most_interface *iface,
+					   int channel_idx)
+
+or (less common)
+
+static struct most_video_dev *
+get_comp_dev(struct most_interface *iface, int channel_idx)
+
+or (> 80 columns)
+
+static struct most_video_dev *get_comp_dev(struct most_interface *iface, int channel_idx)
 
