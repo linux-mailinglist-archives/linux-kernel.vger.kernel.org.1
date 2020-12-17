@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A95482DD472
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:43:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E73402DD46D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:43:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728679AbgLQPmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 10:42:45 -0500
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:20624 "EHLO
+        id S1728822AbgLQPms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 10:42:48 -0500
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:14326 "EHLO
         mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726548AbgLQPmo (ORCPT
+        by vger.kernel.org with ESMTP id S1728628AbgLQPmq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 10:42:44 -0500
+        Thu, 17 Dec 2020 10:42:46 -0500
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BHFPi97001634;
-        Thu, 17 Dec 2020 09:41:47 -0600
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BHFPi98001634;
+        Thu, 17 Dec 2020 09:41:48 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=6puJRNoQ85sTqXFHjZOZ1oaxCItH2xQD/d8qJchGYVE=;
- b=CDDTRJqMj9+bBNxKFByKpeQohb8c8qSyt0/qgJWeIolW75sTfntLSyR7Q55RISrXvNLW
- pMUaq1zyK/tdjeQkF8CJLtoih+rddWEk04abGcWYoakOoEiGRJcCTEUQKWOtDO08RuHS
- t1wj6uZEHMWVzaVjRnu0OW6cNGj6lKn+fCleihtLwinH7PNf/jHK70gTnIvugo8ZdFvs
- i4w5UswFdSDMNEnT39GEwRuxj0wfTziSkHQmylHlk2fyD8Sn44aObDCQl5YQRY7wIPP/
- PtJJdKE+j/5tj8pYDHXprhhxuKy5VynSVrs6F+S/qZS2THyoXl3shnkr8XlUBZKqF1FE 8w== 
+ bh=aMP9SGT4gnrlMbPsjRxvLdeVb+dW0Od9NGiAjNHZ9Go=;
+ b=ZdUObY09lFBzRA8no5KR/ntljZAELrY2xAQPg3mQZRWOaESHNWQFv51c1VwXslEBq9uX
+ Xbh3yP6D0tfrDCgRTTw6vpT+NOdTf5wyhnjqYgqv0QtnAw/Xj7/TrX9ZKIgJoij26oUB
+ fNfLFtXAoeWuG5GDH1N/DQXniokp/eg5luGwfZzJOte/dvdZQT6BUQmErdUsi3iUwA/P
+ /aDy70F8zaEitRU97wyVrtx4vP8tHzhg6aBAj+3QtGR0pH1/3mfvjNOCUseGLjYP221+
+ RkcZR62t+EmHqULX3RTJtTyv4Do7HHd+gfQIs6tukeim54NFGJ8W9G3b4a1Ton4NtqLD Jg== 
 Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 35cu5rxy90-2
+        by mx0b-001ae601.pphosted.com with ESMTP id 35cu5rxy90-3
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 17 Dec 2020 09:41:47 -0600
+        Thu, 17 Dec 2020 09:41:48 -0600
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 17 Dec
@@ -36,8 +36,8 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
  Transport; Thu, 17 Dec 2020 15:41:46 +0000
 Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.64.236])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 94C9F11CA;
-        Thu, 17 Dec 2020 15:41:45 +0000 (UTC)
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 304CF11CB;
+        Thu, 17 Dec 2020 15:41:46 +0000 (UTC)
 From:   Richard Fitzgerald <rf@opensource.cirrus.com>
 To:     <broonie@kernel.org>, <robh+dt@kernel.org>,
         <kuninori.morimoto.gx@renesas.com>, <nsaenzjulienne@suse.de>
@@ -46,11 +46,10 @@ CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <bcm-kernel-feedback-list@broadcom.com>,
         <linux-rpi-kernel@lists.infradead.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v3 1/6] of: base: Add of_count_phandle_with_fixed_args()
-Date:   Thu, 17 Dec 2020 15:41:37 +0000
-Message-ID: <20201217154142.24301-2-rf@opensource.cirrus.com>
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH v3 2/6] ASoC: audio-graph-card: Add plls and sysclks DT bindings
+Date:   Thu, 17 Dec 2020 15:41:38 +0000
+Message-ID: <20201217154142.24301-3-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20201217154142.24301-1-rf@opensource.cirrus.com>
 References: <20201217154142.24301-1-rf@opensource.cirrus.com>
@@ -58,7 +57,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0 mlxscore=0
- mlxlogscore=999 suspectscore=0 spamscore=0 clxscore=1011 malwarescore=0
+ mlxlogscore=999 suspectscore=0 spamscore=0 clxscore=1015 malwarescore=0
  impostorscore=0 priorityscore=1501 bulkscore=0 lowpriorityscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2012170108
@@ -66,153 +65,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an equivalent of of_count_phandle_with_args() for fixed argument
-sets, to pair with of_parse_phandle_with_fixed_args().
+The audio-graph-card driver has bindings for configuring the clocking
+for DAIs within a component, but is missing bindings for setting
+up the PLLs and sysclks of the component.
 
-The existing of_count_phandle_with_args() is modified to be a
-private function that handles both cases and the public functions
-are trivial wrappers round that.
+This patch adds the two new bindings 'plls' and 'sysclks' so that the
+audio-graph-driver can fully configure the component clocking.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- drivers/of/base.c  | 73 +++++++++++++++++++++++++++++++---------------
- include/linux/of.h |  9 ++++++
- 2 files changed, 59 insertions(+), 23 deletions(-)
+ .../bindings/sound/audio-graph-card.txt       | 72 +++++++++++++++++++
+ 1 file changed, 72 insertions(+)
 
-diff --git a/drivers/of/base.c b/drivers/of/base.c
-index 161a23631472..c5ff2524bf40 100644
---- a/drivers/of/base.c
-+++ b/drivers/of/base.c
-@@ -1720,34 +1720,22 @@ int of_parse_phandle_with_fixed_args(const struct device_node *np,
- }
- EXPORT_SYMBOL(of_parse_phandle_with_fixed_args);
+diff --git a/Documentation/devicetree/bindings/sound/audio-graph-card.txt b/Documentation/devicetree/bindings/sound/audio-graph-card.txt
+index d5f6919a2d69..30405e64cfbb 100644
+--- a/Documentation/devicetree/bindings/sound/audio-graph-card.txt
++++ b/Documentation/devicetree/bindings/sound/audio-graph-card.txt
+@@ -32,6 +32,40 @@ Required properties:
+ Optional properties:
+ - pa-gpios: GPIO used to control external amplifier.
  
--/**
-- * of_count_phandle_with_args() - Find the number of phandles references in a property
-- * @np:		pointer to a device tree node containing a list
-- * @list_name:	property name that contains a list
-- * @cells_name:	property name that specifies phandles' arguments count
-- *
-- * Returns the number of phandle + argument tuples within a property. It
-- * is a typical pattern to encode a list of phandle and variable
-- * arguments into a single property. The number of arguments is encoded
-- * by a property in the phandle-target node. For example, a gpios
-- * property would contain a list of GPIO specifies consisting of a
-- * phandle and 1 or more arguments. The number of arguments are
-- * determined by the #gpio-cells property in the node pointed to by the
-- * phandle.
-- */
--int of_count_phandle_with_args(const struct device_node *np, const char *list_name,
--				const char *cells_name)
-+static int __of_count_phandle_with_args(const struct device_node *np,
-+					const char *list_name,
-+					const char *cells_name,
-+					int cells_count)
- {
- 	struct of_phandle_iterator it;
- 	int rc, cur_index = 0;
- 
- 	/*
--	 * If cells_name is NULL we assume a cell count of 0. This makes
--	 * counting the phandles trivial as each 32bit word in the list is a
--	 * phandle and no arguments are to consider. So we don't iterate through
--	 * the list but just use the length to determine the phandle count.
-+	 * If cells_count < 0 and cells_name is NULL we assume a cell count
-+	 * of 0. A zero cell count makes counting the phandles trivial as each
-+	 * 32bit word in the list is a phandle and no arguments are to consider.
-+	 * So we don't iterate through the list but just use the length to
-+	 * determine the phandle count.
- 	 */
--	if (!cells_name) {
-+	if ((cells_count < 0 && !cells_name) || cells_count == 0) {
- 		const __be32 *list;
- 		int size;
- 
-@@ -1758,7 +1746,7 @@ int of_count_phandle_with_args(const struct device_node *np, const char *list_na
- 		return size / sizeof(*list);
- 	}
- 
--	rc = of_phandle_iterator_init(&it, np, list_name, cells_name, -1);
-+	rc = of_phandle_iterator_init(&it, np, list_name, cells_name, cells_count);
- 	if (rc)
- 		return rc;
- 
-@@ -1770,8 +1758,47 @@ int of_count_phandle_with_args(const struct device_node *np, const char *list_na
- 
- 	return cur_index;
- }
++- plls: A list of component pll settings. There are 4 cells per PLL setting:
++	- phandle to the node of the codec or cpu component,
++	- component PLL id,
++	- component clock source id,
++	- frequency (in Hz) of the PLL output clock.
 +
-+/**
-+ * of_count_phandle_with_args() - Find the number of phandles references in a property
-+ * @np:		pointer to a device tree node containing a list
-+ * @list_name:	property name that contains a list
-+ * @cells_name:	property name that specifies phandles' arguments count
-+ *
-+ * Returns the number of phandle + argument tuples within a property. It
-+ * is a typical pattern to encode a list of phandle and variable
-+ * arguments into a single property. The number of arguments is encoded
-+ * by a property in the phandle-target node. For example, a gpios
-+ * property would contain a list of GPIO specifies consisting of a
-+ * phandle and 1 or more arguments. The number of arguments are
-+ * determined by the #gpio-cells property in the node pointed to by the
-+ * phandle.
-+ */
-+int of_count_phandle_with_args(const struct device_node *np, const char *list_name,
-+				const char *cells_name)
-+{
-+	return __of_count_phandle_with_args(np, list_name, cells_name, -1);
-+}
- EXPORT_SYMBOL(of_count_phandle_with_args);
- 
-+/**
-+ * of_count_phandle_with_fixed_args() - Find the number of phandles references in a property
-+ * @np:		pointer to a device tree node containing a list
-+ * @list_name:	property name that contains a list
-+ * @cell_count: number of argument cells following the phandle
-+ *
-+ * Returns the number of phandle + argument tuples within a property. It
-+ * is a typical pattern to encode a list of phandle and variable
-+ * arguments into a single property.
-+ */
-+int of_count_phandle_with_fixed_args(const struct device_node *np,
-+				     const char *list_name,
-+				     int cells_count)
-+{
-+	return __of_count_phandle_with_args(np, list_name, NULL, cells_count);
-+}
-+EXPORT_SYMBOL(of_count_phandle_with_fixed_args);
++	The PLL id and clock source id are specific to the particular component
++	so see the relevant component driver for the ids. Typically the
++	clock source id indicates the pin the source clock is connected to.
 +
- /**
-  * __of_add_property - Add a property to a node without lock operations
-  */
-diff --git a/include/linux/of.h b/include/linux/of.h
-index 5d51891cbf1a..2f28da56ec9b 100644
---- a/include/linux/of.h
-+++ b/include/linux/of.h
-@@ -377,6 +377,8 @@ extern int of_parse_phandle_with_fixed_args(const struct device_node *np,
- 	struct of_phandle_args *out_args);
- extern int of_count_phandle_with_args(const struct device_node *np,
- 	const char *list_name, const char *cells_name);
-+extern int of_count_phandle_with_fixed_args(const struct device_node *np,
-+	const char *list_name, int cells_count);
- 
- /* phandle iterator functions */
- extern int of_phandle_iterator_init(struct of_phandle_iterator *it,
-@@ -886,6 +888,13 @@ static inline int of_count_phandle_with_args(struct device_node *np,
- 	return -ENOSYS;
- }
- 
-+static inline int of_count_phandle_with_fixed_args(const struct device_node *np,
-+						   const char *list_name,
-+						   int cells_count)
-+{
-+	return -ENOSYS;
-+}
++	The same phandle can appear in multiple entries so that several plls
++	can be set in the same component.
 +
- static inline int of_phandle_iterator_init(struct of_phandle_iterator *it,
- 					   const struct device_node *np,
- 					   const char *list_name,
++- plls-clocks: A list of clock names giving the source clock for each setting
++	in the plls property.
++
++- sysclks: A list of component sysclk settings.  There are 4 cells per sysclk
++	setting:
++	- phandle to the node of the codec or cpu component,
++	- component sysclk id,
++	- component clock source id,
++	- direction of the clock: 0 if the clock is an input to the component,
++	  1 if it is an output.
++
++	The sysclk id and clock source id are specific to the particular
++	component so see the relevant component driver for the ids. Typically
++	the clock source id indicates the pin the source clock is connected to.
++
++	The same phandle can appear in multiple entries so that several sysclks
++	can be set in the same component.
++
++- sysclks-clocks: A list of clock names giving the source clock for each setting
++	in the sysclks property.
++
+ -----------------------
+ Example: Single DAI case
+ -----------------------
+@@ -335,3 +369,41 @@ Example: Multi DAI with DPCM
+ 			};
+ 		};
+ 	};
++
++-----------------------
++Example: Set component sysclks and PLLs
++-----------------------
++
++	sound {
++		compatible = "audio-graph-card";
++
++		clocks = <&audioclk>, <&pll1>;
++		clock-names = "audioclk", "pll1";
++
++		plls = <&cs47l15 MADERA_FLL1_REFCLK MADERA_FLL_SRC_MCLK1 98304000>;
++		plls-clocks = "audioclk";
++
++		sysclks = <&cs47l15 MADERA_CLK_SYSCLK_1 MADERA_CLK_SRC_FLL1 0>;
++		sysclks-clocks = "pll1";
++
++		dais = <&cpu_i2s_port>;
++
++		pll1: pll1 {
++			compatible = "fixed-clock";
++			#clock-cells = <0>;
++			clock-frequency = <98304000>;
++		};
++	};
++
++	cs47l15: codec@0 {
++		...
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			cs47l15_aif1_port: port@0 {
++				reg = <0>;
++				cs47l15_aif1: endpoint {
++					remote-endpoint = <&cpu_i2s_endpoint>;
++				};
++			};
++	};
 -- 
 2.20.1
 
