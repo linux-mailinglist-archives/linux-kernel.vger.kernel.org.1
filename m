@@ -2,129 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D6152DD4AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:56:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B8E52DD4AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:58:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729097AbgLQPyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 10:54:51 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:45797 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729037AbgLQPyv (ORCPT
+        id S1727936AbgLQP6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 10:58:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726773AbgLQP56 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 10:54:51 -0500
-Received: by mail-io1-f71.google.com with SMTP id x7so27586523ion.12
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 07:54:35 -0800 (PST)
+        Thu, 17 Dec 2020 10:57:58 -0500
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B811C061794
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 07:57:18 -0800 (PST)
+Received: by mail-qv1-xf30.google.com with SMTP id p12so13479520qvj.13
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 07:57:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=T7Af0WGDzuMPlnkW0mmNLYKjVtF8jTxv62OsHLUaGj4=;
+        b=WAINATTepcPgPrSyn0yPP9zTBQEdvwKM5k1moOzHpik9Ufa5/mpKQazFKRjM8Z49t2
+         4AUZHXR8qrDmskILAHqq74ibIBH95H3FD/mKDaXeQlhQM+xrjeO5ovhHZRVMcaaI38PP
+         sS5P6AjhzL2+EIvDTyXdfL9fGAkUJxsSaqpdTM5udPUsrnUFpDfz60kmB/6EsjtN2yRU
+         XKaqt9xIPQvK3qrTCbR+l5yFPBBgdnCOmUt9rJFZL3FiBws0a6NSC2lx4yrhmzZBaScg
+         a4VuLLRvb+puX3E5R+aPLQn8uyE7ggWCXC3uwa1iMakkRPdkE3DwQV2jI+FP1ZQmOavQ
+         AJ2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=m1z8Xry1KKXh3W2b7n7wksWhEKpKfj57GIAa8FsV6s0=;
-        b=CmpfGuSfKsd/BPX0oTBbnuLgl/HH8myxZgSftdxcLehmGLMHPTjKK57Mgl5vvtC7lM
-         7GZO2j36qVVgDYjsfPwjVZkf8xuEDR4//f8rEEFdkG62lSgxUjsM08HfIq85mn6u+qLz
-         FM91Cb8ZLc2yV3sfkMa7FZt+l7oNkESiHmsEeN8H54H01CXlvP4nQe3N6tHE8neb9w1Q
-         r1S5teGbxRgCi0Ri6ikMAI+3Za3mXAQUp4g4LV6xqkeo/vJppvxVS55j9Sst8PAKnBdW
-         P2gwFvConHdoA1RvHdjTifztgwocCwFkGP9tYiegw/6mirYv5gUziSem9L4+Ojnf2xC/
-         Helw==
-X-Gm-Message-State: AOAM531JCwj3CwkLwi8OXWmv3IKYqHGVh5dmTaQIciM5ER74Ff5BwTxg
-        vdsr09QN3/iOzgKo3oZigeQzOry0c/Dg6lomvUXuBfPPnCMe
-X-Google-Smtp-Source: ABdhPJzbE94LOGk1THU2x4Jf2Zkz2gwX7nSM8+VQ5wQ+7znn7/l7XiAsGgXqGMUEE78kWNwYfaWXy3BV4KevWWLPy0mfdwuEu+7L
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=T7Af0WGDzuMPlnkW0mmNLYKjVtF8jTxv62OsHLUaGj4=;
+        b=VceitkIxK967W2vUkWVSfr3J2ViFqQ8e3EMXY6+bEdMPurmdrqVDYdlCGDBUfnQVCg
+         AD3eSErWwZXf1XLMyO4IDh+XQthpEpMpjR5CVgSqh+GeSr+iPGE2MvyrIYaDp/y9HWY6
+         e8FyqDxSMFB22VQ8FXyXx2+n6f/0PSJ3hTK4XaGY3dK9O28csDQRK7Djxhi5bvmCaWhN
+         nbnHaSQXS1uJkZ53AucjXHJ3zzoo0ZB1JLHgpTP5V3yyMDfv8QYXIcYqO2eEVuQ149sV
+         Tl70HKZ1mJqxHyeMBLtLWgbnC9xakE/TgVgHGM6cUTVc44EoUogrbjb1vBmZIga9C5I8
+         jmNg==
+X-Gm-Message-State: AOAM5307BLp7NBKqfycS+AARWkae4QxspMw6RaPXjo0GRCYSOdPxoP1Z
+        c7XEm8L6MPBC0+5pivFL3u5nMeOsZMlJScABQyvSoA==
+X-Google-Smtp-Source: ABdhPJwqF37+SawHs9+yv9V81dXgoeJN1J6Mw4jypPTzJMQPrRvuj2RwIW3uSkjiMTJCkM0lOQ3KsiIGGARlcy/U1+U=
+X-Received: by 2002:a0c:e90a:: with SMTP id a10mr41908062qvo.38.1608220636994;
+ Thu, 17 Dec 2020 07:57:16 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a02:91c2:: with SMTP id s2mr48568855jag.48.1608220449935;
- Thu, 17 Dec 2020 07:54:09 -0800 (PST)
-Date:   Thu, 17 Dec 2020 07:54:09 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a3962305b6ab0077@google.com>
-Subject: KASAN: null-ptr-deref Read in filp_close
-From:   syzbot <syzbot+96cfd2b22b3213646a93@syzkaller.appspotmail.com>
-To:     christian.brauner@ubuntu.com, gscrivan@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+References: <X9lHQExmHGvETxY4@elver.google.com> <CANpmjNO5ykmE5kWJ0x08-dTDOLe+Wu=2yQ0OmfdQEbQfHByeWg@mail.gmail.com>
+In-Reply-To: <CANpmjNO5ykmE5kWJ0x08-dTDOLe+Wu=2yQ0OmfdQEbQfHByeWg@mail.gmail.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Thu, 17 Dec 2020 16:57:05 +0100
+Message-ID: <CAG_fn=WY9qkUAg+5CjQKYGHMEqxUxsGaYSYcGgb=uumiO-BnTw@mail.gmail.com>
+Subject: Re: [PATCH] kfence: fix typo in test
+To:     Marco Elver <elver@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, kbuild-all@lists.01.org,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Jann Horn <jannh@google.com>,
+        kernel test robot <lkp@intel.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Dec 16, 2020 at 12:44 AM Marco Elver <elver@google.com> wrote:
+>
+> On Wed, 16 Dec 2020 at 00:31, Marco Elver <elver@google.com> wrote:
+> > Fix a typo/accidental copy-paste that resulted in the obviously
+> > incorrect 'GFP_KERNEL * 2' expression.
+> >
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: Marco Elver <elver@google.com>
+Acked-by: Alexander Potapenko <glider@google.com>
 
-syzbot found the following issue on:
-
-HEAD commit:    5e60366d Merge tag 'fallthrough-fixes-clang-5.11-rc1' of g..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15f15413500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=db720fe37a6a41d8
-dashboard link: https://syzkaller.appspot.com/bug?extid=96cfd2b22b3213646a93
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10e1a00b500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1128e41f500000
-
-The issue was bisected to:
-
-commit 582f1fb6b721facf04848d2ca57f34468da1813e
-Author: Giuseppe Scrivano <gscrivan@redhat.com>
-Date:   Wed Nov 18 10:47:45 2020 +0000
-
-    fs, close_range: add flag CLOSE_RANGE_CLOEXEC
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16e85613500000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=15e85613500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=11e85613500000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+96cfd2b22b3213646a93@syzkaller.appspotmail.com
-Fixes: 582f1fb6b721 ("fs, close_range: add flag CLOSE_RANGE_CLOEXEC")
-
-==================================================================
-BUG: KASAN: null-ptr-deref in instrument_atomic_read include/linux/instrumented.h:71 [inline]
-BUG: KASAN: null-ptr-deref in atomic64_read include/asm-generic/atomic-instrumented.h:837 [inline]
-BUG: KASAN: null-ptr-deref in atomic_long_read include/asm-generic/atomic-long.h:29 [inline]
-BUG: KASAN: null-ptr-deref in filp_close+0x22/0x170 fs/open.c:1274
-Read of size 8 at addr 0000000000000077 by task syz-executor511/8522
-
-CPU: 1 PID: 8522 Comm: syz-executor511 Not tainted 5.10.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- __kasan_report mm/kasan/report.c:549 [inline]
- kasan_report.cold+0x5/0x37 mm/kasan/report.c:562
- check_memory_region_inline mm/kasan/generic.c:186 [inline]
- check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
- instrument_atomic_read include/linux/instrumented.h:71 [inline]
- atomic64_read include/asm-generic/atomic-instrumented.h:837 [inline]
- atomic_long_read include/asm-generic/atomic-long.h:29 [inline]
- filp_close+0x22/0x170 fs/open.c:1274
- close_files fs/file.c:402 [inline]
- put_files_struct fs/file.c:417 [inline]
- put_files_struct+0x1cc/0x350 fs/file.c:414
- exit_files+0x12a/0x170 fs/file.c:435
- do_exit+0xb4f/0x2a00 kernel/exit.c:818
- do_group_exit+0x125/0x310 kernel/exit.c:920
- get_signal+0x428/0x2100 kernel/signal.c:2792
- arch_do_signal_or_restart+0x2a8/0x1eb0 arch/x86/kernel/signal.c:811
- handle_signal_work kernel/entry/common.c:147 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
- exit_to_user_mode_prepare+0x124/0x200 kernel/entry/common.c:201
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x50 kernel/entry/common.c:302
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x447039
-Code: Unable to access opcode bytes at RIP 0x44700f.
-RSP: 002b:00007f1b1225cdb8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: 0000000000000001 RBX: 00000000006dbc28 RCX: 0000000000447039
-RDX: 00000000000f4240 RSI: 0000000000000081 RDI: 00000000006dbc2c
-RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
-R13: 00007fff223b6bef R14: 00007f1b1225d9c0 R15: 00000000006dbc2c
-==================================================================
+> > ---
+> >  mm/kfence/kfence_test.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/mm/kfence/kfence_test.c b/mm/kfence/kfence_test.c
+> > index 1433a35a1644..f57c61c833e6 100644
+> > --- a/mm/kfence/kfence_test.c
+> > +++ b/mm/kfence/kfence_test.c
+> > @@ -665,7 +665,7 @@ static void test_krealloc(struct kunit *test)
+> >         for (; i < size * 3; i++) /* Fill to extra bytes. */
+> >                 buf[i] =3D i + 1;
+> >
+> > -       buf =3D krealloc(buf, size * 2, GFP_KERNEL * 2); /* Shrink. */
+> > +       buf =3D krealloc(buf, size * 2, GFP_KERNEL); /* Shrink. */
+> >         KUNIT_EXPECT_GE(test, ksize(buf), size * 2);
+> >         for (i =3D 0; i < size * 2; i++)
+> >                 KUNIT_EXPECT_EQ(test, buf[i], (char)(i + 1));
+> > --
+> > 2.29.2.684.gfbc64c5ab5-goog
+> >
+>
+> This patch could, if appropriate, be squashed into "kfence: add test suit=
+e".
+>
+> Thanks,
+> -- Marco
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+--=20
+Alexander Potapenko
+Software Engineer
+
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
+
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
