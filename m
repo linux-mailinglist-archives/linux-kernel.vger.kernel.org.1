@@ -2,224 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 596922DD10E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 13:04:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4D72DD113
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 13:05:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727531AbgLQMEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 07:04:10 -0500
-Received: from smtp1.axis.com ([195.60.68.17]:62876 "EHLO smtp1.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726155AbgLQMEJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 07:04:09 -0500
+        id S1727689AbgLQMF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 07:05:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726533AbgLQMF0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 07:05:26 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F74CC061794;
+        Thu, 17 Dec 2020 04:04:46 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id ga15so37478292ejb.4;
+        Thu, 17 Dec 2020 04:04:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1608206646;
-  x=1639742646;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Vjr3qBRC1GL8lvl9fDTs60Y6QiLvA0gIVEwpBJnQk/A=;
-  b=CMYgLJLiYueESSewxW1FZeBHmQc3nsUvhjl0DwOdpMOXz2HmsCGChbSV
-   zBvVHHyLXgGYDOnqfN3TjQILiUkcWsG6NCN4PXppijnDo1gAYH/FrNvND
-   Kk4ApedIGM1ogVt+Ghq5Zlql95QN9xNaQr5wCojcR97n3mfT/GBIb697B
-   67bmbFagljvDBXIvKIDULuUoTJLpbhnlEdhMOSynMFNYPTe0ugKM5YU+l
-   zKPLRRNvV2DU3tetm3AUUwufW0Y6VQLomiHCec/BB8jZiMzdn59c+BvhE
-   OT34KUXTL1BF48hOIWDxm21dB0N5FGpsdwtS2NDUYcdPO2/8MCVCu7JIV
-   w==;
-From:   Hermes Zhang <Hermes.Zhang@axis.com>
-To:     =?utf-8?B?UGFsaSBSb2jDoXI=?= <pali@kernel.org>
-CC:     Dan Murphy <dmurphy@ti.com>, Sebastian Reichel <sre@kernel.org>,
-        kernel <kernel@axis.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] power: supply: bq27xxx: Supporrt CHARGE_NOW for
- bq27z561/bq28z610/bq34z100
-Thread-Topic: [PATCH] power: supply: bq27xxx: Supporrt CHARGE_NOW for
- bq27z561/bq28z610/bq34z100
-Thread-Index: AQHW1Gpzjl58KCYghkG0huVSyMYxwqn7Hc0AgAARHMA=
-Date:   Thu, 17 Dec 2020 12:03:24 +0000
-Message-ID: <c77d50a397054b20a4945140820a54e0@XBOX03.axis.com>
-References: <20201217114737.7263-1-chenhui.zhang@axis.com>
- <20201217115648.iiferqyvg7tlnmln@pali>
-In-Reply-To: <20201217115648.iiferqyvg7tlnmln@pali>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.0.5.60]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=crgc6wkW4VempU5HmP4qXbD9FhDUqY6/D2yW3tVCEpE=;
+        b=ocvqyBVcSEZ4mad25E6EkZ6kLnzZwNRW0cKPcHsQjrRLUZx27Ftm3xJnR5uQky5OH0
+         FTHtXTwbWcnmuxlPnFC2bo+PqEc9VMlHnNcKGuZM3F4e50w08hPAFPiPSvrI+okDvFsN
+         WnHRqgi+JylDSSdJpz7YgjF2tXLqdEUFjRIFUIG8DcGJTIajdnM17/mIjOHs+6vXlzyO
+         wOW8rdcnZ6nAVfXCf0dy0wvCpGlbY1PXXC/saHaRMXnD226FmqbFptnVR7wpQy9T/qPI
+         bYZP69Ss4eBjbqJ2HDisDrOm1+E8bC+t90W6wQsOQ1OyjVAXrzGHRoUQrYNWoOtvmlbP
+         qQAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=crgc6wkW4VempU5HmP4qXbD9FhDUqY6/D2yW3tVCEpE=;
+        b=nPCTJyl7D8122KB6p33Ys9zN8WxANLKWiXb4TrkSsQnCwpo4vUWYLLptS2KTVg2gCn
+         DKGXARvFznfYYB9sGbadD6xnS72cRH108R+bHYEWgOeNlkXD3Mc47yG/tXwLzdPEd0aI
+         cQaYT0RPC9CZOIfiSVdUcNDOz7uHq1uvMPSzZVt9IubdmvQix73bl7A+aaEqqAeeNAEJ
+         xX+GrGFG2IKh7Jts/kEM2iVvxD731qFpZLZ3Ff9ZwPnKiZ9Awqs6//YZPhSdjeFrKsOt
+         q8U9Ow8+1xn26Fsnat5yobGbCiGPzAavr9e1xdkFRx3hrs5xDHFsqW9duARPk+hMNSnn
+         c2gQ==
+X-Gm-Message-State: AOAM530GgYG6Qm+4IJDn5G8kANywTrTU+i+1W0RPBXqO2A9+eDV4j1mq
+        sEoJ3ZnvqmshxQo1OBA/FvI=
+X-Google-Smtp-Source: ABdhPJwlphTNHge0FDRXyyhVNuVGNHR9mskoXZZ0eJ90S+7VNcLKQwCm4kRHGSKQXZC5ggerQKse7g==
+X-Received: by 2002:a17:906:31c2:: with SMTP id f2mr36000767ejf.518.1608206685065;
+        Thu, 17 Dec 2020 04:04:45 -0800 (PST)
+Received: from localhost (176-74-128-122.netdatacomm.cz. [176.74.128.122])
+        by smtp.gmail.com with ESMTPSA id ci20sm3540303ejc.26.2020.12.17.04.04.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Dec 2020 04:04:44 -0800 (PST)
+Date:   Thu, 17 Dec 2020 13:04:43 +0100
+From:   Artem Savkov <artem.savkov@gmail.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Joe Lawrence <joe.lawrence@redhat.com>,
+        WANG Chao <chao.wang@ucloud.cn>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Subject: Re: [PATCH] kbuild: add extra-y to targets-for-modules
+Message-ID: <20201217120443.GA739639@sparkplug.usersys.redhat.com>
+References: <20201103054425.59251-1-chao.wang@ucloud.cn>
+ <CAK7LNARnmJRy1NPBDkgNsoe_TqpD=HJhmri4YHjXjscGZ-neWw@mail.gmail.com>
+ <20201123150452.GA68187@MacBook-Pro-2>
+ <CAK7LNASH7Pj9eUdxF-sp1_Ap+uA9jEtsXa--pUDDw_pNVLtviA@mail.gmail.com>
+ <20201208092035.GA96434@MacBook-Pro-2.local>
+ <20201208143117.GA3333762@wtfbox.lan>
+ <CAK7LNAS=wdCObfX3x8CQmXf8HsrKAjz+v+XVUCxVg63pxy8MXg@mail.gmail.com>
+ <f2d1888b-5b8e-a513-61c7-f41fc3f3f7a3@redhat.com>
+ <CAK7LNATmfzt0kTF0BWkSRaZV3p01mvN4OSGPZsCp+KHghCWf0Q@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAK7LNATmfzt0kTF0BWkSRaZV3p01mvN4OSGPZsCp+KHghCWf0Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgUGFsaSwNCg0KRnJvbSB0aGUgVEkgc3BlYyAoZS5nLiBodHRwczovL3d3dy50aS5jb20vbGl0
-L3VnL3RpZHUwNzcvdGlkdTA3Ny5wZGY/dHM9MTYwODIwNjM0NzAyMiZyZWZfdXJsPWh0dHBzJTI1
-M0ElMjUyRiUyNTJGd3d3Lmdvb2dsZS5jb20lMjUyRikgLCB0aGUgTkFDIGFuZCBSQyAoUmVtYWlu
-aW5nQ2FwYWNpdHkpIGFyZSBkaWZmZXJlbnQ6DQoNCjQuNSBOb21pbmFsQXZhaWxhYmxlQ2FwYWNp
-dHkoICk6IDB4MDgvMHgwOQ0KVGhpcyByZWFkLW9ubHkgY29tbWFuZCBwYWlyIHJldHVybnMgdGhl
-IHVuY29tcGVuc2F0ZWQgKGxlc3MgdGhhbiBDLzIwIGxvYWQpIGJhdHRlcnkgY2FwYWNpdHkNCnJl
-bWFpbmluZy4gVW5pdHMgYXJlIG1BaC4NCg0KNC43IFJlbWFpbmluZ0NhcGFjaXR5KCApOiAweDBj
-LzB4MGQNClRoaXMgcmVhZC1vbmx5IGNvbW1hbmQgcGFpciByZXR1cm5zIHRoZSBjb21wZW5zYXRl
-ZCBiYXR0ZXJ5IGNhcGFjaXR5IHJlbWFpbmluZy4gVW5pdHMgYXJlIG1BaC4NCg0KQnV0IGZvciBz
-b21lIGNoaXAgZS5nLiBicTI3ejU2MSBpdCBkb2Vzbid0IGhhdmUgdGhlIE5BQyBSZWcsIHNvIEkg
-cHJlZmVyIHRvIHVzZSBSQyBpbnN0ZWFkLg0KDQpCZXN0IFJlZ2FyZHMsDQpIZXJtZXMNCg0KLS0t
-LS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IFBhbGkgUm9ow6FyIDxwYWxpQGtlcm5lbC5v
-cmc+IA0KU2VudDogMjAyMOW5tDEy5pyIMTfml6UgMTk6NTcNClRvOiBIZXJtZXMgWmhhbmcgPEhl
-cm1lcy5aaGFuZ0BheGlzLmNvbT4NCkNjOiBEYW4gTXVycGh5IDxkbXVycGh5QHRpLmNvbT47IFNl
-YmFzdGlhbiBSZWljaGVsIDxzcmVAa2VybmVsLm9yZz47IGtlcm5lbCA8a2VybmVsQGF4aXMuY29t
-PjsgSGVybWVzIFpoYW5nIDxIZXJtZXMuWmhhbmdAYXhpcy5jb20+OyBsaW51eC1wbUB2Z2VyLmtl
-cm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNClN1YmplY3Q6IFJlOiBbUEFU
-Q0hdIHBvd2VyOiBzdXBwbHk6IGJxMjd4eHg6IFN1cHBvcnJ0IENIQVJHRV9OT1cgZm9yIGJxMjd6
-NTYxL2JxMjh6NjEwL2JxMzR6MTAwDQoNCk9uIFRodXJzZGF5IDE3IERlY2VtYmVyIDIwMjAgMTk6
-NDc6MzcgSGVybWVzIFpoYW5nIHdyb3RlOg0KPiBGcm9tOiBIZXJtZXMgWmhhbmcgPGNoZW5odWl6
-QGF4aXMuY29tPg0KPiANCj4gVGhlIENIQVJHRV9OT1cgaXMgbWFwIHRvIFJFR19OQUMgZm9yIGFs
-bCB0aGUgZ2F1Z2UgY2hpcHMgYmVvZnJlLiBCdXQgDQo+IGZvciBzb21lIGNoaXBzIChlLmcuIGJx
-Mjd6NTYxKSB3aGljaCBkb2Vzbid0IGhhdmUgdGhlIFJFR19OQUMsIHdlIHVzZSANCj4gUkVHX1JD
-IChyZW1haW5pbmcgY2FwYWNpdHkpIGZvciBDSEFSR0VfTk9XLg0KDQpIZWxsbyEgV2hhdCBpcyB0
-aGUgZGlmZmVyZW5jZSBiZXR3ZWVuIE5BQyBhbmQgUkM/IElzIG5vdCBpdCBzYW1lIHRoaW5nPw0K
-SSdtIGFza2luZyBiZWNhdXNlIGZvciBtZSBmcm9tIHRoaXMgcGF0Y2ggZm9yIHBvd2VyIHN1cHBs
-eSBBUEkgcHVycG9zZSBpdCBpcyB0aGUgc2FtZSB0aGluZy4uLiBBbmQgdGhlcmVmb3JlIGlmIGl0
-IGRvZXMgbm90IG1ha2Ugc2Vuc2UgdG8gZGVmaW5lIGZvciBicTI3ejU2MSBjaGlwIEJRMjdYWFhf
-UkVHX05BQyByZWcgdmFsdWUgdG8gdmFsdWUgd2hpY2ggeW91IHVzZWQgaW4gQlEyN1hYWF9SRUdf
-UkMgKHRvIHNpbXBsaWZ5IHdob2xlIGltcGxlbWVudGF0aW9uKS4NCg0KPiBTaWduZWQtb2ZmLWJ5
-OiBIZXJtZXMgWmhhbmcgPGNoZW5odWl6QGF4aXMuY29tPg0KPiAtLS0NCj4gIGRyaXZlcnMvcG93
-ZXIvc3VwcGx5L2JxMjd4eHhfYmF0dGVyeS5jIHwgMzUgDQo+ICsrKysrKysrKysrKysrKysrKysr
-KysrKystDQo+ICAxIGZpbGUgY2hhbmdlZCwgMzQgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigt
-KQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvcG93ZXIvc3VwcGx5L2JxMjd4eHhfYmF0dGVy
-eS5jIA0KPiBiL2RyaXZlcnMvcG93ZXIvc3VwcGx5L2JxMjd4eHhfYmF0dGVyeS5jDQo+IGluZGV4
-IDMxNWUwOTA5ZTZhNC4uYzFhNDlhNTk4ZTliIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL3Bvd2Vy
-L3N1cHBseS9icTI3eHh4X2JhdHRlcnkuYw0KPiArKysgYi9kcml2ZXJzL3Bvd2VyL3N1cHBseS9i
-cTI3eHh4X2JhdHRlcnkuYw0KPiBAQCAtMTEwLDYgKzExMCw3IEBAIGVudW0gYnEyN3h4eF9yZWdf
-aW5kZXggew0KPiAgCUJRMjdYWFhfUkVHX1RURVMsCS8qIFRpbWUtdG8tRW1wdHkgU3RhbmRieSAq
-Lw0KPiAgCUJRMjdYWFhfUkVHX1RURUNQLAkvKiBUaW1lLXRvLUVtcHR5IGF0IENvbnN0YW50IFBv
-d2VyICovDQo+ICAJQlEyN1hYWF9SRUdfTkFDLAkvKiBOb21pbmFsIEF2YWlsYWJsZSBDYXBhY2l0
-eSAqLw0KPiArCUJRMjdYWFhfUkVHX1JDLAkJLyogUmVtYWluaW5nIENhcGFjaXR5ICovDQo+ICAJ
-QlEyN1hYWF9SRUdfRkNDLAkvKiBGdWxsIENoYXJnZSBDYXBhY2l0eSAqLw0KPiAgCUJRMjdYWFhf
-UkVHX0NZQ1QsCS8qIEN5Y2xlIENvdW50ICovDQo+ICAJQlEyN1hYWF9SRUdfQUUsCQkvKiBBdmFp
-bGFibGUgRW5lcmd5ICovDQo+IEBAIC0xNDUsNiArMTQ2LDcgQEAgc3RhdGljIHU4DQo+ICAJCVtC
-UTI3WFhYX1JFR19UVEVTXSA9IDB4MWMsDQo+ICAJCVtCUTI3WFhYX1JFR19UVEVDUF0gPSAweDI2
-LA0KPiAgCQlbQlEyN1hYWF9SRUdfTkFDXSA9IDB4MGMsDQo+ICsJCVtCUTI3WFhYX1JFR19SQ10g
-PSBJTlZBTElEX1JFR19BRERSLA0KPiAgCQlbQlEyN1hYWF9SRUdfRkNDXSA9IDB4MTIsDQo+ICAJ
-CVtCUTI3WFhYX1JFR19DWUNUXSA9IDB4MmEsDQo+ICAJCVtCUTI3WFhYX1JFR19BRV0gPSAweDIy
-LA0KPiBAQCAtMTY5LDYgKzE3MSw3IEBAIHN0YXRpYyB1OA0KPiAgCQlbQlEyN1hYWF9SRUdfVFRF
-U10gPSAweDFjLA0KPiAgCQlbQlEyN1hYWF9SRUdfVFRFQ1BdID0gMHgyNiwNCj4gIAkJW0JRMjdY
-WFhfUkVHX05BQ10gPSAweDBjLA0KPiArCQlbQlEyN1hYWF9SRUdfUkNdID0gSU5WQUxJRF9SRUdf
-QUREUiwNCj4gIAkJW0JRMjdYWFhfUkVHX0ZDQ10gPSAweDEyLA0KPiAgCQlbQlEyN1hYWF9SRUdf
-Q1lDVF0gPSAweDJhLA0KPiAgCQlbQlEyN1hYWF9SRUdfQUVdID0gSU5WQUxJRF9SRUdfQUREUiwg
-QEAgLTE5Myw2ICsxOTYsNyBAQCBzdGF0aWMgdTgNCj4gIAkJW0JRMjdYWFhfUkVHX1RURVNdID0g
-MHgxYSwNCj4gIAkJW0JRMjdYWFhfUkVHX1RURUNQXSA9IElOVkFMSURfUkVHX0FERFIsDQo+ICAJ
-CVtCUTI3WFhYX1JFR19OQUNdID0gMHgwYywNCj4gKwkJW0JRMjdYWFhfUkVHX1JDXSA9IElOVkFM
-SURfUkVHX0FERFIsDQo+ICAJCVtCUTI3WFhYX1JFR19GQ0NdID0gMHgxMiwNCj4gIAkJW0JRMjdY
-WFhfUkVHX0NZQ1RdID0gMHgyYSwNCj4gIAkJW0JRMjdYWFhfUkVHX0FFXSA9IElOVkFMSURfUkVH
-X0FERFIsIEBAIC0yMTUsNiArMjE5LDcgQEAgc3RhdGljIHU4DQo+ICAJCVtCUTI3WFhYX1JFR19U
-VEVTXSA9IDB4MWMsDQo+ICAJCVtCUTI3WFhYX1JFR19UVEVDUF0gPSAweDI2LA0KPiAgCQlbQlEy
-N1hYWF9SRUdfTkFDXSA9IDB4MGMsDQo+ICsJCVtCUTI3WFhYX1JFR19SQ10gPSBJTlZBTElEX1JF
-R19BRERSLA0KPiAgCQlbQlEyN1hYWF9SRUdfRkNDXSA9IDB4MTIsDQo+ICAJCVtCUTI3WFhYX1JF
-R19DWUNUXSA9IDB4MmEsDQo+ICAJCVtCUTI3WFhYX1JFR19BRV0gPSAweDIyLA0KPiBAQCAtMjM3
-LDYgKzI0Miw3IEBAIHN0YXRpYyB1OA0KPiAgCQlbQlEyN1hYWF9SRUdfVFRFU10gPSAweDFhLA0K
-PiAgCQlbQlEyN1hYWF9SRUdfVFRFQ1BdID0gSU5WQUxJRF9SRUdfQUREUiwNCj4gIAkJW0JRMjdY
-WFhfUkVHX05BQ10gPSAweDBjLA0KPiArCQlbQlEyN1hYWF9SRUdfUkNdID0gSU5WQUxJRF9SRUdf
-QUREUiwNCj4gIAkJW0JRMjdYWFhfUkVHX0ZDQ10gPSAweDEyLA0KPiAgCQlbQlEyN1hYWF9SRUdf
-Q1lDVF0gPSAweDFlLA0KPiAgCQlbQlEyN1hYWF9SRUdfQUVdID0gSU5WQUxJRF9SRUdfQUREUiwg
-QEAgLTI1Nyw2ICsyNjMsNyBAQCBzdGF0aWMgdTgNCj4gIAkJW0JRMjdYWFhfUkVHX1RURVNdID0g
-MHgxYywNCj4gIAkJW0JRMjdYWFhfUkVHX1RURUNQXSA9IDB4MjYsDQo+ICAJCVtCUTI3WFhYX1JF
-R19OQUNdID0gMHgwYywNCj4gKwkJW0JRMjdYWFhfUkVHX1JDXSA9IElOVkFMSURfUkVHX0FERFIs
-DQo+ICAJCVtCUTI3WFhYX1JFR19GQ0NdID0gMHgxMiwNCj4gIAkJW0JRMjdYWFhfUkVHX0NZQ1Rd
-ID0gSU5WQUxJRF9SRUdfQUREUiwNCj4gIAkJW0JRMjdYWFhfUkVHX0FFXSA9IDB4MjIsDQo+IEBA
-IC0yNzcsNiArMjg0LDcgQEAgc3RhdGljIHU4DQo+ICAJCVtCUTI3WFhYX1JFR19UVEVTXSA9IDB4
-MWMsDQo+ICAJCVtCUTI3WFhYX1JFR19UVEVDUF0gPSAweDI2LA0KPiAgCQlbQlEyN1hYWF9SRUdf
-TkFDXSA9IDB4MGMsDQo+ICsJCVtCUTI3WFhYX1JFR19SQ10gPSBJTlZBTElEX1JFR19BRERSLA0K
-PiAgCQlbQlEyN1hYWF9SRUdfRkNDXSA9IDB4MTIsDQo+ICAJCVtCUTI3WFhYX1JFR19DWUNUXSA9
-IDB4MmEsDQo+ICAJCVtCUTI3WFhYX1JFR19BRV0gPSAweDIyLA0KPiBAQCAtMjk3LDYgKzMwNSw3
-IEBAIHN0YXRpYyB1OA0KPiAgCQlbQlEyN1hYWF9SRUdfVFRFU10gPSAweDFjLA0KPiAgCQlbQlEy
-N1hYWF9SRUdfVFRFQ1BdID0gMHgyNiwNCj4gIAkJW0JRMjdYWFhfUkVHX05BQ10gPSAweDBjLA0K
-PiArCQlbQlEyN1hYWF9SRUdfUkNdID0gSU5WQUxJRF9SRUdfQUREUiwNCj4gIAkJW0JRMjdYWFhf
-UkVHX0ZDQ10gPSAweDEyLA0KPiAgCQlbQlEyN1hYWF9SRUdfQ1lDVF0gPSAweDJhLA0KPiAgCQlb
-QlEyN1hYWF9SRUdfQUVdID0gMHgyMiwNCj4gQEAgLTMxNyw2ICszMjYsNyBAQCBzdGF0aWMgdTgN
-Cj4gIAkJW0JRMjdYWFhfUkVHX1RURVNdID0gMHgxYywNCj4gIAkJW0JRMjdYWFhfUkVHX1RURUNQ
-XSA9IElOVkFMSURfUkVHX0FERFIsDQo+ICAJCVtCUTI3WFhYX1JFR19OQUNdID0gMHgwYywNCj4g
-KwkJW0JRMjdYWFhfUkVHX1JDXSA9IElOVkFMSURfUkVHX0FERFIsDQo+ICAJCVtCUTI3WFhYX1JF
-R19GQ0NdID0gMHgxMiwNCj4gIAkJW0JRMjdYWFhfUkVHX0NZQ1RdID0gMHgxZSwNCj4gIAkJW0JR
-MjdYWFhfUkVHX0FFXSA9IElOVkFMSURfUkVHX0FERFIsIEBAIC0zMzcsNiArMzQ3LDcgQEAgc3Rh
-dGljIHU4DQo+ICAJCVtCUTI3WFhYX1JFR19UVEVTXSA9IElOVkFMSURfUkVHX0FERFIsDQo+ICAJ
-CVtCUTI3WFhYX1JFR19UVEVDUF0gPSBJTlZBTElEX1JFR19BRERSLA0KPiAgCQlbQlEyN1hYWF9S
-RUdfTkFDXSA9IElOVkFMSURfUkVHX0FERFIsDQo+ICsJCVtCUTI3WFhYX1JFR19SQ10gPSBJTlZB
-TElEX1JFR19BRERSLA0KPiAgCQlbQlEyN1hYWF9SRUdfRkNDXSA9IElOVkFMSURfUkVHX0FERFIs
-DQo+ICAJCVtCUTI3WFhYX1JFR19DWUNUXSA9IElOVkFMSURfUkVHX0FERFIsDQo+ICAJCVtCUTI3
-WFhYX1JFR19BRV0gPSBJTlZBTElEX1JFR19BRERSLCBAQCAtMzYxLDYgKzM3Miw3IEBAIHN0YXRp
-YyB1OA0KPiAgCQlbQlEyN1hYWF9SRUdfVFRFU10gPSBJTlZBTElEX1JFR19BRERSLA0KPiAgCQlb
-QlEyN1hYWF9SRUdfVFRFQ1BdID0gSU5WQUxJRF9SRUdfQUREUiwNCj4gIAkJW0JRMjdYWFhfUkVH
-X05BQ10gPSAweDBjLA0KPiArCQlbQlEyN1hYWF9SRUdfUkNdID0gSU5WQUxJRF9SRUdfQUREUiwN
-Cj4gIAkJW0JRMjdYWFhfUkVHX0ZDQ10gPSAweDEyLA0KPiAgCQlbQlEyN1hYWF9SRUdfQ1lDVF0g
-PSAweDJhLA0KPiAgCQlbQlEyN1hYWF9SRUdfQUVdID0gSU5WQUxJRF9SRUdfQUREUiwgQEAgLTM4
-Miw2ICszOTQsNyBAQCBzdGF0aWMgdTgNCj4gIAkJW0JRMjdYWFhfUkVHX1RURVNdID0gSU5WQUxJ
-RF9SRUdfQUREUiwNCj4gIAkJW0JRMjdYWFhfUkVHX1RURUNQXSA9IElOVkFMSURfUkVHX0FERFIs
-DQo+ICAJCVtCUTI3WFhYX1JFR19OQUNdID0gMHgwYywNCj4gKwkJW0JRMjdYWFhfUkVHX1JDXSA9
-IElOVkFMSURfUkVHX0FERFIsDQo+ICAJCVtCUTI3WFhYX1JFR19GQ0NdID0gMHgxMiwNCj4gIAkJ
-W0JRMjdYWFhfUkVHX0NZQ1RdID0gMHgyYSwNCj4gIAkJW0JRMjdYWFhfUkVHX0FFXSA9IElOVkFM
-SURfUkVHX0FERFIsIEBAIC00MDUsNiArNDE4LDcgQEAgc3RhdGljIHU4DQo+ICAJCVtCUTI3WFhY
-X1JFR19UVEVTXSA9IElOVkFMSURfUkVHX0FERFIsDQo+ICAJCVtCUTI3WFhYX1JFR19UVEVDUF0g
-PSBJTlZBTElEX1JFR19BRERSLA0KPiAgCQlbQlEyN1hYWF9SRUdfTkFDXSA9IDB4MGMsDQo+ICsJ
-CVtCUTI3WFhYX1JFR19SQ10gPSBJTlZBTElEX1JFR19BRERSLA0KPiAgCQlbQlEyN1hYWF9SRUdf
-RkNDXSA9IDB4MTIsDQo+ICAJCVtCUTI3WFhYX1JFR19DWUNUXSA9IDB4MmEsDQo+ICAJCVtCUTI3
-WFhYX1JFR19BRV0gPSBJTlZBTElEX1JFR19BRERSLCBAQCAtNDI1LDYgKzQzOSw3IEBAIHN0YXRp
-YyB1OA0KPiAgCQlbQlEyN1hYWF9SRUdfVFRFU10gPSBJTlZBTElEX1JFR19BRERSLA0KPiAgCQlb
-QlEyN1hYWF9SRUdfVFRFQ1BdID0gSU5WQUxJRF9SRUdfQUREUiwNCj4gIAkJW0JRMjdYWFhfUkVH
-X05BQ10gPSAweDA4LA0KPiArCQlbQlEyN1hYWF9SRUdfUkNdID0gSU5WQUxJRF9SRUdfQUREUiwN
-Cj4gIAkJW0JRMjdYWFhfUkVHX0ZDQ10gPSAweDBlLA0KPiAgCQlbQlEyN1hYWF9SRUdfQ1lDVF0g
-PSBJTlZBTElEX1JFR19BRERSLA0KPiAgCQlbQlEyN1hYWF9SRUdfQUVdID0gSU5WQUxJRF9SRUdf
-QUREUiwgQEAgLTQ1MCw2ICs0NjUsNyBAQCBzdGF0aWMgdTgNCj4gIAkJW0JRMjdYWFhfUkVHX1RU
-RVNdID0gSU5WQUxJRF9SRUdfQUREUiwNCj4gIAkJW0JRMjdYWFhfUkVHX1RURUNQXSA9IElOVkFM
-SURfUkVHX0FERFIsDQo+ICAJCVtCUTI3WFhYX1JFR19OQUNdID0gSU5WQUxJRF9SRUdfQUREUiwN
-Cj4gKwkJW0JRMjdYWFhfUkVHX1JDXSA9IDB4MTAsDQo+ICAJCVtCUTI3WFhYX1JFR19GQ0NdID0g
-MHgxMiwNCj4gIAkJW0JRMjdYWFhfUkVHX0NZQ1RdID0gMHgyYSwNCj4gIAkJW0JRMjdYWFhfUkVH
-X0FFXSA9IDB4MjIsDQo+IEBAIC00NzAsNiArNDg2LDcgQEAgc3RhdGljIHU4DQo+ICAJCVtCUTI3
-WFhYX1JFR19UVEVTXSA9IElOVkFMSURfUkVHX0FERFIsDQo+ICAJCVtCUTI3WFhYX1JFR19UVEVD
-UF0gPSBJTlZBTElEX1JFR19BRERSLA0KPiAgCQlbQlEyN1hYWF9SRUdfTkFDXSA9IElOVkFMSURf
-UkVHX0FERFIsDQo+ICsJCVtCUTI3WFhYX1JFR19SQ10gPSAweDEwLA0KPiAgCQlbQlEyN1hYWF9S
-RUdfRkNDXSA9IDB4MTIsDQo+ICAJCVtCUTI3WFhYX1JFR19DWUNUXSA9IDB4MmEsDQo+ICAJCVtC
-UTI3WFhYX1JFR19BRV0gPSAweDIyLA0KPiBAQCAtNDkwLDYgKzUwNyw3IEBAIHN0YXRpYyB1OA0K
-PiAgCQlbQlEyN1hYWF9SRUdfVFRFU10gPSAweDFlLA0KPiAgCQlbQlEyN1hYWF9SRUdfVFRFQ1Bd
-ID0gSU5WQUxJRF9SRUdfQUREUiwNCj4gIAkJW0JRMjdYWFhfUkVHX05BQ10gPSBJTlZBTElEX1JF
-R19BRERSLA0KPiArCQlbQlEyN1hYWF9SRUdfUkNdID0gMHgwNCwNCj4gIAkJW0JRMjdYWFhfUkVH
-X0ZDQ10gPSAweDA2LA0KPiAgCQlbQlEyN1hYWF9SRUdfQ1lDVF0gPSAweDJjLA0KPiAgCQlbQlEy
-N1hYWF9SRUdfQUVdID0gMHgyNCwNCj4gQEAgLTc0NSw2ICs3NjMsNyBAQCBzdGF0aWMgZW51bSBw
-b3dlcl9zdXBwbHlfcHJvcGVydHkgYnEyN3o1NjFfcHJvcHNbXSA9IHsNCj4gIAlQT1dFUl9TVVBQ
-TFlfUFJPUF9USU1FX1RPX0ZVTExfTk9XLA0KPiAgCVBPV0VSX1NVUFBMWV9QUk9QX1RFQ0hOT0xP
-R1ksDQo+ICAJUE9XRVJfU1VQUExZX1BST1BfQ0hBUkdFX0ZVTEwsDQo+ICsJUE9XRVJfU1VQUExZ
-X1BST1BfQ0hBUkdFX05PVywNCj4gIAlQT1dFUl9TVVBQTFlfUFJPUF9DSEFSR0VfRlVMTF9ERVNJ
-R04sDQo+ICAJUE9XRVJfU1VQUExZX1BST1BfQ1lDTEVfQ09VTlQsDQo+ICAJUE9XRVJfU1VQUExZ
-X1BST1BfUE9XRVJfQVZHLA0KPiBAQCAtNzY0LDYgKzc4Myw3IEBAIHN0YXRpYyBlbnVtIHBvd2Vy
-X3N1cHBseV9wcm9wZXJ0eSBicTI4ejYxMF9wcm9wc1tdID0gew0KPiAgCVBPV0VSX1NVUFBMWV9Q
-Uk9QX1RJTUVfVE9fRlVMTF9OT1csDQo+ICAJUE9XRVJfU1VQUExZX1BST1BfVEVDSE5PTE9HWSwN
-Cj4gIAlQT1dFUl9TVVBQTFlfUFJPUF9DSEFSR0VfRlVMTCwNCj4gKwlQT1dFUl9TVVBQTFlfUFJP
-UF9DSEFSR0VfTk9XLA0KPiAgCVBPV0VSX1NVUFBMWV9QUk9QX0NIQVJHRV9GVUxMX0RFU0lHTiwN
-Cj4gIAlQT1dFUl9TVVBQTFlfUFJPUF9DWUNMRV9DT1VOVCwNCj4gIAlQT1dFUl9TVVBQTFlfUFJP
-UF9QT1dFUl9BVkcsDQo+IEBAIC03ODQsNiArODA0LDcgQEAgc3RhdGljIGVudW0gcG93ZXJfc3Vw
-cGx5X3Byb3BlcnR5IGJxMzR6MTAwX3Byb3BzW10gPSB7DQo+ICAJUE9XRVJfU1VQUExZX1BST1Bf
-VElNRV9UT19GVUxMX05PVywNCj4gIAlQT1dFUl9TVVBQTFlfUFJPUF9URUNITk9MT0dZLA0KPiAg
-CVBPV0VSX1NVUFBMWV9QUk9QX0NIQVJHRV9GVUxMLA0KPiArCVBPV0VSX1NVUFBMWV9QUk9QX0NI
-QVJHRV9OT1csDQo+ICAJUE9XRVJfU1VQUExZX1BST1BfQ0hBUkdFX0ZVTExfREVTSUdOLA0KPiAg
-CVBPV0VSX1NVUFBMWV9QUk9QX0NZQ0xFX0NPVU5ULA0KPiAgCVBPV0VSX1NVUFBMWV9QUk9QX0VO
-RVJHWV9OT1csDQo+IEBAIC0xNTE4LDYgKzE1MzksMTUgQEAgc3RhdGljIGlubGluZSBpbnQgYnEy
-N3h4eF9iYXR0ZXJ5X3JlYWRfbmFjKHN0cnVjdCBicTI3eHh4X2RldmljZV9pbmZvICpkaSkNCj4g
-IAlyZXR1cm4gYnEyN3h4eF9iYXR0ZXJ5X3JlYWRfY2hhcmdlKGRpLCBCUTI3WFhYX1JFR19OQUMp
-OyAgfQ0KPiAgDQo+ICsvKg0KPiArICogUmV0dXJuIHRoZSBiYXR0ZXJ5IFJlbWFpbmluZyBDYXBh
-Y2l0eSBpbiDCtUFoDQo+ICsgKiBPciA8IDAgaWYgc29tZXRoaW5nIGZhaWxzLg0KPiArICovDQo+
-ICtzdGF0aWMgaW5saW5lIGludCBicTI3eHh4X2JhdHRlcnlfcmVhZF9yYyhzdHJ1Y3QgYnEyN3h4
-eF9kZXZpY2VfaW5mbyANCj4gKypkaSkgew0KPiArCXJldHVybiBicTI3eHh4X2JhdHRlcnlfcmVh
-ZF9jaGFyZ2UoZGksIEJRMjdYWFhfUkVHX1JDKTsgfQ0KPiArDQo+ICAvKg0KPiAgICogUmV0dXJu
-IHRoZSBiYXR0ZXJ5IEZ1bGwgQ2hhcmdlIENhcGFjaXR5IGluIMK1QWgNCj4gICAqIE9yIDwgMCBp
-ZiBzb21ldGhpbmcgZmFpbHMuDQo+IEBAIC0xOTY1LDcgKzE5OTUsMTAgQEAgc3RhdGljIGludCBi
-cTI3eHh4X2JhdHRlcnlfZ2V0X3Byb3BlcnR5KHN0cnVjdCBwb3dlcl9zdXBwbHkgKnBzeSwNCj4g
-IAkJCXZhbC0+aW50dmFsID0gUE9XRVJfU1VQUExZX1RFQ0hOT0xPR1lfTElPTjsNCj4gIAkJYnJl
-YWs7DQo+ICAJY2FzZSBQT1dFUl9TVVBQTFlfUFJPUF9DSEFSR0VfTk9XOg0KPiAtCQlyZXQgPSBi
-cTI3eHh4X3NpbXBsZV92YWx1ZShicTI3eHh4X2JhdHRlcnlfcmVhZF9uYWMoZGkpLCB2YWwpOw0K
-PiArCQlpZiAoZGktPnJlZ3NbQlEyN1hYWF9SRUdfTkFDXSAhPSBJTlZBTElEX1JFR19BRERSKQ0K
-PiArCQkJcmV0ID0gYnEyN3h4eF9zaW1wbGVfdmFsdWUoYnEyN3h4eF9iYXR0ZXJ5X3JlYWRfbmFj
-KGRpKSwgdmFsKTsNCj4gKwkJZWxzZQ0KPiArCQkJcmV0ID0gYnEyN3h4eF9zaW1wbGVfdmFsdWUo
-YnEyN3h4eF9iYXR0ZXJ5X3JlYWRfcmMoZGkpLCB2YWwpOw0KPiAgCQlicmVhazsNCj4gIAljYXNl
-IFBPV0VSX1NVUFBMWV9QUk9QX0NIQVJHRV9GVUxMOg0KPiAgCQlyZXQgPSBicTI3eHh4X3NpbXBs
-ZV92YWx1ZShkaS0+Y2FjaGUuY2hhcmdlX2Z1bGwsIHZhbCk7DQo+IC0tDQo+IDIuMjAuMQ0KPiAN
-Cg==
+On Thu, Dec 17, 2020 at 05:26:07PM +0900, Masahiro Yamada wrote:
+> On Thu, Dec 17, 2020 at 8:04 AM Joe Lawrence <joe.lawrence@redhat.com> wrote:
+> >
+> > On 12/16/20 1:14 AM, Masahiro Yamada wrote:
+> > > On Tue, Dec 8, 2020 at 11:31 PM Artem Savkov <artem.savkov@gmail.com> wrote:
+> > >>
+> > >> On Tue, Dec 08, 2020 at 05:20:35PM +0800, WANG Chao wrote:
+> > >>> Sorry for the late reply.
+> > >>>
+> > >>> On 11/25/20 at 10:42P, Masahiro Yamada wrote:
+> > >>>> On Tue, Nov 24, 2020 at 12:05 AM WANG Chao <chao.wang@ucloud.cn> wrote:
+> > >>>>>
+> > >>>>> On 11/23/20 at 02:23P, Masahiro Yamada wrote:
+> > >>>>>> On Tue, Nov 3, 2020 at 3:23 PM WANG Chao <chao.wang@ucloud.cn> wrote:
+> > >>>>>>>
+> > >>>>>>> extra-y target doesn't build for 'make M=...' since commit 6212804f2d78
+> > >>>>>>> ("kbuild: do not create built-in objects for external module builds").
+> > >>>>>>>
+> > >>>>>>> This especially breaks kpatch, which is using 'extra-y := kpatch.lds'
+> > >>>>>>> and 'make M=...' to build livepatch patch module.
+> > >>>>>>>
+> > >>>>>>> Add extra-y to targets-for-modules so that such kind of build works
+> > >>>>>>> properly.
+> > >>>>>>>
+> > >>>>>>> Signed-off-by: WANG Chao <chao.wang@ucloud.cn>
+> > >>>>>>> ---
+> > >>>>>>>   scripts/Makefile.build | 2 +-
+> > >>>>>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+> > >>>>>>>
+> > >>>>>>> diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+> > >>>>>>> index ae647379b579..0113a042d643 100644
+> > >>>>>>> --- a/scripts/Makefile.build
+> > >>>>>>> +++ b/scripts/Makefile.build
+> > >>>>>>> @@ -86,7 +86,7 @@ ifdef need-builtin
+> > >>>>>>>   targets-for-builtin += $(obj)/built-in.a
+> > >>>>>>>   endif
+> > >>>>>>>
+> > >>>>>>> -targets-for-modules := $(patsubst %.o, %.mod, $(filter %.o, $(obj-m)))
+> > >>>>>>> +targets-for-modules := $(extra-y) $(patsubst %.o, %.mod, $(filter %.o, $(obj-m)))
+> > >>>>>>>
+> > >>>>>>>   ifdef need-modorder
+> > >>>>>>>   targets-for-modules += $(obj)/modules.order
+> > >>>>>>> --
+> > >>>>>>> 2.29.1
+> > >>>>>>>
+> > >>>>>>
+> > >>>>>> NACK.
+> > >>>>>>
+> > >>>>>> Please fix your Makefile.
+> > >>>>>>
+> > >>>>>> Hint:
+> > >>>>>> https://patchwork.kernel.org/project/linux-kbuild/patch/20201123045403.63402-6-masahiroy@kernel.org/
+> > >>>>>>
+> > >>>>>>
+> > >>>>>> Probably what you should use is 'targets'.
+> > >>>>>
+> > >>>>> I tried with 'targets' and 'always-y'. Both doesn't work for me.
+> > >>>>>
+> > >>>>> I narraw it down to the following example:
+> > >>>>>
+> > >>>>> cat > Makefile << _EOF_
+> > >>>>> obj-m += foo.o
+> > >>>>>
+> > >>>>> ldflags-y += -T $(src)/kpatch.lds
+> > >>>>> always-y += kpatch.lds
+> > >>>>>
+> > >>>>> foo-objs += bar.o
+> > >>>>>
+> > >>>>> all:
+> > >>>>>          make -C /lib/modules/$(shell uname -r)/build M=$(PWD)
+> > >>>>> clean:
+> > >>>>>          make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
+> > >>>>> _EOF_
+> > >>>>>
+> > >>>>> Take a look into scripts/Makefile.build:488:
+> > >>>>>
+> > >>>>> __build: $(if $(KBUILD_BUILTIN), $(targets-for-builtin)) \
+> > >>>>>           $(if $(KBUILD_MODULES), $(targets-for-modules)) \
+> > >>>>>           $(subdir-ym) $(always-y)
+> > >>>>>          @:
+> > >>>>>
+> > >>>>> 'always-y' is built after 'targets-for-modules'. This makes
+> > >>>>> 'targets-for-modules' fails because kpatch.lds isn't there.
+> > >>>>
+> > >>>>
+> > >>>> Heh, you rely on the targets built from left to right,
+> > >>>> and you have never thought Make supports the parallel option -j.
+> > >>>
+> > >>> You're right. I missed that.
+> > >>>
+> > >>>>
+> > >>>>
+> > >>>> You need to specify the dependency if you expect objects
+> > >>>> are built in the particular order.
+> > >>>>
+> > >>>> However, in this case, using ldflags-y looks wrong
+> > >>>> in the first place.
+> > >>>>
+> > >>>> The linker script is used when combining the object
+> > >>>> as well as the final link of *.ko
+> > >>
+> > >> We want linker script to be used on both those steps, otherwise modpost
+> > >> fails.
+> > >
+> > >
+> > > In that case, does the following work?
+> > > (untested)
+> > >
+> > >
+> > >
+> > > diff --git a/kmod/patch/Makefile b/kmod/patch/Makefile
+> > > index e017b17..02d4c66 100644
+> > > --- a/kmod/patch/Makefile
+> > > +++ b/kmod/patch/Makefile
+> > > @@ -12,7 +12,9 @@ endif
+> > >
+> > >   obj-m += $(KPATCH_NAME).o
+> > >   ldflags-y += -T $(src)/kpatch.lds
+> > > -extra-y := kpatch.lds
+> > > +targets += kpatch.lds
+> > > +
+> > > +$(obj)/$(KPATCH_NAME).o: $(obj)/kpatch.lds
+> > >
+> > >   $(KPATCH_NAME)-objs += patch-hook.o output.o
+> > >
+> >
+> > Hi Masahiro,
+> >
+> > Yeah this is more or less what Artem came up with:
+> > https://github.com/dynup/kpatch/pull/1149
+> >
+> > though we hadn't added kpatch.lds to targets.  Is there documentation
+> > somewhere on what effect "targets" has for out-of-tree builds?
+> >
+> > Thanks,
+> >
+> > -- Joe
+> >
+> 
+> 
+> Please try the rebuild without changing any source code.
+> 
+> If kpatch.lds is needlessly rebuilt, you need to add
+> it to 'targets'.
+> 
+> 
+> In linux-next, this is documented.
+> 
+> Documentation/kbuild/makefile.rst:
+> 
+>         Any target that utilizes if_changed must be listed in $(targets),
+>         otherwise the command line check will fail, and the target will
+>         always be built.
+
+Ah yes, it did rebuild every time. Thank you for the pointer.
+
+-- 
+ Artem
