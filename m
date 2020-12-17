@@ -2,67 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F24C2DCD83
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 09:20:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F26712DCD92
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 09:20:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727325AbgLQISg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 03:18:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725988AbgLQISg (ORCPT
+        id S1727848AbgLQITr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 03:19:47 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:27876 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727782AbgLQITp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 03:18:36 -0500
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C4DC061794
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 00:17:55 -0800 (PST)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1kpoTx-00AYbO-E1; Thu, 17 Dec 2020 09:17:53 +0100
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     Jan Kiszka <jan.kiszka@siemens.com>,
-        Kieran Bingham <kbingham@kernel.org>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH v2] gdb: lx-symbols: store the abspath()
-Date:   Thu, 17 Dec 2020 09:17:47 +0100
-Message-Id: <20201217091747.bf4332cf2b35.I10ebbdb7e9b80ab1a5cddebf53d073be8232d656@changeid>
-X-Mailer: git-send-email 2.26.2
+        Thu, 17 Dec 2020 03:19:45 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608193159; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To:
+ Subject: From: Sender; bh=q+gkjirX8bHiR8sRfJl8kJmFumhW7RL0znKrLM0wdfI=;
+ b=Gp0n0qcxbU8Ok7p3NwmB54/irtQ19PnbkY9CC9IKXZ/EqPMwsQxYmn2cbpdGRQkumTuaYg17
+ T6UXTF62T3s6U18Ijy4rG4AfrtLIhqkeiMrHL66cndt9JBkTB+TLzpiFQt88sMj40DBWTB/B
+ JAZ2t6QwsXJPvinuL+cMS5jXOVk=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5fdb1467253011a4b8b5aa3f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Dec 2020 08:18:47
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5B1C0C43463; Thu, 17 Dec 2020 08:18:46 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.252.214.131] (unknown [202.46.23.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 810E7C433C6;
+        Thu, 17 Dec 2020 08:18:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 810E7C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Subject: Re: [PATCH v4 1/2] Partially revert ASoC: qcom: Fix enabling BCLK and
+ LRCLK in LPAIF invalid state
+To:     Mark Brown <broonie@kernel.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
+        perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+References: <1606539559-4277-1-git-send-email-srivasam@codeaurora.org>
+ <1606539559-4277-2-git-send-email-srivasam@codeaurora.org>
+ <20201130124617.GC4756@sirena.org.uk>
+ <966993b7-4720-bdd2-cf4d-cf5a7c11a0c1@codeaurora.org>
+ <20201201175135.GO5239@sirena.org.uk>
+ <89456f01-aa02-7a7d-a47b-bf1f26e66d4c@codeaurora.org>
+ <20201214175009.GD4880@sirena.org.uk>
+Organization: Qualcomm India Private Limited.
+Message-ID: <471379f0-0ab7-7c18-8c07-bd8a67615b3e@codeaurora.org>
+Date:   Thu, 17 Dec 2020 13:48:39 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
+In-Reply-To: <20201214175009.GD4880@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+Thanks Mark for your Time!!!
 
-If we store the relative path, the user might later cd to a
-different directory, and that would break the automatic symbol
-resolving that happens when a module is loaded into the target
-kernel. Fix this by storing the abspath() of each path given,
-just like we already do for the cwd (os.getcwd() is absolute.)
+On 12/14/2020 11:20 PM, Mark Brown wrote:
+> On Mon, Dec 14, 2020 at 06:13:22PM +0530, Srinivasa Rao Mandadapu wrote:
+>> On 12/1/2020 11:21 PM, Mark Brown wrote:
+>>>> Later from review comments by Srinivas kandagatla, I got to know
+>>>>
+>>>> about regcache sync APIs, which can be used  to sync cache after resume and
+>>>>
+>>>> HW registers can be updated with  original values. With that playback can be
+>>>> continued.
+>>>> So is the reason, I am reverting partial changes in the commit b1824968221c.
+>>> I don't understand why a fix for the register cache not being in sync
+>>> with the hardware doesn't involve syncing the register cache with the
+>>> hardware.
+>> I am sorry I couldn't understand your point. Could you please elaborate your
+>> query?
+> Your changelog talks about syncing the cache but neither the driver nor
+> your change actually does that.
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
-v2: break the long line
----
- scripts/gdb/linux/symbols.py | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Okay. Now I posted v6 patch 
+(https://lore.kernel.org/patchwork/patch/1354638/)
 
-diff --git a/scripts/gdb/linux/symbols.py b/scripts/gdb/linux/symbols.py
-index 1be9763cf8bb..08d264ac328b 100644
---- a/scripts/gdb/linux/symbols.py
-+++ b/scripts/gdb/linux/symbols.py
-@@ -164,7 +164,8 @@ lx-symbols command."""
-             saved_state['breakpoint'].enabled = saved_state['enabled']
- 
-     def invoke(self, arg, from_tty):
--        self.module_paths = [os.path.expanduser(p) for p in arg.split()]
-+        self.module_paths = [os.path.abspath(os.path.expanduser(p))
-+                             for p in arg.split()]
-         self.module_paths.append(os.getcwd())
- 
-         # enforce update
+with subject lines explaining actual changes.
+
+could you please check  the same.
+
 -- 
-2.26.2
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
