@@ -2,164 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D3252DD4EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 17:08:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 191842DD4D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 17:05:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729850AbgLQQFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 11:05:42 -0500
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:3877 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729673AbgLQQFi (ORCPT
+        id S1729170AbgLQQEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 11:04:51 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:35973 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729150AbgLQQEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 11:05:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1608221138; x=1639757138;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=LS0THucIAcJyfFJ9Xr7oOIoPTwX6ERICosDXL7ulg2Y=;
-  b=Zk9of9Zp/+493z2eCpxd50INpMZ6Cd4q3o9M9eY0IuiRixQjuiuDQR8p
-   jU91VCd+oQdpnSsra6lgVU3rwIWJr1Nl7iMOhut615PuGnVnIVsof+hy6
-   RKylFZkWXCyfWqhL98ruYUay36tpfwP/dem3+kVkJhMEfH3POpRQPS37z
-   g=;
-X-IronPort-AV: E=Sophos;i="5.78,428,1599523200"; 
-   d="scan'208";a="73353390"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2c-4e7c8266.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 17 Dec 2020 16:04:50 +0000
-Received: from EX13D31EUA004.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2c-4e7c8266.us-west-2.amazon.com (Postfix) with ESMTPS id 5EE95A1D32;
-        Thu, 17 Dec 2020 16:04:48 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.162.146) by
- EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 17 Dec 2020 16:04:42 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <stable@vger.kernel.org>
-CC:     SeongJae Park <sjpark@amazon.de>, <doebel@amazon.de>,
-        <aams@amazon.de>, <mku@amazon.de>, <jgross@suse.com>,
-        <julien@xen.org>, <wipawel@amazon.de>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 4/5] xen/xenbus: Count pending messages for each watch
-Date:   Thu, 17 Dec 2020 17:04:01 +0100
-Message-ID: <20201217160402.26303-5-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201217160402.26303-1-sjpark@amazon.com>
-References: <20201217160402.26303-1-sjpark@amazon.com>
+        Thu, 17 Dec 2020 11:04:50 -0500
+Received: by mail-io1-f70.google.com with SMTP id y197so27663264iof.3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 08:04:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Bx0HRWFRcZe5lrMjAgb4IwCvDobOWDjbEUCGTH45PGk=;
+        b=l2VC/wWjqOiM8McK6o1+5evwnewLxWKm9v8DFjwWn1x/NIU5PzDPqMyZyKkqO/ju5z
+         mMz2EW17AC1gAQntP9+IUaMdvlsyVnI6kbR4kHwELja7iWReF0J4UfLopd3vNkQ5bP56
+         9BEXtxIwx42TAuMEFnb939boIrvSs7LB0vBWbe6Vp8+k1XaxtEOudheyBKkI0THVTC+m
+         sfUj04In95RGgoa5cl59gSBW4amOFolGK6Vz0CvyxsQpv8WwQBEqHUdoYLKvh29tGscP
+         se7O324JZtVbLfzCiPYRS+Lr1fgY29fPx5OWpM4nusCtz3SP4INOyHhwmYoyz1Q1Su61
+         puLA==
+X-Gm-Message-State: AOAM532q9LthXN8+VgLW3VV5MAP6TKuYEjmiOdPjHKPf4zm7UCmOGUl+
+        xaT6SplwWuCMS1yUflLcENNEOQV/xupSsPBgKIv3KTFP/V/g
+X-Google-Smtp-Source: ABdhPJyp/5Drh3dlyyEcPxJc1TMbunJzvt5KzsHRI7686FzG+R1mGBV/6E1PG3vUOC2XRi/lJ027bqFvorEo0rL97mw19mxlLP1b
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.162.146]
-X-ClientProxiedBy: EX13D14UWC001.ant.amazon.com (10.43.162.5) To
- EX13D31EUA004.ant.amazon.com (10.43.165.161)
+X-Received: by 2002:a05:6e02:102f:: with SMTP id o15mr20796548ilj.142.1608221049468;
+ Thu, 17 Dec 2020 08:04:09 -0800 (PST)
+Date:   Thu, 17 Dec 2020 08:04:09 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005fbe5e05b6ab2440@google.com>
+Subject: UBSAN: invalid-load in param_get_bool
+From:   syzbot <syzbot+438cc6c21c384f9efa5e@syzkaller.appspotmail.com>
+To:     christian.koenig@amd.com, gustavoars@kernel.org,
+        linux-kernel@vger.kernel.org, pmenzel@molgen.mpg.de,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+Hello,
 
-This commit adds a counter of pending messages for each watch in the
-struct.  It is used to skip unnecessary pending messages lookup in
-'unregister_xenbus_watch()'.  It could also be used in 'will_handle'
-callback.
+syzbot found the following issue on:
 
-This is part of XSA-349
+HEAD commit:    accefff5 Merge tag 'arm-soc-omap-genpd-5.11' of git://git...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12385613500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5d42216b510180e3
+dashboard link: https://syzkaller.appspot.com/bug?extid=438cc6c21c384f9efa5e
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-This is upstream commit 3dc86ca6b4c8cfcba9da7996189d1b5a358a94fc
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
-Reported-by: Michael Kurth <mku@amazon.de>
-Reported-by: Pawel Wieczorkiewicz <wipawel@amazon.de>
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Juergen Gross <jgross@suse.com>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+438cc6c21c384f9efa5e@syzkaller.appspotmail.com
+
+================================================================================
+UBSAN: invalid-load in kernel/params.c:302:33
+load of value 255 is not a valid value for type '_Bool'
+CPU: 0 PID: 8488 Comm: syz-fuzzer Not tainted 5.10.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_load_invalid_value.cold+0x62/0x6c lib/ubsan.c:427
+ param_get_bool.cold+0x14/0x19 kernel/params.c:302
+ param_attr_show+0x14a/0x220 kernel/params.c:549
+ module_attr_show+0x48/0x70 kernel/params.c:884
+ sysfs_kf_seq_show+0x1f8/0x400 fs/sysfs/file.c:61
+ seq_read_iter+0x4d3/0x1220 fs/seq_file.c:227
+ seq_read+0x3dd/0x5b0 fs/seq_file.c:159
+ kernfs_fop_read+0xe9/0x590 fs/kernfs/file.c:251
+ vfs_read+0x1b5/0x570 fs/read_write.c:494
+ ksys_read+0x12d/0x250 fs/read_write.c:634
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x4b3d8b
+Code: ff e9 69 ff ff ff cc cc cc cc cc cc cc cc cc e8 db a1 f8 ff 48 8b 7c 24 10 48 8b 74 24 18 48 8b 54 24 20 48 8b 44 24 08 0f 05 <48> 3d 01 f0 ff ff 76 20 48 c7 44 24 28 ff ff ff ff 48 c7 44 24 30
+RSP: 002b:000000c0000a3740 EFLAGS: 00000202 ORIG_RAX: 0000000000000000
+RAX: ffffffffffffffda RBX: 000000c00002c000 RCX: 00000000004b3d8b
+RDX: 0000000000001200 RSI: 000000c000341300 RDI: 0000000000000006
+RBP: 000000c0000a3790 R08: 0000000000000001 R09: 0000000000000002
+R10: 0000000000001200 R11: 0000000000000202 R12: ffffffffffffffff
+R13: 0000000000000002 R14: 0000000000000001 R15: 0000000000000005
+================================================================================
+
+
 ---
- drivers/xen/xenbus/xenbus_xs.c | 31 +++++++++++++++++++------------
- include/xen/xenbus.h           |  2 ++
- 2 files changed, 21 insertions(+), 12 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/xen/xenbus/xenbus_xs.c b/drivers/xen/xenbus/xenbus_xs.c
-index 0ea1c259f2f1..d98d88fae58a 100644
---- a/drivers/xen/xenbus/xenbus_xs.c
-+++ b/drivers/xen/xenbus/xenbus_xs.c
-@@ -701,6 +701,8 @@ int register_xenbus_watch(struct xenbus_watch *watch)
- 
- 	sprintf(token, "%lX", (long)watch);
- 
-+	watch->nr_pending = 0;
-+
- 	down_read(&xs_state.watch_mutex);
- 
- 	spin_lock(&watches_lock);
-@@ -750,12 +752,15 @@ void unregister_xenbus_watch(struct xenbus_watch *watch)
- 
- 	/* Cancel pending watch events. */
- 	spin_lock(&watch_events_lock);
--	list_for_each_entry_safe(msg, tmp, &watch_events, list) {
--		if (msg->u.watch.handle != watch)
--			continue;
--		list_del(&msg->list);
--		kfree(msg->u.watch.vec);
--		kfree(msg);
-+	if (watch->nr_pending) {
-+		list_for_each_entry_safe(msg, tmp, &watch_events, list) {
-+			if (msg->u.watch.handle != watch)
-+				continue;
-+			list_del(&msg->list);
-+			kfree(msg->u.watch.vec);
-+			kfree(msg);
-+		}
-+		watch->nr_pending = 0;
- 	}
- 	spin_unlock(&watch_events_lock);
- 
-@@ -802,7 +807,6 @@ void xs_suspend_cancel(void)
- 
- static int xenwatch_thread(void *unused)
- {
--	struct list_head *ent;
- 	struct xs_stored_msg *msg;
- 
- 	for (;;) {
-@@ -815,13 +819,15 @@ static int xenwatch_thread(void *unused)
- 		mutex_lock(&xenwatch_mutex);
- 
- 		spin_lock(&watch_events_lock);
--		ent = watch_events.next;
--		if (ent != &watch_events)
--			list_del(ent);
-+		msg = list_first_entry_or_null(&watch_events,
-+				struct xs_stored_msg, list);
-+		if (msg) {
-+			list_del(&msg->list);
-+			msg->u.watch.handle->nr_pending--;
-+		}
- 		spin_unlock(&watch_events_lock);
- 
--		if (ent != &watch_events) {
--			msg = list_entry(ent, struct xs_stored_msg, list);
-+		if (msg) {
- 			msg->u.watch.handle->callback(
- 				msg->u.watch.handle,
- 				(const char **)msg->u.watch.vec,
-@@ -911,6 +917,7 @@ static int process_msg(void)
- 					 msg->u.watch.vec_size))) {
- 			spin_lock(&watch_events_lock);
- 			list_add_tail(&msg->list, &watch_events);
-+			msg->u.watch.handle->nr_pending++;
- 			wake_up(&watch_events_waitq);
- 			spin_unlock(&watch_events_lock);
- 		} else {
-diff --git a/include/xen/xenbus.h b/include/xen/xenbus.h
-index 1772507dc2c9..ed9e7e3307b7 100644
---- a/include/xen/xenbus.h
-+++ b/include/xen/xenbus.h
-@@ -58,6 +58,8 @@ struct xenbus_watch
- 	/* Path being watched. */
- 	const char *node;
- 
-+	unsigned int nr_pending;
-+
- 	/*
- 	 * Called just before enqueing new event while a spinlock is held.
- 	 * The event will be discarded if this callback returns false.
--- 
-2.17.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
