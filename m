@@ -2,53 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 255DA2DCC75
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 07:29:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D89F12DCC7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 07:31:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726692AbgLQG2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 01:28:00 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:43287 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725930AbgLQG1z (ORCPT
+        id S1726839AbgLQG3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 01:29:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726503AbgLQG3a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 01:27:55 -0500
-Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0BH6Px1P004685
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Dec 2020 01:26:00 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id BFF8E420280; Thu, 17 Dec 2020 01:25:59 -0500 (EST)
-Date:   Thu, 17 Dec 2020 01:25:59 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     chenlei0x@gmail.com
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lei Chen <lennychen@tencent.com>
-Subject: Re: [PATCH] fs: ext4: remove unnecessary wbc parameter from
- ext4_bio_write_page
-Message-ID: <X9r59yLN+NABG0p4@mit.edu>
-References: <1607669664-25656-1-git-send-email-lennychen@tencent.com>
+        Thu, 17 Dec 2020 01:29:30 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E57B6C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 22:28:49 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id t16so25386035wra.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 22:28:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Uw0qn01yEipuE4KQo4q/I//7O4Z5qhvsoEs4F9itwqk=;
+        b=VJEC/6EOmgFyFKHDv7NxjcSOxbitydIzcOYkIbzqE+DlWxlizfKe5e4ZWTxitA4pjT
+         mhyCgnuIZY28r45HXehI6gk/xqbL/nLipe38jbK+hHwshuM6wGD6doQ23fitAES7Y5Mg
+         +uicIE+cJAxcIMPlsG5WUAJ03mL780xvp1pTP6Q33zNwdrx77qbWEU0He2TjGA7gKTVw
+         /HMert+f/4zgGvMT69ibNddye0lPOzhef285rGCmDr8cs4DUsHPuQPbar0T6fdME2unT
+         AIssadyUx9iBEXc/LO7rTLciI+N6En2ddm7nw8LX1UYM/hPBLjdftjzfZDmkAKX0F3G7
+         qu3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Uw0qn01yEipuE4KQo4q/I//7O4Z5qhvsoEs4F9itwqk=;
+        b=ai8DFKHiHwG6IhE51PdhzKBeJUnlz4+vYl78Zq8ulZVeZFRTQxiG4X5SQdUJGtj6C2
+         EIMaB+q/CckerQ6SZuXTViwDQfQftFCF12SBMFELygIoollkvRGtwdtDJb3emmrivjUy
+         78ykycO8Kmdp5wx9uXIlDX9YYrZ6ZvQDSaSUNQ7SV4tTxgADVIcmwn5Od6zegel+IdjC
+         OFoYkNzb5BsPeCh+lRslhZ9uZQtlqyE/7N8n3Ejzd24xP+SWGrhRfJbZ5BMrUEYEZlGj
+         FyvflPwXUJjGNnJwzNaa74r9UXwq8rX05ylBmHwkOGOuZH/FvCLOOujqYW14SAzhy/hZ
+         +AlQ==
+X-Gm-Message-State: AOAM5318UbQica8x4PrsfljB25DAk89iClalTKdhLfsl+NdnSnSd7l4n
+        4IF3N76y1SeoPZO/0JkQVe7iLQ==
+X-Google-Smtp-Source: ABdhPJyunrsUCrTcQ8XdR1MnBNLU7dkhvUJngbHOgEo/eLy44Cv0qPXsVg4Nn9LpC9RRWGWk25BnHg==
+X-Received: by 2002:a5d:4683:: with SMTP id u3mr42264872wrq.19.1608186528506;
+        Wed, 16 Dec 2020 22:28:48 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:601a:58a2:ee98:f8a1? ([2a01:e34:ed2f:f020:601a:58a2:ee98:f8a1])
+        by smtp.googlemail.com with ESMTPSA id w3sm6634432wma.3.2020.12.16.22.28.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Dec 2020 22:28:47 -0800 (PST)
+Subject: Re: [PATCH 3/5] thermal/drivers/acpi: Use hot and critical ops
+To:     rui.zhang@intel.com
+Cc:     kai.heng.feng@canonical.com, lukasz.luba@arm.com,
+        srinivas.pandruvada@linux.intel.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        "open list:ACPI THERMAL DRIVER" <linux-acpi@vger.kernel.org>
+References: <20201210121514.25760-1-daniel.lezcano@linaro.org>
+ <20201210121514.25760-3-daniel.lezcano@linaro.org>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <c20d9077-66e8-f947-6422-c48e2f679cc5@linaro.org>
+Date:   Thu, 17 Dec 2020 07:28:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1607669664-25656-1-git-send-email-lennychen@tencent.com>
+In-Reply-To: <20201210121514.25760-3-daniel.lezcano@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 02:54:24PM +0800, chenlei0x@gmail.com wrote:
-> From: Lei Chen <lennychen@tencent.com>
+On 10/12/2020 13:15, Daniel Lezcano wrote:
+> The acpi driver wants to do a netlink notification in case of a hot or
+> critical trip point. Implement the corresponding ops to be used for
+> the thermal zone and use them instead of the notify ops.
 > 
-> ext4_bio_write_page does not need wbc parameter, since its parameter
-> io contains the io_wbc field. The io::io_wbc is initialized by
-> ext4_io_submit_init which is called in ext4_writepages and
-> ext4_writepage functions prior to ext4_bio_write_page.
-> Therefor, when ext4_bio_write_page is called, wbc info
-> has already been included in io parameter.
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+
+Is there any comment on this patch ?
+
+> ---
+>  drivers/acpi/thermal.c | 30 ++++++++++++++----------------
+>  1 file changed, 14 insertions(+), 16 deletions(-)
 > 
-> Signed-off-by: Lei Chen <lennychen@tencent.com>
+> diff --git a/drivers/acpi/thermal.c b/drivers/acpi/thermal.c
+> index 12c0ece746f0..b5e4bc9e3282 100644
+> --- a/drivers/acpi/thermal.c
+> +++ b/drivers/acpi/thermal.c
+> @@ -677,27 +677,24 @@ static int thermal_get_trend(struct thermal_zone_device *thermal,
+>  	return 0;
+>  }
+>  
+> -
+> -static int thermal_notify(struct thermal_zone_device *thermal, int trip,
+> -			   enum thermal_trip_type trip_type)
+> +static void acpi_thermal_zone_device_hot(struct thermal_zone_device *thermal)
+>  {
+> -	u8 type = 0;
+>  	struct acpi_thermal *tz = thermal->devdata;
+>  
+> -	if (trip_type == THERMAL_TRIP_CRITICAL)
+> -		type = ACPI_THERMAL_NOTIFY_CRITICAL;
+> -	else if (trip_type == THERMAL_TRIP_HOT)
+> -		type = ACPI_THERMAL_NOTIFY_HOT;
+> -	else
+> -		return 0;
+> -
+>  	acpi_bus_generate_netlink_event(tz->device->pnp.device_class,
+> -					dev_name(&tz->device->dev), type, 1);
+> +					dev_name(&tz->device->dev),
+> +					ACPI_THERMAL_NOTIFY_HOT, 1);
+> +}
+>  
+> -	if (trip_type == THERMAL_TRIP_CRITICAL && nocrt)
+> -		return 1;
+> +static void acpi_thermal_zone_device_critical(struct thermal_zone_device *thermal)
+> +{
+> +	struct acpi_thermal *tz = thermal->devdata;
+>  
+> -	return 0;
+> +	acpi_bus_generate_netlink_event(tz->device->pnp.device_class,
+> +					dev_name(&tz->device->dev),
+> +					ACPI_THERMAL_NOTIFY_CRITICAL, 1);
+> +
+> +	thermal_zone_device_critical(thermal);
+>  }
+>  
+>  static int acpi_thermal_cooling_device_cb(struct thermal_zone_device *thermal,
+> @@ -812,7 +809,8 @@ static struct thermal_zone_device_ops acpi_thermal_zone_ops = {
+>  	.get_trip_temp = thermal_get_trip_temp,
+>  	.get_crit_temp = thermal_get_crit_temp,
+>  	.get_trend = thermal_get_trend,
+> -	.notify = thermal_notify,
+> +	.hot = acpi_thermal_zone_device_hot,
+> +	.critical = acpi_thermal_zone_device_critical,
+>  };
+>  
+>  static int acpi_thermal_register_thermal_zone(struct acpi_thermal *tz)
+> 
 
-Thanks, applied.
 
-					- Ted
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
