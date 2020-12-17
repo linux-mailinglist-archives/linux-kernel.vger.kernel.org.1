@@ -2,132 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C99C72DD1EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 14:10:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3CA12DD1F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 14:12:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728614AbgLQNJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 08:09:31 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47602 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727786AbgLQNJb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 08:09:31 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 74ABEAE65;
-        Thu, 17 Dec 2020 13:08:10 +0000 (UTC)
-From:   Oscar Salvador <osalvador@suse.de>
-To:     akpm@linux-foundation.org
-Cc:     david@redhat.com, mhocko@kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, vbabka@suse.cz, pasha.tatashin@soleen.com,
-        Oscar Salvador <osalvador@suse.de>
-Subject: [PATCH 5/5] mm,memory_hotplug: Add kernel boot option to enable memmap_on_memory
-Date:   Thu, 17 Dec 2020 14:07:58 +0100
-Message-Id: <20201217130758.11565-6-osalvador@suse.de>
-X-Mailer: git-send-email 2.13.7
-In-Reply-To: <20201217130758.11565-1-osalvador@suse.de>
-References: <20201217130758.11565-1-osalvador@suse.de>
+        id S1727418AbgLQNKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 08:10:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726548AbgLQNKw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 08:10:52 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37892C061794
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 05:10:12 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id c133so5500936wme.4
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 05:10:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RSBE/3zCRI/fdlIa2O85+j7iTM1Xd4ZHnkVFYuERLqE=;
+        b=akD+QnmT3IHGlQ5L7v4Y7apNAE2VpUxEloBUxoQyBkO/E4Uy8ICKJnCGeV1x5z/KqD
+         EaoqzlKVQ82psG4l8kfAWtAr2fKX/+fCwvBUg86RRMiCaUnW2aYodi4ABa9/yTMVwyAG
+         lKn0avA8C8JKRlGxIaLK1+hQHb5rD9BnDVJcaPI6KasxhABHKOF1KkyZmD5SP6vAE1gE
+         R3Yq62k2OXtqm7N6YUO6NIF14lGz9pU0LNPDngrfpBwOfwRkuLSvzZkXe+RadYSfqJF8
+         5UTzj+W9hXBgxKNYlkYZNV3e6ck2shDJFv10W0N44Klxz0rV1l5QKe/D/DHvcyDJrQbX
+         gH8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RSBE/3zCRI/fdlIa2O85+j7iTM1Xd4ZHnkVFYuERLqE=;
+        b=muockFkGbFRJKrRxgTe9l0w2vBkQniYAAape6T/kegQXpKlQHKx7IP+4+WozBYGxzc
+         /Ls+6J8xsbpVAoLvtKcuEtFxo8rW7TKGY8qUzHeIGe3QS139h9vD7Olq265JwyJSuRHb
+         gWGpJ4nemuxSG7EmY2f6K9d3HEF37/6xmyW29aXcyDJByi3i2azXPMFQ8285YJ6gRlOc
+         trYD9GoPrRS0y3zFv4Qy8ldpUB8gZgjddhiPEXI8Z96pg2tjq7hT4V8mwVlYzb0vUGrF
+         V/HpsjU+ei86TkL+1J9U2TYK51Kl2DgLFJKyp0RjfWNEXN9Tjdcvcqa0Md8wI7PE5OsL
+         3BcQ==
+X-Gm-Message-State: AOAM531SBLObf/ejmSrCnYsyEuleb6WY4IpQIKZAz6pR0zkYeR/Lzm9r
+        lp8sILuQMMGQuMpg9CmNap7aucB8u1fmfA==
+X-Google-Smtp-Source: ABdhPJwANsRN7e8V4fLkplPexm3aweo7K9eQxQVy9vWxCfpQVDnEO0QeHwRf+NBUrOjxXo/B7RZ3lA==
+X-Received: by 2002:a1c:5459:: with SMTP id p25mr8182463wmi.19.1608210610707;
+        Thu, 17 Dec 2020 05:10:10 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:ccb6:ce78:2bcd:4ead? ([2a01:e34:ed2f:f020:ccb6:ce78:2bcd:4ead])
+        by smtp.googlemail.com with ESMTPSA id d8sm7756941wmb.11.2020.12.17.05.10.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Dec 2020 05:10:10 -0800 (PST)
+Subject: Re: [PATCH 3/5] thermal/drivers/acpi: Use hot and critical ops
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        rui.zhang@intel.com
+Cc:     kai.heng.feng@canonical.com, lukasz.luba@arm.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        "open list:ACPI THERMAL DRIVER" <linux-acpi@vger.kernel.org>
+References: <20201210121514.25760-1-daniel.lezcano@linaro.org>
+ <20201210121514.25760-3-daniel.lezcano@linaro.org>
+ <c20d9077-66e8-f947-6422-c48e2f679cc5@linaro.org>
+ <2b101b07aa18e06a32b26add651a3d2e009e6d18.camel@linux.intel.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <a91f984b-eb38-3fcf-f968-e3afb36d5f65@linaro.org>
+Date:   Thu, 17 Dec 2020 14:10:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <2b101b07aa18e06a32b26add651a3d2e009e6d18.camel@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Self stored memmap leads to a sparse memory situation which is unsuitable
-for workloads that requires large contiguous memory chunks, so make this
-an opt-in which needs to be explicitly enabled.
+On 17/12/2020 12:38, Srinivas Pandruvada wrote:
+> On Thu, 2020-12-17 at 07:28 +0100, Daniel Lezcano wrote:
+>> On 10/12/2020 13:15, Daniel Lezcano wrote:
+>>> The acpi driver wants to do a netlink notification in case of a hot
+>>> or
+>>> critical trip point. Implement the corresponding ops to be used for
+>>> the thermal zone and use them instead of the notify ops.
+>>>
+>>> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+>>
+>> Is there any comment on this patch ?
+> 
+> Looks good to me.
 
-To control this, let memory_hotplug have its own memory space, as suggested
-by David, so we can add memory_hotplug.memmap_on_memory parameter.
+Thanks for reviewing
 
-Signed-off-by: Oscar Salvador <osalvador@suse.de>
----
- .../admin-guide/kernel-parameters.txt         | 14 ++++++++++++
- mm/Makefile                                   |  5 ++++-
- mm/memory_hotplug.c                           | 22 ++++++++++++++++++-
- 3 files changed, 39 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index c722ec19cd00..8ff3d7c87165 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -2776,6 +2776,20 @@
- 			seconds.  Use this parameter to check at some
- 			other rate.  0 disables periodic checking.
- 
-+	memory_hotplug.memmap_on_memory
-+			[KNL,X86,ARM,PPC] Boolean flag to enable this feature.
-+			Format: {on | off (default)}
-+			When enabled, memory to build the pages tables for the
-+			memmap array describing the hot-added range will be taken
-+			from the range itself, so the memmap page tables will be
-+			self-hosted.
-+			Since only single memory device ranges are supported at
-+			the moment, this option is disabled by default because
-+			it might have an impact on workloads that needs large
-+			contiguous memory chunks.
-+			The state of the flag can be read in
-+			/sys/module/memory_hotplug/parameters/memmap_on_memory.
-+
- 	memtest=	[KNL,X86,ARM,PPC] Enable memtest
- 			Format: <integer>
- 			default : 0 <disable>
-diff --git a/mm/Makefile b/mm/Makefile
-index 6b581f8337e8..0425cec6cb17 100644
---- a/mm/Makefile
-+++ b/mm/Makefile
-@@ -58,9 +58,13 @@ obj-y			:= filemap.o mempool.o oom_kill.o fadvise.o \
- page-alloc-y := page_alloc.o
- page-alloc-$(CONFIG_SHUFFLE_PAGE_ALLOCATOR) += shuffle.o
- 
-+# Give 'memory_hotplug' its own module-parameter namespace
-+memory-hotplug-$(CONFIG_MEMORY_HOTPLUG) += memory_hotplug.o
-+
- obj-y += page-alloc.o
- obj-y += init-mm.o
- obj-y += memblock.o
-+obj-y += $(memory-hotplug-y)
- 
- ifdef CONFIG_MMU
- 	obj-$(CONFIG_ADVISE_SYSCALLS)	+= madvise.o
-@@ -83,7 +87,6 @@ obj-$(CONFIG_SLUB) += slub.o
- obj-$(CONFIG_KASAN)	+= kasan/
- obj-$(CONFIG_KFENCE) += kfence/
- obj-$(CONFIG_FAILSLAB) += failslab.o
--obj-$(CONFIG_MEMORY_HOTPLUG) += memory_hotplug.o
- obj-$(CONFIG_MEMTEST)		+= memtest.o
- obj-$(CONFIG_MIGRATION) += migrate.o
- obj-$(CONFIG_TRANSPARENT_HUGEPAGE) += huge_memory.o khugepaged.o
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index 9371e7d3f583..f5f95f49b98a 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -42,7 +42,27 @@
- #include "internal.h"
- #include "shuffle.h"
- 
--static bool memmap_on_memory_enabled;
-+/*
-+ * memory_hotplug.memmap_on_memory parameter
-+ */
-+static bool memmap_on_memory_enabled __ro_after_init;
-+
-+static int memmap_on_memory_show(char *buffer, const struct kernel_param *kp)
-+{
-+	return sprintf(buffer, "%s\n",
-+		       memmap_on_memory_enabled ? "on" : "off");
-+}
-+
-+static __meminit int memmap_on_memory_store(const char *val,
-+					    const struct kernel_param *kp)
-+{
-+	if (!IS_ENABLED(CONFIG_ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE))
-+		return -EINVAL;
-+
-+	return param_set_bool(val, kp);
-+}
-+module_param_call(memmap_on_memory, memmap_on_memory_store,
-+		  memmap_on_memory_show, &memmap_on_memory_enabled, 0400);
- 
- /*
-  * online_page_callback contains pointer to current page onlining function.
 -- 
-2.26.2
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
