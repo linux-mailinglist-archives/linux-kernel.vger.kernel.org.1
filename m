@@ -2,508 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F162DD471
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:43:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 359502DD482
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:45:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729115AbgLQPnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 10:43:03 -0500
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:24802 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728684AbgLQPmr (ORCPT
+        id S1729158AbgLQPo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 10:44:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729129AbgLQPo5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 10:42:47 -0500
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BHFPi9C001634;
-        Thu, 17 Dec 2020 09:41:50 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=gmj8HFDT2HPiRDrHJFz8ZF2n/cAWqZV08im7JSazFa0=;
- b=kPVz1IIby7bCf6Lg5v2bmLkQZuj5p3Ah+TM0GN/uKQetWbkUubMPqcZ/4kDOfwjyzX8O
- AhpeojIU7yEwDNUjwzb7PsLt/todounaCJajKF10jBwC7f3ZWJouMA47vUrag/GryypU
- XsqNwpPuz+tMi/nM6cGojMjWWw9zwQl2X4cqw+vDEmkEH5utlXQjLnl9Z4HcDtWK3PlY
- RP3Nu7pulyC97YDqs38V8URK5Rs4JB0MKeRFR0aROcBVPyk/Oo/4bIkg+9y0dtGVSweM
- dBUDcUWv1xtnkHiN1cDVCUBQGPRPVid38r4LRiliZk2yE/nPULTWJppXNVet0mvUPXCK fg== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 35cu5rxy90-7
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 17 Dec 2020 09:41:50 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 17 Dec
- 2020 15:41:48 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Thu, 17 Dec 2020 15:41:48 +0000
-Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.64.236])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 593A911CB;
-        Thu, 17 Dec 2020 15:41:48 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <broonie@kernel.org>, <robh+dt@kernel.org>,
-        <kuninori.morimoto.gx@renesas.com>, <nsaenzjulienne@suse.de>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <bcm-kernel-feedback-list@broadcom.com>,
-        <linux-rpi-kernel@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH v3 6/6] ARM: dts: Add dts for RPi4b + Cirrus Logic Lochnagar2 + CS47L15
-Date:   Thu, 17 Dec 2020 15:41:42 +0000
-Message-ID: <20201217154142.24301-7-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201217154142.24301-1-rf@opensource.cirrus.com>
-References: <20201217154142.24301-1-rf@opensource.cirrus.com>
+        Thu, 17 Dec 2020 10:44:57 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAFE1C06138C
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 07:44:16 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id c12so19246478pfo.10
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 07:44:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YJBDB26f+rldjj+37sZsFkhqfX20jU8Ct5zIftBgtXU=;
+        b=hhgQdzkn4X5+KE3TaD5QBQ1MyViUTs8nYplu8dVBPHSodPeadQRmtzi7/kzdtKtYaZ
+         0wAJ8pgg49ZD77BJ9l1Ox3cSZORcPe3dtTBc93E4UcaIAgKtrhE4XyVs2TwCPazOThkf
+         pxGK5Wn5t3y+kAtOKYcZWGDnQm6S+0Yepfe4ywYHDSy1bblhT/hVyLsE9LnijR/u1u7f
+         /NzKEH1QZG+qwFp6mQe8zWs2chV4KT/8G2+EDYX8bVMGfYFH2hbnuxAjp97t2yJrcAeP
+         WYm7+5/1TLeOkchXIT133Kpsn1Ocn5IZvbwfBX9cvdHEucf3aIzxT3xRH2LpBX1JzDn+
+         /INg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YJBDB26f+rldjj+37sZsFkhqfX20jU8Ct5zIftBgtXU=;
+        b=q0YgkXbM/lmhfZhecc1zBRR2cGqIMe1r0PXgA2O3JfO8qhSHUXnB2DWSy2kfHrBok2
+         9uBM8cq/C1aQiTmepUktGVs+a5HHKcej6tyY4BDDl3Q03osjK0bPApNxJhdliNWVzAwa
+         ErTIr/2BY15XfzQym8DCb9jSZgjeW0Cr0qkL2e6Nq/9Ho3oMCx74hC0NcBZKpNvGP4p9
+         6ie07q/Ca4JmRXXctTCUQBapU2dB38CA91Akj0a2eXnL4Xby0D0ijIit4gmvArZmWF06
+         cxg9HgtaIUnZHHN1yGusQ/YzjJ0SZjxHmtO/0BjzttGRieY6Q+JcXxvlfqYoiwTLuoVi
+         3dpA==
+X-Gm-Message-State: AOAM531So9SzIqbfqpgcHvthHZ3yGF6fGzwWguG3r5POV88TslsoO7d5
+        YGSG/VzWqmuLxHafZ+s0iLzGzw==
+X-Google-Smtp-Source: ABdhPJwAh5eLMHrPai0VNx94cdnNrnhRTNrFKUwxQB4WkMTaZfdJFDFAoT2h4yBUrsqH2Gim34zjhA==
+X-Received: by 2002:a65:6118:: with SMTP id z24mr8644793pgu.191.1608219856009;
+        Thu, 17 Dec 2020 07:44:16 -0800 (PST)
+Received: from google.com (139.60.82.34.bc.googleusercontent.com. [34.82.60.139])
+        by smtp.gmail.com with ESMTPSA id na6sm4736607pjb.12.2020.12.17.07.44.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Dec 2020 07:44:15 -0800 (PST)
+Date:   Thu, 17 Dec 2020 15:44:11 +0000
+From:   Satya Tangirala <satyat@google.com>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH 0/3] add support for metadata encryption to F2FS
+Message-ID: <X9t8y3rElyAPCLoD@google.com>
+References: <20201005073606.1949772-1-satyat@google.com>
+ <471e0eb7-b035-03da-3ee3-35d5880a6748@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0 mlxscore=0
- mlxlogscore=999 suspectscore=0 spamscore=0 clxscore=1015 malwarescore=0
- impostorscore=0 priorityscore=1501 bulkscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012170108
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <471e0eb7-b035-03da-3ee3-35d5880a6748@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds a devicetree configuration for Raspberry Pi 4b connected to
-Cirrus Logic Lochnagar 2 audio development board and CS47L15 codec.
-
-The common (codec-independent) Lochnagar 2 configuration is separated
-into a dtsi to simplify re-using it for other codecs.
-
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- MAINTAINERS                                   |   1 +
- arch/arm/boot/dts/Makefile                    |   1 +
- ...bcm2711-rpi4b-cirrus-lochnagar-cs47l15.dts | 186 ++++++++++++++++
- .../dts/bcm2711-rpi4b-cirrus-lochnagar.dtsi   | 201 ++++++++++++++++++
- 4 files changed, 389 insertions(+)
- create mode 100644 arch/arm/boot/dts/bcm2711-rpi4b-cirrus-lochnagar-cs47l15.dts
- create mode 100644 arch/arm/boot/dts/bcm2711-rpi4b-cirrus-lochnagar.dtsi
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5cc595ac7b28..7dca1db52144 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4193,6 +4193,7 @@ M:	Charles Keepax <ckeepax@opensource.cirrus.com>
- M:	Richard Fitzgerald <rf@opensource.cirrus.com>
- L:	patches@opensource.cirrus.com
- S:	Supported
-+F:	arch/arm/boot/dts/bcm2711-rpi4b-cirrus-lochnagar*
- F:	Documentation/devicetree/bindings/clock/cirrus,lochnagar.yaml
- F:	Documentation/devicetree/bindings/hwmon/cirrus,lochnagar.yaml
- F:	Documentation/devicetree/bindings/mfd/cirrus,lochnagar.yaml
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index ce66ffd5a1bb..240cc58fd954 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -93,6 +93,7 @@ dtb-$(CONFIG_ARCH_BCM2835) += \
- 	bcm2837-rpi-3-b-plus.dtb \
- 	bcm2837-rpi-cm3-io3.dtb \
- 	bcm2711-rpi-4-b.dtb \
-+	bcm2711-rpi4b-cirrus-lochnagar-cs47l15.dtb \
- 	bcm2835-rpi-zero.dtb \
- 	bcm2835-rpi-zero-w.dtb
- dtb-$(CONFIG_ARCH_BCM_5301X) += \
-diff --git a/arch/arm/boot/dts/bcm2711-rpi4b-cirrus-lochnagar-cs47l15.dts b/arch/arm/boot/dts/bcm2711-rpi4b-cirrus-lochnagar-cs47l15.dts
-new file mode 100644
-index 000000000000..b6b91289bc6f
---- /dev/null
-+++ b/arch/arm/boot/dts/bcm2711-rpi4b-cirrus-lochnagar-cs47l15.dts
-@@ -0,0 +1,186 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/dts-v1/;
-+#include "bcm2711-rpi4b-cirrus-lochnagar.dtsi"
-+#include <dt-bindings/sound/madera.h>
-+
-+/ {
-+	sound {
-+		status = "okay";
-+
-+		compatible = "audio-graph-card";
-+		label = "sound-card-cs47l15";
-+
-+		clocks = <&clk_24m>, <&fll1_out>, <&fll1_dsp>;
-+		clock-names = "ln-clk-24m", "fll1-out", "fll1-dsp";
-+
-+		plls = <
-+			&cs47l15 MADERA_FLL1_REFCLK MADERA_FLL_SRC_MCLK1 98304000
-+		>;
-+		plls-clocks = "ln-clk-24m";
-+
-+		sysclks = <
-+			&cs47l15 MADERA_CLK_SYSCLK_1 MADERA_CLK_SRC_FLL1 0
-+			&cs47l15 MADERA_CLK_DSPCLK   MADERA_CLK_SRC_FLL1 0
-+		>;
-+		sysclks-clocks = "fll1-out", "fll1-dsp";
-+
-+		widgets = "Microphone", "Microphone Jack",
-+			  "Headphone", "Headphone Jack";
-+
-+		routing = "Microphone Jack", "MICBIAS1A",
-+			  "IN1BRN", "Microphone Jack",
-+			  "IN1BRP", "Microphone Jack",
-+			  "Headphone Jack", "HPOUTL",
-+			  "Headphone Jack", "HPOUTR";
-+
-+		dais = <&cpu_i2s_port &cs47l15_trace_port>;
-+
-+		/* Main output from FLL1 */
-+		fll1_out: fll1_out {
-+			compatible = "fixed-clock";
-+			#clock-cells = <0>;
-+			clock-frequency = <98304000>;
-+		};
-+
-+		/* x1.5 DSP output from FLL1 */
-+		fll1_dsp: fll1_dsp {
-+			compatible = "fixed-clock";
-+			#clock-cells = <0>;
-+			clock-frequency = <147456000>;
-+		};
-+	};
-+};
-+
-+&i2s {
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		cpu_i2s_port: port@0 {
-+			reg = <0>;
-+			cpu_i2s_ep: endpoint {
-+				remote-endpoint = <&cs47l15_aif1>;
-+				dai-format = "i2s";
-+			};
-+		};
-+	};
-+};
-+
-+&spi {
-+	status = "okay";
-+
-+	cs47l15: cs47l15@1 {
-+		status = "okay";
-+
-+		compatible = "cirrus,cs47l15";
-+		reg = <0x1>;
-+
-+		spi-max-frequency = <11000000>;
-+
-+		interrupts = <27 8>;
-+		interrupt-controller;
-+		#interrupt-cells = <2>;
-+		interrupt-parent = <&gpio>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+		#sound-dai-cells = <1>;
-+
-+		AVDD-supply = <&lochnagar_vdd1v8>;
-+		DCVDD-supply = <&lochnagar_vddcore>;
-+		DBVDD1-supply = <&lochnagar_vdd1v8>;
-+		CPVDD1-supply = <&lochnagar_vdd1v8>;
-+		SPKVDD-supply = <&wallvdd>;
-+		MICVDD-supply = <&lochnagar_micvdd>;
-+
-+		reset-gpios = <&lochnagar_pin 0 0>;
-+
-+		cirrus,dmic-ref = <
-+			MADERA_DMIC_REF_MICBIAS1
-+		>;
-+		cirrus,inmode = <
-+			MADERA_INMODE_SE   MADERA_INMODE_SE   /* IN1A */
-+			MADERA_INMODE_DIFF MADERA_INMODE_DIFF /* IN1B */
-+			MADERA_INMODE_SE   MADERA_INMODE_SE   /* IN2A */
-+			MADERA_INMODE_DIFF MADERA_INMODE_DIFF /* IN2B */
-+		>;
-+
-+		clocks = <&lochnagar_clk LOCHNAGAR_CDC_MCLK1>,
-+			 <&lochnagar_clk LOCHNAGAR_CDC_MCLK2>;
-+		clock-names = "mclk1", "mclk2";
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&cdc_irq &cs47l15_defaults>;
-+
-+		cs47l15_defaults: cs47l15-gpio-defaults {
-+			aif1 {
-+				groups = "aif1";
-+				function = "aif1";
-+				bias-bus-hold;
-+			};
-+			aif2 {
-+				groups = "aif2";
-+				function = "aif2";
-+				bias-bus-hold;
-+			};
-+			aif3 {
-+				groups = "aif3";
-+				function = "aif3";
-+				bias-bus-hold;
-+			};
-+			pdmspk1 {
-+				groups = "pdmspk1";
-+				function = "pdmspk1";
-+			};
-+		};
-+
-+		micvdd {
-+			regulator-min-microvolt = <3000000>;
-+			regulator-max-microvolt = <3000000>;
-+		};
-+
-+		MICBIAS1 {
-+			regulator-min-microvolt = <2800000>;
-+			regulator-max-microvolt = <2800000>;
-+		};
-+		MICBIAS1A {
-+			regulator-active-discharge = <1>;
-+		};
-+		MICBIAS1B {
-+			regulator-active-discharge = <1>;
-+		};
-+		MICBIAS1C {
-+			regulator-active-discharge = <1>;
-+		};
-+
-+		ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			cs47l15_aif1_port: port@0 {
-+				reg = <0>;
-+				cs47l15_aif1: endpoint {
-+					remote-endpoint = <&cpu_i2s_ep>;
-+					bitclock-master;
-+					frame-master;
-+					system-clock-frequency = <0>;
-+					mclk-fs = <0>;
-+				};
-+			};
-+			/* Debug trace compressed stream */
-+			cs47l15_trace_port: port@3 {
-+				reg = <3>;
-+				cs47l15_trace_cpu: endpoint {
-+					remote-endpoint = <&cs47l15_trace_codec>;
-+					system-clock-frequency = <0>;
-+					mclk-fs = <0>;
-+				};
-+			};
-+			port@4 {
-+				reg = <4>;
-+				cs47l15_trace_codec: endpoint {
-+					remote-endpoint = <&cs47l15_trace_cpu>;
-+					system-clock-frequency = <0>;
-+					mclk-fs = <0>;
-+				};
-+			};
-+		};
-+	};
-+};
-diff --git a/arch/arm/boot/dts/bcm2711-rpi4b-cirrus-lochnagar.dtsi b/arch/arm/boot/dts/bcm2711-rpi4b-cirrus-lochnagar.dtsi
-new file mode 100644
-index 000000000000..af498d7ad18a
---- /dev/null
-+++ b/arch/arm/boot/dts/bcm2711-rpi4b-cirrus-lochnagar.dtsi
-@@ -0,0 +1,201 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/dts-v1/;
-+#include "bcm2711-rpi-4-b.dts"
-+#include <dt-bindings/clk/lochnagar.h>
-+#include <dt-bindings/pinctrl/bcm2835.h>
-+#include <dt-bindings/pinctrl/lochnagar.h>
-+
-+/ {
-+	wallvdd: wallvdd@0 {
-+		compatible = "regulator-fixed";
-+
-+		regulator-name = "WALL_VDD_5V";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		regulator-boot-on;
-+		regulator-always-on;
-+	};
-+
-+};
-+
-+&gpio {
-+	lochnagar_present: lochnagar_present {
-+		brcm,pins = <22>;
-+		brcm,function = <BCM2835_FSEL_GPIO_OUT>;
-+	};
-+
-+	lochnagar_reset: lochnagar_reset {
-+		brcm,pins = <24>;
-+		brcm,function = <BCM2835_FSEL_GPIO_OUT>;
-+	};
-+
-+	cdc_irq: cdc_irq {
-+		brcm,pins = <27>;
-+		brcm,function = <BCM2835_FSEL_GPIO_IN>;
-+	};
-+
-+	spi_pins: spi_pins {
-+		brcm,pins = <9 10 11>;
-+		brcm,function = <BCM2835_FSEL_ALT0>;
-+	};
-+
-+	spi_cs: spi_cs {
-+		brcm,pins = <7 8>;
-+		brcm,function = <BCM2835_FSEL_GPIO_OUT>;
-+	};
-+
-+	i2s_pins: i2s_pins {
-+		brcm,pins = <18 19 20 21>;
-+		brcm,function = <BCM2835_FSEL_ALT0>;
-+	};
-+};
-+
-+&i2s {
-+	status = "okay";
-+	#sound-dai-cells = <1>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2s_pins>;
-+	dmas = <&dma 2>, <&dma 3>;
-+	dma-names = "tx", "rx";
-+};
-+
-+&i2c1 {
-+	status = "okay";
-+
-+	lochnagar: lochnagar@22 {
-+		status = "okay";
-+
-+		compatible = "cirrus,lochnagar2";
-+		reg = <0x22>;
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&lochnagar_present &lochnagar_reset>;
-+
-+		reset-gpio = <&gpio 24 0>;
-+		present-gpio = <&gpio 22 0>;
-+
-+		lochnagar_vdd1v8: VDD1V8 {
-+			compatible = "regulator-fixed";
-+
-+			regulator-name = "VDD1V8";
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-boot-on;
-+			regulator-always-on;
-+
-+			vin-supply = <&wallvdd>;
-+		};
-+
-+		clk_pmic: clk_pmic {
-+			compatible = "fixed-clock";
-+			#clock-cells = <0>;
-+			clock-frequency = <32768>;
-+		};
-+		clk_24m: clk_24m {
-+			compatible = "fixed-clock";
-+			#clock-cells = <0>;
-+			clock-frequency = <24576000>;
-+		};
-+
-+		lochnagar_clk: clk {
-+			compatible = "cirrus,lochnagar2-clk";
-+
-+			#clock-cells = <1>;
-+
-+			clocks = <&clk_pmic>, <&clk_24m>;
-+			clock-names = "ln-pmic-32k", "ln-clk-24m";
-+
-+			assigned-clocks = <&lochnagar_clk LOCHNAGAR_CDC_MCLK1>,
-+					  <&lochnagar_clk LOCHNAGAR_CDC_MCLK2>,
-+					  <&lochnagar_clk LOCHNAGAR_SOUNDCARD_MCLK>;
-+			assigned-clock-parents = <&clk_24m>,
-+						 <&clk_pmic>,
-+						 <&clk_24m>;
-+		};
-+
-+		lochnagar_pin: pin {
-+			compatible = "cirrus,lochnagar-pinctrl";
-+
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+			gpio-ranges = <&lochnagar_pin 0 0 LOCHNAGAR2_PIN_NUM_GPIOS>;
-+
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&pin_settings>;
-+
-+			pin_settings: pin_settings {
-+				rpi_aif {
-+					input-enable;
-+					groups = "gf-aif1";
-+					function = "codec-aif1";
-+				};
-+				codec_aif1 {
-+					output-master;
-+					groups = "codec-aif1";
-+					function = "gf-aif1";
-+				};
-+				sc_codec_aif {
-+					output-enable;
-+					groups = "codec-aif2";
-+					function = "soundcard-aif";
-+				};
-+				sc_lochnagar_aif {
-+					input-enable;
-+					groups = "soundcard-aif";
-+					function = "codec-aif2";
-+				};
-+			};
-+		};
-+
-+		lochnagar_hwmon: hwmon {
-+			compatible = "cirrus,lochnagar2-hwmon";
-+		};
-+
-+		lochnagar_micvdd: MICVDD {
-+			compatible = "cirrus,lochnagar2-micvdd";
-+
-+			SYSVDD-supply = <&wallvdd>;
-+
-+			regulator-min-microvolt = <3000000>;
-+			regulator-max-microvolt = <3000000>;
-+		};
-+
-+		MIC1VDD {
-+			compatible = "cirrus,lochnagar2-mic1vdd";
-+
-+			regulator-always-on;
-+			cirrus,micbias-input = <2>;
-+		};
-+
-+		MIC2VDD {
-+			compatible = "cirrus,lochnagar2-mic2vdd";
-+
-+			regulator-always-on;
-+			cirrus,micbias-input = <3>;
-+		};
-+
-+		lochnagar_vddcore: VDDCORE {
-+			compatible = "cirrus,lochnagar2-vddcore";
-+
-+			SYSVDD-supply = <&wallvdd>;
-+
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1200000>;
-+		};
-+
-+		lochnagar_sc: soundcard {
-+			compatible = "cirrus,lochnagar2-soundcard";
-+
-+			#sound-dai-cells = <1>;
-+
-+			clocks = <&lochnagar_clk LOCHNAGAR_SOUNDCARD_MCLK>;
-+			clock-names = "mclk";
-+		};
-+	};
-+};
-+
-+&spi {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&spi_pins &spi_cs>;
-+	cs-gpios = <&gpio 8 1>, <&gpio 7 1>;
-+};
--- 
-2.20.1
-
+On Sat, Oct 10, 2020 at 05:53:06PM +0800, Chao Yu wrote:
+> On 2020/10/5 15:36, Satya Tangirala wrote:
+> > This patch series adds support for metadata encryption to F2FS using
+> > blk-crypto.
+> 
+> It looks this implementation is based on hardware crypto engine, could you
+> please add this info into f2fs.rst as well like inlinecrypt...
+> 
+To be precise, the implementation requires either a hardware crypto
+engine *or* blk-crypto-fallback. I tried to clarify this a little better
+in the commit messages and in fscrypt.rst, but thinking about it again
+now, I think I should add a section about metadata encryption at the end
+of f2fs.rst. I'll do that when I send out v3 of this patch series (I
+just sent out v2).
+> > 
+> > Patch 3 wires up F2FS with the functions introduced in Patch 2. F2FS
+> > will encrypt every block (that's not being encrypted by some other
+> > encryption key, e.g. a per-file key) with the metadata encryption key
+> > except the superblock (and the redundant copy of the superblock). The DUN
+> > of a block is the offset of the block from the start of the F2FS
+> > filesystem.
+> 
+> Why not using nid as DUN, then GC could migrate encrypted node block directly via
+> meta inode's address space like we do for encrypted data block, rather than
+> decrypting node block to node page and then encrypting node page with DUN of new
+> blkaddr it migrates to.
+> 
+The issue is, the bi_crypt_context in a bio holds a single DUN value,
+which is the DUN for the first data unit in the bio. blk-crypto assumes
+that the DUN of each subsequent data unit can be computed by simply
+incrementing the DUN. So physically contiguous data units can only be put
+into the same bio if they also have contiguous DUNs. I don't know much
+about nids, but if the nid is invariant w.r.t the physical block location,
+then there might be more fragmentation of bios in regular read/writes
+(because physical contiguity may have no relation to DUN contiguity). So I
+think we should continue using the fsblk number as the DUN.
