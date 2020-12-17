@@ -2,216 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E47122DD96C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 20:38:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43B3F2DD96F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 20:38:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729054AbgLQTg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 14:36:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728189AbgLQTg5 (ORCPT
+        id S1729762AbgLQThj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 14:37:39 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:3382 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729069AbgLQThj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 14:36:57 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5622C061282
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 11:36:16 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id t30so9721827wrb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 11:36:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6oOm24In2gplgsGMpCabJu/CznURFMD1RnI7ZTKSVZA=;
-        b=EYxCU38suOXjV47ydNpqlSUba1JRYG/aaI35yaJpn1UB+BtzvlRpADO93fzVKy4t36
-         GXDLRzlEn1BYLHTJGeAeqCidRcIMChrWngyKaOn4n3Lo29932Dg9omdUJcjDTAwCVkgh
-         ta58l29XjSHsRigG3HpDtBAEBVaBmuzih2JNgRoFRFYXa9bEBvBJ5hZC2Srp8gPI8mVa
-         uxVtLO0NA79ZScJlXdTUzkgYBE8Tqjur0dClttztc+oLkYcGroJOHdhhPsrsjuIEAO0T
-         /5F6Wcrc0LxkQR8X/uEnQJlAqKc4CbCNzPl9TN1TZtQafiA6+T03sTUGb4huYEgjoWFX
-         KmZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6oOm24In2gplgsGMpCabJu/CznURFMD1RnI7ZTKSVZA=;
-        b=atO0CuCAMvkl7y2KxRt9Vp3IHhKQaoXUnZHjTzJ8SOO2Cf/wyKuzyVPcQACMA/6tKb
-         JjmQC+kgyCdF+spdT2tfRMrPWiqhcWEQ22KdyGwmus3zHNzhoHxcmWil2y0jWjL5Oc5u
-         3eGod5rTpXEPeEcQubEwxv7PBurOLLOCYCnKbbImLW6k/juE+yiNlAWWiKt1RJWB6Sdg
-         Ydt9KEfpjhNzRMIhXT5rd8uXnXawe22iQAapaH343j91wB5JKL+8/EOBBep7OFX11d57
-         dBa7Q1UrlwAKciVA1OfZ5W9THI1OX53wVffw8asVuyQ/FQKUVlpt38jYBjp1YUUwtbs3
-         B4TA==
-X-Gm-Message-State: AOAM5338Z8YlsBUYfErnvVjbaOyaAyjSyWoICOP46sLI0nfDIjcqQCL2
-        4X0YGg5r22POJlXDpqluX2lGjw==
-X-Google-Smtp-Source: ABdhPJwHDhE2wDWtfE222MozA7wYeHiNXM83hTZa8A1agC08CnIBpdJflfgPV5DnqVW7VF1brOPhmg==
-X-Received: by 2002:a5d:5146:: with SMTP id u6mr433624wrt.46.1608233775160;
-        Thu, 17 Dec 2020 11:36:15 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:ccb6:ce78:2bcd:4ead? ([2a01:e34:ed2f:f020:ccb6:ce78:2bcd:4ead])
-        by smtp.googlemail.com with ESMTPSA id o124sm6076543wmb.5.2020.12.17.11.36.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Dec 2020 11:36:14 -0800 (PST)
-Subject: Re: [PATCH v2 47/48] ARM: tegra: ventana: Support CPU voltage scaling
- and thermal throttling
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20201217180638.22748-1-digetx@gmail.com>
- <20201217180638.22748-48-digetx@gmail.com>
- <91139f8b-0b83-dd8a-ba53-8e7a499e6344@linaro.org>
- <b39ebfc1-42b3-1fa7-efe4-6ecbc8cfcb50@gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <776e0e84-e395-2bfb-f1ee-c34864b1cf16@linaro.org>
-Date:   Thu, 17 Dec 2020 20:36:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 17 Dec 2020 14:37:39 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fdbb35a0000>; Thu, 17 Dec 2020 11:36:58 -0800
+Received: from [10.2.61.104] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 17 Dec
+ 2020 19:36:58 +0000
+Subject: Re: [PATCH 18/25] btrfs: Use readahead_batch_length
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     <linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20201216182335.27227-1-willy@infradead.org>
+ <20201216182335.27227-19-willy@infradead.org>
+ <a5b979d7-1086-fe6c-6e82-f20ecb56d24c@nvidia.com>
+ <20201217121246.GD15600@casper.infradead.org>
+ <20201217134253.GE15600@casper.infradead.org>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <e36468d6-8944-5fee-fe48-4f8cf4f2f679@nvidia.com>
+Date:   Thu, 17 Dec 2020 11:36:58 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:84.0) Gecko/20100101
+ Thunderbird/84.0
 MIME-Version: 1.0
-In-Reply-To: <b39ebfc1-42b3-1fa7-efe4-6ecbc8cfcb50@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201217134253.GE15600@casper.infradead.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1608233818; bh=6rL5WMauA8+LXyGXmzjXvOTi9WOgrRuLBi9GxeFHQwQ=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=HLEYh7m+YH14H3re5sfCCvg1KTEdsatWYftLMwpfepT3/eYkHw3P3Eq4rb0XgKmqZ
+         LVFaBzKsGC26TSljIlKDxVNpKYsW1woSLuiA6iTXMp/QIa8NZi+ywUTtcm9BAkQC/s
+         8XHmXqz8Rb4h7gD6Kq8Cf1krkdXne6HSCxr38AlWn/OTts/nXkmfe4/abBzoNF7asE
+         KW8knZ0bTpYRM00SzLYZl7SvfCIe4mc70RKN8pk3wfETmtcGHSqiPmQNx2gz1qG/Nc
+         uQmsDgx4lszWHKwxqGa9s0O7yH6k6qWxr2PhzinE0v0c1HtFalpUHoD5Rv3N1zf37U
+         wFuZozwfh4vBA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/12/2020 20:01, Dmitry Osipenko wrote:
-> 17.12.2020 21:28, Daniel Lezcano пишет:
->> On 17/12/2020 19:06, Dmitry Osipenko wrote:
->>> Enable CPU voltage scaling and thermal throttling on Tegra20 Ventana board.
->>>
->>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->>> ---
->>>  arch/arm/boot/dts/tegra20-ventana.dts | 40 ++++++++++++++++++++++++++-
->>>  1 file changed, 39 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/arch/arm/boot/dts/tegra20-ventana.dts b/arch/arm/boot/dts/tegra20-ventana.dts
->>> index 14ace2ef749c..c2d9f38960bc 100644
->>> --- a/arch/arm/boot/dts/tegra20-ventana.dts
->>> +++ b/arch/arm/boot/dts/tegra20-ventana.dts
->>> @@ -2,8 +2,10 @@
->>>  /dts-v1/;
->>>  
->>>  #include <dt-bindings/input/input.h>
->>> +#include <dt-bindings/thermal/thermal.h>
->>>  #include "tegra20.dtsi"
->>>  #include "tegra20-cpu-opp.dtsi"
->>> +#include "tegra20-cpu-opp-microvolt.dtsi"
->>>  
->>>  / {
->>>  	model = "NVIDIA Tegra20 Ventana evaluation board";
->>> @@ -527,9 +529,10 @@ ldo_rtc {
->>>  			};
->>>  		};
->>>  
->>> -		temperature-sensor@4c {
->>> +		nct1008: temperature-sensor@4c {
->>>  			compatible = "onnn,nct1008";
->>>  			reg = <0x4c>;
->>> +			#thermal-sensor-cells = <1>;
->>>  		};
->>>  	};
->>>  
->>> @@ -615,10 +618,13 @@ clk32k_in: clock@0 {
->>>  
->>>  	cpus {
->>>  		cpu0: cpu@0 {
->>> +			cpu-supply = <&vdd_cpu>;
->>>  			operating-points-v2 = <&cpu0_opp_table>;
->>> +			#cooling-cells = <2>;
->>>  		};
->>>  
->>>  		cpu@1 {
->>> +			cpu-supply = <&vdd_cpu>;
->>>  			operating-points-v2 = <&cpu0_opp_table>;
->>>  		};
->>>  	};
->>> @@ -717,4 +723,36 @@ sound {
->>>  			 <&tegra_car TEGRA20_CLK_CDEV1>;
->>>  		clock-names = "pll_a", "pll_a_out0", "mclk";
->>>  	};
->>> +
->>> +	thermal-zones {
->>> +		cpu-thermal {
->>> +			polling-delay-passive = <1000>; /* milliseconds */
->>> +			polling-delay = <5000>; /* milliseconds */
->>> +
->>> +			thermal-sensors = <&nct1008 1>;
->>> +
->>> +			trips {
->>> +				trip0: cpu-alert0 {
->>> +					/* start throttling at 50C */
->>> +					temperature = <50000>;
->>> +					hysteresis = <200>;
->>
->> Did you mean <2000> ?
+On 12/17/20 5:42 AM, Matthew Wilcox wrote:
+> On Thu, Dec 17, 2020 at 12:12:46PM +0000, Matthew Wilcox wrote:
+>> ehh ... probably an off-by-one.  Does subtracting 1 from contig_end fix it?
+>> I'll spool up a test VM shortly and try it out.
 > 
-> The <200> is correct.
+> Yes, this fixed it:
 > 
-> Please see this commit for example:
+> -               u64 contig_end = contig_start + readahead_batch_length(rac);
+> +               u64 contig_end = contig_start + readahead_batch_length(rac) - 1;
 > 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2b22393b27670b45a2c870bce3df6579efd9a86a
 
-Ok, thanks for the pointer.
+Yes, confirmed on my end, too.
 
->>> +					type = "passive";
->>> +				};
->>> +
->>> +				trip1: cpu-crit {
->>> +					/* shut down at 60C */
->>> +					temperature = <60000>;
->>> +					hysteresis = <2000>;
->>
->> I think you can drop the hysteresis here, when the critical temperature
->> is reached, there is an emergency shutdown.
-> 
-> Yes, perhaps you're right. Hysteresis doesn't make sense for a critical
-> trip. I'll improve it in the next revision, thanks.
-> 
->> 50°C and 60°C sound very low values, no ?
-> 
-> Tegra20 CPU is very cold in comparison to later generations, it should
-> stay under 50°C even at a full load.
-
-Interesting, thanks.
-
->>> +					type = "critical";
->>> +				};
->>> +			};
->>> +
->>> +			cooling-maps {
->>> +				map0 {
->>> +					trip = <&trip0>;
->>> +					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
->>
->> You should add all CPUs here.
-> 
-> 
-> All CPU cores are coupled on Tegra in regards to CPUFreq, hence I think
-> it won't make any difference if secondary CPU cores will be added here,
-> isn't it?
-
-The explanation is in the description of commit ef4734500407ce4d
-
-
+thanks,
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+John Hubbard
+NVIDIA
