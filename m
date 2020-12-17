@@ -2,198 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7CB62DCB12
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 03:41:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E8A92DCB15
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 03:47:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727758AbgLQCkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 21:40:07 -0500
-Received: from mail-eopbgr1310137.outbound.protection.outlook.com ([40.107.131.137]:10308
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725988AbgLQCkH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 21:40:07 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H2Dzw3o8R7QuSsFA9jTo+bZYGZnb0kU3viRFlyVwzRC4qjxkj9hkjKjx9te506TXxlsQxsRPG8CJsZkl7ljuoueDoL36A2nicC7faW8T4OsAGBVSJQnRJvqIiI4KgDpMbQcv5uWQdG1vz2fSMgIR6fhx4v+odP7uwy7L8nIWFtsq3jgLvsjjpEp+1R/AjJ7Y1qySyAxEt8X97Ayj69I9BM+0OpGhLFW6AiYURQtGpwJQHHEJTJLFzaHlpZLwYouwKLAmiFJYYoDWvf7naNqhghjEBN20lEVxQJjgZAspVbNTGfuhHs0zDLxVbKXgBCNv4pNbhgMHEgycPaJ8LmY8hA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kgE1p8tM45unvZNMujZ0xFQCM/9JKg6WZ1CMILSi0gY=;
- b=f1fDkBm+iZPKPT5gZfeqP4vZ9ufmsfBClGFrwcdcUauBTQd1xR9ctFPUoz4XwjqTK0PB42mis01S1ksCe0uY7ZHtNbBp9JnmZXABlcVwplibmee8eM/3J7ltr7IQKs+x/9udkOMRfHQvNUaVkuoewNnUGurLFshcLe+tEeS/B5Y9F4F4xdWNMRI9TEf8O7vF82w46uJiNPlkn0HziBaPFjmNUHiwvEDiz6+kgoUhEfZKa1BAiUo0ZhNtx/h4sG8aUJjk0ce+j03++LQ/eZO8AoiJW2G128T/NSiHckaJIk7lcvbiLF9DoWXkfxw9iahe//fAqq0dOsYpeWHQdcEgOQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-Received: from PU1PR06MB2167.apcprd06.prod.outlook.com (2603:1096:803:39::19)
- by PU1PR06MB2232.apcprd06.prod.outlook.com (2603:1096:803:38::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Thu, 17 Dec
- 2020 02:38:27 +0000
-Received: from PU1PR06MB2167.apcprd06.prod.outlook.com
- ([fe80::ad65:1718:c397:2677]) by PU1PR06MB2167.apcprd06.prod.outlook.com
- ([fe80::ad65:1718:c397:2677%5]) with mapi id 15.20.3654.025; Thu, 17 Dec 2020
- 02:38:27 +0000
-From:   Billy Tsai <billy_tsai@aspeedtech.com>
-To:     Andrew Jeffery <andrew@aj.id.au>
-CC:     BMC-SW <BMC-SW@aspeedtech.com>, "joel@jms.id.au" <joel@jms.id.au>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>
-Subject: Re: [PATCH v2] driver: aspeed: g6: Fix PWMG0 pinctrl setting
-Thread-Topic: [PATCH v2] driver: aspeed: g6: Fix PWMG0 pinctrl setting
-Thread-Index: AQHW1Azo2Xm2vpu10EmbDlTBuWFCuan7GWWA
-Date:   Thu, 17 Dec 2020 02:38:26 +0000
-Message-ID: <E1023A72-F92B-410D-B2AD-15C053EA82A4@aspeedtech.com>
-References: <1e823780-b1ef-42dd-bb60-321b4d482d31@www.fastmail.com>
-In-Reply-To: <1e823780-b1ef-42dd-bb60-321b4d482d31@www.fastmail.com>
-Accept-Language: zh-TW, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: aj.id.au; dkim=none (message not signed)
- header.d=none;aj.id.au; dmarc=none action=none header.from=aspeedtech.com;
-x-originating-ip: [211.20.114.70]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 40eee7b2-62b4-4a85-dbf0-08d8a234d530
-x-ms-traffictypediagnostic: PU1PR06MB2232:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <PU1PR06MB22323B5153C96C17E2E07E9B8BC40@PU1PR06MB2232.apcprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 4a2f76WtEP7LQwMs/mzO1FXxUND5868Fu/Pk3I2eKrBvV/agiuu2EQr8/i11A1rM5z5kbFz7E7Q4FO9O9WobAuhbBdmkWKz8ViDfCRPA/Zhxtc6W1sVtdNdJL6E5xax6A8Y7t08uRUqONfKOgh+x5ohV3WlCneeKtlQLya+Yn658mbURsMh7f85hLKfH/kXiKRpREeIVCVD1X8wYnJk+6Dl9z1lCHDBZt7mkMZU9erLVIt7AWOpj7LNMC6iAIt9J13V3iBKFoT93a40mnOCIk0652uMs0OZIhzAeFOaVDvULesHJKiArrsY+iIVtkPsqO7bPKLnC+2P4ZIX3AaueEbVj3PjPb/2Lqp81WiTbJvjs932oszQsK/FZe1QJSJotET+SgLd0y6JO8Q/8C2QCadP9ea0rLZGlnxHhTshWOOINAElLN0u798AhDw6elbxzUjhVzT+OodryR5X0VgoH1w==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PU1PR06MB2167.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(39840400004)(366004)(346002)(376002)(396003)(136003)(6506007)(64756008)(66556008)(26005)(91956017)(966005)(4326008)(316002)(86362001)(2906002)(6916009)(186003)(83380400001)(55236004)(478600001)(33656002)(66446008)(8676002)(36756003)(54906003)(8936002)(6512007)(66476007)(2616005)(66946007)(6486002)(76116006)(71200400001)(5660300002)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?aEl6dk9GdTQ2YTcyMGI2a05vbm5Mb0RCUmwyT3VTWkhUTzdOUU1ud0k3Ty9i?=
- =?utf-8?B?dU1pcXRTT3NDWEh1eFJ0TnczNVBPbXh1Q1g4R3F0aDVQVzZaRzZ2blAxMWxO?=
- =?utf-8?B?VC9CNlNUeEc0WlQ2bWpUYlZUa2JXbUxvWDJjcXBHRFoyQ0s0V3BEa2NkZm9Q?=
- =?utf-8?B?bS9LMjU4YUlEUFVLb01zRDRpTnVTU3l6OWdwcXpCTnZnWVByRXMvMHh6ZXpT?=
- =?utf-8?B?VU54dTdlNTVxMEFtQ1E0dkYxRUxJRWdXMXozbVhGeGJJTVN5ZFNRY01LcUZa?=
- =?utf-8?B?VmJES0QrSjVUN0NwU0dKTVQ0bEhuUHp2cFFyRFp5YlJkNWVXajg3amp6TW5I?=
- =?utf-8?B?MmRJU1ZvdlpBcVgyOXZPS010RUtuaVZrTnFibFNkR3VWVC9DV3FmVlkyQ25q?=
- =?utf-8?B?aFc5S0V4akcrN0RtYVdsUmxyYldZNjUrQTU1M3VEelM4MVlzb3VYbnJ5RnJV?=
- =?utf-8?B?U3RTbVhNMU9QL1IxRGw1QjA1dWdjakFxd05xOVpBRFFxTHB2UzZlQUs0S2Z4?=
- =?utf-8?B?V2RSSGl3bFNqdjJlbWRBVVpFYWUvSHEvb0lwLzAwUXlHcUpQYnBWK2J3bjhB?=
- =?utf-8?B?cGxrY2VyWUFib0pYZ3JKR2ZLQjQvdEhEWWdsaE1XUEJnbUhFZCtBSFZyM08z?=
- =?utf-8?B?YWxHNDlNTjhvVjRvekhYV3NnQiszTHg1c1RXcGkrMEQxRGN3cUNZZlZCbUJY?=
- =?utf-8?B?WkRFYW4zR0FnK1Y4R0dnbXFIUFhTdFllaGo0TTRFUjRNK1UrS2RsUk8zaG5L?=
- =?utf-8?B?L1kxVFloZzYrazA4cDc4YXNSc1NUQytvTzZ3VDNqQVNWd25JWDJZUlJUdXBO?=
- =?utf-8?B?MWhFb21nS0t3OGNFYUxLZWVhVXRXNlJrclhrU3NBVHdDam55eGVCcVYzZlgv?=
- =?utf-8?B?eER2ZWdndjNHZysvc2VTbjRkeWJGc2tYMVJpK1pncU9JcmkzSVIxaUJlWGcr?=
- =?utf-8?B?NXI0M0VPTEtIMTVSL3FlaWZpYUs1eTAxVlpEaWwwZEtOeWlTbWMxU1hBYi9o?=
- =?utf-8?B?ek9aY1RXN3hEL1hrQTNTdEV5aFNEdWFoL2d3WUhaMzgyZEk0RUcvd0I2SU1q?=
- =?utf-8?B?cHN2VWRzWDFaMGdrWVZzbXZXb2QzSGhSWlNrbUJQQzAxTFFqeGJ0NzMraXpO?=
- =?utf-8?B?ZStoMVhLNEtrZHdXYXY3VjFDMzQ0d3ROSWVzc3NvUkZIRGdBNng1UGxMMGUy?=
- =?utf-8?B?TmgvQjUyYlFQc3hvSjdrc0ZFM29jU0hjb3lkTWRMdDJaT3dBbm4yUytwYk94?=
- =?utf-8?B?bW14TUtVRnZNRTFrMTI5ZWtPMGdNQ1NEWkFKdWxMQ0Rvc0JtdVB0VFNCcUdz?=
- =?utf-8?Q?WCSMVUBrvb5Us6m9/mYffnL/Z6l2pSX1AO?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <9E2E6A372DB8394094345DD8C3BF19F9@apcprd06.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1727629AbgLQCrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 21:47:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725988AbgLQCrR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 21:47:17 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEB93C0617A7
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 18:46:36 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id l23so3246567pjg.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 18:46:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yaotCu5nitXv5Ew++FqWzmZZRyt2uEF7P/i3lpkEgqo=;
+        b=H2pVXOlGlpJGFMGxOpeVjC943QP5s/RMMR9iZT13h+5x6PLcpAzLf3NctLYTo5xj1x
+         O83nwU8Nk8qVmHuXNwjH+ilu7diES4V2+xvo/HN9HSMnbXJqFQfYiHHwo0eijXAqCZz6
+         vy3Vl8f3ELyeid4LNt5851+EJInwSyo3oLAWuWEg6w1YXYBdldQcN6WhQ0zoo/PD2NLo
+         FC9vs5Q1+sTBpFp7T1dWHGjzwL52jdzegGG7t3tTs8cwQ6kmNnxnOL63nlCGx5ySRf+w
+         +J64Xxb/q+P5HDh6+BMiwsM1MGBQymcPoHCvyhA/V5O94OmUJMI+b9DSpy0+Vuo0aaMC
+         vtqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yaotCu5nitXv5Ew++FqWzmZZRyt2uEF7P/i3lpkEgqo=;
+        b=Xvj76A9s3Q1BV6Eh3Ljjl7YueuU78oZpRWap1M88CtPithJHs5QW4nBOSJv9GLwfWo
+         9jYksM7+12vtgET1mQFMHaO2+IeRsem/lbhDlWekHO0zhhRjVhsXOPCFT9H4hdAFsm9I
+         aPFliJhBb4yy6wlagyUsbHQGGliuzzpn++TMoYSseJCDSGw1QtDrqMl7TNG8flcfuJ2o
+         rbnDOCOOeIn6SpEfMIiK1XOAdJmsSTIcxl3Oe2D7noHOIwqe7PxhTIUZi3LenDh2sWFq
+         fPAtt0/TEdFffV3Bc21QfiZOS6D2Ka5uGa3yeiETZeuleLH0vnYTHrHgeEAXosL6EB+l
+         YEBA==
+X-Gm-Message-State: AOAM533XpoCHoktKRZO1LZ+3JWZnQE32vPp7VPG9mlj10WyBiTaTnS8l
+        h5TJrl+a6Qj2xAsGzhZaqTLiNmO9MGm7Gx7hncxbYA==
+X-Google-Smtp-Source: ABdhPJzI4l6Nh3E/Rm2+g49nfs4ZjEkjgo1MFpw2whaJMCKO2cnyyWtycDGOxWxNdgtIy3G7Heaw632SCX/a/tz9QAs=
+X-Received: by 2002:a17:90a:c588:: with SMTP id l8mr5749752pjt.147.1608173195980;
+ Wed, 16 Dec 2020 18:46:35 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PU1PR06MB2167.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 40eee7b2-62b4-4a85-dbf0-08d8a234d530
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Dec 2020 02:38:27.0154
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: IKDecVi71bCQqTMQwZZzMY4kDUCiluxFWpT5Ykz3b2uWNzv/bvvzB83CYtbh3A3mzlZBg6w9hJEmUD5eLKIMBv8+Dtnbg/sz/3J3fQPrFHc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PU1PR06MB2232
+References: <20201213154534.54826-1-songmuchun@bytedance.com>
+ <20201213154534.54826-9-songmuchun@bytedance.com> <20201216144052.GF29394@linux>
+ <CAMZfGtUj4jng7Ay+c0h=N3b88+sz+A6Awa2r2DT+j9PFrXXBGQ@mail.gmail.com> <20201216221005.GA3207@localhost.localdomain>
+In-Reply-To: <20201216221005.GA3207@localhost.localdomain>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 17 Dec 2020 10:45:59 +0800
+Message-ID: <CAMZfGtUMVpAL6oghwNU-GXjtg8ohGkLcja_3C5+rBSLmf-sx_w@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v9 08/11] mm/hugetlb: Add a kernel
+ parameter hugetlb_free_vmemmap
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQW5kcmV3LA0KDQpCZXN0IFJlZ2FyZHMsDQpCaWxseSBUc2FpDQoNCu+7v09uIDIwMjAvMTIv
-MTcsIDg6MzggQU0sIEFuZHJldyBKZWZmZXJ5IHdyb3RlOg0KDQogICAgPiBUaGUgU0NVIG9mZnNl
-dCBmb3Igc2lnbmFsIFBXTTggaW4gZ3JvdXAgUFdNOEcwIGlzIHdyb25nLCBmaXggaXQgZnJvbQ0K
-ICAgID4gU0NVNDE0IHRvIFNDVTRCNC4NCiAgICA+IEJlc2lkZXMgdGhhdCwgV2hlbiBQV004fjE1
-IG9mIFBXTUcwIHNldCBpdCBuZWVkcyB0byBjbGVhciBTQ1U0MTQgYml0cw0KICAgID4gYXQgdGhl
-IHNhbWUgdGltZS4NCiAgICANCiAgICBGWUksIHdlIGRvbid0IG5lZWQgdG8gZXhwbGljaXRseSBj
-bGVhciBTQ1U0MTRbLi4uXSBhcyBwYXJ0IG9mIHRoZSBQV00gbXV4IA0KICAgIGNvbmZpZ3VyYXRp
-b24gYXMgdGhlIHRoZXNlIGJpdHMgYXJlIGNsZWFyZWQgYXMgcGFydCBvZiBkaXNhYmxpbmcgdGhl
-IFNEMSogDQogICAgc2lnbmFsIHN0YXRlIG9uIGVhY2ggcGluWzFdLiBZb3Ugc2hvdWxkIGJlIGFi
-bGUgdG8gY29uZmlybSB0aGlzIGJ5IGNvbXBpbGluZyANCiAgICB3aXRoIENPTkZJR19ERUJVR19Q
-SU5DVFJMPXkgYW5kICJkZWJ1ZyIgb24gdGhlIGtlcm5lbCBjb21tYW5kbGluZS4NCiAgICANCiAg
-ICBUaGF0IHNhaWQsIGl0IHdvdWxkIGJlIG5lYXQgaWYgd2UgaGFkIHNvbWUga3VuaXQgdGVzdHMg
-dG8gZXhlcmNpc2UgYWxsIHRoaXMsIA0KICAgIGJ1dCBpdCdzIG5vdCBzb21ldGhpbmcgSSd2ZSB0
-aG91Z2h0IGRlZXBseSBhYm91dC4NCg0KVGhhbmtzIGZvciB5b3VyIHJlbWFpbmRlci4gSSB3aWxs
-IHNlbmQgdjMgdG8ganVzdCBmaXggdGhlIGNvcHkvcGFzdGUgZXJyb3IuDQoNCiAgICBbMV0gaHR0
-cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGlu
-dXguZ2l0L3RyZWUvZHJpdmVycy9waW5jdHJsL2FzcGVlZC9waW5jdHJsLWFzcGVlZC5jP2g9djUu
-MTAjbjI0OA0KICAgIA0KICAgID4NCiAgICA+IEZpeGVzOiAyZWRhMWNkZWM0OWYgKCJwaW5jdHJs
-OiBhc3BlZWQ6IEFkZCBBU1QyNjAwIHBpbm11eCBzdXBwb3J0IikNCiAgICA+DQogICAgPiBTaWdu
-ZWQtb2ZmLWJ5OiBCaWxseSBUc2FpIDxiaWxseV90c2FpQGFzcGVlZHRlY2guY29tPg0KICAgID4g
-LS0tDQogICAgPiAgZHJpdmVycy9waW5jdHJsL2FzcGVlZC9waW5jdHJsLWFzcGVlZC1nNi5jIHwg
-MjQgKysrKysrKysrKysrKystLS0tLS0tLQ0KICAgID4gIDEgZmlsZSBjaGFuZ2VkLCAxNiBpbnNl
-cnRpb25zKCspLCA4IGRlbGV0aW9ucygtKQ0KICAgID4NCiAgICA+IGRpZmYgLS1naXQgYS9kcml2
-ZXJzL3BpbmN0cmwvYXNwZWVkL3BpbmN0cmwtYXNwZWVkLWc2LmMgYi9kcml2ZXJzL3BpbmN0cmwv
-YXNwZWVkL3BpbmN0cmwtYXNwZWVkLWc2LmMNCiAgICA+IGluZGV4IGI2NzNhNDRmZmEzYi4uMWRm
-YjEyYTViMmNlIDEwMDY0NA0KICAgID4gLS0tIGEvZHJpdmVycy9waW5jdHJsL2FzcGVlZC9waW5j
-dHJsLWFzcGVlZC1nNi5jDQogICAgPiArKysgYi9kcml2ZXJzL3BpbmN0cmwvYXNwZWVkL3BpbmN0
-cmwtYXNwZWVkLWc2LmMNCiAgICA+IEBAIC0zNjcsNDkgKzM2Nyw1NyBAQCBGVU5DX0dST1VQX0RF
-Q0woUk1JSTQsIEYyNCwgRTIzLCBFMjQsIEUyNSwgQzI1LCBDMjQsIEIyNiwgQjI1LCBCMjQpOw0K
-ICAgID4NCiAgICA+ICAjZGVmaW5lIEQyMiA0MA0KICAgID4gIFNJR19FWFBSX0xJU1RfREVDTF9T
-RVNHKEQyMiwgU0QxQ0xLLCBTRDEsIFNJR19ERVNDX1NFVChTQ1U0MTQsIDgpKTsNCiAgICA+IC1T
-SUdfRVhQUl9MSVNUX0RFQ0xfU0VNRyhEMjIsIFBXTTgsIFBXTThHMCwgUFdNOCwgU0lHX0RFU0Nf
-U0VUKFNDVTQxNCwgOCkpOw0KICAgID4gK1NJR19FWFBSX0xJU1RfREVDTF9TRU1HKEQyMiwgUFdN
-OCwgUFdNOEcwLCBQV004LCBTSUdfREVTQ19TRVQoU0NVNEI0LCA4KSwNCiAgICANCiAgICBHb29k
-IGNhdGNoLCBsb29rcyBsaWtlIGEgY29weS9wYXN0ZSBmYWlsIG9uIG15IHBhcnQgOikNCiAgICAN
-CiAgICA+ICtTSUdfREVTQ19DTEVBUihTQ1U0MTQsIDgpKTsNCiAgICANCiAgICBBcyBhYm92ZSwg
-dGhpcyBzaG91bGQgYmUgdW5uZWNlc3NhcnkuDQogICAgDQogICAgQ2FuIHlvdSBjb25maXJtIGFu
-ZCByZW1vdmUgdGhlIENMRUFSKClzIGZvciB2Mz8NCiAgICANCiAgICBDaGVlcnMsDQogICAgDQog
-ICAgQW5kcmV3DQogICAgDQogICAgPiAgUElOX0RFQ0xfMihEMjIsIEdQSU9GMCwgU0QxQ0xLLCBQ
-V004KTsNCiAgICA+ICBHUk9VUF9ERUNMKFBXTThHMCwgRDIyKTsNCiAgICA+DQogICAgPiAgI2Rl
-ZmluZSBFMjIgNDENCiAgICA+ICBTSUdfRVhQUl9MSVNUX0RFQ0xfU0VTRyhFMjIsIFNEMUNNRCwg
-U0QxLCBTSUdfREVTQ19TRVQoU0NVNDE0LCA5KSk7DQogICAgPiAtU0lHX0VYUFJfTElTVF9ERUNM
-X1NFTUcoRTIyLCBQV005LCBQV005RzAsIFBXTTksIFNJR19ERVNDX1NFVChTQ1U0QjQsIDkpKTsN
-CiAgICA+ICtTSUdfRVhQUl9MSVNUX0RFQ0xfU0VNRyhFMjIsIFBXTTksIFBXTTlHMCwgUFdNOSwg
-U0lHX0RFU0NfU0VUKFNDVTRCNCwgOSksDQogICAgPiArU0lHX0RFU0NfQ0xFQVIoU0NVNDE0LCA5
-KSk7DQogICAgPiAgUElOX0RFQ0xfMihFMjIsIEdQSU9GMSwgU0QxQ01ELCBQV005KTsNCiAgICA+
-ICBHUk9VUF9ERUNMKFBXTTlHMCwgRTIyKTsNCiAgICA+DQogICAgPiAgI2RlZmluZSBEMjMgNDIN
-CiAgICA+ICBTSUdfRVhQUl9MSVNUX0RFQ0xfU0VTRyhEMjMsIFNEMURBVDAsIFNEMSwgU0lHX0RF
-U0NfU0VUKFNDVTQxNCwgMTApKTsNCiAgICA+IC1TSUdfRVhQUl9MSVNUX0RFQ0xfU0VNRyhEMjMs
-IFBXTTEwLCBQV00xMEcwLCBQV00xMCwgU0lHX0RFU0NfU0VUKFNDVTRCNCwgMTApKTsNCiAgICA+
-ICtTSUdfRVhQUl9MSVNUX0RFQ0xfU0VNRyhEMjMsIFBXTTEwLCBQV00xMEcwLCBQV00xMCwgU0lH
-X0RFU0NfU0VUKFNDVTRCNCwgMTApLA0KICAgID4gK1NJR19ERVNDX0NMRUFSKFNDVTQxNCwgMTAp
-KTsNCiAgICA+ICBQSU5fREVDTF8yKEQyMywgR1BJT0YyLCBTRDFEQVQwLCBQV00xMCk7DQogICAg
-PiAgR1JPVVBfREVDTChQV00xMEcwLCBEMjMpOw0KICAgID4NCiAgICA+ICAjZGVmaW5lIEMyMyA0
-Mw0KICAgID4gIFNJR19FWFBSX0xJU1RfREVDTF9TRVNHKEMyMywgU0QxREFUMSwgU0QxLCBTSUdf
-REVTQ19TRVQoU0NVNDE0LCAxMSkpOw0KICAgID4gLVNJR19FWFBSX0xJU1RfREVDTF9TRU1HKEMy
-MywgUFdNMTEsIFBXTTExRzAsIFBXTTExLCBTSUdfREVTQ19TRVQoU0NVNEI0LCAxMSkpOw0KICAg
-ID4gK1NJR19FWFBSX0xJU1RfREVDTF9TRU1HKEMyMywgUFdNMTEsIFBXTTExRzAsIFBXTTExLCBT
-SUdfREVTQ19TRVQoU0NVNEI0LCAxMSksDQogICAgPiArU0lHX0RFU0NfQ0xFQVIoU0NVNDE0LCAx
-MSkpOw0KICAgID4gIFBJTl9ERUNMXzIoQzIzLCBHUElPRjMsIFNEMURBVDEsIFBXTTExKTsNCiAg
-ICA+ICBHUk9VUF9ERUNMKFBXTTExRzAsIEMyMyk7DQogICAgPg0KICAgID4gICNkZWZpbmUgQzIy
-IDQ0DQogICAgPiAgU0lHX0VYUFJfTElTVF9ERUNMX1NFU0coQzIyLCBTRDFEQVQyLCBTRDEsIFNJ
-R19ERVNDX1NFVChTQ1U0MTQsIDEyKSk7DQogICAgPiAtU0lHX0VYUFJfTElTVF9ERUNMX1NFTUco
-QzIyLCBQV00xMiwgUFdNMTJHMCwgUFdNMTIsIFNJR19ERVNDX1NFVChTQ1U0QjQsIDEyKSk7DQog
-ICAgPiArU0lHX0VYUFJfTElTVF9ERUNMX1NFTUcoQzIyLCBQV00xMiwgUFdNMTJHMCwgUFdNMTIs
-IFNJR19ERVNDX1NFVChTQ1U0QjQsIDEyKSwNCiAgICA+ICtTSUdfREVTQ19DTEVBUihTQ1U0MTQs
-IDEyKSk7DQogICAgPiAgUElOX0RFQ0xfMihDMjIsIEdQSU9GNCwgU0QxREFUMiwgUFdNMTIpOw0K
-ICAgID4gIEdST1VQX0RFQ0woUFdNMTJHMCwgQzIyKTsNCiAgICA+DQogICAgPiAgI2RlZmluZSBB
-MjUgNDUNCiAgICA+ICBTSUdfRVhQUl9MSVNUX0RFQ0xfU0VTRyhBMjUsIFNEMURBVDMsIFNEMSwg
-U0lHX0RFU0NfU0VUKFNDVTQxNCwgMTMpKTsNCiAgICA+IC1TSUdfRVhQUl9MSVNUX0RFQ0xfU0VN
-RyhBMjUsIFBXTTEzLCBQV00xM0cwLCBQV00xMywgU0lHX0RFU0NfU0VUKFNDVTRCNCwgMTMpKTsN
-CiAgICA+ICtTSUdfRVhQUl9MSVNUX0RFQ0xfU0VNRyhBMjUsIFBXTTEzLCBQV00xM0cwLCBQV00x
-MywgU0lHX0RFU0NfU0VUKFNDVTRCNCwgMTMpLA0KICAgID4gK1NJR19ERVNDX0NMRUFSKFNDVTQx
-NCwgMTMpKTsNCiAgICA+ICBQSU5fREVDTF8yKEEyNSwgR1BJT0Y1LCBTRDFEQVQzLCBQV00xMyk7
-DQogICAgPiAgR1JPVVBfREVDTChQV00xM0cwLCBBMjUpOw0KICAgID4NCiAgICA+ICAjZGVmaW5l
-IEEyNCA0Ng0KICAgID4gIFNJR19FWFBSX0xJU1RfREVDTF9TRVNHKEEyNCwgU0QxQ0QsIFNEMSwg
-U0lHX0RFU0NfU0VUKFNDVTQxNCwgMTQpKTsNCiAgICA+IC1TSUdfRVhQUl9MSVNUX0RFQ0xfU0VN
-RyhBMjQsIFBXTTE0LCBQV00xNEcwLCBQV00xNCwgU0lHX0RFU0NfU0VUKFNDVTRCNCwgMTQpKTsN
-CiAgICA+ICtTSUdfRVhQUl9MSVNUX0RFQ0xfU0VNRyhBMjQsIFBXTTE0LCBQV00xNEcwLCBQV00x
-NCwgU0lHX0RFU0NfU0VUKFNDVTRCNCwgMTQpLA0KICAgID4gK1NJR19ERVNDX0NMRUFSKFNDVTQx
-NCwgMTQpKTsNCiAgICA+ICBQSU5fREVDTF8yKEEyNCwgR1BJT0Y2LCBTRDFDRCwgUFdNMTQpOw0K
-ICAgID4gIEdST1VQX0RFQ0woUFdNMTRHMCwgQTI0KTsNCiAgICA+DQogICAgPiAgI2RlZmluZSBB
-MjMgNDcNCiAgICA+ICBTSUdfRVhQUl9MSVNUX0RFQ0xfU0VTRyhBMjMsIFNEMVdQLCBTRDEsIFNJ
-R19ERVNDX1NFVChTQ1U0MTQsIDE1KSk7DQogICAgPiAtU0lHX0VYUFJfTElTVF9ERUNMX1NFTUco
-QTIzLCBQV00xNSwgUFdNMTVHMCwgUFdNMTUsIFNJR19ERVNDX1NFVChTQ1U0QjQsIDE1KSk7DQog
-ICAgPiArU0lHX0VYUFJfTElTVF9ERUNMX1NFTUcoQTIzLCBQV00xNSwgUFdNMTVHMCwgUFdNMTUs
-IFNJR19ERVNDX1NFVChTQ1U0QjQsIDE1KSwNCiAgICA+ICtTSUdfREVTQ19DTEVBUihTQ1U0MTQs
-IDE1KSk7DQogICAgPiAgUElOX0RFQ0xfMihBMjMsIEdQSU9GNywgU0QxV1AsIFBXTTE1KTsNCiAg
-ICA+ICBHUk9VUF9ERUNMKFBXTTE1RzAsIEEyMyk7DQogICAgPg0KICAgID4gLS0NCiAgICA+IDIu
-MTcuMQ0KICAgIA0KDQo=
+On Thu, Dec 17, 2020 at 6:10 AM Oscar Salvador <osalvador@suse.de> wrote:
+>
+> On Thu, Dec 17, 2020 at 12:04:11AM +0800, Muchun Song wrote:
+> > On Wed, Dec 16, 2020 at 10:40 PM Oscar Salvador <osalvador@suse.de> wrote:
+> > >
+> > > On Sun, Dec 13, 2020 at 11:45:31PM +0800, Muchun Song wrote:
+> > > > Add a kernel parameter hugetlb_free_vmemmap to disable the feature of
+> > > > freeing unused vmemmap pages associated with each hugetlb page on boot.
+> > > I guess this should read "to enable the feature"?
+> > > AFAICS, it is disabled by default.
+
+Hi Oscar,
+
+Yeah, you are right. It is disabled by default. I forget to update the
+commit log.
+Thanks a lot for pointing this out.
+
+>
+> It still would be great to have an answer for that.
+>
+> Thanks
+>
+>
+> > > >  Documentation/admin-guide/kernel-parameters.txt |  9 +++++++++
+> > > >  Documentation/admin-guide/mm/hugetlbpage.rst    |  3 +++
+> > > >  arch/x86/mm/init_64.c                           |  8 ++++++--
+> > > >  include/linux/hugetlb.h                         | 19 +++++++++++++++++++
+> > > >  mm/hugetlb_vmemmap.c                            | 16 ++++++++++++++++
+> > > >  5 files changed, 53 insertions(+), 2 deletions(-)
+> > > >
+> > > > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> > > > index 3ae25630a223..9e6854f21d55 100644
+> > > > --- a/Documentation/admin-guide/kernel-parameters.txt
+> > > > +++ b/Documentation/admin-guide/kernel-parameters.txt
+> > > > @@ -1551,6 +1551,15 @@
+> > > >                       Documentation/admin-guide/mm/hugetlbpage.rst.
+> > > >                       Format: size[KMG]
+> > > >
+> > > > +     hugetlb_free_vmemmap=
+> > > > +                     [KNL] When CONFIG_HUGETLB_PAGE_FREE_VMEMMAP is set,
+> > > > +                     this controls freeing unused vmemmap pages associated
+> > > > +                     with each HugeTLB page.
+> > > > +                     Format: { on | off (default) }
+> > > > +
+> > > > +                     on:  enable the feature
+> > > > +                     off: disable the feature
+> > > > +
+> > > >       hung_task_panic=
+> > > >                       [KNL] Should the hung task detector generate panics.
+> > > >                       Format: 0 | 1
+> > > > diff --git a/Documentation/admin-guide/mm/hugetlbpage.rst b/Documentation/admin-guide/mm/hugetlbpage.rst
+> > > > index f7b1c7462991..3a23c2377acc 100644
+> > > > --- a/Documentation/admin-guide/mm/hugetlbpage.rst
+> > > > +++ b/Documentation/admin-guide/mm/hugetlbpage.rst
+> > > > @@ -145,6 +145,9 @@ default_hugepagesz
+> > > >
+> > > >       will all result in 256 2M huge pages being allocated.  Valid default
+> > > >       huge page size is architecture dependent.
+> > > > +hugetlb_free_vmemmap
+> > > > +     When CONFIG_HUGETLB_PAGE_FREE_VMEMMAP is set, this enables freeing
+> > > > +     unused vmemmap pages associated with each HugeTLB page.
+> > > >
+> > > >  When multiple huge page sizes are supported, ``/proc/sys/vm/nr_hugepages``
+> > > >  indicates the current number of pre-allocated huge pages of the default size.
+> > > > diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
+> > > > index 0435bee2e172..1bce5f20e6ca 100644
+> > > > --- a/arch/x86/mm/init_64.c
+> > > > +++ b/arch/x86/mm/init_64.c
+> > > > @@ -34,6 +34,7 @@
+> > > >  #include <linux/gfp.h>
+> > > >  #include <linux/kcore.h>
+> > > >  #include <linux/bootmem_info.h>
+> > > > +#include <linux/hugetlb.h>
+> > > >
+> > > >  #include <asm/processor.h>
+> > > >  #include <asm/bios_ebda.h>
+> > > > @@ -1557,7 +1558,8 @@ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
+> > > >  {
+> > > >       int err;
+> > > >
+> > > > -     if (end - start < PAGES_PER_SECTION * sizeof(struct page))
+> > > > +     if (is_hugetlb_free_vmemmap_enabled() ||
+> > > > +         end - start < PAGES_PER_SECTION * sizeof(struct page))
+> > > >               err = vmemmap_populate_basepages(start, end, node, NULL);
+> > > >       else if (boot_cpu_has(X86_FEATURE_PSE))
+> > > >               err = vmemmap_populate_hugepages(start, end, node, altmap);
+> > > > @@ -1585,6 +1587,8 @@ void register_page_bootmem_memmap(unsigned long section_nr,
+> > > >       pmd_t *pmd;
+> > > >       unsigned int nr_pmd_pages;
+> > > >       struct page *page;
+> > > > +     bool base_mapping = !boot_cpu_has(X86_FEATURE_PSE) ||
+> > > > +                         is_hugetlb_free_vmemmap_enabled();
+> > > >
+> > > >       for (; addr < end; addr = next) {
+> > > >               pte_t *pte = NULL;
+> > > > @@ -1610,7 +1614,7 @@ void register_page_bootmem_memmap(unsigned long section_nr,
+> > > >               }
+> > > >               get_page_bootmem(section_nr, pud_page(*pud), MIX_SECTION_INFO);
+> > > >
+> > > > -             if (!boot_cpu_has(X86_FEATURE_PSE)) {
+> > > > +             if (base_mapping) {
+> > > >                       next = (addr + PAGE_SIZE) & PAGE_MASK;
+> > > >                       pmd = pmd_offset(pud, addr);
+> > > >                       if (pmd_none(*pmd))
+> > > > diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> > > > index ebca2ef02212..7f47f0eeca3b 100644
+> > > > --- a/include/linux/hugetlb.h
+> > > > +++ b/include/linux/hugetlb.h
+> > > > @@ -770,6 +770,20 @@ static inline void huge_ptep_modify_prot_commit(struct vm_area_struct *vma,
+> > > >  }
+> > > >  #endif
+> > > >
+> > > > +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+> > > > +extern bool hugetlb_free_vmemmap_enabled;
+> > > > +
+> > > > +static inline bool is_hugetlb_free_vmemmap_enabled(void)
+> > > > +{
+> > > > +     return hugetlb_free_vmemmap_enabled;
+> > > > +}
+> > > > +#else
+> > > > +static inline bool is_hugetlb_free_vmemmap_enabled(void)
+> > > > +{
+> > > > +     return false;
+> > > > +}
+> > > > +#endif
+> > > > +
+> > > >  #else        /* CONFIG_HUGETLB_PAGE */
+> > > >  struct hstate {};
+> > > >
+> > > > @@ -923,6 +937,11 @@ static inline void set_huge_swap_pte_at(struct mm_struct *mm, unsigned long addr
+> > > >                                       pte_t *ptep, pte_t pte, unsigned long sz)
+> > > >  {
+> > > >  }
+> > > > +
+> > > > +static inline bool is_hugetlb_free_vmemmap_enabled(void)
+> > > > +{
+> > > > +     return false;
+> > > > +}
+> > > >  #endif       /* CONFIG_HUGETLB_PAGE */
+> > > >
+> > > >  static inline spinlock_t *huge_pte_lock(struct hstate *h,
+> > > > diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+> > > > index 02201c2e3dfa..64ad929cac61 100644
+> > > > --- a/mm/hugetlb_vmemmap.c
+> > > > +++ b/mm/hugetlb_vmemmap.c
+> > > > @@ -180,6 +180,22 @@
+> > > >  #define RESERVE_VMEMMAP_NR           2U
+> > > >  #define RESERVE_VMEMMAP_SIZE         (RESERVE_VMEMMAP_NR << PAGE_SHIFT)
+> > > >
+> > > > +bool hugetlb_free_vmemmap_enabled;
+> > > > +
+> > > > +static int __init early_hugetlb_free_vmemmap_param(char *buf)
+> > > > +{
+> > > > +     if (!buf)
+> > > > +             return -EINVAL;
+> > > > +
+> > > > +     if (!strcmp(buf, "on"))
+> > > > +             hugetlb_free_vmemmap_enabled = true;
+> > > > +     else if (strcmp(buf, "off"))
+> > > > +             return -EINVAL;
+> > > > +
+> > > > +     return 0;
+> > > > +}
+> > > > +early_param("hugetlb_free_vmemmap", early_hugetlb_free_vmemmap_param);
+> > > > +
+> > > >  static inline unsigned long free_vmemmap_pages_size_per_hpage(struct hstate *h)
+> > > >  {
+> > > >       return (unsigned long)free_vmemmap_pages_per_hpage(h) << PAGE_SHIFT;
+> > > > --
+> > > > 2.11.0
+> > > >
+> > >
+> > > --
+> > > Oscar Salvador
+> > > SUSE L3
+> >
+> >
+> >
+> > --
+> > Yours,
+> > Muchun
+>
+> --
+> Oscar Salvador
+> SUSE L3
+
+
+
+-- 
+Yours,
+Muchun
