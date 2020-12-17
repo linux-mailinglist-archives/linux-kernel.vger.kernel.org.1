@@ -2,102 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D55D2DD84B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:30:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D250C2DD84E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:30:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730272AbgLQS2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 13:28:44 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:50528 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728192AbgLQS2o (ORCPT
+        id S1730834AbgLQS3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 13:29:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729069AbgLQS3I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 13:28:44 -0500
-Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0BHIRjAs031424
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Dec 2020 13:27:45 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id E8524420280; Thu, 17 Dec 2020 13:27:44 -0500 (EST)
-Date:   Thu, 17 Dec 2020 13:27:44 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Richard Weinberger <richard@nod.at>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: Don't leak old mountpoint samples
-Message-ID: <X9ujIOJG/HqMr88R@mit.edu>
-References: <20201201151301.22025-1-richard@nod.at>
+        Thu, 17 Dec 2020 13:29:08 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99745C0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 10:28:27 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id c5so23911682wrp.6
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 10:28:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3Eimbv4irvb06uulzwdmbgzbH0hXJUaf7zvbDZ2yAOw=;
+        b=MBoNO+HzZQn1d2jk1/V+kBAn+RuX+Bgjf4yAuTECCPwo9pr5m6PA59e8a2suZD2rZj
+         WQK6VoGzqsqLLXsUPVSeZCJtfpqNYYeWHwu0WtzcCHrnA0iTZqPKBNzusky0oGwcuPWI
+         vxgZfG5PORMcS69Xl3gppSuianH953hu/LhmBsqsDfxzq0DrtWc4KMCBFbV4Zl+Tdl+j
+         XQwoV7n4jnAiYy/9txHOHHP967uVhDMXq6PpvemH0tcgRkKhqHfeQLEuECTmp6B3Jlgd
+         6Fh5JlgWumnZnWlQKc+PhZd7mWDSwAf3QNa4hWd6frVbAITao8rEW0tIt4LVEW+PWtB+
+         D1YQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3Eimbv4irvb06uulzwdmbgzbH0hXJUaf7zvbDZ2yAOw=;
+        b=qvbV9IksPiA43xyIQMdlYhZiTu3uHNwYr1n1JBF0zHMuOpSC8H4BeY1dsjdTU1br1p
+         BCupwJe+0JtEfWxGHfM6Dyd2ArU2xO+z0em254TvgVXbjpA7RZdBXJEvymYYTiK9zugQ
+         aKNdyBV37piebUSIMoRE2DA+ZPXrNQugIgDm0Szl5OS7tUjbsnVTQKlGs5c4NDJAbV77
+         3JmBzuVAslwiLzaDmobWpdAcIsWO67nniHHN9sby+3P3d14fgzY8qsDd6fwtpbvwfSMP
+         zkVntAAleuWfz66OqdmuYyn4fBr77JfqK5QW5kUq+BCozSYjdVGiEvzaBO2HQsHEByo9
+         j5Tw==
+X-Gm-Message-State: AOAM530PaSkyPZVnGRAYnhQOVTKCqBwZ50635XOVPjf+sGfiojR90nyg
+        /9pOQieqZk2QOzMLPusZLUAA7Q==
+X-Google-Smtp-Source: ABdhPJzKbCCGpt8ELmmFbxdiuj0VOZ+HkKMKFTm6vWFFlnL6Ebt+3D8mHpr+ALmo4+wr+vg26zHlzQ==
+X-Received: by 2002:adf:ebd2:: with SMTP id v18mr115947wrn.322.1608229706152;
+        Thu, 17 Dec 2020 10:28:26 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:ccb6:ce78:2bcd:4ead? ([2a01:e34:ed2f:f020:ccb6:ce78:2bcd:4ead])
+        by smtp.googlemail.com with ESMTPSA id q1sm9831416wrj.8.2020.12.17.10.28.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Dec 2020 10:28:25 -0800 (PST)
+Subject: Re: [PATCH v2 47/48] ARM: tegra: ventana: Support CPU voltage scaling
+ and thermal throttling
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-clk@vger.kernel.org
+References: <20201217180638.22748-1-digetx@gmail.com>
+ <20201217180638.22748-48-digetx@gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <91139f8b-0b83-dd8a-ba53-8e7a499e6344@linaro.org>
+Date:   Thu, 17 Dec 2020 19:28:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201201151301.22025-1-richard@nod.at>
+In-Reply-To: <20201217180638.22748-48-digetx@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 04:13:01PM +0100, Richard Weinberger wrote:
-> As soon the first file is opened, ext4 samples the mountpoint
-> of the filesystem in 64 bytes of the super block.
-> It does so using strlcpy(), this means that the remaining bytes
-> in the super block string buffer are untouched.
-> If the mount point before had a longer path than the current one,
-> it can be reconstructed.
+On 17/12/2020 19:06, Dmitry Osipenko wrote:
+> Enable CPU voltage scaling and thermal throttling on Tegra20 Ventana board.
 > 
-> Consider the case where the fs was mounted to "/media/johnjdeveloper"
-> and later to "/".
-> The the super block buffer then contains "/\x00edia/johnjdeveloper".
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  arch/arm/boot/dts/tegra20-ventana.dts | 40 ++++++++++++++++++++++++++-
+>  1 file changed, 39 insertions(+), 1 deletion(-)
 > 
-> This case was seen in the wild and caused confusion how the name
-> of a developer ands up on the super block of a filesystem used
-> in production...
+> diff --git a/arch/arm/boot/dts/tegra20-ventana.dts b/arch/arm/boot/dts/tegra20-ventana.dts
+> index 14ace2ef749c..c2d9f38960bc 100644
+> --- a/arch/arm/boot/dts/tegra20-ventana.dts
+> +++ b/arch/arm/boot/dts/tegra20-ventana.dts
+> @@ -2,8 +2,10 @@
+>  /dts-v1/;
+>  
+>  #include <dt-bindings/input/input.h>
+> +#include <dt-bindings/thermal/thermal.h>
+>  #include "tegra20.dtsi"
+>  #include "tegra20-cpu-opp.dtsi"
+> +#include "tegra20-cpu-opp-microvolt.dtsi"
+>  
+>  / {
+>  	model = "NVIDIA Tegra20 Ventana evaluation board";
+> @@ -527,9 +529,10 @@ ldo_rtc {
+>  			};
+>  		};
+>  
+> -		temperature-sensor@4c {
+> +		nct1008: temperature-sensor@4c {
+>  			compatible = "onnn,nct1008";
+>  			reg = <0x4c>;
+> +			#thermal-sensor-cells = <1>;
+>  		};
+>  	};
+>  
+> @@ -615,10 +618,13 @@ clk32k_in: clock@0 {
+>  
+>  	cpus {
+>  		cpu0: cpu@0 {
+> +			cpu-supply = <&vdd_cpu>;
+>  			operating-points-v2 = <&cpu0_opp_table>;
+> +			#cooling-cells = <2>;
+>  		};
+>  
+>  		cpu@1 {
+> +			cpu-supply = <&vdd_cpu>;
+>  			operating-points-v2 = <&cpu0_opp_table>;
+>  		};
+>  	};
+> @@ -717,4 +723,36 @@ sound {
+>  			 <&tegra_car TEGRA20_CLK_CDEV1>;
+>  		clock-names = "pll_a", "pll_a_out0", "mclk";
+>  	};
+> +
+> +	thermal-zones {
+> +		cpu-thermal {
+> +			polling-delay-passive = <1000>; /* milliseconds */
+> +			polling-delay = <5000>; /* milliseconds */
+> +
+> +			thermal-sensors = <&nct1008 1>;
+> +
+> +			trips {
+> +				trip0: cpu-alert0 {
+> +					/* start throttling at 50C */
+> +					temperature = <50000>;
+> +					hysteresis = <200>;
+
+Did you mean <2000> ?
+
+> +					type = "passive";
+> +				};
+> +
+> +				trip1: cpu-crit {
+> +					/* shut down at 60C */
+> +					temperature = <60000>;
+> +					hysteresis = <2000>;
+
+I think you can drop the hysteresis here, when the critical temperature
+is reached, there is an emergency shutdown.
+
+50°C and 60°C sound very low values, no ?
+
+> +					type = "critical";
+> +				};
+> +			};
+> +
+> +			cooling-maps {
+> +				map0 {
+> +					trip = <&trip0>;
+> +					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+
+You should add all CPUs here.
+
+> +				};
+> +			};
+> +		};
+> +	};
+>  };
 > 
-> Fix this by clearing the string buffer before writing to it,
-> 
-> Signed-off-by: Richard Weinberger <richard@nod.at>
 
-Thank for reporting this issue.  In fact, the better fix is to use
-strncpy().  See my revised patch for an explanation of why....
 
-commit cdc9ad7d3f201a77749432878fb4caa490862de6
-Author: Theodore Ts'o <tytso@mit.edu>
-Date:   Thu Dec 17 13:24:15 2020 -0500
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-    ext4: don't leak old mountpoint samples
-    
-    When the first file is opened, ext4 samples the mountpoint of the
-    filesystem in 64 bytes of the super block.  It does so using
-    strlcpy(), this means that the remaining bytes in the super block
-    string buffer are untouched.  If the mount point before had a longer
-    path than the current one, it can be reconstructed.
-    
-    Consider the case where the fs was mounted to "/media/johnjdeveloper"
-    and later to "/".  The super block buffer then contains
-    "/\x00edia/johnjdeveloper".
-    
-    This case was seen in the wild and caused confusion how the name
-    of a developer ands up on the super block of a filesystem used
-    in production...
-    
-    Fix this by using strncpy() instead of strlcpy().  The superblock
-    field is defined to be a fixed-size char array, and it is already
-    marked using __nonstring in fs/ext4/ext4.h.  The consumer of the field
-    in e2fsprogs already assumes that in the case of a 64+ byte mount
-    path, that s_last_mounted will not be NUL terminated.
-    
-    Reported-by: Richard Weinberger <richard@nod.at>
-    Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index 1cd3d26e3217..349b27f0dda0 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -810,7 +810,7 @@ static int ext4_sample_last_mounted(struct super_block *sb,
- 	if (err)
- 		goto out_journal;
- 	lock_buffer(sbi->s_sbh);
--	strlcpy(sbi->s_es->s_last_mounted, cp,
-+	strncpy(sbi->s_es->s_last_mounted, cp,
- 		sizeof(sbi->s_es->s_last_mounted));
- 	ext4_superblock_csum_set(sb);
- 	unlock_buffer(sbi->s_sbh);
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
