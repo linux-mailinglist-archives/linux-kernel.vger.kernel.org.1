@@ -2,113 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E1402DDB27
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 23:02:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 470052DDB2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 23:06:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732069AbgLQWCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 17:02:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38476 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727132AbgLQWCX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 17:02:23 -0500
-X-Gm-Message-State: AOAM530ZkZhiarVGzJ6OZojQMghmwUQB4SBiFJlBpTM+RSDPZT8GWP08
-        QW/jnC4uUPSQUZdOW2dtHi9Mc8Vr6AK/TiQsKg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608242502;
-        bh=Tvn9jrecEQspYro+q9S2fWwt824cwVXTxc9Kum0JJ/w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qXFm60GqKVBH/gTpEe/wzO4dP4IVQ5Uqg70JiTCF8T5e3iAoPJIUA+qaP2IwbKWTW
-         50u2qUkasgq8ibYgrKzahMbQ8juu+gAK9jKY/upWV9tlszh4k+b5BCX95R2uG71jB4
-         XWY/yJD37tIaSk8hLpaQt7Ixc0xnSftp1KRELT2loYIBlBM/GRAlX1jdB/QUbc4VKi
-         O4VAjom/G1gTazl7XbTSeZi9PX5T5zsnmS89Pk6e6FLWe8G9WWeIyP7a1mj3wiejEy
-         3aciomts1pBHNfjyK5fvGGtfCEIlnWai2+H1xRIz2f6aihHH1DrtdHHo4Q1RbOG2Q+
-         YAYZrur7+qmIA==
-X-Google-Smtp-Source: ABdhPJwVvM6GScbCAPsAZsTId9M4kSeq2qbkfeKeKIXw4C5P5GAPV1Qz9568jeeXjj7XqFj+HArKxkkKtJrc72tSvc8=
-X-Received: by 2002:a17:906:d784:: with SMTP id pj4mr1079986ejb.360.1608242500803;
- Thu, 17 Dec 2020 14:01:40 -0800 (PST)
+        id S1732082AbgLQWDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 17:03:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732021AbgLQWDV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 17:03:21 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A1A9C0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 14:02:41 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id jx16so247235ejb.10
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 14:02:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9vdnsUgYkB36Ep59teaQpHG5J09HGP1/qSDhF8tulqw=;
+        b=IyWl6xJfaeIwBHp2Vnyb602iv3sW5tz1Z1AonhBzz//6kqX6ut9KC3FJr8VW8yMCoO
+         WRkzbAJo3tcX4BE4tIWUTt9b5IMTegSH0DxRJYvoOCTmYk3N7ZxBLzBGTWkXrzz85kmB
+         uJQ1gHlb6oGRhyKkKvoevO32Bd/V8u31wI7z/0YmWJEKPv/Yu/8MTwjHgTtwebJGBHfz
+         mMzBZBYMFhrvEj93oVEq2KK1wAh2W8sOEFebz96Puan3tNp4aIGxmiPOsd45rAIxLcmF
+         AozEgbPb4M4QG2zOLYiatpVfuSqNk0lpaAu4P2+j5Wt4pNPzxaptN2sOKJyjbtCayXCs
+         OsAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9vdnsUgYkB36Ep59teaQpHG5J09HGP1/qSDhF8tulqw=;
+        b=p6PUPjo/kvoZSDVWvTEt8vKFxqZPy4vOI4Q45JMOD9YwsM0QjttOX72WcYyiRiyGor
+         lyMTZcF1xHpfVqJhRFoMnXDLnebtWQmpwvG4SPv9xXKGR/BK3lbQ80gyVEYziFdECvCV
+         FzXu6xIvIaqpOj/9u46Fs8p1+Xbop0+ylzEEWWAmc09AUFPZKJ9P4Yjw4GTfFtDuPcTF
+         9K+xZFJf/Z1D2jpBKdeGcWgUCpp7RPjDCw6TqBDCFd6fiL6gpiqLhw/ymwnobK22lrqy
+         Lj5WQV70EQbO78DT57JT/RQZZSWWtUUFML50sjG4S0aMPF9TqB4aPK8A2CAKlLwnj75S
+         KxmQ==
+X-Gm-Message-State: AOAM533mi2zmeRLUr20BAmnfzIbLmgPBWIwaBbajwMlBCK//Fc3teuQh
+        Ubxq+GTN9RrJMUi2Sj9p8ipV+aQZi5cfrRpVRUzueA==
+X-Google-Smtp-Source: ABdhPJyrI5y+cymaIqjTdtLsBCNiORBZzKUiI7EZcr4ephYPlGDRI1t9oCp94abQkVwD0TaI9OLg1Gw6Z/Sgo+obFp8=
+X-Received: by 2002:a17:906:ce51:: with SMTP id se17mr1122204ejb.314.1608242559864;
+ Thu, 17 Dec 2020 14:02:39 -0800 (PST)
 MIME-Version: 1.0
-References: <20201217173708.6940-1-nramas@linux.microsoft.com>
- <20201217173708.6940-3-nramas@linux.microsoft.com> <20201217200510.GA105447@robh.at.kernel.org>
- <0b17fbee-cfe9-8cb2-01d1-02b6a61a14f5@linux.microsoft.com>
-In-Reply-To: <0b17fbee-cfe9-8cb2-01d1-02b6a61a14f5@linux.microsoft.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 17 Dec 2020 16:01:28 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+-HOkxtxOO=zyRbDuGVNZoMy589qoVANciNionsdsGCw@mail.gmail.com>
-Message-ID: <CAL_Jsq+-HOkxtxOO=zyRbDuGVNZoMy589qoVANciNionsdsGCw@mail.gmail.com>
-Subject: Re: [PATCH v12 2/4] powerpc: Move arch independent ima kexec
- functions to drivers/of/kexec.c
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        "AKASHI, Takahiro" <takahiro.akashi@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        James Morse <james.morse@arm.com>,
+References: <20201217185243.3288048-1-pasha.tatashin@soleen.com>
+ <20201217185243.3288048-9-pasha.tatashin@soleen.com> <20201217205048.GL5487@ziepe.ca>
+In-Reply-To: <20201217205048.GL5487@ziepe.ca>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Thu, 17 Dec 2020 17:02:03 -0500
+Message-ID: <CA+CK2bA4F+SipkReJzFjCSC-8kZdK4yrwCQZM+TvCTrqV2CGHg@mail.gmail.com>
+Subject: Re: [PATCH v4 08/10] mm/gup: limit number of gup migration failures,
+ honor failures
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
         Sasha Levin <sashal@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        vincenzo.frascino@arm.com, Mark Rutland <mark.rutland@arm.com>,
-        dmitry.kasatkin@gmail.com, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Allison Randal <allison@lohutok.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Bhupesh Sharma <bhsharma@redhat.com>,
-        Matthias Brugger <mbrugger@suse.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, tao.li@vivo.com,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Prakhar Srivastava <prsriva@linux.microsoft.com>,
-        balajib@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree@vger.kernel.org
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 2:52 PM Lakshmi Ramasubramanian
-<nramas@linux.microsoft.com> wrote:
+Hi Jason,
+
+Thank you for your comments. My replies below.
+
+On Thu, Dec 17, 2020 at 3:50 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
 >
-> On 12/17/20 12:05 PM, Rob Herring wrote:
-> > On Thu, Dec 17, 2020 at 09:37:06AM -0800, Lakshmi Ramasubramanian wrote:
-> >> The functions defined in "arch/powerpc/kexec/ima.c" handle setting up
-> >> and freeing the resources required to carry over the IMA measurement
-> >> list from the current kernel to the next kernel across kexec system call.
-> >> These functions do not have architecture specific code, but are
-> >> currently limited to powerpc.
+> On Thu, Dec 17, 2020 at 01:52:41PM -0500, Pavel Tatashin wrote:
+> > +/*
+> > + * Verify that there are no unpinnable (movable) pages, if so return true.
+> > + * Otherwise an unpinnable pages is found return false, and unpin all pages.
+> > + */
+> > +static bool check_and_unpin_pages(unsigned long nr_pages, struct page **pages,
+> > +                               unsigned int gup_flags)
+> > +{
+> > +     unsigned long i, step;
+> > +
+> > +     for (i = 0; i < nr_pages; i += step) {
+> > +             struct page *head = compound_head(pages[i]);
+> > +
+> > +             step = compound_nr(head) - (pages[i] - head);
+>
+> You can't assume that all of a compound head is in the pages array,
+> this assumption would only work inside the page walkers if the page
+> was found in a PMD or something.
 
-[...]
+I am not sure I understand your comment. The compound head is not
+taken from the pages array, and not assumed to be in it. It is exactly
+the same logic as that we currently have:
+https://soleen.com/source/xref/linux/mm/gup.c?r=a00cda3f#1565
 
-> >> +#ifdef CONFIG_IMA_KEXEC
-> >> +/**
-> >> + * arch_ima_add_kexec_buffer - do arch-specific steps to add the IMA buffer
-> >> + *
-> >> + * @image: kimage struct to set IMA buffer data
-> >> + * @load_addr: Starting address where IMA buffer is loaded at
-> >> + * @size: Number of bytes in the IMA buffer
-> >> + *
-> >> + * Architectures should use this function to pass on the IMA buffer
-> >> + * information to the next kernel.
-> >> + *
-> >> + * Return: 0 on success, negative errno on error.
-> >> + */
-> >> +int arch_ima_add_kexec_buffer(struct kimage *image, unsigned long load_addr,
-> >> +                          size_t size)
+>
+> > +     if (gup_flags & FOLL_PIN) {
+> > +             unpin_user_pages(pages, nr_pages);
+>
+> So we throw everything away? Why? That isn't how the old algorithm worked
+
+It is exactly like the old algorithm worked: if there are pages to be
+migrated (not pinnable pages) we unpinned everything.
+See here:
+https://soleen.com/source/xref/linux/mm/gup.c?r=a00cda3f#1603
+
+If cma_pages_list is not empty unpin everything. The list is not empty
+if we isolated some pages, we isolated some pages if there are some
+pages which are not pinnable. Now, we do exactly the same thing, but
+cleaner, and handle errors. We must unpin everything because if we
+fail, no pages should stay pinned, and also if we migrated some pages,
+the pages array must be updated, so we need to call
+__get_user_pages_locked() pin and repopulated pages array.
+
+>
+> > @@ -1654,22 +1664,55 @@ static long __gup_longterm_locked(struct mm_struct *mm,
+> >                                 struct vm_area_struct **vmas,
+> >                                 unsigned int gup_flags)
+> >  {
+> > -     unsigned long flags = 0;
+> > +     int migrate_retry = 0;
+> > +     int isolate_retry = 0;
+> > +     unsigned int flags;
+> >       long rc;
 > >
-> > This should be a static inline in asm/kexec.h.
+> > -     if (gup_flags & FOLL_LONGTERM)
+> > -             flags = memalloc_pin_save();
+> > +     if (!(gup_flags & FOLL_LONGTERM))
+> > +             return __get_user_pages_locked(mm, start, nr_pages, pages, vmas,
+> > +                                            NULL, gup_flags);
+> >
+> > -     rc = __get_user_pages_locked(mm, start, nr_pages, pages, vmas, NULL,
+> > -                                  gup_flags);
+> > +     /*
+> > +      * Without FOLL_WRITE fault handler may return zero page, which can
+> > +      * be in a movable zone, and also will fail to isolate during migration,
+> > +      * thus the longterm pin will fail.
+> > +      */
+> > +     gup_flags &= FOLL_WRITE;
 >
-> arch_ima_add_kexec_buffer() is identical for powerpc and arm64.
-> Would it be better to "static inline" this function in "of.h" instead of
-> duplicating it in "asm/kexec.h" for powerpc and arm64?
+> Is &= what you mean here? |= right?
 
-No, think about what it is specific to and place it there. It has
-nothing to do with DT really. All it is is a wrapper to access the
-struct members in kimage_arch. So it belongs where they are declared.
-Now perhaps ima_buffer_addr and ima_buffer_size shouldn't be arch
-specific, but that's a separate issue.
+Right, I meant |=.
 
-Rob
+>
+> Seems like we've ended up in a weird place if FOLL_LONGTERM always
+> includes FOLL_WRITE. Putting the zero page in ZONE_MOVABLE seems like
+> a bad idea, no?
+
+I am not sure, I just found this problem during testing, and this is
+the solution I am proposing. I am worried about limiting the zero page
+to a non movable zone, but let's see what others think about this.
+
+>
+> > +     /*
+> > +      * Migration may fail, we retry before giving up. Also, because after
+> > +      * migration pages[] becomes outdated, we unpin and repin all pages
+> > +      * in the range, so pages array is repopulated with new values.
+> > +      * Also, because of this we cannot retry migration failures in a loop
+> > +      * without pinning/unpinnig pages.
+> > +      */
+>
+> The old algorithm made continuous forward progress and only went back
+> to the first migration point.
+
+That is not right, the old code went back to the beginning. Making
+continuous progress is possible, but we won't see any performance
+betnefit from it, because migration failures is already exception
+scenarios where machine is under memory stress. The truth is if we
+fail to migrate it is unlikely will succeed if we retry right away, so
+giving some time between retries may be even beneficial.  Also with
+continious progress we need to take care of some corner cases where we
+need to unpin already succeeded pages in case if forward progress is
+not possible. Also, adjust pages array, start address etc.
+
+>
+> > +     for (; ; ) {
+>
+> while (true)?
+
+Hm, the same thing? :)
+
+>
+> > +             rc = __get_user_pages_locked(mm, start, nr_pages, pages, vmas,
+> > +                                          NULL, gup_flags);
+>
+> > +             /* Return if error or if all pages are pinnable */
+> > +             if (rc <= 0 || check_and_unpin_pages(rc, pages, gup_flags))
+> > +                     break;
+>
+> So we sweep the pages list twice now?
+
+Yes, but O(N) is the same. No new operation is added. Before we had
+something like this:
+
+while (npages)
+     check if pinnable
+            isolate
+while (npages)
+   unpin
+migrate
+while (npages)
+  pin
+
+Now:
+while(npages)
+    check if pinnable
+while(npages)
+   unpin
+while(npages)
+    isolate
+migrate
+   pin
+
+>
+> > +             /* Some pages are not pinnable, migrate them */
+> > +             rc = migrate_movable_pages(rc, pages);
+> > +
+> > +             /*
+> > +              * If there is an error, and we tried maximum number of times
+> > +              * bail out. Notice: we return an error code, and all pages are
+> > +              * unpinned
+> > +              */
+> > +             if (rc < 0 && migrate_retry++ >= PINNABLE_MIGRATE_MAX) {
+> > +                     break;
+> > +             } else if (rc > 0 && isolate_retry++ >= PINNABLE_ISOLATE_MAX) {
+> > +                     rc = -EBUSY;
+>
+> I don't like this at all. It shouldn't be so flakey
+>
+> Can you do migration without the LRU?
+
+I do not think it is possible, we must isolate pages before migration.
+
+Pasha
