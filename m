@@ -2,191 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF22E2DD885
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:39:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A2912DD891
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:44:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730133AbgLQSju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 13:39:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46810 "EHLO
+        id S1729986AbgLQSnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 13:43:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbgLQSju (ORCPT
+        with ESMTP id S1728926AbgLQSnj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 13:39:50 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9165CC061794;
-        Thu, 17 Dec 2020 10:39:09 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id p22so29640926edu.11;
-        Thu, 17 Dec 2020 10:39:09 -0800 (PST)
+        Thu, 17 Dec 2020 13:43:39 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C77EC061794
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 10:42:58 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id a12so60130609lfl.6
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 10:42:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=k/GE2Mymn0MWw4lSzUekG2u984+PB3fp4Emf8ngspDc=;
-        b=iRHzqTCLM8uk5SvwHl3R9UrzKEmchQjUBkNk4T2wiWVpOLY/PUsDYx0JhtRbGNchiM
-         CbruN/QLF7JnNMoGA8EV2mSEq4rH1b3M36Ji4rALyQlPUbKqK97Til/NVEU1vgliSe9n
-         RAKZvE76n3mIY4q5jHtw3DtbXMyKH+WlyldQtOEk+RDasXZDNl+2nxFIL2GqNfRAXc4K
-         Pp4mcEyV4k8WdGVZ5CTRWQW7x+SQf91UtxUuJNSwEkLAaoLuHqmrhW+HYK3ryrto946w
-         ihOENKhmeQ458J2KGWoz/BEItMOWSjstmtashGpQQPkRc5RzKg/G9LEWgq+Tob7Gyw9A
-         DQ9g==
+         :cc;
+        bh=7NUIuWcc29XAhs44U0unGtez+GUKQ8v4NObLnMMMLsA=;
+        b=mx7R8WMlj7qwCo/5oc/okBGcqQbMg1FfOFbeWqXdd0aETnkp+fb001QcUblgJOfj0G
+         Nf6avRedgOYRuipQiK6FkBJy6wnWxn5HhBrERPNMJx4VpoUk46dg5AFt7tr7KDKUt4Ga
+         D3TU8SIpNauyYKmq/NYUn2LNVFCOIUAui+fnplUHYMIGXJjqI/lzvoFd/yh+s1bfEYgv
+         Iumf1Mv3Ex50/NRBxfWSzDL94S+z70QTMcok11LdeMMPlrcz1IZLAcG910Sm8Q1BhJiu
+         1LaiZcHvlHuenrCuUqJd1bM1WV/z/lPljY+fcSIzl9FL+MGHLw5iqTXdKgwDb7keqgHA
+         1Wng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=k/GE2Mymn0MWw4lSzUekG2u984+PB3fp4Emf8ngspDc=;
-        b=haAkudD22cHuW+QoTslXLfJDAk6uD4NvvPKFE8vSK3oBeI+4990jBH5XN0SXEtxruO
-         OPMaHX9i2hZupy+Jzo1r7cyVmxIdq+0lvhb51lGyUP2dx4exnViiW5k2DCb/uPRcqTMH
-         0lsGopkKcPZWxSLzPgMS+/1negExhPezUB+6h47tqGsOddIGZBQMNL35KTp94U3DdzfQ
-         GKtpauVPlVoTPq7FceuAcY1C58qcRnmw8sTZsQK7oAzSIPpC8MfeDga1XS0RN2eVnbQu
-         Os0guOVp/r/zY1DWUWDf6uBg5Ok/ePe+3b+AOib3uB+bH6ULx3vAl3SFDO2j66jjAw2Y
-         CK2g==
-X-Gm-Message-State: AOAM532l1jUWya7XrD8OTZfMDmfNhZYzqtnzERlHhuJXmBXxqU9gvlpo
-        ubn01Bh85NZRvWMZM8xFbDJYu/BV0hdv9l0Tizw=
-X-Google-Smtp-Source: ABdhPJwd8dEALA2nQF+a81hXjbR/E6op4D/hUq4hHgh/Gy/7UAdk0Vj81j6hmFhlax3l74y9ZSPv3IOr9twA2HOUn+Y=
-X-Received: by 2002:aa7:db01:: with SMTP id t1mr691695eds.185.1608230348163;
- Thu, 17 Dec 2020 10:39:08 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=7NUIuWcc29XAhs44U0unGtez+GUKQ8v4NObLnMMMLsA=;
+        b=aWhxH3WmlQDRu0b+Piu08Mm9gapt+EXp8ZWMMyxiC6vc1flcJj2n1K91FjGxWGZeCr
+         ldTSudCfLpWXxtLXqAA4MAl7zLdNoiP9CiOvh2u+G/ODz5eot3DvIo+d/tIFLqcA65Sr
+         KYpPXZHHe90bNEDjxZB7cK+iotF9wTcGX9jLaSYXQx7+2qCh5s87oaV1ByAYwa9uBbhJ
+         BTf4fmpYr20kmNx2wE4xdgCEcQ29zoya0VHQjOXzTQb6am8vKWyNztSniV6Tsth2idFl
+         kL0rXPq1y9ToBZ7gJW6CplyPxyJXEDcBNws+GWYxFkZXfBbMx8zSqX985zaDpC3EaisC
+         XI3Q==
+X-Gm-Message-State: AOAM533rb5j/O8R0iYoZnxqSps+5QMpLirbK+QZqb/QAC+z0gynrU2ZV
+        NhzIoiOGM3QVackkIZJvphSPI85k81JxIvrxCXKARA==
+X-Google-Smtp-Source: ABdhPJxVWi5gqix+VnBa8ML8j5+gKLfpG9o5wdSxpgtfI6wubLZ3enzXSw4dbuUdjDNq58Q8604iIlfBnolwcT4y2rk=
+X-Received: by 2002:a2e:2244:: with SMTP id i65mr288265lji.111.1608230576758;
+ Thu, 17 Dec 2020 10:42:56 -0800 (PST)
 MIME-Version: 1.0
-References: <20201215235639.31516-1-adrien.grassein@gmail.com>
- <20201215235639.31516-8-adrien.grassein@gmail.com> <CAMty3ZDgyAx-maPqEOR_cBizQDfRZB0EMGj6iddK1BhGvziFkA@mail.gmail.com>
-In-Reply-To: <CAMty3ZDgyAx-maPqEOR_cBizQDfRZB0EMGj6iddK1BhGvziFkA@mail.gmail.com>
-From:   Adrien Grassein <adrien.grassein@gmail.com>
-Date:   Thu, 17 Dec 2020 19:38:57 +0100
-Message-ID: <CABkfQAHmpuZ8CyuYJijTVOAZ=UgrAepCHZh_j8PJ3y_qwPnQVg@mail.gmail.com>
-Subject: Re: [PATCH v2 7/7] regulator: pf8x00: fix nxp,phase-shift
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Troy Kisky <troy.kisky@boundarydevices.com>
+References: <20201205004848.2541215-1-willmcvicker@google.com>
+ <X9e5vl+nw4GQNYEw@google.com> <nycvar.YFH.7.76.2012171119240.25826@cbobk.fhfr.pm>
+In-Reply-To: <nycvar.YFH.7.76.2012171119240.25826@cbobk.fhfr.pm>
+From:   Will McVicker <willmcvicker@google.com>
+Date:   Thu, 17 Dec 2020 10:42:40 -0800
+Message-ID: <CABYd82Z-HJfn1Ts=k7RYrvWCHj=1578--9Y7A0giFn2=RRWcVA@mail.gmail.com>
+Subject: Re: [PATCH v1] HID: make arrays usage and value to be the same
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        security@kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Will Coster <willcoster@google.com>,
+        stable <stable@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Great! Thanks for the reply.
 
-Thanks for your review.
+--Will
 
-Le jeu. 17 d=C3=A9c. 2020 =C3=A0 18:42, Jagan Teki <jagan@amarulasolutions.=
-com> a =C3=A9crit :
+On Thu, Dec 17, 2020 at 2:19 AM Jiri Kosina <jikos@kernel.org> wrote:
 >
-> On Wed, Dec 16, 2020 at 5:27 AM Adrien Grassein
-> <adrien.grassein@gmail.com> wrote:
-> >
-> > Fix the ternary condition which is a bad coding style
-> > in the kernel
-> >
-> > I also remove the defering configuration of the nxp,phase-shift.
-> > The configuration is now done at parsing time. It save some memory
-> > and it's better for comprehension.
-> >
-> > I also use the OTP default configuration when the paramater is wrong
-> > or not specified.
-> > I think that it's better to use the default configuration from the chip
-> > than an arbitrary value.
-> >
-> > Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
-> > ---
-> >  drivers/regulator/pf8x00-regulator.c | 45 +++++++++++++---------------
-> >  1 file changed, 20 insertions(+), 25 deletions(-)
-> >
-> > diff --git a/drivers/regulator/pf8x00-regulator.c b/drivers/regulator/p=
-f8x00-regulator.c
-> > index 5ad940b3db0a..b8b3ac393ee8 100644
-> > --- a/drivers/regulator/pf8x00-regulator.c
-> > +++ b/drivers/regulator/pf8x00-regulator.c
-> > @@ -107,7 +107,6 @@ enum pf8x00_ldo_states {
-> >
-> >  #define PF8X00_SWXILIM_MASK            GENMASK(4, 3)
-> >  #define PF8X00_SWXPHASE_MASK           GENMASK(2, 0)
-> > -#define PF8X00_SWXPHASE_DEFAULT                0
+> On Mon, 14 Dec 2020, Will McVicker wrote:
 >
-> Keep this as it is and assign it 1 as the below code assigns 1.
-
-I don't understand, PF8X00_SWXPHASE_DEFAULT is not used anymore in the code=
-.
-Why should I keep it ?
+> > > The HID subsystem allows an "HID report field" to have a different
+> > > number of "values" and "usages" when it is allocated. When a field
+> > > struct is created, the size of the usage array is guaranteed to be at
+> > > least as large as the values array, but it may be larger. This leads to
+> > > a potential out-of-bounds write in
+> > > __hidinput_change_resolution_multipliers() and an out-of-bounds read in
+> > > hidinput_count_leds().
+> > >
+> > > To fix this, let's make sure that both the usage and value arrays are
+> > > the same size.
+> > >
+> > > Signed-off-by: Will McVicker <willmcvicker@google.com>
+> > > ---
+> > >  drivers/hid/hid-core.c | 6 +++---
+> > >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
+> > > index 56172fe6995c..8a8b2b982f83 100644
+> > > --- a/drivers/hid/hid-core.c
+> > > +++ b/drivers/hid/hid-core.c
+> > > @@ -90,7 +90,7 @@ EXPORT_SYMBOL_GPL(hid_register_report);
+> > >   * Register a new field for this report.
+> > >   */
+> > >
+> > > -static struct hid_field *hid_register_field(struct hid_report *report, unsigned usages, unsigned values)
+> > > +static struct hid_field *hid_register_field(struct hid_report *report, unsigned usages)
+> > >  {
+> > >     struct hid_field *field;
+> > >
+> > > @@ -101,7 +101,7 @@ static struct hid_field *hid_register_field(struct hid_report *report, unsigned
+> > >
+> > >     field = kzalloc((sizeof(struct hid_field) +
+> > >                      usages * sizeof(struct hid_usage) +
+> > > -                    values * sizeof(unsigned)), GFP_KERNEL);
+> > > +                    usages * sizeof(unsigned)), GFP_KERNEL);
+> > >     if (!field)
+> > >             return NULL;
+> > >
+> > > @@ -300,7 +300,7 @@ static int hid_add_field(struct hid_parser *parser, unsigned report_type, unsign
+> > >     usages = max_t(unsigned, parser->local.usage_index,
+> > >                              parser->global.report_count);
+> > >
+> > > -   field = hid_register_field(report, usages, parser->global.report_count);
+> > > +   field = hid_register_field(report, usages);
+> > >     if (!field)
+> > >             return 0;
+> > >
+> > > --
+> > > 2.29.2.576.ga3fc446d84-goog
+> > >
+> >
+> > Hi Jiri and Benjamin,
+> >
+> > This is a friendly reminder in case this got lost in your inbox.
 >
-> >  #define PF8X00_SWXPHASE_SHIFT          7
-> >
-> >  enum pf8x00_devid {
-> > @@ -121,7 +120,6 @@ enum pf8x00_devid {
-> >
-> >  struct pf8x00_regulator {
-> >         struct regulator_desc desc;
-> > -       u8 phase_shift;
-> >  };
-> >
-> >  struct pf8x00_chip {
-> > @@ -167,17 +165,13 @@ static const int pf8x00_vsnvs_voltages[] =3D {
-> >         0, 1800000, 3000000, 3300000,
-> >  };
-> >
-> > -static struct pf8x00_regulator *desc_to_regulator(const struct regulat=
-or_desc *desc)
-> > -{
-> > -       return container_of(desc, struct pf8x00_regulator, desc);
-> > -}
-> > -
-> >  static int pf8x00_of_parse_cb(struct device_node *np,
-> >                               const struct regulator_desc *desc,
-> >                               struct regulator_config *config)
-> >  {
-> > -       struct pf8x00_regulator *data =3D desc_to_regulator(desc);
-> >         struct pf8x00_chip *chip =3D config->driver_data;
-> > +       unsigned char id =3D desc->id - PF8X00_LDO4;
-> > +       unsigned char reg =3D PF8X00_SW_BASE(id) + SW_CONFIG2;
-> >         int phase;
-> >         int val;
-> >         int ret;
-> > @@ -185,21 +179,30 @@ static int pf8x00_of_parse_cb(struct device_node =
-*np,
-> >         ret =3D of_property_read_u32(np, "nxp,phase-shift", &val);
-> >         if (ret) {
-> >                 dev_dbg(chip->dev,
-> > -                       "unspecified phase-shift for BUCK%d, use 0 degr=
-ees\n",
-> > -                       desc->id - PF8X00_LDO4);
-> > -               val =3D PF8X00_SWXPHASE_DEFAULT;
-> > +                       "unspecified phase-shift for BUCK%d, using OTP =
-configuration\n",
-> > +                       id);
-> > +               goto end;
-> >         }
-> >
-> > -       phase =3D val / 45;
-> > -       if ((phase * 45) !=3D val) {
-> > +       if (val < 0 || val > 315 || val % 45 !=3D 0) {
-> >                 dev_warn(config->dev,
-> > -                        "invalid phase_shift %d for BUCK%d, use 0 degr=
-ees\n",
-> > -                        (phase * 45), desc->id - PF8X00_LDO4);
-> > -               phase =3D PF8X00_SWXPHASE_SHIFT;
-> > +                        "invalid phase_shift %d for BUCK%d, using OTP =
-configuration\n",
-> > +                        val, id);
-> > +               goto end;
-> >         }
-> >
-> > -       data->phase_shift =3D (phase >=3D 1) ? phase - 1 : PF8X00_SWXPH=
-ASE_SHIFT;
-> > +       phase =3D val / 45;
-> > +
-> > +       if (phase >=3D 1)
-> > +               phase -=3D 1;
-> > +       else
-> > +               phase =3D PF8X00_SWXPHASE_SHIFT;
-> > +
-> > +       regmap_update_bits(chip->regmap, reg,
-> > +                       PF8X00_SWXPHASE_MASK,
-> > +                       phase);
+> Hi Will,
 >
-> Add all these arguments in the same line.
-OK.
-
-
-Thanks again,
-
-Adrien
+> I am planning to merge it once the merge window is over.
+>
+> --
+> Jiri Kosina
+> SUSE Labs
+>
