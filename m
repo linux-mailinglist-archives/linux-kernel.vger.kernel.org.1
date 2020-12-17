@@ -2,80 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80A042DD562
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 17:42:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BFAD2DD550
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 17:38:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728491AbgLQQma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 11:42:30 -0500
-Received: from sym2.noone.org ([178.63.92.236]:38668 "EHLO sym2.noone.org"
+        id S1727877AbgLQQhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 11:37:22 -0500
+Received: from mga12.intel.com ([192.55.52.136]:35874 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727260AbgLQQmX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 11:42:23 -0500
-X-Greylist: delayed 596 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Dec 2020 11:42:22 EST
-Received: by sym2.noone.org (Postfix, from userid 1002)
-        id 4Cxcwg63Bvzvjkx; Thu, 17 Dec 2020 17:32:35 +0100 (CET)
-From:   Tobias Klauser <tklauser@distanz.ch>
-To:     Shuah Khan <shuah@kernel.org>
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] selftests/vDSO: fix -Wformat warning in vdso_test_correctness
-Date:   Thu, 17 Dec 2020 17:32:35 +0100
-Message-Id: <20201217163235.22788-1-tklauser@distanz.ch>
-X-Mailer: git-send-email 2.11.0
+        id S1725468AbgLQQhW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 11:37:22 -0500
+IronPort-SDR: CMjjrkU8Q5uO8ioh6jaT+dsr992VsEcVB6L8yWgNFKBnJVG5UZ3Dhk4/NqUXzTDoP8suwuMaDu
+ jIsUTiPfL3Pw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9838"; a="154506900"
+X-IronPort-AV: E=Sophos;i="5.78,428,1599548400"; 
+   d="scan'208";a="154506900"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2020 08:35:35 -0800
+IronPort-SDR: gjXuie8Nql8xWMq51v/jUopGSSFUDNoUVly27jMUhth5HInOMUuPIWsdD5n/6wJbqlqcdlDixw
+ 5J/axoGONmtQ==
+X-IronPort-AV: E=Sophos;i="5.78,428,1599548400"; 
+   d="scan'208";a="453166304"
+Received: from cdonohoe-mobl2.ger.corp.intel.com (HELO dalessan-mobl1.ir.intel.com) ([10.252.13.146])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2020 08:35:33 -0800
+From:   Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>
+To:     herbert@gondor.apana.org.au
+Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
+Subject: [PATCH] crypto: keembay-ocs-aes - Add dependency on HAS_IOMEM
+Date:   Thu, 17 Dec 2020 16:35:10 +0000
+Message-Id: <20201217163510.372558-1-daniele.alessandrelli@linux.intel.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following -Wformat warnings in vdso_test_correctness.c:
+From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
 
-vdso_test_correctness.c: In function ‘test_one_clock_gettime64’:
-vdso_test_correctness.c:352:21: warning: format ‘%ld’ expects argument of type ‘long int’, but argument 3 has type ‘long long int’ [-Wformat=]
-  352 |  printf("\t%llu.%09ld %llu.%09ld %llu.%09ld\n",
-      |                 ~~~~^
-      |                     |
-      |                     long int
-      |                 %09lld
-  353 |         (unsigned long long)start.tv_sec, start.tv_nsec,
-      |                                           ~~~~~~~~~~~~~
-      |                                                |
-      |                                                long long int
-vdso_test_correctness.c:352:32: warning: format ‘%ld’ expects argument of type ‘long int’, but argument 5 has type ‘long long int’ [-Wformat=]
-  352 |  printf("\t%llu.%09ld %llu.%09ld %llu.%09ld\n",
-      |                            ~~~~^
-      |                                |
-      |                                long int
-      |                            %09lld
-  353 |         (unsigned long long)start.tv_sec, start.tv_nsec,
-  354 |         (unsigned long long)vdso.tv_sec, vdso.tv_nsec,
-      |                                          ~~~~~~~~~~~~
-      |                                              |
-      |                                              long long int
-vdso_test_correctness.c:352:43: warning: format ‘%ld’ expects argument of type ‘long int’, but argument 7 has type ‘long long int’ [-Wformat=]
+Add dependency for CRYPTO_DEV_KEEMBAY_OCS_AES_SM4 on HAS_IOMEM to
+prevent build failures.
 
-The tv_sec member of __kernel_timespec is long long, both in
-uapi/linux/time_types.h and locally in vdso_test_correctness.c.
-
-Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
+Fixes: 88574332451380f4 ("crypto: keembay - Add support for Keem Bay OCS AES/SM4")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
 ---
- tools/testing/selftests/vDSO/vdso_test_correctness.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/crypto/keembay/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/testing/selftests/vDSO/vdso_test_correctness.c b/tools/testing/selftests/vDSO/vdso_test_correctness.c
-index 5029ef9b228c..c4aea794725a 100644
---- a/tools/testing/selftests/vDSO/vdso_test_correctness.c
-+++ b/tools/testing/selftests/vDSO/vdso_test_correctness.c
-@@ -349,7 +349,7 @@ static void test_one_clock_gettime64(int clock, const char *name)
- 		return;
- 	}
- 
--	printf("\t%llu.%09ld %llu.%09ld %llu.%09ld\n",
-+	printf("\t%llu.%09lld %llu.%09lld %llu.%09lld\n",
- 	       (unsigned long long)start.tv_sec, start.tv_nsec,
- 	       (unsigned long long)vdso.tv_sec, vdso.tv_nsec,
- 	       (unsigned long long)end.tv_sec, end.tv_nsec);
+diff --git a/drivers/crypto/keembay/Kconfig b/drivers/crypto/keembay/Kconfig
+index 3c16797b25b9..8eb5200d2f60 100644
+--- a/drivers/crypto/keembay/Kconfig
++++ b/drivers/crypto/keembay/Kconfig
+@@ -1,5 +1,6 @@
+ config CRYPTO_DEV_KEEMBAY_OCS_AES_SM4
+ 	tristate "Support for Intel Keem Bay OCS AES/SM4 HW acceleration"
++	depends on HAS_IOMEM
+ 	depends on OF || COMPILE_TEST
+ 	select CRYPTO_SKCIPHER
+ 	select CRYPTO_AEAD
+
+base-commit: 90cc8cf2d1ab87d708ebc311ac104ccbbefad9fc
 -- 
-2.29.0
+2.26.2
 
