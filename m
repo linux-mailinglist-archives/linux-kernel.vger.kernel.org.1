@@ -2,88 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF2742DCF9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 11:41:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F0652DCFA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 11:42:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727571AbgLQKkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 05:40:36 -0500
-Received: from foss.arm.com ([217.140.110.172]:56082 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725871AbgLQKkf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 05:40:35 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 408FF31B;
-        Thu, 17 Dec 2020 02:39:50 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 453883F66E;
-        Thu, 17 Dec 2020 02:39:48 -0800 (PST)
-References: <cover.1607036601.git.reinette.chatre@intel.com> <c8eebc438e057e4bc2ce00256664b7bb0561b323.1607036601.git.reinette.chatre@intel.com> <jhjlfe4t6jq.mognet@arm.com> <e250875b-1c86-660c-b9f0-4060842939bf@intel.com> <jhj1rfptzqt.mognet@arm.com> <b75d780d-d067-12bf-b0e6-706dda200511@intel.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-Cc:     tglx@linutronix.de, fenghua.yu@intel.com, bp@alien8.de,
-        tony.luck@intel.com, kuo-lang.tseng@intel.com, shakeelb@google.com,
-        mingo@redhat.com, babu.moger@amd.com, james.morse@arm.com,
-        hpa@zytor.com, x86@kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 2/3] x86/resctrl: Update PQR_ASSOC MSR synchronously when moving task to resource group
-In-reply-to: <b75d780d-d067-12bf-b0e6-706dda200511@intel.com>
-Date:   Thu, 17 Dec 2020 10:39:43 +0000
-Message-ID: <jhjwnxgsols.mognet@arm.com>
+        id S1727668AbgLQKl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 05:41:57 -0500
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:34842 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725950AbgLQKl4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 05:41:56 -0500
+Received: by mail-ot1-f50.google.com with SMTP id i6so26822264otr.2;
+        Thu, 17 Dec 2020 02:41:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jZq72uh5drDq+vH9HNncqoGluBOo86keamsd9/IIxuo=;
+        b=IirwPUrWSaNiSV988M8pc9139G4DHCVjKu5Pw09zjFOygAQMzs7qA6v+976RLcPArk
+         EhaFgD3zpTP4w00cemYngR27LJ9E5y3bqUdpmyV7SPlSNyfC0C9xjh+mAolpESogqaSk
+         464OlTsyTnHTaEHvadq2lHlNtAL8ECUEkFcXio5/Yjm5JKKJtCHS27b1Mvr1ohLLjQb3
+         6JpCchFp2Xn8jMPCJXQRJlvwuwBNZLPpaTKKUTEkaTbplNQvFP3yg7BH4D+DhWhOIC16
+         K5vJ36xVe169ndlRmKeOa/v6HnOf8O72PV084Bazfuh5OMKVfL7lNKQJFrj9kJPTxZfF
+         /rzw==
+X-Gm-Message-State: AOAM531Qv1q11uGUJdXHl5n2hDEfGf1DKe/MHhsdJ7VavsIvy5CpqGje
+        ovykpquLIteMlJu+5cTHr3xxi0sYEN+KIAboXYU=
+X-Google-Smtp-Source: ABdhPJx9/mrnyQV28izVCd8+tQdBcbMYWFHxro0JPWzgWg1hB/ptH7C+XMsePpAGUbfAC0eKmh4O/gKTVvbOrpAEiog=
+X-Received: by 2002:a05:6830:1f5a:: with SMTP id u26mr28890907oth.250.1608201675171;
+ Thu, 17 Dec 2020 02:41:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201213183759.223246-1-aford173@gmail.com> <20201213183759.223246-3-aford173@gmail.com>
+In-Reply-To: <20201213183759.223246-3-aford173@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 17 Dec 2020 11:41:03 +0100
+Message-ID: <CAMuHMdW8w-J445DRNH8Ykx7Sp2KGCCVibE5uvccmoD=iZSM-zQ@mail.gmail.com>
+Subject: Re: [PATCH 02/18] arm64: dts: renesas: beacon kit: Fix choppy
+ Bluetooth Audio
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 16/12/20 18:26, Reinette Chatre wrote:
-> Hi Valentin,
->> So that's part paranoia and part nonsense from my end - the contents of
->> smp_call() shouldn't matter here.
->>
->> If we distill the code to:
->>
->>    tsk->closid = x;
->>
->>    if (task_curr(tsk))
->>        smp_call(...);
->>
->> It is somewhat far fetched, but AFAICT this can be compiled as:
->>
->>    if (task_curr(tsk))
->>        tsk->closid = x;
->>        smp_call(...);
->>    else
->>        tsk->closid = x;
->>
->> IOW, there could be a sequence where the closid write is ordered *after*
->> the task_curr() read.
+On Sun, Dec 13, 2020 at 7:38 PM Adam Ford <aford173@gmail.com> wrote:
+> The Bluetooth chip is capable of operating at 4Mbps, but the
+> max-speed setting was on the UART node instead of the Bluetooth
+> node, so the chip didn't operate at the correct speed resulting
+> in choppy audio.  Fix this by setting the max-speed in the proper
+> node.
 >
-> Could you please elaborate why it would be an issue is the closid write
-> is ordered after the task_curr() read? task_curr() does not depend on
-> the closid.
->
+> Fixes: a1d8a344f1ca ("arm64: dts: renesas: Introduce r8a774a1-beacon-rzg2m-kit")
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 
-IMO the 'task_curr()' check only makes sense if it happens *after* the
-write, the logic being: 'closid/rmid has been written to, does the task now
-need interrupting?'
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v5.12.
 
-In the above 'else' clause, task_curr() would need to be re-evaluated after
-the write: the task wasn't current *before* the write, but nothing
-guarantees this still holds *after* the write.
+Gr{oetje,eeting}s,
 
->> With
->>
->>    tsk->closid = x;
->>
->>    barrier();
->>
->>    if (task_curr(tsk))
->>        smp_call(...);
->>
->> that explicitely cannot happen.
->>
->
->
-> Reinette
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
