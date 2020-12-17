@@ -2,101 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 154A32DDA2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 21:37:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1526F2DDA39
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 21:39:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730351AbgLQUgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 15:36:48 -0500
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:41185 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728174AbgLQUgr (ORCPT
+        id S1731461AbgLQUiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 15:38:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726951AbgLQUiv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 15:36:47 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 8926061D;
-        Thu, 17 Dec 2020 15:36:01 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 17 Dec 2020 15:36:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:in-reply-to:references:message-id
-        :mime-version:content-type:content-transfer-encoding; s=fm2; bh=
-        t45ozTPrybNr/M6UAAkmifuRs0gYvsMvaHr/n/mLT2I=; b=Z7teO4R3T3WPJTpG
-        8xk2fDEqmAw+IwuFi/TBmMSi+AMevjqsYeXg1JmF6geHZJ2pGot5vOa+juqsQwSa
-        CXK2ftWdIf9G6Xk28/f3nCWGOrx0RlONUnpnBcDZ0eMQyGKMk5ADL/4wrn9chuZ6
-        wpL8QuqF6osNYVvU3rU3WXJAjVmufksPcxPzkLU9dDl1tAiHp+ImpyKfYGkyiopp
-        ja93y2kNmodPQWtPRiPQ2JlBdoJ0F8+2zwjfEecL7PwRq9ZwHRkdaLCswoClMebv
-        0IsBj4KHNThWGgUGEAfl/9jTujz8Os+8OGWsbjnU26xjEsKRmZIkmy0L+1YnVQYx
-        DRiwiQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=t45ozTPrybNr/M6UAAkmifuRs0gYvsMvaHr/n/mLT
-        2I=; b=iVLkFi5Q/Bn+3ECOoCstXXeQ/TPXFMFInTj8dizz1k7CUuL9P/SR7BiaH
-        Iu0U5YaQmuAHTjiaiFUXgM9qSxZQxh3ndORX5NangGecikL6U0XV/CkMWm6wKRiv
-        7Gm57mgAz0DwjJ6hbOeQHYm2Vqfsp5rAp2Zvew7oT3PeG5rSTT+oBZEQNSmjFwXd
-        zPit0fb0Jejxvz5W6s3Mpb+q8ICXs9M0RmdjUyXXEcrqlbssTr0URPUSqKkAagGO
-        wf+gcfq6M2eRlH+8sGGXFlzXvUxcu1/bWmN8uQ0xflZ9P5lO8OV5vpINzzkqbhMW
-        wyw3xPL7KQKVrwu79GpJGZ61h6cGQ==
-X-ME-Sender: <xms:MMHbXwoKB5NFgQL6oJ0uC8GYwCQmrkYBRLe9Os5zmomaZIfGN54J0Q>
-    <xme:MMHbX2peMiIX0IltVOpNTSWbASfe1y8mzPRC1tFaPNOm76Nh1AxF5WUVwUXN8vjhA
-    lb5Rxz6dh90oA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudelgedgudefhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvufgfjghfkfggtgfgsehtqhhmtddtreejnecuhfhrohhmpefirhgv
-    ghcumfdqjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepie
-    dvudegfeehtedvgfffgfdvfeduhfehleegjedvveekvdegteegleffieeghfdtnecukfhp
-    peekgedrvdeguddrudelhedrleeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:MMHbX1PHXb3DTEHb-BfBEVQOLI6mrAhYT5cbEuUQlBGP7KrLPHX0uQ>
-    <xmx:MMHbX37caeER4Z6ylswyjkrq5zfRzUkhY5D5D-WBe-IL0yNGUx-3Qw>
-    <xmx:MMHbX_7Zl9oPmvlZlXkcRmwj66IUEM3-lhx7d2tXOTUj4ly__OiNpg>
-    <xmx:McHbX_HoeH4EeNUkiGoZ1EHJ3VZT4VGkaIbKZVxQgI5JjZ7U7d6Emg>
-Received: from [127.0.0.1] (unknown [84.241.195.96])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 6EB6024005E;
-        Thu, 17 Dec 2020 15:36:00 -0500 (EST)
-Date:   Thu, 17 Dec 2020 21:35:57 +0100
-From:   Greg K-H <greg@kroah.com>
-To:     Young Hsieh <youngh@uber.com>, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-CC:     x86@kernel.org
-Subject: Re: Question for AMD patches
-User-Agent: K-9 Mail for Android
-In-Reply-To: <83E7490A-EFB0-42C2-BD9D-B5E6E5BF440D@uber.com>
-References: <1B44E762-F9F2-4E2B-BFEF-6F032BE8841E@uber.com> <83E7490A-EFB0-42C2-BD9D-B5E6E5BF440D@uber.com>
-Message-ID: <B23EF613-CE1A-482E-8AAE-7AB6FBA8B1D8@kroah.com>
+        Thu, 17 Dec 2020 15:38:51 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 673C6C0617A7;
+        Thu, 17 Dec 2020 12:38:11 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CxkMz3d87z9sTL;
+        Fri, 18 Dec 2020 07:38:07 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1608237487;
+        bh=hdTNc35SNvUUdOeEkUqDTbHHtHnsRfzPL+SEY5p0v2Y=;
+        h=Date:From:To:Cc:Subject:From;
+        b=BhHrWdwaBCg7OlOfovUynL1JfyyfRkhevYTaPVfg0VLOsOjj9TS7oYW6dl+kMyaGY
+         FOhrjWRmnp/HFEuSKqH05zB8gU2yhoDcwHD6yWAv+QyWHYLZUPIHUZDsgBytSz5krt
+         eQGwfUADYbQKYjJuuwKVRKKuwVP48isuj2vnLRw0yxh1xu89KHyw2MZlJBw+Wsv7Cg
+         MZVAEPCrREIshZFNucStv7ZaikWx8SejIvSMR9cFS30pCA8hAE5oPsWWRUdFT2Zujm
+         N+Kty15QfaphknmbGDsOOeyyJWJ4zQiv2bwUSxpqDV9UAVsJJ0lMc6VnP6pBjp19Wt
+         GpPL46ySrbnFA==
+Date:   Fri, 18 Dec 2020 07:38:06 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Stefan Haberland <sth@linux.ibm.com>
+Subject: linux-next: Fixes tag needs some work in the block tree
+Message-ID: <20201218073806.06395319@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/cfT3OR12L7beCEYjQNcIgfz";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-What exact commits are you referring to?
+--Sig_/cfT3OR12L7beCEYjQNcIgfz
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-And you do know about the rules for stable kernel patches, right?
+Hi all,
 
-greg k-h
+In commit
 
-On December 17, 2020 9:05:45 PM GMT+01:00, Young Hsieh <youngh@uber=2Ecom>=
- wrote:
->Hello,=20
->
->This is Young Hsieh from Uber and currently I am in Uber infra team and i=
-n charge of server system design=2E Nice to e-meet you!  :)
->
->We are working on AMD Milan platform with Debian, and notice there are so=
-me patches for performance and security improvements, which are not impleme=
-nted in LTS kernels (4=2E14/4=2E19/5=2E4) yet=2E On our side, we prefer to =
-use the general LTS kernel release instead of a customized kernel, in case =
-we will not align on major fixes down the road=2E So would like to know if =
-there is any plan to backport these patches and if so, what is the timeline=
-?  Thanks a lot again for any advice=2E =20
->
->Cheers,
->****************************************
->Young Hsieh
->Uber Hardware Engineer
->****************************************
+  358e7cbf87b4 ("s390/dasd: fix hanging device offline processing")
+
+Fixes tag
+
+  Fixes: 47825e05d93e ("s390/dasd: fix endless loop after read unit address=
+ configuration")
+
+has these problem(s):
+
+  - Target SHA1 does not exist
+
+Maybe you meant
+
+Fixes: 41995342b40c ("s390/dasd: fix endless loop after read unit address c=
+onfiguration")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/cfT3OR12L7beCEYjQNcIgfz
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/bwa4ACgkQAVBC80lX
+0Gz3PQgAn8U+y2Z4tPJP6/KdWKrAEFriinB3CNZeiVHzQQL/O+IaH+ldjSy1p8qc
+8417KLlvgZ4V0eXrzZlyhKuj0zVZhAyWbpNS4v+gWal6NTfti2igVUMobDCxorZd
+lxb8bwbZz9lYD92FNPjUY28Kl57/8wgdrda5yn3Hu4EkqDycUnZwWUuJkiDdI6sY
+LVFqARfdFfXtTc+8kY5aNV16I7TvcGKA1I3EfguWQy3pLFKAft8msCcrFQXnZ4ip
+/Td0CfGP5CcZwTxqwSZoi3FtHPmoL7aHL8TiiXR+jOkh7BIh/T1KrQyw7bSOEVlk
+zZF8G8jl4rn/fRKs0EgZ+UJA2YmkSQ==
+=VQHY
+-----END PGP SIGNATURE-----
+
+--Sig_/cfT3OR12L7beCEYjQNcIgfz--
