@@ -2,101 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA43F2DD016
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 12:08:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8747D2DD02B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 12:13:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728064AbgLQLIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 06:08:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726999AbgLQLH7 (ORCPT
+        id S1728320AbgLQLMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 06:12:53 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:9461 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727739AbgLQLMw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 06:07:59 -0500
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B5D5C061282
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 03:07:19 -0800 (PST)
-Received: by mail-qt1-x832.google.com with SMTP id j26so19628157qtq.8
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 03:07:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WpyJG39zsZR3QTEsxdeIZ6It7enzbMRWstsw8rPRonw=;
-        b=rFasmzLx8XfOzm6Y+FxLK6NecNAgN+nus0rsYJrLuW+hpzBD/G6Aut+1epJgd3Q9Y3
-         rI4U+FdwwtB+ydXf1iKiX2YBDEoIPOXfOjoxwDsLlRC+VSAaSRks/dwUdbna9h704pS/
-         d2A8hO4XsNEFJP5gOafW/aGB3cdf1Rucz2BtuT7meDa5VftF2vj6TKqvm/XuqnJdLo2v
-         rJfj5QslNlV2FdjWijrHD1hpkaEMpURVzu25lOoF97RlseM6vDkoBhuHL0zQ2qg3FJ/4
-         rLfN4/8uFirSkdP/MspVGyDZ3L7GXufno7ZA4RNMUzeNVlOatGeiFxvigK+pXnDBpG47
-         sfKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WpyJG39zsZR3QTEsxdeIZ6It7enzbMRWstsw8rPRonw=;
-        b=aloIoqZpWTBQewEckUPk9rGMWOgrn14XfUhH5je9Y/4QeRwQdyqQnIMqSI/OQ6fdNT
-         1A5YThIgOaGxNjtNaL+uqhc2RBY0ikBYldwWGSnfRF/aKlK7p0lRM0VkzP2vTjyT+pFU
-         D008PLiq0JLeZj2PjRAo+h2PiqXpxMSQEtQUEYvAChQ8s08YcL0sE5vw/hzvMwO+W46b
-         fhdK0RF887XuPTZMJ1SJcTrh7XAiV2VF5MotzoUsHGqvE6p7wXHAoIlM5jWrj1xm8QKr
-         982U2ec8ZxO+23Vb6bhrsjC5fe7RoFgCKoUkC61KAh1TKMWYhJHolKNZURty34XR3pNg
-         XYRA==
-X-Gm-Message-State: AOAM531L9hwZ/hdWg2Yg+ZM8WXW17OVY3/HJeXiN5M1UHU77s5Af9g9F
-        KihaR3elKBcYNOt5MKktjsen9lwKQ+wo3JpC4S1xzQ==
-X-Google-Smtp-Source: ABdhPJwsy+Mk6kAd77qSP1iHQ1KvXJLnVTRVxCZaOziunZ7175tYz6+6XvAtQVR72glNqSkBWHZ8KadI0C3bjv0widA=
-X-Received: by 2002:ac8:5ac3:: with SMTP id d3mr47345365qtd.66.1608203237853;
- Thu, 17 Dec 2020 03:07:17 -0800 (PST)
+        Thu, 17 Dec 2020 06:12:52 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CxTp32Sk6zhsq9;
+        Thu, 17 Dec 2020 19:11:23 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 17 Dec 2020 19:11:43 +0800
+From:   John Garry <john.garry@huawei.com>
+To:     <axboe@kernel.dk>, <ming.lei@redhat.com>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <hch@lst.de>, <hare@suse.de>, <ppvk@codeaurora.org>,
+        <bvanassche@acm.org>, <kashyap.desai@broadcom.com>,
+        <linuxarm@huawei.com>, John Garry <john.garry@huawei.com>
+Subject: [RFC PATCH v2 0/2] blk-mq: Avoid use-after-free for accessing old requests
+Date:   Thu, 17 Dec 2020 19:07:51 +0800
+Message-ID: <1608203273-170555-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-References: <000000000000ab11c505abeb19f5@google.com> <0000000000004ea4fe05b68fa299@google.com>
-In-Reply-To: <0000000000004ea4fe05b68fa299@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 17 Dec 2020 12:07:06 +0100
-Message-ID: <CACT4Y+ZyAD1aJtTt0q1E=AmsTwnapjitit82+o-Gn2NyxDZNgQ@mail.gmail.com>
-Subject: Re: KASAN: use-after-free Write in __sco_sock_close
-To:     syzbot <syzbot+077eca30d3cb7c02b273@syzkaller.appspotmail.com>
-Cc:     anmol.karan123@gmail.com, coreteam@netfilter.org,
-        David Miller <davem@davemloft.net>,
-        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
-        Fox Chen <foxhlchen@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Patrick McHardy <kaber@trash.net>,
-        Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        mchehab@s-opensource.com, netdev <netdev@vger.kernel.org>,
-        NetFilter <netfilter-devel@vger.kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 8:15 AM syzbot
-<syzbot+077eca30d3cb7c02b273@syzkaller.appspotmail.com> wrote:
->
-> syzbot suspects this issue was fixed by commit:
->
-> commit 6dfccd13db2ff2b709ef60a50163925d477549aa
-> Author: Anmol Karn <anmol.karan123@gmail.com>
-> Date:   Wed Sep 30 14:18:13 2020 +0000
->
->     Bluetooth: Fix null pointer dereference in hci_event_packet()
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14cb845b500000
-> start commit:   47ec5303 Merge git://git.kernel.org/pub/scm/linux/kernel/g..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=e0c783f658542f35
-> dashboard link: https://syzkaller.appspot.com/bug?extid=077eca30d3cb7c02b273
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=165a89dc900000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=130a8c62900000
->
-> If the result looks correct, please mark the issue as fixed by replying with:
->
-> #syz fix: Bluetooth: Fix null pointer dereference in hci_event_packet()
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+This series aims to tackle the various UAF reports, like:
+- https://lore.kernel.org/linux-block/8376443a-ec1b-0cef-8244-ed584b96fa96@huawei.com/
+- https://lore.kernel.org/linux-block/5c3ac5af-ed81-11e4-fee3-f92175f14daf@acm.org/T/#m6c1ac11540522716f645d004e2a5a13c9f218908
+- https://lore.kernel.org/linux-block/04e2f9e8-79fa-f1cb-ab23-4a15bf3f64cc@kernel.dk/
 
-#syz fix: Bluetooth: Fix null pointer dereference in hci_event_packet()
+Details are in the commit messages. Most important detail is that
+fastpath is untouched.
+
+The issue addressed in patch 1/2 is pretty easy to reproduce, 2/2 not so
+much.
+
+Differences to v1:
+- add 2nd patch
+
+John Garry (2):
+  blk-mq: Clean up references to old requests when freeing rqs
+  blk-mq: Lockout tagset iter when freeing rqs
+
+ block/blk-mq-sched.c |  2 +-
+ block/blk-mq-tag.c   | 22 +++++++++++++++++++---
+ block/blk-mq-tag.h   |  3 +++
+ block/blk-mq.c       | 22 ++++++++++++++++++++--
+ block/blk-mq.h       |  2 ++
+ 5 files changed, 45 insertions(+), 6 deletions(-)
+
+-- 
+2.26.2
+
