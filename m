@@ -2,109 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 651502DDB35
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 23:15:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CF7D2DDB41
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 23:27:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732052AbgLQWMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 17:12:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51406 "EHLO
+        id S1732036AbgLQWZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 17:25:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726993AbgLQWMk (ORCPT
+        with ESMTP id S1727134AbgLQWZ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 17:12:40 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C457C061794
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 14:11:58 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id g24so293392edw.9
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 14:11:58 -0800 (PST)
+        Thu, 17 Dec 2020 17:25:28 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E7E4C061794
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 14:24:48 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id f17so60946pge.6
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 14:24:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0ctiK0mA4JK6QvRekJWEWOG1zeHLhg/gasLcxbxoVjc=;
-        b=A8GA8OkuDewd4OZzGXgLg2SB0z//t9YORRY5DZf9LWIYIFt5Om0aDUsaVXYu5IsuP3
-         ffkDcYVvWIAEo36FDAAo38dBcrXKKN2X2oQuVzJlRmujVIYEMhnusSK/sTNmM7GlPY20
-         Uw8mCuwCXC/n9I95XjQx3E8wSpdrCmPD1PE1sWsCGxCXwhhwanoCqrX4poiocnlvtBzQ
-         TPE/3wRqJhefWP6C9VAnAHZbTQtD/3cKE0RQUNzlMAVm//HNDnPvS/WO7k+dIDHmgaDo
-         lA2IplvyRFUdSWoV2zIj+wysQd0TrUGEBH0VnFgEEinw5fZUD7L1FuqR8n09xw8Wlqce
-         6JNw==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FddPVaFthL4eYBtEYJxiDk/v9Sz7IGRrAfmIr7YH5kU=;
+        b=mBanfuG2gNqY8/e6kX428ecgXtrq1Hhgtgh3Kgr06MX0JL5rZgZBp7qDnL/JS3Kvf3
+         mMb1p+oDu23YKrXqkAeKOHYtsmj9SsXdlFR+70RbdS8rsCNJ4qdl5nulZLil4lO0NHTd
+         f51qpQQffWSH8R965jLY+KDQBWr2xWYRybSrs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0ctiK0mA4JK6QvRekJWEWOG1zeHLhg/gasLcxbxoVjc=;
-        b=lTUvti/wa9VCJx5Y+iv7sJJeNRfIJ6F2M1OXDZPLPQi5w++vnbXTJABZyPMG2kwxvb
-         AUujXrBlqJJ49YQ1k3k+If8MEEfz/TLGHPPqV2yB9MeTu2XpBKrNjl+96BzOKdcJ7wJQ
-         1iuqWpTLmFsvOo8SUNCf4APUNa/YqhQzwjtWODhCyUdPYNDieLhlVcX6+u7VykgZGazb
-         kogjGXMxQAflRrq16LQLjsUdzc68Sj4oXKf3dHM7zf00MYytmj7l1+D3DHatmGyuK3sS
-         gCBQfIa1AREIqQRH/EjzuPnCKpNotHs6wazaWhAaC6OgCkqmlTEnjt3CX+3CNunvyRIh
-         +JAg==
-X-Gm-Message-State: AOAM530cFtOnOjT8PcAoAsQR4DQy/FgKXUWUN9iOJzHZ/2Ykzkb/+27Y
-        UnPA95oHK7al8QKC5+ATLmQ=
-X-Google-Smtp-Source: ABdhPJwpxmgrhbd2dIZ1rE4ZcxAA/fLKKWS1bdrxMjIhPPMeXQmB/FtqRW/sCRJJx4PpPIzXFq9F7A==
-X-Received: by 2002:a05:6402:1383:: with SMTP id b3mr1535936edv.100.1608243117145;
-        Thu, 17 Dec 2020 14:11:57 -0800 (PST)
-Received: from localhost.localdomain (p200300f137008a00428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:3700:8a00:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id m7sm4627091ejr.119.2020.12.17.14.11.56
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FddPVaFthL4eYBtEYJxiDk/v9Sz7IGRrAfmIr7YH5kU=;
+        b=B2CdPN4TnxOkqU35oYz+uG5pFY1sNvFl5ZbTKw1CXmpc2FtRck+BmVyDKzySWCBn9O
+         yLs2VWBSbuwXIkKpGda5/XlsLRPMvR4P1M7YiCvkaPVZmmeol515mn2uT+xkgsJWceJt
+         ckQcZnLY5BOnYCcJ/wUjHquY5mIwwT6ZU/2kPI8AodNp/lCxhQhX79raWBjCg8Sphkzx
+         MQxEnrkVwSW/6IEqt9RFbXaUlKj4bqPg7y55xKHPOljhRAPbgaWd46kLhXF6Smh/pDLJ
+         j3WjOZT676SP2mZwrRfIxICg9Owk5GtrpmvbYPR2iHizHC6sRE03Nb8m454e+aAOAn1m
+         DJ+Q==
+X-Gm-Message-State: AOAM5305tDZRFc8caHUfTXxHqB2VqC9gcKqfrgBMiByS3PP/c0dO0Ezw
+        j7CkE/b4TV9M17sLaK7gyLBjIQ==
+X-Google-Smtp-Source: ABdhPJwK9wTmnZIHuMjcdHRA37ZdgUOZIdb4Rh734ONEykhvdRCref4kS//ATnPrZU3O1wxVvvqodA==
+X-Received: by 2002:aa7:8486:0:b029:19e:307f:2941 with SMTP id u6-20020aa784860000b029019e307f2941mr1008725pfn.26.1608243887595;
+        Thu, 17 Dec 2020 14:24:47 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:8edc:d4ff:fe53:350d])
+        by smtp.gmail.com with ESMTPSA id c205sm6775165pfc.160.2020.12.17.14.24.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 14:11:56 -0800 (PST)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     vadivel.muruganx.ramuthevar@linux.intel.com,
-        linux-mtd@lists.infradead.org
-Cc:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        linux-kernel@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH] mtd: rawnand: intel: remove broken code
-Date:   Thu, 17 Dec 2020 23:11:48 +0100
-Message-Id: <20201217221148.2877318-1-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.29.2
+        Thu, 17 Dec 2020 14:24:46 -0800 (PST)
+Date:   Thu, 17 Dec 2020 14:24:43 -0800
+From:   Brian Norris <briannorris@chromium.org>
+To:     Ben Greear <greearb@candelatech.com>
+Cc:     Youghandhar Chintala <youghand@codeaurora.org>,
+        johannes@sipsolutions.net, ath10k@lists.infradead.org,
+        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kuabhs@chromium.org,
+        dianders@chromium.org, pillair@codeaurora.org
+Subject: Re: [PATCH 0/3] mac80211: Trigger disconnect for STA during recovery
+Message-ID: <X9vaqxub2F/8YPT8@google.com>
+References: <20201215172113.5038-1-youghand@codeaurora.org>
+ <18dfa52b-5edd-f737-49c9-f532c1c10ba2@candelatech.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <18dfa52b-5edd-f737-49c9-f532c1c10ba2@candelatech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop the check for mtd->name as it's executed while the mtd variable is
-always NULL. If some MTD name is needed then it should be validated by
-the MTD core.
+On Tue, Dec 15, 2020 at 10:23:33AM -0800, Ben Greear wrote:
+> On 12/15/20 9:21 AM, Youghandhar Chintala wrote:
+> > From: Rakesh Pillai <pillair@codeaurora.org>
+> > 
+> > Currently in case of target hardware restart ,we just reconfig and
+> > re-enable the security keys and enable the network queues to start
+> > data traffic back from where it was interrupted.
+> 
+> Are there any known mac80211 radios/drivers that *can* support seamless restarts?
+> 
+> If not, then just could always enable this feature in mac80211?
 
-While here, also drop the NULL assignment to the mtd variable as it's
-overwritten later on anyways and the NULL value is never read.
+I'm quite sure that iwlwifi intentionally supports a seamless restart.
+From my experience with dealing with user reports, I don't recall any
+issues where restart didn't function as expected, unless there was some
+deeper underlying failure (e.g., hardware/power failure; driver bugs /
+lockups).
 
-Fixes: 0b1039f016e8a3 ("mtd: rawnand: Add NAND controller support on Intel LGM SoC")
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
-I found this by looking at the new driver. This patch is compile-tested
-only.
+I don't have very good stats for ath10k/QCA6174, but it survives
+our testing OK and I again don't recall any user-reported complaints in
+this area. I'd say this is a weaker example though, as I don't have as
+clear of data. (By contrast, ath10k/WCN399x, which Rakesh, et al, are
+patching here, does not pass our tests at all, and clearly fails to
+recover from "seamless" restarts, as noted in patch 3.)
 
+I'd also note that we don't operate in AP mode -- only STA -- and IIRC
+Ben, you've complained about AP mode in the past.
 
- drivers/mtd/nand/raw/intel-nand-controller.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/intel-nand-controller.c b/drivers/mtd/nand/raw/intel-nand-controller.c
-index fdb112e8a90d..398de6ec68d7 100644
---- a/drivers/mtd/nand/raw/intel-nand-controller.c
-+++ b/drivers/mtd/nand/raw/intel-nand-controller.c
-@@ -579,7 +579,7 @@ static int ebu_nand_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	struct ebu_nand_controller *ebu_host;
- 	struct nand_chip *nand;
--	struct mtd_info *mtd = NULL;
-+	struct mtd_info *mtd;
- 	struct resource *res;
- 	char *resname;
- 	int ret;
-@@ -647,10 +647,6 @@ static int ebu_nand_probe(struct platform_device *pdev)
- 	       ebu_host->ebu + EBU_ADDR_SEL(cs));
- 
- 	nand_set_flash_node(&ebu_host->chip, dev->of_node);
--	if (!mtd->name) {
--		dev_err(ebu_host->dev, "NAND label property is mandatory\n");
--		return -EINVAL;
--	}
- 
- 	mtd = nand_to_mtd(&ebu_host->chip);
- 	mtd->dev.parent = dev;
--- 
-2.29.2
-
+Brian
