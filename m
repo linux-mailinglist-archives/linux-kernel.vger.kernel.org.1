@@ -2,105 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 359502DD482
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:45:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 996002DD48E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:50:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729158AbgLQPo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 10:44:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729129AbgLQPo5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 10:44:57 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAFE1C06138C
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 07:44:16 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id c12so19246478pfo.10
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 07:44:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YJBDB26f+rldjj+37sZsFkhqfX20jU8Ct5zIftBgtXU=;
-        b=hhgQdzkn4X5+KE3TaD5QBQ1MyViUTs8nYplu8dVBPHSodPeadQRmtzi7/kzdtKtYaZ
-         0wAJ8pgg49ZD77BJ9l1Ox3cSZORcPe3dtTBc93E4UcaIAgKtrhE4XyVs2TwCPazOThkf
-         pxGK5Wn5t3y+kAtOKYcZWGDnQm6S+0Yepfe4ywYHDSy1bblhT/hVyLsE9LnijR/u1u7f
-         /NzKEH1QZG+qwFp6mQe8zWs2chV4KT/8G2+EDYX8bVMGfYFH2hbnuxAjp97t2yJrcAeP
-         WYm7+5/1TLeOkchXIT133Kpsn1Ocn5IZvbwfBX9cvdHEucf3aIzxT3xRH2LpBX1JzDn+
-         /INg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YJBDB26f+rldjj+37sZsFkhqfX20jU8Ct5zIftBgtXU=;
-        b=q0YgkXbM/lmhfZhecc1zBRR2cGqIMe1r0PXgA2O3JfO8qhSHUXnB2DWSy2kfHrBok2
-         9uBM8cq/C1aQiTmepUktGVs+a5HHKcej6tyY4BDDl3Q03osjK0bPApNxJhdliNWVzAwa
-         ErTIr/2BY15XfzQym8DCb9jSZgjeW0Cr0qkL2e6Nq/9Ho3oMCx74hC0NcBZKpNvGP4p9
-         6ie07q/Ca4JmRXXctTCUQBapU2dB38CA91Akj0a2eXnL4Xby0D0ijIit4gmvArZmWF06
-         cxg9HgtaIUnZHHN1yGusQ/YzjJ0SZjxHmtO/0BjzttGRieY6Q+JcXxvlfqYoiwTLuoVi
-         3dpA==
-X-Gm-Message-State: AOAM531So9SzIqbfqpgcHvthHZ3yGF6fGzwWguG3r5POV88TslsoO7d5
-        YGSG/VzWqmuLxHafZ+s0iLzGzw==
-X-Google-Smtp-Source: ABdhPJwAh5eLMHrPai0VNx94cdnNrnhRTNrFKUwxQB4WkMTaZfdJFDFAoT2h4yBUrsqH2Gim34zjhA==
-X-Received: by 2002:a65:6118:: with SMTP id z24mr8644793pgu.191.1608219856009;
-        Thu, 17 Dec 2020 07:44:16 -0800 (PST)
-Received: from google.com (139.60.82.34.bc.googleusercontent.com. [34.82.60.139])
-        by smtp.gmail.com with ESMTPSA id na6sm4736607pjb.12.2020.12.17.07.44.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 07:44:15 -0800 (PST)
-Date:   Thu, 17 Dec 2020 15:44:11 +0000
-From:   Satya Tangirala <satyat@google.com>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH 0/3] add support for metadata encryption to F2FS
-Message-ID: <X9t8y3rElyAPCLoD@google.com>
-References: <20201005073606.1949772-1-satyat@google.com>
- <471e0eb7-b035-03da-3ee3-35d5880a6748@huawei.com>
+        id S1728426AbgLQPtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 10:49:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48018 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726983AbgLQPtc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 10:49:32 -0500
+X-Gm-Message-State: AOAM533i08aL8cS5pR1EoeDbphURYYfbgo7l7TP5kH6TPvBIE+efQheN
+        v0ec53g+rt8PdI0c3sHoRyoYmhw9qGnI8Cyp+w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608220131;
+        bh=HUSPQFcXMROvPbYKYtXZIsh/aLWhRKEeLyA2ehKEYJI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NDEigNYHKI5UgntIvlCeYPFftngTCzlwBb7C/svF0MViJSdDGdwpIl/nEHvdHR4iS
+         q0jbD+EEeEc3OeR2JJ56OP2pk5LV8zSaBvfodZBHULrYDf8D+KgsKB3JV/LyaYXz6p
+         6eWcsfjAmeJSY7Aq5Musv+Esv8i0bh2bh4u1aFvkm5HoNdoEesyP9NnsiS9rFxgfO4
+         cev/wes6Q2QNboybE3tQaMCelT+iye1u5b3XMeM23sh2Gm4eZMiEo5OuGKP+cCL0m+
+         SIb2ngcl3vlN9OUbT0OHEdLSfvvWtreBF7rkxVNfzTc8fP7x0WVljimLoFDdg3Lj6m
+         YVhuhfpAFcTPw==
+X-Google-Smtp-Source: ABdhPJxQ5o8gr3Ol8IZEUu8ChReLok3hNEWyi2XRN7tE4l6FMSS1YJtI3F49qoZ7PM1sTugtMnsvnSwKCZenmICk0Yk=
+X-Received: by 2002:a17:906:1197:: with SMTP id n23mr35857468eja.359.1608220129334;
+ Thu, 17 Dec 2020 07:48:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <471e0eb7-b035-03da-3ee3-35d5880a6748@huawei.com>
+References: <20201209175708.16252-1-a-govindraju@ti.com> <20201209175708.16252-2-a-govindraju@ti.com>
+ <20201211033301.GA3581630@robh.at.kernel.org> <70d6c152-5d8d-9ad6-ce06-95a9f599c492@ti.com>
+ <20201214222339.GA2471866@robh.at.kernel.org> <76e73cc7-fdb7-45bb-6270-1f668969ad50@ti.com>
+ <96eada83-cf24-e02a-60a6-d81907a1bba0@ti.com>
+In-Reply-To: <96eada83-cf24-e02a-60a6-d81907a1bba0@ti.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 17 Dec 2020 09:48:38 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+7A3C5eV+8aoOXTC+axhtQSgf7NAR0ffMD4UUmcTzU9Q@mail.gmail.com>
+Message-ID: <CAL_Jsq+7A3C5eV+8aoOXTC+axhtQSgf7NAR0ffMD4UUmcTzU9Q@mail.gmail.com>
+Subject: Re: [PATCH RFC 1/2] Documentation: devicetree: Add property for
+ ignoring the dummy bits sent before read transfer
+To:     Aswath Govindraju <a-govindraju@ti.com>
+Cc:     devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vadym Kochan <vadym.kochan@plvision.eu>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 10, 2020 at 05:53:06PM +0800, Chao Yu wrote:
-> On 2020/10/5 15:36, Satya Tangirala wrote:
-> > This patch series adds support for metadata encryption to F2FS using
-> > blk-crypto.
-> 
-> It looks this implementation is based on hardware crypto engine, could you
-> please add this info into f2fs.rst as well like inlinecrypt...
-> 
-To be precise, the implementation requires either a hardware crypto
-engine *or* blk-crypto-fallback. I tried to clarify this a little better
-in the commit messages and in fscrypt.rst, but thinking about it again
-now, I think I should add a section about metadata encryption at the end
-of f2fs.rst. I'll do that when I send out v3 of this patch series (I
-just sent out v2).
-> > 
-> > Patch 3 wires up F2FS with the functions introduced in Patch 2. F2FS
-> > will encrypt every block (that's not being encrypted by some other
-> > encryption key, e.g. a per-file key) with the metadata encryption key
-> > except the superblock (and the redundant copy of the superblock). The DUN
-> > of a block is the offset of the block from the start of the F2FS
-> > filesystem.
-> 
-> Why not using nid as DUN, then GC could migrate encrypted node block directly via
-> meta inode's address space like we do for encrypted data block, rather than
-> decrypting node block to node page and then encrypting node page with DUN of new
-> blkaddr it migrates to.
-> 
-The issue is, the bi_crypt_context in a bio holds a single DUN value,
-which is the DUN for the first data unit in the bio. blk-crypto assumes
-that the DUN of each subsequent data unit can be computed by simply
-incrementing the DUN. So physically contiguous data units can only be put
-into the same bio if they also have contiguous DUNs. I don't know much
-about nids, but if the nid is invariant w.r.t the physical block location,
-then there might be more fragmentation of bios in regular read/writes
-(because physical contiguity may have no relation to DUN contiguity). So I
-think we should continue using the fsblk number as the DUN.
+On Thu, Dec 17, 2020 at 7:48 AM Aswath Govindraju <a-govindraju@ti.com> wrote:
+>
+> Hi Rob,
+>
+> On 15/12/20 9:42 pm, Aswath Govindraju wrote:
+> > Hi Rob,
+> > On 15/12/20 3:53 am, Rob Herring wrote:
+> >> On Fri, Dec 11, 2020 at 08:34:57PM +0530, Aswath Govindraju wrote:
+> >>> Hi,
+> >>> On 11/12/20 9:03 am, Rob Herring wrote:
+> >>>> On Wed, Dec 09, 2020 at 11:27:07PM +0530, Aswath Govindraju wrote:
+> >>>>> Dummy zero bits are sent before data during a read transfer. This causes
+> >>>>> the data read to be shifted to the right. To fix this send zero bits after
+> >>>>> the address during a read transfer.
+> >>>>>
+> >>>>> Add property to send zero bits after the address during a read transfer.
+> >>>>
+> >>>> When is this necessary? Why can't it be implied by the compatible
+> >>>> string which should be specific to the chip model?
+> >>>>
+> >>>
+> >>> This is necessary for 93AA46A/B/C, 93LC46A/B/C, 93C46A/B/C eeproms, as
+> >>> it can be seen in section 2.7 of [1]. We were not sure if these were the
+> >>> only devices supported by the driver(eeprom_93xx46.c). So, in order to
+> >>> apply this only to the above listed devices, we thought that it would be
+> >>> better to apply this change when required by introducing a DT property.
+> >>>
+> >>> May I know how has this case been handled till now ??
+> >>>
+> >>
+> >> No idea. From the at93c46d (which has a compatible string) datasheet it
+> >> looks like it has the same thing.
+> >>
+> >>> If this is required by all the devices then we can drop the property and
+> >>> include the zero bit by default.
+> >>
+> >> Looks like you need a combination of compatible strings for the above
+> >> devices and a property for the ORG pin state on the C devices. I assume
+> >> s/w needs to know if x8 or x16?
+> >>
+> > Yes, there are separate properties for indicating different types of
+> > types of eeproms.
+> >
+>
+> Here I was saying about x8 or x16 using the data-size property. ORG pin
+> state is implied through data-size property and an additional property
+> is not required for ORG pin state.
+
+Ah, I missed that property.
+
+>
+> > So, do you think that it is better to add it as a seperate property??
+> >
+>
+>
+> These are the available options to my knowledge,
+>
+> 1) As you mentioned earlier all the eeprom's supported by the driver
+> send a dummy bit before the read data. This can be thought of a bug and
+> add this change as a fix for it. This might a problem for users who are
+> already using this driver and working around it using user space tools.
+>
+> 2) Add a special compatible string "eeprom-93xx46B", to add the extra
+> dummy cycle and not add an additional property.
+
+No. Genericish compatible strings are what cause the problem and this
+whole discussion.
+
+> 3) Add an additional property as proposed in this patch and use when
+> required.
+>
+> Are there any other suggestions on solving this issue??
+
+You need a compatible string for each vendor+model. Period.
+
+Rob
