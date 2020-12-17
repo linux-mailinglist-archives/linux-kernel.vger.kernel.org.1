@@ -2,63 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 931EC2DD352
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 15:55:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 845792DD354
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 15:55:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727970AbgLQOyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 09:54:09 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2096 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727260AbgLQOyJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 09:54:09 -0500
-Received: from dggeme720-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4CxZj16ztbzVqbX;
-        Thu, 17 Dec 2020 22:52:21 +0800 (CST)
-Received: from [10.174.177.7] (10.174.177.7) by dggeme720-chm.china.huawei.com
- (10.1.199.116) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1913.5; Thu, 17
- Dec 2020 22:53:26 +0800
-Subject: Re: [PATCH] use x86 cpu park to speedup smp_init in kexec situation
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>
-CC:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        <hewenliang4@huawei.com>, <hushiyuan@huawei.com>,
-        <luolongjun@huawei.com>, <hejingxian@huawei.com>
-References: <87eejqu5q5.fsf@nanos.tec.linutronix.de>
- <f2a4d172-fa17-9f98-ad8f-d69f84ad0df5@huawei.com>
- <87v9d2rrdq.fsf@nanos.tec.linutronix.de>
- <06977da1-d148-0079-0e85-32d657d1a1de@huawei.com>
- <87im91sr6e.fsf@nanos.tec.linutronix.de>
-From:   "shenkai (D)" <shenkai8@huawei.com>
-Message-ID: <1e93651f-7444-2957-1f39-09bca981e57d@huawei.com>
-Date:   Thu, 17 Dec 2020 22:53:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1728136AbgLQOy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 09:54:26 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42884 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727253AbgLQOy0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 09:54:26 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 82032AC90;
+        Thu, 17 Dec 2020 14:53:44 +0000 (UTC)
+Message-ID: <289bb62c166c86e9a89649650f38c6c11a1b4bbd.camel@suse.de>
+Subject: Re: [PATCH] arm64: Kconfig: select ZONE_DMA
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>
+Date:   Thu, 17 Dec 2020 15:53:43 +0100
+In-Reply-To: <20201217124323.GB15336@gaia>
+References: <20201217080802.29023-1-peng.fan@oss.nxp.com>
+         <93832374535cb46419e921f5ee02ecabfe2cc83d.camel@suse.de>
+         <20201217124323.GB15336@gaia>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-O+xhLPMi0z3DYDhuQ6rL"
+User-Agent: Evolution 3.38.2 
 MIME-Version: 1.0
-In-Reply-To: <87im91sr6e.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.7]
-X-ClientProxiedBy: dggeme710-chm.china.huawei.com (10.1.199.106) To
- dggeme720-chm.china.huawei.com (10.1.199.116)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2020/12/16 23:31, Thomas Gleixner 写道:
-> OTOH, the advantage of INIT/SIPI is that the AP comes up in a well known
-> state.
 
-We can set APs to a known state explicitly like BSP will do in kexec 
-case (what we also tried
+--=-O+xhLPMi0z3DYDhuQ6rL
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-to do in the patch). Maybe it is not a big problem?
+On Thu, 2020-12-17 at 12:43 +0000, Catalin Marinas wrote:
+> On Thu, Dec 17, 2020 at 09:44:31AM +0100, Nicolas Saenz Julienne wrote:
+> > On Thu, 2020-12-17 at 16:08 +0800, Peng Fan (OSS) wrote:
+> > > From: Peng Fan <peng.fan@nxp.com>
+> > >=20
+> > > ZONE_DMA should not be disabled, otherwise arm64_dma_phys_limit is
+> > > left uninitialized and cause swiotlb have IO TLB above 4GB which
+> > > might crash some platforms
+>=20
+> Actually, arm64_dma_phys_limit would be zero-initialised. The
+> ARCH_LOW_ADDRESS_LIMIT becomes ~0UL, hence it covers the whole address
+> space.
+>=20
+> > > Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> > > ---
+> > >=20
+> > > Not sure whether need to address code to initialize the variables or
+> > > force select ZONE_DMA
+> >=20
+> > What is the cause for the swiotlb related crashes? I assume it's DMA in=
+to an
+> > address too high for the bus, but it might be something else.
+>=20
+> I think that's the case, swiotlb is not within the low 32-bit of the
+> address space.
+>=20
+> > I figure you have a setup with ZONE_DMA32, ZONE_NORMAL and !ZONE_DMA.
+> >=20
+> > First of all, I'd suggest you try arm64's defaults (all zones enabled),=
+ the
+> > series I mention above should fix most of the issues we've had with
+> > ZONE_DMA/ZONE_DMA32 in the past. We now parse DT/ACPI and only create t=
+wo
+> > distinct DMA zones if really needed. Otherwise ZONE_DMA spans the whole=
+ 32 bit
+> > address space.
+> >=20
+> > That said, IMO we're not doing the right thing in the !ZONE_DMA && ZONE=
+_DMA32
+> > case, and this should fix it (I didn't test it):
+> >=20
+> > - #define ARCH_LOW_ADDRESS_LIMIT	(arm64_dma_phys_limit - 1)
+> > + #define ARCH_LOW_ADDRESS_LIMIT	(arm64_dma_phys_limit ? : arm64_dma32_=
+phys_limit)
+>=20
+> Does this limit need to be inclusive?
 
-Best regards
+Yes, I'm missing a '- 1'.
 
-Kai
+I'll send a fix if there is no further push back/comments.
+
+Regards,
+Nicolas
+
+
+--=-O+xhLPMi0z3DYDhuQ6rL
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl/bcPcACgkQlfZmHno8
+x/4sVgf+KVIFmmnUuBOaVUJsFT03XtuQoFr0KYE4FlKWvoJ9qudbyj1xrWdG4r1o
+zJoElvOSKrVaDhvDkqrSQoP0zoUrpN6tcxf5g9HPTXDfhVqNVJfuJ4DHii83w8w1
+AsCw++MxF94UDwNkTwCwdqbcTgo/l+9fdzfEXwpkgKFI8Q6gphE9PzahhJDFhb0u
+BiVSzX9T7ATzDXkyTtxpXnas9R8CPHf5iR5wFNOZplPAFJalCYfTcdwvbMJjvRA9
+XjQIw6500zMaz+L6+FwXoBK7mg/2EGlOXySuzBBCoktbgZNnlUZ1EEx8ap0RhQNF
+H+Dn1EvKiJVfK00ycwXfG2QEP7btxw==
+=HC2u
+-----END PGP SIGNATURE-----
+
+--=-O+xhLPMi0z3DYDhuQ6rL--
 
