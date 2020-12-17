@@ -2,130 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E8D2DD843
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:28:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DF892DD844
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:28:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730041AbgLQS0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 13:26:14 -0500
-Received: from smtprelay0196.hostedemail.com ([216.40.44.196]:59408 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727368AbgLQS0N (ORCPT
+        id S1730175AbgLQS1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 13:27:04 -0500
+Received: from esa2.hc3370-68.iphmx.com ([216.71.145.153]:44561 "EHLO
+        esa2.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727368AbgLQS1E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 13:26:13 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 0D1FF182CF668;
-        Thu, 17 Dec 2020 18:25:32 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2553:2559:2562:2693:2828:3138:3139:3140:3141:3142:3355:3622:3865:3866:3867:3868:3870:3871:3872:3874:4078:4081:4321:5007:6119:7903:7904:10004:10400:10450:10455:11026:11232:11658:11914:12048:12296:12297:12555:12740:12760:12895:12986:13439:14181:14659:14721:14824:19904:19999:21080:21524:21611:21627:21660:21740:30012:30054:30060:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: scene95_61178ef27436
-X-Filterd-Recvd-Size: 4105
-Received: from XPS-9350.home (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf06.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 17 Dec 2020 18:25:30 +0000 (UTC)
-Message-ID: <b1f96f39e78fc3869bf2786f50f833778dd09fb5.camel@perches.com>
-Subject: Re: New objtool warning..
-From:   Joe Perches <joe@perches.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Lyude Paul <lyude@redhat.com>,
-        Ilia Mirkin <imirkin@alum.mit.edu>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Thu, 17 Dec 2020 10:25:29 -0800
-In-Reply-To: <CAHk-=wiJ7xt913Lf6rfeq4CyffhXwHLVZ2ZABcKHmV8cf0FArg@mail.gmail.com>
-References: <CAHk-=wiXtdHJBXw+=0so3ZV8mvG0xEykxUta2sUWPB=hUWHmtQ@mail.gmail.com>
-         <20201216044918.jdmi32dz75uboybv@treble>
-         <CAHk-=wjMoZesNgi1yWzY3nikyR11PUxHgov561UNom5mL1R4rA@mail.gmail.com>
-         <CAHk-=whpp_eo-5d0ZLpx=0X91J0ZNReZ_9riNf96z2dy24z=hw@mail.gmail.com>
-         <20201216200158.akf356yrw44o2rlb@treble>
-         <20201217104556.GT3040@hirez.programming.kicks-ass.net>
-         <20201217162524.fkxiemn7aezpv7d5@treble>
-         <CAHk-=wiJ7xt913Lf6rfeq4CyffhXwHLVZ2ZABcKHmV8cf0FArg@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Thu, 17 Dec 2020 13:27:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1608229623;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=0JnxpV5kSnzrC5FbbL8YNG1KAvQnfLMRnXpPN2OIrj0=;
+  b=MS3qYUNMQpDO8xkDeo3i1YyqqQwGGm3BY/7rUGBqTxZ18mhFqO4d1DtD
+   EaQEQ+MqC9R25/4B8rqbA/Jc7cENKYQvyisHEvhEQLd4CORqTPTwYfnAj
+   dn61t+5LkkSl7salj3absNdhLCA8lvLqq332FtDFYSxf6MgfDRvWgm1E2
+   Y=;
+Authentication-Results: esa2.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+IronPort-SDR: 00tXMVKz+bqsvoJATU8UhkG0eBARLmv5IpviZufx/bZc56Toigz1exXkaq/60al/HMtc0VNN9g
+ k1QKMN0UehcqDT62F4WnbUjWK+u/kwbUPTkrS1h/l3YEhMC+8o7G9iRsiXIsYI9DydJJGpDWyd
+ QSC5FwiSno+b9sn3UcJbmC9EQ1kdZMvZmZZJh+jJ/YWqaqU9+gLhru6eCHDx8A6/NMalhCeFkQ
+ CwWXMpJnNZqRs2epeeF571ULEE5+T1kMsOrBOWiF3YoWDij5uJKUfkJ71GQKwF5sOV5fwk9E13
+ 3Zs=
+X-SBRS: 5.2
+X-MesageID: 33507226
+X-Ironport-Server: esa2.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.158.21
+X-Policy: $RELAYED
+X-IronPort-AV: E=Sophos;i="5.78,428,1599537600"; 
+   d="scan'208";a="33507226"
+Subject: Re: [PATCH v2] xen/xenbus: make xs_talkv() interruptible
+To:     =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
+        <xen-devel@lists.xenproject.org>, <linux-kernel@vger.kernel.org>
+CC:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
+References: <20201215111055.3810-1-jgross@suse.com>
+ <2deac9ce-0c27-a472-7d51-b91a640d92ed@citrix.com>
+ <8d26b752-b7ba-159f-5bed-bb015a06d819@suse.com>
+From:   Andrew Cooper <andrew.cooper3@citrix.com>
+Message-ID: <2414c191-ff55-e446-b555-c9d0ccca6b93@citrix.com>
+Date:   Thu, 17 Dec 2020 18:25:52 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <8d26b752-b7ba-159f-5bed-bb015a06d819@suse.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-ClientProxiedBy: AMSPEX02CAS01.citrite.net (10.69.22.112) To
+ FTLPEX02CL03.citrite.net (10.13.108.165)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-12-17 at 09:27 -0800, Linus Torvalds wrote:
-> On Thu, Dec 17, 2020 at 8:25 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> > 
-> > Oh yeah, I forgot about that.  That would be another option if my patch
-> > doesn't work out.
-> 
-> Well, one option is to just say "ok, we know gcc generates horrible
-> code that falls through to another function in a situation that we
-> claim is unreachable, so let's not claim it is unreachable".
-> 
-> IOW, the problem here is that the compiler fundamentally isn't smart
-> enough to see that something is unreachable, and the "unreachable()"
-> annotation we did didn't actually really cause any code that makes it
-> so. So we basically have code that _if_ we ever change it, it will
-> simply be wrong, and we'll never see any warnings about it but it will
-> fall through to nonsensical code.
-> 
-> So maybe the option here is simply "objtool was right before, the
-> unreachable() is fragile and wrong".
-> 
-> We can easily write that case statement in a way that actually makes
-> the compiler generate better code and avoids the issue by just making
-> case 0x00 also be the default case.
-> 
-> So I think I'll just apply this patch instead.
+On 16/12/2020 08:21, Jürgen Groß wrote:
+> On 15.12.20 21:59, Andrew Cooper wrote:
+>> On 15/12/2020 11:10, Juergen Gross wrote:
+>>> In case a process waits for any Xenstore action in the xenbus driver
+>>> it should be interruptible by signals.
+>>>
+>>> Signed-off-by: Juergen Gross <jgross@suse.com>
+>>> ---
+>>> V2:
+>>> - don't special case SIGKILL as libxenstore is handling -EINTR fine
+>>> ---
+>>>   drivers/xen/xenbus/xenbus_xs.c | 9 ++++++++-
+>>>   1 file changed, 8 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/xen/xenbus/xenbus_xs.c
+>>> b/drivers/xen/xenbus/xenbus_xs.c
+>>> index 3a06eb699f33..17c8f8a155fd 100644
+>>> --- a/drivers/xen/xenbus/xenbus_xs.c
+>>> +++ b/drivers/xen/xenbus/xenbus_xs.c
+>>> @@ -205,8 +205,15 @@ static bool test_reply(struct xb_req_data *req)
+>>>     static void *read_reply(struct xb_req_data *req)
+>>>   {
+>>> +    int ret;
+>>> +
+>>>       do {
+>>> -        wait_event(req->wq, test_reply(req));
+>>> +        ret = wait_event_interruptible(req->wq, test_reply(req));
+>>> +
+>>> +        if (ret == -ERESTARTSYS && signal_pending(current)) {
+>>> +            req->msg.type = XS_ERROR;
+>>> +            return ERR_PTR(-EINTR);
+>>> +        }
+>>
+>> So now I can talk fully about the situations which lead to this, I think
+>> there is a bit more complexity.
+>>
+>> It turns out there are a number of issues related to running a Xen
+>> system with no xenstored.
+>>
+>> 1) If a xenstore-write occurs during startup before init-xenstore-domain
+>> runs, the former blocks on /dev/xen/xenbus waiting for xenstored to
+>> reply, while the latter blocks on /dev/xen/xenbus_backend when trying to
+>> tell the dom0 kernel that xenstored is in dom1.  This effectively
+>> deadlocks the system.
+>
+> This should be easy to solve: any request to /dev/xen/xenbus should
+> block upfront in case xenstored isn't up yet (could e.g. wait
+> interruptible until xenstored_ready is non-zero).
 
-Using default somewhere other than the bottom of a switch/case block
-isn't common/pretty.  It's easy to visually skip/glaze over.
+I'm not sure that that would fix the problem.  The problem is that
+setting the ring details via /dev/xen/xenbus_backend blocks, which
+prevents us launching the xenstored stubdomain, which prevents the
+earlier xenbus write being completed.
 
-Perhaps reorder the block.
-Maybe add static to the const arrays too.
----
- drivers/gpu/drm/drm_edid.c | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-index 74f5a3197214..53b7bb281edb 100644
---- a/drivers/gpu/drm/drm_edid.c
-+++ b/drivers/gpu/drm/drm_edid.c
-@@ -3089,8 +3089,8 @@ static int drm_cvt_modes(struct drm_connector *connector,
- 	struct drm_display_mode *newmode;
- 	struct drm_device *dev = connector->dev;
- 	struct cvt_timing *cvt;
--	const int rates[] = { 60, 85, 75, 60, 50 };
--	const u8 empty[3] = { 0, 0, 0 };
-+	static const int rates[] = { 60, 85, 75, 60, 50 };
-+	static const u8 empty[3] = { 0, 0, 0 };
- 
- 	for (i = 0; i < 4; i++) {
- 		int width, height;
-@@ -3102,20 +3102,18 @@ static int drm_cvt_modes(struct drm_connector *connector,
- 
- 		height = (cvt->code[0] + ((cvt->code[1] & 0xf0) << 4) + 1) * 2;
- 		switch (cvt->code[1] & 0x0c) {
--		case 0x00:
--			width = height * 4 / 3;
--			break;
--		case 0x04:
--			width = height * 16 / 9;
-+		case 0x0c:
-+			width = height * 15 / 9;
- 			break;
- 		case 0x08:
- 			width = height * 16 / 10;
- 			break;
--		case 0x0c:
--			width = height * 15 / 9;
-+		case 0x04:
-+			width = height * 16 / 9;
- 			break;
- 		default:
--			unreachable();
-+			width = height * 4 / 3;
-+			break;
- 		}
- 
- 		for (j = 1; j < 5; j++) {
+So long as /dev/xen/xenbus_backend doesn't block, there's no problem
+with other /dev/xen/xenbus activity being pending briefly.
 
 
+Looking at the current logic, I'm not completely convinced.  Even
+finding a filled-in evtchn/gfn doesn't mean that xenstored is actually
+ready.
+
+There are 3 possible cases.
+
+1) PV guest, and details in start_info
+2) HVM guest, and details in HVM_PARAMs
+3) No details (expected for dom0).  Something in userspace must provide
+details at a later point.
+
+So the setup phases go from nothing, to having ring details, to finding
+the ring working.
+
+I think it would be prudent to try reading a key between having details
+and declaring the xenstored_ready.  Any activity, even XS_ERROR,
+indicates that the other end of the ring is listening.
+
+>
+>> 2) If xenstore-watch is running when xenstored dies, it spins at 100%
+>> cpu usage making no system calls at all.  This is caused by bad error
+>> handling from xs_watch(), and attempting to debug found:
+>
+> Can you expand on "bad error handling from xs_watch()", please?
+
+do_watch() has
+
+    for ( ... ) { // defaults to an infinite loop
+        vec = xs_read_watch();
+        if (vec == NULL)
+            continue;
+        ...
+    }
+
+
+My next plan was to experiment with break instead of continue, which
+I'll get to at some point.
+
+>
+>>
+>> 3) (this issue).  If anyone starts xenstore-watch with no xenstored
+>> running at all, it blocks in D in the kernel.
+>
+> Should be handled with solution for 1).
+>
+>>
+>> The cause is the special handling for watch/unwatch commands which,
+>> instead of just queuing up the data for xenstore, explicitly waits for
+>> an OK for registering the watch.  This causes a write() system call to
+>> block waiting for a non-existent entity to reply.
+>>
+>> So while this patch does resolve the major usability issue I found (I
+>> can't even SIGINT and get my terminal back), I think there are issues.
+>>
+>> The reason why XS_WATCH/XS_UNWATCH are special cased is because they do
+>> require special handling.  The main kernel thread for processing
+>> incoming data from xenstored does need to know how to associate each
+>> async XS_WATCH_EVENT to the caller who watched the path.
+>>
+>> Therefore, depending on when this cancellation hits, we might be in any
+>> of the following states:
+>>
+>> 1) the watch is queued in the kernel, but not even sent to xenstored yet
+>> 2) the watch is queued in the xenstored ring, but not acted upon
+>> 3) the watch is queued in the xenstored ring, and the xenstored has seen
+>> it but not replied yet
+>> 4) the watch has been processed, but the XS_WATCH reply hasn't been
+>> received yet
+>> 5) the watch has been processed, and the XS_WATCH reply received
+>>
+>> State 5 (and a little bit) is the normal success path when xenstored has
+>> acted upon the request, and the internal kernel infrastructure is set up
+>> appropriately to handle XS_WATCH_EVENTs.
+>>
+>> States 1 and 2 can be very common if there is no xenstored (or at least,
+>> it hasn't started up yet).  In reality, there is either no xenstored, or
+>> it is up and running (and for a period of time during system startup,
+>> these cases occur in sequence).
+>
+> Yes. this is the reason we can't just reject a user request if xenstored
+> hasn't been detected yet: it could be just starting.
+
+Right, and I'm not suggesting that we'd want to reject accesses while
+xenstored is starting up.
+
+>
+>>
+>> As soon as the XS_WATCH event has been written into the xenstored ring,
+>> it is not safe to cancel.  You've committed to xenstored processing the
+>> request (if it is up).
+>
+> I'm not sure this is true. Cancelling it might result in a stale watch
+> in xenstored, but there shouldn't be a problem related to that. In case
+> that watch fires the event will normally be discarded by the kernel as
+> no matching watch is found in the kernel's data. In case a new watch
+> has been setup with the same struct xenbus_watch address (which is used
+> as the token), then this new watch might fire without the node of the
+> new watch having changed, but spurious watch events are defined to be
+> okay (OTOH the path in the event might look strange to the handler).
+
+Watches are a quota'd resource in (at least some) xenstored
+configurations.  Losing track of the registration is a resource leak,
+even if the kernel can filter and discard the unexpected watch events.
+
+>> If xenstored is actually up and running, its fine and necessary to
+>> block.  The request will be processed in due course (timing subject to
+>> the client and server load).  If xenstored isn't up, blocking isn't ok.
+>>
+>> Therefore, I think we need to distinguish "not yet on the ring" from "on
+>> the ring", as our distinction as to whether cancelling is safe, and
+>> ensure we don't queue anything on the ring before we're sure xenstored
+>> has started up.
+>>
+>> Does this make sense?
+>
+> Basically, yes.
+
+Great.  If I get any time, I'll try to look into some fixes along the
+above lines.
+
+~Andrew
