@@ -2,64 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A7FC2DDAA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 22:14:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87CAE2DDAAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 22:16:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731770AbgLQVOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 16:14:04 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:46018 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727106AbgLQVOD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 16:14:03 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 647A21C0B7D; Thu, 17 Dec 2020 22:13:20 +0100 (CET)
-Date:   Thu, 17 Dec 2020 22:13:20 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Tian Tao <tiantao6@hisilicon.com>
-Cc:     dmurphy@ti.com, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] leds: lm3533: Switch to using the new API kobj_to_dev()
-Message-ID: <20201217211320.GC28574@duo.ucw.cz>
-References: <1606699168-49894-1-git-send-email-tiantao6@hisilicon.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="PuGuTyElPB9bOcsM"
-Content-Disposition: inline
-In-Reply-To: <1606699168-49894-1-git-send-email-tiantao6@hisilicon.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1731782AbgLQVPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 16:15:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49766 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729114AbgLQVPO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 16:15:14 -0500
+From:   Tom Zanussi <zanussi@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     rostedt@goodmis.org, axelrasmussen@google.com
+Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/5] tracing: More synthetic event error fixes
+Date:   Thu, 17 Dec 2020 15:14:25 -0600
+Message-Id: <cover.1608238451.git.zanussi@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---PuGuTyElPB9bOcsM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This is v4 of the sythetic event error fix patchset.  As suggested by
+Steve, I added a new pass that adds semicolons to 'old' commands that
+may be missing them, in order to maintain backward compatibility.  All
+commands are handled by the new and improved parsing code, but
+commands missing the semicolons have them added before processing and
+are therefore still valid.  At some point in the future, as new
+features are added and we can require any command containing them to
+require semicolons, this pass can be completely skipped by detecting
+those features in the currently empty audit_old_buffer() hook.
 
-On Mon 2020-11-30 09:19:28, Tian Tao wrote:
-> fixed the following coccicheck:
-> drivers/leds/leds-lm3533.c:611:60-61: WARNING opportunity for kobj_to_dev=
-().
->=20
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+Also, as a result, the patch adding semicolons to the selftests is no
+longer necessary (selftests/ftrace: Add synthetic event field
+separators) and has been dropped in this series.
 
-Thanks, applied.
-									Pavel
+Tom
 
 
---=20
-http://www.livejournal.com/~pavelmachek
+v3 text:
 
---PuGuTyElPB9bOcsM
-Content-Type: application/pgp-signature; name="signature.asc"
+Hi,
 
------BEGIN PGP SIGNATURE-----
+This is v3 of the sythetic event error fix patchset.  As suggested by
+Masami, I split the 'tracing/dynevent: Delegate parsing to create
+function' into two - one containing just the interface changes and the
+second with the synthetic event parsing changes the first enabled.
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX9vJ8AAKCRAw5/Bqldv6
-8l3cAJ0ewF5zwnc6+SRno7L5YJKqITs/8QCfTFLOmvph6YadrkTgtwOUrHHaGL4=
-=OTT5
------END PGP SIGNATURE-----
+I also replaced a couple argv_split() with strpbrk() as suggested by
+Masami, along with removing the no-longer-used consume lines and
+another line that tested ECANCELED that was no longer needed.
 
---PuGuTyElPB9bOcsM--
+Also, removed a test case that was no longer needed since the commands
+are now stripped of whitespace first.
+
+Thanks, Masami, for the suggestions.
+
+Tom
+
+v2 text:
+
+This is v2 of the previous sythetic event error fix patchset.
+
+This version drops the original ([PATCH 1/4] tracing: Make
+trace_*_run_command() more flexible) and (tracing: Use new
+trace_run_command() options) patches and replaces them with Masami's
+patch (tracing/dynevent: Delegate parsing to create function) [1].
+The new version adds in all the synthetic event changes needed to
+compile and use the new interface.
+
+A new patch was also added (selftests/ftrace: Add synthetic event
+field separators) that fixes more invalid synthetic event syntax I
+found while testing.
+
+I also added some more new checks to the synthetic event sytax error
+testcase.
+
+As before, I didn't see any problems running the entire ftrace
+testsuite or the test modules that also use the things that were
+touched here.
+
+[1] https://lore.kernel.org/lkml/20201019001504.70dc3ec608277ed22060d2f7@kernel.org/
+
+Thanks,
+
+Tom
+
+
+v1 text:
+
+Hi,
+
+This patchset addresses the synthetic event error anomalies reported
+by Masami in the last patchset [1].
+
+It turns out that most of the problems boil down to clunky separator
+parsing; adding a couple new abilities to trace_run_command() and then
+adapting the existing users seemed to me the best way to fix these
+things, and also gets rid of some code.
+
+Also, to make things easier for error display, I changed these to
+preserve the original command string and pass it through the callback
+instead of rebuilding it for error display.
+
+I added some new error strings and removed unused ones as well, and
+added a bunch of new test cases to the synthetic parser error test
+case.
+
+I didn't see any problems running the entire ftrace testsuite or the
+test modules that also use the things that were touched here.
+
+Thanks,
+
+Tom
+
+[1] https://lore.kernel.org/lkml/20201014110636.139df7be275d40a23b523b84@kernel.org/
+
+The following changes since commit f6a694665f132cbf6e2222dd2f173dc35330a8aa:
+
+  tracing: Offload eval map updates to a work queue (2020-12-15 09:29:14 -0500)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/zanussi/linux-trace.git ftrace/synth-fixes-v4
+
+Masami Hiramatsu (1):
+  tracing/dynevent: Delegate parsing to create function
+
+Tom Zanussi (4):
+  tracing: Rework synthetic event command parsing
+  tracing: Update synth command errors
+  tracing: Add a backward-compatibility check for synthetic event
+    creation
+  selftests/ftrace: Update synthetic event syntax errors
+
+ kernel/trace/trace.c                          |  23 +-
+ kernel/trace/trace.h                          |   3 +-
+ kernel/trace/trace_dynevent.c                 |  35 +-
+ kernel/trace/trace_dynevent.h                 |   4 +-
+ kernel/trace/trace_events_synth.c             | 503 +++++++++++++++---
+ kernel/trace/trace_kprobe.c                   |  33 +-
+ kernel/trace/trace_probe.c                    |  17 +
+ kernel/trace/trace_probe.h                    |   1 +
+ kernel/trace/trace_uprobe.c                   |  17 +-
+ .../trigger-synthetic_event_syntax_errors.tc  |  35 +-
+ 10 files changed, 521 insertions(+), 150 deletions(-)
+
+-- 
+2.17.1
+
