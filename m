@@ -2,189 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D772DDA96
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 22:10:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A7FC2DDAA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 22:14:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731666AbgLQVKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 16:10:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725988AbgLQVKd (ORCPT
+        id S1731770AbgLQVOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 16:14:04 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:46018 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727106AbgLQVOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 16:10:33 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37DADC061794
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 13:09:53 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id r4so190626pls.11
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 13:09:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=SJ3XQzrJUM2Ts9mckzdYNPQrSayfljmO0Ikzg9Zn5jw=;
-        b=vuQQIAmqc8NK11tFUAVC+fYCHYlUcXAbVqlZOZD2Oa2vYzdVJL1jGpSqPB4XYAX/1A
-         26covMhJRXpPy7oYibW9cu79XBnM+bTHpkqS7szdNJr5oARRg/qxrg5AdZI8qOBT3IPT
-         qoPo7UNQAFUE2aXh32NB4xXZWc/X2GcA/I70mCt/otHE0P9IysaUHr3L2531FwD485bj
-         hiBzbbzUbZA+0BfgeUPU18dCYm1kYDHkxtL1Ouf5T5b14U1nORCTqyzycSV/J5ThVVrQ
-         glny4XSZB+QqQ0Bl6sSenn1TUaXLYY5Z5EGAAKWbkIAByvYf/v1Drkav7qv9kj8Wrrue
-         Ec7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=SJ3XQzrJUM2Ts9mckzdYNPQrSayfljmO0Ikzg9Zn5jw=;
-        b=rYTvCYRnHUGEwJcp6Qq52Jmbpxm73Jc6v8058ooFlMCmK+ggW2DeRXQKi1KF5qX9BM
-         0Q9jddbSnxkcq8jfXkJn+TecTHgv/F1CxrZ+7zZY2QxYlA//3pFbw6yy05oAZNQCePOh
-         hzKm+lizHNwRw6TiJZ3vMvvbCSlno0hTqsyKBqSR08LLmPj5g8F1rZpIg/QTDkjkTyQc
-         wGM4DQyr2LImhWHm5NCmtwWqOse7Wk7ym4jbekYSK3coJ1RZYBYc/o7fByYqznOgF26v
-         eC8Xvh9rfylqsnyipyezV+EE6VExQ2dN1PqmjK/QpRHV7VlinJWsHJUoN6PcytQk/JPt
-         5dWQ==
-X-Gm-Message-State: AOAM533rAn9VkyoiXAVS9PdwUpQeB8PM486sFRhM0hghkJWk8ZXVgxR4
-        QcajeWzA1ab+vwLIcem32nVA9761ngEN/Td1
-X-Google-Smtp-Source: ABdhPJxxWb86hTJzrkduuHOZWcQK6/Og9gpbFxD/Xi4fZ9dHs+06Bzl/Iotw7Op6Ln6ipbOkwkLq9g==
-X-Received: by 2002:a17:902:9a06:b029:da:1d45:2c63 with SMTP id v6-20020a1709029a06b02900da1d452c63mr961864plp.31.1608239392663;
-        Thu, 17 Dec 2020 13:09:52 -0800 (PST)
-Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id w4sm6784105pfd.52.2020.12.17.13.09.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 17 Dec 2020 13:09:51 -0800 (PST)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <CA1BD917-22BD-4AAD-877D-BDF41B36D945@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_5922C4CF-2628-4D69-93BC-3AAAECC71D02";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH] ext4: Don't leak old mountpoint samples
-Date:   Thu, 17 Dec 2020 14:09:48 -0700
-In-Reply-To: <X9ujIOJG/HqMr88R@mit.edu>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-References: <20201201151301.22025-1-richard@nod.at> <X9ujIOJG/HqMr88R@mit.edu>
-X-Mailer: Apple Mail (2.3273)
+        Thu, 17 Dec 2020 16:14:03 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 647A21C0B7D; Thu, 17 Dec 2020 22:13:20 +0100 (CET)
+Date:   Thu, 17 Dec 2020 22:13:20 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Tian Tao <tiantao6@hisilicon.com>
+Cc:     dmurphy@ti.com, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] leds: lm3533: Switch to using the new API kobj_to_dev()
+Message-ID: <20201217211320.GC28574@duo.ucw.cz>
+References: <1606699168-49894-1-git-send-email-tiantao6@hisilicon.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="PuGuTyElPB9bOcsM"
+Content-Disposition: inline
+In-Reply-To: <1606699168-49894-1-git-send-email-tiantao6@hisilicon.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---Apple-Mail=_5922C4CF-2628-4D69-93BC-3AAAECC71D02
+--PuGuTyElPB9bOcsM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
 
-On Dec 17, 2020, at 11:27 AM, Theodore Y. Ts'o <tytso@mit.edu> wrote:
+On Mon 2020-11-30 09:19:28, Tian Tao wrote:
+> fixed the following coccicheck:
+> drivers/leds/leds-lm3533.c:611:60-61: WARNING opportunity for kobj_to_dev=
+().
 >=20
-> On Tue, Dec 01, 2020 at 04:13:01PM +0100, Richard Weinberger wrote:
->> As soon the first file is opened, ext4 samples the mountpoint
->> of the filesystem in 64 bytes of the super block.
->> It does so using strlcpy(), this means that the remaining bytes
->> in the super block string buffer are untouched.
->> If the mount point before had a longer path than the current one,
->> it can be reconstructed.
->>=20
->> Consider the case where the fs was mounted to "/media/johnjdeveloper"
->> and later to "/".
->> The the super block buffer then contains "/\x00edia/johnjdeveloper".
->>=20
->> This case was seen in the wild and caused confusion how the name
->> of a developer ands up on the super block of a filesystem used
->> in production...
->>=20
->> Fix this by clearing the string buffer before writing to it,
->>=20
->> Signed-off-by: Richard Weinberger <richard@nod.at>
->=20
-> Thank for reporting this issue.  In fact, the better fix is to use
-> strncpy().  See my revised patch for an explanation of why....
->=20
-> commit cdc9ad7d3f201a77749432878fb4caa490862de6
-> Author: Theodore Ts'o <tytso@mit.edu>
-> Date:   Thu Dec 17 13:24:15 2020 -0500
->=20
->    ext4: don't leak old mountpoint samples
->=20
->    When the first file is opened, ext4 samples the mountpoint of the
->    filesystem in 64 bytes of the super block.  It does so using
->    strlcpy(), this means that the remaining bytes in the super block
->    string buffer are untouched.  If the mount point before had a =
-longer
->    path than the current one, it can be reconstructed.
->=20
->    Consider the case where the fs was mounted to =
-"/media/johnjdeveloper"
->    and later to "/".  The super block buffer then contains
->    "/\x00edia/johnjdeveloper".
->=20
->    This case was seen in the wild and caused confusion how the name
->    of a developer ands up on the super block of a filesystem used
->    in production...
->=20
->    Fix this by using strncpy() instead of strlcpy().  The superblock
->    field is defined to be a fixed-size char array, and it is already
->    marked using __nonstring in fs/ext4/ext4.h.  The consumer of the =
-field
->    in e2fsprogs already assumes that in the case of a 64+ byte mount
->    path, that s_last_mounted will not be NUL terminated.
->=20
->    Reported-by: Richard Weinberger <richard@nod.at>
->    Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
 
-Color me confused, but I don't see how this change makes any difference?
-If "cp" is only "/" then it will *still* not overwrite =
-"edia/johnjdeveloper"
-at the end of the s_last_mounted array.  To my mind, the only difference
-between using strlcpy() and strncpy() would be whether the last byte in
-the array can be used or not, but doesn't affect the remaining bytes.
-
->=20
-> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-> index 1cd3d26e3217..349b27f0dda0 100644
-> --- a/fs/ext4/file.c
-> +++ b/fs/ext4/file.c
-> @@ -810,7 +810,7 @@ static int ext4_sample_last_mounted(struct =
-super_block *sb,
-> 	if (err)
-> 		goto out_journal;
-> 	lock_buffer(sbi->s_sbh);
-> -	strlcpy(sbi->s_es->s_last_mounted, cp,
-> +	strncpy(sbi->s_es->s_last_mounted, cp,
-> 		sizeof(sbi->s_es->s_last_mounted));
-> 	ext4_superblock_csum_set(sb);
-> 	unlock_buffer(sbi->s_sbh);
+Thanks, applied.
+									Pavel
 
 
-Cheers, Andreas
+--=20
+http://www.livejournal.com/~pavelmachek
 
-
-
-
-
-
---Apple-Mail=_5922C4CF-2628-4D69-93BC-3AAAECC71D02
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
+--PuGuTyElPB9bOcsM
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
 
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl/byR0ACgkQcqXauRfM
-H+Am6w//ZN6w43WO7QUFjSXw37PwstnJVOObTkPWPAtgBNDndIQzdZvQMMrlWtC+
-ZBNMd5US6GP6KQwwG6dopRX5MvJdrw5NkUIC2VBRCHHKPUe9G/rwNQXiNAsNZM7D
-IOiKKDFjni7k9Yo0RBAQCKE3RfqRj0BbsI6qgcKaWatn3XGbDL8HXNgHpdIsSnZl
-8s4i8jbvr63ZiGp3ZhQEP2ker2yTFMiztJLtUCIToEEdje0xNdolJzUmvI44+epz
-oi1PFYGzV/xbKAVdd+uYvJg9wNS1v/UCxPsP1eap3ogyxBT0TpZdojcbvR6ZFqEo
-tiX3uWs1W1mUKQPUgTCNVjfCuyACWm7ktPIARtWy2gvDRXylRaqZVZ/7kKLntWFM
-kqw6f6wVLpLwnyObjBiS14IuukVLsYS319ET0vQ0Y7sxEjukLnTWbn57phhzUlTn
-eYtNonbOS2UCfZjtIT7TV2wyTYKtaQTedPg6rCVG6K5xqmcooc9MsGE7Nbfv54pd
-MnV35lIWWDOEWIeSwkS3wfrEazhZH56XYaW5hNB9bHcVS3UGEE2HmxwMwLKUJfIH
-bHg9QQEKl4tABtqwdud2Z+JWB6L1SSD0e+odpXzLZesEohcHlPKJsWjqgxqz/TNS
-pz6iZs0PayDxwFAB7OSn1uw4ywktWeseoMKbnqXbEWqZGH9Nbd8=
-=ttEJ
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX9vJ8AAKCRAw5/Bqldv6
+8l3cAJ0ewF5zwnc6+SRno7L5YJKqITs/8QCfTFLOmvph6YadrkTgtwOUrHHaGL4=
+=OTT5
 -----END PGP SIGNATURE-----
 
---Apple-Mail=_5922C4CF-2628-4D69-93BC-3AAAECC71D02--
+--PuGuTyElPB9bOcsM--
