@@ -2,80 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B4CE2DD99C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 21:04:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C31902DD9A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 21:06:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728151AbgLQUD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 15:03:58 -0500
-Received: from asavdk3.altibox.net ([109.247.116.14]:60498 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725930AbgLQUD6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 15:03:58 -0500
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 986F620026;
-        Thu, 17 Dec 2020 21:03:03 +0100 (CET)
-Date:   Thu, 17 Dec 2020 21:03:02 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Guo Ren <guoren@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
-        Marco Elver <elver@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        sparclinux <sparclinux@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 1/2] futex: mark futex_detect_cmpxchg() as 'noinline'
-Message-ID: <20201217200302.GB1523049@ravnborg.org>
-References: <20190307091514.2489338-1-arnd@arndb.de>
- <X9S28TcEXd2zghzp@elver.google.com>
- <87czzeg5ep.fsf@nanos.tec.linutronix.de>
- <CAK8P3a0LWjNgwm605TM4dKCsn078X7NC3sEfdBSgcMNEocQ5iA@mail.gmail.com>
- <CAJF2gTRLEbBfZJ7Y6UNOMq-cwG5OYRW=+8Pfauz6v6R8ntBjYA@mail.gmail.com>
- <CAK8P3a3+WaQNyJ6Za2qfu6=0mBgU1hApnRXrdp1b1=P7wwyRUg@mail.gmail.com>
- <20201215193800.GA1098247@ravnborg.org>
- <CAK8P3a24eAYjPTw_GvEC5H9nGODjeKCVLSmfpoNSvrzew5BX4Q@mail.gmail.com>
+        id S1730006AbgLQUGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 15:06:08 -0500
+Received: from mout.gmx.net ([212.227.15.18]:49681 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726689AbgLQUGG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 15:06:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1608235469;
+        bh=FWVVbi64fhOi+6PYs3/UZsujVfskYBj31w+7wUkgL6Y=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=gDeASji/CRBScdefY3a0rDH1vf8N/M+PN6UVXnN+OXQuR0QBkgK/DfyRdSzvV+Wiz
+         Euca77Kojnv+kCFykOXD1YfUYU0tFK2Uss5nM5eb6FJYG/wCS8jqOY8X+TJTl2aqag
+         6Q1Gp9ROwT9esxw01IXGNH6N8MkTf1XoTP54L+NY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.217.61]) by mail.gmx.com (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MowGa-1kJLrX06Va-00qRb4; Thu, 17
+ Dec 2020 21:04:29 +0100
+Message-ID: <4b18e97788fdfcc59c69b0836b693e737a48c5d9.camel@gmx.de>
+Subject: Re: [bisected] Re: regression: nouveau fifo: fault 01 ==> channel
+ 1: killed ==> dead desktop
+From:   Mike Galbraith <efault@gmx.de>
+To:     David Airlie <airlied@redhat.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        nouveau <nouveau@lists.freedesktop.org>
+Date:   Thu, 17 Dec 2020 21:04:28 +0100
+In-Reply-To: <CAMwc25rTv0=LuAUoHqC9+Eh6rdaywwrigMza6yKbwbRiEwLZGg@mail.gmail.com>
+References: <fe612bbbeedd0ee0d03d04c7341ea62406b957c7.camel@gmx.de>
+         <136aa09d13fab723e0460b73608ed3950699f2b6.camel@gmx.de>
+         <CAMwc25rTv0=LuAUoHqC9+Eh6rdaywwrigMza6yKbwbRiEwLZGg@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a24eAYjPTw_GvEC5H9nGODjeKCVLSmfpoNSvrzew5BX4Q@mail.gmail.com>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=Ibmpp1ia c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=sAUyEq6cmD5XSRaL4sYA:9 a=CjuIK1q_8ugA:10
-        a=pHzHmUro8NiASowvMSCR:22 a=nt3jZW36AmriUCFCBwmW:22
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:nvNRRXcRWLcJnQW+LzAEELym4xWiqFu0SMrdg2Dp6VHlyGDz7gD
+ 2sXtQA2VcbxZvRFYnsFP3lZWuhZJG6Iss3VCME8pByuEJfvLI7d0Twmf7eHLPhCMhKPDeeR
+ FXuOY4R0jgtu9jkMc+OXDaQZpVDoYclsjUtf20bOlyeC6Jt2cDIM/xkrpIxXrbNQAOhkXqe
+ slddb/Xg4HC2Lub+xOcyA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:f3diTxjBeqA=:G31ad69iCsf717rBLzPT/x
+ T3id+2SsBxLwJ7czjiOq+DIIHdoolUroRxJPbrigl/FPNcatQ0lAW0kSlqxRl2UB+FQmsHZhz
+ 8kUOAbo42+YgI+LSENk1kvhU80cF/IsBfHGBMWKvnIgnJQ2GC9csm0Ctlv6kN9MSkui920YP4
+ 0r5mLv2+74eta0uo4Gqp2c5mAWMCa+1LVoB/eL6MtjtM4VQ4WRnjX/9eKfDAPRvosN97vT6sG
+ QHkLZQmIYPRp2Yz30Z/IateyLW6zGoYlqBX4tlAmyjpHvGAmZR3RO9R8GTlMLWFwbXLuIvD48
+ 3ntQS2ETVcoSz0NyxjBx2/FlBd+8LG4Tx8Hb2MivdKHxM5o0niBqare5HQmkiRUbX0pVKX2bw
+ FUcXlRLfattlWCAbKzdppZFkkMLLtHKrYlSna095QY2MJmxiyQwsHxU2MDuWDbzy23hoki053
+ H/P+leVlH+krqxUFi+9wSPzwtuGRD83S97VofeZFkMtKtvr+zqI8lOqNgjABiXo2Xz0OEtHcY
+ kI2haQi82WISHcz5qWOyhaTqYJSiSUEYCxlmaBKy2u9o/2giLBPz8w3IjK8NGS6PuGXKcAEi/
+ UEdVoy77vvMxwRCLBgtCmnfuk2Qg2JgtX8Ahl1W2dnZ2hCtr6jTsIFNg2JR2DTwTLqQNDHeJP
+ zRjsuMeTpz4aZ3JYvHjT6/gwvGKZsFpOq0LIhsp4m/ynjPI1By8SewYBx3kz+qgcxauoieISS
+ nbmxsaAXp1x5ELyoUoTt6c2x5Txd3VTqjC77GF1niM/+w3AKNoVY2q62rI2fROGOvRVJUmlC7
+ GuSEhp53jwZrfje0a19prKcWSStnrul6a39sf7rGu3XtoxbJY0xrutf4gFuRI00oQz8OaWYrx
+ ZkZqurKIqno5lkUsgFKg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+On Fri, 2020-12-18 at 05:45 +1000, David Airlie wrote:
 
-> > I think we would be better served dropping support for sun4m and sun4d
-> > from the kernel.
-> 
-> This seems appropriate as well to me.
+> Does the attached patch help?
 
-I did a quick hack:
-20 files changed, 40 insertions(+), 3051 deletions(-)
+Yup, that seems to have done the trick.  Fast bug squashing by the drm
+guys today, two slowly bisected, two quickly squashed.
 
-All the leon stuff is kept and there is room for more cleaning up.
-The kernel can build a sparc32_defconfig with the Gaisler toochain.
-This was a one hour quick hack that I cannot commit - it needs to be
-split up to allow some resemble of review.
+	-Mike
 
-And it touched only arch/sparc/ - no sparc32 specific drivers were
-dropped.
-
-If we decide to chase this and we can drop sun4m/sun4d then maintaining
-leon will be simpler as a nice side effect.
-
-	Sam
