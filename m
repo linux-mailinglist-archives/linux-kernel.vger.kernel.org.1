@@ -2,90 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD3D2DDC25
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 00:50:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC9CA2DDC2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 00:51:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732526AbgLQXqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 18:46:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732192AbgLQXqd (ORCPT
+        id S1732026AbgLQXud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 18:50:33 -0500
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:44205 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730792AbgLQXub (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 18:46:33 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5B72C061794
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 15:45:52 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id g3so423055plp.2
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 15:45:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=W3RRTT7yNXDH2vqGzUOSfFsa20THnjHR3wCjzZigjJg=;
-        b=k3RC/895s3C+nXmkdzWMvvxjauP7XUKEgdQ9Ae0BcDG4xPBC8hvzZoYurw2xIWhHP3
-         ZfJ/QjphW+RtwQRxUK5YELqIBgAW6Up/T04VX+sZrpiEaZBHSQotn9UIdPaOSccGcmZI
-         LB+IiC8tpZ6ij1UgYn3pG6Tf+R9P2KtxxtBMKUhu+5BEzXbc7kDeou5Hp5i/VTrj7AeU
-         vREbM5ZOEc6hibgnN8sGA6PLE5/dw+RTLSHXLrTRHtelpDblCKUTgsN7YbTWJpLin1Um
-         0AqLvyXdpGUSqw0jiBcXG86WNd4MahW0hBZYa5hzq7Adg9GDp3Y4Ldufi7ukB5XrTFwU
-         r6dg==
+        Thu, 17 Dec 2020 18:50:31 -0500
+Received: by mail-ot1-f47.google.com with SMTP id f16so289274otl.11;
+        Thu, 17 Dec 2020 15:50:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=W3RRTT7yNXDH2vqGzUOSfFsa20THnjHR3wCjzZigjJg=;
-        b=cbGX7+Sd5Ze+luwRy9ZQ/lf4GoyLKJhvd4w523Kv8/Kh8xbOJLl4dioG+5Wt+QYR6K
-         Y+QJ8sXBKoSXeQTAZ7zVtirsze+EqoZdBU67ZRQIds6o7vjo0kY8peq+uE1gXVewmHa3
-         eFWOz+fGEEfW+SkZ2+1FGAovAN4GYrMjX0Yb/kQfHDhckKlR90eXLpaR+z0TJT2espqp
-         c1UfjoFWR5uPnSB1V7xnVfPj27W+tXHINc3Pp5AR1Uyi+kmazximMrgxh2Kc1krT6hhi
-         MbRCo4QeLrt+PzwcRRSDRL9OKgNGrV++SHsB71ezE/Fq4TTuSVFU5zLLry77M3jmxSSn
-         DA7g==
-X-Gm-Message-State: AOAM532LZ2zlh6/Ja/yw+UHeNff9hMi2MdfgKf8xElxprb21fRQhva6j
-        kISyo+yHPc5cY1I/6iiJn7E=
-X-Google-Smtp-Source: ABdhPJwZTMSyP5GW6egO5piE86RNO6/POneclQsd7v2mo1RWSf20PgSfV0+k3U4vYgYMnnPl6urrzg==
-X-Received: by 2002:a17:902:988c:b029:da:60e0:10ec with SMTP id s12-20020a170902988cb02900da60e010ecmr1272639plp.83.1608248751989;
-        Thu, 17 Dec 2020 15:45:51 -0800 (PST)
-Received: from localhost.localdomain (c-24-16-167-223.hsd1.wa.comcast.net. [24.16.167.223])
-        by smtp.gmail.com with ESMTPSA id z5sm6935088pgv.53.2020.12.17.15.45.51
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=B4zCGaNlp+KrExdt4xkJP2WRtO1LNObzQ+pHXnbCS0c=;
+        b=eg7pXRAERkcAXNT93xBSylFZJU1YQbM6UbYjeUIa1Xn7OXB2YO4uWf7+wovot/eyx8
+         ONicDUnlG4BgsIeEMcurm8DKnq2LBRpI0ODQmhWg6BFpk4P/AoaobQgXha+LHkgGml+g
+         7ypk6Suqty9GafJBY7JGFwoZW9HGgLmuKez2ABP11l8jOJ4r07/JRHOV34WMwVSeWIZS
+         vo90O8Ex83o5zp1owcxr3yW5u9cFTXxyvKXdAp0rqVj0slWaVbCXSf/9HKr5jgmDnkfG
+         IeB+ngdwSc9+gEbudH1gZ78Z7p+TwR2asS1dOie+U67GEGm7grDsYnepam+fRKlQAb/7
+         LMiA==
+X-Gm-Message-State: AOAM531hZRLvMc+TtFr7WtmPrC4M3D6eVq/I2O4teARUWJ9zNzkHbrqX
+        bVHV6hQzqeDbEcLlPuVSMKD0G6Cetw==
+X-Google-Smtp-Source: ABdhPJyUzeyjQ0RMOqTe/h+KLcEyYIdd0plSrvq3FMiavaqduwfXRv5TSWiaz82tlmIQdfC2nGAE2g==
+X-Received: by 2002:a9d:3d64:: with SMTP id a91mr1045379otc.144.1608248990682;
+        Thu, 17 Dec 2020 15:49:50 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id l5sm1536599otj.57.2020.12.17.15.49.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 15:45:51 -0800 (PST)
-From:   Daniel West <daniel.west.dev@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     hverkuil-cisco@xs4all.nl, mchehab+huawei@kernel.org,
-        christian.gromm@microchip.com, masahiroy@kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        daniel.west.dev@gmail.com
-Subject: [PATCH] staging: most: video: fixed a parentheses coding style issue.
-Date:   Thu, 17 Dec 2020 15:45:01 -0800
-Message-Id: <20201217234501.351725-1-daniel.west.dev@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 17 Dec 2020 15:49:49 -0800 (PST)
+Received: (nullmailer pid 453576 invoked by uid 1000);
+        Thu, 17 Dec 2020 23:49:48 -0000
+Date:   Thu, 17 Dec 2020 17:49:48 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     broonie@kernel.org, jagan@amarulasolutions.com,
+        lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, troy.kisky@boundarydevices.com
+Subject: Re: [PATCH v2 1/7] regulator: dt-bindings: remove useless properties
+Message-ID: <20201217234948.GA451916@robh.at.kernel.org>
+References: <20201215235639.31516-1-adrien.grassein@gmail.com>
+ <20201215235639.31516-2-adrien.grassein@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201215235639.31516-2-adrien.grassein@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed a coding style issue.
+On Wed, Dec 16, 2020 at 12:56:33AM +0100, Adrien Grassein wrote:
+> regulator-name is a generic property of the regulator.
+> Don't repeat it here.
 
-Signed-off-by: Daniel West <daniel.west.dev@gmail.com>
----
- drivers/staging/most/video/video.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Yes, but the values aren't generic.
 
-diff --git a/drivers/staging/most/video/video.c b/drivers/staging/most/video/video.c
-index 829df899b993..c58192ab0c2a 100644
---- a/drivers/staging/most/video/video.c
-+++ b/drivers/staging/most/video/video.c
-@@ -365,8 +365,8 @@ static const struct video_device comp_videodev_template = {
- 
- /**************************************************************************/
- 
--static struct most_video_dev *get_comp_dev(
--	struct most_interface *iface, int channel_idx)
-+static struct most_video_dev *get_comp_dev
-+	(struct most_interface *iface, int channel_idx)
- {
- 	struct most_video_dev *mdev;
- 	unsigned long flags;
--- 
-2.25.1
-
+> 
+> Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
+> ---
+>  .../regulator/nxp,pf8x00-regulator.yaml         | 17 -----------------
+>  1 file changed, 17 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml b/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
+> index a6c259ce9785..913532d0532e 100644
+> --- a/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
+> +++ b/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
+> @@ -36,12 +36,6 @@ properties:
+>          description:
+>            Properties for single LDO regulator.
+>  
+> -        properties:
+> -          regulator-name:
+> -            pattern: "^ldo[1-4]$"
+> -            description:
+> -              should be "ldo1", ..., "ldo4"
+> -
+>          unevaluatedProperties: false
+>  
+>        "^buck[1-7]$":
+> @@ -51,11 +45,6 @@ properties:
+>            Properties for single BUCK regulator.
+>  
+>          properties:
+> -          regulator-name:
+> -            pattern: "^buck[1-7]$"
+> -            description:
+> -              should be "buck1", ..., "buck7"
+> -
+>            nxp,ilim-ma:
+>              $ref: "/schemas/types.yaml#/definitions/uint32"
+>              minimum: 2100
+> @@ -94,12 +83,6 @@ properties:
+>          description:
+>            Properties for single VSNVS regulator.
+>  
+> -        properties:
+> -          regulator-name:
+> -            pattern: "^vsnvs$"
+> -            description:
+> -              should be "vsnvs"
+> -
+>          unevaluatedProperties: false
+>  
+>      additionalProperties: false
+> -- 
+> 2.20.1
+> 
