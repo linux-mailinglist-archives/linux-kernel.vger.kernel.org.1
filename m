@@ -2,62 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA952DCE48
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 10:29:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 074D22DCE6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 10:32:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727233AbgLQJ3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 04:29:12 -0500
-Received: from mga04.intel.com ([192.55.52.120]:1837 "EHLO mga04.intel.com"
+        id S1727520AbgLQJcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 04:32:45 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42908 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726703AbgLQJ3L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 04:29:11 -0500
-IronPort-SDR: ve+m5k+NDqtjwa3keGwuZVT1vS+GXT/VEksg+RqOkXzx4tFhpA6nw7RF0T2+7auxJkGSRSHj0U
- RXGS9FA6QkYA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9837"; a="172650301"
-X-IronPort-AV: E=Sophos;i="5.78,426,1599548400"; 
-   d="scan'208";a="172650301"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2020 01:27:25 -0800
-IronPort-SDR: 35SsHYj6v3p7in39ljv1jdkaos50haWexDHJ/ZCTChLnl45Ba7fxRHaYrZvVYGHILFVF7Nr3mq
- I+N7wJCJZXHg==
-X-IronPort-AV: E=Sophos;i="5.78,426,1599548400"; 
-   d="scan'208";a="339223589"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2020 01:27:23 -0800
-Received: by lahna (sSMTP sendmail emulation); Thu, 17 Dec 2020 11:27:19 +0200
-Date:   Thu, 17 Dec 2020 11:27:19 +0200
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        Hans De Goede <hdegoede@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [RFT][PATCH v1 0/3] ACPI: scan: Defer enumeration of devices
- with significant dependencies
-Message-ID: <20201217092719.GF5246@lahna.fi.intel.com>
-References: <1646930.v2jOOB1UEN@kreacher>
+        id S1725950AbgLQJcd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 04:32:33 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1608197506; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=E7FpqkqnD5unmDeE4sjWFYeLFL2ZgXDe6/5+3YmBT64=;
+        b=a9yFTfK79u+NFXUZ4zWV8aHPpDUcRPDVvBCcSa9sHMiOYeRnwQj4sILTaezMzm4EYJQG+K
+        gWtQy41s+pv/TtoyNIh8/P2b5G/eZiIFhJyS9RJs098dCw6tqaN2AHvfO5MUEHUwEaUz34
+        +nKJxIVkWwafsJ2frUmJ4ePnkcxTR4M=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 44FF5B1A1;
+        Thu, 17 Dec 2020 09:31:46 +0000 (UTC)
+From:   Juergen Gross <jgross@suse.com>
+To:     xen-devel@lists.xenproject.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Juergen Gross <jgross@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Deep Shah <sdeep@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: [PATCH v3 00/15] x86: major paravirt cleanup
+Date:   Thu, 17 Dec 2020 10:31:18 +0100
+Message-Id: <20201217093133.1507-1-jgross@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1646930.v2jOOB1UEN@kreacher>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
+This is a major cleanup of the paravirt infrastructure aiming at
+eliminating all custom code patching via paravirt patching.
 
-On Mon, Dec 14, 2020 at 09:23:47PM +0100, Rafael J. Wysocki wrote:
-> Hi,
-> 
-> This series addresses some enumeration ordering issues by using information
-> from _DEP to defer the enumeration of devices that are likely to depend on
-> operation region (OpRegion) handlers supplied by the drivers of other
-> devices.
-> 
-> This allows the OpRegion suppliers to be probed and start working before the
-> devices depending on them are enumerated.
+This is achieved by using ALTERNATIVE instead, leading to the ability
+to give objtool access to the patched in instructions.
 
-For the whole series,
+In order to remove most of the 32-bit special handling from pvops the
+time related operations are switched to use static_call() instead.
 
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+At the end of this series all paravirt patching has to do is to
+replace indirect calls with direct ones. In a further step this could
+be switched to static_call(), too, but that would require a major
+header file disentangling.
+
+Changes in V3:
+- added patches 7 and 12
+- addressed all comments
+
+Changes in V2:
+- added patches 5-12
+
+Juergen Gross (14):
+  x86/xen: use specific Xen pv interrupt entry for MCE
+  x86/xen: use specific Xen pv interrupt entry for DF
+  x86/pv: switch SWAPGS to ALTERNATIVE
+  x86/xen: drop USERGS_SYSRET64 paravirt call
+  x86: rework arch_local_irq_restore() to not use popf
+  x86/paravirt: switch time pvops functions to use static_call()
+  x86/alternative: support "not feature" and ALTERNATIVE_TERNARY
+  x86: add new features for paravirt patching
+  x86/paravirt: remove no longer needed 32-bit pvops cruft
+  x86/paravirt: simplify paravirt macros
+  x86/paravirt: switch iret pvops to ALTERNATIVE
+  x86/paravirt: add new macros PVOP_ALT* supporting pvops in
+    ALTERNATIVEs
+  x86/paravirt: switch functions with custom code to ALTERNATIVE
+  x86/paravirt: have only one paravirt patch function
+
+Peter Zijlstra (1):
+  objtool: Alternatives vs ORC, the hard way
+
+ arch/x86/Kconfig                       |   1 +
+ arch/x86/entry/entry_32.S              |   4 +-
+ arch/x86/entry/entry_64.S              |  26 ++-
+ arch/x86/include/asm/alternative-asm.h |   3 +
+ arch/x86/include/asm/alternative.h     |   7 +
+ arch/x86/include/asm/cpufeatures.h     |   2 +
+ arch/x86/include/asm/idtentry.h        |   6 +
+ arch/x86/include/asm/irqflags.h        |  51 ++----
+ arch/x86/include/asm/mshyperv.h        |  11 --
+ arch/x86/include/asm/paravirt.h        | 157 ++++++------------
+ arch/x86/include/asm/paravirt_time.h   |  38 +++++
+ arch/x86/include/asm/paravirt_types.h  | 220 +++++++++----------------
+ arch/x86/kernel/Makefile               |   3 +-
+ arch/x86/kernel/alternative.c          |  59 ++++++-
+ arch/x86/kernel/asm-offsets.c          |   7 -
+ arch/x86/kernel/asm-offsets_64.c       |   3 -
+ arch/x86/kernel/cpu/vmware.c           |   5 +-
+ arch/x86/kernel/irqflags.S             |  11 --
+ arch/x86/kernel/kvm.c                  |   3 +-
+ arch/x86/kernel/kvmclock.c             |   3 +-
+ arch/x86/kernel/paravirt.c             |  83 +++-------
+ arch/x86/kernel/paravirt_patch.c       | 109 ------------
+ arch/x86/kernel/tsc.c                  |   3 +-
+ arch/x86/xen/enlighten_pv.c            |  36 ++--
+ arch/x86/xen/irq.c                     |  23 ---
+ arch/x86/xen/time.c                    |  12 +-
+ arch/x86/xen/xen-asm.S                 |  52 +-----
+ arch/x86/xen/xen-ops.h                 |   3 -
+ drivers/clocksource/hyperv_timer.c     |   5 +-
+ drivers/xen/time.c                     |   3 +-
+ kernel/sched/sched.h                   |   1 +
+ tools/objtool/check.c                  | 180 ++++++++++++++++++--
+ tools/objtool/check.h                  |   5 +
+ tools/objtool/orc_gen.c                | 178 +++++++++++++-------
+ 34 files changed, 627 insertions(+), 686 deletions(-)
+ create mode 100644 arch/x86/include/asm/paravirt_time.h
+ delete mode 100644 arch/x86/kernel/paravirt_patch.c
+
+-- 
+2.26.2
+
