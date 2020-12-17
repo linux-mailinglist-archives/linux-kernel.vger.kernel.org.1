@@ -2,241 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9DC2DCF0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 11:04:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEF252DCF0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 11:06:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727337AbgLQKEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 05:04:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726488AbgLQKEN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 05:04:13 -0500
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37856C0617B0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 02:03:33 -0800 (PST)
-Received: by mail-oo1-xc29.google.com with SMTP id 9so6667202ooy.7
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 02:03:33 -0800 (PST)
+        id S1727396AbgLQKFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 05:05:40 -0500
+Received: from mail-vi1eur05on2056.outbound.protection.outlook.com ([40.107.21.56]:62595
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725930AbgLQKFj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 05:05:39 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oUjF63HfUtZvVYO58C4Hq6VSAtJM9YeTsNryGqybXAlp7/LI4YOM/Oojt6wO+R2B7Cx0g9H/K7OhuB/rBJV6MWDzgUtegcIGHE6ZDEbk/OBk5He7xlI9n5lSVYWeM8sWjuird7j8/II9fCXrFrLf/3yYYwQD7Di12g1Pe3Q4i9wAdVzw1ZMDS/S4JfdaKPaSBVMRYDPgJCdjJYQRx3aR5YH8W2pyp5JSHPdrerKTT2DCkh/RiCwwMChRwKqmYG5NBRouaIkiGO9zvGiixJTu7Hyq5yQn8CPS1J1nyrUTrNGFBwTUPKW0E9XohWTkkHGQGU8IzOt2NYq0ZUE5fOsaNQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MK19+Mr8RPMB66iRM2QPITg/rKX4OUb+LI4C6M+zPjo=;
+ b=StockriJr2u2Pc/Sglm9cduFiLqrYzYKlJXIyi8UR2K8sC7LsEHvgbnf+/pEzydcJ64E6T4On1MbXQkoLrwFLanOUiXIFQSrgq1Pm3F4tfMqYj96cuyIBeo7XdYVs4CilU37K8yEJQl9d+It9UUwY9m3srWjaGd0d+SO0cnWaF2JYpDalw6XMQFhzPoH8ulqEfJyG0VQc9uHfVM58aFVgQjK+11gt/R4bMwiPJ6WejGtCJj7HQ33oq8JF5hwJEDXwM5LG4NQC8rg/Gm6C+KOVGjcl0Y4fJ7K0mbaYFLdTMxmaU71oC35gAxkEEWXqPU3VU1Rj71xG26isy/IHF7dlA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fi.rohmeurope.com; dmarc=pass action=none
+ header.from=fi.rohmeurope.com; dkim=pass header.d=fi.rohmeurope.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QovU7n4TipZBHahKpVmuX6ckuC6desZlmOmZDqTqu3M=;
-        b=JRI+pp7dnV1oOaSedDD0zjdx02ivklV8ckbZfiPHBcKgcdLi7zY+gS227LevsvZ0qt
-         IDh8C0GVZpETDBWL96aYpOOsWjVr/wm7Yg2mPbqvPEzwoBK/acGCdB7H2Bm46SbXlMY9
-         LI9prf+HrkxZcJ73yGyH50UGC7W7uAfLxSK2w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QovU7n4TipZBHahKpVmuX6ckuC6desZlmOmZDqTqu3M=;
-        b=RDnmTZCSVVYx3jLkw803fN7m9vfquOsVihpwhYYsgeKkL9dt1oInRRkYuVcNO4MuUI
-         Q8VbDeVtQt5ZMcoBQp49JivvznNeeDkwndXHGxuvcytQJCUijs4HWTcYiJ0kmdWQhIO8
-         2aMZ9d2HXPNrYDIT2RedC5NYyDsyu1vnHaItKl7PZPflLxryQyykioxQjaZMv5Zu4Q/a
-         jW7X/HVhWIso91euI1EM0McghOfgJgr7NGVySMIKRVL5ygVvyJXEz1jiao3zHTRHwvQ5
-         R3msa1hj8rzsAdSfKOg6tJHjlfoCOcWG4Zy0fvGKtOr/jP1M/j9Pf6y/4SVtnuqPS9gU
-         1pdw==
-X-Gm-Message-State: AOAM530jo3eYsl9bloxdkPis/G3k+cqgKKZ1NTdsaT9IkW/1n/R5bO0Y
-        jLcSqV6i3uKet3K/4NJWuDinK8l9ecgugYo8H3NINQ==
-X-Google-Smtp-Source: ABdhPJy5FyP1RpGPHptqgvfzTl40RI28lCDVHE2WDMhIPwjXe0oeZjeKTXrjIAMh+Ju7p0whj3OsI4bRHTUe7q/o58A=
-X-Received: by 2002:a4a:c387:: with SMTP id u7mr23255908oop.89.1608199412424;
- Thu, 17 Dec 2020 02:03:32 -0800 (PST)
+ d=rohmsemiconductoreurope.onmicrosoft.com;
+ s=selector1-rohmsemiconductoreurope-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MK19+Mr8RPMB66iRM2QPITg/rKX4OUb+LI4C6M+zPjo=;
+ b=mrz8crb/bPdPxs2OT7GPJZd1NiSTivJYbmSBXOwZVg+d8Yy0PT6+mKPdjovvjCTQVbENxORaaL8QEkhBko4ISfKUniR3QBVm9hnyNQ1P+axJ4qwy+bJXHy3wU+pviZQIM9EokZeWPCziTIjXKsplIPA0QHowUOHGDvfZDVSETDQ=
+Received: from HE1PR03MB3162.eurprd03.prod.outlook.com (2603:10a6:7:55::20) by
+ HE1PR03MB2890.eurprd03.prod.outlook.com (2603:10a6:7:5c::14) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3654.19; Thu, 17 Dec 2020 10:04:47 +0000
+Received: from HE1PR03MB3162.eurprd03.prod.outlook.com
+ ([fe80::f1f1:eb1d:2bf5:eb87]) by HE1PR03MB3162.eurprd03.prod.outlook.com
+ ([fe80::f1f1:eb1d:2bf5:eb87%7]) with mapi id 15.20.3676.025; Thu, 17 Dec 2020
+ 10:04:47 +0000
+From:   "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+To:     "lee.jones@linaro.org" <lee.jones@linaro.org>
+CC:     "linux@roeck-us.net" <linux@roeck-us.net>,
+        "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
+        "mazziesaccount@gmail.com" <mazziesaccount@gmail.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+Subject: Re: [PATCH RESEND v6 2/4] mfd: Support ROHM BD9576MUF and BD9573MUF
+Thread-Topic: [PATCH RESEND v6 2/4] mfd: Support ROHM BD9576MUF and BD9573MUF
+Thread-Index: AQHWwWDHZJglj3cu602g/c6U2v2JcanbrP0AgAAT74CACBGsgIAACbeAgBdZAYA=
+Date:   Thu, 17 Dec 2020 10:04:46 +0000
+Message-ID: <c2949e981014c049571df355501f2af65b3954de.camel@fi.rohmeurope.com>
+References: <cover.1605882179.git.matti.vaittinen@fi.rohmeurope.com>
+         <cc46e329efa30c66f000ab7c97f9bbf0bc31f0f7.1605882179.git.matti.vaittinen@fi.rohmeurope.com>
+         <20201127083242.GK2455276@dell>
+         <6bd4abcb340bdf764fd23b685684d3f984319ed7.camel@fi.rohmeurope.com>
+         <20201202125723.GK4801@dell>
+         <3bab8bd8c69a878f849a07dd9ea35bfac2006da2.camel@fi.rohmeurope.com>
+In-Reply-To: <3bab8bd8c69a878f849a07dd9ea35bfac2006da2.camel@fi.rohmeurope.com>
+Reply-To: "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+Accept-Language: fi-FI, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+authentication-results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none
+ header.from=fi.rohmeurope.com;
+x-originating-ip: [62.78.225.252]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c5e7510d-5c17-4f8e-a4c4-08d8a2732f4e
+x-ms-traffictypediagnostic: HE1PR03MB2890:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <HE1PR03MB2890BDC3139AA0B4D904609DADC40@HE1PR03MB2890.eurprd03.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: YXrxb7yoQonM0zn30JJAfM1LO/Jgc7Jj5vxyLWv3Hu1QdeJ2ZdCQMdWLpDJancK2HN+sTN4PoFoMywSDf5UYU7nBXWNDz/jLua5TYyCJpyNygbaF4Kcn5pnIpIM8Fss2Zjh6WCDaqsSQX5iKhIpNuei9wQi0TnbQ2tC4NSd2b9syBvi6g6HuYfxSQM2ieDvYUWPTMfiu9J+tZxEagHlZk9s3BDQ9W/am3b1/jRlXoKpUBryrt4NHK9q+L+5BJQaJ7bJJ2vdYGnOwUR8NaDimc5spnnjvZOsNfJtclxWDHFUq7CkwXLN2G6soiT2XhVvxcPDq5goOpjYCE5OKRcy23w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR03MB3162.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(366004)(346002)(39850400004)(396003)(86362001)(2906002)(3450700001)(8936002)(6486002)(4001150100001)(26005)(5660300002)(6506007)(4326008)(8676002)(6512007)(186003)(66476007)(64756008)(6916009)(66446008)(66946007)(316002)(71200400001)(76116006)(54906003)(66556008)(2616005)(478600001)(83380400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?YzhoT1NMcFcrVjNHTnlPN09YYXZ2Qk1kaEh1SWpHRFNIbUFwWmVGb0MxNkR1?=
+ =?utf-8?B?ckMwVW5idG9RMkliUzhmczVERDVHTFBJcldBc0RFOCt6d09iTkxHdkdPV0Fr?=
+ =?utf-8?B?Sk5CTVd3MmVnOEIzb3dBelV1Z0dJV2VEYmVWTHpHUlpJdXFFZ3R2blhSdENq?=
+ =?utf-8?B?YkFYMFVGeWRPemt2ZjNBWXJJbk5Fbk5EWGZGWW95SnBHTzJNRmR3Q1hqWU5E?=
+ =?utf-8?B?UkhkbTI2M0d3eEhoOHRVT0plWHA4NjVNWENPak5lUFpIMmZpYW96Z1FGbXFk?=
+ =?utf-8?B?SFZkSGZ3Nk5BUGg4akZrTDFNOHExWVIvK2xpTzEzMnRtbmZ3YTJKK1Qwa21r?=
+ =?utf-8?B?K3g4R2FuR0lzVVFBejlDd0crUGk0U0QrUFFJOVRNd1VIL1ZaYjR1Mlk0THpq?=
+ =?utf-8?B?aGpzaFNNdkVBakNRd0srOVV2bmdSR2grOVpQcXRQOWZaTzJrT3hzL0FmakdT?=
+ =?utf-8?B?WGZsN0ZmbUNja2tSVTNjeGhVK3hMQlNVbU8wQnR2MExtTm5sZHRzdUtXNWRU?=
+ =?utf-8?B?Y3o3MlJtdzA2WEdCd09WV1ZWdlFzT2daVTVUNXhRRmtza0dWckdPZDQ3dFk3?=
+ =?utf-8?B?YjNGa2QxanFURTZsQitKdHRPWFZsMlkvYnRlekovekhLVnZMU0ppbTFEejFs?=
+ =?utf-8?B?RTNZL3ZQYW9VYnQ1QWlDaTY0UkpQU1NVTGwvZ2lmU0RUVDEvRjEzdHZXaHZp?=
+ =?utf-8?B?UTFXRWJOOXA3djBXRDdmWm1ld3FQckYwUlY1cWY2OS9PRWgra29PbXkzTEgx?=
+ =?utf-8?B?N241bUwxanlsSFF4dFdKT3ZUNUZ4aVdkaDEveGVxSHlYZGI2QlVsOExidGZ3?=
+ =?utf-8?B?dmxyWlZNZCtLMjNpVEUyM244OFQ5Zk9Tcm5yM0ZYZ0tlbnhIbEpQMHVIVW8w?=
+ =?utf-8?B?WjB6SVAyUnJLVXRUS2hBL2hKYW91SkRmVlNYdklVbDF3S2FjdWdrK2F1OGJ6?=
+ =?utf-8?B?WHRURVZ0c0JOL250RnAyR0Zwa1R2ZzlwYzdkYlNQWit4Sks0N0lkUmZ3SUxV?=
+ =?utf-8?B?YWxNdWtrUkZINVJSc3JTdU13bVVHcG9UR1lET005alRnRHMyNDZVNFV3bGNW?=
+ =?utf-8?B?K2Y4VCtiM0FCUGcrZi92RU5Xb0xlQ21xRVVDV1pyUGhIVUZYNlN4dGpxbStT?=
+ =?utf-8?B?YmpoUkpxMkN5Y3ZjSUpscVZFcHVmajg0RkVFMWxWRFcvNjVLN2pUM2dLamhQ?=
+ =?utf-8?B?OVhDZkJRaW9GZ1RFM09hQStjM0d2RW1uSjR2SWsyWS85bW5uUmVtS2lBdWFt?=
+ =?utf-8?B?V2FVRDd4ZzF0bEx4TWtTNUJyUzdUQkdVSW9aU1MrRklMcjBLek1WODVySTVD?=
+ =?utf-8?Q?jUPYN4Cz0eyAZJfiQCLXz2kNZaOctnjWKr?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <15E6461DBF1F54458759C423C261B9DF@eurprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <000000000000cb6db205b68a971c@google.com> <CAKMK7uEiS5SrBYv-2w2wWL=9G4ByoHvtiWVsPqekswZzOGmzjg@mail.gmail.com>
- <20201216161621.GH2657@paulmck-ThinkPad-P72>
-In-Reply-To: <20201216161621.GH2657@paulmck-ThinkPad-P72>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Thu, 17 Dec 2020 11:03:20 +0100
-Message-ID: <CAKMK7uH1agVS=e245b=25Lv9Q+u5c7=KL-_NF8Hte10nKTqAXw@mail.gmail.com>
-Subject: Re: WARNING: suspicious RCU usage in modeset_lock
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     syzbot <syzbot+972b924c988834e868b2@syzkaller.appspotmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Peter Rosin <peda@axentia.se>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: fi.rohmeurope.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HE1PR03MB3162.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c5e7510d-5c17-4f8e-a4c4-08d8a2732f4e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Dec 2020 10:04:47.0357
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 94f2c475-a538-4112-b5dd-63f17273d67a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 7todYLBaJF3SK8WMu5envo229uH6MjLF6JOIbEwfiuYcf/PDKkBcNpdFuN5QkBjEr3xSJZciI2E88ZXvVR7OusmLrn6yWFHC792/BXJ8E+NaKstCA7aodvJ8EpNmzcFT
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR03MB2890
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 5:16 PM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Wed, Dec 16, 2020 at 10:52:06AM +0100, Daniel Vetter wrote:
-> > On Wed, Dec 16, 2020 at 2:14 AM syzbot
-> > <syzbot+972b924c988834e868b2@syzkaller.appspotmail.com> wrote:
-> > >
-> > > Hello,
-> > >
-> > > syzbot found the following issue on:
-> > >
-> > > HEAD commit:    94801e5c Merge tag 'pinctrl-v5.10-3' of git://git.kernel.o..
-> > > git tree:       upstream
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=130558c5500000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=ee8a1012a5314210
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=972b924c988834e868b2
-> > > compiler:       gcc (GCC) 10.1.0-syz 20200507
-> > > userspace arch: i386
-> > >
-> > > Unfortunately, I don't have any reproducer for this issue yet.
-> > >
-> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > Reported-by: syzbot+972b924c988834e868b2@syzkaller.appspotmail.com
-> > >
-> > > =============================
-> > > WARNING: suspicious RCU usage
-> > > 5.10.0-rc7-syzkaller #0 Not tainted
-> > > -----------------------------
-> > > kernel/sched/core.c:7270 Illegal context switch in RCU-sched read-side critical section!
-> > >
-> > > other info that might help us debug this:
-> > >
-> > >
-> > > rcu_scheduler_active = 2, debug_locks = 0
-> > > 7 locks held by syz-executor.1/9232:
-> > >  #0: ffffffff8b328c60 (console_lock){+.+.}-{0:0}, at: do_fb_ioctl+0x2e4/0x690 drivers/video/fbdev/core/fbmem.c:1106
-> > >  #1: ffff888041bd4078 (&fb_info->lock){+.+.}-{3:3}, at: lock_fb_info include/linux/fb.h:636 [inline]
-> > >  #1: ffff888041bd4078 (&fb_info->lock){+.+.}-{3:3}, at: do_fb_ioctl+0x2ee/0x690 drivers/video/fbdev/core/fbmem.c:1107
-> > >  #2: ffff888041adca78 (&helper->lock){+.+.}-{3:3}, at: drm_fb_helper_pan_display+0xce/0x970 drivers/gpu/drm/drm_fb_helper.c:1448
-> > >  #3: ffff8880159f01b8 (&dev->master_mutex){+.+.}-{3:3}, at: drm_master_internal_acquire+0x1d/0x70 drivers/gpu/drm/drm_auth.c:407
-> > >  #4: ffff888041adc898 (&client->modeset_mutex){+.+.}-{3:3}, at: drm_client_modeset_commit_locked+0x44/0x580 drivers/gpu/drm/drm_client_modeset.c:1143
-> > >  #5: ffffc90001c07730 (crtc_ww_class_acquire){+.+.}-{0:0}, at: drm_client_modeset_commit_atomic+0xb7/0x7c0 drivers/gpu/drm/drm_client_modeset.c:981
-> > >  #6: ffff888015986108 (crtc_ww_class_mutex){+.+.}-{3:3}, at: ww_mutex_lock_slow include/linux/ww_mutex.h:287 [inline]
-> > >  #6: ffff888015986108 (crtc_ww_class_mutex){+.+.}-{3:3}, at: modeset_lock+0x31c/0x650 drivers/gpu/drm/drm_modeset_lock.c:260
-> >
-> > Given that we managed to take all these locks without upsetting anyone
-> > the rcu section is very deep down. And looking at the backtrace below
-> > I just couldn't find anything.
-> >
-> > Best I can think of is that an interrupt of some sort leaked an rcu
-> > section, and we got shot here. But I'd assume the rcu debugging would
-> > catch this? Backtrace of the start of that rcu read side section would
-> > be really useful here, but I'm not seeing that in the logs. There's
-> > more stuff there, but it's just the usual "everything falls apart"
-> > stuff of little value to understanding how we got there.
->
-> In my experience, lockdep will indeed complain if an interrupt handler
-> returns while in an RCU read-side critical section.
->
-> > Adding some rcu people for more insights on what could have gone wrong here.
-> > -Daniel
-> >
-> > > stack backtrace:
-> > > CPU: 1 PID: 9232 Comm: syz-executor.1 Not tainted 5.10.0-rc7-syzkaller #0
-> > > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-> > > Call Trace:
-> > >  __dump_stack lib/dump_stack.c:77 [inline]
-> > >  dump_stack+0x107/0x163 lib/dump_stack.c:118
-> > >  ___might_sleep+0x25d/0x2b0 kernel/sched/core.c:7270
-> > >  __mutex_lock_common kernel/locking/mutex.c:935 [inline]
-> > >  __ww_mutex_lock.constprop.0+0xa9/0x2cc0 kernel/locking/mutex.c:1111
-> > >  ww_mutex_lock+0x3d/0x170 kernel/locking/mutex.c:1190
->
-> Acquiring a mutex while under the influence of rcu_read_lock() will
-> definitely get you this lockdep complaint, and rightfully so.
->
-> If you need to acquire a mutex with RCU-like protection, one approach
-> is to use SRCU.  But usually this indicates (as you suspected) that
-> someone forgot to invoke rcu_read_unlock().
->
-> One way to locate this is to enlist the aid of lockdep.  You can do this
-> by putting something like this in the callers:
->
->         RCU_LOCKDEP_WARN(lock_is_held(&rcu_bh_lock_map) ||
->                          lock_is_held(&rcu_lock_map) ||
->                          lock_is_held(&rcu_sched_lock_map),
->                          "We are in an RCU read-side critical section");
->
-> This will get you a lockdep complaint much like the one above if the
-> caller is in any sort of RCU read-side critical section.  You can push
-> this up the call stack one level at a time or just sprinkle it up the
-> stack in one go.
->
-> The complaint is specifically about RCU-sched, so you could focus on
-> that using this instead:
->
->         RCU_LOCKDEP_WARN(lock_is_held(&rcu_sched_lock_map),
->                          "We are in an RCU-sched read-side critical section");
->
-> This of course assumes that this is reproducible.  :-/
->
-> But even if it isn't reproducible, for example, if the mutex is only
-> acquired occasionally, these RCU_LOCKDEP_WARN() calls can be used to
-> check assumptions about state.
-
-I think we're tripping over the might_sleep() all the mutexes have,
-and that's not as good as yours, but good enough to catch a missing
-rcu_read_unlock(). That's kinda why I'm baffled, since like almost
-every 2nd function in the backtrace grabbed a mutex and it was all
-fine until the very last.
-
-I think it would be really nice if the rcu checks could retain (in
-debugging only) the backtrace of the outermost rcu_read_lock, so we
-could print that when something goes wrong in cases where it's leaked.
-For normal locks lockdep does that already (well not full backtrace I
-think, just the function that acquired the lock, but that's often
-enough). I guess that doesn't exist yet?
-
-Also yes without reproducer this is kinda tough nut to crack.
--Daniel
-
->
->                                                         Thanx, Paul
->
-> > >  modeset_lock+0x392/0x650 drivers/gpu/drm/drm_modeset_lock.c:263
-> > >  drm_modeset_lock drivers/gpu/drm/drm_modeset_lock.c:342 [inline]
-> > >  drm_modeset_lock+0x50/0x90 drivers/gpu/drm/drm_modeset_lock.c:338
-> > >  drm_atomic_get_plane_state+0x19d/0x510 drivers/gpu/drm/drm_atomic.c:481
-> > >  drm_client_modeset_commit_atomic+0x225/0x7c0 drivers/gpu/drm/drm_client_modeset.c:994
-> > >  drm_client_modeset_commit_locked+0x145/0x580 drivers/gpu/drm/drm_client_modeset.c:1145
-> > >  pan_display_atomic drivers/gpu/drm/drm_fb_helper.c:1395 [inline]
-> > >  drm_fb_helper_pan_display+0x28b/0x970 drivers/gpu/drm/drm_fb_helper.c:1455
-> > >  fb_pan_display+0x2f7/0x6c0 drivers/video/fbdev/core/fbmem.c:925
-> > >  fb_set_var+0x57f/0xda0 drivers/video/fbdev/core/fbmem.c:1043
-> > >  do_fb_ioctl+0x2f9/0x690 drivers/video/fbdev/core/fbmem.c:1108
-> > >  fb_compat_ioctl+0x17c/0xaf0 drivers/video/fbdev/core/fbmem.c:1315
-> > >  __do_compat_sys_ioctl+0x1d3/0x230 fs/ioctl.c:842
-> > >  do_syscall_32_irqs_on arch/x86/entry/common.c:78 [inline]
-> > >  __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:137
-> > >  do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:160
-> > >  entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-> > > RIP: 0023:0xf7fd8549
-> > > Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
-> > > RSP: 002b:00000000f55d20bc EFLAGS: 00000296 ORIG_RAX: 0000000000000036
-> > > RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000004601
-> > > RDX: 0000000020000240 RSI: 0000000000000000 RDI: 0000000000000000
-> > > RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-> > > R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-> > > R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-> > > detected fb_set_par error, error code: -16
-> > >
-> > >
-> > > ---
-> > > This report is generated by a bot. It may contain errors.
-> > > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> > >
-> > > syzbot will keep track of this issue. See:
-> > > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> >
-> >
-> >
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
-
-
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+SGkgZGVlZSBIbyBMZWUsDQoNCk9uIFdlZCwgMjAyMC0xMi0wMiBhdCAxNTozMiArMDIwMCwgTWF0
+dGkgVmFpdHRpbmVuIHdyb3RlOg0KPiBIZWxsbyBMZWUsDQo+IA0KPiBPbiBXZWQsIDIwMjAtMTIt
+MDIgYXQgMTI6NTcgKzAwMDAsIExlZSBKb25lcyB3cm90ZToNCj4gPiBPbiBGcmksIDI3IE5vdiAy
+MDIwLCBWYWl0dGluZW4sIE1hdHRpIHdyb3RlOg0KPiA+IA0KPiA+ID4gSGVsbG8gTGVlLA0KPiA+
+ID4gDQo+ID4gPiBPbiBGcmksIDIwMjAtMTEtMjcgYXQgMDg6MzIgKzAwMDAsIExlZSBKb25lcyB3
+cm90ZToNCj4gPiA+ID4gT24gTW9uLCAyMyBOb3YgMjAyMCwgTWF0dGkgVmFpdHRpbmVuIHdyb3Rl
+Og0KPiA+ID4gPiANCj4gPiA+ID4gPiBBZGQgY29yZSBzdXBwb3J0IGZvciBST0hNIEJEOTU3Nk1V
+RiBhbmQgQkQ5NTczTVVGIFBNSUNzIHdoaWNoDQo+ID4gPiA+ID4gYXJlDQo+ID4gPiA+ID4gbWFp
+bmx5IHVzZWQgdG8gcG93ZXIgdGhlIFItQ2FyIHNlcmllcyBwcm9jZXNzb3JzLg0KPiA+ID4gPiA+
+IA0KPiA+ID4gPiA+IFNpZ25lZC1vZmYtYnk6IE1hdHRpIFZhaXR0aW5lbiA8DQo+ID4gPiA+ID4g
+bWF0dGkudmFpdHRpbmVuQGZpLnJvaG1ldXJvcGUuY29tPg0KPiA+ID4gPiA+IC0tLQ0KPiA+ID4g
+PiA+ICBkcml2ZXJzL21mZC9LY29uZmlnICAgICAgICAgICAgICB8ICAxMSArKysrDQo+ID4gPiA+
+ID4gIGRyaXZlcnMvbWZkL01ha2VmaWxlICAgICAgICAgICAgIHwgICAxICsNCj4gPiA+ID4gPiAg
+ZHJpdmVycy9tZmQvcm9obS1iZDk1NzYuYyAgICAgICAgfCAxMDgNCj4gPiA+ID4gPiArKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrDQo+ID4gPiA+ID4gIGluY2x1ZGUvbGludXgvbWZkL3Jv
+aG0tYmQ5NTd4LmggIHwgIDU5ICsrKysrKysrKysrKysrKysrDQo+ID4gPiA+ID4gIGluY2x1ZGUv
+bGludXgvbWZkL3JvaG0tZ2VuZXJpYy5oIHwgICAyICsNCj4gPiA+ID4gPiAgNSBmaWxlcyBjaGFu
+Z2VkLCAxODEgaW5zZXJ0aW9ucygrKQ0KPiA+ID4gPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJp
+dmVycy9tZmQvcm9obS1iZDk1NzYuYw0KPiA+ID4gPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQgaW5j
+bHVkZS9saW51eC9tZmQvcm9obS1iZDk1N3guaA0KPiA+ID4gPiANCj4gPiA+ID4gTG9va3MgbGlr
+ZSBhIHBvc3NpYmxlIGNhbmRpZGF0ZSBmb3IgInNpbXBsZS1tZmQtaTJjIi4NCj4gPiA+ID4gDQo+
+ID4gPiA+IENvdWxkIHlvdSBsb29rIGludG8gdGhhdCBwbGVhc2U/DQo+ID4gPiA+IA0KPiA+ID4g
+SSBtdXN0IGFkbWl0IEkgZGlkbid0IGtub3cgYWJvdXQgInNpbXBsZS1tZmQtaTJjIi4gR29vZCB0
+aGluZyB0bw0KPiA+ID4ga25vdw0KPiA+ID4gd2hlbiB3b3JraW5nIHdpdGggc2ltcGxlIGRldmlj
+ZXMgOikgSXMgdGhpcyBhIG5ldyB0aGluZz8NCj4gPiANCj4gPiBZZXMsIGl0J3MgbmV3Lg0KPiA+
+IA0KPiA+ID4gSSBhbSB1bnN1cmUgSSB1bmRlcnN0YW5kIHRoZSBpZGVhIGZ1bGx5LiBTaG91bGQg
+dXNlcnMgcHV0IGFsbCB0aGUNCj4gPiA+IGRpZmZlcmVudCByZWdhbXAgY29uZmlncyBpbiB0aGlz
+IGZpbGUgYW5kIGp1c3QgYWRkIHRoZSBkZXZpY2UgSURzDQo+ID4gPiB3aXRoDQo+ID4gPiBwb2lu
+dGVyIHRvIGNvcnJlY3QgY29uZmlnPyAoQkQ5NTc2IGFuZCBCRDk1NzMgbmVlZCB2b2xhdGlsZQ0K
+PiA+ID4gcmFuZ2VzKS4NCj4gPiA+IEFsc28sIGRvZXMgdGhpcyBtZWFuIGVhY2ggc3ViLWRldmlj
+ZSBzaG91bGQgaGF2ZSBvd24gbm9kZSBhbmQgb3duDQo+ID4gPiBjb21wYXRpYmxlIGluIERUIHRv
+IGdldCBjb3JyZWN0bHkgbG9hZCBhbmQgcHJvYmVkPyBJIGd1ZXNzIHRoaXMNCj4gPiA+IHdvdWxk
+DQo+ID4gPiBuZWVkIGEgYnV5LWluIGZyb20gUm9iIHRvbyB0aGVuLg0KPiA+IA0KPiA+IFlvdSBz
+aG91bGQgZGVzY3JpYmUgdGhlIEgvVyBpbiBEVC4NCj4gDQo+IFllcy4gQW5kIGl0IGlzIGRlc2Ny
+aWJlZC4gQnV0IEkndmUgb2NjYXNpb25hbGx5IHJlY2VpdmVkIHJlcXVlc3QgZnJvbQ0KPiBEVCBn
+dXlzIHRvIGFkZCBzb21lIHByb3BlcnRpZXMgZGlyZWN0bHkgdG8gTUZEIG5vZGUgYW5kIG5vdCB0
+byBhZGQNCj4gb3duDQo+IHN1Yi1ub2RlLiBUaGlzIGlzIHdoYXQgaXMgZG9uZSBmb3IgZXhhbXBs
+ZSB3aXRoIHRoZSBCRDcxODM3LzQ3IGNsb2Nrcw0KPiAtDQo+IHRoZXJlIGlzIG5vIG93biBub2Rl
+IGZvciBjbGsgLSB0aGUgY2xrIHByb3BlcnRpZXMgYXJlIHBsYWNlZCBkaXJlY3RseQ0KPiBpbiBN
+RkQgbm9kZSAoYXMgd2FzIHJlcXVlc3RlZCBieSBTdGVwaGVuIGFuZCBSb2IgYmFjayB0aGVuIC0g
+SQ0KPiBvcmlnaW5hbGx5IGhhZCBvd24gbm9kZSBmb3IgY2xrKS4gSSByZWFsbHkgaGF2ZSBubyBj
+bGVhciB2aWV3IG9uIHdoZW4NCj4gdGhpbmdzIHdhcnJhbnQgZm9yIG93biBzdWJub2RlIGFuZCB3
+aGVuIHRoZXkgZG9uJ3QgLSBidXQgYXMgZmFyIGFzIEkNCj4gY2FuIHNlZSB1c2luZyBzaW1wbGUt
+bWZkLWkyYyBmb3JjZXMgb25lIHRvIGFsd2F5cyBoYXZlIGEgc3ViLW5vZGUgLw0KPiBkZXZpY2Uu
+IEV2ZW4ganVzdCBhIGVtcHR5IG5vZGUgd2l0aCBub3RoaW5nIGJ1dCB0aGUgY29tcGF0aWJsZSBl
+dmVuDQo+IGlmDQo+IGRldmljZSBkb2VzIG5vdCBuZWVkIHN0dWZmIGZyb20gRFQ/IEFueXdheXMs
+IEkgdGhpbmsgdGhpcyBpcyBuaWNlDQo+IGFkZGl0aW9uIGZvciBzaW1wbGUgZHJpdmVycy4NCj4g
+DQo+ID4gPiBCeSB0aGUgd2F5IC0gZm9yIHVuZWR1Y2F0ZWQgZXllcyBsaWtlIG1pbmUgdGhpcyBk
+b2VzIG5vdCBsb29rDQo+ID4gPiBsaWtlDQo+ID4gPiBpdA0KPiA+ID4gaGFzIG11Y2ggdG8gZG8g
+d2l0aCBNRkQgYXMgYSBkZXZpY2UgLSBoZXJlIE1GRCByZW1pbmRzIG1lIG9mIGENCj4gPiA+IHNp
+bXBsZS0NCj4gPiA+IGJ1cyBvbiB0b3Agb2YgSTJDLg0KPiA+IA0KPiA+IFRoaXMgaXMgZm9yIE1G
+RCBkZXZpY2VzIHdoZXJlIHRoZSBwYXJlbnQgZG9lcyBsaXR0bGUgbW9yZSB0aGFuDQo+ID4gY3Jl
+YXRlDQo+ID4gYSBzaGFyZWQgYWRkcmVzcyBzcGFjZSBmb3IgY2hpbGQgZGV2aWNlcyB0byBvcGVy
+YXRlIG9uIC0gbGlrZQ0KPiA+IHlvdXJzLg0KPiA+IA0KPiA+ID4gQW55d2F5cywgdGhlIEJEOTU3
+NiBhbmQgQkQ5NTczIGJvdGggaGF2ZSBhIGZldyBpbnRlcnJ1cHRzIGZvcg0KPiA+ID4gT1ZEL1VW
+RA0KPiA+ID4gY29uZGl0aW9ucyBhbmQgSSBhbSBleHBlY3RpbmcgdGhhdCBJIHdpbGwgYmUgYXNr
+ZWQgdG8gcHJvdmlkZSB0aGUNCj4gPiA+IHJlZ3VsYXRvciBub3RpZmllcnMgZm9yIHRob3NlLiBS
+ZWFzb24gd2h5IEkgb21pdHRlZCB0aGUgSVJRcyBmb3INCj4gPiA+IG5vdyBpcw0KPiA+ID4gdGhh
+dCB0aGUgSFcgaXMgZGVzaWduZWQgdG8ga2VlcCB0aGUgSVJRIGFzc2VydGVkIGZvciB3aG9sZSBl
+cnJvcg0KPiA+ID4gZHVyYXRpb24gc28gc29tZSBkZWxheWVkIGFjayBtZWNoYW5pc20gd291bGQg
+YmUgbmVlZGVkLiBJIHdvdWxkDQo+ID4gPiBsaWtlIHRvDQo+ID4gPiBrZWVwIHRoZSBkb29yIG9w
+ZW4gZm9yIGFkZGluZyBJUlFzIHRvIE1GRCBjb3JlLg0KPiA+IA0KPiA+IFlvdSBtZWFuIHRvIGFk
+ZCBhbiBJUlEgRG9tYWluPw0KPiANCj4gWWVzLiBJIHBsYW5uZWQgdG8gdXNlIHJlZ21hcC1pcnEg
+YW5kIGNyZWF0ZSBpcnEgY2hpcCBpbiBNRkQgd2hlbiB0aGUNCj4gb3ZlciAvIHVuZGVyIHZvbHRh
+Z2UgLyB0ZW1wZXJhdHVyZSAtIG5vdGlmaWNhdGlvbnMgb3Igd2F0Y2hkb2cgSVJRcw0KPiBhcmUN
+Cj4gbmVlZGVkLiANCg0KSSBhbSBzb3JyeSBpZiBJIGhhdmUgbWlzc2VkIHlvdXIgcmVwbHkuIFRo
+ZSBST0hNIGVtYWlsIGhhZCByZWRpcmVjdGVkDQphbG1vc3QgYWxsIHBhdGNoIGVtYWlscyB0byBz
+cGFtICsgSSBhbSBub3Qgc3VyZSBpZiBzb21lIG1haWxzIGFyZQ0KZHJvcHBpbmcgOigNCg0KKEkg
+YW0gY29uc2lkZXJpbmcgbW92aW5nIHRvIGdtYWlsIC0gYnV0IEknZCByYXRoZXIga2VlcCBhbGwg
+bWFpbHMgaW4NCm9uZSBzeXN0ZW0gYW5kIEkgY2FuJ3QgdHJhbnNmZXIgd29yayBtYWlsIHRyYWZm
+aWMgdG8gZ21haWwuLi4gSSB3b25kZXINCmhvdyBvdGhlcnMgYXJlIG1hbmFnaW5nIHRoZSBtYWls
+cyAtIHdoaWNoIG1haWwgc3lzdGVtIHlvdSBhcmUgdXNpbmc/KQ0KDQpJIHRoaW5rIHRoaXMgc2Vy
+aWVzIGlzIG5vdyBwZW5kaW5nIHRoZSBkZWNpc2lvbiBob3cgdG8gcHJvY2VlZCB3aXRoIE1GRA0K
+cGFydC4gSWYgeW91IHN0aWxsIHdhbnQgbWUgdG8gc3RhcnQgd2l0aCAic2ltcGxlLW1mZC1pMmMi
+LCB0aGVuIEkgd291bGQNCmFwcHJlY2lhdGUgaWYgeW91IHBvaW50ZWQgbWUgaG93IHlvdSB3b3Vs
+ZCBsaWtlIHRvIHNlZSB0aGUgcmVnbWFwDQpjb25maWdzIGFkZGVkLiBBbHRob3VnaCBJIGFtIHF1
+aXRlIHBvc2l0aXZlIHRoaXMgKGV2ZW50dWFsbHkpIGVuZHMgdXANCmJlaW5nIG1vcmUgdGhhbiB3
+aGF0IHNpbXBsZS1tZmQtaTJjIGlzIGludGVuZGVkIGZvciAoYmVjYXVzZSBhdCBzb21lDQpwb2lu
+dCBwZW9wbGUgd2FudCB0byBhZGQgdGhlIHVzZSBvZiB0aGUgaW50ZXJydXB0cykuDQoNCkJlc3Qg
+UmVnYXJkcw0KCU1hdHRpIFZhaXR0aW5lbg0K
