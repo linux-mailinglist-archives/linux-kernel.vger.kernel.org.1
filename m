@@ -2,89 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98E382DCC8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 07:40:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D5002DCCA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 07:44:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727002AbgLQGkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 01:40:00 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:10987 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726825AbgLQGj7 (ORCPT
+        id S1727165AbgLQGn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 01:43:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726291AbgLQGn4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 01:39:59 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1608187179; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=v9dVYGbG3Dl98V1iYFZEWhPG3mgZAntKN97hbxxOUWg=; b=kklyxvd2G5wrZbCsnY4j/9mBjAwb75BtCL6rNBZLEnGhkbNtjCNfqiuN+jrnI8HCnXeNmoJH
- YnD1KNmIgLcfBLrOyckU9Y5GokbygMUtloV+m8f5fHtLmD3p4ncwbfpdB1ITxKkf0dZpxXjW
- ri70tJOQdeUtq4o3j3f0dxc4inY=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5fdafd093d3433393d37f0c4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Dec 2020 06:39:05
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2DB93C43463; Thu, 17 Dec 2020 06:39:05 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 262F3C433CA;
-        Thu, 17 Dec 2020 06:39:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 262F3C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Colin King <colin.king@canonical.com>
-Cc:     kernel-janitors@vger.kernel.org, netdev@vger.kernel.org,
-        Carl Huang <cjhuang@codeaurora.org>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ath11k@lists.infradead.org, Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH][next] ath11k: add missing null check on allocated skb
-References: <20201214232417.84556-1-colin.king@canonical.com>
-        <20201217063600.E5DB2C43461@smtp.codeaurora.org>
-Date:   Thu, 17 Dec 2020 08:39:00 +0200
-In-Reply-To: <20201217063600.E5DB2C43461@smtp.codeaurora.org> (Kalle Valo's
-        message of "Thu, 17 Dec 2020 06:36:00 +0000 (UTC)")
-Message-ID: <87ft45uebf.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        Thu, 17 Dec 2020 01:43:56 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB15C0617A7
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 22:43:16 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id qw4so36210681ejb.12
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 22:43:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=2E2IRKEI0E+4fYbd4aolEHId9cIRGJRcY4qJxFLCTNY=;
+        b=ux7LL3mZctbUVr6Qn/cj+GvAouxYh8Ff4eiwmFaav39GyXLE7UPBbinIoIWgcYgwwa
+         SocrNn8RD/yq3Mf7TLe67zW84WyQagmmYT1ui4+X/6P4z+J3KDZJHgarHyxRgvMGiHpA
+         xOiA3Avv+7Y1SnhtAY/6IrNun1JvTiNOITROY5qTVR0u+SgWvB7YTEs90xbVGlcEuAuC
+         KlurAedgPMqPyogrmSIZmS2K7s1jwx44peoYGuRslxQHmliLscLfDRkHdSMHZv4UrcWH
+         uz9fU1Cy9iau28KumIK/PrHOTZPmEG3VpWVx3qX2UFuz0NwITsD1D0GON69kkIjiGdvl
+         Q9xA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=2E2IRKEI0E+4fYbd4aolEHId9cIRGJRcY4qJxFLCTNY=;
+        b=crFgKEKxEQRFweoTw2mmwpnQS16bDBeTwraPw+rEj82PbyKGO05FZGk6NrsU2UiHuD
+         UiO1tlH/O74DukXb/K95TSWLFG9rSGgd49ibKou68P+6JwaKAl2F20SU8fcGf1B+7/Ni
+         d85MChy4wd7hc9qWpoh0tco11hyCs2H3IlPP+mBM24tpLg5NHvoYWRmJd77z6OvKkSx4
+         CGOiMDHc0rOE2BBwTKteFhxDmy9UmC8WA8CX8MG5oSQmKCAMhLUCr/U+qIuoa6lG0O0n
+         VGUy5bdXDfKYuijmFEyQGTJDljF2Y/FG6ad2P1nirSY0Pws1bJcH2EiE98+E6jJm3nyU
+         mS1Q==
+X-Gm-Message-State: AOAM533PsB2PsSqyX1YRbnVgETeZrW+cEsxxSvdp6WSiJiZMKLOxhpNm
+        F1NEHvSGh4u9S910iwd3wKjpak1/1VcIgYOOshyr/A==
+X-Google-Smtp-Source: ABdhPJy7HNskfwVp3ThIspYC4Ccdzj43u6x1IlcBsmNfy4vSHjEowpisjy0Wcq0L2d7aiHrnx69C/EEJGi2XhqQMl9g=
+X-Received: by 2002:a17:906:edc8:: with SMTP id sb8mr34272376ejb.247.1608187394890;
+ Wed, 16 Dec 2020 22:43:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 17 Dec 2020 12:13:03 +0530
+Message-ID: <CA+G9fYtHimKZDuJGAzF86OY_F9j93oLPcohJRVLU+RLKEDCrbg@mail.gmail.com>
+Subject: arm64: entry.S:774: Error: immediate out of range at operand 3 --
+ `and x2,x19,
+To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Kristina Martsenko <kristina.martsenko@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kalle Valo <kvalo@codeaurora.org> writes:
+arm64 build failed on Linux next 20201217 tag with gcc-8, gcc-9 and gcc-10.
 
-> Colin King <colin.king@canonical.com> wrote:
->
->> Currently the null check on a newly allocated skb is missing and
->> this can lead to a null pointer dereference is the allocation fails.
->> Fix this by adding a null check and returning -ENOMEM.
->> 
->> Addresses-Coverity: ("Dereference null return")
->> Fixes: 43ed15e1ee01 ("ath11k: put hw to DBS using WMI_PDEV_SET_HW_MODE_CMDID")
->> Signed-off-by: Colin Ian King <colin.king@canonical.com>
->> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
->
-> Patch applied to ath-current branch of ath.git, thanks.
->
-> c86a36a621f2 ath11k: add missing null check on allocated skb
+make --silent --keep-going --jobs=8
+O=/home/tuxbuild/.cache/tuxmake/builds/2/tmp ARCH=arm64
+CROSS_COMPILE=aarch64-linux-gnu- 'CC=sccache aarch64-linux-gnu-gcc'
+'HOSTCC=sccache gcc'
+arch/arm64/kernel/entry.S: Assembler messages:
+arch/arm64/kernel/entry.S:774: Error: immediate out of range at
+operand 3 -- `and
+x2,x19,#((1<<1)|(1<<0)|(1<<2)|(1<<3)|(1<<4)|(1<<5)|(1<<7))'
+make[3]: *** [scripts/Makefile.build:360: arch/arm64/kernel/entry.o] Error 1
 
-I did a mistake and that commit id will change, so please disregard
-this. There will be a new mail soon.
+
+steps to reproduce:
+# TuxMake is a command line tool and Python library that provides
+# portable and repeatable Linux kernel builds across a variety of
+# architectures, toolchains, kernel configurations, and make targets.
+#
+# TuxMake supports the concept of runtimes.
+# See https://docs.tuxmake.org/runtimes/, for that to work it requires
+# that you install podman or docker on your system.
+#
+# To install tuxmake on your system globally:
+# sudo pip3 install -U tuxmake
+#
+# See https://docs.tuxmake.org/ for complete documentation.
+
+tuxmake --runtime docker --target-arch arm64 --toolchain gcc-9
+--kconfig defconfig
+
+Full build log link,
+https://gitlab.com/Linaro/lkft/mirrors/next/linux-next/-/jobs/917491444
+
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Linaro LKFT
+https://lkft.linaro.org
