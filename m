@@ -2,109 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E692A2DD6BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:03:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A65F12DD6C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:06:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729661AbgLQSCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 13:02:16 -0500
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:51660 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727368AbgLQSCP (ORCPT
+        id S1729420AbgLQSEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 13:04:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21232 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726548AbgLQSEv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 13:02:15 -0500
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BHHpgXN007072;
-        Thu, 17 Dec 2020 12:01:03 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=uVWPaUAEkQl2q9gPD+VtCUXeC+LPB+fA8dWpPP4F8/A=;
- b=Wd9qA1gg3lwnieonb8GeT8R9Prn298peWouPQOMjoTADRBvRkXafbp05I9DyGcKczYiP
- 2XRrXXvQbA/6km/F7nXllbKkJYhmTY/yQeYvTeCruGl2sE0ZMwstjIhK0618KZXDpvnx
- kLtvjTGLnJhCFqg0LPdngSSzcfU1N24vP2Wl+hrty+EosQ4ROnKFzSB+GAW3MhuyxNsb
- uBuPI138NqaUqiOtm6C2gR9ieBfMgis9NINdgKgxE1GtG22P7eHXxoBXdZE+UgEsrcaf
- 17317mshz2PFYIOAS9MA3NpT6GLVV6mb8RpY20+ZqFIGlK5Wo5tqxDzPj02kmhpznuum 1g== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 35cu5ry5ne-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 17 Dec 2020 12:01:03 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 17 Dec
- 2020 18:01:01 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Thu, 17 Dec 2020 18:01:01 +0000
-Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.64.236])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0639D11CE;
-        Thu, 17 Dec 2020 18:01:00 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <pmladek@suse.com>, <rostedt@goodmis.org>,
-        <sergey.senozhatsky@gmail.com>, <shuah@kernel.org>
-CC:     <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH v3 4/4] selftests: lib: Add wrapper script for test_scanf
-Date:   Thu, 17 Dec 2020 18:00:57 +0000
-Message-ID: <20201217180057.23786-4-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201217180057.23786-1-rf@opensource.cirrus.com>
-References: <20201217180057.23786-1-rf@opensource.cirrus.com>
+        Thu, 17 Dec 2020 13:04:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608228204;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Uan0eMRuAZ1Sud/IaX1o1QuveN2aWjh6xE24nQjtJJ0=;
+        b=C0c5ZfBNFz/FgvtUH/ecevd5g1ayUWJJbzLlVSMKUBQNVcFDFLE/jWnv3PJAosEDZt3FXn
+        TzlmgnF3vhY49vmb2Ene3edpf5Zoa2oAiTETQfuHH0QWmOWPd2niFnI8XNqe8H4pEJJY+V
+        4sQ5GvMdkAMM1C0gClkLHUmQxNrqclU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-501-0vQb9rE5Mk-iYFfUVH0m4A-1; Thu, 17 Dec 2020 13:03:19 -0500
+X-MC-Unique: 0vQb9rE5Mk-iYFfUVH0m4A-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 21347193EB62;
+        Thu, 17 Dec 2020 18:01:38 +0000 (UTC)
+Received: from localhost (ovpn-115-234.ams2.redhat.com [10.36.115.234])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id AB8B857;
+        Thu, 17 Dec 2020 18:01:37 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0 mlxscore=0
- mlxlogscore=822 suspectscore=0 spamscore=0 clxscore=1015 malwarescore=0
- impostorscore=0 priorityscore=1501 bulkscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012170123
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1608227106-21394-1-git-send-email-stefanc@marvell.com>
+References: <1608227106-21394-1-git-send-email-stefanc@marvell.com>
+Subject: Re: [PATCH net] net: mvpp2: Add TCAM entry to drop flow control pause frames
+To:     netdev@vger.kernel.org, stefanc@marvell.com
+From:   Antoine Tenart <atenart@redhat.com>
+Cc:     thomas.petazzoni@bootlin.com, davem@davemloft.net,
+        nadavh@marvell.com, ymarkman@marvell.com,
+        linux-kernel@vger.kernel.org, stefanc@marvell.com, kuba@kernel.org,
+        linux@armlinux.org.uk, mw@semihalf.com, andrew@lunn.ch,
+        rmk+kernel@armlinux.org.uk, atenart@kernel.org
+Message-ID: <160822809533.1452357.10722693725960219998@kwain.local>
+Date:   Thu, 17 Dec 2020 19:01:35 +0100
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds a wrapper shell script for the test_scanf module.
+Quoting stefanc@marvell.com (2020-12-17 18:45:06)
+> From: Stefan Chulski <stefanc@marvell.com>
+>=20
+> Issue:
+> Flow control frame used to pause GoP(MAC) was delivered to the CPU
+> and created a load on the CPU. Since XOFF/XON frames are used only
+> by MAC, these frames should be dropped inside MAC.
+>=20
+> Fix:
+> According to 802.3-2012 - IEEE Standard for Ethernet pause frame
+> has unique destination MAC address 01-80-C2-00-00-01.
+> Add TCAM parser entry to track and drop pause frames by destination MAC.
+>=20
+> Fixes: db9d7d36eecc ("net: mvpp2: Split the PPv2 driver to a dedicated di=
+rectory")
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Reviewed-by: Petr Mladek <pmladek@suse.com>
----
- tools/testing/selftests/lib/Makefile | 2 +-
- tools/testing/selftests/lib/config   | 1 +
- tools/testing/selftests/lib/scanf.sh | 4 ++++
- 3 files changed, 6 insertions(+), 1 deletion(-)
- create mode 100755 tools/testing/selftests/lib/scanf.sh
+Same here, you should go further in the git history.
 
-diff --git a/tools/testing/selftests/lib/Makefile b/tools/testing/selftests/lib/Makefile
-index a105f094676e..ee71fc99d5b5 100644
---- a/tools/testing/selftests/lib/Makefile
-+++ b/tools/testing/selftests/lib/Makefile
-@@ -4,6 +4,6 @@
- # No binaries, but make sure arg-less "make" doesn't trigger "run_tests"
- all:
- 
--TEST_PROGS := printf.sh bitmap.sh prime_numbers.sh strscpy.sh
-+TEST_PROGS := printf.sh bitmap.sh prime_numbers.sh scanf.sh strscpy.sh
- 
- include ../lib.mk
-diff --git a/tools/testing/selftests/lib/config b/tools/testing/selftests/lib/config
-index b80ee3f6e265..776c8c42e78d 100644
---- a/tools/testing/selftests/lib/config
-+++ b/tools/testing/selftests/lib/config
-@@ -1,4 +1,5 @@
- CONFIG_TEST_PRINTF=m
-+CONFIG_TEST_SCANTF=m
- CONFIG_TEST_BITMAP=m
- CONFIG_PRIME_NUMBERS=m
- CONFIG_TEST_STRSCPY=m
-diff --git a/tools/testing/selftests/lib/scanf.sh b/tools/testing/selftests/lib/scanf.sh
-new file mode 100755
-index 000000000000..b59b8ba561c3
---- /dev/null
-+++ b/tools/testing/selftests/lib/scanf.sh
-@@ -0,0 +1,4 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+# Tests the scanf infrastructure using test_scanf kernel module.
-+$(dirname $0)/../kselftest/module.sh "scanf" test_scanf
--- 
-2.20.1
+Also, was that introduced when the TCAM support landed in (overriding
+its default configuration?)? Or is that the behaviour since the
+beginning? I'm asking because while this could very be a fix, it could
+also fall in the improvements category.
+
+Thanks!
+Antoine
+
+> Signed-off-by: Stefan Chulski <stefanc@marvell.com>
+> ---
+>  drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c | 34 ++++++++++++++++++++=
+++++++
+>  drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.h |  2 +-
+>  2 files changed, 35 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c b/drivers/net=
+/ethernet/marvell/mvpp2/mvpp2_prs.c
+> index 1a272c2..3a9c747 100644
+> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c
+> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c
+> @@ -405,6 +405,39 @@ static int mvpp2_prs_tcam_first_free(struct mvpp2 *p=
+riv, unsigned char start,
+>         return -EINVAL;
+>  }
+> =20
+> +/* Drop flow control pause frames */
+> +static void mvpp2_prs_drop_fc(struct mvpp2 *priv)
+> +{
+> +       struct mvpp2_prs_entry pe;
+> +       unsigned int len;
+> +       unsigned char da[ETH_ALEN] =3D {
+> +                       0x01, 0x80, 0xC2, 0x00, 0x00, 0x01 };
+> +
+> +       memset(&pe, 0, sizeof(pe));
+> +
+> +       /* For all ports - drop flow control frames */
+> +       pe.index =3D MVPP2_PE_FC_DROP;
+> +       mvpp2_prs_tcam_lu_set(&pe, MVPP2_PRS_LU_MAC);
+> +
+> +       /* Set match on DA */
+> +       len =3D ETH_ALEN;
+> +       while (len--)
+> +               mvpp2_prs_tcam_data_byte_set(&pe, len, da[len], 0xff);
+> +
+> +       mvpp2_prs_sram_ri_update(&pe, MVPP2_PRS_RI_DROP_MASK,
+> +                                MVPP2_PRS_RI_DROP_MASK);
+> +
+> +       mvpp2_prs_sram_bits_set(&pe, MVPP2_PRS_SRAM_LU_GEN_BIT, 1);
+> +       mvpp2_prs_sram_next_lu_set(&pe, MVPP2_PRS_LU_FLOWS);
+> +
+> +       /* Mask all ports */
+> +       mvpp2_prs_tcam_port_map_set(&pe, MVPP2_PRS_PORT_MASK);
+> +
+> +       /* Update shadow table and hw entry */
+> +       mvpp2_prs_shadow_set(priv, pe.index, MVPP2_PRS_LU_MAC);
+> +       mvpp2_prs_hw_write(priv, &pe);
+> +}
+> +
+>  /* Enable/disable dropping all mac da's */
+>  static void mvpp2_prs_mac_drop_all_set(struct mvpp2 *priv, int port, boo=
+l add)
+>  {
+> @@ -1168,6 +1201,7 @@ static void mvpp2_prs_mac_init(struct mvpp2 *priv)
+>         mvpp2_prs_hw_write(priv, &pe);
+> =20
+>         /* Create dummy entries for drop all and promiscuous modes */
+> +       mvpp2_prs_drop_fc(priv);
+>         mvpp2_prs_mac_drop_all_set(priv, 0, false);
+>         mvpp2_prs_mac_promisc_set(priv, 0, MVPP2_PRS_L2_UNI_CAST, false);
+>         mvpp2_prs_mac_promisc_set(priv, 0, MVPP2_PRS_L2_MULTI_CAST, false=
+);
+> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.h b/drivers/net=
+/ethernet/marvell/mvpp2/mvpp2_prs.h
+> index e22f6c8..4b68dd3 100644
+> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.h
+> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.h
+> @@ -129,7 +129,7 @@
+>  #define MVPP2_PE_VID_EDSA_FLTR_DEFAULT (MVPP2_PRS_TCAM_SRAM_SIZE - 7)
+>  #define MVPP2_PE_VLAN_DBL              (MVPP2_PRS_TCAM_SRAM_SIZE - 6)
+>  #define MVPP2_PE_VLAN_NONE             (MVPP2_PRS_TCAM_SRAM_SIZE - 5)
+> -/* reserved */
+> +#define MVPP2_PE_FC_DROP               (MVPP2_PRS_TCAM_SRAM_SIZE - 4)
+>  #define MVPP2_PE_MAC_MC_PROMISCUOUS    (MVPP2_PRS_TCAM_SRAM_SIZE - 3)
+>  #define MVPP2_PE_MAC_UC_PROMISCUOUS    (MVPP2_PRS_TCAM_SRAM_SIZE - 2)
+>  #define MVPP2_PE_MAC_NON_PROMISCUOUS   (MVPP2_PRS_TCAM_SRAM_SIZE - 1)
+> --=20
+> 1.9.1
+>=20
 
