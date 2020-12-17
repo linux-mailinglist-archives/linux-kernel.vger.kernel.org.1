@@ -2,81 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF97D2DD5BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 18:12:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C274E2DD5B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 18:10:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728709AbgLQRLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 12:11:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727543AbgLQRLD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 12:11:03 -0500
-Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE66C061794;
-        Thu, 17 Dec 2020 09:10:22 -0800 (PST)
-Received: by mail-vs1-xe30.google.com with SMTP id q10so15314492vsr.13;
-        Thu, 17 Dec 2020 09:10:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IVWkc2hjiETBBpFaxuhkqsl8mzCX2jQxdE5JeIF+Z0Y=;
-        b=CU6N4d/bdV4lyjdny521D22gA6ha4lMOfjgVpiPKJ8cMTUupgq9lg2BLsv/0ob4fZz
-         zIjU7IbSh/CpQNNeeFgtoC9UPiGcGRQhByluuO5UdxUhL4FUhL9NyVbrK5mi04J2HZIB
-         vXbjyjQo36hd33+JYsD41DBMtoBY1yQ5gsO+xKZmFmJQNCjTINeOBYRrv70HQrUnbSeh
-         tdX3bYRKup0qyB0DuczCDf9aPYw3SuXTJ2LtRkunrm8HE1gr9eyLdEJPvLy+mRNhVsqM
-         lJhgBPbZQuE8QWYKYf/qL58Vn+kbXVAK8hFZU0ugwwUJ6Mi/LkrOPgPyPqi4nbaLX/n4
-         or5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IVWkc2hjiETBBpFaxuhkqsl8mzCX2jQxdE5JeIF+Z0Y=;
-        b=Lzdv+BJBUAUyOMCQcP3Jy43IZw3yaALgF0OwH/3cS85zr8DXILZatWpzS2u3/OTDMK
-         zJfmNFhdP3edFYBev7MlSVjRPl0QA02gIOCMS/Od5t61i0dOGe0KSv/TE368J1G6R2hv
-         0S7Vk581/gSW2XGstA6FZ/pWmyKNs2B81uDBimcpDbC6EMLgyFQcq8Av7Y4neUJyvMCF
-         P8DfKvbBykmGCxUqDZbTPD8j3AyVTzANbhwx+T9Js7sKxLr4FUNeI7FtqiFNsPTVIPIG
-         gge5wZTdj6H1fQVu9YW+Xp1mxHH8UZbawDXglyadRh61fwP3vvsqOmQHq2ShgfWI76hw
-         Xb0Q==
-X-Gm-Message-State: AOAM530X4j0eKigsq8NWZzmgvEa6Kh0ZmjHTiJ03PmpXb5y6/3NkhJ59
-        umCYnSK0ZjWkEUwboy89DsFVFP/tKN53qZhvJWk=
-X-Google-Smtp-Source: ABdhPJwTj281L/NJtVaGKGwRcXw+D3VXbtWrJ9dUcKDHjsmr2o0IbtVrxIzMKad1M+jcGHmxFMTSLwremfW2BjtevX0=
-X-Received: by 2002:a67:2287:: with SMTP id i129mr90630vsi.15.1608225021351;
- Thu, 17 Dec 2020 09:10:21 -0800 (PST)
+        id S1728582AbgLQRKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 12:10:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37604 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726595AbgLQRKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 12:10:16 -0500
+Date:   Thu, 17 Dec 2020 18:10:55 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1608224975;
+        bh=0jEK+C+w87Pch7egdMjoBVbIkqvM5UoNUVPWiKQ7t98=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eb7ltVHErC3Oc2LPPKoo+8yCj7hc5w3koLwubMeWdTCYZ2bt5QtKe48QSiMkXWT5S
+         BkFe1fT3B6LtFF4rpz3pAlHhD1i+/nBE49h3oY71Zb+Z6iWRU9Fn5l1+baMu190DNs
+         UznSQy2zMV6FPS0PH/Bt0V9ymya9XfpaaEkSkmEY=
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Tom Rix <trix@redhat.com>
+Cc:     Xu Yilun <yilun.xu@intel.com>, mdf@kernel.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lgoncalv@redhat.com, hao.wu@intel.com
+Subject: Re: [PATCH v3 0/3] UIO support for dfl devices
+Message-ID: <X9uRHzCyS1FNw4e6@kroah.com>
+References: <1608183881-18692-1-git-send-email-yilun.xu@intel.com>
+ <85d48e41-0185-0938-b0ed-93d0f825e761@redhat.com>
 MIME-Version: 1.0
-References: <20201215212228.185517-1-clemens.gruber@pqgruber.com>
- <CAGngYiWbQ2STTgh2OwJTqQ-niBDbbn+OdMkk7PMzYnrZWzSy9Q@mail.gmail.com> <X9uL13GA1uDbLJiG@workstation.tuxnet>
-In-Reply-To: <X9uL13GA1uDbLJiG@workstation.tuxnet>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Thu, 17 Dec 2020 12:10:10 -0500
-Message-ID: <CAGngYiW7vcJjz36xsBYx5n7=j1_5sE5a1AGpqC3Jj+tw0+FAXQ@mail.gmail.com>
-Subject: Re: [PATCH v5 1/7] pwm: pca9685: Switch to atomic API
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        David Jander <david@protonic.nl>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <85d48e41-0185-0938-b0ed-93d0f825e761@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 11:48 AM Clemens Gruber
-<clemens.gruber@pqgruber.com> wrote:
->
-> I can initialize the values to 0 of course and check the file for other
-> places with missing initializations.
->
-> Or would it be better to check the return codes of regmap_read/write in
-> such cases? I'm not sure.
+On Thu, Dec 17, 2020 at 05:35:51AM -0800, Tom Rix wrote:
+> 
+> On 12/16/20 9:44 PM, Xu Yilun wrote:
+> > This patchset supports some dfl device drivers written in userspace.
+> >
+> > In the patchset v1, the "driver_override" interface should be used to bind
+> > the DFL UIO driver to DFL devices. But there is concern that the
+> > "driver_override" interface is not OK itself. So in v2, we use a new
+> > matching algorithem. The "driver_override" interface is abandoned, the DFL
+> > UIO driver matches any DFL device which could not be handled by other DFL
+> > drivers. So the DFL UIO driver could be used for new DFL devices which are
+> > not supported by kernel, also it will not impact the devices which are
+> > already got supported.
+> 
+> This set looks good to me.
+> 
+> Moritz,
+> 
+> Is it possible to get this into 5.11 ?
 
-I think that checking the regmap_read/write return values is overkill
-in this driver. These functions can't realistically fail, except if the i2c
-bus is bad, i.e. h/w failure or intermittency. And that's an externality
-which I believe we can ignore.
+How would that be possible?
 
-Maybe Thierry or Uwe have further insights here.
+New features have to be in linux-next successfully, _BEFORE_ the merge
+window opens.  Please read Documentation/process/ for how we do all of
+this...
+
+thanks,
+
+greg k-h
