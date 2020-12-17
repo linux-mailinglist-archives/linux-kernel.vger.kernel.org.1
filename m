@@ -2,194 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C702DDBC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 00:08:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE7042DDBCA
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 00:13:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732342AbgLQXHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 18:07:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59882 "EHLO
+        id S1732046AbgLQXNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 18:13:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732289AbgLQXHj (ORCPT
+        with ESMTP id S1727134AbgLQXNi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 18:07:39 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A98C061285
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 15:06:22 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id m5so255074pjv.5
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 15:06:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ZzUxY+R92iIXyCaBsOADIATzq/kMO3WIktPOvJAEK0M=;
-        b=y1i+MP6nxpUZku2pqBjU6nVReMMru3TqzVPCs9Wr2kawDgT3Rbl6Z27FslcSz46Swe
-         xoVAHosAGhjI7aOnPsLsxEeZ7xNxfB46hHlFFGpTJRIPhP1Np8JzTR82OcbK/gEjpSJS
-         cowRVeZibs33LWNdWONpxXfhSrlzipytxorMjEG484XY0t/NKnT3vgmrxMO5bzs6bzQE
-         7YZiocAFGQ2ffjZuuW6Bip4QglPBceU2BnKI11qLp0EDtQMiJsfKq2v2ku0CzTTA+rky
-         rGyzmZKB0g5JCTB2WXhE94V1kA53PIShCIbmffIEiIj1LCnDYFb8baE8V4CcmGvT4ii7
-         K+eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ZzUxY+R92iIXyCaBsOADIATzq/kMO3WIktPOvJAEK0M=;
-        b=SGIvnkCvEj8zvR+5qP6rYLRLjiqL833XOgQan4S/hS8HLDQBTY2pMCWkEgW42O6M6A
-         GhunGTsntsPk2dEqR51NJJzWm3LGiAc74ycfVHaFCYjQlB6sVYg4gM/B4FyBywMqaoMo
-         A5XfZdnHaq1y1Icbb6FuomUPw3xn791KD+P8xe15eQdVCy+wxw6KNr2yI3FMcV+JRAIW
-         c9G3jhiD60ipPvif6kOmu+Oe3KtpSv9gnZkFW6a2UNKWsGGjbQtV5rx+6T8flnj1V0BP
-         yupSph10Ga+2TQh41PeIGinq4PTOf8ipp8UXECYOJ0IjGEk5NiZopV+8M/51i055XYU+
-         E3fA==
-X-Gm-Message-State: AOAM531iMx+M6vPu0hjfZo/cggBTiD1V7q5+BaMQCyOLHvfgB4wxn/M8
-        DcZ2indbGGjwLBOJ+IFTwj2sTvCN+v1/pA==
-X-Google-Smtp-Source: ABdhPJyufMB2jhDDOlwI5gRTX4PSbfLBi7TX5g878WswkcmJTvgN17xmcUy7n1BL1TSRvOIBCDRBSw==
-X-Received: by 2002:a17:902:b94a:b029:dc:18f2:8063 with SMTP id h10-20020a170902b94ab02900dc18f28063mr1410930pls.8.1608246381337;
-        Thu, 17 Dec 2020 15:06:21 -0800 (PST)
-Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id q9sm7074036pgb.82.2020.12.17.15.06.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 15:06:20 -0800 (PST)
-From:   John Stultz <john.stultz@linaro.org>
-To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        =?UTF-8?q?=C3=98rjan=20Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: [RFC][PATCH 3/3] dma-buf: system_heap: Add deferred freeing to the system heap
-Date:   Thu, 17 Dec 2020 23:06:12 +0000
-Message-Id: <20201217230612.32397-3-john.stultz@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201217230612.32397-1-john.stultz@linaro.org>
-References: <20201217230612.32397-1-john.stultz@linaro.org>
+        Thu, 17 Dec 2020 18:13:38 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F885C061794;
+        Thu, 17 Dec 2020 15:12:57 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CxnpW4rRZz9sWK;
+        Fri, 18 Dec 2020 10:12:51 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1608246773;
+        bh=7HcfKgnudq/jly4dAIbd/Z5KDczfCvyRwxJ/u4JukdM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=APN8Hq1zP3jxTVZnB+/l9+TcMAuHxVESWeuvwrBzL6ribXhSmNiuhFqRCJ7GrJQ7O
+         6N1BwQVpNJuRFektXniqXJUcx1swjHLGHHHdzkBmfurUTACqPkjgCyRvvfwSyf8mkk
+         QNm0fxNm3RyIaeFw847ncsO6cvK0WmnpoSR8r0aZkipbeL57ZQ9driLOeYAPTTs8IL
+         7eLID2bTRIyGu7SBAGnu4JE2D5TlBBsFo2nyp2o2UeAFXCwNakIfhq1R6mzKg6bkNo
+         H14m6z9iiPuvYcFC+q/38E9gYNcy1ZwWYZNCAAP2WbsihglpsmJ9odh2YHU+Hv7mzv
+         CY/ZO3WrNKilg==
+Date:   Fri, 18 Dec 2020 10:12:49 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
+        Jens Axboe <axboe@kernel.dk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the ext4 tree with Linus' tree
+Message-ID: <20201218101249.20f29765@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/Et8CIw6xaACmIlc6aVCJEDz";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Utilize the deferred free helper library in the system heap.
+--Sig_/Et8CIw6xaACmIlc6aVCJEDz
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This provides a nice performance bump and puts the
-system heap performance on par with ION.
+Hi all,
 
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: Liam Mark <lmark@codeaurora.org>
-Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
-Cc: Laura Abbott <labbott@kernel.org>
-Cc: Brian Starkey <Brian.Starkey@arm.com>
-Cc: Hridya Valsaraju <hridya@google.com>
-Cc: Suren Baghdasaryan <surenb@google.com>
-Cc: Sandeep Patil <sspatil@google.com>
-Cc: Daniel Mentz <danielmentz@google.com>
-Cc: Ørjan Eide <orjan.eide@arm.com>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: Ezequiel Garcia <ezequiel@collabora.com>
-Cc: Simon Ser <contact@emersion.fr>
-Cc: James Jones <jajones@nvidia.com>
-Cc: linux-media@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Signed-off-by: John Stultz <john.stultz@linaro.org>
----
- drivers/dma-buf/heaps/Kconfig       |  1 +
- drivers/dma-buf/heaps/system_heap.c | 30 ++++++++++++++++++++++-------
- 2 files changed, 24 insertions(+), 7 deletions(-)
+Today's linux-next merge of the ext4 tree got a conflict in:
 
-diff --git a/drivers/dma-buf/heaps/Kconfig b/drivers/dma-buf/heaps/Kconfig
-index fa5e1c330cce..3c1cdecca9e2 100644
---- a/drivers/dma-buf/heaps/Kconfig
-+++ b/drivers/dma-buf/heaps/Kconfig
-@@ -5,6 +5,7 @@ config DMABUF_HEAPS_SYSTEM
- 	bool "DMA-BUF System Heap"
- 	depends on DMABUF_HEAPS
- 	select PAGE_POOL
-+	select DMABUF_HEAPS_DEFERRED_FREE
- 	help
- 	  Choose this option to enable the system dmabuf heap. The system heap
- 	  is backed by pages from the buddy allocator. If in doubt, say Y.
-diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
-index 885e30894b77..905b304ea24b 100644
---- a/drivers/dma-buf/heaps/system_heap.c
-+++ b/drivers/dma-buf/heaps/system_heap.c
-@@ -22,6 +22,8 @@
- #include <linux/vmalloc.h>
- #include <net/page_pool.h>
- 
-+#include "deferred-free-helper.h"
-+
- static struct dma_heap *sys_heap;
- 
- struct system_heap_buffer {
-@@ -32,6 +34,7 @@ struct system_heap_buffer {
- 	struct sg_table sg_table;
- 	int vmap_cnt;
- 	void *vaddr;
-+	struct deferred_freelist_item deferred_free;
- };
- 
- struct dma_heap_attachment {
-@@ -317,30 +320,43 @@ static int system_heap_zero_buffer(struct system_heap_buffer *buffer)
- 	return ret;
- }
- 
--static void system_heap_dma_buf_release(struct dma_buf *dmabuf)
-+static void system_heap_buf_free(struct deferred_freelist_item *item, bool skip_pool)
- {
--	struct system_heap_buffer *buffer = dmabuf->priv;
-+	struct system_heap_buffer *buffer = container_of(item, struct system_heap_buffer, deferred_free);
- 	struct sg_table *table;
- 	struct scatterlist *sg;
- 	int i, j;
- 
- 	/* Zero the buffer pages before adding back to the pool */
--	system_heap_zero_buffer(buffer);
-+	if (!skip_pool)
-+		if (system_heap_zero_buffer(buffer))
-+			skip_pool = true; // On zeroing failure, just free
- 
- 	table = &buffer->sg_table;
- 	for_each_sg(table->sgl, sg, table->nents, i) {
- 		struct page *page = sg_page(sg);
- 
--		for (j = 0; j < NUM_ORDERS; j++) {
--			if (compound_order(page) == orders[j])
--				break;
-+		if (skip_pool) {
-+			__free_pages(page, compound_order(page));
-+		} else {
-+			for (j = 0; j < NUM_ORDERS; j++) {
-+				if (compound_order(page) == orders[j])
-+					break;
-+			}
-+			page_pool_put_full_page(pools[j], page, false);
- 		}
--		page_pool_put_full_page(pools[j], page, false);
- 	}
- 	sg_free_table(table);
- 	kfree(buffer);
- }
- 
-+static void system_heap_dma_buf_release(struct dma_buf *dmabuf)
-+{
-+	struct system_heap_buffer *buffer = dmabuf->priv;
-+
-+	deferred_free(&buffer->deferred_free, system_heap_buf_free, buffer->len);
-+}
-+
- static const struct dma_buf_ops system_heap_buf_ops = {
- 	.attach = system_heap_attach,
- 	.detach = system_heap_detach,
--- 
-2.17.1
+  fs/ext4/super.c
 
+between commit:
+
+  8446fe9255be ("block: switch partition lookup to use struct block_device")
+
+from Linus' tree and commit:
+
+  8e6f04c5e918 ("ext4: use sbi instead of EXT4_SB(sb) in ext4_update_super(=
+)")
+
+from the ext4 tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc fs/ext4/super.c
+index 830c196ec069,f53e69ec858d..000000000000
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@@ -5499,22 -5493,76 +5487,72 @@@ static void ext4_update_super(struct su
+  	 */
+  	if (!(sb->s_flags & SB_RDONLY))
+  		ext4_update_tstamp(es, s_wtime);
+ -	if (sb->s_bdev->bd_part)
+ -		es->s_kbytes_written =3D
+ -			cpu_to_le64(sbi->s_kbytes_written +
+ -			    ((part_stat_read(sb->s_bdev->bd_part,
+ -					     sectors[STAT_WRITE]) -
+ -			      sbi->s_sectors_written_start) >> 1));
+ -	else
+ -		es->s_kbytes_written =3D cpu_to_le64(sbi->s_kbytes_written);
+ +	es->s_kbytes_written =3D
+- 		cpu_to_le64(EXT4_SB(sb)->s_kbytes_written +
+++		cpu_to_le64(sbi->s_kbytes_written +
+ +		    ((part_stat_read(sb->s_bdev, sectors[STAT_WRITE]) -
+- 		      EXT4_SB(sb)->s_sectors_written_start) >> 1));
+- 	if (percpu_counter_initialized(&EXT4_SB(sb)->s_freeclusters_counter))
+++		      sbi->s_sectors_written_start) >> 1));
++ 	if (percpu_counter_initialized(&sbi->s_freeclusters_counter))
+  		ext4_free_blocks_count_set(es,
+- 			EXT4_C2B(EXT4_SB(sb), percpu_counter_sum_positive(
+- 				&EXT4_SB(sb)->s_freeclusters_counter)));
+- 	if (percpu_counter_initialized(&EXT4_SB(sb)->s_freeinodes_counter))
++ 			EXT4_C2B(sbi, percpu_counter_sum_positive(
++ 				&sbi->s_freeclusters_counter)));
++ 	if (percpu_counter_initialized(&sbi->s_freeinodes_counter))
+  		es->s_free_inodes_count =3D
+  			cpu_to_le32(percpu_counter_sum_positive(
+- 				&EXT4_SB(sb)->s_freeinodes_counter));
+- 	BUFFER_TRACE(sbh, "marking dirty");
++ 				&sbi->s_freeinodes_counter));
++ 	/* Copy error information to the on-disk superblock */
++ 	spin_lock(&sbi->s_error_lock);
++ 	if (sbi->s_add_error_count > 0) {
++ 		es->s_state |=3D cpu_to_le16(EXT4_ERROR_FS);
++ 		if (!es->s_first_error_time && !es->s_first_error_time_hi) {
++ 			__ext4_update_tstamp(&es->s_first_error_time,
++ 					     &es->s_first_error_time_hi,
++ 					     sbi->s_first_error_time);
++ 			strncpy(es->s_first_error_func, sbi->s_first_error_func,
++ 				sizeof(es->s_first_error_func));
++ 			es->s_first_error_line =3D
++ 				cpu_to_le32(sbi->s_first_error_line);
++ 			es->s_first_error_ino =3D
++ 				cpu_to_le32(sbi->s_first_error_ino);
++ 			es->s_first_error_block =3D
++ 				cpu_to_le64(sbi->s_first_error_block);
++ 			es->s_first_error_errcode =3D
++ 				ext4_errno_to_code(sbi->s_first_error_code);
++ 		}
++ 		__ext4_update_tstamp(&es->s_last_error_time,
++ 				     &es->s_last_error_time_hi,
++ 				     sbi->s_last_error_time);
++ 		strncpy(es->s_last_error_func, sbi->s_last_error_func,
++ 			sizeof(es->s_last_error_func));
++ 		es->s_last_error_line =3D cpu_to_le32(sbi->s_last_error_line);
++ 		es->s_last_error_ino =3D cpu_to_le32(sbi->s_last_error_ino);
++ 		es->s_last_error_block =3D cpu_to_le64(sbi->s_last_error_block);
++ 		es->s_last_error_errcode =3D
++ 				ext4_errno_to_code(sbi->s_last_error_code);
++ 		/*
++ 		 * Start the daily error reporting function if it hasn't been
++ 		 * started already
++ 		 */
++ 		if (!es->s_error_count)
++ 			mod_timer(&sbi->s_err_report, jiffies + 24*60*60*HZ);
++ 		le32_add_cpu(&es->s_error_count, sbi->s_add_error_count);
++ 		sbi->s_add_error_count =3D 0;
++ 	}
++ 	spin_unlock(&sbi->s_error_lock);
++=20
+  	ext4_superblock_csum_set(sb);
+- 	if (sync)
+- 		lock_buffer(sbh);
++ 	unlock_buffer(sbh);
++ }
++=20
++ static int ext4_commit_super(struct super_block *sb)
++ {
++ 	struct buffer_head *sbh =3D EXT4_SB(sb)->s_sbh;
++ 	int error =3D 0;
++=20
++ 	if (!sbh || block_device_ejected(sb))
++ 		return error;
++=20
++ 	ext4_update_super(sb);
++=20
+  	if (buffer_write_io_error(sbh) || !buffer_uptodate(sbh)) {
+  		/*
+  		 * Oh, dear.  A previous attempt to write the
+
+--Sig_/Et8CIw6xaACmIlc6aVCJEDz
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/b5fEACgkQAVBC80lX
+0Gy6LAgAkFJlqN6FmMp8wQePiI1n+TNfLk3MS2yUciQ9sapnohTBCArYrxHJY6Tb
+O00ZpUwub8CyJoK4eW31JsLKjmop9juIz2Eh/EMxYr/4QSiPagBkRLOyj1lIiuTD
+6NL+LXCCU1pzD0bpULYeSPeCE1fylgxPlgfWsmih9cfHvA0SRWeaETB/jvVHXQ9T
+46+5NQ2DpBoJ443ovMzyZbIyvWQhHkxo6MH3jBQitci2D5E2UQ0ePB0teoDfT3J3
+82y/OvcpVUuz4XE18wOrwslkX+fCfG5MYMcTB1HCA91FlfkYf5vjOVfqnnI4NRbc
+EFwHUVSrVioFKqK8HW2I/h+/Z4lpSw==
+=qjif
+-----END PGP SIGNATURE-----
+
+--Sig_/Et8CIw6xaACmIlc6aVCJEDz--
