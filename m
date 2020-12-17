@@ -2,125 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3779C2DD262
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 14:46:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FC802DD266
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 14:48:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728031AbgLQNq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 08:46:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57690 "EHLO
+        id S1728337AbgLQNq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 08:46:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726012AbgLQNqZ (ORCPT
+        with ESMTP id S1728062AbgLQNqz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 08:46:25 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 527E4C0617A7;
-        Thu, 17 Dec 2020 05:45:45 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id k10so5612589wmi.3;
-        Thu, 17 Dec 2020 05:45:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=rYsQcSifJBjYzEUAylJET7ZWFapvbTBxNtMFPXvIx4Q=;
-        b=PPoMd+5wVNGHhLEW70pLNwmZJB3daMNJW72MDfaslVtNRqhTvzWUhZxu6oUfU0kHZ9
-         BE/fVPHRn+c7dN6IHSt6THG3ADtYPJdXA/KnE4gRo1JjID7jqGGEfJI8DZ0fInpu0DdL
-         EqoPIwZjW/zbwNgcBm9v3Mt6ieYg28/k3wshznBEF9mcRlJvYjXXL6LyGvgCwsdWyeX2
-         ulvsOZVNpyDIUfuweccpbbnIisHu4lyFfSnsNHJtkDMnRPYFPzgQJc05nP2+TELIonvm
-         /KQH76R1hOy/kVr3LHQxiaUG5ynAn2OICEVhhR8VnQ1oPIGF4VhBEBK1r58J0CTOyCxm
-         bjnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=rYsQcSifJBjYzEUAylJET7ZWFapvbTBxNtMFPXvIx4Q=;
-        b=ZSOdv55r+30Urm3xeOkpQJqeuGury5Yo+wYqdDnTPzl8WYFpbSnHiWNBRcch3dnlru
-         3yG+VPG6HjKELh4iR1KBCqBIThqQKRxsarcI0G3yZ+XB/QZZYs2XKIs64b7d/RFpEsI5
-         ZRvdAqLacJoPTawDlQ6If5OObyHI0Vh7z0hgv9qIclLAl21uGuplpv7DYE0L/gXLKC5K
-         0nTNvNaj0/F4weL+SjxmzQKFlACVeVP4E+9ScNj4ijE0F3GWpA3kK2EZxKq/F25pGUip
-         rbzdihOx4VZ6RPQKmGAoX5re9BX8bkv9VAga7O/x6LlyVz62HZxKv6cKMoS8N9MUEuoy
-         T9eA==
-X-Gm-Message-State: AOAM531eITBn+OgTEGm9hEpSfkWdVTiEnUXoOXZkBaMOpO4P7LHNPaLk
-        /1bnnfZiIuJPGRmZFc0dTiA=
-X-Google-Smtp-Source: ABdhPJyIltf6RWYr3L+OhyDJ9uNFV409+8fyF+xTY8gmG/AH2zKgXuP3Ov52HdsivhpF480PN1Dtkg==
-X-Received: by 2002:a1c:7710:: with SMTP id t16mr8633011wmi.11.1608212744111;
-        Thu, 17 Dec 2020 05:45:44 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id j7sm8125426wmb.40.2020.12.17.05.45.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 05:45:43 -0800 (PST)
-Date:   Thu, 17 Dec 2020 14:45:41 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Felipe Balbi <balbi@kernel.org>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Ion Agorria <ion@agorria.com>, linux-tegra@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 8/8] ARM: tegra_defconfig: Enable USB_CHIPIDEA and
- remove USB_EHCI_TEGRA
-Message-ID: <X9thBR0QQY6MBi4R@ulmo>
-References: <20201217094007.19336-1-digetx@gmail.com>
- <20201217094007.19336-9-digetx@gmail.com>
+        Thu, 17 Dec 2020 08:46:55 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51325C061794
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 05:46:15 -0800 (PST)
+Received: from zn.tnic (p200300ec2f10f600957b9387e8d7e202.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:f600:957b:9387:e8d7:e202])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C3D741EC03D5;
+        Thu, 17 Dec 2020 14:46:13 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1608212773;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:
+         content-transfer-encoding:content-transfer-encoding:in-reply-to:
+         references; bh=YGc3T6z89tizhAoRWJpKXmxVG6rZwRFRRTRkmhJdB/U=;
+        b=J929rixlaRI1npgy+ZgPB27m4YeXXrFdTPdfb5YWAbbpnahKIfBmpXlsjvaP2PUUsOM7Fr
+        yfxLgV18NfeLoR5JVAgPjERDTOoxudrVUHYrogKoc0z71x1aw9uh/FUy/vNvKpO3b2Z8fr
+        sQLmWflbCTWEMIya7WtWs5bpBTipGbI=
+From:   Borislav Petkov <bp@alien8.de>
+To:     X86 ML <x86@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/2] x86/build: Add {kvm_guest,xen}.config targets to make help's output
+Date:   Thu, 17 Dec 2020 14:46:07 +0100
+Message-Id: <20201217134608.31811-1-bp@alien8.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="TcJYtQr9XJ0HXist"
-Content-Disposition: inline
-In-Reply-To: <20201217094007.19336-9-digetx@gmail.com>
-User-Agent: Mutt/2.0.3 (a51f058f) (2020-12-04)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Borislav Petkov <bp@suse.de>
 
---TcJYtQr9XJ0HXist
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Add the targets which add Kconfig items to the .config so that the
+kernel can be run as a guest, to the 'make help' output so that they
+can be found easier and there's no need to grep the tree each time to
+remember what they should be called.
 
-On Thu, Dec 17, 2020 at 12:40:07PM +0300, Dmitry Osipenko wrote:
-> The ehci-tegra driver was superseded by the generic ChipIdea USB driver,
-> update the tegra's defconfig accordingly.
->=20
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  arch/arm/configs/tegra_defconfig | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+Signed-off-by: Borislav Petkov <bp@suse.de>
+---
+ arch/x86/Makefile | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Greg, Peter, it might make sense for this to go through the USB tree
-along with the rest of the series to make sure it goes in at the right
-time. This file doesn't see many changes, so I expect there to be no
-conflicts with the ARM SoC tree.
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 7116da3980be..3dae5c90c159 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -304,4 +304,7 @@ define archhelp
+   echo  '                  bzdisk/fdimage*/isoimage also accept:'
+   echo  '                  FDARGS="..."  arguments for the booted kernel'
+   echo  '                  FDINITRD=file initrd for the booted kernel'
++  echo  '  kvm_guest.config - Enable Kconfig items for running this kernel as a KVM guest'
++  echo  '  xen.config	  - Enable Kconfig items for running this kernel as a Xen guest'
++
+ endef
+-- 
+2.29.2
 
-Acked-by: Thierry Reding <treding@nvidia.com>
-
-If you'd rather not pick this up, I'll just wait until the rest are
-applied and take this through the Tegra tree.
-
-Thierry
-
---TcJYtQr9XJ0HXist
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl/bYQUACgkQ3SOs138+
-s6H6uxAAh93w2y0dSzDquFO2kapHRFTPArcMPoqEx7HlitAUiLUkEoZi7IBkEREh
-GEyVEZkpxILKjL9sEQn1U+W/YoIFcN7uGN29iU62oCSqNxfPlgnVbze+GaANiTWt
-tvTidIYekLIl+hVYdB5VK0f3W/IPQFqTbsaRBntVNHKiZFavEs8Oy9jRoRi5VveM
-Br6hU2WcNydgR7roBe61GqW59ZgoadYmkKOGbSKRIPDN0uyO/ompmzfJtSKH7fkI
-zJCPs0AAmRiOzuwxZHpR17Z/kerF7BvNULe6ukNNOdezR2F5mBziAc+lfePsyraX
-b5YCOR1bS8Xn/eOvuLMqmMoVVXS/2AZWtog6cZXFEBn61pxHthj4aspzDzle0JTs
-vLGDjApZ1xhyomqe91xeA7QSOc8nujjfn5iSPzuBohKGjXljdSN0Km6UEQ8KO2dh
-I9o1SB4gQ1GU6Qwk8mTJRY1zdhAdyKXmkjlJjvdhzTgDns6fN2oo76rTv82WwjVc
-+MRUbueHuABi7+lJDBQJrVUoqXf1F2lIGKK0/C354ev7aP6fmTASE8A1TUFE89qD
-X2PQJd+AIoORTEv1+5geaKHyvUyI7utSMlr2Au3hIw/Hp4WY3scpxUNYk42HrBHt
-pcSlEu5RnReV+sJRSvOOQNeUyHanzU2SHvJcmo9P3jh/kFR28sk=
-=//h7
------END PGP SIGNATURE-----
-
---TcJYtQr9XJ0HXist--
