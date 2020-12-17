@@ -2,158 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 805742DD34A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 15:53:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12AC72DD357
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 15:55:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728108AbgLQOvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 09:51:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726291AbgLQOvm (ORCPT
+        id S1728159AbgLQOz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 09:55:29 -0500
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:36348 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726569AbgLQOz2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 09:51:42 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3C01C0611C5;
-        Thu, 17 Dec 2020 06:50:57 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1608216656;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VA4CgUr+mddzE5W5XW9xxSKHdRVWkhVu9Ou7VaYBRBs=;
-        b=x8YQjbsn8YubrCEDl0qhTSqp7psA5Cd6Hcsqd6nPGmOKkR4V3QV6au+wuNiZ7qXnSqXxrh
-        pHl+HVLKuH/NQrLPX+SBnCxVKjKz4KY9NGvsbLDIguCeKiwS0WVyMaaieLw2qaowM92I+v
-        AOu83+LgNoQtBcOH4v4HANgrFaxI66gNG0k0wizSwWzdOkg1aXgLEoo8LJ5Abil4dSH97g
-        LlvLd6o+i/ALJXAtSNNYH+yIhVe2vxmfXVuuIlY1jBObQ37+MdgawY4Cp01Gj58Mt9CyAy
-        JklATQ+uU8bAY28yrrUKjmnYeC6hjxb0UQqdPzcYoYDMWKALZ6gJQN1y4PCu6A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1608216656;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VA4CgUr+mddzE5W5XW9xxSKHdRVWkhVu9Ou7VaYBRBs=;
-        b=zuop8u3nFEivs4Yrh4v+upsEEA6+NJTeUPgODNyRqWXHhC8ikax+nyK5d9aFM+tUmTqDLA
-        kfxhlxbeOeHvM0Bw==
-To:     ira.weiny@intel.com, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>, Fenghua Yu <fenghua.yu@intel.com>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-doc@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH V3 04/10] x86/pks: Preserve the PKRS MSR on context switch
-In-Reply-To: <20201106232908.364581-5-ira.weiny@intel.com>
-References: <20201106232908.364581-1-ira.weiny@intel.com> <20201106232908.364581-5-ira.weiny@intel.com>
-Date:   Thu, 17 Dec 2020 15:50:55 +0100
-Message-ID: <871rfoscz4.fsf@nanos.tec.linutronix.de>
+        Thu, 17 Dec 2020 09:55:28 -0500
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BHEqAOf007500;
+        Thu, 17 Dec 2020 06:52:35 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=LHVXFgY28iTMTpgbMNDvqeDEq5m7ESsAw4UScbAYjD0=;
+ b=HSnpnyS1bdRJ2L3DjLPNohkh3UbQHVN6CL7St5Fsa3B49tVO2LKzF1CI3g+HrZppCWF0
+ QyCEjvWC3lb8iPTZvMEw+PDB6U+jdrdXtdaOEp+1gkZ4aE6fENNh/hSBKKEf+vAqRDRy
+ hIImxSiInEE+c+SN+FY24o9fJELcWf9gBcoJ3tWMTMmysWjRkGrMGWAdQaMsOe+lXYFQ
+ MoLRjRc3gYW6vMJHw2HKVyEJwpni671hyaNun8BRsgo45OQfnjLZcNED4WnyUHfhTFAD
+ z83R7MnYE1mE1kV9lOHnrHG7+5YiZMtjBkpgRp3xlUYELKEyVS9VNn9txoE4yzl31WUC 0w== 
+Received: from sc-exch02.marvell.com ([199.233.58.182])
+        by mx0a-0016f401.pphosted.com with ESMTP id 35g4rp0sfv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 17 Dec 2020 06:52:35 -0800
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH02.marvell.com
+ (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 17 Dec
+ 2020 06:52:34 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 17 Dec 2020 06:52:34 -0800
+Received: from stefan-pc.marvell.com (unknown [10.5.25.21])
+        by maili.marvell.com (Postfix) with ESMTP id 9A1E73F703F;
+        Thu, 17 Dec 2020 06:52:31 -0800 (PST)
+From:   <stefanc@marvell.com>
+To:     <netdev@vger.kernel.org>
+CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
+        <nadavh@marvell.com>, <ymarkman@marvell.com>,
+        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
+        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
+        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>
+Subject: [PATCH net v3] net: mvpp2: disable force link UP during port init procedure
+Date:   Thu, 17 Dec 2020 16:52:15 +0200
+Message-ID: <1608216735-14501-1-git-send-email-stefanc@marvell.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
 Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-17_10:2020-12-15,2020-12-17 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06 2020 at 15:29, ira weiny wrote:
-> --- a/arch/x86/kernel/process.c
-> +++ b/arch/x86/kernel/process.c
-> @@ -43,6 +43,7 @@
->  #include <asm/io_bitmap.h>
->  #include <asm/proto.h>
->  #include <asm/frame.h>
-> +#include <asm/pkeys_common.h>
->  
->  #include "process.h"
->  
-> @@ -187,6 +188,27 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
->  	return ret;
->  }
->  
-> +#ifdef CONFIG_ARCH_HAS_SUPERVISOR_PKEYS
-> +DECLARE_PER_CPU(u32, pkrs_cache);
-> +static inline void pks_init_task(struct task_struct *tsk)
+From: Stefan Chulski <stefanc@marvell.com>
 
-First of all. I asked several times now not to glue stuff onto a
-function without a newline inbetween. It's unreadable.
+Force link UP can be enabled by bootloader during tftpboot
+and breaks NFS support.
+Force link UP disabled during port init procedure.
 
-But what's worse is that the declaration of pkrs_cache which is global
-is in a C file and not in a header. And pkrs_cache is not even used in
-this file. So what?
+Fixes: f84bf386f395 ("net: mvpp2: initialize the GoP")
+Signed-off-by: Stefan Chulski <stefanc@marvell.com>
+---
 
-> +{
-> +	/* New tasks get the most restrictive PKRS value */
-> +	tsk->thread.saved_pkrs = INIT_PKRS_VALUE;
-> +}
-> +static inline void pks_sched_in(void)
+Changes in v3:
+- Added Fixes tag.
+Changes in v2:
+- No changes.
 
-Newline between functions. It's fine for stubs, but not for a real implementation.
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-> diff --git a/arch/x86/mm/pkeys.c b/arch/x86/mm/pkeys.c
-> index d1dfe743e79f..76a62419c446 100644
-> --- a/arch/x86/mm/pkeys.c
-> +++ b/arch/x86/mm/pkeys.c
-> @@ -231,3 +231,34 @@ u32 update_pkey_val(u32 pk_reg, int pkey, unsigned int flags)
->  
->  	return pk_reg;
->  }
-> +
-> +DEFINE_PER_CPU(u32, pkrs_cache);
+diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+index d2b0506..0ad3177 100644
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+@@ -5479,7 +5479,7 @@ static int mvpp2_port_init(struct mvpp2_port *port)
+ 	struct mvpp2 *priv = port->priv;
+ 	struct mvpp2_txq_pcpu *txq_pcpu;
+ 	unsigned int thread;
+-	int queue, err;
++	int queue, err, val;
+ 
+ 	/* Checks for hardware constraints */
+ 	if (port->first_rxq + port->nrxqs >
+@@ -5493,6 +5493,18 @@ static int mvpp2_port_init(struct mvpp2_port *port)
+ 	mvpp2_egress_disable(port);
+ 	mvpp2_port_disable(port);
+ 
++	if (mvpp2_is_xlg(port->phy_interface)) {
++		val = readl(port->base + MVPP22_XLG_CTRL0_REG);
++		val &= ~MVPP22_XLG_CTRL0_FORCE_LINK_PASS;
++		val |= MVPP22_XLG_CTRL0_FORCE_LINK_DOWN;
++		writel(val, port->base + MVPP22_XLG_CTRL0_REG);
++	} else {
++		val = readl(port->base + MVPP2_GMAC_AUTONEG_CONFIG);
++		val &= ~MVPP2_GMAC_FORCE_LINK_PASS;
++		val |= MVPP2_GMAC_FORCE_LINK_DOWN;
++		writel(val, port->base + MVPP2_GMAC_AUTONEG_CONFIG);
++	}
++
+ 	port->tx_time_coal = MVPP2_TXDONE_COAL_USEC;
+ 
+ 	port->txqs = devm_kcalloc(dev, port->ntxqs, sizeof(*port->txqs),
+-- 
+1.9.1
 
-Again, why is this global?
-
-> +void write_pkrs(u32 new_pkrs)
-> +{
-> +	u32 *pkrs;
-> +
-> +	if (!static_cpu_has(X86_FEATURE_PKS))
-> +		return;
-> +
-> +	pkrs = get_cpu_ptr(&pkrs_cache);
-
-So this is called from various places including schedule and also from
-the low level entry/exit code. Why do we need to have an extra
-preempt_disable/enable() there via get/put_cpu_ptr()?
-
-Just because performance in those code paths does not matter?
-
-> +	if (*pkrs != new_pkrs) {
-> +		*pkrs = new_pkrs;
-> +		wrmsrl(MSR_IA32_PKRS, new_pkrs);
-> +	}
-> +	put_cpu_ptr(pkrs);
-
-Now back to the context switch:
-
-> @@ -644,6 +668,8 @@ void __switch_to_xtra(struct task_struct *prev_p, struct task_struct *next_p)
->
->	 if ((tifp ^ tifn) & _TIF_SLD)
->		 switch_to_sld(tifn);
-> +
-> +	pks_sched_in();
->  }
-
-How is this supposed to work? 
-
-switch_to() {
-   ....
-   switch_to_extra() {
-      ....
-      if (unlikely(next_tif & _TIF_WORK_CTXSW_NEXT ||
-	           prev_tif & _TIF_WORK_CTXSW_PREV))
-	   __switch_to_xtra(prev, next);
-
-I.e. __switch_to_xtra() is only invoked when the above condition is
-true, which is not guaranteed at all.
-
-While I have to admit that I dropped the ball on the update for the
-entry patch, I'm not too sorry about it anymore when looking at this.
-
-Are you still sure that this is ready for merging?
-
-Thanks,
-
-        tglx
