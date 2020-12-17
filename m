@@ -2,114 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 545092DD201
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 14:18:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 390512DD206
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 14:19:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727323AbgLQNRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 08:17:36 -0500
-Received: from www381.your-server.de ([78.46.137.84]:35830 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726291AbgLQNRf (ORCPT
+        id S1727684AbgLQNS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 08:18:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57258 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726012AbgLQNSz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 08:17:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=LZKbUafPeuQov+HIZ4OeOAVqPXc+101ssRAdpyGpviM=; b=FLw/WgjBHrnMZ99/KqVfG9+LKe
-        4UaGozdGYtcfUGeVe/Ez+4K8cD4wLXRRWz9bgDipWEA0ySL7UMMj1FMclFWMHXc7wpvg3yr5PvwiN
-        ypXAL0A1mp3/2lxVzYz4PM4d/5i2fy/4D4iyW0bZ9JqdtUWrGiAJKs8CCMNxNxFeZOBy4WDeudha/
-        RrCkRdofm+Vjt5R/FWcio7j5+dJYsMoXIqJYV+D9vqWJetWC9nMZnSmQGlHtUpmaTMW3d8bkS9nbu
-        q+E7BXtBHrZVauvBj2YH5Lw4G3arEC8PZiYPD+MXBRW5++IyRowWvT5PW9q//CnLUy3szEO9Mi5Gv
-        wMOmjZvA==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1kpt9F-0001yb-Bx; Thu, 17 Dec 2020 14:16:49 +0100
-Received: from [62.216.202.54] (helo=[192.168.178.20])
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1kpt9F-000D9s-4W; Thu, 17 Dec 2020 14:16:49 +0100
-Subject: Re: [PATCH v1 ] ALSA: core: memalloc: add page alignment for iram
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     alsa-devel@alsa-project.org, gustavoars@kernel.org,
-        linux-kernel@vger.kernel.org, shengjiu.wang@nxp.com,
-        tiwai@suse.com, pierre-louis.bossart@linux.intel.com,
-        xiang@kernel.org, Robin Gong <yibin.gong@nxp.com>,
-        akpm@linux-foundation.org
-References: <1608221747-3474-1-git-send-email-yibin.gong@nxp.com>
- <05c824e5-0c33-4182-26fa-b116a42b10d6@metafoo.de>
- <s5h5z50n4dd.wl-tiwai@suse.de>
- <70074f62-954a-9b40-ab4a-cb438925060c@metafoo.de>
- <s5hmtyclmig.wl-tiwai@suse.de>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <8e103a2b-1097-6d54-7266-34743321efac@metafoo.de>
-Date:   Thu, 17 Dec 2020 14:16:48 +0100
+        Thu, 17 Dec 2020 08:18:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608211049;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ocVbXd5tOfDrxGvrA5+6ey5fuQhbI9fTf7NbBH/g/Pc=;
+        b=FXCld0sZb7HQQxh8YRNkV0KAs5ZQTXGWlzVyCLx6YEzcX/GWdnecCj+RjVuSDN7J5qV1HY
+        h1MfAzpNbgn68rcykSSZFhEkxJJ+ElhHVmydPHOcT8W6DNxZxf+6u+qOhnd+ulcxRkKRHt
+        k1tz83ZSlaqSgRqq7ccXeuFXGJfHgE8=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-578-wed9bvt4O1CcTWFtqU7Atw-1; Thu, 17 Dec 2020 08:17:27 -0500
+X-MC-Unique: wed9bvt4O1CcTWFtqU7Atw-1
+Received: by mail-qk1-f199.google.com with SMTP id n190so22200127qkf.18
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 05:17:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=ocVbXd5tOfDrxGvrA5+6ey5fuQhbI9fTf7NbBH/g/Pc=;
+        b=OIguVx0vN8jrFaFVsa66tRjhI/sCby8y4qTk8f6ggKdBI7GmrYvMP8V2n2obOtkfJB
+         4CgGOt1K+2F4nwzGIhIoSFfm9ynZX4IuDM/hKdk4G6vJwAF5AHfVnS28HkFTPmCjxzuJ
+         uk6KGde1vF+GUN5L057+GupmVFzRR6ad21o3ZQJQozzFPHmzgtwoO2cIh9IY17MS/T9X
+         yzV3AGct0OBtoX//zd1gL3VT//etTl4keKZu0D1mjboLYHhMvRuVuxXvhxnxX+nRiL53
+         4NFN7/LdJSRQHFJS5FohOZqivUr8CWJ6YA4+xJWHldPHfGcZV2ODYLNexNbZgbjMqtXO
+         e1CA==
+X-Gm-Message-State: AOAM533qBwlzYHnrWV3S/lDc6PVSyB35eypkNBRVie1EkZr29ik1Debh
+        0fJfuAYRZLuMaQb03YIRoF5HmqF/nA8Yuh6gU013EiETzwsdOpMOX6HT9OBa3V/Hdd3YylA1FQh
+        DC+LMd/9NzjISi9umvRSpmZDsbH0zVTPgoFkakm5CUZaJLeLFbDGE/AexxZ0sLjOqXiOhTtI=
+X-Received: by 2002:aed:3144:: with SMTP id 62mr48589782qtg.342.1608211046974;
+        Thu, 17 Dec 2020 05:17:26 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyhFwVGG8Kkax7v/eyJISK93npWC3VG3nlu8liesJbrGCip5EwprgQTQF6BcwFvzS1O4uZAiQ==
+X-Received: by 2002:aed:3144:: with SMTP id 62mr48589755qtg.342.1608211046674;
+        Thu, 17 Dec 2020 05:17:26 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id w192sm3351417qka.68.2020.12.17.05.17.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Dec 2020 05:17:26 -0800 (PST)
+Subject: Re: [PATCH] atm: ambassador: remove h from printk format specifier
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     3chas3@gmail.com, linux-atm-general@lists.sourceforge.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201215142228.1847161-1-trix@redhat.com>
+ <20201216164510.770454d8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <6ada03ed-1ecb-493b-96f8-5f9548a46a5e@redhat.com>
+Date:   Thu, 17 Dec 2020 05:17:24 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <s5hmtyclmig.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201216164510.770454d8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26019/Wed Dec 16 15:36:02 2020)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/17/20 12:06 PM, Takashi Iwai wrote:
-> On Thu, 17 Dec 2020 11:59:23 +0100,
-> Lars-Peter Clausen wrote:
->> On 12/17/20 10:55 AM, Takashi Iwai wrote:
->>> On Thu, 17 Dec 2020 10:43:45 +0100,
->>> Lars-Peter Clausen wrote:
->>>> On 12/17/20 5:15 PM, Robin Gong wrote:
->>>>> Since mmap for userspace is based on page alignment, add page alignment
->>>>> for iram alloc from pool, otherwise, some good data located in the same
->>>>> page of dmab->area maybe touched wrongly by userspace like pulseaudio.
->>>>>
->>>> I wonder, do we also have to align size to be a multiple of PAGE_SIZE
->>>> to avoid leaking unrelated data?
->>> Hm, a good question.  Basically the PCM buffer size itself shouldn't
->>> be influenced by that (i.e. no hw-constraint or such is needed), but
->>> the padding should be cleared indeed.  I somehow left those to the
->>> allocator side, but maybe it's safer to clear the whole buffer in
->>> sound/core/memalloc.c commonly.
->> What I meant was that most of the APIs that we use to allocate memory
->> work on a PAGE_SIZE granularity. I.e. if you request a buffer that
->> where the size is not a multiple of PAGE_SIZE internally they will
->> still allocate a buffer that is a multiple of PAGE_SIZE and mark the
->> unused bytes as reserved.
->>
->> But I believe that is not the case gen_pool_dma_alloc(). It will
->> happily allocate those extra bytes to some other allocation request.
->>
->> That we need to zero out the reserved bytes even for those other APIs
->> is a very good additional point!
->>
->> I looked at this a few years ago and I'm pretty sure that we cleared
->> out the allocated area, but I can't find that anymore in the current
->> code. Which is not so great I guess.
-> IIRC, we used GFP_ZERO in the past for the normal page allocations,
-> but this was dropped as it's no longer supported or so.
->
-> Also, we clear out the PCM buffer in hw_params call, but this is for
-> the requested size, not the actual allocated size, hence the padding
-> bytes will remain uncleared.
-Ah! That memset() in hw_params is new.
->
-> So I believe it's safer to add an extra memset() like my test patch.
 
-Yea, we definitely want that.
+On 12/16/20 4:45 PM, Jakub Kicinski wrote:
+> On Tue, 15 Dec 2020 06:22:28 -0800 trix@redhat.com wrote:
+>> From: Tom Rix <trix@redhat.com>
+>>
+>> See Documentation/core-api/printk-formats.rst.
+>> h should no longer be used in the format specifier for printk.
+>>
+>> Signed-off-by: Tom Rix <trix@redhat.com>
+> That's for new code I assume?
+>
+> What's the harm in leaving this ancient code be?
 
-Do we care about leaking audio samples from a previous application. I.e. 
-application 'A' allocates a buffer plays back some data and then closes 
-the device again. Application 'B' then opens the same audio devices 
-allocates a slightly smaller buffer, so that it still uses the same 
-number of pages. The buffer from the previous allocation get reused, but 
-the remainder of the last page wont get cleared in hw_params().
+This change is part of a tree wide cleanup.
+
+drivers/atm status is listed as Maintained in MAINTAINERS so changes like this should be ok.
+
+Should drivers/atm status be changed?
+
+Tom
+
+>
+>> diff --git a/drivers/atm/ambassador.c b/drivers/atm/ambassador.c
+>> index c039b8a4fefe..6b0fff8c0141 100644
+>> --- a/drivers/atm/ambassador.c
+>> +++ b/drivers/atm/ambassador.c
+>> @@ -2169,7 +2169,7 @@ static void setup_pci_dev(struct pci_dev *pci_dev)
+>>  		pci_lat = (lat < MIN_PCI_LATENCY) ? MIN_PCI_LATENCY : lat;
+>>  
+>>  	if (lat != pci_lat) {
+>> -		PRINTK (KERN_INFO, "Changing PCI latency timer from %hu to %hu",
+>> +		PRINTK (KERN_INFO, "Changing PCI latency timer from %u to %u",
+>>  			lat, pci_lat);
+>>  		pci_write_config_byte(pci_dev, PCI_LATENCY_TIMER, pci_lat);
+>>  	}
+>> @@ -2300,7 +2300,7 @@ static void __init amb_check_args (void) {
+>>    unsigned int max_rx_size;
+>>    
+>>  #ifdef DEBUG_AMBASSADOR
+>> -  PRINTK (KERN_NOTICE, "debug bitmap is %hx", debug &= DBG_MASK);
+>> +  PRINTK (KERN_NOTICE, "debug bitmap is %x", debug &= DBG_MASK);
+>>  #else
+>>    if (debug)
+>>      PRINTK (KERN_NOTICE, "no debugging support");
 
