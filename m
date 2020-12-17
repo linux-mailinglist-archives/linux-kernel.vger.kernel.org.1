@@ -2,131 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD1722DCEC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 10:48:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D91D72DCE99
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 10:44:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728082AbgLQJqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 04:46:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727993AbgLQJqK (ORCPT
+        id S1727533AbgLQJnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 04:43:06 -0500
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:52446 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726580AbgLQJnF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 04:46:10 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEB36C061257;
-        Thu, 17 Dec 2020 01:44:53 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id o19so30119897lfo.1;
-        Thu, 17 Dec 2020 01:44:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=SQW682SNhDsjl2P24nfgF7SWJzhlw6l3S/bWSyN4tX0=;
-        b=Zz0Ic5MU75un02Irbv+4P5nyuVMS34Rn01jo5JTUhlMxrt5PUfeahRj/L9atQKClEC
-         nUkZzol6MdScqj9YqT7I4uRCaq3gI7HsRHEkE/95QHo3Xxj6nL+qsOtytQyt657i0vi0
-         S3Y5JATqZpo8qpMdjaD+ksvo0ng4rXhYwBb5uroEF8F+CR503w7xmPbky2awhPqMMAwA
-         srqSpvATnqytTq8I+f4gLPhiFRA69q5P/qZNmKb5imA1xa5B2guX4m8RGi8abLlo7ZR8
-         chDMRzePY074v0HzC6NEvJXslKuEZva7TTUBspBFe6CCCJOYJykdMDALkUmNCx1w6lrE
-         luzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SQW682SNhDsjl2P24nfgF7SWJzhlw6l3S/bWSyN4tX0=;
-        b=WwosMHLe/4NsLdiiTVI/1aImDQFMdv2vXT/Jx8NvE3bGnnbjM6Xyc6zC4aOnjMnPI1
-         YzAT25cZ2mnTgrkQI7JIu40hQXFMlgtOqghDbfx7T2PmnfhwT+RMclP097MWYAXdvSK6
-         6B5PiJSUFmhPdcTGQ50A93qs2tXuQInk2x2xK3YJH5RTR5jVnv0jT8ufNMMx0FGV3Xum
-         rSIwGPVhJZeeorMmAdw2JqS5U5Sr2jCJMnal25lrwYm9TSn6cKOcibqjfJC2g+dgXhKU
-         Ap2Te3aXuw6QqDSfX46vv9C4r5WslQ/QG9EzHzJUcUqQSy03FJHubn2GnDeX1QFsz2wO
-         90DQ==
-X-Gm-Message-State: AOAM531yhTOFKErUAyHFGgC4LnZJfB8URwumPUEGJoTuG8DbiDGrhlji
-        xj3Dx3sqBwMHqll5iu+fNYg=
-X-Google-Smtp-Source: ABdhPJyupW5h/9Ryo1Cq+UoYASEmri2csCVWF4e5v0NnebdUHlcMoUkLsZHXVreFzPwRG4QS2MdfXg==
-X-Received: by 2002:a19:4cc:: with SMTP id 195mr14418347lfe.498.1608198292419;
-        Thu, 17 Dec 2020 01:44:52 -0800 (PST)
-Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.gmail.com with ESMTPSA id u19sm613917lji.2.2020.12.17.01.44.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 01:44:51 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Felipe Balbi <balbi@kernel.org>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Peter Geis <pgwipeout@gmail.com>, Ion Agorria <ion@agorria.com>
-Cc:     linux-tegra@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 6/8] usb: chipidea: tegra: Support runtime PM
-Date:   Thu, 17 Dec 2020 12:40:05 +0300
-Message-Id: <20201217094007.19336-7-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201217094007.19336-1-digetx@gmail.com>
-References: <20201217094007.19336-1-digetx@gmail.com>
+        Thu, 17 Dec 2020 04:43:05 -0500
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BH9aJp9020795;
+        Thu, 17 Dec 2020 01:40:15 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=AlAncbUjN9C61RgCMXrSYHMGQ9BKjAOvLpnBioJ+lGA=;
+ b=PhO/nxAxqgWzGjGBIv0BKLTdKIO4Yjpl8I09oClvBO8HATeT6Zv3d/cM0olBKCSQQ64C
+ EnY20aY/y42+ojoEWwvxEnkFk7a6RjU1SvZP9jzCJhGWM7sTUz4F+gbfVCPtDDwQhFrs
+ mwwIT5NKlpct2zp8IyJyyQUqPRg5T0lcf4V0dhq0EddewLf8t+emWZXDeM/3BdQF2i7S
+ eUW3N9paQnVELRV7a/UFt32piO4OKEURaW/ebZufkT4kqZIPwp9Glpba6RMcqOYQ4DUU
+ rsh+mNXWP5IVLW8Op8SK7KfIdeg7kBEWvr6CLeGDntDvF18qpjL5GRqLUdW+Swt+vqLB Wg== 
+Received: from sc-exch03.marvell.com ([199.233.58.183])
+        by mx0b-0016f401.pphosted.com with ESMTP id 35cx8tf48u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 17 Dec 2020 01:40:15 -0800
+Received: from SC-EXCH04.marvell.com (10.93.176.84) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 17 Dec
+ 2020 01:40:14 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH04.marvell.com
+ (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 17 Dec
+ 2020 01:40:14 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 17 Dec 2020 01:40:14 -0800
+Received: from stefan-pc.marvell.com (unknown [10.5.25.21])
+        by maili.marvell.com (Postfix) with ESMTP id 389953F703F;
+        Thu, 17 Dec 2020 01:40:11 -0800 (PST)
+From:   <stefanc@marvell.com>
+To:     <netdev@vger.kernel.org>
+CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
+        <nadavh@marvell.com>, <ymarkman@marvell.com>,
+        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
+        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
+        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>
+Subject: [PATCH net v2 1/2] net: mvpp2: Fix GoP port 3 Networking Complex Control configurations
+Date:   Thu, 17 Dec 2020 11:40:06 +0200
+Message-ID: <1608198007-10143-1-git-send-email-stefanc@marvell.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-17_07:2020-12-15,2020-12-17 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tegra PHY driver now supports waking up controller from a low power mode.
-Enable runtime PM in order to put controller into the LPM during idle.
+From: Stefan Chulski <stefanc@marvell.com>
 
-Tested-by: Matt Merhar <mattmerhar@protonmail.com>
-Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-Tested-by: Peter Geis <pgwipeout@gmail.com>
-Tested-by: Ion Agorria <ion@agorria.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+During GoP port 2 Networking Complex Control mode of operation configurations,
+also GoP port 3 mode of operation was wrongly set.
+Patch removes these configurations.
+GENCONF_CTRL0_PORTX naming also fixed.
+
+Fixes: f84bf386f395 ("net: mvpp2: initialize the GoP")
+Signed-off-by: Stefan Chulski <stefanc@marvell.com>
 ---
- drivers/usb/chipidea/ci_hdrc_tegra.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/marvell/mvpp2/mvpp2.h      | 6 +++---
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 8 ++++----
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/usb/chipidea/ci_hdrc_tegra.c b/drivers/usb/chipidea/ci_hdrc_tegra.c
-index 5fccdeeefc64..655671159511 100644
---- a/drivers/usb/chipidea/ci_hdrc_tegra.c
-+++ b/drivers/usb/chipidea/ci_hdrc_tegra.c
-@@ -38,21 +38,24 @@ struct tegra_usb_soc_info {
+diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
+index 6bd7e40..39c4e5c 100644
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
+@@ -651,9 +651,9 @@
+ #define     GENCONF_PORT_CTRL1_EN(p)			BIT(p)
+ #define     GENCONF_PORT_CTRL1_RESET(p)			(BIT(p) << 28)
+ #define GENCONF_CTRL0					0x1120
+-#define     GENCONF_CTRL0_PORT0_RGMII			BIT(0)
+-#define     GENCONF_CTRL0_PORT1_RGMII_MII		BIT(1)
+-#define     GENCONF_CTRL0_PORT1_RGMII			BIT(2)
++#define     GENCONF_CTRL0_PORT2_RGMII			BIT(0)
++#define     GENCONF_CTRL0_PORT3_RGMII_MII		BIT(1)
++#define     GENCONF_CTRL0_PORT3_RGMII			BIT(2)
  
- static const struct tegra_usb_soc_info tegra20_ehci_soc_info = {
- 	.flags = CI_HDRC_REQUIRES_ALIGNED_DMA |
--		 CI_HDRC_OVERRIDE_PHY_CONTROL,
-+		 CI_HDRC_OVERRIDE_PHY_CONTROL |
-+		 CI_HDRC_SUPPORTS_RUNTIME_PM,
- 	.dr_mode = USB_DR_MODE_HOST,
- 	.txfifothresh = 10,
- };
+ /* Various constants */
  
- static const struct tegra_usb_soc_info tegra30_ehci_soc_info = {
- 	.flags = CI_HDRC_REQUIRES_ALIGNED_DMA |
--		 CI_HDRC_OVERRIDE_PHY_CONTROL,
-+		 CI_HDRC_OVERRIDE_PHY_CONTROL |
-+		 CI_HDRC_SUPPORTS_RUNTIME_PM,
- 	.dr_mode = USB_DR_MODE_HOST,
- 	.txfifothresh = 16,
- };
+diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+index d64dc12..d2b0506 100644
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+@@ -1231,9 +1231,9 @@ static void mvpp22_gop_init_rgmii(struct mvpp2_port *port)
  
- static const struct tegra_usb_soc_info tegra_udc_soc_info = {
- 	.flags = CI_HDRC_REQUIRES_ALIGNED_DMA |
--		 CI_HDRC_OVERRIDE_PHY_CONTROL,
-+		 CI_HDRC_OVERRIDE_PHY_CONTROL |
-+		 CI_HDRC_SUPPORTS_RUNTIME_PM,
- 	.dr_mode = USB_DR_MODE_UNKNOWN,
- };
+ 	regmap_read(priv->sysctrl_base, GENCONF_CTRL0, &val);
+ 	if (port->gop_id == 2)
+-		val |= GENCONF_CTRL0_PORT0_RGMII | GENCONF_CTRL0_PORT1_RGMII;
++		val |= GENCONF_CTRL0_PORT2_RGMII;
+ 	else if (port->gop_id == 3)
+-		val |= GENCONF_CTRL0_PORT1_RGMII_MII;
++		val |= GENCONF_CTRL0_PORT3_RGMII_MII;
+ 	regmap_write(priv->sysctrl_base, GENCONF_CTRL0, val);
+ }
  
-@@ -323,6 +326,10 @@ static int tegra_usb_probe(struct platform_device *pdev)
- 	usb->data.hub_control = tegra_ehci_hub_control;
- 	usb->data.notify_event = tegra_usb_notify_event;
- 
-+	/* Tegra PHY driver currently doesn't support LPM for ULPI */
-+	if (of_usb_get_phy_mode(pdev->dev.of_node) == USBPHY_INTERFACE_MODE_ULPI)
-+		usb->data.flags &= ~CI_HDRC_SUPPORTS_RUNTIME_PM;
-+
- 	usb->dev = ci_hdrc_add_device(&pdev->dev, pdev->resource,
- 				      pdev->num_resources, &usb->data);
- 	if (IS_ERR(usb->dev)) {
+@@ -1250,9 +1250,9 @@ static void mvpp22_gop_init_sgmii(struct mvpp2_port *port)
+ 	if (port->gop_id > 1) {
+ 		regmap_read(priv->sysctrl_base, GENCONF_CTRL0, &val);
+ 		if (port->gop_id == 2)
+-			val &= ~GENCONF_CTRL0_PORT0_RGMII;
++			val &= ~GENCONF_CTRL0_PORT2_RGMII;
+ 		else if (port->gop_id == 3)
+-			val &= ~GENCONF_CTRL0_PORT1_RGMII_MII;
++			val &= ~GENCONF_CTRL0_PORT3_RGMII_MII;
+ 		regmap_write(priv->sysctrl_base, GENCONF_CTRL0, val);
+ 	}
+ }
 -- 
-2.29.2
+1.9.1
 
