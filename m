@@ -2,98 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6D92DDA50
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 21:51:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E396D2DDA55
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 21:53:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731465AbgLQUvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 15:51:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38826 "EHLO
+        id S1731518AbgLQUvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 15:51:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726917AbgLQUvD (ORCPT
+        with ESMTP id S1731491AbgLQUvb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 15:51:03 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C264AC061794;
-        Thu, 17 Dec 2020 12:50:22 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cxkf44MXCz9sTL;
-        Fri, 18 Dec 2020 07:50:15 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1608238220;
-        bh=S3cmhY3LlkmiCs8LciG44LtHUT+y0pUqc85nnsRMlxw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=J57Cbmj6yS94085Ngclc7Uaxl+3ZVxbEVbdMXQNXps+IiQf67cjNSvd0Xa6qdG04W
-         Y6iO5KOJC6m3aDZIrzD7Wsvs7F7UXD0MxK5LAhnsRUDUVFyhf9L4r9Wcnw6oF9IBm7
-         3jV3Vf2GEv2A1xGpTdz8tH/WLWfMFCp6JwfC0kUilaliMIbr1LAy/fkhAnbv9EqXhc
-         4veP1DNgrFJDbGEg2SaATH1QI44igzaosu1KZZ6pHalmsESoaDWpR+tKm4Qs47uQJ/
-         UUtkMCyimClNw18qqplctIjRDZmOCbp0Ev90MFIEcwfMVEnCN9BuwriV/9Lvm59Qz3
-         390Qybrdizsvw==
-Date:   Fri, 18 Dec 2020 07:50:14 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: linux-next: Tree for Dec 17 (objtool warnings)
-Message-ID: <20201218075014.70b286a3@canb.auug.org.au>
-In-Reply-To: <3140d3b6-e1f2-38a7-60e8-8dca948f962c@infradead.org>
-References: <20201217165304.42c98402@canb.auug.org.au>
-        <3140d3b6-e1f2-38a7-60e8-8dca948f962c@infradead.org>
+        Thu, 17 Dec 2020 15:51:31 -0500
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19E60C06138C
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 12:50:51 -0800 (PST)
+Received: by mail-qv1-xf31.google.com with SMTP id p12so13974598qvj.13
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 12:50:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oqHfltIe6StadBZi2KkdxefX4rAbzFV9jepIFW1E6FY=;
+        b=E/x8A5vMezHCFb9dLm6S0IXJq8Gyh+EPvo5BKs55Wk+POuD1PHi75XEpm0rMiyFNCO
+         HHO1b2pGTYbUDh5Hiq7MA7CpWTSo63OwzfS273kvFBXKpSIfdWF1ZTUIIbb4brsNRlK5
+         9spCH84mjZBmVt00zaRF6kNachiZDpPlmFdp9n2kbSsAFwA+VdZ4CFn9vTCc6LCSi4FW
+         ei6BeLw9IBW0givRHd5+knksA6HoU9W/sihFUzVzR961sv/rWpvQQEk9M7EOvx/H7YHm
+         oAk/kaZ+0uNu1UMZJxnoVx5JOwNnnEzv1DfYcMHinfAUV+6TYGsF8ZEtSili6jQXujtw
+         4S1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oqHfltIe6StadBZi2KkdxefX4rAbzFV9jepIFW1E6FY=;
+        b=Ou6LVRP3YLequnvYbyG+Ft/wJt+H/4xWDg5Csaq+KSuujUzu6KdkK4VGjkw80jnrAQ
+         vSj/BIOK1FP0IqWlNhafoLa4b0aHdy5P1IFCe+cXRz5YPv/JRcTMdHlfnZzLpp/U8/fO
+         E1oJpjqMr4D14ZznOWTxzXCSnJ3yxOJtX17QfNTxzFejOB2Il617X6TV3v6aC1OfGSF8
+         Du55nS9C9EpMkdgmFkhlEABP/1mKCNu+YFqbDU/+xYjBIoSA72JEZoTYdHjKfBhRxCRv
+         e4bgPg4UYg+AoTOC1TwD7coLG7EMR/PBocZ9ptlg4fwmeA8nowkt+EsbluWXh+bRi7+T
+         SzyA==
+X-Gm-Message-State: AOAM5307Pe+uDi4TzFvTLogUBKEXClTN8FrEnPMvCyHmyy+O0QZkDoWN
+        bN8qWLLI6WcGUlzHeLWMfBIZhg==
+X-Google-Smtp-Source: ABdhPJxnMK/i8fyKRnAicH/iIJoa4TtlmAQCGTxXlVYSxs/wReGHF4jBJbTahp3EzGoSA6ywyXHl3Q==
+X-Received: by 2002:a0c:ea34:: with SMTP id t20mr928397qvp.5.1608238250201;
+        Thu, 17 Dec 2020 12:50:50 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id a5sm4381546qtn.57.2020.12.17.12.50.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Dec 2020 12:50:49 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kq0Ea-00CNWJ-NQ; Thu, 17 Dec 2020 16:50:48 -0400
+Date:   Thu, 17 Dec 2020 16:50:48 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, vbabka@suse.cz, mhocko@suse.com,
+        david@redhat.com, osalvador@suse.de, dan.j.williams@intel.com,
+        sashal@kernel.org, tyhicks@linux.microsoft.com,
+        iamjoonsoo.kim@lge.com, mike.kravetz@oracle.com,
+        rostedt@goodmis.org, mingo@redhat.com, peterz@infradead.org,
+        mgorman@suse.de, willy@infradead.org, rientjes@google.com,
+        jhubbard@nvidia.com, linux-doc@vger.kernel.org,
+        ira.weiny@intel.com, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v4 08/10] mm/gup: limit number of gup migration failures,
+ honor failures
+Message-ID: <20201217205048.GL5487@ziepe.ca>
+References: <20201217185243.3288048-1-pasha.tatashin@soleen.com>
+ <20201217185243.3288048-9-pasha.tatashin@soleen.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/6=XiT02swapFKo4b_Dduj8.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201217185243.3288048-9-pasha.tatashin@soleen.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/6=XiT02swapFKo4b_Dduj8.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Dec 17, 2020 at 01:52:41PM -0500, Pavel Tatashin wrote:
+> +/*
+> + * Verify that there are no unpinnable (movable) pages, if so return true.
+> + * Otherwise an unpinnable pages is found return false, and unpin all pages.
+> + */
+> +static bool check_and_unpin_pages(unsigned long nr_pages, struct page **pages,
+> +				  unsigned int gup_flags)
+> +{
+> +	unsigned long i, step;
+> +
+> +	for (i = 0; i < nr_pages; i += step) {
+> +		struct page *head = compound_head(pages[i]);
+> +
+> +		step = compound_nr(head) - (pages[i] - head);
 
-Hi Randy,
+You can't assume that all of a compound head is in the pages array,
+this assumption would only work inside the page walkers if the page
+was found in a PMD or something.
 
-On Thu, 17 Dec 2020 08:46:03 -0800 Randy Dunlap <rdunlap@infradead.org> wro=
-te:
->
-> on x86_64:
->=20
-> (These are on 2 different builds.)
->=20
-> > gcc --version =20
-> gcc (SUSE Linux) 7.5.0
->=20
->=20
-> drivers/gpu/drm/drm_edid.o: warning: objtool: do_cvt_mode() falls through=
- to next function drm_get_override_edid.isra.30()
+> +	if (gup_flags & FOLL_PIN) {
+> +		unpin_user_pages(pages, nr_pages);
 
-This one should be fixed by commit
+So we throw everything away? Why? That isn't how the old algorithm worked
 
-  d652d5f1eeeb ("drm/edid: fix objtool warning in drm_cvt_modes()")
+> @@ -1654,22 +1664,55 @@ static long __gup_longterm_locked(struct mm_struct *mm,
+>  				  struct vm_area_struct **vmas,
+>  				  unsigned int gup_flags)
+>  {
+> -	unsigned long flags = 0;
+> +	int migrate_retry = 0;
+> +	int isolate_retry = 0;
+> +	unsigned int flags;
+>  	long rc;
+>  
+> -	if (gup_flags & FOLL_LONGTERM)
+> -		flags = memalloc_pin_save();
+> +	if (!(gup_flags & FOLL_LONGTERM))
+> +		return __get_user_pages_locked(mm, start, nr_pages, pages, vmas,
+> +					       NULL, gup_flags);
+>  
+> -	rc = __get_user_pages_locked(mm, start, nr_pages, pages, vmas, NULL,
+> -				     gup_flags);
+> +	/*
+> +	 * Without FOLL_WRITE fault handler may return zero page, which can
+> +	 * be in a movable zone, and also will fail to isolate during migration,
+> +	 * thus the longterm pin will fail.
+> +	 */
+> +	gup_flags &= FOLL_WRITE;
 
-in Linus' tree.
+Is &= what you mean here? |= right?
 
---=20
-Cheers,
-Stephen Rothwell
+Seems like we've ended up in a weird place if FOLL_LONGTERM always
+includes FOLL_WRITE. Putting the zero page in ZONE_MOVABLE seems like
+a bad idea, no?
 
---Sig_/6=XiT02swapFKo4b_Dduj8.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+> +	/*
+> +	 * Migration may fail, we retry before giving up. Also, because after
+> +	 * migration pages[] becomes outdated, we unpin and repin all pages
+> +	 * in the range, so pages array is repopulated with new values.
+> +	 * Also, because of this we cannot retry migration failures in a loop
+> +	 * without pinning/unpinnig pages.
+> +	 */
 
------BEGIN PGP SIGNATURE-----
+The old algorithm made continuous forward progress and only went back
+to the first migration point.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/bxIYACgkQAVBC80lX
-0GwsvQf/aglUBremNbvm/qpDmu1krELk2lb13BP4nCpdAdZIRqw/6LGnYAGsxVya
-+t7Hm6HuRIlbqa+Ht32TrMa4c/DsxaBf3fx7ZJhy/o2kod0wAQw8LIv8d759q/Mq
-wb2P5Y1Lcw+M8gYjNy78+8vJr8RHsbzj/1c/AL2eyts5mVVfJyJuRUX7eTymNI0I
-TwcVbucj4CnRzKRcJSBRN10vSj9MPQqhRgFVKvim3x9Ub3pryaQHnpslqFX9tCqa
-I2HLWxXeRfNOwYsSE1A+1PaHTUNWfPdCIr9tt4HUpaMXheFRgteMxZuOzNa7R3cr
-TV4cGKZgJDFkZuei8gwlszjEdUmu3w==
-=iIek
------END PGP SIGNATURE-----
+> +	for (; ; ) {
 
---Sig_/6=XiT02swapFKo4b_Dduj8.--
+while (true)?
+
+> +		rc = __get_user_pages_locked(mm, start, nr_pages, pages, vmas,
+> +					     NULL, gup_flags);
+
+> +		/* Return if error or if all pages are pinnable */
+> +		if (rc <= 0 || check_and_unpin_pages(rc, pages, gup_flags))
+> +			break;
+
+So we sweep the pages list twice now?
+
+> +		/* Some pages are not pinnable, migrate them */
+> +		rc = migrate_movable_pages(rc, pages);
+> +
+> +		/*
+> +		 * If there is an error, and we tried maximum number of times
+> +		 * bail out. Notice: we return an error code, and all pages are
+> +		 * unpinned
+> +		 */
+> +		if (rc < 0 && migrate_retry++ >= PINNABLE_MIGRATE_MAX) {
+> +			break;
+> +		} else if (rc > 0 && isolate_retry++ >= PINNABLE_ISOLATE_MAX) {
+> +			rc = -EBUSY;
+
+I don't like this at all. It shouldn't be so flakey
+
+Can you do migration without the LRU?
+
+Jason
