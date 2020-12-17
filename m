@@ -2,75 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FB692DD52E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 17:28:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D82EA2DD539
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 17:31:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728701AbgLQQ1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 11:27:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42207 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727303AbgLQQ07 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 11:26:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608222333;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=49yV2IcmGc0QJ5YAt0WJ2wci08ptQ85ppP+Sw3Lmdeo=;
-        b=ZTVDeI627f0wePT787vrbctAs/GAT6huTw97akqO0vLx9xRQ2G2jxYKIywsBAWJma1X0bg
-        XUNdC9imb4DevKtuOwcSVxqM1t1TyqYPnv5RP95iHrcOVLGJ3HIiXmGxzOIBhC3tQvL1uf
-        4Z/47/uMj9A0XEWdpnI1LiQx1zeFTAU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-487-qGT79G40PZycWtFdLMCbMg-1; Thu, 17 Dec 2020 11:25:31 -0500
-X-MC-Unique: qGT79G40PZycWtFdLMCbMg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3E0B4803626;
-        Thu, 17 Dec 2020 16:25:29 +0000 (UTC)
-Received: from treble (ovpn-112-170.rdu2.redhat.com [10.10.112.170])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A94895D9CD;
-        Thu, 17 Dec 2020 16:25:28 +0000 (UTC)
-Date:   Thu, 17 Dec 2020 10:25:24 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: New objtool warning..
-Message-ID: <20201217162524.fkxiemn7aezpv7d5@treble>
-References: <CAHk-=wiXtdHJBXw+=0so3ZV8mvG0xEykxUta2sUWPB=hUWHmtQ@mail.gmail.com>
- <20201216044918.jdmi32dz75uboybv@treble>
- <CAHk-=wjMoZesNgi1yWzY3nikyR11PUxHgov561UNom5mL1R4rA@mail.gmail.com>
- <CAHk-=whpp_eo-5d0ZLpx=0X91J0ZNReZ_9riNf96z2dy24z=hw@mail.gmail.com>
- <20201216200158.akf356yrw44o2rlb@treble>
- <20201217104556.GT3040@hirez.programming.kicks-ass.net>
+        id S1728779AbgLQQ2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 11:28:39 -0500
+Received: from mout.gmx.net ([212.227.17.21]:35313 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727160AbgLQQ2c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 11:28:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1608222411;
+        bh=aJhw+NY4u2qqLCXsW8xRiaAfQAzXQyg9VlWkYcC2UWE=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=asPOK6Ks87kt5M4lCZQbjZ+66dQCM40s75b3RbRRHOjQO0J3/gWFSKI1aK5xZF5Us
+         kqYSLgbLhn0cb5f0/H0n6+lw91Zq75b94EKQtIiyob6bDT1uhMee9fTF8knP+b2eo0
+         q5ZOcHHO7ivTk+3IWzayPbuxMegYatcUU4vAbV+8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.217.61]) by mail.gmx.com (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MIx3C-1kVf8a3bic-00KTrQ; Thu, 17
+ Dec 2020 17:26:50 +0100
+Message-ID: <23bc1073395db9ccf55ecca45198375f4d5d6250.camel@gmx.de>
+Subject: Re: [bisected] Re: drm, qxl: post 5.11 merge warning+explosion
+From:   Mike Galbraith <efault@gmx.de>
+To:     Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Dave Airlie <airlied@redhat.com>,
+        virtualization <virtualization@lists.linux-foundation.org>
+Date:   Thu, 17 Dec 2020 17:26:49 +0100
+In-Reply-To: <6f99d3ca-a7ff-69e9-8ca1-9d016a8d3f48@amd.com>
+References: <5979380e28f4ba8023e88f96d3a9291381a8457e.camel@gmx.de>
+         <a1b925758cbc5517d4ff6df3cf2a9b6614fd5535.camel@gmx.de>
+         <1f88b926bedcad0d6e35c7f5b63bbb038c8c6c09.camel@gmx.de>
+         <6f99d3ca-a7ff-69e9-8ca1-9d016a8d3f48@amd.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201217104556.GT3040@hirez.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:tWUdMzCUtqIO6Qrmy+U0bkUiPadM7gU5O5hYttXmoV/4efQNZpE
+ 9o+sGEdbQkOtweBbQbPwHaJr2WVg4G28TOLU6RHpe20YTUf8YKM8fr9NEJsBldTPDNpZiWh
+ flXyIgpWdCIE8ZWeu4a1atMTwWJMe/kNyQ8FfVgKH9Qrx5czxMzIOv4Zm8rp58+fsjgPwGJ
+ 3TsvYeNqzFw1oLHkJYFWA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:C7Yxk1vQWCk=:8nR5iNgzCB+H6q1dk+9iEJ
+ ujcRcH/utrQv3nXUHgvE19dJGj4L9K2ULZid1T34a+HXWaljDyyEaJYFcfOPRCf+f2lFFN6fd
+ LZG3cVQu7C0iRz32ERhUF+wry8vaZ/E9DTl7K+I6xjuE80A+ofJzEApVoe2lJmXOUml9bvyCC
+ xx8JS+EYPIXo54x7m96tyVbDw3QvA7JT7XgXxV0Fw4bn7dKBkwRnBPXfzB5NbXG26NmS1FB13
+ SXnHP8kiL5OZsWy6TkL8lPSeeYaUXA6RzOzN6PRd0ceJ+mPJASKfTajY5/6Y/rog8qsIbc59E
+ 2u2yyY/0gSNbEhVXA2rnMSneFvbg+nCNewmHJahj5yggDuwmzGtAvc/5fd0zHuTs9xSjKe5kG
+ s69BdmqQrW/hCN5gdJLBnr3iN1wvQwGhECVJeVh1mtwsnf8l54KlzjuaA3Cvd8mVScjwc2LYQ
+ A2CVgjWgW6pEmKAyYEfQZRhnCovvNriNkc0Lz29HtoPPzcz9CUKqhFFfXHEGfEuN/yS3vGSui
+ CHBR6UZnalBSNISl+d5+2ylh36qFa2ZwcnC615/DWGRD7X29/8zwUe/iUv7CISJ7ixXneS/LY
+ jDudd6q/hLy1PKvhclxiEG6pOVmrp2nBq9KyJzTYSpylr+1cYqSGJXnvyqONgIbHsg4I/bMj/
+ 25V0Tzmbb0SY+bKDwgs4auLTIEP/1hVKcqr45g8oOELmVvE9szJQQcFiwWVE/xEZIYdRjmEE5
+ a2MJ8sUivwJj9DFU9tTc5Wx7vLtkvhE+RMk+vEPSQ3ts/GFGw9whN4E5wNe7zgq+uuOX5X+70
+ twqFKmUXhwXdFATjO8dBU/l5GU+1lt+3JE9oBcp/cOYb43mSv7xKLri39WFslttAb2cETMBsp
+ ER2fyqWdhaXEvDNxCLaQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 11:45:56AM +0100, Peter Zijlstra wrote:
-> On Wed, Dec 16, 2020 at 02:01:58PM -0600, Josh Poimboeuf wrote:
-> > So this is kind of tricky, because the unreachable() annotation usually
-> > means "the previous instruction is a dead end".  Most of the time, the
-> > next instruction -- the one actually pointed to by the annotation -- is
-> > actually reachable from another path.
-> 
-> *groan*, this is why I ended up sticking a nop in
-> instrumentation_begin()/_end().
+On Thu, 2020-12-17 at 17:24 +0100, Christian K=F6nig wrote:
+> Hi Mike,
+>
+> what exactly is the warning from qxl you are seeing?
 
-Oh yeah, I forgot about that.  That would be another option if my patch
-doesn't work out.
+[    1.815561] WARNING: CPU: 7 PID: 355 at drivers/gpu/drm/ttm/ttm_pool.c:=
+365 ttm_pool_alloc+0x41b/0x540 [ttm]
+[    1.815561] Modules linked in: ext4(E) crc16(E) mbcache(E) jbd2(E) ata_=
+generic(E) ata_piix(E) virtio_console(E) virtio_rng(E) virtio_blk(E) qxl(E=
+) drm_ttm_helper(E) ttm(E) drm_kms_helper(E) syscopyarea(E) sysfillrect(E)=
+ sysimgblt(E) ahci(E) fb_sys_fops(E) cec(E) libahci(E) uhci_hcd(E) ehci_pc=
+i(E) rc_core(E) ehci_hcd(E) crc32c_intel(E) serio_raw(E) virtio_pci(E) vir=
+tio_ring(E) 8139cp(E) virtio(E) libata(E) drm(E) usbcore(E) mii(E) sg(E) d=
+m_multipath(E) dm_mod(E) scsi_dh_rdac(E) scsi_dh_emc(E) scsi_dh_alua(E) sc=
+si_mod(E) autofs4(E)
+[    1.815589] CPU: 7 PID: 355 Comm: kworker/7:2 Tainted: G            E  =
+   5.10.0.g489e9fe-master #26
+[    1.815590] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS=
+ rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
+[    1.815614] Workqueue: events drm_fb_helper_dirty_work [drm_kms_helper]
+[    1.815621] RIP: 0010:ttm_pool_alloc+0x41b/0x540 [ttm]
+[    1.815623] Code: fc ff ff 89 ea 48 8d 04 d5 00 00 00 00 48 29 d0 48 8d=
+ 3c c5 00 1c 40 a0 e9 d7 fc ff ff 85 c0 0f 89 2f fc ff ff e9 28 fc ff ff <=
+0f> 0b e9 35 fc ff ff 89 e9 49 8b 7d 00 b8 00 10 00 00 48 d3 e0 45
+[    1.815623] RSP: 0018:ffff888105d3b818 EFLAGS: 00010246
+[    1.815625] RAX: 0000000000000000 RBX: ffff888106978800 RCX: 0000000000=
+000000
+[    1.815626] RDX: ffff888105d3bc68 RSI: 0000000000000001 RDI: ffff888106=
+238820
+[    1.815626] RBP: ffff888106238758 R08: ffffc90000296000 R09: 8000000000=
+00016b
+[    1.815627] R10: 0000000000000001 R11: ffffc90000296000 R12: 0000000000=
+000000
+[    1.815628] R13: ffff888106238820 R14: 0000000000000000 R15: ffff888106=
+978800
+[    1.815628] FS:  0000000000000000(0000) GS:ffff888237dc0000(0000) knlGS=
+:0000000000000000
+[    1.815632] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    1.815633] CR2: 00007eff52a0d5b8 CR3: 0000000002010003 CR4: 0000000000=
+1706e0
+[    1.815633] Call Trace:
+[    1.815644]  ttm_tt_populate+0xb1/0xc0 [ttm]
+[    1.815647]  ttm_bo_move_memcpy+0x4a5/0x500 [ttm]
+[    1.815652]  qxl_bo_move+0x230/0x2f0 [qxl]
+[    1.815655]  ttm_bo_handle_move_mem+0x79/0x140 [ttm]
+[    1.815657]  ttm_bo_evict+0x124/0x250 [ttm]
+[    1.815693]  ? drm_mm_insert_node_in_range+0x55c/0x580 [drm]
+[    1.815696]  ttm_mem_evict_first+0x110/0x3d0 [ttm]
+[    1.815698]  ttm_bo_mem_space+0x261/0x270 [ttm]
+[    1.815702]  ? qxl_ttm_debugfs_init+0xb0/0xb0 [qxl]
+[    1.815705]  ttm_bo_validate+0x117/0x150 [ttm]
+[    1.815756]  ttm_bo_init_reserved+0x2c8/0x3c0 [ttm]
+[    1.815772]  qxl_bo_create+0x134/0x1d0 [qxl]
+[    1.815775]  ? qxl_ttm_debugfs_init+0xb0/0xb0 [qxl]
+[    1.815791]  qxl_alloc_bo_reserved+0x2c/0x90 [qxl]
+[    1.815794]  qxl_image_alloc_objects+0xa3/0x120 [qxl]
+[    1.815797]  qxl_draw_dirty_fb+0x155/0x450 [qxl]
+[    1.815815]  ? _cond_resched+0x15/0x40
+[    1.815819]  ? ww_mutex_lock_interruptible+0x12/0x60
+[    1.815822]  qxl_framebuffer_surface_dirty+0x14f/0x1a0 [qxl]
+[    1.815841]  drm_fb_helper_dirty_work+0x11d/0x180 [drm_kms_helper]
+[    1.815853]  process_one_work+0x1f5/0x3c0
+[    1.815866]  ? process_one_work+0x3c0/0x3c0
+[    1.815867]  worker_thread+0x2d/0x3d0
+[    1.815868]  ? process_one_work+0x3c0/0x3c0
+[    1.815872]  kthread+0x117/0x130
+[    1.815876]  ? kthread_park+0x90/0x90
+[    1.815880]  ret_from_fork+0x1f/0x30
+[    1.815886] ---[ end trace 51e464c1e89a1728 ]---
+[    1.815894] BUG: kernel NULL pointer dereference, address: 000000000000=
+0230
+[    1.815895] #PF: supervisor read access in kernel mode
+[    1.815895] #PF: error_code(0x0000) - not-present page
+[    1.815896] PGD 0 P4D 0
+[    1.815898] Oops: 0000 [#1] SMP NOPTI
+[    1.815900] CPU: 7 PID: 355 Comm: kworker/7:2 Tainted: G        W   E  =
+   5.10.0.g489e9fe-master #26
+[    1.815901] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS=
+ rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
+[    1.815916] Workqueue: events drm_fb_helper_dirty_work [drm_kms_helper]
+[    1.815921] RIP: 0010:dma_map_page_attrs+0xf/0x1c0
+[    1.815922] Code: 1f 17 5b 01 48 85 c0 75 e3 31 c0 c3 66 66 2e 0f 1f 84=
+ 00 00 00 00 00 0f 1f 40 00 0f 1f 44 00 00 41 55 41 54 55 53 48 83 ec 08 <=
+48> 8b 87 30 02 00 00 48 85 c0 48 0f 44 05 e7 16 5b 01 41 83 f8 02
+[    1.815923] RSP: 0018:ffff888105d3b7e8 EFLAGS: 00010296
+[    1.815924] RAX: 0000000000001000 RBX: 0000000000000001 RCX: 0000000000=
+001000
+[    1.815924] RDX: 0000000000000000 RSI: ffffea0004171e40 RDI: 0000000000=
+000000
+[    1.815925] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000=
+000000
+[    1.815925] R10: ffffea0004171e40 R11: ffffc90000296000 R12: 0000000000=
+000001
+[    1.815926] R13: ffff888106238820 R14: ffff888105d07100 R15: ffff888106=
+978800
+[    1.815926] FS:  0000000000000000(0000) GS:ffff888237dc0000(0000) knlGS=
+:0000000000000000
+[    1.815928] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    1.815929] CR2: 0000000000000230 CR3: 0000000002010003 CR4: 0000000000=
+1706e0
+[    1.815929] Call Trace:
+[    1.815937]  ttm_pool_alloc+0x448/0x540 [ttm]
+[    1.815940]  ttm_tt_populate+0xb1/0xc0 [ttm]
+[    1.815942]  ttm_bo_move_memcpy+0x4a5/0x500 [ttm]
+[    1.815945]  qxl_bo_move+0x230/0x2f0 [qxl]
+[    1.815947]  ttm_bo_handle_move_mem+0x79/0x140 [ttm]
+[    1.815949]  ttm_bo_evict+0x124/0x250 [ttm]
+[    1.815982]  ? drm_mm_insert_node_in_range+0x55c/0x580 [drm]
+[    1.815984]  ttm_mem_evict_first+0x110/0x3d0 [ttm]
+[    1.815988]  ttm_bo_mem_space+0x261/0x270 [ttm]
+[    1.890133]  ? qxl_ttm_debugfs_init+0xb0/0xb0 [qxl]
+[    1.890138]  ttm_bo_validate+0x117/0x150 [ttm]
+[    1.891740]  ttm_bo_init_reserved+0x2c8/0x3c0 [ttm]
+[    1.891744]  qxl_bo_create+0x134/0x1d0 [qxl]
+[    1.893398]  ? qxl_ttm_debugfs_init+0xb0/0xb0 [qxl]
+[    1.893400]  qxl_alloc_bo_reserved+0x2c/0x90 [qxl]
+[    1.893402]  qxl_image_alloc_objects+0xa3/0x120 [qxl]
+[    1.893405]  qxl_draw_dirty_fb+0x155/0x450 [qxl]
+[    1.896515]  ? _cond_resched+0x15/0x40
+[    1.896517]  ? ww_mutex_lock_interruptible+0x12/0x60
+[    1.896520]  qxl_framebuffer_surface_dirty+0x14f/0x1a0 [qxl]
+[    1.896533]  drm_fb_helper_dirty_work+0x11d/0x180 [drm_kms_helper]
+[    1.896537]  process_one_work+0x1f5/0x3c0
+[    1.900535]  ? process_one_work+0x3c0/0x3c0
+[    1.900536]  worker_thread+0x2d/0x3d0
+[    1.900538]  ? process_one_work+0x3c0/0x3c0
+[    1.902704]  kthread+0x117/0x130
+[    1.902706]  ? kthread_park+0x90/0x90
+[    1.902709]  ret_from_fork+0x1f/0x30
+[    1.902711] Modules linked in: ext4(E) crc16(E) mbcache(E) jbd2(E) ata_=
+generic(E) ata_piix(E) virtio_console(E) virtio_rng(E) virtio_blk(E) qxl(E=
+) drm_ttm_helper(E) ttm(E) drm_kms_helper(E) syscopyarea(E) sysfillrect(E)=
+ sysimgblt(E) ahci(E) fb_sys_fops(E) cec(E) libahci(E) uhci_hcd(E) ehci_pc=
+i(E) rc_core(E) ehci_hcd(E) crc32c_intel(E) serio_raw(E) virtio_pci(E) vir=
+tio_ring(E) 8139cp(E) virtio(E) libata(E) drm(E) usbcore(E) mii(E) sg(E) d=
+m_multipath(E) dm_mod(E) scsi_dh_rdac(E) scsi_dh_emc(E) scsi_dh_alua(E) sc=
+si_mod(E) autofs4(E)
+[    1.904797] Dumping ftrace buffer:
+[    1.911038]    (ftrace buffer empty)
+[    1.911041] CR2: 0000000000000230
 
-/me grumbles something about integrating objtool with compiler plugins
-someday...
 
--- 
-Josh
 
