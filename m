@@ -2,125 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D2222DDAC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 22:21:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A09512DDAC8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 22:23:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729584AbgLQVUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 16:20:49 -0500
-Received: from mail-mw2nam10on2125.outbound.protection.outlook.com ([40.107.94.125]:19168
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729108AbgLQVUs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 16:20:48 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KUxG/qOQ/uOTGRYWzrktTbpHWAuqTdLaaCwoe0aGitiBod7dSpkhQbccCjIgdVROdg8tatJ3FxHgC9urWo9LUr63AZ9lnK7yVFmVPVJgKVmbonFR/cMR8zcM/oTDWStsMLwxziZTYuBrE0Mzz3mNt6wximkDCuWwfddSpNp/2Ha1AH5QkjOOw6a9QgScN/wW3xnPCVLNkkJhjUh5MTVK7cfWTddOWU2AD1r3nCBQHtoVQ5iJRJUhCDrFrmswUcMJUm9EMkXowiGB8zlg8i8qyWVaQel+5dvRWTIvvFhe4hh9T1Rpy1XbxNOVBAX4EtX2uVmE8Eqrgz28SCJkXYu5og==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DZNd+hdmfl8lkNXfWfxl6brY4aG0rBK4TkDdgw8mrKk=;
- b=Ywv+0KDmKBTrP0qNB34ZJhQbk0u/d7dF/uWU5Ia300hceCQ4T0N3UvxTjSDMY/EfzoXJROQXwOHh6f9tmlkHspls4ovlV5FTQ6t3S1/kbRceWm0W2BxcBC67AZnI/fzO5/LyJsCSei6wPEhjdNbSTzYtNDZykoX6dfK3q3k6pMtRQZmbVjt+HFLm8DeJqpJpXo5u0SyQne1MTyAFagE7PY9mKYDM873aKpzw4G+2flHPTPW3PG/IhXs8QZxiXF3THvUnW2CxEVvNv/HY1ZfipagCLV21jrKx69B9T0lzxtaK/L1dvCW6bzf/MwDX/Ms6Y3UoG/qjpxaUHZGy/rAGNw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=hammerspace.com; dmarc=pass action=none
- header.from=hammerspace.com; dkim=pass header.d=hammerspace.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hammerspace.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DZNd+hdmfl8lkNXfWfxl6brY4aG0rBK4TkDdgw8mrKk=;
- b=QuL52x4ccVp1V1jH5mQ7kk/FX0DkzE8IfUO7vH6xZ6+aW+SIXTT5zhjIOuMZMlJSsTwdwFed1GFz4pz+AbXFE02kN8fpTNBcoA8zyVQajEz++6c43aWiedfFuxJP5+9yu/l7ao0ZNgOY96oq/cafo/zybAnWjbRam3fa7gu0clA=
-Received: from MN2PR13MB3957.namprd13.prod.outlook.com (2603:10b6:208:263::11)
- by MN2PR13MB3485.namprd13.prod.outlook.com (2603:10b6:208:161::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.19; Thu, 17 Dec
- 2020 21:19:55 +0000
-Received: from MN2PR13MB3957.namprd13.prod.outlook.com
- ([fe80::e989:f666:131a:e210]) by MN2PR13MB3957.namprd13.prod.outlook.com
- ([fe80::e989:f666:131a:e210%8]) with mapi id 15.20.3700.018; Thu, 17 Dec 2020
- 21:19:54 +0000
-From:   Trond Myklebust <trondmy@hammerspace.com>
-To:     "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        "konstantin@linuxfoundation.org" <konstantin@linuxfoundation.org>
-CC:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] Please pull NFS client changes for 5.11
-Thread-Topic: [GIT PULL] Please pull NFS client changes for 5.11
-Thread-Index: AQHW1J8iUwXTPNIWjkGM7oCEKx5v/an7vFYAgAAPIAA=
-Date:   Thu, 17 Dec 2020 21:19:54 +0000
-Message-ID: <faf1df209849d1a8f242f50a709ca52f01f33ef3.camel@hammerspace.com>
-References: <a47c68f255f9fd9361f0c17ccf1273d905fd0bd1.camel@hammerspace.com>
-         <CAHk-=wi74uq4CGeWtSYfMcdgWdpkiwbM5u7ULryCOPM1ZAdFXw@mail.gmail.com>
-In-Reply-To: <CAHk-=wi74uq4CGeWtSYfMcdgWdpkiwbM5u7ULryCOPM1ZAdFXw@mail.gmail.com>
-Accept-Language: en-US, en-GB
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linux-foundation.org; dkim=none (message not signed)
- header.d=none;linux-foundation.org; dmarc=none action=none
- header.from=hammerspace.com;
-x-originating-ip: [68.36.133.222]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6f01c597-e134-4461-2fc1-08d8a2d17fc8
-x-ms-traffictypediagnostic: MN2PR13MB3485:
-x-microsoft-antispam-prvs: <MN2PR13MB348514D79B07E7F3B6EBA2ACB8C40@MN2PR13MB3485.namprd13.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 4B9EwvBzcAe0xaCg/+Nw6MfMtBJet4HQnaOLK4f9fQ61UEnfLjVLCYnEnfX9ppkPgoTsMfJrG5V3CGluHMjDasZqlS8Me6zL27nZWjuZQr4HL14k6J51WO4ewFCWesovHjtBX+iHJ2c8pC+fbkvIw+tugQ3N95PwvST4rWesWFkRR/S8+Pf1Ehi5l69dwvBVq/lod4ZefnrR3eSUcPm7D6tNXCEHbhHtnGkS1f3vT+IXOeQqlswqt3aVhouol9AREMKL62sSoy9Mg5gfVtdaJaCbWP9kMq2NXr5E/GNeiMRLI5ZAvIIVDnfrr6tuYIEUVMLZjYOnjJuZZ4KeXstiAzxRsx3lrV5A94t33H71BKc=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR13MB3957.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(376002)(136003)(39840400004)(346002)(8676002)(64756008)(6506007)(5660300002)(2616005)(4001150100001)(6486002)(86362001)(478600001)(71200400001)(8936002)(316002)(186003)(110136005)(83380400001)(4326008)(4744005)(26005)(54906003)(6512007)(66556008)(91956017)(66476007)(53546011)(66446008)(66946007)(36756003)(2906002)(76116006);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?d0tnb0tQR2hPUENsM2pDd1FnYWg2UGxvZWp4OEtSSmUwcEU1N2lnM3pOTTlY?=
- =?utf-8?B?RHN5L05GMDlkQVErM1psTnp5VjNYUUlQdHdRZi9QL0VBQlltN2s4Wm1zazR2?=
- =?utf-8?B?SmRQbm1UdmZkUjhIcml0K0NJWjJWaUQ3cGN0VFJWd3poZk9hRnN2OEhQVlhX?=
- =?utf-8?B?ejBXOWsyZXZOUU1KOFRTdFhJZ0hXWEJVeStXKzNVeEFaVU8xRzRZWjA0NUJy?=
- =?utf-8?B?TG5SbklON2p2MzNDQjZDOHlnMm9mK2ZadisyWjdIT0o0RFpMWU51ZC9JRmZ6?=
- =?utf-8?B?NkIrTWhvOEhpZndJZUREMU9IZ04yVXowL2ZBMW14dmlXUENVVjE4Mno0VGpK?=
- =?utf-8?B?YzBYTmNoc2xSTGFiWHl5RTlMYWszcGlhT1EyaXF0T2JIU0dhR2ljcnZjYTE0?=
- =?utf-8?B?L1ZFMzBhZ1cvWkI3cWVXeHZSM0pRaUV4SXlkWTdRTFIxQ2o5SkRvMTNxVHNX?=
- =?utf-8?B?bXJuMkhqdmFUZGtGZGw4b2U1TFdLcUZOb2pxYU9yaVg1Q2ZteWFvVndYV1g0?=
- =?utf-8?B?OG5sbGpzL2FyZWlqMkVpUnBqTXhNbHN0cU1RYjFkVU5PTmd0ZncydVFWVmxo?=
- =?utf-8?B?dkFhZ2pWS1BBUkVuTkFvVXdxd2FBYmEzYVNaN3dqRkJLNzZhWjVLQmpwc1Vu?=
- =?utf-8?B?b2xvOWFiaE52TFd0Ry83Q1VLdzhIU2srcjRPVTlROEtobktGRDFNV2Zrb0RQ?=
- =?utf-8?B?cTJHd2xEcVNEL2pTN2piSlFOVjFIcjQ5MHJBK2ZuclcxSjluVkFmd3orR21M?=
- =?utf-8?B?cVh3eERNR1p5THhkNGRtN0tPQWxuTDM5UjVuM2R0QmpjUmtSR3ZsR3duWjZj?=
- =?utf-8?B?bEZaS1hRTjI2S1RiaEV5NEJFbEVCazhzRHNRcTVvdjd5b2MxTGxpc0t6TXA5?=
- =?utf-8?B?cVF0YlBQdG5GYmkyMElzRWRoRTRsSWVINkxlWUJMYm1uSGVEd3VPNW9QdWtL?=
- =?utf-8?B?eTViMWRNN0FCMmFRUXpKSW9VRDdOcUNFY1pueWRRVXFzTXNZSUNoSHFGY2pG?=
- =?utf-8?B?RGlrWVQ4NzVnZy91ekZXbkc4Q3d1QjNsWGtDL2RwNkM3bFdzWW9NcE15a3BW?=
- =?utf-8?B?YVJ4M2hRZVh5aXN6WGdJbTkyYmpEZTRVOXJVUlVCaW4xdHRqbHZna2VJc0Nq?=
- =?utf-8?B?NUw5SFJ5dy9vNFY5QUdacWxxbUwxQ2dYQXFYWUxwSmVydWVXcjcrMTZVc3dy?=
- =?utf-8?B?ZXBLU1hHVEhCRnVDT2lNaFV6M0cwY3dZRGpuZ2tGR1BVamo4eWN1VDl4b2NS?=
- =?utf-8?B?bmdWdXlxeWtobHMyRUR5NDNnNU9xQjNOQW9ETXRQVnRzTThCYTNuUDgwVCta?=
- =?utf-8?Q?KmizMrIe2cQT7akbDeTo3zkMBONWLaopoR?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <8646D5B5BBD5DC4691A3100176AAD755@namprd13.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1729325AbgLQVWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 16:22:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728154AbgLQVWJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 16:22:09 -0500
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2587CC0617B0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 13:21:29 -0800 (PST)
+Received: by mail-vs1-xe2e.google.com with SMTP id e15so265995vsa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 13:21:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Rb4QRsrzHetcmVvjFenLb+xxlOjxCoQIDDaKT8olvy4=;
+        b=eYrjHAZUBdAwFqXOsQgOfJ3405lOCKr+wOjixZJ2LjI5r8W+85GaTLEOtN9ZIRp5Hc
+         toRNJQV5dByAv7/bgMj+44h94qcIXQwfMOxHanusirB8sAKW94E/7NeUPEj700eFBTne
+         Ywh9h21AgnWgJX87hpuOVuK4isj7cuU36cxog=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Rb4QRsrzHetcmVvjFenLb+xxlOjxCoQIDDaKT8olvy4=;
+        b=GcJ+oqVYcWOoDarOBJrBzMCnXZbXIFkLdQvOiS0jKAAYtoar2vtJVlm8S69O3AkPzN
+         ikaySqSHsnDlTm/jJfr+9RwbeUSLYf0lXwCBwtNipjIEcmrwXA8pxrMnpJNdiiocBCi3
+         733uH9h7Xgpo2TD4UuGCkx72gCcn7fb1vAJwCF883zmTbQCDARwiDqUUxU/IfN/y1rVv
+         GQY4s78/WmUtSHKeIKBNaleVfaGAmiUhXUDbgHcEMdchBRjt4jFZmuhsVHuwsDso80sp
+         ZSFYtrNWbs277qagtONp1Zw+t0o7uErjNnIaQEZ64/gLG1Wxud0/OW5KBWcpsSxoRfD+
+         YC+A==
+X-Gm-Message-State: AOAM530qPYW3T+ev/Sl8+a61hDUcx7QyUbxdoDBMR9r31ptFucppS6gT
+        NyxGM3AzYUr81skSXD1zelQZe2JzGQrR7w==
+X-Google-Smtp-Source: ABdhPJzdrFts618o/x4D1RFaa6CkBIBGVo74ISywVloMGtV3wrJAWzLQFqNyrmpbWw1SagLbQxPtFg==
+X-Received: by 2002:a05:6102:666:: with SMTP id z6mr1237481vsf.46.1608240088054;
+        Thu, 17 Dec 2020 13:21:28 -0800 (PST)
+Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com. [209.85.221.181])
+        by smtp.gmail.com with ESMTPSA id z14sm737858vsk.28.2020.12.17.13.21.26
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Dec 2020 13:21:26 -0800 (PST)
+Received: by mail-vk1-f181.google.com with SMTP id d6so17953vkb.13
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 13:21:26 -0800 (PST)
+X-Received: by 2002:a1f:3fc9:: with SMTP id m192mr1317831vka.17.1608240085900;
+ Thu, 17 Dec 2020 13:21:25 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: hammerspace.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR13MB3957.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6f01c597-e134-4461-2fc1-08d8a2d17fc8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Dec 2020 21:19:54.7440
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 0d4fed5c-3a70-46fe-9430-ece41741f59e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: d986UiRvICQnRnvyK+YS0/e94F4knC/TbePRQk3Q/9YFot3T/WUUtAJayhiW+Iaaok83PbcVnV2m8+TuQYQoyg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR13MB3485
+References: <20201216144114.v2.1.I99ee04f0cb823415df59bd4f550d6ff5756e43d6@changeid>
+ <20201216144114.v2.3.I07afdedcc49655c5d26880f8df9170aac5792378@changeid> <160817911850.1580929.16402785505110078436@swboyd.mtv.corp.google.com>
+In-Reply-To: <160817911850.1580929.16402785505110078436@swboyd.mtv.corp.google.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 17 Dec 2020 13:21:14 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=WcVpkpwrLYVaXcRZmQztpw8in6b42+krRbN1+a8LVt6Q@mail.gmail.com>
+Message-ID: <CAD=FV=WcVpkpwrLYVaXcRZmQztpw8in6b42+krRbN1+a8LVt6Q@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] spi: spi-geni-qcom: Don't try to set CS if an xfer
+ is pending
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Mark Brown <broonie@kernel.org>, msavaliy@qti.qualcomm.com,
+        Akash Asthana <akashast@codeaurora.org>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIwLTEyLTE3IGF0IDEyOjI1IC0wODAwLCBMaW51cyBUb3J2YWxkcyB3cm90ZToN
-Cj4gT24gVGh1LCBEZWMgMTcsIDIwMjAgYXQgMTA6MDUgQU0gVHJvbmQgTXlrbGVidXN0DQo+IDx0
-cm9uZG15QGhhbW1lcnNwYWNlLmNvbT4gd3JvdGU6DQo+ID4gDQo+ID4gwqAgZ2l0Oi8vZ2l0Lmxp
-bnV4LW5mcy5vcmcvcHJvamVjdHMvdHJvbmRteS9saW51eC1uZnMuZ2l0IHRhZ3MvbmZzLQ0KPiA+
-IGZvci0NCj4gPiA1LjExLTENCj4gPiANCj4gPiBmb3IgeW91IHRvIGZldGNoIGNoYW5nZXMgdXAg
-dG8NCj4gPiA1MjEwNGYyNzRlMmQ3ZjEzNGQzNGJhYjExY2FkYTg5MTNkNDU0NGUyOg0KPiANCj4g
-cHItdHJhY2tlci1ib3QgZG9lc24ndCBzZWVtIHRvIGhhdmUgcmVhY3RlZCB0byB0aGlzIGVtYWls
-Lg0KPiANCj4gSSBzdXNwZWN0IGl0J3MgYmVjYXVzZSBvZiB0aGUgb2RkIGFuZCB1bmZvcnR1bmF0
-ZSBsaW5lIGJyZWFrcyBpbiBpdCwNCj4gYnV0IHdobyBrbm93cy4gTWF5YmUgaXQncyBqdXN0IGRl
-bGF5ZWQgKGJ1dCB0aGUgb3RoZXIgZmlsZXN5c3RlbQ0KPiBwdWxscw0KPiBzZWVtIHRvIGhhdmUg
-YmVlbiB0cmFja2VkKS4NCj4gDQo+IEFueXdheSwgaXQncyBwdWxsZWQsIGV2ZW4gaWYgdGhlIGF1
-dG9tYXRpb24gc2VlbXMgdG8gbm90IGhhdmUNCj4gbm90aWNlZC4NCj4gDQo+IMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqAgTGludXMNCg0KVGhhbmtzISBNdWNoIGFwcHJlY2lhdGVkLg0KDQotLSANClRy
-b25kIE15a2xlYnVzdA0KTGludXggTkZTIGNsaWVudCBtYWludGFpbmVyLCBIYW1tZXJzcGFjZQ0K
-dHJvbmQubXlrbGVidXN0QGhhbW1lcnNwYWNlLmNvbQ0KDQoNCg==
+Hi,
+
+On Wed, Dec 16, 2020 at 8:25 PM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> Quoting Douglas Anderson (2020-12-16 14:41:51)
+> > If we get a timeout sending then this happens:
+> > * spi_transfer_wait() will get a timeout.
+> > * We'll set the chip select
+> > * We'll call handle_err() => handle_fifo_timeout().
+> >
+> > Unfortunately that won't work so well on geni.  If we got a timeout
+> > transferring then it's likely that our interrupt handler is blocked,
+> > but we need that same interrupt handler to adjust the chip select.
+> > Trying to set the chip select doesn't crash us but ends up confusing
+> > our state machine and leads to messages like:
+> >   Premature done. rx_rem = 32 bpw8
+> >
+> > Let's just drop the chip select request in this case.  Sure, we might
+> > leave the chip select in the wrong state but it's likely it was going
+> > to fail anyway and this avoids getting the driver even more confused
+> > about what it's doing.
+> >
+> > The SPI core in general assumes that setting chip select is a simple
+> > operation that doesn't fail.  Yet another reason to just reconfigure
+> > the chip select line as GPIOs.
+>
+> Indeed.
+>
+> >
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > ---
+> >
+> > Changes in v2:
+> > - ("spi: spi-geni-qcom: Don't try to set CS if an xfer is pending") new for v2.
+> >
+> >  drivers/spi/spi-geni-qcom.c | 9 +++++++--
+> >  1 file changed, 7 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/spi/spi-geni-qcom.c b/drivers/spi/spi-geni-qcom.c
+> > index d988463e606f..0e4fa52ac017 100644
+> > --- a/drivers/spi/spi-geni-qcom.c
+> > +++ b/drivers/spi/spi-geni-qcom.c
+> > @@ -204,9 +204,14 @@ static void spi_geni_set_cs(struct spi_device *slv, bool set_flag)
+> >                 goto exit;
+> >         }
+> >
+> > -       mas->cs_flag = set_flag;
+> > -
+> >         spin_lock_irq(&mas->lock);
+> > +       if (mas->cur_xfer) {
+>
+> How is it possible that cs change happens when cur_xfer is non-NULL?
+
+I'll add this to the commit message:
+
+spi_transfer_one_message()
+ ->transfer_one() AKA spi_geni_transfer_one()
+  setup_fifo_xfer()
+   mas->cur_xfer = non-NULL
+ spi_transfer_wait() => TIMES OUT
+ msg->status != -EINPROGRESS => goto out
+ if (ret != 0 ...)
+  spi_set_cs()
+   ->set_cs AKA spi_geni_set_cs()
+    # mas->cur_xfer is non-NULL
+
+Specifically the place where cur_xfer is usually made NULL is in the
+interrupt handler.  If that doesn't run then it will be non-NULL.
+
+
+> > +               dev_err(mas->dev, "Can't set CS when prev xfter running\n");
+>
+> xfer? or xfter?
+
+Will fix.
+
+
+-Doug
