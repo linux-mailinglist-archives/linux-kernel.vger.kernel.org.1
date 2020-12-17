@@ -2,84 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3532DD955
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 20:29:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E8462DD95D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 20:32:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729157AbgLQT3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 14:29:02 -0500
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:46877 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727368AbgLQT3C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 14:29:02 -0500
-Received: by mail-oi1-f177.google.com with SMTP id q205so80613oig.13;
-        Thu, 17 Dec 2020 11:28:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OIqxJlEr6qhscRY9Nj69alb23UGeDiYW09DXVg3bkF4=;
-        b=ewxWi9CV7yLkhkmeXyjasmN4l/6tAAVlyKA9mGjbgwhU/w+KVP9YygSciECpWS8OHK
-         9p1T++e/G+vSi4v9k0jYIP2Ecvht/MFleOS8lX1euh1EtGU1EB342kIUSoqJvXwBDvjg
-         ao2kXCLYc0FN7dW8B49LCa0XTIqoH3Y/DMc6pZacT9V+DKAFh0AZ94OUuL0G1z4u2MJr
-         UPOE9Dv2ZOqr94hEzLnT+j0c9xiPSh+qXD2oPwxwLAR5Ibv9EI3WXG5RC94hKuU9xEw6
-         PAiI8Brxec+Vb62k+4jIu+HnfWAx8bqitO7S4kwk6OasnMsMqcLE0BiC3Lgem0nTcbdf
-         26ug==
-X-Gm-Message-State: AOAM533CICczxAKIJ1Gs+5CtQvmcD9zaITt5zNg1PXdoDOYMOBZrGDTu
-        FFxsNkM3pzqGra/3W2Ut7g==
-X-Google-Smtp-Source: ABdhPJw3bvC0XYf+pKjCMi2TrfV+zkB/AwPcr+ycvAdNFlDT5V1e88wLbTciwmx3HwL9jGOPY4nPEQ==
-X-Received: by 2002:aca:3257:: with SMTP id y84mr518377oiy.132.1608233301052;
-        Thu, 17 Dec 2020 11:28:21 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id b25sm1497885ooe.18.2020.12.17.11.28.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 11:28:20 -0800 (PST)
-Received: (nullmailer pid 101991 invoked by uid 1000);
-        Thu, 17 Dec 2020 19:28:18 -0000
-Date:   Thu, 17 Dec 2020 13:28:18 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-mediatek@lists.infradead.org, linux-rtc@vger.kernel.org,
-        devicetree@vger.kernel.org, Ran Bi <ran.bi@mediatek.com>,
-        srv_heupstream@mediatek.com, linux-arm-kernel@lists.infradead.org,
-        Yuchen Huang <yuchen.huang@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Lee Jones <lee.jones@linaro.org>,
-        Fei Shao <fshao@chromium.org>,
-        Eddie Huang <eddie.huang@mediatek.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 3/9] dt-bindings: mfd: Add compatible for the MediaTek
- MT6359 PMIC
-Message-ID: <20201217192818.GA101889@robh.at.kernel.org>
-References: <1608104827-7937-1-git-send-email-hsin-hsiung.wang@mediatek.com>
- <1608104827-7937-4-git-send-email-hsin-hsiung.wang@mediatek.com>
+        id S1728192AbgLQTa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 14:30:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49418 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725468AbgLQTa2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 14:30:28 -0500
+X-Gm-Message-State: AOAM531jhmcd5QMKEaZnxNxiAcD2kX0u3SAYaHxgGm+buQuwC7p9mMgX
+        cy7GwwHOhkBCsIX0MoYFY9FxgWBDvR4BiObGM9Y=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608233387;
+        bh=HRY8YeVLSHAvObD2gzi1HyscgTfOcaMV6u6OwjX/7Vo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=tM3fpjtJciyI5a8jL4IU2Yi9/zPHcWryWiiJczOp7eL2q4Ygc3zJqn/a2+DUhntrJ
+         BELyh8lz0GqKdx3emD/xgKVXlp/AQYf2KYJt/+74jcEk8kXHQ74S5G8MgabaLzYYYN
+         zfTGYOmRAN45wSNaoTGJP1xOOyUI1yAg+gcMPsBV/vQVF190pPHUAb3Fv7EmXlLRSR
+         Vfund6xxHGGiwurZ6MGcAWdOr4IGw/MBpiH36Tr7dlwKrxoMkylSOZjwc0DnbfxBDp
+         ADmPcigMY+umWLN2ETAKhygS9rK8ezLQ/4zUysQzlFU+eLtIWfufHLPkR9DlIjYIHZ
+         9OsGggSdj1UbA==
+X-Google-Smtp-Source: ABdhPJw2VdBQyPZ697Di5+5hmP4B46nBT/YDOuvakmMna4r2mnr1HGQCYk9mcrj4BtUaYcvzpnxWhv9ew4Z4L6Yc41o=
+X-Received: by 2002:a05:6830:1c24:: with SMTP id f4mr362030ote.108.1608233386622;
+ Thu, 17 Dec 2020 11:29:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1608104827-7937-4-git-send-email-hsin-hsiung.wang@mediatek.com>
+References: <CAKwvOdkP8vHidFPWczC24XwNHhQaXovQiQ43Yb6Csp_+kPR9XQ@mail.gmail.com>
+ <20201217004051.1247544-1-ndesaulniers@google.com>
+In-Reply-To: <20201217004051.1247544-1-ndesaulniers@google.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 17 Dec 2020 20:29:35 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXHpVDmZqgULT5Jsjwbfd8a5a6D4ojZXwTUUxi-DWvAFOA@mail.gmail.com>
+Message-ID: <CAMj1kXHpVDmZqgULT5Jsjwbfd8a5a6D4ojZXwTUUxi-DWvAFOA@mail.gmail.com>
+Subject: Re: [PATCH] arm64: link with -z norelro for LLD or aarch64-elf
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        Peter Smith <Peter.Smith@arm.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        stable <stable@vger.kernel.org>,
+        =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
+        Quentin Perret <qperret@google.com>,
+        Alan Modra <amodra@gmail.com>,
+        "kernelci . org bot" <bot@kernelci.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Dec 2020 15:47:01 +0800, Hsin-Hsiung Wang wrote:
-> This adds compatible for the MediaTek MT6359 PMIC.
-> 
-> Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+On Thu, 17 Dec 2020 at 01:41, Nick Desaulniers <ndesaulniers@google.com> wr=
+ote:
+>
+> With newer GNU binutils, linking with BFD produces warnings for vmlinux:
+> aarch64-linux-gnu-ld: warning: -z norelro ignored
+>
+> BFD can produce this warning when the target emulation mode does not
+> support RELRO relocation types, and -z relro or -z norelro is passed.
+>
+
+RELRO is not a relocation type, it is a type of program header which
+we might simply ignore, if it weren't for the fact that it can only be
+emitted if the layout of the sections adheres to certain rules (and
+ours doesn't), and we get an error otherwise.
+
+It amounts to implicit __ro_after_init annotations for statically
+initialized const pointers, but given that we don't compile with
+-fpie, those const pointers reside in .rodata already, so RELRO adds
+no value for us.
+
+> Alan Modra clarifies:
+>   The default linker emulation for an aarch64-linux ld.bfd is
+>   -maarch64linux, the default for an aarch64-elf linker is
+>   -maarch64elf.  They are not equivalent.  If you choose -maarch64elf
+>   you get an emulation that doesn't support -z relro.
+>
+> The ARCH=3Darm64 kernel prefers -maarch64elf, but may fall back to
+> -maarch64linux based on the toolchain configuration.
+>
+> LLD will always create RELRO relocation types regardless of target
+> emulation.
+>
+
+RELRO program header
+
+> To avoid the above warning when linking with BFD, pass -z norelro only
+> when linking with LLD or with -maarch64linux.
+>
+> Cc: Alan Modra <amodra@gmail.com>
+> Cc: Ard Biesheuvel <ardb@kernel.org>
+> Cc: F=C4=81ng-ru=C3=AC S=C3=B2ng <maskray@google.com>
+> Fixes: 3b92fa7485eb ("arm64: link with -z norelro regardless of CONFIG_RE=
+LOCATABLE")
+> Reported-by: kernelci.org bot <bot@kernelci.org>
+> Reported-by: Quentin Perret <qperret@google.com>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+
+With mentions of 'RELRO relocation types' fixed:
+
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+
+
+
 > ---
->  Documentation/devicetree/bindings/mfd/mt6397.txt | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-
-
-Please add Acked-by/Reviewed-by tags when posting new versions. However,
-there's no need to repost patches *only* to add the tags. The upstream
-maintainer will do that for acks received on the version they apply.
-
-If a tag was not added on purpose, please state why and what changed.
-
+>  arch/arm64/Makefile | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
+> index 6be9b3750250..90309208bb28 100644
+> --- a/arch/arm64/Makefile
+> +++ b/arch/arm64/Makefile
+> @@ -10,7 +10,7 @@
+>  #
+>  # Copyright (C) 1995-2001 by Russell King
+>
+> -LDFLAGS_vmlinux        :=3D--no-undefined -X -z norelro
+> +LDFLAGS_vmlinux        :=3D--no-undefined -X
+>
+>  ifeq ($(CONFIG_RELOCATABLE), y)
+>  # Pass --no-apply-dynamic-relocs to restore pre-binutils-2.27 behaviour
+> @@ -115,16 +115,20 @@ KBUILD_CPPFLAGS   +=3D -mbig-endian
+>  CHECKFLAGS     +=3D -D__AARCH64EB__
+>  # Prefer the baremetal ELF build target, but not all toolchains include
+>  # it so fall back to the standard linux version if needed.
+> -KBUILD_LDFLAGS +=3D -EB $(call ld-option, -maarch64elfb, -maarch64linuxb=
+)
+> +KBUILD_LDFLAGS +=3D -EB $(call ld-option, -maarch64elfb, -maarch64linuxb=
+ -z norelro)
+>  UTS_MACHINE    :=3D aarch64_be
+>  else
+>  KBUILD_CPPFLAGS        +=3D -mlittle-endian
+>  CHECKFLAGS     +=3D -D__AARCH64EL__
+>  # Same as above, prefer ELF but fall back to linux target if needed.
+> -KBUILD_LDFLAGS +=3D -EL $(call ld-option, -maarch64elf, -maarch64linux)
+> +KBUILD_LDFLAGS +=3D -EL $(call ld-option, -maarch64elf, -maarch64linux -=
+z norelro)
+>  UTS_MACHINE    :=3D aarch64
+>  endif
+>
+> +ifeq ($(CONFIG_LD_IS_LLD), y)
+> +KBUILD_LDFLAGS +=3D -z norelro
+> +endif
+> +
+>  CHECKFLAGS     +=3D -D__aarch64__
+>
+>  ifeq ($(CONFIG_DYNAMIC_FTRACE_WITH_REGS),y)
+> --
+> 2.29.2.684.gfbc64c5ab5-goog
+>
