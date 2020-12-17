@@ -2,95 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 083E72DCD78
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 09:15:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2E302DCD7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 09:17:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727366AbgLQIP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 03:15:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726908AbgLQIP0 (ORCPT
+        id S1727420AbgLQIPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 03:15:45 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:36178 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726580AbgLQIPo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 03:15:26 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C396C0617B0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 00:14:46 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id d2so18549634pfq.5
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 00:14:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=KxXhsJFTOyz+tGYPnV2NQFdQahYXCWz2bAc8QN4Bqq0=;
-        b=D5fosdBjph9Sztv0rn3Oj9xrBq3zLGH/GRfxeJNcCJyKj/Ijo++OfTUsGpQ7Bvq8Vi
-         nJ5nENN5LSBuSKCPhNBTDS3v4QmyfqPHVZ3GrNeD9QiKHElBiNiI1bOC8rM2lMQ7KRd5
-         6kSaimHeQ3dhm8UsBxq5RiCDrzkT8nf9YuG8g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KxXhsJFTOyz+tGYPnV2NQFdQahYXCWz2bAc8QN4Bqq0=;
-        b=WP2+qmKqUvvkHeUuI3TAijMCmrdQOP6M1IfcPFIO5CzymDXokROIqMFOC1x9V4M53i
-         3PKNJb1awUvp+NOg5GqEm6d9Zr1rxd+/Ky91C6pHCjxsE8awayX8ugop6IdhxQE4Xnqw
-         RKQb7SJZRI+T4C/iBCdTVLety9rfgX6dGdQicmQcvgrQ+J+NHy98nW3PULVzzHfM4BLO
-         UkdrgllRi3gO8I7oHHA55dQ7tY2IfrP2RizQ156DxRsOAR6JlhZvnyhVBniyL63A5RYY
-         hsCphS8EU3VIMVQUt4BmYebAasm7bZK8l6qwaY2wuMAez1sbCFZwmhjoaQG7YQ+mua4Q
-         YGkA==
-X-Gm-Message-State: AOAM531v7mXw2GyuzfiY807w0aQLQhK/lOVmdEPZY9yupKc4hAd9DbrE
-        Lp57Kd2YtH7OFFxoztX7YRubDA==
-X-Google-Smtp-Source: ABdhPJyEDA/48cKMDvGBkWS2/ppRVxVRQdD6yl//MLwex1DHh4BThpixOtfOKx+z08qP3Cy6uoXiIg==
-X-Received: by 2002:a63:1d26:: with SMTP id d38mr36488756pgd.246.1608192886171;
-        Thu, 17 Dec 2020 00:14:46 -0800 (PST)
-Received: from kafuu-chino.c.googlers.com.com (105.219.229.35.bc.googleusercontent.com. [35.229.219.105])
-        by smtp.googlemail.com with ESMTPSA id e24sm4224686pjt.16.2020.12.17.00.14.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 00:14:45 -0800 (PST)
-From:   Pi-Hsun Shih <pihsun@chromium.org>
-Cc:     Pi-Hsun Shih <pihsun@chromium.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/2] platform/chrome: cros_ec_sysfs: Add cold-ap-off to sysfs reboot.
-Date:   Thu, 17 Dec 2020 16:14:20 +0800
-Message-Id: <20201217081423.896862-2-pihsun@chromium.org>
-X-Mailer: git-send-email 2.29.2.684.gfbc64c5ab5-goog
-In-Reply-To: <20201217081423.896862-1-pihsun@chromium.org>
-References: <20201217081423.896862-1-pihsun@chromium.org>
+        Thu, 17 Dec 2020 03:15:44 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608192926; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=Vl15HlNa4mtXvZ1I16t5kCLv5QtQ8BV4wsxKyd1mo5E=; b=KAvF6knA0On4i/Soxdfwy1QVFs4PxgHH3PRkW9TWqdDGIonmCFYNHGKgrDR5K/qUhYjwuR1g
+ 9e6cvIN5wnv+TIauWZ2YknacqqH4rMLr+oW5SonJTbBqPD1u67qFo8nP8rbwzOjWxy2IGpwj
+ tn8/oHeMv4qF02SB+pLg/p7VQac=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5fdb1379944e4d244792fae5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Dec 2020 08:14:49
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A566BC43465; Thu, 17 Dec 2020 08:14:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.252.214.131] (unknown [202.46.23.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AF250C433C6;
+        Thu, 17 Dec 2020 08:14:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AF250C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+Subject: Re: [PATCH v4 1/2] Partially revert ASoC: qcom: Fix enabling BCLK and
+ LRCLK in LPAIF invalid state
+To:     Mark Brown <broonie@kernel.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
+        perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+References: <1606539559-4277-1-git-send-email-srivasam@codeaurora.org>
+ <1606539559-4277-2-git-send-email-srivasam@codeaurora.org>
+ <20201130124617.GC4756@sirena.org.uk>
+ <966993b7-4720-bdd2-cf4d-cf5a7c11a0c1@codeaurora.org>
+ <20201201175135.GO5239@sirena.org.uk>
+ <89456f01-aa02-7a7d-a47b-bf1f26e66d4c@codeaurora.org>
+ <20201214175009.GD4880@sirena.org.uk>
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Organization: Qualcomm India Private Limited.
+Message-ID: <043ecf21-bf1c-8a32-f079-a526dfc90b6e@codeaurora.org>
+Date:   Thu, 17 Dec 2020 13:44:41 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
+In-Reply-To: <20201214175009.GD4880@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
----
- drivers/platform/chrome/cros_ec_sysfs.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Thanks Mark for your Time!!!
 
-diff --git a/drivers/platform/chrome/cros_ec_sysfs.c b/drivers/platform/chrome/cros_ec_sysfs.c
-index f521a5c65091..8210fb10e839 100644
---- a/drivers/platform/chrome/cros_ec_sysfs.c
-+++ b/drivers/platform/chrome/cros_ec_sysfs.c
-@@ -28,7 +28,7 @@ static ssize_t reboot_show(struct device *dev,
- 	int count = 0;
- 
- 	count += scnprintf(buf + count, PAGE_SIZE - count,
--			   "ro|rw|cancel|cold|disable-jump|hibernate");
-+			   "ro|rw|cancel|cold|disable-jump|hibernate|cold-ap-off");
- 	count += scnprintf(buf + count, PAGE_SIZE - count,
- 			   " [at-shutdown]\n");
- 	return count;
-@@ -46,6 +46,7 @@ static ssize_t reboot_store(struct device *dev,
- 		{"cancel",       EC_REBOOT_CANCEL, 0},
- 		{"ro",           EC_REBOOT_JUMP_RO, 0},
- 		{"rw",           EC_REBOOT_JUMP_RW, 0},
-+		{"cold-ap-off",  EC_REBOOT_COLD_AP_OFF, 0},
- 		{"cold",         EC_REBOOT_COLD, 0},
- 		{"disable-jump", EC_REBOOT_DISABLE_JUMP, 0},
- 		{"hibernate",    EC_REBOOT_HIBERNATE, 0},
+On 12/14/2020 11:20 PM, Mark Brown wrote:
+> On Mon, Dec 14, 2020 at 06:13:22PM +0530, Srinivasa Rao Mandadapu wrote:
+>> On 12/1/2020 11:21 PM, Mark Brown wrote:
+>>>> Later from review comments by Srinivas kandagatla, I got to know
+>>>>
+>>>> about regcache sync APIs, which can be used  to sync cache after resume and
+>>>>
+>>>> HW registers can be updated with  original values. With that playback can be
+>>>> continued.
+>>>> So is the reason, I am reverting partial changes in the commit b1824968221c.
+>>> I don't understand why a fix for the register cache not being in sync
+>>> with the hardware doesn't involve syncing the register cache with the
+>>> hardware.
+>> I am sorry I couldn't understand your point. Could you please elaborate your
+>> query?
+> Your changelog talks about syncing the cache but neither the driver nor
+> your change actually does that.
+
+Yeah.. Now I posted v6 patch 
+(https://lore.kernel.org/patchwork/patch/1354638/)
+
+with subject lines explaining actual changes.
+
+could you please check  the same.
+
 -- 
-2.29.2.684.gfbc64c5ab5-goog
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
