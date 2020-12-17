@@ -2,148 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 074D22DCE6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 10:32:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B52412DCE68
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 10:32:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727520AbgLQJcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 04:32:45 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42908 "EHLO mx2.suse.de"
+        id S1727304AbgLQJce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 04:32:34 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42834 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725950AbgLQJcd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 04:32:33 -0500
+        id S1726155AbgLQJcc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 04:32:32 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
         t=1608197506; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=E7FpqkqnD5unmDeE4sjWFYeLFL2ZgXDe6/5+3YmBT64=;
-        b=a9yFTfK79u+NFXUZ4zWV8aHPpDUcRPDVvBCcSa9sHMiOYeRnwQj4sILTaezMzm4EYJQG+K
-        gWtQy41s+pv/TtoyNIh8/P2b5G/eZiIFhJyS9RJs098dCw6tqaN2AHvfO5MUEHUwEaUz34
-        +nKJxIVkWwafsJ2frUmJ4ePnkcxTR4M=
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PezddZt9B1as0O7QAdAa2+LbregUz6HT/ncAiFWbX44=;
+        b=DVZpQtKFw1mbHOWW2Oa8umjpwXvQ8DLru5/9cePMOFKRN0fxFl0PRnfMwggcnF//of12qz
+        +S57/gJSEh/PGOWLxELsA0xltbCfgnoigSs/f3djzPQlxeLmr07I6DHwijDWY5ABJ4WsQ3
+        YSIyWGihHsG4YZsZYKtBtufuF8+ewAc=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 44FF5B1A1;
+        by mx2.suse.de (Postfix) with ESMTP id 08D43AC90;
         Thu, 17 Dec 2020 09:31:46 +0000 (UTC)
 From:   Juergen Gross <jgross@suse.com>
 To:     xen-devel@lists.xenproject.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org
+        linux-kernel@vger.kernel.org
 Cc:     Juergen Gross <jgross@suse.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         "H. Peter Anvin" <hpa@zytor.com>,
         Boris Ostrovsky <boris.ostrovsky@oracle.com>,
         Stefano Stabellini <sstabellini@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Deep Shah <sdeep@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: [PATCH v3 00/15] x86: major paravirt cleanup
-Date:   Thu, 17 Dec 2020 10:31:18 +0100
-Message-Id: <20201217093133.1507-1-jgross@suse.com>
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH v3 01/15] x86/xen: use specific Xen pv interrupt entry for MCE
+Date:   Thu, 17 Dec 2020 10:31:19 +0100
+Message-Id: <20201217093133.1507-2-jgross@suse.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20201217093133.1507-1-jgross@suse.com>
+References: <20201217093133.1507-1-jgross@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a major cleanup of the paravirt infrastructure aiming at
-eliminating all custom code patching via paravirt patching.
+Xen PV guests don't use IST. For machine check interrupts switch to
+the same model as debug interrupts.
 
-This is achieved by using ALTERNATIVE instead, leading to the ability
-to give objtool access to the patched in instructions.
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ arch/x86/include/asm/idtentry.h |  3 +++
+ arch/x86/xen/enlighten_pv.c     | 16 +++++++++++++++-
+ arch/x86/xen/xen-asm.S          |  2 +-
+ 3 files changed, 19 insertions(+), 2 deletions(-)
 
-In order to remove most of the 32-bit special handling from pvops the
-time related operations are switched to use static_call() instead.
-
-At the end of this series all paravirt patching has to do is to
-replace indirect calls with direct ones. In a further step this could
-be switched to static_call(), too, but that would require a major
-header file disentangling.
-
-Changes in V3:
-- added patches 7 and 12
-- addressed all comments
-
-Changes in V2:
-- added patches 5-12
-
-Juergen Gross (14):
-  x86/xen: use specific Xen pv interrupt entry for MCE
-  x86/xen: use specific Xen pv interrupt entry for DF
-  x86/pv: switch SWAPGS to ALTERNATIVE
-  x86/xen: drop USERGS_SYSRET64 paravirt call
-  x86: rework arch_local_irq_restore() to not use popf
-  x86/paravirt: switch time pvops functions to use static_call()
-  x86/alternative: support "not feature" and ALTERNATIVE_TERNARY
-  x86: add new features for paravirt patching
-  x86/paravirt: remove no longer needed 32-bit pvops cruft
-  x86/paravirt: simplify paravirt macros
-  x86/paravirt: switch iret pvops to ALTERNATIVE
-  x86/paravirt: add new macros PVOP_ALT* supporting pvops in
-    ALTERNATIVEs
-  x86/paravirt: switch functions with custom code to ALTERNATIVE
-  x86/paravirt: have only one paravirt patch function
-
-Peter Zijlstra (1):
-  objtool: Alternatives vs ORC, the hard way
-
- arch/x86/Kconfig                       |   1 +
- arch/x86/entry/entry_32.S              |   4 +-
- arch/x86/entry/entry_64.S              |  26 ++-
- arch/x86/include/asm/alternative-asm.h |   3 +
- arch/x86/include/asm/alternative.h     |   7 +
- arch/x86/include/asm/cpufeatures.h     |   2 +
- arch/x86/include/asm/idtentry.h        |   6 +
- arch/x86/include/asm/irqflags.h        |  51 ++----
- arch/x86/include/asm/mshyperv.h        |  11 --
- arch/x86/include/asm/paravirt.h        | 157 ++++++------------
- arch/x86/include/asm/paravirt_time.h   |  38 +++++
- arch/x86/include/asm/paravirt_types.h  | 220 +++++++++----------------
- arch/x86/kernel/Makefile               |   3 +-
- arch/x86/kernel/alternative.c          |  59 ++++++-
- arch/x86/kernel/asm-offsets.c          |   7 -
- arch/x86/kernel/asm-offsets_64.c       |   3 -
- arch/x86/kernel/cpu/vmware.c           |   5 +-
- arch/x86/kernel/irqflags.S             |  11 --
- arch/x86/kernel/kvm.c                  |   3 +-
- arch/x86/kernel/kvmclock.c             |   3 +-
- arch/x86/kernel/paravirt.c             |  83 +++-------
- arch/x86/kernel/paravirt_patch.c       | 109 ------------
- arch/x86/kernel/tsc.c                  |   3 +-
- arch/x86/xen/enlighten_pv.c            |  36 ++--
- arch/x86/xen/irq.c                     |  23 ---
- arch/x86/xen/time.c                    |  12 +-
- arch/x86/xen/xen-asm.S                 |  52 +-----
- arch/x86/xen/xen-ops.h                 |   3 -
- drivers/clocksource/hyperv_timer.c     |   5 +-
- drivers/xen/time.c                     |   3 +-
- kernel/sched/sched.h                   |   1 +
- tools/objtool/check.c                  | 180 ++++++++++++++++++--
- tools/objtool/check.h                  |   5 +
- tools/objtool/orc_gen.c                | 178 +++++++++++++-------
- 34 files changed, 627 insertions(+), 686 deletions(-)
- create mode 100644 arch/x86/include/asm/paravirt_time.h
- delete mode 100644 arch/x86/kernel/paravirt_patch.c
-
+diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
+index 247a60a47331..5dd64404715a 100644
+--- a/arch/x86/include/asm/idtentry.h
++++ b/arch/x86/include/asm/idtentry.h
+@@ -585,6 +585,9 @@ DECLARE_IDTENTRY_MCE(X86_TRAP_MC,	exc_machine_check);
+ #else
+ DECLARE_IDTENTRY_RAW(X86_TRAP_MC,	exc_machine_check);
+ #endif
++#ifdef CONFIG_XEN_PV
++DECLARE_IDTENTRY_RAW(X86_TRAP_MC,	xenpv_exc_machine_check);
++#endif
+ #endif
+ 
+ /* NMI */
+diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
+index 4409306364dc..9f5e44c1f70a 100644
+--- a/arch/x86/xen/enlighten_pv.c
++++ b/arch/x86/xen/enlighten_pv.c
+@@ -583,6 +583,20 @@ DEFINE_IDTENTRY_RAW(xenpv_exc_debug)
+ 		exc_debug(regs);
+ }
+ 
++#ifdef CONFIG_X86_MCE
++DEFINE_IDTENTRY_RAW(xenpv_exc_machine_check)
++{
++	/*
++	 * There's no IST on Xen PV, but we still need to dispatch
++	 * to the correct handler.
++	 */
++	if (user_mode(regs))
++		noist_exc_machine_check(regs);
++	else
++		exc_machine_check(regs);
++}
++#endif
++
+ struct trap_array_entry {
+ 	void (*orig)(void);
+ 	void (*xen)(void);
+@@ -603,7 +617,7 @@ static struct trap_array_entry trap_array[] = {
+ 	TRAP_ENTRY_REDIR(exc_debug,			true  ),
+ 	TRAP_ENTRY(exc_double_fault,			true  ),
+ #ifdef CONFIG_X86_MCE
+-	TRAP_ENTRY(exc_machine_check,			true  ),
++	TRAP_ENTRY_REDIR(exc_machine_check,		true  ),
+ #endif
+ 	TRAP_ENTRY_REDIR(exc_nmi,			true  ),
+ 	TRAP_ENTRY(exc_int3,				false ),
+diff --git a/arch/x86/xen/xen-asm.S b/arch/x86/xen/xen-asm.S
+index 1cb0e84b9161..bc2586730a5b 100644
+--- a/arch/x86/xen/xen-asm.S
++++ b/arch/x86/xen/xen-asm.S
+@@ -172,7 +172,7 @@ xen_pv_trap asm_exc_spurious_interrupt_bug
+ xen_pv_trap asm_exc_coprocessor_error
+ xen_pv_trap asm_exc_alignment_check
+ #ifdef CONFIG_X86_MCE
+-xen_pv_trap asm_exc_machine_check
++xen_pv_trap asm_xenpv_exc_machine_check
+ #endif /* CONFIG_X86_MCE */
+ xen_pv_trap asm_exc_simd_coprocessor_error
+ #ifdef CONFIG_IA32_EMULATION
 -- 
 2.26.2
 
