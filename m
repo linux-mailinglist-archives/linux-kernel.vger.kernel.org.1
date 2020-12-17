@@ -2,125 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1FD2DD5A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 18:05:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53F1F2DD5AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 18:08:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729053AbgLQRD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 12:03:57 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:32895 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726613AbgLQRDv (ORCPT
+        id S1728331AbgLQRHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 12:07:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727368AbgLQRHF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 12:03:51 -0500
-Received: by mail-io1-f71.google.com with SMTP id t23so27818666ioh.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 09:03:35 -0800 (PST)
+        Thu, 17 Dec 2020 12:07:05 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08849C0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 09:06:24 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id b5so4476343pjl.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 09:06:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6951Puc06AmaqAEBPElLdD0QTM50Q9SNBxDGt1eq6AA=;
+        b=OlAOwwG6RML8tzpn4gizUuFj7jBhenVz44aFRQiINMhmr9fqly+rfRpe4rREZCn5VR
+         1C5KKngQ3y6r9k/IyjpBwLZLCvU9s4G1SHJ3AStTfgfdC/CfvOUFnVEcjRPy+2pbe5gi
+         ZqsAVUGMA30e1wfwGTT7VTDMoKFfwwYmMHu6LVds6jvC832ANqzYsWwwHGMaRIQ+LvJL
+         0cV3vwlVbPYpZPz/VV17yY2F0CGdn94PbMpNisALuy/T0kynb9IaANXKLWUEP9r7B9e4
+         y0guksGj1v1BaCR5eOnRyH3+tLS2ZbuKu/NQ++UpLDS/OF5ddymKmhUgxSUdCNvYR1aP
+         koIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=pxFfrTkIii6iJjyvF009RrzuDe3n5utIm9WDPVKtgGg=;
-        b=R3LrjwThgAAFoLmhWwzL9RQAL+H+iMCE1RGPD2/T0XiCOS+Daz4pTJ1BXkD4pBxqLG
-         v44UNWFIGPku4rvW64t0pM2yGd2wYUkpYbrNVTmRelP5/VGs0wHpR9TvsGuKUjrBo2px
-         yRx0uTET+6KIl0/o4rOcD4tw7GX8IQxCtr1dPTZmbMX1ealR/z2jEi9iWTknlwrdbPBw
-         leJ0LvriiFf2fCq+H3EFb+GHq+httkiWg5ttiZ+uErrgsUKEbho7AiCpKZkbe8kXhKrl
-         ZY0anT974hht7BiEagiOxOtvzwPlTv6dhZjkV5/GogbYFLeILMEozIjcJfrQZgbzMV4t
-         Z0ig==
-X-Gm-Message-State: AOAM530j0M5dnxprjGYrhxFHpX3c/jJJs9NkCFBaJqSQdKW05W/jRdAs
-        z2EjA+KUV6k/XCITOxuV8TrwLs5Ih0AB+0JgN1CyIHfQ81jk
-X-Google-Smtp-Source: ABdhPJxqR3ejZ43331MFX9g47oKWaI79oYRHV//M9fr5YfFFU9oGUJkfsG/FNkdZk9dJJoqH5l+ELqKb/RrIyR37uB47tGG2WqIn
-MIME-Version: 1.0
-X-Received: by 2002:a92:cb82:: with SMTP id z2mr51635770ilo.195.1608224590079;
- Thu, 17 Dec 2020 09:03:10 -0800 (PST)
-Date:   Thu, 17 Dec 2020 09:03:10 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000692e2f05b6abf7c5@google.com>
-Subject: general protection fault in bond_ipsec_add_sa
-From:   syzbot <syzbot+cfd446c119a93741a3c2@syzkaller.appspotmail.com>
-To:     andy@greyhouse.net, davem@davemloft.net, j.vosburgh@gmail.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        vfalico@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=6951Puc06AmaqAEBPElLdD0QTM50Q9SNBxDGt1eq6AA=;
+        b=YIccbtoTB0VnsenBd7/PwzyUBx2mDZJKs59GBuITgTsiT4+GBzZd4njToiXj9TJCFq
+         fyncJpP6JtLqD7MsAfAyHUoIZbFssyfKvc6OoqqvsSyKsA/sRU5hnuSjLog7D7Xzg0xa
+         yNk3RuoZvUpjS9Xx6HIEVL7qOB6CIhXeb7OSrPal3/XjozabGlESkf9Jnaf1Bpt7JLN6
+         seIHlTcebtOszyIoJSIToL/M0G6eX4O0vL6UjEMfTonYC9lY0n3ae2GSHvVRljh37Qv6
+         VxVIrhBrb90CoSdhhIASCipHOevh/1RT3QP4h9ueMotIw8CzzMqLdyDzF1WDdQR2r49m
+         nfRg==
+X-Gm-Message-State: AOAM531xrAay5pUjKkn4qc7B8blYeBqbR1giDkMeS8sqbs8tyM1nN3/R
+        Pby7iqMq7/jWrkmuRl2TVXTWog==
+X-Google-Smtp-Source: ABdhPJz4fRjtRUnbNYEOV1MmeBr3tL+TSQv/Fxoxxc7mrkAVO3V5f8aweoIHuUikrLP9vcqeuKNywA==
+X-Received: by 2002:a17:90b:691:: with SMTP id m17mr153805pjz.73.1608224784067;
+        Thu, 17 Dec 2020 09:06:24 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id iq3sm5477816pjb.57.2020.12.17.09.06.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Dec 2020 09:06:23 -0800 (PST)
+Date:   Thu, 17 Dec 2020 09:06:23 -0800 (PST)
+X-Google-Original-Date: Thu, 17 Dec 2020 09:06:20 PST (-0800)
+Subject:     Re: linux-next: manual merge of the akpm-current tree with the risc-v tree
+In-Reply-To: <CAHp75VdVDZx_YzD5mwUqs=ezuy=Mt1s8UmWB3mg+MgMj5yqEkQ@mail.gmail.com>
+CC:     Stephen Rothwell <sfr@canb.auug.org.au>, brendanhiggins@google.com,
+        skhan@linuxfoundation.org, Paul Walmsley <paul@pwsan.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     andy.shevchenko@gmail.com
+Message-ID: <mhng-c1e9dc55-3185-4ee5-a8ab-faa751dcd41f@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, 17 Dec 2020 01:40:51 PST (-0800), andy.shevchenko@gmail.com wrote:
+> On Thu, Dec 17, 2020 at 3:28 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>>
+>> Hi all,
+>>
+>> On Mon, 14 Dec 2020 20:21:07 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>> >
+>> > Today's linux-next merge of the akpm-current tree got a conflict in:
+>> >
+>> >   lib/Makefile
+>> >
+>> > between commit:
+>> >
+>> >   527701eda5f1 ("lib: Add a generic version of devmem_is_allowed()")
+>> >
+>> > from the risc-v tree and commits:
+>> >
+>> >   8250e121c672 ("lib/list_kunit: follow new file name convention for KUnit tests")
+>> >   17bf776cf09a ("lib/linear_ranges_kunit: follow new file name convention for KUnit tests")
+>> >   23fa4e39ee62 ("lib/bits_kunit: follow new file name convention for KUnit tests")
+>> >   1987f84faec6 ("lib/cmdline_kunit: add a new test suite for cmdline API")
+>
+> AFAIU Linus rejected the above patches. I hope kselftest/kunit tree
+> can pick them up.
+>
+>> > diff --cc lib/Makefile
+>> > index bcedd691ef63,dc623561ef9d..000000000000
+>> > --- a/lib/Makefile
+>> > +++ b/lib/Makefile
+>> > @@@ -350,8 -350,7 +350,9 @@@ obj-$(CONFIG_PLDMFW) += pldmfw
+>> >
+>> >   # KUnit tests
+>> >   obj-$(CONFIG_BITFIELD_KUNIT) += bitfield_kunit.o
+>> > - obj-$(CONFIG_LIST_KUNIT_TEST) += list-test.o
+>> > - obj-$(CONFIG_LINEAR_RANGES_TEST) += test_linear_ranges.o
+>> > - obj-$(CONFIG_BITS_TEST) += test_bits.o
+>> > + obj-$(CONFIG_BITS_TEST) += bits_kunit.o
+>> > + obj-$(CONFIG_CMDLINE_KUNIT_TEST) += cmdline_kunit.o
+>> > + obj-$(CONFIG_LINEAR_RANGES_TEST) += linear_ranges_kunit.o
+>> > + obj-$(CONFIG_LIST_KUNIT_TEST) += list_kunit.o
+>> >  +
+>> >  +obj-$(CONFIG_GENERIC_LIB_DEVMEM_IS_ALLOWED) += devmem_is_allowed.o
+>>
+>> This is now a conflict between the risc-v tree and Linus' tree.
+>
+> Yeah, and it's slightly different. Perhaps RISC-V tree can handle this
+> by moving Makefile entry somewhere else in the file.
 
-syzbot found the following issue on:
+I was planning on just posting the merge conflict along with the PR, which I
+was going to do this morning (though in practice that means this afternoon...
+;)).  I'd been considering fixing this stuff as I was likely going to have to
+rewrite history to sort out our boot bug, but as it's only manifesting on
+old-ish QEMU versions I've decided that it's not really worth making it a
+blocker.
 
-HEAD commit:    6bff9bb8 Merge tag 'scsi-fixes' of git://git.kernel.org/pu..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14aba80f500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a438b63f5a7f3806
-dashboard link: https://syzkaller.appspot.com/bug?extid=cfd446c119a93741a3c2
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+cfd446c119a93741a3c2@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-CPU: 3 PID: 10570 Comm: syz-executor.0 Not tainted 5.10.0-rc7-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-RIP: 0010:bond_ipsec_add_sa+0x9e/0x240 drivers/net/bonding/bond_main.c:396
-Code: 04 31 ff 89 c3 89 c6 e8 f0 2c d8 fc 85 db 0f 85 f6 00 00 00 e8 93 34 d8 fc 4c 89 ea 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 5f 01 00 00 48 8d bd d0 02 00 00 49 8b 5d 00 48
-RSP: 0018:ffffc90002e47498 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: 0000000000000001 RCX: ffffc90006ee9000
-RDX: 0000000000000000 RSI: ffffffff8497d16d RDI: 0000000000000001
-RBP: ffff888016539c00 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000001 R12: ffff88806c230000
-R13: 0000000000000000 R14: ffff888016539ee0 R15: ffff888016539ee4
-FS:  00007f5eca4f9700(0000) GS:ffff88802cd00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000007120d0 CR3: 0000000050d1d000 CR4: 0000000000350ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- xfrm_dev_state_add+0x2da/0x7b0 net/xfrm/xfrm_device.c:268
- xfrm_state_construct net/xfrm/xfrm_user.c:655 [inline]
- xfrm_add_sa+0x2166/0x34f0 net/xfrm/xfrm_user.c:684
- xfrm_user_rcv_msg+0x42f/0x8b0 net/xfrm/xfrm_user.c:2752
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
- xfrm_netlink_rcv+0x6b/0x90 net/xfrm/xfrm_user.c:2764
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45dcd9
-Code: bd b1 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 8b b1 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f5eca4f8c78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045dcd9
-RDX: 0000000000000000 RSI: 0000000020000180 RDI: 0000000000000003
-RBP: 00000000004aae00 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000075bf40
-R13: 00007ffcc1582edf R14: 00007f5eca4d9000 R15: 0000000000000003
-Modules linked in:
----[ end trace f71849d5db08409b ]---
-RIP: 0010:bond_ipsec_add_sa+0x9e/0x240 drivers/net/bonding/bond_main.c:396
-Code: 04 31 ff 89 c3 89 c6 e8 f0 2c d8 fc 85 db 0f 85 f6 00 00 00 e8 93 34 d8 fc 4c 89 ea 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 5f 01 00 00 48 8d bd d0 02 00 00 49 8b 5d 00 48
-RSP: 0018:ffffc90002e47498 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: 0000000000000001 RCX: ffffc90006ee9000
-RDX: 0000000000000000 RSI: ffffffff8497d16d RDI: 0000000000000001
-RBP: ffff888016539c00 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000001 R12: ffff88806c230000
-R13: 0000000000000000 R14: ffff888016539ee0 R15: ffff888016539ee4
-FS:  00007f5eca4f9700(0000) GS:ffff88802cd00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+If you think that's an issue then I'm happy to rewrite my history, but I do
+generally try to stay away from that and for this sort of thing I've yet to
+have any complaints.  I probably will put it up near the other GENERIC_LIB
+stuff in my conflict resolution, though.
