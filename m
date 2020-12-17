@@ -2,100 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 231CE2DCA87
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 02:29:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3282DCA8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 02:32:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727778AbgLQB2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 20:28:43 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:42541 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725988AbgLQB2n (ORCPT
+        id S1728662AbgLQBar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 20:30:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725988AbgLQBar (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 20:28:43 -0500
-X-UUID: e64650355f984528820cc7eb8ecea633-20201217
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=6zUO/pFL9ZBaYYczz1xolU5TEIyS65c1XFta+4Buk+k=;
-        b=aDCe0PQ5HhntOGOlYT82oQnpVljXDRdhntA1jtleUrzrt+fRBh3DuwWnKWzkG4Ry2bFRlW1VRwOgzKN4/9AZz7KcGoOjm3+8Y4BDgYMZLeG0iAZMzROKZ1XL7uFu9hiZwsnZRwsNLbgTVIKgX002gbzCul/HfJVxkGX7OXj/GUk=;
-X-UUID: e64650355f984528820cc7eb8ecea633-20201217
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 516339937; Thu, 17 Dec 2020 09:27:56 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 17 Dec 2020 09:27:54 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 17 Dec 2020 09:27:51 +0800
-Message-ID: <1608168474.10163.37.camel@mtkswgap22>
-Subject: Re: [PATCH] scsi: ufs: fix livelock on ufshcd_clear_ua_wlun
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <kernel-team@android.com>, <cang@codeaurora.org>,
-        <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
-        <bvanassche@acm.org>, <martin.petersen@oracle.com>,
-        Jaegeuk Kim <jaegeuk@google.com>
-Date:   Thu, 17 Dec 2020 09:27:54 +0800
-In-Reply-To: <20201216190225.2769012-1-jaegeuk@kernel.org>
-References: <20201216190225.2769012-1-jaegeuk@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Wed, 16 Dec 2020 20:30:47 -0500
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E195AC061794
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 17:30:06 -0800 (PST)
+Received: by mail-io1-xd29.google.com with SMTP id z136so25953589iof.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 17:30:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=juliacomputing.com; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=6dQwp+n3JOcX+nLXSXjNOHWl3D3cLU9xBCqYgREOWb4=;
+        b=ZX4EJ9/Ocdmd7IhRX8jQhFjf4hMjSTgDjilQnqsmpoL5ZCjlyMETnIPYGCPnXiwIRb
+         s5VqKC6wxrGqjF1GCxt3JXOr7nraDXdOwD0OcslGBbELo8wseFfXvzzRDIKLgSJnjh9A
+         NLole1g3xWlD7ufoyVvZvnzzv8kKPDVTLJOpADdT9m3NTzUlKX5lcyutlFFDB37/GZ83
+         vudjC/fPf5pEo/tspUAIcB4nJ3uTYgjVswkiS30xDBDBhDPOCTLSolFVrJQ3ejZYbU2e
+         h50z5l3GzomgjwVBOvrX/Gkcny7wDysKiIbNvmSqZdRWzp0eixWr+Dfouo5qGvTHW4kt
+         kAHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=6dQwp+n3JOcX+nLXSXjNOHWl3D3cLU9xBCqYgREOWb4=;
+        b=CgPNJ5Zpb2Nj/ixOMAo4ZB43md7yjY7I5dCVrf1o605SbxxmZfQqYYcbxhwn1rdPst
+         ZvpWSWv3oGbUBgtrXD4olFvl5eFaxcdXe2A8JyNSOXwOw2SEoctVF1ikKP7Z7eeq4OQS
+         kuJOA8lZ8STqHZ3kxXx16+pHrzozoNvH9Xjg9zfTZHAdmXSkS74cdhMRvix/5vHvriqF
+         btLH9RsxAx0jxFkv+MIFec0B24lqxsMqxGJkRjl6RZNgS+No8sjvzBFT2pH2a9e189dX
+         u8v++t1XRnB0s/6K+D2I53ywvBY+eg7FgAhuUKqnP7kSMAJBdrggqgmGU0t2SiLVZzXM
+         bC7g==
+X-Gm-Message-State: AOAM533GP0vChtCh4PdQkrNUpXhUZ63kn5NQfOTVoErTAESX02zuRlvN
+        ETudJ27cxaT9C/45QVjMUl/4Ck8z2WW29fVyX6brszGVhd4oBQ==
+X-Google-Smtp-Source: ABdhPJzVQzWUzfc0Rf4lX2ekHkcnePakR+RhiUkaJKWqtO6OXiI4idpxjZJSs+SNc93Bcn5nmLizaVIGCPugRqioAZo=
+X-Received: by 2002:a5e:d70e:: with SMTP id v14mr44715814iom.75.1608168606099;
+ Wed, 16 Dec 2020 17:30:06 -0800 (PST)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+From:   Keno Fischer <keno@juliacomputing.com>
+Date:   Wed, 16 Dec 2020 20:29:30 -0500
+Message-ID: <CABV8kRwoHAAdez8k60O+AJ9E3g5_PM0F6tpbpB9dC115_FD3Eg@mail.gmail.com>
+Subject: brk checks in PR_SET_MM code
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     gorcunov@openvz.org, Andrew Morton <akpm@linux-foundation.org>,
+        mkoutny@suse.com, ktkhai@virtuozzo.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgSmFlZ2V1aywNCg0KT24gV2VkLCAyMDIwLTEyLTE2IGF0IDExOjAyIC0wODAwLCBKYWVnZXVr
-IEtpbSB3cm90ZToNCj4gRnJvbTogSmFlZ2V1ayBLaW0gPGphZWdldWtAZ29vZ2xlLmNvbT4NCj4g
-DQo+IFRoaXMgZml4ZXMgdGhlIGJlbG93IGxpdmVsb2NrIHdoaWNoIGlzIGNhdXNlZCBieSBjYWxs
-aW5nIGEgc2NzaSBjb21tYW5kIGJlZm9yZQ0KPiB1ZnNoY2Rfc2NzaV91bmJsb2NrX3JlcXVlc3Rz
-KCkgaW4gdWZzaGNkX3VuZ2F0ZV93b3JrKCkuDQo+IA0KPiBXb3JrcXVldWU6IHVmc19jbGtfZ2F0
-aW5nXzAgdWZzaGNkX3VuZ2F0ZV93b3JrDQo+IENhbGwgdHJhY2U6DQo+ICBfX3N3aXRjaF90bysw
-eDI5OC8weDJiYw0KPiAgX19zY2hlZHVsZSsweDU5Yy8weDc2MA0KPiAgc2NoZWR1bGUrMHhhYy8w
-eGYwDQo+ICBzY2hlZHVsZV90aW1lb3V0KzB4NDQvMHgxYjQNCj4gIGlvX3NjaGVkdWxlX3RpbWVv
-dXQrMHg0NC8weDY4DQo+ICB3YWl0X2Zvcl9jb21tb25faW8rMHg3Yy8weDEwMA0KPiAgd2FpdF9m
-b3JfY29tcGxldGlvbl9pbysweDE0LzB4MjANCj4gIGJsa19leGVjdXRlX3JxKzB4OTQvMHhkMA0K
-PiAgX19zY3NpX2V4ZWN1dGUrMHgxMDAvMHgxYzANCj4gIHVmc2hjZF9jbGVhcl91YV93bHVuKzB4
-MTI0LzB4MWM4DQo+ICB1ZnNoY2RfaG9zdF9yZXNldF9hbmRfcmVzdG9yZSsweDFkMC8weDJjYw0K
-PiAgdWZzaGNkX2xpbmtfcmVjb3ZlcnkrMHhhYy8weDEzNA0KPiAgdWZzaGNkX3VpY19oaWJlcm44
-X2V4aXQrMHgxZTgvMHgxZjANCj4gIHVmc2hjZF91bmdhdGVfd29yaysweGFjLzB4MTMwDQoNCkFj
-Y29yZGluZyB0byB0aGUgbGF0ZXN0IG1haW5zdHJlYW0ga2VybmVsLCBvbmNlDQp1ZnNoY2RfdWlj
-X2hpYmVybjhfZXhpdCgpIGVuY291bnRlcnMgZXJyb3IsIGluc3RlYWQsIGVycm9yIGhhbmRsZXIg
-d29yaw0Kd2lsbCBiZSBzY2hlZHVsZWQgd2l0aG91dCBibG9ja2luZyB1ZnNoY2RfdWljX2hpYmVy
-bjhfZXhpdCgpLiBJbg0KYWRkaXRpb24sIHVmc2hjZF9zY3NpX3VuYmxvY2tfcmVxdWVzdHMoKSB3
-b3VsZCBiZSBpbnZva2VkIGJlZm9yZSBsZWF2aW5nDQp1ZnNoY2RfdWljX2hpYmVybjhfZXhpdCgp
-LiBTbyB0aGlzIHN0YWNrIGlzIG5vIGxvbmdlciBleGlzdGVkLg0KDQpUaGFua3MsDQpTdGFubGV5
-IENodQ0KDQo+ICBwcm9jZXNzX29uZV93b3JrKzB4MjcwLzB4NDdjDQo+ICB3b3JrZXJfdGhyZWFk
-KzB4MjdjLzB4NGQ4DQo+ICBrdGhyZWFkKzB4MTNjLzB4MzIwDQo+ICByZXRfZnJvbV9mb3JrKzB4
-MTAvMHgxOA0KPiANCj4gRml4ZXM6IDE5MTg2NTFmMmQ3ZSAoInNjc2k6IHVmczogQ2xlYXIgVUFD
-IGZvciBSUE1CIGFmdGVyIHVmc2hjZCByZXNldHMiKQ0KPiBTaWduZWQtb2ZmLWJ5OiBKYWVnZXVr
-IEtpbSA8amFlZ2V1a0Bnb29nbGUuY29tPg0KPiAtLS0NCj4gIGRyaXZlcnMvc2NzaS91ZnMvdWZz
-aGNkLmMgfCA2ICsrKysrLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDUgaW5zZXJ0aW9ucygrKSwgMSBk
-ZWxldGlvbigtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMg
-Yi9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jDQo+IGluZGV4IGUyMjFhZGQyNWE3ZS4uYjA5OThk
-YjFiNzgxIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jDQo+ICsrKyBi
-L2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMNCj4gQEAgLTE2MDMsNiArMTYwMyw3IEBAIHN0YXRp
-YyB2b2lkIHVmc2hjZF91bmdhdGVfd29yayhzdHJ1Y3Qgd29ya19zdHJ1Y3QgKndvcmspDQo+ICAJ
-fQ0KPiAgdW5ibG9ja19yZXFzOg0KPiAgCXVmc2hjZF9zY3NpX3VuYmxvY2tfcmVxdWVzdHMoaGJh
-KTsNCj4gKwl1ZnNoY2RfY2xlYXJfdWFfd2x1bnMoaGJhKTsNCj4gIH0NCj4gIA0KPiAgLyoqDQo+
-IEBAIC02OTEzLDcgKzY5MTQsNyBAQCBzdGF0aWMgaW50IHVmc2hjZF9ob3N0X3Jlc2V0X2FuZF9y
-ZXN0b3JlKHN0cnVjdCB1ZnNfaGJhICpoYmEpDQo+ICANCj4gIAkvKiBFc3RhYmxpc2ggdGhlIGxp
-bmsgYWdhaW4gYW5kIHJlc3RvcmUgdGhlIGRldmljZSAqLw0KPiAgCWVyciA9IHVmc2hjZF9wcm9i
-ZV9oYmEoaGJhLCBmYWxzZSk7DQo+IC0JaWYgKCFlcnIpDQo+ICsJaWYgKCFlcnIgJiYgIWhiYS0+
-Y2xrX2dhdGluZy5pc19zdXNwZW5kZWQpDQo+ICAJCXVmc2hjZF9jbGVhcl91YV93bHVucyhoYmEp
-Ow0KPiAgb3V0Og0KPiAgCWlmIChlcnIpDQo+IEBAIC04NzQ1LDYgKzg3NDYsNyBAQCBzdGF0aWMg
-aW50IHVmc2hjZF9zdXNwZW5kKHN0cnVjdCB1ZnNfaGJhICpoYmEsIGVudW0gdWZzX3BtX29wIHBt
-X29wKQ0KPiAgCQl1ZnNoY2RfcmVzdW1lX2Nsa3NjYWxpbmcoaGJhKTsNCj4gIAloYmEtPmNsa19n
-YXRpbmcuaXNfc3VzcGVuZGVkID0gZmFsc2U7DQo+ICAJaGJhLT5kZXZfaW5mby5iX3JwbV9kZXZf
-Zmx1c2hfY2FwYWJsZSA9IGZhbHNlOw0KPiArCXVmc2hjZF9jbGVhcl91YV93bHVucyhoYmEpOw0K
-PiAgCXVmc2hjZF9yZWxlYXNlKGhiYSk7DQo+ICBvdXQ6DQo+ICAJaWYgKGhiYS0+ZGV2X2luZm8u
-Yl9ycG1fZGV2X2ZsdXNoX2NhcGFibGUpIHsNCj4gQEAgLTg4NTUsNiArODg1Nyw4IEBAIHN0YXRp
-YyBpbnQgdWZzaGNkX3Jlc3VtZShzdHJ1Y3QgdWZzX2hiYSAqaGJhLCBlbnVtIHVmc19wbV9vcCBw
-bV9vcCkNCj4gIAkJY2FuY2VsX2RlbGF5ZWRfd29yaygmaGJhLT5ycG1fZGV2X2ZsdXNoX3JlY2hl
-Y2tfd29yayk7DQo+ICAJfQ0KPiAgDQo+ICsJdWZzaGNkX2NsZWFyX3VhX3dsdW5zKGhiYSk7DQo+
-ICsNCj4gIAkvKiBTY2hlZHVsZSBjbG9jayBnYXRpbmcgaW4gY2FzZSBvZiBubyBhY2Nlc3MgdG8g
-VUZTIGRldmljZSB5ZXQgKi8NCj4gIAl1ZnNoY2RfcmVsZWFzZShoYmEpOw0KPiAgDQoNCg==
+Hi all,
 
+The code in prctl(PR_SET_MM, ...) performs a number of sanity checks,
+among them
+
+```
+/*
+ * @brk should be after @end_data in traditional maps.
+ */
+if (prctl_map->start_brk <= prctl_map->end_data ||
+    prctl_map->brk <= prctl_map->end_data)
+goto out;
+```
+
+The original commit that introduces this check
+(f606b77f1a9e362451aca8f81d8f36a3a112139e) says:
+
+```
+4) As in regular Elf loading procedure we require that @start_brk and
+   @brk be greater than @end_data.
+```
+
+However, it does not appear that this invariant is actually
+enforced during regular ELF loading. In particular, at least on my
+linux distribution, it does not appear to be satisfied when
+invoking the dynamic linker directly.
+For example, consider the following test application:
+
+```
+#include <sys/prctl.h>
+#include <unistd.h>
+#include <assert.h>
+
+int main(void) {
+    int err = prctl(PR_SET_MM, PR_SET_MM_BRK, sbrk(0), 0, 0);
+    assert(err == 0);
+    return 0;
+}
+```
+```
+$ su
+# ./a.out
+# /lib64/ld-linux-x86-64.so.2 ./a.out
+a.out: test.c:7: main: Assertion `err == 0' failed.
+Aborted
+```
+
+I don't understand this code well enough to know what the
+intended behavior is, but unfortunately this causes some
+processes to be non-restorable using the PR_SET_MM
+mechanism, which defeats the whole purpose of that API.
+Could somebody clarify whether this situation is indeed
+supposed to be impossible and if not whether said checks
+in PR_SET_MM are actually supposed to be there?
+I suppose this is also technically a regression when the
+old PR_SET_MM commands were refactored to use this
+new validation. Previously only the commands that changed
+the brk validated this invariant, but these days it tries
+to validate the entire structure at once, so all the PR_SET_MM
+calls will fail in a process whose layout violates the sanity
+check.
+
+Thanks,
+Keno
