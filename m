@@ -2,123 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A249F2DDAB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 22:18:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8374A2DDABC
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 22:21:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730278AbgLQVQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 16:16:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728358AbgLQVQt (ORCPT
+        id S1729088AbgLQVUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 16:20:24 -0500
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:58345 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728086AbgLQVUX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 16:16:49 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7501EC0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 13:16:09 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id 23so61299519lfg.10
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 13:16:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=E1gFWyQkmkLhCbv2d+Raglj6n3PIGWMNf0Fm0qm+U/4=;
-        b=RASQ28YUFGFrGQbMX/V/LJFRd/0tYNs2lmT1vc9TRt8o323wTRa3xTS/uqfwYDDhkG
-         T2753KyC0R4yJHCHSaEepCuW/vb3BWe2TxOZG6YPg0GuaeHmrg4IvIfKVK6JYJJvcSft
-         njU67lOpM0+5A3Rq6ZjEEsS5UePl7Yn9kpVMk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E1gFWyQkmkLhCbv2d+Raglj6n3PIGWMNf0Fm0qm+U/4=;
-        b=ZqJZTgIpMYIRzKrfw75ek3H2xlbURkHuLI9eNEfxO+3wu9bXj2u0doluAEeSKueqW/
-         Ah2x6j5aztHarRvo5uoQBNe/IUZ1nPUdQ87++ADaDxAezJJvt3L/Y3e6WOUSMFeXa6pL
-         TUjOUxjmRDELKlzgKSO9Te907Cih17lWf4qZZ1jo6lM2n0bVuZyfc33+2Yj4wPkcqtR9
-         PagNetyB6RhSznp8ZC9TTLg8xd60nYb6yvdwknir5JAOgo2Z2aZyyU18lBydTpNjZoED
-         tqsdWanbmlYH7ZURYfmoIwXA05nUKoAgD/ZsOMSXEmhG0uTE2Sb+9Bhvb4pPS9C8ngdr
-         XFuw==
-X-Gm-Message-State: AOAM532dcYVHKqTXcFOb1gOqm8BuPY4p7xDz6JxfWC4nI3HNiwPhwrlm
-        kwhpobV7pxCtDIaJVAo9esxZFFnTG1swpA==
-X-Google-Smtp-Source: ABdhPJzdeiXN8kYGIwb+XU3X1FUoMIH/0CMTnmj+Ft43wPLfSJaSCEVEWodpnTVjDFyer6Y+TnGJ7A==
-X-Received: by 2002:a05:6512:10d3:: with SMTP id k19mr273890lfg.362.1608239767143;
-        Thu, 17 Dec 2020 13:16:07 -0800 (PST)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id n84sm699385lfd.176.2020.12.17.13.16.03
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Dec 2020 13:16:03 -0800 (PST)
-Received: by mail-lf1-f42.google.com with SMTP id o13so48969lfr.3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 13:16:03 -0800 (PST)
-X-Received: by 2002:ac2:4987:: with SMTP id f7mr248377lfl.41.1608239762945;
- Thu, 17 Dec 2020 13:16:02 -0800 (PST)
+        Thu, 17 Dec 2020 16:20:23 -0500
+X-Originating-IP: 86.202.109.140
+Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 21204E0006;
+        Thu, 17 Dec 2020 21:19:37 +0000 (UTC)
+Date:   Thu, 17 Dec 2020 22:19:37 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        alsa-devel@alsa-project.org, Kiran Patil <kiran.patil@intel.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        David Miller <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Parav Pandit <parav@mellanox.com>
+Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
+Message-ID: <20201217211937.GA3177478@piout.net>
+References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <X8ogtmrm7tOzZo+N@kroah.com>
+ <CAPcyv4iLG7V9JT34La5PYfyM9378acbLnkShx=6pOmpPK7yg3A@mail.gmail.com>
+ <X8usiKhLCU3PGL9J@kroah.com>
 MIME-Version: 1.0
-References: <51a9a594a38ae6e0982e78976cf046fb55b63a8e.1603191669.git.viresh.kumar@linaro.org>
- <20201027085152.GB10053@infradead.org> <CAHk-=whw9t3ZtV8iA2SJWYQS1VOJuS14P_qhj3v5-9PCBmGQww@mail.gmail.com>
- <b3a8e2e8-350f-65af-9707-a6d847352f8e@redhat.com> <CAK8P3a0C5qUguxg446iuvaHm0D+E1tSowxht7g9OJp90GDsAAQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a0C5qUguxg446iuvaHm0D+E1tSowxht7g9OJp90GDsAAQ@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 17 Dec 2020 13:15:46 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiTnbrD0zfOaSkwQX0+OB0LE0EjD=+Zxsy2A36-ye+_6Q@mail.gmail.com>
-Message-ID: <CAHk-=wiTnbrD0zfOaSkwQX0+OB0LE0EjD=+Zxsy2A36-ye+_6Q@mail.gmail.com>
-Subject: Re: [PATCH] dcookies: Make dcookies depend on CONFIG_OPROFILE
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     William Cohen <wcohen@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Anmar Oueja <anmar.oueja@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X8usiKhLCU3PGL9J@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just reviving this thread to see if we could get rid of the OPROFILE
-kernel code this time..
+Hello,
 
-One option is to just start off with adding a
+On 05/12/2020 16:51:36+0100, Greg KH wrote:
+> > To me, the documentation was written, and reviewed, more from the
+> > perspective of "why not open code a custom bus instead". So I can see
+> > after the fact how that is a bit too much theory and justification and
+> > not enough practical application. Before the fact though this was a
+> > bold mechanism to propose and it was not clear that everyone was
+> > grokking the "why" and the tradeoffs.
+> 
+> Understood, I guess I read this from the "of course you should do this,
+> now how do I use it?" point of view.  Which still needs to be addressed
+> I feel.
+> 
+> > I also think it was a bit early to identify consistent design patterns
+> > across the implementations and codify those. I expect this to evolve
+> > convenience macros just like other parts of the driver-core gained
+> > over time. Now that it is in though, another pass through the
+> > documentation to pull in more examples seems warranted.
+> 
+> A real, working, example would be great to have, so that people can know
+> how to use this.  Trying to dig through the sound or IB patches to view
+> how it is being used is not a trivial thing to do, which is why
+> reviewing this took so much work.  Having a simple example test module,
+> that creates a number of devices on a bus, ideally tied into the ktest
+> framework, would be great.  I'll attach below a .c file that I used for
+> some basic local testing to verify some of this working, but it does not
+> implement a aux bus driver, which needs to be also tested.
+> 
 
-        depends on DISABLED
+There is something I don't get from the documentation and it is what is
+this introducing that couldn't already be done using platform drivers
+and platform devices?
 
-on the OPROFILE config option, and see if anybody even notices.
+We already have a bunch of drivers in tree that have to share a state
+and register other drivers from other subsystems for the same device.
+How is the auxiliary bus different?
 
-But honestly, just removing the entirely might be the better thing.
-
-The oprofile config is a bit odd. We have things like
-OPROFILE_NMI_TIMER which defaults to on even if OPROFILE isn't even
-selected. All the _users_ of that seem to be inside oprofile code, so
-it's effectively a no-op without oprofile,
-
-The only reason I noticed was that I looked at the Fedora kernel
-config files, and went "uhhuh, Fedora still enables that", and had a
-quick worry before I noticed that it's just the Kconfig system being
-silly.
-
-              Linus
-
-On Wed, Oct 28, 2020 at 11:01 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Wed, Oct 28, 2020 at 5:34 PM William Cohen <wcohen@redhat.com> wrote:
-> >
-> > On 10/27/20 12:54 PM, Linus Torvalds wrote:
-> > >
-> > > I think the user-space "oprofile" program doesn't actually use the
-> > > legacy kernel code any more, and hasn't for a long time.
-> >
-> > Yes, current OProfile code uses the existing linux perf infrastructure and
-> > doesn't use the old oprofile kernel code.  I have thought about removing
-> > that old oprofile driver code from kernel, but have not submitted patches
-> > for it. I would be fine with eliminating that code from the kernel.
->
-> I notice that arch/ia64/ supports oprofile but not perf. I suppose this just
-> means that ia64 people no longer care enough about profiling to
-> add perf support, but it wouldn't stop us from dropping it, right?
->
-> There is also a stub implementation of oprofile for microblaze
-> and no perf code, not sure if it would make any difference for them.
->
-> Everything else that has oprofile kernel code also supports perf.
->
->        Arnd
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
