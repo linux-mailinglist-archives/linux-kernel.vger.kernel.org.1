@@ -2,179 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA7F82DD9B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 21:13:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D77C02DD9B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 21:13:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730228AbgLQUMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 15:12:20 -0500
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:55639 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728208AbgLQUMT (ORCPT
+        id S1728176AbgLQUNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 15:13:01 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:48968 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725930AbgLQUNB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 15:12:19 -0500
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201217201127euoutp0275dbebf5288d7b555edea522d427699d~RmgTFSw9Y0255602556euoutp025;
-        Thu, 17 Dec 2020 20:11:27 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201217201127euoutp0275dbebf5288d7b555edea522d427699d~RmgTFSw9Y0255602556euoutp025
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1608235887;
-        bh=oLVaYH5sGYHTpc7LtynFuW/NM4L7YplTU1DshzGd7+g=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m4e/1cdMXTM19oPuRsdlocelz9nipoSI42VcA4uPhAOX22ZzV5pk4+e9cVStGCj8F
-         g8/coWm43I1ve2/kg/qcB4roRSAAyLDsJp05dLqE2CbyrwjT0pVj+rCehDiO0hLX8c
-         6gxfhhQuRDJVZkF7TL+ice2vjPFMBADMy9x7SrbY=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20201217201121eucas1p239445214fde7606fe72772cfa8e1736b~RmgOMC1w82757427574eucas1p2M;
-        Thu, 17 Dec 2020 20:11:21 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 27.11.27958.96BBBDF5; Thu, 17
-        Dec 2020 20:11:21 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20201217201121eucas1p1147efa18e8ae36db188cae200bc21e4d~RmgNVKap53222332223eucas1p1x;
-        Thu, 17 Dec 2020 20:11:21 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201217201121eusmtrp19a048490110a66b3cdbf80fb8a5bf0de~RmgNUX7ww1667416674eusmtrp1d;
-        Thu, 17 Dec 2020 20:11:21 +0000 (GMT)
-X-AuditID: cbfec7f2-efdff70000006d36-81-5fdbbb693de2
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 1D.2B.16282.86BBBDF5; Thu, 17
-        Dec 2020 20:11:20 +0000 (GMT)
-Received: from localhost (unknown [106.120.51.46]) by eusmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20201217201120eusmtip28c607a2c357b105d9e281aa2962dfe45~RmgNHEn3j2581525815eusmtip2N;
-        Thu, 17 Dec 2020 20:11:20 +0000 (GMT)
-From:   Lukasz Stelmach <l.stelmach@samsung.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>, jim.cromie@gmail.com,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolni?= =?utf-8?Q?erkiewicz?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH v9 3/3] net: ax88796c: ASIX AX88796C SPI Ethernet
- Adapter Driver
-Date:   Thu, 17 Dec 2020 21:11:10 +0100
-In-Reply-To: <20201217110851.4a059426@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        (Jakub Kicinski's message of "Thu, 17 Dec 2020 11:08:51 -0800")
-Message-ID: <dleftjk0tg6vmp.fsf%l.stelmach@samsung.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 17 Dec 2020 15:13:01 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BHK1g8w006408
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 12:12:20 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=VllgsmBXuK9Oj/Ef6T/0gFnqNS7dtriJ2KUq0haRwMg=;
+ b=XccuLc79IsMi9O7OyY9PPfhmcCwHElOQHTUx22axJOY1Eyo5epVE9cTA8pgdqBDrNyPN
+ 0yaIQ0eV/FGDuqXO3kxJMHVo6GexVHByf/ooDvhWSBqg8kUPEr8Inwxu4S/9/DX+I6+F
+ xZAdiL424Wk0F8E8RAF05jmmjWEZe1yLp04= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 35f9ykjatq-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 12:12:20 -0800
+Received: from intmgw004.06.prn3.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 17 Dec 2020 12:12:19 -0800
+Received: by devvm3388.prn0.facebook.com (Postfix, from userid 111017)
+        id 2E3C320F477F; Thu, 17 Dec 2020 12:12:15 -0800 (PST)
+From:   Roman Gushchin <guro@fb.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>, <linux-mm@kvack.org>
+CC:     Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Rik van Riel <riel@surriel.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>,
+        Roman Gushchin <guro@fb.com>
+Subject: [PATCH v2 1/2] mm: cma: allocate cma areas bottom-up
+Date:   Thu, 17 Dec 2020 12:12:13 -0800
+Message-ID: <20201217201214.3414100-1-guro@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-="; micalg="pgp-sha256";
-        protocol="application/pgp-signature"
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrIKsWRmVeSWpSXmKPExsWy7djPc7qZu2/HGyx+aGBx/u4hZouNM9az
-        Wsw538JiMf/IOVaLRe9nsFpce3uH1aL/8Wtmi/PnN7BbXNjWx2qx6fE1VovLu+awWcw4v4/J
-        4tDUvYwWa4/cZbc4tkDMonXvEXYHAY/L1y4ye2xZeZPJY+esu+wem1Z1snlsXlLvsXPHZyaP
-        vi2rGD0+b5IL4IjisklJzcksSy3St0vgynj85QpTwSmBitW951gaGKfydTFyckgImEi07/zE
-        BGILCaxglDh+PqmLkQvI/sIo8XjuB2YI5zOjxPrZLWwwHc+b2tkgEssZJTafmAxV9ZxRYtWX
-        J4xdjBwcbAJ6EmvXRoA0iAioSLRsnskCUsMscJFFYn33ZxaQhLBAmMThRU/AbBYBVYk9R+ax
-        ghRxCkxjlLi1+S5YglfAXOLfqp1gtqiApcSWF/fZIeKCEidnQjQzC+RKzDz/hhGkWULgHKfE
-        /8cP2CFudZF4eXAZlC0s8er4FihbRuL05B4WkEslBOolJk8yg+jtYZTYNucHC0SNtcSdc7+g
-        fnaUaD/9lxGink/ixltBiL18EpO2TWeGCPNKdLQJQVSrSKzr3wM1RUqi99UKRgjbQ+JQ1y1E
-        yK3umMk0gVFhFpJ3ZiF5ZxbQWGYBTYn1u/QhwtoSyxa+ZoawbSXWrXvPsoCRdRWjeGppcW56
-        arFhXmq5XnFibnFpXrpecn7uJkZgSjz97/inHYxzX33UO8TIxMF4iFEFqPnRhtUXGKVY8vLz
-        UpVEeOPib8cL8aYkVlalFuXHF5XmpBYfYpTmYFES5101e028kEB6YklqdmpqQWoRTJaJg1Oq
-        gcmty2oCi/+ZAwkvZq55xOzPevXkwbyTLXwnWl5JX405ZD7H4V7YvR63c9z7n+n3pao7y/nM
-        2avxRUCc+wfv/KNvs4JW/Thm+a00/jX7An3LrRFTI6VEjPSnrq4IP3ZeqezCth3G93jt9Xlv
-        LO2SbdywK2OpY82Kd98KWB0eat25ldNs/FGoQL23wzhAV8Y91tAl0DGJI763NcF7wuNleUv7
-        X1x4lWi6V2HvCa35h6wq2oQ2SH113jNp9XUhr39/bmb3lc7KmSLycers86Ir/C7wc0j//O5f
-        Y3VEoHwNN2+u7eJJO9dO12T+4XyG0bxwJ/+Wa1sNc/x2m90KDHSOKrlwUcJoXcTNEJepVku+
-        WiuxFGckGmoxFxUnAgAsPDKTBAQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrBIsWRmVeSWpSXmKPExsVy+t/xe7oZu2/HG3yZbGVx/u4hZouNM9az
-        Wsw538JiMf/IOVaLRe9nsFpce3uH1aL/8Wtmi/PnN7BbXNjWx2qx6fE1VovLu+awWcw4v4/J
-        4tDUvYwWa4/cZbc4tkDMonXvEXYHAY/L1y4ye2xZeZPJY+esu+wem1Z1snlsXlLvsXPHZyaP
-        vi2rGD0+b5IL4IjSsynKLy1JVcjILy6xVYo2tDDSM7S00DMysdQzNDaPtTIyVdK3s0lJzcks
-        Sy3St0vQy3j85QpTwSmBitW951gaGKfydTFyckgImEg8b2pnA7GFBJYySuy5q9TFyAEUl5JY
-        OTcdokRY4s+1LqASLqCSp4wSj1efYgOpYRPQk1i7NgKkRkRARaJl80wWkBpmgSssEqs+trCC
-        JIQFQiTeL53HCDE/WKJx7SGwOIuAqsSeI/NYQRo4BaYxStzafJcFJMErYC7xb9VOMFtUwFJi
-        y4v77BBxQYmTM5+AxZkFsiW+rn7OPIFRYBaS1CwkqVlA9zELaEqs36UPEdaWWLbwNTOEbSux
-        bt17lgWMrKsYRVJLi3PTc4uN9IoTc4tL89L1kvNzNzECo3nbsZ9bdjCufPVR7xAjEwfjIUYV
-        oM5HG1ZfYJRiycvPS1US4Y2Lvx0vxJuSWFmVWpQfX1Sak1p8iNEU6LeJzFKiyfnANJNXEm9o
-        ZmBqaGJmaWBqaWasJM5rcmRNvJBAemJJanZqakFqEUwfEwenVANT6zKm5IDNXkd3M3EHTlLd
-        b7zHI3KF9rX9HNs3u2cVOc86pFT/yvvqpb8CqgyV6829xPIl7IpV+gKu8t4QvM969/76P3ev
-        C22/dXLP2/jQiutnHbVW5vpx/rdfe/3a8z0ekkzXq5Oitz0Ns3mftOCc9rtgyehlj66LcLj/
-        FdrkxMntc3Rr5k8TuY1cP0v/6q3w3tLmkC924d3zOU7Hrqdv3OZ9TH92/Ve+g6emx/q+5fY+
-        /Sf6N8sL5k/p8mk21hbKBibTeedlSoocOPtZvOnY64kmm99cYS99xVvlW3Tv8EVP/xMN6cE3
-        cxYZXH77YOYcvaqsXSvmnys3ecTj2DnZ4+QScecpqxQuCUyuZo2IVmIpzkg01GIuKk4EAHta
-        tGF7AwAA
-X-CMS-MailID: 20201217201121eucas1p1147efa18e8ae36db188cae200bc21e4d
-X-Msg-Generator: CA
-X-RootMTR: 20201217201121eucas1p1147efa18e8ae36db188cae200bc21e4d
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201217201121eucas1p1147efa18e8ae36db188cae200bc21e4d
-References: <20201217110851.4a059426@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CGME20201217201121eucas1p1147efa18e8ae36db188cae200bc21e4d@eucas1p1.samsung.com>
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-17_14:2020-12-17,2020-12-17 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015 bulkscore=0
+ mlxlogscore=999 impostorscore=0 mlxscore=0 adultscore=0 phishscore=0
+ suspectscore=0 spamscore=0 priorityscore=1501 lowpriorityscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012170134
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Currently cma areas without a fixed base are allocated close to the
+end of the node. This placement is sub-optimal because of compaction:
+it brings pages into the cma area. In particular, it can bring in hot
+executable pages, even if there is a plenty of free memory on the
+machine. This results in cma allocation failures.
 
-It was <2020-12-17 czw 11:08>, when Jakub Kicinski wrote:
-> On Thu, 17 Dec 2020 12:53:30 +0100 =C5=81ukasz Stelmach wrote:
->> ASIX AX88796[1] is a versatile ethernet adapter chip, that can be
->> connected to a CPU with a 8/16-bit bus or with an SPI. This driver
->> supports SPI connection.
->>=20
->> The driver has been ported from the vendor kernel for ARTIK5[2]
->> boards. Several changes were made to adapt it to the current kernel
->> which include:
->>=20
->> + updated DT configuration,
->> + clock configuration moved to DT,
->> + new timer, ethtool and gpio APIs,
->> + dev_* instead of pr_* and custom printk() wrappers,
->> + removed awkward vendor power managemtn.
->> + introduced ethtool tunable to control SPI compression
->>=20
+Instead let's place cma areas close to the beginning of a node.
+In this case the compaction will help to free cma areas, resulting
+in better cma allocation success rates.
 
-[...]
+If there is enough memory let's try to allocate bottom-up starting
+with 4GB to exclude any possible interference with DMA32. On smaller
+machines or in a case of a failure, stick with the old behavior.
 
->>=20
->> The other ax88796 driver is for NE2000 compatible AX88796L chip. These
->> chips are not compatible. Hence, two separate drivers are required.
->>=20
->> Signed-off-by: =C5=81ukasz Stelmach <l.stelmach@samsung.com>
->> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
->
-> drivers/net/ethernet/asix/ax88796c_main.c: In function =E2=80=98ax88796c_=
-tx_fixup=E2=80=99:
-> drivers/net/ethernet/asix/ax88796c_main.c:248:6: warning: variable =E2=80=
-=98tol_len=E2=80=99 set but not used [-Wunused-but-set-variable]
->   248 |  u16 tol_len, pkt_len;
->       |      ^~~~~~~
+16GB vm, 2GB cma area:
+With this patch:
+[    0.000000] Command line: root=3D/dev/vda3 rootflags=3Dsubvol=3D/root =
+systemd.unified_cgroup_hierarchy=3D1 enforcing=3D0 console=3DttyS0,115200=
+ hugetlb_cma=3D2G
+[    0.002928] hugetlb_cma: reserve 2048 MiB, up to 2048 MiB per node
+[    0.002930] cma: Reserved 2048 MiB at 0x0000000100000000
+[    0.002931] hugetlb_cma: reserved 2048 MiB on node 0
 
-Done. Thanks.
+Without this patch:
+[    0.000000] Command line: root=3D/dev/vda3 rootflags=3Dsubvol=3D/root =
+systemd.unified_cgroup_hierarchy=3D1 enforcing=3D0 console=3DttyS0,115200=
+ hugetlb_cma=3D2G
+[    0.002930] hugetlb_cma: reserve 2048 MiB, up to 2048 MiB per node
+[    0.002933] cma: Reserved 2048 MiB at 0x00000003c0000000
+[    0.002934] hugetlb_cma: reserved 2048 MiB on node 0
 
-=2D-=20
-=C5=81ukasz Stelmach
-Samsung R&D Institute Poland
-Samsung Electronics
+v2:
+  - switched to memblock_set_bottom_up(true), by Mike
+  - start with 4GB, by Mike
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+Signed-off-by: Roman Gushchin <guro@fb.com>
+---
+ mm/cma.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/mm/cma.c b/mm/cma.c
+index 7f415d7cda9f..21fd40c092f0 100644
+--- a/mm/cma.c
++++ b/mm/cma.c
+@@ -337,6 +337,22 @@ int __init cma_declare_contiguous_nid(phys_addr_t ba=
+se,
+ 			limit =3D highmem_start;
+ 		}
+=20
++		/*
++		 * If there is enough memory, try a bottom-up allocation first.
++		 * It will place the new cma area close to the start of the node
++		 * and guarantee that the compaction is moving pages out of the
++		 * cma area and not into it.
++		 * Avoid using first 4GB to not interfere with constrained zones
++		 * like DMA/DMA32.
++		 */
++		if (!memblock_bottom_up() &&
++		    memblock_end >=3D SZ_4G + size) {
++			memblock_set_bottom_up(true);
++			addr =3D memblock_alloc_range_nid(size, alignment, SZ_4G,
++							limit, nid, true);
++			memblock_set_bottom_up(false);
++		}
++
+ 		if (!addr) {
+ 			addr =3D memblock_alloc_range_nid(size, alignment, base,
+ 					limit, nid, true);
+--=20
+2.26.2
 
-iQEzBAEBCAAdFiEEXpuyqjq9kGEVr9UQsK4enJilgBAFAl/bu14ACgkQsK4enJil
-gBDPsQf8CSIAfSlfu6USnUeTjFPC7ww9FQ4bu869KBTSUDJHn4bzc+dJuyfb1yMq
-34k2THjWDp8sWNDCoF4A0fWZbrBIwsg1vPFA+ave1KHxCe5mp1J4VzctqN1sIWmU
-woW98UNIfgWdmS/Cb5TRh0In94a3yY/YypPICSPBbs6zuWIIrCHEJKUt1LEzgTx7
-Q6nY0UeCs4Skpbaki/xDo3+uB6bXoRT/kQvnroy3DMCn8qBaX9N961BZUyzYYEg1
-Upja6i+Md4k6UCCunktMtnlHfloXwO3TtVGpisq9eb0Ey/1+pJzD8wNKTOggLBsB
-UhmtvRkvloftPEQSgBlGicJ4kNzBfg==
-=Toi6
------END PGP SIGNATURE-----
---=-=-=--
