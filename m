@@ -2,111 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E29932DD66C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 18:39:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7231E2DD672
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 18:43:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729765AbgLQRiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 12:38:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37268 "EHLO
+        id S1728707AbgLQRmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 12:42:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729667AbgLQRiL (ORCPT
+        with ESMTP id S1727388AbgLQRmH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 12:38:11 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98ED9C061794
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 09:37:30 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id n26so39057291eju.6
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 09:37:30 -0800 (PST)
+        Thu, 17 Dec 2020 12:42:07 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76F70C061794
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 09:41:26 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id y19so59477977lfa.13
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 09:41:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fLF6P+O62fQPSTng8hy4I8KBrSJzO2q6Xzt7+Jwjbu0=;
-        b=Q/35/lbhLWd7jUP9iWj7T78K4JA+OJ44nAbfF31fVN6QvO0ng+xEqQQgcKVl0BFHpi
-         Z076P1aqJldE8WHi0zDHBW3AyHaJI3WnASBCuK3UuTaprL8pmN75uX2V2SuE65pJcVhF
-         LkrJeVoLrk+6qdMsXWATBpuoAu6zAo7Xl0wCs=
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=6YbW1AUww5eVgZRJjTNmifbnLL0mORxjDiclOrS8RJc=;
+        b=aC+kRGYQygogcF3OERvuCopr8U9Pgmr7vdDsOnbur9rZgxQGYFynJKM+V0aKkVMwAv
+         1UgNHmxzW3/7Qdj/j9GtVsV9WvejJSDFiY5Omglg270jp6A8HFZUbqrMTzIfCxIV3yIf
+         KVJ4grN7AQ1c7qq9SHwx70wRYaModjzuDDlbZp4gpqzoINE5mH1BjNb7R07DhMg4C/Pv
+         Gx5HXfx9nR2UcYPAfS/exhv6bNwxKJW4m43U72vD+jQNaQr823ZV+4bbbxm2Vu8bwthe
+         8qDfSnKYhsKOvwYLH1aVqt42FQ71Vcwumt3syVB9vg8ergoqPWdxv90afbf39a4Ej1WU
+         I03g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fLF6P+O62fQPSTng8hy4I8KBrSJzO2q6Xzt7+Jwjbu0=;
-        b=FkdOvyGIf0lc+98UEnFpgRzm9jfquRCd8eAbX6BNk5K4f3xOFbqXPGiZcVZOfBS9r1
-         eEAYZ7CMc1vrnhY4rRsWZBWbl0ffi2R4fZPYzxGXi/FWOdJ2Gf7/X2nxJytS34qppLd7
-         X3Sm1Tp53scvBWoy4F+jsTV41IDp3H1Px1WBw+00hYOSRNkRlaK3k0JdrfkGyv2liARU
-         x3/auejjwjCJT0ruC04CuhFjWwROjIns/P/DP126WZtqa20sY2DI4tkNV5FHbmokAUvd
-         2H7CNAf6kYVyKl7YpV/tN53xw5YTMwcSQM7ALiylSFv0ZelhqrkPEkbAOul11JphMVEv
-         vheA==
-X-Gm-Message-State: AOAM530conmCy3nN0Vmw1AJTD7+wcZSz3RUc3J2J75OyzjwgkRTi0A6w
-        3QVQPgSl5WlIZyomZKX7cblXW+KaWEUbossd90J1dw==
-X-Google-Smtp-Source: ABdhPJyiLapDbFryDYgU3FGxGsnjDcJSPA4Y00bhcDs6zSyPtOYvkH6TskhdgNAa8vH9+dJF3a94dkgm9iNC0Vv5t78=
-X-Received: by 2002:a17:906:2707:: with SMTP id z7mr89185ejc.418.1608226649339;
- Thu, 17 Dec 2020 09:37:29 -0800 (PST)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=6YbW1AUww5eVgZRJjTNmifbnLL0mORxjDiclOrS8RJc=;
+        b=EYL2/7x6aCnTI5tQum8OUOvADJc5dhR7oYD+rAU2YSIqmUVIY8z41cJLCaY4lpD42X
+         NUIB0qGRVdQrW63ggZaMOf+51tUitPMMpAhER4TIQlonVQkFBEDITPMoMG24G+GICJEi
+         JTjIQHhHy+64oyoEK+1PsYnDz8gG5HJBIo68FqSvAvAgsU/XeTzZKEdWxF71PhDQh2US
+         YfUxxvEDXxz5sZT9dchKQyVnEBVkCbt3a18rj8oM45iQcJASDuDpr1kNCMuoe7xX56DY
+         XFJJ9306p3bQ4OAxYPJlvQ+28ufAl/PbuMBwAW7NqYxYKsyHdC5Na/RS9IvqAA5TpxKv
+         2wVw==
+X-Gm-Message-State: AOAM530JDkhSrFvCgSHrK+Z6umVvorK0V0BaYlIOTvLvkmI7MCuEsuQE
+        QSdBDxGXL4g/TeuKWlDKbOrzv61u/d6h+zBNU0Q=
+X-Google-Smtp-Source: ABdhPJwjwkddt2xD8miETjp2TEccSCUh9GrUBV/xPiR84YMwGTro6I30VbKYdfpW1MdtQ+sijht6zYJYSif7nL0tstY=
+X-Received: by 2002:a05:6512:6cd:: with SMTP id u13mr11749390lff.288.1608226884928;
+ Thu, 17 Dec 2020 09:41:24 -0800 (PST)
 MIME-Version: 1.0
-References: <20201215235639.31516-1-adrien.grassein@gmail.com> <20201215235639.31516-4-adrien.grassein@gmail.com>
-In-Reply-To: <20201215235639.31516-4-adrien.grassein@gmail.com>
-From:   Jagan Teki <jagan@amarulasolutions.com>
-Date:   Thu, 17 Dec 2020 23:07:18 +0530
-Message-ID: <CAMty3ZAXQ4d92JubVcw_+EDNC0RQCDJGuoz=Budo7R2efpT7nA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/7] regulator: dt-bindings: pf8x00: fix
- nxp,phase-shift doc
-To:     Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Troy Kisky <troy.kisky@boundarydevices.com>
+Received: by 2002:a19:4816:0:0:0:0:0 with HTTP; Thu, 17 Dec 2020 09:41:24
+ -0800 (PST)
+Reply-To: georgemike7031@gmail.com
+From:   george mike <barrister.alrbiah@gmail.com>
+Date:   Thu, 17 Dec 2020 18:41:24 +0100
+Message-ID: <CAAT6sgVDj0uYCZesabhbssgK-z1HNgQoDaPHxrMXkJn_ncC_NQ@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 5:27 AM Adrien Grassein
-<adrien.grassein@gmail.com> wrote:
->
-> nxp,phase-shift is an enum so use enum format to describe it.
-> Minimum and maximum values are also wrong.
->
-> Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
-> ---
->  .../bindings/regulator/nxp,pf8x00-regulator.yaml | 16 ++++------------
->  1 file changed, 4 insertions(+), 12 deletions(-)
->
-> diff --git a/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml b/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
-> index 913532d0532e..1da724c6e2ba 100644
-> --- a/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
-> +++ b/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
-> @@ -60,21 +60,13 @@ properties:
->
->            nxp,phase-shift:
->              $ref: "/schemas/types.yaml#/definitions/uint32"
-> -            minimum: 45
-> -            maximum: 0
-> +            minimum: 0
-> +            maximum: 315
-> +            default: 0
-> +            enum: [ 0, 45, 90, 135, 180, 225, 270, 315 ]
+dzie=C5=84 dobry
 
-On Wed, Dec 16, 2020 at 5:27 AM Adrien Grassein
-<adrien.grassein@gmail.com> wrote:
->
-> pf8x00 module build was not documented.
->
-> Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
-> ---
->  drivers/regulator/Kconfig | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-> index 53fa84f4d1e1..9c6508e99fdd 100644
-> --- a/drivers/regulator/Kconfig
-> +++ b/drivers/regulator/Kconfig
-> @@ -828,6 +828,10 @@ config REGULATOR_PF8X00
->           Say y here to support the regulators found on the NXP
->           PF8100/PF8121A/PF8200 PMIC.
->
-> +         Say M here if you want to support for the regulators found
-> +         on the NXP PF8100/PF8121A/PF8200 PMIC. The module will be named
-> +         "pf8x00-regulator".
+Nazywam si=C4=99 George Mike. Z zawodu jestem prawnikiem. Chc=C4=99 ci zaof=
+erowa=C4=87
+najbli=C5=BCszy krewny mojego klienta. Odziedziczysz sum=C4=99 (8,5 miliona=
+ dolar=C3=B3w)
+dolar=C3=B3w, kt=C3=B3re m=C3=B3j klient zostawi=C5=82 w banku przed =C5=9B=
+mierci=C4=85.
 
-Reviewed-by: Jagan Teki <jagan@amarulasolutions.com>
+M=C3=B3j klient jest obywatelem twojego kraju, kt=C3=B3ry zgin=C4=85=C5=82 =
+wraz z =C5=BCon=C4=85 w
+wypadku samochodowym
+i jedyny syn. B=C4=99d=C4=99 uprawniony do 50% ca=C5=82kowitego funduszu, p=
+odczas gdy
+50% b=C4=99dzie
+By=C4=87 dla ciebie.
+Aby uzyska=C4=87 wi=C4=99cej informacji, skontaktuj si=C4=99 z moim prywatn=
+ym adresem
+e-mail: georgemike7031gmail.com
+
+Z g=C3=B3ry bardzo dzi=C4=99kuj=C4=99,
+Panie George Mike
