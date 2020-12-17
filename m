@@ -2,118 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45AC12DD2E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 15:21:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 601F82DD2E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 15:21:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728552AbgLQOVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 09:21:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36630 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726999AbgLQOVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 09:21:08 -0500
-Date:   Thu, 17 Dec 2020 15:20:23 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608214827;
-        bh=m2pqAub9e3jm+t7rOT5d+cVkmAc4UUU8rn/uGWbiZVI=;
-        h=From:To:Cc:Subject:From;
-        b=Rto5tdOSaelgG9X4QSfEqOo0/LIYdRpE8fXUO1IkUrDmyLyG3vPnHbCHEz+Au3Igf
-         mtDeRaFmpl1iqK3K6eRptN+PCY8Zge9BaYTF/KxNoZLv7TH2eEVp1BmP1J13E2x5gj
-         JOVer9v81ScDUR2drq7qYIQcieyjeiSDnnc9Ub36vgU2cIHLs7Cs/OqGC/NNoEVM3X
-         kwMktDBbVK1j8oU8GPqQRDvrZJ919/8FbkbwDcb+/pjJrUp0aedxVOiXTMCy0osCnr
-         hgOeaJ34vU9A5bH7q/kfOye8QNFI0ujrtBzfvx1KKwD7efg475aWU+5oLveaJV/v+0
-         kJ6mOF48V4hEw==
-From:   Jessica Yu <jeyu@kernel.org>
+        id S1728496AbgLQOU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 09:20:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726999AbgLQOU4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 09:20:56 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C30C0617B0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 06:20:29 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id jx16so38097679ejb.10
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 06:20:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=s2io9byrVSQg39u9kY1sFTMQIOzVrXTXCf/O9WPWFOA=;
+        b=RD62ChU+OJDF7UVtIVsJlfZGn25fGNj6obtVAVtbOfS2rSy0yE6P+pQA9jFQ/hMihx
+         AQFvzcRCMpzHb5H2uFgcBZkSOfB02SaM9rPWUt+ugNEML91QwzkZ440MrnUrlX1dtd6d
+         mACbQBbnpf5r+rUU5+ytGiLypwDX6Mliyj+TU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=s2io9byrVSQg39u9kY1sFTMQIOzVrXTXCf/O9WPWFOA=;
+        b=hBTI0Nt3RJM66H8YhlNpcvKlYoJGF4hA+t0X+nFV9aJgHnDkdR1kQNWjUzGSU4hOlH
+         qruaEzmVSgDXZktcokZPyJG/qPwzHFmZOdmpWjWUiuphuV6r56oq0tV6wSpefFss87v9
+         jRspfdKE7d8jCpXCxWPGQ8s8KvND7oTRlXFlv3SiWJBU+bL89sAtbcCWVLuL+dvyZQvT
+         TpdciY8MkUZzitN5pDFeW/fwOo1rRRvnSm7NNzSmSMSxLSSt4rk/IlsfX9PPzwKLq/0c
+         H/sERG6PkQ+kaOy3REHDBE11bi1l2CPo3t9OmSQJxxzPK2hfoqXU41LN2pJ7wN+iDGHg
+         5goA==
+X-Gm-Message-State: AOAM531sOaQRYD6VLOn/dS/x1i4L6dIikJwaRyrn1qPVb+ZCBPcgX9Am
+        1c+yVpw5/QicPLzZ+JUndQtpZg==
+X-Google-Smtp-Source: ABdhPJwYacqRq/f7MIh1/3pz0PfUQwyDeoMerwcxyS4emF6UV4Lid3Xf+1Hk5tGsH6lIIlmX0qnYXw==
+X-Received: by 2002:a17:906:9345:: with SMTP id p5mr24446195ejw.40.1608214828591;
+        Thu, 17 Dec 2020 06:20:28 -0800 (PST)
+Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
+        by smtp.gmail.com with ESMTPSA id n4sm24486697edt.46.2020.12.17.06.20.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Dec 2020 06:20:27 -0800 (PST)
+Date:   Thu, 17 Dec 2020 15:20:25 +0100
+From:   Miklos Szeredi <miklos@szeredi.hu>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Modules updates for v5.11
-Message-ID: <20201217142020.GA19116@linux-8ccs>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Subject: [GIT PULL] overlayfs update for 5.11
+Message-ID: <20201217142025.GB1236412@miu.piliscsaba.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi Linus,
 
-Please pull below to receive modules updates for the v5.11 merge window.
-A summary can be found in the signed tag.
+Please pull from:
 
-Thank you,
+  git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/vfs.git tags/ovl-update-5.11
 
-Jessica
+ - Allow unprivileged mounting in a user namespace.
+
+   For quite some time the security model of overlayfs has been that
+   operations on underlying layers shall be performed with the privileges
+   of the mounting task.
+
+   This way an unprvileged user cannot gain privileges by the act of
+   mounting an overlayfs instance.  A full audit of all function calls made
+   by the overlayfs code has been performed to see whether they conform to
+   this model, and this branch contains some fixes in this regard.
+
+ - Support running on copied filesystem images by optionally disabling UUID
+   verification.
+
+ - Bug fixes as well as documentation updates.
+
+I was hoping to get feedback from Eric Biederman on the unprivileged
+mounting feature, but even without that I feel quite good about enabling it
+at this point.  It's a trivial patch at the head of this branch, so
+skipping it now or reverting later would also be options.
+
+Thanks,
+Miklos
 
 ---
-The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+Chengguang Xu (1):
+      ovl: fix incorrect extent info in metacopy case
 
-  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+Kevin Locke (2):
+      ovl: warn about orphan metacopy
+      ovl: document lower modification caveats
 
-are available in the Git repository at:
+Miklos Szeredi (12):
+      ovl: doc clarification
+      ovl: expand warning in ovl_d_real()
+      vfs: move cap_convert_nscap() call into vfs_setxattr()
+      vfs: verify source area in vfs_dedupe_file_range_one()
+      ovl: check privs before decoding file handle
+      ovl: make ioctl() safe
+      ovl: simplify file splice
+      ovl: user xattr
+      ovl: do not fail when setting origin xattr
+      ovl: do not fail because of O_NOATIME
+      ovl: do not get metacopy for userxattr
+      ovl: unprivieged mounts
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/jeyu/linux.git/ tags/modules-for-v5.11
+Pavel Tikhomirov (2):
+      ovl: propagate ovl_fs to ovl_decode_real_fh and ovl_encode_real_fh
+      ovl: introduce new "uuid=off" option for inodes index feature
 
-for you to fetch changes up to 38dc717e97153e46375ee21797aa54777e5498f3:
-
-  module: delay kobject uevent until after module init call (2020-12-09 09:42:47 +0100)
-
-----------------------------------------------------------------
-Modules updates for v5.11
-
-Summary of modules changes for the 5.11 merge window:
-
-- Fix a race condition between systemd/udev and the module loader.
-  The module loader was sending a uevent before the module was fully
-  initialized (i.e., before its init function has been called). This means
-  udev can start processing the module uevent before the module has
-  finished initializing, and some udev rules expect that the module has
-  initialized already upon receiving the uevent. This resulted in some
-  systemd mount units failing if udev processes the event faster than the
-  module can finish init. This is fixed by delaying the uevent until after
-  the module has called its init routine.
-
-- Make the linker array sections for kernel params and module version
-  attributes more robust by switching to use the alignment of the type in
-  question. Namely, linker section arrays will be constructed using the
-  alignment required by the struct (using __alignof__()) as opposed to a
-  specific value such as sizeof(void *) or sizeof(long). This is less
-  likely to cause breakages should the size of the type ever change (from
-  Johan Hovold)
-
-- Fix module state inconsistency by setting it back to GOING when a module
-  fails to load and is on its way out (from Miroslav Benes)
-
-- Some comment and code cleanups (from Sergey Shtylyov)
-
-Signed-off-by: Jessica Yu <jeyu@kernel.org>
-
-----------------------------------------------------------------
-Jessica Yu (1):
-      module: delay kobject uevent until after module init call
-
-Johan Hovold (7):
-      module: drop version-attribute alignment
-      module: simplify version-attribute handling
-      params: drop redundant "unused" attributes
-      params: use type alignment for kernel parameters
-      params: clean up module-param macros
-      init: use type alignment for kernel parameters
-      module: drop semicolon from version macro
-
-Miroslav Benes (1):
-      module: set MODULE_STATE_GOING state when a module fails to load
-
-Sergey Shtylyov (6):
-      module: merge repetitive strings in module_sig_check()
-      module: avoid *goto*s in module_sig_check()
-      module: only handle errors with the *switch* statement in module_sig_check()
-      module: fix up 'kernel-doc' comments
-      module: add more 'kernel-doc' comments
-      module: fix comment style
-
- include/linux/init.h        |   2 +-
- include/linux/module.h      |  28 +++----
- include/linux/moduleparam.h |  12 +--
- kernel/module.c             | 200 ++++++++++++++++++++++++++------------------
- kernel/params.c             |  10 +--
- 5 files changed, 142 insertions(+), 110 deletions(-)
+---
+ Documentation/filesystems/overlayfs.rst |  36 ++++++--
+ fs/overlayfs/copy_up.c                  |  28 ++++---
+ fs/overlayfs/export.c                   |  10 ++-
+ fs/overlayfs/file.c                     | 144 +++++---------------------------
+ fs/overlayfs/inode.c                    |  14 +++-
+ fs/overlayfs/namei.c                    |  28 ++++---
+ fs/overlayfs/overlayfs.h                |  22 +++--
+ fs/overlayfs/ovl_entry.h                |   2 +
+ fs/overlayfs/super.c                    |  95 ++++++++++++++++++---
+ fs/overlayfs/util.c                     |  18 +++-
+ fs/remap_range.c                        |  10 ++-
+ fs/xattr.c                              |  17 ++--
+ include/linux/capability.h              |   2 +-
+ security/commoncap.c                    |   3 +-
+ 14 files changed, 233 insertions(+), 196 deletions(-)
