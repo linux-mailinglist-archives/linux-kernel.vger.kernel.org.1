@@ -2,132 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D1C72DD83A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:25:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8FC32DD83D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:25:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730282AbgLQSXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 13:23:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730167AbgLQSXe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 13:23:34 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40528C0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 10:22:54 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id o13so36764538lfr.3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 10:22:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NUD7gJA5lhMFnM/41VDmQs/Ea6kW133DDlTS4YuhSr8=;
-        b=duD8Q/ZhTOv/pTgvO2qH536A7bKcX3BMXIjJ4srwYUsZSpZ4bqcbcbv/pghu/tC6JF
-         hS0A4KbA1VabvHN6uhoxqA2JLFAQ/9KX8ZtEgLxxTP4lPd9ThjRBFuu5jfFgbJyP7oiW
-         U17LTowLNvNoL2glQph+EwCFBlZLhqkjc5dVc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NUD7gJA5lhMFnM/41VDmQs/Ea6kW133DDlTS4YuhSr8=;
-        b=Q5Tis5gGXr/ztrjstz612qs2lCf0YkCJ6C0RwReZ0WKymCKs0dAY/gnt0kpZnP5tJo
-         26AhlGbtagcpW2EBfmOW3TpdZrF7gA/t4mSNenayrqhsA0MmtV5ujqm2hKKxrseNxCOl
-         2p1E1uw3UTDYSq4xvTZ10Z6bPBRnjuvoMm/7Xg+ERbMgOMhOn63EI9nnFyrueZzvjZ1h
-         1YZVl3Vt+ld9V9gJC8HMB6e5Di9nWBNR7gqOS/j4o6H9P41T5i5jcU5t99zTqmWPzWWu
-         lZhoiVP+9E7wBMt84y8yhi1nei8cmCfXIXuw/4U4YHjD4Rx0gYONnMsSLynWp76VfMJ7
-         U2Pw==
-X-Gm-Message-State: AOAM530S66YnJsxWBd84S8UISqDYmuRNAB1dUe82VsU+u2MUoK3/RF0p
-        QykRe9DVuyiYL0cY7IkNU6VECGypyVuEXw==
-X-Google-Smtp-Source: ABdhPJznIUn1uB7EixM2WIkQ9kEtnee3ddT1x3vViJe6HX1abFa/ca7V+3XqjSihpsQVP9E/0yRqmw==
-X-Received: by 2002:ac2:46f4:: with SMTP id q20mr17036lfo.316.1608229372026;
-        Thu, 17 Dec 2020 10:22:52 -0800 (PST)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id a15sm664146lfr.68.2020.12.17.10.22.50
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Dec 2020 10:22:50 -0800 (PST)
-Received: by mail-lf1-f42.google.com with SMTP id o13so36764128lfr.3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 10:22:50 -0800 (PST)
-X-Received: by 2002:a05:6512:338f:: with SMTP id h15mr21990lfg.40.1608229369683;
- Thu, 17 Dec 2020 10:22:49 -0800 (PST)
+        id S1730366AbgLQSYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 13:24:06 -0500
+Received: from mail-eopbgr60130.outbound.protection.outlook.com ([40.107.6.130]:51523
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729602AbgLQSYF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 13:24:05 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CvsQ7+fkU3tPsGM8N2ght9by4AtoZ4a/jD0KU5NLo3tFjq/5GNDcnIAZ8Ov62h/Xx5wSCrH9sOTP5m2w4ROitKyom+JKREBtYP1RIhMBSVem8r68XaNnj/0ARrKBcpwabFGidJXp6bUa5owp7P+Pk04NuRHwN0g+0h+zx4vNhXbm4NBg06NNTRSaH9fmLCnDOyvk+wIserfoG8FysjEkaQTPm3XsUYd2rfGQxfl44inZbCzBaDmJZcupXMXPBrI0sjfrCjkjVJC6LyWX0XswCTGjxMx4gKZdzp6x4do4B3Xg2PhLUhbu9hA1LVmYYuVUCgciEP89YSaM/hKjCovvCg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QnwWRB7iQfyQHD4zn47t3ou6ziru4ZCqeSJU4Snd6uQ=;
+ b=fVvAq8TJ3F6OJ5DZsM6tgYhuos63jHQPH5jVq3ikXJ9pAHVpQh3hAbuIVAEQqxsWXEk14bQWKgOygK79cziuz4MAdjim7e8ZJ5Z6mGd8soDMjm6PzxwF7aUHy/qcqie0hF5rQhgoqwGeWuSV9sEBZ+ZeyrDNMJ0yPHPxaxy4z6K3CxxHnzVOV4EAigLdS0mzK0IruscAjU3U40Fw2m5KuQYyAjyNNMbkQXIBa5ZbW3bxGBXZG96z9G6Hh8cj/XkgiPG2zzLzKaBSlKki8LNeWcn2cgbEz6m+mTlHCVV8vDrvX8/QsdxiXH22/Jd8rimEmQaZSG/Es0bQXLsGvs0JkA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
+ dkim=pass header.d=prevas.dk; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QnwWRB7iQfyQHD4zn47t3ou6ziru4ZCqeSJU4Snd6uQ=;
+ b=Psndl6Pn2rJpstW2ejkQoAmdrUfvU+tNOGQHQBiPDrPfSpTiw1gcNd/9WiwgGmgui5Vd1ME7eo6wOvXFuGJqcuVsQow+FkHDFA8JSR2tZdt5b+cYDahd+OUSkIt+G4iJfmyI3o+2bXSse2y1/tdxoRZNG03+f60YrjwIWne9LKw=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=prevas.dk;
+Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:3f::10)
+ by AM0PR10MB2356.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:e4::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.15; Thu, 17 Dec
+ 2020 18:23:16 +0000
+Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::9068:c899:48f:a8e3]) by AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::9068:c899:48f:a8e3%6]) with mapi id 15.20.3654.025; Thu, 17 Dec 2020
+ 18:23:16 +0000
+Subject: Re: [PATCH v2 1/3] dt-bindings: rtc: add reset-source property
+To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
+        <linux-rtc@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Qiang Zhao <qiang.zhao@nxp.com>,
+        Bruno Thomsen <bruno.thomsen@gmail.com>
+References: <20201204092752.GE74177@piout.net>
+ <20201211215611.24392-1-rasmus.villemoes@prevas.dk>
+ <20201211215611.24392-2-rasmus.villemoes@prevas.dk>
+ <CAL_JsqJ-5gwycTRQCdX=ZsefEJ=F1GyTjjDW6QB1PBynibFzLg@mail.gmail.com>
+ <b3c05d29-3ed6-d5f5-d1dd-0ddec1f89276@prevas.dk>
+ <CAL_Jsq+HeeFUR1Yv37X4OnkEPvSiAc2B86=Nshxz7tmvpKk+zw@mail.gmail.com>
+ <20201217181209.sibyhlfvlpjaewrv@pengutronix.de>
+From:   Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Message-ID: <519d8939-6d26-304b-7cd8-a5de6b6f168a@prevas.dk>
+Date:   Thu, 17 Dec 2020 19:23:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20201217181209.sibyhlfvlpjaewrv@pengutronix.de>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [5.186.115.188]
+X-ClientProxiedBy: AM6P195CA0080.EURP195.PROD.OUTLOOK.COM
+ (2603:10a6:209:86::21) To AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:3f::10)
 MIME-Version: 1.0
-References: <20201209163950.8494-2-will@kernel.org> <CAHk-=wgos=vgteG52=J=rVSeq6-Y2g2+Kn1=xV=wYjVzM6O9UQ@mail.gmail.com>
- <20201209184049.GA8778@willie-the-truck> <CAHk-=wgVqGh402dxfhR=bx2QSH=+4kq9doarNmD77baqDKdiUg@mail.gmail.com>
- <20201210150828.4b7pg5lx666r7l2u@black.fi.intel.com> <CAHk-=wiU8ktvak2hCj2TWJ6wMSwVsUSvi5Bjf4i1JGvpGmyUZw@mail.gmail.com>
- <20201214160724.ewhjqoi32chheone@box> <CAHk-=wi80Qp6nZC0yyewhnqvrmPx2h_yWvfq4A25ONb7z9BywQ@mail.gmail.com>
- <20201216170703.o5lpsnjfmoj7f3ml@box> <CAHk-=wiVRMADHC0qjTFAVx2Pp0DN-fT-VPC10boDdX0O4=h01w@mail.gmail.com>
- <20201217105409.2gacwgg7rco2ft3m@box>
-In-Reply-To: <20201217105409.2gacwgg7rco2ft3m@box>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 17 Dec 2020 10:22:33 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiyPTnQ9E1dT9LJtNxeVmLaykursk_MSecUqFjSb3gwAw@mail.gmail.com>
-Message-ID: <CAHk-=wiyPTnQ9E1dT9LJtNxeVmLaykursk_MSecUqFjSb3gwAw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mm: Allow architectures to request 'old' entries when prefaulting
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.149] (5.186.115.188) by AM6P195CA0080.EURP195.PROD.OUTLOOK.COM (2603:10a6:209:86::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Thu, 17 Dec 2020 18:23:15 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 72233001-1e70-4985-2e3e-08d8a2b8d269
+X-MS-TrafficTypeDiagnostic: AM0PR10MB2356:
+X-Microsoft-Antispam-PRVS: <AM0PR10MB2356072EA8DB0C4C09D8D33E93C40@AM0PR10MB2356.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hRJxJ4NYdCBdSMzQ59lzo55DvAv2HFx9KyPej9EWrw40ijAmDKVO/JhYkGFakD70+zQnfSisqWivYZ4uFr9bPL3F8xzqagwielQi9Kd6aYYl4icZBa6PNcKELWeWKuHTaTchdFRbWLGJmoXPb2S7SkqDXNFSALOUc3Ohp6jY+d5ov6SeTsfPp1DbNoS5maY3aXu3Ak2s4uK+WCQdxRs/C9sFxykxLJAfNpGduIknzD8kqRBcB1zrCUMNLDjMAs+0M1oBc6rUCYyfwmUtSzBn9TkhOh3Z2YUIy8TFzRbAe83pQNy/+Ix14XxNXSvVRxbbJsiPFiDg8pMUQ1dOL3bIVUFEUncWKOrAmHa5cOKF9HiKggw2DjEUCBYk7kPdxS9PxSJdxdoiKGE+5grLD6PElRZhZejIiRoAHMYGBct5ZoE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(39830400003)(376002)(346002)(366004)(136003)(396003)(31686004)(316002)(6486002)(83380400001)(66476007)(8936002)(44832011)(2906002)(86362001)(66946007)(956004)(4326008)(8976002)(5660300002)(16526019)(31696002)(16576012)(66556008)(478600001)(2616005)(66574015)(26005)(186003)(52116002)(8676002)(110136005)(53546011)(36756003)(54906003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?Windows-1252?Q?I4MESZKjXhiJwNeCuUqCRYsXlBfdE3BDstX1xTJOwDNS92RlUgL4H97N?=
+ =?Windows-1252?Q?ptG1VNF//CBFyWPDpouC+WAgWp4VrLsmes564I+Afg59NgOGSKDQnBrP?=
+ =?Windows-1252?Q?DKaDFbCDHxVOnz6BL+0gd4EMrgDAW66973g9EfxSw4EvyM4ANMkMa5Zp?=
+ =?Windows-1252?Q?fBqnNoeKXadfiYpUmaHoBUJU3Apc/V1NNQNOY7X6xscQNp8H07UEX+3O?=
+ =?Windows-1252?Q?0a9lV1i+CZ7fbrsD6DEf4RkSnKaBFsXTZOZKW89MKR39Y8MW9RIDB/lh?=
+ =?Windows-1252?Q?u4Ut1mQZj7kCozCYfXIFmuTLH+iTzcwZd4yC+qVKsAYLNFTr6N6NfWeT?=
+ =?Windows-1252?Q?+cetrRXXmt5LPGyj7/F9OIoBRKAmoC4Q855YgLxzabiFMj15medPVqsG?=
+ =?Windows-1252?Q?El35IiS5ERMZHtscGav5wDSeDUYsJgXOOvVZzT7B2qEUmKFxttSQPWXI?=
+ =?Windows-1252?Q?RRtXtoACC3uXXAd6ztgFF2tZBfFM+NfDN3ZCW3btMIYxDPTCvCd/C1Ae?=
+ =?Windows-1252?Q?d3jQZKJ8dulBraYuwrXpHL5oLDrzgVmjPq3yqGH7CUPkSveCkqE6fZsW?=
+ =?Windows-1252?Q?OaJb0VXQ24cdM8hPWQM1rFQluGVQejElH+ZSGDI0ff6EsiNz+Dgm9Out?=
+ =?Windows-1252?Q?jn17GZ9V5zLPh82JHrVpW+3xeziC/agrthf1onIYU8cVycuA/vAzvr4r?=
+ =?Windows-1252?Q?ojCi56imI3xUMi9GirVpgD4IbP2dhJeIIx7AdEPFRfS/eY8/+hvSBMae?=
+ =?Windows-1252?Q?qtokrisJyr+4z+2lWnpAn/jG+0IvMw9SsSZbBOSDFJZh0r2zf7IwIbN3?=
+ =?Windows-1252?Q?6tJ5vkwfBVz49X2x04BQf0vd53vX3G9fw0Mbl3XwwDA3pgbppfOGCnOL?=
+ =?Windows-1252?Q?w9UaGPA8wxoMuAQ6o+LInxLDw9jgNdxsZU3ppwXNhwAASHolRyRkbxEe?=
+ =?Windows-1252?Q?tetJi69aiuzOo1WC65qkqu4/YF7czta/95A/50q/nMhh/k9C/umnZk/1?=
+ =?Windows-1252?Q?a5bJx1RE7y87OU8RV0Y62PCsiFrkw8gH89QIkXP/3HXPyG92nZavvnkG?=
+ =?Windows-1252?Q?TZ5q5Z3HBF/3lZr6?=
+X-OriginatorOrg: prevas.dk
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Dec 2020 18:23:15.9976
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
+X-MS-Exchange-CrossTenant-Network-Message-Id: 72233001-1e70-4985-2e3e-08d8a2b8d269
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: w6/EqqTVOqT1s1Uy5If28gFBNo3eMbvZ74vtmul78G49QCm+aksZvN57N5jdFK0/CbDJ/LTAojjlqruxirHrvr3U4yRiEUDVOmPda5cUPPY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB2356
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 2:54 AM Kirill A. Shutemov <kirill@shutemov.name> wrote:
->
-> Also if the range doesn't have a mappable page we would setup a page
-> table into the PMD entry. It means we cannot have huge page mapped there
-> later. It may be a bummer: getting the page table out of page table tree
-> requires mmap_write_lock().
->
-> We also take ptl for cold page cache. It may increase ptl contention, but
-> it should be negligible with split-ptl.
+On 17/12/2020 19.12, Uwe Kleine-König wrote:
+> On Thu, Dec 17, 2020 at 10:51:08AM -0600, Rob Herring wrote:
+>> On Fri, Dec 11, 2020 at 5:10 PM Rasmus Villemoes
+>> <rasmus.villemoes@prevas.dk> wrote:
 
-Both good points.
+>> I'm wondering how you solve which wdog to ping when there are multiple
+>> without relying on numbering. I guess 'reset-source' will solve that
+>> even if that's not your current fix. So I guess I'm fine with this.
+> 
+> I guess you'd need some udev magic that ensures that the right watchdog
+> always gets the same number.
 
-I doubt the second one is really noticeable, since if it isn't cached
-you're going to have all the costs of actually getting the page, but
-the first one sounds fairly fundamental.,
+The thing is, my board only has one watchdog, and my userspace opens
+/dev/watchdog (aka /dev/watchdog0). But when a driver suddenly exposes
+another watchdog device [which happens to be non-functional], and that
+just happens (probe order, link order, whatever) to be the first one
+defined, things break.
 
-But I think both issues could be easily fixed by doing that
-"xas_is_value()" and checking for 'head' being non-NULL early.
+Yes, in the general case one would need some udev rules to create
+appropriate symlinks. But when there's only one actual device, and I
+know that, using /dev/watchdog or /dev/watchdog0 is fine.
 
-In fact, maybe that should be done as part of that early setup loop.
-So that early code that is now
+I'll resend cc'ing the dt mailing list, and taking into account the
+stuff already in -next.
 
-+       head = xas_find(&xas, end_pgoff);
-+       if (!head) {
-+               rcu_read_unlock();
-+               return;
-+       }
-+
-+       while (xas_retry(&xas, head))
-+               head = xas_next_entry(&xas, end_pgoff);
+Thanks,
+Rasmus
 
-could/should perhaps be something more along the lines of
-
-+       head = xas_find(&xas, end_pgoff);
-+       for (; ; head = xas_next_entry(&xas, end_pgoff)) {
-+               if (!head) {
-+                       rcu_read_unlock();
-+                       return;
-+               }
-+               if (likely(!xas_retry(&xas, head))
-+                       break;
-+       }
-
-instead. So that if we don't find any cached entries, we won't do
-anything, rather than take locks and then not do anything.
-
-Then that second loop very naturally becomes a "do { } while ()" one.
-
-Hmm?
-
-               Linus
