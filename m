@@ -2,95 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E301D2DD81F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:22:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3202DD821
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:22:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730832AbgLQSQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 13:16:17 -0500
-Received: from smtprelay0215.hostedemail.com ([216.40.44.215]:33476 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727063AbgLQSQQ (ORCPT
+        id S1730489AbgLQSQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 13:16:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730011AbgLQSQq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 13:16:16 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id B896E1804E50E;
-        Thu, 17 Dec 2020 18:15:34 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 10,1,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:334:355:368:369:379:599:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1381:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:5007:6119:7903:10004:10400:10848:11026:11232:11473:11658:11914:12043:12114:12296:12297:12438:12555:12740:12895:13071:13161:13229:13439:13894:14096:14097:14180:14181:14659:14721:21060:21080:21324:21365:21451:21627:21660:21886:21889:30012:30029:30054:30070:30089:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: hot93_45040be27436
-X-Filterd-Recvd-Size: 2933
-Received: from XPS-9350.home (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf15.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 17 Dec 2020 18:15:33 +0000 (UTC)
-Message-ID: <f650d87a5c65e3da44a129297c3254b7da48767c.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: add new warning when lookup_symbol_name()
- is used
-From:   Joe Perches <joe@perches.com>
-To:     Helge Deller <deller@gmx.de>, Andy Whitcroft <apw@canonical.com>,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 17 Dec 2020 10:15:32 -0800
-In-Reply-To: <e0b41739-f72d-be5c-cfaa-39ced0e2ab6f@gmx.de>
-References: <20201217171111.GA8295@ls3530.fritz.box>
-         <816c1571b4132f991089b40a759cf68afcf4af43.camel@perches.com>
-         <e0b41739-f72d-be5c-cfaa-39ced0e2ab6f@gmx.de>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Thu, 17 Dec 2020 13:16:46 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 744F6C061794
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 10:16:06 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id s2so15579878plr.9
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 10:16:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=n7ny5iw2j1Q3lsbSqEJ2a5WFoaKvdtqDb/7iy7kz+xE=;
+        b=ZQZgYK0Y+YMnQ6ftN0OBpFSUepPpcNy86zWIyPfUOQcWdr3ndfXN6wrbZcpmVQCi/p
+         tY9R0qvLH5ayp0PPjafD2cWNNqdQdqfAJkxKJ8Xj5l6hpLgWu+Sb7p8xYFRQdEa7RxgH
+         ZM3PCDwc2Zv4i+2NWif6gUzjpypaHo15YsZDjdwYLg5wOtOR1WVbzXugyGPFqipxCKt8
+         KVDeTTuO42ciIrzZu8zkMmInNpJlkAM1R2Lyma8Gnn0XzeM9VDGteWjXUCTg/u+FJSzY
+         9pvupkwlGX1uNZEPaC3e49QCcJ3Lli00wMgfY77k7Mn+xYlFHhZ+hmaxMqlfj6yxl6Mi
+         ex3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=n7ny5iw2j1Q3lsbSqEJ2a5WFoaKvdtqDb/7iy7kz+xE=;
+        b=hzhyevriWMlWffnfj95uP3dNZifrRqnyE3V0xS0nFHDcfpoIvrhZzSy07uC8Pt5zjy
+         4iHxMUHz2eN/JB15zpx2a4RN43jjU0uXDxXPOYau5qHBbNpAJe3JaBVMfbWjQSciF92A
+         GvmglfDfWm3IyGSI7RE4P1ymfz1u/vObCHKVeDeiW7aHGWtQux0dtr9l7KgR3S/xR72i
+         rNsX+VDm70bU1rzz/EScGqyZOiy0ntrfy8ljwWPfYq/RxW0Qct0qKkFuupb04QgovZij
+         kynpJf0WsO/a4XAPC2nH5ZxV9beQLkyEjh+hyw560iP8ojIv7JzKZ9uUrdph38qOVoVk
+         SfzQ==
+X-Gm-Message-State: AOAM531vVhh+Jx5exWaF+dmLoS65a14HpQi5k5lPeEmbobJanl68mFOv
+        DXdgC5tjk/M2wIzjUh9Ib8ULVkSGt8/NsxdWPMnESw==
+X-Google-Smtp-Source: ABdhPJzBY0I9BHVc4SPprGLbshrbcvUE7SOZADMC1nPg24hjyeHW3NFHXqt8z3hqkeh3/tIZfdQszXiWV3oUYjyjmgU=
+X-Received: by 2002:a17:90b:16cd:: with SMTP id iy13mr427087pjb.182.1608228965614;
+ Thu, 17 Dec 2020 10:16:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201014005320.2233162-1-kaleshsingh@google.com>
+ <20201014005320.2233162-4-kaleshsingh@google.com> <20201217172847.GA89104@roeck-us.net>
+In-Reply-To: <20201217172847.GA89104@roeck-us.net>
+From:   Kalesh Singh <kaleshsingh@google.com>
+Date:   Thu, 17 Dec 2020 13:15:54 -0500
+Message-ID: <CAC_TJvenGcLUnNE2sG4yBfcp_Aw3mg+cXWN2-nRyzj09bznMyQ@mail.gmail.com>
+Subject: Re: [PATCH v4 3/5] mm: Speedup mremap on 1GB or larger regions
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        Minchan Kim <minchan@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        kernel test robot <lkp@intel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Hassan Naveed <hnaveed@wavecomp.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Gavin Shan <gshan@redhat.com>, Mike Rapoport <rppt@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Jia He <justin.he@arm.com>, John Hubbard <jhubbard@nvidia.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Ram Pai <linuxram@us.ibm.com>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Brian Geffon <bgeffon@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        SeongJae Park <sjpark@amazon.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-12-17 at 18:42 +0100, Helge Deller wrote:
-> On 12/17/20 6:27 PM, Joe Perches wrote:
-> > On Thu, 2020-12-17 at 18:11 +0100, Helge Deller wrote:
-> > > In most cases people use lookup_symbol_name() to resolve a kernel symbol
-> > > and then print it via printk().
-> > > 
-> > > In such cases using the %ps, %pS, %pSR or %pB printk formats are easier
-> > > to use and thus should be preferred.
-> > []
-> > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> > []
-> > > @@ -4317,6 +4317,12 @@ sub process {
-> > >  			     "LINUX_VERSION_CODE should be avoided, code should be for the version to which it is merged\n" . $herecurr);
-> > >  		}
-> > > 
-> > > +# avoid lookup_symbol_name()
-> > > +		if ($line =~ /\blookup_symbol_name\b/) {
-> > > +			WARN("PREFER_PRINTK_FORMAT",
-> > > +			     "If possible prefer %ps or %pS printk format string to print symbol name instead of using lookup_symbol_name()\n" . $herecurr);
-> > > +		}
-> > > +
-> > >  # check for uses of printk_ratelimit
-> > >  		if ($line =~ /\bprintk_ratelimit\s*\(/) {
-> > >  			WARN("PRINTK_RATELIMITED",
-> > 
-> > Huh?  nak.
-> > 
-> > lookup_symbol_name is used in the kernel a grand total of 3 times.
-> 
-> Yes, there were much more in the past which got fixed by patches I submitted.
+On Thu, Dec 17, 2020 at 12:28 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On Wed, Oct 14, 2020 at 12:53:08AM +0000, Kalesh Singh wrote:
+> > Android needs to move large memory regions for garbage collection.
+> > The GC requires moving physical pages of multi-gigabyte heap
+> > using mremap. During this move, the application threads have to
+> > be paused for correctness. It is critical to keep this pause as
+> > short as possible to avoid jitters during user interaction.
+> >
+> > Optimize mremap for >=3D 1GB-sized regions by moving at the PUD/PGD
+> > level if the source and destination addresses are PUD-aligned.
+> > For CONFIG_PGTABLE_LEVELS =3D=3D 3, moving at the PUD level in effect m=
+oves
+> > PGD entries, since the PUD entry is =E2=80=9Cfolded back=E2=80=9D onto =
+the PGD entry.
+> > Add HAVE_MOVE_PUD so that architectures where moving at the PUD level
+> > isn't supported/tested can turn this off by not selecting the config.
+> >
+> > Fix build test error from v1 of this series reported by
+> > kernel test robot in [1].
+> >
+> > [1] https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread=
+/CKPGL4FH4NG7TGH2CVYX2UX76L25BTA3/
+> >
+> > Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+>
+> I thought I reported it, but maybe I didn't. This patch causes all
+> 'parisc' qemu emulations to fail. Typical log:
+>
+> Freeing unused kernel memory: 604K
+> Write protected read-only-after-init data: 2k
+> rodata_test: end of .rodata is not page size aligned
+> Run /sbin/init as init process
+> process '/bin/busybox' started with executable stack
+> Failed to execute /sbin/init (error -12)
+>
+> Reverting this patch fixes the problem.
+>
+> Bisect log from linux-next below. The patch (and thus the problem)
+> are now in mainline Linux.
 
-Hi Helge.
+Hi Guenter,
 
-Much more may be a bit of an overstatement.
+Thanks for reporting. We enabled this on x86 and arm64. Investigating
+what the root cause is now.
 
-I found 3 instances of lookup_symbol_name removals in 2 patches.
-
-commit 36dbca148bf8e3b8658982aa2256bdc7ef040256
--		lookup_symbol_name((ulong)pm_power_off, symname);
--		lookup_symbol_name((ulong)pm_power_off, symname);
-commit da88f9b3113620dcd30fc203236aa53d5430ee98
--	if (lookup_symbol_name((unsigned long)sym, symname) < 0)
-
-There's a tension between adding tests and newbies that consider
-checkpatch warnings as dicta that must be followed so there would
-be patches submitted eventually against the existing correct uses.
-
-So thanks, but given the very few existing all correct uses of
-this function and the low probability of new uses I'd prefer not
-to apply this.
-
-
+Kalesh
+>
+> Guenter
+>
+> ---
+> # bad: [7bba37a1591369e2e506d599b8f5d7d0516b2dbc] Add linux-next specific=
+ files for 20201214
+> # good: [0477e92881850d44910a7e94fc2c46f96faa131f] Linux 5.10-rc7
+> git bisect start 'HEAD' 'v5.10-rc7'
+> # good: [fe5c40ab90a1f82ba97294637eaf875cfdd7a05f] Merge remote-tracking =
+branch 'nand/nand/next'
+> git bisect good fe5c40ab90a1f82ba97294637eaf875cfdd7a05f
+> # good: [674a0d6de8bd290671f7dff405205871a70300b3] Merge remote-tracking =
+branch 'spi/for-next'
+> git bisect good 674a0d6de8bd290671f7dff405205871a70300b3
+> # good: [8623dae312f73a2ea3230b1c648d3004cfc224ce] Merge remote-tracking =
+branch 'vfio/next'
+> git bisect good 8623dae312f73a2ea3230b1c648d3004cfc224ce
+> # good: [dd26635f54bcd8e5d4e875a209f82a0423ba9c08] Merge remote-tracking =
+branch 'gpio/for-next'
+> git bisect good dd26635f54bcd8e5d4e875a209f82a0423ba9c08
+> # good: [86e9c9a734889fe437442e0a35eb4c61d319cb47] Merge remote-tracking =
+branch 'memblock/for-next'
+> git bisect good 86e9c9a734889fe437442e0a35eb4c61d319cb47
+> # bad: [3452331fda80b1cb5e121e6718ca6c07264382b2] userfaultfd: add user-m=
+ode only option to unprivileged_userfaultfd sysctl knob
+> git bisect bad 3452331fda80b1cb5e121e6718ca6c07264382b2
+> # bad: [19f468d54fcffc3f98b71e3e12ff23726767d953] mremap: don't allow MRE=
+MAP_DONTUNMAP on special_mappings and aio
+> git bisect bad 19f468d54fcffc3f98b71e3e12ff23726767d953
+> # good: [d89f3ababcac54493a4cb0582c61eb5f426b44e3] mm: remove pagevec_loo=
+kup_range_nr_tag()
+> git bisect good d89f3ababcac54493a4cb0582c61eb5f426b44e3
+> # good: [eba8373dcb40d30952f31d5fc0cff56b78f46273] mm/mlock: remove __mun=
+lock_isolate_lru_page()
+> git bisect good eba8373dcb40d30952f31d5fc0cff56b78f46273
+> # good: [8831d3f3564beba0f3f1b5291c88b35725bc45c9] xen/unpopulated-alloc:=
+ consolidate pgmap manipulation
+> git bisect good 8831d3f3564beba0f3f1b5291c88b35725bc45c9
+> # bad: [b8d53d70851821d8a2040ddca3aa6ee88fc8aaec] mm/page_vma_mapped.c: a=
+dd colon to fix kernel-doc markups error for check_pte
+> git bisect bad b8d53d70851821d8a2040ddca3aa6ee88fc8aaec
+> # bad: [e77846c3da1862faa25c08e186a62b03e98c862f] x86: mremap speedup - E=
+nable HAVE_MOVE_PUD
+> git bisect bad e77846c3da1862faa25c08e186a62b03e98c862f
+> # bad: [72ad8951bac1c559ea1b691a0b035fb339e4d71d] mm: speedup mremap on 1=
+GB or larger regions
+> git bisect bad 72ad8951bac1c559ea1b691a0b035fb339e4d71d
+> # good: [fa94bfe31609787501a1ff8d7659ade5734ec4e5] kselftests: vm: add mr=
+emap tests
+> git bisect good fa94bfe31609787501a1ff8d7659ade5734ec4e5
+> # first bad commit: [72ad8951bac1c559ea1b691a0b035fb339e4d71d] mm: speedu=
+p mremap on 1GB or larger regions
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to kernel-team+unsubscribe@android.com.
+>
