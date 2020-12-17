@@ -2,127 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABB342DDA36
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 21:39:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F1572DDA41
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 21:42:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730784AbgLQUit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 15:38:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38340 "EHLO mail.kernel.org"
+        id S1730787AbgLQUmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 15:42:36 -0500
+Received: from mga07.intel.com ([134.134.136.100]:38593 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726951AbgLQUit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 15:38:49 -0500
-Date:   Thu, 17 Dec 2020 14:38:06 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608237488;
-        bh=Rpq08eYW+DA58q5pcS/wXU0VbVBc1vYow6lIlzk55rU=;
-        h=From:To:Cc:Subject:In-Reply-To:From;
-        b=KqE949u41Nqk8wZdC73imrPNhV6iDujEFjRfkVjZScfGg5NLARgNksvDkk54oZI9i
-         mv/u6l2got64jOQ5WYUtngu2q9vI6xjHII+Jcy+PrjjE2gs1K6xgdwztx+nAvI4G2p
-         D/IUTUhGXYUo0T11xN0y5dzNNoaIntqhsq2soJ1qJZmtzmxSv5ozHe2eIvw5XczDhw
-         7imXx7N9zkX5LZaNE/XBXWbLBfgxWdq6WNk63Vd9f31kXpIWOfBj6C4mP+2GZruhTz
-         M32DBRPOd7HuNC1U2xW9CiDgiKPo9i9u/PExMcMNgvaVJ1cxp2OOgAAkXwohRF2CCU
-         mV7YA0/SGEecA==
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Zhou Wang <wangzhou1@hisilicon.com>
-Cc:     Zhangfei Gao <zhangfei.gao@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Joerg Roedel <joro@8bytes.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        jean-philippe <jean-philippe@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        kenneth-lee-2012@foxmail.com,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Thanu Rangarajan <Thanu.Rangarajan@arm.com>,
-        Souvik Chakravarty <Souvik.Chakravarty@arm.com>,
-        wanghuiqiang <wanghuiqiang@huawei.com>
-Subject: Re: [PATCH 0/2] Introduce PCI_FIXUP_IOMMU
-Message-ID: <20201217203806.GA20785@bjorn-Precision-5520>
+        id S1728173AbgLQUmf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 15:42:35 -0500
+IronPort-SDR: NwCWZ0XeMDy1YcOLJgNyQ/6pTzLOx/ZLdBHfjoD81xOcRKCpWeBUygWZoGSXV+iMNfOmXrcYNi
+ tbJZlQ0QQ0JQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9838"; a="239419660"
+X-IronPort-AV: E=Sophos;i="5.78,428,1599548400"; 
+   d="scan'208";a="239419660"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2020 12:41:52 -0800
+IronPort-SDR: vMqcelFZkNKz8vAko4tCHOPMa2KxvD9eHIN8YBYVMFXo3hMfi9PxbzJyIdr5mWvvQ7LKO6vevf
+ Zi2Eee9tuGIw==
+X-IronPort-AV: E=Sophos;i="5.78,428,1599548400"; 
+   d="scan'208";a="558185094"
+Received: from jlcowper-mobl1.amr.corp.intel.com (HELO [10.212.113.48]) ([10.212.113.48])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2020 12:41:51 -0800
+Subject: Re: [NEEDS-REVIEW] [PATCH V3 04/10] x86/pks: Preserve the PKRS MSR on
+ context switch
+To:     ira.weiny@intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-doc@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+References: <20201106232908.364581-1-ira.weiny@intel.com>
+ <20201106232908.364581-5-ira.weiny@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <ff685068-6821-ca35-7fa8-732a66cbf266@intel.com>
+Date:   Thu, 17 Dec 2020 12:41:50 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5FD9EE6E.1040505@hisilicon.com>
+In-Reply-To: <20201106232908.364581-5-ira.weiny@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 07:24:30PM +0800, Zhou Wang wrote:
-> On 2020/6/23 23:04, Bjorn Helgaas wrote:
-> > On Fri, Jun 19, 2020 at 10:26:54AM +0800, Zhangfei Gao wrote:
-> >> Have studied _DSM method, two issues we met comparing using quirk.
-> >>
-> >> 1. Need change definition of either pci_host_bridge or pci_dev, like adding
-> >> member can_stall,
-> >> while pci system does not know stall now.
-> >>
-> >> a, pci devices do not have uuid: uuid need be described in dsdt, while pci
-> >> devices are not defined in dsdt.
-> >>     so we have to use host bridge.
-> > 
-> > PCI devices *can* be described in the DSDT.  IIUC these particular
-> > devices are hardwired (not plug-in cards), so platform firmware can
-> > know about them and could describe them in the DSDT.
-> > 
-> >> b,  Parsing dsdt is in in pci subsystem.
-> >> Like drivers/acpi/pci_root.c:
-> >>        obj = acpi_evaluate_dsm(ACPI_HANDLE(bus->bridge), &pci_acpi_dsm_guid,
-> >> 1,
-> >>                                 IGNORE_PCI_BOOT_CONFIG_DSM, NULL);
-> >>
-> >> After parsing DSM in pci, we need record this info.
-> >> Currently, can_stall info is recorded in iommu_fwspec,
-> >> which is allocated in iommu_fwspec_init and called by iort_iommu_configure
-> >> for uefi.
-> > 
-> > You can look for a _DSM wherever it is convenient for you.  It could
-> > be in an AMBA shim layer.
-> > 
-> >> 2. Guest kernel also need support sva.
-> >> Using quirk, the guest can boot with sva enabled, since quirk is
-> >> self-contained by kernel.
-> >> If using  _DSM, a specific uefi or dtb has to be provided,
-> >> currently we can useQEMU_EFI.fd from apt install qemu-efi
-> > 
-> > I don't quite understand what this means, but as I mentioned before, a
-> > quirk for a *limited* number of devices is OK, as long as there is a
-> > plan that removes the need for a quirk for future devices.
-> > 
-> > E.g., if the next platform version ships with a DTB or firmware with a
-> > _DSM or other mechanism that enables the kernel to discover this
-> > information without a kernel change, it's fine to use a quirk to cover
-> > the early platform.
-> > 
-> > The principles are:
-> > 
-> >   - I don't want to have to update a quirk for every new Device ID
-> >     that needs this.
-> 
-> Hi Bjorn and Zhangfei,
-> 
-> We plan to use ATS/PRI to support SVA in future PCI devices. However, for
-> current devices, we need to add limited number of quirk to let them
-> work. The device IDs of current quirk needed devices are ZIP engine(0xa250, 0xa251),
-> SEC engine(0xa255, 0xa256), HPRE engine(0xa258, 0xa259), revision id are
-> 0x21 and 0x30.
-> 
-> Let's continue to upstream these quirks!
+On 11/6/20 3:29 PM, ira.weiny@intel.com wrote:
+>  void disable_TSC(void)
+> @@ -644,6 +668,8 @@ void __switch_to_xtra(struct task_struct *prev_p, struct task_struct *next_p)
+>  
+>  	if ((tifp ^ tifn) & _TIF_SLD)
+>  		switch_to_sld(tifn);
+> +
+> +	pks_sched_in();
+>  }
 
-Please post the patches you propose.  I don't think the previous ones
-are in my queue.  Please include the lore URL for the previous
-posting(s) in the cover letter so we can connect the discussion.
+Does the selftest for this ever actually schedule()?
 
-> >   - I don't really want to have to manage non-PCI information in the
-> >     struct pci_dev.  If this is AMBA- or IOMMU-related, it should be
-> >     stored in a structure related to AMBA or the IOMMU.
-> > .
-> > 
+I see it talking about context switching, but I don't immediately see
+how it would.
