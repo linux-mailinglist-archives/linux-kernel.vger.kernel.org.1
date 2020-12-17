@@ -2,104 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D1C2DD253
+	by mail.lfdr.de (Postfix) with ESMTP id A47032DD254
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 14:43:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727725AbgLQNnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 08:43:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57186 "EHLO
+        id S1728087AbgLQNnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 08:43:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727385AbgLQNnM (ORCPT
+        with ESMTP id S1727385AbgLQNnQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 08:43:12 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5C6C0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 05:42:31 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id v3so15149559plz.13
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 05:42:31 -0800 (PST)
+        Thu, 17 Dec 2020 08:43:16 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F93EC0617B0;
+        Thu, 17 Dec 2020 05:42:36 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id y23so5764282wmi.1;
+        Thu, 17 Dec 2020 05:42:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=xX8a79Gjb31KcVl9BRU7zIuRKc3nJSmAQkj+J42gmDo=;
-        b=IVVED24WxVyEFokYDkZM+re9QFS1ER56bPsSsaUeoZtF74kdLMOrGg6uveNSSEAR6X
-         zpNbUs1Dr8UVbc8lR6YKVFW0ZI6i6MGOvWybKTsxcYAdbcX5oY9vber46zK5rk04JprC
-         mMOlAf8COuTTh3vKw3EQWGQ2jFOwnLhBQGHL67Hzy60NO+/Ch/beibIZoXrogMgDgNn2
-         qL2nx4VDkonJlGbkEwh0omUVj8m2E+vf+2JTXhobeBNmXDF1AgCEDfX23Q82B9xotmZL
-         zBMxrLgJtlTHe9Wmx0gdgNbYy4OfnrozX3DVx+/JTa2Ge1SvPYIi0JvvV/DdUm0NEDMU
-         SdTQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=y2tCpEgJ2Ia9pQf+OBM2EJwVWA5qX5ybW6vI6jPjQhk=;
+        b=XdCTiZNOm3b2tQM/ZlSAS7kDh0j54pCfoyLt6DDcbbXiyKuMFRgNTJnbDB7rdvAMBb
+         nKvhFSmEE/3u8E4kgRNQ2QOH9y0cQa11w4cwOudJwm4rFSVIujKJB1gLAlQSlk9koXh9
+         36qPvikuOUU11GJRROBS18M1p2GO0AsVhzlI8djCxOiZhOCe5wyw643eOeD/xu9+cEBJ
+         33g1S/sCZdNQBsyeqNdzBW9NVsvbXzowR0BVso+ss5h9nO3Tf/vEEAm/jn7Lxp+dqr20
+         QO6NZrqz9MUBGne3slmf6G6M9qRQJzuB/dYKCOpCH9wUoLMEUbuOI1aq5WxcZ+Go5YzS
+         tICg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=xX8a79Gjb31KcVl9BRU7zIuRKc3nJSmAQkj+J42gmDo=;
-        b=HJNab9eBr4v2f2Qcb0TjrtxofaHa/47kNgzOO+Ng8IcyxW7JBwsF9MV/hEP3Mck03/
-         JAmeNda/tq9XQ/q+aJioifcCCr+O6T3NV8hrq8HqNSUcWsQjXwwPnu0Ux8r+Wbb+K2x4
-         vIJGL9JZPR1rg/HxC/9ch7EtEZW00MwKz2cEhSDiGg1b6DsE2VbneAwjQebxJbk8bIwg
-         xwLnHqmQF6wdY3RG3VsrMMAzF4Hha8dcUioR/2sI0F2apMl72DbVI88ouUB5C+Nii0hK
-         Q2oFqMitD4QsAPSFpYFZTggX8XuZEnMioO/lk3aGNl3K7Bp8W3NkpMrTSiDGs1I6NftT
-         1Qwg==
-X-Gm-Message-State: AOAM530+wEMAeW6XVuFN7zZWaYFqSv3fXTyzOUjR7F2c8jSCU72UWILy
-        hPZgSN3gRvIfG4QPZfUn8f+/qHx4pXiQqw==
-X-Google-Smtp-Source: ABdhPJyFttykqEqBExQYV65btoTZGx484eNHaiTltEX264Durh1Mnt15/pR+ALVf5CC+uPkAk5ekkQ==
-X-Received: by 2002:a17:90a:db0b:: with SMTP id g11mr8028012pjv.168.1608212551215;
-        Thu, 17 Dec 2020 05:42:31 -0800 (PST)
-Received: from localhost.localdomain ([2402:3a80:403:493:5d38:be:6298:62ae])
-        by smtp.googlemail.com with ESMTPSA id j15sm6049719pfn.180.2020.12.17.05.42.27
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=y2tCpEgJ2Ia9pQf+OBM2EJwVWA5qX5ybW6vI6jPjQhk=;
+        b=d7uG6CfJrwBKgOuvWMhVHH43TS2dCas/0EB5G+uY8GSDRyel5vZIsk24mkMiati3PJ
+         5f29MMdaBZzDSmBoPKMBM/E8yZog80RoDJ1i/rhj1uF8JVB/zXqaa9WWf6IKc9Wtqkot
+         5L0UzM0TdMV8+vuzT+33Dlg13S+Gtf2mDsjFylj2qbciVduovITdPnEVQtzHfMW4NKDt
+         uM2yQuN6kTsb94qNXCdSCMrCXhwOZSY7kNgrasC0Z66gw4F1dOCYN3xLX7W3K8OxO/v4
+         EmPJG+9JHjih/0X1+/C2U4EjNs8LdD6Zv/Ljul1U3pJuUPY+KSQCDYtIIZu01NnK3tVt
+         Mwfw==
+X-Gm-Message-State: AOAM533RYDG8xNsmdTFzYXyZq1IMOhu2WFgNWqYdzOtLmP8x5ocyiiUk
+        2KJYC7yAPOYTj4jCALAEW+4=
+X-Google-Smtp-Source: ABdhPJxPm+GBn5fWjJyOGtY3tgDT6sYa9I9OcdztQ/jrh3DkBiGPzastgA5wrXT9vXMiDbEo22I8nw==
+X-Received: by 2002:a1c:a185:: with SMTP id k127mr9089789wme.23.1608212555111;
+        Thu, 17 Dec 2020 05:42:35 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id x17sm8988714wro.40.2020.12.17.05.42.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 05:42:30 -0800 (PST)
-From:   Aditya Srivastava <yashsri421@gmail.com>
-To:     joe@perches.com
-Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] checkpatch: fix false positive for COMMIT_LOG_LONG_LINE with URLs
-Date:   Thu, 17 Dec 2020 19:12:21 +0530
-Message-Id: <20201217134221.16178-1-yashsri421@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 17 Dec 2020 05:42:33 -0800 (PST)
+Date:   Thu, 17 Dec 2020 14:42:32 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Felipe Balbi <balbi@kernel.org>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Ion Agorria <ion@agorria.com>, linux-tegra@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 7/8] usb: host: ehci-tegra: Remove the driver
+Message-ID: <X9tgSPfFqFwEWV2m@ulmo>
+References: <20201217094007.19336-1-digetx@gmail.com>
+ <20201217094007.19336-8-digetx@gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="YxOjwJPOhR/B4PYY"
+Content-Disposition: inline
+In-Reply-To: <20201217094007.19336-8-digetx@gmail.com>
+User-Agent: Mutt/2.0.3 (a51f058f) (2020-12-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently checkpatch warns for long line in commit messages even for
-URL lines.
 
-An evaluation over v4.13..v5.8 showed that out of ~11000 warnings for
-this class, around 790 are due to the line containing link.
+--YxOjwJPOhR/B4PYY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-E.g. running checkpatch on commit 3cde818cd02b ("ASoC: topology:
-Consolidate how dtexts and dvalues are freed") reports this warning:
+On Thu, Dec 17, 2020 at 12:40:06PM +0300, Dmitry Osipenko wrote:
+> The ChipIdea driver now provides USB2 host mode support for NVIDIA Tegra
+> SoCs. The ehci-tegra driver is obsolete now, remove it and redirect the
+> older Kconfig entry to the CI driver.
+>=20
+> Tested-by: Matt Merhar <mattmerhar@protonmail.com>
+> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+> Tested-by: Peter Geis <pgwipeout@gmail.com>
+> Tested-by: Ion Agorria <ion@agorria.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/usb/host/Kconfig      |   8 +-
+>  drivers/usb/host/Makefile     |   1 -
+>  drivers/usb/host/ehci-tegra.c | 604 ----------------------------------
+>  3 files changed, 6 insertions(+), 607 deletions(-)
+>  delete mode 100644 drivers/usb/host/ehci-tegra.c
 
-WARNING: Possible unwrapped commit description (prefer a maximum 75 chars per line)
-https://mailman.alsa-project.org/pipermail/alsa-devel/2019-January/144761.html
+Acked-by: Thierry Reding <treding@nvidia.com>
 
-Avoid giving users warning for character limit, instead suggest them to
-prefix the URLs with "Link:"
+--YxOjwJPOhR/B4PYY
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
----
- scripts/checkpatch.pl | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index abd5a3d2e913..23da1f50fe6a 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -3032,8 +3032,14 @@ sub process {
- 		      $line =~ /^\s*(?:Fixes:|Link:|$signature_tags)/i ||
- 					# A Fixes: or Link: line or signature tag line
- 		      $commit_log_possible_stack_dump)) {
--			WARN("COMMIT_LOG_LONG_LINE",
--			     "Possible unwrapped commit description (prefer a maximum 75 chars per line)\n" . $herecurr);
-+			if ($line =~ /(?:http|https|ftp):\/\//) {
-+				WARN("COMMIT_LOG_LONG_LINE",
-+				     "Consider prefixing the URL with 'Link:'\n" . $herecurr);
-+			}
-+			else {
-+				WARN("COMMIT_LOG_LONG_LINE",
-+				     "Possible unwrapped commit description (prefer a maximum 75 chars per line)\n" . $herecurr);
-+			}
- 			$commit_log_long_line = 1;
- 		}
- 
--- 
-2.17.1
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl/bYEgACgkQ3SOs138+
+s6E5Tw/+KFCf97kKuL5jsfZrGId8s3jh8ukIIwP+sFa0yW/+wXqmwwbauQ9BWTWx
+EP60oe7g+gykERthUaqmaKDsFVEj6VugerD5HU43NoIp2Nn2gO0ZuvmLLxWwgUkA
+Be7lDuZMz+4pVJfJMJXlY/CS+NbC/zHMEyCCFgHzqY0zaR7w3MMjnmvWWf0/Y/QU
+2CLsdOP44tYCawQhtOaMFjAsvBeUFuHBw+AZJ0LyoaWx3A01g5kASKfSdi0Fetn+
+WrsvA4b1djJ/nrMRdgzKkxO1JoNgE99uOm2yPjuoBAkRVVNOFuTbX8d7hjBVx6qw
+kljSeV9rbfyKBdI9tFlumUedkzytPF5b7YIPCBNaD61Nykw4tyHjoeVQGQrqZgTA
+Kk/07emcSzAYT7bwtwoHpqI102H38KtJ89pj7unzo2Hm91FBL7s7IwS0uzYHO5hK
+yuRljfwmjUyf+RHQf/SVl5GQL0LD3Y6eaNqbBUxaf/zaSOVTWPBLuCAzv5gmjKbz
+ZCs88hFDmRk/gvG7zkPKBIA+LyUs1tSoLo0qnC7cg1XK9wuZgIiMMNA+9qFd0/Ph
+S+blMC7m4abZ72h17Z+r8ahFj/LcEHUDuqyQr6tqiZmbia0wkg9vaqfRP1K6qcyI
+cvQKUCn/QUbiqszrtKMVbHz0F71HaGjT4qKo1wXoiX6ipdzOLhc=
+=+cu3
+-----END PGP SIGNATURE-----
 
+--YxOjwJPOhR/B4PYY--
