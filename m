@@ -2,158 +2,479 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A3792DCF18
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 11:08:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E24D22DCF17
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 11:08:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727618AbgLQKHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 05:07:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28359 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726615AbgLQKHg (ORCPT
+        id S1727470AbgLQKHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 05:07:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726601AbgLQKHM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 05:07:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608199569;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5vV7dH1SnePNtrGf05LbaOirfK4B0ddR8xhlYZI8Btw=;
-        b=VIWA+lVbSGpEOY/oEQ/3S90fVwC3jgF5Y4x5XoI4ZYr9BE8WmrJ54WKAU5sYXDKwuPEpF6
-        pf+3snkw/0n4KceZGXpLbuXrMjKdjS+cmOxT25mMngBJ9csA0W/8nqGN2ZjOCOmKZqiHws
-        6uNbzUgfsQTeZ5HWjsEWSWGBjmpdmjY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-413-Qi5-pcYrOEu36Ur8Ufv81g-1; Thu, 17 Dec 2020 05:06:03 -0500
-X-MC-Unique: Qi5-pcYrOEu36Ur8Ufv81g-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B381718C89DA;
-        Thu, 17 Dec 2020 10:06:01 +0000 (UTC)
-Received: from [10.36.113.93] (ovpn-113-93.ams2.redhat.com [10.36.113.93])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2E5C571C94;
-        Thu, 17 Dec 2020 10:05:58 +0000 (UTC)
-Subject: Re: [PATCH v2] mm/mmap: Don't unlock VMAs in remap_file_pages()
-To:     "Liam R. Howlett" <Liam.Howlett@Oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Andrew Morton <akpm@google.com>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        Rik van Riel <riel@surriel.com>
-References: <20201215155441.1497432-1-Liam.Howlett@Oracle.com>
- <413ffbe0-959d-c2ad-95d8-80104adac089@redhat.com>
- <20201216204252.vh3zadk4ghbzufqz@revolver>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <91483d71-a12d-1e52-e9c9-135404c5219f@redhat.com>
-Date:   Thu, 17 Dec 2020 11:05:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Thu, 17 Dec 2020 05:07:12 -0500
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67B49C0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 02:06:32 -0800 (PST)
+Received: by mail-ot1-x32a.google.com with SMTP id o11so26704419ote.4
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 02:06:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+tHtpcTR/08FM9RSBLxTm9nzhr1PLovQ8Q+Zogm9jkc=;
+        b=KcAoqw/jyUdVgzYx1Qus+jkgMPmz9ohPB+OT2c7OHiLbd/QlGQLrgY9+h+jigYMmwG
+         gJcjfB0K9nzwrK/rM8SbjLvNV7TEkAZgfU0G937VK8O6XRsi11cAF+k5c7WGQwmeP0Hg
+         i16xFaSU+39OwdJxuP1wPdxxHPi8aA8t2HBfc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+tHtpcTR/08FM9RSBLxTm9nzhr1PLovQ8Q+Zogm9jkc=;
+        b=W4OugR7V0ode1+96TeNf7BhF6VhsmDShpuy+5PaV9GmagVSNNgC43je+i/o0alyncn
+         JeEvuc4W68M+WaXbh0QeI/UjnHd3lkWoJLyjvSc4ZIgzvzXkkvDngjowCywJFhT1E2tO
+         Taqo9sGjERNJfsyYwN8x6WmXmdSbqsbgCRHrS8iax98M+nHrss0wye0bD8SkaFGglmvo
+         KCbM2b2nyDtbLcZ6+vjB01DLEpfgql4ZkJKpsBflOninOqkQ8OSwT0hH0E1NAfzXYCn1
+         WoIBx/YlJtBSniJ5ZSIJ9PoQ2bEbW+aVhWEodrbDGXRi97M4PvxVcMBGrA4DJYfDzLgg
+         ZwBg==
+X-Gm-Message-State: AOAM533Nrkn9x/XFLiQnxLuVJMRWnCAA/d6vymFwoVUCrdfvGkuuA1tA
+        mSdEF5ZXtGO/RZrknwxEFhPXLrzV4ghqvU00ChnDoQ==
+X-Google-Smtp-Source: ABdhPJwWKBrnXb4CDjpXcbBs/tMlwtWspKEQCkvamsO1KhfJn+2RqBRcICNDhnpw2bUYVRVn5sc9MqtX0nA9MrV6GBM=
+X-Received: by 2002:a05:6830:1bef:: with SMTP id k15mr20187278otb.303.1608199591499;
+ Thu, 17 Dec 2020 02:06:31 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201216204252.vh3zadk4ghbzufqz@revolver>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <1606722505-16194-1-git-send-email-wendy.liang@xilinx.com>
+ <CADnq5_NZrqkouXCFKWc2wv483nc=x4cXXjFCqcEmkUYZpNeMUQ@mail.gmail.com>
+ <CAKMK7uFjwmm9W3RFVdQ=EOqHvWeD5ZPA7zP86O_sxxBv3n4jjw@mail.gmail.com>
+ <b0d41bb6-0347-24f5-7a2d-a3b41d5444c9@xilinx.com> <CADnq5_N7Q_6jfghWQGs17gzT2Ucj_19v9V4s7G0wPStVn+mftQ@mail.gmail.com>
+ <83491d22-64b6-68bd-b7e2-787e0826712c@xilinx.com>
+In-Reply-To: <83491d22-64b6-68bd-b7e2-787e0826712c@xilinx.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Thu, 17 Dec 2020 11:06:20 +0100
+Message-ID: <CAKMK7uHeS9zdv=ZBbft3_qqED9iqt=-GyY1OVkX97GPuKn=mRQ@mail.gmail.com>
+Subject: Re: [PATCH v3 0/9] Xilinx AI engine kernel driver
+To:     Jiaying Liang <wendy.liang@xilinx.com>
+Cc:     Alex Deucher <alexdeucher@gmail.com>, tejas.patel@xilinx.com,
+        ravi.patel@xilinx.com, rajan.vaja@xilinx.com,
+        Arnd Bergmann <arnd@arndb.de>,
+        devicetree <devicetree@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Rob Herring <robh+dt@kernel.org>, manish.narani@xilinx.com,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-media <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.12.20 21:42, Liam R. Howlett wrote:
-> 
-> Thank you for looking at this.  I appreciate the scrutiny.
-> 
-> * David Hildenbrand <david@redhat.com> [201216 09:58]:
->> On 15.12.20 16:54, Liam R. Howlett wrote:
->>> do_mmap() will unlock the necessary VMAs.  There is also a bug in the
->>> loop which will evaluate as false and not unlock any VMAs anyways.
->>
->> If there is a BUG, do we have a Fixes: tag? Also
-> 
-> The bug would never show up as it is masked by do_mmap() unlocking the
-> necessary range.  Although there is a bug in this code, the code does
-> not cause an issue as it won't execute so should I have a Fixes tag?
-> The code works and what I've done is remove a chunk of code that never
-> runs.
-> 
+On Thu, Dec 17, 2020 at 9:40 AM Jiaying Liang <wendy.liang@xilinx.com> wrote:
+>
+>
+> On 12/15/20 7:23 AM, Alex Deucher wrote:
+> > On Mon, Dec 14, 2020 at 7:24 PM Jiaying Liang<wendy.liang@xilinx.com>  wrote:
+> >> On 12/11/20 11:39 AM, Daniel Vetter wrote:
+> >>> Hi all
+> >>>
+> >>> On Fri, Dec 11, 2020 at 8:03 PM Alex Deucher<alexdeucher@gmail.com>   wrote:
+> >>>> On Mon, Nov 30, 2020 at 3:25 AM Wendy Liang<wendy.liang@xilinx.com>   wrote:
+> >>>>> AI engine is the acceleration engine provided by Xilinx. These engines
+> >>>>> provide high compute density for vector-based algorithms, and flexible
+> >>>>> custom compute and data movement. It has core tiles for compute and
+> >>>>> shim tiles to interface the FPGA fabric.
+> >>>>>
+> >>>>> You can check the AI engine architecture document for more hardware details:
+> >>>>> https://www.xilinx.com/support/documentation/architecture-manuals/am009-versal-ai-engine.pdf
+> >>>>>
+> >>>>> This patch series adds a Linux kernel driver to manage the Xilinx AI
+> >>>>> engine array device and AI engine partitions (groups of AI engine tiles
+> >>>>> dedicated to an application).
+> >>>> Hi Wendy,
+> >>>>
+> >>>> I think it would be good to provide an overview of how your stack
+> >>>> works in general.  That would give reviewers a better handle on how
+> >>>> all of this fits together.  I'd suggest including an overview in the
+> >>>> cover letter and also in the commit message and/or as a comment in the
+> >>>> code in one of the patches.  I'm not really an expert when it comes to
+> >>>> FPGAs, but this basically looks like a pretty low level interface to
+> >>>> set up the data fabric for a kernel that will run on the soft logic or
+> >>>> maybe the microcontroller on the board.  It doesn't have to be super
+> >>>> detailed, just a nice flow for how you might use this.  E.g.,
+> >>>>
+> >>>> Userspace uses ioctls X, Y, Z to configure the data fabric for the
+> >>>> FPGA kernel.  The kernels can run on... .  DMA access to system memory
+> >>>> for data sets can be allocated using ioctl A.  DMA access is limited
+> >>>> by... . The user can then load the FPGA kernel on to one of the
+> >>>> engines using ioctl B and finally they can kick off the whole thing
+> >>>> using ioctl C.  FPGA kernels are compiled using YYY toolchain and use
+> >>>> use the following runtime (link to runtime) to configure the data
+> >>>> fabric using ioctls X, Y, Z.
+> >>> At least for drm drivers we ideally have that as a .rst file in
+> >>> Documentation/. With that you can even do full svg graphs, or just dot
+> >>> graphs, of the overall stack if you really want to go overboard :-)
+> >>>
+> >>>> It would also be good to go over the security implications of the
+> >>>> design.  E.g., can the FPGA kernel(s) access the DMA engine directly,
+> >>>> or is it limited to just the DMA regions set up by the ioctls?  Also,
+> >>>> does the hardware and software design allow for multiple users?  If
+> >>>> so, how does that work?
+> >>> I've also seen indications that there's some on-chip or on-card
+> >>> memory. How that's planned to be used and whether we want to manage
+> >>> this (maybe even with something like ttm) would be good to understand.
+> >>>
+> >>> All excellent questions from Alex, just figured I add some more.
+> >>>
+> >>> Cheers, Daniel
+> >> Hi Alex, Daniel,
+> >>
+> >> Below is an overview of the driver.
+> >>
+> >> AI engine kernel driver manages Xilinx AI engine device. An AI engine device
+> >> contains cores tiles and SHIM tiles. Core tiles are the computation tiles
+> >> , the SHIM tiles are the tiles interfacing to external components.
+> >>
+> >>             +--------+--------+--------+--------+
+> >>              | Core        | Core        | Core        | Core | ...
+> >>              |                |                | |                |
+> >>             +-----------------------------------+
+> >>              | Core        | Core        | Core        | Core     | ...
+> >>              |                |                | |             |
+> >>             +--------+--------+--------+---------
+> >>              ...
+> >>             +--------+--------+-----------------+
+> >>             | SHIM        | SHIM       | SHIM       |SHIM        |
+> >>             | PL            | PL           | PL            |PL | NOC  |
+> >>             +---+----+---+----+---+-----+-------+
+> >>     AXI Streams   |        |                |              |    |AXI MM
+> >>                          |        |                | |    |
+> >> Events Singals |        |                |              |    |
+> >>                          |        |                | |    |
+> >>                          |        |                | |    |
+> >>             +---+--------+--------+-----+ +--+------+
+> >>             |       FPGA                                        | |
+> >> NOC        |
+> >>             | | |                  |
+> >>             +---------------------------+ +--+-------+
+> >>                                              |
+> >>                                              |
+> >>                                          +---+------+
+> >>                                          |   DDR           |
+> >>                                          +----------+
+> >>
+> >> Each Core tile contains computing module, local memory and DMA module. The
+> >> local memory DMA module takes data from or to the AXI streams and writes
+> >> it to or reads it from the local memory. The computing module can also
+> >> directly get/put data from/to the AXI stream. The AIE SHIM enables AIE tiles
+> >> to get/put data from/to AXI streams from FPGA, enables external master to
+> >> access AI engine address space through AXI MM. SHIM NoC module has DMA
+> >> engine,
+> >> which can access extern memory though AXI MM and push it to internal AXI
+> >> streams.
+> >>
+> >> At runtime, the AI engine tiles interconnection needs to be configured
+> >> so that
+> >> it can get fetch data from external components or adjacent tiles, and AI
+> >> engine
+> >> core program needs to be loaded. And then user application can push data
+> >> to the
+> >> AI engine array and start/stop AI engine core. AI engine device errors
+> >> can be
+> >> raised as events, the AI engine kernel driver listens to the events
+> >> interrupt
+> >> to monitor runtime async device errors.
+> >>
+> >> Instead of application directly interacting with the AI engine kernel
+> >> APIs, user
+> >> application/libraries interacts with AI engine userspace library:
+> >> https://github.com/Xilinx/embeddedsw/tree/master/XilinxProcessorIPLib/drivers/aienginev2
+> >> It provides cross OSes low level functional abstraction such as how to
+> >> connect one
+> >> stream port to another stream port, how to configure core tile local DMA.
+> >>
+> >> The AI engine library can be used by other runtime libraries such as
+> >> Xilinx runtime (XRT)
+> >> library:https://xilinx.github.io/XRT/master/html/index.html,
+> >> which provides acceleration abstraction for Xilinx accelerators, it has
+> >> extensions
+> >> to interface to other acceleration framework such as OpenCL.
+> >> XRT provides buffer handling abstractions for user application to share
+> >> data between
+> >> applicaiton and devices.
+> >>
+> >> Here is an example of application runtime stack:
+> >>
+> >>               +----------------------------+
+> >>               |      Application                              |
+> >>               | |
+> >>               +----------------------------+
+> >>               |       XRT                                        |
+> >>               | |
+> >>               +----------------------------+
+> >>               |      AIE Library                               |
+> >>               | |
+> >>              +----------------------------+
+> >>       +----------------------------------------+
+> >> Kern    +----------------------------+
+> >>               |         AIE Partition                        +--+
+> >>              +----------------------------+    |
+> >>                     |----------------------------+
+> >>               +----------------------------+
+> >>                |         AIE Device                           |
+> >>                | |
+> >>               +----------------------------+
+> >>
+> >>
+> >>
+> >> The AI engine kernel driver provides the following user interfaces:
+> >>    * AIE device driver is the root device driver to manage the partitions of
+> >>      of the AI engine device array. AI engine array can be partitioned into
+> >>      column wised isolated partitions. Each applicaiton can only access its
+> >>      own partitions.
+> >>    * AIE device driver monitors the interrupt from the AI enigne device. All
+> >>      AI engine tiles shared the same interrupt for error events.
+> >>    * AIE partition driver controls address mapping and access of the
+> >>      registers/local memories of the tiles within a partition.
+> >>      * It provides mmap operation to enable application to direclty
+> >> access the
+> >>        tiles local memories for small data update such as parameter
+> >> update for
+> >>        performance.
+> >>      * It provides mmap operatio to map all the registers as readonly for
+> >>        application to poll registers efficiently to check status.
+> >>      * It provides ioctl for userspace to pass I/O commands to write/mask
+> >> write
+> >>        the registers. How to configure is defined by userspace. Userspace
+> >> will
+> >>        pass the I/O commands sequence to the kernel driver, and kernel driver
+> >>        will validate the commands before it writes to the registers.
+> >>      * It provides ioctl to import dmabuf and ioctl to configure the the
+> >> DMA module
+> >>        in the SHIM tile which can access memory outside AI engine array.
+> >>
+> >> The buffer management is out of this driver. In the above example, user
+> >> application
+> >> uses Xilinx runtime(XRT), XRT is the one to manage the buffers.
+> >>
+> > So if I understand this correctly, this driver handles the resource
+> > management for the AI engines, PLs (programmable logic), and DMA
+> > streams.  I think it's important to understand that there are multiple
+> > address spaces here.  Normally when we talk about DMA in the kernel we
+> > are referring to devices accessing an external resource like system
+> > memory on the host CPU or another device's MMIO space (e.g., another
+> > PCIe device).  It would be good to clarify which address spaces the
+> > DMAs in your diagram refer to.  I think the DMAs in the AI engines are
+> > specifically for DMAs within the AI engine logic (e.g., between AIs in
+> > a partition).  How is DMA to system memory handled?  What about
+> > dedicated memory on the FPGA (e.g., HBM or DDR on the FPGA itself)?
+> > Is that what you are exposing as DMA bufs?  When you allocate a
+> > DMA-buf for a partition, is that partition only allowed to access
+> > memory that is part of that DMA buf?  I presume there is some
+> > scatter/gather table that sets up the DMA range that the partition can
+> > access?  Who loads the soft logic (Is that the PL or some other IP)?
+> > Is the soft logic partitioned as well?  If I had some soft logic I
+> > wanted to run on the FPGA, what would the kernel driver interaction
+> > sequence look like?  Maybe using the OpenCL soft logic would be a good
+> > example.  E.g.,
+>
+> The AI engine driver only manage the resources within the AI
+>
+> engine array. There are two types of DMAs of the AI engine device.
+>
+> one is the AI engine tile local memory DMA which can only access the local
+>
+> memory. There is another type of DMA which is in the SHIM tile. This
+>
+> DMA can access external address space such as DDR. Although it can acess
+>
+> the memory on fpga if user configure the platform that way, it is
+> preferred to
+>
+> use PL data mover to move data between FPGA memory and AI engine device.
+>
+> The PL data mover will not be managed by the AI engine driver.
+>
+> One SHIM DMA has up to 16 buffer descriptors to use.
+>
+> Xilinx FPGA manager is the one used to program the FPGA soft logic.
+>
+> E.g. when XRT is used, if AI engine is connected to FPGA logic, the XRT
+> stack is
+>
+> the one to manage the configuration sequence.
+>
+> > 1. user has soft logic blob generated by their soft logic compiler (is
+> > this compiler open source?)
+> The soft logic blob is generated by Xilinx tools which is not open
+> source yet.
+> > 2. user calls AI engine kernel driver to allocate the required
+> > resources (AI engines, AI engine DMAs, doorbells of some sort?  etc.)
+>
+> User will call AI engine kernel driver to allocate required resources within
+>
+> the AI engine array at runtime.
+>
+> However the patches for it is not in this patch set.
+>
+> > 3. user calls AI engine kernel driver to allocate system memory and/or
+> > FGPA memory that can be used by the soft logic blob
+>
+> AI engine kernel driver doesn't allocate system memory. User can use other
+>
+> kernel driver to allocate memory.
+>
+> E.g. when XRT is used, user calls XRT kernel driver (zocl) to allocate
+> system memory.
+>
+> So far, the FPGA memory is usually assigned to a soft data mover when
+> the platform is
+>
+> created. Are you considering to have the FPGA memory in the DMA pool of the
+>
+> system? If it is dedicated to a device, can reserved memory solve this
+> problem?
+>
+> The AI engine kernel driver doesn't consider this yet.
+>
+> > 4. user calls AI engine kernel driver to load soft logic
+>
+> I assume you are referring to the soft logic on the FPGA side which is not
+>
+> part of the AI engine device. FPGA manager is the one to load the soft
+> logic on FPGA.
+>
+> > 5. user interfaces with soft logic (how? presumably via some memory
+> > resource allocated in 2 and 3?)
+>
+> I assume you are referring to the soft logic on the FPGA side (not the
+> AI engine device)
+>
+> The user interface with soft logic is managed by the soft logic IP driver.
+>
+> Each soft logic has some memory mapped control registers. User can
+> access those
+>
+> registers through the soft logic IP driver.
+>
+> About memory allocation, I think it is better to manage the shared
+> memory out of
+>
+> a specific device driver. Are you looking for memory management which covers
+>
+> both the system memory and fpga memory, and the device can specify which
+> memory
+>
+> it prefers?
 
-Ok I see. The use of "bug" here is misleading. The unnecessary code is
-simply not doing what it promised to do without doing any harm.
+Ok, I think the picture is getting clearer. But now I'm wondering why
+you have any interactions with dma-buf in this patch series here?
+-Daniel
 
->>
->> 1. Can we fix the bug separately first?
-> 
-> I think it is safer to remove unexecuted code than enable it and then
-> remove it.
 
-I agree, as it is not actually a bug.
+> Thanks,
+>
+> Wendy
+>
+> >
+> > Thanks,
+> >
+> > Alex
+> >
+> >
+> >> Best Regards,
+> >>
+> >> Wendy
+> >>
+> >>>> Thanks,
+> >>>>
+> >>>> Alex
+> >>>>
+> >>>>
+> >>>>> v3:
+> >>>>> * unlock AIE dev mutex after failed to gain the partition lock in
+> >>>>>     errors handing
+> >>>>> * replace pointer with __u64 and enum with __u32 in ioctl
+> >>>>>
+> >>>>> v2:
+> >>>>> * Fix dtschema check errors
+> >>>>> * Fix test bot warning on interrupt implementation. Removed set but
+> >>>>>     unused  varaible.
+> >>>>> * Fix compilation unused function warning of firmware change in case
+> >>>>>     ZynqMP firmware is not configured
+> >>>>> * There are other warning on ZynqMP firmware reported from testbot
+> >>>>>     which is not introduced by this patch set.
+> >>>>>     "[PATCH] firmware: xlnx-zynqmp: fix compilation warning" is submitted
+> >>>>>     for those fixes.
+> >>>>>
+> >>>>>
+> >>>>> Izhar Ameer Shaikh (1):
+> >>>>>     firmware: xilinx: Add IOCTL support for AIE ISR Clear
+> >>>>>
+> >>>>> Nishad Saraf (2):
+> >>>>>     misc: xilinx-ai-engine: Add support to request device management
+> >>>>>       services
+> >>>>>     misc: xilinx-ai-engine: Add support for servicing error interrupts
+> >>>>>
+> >>>>> Wendy Liang (6):
+> >>>>>     dt-binding: soc: xilinx: ai-engine: Add AI engine binding
+> >>>>>     misc: Add Xilinx AI engine device driver
+> >>>>>     misc: xilinx-ai-engine: Implement AI engine cleanup sequence
+> >>>>>     misc: xilinx-ai-engine: expose AI engine tile memories to userspace
+> >>>>>     misc: xilinx-ai-engine: add setting shim dma bd operation
+> >>>>>     misc: xilinx-ai-engine: add request and release tiles
+> >>>>>
+> >>>>>    .../bindings/soc/xilinx/xlnx,ai-engine.yaml        | 126 ++++
+> >>>>>    MAINTAINERS                                        |   8 +
+> >>>>>    drivers/firmware/xilinx/zynqmp.c                   |  14 +
+> >>>>>    drivers/misc/Kconfig                               |  12 +
+> >>>>>    drivers/misc/Makefile                              |   1 +
+> >>>>>    drivers/misc/xilinx-ai-engine/Makefile             |  16 +
+> >>>>>    drivers/misc/xilinx-ai-engine/ai-engine-aie.c      | 608 +++++++++++++++++++
+> >>>>>    drivers/misc/xilinx-ai-engine/ai-engine-clock.c    | 245 ++++++++
+> >>>>>    drivers/misc/xilinx-ai-engine/ai-engine-dev.c      | 496 ++++++++++++++++
+> >>>>>    drivers/misc/xilinx-ai-engine/ai-engine-dma.c      | 481 +++++++++++++++
+> >>>>>    drivers/misc/xilinx-ai-engine/ai-engine-internal.h | 519 ++++++++++++++++
+> >>>>>    .../misc/xilinx-ai-engine/ai-engine-interrupt.c    | 659 +++++++++++++++++++++
+> >>>>>    drivers/misc/xilinx-ai-engine/ai-engine-mem.c      | 275 +++++++++
+> >>>>>    drivers/misc/xilinx-ai-engine/ai-engine-part.c     | 635 ++++++++++++++++++++
+> >>>>>    drivers/misc/xilinx-ai-engine/ai-engine-res.c      | 219 +++++++
+> >>>>>    drivers/misc/xilinx-ai-engine/ai-engine-reset.c    | 159 +++++
+> >>>>>    include/linux/firmware/xlnx-zynqmp.h               |   8 +
+> >>>>>    include/uapi/linux/xlnx-ai-engine.h                | 238 ++++++++
+> >>>>>    18 files changed, 4719 insertions(+)
+> >>>>>    create mode 100644 Documentation/devicetree/bindings/soc/xilinx/xlnx,ai-engine.yaml
+> >>>>>    create mode 100644 drivers/misc/xilinx-ai-engine/Makefile
+> >>>>>    create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-aie.c
+> >>>>>    create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-clock.c
+> >>>>>    create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-dev.c
+> >>>>>    create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-dma.c
+> >>>>>    create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-internal.h
+> >>>>>    create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-interrupt.c
+> >>>>>    create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-mem.c
+> >>>>>    create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-part.c
+> >>>>>    create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-res.c
+> >>>>>    create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-reset.c
+> >>>>>    create mode 100644 include/uapi/linux/xlnx-ai-engine.h
+> >>>>>
+> >>>>> --
+> >>>>> 2.7.4
+> >>>>>
+> >>>>> _______________________________________________
+> >>>>> dri-devel mailing list
+> >>>>> dri-devel@lists.freedesktop.org
+> >>>>> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> >>>> _______________________________________________
+> >>>> dri-devel mailing list
+> >>>> dri-devel@lists.freedesktop.org
+> >>>> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
-> 
->> 2. Can we have a better description on what the bug actually is
->> "evaluate as false"? What is the result of the bug?
-> 
-> The bug is in the for loop test expression that I removed in the patch.
-> Here is the long explaination of why the loop has never run.
-> 
-> 
-> Line 2982: if (start + size <= start
-> Line 2983: 	goto out;
-> 
-> size is positive.
-> 
-> Line 2992: vma = find_vma(mm, start);
-> Look up the first VMA which satisfies start < vm_end
-> 
-> Line 2997: if (start < vma->vm_start)
-> Line 2998: 	goto out;
-> 
-> So now vma->vm_start >= start.
-> If vma->vm_start > start, then there are no VMAs in that area, otherwise
-> it would have been returned by find_vma().
-> So we can say that vma->vm_start == start.
-> 
-> Line 3033: for (tmp = vma; tmp->vm_start >= start + size;
-> Line 3034:                 tmp = tmp->vm_next) {
-> This is the for loop with the error in the test expression.
-> 
-> tmp->vm_start == start which cannot be >= (start + size).
-> 
-> I believe the intention was to loop through vmas in the range of start
-> to (start + size) and unlock them.
-> 
-> 
-> The result of the bug is no VMA is unlocked in this fuction.  But that
-> doesn't matter as they are unlocked later in the call chain - which is
-> why this code works as intended.
-> 
 
-Thanks for clarifying!
-
-> 
->>
->> CCing some people that might know if this is actually a sane change.
->> Skimming over do_mmap(), it's not immediately clear to me that
->> "do_mmap() will unlock the necessary VMAs".
-> 
-> Ah, yes.  That is understandable.
-> 
-> do_mmap() L1583 -> mmap_region() L1752 -> munmap_vma_range() ->
-> do_munmap() -> __do_munmap() loop at 2891 to unlock the range.
-> 
-> Would you like me to add this call chain to the changelog?
-
-Yes please, in a simplified form.
-
-I suggest something like the following patch description:
-
-"do_mmap(MAP_FIXED) will already unlock pages via munmap_vma_range(). We
-can remove the superfluous manual unlocking in remap_file_pages().
-
-Note that the manual unlocking is even incorrect, as it might miss
-unlocking some pages - no harm done.
-"
 
 -- 
-Thanks,
-
-David / dhildenb
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
