@@ -2,224 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D9442DCA40
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 02:02:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48E652DCA39
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 01:58:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727052AbgLQA6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 19:58:35 -0500
-Received: from mga12.intel.com ([192.55.52.136]:12153 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726607AbgLQA6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 19:58:34 -0500
-IronPort-SDR: /OzDceenrnNtOiICfHSdMKrzmsnQBRUxwG7ITYY7qsb+vFCuBnRPj015EDWx9535QfACFA5Z38
- +jdrwSLVHhEw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9837"; a="154393534"
-X-IronPort-AV: E=Sophos;i="5.78,425,1599548400"; 
-   d="scan'208";a="154393534"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2020 16:57:40 -0800
-IronPort-SDR: AhDE9XYQhnnC3NL1/cGNoRc5wSVVP9weN0rLDr0EItCO19jjp451Si8bcR5nwBYacOOPEaYm2B
- 2gpTHFxcZEZA==
-X-IronPort-AV: E=Sophos;i="5.78,425,1599548400"; 
-   d="scan'208";a="385113859"
-Received: from jekeller-desk.amr.corp.intel.com ([10.166.241.4])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2020 16:57:40 -0800
-From:   Jacob Keller <jacob.e.keller@intel.com>
-To:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Cc:     Jacob Keller <jacob.e.keller@intel.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Stuart Yoder <stuyoder@gmail.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Nishanth Menon <nm@ti.com>, Tero Kristo <t-kristo@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH] msi: use for_each_msi_entry_safe iterator macro
-Date:   Wed, 16 Dec 2020 16:55:57 -0800
-Message-Id: <20201217005557.45031-1-jacob.e.keller@intel.com>
-X-Mailer: git-send-email 2.29.0
+        id S1726934AbgLQA6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 19:58:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726629AbgLQA6V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 19:58:21 -0500
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53FC5C06179C;
+        Wed, 16 Dec 2020 16:57:41 -0800 (PST)
+Received: by mail-vs1-xe2f.google.com with SMTP id x26so14057983vsq.1;
+        Wed, 16 Dec 2020 16:57:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=euybVxxM7EXhNr0jh3ZiR93jYB6lZp7ZVLZdtiF+Stc=;
+        b=dkkHBW1KWRJt7520F0htUV0xuxcwt/oGdQpq2ryed+sFoy7wHDXivE6+LwPdh8Ecza
+         1Iz2veR/H29I7B+d+HuVugAeeyRNVozvTb7ABDSv12jo9KtAAdsJufRHtoctNiA4LvUR
+         JmPjWRKBtJeFzaKgOvrDHqnqfs1zZl1NTgcf4kmC2gevwJ9q1SHrDolzneclHhCZOhl9
+         uKrhIVpRA8JBmgoNZSqUMEm9gnR3kKIYDpu/6x/HFpDIOwV0Gp7kiUZtI57SvJi25ikx
+         o/C3nNq/caEEi9wTQprw98iDPD0Cle62PXpx+uq+TMKcV4s6oA+gD8Cidsc6w7iaJl+L
+         7moA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=euybVxxM7EXhNr0jh3ZiR93jYB6lZp7ZVLZdtiF+Stc=;
+        b=Yb2RkqHgFNZpLys5A4at4auUOPvOvuUgWmkfSNr0uR0jBgAgwNrJHdyqS88Cm4sqqL
+         qGMaWOUDpmwTSUObYuF5qa3tABS1K/4ZjptA4endfRLJjvJLqW+n8Wv3juacEFY/wvbl
+         Eg0RtmyvSVTQO0BlNlTtBNxvt5zp9UTbGqI8qXV5MqzDBrr1fFGkYm42eB4bAUVno4IV
+         NqF6c5gylBJXFfdYfNvMvNq6uiTQ0BN1bFm5KRF3XgpTT5lZ9svBfGB6CH9Esi//YCS+
+         4pHrexduM290CTXd4t8FEfUwN/yWaA7KXikT3p0KgMLjNgmGBQw4RPfr6TNyll+6rZ10
+         5e9g==
+X-Gm-Message-State: AOAM533YqlEXrPJZ/wMuoeyvVcJL2TrMazvOdYT11CgEmn+tP9mrkhH9
+        sFb12RJOujYlkS1CWRKPtWzoucA1+tpYgG11hJw=
+X-Google-Smtp-Source: ABdhPJx9KMF/vMzk77FlYfvwXvpKrhKKNYIudUV0I+/d3bch1b/mIoVo1PmJak881wy/xbmx2XqXWqDCvKN39C6O5VM=
+X-Received: by 2002:a67:507:: with SMTP id 7mr27395596vsf.42.1608166660043;
+ Wed, 16 Dec 2020 16:57:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201206034408.31492-1-TheSven73@gmail.com> <20201206034408.31492-2-TheSven73@gmail.com>
+ <20201208114314.743ee6ec@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+ <CAGngYiVSHRGC+eOCeF3Kyj_wOVqxJHvoc9fXRk-w+sVRjeSpcw@mail.gmail.com>
+ <20201208225125.GA2602479@lunn.ch> <CAGngYiVp2u-A07rrkbeJCbqPW9efjkJUNC+NBxrtCM2JtXGpVA@mail.gmail.com>
+ <3aed88da-8e82-3bd0-6822-d30f1bd5ec9e@gmail.com> <CAGngYiUvJE+L4-tw91ozPaq7mGUbh0PS0q7MpLnHVwDqGrFwEw@mail.gmail.com>
+ <20201209140956.GC2611606@lunn.ch>
+In-Reply-To: <20201209140956.GC2611606@lunn.ch>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Wed, 16 Dec 2020 19:57:28 -0500
+Message-ID: <CAGngYiV=bzc72dpA6TJ7Bo2wcTihmB83HCU63pK4Z_jZ2frKww@mail.gmail.com>
+Subject: Re: [PATCH net v1 2/2] lan743x: boost performance: limit PCIe
+ bandwidth requirement
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bryan Whitehead <bryan.whitehead@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        David S Miller <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 81b1e6e6a859 ("platform-msi: Free descriptors in
-platform_msi_domain_free()") introduced for_each_msi_entry_safe as an
-iterator operating on the msi_list using the safe semantics with
-a temporary variable.
+Hi Andrew,
 
-A handful of locations still used the generic iterator instead of the
-specific macro. Fix the 3 remaining cases. Add a cocci script which can
-detect and report any misuse that is introduced in future changes.
+On Wed, Dec 9, 2020 at 9:10 AM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> 9K is not a nice number, since for each allocation it probably has to
+> find 4 contiguous pages. See what the performance difference is with
+> 2K, 4K and 8K. If there is a big difference, you might want to special
+> case when the MTU is set for jumbo packets, or check if the hardware
+> can do scatter/gather.
+>
+> You also need to be careful with caches and speculation. As you have
+> seen, bad things can happen. And it can be a lot more subtle. If some
+> code is accessing the page before the buffer and gets towards the end
+> of the page, the CPU might speculatively bring in the next page, i.e
+> the start of the buffer. If that happens before the DMA operation, and
+> you don't invalidate the cache correctly, you get hard to find
+> corruption.
 
-Cc: Rafael J. Wysocki <rafael@kernel.org>
-Cc: Stuart Yoder <stuyoder@gmail.com>
-Cc: Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Cc: Nishanth Menon <nm@ti.com>
-Cc: Tero Kristo <t-kristo@ti.com>
-Cc: Santosh Shilimkar <ssantosh@kernel.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-Signed-off-by: Jacob Keller <jacob.e.keller@intel.com>
----
-I noticed that a couple places used the generic _safe iterator. They appear
-to be code which was written before the commit that introduced the new
-MSI-specific iterator.
+Thank you for the guidance. When I keep the 9K buffers, and sync
+only the buffer space that is being used (mtu when mapping, received
+packet size when unmapping), then there is no more corruption, and
+performance improves. But setting the buffer size to the mtu size
+still provides much better performance. I do not understand why
+(yet).
 
- drivers/base/platform-msi.c                   |   2 +-
- drivers/bus/fsl-mc/fsl-mc-msi.c               |   2 +-
- drivers/soc/ti/ti_sci_inta_msi.c              |   2 +-
- .../iterators/for_each_msi_entry.cocci        | 101 ++++++++++++++++++
- 4 files changed, 104 insertions(+), 3 deletions(-)
- create mode 100644 scripts/coccinelle/iterators/for_each_msi_entry.cocci
-
-diff --git a/drivers/base/platform-msi.c b/drivers/base/platform-msi.c
-index c4a17e5edf8b..1fd8ac26c245 100644
---- a/drivers/base/platform-msi.c
-+++ b/drivers/base/platform-msi.c
-@@ -110,7 +110,7 @@ static void platform_msi_free_descs(struct device *dev, int base, int nvec)
- {
- 	struct msi_desc *desc, *tmp;
- 
--	list_for_each_entry_safe(desc, tmp, dev_to_msi_list(dev), list) {
-+	for_each_msi_entry_safe(desc, tmp, dev) {
- 		if (desc->platform.msi_index >= base &&
- 		    desc->platform.msi_index < (base + nvec)) {
- 			list_del(&desc->list);
-diff --git a/drivers/bus/fsl-mc/fsl-mc-msi.c b/drivers/bus/fsl-mc/fsl-mc-msi.c
-index 8edadf05cbb7..d0a52ccfa738 100644
---- a/drivers/bus/fsl-mc/fsl-mc-msi.c
-+++ b/drivers/bus/fsl-mc/fsl-mc-msi.c
-@@ -214,7 +214,7 @@ static void fsl_mc_msi_free_descs(struct device *dev)
- {
- 	struct msi_desc *desc, *tmp;
- 
--	list_for_each_entry_safe(desc, tmp, dev_to_msi_list(dev), list) {
-+	for_each_msi_entry_safe(desc, tmp, dev) {
- 		list_del(&desc->list);
- 		free_msi_entry(desc);
- 	}
-diff --git a/drivers/soc/ti/ti_sci_inta_msi.c b/drivers/soc/ti/ti_sci_inta_msi.c
-index 0eb9462f609e..66f9772dcdfa 100644
---- a/drivers/soc/ti/ti_sci_inta_msi.c
-+++ b/drivers/soc/ti/ti_sci_inta_msi.c
-@@ -64,7 +64,7 @@ static void ti_sci_inta_msi_free_descs(struct device *dev)
- {
- 	struct msi_desc *desc, *tmp;
- 
--	list_for_each_entry_safe(desc, tmp, dev_to_msi_list(dev), list) {
-+	for_each_msi_entry_safe(desc, tmp, dev) {
- 		list_del(&desc->list);
- 		free_msi_entry(desc);
- 	}
-diff --git a/scripts/coccinelle/iterators/for_each_msi_entry.cocci b/scripts/coccinelle/iterators/for_each_msi_entry.cocci
-new file mode 100644
-index 000000000000..45282f93ab6f
---- /dev/null
-+++ b/scripts/coccinelle/iterators/for_each_msi_entry.cocci
-@@ -0,0 +1,101 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/// Use for_each_msi_entry(_safe) instead of generic iterator
-+///
-+// Confidence: High
-+// Copyright: (C) 2020 Jacob Keller, Intel Corporation.
-+// URL: http://coccinelle.lip6.fr/
-+// Comments:
-+// Options: --no-includes --include-headers
-+
-+virtual patch
-+virtual context
-+virtual org
-+virtual report
-+
-+//----------------------------------------------------------
-+//  For context mode
-+//----------------------------------------------------------
-+@depends on context@
-+identifier member =~ "list";
-+struct msi_desc *desc;
-+struct msi_desc *tmp;
-+struct device *dev;
-+iterator name list_for_each_entry_safe;
-+iterator name list_for_each_entry;
-+statement S;
-+@@
-+(
-+* list_for_each_entry_safe(desc, tmp, dev_to_msi_list(dev), member)
-+S
-+|
-+* list_for_each_entry(desc, dev_to_msi_list(dev), member)
-+S
-+)
-+
-+//----------------------------------------------------------
-+//  For patch mode
-+//----------------------------------------------------------
-+@depends on patch@
-+identifier member =~ "list";
-+struct msi_desc *desc;
-+struct msi_desc *tmp;
-+struct device *dev;
-+iterator name list_for_each_entry_safe;
-+iterator name for_each_msi_entry_safe;
-+iterator name list_for_each_entry;
-+iterator name for_each_msi_entry;
-+statement S;
-+@@
-+(
-+- list_for_each_entry_safe(desc, tmp, dev_to_msi_list(dev), member)
-++ for_each_msi_entry_safe(desc, tmp, dev)
-+S
-+|
-+- list_for_each_entry(desc, dev_to_msi_list(dev), member)
-++ for_each_msi_entry(desc, dev)
-+S
-+)
-+
-+//----------------------------------------------------------
-+//  For org and report mode
-+//----------------------------------------------------------
-+
-+@r depends on (org || report )@
-+identifier member =~ "list";
-+struct msi_desc *desc;
-+struct msi_desc *tmp;
-+struct device *dev;
-+iterator name list_for_each_entry_safe;
-+iterator name list_for_each_entry;
-+statement S;
-+position p1, p2;
-+@@
-+(
-+ list_for_each_entry_safe@p1(desc, tmp, dev_to_msi_list(dev), member) S
-+|
-+ list_for_each_entry@p2(desc, dev_to_msi_list(dev), member) S
-+)
-+
-+@script:python depends on report@
-+p << r.p1;
-+@@
-+
-+coccilib.report.print_report(p[0], "WARNING: Use for_each_msi_entry_safe")
-+
-+@script:python depends on org@
-+p << r.p1;
-+@@
-+
-+coccilib.org.print_todo(p[0], "WARNING: Use for_each_msi_entry_safe")
-+
-+@script:python depends on report@
-+p << r.p2;
-+@@
-+
-+coccilib.report.print_report(p[0], "WARNING: Use for_each_msi_entry")
-+
-+@script:python depends on org@
-+p << r.p2;
-+@@
-+
-+coccilib.org.print_todo(p[0], "WARNING: Use for_each_msi_entry")
-
-base-commit: 255b2d524884e4ec60333131aa0ca0ef19826dc2
--- 
-2.29.0
-
+It seems that caching and dma behaviour/performance on arm32
+(armv7) is very different compared to x86.
