@@ -2,106 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BECB22DCD98
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 09:27:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D54E02DCD9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 09:29:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726758AbgLQI0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 03:26:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725988AbgLQI0g (ORCPT
+        id S1727346AbgLQI2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 03:28:01 -0500
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:45874 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726291AbgLQI2B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 03:26:36 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4423BC061794
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 00:25:56 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1kpobh-0003su-Ub; Thu, 17 Dec 2020 09:25:53 +0100
-Subject: Re: [PATCH 1/2] net: stmmac: retain PTP-clock at hwtstamp_set
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Holger Assmann <h.assmann@pengutronix.de>
-Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Rayagond Kokatanur <rayagond@vayavyalabs.com>,
-        kernel@pengutronix.de, Michael Olbrich <m.olbrich@pengutronix.de>,
-        Jose Abreu <Jose.Abreu@synopsys.com>, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Richard Cochran <richardcochran@gmail.com>
-References: <20201216113239.2980816-1-h.assmann@pengutronix.de>
- <20201216171334.1e36fbff@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <ae5371c0-ea53-6885-a25b-b44e9fe0b615@pengutronix.de>
-Date:   Thu, 17 Dec 2020 09:25:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Thu, 17 Dec 2020 03:28:01 -0500
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 0BH8QiaC006418;
+        Thu, 17 Dec 2020 17:26:44 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 0BH8QiaC006418
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1608193605;
+        bh=jcaLNZ1NT1WQYPfq0kRysSDeg/UOI3ok/TD4QabVH5o=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=PZEjpZX4q/Vx98PKPIcKvzac/iauNiBwLcjmNV1Nobc4HhjzF7bzb/0mz7qE/qyaD
+         CmXdo5+x+68mgLC8h+kNEInQH0mnltzOEz8IN+3NCx6zm/hjNrpJuOKumKLT4jbSkR
+         BKHlNK/C52RCWgNLrAoanOWQBMZU0iKZYNtymrJQm92MJ+KU3qD6aPrETeWiVB0IrE
+         Zlb6XTFLHT+hKrD+BydaK8o9fPZXFD4yL8ycteP+sw1+wfEVAAGdJirR1dNryKRMyY
+         byNX3PFyUT2DDiBWNHEwpJy9epgzlnVmSnAyfeBexWZKYEnAE3u/CHYht6LKbz1Ve5
+         9Q3Hh9gR5wc0w==
+X-Nifty-SrcIP: [209.85.214.179]
+Received: by mail-pl1-f179.google.com with SMTP id x18so8629479pln.6;
+        Thu, 17 Dec 2020 00:26:44 -0800 (PST)
+X-Gm-Message-State: AOAM532q6/yvBvuF7KtpOOi85B2mF4d6htqMNIlJkp210RKGJuhW4Q/x
+        R4O+tEsMMSmqDhSpwbF0BwaC+fZn/U/jR68yt5g=
+X-Google-Smtp-Source: ABdhPJyxwEOJhCIKr9ZHuv411/T9wbF+A/Kkwu+5u25hgnhiD+Z4n6mM9vnkQuv4PXISoA+X5+2ezfYW/qYRREcuXRY=
+X-Received: by 2002:a17:90a:d18c:: with SMTP id fu12mr6790562pjb.153.1608193603736;
+ Thu, 17 Dec 2020 00:26:43 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201216171334.1e36fbff@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20201103054425.59251-1-chao.wang@ucloud.cn> <CAK7LNARnmJRy1NPBDkgNsoe_TqpD=HJhmri4YHjXjscGZ-neWw@mail.gmail.com>
+ <20201123150452.GA68187@MacBook-Pro-2> <CAK7LNASH7Pj9eUdxF-sp1_Ap+uA9jEtsXa--pUDDw_pNVLtviA@mail.gmail.com>
+ <20201208092035.GA96434@MacBook-Pro-2.local> <20201208143117.GA3333762@wtfbox.lan>
+ <CAK7LNAS=wdCObfX3x8CQmXf8HsrKAjz+v+XVUCxVg63pxy8MXg@mail.gmail.com> <f2d1888b-5b8e-a513-61c7-f41fc3f3f7a3@redhat.com>
+In-Reply-To: <f2d1888b-5b8e-a513-61c7-f41fc3f3f7a3@redhat.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 17 Dec 2020 17:26:07 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATmfzt0kTF0BWkSRaZV3p01mvN4OSGPZsCp+KHghCWf0Q@mail.gmail.com>
+Message-ID: <CAK7LNATmfzt0kTF0BWkSRaZV3p01mvN4OSGPZsCp+KHghCWf0Q@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: add extra-y to targets-for-modules
+To:     Joe Lawrence <joe.lawrence@redhat.com>
+Cc:     Artem Savkov <artem.savkov@gmail.com>,
+        WANG Chao <chao.wang@ucloud.cn>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Dec 17, 2020 at 8:04 AM Joe Lawrence <joe.lawrence@redhat.com> wrote:
+>
+> On 12/16/20 1:14 AM, Masahiro Yamada wrote:
+> > On Tue, Dec 8, 2020 at 11:31 PM Artem Savkov <artem.savkov@gmail.com> wrote:
+> >>
+> >> On Tue, Dec 08, 2020 at 05:20:35PM +0800, WANG Chao wrote:
+> >>> Sorry for the late reply.
+> >>>
+> >>> On 11/25/20 at 10:42P, Masahiro Yamada wrote:
+> >>>> On Tue, Nov 24, 2020 at 12:05 AM WANG Chao <chao.wang@ucloud.cn> wrote:
+> >>>>>
+> >>>>> On 11/23/20 at 02:23P, Masahiro Yamada wrote:
+> >>>>>> On Tue, Nov 3, 2020 at 3:23 PM WANG Chao <chao.wang@ucloud.cn> wrote:
+> >>>>>>>
+> >>>>>>> extra-y target doesn't build for 'make M=...' since commit 6212804f2d78
+> >>>>>>> ("kbuild: do not create built-in objects for external module builds").
+> >>>>>>>
+> >>>>>>> This especially breaks kpatch, which is using 'extra-y := kpatch.lds'
+> >>>>>>> and 'make M=...' to build livepatch patch module.
+> >>>>>>>
+> >>>>>>> Add extra-y to targets-for-modules so that such kind of build works
+> >>>>>>> properly.
+> >>>>>>>
+> >>>>>>> Signed-off-by: WANG Chao <chao.wang@ucloud.cn>
+> >>>>>>> ---
+> >>>>>>>   scripts/Makefile.build | 2 +-
+> >>>>>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>>>>>
+> >>>>>>> diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+> >>>>>>> index ae647379b579..0113a042d643 100644
+> >>>>>>> --- a/scripts/Makefile.build
+> >>>>>>> +++ b/scripts/Makefile.build
+> >>>>>>> @@ -86,7 +86,7 @@ ifdef need-builtin
+> >>>>>>>   targets-for-builtin += $(obj)/built-in.a
+> >>>>>>>   endif
+> >>>>>>>
+> >>>>>>> -targets-for-modules := $(patsubst %.o, %.mod, $(filter %.o, $(obj-m)))
+> >>>>>>> +targets-for-modules := $(extra-y) $(patsubst %.o, %.mod, $(filter %.o, $(obj-m)))
+> >>>>>>>
+> >>>>>>>   ifdef need-modorder
+> >>>>>>>   targets-for-modules += $(obj)/modules.order
+> >>>>>>> --
+> >>>>>>> 2.29.1
+> >>>>>>>
+> >>>>>>
+> >>>>>> NACK.
+> >>>>>>
+> >>>>>> Please fix your Makefile.
+> >>>>>>
+> >>>>>> Hint:
+> >>>>>> https://patchwork.kernel.org/project/linux-kbuild/patch/20201123045403.63402-6-masahiroy@kernel.org/
+> >>>>>>
+> >>>>>>
+> >>>>>> Probably what you should use is 'targets'.
+> >>>>>
+> >>>>> I tried with 'targets' and 'always-y'. Both doesn't work for me.
+> >>>>>
+> >>>>> I narraw it down to the following example:
+> >>>>>
+> >>>>> cat > Makefile << _EOF_
+> >>>>> obj-m += foo.o
+> >>>>>
+> >>>>> ldflags-y += -T $(src)/kpatch.lds
+> >>>>> always-y += kpatch.lds
+> >>>>>
+> >>>>> foo-objs += bar.o
+> >>>>>
+> >>>>> all:
+> >>>>>          make -C /lib/modules/$(shell uname -r)/build M=$(PWD)
+> >>>>> clean:
+> >>>>>          make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
+> >>>>> _EOF_
+> >>>>>
+> >>>>> Take a look into scripts/Makefile.build:488:
+> >>>>>
+> >>>>> __build: $(if $(KBUILD_BUILTIN), $(targets-for-builtin)) \
+> >>>>>           $(if $(KBUILD_MODULES), $(targets-for-modules)) \
+> >>>>>           $(subdir-ym) $(always-y)
+> >>>>>          @:
+> >>>>>
+> >>>>> 'always-y' is built after 'targets-for-modules'. This makes
+> >>>>> 'targets-for-modules' fails because kpatch.lds isn't there.
+> >>>>
+> >>>>
+> >>>> Heh, you rely on the targets built from left to right,
+> >>>> and you have never thought Make supports the parallel option -j.
+> >>>
+> >>> You're right. I missed that.
+> >>>
+> >>>>
+> >>>>
+> >>>> You need to specify the dependency if you expect objects
+> >>>> are built in the particular order.
+> >>>>
+> >>>> However, in this case, using ldflags-y looks wrong
+> >>>> in the first place.
+> >>>>
+> >>>> The linker script is used when combining the object
+> >>>> as well as the final link of *.ko
+> >>
+> >> We want linker script to be used on both those steps, otherwise modpost
+> >> fails.
+> >
+> >
+> > In that case, does the following work?
+> > (untested)
+> >
+> >
+> >
+> > diff --git a/kmod/patch/Makefile b/kmod/patch/Makefile
+> > index e017b17..02d4c66 100644
+> > --- a/kmod/patch/Makefile
+> > +++ b/kmod/patch/Makefile
+> > @@ -12,7 +12,9 @@ endif
+> >
+> >   obj-m += $(KPATCH_NAME).o
+> >   ldflags-y += -T $(src)/kpatch.lds
+> > -extra-y := kpatch.lds
+> > +targets += kpatch.lds
+> > +
+> > +$(obj)/$(KPATCH_NAME).o: $(obj)/kpatch.lds
+> >
+> >   $(KPATCH_NAME)-objs += patch-hook.o output.o
+> >
+>
+> Hi Masahiro,
+>
+> Yeah this is more or less what Artem came up with:
+> https://github.com/dynup/kpatch/pull/1149
+>
+> though we hadn't added kpatch.lds to targets.  Is there documentation
+> somewhere on what effect "targets" has for out-of-tree builds?
+>
+> Thanks,
+>
+> -- Joe
+>
 
-On 17.12.20 02:13, Jakub Kicinski wrote:
->> +			netdev_warn(priv->dev, "HW Timestamping init failed: %pe\n",
->> +					ERR_PTR(ret));
-> 
-> why convert to ERR_PTR and use %pe and not just %d?
 
-To get a symbolic error name if support is compiled in (note the `e' after %p).
+Please try the rebuild without changing any source code.
 
-> 
-> also continuation misaligned
-> 
->> +		} else {
->> +			ret = stmmac_init_ptp(priv);
->> +			if (ret == -EOPNOTSUPP)
->> +				netdev_warn(priv->dev, "PTP not supported by HW\n");
->> +			else if (ret)
->> +				netdev_warn(priv->dev, "PTP init failed\n");
->> +		}
->>  	}
->>  
->>  	priv->eee_tw_timer = STMMAC_DEFAULT_TWT_LS;
->> @@ -5290,8 +5330,7 @@ int stmmac_resume(struct device *dev)
->>  		/* enable the clk previously disabled */
->>  		clk_prepare_enable(priv->plat->stmmac_clk);
->>  		clk_prepare_enable(priv->plat->pclk);
->> -		if (priv->plat->clk_ptp_ref)
->> -			clk_prepare_enable(priv->plat->clk_ptp_ref);
->> +		stmmac_init_hwtstamp(priv);
-> 
-> This was optional, now you always init?
+If kpatch.lds is needlessly rebuilt, you need to add
+it to 'targets'.
 
-Indeed, omitting the if condition here will lead to a needless warning on every reset.
 
-Cheers,
-Ahmad
+In linux-next, this is documented.
 
-> 
->>  		/* reset the phy so that it's ready */
->>  		if (priv->mii)
->>  			stmmac_mdio_reset(priv->mii);
->>
->> base-commit: 3db1a3fa98808aa90f95ec3e0fa2fc7abf28f5c9
-> 
-> 
+Documentation/kbuild/makefile.rst:
+
+        Any target that utilizes if_changed must be listed in $(targets),
+        otherwise the command line check will fail, and the target will
+        always be built.
+
+
+
+
+
+
 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Best Regards
+Masahiro Yamada
