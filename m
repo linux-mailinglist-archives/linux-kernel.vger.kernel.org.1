@@ -2,135 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8AE62DCFFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 12:02:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20FBA2DCFFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 12:03:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726874AbgLQLBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 06:01:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbgLQLBo (ORCPT
+        id S1727628AbgLQLD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 06:03:29 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:40676 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727160AbgLQLDY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 06:01:44 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51CAEC06138C
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 03:01:02 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id 186so25915620qkj.3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 03:01:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=9Imzg8e8xlIRFIOdl2DY/7SAx12RI7ioSsy2IScl6E0=;
-        b=kDRP/xhfnrHzPCmRqaLzaDTwvF0zEJZMvJLflkpZyd9nJKClvtZtWymdXNIXWfZqeB
-         /VM5SySkKDDqlEsAgUa8MmkMLPKZVk9tWSDs7Pjm8LEWdCDWuCEnf5dpgpBvrqgc5Myl
-         xqytZN6Up1tZdVDylWxTKOHaY10a9oJacBRIO2kidBjPdCbmuzEsd20tivJrK/BaRhnD
-         VBJ0DZhlVpF2DqRZZfVUsX/o2WRUiXJyUm+p+I3fUDlORxHI/oBfyNeOStAY/Tmd2xx+
-         hmt4PAUc9x1Ai83/YUdPLhLJ1/RpStpc+DqtP/25/uxvDmlarPSTB8wEogXsm8BtgUD6
-         Cbsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=9Imzg8e8xlIRFIOdl2DY/7SAx12RI7ioSsy2IScl6E0=;
-        b=aVIaMvGYfbybjv3jmS+lUDTTlswFL+LkDKacdGCd5UnuwbyUwUGol9HadCV1FVsMbe
-         kDPqCt15Zw8oXpyatdfN4We2uXLqmK3TLIIv58qai9WXD3h+gs5C+Z4Yd4KsEnVAgMnw
-         iMoiSMuuS9aSK7npiPath4zoAmXhIMkolJxrBLR0xi7Vq/Pmr6A/BJ+VD+EaC/ZIJil6
-         FqCDc8vovKyCvEhJt4tAe4mda52EoceofLVUqlzvRtIP4YY461jG0lW+M8XvRLZxvmBA
-         S3xT0bb9uQDD2hMeR8vesKj4PSD98lUHlRwAiFHobEle83LWieTH1JD82HyTBN475Hiw
-         yuAg==
-X-Gm-Message-State: AOAM530gza8y4izHxWVv28Ig6xW23Q20cvAduH0hfgQ+umSLCx9StCcB
-        HhecAHirOmA/pGGKLEov9l6aGsYLcqjK5wwjavfm+Q==
-X-Google-Smtp-Source: ABdhPJw1il1BYSqi4VSEYZluhba8w6tFNcfSV2KFj5T4imgrdg26rf0keo4ft1+EWvlnT2aKbhc1lCQSgD05CEyFCIw=
-X-Received: by 2002:a37:7806:: with SMTP id t6mr47141561qkc.360.1608202861827;
- Thu, 17 Dec 2020 03:01:01 -0800 (PST)
+        Thu, 17 Dec 2020 06:03:24 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BHAxrmr142184;
+        Thu, 17 Dec 2020 11:02:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=L3aGYrlGeo3eT6PpjNqyTbmWD+46i7QX5RYLQI6tFXo=;
+ b=Mffd3LLUfyTaTJfrCowPMeqSxUXq0stihiQJYoclk7ZqpIFTVNwf4/UYAl+5wpbnyC7u
+ TV/+FeZ4X8gbGM/sXiFKuz5eNvexQNDcBXFY8xpOviKS3JwyEvXI6hsUXIkB/mabhA4E
+ 9v5a+Owowjo+8Q98j8SFzlcvQo4flWerwMoYZFewLA/bSBDJ4k4NW/nvrRpKOQfMxMtA
+ t+c/o4bucfGl9xCTjechnOjuiBYZJu1o8XFE7GuzGAUHe7iIwCgTbqmC19i71LCiRIE1
+ DgyiuGZMaQmj56PtP1h1lGr0xAudqP8ftgmpwxgImx4XSHRXvRTIZkwTSXJkli1UeEKy Fg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 35cntmcsw0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 17 Dec 2020 11:02:00 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BHB1D4i128891;
+        Thu, 17 Dec 2020 11:02:00 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 35e6et4ynk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 17 Dec 2020 11:02:00 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BHB1u7I011570;
+        Thu, 17 Dec 2020 11:01:56 GMT
+Received: from mwanda (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 17 Dec 2020 03:01:55 -0800
+Date:   Thu, 17 Dec 2020 14:01:48 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Steve French <sfrench@samba.org>
+Cc:     Aurelien Aptel <aaptel@suse.com>,
+        Samuel Cabrero <scabrero@suse.de>, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH 1/3] cifs: Delete a stray unlock in cifs_swn_reconnect()
+Message-ID: <X9s6nGDLt4xreaYN@mwanda>
 MIME-Version: 1.0
-References: <1608198007-10143-1-git-send-email-stefanc@marvell.com> <1608198007-10143-2-git-send-email-stefanc@marvell.com>
-In-Reply-To: <1608198007-10143-2-git-send-email-stefanc@marvell.com>
-From:   Marcin Wojtas <mw@semihalf.com>
-Date:   Thu, 17 Dec 2020 12:00:49 +0100
-Message-ID: <CAPv3WKcwT9F3w=Ua-ktE=eorp0a-HPvoF2U-CwsHVtFw6GKOzQ@mail.gmail.com>
-Subject: Re: [PATCH net v2 2/2] net: mvpp2: disable force link UP during port
- init procedure
-To:     Stefan Chulski <stefanc@marvell.com>
-Cc:     netdev <netdev@vger.kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>, nadavh@marvell.com,
-        Yan Markman <ymarkman@marvell.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Russell King <rmk+kernel@armlinux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9837 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 phishscore=0
+ bulkscore=0 suspectscore=0 malwarescore=0 mlxlogscore=999 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012170080
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9837 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 mlxscore=0
+ lowpriorityscore=0 spamscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ mlxlogscore=999 impostorscore=0 priorityscore=1501 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012170080
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stefan,
+The unlock is done in the caller, this is a stray which leads to a
+double unlock bug.
 
-czw., 17 gru 2020 o 10:42 <stefanc@marvell.com> napisa=C5=82(a):
->
-> From: Stefan Chulski <stefanc@marvell.com>
->
-> Force link UP can be enabled by bootloader during tftpboot
-> and breaks NFS support.
-> Force link UP disabled during port init procedure.
->
-> Signed-off-by: Stefan Chulski <stefanc@marvell.com>
-> ---
+Fixes: bf80e5d4259a ("cifs: Send witness register and unregister commands to userspace daemon")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ fs/cifs/cifs_swn.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-What are the updates against v1? Please note them in this place for
-individual patches and list all in the cover letter (in case sending a
-group of patches).
+diff --git a/fs/cifs/cifs_swn.c b/fs/cifs/cifs_swn.c
+index c594e588a8b5..b2ef082d6438 100644
+--- a/fs/cifs/cifs_swn.c
++++ b/fs/cifs/cifs_swn.c
+@@ -285,8 +285,6 @@ static struct cifs_swn_reg *cifs_find_swn_reg(struct cifs_tcon *tcon)
+ 			continue;
+ 		}
+ 
+-		mutex_unlock(&cifs_swnreg_idr_mutex);
+-
+ 		cifs_dbg(FYI, "Existing swn registration for %s:%s found\n", swnreg->net_name,
+ 				swnreg->share_name);
+ 
+-- 
+2.29.2
 
-Do you think it's a fix that should be backported to stable branches?
-If yes, please add 'Fixes: <commit ID> ("commit title")' and it may be
-good to add 'Cc: stable@vger.kernel.org' adjacent to the Signed-off-by
-tag.
-
-Thanks,
-Marcin
-
->  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/ne=
-t/ethernet/marvell/mvpp2/mvpp2_main.c
-> index d2b0506..0ad3177 100644
-> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> @@ -5479,7 +5479,7 @@ static int mvpp2_port_init(struct mvpp2_port *port)
->         struct mvpp2 *priv =3D port->priv;
->         struct mvpp2_txq_pcpu *txq_pcpu;
->         unsigned int thread;
-> -       int queue, err;
-> +       int queue, err, val;
->
->         /* Checks for hardware constraints */
->         if (port->first_rxq + port->nrxqs >
-> @@ -5493,6 +5493,18 @@ static int mvpp2_port_init(struct mvpp2_port *port=
-)
->         mvpp2_egress_disable(port);
->         mvpp2_port_disable(port);
->
-> +       if (mvpp2_is_xlg(port->phy_interface)) {
-> +               val =3D readl(port->base + MVPP22_XLG_CTRL0_REG);
-> +               val &=3D ~MVPP22_XLG_CTRL0_FORCE_LINK_PASS;
-> +               val |=3D MVPP22_XLG_CTRL0_FORCE_LINK_DOWN;
-> +               writel(val, port->base + MVPP22_XLG_CTRL0_REG);
-> +       } else {
-> +               val =3D readl(port->base + MVPP2_GMAC_AUTONEG_CONFIG);
-> +               val &=3D ~MVPP2_GMAC_FORCE_LINK_PASS;
-> +               val |=3D MVPP2_GMAC_FORCE_LINK_DOWN;
-> +               writel(val, port->base + MVPP2_GMAC_AUTONEG_CONFIG);
-> +       }
-> +
->         port->tx_time_coal =3D MVPP2_TXDONE_COAL_USEC;
->
->         port->txqs =3D devm_kcalloc(dev, port->ntxqs, sizeof(*port->txqs)=
-,
-> --
-> 1.9.1
->
