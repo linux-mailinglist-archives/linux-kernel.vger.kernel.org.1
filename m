@@ -2,62 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0134E2DCAD2
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 03:08:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4E912DCADD
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 03:11:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727188AbgLQCGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 21:06:52 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9536 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726354AbgLQCGw (ORCPT
+        id S1727154AbgLQCJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 21:09:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727317AbgLQCJf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 21:06:52 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CxFhC6YkdzhnJj;
-        Thu, 17 Dec 2020 10:05:31 +0800 (CST)
-Received: from huawei.com (10.175.112.227) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Thu, 17 Dec 2020
- 10:06:05 +0800
-From:   Xiangyang Yu <yuxiangyang4@huawei.com>
-To:     <akpm@linux-foundation.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] mm/filemap: Fix warning: no previous prototype
-Date:   Thu, 17 Dec 2020 10:03:11 +0800
-Message-ID: <20201217020311.491799-1-yuxiangyang4@huawei.com>
-X-Mailer: git-send-email 2.23.0
+        Wed, 16 Dec 2020 21:09:35 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED0DEC0617A7
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 18:08:54 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id be12so1198926plb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 18:08:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8eLKwGSpN1CIyR4Kd4zybrisCdZPTB+phRfHVeIVRLo=;
+        b=frhvB+UsVAgIo3+VjtHXq3C6F2Vh8NZWIdF3ZC34I1OxFyPOl/MK2gMUGOv9oZomu1
+         7ASJMsObwn6jcuWWQYh6ijoJ9+XXN6zDo2lYrOTdt5vc9fQO+5pKh3shKDZuH1EQ81zy
+         eXozjgzjw7fegMSzt/ljyYbMYrbXobtVX9SB1Fa4rdqfafl83gtN9QcJQtS2aHi0481Q
+         PpV62IwtPAOV+h23GiNXAw5L3oBOrJZQLg23D5IDOeZLNzHccE7flF4aXp2TsKQYw+D7
+         t4Sdl0vBPfrAhLf2A5THCQH3AufaOgLUZUumivRQKcyPNFbkIuvi74QJdy6Y6JYFynJW
+         rv0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8eLKwGSpN1CIyR4Kd4zybrisCdZPTB+phRfHVeIVRLo=;
+        b=g3qPqWu+8HFzrGj8YRcmxdga5EbfQR8yCviq7CCq+1bqWxx0JJwewsKX9SzkOhh6n5
+         VVmKAHnNYQmG9Bwc6nqPNRa8TngNDtYec5SfeHmWOLz7kzOEOukxgIcfdUVkg6sg96+e
+         FrsjB88aTGKho30QKuHx/aD41oXuk+dyWpW7BXvtZR24rj1IVisFgDTE5aPE48SHamkl
+         RwYtcp/dcVZ//roLRuJLUnWvr3NG/qsdFnmdy/aDRvqbGyyoELR/H4+soaqFdaBUlSfu
+         npldAuSiDJNkoakU3epDHITaiRQq48Tr7mrMcbfQLSEJkotPLuFH7UZFaYLfjEHQ/ZJM
+         6HGw==
+X-Gm-Message-State: AOAM532MJ9sWtAo3m8dXXuemZnSBWqYrcYWvYQj4ump4Vyd/503farhO
+        VWdTtJ2dih/JD9que1A+fJIN4Geb1xqv3hUWXA6hYA==
+X-Google-Smtp-Source: ABdhPJyYAa4dCGGScl3comwtcPFfhEQus9OAPRGfcjasKlqBX0Jp6tUhcrNwRqTvB0iifU/UajVHGA3HBFklASpZjJ0=
+X-Received: by 2002:a17:902:ed14:b029:da:9da4:3091 with SMTP id
+ b20-20020a170902ed14b02900da9da43091mr33856567pld.29.1608170934177; Wed, 16
+ Dec 2020 18:08:54 -0800 (PST)
 MIME-Version: 1.0
+References: <20201216233956.280068-1-paul@crapouillou.net>
+In-Reply-To: <20201216233956.280068-1-paul@crapouillou.net>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 16 Dec 2020 18:08:42 -0800
+Message-ID: <CAKwvOdnmt7v=+QdZbVYw9fDTeAhhHn0X++aLBa3uQVp7Gp=New@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: boot: Fix unaligned access with CONFIG_MIPS_RAW_APPENDED_DTB
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nathan Chancellor <natechancellor@gmail.com>, od@zcrc.me,
+        linux-mips@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "# 3.4.x" <stable@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.112.227]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed the warning when building with warnings enabled (W=1),
-This function is only used in filemap.c, so mark this function
-with 'static'.
+On Wed, Dec 16, 2020 at 3:40 PM Paul Cercueil <paul@crapouillou.net> wrote:
+>
+> The compressed payload is not necesarily 4-byte aligned, at least when
+> compiling with Clang. In that case, the 4-byte value appended to the
+> compressed payload that corresponds to the uncompressed kernel image
+> size must be read using get_unaligned_le().
 
-mm/filemap.c:830:14: warning: no previous prototype for ‘__add_to_page_cache_locked’ [-Wmissing-prototypes]
+Should it be get_unaligned_le32()?
 
-Signed-off-by: Xiangyang Yu <yuxiangyang4@huawei.com>
----
- mm/filemap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> This fixes Clang-built kernels not booting on MIPS (tested on a Ingenic
+> JZ4770 board).
+>
+> Fixes: b8f54f2cde78 ("MIPS: ZBOOT: copy appended dtb to the end of the kernel")
+> Cc: <stable@vger.kernel.org> # v4.7
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 
-diff --git a/mm/filemap.c b/mm/filemap.c
-index c178022d7893..edaba5251bec 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -827,7 +827,7 @@ int replace_page_cache_page(struct page *old, struct page *new, gfp_t gfp_mask)
- }
- EXPORT_SYMBOL_GPL(replace_page_cache_page);
- 
--noinline int __add_to_page_cache_locked(struct page *page,
-+static noinline int __add_to_page_cache_locked(struct page *page,
- 					struct address_space *mapping,
- 					pgoff_t offset, gfp_t gfp,
- 					void **shadowp)
+Hi Paul, thanks for the patch (and for testing with Clang)!
+Alternatively, we could re-align __image_end to the next 4B multiple
+via:
+
+diff --git a/arch/mips/boot/compressed/ld.script
+b/arch/mips/boot/compressed/ld.script
+index 0ebb667274d6..349919eff5fb 100644
+--- a/arch/mips/boot/compressed/ld.script
++++ b/arch/mips/boot/compressed/ld.script
+@@ -27,6 +27,7 @@ SECTIONS
+                /* Put the compressed image here */
+                __image_begin = .;
+                *(.image)
++               . = ALIGN(4);
+                __image_end = .;
+                CONSTRUCTORS
+                . = ALIGN(16);
+
+The tradeoff being up to 3 wasted bytes of padding in the compressed
+image, vs fetching one value slower (assuming unaligned loads are
+slower than aligned loads MIPS, IDK).  I doubt decompress_kernel is
+called repeatedly, so let's take the byte saving approach of yours by
+using unaligned loads!
+
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+
+> ---
+>  arch/mips/boot/compressed/decompress.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/mips/boot/compressed/decompress.c b/arch/mips/boot/compressed/decompress.c
+> index c61c641674e6..47c07990432b 100644
+> --- a/arch/mips/boot/compressed/decompress.c
+> +++ b/arch/mips/boot/compressed/decompress.c
+> @@ -117,7 +117,7 @@ void decompress_kernel(unsigned long boot_heap_start)
+>                 dtb_size = fdt_totalsize((void *)&__appended_dtb);
+>
+>                 /* last four bytes is always image size in little endian */
+> -               image_size = le32_to_cpup((void *)&__image_end - 4);
+> +               image_size = get_unaligned_le32((void *)&__image_end - 4);
+>
+>                 /* copy dtb to where the booted kernel will expect it */
+>                 memcpy((void *)VMLINUX_LOAD_ADDRESS_ULL + image_size,
+> --
+> 2.29.2
+>
+
+
 -- 
-2.23.0
-
+Thanks,
+~Nick Desaulniers
