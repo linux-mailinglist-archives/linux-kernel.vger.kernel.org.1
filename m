@@ -2,131 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC35E2DD237
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 14:35:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D29962DD239
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 14:35:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728047AbgLQNeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 08:34:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55762 "EHLO
+        id S1728129AbgLQNen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 08:34:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727365AbgLQNeB (ORCPT
+        with ESMTP id S1726877AbgLQNem (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 08:34:01 -0500
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5E33C061794;
-        Thu, 17 Dec 2020 05:33:20 -0800 (PST)
-Received: by mail-il1-x132.google.com with SMTP id r17so25781897ilo.11;
-        Thu, 17 Dec 2020 05:33:20 -0800 (PST)
+        Thu, 17 Dec 2020 08:34:42 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF32C061794;
+        Thu, 17 Dec 2020 05:34:02 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id r7so26622909wrc.5;
+        Thu, 17 Dec 2020 05:34:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+jjwZlh8+P5xdjAQxmNKObP9LCO6P25PhEfU2zCmIIo=;
-        b=uGGcGK/wDVzDKdufzCc89MMDlxsTtuwvQFYZfoNjVx5DcIQn0oQa3KCpR52rZvwyjN
-         qUixh4YWZXYI5/R5tOATyzRH2lwDzqLD7Gl0GY10bvSUbehLdaZsO03Q1WqwXYtPAXzb
-         DgANnf+J6OKYlH7cnsqk2ASYUqUmo5G/v+83VtuFlFhTaeJwytIzfMwghOK2A/hrAj/p
-         awiGQIC8VjEcda3RSSHlI8SMUlAy0PhRzn/Op0qiAre1r44OaDwxPAhQl7aebifpJiNk
-         8ZanpmQ2dnPFuiuBG+ZCE1mbgdbxN9I+3n2eXMZuACyHKH8ONQIqNYqSp1gKjsnSD4IC
-         m3FA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=RdPgE+O03vZl8d5OConBq4/ErbiJyM2cotJazGoLY04=;
+        b=g+NE7p8bCSzsc/PcTU+e+cZ4dCWNV/mkDqZVE5ep5L2MhtW6FrhhFV8Gd708kV7dR1
+         bVjyNZnXJnCzegBJnTcHm4yjmualZByZWBZXGZDY62H+zIZbTEdWO1DBrGlZTxc63HUK
+         /FNIL5KykwprgsZuT5Zh9bcSvyj25PbM9Nk8We5IOCdnzcakHYmi5Tg9iGgjqa9mIhxa
+         l0tjHtGcQ98xkXFSIpd90mX6d53MwVtBuXUQbQ74xiyjBpchWoKSVCvAY9OuAkFITY2E
+         LE1J+H680V3sCOotsOCWS1bqym+Hn79/Ad4pBxOVfG0P8eE5YNKwzZk8ABuzwdkfo9q5
+         rNlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+jjwZlh8+P5xdjAQxmNKObP9LCO6P25PhEfU2zCmIIo=;
-        b=qRwBH1jV6JQnzP3QxF4Gw7M9FnUGjEge8KoFI4agPvFqGUR9kXIihrpmqokvEE8W/d
-         w8uJbDkFn+vUunIa5pL3a6AH7fUDbWeAW0/lzwUhRtF7iH5Ei/qa1/gc0k6UWZv+yt1w
-         knAyjmuzs544aoZNos7agUH1N0eFe4+OgmdXdwB75A6K4Xr99rED1Oo3nkh2lc7KXIJS
-         MGsLNRugqeG7y0I8b5wVfK1LHYW7BduZVSj4YQEgRvrXF4MSaDc0mewmk3yKA/zEIF6w
-         //QuX4UvUAEHLHGJpjxHGqGSQiGJyuCZjATeKe8z8qD6n9Yngc/047uIHtJpFe7HPwNC
-         KfUQ==
-X-Gm-Message-State: AOAM532aN4wR2dg4Axc2e686UdFtwg5B47GDalxKmuVPe1wLugJDB7cs
-        +oqdrdIGAazQtwnh1VzpjhkDKVy/EPw+4loBmY0OUP/xESm4gw==
-X-Google-Smtp-Source: ABdhPJzZdM+KhdXs045hzNvmUYkm/uIToQWw1BQSY/qolijdZMQZ9QVId3RID7/CaGKBcRjz8IyL4jZhw87muy1leGM=
-X-Received: by 2002:a05:6e02:926:: with SMTP id o6mr48950963ilt.65.1608211999880;
- Thu, 17 Dec 2020 05:33:19 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=RdPgE+O03vZl8d5OConBq4/ErbiJyM2cotJazGoLY04=;
+        b=MSirS4z0xEqgLyXa4vDIk0Ypt0sFP2ugPgfAHQN6uMgLFQZITSzS50EbO3zvNT4nPc
+         GYUis8D9Vu2YVUUqrm3EOFvyESZI5H6wvZnDT7BuhgEIFx5N38Y9yb8k1GVMWt+D/poT
+         usveGyfDwojj6qxjzX0OW4F4noUFg/doQsi3H9ikebEsZtALtadIT22DvNlrKoOO6iGj
+         ZRhoWwfAQ7uWG2ozP2vwNf3X8K2mzJHQS0gNynsg1Sje+x+zanfbikBZv51uybvXqKNI
+         PXhxF19ske9tSctXx6JcAo+msRUY7ZCeygr/NvsIVqSQuVL9N39qYP1scnfl1TFNQtB3
+         d2sQ==
+X-Gm-Message-State: AOAM531Pv7fYZ2/YiSgbK9TP9nsUymUtoSDWVFJ3PsS//S4Dvx5O/ykX
+        xDg49GUfNuJcCjQlIArlOJ8=
+X-Google-Smtp-Source: ABdhPJyRy/9xkZuGDvhBcKhJIYJ4l48j5x2ipIw06LNgP/XVotvWKszzxTV0v6V9/TLVpO55ElXNlQ==
+X-Received: by 2002:adf:c454:: with SMTP id a20mr43421614wrg.314.1608212040740;
+        Thu, 17 Dec 2020 05:34:00 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id i9sm8970970wrs.70.2020.12.17.05.33.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Dec 2020 05:33:57 -0800 (PST)
+Date:   Thu, 17 Dec 2020 14:33:56 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Felipe Balbi <balbi@kernel.org>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Ion Agorria <ion@agorria.com>, linux-tegra@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/8] usb: phy: tegra: Support waking up from a low
+ power mode
+Message-ID: <X9teRPo/MadN79NI@ulmo>
+References: <20201217094007.19336-1-digetx@gmail.com>
+ <20201217094007.19336-3-digetx@gmail.com>
 MIME-Version: 1.0
-References: <20201213183759.223246-1-aford173@gmail.com> <20201213183759.223246-7-aford173@gmail.com>
- <CAMuHMdU+d7SZc9gh_3WS+bqd4EhXYh=kv0XvYrgUUckdQ7o5jw@mail.gmail.com>
-In-Reply-To: <CAMuHMdU+d7SZc9gh_3WS+bqd4EhXYh=kv0XvYrgUUckdQ7o5jw@mail.gmail.com>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Thu, 17 Dec 2020 07:33:07 -0600
-Message-ID: <CAHCN7xJf2T3uFLDtJxvjFYzCksWq02+CUY51_WmnU44YDJKy9Q@mail.gmail.com>
-Subject: Re: [PATCH 06/18] arm64: dts: renesas: beacon: Configure Audio CODEC clocks
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="r233Q7uw7p4hkkfc"
+Content-Disposition: inline
+In-Reply-To: <20201217094007.19336-3-digetx@gmail.com>
+User-Agent: Mutt/2.0.3 (a51f058f) (2020-12-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 5:12 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Adam,
->
-> CC alsa-devel
->
-> On Sun, Dec 13, 2020 at 7:38 PM Adam Ford <aford173@gmail.com> wrote:
-> > With the newly added configurable clock options, the audio CODEC can
-> > configure the mclk automatically.  Add the reference to the versaclock.
-> > Since the devices on I2C5 can communicate at 400KHz, let's also increase
-> > that too
-> >
-> > Signed-off-by: Adam Ford <aford173@gmail.com>
->
-> Thanks for your patch!
->
-> > --- a/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
-> > +++ b/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
-> > @@ -424,13 +424,15 @@ &i2c0 {
-> >
-> >  &i2c5 {
-> >         status = "okay";
-> > -       clock-frequency = <100000>;
-> > +       clock-frequency = <400000>;
-> >         pinctrl-0 = <&i2c5_pins>;
-> >         pinctrl-names = "default";
-> >
-> >         codec: wm8962@1a {
-> >                 compatible = "wlf,wm8962";
-> >                 reg = <0x1a>;
-> > +               clocks = <&versaclock6_bb 3>;
-> > +               clock-names = "mclk";
->
-> While the driver does get the (nameless) clock, the DT bindings lack any
-> mention of a clocks property.  It would be good to update the bindings.
 
-Agreed.  I'll push an update to add the clocks property.
+--r233Q7uw7p4hkkfc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->
-> Note that arch/arm/boot/dts/imx6-logicpd-baseboard.dtsi and
-> arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi (both by your
-> hand) use "xclk" instead of "mclk"?
+On Thu, Dec 17, 2020 at 12:40:01PM +0300, Dmitry Osipenko wrote:
+> Support programming of waking up from a low power mode by implementing the
+> generic set_wakeup() callback of the USB PHY API.
+>=20
+> Tested-by: Matt Merhar <mattmerhar@protonmail.com>
+> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+> Tested-by: Peter Geis <pgwipeout@gmail.com>
+> Tested-by: Ion Agorria <ion@agorria.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/usb/phy/phy-tegra-usb.c   | 94 +++++++++++++++++++++++++++++--
+>  include/linux/usb/tegra_usb_phy.h |  2 +
+>  2 files changed, 90 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/drivers/usb/phy/phy-tegra-usb.c b/drivers/usb/phy/phy-tegra-=
+usb.c
+> index 1296524e1bee..46a1f61877ad 100644
+> --- a/drivers/usb/phy/phy-tegra-usb.c
+> +++ b/drivers/usb/phy/phy-tegra-usb.c
+> @@ -45,6 +45,7 @@
+>  #define TEGRA_PORTSC1_RWC_BITS	(PORT_CSC | PORT_PEC | PORT_OCC)
+> =20
+>  #define USB_SUSP_CTRL				0x400
+> +#define   USB_WAKE_ON_RESUME_EN			BIT(2)
+>  #define   USB_WAKE_ON_CNNT_EN_DEV		BIT(3)
+>  #define   USB_WAKE_ON_DISCON_EN_DEV		BIT(4)
+>  #define   USB_SUSP_CLR				BIT(5)
+> @@ -56,6 +57,15 @@
+>  #define   USB_SUSP_SET				BIT(14)
+>  #define   USB_WAKEUP_DEBOUNCE_COUNT(x)		(((x) & 0x7) << 16)
+> =20
+> +#define USB_PHY_VBUS_SENSORS			0x404
+> +#define   B_SESS_VLD_WAKEUP_EN			BIT(6)
+> +#define   B_VBUS_VLD_WAKEUP_EN			BIT(14)
+> +#define   A_SESS_VLD_WAKEUP_EN			BIT(22)
+> +#define   A_VBUS_VLD_WAKEUP_EN			BIT(30)
+> +
+> +#define USB_PHY_VBUS_WAKEUP_ID			0x408
+> +#define   VBUS_WAKEUP_WAKEUP_EN			BIT(30)
+> +
+>  #define USB1_LEGACY_CTRL			0x410
+>  #define   USB1_NO_LEGACY_MODE			BIT(0)
+>  #define   USB1_VBUS_SENSE_CTL_MASK		(3 << 1)
+> @@ -334,6 +344,11 @@ static int utmip_pad_power_on(struct tegra_usb_phy *=
+phy)
+>  		writel_relaxed(val, base + UTMIP_BIAS_CFG0);
+>  	}
+> =20
+> +	if (phy->pad_wakeup) {
+> +		phy->pad_wakeup =3D false;
+> +		utmip_pad_count--;
+> +	}
+> +
+>  	spin_unlock(&utmip_pad_lock);
+> =20
+>  	clk_disable_unprepare(phy->pad_clk);
+> @@ -359,6 +374,17 @@ static int utmip_pad_power_off(struct tegra_usb_phy =
+*phy)
+>  		goto ulock;
+>  	}
+> =20
+> +	/*
+> +	 * In accordance to TRM, OTG and Bias pad circuits could be turned off
+> +	 * to save power if wake is enabled, but the VBUS-change detection
+> +	 * method is board-specific and these circuits may need to be enabled
+> +	 * to generate wakeup event, hence we will just keep them both enabled.
+> +	 */
+> +	if (phy->wakeup_enabled) {
+> +		phy->pad_wakeup =3D true;
+> +		utmip_pad_count++;
+> +	}
+> +
+>  	if (--utmip_pad_count =3D=3D 0) {
+>  		val =3D readl_relaxed(base + UTMIP_BIAS_CFG0);
+>  		val |=3D UTMIP_OTGPD | UTMIP_BIASPD;
+> @@ -503,11 +529,24 @@ static int utmi_phy_power_on(struct tegra_usb_phy *=
+phy)
+>  		writel_relaxed(val, base + UTMIP_PLL_CFG1);
+>  	}
+> =20
+> +	val =3D readl_relaxed(base + USB_SUSP_CTRL);
+> +	val &=3D ~USB_WAKE_ON_RESUME_EN;
+> +	writel_relaxed(val, base + USB_SUSP_CTRL);
+> +
+>  	if (phy->mode =3D=3D USB_DR_MODE_PERIPHERAL) {
+>  		val =3D readl_relaxed(base + USB_SUSP_CTRL);
+>  		val &=3D ~(USB_WAKE_ON_CNNT_EN_DEV | USB_WAKE_ON_DISCON_EN_DEV);
+>  		writel_relaxed(val, base + USB_SUSP_CTRL);
+> =20
+> +		val =3D readl_relaxed(base + USB_PHY_VBUS_WAKEUP_ID);
+> +		val &=3D ~VBUS_WAKEUP_WAKEUP_EN;
+> +		writel_relaxed(val, base + USB_PHY_VBUS_WAKEUP_ID);
+> +
+> +		val =3D readl_relaxed(base + USB_PHY_VBUS_SENSORS);
+> +		val &=3D ~(A_VBUS_VLD_WAKEUP_EN | A_SESS_VLD_WAKEUP_EN);
+> +		val &=3D ~(B_VBUS_VLD_WAKEUP_EN | B_SESS_VLD_WAKEUP_EN);
+> +		writel_relaxed(val, base + USB_PHY_VBUS_SENSORS);
+> +
+>  		val =3D readl_relaxed(base + UTMIP_BAT_CHRG_CFG0);
+>  		val &=3D ~UTMIP_PD_CHRG;
+>  		writel_relaxed(val, base + UTMIP_BAT_CHRG_CFG0);
+> @@ -605,31 +644,55 @@ static int utmi_phy_power_off(struct tegra_usb_phy =
+*phy)
+> =20
+>  	utmi_phy_clk_disable(phy);
+> =20
+> -	if (phy->mode =3D=3D USB_DR_MODE_PERIPHERAL) {
+> -		val =3D readl_relaxed(base + USB_SUSP_CTRL);
+> -		val &=3D ~USB_WAKEUP_DEBOUNCE_COUNT(~0);
+> -		val |=3D USB_WAKE_ON_CNNT_EN_DEV | USB_WAKEUP_DEBOUNCE_COUNT(5);
+> -		writel_relaxed(val, base + USB_SUSP_CTRL);
+> -	}
+> +	/* PHY won't resume if reset is asserted */
+> +	if (phy->wakeup_enabled)
+> +		goto chrg_cfg0;
+> =20
+>  	val =3D readl_relaxed(base + USB_SUSP_CTRL);
+>  	val |=3D UTMIP_RESET;
+>  	writel_relaxed(val, base + USB_SUSP_CTRL);
+> =20
+> +chrg_cfg0:
 
-On the schematics for the two imx boards, it's labeled as xclk, so it
-was named as such.  For this board, the schematic names it mclk. The
-driver doesn't care about the clock-names property, so I'll just
-remove them.
+I found this diffcult to read until I realized that it was basically
+just the equivalent of this:
 
-adam
->
-> >                 DCVDD-supply = <&reg_audio>;
-> >                 DBVDD-supply = <&reg_audio>;
-> >                 AVDD-supply = <&reg_audio>;
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+	if (!phy->wakeup_enabled) {
+		val =3D readl_relaxed(base + USB_SUSP_CTRL);
+		val |=3D UTMIP_RESET;
+		writel_relaxed(val, base + USB_SUSP_CTRL);
+	}
+
+>  	val =3D readl_relaxed(base + UTMIP_BAT_CHRG_CFG0);
+>  	val |=3D UTMIP_PD_CHRG;
+>  	writel_relaxed(val, base + UTMIP_BAT_CHRG_CFG0);
+> =20
+> +	if (phy->wakeup_enabled)
+> +		goto xcvr_cfg1;
+> +
+>  	val =3D readl_relaxed(base + UTMIP_XCVR_CFG0);
+>  	val |=3D UTMIP_FORCE_PD_POWERDOWN | UTMIP_FORCE_PD2_POWERDOWN |
+>  	       UTMIP_FORCE_PDZI_POWERDOWN;
+>  	writel_relaxed(val, base + UTMIP_XCVR_CFG0);
+> =20
+> +xcvr_cfg1:
+
+Similarly, I think this is more readable as:
+
+	if (!phy->wakeup_enabled) {
+		val =3D readl_relaxed(base + UTMIP_XCVR_CFG0);
+		val |=3D UTMIP_FORCE_PD_POWERDOWN | UTMIP_FORCE_PD2_POWERDOWN |
+		       UTMIP_FORCE_PDZI_POWERDOWN;
+		writel_relaxed(val, base + UTMIP_XCVR_CFG0);
+	}
+
+>  	val =3D readl_relaxed(base + UTMIP_XCVR_CFG1);
+>  	val |=3D UTMIP_FORCE_PDDISC_POWERDOWN | UTMIP_FORCE_PDCHRP_POWERDOWN |
+>  	       UTMIP_FORCE_PDDR_POWERDOWN;
+>  	writel_relaxed(val, base + UTMIP_XCVR_CFG1);
+> =20
+> +	if (phy->wakeup_enabled) {
+
+Which then also matches the style of this conditional here.
+
+> +		val =3D readl_relaxed(base + USB_SUSP_CTRL);
+> +		val &=3D ~USB_WAKEUP_DEBOUNCE_COUNT(~0);
+> +		val |=3D USB_WAKEUP_DEBOUNCE_COUNT(5);
+> +		val |=3D USB_WAKE_ON_RESUME_EN;
+> +		writel_relaxed(val, base + USB_SUSP_CTRL);
+> +
+> +		/*
+> +		 * Ask VBUS sensor to generate wake event once cable is
+> +		 * connected.
+> +		 */
+> +		if (phy->mode =3D=3D USB_DR_MODE_PERIPHERAL) {
+> +			val =3D readl_relaxed(base + USB_PHY_VBUS_WAKEUP_ID);
+> +			val |=3D VBUS_WAKEUP_WAKEUP_EN;
+> +			writel_relaxed(val, base + USB_PHY_VBUS_WAKEUP_ID);
+> +
+> +			val =3D readl_relaxed(base + USB_PHY_VBUS_SENSORS);
+> +			val |=3D A_VBUS_VLD_WAKEUP_EN;
+> +			writel_relaxed(val, base + USB_PHY_VBUS_SENSORS);
+> +		}
+> +	}
+> +
+>  	return utmip_pad_power_off(phy);
+>  }
+> =20
+> @@ -765,6 +828,15 @@ static int ulpi_phy_power_off(struct tegra_usb_phy *=
+phy)
+>  	usleep_range(5000, 6000);
+>  	clk_disable_unprepare(phy->clk);
+> =20
+> +	/*
+> +	 * Wakeup currently unimplemented for ULPI, thus PHY needs to be
+> +	 * force-resumed.
+> +	 */
+> +	if (WARN_ON_ONCE(phy->wakeup_enabled)) {
+> +		ulpi_phy_power_on(phy);
+> +		return -EOPNOTSUPP;
+> +	}
+
+How do we control phy->wakeup_enabled? Is this something that we can set
+in device tree, for example? I hope so, because otherwise this would
+cause a nasty splat every time we try to power-off a ULPI PHY.
+
+Thierry
+
+--r233Q7uw7p4hkkfc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl/bXkQACgkQ3SOs138+
+s6ED8g/+Ikv2wPvtmCUUOWM5pFyV7LszZXMIR4xbkG76O2xKYl5zUenU10AkpKDv
+lJ530RRl4FeVc6yt98OWIE9eU+pQz+d49gRJAm6+t1t1nhsCKyA60d5tktHJBVqb
+h8npE7vM4QO8HB5Ig7ibO61tz10++0vYoVemiALZkXIdIR/4TpWRtq1UBAxSWvhv
+5CW6aY81y/qp2/rJ3SB+b1z31HTfhhPvXnUKZcKWat7nDaX8vRZaxCdVnksXslD5
+Izbtq6C8cPb228Xos/e8Qo9gxn4ORMQdmjMqUV8+SD4deP2SpYzzXz4Rj2rqrP5T
+V3YGsFpXAPI4lueVIg5ZCGBmx3ops3EuImCHsW0wZCNQiCJ7sZ3ljqSF3KpgnyJP
+oNNGlDbGUp4a+HzOskTsEJJoK+Ffyc0lyFTDA+iognGGJq2NJS2hVoILfvGi9eUb
+SAjU/v2yp6F5f9vm7DkTv0/Ky+W/C+Iz9+StqrIca61kx6gs/cDPBPdyNEtMLWZj
+RCLpVKEoIaSik4wCVsRjSKPSTdB5bYYYsm5Sr8QaNuAPsz53MxMHwd9PQhln6i/W
+s7M3AGw4Wa9vXfqe4BghkH0WBGnf+pJV3adfcUzGSY0IUIyd60eOPoUI1IpsvO60
+/h8L4LaYExXnmmRys0mPNXL2ZoGUJjTtspSLGdT2gnoqBlU6C9g=
+=b0CX
+-----END PGP SIGNATURE-----
+
+--r233Q7uw7p4hkkfc--
