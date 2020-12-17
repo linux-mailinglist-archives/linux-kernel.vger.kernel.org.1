@@ -2,75 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D5E2DD105
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 13:02:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A19B2DD109
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 13:03:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727107AbgLQMCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 07:02:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51144 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725988AbgLQMCF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 07:02:05 -0500
-Date:   Thu, 17 Dec 2020 12:01:19 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608206484;
-        bh=r7jUwdDtR40JwLDq4mN8x2Vdpjg4t/rJFJC0XlwKltM=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YC253vLNdtERLVRDsI1bn/nR9wmfN11MHTmXEIsd31azR4jyO+1EQyuBvbJBbeipx
-         6Gsg5cPZjTaMw0+lcelI9BCq0Z+3PYzfyYqQWB4BUWbDv9U7yBx7blSS+iQH/EQoh4
-         4JZx0aCB84UkDTdPIuDys50mhZCFVb2aWtC7uJEYu2FHvTk0YtcECivzX1bocVfGru
-         u4/VmBoxro9bdA4gg2iVUXZCFQ+NMexV+Hiw0ErTCJ6HAMQem6gMG0b6WlmmDSFW1o
-         mQUdhzceqOkZrZlNvZ2kQmB6n4fw7/wABkbg0D9DKz02F2tKLK9KVRVFhjkx5HNFCE
-         a8OlX9bK2TVfg==
-From:   Will Deacon <will@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        kernel-team <kernel-team@android.com>,
-        Peter Smith <Peter.Smith@arm.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        stable <stable@vger.kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Alan Modra <amodra@gmail.com>,
-        "kernelci . org bot" <bot@kernelci.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: link with -z norelro for LLD or aarch64-elf
-Message-ID: <20201217120118.GC17544@willie-the-truck>
-References: <CAKwvOdkP8vHidFPWczC24XwNHhQaXovQiQ43Yb6Csp_+kPR9XQ@mail.gmail.com>
- <20201217004051.1247544-1-ndesaulniers@google.com>
+        id S1727331AbgLQMCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 07:02:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726595AbgLQMCh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 07:02:37 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80CFBC061794;
+        Thu, 17 Dec 2020 04:01:57 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id m23so12453847ioy.2;
+        Thu, 17 Dec 2020 04:01:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dcjHVx0jrx6JepteYLCPr4nLNJXZTAOJRNTw9c5FMpw=;
+        b=WkxOsEMqXarZUdo+kgrgrmknOwu36bW/QKLf78dO2KzQBvKq9C2JO4Q7SwvWJZcDNM
+         43FTrc9ZE7tScVxvANwp+I68AYzRCIFnrPqnpfzAXLNaeJWRd2tu0V5PjYHBzjU+3+2S
+         C5ubWgpzyRoOz5lYmdi+lq6dgxM+IC0peeHTPxE1L+zWieT9FmBBlbs8CfJ6qIrb7UM0
+         OG4C2aoE5zV3BaQYklD6hBteKA2L1ZqDefNTcB6+TRLEMTbJ1zkuV3g3+GDsoptb+Cyc
+         ad9H3w30Nqq1uSznisgUbIwnNenzyRrVZQKAo67O9LxdZDNg1fsYB419lWhAPKp3QRAz
+         RHqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dcjHVx0jrx6JepteYLCPr4nLNJXZTAOJRNTw9c5FMpw=;
+        b=LHHI5qO7YGAsHI2AozOxGqqSsJQrZ93ExTUqw6g1qSHCTfKCgE11ebToR+nWjGLD8X
+         JF2SEAmQgnO72KbV2z9yFOuUrNNAduqNc3Bbx85C9nyhHTwFkJ2SW2XNo0W25s2KFkjV
+         SfUgJfc2ogoLdJt3Is0He1ohK7Uxwryv9z+LgHinz8gBvIFmLUmqVclZTG5v85p775fj
+         AwCelL9dHXEnOfSAbDCOwgzJPmENNvBhHpZ4mL/oggEshjdU6Y5h/6iUSJWtu+BREZXD
+         RZNtBVBhbyW06OEAwK0XkFc8JorjKnjCTHqhSbMtGWpcCofdYIFXusPPaIPC8A7FHmZo
+         In4A==
+X-Gm-Message-State: AOAM532rnqC8t+EzG2u+8FasZlz0IQv3ZLOmvSsq9dWcGZ12FkujeEB2
+        Zq6VVsFrNpSHFsjtR6HwhoWFXsHc1GoogEQ4A7M=
+X-Google-Smtp-Source: ABdhPJyOvdDmnB9Dt7Any+53Zlqt8JnKKuD9Jx7HN6cUvdtG33wJzbPG/drNiX1Wt1fZmgqA4jQYTodgbEhf8Yv0F98=
+X-Received: by 2002:a6b:db01:: with SMTP id t1mr10813587ioc.10.1608206513289;
+ Thu, 17 Dec 2020 04:01:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201217004051.1247544-1-ndesaulniers@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201213183759.223246-1-aford173@gmail.com> <20201213183759.223246-5-aford173@gmail.com>
+ <CAMuHMdWAQ9j1b=b7CFcjg97N7YW+7Dj14TB-MGogJGK7kFkdhg@mail.gmail.com>
+In-Reply-To: <CAMuHMdWAQ9j1b=b7CFcjg97N7YW+7Dj14TB-MGogJGK7kFkdhg@mail.gmail.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Thu, 17 Dec 2020 06:01:42 -0600
+Message-ID: <CAHCN7xL10Lj8VS5WEyyEixf4ptjKchX0OMDuFAQc-JJzFa5Ubw@mail.gmail.com>
+Subject: Re: [PATCH 04/18] arm64: dts: renesas: beacon kit: Fix Audio Clock sources
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 04:40:51PM -0800, Nick Desaulniers wrote:
-> With newer GNU binutils, linking with BFD produces warnings for vmlinux:
-> aarch64-linux-gnu-ld: warning: -z norelro ignored
-> 
-> BFD can produce this warning when the target emulation mode does not
-> support RELRO relocation types, and -z relro or -z norelro is passed.
-> 
-> Alan Modra clarifies:
->   The default linker emulation for an aarch64-linux ld.bfd is
->   -maarch64linux, the default for an aarch64-elf linker is
->   -maarch64elf.  They are not equivalent.  If you choose -maarch64elf
->   you get an emulation that doesn't support -z relro.
-> 
-> The ARCH=arm64 kernel prefers -maarch64elf, but may fall back to
-> -maarch64linux based on the toolchain configuration.
-> 
-> LLD will always create RELRO relocation types regardless of target
-> emulation.
-> 
-> To avoid the above warning when linking with BFD, pass -z norelro only
-> when linking with LLD or with -maarch64linux.
+On Thu, Dec 17, 2020 at 4:54 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Adam,
+>
+> On Sun, Dec 13, 2020 at 7:38 PM Adam Ford <aford173@gmail.com> wrote:
+> > The SoC was expecting two clock sources with different frequencies.
+> > One to support 44.1KHz and one to support 48KHz.  With the newly added
+> > ability to configure the programmably clock, configure both clocks.
+> >
+> > Beacause the SoC is expecting a fixed clock/oscillator, it doesn't
+> > attempt to get and enable the clock for audio_clk_a. The choice to
+> > use a fixed-factor-clock was due to the fact that it will automatically
+> > enable the programmable clock frequency without change any code.
+> >
+> > Signed-off-by: Adam Ford <aford173@gmail.com>
+>
+> Thanks for your patch!
+>
+> > --- a/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
+> > +++ b/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
+> > @@ -250,9 +250,12 @@ ss_ep: endpoint {
+> >  };
+> >
+> >  &audio_clk_a {
+> > -       clock-frequency = <24576000>;
+> > -       assigned-clocks = <&versaclock6_bb 4>;
+> > -       assigned-clock-rates = <24576000>;
+> > +       /delete-property/ clock-frequency;
+> > +       #clock-cells = <0>;
+> > +       compatible = "fixed-factor-clock";
+> > +       clock-mult = <1>;
+> > +       clock-div = <1>;
+> > +       clocks = <&versaclock6_bb 4>;
+> >  };
+>
+> Shouldn't you override the clocks property in the rcar_sound node
+> instead, like is done in several other board DTS files (with cs2000)?
+>
 
-Given that, prior to 3b92fa7485eb, we used to pass '-z norelro' if
-CONFIG_RELOCATABLE then was this already broken with the ELF toolchain?
+I guess there are multiple ways to do this.  Because the rcar_sound
+was already expecting a reference to audio_clk_a, it seemed less
+intrusive this way. The way I proposed, we can use the default
+rcar_sound clocking and just change the audio_clk node to enable the
+versaclock output.  The versaclock is driving the audio_clk_a
+reference clock, so it seemed appropriate to put it there.
 
-Will
+If you want me to change, I will.
+
+> >
+> >  &audio_clk_b {
+> > @@ -591,7 +594,7 @@ sound_pins: sound {
+> >         };
+> >
+> >         sound_clk_pins: sound_clk {
+> > -               groups = "audio_clk_a_a";
+> > +               groups = "audio_clk_a_a", "audio_clk_b_a";
+> >                 function = "audio_clk";
+> >         };
+>
+> Yes, this part was definitely missing.
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
