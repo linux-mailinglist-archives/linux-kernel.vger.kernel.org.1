@@ -2,118 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 782C42DDBAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 23:56:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEAA92DDBB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 23:59:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732277AbgLQW4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 17:56:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732168AbgLQW4E (ORCPT
+        id S1732287AbgLQW6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 17:58:07 -0500
+Received: from mail2.candelatech.com ([208.74.158.173]:41422 "EHLO
+        mail3.candelatech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730768AbgLQW6G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 17:56:04 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E37A9C0617B0;
-        Thu, 17 Dec 2020 14:55:23 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id n10so95258pgl.10;
-        Thu, 17 Dec 2020 14:55:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Cb7FwoEM95bPdPXQJmHT4TufQ9QvBdIpL47kT7jRkDk=;
-        b=g5UXcBDDuNrzI7H4Ezzci/0lZaIxdyUG6zYZBGiAtm382qqTwa3RECIG+/oNwblzN6
-         k4A7IWdGlxY0EozpbSDtMU1Hwh2vZZk/1C1tg/S3FTkmlvb3SaX7k2vZPIAHN9xYTcfv
-         nuLCQQZ6uJOxI/1Px998F3V5Rc/f+s64ZOkK6LW1txpPkDw6SOynFgSDYulJ78Jdg3yk
-         7uOH44UFLqedsBer1o0b8+LPt0wmWLY5kLBAd8wzYl62NsTB7qBKZ4nybXWiwUCT5u5A
-         oZWDQNK6gfnrtuwEY1e80MYRJSNBgKxSw538Vx3HUjxDdP6pO6vs9bZ8/6/jCoqbmZiF
-         fBzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Cb7FwoEM95bPdPXQJmHT4TufQ9QvBdIpL47kT7jRkDk=;
-        b=k5rUuEr/TENELJ1tXsqbHZ/oDmSYOqwIQ7OVwNKYTUK4Kn9bZYL+0LckVpqBvMqgMw
-         OckLdx1mrNbAW7sYYxkAqdfLK8nZUYjlAs7Lc8hAMiPggUTuHj13sCrZUE4BpIIwTQlp
-         lxZ37gpyrbZJZzSi1Yqvq6mOu06vkVj6wI6u6RZpmvNLS1O+Plx4YRNwBWoby3BSP1MX
-         0CRx8Dr0Nmwui5fpim0/AiUm7LcbLQCDmksKo9oig0+c3gNuwUM4ETw9kItfIUkxtJBH
-         HdK/vVlZNe6wGWqTBZHleqV/ELIRHO9YLO1Kif552y5h9VrDdaJpLujwK8N83fHndTUS
-         +Lrw==
-X-Gm-Message-State: AOAM531Z+YJluJ5V1xAOV/5jopCh0RMIJIyh8BzPFBjCa6jAhaL1tJMF
-        mKHbYKXZb0QL5f6ARlp+tCWu0WoHJzGocfoMhZ8=
-X-Google-Smtp-Source: ABdhPJx1varRneHVaJ0OMknGe2XRNuPZxuk4qSiltwbAcAguT0qIxPH58+a0G8tP/f5d6z58TXzggT7rqgJYG6YuSLg=
-X-Received: by 2002:a63:2882:: with SMTP id o124mr1398512pgo.11.1608245723518;
- Thu, 17 Dec 2020 14:55:23 -0800 (PST)
+        Thu, 17 Dec 2020 17:58:06 -0500
+Received: from [192.168.254.6] (unknown [50.46.158.169])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail3.candelatech.com (Postfix) with ESMTPSA id AE28313C2B0;
+        Thu, 17 Dec 2020 14:57:24 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail3.candelatech.com AE28313C2B0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=candelatech.com;
+        s=default; t=1608245845;
+        bh=wKglh9KlDBoYb5sTHp2Zpmla8eV1kaQDIWTUPzEfRyo=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=cS/WEcr87wlLHpBF0id46WWTxCo51XmGYj77Tvo56pnMTrdwLdNB1MtH4HaHyOAjN
+         k+8SxCI7rDeTEcSIPDsVOXRHUWtq7yCy9xsWK0ZvwduUSkfRkXuifou+H8Ku+zn8yO
+         vDCDCIgoHcJwGiTSQV/1oN9T5wv6BwL5dbn9uSl4=
+Subject: Re: [PATCH 0/3] mac80211: Trigger disconnect for STA during recovery
+To:     Brian Norris <briannorris@chromium.org>
+Cc:     Youghandhar Chintala <youghand@codeaurora.org>,
+        johannes@sipsolutions.net, ath10k@lists.infradead.org,
+        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kuabhs@chromium.org,
+        dianders@chromium.org, pillair@codeaurora.org
+References: <20201215172113.5038-1-youghand@codeaurora.org>
+ <18dfa52b-5edd-f737-49c9-f532c1c10ba2@candelatech.com>
+ <X9vaqxub2F/8YPT8@google.com>
+From:   Ben Greear <greearb@candelatech.com>
+Organization: Candela Technologies
+Message-ID: <6cec8a4c-620f-093d-2739-7eafe89cd79a@candelatech.com>
+Date:   Thu, 17 Dec 2020 14:57:24 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20201217204236.163446-1-christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20201217204236.163446-1-christophe.jaillet@wanadoo.fr>
-From:   Orson Zhai <orsonzhai@gmail.com>
-Date:   Fri, 18 Dec 2020 06:55:12 +0800
-Message-ID: <CA+H2tpGkv0sPQ2e6OfUVuW2xFx-KSpZy_vYY3TG_9JBWvFZxAA@mail.gmail.com>
-Subject: Re: [PATCH] mmc: sdhci-sprd: Fix some resource leaks in the remove function
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     adrian.hunter@intel.com, Ulf Hansson <ulf.hansson@linaro.org>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Lyra Zhang <zhang.lyra@gmail.com>, linux-mmc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org, billows.wu@unisoc.com,
-        Wu Hongtao <wuht06@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <X9vaqxub2F/8YPT8@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-MW
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ cc: Billows
+On 12/17/20 2:24 PM, Brian Norris wrote:
+> On Tue, Dec 15, 2020 at 10:23:33AM -0800, Ben Greear wrote:
+>> On 12/15/20 9:21 AM, Youghandhar Chintala wrote:
+>>> From: Rakesh Pillai <pillair@codeaurora.org>
+>>>
+>>> Currently in case of target hardware restart ,we just reconfig and
+>>> re-enable the security keys and enable the network queues to start
+>>> data traffic back from where it was interrupted.
+>>
+>> Are there any known mac80211 radios/drivers that *can* support seamless restarts?
+>>
+>> If not, then just could always enable this feature in mac80211?
+> 
+> I'm quite sure that iwlwifi intentionally supports a seamless restart.
+>  From my experience with dealing with user reports, I don't recall any
+> issues where restart didn't function as expected, unless there was some
+> deeper underlying failure (e.g., hardware/power failure; driver bugs /
+> lockups).
+> 
+> I don't have very good stats for ath10k/QCA6174, but it survives
+> our testing OK and I again don't recall any user-reported complaints in
+> this area. I'd say this is a weaker example though, as I don't have as
+> clear of data. (By contrast, ath10k/WCN399x, which Rakesh, et al, are
+> patching here, does not pass our tests at all, and clearly fails to
+> recover from "seamless" restarts, as noted in patch 3.)
+> 
+> I'd also note that we don't operate in AP mode -- only STA -- and IIRC
+> Ben, you've complained about AP mode in the past.
 
-Hi Christophe,
-On Fri, Dec 18, 2020 at 4:50 AM Christophe JAILLET
-<christophe.jaillet@wanadoo.fr> wrote:
->
-> 'sdhci_remove_host()' and 'sdhci_pltfm_free()' should be used in place of
-> 'mmc_remove_host()' and 'mmc_free_host()'.
->
-> This avoids some resource leaks, is more in line with the error handling
-> path of the probe function, and is more consistent with other drivers.
->
-> Fixes: fb8bd90f83c4 ("mmc: sdhci-sprd: Add Spreadtrum's initial host controller")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
-> Other adjustment may be needed.
-> I'm not sure at all of the 0 passed to 'sdhci_remove_host()'. Some drivers
-> pass 0, some have some more complicated computation.
-> ---
->  drivers/mmc/host/sdhci-sprd.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/mmc/host/sdhci-sprd.c b/drivers/mmc/host/sdhci-sprd.c
-> index f85171edabeb..5dc36efff47f 100644
-> --- a/drivers/mmc/host/sdhci-sprd.c
-> +++ b/drivers/mmc/host/sdhci-sprd.c
-> @@ -708,14 +708,14 @@ static int sdhci_sprd_remove(struct platform_device *pdev)
->  {
->         struct sdhci_host *host = platform_get_drvdata(pdev);
->         struct sdhci_sprd_host *sprd_host = TO_SPRD_HOST(host);
-> -       struct mmc_host *mmc = host->mmc;
->
-> -       mmc_remove_host(mmc);
-> +       sdhci_remove_host(host, 0);
-> +
->         clk_disable_unprepare(sprd_host->clk_sdio);
->         clk_disable_unprepare(sprd_host->clk_enable);
->         clk_disable_unprepare(sprd_host->clk_2x_enable);
->
-> -       mmc_free_host(mmc);
-> +       sdhci_pltfm_free(pdev);
+I complain about all sorts of things, but I'm usually running
+station mode :)
 
-I saw a lot of drivers also use mmc_free_host().
-Do you have patches elsewhere to clean them?
+Do you actually see iwlwifi stations stay associated through
+firmware crashes?
+
+Anyway, happy to hear some have seamless recovery, and in that case,
+I have no objections to the patch.
 
 Thanks,
--Orson
+Ben
 
->
->         return 0;
->  }
-> --
-> 2.27.0
->
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
