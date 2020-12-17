@@ -2,126 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F6692DDB33
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 23:12:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 651502DDB35
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 23:15:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731803AbgLQWL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 17:11:56 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:34500 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726993AbgLQWLz (ORCPT
+        id S1732052AbgLQWMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 17:12:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726993AbgLQWMk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 17:11:55 -0500
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id E503220B717A;
-        Thu, 17 Dec 2020 14:11:13 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E503220B717A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1608243074;
-        bh=QSosWZwtVMTcMn62nBnRz7ClBx5R8L8Yz9ALkNCQps8=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=iB98ytkLLq7AgvZAquE6qTkzmUDb+o+31aedBLPvq1Lmn/k0Com6XleZhRApsg7C1
-         ayIyKcrnJ/wTtkBYe/dMGz5HE7ODovuUGlX9iIqySfXrwGcwnXn//yeZFpd4DEijMZ
-         Z1l2dVHjQXDjA0x9nUmy4J90J0ElUAKTEwzXT8Vk=
-Subject: Re: [PATCH v12 2/4] powerpc: Move arch independent ima kexec
- functions to drivers/of/kexec.c
-To:     Rob Herring <robh@kernel.org>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        "AKASHI, Takahiro" <takahiro.akashi@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        James Morse <james.morse@arm.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        vincenzo.frascino@arm.com, Mark Rutland <mark.rutland@arm.com>,
-        dmitry.kasatkin@gmail.com, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Allison Randal <allison@lohutok.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Bhupesh Sharma <bhsharma@redhat.com>,
-        Matthias Brugger <mbrugger@suse.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, tao.li@vivo.com,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Prakhar Srivastava <prsriva@linux.microsoft.com>,
-        balajib@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree@vger.kernel.org
-References: <20201217173708.6940-1-nramas@linux.microsoft.com>
- <20201217173708.6940-3-nramas@linux.microsoft.com>
- <20201217200510.GA105447@robh.at.kernel.org>
- <0b17fbee-cfe9-8cb2-01d1-02b6a61a14f5@linux.microsoft.com>
- <CAL_Jsq+-HOkxtxOO=zyRbDuGVNZoMy589qoVANciNionsdsGCw@mail.gmail.com>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <de64bbaf-1568-b4a4-d76d-fc07a91d7c27@linux.microsoft.com>
-Date:   Thu, 17 Dec 2020 14:11:13 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 17 Dec 2020 17:12:40 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C457C061794
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 14:11:58 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id g24so293392edw.9
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 14:11:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0ctiK0mA4JK6QvRekJWEWOG1zeHLhg/gasLcxbxoVjc=;
+        b=A8GA8OkuDewd4OZzGXgLg2SB0z//t9YORRY5DZf9LWIYIFt5Om0aDUsaVXYu5IsuP3
+         ffkDcYVvWIAEo36FDAAo38dBcrXKKN2X2oQuVzJlRmujVIYEMhnusSK/sTNmM7GlPY20
+         Uw8mCuwCXC/n9I95XjQx3E8wSpdrCmPD1PE1sWsCGxCXwhhwanoCqrX4poiocnlvtBzQ
+         TPE/3wRqJhefWP6C9VAnAHZbTQtD/3cKE0RQUNzlMAVm//HNDnPvS/WO7k+dIDHmgaDo
+         lA2IplvyRFUdSWoV2zIj+wysQd0TrUGEBH0VnFgEEinw5fZUD7L1FuqR8n09xw8Wlqce
+         6JNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0ctiK0mA4JK6QvRekJWEWOG1zeHLhg/gasLcxbxoVjc=;
+        b=lTUvti/wa9VCJx5Y+iv7sJJeNRfIJ6F2M1OXDZPLPQi5w++vnbXTJABZyPMG2kwxvb
+         AUujXrBlqJJ49YQ1k3k+If8MEEfz/TLGHPPqV2yB9MeTu2XpBKrNjl+96BzOKdcJ7wJQ
+         1iuqWpTLmFsvOo8SUNCf4APUNa/YqhQzwjtWODhCyUdPYNDieLhlVcX6+u7VykgZGazb
+         kogjGXMxQAflRrq16LQLjsUdzc68Sj4oXKf3dHM7zf00MYytmj7l1+D3DHatmGyuK3sS
+         gCBQfIa1AREIqQRH/EjzuPnCKpNotHs6wazaWhAaC6OgCkqmlTEnjt3CX+3CNunvyRIh
+         +JAg==
+X-Gm-Message-State: AOAM530cFtOnOjT8PcAoAsQR4DQy/FgKXUWUN9iOJzHZ/2Ykzkb/+27Y
+        UnPA95oHK7al8QKC5+ATLmQ=
+X-Google-Smtp-Source: ABdhPJwpxmgrhbd2dIZ1rE4ZcxAA/fLKKWS1bdrxMjIhPPMeXQmB/FtqRW/sCRJJx4PpPIzXFq9F7A==
+X-Received: by 2002:a05:6402:1383:: with SMTP id b3mr1535936edv.100.1608243117145;
+        Thu, 17 Dec 2020 14:11:57 -0800 (PST)
+Received: from localhost.localdomain (p200300f137008a00428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:3700:8a00:428d:5cff:feb9:9db8])
+        by smtp.googlemail.com with ESMTPSA id m7sm4627091ejr.119.2020.12.17.14.11.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Dec 2020 14:11:56 -0800 (PST)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     vadivel.muruganx.ramuthevar@linux.intel.com,
+        linux-mtd@lists.infradead.org
+Cc:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        linux-kernel@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH] mtd: rawnand: intel: remove broken code
+Date:   Thu, 17 Dec 2020 23:11:48 +0100
+Message-Id: <20201217221148.2877318-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <CAL_Jsq+-HOkxtxOO=zyRbDuGVNZoMy589qoVANciNionsdsGCw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/17/20 2:01 PM, Rob Herring wrote:
-> On Thu, Dec 17, 2020 at 2:52 PM Lakshmi Ramasubramanian
-> <nramas@linux.microsoft.com> wrote:
->>
->> On 12/17/20 12:05 PM, Rob Herring wrote:
->>> On Thu, Dec 17, 2020 at 09:37:06AM -0800, Lakshmi Ramasubramanian wrote:
->>>> The functions defined in "arch/powerpc/kexec/ima.c" handle setting up
->>>> and freeing the resources required to carry over the IMA measurement
->>>> list from the current kernel to the next kernel across kexec system call.
->>>> These functions do not have architecture specific code, but are
->>>> currently limited to powerpc.
-> 
-> [...]
-> 
->>>> +#ifdef CONFIG_IMA_KEXEC
->>>> +/**
->>>> + * arch_ima_add_kexec_buffer - do arch-specific steps to add the IMA buffer
->>>> + *
->>>> + * @image: kimage struct to set IMA buffer data
->>>> + * @load_addr: Starting address where IMA buffer is loaded at
->>>> + * @size: Number of bytes in the IMA buffer
->>>> + *
->>>> + * Architectures should use this function to pass on the IMA buffer
->>>> + * information to the next kernel.
->>>> + *
->>>> + * Return: 0 on success, negative errno on error.
->>>> + */
->>>> +int arch_ima_add_kexec_buffer(struct kimage *image, unsigned long load_addr,
->>>> +                          size_t size)
->>>
->>> This should be a static inline in asm/kexec.h.
->>
->> arch_ima_add_kexec_buffer() is identical for powerpc and arm64.
->> Would it be better to "static inline" this function in "of.h" instead of
->> duplicating it in "asm/kexec.h" for powerpc and arm64?
-> 
-> No, think about what it is specific to and place it there. It has
-> nothing to do with DT really. All it is is a wrapper to access the
-> struct members in kimage_arch. So it belongs where they are declared.
-> Now perhaps ima_buffer_addr and ima_buffer_size shouldn't be arch
-> specific, but that's a separate issue.
-> 
+Drop the check for mtd->name as it's executed while the mtd variable is
+always NULL. If some MTD name is needed then it should be validated by
+the MTD core.
 
-okay - I'll move arch_ima_add_kexec_buffer() to asm/kexec.h
+While here, also drop the NULL assignment to the mtd variable as it's
+overwritten later on anyways and the NULL value is never read.
 
-Please let me know if you have any other comments on the patches.
-If you are done reviewing, I'll post the updated patches shortly.
+Fixes: 0b1039f016e8a3 ("mtd: rawnand: Add NAND controller support on Intel LGM SoC")
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+---
+I found this by looking at the new driver. This patch is compile-tested
+only.
 
-Thanks for reviewing the changes.
 
-  -lakshmi
+ drivers/mtd/nand/raw/intel-nand-controller.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
+diff --git a/drivers/mtd/nand/raw/intel-nand-controller.c b/drivers/mtd/nand/raw/intel-nand-controller.c
+index fdb112e8a90d..398de6ec68d7 100644
+--- a/drivers/mtd/nand/raw/intel-nand-controller.c
++++ b/drivers/mtd/nand/raw/intel-nand-controller.c
+@@ -579,7 +579,7 @@ static int ebu_nand_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	struct ebu_nand_controller *ebu_host;
+ 	struct nand_chip *nand;
+-	struct mtd_info *mtd = NULL;
++	struct mtd_info *mtd;
+ 	struct resource *res;
+ 	char *resname;
+ 	int ret;
+@@ -647,10 +647,6 @@ static int ebu_nand_probe(struct platform_device *pdev)
+ 	       ebu_host->ebu + EBU_ADDR_SEL(cs));
+ 
+ 	nand_set_flash_node(&ebu_host->chip, dev->of_node);
+-	if (!mtd->name) {
+-		dev_err(ebu_host->dev, "NAND label property is mandatory\n");
+-		return -EINVAL;
+-	}
+ 
+ 	mtd = nand_to_mtd(&ebu_host->chip);
+ 	mtd->dev.parent = dev;
+-- 
+2.29.2
 
