@@ -2,97 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95DF52DCC13
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 06:30:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF242DCC17
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 06:33:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726575AbgLQF33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 00:29:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725930AbgLQF33 (ORCPT
+        id S1726803AbgLQFcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 00:32:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24241 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725950AbgLQFcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 00:29:29 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B817C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 21:28:49 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id b8so8519207plx.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 21:28:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=PTl0THDgn2AwC8r+qfcc/Bz2DnZdRIJWemtVkiRjcyw=;
-        b=sV54iQ31ZWag4sHjxIiH/QQtEUskh3ORZUYZ182bmOyhiWsVJ/Er7htgqmFD6JaHmB
-         IGy9y5qrktAzor6ioV7/bRwAF0VxFS1Qj5XrF6XxEs8qzJBX+bvAuqQQ1RgZYfUqKwcW
-         JGvMOxKm5aGWidpI3gKlVTR0sgaIibe2aCzGTRgs35ClQTc7vgYOr8BhdXM+hGscQego
-         0PDtXQZX7Zcd4gHetOu+RxO6S+b1TvtjN4ekUEu8EkbP2zfCl9vGnzikryC2XVgOB+5O
-         Ouk1X0FONj7bBQdeZ9OJI40ooLsKRKvyHuSuTUgjP7VN+3psTzZI/zeggoQEEQFQCuTW
-         1wZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=PTl0THDgn2AwC8r+qfcc/Bz2DnZdRIJWemtVkiRjcyw=;
-        b=JwPwlF9QXrudOBNgwF1Z+KaHqsz5vf0dCsCemSLKk/HgBMlFMO+uV492tUrKYx7h+F
-         4LT/ti/bndsFF/ZKAuweM30GWW+JTNsn/h3y06ianf+M8/6iJyKjPmMDJpPy/INNCFPV
-         b2t+WOLisfxpIlZV+tUw9roVPqgMgAlWDyaRpjmQpLCc3Qwb8GG95ZOSSKYRR1bbUjiR
-         RcvlGRivskny+g1l1iHmAudbl2Z6cWaJnA6I4szDm2qLHEFNUINHtciUaeCjTsDlKU4F
-         7bguSzi2T4KhQBUB8gGgFHIOsu4LRs0bY5GDXNzO/rwNpNKNn32svEXl9PAbwCRkPyUt
-         Lucw==
-X-Gm-Message-State: AOAM532OrJR6jHA/bTgymKcYw39/wU6Y2PtaX0NaXcIOF3H7W/Y1srTv
-        N4dE4w6y5zgoi7vEedoWOOOmdu1sPaFbIiz9
-X-Google-Smtp-Source: ABdhPJyZSGHrmNh+geax9BBtJ7wq+GH0p02FliGe0Xi3cRJXqsW6zlYdd7MB0LSELXIVterL92De8g==
-X-Received: by 2002:a17:902:bf06:b029:dc:1f:ac61 with SMTP id bi6-20020a170902bf06b02900dc001fac61mr6102355plb.16.1608182928400;
-        Wed, 16 Dec 2020 21:28:48 -0800 (PST)
-Received: from AHUANG12-1LT7M0.lenovo.com (118-171-80-86.dynamic-ip.hinet.net. [118.171.80.86])
-        by smtp.gmail.com with ESMTPSA id fs12sm3601478pjb.49.2020.12.16.21.28.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 21:28:47 -0800 (PST)
-From:   Adrian Huang <adrianhuang0701@gmail.com>
-To:     linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Adrian Huang <adrianhuang0701@gmail.com>,
-        Adrian Huang <ahuang12@lenovo.com>
-Subject: [PATCH 1/1] x86/mm: Refine mmap syscall implementation
-Date:   Thu, 17 Dec 2020 13:26:48 +0800
-Message-Id: <20201217052648.24656-1-adrianhuang0701@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 17 Dec 2020 00:32:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608183051;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wY2btsgYqiVS4PQXc7v8Z3T58Klg2+NjtbrlCI9p4QE=;
+        b=dpFh4vbRbZ6DJJ+mcuxOB8TLkbwy/fRwkS4Uu4eg7opQFi1EMWQEHAEkn/a8NSRh5ZpHQ+
+        zPVoTWQXt7M6H1Xxi2BzyuB/p11Hkoo7P1NGNY3RK5gcbXHJz3qJZMSgtphQBrv40ELkC9
+        ppJnsXPMxfNW8v0xvQbSg20S72V0o3Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-303-I715YqmJNjeE8CQLuNAYUA-1; Thu, 17 Dec 2020 00:30:49 -0500
+X-MC-Unique: I715YqmJNjeE8CQLuNAYUA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 86F2E1572D;
+        Thu, 17 Dec 2020 05:30:47 +0000 (UTC)
+Received: from [10.72.12.223] (ovpn-12-223.pek2.redhat.com [10.72.12.223])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 07D5B5D9C0;
+        Thu, 17 Dec 2020 05:30:32 +0000 (UTC)
+Subject: Re: [PATCH v4 12/18] vdpa_sim: add get_config callback in
+ vdpasim_dev_attr
+To:     Stefano Garzarella <sgarzare@redhat.com>,
+        virtualization@lists.linux-foundation.org
+Cc:     Oren Duer <oren@nvidia.com>, Laurent Vivier <lvivier@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Shahaf Shuler <shahafs@nvidia.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>, Eli Cohen <elic@nvidia.com>,
+        linux-kernel@vger.kernel.org
+References: <20201215144256.155342-1-sgarzare@redhat.com>
+ <20201215144256.155342-13-sgarzare@redhat.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <b2d63567-9bf5-4242-adde-cbbe9cdbd293@redhat.com>
+Date:   Thu, 17 Dec 2020 13:30:31 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201215144256.155342-13-sgarzare@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adrian Huang <ahuang12@lenovo.com>
 
-It is unnecessary to use the local variable 'error' in the mmap
-syscall implementation function, so use the return statement
-instead of it.
+On 2020/12/15 下午10:42, Stefano Garzarella wrote:
+> The get_config callback can be used by the device to fill the
+> config structure.
+> The callback will be invoked in vdpasim_get_config() before copying
+> bytes into caller buffer.
+>
+> Move vDPA-net config updates from vdpasim_set_features() in the
+> new vdpasim_net_get_config() callback.
+> This is safe since in vdpa_get_config() we already check that
+> .set_features() callback is called before .get_config().
+>
+> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
 
-Signed-off-by: Adrian Huang <ahuang12@lenovo.com>
----
- arch/x86/kernel/sys_x86_64.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/kernel/sys_x86_64.c b/arch/x86/kernel/sys_x86_64.c
-index 504fa5425bce..660b78827638 100644
---- a/arch/x86/kernel/sys_x86_64.c
-+++ b/arch/x86/kernel/sys_x86_64.c
-@@ -90,14 +90,10 @@ SYSCALL_DEFINE6(mmap, unsigned long, addr, unsigned long, len,
- 		unsigned long, prot, unsigned long, flags,
- 		unsigned long, fd, unsigned long, off)
- {
--	long error;
--	error = -EINVAL;
- 	if (off & ~PAGE_MASK)
--		goto out;
-+		return -EINVAL;
- 
--	error = ksys_mmap_pgoff(addr, len, prot, flags, fd, off >> PAGE_SHIFT);
--out:
--	return error;
-+	return ksys_mmap_pgoff(addr, len, prot, flags, fd, off >> PAGE_SHIFT);
- }
- 
- static void find_start_end(unsigned long addr, unsigned long flags,
--- 
-2.17.1
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+
+> ---
+> v4:
+> - explained in the commit message that the moving is safe [Jason]
+>
+> v3:
+> - checked if get_config callback is set before call it
+> ---
+>   drivers/vdpa/vdpa_sim/vdpa_sim.c | 35 +++++++++++++++++++-------------
+>   1 file changed, 21 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+> index 4a0a6cadb9ff..5eadcd19ab6f 100644
+> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
+> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+> @@ -68,6 +68,8 @@ struct vdpasim_virtqueue {
+>   #define VDPASIM_NET_FEATURES	(VDPASIM_FEATURES | \
+>   				 (1ULL << VIRTIO_NET_F_MAC))
+>   
+> +struct vdpasim;
+> +
+>   struct vdpasim_dev_attr {
+>   	u64 supported_features;
+>   	size_t config_size;
+> @@ -75,6 +77,7 @@ struct vdpasim_dev_attr {
+>   	u32 id;
+>   
+>   	work_func_t work_fn;
+> +	void (*get_config)(struct vdpasim *vdpasim, void *config);
+>   };
+>   
+>   /* State of each vdpasim device */
+> @@ -530,8 +533,6 @@ static u64 vdpasim_get_features(struct vdpa_device *vdpa)
+>   static int vdpasim_set_features(struct vdpa_device *vdpa, u64 features)
+>   {
+>   	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
+> -	struct virtio_net_config *config =
+> -		(struct virtio_net_config *)vdpasim->config;
+>   
+>   	/* DMA mapping must be done by driver */
+>   	if (!(features & (1ULL << VIRTIO_F_ACCESS_PLATFORM)))
+> @@ -539,16 +540,6 @@ static int vdpasim_set_features(struct vdpa_device *vdpa, u64 features)
+>   
+>   	vdpasim->features = features & vdpasim->dev_attr.supported_features;
+>   
+> -	/* We generally only know whether guest is using the legacy interface
+> -	 * here, so generally that's the earliest we can set config fields.
+> -	 * Note: We actually require VIRTIO_F_ACCESS_PLATFORM above which
+> -	 * implies VIRTIO_F_VERSION_1, but let's not try to be clever here.
+> -	 */
+> -
+> -	config->mtu = cpu_to_vdpasim16(vdpasim, 1500);
+> -	config->status = cpu_to_vdpasim16(vdpasim, VIRTIO_NET_S_LINK_UP);
+> -	memcpy(config->mac, macaddr_buf, ETH_ALEN);
+> -
+>   	return 0;
+>   }
+>   
+> @@ -603,8 +594,13 @@ static void vdpasim_get_config(struct vdpa_device *vdpa, unsigned int offset,
+>   {
+>   	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
+>   
+> -	if (offset + len < vdpasim->dev_attr.config_size)
+> -		memcpy(buf, vdpasim->config + offset, len);
+> +	if (offset + len > vdpasim->dev_attr.config_size)
+> +		return;
+> +
+> +	if (vdpasim->dev_attr.get_config)
+> +		vdpasim->dev_attr.get_config(vdpasim, vdpasim->config);
+> +
+> +	memcpy(buf, vdpasim->config + offset, len);
+>   }
+>   
+>   static void vdpasim_set_config(struct vdpa_device *vdpa, unsigned int offset,
+> @@ -747,6 +743,16 @@ static const struct vdpa_config_ops vdpasim_batch_config_ops = {
+>   	.free                   = vdpasim_free,
+>   };
+>   
+> +static void vdpasim_net_get_config(struct vdpasim *vdpasim, void *config)
+> +{
+> +	struct virtio_net_config *net_config =
+> +		(struct virtio_net_config *)config;
+> +
+> +	net_config->mtu = cpu_to_vdpasim16(vdpasim, 1500);
+> +	net_config->status = cpu_to_vdpasim16(vdpasim, VIRTIO_NET_S_LINK_UP);
+> +	memcpy(net_config->mac, macaddr_buf, ETH_ALEN);
+> +}
+> +
+>   static int __init vdpasim_dev_init(void)
+>   {
+>   	struct vdpasim_dev_attr dev_attr = {};
+> @@ -755,6 +761,7 @@ static int __init vdpasim_dev_init(void)
+>   	dev_attr.supported_features = VDPASIM_NET_FEATURES;
+>   	dev_attr.nvqs = VDPASIM_VQ_NUM;
+>   	dev_attr.config_size = sizeof(struct virtio_net_config);
+> +	dev_attr.get_config = vdpasim_net_get_config;
+>   	dev_attr.work_fn = vdpasim_net_work;
+>   
+>   	vdpasim_dev = vdpasim_create(&dev_attr);
 
