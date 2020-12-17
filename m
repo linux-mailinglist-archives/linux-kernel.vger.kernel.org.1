@@ -2,176 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C87C32DD171
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 13:22:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3BE32DD177
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 13:24:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727863AbgLQMU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 07:20:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47432 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727066AbgLQMU0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 07:20:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608207540;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=viLhS8xW7gKOS2yg0+t5Te6Nn9vhuVMrCXMXWpSifM4=;
-        b=VPfkImcz2XxsKtwVzHdGIpo09qsHm7UMS6E+b54V134RE7xlGYgFRX6tFTma7TxzjmNkaU
-        SXvtxBaAF/ZfY135TvAgKLSkigPztleH3AMbt9+uswgca0lVfor7IbiJM8UYXPkdu0+uRL
-        ejWkFe7gyzOktwA2ETtmuqhTNLSzU5k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-569-41ZBC6aaN6G_Q16Yn2BX7g-1; Thu, 17 Dec 2020 07:18:56 -0500
-X-MC-Unique: 41ZBC6aaN6G_Q16Yn2BX7g-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2DB6E59;
-        Thu, 17 Dec 2020 12:18:54 +0000 (UTC)
-Received: from [10.36.113.93] (ovpn-113-93.ams2.redhat.com [10.36.113.93])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9E8F060C15;
-        Thu, 17 Dec 2020 12:18:51 +0000 (UTC)
-Subject: Re: [PATCH 3/3] s390/mm: Define arch_get_mappable_range()
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
-        catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-References: <20201210065845.GA20691@osiris>
- <E026809E-4624-4ACE-B309-0443704C637B@redhat.com>
- <401e72a7-7865-455a-4c7f-79278e3f0af0@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <62e44a97-0402-2a2b-5364-9b2744814011@redhat.com>
-Date:   Thu, 17 Dec 2020 13:18:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1727426AbgLQMXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 07:23:50 -0500
+Received: from foss.arm.com ([217.140.110.172]:33138 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726601AbgLQMXr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 07:23:47 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1B7A031B;
+        Thu, 17 Dec 2020 04:23:01 -0800 (PST)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 24ABA3F66B;
+        Thu, 17 Dec 2020 04:22:59 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     tglx@linutronix.de, fenghua.yu@intel.com, bp@alien8.de,
+        tony.luck@intel.com, kuo-lang.tseng@intel.com, shakeelb@google.com,
+        mingo@redhat.com, babu.moger@amd.com, james.morse@arm.com,
+        hpa@zytor.com, Reinette Chatre <reinette.chatre@intel.com>
+Subject: [PATCH 4/3] x86/intel_rdt: Apply READ_ONCE/WRITE_ONCE to task_struct .rmid & .closid
+Date:   Thu, 17 Dec 2020 12:19:31 +0000
+Message-Id: <20201217121931.10734-1-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <cover.1607036601.git.reinette.chatre@intel.com>
+References: <cover.1607036601.git.reinette.chatre@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <401e72a7-7865-455a-4c7f-79278e3f0af0@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.12.20 12:45, Anshuman Khandual wrote:
-> 
-> 
-> On 12/10/20 12:34 PM, David Hildenbrand wrote:
->>
->>> Am 10.12.2020 um 07:58 schrieb Heiko Carstens <hca@linux.ibm.com>:
->>>
->>> ﻿On Thu, Dec 10, 2020 at 09:48:11AM +0530, Anshuman Khandual wrote:
->>>>>> Alternatively leaving __segment_load() and vmem_add_memory() unchanged
->>>>>> will create three range checks i.e two memhp_range_allowed() and the
->>>>>> existing VMEM_MAX_PHYS check in vmem_add_mapping() on all the hotplug
->>>>>> paths, which is not optimal.
->>>>>
->>>>> Ah, sorry. I didn't follow this discussion too closely. I just thought
->>>>> my point of view would be clear: let's not have two different ways to
->>>>> check for the same thing which must be kept in sync.
->>>>> Therefore I was wondering why this next version is still doing
->>>>> that. Please find a way to solve this.
->>>>
->>>> The following change is after the current series and should work with
->>>> and without memory hotplug enabled. There will be just a single place
->>>> i.e vmem_get_max_addr() to update in case the maximum address changes
->>>> from VMEM_MAX_PHYS to something else later.
->>>
->>> Still not. That's way too much code churn for what you want to achieve.
->>> If the s390 specific patch would look like below you can add
->>>
->>> Acked-by: Heiko Carstens <hca@linux.ibm.com>
->>>
->>> But please make sure that the arch_get_mappable_range() prototype in
->>> linux/memory_hotplug.h is always visible and does not depend on
->>> CONFIG_MEMORY_HOTPLUG. I'd like to avoid seeing sparse warnings
->>> because of this.
->>>
->>> Thanks.
->>>
->>> diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
->>> index 77767850d0d0..e0e78234ae57 100644
->>> --- a/arch/s390/mm/init.c
->>> +++ b/arch/s390/mm/init.c
->>> @@ -291,6 +291,7 @@ int arch_add_memory(int nid, u64 start, u64 size,
->>>    if (WARN_ON_ONCE(params->pgprot.pgprot != PAGE_KERNEL.pgprot))
->>>        return -EINVAL;
->>>
->>> +    VM_BUG_ON(!memhp_range_allowed(start, size, 1));
->>>    rc = vmem_add_mapping(start, size);
->>>    if (rc)
->>>        return rc;
->>> diff --git a/arch/s390/mm/vmem.c b/arch/s390/mm/vmem.c
->>> index b239f2ba93b0..ccd55e2f97f9 100644
->>> --- a/arch/s390/mm/vmem.c
->>> +++ b/arch/s390/mm/vmem.c
->>> @@ -4,6 +4,7 @@
->>>  *    Author(s): Heiko Carstens <heiko.carstens@de.ibm.com>
->>>  */
->>>
->>> +#include <linux/memory_hotplug.h>
->>> #include <linux/memblock.h>
->>> #include <linux/pfn.h>
->>> #include <linux/mm.h>
->>> @@ -532,11 +533,23 @@ void vmem_remove_mapping(unsigned long start, unsigned long size)
->>>    mutex_unlock(&vmem_mutex);
->>> }
->>>
->>> +struct range arch_get_mappable_range(void)
->>> +{
->>> +    struct range range;
->>> +
->>> +    range.start = 0;
->>> +    range.end = VMEM_MAX_PHYS;
->>> +    return range;
->>> +}
->>> +
->>> int vmem_add_mapping(unsigned long start, unsigned long size)
->>> {
->>> +    struct range range;
->>>    int ret;
->>>
->>> -    if (start + size > VMEM_MAX_PHYS ||
->>> +    range = arch_get_mappable_range();
->>> +    if (start < range.start ||
->>> +        start + size > range.end ||
->>>        start + size < start)
->>>        return -ERANGE;
->>>
->>>
->>
->> Right, what I had in mind as reply to v1. Not sure if we really need new checks in common code. Having a new memhp_get_pluggable_range() would be sufficient for my use case (virtio-mem).
-> 
-> Hello David,
-> 
-> Quick question. Currently memhp_get_pluggable_range() is a mm/memory_hotplug.c
-> internal static inline function. Only memhp_range_allowed() is available via
-> the header include/linux/memory_hotplug.h But For memhp_get_pluggable_range()
-> to be visible to the drivers, it needs to get included in the header and also
-> be exported via EXPORT_SYMBOL_GPL() in mm/memory_hotplug.c OR just move the
-> entire definition as static inline into the header itself. Wondering which way
-> would be better ?
+A CPU's current task can have its {closid, rmid} fields read locally while
+they are being concurrently written to from another CPU. This can happen
+anytime __resctrl_sched_in() races with either __rdtgroup_move_task() or
+rdt_move_group_tasks().
 
-As it's most likely not on any hot path, exporting the symbol might be
-the cleanest approach.
+Prevent load / store tearing for those accesses by giving them the
+READ_ONCE() / WRITE_ONCE() treatment.
 
-> 
-> - Anshuman
-> 
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+---
+ arch/x86/include/asm/resctrl.h         | 11 +++++++----
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c | 10 +++++-----
+ 2 files changed, 12 insertions(+), 9 deletions(-)
 
-
+diff --git a/arch/x86/include/asm/resctrl.h b/arch/x86/include/asm/resctrl.h
+index 07603064df8f..d60ed0668a59 100644
+--- a/arch/x86/include/asm/resctrl.h
++++ b/arch/x86/include/asm/resctrl.h
+@@ -56,19 +56,22 @@ static void __resctrl_sched_in(void)
+ 	struct resctrl_pqr_state *state = this_cpu_ptr(&pqr_state);
+ 	u32 closid = state->default_closid;
+ 	u32 rmid = state->default_rmid;
++	u32 tmp;
+ 
+ 	/*
+ 	 * If this task has a closid/rmid assigned, use it.
+ 	 * Else use the closid/rmid assigned to this cpu.
+ 	 */
+ 	if (static_branch_likely(&rdt_alloc_enable_key)) {
+-		if (current->closid)
+-			closid = current->closid;
++		tmp = READ_ONCE(current->closid);
++		if (tmp)
++			closid = tmp;
+ 	}
+ 
+ 	if (static_branch_likely(&rdt_mon_enable_key)) {
+-		if (current->rmid)
+-			rmid = current->rmid;
++		tmp = READ_ONCE(current->rmid);
++		if (tmp)
++			rmid = tmp;
+ 	}
+ 
+ 	if (closid != state->cur_closid || rmid != state->cur_rmid) {
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+index 523660a68d9a..791a7064edea 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -601,11 +601,11 @@ static int __rdtgroup_move_task(struct task_struct *tsk,
+ 	 */
+ 
+ 	if (rdtgrp->type == RDTCTRL_GROUP) {
+-		tsk->closid = rdtgrp->closid;
+-		tsk->rmid = rdtgrp->mon.rmid;
++		WRITE_ONCE(tsk->closid, rdtgrp->closid);
++		WRITE_ONCE(tsk->rmid, rdtgrp->mon.rmid);
+ 	} else if (rdtgrp->type == RDTMON_GROUP) {
+ 		if (rdtgrp->mon.parent->closid == tsk->closid) {
+-			tsk->rmid = rdtgrp->mon.rmid;
++			WRITE_ONCE(tsk->rmid, rdtgrp->mon.rmid);
+ 		} else {
+ 			rdt_last_cmd_puts("Can't move task to different control group\n");
+ 			return -EINVAL;
+@@ -2345,8 +2345,8 @@ static void rdt_move_group_tasks(struct rdtgroup *from, struct rdtgroup *to,
+ 	for_each_process_thread(p, t) {
+ 		if (!from || is_closid_match(t, from) ||
+ 		    is_rmid_match(t, from)) {
+-			t->closid = to->closid;
+-			t->rmid = to->mon.rmid;
++			WRITE_ONCE(t->closid, to->closid);
++			WRITE_ONCE(t->rmid, to->mon.rmid);
+ 
+ 			/* If the task is on a CPU, set the CPU in the mask. */
+ 			set_task_cpumask(t, mask);
 -- 
-Thanks,
-
-David / dhildenb
+2.27.0
 
