@@ -2,77 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 718AE2DCD39
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 08:55:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30BB62DCDB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 09:40:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727985AbgLQHyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 02:54:46 -0500
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:44002 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726999AbgLQHyp (ORCPT
+        id S1727300AbgLQIkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 03:40:10 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:9899 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726862AbgLQIkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 02:54:45 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UIuR4xQ_1608191639;
-Received: from 30.21.164.59(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UIuR4xQ_1608191639)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 17 Dec 2020 15:54:00 +0800
-Subject: Re: [PATCH 2/2] blk-iocost: Use alloc_percpu_gfp() to simplify the
- code
-To:     Tejun Heo <tj@kernel.org>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1ba7a38d5a6186b1e71432ef424c23ba1904a365.1607591591.git.baolin.wang@linux.alibaba.com>
- <aa518c5b5c7185e660a1c8515c10d9513fe92132.1607591591.git.baolin.wang@linux.alibaba.com>
- <X9Iv/MlqQI00wZRn@mtj.duckdns.org>
- <33480f8a-89a3-3ed9-6fd0-95b2944ccbdd@linux.alibaba.com>
- <X9ol4gE65kD6qIyh@mtj.duckdns.org>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-Message-ID: <efa9e363-d9fc-354a-da89-59798e6efe79@linux.alibaba.com>
-Date:   Thu, 17 Dec 2020 15:53:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Thu, 17 Dec 2020 03:40:10 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CxQPw5Psrz7Fp9;
+        Thu, 17 Dec 2020 16:38:44 +0800 (CST)
+Received: from huawei.com (10.44.142.101) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Thu, 17 Dec 2020
+ 16:39:16 +0800
+From:   Zhuling <zhuling8@huawei.com>
+To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+CC:     <luanjianhai@huawei.com>, <luchunhua@huawei.com>
+Subject: [PATCH] Modify hardcode 2 to SECCOMP_MODE_FILTER
+Date:   Thu, 17 Dec 2020 15:54:13 +0800
+Message-ID: <20201217075413.19314-1-zhuling8@huawei.com>
+X-Mailer: git-send-email 2.9.5
 MIME-Version: 1.0
-In-Reply-To: <X9ol4gE65kD6qIyh@mtj.duckdns.org>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.44.142.101]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tejun,
+From: zhuling <zhuling8@huawei.com>
 
-> Hello,
-> 
-> On Fri, Dec 11, 2020 at 03:13:29PM +0800, Baolin Wang wrote:
->> Thanks for teaching me this, at least I did not get this from the local_ops
->> Documentation before. Just out of curiosity, these local[64]_t variables are
->> also allocated from budy allocator ultimately, why they can not be
->> initialized to zeros on some ARCHs with __GFP_ZERO? Could you elaborate on
->> about this restriction? Thanks.
-> 
-> * It's highly unlikely but theoretically possible that some arch might need
->    more than raw value to implement local semantics.
-> 
-> * People might wanna add debug annotations which may require more than just
->    the raw value.
+Signed-off-by: zhuling <zhuling8@huawei.com>
+---
+ samples/bpf/tracex5_user.c | 2 +-
+ samples/seccomp/dropper.c  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Thanks for your explanation. It will be helpful to add these comments 
-for the code in case someone else wants to do the same thing like this 
-patch in future. I can send a patch to add these comments if you have no 
-objection.
+diff --git a/samples/bpf/tracex5_user.c b/samples/bpf/tracex5_user.c
+index c17d3fb..417753f 100644
+--- a/samples/bpf/tracex5_user.c
++++ b/samples/bpf/tracex5_user.c
+@@ -28,7 +28,7 @@ static void install_accept_all_seccomp(void)
+ 		.len = (unsigned short)(sizeof(filter)/sizeof(filter[0])),
+ 		.filter = filter,
+ 	};
+-	if (prctl(PR_SET_SECCOMP, 2, &prog))
++	if (prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, &prog))
+ 		perror("prctl");
+ }
 
->> By the way, seems the kyber-iosched has the same issue, since the 'struct
->> kyber_cpu_latency' also contains an atomic_t variable.
->>
->> 	kqd->cpu_latency = alloc_percpu_gfp(struct kyber_cpu_latency,
->> 					    GFP_KERNEL | __GFP_ZERO);
->> 	if (!kqd->cpu_latency)
->> 		goto err_kqd;
-> 
-> Yeah, the lines become blurry when all existing usages are fine with zeroing
-> and we do end up needing to clean up those when the need arises (e.g. we
-> used to zero some spinlocks too). It's just a better form to stick with
-> initializers when they are provided.
+diff --git a/samples/seccomp/dropper.c b/samples/seccomp/dropper.c
+index cc0648e..08f8e7f 100644
+--- a/samples/seccomp/dropper.c
++++ b/samples/seccomp/dropper.c
+@@ -46,7 +46,7 @@ static int install_filter(int nr, int arch, int error)
+ 		perror("prctl(NO_NEW_PRIVS)");
+ 		return 1;
+ 	}
+-	if (prctl(PR_SET_SECCOMP, 2, &prog)) {
++	if (prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, &prog)) {
+ 		perror("prctl(PR_SET_SECCOMP)");
+ 		return 1;
+ 	}
+--
+2.9.5
 
-OK. Sounds it is worth sending a patch to initialize this structure 
-explicitly to keep consistent.
