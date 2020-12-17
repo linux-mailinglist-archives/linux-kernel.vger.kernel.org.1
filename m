@@ -2,150 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED23B2DCA29
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 01:51:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD3482DCA2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 01:51:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726830AbgLQAtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 19:49:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51376 "EHLO
+        id S1726894AbgLQAuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 19:50:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726703AbgLQAtb (ORCPT
+        with ESMTP id S1725974AbgLQAue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 19:49:31 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7425C061794;
-        Wed, 16 Dec 2020 16:48:50 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CxCzf3ncRz9sTK;
-        Thu, 17 Dec 2020 11:48:46 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1608166127;
-        bh=es0EnsoCQ2ifCTtAA+adaRfzfcRnwMUs2I8Ux5lFmD8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kLR639NcfbLoXZUlgkG4fIGl19uM4kCYDARQzm/b+0MYzgb2tddZtktyajhX8fjqF
-         nw0ndWXzphISZcPy63dtAW6dOSqnrp8/dIb+ApuffRw1Va8x5nzttGhVz10gt68nYp
-         5IcyecRBp2nCR31rHhz+cxv/ZBXtS71XsPGJJQOegcolxD+OjbHIqnOj32z8rMdSfB
-         c2rkQlQX8o5PngZzgYcQIGBHnCzy9zjUAgp0wg0Epm9+TCwfBpxvU2oLMXng1NuR2I
-         Q3kXfWlfgKTridgquKZSkFH3+JwksOek98Ccj+yYdoUs9DpLv+J3yUYKbLqCxTRG1P
-         hSywz+pPz7krw==
-Date:   Thu, 17 Dec 2020 11:48:45 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>,
-        Francis Laniel <laniel_francis@privacyrequired.com>,
-        Ganesh Goudar <ganeshgr@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mahesh Salgaonkar <mahesh@linux.ibm.com>
-Subject: Re: linux-next: manual merge of the akpm-current tree with the
- powerpc tree
-Message-ID: <20201217114845.47fe50fb@canb.auug.org.au>
-In-Reply-To: <20201208204016.4eb18ca4@canb.auug.org.au>
-References: <20201208204016.4eb18ca4@canb.auug.org.au>
+        Wed, 16 Dec 2020 19:50:34 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71559C061794;
+        Wed, 16 Dec 2020 16:49:54 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kphU7-001mxp-VM; Thu, 17 Dec 2020 00:49:36 +0000
+Date:   Thu, 17 Dec 2020 00:49:35 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, jlayton@kernel.org,
+        amir73il@gmail.com, sargun@sargun.me, miklos@szeredi.hu,
+        willy@infradead.org, jack@suse.cz, neilb@suse.com,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 1/3] vfs: add new f_op->syncfs vector
+Message-ID: <20201217004935.GN3579531@ZenIV.linux.org.uk>
+References: <20201216233149.39025-1-vgoyal@redhat.com>
+ <20201216233149.39025-2-vgoyal@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/T61_sMexRa0TWOjwLJzjnGx";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201216233149.39025-2-vgoyal@redhat.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/T61_sMexRa0TWOjwLJzjnGx
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+[Christoph added to Cc...]
+On Wed, Dec 16, 2020 at 06:31:47PM -0500, Vivek Goyal wrote:
+> Current implementation of __sync_filesystem() ignores the return code
+> from ->sync_fs(). I am not sure why that's the case. There must have
+> been some historical reason for this.
+> 
+> Ignoring ->sync_fs() return code is problematic for overlayfs where
+> it can return error if sync_filesystem() on upper super block failed.
+> That error will simply be lost and sycnfs(overlay_fd), will get
+> success (despite the fact it failed).
+> 
+> If we modify existing implementation, there is a concern that it will
+> lead to user space visible behavior changes and break things. So
+> instead implement a new file_operations->syncfs() call which will
+> be called in syncfs() syscall path. Return code from this new
+> call will be captured. And all the writeback error detection
+> logic can go in there as well. Only filesystems which implement
+> this call get affected by this change. Others continue to fallback
+> to existing mechanism.
 
-Hi all,
+That smells like a massive source of confusion down the road.  I'd just
+looked through the existing instances; many always return 0, but quite
+a few sometimes try to return an error:
+fs/btrfs/super.c:2412:  .sync_fs        = btrfs_sync_fs,
+fs/exfat/super.c:204:   .sync_fs        = exfat_sync_fs,
+fs/ext4/super.c:1674:   .sync_fs        = ext4_sync_fs,
+fs/f2fs/super.c:2480:   .sync_fs        = f2fs_sync_fs,
+fs/gfs2/super.c:1600:   .sync_fs                = gfs2_sync_fs,
+fs/hfsplus/super.c:368: .sync_fs        = hfsplus_sync_fs,
+fs/nilfs2/super.c:689:  .sync_fs        = nilfs_sync_fs,
+fs/ocfs2/super.c:139:   .sync_fs        = ocfs2_sync_fs,
+fs/overlayfs/super.c:399:       .sync_fs        = ovl_sync_fs,
+fs/ubifs/super.c:2052:  .sync_fs       = ubifs_sync_fs,
+is the list of such.  There are 4 method callers:
+dquot_quota_sync(), dquot_disable(), __sync_filesystem() and
+sync_fs_one_sb().  For sync_fs_one_sb() we want to ignore the
+return value; for __sync_filesystem() we almost certainly
+do *not* - it ends with return __sync_blockdev(sb->s_bdev, wait),
+after all.  The question for that one is whether we want
+__sync_blockdev() called even in case of ->sync_fs() reporting
+a failure, and I suspect that it's safer to call it anyway and
+return the first error value we'd got.  No idea about quota
+situation.
 
-On Tue, 8 Dec 2020 20:40:16 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->
-> Today's linux-next merge of the akpm-current tree got conflicts in:
->=20
->   drivers/misc/lkdtm/Makefile
->   drivers/misc/lkdtm/lkdtm.h
->   tools/testing/selftests/lkdtm/tests.txt
->=20
-> between commit:
->=20
->   3ba150fb2120 ("lkdtm/powerpc: Add SLB multihit test")
->=20
-> from the powerpc tree and commit:
->=20
->   014a486edd8a ("drivers/misc/lkdtm: add new file in LKDTM to test fortif=
-ied strscpy")
->=20
-> from the akpm-current tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
->=20
-> diff --cc drivers/misc/lkdtm/Makefile
-> index 5a92c74eca92,d898f7b22045..000000000000
-> --- a/drivers/misc/lkdtm/Makefile
-> +++ b/drivers/misc/lkdtm/Makefile
-> @@@ -10,7 -10,7 +10,8 @@@ lkdtm-$(CONFIG_LKDTM)		+=3D rodata_objcop
->   lkdtm-$(CONFIG_LKDTM)		+=3D usercopy.o
->   lkdtm-$(CONFIG_LKDTM)		+=3D stackleak.o
->   lkdtm-$(CONFIG_LKDTM)		+=3D cfi.o
-> + lkdtm-$(CONFIG_LKDTM)		+=3D fortify.o
->  +lkdtm-$(CONFIG_PPC_BOOK3S_64)	+=3D powerpc.o
->  =20
->   KASAN_SANITIZE_stackleak.o	:=3D n
->   KCOV_INSTRUMENT_rodata.o	:=3D n
-> diff --cc drivers/misc/lkdtm/lkdtm.h
-> index 79ec05c18dd1,6aa6d6a1a839..000000000000
-> --- a/drivers/misc/lkdtm/lkdtm.h
-> +++ b/drivers/misc/lkdtm/lkdtm.h
-> @@@ -102,7 -104,7 +104,10 @@@ void lkdtm_STACKLEAK_ERASING(void)
->   /* cfi.c */
->   void lkdtm_CFI_FORWARD_PROTO(void);
->  =20
-> + /* fortify.c */
-> + void lkdtm_FORTIFIED_STRSCPY(void);
-> +=20
->  +/* powerpc.c */
->  +void lkdtm_PPC_SLB_MULTIHIT(void);
->  +
->   #endif
-> diff --cc tools/testing/selftests/lkdtm/tests.txt
-> index 18e4599863c0,92ba4cc41314..000000000000
-> --- a/tools/testing/selftests/lkdtm/tests.txt
-> +++ b/tools/testing/selftests/lkdtm/tests.txt
-> @@@ -68,4 -68,4 +68,5 @@@ USERCOPY_STACK_BEYON
->   USERCOPY_KERNEL
->   STACKLEAK_ERASING OK: the rest of the thread stack is properly erased
->   CFI_FORWARD_PROTO
-> + FORTIFIED_STRSCPY
->  +PPC_SLB_MULTIHIT Recovered
-
-These conflicts are now between the powerpc tree and Linus' tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/T61_sMexRa0TWOjwLJzjnGx
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/aqu0ACgkQAVBC80lX
-0Gzh1Qf/YjaYBc6q7yRUBcnVpD/l9a4dHyHV/exrXAIx6st0ZX4YNtRXKt3p9LJ+
-S6kpR3lntIc61u/YV1zMgD0rT6wPRk9cPYc9iqz+mW7iyXlPgh2h7diuF1WNNpgt
-ChBgpuHNdi+E6KZ7rhhCwJIEzSmzPb6kD13eMCxgjVGOQFGf1W4oWPhBGVcJTbzc
-XwXGWun+BtsASn2VTIeMzVsJWYaHYnkGrF8ZtKo31kSt4wStiYCDA3xw8r/wlRue
-lTqqJsmJ5qxmbzc5oRWX9KuhHDjYRVZzMriNuERQvVcPNmifRzB9basXdfi+MNTl
-S3RZk4xR66z1DyZHjZ4UkfaN1gJRMw==
-=BO9i
------END PGP SIGNATURE-----
-
---Sig_/T61_sMexRa0TWOjwLJzjnGx--
