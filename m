@@ -2,132 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 601F82DD2E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 15:21:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0DE2DD2EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 15:22:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728496AbgLQOU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 09:20:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34786 "EHLO
+        id S1728648AbgLQOWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 09:22:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726999AbgLQOU4 (ORCPT
+        with ESMTP id S1727385AbgLQOWh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 09:20:56 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C30C0617B0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 06:20:29 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id jx16so38097679ejb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 06:20:29 -0800 (PST)
+        Thu, 17 Dec 2020 09:22:37 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B876C061794
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 06:21:56 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id 23so57756192lfg.10
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 06:21:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=s2io9byrVSQg39u9kY1sFTMQIOzVrXTXCf/O9WPWFOA=;
-        b=RD62ChU+OJDF7UVtIVsJlfZGn25fGNj6obtVAVtbOfS2rSy0yE6P+pQA9jFQ/hMihx
-         AQFvzcRCMpzHb5H2uFgcBZkSOfB02SaM9rPWUt+ugNEML91QwzkZ440MrnUrlX1dtd6d
-         mACbQBbnpf5r+rUU5+ytGiLypwDX6Mliyj+TU=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fEsDcXj7kC0e9QLMNZJRwfmrhQOpyffdTx2CokzQK+k=;
+        b=riCzgX1IMRf2nv/TCtl+S/ZuEImnBSmdHagRA2iR74qGVwX1jubwWafisAtkUhzJj3
+         ENOvThhHTo4nW3yj3tbG029Llth4Hh5JAp2slI94u4dQk524gEYVrOkD4+bpTmqiyuBt
+         kYBek6VlF6V+Oo1NxpygfEdo4i1DpvjcIx3W+OCwOfID1kPt3GN9SDRITJ+s3HnGr+x6
+         H5NU1L+sefw/qMFIecLB/5xzHN1G0wTL+KU7n6YxjjtY/cq1BIg/440bWC9A4sszE0Mv
+         oYTPL5Vxh35Q2Z8IQ4Diib5LqWkZyvwFtC6lo5VdkDmJ77tqNL128QMhOM90akJGR3fm
+         GffA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=s2io9byrVSQg39u9kY1sFTMQIOzVrXTXCf/O9WPWFOA=;
-        b=hBTI0Nt3RJM66H8YhlNpcvKlYoJGF4hA+t0X+nFV9aJgHnDkdR1kQNWjUzGSU4hOlH
-         qruaEzmVSgDXZktcokZPyJG/qPwzHFmZOdmpWjWUiuphuV6r56oq0tV6wSpefFss87v9
-         jRspfdKE7d8jCpXCxWPGQ8s8KvND7oTRlXFlv3SiWJBU+bL89sAtbcCWVLuL+dvyZQvT
-         TpdciY8MkUZzitN5pDFeW/fwOo1rRRvnSm7NNzSmSMSxLSSt4rk/IlsfX9PPzwKLq/0c
-         H/sERG6PkQ+kaOy3REHDBE11bi1l2CPo3t9OmSQJxxzPK2hfoqXU41LN2pJ7wN+iDGHg
-         5goA==
-X-Gm-Message-State: AOAM531sOaQRYD6VLOn/dS/x1i4L6dIikJwaRyrn1qPVb+ZCBPcgX9Am
-        1c+yVpw5/QicPLzZ+JUndQtpZg==
-X-Google-Smtp-Source: ABdhPJwYacqRq/f7MIh1/3pz0PfUQwyDeoMerwcxyS4emF6UV4Lid3Xf+1Hk5tGsH6lIIlmX0qnYXw==
-X-Received: by 2002:a17:906:9345:: with SMTP id p5mr24446195ejw.40.1608214828591;
-        Thu, 17 Dec 2020 06:20:28 -0800 (PST)
-Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
-        by smtp.gmail.com with ESMTPSA id n4sm24486697edt.46.2020.12.17.06.20.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 06:20:27 -0800 (PST)
-Date:   Thu, 17 Dec 2020 15:20:25 +0100
-From:   Miklos Szeredi <miklos@szeredi.hu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [GIT PULL] overlayfs update for 5.11
-Message-ID: <20201217142025.GB1236412@miu.piliscsaba.redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fEsDcXj7kC0e9QLMNZJRwfmrhQOpyffdTx2CokzQK+k=;
+        b=ayoBeEvf35pWoFJ2ZvCIk2BgaYwjtkjyWM9sCRL+VO3/cGIXv1MK2g2Sls3m1D6qVi
+         1uaQ6NS+TvbSEhsmsMOJrcNdBDaLKUVpQjhaY5As3gR3WvltYsSEemR2AR4bcCg8+OGz
+         xEbqdkSTwpj91YstBcZhd/mrVtaDhaZ/y/Np14QI2NDWXYXddppWF0LXtPMGl/RcfXrB
+         IvaIQDW0dmCXMYF7iS3qiM/ZwYsxkpeOLOnXDh9wtdE0KzGYuW6PHxsW6lJmI+QZ2HSk
+         Cu7vdIO3ZnFo6HXDpg4LYPMptdJZXj9rrmthc/vh9ReFIVxY9rYGa5F9RC0hrzkRjfdl
+         PwiA==
+X-Gm-Message-State: AOAM532oSCBuL8dc9rwlfcTibvrMB1KVuOTcjDRdahztXglxdsOYOTsk
+        jBWNNGbF0vhVsBaNRj21OLp8LFQ/0HPpMBOqxQfLJQ==
+X-Google-Smtp-Source: ABdhPJyUDc+putV0OYw316T4PZsBgszWBOXNkJyofvl7KyfCUKfxWMXfSayYicYYw8zqZ8CH4DI6NBB5PmTmdGVCoDI=
+X-Received: by 2002:a19:495d:: with SMTP id l29mr10494795lfj.465.1608214915009;
+ Thu, 17 Dec 2020 06:21:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20201217083420.411569-1-lee.jones@linaro.org>
+In-Reply-To: <20201217083420.411569-1-lee.jones@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 17 Dec 2020 15:21:44 +0100
+Message-ID: <CACRpkdbogmGxvs_VsFoB8rbq8-51s2rQWGHwTStBzozmSShT3A@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mfd: Standardise MFD_CELL_* helper names
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Gene Chen <gene_chen@richtek.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Thu, Dec 17, 2020 at 9:34 AM Lee Jones <lee.jones@linaro.org> wrote:
 
-Please pull from:
+> Start all helpers with "MFD_CELL_".
+>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> Cc: Gene Chen <gene_chen@richtek.com>
+> Cc: linux-mediatek@lists.infradead.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/vfs.git tags/ovl-update-5.11
+Makes sense.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
- - Allow unprivileged mounting in a user namespace.
-
-   For quite some time the security model of overlayfs has been that
-   operations on underlying layers shall be performed with the privileges
-   of the mounting task.
-
-   This way an unprvileged user cannot gain privileges by the act of
-   mounting an overlayfs instance.  A full audit of all function calls made
-   by the overlayfs code has been performed to see whether they conform to
-   this model, and this branch contains some fixes in this regard.
-
- - Support running on copied filesystem images by optionally disabling UUID
-   verification.
-
- - Bug fixes as well as documentation updates.
-
-I was hoping to get feedback from Eric Biederman on the unprivileged
-mounting feature, but even without that I feel quite good about enabling it
-at this point.  It's a trivial patch at the head of this branch, so
-skipping it now or reverting later would also be options.
-
-Thanks,
-Miklos
-
----
-Chengguang Xu (1):
-      ovl: fix incorrect extent info in metacopy case
-
-Kevin Locke (2):
-      ovl: warn about orphan metacopy
-      ovl: document lower modification caveats
-
-Miklos Szeredi (12):
-      ovl: doc clarification
-      ovl: expand warning in ovl_d_real()
-      vfs: move cap_convert_nscap() call into vfs_setxattr()
-      vfs: verify source area in vfs_dedupe_file_range_one()
-      ovl: check privs before decoding file handle
-      ovl: make ioctl() safe
-      ovl: simplify file splice
-      ovl: user xattr
-      ovl: do not fail when setting origin xattr
-      ovl: do not fail because of O_NOATIME
-      ovl: do not get metacopy for userxattr
-      ovl: unprivieged mounts
-
-Pavel Tikhomirov (2):
-      ovl: propagate ovl_fs to ovl_decode_real_fh and ovl_encode_real_fh
-      ovl: introduce new "uuid=off" option for inodes index feature
-
----
- Documentation/filesystems/overlayfs.rst |  36 ++++++--
- fs/overlayfs/copy_up.c                  |  28 ++++---
- fs/overlayfs/export.c                   |  10 ++-
- fs/overlayfs/file.c                     | 144 +++++---------------------------
- fs/overlayfs/inode.c                    |  14 +++-
- fs/overlayfs/namei.c                    |  28 ++++---
- fs/overlayfs/overlayfs.h                |  22 +++--
- fs/overlayfs/ovl_entry.h                |   2 +
- fs/overlayfs/super.c                    |  95 ++++++++++++++++++---
- fs/overlayfs/util.c                     |  18 +++-
- fs/remap_range.c                        |  10 ++-
- fs/xattr.c                              |  17 ++--
- include/linux/capability.h              |   2 +-
- security/commoncap.c                    |   3 +-
- 14 files changed, 233 insertions(+), 196 deletions(-)
+Yours,
+Linus Walleij
