@@ -2,179 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D67B62DCE14
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 10:08:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDC352DCE16
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 10:08:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727359AbgLQJG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 04:06:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42890 "EHLO
+        id S1727406AbgLQJG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 04:06:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726259AbgLQJGY (ORCPT
+        with ESMTP id S1726259AbgLQJGz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 04:06:24 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17562C061794
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 01:05:44 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id g20so13955034plo.2
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 01:05:44 -0800 (PST)
+        Thu, 17 Dec 2020 04:06:55 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B534C061282
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 01:06:14 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id h205so11967745lfd.5
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 01:06:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Jju/bhtr378BZhL5XC8hlXJ5twNsYnX10+jclSTpAtw=;
-        b=oyT19CCeCTvnLuZsgySvYPjdrvjtXQFVUeDBvJPphOXxl/MBFsaAONbs7EtEB9CB16
-         Z33x5yEq+NVJZyrcFATL9oI8Lom7xeH8H7nWshGuzMO2DfrQXY/ZWSUv25tcCpoYmUWe
-         ZkVeWr5GoxZlMbYI9gRf3oa7luwcmgIo27ljLWVTCs5MDwZfHxpMnDUNGT/+SWzbQ4xw
-         pv7FZal9SXndCn9cAd8vDh4MZXHBPCpYMQKqvakbue1/f7ux2VwzBHjilo3x2BfVxIvI
-         ks3ZW9TKrwk15fo6SLYheJGUS6QGy0019nm1laQvtbRpmEKZE2V15ZEcolLQc23reoZu
-         J8Lw==
+        bh=vAO/2/47mbhlLw+965PNTisNKeQzGGv2Q/ZDNBlq8ho=;
+        b=ug3HU0/BD5jHUI6DBI3tUcGDLe5Vi0dADf7CQjmuw/ZLMEvO78n6LoGbJVJ9/LH/oY
+         02XfSpETFlVPf2/TuFtgteUxWs4gqgZd8XpPPXZqFJ+3W7fYS2Mo4+z/BVYuNpus6vtz
+         pyZo35hXAxYxPKHwOWQEa28G/ws1llfu1/sO/dgTA2sCj2CHq+PjFNtbH5wP9b92HQTt
+         CUhhGqnd82VO3vyy5jObExl/xwXUQsiT+DVOkAQGGLq1JmbCb+tOKMnYVsNUdxnvshLX
+         AD/iJCQ8RHOTiwU9+j7lRaeJCvbkpPvketTDkElKJfk82Cv9xmcLl4GgDQXxLVZm4TIP
+         EXfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Jju/bhtr378BZhL5XC8hlXJ5twNsYnX10+jclSTpAtw=;
-        b=pNOkgLpsCEpF9EmFPlXcEUD7gQIW17qOtyPwSNswJGdsw1E5Pusj2DLTMDhaL2F20C
-         Ceanbd4UG/2ej6w2j2Ut9WypzaLWfUtfkoXgeXV0wLBYHzTQaWTLkcwVA62oKApC7l9C
-         4iAYixh3iPJTG4au0S2EH6rsy3t9JTgP9EqTCirj9Z0JOHpX8B2GUhpt3ATm5rmo//n/
-         ELH6hgEytIX9+2uB9tF6+zLYo3abUV3n7uYkA/Hp2Fyy6HBZETOKtrMxmOttPz72cM4x
-         /YlETZahmdWhZ+tQ/jo+UFq2ukyWCVwnd0gbwtopmMmI6yjAdG4l7I7TZZp2nV0p+nYr
-         JMQw==
-X-Gm-Message-State: AOAM531qi7IquS+odxGcsDNVegr45Lh9vaSZP5T7QqpllzDCzgnOuY+V
-        p+VhphqOdMYM5PmVr8uDV7uyVNyYG8143hv7K2Ik/g==
-X-Google-Smtp-Source: ABdhPJxDpXsIbZNc4x3sr9DJrY0ZC9PGO9w3Eabe2wNgO5QhVcnZ9m9fZAKWqgGcx69r2FmoF930NeWGyZWQQdyJwZ4=
-X-Received: by 2002:a17:90a:c588:: with SMTP id l8mr7047657pjt.147.1608195943608;
- Thu, 17 Dec 2020 01:05:43 -0800 (PST)
+        bh=vAO/2/47mbhlLw+965PNTisNKeQzGGv2Q/ZDNBlq8ho=;
+        b=J50nZRO2wu1ijKnZV3SffQmCYlfQ8y8OY+nsS8GRpMBp2N6MSYaDEr89LT1NUJb1mu
+         iNVSvsXcHz7o7NmqcXyyKMcKV8LXqKGwIgtCa1knGldIkPgHk2TOKs7pq3IJRM6Rp5JG
+         9jnxeyn81eeR8wRGD/0CqZ4wJYqztheEU2lem2xd9eh+LDJ5AiRfNonA1XzxYOPobTsh
+         2nPt959BDL0aFXldn/0HDhCuP64xatTF+WQ3Hh88euJv+P3Tz2/SfaZhmH92A9rycwlP
+         YwR4MUEKuTlpDfs7dODvMQCKv5UXb0w8Snm1wVZn8bCHr12X+7n97yr9d9noTAxB0YKA
+         5LZA==
+X-Gm-Message-State: AOAM530JuSW3t8JBfXpv70dnABUwu8yg8CScMOEP3qg0PwQIpyHR6Y/6
+        0x5sGOpCrqaEWupHKdHmvlxOJb6CIagtKeQ7KKi9Pw==
+X-Google-Smtp-Source: ABdhPJxsq2p+kthVsRGDbdBPYMJuYG963MsSL6IXTPPE/fUcPdixmm5ttc1CfxGFCERB7fPnA+WDEJZLkKAp9rbYRAA=
+X-Received: by 2002:a05:6512:30a:: with SMTP id t10mr911692lfp.124.1608195972094;
+ Thu, 17 Dec 2020 01:06:12 -0800 (PST)
 MIME-Version: 1.0
-References: <20201213154534.54826-1-songmuchun@bytedance.com>
- <20201213154534.54826-4-songmuchun@bytedance.com> <5936a766-505a-eab0-42a6-59aab2585880@oracle.com>
- <20201216222549.GC3207@localhost.localdomain> <49f6a0f1-c6fa-4642-2db0-69f090e8a392@oracle.com>
- <CAMZfGtXwU7LcTZw7iKFNksVTYx8Bhd=9Nct+zfNy_ibuFiF6ew@mail.gmail.com>
-In-Reply-To: <CAMZfGtXwU7LcTZw7iKFNksVTYx8Bhd=9Nct+zfNy_ibuFiF6ew@mail.gmail.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 17 Dec 2020 17:05:07 +0800
-Message-ID: <CAMZfGtU4QRXp_ufJX_XZzbANbhLO1sdGvDEe+ugTg7WfVc-VYA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v9 03/11] mm/hugetlb: Free the vmemmap
- pages associated with each HugeTLB page
-To:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Oscar Salvador <osalvador@suse.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20201119085022.3606135-1-davidgow@google.com> <CAEf4BzY4i0fH34eO=-4WOzVpifgPmJ0ER5ipBJWB0_4Zdv0AQg@mail.gmail.com>
+ <CABVgOSn10kCaD7EQCMJTgD8udNx6fOExqUL1gXHzEViemiq3LA@mail.gmail.com> <3678c6eb-3815-a360-f495-fc246513f0f5@isovalent.com>
+In-Reply-To: <3678c6eb-3815-a360-f495-fc246513f0f5@isovalent.com>
+From:   David Gow <davidgow@google.com>
+Date:   Thu, 17 Dec 2020 17:05:59 +0800
+Message-ID: <CABVgOSmRrtHQ_6n43kFk6MFYCpf+cS-E=TOiwS=__v6wGNeMNQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] bpf: preload: Fix build error when O= is set
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-um <linux-um@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 2:54 PM Muchun Song <songmuchun@bytedance.com> wrote:
+On Wed, Dec 16, 2020 at 10:53 PM Quentin Monnet <quentin@isovalent.com> wrote:
 >
-> On Thu, Dec 17, 2020 at 6:52 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+> 2020-11-21 17:48 UTC+0800 ~ David Gow <davidgow@google.com>
+> > On Sat, Nov 21, 2020 at 3:38 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> >>
+> >> On Thu, Nov 19, 2020 at 12:51 AM David Gow <davidgow@google.com> wrote:
+> >>>
+> >>> If BPF_PRELOAD is enabled, and an out-of-tree build is requested with
+> >>> make O=<path>, compilation seems to fail with:
+> >>>
+> >>> tools/scripts/Makefile.include:4: *** O=.kunit does not exist.  Stop.
+> >>> make[4]: *** [../kernel/bpf/preload/Makefile:8: kernel/bpf/preload/libbpf.a] Error 2
+> >>> make[3]: *** [../scripts/Makefile.build:500: kernel/bpf/preload] Error 2
+> >>> make[2]: *** [../scripts/Makefile.build:500: kernel/bpf] Error 2
+> >>> make[2]: *** Waiting for unfinished jobs....
+> >>> make[1]: *** [.../Makefile:1799: kernel] Error 2
+> >>> make[1]: *** Waiting for unfinished jobs....
+> >>> make: *** [Makefile:185: __sub-make] Error 2
+> >>>
+> >>> By the looks of things, this is because the (relative path) O= passed on
+> >>> the command line is being passed to the libbpf Makefile, which then
+> >>> can't find the directory. Given OUTPUT= is being passed anyway, we can
+> >>> work around this by explicitly setting an empty O=, which will be
+> >>> ignored in favour of OUTPUT= in tools/scripts/Makefile.include.
+> >>
+> >> Strange, but I can't repro it. I use make O=<absolute path> all the
+> >> time with no issues. I just tried specifically with a make O=.build,
+> >> where .build is inside Linux repo, and it still worked fine. See also
+> >> be40920fbf10 ("tools: Let O= makes handle a relative path with -C
+> >> option") which was supposed to address such an issue. So I'm wondering
+> >> what exactly is causing this problem.
+> >>
+> > [+ linux-um list]
 > >
-> > On 12/16/20 2:25 PM, Oscar Salvador wrote:
-> > > On Wed, Dec 16, 2020 at 02:08:30PM -0800, Mike Kravetz wrote:
-> > >>> + * vmemmap_rmap_walk - walk vmemmap page table
-> > >>> +
-> > >>> +static void vmemmap_pte_range(pmd_t *pmd, unsigned long addr,
-> > >>> +                         unsigned long end, struct vmemmap_rmap_walk *walk)
-> > >>> +{
-> > >>> +   pte_t *pte;
-> > >>> +
-> > >>> +   pte = pte_offset_kernel(pmd, addr);
-> > >>> +   do {
-> > >>> +           BUG_ON(pte_none(*pte));
-> > >>> +
-> > >>> +           if (!walk->reuse)
-> > >>> +                   walk->reuse = pte_page(pte[VMEMMAP_TAIL_PAGE_REUSE]);
-> > >>
-> > >> It may be just me, but I don't like the pte[-1] here.  It certainly does work
-> > >> as designed because we want to remap all pages in the range to the page before
-> > >> the range (at offset -1).  But, we do not really validate this 'reuse' page.
-> > >> There is the BUG_ON(pte_none(*pte)) as a sanity check, but we do nothing similar
-> > >> for pte[-1].  Based on the usage for HugeTLB pages, we can be confident that
-> > >> pte[-1] is actually a pte.  In discussions with Oscar, you mentioned another
-> > >> possible use for these routines.
-> > >
-> > > Without giving it much of a thought, I guess we could duplicate the
-> > > BUG_ON for the pte outside the loop, and add a new one for pte[-1].
-> > > Also, since walk->reuse seems to not change once it is set, we can take
-> > > it outside the loop? e.g:
-> > >
-> > >       pte *pte;
-> > >
-> > >       pte = pte_offset_kernel(pmd, addr);
-> > >       BUG_ON(pte_none(*pte));
-> > >       BUG_ON(pte_none(pte[VMEMMAP_TAIL_PAGE_REUSE]));
-> > >       walk->reuse = pte_page(pte[VMEMMAP_TAIL_PAGE_REUSE]);
-> > >       do {
-> > >               ....
-> > >       } while...
-> > >
-> > > Or I am not sure whether we want to keep it inside the loop in case
-> > > future cases change walk->reuse during the operation.
-> > > But to be honest, I do not think it is realistic of all future possible
-> > > uses of this, so I would rather keep it simple for now.
+> > Hmm... From a quick check, I can't reproduce this on x86, so it's
+> > possibly a UML-specific issue.
 > >
-> > I was thinking about possibly passing the 'reuse' address as another parameter
-> > to vmemmap_remap_reuse().  We could add this addr to the vmemmap_rmap_walk
-> > struct and set walk->reuse when we get to the pte for that address.  Of
-> > course this would imply that the addr would need to be part of the range.
->
-> Maybe adding another one parameter is unnecessary.  How about doing
-> this in the vmemmap_remap_reuse?
->
-> The 'reuse' address just is start + PAGE_SIZE.
->
-> void vmemmap_remap_free(unsigned long start, unsigned long size)
-> {
->          unsigned long end = start + size;
->          unsigned long reuse_addr = start + PAGE_SIZE;
-                                           ^^^
-                                        Here is "-"
-Sorry.
-
->          LIST_HEAD(vmemmap_pages);
->
->          struct vmemmap_remap_walk walk = {
->                   .remap_pte = vmemmap_remap_pte,
->                   .vmemmap_pages = &vmemmap_pages,
->                   .reuse_addr = reuse_addr.
->          };
->
-> }
->
+> > The problem here seems to be that $PWD is, for whatever reason, equal
+> > to the srcdir on x86, but not on UML. In general, $PWD behaves pretty
+> > weirdly -- I don't fully understand it -- but if I add a tactical "PWD
+> > := $(shell pwd)" or use $(CURDIR) instead, the issue shows up on x86
+> > as well. I guess this is because PWD only gets updated when set by a
+> > shell or something, and UML does this somewhere?
 > >
-> > Ideally, we would walk the page table to get to the reuse page.  My concern
-> > was not explicitly about adding the BUG_ON.  In more general use, *pte could
-> > be the first entry on a pte page.  And, then pte[-1] may not even be a pte.
+> > Thoughts?
 > >
-> > Again, I don't think this matters for the current HugeTLB use case.  Just a
-> > little concerned if code is put to use for other purposes.
-> > --
-> > Mike Kravetz
+> > Cheers,
+> > -- David
 >
+> Hi David, Andrii,
 >
+> David, did you use a different command for building for UML and x86? I'm
+> asking because I reproduce on x86, but only for some targets, in
+> particular when I tried bindeb-pkg.
+
+I just ran "make ARCH={x86,um} O=.bpftest", with defconfig + enabling
+BPF_PRELOAD and its dependencies. UML fails, x86 works. (Though I can
+reproduce the failure if I make bindeb-pkg on x86).
+
+(It also shows up when building UML with the allyesconfig-based KUnit
+alltests option by running "./tools/testing/kunit/kunit.py run
+--alltests", though this understandably takes a long time and is less
+obvious)
 >
-> --
-> Yours,
-> Muchun
+> With "make O=.build vmlinux", I have:
+> - $(O) for "dummy" check in tools/scripts/Makefile.include set to
+> /linux/.build
+> - $(PWD) for same check set to /linux/tools
+> - Since $(O) is an absolute path, the "dummy" check passes
+>
+> With "make O=.build bindeb-pkg", I have instead:
+> - $(O) set to .build (relative path)
+> - $(PWD) set to /linux/.build
+> - "dummy" check changes to /linux/.build and searches for .build in it,
+> which fails and aborts the build
+>
+> (tools/scripts/Makefile.include is included from libbpf's Makefile,
+> called from kernel/bpf/preload/Makefile.)
+>
+> I'm not sure how exactly the bindeb-pkg target ends up passing these values.
+
+Yeah: I haven't been able to find where uml is changing them either:
+I'm assuming there's something which changes directory and/or spawns a
+shell/recursive make to change $(PWD) or something.
+
+> For what it's worth, I have been solving this (before finding this
+> thread) with a fix close to yours, I pass "O=$(abspath .)" on the
+> command line for building libbpf in kernel/bpf/preload/Makefile. It
+> looked consistent to me with the "tools/:" target from the main
+> Makefile, where "O=$(abspath $(objtree))" is passed (and $(objtree) is ".").
+
+Given that there are several targets being broken here, it's probably
+worth having a fix like this which overrides O= rather than trying to
+hunt down every target which could change $(PWD). I don't particularly
+mind whether we use O= or O=$(abspath .), both are working in the UML
+usecase as well.
+
+Does anyone object to basically accepting either this patch as-is, or
+using O=$(abspath .)?
 
 
-
--- 
-Yours,
-Muchun
+Cheers,
+-- David
