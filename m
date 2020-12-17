@@ -2,164 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A3B2DD251
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 14:43:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37D1C2DD253
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 14:43:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727365AbgLQNmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 08:42:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57052 "EHLO
+        id S1727725AbgLQNnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 08:43:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726291AbgLQNmT (ORCPT
+        with ESMTP id S1727385AbgLQNnM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 08:42:19 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 050BAC061794;
-        Thu, 17 Dec 2020 05:41:39 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id d13so8390717wrc.13;
-        Thu, 17 Dec 2020 05:41:38 -0800 (PST)
+        Thu, 17 Dec 2020 08:43:12 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5C6C0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 05:42:31 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id v3so15149559plz.13
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 05:42:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=SSiUovB1ZKvlSGMVvhS/vfOc7vEzdGXOp/oMPhMJjwE=;
-        b=rkS6TF9br+Bg1nnQ+IGTw7QVjntpInFGPQYtyKJ7ieGM14VA5oVryVfGXxzc6S9HtY
-         B1ZLQtjrk48iq2Yla6mVE41aBMcZrh+Gbq1Nkd8VZNrBH5XQ/bam63RYuFPuDlPiOrGY
-         Errq/t+7s5pQMyptqzKW0qioD4oST49B2ysTgBJITGyWuRaL/oyz7FSxLj1x4ipLUQTj
-         CaTD+TsOrBpfXL99KyVZihztYjfJpwXxCljRYL3HG31mvXAaNplxOt4ddmge1Hn6EoLg
-         oEg7iePzUojr/JpgPbAkk6nZ2LSfHDpJ0cdQuVpBkFHhJCOx1bZ6W7WZWi2SKtirxpXg
-         MoMg==
+        h=from:to:cc:subject:date:message-id;
+        bh=xX8a79Gjb31KcVl9BRU7zIuRKc3nJSmAQkj+J42gmDo=;
+        b=IVVED24WxVyEFokYDkZM+re9QFS1ER56bPsSsaUeoZtF74kdLMOrGg6uveNSSEAR6X
+         zpNbUs1Dr8UVbc8lR6YKVFW0ZI6i6MGOvWybKTsxcYAdbcX5oY9vber46zK5rk04JprC
+         mMOlAf8COuTTh3vKw3EQWGQ2jFOwnLhBQGHL67Hzy60NO+/Ch/beibIZoXrogMgDgNn2
+         qL2nx4VDkonJlGbkEwh0omUVj8m2E+vf+2JTXhobeBNmXDF1AgCEDfX23Q82B9xotmZL
+         zBMxrLgJtlTHe9Wmx0gdgNbYy4OfnrozX3DVx+/JTa2Ge1SvPYIi0JvvV/DdUm0NEDMU
+         SdTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=SSiUovB1ZKvlSGMVvhS/vfOc7vEzdGXOp/oMPhMJjwE=;
-        b=AQF+jqdo/+LjyTuFf+GxQAXTJF7NVfiDGfMo21px50OTtLaZQwI8RxyoviPwmkWJlO
-         ZqlQN/AeMatoUBDmoDE7phg9W/QalPix0lEK0gOAP3ehbA5Yg3AjcO1qLxQAs7vBS/eN
-         0fnZgEf9Kg9QV8HgWhH0o1sb+/E11kaQ/bABJfyOQGnBBgQ7Zc2n447pnFMgEiyUxMSW
-         2PBMRturfCcb+NvQ/wLi/toW5KHgHvo9YcyCihW20ml9RoDhH8bWLQxrdIxb8awiUr8l
-         erCGGBiuozm6+234JcKmSnWIW3QJBZ2j6XyfpnQFWEUP19CX3xWFoX9tGn8CIXLrJptU
-         PLyQ==
-X-Gm-Message-State: AOAM533XUmSlPKnlF93amFqhiLKKNjhMOuOQQTk3YaqCqRVKz3eOvIaj
-        JZ7nrTYap4J7gXTfAcguBOg=
-X-Google-Smtp-Source: ABdhPJzLB9dqsEJ377DeFiwq4G/4bBOdNhmaCyeB6CWo0v7dpy2Agw3PkWbDuZOqEP5j3VzTja6k7w==
-X-Received: by 2002:adf:ef12:: with SMTP id e18mr12415210wro.192.1608212497764;
-        Thu, 17 Dec 2020 05:41:37 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id r13sm9030864wrt.10.2020.12.17.05.41.36
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=xX8a79Gjb31KcVl9BRU7zIuRKc3nJSmAQkj+J42gmDo=;
+        b=HJNab9eBr4v2f2Qcb0TjrtxofaHa/47kNgzOO+Ng8IcyxW7JBwsF9MV/hEP3Mck03/
+         JAmeNda/tq9XQ/q+aJioifcCCr+O6T3NV8hrq8HqNSUcWsQjXwwPnu0Ux8r+Wbb+K2x4
+         vIJGL9JZPR1rg/HxC/9ch7EtEZW00MwKz2cEhSDiGg1b6DsE2VbneAwjQebxJbk8bIwg
+         xwLnHqmQF6wdY3RG3VsrMMAzF4Hha8dcUioR/2sI0F2apMl72DbVI88ouUB5C+Nii0hK
+         Q2oFqMitD4QsAPSFpYFZTggX8XuZEnMioO/lk3aGNl3K7Bp8W3NkpMrTSiDGs1I6NftT
+         1Qwg==
+X-Gm-Message-State: AOAM530+wEMAeW6XVuFN7zZWaYFqSv3fXTyzOUjR7F2c8jSCU72UWILy
+        hPZgSN3gRvIfG4QPZfUn8f+/qHx4pXiQqw==
+X-Google-Smtp-Source: ABdhPJyFttykqEqBExQYV65btoTZGx484eNHaiTltEX264Durh1Mnt15/pR+ALVf5CC+uPkAk5ekkQ==
+X-Received: by 2002:a17:90a:db0b:: with SMTP id g11mr8028012pjv.168.1608212551215;
+        Thu, 17 Dec 2020 05:42:31 -0800 (PST)
+Received: from localhost.localdomain ([2402:3a80:403:493:5d38:be:6298:62ae])
+        by smtp.googlemail.com with ESMTPSA id j15sm6049719pfn.180.2020.12.17.05.42.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 05:41:36 -0800 (PST)
-Date:   Thu, 17 Dec 2020 14:41:35 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Felipe Balbi <balbi@kernel.org>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Ion Agorria <ion@agorria.com>, linux-tegra@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 6/8] usb: chipidea: tegra: Support runtime PM
-Message-ID: <X9tgD+KSU1bIvht5@ulmo>
-References: <20201217094007.19336-1-digetx@gmail.com>
- <20201217094007.19336-7-digetx@gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="n/D9wwuYCvcRgZHH"
-Content-Disposition: inline
-In-Reply-To: <20201217094007.19336-7-digetx@gmail.com>
-User-Agent: Mutt/2.0.3 (a51f058f) (2020-12-04)
+        Thu, 17 Dec 2020 05:42:30 -0800 (PST)
+From:   Aditya Srivastava <yashsri421@gmail.com>
+To:     joe@perches.com
+Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] checkpatch: fix false positive for COMMIT_LOG_LONG_LINE with URLs
+Date:   Thu, 17 Dec 2020 19:12:21 +0530
+Message-Id: <20201217134221.16178-1-yashsri421@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Currently checkpatch warns for long line in commit messages even for
+URL lines.
 
---n/D9wwuYCvcRgZHH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+An evaluation over v4.13..v5.8 showed that out of ~11000 warnings for
+this class, around 790 are due to the line containing link.
 
-On Thu, Dec 17, 2020 at 12:40:05PM +0300, Dmitry Osipenko wrote:
-> Tegra PHY driver now supports waking up controller from a low power mode.
-> Enable runtime PM in order to put controller into the LPM during idle.
->=20
-> Tested-by: Matt Merhar <mattmerhar@protonmail.com>
-> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-> Tested-by: Peter Geis <pgwipeout@gmail.com>
-> Tested-by: Ion Agorria <ion@agorria.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/usb/chipidea/ci_hdrc_tegra.c | 13 ++++++++++---
->  1 file changed, 10 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/usb/chipidea/ci_hdrc_tegra.c b/drivers/usb/chipidea/=
-ci_hdrc_tegra.c
-> index 5fccdeeefc64..655671159511 100644
-> --- a/drivers/usb/chipidea/ci_hdrc_tegra.c
-> +++ b/drivers/usb/chipidea/ci_hdrc_tegra.c
-> @@ -38,21 +38,24 @@ struct tegra_usb_soc_info {
-> =20
->  static const struct tegra_usb_soc_info tegra20_ehci_soc_info =3D {
->  	.flags =3D CI_HDRC_REQUIRES_ALIGNED_DMA |
-> -		 CI_HDRC_OVERRIDE_PHY_CONTROL,
-> +		 CI_HDRC_OVERRIDE_PHY_CONTROL |
-> +		 CI_HDRC_SUPPORTS_RUNTIME_PM,
->  	.dr_mode =3D USB_DR_MODE_HOST,
->  	.txfifothresh =3D 10,
->  };
-> =20
->  static const struct tegra_usb_soc_info tegra30_ehci_soc_info =3D {
->  	.flags =3D CI_HDRC_REQUIRES_ALIGNED_DMA |
-> -		 CI_HDRC_OVERRIDE_PHY_CONTROL,
-> +		 CI_HDRC_OVERRIDE_PHY_CONTROL |
-> +		 CI_HDRC_SUPPORTS_RUNTIME_PM,
->  	.dr_mode =3D USB_DR_MODE_HOST,
->  	.txfifothresh =3D 16,
->  };
-> =20
->  static const struct tegra_usb_soc_info tegra_udc_soc_info =3D {
->  	.flags =3D CI_HDRC_REQUIRES_ALIGNED_DMA |
-> -		 CI_HDRC_OVERRIDE_PHY_CONTROL,
-> +		 CI_HDRC_OVERRIDE_PHY_CONTROL |
-> +		 CI_HDRC_SUPPORTS_RUNTIME_PM,
->  	.dr_mode =3D USB_DR_MODE_UNKNOWN,
->  };
-> =20
-> @@ -323,6 +326,10 @@ static int tegra_usb_probe(struct platform_device *p=
-dev)
->  	usb->data.hub_control =3D tegra_ehci_hub_control;
->  	usb->data.notify_event =3D tegra_usb_notify_event;
-> =20
-> +	/* Tegra PHY driver currently doesn't support LPM for ULPI */
-> +	if (of_usb_get_phy_mode(pdev->dev.of_node) =3D=3D USBPHY_INTERFACE_MODE=
-_ULPI)
-> +		usb->data.flags &=3D ~CI_HDRC_SUPPORTS_RUNTIME_PM;
-> +
+E.g. running checkpatch on commit 3cde818cd02b ("ASoC: topology:
+Consolidate how dtexts and dvalues are freed") reports this warning:
 
-Does this prevent the wakeup_enabled from being set for ULPI PHYs?
+WARNING: Possible unwrapped commit description (prefer a maximum 75 chars per line)
+https://mailman.alsa-project.org/pipermail/alsa-devel/2019-January/144761.html
 
-Thierry
+Avoid giving users warning for character limit, instead suggest them to
+prefix the URLs with "Link:"
 
---n/D9wwuYCvcRgZHH
-Content-Type: application/pgp-signature; name="signature.asc"
+Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+---
+ scripts/checkpatch.pl | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index abd5a3d2e913..23da1f50fe6a 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3032,8 +3032,14 @@ sub process {
+ 		      $line =~ /^\s*(?:Fixes:|Link:|$signature_tags)/i ||
+ 					# A Fixes: or Link: line or signature tag line
+ 		      $commit_log_possible_stack_dump)) {
+-			WARN("COMMIT_LOG_LONG_LINE",
+-			     "Possible unwrapped commit description (prefer a maximum 75 chars per line)\n" . $herecurr);
++			if ($line =~ /(?:http|https|ftp):\/\//) {
++				WARN("COMMIT_LOG_LONG_LINE",
++				     "Consider prefixing the URL with 'Link:'\n" . $herecurr);
++			}
++			else {
++				WARN("COMMIT_LOG_LONG_LINE",
++				     "Possible unwrapped commit description (prefer a maximum 75 chars per line)\n" . $herecurr);
++			}
+ 			$commit_log_long_line = 1;
+ 		}
+ 
+-- 
+2.17.1
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl/bYA8ACgkQ3SOs138+
-s6Hl5w/7BVkXve6VtsuqTT5P4adAwE8LOMKsR0XHw70c5khXTnLY7llcjsgeAQYk
-6YP0XpHupIaF8fGjEDDohLRnyK/xAWQ2BkHyanHlolWSqYKSxssvcF5etkwiir2t
-Gmq7Klsq4m9B1DeSDnhJj9rqSVhdDR+dVItPphjduL0g7OO8PslQB8m5oJUwuUNd
-J9j2hFhjEeTLdJjItQEGNHBXtVzxx/b+YHFISZG3uIwnuzf0kZ6X+XgSDyONrso5
-Etf2pLmQzchDWHomOoJgSgjZtTbjI9heKdVwG+hZd+hEQIS+m0kx1cxGPZrzNjh5
-s61yFlYQOL1h2saheDY3OeG3k/wgATw2STIwauY+5/ERQQZhuR4UACeD2uPg89xI
-0Wike8b/SWMgmv4V14nOFGNPhTTcQ3mXA+GdBzPznHwfhBXfmsfLaXXQJvA/gEjW
-u4+u3MuPBkf/7t8bGwM7QY3Ia0rUHelOYSLyydKO4GNKSZO+Ldu9IRfg/7aGM70n
-W6/c1LZIhUKMnOr4qXXm5ZZPYnVsDK814osk0wtqoU51auNqkeM1mQ9JrkV8fl57
-7aefWjlNMvDOkpftfViwz6vYJsPqyN7e62khVWLXajCMW0K6nQie2K7DOBt0nQZL
-2tCBA89CiJJzf3c/Hs9snd7H5v7aQqA9WncpYw92JXaJ/IRfns8=
-=U/AY
------END PGP SIGNATURE-----
-
---n/D9wwuYCvcRgZHH--
