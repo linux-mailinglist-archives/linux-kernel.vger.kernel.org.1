@@ -2,77 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03ACB2DD950
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 20:27:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C3532DD955
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 20:29:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729846AbgLQT0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 14:26:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbgLQT0m (ORCPT
+        id S1729157AbgLQT3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 14:29:02 -0500
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:46877 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727368AbgLQT3C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 14:26:42 -0500
-Received: from the.earth.li (the.earth.li [IPv6:2a00:1098:86:4d:c0ff:ee:15:900d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CA84C061794
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 11:26:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=earth.li;
-         s=the; h=In-Reply-To:Content-Type:MIME-Version:Message-ID:Subject:Cc:To:From
-        :Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=id/RU4OEULTzXYn9FVYP9FWC/5fwm6DcgOfQXfSgdAw=; b=duW5i/z4gePeQy2kdqksQSYcpE
-        d/cu5oq7Owsz0j1u6bgAG091GDRfjrvipYXzLBlbYC4BfFbiJAi9Rwhdb00rWLvK2qTaFuAFzCcNO
-        qVp/Akyjwh7AQuFuSwKDU+A8/p/NGgU34FLvmi0ZW3kDmlnWLEdopsLEDoxoGJmSD173Mbfmj0M0g
-        ln2iC/PAHRsCnFM4SMpHKDotYmEz27G7VBfZVaohbSoHgkZINalK/yV/My66lD8fPzk2EyCW/q9sD
-        leQimD6p9/JjM0FxrDpFOXhnin5Xp1xbosyevJDsaPzg98f0k2fLWft+9k/u0rvN0TFfVxosH1CNu
-        2Wfm9Adw==;
-Received: from noodles by the.earth.li with local (Exim 4.92)
-        (envelope-from <noodles@earth.li>)
-        id 1kpyuS-0004ft-2Q; Thu, 17 Dec 2020 19:25:56 +0000
-Date:   Thu, 17 Dec 2020 19:25:56 +0000
-From:   Jonathan McDowell <noodles@earth.li>
-To:     konstantin@linuxfoundation.org
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Oliver Graute <oliver.graute@gmail.com>, corbet@lwn.net,
-        miguel.ojeda.sandonis@gmail.com, grandmaster@al2klimov.de,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: PGP pathfinder service is no longer maintained
-Message-ID: <20201217192555.GA17262@earth.li>
+        Thu, 17 Dec 2020 14:29:02 -0500
+Received: by mail-oi1-f177.google.com with SMTP id q205so80613oig.13;
+        Thu, 17 Dec 2020 11:28:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OIqxJlEr6qhscRY9Nj69alb23UGeDiYW09DXVg3bkF4=;
+        b=ewxWi9CV7yLkhkmeXyjasmN4l/6tAAVlyKA9mGjbgwhU/w+KVP9YygSciECpWS8OHK
+         9p1T++e/G+vSi4v9k0jYIP2Ecvht/MFleOS8lX1euh1EtGU1EB342kIUSoqJvXwBDvjg
+         ao2kXCLYc0FN7dW8B49LCa0XTIqoH3Y/DMc6pZacT9V+DKAFh0AZ94OUuL0G1z4u2MJr
+         UPOE9Dv2ZOqr94hEzLnT+j0c9xiPSh+qXD2oPwxwLAR5Ibv9EI3WXG5RC94hKuU9xEw6
+         PAiI8Brxec+Vb62k+4jIu+HnfWAx8bqitO7S4kwk6OasnMsMqcLE0BiC3Lgem0nTcbdf
+         26ug==
+X-Gm-Message-State: AOAM533CICczxAKIJ1Gs+5CtQvmcD9zaITt5zNg1PXdoDOYMOBZrGDTu
+        FFxsNkM3pzqGra/3W2Ut7g==
+X-Google-Smtp-Source: ABdhPJw3bvC0XYf+pKjCMi2TrfV+zkB/AwPcr+ycvAdNFlDT5V1e88wLbTciwmx3HwL9jGOPY4nPEQ==
+X-Received: by 2002:aca:3257:: with SMTP id y84mr518377oiy.132.1608233301052;
+        Thu, 17 Dec 2020 11:28:21 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id b25sm1497885ooe.18.2020.12.17.11.28.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Dec 2020 11:28:20 -0800 (PST)
+Received: (nullmailer pid 101991 invoked by uid 1000);
+        Thu, 17 Dec 2020 19:28:18 -0000
+Date:   Thu, 17 Dec 2020 13:28:18 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-mediatek@lists.infradead.org, linux-rtc@vger.kernel.org,
+        devicetree@vger.kernel.org, Ran Bi <ran.bi@mediatek.com>,
+        srv_heupstream@mediatek.com, linux-arm-kernel@lists.infradead.org,
+        Yuchen Huang <yuchen.huang@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Lee Jones <lee.jones@linaro.org>,
+        Fei Shao <fshao@chromium.org>,
+        Eddie Huang <eddie.huang@mediatek.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v4 3/9] dt-bindings: mfd: Add compatible for the MediaTek
+ MT6359 PMIC
+Message-ID: <20201217192818.GA101889@robh.at.kernel.org>
+References: <1608104827-7937-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+ <1608104827-7937-4-git-send-email-hsin-hsiung.wang@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201216224344.h3r7wbo7fgatupm5@chatter.i7.local>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1608104827-7937-4-git-send-email-hsin-hsiung.wang@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 16 Dec 2020 15:47:01 +0800, Hsin-Hsiung Wang wrote:
+> This adds compatible for the MediaTek MT6359 PMIC.
+> 
+> Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+> ---
+>  Documentation/devicetree/bindings/mfd/mt6397.txt | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
 
-In article <20201216224344.h3r7wbo7fgatupm5@chatter.i7.local> (earth.lists.linux-kernel) you wrote:
-> On Wed, Dec 16, 2020 at 10:20:18PM +0000, Matthew Wilcox wrote:
-> > > Unfortunately the site https://pgp.cs.uu.nl/ is not maintained 
-> > > anymore
-> > > and the "Finding paths to Linus" link in the Kernel Maintainer PGP guide
-> > > is dead. Is there any alternative sites to find a way through the web of
-> > > trust?
-> > 
-> > Several.  Konstantin has a local one: https://github.com/mricon/wotmate
 
-> This is how we generate these:
-> https://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git/tree/graphs
+Please add Acked-by/Reviewed-by tags when posting new versions. However,
+there's no need to repost patches *only* to add the tags. The upstream
+maintainer will do that for acks received on the version they apply.
 
-> > and if you want a web service, I like this one:
-> > https://the.earth.li/~noodles/pathfind.html
+If a tag was not added on purpose, please state why and what changed.
 
-> FYI, it says "The pathfinder is currently out of action due to queries 
-> taking far too long to respond. It may return in the future when I find 
-> enough time to optimize it." :)
-
-I've re-enabled it for the moment; the keyserver now only holds keys it
-has paths to so hopefully it'll be a bit better behaved now.
-
-J.
-
--- 
-Give me liberty or I will cut you.
