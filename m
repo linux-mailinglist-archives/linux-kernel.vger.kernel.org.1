@@ -2,96 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C902DD6B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:01:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71A932DD6B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:01:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729044AbgLQR7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 12:59:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726291AbgLQR7Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 12:59:24 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B22C061794
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 09:58:44 -0800 (PST)
-Received: from zn.tnic (p200300ec2f10f600810bdc721ae5a957.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:f600:810b:dc72:1ae5:a957])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2C9311EC059F;
-        Thu, 17 Dec 2020 18:58:41 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1608227921;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=lKW6EtXXc6FSMLz1VCn2XUrBr7oBxyq39Ngz4VM1cWk=;
-        b=bBNVrca05lJxFhpxTxV+W4PTx0VRgtjrAjg6UPLFzrNAB9dpCk0p2Xh7zIJnStHEF/J3j/
-        4wwbQDz4Yfa0Z37IgpwEc6UmaK8JUqBZ17/ecbK0jnsV4v7RwbeIJhAe8+9JTlJaWPrkD4
-        GtOdmEP2R2qt2LieeDWhOUPj+Noe2/4=
-Date:   Thu, 17 Dec 2020 18:58:37 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-        Paul McKenney <paulmck@linux.vnet.ibm.com>,
-        john.stultz@linaro.org, acme@redhat.com, frederic@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Marc Zyngier <marc.zyngier@arm.com>, daniel.lezcano@linaro.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [patch 0/2] Documentation/process: Add subsystem/tree handbook
-Message-ID: <20201217175837.GD23634@zn.tnic>
-References: <20181107171010.421878737@linutronix.de>
- <20181107124855.328133e7@lwn.net>
- <CAPcyv4goT+7t1foOhEYgGTz2kRV2Oou8QOs38D13rdC-TpfX+Q@mail.gmail.com>
- <alpine.DEB.2.21.1811072134060.1666@nanos.tec.linutronix.de>
- <20181108074920.4c601ee3@lwn.net>
- <alpine.DEB.2.21.1811081637550.1549@nanos.tec.linutronix.de>
- <20201217150537.GC23634@zn.tnic>
- <20201217105323.4d882a7d@lwn.net>
+        id S1729391AbgLQSA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 13:00:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55664 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726773AbgLQSA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 13:00:26 -0500
+Date:   Thu, 17 Dec 2020 09:59:43 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608227985;
+        bh=jNtML/03RYnflOWL8WR+rzcFTOWO7gE/3Mgtcxp5w/E=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kQgX/CnWq7XOhpDBIzoGnNVs1wX8YxfjImlPjcb/Yr6sMl6Y+9IWySlm2KIMyTaAr
+         CQlsqumlZ8cJNbkiy2TbJs5PplEUuU0Svw1lRJSqNsxxWxLZ8VsG00ZS92pszhdJMM
+         NQcxTTRmjgxyvCKZJ5e8Lms0/fKg+437IHm0mtzz29fLhUu5463K3CHDb3uUHNy2jR
+         rj5nfcW/wij3uJFOpHP8LoOdQqo6twmfJAiOEk2v0cDiV6cco9rciJUapbquUSU5BW
+         uHCLmJtRbww+V1g/Zi9G5eXv75SKNyT4uCYzzjNfltSVN3jQuJipPEDcnKVYTp6dqp
+         C6PPxIkZb3New==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Holger Assmann <h.assmann@pengutronix.de>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Rayagond Kokatanur <rayagond@vayavyalabs.com>,
+        kernel@pengutronix.de, Michael Olbrich <m.olbrich@pengutronix.de>,
+        Jose Abreu <Jose.Abreu@synopsys.com>, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Richard Cochran <richardcochran@gmail.com>
+Subject: Re: [PATCH 1/2] net: stmmac: retain PTP-clock at hwtstamp_set
+Message-ID: <20201217095943.6b17db4f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <ae5371c0-ea53-6885-a25b-b44e9fe0b615@pengutronix.de>
+References: <20201216113239.2980816-1-h.assmann@pengutronix.de>
+        <20201216171334.1e36fbff@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <ae5371c0-ea53-6885-a25b-b44e9fe0b615@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201217105323.4d882a7d@lwn.net>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 10:53:23AM -0700, Jonathan Corbet wrote:
-> Gee...a response from a two-year-old thread...
+On Thu, 17 Dec 2020 09:25:48 +0100 Ahmad Fatoum wrote:
+> On 17.12.20 02:13, Jakub Kicinski wrote:
+> >> +			netdev_warn(priv->dev, "HW Timestamping init failed: %pe\n",
+> >> +					ERR_PTR(ret));  
+> > 
+> > why convert to ERR_PTR and use %pe and not just %d?  
+> 
+> To get a symbolic error name if support is compiled in (note the `e' after %p).
 
-You know how we love to document stuff, right? :-)
-
-> it's taking me a while to page all of that back in :)
-
-Here's the gist of your concern:
-
-https://lkml.kernel.org/r/20181108074920.4c601ee3@lwn.net
-
-> I'd love to see this work get in, I still feel bad about my part in
-> stalling it before.
-
-Why? It makes sense - you want the generic stuff which holds true for
-the whole tree to be in generic docs. Read your example again and you'll
-persuade yourself again. :-)
-
-> Piecemeal could certainly work, or we could just try the whole thing and
-> see what happens.  We got Thorsten's reporting-issues tome in without much
-> trouble, after all, and that's bikeshed territory if anything is.  But
-> whatever works is fine; send stuff and I'll gladly look at it.
-
-Yeah, let's start slowly and small. We'll get there eventually... I
-hope.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Cool, GTK. Kind of weird we there is no equivalent int decorator, tho.
+Do you happen to know why?
