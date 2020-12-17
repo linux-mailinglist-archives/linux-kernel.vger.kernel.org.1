@@ -2,135 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EABA2DCFBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 11:51:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA9862DCFE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 11:57:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727755AbgLQKtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 05:49:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727416AbgLQKtr (ORCPT
+        id S1728070AbgLQK4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 05:56:01 -0500
+Received: from 5.mo178.mail-out.ovh.net ([46.105.51.53]:60016 "EHLO
+        5.mo178.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726503AbgLQK4A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 05:49:47 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC29BC0617B0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 02:49:06 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id b2so28180378edm.3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 02:49:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jlu9YbCN+xfICT/JHvGlkfpb81Fg0+Bwk3beGhrNPiw=;
-        b=kQ3mBU2A7lUDVBNP8yRDt3btPnEiLw6T6ksbE0oUVE7uD4AL1VJUPHqmZfFojJAavk
-         b2PsOCEEcpC/fH/FE5zLmMl0ZOhuWuV0c1db3vyDfKWtbDYm4PQoYuSqwq7XpcWeCFq2
-         LydprRMtKdgZgdQtuqcFU0pxwmUqWUB+JJ/0QeUHJLfAICUcrHxJfBnpK6+Q6mI0XQgH
-         y0mERnTItVCe11ymIATF+wLOcEJ/Ig2g+BylbhqN4kaUEo3xgk2adwkcp/ZzQEJ0K2XH
-         wcixbyEbG1PLAJIP2YKqCbOjG6SVNQLp4xz0SHVjAkbucXBr5WF7SV37qD48EaaN6eIs
-         91Ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jlu9YbCN+xfICT/JHvGlkfpb81Fg0+Bwk3beGhrNPiw=;
-        b=lbgv3lxbmRUR7pwdrHFiPXyI9oFxMDEsqx0m2evbXwIVTUfIy7ofPZRsPCw4xvJd0J
-         4tSmM2MafqwYz4QJL+w63L/VWZ92NfXzlG7DXAeadBM2heFEIFWJnWLa1NxJF2vhR1Um
-         bNjqB1BldUF3KxcWjRW1TXlLxUJ5vLXla66bvt2whIFl+7u0WyMaMlHLyBIMLKnqmrL6
-         XsaEAP/NNiepYTmmDsGVLTRWhZnBMfCaNEGvIi6YVtEvtIVyLrIrvSaVu1RPobLt3OaU
-         fLZGIH2g9TyREgkLl5+J4+Uqa5GU/YA0YeDvrYq/UgQMA1fTtODU8PFLN9msrri6XAO9
-         DJNw==
-X-Gm-Message-State: AOAM533BQ1MvABXz76aY+ax9Y8paj31Is9DOwX+IRyVH3m4GFhGe5JS0
-        35yaOmZtYxHX1DxQBDaq4qh+Tv15GCPeNpcMjfCoow==
-X-Google-Smtp-Source: ABdhPJz5RsUSEq4LXUEu+gfDETPHdfWF2gjImVecob/CD0EldRDfVC4tj9PvGcLX4A9AW/SaCcTttdQEdLjhxB23uYk=
-X-Received: by 2002:a05:6402:229b:: with SMTP id cw27mr37587049edb.23.1608202143684;
- Thu, 17 Dec 2020 02:49:03 -0800 (PST)
+        Thu, 17 Dec 2020 05:56:00 -0500
+Received: from player687.ha.ovh.net (unknown [10.108.42.82])
+        by mo178.mail-out.ovh.net (Postfix) with ESMTP id E58C2BAF18
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 11:49:21 +0100 (CET)
+Received: from armadeus.com (lfbn-str-1-215-46.w86-243.abo.wanadoo.fr [86.243.176.46])
+        (Authenticated sender: sebastien.szymanski@armadeus.com)
+        by player687.ha.ovh.net (Postfix) with ESMTPSA id 08B0F193B955C;
+        Thu, 17 Dec 2020 10:49:11 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-99G0031d6f8708-461d-44dd-8c5d-3d52df7630fe,
+                    8EA734AE32B22C363B3F44C891DDD3EC90B46019) smtp.auth=sebastien.szymanski@armadeus.com
+X-OVh-ClientIp: 86.243.176.46
+From:   =?UTF-8?q?S=C3=A9bastien=20Szymanski?= 
+        <sebastien.szymanski@armadeus.com>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        =?UTF-8?q?S=C3=A9bastien=20Szymanski?= 
+        <sebastien.szymanski@armadeus.com>
+Subject: [PATCH 1/1] ARM: dts: opos6ul: add ksz8081 phy properties
+Date:   Thu, 17 Dec 2020 11:49:05 +0100
+Message-Id: <20201217104905.25369-1-sebastien.szymanski@armadeus.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <CA+G9fYsVud9EmeDnijucxAN49a8S5zjnML6LSmmnPTG3cO5-Hg@mail.gmail.com>
- <20201216160330.GG2657@paulmck-ThinkPad-P72>
-In-Reply-To: <20201216160330.GG2657@paulmck-ThinkPad-P72>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 17 Dec 2020 16:18:52 +0530
-Message-ID: <CA+G9fYsqcSjzEfGerJ_bJJJ3e00Cnqe0zE9yjqfQQYM78UQgtg@mail.gmail.com>
-Subject: Re: i386: rcu-torture: WARNING: at kernel/rcu/rcutorture.c:1169
- rcu_torture_writer [rcutorture]
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 4012988745099334725
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedujedrudelgedgudekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkffogggtgfesthekredtredtjeenucfhrhhomhepuforsggrshhtihgvnhcuufiihihmrghnshhkihcuoehsvggsrghsthhivghnrdhsiiihmhgrnhhskhhisegrrhhmrgguvghushdrtghomheqnecuggftrfgrthhtvghrnhephffggefffeeigefhvdelgfdtieehjedvleevgfevtdegfeffgfejuedtudehtdefnecukfhppedtrddtrddtrddtpdekiedrvdegfedrudejiedrgeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrieekjedrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehsvggsrghsthhivghnrdhsiiihmhgrnhhskhhisegrrhhmrgguvghushdrtghomhdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+Set clock mode and the LED mode in the device tree instead of relying on
+the fixup in mach-imx6ul.
 
-Thanks for your inputs.
+Signed-off-by: Sébastien Szymanski <sebastien.szymanski@armadeus.com>
+---
+ arch/arm/boot/dts/imx6ul-imx6ull-opos6ul.dtsi | 3 +++
+ 1 file changed, 3 insertions(+)
 
-On Wed, 16 Dec 2020 at 21:33, Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Wed, Dec 16, 2020 at 03:40:04PM +0530, Naresh Kamboju wrote:
-> > Linux Kernel Functional Testing (LKFT) started running rcu-torture tests on
-> > qemu_arm64, qemu_arm qemu_x86_64 and qemu_i386 from our CI build systems.
-> >
-> > The following warning(s) noticed on qemu_i386 while running rcu-torture test
-> > on Linux mainline and Linux -next master branch. Since we do not have baseline
-> > results i can not comment this as regression but when compared with
-> > stable-rc 5.4 kernel this warning is new on mainline and next.
->
-> The rcutorture testing "stutters", that is, it periodically intentionally
-> drops the test load down to zero for a few seconds.  The expectation is
-> that with no load, rcutorture will have no trouble finishing any needed
-> grace periods within that zero-load period.  If at the end of the stutter
-> period, RCU work remains undone, then this warning is emitted.
->
-> This warning can be a false positive in the following situations:
->
-> 1.      The system on which you are running rcutorture is under
->         additional heavy load.
+diff --git a/arch/arm/boot/dts/imx6ul-imx6ull-opos6ul.dtsi b/arch/arm/boot/dts/imx6ul-imx6ull-opos6ul.dtsi
+index f2386dcb9ff2..dda4fa91b2f2 100644
+--- a/arch/arm/boot/dts/imx6ul-imx6ull-opos6ul.dtsi
++++ b/arch/arm/boot/dts/imx6ul-imx6ull-opos6ul.dtsi
+@@ -40,6 +40,9 @@ ethphy1: ethernet-phy@1 {
+ 			reg = <1>;
+ 			interrupt-parent = <&gpio4>;
+ 			interrupts = <16 IRQ_TYPE_LEVEL_LOW>;
++			micrel,led-mode = <1>;
++			clocks = <&clks IMX6UL_CLK_ENET_REF>;
++			clock-names = "rmii-ref";
+ 			status = "okay";
+ 		};
+ 	};
+-- 
+2.26.2
 
-The DUT is running the test - rcutorture - only.
-
-> 2.      You are running multiple guest OSes, each of which is running
->         rcutorture, and vCPUs from each of the guest OSes ends up
->         sharing a core with a vCPU from one of the other guests.  This
->         can cause the zero-load period to not be so unloaded.
->
-> 3.      You built rcutorture into your kernel, so that rcutorture starts
->         immediately at boot time (CONFIG_RCU_TORTURE_TEST=y).  If your
->         boot takes long enough, rcutorture can massively overload the
->         single boot CPU, which can in turn result in this warning.
-
-The test was built as a module.
-CONFIG_RCU_TORTURE_TEST=m
-
->
-> If you are in situation #1, I suggest disabling stuttering using the
-> rcutorture.stutter=0 kernel boot parameter.
->
-> If you are in situation #2, I suggest binding the guest-OS vCPUs
-> to avoid them sharing cores with each other.
->
-> If you are in situation #3, I have patches that I expect to submit
-> upstream in the v5.12 merge window that can help.  Hey, they work for me!
-> If you would like to test them before then, please let me know.
->
-> If something else is going on, please let me know what it is so that
-> I can fix it one way or another.
-
-We were running on qemu_i386 today. I have tested on real hardware
-and the reported problem has been reproduced.
-
-> This warning has been present for quite some time, but I continually
-> make rcutorture more aggressive, and this could well be part of the
-> fallout of additional rcutorture aggression.
->
-> And either way, thank you for trying out rcutorture!
-
-We are happy to test :)
-
-- Naresh
