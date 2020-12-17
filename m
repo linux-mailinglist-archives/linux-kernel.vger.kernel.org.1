@@ -2,93 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC3F12DD8B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:51:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C442DD8C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:54:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730063AbgLQSvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 13:51:20 -0500
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:46421 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727063AbgLQSvU (ORCPT
+        id S1730410AbgLQSxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 13:53:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728193AbgLQSx1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 13:51:20 -0500
-Received: by mail-ot1-f53.google.com with SMTP id w3so28346460otp.13;
-        Thu, 17 Dec 2020 10:51:04 -0800 (PST)
+        Thu, 17 Dec 2020 13:53:27 -0500
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 415BEC0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 10:52:47 -0800 (PST)
+Received: by mail-qt1-x834.google.com with SMTP id z9so20842134qtn.4
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 10:52:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RJmQJk/qnnNK+45hsQuVraY9kUpro35/zVkofbDgVLE=;
+        b=dMpnxe+kBujUiyNXSWWljlcdba5/4EI/Xn7Nhij8kkGR8Gwk/dLkR2ZpRbRLNxOTAA
+         ARdOJ21zIOBIB5dtZUYXCz3NVZsBgCTh1OS/ZNZNxkWoAIrPFf3E0+xZgzSHMjFrmaPP
+         /Y+AwjLRJzqpt4s9l3nxH0yhG1pnhAz9V6Uc5NAdWbPLkDZh0T5gqMPkn+uSjeQCGwkT
+         dr/MoFTQBFoEsd6TuHPQ/6F11msiOmekseRjbh5UzigP365AWAZZO/MA547MhyKUMFqV
+         xCznKAmryRMAFlhcA5zrrUI4Sd/WqJtMqWv7hst7bTd8V4lPIImq/wWXvPRQhSaNWtHz
+         953w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=0J3vl1MTUsZMronAIrs9qpBUzg0oJyXdy+TBq+BXRGg=;
-        b=T8l0slvmQau/xppvK7jwZX08C/YACfJ34VfoDnVGsHz8LgvozZtraMLZ8zVxcCtACp
-         H2zH1K01/HJP8KV+UsefXzJxVVlqn/PTt8w/fC8b1aL3+l/9y+3HZLWkdbEVO+7nv2Y6
-         HVgD1yuMqb/IPKRsqtl0m7uWZ1/mVi1YHC34WRqnq6RGij52+Po7u5RrBYPRqvH1HqEB
-         3cYLYns9HbHz/L1CP15E1XACmXVVgld7M06aYPEPKfyYagv5GaBTTHBizahWdprjVPZb
-         ZKS2xUfRD6s0rO8W7ys5EWb43aq3UXDRquv6ZbIb/SXPgJqHcnO80FY/AEdl4YPHA7Rb
-         qC1g==
-X-Gm-Message-State: AOAM5310j4gJZYfvZCzY5snSO0KUsDwtluuBjnW02zng0GsGsnzFGSCb
-        X53iIzggSi7lkeTJ8r5nww==
-X-Google-Smtp-Source: ABdhPJyupopTHCyOI1kXrI4SvwIdqGJXu/0CPZvamUq8qDnn0fuulgPaAICVXyoXi8ycIfF3QKPJBw==
-X-Received: by 2002:a9d:2254:: with SMTP id o78mr245009ota.24.1608231038964;
-        Thu, 17 Dec 2020 10:50:38 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id l21sm1417234otd.0.2020.12.17.10.50.36
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RJmQJk/qnnNK+45hsQuVraY9kUpro35/zVkofbDgVLE=;
+        b=s92+PLdh2tjn4/Q0kRM1ACAArsLthZ+gld4wW5k+0tSOA0uiqHamROqB6fPLTDY3cb
+         GNvPoLxBrWOqsdkWeot+sIctkpDHFufQ0Dw94QyUhW/hy7bpS7Fm0pxK/AHpus9x+swe
+         h80DEwSxlgAQ20dbhFOp/uWGkcPWPh7nGpaDi1Vk6Gk1EnspfyxJEeYvt91/StBR+QwW
+         NfXMzYtFXcUoLJHcE2Vt5fdx8orDV8sZIufnZ9gW/LVXtL38T5TUKKirmQfRyEikriR5
+         t/KlUAi/5DqHfIqkyV6legQIzxZ3lXbZZE1DHaO26x0jgPgt2920Cbgo2vQUv+SWjNTN
+         tllw==
+X-Gm-Message-State: AOAM532uQq4sJniTxUE7zH6idzK7y8NFci5M3BJ0+jWVPaUPq5J4MiHT
+        YRv0ZZJI6k+x6koNX6U0DTgLj2Y9RmO7YSPB
+X-Google-Smtp-Source: ABdhPJx7muuv9wAqAS2WPTPk5ZAJcl+rC1wm26NAoz2/eM7fsJUO8cqs4X+rODk6Tc8u/+MpKEUsfw==
+X-Received: by 2002:ac8:396d:: with SMTP id t42mr121955qtb.273.1608231166390;
+        Thu, 17 Dec 2020 10:52:46 -0800 (PST)
+Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
+        by smtp.gmail.com with ESMTPSA id m8sm4127434qkn.41.2020.12.17.10.52.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 10:50:37 -0800 (PST)
-Received: (nullmailer pid 50648 invoked by uid 1000);
-        Thu, 17 Dec 2020 18:50:36 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Liu Ying <victor.liu@nxp.com>
-Cc:     dri-devel@lists.freedesktop.org, jernej.skrabec@siol.net,
-        Laurent.pinchart@ideasonboard.com, robh+dt@kernel.org,
-        a.hajda@samsung.com, vkoul@kernel.org, linux-media@vger.kernel.org,
-        s.hauer@pengutronix.de, airlied@linux.ie,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        kernel@pengutronix.de, jonas@kwiboo.se, festevam@gmail.com,
-        narmstrong@baylibre.com, daniel@ffwll.ch, shawnguo@kernel.org,
-        mchehab@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-imx@nxp.com, kishon@ti.com
-In-Reply-To: <1608199173-28760-5-git-send-email-victor.liu@nxp.com>
-References: <1608199173-28760-1-git-send-email-victor.liu@nxp.com> <1608199173-28760-5-git-send-email-victor.liu@nxp.com>
-Subject: Re: [PATCH 04/14] dt-bindings: display: bridge: Add i.MX8qm/qxp pixel combiner binding
-Date:   Thu, 17 Dec 2020 12:50:36 -0600
-Message-Id: <1608231036.357497.50647.nullmailer@robh.at.kernel.org>
+        Thu, 17 Dec 2020 10:52:45 -0800 (PST)
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org, vbabka@suse.cz,
+        mhocko@suse.com, david@redhat.com, osalvador@suse.de,
+        dan.j.williams@intel.com, sashal@kernel.org,
+        tyhicks@linux.microsoft.com, iamjoonsoo.kim@lge.com,
+        mike.kravetz@oracle.com, rostedt@goodmis.org, mingo@redhat.com,
+        jgg@ziepe.ca, peterz@infradead.org, mgorman@suse.de,
+        willy@infradead.org, rientjes@google.com, jhubbard@nvidia.com,
+        linux-doc@vger.kernel.org, ira.weiny@intel.com,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH v4 00/10] prohibit pinning pages in ZONE_MOVABLE
+Date:   Thu, 17 Dec 2020 13:52:33 -0500
+Message-Id: <20201217185243.3288048-1-pasha.tatashin@soleen.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Dec 2020 17:59:23 +0800, Liu Ying wrote:
-> This patch adds bindings for i.MX8qm/qxp pixel combiner.
-> 
-> Signed-off-by: Liu Ying <victor.liu@nxp.com>
-> ---
->  .../display/bridge/fsl,imx8qxp-pixel-combiner.yaml | 160 +++++++++++++++++++++
->  1 file changed, 160 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-combiner.yaml
-> 
+Changelog
+---------
+v4
+- Address page migration comments. New patch:
+  mm/gup: limit number of gup migration failures, honor failures
+  Implements the limiting number of retries for migration failures, and
+  also check for isolation failures.
+  Added a test case into gup_test to verify that pages never long-term
+  pinned in a movable zone, and also added tests to fault both in kernel
+  and in userland.
+v3
+- Merged with linux-next, which contains clean-up patch from Jason,
+  therefore this series is reduced by two patches which did the same
+  thing.
+v2
+- Addressed all review comments
+- Added Reviewed-by's.
+- Renamed PF_MEMALLOC_NOMOVABLE to PF_MEMALLOC_PIN
+- Added is_pinnable_page() to check if page can be longterm pinned
+- Fixed gup fast path by checking is_in_pinnable_zone()
+- rename cma_page_list to movable_page_list
+- add a admin-guide note about handling pinned pages in ZONE_MOVABLE,
+  updated caveat about pinned pages from linux/mmzone.h
+- Move current_gfp_context() to fast-path
 
-My bot found errors running 'make dt_binding_check' on your patch:
+---------
+When page is pinned it cannot be moved and its physical address stays
+the same until pages is unpinned.
 
-yamllint warnings/errors:
+This is useful functionality to allows userland to implementation DMA
+access. For example, it is used by vfio in vfio_pin_pages().
 
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-combiner.example.dts:19:18: fatal error: dt-bindings/clock/imx8-lpcg.h: No such file or directory
-   19 |         #include <dt-bindings/clock/imx8-lpcg.h>
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-compilation terminated.
-make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-combiner.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1364: dt_binding_check] Error 2
+However, this functionality breaks memory hotplug/hotremove assumptions
+that pages in ZONE_MOVABLE can always be migrated.
 
-See https://patchwork.ozlabs.org/patch/1417599
+This patch series fixes this issue by forcing new allocations during
+page pinning to omit ZONE_MOVABLE, and also to migrate any existing
+pages from ZONE_MOVABLE during pinning.
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+It uses the same scheme logic that is currently used by CMA, and extends
+the functionality for all allocations.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+For more information read the discussion [1] about this problem.
+[1] https://lore.kernel.org/lkml/CA+CK2bBffHBxjmb9jmSKacm0fJMinyt3Nhk8Nx6iudcQSj80_w@mail.gmail.com
 
-pip3 install dtschema --upgrade
+Previous versions:
+v1
+https://lore.kernel.org/lkml/20201202052330.474592-1-pasha.tatashin@soleen.com
+v2
+https://lore.kernel.org/lkml/20201210004335.64634-1-pasha.tatashin@soleen.com
+v3
+https://lore.kernel.org/lkml/20201211202140.396852-1-pasha.tatashin@soleen.com
 
-Please check and re-submit.
+Pavel Tatashin (10):
+  mm/gup: don't pin migrated cma pages in movable zone
+  mm cma: rename PF_MEMALLOC_NOCMA to PF_MEMALLOC_PIN
+  mm: apply per-task gfp constraints in fast path
+  mm: honor PF_MEMALLOC_PIN for all movable pages
+  mm/gup: migrate pinned pages out of movable zone
+  memory-hotplug.rst: add a note about ZONE_MOVABLE and page pinning
+  mm/gup: change index type to long as it counts pages
+  mm/gup: limit number of gup migration failures, honor failures
+  selftests/vm: test flag is broken
+  selftests/vm: test faulting in kernel, and verify pinnable pages
+
+ .../admin-guide/mm/memory-hotplug.rst         |   9 +
+ include/linux/migrate.h                       |   1 +
+ include/linux/mm.h                            |  11 +
+ include/linux/mmzone.h                        |  11 +-
+ include/linux/sched.h                         |   2 +-
+ include/linux/sched/mm.h                      |  27 +--
+ include/trace/events/migrate.h                |   3 +-
+ mm/gup.c                                      | 217 ++++++++++--------
+ mm/gup_test.c                                 |  15 +-
+ mm/gup_test.h                                 |   1 +
+ mm/hugetlb.c                                  |   4 +-
+ mm/page_alloc.c                               |  33 ++-
+ mm/vmscan.c                                   |  10 +-
+ tools/testing/selftests/vm/gup_test.c         |  26 ++-
+ 14 files changed, 221 insertions(+), 149 deletions(-)
+
+-- 
+2.25.1
 
