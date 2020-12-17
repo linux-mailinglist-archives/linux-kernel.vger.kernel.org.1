@@ -2,146 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3D62DD68E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 18:49:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 697772DD683
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 18:47:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729833AbgLQRsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 12:48:16 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:44814 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728487AbgLQRsN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 12:48:13 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BHHfON6008216;
-        Thu, 17 Dec 2020 09:45:22 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0220;
- bh=FiHsbapZZsHFF2s7cfb3WG2w+ikMFU1s/FrvpNvsWlo=;
- b=Fl5Xhp6DBG/s9/MQWYEg9sFmp43oqdIVJGFIolc6VdGeLTGtRLQl7mtNxhIcnCzmDVDa
- YmLukQ9EVlmnyEzqqnsVpsmaV+nYZP3E0ztnngTqptzhRiEWgl36BCBR2gjrQKBSZDnP
- nVIG5nyc039N2aHfq9so88SQgG9uOR6njWTs0L/wxTt1lhbmwDYVqBVJNVVJ5WPPs94Q
- lQOo43QlWDimtGwhntRqQb+dE7gMFNS93THV6+yNIrT63MxPUR6PROw5esACMMQyKYcg
- QpBWTKP7yQ5mV3eqHQCa0pSl9B+n0L0FSemKqfoagiTJXVwoT+s5mSq08Xl+yKAAQwj7 vA== 
-Received: from sc-exch02.marvell.com ([199.233.58.182])
-        by mx0b-0016f401.pphosted.com with ESMTP id 35cx8tgf86-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 17 Dec 2020 09:45:22 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH02.marvell.com
- (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 17 Dec
- 2020 09:45:20 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 17 Dec
- 2020 09:45:20 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 17 Dec 2020 09:45:20 -0800
-Received: from stefan-pc.marvell.com (unknown [10.5.25.21])
-        by maili.marvell.com (Postfix) with ESMTP id 4321B3F7044;
-        Thu, 17 Dec 2020 09:45:17 -0800 (PST)
-From:   <stefanc@marvell.com>
-To:     <netdev@vger.kernel.org>
-CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
-        <nadavh@marvell.com>, <ymarkman@marvell.com>,
-        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
-        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
-        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>
-Subject: [PATCH net] net: mvpp2: Add TCAM entry to drop flow control pause frames
-Date:   Thu, 17 Dec 2020 19:45:06 +0200
-Message-ID: <1608227106-21394-1-git-send-email-stefanc@marvell.com>
-X-Mailer: git-send-email 1.9.1
+        id S1729588AbgLQRqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 12:46:07 -0500
+Received: from mail.pqgruber.com ([52.59.78.55]:55984 "EHLO mail.pqgruber.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729285AbgLQRqG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 12:46:06 -0500
+Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
+        by mail.pqgruber.com (Postfix) with ESMTPSA id 0A1F4C727E0;
+        Thu, 17 Dec 2020 18:45:24 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
+        s=mail; t=1608227124;
+        bh=RoE1euIuNMQzgC1ALLhy/pbhfHp1J1Yqi1exnRxa2Zw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p+XVpevS4Hf6zx1Kl+gHhvFV7kgdQVcTJ3Q1tydkRwaYpSW3IcJnrKmk4K0TKjcdS
+         qXk4WLMutSMrrhbAsDf/lash62naZ3cfOAQdgPtiegnULNDr98iMOujUOiFGPIoUFx
+         Vf5TpdZTH6BGLlrfR6wWCeAe09hpeeytkcBjm1J0=
+Date:   Thu, 17 Dec 2020 18:45:22 +0100
+From:   Clemens Gruber <clemens.gruber@pqgruber.com>
+To:     Sven Van Asbroeck <thesven73@gmail.com>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        David Jander <david@protonic.nl>
+Subject: Re: [PATCH v5 4/7] pwm: pca9685: Reset registers to POR state in
+ probe
+Message-ID: <X9uZMsjugJXbEfAO@workstation.tuxnet>
+References: <20201215212228.185517-1-clemens.gruber@pqgruber.com>
+ <20201215212228.185517-4-clemens.gruber@pqgruber.com>
+ <CAGngYiUj-4mnJKQYnyJXmvr21tCzhXJA-bGnCwMkJ-0RTSYnNw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-17_13:2020-12-15,2020-12-17 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGngYiUj-4mnJKQYnyJXmvr21tCzhXJA-bGnCwMkJ-0RTSYnNw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Chulski <stefanc@marvell.com>
+On Wed, Dec 16, 2020 at 11:02:03PM -0500, Sven Van Asbroeck wrote:
+> Hi Clemens, minor nit below.
+> 
+> On Wed, Dec 16, 2020 at 7:53 AM Clemens Gruber
+> <clemens.gruber@pqgruber.com> wrote:
+> >
+> > Reset the prescale and ON/OFF registers to their POR default state in
+> > the probe function. Otherwise, the PWMs could still be active after a
+> > watchdog reset and reboot, etc.
+> >
+> > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
+> > ---
+> >  drivers/pwm/pwm-pca9685.c | 9 +++++++--
+> >  1 file changed, 7 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/pwm/pwm-pca9685.c b/drivers/pwm/pwm-pca9685.c
+> > index 7b14447f3c05..38aadaf50996 100644
+> > --- a/drivers/pwm/pwm-pca9685.c
+> > +++ b/drivers/pwm/pwm-pca9685.c
+> > @@ -47,6 +47,7 @@
+> >  #define PCA9685_ALL_LED_OFF_H  0xFD
+> >  #define PCA9685_PRESCALE       0xFE
+> >
+> > +#define PCA9685_PRESCALE_DEF   0x1E    /* => default frequency of ~200 Hz */
+> >  #define PCA9685_PRESCALE_MIN   0x03    /* => max. frequency of 1526 Hz */
+> >  #define PCA9685_PRESCALE_MAX   0xFF    /* => min. frequency of 24 Hz */
+> >
+> > @@ -446,9 +447,11 @@ static int pca9685_pwm_probe(struct i2c_client *client,
+> >         reg &= ~(MODE1_ALLCALL | MODE1_SUB1 | MODE1_SUB2 | MODE1_SUB3);
+> >         regmap_write(pca->regmap, PCA9685_MODE1, reg);
+> >
+> > -       /* Clear all "full off" bits */
+> > +       /* Reset ON/OFF registers to HW defaults (only full OFF bit is set) */
+> > +       regmap_write(pca->regmap, PCA9685_ALL_LED_ON_L, 0);
+> > +       regmap_write(pca->regmap, PCA9685_ALL_LED_ON_H, 0);
+> >         regmap_write(pca->regmap, PCA9685_ALL_LED_OFF_L, 0);
+> > -       regmap_write(pca->regmap, PCA9685_ALL_LED_OFF_H, 0);
+> > +       regmap_write(pca->regmap, PCA9685_ALL_LED_OFF_H, LED_FULL);
+> >
+> >         pca->chip.ops = &pca9685_pwm_ops;
+> >         /* Add an extra channel for ALL_LED */
+> > @@ -470,8 +473,10 @@ static int pca9685_pwm_probe(struct i2c_client *client,
+> >         /*
+> >          * The chip comes out of power-up in the sleep state,
+> >          * but force it to sleep in case it was woken up before
+> > +        * and set the default prescale value
+> >          */
+> >         pca9685_set_sleep_mode(pca, true);
+> > +       regmap_write(pca->regmap, PCA9685_PRESCALE, PCA9685_PRESCALE_DEF);
+> >         pm_runtime_set_suspended(&client->dev);
+> >         pm_runtime_enable(&client->dev);
+> 
+> Consider making it clearer that prescale can only be touched when the chip is
+> in sleep mode. Suggestion:
+> 
+>     /* set the default prescale value - chip _must_ be in sleep mode */
+>     regmap_write(pca->regmap, PCA9685_PRESCALE, PCA9685_PRESCALE_DEF);
 
-Issue:
-Flow control frame used to pause GoP(MAC) was delivered to the CPU
-and created a load on the CPU. Since XOFF/XON frames are used only
-by MAC, these frames should be dropped inside MAC.
+Good point, thanks.
 
-Fix:
-According to 802.3-2012 - IEEE Standard for Ethernet pause frame
-has unique destination MAC address 01-80-C2-00-00-01.
-Add TCAM parser entry to track and drop pause frames by destination MAC.
-
-Fixes: db9d7d36eecc ("net: mvpp2: Split the PPv2 driver to a dedicated directory")
-Signed-off-by: Stefan Chulski <stefanc@marvell.com>
----
- drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c | 34 ++++++++++++++++++++++++++
- drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.h |  2 +-
- 2 files changed, 35 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c
-index 1a272c2..3a9c747 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c
-@@ -405,6 +405,39 @@ static int mvpp2_prs_tcam_first_free(struct mvpp2 *priv, unsigned char start,
- 	return -EINVAL;
- }
- 
-+/* Drop flow control pause frames */
-+static void mvpp2_prs_drop_fc(struct mvpp2 *priv)
-+{
-+	struct mvpp2_prs_entry pe;
-+	unsigned int len;
-+	unsigned char da[ETH_ALEN] = {
-+			0x01, 0x80, 0xC2, 0x00, 0x00, 0x01 };
-+
-+	memset(&pe, 0, sizeof(pe));
-+
-+	/* For all ports - drop flow control frames */
-+	pe.index = MVPP2_PE_FC_DROP;
-+	mvpp2_prs_tcam_lu_set(&pe, MVPP2_PRS_LU_MAC);
-+
-+	/* Set match on DA */
-+	len = ETH_ALEN;
-+	while (len--)
-+		mvpp2_prs_tcam_data_byte_set(&pe, len, da[len], 0xff);
-+
-+	mvpp2_prs_sram_ri_update(&pe, MVPP2_PRS_RI_DROP_MASK,
-+				 MVPP2_PRS_RI_DROP_MASK);
-+
-+	mvpp2_prs_sram_bits_set(&pe, MVPP2_PRS_SRAM_LU_GEN_BIT, 1);
-+	mvpp2_prs_sram_next_lu_set(&pe, MVPP2_PRS_LU_FLOWS);
-+
-+	/* Mask all ports */
-+	mvpp2_prs_tcam_port_map_set(&pe, MVPP2_PRS_PORT_MASK);
-+
-+	/* Update shadow table and hw entry */
-+	mvpp2_prs_shadow_set(priv, pe.index, MVPP2_PRS_LU_MAC);
-+	mvpp2_prs_hw_write(priv, &pe);
-+}
-+
- /* Enable/disable dropping all mac da's */
- static void mvpp2_prs_mac_drop_all_set(struct mvpp2 *priv, int port, bool add)
- {
-@@ -1168,6 +1201,7 @@ static void mvpp2_prs_mac_init(struct mvpp2 *priv)
- 	mvpp2_prs_hw_write(priv, &pe);
- 
- 	/* Create dummy entries for drop all and promiscuous modes */
-+	mvpp2_prs_drop_fc(priv);
- 	mvpp2_prs_mac_drop_all_set(priv, 0, false);
- 	mvpp2_prs_mac_promisc_set(priv, 0, MVPP2_PRS_L2_UNI_CAST, false);
- 	mvpp2_prs_mac_promisc_set(priv, 0, MVPP2_PRS_L2_MULTI_CAST, false);
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.h
-index e22f6c8..4b68dd3 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.h
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.h
-@@ -129,7 +129,7 @@
- #define MVPP2_PE_VID_EDSA_FLTR_DEFAULT	(MVPP2_PRS_TCAM_SRAM_SIZE - 7)
- #define MVPP2_PE_VLAN_DBL		(MVPP2_PRS_TCAM_SRAM_SIZE - 6)
- #define MVPP2_PE_VLAN_NONE		(MVPP2_PRS_TCAM_SRAM_SIZE - 5)
--/* reserved */
-+#define MVPP2_PE_FC_DROP		(MVPP2_PRS_TCAM_SRAM_SIZE - 4)
- #define MVPP2_PE_MAC_MC_PROMISCUOUS	(MVPP2_PRS_TCAM_SRAM_SIZE - 3)
- #define MVPP2_PE_MAC_UC_PROMISCUOUS	(MVPP2_PRS_TCAM_SRAM_SIZE - 2)
- #define MVPP2_PE_MAC_NON_PROMISCUOUS	(MVPP2_PRS_TCAM_SRAM_SIZE - 1)
--- 
-1.9.1
-
+> 
+> >
+> > --
+> > 2.29.2
+> >
