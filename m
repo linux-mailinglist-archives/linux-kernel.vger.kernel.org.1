@@ -2,120 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB2D2DDB2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 23:06:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F6692DDB33
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 23:12:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732096AbgLQWEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 17:04:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25899 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727132AbgLQWEi (ORCPT
+        id S1731803AbgLQWL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 17:11:56 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:34500 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726993AbgLQWLz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 17:04:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608242592;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=C0sgbGiFG7XgKZ99IeYyXSL6vj+ZYcARGRfsHU94m7Y=;
-        b=iWfJx2GUrHUBWNMxuc1gCqS15JYhvKtJbClq/zd4TCJeF5KU/7dYRNdksHcWxvgWFrHfuo
-        U8PSX0oUSovbv9t613i/yUzDvYRVLlLwfpSf082v4vxYUtB8dbx212gix/l5Fw2xJxiW2n
-        9VPC334D4yGUdITFOTzKJb5oi2xHJCo=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-352-34ybj2CaNRO62ZmuCVfwIg-1; Thu, 17 Dec 2020 17:03:10 -0500
-X-MC-Unique: 34ybj2CaNRO62ZmuCVfwIg-1
-Received: by mail-qk1-f197.google.com with SMTP id v66so188461qkh.16
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 14:03:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=C0sgbGiFG7XgKZ99IeYyXSL6vj+ZYcARGRfsHU94m7Y=;
-        b=syd3JYNlw4/1NhBwmWOklRnARSPJ7+TeQkfCCknQUKs/bZM//Jhg4ycGp+jJkdJD7T
-         glaJxIvjIVJ3l8KqZ7fyrEDWiKUnoDjbapHseiyhfCi8nS1tc3MTn3tFWtHIGrwHWRd7
-         76daDnWP207A19UcCqKSShUR7OEJZn7rep0a9N0iS5bcJmwjzENyLGRPG5stE28WjYu5
-         /pHBHykbMfuwNLhQLIcA3jazA6TLlDLy8Jr4IIm4xUGYGLps/a4uS+3i07GfSe52F1he
-         M5rf3FE1qM3/8FFe3xzKSZlu+Xc0ArCi4hcxR1fGoqH4ws7e8l+lB8tmGxPRCYcSuwZb
-         gzDg==
-X-Gm-Message-State: AOAM530ac71M3Wp6ZDnaUfDEhOruAQ1zELvNY/OOMgn9X+IV3xKdqshY
-        B8/Wda5oxQRx9LmCBrKZx1DloOa5nP8fHWwksK/od+Ihp5WaNYxOH7XEy8c5NhNCBWlaGoM+sNd
-        8G/FlRDKqU7yFIACA67bfDrUyy7mL6YFhA4Af7TBNeDl5VjijIXqpNtYAS/LeHtoCPNMWGbo=
-X-Received: by 2002:a37:a1d6:: with SMTP id k205mr1573196qke.384.1608242589758;
-        Thu, 17 Dec 2020 14:03:09 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxmkx2if7Kw2NwuxIsapTJwjnUAUWq9916p4JEscDmDC0JfDUcetA9R7rcyXDUDXWXhtiYy9g==
-X-Received: by 2002:a37:a1d6:: with SMTP id k205mr1573171qke.384.1608242589530;
-        Thu, 17 Dec 2020 14:03:09 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id x134sm2488905qka.1.2020.12.17.14.03.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Dec 2020 14:03:08 -0800 (PST)
-Subject: Re: [PATCH] atm: ambassador: remove h from printk format specifier
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     3chas3@gmail.com, linux-atm-general@lists.sourceforge.net,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201215142228.1847161-1-trix@redhat.com>
- <20201216164510.770454d8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <6ada03ed-1ecb-493b-96f8-5f9548a46a5e@redhat.com>
- <20201217092816.7b739b8c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <ae7d363b-99ec-d75f-bae3-add3ee4789bd@redhat.com>
-Date:   Thu, 17 Dec 2020 14:03:07 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Thu, 17 Dec 2020 17:11:55 -0500
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id E503220B717A;
+        Thu, 17 Dec 2020 14:11:13 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E503220B717A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1608243074;
+        bh=QSosWZwtVMTcMn62nBnRz7ClBx5R8L8Yz9ALkNCQps8=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=iB98ytkLLq7AgvZAquE6qTkzmUDb+o+31aedBLPvq1Lmn/k0Com6XleZhRApsg7C1
+         ayIyKcrnJ/wTtkBYe/dMGz5HE7ODovuUGlX9iIqySfXrwGcwnXn//yeZFpd4DEijMZ
+         Z1l2dVHjQXDjA0x9nUmy4J90J0ElUAKTEwzXT8Vk=
+Subject: Re: [PATCH v12 2/4] powerpc: Move arch independent ima kexec
+ functions to drivers/of/kexec.c
+To:     Rob Herring <robh@kernel.org>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        "AKASHI, Takahiro" <takahiro.akashi@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        James Morse <james.morse@arm.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        vincenzo.frascino@arm.com, Mark Rutland <mark.rutland@arm.com>,
+        dmitry.kasatkin@gmail.com, James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Allison Randal <allison@lohutok.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Bhupesh Sharma <bhsharma@redhat.com>,
+        Matthias Brugger <mbrugger@suse.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, tao.li@vivo.com,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Prakhar Srivastava <prsriva@linux.microsoft.com>,
+        balajib@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree@vger.kernel.org
+References: <20201217173708.6940-1-nramas@linux.microsoft.com>
+ <20201217173708.6940-3-nramas@linux.microsoft.com>
+ <20201217200510.GA105447@robh.at.kernel.org>
+ <0b17fbee-cfe9-8cb2-01d1-02b6a61a14f5@linux.microsoft.com>
+ <CAL_Jsq+-HOkxtxOO=zyRbDuGVNZoMy589qoVANciNionsdsGCw@mail.gmail.com>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <de64bbaf-1568-b4a4-d76d-fc07a91d7c27@linux.microsoft.com>
+Date:   Thu, 17 Dec 2020 14:11:13 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201217092816.7b739b8c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL_Jsq+-HOkxtxOO=zyRbDuGVNZoMy589qoVANciNionsdsGCw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 12/17/20 9:28 AM, Jakub Kicinski wrote:
-> On Thu, 17 Dec 2020 05:17:24 -0800 Tom Rix wrote:
->> On 12/16/20 4:45 PM, Jakub Kicinski wrote:
->>> On Tue, 15 Dec 2020 06:22:28 -0800 trix@redhat.com wrote:  
->>>> From: Tom Rix <trix@redhat.com>
->>>>
->>>> See Documentation/core-api/printk-formats.rst.
->>>> h should no longer be used in the format specifier for printk.
->>>>
->>>> Signed-off-by: Tom Rix <trix@redhat.com>  
->>> That's for new code I assume?
->>>
->>> What's the harm in leaving this ancient code be?  
->> This change is part of a tree wide cleanup.
-> What's the purpose of the "clean up"? Why is it making the code better?
->
-> This is a quote from your change:
->
-> -  PRINTK (KERN_NOTICE, "debug bitmap is %hx", debug &= DBG_MASK);
-> +  PRINTK (KERN_NOTICE, "debug bitmap is %x", debug &= DBG_MASK);
->
-> Are you sure that the use of %hx is the worst part of that line?
-
-In this case, it means this bit of code is compliant with the %h checker in checkpatch.
-
-why you are seeing this change for %hx and not the horrible debug &= or the old PRINTK macro is because the change was mechanical.
-
-leveraging the clang build and a special fixit for %h, an allyesconfig for x86_64 cleans this problem from most of the tree in about an hour.  atm/ was just one of the places it hit, there are about 100 more.
-
-If you want the debug &= fixed, i can do that.
-
-The macro is a treewide problem and i can add that to the treewide cleanups i am planning.
-
-Tom
-
->
->> drivers/atm status is listed as Maintained in MAINTAINERS so changes
->> like this should be ok.
+On 12/17/20 2:01 PM, Rob Herring wrote:
+> On Thu, Dec 17, 2020 at 2:52 PM Lakshmi Ramasubramanian
+> <nramas@linux.microsoft.com> wrote:
 >>
->> Should drivers/atm status be changed?
-> Up to Chas, but AFAIU we're probably only a few years away from ATM as 
-> a whole walking into the light. So IMHO "Obsolete" would be justified.
->
+>> On 12/17/20 12:05 PM, Rob Herring wrote:
+>>> On Thu, Dec 17, 2020 at 09:37:06AM -0800, Lakshmi Ramasubramanian wrote:
+>>>> The functions defined in "arch/powerpc/kexec/ima.c" handle setting up
+>>>> and freeing the resources required to carry over the IMA measurement
+>>>> list from the current kernel to the next kernel across kexec system call.
+>>>> These functions do not have architecture specific code, but are
+>>>> currently limited to powerpc.
+> 
+> [...]
+> 
+>>>> +#ifdef CONFIG_IMA_KEXEC
+>>>> +/**
+>>>> + * arch_ima_add_kexec_buffer - do arch-specific steps to add the IMA buffer
+>>>> + *
+>>>> + * @image: kimage struct to set IMA buffer data
+>>>> + * @load_addr: Starting address where IMA buffer is loaded at
+>>>> + * @size: Number of bytes in the IMA buffer
+>>>> + *
+>>>> + * Architectures should use this function to pass on the IMA buffer
+>>>> + * information to the next kernel.
+>>>> + *
+>>>> + * Return: 0 on success, negative errno on error.
+>>>> + */
+>>>> +int arch_ima_add_kexec_buffer(struct kimage *image, unsigned long load_addr,
+>>>> +                          size_t size)
+>>>
+>>> This should be a static inline in asm/kexec.h.
+>>
+>> arch_ima_add_kexec_buffer() is identical for powerpc and arm64.
+>> Would it be better to "static inline" this function in "of.h" instead of
+>> duplicating it in "asm/kexec.h" for powerpc and arm64?
+> 
+> No, think about what it is specific to and place it there. It has
+> nothing to do with DT really. All it is is a wrapper to access the
+> struct members in kimage_arch. So it belongs where they are declared.
+> Now perhaps ima_buffer_addr and ima_buffer_size shouldn't be arch
+> specific, but that's a separate issue.
+> 
+
+okay - I'll move arch_ima_add_kexec_buffer() to asm/kexec.h
+
+Please let me know if you have any other comments on the patches.
+If you are done reviewing, I'll post the updated patches shortly.
+
+Thanks for reviewing the changes.
+
+  -lakshmi
+
 
