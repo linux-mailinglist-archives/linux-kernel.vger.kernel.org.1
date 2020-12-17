@@ -2,118 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 390512DD206
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 14:19:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8957D2DD209
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 14:19:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727684AbgLQNS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 08:18:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57258 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726012AbgLQNSz (ORCPT
+        id S1727954AbgLQNTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 08:19:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725468AbgLQNTL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 08:18:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608211049;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ocVbXd5tOfDrxGvrA5+6ey5fuQhbI9fTf7NbBH/g/Pc=;
-        b=FXCld0sZb7HQQxh8YRNkV0KAs5ZQTXGWlzVyCLx6YEzcX/GWdnecCj+RjVuSDN7J5qV1HY
-        h1MfAzpNbgn68rcykSSZFhEkxJJ+ElhHVmydPHOcT8W6DNxZxf+6u+qOhnd+ulcxRkKRHt
-        k1tz83ZSlaqSgRqq7ccXeuFXGJfHgE8=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-578-wed9bvt4O1CcTWFtqU7Atw-1; Thu, 17 Dec 2020 08:17:27 -0500
-X-MC-Unique: wed9bvt4O1CcTWFtqU7Atw-1
-Received: by mail-qk1-f199.google.com with SMTP id n190so22200127qkf.18
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 05:17:27 -0800 (PST)
+        Thu, 17 Dec 2020 08:19:11 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 946BAC061794
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 05:18:31 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id jx16so37799869ejb.10
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 05:18:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=2zePh1J6egeEyg3ok0zdWeirathsGkOFp972u7tFGq8=;
+        b=D9zOymYcXj+rSusZRgBj2IBtw+v9xMZ1IwrM5xFW8Ztt/dNYcsJCMYehn7CmL8NmC7
+         dVkJ6y8yYiLtkzI8JIUm9b808VACFGlWenNa63S+l0bC9MdvMGr2ST2gb7AlsNbqQUNw
+         C8YgdLn8psK2MrBv5KOIf4cdfvrIGLloEcO4k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=ocVbXd5tOfDrxGvrA5+6ey5fuQhbI9fTf7NbBH/g/Pc=;
-        b=OIguVx0vN8jrFaFVsa66tRjhI/sCby8y4qTk8f6ggKdBI7GmrYvMP8V2n2obOtkfJB
-         4CgGOt1K+2F4nwzGIhIoSFfm9ynZX4IuDM/hKdk4G6vJwAF5AHfVnS28HkFTPmCjxzuJ
-         uk6KGde1vF+GUN5L057+GupmVFzRR6ad21o3ZQJQozzFPHmzgtwoO2cIh9IY17MS/T9X
-         yzV3AGct0OBtoX//zd1gL3VT//etTl4keKZu0D1mjboLYHhMvRuVuxXvhxnxX+nRiL53
-         4NFN7/LdJSRQHFJS5FohOZqivUr8CWJ6YA4+xJWHldPHfGcZV2ODYLNexNbZgbjMqtXO
-         e1CA==
-X-Gm-Message-State: AOAM533qBwlzYHnrWV3S/lDc6PVSyB35eypkNBRVie1EkZr29ik1Debh
-        0fJfuAYRZLuMaQb03YIRoF5HmqF/nA8Yuh6gU013EiETzwsdOpMOX6HT9OBa3V/Hdd3YylA1FQh
-        DC+LMd/9NzjISi9umvRSpmZDsbH0zVTPgoFkakm5CUZaJLeLFbDGE/AexxZ0sLjOqXiOhTtI=
-X-Received: by 2002:aed:3144:: with SMTP id 62mr48589782qtg.342.1608211046974;
-        Thu, 17 Dec 2020 05:17:26 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyhFwVGG8Kkax7v/eyJISK93npWC3VG3nlu8liesJbrGCip5EwprgQTQF6BcwFvzS1O4uZAiQ==
-X-Received: by 2002:aed:3144:: with SMTP id 62mr48589755qtg.342.1608211046674;
-        Thu, 17 Dec 2020 05:17:26 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id w192sm3351417qka.68.2020.12.17.05.17.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Dec 2020 05:17:26 -0800 (PST)
-Subject: Re: [PATCH] atm: ambassador: remove h from printk format specifier
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     3chas3@gmail.com, linux-atm-general@lists.sourceforge.net,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201215142228.1847161-1-trix@redhat.com>
- <20201216164510.770454d8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <6ada03ed-1ecb-493b-96f8-5f9548a46a5e@redhat.com>
-Date:   Thu, 17 Dec 2020 05:17:24 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=2zePh1J6egeEyg3ok0zdWeirathsGkOFp972u7tFGq8=;
+        b=bj8BzBfpgxRR7BjmYl1PEnDDYu058bbF2jKKrk3ScyD2wFnoPDq9O3l4nEzC0Jw6Y5
+         aanO0Gun4Bn6NreECwtXxWIK5nYEWPyNv/Oh6YobGL50Yhvyrl2uXKtq9SNAH9NH7fOB
+         4J1EVBIDKNvRlFwqiYMnohOT04AAXP5Vty5HdLXniC7pDwqWIHzptqFlbtuhOGj+zOaK
+         s4d2y/tFALl37NvvVAANl6aZAzCZwhJ1DJetMnCRfU0Uo4pD5VLO0ZRyWVimCxOAa3oy
+         gRKd1ePGd8Ig+BvdoBCtMaQiutyV3fOQw4UwpJBM4XK2AzwcHR4M89PcuclMudjaAQ4Y
+         yuig==
+X-Gm-Message-State: AOAM531q1pTJis+loLBC2AC4a/WLDxkd6wSI+J4GpJKft3aF+0ay8agR
+        jBpCWyJl6WN5n4TNBKNIoh53rSvbAy6qTG1n
+X-Google-Smtp-Source: ABdhPJxmf6iO4XDzIR4MQIUy3A6Lf8W/pOlRU578OuDG/O7U6dRig5JlYZP8tiTOviXAE/8ggOyEBg==
+X-Received: by 2002:a17:906:705:: with SMTP id y5mr21113654ejb.428.1608211110292;
+        Thu, 17 Dec 2020 05:18:30 -0800 (PST)
+Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
+        by smtp.gmail.com with ESMTPSA id r23sm3720302ejd.56.2020.12.17.05.18.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Dec 2020 05:18:29 -0800 (PST)
+Date:   Thu, 17 Dec 2020 14:18:22 +0100
+From:   Miklos Szeredi <miklos@szeredi.hu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: [GIT PULL] fuse update for 5.11
+Message-ID: <20201217131822.GA1236412@miu.piliscsaba.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201216164510.770454d8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linus,
 
-On 12/16/20 4:45 PM, Jakub Kicinski wrote:
-> On Tue, 15 Dec 2020 06:22:28 -0800 trix@redhat.com wrote:
->> From: Tom Rix <trix@redhat.com>
->>
->> See Documentation/core-api/printk-formats.rst.
->> h should no longer be used in the format specifier for printk.
->>
->> Signed-off-by: Tom Rix <trix@redhat.com>
-> That's for new code I assume?
->
-> What's the harm in leaving this ancient code be?
+Please pull from:
 
-This change is part of a tree wide cleanup.
+  git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git tags/fuse-update-5.11
 
-drivers/atm status is listed as Maintained in MAINTAINERS so changes like this should be ok.
+ - Improve performance of virtio-fs in mixed read/write workloads.
 
-Should drivers/atm status be changed?
+ - Try to revalidate cache before returning EEXIST on exclusive create.
 
-Tom
+ - Add a couple of miscellaneous bug fixes as well as some code cleanups.
 
->
->> diff --git a/drivers/atm/ambassador.c b/drivers/atm/ambassador.c
->> index c039b8a4fefe..6b0fff8c0141 100644
->> --- a/drivers/atm/ambassador.c
->> +++ b/drivers/atm/ambassador.c
->> @@ -2169,7 +2169,7 @@ static void setup_pci_dev(struct pci_dev *pci_dev)
->>  		pci_lat = (lat < MIN_PCI_LATENCY) ? MIN_PCI_LATENCY : lat;
->>  
->>  	if (lat != pci_lat) {
->> -		PRINTK (KERN_INFO, "Changing PCI latency timer from %hu to %hu",
->> +		PRINTK (KERN_INFO, "Changing PCI latency timer from %u to %u",
->>  			lat, pci_lat);
->>  		pci_write_config_byte(pci_dev, PCI_LATENCY_TIMER, pci_lat);
->>  	}
->> @@ -2300,7 +2300,7 @@ static void __init amb_check_args (void) {
->>    unsigned int max_rx_size;
->>    
->>  #ifdef DEBUG_AMBASSADOR
->> -  PRINTK (KERN_NOTICE, "debug bitmap is %hx", debug &= DBG_MASK);
->> +  PRINTK (KERN_NOTICE, "debug bitmap is %x", debug &= DBG_MASK);
->>  #else
->>    if (debug)
->>      PRINTK (KERN_NOTICE, "no debugging support");
+Thanks,
+Miklos
 
+---
+Miklos Szeredi (10):
+      fuse: launder page should wait for page writeback
+      virtiofs fix leak in setup
+      virtiofs: simplify sb setup
+      fuse: get rid of fuse_mount refcount
+      fuse: simplify get_fuse_conn*()
+      fuse: add fuse_sb_destroy() helper
+      virtiofs: clean up error handling in virtio_fs_get_tree()
+      fuse: always revalidate if exclusive create
+      fuse: rename FUSE_WRITE_KILL_PRIV to FUSE_WRITE_KILL_SUIDGID
+      fuse: fix bad inode
+
+Vivek Goyal (6):
+      fuse: introduce the notion of FUSE_HANDLE_KILLPRIV_V2
+      fuse: set FUSE_WRITE_KILL_SUIDGID in cached write path
+      fuse: setattr should set FATTR_KILL_SUIDGID
+      fuse: don't send ATTR_MODE to kill suid/sgid for handle_killpriv_v2
+      fuse: add a flag FUSE_OPEN_KILL_SUIDGID for open() request
+      fuse: support SB_NOSEC flag to improve write performance
+
+---
+ fs/fuse/acl.c             |  6 +++++
+ fs/fuse/dir.c             | 60 +++++++++++++++++++++++++++++++++++++++-------
+ fs/fuse/file.c            | 41 +++++++++++++++++++++++--------
+ fs/fuse/fuse_i.h          | 41 ++++++++++++++++---------------
+ fs/fuse/inode.c           | 61 ++++++++++++++++++++++-------------------------
+ fs/fuse/readdir.c         |  4 ++--
+ fs/fuse/virtio_fs.c       | 47 ++++++++++++++++--------------------
+ fs/fuse/xattr.c           |  9 +++++++
+ include/uapi/linux/fuse.h | 30 +++++++++++++++++++----
+ 9 files changed, 195 insertions(+), 104 deletions(-)
