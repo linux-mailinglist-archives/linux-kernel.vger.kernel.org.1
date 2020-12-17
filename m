@@ -2,108 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FA022DD1DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 14:08:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82BFB2DD1E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 14:08:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728123AbgLQNHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 08:07:23 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:52180 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728103AbgLQNHW (ORCPT
+        id S1728310AbgLQNHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 08:07:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727185AbgLQNHn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 08:07:22 -0500
-X-UUID: f6d17a4188d240178986101ccd917f1b-20201217
-X-UUID: f6d17a4188d240178986101ccd917f1b-20201217
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
-        (envelope-from <lecopzer.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1322829987; Thu, 17 Dec 2020 21:06:37 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 17 Dec 2020 21:06:34 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 17 Dec 2020 21:06:33 +0800
-From:   Lecopzer Chen <lecopzer.chen@mediatek.com>
-To:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <matthias.bgg@gmail.com>, <will@kernel.org>,
-        <alexandru.elisei@arm.com>, <sumit.garg@linaro.org>,
-        <linux-mediatek@lists.infradead.org>, <yj.chiang@mediatek.com>,
-        Lecopzer Chen <lecopzer.chen@mediatek.com>
-Subject: [PATCH] kernel/watchdog_hld.c: Fix access percpu in preemptible context
-Date:   Thu, 17 Dec 2020 21:06:17 +0800
-Message-ID: <20201217130617.32202-1-lecopzer.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Thu, 17 Dec 2020 08:07:43 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE25C061794;
+        Thu, 17 Dec 2020 05:07:03 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1608210421;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CyOHKGrGF5FgJ/jrTCkQanXT7eBDkCqK5reXHcNL6hU=;
+        b=eovS1hyj5PJ9FjFq7ljImsiygsavh4+hyAufANIEN4qOrIiRDJvnEz+nMcNLlzLjQ0nmpQ
+        qpnwUz3EbXYBc8fFktrxzlnN4DQmYjZ5fJG/MnTix8uxeXRp5AG95AtjsfGKOw0krQrQxv
+        1vu89vPNDAI5DTALWz8VCvROwjE0G5obplIWO86tQCTJsL8Ksrn/sX1nm9dy12fVzaf4Jy
+        eLWmf4CzfHO5nriFc0GYwEHcejk6r4D1+RzHUBqtvKcEI2Cbx+JIjoJYs4kN/Xi6fu2LQC
+        vavhLTIKjSMksx9LjtZAGZdRTRAJXK54Rhp3ahyHcTjHuE4EKFiMiOaYQs+8/g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1608210421;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CyOHKGrGF5FgJ/jrTCkQanXT7eBDkCqK5reXHcNL6hU=;
+        b=trlnJKPooUM3Q07R6gTR3/B9v5VRgpJBlPadulHLT7hRSrDAzhWFliWBHTApTwcTBZrwKG
+        VIZ25dC5Vt0t6hDA==
+To:     Andy Lutomirski <luto@kernel.org>, Weiny Ira <ira.weiny@intel.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        "open list\:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH V3.1] entry: Pass irqentry_state_t by reference
+In-Reply-To: <CALCETrUHwZPic89oExMMe-WyDY8-O3W68NcZvse3=PGW+iW5=w@mail.gmail.com>
+References: <20201106232908.364581-6-ira.weiny@intel.com> <20201124060956.1405768-1-ira.weiny@intel.com> <CALCETrUHwZPic89oExMMe-WyDY8-O3W68NcZvse3=PGW+iW5=w@mail.gmail.com>
+Date:   Thu, 17 Dec 2020 14:07:01 +0100
+Message-ID: <878s9wshsa.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 367c820ef08082 ("arm64: Enable perf events based hard lockup detector")
-reinitilizes lockup detector after arm64 PMU is initialized and provide
-another chance for access smp_processor_id() in preemptible context.
-Since hardlockup_detector_event_create() use many percpu relative variable,
-just try to fix this by get/put_cpu()
+On Fri, Dec 11 2020 at 14:14, Andy Lutomirski wrote:
+> On Mon, Nov 23, 2020 at 10:10 PM <ira.weiny@intel.com> wrote:
+> After contemplating this for a bit, I think this isn't really the
+> right approach.  It *works*, but we've mostly just created a bit of an
+> unfortunate situation.  Our stack, on a (possibly nested) entry looks
+> like:
+>
+> previous frame (or empty if we came from usermode)
+> ---
+> SS
+> RSP
+> FLAGS
+> CS
+> RIP
+> rest of pt_regs
+>
+> C frame
+>
+> irqentry_state_t (maybe -- the compiler is within its rights to play
+> almost arbitrary games here)
+>
+> more C stuff
+>
+> So what we've accomplished is having two distinct arch register
+> regions, one called pt_regs and the other stuck in irqentry_state_t.
+> This is annoying because it means that, if we want to access this
+> thing without passing a pointer around or access it at all from outer
+> frames, we need to do something terrible with the unwinder, and we
+> don't want to go there.
+>
+> So I propose a somewhat different solution: lay out the stack like this.
+>
+> SS
+> RSP
+> FLAGS
+> CS
+> RIP
+> rest of pt_regs
+> PKS
+> ^^^^^^^^ extended_pt_regs points here
+>
+> C frame
+> more C stuff
+> ...
+>
+> IOW we have:
+>
+> struct extended_pt_regs {
+>   bool rcu_whatever;
+>   other generic fields here;
+>   struct arch_extended_pt_regs arch_regs;
+>   struct pt_regs regs;
+> };
+>
+> and arch_extended_pt_regs has unsigned long pks;
+>
+> and instead of passing a pointer to irqentry_state_t to the generic
+> entry/exit code, we just pass a pt_regs pointer.
 
-    BUG: using smp_processor_id() in preemptible [00000000] code: swapper/0/1
-    caller is debug_smp_processor_id+0x20/0x2c
-    CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.10.0+ #276
-    Hardware name: linux,dummy-virt (DT)
-    Call trace:
-      dump_backtrace+0x0/0x3c0
-      show_stack+0x20/0x6c
-      dump_stack+0x2f0/0x42c
-      check_preemption_disabled+0x1cc/0x1dc
-      debug_smp_processor_id+0x20/0x2c
-      hardlockup_detector_event_create+0x34/0x18c
-      hardlockup_detector_perf_init+0x2c/0x134
-      watchdog_nmi_probe+0x18/0x24
-      lockup_detector_init+0x44/0xa8
-      armv8_pmu_driver_init+0x54/0x78
-      do_one_initcall+0x184/0x43c
-      kernel_init_freeable+0x368/0x380
-      kernel_init+0x1c/0x1cc
-      ret_from_fork+0x10/0x30
+While I agree vs. PKS which is architecture specific state and needed in
+other places e.g. #PF, I'm not convinced that sticking the existing
+state into the same area buys us anything more than an indirect access.
 
+Peter?
 
-Fixes: 367c820ef08082 ("arm64: Enable perf events based hard lockup detector")
-Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
-Cc: Sumit Garg <sumit.garg@linaro.org>
+Thanks,
 
----
- kernel/watchdog_hld.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/watchdog_hld.c b/kernel/watchdog_hld.c
-index 247bf0b1582c..c591a1ea8eb3 100644
---- a/kernel/watchdog_hld.c
-+++ b/kernel/watchdog_hld.c
-@@ -165,7 +165,7 @@ static void watchdog_overflow_callback(struct perf_event *event,
- 
- static int hardlockup_detector_event_create(void)
- {
--	unsigned int cpu = smp_processor_id();
-+	unsigned int cpu = get_cpu();
- 	struct perf_event_attr *wd_attr;
- 	struct perf_event *evt;
- 
-@@ -176,11 +176,13 @@ static int hardlockup_detector_event_create(void)
- 	evt = perf_event_create_kernel_counter(wd_attr, cpu, NULL,
- 					       watchdog_overflow_callback, NULL);
- 	if (IS_ERR(evt)) {
-+		put_cpu();
- 		pr_debug("Perf event create on CPU %d failed with %ld\n", cpu,
- 			 PTR_ERR(evt));
- 		return PTR_ERR(evt);
- 	}
- 	this_cpu_write(watchdog_ev, evt);
-+	put_cpu();
- 	return 0;
- }
- 
--- 
-2.25.1
-
+        tglx
