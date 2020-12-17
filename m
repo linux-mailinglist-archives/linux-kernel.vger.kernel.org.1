@@ -2,196 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 935772DDA83
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 22:03:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56D8F2DDA8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 22:06:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731636AbgLQVCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 16:02:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46616 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727055AbgLQVCq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 16:02:46 -0500
-From:   Jakub Kicinski <kuba@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     torvalds@linux-foundation.org
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Networking for 5.11-rc1
-Date:   Thu, 17 Dec 2020 13:02:04 -0800
-Message-Id: <20201217210204.1256850-1-kuba@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1731680AbgLQVFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 16:05:46 -0500
+Received: from bedivere.hansenpartnership.com ([96.44.175.130]:55542 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727098AbgLQVFp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 16:05:45 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 1943F1280A41;
+        Thu, 17 Dec 2020 13:05:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1608239105;
+        bh=2z1gqUvnD7Nsw83lQWThTJ7MGgErgFbJ7JmEcoACSXc=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=hc+IYruwsde7x1Nf08Vb246H6OmkNH/9UfbMo9iSWp0A4CDkBsM1eu9q0CblU0k7L
+         PkAau/W2hSVeaTfiwj76ihpW/HB9LujIajOcehSpxkwbegsZwW0TsWvXf9Fl8dNiCu
+         BHQ/baMym62CxHwcVTIgrenqEyj+zD8og0Dp0tDU=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id FHPVzP9c2lh4; Thu, 17 Dec 2020 13:05:05 -0800 (PST)
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 883191280A18;
+        Thu, 17 Dec 2020 13:05:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1608239104;
+        bh=2z1gqUvnD7Nsw83lQWThTJ7MGgErgFbJ7JmEcoACSXc=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=s47I7kW8tnFJUNd1UvU/ZTFz/XMj8iPdn8h//DzBicTfFwkja9s8QfRi9UdTXNx4W
+         D226YjrDR8fHWX/U071sHn95jsK0cM/YWGhI/HCRSPjf56uKX4FCQ9pK1VhsgiItqE
+         JWnXcXkXRhu/4wvfELuPseS6xOel0EeI9SrwWZdo=
+Message-ID: <0bf3eb18d7f2cf941814926cdd4f4ff61079387b.camel@HansenPartnership.com>
+Subject: Re: [PATCH v2] tpm: Rework open/close/shutdown to avoid races
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Sergey Temerkhanov <s.temerkhanov@gmail.com>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 17 Dec 2020 13:05:03 -0800
+In-Reply-To: <e7566e1e48f5be9dca034b4bfb67683b5d3cb88f.camel@HansenPartnership.com>
+References: <20201215133801.546207-1-s.temerkhanov@gmail.com>
+         <e7566e1e48f5be9dca034b4bfb67683b5d3cb88f.camel@HansenPartnership.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Tue, 2020-12-15 at 10:51 -0800, James Bottomley wrote:
+> On Tue, 2020-12-15 at 16:38 +0300, Sergey Temerkhanov wrote:
+> > Avoid race condition at shutdown by shutting downn the TPM 2.0
+> > devices synchronously. This eliminates the condition when the
+> > shutdown sequence sets chip->ops to NULL leading to the following:
+> > 
+> > [ 1586.593561][ T8669] tpm2_del_space+0x28/0x73
+> > [ 1586.598718][ T8669] tpmrm_release+0x27/0x33wq
+> > [ 1586.603774][ T8669] __fput+0x109/0x1d
+> > [ 1586.608380][ T8669] task_work_run+0x7c/0x90
+> > [ 1586.613414][ T8669] prepare_exit_to_usermode+0xb8/0x128
+> > [ 1586.619522][ T8669] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > [ 1586.626068][ T8669] RIP: 0033:0x4cb4bb
+> 
+> An actual bug report would have been helpful.  However, from this
+> trace it's easy to deduce that tpm2_del_space() didn't get converted
+> to the get/put of the chip ops ... it's still trying to do its own
+> half arsed thing with tpm_chip_start() and the mutex.  So isn't a
+> much simpler fix simply to convert it as below?  compile tested only,
+> but if you can test it out I'll send a proper patch.
 
-quick PR with some fixes which already came in this week,
-since I'm not planning on sending one next week.
+I got this booted and running here, so I know it works.  What I still
+need to know is does it fix your problem?
 
-Happy Holidays!
+James
 
-The following changes since commit 3db1a3fa98808aa90f95ec3e0fa2fc7abf28f5c9:
 
-  Merge tag 'staging-5.11-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging (2020-12-15 14:18:40 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.11-rc1
-
-for you to fetch changes up to 44d4775ca51805b376a8db5b34f650434a08e556:
-
-  net/sched: sch_taprio: reset child qdiscs before freeing them (2020-12-17 10:57:57 -0800)
-
-----------------------------------------------------------------
-Networking fixes for 5.11-rc1.
-
-Current release - always broken:
-
- - net/smc: fix access to parent of an ib device
-
- - devlink: use _BITUL() macro instead of BIT() in the UAPI header
-
- - handful of mptcp fixes
-
-Previous release - regressions:
-
- - intel: AF_XDP: clear the status bits for the next_to_use descriptor
-
- - dpaa2-eth: fix the size of the mapped SGT buffer
-
-Previous release - always broken:
-
- - mptcp: fix security context on server socket
-
- - ethtool: fix string set id check
-
- - ethtool: fix error paths in ethnl_set_channels()
-
- - lan743x: fix rx_napi_poll/interrupt ping-pong
-
- - qca: ar9331: fix sleeping function called from invalid context bug
-
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-
-----------------------------------------------------------------
-Björn Töpel (2):
-      ice, xsk: clear the status bits for the next_to_use descriptor
-      i40e, xsk: clear the status bits for the next_to_use descriptor
-
-Bongsu Jeon (2):
-      nfc: s3fwrn5: Remove the delay for NFC sleep
-      nfc: s3fwrn5: Remove unused NCI prop commands
-
-Christophe JAILLET (3):
-      net: bcmgenet: Fix a resource leak in an error handling path in the probe functin
-      net: mscc: ocelot: Fix a resource leak in the error handling path of the probe function
-      net: allwinner: Fix some resources leak in the error handling path of the probe and in the remove function
-
-Colin Ian King (2):
-      net: nixge: fix spelling mistake in Kconfig: "Instuments" -> "Instruments"
-      octeontx2-af: Fix undetected unmap PF error check
-
-Dan Carpenter (1):
-      qlcnic: Fix error code in probe
-
-Davide Caratti (1):
-      net/sched: sch_taprio: reset child qdiscs before freeing them
-
-Geliang Tang (1):
-      mptcp: clear use_ack and use_map when dropping other suboptions
-
-Geoff Levand (1):
-      net/connector: Add const qualifier to cb_id
-
-Hoang Le (1):
-      tipc: do sanity check payload of a netlink message
-
-Ioana Ciornei (1):
-      dpaa2-eth: fix the size of the mapped SGT buffer
-
-Ivan Vecera (1):
-      ethtool: fix error paths in ethnl_set_channels()
-
-Jakub Kicinski (5):
-      Merge branch 'i40e-ice-af_xdp-zc-fixes'
-      Merge branch 'locked-version-of-netdev_notify_peers'
-      phy: fix kdoc warning
-      Merge branch 'nfc-s3fwrn5-refactor-the-s3fwrn5-module'
-      Merge branch 'mptcp-a-bunch-of-assorted-fixes'
-
-Karsten Graul (1):
-      net/smc: fix access to parent of an ib device
-
-Lijun Pan (3):
-      net: core: introduce __netdev_notify_peers
-      use __netdev_notify_peers in ibmvnic
-      use __netdev_notify_peers in hyperv
-
-Michal Kubecek (1):
-      ethtool: fix string set id check
-
-Oleksij Rempel (1):
-      net: dsa: qca: ar9331: fix sleeping function called from invalid context bug
-
-Paolo Abeni (4):
-      mptcp: fix security context on server socket
-      mptcp: properly annotate nested lock
-      mptcp: push pending frames when subflow has free space
-      mptcp: fix pending data accounting
-
-Parav Pandit (1):
-      net/mlx5: Fix compilation warning for 32-bit platform
-
-Simon Horman (1):
-      nfp: move indirect block cleanup to flower app stop callback
-
-Sven Van Asbroeck (1):
-      lan743x: fix rx_napi_poll/interrupt ping-pong
-
-Tobias Klauser (1):
-      devlink: use _BITUL() macro instead of BIT() in the UAPI header
-
-Vincent Stehlé (1):
-      net: korina: fix return value
-
- Documentation/driver-api/connector.rst             |  2 +-
- drivers/connector/cn_queue.c                       |  8 ++--
- drivers/connector/connector.c                      |  4 +-
- drivers/net/dsa/qca/ar9331.c                       | 33 ++++++++++++-----
- drivers/net/ethernet/allwinner/sun4i-emac.c        |  7 +++-
- drivers/net/ethernet/broadcom/genet/bcmgenet.c     |  4 +-
- drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c   |  2 +-
- drivers/net/ethernet/ibm/ibmvnic.c                 |  9 ++---
- drivers/net/ethernet/intel/i40e/i40e_xsk.c         |  5 ++-
- drivers/net/ethernet/intel/ice/ice_xsk.c           |  5 ++-
- drivers/net/ethernet/korina.c                      |  2 +-
- .../ethernet/marvell/octeontx2/af/rvu_devlink.c    |  3 +-
- drivers/net/ethernet/microchip/lan743x_main.c      | 43 ++++++++++++----------
- drivers/net/ethernet/mscc/ocelot_vsc7514.c         |  8 +++-
- drivers/net/ethernet/netronome/nfp/flower/main.c   |  6 +--
- drivers/net/ethernet/ni/Kconfig                    |  2 +-
- drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c   |  1 +
- drivers/net/hyperv/netvsc_drv.c                    | 11 ++----
- drivers/nfc/s3fwrn5/nci.c                          | 25 -------------
- drivers/nfc/s3fwrn5/nci.h                          | 22 -----------
- drivers/nfc/s3fwrn5/phy_common.c                   |  3 +-
- include/linux/connector.h                          | 10 ++---
- include/linux/mlx5/mlx5_ifc.h                      |  6 +--
- include/linux/netdevice.h                          |  1 +
- include/linux/phy.h                                |  3 +-
- include/uapi/linux/devlink.h                       |  2 +-
- net/core/dev.c                                     | 22 ++++++++++-
- net/ethtool/channels.c                             |  6 ++-
- net/ethtool/strset.c                               |  2 +-
- net/mptcp/options.c                                | 15 +++++---
- net/mptcp/protocol.c                               | 11 +++---
- net/mptcp/protocol.h                               |  2 +-
- net/sched/sch_taprio.c                             | 17 ++++++++-
- net/smc/smc_ib.c                                   | 36 +++++++++++-------
- net/tipc/netlink_compat.c                          | 12 +++---
- tools/testing/selftests/net/mptcp/simult_flows.sh  |  6 +--
- 36 files changed, 198 insertions(+), 158 deletions(-)
