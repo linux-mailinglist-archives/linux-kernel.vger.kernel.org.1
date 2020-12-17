@@ -2,123 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E50B72DD23D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 14:37:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBD702DD23F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 14:37:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727999AbgLQNhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 08:37:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59806 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726613AbgLQNhX (ORCPT
+        id S1728277AbgLQNhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 08:37:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726613AbgLQNha (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 08:37:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608212156;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SgJOBcxRN4tEtPumxdF20iYY88fFb0qgiurqky0v6BE=;
-        b=FQbBuYZ4cSHEj3r0F3D1uJU1sSaajuDHxkXnkUbyeVizfothBKEayzHLFzIRPPJYfIuOQM
-        YYK9YQmZqxtXNknieQFY4rSRHeCS7wz4h50RSQsugfulYzLpExR1NX1X57/iUT0AgFDm3p
-        6NYHYXD1/fmx8GYNFMDB9GmxgzHTt74=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-540-ZbFaL8geNEKkO1I-nwmxUg-1; Thu, 17 Dec 2020 08:35:55 -0500
-X-MC-Unique: ZbFaL8geNEKkO1I-nwmxUg-1
-Received: by mail-qt1-f199.google.com with SMTP id a11so19643984qto.16
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 05:35:55 -0800 (PST)
+        Thu, 17 Dec 2020 08:37:30 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C46F8C061794;
+        Thu, 17 Dec 2020 05:36:49 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id r4so1855335wmh.5;
+        Thu, 17 Dec 2020 05:36:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=5CRO4FUtq0sCZEnT1huEajDQ5nORtucKY9OtwSA93+c=;
+        b=OUwvfsJDlTFH3NVScDvxwySVRCCdqXWQn2gnulj6dTGEy0K66Qd5pffEBsMkq23Sph
+         CFeHvRm4DNyFpbsJQtxH/KBU0R+dvhXR2cnXX61bageQHV+RWzqP85paF8iElqeG6d6E
+         u6HunBPlmgmo8F63qvf4yVoKcQI5WhsAzzba5rA/P/3Kcm3P5Ows25sNDpC2idlsqe80
+         jdWOkh5Pc4wgI+3W1FUBd5+/R2xX9G/xN9ag1u7u/eWkpWDAEPqVAbFEu0Ork10Yw1x0
+         X4SiJI34sLUhOCLzA5IOpNjGdloVPLbGGoX2cLztoV/todXbtXM/hkrzC+APjjWAtk+i
+         7aCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=SgJOBcxRN4tEtPumxdF20iYY88fFb0qgiurqky0v6BE=;
-        b=FLXuAQHvrg34mvAKyv0N0CUgsJ1VJxh5C+xNChf1khkbA3wYtKR9wo88wjmxXahU9E
-         ODRIkD9/y4HCVBdtB0c8eFsNGAEn3oRNmK6pPhE5elG9LJTZ8UKc8vZXy9tk3pTPjZ+F
-         s2NFgSFqNZzCaSYQg29QqG34/O+cNGm+8SZChLuZoatFr49JWJjZ6QdIrv3kR0iL4py9
-         0cyecr8RSwUgX7HV/VLZMnzExReLOC7ACxtgZhiHEAaR6rvdeNQnCpT7lEapS6OJEuTi
-         EngrNt2Lgk8REXXF5fdOXPja0yPtwP/YHrTryPvp+u+W96Lk4Vf8GB3AFAKaP2kSINdZ
-         Iq7Q==
-X-Gm-Message-State: AOAM530Q5Jz4oZDC9ft+ycd2XemURIFnH0sskYMjyc3cCdFPoJr6EHMI
-        0eMCiDMp0wAlZOsiwHdGwko8U+QqA/K4EDf037Rscz5pL6YRE4RMFaJVyAeYEzW0h7DCsrtqhAa
-        EUu1q4Ehu+l69cmDYP/8ppO5O
-X-Received: by 2002:a05:620a:ec7:: with SMTP id x7mr48049241qkm.405.1608212154532;
-        Thu, 17 Dec 2020 05:35:54 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxPs+dQeJxIwLKOCxSjTEM23FpThc6Rq1C2Qh0/YIA30/RVV77JmZbVHRRLj3GBEXH8+F6uGw==
-X-Received: by 2002:a05:620a:ec7:: with SMTP id x7mr48049217qkm.405.1608212154332;
-        Thu, 17 Dec 2020 05:35:54 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id s19sm53162qta.35.2020.12.17.05.35.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Dec 2020 05:35:53 -0800 (PST)
-Subject: Re: [PATCH v3 0/3] UIO support for dfl devices
-To:     Xu Yilun <yilun.xu@intel.com>, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org, lgoncalv@redhat.com, hao.wu@intel.com
-References: <1608183881-18692-1-git-send-email-yilun.xu@intel.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <85d48e41-0185-0938-b0ed-93d0f825e761@redhat.com>
-Date:   Thu, 17 Dec 2020 05:35:51 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=5CRO4FUtq0sCZEnT1huEajDQ5nORtucKY9OtwSA93+c=;
+        b=mrDf5Zd9aHwTs+Qpuwuu+H9ka5+c76VO1sg+m7Ivx3erOMTs0cILiOvcPB0HOIuNq8
+         Iilu6mTLI28MvaJ4vHaccb0o0cI7jrvi8SkoICc1wnlM6UTCM4IErrY2TyoxwZR3rvsh
+         u60tDio6neG6BT0Z1u6PF5GjtPqSyEBekt9KgZ79kqgZrlrx5lYvSzq7CVaocNUt9ytc
+         +AFzivIaHzSFALg/xBju/1oPk+KJQ9ayRBkrL1Y0lB79+SXK6GCEJUtJrYaPuM1RGerK
+         01tgSdoAMbGSos/ZRLGNPIkc6LgF1ahVDydALMkY7xvKDy+kyFXKRCxcaj4dDpajnncD
+         Nk2Q==
+X-Gm-Message-State: AOAM532DpvllaasawwRF5qbRNTcZ6/a0yjh8x2XBvimdp1QeLhB0wTEC
+        5a6JPLbFMqBVfft4LV/clMw=
+X-Google-Smtp-Source: ABdhPJwqqtN1jhnli6wK+Pq5dDDPT6Byc5wprmfaD1IS1+vn3OzcjD8eMZUicw3W+oYuJBa1Mkc/lg==
+X-Received: by 2002:a05:600c:21d1:: with SMTP id x17mr8571783wmj.160.1608212208560;
+        Thu, 17 Dec 2020 05:36:48 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id c190sm7699161wme.19.2020.12.17.05.36.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Dec 2020 05:36:46 -0800 (PST)
+Date:   Thu, 17 Dec 2020 14:36:44 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Felipe Balbi <balbi@kernel.org>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Ion Agorria <ion@agorria.com>, linux-tegra@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/8] usb: chipidea: tegra: Rename UDC to USB
+Message-ID: <X9te7ObUU1Fcy2ut@ulmo>
+References: <20201217094007.19336-1-digetx@gmail.com>
+ <20201217094007.19336-5-digetx@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1608183881-18692-1-git-send-email-yilun.xu@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="2QB7O1hFTgaD5tHU"
+Content-Disposition: inline
+In-Reply-To: <20201217094007.19336-5-digetx@gmail.com>
+User-Agent: Mutt/2.0.3 (a51f058f) (2020-12-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 12/16/20 9:44 PM, Xu Yilun wrote:
-> This patchset supports some dfl device drivers written in userspace.
->
-> In the patchset v1, the "driver_override" interface should be used to bind
-> the DFL UIO driver to DFL devices. But there is concern that the
-> "driver_override" interface is not OK itself. So in v2, we use a new
-> matching algorithem. The "driver_override" interface is abandoned, the DFL
-> UIO driver matches any DFL device which could not be handled by other DFL
-> drivers. So the DFL UIO driver could be used for new DFL devices which are
-> not supported by kernel, also it will not impact the devices which are
-> already got supported.
+--2QB7O1hFTgaD5tHU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This set looks good to me.
+On Thu, Dec 17, 2020 at 12:40:03PM +0300, Dmitry Osipenko wrote:
+> Rename all occurrences in the code from "udc" to "usb" and change the
+> Kconfig entry in order to show that this driver supports USB modes other
+> than device-only mode. The follow up patch will add host-mode support and
+> it will be cleaner to perform the renaming separately, i.e. in this patch.
+>=20
+> Tested-by: Matt Merhar <mattmerhar@protonmail.com>
+> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+> Tested-by: Peter Geis <pgwipeout@gmail.com>
+> Tested-by: Ion Agorria <ion@agorria.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/usb/chipidea/Kconfig         |  2 +-
+>  drivers/usb/chipidea/ci_hdrc_tegra.c | 78 ++++++++++++++--------------
+>  2 files changed, 40 insertions(+), 40 deletions(-)
+>=20
+> diff --git a/drivers/usb/chipidea/Kconfig b/drivers/usb/chipidea/Kconfig
+> index 8bafcfc6080d..8685ead6ccc7 100644
+> --- a/drivers/usb/chipidea/Kconfig
+> +++ b/drivers/usb/chipidea/Kconfig
+> @@ -53,7 +53,7 @@ config USB_CHIPIDEA_GENERIC
+>  	default USB_CHIPIDEA
+> =20
+>  config USB_CHIPIDEA_TEGRA
+> -	tristate "Enable Tegra UDC glue driver" if EMBEDDED
+> +	tristate "Enable Tegra USB glue driver" if EMBEDDED
+>  	depends on OF
+>  	depends on USB_CHIPIDEA_UDC
+>  	default USB_CHIPIDEA
+> diff --git a/drivers/usb/chipidea/ci_hdrc_tegra.c b/drivers/usb/chipidea/=
+ci_hdrc_tegra.c
+> index 10eaaba2a3f0..d8efa80aa1c2 100644
+> --- a/drivers/usb/chipidea/ci_hdrc_tegra.c
+> +++ b/drivers/usb/chipidea/ci_hdrc_tegra.c
+> @@ -12,7 +12,7 @@
+> =20
+>  #include "ci.h"
+> =20
+> -struct tegra_udc {
+> +struct tegra_usb {
+>  	struct ci_hdrc_platform_data data;
+>  	struct platform_device *dev;
+> =20
+> @@ -20,15 +20,15 @@ struct tegra_udc {
+>  	struct clk *clk;
+>  };
+> =20
+> -struct tegra_udc_soc_info {
+> +struct tegra_usb_soc_info {
+>  	unsigned long flags;
+>  };
+> =20
+> -static const struct tegra_udc_soc_info tegra_udc_soc_info =3D {
+> +static const struct tegra_usb_soc_info tegra_udc_soc_info =3D {
+>  	.flags =3D CI_HDRC_REQUIRES_ALIGNED_DMA,
+>  };
+> =20
+> -static const struct of_device_id tegra_udc_of_match[] =3D {
+> +static const struct of_device_id tegra_usb_of_match[] =3D {
+>  	{
+>  		.compatible =3D "nvidia,tegra20-udc",
 
-Moritz,
+Do we perhaps also want to add a new tegra20-usb compatible string here
+and deprecate the old one since this now no longer properly describes
+the device.
 
-Is it possible to get this into 5.11 ?
+In either case, this looks fine:
 
-Tom
+Acked-by: Thierry Reding <treding@nvidia.com>
 
->
-> Main changes from v1:
-> - switch to the new matching algorithem. It matches DFL devices which could
->   not be handled by other DFL drivers.
-> - refacor the code about device resources filling.
-> - add the documentation.
->
-> Main changes from v2:
-> - split the match ops changes in dfl.c to an independent patch.
-> - move the declarations needed for dfl-uio-pdev from include/linux/dfl.h
->   to driver/fpga/dfl.h
-> - some minor fixes.
->
->
-> Xu Yilun (3):
->   fpga: dfl: add the match() ops for dfl driver
->   fpga: dfl: add the userspace I/O device support for DFL devices
->   Documentation: fpga: dfl: Add description for DFL UIO support
->
->  Documentation/fpga/dfl.rst  |  27 +++++++++++
->  drivers/fpga/Kconfig        |  10 ++++
->  drivers/fpga/Makefile       |   1 +
->  drivers/fpga/dfl-uio-pdev.c | 110 ++++++++++++++++++++++++++++++++++++++++++++
->  drivers/fpga/dfl.c          |  22 +++++++--
->  drivers/fpga/dfl.h          |   5 ++
->  include/linux/dfl.h         |   3 ++
->  7 files changed, 173 insertions(+), 5 deletions(-)
->  create mode 100644 drivers/fpga/dfl-uio-pdev.c
->
+--2QB7O1hFTgaD5tHU
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl/bXuwACgkQ3SOs138+
+s6FKBQ//TBLMtbsou6bbuudeuQEKvYa0tffjko5YwU5sr/g3gDENC3MRSPt7XqFg
+4VUhcMXqJV2GOhmvf12SzEIx4L/pFwU41nvJdI5WQGj1IbvWZI3xvwj/HIJZFvBE
+KE5l59EJ6rO8a06fxRBEIADDZ/htTXnC3dLTpT8aNL6Rhs7rGshRwzYnoLjgy8nH
+Me9zmlbmfjUUB3wxWMEvzZImI3qB1xrKr3D6v2i/v7wAvese3jGP0mezjOScHpUe
+udFeKz3ssmyoUoOkZml4yvGt88AMe+a33R1lXNmdawNoHFWhh5jqCRTCHOnLwc8M
+SFmAWMUV84sLcSaZoiBB8uJLdnVWjx3tI3/4+qkPVER2nYCVpjPcxuEKf+uDCQUs
+7fWIt43/vxT9ULWLaFs7xVlRcE4gSkAn8wXc+5dOT+VF8DO/XluLCqNZd/TYXe1r
+F7ZXJS/neZ+2axQ9mTzBDfOMf1+sA5wRb68ckfhReoTosLrko9OAicWwbkFguVBs
+fj7Ivtmn5oiXzrIK0tNDZnFMYM8UiJhe3TUOdGJNp5w5p6q+C7vwLo8282AOtJtZ
+fuAdby9e0IDua3I6KUZrMIw341w0LhOs4nZYwNSBf26XSxfZVGUfHR53ZkgiBxSv
+7pA62Lx5o/sMqZTxaEuPDUk4Nfs3wFIil5z6CMv+uc1QtOzo9Do=
+=7nxN
+-----END PGP SIGNATURE-----
+
+--2QB7O1hFTgaD5tHU--
