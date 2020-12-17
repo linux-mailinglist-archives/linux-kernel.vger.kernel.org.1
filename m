@@ -2,96 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 151082DCFE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 11:57:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DF192DCFE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 11:58:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728168AbgLQK4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 05:56:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726155AbgLQK4c (ORCPT
+        id S1727777AbgLQK6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 05:58:12 -0500
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:45346 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726631AbgLQK6L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 05:56:32 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23BCBC061794;
-        Thu, 17 Dec 2020 02:55:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Ycg1OWAhAt+ZzpKUE25E7HoWCVHWxaXFmMVVBcTRYoc=; b=NX0krpKMDNxEPEbp50YVfpAz4B
-        hyMdM2+iQL70Wd2u931sbt7vRbCXKNXaBjRhXJptWC11dhxVFLsaBcKUDNVWwn5DtkuUar0yPhU3b
-        8xLaBCsCa5Agp8bQGosbLmujhoHo+gATn89UWeH1Ok+FZiMFDCFI/VKJJlnxFiGUdhRu/lAjI8ESE
-        MdaoVigvRXpekClccOpK2+UWLGEjnjvCamelEi6uRV3r9VeL85PlTrXJiDz760jRD64NnT2mK6GQw
-        t+80Xn9VhHbYMiTq3g/WumfWH+8VD+dyHACE8qhA+xB1DDsIm5fR23eG/WIOmQ52WiIe0PuYlbxSG
-        THr/Gwow==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kpqwZ-0004TP-58; Thu, 17 Dec 2020 10:55:35 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9246D305C11;
-        Thu, 17 Dec 2020 11:55:33 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 67014202395BD; Thu, 17 Dec 2020 11:55:33 +0100 (CET)
-Date:   Thu, 17 Dec 2020 11:55:33 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH v5 00/15] An alternative series for asymmetric AArch32
- systems
-Message-ID: <20201217105533.GV3040@hirez.programming.kicks-ass.net>
-References: <20201208132835.6151-1-will@kernel.org>
- <20201215173645.GJ3040@hirez.programming.kicks-ass.net>
- <20201215185012.GA15566@willie-the-truck>
+        Thu, 17 Dec 2020 05:58:11 -0500
+Received: by mail-oi1-f173.google.com with SMTP id f132so31702477oib.12;
+        Thu, 17 Dec 2020 02:57:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eQkdrhIP2aiUl23qHVM2K9iKhvGt/fv8jJNeYO3M4qE=;
+        b=aHSYoafmU/AOQagCXs+PDzr8toav6V0V+m8aswfgOcRoZfS/tetAoDIjPUe1Xg9DV3
+         kzKQnn0PKszQRSW8lIUSuliArwetH2NiSznMCZQR90WqtGxGPVaOY3HzF8dVXjp+Ci8C
+         lw9ch0zrP0j3zUKw9S/7czpcMn9GkQEQ+0ADBM108HenuqfCYXUynI3tHCyrOtHjiX+L
+         OIqB7PYmumd5ZYR7fIQ2grnXbpXOg/qViei0WDdlIsNhfxsbSMkViA41Yrf55TAc34M/
+         JeiR4CQRCKzkXXjLKm+bytitrvQqXQL++2ZvXy5SxMBYy27+kiCYP2TAA+p+mr/9DAa9
+         silQ==
+X-Gm-Message-State: AOAM533yWHMKSMnj2zCoR/UmGWWS9831/v4zjQzlUqF6p+CSVJ3gjmLo
+        X80qDJzUiX628QORflExMSZnANxxWQfD3Ie9szIAtyBq
+X-Google-Smtp-Source: ABdhPJzOMTnOTCRYICkLN7OS/o/ANuqEzeLRQJO8fpTyKNl56t9KCsHZSgQN8r1qicwnbLK1oEsfJstpjqQEWdpfZ9Y=
+X-Received: by 2002:aca:4b16:: with SMTP id y22mr4417118oia.148.1608202650746;
+ Thu, 17 Dec 2020 02:57:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201215185012.GA15566@willie-the-truck>
+References: <20201213183759.223246-1-aford173@gmail.com> <20201213183759.223246-6-aford173@gmail.com>
+In-Reply-To: <20201213183759.223246-6-aford173@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 17 Dec 2020 11:57:19 +0100
+Message-ID: <CAMuHMdUXQ5wAFiqkTVJ8Cm6AC53hLRFL4mbqNrQw20yXiSaPog@mail.gmail.com>
+Subject: Re: [PATCH 05/18] arm64: dts: renesas: beacon: Fix audio-1.8V pin enable
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 06:50:12PM +0000, Will Deacon wrote:
-> On Tue, Dec 15, 2020 at 06:36:45PM +0100, Peter Zijlstra wrote:
+On Sun, Dec 13, 2020 at 7:38 PM Adam Ford <aford173@gmail.com> wrote:
+> The fact the audio worked at all was a coindicence because the wrong
 
-> > IOW, any (accidental or otherwise) trip through a 32bit helper, will
-> > destroy user state (the affinity mask: 0x3c).
-> 
-> Yes, that's correct, and I agree that it's a rough edge. If you're happy
-> with the idea of adding an extra mask to make this work, then I can start
-> hacking that up
+coincidence.
 
-Yeah, I'm afraid we'll have to, this asymmetric muck is only going to
-get worse from here on.
+> gpio enable was used.  Use the correct GPIO pin to ensure its operation.
+>
+> Fixes: a1d8a344f1ca ("arm64: dts: renesas: Introduce r8a774a1-beacon-rzg2m-kit")
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 
-Anyway, I think we can avoid adding another cpumask_t to task_struct and
-do with a cpumask_t * insteads. After all, for 'normal' tasks, the
-task_cpu_possible_mask() will be cpu_possible_mask and we don't need to
-carry anything extra.
+Thanks, I have to trust you on this one, i.e. will queue in
+renesas-devel for v5.12
+(with the above fixed).
 
-Only once we hit one of these assymetric ISA things, can the task
-allocate the additional cpumask and retain the full mask.
+Gr{oetje,eeting}s,
 
-> (although I doubt I'll get something out before the new
-> year at this point).
+                        Geert
 
-Yeah, we're all about to shut down for a bit, I'll not be looking at
-email for 2 weeks either, so even if you send it, I might not see it
-until the next year.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
