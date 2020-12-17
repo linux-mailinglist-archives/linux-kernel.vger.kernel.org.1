@@ -2,68 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A11C2DD086
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 12:40:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6A362DD06D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 12:33:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727439AbgLQLj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 06:39:56 -0500
-Received: from smtp.h3c.com ([60.191.123.56]:56961 "EHLO h3cspam01-ex.h3c.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726012AbgLQLjy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 06:39:54 -0500
-Received: from DAG2EX07-IDC.srv.huawei-3com.com ([10.8.0.70])
-        by h3cspam01-ex.h3c.com with ESMTP id 0BHBcPdV095977;
-        Thu, 17 Dec 2020 19:38:26 +0800 (GMT-8)
-        (envelope-from zhang.yanjunA@h3c.com)
-Received: from localhost.localdomain (10.99.212.201) by
- DAG2EX07-IDC.srv.huawei-3com.com (10.8.0.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 17 Dec 2020 19:38:29 +0800
-From:   Yanjun Zhang <zhang.yanjuna@h3c.com>
-To:     <viro@zeniv.linux.org.uk>
-CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Yanjun Zhang <zhang.yanjuna@h3c.com>
-Subject: [PATCH] writeback: add warning messages for not registered bdi
-Date:   Thu, 17 Dec 2020 19:28:01 +0800
-Message-ID: <20201217112801.22421-1-zhang.yanjuna@h3c.com>
-X-Mailer: git-send-email 2.17.1
+        id S1727025AbgLQLcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 06:32:39 -0500
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:35120 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725468AbgLQLcg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 06:32:36 -0500
+Received: by mail-oi1-f170.google.com with SMTP id s2so31795258oij.2;
+        Thu, 17 Dec 2020 03:32:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8LXjb/Tc1qJnE8Xm7FKVy1Ycjgdxs5RwdN6mlYfTAMM=;
+        b=rJGKQhZpy2iQZRTUkYhwOMgVFCGxdAVNAk1vYmg1XEMME+KsV1W7aL1GyhyGbDX4D8
+         2fWksSXL+sHqzXB4qW55tho4AGGgW65408buHasoKXGXeoqXud4jr5oDSa9EoRVJ2Yup
+         uVV4g/zNbR1pCRFXBGDgovZeg/ki2D0JBKEA/lclMQPyCwdq15tUvw7kAawzdTHUXEk6
+         v1KqlohgPWmKBGQxYtVzXqrwrCo5Uobf+Zid70mRxBhxcRAC/dvorfUyTVFxIUbJeJ/M
+         W6dqaa9gUlyLmRynb0ucPw1sf2h7ZyA4twNy/bhU2fZlJxwhG6riF1LVdnhOLnnvIqwc
+         vpEA==
+X-Gm-Message-State: AOAM5335l5mEGWjIZxrrsWHrHv+y0dvYSTblTx3M0NOjgQEhgFKZs/Ba
+        moDCA1xrCoIW2TNy1LUWf/Tvkxf/ztawJxHAf69lc5KA
+X-Google-Smtp-Source: ABdhPJzZsdsBnfqzp8AaT6fu35qPTYwPZ7ATQL+4PDQoRzADXDEQVvMzXQ1ZBkm22OWLCKIODMgLL4WCoXVWg2XCWtA=
+X-Received: by 2002:aca:ec09:: with SMTP id k9mr4396030oih.153.1608204715398;
+ Thu, 17 Dec 2020 03:31:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.99.212.201]
-X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
- DAG2EX07-IDC.srv.huawei-3com.com (10.8.0.70)
-X-DNSRBL: 
-X-MAIL: h3cspam01-ex.h3c.com 0BHBcPdV095977
+References: <20201213183759.223246-1-aford173@gmail.com> <20201213183759.223246-13-aford173@gmail.com>
+In-Reply-To: <20201213183759.223246-13-aford173@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 17 Dec 2020 12:31:43 +0100
+Message-ID: <CAMuHMdXOmBS2ARoJBNb+wWOWJR6fhic+Q67VaFr_Knxc991L=A@mail.gmail.com>
+Subject: Re: [PATCH 12/18] arm64: dts: renesas: beacon: Better describe keys
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The device name is only printed for the warning case, that bdi is not
-registered detected by the function __mark_inode_dirty. Besides, the
-device name returned by bdi_dev_name may be "(unknown)" in some cases.
+Hi Adam,
 
-This patch add printed messages about the inode and super block. Once
-trigging this warning, we could make more direct analysis.
+On Sun, Dec 13, 2020 at 7:38 PM Adam Ford <aford173@gmail.com> wrote:
+> The keys on the baseboard are laid out in an diamond pattern, up, down,
+> left, right and center.  Update the descriptions to make it easier to
+> read.
+>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 
-Signed-off-by: Yanjun Zhang <zhang.yanjuna@h3c.com>
----
- fs/fs-writeback.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Thanks for your patch!
 
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index e6005c78b..825160cf4 100644
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -2323,7 +2323,8 @@ void __mark_inode_dirty(struct inode *inode, int flags)
- 
- 			WARN((wb->bdi->capabilities & BDI_CAP_WRITEBACK) &&
- 			     !test_bit(WB_registered, &wb->state),
--			     "bdi-%s not registered\n", bdi_dev_name(wb->bdi));
-+			     "bdi-%s not registered, dirtied inode %lu on %s\n",
-+			     bdi_dev_name(wb->bdi), inode->i_ino, sb->s_id);
- 
- 			inode->dirtied_when = jiffies;
- 			if (dirtytime)
+> --- a/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
+> +++ b/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
+> @@ -40,38 +40,38 @@ hdmi0_con: endpoint {
+>         keys {
+>                 compatible = "gpio-keys";
+>
+> -               key-1 {
+> +               key-1 { /* S19 */
+>                         gpios = <&gpio4 6 GPIO_ACTIVE_LOW>;
+>                         linux,code = <KEY_1>;
+> -                       label = "Switch-1";
+> +                       label = "Up";
+>                         wakeup-source;
+>                         debounce-interval = <20>;
+>                 };
+> -               key-2 {
+> +               key-2 { /*S20 */
+>                         gpios = <&gpio3 13 GPIO_ACTIVE_LOW>;
+>                         linux,code = <KEY_2>;
+> -                       label = "Switch-2";
+> +                       label = "Left";
+>                         wakeup-source;
+>                         debounce-interval = <20>;
+>                 };
+> -               key-3 {
+> +               key-3 { /* S21 */
+>                         gpios = <&gpio5 17 GPIO_ACTIVE_LOW>;
+>                         linux,code = <KEY_3>;
+> -                       label = "Switch-3";
+> +                       label = "Down";
+>                         wakeup-source;
+>                         debounce-interval = <20>;
+>                 };
+> -               key-4 {
+> +               key-4 { /* S22 */
+>                         gpios = <&gpio5 20 GPIO_ACTIVE_LOW>;
+>                         linux,code = <KEY_4>;
+> -                       label = "Switch-4";
+> +                       label = "Right";
+>                         wakeup-source;
+>                         debounce-interval = <20>;
+>                 };
+> -               key-5 {
+> +               key-5 { /* S23 */
+>                         gpios = <&gpio5 22 GPIO_ACTIVE_LOW>;
+>                         linux,code = <KEY_5>;
+> -                       label = "Switch-4";
+> +                       label = "Center";
+>                         wakeup-source;
+>                         debounce-interval = <20>;
+>                 };
+
+Wouldn't it make sense for the linux,code properties to reflect this, and thus
+change them to KEY_{UP,LEFT,DOWN,RIGHT,ENTER} (or SELECT, or OK)?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.17.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
