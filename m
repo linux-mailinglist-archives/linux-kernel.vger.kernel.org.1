@@ -2,97 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 766E52DCFAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 11:45:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A7622DCFA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 11:45:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727876AbgLQKoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 05:44:03 -0500
-Received: from mga07.intel.com ([134.134.136.100]:55396 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726488AbgLQKoC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 05:44:02 -0500
-IronPort-SDR: s66Y0Qk9giK0z/AgtkyfiFdB7QDjPdkR55qHGR1BFoH4mTu/pZQtWU5j+3zZF5I1pi4mVHtCYw
- NF8MzyS70YJA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9837"; a="239317982"
-X-IronPort-AV: E=Sophos;i="5.78,426,1599548400"; 
-   d="scan'208";a="239317982"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2020 02:42:16 -0800
-IronPort-SDR: 7hufJF96aVJs3jdNcuUbOOcQhj+zIz9abFidDLlL7O18bylSQpbmgUbdGXdS42E6ofOkj9CHhu
- cfpUQ/uSa8Ow==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,426,1599548400"; 
-   d="scan'208";a="392483698"
-Received: from spandruv-desk.jf.intel.com ([10.54.75.21])
-  by FMSMGA003.fm.intel.com with ESMTP; 17 Dec 2020 02:42:15 -0800
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     lenb@kernel.org, rjw@rjwysocki.net, viresh.kumar@linaro.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        srinivas.pandruvada@linux.intel.com
-Subject: [PATCH] cpufreq: intel_pstate: Use the latest guaranteed freq during verify
-Date:   Thu, 17 Dec 2020 02:42:15 -0800
-Message-Id: <20201217104215.2544837-1-srinivas.pandruvada@linux.intel.com>
-X-Mailer: git-send-email 2.25.4
+        id S1727810AbgLQKn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 05:43:56 -0500
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:34761 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726874AbgLQKn4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 05:43:56 -0500
+Received: by mail-ot1-f50.google.com with SMTP id a109so26781005otc.1;
+        Thu, 17 Dec 2020 02:43:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=blbeuBqoR40MzGeKrBYrMKYeIiq7CQpLFY+gQSBqfCE=;
+        b=UK7awK2erIXSs4Dlzh/IxRytlKSIIa4mwkqxWjHZZAkQoELerkUIWwDEa7He+WA2qQ
+         5rKN+5aGb5r8RoyN1uJvd9rMPA2FNV7MEN4EsQAtQMfcUJMdRMbhr5WRMva8RHmiaOhJ
+         CSYcRO6aM6Cr5m7W6u17CokTU5HA0pRc5Z+jMZBTteymsGeWO3tBI/E/bb+Qgo1E47Ha
+         TvAy/c6YCewHMuiGnzmvhmo7tUdJSAFq0HaTyEnqjl7nON220mD/Y7+E8kaJqqEQ0vBJ
+         PA0pMWMNL+dk/H3C6T1Cy5yeJZaCxYU7SLF3ZDO4HpMwxGBLSLuzSscgC8a+jXyS9ZUP
+         UGzQ==
+X-Gm-Message-State: AOAM530hQBecamRhtoKkV8j9DFPpmLG0wtgaD9BzPJdr2far7fdbSoz4
+        0laEUa2ddlFq+ZRKWjZo9u2dRxisDeM8ZGlrJTePb/Dq
+X-Google-Smtp-Source: ABdhPJw4QU3Ngc4hUpCTE1vaTE9q2XF3PzeeLfnVr4OaaRURG1lGNcSGYHaJR3E/WbVsa4VhG2P2mmonsWgxX+3MYXk=
+X-Received: by 2002:a9d:2203:: with SMTP id o3mr28919780ota.107.1608201795409;
+ Thu, 17 Dec 2020 02:43:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201213183759.223246-1-aford173@gmail.com> <20201213183759.223246-4-aford173@gmail.com>
+In-Reply-To: <20201213183759.223246-4-aford173@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 17 Dec 2020 11:43:04 +0100
+Message-ID: <CAMuHMdW+NuM86Xceh6p3Pt0DRt4qvzzp6gdU3j=q5Q6FEYSSQg@mail.gmail.com>
+Subject: Re: [PATCH 03/18] arm64: dts: renesas: beacon kit: Remove unnecessary nodes
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change tries to address an issue, when BIOS disabled turbo
-but HWP_CAP guaranteed is changed later and user space wants to take
-advantage of this increased guaranteed performance.
+On Sun, Dec 13, 2020 at 7:38 PM Adam Ford <aford173@gmail.com> wrote:
+> VSPI0 and VSPB are already enabled by default.  There is no need
+> to add extra nodes to enable them.  Remove the redundant nodes.
+>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 
-The HWP_CAP.GUARANTEED value is not a static value. It can be changed
-by some out of band agent or during Intel Speed Select performance
-level change. The HWP_CAP.MAX still shows max possible performance when
-BIOS disabled turbo. So guaranteed can still change as long as this is
-same or below HWP_CAP.MAX.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v5.12.
 
-When guaranteed is changed, the sysfs base_frequency attributes shows
-the latest guaranteed frequency. This attribute can be used by user
-space software to update scaling min/max frequency.
+Gr{oetje,eeting}s,
 
-Currently the setpolicy callback already uses the latest HWP_CAP
-values when setting HWP_REQ. But the verify callback will still restrict
-the user settings to the to old guaranteed value. So if the guaranteed
-is increased, user space can't take advantage of it.
+                        Geert
 
-To solve this similar to setpolicy callback, read the latest HWP_CAP
-values and use it to restrict the maximum setting. This is done by
-calling intel_pstate_get_hwp_max(), which already accounts for user
-and BIOS turbo disable to get the current max performance.
-
-This issue is side effect of fixing the issue of scaling frequency
-limits by the
- 'commit eacc9c5a927e ("cpufreq: intel_pstate:
- Fix intel_pstate_get_hwp_max() for turbo disabled")'
-The fix resulted in correct setting of reduced scaling frequencies,
-but this resulted in capping HWP.REQ to HWP_CAP.GUARANTEED in this case.
-
-Cc: 5.8+ <stable@vger.kernel.org> # 5.8+
-Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
----
- drivers/cpufreq/intel_pstate.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-index 2a4db856222f..7081d1edb22b 100644
---- a/drivers/cpufreq/intel_pstate.c
-+++ b/drivers/cpufreq/intel_pstate.c
-@@ -2199,6 +2199,12 @@ static void intel_pstate_clear_update_util_hook(unsigned int cpu)
- 
- static int intel_pstate_get_max_freq(struct cpudata *cpu)
- {
-+	if (hwp_active) {
-+		int turbo_max, max_state;
-+
-+		intel_pstate_get_hwp_max(cpu->cpu, &turbo_max, &max_state);
-+		return max_state * cpu->pstate.scaling;
-+	}
- 	return global.turbo_disabled || global.no_turbo ?
- 			cpu->pstate.max_freq : cpu->pstate.turbo_freq;
- }
 -- 
-2.29.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
