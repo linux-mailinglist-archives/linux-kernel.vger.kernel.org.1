@@ -2,153 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A09512DDAC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 22:23:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6CDA2DDACE
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 22:26:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729325AbgLQVWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 16:22:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43640 "EHLO
+        id S1729685AbgLQV0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 16:26:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728154AbgLQVWJ (ORCPT
+        with ESMTP id S1729113AbgLQV0Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 16:22:09 -0500
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2587CC0617B0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 13:21:29 -0800 (PST)
-Received: by mail-vs1-xe2e.google.com with SMTP id e15so265995vsa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 13:21:29 -0800 (PST)
+        Thu, 17 Dec 2020 16:26:16 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31BF5C061794
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 13:25:36 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id z12so128940pjn.1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 13:25:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Rb4QRsrzHetcmVvjFenLb+xxlOjxCoQIDDaKT8olvy4=;
-        b=eYrjHAZUBdAwFqXOsQgOfJ3405lOCKr+wOjixZJ2LjI5r8W+85GaTLEOtN9ZIRp5Hc
-         toRNJQV5dByAv7/bgMj+44h94qcIXQwfMOxHanusirB8sAKW94E/7NeUPEj700eFBTne
-         Ywh9h21AgnWgJX87hpuOVuK4isj7cuU36cxog=
+        d=google.com; s=20161025;
+        h=from:to:cc:subject:references:date:in-reply-to:message-id
+         :user-agent:mime-version;
+        bh=cKNE4Ll3LbqQqi/vsSSnD8gv0zzuQpoyh0gLWN6xhD0=;
+        b=eoOVXWFoeqY4b6J7GsYROACiZ6V+ENVkYs79nY5OlPO/qxefEC6xaFwDcXLpfk9ywG
+         LIpolf5jYqYUOxO8lM8Sx44hI+BewEGql7609u0yxyKqwOOxLBFatd/7KDNq8HBSQB74
+         uBvMRx1KFhx/4w7a8iebx00wUf35+sLx0HW9xtwaDGfG/znI3emStmIYPrBsQfhca7Jr
+         GJNWfbysMeMmfYi0j1JhcBxf04qonRI3mc9BTMIuAikpdtCDXTVDK9q6L+VUvnWSvwS7
+         g6j+iF3tjhPomCgzcGXlMtiE+lBATNu5i6AxNxY8hUiqES16nvKPk1NMA+8nb+ZWm1Gy
+         6WGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Rb4QRsrzHetcmVvjFenLb+xxlOjxCoQIDDaKT8olvy4=;
-        b=GcJ+oqVYcWOoDarOBJrBzMCnXZbXIFkLdQvOiS0jKAAYtoar2vtJVlm8S69O3AkPzN
-         ikaySqSHsnDlTm/jJfr+9RwbeUSLYf0lXwCBwtNipjIEcmrwXA8pxrMnpJNdiiocBCi3
-         733uH9h7Xgpo2TD4UuGCkx72gCcn7fb1vAJwCF883zmTbQCDARwiDqUUxU/IfN/y1rVv
-         GQY4s78/WmUtSHKeIKBNaleVfaGAmiUhXUDbgHcEMdchBRjt4jFZmuhsVHuwsDso80sp
-         ZSFYtrNWbs277qagtONp1Zw+t0o7uErjNnIaQEZ64/gLG1Wxud0/OW5KBWcpsSxoRfD+
-         YC+A==
-X-Gm-Message-State: AOAM530qPYW3T+ev/Sl8+a61hDUcx7QyUbxdoDBMR9r31ptFucppS6gT
-        NyxGM3AzYUr81skSXD1zelQZe2JzGQrR7w==
-X-Google-Smtp-Source: ABdhPJzdrFts618o/x4D1RFaa6CkBIBGVo74ISywVloMGtV3wrJAWzLQFqNyrmpbWw1SagLbQxPtFg==
-X-Received: by 2002:a05:6102:666:: with SMTP id z6mr1237481vsf.46.1608240088054;
-        Thu, 17 Dec 2020 13:21:28 -0800 (PST)
-Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com. [209.85.221.181])
-        by smtp.gmail.com with ESMTPSA id z14sm737858vsk.28.2020.12.17.13.21.26
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Dec 2020 13:21:26 -0800 (PST)
-Received: by mail-vk1-f181.google.com with SMTP id d6so17953vkb.13
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 13:21:26 -0800 (PST)
-X-Received: by 2002:a1f:3fc9:: with SMTP id m192mr1317831vka.17.1608240085900;
- Thu, 17 Dec 2020 13:21:25 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
+         :message-id:user-agent:mime-version;
+        bh=cKNE4Ll3LbqQqi/vsSSnD8gv0zzuQpoyh0gLWN6xhD0=;
+        b=ffroZ+gmhLe69ybI9R3eM7WG1psT3PXHqS0k7LTdKAeqEnve6qop2OJ1c8QLfibIEf
+         1wul8HxVi+e9SjWalNEnW06IHZXsEV7/CTu2AHvmiF/0ENpdI2mIPFmdITMkAVS7So+M
+         vbJQ7/3UzmJZiX+QotbXNgPm9NvA41pWXHRC6mUS8cK4vzAeVqNEeOA0Hg6VAkExLMe5
+         EUbKa+v+bKHL54rArckUjvF1PzfieVToMw6I5A9ERk8Zn7XP+xYysEfZ8r5mUfAlX7tl
+         ECYM+ogykTrgnN22WycC6jm2GRoNINES/AFLXqCA/iYhc5r7oXVhLwbJNrhgQGT0C6Sa
+         EzcA==
+X-Gm-Message-State: AOAM533xAis5KGGaLTsGFgNUr4iJGc0XMKkRdc7Z13n5dAF0bFdfRegh
+        FacEuu9EB+I8YW4YE5NiS8AQmg==
+X-Google-Smtp-Source: ABdhPJz6EsiB3cJ4HZ3oGGLUDn55HprsHHoFuQFNAlqyX0+nruQAzzscAtJC0z/ygi0mm7YuAWXYiw==
+X-Received: by 2002:a17:902:8498:b029:d8:e2a0:e4e7 with SMTP id c24-20020a1709028498b02900d8e2a0e4e7mr835859plo.49.1608240335511;
+        Thu, 17 Dec 2020 13:25:35 -0800 (PST)
+Received: from bsegall-glaptop.localhost (c-73-71-82-80.hsd1.ca.comcast.net. [73.71.82.80])
+        by smtp.gmail.com with ESMTPSA id a141sm6893211pfa.189.2020.12.17.13.25.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Dec 2020 13:25:34 -0800 (PST)
+From:   Benjamin Segall <bsegall@google.com>
+To:     Huaixin Chang <changhuaixin@linux.alibaba.com>
+Cc:     linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
+        juri.lelli@redhat.com, mgorman@suse.de, mingo@redhat.com,
+        pauld@redhead.com, peterz@infradead.org, pjt@google.com,
+        rostedt@goodmis.org, vincent.guittot@linaro.org,
+        khlebnikov@yandex-team.ru, xiyou.wangcong@gmail.com,
+        shanpeic@linux.alibaba.com
+Subject: Re: [PATCH 0/4] sched/fair: Burstable CFS bandwidth controller
+References: <20201217074620.58338-1-changhuaixin@linux.alibaba.com>
+Date:   Thu, 17 Dec 2020 13:25:31 -0800
+In-Reply-To: <20201217074620.58338-1-changhuaixin@linux.alibaba.com> (Huaixin
+        Chang's message of "Thu, 17 Dec 2020 15:46:16 +0800")
+Message-ID: <xm26zh2cxgz8.fsf@google.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20201216144114.v2.1.I99ee04f0cb823415df59bd4f550d6ff5756e43d6@changeid>
- <20201216144114.v2.3.I07afdedcc49655c5d26880f8df9170aac5792378@changeid> <160817911850.1580929.16402785505110078436@swboyd.mtv.corp.google.com>
-In-Reply-To: <160817911850.1580929.16402785505110078436@swboyd.mtv.corp.google.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 17 Dec 2020 13:21:14 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=WcVpkpwrLYVaXcRZmQztpw8in6b42+krRbN1+a8LVt6Q@mail.gmail.com>
-Message-ID: <CAD=FV=WcVpkpwrLYVaXcRZmQztpw8in6b42+krRbN1+a8LVt6Q@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] spi: spi-geni-qcom: Don't try to set CS if an xfer
- is pending
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Mark Brown <broonie@kernel.org>, msavaliy@qti.qualcomm.com,
-        Akash Asthana <akashast@codeaurora.org>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The code for this looks fine, and the feature is something people do
+seem to ask for occasionally. I agree with peterz that using this
+generally means you lose any guarantees (which are already imperfect
+given CFS), but I suspect that cfsb is being used in overload anyways.
 
-On Wed, Dec 16, 2020 at 8:25 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> Quoting Douglas Anderson (2020-12-16 14:41:51)
-> > If we get a timeout sending then this happens:
-> > * spi_transfer_wait() will get a timeout.
-> > * We'll set the chip select
-> > * We'll call handle_err() => handle_fifo_timeout().
-> >
-> > Unfortunately that won't work so well on geni.  If we got a timeout
-> > transferring then it's likely that our interrupt handler is blocked,
-> > but we need that same interrupt handler to adjust the chip select.
-> > Trying to set the chip select doesn't crash us but ends up confusing
-> > our state machine and leads to messages like:
-> >   Premature done. rx_rem = 32 bpw8
-> >
-> > Let's just drop the chip select request in this case.  Sure, we might
-> > leave the chip select in the wrong state but it's likely it was going
-> > to fail anyway and this avoids getting the driver even more confused
-> > about what it's doing.
-> >
-> > The SPI core in general assumes that setting chip select is a simple
-> > operation that doesn't fail.  Yet another reason to just reconfigure
-> > the chip select line as GPIOs.
->
-> Indeed.
->
-> >
-> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > ---
-> >
-> > Changes in v2:
-> > - ("spi: spi-geni-qcom: Don't try to set CS if an xfer is pending") new for v2.
-> >
-> >  drivers/spi/spi-geni-qcom.c | 9 +++++++--
-> >  1 file changed, 7 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/spi/spi-geni-qcom.c b/drivers/spi/spi-geni-qcom.c
-> > index d988463e606f..0e4fa52ac017 100644
-> > --- a/drivers/spi/spi-geni-qcom.c
-> > +++ b/drivers/spi/spi-geni-qcom.c
-> > @@ -204,9 +204,14 @@ static void spi_geni_set_cs(struct spi_device *slv, bool set_flag)
-> >                 goto exit;
-> >         }
-> >
-> > -       mas->cs_flag = set_flag;
-> > -
-> >         spin_lock_irq(&mas->lock);
-> > +       if (mas->cur_xfer) {
->
-> How is it possible that cs change happens when cur_xfer is non-NULL?
-
-I'll add this to the commit message:
-
-spi_transfer_one_message()
- ->transfer_one() AKA spi_geni_transfer_one()
-  setup_fifo_xfer()
-   mas->cur_xfer = non-NULL
- spi_transfer_wait() => TIMES OUT
- msg->status != -EINPROGRESS => goto out
- if (ret != 0 ...)
-  spi_set_cs()
-   ->set_cs AKA spi_geni_set_cs()
-    # mas->cur_xfer is non-NULL
-
-Specifically the place where cur_xfer is usually made NULL is in the
-interrupt handler.  If that doesn't run then it will be non-NULL.
-
-
-> > +               dev_err(mas->dev, "Can't set CS when prev xfter running\n");
->
-> xfer? or xfter?
-
-Will fix.
-
-
--Doug
+The docs could use a grammar/wording pass maybe, but that's easy enough.
