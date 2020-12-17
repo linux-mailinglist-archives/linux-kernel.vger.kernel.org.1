@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6585E2DDAAF
+	by mail.lfdr.de (Postfix) with ESMTP id D2E5E2DDAB0
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 22:16:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731836AbgLQVPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 16:15:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49878 "EHLO mail.kernel.org"
+        id S1731838AbgLQVPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 16:15:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731809AbgLQVPU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 16:15:20 -0500
+        id S1726983AbgLQVPz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 16:15:55 -0500
 From:   Tom Zanussi <zanussi@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     rostedt@goodmis.org, axelrasmussen@google.com
 Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 4/5] tracing: Add a backward-compatibility check for synthetic event creation
-Date:   Thu, 17 Dec 2020 15:14:29 -0600
-Message-Id: <10708db9327a6db3e8cdd9639504923e6629ae85.1608238451.git.zanussi@kernel.org>
+Subject: [PATCH v4 5/5] selftests/ftrace: Update synthetic event syntax errors
+Date:   Thu, 17 Dec 2020 15:14:30 -0600
+Message-Id: <6cb978ea1a56e76f723fb7aee74422b0766db8e9.1608238451.git.zanussi@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <cover.1608238451.git.zanussi@kernel.org>
 References: <cover.1608238451.git.zanussi@kernel.org>
@@ -27,405 +27,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The synthetic event parsing rework requiring semicolons between
-synthetic event fields.  That requirement breaks existing users who
-might already have used the old form, so this adds a pre-parsing pass
-that adds semicolons between fields to any string missing them.  If
-none are required, the original string is used.
+Some of the synthetic event errors and positions have changed in the
+code - update those and add several more tests.
 
-In the future, if/when new features are added, the requirement will be
-that any string containing the new feature will be required to use
-semicolons, and the audit_old_buffer() check can check for those and
-avoid the pre-parsing semicolon pass altogether.
+Also add a runtime check to ensure that the kernel supports dynamic
+strings in synthetic events, which these tests require.
 
-As it stands, the pre-parsing pass creates a new string with
-semicolons only if one or more semicolons were actually needed and
-only if no errors were found in pre-parsing.  The assumption is that
-the real parsing pass will find and flag any errors and the user
-should see them in reference to the original unmodified string.
+Fixes: 81ff92a93d95 (selftests/ftrace: Add test case for synthetic
+event syntax errors)
 
+Reported-by: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Tom Zanussi <zanussi@kernel.org>
 ---
- kernel/trace/trace_events_synth.c | 294 ++++++++++++++++++++++++++++--
- 1 file changed, 274 insertions(+), 20 deletions(-)
+ .../trigger-synthetic_event_syntax_errors.tc  | 35 ++++++++++++++-----
+ 1 file changed, 27 insertions(+), 8 deletions(-)
 
-diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
-index 2a9c8bf74bb2..6bff54ed31ce 100644
---- a/kernel/trace/trace_events_synth.c
-+++ b/kernel/trace/trace_events_synth.c
-@@ -1373,6 +1373,245 @@ int synth_event_delete(const char *event_name)
+diff --git a/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc
+index ada594fe16cb..955e3ceea44b 100644
+--- a/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc
++++ b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc
+@@ -1,19 +1,38 @@
+ #!/bin/sh
+ # SPDX-License-Identifier: GPL-2.0
+ # description: event trigger - test synthetic_events syntax parser errors
+-# requires: synthetic_events error_log
++# requires: synthetic_events error_log "char name[]' >> synthetic_events":README
+ 
+ check_error() { # command-with-error-pos-by-^
+     ftrace_errlog_check 'synthetic_events' "$1" 'synthetic_events'
  }
- EXPORT_SYMBOL_GPL(synth_event_delete);
  
-+static int save_synth_field(int argc, char **argv, int *consumed,
-+			    struct seq_buf *s, bool *added_semi)
-+{
-+	const char *prefix = NULL, *field_name, *field_type = argv[0];
-+	const char *save_field_type, *array, *next_tok;
-+	int len, ret = -EINVAL;
-+	struct seq_buf f;
-+	ssize_t size;
-+	char *tmp;
-+
-+	*added_semi = false;
-+
-+	if (field_type[0] == ';')
-+		field_type++;
-+
-+	if (!strcmp(field_type, "unsigned")) {
-+		if (argc < 3)
-+			goto out;
-+		prefix = "unsigned";
-+		field_type = argv[1];
-+		field_name = argv[2];
-+		*consumed = 3;
-+	} else {
-+		field_type = argv[0];
-+		field_name = argv[1];
-+		*consumed = 2;
-+	}
-+
-+	len = strlen(field_name);
-+	array = strchr(field_name, '[');
-+	if (array)
-+		len -= strlen(array);
-+	else if (field_name[len - 1] == ';')
-+		len--;
-+
-+	tmp = kmemdup_nul(field_name, len, GFP_KERNEL);
-+	if (!tmp) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	if (!is_good_name(tmp)) {
-+		kfree(tmp);
-+		goto out;
-+	}
-+
-+	kfree(tmp);
-+
-+	save_field_type = field_type;
-+	if (field_type[0] == ';')
-+		field_type++;
-+	len = strlen(field_type) + 1;
-+
-+	if (array)
-+		len += strlen(array);
-+
-+	if (prefix)
-+		len += strlen(prefix) + 1;
-+
-+	tmp = kzalloc(len, GFP_KERNEL);
-+	if (!tmp) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	seq_buf_init(&f, tmp, len);
-+	if (prefix) {
-+		seq_buf_puts(&f, prefix);
-+		seq_buf_putc(&f, ' ');
-+	}
-+	seq_buf_puts(&f, field_type);
-+	if (array) {
-+		seq_buf_puts(&f, array);
-+		if (f.buffer[f.len - 1] == ';')
-+			f.len--;
-+	}
-+	if (WARN_ON_ONCE(!seq_buf_buffer_left(&f))) {
-+		kfree(tmp);
-+		goto out;
-+	}
-+
-+	f.buffer[f.len] = '\0';
-+
-+	field_type = save_field_type;
-+
-+	size = synth_field_size(tmp);
-+	if (size < 0 || ((size == 0) && (!synth_field_is_string(tmp)))) {
-+		kfree(tmp);
-+		goto out;
-+	}
-+
-+	kfree(tmp);
-+
-+	if (prefix) {
-+		seq_buf_puts(s, prefix);
-+		seq_buf_putc(s, ' ');
-+	}
-+	seq_buf_puts(s, field_type);
-+	seq_buf_putc(s, ' ');
-+	seq_buf_puts(s, field_name);
-+	if (field_name[strlen(field_name) - 1] == ';')
-+		seq_buf_putc(s, ' ');
-+
-+	if (*consumed < argc) {
-+		next_tok = argv[*consumed];
-+		if (field_name[strlen(field_name) - 1] != ';' &&
-+		    next_tok[0] != ';') {
-+			seq_buf_puts(s, "; ");
-+			*added_semi = true;
-+		}
-+	}
-+
-+	ret = 0;
-+ out:
-+	return ret;
++check_dyn_error() { # command-with-error-pos-by-^
++    ftrace_errlog_check 'synthetic_events' "$1" 'dynamic_events'
 +}
 +
-+static char *insert_semicolons(const char *raw_command)
-+{
-+	int i, argc, consumed = 0, n_fields = 0, semis_added = 0;
-+	char *name, **argv, **save_argv;
-+	int ret = -EINVAL;
-+	struct seq_buf s;
-+	bool added_semi;
-+	char *buf;
+ check_error 'myevent ^chr arg'			# INVALID_TYPE
+-check_error 'myevent ^char str[];; int v'	# INVALID_TYPE
+-check_error 'myevent char ^str]; int v'		# INVALID_NAME
+-check_error 'myevent char ^str;[]'		# INVALID_NAME
+-check_error 'myevent ^char str[; int v'		# INVALID_TYPE
+-check_error '^mye;vent char str[]'		# BAD_NAME
+-check_error 'myevent char str[]; ^int'		# INVALID_FIELD
+-check_error '^myevent'				# INCOMPLETE_CMD
++check_error 'myevent ^unsigned arg'		# INCOMPLETE_TYPE
 +
-+	argc = 0;
++check_error 'myevent char ^str]; int v'		# BAD_NAME
++check_error '^mye-vent char str[]'		# BAD_NAME
++check_error 'myevent char ^st-r[]'		# BAD_NAME
 +
-+	argv = argv_split(GFP_KERNEL, raw_command, &argc);
-+	if (!argv)
-+		return NULL;
++check_error 'myevent char str;^[]'		# INVALID_FIELD
++check_error 'myevent char str; ^int'		# INVALID_FIELD
 +
-+	if (!argc)
-+		goto out;
++check_error 'myevent char ^str[; int v'		# INVALID_ARRAY_SPEC
++check_error 'myevent char ^str[kdjdk]'		# INVALID_ARRAY_SPEC
++check_error 'myevent char ^str[257]'		# INVALID_ARRAY_SPEC
 +
-+	name = argv[0];
-+	save_argv = argv;
-+	argv++;
-+	argc--;
++check_error '^mye;vent char str[]'		# INVALID_CMD
++check_error '^myevent ; char str[]'		# INVALID_CMD
++check_error '^myevent; char str[]'		# INVALID_CMD
++check_error '^myevent ;char str[]'		# INVALID_CMD
++check_error '^; char str[]'			# INVALID_CMD
++check_error '^;myevent char str[]'		# INVALID_CMD
++check_error '^myevent'				# INVALID_CMD
 +
-+	buf = kzalloc(MAX_DYNEVENT_CMD_LEN, GFP_KERNEL);
-+	if (!buf) {
-+		ret = -ENOMEM;
-+		goto err;
-+	}
-+
-+	seq_buf_init(&s, buf, MAX_DYNEVENT_CMD_LEN);
-+
-+	seq_buf_puts(&s, name);
-+	seq_buf_putc(&s, ' ');
-+
-+	if (name[0] == '\0' || argc < 1)
-+		goto err;
-+
-+	for (i = 0; i < argc - 1; i++) {
-+		if (strcmp(argv[i], ";") == 0) {
-+			seq_buf_puts(&s, " ; ");
-+			continue;
-+		}
-+
-+		if (n_fields == SYNTH_FIELDS_MAX)
-+			goto err;
-+
-+		ret = save_synth_field(argc - i, &argv[i], &consumed,
-+				       &s, &added_semi);
-+		if (ret)
-+			goto err;
-+
-+		if (added_semi)
-+			semis_added++;
-+
-+		i += consumed - 1;
-+	}
-+
-+	if (i < argc && strcmp(argv[i], ";") != 0)
-+		goto err;
-+
-+	if (!semis_added) {
-+		kfree(buf);
-+		buf = NULL;
-+		goto out;
-+	}
-+
-+	if (WARN_ON_ONCE(!seq_buf_buffer_left(&s)))
-+		goto err;
-+
-+	buf[s.len] = '\0';
-+ out:
-+	argv_free(save_argv);
-+
-+	return buf;
-+ err:
-+	kfree(buf);
-+	buf = ERR_PTR(ret);
-+
-+	goto out;
-+}
-+
-+static bool audit_old_buffer(const char *cmd)
-+{
-+	/* as of now, every cmd is an old cmd */
-+	return true;
-+}
-+
-+/**
-+ * get_parseable_cmd - Return a modifiable string for parsing
-+ * @raw_command: The command to start with
-+ *
-+ * Create a cmd string that can be modified by the caller for command
-+ * parsing purposes. If successful, the caller must free the command
-+ * returned.
-+ *
-+ * The input string will first be checked to see whether or not it can
-+ * be considered an 'old command' - a command that doesn't require
-+ * semicolons between fields - for which backward compatibility must
-+ * be maintained.  If it can be considered an old command, a semicolon
-+ * will be added between any two fields missing one.  If no semicolons
-+ * were required, or if the preparsing required for the pass
-+ * encountered errors, a modifiable copy of the original string will
-+ * be returned.
-+ *
-+ * Return: parseable cmd if successful, error or NULL string otherwise.
-+ */
-+static char *get_parseable_cmd(const char *raw_command)
-+{
-+	char *cmd = NULL;
-+
-+	if (audit_old_buffer(raw_command))
-+		cmd = insert_semicolons(raw_command);
-+
-+	if (IS_ERR_OR_NULL(cmd)) {
-+		cmd = kstrdup(raw_command, GFP_KERNEL);
-+		if (!cmd)
-+			cmd = ERR_PTR(-ENOMEM);
-+	}
-+
-+	return cmd;
-+}
-+
- static int check_command(const char *raw_command)
- {
- 	char **argv = NULL, *cmd, *saved_cmd, *name_and_field;
-@@ -1406,28 +1645,33 @@ static int check_command(const char *raw_command)
++check_dyn_error '^s:junk/myevent char str['	# INVALID_DYN_CMD
  
- static int create_or_delete_synth_event(const char *raw_command)
- {
--	char *name = NULL, *fields, *p;
-+	char *name = NULL, *fields, *p, *cmd;
- 	int ret = 0;
- 
- 	raw_command = skip_spaces(raw_command);
- 	if (raw_command[0] == '\0')
- 		return ret;
- 
--	last_cmd_set(raw_command);
-+	cmd = get_parseable_cmd(raw_command);
-+	if (IS_ERR(cmd))
-+		return PTR_ERR(cmd);
- 
--	ret = check_command(raw_command);
-+	last_cmd_set(cmd);
-+
-+	ret = check_command(cmd);
- 	if (ret) {
- 		synth_err(SYNTH_ERR_INVALID_CMD, 0);
--		return ret;
-+		goto free;
- 	}
- 
--	p = strpbrk(raw_command, " \t");
-+	p = strpbrk(cmd, " \t");
- 	if (!p) {
- 		synth_err(SYNTH_ERR_INVALID_CMD, 0);
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto free;
- 	}
- 
--	name = kmemdup_nul(raw_command, p - raw_command, GFP_KERNEL);
-+	name = kmemdup_nul(cmd, p - cmd, GFP_KERNEL);
- 	if (!name)
- 		return -ENOMEM;
- 
-@@ -1441,6 +1685,7 @@ static int create_or_delete_synth_event(const char *raw_command)
- 	ret = __create_synth_event(name, fields);
- free:
- 	kfree(name);
-+	kfree(cmd);
- 
- 	return ret;
- }
-@@ -1988,7 +2233,7 @@ EXPORT_SYMBOL_GPL(synth_event_trace_end);
- 
- static int create_synth_event(const char *raw_command)
- {
--	char *fields, *p;
-+	char *fields, *p, *cmd;
- 	const char *name;
- 	int len, ret = 0;
- 
-@@ -1996,20 +2241,27 @@ static int create_synth_event(const char *raw_command)
- 	if (raw_command[0] == '\0')
- 		return ret;
- 
--	last_cmd_set(raw_command);
-+	cmd = get_parseable_cmd(raw_command);
-+	if (IS_ERR(cmd))
-+		return PTR_ERR(cmd);
-+
-+	last_cmd_set(cmd);
- 
--	p = strpbrk(raw_command, " \t");
-+	p = strpbrk(cmd, " \t");
- 	if (!p) {
- 		synth_err(SYNTH_ERR_INVALID_CMD, 0);
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto free;
- 	}
- 
- 	fields = skip_spaces(p);
- 
--	name = raw_command;
-+	name = cmd;
- 
--	if (name[0] != 's' || name[1] != ':')
--		return -ECANCELED;
-+	if (name[0] != 's' || name[1] != ':') {
-+		ret = -ECANCELED;
-+		goto free;
-+	}
- 	name += 2;
- 
- 	/* This interface accepts group name prefix */
-@@ -2017,26 +2269,28 @@ static int create_synth_event(const char *raw_command)
- 		len = str_has_prefix(name, SYNTH_SYSTEM "/");
- 		if (len == 0) {
- 			synth_err(SYNTH_ERR_INVALID_DYN_CMD, 0);
--			return -EINVAL;
-+			ret = -EINVAL;
-+			goto free;
- 		}
- 		name += len;
- 	}
- 
--	len = name - raw_command;
-+	len = name - cmd;
- 
--	ret = check_command(raw_command + len);
-+	ret = check_command(cmd + len);
- 	if (ret) {
- 		synth_err(SYNTH_ERR_INVALID_CMD, 0);
--		return ret;
-+		goto free;
- 	}
- 
--	name = kmemdup_nul(raw_command + len, p - raw_command - len, GFP_KERNEL);
-+	name = kmemdup_nul(cmd + len, p - cmd - len, GFP_KERNEL);
- 	if (!name)
- 		return -ENOMEM;
- 
- 	ret = __create_synth_event(name, fields);
--
- 	kfree(name);
-+ free:
-+	kfree(cmd);
- 
- 	return ret;
- }
+ exit 0
 -- 
 2.17.1
 
