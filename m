@@ -2,137 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A56A2DCF49
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 11:14:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DED3A2DCEFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 11:01:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728433AbgLQKMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 05:12:19 -0500
-Received: from mail-eopbgr150083.outbound.protection.outlook.com ([40.107.15.83]:17125
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727331AbgLQKMQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 05:12:16 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=APvxvwAcfZ4cNYJ1bj8wvf0t9GV6RhSx6ijWXT6g9hPgyKMBSYrUvlcMTGlVYKlydinqIxuoOD2O5+5IueRQV9WgABXc9I2hCCPydZoF4+cRgGetO4ve/mEekHzB2I4tFLhUl6hTMHiZRDRMQQ15W70MGPRsiNHeipdJSTXsK6G1WVUiUDFxIqIaNem4ALFEbdfdl75AQU/FsZm3kpnE0DR6Zai9gyu8/fZ1Kow02Jb7SIxPgQW84+I5vvuiwK8l68l/k1iqE4hGNZr9vuUJRI0r2tN14Y7V95OTzmHOUU8Z5ufjpQo24dOBgeYoFGt2fjz30+dYrbVZ6GXe6z7ojQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BF2scDc6uWH+SWMe/NZDGxcEkfuzT3ud9rfhpVjCupY=;
- b=KHj0cdqoTnj1Oa/YRdx+CskxU4pY1PlC6t98BNdrFqRfxpB9s7vwuJTtRFMhQNaUDs4TkgB/c1OZdXu+jJuvgZ6cyam2+Viw2MKsQ2DANfmfPcbcALRA/7p2e3XBtJqeDDz15zKg/r1/9HfNbUNoLqwTYS/hpSeQ8u6SpqFqzsPwnASgnEub3G9B5x5s4JGOFcCWvbCKXrOcWLVBnp98Z2Rs87hP/OYwh5Xx+6zSH4fpqAOHx73LTdwdpvo0aH6NO3nAn3aZzuZzvzP90nteoekU8cX087ayYxJClceCQuuYTHq0fSNdIxMkzByY98tLyo3qCmySbWjN4XK63Rkcxw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BF2scDc6uWH+SWMe/NZDGxcEkfuzT3ud9rfhpVjCupY=;
- b=DHJgFatQst1AVReV6kbk58/SI+hZPnO5KnrM4yF8csdO68TkP/1M+ihf4+ql4PqMuUj/A6fc/WIUxR1PU1B0LfXjFT+p00tGOILhmoQfj23jjtlfgpyxj0z1FrEd8BQ7zY2WQU0zyCkj6sHf38m/rav3LXMimvcBoBzv06YGmXk=
-Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
- header.d=none;lists.freedesktop.org; dmarc=none action=none
- header.from=nxp.com;
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
- by VE1PR04MB7312.eurprd04.prod.outlook.com (2603:10a6:800:1a5::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.14; Thu, 17 Dec
- 2020 10:09:46 +0000
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::dcb7:6117:3def:2685]) by VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::dcb7:6117:3def:2685%7]) with mapi id 15.20.3654.024; Thu, 17 Dec 2020
- 10:09:46 +0000
-From:   Liu Ying <victor.liu@nxp.com>
-To:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org
-Cc:     airlied@linux.ie, daniel@ffwll.ch, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, mchehab@kernel.org,
-        a.hajda@samsung.com, narmstrong@baylibre.com,
-        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-        jernej.skrabec@siol.net, kishon@ti.com, vkoul@kernel.org
-Subject: [PATCH 14/14] MAINTAINERS: add maintainer for DRM bridge drivers for i.MX SoCs
-Date:   Thu, 17 Dec 2020 17:59:33 +0800
-Message-Id: <1608199173-28760-15-git-send-email-victor.liu@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1608199173-28760-1-git-send-email-victor.liu@nxp.com>
-References: <1608199173-28760-1-git-send-email-victor.liu@nxp.com>
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: SG2P153CA0012.APCP153.PROD.OUTLOOK.COM (2603:1096::22) To
- VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
+        id S1727881AbgLQKBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 05:01:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726488AbgLQKBJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 05:01:09 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 197E0C061794
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 02:00:28 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id x20so36307136lfe.12
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 02:00:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=zp+lOAZKeRzjBsyGhBdKFVh1GtYpejMM+fmxfduzjck=;
+        b=jabPh2d2O1OM1VRZirwMfkdY7G7tEbOrpLncUOnVV7ZoipYG6tN4Wy56G74iv/ZaW6
+         vuhVcFg1e24jo+wW4jkWF6r06/w7LICfASOVtbqqIQf054Dh0+RTttl4CRAba6j8g2Qe
+         iywYlEqXX8ojFS/ovE6OMS+kSVc9+GntwBECfTSVPx4ZvwI90pN2i2KKZowRH85jeQww
+         3JrdHOnDK8mdrmbewVHY2wEVpjNJiTDbArY8+jo5KHuqF++ZUUUHfvkOzTSp3dnGIa/b
+         Vme1Xf9qze9Firq682xdRXkODf3nMJQPNQnYkhU063rtWuIntgZpFoh6cnChlEw2txDX
+         Bx4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=zp+lOAZKeRzjBsyGhBdKFVh1GtYpejMM+fmxfduzjck=;
+        b=RZfyxsyCsj7EOqW0+cPqqA2vb/Mje3DDUefLnJIKn0LQpRlIySkyuKryHT5ikEuwUg
+         lhdg55G56P3BMdeuXitnCsydYDzjWw7TcgCRNb3U1tSPZPI7eSJoWemUWdQBNHF9Ewv+
+         ooDbTOk1dN5zh3IUG9FsNmGUBDsXEWFnq4JZTqTvuQth0ZS70AxKc8Bk6joK+5XWs1Kh
+         WnWI2gOM7RU5AjxJJg6/3uDAy8eHU3OhlmQ7Yty2JqIc6o1eTbwvgs0jOFfguLpVs1US
+         iNztRf3CKZlsuG1nREnSJS12W8UfYHykTv7gIEhtaZ0D3KONMYZlhiiOcOumt7h4INxt
+         V5cQ==
+X-Gm-Message-State: AOAM533TNaiCcJC4V3e4TsoCTYKOaJVTuGisdAzpQDxbFtUmP1xRCSbt
+        at14JIqfCJHLXoiu7RTJDMfjtiD6ATin4nIiXHTq1w==
+X-Google-Smtp-Source: ABdhPJy6Yohv7aunK4LueT5l/ODL4AiIO5cUTcigvNmSfAqVU7pK5cpPqgG8WSjKw6GtX+zSexztYVhuGIuYVTro7p8=
+X-Received: by 2002:a2e:85d1:: with SMTP id h17mr15892558ljj.438.1608199226806;
+ Thu, 17 Dec 2020 02:00:26 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by SG2P153CA0012.APCP153.PROD.OUTLOOK.COM (2603:1096::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3700.2 via Frontend Transport; Thu, 17 Dec 2020 10:09:40 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 84b7ff28-2b27-46e7-9885-08d8a273e1d4
-X-MS-TrafficTypeDiagnostic: VE1PR04MB7312:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VE1PR04MB731230812B2FA1D3EB77E42598C40@VE1PR04MB7312.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2582;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iauia470FRizMo+iDTRWovfD15k1jBvQam4d5p9f0k+cV895EvWUBrhF/ql6v5HhAGeDhwYweLUnXJs6mXMyF39eZz0Vt3RiLH6TeT7VmLx23uELXf05sO+M3RnxCLXwaEGI+ayhoU7MqOww77S+fKttUXECketNW6oUKXHT3VdCyQ2ArVPqH4x9Q2VLXIE0rka1Nb5YRhOD4LtQrqf39bxMuAEpaC47IQVsztZ496uFtW2SaGT6r3OrKz8WplK35037nfjhYDMfnXzVe/wwD0lAWF35bI1T67qev/YDXc0pX0Bg7NVl9VT34qkoIHS+4TQsV6QMa/O6RCHv3TRtbnuCqJrWXsRc03/BNr/Xam3Jqc+JsZW/UlXVXedQpDxl
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(6029001)(4636009)(366004)(39860400002)(376002)(396003)(136003)(346002)(6666004)(316002)(86362001)(6486002)(2906002)(8676002)(6506007)(4326008)(52116002)(26005)(16526019)(8936002)(7416002)(478600001)(2616005)(186003)(956004)(66946007)(5660300002)(6512007)(69590400008)(66476007)(36756003)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?a83V2e9ZnnLD6JenLvV8qdYlSWa3jtjkjQ/FscPwvdLsJ2enbh9wkNYH2bhu?=
- =?us-ascii?Q?zReWNNKGGl1qsUYE7B/su/0Ce3VB8j2FjCaRyAmTI6hm4LnLf2U+GobaAuYx?=
- =?us-ascii?Q?6rQXCmUJs832FVrOnUHcF0aqgaCnxIST8f+Tn9vSPt9nS4+/Cm5yeAjJ1qnG?=
- =?us-ascii?Q?1LJ1Pw8NB2khlaNn8qJJuviwAdtCyOu2flHAqKtV6NWE1Lrlerl2uwdCYHLx?=
- =?us-ascii?Q?Jos4cU/cVdvnNVI3XhfWdi9VWC9a+9pS/mpglCuifTf2ETka+w6obvUvHqUV?=
- =?us-ascii?Q?WRlkc7cUbDzgtnieRgApDUDtwJJPvKrMJHyJjQT7XpgZa9LLekTC94AJMEV5?=
- =?us-ascii?Q?gKogcBoaY/OLt8fY3V0IbE5Kq2WNAtBCJsduoTwj4vbDML+DN8JU35zK4lqq?=
- =?us-ascii?Q?9Podk3jifLdPphppKE3SvI1bVyHL3cvmcTb6sBOQWPEyLuTg9hSPTYHOc+Lf?=
- =?us-ascii?Q?7pg4TQkD1rvHo6x1/bsQ5BGXFFN//LURW+wMds1yrOU+1HzrzuGl8ZhG6Qec?=
- =?us-ascii?Q?mXFl3gYLMISabj15N1RfF5EcFxEQYIbYUNMDzEDqIxdJ3hWlIahNHk/ZKnta?=
- =?us-ascii?Q?M0+xuyG0xdOiF/SNAXOZudPQfzuY8W4Uwx7X0QGy25Xc1f26+cWeha8pTFAt?=
- =?us-ascii?Q?QrpeNTOr54YH3k2sAUQieGXgg+LACFq81CVM6wdv/PpM5MCb1IJ4h8KWgBk4?=
- =?us-ascii?Q?HlV/dyAoqky6z1kI6b7+2bTJdwBLTsSG5c6o8Kem7SbRqBOmnPhFHy2H3otL?=
- =?us-ascii?Q?UmS0n8xVUCMH6LHeBw8aKONAtJQtP61lY9GB9d/rPoob/7PvudwwFe+YyY2c?=
- =?us-ascii?Q?Hz3olnYBr6Igp9tQM35CGmgAat2jIzrQP70RkBlHiYtYCg1hGImKUDcwSdn/?=
- =?us-ascii?Q?7UAtjUohsxfY/29ssV3DblBjzYbGQeCNHYsyBTIWo1JzQcIIaPm5g4omC/kV?=
- =?us-ascii?Q?UwzEHdyYfAkLLqn9IB+wQYW95ksSs5V/jIb7AoTWr+Pea1y9m5r1FyUoxyx0?=
- =?us-ascii?Q?PApw?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Dec 2020 10:09:46.4841
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-Network-Message-Id: 84b7ff28-2b27-46e7-9885-08d8a273e1d4
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: s+g+db5M66YyMH4b6NnMxKqIxYCZdUXrz1pPwrMv9pHn2KdMQMCCjU/w6p7SxQ7LRRu+mrjCF+vJl5dS2yHUZQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7312
+References: <20201124133139.3072124-1-uwe@kleine-koenig.org>
+ <20201124133139.3072124-5-uwe@kleine-koenig.org> <20201203130141.ys2s7aaltyzkdena@pengutronix.de>
+ <20201214204046.xopipytz4ws7j72f@pengutronix.de>
+In-Reply-To: <20201214204046.xopipytz4ws7j72f@pengutronix.de>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 17 Dec 2020 11:00:15 +0100
+Message-ID: <CACRpkdaoouaKk=9GFudR7pHiU97zefs0i9E6_jGkHEBa9ujA4Q@mail.gmail.com>
+Subject: Re: [PATCH v2 4/5] amba: Make the remove callback return void
+To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vinod Koul <vkoul@kernel.org>, Eric Anholt <eric@anholt.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Rob Herring <robh@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Russell King <linux@armlinux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add myself as the maintainer of DRM bridge drivers for i.MX SoCs.
+On Mon, Dec 14, 2020 at 9:41 PM Uwe Kleine-K=C3=B6nig
+<u.kleine-koenig@pengutronix.de> wrote:
 
-Signed-off-by: Liu Ying <victor.liu@nxp.com>
----
- MAINTAINERS | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+> Technically there are still some maintainers' ack missing but I'd really
+> like to get this series applied.  As I don't want to make people angry
+> I'm asking once more for your Acks.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 7b073c4..4b4e40e 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5846,6 +5846,16 @@ F:	Documentation/devicetree/bindings/display/imx/
- F:	drivers/gpu/drm/imx/
- F:	drivers/gpu/ipu-v3/
- 
-+DRM DRIVERS FOR FREESCALE IMX BRIDGE
-+M:	Liu Ying <victor.liu@nxp.com>
-+L:	dri-devel@lists.freedesktop.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-ldb.yaml
-+F:	Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-combiner.yaml
-+F:	Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-link.yaml
-+F:	Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pxl2dpi.yaml
-+F:	drivers/gpu/drm/bridge/imx/
-+
- DRM DRIVERS FOR GMA500 (Poulsbo, Moorestown and derivative chipsets)
- M:	Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
- L:	dri-devel@lists.freedesktop.org
--- 
-2.7.4
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
+Sorry for taking so long, it's nice work.
+
+Yours,
+Linus Walleij
