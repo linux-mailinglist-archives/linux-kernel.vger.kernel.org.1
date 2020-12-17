@@ -2,31 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B97312DCC7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 07:31:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B38542DCC80
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 07:31:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727109AbgLQG3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 01:29:46 -0500
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:50590 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726862AbgLQG3q (ORCPT
+        id S1727187AbgLQG3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 01:29:48 -0500
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:10569 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726862AbgLQG3s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 01:29:46 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UItliQ7_1608186540;
+        Thu, 17 Dec 2020 01:29:48 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UItliQ7_1608186540;
 Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UItliQ7_1608186540)
           by smtp.aliyun-inc.com(127.0.0.1);
           Thu, 17 Dec 2020 14:29:01 +0800
 From:   Alex Shi <alex.shi@linux.alibaba.com>
 To:     akpm@linux-foundation.org
 Cc:     Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Johannes Weiner <hannes@cmpxchg.org>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] mm/memcg: remove rcu locking for lock_page_lruvec function series
-Date:   Thu, 17 Dec 2020 14:28:51 +0800
-Message-Id: <1608186532-81218-2-git-send-email-alex.shi@linux.alibaba.com>
+Subject: [PATCH 3/3] mm/compaction: remove rcu_read_lock during page compaction
+Date:   Thu, 17 Dec 2020 14:28:52 +0800
+Message-Id: <1608186532-81218-3-git-send-email-alex.shi@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1608186532-81218-1-git-send-email-alex.shi@linux.alibaba.com>
 References: <1608186532-81218-1-git-send-email-alex.shi@linux.alibaba.com>
@@ -34,60 +31,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The rcu_read_lock was used to block memcg destory, but with the detailed
-calling conditions, the memcg won't gone since the page is hold. So we
-don't need it now, let's remove them to save locking load in debugging.
+rcu_read_lock was used to guard memcg destory, now TestClearPageLRU
+could block this happen, so we don't need it. Remove it to reduce
+locking load in debugging mode.
 
 Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
 Cc: Hugh Dickins <hughd@google.com>
 Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: cgroups@vger.kernel.org
 Cc: linux-mm@kvack.org
 Cc: linux-kernel@vger.kernel.org
 ---
- mm/memcontrol.c | 6 ------
- 1 file changed, 6 deletions(-)
+ mm/compaction.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index e6b50d068b2f..98bbee1d2faf 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1356,10 +1356,8 @@ struct lruvec *lock_page_lruvec(struct page *page)
- 	struct lruvec *lruvec;
- 	struct pglist_data *pgdat = page_pgdat(page);
+diff --git a/mm/compaction.c b/mm/compaction.c
+index 8049d3530812..02af220fb992 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -995,7 +995,6 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+ 		if (!TestClearPageLRU(page))
+ 			goto isolate_fail_put;
  
--	rcu_read_lock();
- 	lruvec = mem_cgroup_page_lruvec(page, pgdat);
- 	spin_lock(&lruvec->lru_lock);
--	rcu_read_unlock();
+-		rcu_read_lock();
+ 		lruvec = mem_cgroup_page_lruvec(page, pgdat);
  
- 	lruvec_memcg_debug(lruvec, page);
+ 		/* If we already hold the lock, we can skip some rechecking */
+@@ -1005,7 +1004,6 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
  
-@@ -1371,10 +1369,8 @@ struct lruvec *lock_page_lruvec_irq(struct page *page)
- 	struct lruvec *lruvec;
- 	struct pglist_data *pgdat = page_pgdat(page);
+ 			compact_lock_irqsave(&lruvec->lru_lock, &flags, cc);
+ 			locked = lruvec;
+-			rcu_read_unlock();
  
--	rcu_read_lock();
- 	lruvec = mem_cgroup_page_lruvec(page, pgdat);
- 	spin_lock_irq(&lruvec->lru_lock);
--	rcu_read_unlock();
+ 			lruvec_memcg_debug(lruvec, page);
  
- 	lruvec_memcg_debug(lruvec, page);
+@@ -1026,8 +1024,7 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+ 				SetPageLRU(page);
+ 				goto isolate_fail_put;
+ 			}
+-		} else
+-			rcu_read_unlock();
++		}
  
-@@ -1386,10 +1382,8 @@ struct lruvec *lock_page_lruvec_irqsave(struct page *page, unsigned long *flags)
- 	struct lruvec *lruvec;
- 	struct pglist_data *pgdat = page_pgdat(page);
- 
--	rcu_read_lock();
- 	lruvec = mem_cgroup_page_lruvec(page, pgdat);
- 	spin_lock_irqsave(&lruvec->lru_lock, *flags);
--	rcu_read_unlock();
- 
- 	lruvec_memcg_debug(lruvec, page);
- 
+ 		/* The whole page is taken off the LRU; skip the tail pages. */
+ 		if (PageCompound(page))
 -- 
 2.29.GIT
 
