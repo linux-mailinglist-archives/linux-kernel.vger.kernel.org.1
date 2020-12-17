@@ -2,133 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 690F22DD4EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 17:08:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 246392DD4C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 17:05:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729983AbgLQQF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 11:05:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53944 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729951AbgLQQFx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 11:05:53 -0500
-From:   guoren@kernel.org
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     palmerdabbelt@google.com, paul.walmsley@sifive.com,
-        mhiramat@kernel.org, alankao@andestech.com, rostedt@goodmis.org,
-        bjorn.topel@intel.com, pdp7pdp7@gmail.com
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        anup@brainfault.org, linux-csky@vger.kernel.org,
-        greentime.hu@sifive.com, zong.li@sifive.com, guoren@kernel.org,
-        me@packi.ch, Guo Ren <guoren@linux.alibaba.com>
-Subject: [PATCH v5 9/9] riscv: Add support for function error injection
-Date:   Thu, 17 Dec 2020 16:01:45 +0000
-Message-Id: <1608220905-1962-10-git-send-email-guoren@kernel.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1608220905-1962-1-git-send-email-guoren@kernel.org>
-References: <1608220905-1962-1-git-send-email-guoren@kernel.org>
+        id S1728493AbgLQQDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 11:03:35 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:41492 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725468AbgLQQDf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 11:03:35 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BHG2kRu103126;
+        Thu, 17 Dec 2020 10:02:46 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1608220966;
+        bh=tWXhUMHCG+YU09HqJ08eBw7szVoLKewTtgbA6Uw2IS8=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=lB8H4o5XyE0og4trlHoKjkQXCkDVPOd4o2GImmunuc8jodxQNHPXrreK5CjrB/RY/
+         gFae4x6nzlDT1aZtXKdW4RHlgWItpZ9eh7J8BDb5Z7iPyV2ZcbGdbYL5IOzWVs1/42
+         rpCZ2CUlWBxEc+meEzU/SQAYoLWApc17KKsWbdIA=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BHG2kJ0045509
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 17 Dec 2020 10:02:46 -0600
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 17
+ Dec 2020 10:02:46 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 17 Dec 2020 10:02:46 -0600
+Received: from [10.250.232.169] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BHG2gQD111755;
+        Thu, 17 Dec 2020 10:02:43 -0600
+Subject: Re: [PATCH RFC 1/2] Documentation: devicetree: Add property for
+ ignoring the dummy bits sent before read transfer
+To:     Rob Herring <robh@kernel.org>
+CC:     <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vadym Kochan <vadym.kochan@plvision.eu>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>
+References: <20201209175708.16252-1-a-govindraju@ti.com>
+ <20201209175708.16252-2-a-govindraju@ti.com>
+ <20201211033301.GA3581630@robh.at.kernel.org>
+ <70d6c152-5d8d-9ad6-ce06-95a9f599c492@ti.com>
+ <20201214222339.GA2471866@robh.at.kernel.org>
+ <76e73cc7-fdb7-45bb-6270-1f668969ad50@ti.com>
+ <96eada83-cf24-e02a-60a6-d81907a1bba0@ti.com>
+ <CAL_Jsq+7A3C5eV+8aoOXTC+axhtQSgf7NAR0ffMD4UUmcTzU9Q@mail.gmail.com>
+From:   Aswath Govindraju <a-govindraju@ti.com>
+Message-ID: <ef6e4642-9c8d-3ca0-65e5-5182a6ec4cf5@ti.com>
+Date:   Thu, 17 Dec 2020 21:32:42 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <CAL_Jsq+7A3C5eV+8aoOXTC+axhtQSgf7NAR0ffMD4UUmcTzU9Q@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
+Hi Rob,
 
-Inspired by the commit 42d038c4fb00 ("arm64: Add support for function
-error injection"), this patch supports function error injection for
-riscv.
+On 17/12/20 9:18 pm, Rob Herring wrote:
+> On Thu, Dec 17, 2020 at 7:48 AM Aswath Govindraju <a-govindraju@ti.com> wrote:
+>>
+>> Hi Rob,
+>>
+>> On 15/12/20 9:42 pm, Aswath Govindraju wrote:
+>>> Hi Rob,
+>>> On 15/12/20 3:53 am, Rob Herring wrote:
+>>>> On Fri, Dec 11, 2020 at 08:34:57PM +0530, Aswath Govindraju wrote:
+>>>>> Hi,
+>>>>> On 11/12/20 9:03 am, Rob Herring wrote:
+>>>>>> On Wed, Dec 09, 2020 at 11:27:07PM +0530, Aswath Govindraju wrote:
+>>>>>>> Dummy zero bits are sent before data during a read transfer. This causes
+>>>>>>> the data read to be shifted to the right. To fix this send zero bits after
+>>>>>>> the address during a read transfer.
+>>>>>>>
+>>>>>>> Add property to send zero bits after the address during a read transfer.
+>>>>>>
+>>>>>> When is this necessary? Why can't it be implied by the compatible
+>>>>>> string which should be specific to the chip model?
+>>>>>>
+>>>>>
+>>>>> This is necessary for 93AA46A/B/C, 93LC46A/B/C, 93C46A/B/C eeproms, as
+>>>>> it can be seen in section 2.7 of [1]. We were not sure if these were the
+>>>>> only devices supported by the driver(eeprom_93xx46.c). So, in order to
+>>>>> apply this only to the above listed devices, we thought that it would be
+>>>>> better to apply this change when required by introducing a DT property.
+>>>>>
+>>>>> May I know how has this case been handled till now ??
+>>>>>
+>>>>
+>>>> No idea. From the at93c46d (which has a compatible string) datasheet it
+>>>> looks like it has the same thing.
+>>>>
+>>>>> If this is required by all the devices then we can drop the property and
+>>>>> include the zero bit by default.
+>>>>
+>>>> Looks like you need a combination of compatible strings for the above
+>>>> devices and a property for the ORG pin state on the C devices. I assume
+>>>> s/w needs to know if x8 or x16?
+>>>>
+>>> Yes, there are separate properties for indicating different types of
+>>> types of eeproms.
+>>>
+>>
+>> Here I was saying about x8 or x16 using the data-size property. ORG pin
+>> state is implied through data-size property and an additional property
+>> is not required for ORG pin state.
+> 
+> Ah, I missed that property.
+> 
+>>
+>>> So, do you think that it is better to add it as a seperate property??
+>>>
+>>
+>>
+>> These are the available options to my knowledge,
+>>
+>> 1) As you mentioned earlier all the eeprom's supported by the driver
+>> send a dummy bit before the read data. This can be thought of a bug and
+>> add this change as a fix for it. This might a problem for users who are
+>> already using this driver and working around it using user space tools.
+>>
+>> 2) Add a special compatible string "eeprom-93xx46B", to add the extra
+>> dummy cycle and not add an additional property.
+> 
+> No. Genericish compatible strings are what cause the problem and this
+> whole discussion.
+> 
+>> 3) Add an additional property as proposed in this patch and use when
+>> required.
+>>
+>> Are there any other suggestions on solving this issue??
+> 
+> You need a compatible string for each vendor+model. Period.
+>
 
-This patch mainly support two functions: one is regs_set_return_value()
-which is used to overwrite the return value; the another function is
-override_function_with_return() which is to override the probed
-function returning and jump to its caller.
+Thank you for the comments.
 
-Test log:
- cd /sys/kernel/debug/fail_function
- echo sys_clone > inject
- echo 100 > probability
- echo 1 > interval
- ls /
-[  313.176875] FAULT_INJECTION: forcing a failure.
-[  313.176875] name fail_function, interval 1, probability 100, space 0, times 1
-[  313.184357] CPU: 0 PID: 87 Comm: sh Not tainted 5.8.0-rc5-00007-g6a758cc #117
-[  313.187616] Call Trace:
-[  313.189100] [<ffffffe0002036b6>] walk_stackframe+0x0/0xc2
-[  313.191626] [<ffffffe00020395c>] show_stack+0x40/0x4c
-[  313.193927] [<ffffffe000556c60>] dump_stack+0x7c/0x96
-[  313.194795] [<ffffffe0005522e8>] should_fail+0x140/0x142
-[  313.195923] [<ffffffe000299ffc>] fei_kprobe_handler+0x2c/0x5a
-[  313.197687] [<ffffffe0009e2ec4>] kprobe_breakpoint_handler+0xb4/0x18a
-[  313.200054] [<ffffffe00020357e>] do_trap_break+0x36/0xca
-[  313.202147] [<ffffffe000201bca>] ret_from_exception+0x0/0xc
-[  313.204556] [<ffffffe000201bbc>] ret_from_syscall+0x0/0x2
--sh: can't fork: Invalid argument
+This change is required for microchip "93LC46B" model . I will add a new
+compatible string "microchip,93LC46B" and use it to implement the driver
+changes.
 
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
----
- arch/riscv/Kconfig              |  1 +
- arch/riscv/include/asm/ptrace.h |  6 ++++++
- arch/riscv/lib/Makefile         |  2 ++
- arch/riscv/lib/error-inject.c   | 10 ++++++++++
- 4 files changed, 19 insertions(+)
- create mode 100644 arch/riscv/lib/error-inject.c
+Thanks,
+Aswath
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index af0ec36..a627ae2 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -67,6 +67,7 @@ config RISCV
- 	select HAVE_EBPF_JIT if MMU
- 	select HAVE_FUTEX_CMPXCHG if FUTEX
- 	select HAVE_GCC_PLUGINS
-+	select HAVE_FUNCTION_ERROR_INJECTION
- 	select HAVE_GENERIC_VDSO if MMU && 64BIT
- 	select HAVE_KPROBES
- 	select HAVE_KPROBES_ON_FTRACE
-diff --git a/arch/riscv/include/asm/ptrace.h b/arch/riscv/include/asm/ptrace.h
-index 23372bb..cb4abb6 100644
---- a/arch/riscv/include/asm/ptrace.h
-+++ b/arch/riscv/include/asm/ptrace.h
-@@ -109,6 +109,12 @@ static inline unsigned long regs_return_value(struct pt_regs *regs)
- 	return regs->a0;
- }
- 
-+static inline void regs_set_return_value(struct pt_regs *regs,
-+					 unsigned long val)
-+{
-+	regs->a0 = val;
-+}
-+
- extern int regs_query_register_offset(const char *name);
- extern unsigned long regs_get_kernel_stack_nth(struct pt_regs *regs,
- 					       unsigned int n);
-diff --git a/arch/riscv/lib/Makefile b/arch/riscv/lib/Makefile
-index 47e7a82..699ed20 100644
---- a/arch/riscv/lib/Makefile
-+++ b/arch/riscv/lib/Makefile
-@@ -4,3 +4,5 @@ lib-y			+= memcpy.o
- lib-y			+= memset.o
- lib-$(CONFIG_MMU)	+= uaccess.o
- lib-$(CONFIG_64BIT)	+= tishift.o
-+
-+obj-$(CONFIG_FUNCTION_ERROR_INJECTION) += error-inject.o
-diff --git a/arch/riscv/lib/error-inject.c b/arch/riscv/lib/error-inject.c
-new file mode 100644
-index 00000000..d667ade
---- /dev/null
-+++ b/arch/riscv/lib/error-inject.c
-@@ -0,0 +1,10 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/error-injection.h>
-+#include <linux/kprobes.h>
-+
-+void override_function_with_return(struct pt_regs *regs)
-+{
-+	instruction_pointer_set(regs, regs->ra);
-+}
-+NOKPROBE_SYMBOL(override_function_with_return);
--- 
-2.7.4
 
