@@ -2,174 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C1322DD899
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:46:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 604852DD8A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:48:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730082AbgLQSpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 13:45:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728182AbgLQSpi (ORCPT
+        id S1730513AbgLQSrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 13:47:04 -0500
+Received: from out03.mta.xmission.com ([166.70.13.233]:32902 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729602AbgLQSrD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 13:45:38 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A7C3C0617A7;
-        Thu, 17 Dec 2020 10:44:58 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id cm17so29727334edb.4;
-        Thu, 17 Dec 2020 10:44:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=a9fRIqvzJymHT2HZ/FU26JTBjEDUTwr5tEPTmXqVJpM=;
-        b=MwjMOllUK0/NSsp+i51FRUdBQl1xYyWF180W81NE+Ll3OUdEyyhvKWcvoTFQT7idAL
-         aAhOtYgN+59eBv7CDVMuRuYTkkl4OiJBQZEK8iTdp3SLX1oTgW6V+1rurF+BI4+i9CWp
-         JKy3wYAyIYCrjOIWrtwK29weGiMXKfmI3hYqnaxwnoYYNXA0vtix3i1sRJ1jGkOndvdm
-         +ALJH3T6vclBHkH9rei3Wo++kFHz2AmpMKxGDcGrO+gUNfTQ14oXBuyShBX67UKDzhVl
-         GkbD8zzPWTBnsdtpZcIRa/hMyDCIrvMsajgmfG4PBP7yBCDvTijo//X9FduCgzxIfSSa
-         xw/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=a9fRIqvzJymHT2HZ/FU26JTBjEDUTwr5tEPTmXqVJpM=;
-        b=PDtTCPjHi7s408g4TXSMtqfGQbbQBqKUymSJbc1RVMfAqIsGq8Fd9QnwS7AIRUwqn0
-         n3FGMMVgVwrDH2RIiZ/+yn/kqLfeF9qnW1sEIHLwoMiBGC4b8I6h5M9Rwwy+hRCG/uLW
-         3CF3qHR6v4jT1ibaKCbZqWeTXeeF+YCu0N2iLQ5l+cGCTZ6cMOBx0JI1J3ZesJTH5Ij4
-         t3TQxpn3mDSlihJxwh2H122S/WCz4qBAWy9FXoPEqKOMyx1AFwhu2DqE90K0U1xLNZzi
-         wHMAU1YojweGplh+a6WntxbqJKkT2CDMIlIPrEeHX0cLGkcHPM7i4nU1q3kQTE10Ply2
-         uWFQ==
-X-Gm-Message-State: AOAM533KXzM29Tb6Axl79zSeKoGT1F70G5bEfPPnG/evhsLdvSXjy1Fd
-        hxLv6HYiusApI+JH6jn3o3Z9uZy9WznakA==
-X-Google-Smtp-Source: ABdhPJxvQPAIj76o5mOi9AIT9d+pRI5J4Gg8nLlRTQcN/prDDqJGBUHEHS85KXt2kfGvCtmjpFt2YQ==
-X-Received: by 2002:a50:fe8d:: with SMTP id d13mr738395edt.132.1608230696344;
-        Thu, 17 Dec 2020 10:44:56 -0800 (PST)
-Received: from localhost.localdomain (93-103-18-160.static.t-2.net. [93.103.18.160])
-        by smtp.gmail.com with ESMTPSA id k3sm10849713eds.87.2020.12.17.10.44.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 10:44:55 -0800 (PST)
-From:   Uros Bizjak <ubizjak@gmail.com>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Uros Bizjak <ubizjak@gmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Subject: [PATCH] KVM/nVMX: Use __vmx_vcpu_run in nested_vmx_check_vmentry_hw
-Date:   Thu, 17 Dec 2020 19:44:51 +0100
-Message-Id: <20201217184451.201311-1-ubizjak@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Thu, 17 Dec 2020 13:47:03 -0500
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kpyI6-003Dnp-MZ; Thu, 17 Dec 2020 11:46:18 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kpyI5-002lI8-Ei; Thu, 17 Dec 2020 11:46:18 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     "Alejandro Colomar \(man-pages\)" <alx.manpages@gmail.com>
+Cc:     Oleg Nesterov <oleg@tv-sign.ru>, Jann Horn <jannh@google.com>,
+        Ted Estes <ted@softwarecrafters.com>,
+        Jann Horn <jann@thejh.net>, Pavel Emelyanov <xemul@openvz.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>
+References: <feef4f9a-4ed8-8a2e-d330-88e7f516faae@gmail.com>
+        <X9lBp3BHbwcTmDqb@pc.thejh.net>
+        <0e5189c0-9e9b-ac34-825c-619a9a6ef682@gmail.com>
+        <d38c5e8b-1653-d89a-a0c8-b95cb1844fba@gmail.com>
+        <CAG48ez0y21uWBDuaczLMxLPpFTKABrgm+-aqLb-0a4rHuOCX-g@mail.gmail.com>
+        <5062fe43-ca37-134f-89ad-57fbd8c312ba@softwarecrafters.com>
+        <CAG48ez2g=U-H56g6VebQCiSXGg+bVvhBA5yfwymNxVYAGEJJcA@mail.gmail.com>
+        <1abbf267-d522-0586-e5a5-c71f4d7b0fa4@gmail.com>
+Date:   Thu, 17 Dec 2020 12:45:29 -0600
+In-Reply-To: <1abbf267-d522-0586-e5a5-c71f4d7b0fa4@gmail.com> (Alejandro
+        Colomar's message of "Wed, 16 Dec 2020 10:22:09 +0100")
+Message-ID: <87eejouv92.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-XM-SPF: eid=1kpyI5-002lI8-Ei;;;mid=<87eejouv92.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX190iekfNeZPMseo2lks32NWzQGjeRDvFXU=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.7 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong,XM_B_SpammyWords
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4748]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;"Alejandro Colomar \(man-pages\)" <alx.manpages@gmail.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 673 ms - load_scoreonly_sql: 0.31 (0.0%),
+        signal_user_changed: 15 (2.2%), b_tie_ro: 12 (1.8%), parse: 1.74
+        (0.3%), extract_message_metadata: 21 (3.1%), get_uri_detail_list: 2.9
+        (0.4%), tests_pri_-1000: 6 (0.9%), tests_pri_-950: 1.33 (0.2%),
+        tests_pri_-900: 1.08 (0.2%), tests_pri_-90: 240 (35.6%), check_bayes:
+        237 (35.2%), b_tokenize: 12 (1.7%), b_tok_get_all: 11 (1.7%),
+        b_comp_prob: 3.7 (0.6%), b_tok_touch_all: 205 (30.5%), b_finish: 1.28
+        (0.2%), tests_pri_0: 370 (55.0%), check_dkim_signature: 0.63 (0.1%),
+        check_dkim_adsp: 6 (0.9%), poll_dns_idle: 0.41 (0.1%), tests_pri_10:
+        2.2 (0.3%), tests_pri_500: 11 (1.6%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [Bug 210655] ptrace.2: documentation is incorrect about access checking threads in same thread group
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace inline assembly in nested_vmx_check_vmentry_hw
-with a call to __vmx_vcpu_run.  The function is not
-performance critical, so (double) GPR save/restore
-in __vmx_vcpu_run can be tolerated, as far as performance
-effects are concerned.
+"Alejandro Colomar (man-pages)" <alx.manpages@gmail.com> writes:
 
-v2: Mark vmx_vmenter SYM_FUNC_START_LOCAL.
+> [CC += Thomas, Ingo, Peter, Darren]
+>
+> Hi Oleg,
+>
+> On 12/16/20 3:33 AM, Jann Horn wrote:
+>> On Wed, Dec 16, 2020 at 3:21 AM Ted Estes <ted@softwarecrafters.com> wrote:
+>>> On 12/15/2020 6:01 PM, Jann Horn wrote:
+>>>> On Wed, Dec 16, 2020 at 12:25 AM Alejandro Colomar (man-pages)
+>>>> <alx.manpages@gmail.com> wrote:
+>>>>> On 12/16/20 12:23 AM, Alejandro Colomar (man-pages) wrote:
+>>>>>> On 12/16/20 12:07 AM, Jann Horn wrote:
+>>>>>>> As the comment explains, you can't actually *attach*
+>>>>>>> to another task in the same thread group; but that's
+>>>>>>> not because of the ptrace-style access check rules,
+>>>>>>> but because specifically *attaching* to another task
+>>>>>>> in the same thread group doesn't work.
+>>>> As I said, attaching indeed doesn't work. But that's not what "Ptrace
+>>>> access mode checking" means. As the first sentence of that section
+>>>> says:
+>>>>
+>>>> | Various parts of the kernel-user-space API (not just ptrace()
+>>>> | operations), require so-called "ptrace access mode" checks,
+>>>> | whose outcome determines whether an operation is
+>>>> | permitted (or, in a  few cases,  causes  a "read" operation
+>>>> | to return sanitized data).
+>>>>
+>>>> You can find these places by grepping for \bptrace_may_access\b -
+>>>> operations like e.g. the get_robust_list() syscall will always succeed
+>>>> when inspecting other tasks in the caller's thread group thanks to
+>>>> this rule.
+>>>
+>>> Ah, yes.  I missed that back reference while trying to digest that
+>>> rather meaty man page.  A grep on the man page source tree does show a
+>>> number of references to "ptrace access mode".
+>>>
+>>> That said, the ptrace(2) man page also directly references the ptrace
+>>> access mode check under both PTRACE_ATTACH and PTACE_SEIZE:
+>>>
+>>> | Permission to perform a PTRACE_ATTACH is governed by a ptrace | access
+>>> mode PTRACE_MODE_ATTACH_REALCREDS check; see below. As confirmed, the
+>>> "same thread group" rule does not apply to either of those operations. A
+>>> re-wording of rule 1 similar to this might help avoid confusion: 1. If
+>>> the calling thread and the target thread are in the same thread group:
+>>> a. For ptrace() called with PTRACE_ATTACH or PTRACE_SEIZE, access is
+>>> NEVER allowed. b. For all other so-called "ptrace access mode checks",
+>>> access is ALWAYS allowed. --Ted
+>> 
+>> Yeah, maybe. OTOH I'm not sure whether it really makes sense to
+>> explain this as being part of a security check, or whether it should
+>> be explained separately as a restriction on PTRACE_ATTACH and
+>> PTRACE_SEIZE (with a note like "(irrelevant for ptrace attachment)" on
+>> rule 1). But I don't feel strongly about it either way.
+>> 
+>
+> As you are the maintainer for ptrace,
+> could you confirm the above from Jan?
+> And maybe suggest what you would do with the manual page.
+>
+> I'd like to get confirmation that there are still other functions that
+> require "ptrace access mode" other than ptrace() itself, where it's
+> valid that the calling thread and the target thread are in the same
+> group.
 
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Sean Christopherson <seanjc@google.com>
-Reviewed-and-tested-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
----
- arch/x86/kvm/vmx/nested.c  | 32 +++-----------------------------
- arch/x86/kvm/vmx/vmenter.S |  2 +-
- arch/x86/kvm/vmx/vmx.c     |  2 --
- arch/x86/kvm/vmx/vmx.h     |  1 +
- 4 files changed, 5 insertions(+), 32 deletions(-)
+Large swaths of proc are governed by those checks.
 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index 89af692deb7e..6ab62bf277c4 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -12,6 +12,7 @@
- #include "nested.h"
- #include "pmu.h"
- #include "trace.h"
-+#include "vmx.h"
- #include "x86.h"
- 
- static bool __read_mostly enable_shadow_vmcs = 1;
-@@ -3056,35 +3057,8 @@ static int nested_vmx_check_vmentry_hw(struct kvm_vcpu *vcpu)
- 		vmx->loaded_vmcs->host_state.cr4 = cr4;
- 	}
- 
--	asm(
--		"sub $%c[wordsize], %%" _ASM_SP "\n\t" /* temporarily adjust RSP for CALL */
--		"cmp %%" _ASM_SP ", %c[host_state_rsp](%[loaded_vmcs]) \n\t"
--		"je 1f \n\t"
--		__ex("vmwrite %%" _ASM_SP ", %[HOST_RSP]") "\n\t"
--		"mov %%" _ASM_SP ", %c[host_state_rsp](%[loaded_vmcs]) \n\t"
--		"1: \n\t"
--		"add $%c[wordsize], %%" _ASM_SP "\n\t" /* un-adjust RSP */
--
--		/* Check if vmlaunch or vmresume is needed */
--		"cmpb $0, %c[launched](%[loaded_vmcs])\n\t"
--
--		/*
--		 * VMLAUNCH and VMRESUME clear RFLAGS.{CF,ZF} on VM-Exit, set
--		 * RFLAGS.CF on VM-Fail Invalid and set RFLAGS.ZF on VM-Fail
--		 * Valid.  vmx_vmenter() directly "returns" RFLAGS, and so the
--		 * results of VM-Enter is captured via CC_{SET,OUT} to vm_fail.
--		 */
--		"call vmx_vmenter\n\t"
--
--		CC_SET(be)
--	      : ASM_CALL_CONSTRAINT, CC_OUT(be) (vm_fail)
--	      :	[HOST_RSP]"r"((unsigned long)HOST_RSP),
--		[loaded_vmcs]"r"(vmx->loaded_vmcs),
--		[launched]"i"(offsetof(struct loaded_vmcs, launched)),
--		[host_state_rsp]"i"(offsetof(struct loaded_vmcs, host_state.rsp)),
--		[wordsize]"i"(sizeof(ulong))
--	      : "memory"
--	);
-+	vm_fail = __vmx_vcpu_run(vmx, (unsigned long *)&vcpu->arch.regs,
-+				 vmx->loaded_vmcs->launched);
- 
- 	if (vmx->msr_autoload.host.nr)
- 		vmcs_write32(VM_EXIT_MSR_LOAD_COUNT, vmx->msr_autoload.host.nr);
-diff --git a/arch/x86/kvm/vmx/vmenter.S b/arch/x86/kvm/vmx/vmenter.S
-index 90ad7a6246e3..14abe1e37359 100644
---- a/arch/x86/kvm/vmx/vmenter.S
-+++ b/arch/x86/kvm/vmx/vmenter.S
-@@ -44,7 +44,7 @@
-  * they VM-Fail, whereas a successful VM-Enter + VM-Exit will jump
-  * to vmx_vmexit.
-  */
--SYM_FUNC_START(vmx_vmenter)
-+SYM_FUNC_START_LOCAL(vmx_vmenter)
- 	/* EFLAGS.ZF is set if VMCS.LAUNCHED == 0 */
- 	je 2f
- 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 47b8357b9751..72b496c54bc9 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -6593,8 +6593,6 @@ static fastpath_t vmx_exit_handlers_fastpath(struct kvm_vcpu *vcpu)
- 	}
- }
- 
--bool __vmx_vcpu_run(struct vcpu_vmx *vmx, unsigned long *regs, bool launched);
--
- static noinstr void vmx_vcpu_enter_exit(struct kvm_vcpu *vcpu,
- 					struct vcpu_vmx *vmx)
- {
-diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-index f6f66e5c6510..32db3b033e9b 100644
---- a/arch/x86/kvm/vmx/vmx.h
-+++ b/arch/x86/kvm/vmx/vmx.h
-@@ -339,6 +339,7 @@ void vmx_set_virtual_apic_mode(struct kvm_vcpu *vcpu);
- struct vmx_uret_msr *vmx_find_uret_msr(struct vcpu_vmx *vmx, u32 msr);
- void pt_update_intercept_for_msr(struct kvm_vcpu *vcpu);
- void vmx_update_host_rsp(struct vcpu_vmx *vmx, unsigned long host_rsp);
-+bool __vmx_vcpu_run(struct vcpu_vmx *vmx, unsigned long *regs, bool launched);
- int vmx_find_loadstore_msr_slot(struct vmx_msrs *m, u32 msr);
- void vmx_ept_load_pdptrs(struct kvm_vcpu *vcpu);
- 
--- 
-2.26.2
+In general in the kernel whenever you are accessing another process to
+perform an operation (especially reading) it will probably use
+"ptrace access mode" checks.
 
+You can see this by with "git grep ptrace_may_access" on the kernel source.
+
+Eric
