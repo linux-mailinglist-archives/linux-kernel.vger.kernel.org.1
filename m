@@ -2,158 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCCFB2DD8DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:57:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 525B72DD8F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 20:01:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730999AbgLQSyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 13:54:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728704AbgLQSyb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 13:54:31 -0500
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD55FC0619E1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 10:53:05 -0800 (PST)
-Received: by mail-qt1-x82c.google.com with SMTP id z20so20838653qtq.3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 10:53:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=fRwryvuVhXYrAhLWdCvlg8zqrU0LccdvvXixZFgTlpI=;
-        b=gDva44QEcG/VWunZgNqEGGjC6m5HKRd5jC3iu5YSaDSrrwASQW3uz9D7uUgtQbFZS9
-         YN1YGfbBQ27Me0nqIB5dGg6H090zCpDkS2icZOHxNb/089r2kSUj+OVuhMTICDAYNLZT
-         HtRlXXdMCv904IqORReSjOaIMQk32q7XdGOEXHUvYw15a7J2dm++e/DVF6j7O6nvR7DY
-         rVzv4TB6dwm1dsjL4NUpH5/QlV9WBOeJOrkHBIuU/H4vVoDTO80obrJk96W54xN8KSgf
-         g6/DPummsvSPaE4NAtii+AUigVRv2OtUpjv2GFzonPdM+AdN8bG3gZYeRFoX9WxZ3SM9
-         stxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fRwryvuVhXYrAhLWdCvlg8zqrU0LccdvvXixZFgTlpI=;
-        b=Q10539PxIdRJsHSErmAQ2SnPOF8zSvJ7GEDuc3XB8kS6eybIvf3Wx4Tu4bo2pqDxlv
-         YuP+2usRCztJXT7iaw5QgLcwxcqjGMVzWx3a1C0L4hHfrQDRZSwJL/1LyPnTBnFFI5E3
-         QvwrX9m2LSjAz95oPsGCdZxb2dE2gxA42XQz8qN4W3O5a5oiIUfrpNsWrkEQY20L8eKn
-         FrdqQIyWyQc4ACIsHLWIuQjNEuzAJgXCMBt0kNnVbD8SaWiet4FwMgJmDf8gTMwboTHG
-         ONXUFN4uInJRglj/M0Pz2ukoIrZT3wb2+qwaoQ+C8+qgQE0WFvESxuez3Semk/5gyv1o
-         loNA==
-X-Gm-Message-State: AOAM533K8emPQPtjAS2FelMNvDGTx57j5vMaWq8Crfun5zLf00Lq0H49
-        +JcaXvgjyV41USNqmauuuWMW/g==
-X-Google-Smtp-Source: ABdhPJwU+kKYKSTYax2pFkwKEkMqmzxAc7GK//7UyTNHIEsyN/EH4UN0SEvfnPr8PHHMvDmMtUAQVg==
-X-Received: by 2002:ac8:730d:: with SMTP id x13mr171787qto.162.1608231185009;
-        Thu, 17 Dec 2020 10:53:05 -0800 (PST)
-Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id m8sm4127434qkn.41.2020.12.17.10.53.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 10:53:04 -0800 (PST)
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org, vbabka@suse.cz,
-        mhocko@suse.com, david@redhat.com, osalvador@suse.de,
-        dan.j.williams@intel.com, sashal@kernel.org,
-        tyhicks@linux.microsoft.com, iamjoonsoo.kim@lge.com,
-        mike.kravetz@oracle.com, rostedt@goodmis.org, mingo@redhat.com,
-        jgg@ziepe.ca, peterz@infradead.org, mgorman@suse.de,
-        willy@infradead.org, rientjes@google.com, jhubbard@nvidia.com,
-        linux-doc@vger.kernel.org, ira.weiny@intel.com,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH v4 10/10] selftests/vm: test faulting in kernel, and verify pinnable pages
-Date:   Thu, 17 Dec 2020 13:52:43 -0500
-Message-Id: <20201217185243.3288048-11-pasha.tatashin@soleen.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201217185243.3288048-1-pasha.tatashin@soleen.com>
-References: <20201217185243.3288048-1-pasha.tatashin@soleen.com>
+        id S1730468AbgLQTAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 14:00:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44718 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729976AbgLQTAs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 14:00:48 -0500
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608231607;
+        bh=tkbRZI4MahMfFZzBoVWuTbgeL+mUCSMZVYmPay2x5cI=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=fPnNWevK9yN4+8S4PKfP9zF4cfVfY5PVjBdYNyfmU723uAuaM/5uYDIZCBDrbkEpq
+         6/uAzkLLqKk82kMWxAr+DfncAR0th27Y0+E+2yeEPMQVyqCjhlB1OzcoQsJM1IZrId
+         Ud3H/n2q/BSyz/FBshJNd4GYij8dGPrfKblxOxrgcZflOMWv1a5NoJXewACWl0ft9n
+         4kWMOnZE7deErD/V68pWAsC/64c2pVqMYa7FvWiPSGeE8iNLpgQTJZHl+6QuorC/px
+         UhC/7/IXaw2+gkdbmCAGNadswBvMgPs+FIJecKQ218AWWSVxruU3syp6SWzDtAYmlo
+         c/izGYz4mZ0Ag==
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: nixge: fix spelling mistake in Kconfig: "Instuments" ->
+ "Instruments"
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <160823160785.4885.7822597887930335390.git-patchwork-notify@kernel.org>
+Date:   Thu, 17 Dec 2020 19:00:07 +0000
+References: <20201216120020.13149-1-colin.king@canonical.com>
+In-Reply-To: <20201216120020.13149-1-colin.king@canonical.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When pages are pinned they can be faulted in userland and migrated, and
-they can be faulted right in kernel without migration.
+Hello:
 
-In either case, the pinned pages must end-up being pinnable (not movable).
+This patch was applied to netdev/net.git (refs/heads/master):
 
-Add a new test without touching pages in userland, and use FOLL_TOUCH
-instead. Also, verify that pinned pages are pinnable.
+On Wed, 16 Dec 2020 12:00:20 +0000 you wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> There is a spelling mistake in the Kconfig. Fix it.
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/net/ethernet/ni/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
----
- mm/gup_test.c                         |  6 ++++++
- tools/testing/selftests/vm/gup_test.c | 17 +++++++++++++----
- 2 files changed, 19 insertions(+), 4 deletions(-)
+Here is the summary with links:
+  - net: nixge: fix spelling mistake in Kconfig: "Instuments" -> "Instruments"
+    https://git.kernel.org/netdev/net/c/38ba95a4ed24
 
-diff --git a/mm/gup_test.c b/mm/gup_test.c
-index 24c70c5814ba..24fd542091ee 100644
---- a/mm/gup_test.c
-+++ b/mm/gup_test.c
-@@ -52,6 +52,12 @@ static void verify_dma_pinned(unsigned int cmd, struct page **pages,
- 
- 				dump_page(page, "gup_test failure");
- 				break;
-+			} else if (cmd == PIN_LONGTERM_BENCHMARK &&
-+				WARN(!is_pinnable_page(page),
-+				     "pages[%lu] is NOT pinnable but pinned\n",
-+				     i)) {
-+				dump_page(page, "gup_test failure");
-+				break;
- 			}
- 		}
- 		break;
-diff --git a/tools/testing/selftests/vm/gup_test.c b/tools/testing/selftests/vm/gup_test.c
-index 42c71483729f..f08cc97d424d 100644
---- a/tools/testing/selftests/vm/gup_test.c
-+++ b/tools/testing/selftests/vm/gup_test.c
-@@ -13,6 +13,7 @@
- 
- /* Just the flags we need, copied from mm.h: */
- #define FOLL_WRITE	0x01	/* check pte is writable */
-+#define FOLL_TOUCH	0x02	/* mark page accessed */
- 
- static char *cmd_to_str(unsigned long cmd)
- {
-@@ -39,11 +40,11 @@ int main(int argc, char **argv)
- 	unsigned long size = 128 * MB;
- 	int i, fd, filed, opt, nr_pages = 1, thp = -1, repeats = 1, write = 1;
- 	unsigned long cmd = GUP_FAST_BENCHMARK;
--	int flags = MAP_PRIVATE;
-+	int flags = MAP_PRIVATE, touch = 0;
- 	char *file = "/dev/zero";
- 	char *p;
- 
--	while ((opt = getopt(argc, argv, "m:r:n:F:f:abctTLUuwWSHp")) != -1) {
-+	while ((opt = getopt(argc, argv, "m:r:n:F:f:abctTLUuwWSHpz")) != -1) {
- 		switch (opt) {
- 		case 'a':
- 			cmd = PIN_FAST_BENCHMARK;
-@@ -110,6 +111,10 @@ int main(int argc, char **argv)
- 		case 'H':
- 			flags |= (MAP_HUGETLB | MAP_ANONYMOUS);
- 			break;
-+		case 'z':
-+			/* fault pages in gup, do not fault in userland */
-+			touch = 1;
-+			break;
- 		default:
- 			return -1;
- 		}
-@@ -167,8 +172,12 @@ int main(int argc, char **argv)
- 	else if (thp == 0)
- 		madvise(p, size, MADV_NOHUGEPAGE);
- 
--	for (; (unsigned long)p < gup.addr + size; p += PAGE_SIZE)
--		p[0] = 0;
-+	if (touch) {
-+		gup.flags |= FOLL_TOUCH;
-+	} else {
-+		for (; (unsigned long)p < gup.addr + size; p += PAGE_SIZE)
-+			p[0] = 0;
-+	}
- 
- 	/* Only report timing information on the *_BENCHMARK commands: */
- 	if ((cmd == PIN_FAST_BENCHMARK) || (cmd == GUP_FAST_BENCHMARK) ||
--- 
-2.25.1
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
