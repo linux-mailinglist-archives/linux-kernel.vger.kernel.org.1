@@ -2,126 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84EB42DCB8F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 05:01:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 893FB2DCB93
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 05:02:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728025AbgLQEAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 23:00:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52628 "EHLO
+        id S1728170AbgLQEBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 23:01:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727233AbgLQEAg (ORCPT
+        with ESMTP id S1727233AbgLQEBv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 23:00:36 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB8A6C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 19:59:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=D+U58Hlin8vRDbLHPWBD6r+oyxo4/x6yjr9/Sk9jqEQ=; b=xRE60jGqx6Dpad8UzoN9UBY+1n
-        4zdt45djmBL52OQ9IY5+EhspykdCi7FbP0oePOksfOvOj3UdaUd1ae77tgd1CwuI6jl9opFxSmKrj
-        cPmaYPT5qXzYnVAbRmKBaU9C2f9UDnUbGux/xH+3+wFOEJHoXm236cZdTczApRSteZXAjFmLh5Ud/
-        bJMkOdEWjrajXBmKAJrR99rLBKnoldasCctTFnngNqBwklDDPgpvJUk84y6Q0YfWWNf7Fa/wIvXZf
-        78O/m0CP4+qFpn+AiqFYTQseSLS4v/syrAPzsTIMqC5aBbBikrIVlNX0JXITFoJo0y/qmip6tWjvx
-        qOMJtUiw==;
-Received: from [2601:1c0:6280:3f0::64ea]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kpkSF-0008VZ-1f; Thu, 17 Dec 2020 03:59:51 +0000
-Subject: Re: [kbuild-all] Re: ERROR: "snd_soc_new_ac97_component" undefined!
-To:     Rong Chen <rong.a.chen@intel.com>,
-        kernel test robot <lkp@intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-References: <202012070230.Vq6VRv8j-lkp@intel.com>
- <ce6a995d-abb2-5599-cd42-bbf8143d3b35@infradead.org>
- <0c496357-7846-1200-39d5-b53fc650e0ac@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <7d5afa57-e355-c52f-3743-d3db40594565@infradead.org>
-Date:   Wed, 16 Dec 2020 19:59:46 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 16 Dec 2020 23:01:51 -0500
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66AB1C0617A7;
+        Wed, 16 Dec 2020 20:01:11 -0800 (PST)
+Received: by mail-ua1-x930.google.com with SMTP id y25so5226272uaq.7;
+        Wed, 16 Dec 2020 20:01:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hPoC6m5W8VLKxto4R9D3lag/KjqB9wfQE1fVcUOFbDQ=;
+        b=Wz729HH2Z5VFq9FmqP2PgZlVCmWrdLir3bZuEHB8H7YapU9l8lUMW7lFoGENk5LEHi
+         SytDY3Og/CLasQAdxZ4vQOFa5TkzoyTjapj4eARnEBYO4GM8vkWgNTp56g4mBevm85TP
+         M34J/YHblpnqszTYs+YrUSDvmAPhc6U+DROCBrCqSsNRvVMDu5+WP9MFTJutCw/080mA
+         A+yrlHiN7nbX2aZnkXmWACmtdvL5aM2X5xznfhPrXTAV3nK1kGGLmul+whAvOrXbmliQ
+         8+rm9+3HyM1HZ5l4h7QuHPbkWRIbgSPd08QcsbvwMKWcVe0aUt4+sqzDtrliIv8hcCCQ
+         EeWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hPoC6m5W8VLKxto4R9D3lag/KjqB9wfQE1fVcUOFbDQ=;
+        b=MkXRAjgi0Ptxc7m4O0tkWW0b2eUFaS5dM4KsUAql3oIePBI5JXfg121NfnlHmV757b
+         2tkPWn7MLAEvqR3iKopqiyGEoNyqRSGFm9IDPBJ2iEEPEkMciaKTsxn2VpCkcx0cLz/N
+         c8z9G61Jz6NFElzzzMK8MBxAtB8Zg9wfKj6Vbo+PyyR3CTGXvo1DjFMvjaceVvm6PSQm
+         FIA5hmvZSWP7Ps07wtO6BbAZbNF5ExoaOp0d3cqKqr1LbGHSNi/J3IeunL6edkgtsXnb
+         atQkIAOjGgaoT7uVzIze0qYxyN1hxqWrbc/9fdKDBWZJm5wOVMgJzW2GvcfEi6gTzGSb
+         yhig==
+X-Gm-Message-State: AOAM531FSmRg9ZQsfvBZOIPwENt2tY4unWlTKybAQUxnL+qKHT75io2t
+        P882t2FR3NvHMzEw5/05GJQ1FtI9xfpWS5R+Qfk=
+X-Google-Smtp-Source: ABdhPJzFO7nlS4CIq6+th8AWrd1r506MJDBKoTKi3+BP2xsSiKOvQJG65QJBFSFQcLVkkceMNAuwk9X9EnpnUcKgQSA=
+X-Received: by 2002:ab0:3806:: with SMTP id x6mr22038369uav.58.1608177670487;
+ Wed, 16 Dec 2020 20:01:10 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <0c496357-7846-1200-39d5-b53fc650e0ac@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201216125320.5277-1-clemens.gruber@pqgruber.com> <20201216125320.5277-2-clemens.gruber@pqgruber.com>
+In-Reply-To: <20201216125320.5277-2-clemens.gruber@pqgruber.com>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Wed, 16 Dec 2020 23:00:59 -0500
+Message-ID: <CAGngYiWkKZGkQ4TTTy8bQYvnGBK45V0A0JCe_+M5V+vuVU+zkQ@mail.gmail.com>
+Subject: Re: [PATCH v5 2/7] pwm: pca9685: Support hardware readout
+To:     Clemens Gruber <clemens.gruber@pqgruber.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pwm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/16/20 7:15 PM, Rong Chen wrote:
-> 
-> 
-> On 12/11/20 8:16 AM, Randy Dunlap wrote:
->> On 12/6/20 10:11 AM, kernel test robot wrote:
->>> Hi Geert,
->>>
->>> First bad commit (maybe != root cause):
->>>
->>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->>> head:   7059c2c00a2196865c2139083cbef47cd18109b6
->>> commit: ea00d95200d02ece71f5814d41b14f2eb16d598b ASoC: Use imply for SND_SOC_ALL_CODECS
->>> date:   10 months ago
->>> config: powerpc-randconfig-r012-20201207 (attached as .config)
->>> compiler: powerpc-linux-gcc (GCC) 9.3.0
->>> reproduce (this is a W=1 build):
->>>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>>          chmod +x ~/bin/make.cross
->>>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ea00d95200d02ece71f5814d41b14f2eb16d598b
->>>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>>          git fetch --no-tags linus master
->>>          git checkout ea00d95200d02ece71f5814d41b14f2eb16d598b
->>>          # save the attached .config to linux build tree
->>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=powerpc
->>>
->>> If you fix the issue, kindly add following tag as appropriate
->>> Reported-by: kernel test robot <lkp@intel.com>
->>>
->>> All errors (new ones prefixed by >>):
->>>
->>>     ERROR: "mpc5200_audio_dma_create" [sound/soc/fsl/mpc5200_psc_ac97.ko] undefined!
->>>     ERROR: "mpc5200_audio_dma_destroy" [sound/soc/fsl/mpc5200_psc_ac97.ko] undefined!
->>>>> ERROR: "snd_soc_new_ac97_component" [sound/soc/codecs/snd-soc-stac9766.ko] undefined!
->>>>> ERROR: "snd_soc_free_ac97_component" [sound/soc/codecs/snd-soc-stac9766.ko] undefined!
->>>     ERROR: "snd_soc_new_ac97_component" [sound/soc/codecs/snd-soc-ad1980.ko] undefined!
->>>     ERROR: "snd_soc_free_ac97_component" [sound/soc/codecs/snd-soc-ad1980.ko] undefined!
->>
->> I also see these:
->>
->> ERROR: modpost: "__regmap_init_ac97" [sound/soc/codecs/snd-soc-stac9766.ko] undefined!
->> ERROR: modpost: "regmap_ac97_default_volatile" [sound/soc/codecs/snd-soc-stac9766.ko] undefined!
->>
->> and the (usual) missing Kconfig warnings:    :(
->>
->> WARNING: unmet direct dependencies detected for SND_SOC_MPC5200_AC97
->>    Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_POWERPC_SOC [=m] && PPC_MPC52xx [=y] && PPC_BESTCOMM [=n]
->>    Selected by [m]:
->>    - SND_MPC52xx_SOC_EFIKA [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_POWERPC_SOC [=m] && PPC_EFIKA [=y]
->>
->> WARNING: unmet direct dependencies detected for SND_SOC_STAC9766
->>    Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_SOC_AC97_BUS [=n]
->>    Selected by [m]:
->>    - SND_MPC52xx_SOC_EFIKA [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_POWERPC_SOC [=m] && PPC_EFIKA [=y]
->>
->> WARNING: unmet direct dependencies detected for HOTPLUG_CPU
->>    Depends on [n]: SMP [=y] && (PPC_PSERIES [=n] || PPC_PMAC [=n] || PPC_POWERNV [=n] || FSL_SOC_BOOKE [=n])
->>    Selected by [y]:
->>    - PM_SLEEP_SMP [=y] && SMP [=y] && (ARCH_SUSPEND_POSSIBLE [=y] || ARCH_HIBERNATION_POSSIBLE [=y]) && PM_SLEEP [=y]
->>
->>
->>
->> Please begin including Kconfig warnings. I have asked previously but...
->>
->> thanks.
-> 
-> Hi Randy,
-> 
-> We have added Kconfig warnings in reports now. please see another report: https://lore.kernel.org/linux-block/202012170150.Y7ycOeI9-lkp@intel.com/
+On Wed, Dec 16, 2020 at 7:53 AM Clemens Gruber
+<clemens.gruber@pqgruber.com> wrote:
+>
+> Implements .get_state to read-out the current hardware state.
+>
 
-Great!  Thank you for doing this.
+I am not convinced that we actually need this.
 
--- 
-~Randy
+Looking at the pwm core, .get_state() is only called right after .request(),
+to initialize the cached value of the state. The core then uses the cached
+value throughout, it'll never read out the h/w again, until the next .request().
 
+In our case, we know that the state right after request is always disabled,
+because:
+- we disable all pwm channels on probe (in PATCH v5 4/7)
+- .free() disables the pwm channel
+
+Conclusion: .get_state() will always return "pwm disabled", so why do we
+bother reading out the h/w?
+
+Of course, if we choose to leave the pwm enabled after .free(), then
+.get_state() can even be left out! Do we want that? Genuine question, I do
+not know the answer.
+
+> The hardware readout may return slightly different values than those
+> that were set in apply due to the limited range of possible prescale and
+> counter register values.
+>
+> Also note that although the datasheet mentions 200 Hz as default
+> frequency when using the internal 25 MHz oscillator, the calculated
+> period from the default prescaler register setting of 30 is 5079040ns.
+>
+> Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
+> ---
+>  drivers/pwm/pwm-pca9685.c | 41 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 41 insertions(+)
+>
+> diff --git a/drivers/pwm/pwm-pca9685.c b/drivers/pwm/pwm-pca9685.c
+> index 1b5b5fb93b43..b3398963c0ff 100644
+> --- a/drivers/pwm/pwm-pca9685.c
+> +++ b/drivers/pwm/pwm-pca9685.c
+> @@ -331,6 +331,46 @@ static int pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+>         return 0;
+>  }
+>
+> +static void pca9685_pwm_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
+> +                                 struct pwm_state *state)
+> +{
+> +       struct pca9685 *pca = to_pca(chip);
+> +       unsigned long long duty;
+> +       unsigned int val;
+> +
+> +       /* Calculate (chip-wide) period from prescale value */
+> +       regmap_read(pca->regmap, PCA9685_PRESCALE, &val);
+> +       state->period = (PCA9685_COUNTER_RANGE * 1000 / PCA9685_OSC_CLOCK_MHZ) *
+> +                       (val + 1);
+> +
+> +       /* The (per-channel) polarity is fixed */
+> +       state->polarity = PWM_POLARITY_NORMAL;
+> +
+> +       if (pwm->hwpwm >= PCA9685_MAXCHAN) {
+> +               /*
+> +                * The "all LEDs" channel does not support HW readout
+> +                * Return 0 and disabled for backwards compatibility
+> +                */
+> +               state->duty_cycle = 0;
+> +               state->enabled = false;
+> +               return;
+> +       }
+> +
+> +       duty = pca9685_pwm_get_duty(pca, pwm->hwpwm);
+> +
+> +       state->enabled = !!duty;
+> +       if (!state->enabled) {
+> +               state->duty_cycle = 0;
+> +               return;
+> +       } else if (duty == PCA9685_COUNTER_RANGE) {
+> +               state->duty_cycle = state->period;
+> +               return;
+> +       }
+> +
+> +       duty *= state->period;
+> +       state->duty_cycle = duty / PCA9685_COUNTER_RANGE;
+> +}
+> +
+>  static int pca9685_pwm_request(struct pwm_chip *chip, struct pwm_device *pwm)
+>  {
+>         struct pca9685 *pca = to_pca(chip);
+> @@ -353,6 +393,7 @@ static void pca9685_pwm_free(struct pwm_chip *chip, struct pwm_device *pwm)
+>
+>  static const struct pwm_ops pca9685_pwm_ops = {
+>         .apply = pca9685_pwm_apply,
+> +       .get_state = pca9685_pwm_get_state,
+>         .request = pca9685_pwm_request,
+>         .free = pca9685_pwm_free,
+>         .owner = THIS_MODULE,
+> --
+> 2.29.2
+>
