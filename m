@@ -2,131 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64AB02DCB0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 03:36:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7CB62DCB12
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 03:41:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727403AbgLQCgP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 16 Dec 2020 21:36:15 -0500
-Received: from aposti.net ([89.234.176.197]:53254 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727089AbgLQCgK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 21:36:10 -0500
-Date:   Thu, 17 Dec 2020 02:35:14 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH] MIPS: boot: Fix unaligned access with
- CONFIG_MIPS_RAW_APPENDED_DTB
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nathan Chancellor <natechancellor@gmail.com>, od@zcrc.me,
-        linux-mips@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "# 3.4.x" <stable@vger.kernel.org>
-Message-Id: <QUPGLQ.GMF1AOUMK24W@crapouillou.net>
-In-Reply-To: <CAKwvOdnmt7v=+QdZbVYw9fDTeAhhHn0X++aLBa3uQVp7Gp=New@mail.gmail.com>
-References: <20201216233956.280068-1-paul@crapouillou.net>
-        <CAKwvOdnmt7v=+QdZbVYw9fDTeAhhHn0X++aLBa3uQVp7Gp=New@mail.gmail.com>
+        id S1727758AbgLQCkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 21:40:07 -0500
+Received: from mail-eopbgr1310137.outbound.protection.outlook.com ([40.107.131.137]:10308
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725988AbgLQCkH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 21:40:07 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=H2Dzw3o8R7QuSsFA9jTo+bZYGZnb0kU3viRFlyVwzRC4qjxkj9hkjKjx9te506TXxlsQxsRPG8CJsZkl7ljuoueDoL36A2nicC7faW8T4OsAGBVSJQnRJvqIiI4KgDpMbQcv5uWQdG1vz2fSMgIR6fhx4v+odP7uwy7L8nIWFtsq3jgLvsjjpEp+1R/AjJ7Y1qySyAxEt8X97Ayj69I9BM+0OpGhLFW6AiYURQtGpwJQHHEJTJLFzaHlpZLwYouwKLAmiFJYYoDWvf7naNqhghjEBN20lEVxQJjgZAspVbNTGfuhHs0zDLxVbKXgBCNv4pNbhgMHEgycPaJ8LmY8hA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kgE1p8tM45unvZNMujZ0xFQCM/9JKg6WZ1CMILSi0gY=;
+ b=f1fDkBm+iZPKPT5gZfeqP4vZ9ufmsfBClGFrwcdcUauBTQd1xR9ctFPUoz4XwjqTK0PB42mis01S1ksCe0uY7ZHtNbBp9JnmZXABlcVwplibmee8eM/3J7ltr7IQKs+x/9udkOMRfHQvNUaVkuoewNnUGurLFshcLe+tEeS/B5Y9F4F4xdWNMRI9TEf8O7vF82w46uJiNPlkn0HziBaPFjmNUHiwvEDiz6+kgoUhEfZKa1BAiUo0ZhNtx/h4sG8aUJjk0ce+j03++LQ/eZO8AoiJW2G128T/NSiHckaJIk7lcvbiLF9DoWXkfxw9iahe//fAqq0dOsYpeWHQdcEgOQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
+ header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
+Received: from PU1PR06MB2167.apcprd06.prod.outlook.com (2603:1096:803:39::19)
+ by PU1PR06MB2232.apcprd06.prod.outlook.com (2603:1096:803:38::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Thu, 17 Dec
+ 2020 02:38:27 +0000
+Received: from PU1PR06MB2167.apcprd06.prod.outlook.com
+ ([fe80::ad65:1718:c397:2677]) by PU1PR06MB2167.apcprd06.prod.outlook.com
+ ([fe80::ad65:1718:c397:2677%5]) with mapi id 15.20.3654.025; Thu, 17 Dec 2020
+ 02:38:27 +0000
+From:   Billy Tsai <billy_tsai@aspeedtech.com>
+To:     Andrew Jeffery <andrew@aj.id.au>
+CC:     BMC-SW <BMC-SW@aspeedtech.com>, "joel@jms.id.au" <joel@jms.id.au>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>
+Subject: Re: [PATCH v2] driver: aspeed: g6: Fix PWMG0 pinctrl setting
+Thread-Topic: [PATCH v2] driver: aspeed: g6: Fix PWMG0 pinctrl setting
+Thread-Index: AQHW1Azo2Xm2vpu10EmbDlTBuWFCuan7GWWA
+Date:   Thu, 17 Dec 2020 02:38:26 +0000
+Message-ID: <E1023A72-F92B-410D-B2AD-15C053EA82A4@aspeedtech.com>
+References: <1e823780-b1ef-42dd-bb60-321b4d482d31@www.fastmail.com>
+In-Reply-To: <1e823780-b1ef-42dd-bb60-321b4d482d31@www.fastmail.com>
+Accept-Language: zh-TW, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: aj.id.au; dkim=none (message not signed)
+ header.d=none;aj.id.au; dmarc=none action=none header.from=aspeedtech.com;
+x-originating-ip: [211.20.114.70]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 40eee7b2-62b4-4a85-dbf0-08d8a234d530
+x-ms-traffictypediagnostic: PU1PR06MB2232:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PU1PR06MB22323B5153C96C17E2E07E9B8BC40@PU1PR06MB2232.apcprd06.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 4a2f76WtEP7LQwMs/mzO1FXxUND5868Fu/Pk3I2eKrBvV/agiuu2EQr8/i11A1rM5z5kbFz7E7Q4FO9O9WobAuhbBdmkWKz8ViDfCRPA/Zhxtc6W1sVtdNdJL6E5xax6A8Y7t08uRUqONfKOgh+x5ohV3WlCneeKtlQLya+Yn658mbURsMh7f85hLKfH/kXiKRpREeIVCVD1X8wYnJk+6Dl9z1lCHDBZt7mkMZU9erLVIt7AWOpj7LNMC6iAIt9J13V3iBKFoT93a40mnOCIk0652uMs0OZIhzAeFOaVDvULesHJKiArrsY+iIVtkPsqO7bPKLnC+2P4ZIX3AaueEbVj3PjPb/2Lqp81WiTbJvjs932oszQsK/FZe1QJSJotET+SgLd0y6JO8Q/8C2QCadP9ea0rLZGlnxHhTshWOOINAElLN0u798AhDw6elbxzUjhVzT+OodryR5X0VgoH1w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PU1PR06MB2167.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(39840400004)(366004)(346002)(376002)(396003)(136003)(6506007)(64756008)(66556008)(26005)(91956017)(966005)(4326008)(316002)(86362001)(2906002)(6916009)(186003)(83380400001)(55236004)(478600001)(33656002)(66446008)(8676002)(36756003)(54906003)(8936002)(6512007)(66476007)(2616005)(66946007)(6486002)(76116006)(71200400001)(5660300002)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?aEl6dk9GdTQ2YTcyMGI2a05vbm5Mb0RCUmwyT3VTWkhUTzdOUU1ud0k3Ty9i?=
+ =?utf-8?B?dU1pcXRTT3NDWEh1eFJ0TnczNVBPbXh1Q1g4R3F0aDVQVzZaRzZ2blAxMWxO?=
+ =?utf-8?B?VC9CNlNUeEc0WlQ2bWpUYlZUa2JXbUxvWDJjcXBHRFoyQ0s0V3BEa2NkZm9Q?=
+ =?utf-8?B?bS9LMjU4YUlEUFVLb01zRDRpTnVTU3l6OWdwcXpCTnZnWVByRXMvMHh6ZXpT?=
+ =?utf-8?B?VU54dTdlNTVxMEFtQ1E0dkYxRUxJRWdXMXozbVhGeGJJTVN5ZFNRY01LcUZa?=
+ =?utf-8?B?VmJES0QrSjVUN0NwU0dKTVQ0bEhuUHp2cFFyRFp5YlJkNWVXajg3amp6TW5I?=
+ =?utf-8?B?MmRJU1ZvdlpBcVgyOXZPS010RUtuaVZrTnFibFNkR3VWVC9DV3FmVlkyQ25q?=
+ =?utf-8?B?aFc5S0V4akcrN0RtYVdsUmxyYldZNjUrQTU1M3VEelM4MVlzb3VYbnJ5RnJV?=
+ =?utf-8?B?U3RTbVhNMU9QL1IxRGw1QjA1dWdjakFxd05xOVpBRFFxTHB2UzZlQUs0S2Z4?=
+ =?utf-8?B?V2RSSGl3bFNqdjJlbWRBVVpFYWUvSHEvb0lwLzAwUXlHcUpQYnBWK2J3bjhB?=
+ =?utf-8?B?cGxrY2VyWUFib0pYZ3JKR2ZLQjQvdEhEWWdsaE1XUEJnbUhFZCtBSFZyM08z?=
+ =?utf-8?B?YWxHNDlNTjhvVjRvekhYV3NnQiszTHg1c1RXcGkrMEQxRGN3cUNZZlZCbUJY?=
+ =?utf-8?B?WkRFYW4zR0FnK1Y4R0dnbXFIUFhTdFllaGo0TTRFUjRNK1UrS2RsUk8zaG5L?=
+ =?utf-8?B?L1kxVFloZzYrazA4cDc4YXNSc1NUQytvTzZ3VDNqQVNWd25JWDJZUlJUdXBO?=
+ =?utf-8?B?MWhFb21nS0t3OGNFYUxLZWVhVXRXNlJrclhrU3NBVHdDam55eGVCcVYzZlgv?=
+ =?utf-8?B?eER2ZWdndjNHZysvc2VTbjRkeWJGc2tYMVJpK1pncU9JcmkzSVIxaUJlWGcr?=
+ =?utf-8?B?NXI0M0VPTEtIMTVSL3FlaWZpYUs1eTAxVlpEaWwwZEtOeWlTbWMxU1hBYi9o?=
+ =?utf-8?B?ek9aY1RXN3hEL1hrQTNTdEV5aFNEdWFoL2d3WUhaMzgyZEk0RUcvd0I2SU1q?=
+ =?utf-8?B?cHN2VWRzWDFaMGdrWVZzbXZXb2QzSGhSWlNrbUJQQzAxTFFqeGJ0NzMraXpO?=
+ =?utf-8?B?ZStoMVhLNEtrZHdXYXY3VjFDMzQ0d3ROSWVzc3NvUkZIRGdBNng1UGxMMGUy?=
+ =?utf-8?B?TmgvQjUyYlFQc3hvSjdrc0ZFM29jU0hjb3lkTWRMdDJaT3dBbm4yUytwYk94?=
+ =?utf-8?B?bW14TUtVRnZNRTFrMTI5ZWtPMGdNQ1NEWkFKdWxMQ0Rvc0JtdVB0VFNCcUdz?=
+ =?utf-8?Q?WCSMVUBrvb5Us6m9/mYffnL/Z6l2pSX1AO?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <9E2E6A372DB8394094345DD8C3BF19F9@apcprd06.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+X-OriginatorOrg: aspeedtech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PU1PR06MB2167.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 40eee7b2-62b4-4a85-dbf0-08d8a234d530
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Dec 2020 02:38:27.0154
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: IKDecVi71bCQqTMQwZZzMY4kDUCiluxFWpT5Ykz3b2uWNzv/bvvzB83CYtbh3A3mzlZBg6w9hJEmUD5eLKIMBv8+Dtnbg/sz/3J3fQPrFHc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PU1PR06MB2232
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nick,
-
-Le mer. 16 déc. 2020 à 18:08, Nick Desaulniers 
-<ndesaulniers@google.com> a écrit :
-> On Wed, Dec 16, 2020 at 3:40 PM Paul Cercueil <paul@crapouillou.net> 
-> wrote:
->> 
->>  The compressed payload is not necesarily 4-byte aligned, at least 
->> when
->>  compiling with Clang. In that case, the 4-byte value appended to the
->>  compressed payload that corresponds to the uncompressed kernel image
->>  size must be read using get_unaligned_le().
-> 
-> Should it be get_unaligned_le32()?
-
-Indeed.
-
->> 
->>  This fixes Clang-built kernels not booting on MIPS (tested on a 
->> Ingenic
->>  JZ4770 board).
->> 
->>  Fixes: b8f54f2cde78 ("MIPS: ZBOOT: copy appended dtb to the end of 
->> the kernel")
->>  Cc: <stable@vger.kernel.org> # v4.7
->>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> 
-> Hi Paul, thanks for the patch (and for testing with Clang)!
-> Alternatively, we could re-align __image_end to the next 4B multiple
-> via:
-> 
-> diff --git a/arch/mips/boot/compressed/ld.script
-> b/arch/mips/boot/compressed/ld.script
-> index 0ebb667274d6..349919eff5fb 100644
-> --- a/arch/mips/boot/compressed/ld.script
-> +++ b/arch/mips/boot/compressed/ld.script
-> @@ -27,6 +27,7 @@ SECTIONS
->                 /* Put the compressed image here */
->                 __image_begin = .;
->                 *(.image)
-> +               . = ALIGN(4);
->                 __image_end = .;
->                 CONSTRUCTORS
->                 . = ALIGN(16);
-
-Actually that would not work (I did try that), since the 4-byte size 
-appended to the compressed payload is inside the *(.image) section. The 
-code that appends it (in scripts/Makefile.lib, I think) doesn't seem to 
-take care about aligning it to a 4-byte offset. I have no idea why it 
-does with GCC and doesn't with Clang, and I have no idea why the 
-compressed payload's size isn't aligned either.
-
-> The tradeoff being up to 3 wasted bytes of padding in the compressed
-> image, vs fetching one value slower (assuming unaligned loads are
-> slower than aligned loads MIPS, IDK).  I doubt decompress_kernel is
-> called repeatedly, so let's take the byte saving approach of yours by
-> using unaligned loads!
-> 
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-
-Thanks.
-
-Cheers,
--Paul
-
->>  ---
->>   arch/mips/boot/compressed/decompress.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->> 
->>  diff --git a/arch/mips/boot/compressed/decompress.c 
->> b/arch/mips/boot/compressed/decompress.c
->>  index c61c641674e6..47c07990432b 100644
->>  --- a/arch/mips/boot/compressed/decompress.c
->>  +++ b/arch/mips/boot/compressed/decompress.c
->>  @@ -117,7 +117,7 @@ void decompress_kernel(unsigned long 
->> boot_heap_start)
->>                  dtb_size = fdt_totalsize((void *)&__appended_dtb);
->> 
->>                  /* last four bytes is always image size in little 
->> endian */
->>  -               image_size = le32_to_cpup((void *)&__image_end - 4);
->>  +               image_size = get_unaligned_le32((void 
->> *)&__image_end - 4);
->> 
->>                  /* copy dtb to where the booted kernel will expect 
->> it */
->>                  memcpy((void *)VMLINUX_LOAD_ADDRESS_ULL + 
->> image_size,
->>  --
->>  2.29.2
->> 
-> 
-> 
-> --
-> Thanks,
-> ~Nick Desaulniers
-
-
+SGkgQW5kcmV3LA0KDQpCZXN0IFJlZ2FyZHMsDQpCaWxseSBUc2FpDQoNCu+7v09uIDIwMjAvMTIv
+MTcsIDg6MzggQU0sIEFuZHJldyBKZWZmZXJ5IHdyb3RlOg0KDQogICAgPiBUaGUgU0NVIG9mZnNl
+dCBmb3Igc2lnbmFsIFBXTTggaW4gZ3JvdXAgUFdNOEcwIGlzIHdyb25nLCBmaXggaXQgZnJvbQ0K
+ICAgID4gU0NVNDE0IHRvIFNDVTRCNC4NCiAgICA+IEJlc2lkZXMgdGhhdCwgV2hlbiBQV004fjE1
+IG9mIFBXTUcwIHNldCBpdCBuZWVkcyB0byBjbGVhciBTQ1U0MTQgYml0cw0KICAgID4gYXQgdGhl
+IHNhbWUgdGltZS4NCiAgICANCiAgICBGWUksIHdlIGRvbid0IG5lZWQgdG8gZXhwbGljaXRseSBj
+bGVhciBTQ1U0MTRbLi4uXSBhcyBwYXJ0IG9mIHRoZSBQV00gbXV4IA0KICAgIGNvbmZpZ3VyYXRp
+b24gYXMgdGhlIHRoZXNlIGJpdHMgYXJlIGNsZWFyZWQgYXMgcGFydCBvZiBkaXNhYmxpbmcgdGhl
+IFNEMSogDQogICAgc2lnbmFsIHN0YXRlIG9uIGVhY2ggcGluWzFdLiBZb3Ugc2hvdWxkIGJlIGFi
+bGUgdG8gY29uZmlybSB0aGlzIGJ5IGNvbXBpbGluZyANCiAgICB3aXRoIENPTkZJR19ERUJVR19Q
+SU5DVFJMPXkgYW5kICJkZWJ1ZyIgb24gdGhlIGtlcm5lbCBjb21tYW5kbGluZS4NCiAgICANCiAg
+ICBUaGF0IHNhaWQsIGl0IHdvdWxkIGJlIG5lYXQgaWYgd2UgaGFkIHNvbWUga3VuaXQgdGVzdHMg
+dG8gZXhlcmNpc2UgYWxsIHRoaXMsIA0KICAgIGJ1dCBpdCdzIG5vdCBzb21ldGhpbmcgSSd2ZSB0
+aG91Z2h0IGRlZXBseSBhYm91dC4NCg0KVGhhbmtzIGZvciB5b3VyIHJlbWFpbmRlci4gSSB3aWxs
+IHNlbmQgdjMgdG8ganVzdCBmaXggdGhlIGNvcHkvcGFzdGUgZXJyb3IuDQoNCiAgICBbMV0gaHR0
+cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGlu
+dXguZ2l0L3RyZWUvZHJpdmVycy9waW5jdHJsL2FzcGVlZC9waW5jdHJsLWFzcGVlZC5jP2g9djUu
+MTAjbjI0OA0KICAgIA0KICAgID4NCiAgICA+IEZpeGVzOiAyZWRhMWNkZWM0OWYgKCJwaW5jdHJs
+OiBhc3BlZWQ6IEFkZCBBU1QyNjAwIHBpbm11eCBzdXBwb3J0IikNCiAgICA+DQogICAgPiBTaWdu
+ZWQtb2ZmLWJ5OiBCaWxseSBUc2FpIDxiaWxseV90c2FpQGFzcGVlZHRlY2guY29tPg0KICAgID4g
+LS0tDQogICAgPiAgZHJpdmVycy9waW5jdHJsL2FzcGVlZC9waW5jdHJsLWFzcGVlZC1nNi5jIHwg
+MjQgKysrKysrKysrKysrKystLS0tLS0tLQ0KICAgID4gIDEgZmlsZSBjaGFuZ2VkLCAxNiBpbnNl
+cnRpb25zKCspLCA4IGRlbGV0aW9ucygtKQ0KICAgID4NCiAgICA+IGRpZmYgLS1naXQgYS9kcml2
+ZXJzL3BpbmN0cmwvYXNwZWVkL3BpbmN0cmwtYXNwZWVkLWc2LmMgYi9kcml2ZXJzL3BpbmN0cmwv
+YXNwZWVkL3BpbmN0cmwtYXNwZWVkLWc2LmMNCiAgICA+IGluZGV4IGI2NzNhNDRmZmEzYi4uMWRm
+YjEyYTViMmNlIDEwMDY0NA0KICAgID4gLS0tIGEvZHJpdmVycy9waW5jdHJsL2FzcGVlZC9waW5j
+dHJsLWFzcGVlZC1nNi5jDQogICAgPiArKysgYi9kcml2ZXJzL3BpbmN0cmwvYXNwZWVkL3BpbmN0
+cmwtYXNwZWVkLWc2LmMNCiAgICA+IEBAIC0zNjcsNDkgKzM2Nyw1NyBAQCBGVU5DX0dST1VQX0RF
+Q0woUk1JSTQsIEYyNCwgRTIzLCBFMjQsIEUyNSwgQzI1LCBDMjQsIEIyNiwgQjI1LCBCMjQpOw0K
+ICAgID4NCiAgICA+ICAjZGVmaW5lIEQyMiA0MA0KICAgID4gIFNJR19FWFBSX0xJU1RfREVDTF9T
+RVNHKEQyMiwgU0QxQ0xLLCBTRDEsIFNJR19ERVNDX1NFVChTQ1U0MTQsIDgpKTsNCiAgICA+IC1T
+SUdfRVhQUl9MSVNUX0RFQ0xfU0VNRyhEMjIsIFBXTTgsIFBXTThHMCwgUFdNOCwgU0lHX0RFU0Nf
+U0VUKFNDVTQxNCwgOCkpOw0KICAgID4gK1NJR19FWFBSX0xJU1RfREVDTF9TRU1HKEQyMiwgUFdN
+OCwgUFdNOEcwLCBQV004LCBTSUdfREVTQ19TRVQoU0NVNEI0LCA4KSwNCiAgICANCiAgICBHb29k
+IGNhdGNoLCBsb29rcyBsaWtlIGEgY29weS9wYXN0ZSBmYWlsIG9uIG15IHBhcnQgOikNCiAgICAN
+CiAgICA+ICtTSUdfREVTQ19DTEVBUihTQ1U0MTQsIDgpKTsNCiAgICANCiAgICBBcyBhYm92ZSwg
+dGhpcyBzaG91bGQgYmUgdW5uZWNlc3NhcnkuDQogICAgDQogICAgQ2FuIHlvdSBjb25maXJtIGFu
+ZCByZW1vdmUgdGhlIENMRUFSKClzIGZvciB2Mz8NCiAgICANCiAgICBDaGVlcnMsDQogICAgDQog
+ICAgQW5kcmV3DQogICAgDQogICAgPiAgUElOX0RFQ0xfMihEMjIsIEdQSU9GMCwgU0QxQ0xLLCBQ
+V004KTsNCiAgICA+ICBHUk9VUF9ERUNMKFBXTThHMCwgRDIyKTsNCiAgICA+DQogICAgPiAgI2Rl
+ZmluZSBFMjIgNDENCiAgICA+ICBTSUdfRVhQUl9MSVNUX0RFQ0xfU0VTRyhFMjIsIFNEMUNNRCwg
+U0QxLCBTSUdfREVTQ19TRVQoU0NVNDE0LCA5KSk7DQogICAgPiAtU0lHX0VYUFJfTElTVF9ERUNM
+X1NFTUcoRTIyLCBQV005LCBQV005RzAsIFBXTTksIFNJR19ERVNDX1NFVChTQ1U0QjQsIDkpKTsN
+CiAgICA+ICtTSUdfRVhQUl9MSVNUX0RFQ0xfU0VNRyhFMjIsIFBXTTksIFBXTTlHMCwgUFdNOSwg
+U0lHX0RFU0NfU0VUKFNDVTRCNCwgOSksDQogICAgPiArU0lHX0RFU0NfQ0xFQVIoU0NVNDE0LCA5
+KSk7DQogICAgPiAgUElOX0RFQ0xfMihFMjIsIEdQSU9GMSwgU0QxQ01ELCBQV005KTsNCiAgICA+
+ICBHUk9VUF9ERUNMKFBXTTlHMCwgRTIyKTsNCiAgICA+DQogICAgPiAgI2RlZmluZSBEMjMgNDIN
+CiAgICA+ICBTSUdfRVhQUl9MSVNUX0RFQ0xfU0VTRyhEMjMsIFNEMURBVDAsIFNEMSwgU0lHX0RF
+U0NfU0VUKFNDVTQxNCwgMTApKTsNCiAgICA+IC1TSUdfRVhQUl9MSVNUX0RFQ0xfU0VNRyhEMjMs
+IFBXTTEwLCBQV00xMEcwLCBQV00xMCwgU0lHX0RFU0NfU0VUKFNDVTRCNCwgMTApKTsNCiAgICA+
+ICtTSUdfRVhQUl9MSVNUX0RFQ0xfU0VNRyhEMjMsIFBXTTEwLCBQV00xMEcwLCBQV00xMCwgU0lH
+X0RFU0NfU0VUKFNDVTRCNCwgMTApLA0KICAgID4gK1NJR19ERVNDX0NMRUFSKFNDVTQxNCwgMTAp
+KTsNCiAgICA+ICBQSU5fREVDTF8yKEQyMywgR1BJT0YyLCBTRDFEQVQwLCBQV00xMCk7DQogICAg
+PiAgR1JPVVBfREVDTChQV00xMEcwLCBEMjMpOw0KICAgID4NCiAgICA+ICAjZGVmaW5lIEMyMyA0
+Mw0KICAgID4gIFNJR19FWFBSX0xJU1RfREVDTF9TRVNHKEMyMywgU0QxREFUMSwgU0QxLCBTSUdf
+REVTQ19TRVQoU0NVNDE0LCAxMSkpOw0KICAgID4gLVNJR19FWFBSX0xJU1RfREVDTF9TRU1HKEMy
+MywgUFdNMTEsIFBXTTExRzAsIFBXTTExLCBTSUdfREVTQ19TRVQoU0NVNEI0LCAxMSkpOw0KICAg
+ID4gK1NJR19FWFBSX0xJU1RfREVDTF9TRU1HKEMyMywgUFdNMTEsIFBXTTExRzAsIFBXTTExLCBT
+SUdfREVTQ19TRVQoU0NVNEI0LCAxMSksDQogICAgPiArU0lHX0RFU0NfQ0xFQVIoU0NVNDE0LCAx
+MSkpOw0KICAgID4gIFBJTl9ERUNMXzIoQzIzLCBHUElPRjMsIFNEMURBVDEsIFBXTTExKTsNCiAg
+ICA+ICBHUk9VUF9ERUNMKFBXTTExRzAsIEMyMyk7DQogICAgPg0KICAgID4gICNkZWZpbmUgQzIy
+IDQ0DQogICAgPiAgU0lHX0VYUFJfTElTVF9ERUNMX1NFU0coQzIyLCBTRDFEQVQyLCBTRDEsIFNJ
+R19ERVNDX1NFVChTQ1U0MTQsIDEyKSk7DQogICAgPiAtU0lHX0VYUFJfTElTVF9ERUNMX1NFTUco
+QzIyLCBQV00xMiwgUFdNMTJHMCwgUFdNMTIsIFNJR19ERVNDX1NFVChTQ1U0QjQsIDEyKSk7DQog
+ICAgPiArU0lHX0VYUFJfTElTVF9ERUNMX1NFTUcoQzIyLCBQV00xMiwgUFdNMTJHMCwgUFdNMTIs
+IFNJR19ERVNDX1NFVChTQ1U0QjQsIDEyKSwNCiAgICA+ICtTSUdfREVTQ19DTEVBUihTQ1U0MTQs
+IDEyKSk7DQogICAgPiAgUElOX0RFQ0xfMihDMjIsIEdQSU9GNCwgU0QxREFUMiwgUFdNMTIpOw0K
+ICAgID4gIEdST1VQX0RFQ0woUFdNMTJHMCwgQzIyKTsNCiAgICA+DQogICAgPiAgI2RlZmluZSBB
+MjUgNDUNCiAgICA+ICBTSUdfRVhQUl9MSVNUX0RFQ0xfU0VTRyhBMjUsIFNEMURBVDMsIFNEMSwg
+U0lHX0RFU0NfU0VUKFNDVTQxNCwgMTMpKTsNCiAgICA+IC1TSUdfRVhQUl9MSVNUX0RFQ0xfU0VN
+RyhBMjUsIFBXTTEzLCBQV00xM0cwLCBQV00xMywgU0lHX0RFU0NfU0VUKFNDVTRCNCwgMTMpKTsN
+CiAgICA+ICtTSUdfRVhQUl9MSVNUX0RFQ0xfU0VNRyhBMjUsIFBXTTEzLCBQV00xM0cwLCBQV00x
+MywgU0lHX0RFU0NfU0VUKFNDVTRCNCwgMTMpLA0KICAgID4gK1NJR19ERVNDX0NMRUFSKFNDVTQx
+NCwgMTMpKTsNCiAgICA+ICBQSU5fREVDTF8yKEEyNSwgR1BJT0Y1LCBTRDFEQVQzLCBQV00xMyk7
+DQogICAgPiAgR1JPVVBfREVDTChQV00xM0cwLCBBMjUpOw0KICAgID4NCiAgICA+ICAjZGVmaW5l
+IEEyNCA0Ng0KICAgID4gIFNJR19FWFBSX0xJU1RfREVDTF9TRVNHKEEyNCwgU0QxQ0QsIFNEMSwg
+U0lHX0RFU0NfU0VUKFNDVTQxNCwgMTQpKTsNCiAgICA+IC1TSUdfRVhQUl9MSVNUX0RFQ0xfU0VN
+RyhBMjQsIFBXTTE0LCBQV00xNEcwLCBQV00xNCwgU0lHX0RFU0NfU0VUKFNDVTRCNCwgMTQpKTsN
+CiAgICA+ICtTSUdfRVhQUl9MSVNUX0RFQ0xfU0VNRyhBMjQsIFBXTTE0LCBQV00xNEcwLCBQV00x
+NCwgU0lHX0RFU0NfU0VUKFNDVTRCNCwgMTQpLA0KICAgID4gK1NJR19ERVNDX0NMRUFSKFNDVTQx
+NCwgMTQpKTsNCiAgICA+ICBQSU5fREVDTF8yKEEyNCwgR1BJT0Y2LCBTRDFDRCwgUFdNMTQpOw0K
+ICAgID4gIEdST1VQX0RFQ0woUFdNMTRHMCwgQTI0KTsNCiAgICA+DQogICAgPiAgI2RlZmluZSBB
+MjMgNDcNCiAgICA+ICBTSUdfRVhQUl9MSVNUX0RFQ0xfU0VTRyhBMjMsIFNEMVdQLCBTRDEsIFNJ
+R19ERVNDX1NFVChTQ1U0MTQsIDE1KSk7DQogICAgPiAtU0lHX0VYUFJfTElTVF9ERUNMX1NFTUco
+QTIzLCBQV00xNSwgUFdNMTVHMCwgUFdNMTUsIFNJR19ERVNDX1NFVChTQ1U0QjQsIDE1KSk7DQog
+ICAgPiArU0lHX0VYUFJfTElTVF9ERUNMX1NFTUcoQTIzLCBQV00xNSwgUFdNMTVHMCwgUFdNMTUs
+IFNJR19ERVNDX1NFVChTQ1U0QjQsIDE1KSwNCiAgICA+ICtTSUdfREVTQ19DTEVBUihTQ1U0MTQs
+IDE1KSk7DQogICAgPiAgUElOX0RFQ0xfMihBMjMsIEdQSU9GNywgU0QxV1AsIFBXTTE1KTsNCiAg
+ICA+ICBHUk9VUF9ERUNMKFBXTTE1RzAsIEEyMyk7DQogICAgPg0KICAgID4gLS0NCiAgICA+IDIu
+MTcuMQ0KICAgIA0KDQo=
