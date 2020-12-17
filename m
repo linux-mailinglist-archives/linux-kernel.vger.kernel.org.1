@@ -2,178 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6212DCA08
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 01:39:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BC6E2DCA0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 01:39:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727741AbgLQAjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 19:39:16 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:36065 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727126AbgLQAjP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 19:39:15 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 25C3E5C00A4;
-        Wed, 16 Dec 2020 19:38:09 -0500 (EST)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Wed, 16 Dec 2020 19:38:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:date:from:to:cc:subject:content-type; s=
-        fm1; bh=uyKQlz7tKmkJEHi1rnMNhx+gyyryTNSncCx9L8amB8o=; b=l+32yJwW
-        iEH56IQdskVDL4I0Ou2dHpbnzpSMvu7L16vkkwmIo63PKZoRzxK7Ld60VHqkWX6s
-        Of220YFw1vhGrqSTVBeVRDvn5MlYYcDmjrf6ldXKChTRhV+V6j2oP+ZJNUhAL34q
-        TwbyHD+VVih1OnC8aIRZ/+4z2v/+7+9WEH7UjzdD6LnaQ7qQmJKj9fya5uBQFxpt
-        XCJWoaJNWxF3YojofHU5EahZlofnd+9FFXPwgTqV1YiPfV45fZAQXvzcLLaCc8y5
-        67xR9VgosuxFWKfeigqTgzllO5HJjDFyvp+HrYq/dG115lDLfNVQJQGVJHq3PYH8
-        mzF6ozw18IGH3g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:message-id
-        :mime-version:subject:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm1; bh=uyKQlz7tKmkJEHi1rnMNhx+gyyryT
-        NSncCx9L8amB8o=; b=Eh/g4ZLT2zkbyz5V8BwZrSOhxK7/H/gfSD+ndUYmFVOQs
-        XNjdp6MSuY7eTAy78PJpnudacb8y+P5RDA0838BPPXpRx6gZGC48xol6VYAMcPiQ
-        u0V6PwecX/ALssH3CmyqSVOfBp2XLNMEKoQz+r84eso5ik4bEH04o9HX+plb9dOH
-        Dxuti4rjtXK/BrkSYBYtpLRlK2NXo0lfVuajla9EFGW9g+ruX/RvQ+w+uPJaasYG
-        QTdxercDVR9G2hKhza//5OKUQympVtIDiTIT7onDXWpb/L653O8gptuglQOOeYr8
-        OuAxMAe7ZKPv3TvWx79TWH0u8fdYaPTFfWPbAoHsA==
-X-ME-Sender: <xms:b6jaX8dokaaW4zHrTFrVu8bkCve2p5TVEyM56r5EDXTeluxKRbHpQw>
-    <xme:b6jaX-OCdgEX-VhP2ZRHGVnZbHGX-UKwLjFclBk_oFnQJT6cOeeh7S1tz3huE-J8r
-    MXDPWzUAVTU3n6_pQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudelfedgvdegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefofgggkfffhffvufgtsehttdertd
-    erredtnecuhfhrohhmpedftehnughrvgifucflvghffhgvrhihfdcuoegrnhgurhgvfies
-    rghjrdhiugdrrghuqeenucggtffrrghtthgvrhhnpeeluddvveelleehiedtudejieelke
-    ettedtueduveeiffejvdekueekleeugeegteenucffohhmrghinhepkhgvrhhnvghlrdho
-    rhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hnughrvgifsegrjhdrihgurdgruh
-X-ME-Proxy: <xmx:b6jaX9gEspP2UzQILFM7Ut_6AeO4Sg1dZqv2t4AAC1eflG9em9aUpQ>
-    <xmx:b6jaXx-MKd_5GGxFNLMLm7jZpH4diBlhXYCgiH9H575OtcZ6yHG6bw>
-    <xmx:b6jaX4tHbKMCzSr6RHfm6iG6zLRLvBKc_4FnxPh3NKcBXasZYgTtYw>
-    <xmx:cajaX9-LYq3OyK_lZxTbbNF6lZT_v8-JOER3tTyds9HMrDaM5yrh6g>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 02856E0503; Wed, 16 Dec 2020 19:38:05 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.3.1-61-gb52c239-fm-20201210.001-gb52c2396
-Mime-Version: 1.0
-Message-Id: <1e823780-b1ef-42dd-bb60-321b4d482d31@www.fastmail.com>
-Date:   Thu, 17 Dec 2020 11:07:45 +1030
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     billy_tsai@aspeedtech.com
-Cc:     BMC-SW@aspeedtech.com, andrew@aj.id.au, joel@jms.id.au,
-        linus.walleij@linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
-Subject: Re: [PATCH v2] driver: aspeed: g6: Fix PWMG0 pinctrl setting
-Content-Type: text/plain
+        id S1727807AbgLQAjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 19:39:18 -0500
+Received: from mga03.intel.com ([134.134.136.65]:41740 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727126AbgLQAjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 19:39:18 -0500
+IronPort-SDR: XGMrxkwFhYQpZI6EHZkhVsJOQMmV0Sw2gq+cPR67QzZ8iYbJ3cdR5tRVSZ3N6yepNaMrVuAKMv
+ KYkv8gBXHyFg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9837"; a="175266136"
+X-IronPort-AV: E=Sophos;i="5.78,425,1599548400"; 
+   d="scan'208";a="175266136"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2020 16:38:36 -0800
+IronPort-SDR: NimDuO3JSSCaVpcE48OB6QWQniCI0fiXPNzekJI5l7NmE3AKdZihNJaKV633ov9z2pi3EL+dvK
+ tZn+LkRliH4A==
+X-IronPort-AV: E=Sophos;i="5.78,425,1599548400"; 
+   d="scan'208";a="369434314"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2020 16:38:36 -0800
+Date:   Wed, 16 Dec 2020 16:38:36 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH V3.1] entry: Pass irqentry_state_t by reference
+Message-ID: <20201217003835.GZ1563847@iweiny-DESK2.sc.intel.com>
+References: <20201106232908.364581-6-ira.weiny@intel.com>
+ <20201124060956.1405768-1-ira.weiny@intel.com>
+ <CALCETrUHwZPic89oExMMe-WyDY8-O3W68NcZvse3=PGW+iW5=w@mail.gmail.com>
+ <20201216013202.GY1563847@iweiny-DESK2.sc.intel.com>
+ <CALCETrWoh5BYnU16adT7i6tsQ77PGaLN_qyZnCy-WfO3UJoykw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALCETrWoh5BYnU16adT7i6tsQ77PGaLN_qyZnCy-WfO3UJoykw@mail.gmail.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> The SCU offset for signal PWM8 in group PWM8G0 is wrong, fix it from
-> SCU414 to SCU4B4.
-> Besides that, When PWM8~15 of PWMG0 set it needs to clear SCU414 bits
-> at the same time.
+On Tue, Dec 15, 2020 at 06:09:02PM -0800, Andy Lutomirski wrote:
+> On Tue, Dec 15, 2020 at 5:32 PM Ira Weiny <ira.weiny@intel.com> wrote:
+> >
+> > On Fri, Dec 11, 2020 at 02:14:28PM -0800, Andy Lutomirski wrote:
+> > > On Mon, Nov 23, 2020 at 10:10 PM <ira.weiny@intel.com> wrote:
+> 
+> > > IOW we have:
+> > >
+> > > struct extended_pt_regs {
+> > >   bool rcu_whatever;
+> > >   other generic fields here;
+> > >   struct arch_extended_pt_regs arch_regs;
+> > >   struct pt_regs regs;
+> > > };
+> > >
+> > > and arch_extended_pt_regs has unsigned long pks;
+> > >
+> > > and instead of passing a pointer to irqentry_state_t to the generic
+> > > entry/exit code, we just pass a pt_regs pointer.  And we have a little
+> > > accessor like:
+> > >
+> > > struct extended_pt_regs *extended_regs(struct pt_regs *) { return
+> > > container_of(...); }
+> > >
+> > > And we tell eBPF that extended_pt_regs is NOT ABI, and we will change
+> > > it whenever we feel like just to keep you on your toes, thank you very
+> > > much.
+> > >
+> > > Does this seem reasonable?
+> >
+> > Conceptually yes.  But I'm failing to see how this implementation can be made
+> > generic for the generic fields.  The pks fields, assuming they stay x86
+> > specific, would be reasonable to add in PUSH_AND_CLEAR_REGS.  But the
+> > rcu/lockdep field is generic.  Wouldn't we have to modify every architecture to
+> > add space for the rcu/lockdep bool?
+> >
+> > If not, where is a generic place that could be done?  Basically I'm missing how
+> > the effective stack structure can look like this:
+> >
+> > > struct extended_pt_regs {
+> > >   bool rcu_whatever;
+> > >   other generic fields here;
+> > >   struct arch_extended_pt_regs arch_regs;
+> > >   struct pt_regs regs;
+> > > };
+> >
+> > It seems more reasonable to make it look like:
+> >
+> > #ifdef CONFIG_ARCH_HAS_SUPERVISOR_PKEYS
+> > struct extended_pt_regs {
+> >         unsigned long pkrs;
+> >         struct pt_regs regs;
+> > };
+> > #endif
+> >
+> > And leave the rcu/lockdep bool passed by value as before (still in C).
+> 
+> We could certainly do this,
 
-FYI, we don't need to explicitly clear SCU414[...] as part of the PWM mux 
-configuration as the these bits are cleared as part of disabling the SD1* 
-signal state on each pin[1]. You should be able to confirm this by compiling 
-with CONFIG_DEBUG_PINCTRL=y and "debug" on the kernel commandline.
+I'm going to start with this basic support.  Because I have 0 experience in
+most of these architectures.
 
-That said, it would be neat if we had some kunit tests to exercise all this, 
-but it's not something I've thought deeply about.
+> but we could also allocate some generic
+> space.  PUSH_AND_CLEAR_REGS would get an extra instruction like:
+> 
+> subq %rsp, $GENERIC_PTREGS_SIZE
+> 
+> or however this should be written.  That field would be defined in
+> asm-offsets.c.  And yes, all the generic-entry architectures would
+> need to get onboard.
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pinctrl/aspeed/pinctrl-aspeed.c?h=v5.10#n248
+What do you mean by 'generic-entry' architectures?  I thought they all used the
+generic entry code?
 
->
-> Fixes: 2eda1cdec49f ("pinctrl: aspeed: Add AST2600 pinmux support")
->
-> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
-> ---
->  drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c | 24 ++++++++++++++--------
->  1 file changed, 16 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
-> index b673a44ffa3b..1dfb12a5b2ce 100644
-> --- a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
-> +++ b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
-> @@ -367,49 +367,57 @@ FUNC_GROUP_DECL(RMII4, F24, E23, E24, E25, C25, C24, B26, B25, B24);
->
->  #define D22 40
->  SIG_EXPR_LIST_DECL_SESG(D22, SD1CLK, SD1, SIG_DESC_SET(SCU414, 8));
-> -SIG_EXPR_LIST_DECL_SEMG(D22, PWM8, PWM8G0, PWM8, SIG_DESC_SET(SCU414, 8));
-> +SIG_EXPR_LIST_DECL_SEMG(D22, PWM8, PWM8G0, PWM8, SIG_DESC_SET(SCU4B4, 8),
+Regardless I would need to start another thread on this topic with any of those
+architecture maintainers to see what the work load would be for this.  I don't
+think I can do it on my own.
 
-Good catch, looks like a copy/paste fail on my part :)
+FWIW I think it is a bit unfair to hold up the PKS support in x86 for making
+these generic fields part of the stack frame.  So perhaps that could be made a
+follow on to the PKS series?
 
-> +SIG_DESC_CLEAR(SCU414, 8));
+> 
+> If we wanted to be fancy, we could split the generic area into
+> initialize-to-zero and uninitialized for debugging purposes, but that
+> might be more complication than is worthwhile.
 
-As above, this should be unnecessary.
+Ok, agreed, but this is step 3 or 4 at the earliest.
 
-Can you confirm and remove the CLEAR()s for v3?
-
-Cheers,
-
-Andrew
-
->  PIN_DECL_2(D22, GPIOF0, SD1CLK, PWM8);
->  GROUP_DECL(PWM8G0, D22);
->
->  #define E22 41
->  SIG_EXPR_LIST_DECL_SESG(E22, SD1CMD, SD1, SIG_DESC_SET(SCU414, 9));
-> -SIG_EXPR_LIST_DECL_SEMG(E22, PWM9, PWM9G0, PWM9, SIG_DESC_SET(SCU4B4, 9));
-> +SIG_EXPR_LIST_DECL_SEMG(E22, PWM9, PWM9G0, PWM9, SIG_DESC_SET(SCU4B4, 9),
-> +SIG_DESC_CLEAR(SCU414, 9));
->  PIN_DECL_2(E22, GPIOF1, SD1CMD, PWM9);
->  GROUP_DECL(PWM9G0, E22);
->
->  #define D23 42
->  SIG_EXPR_LIST_DECL_SESG(D23, SD1DAT0, SD1, SIG_DESC_SET(SCU414, 10));
-> -SIG_EXPR_LIST_DECL_SEMG(D23, PWM10, PWM10G0, PWM10, SIG_DESC_SET(SCU4B4, 10));
-> +SIG_EXPR_LIST_DECL_SEMG(D23, PWM10, PWM10G0, PWM10, SIG_DESC_SET(SCU4B4, 10),
-> +SIG_DESC_CLEAR(SCU414, 10));
->  PIN_DECL_2(D23, GPIOF2, SD1DAT0, PWM10);
->  GROUP_DECL(PWM10G0, D23);
->
->  #define C23 43
->  SIG_EXPR_LIST_DECL_SESG(C23, SD1DAT1, SD1, SIG_DESC_SET(SCU414, 11));
-> -SIG_EXPR_LIST_DECL_SEMG(C23, PWM11, PWM11G0, PWM11, SIG_DESC_SET(SCU4B4, 11));
-> +SIG_EXPR_LIST_DECL_SEMG(C23, PWM11, PWM11G0, PWM11, SIG_DESC_SET(SCU4B4, 11),
-> +SIG_DESC_CLEAR(SCU414, 11));
->  PIN_DECL_2(C23, GPIOF3, SD1DAT1, PWM11);
->  GROUP_DECL(PWM11G0, C23);
->
->  #define C22 44
->  SIG_EXPR_LIST_DECL_SESG(C22, SD1DAT2, SD1, SIG_DESC_SET(SCU414, 12));
-> -SIG_EXPR_LIST_DECL_SEMG(C22, PWM12, PWM12G0, PWM12, SIG_DESC_SET(SCU4B4, 12));
-> +SIG_EXPR_LIST_DECL_SEMG(C22, PWM12, PWM12G0, PWM12, SIG_DESC_SET(SCU4B4, 12),
-> +SIG_DESC_CLEAR(SCU414, 12));
->  PIN_DECL_2(C22, GPIOF4, SD1DAT2, PWM12);
->  GROUP_DECL(PWM12G0, C22);
->
->  #define A25 45
->  SIG_EXPR_LIST_DECL_SESG(A25, SD1DAT3, SD1, SIG_DESC_SET(SCU414, 13));
-> -SIG_EXPR_LIST_DECL_SEMG(A25, PWM13, PWM13G0, PWM13, SIG_DESC_SET(SCU4B4, 13));
-> +SIG_EXPR_LIST_DECL_SEMG(A25, PWM13, PWM13G0, PWM13, SIG_DESC_SET(SCU4B4, 13),
-> +SIG_DESC_CLEAR(SCU414, 13));
->  PIN_DECL_2(A25, GPIOF5, SD1DAT3, PWM13);
->  GROUP_DECL(PWM13G0, A25);
->
->  #define A24 46
->  SIG_EXPR_LIST_DECL_SESG(A24, SD1CD, SD1, SIG_DESC_SET(SCU414, 14));
-> -SIG_EXPR_LIST_DECL_SEMG(A24, PWM14, PWM14G0, PWM14, SIG_DESC_SET(SCU4B4, 14));
-> +SIG_EXPR_LIST_DECL_SEMG(A24, PWM14, PWM14G0, PWM14, SIG_DESC_SET(SCU4B4, 14),
-> +SIG_DESC_CLEAR(SCU414, 14));
->  PIN_DECL_2(A24, GPIOF6, SD1CD, PWM14);
->  GROUP_DECL(PWM14G0, A24);
->
->  #define A23 47
->  SIG_EXPR_LIST_DECL_SESG(A23, SD1WP, SD1, SIG_DESC_SET(SCU414, 15));
-> -SIG_EXPR_LIST_DECL_SEMG(A23, PWM15, PWM15G0, PWM15, SIG_DESC_SET(SCU4B4, 15));
-> +SIG_EXPR_LIST_DECL_SEMG(A23, PWM15, PWM15G0, PWM15, SIG_DESC_SET(SCU4B4, 15),
-> +SIG_DESC_CLEAR(SCU414, 15));
->  PIN_DECL_2(A23, GPIOF7, SD1WP, PWM15);
->  GROUP_DECL(PWM15G0, A23);
->
-> --
-> 2.17.1
+Ira
