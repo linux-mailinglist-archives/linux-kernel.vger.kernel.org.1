@@ -2,264 +2,355 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CFC42DCE0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 10:05:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C05A2DCE0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 10:05:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727268AbgLQJEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 04:04:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25853 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726416AbgLQJEg (ORCPT
+        id S1727345AbgLQJFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 04:05:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727294AbgLQJE6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 04:04:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608195789;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=N7BMLAt3Nkb4GWZAxfBiiUdsoewOzT4BGc7hVKvcSzc=;
-        b=KTWMHWqkz1LIHEcC3MTPK3RuUhRKfZ7iYPM6eTPOCc0Nkomw58TLFrV6KPUo1Dgu0bFoeb
-        2uUH7n2z/99Zhxz1RwPTh1XdiuTwcjE2GGV4x0M9NhKpHBoiZ/m8u6LY9eZoiShfNsqkuj
-        CUmCOgAnnbQCJg4Oxkl2V4gf5E7WRcI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-55-6rdIExmXMbSqGRSDQB8yNA-1; Thu, 17 Dec 2020 04:03:05 -0500
-X-MC-Unique: 6rdIExmXMbSqGRSDQB8yNA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 81710190A7A4;
-        Thu, 17 Dec 2020 09:03:03 +0000 (UTC)
-Received: from [10.72.12.223] (ovpn-12-223.pek2.redhat.com [10.72.12.223])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A76125D9C0;
-        Thu, 17 Dec 2020 09:02:50 +0000 (UTC)
-Subject: Re: [PATCH 00/21] Control VQ support in vDPA
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     eperezma@redhat.com, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lulu@redhat.com, eli@mellanox.com,
-        lingshan.zhu@intel.com, rob.miller@broadcom.com,
-        stefanha@redhat.com, sgarzare@redhat.com
-References: <20201216064818.48239-1-jasowang@redhat.com>
- <20201216044051-mutt-send-email-mst@kernel.org>
- <aa061fcb-9395-3a1b-5d6e-76b5454dfb6c@redhat.com>
- <20201217025410-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <61b60985-142b-10f2-58b8-1d9f57c0cfca@redhat.com>
-Date:   Thu, 17 Dec 2020 17:02:49 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 17 Dec 2020 04:04:58 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83471C0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 01:04:18 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id w18so12933245iot.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 01:04:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wO5PdkW1h0hMqSfogzOe9zRiOHCL2Q7rrfsrpK94HwI=;
+        b=FP7CYpsQuy86qnPV+sDFWgK6sj5ReWWecWwDT/HFoT4buDPtxUIIJ+AbFmoWJHCgS0
+         EwTURlJrqD0uWvV1zZlmC9XYU1xL8CVCcckNfT4wNCLRhInh8sG1lhYOohkOIZDdwvwR
+         TE1HbGWKgWoPxEdTf0UMwQ3wjj7NNUhsTw3CY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wO5PdkW1h0hMqSfogzOe9zRiOHCL2Q7rrfsrpK94HwI=;
+        b=O+4fY7hnpu7w45VRmuubyuboN217acUvjPqZFlOe7hN0ReKNXOMOYqf/eMKD+zt9Va
+         Dlxle0pilu6WypEgtNZnpT/4XX84hE52Gk/qYsGxY8BNqDidi1zpnJdqAbtXm2aLwXli
+         GfHyNMyb14DPn8g5+21mFlJ1rtnEYNVcGtNyBg8vYS5aT8uEvLW3SghUG0IbrlTwDEZd
+         5TgQ1i6F5PRsVBD7rLgtHPdxQwduVP/OX8GeqSzz9/tAvZ8ZseE17svbNqVfNjr8rgf0
+         ed8tJ86wndYO4JNqkCDYYCK7vtlqaBdcCS8F4fnUsOmvmrGmVZ8h1LhZj+OyUiDPvYxd
+         Nk1w==
+X-Gm-Message-State: AOAM530wh9sSGmMULqmPRRLzL77Vx285mnvzuBaB77LORN+w8/ZpZGk/
+        wwNyEqBZnGcuVurzbVxJjqtrF8rh5HYFEXK0CJLi7Q==
+X-Google-Smtp-Source: ABdhPJywqMThmvuS3pOWYs8OtKoGze+h43JEKfuJyX/5uakupcLxkSc1wlxjo5J3V0umBbt4crX06jSGenmYXkkzBMw=
+X-Received: by 2002:a02:b011:: with SMTP id p17mr47557156jah.114.1608195857543;
+ Thu, 17 Dec 2020 01:04:17 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201217025410-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <1607591262-21736-1-git-send-email-yongqiang.niu@mediatek.com> <1607591262-21736-7-git-send-email-yongqiang.niu@mediatek.com>
+In-Reply-To: <1607591262-21736-7-git-send-email-yongqiang.niu@mediatek.com>
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+Date:   Thu, 17 Dec 2020 17:03:51 +0800
+Message-ID: <CAJMQK-gVkYqZqnKOVNwoPzV9mmomWKfKAh_mwu4BkMHDAxTw6w@mail.gmail.com>
+Subject: Re: [PATCH v8, 6/6] drm/mediatek: add support for mediatek SOC MT8183
+To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
+Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        lkml <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2020/12/17 下午3:58, Michael S. Tsirkin wrote:
-> On Thu, Dec 17, 2020 at 11:30:18AM +0800, Jason Wang wrote:
->> On 2020/12/16 下午5:47, Michael S. Tsirkin wrote:
->>> On Wed, Dec 16, 2020 at 02:47:57PM +0800, Jason Wang wrote:
->>>> Hi All:
->>>>
->>>> This series tries to add the support for control virtqueue in vDPA.
->>>>
->>>> Control virtqueue is used by networking device for accepting various
->>>> commands from the driver. It's a must to support multiqueue and other
->>>> configurations.
->>>>
->>>> When used by vhost-vDPA bus driver for VM, the control virtqueue
->>>> should be shadowed via userspace VMM (Qemu) instead of being assigned
->>>> directly to Guest. This is because Qemu needs to know the device state
->>>> in order to start and stop device correctly (e.g for Live Migration).
->>>>
->>>> This requies to isolate the memory mapping for control virtqueue
->>>> presented by vhost-vDPA to prevent guest from accesing it directly.
->>>> To achieve this, vDPA introduce two new abstractions:
->>>>
->>>> - address space: identified through address space id (ASID) and a set
->>>>                    of memory mapping in maintained
->>>> - virtqueue group: the minimal set of virtqueues that must share an
->>>>                    address space
->>> How will this support the pretty common case where control vq
->>> is programmed by the kernel through the PF, and others by the VFs?
->>
->> In this case, the VF parent need to provide a software control vq and decode
->> the command then send them to VF.
+On Thu, Dec 10, 2020 at 9:07 AM Yongqiang Niu
+<yongqiang.niu@mediatek.com> wrote:
 >
-> But how does that tie to the address space infrastructure?
-
-
-In this case, address space is not a must. But the idea is to make 
-control vq works for all types of hardware:
-
-1) control virtqueue is implemented via VF/PF communication
-2) control virtqueue is implemented by VF but not through DMA
-3) control virtqueue is implemented by VF DMA, it could be either a 
-hardware control virtqueue or other type of DMA
-
-The address space is a must for 3) to work and can work for both 1) and 2).
-
-
+> This patch add support for mediatek SOC MT8183
+> 1. add ovl private data
+> 2. add rdma private data
+> 3. add mutes private data
+> 4. add main and external path module for crtc create
 >
+> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_disp_ovl.c  | 18 ++++++++++++
+>  drivers/gpu/drm/mediatek/mtk_disp_rdma.c |  6 ++++
+>  drivers/gpu/drm/mediatek/mtk_drm_ddp.c   | 47 ++++++++++++++++++++++++++++++++
+>  drivers/gpu/drm/mediatek/mtk_drm_drv.c   | 43 +++++++++++++++++++++++++++++
+>  4 files changed, 114 insertions(+)
 >
+> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
+> index 28651bc..8cf9f3b 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
+> @@ -430,11 +430,29 @@ static int mtk_disp_ovl_remove(struct platform_device *pdev)
+>         .fmt_rgb565_is_0 = true,
+>  };
 >
->>>
->>> I actually thought the way to support it is by exposing
->>> something like an "inject buffers" API which sends data to a given VQ.
->>> Maybe an ioctl, and maybe down the road uio ring can support batching
->>> these ....
->>
->> So the virtuqueue allows the request to be processed asynchronously (e.g
->> driver may choose to use interrupt for control vq). This means we need to
->> support that in uAPI level.
-> I don't think we need to make it async, just a regular ioctl will do.
-> In fact no guest uses the asynchronous property.
-
-
-It was not forbidden by the spec then we need to support that. E.g we 
-can not assume driver doesn't assign interrupt for cvq.
-
-
+> +static const struct mtk_disp_ovl_data mt8183_ovl_driver_data = {
+> +       .addr = DISP_REG_OVL_ADDR_MT8173,
+> +       .gmc_bits = 10,
+> +       .layer_nr = 4,
+> +       .fmt_rgb565_is_0 = true,
+> +};
+> +
+> +static const struct mtk_disp_ovl_data mt8183_ovl_2l_driver_data = {
+> +       .addr = DISP_REG_OVL_ADDR_MT8173,
+> +       .gmc_bits = 10,
+> +       .layer_nr = 2,
+> +       .fmt_rgb565_is_0 = true,
+> +};
+> +
+>  static const struct of_device_id mtk_disp_ovl_driver_dt_match[] = {
+>         { .compatible = "mediatek,mt2701-disp-ovl",
+>           .data = &mt2701_ovl_driver_data},
+>         { .compatible = "mediatek,mt8173-disp-ovl",
+>           .data = &mt8173_ovl_driver_data},
+> +       { .compatible = "mediatek,mt8183-disp-ovl",
+> +         .data = &mt8183_ovl_driver_data},
+> +       { .compatible = "mediatek,mt8183-disp-ovl-2l",
+> +         .data = &mt8183_ovl_2l_driver_data},
+>         {},
+>  };
+>  MODULE_DEVICE_TABLE(of, mtk_disp_ovl_driver_dt_match);
+> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
+> index 0508392..86e77c2 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
+> @@ -359,11 +359,17 @@ static int mtk_disp_rdma_remove(struct platform_device *pdev)
+>         .fifo_size = SZ_8K,
+>  };
 >
+> +static const struct mtk_disp_rdma_data mt8183_rdma_driver_data = {
+> +       .fifo_size = 5 * SZ_1K,
+> +};
+> +
+>  static const struct of_device_id mtk_disp_rdma_driver_dt_match[] = {
+>         { .compatible = "mediatek,mt2701-disp-rdma",
+>           .data = &mt2701_rdma_driver_data},
+>         { .compatible = "mediatek,mt8173-disp-rdma",
+>           .data = &mt8173_rdma_driver_data},
+> +       { .compatible = "mediatek,mt8183-disp-rdma",
+> +         .data = &mt8183_rdma_driver_data},
+>         {},
+>  };
+>  MODULE_DEVICE_TABLE(of, mtk_disp_rdma_driver_dt_match);
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp.c
+> index 014c1bb..60788c1 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp.c
+> @@ -15,6 +15,8 @@
 >
->> And if we manage to do that, it's just another
->> type of virtqueue.
->>
->> For virtio-vDPA, this also means the extensions for queue processing which
->> is a functional duplication.
-> I don't see why, just send it to the actual control vq :)
-
-
-But in the case you've pointed out, there's no hardware control vq in fact.
-
-
+>  #define MT2701_DISP_MUTEX0_MOD0                        0x2c
+>  #define MT2701_DISP_MUTEX0_SOF0                        0x30
+> +#define MT8183_DISP_MUTEX0_MOD0                        0x30
+> +#define MT8183_DISP_MUTEX0_SOF0                        0x2c
 >
->> Using what proposed in this series, we don't
->> need any changes for kernel virtio drivers.
->>
->> What's more important, this series could be used for future features that
->> requires DMA isolation between virtqueues:
->>
->> - report dirty pages via virtqueue
->> - sub function level device slicing
+>  #define DISP_REG_MUTEX_EN(n)                   (0x20 + 0x20 * (n))
+>  #define DISP_REG_MUTEX(n)                      (0x24 + 0x20 * (n))
+> @@ -25,6 +27,18 @@
 >
-> I agree these are nice to have, but I am not sure basic control vq must
-> be tied to that.
-
-
-If the control virtqueue is implemented via DMA through VF, it looks 
-like a must.
-
-Thanks
-
-
+>  #define INT_MUTEX                              BIT(1)
 >
->> ...
->>
->> Thanks
->>
->>
->>>
->>>> Device needs to advertise the following attributes to vDPA:
->>>>
->>>> - the number of address spaces supported in the device
->>>> - the number of virtqueue groups supported in the device
->>>> - the mappings from a specific virtqueue to its virtqueue groups
->>>>
->>>> The mappings from virtqueue to virtqueue groups is fixed and defined
->>>> by vDPA device driver. E.g:
->>>>
->>>> - For the device that has hardware ASID support, it can simply
->>>>     advertise a per virtqueue virtqueue group.
->>>> - For the device that does not have hardware ASID support, it can
->>>>     simply advertise a single virtqueue group that contains all
->>>>     virtqueues. Or if it wants a software emulated control virtqueue, it
->>>>     can advertise two virtqueue groups, one is for cvq, another is for
->>>>     the rest virtqueues.
->>>>
->>>> vDPA also allow to change the association between virtqueue group and
->>>> address space. So in the case of control virtqueue, userspace
->>>> VMM(Qemu) may use a dedicated address space for the control virtqueue
->>>> group to isolate the memory mapping.
->>>>
->>>> The vhost/vhost-vDPA is also extend for the userspace to:
->>>>
->>>> - query the number of virtqueue groups and address spaces supported by
->>>>     the device
->>>> - query the virtqueue group for a specific virtqueue
->>>> - assocaite a virtqueue group with an address space
->>>> - send ASID based IOTLB commands
->>>>
->>>> This will help userspace VMM(Qemu) to detect whether the control vq
->>>> could be supported and isolate memory mappings of control virtqueue
->>>> from the others.
->>>>
->>>> To demonstrate the usage, vDPA simulator is extended to support
->>>> setting MAC address via a emulated control virtqueue.
->>>>
->>>> Please review.
->>>>
->>>> Changes since RFC:
->>>>
->>>> - tweak vhost uAPI documentation
->>>> - switch to use device specific IOTLB really in patch 4
->>>> - tweak the commit log
->>>> - fix that ASID in vhost is claimed to be 32 actually but 16bit
->>>>     actually
->>>> - fix use after free when using ASID with IOTLB batching requests
->>>> - switch to use Stefano's patch for having separated iov
->>>> - remove unused "used_as" variable
->>>> - fix the iotlb/asid checking in vhost_vdpa_unmap()
->>>>
->>>> Thanks
->>>>
->>>> Jason Wang (20):
->>>>     vhost: move the backend feature bits to vhost_types.h
->>>>     virtio-vdpa: don't set callback if virtio doesn't need it
->>>>     vhost-vdpa: passing iotlb to IOMMU mapping helpers
->>>>     vhost-vdpa: switch to use vhost-vdpa specific IOTLB
->>>>     vdpa: add the missing comment for nvqs in struct vdpa_device
->>>>     vdpa: introduce virtqueue groups
->>>>     vdpa: multiple address spaces support
->>>>     vdpa: introduce config operations for associating ASID to a virtqueue
->>>>       group
->>>>     vhost_iotlb: split out IOTLB initialization
->>>>     vhost: support ASID in IOTLB API
->>>>     vhost-vdpa: introduce asid based IOTLB
->>>>     vhost-vdpa: introduce uAPI to get the number of virtqueue groups
->>>>     vhost-vdpa: introduce uAPI to get the number of address spaces
->>>>     vhost-vdpa: uAPI to get virtqueue group id
->>>>     vhost-vdpa: introduce uAPI to set group ASID
->>>>     vhost-vdpa: support ASID based IOTLB API
->>>>     vdpa_sim: advertise VIRTIO_NET_F_MTU
->>>>     vdpa_sim: factor out buffer completion logic
->>>>     vdpa_sim: filter destination mac address
->>>>     vdpasim: control virtqueue support
->>>>
->>>> Stefano Garzarella (1):
->>>>     vdpa_sim: split vdpasim_virtqueue's iov field in out_iov and in_iov
->>>>
->>>>    drivers/vdpa/ifcvf/ifcvf_main.c   |   9 +-
->>>>    drivers/vdpa/mlx5/net/mlx5_vnet.c |  11 +-
->>>>    drivers/vdpa/vdpa.c               |   8 +-
->>>>    drivers/vdpa/vdpa_sim/vdpa_sim.c  | 292 ++++++++++++++++++++++++------
->>>>    drivers/vhost/iotlb.c             |  23 ++-
->>>>    drivers/vhost/vdpa.c              | 246 ++++++++++++++++++++-----
->>>>    drivers/vhost/vhost.c             |  23 ++-
->>>>    drivers/vhost/vhost.h             |   4 +-
->>>>    drivers/virtio/virtio_vdpa.c      |   2 +-
->>>>    include/linux/vdpa.h              |  42 ++++-
->>>>    include/linux/vhost_iotlb.h       |   2 +
->>>>    include/uapi/linux/vhost.h        |  25 ++-
->>>>    include/uapi/linux/vhost_types.h  |  10 +-
->>>>    13 files changed, 561 insertions(+), 136 deletions(-)
->>>>
->>>> -- 
->>>> 2.25.1
+> +#define MT8183_MUTEX_MOD_DISP_RDMA0            0
+> +#define MT8183_MUTEX_MOD_DISP_RDMA1            1
+> +#define MT8183_MUTEX_MOD_DISP_OVL0             9
+> +#define MT8183_MUTEX_MOD_DISP_OVL0_2L          10
+> +#define MT8183_MUTEX_MOD_DISP_OVL1_2L          11
+> +#define MT8183_MUTEX_MOD_DISP_WDMA0            12
+> +#define MT8183_MUTEX_MOD_DISP_COLOR0           13
+> +#define MT8183_MUTEX_MOD_DISP_CCORR0           14
+> +#define MT8183_MUTEX_MOD_DISP_AAL0             15
+> +#define MT8183_MUTEX_MOD_DISP_GAMMA0           16
+> +#define MT8183_MUTEX_MOD_DISP_DITHER0          17
+> +
+>  #define MT8173_MUTEX_MOD_DISP_OVL0             11
+>  #define MT8173_MUTEX_MOD_DISP_OVL1             12
+>  #define MT8173_MUTEX_MOD_DISP_RDMA0            13
+> @@ -74,6 +88,10 @@
+>  #define MUTEX_SOF_DSI2                 5
+>  #define MUTEX_SOF_DSI3                 6
+>
+> +#define MT8183_MUTEX_SOF_DPI0                  2
+> +#define MT8183_MUTEX_EOF_DSI0                  (MUTEX_SOF_DSI0 << 6)
+> +#define MT8183_MUTEX_EOF_DPI0                  (MT8183_MUTEX_SOF_DPI0 << 6)
+> +
+>
+>  struct mtk_disp_mutex {
+>         int id;
+> @@ -153,6 +171,20 @@ struct mtk_ddp {
+>         [DDP_COMPONENT_WDMA1] = MT8173_MUTEX_MOD_DISP_WDMA1,
+>  };
+>
+> +static const unsigned int mt8183_mutex_mod[DDP_COMPONENT_ID_MAX] = {
+> +       [DDP_COMPONENT_AAL0] = MT8183_MUTEX_MOD_DISP_AAL0,
+> +       [DDP_COMPONENT_CCORR] = MT8183_MUTEX_MOD_DISP_CCORR0,
+> +       [DDP_COMPONENT_COLOR0] = MT8183_MUTEX_MOD_DISP_COLOR0,
+> +       [DDP_COMPONENT_DITHER] = MT8183_MUTEX_MOD_DISP_DITHER0,
+> +       [DDP_COMPONENT_GAMMA] = MT8183_MUTEX_MOD_DISP_GAMMA0,
+> +       [DDP_COMPONENT_OVL0] = MT8183_MUTEX_MOD_DISP_OVL0,
+> +       [DDP_COMPONENT_OVL_2L0] = MT8183_MUTEX_MOD_DISP_OVL0_2L,
+> +       [DDP_COMPONENT_OVL_2L1] = MT8183_MUTEX_MOD_DISP_OVL1_2L,
+> +       [DDP_COMPONENT_RDMA0] = MT8183_MUTEX_MOD_DISP_RDMA0,
+> +       [DDP_COMPONENT_RDMA1] = MT8183_MUTEX_MOD_DISP_RDMA1,
+> +       [DDP_COMPONENT_WDMA0] = MT8183_MUTEX_MOD_DISP_WDMA0,
+> +};
+> +
+>  static const unsigned int mt2712_mutex_sof[DDP_MUTEX_SOF_DSI3 + 1] = {
+>         [DDP_MUTEX_SOF_SINGLE_MODE] = MUTEX_SOF_SINGLE_MODE,
+>         [DDP_MUTEX_SOF_DSI0] = MUTEX_SOF_DSI0,
+> @@ -163,6 +195,12 @@ struct mtk_ddp {
+>         [DDP_MUTEX_SOF_DSI3] = MUTEX_SOF_DSI3,
+>  };
+>
+> +static const unsigned int mt8183_mutex_sof[DDP_MUTEX_SOF_DSI3 + 1] = {
+> +       [DDP_MUTEX_SOF_SINGLE_MODE] = MUTEX_SOF_SINGLE_MODE,
+> +       [DDP_MUTEX_SOF_DSI0] = MUTEX_SOF_DSI0 | MT8183_MUTEX_EOF_DSI0,
+> +       [DDP_MUTEX_SOF_DPI0] = MT8183_MUTEX_SOF_DPI0 | MT8183_MUTEX_EOF_DPI0,
+> +};
+> +
+>  static const struct mtk_ddp_data mt2701_ddp_driver_data = {
+>         .mutex_mod = mt2701_mutex_mod,
+>         .mutex_sof = mt2712_mutex_sof,
+> @@ -184,6 +222,13 @@ struct mtk_ddp {
+>         .mutex_sof_reg = MT2701_DISP_MUTEX0_SOF0,
+>  };
+>
+> +static const struct mtk_ddp_data mt8183_ddp_driver_data = {
+> +       .mutex_mod = mt8183_mutex_mod,
+> +       .mutex_sof = mt8183_mutex_sof,
+> +       .mutex_mod_reg = MT8183_DISP_MUTEX0_MOD0,
+> +       .mutex_sof_reg = MT8183_DISP_MUTEX0_SOF0,
 
+Tested on an mt8183 device, and get:
+
+[   10.014978] mediatek-ddp 14016000.mutex: Failed to get clock
+[   10.026441] mediatek-ddp: probe of 14016000.mutex failed with error -2
+
+Since mt8183 mutex doesn't need clock, I think this should add
+.no_clk = true,
+
+
+> +};
+> +
+>  struct mtk_disp_mutex *mtk_disp_mutex_get(struct device *dev, unsigned int id)
+>  {
+>         struct mtk_ddp *ddp = dev_get_drvdata(dev);
+> @@ -402,6 +447,8 @@ static int mtk_ddp_remove(struct platform_device *pdev)
+>           .data = &mt2712_ddp_driver_data},
+>         { .compatible = "mediatek,mt8173-disp-mutex",
+>           .data = &mt8173_ddp_driver_data},
+> +       { .compatible = "mediatek,mt8183-disp-mutex",
+> +         .data = &mt8183_ddp_driver_data},
+>         {},
+>  };
+>  MODULE_DEVICE_TABLE(of, ddp_driver_dt_match);
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+> index 59c85c6..a7e9f88 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+> @@ -131,6 +131,24 @@
+>         DDP_COMPONENT_DPI0,
+>  };
+>
+> +static const enum mtk_ddp_comp_id mt8183_mtk_ddp_main[] = {
+> +       DDP_COMPONENT_OVL0,
+> +       DDP_COMPONENT_OVL_2L0,
+> +       DDP_COMPONENT_RDMA0,
+> +       DDP_COMPONENT_COLOR0,
+> +       DDP_COMPONENT_CCORR,
+> +       DDP_COMPONENT_AAL0,
+> +       DDP_COMPONENT_GAMMA,
+> +       DDP_COMPONENT_DITHER,
+> +       DDP_COMPONENT_DSI0,
+> +};
+> +
+> +static const enum mtk_ddp_comp_id mt8183_mtk_ddp_ext[] = {
+> +       DDP_COMPONENT_OVL_2L1,
+> +       DDP_COMPONENT_RDMA1,
+> +       DDP_COMPONENT_DPI0,
+> +};
+> +
+>  static const struct mtk_mmsys_driver_data mt2701_mmsys_driver_data = {
+>         .main_path = mt2701_mtk_ddp_main,
+>         .main_len = ARRAY_SIZE(mt2701_mtk_ddp_main),
+> @@ -163,6 +181,13 @@
+>         .ext_len = ARRAY_SIZE(mt8173_mtk_ddp_ext),
+>  };
+>
+> +static const struct mtk_mmsys_driver_data mt8183_mmsys_driver_data = {
+> +       .main_path = mt8183_mtk_ddp_main,
+> +       .main_len = ARRAY_SIZE(mt8183_mtk_ddp_main),
+> +       .ext_path = mt8183_mtk_ddp_ext,
+> +       .ext_len = ARRAY_SIZE(mt8183_mtk_ddp_ext),
+> +};
+> +
+>  static int mtk_drm_kms_init(struct drm_device *drm)
+>  {
+>         struct mtk_drm_private *private = drm->dev_private;
+> @@ -403,12 +428,20 @@ static void mtk_drm_unbind(struct device *dev)
+>           .data = (void *)MTK_DISP_OVL },
+>         { .compatible = "mediatek,mt8173-disp-ovl",
+>           .data = (void *)MTK_DISP_OVL },
+> +       { .compatible = "mediatek,mt8183-disp-ovl",
+> +         .data = (void *)MTK_DISP_OVL },
+> +       { .compatible = "mediatek,mt8183-disp-ovl-2l",
+> +         .data = (void *)MTK_DISP_OVL_2L },
+>         { .compatible = "mediatek,mt2701-disp-rdma",
+>           .data = (void *)MTK_DISP_RDMA },
+>         { .compatible = "mediatek,mt8173-disp-rdma",
+>           .data = (void *)MTK_DISP_RDMA },
+> +       { .compatible = "mediatek,mt8183-disp-rdma",
+> +         .data = (void *)MTK_DISP_RDMA },
+>         { .compatible = "mediatek,mt8173-disp-wdma",
+>           .data = (void *)MTK_DISP_WDMA },
+> +       { .compatible = "mediatek,mt8183-disp-ccorr",
+> +         .data = (void *)MTK_DISP_CCORR },
+>         { .compatible = "mediatek,mt2701-disp-color",
+>           .data = (void *)MTK_DISP_COLOR },
+>         { .compatible = "mediatek,mt8173-disp-color",
+> @@ -417,22 +450,30 @@ static void mtk_drm_unbind(struct device *dev)
+>           .data = (void *)MTK_DISP_AAL},
+>         { .compatible = "mediatek,mt8173-disp-gamma",
+>           .data = (void *)MTK_DISP_GAMMA, },
+> +       { .compatible = "mediatek,mt8183-disp-dither",
+> +         .data = (void *)MTK_DISP_DITHER },
+>         { .compatible = "mediatek,mt8173-disp-ufoe",
+>           .data = (void *)MTK_DISP_UFOE },
+>         { .compatible = "mediatek,mt2701-dsi",
+>           .data = (void *)MTK_DSI },
+>         { .compatible = "mediatek,mt8173-dsi",
+>           .data = (void *)MTK_DSI },
+> +       { .compatible = "mediatek,mt8183-dsi",
+> +         .data = (void *)MTK_DSI },
+>         { .compatible = "mediatek,mt2701-dpi",
+>           .data = (void *)MTK_DPI },
+>         { .compatible = "mediatek,mt8173-dpi",
+>           .data = (void *)MTK_DPI },
+> +       { .compatible = "mediatek,mt8183-dpi",
+> +         .data = (void *)MTK_DPI },
+>         { .compatible = "mediatek,mt2701-disp-mutex",
+>           .data = (void *)MTK_DISP_MUTEX },
+>         { .compatible = "mediatek,mt2712-disp-mutex",
+>           .data = (void *)MTK_DISP_MUTEX },
+>         { .compatible = "mediatek,mt8173-disp-mutex",
+>           .data = (void *)MTK_DISP_MUTEX },
+> +       { .compatible = "mediatek,mt8183-disp-mutex",
+> +         .data = (void *)MTK_DISP_MUTEX },
+>         { .compatible = "mediatek,mt2701-disp-pwm",
+>           .data = (void *)MTK_DISP_BLS },
+>         { .compatible = "mediatek,mt8173-disp-pwm",
+> @@ -451,6 +492,8 @@ static void mtk_drm_unbind(struct device *dev)
+>           .data = &mt2712_mmsys_driver_data},
+>         { .compatible = "mediatek,mt8173-mmsys",
+>           .data = &mt8173_mmsys_driver_data},
+> +       { .compatible = "mediatek,mt8183-mmsys",
+> +         .data = &mt8183_mmsys_driver_data},
+>         { }
+>  };
+>
