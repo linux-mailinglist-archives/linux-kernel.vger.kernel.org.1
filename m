@@ -2,109 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FFCE2DD3DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:13:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D32DB2DD3E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:16:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728547AbgLQPND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 10:13:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726983AbgLQPNB (ORCPT
+        id S1728562AbgLQPNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 10:13:34 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:43572 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728256AbgLQPNa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 10:13:01 -0500
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A5C1C06138C;
-        Thu, 17 Dec 2020 07:12:21 -0800 (PST)
-Received: by mail-oi1-x22e.google.com with SMTP id 9so25371242oiq.3;
-        Thu, 17 Dec 2020 07:12:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kzMBmlibq76f5yv+/Tsnh17vM8pmr6p5zVG9gRqZBy0=;
-        b=NcUkDAOvq3/UwiR+n9/KcC2mcBfR9g+zCs2oA6uj4/1A5UiP2gwXiZYWRaUVrsyVlU
-         ucAmqXUrkGN+8OQXS7Myo5XkpQdbP18ebObo5UE/srkCxHQrzaO8yYKaMdxsaI9fNaqf
-         xHIveI/VFOQ0lXC9lEuxmchxsl5YhT+jotTZeoxlTmhOSjdLRblDjGGtDdaFSgYdUItW
-         Tj4zWnuJ2IG/QrE3dwoe1V1G8QNjlZeF23yS4162Wsz/GrXWU8sqebWiu5pEHdidLMWu
-         DPEvPKRYAdIRYvb9irUubCNywe6tYK1p+6zW1Qvi3s6JGN2owoA+vtdxKNxYNuDsRPkE
-         wXqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kzMBmlibq76f5yv+/Tsnh17vM8pmr6p5zVG9gRqZBy0=;
-        b=pbTEa008UgslN3fu2A9o0LUnUErnwaRdEyhay8rxyrSL4kxSe1ZQ2izyJS5/yoc87C
-         XNd9z8iuI7zba+hamqLL/BjAExgdpuD5LyYoXv2Le/ofKPa636CDyjCuYxqPOUhCyWMJ
-         deZcZEjUYKFk4PlyX5TgmW0gTbbw+dRH/k17ex4QqzFbcQSnWk4tVc5jOtkPuOKWjWUq
-         34IyQj6Qq5IzuNUGzhk3w8P0/ZJFgab0qJ4Sx0s7yI/4Az1gPOJxbzViyGDBWAO1uOza
-         murkl2jxlybcc6sdmlmgFLpG/ZnxM9DhytjhPAPD+66Jl8XGRZSy6ma/niS9J2zoW3S5
-         AFGA==
-X-Gm-Message-State: AOAM531wVAlaxFTBrOHwUmwJWn+XQ8k8Q+qOryVi3qZXdu03Y8UG8jcH
-        p84+zNEagEIw5x7sGFLFyb86zzHqZt8zjBNar7I=
-X-Google-Smtp-Source: ABdhPJzbGX9yzZnSFnykiaAlgcvsaCJs08rhZzT4N1d2vC0OMg4FWero8eTWeiLWpCGnd/8ET6et5ZSBLDWYPCRYxZQ=
-X-Received: by 2002:aca:3ed5:: with SMTP id l204mr5090106oia.149.1608217940702;
- Thu, 17 Dec 2020 07:12:20 -0800 (PST)
+        Thu, 17 Dec 2020 10:13:30 -0500
+Received: from 89-64-78-63.dynamic.chello.pl (89.64.78.63) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.537)
+ id 205a57d8fdab3123; Thu, 17 Dec 2020 16:12:44 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] cpufreq: intel_pstate: Use the latest guaranteed freq during verify
+Date:   Thu, 17 Dec 2020 16:12:43 +0100
+Message-ID: <8153207.dYVdvtsJbe@kreacher>
+In-Reply-To: <93d4eebb5121ad0497af555c55a6ad74b8a06e64.camel@linux.intel.com>
+References: <20201217104215.2544837-1-srinivas.pandruvada@linux.intel.com> <d581bfe77c2fc4ff266bb155cf610f176c786e2e.camel@linux.intel.com> <93d4eebb5121ad0497af555c55a6ad74b8a06e64.camel@linux.intel.com>
 MIME-Version: 1.0
-References: <20201122095556.21597-1-sergio.paracuellos@gmail.com>
- <20201122095556.21597-3-sergio.paracuellos@gmail.com> <160819550615.1580929.14234996916739809712@swboyd.mtv.corp.google.com>
- <CAL_JsqLONxqAXRta2iuYNoJ=8wEFdYsiq_OFqgSW3aMLMhy94Q@mail.gmail.com>
-In-Reply-To: <CAL_JsqLONxqAXRta2iuYNoJ=8wEFdYsiq_OFqgSW3aMLMhy94Q@mail.gmail.com>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Thu, 17 Dec 2020 16:12:09 +0100
-Message-ID: <CAMhs-H_F5npCkxxHc4Pz+6Ptm=ML13adk6Kg_aHqatpZwAietA@mail.gmail.com>
-Subject: Re: [PATCH v4 2/6] dt: bindings: add mt7621-clk device tree binding documentation
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        John Crispin <john@phrozen.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Chuanhong Guo <gch981213@gmail.com>,
-        Weijie Gao <hackpascal@gmail.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
-        NeilBrown <neil@brown.name>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Thursday, December 17, 2020 3:23:44 PM CET Srinivas Pandruvada wrote:
+> On Thu, 2020-12-17 at 06:19 -0800, Srinivas Pandruvada wrote:
+> > On Thu, 2020-12-17 at 14:58 +0100, Rafael J. Wysocki wrote:
+> > > On Thu, Dec 17, 2020 at 11:44 AM Srinivas Pandruvada
+> > > <srinivas.pandruvada@linux.intel.com> wrote:
+> > > > 
+> > > > This change tries to address an issue, when BIOS disabled turbo
+> > > > but HWP_CAP guaranteed is changed later and user space wants to
+> > > > take
+> > > > advantage of this increased guaranteed performance.
+> > > > 
+> > > > The HWP_CAP.GUARANTEED value is not a static value. It can be
+> > > > changed
+> > > > by some out of band agent or during Intel Speed Select
+> > > > performance
+> > > > level change. The HWP_CAP.MAX still shows max possible
+> > > > performance
+> > > > when
+> > > > BIOS disabled turbo. So guaranteed can still change as long as
+> > > > this
+> > > > is
+> > > > same or below HWP_CAP.MAX.
+> > > > 
+> > > > When guaranteed is changed, the sysfs base_frequency attributes
+> > > > shows
+> > > > the latest guaranteed frequency. This attribute can be used by
+> > > > user
+> > > > space software to update scaling min/max frequency.
+> > > > 
+> > > > Currently the setpolicy callback already uses the latest HWP_CAP
+> > > > values when setting HWP_REQ. But the verify callback will still
+> > > > restrict
+> > > > the user settings to the to old guaranteed value. So if the
+> > > > guaranteed
+> > > > is increased, user space can't take advantage of it.
+> > > > 
+> > > > To solve this similar to setpolicy callback, read the latest
+> > > > HWP_CAP
+> > > > values and use it to restrict the maximum setting. This is done
+> > > > by
+> > > > calling intel_pstate_get_hwp_max(), which already accounts for
+> > > > user
+> > > > and BIOS turbo disable to get the current max performance.
+> > > > 
+> > > > This issue is side effect of fixing the issue of scaling
+> > > > frequency
+> > > > limits by the
+> > > >  'commit eacc9c5a927e ("cpufreq: intel_pstate:
+> > > >  Fix intel_pstate_get_hwp_max() for turbo disabled")'
+> > > > The fix resulted in correct setting of reduced scaling
+> > > > frequencies,
+> > > > but this resulted in capping HWP.REQ to HWP_CAP.GUARANTEED in
+> > > > this
+> > > > case.
+> > > > 
+> > > > Cc: 5.8+ <stable@vger.kernel.org> # 5.8+
+> > > > Signed-off-by: Srinivas Pandruvada <
+> > > > srinivas.pandruvada@linux.intel.com>
+> > > > ---
+> > > >  drivers/cpufreq/intel_pstate.c | 6 ++++++
+> > > >  1 file changed, 6 insertions(+)
+> > > > 
+> > > > diff --git a/drivers/cpufreq/intel_pstate.c
+> > > > b/drivers/cpufreq/intel_pstate.c
+> > > > index 2a4db856222f..7081d1edb22b 100644
+> > > > --- a/drivers/cpufreq/intel_pstate.c
+> > > > +++ b/drivers/cpufreq/intel_pstate.c
+> > > > @@ -2199,6 +2199,12 @@ static void
+> > > > intel_pstate_clear_update_util_hook(unsigned int cpu)
+> > > > 
+> > > >  static int intel_pstate_get_max_freq(struct cpudata *cpu)
+> > > >  {
+> > > > +       if (hwp_active) {
+> > > > +               int turbo_max, max_state;
+> > > > +
+> > > > +               intel_pstate_get_hwp_max(cpu->cpu, &turbo_max,
+> > > > &max_state);
+> > > 
+> > > This would cause intel_pstate_get_hwp_max() to be called twice in
+> > > intel_pstate_update_perf_limits() which is not perfect.
+> > 
+> > We can optimize by using cached value.
+> > 
+> > 
+> > diff --git a/drivers/cpufreq/intel_pstate.c
+> > b/drivers/cpufreq/intel_pstate.c
+> > index 7081d1edb22b..d345c9ef240c 100644
+> > --- a/drivers/cpufreq/intel_pstate.c
+> > +++ b/drivers/cpufreq/intel_pstate.c
+> > @@ -2223,7 +2223,11 @@ static void
+> > intel_pstate_update_perf_limits(struct cpudata *cpu,
+> >          * rather than pure ratios.
+> >          */
+> >         if (hwp_active) {
+> > -               intel_pstate_get_hwp_max(cpu->cpu, &turbo_max,
+> > &max_state);
+> > +               if (global.no_turbo || global.turbo_disabled)
+> > +                       max_state = HWP_GUARANTEED_PERF(cpu-
+> > > hwp_cap_cached);
+> > +               else
+> > +                       max_state = HWP_HIGHEST_PERF(cpu-
+> > > hwp_cap_cached);
+> Can use  ternary operator instead of if..else. to further simplify.
+> 
+> > +               turbo_max = HWP_HIGHEST_PERF(cpu->hwp_cached);
+> >         } else {
+> >                 max_state = global.no_turbo || global.turbo_disabled
+> > ?
+> >                         cpu->pstate.max_pstate : cpu-
+> > > pstate.turbo_pstate;
 
-On Thu, Dec 17, 2020 at 4:05 PM Rob Herring <robh+dt@kernel.org> wrote:
->
-> On Thu, Dec 17, 2020 at 2:58 AM Stephen Boyd <sboyd@kernel.org> wrote:
-> >
-> > Quoting Sergio Paracuellos (2020-11-22 01:55:52)
-> > > Adds device tree binding documentation for clocks in the
-> > > MT7621 SOC.
-> > >
-> > > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> > > ---
-> > >  .../bindings/clock/mediatek,mt7621-clk.yaml   | 67 +++++++++++++++++++
-> > >  1 file changed, 67 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
-> > >
-> >
-> > Rob?
->
-> Send to the DT list please.
+Well, would something like the patch below work?
 
-Sorry, there was a typo 'evicetree@vger.kernel.org' in CC list.
+---
+ drivers/cpufreq/intel_pstate.c |   16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
->
-> But I agree with Stephen's comment. Either make the syscon complete
-> (fully describe the h/w, not just what you need ATM) to show the need
-> for child nodes or get rid of the child nodes.
+Index: linux-pm/drivers/cpufreq/intel_pstate.c
+===================================================================
+--- linux-pm.orig/drivers/cpufreq/intel_pstate.c
++++ linux-pm/drivers/cpufreq/intel_pstate.c
+@@ -2207,9 +2207,9 @@ static void intel_pstate_update_perf_lim
+ 					    unsigned int policy_min,
+ 					    unsigned int policy_max)
+ {
+-	int max_freq = intel_pstate_get_max_freq(cpu);
+ 	int32_t max_policy_perf, min_policy_perf;
+ 	int max_state, turbo_max;
++	int max_freq;
+ 
+ 	/*
+ 	 * HWP needs some special consideration, because on BDX the
+@@ -2223,6 +2223,7 @@ static void intel_pstate_update_perf_lim
+ 			cpu->pstate.max_pstate : cpu->pstate.turbo_pstate;
+ 		turbo_max = cpu->pstate.turbo_pstate;
+ 	}
++	max_freq = max_state * cpu->pstate.scaling;
+ 
+ 	max_policy_perf = max_state * policy_max / max_freq;
+ 	if (policy_max == policy_min) {
+@@ -2325,9 +2326,18 @@ static void intel_pstate_adjust_policy_m
+ static void intel_pstate_verify_cpu_policy(struct cpudata *cpu,
+ 					   struct cpufreq_policy_data *policy)
+ {
++	int max_freq;
++
+ 	update_turbo_state();
+-	cpufreq_verify_within_limits(policy, policy->cpuinfo.min_freq,
+-				     intel_pstate_get_max_freq(cpu));
++	if (hwp_active) {
++		int max_state, turbo_max;
++
++		intel_pstate_get_hwp_max(cpu->cpu, &turbo_max, &max_state);
++		max_freq = max_state * cpu->pstate.scaling;
++	} else {
++		max_freq = intel_pstate_get_max_freq(cpu);
++	}
++	cpufreq_verify_within_limits(policy, policy->cpuinfo.min_freq, max_freq);
+ 
+ 	intel_pstate_adjust_policy_max(cpu, policy);
+ }
 
-Got it. Will try to do something better and send v5.
 
->
-> Rob
 
-Thanks,
-    Sergio Paracuellos
