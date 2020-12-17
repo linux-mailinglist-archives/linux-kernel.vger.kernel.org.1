@@ -2,125 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F392DCD50
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 09:00:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BB422DD519
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 17:23:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727272AbgLQIAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 03:00:52 -0500
-Received: from mail-eopbgr50051.outbound.protection.outlook.com ([40.107.5.51]:37253
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726703AbgLQIAw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 03:00:52 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HHaz4fkccrtJ/l5WhMeks8dA/mm4WD0LstdngQu1IhL4j5+OoQePA7Y/ehe3j0Z5iLeB7A7WlANHFrbLRi1AkRsXk1v1csspmJqpYEU0dq/dx9Ku9OSHQzllINcn4Mpaqf6Psl2PjOQZ1ESWG39/TRDCG/BlJFlByY+JMRgzlwau0j5/xALs4STQn8zZI+LhnfNPzB37vKe3tfpPJGue9hAi7rVWRvswQAi9lbNHW+TxlRaLrgtCIozRL5vgaaziHcP/CNlzIGKgPEC6Xv7CvWueY7FW8jSthBKwNWDGtYncjm1RWa5YasAw7SuD25oELzRWyGtzeXXnqlaAZoeTfw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Hg8l/NYhQ+1E/LChxorRpKnBB3P4TfJ2XYNh5dqZNQY=;
- b=ZmNU+y51YGFisq6kzIoGROLefbfXg45q6ab40OcjtGMmKE5BleUV6QGDNEBRqvD61neA3eqi+zUPJIGWd/r5uOZ+NxpQ902BY8xPm/ksWn/9nnPnWFoHXBzx7k2pvdUVwoQgx/2vKzUsSPjxE6dC6St8GmzSrZ9efRcfRRcz8l4Tx/xVYrYVppjeKoMCW6XGpHqIj/Kyq/LyyQ4TXyJQOtA2w8WmisgKuSdfzoq5upKuPXHjdiQJYy/oB3O7KLQ0qXRNo5NL6hz9F39nDu5UFQa7CbzYa0TsYLzyhQFKu2tYRysMXwn3n/kK3lU69kDZSR+04a+KYpcZqFUdVuvGzw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Hg8l/NYhQ+1E/LChxorRpKnBB3P4TfJ2XYNh5dqZNQY=;
- b=L7x7dviXKQZM4qPzpbRyrUUPj/zJUeEPEbvV35Y1Jki6JLgRNvX8IEFO2zqbBvcKjzOPkyXbYLP1qpEOB/vvf19wyY2FmztT0ow+XmWHH2rFAUFPlwh8WbNuFwpW9EUJHhGx9ew3bM6JHAbY532of6p27pQvuMBzG6YL/zRKipo=
-Authentication-Results: perex.cz; dkim=none (message not signed)
- header.d=none;perex.cz; dmarc=none action=none header.from=nxp.com;
-Received: from VE1PR04MB6638.eurprd04.prod.outlook.com (2603:10a6:803:119::15)
- by VI1PR0402MB3549.eurprd04.prod.outlook.com (2603:10a6:803:8::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.15; Thu, 17 Dec
- 2020 08:00:03 +0000
-Received: from VE1PR04MB6638.eurprd04.prod.outlook.com
- ([fe80::b042:5b55:165a:87e2]) by VE1PR04MB6638.eurprd04.prod.outlook.com
- ([fe80::b042:5b55:165a:87e2%5]) with mapi id 15.20.3676.025; Thu, 17 Dec 2020
- 08:00:03 +0000
-From:   Robin Gong <yibin.gong@nxp.com>
-To:     perex@perex.cz, tiwai@suse.com, akpm@linux-foundation.org,
-        xiang@kernel.org, pierre-louis.bossart@linux.intel.com,
-        gustavoars@kernel.org, shengjiu.wang@nxp.com
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 ] ALSA: core: memalloc: add page alignment for iram
-Date:   Fri, 18 Dec 2020 00:15:47 +0800
-Message-Id: <1608221747-3474-1-git-send-email-yibin.gong@nxp.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: SG2PR02CA0004.apcprd02.prod.outlook.com
- (2603:1096:3:17::16) To VE1PR04MB6638.eurprd04.prod.outlook.com
- (2603:10a6:803:119::15)
+        id S1728156AbgLQQWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 11:22:44 -0500
+Received: from mout.gmx.net ([212.227.17.22]:56915 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725468AbgLQQWn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 11:22:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1608222064;
+        bh=GiA3SVJQxbWUZvTzL7A9ussr290uZsz9k9rPQnz6TTY=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=e7Jkfv4rwu+0P4AwRO0ZOs/0gSIpd3OMDgN+clRWB2tuFWr/PvsKea7EoqhTCJECh
+         VAOn+YHOXFfDixHIubZX/TVpN7CE+QCUzH7Wdk/Ldwba72sSqub+nA1fabL4j9dAk3
+         i8XztMonolO18RN5HZ2UeH6pVnZGBGA1W3oyMUtE=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.217.61]) by mail.gmx.com (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MHoRK-1kuvxh3ba2-00Eqyd; Thu, 17
+ Dec 2020 17:21:03 +0100
+Message-ID: <1f88b926bedcad0d6e35c7f5b63bbb038c8c6c09.camel@gmx.de>
+Subject: [bisected] Re: drm, qxl: post 5.11 merge warning+explosion
+From:   Mike Galbraith <efault@gmx.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Dave Airlie <airlied@redhat.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Date:   Thu, 17 Dec 2020 17:21:02 +0100
+In-Reply-To: <a1b925758cbc5517d4ff6df3cf2a9b6614fd5535.camel@gmx.de>
+References: <5979380e28f4ba8023e88f96d3a9291381a8457e.camel@gmx.de>
+         <a1b925758cbc5517d4ff6df3cf2a9b6614fd5535.camel@gmx.de>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from robin-OptiPlex-790.ap.freescale.net (119.31.174.66) by SG2PR02CA0004.apcprd02.prod.outlook.com (2603:1096:3:17::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3654.12 via Frontend Transport; Thu, 17 Dec 2020 07:59:59 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: bcdca302-a3c5-4ed3-1bb3-08d8a261c278
-X-MS-TrafficTypeDiagnostic: VI1PR0402MB3549:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR0402MB3549B4067E546C4BEC61BF3E89C40@VI1PR0402MB3549.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: oxBOE49abwn1qigOjMY4nWRCp6G726ZQMHyGGYlWe9vx9qt8e76FGoI2g4zq2z0IJd3v/nkEuUenR67es6iY+uckiHe5uyPmWKUtlot6Cs+k+hj6hlkePMOnjkjKjroPrfaO3GX1GiJ+a4SeGuHFOhlIUPm4Msy0XVb5ZOQIxjCCkPH12fcvPTOZi/6r/57s2sUlr90HzHQw130vue7vxCsnV3szAAvyaAxtFdg52oSOeDAdXwcDJHbsf+CqAajkCIU52fxpfrmYav12J2Idz7Rpca60mID5MSAZJSsBsYFMDmUOYR4+91o97ox3nWgUM23h4dYSgOv798PlycygRQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6638.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(39860400002)(396003)(376002)(136003)(6512007)(316002)(956004)(66476007)(478600001)(6486002)(36756003)(86362001)(6666004)(6636002)(52116002)(8936002)(186003)(4326008)(66946007)(83380400001)(2616005)(16526019)(26005)(4744005)(2906002)(8676002)(5660300002)(66556008)(6506007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?d6kRqk39AqeaA9nRnlDXo7iq7Cjhb3mrGV+HUYVUfvmfKgUMsYEb3csfNDGK?=
- =?us-ascii?Q?9jYrKPfDog7Rjvfl8MaIUNGmSuJ0Htu1lCBSsuvFpV98SJCc6QZ5FiOJGOIm?=
- =?us-ascii?Q?OzlQGa3Edl26ssojdyf14iBgSYzC5OlxNjjV4dOOizhr/FwwhThrqnQEBghN?=
- =?us-ascii?Q?u2UzhE2jPm5DiPRsLG4+F91E1ik115P5+O1c/eBL6+W/JeBBouZi+AV76yX2?=
- =?us-ascii?Q?PY8ZNKBXUrrV3/FAZHUhQT2zm6Q2HutToHki66XQ5PKkl+1Y2VrOH21anOd6?=
- =?us-ascii?Q?rBKPkGDbUV3THCI9JmrCg9n0W2H5qHjCaXYIghjswFEx9bxP/qkfSrQAhehQ?=
- =?us-ascii?Q?1QOTvi3hfT48XaP9qR9sj1/Te4W0L5jH0nzfPr9B1RssxCqXj8VWUKW+g0CH?=
- =?us-ascii?Q?azEA99Fa4XvXN3rbBDQw64XihrPyFr6sN6a6nGF38kuPn3zwy04dfd+3KoXc?=
- =?us-ascii?Q?bEuEcyfwLE756EfqzQC4sIrV6LU18zBGt4SnUYwvxTFSQG/X2204Hr9Ao3Qv?=
- =?us-ascii?Q?Qtno423TEZbi3YWoXAzWSzb7y553qLHDfSZuEjqmeLS1FVMI4Ytfb7gQd1FU?=
- =?us-ascii?Q?6MCujNSSKMXYgUYXaS1bFj/pWMnEPh+9kAPfTLVMY1YPsHJesGEVivobBKcw?=
- =?us-ascii?Q?OhymYwFcnWd2HUSLmBvKdpXclxnAN2eIXYQy37mYPxJlFS6FpoQ3P8ZgRL8N?=
- =?us-ascii?Q?cPKgjFTXx6QRVPYsPdoZgglHIFlEI+YnFC8wAN4tQC2KI68+PD4TG/Eo5VSJ?=
- =?us-ascii?Q?I0Nd8Wr/u6WvvtM944N9XPLdzhTIPwhsWUMT6psFIslmv2qveupav7DthYlP?=
- =?us-ascii?Q?C1BPS4cceyrrR/JwIb3iJ/mZsxCKqf8dBhuHN7lBIikXSkjKfo9LiqgOONvn?=
- =?us-ascii?Q?dfjHcKx8FNVNIh+UF8QzBvZeho/Rys2QoFzacShhji6dwNKHzO8l/yoilgdK?=
- =?us-ascii?Q?QEEB81UgxAelgb8ytmTrTZZcWD9S27RuoDAwanEgvCmwuiVI1VhCimzlDuXZ?=
- =?us-ascii?Q?wJyv?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6638.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Dec 2020 08:00:03.0104
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-Network-Message-Id: bcdca302-a3c5-4ed3-1bb3-08d8a261c278
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rYccN9F+yDGyi3QGBd1QKhYCXx9xaw8uC7wwyJ97eci0wl+ImjM9VB8KNqipatu13n2ntmtrFQ8KX04Cnn1wjw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3549
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:B4e418HlYaOUc8nmN7chcWcHDKS1A5mJ5S/7F4mCNxFmJZQUjcG
+ MYWKQSMRCUXF7tSkVqSD6Ki0nB0TQFL5lfJFG/zeDQC5jdiZCRZOQxnO1V4IkhlP0mnlHqD
+ KC6llOrJU5LRgSBYYlfrLaXLkxu9xA9BD+Guy4FlWV3e/pD11CuL/cdv1gu3AcCos12dRl8
+ WN6amfq6WtBUTnRVLk00Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:9aAL17RVKKc=:goWWGf7q4OntYZHTZPfzJ4
+ gZ7gGgNoYYogdD/nTqRZ2rfO2LPeGB4y8xSIJCP+kGHSwMNiYftDuzHbDyxG7cUllJphAbPDJ
+ 1I13ylX0JvaoHMXUZBz6+UtBCCMTUf7+4MoD1hseh/10/L4CLzttWADYlkj89CsbNgVsEA6VC
+ H/gJokcy4O4wKE75tFLlo7HZEBAofN6y9I/0LUln93cjmaecNF9CNX/3uyhHfbJLRXTdvBvd7
+ St/lBmh9RU6L080WQm1+C6sQy0n8mJfpW/IwdkY1nNgNdjW4Mo6HC3j3+diyHDtjejTfyB4FI
+ T0twKBvpuE/7aBfe2HY0aID+P9hj95GhEZaKWmDMUPsRpcUNJH4lGgPpcJ1iVqhCWSq987ea9
+ qd9zOervarJviDh02iOJsKiowmOj9D/+26N1DhTLIBwRqaGPxNXin5RUnpd5WgRJcb33pVNiN
+ gDRWYUEH6MKybvaNAOQQeyj9ms10s/9gbpmHS1xjVUsSjJh8fVV/Xs2G+urXemsBuM6E5cj5R
+ IdIyxYtuROKoBjaYNzqTKgrEufYLiNr90ZCUWTQhs4dpGMlOWBS7yfEkzs5xKbU1MOyCmVBls
+ 1fM3SKgMbdGB2M4z98T3s8ltNvi1xprsF8jJrtxnFHCVEv4RhpTZu7+5mq9R2JweCCbDrRxtA
+ iIC60NsyF+FAl+iYFyhiFDvgge6U3lgG+udjFeGnDl0VXnmKWcFV/yyMLTCSdWrPNJCxxu9Ie
+ yvAWJYZOLMr0tPUDlAddW3B/ecIBERZjdVuPCV8BNiVukHtLx0NCLGOBULXubJVFVZOqoUmx9
+ rBB5SCTT4QYrj+OJ97tSHJiAdqQ1uMiH2pCsVKv7LBMkA3PeC009Hl5hLWkO2CHXiZtlMkvcc
+ ODYhpc5n+lIaqdrUISRQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since mmap for userspace is based on page alignment, add page alignment
-for iram alloc from pool, otherwise, some good data located in the same
-page of dmab->area maybe touched wrongly by userspace like pulseaudio.
+ee5d2a8e549e90325fcc31825269f89647cd6fac is the first bad commit
+commit ee5d2a8e549e90325fcc31825269f89647cd6fac
+Author: Christian K=F6nig <christian.koenig@amd.com>
+Date:   Sat Oct 24 13:10:28 2020 +0200
 
-Signed-off-by: Robin Gong <yibin.gong@nxp.com>
----
- sound/core/memalloc.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+    drm/ttm: wire up the new pool as default one v2
 
-diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
-index 0aeeb62..0f33516 100644
---- a/sound/core/memalloc.c
-+++ b/sound/core/memalloc.c
-@@ -77,7 +77,8 @@ static void snd_malloc_dev_iram(struct snd_dma_buffer *dmab, size_t size)
- 	/* Assign the pool into private_data field */
- 	dmab->private_data = pool;
- 
--	dmab->area = gen_pool_dma_alloc(pool, size, &dmab->addr);
-+	dmab->area = gen_pool_dma_alloc_align(pool, size, &dmab->addr,
-+					PAGE_SIZE);
- }
- 
- /**
--- 
-2.7.4
+    Provide the necessary parameters by all drivers and use the new pool a=
+lloc
+    when no driver specific function is provided.
+
+    v2: fix the GEM VRAM helpers
+
+    Signed-off-by: Christian K=F6nig <christian.koenig@amd.com>
+    Reviewed-by: Dave Airlie <airlied@redhat.com>
+    Reviewed-by: Madhav Chauhan <madhav.chauhan@amd.com>
+    Tested-by: Huang Rui <ray.huang@amd.com>
+    Link: https://patchwork.freedesktop.org/patch/397081/?series=3D83051&r=
+ev=3D1
+
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c |  4 ++--
+ drivers/gpu/drm/drm_gem_vram_helper.c   |  4 ++--
+ drivers/gpu/drm/nouveau/nouveau_ttm.c   | 14 +++++++++-----
+ drivers/gpu/drm/qxl/qxl_ttm.c           |  5 ++---
+ drivers/gpu/drm/radeon/radeon_ttm.c     |  4 ++--
+ drivers/gpu/drm/ttm/ttm_bo.c            |  8 ++++++--
+ drivers/gpu/drm/ttm/ttm_memory.c        |  2 +-
+ drivers/gpu/drm/ttm/ttm_tt.c            |  5 ++---
+ drivers/gpu/drm/vmwgfx/vmwgfx_drv.c     |  5 +++--
+ include/drm/ttm/ttm_bo_driver.h         | 11 +++++++----
+ 10 files changed, 36 insertions(+), 26 deletions(-)
+
+git bisect start 'drivers/gpu/drm/qxl'
+# good: [2c85ebc57b3e1817b6ce1a6b703928e113a90442] Linux 5.10
+git bisect good 2c85ebc57b3e1817b6ce1a6b703928e113a90442
+# bad: [accefff5b547a9a1d959c7e76ad539bf2480e78b] Merge tag 'arm-soc-omap-=
+genpd-5.11' of git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc
+git bisect bad accefff5b547a9a1d959c7e76ad539bf2480e78b
+# bad: [d635a69dd4981cc51f90293f5f64268620ed1565] Merge tag 'net-next-5.11=
+' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next
+git bisect bad d635a69dd4981cc51f90293f5f64268620ed1565
+# bad: [0ca2ce81eb8ee30f3ba8ac7967fef9cfbb44dbdb] Merge tag 'arm64-upstrea=
+m' of git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux
+git bisect bad 0ca2ce81eb8ee30f3ba8ac7967fef9cfbb44dbdb
+# bad: [f8aab60422c371425365d386dfd51e0c6c5b1041] drm/amdgpu: Initialise d=
+rm_gem_object_funcs for imported BOs
+git bisect bad f8aab60422c371425365d386dfd51e0c6c5b1041
+# bad: [c0f98d2f8b076bf3e3183aa547395f919c943a14] Merge tag 'drm-misc-next=
+-2020-11-05' of git://anongit.freedesktop.org/drm/drm-misc into drm-next
+git bisect bad c0f98d2f8b076bf3e3183aa547395f919c943a14
+# good: [6a6e5988a2657cd0c91f6f1a3e7d194599248b6d] drm/ttm: replace last m=
+ove_notify with delete_mem_notify
+git bisect good 6a6e5988a2657cd0c91f6f1a3e7d194599248b6d
+# good: [f566fdcd6cc49a9d5b5d782f56e3e7cb243f01b8] drm/i915: Force VT'd wo=
+rkarounds when running as a guest OS
+git bisect good f566fdcd6cc49a9d5b5d782f56e3e7cb243f01b8
+# good: [e76ab2cf21c38331155ea613cdf18582f011c30f] drm/i915: Remove per-pl=
+atform IIR HPD masking
+git bisect good e76ab2cf21c38331155ea613cdf18582f011c30f
+# bad: [268af50f38b1f2199a2e85e38073d7a25c20190c] drm/panfrost: Support ca=
+che-coherent integrations
+git bisect bad 268af50f38b1f2199a2e85e38073d7a25c20190c
+# good: [e000650375b65ff77c5ee852b5086f58c741179e] fbdev/atafb: Remove unu=
+sed extern variables
+git bisect good e000650375b65ff77c5ee852b5086f58c741179e
+# bad: [461619f5c3242aaee9ec3f0b7072719bd86ea207] drm/nouveau: switch to n=
+ew allocator
+git bisect bad 461619f5c3242aaee9ec3f0b7072719bd86ea207
+# good: [d099fc8f540add80f725014fdd4f7f49f3c58911] drm/ttm: new TT backend=
+ allocation pool v3
+git bisect good d099fc8f540add80f725014fdd4f7f49f3c58911
+# bad: [e93b2da9799e5cb97760969f3e1f02a5bdac29fe] drm/amdgpu: switch to ne=
+w allocator v2
+git bisect bad e93b2da9799e5cb97760969f3e1f02a5bdac29fe
+# bad: [ee5d2a8e549e90325fcc31825269f89647cd6fac] drm/ttm: wire up the new=
+ pool as default one v2
+git bisect bad ee5d2a8e549e90325fcc31825269f89647cd6fac
+# first bad commit: [ee5d2a8e549e90325fcc31825269f89647cd6fac] drm/ttm: wi=
+re up the new pool as default one v2
 
