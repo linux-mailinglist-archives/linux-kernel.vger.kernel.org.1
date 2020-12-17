@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D052DCA68
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 02:17:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4CCA2DCA65
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 02:17:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389069AbgLQBNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 20:13:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55106 "EHLO mail.kernel.org"
+        id S2389052AbgLQBNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 20:13:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389015AbgLQBMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 20:12:53 -0500
+        id S2388972AbgLQBM5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 20:12:57 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 730F623AFB;
+        by mail.kernel.org (Postfix) with ESMTPSA id 9D3E823D51;
         Thu, 17 Dec 2020 01:05:04 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1kphj5-000xuU-FW; Wed, 16 Dec 2020 20:05:03 -0500
-Message-ID: <20201217010503.320541798@goodmis.org>
+        id 1kphj5-000xuy-L4; Wed, 16 Dec 2020 20:05:03 -0500
+Message-ID: <20201217010503.521310301@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Wed, 16 Dec 2020 20:04:16 -0500
+Date:   Wed, 16 Dec 2020 20:04:17 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
@@ -29,9 +29,9 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Arnd Bergmann <arnd@arndb.de>,
         Lukas Bulwahn <lukas.bulwahn@gmail.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
-        Qiujun Huang <hqjagain@gmail.com>, stable@vger.kernel.org,
-        Anatoly Pugachev <matorola@gmail.com>
-Subject: [for-linus][PATCH 8/9] Revert: "ring-buffer: Remove HAVE_64BIT_ALIGNED_ACCESS"
+        Qiujun Huang <hqjagain@gmail.com>,
+        Lucas Stach <l.stach@pengutronix.de>
+Subject: [for-linus][PATCH 9/9] tracing: Offload eval map updates to a work queue
 References: <20201217010408.742794078@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,108 +41,82 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-It was believed that metag was the only architecture that required the ring
-buffer to keep 8 byte words aligned on 8 byte architectures, and with its
-removal, it was assumed that the ring buffer code did not need to handle
-this case. It appears that sparc64 also requires this.
+In order for tracepoints to export their enums to user space, the use of the
+TRACE_DEFINE_ENUM() macro is used. On boot up, the strings shown in the
+tracefs "print fmt" lines are processed, and all the enums registered by
+TRACE_DEFINE_ENUM are replaced with the interger value. This way, userspace
+tools that read the raw binary data, knows how to evaluate the raw events.
 
-The following was reported on a sparc64 boot up:
+This is currently done in an initcall, but it has been noticed that slow
+embedded boards that have tracing may take a few seconds to process them
+all, and a few seconds slow down on an embedded device is detrimental to the
+system.
 
-   kernel: futex hash table entries: 65536 (order: 9, 4194304 bytes, linear)
-   kernel: Running postponed tracer tests:
-   kernel: Testing tracer function:
-   kernel: Kernel unaligned access at TPC[552a20] trace_function+0x40/0x140
-   kernel: Kernel unaligned access at TPC[552a24] trace_function+0x44/0x140
-   kernel: Kernel unaligned access at TPC[552a20] trace_function+0x40/0x140
-   kernel: Kernel unaligned access at TPC[552a24] trace_function+0x44/0x140
-   kernel: Kernel unaligned access at TPC[552a20] trace_function+0x40/0x140
-   kernel: PASSED
+Instead, offload the work to a work queue and make sure that its finished by
+destroying the work queue (which flushes all work) in a late initcall. This
+will allow the system to continue to boot and run the updates in the
+background, and this speeds up the boot time. Note, the strings being
+updated are only used by user space, so finishing the process before the
+system is fully booted will prevent any race issues.
 
-Need to put back the 64BIT aligned code for the ring buffer.
+Link: https://lore.kernel.org/r/68d7b3327052757d0cd6359a6c9015a85b437232.camel@pengutronix.de
 
-Link: https://lore.kernel.org/r/CADxRZqzXQRYgKc=y-KV=S_yHL+Y8Ay2mh5ezeZUnpRvg+syWKw@mail.gmail.com
-
-Cc: stable@vger.kernel.org
-Fixes: 86b3de60a0b6 ("ring-buffer: Remove HAVE_64BIT_ALIGNED_ACCESS")
-Reported-by: Anatoly Pugachev <matorola@gmail.com>
+Reported-by: Lucas Stach <l.stach@pengutronix.de>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- arch/Kconfig               | 16 ++++++++++++++++
- kernel/trace/ring_buffer.c | 17 +++++++++++++----
- 2 files changed, 29 insertions(+), 4 deletions(-)
+ kernel/trace/trace.c | 32 +++++++++++++++++++++++++++++++-
+ 1 file changed, 31 insertions(+), 1 deletion(-)
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 56b6ccc0e32d..fa716994f77e 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -143,6 +143,22 @@ config UPROBES
- 	    managed by the kernel and kept transparent to the probed
- 	    application. )
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index eee484afcc51..eb5205e48733 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -9066,7 +9066,10 @@ int tracing_init_dentry(void)
+ extern struct trace_eval_map *__start_ftrace_eval_maps[];
+ extern struct trace_eval_map *__stop_ftrace_eval_maps[];
  
-+config HAVE_64BIT_ALIGNED_ACCESS
-+	def_bool 64BIT && !HAVE_EFFICIENT_UNALIGNED_ACCESS
-+	help
-+	  Some architectures require 64 bit accesses to be 64 bit
-+	  aligned, which also requires structs containing 64 bit values
-+	  to be 64 bit aligned too. This includes some 32 bit
-+	  architectures which can do 64 bit accesses, as well as 64 bit
-+	  architectures without unaligned access.
+-static void __init trace_eval_init(void)
++static struct workqueue_struct *eval_map_wq __initdata;
++static struct work_struct eval_map_work __initdata;
 +
-+	  This symbol should be selected by an architecture if 64 bit
-+	  accesses are required to be 64 bit aligned in this way even
-+	  though it is not a 64 bit architecture.
++static void __init eval_map_work_func(struct work_struct *work)
+ {
+ 	int len;
+ 
+@@ -9074,6 +9077,33 @@ static void __init trace_eval_init(void)
+ 	trace_insert_eval_map(NULL, __start_ftrace_eval_maps, len);
+ }
+ 
++static int __init trace_eval_init(void)
++{
++	INIT_WORK(&eval_map_work, eval_map_work_func);
 +
-+	  See Documentation/unaligned-memory-access.txt for more
-+	  information on the topic of unaligned memory accesses.
++	eval_map_wq = alloc_workqueue("eval_map_wq", WQ_UNBOUND, 0);
++	if (!eval_map_wq) {
++		pr_err("Unable to allocate eval_map_wq\n");
++		/* Do work here */
++		eval_map_work_func(&eval_map_work);
++		return -ENOMEM;
++	}
 +
- config HAVE_EFFICIENT_UNALIGNED_ACCESS
- 	bool
- 	help
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index e03bc4e5d482..926845eb5ab5 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -130,7 +130,16 @@ int ring_buffer_print_entry_header(struct trace_seq *s)
- #define RB_ALIGNMENT		4U
- #define RB_MAX_SMALL_DATA	(RB_ALIGNMENT * RINGBUF_TYPE_DATA_TYPE_LEN_MAX)
- #define RB_EVNT_MIN_SIZE	8U	/* two 32bit words */
--#define RB_ALIGN_DATA		__aligned(RB_ALIGNMENT)
++	queue_work(eval_map_wq, &eval_map_work);
++	return 0;
++}
 +
-+#ifndef CONFIG_HAVE_64BIT_ALIGNED_ACCESS
-+# define RB_FORCE_8BYTE_ALIGNMENT	0
-+# define RB_ARCH_ALIGNMENT		RB_ALIGNMENT
-+#else
-+# define RB_FORCE_8BYTE_ALIGNMENT	1
-+# define RB_ARCH_ALIGNMENT		8U
-+#endif
++static int __init trace_eval_sync(void)
++{
++	/* Make sure the eval map updates are finished */
++	if (eval_map_wq)
++		destroy_workqueue(eval_map_wq);
++	return 0;
++}
 +
-+#define RB_ALIGN_DATA		__aligned(RB_ARCH_ALIGNMENT)
- 
- /* define RINGBUF_TYPE_DATA for 'case RINGBUF_TYPE_DATA:' */
- #define RINGBUF_TYPE_DATA 0 ... RINGBUF_TYPE_DATA_TYPE_LEN_MAX
-@@ -2718,7 +2727,7 @@ rb_update_event(struct ring_buffer_per_cpu *cpu_buffer,
- 
- 	event->time_delta = delta;
- 	length -= RB_EVNT_HDR_SIZE;
--	if (length > RB_MAX_SMALL_DATA) {
-+	if (length > RB_MAX_SMALL_DATA || RB_FORCE_8BYTE_ALIGNMENT) {
- 		event->type_len = 0;
- 		event->array[0] = length;
- 	} else
-@@ -2733,11 +2742,11 @@ static unsigned rb_calculate_event_length(unsigned length)
- 	if (!length)
- 		length++;
- 
--	if (length > RB_MAX_SMALL_DATA)
-+	if (length > RB_MAX_SMALL_DATA || RB_FORCE_8BYTE_ALIGNMENT)
- 		length += sizeof(event.array[0]);
- 
- 	length += RB_EVNT_HDR_SIZE;
--	length = ALIGN(length, RB_ALIGNMENT);
-+	length = ALIGN(length, RB_ARCH_ALIGNMENT);
- 
- 	/*
- 	 * In case the time delta is larger than the 27 bits for it
++late_initcall_sync(trace_eval_sync);
++
++
+ #ifdef CONFIG_MODULES
+ static void trace_module_add_evals(struct module *mod)
+ {
 -- 
 2.29.2
 
