@@ -2,106 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34CB52DCCB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 07:47:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 894E32DCCB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 07:51:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727326AbgLQGrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 01:47:03 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:58121 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727145AbgLQGrC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 01:47:02 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1727084AbgLQGt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 01:49:59 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:59852 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726503AbgLQGt6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 01:49:58 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608187779; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=5DvfUupqVLoh/0vLxxTriTZKRuTh4+K/pLTz7gLYYGw=;
+ b=sMZthuDhbAENLqCVfbqlhPuseuvkZRs68BUqibqAtnWcXsulE9OmQ08FM8In+3nkttNnJhaV
+ hwh3U4wHmnBs0uX7aZPKIW56jU5O15AHqzmg2dlFBYr2V3eXNZWfFNwxS68KcttdI07NKp6d
+ uYqhKLp4FM6yliQRfgmcgW/Aeuc=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5fdaff73031793dcb49b04c1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Dec 2020 06:49:23
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 42DD7C43461; Thu, 17 Dec 2020 06:49:23 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CxMwC4jNtz9sW8;
-        Thu, 17 Dec 2020 17:46:19 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1608187580;
-        bh=zzxyExe56gGMPnZtWltbM/UtqBs1rZ5hul4IrgQJAqg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eyQkDON8rZTvQ190s8jlnad8WLhMpCqqf+9qZE9UkeiuT3u6vX4wg3x51pSnoQpww
-         MTiF7TSzqC8o+qkqAfknGtllPdmcnlkYvZuhJv0OwqmzEgnBsCfa1KvKqtVp3oa9az
-         +k+wHDW74oNPdz2XHfGn+q6mGpLKREzeP4lCl7CgQ2b3GO/YoOv0yuRAHbqD8H9giU
-         PcUSwLSEZzm7xQREmspbHiXe1S1hJB8hsu9Biq9BsAp+AFjE3cjwjxVfkCt/4ikbJF
-         HkNHjiiO48KolSwMxkD4CZ8CL9hHctd4o7BYqfS1dqnhY5btOZzkUCnx97q6v9MCeI
-         7X/vk0BPrJ1pA==
-Date:   Thu, 17 Dec 2020 17:46:18 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Kristina Martsenko <kristina.martsenko@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: arm64: entry.S:774: Error: immediate out of range at operand 3
- -- `and x2,x19,
-Message-ID: <20201217174618.401f2dc8@canb.auug.org.au>
-In-Reply-To: <CA+G9fYtHimKZDuJGAzF86OY_F9j93oLPcohJRVLU+RLKEDCrbg@mail.gmail.com>
-References: <CA+G9fYtHimKZDuJGAzF86OY_F9j93oLPcohJRVLU+RLKEDCrbg@mail.gmail.com>
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9BD89C433C6;
+        Thu, 17 Dec 2020 06:49:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9BD89C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/gTpo6cq9fwsY9HvS/9w7mB7";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] ath10k: Fix error handling in case of CE pipe init
+ failure
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1607713210-18320-1-git-send-email-pillair@codeaurora.org>
+References: <1607713210-18320-1-git-send-email-pillair@codeaurora.org>
+To:     Rakesh Pillai <pillair@codeaurora.org>
+Cc:     ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, briannorris@chromium.org,
+        dianders@chromium.org, kuabhs@chromium.org,
+        youghand@codeaurora.org, Rakesh Pillai <pillair@codeaurora.org>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20201217064923.42DD7C43461@smtp.codeaurora.org>
+Date:   Thu, 17 Dec 2020 06:49:23 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/gTpo6cq9fwsY9HvS/9w7mB7
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Rakesh Pillai <pillair@codeaurora.org> wrote:
 
-Hi Naresh,
+> Currently if the copy engine pipe init fails for snoc based
+> chipsets, the rri is not freed.
+> 
+> Fix this error handling for copy engine pipe init
+> failure.
+> 
+> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
+> 
+> Fixes: 4945af5b264f ("ath10k: enable SRRI/DRRI support on ddr for WCN3990")
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> Reviewed-by: Brian Norris <briannorris@chromium.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-On Thu, 17 Dec 2020 12:13:03 +0530 Naresh Kamboju <naresh.kamboju@linaro.or=
-g> wrote:
->
-> arm64 build failed on Linux next 20201217 tag with gcc-8, gcc-9 and gcc-1=
-0.
->=20
-> make --silent --keep-going --jobs=3D8
-> O=3D/home/tuxbuild/.cache/tuxmake/builds/2/tmp ARCH=3Darm64
-> CROSS_COMPILE=3Daarch64-linux-gnu- 'CC=3Dsccache aarch64-linux-gnu-gcc'
-> 'HOSTCC=3Dsccache gcc'
-> arch/arm64/kernel/entry.S: Assembler messages:
-> arch/arm64/kernel/entry.S:774: Error: immediate out of range at
-> operand 3 -- `and
-> x2,x19,#((1<<1)|(1<<0)|(1<<2)|(1<<3)|(1<<4)|(1<<5)|(1<<7))'
-> make[3]: *** [scripts/Makefile.build:360: arch/arm64/kernel/entry.o] Erro=
-r 1
+Patch applied to ath-next branch of ath.git, thanks.
 
-This is fixed by commit
+31561e8557cd ath10k: Fix error handling in case of CE pipe init failure
 
-  870d16757ba8 ("arm64: make _TIF_WORK_MASK bits contiguous")
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/1607713210-18320-1-git-send-email-pillair@codeaurora.org/
 
-in Linus' tree which will be in linux-next tomorrow.
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/gTpo6cq9fwsY9HvS/9w7mB7
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/a/rsACgkQAVBC80lX
-0GwVVAf9F8gMswhzGzPSLBocjcICVFyIk0gdzipet/ZG7T/Tb509CakZw1tp5DtA
-4S2f5lck3C9OvG66/qDJvFZr4ME3JAmJZexeZHIMYusPjrqhmFuXta9/ZYIhMWNs
-UH+bB9XZ5DJu/IHAdX6ICrEhPuhD3Lh+NoOdNJIhzw/nLjbtnGVjZ6MnmAQBa9Gr
-eEwuPjbE//mMttkQVW+FKgiTDKCMmBN1LPwxTkphdd3DJ+m8CtYDT/9hElAq2NEm
-eaKpAmwAyu3/BxXJsqP87Z4vZeavWZRPQ5K4fLCxWpV9Vu+lcHKROMv19msgHje5
-kMSm64npuZ8U7TaIa9C0yFyhsXuwgQ==
-=ZAGG
------END PGP SIGNATURE-----
-
---Sig_/gTpo6cq9fwsY9HvS/9w7mB7--
