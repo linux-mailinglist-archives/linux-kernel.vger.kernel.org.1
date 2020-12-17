@@ -2,47 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A09412DD57C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 17:50:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EA2A2DD580
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 17:53:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728628AbgLQQt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 11:49:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52034 "EHLO mail.kernel.org"
+        id S1728158AbgLQQwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 11:52:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727368AbgLQQtz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 11:49:55 -0500
-Date:   Thu, 17 Dec 2020 16:49:11 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Lecopzer Chen <lecopzer.chen@mediatek.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, mark.rutland@arm.com,
-        matthias.bgg@gmail.com, will@kernel.org, yj.chiang@mediatek.com
-Subject: Re: [PATCH] arm64: Kconfig: Add SYS_SUPPORTS_APM_EMULATION
-Message-ID: <20201217164911.GB20278@gaia>
-References: <20201216155820.GH2511@gaia>
- <20201216164147.9854-1-lecopzer.chen@mediatek.com>
+        id S1727253AbgLQQwB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 11:52:01 -0500
+X-Gm-Message-State: AOAM5304DHwpgdskwgv1Fy4ikdK/jpMdUI7F6fdAtJPVxrRMIEIpq7e6
+        VCC2VFPsUyvX/wIPAd9LifS5+CXvUnNpRElxHw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608223880;
+        bh=P5m3N09g7UEzzx6CDYAyM0fEzFb1mPowgoyMkOKqZKA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=G8RLUc9w2UVQetcvSaxphIRhXVVnrAQqFD9f92OuLOeVEoH4e7y0HxUC2X5TKgQ/z
+         S0gy3uALB+JuCNHh99PMJt/rJCjpZPBIY06G/FfPjT0r04TRb+ri56pBkcuwTfOXG/
+         byL+uAwmw/5izHvJquFUhEAKNa3DD7G3cOhnvid7wD7Idy3ScddUsX49rh67+2d1n/
+         du72k78TeAByUQBvzEoiEm2wjqdluYpssbJb9ZPLGW9iZPepOC+r0RNce2AFH+2hcD
+         I07SlzSLdlhDfApVSYaq5p2ttj8c0Na6USnBZ2MfNIEAht4exowyesWpOXCceiW/nW
+         IPGU48CAXukKA==
+X-Google-Smtp-Source: ABdhPJyBzkrZgMWMBcvlcnLo3tCgsXg3Xa1J3OEC4I62tFNfvgTBx9zRDZ9KJ3sxjoUoRLKwyU4RbkSynkCO9SPDknk=
+X-Received: by 2002:ad4:4a72:: with SMTP id cn18mr29845197qvb.50.1608223879583;
+ Thu, 17 Dec 2020 08:51:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201216164147.9854-1-lecopzer.chen@mediatek.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201204092752.GE74177@piout.net> <20201211215611.24392-1-rasmus.villemoes@prevas.dk>
+ <20201211215611.24392-2-rasmus.villemoes@prevas.dk> <CAL_JsqJ-5gwycTRQCdX=ZsefEJ=F1GyTjjDW6QB1PBynibFzLg@mail.gmail.com>
+ <b3c05d29-3ed6-d5f5-d1dd-0ddec1f89276@prevas.dk>
+In-Reply-To: <b3c05d29-3ed6-d5f5-d1dd-0ddec1f89276@prevas.dk>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Thu, 17 Dec 2020 10:51:08 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+HeeFUR1Yv37X4OnkEPvSiAc2B86=Nshxz7tmvpKk+zw@mail.gmail.com>
+Message-ID: <CAL_Jsq+HeeFUR1Yv37X4OnkEPvSiAc2B86=Nshxz7tmvpKk+zw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: rtc: add reset-source property
+To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Cc:     "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
+        <linux-rtc@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Qiang Zhao <qiang.zhao@nxp.com>,
+        Bruno Thomsen <bruno.thomsen@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 12:41:47AM +0800, Lecopzer Chen wrote:
-> so there is two points
-> 1. out-of-tree function can't be approved
->     I totally agree with this :) so we may have a driver upstream in the future.
+On Fri, Dec 11, 2020 at 5:10 PM Rasmus Villemoes
+<rasmus.villemoes@prevas.dk> wrote:
+>
+> On 11/12/2020 23.30, Rob Herring wrote:
+> > On Fri, Dec 11, 2020 at 3:56 PM Rasmus Villemoes
+> > <rasmus.villemoes@prevas.dk> wrote:
+> >>
+> >> Some RTCs, e.g. the pcf2127, can be used as a hardware watchdog. But
+> >> if the reset pin is not actually wired up, the driver exposes a
+> >> watchdog device that doesn't actually work.
+> >>
+> >> Provide a standard binding that can be used to indicate that a given
+> >> RTC can perform a reset of the machine, similar to wakeup-source.
+> >
+> > Why not use the watchdog 'timeout-sec' property?
+>
+> Wouldn't that be overloading that property? AFAIU, that is used to ask
+> the kernel to program an initial timeout value into the watchdog device.
+> But what if one doesn't want to start the watchdog device at kernel
+> boot, but just indicate that the RTC has that capability?
 
-It may not be upstreamable if it relies on the old APM interface ;).
+Yeah, I guess you're right.
 
-> 2. APM not make sense on arm64
-> Could you please let me konw the reason why APM on ARM64 doesn't make sense?
+> It's quite possible that if it can act as a watchdog device (and
+> has-watchdog was also suggested), one would also want timeout-sec and
+> other watchdog bindings to apply. But that can be added later, by those
+> who actually want that.
+>
+> For now, I'd really like to get my board booting again (or rather, not
+> get reset by the real watchdog just because the pcf2127 driver now
+> exposes something as /dev/wathdog0, pushing the real one to
+> /dev/wathcdog1 which doesn't get pinged from userspace).
 
-It's a very old interface, even on x86 it is disabled in the distro
-kernels. There are more modern alternatives and you should update your
-driver and user space to use them (e.g. /sys/power/).
+I'm wondering how you solve which wdog to ping when there are multiple
+without relying on numbering. I guess 'reset-source' will solve that
+even if that's not your current fix. So I guess I'm fine with this.
 
--- 
-Catalin
+But you need to send to the DT list so checks are run.
+
+Rob
