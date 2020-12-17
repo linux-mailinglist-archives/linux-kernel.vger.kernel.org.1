@@ -2,250 +2,373 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3EC12DCB9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 05:05:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 728682DCB9D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 05:07:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728330AbgLQEEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 23:04:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53232 "EHLO
+        id S1727892AbgLQEH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 23:07:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727788AbgLQEEc (ORCPT
+        with ESMTP id S1726908AbgLQEH0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 23:04:32 -0500
-Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2CF9C061794;
-        Wed, 16 Dec 2020 20:03:51 -0800 (PST)
-Received: by mail-vk1-xa2d.google.com with SMTP id m67so3820591vkg.7;
-        Wed, 16 Dec 2020 20:03:51 -0800 (PST)
+        Wed, 16 Dec 2020 23:07:26 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A05C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 20:06:46 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id lb18so2911855pjb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 20:06:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=wpvV4G1320CTcs8x7p4CfEdvxJWtV5tnsFEXn9LRPH0=;
-        b=TKMEytSWe/cqxWm6g5cTDMI+7fdNKB///tfnib7Q4WpFIS+i51uonxTKysS/ImG9R5
-         J1PR4KxmjnXVJx7TAaOmtHSkAGpIlYp1oAa7PZI7OwLq6tJ84NY4jNEGzd2J1dUpPZqg
-         MFixL+YJkvYH7d07ZPMhwV2DjIrYf6wMkYm6erAczWSFNbP4jQ73NJw85q3Fv+3p+DBX
-         it295E2eoliUyzkNHZ0ySglUXEJVuWHd78kc7MoRUp05p/QPG04FvY4Vwis+CCszJtxz
-         K1HEWdvRvYS9t/4uYBKXc+quUcaXW8JSIiWbNGyCONTxivEyVlhd9DvU4594+NXLZXJg
-         wBqQ==
+        bh=CuQTsm5m78rhlvOaQpHCZ0Hy/MeDPaNHg0VT5s/kHYM=;
+        b=1LoQvEKMIYgQcUpFFzzAuB3i3uLtLEzZI2cxrr21ZhixUFJoeznemU9MvY7i+2t7Xq
+         Ap3/zHcE4UUBJCwwbGrXrEfVHf/gwgI/gKcytUrP1zHoe9hszsNNBWGfMHHun7kC/fo2
+         CRvXpyevmVDetwvl104xCgbVhMOJ1dX9i/cYwFeIleppDtziIDTtEbE0oTgPviLFznLw
+         qWae2+cJl38TL13fpZeZNoPT3drlSOEjYj1sKcN+PcNoaJohUj8ww0O6Lb0sr42owa1L
+         y8H1u1Wbz/WX5iGCRHmcUw5ARlJDsEanRzdRhmX4JxLpg/XNBJHR2u1BNYUt8Ol9k8NU
+         aR1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wpvV4G1320CTcs8x7p4CfEdvxJWtV5tnsFEXn9LRPH0=;
-        b=Qn2nwN/juq6FULSTE8WgBY38dMJ2xGIOJZ9zXljyYxY9oaX+aEPgiRBtDYRjJaAUrK
-         VCYmJ2DWNpM70/+QE0ryBiTw+nVok+4GU6rOz8rIJl3xGqZOfS+rz1RcqR4vBNM+UcKJ
-         8Tn9Q8KPJdBo8k3lBB5xFoveYJUj5TPhGAv/PTxv2iYPTPoYJHgWBJzS0p+3E63Npx+L
-         KIoBPGCFWKqXiHocDr3ANXXMeJ4g5yIoIivec2mkkBYkiaAWYzwwdLycSXfuK364G2yM
-         PgtDsRt+cO8LPdFPAflKPc4bem3Ms96gH8PvQ7RwyR1+2meSJGrAEITeaKdJzvVRDXwp
-         Sudg==
-X-Gm-Message-State: AOAM533KnNNmbb9o0GyKGW5Zl4G5JRufqJ8AD2b76DHb828s2a9MgKY9
-        je+Q66XK+Ne9x4JxkC4Q/UkCYT9XlUVV1A6XtPA=
-X-Google-Smtp-Source: ABdhPJz0OJIv+LRrzEK6zUQBMMIDFInFxUEMu4weV89KWfpYwx75ylbOSuKYe2hLBmSvzV5mI7uxqMjFTwE6YzXv0MQ=
-X-Received: by 2002:a1f:fc84:: with SMTP id a126mr25223346vki.23.1608177830721;
- Wed, 16 Dec 2020 20:03:50 -0800 (PST)
+        bh=CuQTsm5m78rhlvOaQpHCZ0Hy/MeDPaNHg0VT5s/kHYM=;
+        b=onQA83p9g7qQzb1l6E+BX8ojlAIb/+xHkr1nheX/doFrQxoX5qA6LYN78y9/bnFANU
+         E7RsYYib4qDaBGWdVShszZ+V1fa81YALYY8SymuN6Qy2iKpHG5WBcjwRJegRhoboZXfm
+         ELCjTv+h6BBaTmI0YxFlED9vDulXH1Gz9ds7DdG2qJUu0A8irtf8vhZhxROb4FnSPTXX
+         3c9LBlvNY/ZzTykjxdAnF55JfbKP80W64sImZoS+rkCfcIlE6Og+sxU4jJ3U3Mi/H+bF
+         9J3YXcKjo/ybX2JtmEIXFz0gEjG/OM0TyUIqqT9udpNgcslacm/9vx1hlgWBRfP4/YeV
+         9VjQ==
+X-Gm-Message-State: AOAM533qcHFReugXv5Lm81IK4fmrRD3ym5OQvLQxBTN+NtBIPLX93GFj
+        8MDN/cgwc8IrY5DySusxSl7xiDSzbKxrSbU0fSMgFA==
+X-Google-Smtp-Source: ABdhPJyaPTdCa5ikXoniElng2cjsW6oqyjFvGVlQ86dsmp5zc7Oapc7xBkAFMeQCq7H+mZ58wjmyxm3fUwnsF58z4uA=
+X-Received: by 2002:a17:90a:5405:: with SMTP id z5mr6219952pjh.13.1608178006045;
+ Wed, 16 Dec 2020 20:06:46 -0800 (PST)
 MIME-Version: 1.0
-References: <20201215212228.185517-1-clemens.gruber@pqgruber.com> <20201215212228.185517-7-clemens.gruber@pqgruber.com>
-In-Reply-To: <20201215212228.185517-7-clemens.gruber@pqgruber.com>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Wed, 16 Dec 2020 23:03:39 -0500
-Message-ID: <CAGngYiWHrq0f=bQSRpkHtU6Uo4UJ8XoNTxdT6o8njE3cH3H2Mw@mail.gmail.com>
-Subject: Re: [PATCH v5 7/7] pwm: pca9685: Restrict period change for prescaler users
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        David Jander <david@protonic.nl>
+References: <20201213154534.54826-1-songmuchun@bytedance.com>
+ <20201213154534.54826-4-songmuchun@bytedance.com> <5936a766-505a-eab0-42a6-59aab2585880@oracle.com>
+In-Reply-To: <5936a766-505a-eab0-42a6-59aab2585880@oracle.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 17 Dec 2020 12:06:09 +0800
+Message-ID: <CAMZfGtXmQrdLeMs4dz60aPuLzNogEdN35EAeLRT-26gZtW64vA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v9 03/11] mm/hugetlb: Free the vmemmap
+ pages associated with each HugeTLB page
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Clemens, see below.
-
-On Wed, Dec 16, 2020 at 7:53 AM Clemens Gruber
-<clemens.gruber@pqgruber.com> wrote:
+On Thu, Dec 17, 2020 at 6:08 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
 >
-> Previously, the last used PWM channel could change the global prescale
-> setting, even if other channels were already in use.
+> On 12/13/20 7:45 AM, Muchun Song wrote:
+> > Every HugeTLB has more than one struct page structure. We __know__ that
+> > we only use the first 4(HUGETLB_CGROUP_MIN_ORDER) struct page structures
+> > to store metadata associated with each HugeTLB.
+> >
+> > There are a lot of struct page structures associated with each HugeTLB
+> > page. For tail pages, the value of compound_head is the same. So we can
+> > reuse first page of tail page structures. We map the virtual addresses
+> > of the remaining pages of tail page structures to the first tail page
+> > struct, and then free these page frames. Therefore, we need to reserve
+> > two pages as vmemmap areas.
+> >
+> > When we allocate a HugeTLB page from the buddy, we can free some vmemmap
+> > pages associated with each HugeTLB page. It is more appropriate to do it
+> > in the prep_new_huge_page().
+> >
+> > The free_vmemmap_pages_per_hpage(), which indicates how many vmemmap
+> > pages associated with a HugeTLB page can be freed, returns zero for
+> > now, which means the feature is disabled. We will enable it once all
+> > the infrastructure is there.
+> >
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > ---
+> >  include/linux/bootmem_info.h |  27 +++++-
+> >  include/linux/mm.h           |   2 +
+> >  mm/Makefile                  |   1 +
+> >  mm/hugetlb.c                 |   3 +
+> >  mm/hugetlb_vmemmap.c         | 209 +++++++++++++++++++++++++++++++++++++++++++
+> >  mm/hugetlb_vmemmap.h         |  20 +++++
+> >  mm/sparse-vmemmap.c          | 170 +++++++++++++++++++++++++++++++++++
+> >  7 files changed, 431 insertions(+), 1 deletion(-)
+> >  create mode 100644 mm/hugetlb_vmemmap.c
+> >  create mode 100644 mm/hugetlb_vmemmap.h
 >
-> Fix it by only allowing the first user of the prescaler to change the
-> global chip-wide prescale setting. If there is more than one channel in
-> use, the prescale settings resulting from the chosen periods must match.
+> > diff --git a/mm/sparse-vmemmap.c b/mm/sparse-vmemmap.c
+> > index 16183d85a7d5..78c527617e8d 100644
+> > --- a/mm/sparse-vmemmap.c
+> > +++ b/mm/sparse-vmemmap.c
+> > @@ -27,8 +27,178 @@
+> >  #include <linux/spinlock.h>
+> >  #include <linux/vmalloc.h>
+> >  #include <linux/sched.h>
+> > +#include <linux/pgtable.h>
+> > +#include <linux/bootmem_info.h>
+> > +
+> >  #include <asm/dma.h>
+> >  #include <asm/pgalloc.h>
+> > +#include <asm/tlbflush.h>
+> > +
+> > +/*
+> > + * vmemmap_rmap_walk - walk vmemmap page table
 >
-> PWMs that are disabled or have a duty cycle of 0% or 100% are not
-> considered to be using the prescaler as they have the full OFF or full
-> ON bits set. This also applies to channels used as GPIOs.
->
-> Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
-> ---
->  drivers/pwm/pwm-pca9685.c | 51 +++++++++++++++++++++++++++++++++------
->  1 file changed, 44 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/pwm/pwm-pca9685.c b/drivers/pwm/pwm-pca9685.c
-> index ff916980de49..438492d4aed4 100644
-> --- a/drivers/pwm/pwm-pca9685.c
-> +++ b/drivers/pwm/pwm-pca9685.c
-> @@ -23,11 +23,11 @@
->  #include <linux/bitmap.h>
->
->  /*
-> - * Because the PCA9685 has only one prescaler per chip, changing the period of
-> - * one channel affects the period of all 16 PWM outputs!
-> - * However, the ratio between each configured duty cycle and the chip-wide
-> - * period remains constant, because the OFF time is set in proportion to the
-> - * counter range.
-> + * Because the PCA9685 has only one prescaler per chip, only the first channel
-> + * that uses the prescaler is allowed to change the prescale register.
-> + * PWM channels requested afterwards must use a period that results in the same
-> + * prescale setting as the one set by the first requested channel, unless they
-> + * use duty cycles of 0% or 100% (prescaler not used for full OFF/ON).
->   */
->
->  #define PCA9685_MODE1          0x00
-> @@ -80,6 +80,8 @@ struct pca9685 {
->         struct pwm_chip chip;
->         struct regmap *regmap;
->         bool staggered_outputs;
-> +       struct mutex prescaler_users_lock;
+> I am not sure if 'rmap' should be part of these names.  rmap today is mostly
+> about reverse mapping lookup.  Did you use rmap for 'remap', or because this
+> code is patterned after the page table walking rmap code?  Just think the
+> naming could cause some confusion.
 
-Keep things simple by re-using the "struct mutex lock" below?
-This code isn't performance-intensive, so having a single lock for
-pwm/gpio requests + pwm_apply() is probably ok.
-
-> +       DECLARE_BITMAP(prescaler_users, PCA9685_MAXCHAN + 1);
-
-Rename to pwms_use_prescale ?
-
->  #if IS_ENABLED(CONFIG_GPIOLIB)
->         struct mutex lock;
->         struct gpio_chip gpio;
-> @@ -92,6 +94,18 @@ static inline struct pca9685 *to_pca(struct pwm_chip *chip)
->         return container_of(chip, struct pca9685, chip);
->  }
->
-> +/* This function is supposed to be called with the prescaler_users_lock held */
-> +static inline bool pca9685_may_change_prescaler(struct pca9685 *pca, int channel)
-
-Drop the inline? Only the compiler knows if inlining this function makes sense
-on a platform (armv7, x86, etc). Compilers are usually better at this then
-humans...
-
-Rename to pca9685_prescaler_can_change() ?
-
-> +{
-> +       /*
-> +        * A PWM channel may only change the prescaler if there are no users of
-> +        * the prescaler yet or that same channel is the only one in use.
-> +        */
-> +       return bitmap_empty(pca->prescaler_users, PCA9685_MAXCHAN + 1) ||
-> +               (bitmap_weight(pca->prescaler_users, PCA9685_MAXCHAN + 1) == 1 &&
-> +                test_bit(channel, pca->prescaler_users));
-> +}
-
-I found this logic expression quite complex to read. Perhaps simplify by using
-a few steps? For example:
-
-/* if prescaler not in use, we can always change it */
-if (empty) return true;
-/* if more than one pwm is using the prescaler, we can never change it */
-if (weight > 1) return false;
-/* one pwm is using the prescaler, we can only change it if it's us */
-return test_bit(us);
-
-> +
->  static void pca9685_pwm_set_duty(struct pca9685 *pca, int channel, unsigned int duty)
->  {
->         unsigned int on, off;
-> @@ -337,16 +351,25 @@ static int pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
->         duty = PCA9685_COUNTER_RANGE * state->duty_cycle;
->         duty = DIV_ROUND_CLOSEST_ULL(duty, state->period);
->
-> +       mutex_lock(&pca->prescaler_users_lock);
-> +
->         if (!state->enabled || duty < 1) {
->                 pca9685_pwm_set_duty(pca, pwm->hwpwm, 0);
-> -               return 0;
-> +               goto prescaler_unused;
->         } else if (duty == PCA9685_COUNTER_RANGE) {
->                 pca9685_pwm_set_duty(pca, pwm->hwpwm, duty);
-> -               return 0;
-> +               goto prescaler_unused;
->         }
->
->         regmap_read(pca->regmap, PCA9685_PRESCALE, &val);
->         if (prescale != val) {
-> +               if (!pca9685_may_change_prescaler(pca, pwm->hwpwm)) {
-> +                       mutex_unlock(&pca->prescaler_users_lock);
-> +                       dev_err(chip->dev,
-> +                               "prescaler not set: already in use with different setting!\n");
-> +                       return -EBUSY;
-> +               }
-> +
->                 /*
->                  * Putting the chip briefly into SLEEP mode
->                  * at this point won't interfere with the
-> @@ -364,6 +387,14 @@ static int pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
->         }
->
->         pca9685_pwm_set_duty(pca, pwm->hwpwm, duty);
-> +
-> +       set_bit(pwm->hwpwm, pca->prescaler_users);
-> +       mutex_unlock(&pca->prescaler_users_lock);
-> +       return 0;
-> +
-> +prescaler_unused:
-> +       clear_bit(pwm->hwpwm, pca->prescaler_users);
-> +       mutex_unlock(&pca->prescaler_users_lock);
->         return 0;
->  }
-
-The need for the mutex makes this function quite "messy": we have to guard all
-the exits, and that's easy to forget.
-
-Maybe simplify the function by moving the mutex to a helper?
-Example:
-
-static int __pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
-     const struct pwm_state *state)
-{
- ... just do stuff and don't worry about the mutex
-}
-
-static int pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
-     const struct pwm_state *state)
-{
-    /* document why we serialize pwm_apply */
-    mutex_lock();
-    __pca9685_pwm_apply(chip, pwm, state);
-    mutex_unlock();
-}
+Yeah. I should use "remap" to avoid confusion.
 
 >
-> @@ -422,7 +453,11 @@ static void pca9685_pwm_free(struct pwm_chip *chip, struct pwm_device *pwm)
->  {
->         struct pca9685 *pca = to_pca(chip);
+> > + *
+> > + * @rmap_pte:                called for each non-empty PTE (lowest-level) entry.
+> > + * @reuse:           the page which is reused for the tail vmemmap pages.
+> > + * @vmemmap_pages:   the list head of the vmemmap pages that can be freed.
+> > + */
+> > +struct vmemmap_rmap_walk {
+> > +     void (*rmap_pte)(pte_t *pte, unsigned long addr,
+> > +                      struct vmemmap_rmap_walk *walk);
+> > +     struct page *reuse;
+> > +     struct list_head *vmemmap_pages;
+> > +};
+> > +
+> > +/*
+> > + * The index of the pte page table which is mapped to the tail of the
+> > + * vmemmap page.
+> > + */
+> > +#define VMEMMAP_TAIL_PAGE_REUSE              -1
 >
-> +       mutex_lock(&pca->prescaler_users_lock);
-> +       clear_bit(pwm->hwpwm, pca->prescaler_users);
->         pca9685_pwm_set_duty(pca, pwm->hwpwm, 0);
-> +       mutex_unlock(&pca->prescaler_users_lock);
-> +
->         pm_runtime_put(chip->dev);
->         pca9685_pwm_clear_inuse(pca, pwm->hwpwm);
->  }
-> @@ -463,6 +498,8 @@ static int pca9685_pwm_probe(struct i2c_client *client,
+> That is the index/offset from the range to be remapped.  See comments below.
+
+You are right. I need to update the comment.
+
 >
->         i2c_set_clientdata(client, pca);
+> > +
+> > +static void vmemmap_pte_range(pmd_t *pmd, unsigned long addr,
+> > +                           unsigned long end, struct vmemmap_rmap_walk *walk)
+> > +{
+> > +     pte_t *pte;
+> > +
+> > +     pte = pte_offset_kernel(pmd, addr);
+> > +     do {
+> > +             BUG_ON(pte_none(*pte));
+> > +
+> > +             if (!walk->reuse)
+> > +                     walk->reuse = pte_page(pte[VMEMMAP_TAIL_PAGE_REUSE]);
 >
-> +       mutex_init(&pca->prescaler_users_lock);
-> +
->         regmap_read(pca->regmap, PCA9685_MODE2, &reg);
+> It may be just me, but I don't like the pte[-1] here.  It certainly does work
+> as designed because we want to remap all pages in the range to the page before
+> the range (at offset -1).  But, we do not really validate this 'reuse' page.
+> There is the BUG_ON(pte_none(*pte)) as a sanity check, but we do nothing similar
+> for pte[-1].  Based on the usage for HugeTLB pages, we can be confident that
+> pte[-1] is actually a pte.  In discussions with Oscar, you mentioned another
+> possible use for these routines.
+
+Yeah, we should add a BUG_ON for pte[-1].
+
 >
->         if (device_property_read_bool(&client->dev, "invert"))
+> Don't change anything based on my opinion only.  I would like to see what
+> others think as well.
+>
+> > +
+> > +             if (walk->rmap_pte)
+> > +                     walk->rmap_pte(pte, addr, walk);
+> > +     } while (pte++, addr += PAGE_SIZE, addr != end);
+> > +}
+> > +
+> > +static void vmemmap_pmd_range(pud_t *pud, unsigned long addr,
+> > +                           unsigned long end, struct vmemmap_rmap_walk *walk)
+> > +{
+> > +     pmd_t *pmd;
+> > +     unsigned long next;
+> > +
+> > +     pmd = pmd_offset(pud, addr);
+> > +     do {
+> > +             BUG_ON(pmd_none(*pmd));
+> > +
+> > +             next = pmd_addr_end(addr, end);
+> > +             vmemmap_pte_range(pmd, addr, next, walk);
+> > +     } while (pmd++, addr = next, addr != end);
+> > +}
+> > +
+> > +static void vmemmap_pud_range(p4d_t *p4d, unsigned long addr,
+> > +                           unsigned long end, struct vmemmap_rmap_walk *walk)
+> > +{
+> > +     pud_t *pud;
+> > +     unsigned long next;
+> > +
+> > +     pud = pud_offset(p4d, addr);
+> > +     do {
+> > +             BUG_ON(pud_none(*pud));
+> > +
+> > +             next = pud_addr_end(addr, end);
+> > +             vmemmap_pmd_range(pud, addr, next, walk);
+> > +     } while (pud++, addr = next, addr != end);
+> > +}
+> > +
+> > +static void vmemmap_p4d_range(pgd_t *pgd, unsigned long addr,
+> > +                           unsigned long end, struct vmemmap_rmap_walk *walk)
+> > +{
+> > +     p4d_t *p4d;
+> > +     unsigned long next;
+> > +
+> > +     p4d = p4d_offset(pgd, addr);
+> > +     do {
+> > +             BUG_ON(p4d_none(*p4d));
+> > +
+> > +             next = p4d_addr_end(addr, end);
+> > +             vmemmap_pud_range(p4d, addr, next, walk);
+> > +     } while (p4d++, addr = next, addr != end);
+> > +}
+> > +
+> > +static void vmemmap_remap_range(unsigned long start, unsigned long end,
+> > +                             struct vmemmap_rmap_walk *walk)
+> > +{
+> > +     unsigned long addr = start;
+> > +     unsigned long next;
+> > +     pgd_t *pgd;
+> > +
+> > +     VM_BUG_ON(!IS_ALIGNED(start, PAGE_SIZE));
+> > +     VM_BUG_ON(!IS_ALIGNED(end, PAGE_SIZE));
+> > +
+> > +     pgd = pgd_offset_k(addr);
+> > +     do {
+> > +             BUG_ON(pgd_none(*pgd));
+> > +
+> > +             next = pgd_addr_end(addr, end);
+> > +             vmemmap_p4d_range(pgd, addr, next, walk);
+> > +     } while (pgd++, addr = next, addr != end);
+> > +
+> > +     flush_tlb_kernel_range(start, end);
+> > +}
+> > +
+> > +/*
+> > + * Free a vmemmap page. A vmemmap page can be allocated from the memblock
+> > + * allocator or buddy allocator. If the PG_reserved flag is set, it means
+> > + * that it allocated from the memblock allocator, just free it via the
+> > + * free_bootmem_page(). Otherwise, use __free_page().
+> > + */
+> > +static inline void free_vmemmap_page(struct page *page)
+> > +{
+> > +     if (PageReserved(page))
+> > +             free_bootmem_page(page);
+> > +     else
+> > +             __free_page(page);
+> > +}
+> > +
+> > +/* Free a list of the vmemmap pages */
+> > +static void free_vmemmap_page_list(struct list_head *list)
+> > +{
+> > +     struct page *page, *next;
+> > +
+> > +     list_for_each_entry_safe(page, next, list, lru) {
+> > +             list_del(&page->lru);
+> > +             free_vmemmap_page(page);
+> > +     }
+> > +}
+> > +
+> > +static void vmemmap_remap_reuse_pte(pte_t *pte, unsigned long addr,
+> > +                                 struct vmemmap_rmap_walk *walk)
+>
+> See vmemmap_remap_reuse rename suggestion below.  I would suggest reuse
+> be dropped from the name here and just be called 'vmemmap_remap_pte'.
+
+OK. Will do that.
+
+>
+> > +{
+> > +     /*
+> > +      * Make the tail pages are mapped with read-only to catch
+> > +      * illegal write operation to the tail pages.
+> > +      */
+> > +     pgprot_t pgprot = PAGE_KERNEL_RO;
+> > +     pte_t entry = mk_pte(walk->reuse, pgprot);
+> > +     struct page *page;
+> > +
+> > +     page = pte_page(*pte);
+> > +     list_add(&page->lru, walk->vmemmap_pages);
+> > +
+> > +     set_pte_at(&init_mm, addr, pte, entry);
+> > +}
+> > +
+> > +/**
+> > + * vmemmap_remap_reuse - remap the vmemmap virtual address range
+>
+> My original commnet here was:
+>
+> Not sure if the word '_reuse' is best in this function name.  To me, the name
+> implies this routine will reuse vmemmap pages.  Perhaps, it makes more sense
+> to rename as 'vmemmap_remap_free'?  It will first remap, then free vmemmap.
+
+The vmemmap_remap_free is also a good name to me.
+In the next patch, we can use vmemmap_remap_alloc for
+allocating vmemmap pages. Looks very symmetrical. :-)
+
+Thanks Mike.
+
+>
+> But, then I looked at the code above and perhaps you are using the word
+> '_reuse' because the page before the range will be reused?  The vmemmap
+
+Yeah. You are right.
+
+> page at offset VMEMMAP_TAIL_PAGE_REUSE (-1).
+>
+> > + *                       [start, start + size) to the page which
+> > + *                       [start - PAGE_SIZE, start) is mapped.
+> > + * @start:   start address of the vmemmap virtual address range
+> > + * @end:     size of the vmemmap virtual address range
+>
+>       ^^^^ should be @size:
+
+Oh, Yeah. Forgot to update it. Thanks.
+
+>
 > --
-> 2.29.2
+> Mike Kravetz
 >
+> > + */
+> > +void vmemmap_remap_reuse(unsigned long start, unsigned long size)
+> > +{
+> > +     unsigned long end = start + size;
+> > +     LIST_HEAD(vmemmap_pages);
+> > +
+> > +     struct vmemmap_rmap_walk walk = {
+> > +             .rmap_pte       = vmemmap_remap_reuse_pte,
+> > +             .vmemmap_pages  = &vmemmap_pages,
+> > +     };
+> > +
+> > +     vmemmap_remap_range(start, end, &walk);
+> > +     free_vmemmap_page_list(&vmemmap_pages);
+> > +}
+> >
+> >  /*
+> >   * Allocate a block of memory to be used to back the virtual memory map
+> >
+
+
+
+-- 
+Yours,
+Muchun
