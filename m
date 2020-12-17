@@ -2,118 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B707E2DD3B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:06:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 078732DD3B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:06:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729141AbgLQPDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 10:03:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41542 "EHLO
+        id S1728325AbgLQPF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 10:05:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727394AbgLQPDW (ORCPT
+        with ESMTP id S1727660AbgLQPFZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 10:03:22 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF308C0617A7;
-        Thu, 17 Dec 2020 07:02:41 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id a12so26873010wrv.8;
-        Thu, 17 Dec 2020 07:02:41 -0800 (PST)
+        Thu, 17 Dec 2020 10:05:25 -0500
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69AAFC0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 07:04:45 -0800 (PST)
+Received: by mail-qt1-x84a.google.com with SMTP id i1so20875183qtw.4
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 07:04:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Ga2/KMv98S2RYvMmfnUwu2rGZHl7WSnJKIOH8EUBBqg=;
-        b=bGMJTp7n52Ssq2cbclAal308zW2i2bGV0MID3GJNLdCe9ap8I+wb2UeUVjQKWq5mRV
-         iDbiO6vkEkugXyS8t1bKX6JqcVsL32BeP9yJQJicV/vbHGDqbCiJrUnTHhPyYG0ecFBb
-         Fc5/jpv4+0+iWAu+2kXo3HfA76fqUXiOSfnnKZN/p42E+z9/T8bxrRwVRt2JNMFaW9MM
-         ljJ/jZfPW2KBseYcM8QwuIoXgC9gLraj3qM2wPePJOlQIfoKMUsbOJcPhXRQEMv3oh6M
-         neIvF7PYNIfUZVQkyLnwfoIj9hmoUe0VudtQ3zui9dRy4g9Rvq5DBCjgMfpqcEtvH5nK
-         jJjg==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=Yk0fWIDpYSRXNFlvOOk6G8jCPlvAFL7y91EQrAZ1ReI=;
+        b=mr2pGb6Ug8sFbn6nsJV39BmxtDqXSgMty9VRhi4fw/oUwA1VVRxorzdlpbwaLHHhW6
+         kClxH6KlsV0JluSSglqx7kq4oym5rQyH2bP2DCw2jvxjER47Kn9LfeK09AFDlB6w0X/M
+         CoysKAxeKEYFY9N5JMIsgzw0on0XJmTRpVRvo0k7ggiBVUzI/XukO4gAtM1qU/9VVn87
+         FTg1Fhfr53JAtgdMUl7sj3cGSxp6o15ExwemihkSL3sP8+KaCHbwoaAyMpWP7CyRqo3P
+         y4/LEK7ijSCnSS7LGHSD0Tp1UanZhsZOhzendhCedxSA8OU7thFa+RSx/dfmP8UYNnQX
+         r6xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Ga2/KMv98S2RYvMmfnUwu2rGZHl7WSnJKIOH8EUBBqg=;
-        b=hV4DlHnJo+HuHHcN9ACZm5TJGDIMBSq6EnN2lT0jHhDVwkuPsaHZXOllXHvgXdkuuz
-         wESAiB1QsTOBobMVkBGKceM0+EAqF55DJQoDVh3VfLCf/9+NoCbveOqkkrx5eBFiiNL1
-         sKqSfwgnbM3uWu4hWKzUm10Bn276XOiDj+TvYOnmz+dlpWAWYANlFYh2ev17mkOao36/
-         WLsYuFsU1ZXOf7233yoHcT++bdLXXETY0h4t8ZgoQoR7gWEEjfz1oSsJW+HajxJ65S9W
-         PySAaTXHWiO11OXVSjJTJWf3L+DUc+MgaOJbt/xoSuYYGhJuXTvIzrik7HuI3bCeZB3p
-         NZ/g==
-X-Gm-Message-State: AOAM530frF6+UDPWv1YPuTA9oDyy5WmhR0jp0CkU5lCal7g4FUMx2Yvh
-        dHQJdCP4OHMkqYUOc0iYAr8=
-X-Google-Smtp-Source: ABdhPJx5mFZlG161O/8tcYPkP6ILf4pBrPDXprinePS09teWflTAMc/XFEgVJeH582RuPWHQu/OFqg==
-X-Received: by 2002:adf:9e4d:: with SMTP id v13mr43258327wre.135.1608217360720;
-        Thu, 17 Dec 2020 07:02:40 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id o83sm8297551wme.21.2020.12.17.07.02.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 07:02:39 -0800 (PST)
-Date:   Thu, 17 Dec 2020 16:02:38 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Felipe Balbi <balbi@kernel.org>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Ion Agorria <ion@agorria.com>, linux-tegra@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 6/8] usb: chipidea: tegra: Support runtime PM
-Message-ID: <X9tzDmgDxscC+lt/@ulmo>
-References: <20201217094007.19336-1-digetx@gmail.com>
- <20201217094007.19336-7-digetx@gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="7w8CkElLSiXeS+jy"
-Content-Disposition: inline
-In-Reply-To: <20201217094007.19336-7-digetx@gmail.com>
-User-Agent: Mutt/2.0.3 (a51f058f) (2020-12-04)
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=Yk0fWIDpYSRXNFlvOOk6G8jCPlvAFL7y91EQrAZ1ReI=;
+        b=Lbrciimn1p/6jh7DI+4FtIiwWGvh+VA2VULalfrFNvCYnoJd0BThCWR9ScBvnGnG7r
+         dQ+xe99t4eRu5y6euD1CLGF2ij0Bb8Kc9Ghl4+IR07EoVYW7u3hjTdC2cSyFtedsbtCL
+         xtnn5berlOWbnATqvdWt4TzT6u9dm0GpOTJxwP43DoaQsNNgK1DA00K6Mqj17/n0YHCr
+         Xk1hUK/R/jIrlejNR3ixWWoNXNGk+LoWiDJWIvNKF9uPPoz3nnUYKKn5ea+eTqQ+eIyu
+         /ejIGD/rARCsBkHx/rn1vqdbmNB8hHzcKk2I6dMFEP3qvx3MHlCZG21MNTrdMOg5zCoC
+         5SXA==
+X-Gm-Message-State: AOAM5311vAkQlVUfGwNCUprjNf6S2xAf7GMaxfIvPdOmqULCD6ZLbSyM
+        ZMb5x0h9FlKJztAPDUI4zmdEV9U9chY=
+X-Google-Smtp-Source: ABdhPJzt/WpiPThyfJOP52ud+2ffcF3oKSw6cetCFfe4FYdRSEvVK4B8STY6mFD+mtQDqMOq19ELoJDkEVU=
+Sender: "satyat via sendgmr" <satyat@satyaprateek.c.googlers.com>
+X-Received: from satyaprateek.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:1092])
+ (user=satyat job=sendgmr) by 2002:ad4:4c8c:: with SMTP id bs12mr50361550qvb.11.1608217484419;
+ Thu, 17 Dec 2020 07:04:44 -0800 (PST)
+Date:   Thu, 17 Dec 2020 15:04:32 +0000
+Message-Id: <20201217150435.1505269-1-satyat@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.684.gfbc64c5ab5-goog
+Subject: [PATCH v2 0/3] add support for metadata encryption to F2FS
+From:   Satya Tangirala <satyat@google.com>
+To:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Satya Tangirala <satyat@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch series adds support for metadata encryption to F2FS using
+blk-crypto.
 
---7w8CkElLSiXeS+jy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Currently, F2FS supports native file based encryption (FBE) via fscrypt.
+FBE encrypts the contents of files that reside in folders with encryption
+policies, as well as their filenames, but all other file contents
+and filesystem metadata is stored unencrypted. We'd like to have metadata
+and the contents of non-FBE files encrypted too, to protect data like
+file sizes, xattrs, locations, etc. which can be valuable in certain
+contexts.
 
-On Thu, Dec 17, 2020 at 12:40:05PM +0300, Dmitry Osipenko wrote:
-> Tegra PHY driver now supports waking up controller from a low power mode.
-> Enable runtime PM in order to put controller into the LPM during idle.
->=20
-> Tested-by: Matt Merhar <mattmerhar@protonmail.com>
-> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-> Tested-by: Peter Geis <pgwipeout@gmail.com>
-> Tested-by: Ion Agorria <ion@agorria.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/usb/chipidea/ci_hdrc_tegra.c | 13 ++++++++++---
->  1 file changed, 10 insertions(+), 3 deletions(-)
+The simplest way to do metadata encryption would be to run the filesystem
+over dm-crypt (set up to encrypt all bios with the metadata encryption
+key). This would essentially encrypt file contents twice (once with the FBE
+key and once with the metadata encryption key).  On many android devices,
+this is slower than we'd like, and also doesn't play well with inline
+encryption engines (which only allow for one layer of encryption, so the
+other layer must be done by the kernel crypto API).
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+Android currently has metadata encryption, and due to the drawbacks
+listed above, doesn't use the above mentioned approach, and avoids
+double encryption. Metadata encryption on android is currently
+implemented using a new DM target (dm-default-key) that encrypts any
+bio it receives that has data which has not previously been encrypted
+(in practice, it checks for the presence of bio->bi_crypt_context, and
+if it's missing, dm-default-key adds a bi_crypt_context to the bio with
+the metadata encryption key that it was configured with). This works fine
+as long as filesystems submit bios without bi_crypt_contexts for
+filesystem metadata/unencrypted file contents, or submit bios with
+bi_crypt_contexts for encrypted file contents. However, filesystems like
+F2FS sometimes want to read the ciphertext of fscrypt encrypted data
+contents (so F2FS will submit a bio without any bi_crypt_context, but
+expects to receive ciphertext rather than the file contents decrypted
+with the metadata encryption key). To address this issue, F2FS sets a flag
+on the bio which essentially instructs dm-default-key not to add a
+bi_crypt_context on that bio even though there isn't already one on it.
+We'd like to try to come up with a metadata encryption solution that avoids
+this layering violation.
 
---7w8CkElLSiXeS+jy
-Content-Type: application/pgp-signature; name="signature.asc"
+The most natural solution that avoids double encryption and layering
+violations is to let the filesystem take care of metadata encryption,
+since the filesystem is what's responsible for knowing where the filesystem
+metadata/unencrypted file contents/encrypted file contents are. This patch
+series follows that approach, and adds support for metadata encryption to
+F2FS and fscrypt.
 
------BEGIN PGP SIGNATURE-----
+Patch 1 replaces fscrypt_get_devices (which took an array of request_queues
+and filled it up) with fscrypt_get_device, which takes a index of the
+desired device and returns the device at that index (so the index passed
+to fscrypt_get_device must be between 0 and (fscrypt_get_num_devices() - 1)
+inclusive). This allows callers to avoid having to allocate an array to
+pass to fscrypt_get_devices() when they only need to iterate through
+each element in the array (and have no use for the array itself).
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl/bcw4ACgkQ3SOs138+
-s6HgOg//Uiwad4EVxU9jw6jA4Eu6HI0/sS9MV+fj/SFJuYEYT9ZhMh4v+C4IcUZK
-+EUrLvhTY8aa94CtiESWQryRPXQ0/GMu6r5JGWtIY0llUNCD9Y+dEacxUVi3SNgk
-W3vj/fSIWppFlhQ73VC2ds9eGMKZW8nJLwJGKAa2fmjTmcQLv5+nnH8f35tAOCDc
-BQhkYm0tHV2kdB6uu2SovBlQ/yvNrS2Bd7n466Csy/DWAxQuminrd6IbixJ44Ny3
-eZzRDGJhutEorKZlZjJhpXtMkKyVUDbjIGcVHjywyIIdMvhieexSFOBDYqYOMNUz
-GAbVr+sbTeeXnGZr68UYtZFRpF7j+InH7QhzHCwf0PFlg180npAYEQRTS9+joeWH
-HMIMzXLIX1k89q2Itr5N64xovaZFrCSF7KXPvZnI2DTYe3Qkpi9jLbsrGrgMfmFd
-28S0/3ZSLitiFU9lSorL2QUqthwWiMczmo59HODJjT833VrAiJo1yk1YhOLHvt4r
-bP0LMJPvb4guYy2AUe+cvLJFxjFGGZnVjkoc1u4+dTTtnJkgTrKhtZV4QWiBXj5o
-olABXsMERI3aIfPeTuLkwrnMvRpJE0BKoPYPZolJHgJ5Cqbto73hlElK8T1Fo1lG
-Gj/olauzbaOhGklZmsnKXxwnqo3+Kw4lTAqIsdB6ev/wl6nWRYU=
-=P0P0
------END PGP SIGNATURE-----
+Patch 2 introduces some functions to fscrypt that help filesystems perform
+metadata encryption. Any filesystem that wants to use metadata encryption
+can call fscrypt_setup_metadata_encryption() with the super_block of the
+filesystem, the encryption algorithm and the descriptor of the metadata
+crypt key. The descriptor is looked up in the logon keyring of the
+current session with "fscrypt:" as the prefix of the descriptor. The
+metadata crypt key is not directly used for encryption - the actual
+metadata encryption key is derived from this metadata key (refer to
+fscrypt_setup_metadata_encryption() in fs/crypto/metadata_crypt.c for
+details). 
 
---7w8CkElLSiXeS+jy--
+The patch also introduces fscrypt_metadata_crypt_bio() which an FS should
+call on a bio that the FS wants metadata crypted. The function will add
+an encryption context with the metadata encryption key set up by the call
+to the above mentioned fscrypt_setup_metadata_encryption().
+
+The patch also introduces fscrypt_metadata_crypt_prepare_all_devices().
+Filesystems that use multiple devices should call this function once all
+the underlying devices have been determined. An FS might only be able to
+determine all the underlying devices after some initial processing that
+might already require metadata en/decryption, which is why this function
+is separate from fscrypt_setup_metadata_encryption().
+
+Finally, the patch makes the metadata crypt key for the filesystem part
+of the key derivation process for all fscrypt file content encryption
+keys used with that filesystem - this way, the file content encryption
+keys are at least as strong as the metadata encryption key. For more
+details please refer to fscrypt_mix_in_metadata_key() in
+fs/crypto/metadata_crypt.c
+
+Patch 3 wires up F2FS with the functions introduced in Patch 2. F2FS
+will encrypt every block (that's not being encrypted by some other
+encryption key, e.g. a per-file key) with the metadata encryption key
+except the superblock (and the redundant copy of the superblock). The DUN
+of a block is the offset of the block from the start of the F2FS
+filesystem.
+
+Please refer to the commit message for why the superblock was excluded from
+en/decryption, and other limitations. The superblock and its copy are
+stored in plaintext on disk. The encryption algorithm used for metadata
+encryption is stored within the superblock itself. Changes to the userspace
+tools (that are required to test out metadata encryption with F2FS) are
+also being sent out - I'll post a link as a reply to this mail once it's
+out.
+
+Changes v1 => v2:
+ - The metadata crypt key is no longer used directly for encryption. The
+   actual metadata encryption key is now derived from the metadata crypt key.
+   A key identifier is also derived from the metadata crypt key (and this
+   identifier is verified at FS mount time). The key identifier is stored
+   directly in the F2FS superblock, so there's no longer a need for any new
+   mount options.
+ - The metadata crypt key is now mixed into the key derivation process for
+   all subkeys derived from fscrypt master keys
+ - Make the metadata key payload in the keyring just the raw bytes of the
+   key (instead of having it represent a struct fscrypt_key)
+ - export some of the metadata_crypt.c functions, since F2FS can be built
+   as a module
+ - make FS_ENCRYPTION_METADATA depend on FS_ENCRYPTION_INLINE_CRYPT
+ - fscrypt_set_bio_crypt_ctx() calls fscrypt_metadata_crypt_bio()
+   directly, so filesystems only need to call fscrypt_set_bio_crypt_ctx()
+ - Cleanups and updated docs
+
+Satya Tangirala (3):
+  fscrypt, f2fs: replace fscrypt_get_devices with fscrypt_get_device
+  fscrypt: Add metadata encryption support
+  f2fs: Add metadata encryption support
+
+ Documentation/filesystems/fscrypt.rst |  86 +++++++-
+ fs/crypto/Kconfig                     |  12 +
+ fs/crypto/Makefile                    |   1 +
+ fs/crypto/bio.c                       |   2 +-
+ fs/crypto/fscrypt_private.h           |  46 ++++
+ fs/crypto/hkdf.c                      |   1 +
+ fs/crypto/inline_crypt.c              |  52 ++---
+ fs/crypto/keyring.c                   |   4 +
+ fs/crypto/metadata_crypt.c            | 303 ++++++++++++++++++++++++++
+ fs/ext4/readpage.c                    |   2 +-
+ fs/f2fs/data.c                        |  17 +-
+ fs/f2fs/f2fs.h                        |   2 +
+ fs/f2fs/super.c                       |  60 ++++-
+ include/linux/f2fs_fs.h               |   7 +-
+ include/linux/fs.h                    |  10 +
+ include/linux/fscrypt.h               |  50 ++++-
+ 16 files changed, 586 insertions(+), 69 deletions(-)
+ create mode 100644 fs/crypto/metadata_crypt.c
+
+-- 
+2.29.2.729.g45daf8777d-goog
+
