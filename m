@@ -2,165 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFF962DD859
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:30:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EF112DD85D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:30:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731313AbgLQSaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 13:30:14 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:58442 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728180AbgLQSaL (ORCPT
+        id S1731373AbgLQSaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 13:30:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728180AbgLQSae (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 13:30:11 -0500
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 0B6E620B717A;
-        Thu, 17 Dec 2020 10:29:30 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0B6E620B717A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1608229770;
-        bh=GwfRqRu08UdwXtSUpS9V9mnLcj+rN1xicTZ0lOWPifs=;
-        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
-        b=Va0dDR8fH6oIFQsOLK4t9CSVal0ebVldzlYKaF7CNl2rfSNuhHp17P7L9q01f261u
-         ndOKIA66Pku3uWcsP9bumD5l/vEPT5t84v9tJgalSnBXq07ovsz6mNNVBpHAlebueH
-         OnT27wrw3DIoXQZ+LKgduXrjhaB6Jh/00eMCC+Fs=
-Subject: Re: [PATCH v12 1/4] powerpc: Use fdt_appendprop_addrrange() to add
- ima buffer to FDT
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-To:     zohar@linux.ibm.com, bauerman@linux.ibm.com, robh@kernel.org,
-        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
-        will@kernel.org, catalin.marinas@arm.com, mpe@ellerman.id.au
-Cc:     james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
-        paulus@samba.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
-        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-References: <20201217173708.6940-1-nramas@linux.microsoft.com>
- <20201217173708.6940-2-nramas@linux.microsoft.com>
-Message-ID: <37a62c46-cb43-0e71-ee79-8c497a11e159@linux.microsoft.com>
-Date:   Thu, 17 Dec 2020 10:29:29 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 17 Dec 2020 13:30:34 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C032C06138C
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 10:29:54 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id n4so28497794iow.12
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 10:29:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wtAaLc0Rs8lv5fpi3aTVIyZvijT8nFf8KPH6bgFjPWw=;
+        b=UZo8WQlNVPkpgY0yLShRQLZ2O0HZJlIuhWldgN5ZXLqvdpH7LbNYo2MCLt0aTzZHOV
+         rxdtiA6DQpvHIeg458SOcrINQW8f4pQDQBBN3Qhrt18uUiL8pyFqp3Wc+e90UbDw7+Az
+         /5+fb30Enw7WSu+4syj4ZHBJzt2RTAD8StNLg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wtAaLc0Rs8lv5fpi3aTVIyZvijT8nFf8KPH6bgFjPWw=;
+        b=WWHN3m5eDIsf3Bq2NzOD/oLgnb4M08yPif6w7JXE4k4tAAKBhW8dN+rFUOppZvxaRv
+         THpShoUlg2lfLJwU0bdaf9f5i6kLDfHopRNBZ+bvKbSSmzHunlPwRd+VdS0as1IAHESZ
+         pQxgvlwZmNDvPN6chCURhvYTbhEewXLADxR8hcZirAq1gaB/xTJ7/OPlneUpJrTvE30W
+         8P6+UKCx5RiRQTnlvkntIfu3/Jw4t1imN9qh1RpTs8HOhJPPZovn/ZEoJyZA6z1vswb+
+         L6YekZjHhFiTYudW8kU/wGTZFBEUMIFRqXSEMsbO+KaOZU0kyNYP7U1Z58r7uc8c/vbS
+         FGHA==
+X-Gm-Message-State: AOAM531P3uHe9JE9UyDxs2TsUgjE4HeJwOfwDohCdEkjiad4NWQKhyNi
+        zUoTnvdpeGmMqhxl1SFh7seDBRKjKUzd6A==
+X-Google-Smtp-Source: ABdhPJwH+GWNT5NwQG0SjigXW+AtkkUpC7FXi1H5sIXtEXpE86NKiILIxmILomV8+Hejqrz4a+4ttw==
+X-Received: by 2002:a02:5148:: with SMTP id s69mr197146jaa.8.1608229793805;
+        Thu, 17 Dec 2020 10:29:53 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id e25sm14644210iom.40.2020.12.17.10.29.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Dec 2020 10:29:53 -0800 (PST)
+Subject: Re: [PATCH] selftests/vDSO: fix -Wformat warning in
+ vdso_test_correctness
+To:     Tobias Klauser <tklauser@distanz.ch>, Shuah Khan <shuah@kernel.org>
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20201217163235.22788-1-tklauser@distanz.ch>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <c3bb8366-f1ab-31bc-fd6c-7e7cbfeb72a1@linuxfoundation.org>
+Date:   Thu, 17 Dec 2020 11:29:52 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <20201217173708.6940-2-nramas@linux.microsoft.com>
+In-Reply-To: <20201217163235.22788-1-tklauser@distanz.ch>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/17/20 9:37 AM, Lakshmi Ramasubramanian wrote:
-> fdt_appendprop_addrrange() function adds a property, with the given name,
-> to the device tree at the given node offset, and also sets the address
-> and size of the property. This function should be used to add
-> "linux,ima-kexec-buffer" property to the device tree and set the address
-> and size of the IMA measurement buffer, instead of using custom function.
+On 12/17/20 9:32 AM, Tobias Klauser wrote:
+> Fix the following -Wformat warnings in vdso_test_correctness.c:
 > 
-
-Typo in the email address of James Morse (ARM.com). Sorry about that.
-Adding the correct email address.
-
-  -lakshmi
-
-> Use fdt_appendprop_addrrange() to add  "linux,ima-kexec-buffer" property
-> to the device tree. This property holds the address and size of
-> the IMA measurement buffer that needs to be passed from the current
-> kernel to the next kernel across kexec system call.
+> vdso_test_correctness.c: In function ‘test_one_clock_gettime64’:
+> vdso_test_correctness.c:352:21: warning: format ‘%ld’ expects argument of type ‘long int’, but argument 3 has type ‘long long int’ [-Wformat=]
+>    352 |  printf("\t%llu.%09ld %llu.%09ld %llu.%09ld\n",
+>        |                 ~~~~^
+>        |                     |
+>        |                     long int
+>        |                 %09lld
+>    353 |         (unsigned long long)start.tv_sec, start.tv_nsec,
+>        |                                           ~~~~~~~~~~~~~
+>        |                                                |
+>        |                                                long long int
+> vdso_test_correctness.c:352:32: warning: format ‘%ld’ expects argument of type ‘long int’, but argument 5 has type ‘long long int’ [-Wformat=]
+>    352 |  printf("\t%llu.%09ld %llu.%09ld %llu.%09ld\n",
+>        |                            ~~~~^
+>        |                                |
+>        |                                long int
+>        |                            %09lld
+>    353 |         (unsigned long long)start.tv_sec, start.tv_nsec,
+>    354 |         (unsigned long long)vdso.tv_sec, vdso.tv_nsec,
+>        |                                          ~~~~~~~~~~~~
+>        |                                              |
+>        |                                              long long int
+> vdso_test_correctness.c:352:43: warning: format ‘%ld’ expects argument of type ‘long int’, but argument 7 has type ‘long long int’ [-Wformat=]
 > 
-> Remove custom code that is used in setup_ima_buffer() to add
-> "linux,ima-kexec-buffer" property to the device tree.
+> The tv_sec member of __kernel_timespec is long long, both in
+> uapi/linux/time_types.h and locally in vdso_test_correctness.c.
 > 
-> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
 > ---
->   arch/powerpc/kexec/ima.c | 51 ++++++----------------------------------
->   1 file changed, 7 insertions(+), 44 deletions(-)
+>   tools/testing/selftests/vDSO/vdso_test_correctness.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/arch/powerpc/kexec/ima.c b/arch/powerpc/kexec/ima.c
-> index 720e50e490b6..d579d3da4715 100644
-> --- a/arch/powerpc/kexec/ima.c
-> +++ b/arch/powerpc/kexec/ima.c
-> @@ -11,6 +11,7 @@
->   #include <linux/of.h>
->   #include <linux/memblock.h>
->   #include <linux/libfdt.h>
-> +#include <asm/ima.h>
+> diff --git a/tools/testing/selftests/vDSO/vdso_test_correctness.c b/tools/testing/selftests/vDSO/vdso_test_correctness.c
+> index 5029ef9b228c..c4aea794725a 100644
+> --- a/tools/testing/selftests/vDSO/vdso_test_correctness.c
+> +++ b/tools/testing/selftests/vDSO/vdso_test_correctness.c
+> @@ -349,7 +349,7 @@ static void test_one_clock_gettime64(int clock, const char *name)
+>   		return;
+>   	}
 >   
->   static int get_addr_size_cells(int *addr_cells, int *size_cells)
->   {
-> @@ -145,27 +146,6 @@ int arch_ima_add_kexec_buffer(struct kimage *image, unsigned long load_addr,
->   	return 0;
->   }
->   
-> -static int write_number(void *p, u64 value, int cells)
-> -{
-> -	if (cells == 1) {
-> -		u32 tmp;
-> -
-> -		if (value > U32_MAX)
-> -			return -EINVAL;
-> -
-> -		tmp = cpu_to_be32(value);
-> -		memcpy(p, &tmp, sizeof(tmp));
-> -	} else if (cells == 2) {
-> -		u64 tmp;
-> -
-> -		tmp = cpu_to_be64(value);
-> -		memcpy(p, &tmp, sizeof(tmp));
-> -	} else
-> -		return -EINVAL;
-> -
-> -	return 0;
-> -}
-> -
->   /**
->    * setup_ima_buffer - add IMA buffer information to the fdt
->    * @image:		kexec image being loaded.
-> @@ -176,35 +156,18 @@ static int write_number(void *p, u64 value, int cells)
->    */
->   int setup_ima_buffer(const struct kimage *image, void *fdt, int chosen_node)
->   {
-> -	int ret, addr_cells, size_cells, entry_size;
-> -	u8 value[16];
-> +	int ret;
->   
->   	remove_ima_buffer(fdt, chosen_node);
->   	if (!image->arch.ima_buffer_size)
->   		return 0;
->   
-> -	ret = get_addr_size_cells(&addr_cells, &size_cells);
-> +	ret = fdt_appendprop_addrrange(fdt, 0, chosen_node,
-> +				       "linux,ima-kexec-buffer",
-> +				       image->arch.ima_buffer_addr,
-> +				       image->arch.ima_buffer_size);
->   	if (ret)
-> -		return ret;
-> -
-> -	entry_size = 4 * (addr_cells + size_cells);
-> -
-> -	if (entry_size > sizeof(value))
-> -		return -EINVAL;
-> -
-> -	ret = write_number(value, image->arch.ima_buffer_addr, addr_cells);
-> -	if (ret)
-> -		return ret;
-> -
-> -	ret = write_number(value + 4 * addr_cells, image->arch.ima_buffer_size,
-> -			   size_cells);
-> -	if (ret)
-> -		return ret;
-> -
-> -	ret = fdt_setprop(fdt, chosen_node, "linux,ima-kexec-buffer", value,
-> -			  entry_size);
-> -	if (ret < 0)
-> -		return -EINVAL;
-> +		return (ret == -FDT_ERR_NOSPACE ? -ENOMEM : -EINVAL);
->   
->   	ret = fdt_add_mem_rsv(fdt, image->arch.ima_buffer_addr,
->   			      image->arch.ima_buffer_size);
-> 
+> -	printf("\t%llu.%09ld %llu.%09ld %llu.%09ld\n",
+> +	printf("\t%llu.%09lld %llu.%09lld %llu.%09lld\n",
+>   	Thanks for the patch.
+
+Thanks for the patch.
+
+Applied to linux-kselftest next
+
+thanks,
+-- Shuah
 
