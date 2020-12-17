@@ -2,167 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F172DCCCA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 07:56:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E31322DCCC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 07:56:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727145AbgLQGz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 01:55:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51102 "EHLO
+        id S1727163AbgLQG4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 01:56:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726547AbgLQGz1 (ORCPT
+        with ESMTP id S1725828AbgLQG4H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 01:55:27 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27528C0617B0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 22:54:47 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id r4so14608678pls.11
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 22:54:47 -0800 (PST)
+        Thu, 17 Dec 2020 01:56:07 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE20C061285
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 22:55:20 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id t37so19666861pga.7
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 22:55:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kYkx9ybV2ueAWfRQVHDx3D5vcB/QAf7LUwizku++lx4=;
-        b=R0gTUZ/+FhatN0Ola7XCwP06109oq3LSjiDLx745S1G4yZuUoGIKOIdEOfFNnMrxQe
-         jIu36Ii/UWnyJrMJwV8/Cb8hef91r3E4XiUWyVhOZdHJOl5WdnKDs8fwvjq2wIihNj7Y
-         Rx951XBU/s4mHFmnPyHjCFleq1NoZJ+xgzlJHgnpP9RF6X/OPreeu3W+YELbsOnRgC3X
-         AUrlEEHRed6m+LTcbfmVz9akeJA9Cw8r0C/iJC1Wd3K4jjIkwHQvgz1GoMPzQBj41d8U
-         rmisL0fl/QSjgMo8J1g3wDk6vnaRmE7v/rxG7ZQUtxbQYK7zW7Wpgf7WTQmeJdzhvWa8
-         5RmQ==
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BjnZ5s+jnI9mFnTZF3RJgIJMeukCqH/N1kppehfap7Y=;
+        b=MBNR7NLIdCYQa+qPbJyC+kEool/SY9YLMyPfGemmPyFOFNBylFATMYY0dvR/oo61E8
+         9f4eyvP+inKs/hugnGWwfwE2QtXdDrna2juwkKf1zZwI4ibcD9gU2BYyhkoPZFBL8Sxb
+         ShVzr0UPDrFT4vMttijcd+lYmuLDZVOmxMMrz8huf+mNHWh71wfNP0ZWJ1ZrdHZu3SqF
+         YjOWXNdI4hufbL5e6JVHlsvsg9qeOVlfA1zBc2blHIa/8dM6FI2YC0ZWkN0GEjWCwv7P
+         12OZZS+iGTuSm1EzDR4rrh/l2KsC1J9enE/z5SzJWscdldap/xklGjipk/IIbGLbFTk0
+         xG8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kYkx9ybV2ueAWfRQVHDx3D5vcB/QAf7LUwizku++lx4=;
-        b=Wl9AMdBU3O8M9FGpVu8tdaZOgFT0M7066Qxri/yKK5SK090veW8BNNfIFE6cWh0aSJ
-         s8SuvNnpqVjLTKcEHawaDpy73dht6baJJhFILpgF2HkmmTp2jCo10GuoyFj4IkyF2erJ
-         mccRai0ospjbs01mMjmFs2BHzrmncmLfFHXkNl/Js18jmJLHFwyMyb7jmTno0DQKMAE2
-         HYpwpI9WWDM0Exlrj2zph5CSHDf+OX8M8xTkgIHPNvZIXW6XXW/1NbetQ3v5xl29krfe
-         77ApHWMrrBLijB0PmA+iugbkLjJZNV+6hSA9oAjKSNgbCyorljnRaHjT0h4fWsM0/g5V
-         45/A==
-X-Gm-Message-State: AOAM531nRTUkKC/b+Hva7ehX7ypXAceIUe0OMuqdXDFjwFffo9964wal
-        Mht+BkkAyuTlYR9tzoKFPoBQbetyIDQ9mKPuQLw77/rVhOVWy6HU
-X-Google-Smtp-Source: ABdhPJxIo3Bkh6if9eAbNjiecVSukBNUK6FsdvhRNKiiTT/IlqPDPu9KgseS7K+gDKV5spUiE1CR0WiMXQaInL/1jZE=
-X-Received: by 2002:a17:902:8503:b029:dc:44f:62d8 with SMTP id
- bj3-20020a1709028503b02900dc044f62d8mr13771103plb.34.1608188086569; Wed, 16
- Dec 2020 22:54:46 -0800 (PST)
-MIME-Version: 1.0
-References: <20201213154534.54826-1-songmuchun@bytedance.com>
- <20201213154534.54826-4-songmuchun@bytedance.com> <5936a766-505a-eab0-42a6-59aab2585880@oracle.com>
- <20201216222549.GC3207@localhost.localdomain> <49f6a0f1-c6fa-4642-2db0-69f090e8a392@oracle.com>
-In-Reply-To: <49f6a0f1-c6fa-4642-2db0-69f090e8a392@oracle.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 17 Dec 2020 14:54:10 +0800
-Message-ID: <CAMZfGtXwU7LcTZw7iKFNksVTYx8Bhd=9Nct+zfNy_ibuFiF6ew@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v9 03/11] mm/hugetlb: Free the vmemmap
- pages associated with each HugeTLB page
-To:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Oscar Salvador <osalvador@suse.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=BjnZ5s+jnI9mFnTZF3RJgIJMeukCqH/N1kppehfap7Y=;
+        b=ZH57kYDAIMY8tY6ZiWda3HZpJLDVg5fIiaMkJTLSJV+Q0WuCiBgNMOBZSyTIa3AfN3
+         qZcw0xLD8bygTK6KGH+lpEPdNbxHAWdpv+Pcf3I5z7+BaoI0517rUjIcafxTaadrUxdj
+         cdBwHVsGdFTV+7BaN/7NxZXlLpOinEc0hAEps8ThtdNySvFX7ksUA7fXj6+egHb9x+31
+         SCe+K7ONN+nTZq5WsInv/qY7F9QR1AePuhU566xteW6fs45oLWv8xVJPL2tWphsRLScN
+         MntmSMaycllKoH0ktJnJKalc5VuQufbg9npuLywMO0rAZYnjmUeY/I9U397rTPSbcfhf
+         zoTQ==
+X-Gm-Message-State: AOAM532bHRt/RMJE+tsqgGZJWEfV97qXSzDwCfljBirl70vVLfidam/2
+        ZXNmW5kmAiLZvSlw4itxeNOvYg==
+X-Google-Smtp-Source: ABdhPJwOkX04PZM/hDkMwFByq3zRzuq27yaN/Sp6sDe9qMIhnlWHKH2jlrq5wuwjc8F2fNQ6gRsdzQ==
+X-Received: by 2002:aa7:8506:0:b029:19e:95:f75f with SMTP id v6-20020aa785060000b029019e0095f75fmr35416013pfn.7.1608188119792;
+        Wed, 16 Dec 2020 22:55:19 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id l7sm3921765pjy.29.2020.12.16.22.55.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Dec 2020 22:55:19 -0800 (PST)
+Date:   Wed, 16 Dec 2020 22:55:19 -0800 (PST)
+X-Google-Original-Date: Wed, 16 Dec 2020 22:55:17 PST (-0800)
+Subject:     Re: [dm-devel] [PATCH v1 0/5] dm: dm-user: New target that proxies BIOs to userspace
+In-Reply-To: <CAGF4SLgDvS7VOih4XZ+sqx6jVK3wBQZan+uZMVsdYdVEPZdrpw@mail.gmail.com>
+CC:     josef@toxicpanda.com, bvanassche@acm.org,
+        Christoph Hellwig <hch@infradead.org>, snitzer@redhat.com,
+        corbet@lwn.net, kernel-team@android.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
+        song@kernel.org, dm-devel@redhat.com,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org, agk@redhat.com,
+        michael.christie@oracle.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     v.mayatskih@gmail.com
+Message-ID: <mhng-7da80016-a7d7-4232-999d-6fea3196118d@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 6:52 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+On Wed, 16 Dec 2020 10:24:59 PST (-0800), v.mayatskih@gmail.com wrote:
+> On Mon, Dec 14, 2020 at 10:03 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
 >
-> On 12/16/20 2:25 PM, Oscar Salvador wrote:
-> > On Wed, Dec 16, 2020 at 02:08:30PM -0800, Mike Kravetz wrote:
-> >>> + * vmemmap_rmap_walk - walk vmemmap page table
-> >>> +
-> >>> +static void vmemmap_pte_range(pmd_t *pmd, unsigned long addr,
-> >>> +                         unsigned long end, struct vmemmap_rmap_walk *walk)
-> >>> +{
-> >>> +   pte_t *pte;
-> >>> +
-> >>> +   pte = pte_offset_kernel(pmd, addr);
-> >>> +   do {
-> >>> +           BUG_ON(pte_none(*pte));
-> >>> +
-> >>> +           if (!walk->reuse)
-> >>> +                   walk->reuse = pte_page(pte[VMEMMAP_TAIL_PAGE_REUSE]);
-> >>
-> >> It may be just me, but I don't like the pte[-1] here.  It certainly does work
-> >> as designed because we want to remap all pages in the range to the page before
-> >> the range (at offset -1).  But, we do not really validate this 'reuse' page.
-> >> There is the BUG_ON(pte_none(*pte)) as a sanity check, but we do nothing similar
-> >> for pte[-1].  Based on the usage for HugeTLB pages, we can be confident that
-> >> pte[-1] is actually a pte.  In discussions with Oscar, you mentioned another
-> >> possible use for these routines.
-> >
-> > Without giving it much of a thought, I guess we could duplicate the
-> > BUG_ON for the pte outside the loop, and add a new one for pte[-1].
-> > Also, since walk->reuse seems to not change once it is set, we can take
-> > it outside the loop? e.g:
-> >
-> >       pte *pte;
-> >
-> >       pte = pte_offset_kernel(pmd, addr);
-> >       BUG_ON(pte_none(*pte));
-> >       BUG_ON(pte_none(pte[VMEMMAP_TAIL_PAGE_REUSE]));
-> >       walk->reuse = pte_page(pte[VMEMMAP_TAIL_PAGE_REUSE]);
-> >       do {
-> >               ....
-> >       } while...
-> >
-> > Or I am not sure whether we want to keep it inside the loop in case
-> > future cases change walk->reuse during the operation.
-> > But to be honest, I do not think it is realistic of all future possible
-> > uses of this, so I would rather keep it simple for now.
+>> I was really experting someone to say that.  It does seem kind of silly to build
+>> out the new interface, but not go all the way to a ring buffer.  We just didn't
+>> really have any way to justify the extra complexity as our use cases aren't
+>> that high performance.   I kind of like to have benchmarks for this sort of
+>> thing, though, and I didn't have anyone who had bothered avoiding the last copy
+>> to compare against.
 >
-> I was thinking about possibly passing the 'reuse' address as another parameter
-> to vmemmap_remap_reuse().  We could add this addr to the vmemmap_rmap_walk
-> struct and set walk->reuse when we get to the pte for that address.  Of
-> course this would imply that the addr would need to be part of the range.
+> I worked on something very similar, though performance was one of the
+> goals. The implementation was floating around lockless ring buffers,
+> shared memory for zerocopy, multiqueue and error handling. It could be
+> that every disk storage vendor has to implement something like that in
+> order to bridge Linux kernel to their own proprietary datapath running
+> in userspace.
 
-Maybe adding another one parameter is unnecessary.  How about doing
-this in the vmemmap_remap_reuse?
+OK, good to know.  That's kind of the feeling I'd gotten from having chatted to
+a handful of people about this, but I don't remember people having actually
+gotten all the way to zero-copy.  That's how we managed to end up at this
+middle-ground ABI style: when I thought people were, in practice, punting on
+zero copy because the complexity just wasn't worth the performance benefit.
+Maybe I'd just been colored by how my projects ended up going, but I've ended
+up designing complicated interfaces in the past that allow for zero-copy only
+to never get around to actually making that work.  I don't know if that's just
+because I've had the good fortune to avoid working on anything that ended up
+with users, though :).
 
-The 'reuse' address just is start + PAGE_SIZE.
+For our use case I think we actually get better performance out of the
+copy-based (and probably more importantly kalloc-based, but that's an
+implementation thing not an ABI thing) approach: essentially we're very
+sensitive to memory pressure and expect this first dm-user daemon to mostly be
+idle, so we're really worried about avoiding excess memory usage while idle and
+less worried about throughput when active.  This stream-based interface means
+that userspace doesn't need much memory allocated to service a request, which
+helps with sleep/wake latencies and/or idle memory usage.  That's also why we
+have the simple locking scheme: no sense splitting locks if there's no
+contention, and we only need a single thread to saturate the storage bandwidth
+on these phones.
 
-void vmemmap_remap_free(unsigned long start, unsigned long size)
-{
-         unsigned long end = start + size;
-         unsigned long reuse_addr = start + PAGE_SIZE;
-         LIST_HEAD(vmemmap_pages);
+That said, it does sound like people really do care about the sort of
+performance levels where zero copy is relevant in this space.  I'll take a shot
+at something along those lines, and while it will add a degree of userspace
+complexity I'm not sure it'll add much in the way of kernel complexity -- at
+least compared to a fast version of this, where we'd need most of that stuff
+anyway (obviously the malloc+single lock design is simple, but probably
+wouldn't stick around for long).  At a bare minimum it'll be interesting to
+play around with, but if people are doing it in practice then I'm more
+confident that I can put something together that at least serves as a starting
+point for further discussion.
 
-         struct vmemmap_remap_walk walk = {
-                  .remap_pte = vmemmap_remap_pte,
-                  .vmemmap_pages = &vmemmap_pages,
-                  .reuse_addr = reuse_addr.
-         };
+I haven't gotten around to writing any code yet, but I had spent a bit of time
+thinking about how to put this zero-copy version together and am leaning
+towards it being a standalone block device (as opposed to a DM target).  I'd
+avoided that before as I didn't want to mess around with my own device control
+scheme so I'll still try to do the DM thing, but I'm not sure it'll be viable.
+That's all speculation now, but it does bring up one interesting question:
 
-}
-
->
-> Ideally, we would walk the page table to get to the reuse page.  My concern
-> was not explicitly about adding the BUG_ON.  In more general use, *pte could
-> be the first entry on a pte page.  And, then pte[-1] may not even be a pte.
->
-> Again, I don't think this matters for the current HugeTLB use case.  Just a
-> little concerned if code is put to use for other purposes.
-> --
-> Mike Kravetz
-
-
-
--- 
-Yours,
-Muchun
+IIUC, this version of dm-user handles BIOs before they reach the block
+scheduler while a standalone driver would likely handle them after blk-mq.  I
+don't have direct experience with this, but the last time I ran into people who
+had these sorts of performance requirements for userspace drivers they weren't
+actually trying to write userspace drivers but were instead trying to write a
+userspace scheduler, with the userspace drivers just being the mechanism to
+implement that scheduler.  This was a decade ago and I'm not sure that's what
+people are trying to do in the new blk-mq world, but if it is then it's going
+to be a major design consideration.  I'm also not entirely sure that we're
+really solving the same problem at that point.
