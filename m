@@ -2,111 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90C0D2DD08F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 12:40:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A122DD096
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 12:42:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727912AbgLQLkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 06:40:15 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:11713 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727793AbgLQLkO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 06:40:14 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1608205189; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=CgHSq++NLr2TaQFTh+d2Zw8b6UtAJXov/TwK1S6TAiA=; b=iM8dgKKS/McaVwYevZTi1lonDRMugSbLimQ//86YZBUUT/XxyPt4Eca9HqICEL3+xqU/6wHT
- mDL53r3TxykNsUO1GDoVVHBwDuR0SUsoKKgf6Qhqso50BMRd6ujx8bcUWav2p6iTV9mqEk4a
- ziWaLSj4UlE7bbjyVJOyIOcwvco=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5fdb4369bfd08afb0d52d5e1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Dec 2020 11:39:21
- GMT
-Sender: kgunda=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id EE176C43462; Thu, 17 Dec 2020 11:39:20 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from kgunda-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kgunda)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 18601C43463;
-        Thu, 17 Dec 2020 11:39:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 18601C43463
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kgunda@codeaurora.org
-From:   Kiran Gunda <kgunda@codeaurora.org>
-To:     swboyd@chromium.org, robh@kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Kiran Gunda <kgunda@codeaurora.org>
-Subject: [PATCH V3 2/2] mfd: qcom-spmi-pmic: Add support for pm6150 and pm6150l
-Date:   Thu, 17 Dec 2020 17:08:43 +0530
-Message-Id: <1608205123-23119-3-git-send-email-kgunda@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1608205123-23119-1-git-send-email-kgunda@codeaurora.org>
-References: <1608205123-23119-1-git-send-email-kgunda@codeaurora.org>
+        id S1727990AbgLQLlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 06:41:02 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45242 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726773AbgLQLlB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 06:41:01 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 527A2AC7B;
+        Thu, 17 Dec 2020 11:40:20 +0000 (UTC)
+Message-ID: <f7dfcf49dbfebeaf49e2f36d8c72e34c74a32fb5.camel@suse.de>
+Subject: Re: [PATCH 1/3] cifs: Delete a stray unlock in cifs_swn_reconnect()
+From:   Samuel Cabrero <scabrero@suse.de>
+Reply-To: scabrero@suse.com
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Steve French <sfrench@samba.org>
+Cc:     Aurelien Aptel <aaptel@suse.com>, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Date:   Thu, 17 Dec 2020 12:40:18 +0100
+In-Reply-To: <X9s6nGDLt4xreaYN@mwanda>
+References: <X9s6nGDLt4xreaYN@mwanda>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the compatibles and PMIC ids for pm6150 and pm6150l PMICs
-found on SC7180 based platforms.
+On Thu, 2020-12-17 at 14:01 +0300, Dan Carpenter wrote:
+> The unlock is done in the caller, this is a stray which leads to a
+> double unlock bug.
+> 
 
-Signed-off-by: Kiran Gunda <kgunda@codeaurora.org>
----
- Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml | 2 ++
- drivers/mfd/qcom-spmi-pmic.c                              | 4 ++++
- 2 files changed, 6 insertions(+)
+Indeed.
 
-diff --git a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
-index 0b3e440..92cf7e9 100644
---- a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
-+++ b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
-@@ -58,6 +58,8 @@ patternProperties:
-               - qcom,pm8005
- 	      - qcom,pm660l
- 	      - qcom,pm660
-+	      - qcom,pm6150l
-+	      - qcom,pm6150
- 
-           - enum:
-               - qcom,spmi-pmic
-diff --git a/drivers/mfd/qcom-spmi-pmic.c b/drivers/mfd/qcom-spmi-pmic.c
-index a35d5cf..6d8b688 100644
---- a/drivers/mfd/qcom-spmi-pmic.c
-+++ b/drivers/mfd/qcom-spmi-pmic.c
-@@ -38,6 +38,8 @@
- #define PM8005_SUBTYPE		0x18
- #define PM660L_SUBTYPE		0x1A
- #define PM660_SUBTYPE		0x1B
-+#define PM6150L_SUBTYPE		0x1F
-+#define PM6150_SUBTYPE		0x28
- 
- static const struct of_device_id pmic_spmi_id_table[] = {
- 	{ .compatible = "qcom,spmi-pmic", .data = (void *)COMMON_SUBTYPE },
-@@ -61,6 +63,8 @@ static const struct of_device_id pmic_spmi_id_table[] = {
- 	{ .compatible = "qcom,pm8005",    .data = (void *)PM8005_SUBTYPE },
- 	{ .compatible = "qcom,pm660l",    .data = (void *)PM660L_SUBTYPE },
- 	{ .compatible = "qcom,pm660",     .data = (void *)PM660_SUBTYPE },
-+	{ .compatible = "qcom,pm6150l",   .data = (void *)PM6150L_SUBTYPE },
-+	{ .compatible = "qcom,pm6150",    .data = (void *)PM6150_SUBTYPE },
- 	{ }
- };
- 
+Reviewed-by: Samuel Cabrero <scabrero@suse.de>
+
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
- a Linux Foundation Collaborative Project
+Samuel Cabrero / SUSE Labs Samba Team
+GPG: D7D6 E259 F91C F0B3 2E61 1239 3655 6EC9 7051 0856
+scabrero@suse.com
+scabrero@suse.de
 
