@@ -2,102 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D85922DCAF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 03:21:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9DD12DCAF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 03:21:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727811AbgLQCSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 21:18:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727420AbgLQCSN (ORCPT
+        id S1727942AbgLQCTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 21:19:33 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9627 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727262AbgLQCTd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 21:18:13 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 279BAC061794
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 18:17:33 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id be12so1215977plb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 18:17:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=CINNwNMj6sXXA523Nvf46evyRHb0T5u+eLeN61gnr1o=;
-        b=QmaJicxPMVcBstcSnuGZDWUScFyu4ScV1SnYs1wYrb+o/xM9p7E6lN2X/E5ksTJU/Z
-         Vbl6PDDUBGZvuYN++ozUN3B3mG0QynuSS0rPXdIFJXgizXA/rYnqD2VuMVwBkwUQRYab
-         l/U+F8WIJpDqp+KA4GKVMCUt031FhGd4x6gRNK5lXB8NmGq9e1UOZWB3Mg8VKnuiys2J
-         NeqEbEbtH/DH/+tns8yCPA4JfyMYh08ZVMNFSKt7T8LmiqSyR3HSda5AVxxsCNC865cn
-         BlLfNEjsrPl42VRlrwlTg9g0QWLLyL/q2lw3AE+Sh/ZW4pXGwpFq72FKfQK0YPDk2Y5c
-         kTUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=CINNwNMj6sXXA523Nvf46evyRHb0T5u+eLeN61gnr1o=;
-        b=DitalJLWmPNMRXlDxFTl1FqsyD+72VOrV+6puSakb5asIEh/HP+E97+qpGP7Zo2im6
-         jsSKq/MQCqmJ9vNxEWM3nEzEvYdbYDVxb6I78HU4SR0HAUsDMcWS7ZlMbNZYMD4q/9xq
-         3i/PAQFVtBlKmnEQDqqKD9bso8gyv6ilg+mIY5ruQsl2RA5NsM4k0tzd3UVKdGW5UVLk
-         2w3My7um7j8UmL5hwmERdMyhktDz1BdjsogyxEUr6mG4LcAeNLi9Yp98Zuw1ixjzZUlU
-         DjpiC/J1H1RHhfVMJPQSxB+SF7FgPGq5rKldN/5I5nvc+cfUR3h5Eph/hVoRHHYTklz2
-         Cz6w==
-X-Gm-Message-State: AOAM532lRcD2M3cq1cJEndUKLYSYpJPDHwTYV/biDen2qR0Mn0cfedNz
-        Dk2b1s61I6EnvxLvkseGpPK+3KB2UBuB7iCwSUQ=
-X-Google-Smtp-Source: ABdhPJwqr1mvO9dbo5PqiMldA3xijX7g6V5dfz+YwMtWPGag570MHgYcc1Ls8OGH2QK9UjadBEPdLicCZ5PqILTBloU=
-X-Received: by 2002:a17:90b:100e:: with SMTP id gm14mr5676468pjb.179.1608171452638;
- Wed, 16 Dec 2020 18:17:32 -0800 (PST)
+        Wed, 16 Dec 2020 21:19:33 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CxFyp3SPjz15dlW;
+        Thu, 17 Dec 2020 10:18:10 +0800 (CST)
+Received: from [10.174.177.244] (10.174.177.244) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 17 Dec 2020 10:18:45 +0800
+Subject: Re: linux-next: manual merge of the akpm-current tree with the risc-v
+ tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        "Paul Walmsley" <paul@pwsan.com>
+CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Linux Next Mailing List" <linux-next@vger.kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>
+References: <20201127183441.347e30e0@canb.auug.org.au>
+ <20201217122616.410c88b9@canb.auug.org.au>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <539584e6-01b4-146f-d36a-87cfa50607e8@huawei.com>
+Date:   Thu, 17 Dec 2020 10:18:45 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-From:   Jassi Brar <jassisinghbrar@gmail.com>
-Date:   Wed, 16 Dec 2020 20:17:21 -0600
-Message-ID: <CABb+yY29c=nw5Nm4J3Aq4mFtzFPTvS51sVmA9zM+KxHgDaHN=A@mail.gmail.com>
-Subject: [GIT PULL] Mailbox changes for v5.11]
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201217122616.410c88b9@canb.auug.org.au>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.177.244]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
-The following changes since commit 509a15421674b9e1a3e1916939d0d0efd3e578da:
 
-  Merge tag '5.10-rc6-smb3-fixes' of
-git://git.samba.org/sfrench/cifs-2.6 (2020-12-01 15:43:53 -0800)
+On 2020/12/17 9:26, Stephen Rothwell wrote:
+> Hi all,
+>
+> On Fri, 27 Nov 2020 18:34:41 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>> Today's linux-next merge of the akpm-current tree got a conflict in:
+>>
+>>    arch/riscv/Kconfig
+>>
+>> between commit:
+>>
+>>    5cb0080f1bfd ("riscv: Enable ARCH_STACKWALK")
+>>
+>> from the risc-v tree and commit:
+>>
+>>    46b9b00649f6 ("arch, mm: restore dependency of __kernel_map_pages() on DEBUG_PAGEALLOC")
+>>
+>> from the akpm-current tree.
+>>
+>> I fixed it up (see below) and can carry the fix as necessary. This
+>> is now fixed as far as linux-next is concerned, but any non trivial
+>> conflicts should be mentioned to your upstream maintainer when your tree
+>> is submitted for merging.  You may also want to consider cooperating
+>> with the maintainer of the conflicting tree to minimise any particularly
+>> complex conflicts.
+>>
+>>
+>> diff --cc arch/riscv/Kconfig
+>> index 8a2a0523a9a3,9283c6f9ae2a..000000000000
+>> --- a/arch/riscv/Kconfig
+>> +++ b/arch/riscv/Kconfig
+>> @@@ -14,7 -14,7 +14,8 @@@ config RISC
+>>    	def_bool y
+>>    	select ARCH_CLOCKSOURCE_INIT
+>>    	select ARCH_SUPPORTS_ATOMIC_RMW
+>>   +	select ARCH_STACKWALK
+>> + 	select ARCH_SUPPORTS_DEBUG_PAGEALLOC if MMU
+>>    	select ARCH_HAS_BINFMT_FLAT
+>>    	select ARCH_HAS_DEBUG_VM_PGTABLE
+>>    	select ARCH_HAS_DEBUG_VIRTUAL if MMU
+> This is now a conflict between the risc-v tree and Linus' tree.
 
-are available in the Git repository at:
+Could it be fixed in alphabetical order when merging riscv tree?
 
-  git://git.linaro.org/landing-teams/working/fujitsu/integration.git
-tags/mailbox-v5.11
 
-for you to fetch changes up to 5a6338cce9f4133c478d3b10b300f96dd644379a:
 
-  mailbox: arm_mhuv2: Add driver (2020-12-09 19:26:02 -0600)
-
-----------------------------------------------------------------
-- arm: added mhu-v2 controller driver
-       mhu_db fix kfree by using devm_ variant
-- stm32-ipcc: misc cleanup
-
-----------------------------------------------------------------
-Martin Kaiser (3):
-      mailbox: stm32-ipcc: add COMPILE_TEST dependency
-      mailbox: stm32-ipcc: remove duplicate error message
-      mailbox: stm32-ipcc: cast void pointers to unsigned long
-
-Sudeep Holla (1):
-      mailbox: arm_mhu_db: Fix mhu_db_shutdown by replacing kfree with
-devm_kfree
-
-Viresh Kumar (2):
-      dt-bindings: mailbox : arm,mhuv2: Add bindings
-      mailbox: arm_mhuv2: Add driver
-
- .../devicetree/bindings/mailbox/arm,mhuv2.yaml     |  209 ++++
- MAINTAINERS                                        |    9 +
- drivers/mailbox/Kconfig                            |    9 +-
- drivers/mailbox/Makefile                           |    2 +
- drivers/mailbox/arm_mhu_db.c                       |    2 +-
- drivers/mailbox/arm_mhuv2.c                        | 1136 ++++++++++++++++++++
- drivers/mailbox/stm32-ipcc.c                       |   15 +-
- include/linux/mailbox/arm_mhuv2_message.h          |   20 +
- 8 files changed, 1391 insertions(+), 11 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mailbox/arm,mhuv2.yaml
- create mode 100644 drivers/mailbox/arm_mhuv2.c
- create mode 100644 include/linux/mailbox/arm_mhuv2_message.h
+>
