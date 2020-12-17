@@ -2,68 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F3302DCA26
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 01:51:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED23B2DCA29
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 01:51:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726658AbgLQAtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 19:49:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46832 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726380AbgLQAtT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 19:49:19 -0500
-Date:   Wed, 16 Dec 2020 16:48:38 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608166119;
-        bh=NLNYrstPfE0QbPFqmX/aq0W0aFwreKPMHKoYADup7O4=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=TW6bxj7FeH+GBQc7l6QMpag7hNqnreKCz6JXMDRyWX6Iv82o0LSK1Yrp1qI031hPs
-         bY0+t5W81WOc8RuIYMHIZTxU4vYSLMA1g+Ke+7qlOoizQWY2mGKCHVrDYNDPrMtjqB
-         iYHu/B3jvqLDVIuIyRXwuAhm1dW1vrWgw3y9IRvzj6OubwNSeCzODL0ajDhJQiczxM
-         ag0hHUm4iVZ+oppbwZNPTcDzINtgj9dJq4g81jb0JNXp3fFY4Pvd2NuxOMvcgbfllF
-         6uY0jwWGRvyz/lHS8VvWE3jEGwGaLQz5TN00KnRDXI1wcsy+9p5w25+nvheE2s1Vn6
-         iyP0aDd8nqMaw==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Gao Yan <gao.yanB@h3c.com>
-Cc:     <paulus@samba.org>, <davem@davemloft.net>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] net: remove disc_data_lock in ppp line discipline
-Message-ID: <20201216164838.55f939a2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201215150054.570-1-gao.yanB@h3c.com>
-References: <20201215150054.570-1-gao.yanB@h3c.com>
+        id S1726830AbgLQAtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 19:49:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726703AbgLQAtb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 19:49:31 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7425C061794;
+        Wed, 16 Dec 2020 16:48:50 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CxCzf3ncRz9sTK;
+        Thu, 17 Dec 2020 11:48:46 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1608166127;
+        bh=es0EnsoCQ2ifCTtAA+adaRfzfcRnwMUs2I8Ux5lFmD8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kLR639NcfbLoXZUlgkG4fIGl19uM4kCYDARQzm/b+0MYzgb2tddZtktyajhX8fjqF
+         nw0ndWXzphISZcPy63dtAW6dOSqnrp8/dIb+ApuffRw1Va8x5nzttGhVz10gt68nYp
+         5IcyecRBp2nCR31rHhz+cxv/ZBXtS71XsPGJJQOegcolxD+OjbHIqnOj32z8rMdSfB
+         c2rkQlQX8o5PngZzgYcQIGBHnCzy9zjUAgp0wg0Epm9+TCwfBpxvU2oLMXng1NuR2I
+         Q3kXfWlfgKTridgquKZSkFH3+JwksOek98Ccj+yYdoUs9DpLv+J3yUYKbLqCxTRG1P
+         hSywz+pPz7krw==
+Date:   Thu, 17 Dec 2020 11:48:45 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Francis Laniel <laniel_francis@privacyrequired.com>,
+        Ganesh Goudar <ganeshgr@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mahesh Salgaonkar <mahesh@linux.ibm.com>
+Subject: Re: linux-next: manual merge of the akpm-current tree with the
+ powerpc tree
+Message-ID: <20201217114845.47fe50fb@canb.auug.org.au>
+In-Reply-To: <20201208204016.4eb18ca4@canb.auug.org.au>
+References: <20201208204016.4eb18ca4@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/T61_sMexRa0TWOjwLJzjnGx";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Dec 2020 23:00:54 +0800 Gao Yan wrote:
-> tty layer provide tty->ldisc_sem lock to protect tty->disc_data;
-> For examlpe, when cpu A is running ppp_synctty_ioctl that
-> hold the tty->ldisc_sem, so if cpu B calls ppp_synctty_close,
-> it will wait until cpu A release tty->ldisc_sem. So I think it is
-> unnecessary to have the disc_data_lock;
-> 
-> cpu A                           cpu B
-> tty_ioctl                       tty_reopen
->  ->hold tty->ldisc_sem            ->hold tty->ldisc_sem(write), failed
->  ->ld->ops->ioctl                 ->wait...
->  ->release tty->ldisc_sem         ->wait...OK,hold tty->ldisc_sem
->                                     ->tty_ldisc_reinit
->                                       ->tty_ldisc_close
->                                         ->ld->ops->close  
-> 
-> Signed-off-by: Gao Yan <gao.yanB@h3c.com>
+--Sig_/T61_sMexRa0TWOjwLJzjnGx
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-# Form letter - net-next is closed
+Hi all,
 
-We have already sent the networking pull request for 5.11 and therefore
-net-next is closed for new drivers, features, code refactoring and
-optimizations. We are currently accepting bug fixes only.
+On Tue, 8 Dec 2020 20:40:16 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>
+> Today's linux-next merge of the akpm-current tree got conflicts in:
+>=20
+>   drivers/misc/lkdtm/Makefile
+>   drivers/misc/lkdtm/lkdtm.h
+>   tools/testing/selftests/lkdtm/tests.txt
+>=20
+> between commit:
+>=20
+>   3ba150fb2120 ("lkdtm/powerpc: Add SLB multihit test")
+>=20
+> from the powerpc tree and commit:
+>=20
+>   014a486edd8a ("drivers/misc/lkdtm: add new file in LKDTM to test fortif=
+ied strscpy")
+>=20
+> from the akpm-current tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+>=20
+> diff --cc drivers/misc/lkdtm/Makefile
+> index 5a92c74eca92,d898f7b22045..000000000000
+> --- a/drivers/misc/lkdtm/Makefile
+> +++ b/drivers/misc/lkdtm/Makefile
+> @@@ -10,7 -10,7 +10,8 @@@ lkdtm-$(CONFIG_LKDTM)		+=3D rodata_objcop
+>   lkdtm-$(CONFIG_LKDTM)		+=3D usercopy.o
+>   lkdtm-$(CONFIG_LKDTM)		+=3D stackleak.o
+>   lkdtm-$(CONFIG_LKDTM)		+=3D cfi.o
+> + lkdtm-$(CONFIG_LKDTM)		+=3D fortify.o
+>  +lkdtm-$(CONFIG_PPC_BOOK3S_64)	+=3D powerpc.o
+>  =20
+>   KASAN_SANITIZE_stackleak.o	:=3D n
+>   KCOV_INSTRUMENT_rodata.o	:=3D n
+> diff --cc drivers/misc/lkdtm/lkdtm.h
+> index 79ec05c18dd1,6aa6d6a1a839..000000000000
+> --- a/drivers/misc/lkdtm/lkdtm.h
+> +++ b/drivers/misc/lkdtm/lkdtm.h
+> @@@ -102,7 -104,7 +104,10 @@@ void lkdtm_STACKLEAK_ERASING(void)
+>   /* cfi.c */
+>   void lkdtm_CFI_FORWARD_PROTO(void);
+>  =20
+> + /* fortify.c */
+> + void lkdtm_FORTIFIED_STRSCPY(void);
+> +=20
+>  +/* powerpc.c */
+>  +void lkdtm_PPC_SLB_MULTIHIT(void);
+>  +
+>   #endif
+> diff --cc tools/testing/selftests/lkdtm/tests.txt
+> index 18e4599863c0,92ba4cc41314..000000000000
+> --- a/tools/testing/selftests/lkdtm/tests.txt
+> +++ b/tools/testing/selftests/lkdtm/tests.txt
+> @@@ -68,4 -68,4 +68,5 @@@ USERCOPY_STACK_BEYON
+>   USERCOPY_KERNEL
+>   STACKLEAK_ERASING OK: the rest of the thread stack is properly erased
+>   CFI_FORWARD_PROTO
+> + FORTIFIED_STRSCPY
+>  +PPC_SLB_MULTIHIT Recovered
 
-Please repost when net-next reopens after 5.11-rc1 is cut.
+These conflicts are now between the powerpc tree and Linus' tree.
 
-Look out for the announcement on the mailing list or check:
-http://vger.kernel.org/~davem/net-next.html
+--=20
+Cheers,
+Stephen Rothwell
 
-RFC patches sent for review only are obviously welcome at any time.
+--Sig_/T61_sMexRa0TWOjwLJzjnGx
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/aqu0ACgkQAVBC80lX
+0Gzh1Qf/YjaYBc6q7yRUBcnVpD/l9a4dHyHV/exrXAIx6st0ZX4YNtRXKt3p9LJ+
+S6kpR3lntIc61u/YV1zMgD0rT6wPRk9cPYc9iqz+mW7iyXlPgh2h7diuF1WNNpgt
+ChBgpuHNdi+E6KZ7rhhCwJIEzSmzPb6kD13eMCxgjVGOQFGf1W4oWPhBGVcJTbzc
+XwXGWun+BtsASn2VTIeMzVsJWYaHYnkGrF8ZtKo31kSt4wStiYCDA3xw8r/wlRue
+lTqqJsmJ5qxmbzc5oRWX9KuhHDjYRVZzMriNuERQvVcPNmifRzB9basXdfi+MNTl
+S3RZk4xR66z1DyZHjZ4UkfaN1gJRMw==
+=BO9i
+-----END PGP SIGNATURE-----
+
+--Sig_/T61_sMexRa0TWOjwLJzjnGx--
