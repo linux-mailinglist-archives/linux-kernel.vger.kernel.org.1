@@ -2,200 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 810EA2DCB9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 05:09:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB6A22DCBA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 05:22:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726532AbgLQEJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 23:09:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726074AbgLQEJR (ORCPT
+        id S1726625AbgLQEUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 23:20:31 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9221 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726074AbgLQEUb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 23:09:17 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6F40C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 20:08:36 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id s26so19268738lfc.8
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 20:08:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=lwhMxOuuXMCFtk8usWo2pFVVrawVM2WG3MRduFpv4wU=;
-        b=ciyzGsfNzMSFTEGXyOYE0sJ5/bN04Q75Zrn9u9xZU8sEHs6t1DW/iQ2xBjODCRM6rp
-         lp/WIhNZ1r2MrC/1eCJh65kj+FFOmuSS337TBCN4hXoAQALfqgppHJnFIpGBH9UNtQ3A
-         nTJYQVq44WaN9NlNE6AO5/K6F9wl+xRLOqVAg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=lwhMxOuuXMCFtk8usWo2pFVVrawVM2WG3MRduFpv4wU=;
-        b=X/yiZQz6s/rgG4npwec3P0S8YJexqNrnYB35ismaGy+lVUqbrqCFuShikWV67Ef6yE
-         vuG6zDcdcPKlKdGEMXBMEDPA5m+oy24UnPWFgQVWR7rSQZ37TRM4k+kN4XhIBnuBTU8j
-         TpLK1MAoqIpySasq/xTxHLZ+yTl3I8vztfaowoevL/NIK07Fc1ZiBwesqdG0IActvaH3
-         5KnlzGwY3axWtKTVWayD1yYhPWQcY2GaS+5SPZXiDTu4kt0YSpV+daiFKrhRdy2b3mHV
-         TXE4g1KW5uUKf95B9q4tsovhXGhJx9bit19fZeQmIUofvNMARPplBHGT0+bb5stMBw/f
-         Tlhw==
-X-Gm-Message-State: AOAM5319qu0eqJpInntE1USBA0P5vZOlpB8d8dZUJ7TBJUdNsH4mMjiy
-        nmxN7sKT1k3v28Eb5WNJ/m/3WEN3WpbpeXnQbaqDE1XFgqlOMF8YNe6F/CMcuRYbxTo7GsfvPBp
-        X+huBwBXUxu7FIgkZ+/rDlvpOKqXINYA=
-X-Google-Smtp-Source: ABdhPJxyTWcdhRdum/asRPjQnQUlaFhSIdbrXR2n+h0GrPjO4V/PObFy/wT9vtHB5Y+CWLToKiZyWQ9mUW1GGnoZ49I=
-X-Received: by 2002:a2e:874c:: with SMTP id q12mr15247391ljj.424.1608178114926;
- Wed, 16 Dec 2020 20:08:34 -0800 (PST)
+        Wed, 16 Dec 2020 23:20:31 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CxJf46wsZzkr0L;
+        Thu, 17 Dec 2020 12:18:52 +0800 (CST)
+Received: from [10.174.187.231] (10.174.187.231) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 17 Dec 2020 12:19:35 +0800
+Subject: Re: [RFC PATCH v1 3/4] KVM: arm64: GICv4.1: Restore VLPI's pending
+ state to physical side
+To:     Auger Eric <eric.auger@redhat.com>, Marc Zyngier <maz@kernel.org>
+CC:     James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Christoffer Dall <christoffer.dall@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>, "Neo Jia" <cjia@nvidia.com>,
+        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
+References: <20201123065410.1915-1-lushenming@huawei.com>
+ <20201123065410.1915-4-lushenming@huawei.com>
+ <5c724bb83730cdd5dcf7add9a812fa92@kernel.org>
+ <b03edcf2-2950-572f-fd31-601d8d766c80@huawei.com>
+ <2d2bcae4f871d239a1af50362f5c11a4@kernel.org>
+ <49610291-cf57-ff78-d0ac-063af24efbb4@huawei.com>
+ <48c10467-30f3-9b5c-bbcb-533a51516dc5@huawei.com>
+ <2ad38077300bdcaedd2e3b073cd36743@kernel.org>
+ <9b80d460-e149-20c8-e9b3-e695310b4ed1@huawei.com>
+ <274dafb2e21f49326a64bb575e668793@kernel.org>
+ <59ec07e5-c017-8644-b96f-e87fe600c490@huawei.com>
+ <f8b398df-9945-9ce6-18e6-970637a1bb51@redhat.com>
+From:   Shenming Lu <lushenming@huawei.com>
+Message-ID: <5732e2a2-7b78-dcbe-bd7d-77541c7bcf16@huawei.com>
+Date:   Thu, 17 Dec 2020 12:19:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-References: <38a23afc-57da-a01f-286c-15f8b3d61705@broadcom.com>
- <1605316659-3422-1-git-send-email-dphadke@linux.microsoft.com>
- <CAHO=5PFzd9KTR93ntUvAX5dqzxqJQpVXEirs5uoXdvcnZ7hL4g@mail.gmail.com>
- <20201202143505.GA874@kunai> <23a2f2e8-06ad-c728-98eb-91b164572ba4@broadcom.com>
-In-Reply-To: <23a2f2e8-06ad-c728-98eb-91b164572ba4@broadcom.com>
-From:   Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
-Date:   Thu, 17 Dec 2020 09:38:23 +0530
-Message-ID: <CAHO=5PE=BRADou_Hn8qP3mgWiSwDezPCxDjuqa0v1MxMOJRyHQ@mail.gmail.com>
-Subject: Re: [PATCH v3 5/6] i2c: iproc: handle master read request
-To:     Ray Jui <ray.jui@broadcom.com>, Wolfram Sang <wsa@kernel.org>,
-        Dhananjay Phadke <dphadke@linux.microsoft.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lori Hikichi <lori.hikichi@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000004dabdd05b6a12546"
+In-Reply-To: <f8b398df-9945-9ce6-18e6-970637a1bb51@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.187.231]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000004dabdd05b6a12546
-Content-Type: text/plain; charset="UTF-8"
+On 2020/12/16 18:35, Auger Eric wrote:
+> Hi Shenming,
+> 
+> On 12/1/20 1:15 PM, Shenming Lu wrote:
+>> On 2020/12/1 19:50, Marc Zyngier wrote:
+>>> On 2020-12-01 11:40, Shenming Lu wrote:
+>>>> On 2020/12/1 18:55, Marc Zyngier wrote:
+>>>>> On 2020-11-30 07:23, Shenming Lu wrote:
+>>>>>
+>>>>> Hi Shenming,
+>>>>>
+>>>>>> We are pondering over this problem these days, but still don't get a
+>>>>>> good solution...
+>>>>>> Could you give us some advice on this?
+>>>>>>
+>>>>>> Or could we move the restoring of the pending states (include the sync
+>>>>>> from guest RAM and the transfer to HW) to the GIC VM state change handler,
+>>>>>> which is completely corresponding to save_pending_tables (more symmetric?)
+>>>>>> and don't expose GICv4...
+>>>>>
+>>>>> What is "the GIC VM state change handler"? Is that a QEMU thing?
+>>>>
+>>>> Yeah, it is a a QEMU thing...
+>>>>
+>>>>> We don't really have that concept in KVM, so I'd appreciate if you could
+>>>>> be a bit more explicit on this.
+>>>>
+>>>> My thought is to add a new interface (to QEMU) for the restoring of
+>>>> the pending states, which is completely corresponding to
+>>>> KVM_DEV_ARM_VGIC_SAVE_PENDING_TABLES...
+>>>> And it is called from the GIC VM state change handler in QEMU, which
+>>>> is happening after the restoring (call kvm_vgic_v4_set_forwarding())
+>>>> but before the starting (running) of the VFIO device.
+>>>
+>>> Right, that makes sense. I still wonder how much the GIC save/restore
+>>> stuff differs from other architectures that implement similar features,
+>>> such as x86 with VT-D.
+>>
+>> I am not familiar with it...
+>>
+>>>
+>>> It is obviously too late to change the userspace interface, but I wonder
+>>> whether we missed something at the time.
+>>
+>> The interface seems to be really asymmetrical?...
+> 
+> in qemu d5aa0c229a ("hw/intc/arm_gicv3_kvm: Implement pending table
+> save") commit message, it is traced:
+> 
+> "There is no explicit restore as the tables are implicitly sync'ed
+> on ITS table restore and on LPI enable at redistributor level."
+> 
+> At that time there was no real justification behind adding the RESTORE
+> fellow attr.
+> 
+> Maybe a stupid question but isn't it possible to unset the forwarding
+> when saving and rely on VFIO to automatically restore it when resuming
+> on destination?
 
-On Wed, Dec 2, 2020 at 11:14 PM Ray Jui <ray.jui@broadcom.com> wrote:
->
->
->
-> On 12/2/2020 6:35 AM, Wolfram Sang wrote:
-> >
-> >> All review comments are scattered now, please let me know what has to be
-> >> done further,
-> >> Are we going to change the tasklet to irq thread ?
-> >> Are we going to remove batching 64 packets if transaction > 64B and use rx
-> >> fifo threshold ?
-> >>
-> >> I don't see any issue with current code but if it has to change we need a
-> >> valid reason for the same.
-> >> If nothing to be done, please acknowledge the patch.
-> >
-> > Valid request. Has there been any news?
-> >
->
-> Sorry for the delay. I just replied.
-
-This patch is tested and validated with all corner cases and its working.
-Can we merge this and take up any improvement as part of separate patch?
+It seems that the unset_forwarding would not be called when saving, it would
+be called after migration completion...
+As for the resuming/set_forwarding, I still wonder: is it really improper to
+transfer the pending states from vgic to VPT in set_forwarding (not only in
+migration)?...  -_-
 
 Thanks,
-Rayagonda
+Shenming
 
->
->
-> Thanks,
->
-> Ray
-
--- 
-This electronic communication and the information and any files transmitted 
-with it, or attached to it, are confidential and are intended solely for 
-the use of the individual or entity to whom it is addressed and may contain 
-information that is confidential, legally privileged, protected by privacy 
-laws, or otherwise restricted from disclosure to anyone else. If you are 
-not the intended recipient or the person responsible for delivering the 
-e-mail to the intended recipient, you are hereby notified that any use, 
-copying, distributing, dissemination, forwarding, printing, or copying of 
-this e-mail is strictly prohibited. If you received this e-mail in error, 
-please return the e-mail to the sender, delete it from your computer, and 
-destroy any printed copy of it.
-
---0000000000004dabdd05b6a12546
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-xVUYGnc0GLrYeHC2X4wJbUsgi+UFM/rVW0RKe5Sg4xmLXWc/rBhXDBVPeFVdN2dYsk5MyDRM/fXj
-cAA+xTX+SQGoND8CAwEAAaOCAdcwggHTMA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEw
-gY4wTQYIKwYBBQUHMAKGQWh0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVy
-c29uYWxzaWduMnNoYTJnM29jc3AuY3J0MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFs
-c2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0
-MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNV
-HRMEAjAAMEQGA1UdHwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJz
-b25hbHNpZ24yc2hhMmczLmNybDArBgNVHREEJDAigSByYXlhZ29uZGEua29rYXRhbnVyQGJyb2Fk
-Y29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJ
-nXsLYTAdBgNVHQ4EFgQU1rE7oQJ7FiSTADFOqokePoGwIq4wDQYJKoZIhvcNAQELBQADggEBAD8I
-VcITGu1E61LQLR1zygqFw8ByKPgiiprMuQB74Viskl7pAZigzYJB8H3Mpd2ljve+GRo8yvbBC76r
-Gi5WdS06XI5vuImDJ2g6QUt754rj7xEYftM5Gy9ZMslKNvSiPPh1/ACx5w7ecD1ZK0YLMKGATeBD
-XybduRFIEPZBAjgJ5LOYT2ax3ZesfAkan1XJ97yLA93edgTTO2cbUAADTIMFWm4lI/e14wdGmK0I
-FtqJWw6DATg5ePiAAn+S0JoIL1xqKsZi2ioNqm02QMFb7RbB3yEGb/7ZLAGcPW666o5GSLsUnPPq
-YOfL/3X6tVfGeoi3IgfI+z76/lXk8vOQzQQxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkw
-FwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2ln
-biAyIENBIC0gU0hBMjU2IC0gRzMCDDw+ri+StHzo6PJZ/DANBglghkgBZQMEAgEFAKCB1DAvBgkq
-hkiG9w0BCQQxIgQgwOJKP4ubqyLDxs30hM29dpxdSunNmOqXGSN+ITyt7wMwGAYJKoZIhvcNAQkD
-MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAxMjE3MDQwODM1WjBpBgkqhkiG9w0BCQ8x
-XDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsG
-CSqGSIb3DQEBCjALBgkqhkiG9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAF8j
-/HGmVa0W++Z0x5z/TMW1xY4bDP7yQ2kB+coBdvw4IZAEeUdAjXV5RXr+NsItQB8RUTkgA8SQ3r0L
-px4Kke6+2MHKI5bHKIjwrdrG1l6g4njGN6n5swP0IgdCTkGu13Vuta1SxFDwWsn5HGoJhcz57vYI
-jTpkzEFNo6p5AU9Ix/VD8WWtRbApSXs5jvuZZEe2T38VbVTV2dwvYBT7WVUKzhX9wasCzjx/ad5+
-hDQZydpUhf8q2v2xzDAiuOau7oCgMrzhzBdwHQ8oT05CGzrLtF0bykZrn8yBQIgJa/Ow24HwLLG4
-SuiUll76KtaCK8yewbRl4pzyMMYxpXowOCk=
---0000000000004dabdd05b6a12546--
+> 
+> Thanks
+> 
+> Eric
+> 
+> 
+>>
+>> Or is there a possibility that we could know which irq is hw before the VFIO
+>> device calls kvm_vgic_v4_set_forwarding()?
+>>
+>> Thanks,
+>> Shenming
+>>
+>>>
+>>> Thanks,
+>>>
+>>>         M.
+>>
+> 
+> .
+> 
