@@ -2,166 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D3BD2DD0DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 12:53:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE9C12DD0E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 12:57:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727621AbgLQLxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 06:53:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727376AbgLQLxI (ORCPT
+        id S1726719AbgLQLz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 06:55:27 -0500
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:37001 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726012AbgLQLz0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 06:53:08 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 648B3C061794;
-        Thu, 17 Dec 2020 03:52:28 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id z136so27233748iof.3;
-        Thu, 17 Dec 2020 03:52:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SWAnzpoIcE5rEwzTDRr2wTpeH8UpAAJFMs0DyDjCpqM=;
-        b=sYvid2XG3x7b/6t0LkLeGAdk9h3WY2FincKoCHtxCWzv76/zw/Lmlu1reWy6pED7Hy
-         QmHHvVVtG3ZXtAexF/hWf4VgB6h2RDEwWVIQl5fKKo6NOJngk6rwpVPvBxzASxf9bQoc
-         04GNRnlazw+lXUHtDg2BdI0nIeoE9dzTQFDI5y+r2du0gbUFwNeOclu/jOppfQhLrPmm
-         s4UPC4mIsZUKuzzr7078aNpbZxsmmkqpsvw7m55PcIY1cus6xlujWgM4ZNFlA38V3Um9
-         Y+IvcAbBIiGmSj6YfY7T247/BaTG+UueT5gRONFdSKUhGnvSXPu2FhAKaQNGQKxaoaGi
-         5l1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SWAnzpoIcE5rEwzTDRr2wTpeH8UpAAJFMs0DyDjCpqM=;
-        b=TK29FO+2xAo3NLUb9HD8ZJU2um6mI7UoprIYz1JUq5DMiRN2NTjaUXjlT5/Evgkm61
-         O1WBsYIVYjA/TwSafrFhqFE/JwwIDV2FLLqt8Y4zE6plTRUnkYyYFXOWw0oh8DAm9/2U
-         rb/o/X68eqzVaNCir2fv7SrmGApf5hY+jhA++vwuk4jMvprPwtsJIoyOaKD7hsklcy9o
-         b4Fn3mnqDbEzb7kLfnV+AjuPGZPXjLCJalIuCnQu59Rlxy8lky/Ntz1hh6yv+IWY+iRU
-         SKJl0URwLFdXrTZLetWabtAzxYhmrdWJDQmemQr/XsRmHMLTq0M5rpH2RPg+eUwSe3Qo
-         sgfQ==
-X-Gm-Message-State: AOAM533zvhMwE/CXQgn345GGizvlgOFHcQ46HsAZXn+PyDJFmA3wfewX
-        VAWy+3Ad5Mgv9vhDCbSR64pboHBzuxNwEPZw05s=
-X-Google-Smtp-Source: ABdhPJxLqPiDWz8F0NrugQuAfroa5tM3N+LuhLGdowWERAYKEafweFFocLSidDpsv3IWLXVCK90HBFHvAYtKQHaN7sk=
-X-Received: by 2002:a02:caac:: with SMTP id e12mr46551817jap.45.1608205947532;
- Thu, 17 Dec 2020 03:52:27 -0800 (PST)
-MIME-Version: 1.0
-References: <20201213183759.223246-1-aford173@gmail.com> <20201213183759.223246-2-aford173@gmail.com>
- <CAMuHMdWRieM1H5WLySVDVQds-xKgsqo-OibegJrXgonfqbAL8g@mail.gmail.com>
- <CAHCN7xL3KU4dA=0-S7J5AEPmjAtpz4j-frEUqBD=JU7BV7g1WA@mail.gmail.com> <CAMuHMdWc=qD=Oqa-7o9K1bd_OM0L7Br8BVAbDvYNraO0wAX2jw@mail.gmail.com>
-In-Reply-To: <CAMuHMdWc=qD=Oqa-7o9K1bd_OM0L7Br8BVAbDvYNraO0wAX2jw@mail.gmail.com>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Thu, 17 Dec 2020 05:52:16 -0600
-Message-ID: <CAHCN7xKsSgM+=MFOKpNZTsJJiNyx6_mqZL2g_PKhN5fWyE6y7Q@mail.gmail.com>
-Subject: Re: [PATCH 01/18] arm64: dts: renesas: beacon kit: Configure
- programmable clocks
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
+        Thu, 17 Dec 2020 06:55:26 -0500
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201217115347euoutp015823d44d442f3d93237295549cba7af1~RftyO-44t0351003510euoutp01f
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 11:53:47 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201217115347euoutp015823d44d442f3d93237295549cba7af1~RftyO-44t0351003510euoutp01f
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1608206027;
+        bh=4D2ygLyKzRgVS3qMV6DdZglnSQ/S2hR8DaD1xUTXRi4=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=cZfDTpSjhffRhm3UATDRD3DR+c6JS1p48bYE/77/wq0aL+QQu+SBPENWyrmGTEROi
+         weD5weeeQbd1F4fPzrKN/jNy0P0YAvLgna2xVCDu7O0XuJXMQEK0CwKwTthC8qVBhZ
+         zE7EF9wA10OvFkhiJLf+L5MFaaE7gBLJaJweeovU=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20201217115342eucas1p1d5d62b7427344c38dbfb412eefe110fe~RfttPt56a2472224722eucas1p1p;
+        Thu, 17 Dec 2020 11:53:42 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id E3.9D.45488.6C64BDF5; Thu, 17
+        Dec 2020 11:53:42 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20201217115341eucas1p11b7d1ffe89f9411223523eb5b5da170a~RftsvOzBf2279122791eucas1p14;
+        Thu, 17 Dec 2020 11:53:41 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201217115341eusmtrp15bdad5cf09e0acf0a90e16fc45493a28~RftsuYjNc2059420594eusmtrp1z;
+        Thu, 17 Dec 2020 11:53:41 +0000 (GMT)
+X-AuditID: cbfec7f5-c5fff7000000b1b0-bb-5fdb46c6060a
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 56.A7.21957.5C64BDF5; Thu, 17
+        Dec 2020 11:53:41 +0000 (GMT)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20201217115341eusmtip18f3cfb9d9d963a0a62be134aeccd8147~Rftsfwbxv2868728687eusmtip1b;
+        Thu, 17 Dec 2020 11:53:41 +0000 (GMT)
+From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+To:     Andrew Lunn <andrew@lunn.ch>, jim.cromie@gmail.com,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Luca Ceresoli <luca@lucaceresoli.net>
-Content-Type: text/plain; charset="UTF-8"
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Cc:     =?UTF-8?q?Bart=C5=82omiej=20=C5=BBolnierkiewicz?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+Subject: [PATCH v9 0/3] AX88796C SPI Ethernet Adapter
+Date:   Thu, 17 Dec 2020 12:53:27 +0100
+Message-Id: <20201217115330.28431-1-l.stelmach@samsung.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Organization: Samsung R&D Institute Poland
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrIKsWRmVeSWpSXmKPExsWy7djP87rH3G7HG9xqFbQ4f/cQs8XGGetZ
+        Leacb2GxmH/kHKvFovczWC2uvb3DatH/+DWzxfnzG9gtLmzrY7W4eWgFo8Wmx9dYLS7vmsNm
+        MeP8PiaLQ1P3MlqsPXKX3eLYAjGL1r1H2B0EPS5fu8jssWXlTSaPnbPusntsWtXJ5rF5Sb3H
+        zh2fmTz6tqxi9Pi8SS6AI4rLJiU1J7MstUjfLoErY99SsYLNWhWrrraxNjD+Uehi5OSQEDCR
+        uPRgG1sXIxeHkMAKRolnN48yQzhfGCXe/F0JlfnMKDHr6QMWmJb7TxexQiSWM0rcf76HEcJ5
+        zijx8x2Iw8nBJuAo0b/0BFiViMA9Zon17Q/AqpgF9jFK7Lw3hRmkSljAVOLhr/+sIDaLgKrE
+        owubwHbwClhL7D5+gwlin7xE+/LtbBBxQYmTM5+A1fALaEmsaboOZjMD1TRvnQ12uYTAYk6J
+        Kz9/M0M0u0js/g7RLCEgLPHq+BZ2CFtG4vTkHqBmDiC7XmLyJDOI3h5GiW1zfkA9ai1x59wv
+        NpAaZgFNifW79CHCjhInd/9jgmjlk7jxVhDiBD6JSdumM0OEeSU62oQgqlUk1vXvgRooJdH7
+        agUjhO0hsXLtf+YJjIqzkDw2C8kzsxD2LmBkXsUonlpanJueWmycl1quV5yYW1yal66XnJ+7
+        iRGY6k7/O/51B+OKVx/1DjEycTAeYpTgYFYS4U04cDNeiDclsbIqtSg/vqg0J7X4EKM0B4uS
+        OO+urWvihQTSE0tSs1NTC1KLYLJMHJxSDUzV97btnFeyweGd7KSnN88lel3WeWCdGjYxyJmv
+        MUGk696T17ys7yc71UnYzzZn/RVzMmepg/N5hh1VOl5LRA8Z9Uuo/47pX7+2lXdCxO3PR5Wq
+        V320W8cqpLF8yo7pL1n/K7i+2lmbbHs5ft/qOtfQF0uPLlW+/3b2WfflxtcuukxxL+2WZDTf
+        NGvrIpMFu+5vqIr5eZ9ZymtvqsBypqsTfmu/P1u2xL/wYNqr7Og4k8utb8W1ryq4TGLSiem+
+        cpLN/mPE007baXIq3LP3Cm/XWmTHGr9CSXnyUuFHy5c/UtNf3a566Zati+Se0Je7D08Ke/wp
+        3jZD9m93fe2clk2LVq/0Lb3zzddK5tf32a+eKLEUZyQaajEXFScCACgvTMvkAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrJIsWRmVeSWpSXmKPExsVy+t/xu7pH3W7HG3Q80LQ4f/cQs8XGGetZ
+        Leacb2GxmH/kHKvFovczWC2uvb3DatH/+DWzxfnzG9gtLmzrY7W4eWgFo8Wmx9dYLS7vmsNm
+        MeP8PiaLQ1P3MlqsPXKX3eLYAjGL1r1H2B0EPS5fu8jssWXlTSaPnbPusntsWtXJ5rF5Sb3H
+        zh2fmTz6tqxi9Pi8SS6AI0rPpii/tCRVISO/uMRWKdrQwkjP0NJCz8jEUs/Q2DzWyshUSd/O
+        JiU1J7MstUjfLkEvY99SsYLNWhWrrraxNjD+Uehi5OSQEDCRuP90EWsXIxeHkMBSRok7T7az
+        dDFyACWkJFbOTYeoEZb4c62LDaLmKaPEm3NrGUESbAKOEv1LT4A1iwi8YZZouveWHcRhFtjH
+        KLH/6GJ2kCphAVOJh7/+s4LYLAKqEo8ubGIBsXkFrCV2H7/BBLFCXqJ9+XY2iLigxMmZT8Cu
+        YBZQl1g/TwgkzC+gJbGm6TpYKzNQefPW2cwTGAVmIemYhdAxC0nVAkbmVYwiqaXFuem5xYZ6
+        xYm5xaV56XrJ+bmbGIFxuu3Yz807GOe9+qh3iJGJg/EQowQHs5IIb8KBm/FCvCmJlVWpRfnx
+        RaU5qcWHGE2BPpjILCWanA9MFHkl8YZmBqaGJmaWBqaWZsZK4rxb566JFxJITyxJzU5NLUgt
+        gulj4uCUamDameDnWH3i0O56N76dsnO8bt3gcSt5X/p2f0FRrYr3Tq2Q3wnuvyc/dJU4EqvL
+        fG/v09zkgt9xL+QEUzlkq6o/fVsuyWW7zf52fF+Dd+GSk5sOJYY9TeuxifqY/HfxZ5mrzotk
+        pF4/j1Hoty1JXV6xs7t2/rPZRTLCn+4UMEn3Pfzu8u5l/MpFzKWtZ7sDtNlOHnN6fO+B1dYC
+        dmbBCDbV19fF5lttregqDLqjcH39n8LwyKDX7yZPDlvNeWiB0cv/M1jP32yN36j4qZRHYu55
+        rw3FJaXJtVEfnu3V6p7rbblv+kWWS55WxVMNPGa035ReKj+1/cbLSC6rcz9Pf/Hrl+Dr5jae
+        KLJgrb6ExF0lluKMREMt5qLiRACpdZ35XAMAAA==
+X-CMS-MailID: 20201217115341eucas1p11b7d1ffe89f9411223523eb5b5da170a
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20201217115341eucas1p11b7d1ffe89f9411223523eb5b5da170a
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201217115341eucas1p11b7d1ffe89f9411223523eb5b5da170a
+References: <CGME20201217115341eucas1p11b7d1ffe89f9411223523eb5b5da170a@eucas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 2:16 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Adam,
->
-> On Wed, Dec 16, 2020 at 6:03 PM Adam Ford <aford173@gmail.com> wrote:
-> > On Wed, Dec 16, 2020 at 8:55 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > On Sun, Dec 13, 2020 at 7:38 PM Adam Ford <aford173@gmail.com> wrote:
-> > > > When the board was added, clock drivers were being updated done at
-> > > > the same time to allow the versaclock driver to properly configure
-> > > > the modes.  Unforutnately, the updates were not applied to the board
->
-> > > > --- a/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
-> > > > +++ b/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
-> > > > @@ -5,6 +5,7 @@
-> > > >
-> > > >  #include <dt-bindings/gpio/gpio.h>
-> > > >  #include <dt-bindings/input/input.h>
-> > > > +#include <dt-bindings/clk/versaclock.h>
-> > > >
-> > > >  / {
-> > > >         backlight_lvds: backlight-lvds {
-> > > > @@ -294,12 +295,12 @@ &du_out_rgb {
-> > > >  &ehci0 {
-> > > >         dr_mode = "otg";
-> > > >         status = "okay";
-> > > > -       clocks = <&cpg CPG_MOD 703>, <&cpg CPG_MOD 704>;
-> > > > +       clocks = <&cpg CPG_MOD 703>, <&cpg CPG_MOD 704>, <&versaclock5 3>;
-> > >
-> > > Why this change? You said before you don't need this
-> > > https://lore.kernel.org/linux-renesas-soc/CAHCN7xJWbP16SA-Ok-5syNnqOZAt8OFJo2_rtg5VrNVsN2-eiQ@mail.gmail.com/
-> > >
-> >
-> > I had talked with the hardware guys about buy pre-programmed
-> > versaclock chips which would have been pre-configured and pre-enabled.
-> > I thought it was going to happen, but it didn't, so we need the
-> > versaclock driver to enable the reference clock for the USB
-> > controllers, ethernet controller and audio clocks.  Previously we were
-> > manually configuring it or it was coincidentally working. Ideally,
-> > we'd have the clock system intentionally enable/disable the clocks
-> > when drivers are loaded/unloaded for for power management reasons.
->
-> Can you tell me how exactly the Versaclock outputs are wired?
+This is a driver for AX88796C Ethernet Adapter connected in SPI mode as
+found on ARTIK5 evaluation board. The driver has been ported from a
+v3.10.9 vendor kernel for ARTIK5 board.
 
-The SoC is expecting a fixed external 50 MHz clock connected to
-USB_EXTAL.  Instead of a fixed clock, we're using the Versaclock.
-We're also using the Versaclock to drive the AVB TXCRefClk,
-du_dotclkiun0 and du_dotclkin2 (also also called du_dotclkin3 on
-RZ/G2N) instead of fixed clocks.
+Changes in v9:
+  - used pskb_extend_head()
+  - used ethtool private flags instead of tunables to switch SPI
+    compression
+  - changed
+    - alloc_skb() to netdev_alloc(skb)
+    - __pskb_trim() to pskb_trim()
+  - removed:
+    - chages to skb->truesize
+    - unnecessary casting to short
+    - return f() in a void function
+    - IRQF_SHARED flags
+    - unnecessary memset(0) of kzalloc()ed buffer
+    - unused endiannes detection
+    - unnecessary __packed attribute for some structures
+  - added:
+    - temporary variable in AX_WRITE/READ sequences
+    - missin mutex_unlock() in error paths
+  - axspi_read_reg() returns a constant value in case of an error
+  
+Changes in v8:
+  - fixed the entry in MAINTAINERS
+  - removed unnecessary netif_err()
+  - changed netif_rx() to netif_rx_ni() for code running in a process
+    context
+  - added explicit type casting for ~BIT()
 
-> E.g. for USB, the bindings don't say anything about a third clock input,
-> so I'd like to know where that clock is fed into USB.
+Changes in v7:
+  - removed duplicate code
+  - moved a constant buffer definition away from a header file
 
-The way the driver is crafted, it can take in multiple clocks and it
-goes through a list to enable them all, so I added the versaclock to
-the array.  Without the versaclock reference, the clock doesn't get
-turned on and the USB fails to operate.
+Changes in v6:
+  - fixed typos in Kconfig
+  - checked argument value in ax88796c_set_tunable
+  - updated tags in commit messages
 
-The DU clocks are also expecting an array, so I added the versaclock
-to that array as well.
+Changes in v5:
+  - coding style (local variable declarations)
+  - added spi0 node in the DT binding example and removed
+    interrupt-parent
+  - removed comp module parameter
+  - added CONFIG_SPI_AX88796C_COMPRESSION option to set the initial
+    state of SPI compression
+  - introduced new ethtool tunable "spi-compression" to controll SPI
+    transfer compression
+  - removed unused fields in struct ax88796c_device
+  - switched from using buffers allocated on stack for SPI transfers
+    to DMA safe ones embedded in struct ax_spi and allocated with
+    kmalloc()
 
-It's similar to the rationale that I'm trying to add the option clock
-for the AVB TXC_Ref clock on the other path.  We're using the
-versaclock there as well.  The difference is that in the case of the
-AVB_TXCRefClk, the driver isn't expecting an array of clocks, it's
-only expecting a single clock.  In order to enable the additional
-clock,  I started the patch to accept the optional clock for the
-TXCRefClk in order to get the clock system to enable the clock.
+Changes in v4:
+  - fixed compilation problems in asix,ax88796c.yaml and in
+  ax88796c_main.c introduced in v3
 
-Because the Versaclock isn't programmed to automatically start, they
-need the consumers of the clock to request and enable them.
+Changes in v3:
+  - modify vendor-prefixes.yaml in a separate patch
+  - fix several problems in the dt binding
+    - removed unnecessary descriptions and properties
+    - changed the order of entries
+    - fixed problems with missing defines in the example
+  - change (1 << N) to BIT(N), left a few (0 << N)
+  - replace ax88796c_get_link(), ax88796c_get_link_ksettings(),
+    ax88796c_set_link_ksettings(), ax88796c_nway_reset(),
+    ax88796c_set_mac_address() with appropriate kernel functions.
+  - disable PHY auto-polling in MAC and use PHYLIB to track the state
+    of PHY and configure MAC
+  - propagate return values instead of returning constants in several
+    places
+  - add WARN_ON() for unlocked mutex
+  - remove local work queue and use the system_wq
+  - replace phy_connect_direct() with phy_connect() and move
+    devm_register_netdev() to the end of ax88796c_probe()
+    (Unlike phy_connect_direct() phy_connect() does not crash if the
+    network device isn't registered yet.)
+  - remove error messages on ENOMEM
+  - move free_irq() to the end of ax88796c_close() to avoid race
+    condition
+  - implement flow-control
 
-I admit that I'll probably need to update the bindings to add the
-extra clocks as optional, so if you want, I can submit additional
-patches to add these optional clocks to their respective bindings.
+Changes in v2:
+  - use phylib
+  - added DT bindings
+  - moved #includes to *.c files
+  - used mutex instead of a semaphore for locking
+  - renamed some constants
+  - added error propagation for several functions
+  - used ethtool for dumping registers
+  - added control over checksum offloading
+  - remove vendor specific PM
+  - removed macaddr module parameter and added support for reading a MAC
+    address from platform data (e.g. DT)
+  - removed dependency on SPI from NET_VENDOR_ASIX
+  - added an entry in the MAINTAINERS file
+  - simplified logging with appropriate netif_* and netdev_* helpers
+  - lots of style fixes
 
->
-> > Thank you for the review.  Is that the only patch in the series with
-> > concerns?  I probably won't get to V2 until this weekend.
->
-> Sorry, I still have to review the other patches in your series.
-> Anyway, we have time until the end of January to queue DT patches for
-> v5.12...
+Łukasz Stelmach (3):
+  dt-bindings: vendor-prefixes: Add asix prefix
+  dt-bindings: net: Add bindings for AX88796C SPI Ethernet Adapter
+  net: ax88796c: ASIX AX88796C SPI Ethernet Adapter Driver
 
-Great.  Thank you,
+ .../bindings/net/asix,ax88796c.yaml           |   73 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
+ MAINTAINERS                                   |    6 +
+ drivers/net/ethernet/Kconfig                  |    1 +
+ drivers/net/ethernet/Makefile                 |    1 +
+ drivers/net/ethernet/asix/Kconfig             |   35 +
+ drivers/net/ethernet/asix/Makefile            |    6 +
+ drivers/net/ethernet/asix/ax88796c_ioctl.c    |  239 ++++
+ drivers/net/ethernet/asix/ax88796c_ioctl.h    |   26 +
+ drivers/net/ethernet/asix/ax88796c_main.c     | 1105 +++++++++++++++++
+ drivers/net/ethernet/asix/ax88796c_main.h     |  558 +++++++++
+ drivers/net/ethernet/asix/ax88796c_spi.c      |  115 ++
+ drivers/net/ethernet/asix/ax88796c_spi.h      |   69 +
+ 13 files changed, 2236 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/asix,ax88796c.yaml
+ create mode 100644 drivers/net/ethernet/asix/Kconfig
+ create mode 100644 drivers/net/ethernet/asix/Makefile
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_ioctl.c
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_ioctl.h
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_main.c
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_main.h
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_spi.c
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_spi.h
 
-adam
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+-- 
+2.26.2
+
