@@ -2,202 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E83392DD295
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 15:04:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9552DD29D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 15:11:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727767AbgLQOEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 09:04:04 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:35832 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726488AbgLQOEE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 09:04:04 -0500
-Received: from ironmsg07-lv.qualcomm.com (HELO ironmsg07-lv.qulacomm.com) ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 17 Dec 2020 06:03:22 -0800
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg07-lv.qulacomm.com with ESMTP/TLS/AES256-SHA; 17 Dec 2020 06:03:21 -0800
-X-QCInternal: smtphost
-Received: from mdalam-linux.qualcomm.com ([10.201.2.71])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 17 Dec 2020 19:33:06 +0530
-Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
-        id 2313A219ED; Thu, 17 Dec 2020 19:33:05 +0530 (IST)
-From:   Md Sadre Alam <mdalam@codeaurora.org>
-To:     miquel.raynal@bootlin.com, manivannan.sadhasivam@linaro.org,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        boris.brezillon@collabora.com
-Cc:     mdalam@codeaurora.org, sricharan@codeaurora.org
-Subject: [PATCH] mtd: rawnand: qcom: update last code word register
-Date:   Thu, 17 Dec 2020 19:32:56 +0530
-Message-Id: <1608213776-19584-1-git-send-email-mdalam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1727376AbgLQOKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 09:10:17 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:59380 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725988AbgLQOKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 09:10:16 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kptyB-00CVnS-6L; Thu, 17 Dec 2020 15:09:27 +0100
+Date:   Thu, 17 Dec 2020 15:09:27 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Marcin Wojtas <mw@semihalf.com>
+Cc:     Stefan Chulski <stefanc@marvell.com>,
+        netdev <netdev@vger.kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        "David S. Miller" <davem@davemloft.net>, nadavh@marvell.com,
+        Yan Markman <ymarkman@marvell.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Russell King <rmk+kernel@armlinux.org.uk>
+Subject: Re: [PATCH net v2 2/2] net: mvpp2: disable force link UP during port
+ init procedure
+Message-ID: <20201217140927.GA2981994@lunn.ch>
+References: <1608198007-10143-1-git-send-email-stefanc@marvell.com>
+ <1608198007-10143-2-git-send-email-stefanc@marvell.com>
+ <CAPv3WKcwT9F3w=Ua-ktE=eorp0a-HPvoF2U-CwsHVtFw6GKOzQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPv3WKcwT9F3w=Ua-ktE=eorp0a-HPvoF2U-CwsHVtFw6GKOzQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From QPIC version 2.0 onwards new register got added to
-read last codeword. This change will update the same.
+> Do you think it's a fix that should be backported to stable branches?
+> If yes, please add 'Fixes: <commit ID> ("commit title")' and it may be
+> good to add 'Cc: stable@vger.kernel.org' adjacent to the Signed-off-by
+> tag.
 
-For first three code word READ_LOCATION_n register will be
-use.For last code wrod READ_LOCATION_LAST_CW_n register will be
-use.
+netdev patches should not be Cc: stable@vger.kernel.org. David and
+Jakub handle stable patches directly.
 
-Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
----
- drivers/mtd/nand/raw/qcom_nandc.c | 79 +++++++++++++++++++++++++++++++++------
- 1 file changed, 67 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index 667e4bf..eaef51d 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -48,6 +48,10 @@
- #define	NAND_READ_LOCATION_1		0xf24
- #define	NAND_READ_LOCATION_2		0xf28
- #define	NAND_READ_LOCATION_3		0xf2c
-+#define NAND_READ_LOCATION_LAST_CW_0    0xf40
-+#define NAND_READ_LOCATION_LAST_CW_1    0xf44
-+#define NAND_READ_LOCATION_LAST_CW_2    0xf48
-+#define NAND_READ_LOCATION_LAST_CW_3    0xf4c
- 
- /* dummy register offsets, used by write_reg_dma */
- #define	NAND_DEV_CMD1_RESTORE		0xdead
-@@ -187,6 +191,12 @@ nandc_set_reg(nandc, NAND_READ_LOCATION_##reg,			\
- 	      ((size) << READ_LOCATION_SIZE) |			\
- 	      ((is_last) << READ_LOCATION_LAST))
- 
-+#define nandc_set_read_loc_last(nandc, reg, offset, size, is_last)	\
-+nandc_set_reg(nandc, NAND_READ_LOCATION_LAST_CW_##reg,			\
-+	      ((offset) << READ_LOCATION_OFFSET) |		\
-+	      ((size) << READ_LOCATION_SIZE) |			\
-+	      ((is_last) << READ_LOCATION_LAST))
-+
- /*
-  * Returns the actual register address for all NAND_DEV_ registers
-  * (i.e. NAND_DEV_CMD0, NAND_DEV_CMD1, NAND_DEV_CMD2 and NAND_DEV_CMD_VLD)
-@@ -316,6 +326,10 @@ struct nandc_regs {
- 	__le32 read_location1;
- 	__le32 read_location2;
- 	__le32 read_location3;
-+	__le32 read_location_last0;
-+	__le32 read_location_last1;
-+	__le32 read_location_last2;
-+	__le32 read_location_last3;
- 
- 	__le32 erased_cw_detect_cfg_clr;
- 	__le32 erased_cw_detect_cfg_set;
-@@ -644,6 +658,14 @@ static __le32 *offset_to_nandc_reg(struct nandc_regs *regs, int offset)
- 		return &regs->read_location2;
- 	case NAND_READ_LOCATION_3:
- 		return &regs->read_location3;
-+	case NAND_READ_LOCATION_LAST_CW_0:
-+		return &regs->read_location_last0;
-+	case NAND_READ_LOCATION_LAST_CW_1:
-+		return &regs->read_location_last1;
-+	case NAND_READ_LOCATION_LAST_CW_2:
-+		return &regs->read_location_last2;
-+	case NAND_READ_LOCATION_LAST_CW_3:
-+		return &regs->read_location_last3;
- 	default:
- 		return NULL;
- 	}
-@@ -719,9 +741,13 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read)
- 	nandc_set_reg(nandc, NAND_READ_STATUS, host->clrreadstatus);
- 	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
- 
--	if (read)
-+	if (read) {
-+		if (nandc->props->qpic_v2)
-+			nandc_set_read_loc_last(nandc, 0, 0, host->use_ecc ?
-+					host->cw_data : host->cw_size, 1);
- 		nandc_set_read_loc(nandc, 0, 0, host->use_ecc ?
- 				   host->cw_data : host->cw_size, 1);
-+	}
- }
- 
- /*
-@@ -1096,9 +1122,13 @@ static void config_nand_page_read(struct qcom_nand_controller *nandc)
- static void
- config_nand_cw_read(struct qcom_nand_controller *nandc, bool use_ecc)
- {
--	if (nandc->props->is_bam)
-+	if (nandc->props->is_bam) {
-+		if (nandc->props->qpic_v2)
-+			write_reg_dma(nandc, NAND_READ_LOCATION_LAST_CW_0,
-+				      4, NAND_BAM_NEXT_SGL);
- 		write_reg_dma(nandc, NAND_READ_LOCATION_0, 4,
- 			      NAND_BAM_NEXT_SGL);
-+	}
- 
- 	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
- 	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
-@@ -1633,16 +1663,28 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 	}
- 
- 	if (nandc->props->is_bam) {
--		nandc_set_read_loc(nandc, 0, read_loc, data_size1, 0);
-+		if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
-+			nandc_set_read_loc_last(nandc, 0, read_loc, data_size1, 0);
-+		else
-+			nandc_set_read_loc(nandc, 0, read_loc, data_size1, 0);
- 		read_loc += data_size1;
- 
--		nandc_set_read_loc(nandc, 1, read_loc, oob_size1, 0);
-+		if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
-+			nandc_set_read_loc_last(nandc, 1, read_loc, oob_size1, 0);
-+		else
-+			nandc_set_read_loc(nandc, 1, read_loc, oob_size1, 0);
- 		read_loc += oob_size1;
- 
--		nandc_set_read_loc(nandc, 2, read_loc, data_size2, 0);
-+		if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
-+			nandc_set_read_loc_last(nandc, 2, read_loc, data_size2, 0);
-+		else
-+			nandc_set_read_loc(nandc, 2, read_loc, data_size2, 0);
- 		read_loc += data_size2;
- 
--		nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
-+		if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
-+			nandc_set_read_loc_last(nandc, 3, read_loc, oob_size2, 0);
-+		else
-+			nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
- 	}
- 
- 	config_nand_cw_read(nandc, false);
-@@ -1873,14 +1915,27 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
- 
- 		if (nandc->props->is_bam) {
- 			if (data_buf && oob_buf) {
--				nandc_set_read_loc(nandc, 0, 0, data_size, 0);
--				nandc_set_read_loc(nandc, 1, data_size,
--						   oob_size, 1);
-+				if (nandc->props->qpic_v2 && i == (ecc->steps - 1)) {
-+					nandc_set_read_loc_last(nandc, 0, 0, data_size, 0);
-+					nandc_set_read_loc_last(nandc, 1, data_size,
-+								oob_size, 1);
-+				} else {
-+					nandc_set_read_loc(nandc, 0, 0, data_size, 0);
-+					nandc_set_read_loc(nandc, 1, data_size,
-+							   oob_size, 1);
-+				}
- 			} else if (data_buf) {
--				nandc_set_read_loc(nandc, 0, 0, data_size, 1);
-+				if (nandc->props->qpic_v2 && i == (ecc->steps - 1))
-+					nandc_set_read_loc_last(nandc, 0, 0, data_size, 1);
-+				else
-+					nandc_set_read_loc(nandc, 0, 0, data_size, 1);
- 			} else {
--				nandc_set_read_loc(nandc, 0, data_size,
--						   oob_size, 1);
-+				if (nandc->props->qpic_v2 && i == (ecc->steps - 1))
-+					nandc_set_read_loc_last(nandc, 0, data_size,
-+								oob_size, 1);
-+				else
-+					nandc_set_read_loc(nandc, 0, data_size,
-+							   oob_size, 1);
- 			}
- 		}
- 
--- 
-2.7.4
-
+      Andrew
