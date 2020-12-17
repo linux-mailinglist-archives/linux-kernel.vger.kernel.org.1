@@ -2,76 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E36012DD245
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 14:39:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F72D2DD24E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 14:41:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728115AbgLQNif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 08:38:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56472 "EHLO
+        id S1728098AbgLQNlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 08:41:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726488AbgLQNie (ORCPT
+        with ESMTP id S1727354AbgLQNlU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 08:38:34 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43E89C061794
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 05:37:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2j5SyKzfkhG4+GIahrgxga1F7ov7IQkTMlGIU7JUGvY=; b=vkTdn2bb30CJwK/BdkiV6Uy2AR
-        RCKfmt6VVw14hlI3aSS75HbTuHigTWD9OEJCfpFJx186/bPmddtVGN5Bt0Wpmnj1UTLSTmhv0HCQL
-        8OQHH0eM2pYtPVvTLYYo8CkayLhFUHbAjAIjq42XGcPDcNqWFKvtcvzxW6WF7sZ0iYsPGkVwf2Iav
-        DAfkktx4G5Zc7lvR5S4hyoe5kuklqFajQzdU9vY7PsrZUI9tWMP9O/U/7w43HJrEig1Stqg540+4E
-        eJb5JBH/74ea8m8pEXIj0bWtmDoK1AyX5TQ7a4oSaFtp9d3R5qSitFPIZnd7okQDmUd/D24eyYrjQ
-        9ber0chw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kptT1-0006T8-FQ; Thu, 17 Dec 2020 13:37:15 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 01CBB300DAE;
-        Thu, 17 Dec 2020 14:36:56 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D6C072020D9ED; Thu, 17 Dec 2020 14:36:56 +0100 (CET)
-Date:   Thu, 17 Dec 2020 14:36:56 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Huaixin Chang <changhuaixin@linux.alibaba.com>
-Cc:     linux-kernel@vger.kernel.org, bsegall@google.com,
-        dietmar.eggemann@arm.com, juri.lelli@redhat.com, mgorman@suse.de,
-        mingo@redhat.com, pauld@redhead.com, pjt@google.com,
-        rostedt@goodmis.org, vincent.guittot@linaro.org,
-        khlebnikov@yandex-team.ru, xiyou.wangcong@gmail.com,
-        shanpeic@linux.alibaba.com
-Subject: Re: [PATCH 1/4] sched/fair: Introduce primitives for CFS bandwidth
- burst
-Message-ID: <20201217133656.GX3040@hirez.programming.kicks-ass.net>
-References: <20201217074620.58338-1-changhuaixin@linux.alibaba.com>
- <20201217074620.58338-2-changhuaixin@linux.alibaba.com>
+        Thu, 17 Dec 2020 08:41:20 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3162CC061794;
+        Thu, 17 Dec 2020 05:40:40 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id x22so5582610wmc.5;
+        Thu, 17 Dec 2020 05:40:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=/xEt0wXdZL7ADBlF9vEh+tffl4oQx1au7xXjBQxF3OA=;
+        b=qVVYf0/5qfDxl0QYXURpha42E9l2jVz9UilHHIX//iYcVxpw7+R9seGuvwbdJGOr0q
+         zrH2fyS2QUpiNjh6vhKFpx/GLwrgejSGB1VOtOYV62krufKhDfe9nO4s5i1j3JbHo3Ep
+         b78EVoWywFQUF5BSzImktjUuPHLBObOP8qo035QUQyqMQG5J2obwVJ9QmGUcc5FC+u48
+         /JKc4oo3At6WPqwtHQNiqIw5FbemJCY+j8g0T24b/dQuUl+8g1ik+C13vdFoA+VMhTv4
+         k9zgZaGMOggGdZFcw61cHiMXGuCVppmv/O1t4IpAqZnvJEtxUArcJWVG+OVECqbGUeo2
+         G6+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=/xEt0wXdZL7ADBlF9vEh+tffl4oQx1au7xXjBQxF3OA=;
+        b=ExHzHlxNPok2eNVSZ5T9m99/na0Hyv6zC0zu6QaI8uiiOJxs1YxWUIbDMOlRlCRwzI
+         Lh6ridokEAht79bWymwGm6+ubxs+EG225EvtEVFTDFPNkW/yANUBuGbUyYUVE7TwxoZi
+         f0NIiE5NiihXlrkYpt2pDSrhhdiB66gXcVxbiB1dgzTLeGI1liPeHPOnb6QeVpNJdUNf
+         FBjtIf+VOaWKdPKw31GqjSrbqzCdAn6ZJTXMUdbgB3fM0Qyj+N/eWCTTRlStb27GEbPD
+         AeHiABHo9RlCP91K0U9ZXB+yQkXuo7leBQf/tUaMFJdrWqLYDUg7cD4BDG8DPNusHi9f
+         57EQ==
+X-Gm-Message-State: AOAM530sjcazPXZeOIROOySjrdqE6Uji/RXM0lvdPqKn/4DtXilLnnkE
+        Ks2OrTMXCl81a2ADo7ycT9A=
+X-Google-Smtp-Source: ABdhPJw8WnkEANXergOYbF/Xpo2OL4+IJooyL6tb8eAwRdFjI8Lm0fBCRWx60MEWgmF8s2OdkJQntA==
+X-Received: by 2002:a1c:2182:: with SMTP id h124mr8626434wmh.25.1608212438975;
+        Thu, 17 Dec 2020 05:40:38 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id e17sm8660868wrw.84.2020.12.17.05.40.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Dec 2020 05:40:37 -0800 (PST)
+Date:   Thu, 17 Dec 2020 14:40:36 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Felipe Balbi <balbi@kernel.org>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Ion Agorria <ion@agorria.com>, linux-tegra@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 5/8] usb: chipidea: tegra: Support host mode
+Message-ID: <X9tf1MzyUTCvfvBn@ulmo>
+References: <20201217094007.19336-1-digetx@gmail.com>
+ <20201217094007.19336-6-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="7iCBPi+CNmxV7TSd"
 Content-Disposition: inline
-In-Reply-To: <20201217074620.58338-2-changhuaixin@linux.alibaba.com>
+In-Reply-To: <20201217094007.19336-6-digetx@gmail.com>
+User-Agent: Mutt/2.0.3 (a51f058f) (2020-12-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 03:46:17PM +0800, Huaixin Chang wrote:
-> In this patch, we introduce the notion of CFS bandwidth burst. Unused
-> "quota" from pervious "periods" might be accumulated and used in the
-> following "periods". The maximum amount of accumulated bandwidth is
-> bounded by "burst". And the maximun amount of CPU a group can consume in
-> a given period is "buffer" which is equivalent to "quota" + "burst in
-> case that this group has done enough accumulation.
 
-Oh man, Juri, wasn't there a paper about statistical bandwidth
-accounting somewhere? Where, if you replace every utilization by a
-statistical variable, the end result is still useful?
+--7iCBPi+CNmxV7TSd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-That is, instead of something like; \Sum u_i <= 1, you get something
-like: \Sum {avg(u),var(u)}_i <= {1, sqrt(\Sum var_i^2)} and you can
-still proof bounded tardiness etc.. (assuming a gaussian distribution).
+On Thu, Dec 17, 2020 at 12:40:04PM +0300, Dmitry Osipenko wrote:
+> From: Peter Geis <pgwipeout@gmail.com>
+>=20
+> Add USB host mode to the Tegra HDRC driver. This allows us to benefit from
+> support provided by the generic ChipIdea driver instead of duplicating the
+> effort in a separate ehci-tegra driver.
+>=20
+> Tested-by: Matt Merhar <mattmerhar@protonmail.com>
+> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+> Tested-by: Ion Agorria <ion@agorria.com>
+> Signed-off-by: Peter Geis <pgwipeout@gmail.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/usb/chipidea/Kconfig         |   1 -
+>  drivers/usb/chipidea/ci_hdrc_tegra.c | 243 ++++++++++++++++++++++++++-
+>  drivers/usb/chipidea/core.c          |  10 +-
+>  drivers/usb/chipidea/host.c          | 104 +++++++++++-
+>  include/linux/usb/chipidea.h         |   6 +
+>  5 files changed, 356 insertions(+), 8 deletions(-)
 
-The proposed seems close to that, but not quite, and I'm afraid it's not
-quite strong enough to still provide any guarantees.
+Looks good:
+
+Acked-by: Thierry Reding <treding@nvidia.com>
+
+--7iCBPi+CNmxV7TSd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl/bX9QACgkQ3SOs138+
+s6EcQw/9F3ruq/wHzXzARXjYo1L/SG55dJe/VK6Qei7WNOWR47PnS5PvUv0dR4rs
+mjvbDJ4tpU91LvnrAytX1aQOtifDNnjY5dqKDLgPde/iiHoh97rjwiBPgYtnQM5k
+1bWVi+A0pHY4H2FtB35HZtP/fLPo3sDJzax8s7/SIFyfXiu+cgbSVZjGypjhBHJY
+RYXLLZzFfxMeJFpDvxb5cYbQy1+06bPPQIZePlE3WMFrh/oanjQraseMc2PdSA3K
+5ufgyHtVInNS3gFERDQyvDQ3/JjNBvZbTQCNmDfPd9HdNgiP6SDUoLQxlZ/vNnWt
+0aJ/uUSTRhid7PvngYOaoPS+LjiELrTuSq3ubdVRJ0wM5uMJQQQ2xBjAlfTMawQP
+7K3xdnZ6GEx7+VyieqD2JC7c2eqdJm2WAqI3aHJTo5oYfWHmxWmp4Xd7FzkxYuVi
+PLWjkEKFxHl54BWV559t3oEayqRXLTr1k0JOVXaqA5anY5FodjGE4xov99qCjoXp
+NBs7q5dHuhMLcdYpS1JYLmdzzURDPiZnG7QgimybQ3m9uzCLHKMXu6+5SmCz5cRF
+0GsFyzY6XPgq8xZnzpARSVhDT/8E9tYE4KozE/j/Ca+pTkRwPKxxhJGD/l6931EM
+YfSTtZOyvZojLbUeptQ48zb26wDSZCEDyPqN3jnmsEABZbSjqzM=
+=G5vX
+-----END PGP SIGNATURE-----
+
+--7iCBPi+CNmxV7TSd--
