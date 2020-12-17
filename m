@@ -2,88 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F922DCCD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 08:14:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1D532DCCDA
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 08:16:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725828AbgLQHNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 02:13:22 -0500
-Received: from mga02.intel.com ([134.134.136.20]:59248 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725950AbgLQHNS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 02:13:18 -0500
-IronPort-SDR: kvm8tsI0EyuFkWyVx/qz/FupV9VdV2Lxk/RVcEqEVjVUoKhvNsg9SPyctmSM4Q/GmBMrT4g6Xt
- HTcK8a7DZQLQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9837"; a="162252227"
-X-IronPort-AV: E=Sophos;i="5.78,426,1599548400"; 
-   d="scan'208";a="162252227"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2020 23:12:36 -0800
-IronPort-SDR: 5Zfia1INRsXjGay5F2bdewOdEaKE5g0chA4V2oJ3TSGqGBK8f1ypgrNIkTdH8Ldx5ELwnj453R
- ayg7+6QgdEKQ==
-X-IronPort-AV: E=Sophos;i="5.78,426,1599548400"; 
-   d="scan'208";a="369636444"
-Received: from bruennej-mobl1.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.249.33.70])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2020 23:12:32 -0800
-Subject: Re: memory leak in xskq_create
-To:     Peilin Ye <yepeilin.cs@gmail.com>
-Cc:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
-        jonathan.lemon@gmail.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, magnus.karlsson@intel.com,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <0000000000002aca2e05b659af04@google.com>
- <20201216181135.GA94576@PWN>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Message-ID: <0a6cb67b-c24a-07e3-819b-820f3be9e3cd@intel.com>
-Date:   Thu, 17 Dec 2020 08:12:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <20201216181135.GA94576@PWN>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1727004AbgLQHP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 02:15:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726533AbgLQHPy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 02:15:54 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E909AC061794;
+        Wed, 16 Dec 2020 23:15:12 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id 6so21714399ejz.5;
+        Wed, 16 Dec 2020 23:15:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=bGy7gLBy2hFyYL8nSs16yQL0Na8VVi6rxjiUYpw2umY=;
+        b=hYJDilWH5PI0sM/ctM4XmnHMmy/VC9X9ze3GqvZytzsEnHTTT7JfJPcRe0wc+Oro2O
+         UamTbMbmnYThx+VozwRfDpwHQv80X+SUNy+FUvJq/kDc0PfMhxlvc/XykW+jxX/oX5x4
+         JdmtEAOqaV+dV64JeZyEX9AaQbAACElDz0SYbXsmsDQYnG977McOlzeSG1FNY3eUu1vd
+         0tQQkZyrBLDXRKR81yY0dPHkJKAsFYssk3Un1qjxZoTM+Mnt3rS6rq3lh51KYkaPAhDA
+         imCfA3ObkPTwWN9ln0DVugoDXF0b39MdTWFTj9r2uFy5L1krm+H91Ij/B9pBOpdICMtH
+         0cIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=bGy7gLBy2hFyYL8nSs16yQL0Na8VVi6rxjiUYpw2umY=;
+        b=L4teNoQNRq0eHZiFQgfq51esAe8Dbj1ZbiYklV0pc8X5WH9o8u1rJSGwMU0a9VSTS9
+         5WyRxzaVjT3pXNOTqMKgTm0rWR2qjaBzlJbsdfehamj1oCsJ6yjzCCeZ8oTcHxjbZx3c
+         hquucjLgXE6tamE96kBIXHj9TASGEadfbKJ1J0B8YlTYCYIoWvyBho5vGXn7vNC0Dcii
+         kwbhrp2BeXegMPpx0pVTriEx2s4hKlVgHzfkr2AX2onoOBzSNb5ZFKX91UH6lC6KpiOq
+         DeV3/5diDbwMMYvQ+yYGIHhE2yxTR4GLR1+VHwY2bk8NhPUWcIBZtpibs0HEaQOd9SpE
+         5/jg==
+X-Gm-Message-State: AOAM531k5zyXZ8n3TRkR2RGa4Dx8aJHJhWYE3fYikPf03crruJ0BlDD5
+        Y+hHBPIHqpl39fw5DQspy4jN25gQALQnyA==
+X-Google-Smtp-Source: ABdhPJy1nSlTGWTs/AOPSz2icN7kkMpTQo4NU2ITDs0u8lTrYvpAd6c6H96zc8hAOhvnq6hRAJqxKw==
+X-Received: by 2002:a17:907:20dc:: with SMTP id qq28mr33410118ejb.403.1608189311050;
+        Wed, 16 Dec 2020 23:15:11 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2dfe:900:8cfe:59ae:f146:5d09])
+        by smtp.gmail.com with ESMTPSA id mc25sm2961331ejb.58.2020.12.16.23.15.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Dec 2020 23:15:10 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-pm@vger.kernel.org
+Cc:     Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
+        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] MAINTAINERS: include governors into CPU IDLE TIME MANAGEMENT FRAMEWORK
+Date:   Thu, 17 Dec 2020 08:15:01 +0100
+Message-Id: <20201217071501.31267-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The current pattern in the file entry does not make the files in the
+governors subdirectory to be a part of the CPU IDLE TIME MANAGEMENT
+FRAMEWORK.
 
-On 2020-12-16 19:11, Peilin Ye wrote:
-> Hi all,
-> 
-> On Sun, Dec 13, 2020 at 06:53:10AM -0800, syzbot wrote:
->> BUG: memory leak
->> unreferenced object 0xffff88810f897940 (size 64):
->>    comm "syz-executor991", pid 8502, jiffies 4294942194 (age 14.080s)
->>    hex dump (first 32 bytes):
->>      7f 00 00 00 80 00 00 00 00 00 00 00 00 00 00 00  ................
->>      00 a0 37 0c 81 88 ff ff 00 00 00 00 00 00 00 00  ..7.............
->>    backtrace:
->>      [<00000000639d0dd1>] xskq_create+0x23/0xd0 include/linux/slab.h:552
->>      [<00000000b680b035>] xsk_init_queue net/xdp/xsk.c:508 [inline]
->>      [<00000000b680b035>] xsk_setsockopt+0x1c4/0x590 net/xdp/xsk.c:875
->>      [<000000002b302260>] __sys_setsockopt+0x1b0/0x360 net/socket.c:2132
->>      [<00000000ae03723e>] __do_sys_setsockopt net/socket.c:2143 [inline]
->>      [<00000000ae03723e>] __se_sys_setsockopt net/socket.c:2140 [inline]
->>      [<00000000ae03723e>] __x64_sys_setsockopt+0x22/0x30 net/socket.c:2140
->>      [<0000000005c2b4a0>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->>      [<0000000003db140f>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> I have tested the following diff locally against syzbot's reproducer,
-> and sent a patch to it [1] for testing.  I will send a real patch here
-> tomorrow if syzbot is happy about it.  Please see explanation below.
->
+Adjust the file pattern to include files in governors.
 
-Hi Peilin Ye!
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+applies cleanly on current master and next-20201215
 
-Thanks for taking a look! Magnus has already addressed this problem in
-another patch [1].
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 952731d1e43c..ac679aa00e0d 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4596,7 +4596,7 @@ B:	https://bugzilla.kernel.org
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git
+ F:	Documentation/admin-guide/pm/cpuidle.rst
+ F:	Documentation/driver-api/pm/cpuidle.rst
+-F:	drivers/cpuidle/*
++F:	drivers/cpuidle/
+ F:	include/linux/cpuidle.h
+ 
+ CPU POWER MONITORING SUBSYSTEM
+-- 
+2.17.1
 
-Cheers,
-Björn
-
-
-
-[1] 
-https://lore.kernel.org/bpf/20201214085127.3960-1-magnus.karlsson@gmail.com/
