@@ -2,177 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEFAA2DD82E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:22:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B152DD830
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:22:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729979AbgLQSWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 13:22:11 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:41040 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729580AbgLQSWL (ORCPT
+        id S1730069AbgLQSWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 13:22:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729923AbgLQSWL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 17 Dec 2020 13:22:11 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1608229311; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=uDlTTR0Cfma4aSUzb8Egeut+U21yuCwXAadjUdyUhZA=;
- b=Aa7qzhDKlaj1lf5aZyxByDMRi9pkJpuwHlokOmknOmm2xce/uRVkMkvhirdbtq+HX0z9ZFh5
- I49y5VcPzjjXNEMffFqTZqxSB9ByvU92+RCtkFCOvPLEs4UyOyLz+Os2vYj/kIt+5Fwg/tIe
- mwVMBVdG1XQyQVDf78MTFFVhP/4=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
- 5fdba1a2ca81d9e625eab5e6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Dec 2020 18:21:22
- GMT
-Sender: rishabhb=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B0F90C433ED; Thu, 17 Dec 2020 18:21:21 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: rishabhb)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 19D7BC433CA;
-        Thu, 17 Dec 2020 18:21:20 +0000 (UTC)
+Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24205C0617A7;
+        Thu, 17 Dec 2020 10:21:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
+         s=20161220; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=k+TBWoCCmuI+juM/RDKcFjuPs5RlB1YJML8ROgxtvlw=; b=R5sL7KBWSOcu7q0eGSq07mz0ho
+        j0+NPSXrRL9yeaniOZDHuWaAUVw2P1el8IkVWHrEKPgMyaBC6tPpkE02x+lkmACRyi1nUI8VYhEba
+        GryzGGyvSAdgSkDMTxMEKoCwwgzZfq4x5sor0wcLurTcDMASw+FAGnWD3u9srW/2m1KyFb3bq1BD8
+        YIjjrqGYlG6Uvnupn5dUXS/wm/r8RC4x4SnsVeQY9X9POgEG7Psy8lft01Vqfa3Qk/L1JC82JFrZE
+        b6BZqcQDoGn0v3nSv9BC56rPFVkFjCWUpKHpOZ7VRD+T1n5S+8IZ4gdI2K2JtncSw/+m1ibYAuSDI
+        8HY+qvmA==;
+Received: from dsl-hkibng22-54f986-236.dhcp.inet.fi ([84.249.134.236] helo=[192.168.1.10])
+        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <cyndis@kapsi.fi>)
+        id 1kpxu0-000859-J2; Thu, 17 Dec 2020 20:21:24 +0200
+Subject: Re: [PATCH v2 34/48] gpu: host1x: Support power management
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-clk@vger.kernel.org
+References: <20201217180638.22748-1-digetx@gmail.com>
+ <20201217180638.22748-35-digetx@gmail.com>
+From:   Mikko Perttunen <cyndis@kapsi.fi>
+Message-ID: <cb8dca7c-6ef2-5116-6c04-816a63525e2e@kapsi.fi>
+Date:   Thu, 17 Dec 2020 20:21:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20201217180638.22748-35-digetx@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Thu, 17 Dec 2020 10:21:20 -0800
-From:   rishabhb@codeaurora.org
-To:     Alex Elder <elder@linaro.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tsoni@codeaurora.org, psodagud@codeaurora.org,
-        sidgup@codeaurora.org
-Subject: Re: [PATCH] remoteproc: Create a separate workqueue for recovery
- tasks
-In-Reply-To: <dc9940f0-7fe3-d1da-acb5-580ae7366c9b@linaro.org>
-References: <1607806087-27244-1-git-send-email-rishabhb@codeaurora.org>
- <X9k+xmg9SULEbJXe@builder.lan>
- <dc9940f0-7fe3-d1da-acb5-580ae7366c9b@linaro.org>
-Message-ID: <87c3f902b94bc243fc28e0ce79303dd4@codeaurora.org>
-X-Sender: rishabhb@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-SA-Exim-Connect-IP: 84.249.134.236
+X-SA-Exim-Mail-From: cyndis@kapsi.fi
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-17 08:12, Alex Elder wrote:
-> On 12/15/20 4:55 PM, Bjorn Andersson wrote:
->> On Sat 12 Dec 14:48 CST 2020, Rishabh Bhatnagar wrote:
->> 
->>> Create an unbound high priority workqueue for recovery tasks.
+On 12/17/20 8:06 PM, Dmitry Osipenko wrote:
+> Add suspend/resume and generic power domain support to the Host1x driver.
+> This is required for enabling system-wide DVFS and supporting dynamic
+> power management using a generic power domain.
 > 
-> I have been looking at a different issue that is caused by
-> crash notification.
+> Tested-by: Peter Geis <pgwipeout@gmail.com>
+> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>   drivers/gpu/host1x/dev.c | 102 ++++++++++++++++++++++++++++++++++-----
+>   1 file changed, 91 insertions(+), 11 deletions(-)
 > 
-> What happened was that the modem crashed while the AP was
-> in system suspend (or possibly even resuming) state.  And
-> there is no guarantee that the system will have called a
-> driver's ->resume callback when the crash notification is
-> delivered.
+> diff --git a/drivers/gpu/host1x/dev.c b/drivers/gpu/host1x/dev.c
+> index d0ebb70e2fdd..c1525cffe7b1 100644
+> --- a/drivers/gpu/host1x/dev.c
+> +++ b/drivers/gpu/host1x/dev.c
+> @@ -12,6 +12,7 @@
+>   #include <linux/module.h>
+>   #include <linux/of_device.h>
+>   #include <linux/of.h>
+> +#include <linux/pm_runtime.h>
+>   #include <linux/slab.h>
+>   
+>   #define CREATE_TRACE_POINTS
+> @@ -417,7 +418,7 @@ static int host1x_probe(struct platform_device *pdev)
+>   		return err;
+>   	}
+>   
+> -	host->rst = devm_reset_control_get(&pdev->dev, "host1x");
+> +	host->rst = devm_reset_control_get_exclusive_released(&pdev->dev, "host1x");
+>   	if (IS_ERR(host->rst)) {
+>   		err = PTR_ERR(host->rst);
+>   		dev_err(&pdev->dev, "failed to get reset: %d\n", err);
+> @@ -437,16 +438,15 @@ static int host1x_probe(struct platform_device *pdev)
+>   		goto iommu_exit;
+>   	}
+>   
+> -	err = clk_prepare_enable(host->clk);
+> -	if (err < 0) {
+> -		dev_err(&pdev->dev, "failed to enable clock\n");
+> -		goto free_channels;
+> -	}
+> +	pm_runtime_enable(&pdev->dev);
+> +	err = pm_runtime_get_sync(&pdev->dev);
+> +	if (err < 0)
+> +		goto rpm_disable;
+>   
+>   	err = reset_control_deassert(host->rst);
+>   	if (err < 0) {
+>   		dev_err(&pdev->dev, "failed to deassert reset: %d\n", err);
+> -		goto unprepare_disable;
+> +		goto rpm_disable;
+>   	}
+>   
+>   	err = host1x_syncpt_init(host);
+> @@ -485,9 +485,10 @@ static int host1x_probe(struct platform_device *pdev)
+>   	host1x_syncpt_deinit(host);
+>   reset_assert:
+>   	reset_control_assert(host->rst);
+> -unprepare_disable:
+> -	clk_disable_unprepare(host->clk);
+> -free_channels:
+> +rpm_disable:
+> +	pm_runtime_put(&pdev->dev);
+> +	pm_runtime_disable(&pdev->dev);
+> +
+>   	host1x_channel_list_free(&host->channel_list);
+>   iommu_exit:
+>   	host1x_iommu_exit(host);
+> @@ -504,16 +505,95 @@ static int host1x_remove(struct platform_device *pdev)
+>   	host1x_intr_deinit(host);
+>   	host1x_syncpt_deinit(host);
+>   	reset_control_assert(host->rst);
+> -	clk_disable_unprepare(host->clk);
+> +	pm_runtime_put(&pdev->dev);
+> +	pm_runtime_disable(&pdev->dev);
+>   	host1x_iommu_exit(host);
+>   
+>   	return 0;
+>   }
+>   
+> +static int __maybe_unused host1x_runtime_suspend(struct device *dev)
+> +{
+> +	struct host1x *host = dev_get_drvdata(dev);
+> +
+> +	clk_disable_unprepare(host->clk);
+> +	reset_control_release(host->rst);
+> +
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused host1x_runtime_resume(struct device *dev)
+> +{
+> +	struct host1x *host = dev_get_drvdata(dev);
+> +	int err;
+> +
+> +	err = reset_control_acquire(host->rst);
+> +	if (err) {
+> +		dev_err(dev, "failed to acquire reset: %d\n", err);
+> +		return err;
+> +	}
+> +
+> +	err = clk_prepare_enable(host->clk);
+> +	if (err) {
+> +		dev_err(dev, "failed to enable clock: %d\n", err);
+> +		goto release_reset;
+> +	}
+> +
+> +	return 0;
+> +
+> +release_reset:
+> +	reset_control_release(host->rst);
+> +
+> +	return err;
+> +}
+> +
+> +static __maybe_unused int host1x_suspend(struct device *dev)
+> +{
+> +	struct host1x *host = dev_get_drvdata(dev);
+> +	int err;
+> +
+> +	host1x_syncpt_save(host);
+> +
+> +	err = pm_runtime_force_suspend(dev);
+> +	if (err < 0)
+> +		return err;
+> +
+> +	return 0;
+> +}
+> +
+> +static __maybe_unused int host1x_resume(struct device *dev)
+> +{
+> +	struct host1x *host = dev_get_drvdata(dev);
+> +	struct host1x_channel *channel;
+> +	unsigned int index;
+> +	int err;
+> +
+> +	err = pm_runtime_force_resume(dev);
+> +	if (err < 0)
+> +		return err;
+> +
+> +	host1x_syncpt_restore(host);
+
+We also need to execute 'host1x_setup_sid_table' upon resume.
+
+cheers,
+Mikko
+
+> +
+> +	for_each_set_bit(index, host->channel_list.allocated_channels,
+> +			 host->info->nb_channels) {
+> +		channel = &host->channel_list.channels[index];
+> +		host1x_hw_channel_init(host, channel, channel->id);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct dev_pm_ops host1x_pm = {
+> +	SET_RUNTIME_PM_OPS(host1x_runtime_suspend, host1x_runtime_resume,
+> +			   NULL)
+> +	SET_SYSTEM_SLEEP_PM_OPS(host1x_suspend, host1x_resume)
+> +};
+> +
+>   static struct platform_driver tegra_host1x_driver = {
+>   	.driver = {
+>   		.name = "tegra-host1x",
+>   		.of_match_table = host1x_of_match,
+> +		.pm = &host1x_pm,
+>   	},
+>   	.probe = host1x_probe,
+>   	.remove = host1x_remove,
 > 
-> In my case (in the IPA driver), handling a modem crash
-> cannot be done while the driver is suspended; i.e. the
-> activities in its ->resume callback must be completed
-> before we can recover from the crash.
-> 
-> For this reason I might like to change the way the
-> crash notification is handled, but what I'd rather see
-> is to have the work queue not run until user space
-> is unfrozen, which would guarantee that all drivers
-> that have registered for a crash notification will
-> be resumed when the notification arrives.
-> 
-> I'm not sure how that interacts with what you are
-> looking for here.  I think the workqueue could still
-> be unbound, but its work would be delayed longer before
-> any notification (and recovery) started.
-> 
-> 					-Alex
-> 
-> 
-In that case, maybe adding a "WQ_FREEZABLE" flag might help?
-> 
->> This simply repeats $subject
->> 
->>> Recovery time is an important parameter for a subsystem and there
->>> might be situations where multiple subsystems crash around the same
->>> time.  Scheduling into an unbound workqueue increases parallelization
->>> and avoids time impact.
->> 
->> You should be able to write this more succinctly. The important part 
->> is
->> that you want an unbound work queue to allow recovery to happen in
->> parallel - which naturally implies that you care about recovery 
->> latency.
->> 
->>> Also creating a high priority workqueue
->>> will utilize separate worker threads with higher nice values than
->>> normal ones.
->>> 
->> 
->> This doesn't describe why you need the higher priority.
->> 
->> 
->> I believe, and certainly with the in-line coredump, that we're running
->> our recovery work for way too long to be queued on the system_wq. As
->> such the content of the patch looks good!
->> 
->> Regards,
->> Bjorn
->> 
->>> Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
->>> ---
->>>   drivers/remoteproc/remoteproc_core.c | 9 ++++++++-
->>>   1 file changed, 8 insertions(+), 1 deletion(-)
->>> 
->>> diff --git a/drivers/remoteproc/remoteproc_core.c 
->>> b/drivers/remoteproc/remoteproc_core.c
->>> index 46c2937..8fd8166 100644
->>> --- a/drivers/remoteproc/remoteproc_core.c
->>> +++ b/drivers/remoteproc/remoteproc_core.c
->>> @@ -48,6 +48,8 @@ static DEFINE_MUTEX(rproc_list_mutex);
->>>   static LIST_HEAD(rproc_list);
->>>   static struct notifier_block rproc_panic_nb;
->>>   +static struct workqueue_struct *rproc_wq;
->>> +
->>>   typedef int (*rproc_handle_resource_t)(struct rproc *rproc,
->>>   				 void *, int offset, int avail);
->>>   @@ -2475,7 +2477,7 @@ void rproc_report_crash(struct rproc *rproc, 
->>> enum rproc_crash_type type)
->>>   		rproc->name, rproc_crash_to_string(type));
->>>     	/* create a new task to handle the error */
->>> -	schedule_work(&rproc->crash_handler);
->>> +	queue_work(rproc_wq, &rproc->crash_handler);
->>>   }
->>>   EXPORT_SYMBOL(rproc_report_crash);
->>>   @@ -2520,6 +2522,10 @@ static void __exit rproc_exit_panic(void)
->>>     static int __init remoteproc_init(void)
->>>   {
->>> +	rproc_wq = alloc_workqueue("rproc_wq", WQ_UNBOUND | WQ_HIGHPRI, 0);
->>> +	if (!rproc_wq)
->>> +		return -ENOMEM;
->>> +
->>>   	rproc_init_sysfs();
->>>   	rproc_init_debugfs();
->>>   	rproc_init_cdev();
->>> @@ -2536,6 +2542,7 @@ static void __exit remoteproc_exit(void)
->>>   	rproc_exit_panic();
->>>   	rproc_exit_debugfs();
->>>   	rproc_exit_sysfs();
->>> +	destroy_workqueue(rproc_wq);
->>>   }
->>>   module_exit(remoteproc_exit);
->>>   -- The Qualcomm Innovation Center, Inc. is a member of the Code 
->>> Aurora Forum,
->>> a Linux Foundation Collaborative Project
->>> 
