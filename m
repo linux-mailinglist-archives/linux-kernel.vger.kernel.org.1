@@ -2,93 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C60F2DD5E8
+	by mail.lfdr.de (Postfix) with ESMTP id E67402DD5EA
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 18:20:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729099AbgLQRSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 12:18:06 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:34724 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727260AbgLQRSG (ORCPT
+        id S1729197AbgLQRTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 12:19:47 -0500
+Received: from smtprelay0179.hostedemail.com ([216.40.44.179]:53342 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726548AbgLQRTr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 12:18:06 -0500
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BHHBplD031432;
-        Thu, 17 Dec 2020 18:17:14 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=STMicroelectronics;
- bh=K4kpfHhJ4ffNMdY3z5st+Fqr42PIgLAlFuopVj0ZuDk=;
- b=lOYnUmS9rrUSqXXZTxMn6T6AmRSCTQoaaWttPySfImT01zDLGzwhz0sj1vpZdt+3ZrBe
- DtvzPby6EEfNzPAqc4EVDrp+YcDTzjWqcQ/FW9CuPJNkSvOhFx7oUViEvlRvFd6tcQoO
- oT0eZguPPT55PwbNexiM4Rt8ue+rDePiNPjRn4jZCg65Pn4hCCYynZ1yJF64a1u11Cjb
- GJd8/Ew+U+iK5h1vaBYNXYeWxV5TbvaXeYbwkYz88nLXv6qAxqYVzbJ9BSPyQO8cX8pt
- X5cas06KgakPimIvDd5dGhYh4lKLDfnPG5AqUQR7eNO3npzzz/jN9I/1gG1O+ooK7fxY kg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 35cpwegym6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Dec 2020 18:17:14 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id CF1C310002A;
-        Thu, 17 Dec 2020 18:17:11 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node1.st.com [10.75.127.4])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id AFDA9246387;
-        Thu, 17 Dec 2020 18:17:11 +0100 (CET)
-Received: from SFHDAG2NODE3.st.com (10.75.127.6) by SFHDAG2NODE1.st.com
- (10.75.127.4) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 17 Dec
- 2020 18:17:11 +0100
-Received: from SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c]) by
- SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c%20]) with mapi id
- 15.00.1473.003; Thu, 17 Dec 2020 18:17:11 +0100
-From:   Patrice CHOTARD <patrice.chotard@st.com>
-To:     Colin King <colin.king@canonical.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ARM: sti: Fix spelling mistake in Kconfig "targetted" ->
- "targeted"
-Thread-Topic: [PATCH] ARM: sti: Fix spelling mistake in Kconfig "targetted" ->
- "targeted"
-Thread-Index: AQHW1Jfz37KH7FeRe02N5sVdj5MbaKn7dvQA
-Date:   Thu, 17 Dec 2020 17:17:11 +0000
-Message-ID: <d53e1ba7-9403-db77-e8a3-72ce41c8f89e@st.com>
-References: <20201217171331.57376-1-colin.king@canonical.com>
-In-Reply-To: <20201217171331.57376-1-colin.king@canonical.com>
-Accept-Language: fr-FR, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.75.127.44]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <19FA6B65291E1E45B6F79A00DD5DE839@st.com>
-Content-Transfer-Encoding: base64
+        Thu, 17 Dec 2020 12:19:47 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id ACD0252DD;
+        Thu, 17 Dec 2020 17:19:05 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:334:355:379:599:800:960:967:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1535:1544:1593:1594:1605:1711:1730:1747:1777:1792:1801:2198:2199:2393:2525:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3622:3865:3866:3867:3870:3871:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4605:5007:7903:7904:8550:8985:9025:10004:10848:11026:11232:11233:11473:11657:11658:11914:12043:12048:12296:12297:12438:12555:12740:12895:12986:13439:13894:14181:14659:14721:21080:21433:21627:21939:30054:30062:30070:30089:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: watch24_440264927436
+X-Filterd-Recvd-Size: 5311
+Received: from XPS-9350.home (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf01.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 17 Dec 2020 17:19:04 +0000 (UTC)
+Message-ID: <e28fe0a9dac014ab94bf059773b98ee4be8bd01b.camel@perches.com>
+Subject: Re: [PATCH -next] tools: perf: convert comma to semicolon
+From:   Joe Perches <joe@perches.com>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, linux-kernel@vger.kernel.org
+Cc:     Julia Lawall <julia.lawall@lip6.fr>
+Date:   Thu, 17 Dec 2020 09:19:03 -0800
+In-Reply-To: <20201216131526.14665-1-zhengyongjun3@huawei.com>
+References: <20201216131526.14665-1-zhengyongjun3@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-17_11:2020-12-15,2020-12-17 signatures=0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQ29saW4NCg0KT24gMTIvMTcvMjAgNjoxMyBQTSwgQ29saW4gS2luZyB3cm90ZToNCj4gRnJv
-bTogQ29saW4gSWFuIEtpbmcgPGNvbGluLmtpbmdAY2Fub25pY2FsLmNvbT4NCj4NCj4gVGhlcmUg
-aXMgYSBzcGVsbGluZyBtaXN0YWtlIGluIHRoZSBLY29uZmlnIGhlbHAgdGV4dC4gRml4IGl0Lg0K
-Pg0KPiBTaWduZWQtb2ZmLWJ5OiBDb2xpbiBJYW4gS2luZyA8Y29saW4ua2luZ0BjYW5vbmljYWwu
-Y29tPg0KPiAtLS0NCj4gIGFyY2gvYXJtL21hY2gtc3RpL0tjb25maWcgfCAyICstDQo+ICAxIGZp
-bGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkNCj4NCj4gZGlmZiAtLWdp
-dCBhL2FyY2gvYXJtL21hY2gtc3RpL0tjb25maWcgYi9hcmNoL2FybS9tYWNoLXN0aS9LY29uZmln
-DQo+IGluZGV4IGIyZDQ1Y2YxMGEzYy4uNzQ2NDBiYmFlYmE2IDEwMDY0NA0KPiAtLS0gYS9hcmNo
-L2FybS9tYWNoLXN0aS9LY29uZmlnDQo+ICsrKyBiL2FyY2gvYXJtL21hY2gtc3RpL0tjb25maWcN
-Cj4gQEAgLTUwLDcgKzUwLDcgQEAgY29uZmlnIFNPQ19TVElINDA3DQo+ICAJc2VsZWN0IFNUSUg0
-MDdfUkVTRVQNCj4gIAloZWxwDQo+ICAJICBUaGlzIGVuYWJsZXMgc3VwcG9ydCBmb3IgU1RNaWNy
-b2VsZWN0cm9uaWNzIERpZ2l0YWwgQ29uc3VtZXINCj4gLQkgIEVsZWN0cm9uaWNzIGZhbWlseSBT
-dGlINDA3IHBhcnRzLCB0YXJnZXR0ZWQgYXQgc2V0LXRvcC1ib3gNCj4gKwkgIEVsZWN0cm9uaWNz
-IGZhbWlseSBTdGlINDA3IHBhcnRzLCB0YXJnZXRlZCBhdCBzZXQtdG9wLWJveA0KPiAgCSAgYW5k
-IG90aGVyIGRpZ2l0YWwgYXVkaW8vdmlkZW8gYXBwbGljYXRpb25zIHVzaW5nIEZsYXR0ZW5lZCBE
-ZXZpY2UNCj4gIAkgIFRyZWVzLg0KPiAgDQoNClJldmlld2VkLWJ5OiBQYXRyaWNlIENob3RhcmQg
-PHBhdHJpY2UuY2hvdGFyZEBzdC5jb20+DQoNClRoYW5rcw0KDQpQYXRyaWNlDQo=
+On Wed, 2020-12-16 at 21:15 +0800, Zheng Yongjun wrote:
+> Replace a comma between expression statements by a semicolon.
+
+If you are going to submit patches for comma/semicolon conversions,
+please to not use checkpatch to produce them.
+
+checkpatch is a trivial tool that does not have very good coverage
+of the possible uses of commas that would generally be written with
+a semicolon.
+
+Use the coccinelle script that Julia Lawall provided instead.
+
+https://lore.kernel.org/lkml/alpine.DEB.2.22.394.2008201856110.2524@hadrien/
+
+This misses these 2 uses in tools/perf.
+
+diff --git a/tools/perf/ui/tui/util.c b/tools/perf/ui/tui/util.c
+index 0f562e2cb1e8..ee549b07b9ae 100644
+--- a/tools/perf/ui/tui/util.c
++++ b/tools/perf/ui/tui/util.c
+@@ -190,7 +190,7 @@ void __ui__info_window(const char *title, const char *text,>
+        nr_lines += 2;
+        if (exit_msg)
+                nr_lines += 2;
+-       y = SLtt_Screen_Rows / 2 - nr_lines / 2,
++       y = SLtt_Screen_Rows / 2 - nr_lines / 2;
+        x = SLtt_Screen_Cols / 2 - max_len / 2;
+ 
+        SLsmg_set_color(0);
+
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index 1cad6051d8b0..76abb08f9e14 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -269,7 +269,7 @@ struct evsel *evsel__new_idx(struct perf_event_attr *attr, int idx)
+ 
+        if (evsel__is_bpf_output(evsel)) {
+                evsel->core.attr.sample_type |= (PERF_SAMPLE_RAW | PERF_SAMPLE_TIME |
+-                                           PERF_SAMPLE_CPU | PERF_SAMPLE_PERIOD),
++                                           PERF_SAMPLE_CPU | PERF_SAMPLE_PERIOD);
+                evsel->core.attr.sample_period = 1;
+        }
+ 
+
+
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> ---
+>  tools/perf/builtin-diff.c         | 4 ++--
+>  tools/perf/builtin-inject.c       | 2 +-
+>  tools/perf/ui/browsers/annotate.c | 2 +-
+>  tools/perf/util/annotate.c        | 2 +-
+>  4 files changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/tools/perf/builtin-diff.c b/tools/perf/builtin-diff.c
+> index cefc71506409..9064419b108f 100644
+> --- a/tools/perf/builtin-diff.c
+> +++ b/tools/perf/builtin-diff.c
+> @@ -1912,8 +1912,8 @@ static int data_init(int argc, const char **argv)
+>  		struct perf_data *data = &d->data;
+>  
+> 
+>  		data->path  = use_default ? defaults[i] : argv[i];
+> -		data->mode  = PERF_DATA_MODE_READ,
+> -		data->force = force,
+> +		data->mode  = PERF_DATA_MODE_READ;
+> +		data->force = force;
+>  
+> 
+>  		d->idx  = i;
+>  	}
+> diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
+> index 0462dc8db2e3..235a91a907fd 100644
+> --- a/tools/perf/builtin-inject.c
+> +++ b/tools/perf/builtin-inject.c
+> @@ -747,7 +747,7 @@ static int __cmd_inject(struct perf_inject *inject)
+>  		inject->tool.auxtrace_info  = perf_event__process_auxtrace_info;
+>  		inject->tool.auxtrace	    = perf_event__process_auxtrace;
+>  		inject->tool.aux	    = perf_event__drop_aux;
+> -		inject->tool.itrace_start   = perf_event__drop_aux,
+> +		inject->tool.itrace_start   = perf_event__drop_aux;
+>  		inject->tool.ordered_events = true;
+>  		inject->tool.ordering_requires_timestamps = true;
+>  		/* Allow space in the header for new attributes */
+> diff --git a/tools/perf/ui/browsers/annotate.c b/tools/perf/ui/browsers/annotate.c
+> index bd77825fd5a1..3d857b1e0e62 100644
+> --- a/tools/perf/ui/browsers/annotate.c
+> +++ b/tools/perf/ui/browsers/annotate.c
+> @@ -928,7 +928,7 @@ int symbol__tui_annotate(struct map_symbol *ms, struct evsel *evsel,
+>  
+> 
+>  	browser.b.width = notes->max_line_len;
+>  	browser.b.nr_entries = notes->nr_entries;
+> -	browser.b.entries = &notes->src->source,
+> +	browser.b.entries = &notes->src->source;
+>  	browser.b.width += 18; /* Percentage */
+>  
+> 
+>  	if (notes->options->hide_src_code)
+> diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+> index 6c8575e182ed..3b4663f8229e 100644
+> --- a/tools/perf/util/annotate.c
+> +++ b/tools/perf/util/annotate.c
+> @@ -367,7 +367,7 @@ static int jump__parse(struct arch *arch, struct ins_operands *ops, struct map_s
+>  	}
+>  
+> 
+>  	target.addr = map__objdump_2mem(map, ops->target.addr);
+> -	start = map->unmap_ip(map, sym->start),
+> +	start = map->unmap_ip(map, sym->start);
+>  	end = map->unmap_ip(map, sym->end);
+>  
+> 
+>  	ops->target.outside = target.addr < start || target.addr > end;
+
+
