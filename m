@@ -2,79 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 967F82DCA7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 02:26:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 763BE2DCA82
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 02:26:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388931AbgLQBYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 20:24:15 -0500
-Received: from rere.qmqm.pl ([91.227.64.183]:47793 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728191AbgLQBYP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 20:24:15 -0500
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4CxDlk0Rxjz63;
-        Thu, 17 Dec 2020 02:23:29 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1608168212; bh=xW9ibLoV5/qLNGN3Busmpz2Fsg3WeYdpFtrM6aESBL8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F0QsVj+LedvuKyx7KZpPQpw/FaclNAFrecY5kvlTJPqc3hYXnLY7op+/R4JKKwzDF
-         ecWxaZk85UXkipmWiu3WwIoa/34ijll1c4Ngi+s3cv69sH0T1McNVJBKLGObCRXzpH
-         Jc5sXYV/LlIoS8hF/K6iOIvo6Ao6HNI661kpnm0A7SSzIMH6G+R8ZIfES4MKDY1r9m
-         YTolpcJL32aBuI62lC7xiIntdYzi+kFihpB5y/tgq/67LV/cyol3x5aVHUxOh+cqLo
-         HQDZEaBtrtIWxCvaz1hyzR5Xvs2NUwWZTjiZDF4cPyy0vuCpkz+K+Qj4lm/PcwXW3R
-         6vAZMtyNYVphQ==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Thu, 17 Dec 2020 02:23:38 +0100
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Nick Terrell <terrelln@fb.com>
-Cc:     David Sterba <dsterba@suse.cz>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Nick Terrell <nickrterrell@gmail.com>,
-        "squashfs-devel@lists.sourceforge.net" 
-        <squashfs-devel@lists.sourceforge.net>,
-        Christoph Hellwig <hch@infradead.org>,
-        Yann Collet <cyan@fb.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        Petr Malat <oss@malat.biz>, Chris Mason <clm@fb.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Niket Agarwal <niketa@fb.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Johannes Weiner <jweiner@fb.com>
-Subject: Re: [f2fs-dev] [PATCH v7 0/3] Update to zstd-1.4.6
-Message-ID: <20201217012337.GA24705@qmqm.qmqm.pl>
-References: <20201203205114.1395668-1-nickrterrell@gmail.com>
- <DF6B2E26-2D6E-44FF-89DB-93A37E2EA268@fb.com>
- <X9lOHkAE67EP/sXo@sol.localdomain>
- <B3F00261-E977-4B85-84CD-66B07DA79D9D@fb.com>
- <20201216005806.GA26841@gondor.apana.org.au>
- <20201216185052.GL6430@twin.jikos.cz>
- <6C449BCE-E7DB-4EE6-B4F5-FED3977BD8F0@fb.com>
+        id S2388980AbgLQBYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 20:24:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731391AbgLQBYk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 20:24:40 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE024C061794;
+        Wed, 16 Dec 2020 17:23:59 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CxDmC3yH1z9sTX;
+        Thu, 17 Dec 2020 12:23:55 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1608168237;
+        bh=TnFujtbZ+cKkokGS0FUWxHGmo/iJu4wjsqoiJItDnPE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iyz4hzeTPD2R9vkZGfL2dA2jENrCamZCLhVnHBlQ1nNI18Jfwbf40U9mSi2JsfsJR
+         JI+lhSR2Cr63OQfumtF5OxPaW/K14IUANyWhobctS9o/cW99vhSI6Y46GXK+TeK4B5
+         EhTiuXek4LutFiKuSWX5ijgn2Di4i7ltgRe/9liMuSOi2dKHqaMzkg1/E0R4uK5FhO
+         iwOp4a5jYFdbA63rNYgAcTlit5wx+N/bxEiftCTpsEmSiuolwVNoOCVA1zmX6R3rYg
+         95O7xAFV5qDznk91S9GimUWYuO5C3zMQ/NPLNR/OtuCX7wQMU3XnR1ZU/LrcBmX1CM
+         lUH/YgS2YdOsA==
+Date:   Thu, 17 Dec 2020 12:23:54 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Guo Ren <ren_guo@c-sky.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>
+Subject: Re: linux-next: manual merge of the seccomp tree with the csky tree
+Message-ID: <20201217122354.6ad6b052@canb.auug.org.au>
+In-Reply-To: <20201125173824.0e3dbcd7@canb.auug.org.au>
+References: <20201125173824.0e3dbcd7@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6C449BCE-E7DB-4EE6-B4F5-FED3977BD8F0@fb.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; boundary="Sig_/_YEESlslusO/vFPud8uiykD";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 10:07:38PM +0000, Nick Terrell wrote:
-[...]
-> It is very large. If it helps, in the commit message I’ve provided this link [0],
-> which provides the diff between upstream zstd as-is and the imported zstd,
-> which has been modified by the automated tooling to work in the kernel.
-> [0] https://github.com/terrelln/linux/commit/ac2ee65dcb7318afe426ad08f6a844faf3aebb41
+--Sig_/_YEESlslusO/vFPud8uiykD
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I looks like you could remove a bit more dead code by noting __GNUC__ >= 4
-(gcc-4.9 is currently the oldest supported [1]).
+Hi aa,
 
-[1] Documentation/process/changes.rst
+On Wed, 25 Nov 2020 17:38:24 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Today's linux-next merge of the seccomp tree got a conflict in:
+>=20
+>   arch/csky/include/asm/Kbuild
+>=20
+> between commit:
+>=20
+>   fed76f8679a6 ("csky: Add QUEUED_SPINLOCKS supported")
+>=20
+> from the csky tree and commit:
+>=20
+>   6e9ae6f98809 ("csky: Enable seccomp architecture tracking")
+>=20
+> from the seccomp tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+> --=20
+> Cheers,
+> Stephen Rothwell
+>=20
+> diff --cc arch/csky/include/asm/Kbuild
+> index f814d46d347f,93372255984d..000000000000
+> --- a/arch/csky/include/asm/Kbuild
+> +++ b/arch/csky/include/asm/Kbuild
+> @@@ -3,9 -3,6 +3,8 @@@ generic-y +=3D asm-offsets.
+>   generic-y +=3D gpio.h
+>   generic-y +=3D kvm_para.h
+>   generic-y +=3D local64.h
+>  +generic-y +=3D mcs_spinlock.h
+>   generic-y +=3D qrwlock.h
+>  +generic-y +=3D qspinlock.h
+> - generic-y +=3D seccomp.h
+>   generic-y +=3D user.h
+>   generic-y +=3D vmlinux.lds.h
 
-Best Regards
-Michał Mirosław
+This is now a conflict between the csky tree and Linus' tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/_YEESlslusO/vFPud8uiykD
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/asyoACgkQAVBC80lX
+0GyzmwgApaL3mGGiGQANYUuXgT4qThPujLzmYt3JqHLWamGbLmpZnoCtQzK/Aw4d
+Bwyhc+nHe5PEWnPH6/8vWoFdjj1JE7FdWREnvZvAD1nj4N7mX1CczAEbbnEcLLqO
+8ZMak2e7UDW0aNJfdvqXTbMSV3oDqeB0bPlLpkB8Kim3SOMGSyGPg0ZPuZ4rlKv+
+AKiuRAJ6R1rb1n7Em5iIUJsCcxQxWdO/o45j8gdc0LOnY4eTJr0g7LLTdB4M6Fxm
+Ch95I3QX8PVhA8ruHcVbaklntnfnc1WVsuBqknuyMe4vv453QQz7qDZhhFhpBOnM
+EaUjGVPCbwaRRq0tjMrxI2q/8R3S3g==
+=kmnD
+-----END PGP SIGNATURE-----
+
+--Sig_/_YEESlslusO/vFPud8uiykD--
