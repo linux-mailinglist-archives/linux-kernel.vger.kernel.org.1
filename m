@@ -2,144 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0890B2DCDFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 10:00:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9DB2DCE03
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 10:00:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727554AbgLQI7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 03:59:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32996 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725950AbgLQI7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 03:59:08 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608195507;
-        bh=89Rrw3aBfmj49VIcsFK0hxM3oXxLCW7ouMh8y82kb8c=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=jSM8yIJeNXE2vbVBtrhtHPxiIvg3M2ZUY4PpsQ6HWbzbJ57SHE7Su1WHykBMYxJfv
-         7Oet2owLzFdWUI7lKwBCNx1Vhm0MmL9Qr9p6QM9EcWH3dZSse/NhX0IKLuPCeFhLp/
-         mvXDJARC/IrF++8iS9JIh6MdK/N1yM30FbdQM2hEdXi7HRbTW66pN3dQ7abUhi87a4
-         JhrKcevsI++WNiAtoNs7ZnNFtYOZQN+WlIGNRXSMY4P/zHHz4opdahBPzpfcheuR/V
-         VdAV3dgvfPJeH9QniPA9YLljEidWSb5XcqQchHh5xFooX9LHZni7L1Aknyp94dXP1J
-         w4bk84/dNUniw==
+        id S1727688AbgLQI7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 03:59:34 -0500
+Received: from relay10.mail.gandi.net ([217.70.178.230]:55559 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727035AbgLQI7e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 03:59:34 -0500
+Received: from localhost (50-39-163-217.bvtn.or.frontiernet.net [50.39.163.217])
+        (Authenticated sender: josh@joshtriplett.org)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 7B417240010;
+        Thu, 17 Dec 2020 08:58:49 +0000 (UTC)
+Date:   Thu, 17 Dec 2020 00:58:47 -0800
+From:   Josh Triplett <josh@joshtriplett.org>
+To:     Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, nbd@other.debian.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] nbd: Respect max_part for all partition scans
+Message-ID: <86d03378210ddac44eb07ebb78c9b0f32c56fe96.1608195087.git.josh@joshtriplett.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201122095556.21597-3-sergio.paracuellos@gmail.com>
-References: <20201122095556.21597-1-sergio.paracuellos@gmail.com> <20201122095556.21597-3-sergio.paracuellos@gmail.com>
-Subject: Re: [PATCH v4 2/6] dt: bindings: add mt7621-clk device tree binding documentation
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     robh+dt@kernel.org, john@phrozen.org, tsbogend@alpha.franken.de,
-        gregkh@linuxfoundation.org, gch981213@gmail.com,
-        hackpascal@gmail.com, linux-clk@vger.kernel.org,
-        evicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, devel@driverdev.osuosl.org,
-        neil@brown.name
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        mturquette@baylibre.com
-Date:   Thu, 17 Dec 2020 00:58:26 -0800
-Message-ID: <160819550615.1580929.14234996916739809712@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sergio Paracuellos (2020-11-22 01:55:52)
-> Adds device tree binding documentation for clocks in the
-> MT7621 SOC.
->=20
-> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> ---
->  .../bindings/clock/mediatek,mt7621-clk.yaml   | 67 +++++++++++++++++++
->  1 file changed, 67 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt76=
-21-clk.yaml
->=20
+The creation path of the NBD device respects max_part and only scans for
+partitions if max_part is not 0. However, some other code paths ignore
+max_part, and unconditionally scan for partitions. Add a check for
+max_part on each partition scan.
 
-Rob?
+Signed-off-by: Josh Triplett <josh@joshtriplett.org>
+---
 
-> diff --git a/Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.=
-yaml b/Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
-> new file mode 100644
-> index 000000000000..6aca4c1a4a46
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
-> @@ -0,0 +1,67 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/clock/mediatek,mt7621-clk.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: MT7621 Clock Device Tree Bindings
-> +
-> +maintainers:
-> +  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> +
-> +description: |
-> +  The MT7621 has a PLL controller from where the cpu clock is provided
-> +  as well as derived clocks for the bus and the peripherals. It also
-> +  can gate SoC device clocks.
-> +
-> +  Each clock is assigned an identifier and client nodes use this identif=
-ier
-> +  to specify the clock which they consume.
-> +
-> +  All these identifiers could be found in:
-> +  [1]: <include/dt-bindings/clock/mt7621-clk.h>.
-> +
-> +  The mt7621 clock node should be the child of a syscon node with the
-> +  required property:
-> +
-> +  - compatible: Should be one of the following:
-> +                "mediatek,mt7621-sysc", "syscon"
-> +
-> +  Refer to the bindings described in
-> +  Documentation/devicetree/bindings/mfd/syscon.yaml
-> +
-> +properties:
-> +  compatible:
-> +    const: mediatek,mt7621-clk
-> +
-> +  "#clock-cells":
-> +    description:
-> +      The first cell indicates the clock gate number, see [1] for availa=
-ble
-> +      clocks.
-> +    const: 1
-> +
-> +  clock-output-names:
-> +    maxItems: 8
-> +
-> +required:
-> +  - compatible
-> +  - '#clock-cells'
-> +  - clock-output-names
+Caught this when reading recent NBD patches, which tweaked the
+nbd_set_size path.
 
-Why is clock-output-names required? Hopefully it is not required.
+It doesn't seem worth factoring these two lines into a function,
+especially since the callers obtain the disk structure in different
+ways.
 
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/mt7621-clk.h>
-> +
-> +    sysc: sysc@0 {
+ drivers/block/nbd.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-syscon@0? I don't think sysc is a standard node name.
-
-> +      compatible =3D "mediatek,mt7621-sysc", "syscon";
-> +      reg =3D <0x0 0x100>;
-> +
-> +      pll {
-
-clock-controller? Why can't the parent device be the clk provider and
-have #clock-cells?
-
-> +        compatible =3D "mediatek,mt7621-clk";
-> +        #clock-cells =3D <1>;
-> +        clock-output-names =3D "xtal", "cpu", "bus",
-> +                             "50m", "125m", "150m",
-> +                             "250m", "270m";
-> +      };
-> +    };
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index 92f84ed0ba9e..6727358e147d 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -318,7 +318,8 @@ static int nbd_set_size(struct nbd_device *nbd, loff_t bytesize,
+ 	blk_queue_logical_block_size(nbd->disk->queue, blksize);
+ 	blk_queue_physical_block_size(nbd->disk->queue, blksize);
+ 
+-	set_bit(GD_NEED_PART_SCAN, &nbd->disk->state);
++	if (max_part)
++		set_bit(GD_NEED_PART_SCAN, &nbd->disk->state);
+ 	if (!set_capacity_and_notify(nbd->disk, bytesize >> 9))
+ 		kobject_uevent(&nbd_to_dev(nbd)->kobj, KOBJ_CHANGE);
+ 	return 0;
+@@ -1476,9 +1477,11 @@ static int nbd_open(struct block_device *bdev, fmode_t mode)
+ 		refcount_set(&nbd->config_refs, 1);
+ 		refcount_inc(&nbd->refs);
+ 		mutex_unlock(&nbd->config_lock);
+-		set_bit(GD_NEED_PART_SCAN, &bdev->bd_disk->state);
++		if (max_part)
++			set_bit(GD_NEED_PART_SCAN, &bdev->bd_disk->state);
+ 	} else if (nbd_disconnected(nbd->config)) {
+-		set_bit(GD_NEED_PART_SCAN, &bdev->bd_disk->state);
++		if (max_part)
++			set_bit(GD_NEED_PART_SCAN, &bdev->bd_disk->state);
+ 	}
+ out:
+ 	mutex_unlock(&nbd_index_mutex);
+-- 
+2.29.2
