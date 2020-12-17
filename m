@@ -2,112 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBEF92DCA49
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 02:11:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDAFB2DCA6F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 02:17:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388513AbgLQBIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 20:08:46 -0500
-Received: from mga09.intel.com ([134.134.136.24]:24409 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726597AbgLQBIg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 20:08:36 -0500
-IronPort-SDR: SDtJEkgemEIzU7IiSiDXt73AYalxBN8kr0lf5s4VFwWGPSDNggRCQa9egZzuIWaioA0sQW6NOM
- f/l9pBnD610A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9837"; a="175310371"
-X-IronPort-AV: E=Sophos;i="5.78,425,1599548400"; 
-   d="scan'208";a="175310371"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2020 17:07:53 -0800
-IronPort-SDR: lzMreFwbhaAW+gQY9gHbDs9PCei4YD/idYimXqRyrSKodZeWQ+vElqTB1bblFKHAVjZW+NyXhP
- Z3ytofMo8rxw==
-X-IronPort-AV: E=Sophos;i="5.78,425,1599548400"; 
-   d="scan'208";a="338886600"
-Received: from shao2-debian.sh.intel.com (HELO localhost) ([10.239.13.117])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2020 17:07:52 -0800
-Date:   Thu, 17 Dec 2020 09:07:10 +0800
-From:   kernel test robot <rong.a.chen@intel.com>
-To:     Tova Mussai <tova.mussai@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: net/wireless/scan.c:552:2: warning: Assignment of function parameter
- has no effect outside the function. Did you forget dereferencing
-Message-ID: <20201217010710.GP67148@shao2-debian>
+        id S2389099AbgLQBNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 20:13:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389016AbgLQBNK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 20:13:10 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 434B8C0617B0;
+        Wed, 16 Dec 2020 17:12:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=F8PQcYi3gvouvVHva2A57eJGUWi5JG5zYlkbXK0yVMo=; b=EBkrCGqMq/3cf0a2Z0P7yAhM0r
+        LoFNNB7S/agSex5YbwWgpt+4NKxHgCTaBgsbCX4qXSlEqt1CQoxSYpTdElUe0nHP5bkE5G2k2Xx/J
+        tnYxQiyJNSUPLBjmsGqHwmi3xMHtoIPHKY4Z4Lu4JkSlcPCBMo7rqlKBoa2GSnfs6k42gQkvVpc2+
+        cVzc+Dgm1gR7QNN6F40mulJCOfSnmztxSgNBXp/HfG0r5EKd/4VcEXpb7tQPkbksvdu619QepoDAI
+        LxkOxtdfiKUya/YARcUxc7FSzsGfPqLjBvsWRxA5+TIDKM9wAxOJtNlK0dkRooPshWOcfeQutC1Gm
+        6+O/QoPw==;
+Received: from [2601:1c0:6280:3f0::64ea] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kphqF-0003ck-7i; Thu, 17 Dec 2020 01:12:27 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        syzbot+1e911ad71dd4ea72e04a@syzkaller.appspotmail.com,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org
+Subject: [PATCH] HID: core: detect and skip invalid inputs to snto32()
+Date:   Wed, 16 Dec 2020 17:12:21 -0800
+Message-Id: <20201217011221.25678-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   fab0fca1da5cdc48be051715cd9787df04fdce3a
-commit: c8cb5b854b40f2ce52ccd032fa19750f4181d5fc nl80211/cfg80211: support 6 GHz scanning
-compiler: c6x-elf-gcc (GCC) 9.3.0
+Prevent invalid (0, 0) inputs to hid-core's snto32() function.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <rong.a.chen@intel.com>
+Maybe it is just the dummy device here that is causing this, but
+there are hundreds of calls to snto32(0, 0). Having n (bits count)
+of 0 is causing the current UBSAN trap with a shift value of
+0xffffffff (-1, or n - 1 in this function).
 
+Either of the value to shift being 0 or the bits count being 0 can be
+handled by just returning 0 to the caller, avoiding the following
+complex shift + OR operations:
 
-cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
+	return value & (1 << (n - 1)) ? value | (~0U << n) : value;
 
->> net/wireless/scan.c:552:2: warning: Assignment of function parameter has no effect outside the function. Did you forget dereferencing it? [uselessAssignmentPtrArg]
-    pos++;
-    ^
-
-vim +552 net/wireless/scan.c
-
-c8cb5b854b40f2c Tova Mussai 2020-09-18  530  
-c8cb5b854b40f2c Tova Mussai 2020-09-18  531  static int cfg80211_parse_ap_info(struct cfg80211_colocated_ap *entry,
-c8cb5b854b40f2c Tova Mussai 2020-09-18  532  				  const u8 *pos, u8 length,
-c8cb5b854b40f2c Tova Mussai 2020-09-18  533  				  const struct element *ssid_elem,
-c8cb5b854b40f2c Tova Mussai 2020-09-18  534  				  int s_ssid_tmp)
-c8cb5b854b40f2c Tova Mussai 2020-09-18  535  {
-c8cb5b854b40f2c Tova Mussai 2020-09-18  536  	/* skip the TBTT offset */
-c8cb5b854b40f2c Tova Mussai 2020-09-18  537  	pos++;
-c8cb5b854b40f2c Tova Mussai 2020-09-18  538  
-c8cb5b854b40f2c Tova Mussai 2020-09-18  539  	memcpy(entry->bssid, pos, ETH_ALEN);
-c8cb5b854b40f2c Tova Mussai 2020-09-18  540  	pos += ETH_ALEN;
-c8cb5b854b40f2c Tova Mussai 2020-09-18  541  
-c8cb5b854b40f2c Tova Mussai 2020-09-18  542  	if (length == IEEE80211_TBTT_INFO_OFFSET_BSSID_SSSID_BSS_PARAM) {
-c8cb5b854b40f2c Tova Mussai 2020-09-18  543  		memcpy(&entry->short_ssid, pos,
-c8cb5b854b40f2c Tova Mussai 2020-09-18  544  		       sizeof(entry->short_ssid));
-c8cb5b854b40f2c Tova Mussai 2020-09-18  545  		entry->short_ssid_valid = true;
-c8cb5b854b40f2c Tova Mussai 2020-09-18  546  		pos += 4;
-c8cb5b854b40f2c Tova Mussai 2020-09-18  547  	}
-c8cb5b854b40f2c Tova Mussai 2020-09-18  548  
-c8cb5b854b40f2c Tova Mussai 2020-09-18  549  	/* skip non colocated APs */
-c8cb5b854b40f2c Tova Mussai 2020-09-18  550  	if (!cfg80211_parse_bss_param(*pos, entry))
-c8cb5b854b40f2c Tova Mussai 2020-09-18  551  		return -EINVAL;
-c8cb5b854b40f2c Tova Mussai 2020-09-18 @552  	pos++;
-c8cb5b854b40f2c Tova Mussai 2020-09-18  553  
-c8cb5b854b40f2c Tova Mussai 2020-09-18  554  	if (length == IEEE80211_TBTT_INFO_OFFSET_BSSID_BSS_PARAM) {
-c8cb5b854b40f2c Tova Mussai 2020-09-18  555  		/*
-c8cb5b854b40f2c Tova Mussai 2020-09-18  556  		 * no information about the short ssid. Consider the entry valid
-c8cb5b854b40f2c Tova Mussai 2020-09-18  557  		 * for now. It would later be dropped in case there are explicit
-c8cb5b854b40f2c Tova Mussai 2020-09-18  558  		 * SSIDs that need to be matched
-c8cb5b854b40f2c Tova Mussai 2020-09-18  559  		 */
-c8cb5b854b40f2c Tova Mussai 2020-09-18  560  		if (!entry->same_ssid)
-c8cb5b854b40f2c Tova Mussai 2020-09-18  561  			return 0;
-c8cb5b854b40f2c Tova Mussai 2020-09-18  562  	}
-c8cb5b854b40f2c Tova Mussai 2020-09-18  563  
-c8cb5b854b40f2c Tova Mussai 2020-09-18  564  	if (entry->same_ssid) {
-c8cb5b854b40f2c Tova Mussai 2020-09-18  565  		entry->short_ssid = s_ssid_tmp;
-c8cb5b854b40f2c Tova Mussai 2020-09-18  566  		entry->short_ssid_valid = true;
-c8cb5b854b40f2c Tova Mussai 2020-09-18  567  
-c8cb5b854b40f2c Tova Mussai 2020-09-18  568  		/*
-c8cb5b854b40f2c Tova Mussai 2020-09-18  569  		 * This is safe because we validate datalen in
-c8cb5b854b40f2c Tova Mussai 2020-09-18  570  		 * cfg80211_parse_colocated_ap(), before calling this
-c8cb5b854b40f2c Tova Mussai 2020-09-18  571  		 * function.
-c8cb5b854b40f2c Tova Mussai 2020-09-18  572  		 */
-c8cb5b854b40f2c Tova Mussai 2020-09-18  573  		memcpy(&entry->ssid, &ssid_elem->data,
-c8cb5b854b40f2c Tova Mussai 2020-09-18  574  		       ssid_elem->datalen);
-c8cb5b854b40f2c Tova Mussai 2020-09-18  575  		entry->ssid_len = ssid_elem->datalen;
-c8cb5b854b40f2c Tova Mussai 2020-09-18  576  	}
-c8cb5b854b40f2c Tova Mussai 2020-09-18  577  	return 0;
-c8cb5b854b40f2c Tova Mussai 2020-09-18  578  }
-c8cb5b854b40f2c Tova Mussai 2020-09-18  579  
-
+Fixes: dde5845a529f ("[PATCH] Generic HID layer - code split")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: syzbot+1e911ad71dd4ea72e04a@syzkaller.appspotmail.com
+Cc: Jiri Kosina <jikos@kernel.org>
+Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc: linux-input@vger.kernel.org
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/hid/hid-core.c |    3 +++
+ 1 file changed, 3 insertions(+)
+
+--- lnx-510.orig/drivers/hid/hid-core.c
++++ lnx-510/drivers/hid/hid-core.c
+@@ -1307,6 +1307,9 @@ EXPORT_SYMBOL_GPL(hid_open_report);
+ 
+ static s32 snto32(__u32 value, unsigned n)
+ {
++	if (!value || !n)
++		return 0;
++
+ 	switch (n) {
+ 	case 8:  return ((__s8)value);
+ 	case 16: return ((__s16)value);
