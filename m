@@ -2,61 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FBAB2DCD4C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 09:00:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 882CC2DCD0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 08:48:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727401AbgLQH7o convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 17 Dec 2020 02:59:44 -0500
-Received: from smtp8.jalawave.net.id ([60.253.103.106]:36640 "EHLO
-        smtp8.jalawave.net.id.novalocal" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726416AbgLQH7o (ORCPT
+        id S1726671AbgLQHrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 02:47:18 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:40560 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726012AbgLQHrP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 02:59:44 -0500
-X-Greylist: delayed 683 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Dec 2020 02:59:43 EST
-Received: from mail2.pusjatan.pu.go.id (mail.pusjatan.pu.go.id [202.51.235.143])
-        by smtp8.jalawave.net.id.novalocal (Postfix) with ESMTPS id A2F631109628;
-        Thu, 17 Dec 2020 14:42:17 +0700 (WIB)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp8.jalawave.net.id.novalocal A2F631109628
-Received: from localhost (localhost [127.0.0.1])
-        by mail2.pusjatan.pu.go.id (Postfix) with ESMTP id 67E5183762;
-        Thu, 17 Dec 2020 14:42:36 +0700 (WIB)
-Received: from mail2.pusjatan.pu.go.id ([127.0.0.1])
-        by localhost (mail2.pusjatan.pu.go.id [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id qg_wHXRZc0Fw; Thu, 17 Dec 2020 14:42:36 +0700 (WIB)
-Received: from localhost (localhost [127.0.0.1])
-        by mail2.pusjatan.pu.go.id (Postfix) with ESMTP id 1F4FC83789;
-        Thu, 17 Dec 2020 14:42:36 +0700 (WIB)
-X-Virus-Scanned: amavisd-new at pusjatan.pu.go.id
-Received: from mail2.pusjatan.pu.go.id ([127.0.0.1])
-        by localhost (mail2.pusjatan.pu.go.id [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id vFfpjJ1g3IKw; Thu, 17 Dec 2020 14:42:35 +0700 (WIB)
-Received: from [100.87.65.121] (unknown [106.210.46.38])
-        by mail2.pusjatan.pu.go.id (Postfix) with ESMTPSA id E81F783762;
-        Thu, 17 Dec 2020 14:42:29 +0700 (WIB)
-Content-Type: text/plain; charset="iso-8859-1"
+        Thu, 17 Dec 2020 02:47:15 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R891e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=changhuaixin@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0UIuSawr_1608191189;
+Received: from localhost(mailfrom:changhuaixin@linux.alibaba.com fp:SMTPD_---0UIuSawr_1608191189)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 17 Dec 2020 15:46:29 +0800
+From:   Huaixin Chang <changhuaixin@linux.alibaba.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     bsegall@google.com, changhuaixin@linux.alibaba.com,
+        dietmar.eggemann@arm.com, juri.lelli@redhat.com, mgorman@suse.de,
+        mingo@redhat.com, pauld@redhead.com, peterz@infradead.org,
+        pjt@google.com, rostedt@goodmis.org, vincent.guittot@linaro.org,
+        khlebnikov@yandex-team.ru, xiyou.wangcong@gmail.com,
+        shanpeic@linux.alibaba.com
+Subject: [PATCH 0/4] sched/fair: Burstable CFS bandwidth controller
+Date:   Thu, 17 Dec 2020 15:46:16 +0800
+Message-Id: <20201217074620.58338-1-changhuaixin@linux.alibaba.com>
+X-Mailer: git-send-email 2.14.4.44.g2045bb6
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Loan Offer 
-To:     Recipients <tknp-kepanjenkidul@blitarkota.go.id>
-From:   Loan Services <tknp-kepanjenkidul@blitarkota.go.id>
-Date:   Thu, 17 Dec 2020 13:12:04 +0530
-Reply-To: info_innoxcapitalservicesolution@aol.com
-Message-Id: <20201217074229.E81F783762@mail2.pusjatan.pu.go.id>
-X-Jalawave-MailScanner-Information: Please contact the ISP for more information
-X-Jalawave-MailScanner-ID: A2F631109628.A9635
-X-Jalawave-MailScanner: Found to be clean
-X-Jalawave-MailScanner-SpamScore: sss
-X-Jalawave-MailScanner-From: tknp-kepanjenkidul@blitarkota.go.id
-X-Spam-Status: No
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do you need a Loan @ 2% P.A? Mail us your: Names,Home Add,Mob No,Email id,Amount Needed,Loan Duration,Occupation :If you are interested kindly contact us via email for more details
+The CFS bandwidth controller limits CPU requests of a task group to
+quota during each period. However, parallel workloads might be bursty
+so that they get throttled. And they are latency sensitive at the same
+time so that throttling them is undesired.
+
+Scaling up period and quota allows greater burst capacity. But it might
+cause longer stuck till next refill. We introduce "burst" to allow
+accumulating unused quota from previous periods, and to be assigned when
+a task group requests more CPU than quota during a specific period. Thus
+allowing CPU time requests as long as the average requested CPU time is
+below quota on the long run. The maximum accumulation is capped by burst
+and is set 0 by default, thus the traditional behaviour remains.
+
+A huge drop of 99th tail latency from more than 500ms to 27ms is seen for
+real java workloads when using burst. Similar drops are seen when
+testing with schbench too:
+
+	echo $$ > /sys/fs/cgroup/cpu/test/cgroup.procs
+	echo 700000 > /sys/fs/cgroup/cpu/test/cpu.cfs_quota_us
+	echo 100000 > /sys/fs/cgroup/cpu/test/cpu.cfs_period_us
+	echo 400000 > /sys/fs/cgroup/cpu/test/cpu.cfs_burst_us
+
+	# The average CPU usage is around 500%, which is 200ms CPU time
+	# every 40ms.
+	./schbench -m 1 -t 30 -r 60 -c 10000 -R 500
+
+	Without burst:
+
+	Latency percentiles (usec)
+	50.0000th: 7
+	75.0000th: 8
+	90.0000th: 9
+	95.0000th: 10
+	*99.0000th: 933
+	99.5000th: 981
+	99.9000th: 3068
+	min=0, max=20054
+	rps: 498.31 p95 (usec) 10 p99 (usec) 933 p95/cputime 0.10% p99/cputime 9.33%
+
+	With burst:
+
+	Latency percentiles (usec)
+	50.0000th: 7
+	75.0000th: 8
+	90.0000th: 9
+	95.0000th: 9
+	*99.0000th: 12
+	99.5000th: 13
+	99.9000th: 19
+	min=0, max=406
+	rps: 498.36 p95 (usec) 9 p99 (usec) 12 p95/cputime 0.09% p99/cputime 0.12%
+
+How much workloads with benefit from burstable CFS bandwidth control
+depends on how bursty and how latency sensitive they are.
+
+Previously, Cong Wang and Konstantin Khlebnikov proposed similar
+feature:
+https://lore.kernel.org/lkml/20180522062017.5193-1-xiyou.wangcong@gmail.com/
+https://lore.kernel.org/lkml/157476581065.5793.4518979877345136813.stgit@buzz/
+
+This time we present more latency statistics and handle overflow while
+accumulating.
+
+Huaixin Chang (4):
+  sched/fair: Introduce primitives for CFS bandwidth burst
+  sched/fair: Make CFS bandwidth controller burstable
+  sched/fair: Add cfs bandwidth burst statistics
+  sched/fair: Add document for burstable CFS bandwidth control
+
+ Documentation/scheduler/sched-bwc.rst |  49 +++++++++++--
+ include/linux/sched/sysctl.h          |   2 +
+ kernel/sched/core.c                   | 126 +++++++++++++++++++++++++++++-----
+ kernel/sched/fair.c                   |  58 +++++++++++++---
+ kernel/sched/sched.h                  |   9 ++-
+ kernel/sysctl.c                       |  18 +++++
+ 6 files changed, 232 insertions(+), 30 deletions(-)
 
 -- 
-This message has been scanned for viruses and
-dangerous content by MailScanner, and is
-believed to be clean.
+2.14.4.44.g2045bb6
 
