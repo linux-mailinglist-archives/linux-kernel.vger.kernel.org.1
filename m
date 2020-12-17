@@ -2,127 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E472DD7E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:15:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F06A62DD7E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 19:15:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731710AbgLQSNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 13:13:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731683AbgLQSMz (ORCPT
+        id S1731715AbgLQSNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 13:13:34 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:56418 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731448AbgLQSNa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 13:12:55 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CCC3C0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 10:12:15 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kpxl4-00062E-Jr; Thu, 17 Dec 2020 19:12:10 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kpxl3-0005TP-Lv; Thu, 17 Dec 2020 19:12:09 +0100
-Date:   Thu, 17 Dec 2020 19:12:09 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
-        <linux-rtc@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>,
-        Bruno Thomsen <bruno.thomsen@gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: rtc: add reset-source property
-Message-ID: <20201217181209.sibyhlfvlpjaewrv@pengutronix.de>
-References: <20201204092752.GE74177@piout.net>
- <20201211215611.24392-1-rasmus.villemoes@prevas.dk>
- <20201211215611.24392-2-rasmus.villemoes@prevas.dk>
- <CAL_JsqJ-5gwycTRQCdX=ZsefEJ=F1GyTjjDW6QB1PBynibFzLg@mail.gmail.com>
- <b3c05d29-3ed6-d5f5-d1dd-0ddec1f89276@prevas.dk>
- <CAL_Jsq+HeeFUR1Yv37X4OnkEPvSiAc2B86=Nshxz7tmvpKk+zw@mail.gmail.com>
+        Thu, 17 Dec 2020 13:13:30 -0500
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 6245E20B717A;
+        Thu, 17 Dec 2020 10:12:47 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6245E20B717A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1608228768;
+        bh=Op0ld8ZQz9MkUpOQGNST4tVuL0ZNrXjqa+FJW4eo3lg=;
+        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
+        b=fVgiVskChG1sCODqaC9ji/e08EOBl9FciBDOSkXrS6hHsVVqHAeEg7HpM89sbatB1
+         yav/4BaBkrLCJmtFqJ1HhpnILWp1eByL6oa8t+H6E2+B6wWLFjN6MPU8O4t5fJJ9UD
+         bCc3IYmmcivUyc+kbUolwk6EtPHVCMzxyzj7ErWA=
+Subject: Re: [PATCH v12 0/4] Carry forward IMA measurement log on kexec on
+ ARM64
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+To:     zohar@linux.ibm.com, bauerman@linux.ibm.com, robh@kernel.org,
+        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
+        will@kernel.org, catalin.marinas@arm.com, mpe@ellerman.id.au
+Cc:     james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
+        paulus@samba.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
+        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+References: <20201217173708.6940-1-nramas@linux.microsoft.com>
+Message-ID: <2a0910db-5477-a852-3f35-4a3abb633b57@linux.microsoft.com>
+Date:   Thu, 17 Dec 2020 10:12:43 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="bzpv2fu724s7d55y"
-Content-Disposition: inline
-In-Reply-To: <CAL_Jsq+HeeFUR1Yv37X4OnkEPvSiAc2B86=Nshxz7tmvpKk+zw@mail.gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20201217173708.6940-1-nramas@linux.microsoft.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 12/17/20 9:37 AM, Lakshmi Ramasubramanian wrote:
+> On kexec file load Integrity Measurement Architecture (IMA) subsystem
+> may verify the IMA signature of the kernel and initramfs, and measure
+> it. The command line parameters passed to the kernel in the kexec call
+> may also be measured by IMA. A remote attestation service can verify
+> a TPM quote based on the TPM event log, the IMA measurement list, and
+> the TPM PCR data. This can be achieved only if the IMA measurement log
+> is carried over from the current kernel to the next kernel across
+> the kexec call.
 
---bzpv2fu724s7d55y
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Typo in the email address of James Morse (ARM.com). Sorry about that.
+Adding the correct email address.
 
-On Thu, Dec 17, 2020 at 10:51:08AM -0600, Rob Herring wrote:
-> On Fri, Dec 11, 2020 at 5:10 PM Rasmus Villemoes
-> <rasmus.villemoes@prevas.dk> wrote:
-> >
-> > On 11/12/2020 23.30, Rob Herring wrote:
-> > > On Fri, Dec 11, 2020 at 3:56 PM Rasmus Villemoes
-> > > <rasmus.villemoes@prevas.dk> wrote:
-> > >>
-> > >> Some RTCs, e.g. the pcf2127, can be used as a hardware watchdog. But
-> > >> if the reset pin is not actually wired up, the driver exposes a
-> > >> watchdog device that doesn't actually work.
-> > >>
-> > >> Provide a standard binding that can be used to indicate that a given
-> > >> RTC can perform a reset of the machine, similar to wakeup-source.
-> > >
-> > > Why not use the watchdog 'timeout-sec' property?
-> >
-> > Wouldn't that be overloading that property? AFAIU, that is used to ask
-> > the kernel to program an initial timeout value into the watchdog device.
-> > But what if one doesn't want to start the watchdog device at kernel
-> > boot, but just indicate that the RTC has that capability?
->=20
-> Yeah, I guess you're right.
+  -lakshmi
 
-I agree, too. The initial suggestion looks fine.
+> 
+> powerpc already supports carrying forward the IMA measurement log on
+> kexec. This patch set adds support for carrying forward the IMA
+> measurement log on kexec on ARM64.
+> 
+> This patch set moves the platform independent code defined for powerpc
+> such that it can be reused for other platforms as well. A chosen node
+> "linux,ima-kexec-buffer" is added to the DTB for ARM64 to hold
+> the address and the size of the memory reserved to carry
+> the IMA measurement log.
+> 
+> This patch set has been tested for ARM64 platform using QEMU.
+> I would like help from the community for testing this change on powerpc.
+> Thanks.
+> 
+> This patch set is based on
+> commit a29a64445089 ("powerpc: Use common of_kexec_setup_new_fdt()")
+> in https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git
+> "dt/kexec" branch.
+>  > Changelog:
+> 
+> v12
+>    - Use fdt_appendprop_addrrange() in setup_ima_buffer()
+>      to setup the IMA measurement list property in
+>      the device tree.
+>    - Moved architecture independent functions from
+>      "arch/powerpc/kexec/ima.c" to "drivers/of/kexec."
+>    - Deleted "arch/powerpc/kexec/ima.c" and
+>      "arch/powerpc/include/asm/ima.h".
+> 
+> v11
+>    - Rebased the changes on the kexec code refactoring done by
+>      Rob Herring in his "dt/kexec" branch
+>    - Removed "extern" keyword in function declarations
+>    - Removed unnecessary header files included in C files
+>    - Updated patch descriptions per Thiago's comments
+> 
+> v10
+>    - Moved delete_fdt_mem_rsv(), remove_ima_buffer(),
+>      get_ima_kexec_buffer, and get_root_addr_size_cells()
+>      to drivers/of/kexec.c
+>    - Moved arch_ima_add_kexec_buffer() to
+>      security/integrity/ima/ima_kexec.c
+>    - Conditionally define IMA buffer fields in struct kimage_arch
+> 
+> v9
+>    - Moved delete_fdt_mem_rsv() to drivers/of/kexec_fdt.c
+>    - Defined a new function get_ima_kexec_buffer() in
+>      drivers/of/ima_kexec.c to replace do_get_kexec_buffer()
+>    - Changed remove_ima_kexec_buffer() to the original function name
+>      remove_ima_buffer()
+>    - Moved remove_ima_buffer() to drivers/of/ima_kexec.c
+>    - Moved ima_get_kexec_buffer() and ima_free_kexec_buffer()
+>      to security/integrity/ima/ima_kexec.c
+> 
+> v8:
+>    - Moved remove_ima_kexec_buffer(), do_get_kexec_buffer(), and
+>      delete_fdt_mem_rsv() to drivers/of/fdt.c
+>    - Moved ima_dump_measurement_list() and ima_add_kexec_buffer()
+>      back to security/integrity/ima/ima_kexec.c
+> 
+> v7:
+>    - Renamed remove_ima_buffer() to remove_ima_kexec_buffer() and moved
+>      this function definition to kernel.
+>    - Moved delete_fdt_mem_rsv() definition to kernel
+>    - Moved ima_dump_measurement_list() and ima_add_kexec_buffer() to
+>      a new file namely ima_kexec_fdt.c in IMA
+> 
+> v6:
+>    - Remove any existing FDT_PROP_IMA_KEXEC_BUFFER property in the device
+>      tree and also its corresponding memory reservation in the currently
+>      running kernel.
+>    - Moved the function remove_ima_buffer() defined for powerpc to IMA
+>      and renamed the function to ima_remove_kexec_buffer(). Also, moved
+>      delete_fdt_mem_rsv() from powerpc to IMA.
+> 
+> v5:
+>    - Merged get_addr_size_cells() and do_get_kexec_buffer() into a single
+>      function when moving the arch independent code from powerpc to IMA
+>    - Reverted the change to use FDT functions in powerpc code and added
+>      back the original code in get_addr_size_cells() and
+>      do_get_kexec_buffer() for powerpc.
+>    - Added fdt_add_mem_rsv() for ARM64 to reserve the memory for
+>      the IMA log buffer during kexec.
+>    - Fixed the warning reported by kernel test bot for ARM64
+>      arch_ima_add_kexec_buffer() - moved this function to a new file
+>      namely arch/arm64/kernel/ima_kexec.c
+> 
+> v4:
+>    - Submitting the patch series on behalf of the original author
+>      Prakhar Srivastava <prsriva@linux.microsoft.com>
+>    - Moved FDT_PROP_IMA_KEXEC_BUFFER ("linux,ima-kexec-buffer") to
+>      libfdt.h so that it can be shared by multiple platforms.
+> 
+> v3:
+> Breakup patches further into separate patches.
+>    - Refactoring non architecture specific code out of powerpc
+>    - Update powerpc related code to use fdt functions
+>    - Update IMA buffer read related code to use of functions
+>    - Add support to store the memory information of the IMA
+>      measurement logs to be carried forward.
+>    - Update the property strings to align with documented nodes
+>      https://github.com/devicetree-org/dt-schema/pull/46
+> 
+> v2:
+>    Break patches into separate patches.
+>    - Powerpc related Refactoring
+>    - Updating the docuemntation for chosen node
+>    - Updating arm64 to support IMA buffer pass
+> 
+> v1:
+>    Refactoring carrying over IMA measuremnet logs over Kexec. This patch
+>      moves the non-architecture specific code out of powerpc and adds to
+>      security/ima.(Suggested by Thiago)
+>    Add Documentation regarding the ima-kexec-buffer node in the chosen
+>      node documentation
+> 
+> v0:
+>    Add a layer of abstraction to use the memory reserved by device tree
+>      for ima buffer pass.
+>    Add support for ima buffer pass using reserved memory for arm64 kexec.
+>      Update the arch sepcific code path in kexec file load to store the
+>      ima buffer in the reserved memory. The same reserved memory is read
+>      on kexec or cold boot.
+> 
+> Lakshmi Ramasubramanian (4):
+>    powerpc: Use fdt_appendprop_addrrange() to add ima buffer to FDT
+>    powerpc: Move arch independent ima kexec functions to
+>      drivers/of/kexec.c
+>    arm64: Free DTB buffer if fdt_open_into() fails
+>    arm64: Add IMA log information in kimage used for kexec
+> 
+>   arch/arm64/Kconfig                     |   1 +
+>   arch/arm64/include/asm/kexec.h         |   5 +
+>   arch/arm64/kernel/machine_kexec_file.c |   4 +-
+>   arch/powerpc/include/asm/ima.h         |  30 ----
+>   arch/powerpc/include/asm/kexec.h       |   1 -
+>   arch/powerpc/kexec/Makefile            |   7 -
+>   arch/powerpc/kexec/file_load.c         |  39 -----
+>   arch/powerpc/kexec/ima.c               | 219 -------------------------
+>   drivers/of/kexec.c                     | 198 ++++++++++++++++++++++
+>   include/linux/of.h                     |  17 ++
+>   security/integrity/ima/ima.h           |   4 -
+>   security/integrity/ima/ima_kexec.c     |   2 +
+>   12 files changed, 226 insertions(+), 301 deletions(-)
+>   delete mode 100644 arch/powerpc/include/asm/ima.h
+>   delete mode 100644 arch/powerpc/kexec/ima.c
+> 
 
-> > It's quite possible that if it can act as a watchdog device (and
-> > has-watchdog was also suggested), one would also want timeout-sec and
-> > other watchdog bindings to apply. But that can be added later, by those
-> > who actually want that.
-> >
-> > For now, I'd really like to get my board booting again (or rather, not
-> > get reset by the real watchdog just because the pcf2127 driver now
-> > exposes something as /dev/wathdog0, pushing the real one to
-> > /dev/wathcdog1 which doesn't get pinged from userspace).
->=20
-> I'm wondering how you solve which wdog to ping when there are multiple
-> without relying on numbering. I guess 'reset-source' will solve that
-> even if that's not your current fix. So I guess I'm fine with this.
-
-I guess you'd need some udev magic that ensures that the right watchdog
-always gets the same number.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---bzpv2fu724s7d55y
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/bn3YACgkQwfwUeK3K
-7AkL2Qf/XJXUTfIwcB2/pL6pXTVDZFfY541cg7fc5B9wDWTNzWqUqmGsOCpV7eOM
-r7FLaH2I1O3moJMD9o4wnorbvPP116Pfr5z0e8cTeqKnEcUEgd5EUeCobeKKVXUK
-wa2gz+mOu7TRX8W0DOUeKIfsFYlEMdeVrfdFXauLdMMDF48w0//v19ZjvOGSy1SH
-CyU3X8NGw2Tb3ZB81qG9QOANHbt/cAN8qIziMHxcw46+QUv3BaBOAKv57HrVkcys
-TzdYYeGDqRhh9FwF0ikJ1L/lglpLpUoA6Q2ajONh6QK9+PeopW9MQTop0d+D7jMK
-4g9/M1Z1XWbUQkBC0CTADRTrePaJgA==
-=HAL0
------END PGP SIGNATURE-----
-
---bzpv2fu724s7d55y--
