@@ -2,214 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AF162DD4F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 17:12:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B102DD4FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 17:15:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728425AbgLQQLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 11:11:36 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:10869 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725468AbgLQQLf (ORCPT
+        id S1728755AbgLQQNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 11:13:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726291AbgLQQNi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 11:11:35 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BHG5Bcd024387;
-        Thu, 17 Dec 2020 08:08:33 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0220;
- bh=XCAW/nUK0AqsYCHlhDLr5vrqNA+IzYS7C8hKYpqIFBY=;
- b=UJxgVdrontMzLoUgyuEdgcIQcmTXafH6VPpmiLOub5Laj6m2vVNKv7acFrPhi5vlOZcJ
- NwKEU2oXp3TADGhNZWpyPl5S4bPGJxx0D3MPZj/XpqHV2sAto5KufV1hqp8ZfjsvEir8
- X31qVYugoqCO4bI/bJwojTzUplJuXCeoQKUHWxmxtPxFUYsnSEjY1wxqAbJGC7z/RIEJ
- +jMnRzPRgQDRDDFHnKfrfiT+sRXT4ypKflHe9Yy3wbm7CMSTNQyNZr2D2OTaqamUEX/M
- UZbLX18mgnR09sP9EDPvbvCO9l5kqKh5y1PJ0XjQNAQbNSrAugCMJN/ig62cdsbdmBYF +w== 
-Received: from sc-exch03.marvell.com ([199.233.58.183])
-        by mx0b-0016f401.pphosted.com with ESMTP id 35cx8tg3ve-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 17 Dec 2020 08:08:33 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH03.marvell.com
- (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 17 Dec
- 2020 08:08:26 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 17 Dec
- 2020 08:08:25 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 17 Dec 2020 08:08:25 -0800
-Received: from stefan-pc.marvell.com (unknown [10.5.25.21])
-        by maili.marvell.com (Postfix) with ESMTP id 44C273F703F;
-        Thu, 17 Dec 2020 08:08:22 -0800 (PST)
-From:   <stefanc@marvell.com>
-To:     <netdev@vger.kernel.org>
-CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
-        <nadavh@marvell.com>, <ymarkman@marvell.com>,
-        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
-        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
-        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
-        <lironh@marvell.com>
-Subject: [PATCH net-next] net: mvpp2: prs: improve ipv4 parse flow
-Date:   Thu, 17 Dec 2020 18:07:58 +0200
-Message-ID: <1608221278-15043-1-git-send-email-stefanc@marvell.com>
-X-Mailer: git-send-email 1.9.1
+        Thu, 17 Dec 2020 11:13:38 -0500
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69468C061794
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 08:12:58 -0800 (PST)
+Received: by mail-il1-x134.google.com with SMTP id n9so15333180ili.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 08:12:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=w52xAyUk2YHyHvKrzIF/7PAvKUFWBeTs9L3pldfVYi4=;
+        b=khGtcJdI1pu91hjwmwYU6dXHXhL2Sn3ycmLuGsIi7+3JRuYjkPujk3064Lpizzaisi
+         NZZdSCpvm3/Rq+41zMqRlmoE9M2GD2gYXGlw7FbIP+VlwdB884TB8+tzM9WxSlo/hTvy
+         kRJQvgDDPws64wlHDMRFQ6RR0yjus7pF8O/ERHJsmOi1PcISaZkIt13SDS7cOSFMqTZz
+         QzRSr0aqZn568/y9iLL69+0bsF7l3hURZbDIEMxeWT13N+Sq8UCdE0gMQiuWsxFccBME
+         PfsP36ThSw/9rL5aR48FhXUjBWWOzfNVNQWzDlFRU1Bi5w54LKrbHo0XJoIPlXjnyHaP
+         Rosw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=w52xAyUk2YHyHvKrzIF/7PAvKUFWBeTs9L3pldfVYi4=;
+        b=JhE8T3BCCsnXgHKi82fEiOiwgi0NIGYnNPuDBrr5JlcREHVG/fNR3nt2KtlcuJGHgR
+         M/6G7yCu1pyFTX2wJ5R2WkZGFmcKDn+tCzkKxqerTwr3AhXIIm7PtiKQDPvsXCY8YXt1
+         Je24iHCwwJP5ux/qEM5/PXzu6c+EiXqPcL9FIbeKwBXRwHZ8k7m2NjiDZ6z+0Ex6OIMi
+         3YoUlYxqpCyWGE5YjM/i+vAS7TOGkmwkNgCorVDwO6CARqZTkTOI2AtNfAAiyeRiYIBQ
+         ZdGoRQazUXNBE2KtYO2LPp1t0JBeFHvZ7q3djdtBGmpaK7Y15vLrZGIVzLE2SpdRoN1F
+         xD6A==
+X-Gm-Message-State: AOAM531OGQtrkLJcC5zi3b+u2qYLMD5IkNCdURSSKBjkvyYknxZPvV0U
+        uzfo28efzN4Xr/l4qAGDek8guA==
+X-Google-Smtp-Source: ABdhPJwlqp6BXP81F9gzX2YwoxtDJP3LY6Ch+P+pg5OIAGJHA915louUg5qOwvxdSRzdvXCO/9dLlw==
+X-Received: by 2002:a92:4a12:: with SMTP id m18mr50974098ilf.98.1608221577695;
+        Thu, 17 Dec 2020 08:12:57 -0800 (PST)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id m18sm14419664ioy.44.2020.12.17.08.12.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Dec 2020 08:12:57 -0800 (PST)
+Subject: Re: [PATCH] remoteproc: Create a separate workqueue for recovery
+ tasks
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rishabh Bhatnagar <rishabhb@codeaurora.org>
+Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tsoni@codeaurora.org, psodagud@codeaurora.org,
+        sidgup@codeaurora.org
+References: <1607806087-27244-1-git-send-email-rishabhb@codeaurora.org>
+ <X9k+xmg9SULEbJXe@builder.lan>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <dc9940f0-7fe3-d1da-acb5-580ae7366c9b@linaro.org>
+Date:   Thu, 17 Dec 2020 10:12:56 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-17_10:2020-12-15,2020-12-17 signatures=0
+In-Reply-To: <X9k+xmg9SULEbJXe@builder.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Chulski <stefanc@marvell.com>
+On 12/15/20 4:55 PM, Bjorn Andersson wrote:
+> On Sat 12 Dec 14:48 CST 2020, Rishabh Bhatnagar wrote:
+> 
+>> Create an unbound high priority workqueue for recovery tasks.
 
-Patch didn't fix any issue, just improve parse flow
-and align ipv4 parse flow with ipv6 parse flow.
+I have been looking at a different issue that is caused by
+crash notification.
 
-Currently ipv4 kenguru parser first check IP protocol(TCP/UDP)
-and then destination IP address.
-Patch introduce reverse ipv4 parse, first destination IP address parsed
-and only then IP protocol.
-This would allow extend capability for packet L4 parsing and align ipv4
-parsing flow with ipv6.
+What happened was that the modem crashed while the AP was
+in system suspend (or possibly even resuming) state.  And
+there is no guarantee that the system will have called a
+driver's ->resume callback when the crash notification is
+delivered.
 
-Suggested-by: Liron Himi <lironh@marvell.com>
-Signed-off-by: Stefan Chulski <stefanc@marvell.com>
----
- drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c | 64 ++++++++++++++++----------
- 1 file changed, 39 insertions(+), 25 deletions(-)
+In my case (in the IPA driver), handling a modem crash
+cannot be done while the driver is suspended; i.e. the
+activities in its ->resume callback must be completed
+before we can recover from the crash.
 
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c
-index 5692c60..b9e5b08 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c
-@@ -882,15 +882,15 @@ static int mvpp2_prs_ip4_proto(struct mvpp2 *priv, unsigned short proto,
- 	mvpp2_prs_tcam_lu_set(&pe, MVPP2_PRS_LU_IP4);
- 	pe.index = tid;
- 
--	/* Set next lu to IPv4 */
--	mvpp2_prs_sram_next_lu_set(&pe, MVPP2_PRS_LU_IP4);
--	mvpp2_prs_sram_shift_set(&pe, 12, MVPP2_PRS_SRAM_OP_SEL_SHIFT_ADD);
-+	/* Finished: go to flowid generation */
-+	mvpp2_prs_sram_next_lu_set(&pe, MVPP2_PRS_LU_FLOWS);
-+	mvpp2_prs_sram_bits_set(&pe, MVPP2_PRS_SRAM_LU_GEN_BIT, 1);
-+
- 	/* Set L4 offset */
- 	mvpp2_prs_sram_offset_set(&pe, MVPP2_PRS_SRAM_UDF_TYPE_L4,
- 				  sizeof(struct iphdr) - 4,
- 				  MVPP2_PRS_SRAM_OP_SEL_UDF_ADD);
--	mvpp2_prs_sram_ai_update(&pe, MVPP2_PRS_IPV4_DIP_AI_BIT,
--				 MVPP2_PRS_IPV4_DIP_AI_BIT);
-+	mvpp2_prs_sram_ai_update(&pe, 0, MVPP2_PRS_IPV4_DIP_AI_BIT);
- 	mvpp2_prs_sram_ri_update(&pe, ri, ri_mask | MVPP2_PRS_RI_IP_FRAG_MASK);
- 
- 	mvpp2_prs_tcam_data_byte_set(&pe, 2, 0x00,
-@@ -899,7 +899,8 @@ static int mvpp2_prs_ip4_proto(struct mvpp2 *priv, unsigned short proto,
- 				     MVPP2_PRS_TCAM_PROTO_MASK);
- 
- 	mvpp2_prs_tcam_data_byte_set(&pe, 5, proto, MVPP2_PRS_TCAM_PROTO_MASK);
--	mvpp2_prs_tcam_ai_update(&pe, 0, MVPP2_PRS_IPV4_DIP_AI_BIT);
-+	mvpp2_prs_tcam_ai_update(&pe, MVPP2_PRS_IPV4_DIP_AI_BIT,
-+				 MVPP2_PRS_IPV4_DIP_AI_BIT);
- 	/* Unmask all ports */
- 	mvpp2_prs_tcam_port_map_set(&pe, MVPP2_PRS_PORT_MASK);
- 
-@@ -967,12 +968,17 @@ static int mvpp2_prs_ip4_cast(struct mvpp2 *priv, unsigned short l3_cast)
- 		return -EINVAL;
- 	}
- 
--	/* Finished: go to flowid generation */
--	mvpp2_prs_sram_next_lu_set(&pe, MVPP2_PRS_LU_FLOWS);
--	mvpp2_prs_sram_bits_set(&pe, MVPP2_PRS_SRAM_LU_GEN_BIT, 1);
-+	/* Go again to ipv4 */
-+	mvpp2_prs_sram_next_lu_set(&pe, MVPP2_PRS_LU_IP4);
- 
--	mvpp2_prs_tcam_ai_update(&pe, MVPP2_PRS_IPV4_DIP_AI_BIT,
-+	mvpp2_prs_sram_ai_update(&pe, MVPP2_PRS_IPV4_DIP_AI_BIT,
- 				 MVPP2_PRS_IPV4_DIP_AI_BIT);
-+
-+	/* Shift back to IPv4 proto */
-+	mvpp2_prs_sram_shift_set(&pe, -12, MVPP2_PRS_SRAM_OP_SEL_SHIFT_ADD);
-+
-+	mvpp2_prs_tcam_ai_update(&pe, 0, MVPP2_PRS_IPV4_DIP_AI_BIT);
-+
- 	/* Unmask all ports */
- 	mvpp2_prs_tcam_port_map_set(&pe, MVPP2_PRS_PORT_MASK);
- 
-@@ -1392,8 +1398,9 @@ static int mvpp2_prs_etype_init(struct mvpp2 *priv)
- 	mvpp2_prs_sram_next_lu_set(&pe, MVPP2_PRS_LU_IP4);
- 	mvpp2_prs_sram_ri_update(&pe, MVPP2_PRS_RI_L3_IP4,
- 				 MVPP2_PRS_RI_L3_PROTO_MASK);
--	/* Skip eth_type + 4 bytes of IP header */
--	mvpp2_prs_sram_shift_set(&pe, MVPP2_ETH_TYPE_LEN + 4,
-+	/* goto ipv4 dest-address (skip eth_type + IP-header-size - 4) */
-+	mvpp2_prs_sram_shift_set(&pe, MVPP2_ETH_TYPE_LEN +
-+				 sizeof(struct iphdr) - 4,
- 				 MVPP2_PRS_SRAM_OP_SEL_SHIFT_ADD);
- 	/* Set L3 offset */
- 	mvpp2_prs_sram_offset_set(&pe, MVPP2_PRS_SRAM_UDF_TYPE_L3,
-@@ -1597,8 +1604,9 @@ static int mvpp2_prs_pppoe_init(struct mvpp2 *priv)
- 	mvpp2_prs_sram_next_lu_set(&pe, MVPP2_PRS_LU_IP4);
- 	mvpp2_prs_sram_ri_update(&pe, MVPP2_PRS_RI_L3_IP4_OPT,
- 				 MVPP2_PRS_RI_L3_PROTO_MASK);
--	/* Skip eth_type + 4 bytes of IP header */
--	mvpp2_prs_sram_shift_set(&pe, MVPP2_ETH_TYPE_LEN + 4,
-+	/* goto ipv4 dest-address (skip eth_type + IP-header-size - 4) */
-+	mvpp2_prs_sram_shift_set(&pe, MVPP2_ETH_TYPE_LEN +
-+				 sizeof(struct iphdr) - 4,
- 				 MVPP2_PRS_SRAM_OP_SEL_SHIFT_ADD);
- 	/* Set L3 offset */
- 	mvpp2_prs_sram_offset_set(&pe, MVPP2_PRS_SRAM_UDF_TYPE_L3,
-@@ -1727,19 +1735,20 @@ static int mvpp2_prs_ip4_init(struct mvpp2 *priv)
- 	mvpp2_prs_tcam_lu_set(&pe, MVPP2_PRS_LU_IP4);
- 	pe.index = MVPP2_PE_IP4_PROTO_UN;
- 
--	/* Set next lu to IPv4 */
--	mvpp2_prs_sram_next_lu_set(&pe, MVPP2_PRS_LU_IP4);
--	mvpp2_prs_sram_shift_set(&pe, 12, MVPP2_PRS_SRAM_OP_SEL_SHIFT_ADD);
-+	/* Finished: go to flowid generation */
-+	mvpp2_prs_sram_next_lu_set(&pe, MVPP2_PRS_LU_FLOWS);
-+	mvpp2_prs_sram_bits_set(&pe, MVPP2_PRS_SRAM_LU_GEN_BIT, 1);
-+
- 	/* Set L4 offset */
- 	mvpp2_prs_sram_offset_set(&pe, MVPP2_PRS_SRAM_UDF_TYPE_L4,
- 				  sizeof(struct iphdr) - 4,
- 				  MVPP2_PRS_SRAM_OP_SEL_UDF_ADD);
--	mvpp2_prs_sram_ai_update(&pe, MVPP2_PRS_IPV4_DIP_AI_BIT,
--				 MVPP2_PRS_IPV4_DIP_AI_BIT);
-+	mvpp2_prs_sram_ai_update(&pe, 0, MVPP2_PRS_IPV4_DIP_AI_BIT);
- 	mvpp2_prs_sram_ri_update(&pe, MVPP2_PRS_RI_L4_OTHER,
- 				 MVPP2_PRS_RI_L4_PROTO_MASK);
- 
--	mvpp2_prs_tcam_ai_update(&pe, 0, MVPP2_PRS_IPV4_DIP_AI_BIT);
-+	mvpp2_prs_tcam_ai_update(&pe, MVPP2_PRS_IPV4_DIP_AI_BIT,
-+				 MVPP2_PRS_IPV4_DIP_AI_BIT);
- 	/* Unmask all ports */
- 	mvpp2_prs_tcam_port_map_set(&pe, MVPP2_PRS_PORT_MASK);
- 
-@@ -1752,14 +1761,19 @@ static int mvpp2_prs_ip4_init(struct mvpp2 *priv)
- 	mvpp2_prs_tcam_lu_set(&pe, MVPP2_PRS_LU_IP4);
- 	pe.index = MVPP2_PE_IP4_ADDR_UN;
- 
--	/* Finished: go to flowid generation */
--	mvpp2_prs_sram_next_lu_set(&pe, MVPP2_PRS_LU_FLOWS);
--	mvpp2_prs_sram_bits_set(&pe, MVPP2_PRS_SRAM_LU_GEN_BIT, 1);
-+	/* Go again to ipv4 */
-+	mvpp2_prs_sram_next_lu_set(&pe, MVPP2_PRS_LU_IP4);
-+
-+	mvpp2_prs_sram_ai_update(&pe, MVPP2_PRS_IPV4_DIP_AI_BIT,
-+				 MVPP2_PRS_IPV4_DIP_AI_BIT);
-+
-+	/* Shift back to IPv4 proto */
-+	mvpp2_prs_sram_shift_set(&pe, -12, MVPP2_PRS_SRAM_OP_SEL_SHIFT_ADD);
-+
- 	mvpp2_prs_sram_ri_update(&pe, MVPP2_PRS_RI_L3_UCAST,
- 				 MVPP2_PRS_RI_L3_ADDR_MASK);
-+	mvpp2_prs_tcam_ai_update(&pe, 0, MVPP2_PRS_IPV4_DIP_AI_BIT);
- 
--	mvpp2_prs_tcam_ai_update(&pe, MVPP2_PRS_IPV4_DIP_AI_BIT,
--				 MVPP2_PRS_IPV4_DIP_AI_BIT);
- 	/* Unmask all ports */
- 	mvpp2_prs_tcam_port_map_set(&pe, MVPP2_PRS_PORT_MASK);
- 
--- 
-1.9.1
+For this reason I might like to change the way the
+crash notification is handled, but what I'd rather see
+is to have the work queue not run until user space
+is unfrozen, which would guarantee that all drivers
+that have registered for a crash notification will
+be resumed when the notification arrives.
+
+I'm not sure how that interacts with what you are
+looking for here.  I think the workqueue could still
+be unbound, but its work would be delayed longer before
+any notification (and recovery) started.
+
+					-Alex
+
+
+
+> This simply repeats $subject
+> 
+>> Recovery time is an important parameter for a subsystem and there
+>> might be situations where multiple subsystems crash around the same
+>> time.  Scheduling into an unbound workqueue increases parallelization
+>> and avoids time impact.
+> 
+> You should be able to write this more succinctly. The important part is
+> that you want an unbound work queue to allow recovery to happen in
+> parallel - which naturally implies that you care about recovery latency.
+> 
+>> Also creating a high priority workqueue
+>> will utilize separate worker threads with higher nice values than
+>> normal ones.
+>>
+> 
+> This doesn't describe why you need the higher priority.
+> 
+> 
+> I believe, and certainly with the in-line coredump, that we're running
+> our recovery work for way too long to be queued on the system_wq. As
+> such the content of the patch looks good!
+> 
+> Regards,
+> Bjorn
+> 
+>> Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
+>> ---
+>>   drivers/remoteproc/remoteproc_core.c | 9 ++++++++-
+>>   1 file changed, 8 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+>> index 46c2937..8fd8166 100644
+>> --- a/drivers/remoteproc/remoteproc_core.c
+>> +++ b/drivers/remoteproc/remoteproc_core.c
+>> @@ -48,6 +48,8 @@ static DEFINE_MUTEX(rproc_list_mutex);
+>>   static LIST_HEAD(rproc_list);
+>>   static struct notifier_block rproc_panic_nb;
+>>   
+>> +static struct workqueue_struct *rproc_wq;
+>> +
+>>   typedef int (*rproc_handle_resource_t)(struct rproc *rproc,
+>>   				 void *, int offset, int avail);
+>>   
+>> @@ -2475,7 +2477,7 @@ void rproc_report_crash(struct rproc *rproc, enum rproc_crash_type type)
+>>   		rproc->name, rproc_crash_to_string(type));
+>>   
+>>   	/* create a new task to handle the error */
+>> -	schedule_work(&rproc->crash_handler);
+>> +	queue_work(rproc_wq, &rproc->crash_handler);
+>>   }
+>>   EXPORT_SYMBOL(rproc_report_crash);
+>>   
+>> @@ -2520,6 +2522,10 @@ static void __exit rproc_exit_panic(void)
+>>   
+>>   static int __init remoteproc_init(void)
+>>   {
+>> +	rproc_wq = alloc_workqueue("rproc_wq", WQ_UNBOUND | WQ_HIGHPRI, 0);
+>> +	if (!rproc_wq)
+>> +		return -ENOMEM;
+>> +
+>>   	rproc_init_sysfs();
+>>   	rproc_init_debugfs();
+>>   	rproc_init_cdev();
+>> @@ -2536,6 +2542,7 @@ static void __exit remoteproc_exit(void)
+>>   	rproc_exit_panic();
+>>   	rproc_exit_debugfs();
+>>   	rproc_exit_sysfs();
+>> +	destroy_workqueue(rproc_wq);
+>>   }
+>>   module_exit(remoteproc_exit);
+>>   
+>> -- 
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+>> a Linux Foundation Collaborative Project
+>>
 
