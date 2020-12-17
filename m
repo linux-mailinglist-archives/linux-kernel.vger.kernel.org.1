@@ -2,108 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F26712DCD92
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 09:20:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31F5E2DCD8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 09:20:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727848AbgLQITr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 03:19:47 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:27876 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727782AbgLQITp (ORCPT
+        id S1727817AbgLQITk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 03:19:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727782AbgLQITk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 03:19:45 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1608193159; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To:
- Subject: From: Sender; bh=q+gkjirX8bHiR8sRfJl8kJmFumhW7RL0znKrLM0wdfI=;
- b=Gp0n0qcxbU8Ok7p3NwmB54/irtQ19PnbkY9CC9IKXZ/EqPMwsQxYmn2cbpdGRQkumTuaYg17
- T6UXTF62T3s6U18Ijy4rG4AfrtLIhqkeiMrHL66cndt9JBkTB+TLzpiFQt88sMj40DBWTB/B
- JAZ2t6QwsXJPvinuL+cMS5jXOVk=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5fdb1467253011a4b8b5aa3f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Dec 2020 08:18:47
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5B1C0C43463; Thu, 17 Dec 2020 08:18:46 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [10.252.214.131] (unknown [202.46.23.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 810E7C433C6;
-        Thu, 17 Dec 2020 08:18:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 810E7C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Subject: Re: [PATCH v4 1/2] Partially revert ASoC: qcom: Fix enabling BCLK and
- LRCLK in LPAIF invalid state
-To:     Mark Brown <broonie@kernel.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
-        perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-References: <1606539559-4277-1-git-send-email-srivasam@codeaurora.org>
- <1606539559-4277-2-git-send-email-srivasam@codeaurora.org>
- <20201130124617.GC4756@sirena.org.uk>
- <966993b7-4720-bdd2-cf4d-cf5a7c11a0c1@codeaurora.org>
- <20201201175135.GO5239@sirena.org.uk>
- <89456f01-aa02-7a7d-a47b-bf1f26e66d4c@codeaurora.org>
- <20201214175009.GD4880@sirena.org.uk>
-Organization: Qualcomm India Private Limited.
-Message-ID: <471379f0-0ab7-7c18-8c07-bd8a67615b3e@codeaurora.org>
-Date:   Thu, 17 Dec 2020 13:48:39 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Thu, 17 Dec 2020 03:19:40 -0500
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB491C0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 00:18:59 -0800 (PST)
+Received: by mail-qv1-xf2b.google.com with SMTP id l14so12910685qvh.2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 00:18:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5VQg7Qq6tu9zxEiOHWHdVZC+h6E0ef9ck17g1uIq278=;
+        b=JiQsm1xH9UW6+PT9gLz89MNIxj6KBYXql+gCE8wkihR9NAvOX7KpOCM/9cefnTv3lR
+         q8I4WTdZo+TDkCag7yIKnHY+hhasYZAL6+fohN4tCZyLhBQZg+nJfFZ8MbjO1fZSzSs9
+         sKnFb57GeKrVj1XsWwkBxRApKKCiw0IAg3QWpAzIXksF/AyUvXwBiTbpyh0tWPh2bFlV
+         OCuS8eyah3aaHvWroPQC07NszabIlb4iPIJMtM70rhFqUSKhqeyIS4SsLXep6pcEX/kN
+         r17nqSa7So8qGDQSi/VXcKrJHGGTo+l1gDmrIKA7tbMYmR3rpdJEkAaUkkY1RJwgXmi5
+         eQvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5VQg7Qq6tu9zxEiOHWHdVZC+h6E0ef9ck17g1uIq278=;
+        b=NIb9l5dR8mkej9CY054Be8e3QSWrvI2husXa7qapA4skhA9Kw0gjBf4PFr8QyHji5i
+         b8eMYlwXRYai3fLjrOr53WojEXbxvoPgCJ7sMpMl3BNktpVWRXJgfaR5coDxmQpjvAA6
+         zFhBrR/5jgV29UwifcquciTWsXs2yhvSN/6pg8WPOnzpnqFpAKsWXVSeK36fnawy4o7w
+         VA5mYT/GNuG9ZHnKQ4Eg/7P4bBVC3OfNL9wG5aLNg6gplnJ2c9IHQOws8FnkXGwLDITE
+         LGI4XlkzFMmyvWE7Z9VC0sTg0pAtWMZtwkFvPP+DHgvebj0yAZbKi9M3cJF2ADmnYI3F
+         L9RA==
+X-Gm-Message-State: AOAM531zxF6b3aBEAbLkHR9QNv0sUGpPBE9c90ZAVW1etskTtBd4F+VP
+        Dn6iBJSd+nHjbvx6JZD+SKo/gB3aNyqLlr7TN4qmHA==
+X-Google-Smtp-Source: ABdhPJyMAxUvSxPZNp7c19iP1MJhJ0bR5Yv/kJcGX8Ex7UvCtSI4xwbzgaZS8dJXfg+pTmJTHUo3J0yAza8eKWA295o=
+X-Received: by 2002:a0c:b20d:: with SMTP id x13mr47798309qvd.18.1608193138660;
+ Thu, 17 Dec 2020 00:18:58 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201214175009.GD4880@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <000000000000f683660598300559@google.com> <0000000000002aca3d05b69503ac@google.com>
+In-Reply-To: <0000000000002aca3d05b69503ac@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 17 Dec 2020 09:18:45 +0100
+Message-ID: <CACT4Y+Z0=kRUdwOguF5a_E+HyUUsnD3Gw=qx9Z_dao1o41W=ag@mail.gmail.com>
+Subject: Re: INFO: rcu detected stall in sys_open (2)
+To:     syzbot <syzbot+7ee926c5e237e614ccb1@syzkaller.appspotmail.com>
+Cc:     Borislav Petkov <bp@alien8.de>, David Miller <davem@davemloft.net>,
+        David Howells <dhowells@redhat.com>,
+        =?UTF-8?B?RnLDqWTDqXJpYyBXZWlzYmVja2Vy?= <fweisbec@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-afs@lists.infradead.org,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Mark for your Time!!!
+On Wed, Dec 16, 2020 at 2:40 PM syzbot
+<syzbot+7ee926c5e237e614ccb1@syzkaller.appspotmail.com> wrote:
+>
+> syzbot suspects this issue was fixed by commit:
+>
+> commit 1d0e850a49a5b56f8f3cb51e74a11e2fedb96be6
+> Author: David Howells <dhowells@redhat.com>
+> Date:   Fri Oct 16 12:21:14 2020 +0000
+>
+>     afs: Fix cell removal
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=128ceadf500000
+> start commit:   c85fb28b Merge tag 'arm64-fixes' of git://git.kernel.org/p..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=de7f697da23057c7
+> dashboard link: https://syzkaller.appspot.com/bug?extid=7ee926c5e237e614ccb1
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1227c177900000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13553f60500000
+>
+> If the result looks correct, please mark the issue as fixed by replying with:
+>
+> #syz fix: afs: Fix cell removal
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-On 12/14/2020 11:20 PM, Mark Brown wrote:
-> On Mon, Dec 14, 2020 at 06:13:22PM +0530, Srinivasa Rao Mandadapu wrote:
->> On 12/1/2020 11:21 PM, Mark Brown wrote:
->>>> Later from review comments by Srinivas kandagatla, I got to know
->>>>
->>>> about regcache sync APIs, which can be used  to sync cache after resume and
->>>>
->>>> HW registers can be updated with  original values. With that playback can be
->>>> continued.
->>>> So is the reason, I am reverting partial changes in the commit b1824968221c.
->>> I don't understand why a fix for the register cache not being in sync
->>> with the hardware doesn't involve syncing the register cache with the
->>> hardware.
->> I am sorry I couldn't understand your point. Could you please elaborate your
->> query?
-> Your changelog talks about syncing the cache but neither the driver nor
-> your change actually does that.
-
-Okay. Now I posted v6 patch 
-(https://lore.kernel.org/patchwork/patch/1354638/)
-
-with subject lines explaining actual changes.
-
-could you please check  the same.
-
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+#syz fix: afs: Fix cell removal
