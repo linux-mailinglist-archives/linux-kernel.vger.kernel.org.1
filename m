@@ -2,186 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2DDE2DDA72
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 21:59:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1B82DDA7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 22:01:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731648AbgLQU66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 15:58:58 -0500
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:57785 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726917AbgLQU65 (ORCPT
+        id S1731683AbgLQU7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 15:59:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729655AbgLQU7M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 15:58:57 -0500
+        Thu, 17 Dec 2020 15:59:12 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5B81C061794;
+        Thu, 17 Dec 2020 12:58:31 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id m25so61160843lfc.11;
+        Thu, 17 Dec 2020 12:58:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1608238737; x=1639774737;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=YmPKlh6Z7zQjy5YM3miO0QALbeMXWiJWpI/BK+viLiI=;
-  b=s0m6L6RoORwRO4oT/Jl9Y0fI1eexuumxbri+BrV9iK2aaVuvduXV2j+I
-   ujPrNjDimhgoFIjNROAnd+UoKLe9aD4XRBIHty9aIwd0kw0AHsMKPQaYS
-   mFNDILz1LE1jGFuXjRFybDT8UxVn0dpd7CvZuveSgKHQEf4NLM8OlUtot
-   E=;
-X-IronPort-AV: E=Sophos;i="5.78,428,1599523200"; 
-   d="scan'208";a="104011435"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 17 Dec 2020 20:58:16 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com (Postfix) with ESMTPS id 89702A1DA7;
-        Thu, 17 Dec 2020 20:58:14 +0000 (UTC)
-Received: from EX13D01UWB004.ant.amazon.com (10.43.161.157) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 17 Dec 2020 20:58:13 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (10.43.161.207) by
- EX13d01UWB004.ant.amazon.com (10.43.161.157) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 17 Dec 2020 20:58:13 +0000
-Received: from dev-dsk-pboris-1f-f9682a47.us-east-1.amazon.com (10.1.57.236)
- by mail-relay.amazon.com (10.43.161.249) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Thu, 17 Dec 2020 20:58:13 +0000
-Received: by dev-dsk-pboris-1f-f9682a47.us-east-1.amazon.com (Postfix, from userid 5360108)
-        id 4C8C3A8C36; Thu, 17 Dec 2020 20:58:12 +0000 (UTC)
-From:   Boris Protopopov <pboris@amazon.com>
-To:     <pboris@amazon.com>
-CC:     <sfrench@samba.org>, <linux-cifs@vger.kernel.org>,
-        <samba-technical@lists.samba.org>, <linux-kernel@vger.kernel.org>,
-        <samjonas@amazon.com>
-Subject: [PATCH 2/2] Add SMB 2 support for getting and setting SACLs
-Date:   Thu, 17 Dec 2020 20:58:08 +0000
-Message-ID: <20201217205808.14756-1-pboris@amazon.com>
-X-Mailer: git-send-email 2.15.3.AMZN
-In-Reply-To: <20201027204226.26906-1-pboris@amazon.com>
-References: <20201027204226.26906-1-pboris@amazon.com>
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2zaYEPU3Dc5zFOFGXsYjz12iYiWYHN8N3O6lakukl/s=;
+        b=qgHdy+aVZrcGxyULYw4C/dnhEhXcHqnIi3WOZ6PUyWeJ1T2KuwB4MyFcAMVcIxtEkN
+         P0wC9L1L3/OzQP2N4oOFkRUNhuvP6BbgtM9veJ1+/75E6Miy7hj7Bf2nEtboXPbzthOR
+         kxxro9rjbhD5efC41F1HFL2RxEsBF22ZTFXdF10FlYyRqWRrEuRkkxNHvNJAyiBiyHb5
+         xCx3hJCcAYykCnF/aKI0AxMDTkj4x39+lQJUW1SrSIqcsl3UFk3eY07U8IrPb8AhV1uo
+         MAvO3Efc7ekB1pIAMLvXK67v6Yhq5T7IZPOk04vo8zGuFhsht5N49PaRJoPc7WLTbass
+         MfYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2zaYEPU3Dc5zFOFGXsYjz12iYiWYHN8N3O6lakukl/s=;
+        b=mk6ECNMHIfaJnfdVJza6zr3sQqMHNSUgYAr5ydti1HnQ46TwMYNrMnbwcfUw3Asi+C
+         b2yLSIDIROzMJ4LukAW2nI6g0WCFx2Rgp+mq9uJog4e5eFieaS5jShXCayMwSEf11HGI
+         X7T6jbjuu9QqNTxS95tA8I7QTHbfhwKEw7O527CzXhBDqmwJB2aYLR5Vft2Ixka435tP
+         sKi/5FxDUB5UY0wKD7LEMy2xHnmF6UqG0UXampjezxvUVSZ0coNYem4z9WPl2kLL7U+2
+         bq2afagXnH6yG2+yTpWrD+kO3pjf0QaM+NxG/+yqMZulq4kQBMVz/5debAdh5xrh1HEk
+         1smw==
+X-Gm-Message-State: AOAM531DD07vwJRGTuaLZMKW502LLUivI2AlWRZnvbbClbo+msHB3e2f
+        ilcxzGuwW0eCPCm8RSbXdQ77KmaKBMA=
+X-Google-Smtp-Source: ABdhPJybT54BUMIzcynXITACTqPF/IcLrcExqUZ6d4e77IqO+C219fiwEYcS2lWHXSvWZh2/2hrkeQ==
+X-Received: by 2002:a05:6512:3089:: with SMTP id z9mr233591lfd.433.1608238709941;
+        Thu, 17 Dec 2020 12:58:29 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id z26sm789139ljn.98.2020.12.17.12.58.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Dec 2020 12:58:29 -0800 (PST)
+Subject: Re: [PATCH v2 34/48] gpu: host1x: Support power management
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Mikko Perttunen <cyndis@kapsi.fi>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-clk@vger.kernel.org
+References: <20201217180638.22748-1-digetx@gmail.com>
+ <20201217180638.22748-35-digetx@gmail.com>
+ <cb8dca7c-6ef2-5116-6c04-816a63525e2e@kapsi.fi>
+ <b106c4c0-bd93-bbc9-9357-45fe8fb1cf0f@gmail.com>
+Message-ID: <5523b804-f5de-a529-fd4e-751c39ab663b@gmail.com>
+Date:   Thu, 17 Dec 2020 23:58:28 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <b106c4c0-bd93-bbc9-9357-45fe8fb1cf0f@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix passing of the additional security info via version
-operations. Force new open when getting SACL and avoid
-reuse of files that were previously open without
-sufficient privileges to access SACLs.
+17.12.2020 21:45, Dmitry Osipenko пишет:
+> 17.12.2020 21:21, Mikko Perttunen пишет:
+>> On 12/17/20 8:06 PM, Dmitry Osipenko wrote:
+>>> Add suspend/resume and generic power domain support to the Host1x driver.
+>>> This is required for enabling system-wide DVFS and supporting dynamic
+>>> power management using a generic power domain.
+>>>
+>>> Tested-by: Peter Geis <pgwipeout@gmail.com>
+>>> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>> ---
+>>>   drivers/gpu/host1x/dev.c | 102 ++++++++++++++++++++++++++++++++++-----
+>>>   1 file changed, 91 insertions(+), 11 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/host1x/dev.c b/drivers/gpu/host1x/dev.c
+>>> index d0ebb70e2fdd..c1525cffe7b1 100644
+>>> --- a/drivers/gpu/host1x/dev.c
+>>> +++ b/drivers/gpu/host1x/dev.c
+>>> @@ -12,6 +12,7 @@
+>>>   #include <linux/module.h>
+>>>   #include <linux/of_device.h>
+>>>   #include <linux/of.h>
+>>> +#include <linux/pm_runtime.h>
+>>>   #include <linux/slab.h>
+>>>     #define CREATE_TRACE_POINTS
+>>> @@ -417,7 +418,7 @@ static int host1x_probe(struct platform_device *pdev)
+>>>           return err;
+>>>       }
+>>>   -    host->rst = devm_reset_control_get(&pdev->dev, "host1x");
+>>> +    host->rst = devm_reset_control_get_exclusive_released(&pdev->dev,
+>>> "host1x");
+>>>       if (IS_ERR(host->rst)) {
+>>>           err = PTR_ERR(host->rst);
+>>>           dev_err(&pdev->dev, "failed to get reset: %d\n", err);
+>>> @@ -437,16 +438,15 @@ static int host1x_probe(struct platform_device
+>>> *pdev)
+>>>           goto iommu_exit;
+>>>       }
+>>>   -    err = clk_prepare_enable(host->clk);
+>>> -    if (err < 0) {
+>>> -        dev_err(&pdev->dev, "failed to enable clock\n");
+>>> -        goto free_channels;
+>>> -    }
+>>> +    pm_runtime_enable(&pdev->dev);
+>>> +    err = pm_runtime_get_sync(&pdev->dev);
+>>> +    if (err < 0)
+>>> +        goto rpm_disable;
+>>>         err = reset_control_deassert(host->rst);
+>>>       if (err < 0) {
+>>>           dev_err(&pdev->dev, "failed to deassert reset: %d\n", err);
+>>> -        goto unprepare_disable;
+>>> +        goto rpm_disable;
+>>>       }
+>>>         err = host1x_syncpt_init(host);
+>>> @@ -485,9 +485,10 @@ static int host1x_probe(struct platform_device
+>>> *pdev)
+>>>       host1x_syncpt_deinit(host);
+>>>   reset_assert:
+>>>       reset_control_assert(host->rst);
+>>> -unprepare_disable:
+>>> -    clk_disable_unprepare(host->clk);
+>>> -free_channels:
+>>> +rpm_disable:
+>>> +    pm_runtime_put(&pdev->dev);
+>>> +    pm_runtime_disable(&pdev->dev);
+>>> +
+>>>       host1x_channel_list_free(&host->channel_list);
+>>>   iommu_exit:
+>>>       host1x_iommu_exit(host);
+>>> @@ -504,16 +505,95 @@ static int host1x_remove(struct platform_device
+>>> *pdev)
+>>>       host1x_intr_deinit(host);
+>>>       host1x_syncpt_deinit(host);
+>>>       reset_control_assert(host->rst);
+>>> -    clk_disable_unprepare(host->clk);
+>>> +    pm_runtime_put(&pdev->dev);
+>>> +    pm_runtime_disable(&pdev->dev);
+>>>       host1x_iommu_exit(host);
+>>>         return 0;
+>>>   }
+>>>   +static int __maybe_unused host1x_runtime_suspend(struct device *dev)
+>>> +{
+>>> +    struct host1x *host = dev_get_drvdata(dev);
+>>> +
+>>> +    clk_disable_unprepare(host->clk);
+>>> +    reset_control_release(host->rst);
+>>> +
+>>> +    return 0;
+>>> +}
+>>> +
+>>> +static int __maybe_unused host1x_runtime_resume(struct device *dev)
+>>> +{
+>>> +    struct host1x *host = dev_get_drvdata(dev);
+>>> +    int err;
+>>> +
+>>> +    err = reset_control_acquire(host->rst);
+>>> +    if (err) {
+>>> +        dev_err(dev, "failed to acquire reset: %d\n", err);
+>>> +        return err;
+>>> +    }
+>>> +
+>>> +    err = clk_prepare_enable(host->clk);
+>>> +    if (err) {
+>>> +        dev_err(dev, "failed to enable clock: %d\n", err);
+>>> +        goto release_reset;
+>>> +    }
+>>> +
+>>> +    return 0;
+>>> +
+>>> +release_reset:
+>>> +    reset_control_release(host->rst);
+>>> +
+>>> +    return err;
+>>> +}
+>>> +
+>>> +static __maybe_unused int host1x_suspend(struct device *dev)
+>>> +{
+>>> +    struct host1x *host = dev_get_drvdata(dev);
+>>> +    int err;
+>>> +
+>>> +    host1x_syncpt_save(host);
+>>> +
+>>> +    err = pm_runtime_force_suspend(dev);
+>>> +    if (err < 0)
+>>> +        return err;
+>>> +
+>>> +    return 0;
+>>> +}
+>>> +
+>>> +static __maybe_unused int host1x_resume(struct device *dev)
+>>> +{
+>>> +    struct host1x *host = dev_get_drvdata(dev);
+>>> +    struct host1x_channel *channel;
+>>> +    unsigned int index;
+>>> +    int err;
+>>> +
+>>> +    err = pm_runtime_force_resume(dev);
+>>> +    if (err < 0)
+>>> +        return err;
+>>> +
+>>> +    host1x_syncpt_restore(host);
+>>
+>> We also need to execute 'host1x_setup_sid_table' upon resume.
+> 
+> Indeed, thanks. I'll correct it in the next revision.
+> 
+> Perhaps the actual save/restore needs to be moved to the runtime
+> callbacks. At least I can't remember right now why this wasn't done in
+> the first place.
+> 
 
-Signed-off-by: Boris Protopopov <pboris@amazon.com>
----
-
-After further testing, I found that the security info was not being
-passed correctly to opts->get_acl and opts->get_acl_by_fid(). Also,
-it turned out that files open for read were being used to fetch
-SACL without proper privileges. This patch fixes these issues, and
-is meant to be squashed (comments dropped) with the earlier patch.
-
-fs/cifs/cifsacl.c | 10 +++++-----
- fs/cifs/smb2ops.c |  4 ++--
- fs/cifs/smb2pdu.c |  4 +++-
- fs/cifs/xattr.c   | 10 ++++------
- 4 files changed, 14 insertions(+), 14 deletions(-)
-
-diff --git a/fs/cifs/cifsacl.c b/fs/cifs/cifsacl.c
-index 353394d9ada8..6baa121952ce 100644
---- a/fs/cifs/cifsacl.c
-+++ b/fs/cifs/cifsacl.c
-@@ -1245,7 +1245,7 @@ cifs_acl_to_fattr(struct cifs_sb_info *cifs_sb, struct cifs_fattr *fattr,
- 	int rc = 0;
- 	struct tcon_link *tlink = cifs_sb_tlink(cifs_sb);
- 	struct smb_version_operations *ops;
--	const u32 unused = 0;
-+	const u32 info = 0;
- 
- 	cifs_dbg(NOISY, "converting ACL to mode for %s\n", path);
- 
-@@ -1255,9 +1255,9 @@ cifs_acl_to_fattr(struct cifs_sb_info *cifs_sb, struct cifs_fattr *fattr,
- 	ops = tlink_tcon(tlink)->ses->server->ops;
- 
- 	if (pfid && (ops->get_acl_by_fid))
--		pntsd = ops->get_acl_by_fid(cifs_sb, pfid, &acllen, unused);
-+		pntsd = ops->get_acl_by_fid(cifs_sb, pfid, &acllen, info);
- 	else if (ops->get_acl)
--		pntsd = ops->get_acl(cifs_sb, inode, path, &acllen, unused);
-+		pntsd = ops->get_acl(cifs_sb, inode, path, &acllen, info);
- 	else {
- 		cifs_put_tlink(tlink);
- 		return -EOPNOTSUPP;
-@@ -1295,7 +1295,7 @@ id_mode_to_cifs_acl(struct inode *inode, const char *path, __u64 nmode,
- 	struct tcon_link *tlink = cifs_sb_tlink(cifs_sb);
- 	struct smb_version_operations *ops;
- 	bool mode_from_sid, id_from_sid;
--	const u32 unused = 0;
-+	const u32 info = 0;
- 
- 	if (IS_ERR(tlink))
- 		return PTR_ERR(tlink);
-@@ -1311,7 +1311,7 @@ id_mode_to_cifs_acl(struct inode *inode, const char *path, __u64 nmode,
- 		return -EOPNOTSUPP;
- 	}
- 
--	pntsd = ops->get_acl(cifs_sb, inode, path, &secdesclen, unused);
-+	pntsd = ops->get_acl(cifs_sb, inode, path, &secdesclen, info);
- 	if (IS_ERR(pntsd)) {
- 		rc = PTR_ERR(pntsd);
- 		cifs_dbg(VFS, "%s: error %d getting sec desc\n", __func__, rc);
-diff --git a/fs/cifs/smb2ops.c b/fs/cifs/smb2ops.c
-index d28a29728fb1..f5e198860c16 100644
---- a/fs/cifs/smb2ops.c
-+++ b/fs/cifs/smb2ops.c
-@@ -3315,9 +3315,9 @@ get_smb2_acl(struct cifs_sb_info *cifs_sb,
- 	struct cifs_ntsd *pntsd = NULL;
- 	struct cifsFileInfo *open_file = NULL;
- 
--	if (inode)
-+	if (inode && !(info & SACL_SECINFO))
- 		open_file = find_readable_file(CIFS_I(inode), true);
--	if (!open_file)
-+	if (!open_file || (info & SACL_SECINFO))
- 		return get_smb2_acl_by_path(cifs_sb, path, pacllen, info);
- 
- 	pntsd = get_smb2_acl_by_fid(cifs_sb, &open_file->fid, pacllen, info);
-diff --git a/fs/cifs/smb2pdu.c b/fs/cifs/smb2pdu.c
-index 0aeb63694306..b207e1eb6803 100644
---- a/fs/cifs/smb2pdu.c
-+++ b/fs/cifs/smb2pdu.c
-@@ -3472,8 +3472,10 @@ SMB311_posix_query_info(const unsigned int xid, struct cifs_tcon *tcon,
- int
- SMB2_query_acl(const unsigned int xid, struct cifs_tcon *tcon,
- 	       u64 persistent_fid, u64 volatile_fid,
--	       void **data, u32 *plen, u32 additional_info)
-+	       void **data, u32 *plen, u32 extra_info)
- {
-+	__u32 additional_info = OWNER_SECINFO | GROUP_SECINFO | DACL_SECINFO |
-+				extra_info;
- 	*plen = 0;
- 
- 	return query_info(xid, tcon, persistent_fid, volatile_fid,
-diff --git a/fs/cifs/xattr.c b/fs/cifs/xattr.c
-index 9318a2acf4ee..6b658a1172ef 100644
---- a/fs/cifs/xattr.c
-+++ b/fs/cifs/xattr.c
-@@ -340,21 +340,19 @@ static int cifs_xattr_get(const struct xattr_handler *handler,
- 		 * fetch owner, DACL, and SACL if asked for full descriptor,
- 		 * fetch owner and DACL otherwise
- 		 */
--		u32 acllen, additional_info = 0;
-+		u32 acllen, extra_info;
- 		struct cifs_ntsd *pacl;
- 
- 		if (pTcon->ses->server->ops->get_acl == NULL)
- 			goto out; /* rc already EOPNOTSUPP */
- 
- 		if (handler->flags == XATTR_CIFS_NTSD_FULL) {
--			additional_info = OWNER_SECINFO | GROUP_SECINFO |
--				DACL_SECINFO | SACL_SECINFO;
-+			extra_info = SACL_SECINFO;
- 		} else {
--			additional_info = OWNER_SECINFO | GROUP_SECINFO |
--				DACL_SECINFO;
-+			extra_info = 0;
- 		}
- 		pacl = pTcon->ses->server->ops->get_acl(cifs_sb,
--				inode, full_path, &acllen, additional_info);
-+				inode, full_path, &acllen, extra_info);
- 		if (IS_ERR(pacl)) {
- 			rc = PTR_ERR(pacl);
- 			cifs_dbg(VFS, "%s: error %zd getting sec desc\n",
--- 
-2.18.4
-
+I looked at the save/restore once again and recalled why it's done so.
+The reason is that the host1x touches hardware during the driver probe,
+and thus, RPM needs to be resumed first. It will be a bigger change to
+properly decouple the hardware initialization so that it all could be
+put it into the RPM callback. I'll try to do it in v3.
