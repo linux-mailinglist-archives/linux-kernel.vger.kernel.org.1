@@ -2,272 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E3E02DCFC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 11:51:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E1CC2DCFC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 11:51:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727382AbgLQKuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 05:50:37 -0500
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:50065 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726488AbgLQKug (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 05:50:36 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 5EE83580343;
-        Thu, 17 Dec 2020 05:49:49 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Thu, 17 Dec 2020 05:49:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=Fz19MIrrom3/tNzE5t9TxRgLAhN
-        NIkrSoabz4T39DXA=; b=bf1/FVPnRMiOd19HdPfs99lgjNUFAz4OlsDPNpZWevj
-        PUmO0u51HUV2SQEBA8Wx8YHYtpw5V1njDDdD0NN+MG/FkythJE0sUnXfIOw1jczP
-        sEpE0HzlfqeojXnmHrHUvWZayX/RnGG2PZyUurc5WxLH8Vqe44cx8Sr2XO0oj06Y
-        JWOnH1Mu54EO1YcIT5UbkjvZsgyFSCvoY3nIIlO1E9YDZN1bzCfB7HGQcZzsFf8d
-        tr8qY5YytMCd8AXkPC+bPj8XD+19iESWW1812IzphyFw3DID79HDYyolTh/J4P0X
-        rmvRg7iT6nGlSOZsyRRdmmXSlczHxUAdfffXNqSqnrQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=Fz19MI
-        rrom3/tNzE5t9TxRgLAhNNIkrSoabz4T39DXA=; b=dl+OtWIwi8zX57fV8vG4A9
-        Vho1AmAiEDklZP3sjRMMBB1/bKY/Uhrlhrj2nWB+C8szg5rm8/SMmDTxtGUbUoPM
-        q+0m3A8AfcC4+2R+lO2oUkVT7YGUTy1EW0lTngvKtzK+Z+9KixWz/f6b/1PhEqWf
-        eeuYI071bcuC/0SQLeoQu7fvkM9JkTbumkJRxtVjVJxfrtrGooSwdplRkl80VBWr
-        phChomLVLY9So2sSFsh/PgIWUzufhvQ6PyVv7smpT8qvU+vhufSDG8kNSonhs9hx
-        MnJqXRecwoqlbbtoqL/5NGIHkvAVIaAl8LLiLek41wOMB/5AYBCqLV3oEz4yaO+A
-        ==
-X-ME-Sender: <xms:yzfbX8eX97v78afAK-jkGwSVjtzIgZ4K7HU2ru3169OmxeLQZYwrAg>
-    <xme:yzfbX-OFMkBOlWQAf-9eSM7mUmzwMI-B3H4Zlv3Liqp1OKBHlfHAs6uld2GM5WXoH
-    jLgM74_0Z0irR5wAFw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudelgedgudekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepvddvgffhkeefgfdthfekjeduffefheeukeeuffevgedvtddtvdehgeelhfel
-    udetnecuffhomhgrihhnpeigshegrghllhdrnhhlnecukfhppeeltddrkeelrdeikedrje
-    einecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgr
-    gihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:yzfbX9hLcfjf6Eg53VI8r7mETEx2QBhsiDya9bGQkk5p-cAdqpPkFQ>
-    <xmx:yzfbXx_HZBLZmmQvt63k91WOYdPKDKyF9b-fy2KkRiqC6c4okKgOkg>
-    <xmx:yzfbX4tmpg4qcRefmg0lNVp7bfBNF8ZHryhsKCn8JV7Stxw7eDIxFQ>
-    <xmx:zTfbX4E10eWJto7ZJPcmofAgPBFyYr4dBEtxjFORVHJZ35tVU7eNiA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id AEC1F1080059;
-        Thu, 17 Dec 2020 05:49:47 -0500 (EST)
-Date:   Thu, 17 Dec 2020 11:49:46 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Eric Anholt <eric@anholt.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Jason Cooper <jason@lakedaemon.net>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        linux-rpi-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 00/15] drm/vc4: hdmi: Add CEC support for the BCM2711
-Message-ID: <20201217104946.srurfmuphqzz4c4w@gilmour>
-References: <20201210134648.272857-1-maxime@cerno.tech>
- <23bdb67a-fb55-42d4-9130-ade1b0396768@xs4all.nl>
+        id S1727814AbgLQKvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 05:51:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59310 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726291AbgLQKvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 05:51:01 -0500
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608202220;
+        bh=Ro0hI3oK3wxsStmiMichCc3NaGtunDmMy0N4tSUrHvA=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=mB5QRYpLLHdVyomEOKfAx5GO+7StHxvVBWjJMnhll97xs2z9dUkqt5tEjaRyUpXqp
+         olQRzZAUwBgfLvoK+kZzvmqqAR9Hfkb2KqFDBPv0ICd8XKPFiLCbQFiPfiqXmdHQMM
+         IQyMWBWd9Phwel4HlMY0tTB35bqlLZh2inDBz3v8yq/lkExn37Y8te0Iw4k9S+UCvo
+         P537SdVO7+cJD2xVq7Ub+SEVCU94MI+k0UaBFy6RX+TQXePf1JvDP4WW9iuuNALcj4
+         liBU4nWp27QAQfSc8SS4JNhrcwOyc3vYTccKFKT018hUyaKXRWX3HhyEtM8sOYLxSr
+         3XFJMGToAdfQw==
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ubepamncu45hulnr"
-Content-Disposition: inline
-In-Reply-To: <23bdb67a-fb55-42d4-9130-ade1b0396768@xs4all.nl>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAMhs-H9SiZ90NYCGL+3ad9UR7CDUiA1gb99ZcfHp10=SZtVPpg@mail.gmail.com>
+References: <20201122095556.21597-1-sergio.paracuellos@gmail.com> <20201122095556.21597-3-sergio.paracuellos@gmail.com> <160819550615.1580929.14234996916739809712@swboyd.mtv.corp.google.com> <CAMhs-H_EiDot_V4Qj1Q8noAf5RNi9BOyy0WmawE+70wY7=FxDg@mail.gmail.com> <160819962346.1580929.2348154780751858972@swboyd.mtv.corp.google.com> <CAMhs-H_ixfqMxVFOf+J0O-Tp0Q0ngviMm6jHrHJSgCLwZj+Tvw@mail.gmail.com> <160820116913.1580929.15821601182796836787@swboyd.mtv.corp.google.com> <CAMhs-H9SiZ90NYCGL+3ad9UR7CDUiA1gb99ZcfHp10=SZtVPpg@mail.gmail.com>
+Subject: Re: [PATCH v4 2/6] dt: bindings: add mt7621-clk device tree binding documentation
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        John Crispin <john@phrozen.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        Weijie Gao <hackpascal@gmail.com>,
+        COMMON CLK FRAMEWORK <linux-clk@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:MIPS <linux-mips@vger.kernel.org>, open list:STAGING 
+        SUBSYSTEM <devel@driverdev.osuosl.org>, NeilBrown <neil@brown.name>, 
+        open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Thu, 17 Dec 2020 02:50:18 -0800
+Message-ID: <160820221883.1580929.5758849422177353179@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---ubepamncu45hulnr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi Hans,
-
-On Wed, Dec 16, 2020 at 01:35:43PM +0100, Hans Verkuil wrote:
-> Hi Maxime,
+Quoting Sergio Paracuellos (2020-12-17 02:38:37)
+> On Thu, Dec 17, 2020 at 11:32 AM Stephen Boyd <sboyd@kernel.org> wrote:
+> >
+> > Quoting Sergio Paracuellos (2020-12-17 02:14:10)
+> > > node is to use architecture operations in
+> > > 'arch/mips/include/asm/mach-ralink/ralink_regs.h'
+> > > instead of getting a phandle using the regmap is being currently used=
+...
+> >
+> > Can that be done with
+> >
+> > CLK_OF_DECLARE_DRIVER("mediatek,mt7621-sysc", my_timer_clk_init)
+> >
+> > ? Is the syscon used anywhere besides by the clk driver?
 >=20
-> On 10/12/2020 14:46, Maxime Ripard wrote:
-> > Hi,
-> >=20
-> > Here's a series introducing the CEC support for the BCM2711 found on the
-> > RaspberryPi4.
-> >=20
-> > The BCM2711 HDMI controller uses a similar layout for the CEC registers=
-, the
-> > main difference being that the interrupt handling part is now shared be=
-tween
-> > both HDMI controllers.
-> >=20
-> > This series is mainly about fixing a couple of bugs, reworking the driv=
-er to
-> > support having two different interrupts, one for each direction, provid=
-ed by an
-> > external irqchip, and enables the irqchip driver for the controller we =
-have.
-> >=20
-> > This has been tested on an RPi3 and RPi4, but requires the latest firmw=
-are.
-> > It's is based on the 10 and 12 bpc series.
->=20
-> This series looks good to me. Before I give my Acked-by for this series, =
-can you
-> confirm that it is possible to transmit the Image View On message on both=
- outputs
-> of the RPi4 when the HPD is low?
->=20
-> See section "CEC Without HPD" in https://hverkuil.home.xs4all.nl/cec-stat=
-us.txt
-> on how to test this with a Pulse-Eight device.
->=20
-> This should work.
+> Yes, for example all the gates use them to access SYSC_REG_CLKCFG1 in
+> all of their 'mt7621_gate_ops' and also in all 'recalc_rate' functions
+> where SYSC_REG_SYSTEM_CONFIG0, is readed.
 
-This is the output on the RPi4:
-
-# cec-ctl --playback
-Driver Info:
-	Driver Name                : vc4_hdmi
-	Adapter Name               : vc4
-	Capabilities               : 0x0000010e
-		Logical Addresses
-		Transmit
-		Passthrough
-	Driver version             : 5.10.0
-	Available Logical Addresses: 1
-	Physical Address           : f.f.f.f
-	Logical Address Mask       : 0x0000
-	CEC Version                : 2.0
-	Vendor ID                  : 0x000c03 (HDMI)
-	OSD Name                   : Playback
-	Logical Addresses          : 1 (Allow RC Passthrough)
-
-	  Logical Address          : Not Allocated
-	    Primary Device Type    : Playback
-	    Logical Address Type   : Playback
-	    All Device Types       : Playback
-	    RC TV Profile          : None
-	    Device Features        :
-		None
-
-# cec-ctl -t0 --image-view-on
-Driver Info:
-	Driver Name                : vc4_hdmi
-	Adapter Name               : vc4
-	Capabilities               : 0x0000010e
-		Logical Addresses
-		Transmit
-		Passthrough
-	Driver version             : 5.10.0
-	Available Logical Addresses: 1
-	Physical Address           : f.f.f.f
-	Logical Address Mask       : 0x0000
-	CEC Version                : 2.0
-	Vendor ID                  : 0x000c03 (HDMI)
-	OSD Name                   : Playback
-	Logical Addresses          : 1 (Allow RC Passthrough)
-
-	  Logical Address          : Not Allocated
-	    Primary Device Type    : Playback
-	    Logical Address Type   : Playback
-	    All Device Types       : Playback
-	    RC TV Profile          : None
-	    Device Features        :
-		None
-
-
-Transmit from Unregistered to TV (15 to 0):
-CEC_MSG_IMAGE_VIEW_ON (0x04)
-	Sequence: 1 Tx Timestamp: 77.631s
-
-
-And this is the output on my desktop with the Pulse-Eight:
-$ sudo cec-ctl -p0.0.0.0 --tv
-Driver Info:
-	Driver Name                : pulse8-cec
-	Adapter Name               : serio0
-	Capabilities               : 0x0000003f
-		Physical Address
-		Logical Addresses
-		Transmit
-		Passthrough
-		Remote Control Support
-		Monitor All
-	Driver version             : 5.9.8
-	Available Logical Addresses: 1
-	Connector Info             : None
-	Physical Address           : 0.0.0.0
-	Logical Address Mask       : 0x0001
-	CEC Version                : 2.0
-	Vendor ID                  : 0x000c03 (HDMI)
-	OSD Name                   : 'TV  '
-	Logical Addresses          : 1 (Allow RC Passthrough)
-
-	  Logical Address          : 0 (TV)
-	    Primary Device Type    : TV
-	    Logical Address Type   : TV
-	    All Device Types       : TV
-	    RC TV Profile          : None
-	    Device Features        :
-		None
-
-$ sudo cec-ctl -M
-Driver Info:
-	Driver Name                : pulse8-cec
-	Adapter Name               : serio0
-	Capabilities               : 0x0000003f
-		Physical Address
-		Logical Addresses
-		Transmit
-		Passthrough
-		Remote Control Support
-		Monitor All
-	Driver version             : 5.9.8
-	Available Logical Addresses: 1
-	Connector Info             : None
-	Physical Address           : 0.0.0.0
-	Logical Address Mask       : 0x0001
-	CEC Version                : 2.0
-	Vendor ID                  : 0x000c03 (HDMI)
-	OSD Name                   : 'TV  '
-	Logical Addresses          : 1 (Allow RC Passthrough)
-
-	  Logical Address          : 0 (TV)
-	    Primary Device Type    : TV
-	    Logical Address Type   : TV
-	    All Device Types       : TV
-	    RC TV Profile          : None
-	    Device Features        :
-		None
-
-
-
-Initial Event: State Change: PA: 0.0.0.0, LA mask: 0x0001, Conn Info: no
-Received from Unregistered to TV (15 to 0): IMAGE_VIEW_ON (0x04)
-
-So it looks like it's working as expected?
-
-Maxime
-
---ubepamncu45hulnr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX9s3ygAKCRDj7w1vZxhR
-xb/QAP4sjWL/MqcJFqZCGoWPN/WYGWrGCwbWn1yMP2uJ3w1eiQD/WCKs0iECflyQ
-FQ7LIfCYTFsXHbNBtI79BxJztB7VnAs=
-=2QGA
------END PGP SIGNATURE-----
-
---ubepamncu45hulnr--
+That sounds like it's only used by the clk provider/driver? Any other
+code uses the syscon?
