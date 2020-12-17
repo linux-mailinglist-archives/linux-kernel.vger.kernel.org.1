@@ -2,93 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ABD62DD42D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:29:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 281752DD43B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:32:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729102AbgLQP3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 10:29:36 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:46956 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726291AbgLQP3d (ORCPT
+        id S1728167AbgLQPcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 10:32:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726548AbgLQPb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 10:29:33 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1608218931;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EIcpuCdPdjtUIDDq5V1Kd6Nd1DvDsLvtJ/iV0ZcMRgA=;
-        b=3/uIVXk04WU6Kuue5KdK/PZzRT3PQRQci3lkMWxtnm0m12Qkt5QmdLW1qQQiqnAFp2hZp5
-        QzFq2fC1v1lLeWxspvs7ZktqDZYepiYqq++tBMgUhzKOe2wtg66cawjCw02bRBA1+2Djdc
-        4KqVMkPy5/ypITooF8IgTBcIQjsKSpTImchFsyfvoJm7nqCiKy3U5DR28Hag30uG9YGgov
-        RUvtLmBoVLaNPRF+SFiF/2wkaVq1oYPqBJmTNbWB4E7TQFmDGdSdnkPdaiSRXTI2qchLhb
-        YTBG4YlbqP+sIR9BHSNaYY0o6m7NSpXCZrdp1Gbc1GfXIGh0T78z8Dt66x3VyQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1608218931;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EIcpuCdPdjtUIDDq5V1Kd6Nd1DvDsLvtJ/iV0ZcMRgA=;
-        b=9yQmqCVKnv9+iECxfpPNtEbdep6NKjLzINPHlJVMXIR0uStpoRGsed4or02lEAiC+4QayK
-        TZlxdiWrObB1IHAQ==
-To:     ira.weiny@intel.com, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH V3 06/10] x86/entry: Preserve PKRS MSR across exceptions
-In-Reply-To: <20201106232908.364581-7-ira.weiny@intel.com>
-References: <20201106232908.364581-1-ira.weiny@intel.com> <20201106232908.364581-7-ira.weiny@intel.com>
-Date:   Thu, 17 Dec 2020 16:28:51 +0100
-Message-ID: <87y2hwqwng.fsf@nanos.tec.linutronix.de>
+        Thu, 17 Dec 2020 10:31:59 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81457C0617B0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 07:31:19 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id r9so27884867ioo.7
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 07:31:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SNLzqNA7Yv8jUaImikGcte3pXfNXnVGyGGbxaqJSnmE=;
+        b=NstEXwcBZ58bsIqvPEou/vpNRiwQWHboP9Z0GcBCOZ8Zb8GlpgRMYIix6IgT+k1c7q
+         /ZeFfGVxYFWgLX6Ra5z66ckoBCfcJRLVAijaEbs4WtQkm9kvUtr3hYUGj0cl7RMfjhaU
+         xdRAHAGvTvaTGOVG0cHMEgHCEmVfY0ft1egwM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SNLzqNA7Yv8jUaImikGcte3pXfNXnVGyGGbxaqJSnmE=;
+        b=oqzPi9UseHutSkaPWNFXBl9grrbVO9K35WF4QKhV3yijzR6PyriDu05ArDth1JPa8b
+         DqZS5tlYFVPEHvQVXIMgtJdB6qmLQQnh76Gx7xjrydHcQ7MgSw7uykoppSBosMfyjAl9
+         pGX7b5pMmCiLvedqd0BB9jCk/N990QLKdYk/M5TQfRJLmTGv81DndEN+lIPjbn3LEmnc
+         E/PO7GEYTUJw9iwwGBfKsA4AInLBU5mUrEVoSQXTf4K4jpKDo1ROtEQw42VUPto4sm1z
+         y7I8FJvf5maYlplwXKFATPVPAdvzUmF+ui+DM1bFv1CzuGkMGT3sznWLKQrUsyc7IaLK
+         /AIQ==
+X-Gm-Message-State: AOAM531padmBe4BJaDV1dwLTJmkgzDhX74Ryq4Xpyq/0epedOAeL/XE5
+        HOF0fjQyEvCEX9o6UhArafCq6eF8N8m1bdaJNJfr/w==
+X-Google-Smtp-Source: ABdhPJwGHY8bZs97SycriCjRPbd9tDIlKsouhD/rI6FdX+ZALVYkmXeiTNH2xpyk3fGPfBBSWYjON8DeZP3ikISG75g=
+X-Received: by 2002:a05:6602:387:: with SMTP id f7mr22817510iov.209.1608219078885;
+ Thu, 17 Dec 2020 07:31:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201126165748.1748417-1-revest@google.com> <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com>
+ <CACYkzJ7T4y7in1AsCvJ2izA3yiAke8vE9SRFRCyTPeqMnDHoyQ@mail.gmail.com>
+ <e8b03cbc-c120-43d5-168c-cde5b6a97af8@fb.com> <CAEf4BzYz9Yf9abPBtP+swCuqvvhL0cbbbF1x-3stg9mp=a6+-A@mail.gmail.com>
+ <194b5a6e6e30574a035a3e3baa98d7fde7f91f1c.camel@chromium.org>
+ <CAADnVQK6GjmL19zQykYbh=THM9ktQUzfnwF_FfhUKimCxDnnkQ@mail.gmail.com>
+ <CABRcYm+zjC-WH2gxtfEX5S6mZj-5_ByAzVd5zi3aRmQv-asYqg@mail.gmail.com> <221fb873-80fc-5407-965e-b075c964fa13@fb.com>
+In-Reply-To: <221fb873-80fc-5407-965e-b075c964fa13@fb.com>
+From:   Florent Revest <revest@chromium.org>
+Date:   Thu, 17 Dec 2020 16:31:08 +0100
+Message-ID: <CABRcYmLL=SUsPS6qWVgTyYJ26r-QtECfeTZXkXSp7iRBDZRbZA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Florent Revest <revest@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06 2020 at 15:29, ira weiny wrote:
-> +#ifdef CONFIG_ARCH_HAS_SUPERVISOR_PKEYS
-> +/*
-> + * PKRS is a per-logical-processor MSR which overlays additional protection for
-> + * pages which have been mapped with a protection key.
-> + *
-> + * The register is not maintained with XSAVE so we have to maintain the MSR
-> + * value in software during context switch and exception handling.
-> + *
-> + * Context switches save the MSR in the task struct thus taking that value to
-> + * other processors if necessary.
-> + *
-> + * To protect against exceptions having access to this memory we save the
-> + * current running value and set the PKRS value for the duration of the
-> + * exception.  Thus preventing exception handlers from having the elevated
-> + * access of the interrupted task.
-> + */
-> +noinstr void irq_save_set_pkrs(irqentry_state_t *irq_state, u32 val)
-> +{
-> +	if (!cpu_feature_enabled(X86_FEATURE_PKS))
-> +		return;
-> +
-> +	irq_state->thread_pkrs = current->thread.saved_pkrs;
-> +	write_pkrs(INIT_PKRS_VALUE);
+On Mon, Dec 14, 2020 at 7:47 AM Yonghong Song <yhs@fb.com> wrote:
+> On 12/11/20 6:40 AM, Florent Revest wrote:
+> > On Wed, Dec 2, 2020 at 10:18 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> >> I still think that adopting printk/vsnprintf for this instead of
+> >> reinventing the wheel
+> >> is more flexible and easier to maintain long term.
+> >> Almost the same layout can be done with vsnprintf
+> >> with exception of \0 char.
+> >> More meaningful names, etc.
+> >> See Documentation/core-api/printk-formats.rst
+> >
+> > I agree this would be nice. I finally got a bit of time to experiment
+> > with this and I noticed a few things:
+> >
+> > First of all, because helpers only have 5 arguments, if we use two for
+> > the output buffer and its size and two for the format string and its
+> > size, we are only left with one argument for a modifier. This is still
+> > enough for our usecase (where we'd only use "%ps" for example) but it
+> > does not strictly-speaking allow for the same layout that Andrii
+> > proposed.
+>
+> See helper bpf_seq_printf. It packs all arguments for format string and
+> puts them into an array. bpf_seq_printf will unpack them as it parsed
+> through the format string. So it should be doable to have more than
+> "%ps" in format string.
 
-Why is this noinstr? Just because it's called from a noinstr function?
+This could be a nice trick, thank you for the suggestion Yonghong :)
 
-Of course the function itself violates the noinstr constraints:
+My understanding is that this would also require two extra args (one
+for the array of arguments and one for the size of this array) so it
+would still not fit the 5 arguments limit I described in my previous
+email.
+eg: this would not be possible:
+long bpf_snprintf(const char *out, u32 out_size,
+                  const char *fmt, u32 fmt_size,
+                 const void *data, u32 data_len)
 
-  vmlinux.o: warning: objtool: write_pkrs()+0x36: call to do_trace_write_msr() leaves .noinstr.text section
-
-There is absolutely no reason to have this marked noinstr.
-
-Thanks,
-
-        tglx
+Would you then suggest that we also put the format string and its
+length in the first and second cells of this array and have something
+along the line of:
+long bpf_snprintf(const char *out, u32 out_size,
+                  const void *args, u32 args_len) ?
+This seems like a fairly opaque signature to me and harder to verify.
