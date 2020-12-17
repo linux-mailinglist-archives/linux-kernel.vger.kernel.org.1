@@ -2,109 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D28E52DD94C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 20:26:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03ACB2DD950
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 20:27:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729580AbgLQTZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 14:25:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53944 "EHLO
+        id S1729846AbgLQT0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 14:26:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727063AbgLQTZu (ORCPT
+        with ESMTP id S1725468AbgLQT0m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 14:25:50 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDBD5C0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 11:25:09 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id 190so19117wmz.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 11:25:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ixCzYST95/yuaNiK81DgJI4fw2sfz4OqTewDrmBzQzY=;
-        b=EE+bWjgmZYCmpkp12HoUS6LRCELP4LBsnaGbo3WreVLVH6a7QL6p876NZS8ZSye4Ma
-         WtkGyc7+Ob0anX1aYMKBJKK+EQa0XetFVboNh6N7jqE1WDPt7HsY4knHMJkcPq/divRV
-         IaAktzpprw+PU+JCfHrhscGAONoimtngMISAsSm4PgqJvhHxFaVnGYdpwuNYGQs/LJhH
-         kViPrO6HFKJZeaPe++7ALd+p/ndKwUw7fBwoLE76iLfvUOjt8yKDpWAGR9hcJ7L2p2Qb
-         9RsLbcxE+A+31aCocEeS8JQ92oNO8Su6WdIpigin26ooyBzBJ0cnAIFPGxeMuT04n6dW
-         zdZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ixCzYST95/yuaNiK81DgJI4fw2sfz4OqTewDrmBzQzY=;
-        b=l2uc/FF+mqWdTpZ5ljwJf/8l0dmTO+kyYCwvcA0JRTrzOUO2RfpaZZyiyaslLhEWTv
-         0F9iPxN8mLVmRxexi2rojpiph+NRNPtR1sKDzb6+5KqVbBuQRzeURa7s6/nW/izBqIEZ
-         heu6Iwd0RurayVXRawbFafL61Zzt5wxAwVEoIT2VtIYN20B0v07AQozl0/ik+dHaI7+4
-         Z8jWy75HAHwKILvncL4zlN0Q7WVDOJ96zM5LpWRCGbFivvQuQBFdjMMtlLZdTN33rfgC
-         zSwMOh/U64KEBEh6qEkjx5hJpsIU2o2KmjwBv2jBEsfMsUo5ncFh9vGVKy6LlorKYN/8
-         mgWg==
-X-Gm-Message-State: AOAM533F6c6qZ7dywz/EASFNWWM332T8Vo3LWA5IdrIV4jfkG9uzRM94
-        grRtH/S+I+2pVnyHJYfBelsZyg==
-X-Google-Smtp-Source: ABdhPJyOFeWBCrILNXkRsgkNImAd+vZ6FQGRL5WGzeKgDFg68HIioj2nft7cI62Tfx/kLzdFJSzRZQ==
-X-Received: by 2002:a1c:7dd8:: with SMTP id y207mr784655wmc.181.1608233108453;
-        Thu, 17 Dec 2020 11:25:08 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:ccb6:ce78:2bcd:4ead? ([2a01:e34:ed2f:f020:ccb6:ce78:2bcd:4ead])
-        by smtp.googlemail.com with ESMTPSA id r1sm10811356wrl.95.2020.12.17.11.25.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Dec 2020 11:25:07 -0800 (PST)
-Subject: Re: [PATCH v2 3/3] thermal/core: Remove ms based delay fields
-To:     Hans de Goede <hdegoede@redhat.com>, rui.zhang@intel.com
-Cc:     amitk@kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Peter Kaestle <peter@piie.net>,
-        Mark Gross <mgross@linux.intel.com>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Eduardo Valentin <edubezval@gmail.com>,
-        Keerthy <j-keerthy@ti.com>,
-        "open list:ACER ASPIRE ONE TEMPERATURE AND FAN DRIVER" 
-        <platform-driver-x86@vger.kernel.org>,
-        "open list:TI BANDGAP AND THERMAL DRIVER" 
-        <linux-omap@vger.kernel.org>
-References: <20201216220337.839878-1-daniel.lezcano@linaro.org>
- <20201216220337.839878-3-daniel.lezcano@linaro.org>
- <c575c7bc-cf53-bfdf-ea42-e8661d714699@redhat.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <01f5ee86-a1c2-97da-a55d-8c5ab0e21154@linaro.org>
-Date:   Thu, 17 Dec 2020 20:25:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 17 Dec 2020 14:26:42 -0500
+Received: from the.earth.li (the.earth.li [IPv6:2a00:1098:86:4d:c0ff:ee:15:900d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CA84C061794
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 11:26:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=earth.li;
+         s=the; h=In-Reply-To:Content-Type:MIME-Version:Message-ID:Subject:Cc:To:From
+        :Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=id/RU4OEULTzXYn9FVYP9FWC/5fwm6DcgOfQXfSgdAw=; b=duW5i/z4gePeQy2kdqksQSYcpE
+        d/cu5oq7Owsz0j1u6bgAG091GDRfjrvipYXzLBlbYC4BfFbiJAi9Rwhdb00rWLvK2qTaFuAFzCcNO
+        qVp/Akyjwh7AQuFuSwKDU+A8/p/NGgU34FLvmi0ZW3kDmlnWLEdopsLEDoxoGJmSD173Mbfmj0M0g
+        ln2iC/PAHRsCnFM4SMpHKDotYmEz27G7VBfZVaohbSoHgkZINalK/yV/My66lD8fPzk2EyCW/q9sD
+        leQimD6p9/JjM0FxrDpFOXhnin5Xp1xbosyevJDsaPzg98f0k2fLWft+9k/u0rvN0TFfVxosH1CNu
+        2Wfm9Adw==;
+Received: from noodles by the.earth.li with local (Exim 4.92)
+        (envelope-from <noodles@earth.li>)
+        id 1kpyuS-0004ft-2Q; Thu, 17 Dec 2020 19:25:56 +0000
+Date:   Thu, 17 Dec 2020 19:25:56 +0000
+From:   Jonathan McDowell <noodles@earth.li>
+To:     konstantin@linuxfoundation.org
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Oliver Graute <oliver.graute@gmail.com>, corbet@lwn.net,
+        miguel.ojeda.sandonis@gmail.com, grandmaster@al2klimov.de,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: PGP pathfinder service is no longer maintained
+Message-ID: <20201217192555.GA17262@earth.li>
 MIME-Version: 1.0
-In-Reply-To: <c575c7bc-cf53-bfdf-ea42-e8661d714699@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201216224344.h3r7wbo7fgatupm5@chatter.i7.local>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/12/2020 19:32, Hans de Goede wrote:
-> Hi Daniel,
-> 
-> On 12/16/20 11:03 PM, Daniel Lezcano wrote:
->> The code does no longer use the ms unit based fields to set the
->> delays as they are replaced by the jiffies.
->>
->> Remove them and replace their user to use the jiffies version instead.
->>
->> Cc: Thara Gopinath <thara.gopinath@linaro.org>
->> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
->> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
-> 
-> I assume that you will merge this through the thermal tree,
-> here is my ack for doing so for the pdx86 bits:
-> 
-> Acked-by: Hans de Goede <hdegoede@redhat.com>
 
-Thanks!
+In article <20201216224344.h3r7wbo7fgatupm5@chatter.i7.local> (earth.lists.linux-kernel) you wrote:
+> On Wed, Dec 16, 2020 at 10:20:18PM +0000, Matthew Wilcox wrote:
+> > > Unfortunately the site https://pgp.cs.uu.nl/ is not maintained 
+> > > anymore
+> > > and the "Finding paths to Linus" link in the Kernel Maintainer PGP guide
+> > > is dead. Is there any alternative sites to find a way through the web of
+> > > trust?
+> > 
+> > Several.  Konstantin has a local one: https://github.com/mricon/wotmate
 
+> This is how we generate these:
+> https://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git/tree/graphs
+
+> > and if you want a web service, I like this one:
+> > https://the.earth.li/~noodles/pathfind.html
+
+> FYI, it says "The pathfinder is currently out of action due to queries 
+> taking far too long to respond. It may return in the future when I find 
+> enough time to optimize it." :)
+
+I've re-enabled it for the moment; the keyserver now only holds keys it
+has paths to so hopefully it'll be a bit better behaved now.
+
+J.
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Give me liberty or I will cut you.
