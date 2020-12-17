@@ -2,240 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 343B12DCFCD
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 11:55:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 409992DCFCF
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 11:55:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727416AbgLQKyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 05:54:36 -0500
-Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:43629 "EHLO
-        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726983AbgLQKyf (ORCPT
+        id S1727788AbgLQKyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 05:54:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726983AbgLQKyt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 05:54:35 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id pqukkWOvhynrEpqunktAgK; Thu, 17 Dec 2020 11:53:52 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1608202432; bh=pqOm4Mt+OtXECc6KvRmlRk/K/jqE4ItBI7LIXf66kj8=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=T5Lxpfws1Po/qw43sUq17iXCqo7hDHcvrqRSrXhodEJnU/Vp8w+mCNb7Podev7eK5
-         qpOx0GK7YsaenPAH6N8douDLtLfYuDGeWLq70vKpvKGIxRuNAkV6xewSlKzB56fbVj
-         Z6hvj/dFZv26C/i4FZ3ftz8Jm43LNqajPL3BfqIfNrR7MR4pE67RLXQpbXmw+HVznR
-         oltxiLynqM1rs84nF7rtmyYz2dAzWp5D1lW8sgxleyYBWbVf4OpMx8XOBA6IQGwTIJ
-         ti3laM1bF38Lj5wNovuSZLWeQv/KGLyDwegMPoTmv7JIv2J9gE/czfOFzynY6sYapK
-         AiMRkqvym9RJA==
-Subject: Re: [PATCH 00/15] drm/vc4: hdmi: Add CEC support for the BCM2711
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Eric Anholt <eric@anholt.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Jason Cooper <jason@lakedaemon.net>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        linux-rpi-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org
-References: <20201210134648.272857-1-maxime@cerno.tech>
- <23bdb67a-fb55-42d4-9130-ade1b0396768@xs4all.nl>
- <20201217104946.srurfmuphqzz4c4w@gilmour>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <cc3e0adf-ba44-7593-40ec-3d2c1efcba02@xs4all.nl>
-Date:   Thu, 17 Dec 2020 11:53:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Thu, 17 Dec 2020 05:54:49 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34DCBC061794
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 02:54:09 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id o19so30597163lfo.1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 02:54:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=U2gdYWgfYq7/caNuHmA4slgJYp3VoGcO5t/XEQGLQQ0=;
+        b=Y0vnIunm2BtL/nDigBSGNBcw/P80MeXJ3EktmUtjqwbdQoeIMih/9ec50Y2mgdyVGb
+         YicrV8G2h8AV7KYlpscj68yN6nUzW0bmrl0gG0ZpUfAycLNiq46+sz0B8r1KAYx1PDq7
+         dw4YSLjL7JryxLo9VaWuFT+c+e6kqeKEUeiXQ/vTD6qRGPK+35YudpfKB0RIuykYkhIM
+         1r5hDiInL8OOBEMkGwmVjtF3UzBhSIeglXR/Yq6g8C/3CZj+I0mq939SwuzDEGrjza8W
+         ffCRQAIVjRM5g1L2nolpR+H5YxTTI6hKuFwtw3oUmloGhOGPHj/qJ9CL7h9enpMfNt+q
+         IMqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=U2gdYWgfYq7/caNuHmA4slgJYp3VoGcO5t/XEQGLQQ0=;
+        b=ZIKFEQ2JQQtQGnPtNi+u2EEGbQOyo+L7VODfu1itC/WHGn6YXxtidx5l8FCsCgVBb7
+         4iwEiCtCqfbOtOcfsWMuG4Z+SE83HBSVNLKAb38ate9MZywE4WL/FcOgtK8H1gdhWVvr
+         OIRRbafTIdqDDYHCk0P82A5iIj3vA+iLTUhvOT7/L8bHjtQCFEYQz802s+0gFW/0U6UI
+         D1yx0BHQWIST8W3GEQNO+CuSanjwbKHitKXYjeeH+Pd1Et4/4yIzzLFalDjr8zXNb5Ny
+         6v3ir7PbtL5ydVv7QlszPUOP6quR3pt2nqzvSi/cOpdq/E3lM9/2BgHfHLTEL4EqoE2U
+         tXJQ==
+X-Gm-Message-State: AOAM531Ydy96+csall64opTL6Mugs74QYY80YBhx3AIw4dfXRNAGQSxI
+        Zn/MYVszGhXJJ5f6Y23RzvvKdQ==
+X-Google-Smtp-Source: ABdhPJw5YnXWpK4XOuli92QD7Gp3bI1r5jX1GrLIR/ZzJhjBrvbLIp9dNy4FbuDSBpMT+m8YLfK+2Q==
+X-Received: by 2002:a2e:918f:: with SMTP id f15mr8283125ljg.82.1608202447739;
+        Thu, 17 Dec 2020 02:54:07 -0800 (PST)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id j1sm545204lfg.225.2020.12.17.02.54.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Dec 2020 02:54:07 -0800 (PST)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 011E31033F4; Thu, 17 Dec 2020 13:54:09 +0300 (+03)
+Date:   Thu, 17 Dec 2020 13:54:09 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Android Kernel Team <kernel-team@android.com>
+Subject: Re: [PATCH 1/2] mm: Allow architectures to request 'old' entries
+ when prefaulting
+Message-ID: <20201217105409.2gacwgg7rco2ft3m@box>
+References: <20201209163950.8494-2-will@kernel.org>
+ <CAHk-=wgos=vgteG52=J=rVSeq6-Y2g2+Kn1=xV=wYjVzM6O9UQ@mail.gmail.com>
+ <20201209184049.GA8778@willie-the-truck>
+ <CAHk-=wgVqGh402dxfhR=bx2QSH=+4kq9doarNmD77baqDKdiUg@mail.gmail.com>
+ <20201210150828.4b7pg5lx666r7l2u@black.fi.intel.com>
+ <CAHk-=wiU8ktvak2hCj2TWJ6wMSwVsUSvi5Bjf4i1JGvpGmyUZw@mail.gmail.com>
+ <20201214160724.ewhjqoi32chheone@box>
+ <CAHk-=wi80Qp6nZC0yyewhnqvrmPx2h_yWvfq4A25ONb7z9BywQ@mail.gmail.com>
+ <20201216170703.o5lpsnjfmoj7f3ml@box>
+ <CAHk-=wiVRMADHC0qjTFAVx2Pp0DN-fT-VPC10boDdX0O4=h01w@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201217104946.srurfmuphqzz4c4w@gilmour>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfIUSp/ZairFgVbf4QlE3fdEYEV4fqOe2zUw/3ZnPt+PbqHMIVjwML22PZ0ehEIxEiDRgCRbI3Z9gyPtotlm4L1ty3yDx8CNhHeyD9tz5xBcogunQEVZ3
- 7QUVEXG1gfR60UqS9WtQEGxmI2phsxaXo+RB+/7k+yQLBqMSqKxkXQ+6rEm95z2svyJ0iWVc5tK+iZuR8fi7YJNowGE4qgAFi55M2fTPbBRZ0WOcVxM6WSEh
- ZfvFb9zijNpZ6OBk3kszh8GGnIVFA/L23YCqovIlf7JH1XcFFkKYuzBKOAnRB296vNsSaN7aUqtCEQ9Rxd/h+yeUFrYMrrGPkyBjDbWWmMC4CIQb72Kw0SCU
- 6bWg5WLbh5Kg/7ODMxkovOz7R5pKKxgdtJl047mtovQzrvr3vrN4nIsq2j58hNgRkX+vgBVC9mUcCempJgOBx2NJ1IlS1Owt2uqfQzdywIn4fYlzSdR0BV8C
- trHzufCjZJ9O/Jx9pElVWZr5DQ/BzPZvAdccURVuowZYpNvAx9CMqRADo7l2pYnPaqrh1sM3pmNsunEqshyVQVBVw0XWkbDfw8aEGC9cBuLsdDj3kfn16EGs
- T4EyR3NLREx09a+okgCXAhivE9Mov15vJCRx0hgvmDsZK/UNuV+zsHfCXBKRxRH8nAj3nvbJVxSiAr3QfSQ//rOWaxCAJOYEpMIdOLmQLHqKZkm+kduZBU/d
- QcXpDmmCJmlgV8vIl+xFJ+d+Ksz5IHST1OkD6t1LejGvDhtu3ZN8mOcuRR7q4fOtvPhbAKeW5OEDYX6g+5XWL+jyPJ8sgfb6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wiVRMADHC0qjTFAVx2Pp0DN-fT-VPC10boDdX0O4=h01w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/12/2020 11:49, Maxime Ripard wrote:
-> Hi Hans,
+On Wed, Dec 16, 2020 at 10:41:36AM -0800, Linus Torvalds wrote:
+> On Wed, Dec 16, 2020 at 9:07 AM Kirill A. Shutemov <kirill@shutemov.name> wrote:
+> >
+> > If this looks fine, I'll submit a proper patch.
 > 
-> On Wed, Dec 16, 2020 at 01:35:43PM +0100, Hans Verkuil wrote:
->> Hi Maxime,
->>
->> On 10/12/2020 14:46, Maxime Ripard wrote:
->>> Hi,
->>>
->>> Here's a series introducing the CEC support for the BCM2711 found on the
->>> RaspberryPi4.
->>>
->>> The BCM2711 HDMI controller uses a similar layout for the CEC registers, the
->>> main difference being that the interrupt handling part is now shared between
->>> both HDMI controllers.
->>>
->>> This series is mainly about fixing a couple of bugs, reworking the driver to
->>> support having two different interrupts, one for each direction, provided by an
->>> external irqchip, and enables the irqchip driver for the controller we have.
->>>
->>> This has been tested on an RPi3 and RPi4, but requires the latest firmware.
->>> It's is based on the 10 and 12 bpc series.
->>
->> This series looks good to me. Before I give my Acked-by for this series, can you
->> confirm that it is possible to transmit the Image View On message on both outputs
->> of the RPi4 when the HPD is low?
->>
->> See section "CEC Without HPD" in https://hverkuil.home.xs4all.nl/cec-status.txt
->> on how to test this with a Pulse-Eight device.
->>
->> This should work.
+> That patch looks good to me.
 > 
-> This is the output on the RPi4:
-> 
-> # cec-ctl --playback
-> Driver Info:
-> 	Driver Name                : vc4_hdmi
-> 	Adapter Name               : vc4
-> 	Capabilities               : 0x0000010e
-> 		Logical Addresses
-> 		Transmit
-> 		Passthrough
-> 	Driver version             : 5.10.0
-> 	Available Logical Addresses: 1
-> 	Physical Address           : f.f.f.f
-> 	Logical Address Mask       : 0x0000
-> 	CEC Version                : 2.0
-> 	Vendor ID                  : 0x000c03 (HDMI)
-> 	OSD Name                   : Playback
-> 	Logical Addresses          : 1 (Allow RC Passthrough)
-> 
-> 	  Logical Address          : Not Allocated
-> 	    Primary Device Type    : Playback
-> 	    Logical Address Type   : Playback
-> 	    All Device Types       : Playback
-> 	    RC TV Profile          : None
-> 	    Device Features        :
-> 		None
-> 
-> # cec-ctl -t0 --image-view-on
-> Driver Info:
-> 	Driver Name                : vc4_hdmi
-> 	Adapter Name               : vc4
-> 	Capabilities               : 0x0000010e
-> 		Logical Addresses
-> 		Transmit
-> 		Passthrough
-> 	Driver version             : 5.10.0
-> 	Available Logical Addresses: 1
-> 	Physical Address           : f.f.f.f
-> 	Logical Address Mask       : 0x0000
-> 	CEC Version                : 2.0
-> 	Vendor ID                  : 0x000c03 (HDMI)
-> 	OSD Name                   : Playback
-> 	Logical Addresses          : 1 (Allow RC Passthrough)
-> 
-> 	  Logical Address          : Not Allocated
-> 	    Primary Device Type    : Playback
-> 	    Logical Address Type   : Playback
-> 	    All Device Types       : Playback
-> 	    RC TV Profile          : None
-> 	    Device Features        :
-> 		None
-> 
-> 
-> Transmit from Unregistered to TV (15 to 0):
-> CEC_MSG_IMAGE_VIEW_ON (0x04)
-> 	Sequence: 1 Tx Timestamp: 77.631s
-> 
-> 
-> And this is the output on my desktop with the Pulse-Eight:
-> $ sudo cec-ctl -p0.0.0.0 --tv
-> Driver Info:
-> 	Driver Name                : pulse8-cec
-> 	Adapter Name               : serio0
-> 	Capabilities               : 0x0000003f
-> 		Physical Address
-> 		Logical Addresses
-> 		Transmit
-> 		Passthrough
-> 		Remote Control Support
-> 		Monitor All
-> 	Driver version             : 5.9.8
-> 	Available Logical Addresses: 1
-> 	Connector Info             : None
-> 	Physical Address           : 0.0.0.0
-> 	Logical Address Mask       : 0x0001
-> 	CEC Version                : 2.0
-> 	Vendor ID                  : 0x000c03 (HDMI)
-> 	OSD Name                   : 'TV  '
-> 	Logical Addresses          : 1 (Allow RC Passthrough)
-> 
-> 	  Logical Address          : 0 (TV)
-> 	    Primary Device Type    : TV
-> 	    Logical Address Type   : TV
-> 	    All Device Types       : TV
-> 	    RC TV Profile          : None
-> 	    Device Features        :
-> 		None
-> 
-> $ sudo cec-ctl -M
-> Driver Info:
-> 	Driver Name                : pulse8-cec
-> 	Adapter Name               : serio0
-> 	Capabilities               : 0x0000003f
-> 		Physical Address
-> 		Logical Addresses
-> 		Transmit
-> 		Passthrough
-> 		Remote Control Support
-> 		Monitor All
-> 	Driver version             : 5.9.8
-> 	Available Logical Addresses: 1
-> 	Connector Info             : None
-> 	Physical Address           : 0.0.0.0
-> 	Logical Address Mask       : 0x0001
-> 	CEC Version                : 2.0
-> 	Vendor ID                  : 0x000c03 (HDMI)
-> 	OSD Name                   : 'TV  '
-> 	Logical Addresses          : 1 (Allow RC Passthrough)
-> 
-> 	  Logical Address          : 0 (TV)
-> 	    Primary Device Type    : TV
-> 	    Logical Address Type   : TV
-> 	    All Device Types       : TV
-> 	    RC TV Profile          : None
-> 	    Device Features        :
-> 		None
-> 
-> 
-> 
-> Initial Event: State Change: PA: 0.0.0.0, LA mask: 0x0001, Conn Info: no
-> Received from Unregistered to TV (15 to 0): IMAGE_VIEW_ON (0x04)
-> 
-> So it looks like it's working as expected?
+> It would be good if somebody else looked it through - maybe I like it
+> just because I got to pee in the snow and make my mark. But i think
+> that filemap_map_pages() now looks a lot more understandable, and
+> having that pte_offset_map_lock() outside the loop should be good.
 
-Yes, it looks good. Make sure you test this for both outputs of the RPi4. If it
-works for both, then you can add my
+It worth noting that after the change in the worth case scenario we will
+have additional ref/unref and lock/unlock of the page if we get deep
+enough into filemap_map_pmd(), but fail to map the page.
 
-Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Also if the range doesn't have a mappable page we would setup a page
+table into the PMD entry. It means we cannot have huge page mapped there
+later. It may be a bummer: getting the page table out of page table tree
+requires mmap_write_lock().
 
-for this series.
+We also take ptl for cold page cache. It may increase ptl contention, but
+it should be negligible with split-ptl.
 
-Very nice work, thank you for doing this!
-
-Regards,
-
-	Hans
-
-> 
-> Maxime
-> 
-
+-- 
+ Kirill A. Shutemov
