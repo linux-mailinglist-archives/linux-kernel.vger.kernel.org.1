@@ -2,216 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1756F2DDBEF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 00:38:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D19862DDBF3
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 00:42:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732190AbgLQXiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 18:38:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726789AbgLQXiJ (ORCPT
+        id S1732158AbgLQXk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 18:40:56 -0500
+Received: from out01.mta.xmission.com ([166.70.13.231]:60984 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727153AbgLQXk4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 18:38:09 -0500
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2BFBC061794;
-        Thu, 17 Dec 2020 15:37:28 -0800 (PST)
-Received: by mail-qt1-x82b.google.com with SMTP id a6so145518qtw.6;
-        Thu, 17 Dec 2020 15:37:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kD1MCPsoar6G9vdvcEBH5KP4RAgDclspZS+ZkNc4Ibw=;
-        b=vF1XpAg3XI4izQ9RMo3HIqPyUz+/ETJm89Xj86uC113NDLGEhaO0joAeBhgp1fZ3Du
-         rNVPb8S2hZecAOpE2YsGcafHsDWtyXjI01SgtBra1oQbjY6nDfBzzFMPhsidwZ9o1ZQm
-         kCVZSO1smvTI9+tYfEC9A3JGkmA5gHniIbefKqv0Qo6LHVB2znzwx/Aob970XlUClcce
-         /HLH2bnFpNFIx8Z4ovAIU30r/uGnZ266YC+rScWuKg5Qm2pquEW7PU0fvvLuTcJ/AFmC
-         hAco2pfmL97oiHf1D9kgKxKxF2PMv5d2F3sWwNgv7ERM2/r+TUGaUYfhN0ocCUUquNWk
-         TRWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kD1MCPsoar6G9vdvcEBH5KP4RAgDclspZS+ZkNc4Ibw=;
-        b=pTONdIMn81O6o89g3/12xl//LNOD9NvFYDOkDmci6hqqzRCV2oREWHidDX+x+bSe69
-         d7Q0KbU83HmYjTufKFoN1soylD5j8zwJV0zZSaJCCK+E8XNUByLgmpE3sVMfVtC8XQ2L
-         Zyjx/7qn8agq68oAPQqpK3I/MebU4X18S56z+qVIg5w5wSHejtsjLGTndG6Kjxlf6H3x
-         UfCoCI2Hz4jEbjhq31ENYaFVJKp7hA6Xq5n14tiaCaY8gzD7Ib1uWEKVUCecJJgbwVHc
-         CUVHdmomO6G9KAQ9NuVbNdfCvO41EY4zs6+jhuqX+WzfXnM4bQXK+LYuTylMUx/C3WLb
-         nmPQ==
-X-Gm-Message-State: AOAM532bl4kBEaG45DninfPPXprJ7Xgy5xtZ/PnjjVGra7Fcv8HFA/Qb
-        OuCg2uL98HaUbiCUXeWnaGI//qyhzrmSbsAtIyw=
-X-Google-Smtp-Source: ABdhPJxTAw/uYHDkTUNNqfptLLfb2aLcIaqUznoO4lkmP/y4u+xIxscOz0xMEGy3En40Zo/6ZZjRIsbVCe9ALFWfGks=
-X-Received: by 2002:ac8:4e47:: with SMTP id e7mr1374898qtw.262.1608248247634;
- Thu, 17 Dec 2020 15:37:27 -0800 (PST)
+        Thu, 17 Dec 2020 18:40:56 -0500
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kq2sY-0044T9-4e; Thu, 17 Dec 2020 16:40:14 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kq2sX-0005I7-4C; Thu, 17 Dec 2020 16:40:13 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Jan Kratochvil <jan.kratochvil@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Pedro Alves <palves@redhat.com>,
+        Simon Marchi <simon.marchi@efficios.com>,
+        linux-kernel@vger.kernel.org
+References: <20201217142931.GA8865@redhat.com>
+Date:   Thu, 17 Dec 2020 17:39:25 -0600
+In-Reply-To: <20201217142931.GA8865@redhat.com> (Oleg Nesterov's message of
+        "Thu, 17 Dec 2020 15:29:31 +0100")
+Message-ID: <875z50roia.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <CAA85sZsiuE9rN7uVCuhgiki-rffo4mYbh6BKvuGaJAK5CsPgKw@mail.gmail.com>
- <20201216232103.GA368161@bjorn-Precision-5520>
-In-Reply-To: <20201216232103.GA368161@bjorn-Precision-5520>
-From:   Ian Kumlien <ian.kumlien@gmail.com>
-Date:   Fri, 18 Dec 2020 00:37:16 +0100
-Message-ID: <CAA85sZtez59wrAr8AVdbaZWvkPhVeurcznQ0kbL3UVx2FqLJ7w@mail.gmail.com>
-Subject: Re: [PATCH 1/3] PCI/ASPM: Use the path max in L1 ASPM latency check
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
-        Puranjay Mohan <puranjay12@gmail.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-XM-SPF: eid=1kq2sX-0005I7-4C;;;mid=<875z50roia.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18qbH29e3tFi1eaHW9H8LdYmZDAzgCjEVU=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.7 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMSubLong,
+        XM_B_SpammyWords autolearn=disabled version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
+X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Oleg Nesterov <oleg@redhat.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 556 ms - load_scoreonly_sql: 0.02 (0.0%),
+        signal_user_changed: 4.2 (0.7%), b_tie_ro: 2.9 (0.5%), parse: 1.30
+        (0.2%), extract_message_metadata: 12 (2.2%), get_uri_detail_list: 4.2
+        (0.8%), tests_pri_-1000: 11 (1.9%), tests_pri_-950: 1.05 (0.2%),
+        tests_pri_-900: 0.79 (0.1%), tests_pri_-90: 102 (18.3%), check_bayes:
+        100 (18.0%), b_tokenize: 10 (1.7%), b_tok_get_all: 10 (1.8%),
+        b_comp_prob: 2.5 (0.5%), b_tok_touch_all: 75 (13.4%), b_finish: 0.77
+        (0.1%), tests_pri_0: 412 (74.0%), check_dkim_signature: 0.71 (0.1%),
+        check_dkim_adsp: 3.7 (0.7%), poll_dns_idle: 1.65 (0.3%), tests_pri_10:
+        2.6 (0.5%), tests_pri_500: 7 (1.3%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [RFC PATCH] ptrace: make ptrace() fail if the tracee changed its pid unexpectedly
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 12:21 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> On Wed, Dec 16, 2020 at 12:20:53PM +0100, Ian Kumlien wrote:
-> > On Wed, Dec 16, 2020 at 1:08 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > On Tue, Dec 15, 2020 at 02:09:12PM +0100, Ian Kumlien wrote:
-> > > > On Tue, Dec 15, 2020 at 1:40 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > > > On Mon, Dec 14, 2020 at 11:56:31PM +0100, Ian Kumlien wrote:
-> > > > > > On Mon, Dec 14, 2020 at 8:19 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > > >
-> > > > > > > If you're interested, you could probably unload the Realtek drivers,
-> > > > > > > remove the devices, and set the PCI_EXP_LNKCTL_LD (Link Disable) bit
-> > > > > > > in 02:04.0, e.g.,
-> > > > > > >
-> > > > > > >   # RT=/sys/devices/pci0000:00/0000:00:01.2/0000:01:00.0/0000:02:04.0
-> > > > > > >   # echo 1 > $RT/0000:04:00.0/remove
-> > > > > > >   # echo 1 > $RT/0000:04:00.1/remove
-> > > > > > >   # echo 1 > $RT/0000:04:00.2/remove
-> > > > > > >   # echo 1 > $RT/0000:04:00.4/remove
-> > > > > > >   # echo 1 > $RT/0000:04:00.7/remove
-> > > > > > >   # setpci -s02:04.0 CAP_EXP+0x10.w=0x0010
-> > > > > > >
-> > > > > > > That should take 04:00.x out of the picture.
-> > > > > >
-> > > > > > Didn't actually change the behaviour, I'm suspecting an errata for AMD pcie...
-> > > > > >
-> > > > > > So did this, with unpatched kernel:
-> > > > > > [ ID] Interval           Transfer     Bitrate         Retr  Cwnd
-> > > > > > [  5]   0.00-1.00   sec  4.56 MBytes  38.2 Mbits/sec    0   67.9 KBytes
-> > > > > > [  5]   1.00-2.00   sec  4.47 MBytes  37.5 Mbits/sec    0   96.2 KBytes
-> > > > > > [  5]   2.00-3.00   sec  4.85 MBytes  40.7 Mbits/sec    0   50.9 KBytes
-> > > > > > [  5]   3.00-4.00   sec  4.23 MBytes  35.4 Mbits/sec    0   70.7 KBytes
-> > > > > > [  5]   4.00-5.00   sec  4.23 MBytes  35.4 Mbits/sec    0   48.1 KBytes
-> > > > > > [  5]   5.00-6.00   sec  4.23 MBytes  35.4 Mbits/sec    0   45.2 KBytes
-> > > > > > [  5]   6.00-7.00   sec  4.23 MBytes  35.4 Mbits/sec    0   36.8 KBytes
-> > > > > > [  5]   7.00-8.00   sec  3.98 MBytes  33.4 Mbits/sec    0   36.8 KBytes
-> > > > > > [  5]   8.00-9.00   sec  4.23 MBytes  35.4 Mbits/sec    0   36.8 KBytes
-> > > > > > [  5]   9.00-10.00  sec  4.23 MBytes  35.4 Mbits/sec    0   48.1 KBytes
-> > > > > > - - - - - - - - - - - - - - - - - - - - - - - - -
-> > > > > > [ ID] Interval           Transfer     Bitrate         Retr
-> > > > > > [  5]   0.00-10.00  sec  43.2 MBytes  36.2 Mbits/sec    0             sender
-> > > > > > [  5]   0.00-10.00  sec  42.7 MBytes  35.8 Mbits/sec                  receiver
-> > > > > >
-> > > > > > and:
-> > > > > > echo 0 > /sys/devices/pci0000:00/0000:00:01.2/0000:01:00.0/link/l1_aspm
-> > > > >
-> > > > > BTW, thanks a lot for testing out the "l1_aspm" sysfs file.  I'm very
-> > > > > pleased that it seems to be working as intended.
-> > > >
-> > > > It was nice to find it for easy disabling :)
-> > > >
-> > > > > > and:
-> > > > > > [ ID] Interval           Transfer     Bitrate         Retr  Cwnd
-> > > > > > [  5]   0.00-1.00   sec   113 MBytes   951 Mbits/sec  153    772 KBytes
-> > > > > > [  5]   1.00-2.00   sec   109 MBytes   912 Mbits/sec  276    550 KBytes
-> > > > > > [  5]   2.00-3.00   sec   111 MBytes   933 Mbits/sec  123    625 KBytes
-> > > > > > [  5]   3.00-4.00   sec   111 MBytes   933 Mbits/sec   31    687 KBytes
-> > > > > > [  5]   4.00-5.00   sec   110 MBytes   923 Mbits/sec    0    679 KBytes
-> > > > > > [  5]   5.00-6.00   sec   110 MBytes   923 Mbits/sec  136    577 KBytes
-> > > > > > [  5]   6.00-7.00   sec   110 MBytes   923 Mbits/sec  214    645 KBytes
-> > > > > > [  5]   7.00-8.00   sec   110 MBytes   923 Mbits/sec   32    628 KBytes
-> > > > > > [  5]   8.00-9.00   sec   110 MBytes   923 Mbits/sec   81    537 KBytes
-> > > > > > [  5]   9.00-10.00  sec   110 MBytes   923 Mbits/sec   10    577 KBytes
-> > > > > > - - - - - - - - - - - - - - - - - - - - - - - - -
-> > > > > > [ ID] Interval           Transfer     Bitrate         Retr
-> > > > > > [  5]   0.00-10.00  sec  1.08 GBytes   927 Mbits/sec  1056             sender
-> > > > > > [  5]   0.00-10.00  sec  1.07 GBytes   923 Mbits/sec                  receiver
-> > > > > >
-> > > > > > But this only confirms that the fix i experience is a side effect.
-> > > > > >
-> > > > > > The original code is still wrong :)
-> > > > >
-> > > > > What exactly is this machine?  Brand, model, config?  Maybe you could
-> > > > > add this and a dmesg log to the buzilla?  It seems like other people
-> > > > > should be seeing the same problem, so I'm hoping to grub around on the
-> > > > > web to see if there are similar reports involving these devices.
-> > > >
-> > > > ASUS Pro WS X570-ACE with AMD Ryzen 9 3900X
-> > >
-> > > Possible similar issues:
-> > >
-> > >   https://forums.unraid.net/topic/94274-hardware-upgrade-woes/
-> > >   https://forums.servethehome.com/index.php?threads/upgraded-my-home-server-from-intel-to-amd-virtual-disk-stuck-in-degraded-unhealty-state.25535/ (Windows)
-> >
-> > Could be, I suspect that we need a workaround (is there a quirk for
-> > "reporting wrong latency"?) and the patches.
->
-> I don't think there's currently a quirk mechanism that would work for
-> correcting latencies, but there should be, and we could add one if we
-> can figure out for sure what's wrong.
->
-> I found this:
->
->   https://www.reddit.com/r/VFIO/comments/hgk3cz/x570_pcieclassic_pci_bridge_woes/
->
-> which looks like it should be the same hardware (if you can collect a
-> dmesg log or "lspci -nnvv" output we could tell for sure) and is
-> interesting because it includes some lspci output that shows different
-> L1 exit latencies than what you see.
+Oleg Nesterov <oleg@redhat.com> writes:
 
-I'll send both of them separately to you, no reason to push that to
-everyone i assume.. =)
-
-> > > > > https://bugzilla.kernel.org/show_bug.cgi?id=209725
-> > > > >
-> > > > > Here's one that is superficially similar:
-> > > > > https://linux-hardware.org/index.php?probe=e5f24075e5&log=lspci_all
-> > > > > in that it has a RP -- switch -- I211 path.  Interestingly, the switch
-> > > > > here advertises <64us L1 exit latency instead of the <32us latency
-> > > > > your switch advertises.  Of course, I can't tell if it's exactly the
-> > > > > same switch.
-> > > >
-> > > > Same chipset it seems
-> > > >
-> > > > I'm running bios version:
-> > > >         Version: 2206
-> > > >         Release Date: 08/13/2020
-> > > >
-> > > > ANd latest is:
-> > > > Version 3003
-> > > > 2020/12/07
-> > > >
-> > > > Will test upgrading that as well, but it could be that they report the
-> > > > incorrect latency of the switch - I don't know how many things AGESA
-> > > > changes but... It's been updated twice since my upgrade.
-> > >
-> > > I wouldn't be surprised if the advertised exit latencies are writable
-> > > by the BIOS because it probably depends on electrical characteristics
-> > > outside the switch.  If so, it's possible ASUS just screwed it up.
-> >
-> > Not surprisingly, nothing changed.
-> > (There was a lot of "stability improvements")
+> Suppose we have 2 threads, the group-leader L and a sub-theread T,
+> both parked in ptrace_stop(). Debugger tries to resume both threads
+> and does
 >
-> I wouldn't be totally surprised if ASUS didn't test that I211 NIC
-> under Linux, but I'm sure it must work well under Windows.  If you
-> happen to have Windows, a free trial version of AIDA64 should be able
-> to give us the equivalent of "lspci -vv".
+> 	ptrace(PTRACE_CONT, T);
+> 	ptrace(PTRACE_CONT, L);
+>
+> If the sub-thread T execs in between, the 2nd PTRACE_CONT doesn not
+> resume the old leader L, it resumes the post-exec thread T which was
+> actually now stopped in PTHREAD_EVENT_EXEC. In this case the
+> PTHREAD_EVENT_EXEC event is lost, and the tracer can't know that the
+> tracee changed its pid.
 
-I don't have windows, haven't had windows at home since '98 ;)
+The change seems sensible.  I don't expect this is common but it looks
+painful to deal with if it happens.
 
-I'll check with some friends that dualboot om systems that might be
-similar - will see what i can get
+Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
 
+I am wondering if this should be expanded to all ptrace types for
+consistency.  Or maybe we should set a flag to make this happen for
+all ptrace events.
 
-> Bjorn
+It just seems really odd to only worry about missing this event.
+I admit this a threaded PTRACE_EVENT_EXEC is the only event we are
+likely to miss but still.
+
+Do you by any chance have any debugger/strace test cases?
+
+I would think that would be the way to test to see if this breaks
+anything.  I think I remember strace having a good test suite.
+
+> This patch makes ptrace() fail in this case until debugger does wait()
+> and consumes PTHREAD_EVENT_EXEC which reports old_pid. This affects all
+> ptrace requests except the "asynchronous" PTRACE_INTERRUPT/KILL.
+>
+> The patch doesn't add the new PTRACE_ option to not complicate the API,
+> and I _hope_ this won't cause any noticeable regression:
+>
+> 	- If debugger uses PTRACE_O_TRACEEXEC and the thread did an exec
+> 	  and the tracer does a ptrace request without having consumed
+> 	  the exec event, it's 100% sure that the thread the ptracer
+> 	  thinks it is targeting does not exist anymore, or isn't the
+> 	  same as the one it thinks it is targeting.
+>
+> 	- To some degree this patch adds nothing new. In the scenario
+> 	  above ptrace(L) can fail with -ESRCH if it is called after the
+> 	  execing sub-thread wakes the leader up and before it "steals"
+> 	  the leader's pid.
+>
+> Test-case:
+>
+> 	#include <stdio.h>
+> 	#include <unistd.h>
+> 	#include <signal.h>
+> 	#include <sys/ptrace.h>
+> 	#include <sys/wait.h>
+> 	#include <errno.h>
+> 	#include <pthread.h>
+> 	#include <assert.h>
+>
+> 	void *tf(void *arg)
+> 	{
+> 		execve("/usr/bin/true", NULL, NULL);
+> 		assert(0);
+>
+> 		return NULL;
+> 	}
+>
+> 	int main(void)
+> 	{
+> 		int leader = fork();
+> 		if (!leader) {
+> 			kill(getpid(), SIGSTOP);
+>
+> 			pthread_t th;
+> 			pthread_create(&th, NULL, tf, NULL);
+> 			for (;;)
+> 				pause();
+>
+> 			return 0;
+> 		}
+>
+> 		waitpid(leader, NULL, WSTOPPED);
+>
+> 		ptrace(PTRACE_SEIZE, leader, 0,
+> 				PTRACE_O_TRACECLONE | PTRACE_O_TRACEEXEC);
+> 		waitpid(leader, NULL, 0);
+>
+> 		ptrace(PTRACE_CONT, leader, 0,0);
+> 		waitpid(leader, NULL, 0);
+>
+> 		int status, thread = waitpid(-1, &status, 0);
+> 		assert(thread > 0 && thread != leader);
+> 		assert(status == 0x80137f);
+>
+> 		ptrace(PTRACE_CONT, thread, 0,0);
+> 		/*
+> 		 * waitid() because waitpid(leader, &status, WNOWAIT) does not
+> 		 * report status. Why ????
+> 		 *
+> 		 * Why WEXITED? because we have another kernel problem connected
+> 		 * to mt-exec.
+> 		 */
+> 		siginfo_t info;
+> 		assert(waitid(P_PID, leader, &info, WSTOPPED|WEXITED|WNOWAIT) == 0);
+> 		assert(info.si_pid == leader && info.si_status == 0x0405);
+>
+> 		/* OK, it sleeps in ptrace(PTRACE_EVENT_EXEC == 0x04) */
+> 		assert(ptrace(PTRACE_CONT, leader, 0,0) == -1);
+> 		assert(errno == ESRCH);
+>
+> 		assert(leader == waitpid(leader, &status, WNOHANG));
+> 		assert(status == 0x04057f);
+>
+> 		assert(ptrace(PTRACE_CONT, leader, 0,0) == 0);
+>
+> 		return 0;
+> 	}
+>
+> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+> ---
+>  kernel/ptrace.c | 24 +++++++++++++++++++++++-
+>  1 file changed, 23 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+> index 43d6179508d6..1037251ae4a5 100644
+> --- a/kernel/ptrace.c
+> +++ b/kernel/ptrace.c
+> @@ -169,6 +169,27 @@ void __ptrace_unlink(struct task_struct *child)
+>  	spin_unlock(&child->sighand->siglock);
+>  }
+>  
+> +static bool looks_like_a_spurious_pid(struct task_struct *task)
+> +{
+> +	int pid;
+> +
+> +	if (task->exit_code != ((PTRACE_EVENT_EXEC << 8) | SIGTRAP))
+> +		return false;
+> +
+> +	rcu_read_lock();
+> +	pid = task_pid_nr_ns(task, task_active_pid_ns(task->parent));
+> +	rcu_read_unlock();
+> +
+> +	if (pid == task->ptrace_message)
+> +		return false;
+> +	/*
+> +	 * The tracee changed its pid but the PTRACE_EVENT_EXEC event
+> +	 * was not wait()'ed, most probably debugger targets the old
+> +	 * leader which was destroyed in de_thread().
+> +	 */
+> +	return true;
+> +}
+> +
+>  /* Ensure that nothing can wake it up, even SIGKILL */
+>  static bool ptrace_freeze_traced(struct task_struct *task)
+>  {
+> @@ -179,7 +200,8 @@ static bool ptrace_freeze_traced(struct task_struct *task)
+>  		return ret;
+>  
+>  	spin_lock_irq(&task->sighand->siglock);
+> -	if (task_is_traced(task) && !__fatal_signal_pending(task)) {
+> +	if (task_is_traced(task) && !looks_like_a_spurious_pid(task) &&
+> +	    !__fatal_signal_pending(task)) {
+>  		task->state = __TASK_TRACED;
+>  		ret = true;
+>  	}
+
+Eric
