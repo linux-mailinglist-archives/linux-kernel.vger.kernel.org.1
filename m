@@ -2,167 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33C7F2DD44A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:37:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADC612DD453
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 16:40:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728326AbgLQPgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 10:36:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726773AbgLQPgC (ORCPT
+        id S1728122AbgLQPjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 10:39:11 -0500
+Received: from www381.your-server.de ([78.46.137.84]:42322 "EHLO
+        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726291AbgLQPjL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 10:36:02 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B3E9C06138C
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 07:35:22 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id v1so3842753pjr.2
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 07:35:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=cF1lpVOfX+qqIliOA4fJEolSXJPbWdzTY82HZk7M6Ss=;
-        b=jmCoo2KfKiXBFPZ5Pu4hTHY3iB5JmJdEW2xDg11/qL0XDN1JfsdN7XyC2j8sEoH95y
-         GFMTYGr0oCS+l4J4pMyQxd8aZ/F75Twiay44FOIBLAxCIaB28JlAUo9Ib+wLBPNGhIB5
-         JZos5e7Irlc2WYQAdv2N/x8jYTVEVdXO+q3lEFoIwQJafSWpP75RiwxCcuG16exsWsl1
-         /xaldJycza+FyblXi0w7S8BUo7Flvd3XJQ13gxiBJ6wf0KNWX2NhU00LCXp3C5ufBfWG
-         twR6w2w9HVJM956l2GZbRuU5Uhi+JmF4wOm7e79KWTwg3krAg7CO6ep+OzxKH/X27pcp
-         D66A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=cF1lpVOfX+qqIliOA4fJEolSXJPbWdzTY82HZk7M6Ss=;
-        b=dktlKzKOytUjd9cNMp3I4DnVb/LUNqlI7bb/cfik7Q+kB4xW/ij0AYYno1GamiQ0nr
-         nXQ7ghYpNx1wI7+SUjz4E4rmkTHftm/WmyNPKvATzgrutqeOZlMHat7JCOXUlO5f64ke
-         f5I8SdeSor1CPxHxkkhEQLLvJgjR8u44aX0Ogar+cUXbTgWb+Q+Aw2W/37/QZNEnv22d
-         IuaFeP5eGoADtkTm3/KH0tCz31gzphOHShp6fn3ak8Mp6YAbu91XWAmDyScvfWN9ZeBI
-         bpSauizyDeySQ8sDSFH3AQxEMy9QlNHXXSA+zQAi87Nh8x1YPPG9UFk7XfbREc2f9Ftg
-         g+9w==
-X-Gm-Message-State: AOAM530VD6nx4Cc3+MKFnaZnsSDii2/7X1NDawo7NYQzi5GJcmfzFuBB
-        qixNtOiFQrTTPAwrAJr2Ue3X8w==
-X-Google-Smtp-Source: ABdhPJxqYT8PU/t0P9GGyShWjJrS4X7K4WGiEwYmQMQu9GEUzGcTkb4Xv4/Y1sZVsWotkJYwFWmFsw==
-X-Received: by 2002:a17:902:64:b029:da:a9cf:4065 with SMTP id 91-20020a1709020064b02900daa9cf4065mr36533471pla.26.1608219321514;
-        Thu, 17 Dec 2020 07:35:21 -0800 (PST)
-Received: from ?IPv6:2601:646:c200:1ef2:9dc1:d988:a568:787a? ([2601:646:c200:1ef2:9dc1:d988:a568:787a])
-        by smtp.gmail.com with ESMTPSA id r123sm6059458pfr.68.2020.12.17.07.35.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Dec 2020 07:35:20 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH V3.1] entry: Pass irqentry_state_t by reference
-Date:   Thu, 17 Dec 2020 07:35:18 -0800
-Message-Id: <24F5DC49-1FB3-42CF-8323-B0B39D936F7F@amacapital.net>
-References: <20201217131924.GW3040@hirez.programming.kicks-ass.net>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Weiny Ira <ira.weiny@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-In-Reply-To: <20201217131924.GW3040@hirez.programming.kicks-ass.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-X-Mailer: iPhone Mail (18B121)
+        Thu, 17 Dec 2020 10:39:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
+         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=y7d7zmNBQjtcQn+6PwWL2fufKcxV2hcFWsNHT3w68OE=; b=XmTNJs+/28EyPwFcRV/h+lu5sr
+        ThGpyC647Cxbwv51m0rwAiMixd3aie9hUB0Gw/AkcvBEuf6PysybElZpvHKaxOBdJ9xf+9Us0k3IS
+        seYLgIhfqou0FdY1XC7jqsUqvSzyZMWTo3eMDvS+VkerJtWBM9FB1gVj2EDJQTNU+y+2cO0Q9KUsB
+        vcDHIuiia/49ztdigE6MsRjHuzt2qe9jD1pvxWJ+PvtIOlSsGlM8OnRGtTfO9PsuLVaJ/TfH5TF2s
+        /fan+YQtTn7T0HwPA/VUdTtZHibHQBVhJNjQj791NUN9Fg+7lb0hJoTkiGnGlwGVbFwJfVLFvhNn3
+        y5mHd/3A==;
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <lars@metafoo.de>)
+        id 1kpvMG-0006mU-8D; Thu, 17 Dec 2020 16:38:24 +0100
+Received: from [62.216.202.54] (helo=[192.168.178.20])
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <lars@metafoo.de>)
+        id 1kpvMG-000SiN-1k; Thu, 17 Dec 2020 16:38:24 +0100
+Subject: Re: [PATCH v1 ] ALSA: core: memalloc: add page alignment for iram
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     alsa-devel@alsa-project.org, gustavoars@kernel.org,
+        linux-kernel@vger.kernel.org, shengjiu.wang@nxp.com,
+        tiwai@suse.com, pierre-louis.bossart@linux.intel.com,
+        xiang@kernel.org, Robin Gong <yibin.gong@nxp.com>,
+        akpm@linux-foundation.org
+References: <1608221747-3474-1-git-send-email-yibin.gong@nxp.com>
+ <05c824e5-0c33-4182-26fa-b116a42b10d6@metafoo.de>
+ <s5h5z50n4dd.wl-tiwai@suse.de>
+ <70074f62-954a-9b40-ab4a-cb438925060c@metafoo.de>
+ <s5hmtyclmig.wl-tiwai@suse.de>
+ <8e103a2b-1097-6d54-7266-34743321efac@metafoo.de>
+ <s5hwnxgjysq.wl-tiwai@suse.de>
+ <1fc18b56-effa-9dbc-8263-00c632e163e7@metafoo.de>
+ <s5hmtycjwam.wl-tiwai@suse.de>
+From:   Lars-Peter Clausen <lars@metafoo.de>
+Message-ID: <98fd6adb-5bae-56ce-c52b-f778f92f6a2d@metafoo.de>
+Date:   Thu, 17 Dec 2020 16:38:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
+MIME-Version: 1.0
+In-Reply-To: <s5hmtycjwam.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26020/Thu Dec 17 15:34:34 2020)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 12/17/20 4:18 PM, Takashi Iwai wrote:
+> On Thu, 17 Dec 2020 15:57:02 +0100,
+> Lars-Peter Clausen wrote:
+>> On 12/17/20 3:24 PM, Takashi Iwai wrote:
+>>> On Thu, 17 Dec 2020 14:16:48 +0100,
+>>> Lars-Peter Clausen wrote:
+>>>> On 12/17/20 12:06 PM, Takashi Iwai wrote:
+>>>>> On Thu, 17 Dec 2020 11:59:23 +0100,
+>>>>> Lars-Peter Clausen wrote:
+>>>>>> On 12/17/20 10:55 AM, Takashi Iwai wrote:
+>>>>>>> On Thu, 17 Dec 2020 10:43:45 +0100,
+>>>>>>> Lars-Peter Clausen wrote:
+>>>>>>>> On 12/17/20 5:15 PM, Robin Gong wrote:
+>>>>>>>>> Since mmap for userspace is based on page alignment, add page alignment
+>>>>>>>>> for iram alloc from pool, otherwise, some good data located in the same
+>>>>>>>>> page of dmab->area maybe touched wrongly by userspace like pulseaudio.
+>>>>>>>>>
+>>>>>>>> I wonder, do we also have to align size to be a multiple of PAGE_SIZE
+>>>>>>>> to avoid leaking unrelated data?
+>>>>>>> Hm, a good question.  Basically the PCM buffer size itself shouldn't
+>>>>>>> be influenced by that (i.e. no hw-constraint or such is needed), but
+>>>>>>> the padding should be cleared indeed.  I somehow left those to the
+>>>>>>> allocator side, but maybe it's safer to clear the whole buffer in
+>>>>>>> sound/core/memalloc.c commonly.
+>>>>>> What I meant was that most of the APIs that we use to allocate memory
+>>>>>> work on a PAGE_SIZE granularity. I.e. if you request a buffer that
+>>>>>> where the size is not a multiple of PAGE_SIZE internally they will
+>>>>>> still allocate a buffer that is a multiple of PAGE_SIZE and mark the
+>>>>>> unused bytes as reserved.
+>>>>>>
+>>>>>> But I believe that is not the case gen_pool_dma_alloc(). It will
+>>>>>> happily allocate those extra bytes to some other allocation request.
+>>>>>>
+>>>>>> That we need to zero out the reserved bytes even for those other APIs
+>>>>>> is a very good additional point!
+>>>>>>
+>>>>>> I looked at this a few years ago and I'm pretty sure that we cleared
+>>>>>> out the allocated area, but I can't find that anymore in the current
+>>>>>> code. Which is not so great I guess.
+>>>>> IIRC, we used GFP_ZERO in the past for the normal page allocations,
+>>>>> but this was dropped as it's no longer supported or so.
+>>>>>
+>>>>> Also, we clear out the PCM buffer in hw_params call, but this is for
+>>>>> the requested size, not the actual allocated size, hence the padding
+>>>>> bytes will remain uncleared.
+>>>> Ah! That memset() in hw_params is new.
+>>>>> So I believe it's safer to add an extra memset() like my test patch.
+>>>> Yea, we definitely want that.
+>>>>
+>>>> Do we care about leaking audio samples from a previous
+>>>> application. I.e. application 'A' allocates a buffer plays back some
+>>>> data and then closes the device again. Application 'B' then opens the
+>>>> same audio devices allocates a slightly smaller buffer, so that it
+>>>> still uses the same number of pages. The buffer from the previous
+>>>> allocation get reused, but the remainder of the last page wont get
+>>>> cleared in hw_params().
+>>> That's true.  On the second though, it might be better to extend that
+>>> memset() in hw_params to assure clearing the whole allocated buffer.
+>>> We can check runtime->dma_buffer_p->bytes for the actual size.
+>>>
+>>> Also, in the PCM memory allocator, we make sure that the allocation is
+>>> performed for page size.
+>>>
+>>>
+>>> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+>>> index 47b155a49226..6aabad070abf 100644
+>>> --- a/sound/core/pcm_native.c
+>>> +++ b/sound/core/pcm_native.c
+>>> @@ -755,8 +755,15 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
+>>>    		runtime->boundary *= 2;
+>>>      	/* clear the buffer for avoiding possible kernel info leaks */
+>>> -	if (runtime->dma_area && !substream->ops->copy_user)
+>>> -		memset(runtime->dma_area, 0, runtime->dma_bytes);
+>>> +	if (runtime->dma_area && !substream->ops->copy_user) {
+>>> +		size_t size;
+>>> +
+>>> +		if (runtime->dma_buffer_p)
+>>> +			size = runtime->dma_buffer_p->bytes;
+>>> +		else
+>>> +			size = runtime->dma_bytes;
+>> I'm not sure.
+>>
+>> Not all drivers use snd_pcm_lib_malloc_pages() and
+>> runtime->dma_buffer_p->bytes might not be a multiple of PAGE_SIZE.
+> The runtime->dma_buffer_p->bytes is assured to be page-aligned by the
+> change in pcm_memory.c in this patch.  But it's true that non-standard
+> allocations won't cover the whole pages...
+>
+>> On the other hand if it is mmap-able, the underlying buffer must be a
+>> multiple of PAGE_SIZE. So a simple memset(..., PAGE_ALIGN(size))
+>> should work.
+>>
+>> But we'd risk breaking drivers that do not reserve the remainder of
+>> the page and use it for something else.
+>>
+>> Maybe what we need is a check that runtime->dma_area is page aligned
+>> and runtime->dma_bytes is a multiple of PAGE_SIZE. With a warning at
+>> first and then turn this into a error a year later or so.
+> OK, how about the following instead?
+> Just check SNDRV_PCM_INFO_MMAP in runtime->info; if this is set, the
+> buffer size must be aligned with the page size, and we are safe to
+> extend the size to clear.
+>
+> So the revised fix is much simpler, something like below.
 
-> On Dec 17, 2020, at 5:19 AM, Peter Zijlstra <peterz@infradead.org> wrote:
->=20
-> =EF=BB=BFOn Thu, Dec 17, 2020 at 02:07:01PM +0100, Thomas Gleixner wrote:
->>> On Fri, Dec 11 2020 at 14:14, Andy Lutomirski wrote:
->>>> On Mon, Nov 23, 2020 at 10:10 PM <ira.weiny@intel.com> wrote:
->>> After contemplating this for a bit, I think this isn't really the
->>> right approach.  It *works*, but we've mostly just created a bit of an
->>> unfortunate situation.  Our stack, on a (possibly nested) entry looks
->>> like:
->>>=20
->>> previous frame (or empty if we came from usermode)
->>> ---
->>> SS
->>> RSP
->>> FLAGS
->>> CS
->>> RIP
->>> rest of pt_regs
->>>=20
->>> C frame
->>>=20
->>> irqentry_state_t (maybe -- the compiler is within its rights to play
->>> almost arbitrary games here)
->>>=20
->>> more C stuff
->>>=20
->>> So what we've accomplished is having two distinct arch register
->>> regions, one called pt_regs and the other stuck in irqentry_state_t.
->>> This is annoying because it means that, if we want to access this
->>> thing without passing a pointer around or access it at all from outer
->>> frames, we need to do something terrible with the unwinder, and we
->>> don't want to go there.
->>>=20
->>> So I propose a somewhat different solution: lay out the stack like this.=
+I think this will work for the leaking data issue.
 
->>>=20
->>> SS
->>> RSP
->>> FLAGS
->>> CS
->>> RIP
->>> rest of pt_regs
->>> PKS
->>> ^^^^^^^^ extended_pt_regs points here
->>>=20
->>> C frame
->>> more C stuff
->>> ...
->>>=20
->>> IOW we have:
->>>=20
->>> struct extended_pt_regs {
->>>  bool rcu_whatever;
->>>  other generic fields here;
->>>  struct arch_extended_pt_regs arch_regs;
->>>  struct pt_regs regs;
->>> };
->>>=20
->>> and arch_extended_pt_regs has unsigned long pks;
->>>=20
->>> and instead of passing a pointer to irqentry_state_t to the generic
->>> entry/exit code, we just pass a pt_regs pointer.
->>=20
->> While I agree vs. PKS which is architecture specific state and needed in
->> other places e.g. #PF, I'm not convinced that sticking the existing
->> state into the same area buys us anything more than an indirect access.
->>=20
->> Peter?
->=20
-> Agreed; that immediately solves the confusion Ira had as well. While
-> extending pt_regs sounds scary, I think we've isolated our pt_regs
-> implementation from actual ABI pretty well, but of course, that would
-> need an audit. We don't want to leak this into signals for example.
->=20
+But it will not help with the original issue that 
+gen_pool_dma_alloc_align() does not reserve the remainder of the page 
+and could give it out to other allocations. We'd need a separate patch 
+for that.
 
-I=E2=80=99m okay with this.
+>
+>
+> thanks,
+>
+> Takashi
+>
+> ---
+> --- a/sound/core/pcm_native.c
+> +++ b/sound/core/pcm_native.c
+> @@ -755,8 +755,13 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
+>   		runtime->boundary *= 2;
+>   
+>   	/* clear the buffer for avoiding possible kernel info leaks */
+> -	if (runtime->dma_area && !substream->ops->copy_user)
+> -		memset(runtime->dma_area, 0, runtime->dma_bytes);
+> +	if (runtime->dma_area && !substream->ops->copy_user) {
+> +		size_t size = runtime->dma_bytes;
+> +
+> +		if (runtime->info & SNDRV_PCM_INFO_MMAP)
+> +			size = PAGE_ALIGN(size);
+> +		memset(runtime->dma_area, 0, size);
+> +	}
+>   
+>   	snd_pcm_timer_resolution_change(substream);
+>   	snd_pcm_set_state(substream, SNDRV_PCM_STATE_SETUP);
 
-My suggestion for having an extended pt_regs that contains pt_regs is to kee=
-p extensions like this invisible to unsuspecting parts of the kernel. In par=
-ticular, BPF seems to pass around struct pt_regs *, and I don=E2=80=99t know=
- what the implications of effectively offsetting all the registers relative t=
-o the pointer would be.
 
-Anything that actually broke the signal regs ABI should be noticed by the x8=
-6 selftests =E2=80=94 the tests read and write registers through ucontext.
-
->=20
