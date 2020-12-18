@@ -2,119 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0FB2DEA87
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 21:53:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2C6E2DEA8D
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 21:56:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725924AbgLRUxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 15:53:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725775AbgLRUxE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 15:53:04 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EAFFC0617A7;
-        Fri, 18 Dec 2020 12:52:24 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id jx16so5096153ejb.10;
-        Fri, 18 Dec 2020 12:52:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+8c1rIvZTzQ8Bs3HQBKl/eE71ZRjG3qZxpWx6FA9GKo=;
-        b=PoNzKMOoSgQCx5msjP2UYyPa7AZ6EsUmMu1WdNvaTlRosmAuYsSUbYKQ35ZL0W7waT
-         rnSnf/78EwTQdDeMtTPTcxu+j+i2U78rOMrs6EO+KhDVPegXPQqmkL5onRfL9f+kZEa+
-         ZO7RtXQxdU66Zo1xFcWqOa7M+V47HN7qd3Wk9DdBmfmfsP4b0neH4T0g8MPs3qvLWxq0
-         5tYp2Cc2rLu2Vo7ky+QE4UPtW5z3K6TDYWRLsFYC9+ouaMClKYfeWBRT+DpwYqJ5sRkR
-         rfS8Sj5dOUApt995alfwf53QAOBP2ET9akheRZTnRDtvCPcOajCnNhhrdmUiEPhcMw4G
-         Omlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+8c1rIvZTzQ8Bs3HQBKl/eE71ZRjG3qZxpWx6FA9GKo=;
-        b=qs2v5F/IKFbNqHbRDfL9lhPeC8uebULairR8tLAsfHKhcd3VU/9SdSb2kVpJnWOG16
-         rvJFSz8i0RrDr7q+F5MWEWbSKPTJyysZGYWR5rcLAUdkUiQ6Q7Z0WzgZU6LNP3MAuReV
-         2oT39yTuha4Tlwj9Qzj7V+KihA2+RxBBxyEFGffxFg/4AwJcoc7EsCniBxYEJ0COUZ1Y
-         vginu0Ei7/eMaZ3vP74jkUS5BBxv5Hc4nhWcaVANMXNI/o9DIY1kfytpGJ7xe9bpqlis
-         MTJu18pKHyJ6SvI+BXUeuvMmgVXnodVomwVirJFQlpvCCJmmXKNBODyI27KliAAR6DmE
-         JfnQ==
-X-Gm-Message-State: AOAM530qn4Vj7kNV3ukftKqUujzLww+aqZq7uSK/FuFte3NNilSefcxk
-        Usi7cOndpIACcEKkoSiYQ5M=
-X-Google-Smtp-Source: ABdhPJxKpmw2JIjGGJF5hBqwImpSO+0Fk2j4us96ccbT7QWDarWxpHRL7BNxU6Yqj6LBRwi6MPaE4g==
-X-Received: by 2002:a17:906:3b8b:: with SMTP id u11mr5701651ejf.489.1608324742967;
-        Fri, 18 Dec 2020 12:52:22 -0800 (PST)
-Received: from skbuf ([188.25.2.120])
-        by smtp.gmail.com with ESMTPSA id h12sm5770441eja.113.2020.12.18.12.52.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Dec 2020 12:52:22 -0800 (PST)
-Date:   Fri, 18 Dec 2020 22:52:20 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     netdev@vger.kernel.org, andrew@lunn.ch,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Murali Krishna Policharla <murali.policharla@broadcom.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "open list:BROADCOM SYSTEMPORT ETHERNET DRIVER" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net] net: systemport: set dev->max_mtu to
- UMAC_MAX_MTU_SIZE
-Message-ID: <20201218205220.jb3kh7v23gtpymmx@skbuf>
-References: <20201218173843.141046-1-f.fainelli@gmail.com>
- <20201218202441.ppcxswvlix3xszsn@skbuf>
- <c178b5db-3de4-5f02-eee3-c9e69393174a@gmail.com>
+        id S1726065AbgLRUyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 15:54:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50644 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725808AbgLRUyg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 15:54:36 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6260D23B6C;
+        Fri, 18 Dec 2020 20:53:55 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kqMl7-002Ncg-Bq; Fri, 18 Dec 2020 20:53:53 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c178b5db-3de4-5f02-eee3-c9e69393174a@gmail.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 18 Dec 2020 20:53:53 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        tglx@linutronix.de
+Subject: Re: [irqchip: irq/irqchip-next] irqchip/bcm2836: Fix IPI
+ acknowledgement after conversion to handle_percpu_devid_irq
+In-Reply-To: <jhjo8iqsvgk.mognet@arm.com>
+References: <c9fb4ab3-a5cb-648c-6de3-c6a871e60870@roeck-us.net>
+ <160831684292.22759.15563002516530918910.tip-bot2@tip-bot2>
+ <jhjo8iqsvgk.mognet@arm.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <aad56a6f5af539b1dc39d3e75ef83bc3@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: valentin.schneider@arm.com, linux-kernel@vger.kernel.org, linux@roeck-us.net, tglx@linutronix.de
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 12:30:20PM -0800, Florian Fainelli wrote:
-> On 12/18/20 12:24 PM, Vladimir Oltean wrote:
-> > Hi Florian,
-> > 
-> > On Fri, Dec 18, 2020 at 09:38:43AM -0800, Florian Fainelli wrote:
-> >> The driver is already allocating receive buffers of 2KiB and the
-> >> Ethernet MAC is configured to accept frames up to UMAC_MAX_MTU_SIZE.
-> >>
-> >> Fixes: bfcb813203e6 ("net: dsa: configure the MTU for switch ports")
-> >> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> >> ---
-> >>  drivers/net/ethernet/broadcom/bcmsysport.c | 1 +
-> >>  1 file changed, 1 insertion(+)
-> >>
-> >> diff --git a/drivers/net/ethernet/broadcom/bcmsysport.c b/drivers/net/ethernet/broadcom/bcmsysport.c
-> >> index 0fdd19d99d99..b1ae9eb8f247 100644
-> >> --- a/drivers/net/ethernet/broadcom/bcmsysport.c
-> >> +++ b/drivers/net/ethernet/broadcom/bcmsysport.c
-> >> @@ -2577,6 +2577,7 @@ static int bcm_sysport_probe(struct platform_device *pdev)
-> >>  			 NETIF_F_HW_VLAN_CTAG_TX;
-> >>  	dev->hw_features |= dev->features;
-> >>  	dev->vlan_features |= dev->features;
-> >> +	dev->max_mtu = UMAC_MAX_MTU_SIZE;
-> >>  
-> >>  	/* Request the WOL interrupt and advertise suspend if available */
-> >>  	priv->wol_irq_disabled = 1;
-> >> -- 
-> >> 2.25.1
-> >>
-> > 
-> > Do you want to treat the SYSTEMPORT Lite differently?
-> > 
-> > 	/* Set maximum frame length */
-> > 	if (!priv->is_lite)
-> > 		umac_writel(priv, UMAC_MAX_MTU_SIZE, UMAC_MAX_FRAME_LEN);
-> > 	else
-> > 		gib_set_pad_extension(priv);
+On 2020-12-18 20:36, Valentin Schneider wrote:
+> On 18/12/20 18:40, irqchip-bot for Marc Zyngier wrote:
+>> The following commit has been merged into the irq/irqchip-next branch 
+>> of irqchip:
+>> 
+>> Commit-ID:     d7f39c40ebb6986e7371510d1c20a4efee4a7f0d
+>> Gitweb:        
+>> https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/d7f39c40ebb6986e7371510d1c20a4efee4a7f0d
+>> Author:        Marc Zyngier <maz@kernel.org>
+>> AuthorDate:    Fri, 18 Dec 2020 18:03:46
+>> Committer:     Marc Zyngier <maz@kernel.org>
+>> CommitterDate: Fri, 18 Dec 2020 18:34:17
+>> 
+>> irqchip/bcm2836: Fix IPI acknowledgement after conversion to 
+>> handle_percpu_devid_irq
+>> 
+>> It appears that despite its name, the bcm2836_arm_irqchip_ipi_eoi()
+>> callback is an acknowledgement, and not an EOI. This means that
+>> we lose IPIs that are made pending between the handling of the
+>> IPI and the write to LOCAL_MAILBOX0_CLR0. With the right timing,
+>> things fail nicely.
+>> 
+>> This used to work with handle_percpu_devid_fasteoi_ipi(), which
+>> started by eoi-ing the interrupt. With the standard fasteoi flow,
+>> this doesn't work anymore.
+>> 
+>> So let's use this callback for what it is, an ack. Your favourite
+>> RPi-2/3 is back up and running.
+>> 
 > 
-> SYSTEMPORT Lite does not actually validate the frame length, so setting
-> a maximum number to the buffer size we allocate could work, but I don't
-> see a reason to differentiate the two types of MACs here.
+> Thanks for cleaning up my mess!
 
-And if the Lite doesn't validate the frame length, then shouldn't it
-report a max_mtu equal to the max_mtu of the attached DSA switch, plus
-the Broadcom tag length? Doesn't the b53 driver support jumbo frames?
+Shared responsibilities... ;-)
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
