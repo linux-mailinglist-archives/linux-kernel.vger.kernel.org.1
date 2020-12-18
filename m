@@ -2,107 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 528DE2DEA2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 21:25:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60C222DEA2D
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 21:27:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730440AbgLRUZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 15:25:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729197AbgLRUZ0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 15:25:26 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E722FC0617A7;
-        Fri, 18 Dec 2020 12:24:45 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id 6so5034021ejz.5;
-        Fri, 18 Dec 2020 12:24:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KmZwA9sFuoGFH8swfww22Ud6VHWImiRk8xi92zAVi9U=;
-        b=I4Ht8DvArejZH85a2JfDifAruxalIdggu2ndzsYuTY420eELaLk20cfgW4A6hm0EXh
-         WiyvNeMeaJ7iu/fIW7gQqYFYZGFqz0Yw2he7SyVAVUAEPslkEguQydhGRjUI69kRXMoz
-         YdZ0NKcaqDgWZqI5P0mIPfWIeHq5LLSS+GBRvR89rXAhbslkBXzx7Au9P5YeSOggPOW9
-         WlyJvtI2AaB2ZdbUuvjAVFUCK5bxw8SsEODL/32BFq7dxLOBbYLx+pgasztjZpDT5WX+
-         rEJcMQB7zNcXbP1zKEcrdw39hSgzkaj5/IU74I3bKOMTcA+VTrwtT15iKSzeQJH8T48J
-         Z5KQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KmZwA9sFuoGFH8swfww22Ud6VHWImiRk8xi92zAVi9U=;
-        b=njMM2vnnlnBuPtBYG0w5aY29/OQbz9h4e1W8y7sQ0SyHyp7YaHN0ynjxKIcVWuxddZ
-         PKjFAlxabU/EmMoeUXXOI341cv6oVZbwH3dmhBFNv5m6PobKWWn6LFs38tYQoWurU7xx
-         c8nsuRDsmx2+h9zyUM76MLLOzD3Z0LB+6GbMFC9L4t0PMoB6yT4thivLOIk0cCM1PIxN
-         oEBwzQECoXPP4wiFQYGGxFfWKIwdqxY1IqM/ArMBdpNe6NCVq1StKatUuE6TTqTZWI9O
-         aJ4bJZyKIMU69bqFk2scuKHpAZ4T0DKrGauVmceAL97s5sV1MUfzBjcGHtpcdxT25i0o
-         nkLQ==
-X-Gm-Message-State: AOAM530UnXxeZz7I2RkKw/e1QPZVt3CIHfuiXlLfe5Klx/VV/JgigzGE
-        vy9QLSx/vYJ6F3MQ6QyWGJY=
-X-Google-Smtp-Source: ABdhPJw6Qo007oxxLzbqbBiYwjiHUFo5/XhdmeHlWxAQzkO92Ow/13FGm+UsjxBhsufZmIxHfmuWqA==
-X-Received: by 2002:a17:906:848:: with SMTP id f8mr5610550ejd.404.1608323083387;
-        Fri, 18 Dec 2020 12:24:43 -0800 (PST)
-Received: from skbuf ([188.25.2.120])
-        by smtp.gmail.com with ESMTPSA id e11sm25230016edj.44.2020.12.18.12.24.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Dec 2020 12:24:42 -0800 (PST)
-Date:   Fri, 18 Dec 2020 22:24:41 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     netdev@vger.kernel.org, andrew@lunn.ch,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Murali Krishna Policharla <murali.policharla@broadcom.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "open list:BROADCOM SYSTEMPORT ETHERNET DRIVER" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net] net: systemport: set dev->max_mtu to
- UMAC_MAX_MTU_SIZE
-Message-ID: <20201218202441.ppcxswvlix3xszsn@skbuf>
-References: <20201218173843.141046-1-f.fainelli@gmail.com>
+        id S1731607AbgLRU0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 15:26:03 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56878 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730516AbgLRU0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 15:26:02 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B7CB0AF5D;
+        Fri, 18 Dec 2020 20:25:20 +0000 (UTC)
+From:   NeilBrown <neilb@suse.de>
+To:     Jeffrey Layton <jlayton@kernel.org>,
+        Vivek Goyal <vgoyal@redhat.com>
+Date:   Sat, 19 Dec 2020 07:25:12 +1100
+Cc:     Jeff Layton <jlayton@kernel.org>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        amir73il@gmail.com, sargun@sargun.me, miklos@szeredi.hu,
+        willy@infradead.org, jack@suse.cz, neilb@suse.com,
+        viro@zeniv.linux.org.uk
+Subject: Re: [PATCH 3/3] overlayfs: Check writeback errors w.r.t upper in
+ ->syncfs()
+In-Reply-To: <20201218165551.GA1178523@tleilax.poochiereds.net>
+References: <20201216233149.39025-1-vgoyal@redhat.com>
+ <20201216233149.39025-4-vgoyal@redhat.com>
+ <20201217200856.GA707519@tleilax.poochiereds.net>
+ <20201218144418.GA3424@redhat.com>
+ <20201218150258.GA866424@tleilax.poochiereds.net>
+ <20201218162819.GC3424@redhat.com>
+ <20201218165551.GA1178523@tleilax.poochiereds.net>
+Message-ID: <87sg82n9p3.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201218173843.141046-1-f.fainelli@gmail.com>
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Florian,
+--=-=-=
+Content-Type: text/plain
 
-On Fri, Dec 18, 2020 at 09:38:43AM -0800, Florian Fainelli wrote:
-> The driver is already allocating receive buffers of 2KiB and the
-> Ethernet MAC is configured to accept frames up to UMAC_MAX_MTU_SIZE.
-> 
-> Fixes: bfcb813203e6 ("net: dsa: configure the MTU for switch ports")
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
->  drivers/net/ethernet/broadcom/bcmsysport.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/net/ethernet/broadcom/bcmsysport.c b/drivers/net/ethernet/broadcom/bcmsysport.c
-> index 0fdd19d99d99..b1ae9eb8f247 100644
-> --- a/drivers/net/ethernet/broadcom/bcmsysport.c
-> +++ b/drivers/net/ethernet/broadcom/bcmsysport.c
-> @@ -2577,6 +2577,7 @@ static int bcm_sysport_probe(struct platform_device *pdev)
->  			 NETIF_F_HW_VLAN_CTAG_TX;
->  	dev->hw_features |= dev->features;
->  	dev->vlan_features |= dev->features;
-> +	dev->max_mtu = UMAC_MAX_MTU_SIZE;
->  
->  	/* Request the WOL interrupt and advertise suspend if available */
->  	priv->wol_irq_disabled = 1;
-> -- 
-> 2.25.1
-> 
+On Fri, Dec 18 2020, Jeffrey Layton wrote:
+>
+> The patch we're discussing here _does_ add a f_op->syncfs, which is why
+> I was suggesting to do it that way.
 
-Do you want to treat the SYSTEMPORT Lite differently?
+I haven't thought through the issues to decide what I think of adding a
+new op, but I already know what I think of adding ->syncfs.  Don't Do
+It.  The name is much too easily confused with ->sync_fs.
 
-	/* Set maximum frame length */
-	if (!priv->is_lite)
-		umac_writel(priv, UMAC_MAX_MTU_SIZE, UMAC_MAX_FRAME_LEN);
-	else
-		gib_set_pad_extension(priv);
+If you call it ->sync_fs_return_error() it would be MUCH better.
+
+And having said that, the solution becomes obvious.  Add a new flag,
+either as another bit in 'int wait', or as a new bool.
+The new flag would be "return_error" - or whatever is appropriate.
+
+NeilBrown
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJBBAEBCAAsFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAl/dECgOHG5laWxiQHN1
+c2UuZGUACgkQOeye3VZigbk3ig/4iZJnVRvb8/0pwu2NgBVBzqiie5K8kJNvUzsU
+BBTsOxBahvwn2B3zMsI9IP3q77wAdVF8wbl8HihIjuGuFramVoMmkCH+t1vVHa35
+cHuB+xZEOEqGgSVWYC02Ci54z+ZxHi71JlbVfT3n7Zrj1VY+k9q/23ZzRPknQjTr
+NU1QA2ya8r1P006F5/hJ/3zLTneuMYJsRWT6AlvYabI+rv12TMcirBBQFhcfb3je
+Q+/3RPZW1avW+hlIoACeMA0PRxWASwLH04Wx1zrC85G3OSpC+uBFt254jL/R5EPF
+GBiGPmEaEALoJrlnSoJLBWysb50lyTUf94R/Gj2wqYA3fJ51YB1eZqm2yudaUPWY
+QfYoaO6KdyjbPOJjXXD2lznIyWKvKFtT1XR/yvuKwuNtnuX2001uhXFLCLGTDFO8
+ujbSBJkFlMGGvxfZ2FsqRUBNWgPaKHMUCgIeqiTVmSqPoVeaVn74Ru06ilIVbcTF
+1ULHPC7arfCNRTbl7siAaGPSiPGbco4asdgrJzGyFaOJhgmZZ16kC1jFqAwwYMrg
+1sfjpjkgyPWjYy+hAbkOMsp3O1s3jvzVc8Qu0YLd0HKEI2zL7b52MzkE2KH4i1WN
+hYD5QCUc1G1xzEMPwnMCC7Jdthypgzjg6J9TzbmtOlfWQFORuCOTEeHUzcx6Lsf0
+e/2rvw==
+=hNhL
+-----END PGP SIGNATURE-----
+--=-=-=--
