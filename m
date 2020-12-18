@@ -2,151 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D5492DE18C
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 11:55:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C6E02DE19A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 11:58:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389173AbgLRKwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 05:52:41 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38928 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389078AbgLRKwk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 05:52:40 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1608288713; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8MQYiPPFwOXe1yceAmnwSQFW51gmPEmADZJTW8S8zQI=;
-        b=p4Oy1M04f2z+5mTIDxeHlLDELqaylg9Gmjc2rKY/4RyCJDvjqifw7iPZAP3KOtOk3LWusj
-        XB3+Z9mwv9BWy78dBl7B2PWo//ZMnBQjrPCLemF0ObWjjZg0oXwVXiF+/7agKiHYhzni+P
-        wOtyf+ZVCSfPvvWFnhnAyi3ncPW8slA=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D0827ABC6;
-        Fri, 18 Dec 2020 10:51:53 +0000 (UTC)
-Date:   Fri, 18 Dec 2020 11:51:53 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Jacob Wen <jian.w.wen@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org
-Subject: Re: [PATCH] mm/vmscan: DRY cleanup for do_try_to_free_pages()
-Message-ID: <20201218105153.GX32193@dhcp22.suse.cz>
-References: <20201218102217.186836-1-jian.w.wen@oracle.com>
+        id S2389205AbgLRK53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 05:57:29 -0500
+Received: from mail-vi1eur05on2138.outbound.protection.outlook.com ([40.107.21.138]:28769
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727292AbgLRK52 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 05:57:28 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=At2VUy/dVrvYju09fgQa9h0LThugTQ9qkEO45mX/axY6I50CEx99wAFmNbp/2KlyX/orYJ7oEXcvimjtYuKA4OYW4UzK0kheBxGaSdNTSplhhYi+wQYmHIqkaUCMIAMwW7bsiHNZ01Y8Waf4I/0wMz45D04zzurfi8NzKVGWqedc2e6UkLCEsCmcgFrnkm4jqZXJxCztcBkjexi3RzZa+JUTqm9BUa/TQfbFeewzZ4xy3Fw6HD00AYJupGiPGHS/8aH7JskT7Ow0L67FFNrayg6JmKXtH8SzPcf0DzyITnWEOFXRn2C7Ab+iZtl8ZrX7wZuuFkFKBas2yWZiUKN/ww==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8V+XO1z13KPHg4JZFVlOmxZAuGjh8gUkGGSasnR70Ew=;
+ b=Fcohmh7AtIiqr10KXPtU5J0CdwnrTQl3mO2rKHiz33GfW1o/PmuY0ELiEv94AxeQ22GY+7X8580FyjPymRcMlCxHIvrO+wBc2t0fdYplP+TLDGAagUFsSJwMbWtREFLw5UAmwZatuUXBk52p13IXomSxmflw8RB6B+nJVsxVNhEKdE35q/64Q4D9CUTO9cTPZunXXOPVfTTe18Jq+t97xUysYiHd7I7D3s7oYMAQcOI6n9YYe2LJfJPkenVuYXmM5VuJYVEqmVOoVNBgShLMxielr41hVZIQVhYpWuF9z+gJNlxgi8yRDzKxBNh0u26R0KePss9r/nWxmUquwBB5WA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
+ dkim=pass header.d=prevas.dk; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8V+XO1z13KPHg4JZFVlOmxZAuGjh8gUkGGSasnR70Ew=;
+ b=URmB47iGxpNI8y6EfVJS+CZ5BY4N2C4ypo9gFT+Qx5N9noZQ6rHVpxOgCDjmwER/hvc84ksu4ftaddP8kN4Ryg0E54Hq+x5jOzjy0Cqc+d5r4BgtFkEpa7WVarlWHd9E4ks/oF4KI3yytONiEKSrx2p6RDTHmgVJfARdxkwVFP8=
+Authentication-Results: davemloft.net; dkim=none (message not signed)
+ header.d=none;davemloft.net; dmarc=none action=none header.from=prevas.dk;
+Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:3f::10)
+ by AM8PR10MB4163.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:1e4::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.13; Fri, 18 Dec
+ 2020 10:56:37 +0000
+Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::9068:c899:48f:a8e3]) by AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::9068:c899:48f:a8e3%6]) with mapi id 15.20.3654.025; Fri, 18 Dec 2020
+ 10:56:37 +0000
+From:   Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, Zhao Qiang <qiang.zhao@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>, Andrew Lunn <andrew@lunn.ch>,
+        linux-kernel@vger.kernel.org,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Subject: [PATCH net v2 0/3] ucc_geth fixes
+Date:   Fri, 18 Dec 2020 11:55:35 +0100
+Message-Id: <20201218105538.30563-1-rasmus.villemoes@prevas.dk>
+X-Mailer: git-send-email 2.23.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [5.186.115.188]
+X-ClientProxiedBy: AM6PR10CA0100.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:209:8c::41) To AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:3f::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201218102217.186836-1-jian.w.wen@oracle.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from prevas-ravi.prevas.se (5.186.115.188) by AM6PR10CA0100.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:209:8c::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Fri, 18 Dec 2020 10:56:36 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0ad25e0f-ba58-4aba-8f8f-08d8a3439792
+X-MS-TrafficTypeDiagnostic: AM8PR10MB4163:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM8PR10MB4163FC2B9B6E7D475E9B189293C30@AM8PR10MB4163.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: evKC32Ln0z06vhX4a55mDINMlVEmS+IMckfGaGPdQGFZKb1mYHwvPlih0hnKVoDWukb0UtsGk5Fbx8Mf+iBEJH3TXBmX9boZmfQweWvbLvgtQJV88hOMHKpBhMSLf+wN9Pi+XVYjRyDILD1k8PlUI9dht5GuvUIDtroiQEXc97rn4zBFvhqV0RpADJ6+OtstaUCrGBi6o+OhX/ca1l4aVnlYJFyI34ESHfihJ503XpjFd+8hx+VUoe57Vh04ovmfJ2utQqum1LDzhare/NG+SoDPbofRyKunx97nHo7uZaYGt/YpORoEoHgmz7PC8rMEIXEnsgjfqHwy0LWDaH2Khg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(376002)(39840400004)(396003)(366004)(136003)(346002)(44832011)(66946007)(36756003)(26005)(66556008)(2616005)(52116002)(478600001)(316002)(86362001)(54906003)(8976002)(4744005)(956004)(1076003)(186003)(2906002)(16526019)(8676002)(6486002)(6506007)(4326008)(83380400001)(107886003)(5660300002)(110136005)(66476007)(6512007)(8936002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?LoMgdhuwWnPA32V1u6PY325qbo7mlcnxmG3KUX/zc0Zjp6z8/0Egmv6AL+Vt?=
+ =?us-ascii?Q?kAz1DRX+6U4kHMq0Vd8IfjLKBFPWAbZByiSPy/nlrJyvUY6A78TRsKk7ksy8?=
+ =?us-ascii?Q?ayx/U//+g+FIH3mqht7/KMBn+DWzhIFpkeLznM89NS29XL9RimYhZ/P4Oo44?=
+ =?us-ascii?Q?jROAjoTvfj0MqqGOYLVLaRdDyrqSWCX0lMDEEI9ou5SIxA12Hiyt40uLENy2?=
+ =?us-ascii?Q?O9dYk2CMVDrPWsNthhhWDLyvdbQ4vsa6wTS9hDWwTqQTd8PPSG97vQj3SMiF?=
+ =?us-ascii?Q?dWDUgDbb1uDUrYBJmJh335sUWRJZ8RUA2tTt+kHMYsTUv5W002h/Z5kINE3/?=
+ =?us-ascii?Q?r4zjVetfBA8FTI+94BurQNQI6dRWQO9oJyKXE/v3q7lwBkdkBaidN5WwQ14o?=
+ =?us-ascii?Q?Z7E5ecE1lfpnrJ4XWkhGuqNMR5avcbMeFmQa4g6GyeX/FGt42pmnK/wJ++Lm?=
+ =?us-ascii?Q?Ehmw+tWOWN228BLK17gzupEhYQlLpERqNieDWXwiLNFsaex3T+ITWpXmyuZG?=
+ =?us-ascii?Q?QHTcuVcqNbXNNFGQ0FV5f5StbMBMh/nLLpfEzaLkg3cocTxm9EG1X5HSGbNu?=
+ =?us-ascii?Q?GSlat4m5O3HRNda7be0Pq4vEBIwMFMu52lelPEcItLMA8dgKZoAggIKfEA66?=
+ =?us-ascii?Q?oHxsCl8aPKI3dGgxckwKEXFRMbN2xzYnQniafvsnpBi6hX19s9aGjpCV6M/6?=
+ =?us-ascii?Q?kgpmWPb0bnOba9dp6sjStyLfB5c/pTc+jxOAhbrY/ApZUOQX50DE1q1/VMy7?=
+ =?us-ascii?Q?IAjbUYh6xOSh3uwojvpR6FBJy0NV2cUULkrewCPJF8JJXdw+Zdh1n3bCaFpk?=
+ =?us-ascii?Q?AYDOXE0N4kA/DhKuKPh7LX6mtQLGbTCd6CQvTGTwPwYYZEuPiy06cyV5g3ks?=
+ =?us-ascii?Q?X1nZsDWZD7wKbo2khYaPhV6WZGUjNgfB20mzN6lpama3MQrXKv0mgOXSvykI?=
+ =?us-ascii?Q?Lc55aakh6OeX2VElvH6ujzZ06suIqwxD7edv+FSiNghMYiwLbxbZQq4xLKfN?=
+ =?us-ascii?Q?lJBH?=
+X-OriginatorOrg: prevas.dk
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Dec 2020 10:56:37.3096
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0ad25e0f-ba58-4aba-8f8f-08d8a3439792
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: eowl0ALoahptBCT01n4gLZs1Gr+MHEUFRGh8ZmX289OQ93twDDLz7gKLmLP4yeQUoHs9R0YIStY7BO4AAvV+7yTpHGBFIFsyn/e/cUkoK/A=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR10MB4163
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 18-12-20 18:22:17, Jacob Wen wrote:
-> This patch reduces repetition of set_task_reclaim_state() around
-> do_try_to_free_pages().
+This is three bug fixes that fell out of a series of cleanups of the
+ucc_geth driver. Please consider applying via the net tree.
 
-The changelog really should be talking about why this is needed/useful.
-From the above it is not really clear whether you aimed at doing
-a clean up or this is a fix for some misbehavior. I do assume the former
-but this should be clearly articulated.
+v2: reorder and split off from larger series; add Andrew's R-b to
+patch 1; only move the free_netdev() call in patch 3.
 
-> Signed-off-by: Jacob Wen <jian.w.wen@oracle.com>
-> ---
->  mm/vmscan.c | 27 ++++++++++++++++-----------
->  1 file changed, 16 insertions(+), 11 deletions(-)
-> 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 257cba79a96d..4bc244b23686 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -3023,6 +3023,10 @@ static unsigned long do_try_to_free_pages(struct zonelist *zonelist,
->  	pg_data_t *last_pgdat;
->  	struct zoneref *z;
->  	struct zone *zone;
-> +	unsigned long ret;
-> +
-> +	set_task_reclaim_state(current, &sc->reclaim_state);
-> +
->  retry:
->  	delayacct_freepages_start();
->  
-> @@ -3069,12 +3073,16 @@ static unsigned long do_try_to_free_pages(struct zonelist *zonelist,
->  
->  	delayacct_freepages_end();
->  
-> -	if (sc->nr_reclaimed)
-> -		return sc->nr_reclaimed;
-> +	if (sc->nr_reclaimed) {
-> +		ret = sc->nr_reclaimed;
-> +		goto out;
-> +	}
->  
->  	/* Aborted reclaim to try compaction? don't OOM, then */
-> -	if (sc->compaction_ready)
-> -		return 1;
-> +	if (sc->compaction_ready) {
-> +		ret = 1;
-> +		goto out;
-> +	}
->  
->  	/*
->  	 * We make inactive:active ratio decisions based on the node's
-> @@ -3101,7 +3109,10 @@ static unsigned long do_try_to_free_pages(struct zonelist *zonelist,
->  		goto retry;
->  	}
->  
-> -	return 0;
-> +	ret = 0;
-> +out:
-> +	set_task_reclaim_state(current, NULL);
-> +	return ret;
->  }
->  
->  static bool allow_direct_reclaim(pg_data_t *pgdat)
-> @@ -3269,13 +3280,11 @@ unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
->  	if (throttle_direct_reclaim(sc.gfp_mask, zonelist, nodemask))
->  		return 1;
->  
-> -	set_task_reclaim_state(current, &sc.reclaim_state);
->  	trace_mm_vmscan_direct_reclaim_begin(order, sc.gfp_mask);
->  
->  	nr_reclaimed = do_try_to_free_pages(zonelist, &sc);
->  
->  	trace_mm_vmscan_direct_reclaim_end(nr_reclaimed);
-> -	set_task_reclaim_state(current, NULL);
->  
->  	return nr_reclaimed;
->  }
-> @@ -3347,7 +3356,6 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
->  	 */
->  	struct zonelist *zonelist = node_zonelist(numa_node_id(), sc.gfp_mask);
->  
-> -	set_task_reclaim_state(current, &sc.reclaim_state);
->  	trace_mm_vmscan_memcg_reclaim_begin(0, sc.gfp_mask);
->  	noreclaim_flag = memalloc_noreclaim_save();
->  
-> @@ -3355,7 +3363,6 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
->  
->  	memalloc_noreclaim_restore(noreclaim_flag);
->  	trace_mm_vmscan_memcg_reclaim_end(nr_reclaimed);
-> -	set_task_reclaim_state(current, NULL);
->  
->  	return nr_reclaimed;
->  }
-> @@ -4023,11 +4030,9 @@ unsigned long shrink_all_memory(unsigned long nr_to_reclaim)
->  
->  	fs_reclaim_acquire(sc.gfp_mask);
->  	noreclaim_flag = memalloc_noreclaim_save();
-> -	set_task_reclaim_state(current, &sc.reclaim_state);
->  
->  	nr_reclaimed = do_try_to_free_pages(zonelist, &sc);
->  
-> -	set_task_reclaim_state(current, NULL);
->  	memalloc_noreclaim_restore(noreclaim_flag);
->  	fs_reclaim_release(sc.gfp_mask);
->  
-> -- 
-> 2.25.1
-> 
+Rasmus Villemoes (3):
+  ethernet: ucc_geth: set dev->max_mtu to 1518
+  ethernet: ucc_geth: fix definition and size of ucc_geth_tx_global_pram
+  ethernet: ucc_geth: fix use-after-free in ucc_geth_remove()
+
+ drivers/net/ethernet/freescale/ucc_geth.c | 3 ++-
+ drivers/net/ethernet/freescale/ucc_geth.h | 9 ++++++++-
+ 2 files changed, 10 insertions(+), 2 deletions(-)
 
 -- 
-Michal Hocko
-SUSE Labs
+2.23.0
+
