@@ -2,208 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F3402DE513
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:46:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 178DD2DE517
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:47:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728012AbgLROpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 09:45:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27015 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726567AbgLROpw (ORCPT
+        id S1728051AbgLROqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 09:46:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727981AbgLROqx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 09:45:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608302665;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CthNdoUY/FIFXJCBduT4k2Ir0PRGPQTHNOp+0Jn+7JM=;
-        b=P7kYKd1EaBJ2pQeY16aE4BNqPSLUlEGyuUH/J17wjWubKzAZkt8JNlrtmJf+npqgw/C6jY
-        91PFQbCZkKeq/G87AHO65ON3RZMggW6t+c/nmo8GqE+ImB2fX4IJg3d/hmUq5nIaEb/eg9
-        8L2aXxHSG5+9wnjhKIo8yVNlnR6Xy+o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-169-pEZB78OdMT2Hg7zsV1RQcA-1; Fri, 18 Dec 2020 09:44:21 -0500
-X-MC-Unique: pEZB78OdMT2Hg7zsV1RQcA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 43D98800688;
-        Fri, 18 Dec 2020 14:44:19 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-115-223.rdu2.redhat.com [10.10.115.223])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B815B60CED;
-        Fri, 18 Dec 2020 14:44:18 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 3E856220BCF; Fri, 18 Dec 2020 09:44:18 -0500 (EST)
-Date:   Fri, 18 Dec 2020 09:44:18 -0500
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Jeffrey Layton <jlayton@poochiereds.net>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, jlayton@kernel.org,
-        amir73il@gmail.com, sargun@sargun.me, miklos@szeredi.hu,
-        willy@infradead.org, jack@suse.cz, neilb@suse.com,
-        viro@zeniv.linux.org.uk
-Subject: Re: [PATCH 3/3] overlayfs: Check writeback errors w.r.t upper in
- ->syncfs()
-Message-ID: <20201218144418.GA3424@redhat.com>
-References: <20201216233149.39025-1-vgoyal@redhat.com>
- <20201216233149.39025-4-vgoyal@redhat.com>
- <20201217200856.GA707519@tleilax.poochiereds.net>
+        Fri, 18 Dec 2020 09:46:53 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5EEDC061285
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 06:46:12 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id 91so2438348wrj.7
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 06:46:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IOS7/z9Qy+orQvgN4m7ZcdCgVVfUTOFkUvXr8iUDtNQ=;
+        b=jP4+qMylQ3mhIfQvzLOdmkmIohRItctCA1AYJFdDpD6neUt/k85ZMDI4i2OzBVHyT8
+         9nZ8g3l6IpArhkwp9iYEmf9uY02iLC5C8AVgXOkEOt7FeJlJlwv9EeOc7LDDxCYqxLsR
+         6nbfPcHjsDCI2lX6zoUbekAqhOBvcrCIGVw+gKlfwdYYe4LxGRM1OEJ5G6BWFiQMl/zr
+         kTRisF/pNz/FW6A2LcC3KDrDDUM8wl+g8CFiZAjD0xC/vkgdkVrJq+Hxz1ZW/sTWIl9v
+         lHLPbwplwfadoeKNL3pYmKNleHr7uoNPsZ5I2f+iiEwzOM8u96WE5ZpnZhcKRgMS3wKM
+         QWKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IOS7/z9Qy+orQvgN4m7ZcdCgVVfUTOFkUvXr8iUDtNQ=;
+        b=WWAazbbI4bBEMLbgzrBWczeKuPABWdK2hGtxwsBx1iD7f9/ixNUJP08hZeXza5ZcXb
+         uJe2TY033S7EMyT8Sz2Up8wyD4kPIKdW4rq0tUOzGiW6DNIKXnGomIYcTbDHaB6yGFwY
+         ZsS//ZQgdTdaASwlaaXXiwEMFT9M1yG+eBn7tOxOfrzQ4LaHXYbWcbidm00V+fTb9K1b
+         Yq8PU+L4CTFsKWhp/sE64N66/+ruUnI/QbUwwQtmyf1NVX+QURbrfmI/JZMR7CX9Iy4V
+         dhZ3Zn6+tf9sLpl+55scgCgC6NPTCicr/P44AW98YqXrAwMA1i0l+8rlPBXaZFT8vNWN
+         C5bA==
+X-Gm-Message-State: AOAM5324Cdpgy8oTv28NI/NwJsy3Iy5VbERHjZ7PZ1ikArrQkTVcmB+g
+        LN81MjfqNMGBobDz3mium/EvC6d/08nOyjdUrBPkGA==
+X-Google-Smtp-Source: ABdhPJwtPel488pKG+titVqvbHsJDbSA8DLgQ+5Gid39Aj6tn9e5V4SXOrJcLJdMUB9QQY12ijJ55Y7nrivzD5nE7ec=
+X-Received: by 2002:adf:f7d2:: with SMTP id a18mr4827679wrq.47.1608302771328;
+ Fri, 18 Dec 2020 06:46:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201217200856.GA707519@tleilax.poochiereds.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20201210134648.272857-1-maxime@cerno.tech> <20201210134648.272857-6-maxime@cerno.tech>
+ <CAPY8ntDXJWR-vssSLsRbh7RTd-40SQApOxWGwt2LkeoyxCdYMw@mail.gmail.com>
+In-Reply-To: <CAPY8ntDXJWR-vssSLsRbh7RTd-40SQApOxWGwt2LkeoyxCdYMw@mail.gmail.com>
+From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date:   Fri, 18 Dec 2020 14:45:54 +0000
+Message-ID: <CAPY8ntAx56BhKLVGyNUjjOYSaaJ1H2wku=Co8oqb38bPDEvGKA@mail.gmail.com>
+Subject: Re: [PATCH 05/15] drm/vc4: hdmi: Restore cec physical address on reconnect
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Eric Anholt <eric@anholt.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Jason Cooper <jason@lakedaemon.net>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-rpi-kernel@lists.infradead.org,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Dom Cobley <popcornmix@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 03:08:56PM -0500, Jeffrey Layton wrote:
-> On Wed, Dec 16, 2020 at 06:31:49PM -0500, Vivek Goyal wrote:
-> > Check for writeback error on overlay super block w.r.t "struct file"
-> > passed in ->syncfs().
-> > 
-> > As of now real error happens on upper sb. So this patch first propagates
-> > error from upper sb to overlay sb and then checks error w.r.t struct
-> > file passed in.
-> > 
-> > Jeff, I know you prefer that I should rather file upper file and check
-> > error directly on on upper sb w.r.t this real upper file.  While I was
-> > implementing that I thought what if file is on lower (and has not been
-> > copied up yet). In that case shall we not check writeback errors and
-> > return back to user space? That does not sound right though because,
-> > we are not checking for writeback errors on this file. Rather we
-> > are checking for any error on superblock. Upper might have an error
-> > and we should report it to user even if file in question is a lower
-> > file. And that's why I fell back to this approach. But I am open to
-> > change it if there are issues in this method.
-> > 
-> > Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+On Fri, 18 Dec 2020 at 14:21, Dave Stevenson
+<dave.stevenson@raspberrypi.com> wrote:
+>
+> Hi  Maxime & Dom
+>
+> On Thu, 10 Dec 2020 at 13:47, Maxime Ripard <maxime@cerno.tech> wrote:
+> >
+> > From: Dom Cobley <popcornmix@gmail.com>
+> >
+> > Currently we call cec_phys_addr_invalidate on a hotplug deassert.
+> > That may be due to a TV power cycling, or an AVR being switched
+> > on (and switching edid).
+> >
+> > This makes CEC unusable since our controller wouldn't have a physical
+> > address anymore.
+> >
+> > Set it back up again on the hotplug assert.
+> >
+> > Fixes: 15b4511a4af6 ("drm/vc4: add HDMI CEC support")
+> > Signed-off-by: Dom Cobley <popcornmix@gmail.com>
+> > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 > > ---
-> >  fs/overlayfs/ovl_entry.h |  2 ++
-> >  fs/overlayfs/super.c     | 15 ++++++++++++---
-> >  2 files changed, 14 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/fs/overlayfs/ovl_entry.h b/fs/overlayfs/ovl_entry.h
-> > index 1b5a2094df8e..a08fd719ee7b 100644
-> > --- a/fs/overlayfs/ovl_entry.h
-> > +++ b/fs/overlayfs/ovl_entry.h
-> > @@ -79,6 +79,8 @@ struct ovl_fs {
-> >  	atomic_long_t last_ino;
-> >  	/* Whiteout dentry cache */
-> >  	struct dentry *whiteout;
-> > +	/* Protects multiple sb->s_wb_err update from upper_sb . */
-> > +	spinlock_t errseq_lock;
-> >  };
-> >  
-> >  static inline struct vfsmount *ovl_upper_mnt(struct ovl_fs *ofs)
-> > diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
-> > index b4d92e6fa5ce..e7bc4492205e 100644
-> > --- a/fs/overlayfs/super.c
-> > +++ b/fs/overlayfs/super.c
-> > @@ -291,7 +291,7 @@ int ovl_syncfs(struct file *file)
-> >  	struct super_block *sb = file->f_path.dentry->d_sb;
-> >  	struct ovl_fs *ofs = sb->s_fs_info;
-> >  	struct super_block *upper_sb;
-> > -	int ret;
-> > +	int ret, ret2;
-> >  
-> >  	ret = 0;
-> >  	down_read(&sb->s_umount);
-> > @@ -310,10 +310,18 @@ int ovl_syncfs(struct file *file)
-> >  	ret = sync_filesystem(upper_sb);
-> >  	up_read(&upper_sb->s_umount);
-> >  
-> > +	/* Update overlay sb->s_wb_err */
-> > +	if (errseq_check(&upper_sb->s_wb_err, sb->s_wb_err)) {
-> > +		/* Upper sb has errors since last time */
-> > +		spin_lock(&ofs->errseq_lock);
-> > +		errseq_check_and_advance(&upper_sb->s_wb_err, &sb->s_wb_err);
-> > +		spin_unlock(&ofs->errseq_lock);
-> > +	}
-> 
-> So, the problem here is that the resulting value in sb->s_wb_err is
-> going to end up with the REPORTED flag set (using the naming in my
-> latest set). So, a later opener of a file on sb->s_wb_err won't see it.
-> 
-> For instance, suppose you call sync() on the box and does the above
-> check and advance. Then, you open the file and call syncfs() and get
-> back no error because REPORTED flag was set when you opened. That error
-> will then be lost.
-
-Hi Jeff,
-
-In this patch, I am doing this only in ->syncfs() path and not in
-->sync_fs() path. IOW, errseq_check_and_advance() will take place
-only if there is a valid "struct file" passed in. That means there
-is a consumer of the error and that means it should be fine to
-set the sb->s_wb_err as SEEN/REPORTED, right?
-
-If we end up plumbming "struct file" in existing ->sync_fs() routine,
-then I will call this only if a non NULL struct file has been 
-passed in. Otherwise skip this step. 
-
-IOW, sync() call will not result in errseq_check_and_advance() instead
-a syncfs() call will. 
-
-> 
-> >  
-> > +	ret2 = errseq_check_and_advance(&sb->s_wb_err, &file->f_sb_err);
-> >  out:
-> >  	up_read(&sb->s_umount);
-> > -	return ret;
-> > +	return ret ? ret : ret2;
-> >  }
-> >  
-> >  /**
-> > @@ -1903,6 +1911,7 @@ static int ovl_fill_super(struct super_block *sb, void *data, int silent)
-> >  	if (!cred)
-> >  		goto out_err;
-> >  
-> > +	spin_lock_init(&ofs->errseq_lock);
-> >  	/* Is there a reason anyone would want not to share whiteouts? */
-> >  	ofs->share_whiteout = true;
-> >  
-> > @@ -1975,7 +1984,7 @@ static int ovl_fill_super(struct super_block *sb, void *data, int silent)
-> >  
-> >  		sb->s_stack_depth = ovl_upper_mnt(ofs)->mnt_sb->s_stack_depth;
-> >  		sb->s_time_gran = ovl_upper_mnt(ofs)->mnt_sb->s_time_gran;
+> >  drivers/gpu/drm/vc4/vc4_hdmi.c | 25 +++++++++++++++++--------
+> >  1 file changed, 17 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> > index 28b78ea885ea..eff3bac562c6 100644
+> > --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
+> > +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> > @@ -136,20 +136,29 @@ static enum drm_connector_status
+> >  vc4_hdmi_connector_detect(struct drm_connector *connector, bool force)
+> >  {
+> >         struct vc4_hdmi *vc4_hdmi = connector_to_vc4_hdmi(connector);
+> > +       bool connected = false;
+> >
+> >         if (vc4_hdmi->hpd_gpio) {
+> >                 if (gpio_get_value_cansleep(vc4_hdmi->hpd_gpio) ^
+> >                     vc4_hdmi->hpd_active_low)
+> > -                       return connector_status_connected;
+> > -               cec_phys_addr_invalidate(vc4_hdmi->cec_adap);
+> > -               return connector_status_disconnected;
+> > -       }
 > > -
-> > +		sb->s_wb_err = errseq_sample(&ovl_upper_mnt(ofs)->mnt_sb->s_wb_err);
-> 
-> This will mark the error on the upper_sb as REPORTED, and that's not
-> really that's the case if you're just using it set s_wb_err in the
-> overlay. You might want to use errseq_peek in this situation.
+> > -       if (drm_probe_ddc(vc4_hdmi->ddc))
+> > -               return connector_status_connected;
+> > -
+> > +                       connected = true;
+> > +       } else if (drm_probe_ddc(vc4_hdmi->ddc))
+> > +               connected = true;
+> >         if (HDMI_READ(HDMI_HOTPLUG) & VC4_HDMI_HOTPLUG_CONNECTED)
+>
+> This needs to become an "else if(...".
+> It used to be that all the other paths would return, so were mutually
+> exclusive to this. Now they set a thing and keep going we need to
+> avoid reading the register should there be a HPD gpio or the ddc probe
+> succeeds.
+> Memory says that otherwise Pi3 always reports connected.
+>
+> I fixed this in a downstream patch already -
+> https://github.com/raspberrypi/linux/commit/d345caec1e9b2317b9cd7eb5b92ae453a0d3e98c
+>
+> Otherwise fine.
+>
+>   Dave
+>
+> > +               connected = true;
+> > +       if (connected) {
+> > +               if (connector->status != connector_status_connected) {
+> > +                       struct edid *edid = drm_get_edid(connector, vc4_hdmi->ddc);
+> > +
+> > +                       if (edid) {
+> > +                               cec_s_phys_addr_from_edid(vc4_hdmi->cec_adap, edid);
+> > +                               vc4_hdmi->encoder.hdmi_monitor = drm_detect_hdmi_monitor(edid);
+> > +                               drm_connector_update_edid_property(connector, edid);
 
-For now I am still looking at existing code and not new code. Because
-I belive that new code does not change existing behavior instead
-provides additional functionality to allow sampling the error without
-marking it seen as well as provide helper to not force seeing an
-unseen error.
+Actually looking at this again in the context of the other changes, do
+we need to call drm_connector_update_edid_property() here?
 
-So current errseq_sample() does not mark error SEEN. And if it is
-an unseen error, we will get 0 and be forced to see the error next
-time.
+We've just called drm_get_edid() to get the edid, and that calls
+drm_connector_update_edid_property() as well [1]
+Updating vc4_hdmi->encoder.hdmi_monitor may be necessary. It's
+otherwise done in vc4_hdmi_connector_get_modes, which I sort of expect
+to be called almost immediately by the framework when connector_detect
+returns "connected". I haven't checked if that is guaranteed though.
 
-One small issue with this is that say upper has unseen error. Now
-we mount overlay and save that value in sb->s_wb_err (unseen). Say
-a file is opened on upper and error is now seen on upper. But
-we still have unseen error cached in overlay and if overlay fd is
-now opened, f->f_sb_err will be 0 and it will be forced to see
-err on next syncfs().
+vc4_hdmi_connector_get_modes also includes a manual call to
+drm_connector_update_edid_property after having just called
+drm_get_edid, so that one feels redundant too.
 
-IOW, despite the fact that overlay fd was opened after upper sb had
-been marked seen, it still will see error. I think it probably is
-not a big issue.
+  Dave
 
-Vivek
+[1] https://elixir.bootlin.com/linux/v5.10/source/drivers/gpu/drm/drm_edid.c#L2059
 
-> 
-> >  	}
-> >  	oe = ovl_get_lowerstack(sb, splitlower, numlower, ofs, layers);
-> >  	err = PTR_ERR(oe);
-> > -- 
-> > 2.25.4
-> > 
-> 
-
+> > +                               kfree(edid);
+> > +                       }
+> > +               }
+> >                 return connector_status_connected;
+> > +       }
+> >         cec_phys_addr_invalidate(vc4_hdmi->cec_adap);
+> >         return connector_status_disconnected;
+> >  }
+> > --
+> > 2.28.0
+> >
