@@ -2,168 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FE042DE35A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 14:37:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1875F2DE361
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 14:41:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725969AbgLRNf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 08:35:58 -0500
-Received: from mail.xenproject.org ([104.130.215.37]:38808 "EHLO
-        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725911AbgLRNf5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 08:35:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
-        s=20200302mail; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject;
-        bh=xM2g/GyajSitlPfAkAWgiSwGXMkoqb0lchea5HNLvyg=; b=uSpo9ATqHSsdor1NQBFiFFtmAO
-        wHxwDpPzVuOnbX3le4a830ztgAQP6o/AZq+UOlOSmBFGtgUQJF9i0yRXs9c3gMar7NKO5ez5OVMiB
-        /R5dbNkQKa+gYpunNz438CavuHCfw7kueH4PRtZTujPtftncFmEiUO4+SuyqNiENyiog=;
-Received: from xenbits.xenproject.org ([104.239.192.120])
-        by mail.xenproject.org with esmtp (Exim 4.92)
-        (envelope-from <julien@xen.org>)
-        id 1kqFuX-0008BY-HY; Fri, 18 Dec 2020 13:35:09 +0000
-Received: from 54-240-197-228.amazon.com ([54.240.197.228] helo=a483e7b01a66.ant.amazon.com)
-        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <julien@xen.org>)
-        id 1kqFuX-0003W5-7P; Fri, 18 Dec 2020 13:35:09 +0000
-Subject: Re: xen/evtchn: Interrupt for port 34, but apparently not enabled;
- per-user 00000000a86a4c1b on 5.10
-To:     =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>, aams@amazon.de
-Cc:     linux-kernel@vger.kernel.org,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        foersleo@amazon.de
-References: <ce881240-284f-8470-10f1-5cce353ee903@xen.org>
- <b5c32c48-3e74-2045-62ec-560b19766389@suse.com>
- <da65a69e-389b-1602-1479-6799ce10c101@suse.com>
-From:   Julien Grall <julien@xen.org>
-Message-ID: <1711bb04-ea95-3507-9aa3-e82791d757b4@xen.org>
-Date:   Fri, 18 Dec 2020 13:35:07 +0000
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.1
+        id S1726316AbgLRNlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 08:41:02 -0500
+Received: from foss.arm.com ([217.140.110.172]:35694 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725911AbgLRNlB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 08:41:01 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ADADC1FB;
+        Fri, 18 Dec 2020 05:40:15 -0800 (PST)
+Received: from e123083-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A47813F66B;
+        Fri, 18 Dec 2020 05:40:13 -0800 (PST)
+Date:   Fri, 18 Dec 2020 14:40:07 +0100
+From:   Morten Rasmussen <morten.rasmussen@arm.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        dietmar.eggemann@arm.com, patrick.bellasi@matbug.net,
+        lenb@kernel.org, linux-kernel@vger.kernel.org,
+        ionela.voinescu@arm.com, qperret@google.com,
+        viresh.kumar@linaro.org
+Subject: Re: [PATCH] sched: Add schedutil overview
+Message-ID: <20201218133655.GA10123@e123083-lin>
+References: <20201218103258.GA3040@hirez.programming.kicks-ass.net>
+ <jhjsg83s616.mognet@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <da65a69e-389b-1602-1479-6799ce10c101@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <jhjsg83s616.mognet@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Juergen,
-
-On 15/12/2020 10:20, Jürgen Groß wrote:
-> On 15.12.20 08:27, Jürgen Groß wrote:
->> On 14.12.20 22:25, Julien Grall wrote:
->>> Hi Juergen,
->>>
->>> When testing Linux 5.10 dom0, I could reliably hit the following 
->>> warning with using event 2L ABI:
->>>
->>> [  589.591737] Interrupt for port 34, but apparently not enabled; 
->>> per-user 00000000a86a4c1b
->>> [  589.593259] WARNING: CPU: 0 PID: 1111 at 
->>> /home/ANT.AMAZON.COM/jgrall/works/oss/linux/drivers/xen/evtchn.c:170 
->>> evtchn_interrupt+0xeb/0x100
->>> [  589.595514] Modules linked in:
->>> [  589.596145] CPU: 0 PID: 1111 Comm: qemu-system-i38 Tainted: G 
->>> W         5.10.0+ #180
->>> [  589.597708] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), 
->>> BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
->>> [  589.599782] RIP: e030:evtchn_interrupt+0xeb/0x100
->>> [  589.600698] Code: 48 8d bb d8 01 00 00 ba 01 00 00 00 be 1d 00 00 
->>> 00 e8 d9 10 ca ff eb b2 8b 75 20 48 89 da 48 c7 c7 a8 31 3d 82 e8 65 
->>> 29 a0 ff <0f> 0b e9 42 ff ff ff 0f 1f 40 00 66 2e 0f 1f 84 00 00 00 
->>> 00 00 0f
->>> [  589.604087] RSP: e02b:ffffc90040003e70 EFLAGS: 00010086
->>> [  589.605102] RAX: 0000000000000000 RBX: ffff888102091800 RCX: 
->>> 0000000000000027
->>> [  589.606445] RDX: 0000000000000000 RSI: ffff88817fe19150 RDI: 
->>> ffff88817fe19158
->>> [  589.607790] RBP: ffff88810f5ab980 R08: 0000000000000001 R09: 
->>> 0000000000328980
->>> [  589.609134] R10: 0000000000000000 R11: ffffc90040003c70 R12: 
->>> ffff888107fd3c00
->>> [  589.610484] R13: ffffc90040003ed4 R14: 0000000000000000 R15: 
->>> ffff88810f5ffd80
->>> [  589.611828] FS:  00007f960c4b8ac0(0000) GS:ffff88817fe00000(0000) 
->>> knlGS:0000000000000000
->>> [  589.613348] CS:  10000e030 DS: 0000 ES: 0000 CR0: 0000000080050033
->>> [  589.614525] CR2: 00007f17ee72e000 CR3: 000000010f5b6000 CR4: 
->>> 0000000000050660
->>> [  589.615874] Call Trace:
->>> [  589.616402]  <IRQ>
->>> [  589.616855]  __handle_irq_event_percpu+0x4e/0x2c0
->>> [  589.617784]  handle_irq_event_percpu+0x30/0x80
->>> [  589.618660]  handle_irq_event+0x3a/0x60
->>> [  589.619428]  handle_edge_irq+0x9b/0x1f0
->>> [  589.620209]  generic_handle_irq+0x4f/0x60
->>> [  589.621008]  evtchn_2l_handle_events+0x160/0x280
->>> [  589.621913]  __xen_evtchn_do_upcall+0x66/0xb0
->>> [  589.622767]  __xen_pv_evtchn_do_upcall+0x11/0x20
->>> [  589.623665]  asm_call_irq_on_stack+0x12/0x20
->>> [  589.624511]  </IRQ>
->>> [  589.624978]  xen_pv_evtchn_do_upcall+0x77/0xf0
->>> [  589.625848]  exc_xen_hypervisor_callback+0x8/0x10
->>>
->>> This can be reproduced when creating/destroying guest in a loop. 
->>> Although, I have struggled to reproduce it on a vanilla Xen.
->>>
->>> After several hours of debugging, I think I have found the root cause.
->>>
->>> While we only expect the unmask to happen when the event channel is 
->>> EOIed, there is an unmask happening as part of handle_edge_irq() 
->>> because the interrupt was seen as pending by another vCPU 
->>> (IRQS_PENDING is set).
->>>
->>> It turns out that the event channel is set for multiple vCPU is in 
->>> cpu_evtchn_mask. This is happening because the affinity is not 
->>> cleared when freeing an event channel.
->>>
->>> The implementation of evtchn_2l_handle_events() will look for all the 
->>> active interrupts for the current vCPU and later on clear the pending 
->>> bit (via the ack() callback). IOW, I believe, this is not an atomic 
->>> operation.
->>>
->>> Even if Xen will notify the event to a single vCPU, 
->>> evtchn_pending_sel may still be set on the other vCPU (thanks to a 
->>> different event channel). Therefore, there is a chance that two vCPUs 
->>> will try to handle the same interrupt.
->>>
->>> The IRQ handler handle_edge_irq() is able to deal with that and will 
->>> mask/unmask the interrupt. This will mess us with the lateeoi logic 
->>> (although, I managed to reproduce it once without XSA-332).
->>
->> Thanks for the analysis!
->>
->>> My initial idea to fix the problem was to switch the affinity from 
->>> CPU X to CPU0 when the event channel is freed.
->>>
->>> However, I am not sure this is enough because I haven't found 
->>> anything yet preventing a race between evtchn_2l_handle_events9) and 
->>> evtchn_2l_bind_vcpu().
->>>
->>> So maybe we want to introduce a refcounting (if there is nothing 
->>> provided by the IRQ framework) and only unmask when the counter drop 
->>> to 0.
->>>
->>> Any opinions?
->>
->> I think we don't need a refcount, but just the internal states "masked"
->> and "eoi_pending" and unmask only if both are false. "masked" will be
->> set when the event is being masked. When delivering a lateeoi irq
->> "eoi_pending" will be set and "masked "reset. "masked" will be reset
->> when a normal unmask is happening. And "eoi_pending" will be reset
->> when a lateeoi is signaled. Any reset of "masked" and "eoi_pending"
->> will check the other flag and do an unmask if both are false.
->>
->> I'll write a patch.
+On Fri, Dec 18, 2020 at 11:33:09AM +0000, Valentin Schneider wrote:
+> On 18/12/20 10:32, Peter Zijlstra wrote:
+> > +Schedutil / DVFS
+> > +----------------
+> > +
+> > +Every time the scheduler load tracking is updated (task wakeup, task
+> > +migration, time progression) we call out to schedutil to update the hardware
+> > +DVFS state.
+> > +
+> > +The basis is the CPU runqueue's 'running' metric, which per the above it is
+> > +the frequency invariant utilization estimate of the CPU. From this we compute
+> > +a desired frequency like:
+> > +
+> > +             max( running, util_est );	if UTIL_EST
+> > +  u_cfs := { running;			otherwise
+> > +
+> > +  u_clamp := clamp( u_cfs, u_min, u_max )
+> > +
+> > +  u := u_cfs + u_rt + u_irq + u_dl;	[approx. see source for more detail]
+> > +
+> > +  f_des := min( f_max, 1.25 u * f_max )
+> > +
 > 
-> Julien, could you please test the attached (only build tested) patch?
+> In schedutil_cpu_util(), uclamp clamps both u_cfs and u_rt. I'm afraid the
+> below might just bring more confusion; what do you think?
+> 
+>                clamp( u_cfs + u_rt, u_min, u_max );      if UCLAMP_TASK
+>   u_clamp := { u_cfs + u_rt;                             otherwise
+> 
+>   u := u_clamp + u_irq + u_dl;	    [approx. see source for more detail]
 
-Thank you writing the patches. I will aim to give a spin next week.
+It is reflecting the code so I think it is worth it. It also fixes the
+typo in the original sum (u_cfs -> u_clamp).
 
-Cheers,
+> (also, does this need a word about runnable rt tasks => goto max?)
 
--- 
-Julien Grall
+What is actually the intended policy there? I thought it was goto max
+unless rt was clamped, but if I read the code correctly in
+schedutil_cpu_util() the current policy is only goto max if uclamp isn't
+in use at all, including cfs.
+
+The write-up looks good to me.
+
+Reviewed-by: Morten Rasmussen <morten.rasmussen@arm.com>
+
+Morten
