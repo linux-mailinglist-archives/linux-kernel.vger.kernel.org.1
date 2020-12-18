@@ -2,114 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17AD22DDE6F
+	by mail.lfdr.de (Postfix) with ESMTP id F05FF2DDE71
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 07:12:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732627AbgLRGKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 01:10:02 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9226 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725298AbgLRGKB (ORCPT
+        id S1732669AbgLRGKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 01:10:05 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:25040 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725870AbgLRGKC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 01:10:01 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cxz236Fl7zksDZ;
-        Fri, 18 Dec 2020 14:08:27 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.9) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Fri, 18 Dec 2020
- 14:09:16 +0800
-Subject: Re: [PATCH 1/1] device-dax: avoid an unnecessary check in
- alloc_dev_dax_range()
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20201120092251.2197-1-thunder.leizhen@huawei.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <55970773-35ff-1afb-940b-8342b09aea9a@huawei.com>
-Date:   Fri, 18 Dec 2020 14:09:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Fri, 18 Dec 2020 01:10:02 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608271782; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=wvH4HZDno0lJ1hR1mOD7hwlzls6bXIAXkA0JtzPzJ6o=;
+ b=emjO4B5MY4DK0dTVU8KlT5nj8aLIimmc/9ZKDqaDU+0jAzLSgrKJLO7aWaGuQgO0Zl31z3E4
+ /l9S9Bb9o0MEkvFh5NxBV2QYyudZpYJhKIBOr10Xx61PP5biwX5ZuMTtC1JziwpXR8dBk7zP
+ nfINCyHgXXXpkQ+cpd09VqKRidQ=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-west-2.postgun.com with SMTP id
+ 5fdc478b93a3d2b1cdc83cf9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Dec 2020 06:09:15
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D4E34C433CA; Fri, 18 Dec 2020 06:09:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 195D2C433C6;
+        Fri, 18 Dec 2020 06:09:15 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20201120092251.2197-1-thunder.leizhen@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.9]
-X-CFilter-Loop: Reflected
+Date:   Fri, 18 Dec 2020 14:09:15 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Stanley Chu <stanley.chu@mediatek.com>
+Cc:     linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
+        avri.altman@wdc.com, alim.akhtar@samsung.com, jejb@linux.ibm.com,
+        beanhuo@micron.com, asutoshd@codeaurora.org,
+        matthias.bgg@gmail.com, bvanassche@acm.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
+        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
+        chaotian.jing@mediatek.com, cc.chou@mediatek.com,
+        jiajie.hao@mediatek.com, alice.chao@mediatek.com
+Subject: Re: [PATCH v2 2/4] scsi: ufs: Remove redundant null checking of
+ devfreq instance
+In-Reply-To: <20201216131639.4128-3-stanley.chu@mediatek.com>
+References: <20201216131639.4128-1-stanley.chu@mediatek.com>
+ <20201216131639.4128-3-stanley.chu@mediatek.com>
+Message-ID: <06d27572bb06ed44e914b830201b2e45@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2020/11/20 17:22, Zhen Lei wrote:
-> Swap the calling sequence of krealloc() and __request_region(), call the
-> latter first. In this way, the value of dev_dax->nr_range does not need to
-> be considered when __request_region() failed.
+On 2020-12-16 21:16, Stanley Chu wrote:
+> hba->devfreq is zero-initialized thus it is not required
+> to check its existence in ufshcd_add_lus() function which
+> is invoked during initialization only.
 > 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
 > ---
->  drivers/dax/bus.c | 29 ++++++++++++-----------------
->  1 file changed, 12 insertions(+), 17 deletions(-)
+>  drivers/scsi/ufs/ufshcd.c | 14 ++++++--------
+>  1 file changed, 6 insertions(+), 8 deletions(-)
 > 
-> diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
-> index 27513d311242..1efae11d947a 100644
-> --- a/drivers/dax/bus.c
-> +++ b/drivers/dax/bus.c
-> @@ -763,23 +763,15 @@ static int alloc_dev_dax_range(struct dev_dax *dev_dax, u64 start,
->  		return 0;
->  	}
->  
-> -	ranges = krealloc(dev_dax->ranges, sizeof(*ranges)
-> -			* (dev_dax->nr_range + 1), GFP_KERNEL);
-> -	if (!ranges)
-> -		return -ENOMEM;
-> -
->  	alloc = __request_region(res, start, size, dev_name(dev), 0);
-> -	if (!alloc) {
-> -		/*
-> -		 * If this was an empty set of ranges nothing else
-> -		 * will release @ranges, so do it now.
-> -		 */
-> -		if (!dev_dax->nr_range) {
-> -			kfree(ranges);
-> -			ranges = NULL;
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index a91b73a1fc48..9cc16598136d 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -7636,15 +7636,13 @@ static int ufshcd_add_lus(struct ufs_hba *hba)
+>  			&hba->pwr_info,
+>  			sizeof(struct ufs_pa_layer_attr));
+>  		hba->clk_scaling.saved_pwr_info.is_valid = true;
+> -		if (!hba->devfreq) {
+> -			hba->clk_scaling.is_allowed = true;
+> -			ret = ufshcd_devfreq_init(hba);
+> -			if (ret)
+> -				goto out;
+> +		hba->clk_scaling.is_allowed = true;
+> +		ret = ufshcd_devfreq_init(hba);
+> +		if (ret)
+> +			goto out;
+> 
+> -			hba->clk_scaling.is_enabled = true;
+> -			ufshcd_clkscaling_init_sysfs(hba);
 > -		}
-> -		dev_dax->ranges = ranges;
-> +	if (!alloc)
->  		return -ENOMEM;
-> +
-> +	ranges = krealloc(dev_dax->ranges, sizeof(*ranges)
-> +			* (dev_dax->nr_range + 1), GFP_KERNEL);
-> +	if (!ranges) {
-> +		rc = -ENOMEM;
-> +		goto err;
-
-Hi, Dan Williams:
-In fact, after adding the new helper dev_dax_trim_range(), we can
-directly call __release_region() and return error code at here. Replace goto.
-
+> +		hba->clk_scaling.is_enabled = true;
+> +		ufshcd_clkscaling_init_sysfs(hba);
 >  	}
->  
->  	for (i = 0; i < dev_dax->nr_range; i++)
-> @@ -808,11 +800,14 @@ static int alloc_dev_dax_range(struct dev_dax *dev_dax, u64 start,
->  		dev_dbg(dev, "delete range[%d]: %pa:%pa\n", dev_dax->nr_range - 1,
->  				&alloc->start, &alloc->end);
->  		dev_dax->nr_range--;
-> -		__release_region(res, alloc->start, resource_size(alloc));
-> -		return rc;
-> +		goto err;
->  	}
->  
->  	return 0;
-> +
-> +err:
-> +	__release_region(res, alloc->start, resource_size(alloc));
-> +	return rc;
->  }
->  
->  static int adjust_dev_dax_range(struct dev_dax *dev_dax, struct resource *res, resource_size_t size)
 > 
+>  	ufs_bsg_probe(hba);
 
+Reviewed-by: Can Guo <cang@codeaurora.org>
