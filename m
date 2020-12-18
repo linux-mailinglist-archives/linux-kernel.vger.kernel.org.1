@@ -2,134 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55D9C2DEAB5
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 22:04:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D96CA2DEAC0
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 22:07:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726232AbgLRVDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 16:03:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725778AbgLRVDe (ORCPT
+        id S1726181AbgLRVHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 16:07:09 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:54938 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725843AbgLRVHJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 16:03:34 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAA2BC0617B0;
-        Fri, 18 Dec 2020 13:02:53 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id j16so3769616edr.0;
-        Fri, 18 Dec 2020 13:02:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mzct5htaiEux0x9rPO5sq+ILOG2h8DTokZY7C5lhKkg=;
-        b=BCdINtKQLiA24DLJWFXMCfu1JUUFx6/f4n5yu+UBopNswmAxv/YeeRIN2QCueWboqR
-         cd0KcpYSCh0qBNkyup0yexILujiXngAJJC+qXT/eLyc3y5XQ/VFiW/SgeF4fkjSIDCSu
-         Cml9Rn28XDqWQq5Xn2LVaVWES1qzDmEkc4cTASvE9KJjTIJFTngn5+naCcHDQOTwEEDH
-         kejOxYMzU0GCTssnuPimA0Ye1ce1fqn0zhIfl7QN4WArFoKleOuizh7jPzbhVFYYObcy
-         s06YveS12GdZ/VMe2rk9gZLD3vpes5/BGSng81VIs/wZrQWmoqocqXW9KJIDQ2EX9rVD
-         xOOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mzct5htaiEux0x9rPO5sq+ILOG2h8DTokZY7C5lhKkg=;
-        b=rsWT+PBNyW0EctaobrIuOuT0njMmuKeLPimG2XINzcdJJLyWizXpH0vO8/+gzxO5N8
-         ncw4QKq9uVPQAmeAmkg8d0Je7r0SpgdiR+ajzlLknMNFRMDYk9+gFsb1rB+eUHVq+P0o
-         HBtHalLQcwziOTOmxRFUAgI1HIDCOwqWDQIlV74jQpmp7EXx522DJVDkPxBWTuSUCC5B
-         PCQlKh1M/YVN9AisFIWTUXhW+zEOAqPOAZX0LsLdJZVT0ERoLaPv49Kxq3HxiRP/YOaz
-         v3QZ+t2lWi+uf0zjPWrcCvOKW5NtYWKa3dr+WyeJOl7cBo3ChKnYmEW6IM/zgnbAu2K3
-         Ow8Q==
-X-Gm-Message-State: AOAM531XpkB3Hjbr56XKTJwmrEoQ8k4l3yxx22z8oz+HDVb09o/m6681
-        AjDe8hEme3M0Ll6tW/doJdY=
-X-Google-Smtp-Source: ABdhPJyxJWD4Fo3smfSZgPoleK1imWoabQUl6UBIgTiStR84QFPZOnmgOBoAgDJHdYgvnkLOwRGGPQ==
-X-Received: by 2002:aa7:c78c:: with SMTP id n12mr6347111eds.363.1608325372500;
-        Fri, 18 Dec 2020 13:02:52 -0800 (PST)
-Received: from skbuf ([188.25.2.120])
-        by smtp.gmail.com with ESMTPSA id r1sm5901368eje.51.2020.12.18.13.02.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Dec 2020 13:02:51 -0800 (PST)
-Date:   Fri, 18 Dec 2020 23:02:50 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     netdev@vger.kernel.org, andrew@lunn.ch,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Murali Krishna Policharla <murali.policharla@broadcom.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "open list:BROADCOM SYSTEMPORT ETHERNET DRIVER" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net] net: systemport: set dev->max_mtu to
- UMAC_MAX_MTU_SIZE
-Message-ID: <20201218210250.owahylqnagtssbsw@skbuf>
-References: <20201218173843.141046-1-f.fainelli@gmail.com>
- <20201218202441.ppcxswvlix3xszsn@skbuf>
- <c178b5db-3de4-5f02-eee3-c9e69393174a@gmail.com>
- <20201218205220.jb3kh7v23gtpymmx@skbuf>
- <b8e61c3f-179f-7d8f-782a-86a8c69c5a75@gmail.com>
+        Fri, 18 Dec 2020 16:07:09 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1608325586;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5KbSIN55suX89YOBcIXDM5LxH+O6LLG2triQiwJQEiw=;
+        b=lxq0Z0/2O14CTwirAq+bb6fuW6UqCM6iqC8qzHXHLrZfy+sDRGOF/0How3eiSpYti5hyy1
+        PPjKqCf3MKtrf7IQYaOFjyuXT4RetV9r+fcaYWFfkisBByb0n0d6/Oz8hpeuclU2liQ+zF
+        b9UZig1XjIDtkpFQUGed0hJ9FSlPU8zI3iu4ngwn8ZXccAFZTXAmD+IAi9lNZOjDIv05V6
+        0hdumIZXflEtEFfoAyzhRw6zWRPLAlhR2F6ZwRzJTud4+jkuGbq92iptCpTRZzgpYytBBv
+        +1bhFOhdCmZjOEKl9Odfaojy3oH3jv/xMNUCbWSAye7FSC970xo3MgIOPjbxaw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1608325586;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5KbSIN55suX89YOBcIXDM5LxH+O6LLG2triQiwJQEiw=;
+        b=BngWZDtOpkOjDlsMazPLISfJ/Wv/jD0wklYW3MtSj1b941oW4rqP5E8tjXsT4f09a0QbS1
+        JhvFAp2tpTn1qMBA==
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     "Weiny\, Ira" <ira.weiny@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux MM <linux-mm@kvack.org>, linux-kselftest@vger.kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH V3 04/10] x86/pks: Preserve the PKRS MSR on context switch
+In-Reply-To: <CAPcyv4h2MvybBi==3uzAjGeW0R7azHYSKwmvzMXq9eM8NzMLEg@mail.gmail.com>
+References: <20201106232908.364581-1-ira.weiny@intel.com> <20201106232908.364581-5-ira.weiny@intel.com> <871rfoscz4.fsf@nanos.tec.linutronix.de> <87mtycqcjf.fsf@nanos.tec.linutronix.de> <878s9vqkrk.fsf@nanos.tec.linutronix.de> <CAPcyv4h2MvybBi==3uzAjGeW0R7azHYSKwmvzMXq9eM8NzMLEg@mail.gmail.com>
+Date:   Fri, 18 Dec 2020 22:06:24 +0100
+Message-ID: <875z4yrfhr.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b8e61c3f-179f-7d8f-782a-86a8c69c5a75@gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 12:54:33PM -0800, Florian Fainelli wrote:
-> On 12/18/20 12:52 PM, Vladimir Oltean wrote:
-> > On Fri, Dec 18, 2020 at 12:30:20PM -0800, Florian Fainelli wrote:
-> >> On 12/18/20 12:24 PM, Vladimir Oltean wrote:
-> >>> Hi Florian,
-> >>>
-> >>> On Fri, Dec 18, 2020 at 09:38:43AM -0800, Florian Fainelli wrote:
-> >>>> The driver is already allocating receive buffers of 2KiB and the
-> >>>> Ethernet MAC is configured to accept frames up to UMAC_MAX_MTU_SIZE.
-> >>>>
-> >>>> Fixes: bfcb813203e6 ("net: dsa: configure the MTU for switch ports")
-> >>>> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> >>>> ---
-> >>>>  drivers/net/ethernet/broadcom/bcmsysport.c | 1 +
-> >>>>  1 file changed, 1 insertion(+)
-> >>>>
-> >>>> diff --git a/drivers/net/ethernet/broadcom/bcmsysport.c b/drivers/net/ethernet/broadcom/bcmsysport.c
-> >>>> index 0fdd19d99d99..b1ae9eb8f247 100644
-> >>>> --- a/drivers/net/ethernet/broadcom/bcmsysport.c
-> >>>> +++ b/drivers/net/ethernet/broadcom/bcmsysport.c
-> >>>> @@ -2577,6 +2577,7 @@ static int bcm_sysport_probe(struct platform_device *pdev)
-> >>>>  			 NETIF_F_HW_VLAN_CTAG_TX;
-> >>>>  	dev->hw_features |= dev->features;
-> >>>>  	dev->vlan_features |= dev->features;
-> >>>> +	dev->max_mtu = UMAC_MAX_MTU_SIZE;
-> >>>>  
-> >>>>  	/* Request the WOL interrupt and advertise suspend if available */
-> >>>>  	priv->wol_irq_disabled = 1;
-> >>>> -- 
-> >>>> 2.25.1
-> >>>>
-> >>>
-> >>> Do you want to treat the SYSTEMPORT Lite differently?
-> >>>
-> >>> 	/* Set maximum frame length */
-> >>> 	if (!priv->is_lite)
-> >>> 		umac_writel(priv, UMAC_MAX_MTU_SIZE, UMAC_MAX_FRAME_LEN);
-> >>> 	else
-> >>> 		gib_set_pad_extension(priv);
-> >>
-> >> SYSTEMPORT Lite does not actually validate the frame length, so setting
-> >> a maximum number to the buffer size we allocate could work, but I don't
-> >> see a reason to differentiate the two types of MACs here.
-> > 
-> > And if the Lite doesn't validate the frame length, then shouldn't it
-> > report a max_mtu equal to the max_mtu of the attached DSA switch, plus
-> > the Broadcom tag length? Doesn't the b53 driver support jumbo frames?
-> 
-> And how would I do that without create a horrible layering violation in
-> either the systemport driver or DSA? Yes the b53 driver supports jumbo
-> frames.
+On Fri, Dec 18 2020 at 11:20, Dan Williams wrote:
+> On Fri, Dec 18, 2020 at 5:58 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+> [..]
+>>   5) The DAX case which you made "work" with dev_access_enable() and
+>>      dev_access_disable(), i.e. with yet another lazy approach of
+>>      avoiding to change a handful of usage sites.
+>>
+>>      The use cases are strictly context local which means the global
+>>      magic is not used at all. Why does it exist in the first place?
+>>
+>>      Aside of that this global thing would never work at all because the
+>>      refcounting is per thread and not global.
+>>
+>>      So that DAX use case is just a matter of:
+>>
+>>         grant/revoke_access(DEV_PKS_KEY, READ/WRITE)
+>>
+>>      which is effective for the current execution context and really
+>>      wants to be a distinct READ/WRITE protection and not the magic
+>>      global thing which just has on/off. All usage sites know whether
+>>      they want to read or write.
+>
+> I was tracking and nodding until this point. Yes, kill the global /
+> kmap() support, but if grant/revoke_access is not integrated behind
+> kmap_{local,atomic}() then it's not a "handful" of sites that need to
+> be instrumented it's 100s. Are you suggesting that "relaxed" mode
+> enforcement is a way to distribute the work of teaching driver writers
+> that they need to incorporate explicit grant/revoke-read/write in
+> addition to kmap? The entire reason PTE_DEVMAP exists was to allow
+> get_user_pages() for PMEM and not require every downstream-GUP code
+> path to specifically consider whether it was talking to PMEM or RAM
+> pages, and certainly not whether they were reading or writing to it.
 
-Sorry, I don't understand where is the layering violation (maybe it doesn't
-help me either that I'm not familiar with Broadcom architectures).
+kmap_local() is fine. That can work automatically because it's strict
+local to the context which does the mapping.
 
-Is the SYSTEMPORT Lite always used as a DSA master, or could it also be
-used standalone? What would be the issue with hardcoding a max_mtu value
-which is large enough for b53 to use jumbo frames?
+kmap() is dubious because it's a 'global' mapping as dictated per
+HIGHMEM. So doing the RELAXED mode for kmap() is sensible I think to
+identify cases where the mapped address is really handed to a different
+execution context. We want to see those cases and analyse whether this
+can't be solved in a different way. That's why I suggested to do a
+warning in that case.
+
+Also vs. the DAX use case I really meant the code in fs/dax and
+drivers/dax/ itself which is handling this via dax_read_[un]lock.
+
+Does that make more sense?
+
+Thanks,
+
+        tglx
+
+
