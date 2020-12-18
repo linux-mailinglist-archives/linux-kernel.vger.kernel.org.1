@@ -2,137 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F6F2DEAAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 22:01:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55D9C2DEAB5
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 22:04:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726173AbgLRU7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 15:59:44 -0500
-Received: from nat-hk.nvidia.com ([203.18.50.4]:62787 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725836AbgLRU7n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 15:59:43 -0500
-Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fdd18150000>; Sat, 19 Dec 2020 04:59:01 +0800
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL102.nvidia.com
- (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 18 Dec
- 2020 20:59:00 +0000
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.176)
- by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 18 Dec 2020 20:59:00 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JGrbTCunII8mPTrhgoBTw/61f7RDYJe8UwipAbQA457oKdi12GwCdewc8kpYzeMAhRbHncnaZeqbp8qhsCpzryNOOMpCFLseuSDyPwVoTWdwaThxUB6G7WiQcr5RpAyp45Z2mVKKfQ8ZxfbTZX0wGKhvMytghd8h490v1WOP8ZbyaOFJ+Dwuz/vf7vI32VZb4CbSuwQ/sIoiiDX/Nvj2UTjxh/BR+7F6G6akvndRWbiSUyKwCV5Wr34xwfzM0Lxnoz7nRNJH5+X2maeM1OytktHBvoApB3IQgkRLZ7MqkaB8fdSMFQ9mD/JbuCthVJByWcpXQs4szaYhGN0d0LZWOg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IDI5Cvx/QMGqhJCQkIPCkWYEOEwvb1t/i3GIrRAP0jE=;
- b=d1XIhdVhDPfoKRtu0NO2Xf+Drb+s/9Ya41Tsi9y9X8HNn9ZDTHsaGEfuhKGKdKpfMw9+4MuA9CkvN2Phiq82vpObFyFG6ZhmM7bcc4WAS6oxJtVLaX1/0SnRBjjSNjc4oCuPI6MCCUW2Pb8j2UAkEsE/iC6h6TzoKgiaclVBI7chvpYlWT/9tMRxzTbYHsDh/zTC1kKLvY//4vBynYAeQoX8BUgWxqbj9xX3+Cr2RItrVh475GdssbU9vyzYc46keBjTlL6foJGUVHP2HeKitTmg9EebV5pnqkIonhs/Ts/FLHRpBteDVjh4Zgq9j193Miu7MX5pNuUKqwGVRYm+Hw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1660.namprd12.prod.outlook.com (2603:10b6:4:9::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3654.20; Fri, 18 Dec 2020 20:58:58 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3676.025; Fri, 18 Dec 2020
- 20:58:57 +0000
-Date:   Fri, 18 Dec 2020 16:58:56 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     Greg KH <gregkh@linuxfoundation.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        <alsa-devel@alsa-project.org>, Kiran Patil <kiran.patil@intel.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        "Liam Girdwood" <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        "Dave Ertman" <david.m.ertman@intel.com>,
+        id S1726232AbgLRVDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 16:03:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725778AbgLRVDe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 16:03:34 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAA2BC0617B0;
+        Fri, 18 Dec 2020 13:02:53 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id j16so3769616edr.0;
+        Fri, 18 Dec 2020 13:02:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mzct5htaiEux0x9rPO5sq+ILOG2h8DTokZY7C5lhKkg=;
+        b=BCdINtKQLiA24DLJWFXMCfu1JUUFx6/f4n5yu+UBopNswmAxv/YeeRIN2QCueWboqR
+         cd0KcpYSCh0qBNkyup0yexILujiXngAJJC+qXT/eLyc3y5XQ/VFiW/SgeF4fkjSIDCSu
+         Cml9Rn28XDqWQq5Xn2LVaVWES1qzDmEkc4cTASvE9KJjTIJFTngn5+naCcHDQOTwEEDH
+         kejOxYMzU0GCTssnuPimA0Ye1ce1fqn0zhIfl7QN4WArFoKleOuizh7jPzbhVFYYObcy
+         s06YveS12GdZ/VMe2rk9gZLD3vpes5/BGSng81VIs/wZrQWmoqocqXW9KJIDQ2EX9rVD
+         xOOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mzct5htaiEux0x9rPO5sq+ILOG2h8DTokZY7C5lhKkg=;
+        b=rsWT+PBNyW0EctaobrIuOuT0njMmuKeLPimG2XINzcdJJLyWizXpH0vO8/+gzxO5N8
+         ncw4QKq9uVPQAmeAmkg8d0Je7r0SpgdiR+ajzlLknMNFRMDYk9+gFsb1rB+eUHVq+P0o
+         HBtHalLQcwziOTOmxRFUAgI1HIDCOwqWDQIlV74jQpmp7EXx522DJVDkPxBWTuSUCC5B
+         PCQlKh1M/YVN9AisFIWTUXhW+zEOAqPOAZX0LsLdJZVT0ERoLaPv49Kxq3HxiRP/YOaz
+         v3QZ+t2lWi+uf0zjPWrcCvOKW5NtYWKa3dr+WyeJOl7cBo3ChKnYmEW6IM/zgnbAu2K3
+         Ow8Q==
+X-Gm-Message-State: AOAM531XpkB3Hjbr56XKTJwmrEoQ8k4l3yxx22z8oz+HDVb09o/m6681
+        AjDe8hEme3M0Ll6tW/doJdY=
+X-Google-Smtp-Source: ABdhPJyxJWD4Fo3smfSZgPoleK1imWoabQUl6UBIgTiStR84QFPZOnmgOBoAgDJHdYgvnkLOwRGGPQ==
+X-Received: by 2002:aa7:c78c:: with SMTP id n12mr6347111eds.363.1608325372500;
+        Fri, 18 Dec 2020 13:02:52 -0800 (PST)
+Received: from skbuf ([188.25.2.120])
+        by smtp.gmail.com with ESMTPSA id r1sm5901368eje.51.2020.12.18.13.02.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Dec 2020 13:02:51 -0800 (PST)
+Date:   Fri, 18 Dec 2020 23:02:50 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     netdev@vger.kernel.org, andrew@lunn.ch,
+        "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        David Miller <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Parav Pandit <parav@mellanox.com>, <lee.jones@linaro.org>
-Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
-Message-ID: <20201218205856.GZ552508@nvidia.com>
-References: <X8usiKhLCU3PGL9J@kroah.com> <20201217211937.GA3177478@piout.net>
- <X9xV+8Mujo4dhfU4@kroah.com> <20201218131709.GA5333@sirena.org.uk>
- <20201218140854.GW552508@nvidia.com> <20201218155204.GC5333@sirena.org.uk>
- <20201218162817.GX552508@nvidia.com> <20201218180310.GD5333@sirena.org.uk>
- <20201218184150.GY552508@nvidia.com> <20201218203211.GE5333@sirena.org.uk>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201218203211.GE5333@sirena.org.uk>
-X-ClientProxiedBy: BL0PR01CA0007.prod.exchangelabs.com (2603:10b6:208:71::20)
- To DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+        Murali Krishna Policharla <murali.policharla@broadcom.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "open list:BROADCOM SYSTEMPORT ETHERNET DRIVER" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net] net: systemport: set dev->max_mtu to
+ UMAC_MAX_MTU_SIZE
+Message-ID: <20201218210250.owahylqnagtssbsw@skbuf>
+References: <20201218173843.141046-1-f.fainelli@gmail.com>
+ <20201218202441.ppcxswvlix3xszsn@skbuf>
+ <c178b5db-3de4-5f02-eee3-c9e69393174a@gmail.com>
+ <20201218205220.jb3kh7v23gtpymmx@skbuf>
+ <b8e61c3f-179f-7d8f-782a-86a8c69c5a75@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR01CA0007.prod.exchangelabs.com (2603:10b6:208:71::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Fri, 18 Dec 2020 20:58:57 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kqMq0-00CvHl-1X; Fri, 18 Dec 2020 16:58:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1608325141; bh=IDI5Cvx/QMGqhJCQkIPCkWYEOEwvb1t/i3GIrRAP0jE=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=e4U24Cpk8UCcJbcDn9+jDbjP7qDNv3rqoxrUVk5ezTKPcccWpv9boWD7Anosm1aV+
-         LDBTd+U5ZAxZ0n8yQuFiSbX9fQs9KjoVI1HcueJzwi+7tyGJT8gqrzjihUqQmBo//z
-         NVZEgtR3qigkwRmHnFqqiv76radIFSLMlxr56KJDVtu7StPz+r7tDiwmpK2kZtl75b
-         tR/zUiflnKJT09hUyG7P5NCNla78nMTkKFf3K5HxbNJnEgE1IgSuLWdyq5BokFpaZn
-         qqUvdAStiWCCNMQDWEGD8CusvNAKMxNAwW1BHvE98MqO79QCiaXYcpkTzEauq//rDC
-         LJwy5agNHp11Q==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b8e61c3f-179f-7d8f-782a-86a8c69c5a75@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 08:32:11PM +0000, Mark Brown wrote:
-
-> > So, I strongly suspect, MFD should create mfd devices on a MFD bus
-> > type.
+On Fri, Dec 18, 2020 at 12:54:33PM -0800, Florian Fainelli wrote:
+> On 12/18/20 12:52 PM, Vladimir Oltean wrote:
+> > On Fri, Dec 18, 2020 at 12:30:20PM -0800, Florian Fainelli wrote:
+> >> On 12/18/20 12:24 PM, Vladimir Oltean wrote:
+> >>> Hi Florian,
+> >>>
+> >>> On Fri, Dec 18, 2020 at 09:38:43AM -0800, Florian Fainelli wrote:
+> >>>> The driver is already allocating receive buffers of 2KiB and the
+> >>>> Ethernet MAC is configured to accept frames up to UMAC_MAX_MTU_SIZE.
+> >>>>
+> >>>> Fixes: bfcb813203e6 ("net: dsa: configure the MTU for switch ports")
+> >>>> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> >>>> ---
+> >>>>  drivers/net/ethernet/broadcom/bcmsysport.c | 1 +
+> >>>>  1 file changed, 1 insertion(+)
+> >>>>
+> >>>> diff --git a/drivers/net/ethernet/broadcom/bcmsysport.c b/drivers/net/ethernet/broadcom/bcmsysport.c
+> >>>> index 0fdd19d99d99..b1ae9eb8f247 100644
+> >>>> --- a/drivers/net/ethernet/broadcom/bcmsysport.c
+> >>>> +++ b/drivers/net/ethernet/broadcom/bcmsysport.c
+> >>>> @@ -2577,6 +2577,7 @@ static int bcm_sysport_probe(struct platform_device *pdev)
+> >>>>  			 NETIF_F_HW_VLAN_CTAG_TX;
+> >>>>  	dev->hw_features |= dev->features;
+> >>>>  	dev->vlan_features |= dev->features;
+> >>>> +	dev->max_mtu = UMAC_MAX_MTU_SIZE;
+> >>>>  
+> >>>>  	/* Request the WOL interrupt and advertise suspend if available */
+> >>>>  	priv->wol_irq_disabled = 1;
+> >>>> -- 
+> >>>> 2.25.1
+> >>>>
+> >>>
+> >>> Do you want to treat the SYSTEMPORT Lite differently?
+> >>>
+> >>> 	/* Set maximum frame length */
+> >>> 	if (!priv->is_lite)
+> >>> 		umac_writel(priv, UMAC_MAX_MTU_SIZE, UMAC_MAX_FRAME_LEN);
+> >>> 	else
+> >>> 		gib_set_pad_extension(priv);
+> >>
+> >> SYSTEMPORT Lite does not actually validate the frame length, so setting
+> >> a maximum number to the buffer size we allocate could work, but I don't
+> >> see a reason to differentiate the two types of MACs here.
+> > 
+> > And if the Lite doesn't validate the frame length, then shouldn't it
+> > report a max_mtu equal to the max_mtu of the attached DSA switch, plus
+> > the Broadcom tag length? Doesn't the b53 driver support jumbo frames?
 > 
-> Historically people did try to create custom bus types, as I have
-> pointed out before there was then pushback that these were duplicating
-> the platform bus so everything uses platform bus.
+> And how would I do that without create a horrible layering violation in
+> either the systemport driver or DSA? Yes the b53 driver supports jumbo
+> frames.
 
-Yes, I vaugely remember..
+Sorry, I don't understand where is the layering violation (maybe it doesn't
+help me either that I'm not familiar with Broadcom architectures).
 
-I don't know what to say, it seems Greg doesn't share this view of
-platform devices as a universal device.
-
-Reading between the lines, I suppose things would have been happier
-with some kind of inheritance scheme where platform device remained as
-only instantiated directly in board files, while drivers could bind to
-OF/DT/ACPI/FPGA/etc device instantiations with minimal duplication &
-boilerplate.
-
-And maybe that is exactly what we have today with platform devices,
-though the name is now unfortunate.
-
-> I can't tell the difference between what it's doing and what SOF is
-> doing, the code I've seen is just looking at the system it's running
-> on and registering a fixed set of client devices.  It looks slightly
-> different because it's registering a device at a time with some wrapper
-> functions involved but that's what the code actually does.
-
-SOF's aux bus usage in general seems weird to me, but if you think
-it fits the mfd scheme of primarily describing HW to partition vs
-describing a SW API then maybe it should use mfd.
-
-The only problem with mfd as far as SOF is concerned was Greg was not
-happy when he saw PCI stuff in the MFD subsystem.
-
-This whole thing started when Intel first proposed to directly create
-platform_device's in their ethernet driver and Greg had a quite strong
-NAK to that.
-
-MFD still doesn't fit what mlx5 and others in the netdev area are
-trying to do. Though it could have been soe-horned it would have been
-really weird to create a platform device with an empty HW resource
-list. At a certain point the bus type has to mean *something*!
-
-Jason
+Is the SYSTEMPORT Lite always used as a DSA master, or could it also be
+used standalone? What would be the issue with hardcoding a max_mtu value
+which is large enough for b53 to use jumbo frames?
