@@ -2,124 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 330522DEB49
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 22:50:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6668D2DEB52
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 22:59:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726220AbgLRVuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 16:50:01 -0500
-Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:58790 "EHLO
-        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725982AbgLRVuA (ORCPT
+        id S1726076AbgLRV7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 16:59:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725813AbgLRV7C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 16:50:00 -0500
-Received: from dread.disaster.area (pa49-181-255-32.pa.nsw.optusnet.com.au [49.181.255.32])
-        by mail110.syd.optusnet.com.au (Postfix) with ESMTPS id 749E310676B;
-        Sat, 19 Dec 2020 08:49:16 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1kqNch-000DzC-NE; Sat, 19 Dec 2020 08:49:15 +1100
-Date:   Sat, 19 Dec 2020 08:49:15 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Donald Buczek <buczek@molgen.mpg.de>
-Cc:     linux-xfs@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        it+linux-xfs@molgen.mpg.de
-Subject: Re: v5.10.1 xfs deadlock
-Message-ID: <20201218214915.GA53382@dread.disaster.area>
-References: <b8da4aed-ee44-5d9f-88dc-3d32f0298564@molgen.mpg.de>
+        Fri, 18 Dec 2020 16:59:02 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E925BC0617B0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 13:58:21 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id g20so5369389ejb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 13:58:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=awSkLxPxfKKMYWXrPvJO5HFC6rX6G+L4B8C1Llf9W6k=;
+        b=hLBV/ED7BfeJwzOqpNCmMYChlwoFiY2KhYRYAh9YAvNmhTCp5Rl5vOtjXE5lcygy6P
+         xGW8sekB6mt/nykunGGg68jfMt3kl8nI0XjHiLHAw/Jl44bdjco/2PBUvN8fBn5kDwON
+         gE1GN8Dxfx9SDSEZCsA/rAzWdaPWuRJucgTnKWiNxbhGi9kV9JTK9FfS9yflDIleezEV
+         bNojTL0m3+dL9+Bw8KoCwccFevhvpilw/9ImOHE0xnU4wNOK7nlI50q9eVjVevAIbBH7
+         jimQcsulIbzCWqGNVfNFRrbVZ+LrmM/3NVINZEg9b1lVwrhdpKkWdJLhFQIZGVrqeCxa
+         DBdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=awSkLxPxfKKMYWXrPvJO5HFC6rX6G+L4B8C1Llf9W6k=;
+        b=e1DMDFtoLikkIauMkxMXZ4AtU7nqh2KdKDYOEy/oQ2/Ag8soW8BPwbtLMm9ov100ud
+         RebMjw+/Mo9hjpYQnNGNPHp7qmRzmMME9wm9yHrH6Q1MlzFG6S89sUa2AblNNxuuWl8G
+         Ndt/qoCBBYJyaDf7x68T6jWHOIEaS2BMSYGmKbSfCL2TdzBKvPnjVEIovqXSt5UFKT0M
+         6pNZXmSjI2Ktsiabysk6un6PzUaJ+XxPx7ta/QQEGEwLtc+BsBgReOyb4IzcM6Z/nOdU
+         vwjlp5xoKWpqryvU2cR3CxPtHvsboxu18YStvxxchNW7DN2do78nZ2CTAPpN4LPP6fDu
+         MAxg==
+X-Gm-Message-State: AOAM5317/tzN6nwG4avwzjcKAAg3+324jiz2HOCPUcBJUI4wneBzHmZM
+        Thly4iOpXsfP+ON3yG18eiGeyuiDOHtjn54rslKJUA==
+X-Google-Smtp-Source: ABdhPJw+WBaQpu6K/EP/XCCpxET87+bULI/RU+iA1GSA2CpDe3vqce08alBcHTx2GShwo2pEUBLYdR2k0/3Rq4IDZN0=
+X-Received: by 2002:a17:906:edb2:: with SMTP id sa18mr5756613ejb.264.1608328700420;
+ Fri, 18 Dec 2020 13:58:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b8da4aed-ee44-5d9f-88dc-3d32f0298564@molgen.mpg.de>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0 cx=a_idp_d
-        a=TT2gYx/P4twmiiok1SQxOQ==:117 a=TT2gYx/P4twmiiok1SQxOQ==:17
-        a=kj9zAlcOel0A:10 a=zTNgK-yGK50A:10 a=pbPJX3KNAAAA:8 a=WWXfqoTBAAAA:8
-        a=7-415B0cAAAA:8 a=n4V3cln1qZeQZ-Gr4-cA:9 a=CjuIK1q_8ugA:10
-        a=oq68ferKVpmdzqj7Fr_q:22 a=G2uvcFSCWpQuK2C1375M:22
-        a=biEYGPWJfzWAr4FL6Ov7:22
+References: <20201106232908.364581-1-ira.weiny@intel.com> <20201106232908.364581-5-ira.weiny@intel.com>
+ <871rfoscz4.fsf@nanos.tec.linutronix.de> <87mtycqcjf.fsf@nanos.tec.linutronix.de>
+ <878s9vqkrk.fsf@nanos.tec.linutronix.de> <CAPcyv4h2MvybBi==3uzAjGeW0R7azHYSKwmvzMXq9eM8NzMLEg@mail.gmail.com>
+ <875z4yrfhr.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <875z4yrfhr.fsf@nanos.tec.linutronix.de>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 18 Dec 2020 13:58:09 -0800
+Message-ID: <CAPcyv4gqm5p+pVmX4JL0fT2LY0dfoT+UXAfsGLA9LMr42vp33A@mail.gmail.com>
+Subject: Re: [PATCH V3 04/10] x86/pks: Preserve the PKRS MSR on context switch
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     "Weiny, Ira" <ira.weiny@intel.com>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux MM <linux-mm@kvack.org>, linux-kselftest@vger.kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 06:44:51PM +0100, Donald Buczek wrote:
-> Dear xfs developer,
-> 
-> I was doing some testing on a Linux 5.10.1 system with two 100 TB xfs filesystems on md raid6 raids.
-> 
-> The stress test was essentially `cp -a`ing a Linux source repository with two threads in parallel on each filesystem.
-> 
-> After about on hour, the processes to one filesystem (md1) blocked, 30 minutes later the process to the other filesystem (md0) did.
-> 
->     root      7322  2167  0 Dec16 pts/1    00:00:06 cp -a /jbod/M8068/scratch/linux /jbod/M8068/scratch/1/linux.018.TMP
->     root      7329  2169  0 Dec16 pts/1    00:00:05 cp -a /jbod/M8068/scratch/linux /jbod/M8068/scratch/2/linux.019.TMP
->     root     13856  2170  0 Dec16 pts/1    00:00:08 cp -a /jbod/M8067/scratch/linux /jbod/M8067/scratch/2/linux.028.TMP
->     root     13899  2168  0 Dec16 pts/1    00:00:05 cp -a /jbod/M8067/scratch/linux /jbod/M8067/scratch/1/linux.027.TMP
-> 
-> Some info from the system (all stack traces, slabinfo) is available here: https://owww.molgen.mpg.de/~buczek/2020-12-16.info.txt
-> 
-> It stands out, that there are many (549 for md0, but only 10 for md1)  "xfs-conv" threads all with stacks like this
-> 
->     [<0>] xfs_log_commit_cil+0x6cc/0x7c0
->     [<0>] __xfs_trans_commit+0xab/0x320
->     [<0>] xfs_iomap_write_unwritten+0xcb/0x2e0
->     [<0>] xfs_end_ioend+0xc6/0x110
->     [<0>] xfs_end_io+0xad/0xe0
->     [<0>] process_one_work+0x1dd/0x3e0
->     [<0>] worker_thread+0x2d/0x3b0
->     [<0>] kthread+0x118/0x130
->     [<0>] ret_from_fork+0x22/0x30
-> 
-> xfs_log_commit_cil+0x6cc is
-> 
->   xfs_log_commit_cil()
->     xlog_cil_push_background(log)
->       xlog_wait(&cil->xc_push_wait, &cil->xc_push_lock);
-> 
-> Some other threads, including the four "cp" commands are also blocking at xfs_log_commit_cil+0x6cc
-> 
-> There are also single "flush" process for each md device with this stack signature:
-> 
->     [<0>] xfs_map_blocks+0xbf/0x400
->     [<0>] iomap_do_writepage+0x15e/0x880
->     [<0>] write_cache_pages+0x175/0x3f0
->     [<0>] iomap_writepages+0x1c/0x40
->     [<0>] xfs_vm_writepages+0x59/0x80
->     [<0>] do_writepages+0x4b/0xe0
->     [<0>] __writeback_single_inode+0x42/0x300
->     [<0>] writeback_sb_inodes+0x198/0x3f0
->     [<0>] __writeback_inodes_wb+0x5e/0xc0
->     [<0>] wb_writeback+0x246/0x2d0
->     [<0>] wb_workfn+0x26e/0x490
->     [<0>] process_one_work+0x1dd/0x3e0
->     [<0>] worker_thread+0x2d/0x3b0
->     [<0>] kthread+0x118/0x130
->     [<0>] ret_from_fork+0x22/0x30
-> 
-> xfs_map_blocks+0xbf is the
-> 
->     xfs_ilock(ip, XFS_ILOCK_SHARED);
-> 
-> in xfs_map_blocks().
+On Fri, Dec 18, 2020 at 1:06 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> On Fri, Dec 18 2020 at 11:20, Dan Williams wrote:
+> > On Fri, Dec 18, 2020 at 5:58 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+> > [..]
+> >>   5) The DAX case which you made "work" with dev_access_enable() and
+> >>      dev_access_disable(), i.e. with yet another lazy approach of
+> >>      avoiding to change a handful of usage sites.
+> >>
+> >>      The use cases are strictly context local which means the global
+> >>      magic is not used at all. Why does it exist in the first place?
+> >>
+> >>      Aside of that this global thing would never work at all because the
+> >>      refcounting is per thread and not global.
+> >>
+> >>      So that DAX use case is just a matter of:
+> >>
+> >>         grant/revoke_access(DEV_PKS_KEY, READ/WRITE)
+> >>
+> >>      which is effective for the current execution context and really
+> >>      wants to be a distinct READ/WRITE protection and not the magic
+> >>      global thing which just has on/off. All usage sites know whether
+> >>      they want to read or write.
+> >
+> > I was tracking and nodding until this point. Yes, kill the global /
+> > kmap() support, but if grant/revoke_access is not integrated behind
+> > kmap_{local,atomic}() then it's not a "handful" of sites that need to
+> > be instrumented it's 100s. Are you suggesting that "relaxed" mode
+> > enforcement is a way to distribute the work of teaching driver writers
+> > that they need to incorporate explicit grant/revoke-read/write in
+> > addition to kmap? The entire reason PTE_DEVMAP exists was to allow
+> > get_user_pages() for PMEM and not require every downstream-GUP code
+> > path to specifically consider whether it was talking to PMEM or RAM
+> > pages, and certainly not whether they were reading or writing to it.
+>
+> kmap_local() is fine. That can work automatically because it's strict
+> local to the context which does the mapping.
+>
+> kmap() is dubious because it's a 'global' mapping as dictated per
+> HIGHMEM. So doing the RELAXED mode for kmap() is sensible I think to
+> identify cases where the mapped address is really handed to a different
+> execution context. We want to see those cases and analyse whether this
+> can't be solved in a different way. That's why I suggested to do a
+> warning in that case.
+>
+> Also vs. the DAX use case I really meant the code in fs/dax and
+> drivers/dax/ itself which is handling this via dax_read_[un]lock.
+>
+> Does that make more sense?
 
-Can you post the entire dmesg output after running
-'echo w > /proc/sysrq-trigger' to dump all the block threads to
-dmesg?
-
-> I have an out of tree driver for the HBA ( smartpqi 2.1.6-005
-> pulled from linux-scsi) , but it is unlikely that this blocking is
-> related to that, because the md block devices itself are
-> responsive (`xxd /dev/md0` )
-
-My bet is that the OOT driver/hardware had dropped a log IO on the
-floor - XFS is waiting for the CIL push to complete, and I'm betting
-that is stuck waiting for iclog IO completion while writing the CIL
-to the journal. The sysrq output will tell us if this is the case,
-so that's the first place to look.
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Yup, got it. The dax code can be precise wrt to PKS in a way that
+kmap_local() cannot.
