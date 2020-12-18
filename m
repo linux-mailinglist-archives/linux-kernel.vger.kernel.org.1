@@ -2,171 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6FD2DE33E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 14:23:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 324D62DE33F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 14:24:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727053AbgLRNWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 08:22:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726474AbgLRNWX (ORCPT
+        id S1727098AbgLRNXh convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 18 Dec 2020 08:23:37 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2530 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726230AbgLRNXh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 08:22:23 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40029C061282
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 05:21:43 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id d26so2098571wrb.12
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 05:21:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=F+ibjVaRawhB9by9+I/z97txlwumatdH7xKnsmPgCGQ=;
-        b=k5O8dSEmSegIR7pYA9kV2ana+UeZIpHtGeDaUNyh9fmp8oCXJhsX8wUXP68tD5eWZv
-         RJZNsMiPVsggdsokowNDv9oX1TWqyfbNOEo8AjdDAIwgyrys3P5y66kWCBOsEuPhQfec
-         eWWyJzb0+2YmlgcrJ2Vewwut/ZG8owPpSTRMsG51UIA2RshPJJEckF1PF17v/GpCTCN9
-         JmoP6ZT/ILZd8XyE1rTs3xCfMNWWFloEsQPfq5hm3XQ/W43zMNM8RXcjG3enzySy8Pjl
-         dsIx74U40ax+muXd4/dAAMrr3h1qL1rj64mYoHM78mhsD9v5orIYz88yAK90ivsTkSv1
-         QU1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=F+ibjVaRawhB9by9+I/z97txlwumatdH7xKnsmPgCGQ=;
-        b=RKMYs+VLHIFdV8GToCKLPs4yv3oPQeBm+jOpxeFXljjSB7R5fiJj6DhQTPDBVHAlyK
-         wsSkOdb4NahNeSm2/vDcQhOIySr9sOhKVJuwWREaMyAbs41WE/Iwq6jNdUU0Vn78Sg4f
-         dMuPSokecWz2lP7TA/GkypKCx7Gs8lfFke+XhwxD1fqwAQVzaBoBwUu+NoWsPmJoffcp
-         XXBnxv/vhMS9lCoZypecEYNVllctv/VxumnBV5Ao9Gq0zQWjWl0B76lrB044tVLnfUp2
-         h5ETqSKk9EUtyIad+bjIZWymbzS/0TxPaiwb864wQ+e80NT4h2U4yiQTISfvEqUqw+58
-         NzcA==
-X-Gm-Message-State: AOAM532kPm6sOQ9PAxtS+3DyXbi+Az3++cZqIIBkPPprmWMPW+HO88+v
-        clJOx1dLEYU1aO67qlqlkTGpjQ==
-X-Google-Smtp-Source: ABdhPJwtBIUdA1p+Ktu1cWhF7xpUYRoQd2G/kpx1lZYPa72QSunJ0F9p0UsLXj2jqK45VkD4M5qrZw==
-X-Received: by 2002:a05:6000:11c1:: with SMTP id i1mr4613985wrx.16.1608297701780;
-        Fri, 18 Dec 2020 05:21:41 -0800 (PST)
-Received: from dell ([91.110.221.216])
-        by smtp.gmail.com with ESMTPSA id c190sm11393200wme.19.2020.12.18.05.21.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Dec 2020 05:21:41 -0800 (PST)
-Date:   Fri, 18 Dec 2020 13:21:39 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v3 3/7] mfd: Add MFD driver for ATC260x PMICs
-Message-ID: <20201218132139.GR207743@dell>
-References: <cover.1607216141.git.cristian.ciocaltea@gmail.com>
- <f538c21de556c66390614bad778f7dc095222e8c.1607216141.git.cristian.ciocaltea@gmail.com>
- <20201216101000.GD207743@dell>
- <20201217231731.GA104305@BV030612LT>
+        Fri, 18 Dec 2020 08:23:37 -0500
+Received: from dggeml406-hub.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Cy8fg1jqhzQsqX;
+        Fri, 18 Dec 2020 21:22:19 +0800 (CST)
+Received: from DGGEML424-HUB.china.huawei.com (10.1.199.41) by
+ dggeml406-hub.china.huawei.com (10.3.17.50) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Fri, 18 Dec 2020 21:22:54 +0800
+Received: from DGGEML513-MBX.china.huawei.com ([169.254.12.170]) by
+ dggeml424-hub.china.huawei.com ([10.1.199.41]) with mapi id 14.03.0487.000;
+ Fri, 18 Dec 2020 21:22:53 +0800
+From:   wufengguang <wufengguang@huawei.com>
+To:     Hui Zhu <teawater@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Hui Zhu <teawaterz@linux.alibaba.com>
+Subject: Re: [PATCH] usemem: Add option touch-alloc
+Thread-Topic: [PATCH] usemem: Add option touch-alloc
+Thread-Index: AdbVQLU3AXz0GA7TSPaB37n1qGP7DA==
+Date:   Fri, 18 Dec 2020 13:22:53 +0000
+Message-ID: <63AD405728A51946A32F7AFFEF2AFE88A50008@dggeml513-mbx.china.huawei.com>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.52.178.143]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201217231731.GA104305@BV030612LT>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Dec 2020, Cristian Ciocaltea wrote:
+Zhu Hui,
 
-> Hi Lee,
-> 
-> Thank you for the detailed review!
-> 
-> I will prepare a new revision, but there are still a couple of open
-> points..
+Applied both patches with minor cleanup. Thanks!
 
-Could you please snip your replies, leaving only the open points.
+Regards,
+Fengguang
 
-Scrolling through lots of empty quotes or "done" comments is quite
-time consuming.  Thanks.
-
-[...]
-
-> > > +	/*
-> > > +	 * Using regmap within an atomic context (e.g. accessing a PMIC when
-> > > +	 * powering system down) is normally allowed only if the regmap type
-> > > +	 * is MMIO and the regcache type is either REGCACHE_NONE or
-> > > +	 * REGCACHE_FLAT. For slow buses like I2C and SPI, the regmap is
-> > > +	 * internally protected by a mutex which is acquired non-atomically.
-> > > +	 *
-> > > +	 * Let's improve this by using a customized locking scheme inspired
-> > > +	 * from I2C atomic transfer. See i2c_in_atomic_xfer_mode() for a
-> > > +	 * starting point.
-> > > +	 */
-> > > +	if (system_state > SYSTEM_RUNNING && irqs_disabled())
-> > 
-> > Were does system_state come from?
-> 
-> It is declared in 'include/linux/kernel.h':
-> 
-> extern enum system_states {
-> 	SYSTEM_BOOTING,
-> 	SYSTEM_SCHEDULING,
-> 	SYSTEM_RUNNING,
-> 	SYSTEM_HALT,
-> 	SYSTEM_POWER_OFF,
-> 	SYSTEM_RESTART,
-> 	SYSTEM_SUSPEND,
-> } system_state;
-> 
-> The definition is in 'init/main.c':
-> 
-> enum system_states system_state __read_mostly;
-> EXPORT_SYMBOL(system_state);
-
-Ah, it's a system wide thing.  No problem.
-
-[...]
-
-> > > +	ret = regmap_read(atc260x->regmap, atc260x->rev_reg, &chip_rev);
-> > > +	if (ret) {
-> > > +		dev_err(dev, "Failed to get chip revision\n");
-> > > +		return ret;
-> > > +	}
-> > > +
-> > > +	if (chip_rev < 0 || chip_rev > 31) {
-> > > +		dev_err(dev, "Unknown chip revision: %d\n", ret);
-> > > +		return -EINVAL;
-> > > +	}
-> > 
-> > This still seems limiting.
-> 
-> This is based on the vendor implementation. Unfortunately I don't have
-> access to a data sheet or any other source of information about the
-> management of the chip revisions.
-
-So which versions does this driver work with?  All 32?
-
-[...]
-
-> > > +const struct of_device_id atc260x_i2c_of_match[] = {
-> > > +	{ .compatible = "actions,atc2603c", .data = (void *)ATC2603C },
-> > > +	{ .compatible = "actions,atc2609a", .data = (void *)ATC2609A },
-> > > +	{ /* sentinel */ }
-> > 
-> > I think you can drop the (void *) casts.
-> 
-> Without the cast, I get the following compiler warning:
-> 
-> drivers/mfd/atc260x-i2c.c:46:46: warning: initialization of ‘const void *’
-> from ‘int’ makes pointer from integer without a cast [-Wint-conversion]
->   { .compatible = "actions,atc2603c", .data = ATC2603C },
-
-Perhaps I'm getting confused with addresses of things.  Never mind.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
