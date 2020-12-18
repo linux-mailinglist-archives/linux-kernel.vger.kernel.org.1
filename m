@@ -2,233 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FCBF2DE627
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 16:05:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E02A2DE62B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 16:05:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731485AbgLRPDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 10:03:45 -0500
-Received: from mail-qk1-f180.google.com ([209.85.222.180]:44921 "EHLO
-        mail-qk1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731382AbgLRPDn (ORCPT
+        id S1731566AbgLRPD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 10:03:59 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:8220 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731531AbgLRPD5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 10:03:43 -0500
-Received: by mail-qk1-f180.google.com with SMTP id i67so2167567qkf.11
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 07:03:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Zjs7hNTEDKHlxBiYlsWxr44ZfT9qxL9IbjWkb/fejuo=;
-        b=EcUcSyJDiFbGr7vHI1YDNwf5fmAUjoylXSe5nx/swIqqPAwydwsKeVr6kHxx11VJp+
-         RBccdvZR8JrbHDlimOnw0oOhu4/B5IqSS6MBglz/uKEiopaNW6v8MO8dLyOHLr0+Oo/j
-         Fn5kE4A08/+c4lZhAXgXnZgpazC53OyJz21nfRgr5zZ9QtuD7a9HwUMQb9OiphEViq8A
-         ABYkKRyvkcwNAp0LEMgreL1KqFpVA6aXlq4CNh3a8lBdcCTSjV7C3MaFPW7hAeEoq2TN
-         QS36KLLlUgLT2WnRrpJQ3MZeTVdDQNmqDpH64gxUBQzAwX7pIPR+n3FdezFUMwQ/yDuY
-         DEBA==
-X-Gm-Message-State: AOAM531XrwhxtdKHa9vr7i7TFUobOKjsuhgnXxqMxTIzQs51QKMCuaNU
-        2+V/OdeLd7st3h/MisdVj9w7lQ==
-X-Google-Smtp-Source: ABdhPJyG4Nr4/zWsyUFtL20wO1j3BGOj0dhaf7PB/Ya6U+DCM0Kc+Gqeu3Oh+aj/pho+XYIGdqM1Tg==
-X-Received: by 2002:a37:ef10:: with SMTP id j16mr5133179qkk.129.1608303782338;
-        Fri, 18 Dec 2020 07:03:02 -0800 (PST)
-Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net. [68.20.15.154])
-        by smtp.gmail.com with ESMTPSA id v1sm6213367qki.96.2020.12.18.07.03.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Dec 2020 07:03:01 -0800 (PST)
-Date:   Fri, 18 Dec 2020 10:02:58 -0500
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, jlayton@kernel.org,
-        amir73il@gmail.com, sargun@sargun.me, miklos@szeredi.hu,
-        willy@infradead.org, jack@suse.cz, neilb@suse.com,
-        viro@zeniv.linux.org.uk
-Subject: Re: [PATCH 3/3] overlayfs: Check writeback errors w.r.t upper in
- ->syncfs()
-Message-ID: <20201218150258.GA866424@tleilax.poochiereds.net>
-References: <20201216233149.39025-1-vgoyal@redhat.com>
- <20201216233149.39025-4-vgoyal@redhat.com>
- <20201217200856.GA707519@tleilax.poochiereds.net>
- <20201218144418.GA3424@redhat.com>
+        Fri, 18 Dec 2020 10:03:57 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fdcc4b40001>; Fri, 18 Dec 2020 07:03:16 -0800
+Received: from [10.26.73.104] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 18 Dec
+ 2020 15:03:09 +0000
+Subject: Re: [PATCH] gcc-plugins: simplify GCC plugin-dev capability test
+To:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+CC:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Emese Revfy <re.emese@gmail.com>,
+        <linux-hardening@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+References: <CGME20201218075758eucas1p1605768803a5c9edce4fbe54b3e3b859a@eucas1p1.samsung.com>
+ <20201203125700.161354-1-masahiroy@kernel.org>
+ <b9b17126-9af5-2f73-526e-91bb9fd27f71@samsung.com>
+ <CAK7LNART2qQBY7Vc8rhMiXS_Fwty7qpWjwwfPrUegTb-gjy6sA@mail.gmail.com>
+ <9f959875-1a30-b1a1-b626-3805e24a6df3@samsung.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <e5b06d9a-9b24-2440-e0c2-8bf7095eccd9@nvidia.com>
+Date:   Fri, 18 Dec 2020 15:03:07 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201218144418.GA3424@redhat.com>
+In-Reply-To: <9f959875-1a30-b1a1-b626-3805e24a6df3@samsung.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1608303796; bh=i2gqYFm8Es9As6zex1py1RDeyxb0UIj49IrIjubjQnA=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=iczPNr/KjI/Oz8oLjaL78LiLPDQ/RO5BMegfEKhPALNn/bYVQ/pfdNrJl9zUOGKmO
+         6hQtceyyfG8fx/eDxrJueUkdNrrThvMrT4hRVge7jDVa5AvZkA6mDnAXWkdQaNsVa+
+         y0lZtGLrWzgDuZoXdqTz/4AhBG/a4Q46qCRK+aaBfCN+CHf0ROKaJtLuOF1uWn/2p0
+         YXrxNnEgaDxDwLRRfEO3/+imIxr+bGMINBPzlh1qhAU/GehUHt+lgKV6Pj8f7Ep0Uv
+         c6cpp0EtRuMDIpTOlewQmhpTVkh7l5MvIVE3XzIX2mPk70AtqHsdU+PvUdTthA2rJJ
+         sEggiq2y3ihMw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 09:44:18AM -0500, Vivek Goyal wrote:
-> On Thu, Dec 17, 2020 at 03:08:56PM -0500, Jeffrey Layton wrote:
-> > On Wed, Dec 16, 2020 at 06:31:49PM -0500, Vivek Goyal wrote:
-> > > Check for writeback error on overlay super block w.r.t "struct file"
-> > > passed in ->syncfs().
-> > > 
-> > > As of now real error happens on upper sb. So this patch first propagates
-> > > error from upper sb to overlay sb and then checks error w.r.t struct
-> > > file passed in.
-> > > 
-> > > Jeff, I know you prefer that I should rather file upper file and check
-> > > error directly on on upper sb w.r.t this real upper file.  While I was
-> > > implementing that I thought what if file is on lower (and has not been
-> > > copied up yet). In that case shall we not check writeback errors and
-> > > return back to user space? That does not sound right though because,
-> > > we are not checking for writeback errors on this file. Rather we
-> > > are checking for any error on superblock. Upper might have an error
-> > > and we should report it to user even if file in question is a lower
-> > > file. And that's why I fell back to this approach. But I am open to
-> > > change it if there are issues in this method.
-> > > 
-> > > Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
-> > > ---
-> > >  fs/overlayfs/ovl_entry.h |  2 ++
-> > >  fs/overlayfs/super.c     | 15 ++++++++++++---
-> > >  2 files changed, 14 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/fs/overlayfs/ovl_entry.h b/fs/overlayfs/ovl_entry.h
-> > > index 1b5a2094df8e..a08fd719ee7b 100644
-> > > --- a/fs/overlayfs/ovl_entry.h
-> > > +++ b/fs/overlayfs/ovl_entry.h
-> > > @@ -79,6 +79,8 @@ struct ovl_fs {
-> > >  	atomic_long_t last_ino;
-> > >  	/* Whiteout dentry cache */
-> > >  	struct dentry *whiteout;
-> > > +	/* Protects multiple sb->s_wb_err update from upper_sb . */
-> > > +	spinlock_t errseq_lock;
-> > >  };
-> > >  
-> > >  static inline struct vfsmount *ovl_upper_mnt(struct ovl_fs *ofs)
-> > > diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
-> > > index b4d92e6fa5ce..e7bc4492205e 100644
-> > > --- a/fs/overlayfs/super.c
-> > > +++ b/fs/overlayfs/super.c
-> > > @@ -291,7 +291,7 @@ int ovl_syncfs(struct file *file)
-> > >  	struct super_block *sb = file->f_path.dentry->d_sb;
-> > >  	struct ovl_fs *ofs = sb->s_fs_info;
-> > >  	struct super_block *upper_sb;
-> > > -	int ret;
-> > > +	int ret, ret2;
-> > >  
-> > >  	ret = 0;
-> > >  	down_read(&sb->s_umount);
-> > > @@ -310,10 +310,18 @@ int ovl_syncfs(struct file *file)
-> > >  	ret = sync_filesystem(upper_sb);
-> > >  	up_read(&upper_sb->s_umount);
-> > >  
-> > > +	/* Update overlay sb->s_wb_err */
-> > > +	if (errseq_check(&upper_sb->s_wb_err, sb->s_wb_err)) {
-> > > +		/* Upper sb has errors since last time */
-> > > +		spin_lock(&ofs->errseq_lock);
-> > > +		errseq_check_and_advance(&upper_sb->s_wb_err, &sb->s_wb_err);
-> > > +		spin_unlock(&ofs->errseq_lock);
-> > > +	}
-> > 
-> > So, the problem here is that the resulting value in sb->s_wb_err is
-> > going to end up with the REPORTED flag set (using the naming in my
-> > latest set). So, a later opener of a file on sb->s_wb_err won't see it.
-> > 
-> > For instance, suppose you call sync() on the box and does the above
-> > check and advance. Then, you open the file and call syncfs() and get
-> > back no error because REPORTED flag was set when you opened. That error
-> > will then be lost.
-> 
-> Hi Jeff,
-> 
-> In this patch, I am doing this only in ->syncfs() path and not in
-> ->sync_fs() path. IOW, errseq_check_and_advance() will take place
-> only if there is a valid "struct file" passed in. That means there
-> is a consumer of the error and that means it should be fine to
-> set the sb->s_wb_err as SEEN/REPORTED, right?
-> 
-> If we end up plumbming "struct file" in existing ->sync_fs() routine,
-> then I will call this only if a non NULL struct file has been 
-> passed in. Otherwise skip this step. 
-> 
-> IOW, sync() call will not result in errseq_check_and_advance() instead
-> a syncfs() call will. 
-> 
 
-It still seems odd and I'm not sure you won't end up with weird corner
-cases due to the flag handling. If you're doing this in the new
-f_op->syncfs, then why bother with sb->s_wb_err at all? You can just do
-this, and avoid the overlayfs sb altogether:
+On 18/12/2020 10:05, Marek Szyprowski wrote:
+> On 18.12.2020 10:43, Masahiro Yamada wrote:
+>> On Fri, Dec 18, 2020 at 4:58 PM Marek Szyprowski
+>> <m.szyprowski@samsung.com> wrote:
+>>> On 03.12.2020 13:57, Masahiro Yamada wrote:
+>>>> Linus pointed out a third of the time in the Kconfig parse stage comes
+>>>> from the single invocation of cc1plus in scripts/gcc-plugin.sh [1],
+>>>> and directly testing plugin-version.h for existence cuts down the
+>>>> overhead a lot. [2]
+>>>>
+>>>> This commit takes one step further to kill the build test entirely.
+>>>>
+>>>> The small piece of code was probably intended to test the C++ designated
+>>>> initializer, which was not supported until C++20.
+>>>>
+>>>> In fact, with -pedantic option given, both GCC and Clang emit a warning.
+>>>>
+>>>> $ echo 'class test { public: int test; } test = { .test = 1 };' | g++ -x c++ -pedantic - -fsyntax-only
+>>>> <stdin>:1:43: warning: C++ designated initializers only available with '-std=c++2a' or '-std=gnu++2a' [-Wpedantic]
+>>>> $ echo 'class test { public: int test; } test = { .test = 1 };' | clang++ -x c++ -pedantic - -fsyntax-only
+>>>> <stdin>:1:43: warning: designated initializers are a C++20 extension [-Wc++20-designator]
+>>>> class test { public: int test; } test = { .test = 1 };
+>>>>                                             ^
+>>>> 1 warning generated.
+>>>>
+>>>> Otherwise, modern C++ compilers should be able to build the code, and
+>>>> hopefully skipping this test should not make any practical problem.
+>>>>
+>>>> Checking the existence of plugin-version.h is still needed to ensure
+>>>> the plugin-dev package is installed. The test code is now small enough
+>>>> to be embedded in scripts/gcc-plugins/Kconfig.
+>>>>
+>>>> [1] https://protect2.fireeye.com/v1/url?k=03db90e1-5c40a828-03da1bae-0cc47a336fae-4cc36f5830aeb78d&q=1&e=dfdc1cf9-82d6-4ca5-b35d-1782e918bde3&u=https%3A%2F%2Flore.kernel.org%2Flkml%2FCAHk-%3DwjU4DCuwQ4pXshRbwDCUQB31ScaeuDo1tjoZ0_PjhLHzQ%40mail.gmail.com%2F
+>>>> [2] https://protect2.fireeye.com/v1/url?k=965b670a-c9c05fc3-965aec45-0cc47a336fae-e34339513ff747c0&q=1&e=dfdc1cf9-82d6-4ca5-b35d-1782e918bde3&u=https%3A%2F%2Flore.kernel.org%2Flkml%2FCAHk-%3DwhK0aQxs6Q5ijJmYF1n2ch8cVFSUzU5yUM_HOjig%3D%2Bvnw%40mail.gmail.com%2F
+>>>>
+>>>> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+>>>> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+>>> This patch landed in linux next-20201217 as commit 1e860048c53e
+>>> ("gcc-plugins: simplify GCC plugin-dev capability test").
+>>>
+>>> It causes a build break with my tests setup, but I'm not sure weather it
+>>> is really an issue of this commit or a toolchain I use. However I've
+>>> checked various versions of the gcc cross-compilers released by Linaro
+>>> at https://protect2.fireeye.com/v1/url?k=053727b6-5aac1f7f-0536acf9-0cc47a336fae-5bd799e7ce6b1b9b&q=1&e=dfdc1cf9-82d6-4ca5-b35d-1782e918bde3&u=https%3A%2F%2Freleases.linaro.org%2Fcomponents%2Ftoolchain%2Fbinaries%2F and all
+>>> fails with the same error:
+>>>
+>>> $ make ARCH=arm
+>>> CROSS_COMPILE=../../cross/gcc-arm-10.2-2020.11-x86_64-arm-none-eabi/bin/arm-none-eabi-
+>>> zImage
+>>>     HOSTCXX scripts/gcc-plugins/arm_ssp_per_task_plugin.so
+>>> In file included from
+>>> /home/mszyprow/dev/cross/gcc-arm-10.2-2020.11-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/10.2.1/plugin/include/gcc-plugin.h:28:0,
+>>>                    from scripts/gcc-plugins/gcc-common.h:7,
+>>>                    from scripts/gcc-plugins/arm_ssp_per_task_plugin.c:3:
+>>> /home/mszyprow/dev/cross/gcc-arm-10.2-2020.11-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/10.2.1/plugin/include/system.h:687:10:
+>>> fatal error: gmp.h: No such file or directory
+>>>    #include <gmp.h>
+>>>             ^~~~~~~
+>>> compilation terminated.
+>>> scripts/gcc-plugins/Makefile:47: recipe for target
+>>> 'scripts/gcc-plugins/arm_ssp_per_task_plugin.so' failed
+>>> make[2]: *** [scripts/gcc-plugins/arm_ssp_per_task_plugin.so] Error 1
+>>> scripts/Makefile.build:496: recipe for target 'scripts/gcc-plugins' failed
+>>> make[1]: *** [scripts/gcc-plugins] Error 2
+>>> Makefile:1190: recipe for target 'scripts' failed
+>>> make: *** [scripts] Error 2
+>>>
+>>> Compilation works if I use the cross-gcc provided by
+>>> gcc-7-arm-linux-gnueabi/gcc-arm-linux-gnueabi Ubuntu packages, which is:
+>>>
+>>> $ arm-linux-gnueabi-gcc --version
+>>> arm-linux-gnueabi-gcc (Ubuntu/Linaro 7.5.0-3ubuntu1~18.04) 7.5.0
+>>>
+>>
+>> I can compile gcc-plugins with Linaro toolchians.
+>>
+>> The version of mine is this:
+>>
+>> masahiro@oscar:~/ref/linux-next$
+>> ~/tools/arm-linaro-7.5/bin/arm-linux-gnueabihf-gcc --version
+>> arm-linux-gnueabihf-gcc (Linaro GCC 7.5-2019.12) 7.5.0
+>> Copyright (C) 2017 Free Software Foundation, Inc.
+>> This is free software; see the source for copying conditions.  There is NO
+>> warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+>>
+>>
+>>
+>>
+>> Maybe, it depends on the host environment?
+>>
+>>
+>> Please try this:
+>>
+>> $ sudo apt install libgmp-dev
+> 
+> Indeed, it was missing on my setup. Sorry for the noise.
 
-if (errseq_check(&upper_sb->s_wb_err, file->f_sb_err)) {
-	/* Upper sb has errors since last time */
-	spin_lock(&file->f_lock);
-	errseq_check_and_advance(&upper_sb->s_wb_err, &file->f_sb_err);
-	spin_unlock(&file->f_lock);
-}
 
-That's simpler than trying to propagate the error between two
-errseq_t's. You would need to sample the upper_sb->s_wb_err at
-open time in the overlayfs ->open handler though, to make sure
-you're tracking the right one.
+So this change also breaks the build on our farm build machines and
+while we can request that packages are installed on these machines, it
+takes time. Is there anyway to avoid this?
 
-> > 
-> > >  
-> > > +	ret2 = errseq_check_and_advance(&sb->s_wb_err, &file->f_sb_err);
-> > >  out:
-> > >  	up_read(&sb->s_umount);
-> > > -	return ret;
-> > > +	return ret ? ret : ret2;
-> > >  }
-> > >  
-> > >  /**
-> > > @@ -1903,6 +1911,7 @@ static int ovl_fill_super(struct super_block *sb, void *data, int silent)
-> > >  	if (!cred)
-> > >  		goto out_err;
-> > >  
-> > > +	spin_lock_init(&ofs->errseq_lock);
-> > >  	/* Is there a reason anyone would want not to share whiteouts? */
-> > >  	ofs->share_whiteout = true;
-> > >  
-> > > @@ -1975,7 +1984,7 @@ static int ovl_fill_super(struct super_block *sb, void *data, int silent)
-> > >  
-> > >  		sb->s_stack_depth = ovl_upper_mnt(ofs)->mnt_sb->s_stack_depth;
-> > >  		sb->s_time_gran = ovl_upper_mnt(ofs)->mnt_sb->s_time_gran;
-> > > -
-> > > +		sb->s_wb_err = errseq_sample(&ovl_upper_mnt(ofs)->mnt_sb->s_wb_err);
-> > 
-> > This will mark the error on the upper_sb as REPORTED, and that's not
-> > really that's the case if you're just using it set s_wb_err in the
-> > overlay. You might want to use errseq_peek in this situation.
-> 
-> For now I am still looking at existing code and not new code. Because
-> I belive that new code does not change existing behavior instead
-> provides additional functionality to allow sampling the error without
-> marking it seen as well as provide helper to not force seeing an
-> unseen error.
-> 
-> So current errseq_sample() does not mark error SEEN. And if it is
-> an unseen error, we will get 0 and be forced to see the error next
-> time.
-> 
-> One small issue with this is that say upper has unseen error. Now
-> we mount overlay and save that value in sb->s_wb_err (unseen). Say
-> a file is opened on upper and error is now seen on upper. But
-> we still have unseen error cached in overlay and if overlay fd is
-> now opened, f->f_sb_err will be 0 and it will be forced to see
-> err on next syncfs().
-> 
-> IOW, despite the fact that overlay fd was opened after upper sb had
-> been marked seen, it still will see error. I think it probably is
-> not a big issue.
-> 
+Cheers
+Jon
 
-Good point. I was thinking about the newer code that may mark it
-OBSERVED when you sample at open time.
-
-Still, I think working with the overlayfs sb->s_wb_err is just adding
-complexity for little benefit.  Assuming that writeback errors can only
-happen on the upper layer, you're better off avoiding it.
-
-> 
-> > 
-> > >  	}
-> > >  	oe = ovl_get_lowerstack(sb, splitlower, numlower, ofs, layers);
-> > >  	err = PTR_ERR(oe);
-> > > -- 
-> > > 2.25.4
-> > > 
-> > 
-> 
+-- 
+nvpublic
