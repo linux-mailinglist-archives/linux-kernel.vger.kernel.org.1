@@ -2,88 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBDCE2DE091
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 10:47:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2204D2DE095
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 10:49:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389037AbgLRJpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 04:45:31 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57294 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727254AbgLRJpa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 04:45:30 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1608284683; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qvWpWbEVzaGdCtT7lY02iDD8k+ikMF0dcZg/sL419MU=;
-        b=XxjUmRtsLsgb930BhBZuWO8HArjYr53zHDvbqLhbU11F5AoFpegckrbl6Lp7seCfOsPrxo
-        vJa7+rmjsW39l5Lim+zoAJPPG48d514n+n6dyL+fLEXm9WidgFnEUXaykQBsb8T9nHljwD
-        dhrssBMDGOgEH5Nqhncc1j///AKYo/w=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9A480AC7B;
-        Fri, 18 Dec 2020 09:44:43 +0000 (UTC)
-Date:   Fri, 18 Dec 2020 10:44:42 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, vbabka@suse.cz, david@redhat.com,
-        osalvador@suse.de, dan.j.williams@intel.com, sashal@kernel.org,
-        tyhicks@linux.microsoft.com, iamjoonsoo.kim@lge.com,
-        mike.kravetz@oracle.com, rostedt@goodmis.org, mingo@redhat.com,
-        jgg@ziepe.ca, peterz@infradead.org, mgorman@suse.de,
-        willy@infradead.org, rientjes@google.com, jhubbard@nvidia.com,
-        linux-doc@vger.kernel.org, ira.weiny@intel.com,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v4 06/10] memory-hotplug.rst: add a note about
- ZONE_MOVABLE and page pinning
-Message-ID: <20201218094442.GU32193@dhcp22.suse.cz>
-References: <20201217185243.3288048-1-pasha.tatashin@soleen.com>
- <20201217185243.3288048-7-pasha.tatashin@soleen.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201217185243.3288048-7-pasha.tatashin@soleen.com>
+        id S1733083AbgLRJro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 04:47:44 -0500
+Received: from smtp25.cstnet.cn ([159.226.251.25]:54104 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728240AbgLRJro (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 04:47:44 -0500
+Received: from localhost.localdomain (unknown [124.16.141.242])
+        by APP-05 (Coremail) with SMTP id zQCowAC3p3CJetxf_O4SAA--.42642S2;
+        Fri, 18 Dec 2020 17:46:50 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
+        pmeerw@pmeerw.net, linux-iio@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] iio: frequency: adf4350: Remove redundant null check before clk_disable_unprepare
+Date:   Fri, 18 Dec 2020 09:46:47 +0000
+Message-Id: <20201218094647.1386-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: zQCowAC3p3CJetxf_O4SAA--.42642S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZFy8CFy8AFW3tr4UAFW5KFg_yoWDWrX_C3
+        W8urZ2gF4rur9ayw1UGr4qvF98G3Zava1SgrySyFyfKry7X39xZrW8Zrs8A3y7uw4UtF15
+        X3yDGr4fC34fCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2xYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_GFWl42xK82IY
+        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF
+        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
+        vE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU4pVbDUUUU
+X-Originating-IP: [124.16.141.242]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCgkOA1z4jO9-VwABsg
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 17-12-20 13:52:39, Pavel Tatashin wrote:
-> Document the special handling of page pinning when ZONE_MOVABLE present.
-> 
-> Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-> Suggested-by: David Hildenbrand <david@redhat.com>
+Because clk_disable_unprepare() already checked NULL clock parameter,
+so the additional check is unnecessary, just remove it.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ drivers/iio/frequency/adf4350.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-> ---
->  Documentation/admin-guide/mm/memory-hotplug.rst | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/Documentation/admin-guide/mm/memory-hotplug.rst b/Documentation/admin-guide/mm/memory-hotplug.rst
-> index 5c4432c96c4b..c6618f99f765 100644
-> --- a/Documentation/admin-guide/mm/memory-hotplug.rst
-> +++ b/Documentation/admin-guide/mm/memory-hotplug.rst
-> @@ -357,6 +357,15 @@ creates ZONE_MOVABLE as following.
->     Unfortunately, there is no information to show which memory block belongs
->     to ZONE_MOVABLE. This is TBD.
->  
-> +.. note::
-> +   Techniques that rely on long-term pinnings of memory (especially, RDMA and
-> +   vfio) are fundamentally problematic with ZONE_MOVABLE and, therefore, memory
-> +   hot remove. Pinned pages cannot reside on ZONE_MOVABLE, to guarantee that
-> +   memory can still get hot removed - be aware that pinning can fail even if
-> +   there is plenty of free memory in ZONE_MOVABLE. In addition, using
-> +   ZONE_MOVABLE might make page pinning more expensive, because pages have to be
-> +   migrated off that zone first.
-> +
->  .. _memory_hotplug_how_to_offline_memory:
->  
->  How to offline memory
-> -- 
-> 2.25.1
-> 
-
+diff --git a/drivers/iio/frequency/adf4350.c b/drivers/iio/frequency/adf4350.c
+index 82c050a3899d..1462a6a5bc6d 100644
+--- a/drivers/iio/frequency/adf4350.c
++++ b/drivers/iio/frequency/adf4350.c
+@@ -582,8 +582,7 @@ static int adf4350_probe(struct spi_device *spi)
+ 	if (!IS_ERR(st->reg))
+ 		regulator_disable(st->reg);
+ error_disable_clk:
+-	if (clk)
+-		clk_disable_unprepare(clk);
++	clk_disable_unprepare(clk);
+ 
+ 	return ret;
+ }
+@@ -599,8 +598,7 @@ static int adf4350_remove(struct spi_device *spi)
+ 
+ 	iio_device_unregister(indio_dev);
+ 
+-	if (st->clk)
+-		clk_disable_unprepare(st->clk);
++	clk_disable_unprepare(st->clk);
+ 
+ 	if (!IS_ERR(reg))
+ 		regulator_disable(reg);
 -- 
-Michal Hocko
-SUSE Labs
+2.17.1
+
