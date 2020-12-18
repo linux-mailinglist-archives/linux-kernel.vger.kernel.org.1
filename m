@@ -2,320 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF3D02DE8FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 19:39:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 651E32DE8FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 19:41:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728582AbgLRSix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 13:38:53 -0500
-Received: from honk.sigxcpu.org ([24.134.29.49]:50606 "EHLO honk.sigxcpu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726145AbgLRSiw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 13:38:52 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 35771FB03;
-        Fri, 18 Dec 2020 19:38:10 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 7Bdg8r9sBTr0; Fri, 18 Dec 2020 19:38:08 +0100 (CET)
-Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id B611A43FDC; Fri, 18 Dec 2020 19:38:07 +0100 (CET)
-From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-power@fi.rohmeurope.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] regulators: bd718x7: Add enable times
-Date:   Fri, 18 Dec 2020 19:38:07 +0100
-Message-Id: <41fb2ed19f584f138336344e2297ae7301f72b75.1608316658.git.agx@sigxcpu.org>
-X-Mailer: git-send-email 2.29.2
+        id S1728653AbgLRSky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 13:40:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726059AbgLRSkx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 13:40:53 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67FBBC0617A7;
+        Fri, 18 Dec 2020 10:40:13 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id x2so2756325ybt.11;
+        Fri, 18 Dec 2020 10:40:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z7jR72gvgMysEEXgqv4JPyd7bohxMk2wY0hLM59Aeus=;
+        b=FbdHY15z3Rb6j6g4JE9QsSsUHjp04iGmeSA2XUtD/zSlOrxzA0WTS085aKrkesD2cM
+         k1xONlEUTEHBpPOitWhRhFLKgFsd94UpbK1/tLqafJnk/Qam1eErX9UpCnMDR0fQA7nR
+         DtRFjRL3HuYlImSZoTInMYeMtOD8tMo48iBdK4OlHV3gF9fZ/iRw/kVm2ZAVYD1IXRI5
+         YLv8VIxudez75O9+1zj8Txu7pV4lTJvqqyD6LgeakopuhoygseBTHuYAklUQcYkBIXfT
+         GRS777gR4TEHQvfsqaKlFV3SBgA7jxYg5R43klgLl7Sljif0Ix/J2cMsdYEO1RBHseLk
+         m2IA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z7jR72gvgMysEEXgqv4JPyd7bohxMk2wY0hLM59Aeus=;
+        b=aQIwFM0B44phLrw6f4h1lVtbCZ9GwnlWfps30rSrF6Ug8r86/3VpvT/kuQw1hbYL9e
+         vEBBdIB8ASDf5PKaJt+yG7hlSN6w6tf0vnGjUwrtB8MIRrhMahNshropeO5D6DVdFNV1
+         b9fGgb+ENtbDdmC/EfAQCY9zEmqRYOr0b6K/hosOjpxZNRQJKOFndgMVJCar72vABkse
+         Wq4djUrwb2floxHM/p9HElY3kdN8zOgmJsEfI/6mtZoiVJPk6q15ccshke4opwdW9CI4
+         0pXn2Gtrr3+TtZzO4p5m6kQCiQaIshm5NpHKt+ILkr2KPK3UTXESQPjTMQA/ZATimw0p
+         SxrA==
+X-Gm-Message-State: AOAM533UJRteSsabW5ZDJ8Y30F0cW4D0mfheM43KW3NtMmhQzbwbeEK8
+        7c2Z5slCyWvdSv8Jsz5tpxb/RsncBnwtHlgM5kk=
+X-Google-Smtp-Source: ABdhPJyGngw2SmFyfCwklV8KN7Go+Kfm/IAeF4ztQpcuxDt8oEGa/9Hh4/DnTneDjDRt/mMV0coX3qhSnTfpzwpVOHo=
+X-Received: by 2002:a05:6902:602:: with SMTP id d2mr7418313ybt.205.1608316812748;
+ Fri, 18 Dec 2020 10:40:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20201027204226.26906-1-pboris@amazon.com> <20201217205808.14756-1-pboris@amazon.com>
+ <CANT5p=oMDGHSMOCgOrz6S9tuB3BmbL4mLqsC4vqSPod8pWsTaA@mail.gmail.com>
+In-Reply-To: <CANT5p=oMDGHSMOCgOrz6S9tuB3BmbL4mLqsC4vqSPod8pWsTaA@mail.gmail.com>
+From:   Boris Protopopov <boris.v.protopopov@gmail.com>
+Date:   Fri, 18 Dec 2020 13:40:01 -0500
+Message-ID: <CAHhKpQ4qKjZGboa=y=Yq8WAMtDE6UXDr-3vaRvtFJqbmnkXPCQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] Add SMB 2 support for getting and setting SACLs
+To:     Shyam Prasad N <nspmangalore@gmail.com>
+Cc:     Boris Protopopov <pboris@amazon.com>,
+        Steven French <sfrench@samba.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        LKML <linux-kernel@vger.kernel.org>, samjonas@amazon.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the typical startup times from the data sheet so boards get a
-reasonable default. Not setting any enable time can lead to board hangs
-when e.g. clocks are enabled too soon afterwards.
+No objections on my part as far as adding 'if (info & SACL_SECINFO) return'.
 
-This fixes gpu power domain resume on the Librem 5.
+I had originally those flags sent from the caller, but that was
+confusing at the top level (e.g. in cifsacl.c), so I have opted to
+passing only "extra" flags ("additional" was already taken).
 
-Signed-off-by: Guido Günther <agx@sigxcpu.org>
-
----
-v2
-- As per review comment by Matti Vaittinen
-  https://lore.kernel.org/lkml/beba25e85db20649aa040fc0ae549895c9265f6f.camel@fi.rohmeurope.com/
-  Use defines instead of plain values
-- As per review comment by Mark Brown
-  https://lore.kernel.org/lkml/20201216130637.GC4861@sirena.org.uk/
-  Drop cover letter
----
- drivers/regulator/bd718x7-regulator.c | 27 ++++++++++++++++++++++++
- include/linux/mfd/rohm-bd718x7.h      | 30 +++++++++++++++++++++++++++
- 2 files changed, 57 insertions(+)
-
-diff --git a/drivers/regulator/bd718x7-regulator.c b/drivers/regulator/bd718x7-regulator.c
-index e6d5d98c3cea..f7597832d2c5 100644
---- a/drivers/regulator/bd718x7-regulator.c
-+++ b/drivers/regulator/bd718x7-regulator.c
-@@ -613,6 +613,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
- 			.vsel_mask = DVS_BUCK_RUN_MASK,
- 			.enable_reg = BD718XX_REG_BUCK1_CTRL,
- 			.enable_mask = BD718XX_BUCK_EN,
-+			.enable_time = BD71847_BUCK1_STARTUP_TIME,
- 			.owner = THIS_MODULE,
- 			.of_parse_cb = buck_set_hw_dvs_levels,
- 		},
-@@ -646,6 +647,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
- 			.vsel_mask = DVS_BUCK_RUN_MASK,
- 			.enable_reg = BD718XX_REG_BUCK2_CTRL,
- 			.enable_mask = BD718XX_BUCK_EN,
-+			.enable_time = BD71847_BUCK2_STARTUP_TIME,
- 			.owner = THIS_MODULE,
- 			.of_parse_cb = buck_set_hw_dvs_levels,
- 		},
-@@ -680,6 +682,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
- 			.linear_range_selectors = bd71847_buck3_volt_range_sel,
- 			.enable_reg = BD718XX_REG_1ST_NODVS_BUCK_CTRL,
- 			.enable_mask = BD718XX_BUCK_EN,
-+			.enable_time = BD71847_BUCK3_STARTUP_TIME,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -706,6 +709,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
- 			.vsel_range_mask = BD71847_BUCK4_RANGE_MASK,
- 			.linear_range_selectors = bd71847_buck4_volt_range_sel,
- 			.enable_mask = BD718XX_BUCK_EN,
-+			.enable_time = BD71847_BUCK4_STARTUP_TIME,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -727,6 +731,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
- 			.vsel_mask = BD718XX_3RD_NODVS_BUCK_MASK,
- 			.enable_reg = BD718XX_REG_3RD_NODVS_BUCK_CTRL,
- 			.enable_mask = BD718XX_BUCK_EN,
-+			.enable_time = BD71847_BUCK5_STARTUP_TIME,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -750,6 +755,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
- 			.vsel_mask = BD718XX_4TH_NODVS_BUCK_MASK,
- 			.enable_reg = BD718XX_REG_4TH_NODVS_BUCK_CTRL,
- 			.enable_mask = BD718XX_BUCK_EN,
-+			.enable_time = BD71847_BUCK6_STARTUP_TIME,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -775,6 +781,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
- 			.linear_range_selectors = bd718xx_ldo1_volt_range_sel,
- 			.enable_reg = BD718XX_REG_LDO1_VOLT,
- 			.enable_mask = BD718XX_LDO_EN,
-+			.enable_time = BD71847_LDO1_STARTUP_TIME,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -796,6 +803,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
- 			.n_voltages = ARRAY_SIZE(ldo_2_volts),
- 			.enable_reg = BD718XX_REG_LDO2_VOLT,
- 			.enable_mask = BD718XX_LDO_EN,
-+			.enable_time = BD71847_LDO2_STARTUP_TIME,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -818,6 +826,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
- 			.vsel_mask = BD718XX_LDO3_MASK,
- 			.enable_reg = BD718XX_REG_LDO3_VOLT,
- 			.enable_mask = BD718XX_LDO_EN,
-+			.enable_time = BD71847_LDO3_STARTUP_TIME,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -840,6 +849,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
- 			.vsel_mask = BD718XX_LDO4_MASK,
- 			.enable_reg = BD718XX_REG_LDO4_VOLT,
- 			.enable_mask = BD718XX_LDO_EN,
-+			.enable_time = BD71847_LDO4_STARTUP_TIME,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -865,6 +875,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
- 			.linear_range_selectors = bd71847_ldo5_volt_range_sel,
- 			.enable_reg = BD718XX_REG_LDO5_VOLT,
- 			.enable_mask = BD718XX_LDO_EN,
-+			.enable_time = BD71847_LDO5_STARTUP_TIME,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -889,6 +900,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
- 			.vsel_mask = BD718XX_LDO6_MASK,
- 			.enable_reg = BD718XX_REG_LDO6_VOLT,
- 			.enable_mask = BD718XX_LDO_EN,
-+			.enable_time = BD71847_LDO6_STARTUP_TIME,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -942,6 +954,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.vsel_mask = DVS_BUCK_RUN_MASK,
- 			.enable_reg = BD718XX_REG_BUCK1_CTRL,
- 			.enable_mask = BD718XX_BUCK_EN,
-+			.enable_time = BD71837_BUCK1_STARTUP_TIME,
- 			.owner = THIS_MODULE,
- 			.of_parse_cb = buck_set_hw_dvs_levels,
- 		},
-@@ -975,6 +988,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.vsel_mask = DVS_BUCK_RUN_MASK,
- 			.enable_reg = BD718XX_REG_BUCK2_CTRL,
- 			.enable_mask = BD718XX_BUCK_EN,
-+			.enable_time = BD71837_BUCK2_STARTUP_TIME,
- 			.owner = THIS_MODULE,
- 			.of_parse_cb = buck_set_hw_dvs_levels,
- 		},
-@@ -1005,6 +1019,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.vsel_mask = DVS_BUCK_RUN_MASK,
- 			.enable_reg = BD71837_REG_BUCK3_CTRL,
- 			.enable_mask = BD718XX_BUCK_EN,
-+			.enable_time = BD71837_BUCK3_STARTUP_TIME,
- 			.owner = THIS_MODULE,
- 			.of_parse_cb = buck_set_hw_dvs_levels,
- 		},
-@@ -1033,6 +1048,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.vsel_mask = DVS_BUCK_RUN_MASK,
- 			.enable_reg = BD71837_REG_BUCK4_CTRL,
- 			.enable_mask = BD718XX_BUCK_EN,
-+			.enable_time = BD71837_BUCK4_STARTUP_TIME,
- 			.owner = THIS_MODULE,
- 			.of_parse_cb = buck_set_hw_dvs_levels,
- 		},
-@@ -1065,6 +1081,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.linear_range_selectors = bd71837_buck5_volt_range_sel,
- 			.enable_reg = BD718XX_REG_1ST_NODVS_BUCK_CTRL,
- 			.enable_mask = BD718XX_BUCK_EN,
-+			.enable_time = BD71837_BUCK5_STARTUP_TIME,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -1088,6 +1105,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.vsel_mask = BD71837_BUCK6_MASK,
- 			.enable_reg = BD718XX_REG_2ND_NODVS_BUCK_CTRL,
- 			.enable_mask = BD718XX_BUCK_EN,
-+			.enable_time = BD71837_BUCK6_STARTUP_TIME,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -1109,6 +1127,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.vsel_mask = BD718XX_3RD_NODVS_BUCK_MASK,
- 			.enable_reg = BD718XX_REG_3RD_NODVS_BUCK_CTRL,
- 			.enable_mask = BD718XX_BUCK_EN,
-+			.enable_time = BD71837_BUCK7_STARTUP_TIME,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -1132,6 +1151,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.vsel_mask = BD718XX_4TH_NODVS_BUCK_MASK,
- 			.enable_reg = BD718XX_REG_4TH_NODVS_BUCK_CTRL,
- 			.enable_mask = BD718XX_BUCK_EN,
-+			.enable_time = BD71837_BUCK8_STARTUP_TIME,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -1157,6 +1177,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.linear_range_selectors = bd718xx_ldo1_volt_range_sel,
- 			.enable_reg = BD718XX_REG_LDO1_VOLT,
- 			.enable_mask = BD718XX_LDO_EN,
-+			.enable_time = BD71837_LDO1_STARTUP_TIME,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -1178,6 +1199,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.n_voltages = ARRAY_SIZE(ldo_2_volts),
- 			.enable_reg = BD718XX_REG_LDO2_VOLT,
- 			.enable_mask = BD718XX_LDO_EN,
-+			.enable_time = BD71837_LDO2_STARTUP_TIME,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -1200,6 +1222,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.vsel_mask = BD718XX_LDO3_MASK,
- 			.enable_reg = BD718XX_REG_LDO3_VOLT,
- 			.enable_mask = BD718XX_LDO_EN,
-+			.enable_time = BD71837_LDO3_STARTUP_TIME,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -1222,6 +1245,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.vsel_mask = BD718XX_LDO4_MASK,
- 			.enable_reg = BD718XX_REG_LDO4_VOLT,
- 			.enable_mask = BD718XX_LDO_EN,
-+			.enable_time = BD71837_LDO4_STARTUP_TIME,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -1246,6 +1270,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.vsel_mask = BD71837_LDO5_MASK,
- 			.enable_reg = BD718XX_REG_LDO5_VOLT,
- 			.enable_mask = BD718XX_LDO_EN,
-+			.enable_time = BD71837_LDO5_STARTUP_TIME,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -1272,6 +1297,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.vsel_mask = BD718XX_LDO6_MASK,
- 			.enable_reg = BD718XX_REG_LDO6_VOLT,
- 			.enable_mask = BD718XX_LDO_EN,
-+			.enable_time = BD71837_LDO6_STARTUP_TIME,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-@@ -1296,6 +1322,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
- 			.vsel_mask = BD71837_LDO7_MASK,
- 			.enable_reg = BD71837_REG_LDO7_VOLT,
- 			.enable_mask = BD718XX_LDO_EN,
-+			.enable_time = BD71837_LDO7_STARTUP_TIME,
- 			.owner = THIS_MODULE,
- 		},
- 		.init = {
-diff --git a/include/linux/mfd/rohm-bd718x7.h b/include/linux/mfd/rohm-bd718x7.h
-index bee2474a8f9f..fba80dc2c1d5 100644
---- a/include/linux/mfd/rohm-bd718x7.h
-+++ b/include/linux/mfd/rohm-bd718x7.h
-@@ -323,4 +323,34 @@ struct bd718xx {
- 	struct regmap_irq_chip_data *irq_data;
- };
- 
-+/* Typical regulator startup times as per data sheet in uS */
-+#define BD71847_BUCK1_STARTUP_TIME 144
-+#define BD71847_BUCK2_STARTUP_TIME 162
-+#define BD71847_BUCK3_STARTUP_TIME 162
-+#define BD71847_BUCK4_STARTUP_TIME 240
-+#define BD71847_BUCK5_STARTUP_TIME 270
-+#define BD71847_BUCK6_STARTUP_TIME 200
-+#define BD71847_LDO1_STARTUP_TIME  440
-+#define BD71847_LDO2_STARTUP_TIME  370
-+#define BD71847_LDO3_STARTUP_TIME  310
-+#define BD71847_LDO4_STARTUP_TIME  400
-+#define BD71847_LDO5_STARTUP_TIME  530
-+#define BD71847_LDO6_STARTUP_TIME  400
-+
-+#define BD71837_BUCK1_STARTUP_TIME 160
-+#define BD71837_BUCK2_STARTUP_TIME 180
-+#define BD71837_BUCK3_STARTUP_TIME 180
-+#define BD71837_BUCK4_STARTUP_TIME 180
-+#define BD71837_BUCK5_STARTUP_TIME 160
-+#define BD71837_BUCK6_STARTUP_TIME 240
-+#define BD71837_BUCK7_STARTUP_TIME 220
-+#define BD71837_BUCK8_STARTUP_TIME 200
-+#define BD71837_LDO1_STARTUP_TIME  440
-+#define BD71837_LDO2_STARTUP_TIME  370
-+#define BD71837_LDO3_STARTUP_TIME  310
-+#define BD71837_LDO4_STARTUP_TIME  400
-+#define BD71837_LDO5_STARTUP_TIME  310
-+#define BD71837_LDO6_STARTUP_TIME  400
-+#define BD71837_LDO7_STARTUP_TIME  530
-+
- #endif /* __LINUX_MFD_BD718XX_H__ */
--- 
-2.29.2
-
+-------------
+...
+> > --- a/fs/cifs/smb2ops.c
+> > +++ b/fs/cifs/smb2ops.c
+> > @@ -3315,9 +3315,9 @@ get_smb2_acl(struct cifs_sb_info *cifs_sb,
+> >         struct cifs_ntsd *pntsd = NULL;
+> >         struct cifsFileInfo *open_file = NULL;
+> >
+> > -       if (inode)
+> > +       if (inode && !(info & SACL_SECINFO))
+> >                 open_file = find_readable_file(CIFS_I(inode), true);
+> > -       if (!open_file)
+> > +       if (!open_file || (info & SACL_SECINFO))
+> >                 return get_smb2_acl_by_path(cifs_sb, path, pacllen, info);
+> >
+> >         pntsd = get_smb2_acl_by_fid(cifs_sb, &open_file->fid, pacllen, info);
+> Why not have an if (info & SACL_SECINFO) return
+> get_smb2_acl_by_path... right at the beginning?
+> Looks cleaner that way IMO.
+>
+...
+> > diff --git a/fs/cifs/smb2pdu.c b/fs/cifs/smb2pdu.c
+> > index 0aeb63694306..b207e1eb6803 100644
+> > --- a/fs/cifs/smb2pdu.c
+> > +++ b/fs/cifs/smb2pdu.c
+> > @@ -3472,8 +3472,10 @@ SMB311_posix_query_info(const unsigned int xid, struct cifs_tcon *tcon,
+> >  int
+> >  SMB2_query_acl(const unsigned int xid, struct cifs_tcon *tcon,
+> >                u64 persistent_fid, u64 volatile_fid,
+> > -              void **data, u32 *plen, u32 additional_info)
+> > +              void **data, u32 *plen, u32 extra_info)
+> >  {
+> > +       __u32 additional_info = OWNER_SECINFO | GROUP_SECINFO | DACL_SECINFO |
+> > +                               extra_info;
+> I still prefer having these flags set by the caller. That way, the
+> caller has the flexibility to query only the subset needed.
+> --
+> -Shyam
