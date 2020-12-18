@@ -2,177 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86D7C2DDCF8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 03:37:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC1292DDCFD
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 03:40:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732297AbgLRChn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 21:37:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35666 "EHLO
+        id S1732353AbgLRCks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 21:40:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728578AbgLRChm (ORCPT
+        with ESMTP id S1731526AbgLRCkr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 21:37:42 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F703C0617A7;
-        Thu, 17 Dec 2020 18:37:02 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id c14so422635qtn.0;
-        Thu, 17 Dec 2020 18:37:02 -0800 (PST)
+        Thu, 17 Dec 2020 21:40:47 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11FBBC0617B0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 18:40:07 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id b9so1066798ejy.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 18:40:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=eLeNkTbh4DSc6M1hh6DNaHMv8Lj9zN6vPFWfAXZNwaY=;
-        b=mmrDUgHBSjvMD2nn3XQbwAGrHQWS+6MZPQEb1oZn5xg62coWOgcnZ8haMtMJbuZU2e
-         4lkeS1JlJYnHvKo/FpldtZSEkvhrqx1w7O9qp7pL2tHUEls+Vt53Om///vYe5r6TnWLi
-         4SUdtI4z+MLe3It0idX+zdDtaCfFO9YMjndydd/zwk7rMX62kihdjXYQ0q1Ux5/euws9
-         O815K9q93NmfNp+z6AgrXpg04/eXgfMZHbAVN0IFEyUkGknFZChBQRK1/zTqhc5TwXyR
-         HLhMUp3h9A6QEM50kA/2vUbvOrjwIGZB3RF/jpPyeo3jxU0/rBVo8puEx2XkhendX0lW
-         8STw==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9dgG7qudFm2M5ITbimg/EWCzHwUSe9U+CunlE6/jL+E=;
+        b=K0iNceVwSaWAQkyefoafIL+r7jjBCygPntMyHwd3POvZ8g7YT3AyjHi/gqQvjRrJPp
+         AQWvJ6QTr8tSOFjOEiKecyu618xXLtEzB37NYJTRWPBWh/iiWfJ5t/SN0pDlfSIXxTnW
+         8XQzV9vnsOMuQsRKnQA5Jq590u5DiEXtzkdJCh1ysSLMrEsG1R56M1pUe8CrRCb+AcvC
+         cnxem06FxnKPRYauImA7ZiEd5hlHlH70gZYuIdvcL9ybSDCFbUcFzjRNwwgZivcciosw
+         8TUurj7TkNKk9PaAy3cONHdKYvZ8nYXBh9cejLzDWsfKSSXwUBWfA9pr0ceTS+6Hcm7W
+         xQxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=eLeNkTbh4DSc6M1hh6DNaHMv8Lj9zN6vPFWfAXZNwaY=;
-        b=BzF4CdWaLmBxyARhvgWIvBRLe4NErPqk5xryHSIt8nqco9GfK2pmGrOgI0xMufKkbG
-         Cqksd36kf8beQkMmoL8AiNAfjlisXrDJEb0sgh3BPfNduttobdUhZXlWDi+sOpQTU55g
-         oWswm3z3tOICWQV+Us1g4r5MnA4kTliGz80up2apfDPO+yfapPawUayojGtxtrrXcNRD
-         s4JeEdN+p8nJHrfDQ+s+EksD5EwNDlnddMVXqxAxAS50TPdq39ovpBDny7NJ4QIZPhGg
-         5JbthYWIGBZpx+pr8HRQbMc+ic6MlexgzhAcysmks/QeCMpdkV1flI7eZi7LVLiJdXH0
-         xkPA==
-X-Gm-Message-State: AOAM532GvAwKo5PQbuRZ1vFlseZSB7Uy9IdCXws1FF2Txn7Xw2Ae84FI
-        PIQWwZMcgZK4Oa19vU8Hey4=
-X-Google-Smtp-Source: ABdhPJxGss/SAuvfMsh8jZ4y8fcmFs98NxJ4B2z3d6gxBRniMhY9u0UP6oGV6EvV+EuPh0kQG32O4Q==
-X-Received: by 2002:ac8:720c:: with SMTP id a12mr1981900qtp.42.1608259021374;
-        Thu, 17 Dec 2020 18:37:01 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id b78sm214183qkg.29.2020.12.17.18.37.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 18:37:00 -0800 (PST)
-Date:   Thu, 17 Dec 2020 19:36:58 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        Peter Smith <Peter.Smith@arm.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        stable <stable@vger.kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Alan Modra <amodra@gmail.com>,
-        "kernelci . org bot" <bot@kernelci.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] arm64: link with -z norelro for LLD or aarch64-elf
-Message-ID: <20201218023658.GA577188@ubuntu-m3-large-x86>
-References: <CAKwvOd=LZHzR11kuhT2EjFnUdFwu5hQmxiwqeLB2sKC0hWFY=g@mail.gmail.com>
- <20201218002432.788499-1-ndesaulniers@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9dgG7qudFm2M5ITbimg/EWCzHwUSe9U+CunlE6/jL+E=;
+        b=MBK8CqmNIAfoB+/46OfJoFrgWCRTA3Ika4rJILpn+2OUx8Ba+eEj5oc+c3HzA+91mn
+         xuSkuV2V9pxJKoosb6JOC2IQM+DWIsy1uknKqhoibylryDceKWutqoWlRP4iDHTWBF99
+         7oTn1JU8eJYbfj02QBgvGppY6s9qNYvWdOUEmnSNBJihRbT5sytmcpO4iIMi26JfviS+
+         jBZ3FzXaOw2iuYtfIiaDv5Qa4Hci7k3CVqs98Wk2Yc9fyxq8rRyt80zRBy2Z4BpmRso1
+         V24vNa/QudTA9fdagUK5R/U/uNSKREu3lPxI0cCLePg8UsvYy5BBtynHZvSWZocVw1WL
+         VJzg==
+X-Gm-Message-State: AOAM5309rm5TmtkLkGegzn0b5kxEAmURDvIGCEjSDUDG2oAajAGW/FEE
+        CpuUDF0eesRUMFpwaw9PC8dkfTEhkI254Ya0D0oFEQ==
+X-Google-Smtp-Source: ABdhPJySH0QTe8IayfD/c7x3TXLpQyM5fmUjCclwC7NQ12btUfoyVuaLt0jSgr0SOVFRPZFstKr7iq1l+tk4kWBsDWE=
+X-Received: by 2002:a17:906:2707:: with SMTP id z7mr1965646ejc.418.1608259205621;
+ Thu, 17 Dec 2020 18:40:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201218002432.788499-1-ndesaulniers@google.com>
+References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <X8ogtmrm7tOzZo+N@kroah.com> <CAPcyv4iLG7V9JT34La5PYfyM9378acbLnkShx=6pOmpPK7yg3A@mail.gmail.com>
+ <X8usiKhLCU3PGL9J@kroah.com> <20201217211937.GA3177478@piout.net>
+In-Reply-To: <20201217211937.GA3177478@piout.net>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 17 Dec 2020 18:39:55 -0800
+Message-ID: <CAPcyv4h-jg0dxKZ89yYnHsTEDj7jLWDBhBVTgEC77tLLsz92pw@mail.gmail.com>
+Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        alsa-devel@alsa-project.org, Kiran Patil <kiran.patil@intel.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        David Miller <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Parav Pandit <parav@mellanox.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 04:24:32PM -0800, 'Nick Desaulniers' via Clang Built Linux wrote:
-> With GNU binutils 2.35+, linking with BFD produces warnings for vmlinux:
-> aarch64-linux-gnu-ld: warning: -z norelro ignored
-> 
-> BFD can produce this warning when the target emulation mode does not
-> support RELRO program headers, and -z relro or -z norelro is passed.
-> 
-> Alan Modra clarifies:
->   The default linker emulation for an aarch64-linux ld.bfd is
->   -maarch64linux, the default for an aarch64-elf linker is
->   -maarch64elf.  They are not equivalent.  If you choose -maarch64elf
->   you get an emulation that doesn't support -z relro.
-> 
-> The ARCH=arm64 kernel prefers -maarch64elf, but may fall back to
-> -maarch64linux based on the toolchain configuration.
-> 
-> LLD will always create RELRO program header regardless of target
-> emulation.
-> 
-> To avoid the above warning when linking with BFD, pass -z norelro only
-> when linking with LLD or with -maarch64linux.
-> 
-> Cc: Alan Modra <amodra@gmail.com>
-> Cc: Fāng-ruì Sòng <maskray@google.com>
-> Fixes: 3b92fa7485eb ("arm64: link with -z norelro regardless of CONFIG_RELOCATABLE")
-> Reported-by: kernelci.org bot <bot@kernelci.org>
-> Reported-by: Quentin Perret <qperret@google.com>
-> Acked-by: Ard Biesheuvel <ardb@kernel.org>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+On Thu, Dec 17, 2020 at 1:20 PM Alexandre Belloni
+<alexandre.belloni@bootlin.com> wrote:
+>
+> Hello,
+>
+> On 05/12/2020 16:51:36+0100, Greg KH wrote:
+> > > To me, the documentation was written, and reviewed, more from the
+> > > perspective of "why not open code a custom bus instead". So I can see
+> > > after the fact how that is a bit too much theory and justification and
+> > > not enough practical application. Before the fact though this was a
+> > > bold mechanism to propose and it was not clear that everyone was
+> > > grokking the "why" and the tradeoffs.
+> >
+> > Understood, I guess I read this from the "of course you should do this,
+> > now how do I use it?" point of view.  Which still needs to be addressed
+> > I feel.
+> >
+> > > I also think it was a bit early to identify consistent design patterns
+> > > across the implementations and codify those. I expect this to evolve
+> > > convenience macros just like other parts of the driver-core gained
+> > > over time. Now that it is in though, another pass through the
+> > > documentation to pull in more examples seems warranted.
+> >
+> > A real, working, example would be great to have, so that people can know
+> > how to use this.  Trying to dig through the sound or IB patches to view
+> > how it is being used is not a trivial thing to do, which is why
+> > reviewing this took so much work.  Having a simple example test module,
+> > that creates a number of devices on a bus, ideally tied into the ktest
+> > framework, would be great.  I'll attach below a .c file that I used for
+> > some basic local testing to verify some of this working, but it does not
+> > implement a aux bus driver, which needs to be also tested.
+> >
+>
+> There is something I don't get from the documentation and it is what is
+> this introducing that couldn't already be done using platform drivers
+> and platform devices?
 
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+There is room for documentation improvement here. I realize reading it
+back now that much of the justification for "why not platform bus?"
+happened on the list, but only a small mention made it into the
+document. It turns out that platform-bus has some special integrations
+and hacks with platform-firmware implementations. For example, the
+ACPI companion magic and specific platform firmware integrations in
+platform_match(). It's also an awkward bus name to use because these
+devices do not belong to the platform. The platform bus is for devices
+that do not have an enumeration mechanism besides board files or
+firmware descriptions.
 
-> ---
-> Changes V1 -> V2:
-> * s/relocation types/program headers/
-> * s/newer GNU binutils/GNU binutils 2.35+/
-> * Pick up Ard's Ack.
-> 
-> Note: maintainers may want to pick up the following tag:
-> 
-> Fixes: 3bbd3db86470 ("arm64: relocatable: fix inconsistencies in linker script and options")
-> 
-> or drop the existing fixes tag (this patch is more so in response to
-> change to BFD to warn than fix a kernel regression, IMO, but I don't
-> care). Either way, it would be good to fix this for the newly minted
-> v5.10.y.
+So while many of the auxiliary device use cases might be able to be
+squeezed into a platform-bus scheme it further overloads what is
+already a wide responsibility.
 
-Should probably have
+In comparison, the auxiliary-bus is tailored to the "sub-function of a
+parent device/driver" use case. It lets the host driver be the root of
+a namespace of sub-functionality in a standard template way.
 
-Cc: stable@vger.kernel.org
+> We already have a bunch of drivers in tree that have to share a state
+> and register other drivers from other subsystems for the same device.
+> How is the auxiliary bus different?
 
-then.
-
-> I'll probably be offline for the next two weeks for the holidays, so no
-> promises on quick replies. Happy holidays+new year!
-> 
-> 
->  arch/arm64/Makefile | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-> index 6be9b3750250..90309208bb28 100644
-> --- a/arch/arm64/Makefile
-> +++ b/arch/arm64/Makefile
-> @@ -10,7 +10,7 @@
->  #
->  # Copyright (C) 1995-2001 by Russell King
->  
-> -LDFLAGS_vmlinux	:=--no-undefined -X -z norelro
-> +LDFLAGS_vmlinux	:=--no-undefined -X
->  
->  ifeq ($(CONFIG_RELOCATABLE), y)
->  # Pass --no-apply-dynamic-relocs to restore pre-binutils-2.27 behaviour
-> @@ -115,16 +115,20 @@ KBUILD_CPPFLAGS	+= -mbig-endian
->  CHECKFLAGS	+= -D__AARCH64EB__
->  # Prefer the baremetal ELF build target, but not all toolchains include
->  # it so fall back to the standard linux version if needed.
-> -KBUILD_LDFLAGS	+= -EB $(call ld-option, -maarch64elfb, -maarch64linuxb)
-> +KBUILD_LDFLAGS	+= -EB $(call ld-option, -maarch64elfb, -maarch64linuxb -z norelro)
->  UTS_MACHINE	:= aarch64_be
->  else
->  KBUILD_CPPFLAGS	+= -mlittle-endian
->  CHECKFLAGS	+= -D__AARCH64EL__
->  # Same as above, prefer ELF but fall back to linux target if needed.
-> -KBUILD_LDFLAGS	+= -EL $(call ld-option, -maarch64elf, -maarch64linux)
-> +KBUILD_LDFLAGS	+= -EL $(call ld-option, -maarch64elf, -maarch64linux -z norelro)
->  UTS_MACHINE	:= aarch64
->  endif
->  
-> +ifeq ($(CONFIG_LD_IS_LLD), y)
-> +KBUILD_LDFLAGS	+= -z norelro
-> +endif
-> +
->  CHECKFLAGS	+= -D__aarch64__
->  
->  ifeq ($(CONFIG_DYNAMIC_FTRACE_WITH_REGS),y)
-> -- 
-> 2.29.2.684.gfbc64c5ab5-goog
-> 
+There's also custom subsystem buses that do this. Why not other
+alternatives? They didn't capture the simultaneous mindshare of RDMA,
+SOF, and NETDEV developers. Personally my plans for using
+auxiliary-bus do not map cleanly to anything else in the tree. I want
+to use it for attaching an NPEM driver (Native PCIE Enclosure
+Management) to any PCI device driver that opts-in, but it would be
+overkill to go create an "npem" bus for this.
