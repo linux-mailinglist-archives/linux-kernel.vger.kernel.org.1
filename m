@@ -2,197 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90A5A2DEC30
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 00:59:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 638C82DEC35
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 01:01:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726267AbgLRX6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 18:58:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725948AbgLRX6i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 18:58:38 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3E10C0617B0;
-        Fri, 18 Dec 2020 15:57:57 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id r3so4297181wrt.2;
-        Fri, 18 Dec 2020 15:57:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tvXl0W+WJwpnbxy3THEOQYack8Z4j8OQae2L4gnwAYw=;
-        b=d6Yu7BK1W77mwLSclcTkOVuwCLsCfbArAxi+vbGYgWSFLLfRZXlcBrpQX625dCxoBc
-         rWL1oxv2Su1YmDyaBEzWxKGg/beqMhojBnuOBA8eInfeQ+mtebSrtc08LjH6V9ozx4Tt
-         gvnn7Num4KpNVxZqZLhQtqTjqjZ5ngP6BTkkNfrShmk5r2GCLBXHaRNH/3GgFHbKsWIl
-         6v4KhwqLGXUy8TKPgN+ZfREFMnVVxZx8gYuaaojaqcfRDnG39Xz6cuWuKCkxPHuT0k1B
-         7VLhqTfAqIGV30njvbz54MUGVHueyBYJb9HIwMhrUAlxODtMdbI7RpuO0b6EtLje7xHY
-         ve9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tvXl0W+WJwpnbxy3THEOQYack8Z4j8OQae2L4gnwAYw=;
-        b=UiVsp81JtN+pRt5Edc5s5ledNll6QJSM9ZzrKvQxnlmpcbUE2lue8GJB+W7rppbZrb
-         nBUSjr0Fbf8iPeMPq/bQ7YIR+EhCfxrSX+xWND84EL4fQ4SHvWZaDwrIuyeRkaSYHJx+
-         2KxyTBapEXGrPBL76QsyTXUguWiP4iKaQRnbYRSGk1++CmlV8dVvTjpMzStGe8wELL4/
-         8cRdLtl8xwxFsaWBdPrRzhGS4P6Rblf87ar5Ptak0YZiTi6cA6SxdnSdrblR1pdtK+/J
-         ACE08MZGgqifkcGtvwxGrXNIT903yKobRrI0X+NO1c7U0CwDRUloABskptPmH8WjQUyU
-         0GjA==
-X-Gm-Message-State: AOAM53271rXYTzRyTujmkmDzKlBhPbmadA/OGo4Ei1oQbi0rpdyJPGfl
-        H2RWbXsPr1JWwTMees0fvgQ=
-X-Google-Smtp-Source: ABdhPJzZP4Av12s27l37IvWOJLfwhQy/pjMU1yhNooTJw0Ezq0+QCo+MtUQwxvHm17IA01AeQXd1yA==
-X-Received: by 2002:adf:dd90:: with SMTP id x16mr6766025wrl.85.1608335876277;
-        Fri, 18 Dec 2020 15:57:56 -0800 (PST)
-Received: from [192.168.1.211] ([2.31.224.116])
-        by smtp.gmail.com with ESMTPSA id h15sm15020751wru.4.2020.12.18.15.57.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Dec 2020 15:57:55 -0800 (PST)
-Subject: Re: [PATCH v2 12/12] ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org, yong.zhi@intel.com,
-        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
-        tian.shu.qiu@intel.com, mchehab@kernel.org, robert.moore@intel.com,
-        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, andriy.shevchenko@linux.intel.com,
-        linux@rasmusvillemoes.dk,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
-        linus.walleij@linaro.org, heikki.krogerus@linux.intel.com,
-        kitakar@gmail.com, jorhand@linux.microsoft.com
-References: <20201217234337.1983732-1-djrscally@gmail.com>
- <20201217234337.1983732-13-djrscally@gmail.com>
- <X9zehD1xtQP/bxXu@pendragon.ideasonboard.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <5c0ae9f8-ba58-a26c-400b-7d85d01087a3@gmail.com>
-Date:   Fri, 18 Dec 2020 23:57:54 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726273AbgLRX7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 18:59:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60548 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725925AbgLRX7x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 18:59:53 -0500
+Date:   Sat, 19 Dec 2020 00:59:10 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608335953;
+        bh=P4Z0pkJ9/Dkinhi9fgAOvOmBiWOWNe1uIrjKFyME8Y4=;
+        h=From:To:Cc:Subject:From;
+        b=Tznb9YBZRFL2qFzyNDnyA/R+9ENtb3zzYc/ahHaCvqLIssHfgw067Te7qiSohJQHs
+         pcb5JxAE1t5ErYm+jCbfHmIkwWugBDQWWLPzzpR9Es7snz7e0dYWr644nGwSwUrdpI
+         bWIP1SiCrIV1d2gsb3t896Li7FcdrVuiE+WwPMZXO+f++33pqBGc5MjvVeVkA8Mg8a
+         bMPM1qVL+uh0FZxB5djWC8oCdQnpHP3cC2VOAan4fhMvWjKk5l+TmwYs19wN1F45mA
+         j6IlvNFilnxB+jq8mxNbT2Mgw9eYEfmLYPwk3zK/QL6qYad2y/AU3IGGTRV54+wFcQ
+         Aad1+gF57uscA==
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [GIT PULL] hsi changes for 5.11
+Message-ID: <20201218235910.6tjqvzaxl7kne4cl@earth.universe>
 MIME-Version: 1.0
-In-Reply-To: <X9zehD1xtQP/bxXu@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="we4w3f2mp6th3jpt"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent - thanks for the comments
 
-On 18/12/2020 16:53, Laurent Pinchart wrote:
->> +static void cio2_bridge_init_property_names(struct cio2_sensor *sensor)
->> +{
->> +	strscpy(sensor->prop_names.clock_frequency, "clock-frequency",
->> +		sizeof(sensor->prop_names.clock_frequency));
->> +	strscpy(sensor->prop_names.rotation, "rotation",
->> +		sizeof(sensor->prop_names.rotation));
->> +	strscpy(sensor->prop_names.bus_type, "bus-type",
->> +		sizeof(sensor->prop_names.bus_type));
->> +	strscpy(sensor->prop_names.data_lanes, "data-lanes",
->> +		sizeof(sensor->prop_names.data_lanes));
->> +	strscpy(sensor->prop_names.remote_endpoint, "remote-endpoint",
->> +		sizeof(sensor->prop_names.remote_endpoint));
->> +	strscpy(sensor->prop_names.link_frequencies, "link-frequencies",
->> +		sizeof(sensor->prop_names.link_frequencies));
-> 
-> Just curious, was there anything not working correctly with the proposal
-> I made ?
-> 
-> static const struct cio2_property_names prop_names = {
-> 	.clock_frequency = "clock-frequency",
-> 	.rotation = "rotation",
-> 	.bus_type = "bus-type",
-> 	.data_lanes = "data-lanes",
-> 	.remote_endpoint = "remote-endpoint",
-> };
-> 
-> static void cio2_bridge_init_property_names(struct cio2_sensor *sensor)
-> {
-> 	sensor->prop_names = prop_names;
-> }
-> 
-> It generates a warning when the string is too long for the field size,
-> which should help catching issues at compilation time.
+--we4w3f2mp6th3jpt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Yes, though I don't know how much of a real-world problem it would have
-been - if you recall we have the issue that the device grabs a reference
-to the software_nodes (after we stopped delaying until after the
-i2c_client is available), which means we can't safely free the
-cio2_bridge struct on module unload. That also means we can't rely on
-those pointers to string literals existing, because if the ipu3-cio2
-module gets unloaded they'll be gone.
+Hi Linus,
 
-Shame, as it's way neater.
+The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
 
->> +static void cio2_bridge_init_swnode_names(struct cio2_sensor *sensor)
->> +{
->> +	snprintf(sensor->node_names.remote_port, 7, "port@%u", sensor->ssdb.link);
->> +	strscpy(sensor->node_names.port, "port@0", sizeof(sensor->node_names.port));
->> +	strscpy(sensor->node_names.endpoint, "endpoint@0", sizeof(sensor->node_names.endpoint));
-> 
-> I'd wrap lines, but maybe that's because I'm an old-school, 80-columns
-> programmer :-)
+  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
 
-Heh sure, I'll wrap them.
+are available in the Git repository at:
 
->> +static int cio2_bridge_connect_sensors(struct cio2_bridge *bridge,
->> +				       struct pci_dev *cio2)
->> +{
->> +	struct fwnode_handle *fwnode;
->> +	struct cio2_sensor *sensor;
->> +	struct acpi_device *adev;
->> +	unsigned int i;
->> +	int ret = 0;
->> +
->> +	for (i = 0; i < ARRAY_SIZE(cio2_supported_sensors); i++) {
->> +		const struct cio2_sensor_config *cfg = &cio2_supported_sensors[i];
->> +
->> +		for_each_acpi_dev_match(adev, cfg->hid, NULL, -1) {
->> +			if (bridge->n_sensors >= CIO2_NUM_PORTS) {
->> +				dev_warn(&cio2->dev, "Exceeded available CIO2 ports\n");
->> +				/* overflow i so outer loop ceases */
->> +				i = ARRAY_SIZE(cio2_supported_sensors);
->> +				break;
-> 
-> Or just
-> 
-> 				return 0;
-> 
-> ?
+  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/sre/linux-hsi.git tags/hsi-for-5.11
 
-Derp, yes of course.
+for you to fetch changes up to 8a77ed6d1fdda752f6b3203391a099f590a9454f:
 
+  HSI: core: fix a kernel-doc markup (2020-12-02 22:35:44 +0100)
 
->> +/* Data representation as it is in ACPI SSDB buffer */
->> +struct cio2_sensor_ssdb {
->> +	u8 version;				/* 0000 */
->> +	u8 sku;					/* 0001 */
->> +	u8 guid_csi2[16];			/* 0002 */
->> +	u8 devfunction;				/* 0003 */
->> +	u8 bus;					/* 0004 */
->> +	u32 dphylinkenfuses;			/* 0005 */
->> +	u32 clockdiv;				/* 0009 */
->> +	u8 link;				/* 0013 */
->> +	u8 lanes;				/* 0014 */
->> +	u32 csiparams[10];			/* 0015 */
->> +	u32 maxlanespeed;			/* 0019 */
->> +	u8 sensorcalibfileidx;			/* 0023 */
->> +	u8 sensorcalibfileidxInMBZ[3];		/* 0024 */
->> +	u8 romtype;				/* 0025 */
->> +	u8 vcmtype;				/* 0026 */
->> +	u8 platforminfo;			/* 0027 */
-> 
-> Why stop at 27 ? :-) I'd either go all the way, or not at all. It's also
-> quite customary to represent offset as hex values, as that's what most
-> hex editors / viewers will show.
+----------------------------------------------------------------
+HSI changes for the 5.11 series
 
-Oops - that was actually just me debugging...I guess I might actually
-finish it, converted to hex. It came in useful reading the DSDT to have
-that somewhere easy to refer to.
+* misc. cleanups
 
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+----------------------------------------------------------------
+Jing Xiangfeng (1):
+      HSI: omap_ssi: Don't jump to free ID in ssi_add_controller()
 
-Nice - thank you!
+Mauro Carvalho Chehab (1):
+      HSI: core: fix a kernel-doc markup
+
+ drivers/hsi/controllers/omap_ssi_core.c | 2 +-
+ drivers/hsi/hsi_core.c                  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+--we4w3f2mp6th3jpt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl/dQkYACgkQ2O7X88g7
++pqveBAAohYKqXXJDAgCZQzLV0DuQiQuBMo0v2oMgqTdBfTUzt/CUI+yBM/LoLS1
+kTWKqU4YjOD46n4yvxOf9uEXBURCCbnZ3joQ/EqWcREgOZH7H+iG8jmlb7rmezDp
+lIV3CvFbARh1hS01ZF8YyQdW/KNSy97UdejWWED2nZlyFHJrcEj0+YnpKWUYZO2e
+oCi3DxoE4mVBpS0B/8r3APIHOVOqgHn9b0iXK00HWH1uX4vzJtQ9fFcdb1qQTsGM
+8yP8+OCcniFXmNKf93Sk2wWA8gBzJWI/IuSn1fi3jtCB3E19+NejlnNkdKHoymPD
+ZqQoSwdp6NAXR17PWv0jQVNR7EKl29nmr2niRFx221Yf5ydAGgHOGf5yLe3w/LsF
+KsPBhphor3OpCDLn0Obsgo1gBi0mn3/Rg78YVfvE/e1b3F6HmLncDYrYZ23JRsfD
+hesoR4m0QhGLGA+SXrlmfVy+SlHWXj17kcXwp1hRavfP8OlzE3fu6gmF7An+MJD1
+a7KRr46ZVXPyiab0volW21idZATPkp/aiCIQxJirPvCEVpZAcsv8NSy9EBdP+5ae
+ECr9URDrxIIgCQfbQ50HSJ9RHvmoGpmkldwT/yRwXjQjgypbcJ3dJhITssJ03wFc
+u2naQPi4dTCYCWSnP05WsuVEj7p93EaXnuGb5Gy5B8a6uRm4+9Q=
+=3rsy
+-----END PGP SIGNATURE-----
+
+--we4w3f2mp6th3jpt--
