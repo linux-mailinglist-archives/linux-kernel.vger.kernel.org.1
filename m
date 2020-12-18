@@ -2,124 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DF382DEB5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 23:02:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D40612DEB62
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 23:03:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726060AbgLRWAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 17:00:11 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:42888 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725925AbgLRWAK (ORCPT
+        id S1726203AbgLRWCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 17:02:42 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:13862 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726095AbgLRWCl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 17:00:10 -0500
-Received: from [IPv6:2a00:5f00:102:0:944a:5cff:fe54:340e] (unknown [IPv6:2a00:5f00:102:0:944a:5cff:fe54:340e])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: gtucker)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id E3E4B1F4663F;
-        Fri, 18 Dec 2020 21:59:28 +0000 (GMT)
-Subject: Re: kernelci/staging-next bisection: sleep.login on
- rk3288-rock2-square #2286-staging
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        kernelci-results-staging@groups.io,
-        "kernelci-results@groups.io" <kernelci-results@groups.io>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Mike Rapoport <rppt@kernel.org>, Baoquan He <bhe@redhat.com>
-References: <5fd3e5d9.1c69fb81.f9e69.5028@mx.google.com>
- <127999c4-7d56-0c36-7f88-8e1a5c934cae@collabora.com>
- <20201213082314.GA198221@linux.ibm.com>
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Message-ID: <0633d44a-3796-8a1b-e5dc-99fc62aa4dc7@collabora.com>
-Date:   Fri, 18 Dec 2020 21:59:26 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        Fri, 18 Dec 2020 17:02:41 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fdd26d80007>; Fri, 18 Dec 2020 14:02:00 -0800
+Received: from [10.2.61.1] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 18 Dec
+ 2020 22:01:57 +0000
+Subject: Re: [PATCH v4 5/9] spi: spi-mem: Mark dummy transfers by setting
+ dummy_data bit
+To:     Mark Brown <broonie@kernel.org>, Pratyush Yadav <p.yadav@ti.com>
+CC:     Boris Brezillon <boris.brezillon@collabora.com>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <robh+dt@kernel.org>, <lukas@wunner.de>, <bbrezillon@kernel.org>,
+        <tudor.ambarus@microchip.com>, <linux-spi@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+References: <1608236927-28701-1-git-send-email-skomatineni@nvidia.com>
+ <1608236927-28701-6-git-send-email-skomatineni@nvidia.com>
+ <20201218092106.skwej2g6bk3oksbb@ti.com>
+ <20201218105759.43789ccf@collabora.com>
+ <31c395ee-d7a6-edc5-a790-89fad91a0a27@nvidia.com>
+ <20201218191936.hb6sq7zr3zdirar7@ti.com>
+ <20201218204102.GF5333@sirena.org.uk> <20201218204414.GG5333@sirena.org.uk>
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+Message-ID: <c9343475-44b2-c9c4-1790-f6b50ec9c1bd@nvidia.com>
+Date:   Fri, 18 Dec 2020 14:01:56 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201213082314.GA198221@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20201218204414.GG5333@sirena.org.uk>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1608328920; bh=8Acq9GMc6nnEBbII98wXaf5fZtYBkqKtmc92tqPAku0=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=IBjIy3g1xJgPT0QS1nye2wOATxRT9+dPfxL8LVtbKHPbqmixzQGaxpIDYKewcilpT
+         LI6ZoTrTtku07/y8t9ZZPc9yl9ZwsUyideM/rDRhxVIM1sNNbvXqPWKjWa3at9kuxs
+         fwyG32gBi7m9E8gWFVQLy75NMJraywk9hBmbV/e9N2fIdG14syJNk7RElqbr9akQQt
+         QIEG6YjZxgjx59UgkgFRpp6+eFWy9yIJLrxbCaaffk3aqyxsy4vg/+bzZfxmgp1UFH
+         X0yTNbj/mKSBYUTGxMcg8P8CrE8F5XVWyqkHJZgWUBjy92iwnsMi9aTWFow6QRlNuF
+         TgpTtcb05ScGA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/12/2020 08:23, Mike Rapoport wrote:
-> Hi Guillaume,
-> 
-> On Fri, Dec 11, 2020 at 09:53:46PM +0000, Guillaume Tucker wrote:
->> Hi Mike,
->>
->> Please see the bisection report below about a boot failure on
->> rk3288 with next-20201210.
->>
->> Reports aren't automatically sent to the public while we're
->> trialing new bisection features on kernelci.org but this one
->> looks valid.
->>
->> There's nothing in the serial console log, probably because it's
->> crashing too early during boot.  This was confirmed on two rk3288
->> platforms on kernelci.org: rk3288-veyron-jaq and
->> rk3288-rock2-square.  There's no clear sign about other platforms
->> being impacted.
->>
->> If this looks like something you want to investigate but you
->> don't have a platform at hand to reproduce it, please let us know
->> if you would like the test to be re-run on kernelci.org with some
->> debug config turned on, or if you have a fix to try.
-> 
-> I'd apprciate if you can build a working kernel with
-> CONFIG_DEBUG_MEMORY_INIT=y and run it with 
-> 
-> 	memblock=debug mminit_loglevel=4
-> 
-> in the command line.
-> 
-> If I understand correctly, DEBUG_LL is not an option for these platforms
-> so if earlyprintk didn't display the log there is not much to do about
-> it.
 
-OK, sorry for the delay.  I've built a kernel and booted it as
-you requested, and also found that the issue was due to this
-memory area defined in arch/arm/boot/dts/rk3288.dtsi:
+On 12/18/20 12:44 PM, Mark Brown wrote:
+> On Fri, Dec 18, 2020 at 08:41:02PM +0000, Mark Brown wrote:
+>> On Sat, Dec 19, 2020 at 12:49:38AM +0530, Pratyush Yadav wrote:
+>>> Anyway, if the SPI maintainers think this is worth it, I won't object.
+>> This gets kind of circular, for me it's a question of if there's some
+>> meaningful benefit from using the feature vs the cost to support it and
+>> from the sounds of it we don't have numbers on the benefits from using
+>> it at present.
+> ...although I do have to say looking at the implementation that the cost
+> seems low, it's just a flag set on an existing transfer.  The only issue
+> is if we'd get more win from coalesing the entire transaction (or entire
+> transmit) into a single transfer that could be DMAed and/or requires
+> fewer trips through the stack which does make it seem like an unclear
+> tradeoff from the point of view of client drivers
 
-        reserved-memory {
-                #address-cells = <2>;
-                #size-cells = <2>;
-                ranges;
+Using HW dummy cycles save extra software cycle of transfer which 
+involves transfer setup register writes, writing dummy bytes to TX FIFO, 
+interrupt processing.
 
-                /*
-                 * The rk3288 cannot use the memory area above 0xfe000000
-                 * for dma operations for some reason. While there is
-                 * probably a better solution available somewhere, we
-                 * haven't found it yet and while devices with 2GB of ram
-                 * are not affected, this issue prevents 4GB from booting.
-                 * So to make these devices at least bootable, block
-                 * this area for the time being until the real solution
-                 * is found.
-                 */
-                dma-unusable@fe000000 {
-                        reg = <0x0 0xfe000000 0x0 0x1000000>;
-                };
-        };
+Implementation wise it just a single bit field added to spi_transfer and 
+on Tegra controller driver programming dummy cycles with prior transfer 
+and skipping sw dummy transfer which is actually not complex.
 
-So I've put a hack[1] on top of 950c37691925 to skip adding a
-node in memblock_enforce_memory_reserved_overlap() if the base
-address is 0xfe000000, which got the kernel booting.  Here's the
-console log:
+ From quick check, I see HW dummy cycles transfer of 128KB shows 18 Mb/s 
+while SW transfer of bytes shows 17.3 MB/s on average.
 
-  https://people.collabora.com/~gtucker/tmp/2966825.txt
+When back-to-back read commands are executed using HW dummy cycles will 
+definitely save cycles.
 
-and the full test job details, if this helps:
-
-  https://lava.collabora.co.uk/scheduler/job/2966825
-
-
-I haven't really looked much further than that, but I'll be
-available on Monday to help run other tests if needed.
-
-Thanks,
-Guillaume
-
-[1] https://people.collabora.com/~gtucker/tmp/2966825.patch
