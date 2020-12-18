@@ -2,137 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5DB2DDE6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 07:09:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17AD22DDE6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 07:12:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732308AbgLRGJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 01:09:35 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:61530 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726801AbgLRGJe (ORCPT
+        id S1732627AbgLRGKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 01:10:02 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9226 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725298AbgLRGKB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 01:09:34 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1608271754; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=uS4mzlo3uSd6U8vrzsDXSBBTfBn/BjCQj5rxsqIrlfA=;
- b=oVb2Axzecy46yTzizlulnMkFQjo5yEk4EwJT4wTr4YS8mpeHLc87Jp2j7XZMLunY9tiE+ewQ
- XmgsxI9KPNAr4gF9x8D4Yb+ii4wdiK3qVEjI+WaNTxTzeyv/SnRGLltjjfMyWLlyN07i+CGS
- s0q8AoRGlDyC1wzBQ0gPQ5nMI6A=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5fdc47660564dfefcd00b778 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Dec 2020 06:08:38
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3C1FFC43466; Fri, 18 Dec 2020 06:08:37 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B3600C433CA;
-        Fri, 18 Dec 2020 06:08:35 +0000 (UTC)
+        Fri, 18 Dec 2020 01:10:01 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cxz236Fl7zksDZ;
+        Fri, 18 Dec 2020 14:08:27 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.9) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Fri, 18 Dec 2020
+ 14:09:16 +0800
+Subject: Re: [PATCH 1/1] device-dax: avoid an unnecessary check in
+ alloc_dev_dax_range()
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20201120092251.2197-1-thunder.leizhen@huawei.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <55970773-35ff-1afb-940b-8342b09aea9a@huawei.com>
+Date:   Fri, 18 Dec 2020 14:09:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20201120092251.2197-1-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Fri, 18 Dec 2020 14:08:35 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Stanley Chu <stanley.chu@mediatek.com>
-Cc:     linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
-        avri.altman@wdc.com, alim.akhtar@samsung.com, jejb@linux.ibm.com,
-        beanhuo@micron.com, asutoshd@codeaurora.org,
-        matthias.bgg@gmail.com, bvanassche@acm.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
-        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
-        chaotian.jing@mediatek.com, cc.chou@mediatek.com,
-        jiajie.hao@mediatek.com, alice.chao@mediatek.com
-Subject: Re: [PATCH v2 1/4] scsi: ufs: Refactor cancelling clkscaling works
-In-Reply-To: <20201216131639.4128-2-stanley.chu@mediatek.com>
-References: <20201216131639.4128-1-stanley.chu@mediatek.com>
- <20201216131639.4128-2-stanley.chu@mediatek.com>
-Message-ID: <0a96e3c62a0a77c78285fe92f2db2cd3@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-Originating-IP: [10.174.177.9]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-16 21:16, Stanley Chu wrote:
-> Cancelling suspend_work and resume_work is only required while
-> suspending clk-scaling. Thus moving these two invokes into
-> ufshcd_suspend_clkscaling() function.
-> 
-> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
-> ---
->  drivers/scsi/ufs/ufshcd.c | 17 ++++++-----------
->  1 file changed, 6 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 052479a56a6f..a91b73a1fc48 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -1451,6 +1451,9 @@ static void ufshcd_suspend_clkscaling(struct 
-> ufs_hba *hba)
->  	if (!ufshcd_is_clkscaling_supported(hba))
->  		return;
-> 
-> +	cancel_work_sync(&hba->clk_scaling.suspend_work);
-> +	cancel_work_sync(&hba->clk_scaling.resume_work);
-> +
->  	spin_lock_irqsave(hba->host->host_lock, flags);
->  	if (!hba->clk_scaling.is_suspended) {
->  		suspend = true;
-> @@ -1514,9 +1517,6 @@ static ssize_t
-> ufshcd_clkscale_enable_store(struct device *dev,
->  	pm_runtime_get_sync(hba->dev);
->  	ufshcd_hold(hba, false);
-> 
-> -	cancel_work_sync(&hba->clk_scaling.suspend_work);
-> -	cancel_work_sync(&hba->clk_scaling.resume_work);
-> -
->  	if (value) {
->  		ufshcd_resume_clkscaling(hba);
->  	} else {
-> @@ -5663,11 +5663,8 @@ static void ufshcd_err_handling_prepare(struct
-> ufs_hba *hba)
->  		ufshcd_vops_resume(hba, UFS_RUNTIME_PM);
->  	} else {
->  		ufshcd_hold(hba, false);
-> -		if (hba->clk_scaling.is_enabled) {
-> -			cancel_work_sync(&hba->clk_scaling.suspend_work);
-> -			cancel_work_sync(&hba->clk_scaling.resume_work);
-> +		if (hba->clk_scaling.is_enabled)
->  			ufshcd_suspend_clkscaling(hba);
-> -		}
->  	}
->  	down_write(&hba->clk_scaling_lock);
->  	hba->clk_scaling.is_allowed = false;
-> @@ -8512,11 +8509,9 @@ static int ufshcd_suspend(struct ufs_hba *hba,
-> enum ufs_pm_op pm_op)
->  	ufshcd_hold(hba, false);
->  	hba->clk_gating.is_suspended = true;
-> 
-> -	if (hba->clk_scaling.is_enabled) {
-> -		cancel_work_sync(&hba->clk_scaling.suspend_work);
-> -		cancel_work_sync(&hba->clk_scaling.resume_work);
-> +	if (hba->clk_scaling.is_enabled)
->  		ufshcd_suspend_clkscaling(hba);
-> -	}
-> +
->  	down_write(&hba->clk_scaling_lock);
->  	hba->clk_scaling.is_allowed = false;
->  	up_write(&hba->clk_scaling_lock);
 
-Reviewed-by: Can Guo <cang@codeaurora.org>
+
+On 2020/11/20 17:22, Zhen Lei wrote:
+> Swap the calling sequence of krealloc() and __request_region(), call the
+> latter first. In this way, the value of dev_dax->nr_range does not need to
+> be considered when __request_region() failed.
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  drivers/dax/bus.c | 29 ++++++++++++-----------------
+>  1 file changed, 12 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
+> index 27513d311242..1efae11d947a 100644
+> --- a/drivers/dax/bus.c
+> +++ b/drivers/dax/bus.c
+> @@ -763,23 +763,15 @@ static int alloc_dev_dax_range(struct dev_dax *dev_dax, u64 start,
+>  		return 0;
+>  	}
+>  
+> -	ranges = krealloc(dev_dax->ranges, sizeof(*ranges)
+> -			* (dev_dax->nr_range + 1), GFP_KERNEL);
+> -	if (!ranges)
+> -		return -ENOMEM;
+> -
+>  	alloc = __request_region(res, start, size, dev_name(dev), 0);
+> -	if (!alloc) {
+> -		/*
+> -		 * If this was an empty set of ranges nothing else
+> -		 * will release @ranges, so do it now.
+> -		 */
+> -		if (!dev_dax->nr_range) {
+> -			kfree(ranges);
+> -			ranges = NULL;
+> -		}
+> -		dev_dax->ranges = ranges;
+> +	if (!alloc)
+>  		return -ENOMEM;
+> +
+> +	ranges = krealloc(dev_dax->ranges, sizeof(*ranges)
+> +			* (dev_dax->nr_range + 1), GFP_KERNEL);
+> +	if (!ranges) {
+> +		rc = -ENOMEM;
+> +		goto err;
+
+Hi, Dan Williams:
+In fact, after adding the new helper dev_dax_trim_range(), we can
+directly call __release_region() and return error code at here. Replace goto.
+
+>  	}
+>  
+>  	for (i = 0; i < dev_dax->nr_range; i++)
+> @@ -808,11 +800,14 @@ static int alloc_dev_dax_range(struct dev_dax *dev_dax, u64 start,
+>  		dev_dbg(dev, "delete range[%d]: %pa:%pa\n", dev_dax->nr_range - 1,
+>  				&alloc->start, &alloc->end);
+>  		dev_dax->nr_range--;
+> -		__release_region(res, alloc->start, resource_size(alloc));
+> -		return rc;
+> +		goto err;
+>  	}
+>  
+>  	return 0;
+> +
+> +err:
+> +	__release_region(res, alloc->start, resource_size(alloc));
+> +	return rc;
+>  }
+>  
+>  static int adjust_dev_dax_range(struct dev_dax *dev_dax, struct resource *res, resource_size_t size)
+> 
+
