@@ -2,86 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8FB32DE0BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 11:10:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B23F22DE0C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 11:14:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733167AbgLRKJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 05:09:24 -0500
-Received: from smtprelay0091.hostedemail.com ([216.40.44.91]:34894 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1733048AbgLRKJX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 05:09:23 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 821BB18026431;
-        Fri, 18 Dec 2020 10:08:42 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3870:3872:3874:4321:5007:7576:8879:10004:10400:10848:11026:11232:11658:11914:12296:12297:12740:12760:12895:13069:13311:13357:13439:14096:14097:14659:14721:21080:21627:21773:21796:30030:30036:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: rock88_2b13b822743c
-X-Filterd-Recvd-Size: 2292
-Received: from XPS-9350.home (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf19.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 18 Dec 2020 10:08:40 +0000 (UTC)
-Message-ID: <c09401d003360cff41c949ccaea8ae9dc7b2c733.camel@perches.com>
-Subject: Re: [PATCH] staging: most: video: fixed a parentheses coding style
- issue.
-From:   Joe Perches <joe@perches.com>
-To:     David Laight <David.Laight@ACULAB.COM>,
-        Daniel West <daniel.west.dev@gmail.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Cc:     "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
-        "mchehab+huawei@kernel.org" <mchehab+huawei@kernel.org>,
-        "christian.gromm@microchip.com" <christian.gromm@microchip.com>,
-        "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Fri, 18 Dec 2020 02:08:39 -0800
-In-Reply-To: <d5993e314b134e038a1e4eeba32833ce@AcuMS.aculab.com>
-References: <20201217234501.351725-1-daniel.west.dev@gmail.com>
-         <04c331f6bfce57c253cb86208ebd28f6363e04c0.camel@perches.com>
-         <d5993e314b134e038a1e4eeba32833ce@AcuMS.aculab.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S2388972AbgLRKMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 05:12:24 -0500
+Received: from mail-eopbgr70124.outbound.protection.outlook.com ([40.107.7.124]:52144
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1732938AbgLRKMX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 05:12:23 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kKgYE4AaxxbnXPG8A9ADVQmGQ99IKOkJumoptbVY5QdkX/NGRpSYLgWIHCEADXIKrDAtFOJ0ylySIaeZ9DlEBcF6DIoGz3P3wDRHU2hzdoLozBTVdsboCvT3AYu2SxIDigBJ1NkhiVT8RSd4Sjqoe33+dv9gVcbs4nnUxWUSm5/EUr3wVDB/wG11S98Tu0xgCd9l7jyAUXE44tcItqjSMNd/pPZOBRdx2xSM+bl5+EbLJ9W/Hx/CKU+P+op6UhjxTJK48WOHBoAOyBWCnTFuQzCgbwXnoQgA2Q2MZKLq1bE+M6s0qr26aFVn/LaiT+rDfodHTybAVU6gWxaw95dXxQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=66mXcxKXLpveR0yfpCGe+ojxzzaTuzgN5W2EFpvBKvg=;
+ b=BLo4gS/lSJAYGwJjCwVl48Whk9sfKW/UeIP8kDNQaowTW4uwb7KayTwE5koy4tmwiECSrir6MLb3e9EYV+Zck/RB4vVNqEPbinhP5QrUlAi33ur9ecF8BF95Pb1e9Xl/nUB+EIYqEVWqjIRLX3yalhOpjk3Tak4uR+Ko7ZM+Iqs3YsLXvVNvuVLhQdLAke1vj+Vlr0CLz9BtQXPjYTI3Y4v6FB4b9iHyw9dvSYhk9PqreDi9qBwY6AQfAY/uGNzKCcnBwuQ3Fmo8qX9RYWJ/1LEt5YmLd6oNxwT4zVVkxFpOi0QHyHPxgkQXrv02E296lT4m64N9M2juVUyHeC/mxg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
+ dkim=pass header.d=prevas.dk; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=66mXcxKXLpveR0yfpCGe+ojxzzaTuzgN5W2EFpvBKvg=;
+ b=bJH1NV0qQSFJ1nmMDD8+x/Yfbql5jqJlelt4Bjdyxe+oiVBt1Jugw5WznnzPpMyXz8oW69jxRNBx8NxPH0DcjmK7y+oGeBRZNQsnAAWNGtWeHcPgGq00uwPgfn5HaO3alytQoeZekG4LWqNw3HBytvXbavixSduQPCES9n7aQ60=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=prevas.dk;
+Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:3f::10)
+ by AM4PR1001MB1346.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:200:99::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.25; Fri, 18 Dec
+ 2020 10:11:02 +0000
+Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::9068:c899:48f:a8e3]) by AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::9068:c899:48f:a8e3%6]) with mapi id 15.20.3654.025; Fri, 18 Dec 2020
+ 10:11:02 +0000
+From:   Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+To:     linux-rtc@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Qiang Zhao <qiang.zhao@nxp.com>,
+        Bruno Thomsen <bruno.thomsen@gmail.com>,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Subject: [PATCH v3 0/2] add reset-source RTC binding, update pcf2127 driver
+Date:   Fri, 18 Dec 2020 11:10:52 +0100
+Message-Id: <20201218101054.25416-1-rasmus.villemoes@prevas.dk>
+X-Mailer: git-send-email 2.23.0
+In-Reply-To: <20201211215611.24392-1-rasmus.villemoes@prevas.dk>
+References: <20201211215611.24392-1-rasmus.villemoes@prevas.dk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [5.186.115.188]
+X-ClientProxiedBy: AM6PR02CA0007.eurprd02.prod.outlook.com
+ (2603:10a6:20b:6e::20) To AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:3f::10)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from prevas-ravi.prevas.se (5.186.115.188) by AM6PR02CA0007.eurprd02.prod.outlook.com (2603:10a6:20b:6e::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.28 via Frontend Transport; Fri, 18 Dec 2020 10:11:01 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 04820316-e231-4c6a-7da5-08d8a33d3964
+X-MS-TrafficTypeDiagnostic: AM4PR1001MB1346:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM4PR1001MB1346F4A4BCEC608957B9D8FA93C30@AM4PR1001MB1346.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7hV1c7peXpxLVd3uEhhKPQd09oIgUPnG074P2wHh66g0+IbMKzH5Gmxvray4xKbqacJwNe+763MEexszNu+DfVPuXhEkG62q4yAMfwHwNhEJm81mZ2QCYWh10SHg7B1V0wb9tC6cDbkU8ngYAaT5hksP6/zOGsUiyGayP0HK8EB21jchY3/JeI8FQd8GUyOPjRNUa7to6KkDikcr20EEQPg9JS6PT1qnAD9Ko2yQyqkEsrS8hCoYiqI4w9WAmdpWeLtLQhNlrLTYSAHKIA5x817HJhUjgaNWD9om2+zLcKkFPryGrMJyS8XDk7//HW811tC8YQ8dS86kvb4/s0CSbps/AfGVbN45byfc08rYeEiZjBlKq8+VeNMX2ehztKBBhVnWy0RExOMiF6aube/6pw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(136003)(39840400004)(396003)(366004)(346002)(376002)(5660300002)(4744005)(1076003)(956004)(86362001)(44832011)(2616005)(6506007)(8936002)(478600001)(16526019)(66556008)(66946007)(52116002)(6666004)(107886003)(4326008)(6916009)(6486002)(186003)(26005)(36756003)(66476007)(6512007)(83380400001)(66574015)(54906003)(8676002)(2906002)(8976002)(316002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?bVBCcFhwZ0tsVFdwSVc4cWpoTUZzK3d4YzJkaURFZm9ET2NDcnZkdDFOZG5Z?=
+ =?utf-8?B?R2VVWXBmOTNzT29Lb1BvVGg1MWNKRWVHUStPM0lnekt5NURRdkdaRUNyMmZn?=
+ =?utf-8?B?QjVLVzZFRWg0QXFzU0htWHhlcjZhMjRoRFhDc09uNXUrdUNNRGxXdkVSQk9Q?=
+ =?utf-8?B?VmdNS2JtSUZsekVUbmJaWWlvKzV3M1N1ZmRNU01Hbi9LRndzQWtmWk9mcS9C?=
+ =?utf-8?B?UWU3Qzh6V2pFdmxNWnQ5QTBSYWx4RTJWOVlwUkRYczB5MWFvQUVPTEtEZTcr?=
+ =?utf-8?B?Wmc4WXVRMDEyWGFFMGZDVjlRdGlLSTB5WWM1SDl6SzJBdzFudGpER3hNSkdR?=
+ =?utf-8?B?UXdkSnN1UGFBTWVNUnk3SGZsZ2ZJMUc4Q2RTdndBNkpjenZFTzJBT2hIZ05D?=
+ =?utf-8?B?Z05yQ0ZNQUltQ2k4dkNieGdWOGxTUVpuV01nM1BuSDJqOU55Ly8wVExnY1RY?=
+ =?utf-8?B?U2pTR2ZwNlUvY3JiaWhqQ2JvM3JmbjVQRVBWaE1oVnFla0I4aUZDR2owTkRT?=
+ =?utf-8?B?RDc1RjRSM0tCblljc0dWWGZLZDdmTGZhdnJrNlRnNmg3OHMyMWw3azJ2UGd3?=
+ =?utf-8?B?ZmlFNzQ2dmcxTmRNZktib0xyKzVNTGpxdFEvQ2pTV2dpb1JZY3B6V1gxSUpC?=
+ =?utf-8?B?dGY4YXFUN2lhYU9HQlNUdU56RmxPckdMbkErdVlGM2NOQU5ENzVoQkdJdnU5?=
+ =?utf-8?B?YjBwaFFzWC9uMjdIMDJxMG9IRWtlQnZTTi81cVVXTktLdWs2ck01QTlEV2NJ?=
+ =?utf-8?B?YktjUkZVUVhuUzh4M1B3UnN2TXdaSWRQWGhSMXUxYlAxSE5JTysxOEF0RG5T?=
+ =?utf-8?B?RmFTUDIzckZmSWZVZDR6QkJIeWVrSmZjQUJ0MWUvUXdDWXNaLzV0NStSQ2lZ?=
+ =?utf-8?B?T2VRTkFiZHJyVVBWRkRYWkFIZGtFWjhDN1pTYkZBSnU3RFV2NW9hRmhtVWhE?=
+ =?utf-8?B?QURMTmQrTlhvT25yenJnVzd5NGFyd0g0aVlPaWkramZ4SWxXTVcreUJxeDFa?=
+ =?utf-8?B?YXMzUHF5RGNnSUZWbytvTnNKQVdYYU9MZE9aL0RrVXZ1ZFdPdVZSU002NUdm?=
+ =?utf-8?B?NTFERVArQlJWdi84UnZseXNJd0ErYjh3YS94L0VXQlhIWnBZUzFPcmNNdmNt?=
+ =?utf-8?B?WENWb2k5cnMvUmJmSVVzK0hUbDIvdm92c1BKTDFVa1liK3cwR0FIa0svRDI3?=
+ =?utf-8?B?RXVOQ0p1Ri96S0c0VmcwWkRFRWJpVlRxM3pKdmVqWnNaK2hIOWViMjNDMjNq?=
+ =?utf-8?B?dFVjWWhGd1RINklseDJMeTdFWlZMVHBHZlh3ZWE3RGk4VGZ4d256LzVzZnU1?=
+ =?utf-8?Q?nT5xgS1qwj167mQLCHZhvX6bls006rhZf0?=
+X-OriginatorOrg: prevas.dk
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Dec 2020 10:11:02.3475
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
+X-MS-Exchange-CrossTenant-Network-Message-Id: 04820316-e231-4c6a-7da5-08d8a33d3964
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: gpBOuBh3XOyXdhZkos3tuxfnQzwjC/oHnyDqzCOk+ZhrjR7qFJw7RG/DegQcs1qSNOmBjvYzNaOUzENYCYNToXP/sB2WnLjUDBQB/6bjwTE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR1001MB1346
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-12-18 at 09:49 +0000, David Laight wrote:
-> From: Joe Perches
-> > Sent: 17 December 2020 23:58
-> > 
-> > On Thu, 2020-12-17 at 15:45 -0800, Daniel West wrote:
-> > > Fixed a coding style issue.
-> > 
-> > It may pass checkpatch without warning, but it's uncommon kernel coding style.
-> 
-> checkpatch probably shouldn't complain about lines that end in (
-> if they are function definitions.
+This adds a reset-source RTC DT binding, as suggested by Alexandre,
+and resends Uwe's patch making use of that property in pcf2127 driver
+to avoid the driver exposing a watchdog that doesn't work (and
+potentially shuffling the enumeration of the existing devices that do
+work).
 
-Opinons vary.
+v3: elide the refactoring patch already in -next (5d78533a0c53 - rtc:
+pcf2127: move watchdog initialisation to a separate function), make
+sure to cc the DT binding list.
 
-Very few function declaration/definitions in the linux kernel use the
-one line per argument style (gnu indent -bfde)
+Applies on top of next-20201218.
 
-type function(
-	type argument1,
-	type argument2,
-	...
-	)
-{
-	...
-}
+Rasmus Villemoes (1):
+  dt-bindings: rtc: add reset-source property
 
-It probably shouldn't be encouraged.
+Uwe Kleine-König (1):
+  rtc: pcf2127: only use watchdog when explicitly available
 
-> > or (> 80 columns)
-> > static struct most_video_dev *get_comp_dev(struct most_interface *iface, int channel_idx)
-> Or shorten the variable/type names a bit so it all fits.
+ Documentation/devicetree/bindings/rtc/rtc.yaml | 5 +++++
+ drivers/rtc/rtc-pcf2127.c                      | 3 ++-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
-Always a possibility but probably not a good one here as even
-renaming channel_idx to idx doesn't make it < 80 columns
-
+-- 
+2.23.0
 
