@@ -2,109 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D152E2DE3EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:21:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 082E42DE3E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:21:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727916AbgLROVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 09:21:11 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:37710 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727108AbgLROVK (ORCPT
+        id S1727817AbgLROUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 09:20:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726047AbgLROUL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 09:21:10 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BIEJQJC093197;
-        Fri, 18 Dec 2020 08:19:26 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1608301166;
-        bh=S+0GamKVCQ687Tv6EqyRvpQ1fBcSrBgLoRk//UMEKCc=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=OhInuthfyE1sUT8QW2eEhRFjnbAPn+XfqGsUV4TRoOxjVnbfsDsvCcSie1YV4266F
-         8/RGvWMmDTkhyLbGDvbXCCq2Lny1atTCTREMQH03bwULQo68I86n48w5a1mGsKnPFE
-         ZUs2go+hyKlixjJWH7kN4clMEnqDp82uw8nSOeuw=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BIEJQSm095816
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 18 Dec 2020 08:19:26 -0600
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 18
- Dec 2020 08:19:26 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 18 Dec 2020 08:19:26 -0600
-Received: from [10.24.69.20] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BIEJNTE090472;
-        Fri, 18 Dec 2020 08:19:23 -0600
-Subject: Re: [PATCH] msi: use for_each_msi_entry_safe iterator macro
-To:     Jacob Keller <jacob.e.keller@intel.com>,
-        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>
-CC:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Stuart Yoder <stuyoder@gmail.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Nishanth Menon <nm@ti.com>, Tero Kristo <t-kristo@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-References: <20201217005557.45031-1-jacob.e.keller@intel.com>
-From:   Lokesh Vutla <lokeshvutla@ti.com>
-Message-ID: <4b3ee539-d5b0-d316-5ee0-0b7bd543c283@ti.com>
-Date:   Fri, 18 Dec 2020 19:49:22 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 18 Dec 2020 09:20:11 -0500
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C5AC0617B0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 06:19:30 -0800 (PST)
+Received: by mail-qv1-xf35.google.com with SMTP id 4so934525qvh.1
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 06:19:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WERPNLKxdgIzL5x4a7MSy0JBfPg8vRpdWpyRT6Y+Lx4=;
+        b=JWVockyamEBA1QzjNns4oKAV8HOKMsYdVPooYbIOFtw278D5Gt2qniBWvLXweuFSj1
+         tzoYgabP31sX8hAUUWwt4d0+LhYZklSF/9Z3Fjkyzcx403vDihglcZmVY9UWldsSa209
+         8KGP9Eedu9P7hKrxzgJg7+VYF77W8RFgrnq9eZz6CHtBH3d7cRyxqUGaefNQ/BPmrNEx
+         9oi1tjrsWCdOQocEJGzhvaO1K25b4dVre+HK05WlgxLdhuRdrs5lGz4do084bbGZMjD9
+         igN58y1WTKT0to1tcAZQOxq+tGgZe7hUtUrwUcHq0n/sMfcq1W3S32vgfSrF4OeLu0iI
+         CNLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WERPNLKxdgIzL5x4a7MSy0JBfPg8vRpdWpyRT6Y+Lx4=;
+        b=VbOuc7uGZtwiD6zRXwx3/9AaX+0KflvypIdOIvGJ6FglfNlXiqcHvdBIRYXm/MdSI6
+         msQDbR1oXARTXLzFNLyBVaum5K4gsnkneLEJN239Bm1RcTx0A4vkx/J6XlxLaiEhZVkl
+         I75OIVItWkOw4fA0BBvgEf0YETrNHqPAWH0bNgRPEOPTX3KlaVBxCtr5cBLCHxgEtRVS
+         F9SnPahzcLu2m3hV0O7KMQbUcUDx5jgbs3sRK60EXWbwFhJRtNjb0mmsPB/1kq3JATEd
+         NyfyIy+fMho6SAlbyIHanIkqpeyiJRjXQHnrMZvyp137s4XtdN0mDnbXPpPj2EbOi1jo
+         zHBQ==
+X-Gm-Message-State: AOAM533b7ldVCAeX0tkCAxugjfETn7BIzGeQQb6zLT8dhJezX0Tku2yG
+        +yS6snGTr8/dFGyAXGfwPjVQiQ==
+X-Google-Smtp-Source: ABdhPJx8/DJ78GkxbcIU1memIsL2TB3DNuXc1GCmXG+0Kwa2zwOi49IxsU0awOMhpxtgwLhA0c9ALg==
+X-Received: by 2002:a05:6214:768:: with SMTP id f8mr4637876qvz.1.1608301168974;
+        Fri, 18 Dec 2020 06:19:28 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id s130sm5426876qka.91.2020.12.18.06.19.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Dec 2020 06:19:28 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kqGbP-00CgM0-FO; Fri, 18 Dec 2020 10:19:27 -0400
+Date:   Fri, 18 Dec 2020 10:19:27 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v4 08/10] mm/gup: limit number of gup migration failures,
+ honor failures
+Message-ID: <20201218141927.GM5487@ziepe.ca>
+References: <20201217185243.3288048-1-pasha.tatashin@soleen.com>
+ <20201217185243.3288048-9-pasha.tatashin@soleen.com>
+ <20201217205048.GL5487@ziepe.ca>
+ <CA+CK2bA4F+SipkReJzFjCSC-8kZdK4yrwCQZM+TvCTrqV2CGHg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201217005557.45031-1-jacob.e.keller@intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+CK2bA4F+SipkReJzFjCSC-8kZdK4yrwCQZM+TvCTrqV2CGHg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 17/12/20 6:25 am, Jacob Keller wrote:
-> Commit 81b1e6e6a859 ("platform-msi: Free descriptors in
-> platform_msi_domain_free()") introduced for_each_msi_entry_safe as an
-> iterator operating on the msi_list using the safe semantics with
-> a temporary variable.
+On Thu, Dec 17, 2020 at 05:02:03PM -0500, Pavel Tatashin wrote:
+> Hi Jason,
 > 
-> A handful of locations still used the generic iterator instead of the
-> specific macro. Fix the 3 remaining cases. Add a cocci script which can
-> detect and report any misuse that is introduced in future changes.
+> Thank you for your comments. My replies below.
 > 
-> Cc: Rafael J. Wysocki <rafael@kernel.org>
-> Cc: Stuart Yoder <stuyoder@gmail.com>
-> Cc: Laurentiu Tudor <laurentiu.tudor@nxp.com>
-> Cc: Nishanth Menon <nm@ti.com>
-> Cc: Tero Kristo <t-kristo@ti.com>
-> Cc: Santosh Shilimkar <ssantosh@kernel.org>
-> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> Signed-off-by: Jacob Keller <jacob.e.keller@intel.com>
-> ---
+> On Thu, Dec 17, 2020 at 3:50 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >
+> > On Thu, Dec 17, 2020 at 01:52:41PM -0500, Pavel Tatashin wrote:
+> > > +/*
+> > > + * Verify that there are no unpinnable (movable) pages, if so return true.
+> > > + * Otherwise an unpinnable pages is found return false, and unpin all pages.
+> > > + */
+> > > +static bool check_and_unpin_pages(unsigned long nr_pages, struct page **pages,
+> > > +                               unsigned int gup_flags)
+> > > +{
+> > > +     unsigned long i, step;
+> > > +
+> > > +     for (i = 0; i < nr_pages; i += step) {
+> > > +             struct page *head = compound_head(pages[i]);
+> > > +
+> > > +             step = compound_nr(head) - (pages[i] - head);
+> >
+> > You can't assume that all of a compound head is in the pages array,
+> > this assumption would only work inside the page walkers if the page
+> > was found in a PMD or something.
+> 
+> I am not sure I understand your comment. The compound head is not
+> taken from the pages array, and not assumed to be in it. It is exactly
+> the same logic as that we currently have:
+> https://soleen.com/source/xref/linux/mm/gup.c?r=a00cda3f#1565
 
-[..snip..]
+Oh, that existing logic is wrong too :( Another bug.
 
->  	}
-> diff --git a/drivers/soc/ti/ti_sci_inta_msi.c b/drivers/soc/ti/ti_sci_inta_msi.c
-> index 0eb9462f609e..66f9772dcdfa 100644
-> --- a/drivers/soc/ti/ti_sci_inta_msi.c
-> +++ b/drivers/soc/ti/ti_sci_inta_msi.c
-> @@ -64,7 +64,7 @@ static void ti_sci_inta_msi_free_descs(struct device *dev)
->  {
->  	struct msi_desc *desc, *tmp;
->  
-> -	list_for_each_entry_safe(desc, tmp, dev_to_msi_list(dev), list) {
-> +	for_each_msi_entry_safe(desc, tmp, dev) {
->  		list_del(&desc->list);
->  		free_msi_entry(desc);
->  	}
+You can't skip pages in the pages[] array under the assumption they
+are contiguous. ie the i+=step is wrong.
 
-For ti_sci_inta_msi part:
+> >
+> > > +     if (gup_flags & FOLL_PIN) {
+> > > +             unpin_user_pages(pages, nr_pages);
+> >
+> > So we throw everything away? Why? That isn't how the old algorithm worked
+> 
+> It is exactly like the old algorithm worked: if there are pages to be
+> migrated (not pinnable pages) we unpinned everything.
+> See here:
+> https://soleen.com/source/xref/linux/mm/gup.c?r=a00cda3f#1603
 
-Reviewed-by: Lokesh Vutla <lokeshvutla@ti.com>
+Hmm, OK, but I'm not sure that is great either
 
-Thanks and regards,
-Lokesh
+> cleaner, and handle errors. We must unpin everything because if we
+> fail, no pages should stay pinned, and also if we migrated some pages,
+> the pages array must be updated, so we need to call
+> __get_user_pages_locked() pin and repopulated pages array.
 
+However the page can't be unpinned until it is put on the LRU (and I'm
+hoping that the LRU is enough of a 'lock' to make that safe, no idea)
+
+> > I don't like this at all. It shouldn't be so flakey
+> >
+> > Can you do migration without the LRU?
+> 
+> I do not think it is possible, we must isolate pages before migration.
+
+I don't like this at all :( Lots of stuff relies on GUP, introducing a
+random flakiness like this not good.
+
+Jason
