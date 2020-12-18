@@ -2,110 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C2012DE225
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 12:45:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2692E2DE23A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 12:56:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726365AbgLRLpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 06:45:04 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:9463 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726303AbgLRLpD (ORCPT
+        id S1726484AbgLRLyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 06:54:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726447AbgLRLyn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 06:45:03 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Cy6T10T8mzhsnY;
-        Fri, 18 Dec 2020 19:43:49 +0800 (CST)
-Received: from use12-sp2.huawei.com (10.67.189.174) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 18 Dec 2020 19:44:13 +0800
-From:   Xiaoming Ni <nixiaoming@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>,
-        <pavel@ucw.cz>, <dmurphy@ti.com>, <akpm@linux-foundation.org>,
-        <keescook@chromium.org>, <gpiccoli@canonical.com>,
-        <penguin-kernel@i-love.sakura.ne.jp>
-CC:     <nixiaoming@huawei.com>, <wangle6@huawei.com>
-Subject: [PATCH 4/4] leds:trigger:ledtrig-heartbeat: Replace "panic_heartbeats" with is_be_panic()
-Date:   Fri, 18 Dec 2020 19:44:06 +0800
-Message-ID: <20201218114406.61906-5-nixiaoming@huawei.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201218114406.61906-1-nixiaoming@huawei.com>
-References: <20201218114406.61906-1-nixiaoming@huawei.com>
+        Fri, 18 Dec 2020 06:54:43 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DB05C0617B0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 03:54:03 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id n3so4775014pjm.1
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 03:54:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EMOyMmi5OQh1mMw6pWH3HTsh9nX0nJvvkb+01sG5L6Q=;
+        b=OEqRBfN9ikmHv25/4WO0ioVGt+dtMVY9rOSKsI5lIuKBTvU4b+aYp4CCK82nWHGnS2
+         rjLxRrIr/TQvF8gZBpg25+9PrMfCR6teCbq6+7toS/4enCVZg87drrlN9cOTyBOQ/+kZ
+         0rIMRQV3Y7H5lJr5N7MFfK2xTyTOvpPt+kbgejrqeYe4xCTJCu26W53nxg3KXT55BVSj
+         4BK1Bj6Ug2n5ufoys9NpoYzTBTU6KrsVsbBArZ6gDAycN/ciqAfBF73YU/QS6I6ENmpf
+         DNXhWTbx7nR6WtTw9YBgslobxO3i88AalvYg1IuJaWD4eLKdTQbjO00LOIWzdBrcirIx
+         UiLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EMOyMmi5OQh1mMw6pWH3HTsh9nX0nJvvkb+01sG5L6Q=;
+        b=q1jrJzFRovmUM4dAmXoRRWdDEQOwAbr5kQ/SyLrXxcU9F6jpf+hc8glqfgCQkSEetR
+         3tUM78IAvx1jjWRZaQyqlXVwpFyL8345CmPGkCCpSiplhiiQuuQIsxxZBevD4YbY2CNg
+         nEFmEvbkd26MM4n01avCiQ2Ohtg4tn363X1mH/bQwbDEp9/JHpNs10vmnO8XW/nwoMeq
+         /56WxiVK/IYBRZwJ7hJrUsgBCeqFeFm0fUVaEWkh58TgHtxosoFyCtxiCK5R/CXK76jG
+         DcUxbu69tPcM+daKGN7+teeRxeZX3eYwXWWgSzx3nYzws3UElGFcsAxcFg2aewvUOLqq
+         aRDQ==
+X-Gm-Message-State: AOAM5329GrLD3P+GNe7GSkcqNcklfSnkXfUq/0oqvrbqTVVpV9Utn6Dy
+        m4Tymy20BCokU+m8FD2fzFauEA==
+X-Google-Smtp-Source: ABdhPJwSlTiK2XI1930qTKhXQbTvQGl7TXUde9fI8+X06ym1hrnx7dRsCU6ClGix/2RdhYaIhNBIHQ==
+X-Received: by 2002:a17:90a:5894:: with SMTP id j20mr3959568pji.107.1608292442787;
+        Fri, 18 Dec 2020 03:54:02 -0800 (PST)
+Received: from google.com (139.60.82.34.bc.googleusercontent.com. [34.82.60.139])
+        by smtp.gmail.com with ESMTPSA id gp14sm7862161pjb.6.2020.12.18.03.54.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Dec 2020 03:54:02 -0800 (PST)
+Date:   Fri, 18 Dec 2020 11:53:58 +0000
+From:   Satya Tangirala <satyat@google.com>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH 0/3] add support for metadata encryption to F2FS
+Message-ID: <X9yYVuuLt3/hL17J@google.com>
+References: <20201005073606.1949772-1-satyat@google.com>
+ <471e0eb7-b035-03da-3ee3-35d5880a6748@huawei.com>
+ <X9t8y3rElyAPCLoD@google.com>
+ <9a8d3ae2-a09f-f199-5cb1-48b1317b3d37@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.189.174]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9a8d3ae2-a09f-f199-5cb1-48b1317b3d37@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the global variable "panic_heartbeats" with is_be_panic()
-
-Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
----
- drivers/leds/trigger/ledtrig-heartbeat.c | 19 +------------------
- 1 file changed, 1 insertion(+), 18 deletions(-)
-
-diff --git a/drivers/leds/trigger/ledtrig-heartbeat.c b/drivers/leds/trigger/ledtrig-heartbeat.c
-index 36b6709afe9f..3c34d49f0ed8 100644
---- a/drivers/leds/trigger/ledtrig-heartbeat.c
-+++ b/drivers/leds/trigger/ledtrig-heartbeat.c
-@@ -19,8 +19,6 @@
- #include <linux/reboot.h>
- #include "../leds.h"
- 
--static int panic_heartbeats;
--
- struct heartbeat_trig_data {
- 	struct led_classdev *led_cdev;
- 	unsigned int phase;
-@@ -39,7 +37,7 @@ static void led_heartbeat_function(struct timer_list *t)
- 
- 	led_cdev = heartbeat_data->led_cdev;
- 
--	if (unlikely(panic_heartbeats)) {
-+	if (unlikely(is_being_panic())) {
- 		led_set_brightness_nosleep(led_cdev, LED_OFF);
- 		return;
- 	}
-@@ -169,28 +167,15 @@ static int heartbeat_reboot_notifier(struct notifier_block *nb,
- 	return NOTIFY_DONE;
- }
- 
--static int heartbeat_panic_notifier(struct notifier_block *nb,
--				     unsigned long code, void *unused)
--{
--	panic_heartbeats = 1;
--	return NOTIFY_DONE;
--}
--
- static struct notifier_block heartbeat_reboot_nb = {
- 	.notifier_call = heartbeat_reboot_notifier,
- };
- 
--static struct notifier_block heartbeat_panic_nb = {
--	.notifier_call = heartbeat_panic_notifier,
--};
--
- static int __init heartbeat_trig_init(void)
- {
- 	int rc = led_trigger_register(&heartbeat_led_trigger);
- 
- 	if (!rc) {
--		atomic_notifier_chain_register(&panic_notifier_list,
--					       &heartbeat_panic_nb);
- 		register_reboot_notifier(&heartbeat_reboot_nb);
- 	}
- 	return rc;
-@@ -199,8 +184,6 @@ static int __init heartbeat_trig_init(void)
- static void __exit heartbeat_trig_exit(void)
- {
- 	unregister_reboot_notifier(&heartbeat_reboot_nb);
--	atomic_notifier_chain_unregister(&panic_notifier_list,
--					 &heartbeat_panic_nb);
- 	led_trigger_unregister(&heartbeat_led_trigger);
- }
- 
--- 
-2.27.0
-
+On Fri, Dec 18, 2020 at 05:02:23PM +0800, Chao Yu wrote:
+> On 2020/12/17 23:44, Satya Tangirala wrote:
+> > On Sat, Oct 10, 2020 at 05:53:06PM +0800, Chao Yu wrote:
+> > > Why not using nid as DUN, then GC could migrate encrypted node block directly via
+> > > meta inode's address space like we do for encrypted data block, rather than
+> > > decrypting node block to node page and then encrypting node page with DUN of new
+> > > blkaddr it migrates to.
+> > > 
+> > The issue is, the bi_crypt_context in a bio holds a single DUN value,
+> > which is the DUN for the first data unit in the bio. blk-crypto assumes
+> > that the DUN of each subsequent data unit can be computed by simply
+> > incrementing the DUN. So physically contiguous data units can only be put
+> > into the same bio if they also have contiguous DUNs. I don't know much
+> > about nids, but if the nid is invariant w.r.t the physical block location,
+> > then there might be more fragmentation of bios in regular read/writes
+> 
+> Correct, considering performance of in batch node flush, it will be better to
+> use pba as IV value.
+> 
+> But, what's the plan about supporting software encryption for metadata? Current
+> f2fs write flow will handle all operations which may encounter failure before
+> allocating block address for node, if we do allocation first, and then use pba
+> as IV to encrypt node block, it will be a little complicated to revert allocation
+> if we fail to encrypt node block.
+> 
+Software encryption for metadata is supported through the blk-crypto
+framework - so encryption will happen in the block layer, not the
+filesystem layer. So there's nothing extra/special we need to do if
+there's an encryption failure - an encryption failure is no different
+from a read/write failure in a lower layer from f2fs' perspective.
