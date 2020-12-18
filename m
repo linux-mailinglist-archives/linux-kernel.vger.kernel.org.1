@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E89E2DE741
+	by mail.lfdr.de (Postfix) with ESMTP id D07902DE742
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 17:10:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730228AbgLRQJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 11:09:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47190 "EHLO
+        id S1730292AbgLRQJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 11:09:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728291AbgLRQJm (ORCPT
+        with ESMTP id S1727608AbgLRQJt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 11:09:42 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B71C06138C
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 08:09:02 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id e2so1598845pgi.5
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 08:09:02 -0800 (PST)
+        Fri, 18 Dec 2020 11:09:49 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA6BC061285
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 08:09:09 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id v1so1535002pjr.2
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 08:09:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=cbphNThpMBkxGgNc7zAuFjFsnDtTe74/75ruhMTtlWA=;
-        b=TrwsgWTFeIYHpaE92OK13QkzEiSSoPGh8SYTNr+hnoXgb3GyESoW1rfND/PUo1RFN9
-         CMKOOr2ceuLeZDgSJda4Zzeo6VLgKVQwGeuXNlq5/1/ZdSOp7PhqDPg1b1cJJW8YqN2f
-         mSzfV8yyWRbuuFYT7zO+gKA1kQUsg/1SfozDleofFbxxwO2OlxH3JOo5WbSnKnfr3eOm
-         jCYLYOuMlvqNy7JG000wcRi/Url1YOnKBaDTnNQ5Di9UTtxPckcmrqZsuaJeomaa+ncE
-         pKJ0k8iVnYMXfTwbpnJxepcxnS5XOs/OhIFSptkKyQ8CvmNg6EZ2ryUzaMNxL/OQTv5z
-         CLHA==
+        bh=HILaepP1L4LkoXGwjGc6/8JBQvrDdhltwxNiKtQLYyE=;
+        b=a8y/QEyVo+S8aK85CvirEM0AMNRs75MWjiQVcmcwXD6eKV5Mh1AQ3f128Hj447yKXX
+         sApwzn+GpoWpXPMvvRm+NybbV5kfHRUri80bgjlUJrdPc9imbVr5ui1ytyfB9H0uDZnq
+         OdwyIVnhlccLrpVDRfT8H4hsaidkVazfRWzwRChMVntthXcRt5ClKP4YTCo3WU22tCnG
+         mnBT/nBZJPDz6LCxU5x31OkorCk8JfCTfqPlrf4s5KzkR6W04MbTkzsHfT027cLEzWuR
+         LwEB7cN2TlSufEdKKNTzL3SRIedhR7jBl4hRMn98O8R9ljyEb0Jq3XP9Lh5K/NeqMIVl
+         HYOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=cbphNThpMBkxGgNc7zAuFjFsnDtTe74/75ruhMTtlWA=;
-        b=No6+WI1QSxIcULG2vd4XAnHhe59dZx973SdGL6B3W4SXQK10eHv5yqCAmTo9xXwhQp
-         nuL+FjJPoT96mNHlMaQ+e4UwEqXUy5TbTP8EltBuXw60LWsqeJSxk6r5FgiEeCZI+3LV
-         y9/YBn791aZ/oACJUDXboqlN6OfW/kD50Kh1uCmkrJkphB5OGXaByyp2YPClvZ/6SAgQ
-         u1eqr9xCH0UybkZJMXA+WmFGocXE2RX5kkuO1ZtXZ7xFjFiR6P9jEHsBkOXgYVxti1EL
-         aIKItxefRctrI+EVabFQ1lTKYfysnfUtW+VfRSj539U2WcAW9LATe5mVdbw5GLzv/07c
-         AZ/Q==
-X-Gm-Message-State: AOAM5325CW4NSzOVSeNySa6ID9epybzaZ/gcD8eb0h17ZEgOhrS2DHRI
-        xzxA8rlnPZ8RxcYHKTTaVliK4oGGPmA=
-X-Google-Smtp-Source: ABdhPJwaNlT9TRkHrl2F3O67M//Tc0MAvMcqIDHcNS7d9rnIj4broSv7ETXiWh8lGqrCNUbbbXJ0fg==
-X-Received: by 2002:a65:67cf:: with SMTP id b15mr4690294pgs.429.1608307741721;
-        Fri, 18 Dec 2020 08:09:01 -0800 (PST)
+        bh=HILaepP1L4LkoXGwjGc6/8JBQvrDdhltwxNiKtQLYyE=;
+        b=MpJ4NuTaTkjSZc6Yuxo2CLphoVSu00Bv5GK6rYZGhPg5NuAZV8wegisnRCoRmby/4f
+         9tiKlAGdADdAvzGI99X6A27CQSHWGgKxrWpqFFH4ca5G5e2MdGD6DzEkQ0wc/fhdEvHc
+         mkLSDCbCIuJPvtEc85Xq9BAyWwY0YpwJTFELRUDJZmBNXLgwLPoKeVDunnSkcPcYuOBE
+         TpB7PTpHBu8N40JXvt/LCVJqlsDDhEyCqh+qS2gb+XM9Dphz7nEf69gX+qNMT4lPCIGe
+         zooX8tcyr4jFxJlu/0ZIAqTuzAUpv3Tt5lFNlL0MHKBO8jTtRCuQb4O7jlDmHKkHh9O7
+         YGIA==
+X-Gm-Message-State: AOAM532dksoPMOFCSQkdggtgBidA5t2Lf1Li4DA8McS+UeoREASKKB/s
+        IyCLamh7IFE+fwz31kW9908el3tizHA=
+X-Google-Smtp-Source: ABdhPJweZzlLDxl8M6kOxmpStgmtqZh/iRGCgjiUE3aMiAcJLBkT38JR3XDVyWlogphH65gTeb4DMA==
+X-Received: by 2002:a17:90a:c592:: with SMTP id l18mr4962949pjt.228.1608307748677;
+        Fri, 18 Dec 2020 08:09:08 -0800 (PST)
 Received: from localhost ([47.251.4.198])
-        by smtp.gmail.com with ESMTPSA id a12sm9366971pgq.5.2020.12.18.08.09.00
+        by smtp.gmail.com with ESMTPSA id t5sm7956672pjr.22.2020.12.18.08.09.07
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 18 Dec 2020 08:09:01 -0800 (PST)
+        Fri, 18 Dec 2020 08:09:08 -0800 (PST)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Valentin Schneider <valentin.schneider@arm.com>,
@@ -58,9 +58,9 @@ Cc:     Valentin Schneider <valentin.schneider@arm.com>,
         Tejun Heo <tj@kernel.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: [PATCH -tip V2 02/10] workqueue: use cpu_possible_mask instead of cpu_active_mask to break affinity
-Date:   Sat, 19 Dec 2020 01:09:11 +0800
-Message-Id: <20201218170919.2950-3-jiangshanlai@gmail.com>
+Subject: [PATCH -tip V2 03/10] workqueue: Manually break affinity on pool detachment
+Date:   Sat, 19 Dec 2020 01:09:12 +0800
+Message-Id: <20201218170919.2950-4-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20201218170919.2950-1-jiangshanlai@gmail.com>
 References: <20201218170919.2950-1-jiangshanlai@gmail.com>
@@ -72,36 +72,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-The scheduler won't break affinity for us any more, and we should
-"emulate" the same behavior when the scheduler breaks affinity for
-us.  The behavior is "changing the cpumask to cpu_possible_mask".
-
-And there might be some other CPUs online later while the worker is
-still running with the pending work items.  The worker should be allowed
-to use the later online CPUs as before and process the work items ASAP.
-If we use cpu_active_mask here, we can't achieve this goal but
-using cpu_possible_mask can.
+The pool->attrs->cpumask might be a single CPU and it may go
+down after detachment, and the scheduler won't force to break
+affinity for us since it is a per-cpu-ktrhead.  So we have to
+do it on our own and unbind this worker which can't be unbound
+by workqueue_offline_cpu() since it doesn't belong to any pool
+after detachment.  Do it unconditionally for there is no harm
+to break affinity for non-per-cpu-ktrhead and we don't need to
+rely on the scheduler's policy on when to break affinity.
 
 Fixes: 06249738a41a ("workqueue: Manually break affinity on hotplug")
 Acked-by: Tejun Heo <tj@kernel.org>
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- kernel/workqueue.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/workqueue.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
 diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index aba71ab359dd..fa71520822f0 100644
+index fa71520822f0..4d7575311198 100644
 --- a/kernel/workqueue.c
 +++ b/kernel/workqueue.c
-@@ -4910,7 +4910,7 @@ static void unbind_workers(int cpu)
- 		raw_spin_unlock_irq(&pool->lock);
+@@ -1885,6 +1885,19 @@ static void worker_detach_from_pool(struct worker *worker)
  
- 		for_each_pool_worker(worker, pool)
--			WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, cpu_active_mask) < 0);
-+			WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, cpu_possible_mask) < 0);
+ 	if (list_empty(&pool->workers))
+ 		detach_completion = pool->detach_completion;
++
++	/*
++	 * The pool->attrs->cpumask might be a single CPU and it may go
++	 * down after detachment, and the scheduler won't force to break
++	 * affinity for us since it is a per-cpu-ktrhead.  So we have to
++	 * do it on our own and unbind this worker which can't be unbound
++	 * by workqueue_offline_cpu() since it doesn't belong to any pool
++	 * after detachment.  Do it unconditionally for there is no harm
++	 * to break affinity for non-per-cpu-ktrhead and we don't need to
++	 * rely on the scheduler's policy on when to break affinity.
++	 */
++	set_cpus_allowed_ptr(worker->task, cpu_possible_mask);
++
+ 	mutex_unlock(&wq_pool_attach_mutex);
  
- 		mutex_unlock(&wq_pool_attach_mutex);
- 
+ 	/* clear leftover flags without pool->lock after it is detached */
 -- 
 2.19.1.6.gb485710b
 
