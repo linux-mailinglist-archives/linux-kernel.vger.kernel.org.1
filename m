@@ -2,125 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E9FD2DE6F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 16:53:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DBA82DE704
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 16:56:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729209AbgLRPw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 10:52:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37252 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725949AbgLRPw7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 10:52:59 -0500
-Date:   Fri, 18 Dec 2020 15:52:04 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608306738;
-        bh=hh6kmTaYw7S1ycwZ4+Gi2lG2vKviQu4KRDfzNgRJMMs=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UyU1MPj7dIcBqLmjerLEZsmEzC9n1onWw7rJnwndCFVtu521SPmOch8eA090w9V2H
-         ebUvciuQh2tgliNsbPhJ+d7famGJ5HrWsYQXOFYFawsqG7YFaYaENY1wZ3I+lQvhM3
-         sBTMAP+TWsAs/Y2hGXv08Pw61G+jsbNEjrvVOliXG1QnXFRMS7pL33FrykEC15cAbc
-         2EPJnk8WkKwkraXP8CJjbdl6y+P9OpU1+fs8usTsCYpva/XnIg5e4tdCor3867HRms
-         tVOavWiyg+wnpW7nD1Pb2LmOxcN9bu82ySjirX3es0l64KZmVFEC9qMU+j+GVrqdxQ
-         J63Ghc7zBNX5A==
-From:   Mark Brown <broonie@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        alsa-devel@alsa-project.org, Kiran Patil <kiran.patil@intel.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        David Miller <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Parav Pandit <parav@mellanox.com>, lee.jones@linaro.org
-Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
-Message-ID: <20201218155204.GC5333@sirena.org.uk>
-References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
- <X8ogtmrm7tOzZo+N@kroah.com>
- <CAPcyv4iLG7V9JT34La5PYfyM9378acbLnkShx=6pOmpPK7yg3A@mail.gmail.com>
- <X8usiKhLCU3PGL9J@kroah.com>
- <20201217211937.GA3177478@piout.net>
- <X9xV+8Mujo4dhfU4@kroah.com>
- <20201218131709.GA5333@sirena.org.uk>
- <20201218140854.GW552508@nvidia.com>
+        id S1727942AbgLRP42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 10:56:28 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:13459 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725949AbgLRP41 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 10:56:27 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fdcd1030000>; Fri, 18 Dec 2020 07:55:47 -0800
+Received: from [10.26.73.104] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 18 Dec
+ 2020 15:55:41 +0000
+Subject: Re: [PATCH] gcc-plugins: simplify GCC plugin-dev capability test
+To:     Masahiro Yamada <masahiroy@kernel.org>
+CC:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Emese Revfy" <re.emese@gmail.com>,
+        <linux-hardening@vger.kernel.org>,
+        "Linus Torvalds" <torvalds@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+References: <CGME20201218075758eucas1p1605768803a5c9edce4fbe54b3e3b859a@eucas1p1.samsung.com>
+ <20201203125700.161354-1-masahiroy@kernel.org>
+ <b9b17126-9af5-2f73-526e-91bb9fd27f71@samsung.com>
+ <CAK7LNART2qQBY7Vc8rhMiXS_Fwty7qpWjwwfPrUegTb-gjy6sA@mail.gmail.com>
+ <9f959875-1a30-b1a1-b626-3805e24a6df3@samsung.com>
+ <e5b06d9a-9b24-2440-e0c2-8bf7095eccd9@nvidia.com>
+ <25030057-86b1-5619-25fd-acfa0728b850@samsung.com>
+ <4ab4f62f-8b37-01e1-f81c-270155b13a51@nvidia.com>
+ <7e691a61-bf4b-0594-8d6d-36d62a5def0b@nvidia.com>
+ <CAK7LNAQ6pzMGm=L9389Xtfghjfjr_wDqRntZC2XqP3JDQuhLhQ@mail.gmail.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <c2a968fa-5a98-d9ea-3255-1e3be3e9c704@nvidia.com>
+Date:   Fri, 18 Dec 2020 15:55:38 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ABTtc+pdwF7KHXCz"
-Content-Disposition: inline
-In-Reply-To: <20201218140854.GW552508@nvidia.com>
-X-Cookie: Password:
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAK7LNAQ6pzMGm=L9389Xtfghjfjr_wDqRntZC2XqP3JDQuhLhQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1608306947; bh=Vf95MzpRH15xDbnzDYz9T/qpYpIZeGHo+3utb3dK3p0=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=gG1/wrOtHRdihF20uuUYpsjhtLGEJ5rvCJOx94H2d7uzNK19cqpHiseyv8P0NMLnv
+         I8Zi4EIzJDUESASrLirKD8QcdqAyICwtSnYzjefHZfkdImiC/meaX6PB4jWksKyPn3
+         NXHBxyDYBsPaGvIZ501PqOkAVxG0tSXgtdtUHyu7vZ8LnAkWl2orGfSQ/aKjOvU0gK
+         sooRrWLWtSoa9pZjxe/t09QaLppo6aGzGKrhF0D8JG21EijrBMc9Eb0V6ol/6FEdsg
+         QZ5CwULlbPQOI299ues3dhGG3lEJU8VMBTHUof23kR279uTCiRUmzbkTxDCXNCLbaG
+         yi8K0JAnpKkIQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---ABTtc+pdwF7KHXCz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Fri, Dec 18, 2020 at 10:08:54AM -0400, Jason Gunthorpe wrote:
-> On Fri, Dec 18, 2020 at 01:17:09PM +0000, Mark Brown wrote:
+On 18/12/2020 15:42, Masahiro Yamada wrote:
 
-> > As previously discussed this will need the auxilliary bus extending to
-> > support at least interrupts and possibly also general resources.
+...
 
-> I thought the recent LWN article summed it up nicely, auxillary bus is
-> for gluing to subsystems together using a driver specific software API
-> to connect to the HW, MFD is for splitting a physical HW into disjoint
-> regions of HW.
+>> However, if you are saying that this is a problem/bug with our builders,
+>> then of course we will have to get this fixed.
+>>
+> 
+> 
+> Yes, please do so.
+> 
+> 
+> Kconfig evaluates $(CC) capabilities, and
+> hides CONFIG options it cannot support.
+> 
+> 
+> In contrast, we do not do that for $(HOSTCC)
+> capabilities because it is just a matter of some
+> missing packages.
+> 
+> 
+> For example, if you enable CONFIG_SYSTEM_TRUSTED_KEYRING
+> and fail to build scripts/extrace-cert.c
+> due to missing <openssl/bio.h>,
+> you need to install the openssl dev package.
+> 
+> It is the same pattern.
 
-This conflicts with the statements from Greg about not using the
-platform bus for things that aren't memory mapped or "direct firmware",
-a large proportion of MFD subfunctions are neither at least in so far as
-I can understand what direct firmware means.
 
-To be honest I don't find the LWN article clarifies things particularly
-here, the rationale appears to involve some misconceptions about what
-MFDs look like.  It looks like it assumes that MFD functions have
-physically separate register sets for example which is not a reliable
-feature of MFDs, nor is the assumption that there's no shared
-functionality which appears to be there.  It also appears to assume that
-MFD subfunctions can clearly be described by ACPI (where it would be
-unidiomatic, we just don't see this happening for the MFDs that appear
-on ACPI systems and I'm not sure bindings exist within ACPI) or DT
-(where even where subfunctions are individually described it's rarely
-doing more than enumerating that things exist).
+OK, thanks for confirming. We will get this fixed.
 
-> Maybe there is some overlap, but if you want to add HW representations
-> to the general auxillary device then I think you are using it for the
-> wrong thing.
+Cheers Jon
 
-Even for the narrowest use case for auxiliary devices that I can think
-of I think the assumption that nobody will ever design something which
-can wire an interrupt intended to be serviced by a subfunction is a bit
-optimistic.  If Greg's statements about not using platform buses for
-MMIO or direct firmware devices are accurate then those cases already
-exist, if nothing else a common subfunction for MFDs is an interrupt
-controller.
-
---ABTtc+pdwF7KHXCz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/c0CMACgkQJNaLcl1U
-h9AEzwf+O76Uw7BDG33tM6xhLOwoq847RdyVqkI6RrFlyIlLsFlIt49fbXRIuXTF
-Pviz3SUZ268ihxH3NrtuGLDtkdVL70oKo26hEppOtp877dhmkjK/BCnnkqIiERro
-4Hpxo/eoIjqT0lnx+ah2ge9q5cDhT9s1mMH8vkvdOSGa2a9z71uYEzOARmvUbXy9
-LK4/z9VmLS0wmO6YPxwc4Nq6afaa0m/yGhGFxu2aKT9aKfzbBIywl6WFllPz1Y1H
-G+ZxfgLJ6sZON36FToD7/FEDUuZxBUGjA5d2txOX0xpx/ZsnvapoRypEvotufObZ
-ZVX/PBjkUnHdClRckKl3LHCok9Xw1w==
-=lhpS
------END PGP SIGNATURE-----
-
---ABTtc+pdwF7KHXCz--
+-- 
+nvpublic
