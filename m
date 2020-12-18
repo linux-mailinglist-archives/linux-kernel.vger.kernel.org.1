@@ -2,104 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9328E2DE06D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 10:33:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 927E12DE071
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 10:36:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732881AbgLRJcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 04:32:23 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2267 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727235AbgLRJcW (ORCPT
+        id S1733131AbgLRJfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 04:35:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20072 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726798AbgLRJfS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 04:32:22 -0500
-Received: from fraeml704-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Cy3T76ds8z67RKR;
-        Fri, 18 Dec 2020 17:28:43 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml704-chm.china.huawei.com (10.206.15.53) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Fri, 18 Dec 2020 10:31:39 +0100
-Received: from [10.210.168.198] (10.210.168.198) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 18 Dec 2020 09:31:38 +0000
-Subject: Re: [RFC PATCH v2 2/2] blk-mq: Lockout tagset iter when freeing rqs
-To:     Bart Van Assche <bvanassche@acm.org>, <axboe@kernel.dk>,
-        <ming.lei@redhat.com>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <hch@lst.de>, <hare@suse.de>, <ppvk@codeaurora.org>,
-        <kashyap.desai@broadcom.com>, <linuxarm@huawei.com>
-References: <1608203273-170555-1-git-send-email-john.garry@huawei.com>
- <1608203273-170555-3-git-send-email-john.garry@huawei.com>
- <30c16455-6d7d-39ac-b3fc-4ee38199e683@acm.org>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <c1e9c7d8-e9ce-b3c5-19f5-22eb3a808c29@huawei.com>
-Date:   Fri, 18 Dec 2020 09:30:55 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Fri, 18 Dec 2020 04:35:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608284031;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6szuUC/E+b51oLf2cT47Z8pxpNkrhEO7MYClDvDXDJs=;
+        b=agwN4VXf7C/c0O4KFl28bpmnl8ZX1oD1ZvFPd7IIRkK4xemvm6poxQirmx7lyleOkjfxF0
+        mZoSuzwHYiWvqLsDn2UAMmV3LnnBHPW3nZrgcFLz0VkFjHD8xqlLwc+Spv+QNsxI/NH7K2
+        UO9+cu7fAFcMofDdW8I4UMXQpMebkFY=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-451-yWD1nFcjM5monmy-HkvHTg-1; Fri, 18 Dec 2020 04:33:49 -0500
+X-MC-Unique: yWD1nFcjM5monmy-HkvHTg-1
+Received: by mail-ed1-f70.google.com with SMTP id h5so876371edq.3
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 01:33:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=6szuUC/E+b51oLf2cT47Z8pxpNkrhEO7MYClDvDXDJs=;
+        b=cyMljeNBmjSPy+iC3XiXxhqU/3SazRXZGuCBUDG6Y0jPfUZbjJC8TyvxKG2ZHKn5la
+         tqOxGG/gU789DCHhydWRibcGnH3eKKaD+pj1rYpQqpamBhhrr09PtYH6dK19OJbPmc4V
+         BaU2RSAIOk9tgc9V7xZP3MR/vUvDg0gbg36Wh84cWKAit8Q0zHKFrDyYeEDpNRv8Bl6s
+         sK//sBdb4iXoV5pM5KWRq75bnohZYuGbZTiJ5SEQnE1LYwSCmBbXZ4U1wdD/B9gJXK7q
+         tlVqv0rWinRKI2REabNpHUsKJ1O60lck+tKmEt9PQa6AgVWj+K48B5+6SDxCNI5rLiuy
+         4soQ==
+X-Gm-Message-State: AOAM531ZvwddHHWuO5eDuD9hsaWvpjlXsQ0jNG0fu8Boh8Tq5gNQ+YOn
+        0nH7Rx4uE9q00rUtthKP2PrGWU8IdtxHz56CuJKEQ1l9bPHnx6ibpWMQf7HrhJP5R3lNfrIg5L6
+        EgbISByhtBHX1xHjt/gdKW2Fo
+X-Received: by 2002:aa7:c652:: with SMTP id z18mr3389744edr.60.1608284028698;
+        Fri, 18 Dec 2020 01:33:48 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw/ns2TM1N8Va0SMdnRxXx42M29Uge5oKuIU7+km2Y8+qK4HKaDt+nvTWh+zrYr37Ey9luaag==
+X-Received: by 2002:aa7:c652:: with SMTP id z18mr3389731edr.60.1608284028520;
+        Fri, 18 Dec 2020 01:33:48 -0800 (PST)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id d13sm10988021edx.27.2020.12.18.01.33.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Dec 2020 01:33:47 -0800 (PST)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
+        Richard Herbert <rherbert@sympatico.ca>
+Subject: Re: [PATCH 4/4] KVM: x86/mmu: Optimize not-present/MMIO SPTE check
+ in get_mmio_spte()
+In-Reply-To: <20201218003139.2167891-5-seanjc@google.com>
+References: <20201218003139.2167891-1-seanjc@google.com>
+ <20201218003139.2167891-5-seanjc@google.com>
+Date:   Fri, 18 Dec 2020 10:33:47 +0100
+Message-ID: <87lfdvtq4k.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <30c16455-6d7d-39ac-b3fc-4ee38199e683@acm.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.168.198]
-X-ClientProxiedBy: lhreml744-chm.china.huawei.com (10.201.108.194) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/12/2020 01:55, Bart Van Assche wrote:
-> On 12/17/20 3:07 AM, John Garry wrote:
->> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
->> index a6df2d5df88a..853ed5b889aa 100644
->> --- a/block/blk-mq-tag.c
->> +++ b/block/blk-mq-tag.c
->> @@ -358,10 +358,19 @@ void blk_mq_tagset_busy_iter(struct blk_mq_tag_set *tagset,
->>   {
->>   	int i;
->>   
->>   	for (i = 0; i < tagset->nr_hw_queues; i++) {
->> -		if (tagset->tags && tagset->tags[i])
->> -			__blk_mq_all_tag_iter(tagset->tags[i], fn, priv,
->> +		if (tagset->tags && tagset->tags[i]) {
->> +			struct blk_mq_tags *tags = tagset->tags[i];
->> +
->> +			if (!atomic_inc_not_zero(&tags->iter_usage_counter))
->> +				continue;
->> +
->> +			__blk_mq_all_tag_iter(tags, fn, priv,
->>   					      BT_TAG_ITER_STARTED);
->> +
->> +			atomic_dec(&tags->iter_usage_counter);
->> +		}
->>   	}
->>   }
-> 
-> Atomic operations are (a) more expensive than rcu_read_lock() /
-> rcu_read_lock() and (b) do not provide the same guarantees.
-> rcu_read_lock() has acquire semantics and rcu_read_unlock() has
-> release semantics. Regular atomic operations do not have these
-> semantics which means that the CPU is allowed to reorder certain
-> regular loads and stores against atomic operations. Additionally,
-> atomic operations are more expensive than the corresponding RCU
-> primitives. In other words, I would be much happier if this patch
-> series would use RCU instead of atomics.
-> 
+Sean Christopherson <seanjc@google.com> writes:
 
-Hi Bart,
+> Check only the terminal leaf for a "!PRESENT || MMIO" SPTE when looking
+> for reserved bits on valid, non-MMIO SPTEs.  The get_walk() helpers
+> terminate their walks if a not-present or MMIO SPTE is encountered, i.e.
+> the non-terminal SPTEs have already been verified to be regular SPTEs.
+> This eliminates an extra check-and-branch in a relatively hot loop.
+>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kvm/mmu/mmu.c | 20 +++++++++++++-------
+>  1 file changed, 13 insertions(+), 7 deletions(-)
+>
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 4798a4472066..769855f5f0a1 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -3511,7 +3511,7 @@ static int get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes, int *root_level
+>  	return leaf;
+>  }
+>  
+> -/* return true if reserved bit is detected on spte. */
+> +/* return true if reserved bit(s) are detected on a valid, non-MMIO SPTE. */
+>  static bool get_mmio_spte(struct kvm_vcpu *vcpu, u64 addr, u64 *sptep)
+>  {
+>  	u64 sptes[PT64_ROOT_MAX_LEVEL + 1];
+> @@ -3534,11 +3534,20 @@ static bool get_mmio_spte(struct kvm_vcpu *vcpu, u64 addr, u64 *sptep)
+>  		return reserved;
+>  	}
+>  
+> +	*sptep = sptes[leaf];
+> +
+> +	/*
+> +	 * Skip reserved bits checks on the terminal leaf if it's not a valid
+> +	 * SPTE.  Note, this also (intentionally) skips MMIO SPTEs, which, by
+> +	 * design, always have reserved bits set.  The purpose of the checks is
+> +	 * to detect reserved bits on non-MMIO SPTEs. i.e. buggy SPTEs.
+> +	 */
+> +	if (!is_shadow_present_pte(sptes[leaf]))
+> +		leaf++;
+> +
+>  	rsvd_check = &vcpu->arch.mmu->shadow_zero_check;
+>  
+> -	for (level = root; level >= leaf; level--) {
+> -		if (!is_shadow_present_pte(sptes[level]))
+> -			break;
+> +	for (level = root; level >= leaf; level--)
+>  		/*
+>  		 * Use a bitwise-OR instead of a logical-OR to aggregate the
+>  		 * reserved bit and EPT's invalid memtype/XWR checks to avoid
+> @@ -3546,7 +3555,6 @@ static bool get_mmio_spte(struct kvm_vcpu *vcpu, u64 addr, u64 *sptep)
+>  		 */
+>  		reserved |= __is_bad_mt_xwr(rsvd_check, sptes[level]) |
+>  			    __is_rsvd_bits_set(rsvd_check, sptes[level], level);
+> -	}
+>  
+>  	if (reserved) {
+>  		pr_err("%s: detect reserved bits on spte, addr 0x%llx, dump hierarchy:\n",
+> @@ -3556,8 +3564,6 @@ static bool get_mmio_spte(struct kvm_vcpu *vcpu, u64 addr, u64 *sptep)
+>  			       sptes[level], level);
+>  	}
+>  
+> -	*sptep = sptes[leaf];
+> -
+>  	return reserved;
+>  }
 
-In terms of solving the problem with RCU, can you provide more details 
-on how it would actually work?
+FWIW (as I got a bit lost in tdp-mmu code when checking that
+is_shadow_present_pte() is always performed)
 
-I saw that you mentioned kfree_rcu() at the following, so guess it's 
-related:
-https://lore.kernel.org/linux-block/5c3ac5af-ed81-11e4-fee3-f92175f14daf@acm.org/T/#m830071bca03af31516800c14f8cccbe63661c5db
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 
-In terms of expense of atomic operations, we're just adding these 
-operations around the iter function, so I can't see much impact really 
-on fastpath.
+-- 
+Vitaly
 
-Thanks,
-John
