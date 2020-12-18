@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41F0C2DE900
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 19:43:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C906C2DE8FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 19:43:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729161AbgLRSl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 13:41:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42242 "EHLO
+        id S1728955AbgLRSl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 13:41:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728661AbgLRSl0 (ORCPT
+        with ESMTP id S1726273AbgLRSlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 13:41:26 -0500
+        Fri, 18 Dec 2020 13:41:25 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC6A4C06138C
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91151C0617B0
         for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 10:40:45 -0800 (PST)
-Date:   Fri, 18 Dec 2020 18:40:42 -0000
+Date:   Fri, 18 Dec 2020 18:40:43 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1608316843;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -23,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aI4YjByaniYm46eNLbWPyS3QStnm6uMyDSCetfQmMwI=;
-        b=vvbyhHIOLLBVCmCzOA8g+YXOGhkwK4OsnniQVsEoZEosYh56U2wS6VcDX5IO1I6hugrczb
-        M3rvvCD0q8z+AreiM+zlIZ1LgYSzpgBYmXNLjeJMN9Ovhwz+C1d5Ch7WJrwTu9ALgjOAB0
-        qlGQzmv/s98hj5dQW0JZp0r2ZgNK5g+bUF6SXt7y+bKnt9JS6oBugL5Li6lLEqModu5K1J
-        VhE9et3/UzbQun/posknyqoEg3seAYNA44eOs2MSdMrEs19O3pF9JnTsCypN4TusYJ+XFg
-        rOgXgb0m72rk21aV6d14SiE978vdy9XP2tAp/yV+n6FrlwXLMK31sJcWLqG4NQ==
+        bh=6SYP1UqNBzhgmR9vajnzHsKxFlT9ERvxB+ikOGX3JQw=;
+        b=ETs+VYlJ9yPzeTczZs1fqRnZmE4cLV9A++bcvpEVqzvntjkkUk6BqGWFeFW6nL66T5j2X+
+        NVbCKZR0RSAD5T7mRrroSQnaQm2BiufgvY2v6dJI6r5r0EH9UULlg5UKlIyO83NW8FUAjA
+        iP4Y0IK76r1Lcx+7xK+TdxH1ieLWLBL+7mkr2f1RcbgdtSnho3FIFqVuGUzImsoAP52Kn4
+        3a0Hmdar51Wrqh9FTS2xw3bvBVWoFaSEU4gM4kh9E5/QK9GvYRcMyO7HwXsuEH53+Pv1Cm
+        4Ku87SPZS9QxHnUvAzRkR2Ln6bY62AbBYgiHZudz/2JY7lxAehWWRWx4jao86Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1608316843;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,22 +36,20 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aI4YjByaniYm46eNLbWPyS3QStnm6uMyDSCetfQmMwI=;
-        b=BU/85o+Eh1nLwiU8AasLzkIVBrshjuwx9bZfqq5wQj5UvhmbqtSfHlZwJTGv4q7CH+awSa
-        AG9oDwFfpUs8i9Cg==
-From:   "irqchip-bot for Marc Zyngier" <tip-bot2@linutronix.de>
+        bh=6SYP1UqNBzhgmR9vajnzHsKxFlT9ERvxB+ikOGX3JQw=;
+        b=6zzEe0DoE2saxtrHAWV+PCaSjKzdkHd5M0u3HDW4zqm5Eei1RBdAkz1+PQMUaiz/b1lB1C
+        0syxLuFLL0tRQcCw==
+From:   "irqchip-bot for Zheng Yongjun" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] irqchip/bcm2836: Fix IPI acknowledgement
- after conversion to handle_percpu_devid_irq
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        Guenter Roeck <linux@roeck-us.net>,
+Subject: [irqchip: irq/irqchip-next] irqchip/irq-sl28cpld: Convert comma to semicolon
+Cc:     Zheng Yongjun <zhengyongjun3@huawei.com>,
         Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
-In-Reply-To: <c9fb4ab3-a5cb-648c-6de3-c6a871e60870@roeck-us.net>
-References: <c9fb4ab3-a5cb-648c-6de3-c6a871e60870@roeck-us.net>
+In-Reply-To: <20201214133530.3783-1-zhengyongjun3@huawei.com>
+References: <20201214133530.3783-1-zhengyongjun3@huawei.com>
 MIME-Version: 1.0
-Message-ID: <160831684292.22759.15563002516530918910.tip-bot2@tip-bot2>
+Message-ID: <160831684334.22759.13415840458012921671.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -63,57 +61,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-Commit-ID:     d7f39c40ebb6986e7371510d1c20a4efee4a7f0d
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/d7f39c40ebb6986e7371510d1c20a4efee4a7f0d
-Author:        Marc Zyngier <maz@kernel.org>
-AuthorDate:    Fri, 18 Dec 2020 18:03:46 
+Commit-ID:     e90f55e0196a66f8e9e445f7f33f876dd889be9a
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/e90f55e0196a66f8e9e445f7f33f876dd889be9a
+Author:        Zheng Yongjun <zhengyongjun3@huawei.com>
+AuthorDate:    Mon, 14 Dec 2020 21:35:30 +08:00
 Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Fri, 18 Dec 2020 18:34:17 
+CommitterDate: Fri, 18 Dec 2020 17:43:47 
 
-irqchip/bcm2836: Fix IPI acknowledgement after conversion to handle_percpu_devid_irq
+irqchip/irq-sl28cpld: Convert comma to semicolon
 
-It appears that despite its name, the bcm2836_arm_irqchip_ipi_eoi()
-callback is an acknowledgement, and not an EOI. This means that
-we lose IPIs that are made pending between the handling of the
-IPI and the write to LOCAL_MAILBOX0_CLR0. With the right timing,
-things fail nicely.
+Replace a comma between expression statements by a semicolon.
 
-This used to work with handle_percpu_devid_fasteoi_ipi(), which
-started by eoi-ing the interrupt. With the standard fasteoi flow,
-this doesn't work anymore.
-
-So let's use this callback for what it is, an ack. Your favourite
-RPi-2/3 is back up and running.
-
-Fixes: ffdad793d579 ("irqchip/bcm2836: Make IPIs use handle_percpu_devid_irq()")
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/c9fb4ab3-a5cb-648c-6de3-c6a871e60870@roeck-us.net
+Link: https://lore.kernel.org/r/20201214133530.3783-1-zhengyongjun3@huawei.com
 ---
- drivers/irqchip/irq-bcm2836.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/irqchip/irq-sl28cpld.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/irqchip/irq-bcm2836.c b/drivers/irqchip/irq-bcm2836.c
-index 5f5eb88..25c9a9c 100644
---- a/drivers/irqchip/irq-bcm2836.c
-+++ b/drivers/irqchip/irq-bcm2836.c
-@@ -167,7 +167,7 @@ static void bcm2836_arm_irqchip_handle_ipi(struct irq_desc *desc)
- 	chained_irq_exit(chip, desc);
- }
+diff --git a/drivers/irqchip/irq-sl28cpld.c b/drivers/irqchip/irq-sl28cpld.c
+index 0aa50d0..fbb3544 100644
+--- a/drivers/irqchip/irq-sl28cpld.c
++++ b/drivers/irqchip/irq-sl28cpld.c
+@@ -66,7 +66,7 @@ static int sl28cpld_intc_probe(struct platform_device *pdev)
+ 	irqchip->chip.num_regs = 1;
+ 	irqchip->chip.status_base = base + INTC_IP;
+ 	irqchip->chip.mask_base = base + INTC_IE;
+-	irqchip->chip.mask_invert = true,
++	irqchip->chip.mask_invert = true;
+ 	irqchip->chip.ack_base = base + INTC_IP;
  
--static void bcm2836_arm_irqchip_ipi_eoi(struct irq_data *d)
-+static void bcm2836_arm_irqchip_ipi_ack(struct irq_data *d)
- {
- 	int cpu = smp_processor_id();
- 
-@@ -195,7 +195,7 @@ static struct irq_chip bcm2836_arm_irqchip_ipi = {
- 	.name		= "IPI",
- 	.irq_mask	= bcm2836_arm_irqchip_dummy_op,
- 	.irq_unmask	= bcm2836_arm_irqchip_dummy_op,
--	.irq_eoi	= bcm2836_arm_irqchip_ipi_eoi,
-+	.irq_ack	= bcm2836_arm_irqchip_ipi_ack,
- 	.ipi_send_mask	= bcm2836_arm_irqchip_ipi_send_mask,
- };
- 
+ 	return devm_regmap_add_irq_chip_fwnode(dev, dev_fwnode(dev),
