@@ -2,143 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8CD2DE3B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:10:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FBE42DE3C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:13:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727152AbgLROJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 09:09:51 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:34364 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725982AbgLROJu (ORCPT
+        id S1726581AbgLROMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 09:12:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42013 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725982AbgLROMQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 09:09:50 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BIE901h089178;
-        Fri, 18 Dec 2020 08:09:00 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1608300540;
-        bh=MP/aflp2kqPzZRgdYXg9m6RlHVOpsuvLhLq090MhZCI=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=DX2nq+GxbLDSzpLg38r1TBqCBOax+DnNY31pAoP3+mf+ueMDk7eNGm1CXeA3y+s9T
-         3r1akq/U1axTTJqJtxucDM9B5YJUAQUqMXY1Z62eT0NZTHbhGcAdyaG5YLGCZzSIHG
-         Wg/AS2TsjlVzbGzVOANRCqouSejVQceiT7ldAnwU=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BIE90q6078843
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 18 Dec 2020 08:09:00 -0600
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 18
- Dec 2020 08:09:00 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 18 Dec 2020 08:09:00 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BIE90on036430;
-        Fri, 18 Dec 2020 08:09:00 -0600
-Date:   Fri, 18 Dec 2020 08:09:00 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Tero Kristo <t-kristo@ti.com>
-CC:     <linux-kernel@vger.kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Tero Kristo <kristo@kernel.org>
-Subject: Re: [PATCH] MAINTAINERS: Update my email address and maintainer
- level status
-Message-ID: <20201218140900.5ys46co2bshgwmuc@monotype>
-References: <20201217130721.23555-1-t-kristo@ti.com>
+        Fri, 18 Dec 2020 09:12:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608300650;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gu9xz6qa9Z3nFfsgaYSBwn9dCVbNjrSOJI1gB2zjnDs=;
+        b=Mv+hCsIWNwY+r9JsEaSnwAZrfOU07nwOPjoB1wzVqcuJ8uNm2ETM81C2n1mduhoR/x1GTl
+        cYKiOGW/oI3J+6/RmokfKcgRBygbBQxZwyB4oLGquSYFaEChgnBhKXjMivcGRMlhxDeuRq
+        mNRxN4snyUEwl9hJ6M7aHEF35AWkuUI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-525-MIDmJ1fJN4-R7Bwuz2c3aw-1; Fri, 18 Dec 2020 09:10:48 -0500
+X-MC-Unique: MIDmJ1fJN4-R7Bwuz2c3aw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 94249801ADF;
+        Fri, 18 Dec 2020 14:10:46 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.50])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 4FAB917577;
+        Fri, 18 Dec 2020 14:10:34 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Fri, 18 Dec 2020 15:10:46 +0100 (CET)
+Date:   Fri, 18 Dec 2020 15:10:33 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Jan Kratochvil <jan.kratochvil@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Pedro Alves <palves@redhat.com>,
+        Simon Marchi <simon.marchi@efficios.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] ptrace: make ptrace() fail if the tracee changed its
+ pid unexpectedly
+Message-ID: <20201218141032.GA20989@redhat.com>
+References: <20201217142931.GA8865@redhat.com>
+ <875z50roia.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201217130721.23555-1-t-kristo@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <875z50roia.fsf@x220.int.ebiederm.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15:07-20201217, Tero Kristo wrote:
-> My employment with TI is ending tomorrow, so update the email address
-> entry in the maintainers file. Also, I don't expect to spend that much
-> time with maintaining TI code anymore, so downgrade the status level to
-> odd fixes only on areas where I remain as the main contact point for
-> now, and move myself as secondary contact point where someone else has
-> taken over the maintainership.
-> 
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Michael Turquette <mturquette@baylibre.com>
-> Cc: Nishanth Menon <nm@ti.com>
-> Cc: Santosh Shilimkar <ssantosh@kernel.org>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Tony Luck <tony.luck@intel.com>
-> Signed-off-by: Tero Kristo <t-kristo@ti.com>
-> Signed-off-by: Tero Kristo <kristo@kernel.org>
+On 12/17, Eric W. Biederman wrote:
+>
+> Oleg Nesterov <oleg@redhat.com> writes:
+>
+> > Suppose we have 2 threads, the group-leader L and a sub-theread T,
+> > both parked in ptrace_stop(). Debugger tries to resume both threads
+> > and does
+> >
+> > 	ptrace(PTRACE_CONT, T);
+> > 	ptrace(PTRACE_CONT, L);
+> >
+> > If the sub-thread T execs in between, the 2nd PTRACE_CONT doesn not
+> > resume the old leader L, it resumes the post-exec thread T which was
+> > actually now stopped in PTHREAD_EVENT_EXEC. In this case the
+> > PTHREAD_EVENT_EXEC event is lost, and the tracer can't know that the
+> > tracee changed its pid.
+>
+> The change seems sensible.  I don't expect this is common but it looks
+> painful to deal with if it happens.
 
-Thanks Tero. Much appreciate your help and continued support..
+Yes, this is not a bug, but gdb can't handle this case without some help
+from the kernel.
 
-Acked-by: Nishanth Menon <nm@ti.com>
+> Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
 
-> ---
->  MAINTAINERS | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index f59ebd1eda3d..c362d8d9d316 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -2615,8 +2615,8 @@ S:	Maintained
->  F:	drivers/power/reset/keystone-reset.c
->  
->  ARM/TEXAS INSTRUMENTS K3 ARCHITECTURE
-> -M:	Tero Kristo <t-kristo@ti.com>
->  M:	Nishanth Menon <nm@ti.com>
-> +M:	Tero Kristo <kristo@kernel.org>
->  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->  S:	Supported
->  F:	Documentation/devicetree/bindings/arm/ti/k3.yaml
-> @@ -6465,9 +6465,9 @@ S:	Maintained
->  F:	drivers/edac/skx_*.[ch]
->  
->  EDAC-TI
-> -M:	Tero Kristo <t-kristo@ti.com>
-> +M:	Tero Kristo <kristo@kernel.org>
->  L:	linux-edac@vger.kernel.org
-> -S:	Maintained
-> +S:	Odd Fixes
->  F:	drivers/edac/ti_edac.c
->  
->  EDIROL UA-101/UA-1000 DRIVER
-> @@ -17503,7 +17503,7 @@ F:	drivers/iio/dac/ti-dac7612.c
->  
->  TEXAS INSTRUMENTS' SYSTEM CONTROL INTERFACE (TISCI) PROTOCOL DRIVER
->  M:	Nishanth Menon <nm@ti.com>
-> -M:	Tero Kristo <t-kristo@ti.com>
-> +M:	Tero Kristo <kristo@kernel.org>
->  M:	Santosh Shilimkar <ssantosh@kernel.org>
->  L:	linux-arm-kernel@lists.infradead.org
->  S:	Maintained
-> @@ -17647,9 +17647,9 @@ S:	Maintained
->  F:	drivers/clk/clk-cdce706.c
->  
->  TI CLOCK DRIVER
-> -M:	Tero Kristo <t-kristo@ti.com>
-> +M:	Tero Kristo <kristo@kernel.org>
->  L:	linux-omap@vger.kernel.org
-> -S:	Maintained
-> +S:	Odd Fixes
->  F:	drivers/clk/ti/
->  F:	include/linux/clk/ti.h
->  
-> -- 
-> 2.17.1
-> 
-> --
-> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Thanks!
 
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+
+
+> I am wondering if this should be expanded to all ptrace types for
+> consistency.  Or maybe we should set a flag to make this happen for
+> all ptrace events.
+
+But for what? ptrace is the very old API, I don't think we want to
+suddenly enforce the rule that every reported event must be wait()'ed.
+Plus this needs some complications to support WNOWAIT.
+
+I would like to kill JOBCTL_TRAPPING_BIT which ensures that the tracer
+does NOT need wait() after PTRACE_ATTACH(stopped-task) (see
+wait_on_bit() in ptrace_attach()). I think this makes no sense but
+who knows, perhaps even this change can break something.
+
+> It just seems really odd to only worry about missing this event.
+
+Agreed,
+
+> I admit this a threaded PTRACE_EVENT_EXEC is the only event we are
+> likely to miss but still.
+
+Yes, this is the only event debugger can miss even if it uses wait()
+correctly.
+
+> Do you by any chance have any debugger/strace test cases?
+>
+> I would think that would be the way to test to see if this breaks
+> anything.  I think I remember strace having a good test suite.
+
+Heh. You can never know what other people do with ptrace ;)
+For example, see
+
+    fab840fc2d54 ptrace: PTRACE_DETACH should do flush_ptrace_hw_breakpoint(child)
+    35114fcbe0b9 Revert "ptrace: PTRACE_DETACH should do flush_ptrace_hw_breakpoint(child)"
+
+Oleg.
+
