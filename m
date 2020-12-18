@@ -2,664 +2,332 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B5F2DE7AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 17:54:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCD462DE7B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 17:54:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730292AbgLRQyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 11:54:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54026 "EHLO
+        id S1731478AbgLRQya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 11:54:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726708AbgLRQyO (ORCPT
+        with ESMTP id S1730778AbgLRQy3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 11:54:14 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8751AC0617A7;
-        Fri, 18 Dec 2020 08:53:33 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 95F0B2CF;
-        Fri, 18 Dec 2020 17:53:31 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1608310411;
-        bh=uTJkth1zWAoScFFmIFoNhmQ7KrP/TdJCK3zTIlCv/D0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mTyvdOjATRhxrFObpGAGF5xO4YibMzIWP3+JoRXOcpiYqFfT7zHwSugKjp5qSyvqE
-         L6Emn33zr3zdPLDNNIbydHTbWQO7B93oUK3yd6t+69O5vkOSb5iqm49a8yPxK8jREa
-         bQ46VSdz/0cMzXnf0fdByhUG7Z3X47TZUxG00/Hg=
-Date:   Fri, 18 Dec 2020 18:53:24 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org, yong.zhi@intel.com,
-        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
-        tian.shu.qiu@intel.com, mchehab@kernel.org, robert.moore@intel.com,
-        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, andriy.shevchenko@linux.intel.com,
-        linux@rasmusvillemoes.dk,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
-        linus.walleij@linaro.org, heikki.krogerus@linux.intel.com,
-        kitakar@gmail.com, jorhand@linux.microsoft.com
-Subject: Re: [PATCH v2 12/12] ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver
-Message-ID: <X9zehD1xtQP/bxXu@pendragon.ideasonboard.com>
-References: <20201217234337.1983732-1-djrscally@gmail.com>
- <20201217234337.1983732-13-djrscally@gmail.com>
+        Fri, 18 Dec 2020 11:54:29 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0699EC0617B0;
+        Fri, 18 Dec 2020 08:53:49 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id 3so3269031wmg.4;
+        Fri, 18 Dec 2020 08:53:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=oROkYWuGtdpchpUe6irTsyvytqP+YdMNpvBJ69Sb9Qg=;
+        b=XKsvY3jgK8UqFvgNRP7TGzZ0E28+n//2IslLytTn0En2+F2q0goG1lKQJ57axKtFnw
+         30j3IDmQrAjQgHLtoX74Q+RHgQeI6uJ/E0bHBPPsKOwQvgN6cPVZrt8cTiwVRTavAWM1
+         d89Q3a72D1BILG5MvHIXCNAHL8d7KpoirTes81BfcjVaFwoKUmySKHr+xAQX40ozDL5J
+         lmEbbMBVdS3I0kwAMG4/auIlTztdJyjmA/Vma3WJC5pvnP/0wWxB/lrDYj0hBkJSzFh1
+         5UuoLFyq6qdcUb9rTCGQJUR5K9CIN795WjN0iYKOLGXNEFkJ4dn0pSiXQ4OMK7H77nuj
+         96Pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=oROkYWuGtdpchpUe6irTsyvytqP+YdMNpvBJ69Sb9Qg=;
+        b=SL6hej0ZVeARGnU3fyvdMlUp1iW2J6wzYlWYcz3Blz9gLDedfzPKxo68lXHlWe9i2Z
+         AWmjboGF7I6Ruwhk/61FgSEdjAe5aecR+svs/3VBCM3rhLm+YXVtOxCsT0XGvdPpwn9i
+         ZWZ9b/D6utOLuM0x50zjkSh04SqP+/0Mk1ZV3PQ3cD62OhBAiAvzFRSYal0hXzfLljoR
+         QSTp1ZWQksizaDRHZO9MnibNyk/xOMBWVyB+uMDVuIE+2YPrGuEQx5LFoqcIalONBHWP
+         tnFxrvlll23XxraICj2tzVUzYcCFrYgb69YutStkm6ippaCA65pkPJCl7foa2l6I6c86
+         E+fQ==
+X-Gm-Message-State: AOAM532tPtLjHz4S1IyMyIwLjkZjENBV3t2nLez6mCD/4OL0Jou0SmR9
+        o191aa9xQEgAeDZSjNQ0T64=
+X-Google-Smtp-Source: ABdhPJwFuJofB1jqnUAg4iEMJUFeE3ewU97yTH/1c7/wDbA4q5cI4qe4HtT7qg4D8L91nxVLVWUhug==
+X-Received: by 2002:a1c:c287:: with SMTP id s129mr5070756wmf.79.1608310427074;
+        Fri, 18 Dec 2020 08:53:47 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id y68sm14120888wmc.0.2020.12.18.08.53.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Dec 2020 08:53:45 -0800 (PST)
+Date:   Fri, 18 Dec 2020 17:53:43 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Jon Hunter <jonathanh@nvidia.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Emese Revfy <re.emese@gmail.com>,
+        linux-hardening@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH] gcc-plugins: simplify GCC plugin-dev capability test
+Message-ID: <X9zel5Vz5cIx2crQ@ulmo>
+References: <CGME20201218075758eucas1p1605768803a5c9edce4fbe54b3e3b859a@eucas1p1.samsung.com>
+ <20201203125700.161354-1-masahiroy@kernel.org>
+ <b9b17126-9af5-2f73-526e-91bb9fd27f71@samsung.com>
+ <CAK7LNART2qQBY7Vc8rhMiXS_Fwty7qpWjwwfPrUegTb-gjy6sA@mail.gmail.com>
+ <9f959875-1a30-b1a1-b626-3805e24a6df3@samsung.com>
+ <e5b06d9a-9b24-2440-e0c2-8bf7095eccd9@nvidia.com>
+ <25030057-86b1-5619-25fd-acfa0728b850@samsung.com>
+ <4ab4f62f-8b37-01e1-f81c-270155b13a51@nvidia.com>
+ <7e691a61-bf4b-0594-8d6d-36d62a5def0b@nvidia.com>
+ <CAK7LNAQ6pzMGm=L9389Xtfghjfjr_wDqRntZC2XqP3JDQuhLhQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="lwkOZ5gkRFq3fFGP"
 Content-Disposition: inline
-In-Reply-To: <20201217234337.1983732-13-djrscally@gmail.com>
+In-Reply-To: <CAK7LNAQ6pzMGm=L9389Xtfghjfjr_wDqRntZC2XqP3JDQuhLhQ@mail.gmail.com>
+User-Agent: Mutt/2.0.3 (a51f058f) (2020-12-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
 
-Thank you for the patch.
+--lwkOZ5gkRFq3fFGP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 17, 2020 at 11:43:37PM +0000, Daniel Scally wrote:
-> Currently on platforms designed for Windows, connections between CIO2 and
-> sensors are not properly defined in DSDT. This patch extends the ipu3-cio2
-> driver to compensate by building software_node connections, parsing the
-> connection properties from the sensor's SSDB buffer.
-> 
-> Suggested-by: Jordan Hand <jorhand@linux.microsoft.com>
-> Signed-off-by: Daniel Scally <djrscally@gmail.com>
-> ---
-> Changes in v2:
-> 
-> 	- Dropped some headers
-> 	- Added support for specifying link-frequencies in the array of
-> 	cio2_supported_sensors and added that property to the endpoint.
-> 	- Replaced strcpy with strscpy (Laurent, I liked your change better
-> 	stylistically but ofc the string literals are lost when the module
-> 	is reloaded)
-> 	- Named the ports/endpoints "port@%u"
-> 	- Added an overflow check to cio2_bridge_connect_sensors()
-> 	- A bunch of cosmetic changes
-> 
-> For the cio2_supported_sensors array, specify link frequencies in this
-> manner: 
-> 
-> 	CIO2_SENSOR_CONFIG("OVTI5648", 2, 16800000, 2100000)
-> 
->  MAINTAINERS                                   |   1 +
->  drivers/media/pci/intel/ipu3/Kconfig          |  18 ++
->  drivers/media/pci/intel/ipu3/Makefile         |   1 +
->  drivers/media/pci/intel/ipu3/cio2-bridge.c    | 274 ++++++++++++++++++
->  drivers/media/pci/intel/ipu3/cio2-bridge.h    | 122 ++++++++
->  drivers/media/pci/intel/ipu3/ipu3-cio2-main.c |  34 +++
->  drivers/media/pci/intel/ipu3/ipu3-cio2.h      |   6 +
->  7 files changed, 456 insertions(+)
->  create mode 100644 drivers/media/pci/intel/ipu3/cio2-bridge.c
->  create mode 100644 drivers/media/pci/intel/ipu3/cio2-bridge.h
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 16b544624577..e7784b4bc8ea 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -8943,6 +8943,7 @@ INTEL IPU3 CSI-2 CIO2 DRIVER
->  M:	Yong Zhi <yong.zhi@intel.com>
->  M:	Sakari Ailus <sakari.ailus@linux.intel.com>
->  M:	Bingbu Cao <bingbu.cao@intel.com>
-> +M:	Dan Scally <djrscally@gmail.com>
->  R:	Tianshu Qiu <tian.shu.qiu@intel.com>
->  L:	linux-media@vger.kernel.org
->  S:	Maintained
-> diff --git a/drivers/media/pci/intel/ipu3/Kconfig b/drivers/media/pci/intel/ipu3/Kconfig
-> index 82d7f17e6a02..dcf5c4b74673 100644
-> --- a/drivers/media/pci/intel/ipu3/Kconfig
-> +++ b/drivers/media/pci/intel/ipu3/Kconfig
-> @@ -16,3 +16,21 @@ config VIDEO_IPU3_CIO2
->  	  Say Y or M here if you have a Skylake/Kaby Lake SoC with MIPI CSI-2
->  	  connected camera.
->  	  The module will be called ipu3-cio2.
-> +
-> +config CIO2_BRIDGE
-> +	bool "IPU3 CIO2 Sensors Bridge"
-> +	depends on VIDEO_IPU3_CIO2
-> +	help
-> +	  This extension provides an API for the ipu3-cio2 driver to create
-> +	  connections to cameras that are hidden in SSDB buffer in ACPI. It
-> +	  can be used to enable support for cameras in detachable / hybrid
-> +	  devices that ship with Windows.
-> +
-> +	  Say Y here if your device is a detachable / hybrid laptop that comes
-> +	  with Windows installed by the OEM, for example:
-> +
-> +		- Microsoft Surface models (except Surface Pro 3)
-> +		- The Lenovo Miix line (for example the 510, 520, 710 and 720)
-> +		- Dell 7285
-> +
-> +	  If in doubt, say N here.
-> diff --git a/drivers/media/pci/intel/ipu3/Makefile b/drivers/media/pci/intel/ipu3/Makefile
-> index 429d516452e4..933777e6ea8a 100644
-> --- a/drivers/media/pci/intel/ipu3/Makefile
-> +++ b/drivers/media/pci/intel/ipu3/Makefile
-> @@ -2,3 +2,4 @@
->  obj-$(CONFIG_VIDEO_IPU3_CIO2) += ipu3-cio2.o
->  
->  ipu3-cio2-y += ipu3-cio2-main.o
-> +ipu3-cio2-$(CONFIG_CIO2_BRIDGE) += cio2-bridge.o
-> diff --git a/drivers/media/pci/intel/ipu3/cio2-bridge.c b/drivers/media/pci/intel/ipu3/cio2-bridge.c
-> new file mode 100644
-> index 000000000000..3f0e2d7eab20
-> --- /dev/null
-> +++ b/drivers/media/pci/intel/ipu3/cio2-bridge.c
-> @@ -0,0 +1,274 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Author: Dan Scally <djrscally@gmail.com> */
-> +
-> +#include <linux/acpi.h>
-> +#include <linux/device.h>
-> +#include <linux/pci.h>
-> +#include <linux/property.h>
-> +
-> +#include "cio2-bridge.h"
-> +
-> +/*
-> + * Extend this array with ACPI Hardware ID's of devices known to be working
-> + * plus the number of link-frequencies expected by their drivers, along with
-> + * the frequency values in hertz. This is somewhat opportunistic way of adding
-> + * support for this for now in the hopes of a better source for the information
-> + * (possibly some encoded value in the SSDB buffer that we're unaware of)
-> + * becoming apparent in the future.
-> + *
-> + * Do not add an entry for a sensor that is not actually supported.
-> + */
-> +static const struct cio2_sensor_config cio2_supported_sensors[] = {
-> +	CIO2_SENSOR_CONFIG("INT33BE", 0),
-> +	CIO2_SENSOR_CONFIG("OVTI2680", 0),
-> +};
-> +
-> +static int cio2_bridge_read_acpi_buffer(struct acpi_device *adev, char *id,
-> +					void *data, u32 size)
-> +{
-> +	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
-> +	union acpi_object *obj;
-> +	acpi_status status;
-> +	int ret;
-> +
-> +	status = acpi_evaluate_object(adev->handle, id, NULL, &buffer);
-> +	if (ACPI_FAILURE(status))
-> +		return -ENODEV;
-> +
-> +	obj = buffer.pointer;
-> +	if (!obj) {
-> +		dev_err(&adev->dev, "Couldn't locate ACPI buffer\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	if (obj->type != ACPI_TYPE_BUFFER) {
-> +		dev_err(&adev->dev, "Not an ACPI buffer\n");
-> +		ret = -ENODEV;
-> +		goto out_free_buff;
-> +	}
-> +
-> +	if (obj->buffer.length > size) {
-> +		dev_err(&adev->dev, "Given buffer is too small\n");
-> +		ret = -EINVAL;
-> +		goto out_free_buff;
-> +	}
-> +
-> +	memcpy(data, obj->buffer.pointer, obj->buffer.length);
-> +	ret = obj->buffer.length;
-> +
-> +out_free_buff:
-> +	kfree(buffer.pointer);
-> +	return ret;
-> +}
-> +
-> +static void cio2_bridge_init_property_names(struct cio2_sensor *sensor)
-> +{
-> +	strscpy(sensor->prop_names.clock_frequency, "clock-frequency",
-> +		sizeof(sensor->prop_names.clock_frequency));
-> +	strscpy(sensor->prop_names.rotation, "rotation",
-> +		sizeof(sensor->prop_names.rotation));
-> +	strscpy(sensor->prop_names.bus_type, "bus-type",
-> +		sizeof(sensor->prop_names.bus_type));
-> +	strscpy(sensor->prop_names.data_lanes, "data-lanes",
-> +		sizeof(sensor->prop_names.data_lanes));
-> +	strscpy(sensor->prop_names.remote_endpoint, "remote-endpoint",
-> +		sizeof(sensor->prop_names.remote_endpoint));
-> +	strscpy(sensor->prop_names.link_frequencies, "link-frequencies",
-> +		sizeof(sensor->prop_names.link_frequencies));
+On Sat, Dec 19, 2020 at 12:42:51AM +0900, Masahiro Yamada wrote:
+> On Sat, Dec 19, 2020 at 12:33 AM Jon Hunter <jonathanh@nvidia.com> wrote:
+> >
+> >
+> > On 18/12/2020 15:12, Jon Hunter wrote:
+> > >
+> > > On 18/12/2020 15:09, Marek Szyprowski wrote:
+> > >>
+> > >> On 18.12.2020 16:03, Jon Hunter wrote:
+> > >>> On 18/12/2020 10:05, Marek Szyprowski wrote:
+> > >>>> On 18.12.2020 10:43, Masahiro Yamada wrote:
+> > >>>>> On Fri, Dec 18, 2020 at 4:58 PM Marek Szyprowski
+> > >>>>> <m.szyprowski@samsung.com> wrote:
+> > >>>>>> On 03.12.2020 13:57, Masahiro Yamada wrote:
+> > >>>>>>> Linus pointed out a third of the time in the Kconfig parse stag=
+e comes
+> > >>>>>>> from the single invocation of cc1plus in scripts/gcc-plugin.sh =
+[1],
+> > >>>>>>> and directly testing plugin-version.h for existence cuts down t=
+he
+> > >>>>>>> overhead a lot. [2]
+> > >>>>>>>
+> > >>>>>>> This commit takes one step further to kill the build test entir=
+ely.
+> > >>>>>>>
+> > >>>>>>> The small piece of code was probably intended to test the C++ d=
+esignated
+> > >>>>>>> initializer, which was not supported until C++20.
+> > >>>>>>>
+> > >>>>>>> In fact, with -pedantic option given, both GCC and Clang emit a=
+ warning.
+> > >>>>>>>
+> > >>>>>>> $ echo 'class test { public: int test; } test =3D { .test =3D 1=
+ };' | g++ -x c++ -pedantic - -fsyntax-only
+> > >>>>>>> <stdin>:1:43: warning: C++ designated initializers only availab=
+le with '-std=3Dc++2a' or '-std=3Dgnu++2a' [-Wpedantic]
+> > >>>>>>> $ echo 'class test { public: int test; } test =3D { .test =3D 1=
+ };' | clang++ -x c++ -pedantic - -fsyntax-only
+> > >>>>>>> <stdin>:1:43: warning: designated initializers are a C++20 exte=
+nsion [-Wc++20-designator]
+> > >>>>>>> class test { public: int test; } test =3D { .test =3D 1 };
+> > >>>>>>>                                              ^
+> > >>>>>>> 1 warning generated.
+> > >>>>>>>
+> > >>>>>>> Otherwise, modern C++ compilers should be able to build the cod=
+e, and
+> > >>>>>>> hopefully skipping this test should not make any practical prob=
+lem.
+> > >>>>>>>
+> > >>>>>>> Checking the existence of plugin-version.h is still needed to e=
+nsure
+> > >>>>>>> the plugin-dev package is installed. The test code is now small=
+ enough
+> > >>>>>>> to be embedded in scripts/gcc-plugins/Kconfig.
+> > >>>>>>>
+> > >>>>>>> [1] https://protect2.fireeye.com/v1/url?k=3D03db90e1-5c40a828-0=
+3da1bae-0cc47a336fae-4cc36f5830aeb78d&q=3D1&e=3Ddfdc1cf9-82d6-4ca5-b35d-178=
+2e918bde3&u=3Dhttps%3A%2F%2Flore.kernel.org%2Flkml%2FCAHk-%3DwjU4DCuwQ4pXsh=
+RbwDCUQB31ScaeuDo1tjoZ0_PjhLHzQ%40mail.gmail.com%2F
+> > >>>>>>> [2] https://protect2.fireeye.com/v1/url?k=3D965b670a-c9c05fc3-9=
+65aec45-0cc47a336fae-e34339513ff747c0&q=3D1&e=3Ddfdc1cf9-82d6-4ca5-b35d-178=
+2e918bde3&u=3Dhttps%3A%2F%2Flore.kernel.org%2Flkml%2FCAHk-%3DwhK0aQxs6Q5ijJ=
+mYF1n2ch8cVFSUzU5yUM_HOjig%3D%2Bvnw%40mail.gmail.com%2F
+> > >>>>>>>
+> > >>>>>>> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > >>>>>>> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > >>>>>> This patch landed in linux next-20201217 as commit 1e860048c53e
+> > >>>>>> ("gcc-plugins: simplify GCC plugin-dev capability test").
+> > >>>>>>
+> > >>>>>> It causes a build break with my tests setup, but I'm not sure we=
+ather it
+> > >>>>>> is really an issue of this commit or a toolchain I use. However =
+I've
+> > >>>>>> checked various versions of the gcc cross-compilers released by =
+Linaro
+> > >>>>>> at https://protect2.fireeye.com/v1/url?k=3D053727b6-5aac1f7f-053=
+6acf9-0cc47a336fae-5bd799e7ce6b1b9b&q=3D1&e=3Ddfdc1cf9-82d6-4ca5-b35d-1782e=
+918bde3&u=3Dhttps%3A%2F%2Freleases.linaro.org%2Fcomponents%2Ftoolchain%2Fbi=
+naries%2F and all
+> > >>>>>> fails with the same error:
+> > >>>>>>
+> > >>>>>> $ make ARCH=3Darm
+> > >>>>>> CROSS_COMPILE=3D../../cross/gcc-arm-10.2-2020.11-x86_64-arm-none=
+-eabi/bin/arm-none-eabi-
+> > >>>>>> zImage
+> > >>>>>>      HOSTCXX scripts/gcc-plugins/arm_ssp_per_task_plugin.so
+> > >>>>>> In file included from
+> > >>>>>> /home/mszyprow/dev/cross/gcc-arm-10.2-2020.11-x86_64-arm-none-ea=
+bi/bin/../lib/gcc/arm-none-eabi/10.2.1/plugin/include/gcc-plugin.h:28:0,
+> > >>>>>>                     from scripts/gcc-plugins/gcc-common.h:7,
+> > >>>>>>                     from scripts/gcc-plugins/arm_ssp_per_task_pl=
+ugin.c:3:
+> > >>>>>> /home/mszyprow/dev/cross/gcc-arm-10.2-2020.11-x86_64-arm-none-ea=
+bi/bin/../lib/gcc/arm-none-eabi/10.2.1/plugin/include/system.h:687:10:
+> > >>>>>> fatal error: gmp.h: No such file or directory
+> > >>>>>>     #include <gmp.h>
+> > >>>>>>              ^~~~~~~
+> > >>>>>> compilation terminated.
+> > >>>>>> scripts/gcc-plugins/Makefile:47: recipe for target
+> > >>>>>> 'scripts/gcc-plugins/arm_ssp_per_task_plugin.so' failed
+> > >>>>>> make[2]: *** [scripts/gcc-plugins/arm_ssp_per_task_plugin.so] Er=
+ror 1
+> > >>>>>> scripts/Makefile.build:496: recipe for target 'scripts/gcc-plugi=
+ns' failed
+> > >>>>>> make[1]: *** [scripts/gcc-plugins] Error 2
+> > >>>>>> Makefile:1190: recipe for target 'scripts' failed
+> > >>>>>> make: *** [scripts] Error 2
+> > >>>>>>
+> > >>>>>> Compilation works if I use the cross-gcc provided by
+> > >>>>>> gcc-7-arm-linux-gnueabi/gcc-arm-linux-gnueabi Ubuntu packages, w=
+hich is:
+> > >>>>>>
+> > >>>>>> $ arm-linux-gnueabi-gcc --version
+> > >>>>>> arm-linux-gnueabi-gcc (Ubuntu/Linaro 7.5.0-3ubuntu1~18.04) 7.5.0
+> > >>>>>>
+> > >>>>> I can compile gcc-plugins with Linaro toolchians.
+> > >>>>>
+> > >>>>> The version of mine is this:
+> > >>>>>
+> > >>>>> masahiro@oscar:~/ref/linux-next$
+> > >>>>> ~/tools/arm-linaro-7.5/bin/arm-linux-gnueabihf-gcc --version
+> > >>>>> arm-linux-gnueabihf-gcc (Linaro GCC 7.5-2019.12) 7.5.0
+> > >>>>> Copyright (C) 2017 Free Software Foundation, Inc.
+> > >>>>> This is free software; see the source for copying conditions.  Th=
+ere is NO
+> > >>>>> warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULA=
+R PURPOSE.
+> > >>>>>
+> > >>>>>
+> > >>>>>
+> > >>>>>
+> > >>>>> Maybe, it depends on the host environment?
+> > >>>>>
+> > >>>>>
+> > >>>>> Please try this:
+> > >>>>>
+> > >>>>> $ sudo apt install libgmp-dev
+> > >>>> Indeed, it was missing on my setup. Sorry for the noise.
+> > >>>
+> > >>> So this change also breaks the build on our farm build machines and
+> > >>> while we can request that packages are installed on these machines,=
+ it
+> > >>> takes time. Is there anyway to avoid this?
+> > >>
+> > >> You can temporarily revert 1e860048c53e (this patch).
+> > >
+> > >
+> > > Again that works locally, but these automated builders just pull the
+> > > latest -next branch and build.
+> >
+> >
+> > However, if you are saying that this is a problem/bug with our builders,
+> > then of course we will have to get this fixed.
+> >
+>=20
+>=20
+> Yes, please do so.
+>=20
+>=20
+> Kconfig evaluates $(CC) capabilities, and
+> hides CONFIG options it cannot support.
+>=20
+>=20
+> In contrast, we do not do that for $(HOSTCC)
+> capabilities because it is just a matter of some
+> missing packages.
+>=20
+>=20
+> For example, if you enable CONFIG_SYSTEM_TRUSTED_KEYRING
+> and fail to build scripts/extrace-cert.c
+> due to missing <openssl/bio.h>,
+> you need to install the openssl dev package.
+>=20
+> It is the same pattern.
 
-Just curious, was there anything not working correctly with the proposal
-I made ?
+I did notice that your patch changes the original check from using
+$HOSTCC to try and build a test plugin using the gcc-plugin.h header
+found using $CC to just determining the the existence of the
+gcc-plugin.h header using $CC. So it's no longer trying to actually
+use the gcc-plugin.h header.
 
-static const struct cio2_property_names prop_names = {
-	.clock_frequency = "clock-frequency",
-	.rotation = "rotation",
-	.bus_type = "bus-type",
-	.data_lanes = "data-lanes",
-	.remote_endpoint = "remote-endpoint",
-};
+I think that might be what's causing the builders to suddenly break.
+Where previously the check would fail (presumably producing a similar
+error to the one we're now seeing, i.e. $CC was built with plugins
+support, but the installation was broken, so it can't actually build
+plugins because some headers are missing) the same check now succeeds
+(i.e. $CC was built with plugins support, but we no longer check if the
+plugin support is also functional). That means after your change the
+builders will now by default try to build the plugins and fail, whereas
+previously they wouldn't attempt to do so because the dependency wasn't
+met.
 
-static void cio2_bridge_init_property_names(struct cio2_sensor *sensor)
-{
-	sensor->prop_names = prop_names;
-}
+This is similar to what autotools does when it checks for headers. It
+does one pass that just checks if a header is present and another pass
+where it checks that the header can actually be used. Usually when the
+first pass succeeds and the latter fails, it indicates that something is
+wrong with your toolchain setup, or you didn't pass the proper arguments
+in CFLAGS and friends.
 
-It generates a warning when the string is too long for the field size,
-which should help catching issues at compilation time.
+So that makes the new check a bit less useful than the old one, because
+rather than defaulting to "no" when GCC plugins can't be built, we now
+default to "yes" when they should be able to get built but can't.
 
-> +}
-> +
-> +static void cio2_bridge_create_fwnode_properties(struct cio2_sensor *sensor,
-> +						 const struct cio2_sensor_config *cfg)
-> +{
-> +	unsigned int i;
-> +
-> +	cio2_bridge_init_property_names(sensor);
-> +
-> +	for (i = 0; i < 4; i++)
-> +		sensor->data_lanes[i] = i + 1;
-> +
-> +	sensor->local_ref[0].node = &sensor->swnodes[SWNODE_CIO2_ENDPOINT];
-> +	sensor->remote_ref[0].node = &sensor->swnodes[SWNODE_SENSOR_ENDPOINT];
-> +
-> +	sensor->dev_properties[0] = PROPERTY_ENTRY_U32(sensor->prop_names.clock_frequency,
-> +						       sensor->ssdb.mclkspeed);
-> +	sensor->dev_properties[1] = PROPERTY_ENTRY_U8(sensor->prop_names.rotation,
-> +						      sensor->ssdb.degree);
-> +
-> +	sensor->ep_properties[0] = PROPERTY_ENTRY_U32(sensor->prop_names.bus_type, 4);
-> +	sensor->ep_properties[1] = PROPERTY_ENTRY_U32_ARRAY_LEN(sensor->prop_names.data_lanes,
-> +								sensor->data_lanes,
-> +								sensor->ssdb.lanes);
-> +	sensor->ep_properties[2] = PROPERTY_ENTRY_REF_ARRAY(sensor->prop_names.remote_endpoint,
-> +							    sensor->local_ref);
-> +
-> +	if (cfg->nr_link_freqs > 0)
-> +		sensor->ep_properties[3] = PROPERTY_ENTRY_U64_ARRAY_LEN(
-> +						sensor->prop_names.link_frequencies,
-> +						cfg->link_freqs,
-> +						cfg->nr_link_freqs);
-> +
-> +	sensor->cio2_properties[0] = PROPERTY_ENTRY_U32_ARRAY_LEN(sensor->prop_names.data_lanes,
-> +								  sensor->data_lanes,
-> +								  sensor->ssdb.lanes);
-> +	sensor->cio2_properties[1] = PROPERTY_ENTRY_REF_ARRAY(sensor->prop_names.remote_endpoint,
-> +							      sensor->remote_ref);
-> +}
-> +
-> +static void cio2_bridge_init_swnode_names(struct cio2_sensor *sensor)
-> +{
-> +	snprintf(sensor->node_names.remote_port, 7, "port@%u", sensor->ssdb.link);
-> +	strscpy(sensor->node_names.port, "port@0", sizeof(sensor->node_names.port));
-> +	strscpy(sensor->node_names.endpoint, "endpoint@0", sizeof(sensor->node_names.endpoint));
+Anyway, it's probably reasonable to expect the installation to be good
+and that plugins can be built if the gcc-plugin.h header can be found,
+so I'm not objecting to this patch. However, I'm curious as to whether
+installing libgmp-dev (and apparently libmpc-dev as well) is the right
+thing to do here.
 
-I'd wrap lines, but maybe that's because I'm an old-school, 80-columns
-programmer :-)
+In case where CC !=3D HOSTCC, it's possible that CC was not built against
+the same version of GMP/MPC as HOSTCC. And even HOSTCC might not
+necessarily have been built against the versions provided by libgmp-dev
+or libmpc-dev. I'm not overly familiar with GMP/MPC, so perhaps if these
+headers are reasonably stable, this is not all that important. But if it
+is, then which version of GMP/MPC do we need? The version that CC was
+built against, or the version that HOSTCC was built against?
 
-> +}
-> +
-> +static void cio2_bridge_create_connection_swnodes(struct cio2_bridge *bridge,
-> +						  struct cio2_sensor *sensor)
-> +{
-> +	struct software_node *nodes = sensor->swnodes;
-> +
-> +	cio2_bridge_init_swnode_names(sensor);
-> +
-> +	nodes[SWNODE_SENSOR_HID] = NODE_SENSOR(sensor->name,
-> +					       sensor->dev_properties);
-> +	nodes[SWNODE_SENSOR_PORT] = NODE_PORT(sensor->node_names.port,
-> +					      &nodes[SWNODE_SENSOR_HID]);
-> +	nodes[SWNODE_SENSOR_ENDPOINT] = NODE_ENDPOINT(sensor->node_names.endpoint,
-> +						      &nodes[SWNODE_SENSOR_PORT],
-> +						      sensor->ep_properties);
-> +	nodes[SWNODE_CIO2_PORT] = NODE_PORT(sensor->node_names.remote_port,
-> +					    &bridge->cio2_hid_node);
-> +	nodes[SWNODE_CIO2_ENDPOINT] = NODE_ENDPOINT(sensor->node_names.endpoint,
-> +						    &nodes[SWNODE_CIO2_PORT],
-> +						    sensor->cio2_properties);
-> +}
-> +
-> +static void cio2_bridge_unregister_sensors(struct cio2_bridge *bridge)
-> +{
-> +	struct cio2_sensor *sensor;
-> +	unsigned int i;
-> +
-> +	for (i = 0; i < bridge->n_sensors; i++) {
-> +		sensor = &bridge->sensors[i];
-> +		software_node_unregister_nodes(sensor->swnodes);
-> +		acpi_dev_put(sensor->adev);
-> +	}
-> +}
-> +
-> +static int cio2_bridge_connect_sensors(struct cio2_bridge *bridge,
-> +				       struct pci_dev *cio2)
-> +{
-> +	struct fwnode_handle *fwnode;
-> +	struct cio2_sensor *sensor;
-> +	struct acpi_device *adev;
-> +	unsigned int i;
-> +	int ret = 0;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(cio2_supported_sensors); i++) {
-> +		const struct cio2_sensor_config *cfg = &cio2_supported_sensors[i];
-> +
-> +		for_each_acpi_dev_match(adev, cfg->hid, NULL, -1) {
-> +			if (bridge->n_sensors >= CIO2_NUM_PORTS) {
-> +				dev_warn(&cio2->dev, "Exceeded available CIO2 ports\n");
-> +				/* overflow i so outer loop ceases */
-> +				i = ARRAY_SIZE(cio2_supported_sensors);
-> +				break;
+Thierry
 
-Or just
+--lwkOZ5gkRFq3fFGP
+Content-Type: application/pgp-signature; name="signature.asc"
 
-				return 0;
+-----BEGIN PGP SIGNATURE-----
 
-?
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl/c3pQACgkQ3SOs138+
+s6EoQw//TdKCyTvJRHifMDDg8NdlEybqBnlLd91J9Lwyqo0nlelVLcOLlxIGzu1h
+Nop9DeXGooDdMRBjk5XBWkfhfYMvhOaddxNELOuc3yh/ETG1sCDfK67mvpoz2911
+KCGg9WxUAWs4bYcyuKnlfnWKJwV1kvN7XzqJ7PPgdM9EXgr2CYeqyjH9S1p+XWHq
+H8I6D/4Qz+oQeiJMx0AZIcEScFu5R6kFMWV8+0llVkIyJX8CBIVgnmz7iHjxbswV
+RSS6z3XUgkTu41XuWVS/otlUMYN4ivTRT6yKZ0o0qmwi2DUCmNaZMJumB0Kek+6U
+JtAqrw4x7+X2iz8p6j1EyUs0B4AivMN1V1IEXe6UPTye2uf6Bh9goKqmyRvp+aGQ
+nyCSdlkP9FUDmbDb3tXIXplLRODZXsYLF9r8zxa9/Jlor+8x5t28TU4PAeiMBtp4
+8rn/TA/a/TgDAk3sFjzp8vMSbSp41dYpkmOJuBUYbV9ea6YqJTpUNV8jCHAp+j0t
+tCQZ1z3a+I+VpjV/WU/pL4M71CiM/t+WC3Kt5l6Ihx8bbtwhhAZbJY2e6QmXBGio
+RHdywuK/Fotc9fmse/C24ZBNVwyNyDtPCpyiXHR+tKMNzYfffH1QqcPD59FNkqN5
+Jne2EfrMDRoQ9AJ6aknFpRW6+L4j0sPWpnElKi1bRCc90CjHotg=
+=dCOk
+-----END PGP SIGNATURE-----
 
-> +			}
-> +
-> +			if (!adev->status.enabled)
-> +				continue;
-> +
-> +			sensor = &bridge->sensors[bridge->n_sensors];
-> +			sensor->adev = adev;
-> +			strscpy(sensor->name, cfg->hid, sizeof(sensor->name));
-> +
-> +			ret = cio2_bridge_read_acpi_buffer(adev, "SSDB",
-> +							   &sensor->ssdb,
-> +							   sizeof(sensor->ssdb));
-> +			if (ret < 0)
-> +				goto err_put_adev;
-> +
-> +			if (sensor->ssdb.lanes > 4) {
-> +				dev_err(&adev->dev,
-> +					"Number of lanes in SSDB is invalid\n");
-> +				goto err_put_adev;
-> +			}
-> +
-> +			cio2_bridge_create_fwnode_properties(sensor, cfg);
-> +			cio2_bridge_create_connection_swnodes(bridge, sensor);
-> +
-> +			ret = software_node_register_nodes(sensor->swnodes);
-> +			if (ret)
-> +				goto err_put_adev;
-> +
-> +			fwnode = software_node_fwnode(&sensor->swnodes[SWNODE_SENSOR_HID]);
-> +			if (!fwnode) {
-> +				ret = -ENODEV;
-> +				goto err_free_swnodes;
-> +			}
-> +
-> +			adev->fwnode.secondary = fwnode;
-> +
-> +			dev_info(&cio2->dev, "Found supported sensor %s\n",
-> +				 acpi_dev_name(adev));
-> +
-> +			bridge->n_sensors++;
-> +		}
-> +	}
-> +
-> +	return ret;
-> +
-> +err_free_swnodes:
-> +	software_node_unregister_nodes(sensor->swnodes);
-> +err_put_adev:
-> +	acpi_dev_put(sensor->adev);
-> +
-> +	return ret;
-> +}
-> +
-> +int cio2_bridge_init(struct pci_dev *cio2)
-> +{
-> +	struct device *dev = &cio2->dev;
-> +	struct fwnode_handle *fwnode;
-> +	struct cio2_bridge *bridge;
-> +	int ret;
-> +
-> +	bridge = kzalloc(sizeof(*bridge), GFP_KERNEL);
-> +	if (!bridge)
-> +		return -ENOMEM;
-> +
-> +	strscpy(bridge->cio2_node_name, CIO2_HID, sizeof(bridge->cio2_node_name));
-> +	bridge->cio2_hid_node.name = bridge->cio2_node_name;
-> +
-> +	ret = software_node_register(&bridge->cio2_hid_node);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to register the CIO2 HID node\n");
-> +		goto err_free_bridge;
-> +	}
-> +
-> +	ret = cio2_bridge_connect_sensors(bridge, cio2);
-> +	if (ret || bridge->n_sensors == 0)
-> +		goto err_unregister_cio2;
-> +
-> +	dev_info(dev, "Connected %d cameras\n", bridge->n_sensors);
-> +
-> +	fwnode = software_node_fwnode(&bridge->cio2_hid_node);
-> +	if (!fwnode) {
-> +		dev_err(dev, "Error getting fwnode from cio2 software_node\n");
-> +		ret = -ENODEV;
-> +		goto err_unregister_sensors;
-> +	}
-> +
-> +	set_secondary_fwnode(dev, fwnode);
-> +
-> +	return 0;
-> +
-> +err_unregister_sensors:
-> +	cio2_bridge_unregister_sensors(bridge);
-> +err_unregister_cio2:
-> +	software_node_unregister(&bridge->cio2_hid_node);
-> +err_free_bridge:
-> +	kfree(bridge);
-> +
-> +	return ret;
-> +}
-> diff --git a/drivers/media/pci/intel/ipu3/cio2-bridge.h b/drivers/media/pci/intel/ipu3/cio2-bridge.h
-> new file mode 100644
-> index 000000000000..f89a8e33f82c
-> --- /dev/null
-> +++ b/drivers/media/pci/intel/ipu3/cio2-bridge.h
-> @@ -0,0 +1,122 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/* Author: Dan Scally <djrscally@gmail.com> */
-> +#ifndef __CIO2_BRIDGE_H
-> +#define __CIO2_BRIDGE_H
-> +
-> +#include <linux/property.h>
-> +
-> +#define CIO2_HID				"INT343E"
-> +#define CIO2_NUM_PORTS				4
-> +#define MAX_NUM_LINK_FREQS			3
-> +
-> +#define CIO2_SENSOR_CONFIG(_HID, _NR, ...)	\
-> +	{					\
-> +		.hid = _HID,			\
-> +		.nr_link_freqs = _NR,		\
-> +		.link_freqs = { __VA_ARGS__ }	\
-> +	}
-> +
-> +#define NODE_SENSOR(_HID, _PROPS)		\
-> +	((const struct software_node) {		\
-> +		.name = _HID,			\
-> +		.properties = _PROPS,		\
-> +	})
-> +
-> +#define NODE_PORT(_PORT, _SENSOR_NODE)		\
-> +	((const struct software_node) {		\
-> +		_PORT,				\
-> +		_SENSOR_NODE,			\
-> +	})
-> +
-> +#define NODE_ENDPOINT(_EP, _PORT, _PROPS)	\
-> +	((const struct software_node) {		\
-> +		_EP,				\
-> +		_PORT,				\
-> +		_PROPS,				\
-> +	})
-> +
-> +enum cio2_sensor_swnodes {
-> +	SWNODE_SENSOR_HID,
-> +	SWNODE_SENSOR_PORT,
-> +	SWNODE_SENSOR_ENDPOINT,
-> +	SWNODE_CIO2_PORT,
-> +	SWNODE_CIO2_ENDPOINT,
-> +	NR_OF_SENSOR_SWNODES
-> +};
-> +
-> +/* Data representation as it is in ACPI SSDB buffer */
-> +struct cio2_sensor_ssdb {
-> +	u8 version;				/* 0000 */
-> +	u8 sku;					/* 0001 */
-> +	u8 guid_csi2[16];			/* 0002 */
-> +	u8 devfunction;				/* 0003 */
-> +	u8 bus;					/* 0004 */
-> +	u32 dphylinkenfuses;			/* 0005 */
-> +	u32 clockdiv;				/* 0009 */
-> +	u8 link;				/* 0013 */
-> +	u8 lanes;				/* 0014 */
-> +	u32 csiparams[10];			/* 0015 */
-> +	u32 maxlanespeed;			/* 0019 */
-> +	u8 sensorcalibfileidx;			/* 0023 */
-> +	u8 sensorcalibfileidxInMBZ[3];		/* 0024 */
-> +	u8 romtype;				/* 0025 */
-> +	u8 vcmtype;				/* 0026 */
-> +	u8 platforminfo;			/* 0027 */
-
-Why stop at 27 ? :-) I'd either go all the way, or not at all. It's also
-quite customary to represent offset as hex values, as that's what most
-hex editors / viewers will show.
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> +	u8 platformsubinfo;
-> +	u8 flash;
-> +	u8 privacyled;
-> +	u8 degree;
-> +	u8 mipilinkdefined;
-> +	u32 mclkspeed;
-> +	u8 controllogicid;
-> +	u8 reserved1[3];
-> +	u8 mclkport;
-> +	u8 reserved2[13];
-> +} __packed;
-> +
-> +struct cio2_property_names {
-> +	char clock_frequency[16];
-> +	char rotation[9];
-> +	char bus_type[9];
-> +	char data_lanes[11];
-> +	char remote_endpoint[16];
-> +	char link_frequencies[17];
-> +};
-> +
-> +struct cio2_node_names {
-> +	char port[7];
-> +	char endpoint[11];
-> +	char remote_port[7];
-> +};
-> +
-> +struct cio2_sensor_config {
-> +	const char *hid;
-> +	const u8 nr_link_freqs;
-> +	const u64 link_freqs[MAX_NUM_LINK_FREQS];
-> +};
-> +
-> +struct cio2_sensor {
-> +	char name[ACPI_ID_LEN];
-> +	struct acpi_device *adev;
-> +
-> +	struct software_node swnodes[6];
-> +	struct cio2_node_names node_names;
-> +
-> +	u32 data_lanes[4];
-> +	struct cio2_sensor_ssdb ssdb;
-> +	struct cio2_property_names prop_names;
-> +	struct property_entry ep_properties[5];
-> +	struct property_entry dev_properties[3];
-> +	struct property_entry cio2_properties[3];
-> +	struct software_node_ref_args local_ref[1];
-> +	struct software_node_ref_args remote_ref[1];
-> +};
-> +
-> +struct cio2_bridge {
-> +	char cio2_node_name[ACPI_ID_LEN];
-> +	struct software_node cio2_hid_node;
-> +	unsigned int n_sensors;
-> +	struct cio2_sensor sensors[CIO2_NUM_PORTS];
-> +};
-> +
-> +#endif
-> diff --git a/drivers/media/pci/intel/ipu3/ipu3-cio2-main.c b/drivers/media/pci/intel/ipu3/ipu3-cio2-main.c
-> index 36e354ecf71e..68ff28abc6a3 100644
-> --- a/drivers/media/pci/intel/ipu3/ipu3-cio2-main.c
-> +++ b/drivers/media/pci/intel/ipu3/ipu3-cio2-main.c
-> @@ -1702,11 +1702,28 @@ static void cio2_queues_exit(struct cio2_device *cio2)
->  		cio2_queue_exit(cio2, &cio2->queue[i]);
->  }
->  
-> +static bool cio2_check_fwnode_graph(struct fwnode_handle *fwnode)
-> +{
-> +	struct fwnode_handle *endpoint;
-> +
-> +	if (IS_ERR_OR_NULL(fwnode))
-> +		return false;
-> +
-> +	endpoint = fwnode_graph_get_next_endpoint(fwnode, NULL);
-> +	if (endpoint) {
-> +		fwnode_handle_put(endpoint);
-> +		return true;
-> +	}
-> +
-> +	return cio2_check_fwnode_graph(fwnode->secondary);
-> +}
-> +
->  /**************** PCI interface ****************/
->  
->  static int cio2_pci_probe(struct pci_dev *pci_dev,
->  			  const struct pci_device_id *id)
->  {
-> +	struct fwnode_handle *fwnode = dev_fwnode(&pci_dev->dev);
->  	struct cio2_device *cio2;
->  	int r;
->  
-> @@ -1715,6 +1732,23 @@ static int cio2_pci_probe(struct pci_dev *pci_dev,
->  		return -ENOMEM;
->  	cio2->pci_dev = pci_dev;
->  
-> +	/*
-> +	 * On some platforms no connections to sensors are defined in firmware,
-> +	 * if the device has no endpoints then we can try to build those as
-> +	 * software_nodes parsed from SSDB.
-> +	 */
-> +	if (!cio2_check_fwnode_graph(fwnode)) {
-> +		if (fwnode && !IS_ERR_OR_NULL(fwnode->secondary)) {
-> +			dev_err(&pci_dev->dev,
-> +				"fwnode graph has no endpoints connected\n");
-> +			return -EINVAL;
-> +		}
-> +
-> +		r = cio2_bridge_init(pci_dev);
-> +		if (r)
-> +			return r;
-> +	}
-> +
->  	r = pcim_enable_device(pci_dev);
->  	if (r) {
->  		dev_err(&pci_dev->dev, "failed to enable device (%d)\n", r);
-> diff --git a/drivers/media/pci/intel/ipu3/ipu3-cio2.h b/drivers/media/pci/intel/ipu3/ipu3-cio2.h
-> index ccf0b85ae36f..520a27c9cdad 100644
-> --- a/drivers/media/pci/intel/ipu3/ipu3-cio2.h
-> +++ b/drivers/media/pci/intel/ipu3/ipu3-cio2.h
-> @@ -437,4 +437,10 @@ static inline struct cio2_queue *vb2q_to_cio2_queue(struct vb2_queue *vq)
->  	return container_of(vq, struct cio2_queue, vbq);
->  }
->  
-> +#if IS_ENABLED(CONFIG_CIO2_BRIDGE)
-> +int cio2_bridge_init(struct pci_dev *cio2);
-> +#else
-> +int cio2_bridge_init(struct pci_dev *cio2) { return 0; }
-> +#endif
-> +
->  #endif
-
--- 
-Regards,
-
-Laurent Pinchart
+--lwkOZ5gkRFq3fFGP--
