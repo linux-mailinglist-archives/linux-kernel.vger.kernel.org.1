@@ -2,95 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15DC22DDEA0
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 07:30:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 982002DDEA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 07:32:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732854AbgLRG3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 01:29:40 -0500
-Received: from mail-ej1-f41.google.com ([209.85.218.41]:46139 "EHLO
-        mail-ej1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732785AbgLRG3k (ORCPT
+        id S1732785AbgLRGbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 01:31:01 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:28563 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732731AbgLRGbB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 01:29:40 -0500
-Received: by mail-ej1-f41.google.com with SMTP id j22so1536927eja.13;
-        Thu, 17 Dec 2020 22:29:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=p6sm2ullPipX+R/2HJtHxedMHLdzpauKOUOn9DVVdT8=;
-        b=dJG99sQ7OL1ymqsTTsfMkHutNGV39lxr7fRVn85akTw7VHGJQIeWfk30VR1W9tsHp2
-         15V/ekI0DLgm2L07y4IbQi0KiQ3NNBURlwUovJ8prj48LtnwJHSUvINb3cQktog4xzeq
-         tKBajXfr7mrXrLI+cuZTacOfk1dufFFiiqzH9m4wf1CLMHxUn93C4+rtE3g3BX56TZR6
-         cxZcwLw0P36bXS0yLaJBk493cweXuSudd8KZJMNNdVm/pPdMB5IhMRH1tnkBF1s0hWzc
-         viD1Mp4huErlfs+QxZq9Lrq2XIIfINdMoO19HQRloYGek/74o5oPvKcqDv7v56XiY23w
-         G/Xg==
-X-Gm-Message-State: AOAM531FDhn/ZVqaK5AABPG7OFRWof06ZSzvMaYaBGSZZQ5vNmJ4/BI4
-        wAI1wWGJkTudptEo95aMHeyco4qtXuGfLQ==
-X-Google-Smtp-Source: ABdhPJy8KzXwbeQ2Z7Fm533YgLBAeDCIsXDcMF6eUW8TwtokjArP5irJekuzQETsVnVHbz3pAjpKhQ==
-X-Received: by 2002:a17:907:d28:: with SMTP id gn40mr2461175ejc.33.1608272938017;
-        Thu, 17 Dec 2020 22:28:58 -0800 (PST)
-Received: from ?IPv6:2a0b:e7c0:0:107::ee2? ([2a0b:e7c0:0:107::ee2])
-        by smtp.gmail.com with ESMTPSA id ch30sm25195262edb.8.2020.12.17.22.28.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Dec 2020 22:28:57 -0800 (PST)
-Subject: Re: drivers/tty/vt/keyboard.c:2037:13: sparse: sparse: incorrect type
- in initializer (different address spaces)
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        linux-sh@vger.kernel.org, Rich Felker <dalias@libc.org>
-References: <202012162048.l1ovj8ga-lkp@intel.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <877c5461-aa67-3d19-b353-ff902742a6ce@kernel.org>
-Date:   Fri, 18 Dec 2020 07:28:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Fri, 18 Dec 2020 01:31:01 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608273039; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=f/emvhlPCHn+Sh53iWp8Ew1VVewyQayEPXGejZeXtsk=;
+ b=SGnziXRXF/uX3SkEXf3nzhEid2u1+uynE9t9eRpGBsK6XdDFPtGinUg0/rwDhu8ApNMVk96F
+ hoLd0y7qkudxEPFuqwLDUEAzMt18rEgXnqCxpYKnWh5zX9CtQ9WC2HrJ00KpBsYV83EHFjBn
+ uJwxkPqvHaLXCrrFDLxUPCc7i+g=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
+ 5fdc4c71ca81d9e6259728be (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Dec 2020 06:30:09
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 48947C43463; Fri, 18 Dec 2020 06:30:09 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6BA43C433C6;
+        Fri, 18 Dec 2020 06:30:08 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <202012162048.l1ovj8ga-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Fri, 18 Dec 2020 14:30:08 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Stanley Chu <stanley.chu@mediatek.com>
+Cc:     linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
+        avri.altman@wdc.com, alim.akhtar@samsung.com, jejb@linux.ibm.com,
+        beanhuo@micron.com, asutoshd@codeaurora.org,
+        matthias.bgg@gmail.com, bvanassche@acm.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
+        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
+        chaotian.jing@mediatek.com, cc.chou@mediatek.com,
+        jiajie.hao@mediatek.com, alice.chao@mediatek.com
+Subject: Re: [PATCH v2 0/4] scsi: ufs: Cleanup and refactor clock scaling
+In-Reply-To: <1608272678.10163.40.camel@mtkswgap22>
+References: <20201216131639.4128-1-stanley.chu@mediatek.com>
+ <e939a0fd4afd1691f3e1a8182515ca64@codeaurora.org>
+ <1608272678.10163.40.camel@mtkswgap22>
+Message-ID: <ee0f3ffc6d86098fc5704c1726fc69f3@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16. 12. 20, 13:07, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   d01e7f10dae29eba0f9ada82b65d24e035d5b2f9
-> commit: 07edff9265204e15c9fc8d07cc69e38c4c484e15 vt: keyboard, reorder user buffer handling in vt_do_kdgkb_ioctl
-> date:   6 weeks ago
-> config: sh-randconfig-s032-20201216 (attached as .config)
-> compiler: sh4-linux-gcc (GCC) 9.3.0
-> reproduce:
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # apt-get install sparse
->          # sparse version: v0.6.3-184-g1b896707-dirty
->          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=07edff9265204e15c9fc8d07cc69e38c4c484e15
->          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->          git fetch --no-tags linus master
->          git checkout 07edff9265204e15c9fc8d07cc69e38c4c484e15
->          # save the attached .config to linux build tree
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=sh
+On 2020-12-18 14:24, Stanley Chu wrote:
+> Hi Can,
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+> On Fri, 2020-12-18 at 14:20 +0800, Can Guo wrote:
+>> On 2020-12-16 21:16, Stanley Chu wrote:
+>> > Hi,
+>> > This series cleans up and refactors clk-scaling feature, and shall not
+>> > change any functionality.
+>> >
+>> > This series is based on Can's series "Three changes related with UFS
+>> > clock scaling" in 5.10/scsi-fixes branch in Martin's tree.
+>> >
+>> 
+>> Hi Stanley,
+>> 
+>> Thanks for noticing my changes, will you review them?
+>> I see customers manipulte UFS scaling related sysfs
+>> nodes more often than before, so we may want to fix it asap.
 > 
+> I have gave my review tag in all patches in this series : )
 > 
-> "sparse warnings: (new ones prefixed by >>)"
->     drivers/tty/vt/keyboard.c:1745:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned int const *__gu_addr @@     got unsigned int [noderef] __user * @@
->     drivers/tty/vt/keyboard.c:1745:21: sparse:     expected unsigned int const *__gu_addr
->     drivers/tty/vt/keyboard.c:1745:21: sparse:     got unsigned int [noderef] __user *
->     drivers/tty/vt/keyboard.c:1745:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     
+> Thanks,
+> Stanley Chu
+> 
 
-Guys,
+Hi Stanley,
 
-any idea why __gu_addr in superH's __get_user_check is not marked as __user?
+oops, just saw it - I opened the wrong series.
+I will push a new version which incorporates your comments soon.
+Since the new changes would only be some words in ufshcd.h, so you
+won't need to rebase.
 
-thanks,
--- 
-js
-suse labs
+Thanks,
+
+Can Guo.
+
+>> 
+>> Regards,
+>> 
+>> Can Guo.
+>> 
+>> > However this series may not be required to be merged to 5.10. The
+>> > choice of base branch is simply making these patches easy to be
+>> > reviewed because this series is based on clk-scaling fixes by Can. If
+>> > this series is decided not being merged to 5.10, then I would rebase
+>> > it to 5.11/scsi-queue.
+>> >
+>> > Changes since v1:
+>> >   - Refactor ufshcd_clk_scaling_suspend() in patch [3/4]
+>> >   - Change function name from ufshcd_clk_scaling_pm() to
+>> > ufshcd_clk_scaling_suspend() in patch [3/4]
+>> >   - Refine patch titles
+>> >
+>> > Stanley Chu (4):
+>> >   scsi: ufs: Refactor cancelling clkscaling works
+>> >   scsi: ufs: Remove redundant null checking of devfreq instance
+>> >   scsi: ufs: Cleanup and refactor clk-scaling feature
+>> >   scsi: ufs: Fix build warning by incorrect function description
+>> >
+>> >  drivers/scsi/ufs/ufshcd.c | 90 +++++++++++++++++++--------------------
+>> >  1 file changed, 43 insertions(+), 47 deletions(-)
