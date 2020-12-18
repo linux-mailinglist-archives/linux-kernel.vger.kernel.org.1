@@ -2,115 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A024A2DE299
+	by mail.lfdr.de (Postfix) with ESMTP id 3386A2DE298
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 13:13:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727489AbgLRMM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 07:12:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38936 "EHLO
+        id S1726133AbgLRMM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 07:12:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727410AbgLRMMx (ORCPT
+        with ESMTP id S1727416AbgLRMMx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 18 Dec 2020 07:12:53 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24905C0617B0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 04:11:45 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id c22so1186940pgg.13
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 04:11:45 -0800 (PST)
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFA6BC0611CE;
+        Fri, 18 Dec 2020 04:11:53 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id y24so1435658edt.10;
+        Fri, 18 Dec 2020 04:11:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Lir5dGRHwLjSomlPAkXb06BknP7+1ImyKhCDlWgaNdw=;
-        b=PSR0j3LssWf3n590Kl/5HCRReDzxWwIkwGaewAN+IN3Yy+sxrJlRPXbRjbiC1s79za
-         2UaABryTthjhSPMkjP5XonAQ7mZN+WDg/mIF02RrEldHCN0Uy1i+Z+++tdQEyvwYWA5m
-         Vhu7B6D9mFTE2pMOy0hesGU4t3o9a5e2vcYvZvT4ptu5FqeXxx7BCBNJfqVFh4Jd6va7
-         +ZkQSIKlYm91N8WMQzgcPkKN7Zev2lnxIONot5kOV6K4khpdcL9pMt5vQVAzNqbwjh0J
-         DUmCEuFkFVK90GZYxhMawjGxumtnbd4nqM9Xy4cjqXd1LDo0JE0GQODzEExCTkrpLCYs
-         qdWQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fpfHgLjNqUef0wN0lc7+nNzCiw4Mf77uS73mqGKZnIM=;
+        b=mCkVQjDpB6nuKIaWx8YJljXcOY94LkJ5nKGV8N08bV1bxTNGuPBSeyEA7vA83YccO5
+         8SHhceT0oQJtyM4+hihCu6p3LQabHOp05TLVcAjJvxFU5XGY7cWaXEgkDmAksyy2I0+g
+         GQXz2py0/u5nox0lGpJiIPgfXnZNrOHaaFMIu+Fb18rcfUbMCFCYs8sIxgvEnRmLL5tZ
+         /50BZ79EQpqx+fpGZoWK7mxElPkr6BA3JPXIhjAFvx9USGSVqIWmJGe1pWcvoLugr6qe
+         9dcUQ1QlESgvPSqMg4H3BkdqE0G8lsuKMYBV+ZH6ljEQjdTq9JqSj+kiFq84xv6DrS91
+         e0sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=Lir5dGRHwLjSomlPAkXb06BknP7+1ImyKhCDlWgaNdw=;
-        b=rAth3vjnVq2vUFokDfPYU1GLesHRlIzHdwQiDYKUM7/9+D1KQQXYCT0+NoGL3xmpv1
-         LLHp/SbVP3HJ8pNY9dxRlmftrsGVm4bajlF6mVij8QK/KZramuceTt46Jbaw5fP4R5RK
-         LJU0nwJPW5cVMuNoBJD5rkHisP0KK0WkslK3F3uor0wL6rDrKti1BbofTXra+b5ZrHTV
-         UWap+GR1WSJ6YisYWqgCvTY0OVigJga7zISpK3nDZC6aaG7NGtFGyG4hUxsxtkfqu2ft
-         mIfEcOdzwVhelDHSPQNlR4EtIcXxk+VqKmiHhXha3z/MJwRAyTUJzHoITIQm4tpa3VYd
-         qM7g==
-X-Gm-Message-State: AOAM530CM/G8+xoJlTTGzUqM+wOyKgizxXb6yJqKJ73ddkIMEy94qwqw
-        NYYe63XlorDZns5w7HtbQiWvIysfUwOYUQ==
-X-Google-Smtp-Source: ABdhPJzBZdc9Bq2SaJxqCFnEuJzfYhbCSMGi9LhhyjhuoaYCDAAElnBYpnVoZTqOGoVfXCH27Z3ItQ==
-X-Received: by 2002:a63:f745:: with SMTP id f5mr3818665pgk.119.1608293504443;
-        Fri, 18 Dec 2020 04:11:44 -0800 (PST)
-Received: from localhost.localdomain ([2402:3a80:40b:fec:bcbf:34af:77f4:28f0])
-        by smtp.googlemail.com with ESMTPSA id x1sm8499834pfc.112.2020.12.18.04.11.40
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fpfHgLjNqUef0wN0lc7+nNzCiw4Mf77uS73mqGKZnIM=;
+        b=BhjkzMydxt6vMnpRp51S0KLDw3so1MqdEMVkt65ufS7mi1Ftt6AELy56BlUfrp0eIx
+         otd+sjMf3fxB/eFB6//h2MI8Ynk8lgjxDPUiUGrMoh6YOIMrNL0IwAb8GClbjAesLUYT
+         CE/SUftwQwEPxH6iL0lhBIQs7blSQYoZfJHWD6/bRVFgLAlnWwLfQAUq+8sISFJ3VGjx
+         eS0d8Q53PV3LZoN/SQNa7JtQakL2N/cCzJCcYHGJoOvzavZpub7ZntWas63kLu15nySe
+         0Ktlp8FSXXvcx1vVjNs3G79Mo2knGRF6m5BbL2rUQ+Exfp392u0RmxZEl/hX8JtLTuz+
+         VsWA==
+X-Gm-Message-State: AOAM531vm/luIYPS9r1cc61dgIFur75Slz0Itn+Ll2/iQrkpcxC7CNLn
+        UVQKA2zNDDhWTruwqMRPj7FwOZiC6PFntw==
+X-Google-Smtp-Source: ABdhPJzfkGsxDIrFIIAEvsjC2QCxFCNKemW4SsggW8Fc3JEQLPdbEflH3gID8c3dDMLijzQHBOqdjw==
+X-Received: by 2002:aa7:ca03:: with SMTP id y3mr4106732eds.87.1608293512052;
+        Fri, 18 Dec 2020 04:11:52 -0800 (PST)
+Received: from localhost.localdomain (93-103-18-160.static.t-2.net. [93.103.18.160])
+        by smtp.gmail.com with ESMTPSA id i13sm15852716edu.22.2020.12.18.04.11.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Dec 2020 04:11:43 -0800 (PST)
-From:   Aditya Srivastava <yashsri421@gmail.com>
-To:     joe@perches.com
-Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] checkpatch: fix false positive for COMMIT_LOG_LONG_LINE with URLs
-Date:   Fri, 18 Dec 2020 17:41:33 +0530
-Message-Id: <20201218121133.18614-1-yashsri421@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <1ce4502a-d75a-7e27-5844-f195607c4c99@gmail.com>
-References: <1ce4502a-d75a-7e27-5844-f195607c4c99@gmail.com>
+        Fri, 18 Dec 2020 04:11:51 -0800 (PST)
+From:   Uros Bizjak <ubizjak@gmail.com>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Uros Bizjak <ubizjak@gmail.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Subject: [PATCH] KVM/x86: Move definition of __ex to x86.h
+Date:   Fri, 18 Dec 2020 13:11:46 +0100
+Message-Id: <20201218121146.432286-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently checkpatch warns for long line in commit messages even for
-URL lines.
+Merge __kvm_handle_fault_on_reboot with its sole user
+and move the definition of __ex to a common include to be
+shared between VMX and SVM.
 
-An evaluation over v4.13..v5.8 showed that out of 11729 warnings for
-this class, around 299 are due to line starting with URL.
-
-E.g., running checkpatch on commit 3cde818cd02b ("ASoC: topology:
-Consolidate how dtexts and dvalues are freed") reports this warning:
-
-WARNING: Possible unwrapped commit description (prefer a maximum 75 chars per line)
-https://mailman.alsa-project.org/pipermail/alsa-devel/2019-January/144761.html
-
-Avoid giving users warning for character limit for such cases, instead
-suggest them to prefix the URLs with "Link:"
-
-Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
 ---
-changes in v2:
-- Fix coding style ('} else {')
-- Make the URL check follow RFC 3986 style
-- Give warning only if the URL is first non-whitespace of the line
-- Set $commit_log_long_line only for else case
-- Fix the warning count with exact figures and according to first non-space char as URL
+ arch/x86/include/asm/kvm_host.h | 25 -------------------------
+ arch/x86/kvm/svm/svm.c          |  2 --
+ arch/x86/kvm/vmx/vmx_ops.h      |  4 +---
+ arch/x86/kvm/x86.h              | 23 +++++++++++++++++++++++
+ 4 files changed, 24 insertions(+), 30 deletions(-)
 
- scripts/checkpatch.pl | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index abd5a3d2e913..bf77bd0b22cf 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -3032,9 +3032,14 @@ sub process {
- 		      $line =~ /^\s*(?:Fixes:|Link:|$signature_tags)/i ||
- 					# A Fixes: or Link: line or signature tag line
- 		      $commit_log_possible_stack_dump)) {
--			WARN("COMMIT_LOG_LONG_LINE",
--			     "Possible unwrapped commit description (prefer a maximum 75 chars per line)\n" . $herecurr);
--			$commit_log_long_line = 1;
-+			if ($line =~ /^\s*\b[a-z][\w\.\+\-]*:\/\/\S+/i) {
-+				WARN("COMMIT_LOG_LONG_LINE",
-+				     "Consider prefixing the URL with 'Link:'\n" . $herecurr);
-+			} else {
-+				WARN("COMMIT_LOG_LONG_LINE",
-+				     "Possible unwrapped commit description (prefer a maximum 75 chars per line)\n" . $herecurr);
-+				$commit_log_long_line = 1;
-+			}
- 		}
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 7e5f33a0d0e2..ff152ee1d63f 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1623,31 +1623,6 @@ enum {
+ #define kvm_arch_vcpu_memslots_id(vcpu) ((vcpu)->arch.hflags & HF_SMM_MASK ? 1 : 0)
+ #define kvm_memslots_for_spte_role(kvm, role) __kvm_memslots(kvm, (role).smm)
  
- # Reset possible stack dump if a blank line is found
+-asmlinkage void kvm_spurious_fault(void);
+-
+-/*
+- * Hardware virtualization extension instructions may fault if a
+- * reboot turns off virtualization while processes are running.
+- * Usually after catching the fault we just panic; during reboot
+- * instead the instruction is ignored.
+- */
+-#define __kvm_handle_fault_on_reboot(insn)				\
+-	"666: \n\t"							\
+-	insn "\n\t"							\
+-	"jmp	668f \n\t"						\
+-	"667: \n\t"							\
+-	"1: \n\t"							\
+-	".pushsection .discard.instr_begin \n\t"			\
+-	".long 1b - . \n\t"						\
+-	".popsection \n\t"						\
+-	"call	kvm_spurious_fault \n\t"				\
+-	"1: \n\t"							\
+-	".pushsection .discard.instr_end \n\t"				\
+-	".long 1b - . \n\t"						\
+-	".popsection \n\t"						\
+-	"668: \n\t"							\
+-	_ASM_EXTABLE(666b, 667b)
+-
+ #define KVM_ARCH_WANT_MMU_NOTIFIER
+ int kvm_unmap_hva_range(struct kvm *kvm, unsigned long start, unsigned long end,
+ 			unsigned flags);
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index da7eb4aaf44f..0a72ab9fd568 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -42,8 +42,6 @@
+ 
+ #include "svm.h"
+ 
+-#define __ex(x) __kvm_handle_fault_on_reboot(x)
+-
+ MODULE_AUTHOR("Qumranet");
+ MODULE_LICENSE("GPL");
+ 
+diff --git a/arch/x86/kvm/vmx/vmx_ops.h b/arch/x86/kvm/vmx/vmx_ops.h
+index 692b0c31c9c8..7e3cb53c413f 100644
+--- a/arch/x86/kvm/vmx/vmx_ops.h
++++ b/arch/x86/kvm/vmx/vmx_ops.h
+@@ -4,13 +4,11 @@
+ 
+ #include <linux/nospec.h>
+ 
+-#include <asm/kvm_host.h>
+ #include <asm/vmx.h>
+ 
+ #include "evmcs.h"
+ #include "vmcs.h"
+-
+-#define __ex(x) __kvm_handle_fault_on_reboot(x)
++#include "x86.h"
+ 
+ asmlinkage void vmread_error(unsigned long field, bool fault);
+ __attribute__((regparm(0))) void vmread_error_trampoline(unsigned long field,
+diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
+index e7ca622a468f..608548d05e84 100644
+--- a/arch/x86/kvm/x86.h
++++ b/arch/x86/kvm/x86.h
+@@ -7,6 +7,29 @@
+ #include "kvm_cache_regs.h"
+ #include "kvm_emulate.h"
+ 
++asmlinkage void kvm_spurious_fault(void);
++
++/*
++ * Hardware virtualization extension instructions may fault if a
++ * reboot turns off virtualization while processes are running.
++ * Usually after catching the fault we just panic; during reboot
++ * instead the instruction is ignored.
++ */
++#define __ex(insn)							\
++	"666:	" insn "\n"						\
++	"	jmp 669f\n"						\
++	"667:\n"							\
++	".pushsection .discard.instr_begin\n"				\
++	".long 667b - .\n"						\
++	".popsection\n"							\
++	"	call kvm_spurious_fault\n"				\
++	"668:\n"							\
++	".pushsection .discard.instr_end\n"				\
++	".long 668b - .\n"						\
++	".popsection\n"							\
++	"669:\n"							\
++	_ASM_EXTABLE(666b, 667b)
++
+ #define KVM_DEFAULT_PLE_GAP		128
+ #define KVM_VMX_DEFAULT_PLE_WINDOW	4096
+ #define KVM_DEFAULT_PLE_WINDOW_GROW	2
 -- 
-2.17.1
+2.26.2
 
