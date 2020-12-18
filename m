@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE3032DE90E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 19:45:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F7E72DE928
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 19:47:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730065AbgLRSpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 13:45:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42784 "EHLO
+        id S1731584AbgLRSp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 13:45:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726457AbgLRSo4 (ORCPT
+        with ESMTP id S1725822AbgLRSpZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 13:44:56 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E08FC061285;
-        Fri, 18 Dec 2020 10:44:16 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id h205so7925132lfd.5;
-        Fri, 18 Dec 2020 10:44:16 -0800 (PST)
+        Fri, 18 Dec 2020 13:45:25 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FA75C061248;
+        Fri, 18 Dec 2020 10:44:17 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id m12so7904537lfo.7;
+        Fri, 18 Dec 2020 10:44:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=3M844JBma4xvEDyxxhCj86KgztGUDZcwECSGjVFOJyY=;
-        b=CGD8k2xCr24nboIbIJsDW0kkgfFRW6RjmsigEr4RW/n3VkMUDHmDj8p2MHVffWZizz
-         XaHONODjULc9KuZ8/B+PwlZOXvZ26CmaoSA0Cw4Z+4fjapM7KLY7bor9LcO01Zf257EM
-         SgvlZoHbPqQN0c6fS6ETpuCxM54vBUL2hb4KDzpTY+krBDkMdKeO2CiFwISV372qsKkZ
-         f9uYEj7VEIPj146hMu5BmBC8pz1xoUzKlQDlL4x31xxQ5lt9PuaKwf4gpWzqbOvo2rcQ
-         s+WhJ4PDKbSBlYuXcACCIMvSiueejBVQ3NEnVoApgrufchm4Z/m0941ai3CZdnICATQX
-         b4Zg==
+        bh=UNMAzeAbUgd0/Pwv00BAWyYvn6eBGgcQQ3CQrYWw0+o=;
+        b=oGgLAWupQ9OoHiApSyja7UMCBQeXDQQs3OQ/psajcsS1gbPMgXFEAbDcXs4IBDppmv
+         9TwmYm5s4h9eOuw87B6Tk2nh/64jhLjNq7JS+vMPT2UxFFh+mOwKQlulUdB1kuwBkGer
+         LUbKoT2uexguzsNeE9uvFy4FVc25HQKJV+LDyvFaiwgRNiywA4RI1fbS5OLr0SdxaoIQ
+         /p5vzxK2UNYwnw2/hCxa0yuMoXcwdDkTLiPsoVex2lI/hj6OaPBR3VeT9wTZZbqJVXhZ
+         P8C99mzR0zY4lyfDThCPQ8RtolDFSDXwQYu3Srlf7KCiEdzk/cuCeeEhQ/7snTGLrb2Y
+         KGqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=3M844JBma4xvEDyxxhCj86KgztGUDZcwECSGjVFOJyY=;
-        b=RqBfUvBfJqqsO1/N1VguuUSBcOUji2Szl3ed8wQBIMT/SD8O9zHSTspTjy2iFwN0Hv
-         Ea/Vcka1/iJ3pWpnIXqT3OpaUqmsiR+1P2N40zcJBNMEY+vSZ6N28oNifXXHHl/1kOa3
-         WhLAh6mS5Dh/9HPCQH1O51W1q4FCknc2dnhL0axKXxGgp/JmGffrBmd5heI9+MtnCp8F
-         +ndz9Y/LaDPrHXkedoBf6GVjviEbohiFWgATvIhdKR3rsyZ1XBlPPk64kiPa7fogeALZ
-         kow66JJlo/mH/RlcFE4/YNbtP1RmKFqfWV6VLtn5QbapxcAEtbRvDnKOA2vh3ANYJotZ
-         CxBA==
-X-Gm-Message-State: AOAM531HNhNRCJXiYtS1sKg9JFnX2SKnolDM5R4ZAxmSDLLUgfpMhHQb
-        OonYGO2suIyekAcEOtYeu8UeKjEunnNWkA==
-X-Google-Smtp-Source: ABdhPJz4b8RP5CqX3c8XZhrekTMTc4FH8vAZ6yZ5tcL2ObBvJjSI8LM3dGP2SqiSAosh7R0nVNucsw==
-X-Received: by 2002:a2e:9756:: with SMTP id f22mr2288061ljj.65.1608317054574;
-        Fri, 18 Dec 2020 10:44:14 -0800 (PST)
+        bh=UNMAzeAbUgd0/Pwv00BAWyYvn6eBGgcQQ3CQrYWw0+o=;
+        b=gbGzXrkkreL8T/qkobaK2sr7zUyqc2N+nGi1f4DeyvP7B0vRHaBSCgmlj/JP7y9uEP
+         9tGp+BY8KDcbR23QtilkD192IchmX9PwIB7FelWl7fDM1fvDr4kDCMflJu5T6jC9BZT9
+         5bwuuPBgZb3KlulTcwa/NriXrcBCoB+E0X+t/dZj6f8zMiCdPK41eJVb58XiGJiSMPux
+         hPgXpTQqYEt0hdV3eEs0EXT0g8hyuqlZCzHq8iY2AEl7lqiRtLMW3acz3GD644kWCq4+
+         QiOmoiBgOy2v4ubwLHlDGBrjGOcSTjzwFt1dCQ38rT7oEknRaXxCbto/ng9w3BBUG8tP
+         mzWw==
+X-Gm-Message-State: AOAM533mLAM0NyWYK4zpN8zrncm8oeGfIB15B3T0x7ApbKlq2bGLdzu/
+        N51eiQrXhLxSRgiaRe7DOJg=
+X-Google-Smtp-Source: ABdhPJwdnJxjFxdqg+S1tQOFTy9O/1d3iLOOoQELtImhvQL3nesrI/dW9EcEyu4sBVDmgE/iCP5Gww==
+X-Received: by 2002:a05:6512:789:: with SMTP id x9mr1861834lfr.487.1608317056091;
+        Fri, 18 Dec 2020 10:44:16 -0800 (PST)
 Received: from saturn.localdomain ([2a00:fd00:8060:1c00:2c04:50ad:1138:9ea2])
-        by smtp.gmail.com with ESMTPSA id s7sm1116980ljp.38.2020.12.18.10.44.12
+        by smtp.gmail.com with ESMTPSA id s7sm1116980ljp.38.2020.12.18.10.44.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Dec 2020 10:44:13 -0800 (PST)
+        Fri, 18 Dec 2020 10:44:15 -0800 (PST)
 Sender: Sam Ravnborg <sam.ravnborg@gmail.com>
 From:   Sam Ravnborg <sam@ravnborg.org>
 To:     David S Miller <davem@davemloft.net>, sparclinux@vger.kernel.org,
@@ -75,9 +75,9 @@ Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
         Will Deacon <will@kernel.org>, Willy Tarreau <w@1wt.eu>,
         linux-kernel@vger.kernel.org, debian-sparc@lists.debian.org,
         gentoo-sparc@l.g.o
-Subject: [PATCH v1 04/13] sparc32: Drop auxio support
-Date:   Fri, 18 Dec 2020 19:43:38 +0100
-Message-Id: <20201218184347.2180772-5-sam@ravnborg.org>
+Subject: [PATCH v1 05/13] sparc32: Drop run-time patching of ipi trap
+Date:   Fri, 18 Dec 2020 19:43:39 +0100
+Message-Id: <20201218184347.2180772-6-sam@ravnborg.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201218184347.2180772-1-sam@ravnborg.org>
 References: <20201218184347.2180772-1-sam@ravnborg.org>
@@ -87,437 +87,234 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-auxio is not supported by LEON - so drop it.
+There is no longer any need for the run-time patching of the ipi trap
+with the removal of sun4m and sun4d. Remove the patching and drop the
+ipi implementation for the two machines.
+
+The patch includes removal of patching from pcic as this was needed to
+fix the build. pcic will be removed in a later commit.
 
 Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-Cc: Sam Ravnborg <sam@ravnborg.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Christian Brauner <christian.brauner@ubuntu.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Mike Rapoport <rppt@kernel.org>
-Cc: Dmitry Safonov <0x7f454c46@gmail.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Sam Ravnborg <sam@ravnborg.org>
+Cc: Christian Brauner <christian.brauner@ubuntu.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Pekka Enberg <penberg@kernel.org>
 Cc: Arnd Bergmann <arnd@kernel.org>
 Cc: Andreas Larsson <andreas@gaisler.com>
 ---
- arch/sparc/include/asm/auxio_32.h |  73 +---------------
- arch/sparc/kernel/Makefile        |   2 +-
- arch/sparc/kernel/apc.c           |  14 ---
- arch/sparc/kernel/auxio_32.c      | 140 ------------------------------
- arch/sparc/kernel/devices.c       |   3 -
- arch/sparc/kernel/kernel.h        |   4 -
- arch/sparc/kernel/pmc.c           |  10 ---
- arch/sparc/kernel/process_32.c    |  10 ---
- arch/sparc/prom/misc_32.c         |   2 -
- 9 files changed, 3 insertions(+), 255 deletions(-)
- delete mode 100644 arch/sparc/kernel/auxio_32.c
+ arch/sparc/kernel/entry.S     | 70 ++---------------------------------
+ arch/sparc/kernel/kernel.h    |  4 --
+ arch/sparc/kernel/leon_smp.c  |  3 --
+ arch/sparc/kernel/pcic.c      | 11 ------
+ arch/sparc/kernel/sun4d_smp.c |  3 --
+ arch/sparc/kernel/ttable_32.S |  9 ++---
+ 6 files changed, 7 insertions(+), 93 deletions(-)
 
-diff --git a/arch/sparc/include/asm/auxio_32.h b/arch/sparc/include/asm/auxio_32.h
-index 852457c7a265..e2335ddd359d 100644
---- a/arch/sparc/include/asm/auxio_32.h
-+++ b/arch/sparc/include/asm/auxio_32.h
-@@ -1,43 +1,12 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- /*
-- * auxio.h:  Definitions and code for the Auxiliary I/O register.
-+ * Dummy definitions for the Auxiliary I/O register.
-  *
-  * Copyright (C) 1995 David S. Miller (davem@caip.rutgers.edu)
-  */
- #ifndef _SPARC_AUXIO_H
- #define _SPARC_AUXIO_H
+diff --git a/arch/sparc/kernel/entry.S b/arch/sparc/kernel/entry.S
+index 9985b08a3467..1a2e20a7e584 100644
+--- a/arch/sparc/kernel/entry.S
++++ b/arch/sparc/kernel/entry.S
+@@ -174,32 +174,6 @@ maybe_smp4m_msg_check_resched:
+ maybe_smp4m_msg_out:
+ 	RESTORE_ALL
  
--#include <asm/vaddrs.h>
--
--/* This register is an unsigned char in IO space.  It does two things.
-- * First, it is used to control the front panel LED light on machines
-- * that have it (good for testing entry points to trap handlers and irq's)
-- * Secondly, it controls various floppy drive parameters.
-- */
--#define AUXIO_ORMEIN      0xf0    /* All writes must set these bits. */
--#define AUXIO_ORMEIN4M    0xc0    /* sun4m - All writes must set these bits. */
--#define AUXIO_FLPY_DENS   0x20    /* Floppy density, high if set. Read only. */
--#define AUXIO_FLPY_DCHG   0x10    /* A disk change occurred.  Read only. */
--#define AUXIO_EDGE_ON     0x10    /* sun4m - On means Jumper block is in. */
--#define AUXIO_FLPY_DSEL   0x08    /* Drive select/start-motor. Write only. */
--#define AUXIO_LINK_TEST   0x08    /* sun4m - On means TPE Carrier detect. */
--
--/* Set the following to one, then zero, after doing a pseudo DMA transfer. */
--#define AUXIO_FLPY_TCNT   0x04    /* Floppy terminal count. Write only. */
--
--/* Set the following to zero to eject the floppy. */
--#define AUXIO_FLPY_EJCT   0x02    /* Eject floppy disk.  Write only. */
--#define AUXIO_LED         0x01    /* On if set, off if unset. Read/Write */
--
--#ifndef __ASSEMBLY__
--
--/*
-- * NOTE: these routines are implementation dependent--
-- * understand the hardware you are querying!
-- */
--void set_auxio(unsigned char bits_on, unsigned char bits_off);
--unsigned char get_auxio(void); /* .../asm/floppy.h */
--
- /*
-  * The following routines are provided for driver-compatibility
-  * with sparc64 (primarily sunlance.c)
-@@ -46,44 +15,6 @@ unsigned char get_auxio(void); /* .../asm/floppy.h */
- #define AUXIO_LTE_ON    1
- #define AUXIO_LTE_OFF   0
+-	.align	4
+-	.globl	linux_trap_ipi15_sun4m
+-linux_trap_ipi15_sun4m:
+-	SAVE_ALL
+-	sethi	%hi(0x80000000), %o2
+-	GET_PROCESSOR4M_ID(o0)
+-	sethi	%hi(sun4m_irq_percpu), %l5
+-	or	%l5, %lo(sun4m_irq_percpu), %o5
+-	sll	%o0, 2, %o0
+-	ld	[%o5 + %o0], %o5
+-	ld	[%o5 + 0x00], %o3	! sun4m_irq_percpu[cpu]->pending
+-	andcc	%o3, %o2, %g0
+-	be	sun4m_nmi_error		! Must be an NMI async memory error
+-	 st	%o2, [%o5 + 0x04]	! sun4m_irq_percpu[cpu]->clear=0x80000000
+-	WRITE_PAUSE
+-	ld	[%o5 + 0x00], %g0	! sun4m_irq_percpu[cpu]->pending
+-	WRITE_PAUSE
+-	or	%l0, PSR_PIL, %l4
+-	wr	%l4, 0x0, %psr
+-	WRITE_PAUSE
+-	wr	%l4, PSR_ET, %psr
+-	WRITE_PAUSE
+-	call	smp4m_cross_call_irq
+-	 nop
+-	b	ret_trap_lockless_ipi
+-	 clr	%l6
  
--/* auxio_set_lte - Set Link Test Enable (TPE Link Detect)
-- *
-- * on - AUXIO_LTE_ON or AUXIO_LTE_OFF
-- */
--#define auxio_set_lte(on) \
--do { \
--	if(on) { \
--		set_auxio(AUXIO_LINK_TEST, 0); \
--	} else { \
--		set_auxio(0, AUXIO_LINK_TEST); \
--	} \
--} while (0)
--
--#define AUXIO_LED_ON    1
--#define AUXIO_LED_OFF   0
--
--/* auxio_set_led - Set system front panel LED
-- *
-- * on - AUXIO_LED_ON or AUXIO_LED_OFF
-- */
--#define auxio_set_led(on) \
--do { \
--	if(on) { \
--		set_auxio(AUXIO_LED, 0); \
--	} else { \
--		set_auxio(0, AUXIO_LED); \
--	} \
--} while (0)
--
--#endif /* !(__ASSEMBLY__) */
--
--
--/* AUXIO2 (Power Off Control) */
--extern volatile u8 __iomem *auxio_power_register;
--
--#define	AUXIO_POWER_DETECT_FAILURE	32
--#define	AUXIO_POWER_CLEAR_FAILURE	2
--#define	AUXIO_POWER_OFF			1
--
-+#define auxio_set_lte(on)
+ 	.globl	smp4d_ticker
+ 	/* SMP per-cpu ticker interrupts are handled specially. */
+@@ -220,44 +194,6 @@ smp4d_ticker:
+ 	WRITE_PAUSE
+ 	RESTORE_ALL
  
- #endif /* !(_SPARC_AUXIO_H) */
-diff --git a/arch/sparc/kernel/Makefile b/arch/sparc/kernel/Makefile
-index b6c9ca1d6c66..b2735fb29c89 100644
---- a/arch/sparc/kernel/Makefile
-+++ b/arch/sparc/kernel/Makefile
-@@ -84,7 +84,7 @@ obj-$(CONFIG_SMP)         += trampoline_$(BITS).o smp_$(BITS).o
- obj-$(CONFIG_SPARC32_SMP) += sun4m_smp.o sun4d_smp.o leon_smp.o
- obj-$(CONFIG_SPARC64_SMP) += hvtramp.o
+-	.align	4
+-	.globl	linux_trap_ipi15_sun4d
+-linux_trap_ipi15_sun4d:
+-	SAVE_ALL
+-	sethi	%hi(CC_BASE), %o4
+-	sethi	%hi(MXCC_ERR_ME|MXCC_ERR_PEW|MXCC_ERR_ASE|MXCC_ERR_PEE), %o2
+-	or	%o4, (CC_EREG - CC_BASE), %o0
+-	ldda	[%o0] ASI_M_MXCC, %o0
+-	andcc	%o0, %o2, %g0
+-	bne	1f
+-	 sethi	%hi(BB_STAT2), %o2
+-	lduba	[%o2] ASI_M_CTL, %o2
+-	andcc	%o2, BB_STAT2_MASK, %g0
+-	bne	2f
+-	 or	%o4, (CC_ICLR - CC_BASE), %o0
+-	sethi	%hi(1 << 15), %o1
+-	stha	%o1, [%o0] ASI_M_MXCC	/* Clear PIL 15 in MXCC's ICLR */
+-	or	%l0, PSR_PIL, %l4
+-	wr	%l4, 0x0, %psr
+-	WRITE_PAUSE
+-	wr	%l4, PSR_ET, %psr
+-	WRITE_PAUSE
+-	call	smp4d_cross_call_irq
+-	 nop
+-	b	ret_trap_lockless_ipi
+-	 clr	%l6
+-
+-1:	/* MXCC error */
+-2:	/* BB error */
+-	/* Disable PIL 15 */
+-	set	CC_IMSK, %l4
+-	lduha	[%l4] ASI_M_MXCC, %l5
+-	sethi	%hi(1 << 15), %l7
+-	or	%l5, %l7, %l5
+-	stha	%l5, [%l4] ASI_M_MXCC
+-	/* FIXME */
+-1:	b,a	1b
+-
+ 	.globl	smpleon_ipi
+ 	.extern leon_ipi_interrupt
+ 	/* SMP per-cpu IPI interrupts are handled specially. */
+@@ -618,11 +554,11 @@ sun4m_nmi_error:
  
--obj-y                     += auxio_$(BITS).o
-+obj-$(CONFIG_SPARC64)     += auxio_64.o
- obj-$(CONFIG_SUN_PM)      += apc.o pmc.o
+ #ifndef CONFIG_SMP
+ 	.align	4
+-	.globl	linux_trap_ipi15_sun4m
+-linux_trap_ipi15_sun4m:
++	.globl	linux_trap_ipi15_leon
++linux_trap_ipi15_leon:
+ 	SAVE_ALL
  
- obj-$(CONFIG_MODULES)     += module.o
-diff --git a/arch/sparc/kernel/apc.c b/arch/sparc/kernel/apc.c
-index ecd05bc0a104..93f5934bbbe1 100644
---- a/arch/sparc/kernel/apc.c
-+++ b/arch/sparc/kernel/apc.c
-@@ -19,15 +19,9 @@
- #include <asm/io.h>
- #include <asm/oplib.h>
- #include <linux/uaccess.h>
--#include <asm/auxio.h>
- #include <asm/apc.h>
- #include <asm/processor.h>
+-	ba	sun4m_nmi_error
++	ba      sun4m_nmi_error
+ 	 nop
+ #endif /* CONFIG_SMP */
  
--/* Debugging
-- * 
-- * #define APC_DEBUG_LED
-- */
--
- #define APC_MINOR	MISC_DYNAMIC_MINOR
- #define APC_OBPNAME	"power-management"
- #define APC_DEVNAME "apc"
-@@ -60,15 +54,7 @@ __setup("apc=", apc_setup);
-  */
- static void apc_swift_idle(void)
- {
--#ifdef APC_DEBUG_LED
--	set_auxio(0x00, AUXIO_LED); 
--#endif
--
- 	apc_writeb(apc_readb(APC_IDLE_REG) | APC_IDLE_ON, APC_IDLE_REG);
--
--#ifdef APC_DEBUG_LED
--	set_auxio(AUXIO_LED, 0x00); 
--#endif
- } 
- 
- static inline void apc_free(struct platform_device *op)
-diff --git a/arch/sparc/kernel/auxio_32.c b/arch/sparc/kernel/auxio_32.c
-deleted file mode 100644
-index a32d588174f2..000000000000
---- a/arch/sparc/kernel/auxio_32.c
-+++ /dev/null
-@@ -1,140 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/* auxio.c: Probing for the Sparc AUXIO register at boot time.
-- *
-- * Copyright (C) 1996 David S. Miller (davem@caip.rutgers.edu)
-- */
--
--#include <linux/stddef.h>
--#include <linux/init.h>
--#include <linux/spinlock.h>
--#include <linux/of.h>
--#include <linux/of_device.h>
--#include <linux/export.h>
--
--#include <asm/oplib.h>
--#include <asm/io.h>
--#include <asm/auxio.h>
--#include <asm/string.h>		/* memset(), Linux has no bzero() */
--#include <asm/cpu_type.h>
--
--#include "kernel.h"
--
--/* Probe and map in the Auxiliary I/O register */
--
--/* auxio_register is not static because it is referenced 
-- * in entry.S::floppy_tdone
-- */
--void __iomem *auxio_register = NULL;
--static DEFINE_SPINLOCK(auxio_lock);
--
--void __init auxio_probe(void)
--{
--	phandle node, auxio_nd;
--	struct linux_prom_registers auxregs[1];
--	struct resource r;
--
--	switch (sparc_cpu_model) {
--	case sparc_leon:
--	case sun4d:
--		return;
--	default:
--		break;
--	}
--	node = prom_getchild(prom_root_node);
--	auxio_nd = prom_searchsiblings(node, "auxiliary-io");
--	if(!auxio_nd) {
--		node = prom_searchsiblings(node, "obio");
--		node = prom_getchild(node);
--		auxio_nd = prom_searchsiblings(node, "auxio");
--		if(!auxio_nd) {
--#ifdef CONFIG_PCI
--			/* There may be auxio on Ebus */
--			return;
--#else
--			if(prom_searchsiblings(node, "leds")) {
--				/* VME chassis sun4m machine, no auxio exists. */
--				return;
--			}
--			prom_printf("Cannot find auxio node, cannot continue...\n");
--			prom_halt();
--#endif
--		}
--	}
--	if(prom_getproperty(auxio_nd, "reg", (char *) auxregs, sizeof(auxregs)) <= 0)
--		return;
--	prom_apply_obio_ranges(auxregs, 0x1);
--	/* Map the register both read and write */
--	r.flags = auxregs[0].which_io & 0xF;
--	r.start = auxregs[0].phys_addr;
--	r.end = auxregs[0].phys_addr + auxregs[0].reg_size - 1;
--	auxio_register = of_ioremap(&r, 0, auxregs[0].reg_size, "auxio");
--	/* Fix the address on sun4m. */
--	if ((((unsigned long) auxregs[0].phys_addr) & 3) == 3)
--		auxio_register += (3 - ((unsigned long)auxio_register & 3));
--
--	set_auxio(AUXIO_LED, 0);
--}
--
--unsigned char get_auxio(void)
--{
--	if(auxio_register) 
--		return sbus_readb(auxio_register);
--	return 0;
--}
--EXPORT_SYMBOL(get_auxio);
--
--void set_auxio(unsigned char bits_on, unsigned char bits_off)
--{
--	unsigned char regval;
--	unsigned long flags;
--	spin_lock_irqsave(&auxio_lock, flags);
--	switch (sparc_cpu_model) {
--	case sun4m:
--		if(!auxio_register)
--			break;     /* VME chassis sun4m, no auxio. */
--		regval = sbus_readb(auxio_register);
--		sbus_writeb(((regval | bits_on) & ~bits_off) | AUXIO_ORMEIN4M,
--			auxio_register);
--		break;
--	case sun4d:
--		break;
--	default:
--		panic("Can't set AUXIO register on this machine.");
--	}
--	spin_unlock_irqrestore(&auxio_lock, flags);
--}
--EXPORT_SYMBOL(set_auxio);
--
--/* sun4m power control register (AUXIO2) */
--
--volatile u8 __iomem *auxio_power_register = NULL;
--
--void __init auxio_power_probe(void)
--{
--	struct linux_prom_registers regs;
--	phandle node;
--	struct resource r;
--
--	/* Attempt to find the sun4m power control node. */
--	node = prom_getchild(prom_root_node);
--	node = prom_searchsiblings(node, "obio");
--	node = prom_getchild(node);
--	node = prom_searchsiblings(node, "power");
--	if (node == 0 || (s32)node == -1)
--		return;
--
--	/* Map the power control register. */
--	if (prom_getproperty(node, "reg", (char *)&regs, sizeof(regs)) <= 0)
--		return;
--	prom_apply_obio_ranges(&regs, 1);
--	memset(&r, 0, sizeof(r));
--	r.flags = regs.which_io & 0xF;
--	r.start = regs.phys_addr;
--	r.end = regs.phys_addr + regs.reg_size - 1;
--	auxio_power_register =
--		(u8 __iomem *)of_ioremap(&r, 0, regs.reg_size, "auxpower");
--
--	/* Display a quick message on the console. */
--	if (auxio_power_register)
--		printk(KERN_INFO "Power off control detected.\n");
--}
-diff --git a/arch/sparc/kernel/devices.c b/arch/sparc/kernel/devices.c
-index 23b6e50d4ada..b3c2d51b22c4 100644
---- a/arch/sparc/kernel/devices.c
-+++ b/arch/sparc/kernel/devices.c
-@@ -132,7 +132,4 @@ void __init device_scan(void)
- 							    0);
- 	}
- #endif /* !CONFIG_SMP */
--
--	auxio_probe();
--	auxio_power_probe();
- }
 diff --git a/arch/sparc/kernel/kernel.h b/arch/sparc/kernel/kernel.h
-index c76e49032273..7328d13875e4 100644
+index 7328d13875e4..c9e1b13d955f 100644
 --- a/arch/sparc/kernel/kernel.h
 +++ b/arch/sparc/kernel/kernel.h
-@@ -175,10 +175,6 @@ asmlinkage void user_unaligned_trap(struct pt_regs *regs, unsigned int insn);
- /* windows.c */
- void try_to_clear_window_buffer(struct pt_regs *regs, int who);
+@@ -135,10 +135,6 @@ void leonsmp_ipi_interrupt(void);
+ void leon_cross_call_irq(void);
  
--/* auxio_32.c */
--void __init auxio_probe(void);
--void __init auxio_power_probe(void);
+ /* head_32.S */
+-extern unsigned int t_nmi[];
+-extern unsigned int linux_trap_ipi15_sun4d[];
+-extern unsigned int linux_trap_ipi15_sun4m[];
 -
- /* pcic.c */
- extern void __iomem *pcic_regs;
- void pcic_nmi(unsigned int pend, struct pt_regs *regs);
-diff --git a/arch/sparc/kernel/pmc.c b/arch/sparc/kernel/pmc.c
-index b5c1eb33b951..441b9fbc27f1 100644
---- a/arch/sparc/kernel/pmc.c
-+++ b/arch/sparc/kernel/pmc.c
-@@ -17,12 +17,10 @@
- #include <asm/io.h>
- #include <asm/oplib.h>
- #include <linux/uaccess.h>
--#include <asm/auxio.h>
- #include <asm/processor.h>
+ extern struct tt_entry trapbase;
+ extern struct tt_entry trapbase_cpu1;
+ extern struct tt_entry trapbase_cpu2;
+diff --git a/arch/sparc/kernel/leon_smp.c b/arch/sparc/kernel/leon_smp.c
+index 1eed26d423fb..b0d75783d337 100644
+--- a/arch/sparc/kernel/leon_smp.c
++++ b/arch/sparc/kernel/leon_smp.c
+@@ -461,8 +461,5 @@ static const struct sparc32_ipi_ops leon_ipi_ops = {
  
- /* Debug
-  *
-- * #define PMC_DEBUG_LED
-  * #define PMC_NO_IDLE
-  */
- 
-@@ -43,15 +41,7 @@ static u8 __iomem *regs;
-  */
- static void pmc_swift_idle(void)
+ void __init leon_init_smp(void)
  {
--#ifdef PMC_DEBUG_LED
--	set_auxio(0x00, AUXIO_LED);
--#endif
+-	/* Patch ipi15 trap table */
+-	t_nmi[1] = t_nmi[1] + (linux_trap_ipi15_leon - linux_trap_ipi15_sun4m);
 -
- 	pmc_writeb(pmc_readb(PMC_IDLE_REG) | PMC_IDLE_ON, PMC_IDLE_REG);
--
--#ifdef PMC_DEBUG_LED
--	set_auxio(AUXIO_LED, 0x00);
--#endif
+ 	sparc32_ipi_ops = &leon_ipi_ops;
  }
+diff --git a/arch/sparc/kernel/pcic.c b/arch/sparc/kernel/pcic.c
+index ee4c9a9a171c..87bdcb16019b 100644
+--- a/arch/sparc/kernel/pcic.c
++++ b/arch/sparc/kernel/pcic.c
+@@ -354,17 +354,6 @@ int __init pcic_probe(void)
+ 	prom_getstring(node, "name", namebuf, 63);  namebuf[63] = 0;
+ 	strcpy(pbm->prom_name, namebuf);
  
- static int pmc_probe(struct platform_device *op)
-diff --git a/arch/sparc/kernel/process_32.c b/arch/sparc/kernel/process_32.c
-index a02363735915..cf9ef387c6d5 100644
---- a/arch/sparc/kernel/process_32.c
-+++ b/arch/sparc/kernel/process_32.c
-@@ -30,7 +30,6 @@
- #include <linux/slab.h>
- #include <linux/cpu.h>
- 
--#include <asm/auxio.h>
- #include <asm/oplib.h>
- #include <linux/uaccess.h>
- #include <asm/page.h>
-@@ -52,8 +51,6 @@ void (*sparc_idle)(void);
- 
- /* 
-  * Power-off handler instantiation for pm.h compliance
-- * This is done via auxio, but could be used as a fallback
-- * handler when auxio is not present-- unused for now...
-  */
- void (*pm_power_off)(void) = machine_power_off;
- EXPORT_SYMBOL(pm_power_off);
-@@ -107,13 +104,6 @@ void machine_restart(char * cmd)
- 
- void machine_power_off(void)
- {
--	if (auxio_power_register &&
--	    (!of_node_is_type(of_console_device, "serial") || scons_pwroff)) {
--		u8 power_register = sbus_readb(auxio_power_register);
--		power_register |= AUXIO_POWER_OFF;
--		sbus_writeb(power_register, auxio_power_register);
+-	{
+-		extern int pcic_nmi_trap_patch[4];
+-
+-		t_nmi[0] = pcic_nmi_trap_patch[0];
+-		t_nmi[1] = pcic_nmi_trap_patch[1];
+-		t_nmi[2] = pcic_nmi_trap_patch[2];
+-		t_nmi[3] = pcic_nmi_trap_patch[3];
+-		swift_flush_dcache();
+-		pcic_regs = pcic->pcic_regs;
 -	}
 -
- 	machine_halt();
- }
+ 	prom_getstring(prom_root_node, "name", namebuf, 63);  namebuf[63] = 0;
+ 	{
+ 		struct pcic_sn2list *p;
+diff --git a/arch/sparc/kernel/sun4d_smp.c b/arch/sparc/kernel/sun4d_smp.c
+index ff30f03beb7c..cecdda746baa 100644
+--- a/arch/sparc/kernel/sun4d_smp.c
++++ b/arch/sparc/kernel/sun4d_smp.c
+@@ -401,9 +401,6 @@ void __init sun4d_init_smp(void)
+ {
+ 	int i;
  
-diff --git a/arch/sparc/prom/misc_32.c b/arch/sparc/prom/misc_32.c
-index 625750924860..78dde6bfbf0f 100644
---- a/arch/sparc/prom/misc_32.c
-+++ b/arch/sparc/prom/misc_32.c
-@@ -13,7 +13,6 @@
+-	/* Patch ipi15 trap table */
+-	t_nmi[1] = t_nmi[1] + (linux_trap_ipi15_sun4d - linux_trap_ipi15_sun4m);
+-
+ 	sparc32_ipi_ops = &sun4d_ipi_ops;
  
- #include <asm/openprom.h>
- #include <asm/oplib.h>
--#include <asm/auxio.h>
+ 	for (i = 0; i < NR_CPUS; i++) {
+diff --git a/arch/sparc/kernel/ttable_32.S b/arch/sparc/kernel/ttable_32.S
+index e79fd786fbbb..78bbf2548e1f 100644
+--- a/arch/sparc/kernel/ttable_32.S
++++ b/arch/sparc/kernel/ttable_32.S
+@@ -43,8 +43,7 @@ t_irq12:TRAP_ENTRY_INTERRUPT(12)            /* IRQ Zilog serial chip         */
+ t_irq13:TRAP_ENTRY_INTERRUPT(13)            /* IRQ Audio Intr.               */
+ t_irq14:TRAP_ENTRY_INTERRUPT(14)            /* IRQ Timer #2                  */
  
- extern void restore_current(void);
+-	.globl	t_nmi
+-t_nmi:	TRAP_ENTRY(0x1f, linux_trap_ipi15_sun4m)
++t_nmi:	TRAP_ENTRY(0x1f, linux_trap_ipi15_leon)
  
-@@ -60,7 +59,6 @@ prom_cmdline(void)
- 	(*(romvec->pv_abort))();
- 	restore_current();
- 	spin_unlock_irqrestore(&prom_lock, flags);
--	set_auxio(AUXIO_LED, 0);
- }
- 
- /* Drop into the prom, but completely terminate the program.
+ t_racc:	TRAP_ENTRY(0x20, do_reg_access)     /* General Register Access Error */
+ t_iacce:BAD_TRAP(0x21)                      /* Instr Access Error            */
+@@ -146,7 +145,7 @@ trapbase_cpu1:
+ 	TRAP_ENTRY_INTERRUPT(9) TRAP_ENTRY_INTERRUPT(10)
+ 	TRAP_ENTRY_INTERRUPT(11) TRAP_ENTRY_INTERRUPT(12)
+ 	TRAP_ENTRY_INTERRUPT(13) TRAP_ENTRY_INTERRUPT(14)
+-	TRAP_ENTRY(0x1f, linux_trap_ipi15_sun4m)
++	TRAP_ENTRY(0x1f, linux_trap_ipi15_leon)
+ 	TRAP_ENTRY(0x20, do_reg_access)
+ 	BAD_TRAP(0x21)
+ 	BAD_TRAP(0x22)
+@@ -245,7 +244,7 @@ trapbase_cpu2:
+ 	TRAP_ENTRY_INTERRUPT(12)
+ 	TRAP_ENTRY_INTERRUPT(13)
+ 	TRAP_ENTRY_INTERRUPT(14)
+-	TRAP_ENTRY(0x1f, linux_trap_ipi15_sun4m)
++	TRAP_ENTRY(0x1f, linux_trap_ipi15_leon)
+ 	TRAP_ENTRY(0x20, do_reg_access)
+ 	BAD_TRAP(0x21)
+ 	BAD_TRAP(0x22)
+@@ -345,7 +344,7 @@ trapbase_cpu3:
+ 	TRAP_ENTRY_INTERRUPT(12)
+ 	TRAP_ENTRY_INTERRUPT(13)
+ 	TRAP_ENTRY_INTERRUPT(14)
+-	TRAP_ENTRY(0x1f, linux_trap_ipi15_sun4m)
++	TRAP_ENTRY(0x1f, linux_trap_ipi15_leon)
+ 	TRAP_ENTRY(0x20, do_reg_access)
+ 	BAD_TRAP(0x21)
+ 	BAD_TRAP(0x22)
 -- 
 2.27.0
 
