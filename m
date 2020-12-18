@@ -2,145 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1B82DE316
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 14:06:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84A532DE313
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 14:06:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727382AbgLRNGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 08:06:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26717 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727228AbgLRNGV (ORCPT
+        id S1727337AbgLRNFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 08:05:53 -0500
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:38504 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727307AbgLRNFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 08:06:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608296694;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=e/CHgMLH2UdVHVqifkFPGlm0faQZyFjgpZO1JW9Bwng=;
-        b=H7siudVoExcOES8FcVNtN7nqlGhjSCp0hUA6nJiqBFbFa+ifpuNgym4CAgsEEShmf2mklb
-        aPaGStqKZuYSieThfOdDBXZ0cO3+wgNHOx3+RXcasLdsipjzx5Nl2SAnE2DArZXJ1ULfes
-        OxR3+fJhp3gDpIzBFBoh/GVqqzKhMCc=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-527-Zo7UmX0lOWSVE2VxUtgIpw-1; Fri, 18 Dec 2020 08:04:51 -0500
-X-MC-Unique: Zo7UmX0lOWSVE2VxUtgIpw-1
-Received: by mail-wr1-f69.google.com with SMTP id r8so1139028wro.22
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 05:04:51 -0800 (PST)
+        Fri, 18 Dec 2020 08:05:52 -0500
+Received: by mail-ot1-f41.google.com with SMTP id j20so1813256otq.5;
+        Fri, 18 Dec 2020 05:05:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=e/CHgMLH2UdVHVqifkFPGlm0faQZyFjgpZO1JW9Bwng=;
-        b=mz5enRI0bouBcdNCZGm6Ic/q4HjFyU2h5+CNx/B0X8X1WmCYj0KjeT2gfChpxPE13u
-         oecQ+I1+XqxXsDSdxb3sOA2wxqz9hodcFn7GAvzYkwneBRX9M72b7Xc2PtBeGW++zfH3
-         w1hrztwKrtyqEKk/LHv7sUORsm+68czcbcI9O3/T1wUR0j2CdZWPVaHClUSNG3p+TsZ8
-         mKox3MZ3HWWQif4WUNxT6xW0Jt9em6U6Yz0ftgq3SPOYJqdwiDW9aHV1sFIgffE6szw+
-         1BFiy7RuC2yQBsy7YP1FgfIEnVibRCvZLCfTWdbZGD8regakqHnMgucGLuq7G5nlrh0O
-         2SQw==
-X-Gm-Message-State: AOAM530LqFpa22sf6AXQL1i9qFxCjba4LSpCxKKu0XZnYHqyqEeYmwt7
-        yDTDOt9vUV+kkIAT29SJ6U/KBM62dwBrrGmQKbC7yoshJUn63xG713niEJ14eLdp42XUiCYA6BC
-        oP2kVeKQNcDFHiCrYV7E/+hH1
-X-Received: by 2002:a5d:674c:: with SMTP id l12mr4337397wrw.399.1608296690709;
-        Fri, 18 Dec 2020 05:04:50 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwvXjhuHussNqD/bNTJR7GABzVwieD5LhDI+X6Xwo5OKXtYsMIhoNZrAqgzmYzqeytY6lA7sw==
-X-Received: by 2002:a5d:674c:: with SMTP id l12mr4337352wrw.399.1608296690473;
-        Fri, 18 Dec 2020 05:04:50 -0800 (PST)
-Received: from [192.168.3.114] (p5b0c6327.dip0.t-ipconnect.de. [91.12.99.39])
-        by smtp.gmail.com with ESMTPSA id k10sm12747574wrq.38.2020.12.18.05.04.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Dec 2020 05:04:49 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   David Hildenbrand <david@redhat.com>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v4 08/10] mm/gup: limit number of gup migration failures, honor failures
-Date:   Fri, 18 Dec 2020 14:04:48 +0100
-Message-Id: <1671AFC0-3D06-4C4E-934D-CB6DC0AFE4A1@redhat.com>
-References: <CA+CK2bCn++2Sk4-Eunibj6f+JoOL77uJQXGU2+dScHQ3RgC7_Q@mail.gmail.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        linux-kselftest@vger.kernel.org
-In-Reply-To: <CA+CK2bCn++2Sk4-Eunibj6f+JoOL77uJQXGU2+dScHQ3RgC7_Q@mail.gmail.com>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-X-Mailer: iPhone Mail (18B92)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=reSTRV4dt7ZPUclP+v1NvqHl1Mq5jwxkuDW3Be0Lj/Q=;
+        b=Fgy2sOnKiEB00Kd3mEqaSK0RaOfscVQwK9yVTgWBPLH59f/DK7fTIGf7QJstq0n/SN
+         Q0msK4eQsBG8U3sJ1QsoqNGX05vEPLaD4v7HDhg/Vqvyq1F8UC81h7+h4COF5KLT1K3H
+         rKISZsTm8Tpwcjnv4K4uiKkI6n5uQ7WFEhL8pvPwrXEMCu3svYti+cwfFywERHg/km0G
+         1/QZVFHDeNIgj/E32HkG9q8RECHMMjX4L+TncYACw9/RysdMActuFgCXeTdtj2B5+gZ7
+         ghJBFNMIFdR62+YniZvRj9aubYYenuMhvN3ggBHwBFOOH7kn1lHtAWN+hPvKbgD+qzpR
+         7mEg==
+X-Gm-Message-State: AOAM531NJMcTbd9FcqCHtqXs78yHWGrruBQ9svS47Z1DQjDKspQgkLHX
+        5e44QtcQweX11Y+10Mh6wehvjd+MNqpLO71Xm1g=
+X-Google-Smtp-Source: ABdhPJzGwkhEVu5ipeVElNXuYDRlTMW/vqp/IfddZsJHun4cLC1wohvG+90Iq3eaADoRF/1rXUKP4J71SfpC0VAurNE=
+X-Received: by 2002:a9d:2203:: with SMTP id o3mr2682245ota.107.1608296711700;
+ Fri, 18 Dec 2020 05:05:11 -0800 (PST)
+MIME-Version: 1.0
+References: <20201213183759.223246-1-aford173@gmail.com> <20201213183759.223246-5-aford173@gmail.com>
+ <CAMuHMdWAQ9j1b=b7CFcjg97N7YW+7Dj14TB-MGogJGK7kFkdhg@mail.gmail.com> <CAHCN7xL10Lj8VS5WEyyEixf4ptjKchX0OMDuFAQc-JJzFa5Ubw@mail.gmail.com>
+In-Reply-To: <CAHCN7xL10Lj8VS5WEyyEixf4ptjKchX0OMDuFAQc-JJzFa5Ubw@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 18 Dec 2020 14:05:00 +0100
+Message-ID: <CAMuHMdU4b-pTAKcEKE+UW1+8p34LR2i84Opj31vR3GJ=oY1JWg@mail.gmail.com>
+Subject: Re: [PATCH 04/18] arm64: dts: renesas: beacon kit: Fix Audio Clock sources
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Adam,
 
-> Am 18.12.2020 um 13:43 schrieb Pavel Tatashin <pasha.tatashin@soleen.com>:=
+On Thu, Dec 17, 2020 at 1:01 PM Adam Ford <aford173@gmail.com> wrote:
+> On Thu, Dec 17, 2020 at 4:54 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Sun, Dec 13, 2020 at 7:38 PM Adam Ford <aford173@gmail.com> wrote:
+> > > The SoC was expecting two clock sources with different frequencies.
+> > > One to support 44.1KHz and one to support 48KHz.  With the newly added
+> > > ability to configure the programmably clock, configure both clocks.
+> > >
+> > > Beacause the SoC is expecting a fixed clock/oscillator, it doesn't
+> > > attempt to get and enable the clock for audio_clk_a. The choice to
+> > > use a fixed-factor-clock was due to the fact that it will automatically
+> > > enable the programmable clock frequency without change any code.
+> > >
+> > > Signed-off-by: Adam Ford <aford173@gmail.com>
+> >
+> > Thanks for your patch!
+> >
+> > > --- a/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
+> > > +++ b/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
+> > > @@ -250,9 +250,12 @@ ss_ep: endpoint {
+> > >  };
+> > >
+> > >  &audio_clk_a {
+> > > -       clock-frequency = <24576000>;
+> > > -       assigned-clocks = <&versaclock6_bb 4>;
+> > > -       assigned-clock-rates = <24576000>;
+> > > +       /delete-property/ clock-frequency;
+> > > +       #clock-cells = <0>;
+> > > +       compatible = "fixed-factor-clock";
+> > > +       clock-mult = <1>;
+> > > +       clock-div = <1>;
+> > > +       clocks = <&versaclock6_bb 4>;
+> > >  };
+> >
+> > Shouldn't you override the clocks property in the rcar_sound node
+> > instead, like is done in several other board DTS files (with cs2000)?
+> >
+>
+> I guess there are multiple ways to do this.  Because the rcar_sound
+> was already expecting a reference to audio_clk_a, it seemed less
+> intrusive this way. The way I proposed, we can use the default
+> rcar_sound clocking and just change the audio_clk node to enable the
+> versaclock output.  The versaclock is driving the audio_clk_a
+> reference clock, so it seemed appropriate to put it there.
+>
+> If you want me to change, I will.
 
->=20
-> =EF=BB=BFOn Fri, Dec 18, 2020 at 5:46 AM Michal Hocko <mhocko@suse.com> wr=
-ote:
->>=20
->> On Thu 17-12-20 13:52:41, Pavel Tatashin wrote:
->> [...]
->>> +#define PINNABLE_MIGRATE_MAX 10
->>> +#define PINNABLE_ISOLATE_MAX 100
->>=20
->> Why would we need to limit the isolation retries. Those should always be
->> temporary failure unless I am missing something.
->=20
-> Actually, during development, I was retrying isolate errors
-> infinitely, but during testing found a hung where when FOLL_TOUCH
-> without FOLL_WRITE is passed (fault in kernel without write flag), the
-> zero page is faulted. The isolation of the zero page was failing every
-> time, therefore the process was hanging.
->=20
-> Since then, I fixed this problem by adding FOLL_WRITE unconditionally
-> to FOLL_LONGTERM, but I was worried about other possible bugs that
-> would cause hangs, so decided to limit isolation errors. If you think
-> it its not necessary, I can unlimit isolate retires.
->=20
->> I am not sure about the
->> PINNABLE_MIGRATE_MAX either. Why do we want to limit that? migrate_pages
->> already implements its retry logic why do you want to count retries on
->> top of that? I do agree that the existing logic is suboptimal because
->=20
-> True, but again, just recently, I worked on a race bug where pages can
-> end up in per-cpu list after lru_add_drain_all() but before isolation,
-> so I think retry is necessary.
->=20
->> the migration failure might be ephemeral or permanent but that should be
->> IMHO addressed at migrate_pages (resp. unmap_and_move) and simply report
->> failures that are permanent - e.g. any potential pre-existing long term
->> pin - if that is possible at all. If not what would cause permanent
->> migration failure? OOM?
->=20
-> Yes, OOM is the main cause for migration failures. And also a few
-> cases described in movable zone comment, where it is possible during
-> boot some pages can be allocated by memblock in movable zone due to
-> lack of memory resources (even if those resources were added later),
-> hardware page poisoning is another rare example.
->=20
+Taking a fresh look at this, I start to like it.
+What do other people think?
 
-How is concurrent migration handled? Like memory offlining, compaction, allo=
-c_contig_range() while trying to pin?
+Gr{oetje,eeting}s,
 
+                        Geert
 
->> --
->> Michal Hocko
->> SUSE Labs
->=20
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
