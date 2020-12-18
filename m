@@ -2,84 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29F772DDD15
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 03:52:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D0672DDD17
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 03:54:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732594AbgLRCwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 21:52:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727196AbgLRCwf (ORCPT
+        id S1732603AbgLRCxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 21:53:35 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:53047 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727148AbgLRCxf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 21:52:35 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B600CC06138C
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 18:51:55 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id m6so644031pfm.6
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 18:51:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=ul+JQXSNam3Jh6+49O94MwvKAzXGAJzUccEcBcdHWAs=;
-        b=G42IndBReRqVZg+a2MKBCb1Kt4lvbF/WksJWYeKee00AmCVPkhoe12N+igTMnPs45K
-         MuUMt7Et/HKLyEo+4sPBXph5sJD74t1/+Iw+f6zebD11w1O6iabrgvphBzxkxe4kyFef
-         nc9nRW4sg0ffad3/Ol1YKAhOt2Ycpb8gAek78=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=ul+JQXSNam3Jh6+49O94MwvKAzXGAJzUccEcBcdHWAs=;
-        b=pfaUz4UcMB15x/U5fymuW/YA+40qa/un9hNx04fWM9oDw0HzVMqSDNhh7zC4MAikqr
-         9MLVoZzD/tljNbljDH2mJ45rWgSFqI4vbVoJBdUQ2e0Cam3CLUO4GMb1gCIjGVk0e1Gz
-         22f59+7AehS0mWx0HJDBrcWB2vjcl1NA7jvE9ysFMOW1Awa9vi86mdWB2+h/KtUaLnAQ
-         UcAo5y92a54py1sDu+yuRiEW8BGpZygyeCpWCBjAoJBGEDxM1cKSdQWIzs2oO/efuErh
-         m72lLerF3UPjx75evOp/hePBF1DtnC/rfRICICuiPHvqsmwzGBqqq49q23T+KcwMtJN+
-         jReg==
-X-Gm-Message-State: AOAM533DrWGS8wqtSgFjRRLRUuVP4ompf/ZbavnbTU7voL5cWM73KkoZ
-        PKbv8fktrFITO4cRKa7b53ncTQ==
-X-Google-Smtp-Source: ABdhPJwg5+G+1UyV/hGw2/rBQu+naxSAN5HNPZscRDaWeHpeyp1drWCU5fDXVg/R//PgykEOZubs6g==
-X-Received: by 2002:a62:1617:0:b029:1a3:c265:a50c with SMTP id 23-20020a6216170000b02901a3c265a50cmr2150152pfw.77.1608259915209;
-        Thu, 17 Dec 2020 18:51:55 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id u9sm6943347pfl.143.2020.12.17.18.51.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 18:51:54 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 17 Dec 2020 21:53:35 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608259990; h=Content-Type: MIME-Version: Message-ID: Date:
+ Subject: Cc: To: From: Sender;
+ bh=ebTPNgHK0L+3PQYRyzj0hOaE/+/JSKPpAVccenwyp0g=; b=vk6c/b1+BntsIikJNRPOwjS085hE6i1f+vEsR4Y5grlJpIgyq+DKnP5tBko9MCU7yICTXou2
+ 2MY07iGQ1AbB13CexurhRoUDQjmkeBv7OrBID02s2JKQGyJu/Ori5o+ywUMgYRTQetWNQbfB
+ SVfrSp5+jf5sNswK2lyP6/X3a9E=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5fdc1994f5e9af65f88e3025 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Dec 2020 02:53:08
+ GMT
+Sender: mengw=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 70AE4C43463; Fri, 18 Dec 2020 02:53:08 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.5 required=2.0 tests=ALL_TRUSTED,BAYES_05,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from mengw03 (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: mengw)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9C54CC433CA;
+        Fri, 18 Dec 2020 02:53:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9C54CC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mengw@codeaurora.org
+From:   <mengw@codeaurora.org>
+To:     <myungjoo.ham@samsung.com>, <cw00.choi@samsung.com>
+Cc:     <linux-kernel@vger.kernel.org>, <plai@codeaurora.org>
+Subject: Recall: extcon: add EXTCON_JACK_UNSUPPORTED for external headset jack
+Date:   Fri, 18 Dec 2020 10:53:03 +0800
+Message-ID: <!&!LgAAAAAAAAB19i+0qN0BRYnou6+9xQsSAQDDto4Q93URzrTNAKoAu7bmAAAAAAAOAABGAAAAAAAAAHX2L7So3QFFiei7r73FCxIHAMO2jhD3dRHOtM0AqgC7tuYAAAAAAA4AAM6huCz+NjFBpnM+pqhie+kAAAAADAEAAAAAAAAQAAAAA9+sgWAmFUOzmRJaVVysKD4AAABleHRjb246IGFkZCBFWFRDT05fSkFDS19VTlNVUFBPUlRFRCBmb3IgZXh0ZXJuYWwgaGVhZHNldCBqYWNrAA==@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAD=FV=XBMYpxLMqEDEwnpVGjtL+iUvCCmXWDrdwngMa-BWGM+w@mail.gmail.com>
-References: <20201216144114.v2.1.I99ee04f0cb823415df59bd4f550d6ff5756e43d6@changeid> <20201216144114.v2.3.I07afdedcc49655c5d26880f8df9170aac5792378@changeid> <160817939232.1580929.12113046418592056259@swboyd.mtv.corp.google.com> <CAD=FV=XBMYpxLMqEDEwnpVGjtL+iUvCCmXWDrdwngMa-BWGM+w@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] spi: spi-geni-qcom: Don't try to set CS if an xfer is pending
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Mark Brown <broonie@kernel.org>, msavaliy@qti.qualcomm.com,
-        Akash Asthana <akashast@codeaurora.org>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>
-To:     Doug Anderson <dianders@chromium.org>
-Date:   Thu, 17 Dec 2020 18:51:52 -0800
-Message-ID: <160825991289.1580929.8225600641746583053@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: multipart/mixed;
+        boundary="----=_NextPart_000_0028_01D6D52B.F7C52210"
+X-Mailer: Microsoft Outlook 16.0
+X-MS-TNEF-Correlator: 0000000075F62FB4A8DD014589E8BBAFBDC50B120700C3B68E10F77511CEB4CD00AA00BBB6E600000000000D0000CEA1B82CFE363141A6733EA6A8627BE90000000088030000
+Expiry-Date: Sun, 20 Dec 2020 10:53:02 +0800
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Doug Anderson (2020-12-17 13:35:08)
->=20
-> If we wanted to truly make this driver super robust against ridiculous
-> interrupt latencies then, presumably, we could handle the SPI timeout
-> ourselves but before timing out we could check to see if the
-> interrupts were pending.  Then we could disable our interrupts,
-> synchronize our interrupt handler, handle the interrupt directly, and
-> then re-enable interrupts.  If we did this then transfers could
-> continue to eek their way through even if interrupts were completely
-> blocked.  IMO, it's not worth it.  I'm satisfied with not crashing and
-> not getting the state machine too out-of-whack.
->=20
+This is a multipart message in MIME format.
 
-Ok that's fair. If it's not worth the effort then let's drop this idea.
+------=_NextPart_000_0028_01D6D52B.F7C52210
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+mengw@codeaurora.org would like to recall the message, "extcon: add
+EXTCON_JACK_UNSUPPORTED for external headset jack".
+
+------=_NextPart_000_0028_01D6D52B.F7C52210
+Content-Type: application/ms-tnef;
+	name="winmail.dat"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="winmail.dat"
+
+eJ8+IgcCAQaQCAAEAAAAAAABAAEAAQeQBgAIAAAA6f0AAAAAAADmAQEIgAcAEwAAAElQTS5PdXRs
+b29rLlJlY2FsbACCBgEDkAYAGAYAABsAAAADACYAAQAAAAIBMQABAAAAsQEAAFBDREZFQjA5AAEA
+AgDKAAAAAAAAADihuxAF5RAaobsIACsqVsIAAHBzdHByeC5kbGwAAAAAAAAAAOkv63WWUESGg7h9
+5SKqSUgAAEMAOgBcAFUAcwBlAHIAcwBcAG0AZQBuAGcAdwBcAEEAcABwAEQAYQB0AGEAXABMAG8A
+YwBhAGwAXABNAGkAYwByAG8AcwBvAGYAdABcAE8AdQB0AGwAbwBvAGsAXABtAGUAbgBnAHcAQABj
+AG8AZABlAGEAdQByAG8AcgBhAC4AbwByAGcALgBvAHMAdAAAAC4AAAAAAAAAdfYvtKjdAUWJ6Luv
+vcULEgEAw7aOEPd1Ec60zQCqALu25gAAAAAADgAARgAAAAAAAAB19i+0qN0BRYnou6+9xQsSBwDD
+to4Q93URzrTNAKoAu7bmAAAAAAAOAADOobgs/jYxQaZzPqaoYnvpAAAAAAwBAAAAAAAAEAAAAAPf
+rIFgJhVDs5kSWlVcrCg+AAAAZXh0Y29uOiBhZGQgRVhUQ09OX0pBQ0tfVU5TVVBQT1JURUQgZm9y
+IGV4dGVybmFsIGhlYWRzZXQgamFjawAAAAAeAHAAAQAAAEgAAAABCVJlY2FsbDogZXh0Y29uOiBh
+ZGQgRVhUQ09OX0pBQ0tfVU5TVVBQT1JURUQgZm9yIGV4dGVybmFsIGhlYWRzZXQgamFjawALAAEO
+AQAAAAMAFA4BAAAAHgAoDgEAAAAzAAAAMDAwMDAwMDMBbWVuZ3dAY29kZWF1cm9yYS5vcmcBbWVu
+Z3dAY29kZWF1cm9yYS5vcmcAAB4AKQ4BAAAAMwAAADAwMDAwMDAzAW1lbmd3QGNvZGVhdXJvcmEu
+b3JnAW1lbmd3QGNvZGVhdXJvcmEub3JnAAAeAPo/AQAAABUAAABtZW5nd0Bjb2RlYXVyb3JhLm9y
+ZwAAAAACAQBoAQAAABAAAAAD36yBYCYVQ7OZElpVXKwoAwBVgAggBgAAAAAAwAAAAAAAAEYAAAAA
+GoUAAAEAAAALAB8OAQAAAAIB+A8BAAAAEAAAAL2+/xywbQpHiVqWWmyvakkCAfoPAQAAABAAAAB1
+9i+0qN0BRYnou6+9xQsSAwD+DwUAAAACAQkQAQAAAAsBAAAHAQAAhgEAAExaRnW2OlMzAwAKAHJj
+cGcxMjUiMgNDdGV4BUJiaf5kBAADMAEDAfcKgAKkA+T/BxMCgBBzAFAEVghVB7IRpScOUQMBAgBj
+aArAc2XcdDIGAAbDEaUzBEYUN94wEqwRswjvCfc7GJ8OMHY1EaIMYGMAUAsJAWQzFjYW0AumIAeA
+bmd3NkAFoAEAYQhwBbBhLhEFsGcgdwhgbGQgAGxpa2UgdG8gzRigYwdAAyB0aB9QB4GAc2FnZSwg
+Ig7BQQWgbjogYWQfAEUAWFRDT05fSkEAQ0tfVU5TVVCAUE9SVEVEIAIQ7wXADsEEkQdAICAgIXAU
+kcQgagDQayIuCqIKgAJ9JVAAAwAWEAAAAAADAA00/T+tDgMADzT9P60OAgEUNAEAAAAQAAAA6S/r
+dZZQRIaDuH3lIqpJSAIB4mUBAAAAFAAAABIEQJ3cM8FFm90q9jWAPaYABBS9AgHjZQEAAAAVAAAA
+FBIEQJ3cM8FFm90q9jWAPaYABBS9AAAAAgF/AAEAAACNAAAAMDAwMDAwMDA3NUY2MkZCNEE4REQw
+MTQ1ODlFOEJCQUZCREM1MEIxMjA3MDBDM0I2OEUxMEY3NzUxMUNFQjRDRDAwQUEwMEJCQjZFNjAw
+MDAwMDAwMDAwRDAwMDBDRUExQjgyQ0ZFMzYzMTQxQTY3MzNFQTZBODYyN0JFOTAwMDAwMDAwODgw
+MzAwMDAAAAAAAwAGEHlMgl0DAAcQZgAAAAMAEBAAAAAAAwAREAEAAAAeAAgQAQAAAGUAAABNRU5H
+V0BDT0RFQVVST1JBT1JHV09VTERMSUtFVE9SRUNBTExUSEVNRVNTQUdFLCJFWFRDT046QURERVhU
+Q09OSkFDS1VOU1VQUE9SVEVERk9SRVhURVJOQUxIRUFEU0VUSkFDAAAAAGeG
+
+------=_NextPart_000_0028_01D6D52B.F7C52210--
+
