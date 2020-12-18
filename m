@@ -2,250 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8E82DE763
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 17:23:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC0942DE76A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 17:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730198AbgLRQXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 11:23:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49284 "EHLO
+        id S1731546AbgLRQZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 11:25:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725982AbgLRQXQ (ORCPT
+        with ESMTP id S1729097AbgLRQZN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 11:23:16 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C959C06138C;
-        Fri, 18 Dec 2020 08:22:35 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5A01B2CF;
-        Fri, 18 Dec 2020 17:22:29 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1608308549;
-        bh=4PbRrp9qXNRvtifEovvthJk+rkA45bCfI9RwzXQYWIU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AhlFzPcj+l+0MTWKmOtg0slm7D6jcXbiIunFttRz9bIPKUCmhpK/mkX6ByJRX0Ty1
-         ENTFGy8tMelBd1JsWbBmbR4vYNMPrT0mDuRqEVvPlEYx6kUMaGRTyEtDz2RLd7HoSR
-         Ajy/eJqq9y9tREqpJ37vRte7mE9xkVOx2ytGoR0w=
-Date:   Fri, 18 Dec 2020 18:22:22 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org, yong.zhi@intel.com,
-        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
-        tian.shu.qiu@intel.com, mchehab@kernel.org, robert.moore@intel.com,
-        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, andriy.shevchenko@linux.intel.com,
-        linux@rasmusvillemoes.dk,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
-        linus.walleij@linaro.org, heikki.krogerus@linux.intel.com,
-        kitakar@gmail.com, jorhand@linux.microsoft.com
-Subject: Re: [PATCH v2 06/12] software_node: Add support for fwnode_graph*()
- family of functions
-Message-ID: <X9zXPpirfS2mCFk0@pendragon.ideasonboard.com>
-References: <20201217234337.1983732-1-djrscally@gmail.com>
- <20201217234337.1983732-7-djrscally@gmail.com>
+        Fri, 18 Dec 2020 11:25:13 -0500
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1553C0617B0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 08:24:06 -0800 (PST)
+Received: by mail-ot1-x32a.google.com with SMTP id d20so2420420otl.3
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 08:24:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QqQbpFMD6dkYLibiVClg3d7g7y7tRyurb1/VW+ic+G0=;
+        b=MhcTzhtSsPXPCXJbfWKHsmWz86Veki87y6eADP+xTqJnN5ZPTGjxAb4fDGzbH4YBLt
+         WjUjiYEfSKD7mmKYTplE11kGtdoITHmq58NPUS4k5ZNNp3GzDUpJfij4bNl6906lglYy
+         wUVxADPIm1LYqZIpXEf+CWX27BGN6+uVe+kpE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QqQbpFMD6dkYLibiVClg3d7g7y7tRyurb1/VW+ic+G0=;
+        b=oJqAkb3Z4BarzCHVeuVGk7DldM2n/lyhGldcLfR5Ihzj+ttNv6cs1EmG81IuG/73hO
+         AWGJLmgllNR7BCyw5mSbwKzroCz8kSj0sBQlMuHOWbZNdpHi1bWKibznLB6HV9TQaps3
+         wn8KNGioCbKcJQrNiNPgbla1WqV9BVyv3qByM4xNyYuk1rxE0HFrMzC7Mm8gUmBNoPy3
+         3kdjSWEPGpmDQALs3Zw0uiS6LoX5nqYJh3qpmaSYYdhcGAbjmkF+V2BbQYUqEAEVZtor
+         TvBX02xYDz8hob62ZK+bysmucOO+kAR7nLoKj+x9lMiYL8dYUiefRMLRK/Rbo1N3zNQ6
+         FFQg==
+X-Gm-Message-State: AOAM532dya794513gC+R/7/S2zSuL1fMXtV+CMNBDQhupRBMBjdsAoQn
+        2EgjtL7uV99K+N4FmKJoGXuXP3AYk4Mzbxgm4/xODA==
+X-Google-Smtp-Source: ABdhPJwcCzLk4SZo7l5u4xEQ9jFcCgTViVhvgvQnWJwu13ClsiUz4ogGyWTFmuZasY2Lmv3ZnmkKKq/LXncK/+CK+t0=
+X-Received: by 2002:a9d:23ca:: with SMTP id t68mr3434686otb.281.1608308646236;
+ Fri, 18 Dec 2020 08:24:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201217234337.1983732-7-djrscally@gmail.com>
+References: <000000000000cb6db205b68a971c@google.com> <CAKMK7uEiS5SrBYv-2w2wWL=9G4ByoHvtiWVsPqekswZzOGmzjg@mail.gmail.com>
+ <20201216161621.GH2657@paulmck-ThinkPad-P72> <CAKMK7uH1agVS=e245b=25Lv9Q+u5c7=KL-_NF8Hte10nKTqAXw@mail.gmail.com>
+ <20201218111031.226f8b59@gandalf.local.home>
+In-Reply-To: <20201218111031.226f8b59@gandalf.local.home>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Fri, 18 Dec 2020 17:23:55 +0100
+Message-ID: <CAKMK7uEOojWe=KEAkdor4fqWh8=Q6wZTYRNBPWaACaen-iyi0Q@mail.gmail.com>
+Subject: Re: WARNING: suspicious RCU usage in modeset_lock
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        syzbot <syzbot+972b924c988834e868b2@syzkaller.appspotmail.com>,
+        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Peter Rosin <peda@axentia.se>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+On Fri, Dec 18, 2020 at 5:10 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Thu, 17 Dec 2020 11:03:20 +0100
+> Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
+>
+> > I think we're tripping over the might_sleep() all the mutexes have,
+> > and that's not as good as yours, but good enough to catch a missing
+> > rcu_read_unlock(). That's kinda why I'm baffled, since like almost
+> > every 2nd function in the backtrace grabbed a mutex and it was all
+> > fine until the very last.
+> >
+> > I think it would be really nice if the rcu checks could retain (in
+> > debugging only) the backtrace of the outermost rcu_read_lock, so we
+> > could print that when something goes wrong in cases where it's leaked.
+> > For normal locks lockdep does that already (well not full backtrace I
+> > think, just the function that acquired the lock, but that's often
+> > enough). I guess that doesn't exist yet?
+> >
+> > Also yes without reproducer this is kinda tough nut to crack.
+>
+> I'm looking at drm_client_modeset_commit_atomic(), where it triggered after
+> the "retry:" label, which to get to, does a bit of goto spaghetti, with
+> a -EDEADLK detected and a goto backoff, which calls goto retry, and then
+> the next mutex taken is the one that triggers the bug.
 
-Thank you for the patch.
+This is standard drm locking spaghetti using ww_mutexes. Enable
+CONFIG_DEBUG_WW_MUTEX_SLOWPATH and you'll hit this all the time, in
+all kinds of situations. We're using this all the time because it's
+way too easy to to get the error cases wrong.
 
-On Thu, Dec 17, 2020 at 11:43:31PM +0000, Daniel Scally wrote:
-> From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> 
-> This implements the remaining .graph_* callbacks in the
-> fwnode operations structure for the software nodes. That makes
-> the fwnode_graph*() functions available in the drivers also
-> when software nodes are used.
-> 
-> The implementation tries to mimic the "OF graph" as much as
-> possible, but there is no support for the "reg" device
-> property. The ports will need to have the index in their
-> name which starts with "port@" (for example "port@0", "port@1",
-> ...) and endpoints will use the index of the software node
-> that is given to them during creation. The port nodes can
-> also be grouped under a specially named "ports" subnode,
-> just like in DT, if necessary.
-> 
-> The remote-endpoints are reference properties under the
-> endpoint nodes that are named "remote-endpoint".
-> 
-> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> Co-developed-by: Daniel Scally <djrscally@gmail.com>
-> Signed-off-by: Daniel Scally <djrscally@gmail.com>
-> ---
-> Changes in v2:
-> 
-> 	- Changed commit to specify port name prefix as port@
-> 	- Accounted for that rename in *parse_endpoint()
-> 
->  drivers/base/swnode.c | 110 +++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 109 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
-> index 2b90d380039b..0d14d5ebe441 100644
-> --- a/drivers/base/swnode.c
-> +++ b/drivers/base/swnode.c
-> @@ -540,6 +540,110 @@ software_node_get_reference_args(const struct fwnode_handle *fwnode,
->  	return 0;
->  }
->  
-> +static struct fwnode_handle *
-> +swnode_graph_find_next_port(const struct fwnode_handle *parent,
-> +			    struct fwnode_handle *port)
-> +{
-> +	struct fwnode_handle *old = port;
-> +
-> +	while ((port = software_node_get_next_child(parent, old))) {
-> +		if (!strncmp(to_swnode(port)->node->name, "port", 4))
+> As this is hard to reproduce, but reproducible by a fuzzer, I'm guessing
+> there's some error return path somewhere in there that doesn't release an
+> rcu_read_lock().
 
-Maybe we'll need to limit this to matching on "port" or "port@[0-9]+" to
-avoid false positives, but that can be done later, if needed.
-
-> +			return port;
-> +		old = port;
-> +	}
-> +
-> +	return NULL;
-> +}
-> +
-> +static struct fwnode_handle *
-> +software_node_graph_get_next_endpoint(const struct fwnode_handle *fwnode,
-> +				      struct fwnode_handle *endpoint)
-> +{
-> +	struct swnode *swnode = to_swnode(fwnode);
-> +	struct fwnode_handle *old = endpoint;
-> +	struct fwnode_handle *parent;
-> +	struct fwnode_handle *port;
-> +
-> +	if (!swnode)
-> +		return NULL;
-> +
-> +	if (endpoint) {
-> +		port = software_node_get_parent(endpoint);
-
-Here the reference count to port is incremented.
-
-> +		parent = software_node_get_parent(port);
-> +	} else {
-> +		parent = software_node_get_named_child_node(fwnode, "ports");
-> +		if (!parent)
-> +			parent = software_node_get(&swnode->fwnode);
-> +
-> +		port = swnode_graph_find_next_port(parent, NULL);
-
-But here it isn't, software_node_get_next_child() doesn't deal with
-reference counts.
-
-> +	}
-> +
-> +	for (; port; port = swnode_graph_find_next_port(parent, port)) {
-
-So if the loop terminates normally, the reference acquired in the first
-branch of the if will be leaked.
-
-> +		endpoint = software_node_get_next_child(port, old);
-> +		if (endpoint) {
-> +			fwnode_handle_put(port);
-
-While in this case the reference not acquired in the second branch of
-the if will be released incorrectly.
-
-I think it's software_node_get_next_child() that needs to be fixed if
-I'm not mistaken.
-
-> +			break;
-> +		}
-> +
-> +		/* No more endpoints for that port, so stop passing old */
-> +		old = NULL;
-
-I wonder if you could drop the 'old' variable and use 'enpoint' in the
-call to software_node_get_next_child(). You could then drop these two
-lines.
-
-> +	}
-> +
-> +	fwnode_handle_put(parent);
-> +
-> +	return endpoint;
-> +}
-> +
-> +static struct fwnode_handle *
-> +software_node_graph_get_remote_endpoint(const struct fwnode_handle *fwnode)
-> +{
-> +	struct swnode *swnode = to_swnode(fwnode);
-> +	const struct software_node_ref_args *ref;
-> +	const struct property_entry *prop;
-> +
-> +	if (!swnode)
-> +		return NULL;
-> +
-> +	prop = property_entry_get(swnode->node->properties, "remote-endpoint");
-> +	if (!prop || prop->type != DEV_PROP_REF || prop->is_inline)
-> +		return NULL;
-> +
-> +	ref = prop->pointer;
-> +
-> +	return software_node_get(software_node_fwnode(ref[0].node));
-> +}
-> +
-> +static struct fwnode_handle *
-> +software_node_graph_get_port_parent(struct fwnode_handle *fwnode)
-> +{
-> +	struct swnode *swnode = to_swnode(fwnode);
-> +	struct fwnode_handle *parent;
-> +
-> +	if (!strcmp(swnode->parent->node->name, "ports"))
-> +		parent = &swnode->parent->parent->fwnode;
-> +	else
-> +		parent = &swnode->parent->fwnode;
-> +
-> +	return software_node_get(parent);
-> +}
-> +
-> +static int
-> +software_node_graph_parse_endpoint(const struct fwnode_handle *fwnode,
-> +				   struct fwnode_endpoint *endpoint)
-> +{
-> +	struct swnode *swnode = to_swnode(fwnode);
-> +	int ret;
-> +
-> +	ret = kstrtou32(swnode->parent->node->name + 5, 10, &endpoint->port);
-> +	if (ret)
-> +		return ret;
-> +
-> +	endpoint->id = swnode->id;
-> +	endpoint->local_fwnode = fwnode;
-> +
-> +	return 0;
-> +}
-> +
->  static const struct fwnode_operations software_node_ops = {
->  	.get = software_node_get,
->  	.put = software_node_put,
-> @@ -551,7 +655,11 @@ static const struct fwnode_operations software_node_ops = {
->  	.get_parent = software_node_get_parent,
->  	.get_next_child_node = software_node_get_next_child,
->  	.get_named_child_node = software_node_get_named_child_node,
-> -	.get_reference_args = software_node_get_reference_args
-> +	.get_reference_args = software_node_get_reference_args,
-> +	.graph_get_next_endpoint = software_node_graph_get_next_endpoint,
-> +	.graph_get_remote_endpoint = software_node_graph_get_remote_endpoint,
-> +	.graph_get_port_parent = software_node_graph_get_port_parent,
-> +	.graph_parse_endpoint = software_node_graph_parse_endpoint,
->  };
->  
->  /* -------------------------------------------------------------------------- */
-
+We're maybe a bit too happy to use funny locking schemes like
+ww_mutex, but at least to my knowledge there's no rcu anywhere near
+these. Or preempt disable fwiw (which I think the consensus is the
+more likely culprit). So I have no idea how this leaks.
+-Daniel
 -- 
-Regards,
-
-Laurent Pinchart
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
