@@ -2,166 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4C052DE0E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 11:24:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88E2A2DE0FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 11:28:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389074AbgLRKXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 05:23:10 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:44262 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733163AbgLRKXK (ORCPT
+        id S1733189AbgLRK2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 05:28:23 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:62467 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728213AbgLRK2W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 05:23:10 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BIAJulT050545;
-        Fri, 18 Dec 2020 10:22:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2020-01-29; bh=yZVSy6EAEkuFTl3w094FI33pOcFr9o89On5Z47ID5tI=;
- b=FB8bov3xvzptM61+kZ4s5lYukNeGaugdn2PMrCNCuwUAi56DzeABMbp4kkPICHulFjCD
- /Xt+cm4WYgTxet6F/Pqa8l6hB8u9vedqCu2UgD6rSnh4r1JqR4S7ayb2yshEdajktRKB
- 9dwdP6qZddyzJx/V7u5Js7UY9DXSg8ZVT6lPR/X7+8W8Ri5KH9/gBrT17hQlcpQzzctM
- e6EHSqv3n+GiLdDub+o8PZTUU+bkSC6mt1zJokPDIIIDUgraoghHROwCn8K6rGjfie0I
- HL7zoy0mYCq93Ue/MSCd9Y+2OJ+Tu8VffC7jNJ/WEeZ4b0OYrWtAQt4oPbPRGoNHqdpz Gw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 35ckcbsv92-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 18 Dec 2020 10:22:26 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BIAFMns186416;
-        Fri, 18 Dec 2020 10:22:26 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 35e6eujq18-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Dec 2020 10:22:26 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0BIAMP4P021858;
-        Fri, 18 Dec 2020 10:22:25 GMT
-Received: from jian-L460.jp.oracle.com (/10.191.3.55)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 18 Dec 2020 02:22:24 -0800
-From:   Jacob Wen <jian.w.wen@oracle.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     akpm@linux-foundation.org, jian.w.wen@oracle.com
-Subject: [PATCH] mm/vmscan: DRY cleanup for do_try_to_free_pages()
-Date:   Fri, 18 Dec 2020 18:22:17 +0800
-Message-Id: <20201218102217.186836-1-jian.w.wen@oracle.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9838 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=35 mlxscore=0 phishscore=0
- bulkscore=0 suspectscore=0 malwarescore=0 mlxlogscore=999 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012180075
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9838 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- priorityscore=1501 mlxscore=0 suspectscore=0 adultscore=6 phishscore=0
- malwarescore=0 impostorscore=0 lowpriorityscore=0 clxscore=1015
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012180075
+        Fri, 18 Dec 2020 05:28:22 -0500
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 18 Dec 2020 02:27:41 -0800
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 18 Dec 2020 02:27:38 -0800
+X-QCInternal: smtphost
+Received: from kalyant-linux.qualcomm.com ([10.204.66.210])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 18 Dec 2020 15:57:10 +0530
+Received: by kalyant-linux.qualcomm.com (Postfix, from userid 94428)
+        id 903563F56; Fri, 18 Dec 2020 02:27:09 -0800 (PST)
+From:   Kalyan Thota <kalyan_t@codeaurora.org>
+To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
+Cc:     Kalyan Thota <kalyan_t@codeaurora.org>,
+        linux-kernel@vger.kernel.org, robdclark@gmail.com,
+        seanpaul@chromium.org, hoegsberg@chromium.org,
+        dianders@chromium.org, mkrishn@codeaurora.org, swboyd@chromium.org,
+        abhinavk@codeaurora.org, ddavenport@chromium.org
+Subject: [v2] drm/msm/disp/dpu1: turn off vblank irqs aggressively in dpu driver
+Date:   Fri, 18 Dec 2020 02:27:07 -0800
+Message-Id: <1608287227-17685-1-git-send-email-kalyan_t@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch reduces repetition of set_task_reclaim_state() around
-do_try_to_free_pages().
+Set the flag vblank_disable_immediate = true to turn off vblank irqs
+immediately as soon as drm_vblank_put is requested so that there are
+no irqs triggered during idle state. This will reduce cpu wakeups
+and help in power saving.
 
-Signed-off-by: Jacob Wen <jian.w.wen@oracle.com>
+To enable vblank_disable_immediate flag the underlying KMS driver
+needs to support high precision vblank timestamping and also a
+reliable way of providing vblank counter which is incrementing
+at the leading edge of vblank.
+
+This patch also brings in changes to support vblank_disable_immediate
+requirement in dpu driver.
+
+Changes in v1:
+ - Specify reason to add vblank timestamp support. (Rob)
+ - Add changes to provide vblank counter from dpu driver.
+
+Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
 ---
- mm/vmscan.c | 27 ++++++++++++++++-----------
- 1 file changed, 16 insertions(+), 11 deletions(-)
+ drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c           | 80 ++++++++++++++++++++++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c        | 30 ++++++++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h        | 11 +++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h   |  1 +
+ .../gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c   | 17 +++++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c            |  5 ++
+ 6 files changed, 144 insertions(+)
 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 257cba79a96d..4bc244b23686 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -3023,6 +3023,10 @@ static unsigned long do_try_to_free_pages(struct zonelist *zonelist,
- 	pg_data_t *last_pgdat;
- 	struct zoneref *z;
- 	struct zone *zone;
-+	unsigned long ret;
-+
-+	set_task_reclaim_state(current, &sc->reclaim_state);
-+
- retry:
- 	delayacct_freepages_start();
- 
-@@ -3069,12 +3073,16 @@ static unsigned long do_try_to_free_pages(struct zonelist *zonelist,
- 
- 	delayacct_freepages_end();
- 
--	if (sc->nr_reclaimed)
--		return sc->nr_reclaimed;
-+	if (sc->nr_reclaimed) {
-+		ret = sc->nr_reclaimed;
-+		goto out;
-+	}
- 
- 	/* Aborted reclaim to try compaction? don't OOM, then */
--	if (sc->compaction_ready)
--		return 1;
-+	if (sc->compaction_ready) {
-+		ret = 1;
-+		goto out;
-+	}
- 
- 	/*
- 	 * We make inactive:active ratio decisions based on the node's
-@@ -3101,7 +3109,10 @@ static unsigned long do_try_to_free_pages(struct zonelist *zonelist,
- 		goto retry;
- 	}
- 
--	return 0;
-+	ret = 0;
-+out:
-+	set_task_reclaim_state(current, NULL);
-+	return ret;
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
+index d4662e8..9a80981 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
+@@ -65,6 +65,83 @@ static void dpu_crtc_destroy(struct drm_crtc *crtc)
+ 	kfree(dpu_crtc);
  }
  
- static bool allow_direct_reclaim(pg_data_t *pgdat)
-@@ -3269,13 +3280,11 @@ unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
- 	if (throttle_direct_reclaim(sc.gfp_mask, zonelist, nodemask))
- 		return 1;
++static struct drm_encoder *get_encoder_from_crtc(struct drm_crtc *crtc)
++{
++	struct drm_device *dev = crtc->dev;
++	struct drm_encoder *encoder;
++
++	drm_for_each_encoder(encoder, dev)
++		if (encoder->crtc == crtc)
++			return encoder;
++
++	return NULL;
++}
++
++static u32 dpu_crtc_get_vblank_counter(struct drm_crtc *crtc)
++{
++	struct drm_encoder *encoder;
++
++	encoder = get_encoder_from_crtc(crtc);
++	if (!encoder) {
++		DRM_ERROR("no encoder found for crtc %d\n", crtc->index);
++		return false;
++	}
++
++	return dpu_encoder_get_frame_count(encoder);
++}
++
++static bool dpu_crtc_get_scanout_position(struct drm_crtc *crtc,
++					   bool in_vblank_irq,
++					   int *vpos, int *hpos,
++					   ktime_t *stime, ktime_t *etime,
++					   const struct drm_display_mode *mode)
++{
++	unsigned int pipe = crtc->index;
++	struct drm_encoder *encoder;
++	int line, vsw, vbp, vactive_start, vactive_end, vfp_end;
++
++	encoder = get_encoder_from_crtc(crtc);
++	if (!encoder) {
++		DRM_ERROR("no encoder found for crtc %d\n", pipe);
++		return false;
++	}
++
++	vsw = mode->crtc_vsync_end - mode->crtc_vsync_start;
++	vbp = mode->crtc_vtotal - mode->crtc_vsync_end;
++
++	/*
++	 * the line counter is 1 at the start of the VSYNC pulse and VTOTAL at
++	 * the end of VFP. Translate the porch values relative to the line
++	 * counter positions.
++	 */
++
++	vactive_start = vsw + vbp + 1;
++	vactive_end = vactive_start + mode->crtc_vdisplay;
++
++	/* last scan line before VSYNC */
++	vfp_end = mode->crtc_vtotal;
++
++	if (stime)
++		*stime = ktime_get();
++
++	line = dpu_encoder_get_linecount(encoder);
++
++	if (line < vactive_start)
++		line -= vactive_start;
++	else if (line > vactive_end)
++		line = line - vfp_end - vactive_start;
++	else
++		line -= vactive_start;
++
++	*vpos = line;
++	*hpos = 0;
++
++	if (etime)
++		*etime = ktime_get();
++
++	return true;
++}
++
+ static void _dpu_crtc_setup_blend_cfg(struct dpu_crtc_mixer *mixer,
+ 		struct dpu_plane_state *pstate, struct dpu_format *format)
+ {
+@@ -1243,6 +1320,8 @@ static const struct drm_crtc_funcs dpu_crtc_funcs = {
+ 	.early_unregister = dpu_crtc_early_unregister,
+ 	.enable_vblank  = msm_crtc_enable_vblank,
+ 	.disable_vblank = msm_crtc_disable_vblank,
++	.get_vblank_timestamp = drm_crtc_vblank_helper_get_vblank_timestamp,
++	.get_vblank_counter = dpu_crtc_get_vblank_counter,
+ };
  
--	set_task_reclaim_state(current, &sc.reclaim_state);
- 	trace_mm_vmscan_direct_reclaim_begin(order, sc.gfp_mask);
+ static const struct drm_crtc_helper_funcs dpu_crtc_helper_funcs = {
+@@ -1251,6 +1330,7 @@ static const struct drm_crtc_helper_funcs dpu_crtc_helper_funcs = {
+ 	.atomic_check = dpu_crtc_atomic_check,
+ 	.atomic_begin = dpu_crtc_atomic_begin,
+ 	.atomic_flush = dpu_crtc_atomic_flush,
++	.get_scanout_position = dpu_crtc_get_scanout_position,
+ };
  
- 	nr_reclaimed = do_try_to_free_pages(zonelist, &sc);
- 
- 	trace_mm_vmscan_direct_reclaim_end(nr_reclaimed);
--	set_task_reclaim_state(current, NULL);
- 
- 	return nr_reclaimed;
+ /* initialize crtc */
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+index f7f5c25..5cd3f31 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+@@ -425,6 +425,36 @@ int dpu_encoder_helper_unregister_irq(struct dpu_encoder_phys *phys_enc,
+ 	return 0;
  }
-@@ -3347,7 +3356,6 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+ 
++int dpu_encoder_get_frame_count(struct drm_encoder *drm_enc)
++{
++	struct dpu_encoder_virt *dpu_enc;
++	struct dpu_encoder_phys *phys;
++	int framecount = 0;
++
++	dpu_enc = to_dpu_encoder_virt(drm_enc);
++	phys = dpu_enc ? dpu_enc->cur_master : NULL;
++
++	if (phys && phys->ops.get_frame_count)
++		framecount = phys->ops.get_frame_count(phys);
++
++	return framecount;
++}
++
++int dpu_encoder_get_linecount(struct drm_encoder *drm_enc)
++{
++	struct dpu_encoder_virt *dpu_enc;
++	struct dpu_encoder_phys *phys;
++	int linecount = 0;
++
++	dpu_enc = to_dpu_encoder_virt(drm_enc);
++	phys = dpu_enc ? dpu_enc->cur_master : NULL;
++
++	if (phys && phys->ops.get_line_count)
++		linecount = phys->ops.get_line_count(phys);
++
++	return linecount;
++}
++
+ void dpu_encoder_get_hw_resources(struct drm_encoder *drm_enc,
+ 				  struct dpu_encoder_hw_resources *hw_res)
+ {
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h
+index b491346..99a5d73 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h
+@@ -156,5 +156,16 @@ void dpu_encoder_prepare_commit(struct drm_encoder *drm_enc);
+  */
+ void dpu_encoder_set_idle_timeout(struct drm_encoder *drm_enc,
+ 							u32 idle_timeout);
++/**
++ * dpu_encoder_get_linecount - get interface line count for the encoder.
++ * @drm_enc:    Pointer to previously created drm encoder structure
++ */
++int dpu_encoder_get_linecount(struct drm_encoder *drm_enc);
++
++/**
++ * dpu_encoder_get_frame_count - get interface frame count for the encoder.
++ * @drm_enc:    Pointer to previously created drm encoder structure
++ */
++int dpu_encoder_get_frame_count(struct drm_encoder *drm_enc);
+ 
+ #endif /* __DPU_ENCODER_H__ */
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+index f8f2515..ecbc4be 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+@@ -143,6 +143,7 @@ struct dpu_encoder_phys_ops {
+ 	void (*prepare_idle_pc)(struct dpu_encoder_phys *phys_enc);
+ 	void (*restore)(struct dpu_encoder_phys *phys);
+ 	int (*get_line_count)(struct dpu_encoder_phys *phys);
++	int (*get_frame_count)(struct dpu_encoder_phys *phys);
+ };
+ 
+ /**
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+index 9a69fad..f983595 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+@@ -658,6 +658,22 @@ static int dpu_encoder_phys_vid_get_line_count(
+ 	return phys_enc->hw_intf->ops.get_line_count(phys_enc->hw_intf);
+ }
+ 
++static int dpu_encoder_phys_vid_get_frame_count(
++		struct dpu_encoder_phys *phys_enc)
++{
++	struct intf_status s = {0};
++
++	if (!dpu_encoder_phys_vid_is_master(phys_enc))
++		return -EINVAL;
++
++	if (!phys_enc->hw_intf || !phys_enc->hw_intf->ops.get_status)
++		return -EINVAL;
++
++	phys_enc->hw_intf->ops.get_status(phys_enc->hw_intf, &s);
++
++	return s.frame_count;
++}
++
+ static void dpu_encoder_phys_vid_init_ops(struct dpu_encoder_phys_ops *ops)
+ {
+ 	ops->is_master = dpu_encoder_phys_vid_is_master;
+@@ -676,6 +692,7 @@ static void dpu_encoder_phys_vid_init_ops(struct dpu_encoder_phys_ops *ops)
+ 	ops->handle_post_kickoff = dpu_encoder_phys_vid_handle_post_kickoff;
+ 	ops->needs_single_flush = dpu_encoder_phys_vid_needs_single_flush;
+ 	ops->get_line_count = dpu_encoder_phys_vid_get_line_count;
++	ops->get_frame_count = dpu_encoder_phys_vid_get_frame_count;
+ }
+ 
+ struct dpu_encoder_phys *dpu_encoder_phys_vid_init(
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+index 374b0e8..764a773 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+@@ -14,6 +14,7 @@
+ 
+ #include <drm/drm_crtc.h>
+ #include <drm/drm_file.h>
++#include <drm/drm_vblank.h>
+ 
+ #include "msm_drv.h"
+ #include "msm_mmu.h"
+@@ -1020,6 +1021,10 @@ static int dpu_kms_hw_init(struct msm_kms *kms)
  	 */
- 	struct zonelist *zonelist = node_zonelist(numa_node_id(), sc.gfp_mask);
+ 	dev->mode_config.allow_fb_modifiers = true;
  
--	set_task_reclaim_state(current, &sc.reclaim_state);
- 	trace_mm_vmscan_memcg_reclaim_begin(0, sc.gfp_mask);
- 	noreclaim_flag = memalloc_noreclaim_save();
- 
-@@ -3355,7 +3363,6 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
- 
- 	memalloc_noreclaim_restore(noreclaim_flag);
- 	trace_mm_vmscan_memcg_reclaim_end(nr_reclaimed);
--	set_task_reclaim_state(current, NULL);
- 
- 	return nr_reclaimed;
- }
-@@ -4023,11 +4030,9 @@ unsigned long shrink_all_memory(unsigned long nr_to_reclaim)
- 
- 	fs_reclaim_acquire(sc.gfp_mask);
- 	noreclaim_flag = memalloc_noreclaim_save();
--	set_task_reclaim_state(current, &sc.reclaim_state);
- 
- 	nr_reclaimed = do_try_to_free_pages(zonelist, &sc);
- 
--	set_task_reclaim_state(current, NULL);
- 	memalloc_noreclaim_restore(noreclaim_flag);
- 	fs_reclaim_release(sc.gfp_mask);
- 
++	dev->max_vblank_count = 0;
++	/* Disable vblank irqs aggressively for power-saving */
++	dev->vblank_disable_immediate = true;
++
+ 	/*
+ 	 * _dpu_kms_drm_obj_init should create the DRM related objects
+ 	 * i.e. CRTCs, planes, encoders, connectors and so forth
 -- 
-2.25.1
+2.7.4
 
