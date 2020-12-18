@@ -2,124 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E1B22DDEC2
+	by mail.lfdr.de (Postfix) with ESMTP id CB9D32DDEC3
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 07:57:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732868AbgLRGzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 01:55:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbgLRGzX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 01:55:23 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE00C0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 22:54:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=eVSNY9beUisrR6DjTzyXH++4TmxxcaQeUDEUADAgt1U=; b=Xh9i/7r3Q7CTC43D9D6U4TBeLw
-        zbsXVO3dGc/0kXabTzkzBxWo6nkH4P+9vqohUSsYuuEEyrTc29TMPeJqPfYDN9MGaND6J6JN/Zudn
-        0+BVcxITXS+1/+mIMlg/AnljIuS0yDuEQeQNGZXjz3sh1j1VcQbRAsDNQfG56w8tCePWoKwX1KzJN
-        dNHkVtlOS36acsz1CwafDFRdmcKXur3zgvz3r70kfhQUi4uANuKi26r/YxxGCExy8/oxr55YpcQnO
-        m6X8yxxLstkn7d+VibZhl4mT/VnThtX5Z6zvukWe66Wx0t4R1ogIsm5QbWam6Bwk+C1q6L83TqiyJ
-        DxDJL9Sg==;
-Received: from [2601:1c0:6280:3f0::64ea]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kq9ex-0005O4-Fu; Fri, 18 Dec 2020 06:54:39 +0000
-Subject: Re: 5.10.1: UBSAN: shift-out-of-bounds in ./include/linux/log2.h:57:1
-To:     =?UTF-8?Q?Toralf_F=c3=b6rster?= <toralf.foerster@gmx.de>,
-        jgg@ziepe.ca
-Cc:     Linux Kernel <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-References: <c6e5eb81-680f-dd5c-8a81-62041a5ce50c@gmx.de>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <5c172fad-a9cf-c29d-0a27-f2b0505dc33d@infradead.org>
-Date:   Thu, 17 Dec 2020 22:54:35 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <c6e5eb81-680f-dd5c-8a81-62041a5ce50c@gmx.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1732810AbgLRG4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 01:56:55 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:52362 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725298AbgLRG4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 01:56:54 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4Cy0512qD5z9vBn3;
+        Fri, 18 Dec 2020 07:56:05 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 6cf9Mvim-Poy; Fri, 18 Dec 2020 07:56:05 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Cy0511vfJz9vBmT;
+        Fri, 18 Dec 2020 07:56:05 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 33C738B777;
+        Fri, 18 Dec 2020 07:56:06 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 8HqV_UhUuv6t; Fri, 18 Dec 2020 07:56:06 +0100 (CET)
+Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E52788B75F;
+        Fri, 18 Dec 2020 07:56:05 +0100 (CET)
+Received: by localhost.localdomain (Postfix, from userid 0)
+        id A739166934; Fri, 18 Dec 2020 06:56:05 +0000 (UTC)
+Message-Id: <62df436454ef06e104cc334a0859a2878d7888d5.1608274548.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v2] powerpc/32s: Only build hash code when
+ CONFIG_PPC_BOOK3S_604 is selected
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Fri, 18 Dec 2020 06:56:05 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+It is now possible to only build book3s/32 kernel for
+CPUs without hash table.
 
-[adding linux-mm]
+Opt out hash related code when CONFIG_PPC_BOOK3S_604 is not selected.
 
-On 12/16/20 1:54 AM, Toralf Förster wrote:
-> Hi,
-> 
-> I got this recently at this hardened Gentoo Linux server:
-> 
-> Linux mr-fox 5.10.1 #1 SMP Tue Dec 15 22:09:42 CET 2020 x86_64 Intel(R)
-> Xeon(R) CPU E5-1650 v3 @ 3.50GHz GenuineIntel GNU/Linux
-> 
-> 
-> Dec 15 23:31:51 mr-fox kernel: [ 1974.206972]
-> ================================================================================
-> Dec 15 23:31:51 mr-fox kernel: [ 1974.206977] UBSAN: shift-out-of-bounds
-> in ./include/linux/log2.h:57:13
-> Dec 15 23:31:51 mr-fox kernel: [ 1974.206980] shift exponent 64 is too
-> large for 64-bit type 'long unsigned int'
-> Dec 15 23:31:51 mr-fox kernel: [ 1974.206982] CPU: 11 PID: 21051 Comm:
-> cc1 Tainted: G                T 5.10.1 #1
-> Dec 15 23:31:51 mr-fox kernel: [ 1974.206984] Hardware name: ASUSTeK
-> COMPUTER INC. Z10PA-U8 Series/Z10PA-U8 Series, BIOS 3703 08/02/2018
-> Dec 15 23:31:51 mr-fox kernel: [ 1974.206985] Call Trace:
-> Dec 15 23:31:51 mr-fox kernel: [ 1974.206993]  dump_stack+0x57/0x6a
-> Dec 15 23:31:51 mr-fox kernel: [ 1974.206996]  ubsan_epilogue+0x5/0x40
-> Dec 15 23:31:51 mr-fox kernel: [ 1974.206999]
-> __ubsan_handle_shift_out_of_bounds.cold+0x61/0x10e
-> Dec 15 23:31:51 mr-fox kernel: [ 1974.207002]
-> ondemand_readahead.cold+0x16/0x21
-> Dec 15 23:31:51 mr-fox kernel: [ 1974.207007]
-> generic_file_buffered_read+0x452/0x890
-> Dec 15 23:31:51 mr-fox kernel: [ 1974.207011]  new_sync_read+0x156/0x200
-> Dec 15 23:31:51 mr-fox kernel: [ 1974.207014]  vfs_read+0xf8/0x190
-> Dec 15 23:31:51 mr-fox kernel: [ 1974.207016]  ksys_read+0x65/0xe0
-> Dec 15 23:31:51 mr-fox kernel: [ 1974.207018]  do_syscall_64+0x33/0x40
-> Dec 15 23:31:51 mr-fox kernel: [ 1974.207021]
-> entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> Dec 15 23:31:51 mr-fox kernel: [ 1974.207024] RIP: 0033:0x7f01b2df198e
-> Dec 15 23:31:51 mr-fox kernel: [ 1974.207026] Code: c0 e9 b6 fe ff ff 50
-> 48 8d 3d 66 c3 09 00 e8 59 e2 01 00 66 0f 1f 84 00 00 00 00 00 64 8b 04
-> 25 18 00 00 00 85 c0 75 14 0f 05 <48> 3d 00 f0 ff ff 77 5a c3 66 0f 1f
-> 84 00 00 00 00 00 48 83 ec 28
-> Dec 15 23:31:51 mr-fox kernel: [ 1974.207028] RSP: 002b:00007fff2167e998
-> EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-> Dec 15 23:31:51 mr-fox kernel: [ 1974.207030] RAX: ffffffffffffffda RBX:
-> 0000000000000000 RCX: 00007f01b2df198e
-> Dec 15 23:31:51 mr-fox kernel: [ 1974.207032] RDX: 0000000000000000 RSI:
-> 00000000054dcc50 RDI: 0000000000000004
-> Dec 15 23:31:51 mr-fox kernel: [ 1974.207033] RBP: 00000000054dcc50 R08:
-> 00000000054dcc50 R09: 0000000000000000
-> Dec 15 23:31:51 mr-fox kernel: [ 1974.207034] R10: 0000000000000000 R11:
-> 0000000000000246 R12: 00000000054dc3b0
-> Dec 15 23:31:51 mr-fox kernel: [ 1974.207035] R13: 0000000000008000 R14:
-> 00000000054c9800 R15: 0000000000000000
-> Dec 15 23:31:51 mr-fox kernel: [ 1974.207037]
-> ================================================================================
-> 
-> 
-> Known issue ?
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+v2: Rebased
+---
+ arch/powerpc/kernel/head_book3s_32.S | 12 ++++++++++++
+ arch/powerpc/mm/book3s32/Makefile    |  4 +++-
+ 2 files changed, 15 insertions(+), 1 deletion(-)
 
-Not that I have heard about, but that's not conclusive.
-
-Looks to me like this is in mm/readahead.c:
-
-static unsigned long get_init_ra_size(unsigned long size, unsigned long max)
-{
-	unsigned long newsize = roundup_pow_of_two(size);
-
-
-What filesystem?  What workload?
-
-thanks.
+diff --git a/arch/powerpc/kernel/head_book3s_32.S b/arch/powerpc/kernel/head_book3s_32.S
+index 349bf3f0c3af..c02024bce544 100644
+--- a/arch/powerpc/kernel/head_book3s_32.S
++++ b/arch/powerpc/kernel/head_book3s_32.S
+@@ -286,6 +286,7 @@ MachineCheck:
+ 	DO_KVM  0x300
+ DataAccess:
+ #ifdef CONFIG_VMAP_STACK
++#ifdef CONFIG_PPC_BOOK3S_604
+ BEGIN_MMU_FTR_SECTION
+ 	mtspr	SPRN_SPRG_SCRATCH2,r10
+ 	mfspr	r10, SPRN_SPRG_THREAD
+@@ -302,12 +303,14 @@ BEGIN_MMU_FTR_SECTION
+ MMU_FTR_SECTION_ELSE
+ 	b	1f
+ ALT_MMU_FTR_SECTION_END_IFSET(MMU_FTR_HPTE_TABLE)
++#endif
+ 1:	EXCEPTION_PROLOG_0 handle_dar_dsisr=1
+ 	EXCEPTION_PROLOG_1
+ 	b	handle_page_fault_tramp_1
+ #else	/* CONFIG_VMAP_STACK */
+ 	EXCEPTION_PROLOG handle_dar_dsisr=1
+ 	get_and_save_dar_dsisr_on_stack	r4, r5, r11
++#ifdef CONFIG_PPC_BOOK3S_604
+ BEGIN_MMU_FTR_SECTION
+ 	andis.	r0, r5, (DSISR_BAD_FAULT_32S | DSISR_DABRMATCH)@h
+ 	bne	handle_page_fault_tramp_2	/* if not, try to put a PTE */
+@@ -315,8 +318,11 @@ BEGIN_MMU_FTR_SECTION
+ 	bl	hash_page
+ 	b	handle_page_fault_tramp_1
+ MMU_FTR_SECTION_ELSE
++#endif
+ 	b	handle_page_fault_tramp_2
++#ifdef CONFIG_PPC_BOOK3S_604
+ ALT_MMU_FTR_SECTION_END_IFSET(MMU_FTR_HPTE_TABLE)
++#endif
+ #endif	/* CONFIG_VMAP_STACK */
+ 
+ /* Instruction access exception. */
+@@ -332,12 +338,14 @@ InstructionAccess:
+ 	mfspr	r11, SPRN_SRR1		/* check whether user or kernel */
+ 	stw	r11, SRR1(r10)
+ 	mfcr	r10
++#ifdef CONFIG_PPC_BOOK3S_604
+ BEGIN_MMU_FTR_SECTION
+ 	andis.	r11, r11, SRR1_ISI_NOPT@h	/* no pte found? */
+ 	bne	hash_page_isi
+ .Lhash_page_isi_cont:
+ 	mfspr	r11, SPRN_SRR1		/* check whether user or kernel */
+ END_MMU_FTR_SECTION_IFSET(MMU_FTR_HPTE_TABLE)
++#endif
+ 	andi.	r11, r11, MSR_PR
+ 
+ 	EXCEPTION_PROLOG_1
+@@ -348,9 +356,11 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_HPTE_TABLE)
+ 	beq	1f			/* if so, try to put a PTE */
+ 	li	r3,0			/* into the hash table */
+ 	mr	r4,r12			/* SRR0 is fault address */
++#ifdef CONFIG_PPC_BOOK3S_604
+ BEGIN_MMU_FTR_SECTION
+ 	bl	hash_page
+ END_MMU_FTR_SECTION_IFSET(MMU_FTR_HPTE_TABLE)
++#endif
+ #endif	/* CONFIG_VMAP_STACK */
+ 1:	mr	r4,r12
+ 	andis.	r5,r9,DSISR_SRR1_MATCH_32S@h /* Filter relevant SRR1 bits */
+@@ -683,6 +693,7 @@ handle_page_fault_tramp_2:
+ 	EXC_XFER_LITE(0x300, handle_page_fault)
+ 
+ #ifdef CONFIG_VMAP_STACK
++#ifdef CONFIG_PPC_BOOK3S_604
+ .macro save_regs_thread		thread
+ 	stw	r0, THR0(\thread)
+ 	stw	r3, THR3(\thread)
+@@ -754,6 +765,7 @@ fast_hash_page_return:
+ 	mfspr	r11, SPRN_SPRG_SCRATCH1
+ 	mfspr	r10, SPRN_SPRG_SCRATCH0
+ 	rfi
++#endif /* CONFIG_PPC_BOOK3S_604 */
+ 
+ stack_overflow:
+ 	vmap_stack_overflow_exception
+diff --git a/arch/powerpc/mm/book3s32/Makefile b/arch/powerpc/mm/book3s32/Makefile
+index 3f972db17761..446d9de88ce4 100644
+--- a/arch/powerpc/mm/book3s32/Makefile
++++ b/arch/powerpc/mm/book3s32/Makefile
+@@ -6,4 +6,6 @@ ifdef CONFIG_KASAN
+ CFLAGS_mmu.o  		+= -DDISABLE_BRANCH_PROFILING
+ endif
+ 
+-obj-y += mmu.o hash_low.o mmu_context.o tlb.o nohash_low.o
++obj-y += mmu.o mmu_context.o
++obj-$(CONFIG_PPC_BOOK3S_603) += nohash_low.o
++obj-$(CONFIG_PPC_BOOK3S_604) += hash_low.o tlb.o
 -- 
-~Randy
+2.25.0
+
