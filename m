@@ -2,148 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0EF02DEC1E
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 00:51:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90A5A2DEC30
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 00:59:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726176AbgLRXuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 18:50:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40345 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725855AbgLRXuM (ORCPT
+        id S1726267AbgLRX6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 18:58:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725948AbgLRX6i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 18:50:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608335325;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+ltfjKp0a0CZjK5VqWOENgE7djMo2w8zSxVmcmLegAo=;
-        b=cCI35rG0EgMsIpBcQyllz8zUMtI09O8trpCaun2Fh6dkKNuRjd6hS0Kg4qLAO2g28ITRkM
-        B2xIG1AR9Ce7yotaUG0VMXpXPT0nG18geAfSXlIswyPhOgUPMqYsrR0ktFQb7+D9IzzBHp
-        ibgAzh57Nw5MJ1q+d1TL5CnWQWj04iA=
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
- [209.85.167.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-581-5f5NV1PGORWHY0mUEC87dA-1; Fri, 18 Dec 2020 18:48:43 -0500
-X-MC-Unique: 5f5NV1PGORWHY0mUEC87dA-1
-Received: by mail-oi1-f199.google.com with SMTP id f190so2096762oib.10
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 15:48:43 -0800 (PST)
+        Fri, 18 Dec 2020 18:58:38 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3E10C0617B0;
+        Fri, 18 Dec 2020 15:57:57 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id r3so4297181wrt.2;
+        Fri, 18 Dec 2020 15:57:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tvXl0W+WJwpnbxy3THEOQYack8Z4j8OQae2L4gnwAYw=;
+        b=d6Yu7BK1W77mwLSclcTkOVuwCLsCfbArAxi+vbGYgWSFLLfRZXlcBrpQX625dCxoBc
+         rWL1oxv2Su1YmDyaBEzWxKGg/beqMhojBnuOBA8eInfeQ+mtebSrtc08LjH6V9ozx4Tt
+         gvnn7Num4KpNVxZqZLhQtqTjqjZ5ngP6BTkkNfrShmk5r2GCLBXHaRNH/3GgFHbKsWIl
+         6v4KhwqLGXUy8TKPgN+ZfREFMnVVxZx8gYuaaojaqcfRDnG39Xz6cuWuKCkxPHuT0k1B
+         7VLhqTfAqIGV30njvbz54MUGVHueyBYJb9HIwMhrUAlxODtMdbI7RpuO0b6EtLje7xHY
+         ve9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+ltfjKp0a0CZjK5VqWOENgE7djMo2w8zSxVmcmLegAo=;
-        b=SFopJneFNDiLae72aawIAm8PgF24vunsPfNbCf/uBh6G42OG7uLQiueJPyCyPAmcWV
-         xJ7mzEuaWPiBJB8OY0SSyPlnWu5IHU21W+DqPktdJoV0ZgtAKmMI/vcS+dRWBn2RHcSi
-         gvqauwEqpDhC4X8iC5YNcy0Q1sUkp4SvxNBqrtuNaLNx/oc25pYhiVxnPJrxtE6tOYOE
-         E3963XQyUe+cSXQcDF2O38APzvIjefaZk4YgX8cGeRwb2026higz3ZNAJvV96FA0eCmp
-         9ujsh0T68V4VpEGf3V43B0dhyFd5wXnXUi8WoCgoJaUJLRq8yCJqOVBPqTKoyESaIYK0
-         plFA==
-X-Gm-Message-State: AOAM532HPTAOQxEXyoL9kNM5kToiduzg2M6bCm0ERz/YCezalQJHRPN6
-        xrcs7Epb2LjhkVjdhn4ZgNn7G8KUViY4TH+AwaegYD8sWDMgJmPF1g365OkTOKaijwRFEwR57Qy
-        c+tbjvbTzhCc+v1FVDWc4VW7xPdiOJYPaRFjIKA0U
-X-Received: by 2002:a9d:749a:: with SMTP id t26mr4581980otk.277.1608335323019;
-        Fri, 18 Dec 2020 15:48:43 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyJ2nN1vXngcVUoOEAG74s5U3e8lcwmpg38reul9rkZLcrTb66nfk4bZlJ62m+lBkyygSFDFV1MAs6YD3J999k=
-X-Received: by 2002:a9d:749a:: with SMTP id t26mr4581966otk.277.1608335322797;
- Fri, 18 Dec 2020 15:48:42 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tvXl0W+WJwpnbxy3THEOQYack8Z4j8OQae2L4gnwAYw=;
+        b=UiVsp81JtN+pRt5Edc5s5ledNll6QJSM9ZzrKvQxnlmpcbUE2lue8GJB+W7rppbZrb
+         nBUSjr0Fbf8iPeMPq/bQ7YIR+EhCfxrSX+xWND84EL4fQ4SHvWZaDwrIuyeRkaSYHJx+
+         2KxyTBapEXGrPBL76QsyTXUguWiP4iKaQRnbYRSGk1++CmlV8dVvTjpMzStGe8wELL4/
+         8cRdLtl8xwxFsaWBdPrRzhGS4P6Rblf87ar5Ptak0YZiTi6cA6SxdnSdrblR1pdtK+/J
+         ACE08MZGgqifkcGtvwxGrXNIT903yKobRrI0X+NO1c7U0CwDRUloABskptPmH8WjQUyU
+         0GjA==
+X-Gm-Message-State: AOAM53271rXYTzRyTujmkmDzKlBhPbmadA/OGo4Ei1oQbi0rpdyJPGfl
+        H2RWbXsPr1JWwTMees0fvgQ=
+X-Google-Smtp-Source: ABdhPJzZP4Av12s27l37IvWOJLfwhQy/pjMU1yhNooTJw0Ezq0+QCo+MtUQwxvHm17IA01AeQXd1yA==
+X-Received: by 2002:adf:dd90:: with SMTP id x16mr6766025wrl.85.1608335876277;
+        Fri, 18 Dec 2020 15:57:56 -0800 (PST)
+Received: from [192.168.1.211] ([2.31.224.116])
+        by smtp.gmail.com with ESMTPSA id h15sm15020751wru.4.2020.12.18.15.57.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Dec 2020 15:57:55 -0800 (PST)
+Subject: Re: [PATCH v2 12/12] ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
+        lenb@kernel.org, gregkh@linuxfoundation.org, yong.zhi@intel.com,
+        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
+        tian.shu.qiu@intel.com, mchehab@kernel.org, robert.moore@intel.com,
+        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, andriy.shevchenko@linux.intel.com,
+        linux@rasmusvillemoes.dk,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
+        linus.walleij@linaro.org, heikki.krogerus@linux.intel.com,
+        kitakar@gmail.com, jorhand@linux.microsoft.com
+References: <20201217234337.1983732-1-djrscally@gmail.com>
+ <20201217234337.1983732-13-djrscally@gmail.com>
+ <X9zehD1xtQP/bxXu@pendragon.ideasonboard.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <5c0ae9f8-ba58-a26c-400b-7d85d01087a3@gmail.com>
+Date:   Fri, 18 Dec 2020 23:57:54 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201205234354.1710-1-jarod@redhat.com> <11900.1607459690@famine>
-In-Reply-To: <11900.1607459690@famine>
-From:   Jarod Wilson <jarod@redhat.com>
-Date:   Fri, 18 Dec 2020 18:48:32 -0500
-Message-ID: <CAKfmpSfnD6-7UmaMCN10xvhZq1cbqosRQd9S6H_xjT=Oqi41JA@mail.gmail.com>
-Subject: Re: [PATCH net] bonding: reduce rtnl lock contention in mii monitor thread
-To:     Jay Vosburgh <jay.vosburgh@canonical.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Mahesh Bandewar <maheshb@google.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Davis <tadavis@lbl.gov>, Netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <X9zehD1xtQP/bxXu@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 3:35 PM Jay Vosburgh <jay.vosburgh@canonical.com> wrote:
->
-> Jarod Wilson <jarod@redhat.com> wrote:
-...
-> >The addition of a case BOND_LINK_BACK in bond_miimon_commit() is somewhat
-> >separate from the fix for the actual hang, but it eliminates a constant
-> >"invalid new link 3 on slave" message seen related to this issue, and it's
-> >not actually an invalid state here, so we shouldn't be reporting it as an
-> >error.
-...
->         In principle, bond_miimon_commit should not see _BACK or _FAIL
-> state as a new link state, because those states should be managed at the
-> bond_miimon_inspect level (as they are the result of updelay and
-> downdelay).  These states should not be "committed" in the sense of
-> causing notifications or doing actions that require RTNL.
->
->         My recollection is that the "invalid new link" messages were the
-> result of a bug in de77ecd4ef02, which was fixed in 1899bb325149
-> ("bonding: fix state transition issue in link monitoring"), but maybe
-> the RTNL problem here induces that in some other fashion.
->
->         Either way, I believe this message is correct as-is.
+Hi Laurent - thanks for the comments
 
-For reference, with 5.10.1 and this script:
+On 18/12/2020 16:53, Laurent Pinchart wrote:
+>> +static void cio2_bridge_init_property_names(struct cio2_sensor *sensor)
+>> +{
+>> +	strscpy(sensor->prop_names.clock_frequency, "clock-frequency",
+>> +		sizeof(sensor->prop_names.clock_frequency));
+>> +	strscpy(sensor->prop_names.rotation, "rotation",
+>> +		sizeof(sensor->prop_names.rotation));
+>> +	strscpy(sensor->prop_names.bus_type, "bus-type",
+>> +		sizeof(sensor->prop_names.bus_type));
+>> +	strscpy(sensor->prop_names.data_lanes, "data-lanes",
+>> +		sizeof(sensor->prop_names.data_lanes));
+>> +	strscpy(sensor->prop_names.remote_endpoint, "remote-endpoint",
+>> +		sizeof(sensor->prop_names.remote_endpoint));
+>> +	strscpy(sensor->prop_names.link_frequencies, "link-frequencies",
+>> +		sizeof(sensor->prop_names.link_frequencies));
+> 
+> Just curious, was there anything not working correctly with the proposal
+> I made ?
+> 
+> static const struct cio2_property_names prop_names = {
+> 	.clock_frequency = "clock-frequency",
+> 	.rotation = "rotation",
+> 	.bus_type = "bus-type",
+> 	.data_lanes = "data-lanes",
+> 	.remote_endpoint = "remote-endpoint",
+> };
+> 
+> static void cio2_bridge_init_property_names(struct cio2_sensor *sensor)
+> {
+> 	sensor->prop_names = prop_names;
+> }
+> 
+> It generates a warning when the string is too long for the field size,
+> which should help catching issues at compilation time.
 
-#!/bin/sh
+Yes, though I don't know how much of a real-world problem it would have
+been - if you recall we have the issue that the device grabs a reference
+to the software_nodes (after we stopped delaying until after the
+i2c_client is available), which means we can't safely free the
+cio2_bridge struct on module unload. That also means we can't rely on
+those pointers to string literals existing, because if the ipu3-cio2
+module gets unloaded they'll be gone.
 
-slave1=ens4f0
-slave2=ens4f1
+Shame, as it's way neater.
 
-modprobe -rv bonding
-modprobe -v bonding mode=2 miimon=100 updelay=200
-ip link set bond0 up
-ifenslave bond0 $slave1 $slave2
-sleep 5
+>> +static void cio2_bridge_init_swnode_names(struct cio2_sensor *sensor)
+>> +{
+>> +	snprintf(sensor->node_names.remote_port, 7, "port@%u", sensor->ssdb.link);
+>> +	strscpy(sensor->node_names.port, "port@0", sizeof(sensor->node_names.port));
+>> +	strscpy(sensor->node_names.endpoint, "endpoint@0", sizeof(sensor->node_names.endpoint));
+> 
+> I'd wrap lines, but maybe that's because I'm an old-school, 80-columns
+> programmer :-)
 
-while :
-do
-        ip link set $slave1 down
-        sleep 1
-        ip link set $slave1 up
-        sleep 1
-done
+Heh sure, I'll wrap them.
 
-I get this repeating log output:
+>> +static int cio2_bridge_connect_sensors(struct cio2_bridge *bridge,
+>> +				       struct pci_dev *cio2)
+>> +{
+>> +	struct fwnode_handle *fwnode;
+>> +	struct cio2_sensor *sensor;
+>> +	struct acpi_device *adev;
+>> +	unsigned int i;
+>> +	int ret = 0;
+>> +
+>> +	for (i = 0; i < ARRAY_SIZE(cio2_supported_sensors); i++) {
+>> +		const struct cio2_sensor_config *cfg = &cio2_supported_sensors[i];
+>> +
+>> +		for_each_acpi_dev_match(adev, cfg->hid, NULL, -1) {
+>> +			if (bridge->n_sensors >= CIO2_NUM_PORTS) {
+>> +				dev_warn(&cio2->dev, "Exceeded available CIO2 ports\n");
+>> +				/* overflow i so outer loop ceases */
+>> +				i = ARRAY_SIZE(cio2_supported_sensors);
+>> +				break;
+> 
+> Or just
+> 
+> 				return 0;
+> 
+> ?
 
-[ 9488.262291] sfc 0000:05:00.0 ens4f0: link up at 10000Mbps
-full-duplex (MTU 1500)
-[ 9488.339508] bond0: (slave ens4f0): link status up, enabling it in 200 ms
-[ 9488.339511] bond0: (slave ens4f0): invalid new link 3 on slave
-[ 9488.547643] bond0: (slave ens4f0): link status definitely up, 10000
-Mbps full duplex
-[ 9489.276614] bond0: (slave ens4f0): link status definitely down,
-disabling slave
-[ 9490.273830] sfc 0000:05:00.0 ens4f0: link up at 10000Mbps
-full-duplex (MTU 1500)
-[ 9490.315540] bond0: (slave ens4f0): link status up, enabling it in 200 ms
-[ 9490.315543] bond0: (slave ens4f0): invalid new link 3 on slave
-[ 9490.523641] bond0: (slave ens4f0): link status definitely up, 10000
-Mbps full duplex
-[ 9491.356526] bond0: (slave ens4f0): link status definitely down,
-disabling slave
-[ 9492.285249] sfc 0000:05:00.0 ens4f0: link up at 10000Mbps
-full-duplex (MTU 1500)
-[ 9492.291522] bond0: (slave ens4f0): link status up, enabling it in 200 ms
-[ 9492.291523] bond0: (slave ens4f0): invalid new link 3 on slave
-[ 9492.499604] bond0: (slave ens4f0): link status definitely up, 10000
-Mbps full duplex
-[ 9493.331594] bond0: (slave ens4f0): link status definitely down,
-disabling slave
+Derp, yes of course.
 
-"invalid new link 3 on slave" is there every single time.
 
-Side note: I'm not actually able to reproduce the repeating "link
-status up, enabling it in 200 ms" and never recovering from a downed
-link on this host, no clue why it's so reproducible w/another system.
+>> +/* Data representation as it is in ACPI SSDB buffer */
+>> +struct cio2_sensor_ssdb {
+>> +	u8 version;				/* 0000 */
+>> +	u8 sku;					/* 0001 */
+>> +	u8 guid_csi2[16];			/* 0002 */
+>> +	u8 devfunction;				/* 0003 */
+>> +	u8 bus;					/* 0004 */
+>> +	u32 dphylinkenfuses;			/* 0005 */
+>> +	u32 clockdiv;				/* 0009 */
+>> +	u8 link;				/* 0013 */
+>> +	u8 lanes;				/* 0014 */
+>> +	u32 csiparams[10];			/* 0015 */
+>> +	u32 maxlanespeed;			/* 0019 */
+>> +	u8 sensorcalibfileidx;			/* 0023 */
+>> +	u8 sensorcalibfileidxInMBZ[3];		/* 0024 */
+>> +	u8 romtype;				/* 0025 */
+>> +	u8 vcmtype;				/* 0026 */
+>> +	u8 platforminfo;			/* 0027 */
+> 
+> Why stop at 27 ? :-) I'd either go all the way, or not at all. It's also
+> quite customary to represent offset as hex values, as that's what most
+> hex editors / viewers will show.
 
--- 
-Jarod Wilson
-jarod@redhat.com
+Oops - that was actually just me debugging...I guess I might actually
+finish it, converted to hex. It came in useful reading the DSDT to have
+that somewhere easy to refer to.
 
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+Nice - thank you!
