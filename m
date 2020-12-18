@@ -2,84 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60C222DEA2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 21:27:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6085C2DEA33
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 21:30:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731607AbgLRU0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 15:26:03 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56878 "EHLO mx2.suse.de"
+        id S1730513AbgLRUaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 15:30:06 -0500
+Received: from mga14.intel.com ([192.55.52.115]:19583 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730516AbgLRU0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 15:26:02 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B7CB0AF5D;
-        Fri, 18 Dec 2020 20:25:20 +0000 (UTC)
-From:   NeilBrown <neilb@suse.de>
-To:     Jeffrey Layton <jlayton@kernel.org>,
-        Vivek Goyal <vgoyal@redhat.com>
-Date:   Sat, 19 Dec 2020 07:25:12 +1100
-Cc:     Jeff Layton <jlayton@kernel.org>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        amir73il@gmail.com, sargun@sargun.me, miklos@szeredi.hu,
-        willy@infradead.org, jack@suse.cz, neilb@suse.com,
-        viro@zeniv.linux.org.uk
-Subject: Re: [PATCH 3/3] overlayfs: Check writeback errors w.r.t upper in
- ->syncfs()
-In-Reply-To: <20201218165551.GA1178523@tleilax.poochiereds.net>
-References: <20201216233149.39025-1-vgoyal@redhat.com>
- <20201216233149.39025-4-vgoyal@redhat.com>
- <20201217200856.GA707519@tleilax.poochiereds.net>
- <20201218144418.GA3424@redhat.com>
- <20201218150258.GA866424@tleilax.poochiereds.net>
- <20201218162819.GC3424@redhat.com>
- <20201218165551.GA1178523@tleilax.poochiereds.net>
-Message-ID: <87sg82n9p3.fsf@notabene.neil.brown.name>
+        id S1726468AbgLRUaF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 15:30:05 -0500
+IronPort-SDR: b9D8wMx1upnFcVhD3e6kWypbC1InLGntCAWm7L+ZS4WxxnsLSnBy8fSY+l2q/EhcwhlwXGbwFk
+ UZGJmALVJoSg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9839"; a="174729217"
+X-IronPort-AV: E=Sophos;i="5.78,431,1599548400"; 
+   d="scan'208";a="174729217"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2020 12:28:20 -0800
+IronPort-SDR: 5yzWuNenkCaVFwsIYBAgOCyEqtf5UoT9DU/IvUUlQXz7LRAixKI587sSRmBBFJYsY6pOfWGTbZ
+ WI4B8tg9PQkQ==
+X-IronPort-AV: E=Sophos;i="5.78,431,1599548400"; 
+   d="scan'208";a="393914420"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2020 12:28:15 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kqMNI-00FgGS-2m; Fri, 18 Dec 2020 22:29:16 +0200
+Date:   Fri, 18 Dec 2020 22:29:16 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
+        lenb@kernel.org, gregkh@linuxfoundation.org, yong.zhi@intel.com,
+        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
+        tian.shu.qiu@intel.com, mchehab@kernel.org, robert.moore@intel.com,
+        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
+        linus.walleij@linaro.org, heikki.krogerus@linux.intel.com,
+        kitakar@gmail.com, jorhand@linux.microsoft.com
+Subject: Re: [PATCH v2 04/12] software_node: Enforce parent before child
+ ordering of nodes arrays
+Message-ID: <20201218202916.GA4077@smile.fi.intel.com>
+References: <20201217234337.1983732-1-djrscally@gmail.com>
+ <20201217234337.1983732-5-djrscally@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201217234337.1983732-5-djrscally@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
+On Thu, Dec 17, 2020 at 11:43:29PM +0000, Daniel Scally wrote:
+> Registering software_nodes with the .parent member set to point to a
+> currently unregistered software_node has the potential for problems,
+> so enforce parent -> child ordering in arrays passed in to
+> software_node_register_nodes().
+> 
+> Software nodes that are children of another software node should be
+> unregistered before their parent. To allow easy unregistering of an array
+> of software_nodes ordered parent to child, reverse the order in which
+> software_node_unregister_nodes() unregisters software_nodes.
 
-On Fri, Dec 18 2020, Jeffrey Layton wrote:
->
-> The patch we're discussing here _does_ add a f_op->syncfs, which is why
-> I was suggesting to do it that way.
+...
 
-I haven't thought through the issues to decide what I think of adding a
-new op, but I already know what I think of adding ->syncfs.  Don't Do
-It.  The name is much too easily confused with ->sync_fs.
+> + * Register multiple software nodes at once. If any node in the array
+> + * has it's .parent pointer set, then it's parent **must** have been
 
-If you call it ->sync_fs_return_error() it would be MUCH better.
+it's => its in both cases?
 
-And having said that, the solution becomes obvious.  Add a new flag,
-either as another bit in 'int wait', or as a new bool.
-The new flag would be "return_error" - or whatever is appropriate.
 
-NeilBrown
+> + * registered before it is; either outside of this function or by
+> + * ordering the array such that parent comes before child.
+>   */
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+...
 
------BEGIN PGP SIGNATURE-----
+> +		const struct software_node *parent = nodes[i].parent;
+> +
+> +		if (parent && !software_node_to_swnode(parent)) {
 
-iQJBBAEBCAAsFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAl/dECgOHG5laWxiQHN1
-c2UuZGUACgkQOeye3VZigbk3ig/4iZJnVRvb8/0pwu2NgBVBzqiie5K8kJNvUzsU
-BBTsOxBahvwn2B3zMsI9IP3q77wAdVF8wbl8HihIjuGuFramVoMmkCH+t1vVHa35
-cHuB+xZEOEqGgSVWYC02Ci54z+ZxHi71JlbVfT3n7Zrj1VY+k9q/23ZzRPknQjTr
-NU1QA2ya8r1P006F5/hJ/3zLTneuMYJsRWT6AlvYabI+rv12TMcirBBQFhcfb3je
-Q+/3RPZW1avW+hlIoACeMA0PRxWASwLH04Wx1zrC85G3OSpC+uBFt254jL/R5EPF
-GBiGPmEaEALoJrlnSoJLBWysb50lyTUf94R/Gj2wqYA3fJ51YB1eZqm2yudaUPWY
-QfYoaO6KdyjbPOJjXXD2lznIyWKvKFtT1XR/yvuKwuNtnuX2001uhXFLCLGTDFO8
-ujbSBJkFlMGGvxfZ2FsqRUBNWgPaKHMUCgIeqiTVmSqPoVeaVn74Ru06ilIVbcTF
-1ULHPC7arfCNRTbl7siAaGPSiPGbco4asdgrJzGyFaOJhgmZZ16kC1jFqAwwYMrg
-1sfjpjkgyPWjYy+hAbkOMsp3O1s3jvzVc8Qu0YLd0HKEI2zL7b52MzkE2KH4i1WN
-hYD5QCUc1G1xzEMPwnMCC7Jdthypgzjg6J9TzbmtOlfWQFORuCOTEeHUzcx6Lsf0
-e/2rvw==
-=hNhL
------END PGP SIGNATURE-----
---=-=-=--
+Can we have parent of swnode in an array not being an swnode?
+Either comment that parent for swnode can be swnode only (Heikki, was it an
+idea?) or check if parent is of swnode type and only that apply this
+requirement.
+
+> +			ret = -EINVAL;
+> +			goto err_unregister_nodes;
+>  		}
+
+...
+
+> + * Unregister multiple software nodes at once. If parent pointers are set up
+> + * in any of the software nodes then the array MUST be ordered such that
+> + * parents come before their children.
+
+Shouldn't be consistent with above, i.e. **must** ?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
