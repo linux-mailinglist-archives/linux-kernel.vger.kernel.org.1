@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B772DDC6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 01:34:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 157D62DDC6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 01:34:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729287AbgLRAdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 19:33:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44756 "EHLO
+        id S1730184AbgLRAdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 19:33:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725930AbgLRAdN (ORCPT
+        with ESMTP id S1725930AbgLRAdO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 19:33:13 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B309C061285
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 16:31:57 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id j1so523879ybj.11
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 16:31:57 -0800 (PST)
+        Thu, 17 Dec 2020 19:33:14 -0500
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F5AAC061257
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 16:32:00 -0800 (PST)
+Received: by mail-qv1-xf4a.google.com with SMTP id 12so685712qvk.23
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 16:32:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=oPInapfcZTUHbBkbVV08IPJRvv/+257Sb09FHDMXMx0=;
-        b=BJM2457W/2DqIVdYPMvLElMFmLn+V9yNBpsNR5FdQfmquv2Pi/tsiRXYT/XV90HZuz
-         q9wsNx7EMERv9CED+XDz1TDsMIELmhvQgDp4Z8RN4oAFaPp8hH+Lfjjj6F//A01INe8c
-         hQWQaNaITd2hfeSEztvkBn9V8c0eByUkez8k3Y2PtvfGeupAZ5EWirZ6ZAYtQk6ddsZn
-         KRK5CEWkZ7KN/UVc+VZmFveUdRpJWQJTbKNdR5IYQ9tty9vlQ6mB9bAOCKvhkMb8rbzH
-         SQM1f2BzIbZYtXRvUtOFLzWxy80tWWVa9zIS7egAI4cBMi1hm/f9h0GUGso/HrUwDz2A
-         mgww==
+        bh=31UxY3BjxhhaVQJHGm3+ViFf/MlRFopzIvlMkIG1nRk=;
+        b=Hn2FNm68j9LqarEV9dPHPgK3Xa8kkSTIruyksHHOd6CxrYqKy25Xx4tzQT+Rqm+GFb
+         ZCGYQOxmf1wkpIk1j+V9nnoT+BH3let0VtXfOkIpf1dpIR60LoFSAPfoPG0jEnce3FHR
+         1etFrryYikPIGpU2gcVBo89wS4sBSvNuw+XtxSPpKv5J5RTrAIDuAOyOvxP0jtHRey6J
+         pjk9Pjurj8MkO8tmhSxyJVR1r/JiQc8Tvbhv0Jfr7+0QgHqHJH9+GK9825r3t7tNEyOW
+         1KMEvqn+JI3Gy+4Cwh8UIOdTNmZH7EZfVwSzubR8eV9zoz2yuJuEsxgzxP4AGUUjaKRd
+         2teQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=oPInapfcZTUHbBkbVV08IPJRvv/+257Sb09FHDMXMx0=;
-        b=PiqjQcasGHGF3MVuGbE/sIMgtQIw/U6MMW/sYlQCFesEfZ3SzSO6gXmphTBJGJbmFF
-         n1LI63twmBBFMzvtX7Sca0ert01xpvSzaW1dAJ6jQUzK6v5ciXU/EB3iZx9h8EPb/Wif
-         sHyd8m42KX+ZB+9PhsVsroR4sFm2MMdxcuxahoCYHWJ5c1006n1SkfkaB18FBQQFwRWY
-         xR5nzZlnyex+8ZUt6KFnXCq6LTTXRb/djyQ+bKbaA/QLt0TBX2belUKNk2va7Gi0OSXl
-         GAgTrQaAQV1fzgqbgSQDjhVNyId7eG30AjtkCfiDyqBf7+/rXS9rR5lWB7Wj962J35fd
-         B3kw==
-X-Gm-Message-State: AOAM5309v29y+E7dD+jw/fICnEhG4lmHGsf3d7aKs459M+hgsfcMpM/i
-        WIAKewe2oVcXmLVzA+T0wuVBnEJcbXs=
-X-Google-Smtp-Source: ABdhPJwZql1VvyeiPF6SWvG4xyoDmI65yGXwGbsVO8dFZiPBHoEGM/0qw4KWY8ipQ5YL1H/pZm6Ie2PArzI=
+        bh=31UxY3BjxhhaVQJHGm3+ViFf/MlRFopzIvlMkIG1nRk=;
+        b=sSWDaguxIEiFJigxZInP8AixOvwct9xCO/PM7ysO2CqEn5iPqIGnPQIL3mY3bPhcNn
+         lRu52nRtGMzwNHQoJWtvzhsOpsZtiPxDDNDvdJOE0P7arxerR+MqR92Qx+fPjZnWY38I
+         B0ayILggk8OfpAjQK+TMB7CBhsXJt3Uvuo9BnwLKcUBZxkTbp9FMZIyWDVpauCI/PW2w
+         pk4rFRO/V7KsTympwX1JLvkre+LOntIUINbqBbCAxc86PU+NDbWAc88OyFsPkiWhGzOK
+         D1GXQMJgQOwpuEDGUDmhBysRY8JNsT81wucO8kPgnHJVnhhjBrL0h/NTWFwgaWXdYA+w
+         xcaQ==
+X-Gm-Message-State: AOAM532xafr+fT4UH0Zj/Fd8tZoavoGxPEeNXBm5DYyLY50RR9wLlzc/
+        TKv5unPW7Olg5OHddwFb5I+QL0WEDss=
+X-Google-Smtp-Source: ABdhPJx+lcVCo2wS+9IQsGU5CWvwij4l21/N8yDEVb4j3SxnWb7tnXeTlyi47WM0DVQjnd6m2O7L/Xu2fAw=
 Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
- (user=seanjc job=sendgmr) by 2002:a25:5303:: with SMTP id h3mr2709285ybb.58.1608251516871;
- Thu, 17 Dec 2020 16:31:56 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a0c:aa55:: with SMTP id e21mr1897255qvb.43.1608251519493;
+ Thu, 17 Dec 2020 16:31:59 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 17 Dec 2020 16:31:37 -0800
+Date:   Thu, 17 Dec 2020 16:31:38 -0800
 In-Reply-To: <20201218003139.2167891-1-seanjc@google.com>
-Message-Id: <20201218003139.2167891-3-seanjc@google.com>
+Message-Id: <20201218003139.2167891-4-seanjc@google.com>
 Mime-Version: 1.0
 References: <20201218003139.2167891-1-seanjc@google.com>
 X-Mailer: git-send-email 2.29.2.684.gfbc64c5ab5-goog
-Subject: [PATCH 2/4] KVM: x86/mmu: Get root level from walkers when retrieving
- MMIO SPTE
+Subject: [PATCH 3/4] KVM: x86/mmu: Use raw level to index into MMIO walks'
+ sptes array
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -69,119 +69,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Get the so called "root" level from the low level shadow page table
-walkers instead of manually attempting to calculate it higher up the
-stack, e.g. in get_mmio_spte().  When KVM is using PAE shadow paging,
-the starting level of the walk, from the callers perspective, is not
-the CR3 root but rather the PDPTR "root".  Checking for reserved bits
-from the CR3 root causes get_mmio_spte() to consume uninitialized stack
-data due to indexing into sptes[] for a level that was not filled by
-get_walk().  This can result in false positives and/or negatives
-depending on what garbage happens to be on the stack.
+Bump the size of the sptes array by one and use the raw level of the
+SPTE to index into the sptes array.  Using the SPTE level directly
+improves readability by eliminating the need to reason out why the level
+is being adjusted when indexing the array.  The array is on the stack
+and is not explicitly initialized; bumping its size is nothing more than
+a superficial adjustment to the stack frame.
 
-Opportunistically nuke a few extra newlines.
-
-Fixes: 95fb5b0258b7 ("kvm: x86/mmu: Support MMIO in the TDP MMU")
-Reported-by: Richard Herbert <rherbert@sympatico.ca>
-Cc: Ben Gardon <bgardon@google.com>
-Cc: stable@vger.kernel.org
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c     | 15 ++++++---------
- arch/x86/kvm/mmu/tdp_mmu.c |  5 ++++-
- arch/x86/kvm/mmu/tdp_mmu.h |  4 +++-
- 3 files changed, 13 insertions(+), 11 deletions(-)
+ arch/x86/kvm/mmu/mmu.c     | 15 +++++++--------
+ arch/x86/kvm/mmu/tdp_mmu.c |  2 +-
+ 2 files changed, 8 insertions(+), 9 deletions(-)
 
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index a48cd12c01d7..52f36c879086 100644
+index 52f36c879086..4798a4472066 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -3485,16 +3485,16 @@ static bool mmio_info_in_cache(struct kvm_vcpu *vcpu, u64 addr, bool direct)
-  * Return the level of the lowest level SPTE added to sptes.
-  * That SPTE may be non-present.
-  */
--static int get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes)
-+static int get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes, int *root_level)
- {
- 	struct kvm_shadow_walk_iterator iterator;
- 	int leaf = -1;
- 	u64 spte;
- 
--
- 	walk_shadow_page_lockless_begin(vcpu);
- 
--	for (shadow_walk_init(&iterator, vcpu, addr);
-+	for (shadow_walk_init(&iterator, vcpu, addr),
-+	     *root_level = iterator.level;
- 	     shadow_walk_okay(&iterator);
- 	     __shadow_walk_next(&iterator, spte)) {
+@@ -3500,7 +3500,7 @@ static int get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes, int *root_level
  		leaf = iterator.level;
-@@ -3504,7 +3504,6 @@ static int get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes)
+ 		spte = mmu_spte_get_lockless(iterator.sptep);
+ 
+-		sptes[leaf - 1] = spte;
++		sptes[leaf] = spte;
  
  		if (!is_shadow_present_pte(spte))
  			break;
--
- 	}
- 
- 	walk_shadow_page_lockless_end(vcpu);
-@@ -3517,9 +3516,7 @@ static bool get_mmio_spte(struct kvm_vcpu *vcpu, u64 addr, u64 *sptep)
+@@ -3514,7 +3514,7 @@ static int get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes, int *root_level
+ /* return true if reserved bit is detected on spte. */
+ static bool get_mmio_spte(struct kvm_vcpu *vcpu, u64 addr, u64 *sptep)
  {
- 	u64 sptes[PT64_ROOT_MAX_LEVEL];
+-	u64 sptes[PT64_ROOT_MAX_LEVEL];
++	u64 sptes[PT64_ROOT_MAX_LEVEL + 1];
  	struct rsvd_bits_validate *rsvd_check;
--	int root = vcpu->arch.mmu->shadow_root_level;
--	int leaf;
--	int level;
-+	int root, leaf, level;
+ 	int root, leaf, level;
  	bool reserved = false;
+@@ -3537,16 +3537,15 @@ static bool get_mmio_spte(struct kvm_vcpu *vcpu, u64 addr, u64 *sptep)
+ 	rsvd_check = &vcpu->arch.mmu->shadow_zero_check;
  
- 	if (!VALID_PAGE(vcpu->arch.mmu->root_hpa)) {
-@@ -3528,9 +3525,9 @@ static bool get_mmio_spte(struct kvm_vcpu *vcpu, u64 addr, u64 *sptep)
+ 	for (level = root; level >= leaf; level--) {
+-		if (!is_shadow_present_pte(sptes[level - 1]))
++		if (!is_shadow_present_pte(sptes[level]))
+ 			break;
+ 		/*
+ 		 * Use a bitwise-OR instead of a logical-OR to aggregate the
+ 		 * reserved bit and EPT's invalid memtype/XWR checks to avoid
+ 		 * adding a Jcc in the loop.
+ 		 */
+-		reserved |= __is_bad_mt_xwr(rsvd_check, sptes[level - 1]) |
+-			    __is_rsvd_bits_set(rsvd_check, sptes[level - 1],
+-					       level);
++		reserved |= __is_bad_mt_xwr(rsvd_check, sptes[level]) |
++			    __is_rsvd_bits_set(rsvd_check, sptes[level], level);
  	}
  
- 	if (is_tdp_mmu_root(vcpu->kvm, vcpu->arch.mmu->root_hpa))
--		leaf = kvm_tdp_mmu_get_walk(vcpu, addr, sptes);
-+		leaf = kvm_tdp_mmu_get_walk(vcpu, addr, sptes, &root);
- 	else
--		leaf = get_walk(vcpu, addr, sptes);
-+		leaf = get_walk(vcpu, addr, sptes, &root);
+ 	if (reserved) {
+@@ -3554,10 +3553,10 @@ static bool get_mmio_spte(struct kvm_vcpu *vcpu, u64 addr, u64 *sptep)
+ 		       __func__, addr);
+ 		for (level = root; level >= leaf; level--)
+ 			pr_err("------ spte 0x%llx level %d.\n",
+-			       sptes[level - 1], level);
++			       sptes[level], level);
+ 	}
  
- 	if (unlikely(leaf < 0)) {
- 		*sptep = 0ull;
+-	*sptep = sptes[leaf - 1];
++	*sptep = sptes[leaf];
+ 
+ 	return reserved;
+ }
 diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 50cec7a15ddb..a4f9447f8327 100644
+index a4f9447f8327..efef571806ad 100644
 --- a/arch/x86/kvm/mmu/tdp_mmu.c
 +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -1148,13 +1148,16 @@ bool kvm_tdp_mmu_write_protect_gfn(struct kvm *kvm,
-  * Return the level of the lowest level SPTE added to sptes.
-  * That SPTE may be non-present.
-  */
--int kvm_tdp_mmu_get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes)
-+int kvm_tdp_mmu_get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes,
-+			 int *root_level)
- {
- 	struct tdp_iter iter;
- 	struct kvm_mmu *mmu = vcpu->arch.mmu;
- 	gfn_t gfn = addr >> PAGE_SHIFT;
- 	int leaf = -1;
+@@ -1160,7 +1160,7 @@ int kvm_tdp_mmu_get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes,
  
-+	*root_level = vcpu->arch.mmu->shadow_root_level;
-+
  	tdp_mmu_for_each_pte(iter, mmu, gfn, gfn + 1) {
  		leaf = iter.level;
- 		sptes[leaf - 1] = iter.old_spte;
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-index 556e065503f6..cbbdbadd1526 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.h
-+++ b/arch/x86/kvm/mmu/tdp_mmu.h
-@@ -44,5 +44,7 @@ void kvm_tdp_mmu_zap_collapsible_sptes(struct kvm *kvm,
- bool kvm_tdp_mmu_write_protect_gfn(struct kvm *kvm,
- 				   struct kvm_memory_slot *slot, gfn_t gfn);
+-		sptes[leaf - 1] = iter.old_spte;
++		sptes[leaf] = iter.old_spte;
+ 	}
  
--int kvm_tdp_mmu_get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes);
-+int kvm_tdp_mmu_get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes,
-+			 int *root_level);
-+
- #endif /* __KVM_X86_MMU_TDP_MMU_H */
+ 	return leaf;
 -- 
 2.29.2.684.gfbc64c5ab5-goog
 
