@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DD8B2DE978
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 20:02:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 748AB2DE97E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 20:02:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732994AbgLRTBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 14:01:33 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:41124 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726011AbgLRTB3 (ORCPT
+        id S1733048AbgLRTBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 14:01:46 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:43715 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726487AbgLRTB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 14:01:29 -0500
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BIIx6no005387;
+        Fri, 18 Dec 2020 14:01:28 -0500
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BIIv1Ge013340;
         Fri, 18 Dec 2020 20:00:31 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=selector1;
- bh=Ka8iceOB3Xs/cEsTiVyBu9ihsXtHU5bQ3J2Fth7vxDs=;
- b=8HLJXbMULBYk+f+yA3V68ljwcZKjhMMTxXOeRVu4L7SUchlxxI2HdrYC9WusE8QfVjR0
- anSTOImIIdUu6H/3bhNuS2oo1os85JbH/SuNSQwjSRDXi3a03rG+JLtrzJJDIOD/v5Kd
- aS9ctsbvPlItRmSO9TR6qmij0kaLvnw/BPcehKdRsLO7X7qfH3t6/nj51PXJZdBoW3oG
- 1d5yOtwGaZi+H7Q/2t5zJA3sTdkt0X+cmIyXBvjkASLXAqQH0wIlkkYD/MkcDEEUDtVs
- Mi1BZ8l6pZx6gA9tx6C9gE31r420g5Fk+jSN7hzR+HF9dYx8vXTXhjj/xq7qQ7+9beke Ag== 
+ bh=2ac0OtE21/ui4wlzt7Dk2cdhdVHiNUCF8D7wYErCU0g=;
+ b=3rKZTa32DfFuXBAhhVyQ6HI/7rVojJXWfFSR/OC5kKK4yzrkXOC6zNeoefFd8UUC7HJ4
+ QAV5VUmr6ByOgpGTjj0ojVdX9QQWE7c6OpUQ6mBdIUsjGAUEmNsFAlXXQbMftb5cVpfp
+ E66HJYKyiZKgO7sWklyr/PzW3hNC6z2yc3BzvUauGtOcLk3DWw+G6JB7TXaYsaV4LeBm
+ MvGx3/PEytXhQjD97CmDuLUmjPg2j190hGUDK0ejEpG1TFsv1pb1OcbxOwEm+VoMMnLK
+ 76CwKaNzMwCGFZWzwLYAs5B+BrvEs09n20q1KZGydPBLDrA1NoeBET3w/hCtO6zsrT5u fw== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 35cpwern1t-1
+        by mx07-00178001.pphosted.com with ESMTP id 35cptdqw8x-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Fri, 18 Dec 2020 20:00:31 +0100
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id F2E0510002A;
-        Fri, 18 Dec 2020 20:00:30 +0100 (CET)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8AA03100034;
+        Fri, 18 Dec 2020 20:00:31 +0100 (CET)
 Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E4C04228601;
-        Fri, 18 Dec 2020 20:00:30 +0100 (CET)
-Received: from localhost (10.75.127.49) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 18 Dec 2020 20:00:30
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7D07E228601;
+        Fri, 18 Dec 2020 20:00:31 +0100 (CET)
+Received: from localhost (10.75.127.48) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 18 Dec 2020 20:00:31
  +0100
 From:   Erwan Le Ray <erwan.leray@foss.st.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -49,16 +49,16 @@ CC:     <linux-serial@vger.kernel.org>, <devicetree@vger.kernel.org>,
         Erwan Le Ray <erwan.leray@foss.st.com>,
         Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
         Valentin Caron <valentin.caron@foss.st.com>
-Subject: [PATCH 5/8] dt-bindings: serial: stm32: update rts-gpios and cts-gpios
-Date:   Fri, 18 Dec 2020 20:00:16 +0100
-Message-ID: <20201218190020.1572-6-erwan.leray@foss.st.com>
+Subject: [PATCH 6/8] serial: stm32: update conflicting RTS/CTS config comment
+Date:   Fri, 18 Dec 2020 20:00:17 +0100
+Message-ID: <20201218190020.1572-7-erwan.leray@foss.st.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201218190020.1572-1-erwan.leray@foss.st.com>
 References: <20201218190020.1572-1-erwan.leray@foss.st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG2NODE3.st.com
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
  (10.75.127.6)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
  definitions=2020-12-18_12:2020-12-18,2020-12-18 signatures=0
@@ -66,43 +66,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update rts-gpios and cts-gpios:
-- remove max-items as already defined in serial.yaml
-- add a note describing rts-gpios and cts-gpios usage with stm32
-
-Document the use of cts-gpios and rts-gpios for flow control in STM32 UART
-controller. These properties can be used instead of 'uart-has-rtscts' or
-'st,hw-flow-ctrl' (deprecated) for making use of any gpio pins for flow
-control instead of dedicated pins.
-It should be noted that both cts-gpios/rts-gpios and 'uart-has-rtscts' or
-'st,hw-flow-ctrl' (deprecated) properties cannot co-exist in a design.
+The comment for conflicting RTS/CTS config refers to "st, hw-flow-ctrl",
+but this property is deprecated since the generic RTS/CTS property has
+been introduced by the patch 'serial: stm32: Use generic DT binding for
+announcing RTS/CTS lines'.
+Update the comment to refer to both generic and deprecated RTS/CTS
+properties.
 
 Signed-off-by: Erwan Le Ray <erwan.leray@foss.st.com>
 
-diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-index 06d5f251ec88..8631678283f9 100644
---- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-+++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-@@ -50,11 +50,14 @@ properties:
-     minItems: 1
-     maxItems: 2
+diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
+index 938d2c4aeaed..0d6c7f3375f0 100644
+--- a/drivers/tty/serial/stm32-usart.c
++++ b/drivers/tty/serial/stm32-usart.c
+@@ -1031,7 +1031,10 @@ static int stm32_usart_init_port(struct stm32_port *stm32port,
+ 		goto err_clk;
+ 	}
  
--  cts-gpios:
--    maxItems: 1
--
--  rts-gpios:
--    maxItems: 1
-+# cts-gpios and rts-gpios properties can be used instead of 'uart-has-rtscts'
-+# or 'st,hw-flow-ctrl' (deprecated) for making use of any gpio pins for flow
-+# control instead of dedicated pins.
-+#
-+# It should be noted that both cts-gpios/rts-gpios and 'uart-has-rtscts' or
-+# 'st,hw-flow-ctrl' (deprecated) properties cannot co-exist in a design.
-+  cts-gpios: true
-+  rts-gpios: true
- 
-   wakeup-source: true
- 
+-	/* Both CTS/RTS gpios and "st,hw-flow-ctrl" should not be specified */
++	/*
++	 * Both CTS/RTS gpios and "st,hw-flow-ctrl" (deprecated) or "uart-has-rtscts"
++	 * properties should not be specified.
++	 */
+ 	if (stm32port->hw_flow_control) {
+ 		if (mctrl_gpio_to_gpiod(stm32port->gpios, UART_GPIO_CTS) ||
+ 		    mctrl_gpio_to_gpiod(stm32port->gpios, UART_GPIO_RTS)) {
 -- 
 2.17.1
 
