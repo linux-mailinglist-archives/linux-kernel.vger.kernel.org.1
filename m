@@ -2,109 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A5622DEC1A
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 00:47:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0EF02DEC1E
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 00:51:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726020AbgLRXrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 18:47:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725824AbgLRXrT (ORCPT
+        id S1726176AbgLRXuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 18:50:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40345 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725855AbgLRXuM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 18:47:19 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AB26C0617B0;
-        Fri, 18 Dec 2020 15:46:39 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id r3so4245165wrt.2;
-        Fri, 18 Dec 2020 15:46:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CVUZDewVjbnAS4rVNDdhGUv6812bBoBX8FloR4mhQfY=;
-        b=LQVpwPjWC+rUHtMvyQSO2kGfFZ6mDpYwAFv8SZMMTP0bhZjlgy++49CszYHYfklMjA
-         j4oKZvyOyj9AY5jJxF6p3YAggoImcqKqKa27j8BjNFkKONTSAAOSIXwthantYKZgTlok
-         dBoqC1iAYNIxzruRpdR52FssBg16j3UDUTMQdExvTqVgSmokZRUVhxRgvRmUNHWvQgLM
-         OhQ+m1E5b2WpjzjUKXa30v9ghy+pD0D5+MKFzC7D5L7KhN/LOfVYfpy4skqhW3eGsDk6
-         XXMba55diAEeLWmRbShS44l9T+8HEOKSL37YerSWajhWu8Xa9fjCQEUMU+fPq+yuMm6E
-         u6Ew==
+        Fri, 18 Dec 2020 18:50:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608335325;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+ltfjKp0a0CZjK5VqWOENgE7djMo2w8zSxVmcmLegAo=;
+        b=cCI35rG0EgMsIpBcQyllz8zUMtI09O8trpCaun2Fh6dkKNuRjd6hS0Kg4qLAO2g28ITRkM
+        B2xIG1AR9Ce7yotaUG0VMXpXPT0nG18geAfSXlIswyPhOgUPMqYsrR0ktFQb7+D9IzzBHp
+        ibgAzh57Nw5MJ1q+d1TL5CnWQWj04iA=
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
+ [209.85.167.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-581-5f5NV1PGORWHY0mUEC87dA-1; Fri, 18 Dec 2020 18:48:43 -0500
+X-MC-Unique: 5f5NV1PGORWHY0mUEC87dA-1
+Received: by mail-oi1-f199.google.com with SMTP id f190so2096762oib.10
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 15:48:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CVUZDewVjbnAS4rVNDdhGUv6812bBoBX8FloR4mhQfY=;
-        b=DClvmVC+6LmABsJaE3xYvfXqgKzwAMVTvs+ra6+Uy2HJtP1H2NUoVSc1FBFyo0DTTU
-         L+8DogXrM7V4YeRXN5iDGzl50h8DDR/j/lLihuGbP7ATd4ZyF70dZEECxk6c22paVNc/
-         x7mndPBw8LSWYiNWcNlaZD12DB/FwVIz9SBMZ2ngDzdmFETaSAukXV9Olhd5lMcaeyBL
-         bHD+tLzlNhymwauyTUoHrUhwwkVDT4dMU/ZWnZA2Cjxp2bt0yT7hpNDRoXgF/cHfGWZJ
-         hlQj4fPb1nDAr5uQW+C7eNdGrKmag5120ScB5Mxr9kHCgZrHy0YhGxBGDyV5fTL7BAF8
-         tMSg==
-X-Gm-Message-State: AOAM5328RMzORDgOADvasgTv+K5qWibeaDUPPyFIsRTTCP3wtawijKcK
-        N6zeWugmK83hCmjuItWgJnc=
-X-Google-Smtp-Source: ABdhPJx2UQOLsIf2OalZVqW5ESze04/v9Ukl2g12dxgUkqySNr4VHiXXJHF4dNUCfswYHvLpW4Iz1w==
-X-Received: by 2002:a5d:690d:: with SMTP id t13mr6814722wru.410.1608335196953;
-        Fri, 18 Dec 2020 15:46:36 -0800 (PST)
-Received: from [192.168.1.211] ([2.31.224.116])
-        by smtp.gmail.com with ESMTPSA id c20sm9333375wmb.38.2020.12.18.15.46.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Dec 2020 15:46:35 -0800 (PST)
-Subject: Re: [PATCH v2 06/12] software_node: Add support for fwnode_graph*()
- family of functions
-From:   Daniel Scally <djrscally@gmail.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org, yong.zhi@intel.com,
-        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
-        tian.shu.qiu@intel.com, mchehab@kernel.org, robert.moore@intel.com,
-        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, andriy.shevchenko@linux.intel.com,
-        linux@rasmusvillemoes.dk,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
-        linus.walleij@linaro.org, heikki.krogerus@linux.intel.com,
-        kitakar@gmail.com, jorhand@linux.microsoft.com
-References: <20201217234337.1983732-1-djrscally@gmail.com>
- <20201217234337.1983732-7-djrscally@gmail.com>
- <X9zXPpirfS2mCFk0@pendragon.ideasonboard.com>
- <8d448981-ddd5-9e2e-03bc-0a67b318d379@gmail.com>
-Message-ID: <ea73b9ca-d0c0-060d-5af6-f7a82f36b136@gmail.com>
-Date:   Fri, 18 Dec 2020 23:46:34 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+ltfjKp0a0CZjK5VqWOENgE7djMo2w8zSxVmcmLegAo=;
+        b=SFopJneFNDiLae72aawIAm8PgF24vunsPfNbCf/uBh6G42OG7uLQiueJPyCyPAmcWV
+         xJ7mzEuaWPiBJB8OY0SSyPlnWu5IHU21W+DqPktdJoV0ZgtAKmMI/vcS+dRWBn2RHcSi
+         gvqauwEqpDhC4X8iC5YNcy0Q1sUkp4SvxNBqrtuNaLNx/oc25pYhiVxnPJrxtE6tOYOE
+         E3963XQyUe+cSXQcDF2O38APzvIjefaZk4YgX8cGeRwb2026higz3ZNAJvV96FA0eCmp
+         9ujsh0T68V4VpEGf3V43B0dhyFd5wXnXUi8WoCgoJaUJLRq8yCJqOVBPqTKoyESaIYK0
+         plFA==
+X-Gm-Message-State: AOAM532HPTAOQxEXyoL9kNM5kToiduzg2M6bCm0ERz/YCezalQJHRPN6
+        xrcs7Epb2LjhkVjdhn4ZgNn7G8KUViY4TH+AwaegYD8sWDMgJmPF1g365OkTOKaijwRFEwR57Qy
+        c+tbjvbTzhCc+v1FVDWc4VW7xPdiOJYPaRFjIKA0U
+X-Received: by 2002:a9d:749a:: with SMTP id t26mr4581980otk.277.1608335323019;
+        Fri, 18 Dec 2020 15:48:43 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyJ2nN1vXngcVUoOEAG74s5U3e8lcwmpg38reul9rkZLcrTb66nfk4bZlJ62m+lBkyygSFDFV1MAs6YD3J999k=
+X-Received: by 2002:a9d:749a:: with SMTP id t26mr4581966otk.277.1608335322797;
+ Fri, 18 Dec 2020 15:48:42 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <8d448981-ddd5-9e2e-03bc-0a67b318d379@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201205234354.1710-1-jarod@redhat.com> <11900.1607459690@famine>
+In-Reply-To: <11900.1607459690@famine>
+From:   Jarod Wilson <jarod@redhat.com>
+Date:   Fri, 18 Dec 2020 18:48:32 -0500
+Message-ID: <CAKfmpSfnD6-7UmaMCN10xvhZq1cbqosRQd9S6H_xjT=Oqi41JA@mail.gmail.com>
+Subject: Re: [PATCH net] bonding: reduce rtnl lock contention in mii monitor thread
+To:     Jay Vosburgh <jay.vosburgh@canonical.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Mahesh Bandewar <maheshb@google.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, Netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Dec 8, 2020 at 3:35 PM Jay Vosburgh <jay.vosburgh@canonical.com> wrote:
+>
+> Jarod Wilson <jarod@redhat.com> wrote:
+...
+> >The addition of a case BOND_LINK_BACK in bond_miimon_commit() is somewhat
+> >separate from the fix for the actual hang, but it eliminates a constant
+> >"invalid new link 3 on slave" message seen related to this issue, and it's
+> >not actually an invalid state here, so we shouldn't be reporting it as an
+> >error.
+...
+>         In principle, bond_miimon_commit should not see _BACK or _FAIL
+> state as a new link state, because those states should be managed at the
+> bond_miimon_inspect level (as they are the result of updelay and
+> downdelay).  These states should not be "committed" in the sense of
+> causing notifications or doing actions that require RTNL.
+>
+>         My recollection is that the "invalid new link" messages were the
+> result of a bug in de77ecd4ef02, which was fixed in 1899bb325149
+> ("bonding: fix state transition issue in link monitoring"), but maybe
+> the RTNL problem here induces that in some other fashion.
+>
+>         Either way, I believe this message is correct as-is.
 
-On 18/12/2020 22:13, Daniel Scally wrote:
+For reference, with 5.10.1 and this script:
 
->>> +			break;
->>> +		}
->>> +
->>> +		/* No more endpoints for that port, so stop passing old */
->>> +		old = NULL;
->>
->> I wonder if you could drop the 'old' variable and use 'enpoint' in the
->> call to software_node_get_next_child(). You could then drop these two
->> lines.
-> 
-> That won't work, because endpoint would at that point not be a child of
-> the port we're passing, and the function relies on it being one:
-> 
-> 	if (!p || list_empty(&p->children) ||
-> 	    (c && list_is_last(&c->entry, &p->children))) {
-> 		fwnode_handle_put(child);
-> 		return NULL;
-> 	}
-> 
+#!/bin/sh
 
-Wait, that's nonsense of course, because endpoint gets set to NULL when
-software_node_get_next_child() finds nothing - I'll double check but
-pretty sure you're right.
+slave1=ens4f0
+slave2=ens4f1
+
+modprobe -rv bonding
+modprobe -v bonding mode=2 miimon=100 updelay=200
+ip link set bond0 up
+ifenslave bond0 $slave1 $slave2
+sleep 5
+
+while :
+do
+        ip link set $slave1 down
+        sleep 1
+        ip link set $slave1 up
+        sleep 1
+done
+
+I get this repeating log output:
+
+[ 9488.262291] sfc 0000:05:00.0 ens4f0: link up at 10000Mbps
+full-duplex (MTU 1500)
+[ 9488.339508] bond0: (slave ens4f0): link status up, enabling it in 200 ms
+[ 9488.339511] bond0: (slave ens4f0): invalid new link 3 on slave
+[ 9488.547643] bond0: (slave ens4f0): link status definitely up, 10000
+Mbps full duplex
+[ 9489.276614] bond0: (slave ens4f0): link status definitely down,
+disabling slave
+[ 9490.273830] sfc 0000:05:00.0 ens4f0: link up at 10000Mbps
+full-duplex (MTU 1500)
+[ 9490.315540] bond0: (slave ens4f0): link status up, enabling it in 200 ms
+[ 9490.315543] bond0: (slave ens4f0): invalid new link 3 on slave
+[ 9490.523641] bond0: (slave ens4f0): link status definitely up, 10000
+Mbps full duplex
+[ 9491.356526] bond0: (slave ens4f0): link status definitely down,
+disabling slave
+[ 9492.285249] sfc 0000:05:00.0 ens4f0: link up at 10000Mbps
+full-duplex (MTU 1500)
+[ 9492.291522] bond0: (slave ens4f0): link status up, enabling it in 200 ms
+[ 9492.291523] bond0: (slave ens4f0): invalid new link 3 on slave
+[ 9492.499604] bond0: (slave ens4f0): link status definitely up, 10000
+Mbps full duplex
+[ 9493.331594] bond0: (slave ens4f0): link status definitely down,
+disabling slave
+
+"invalid new link 3 on slave" is there every single time.
+
+Side note: I'm not actually able to reproduce the repeating "link
+status up, enabling it in 200 ms" and never recovering from a downed
+link on this host, no clue why it's so reproducible w/another system.
+
+-- 
+Jarod Wilson
+jarod@redhat.com
+
