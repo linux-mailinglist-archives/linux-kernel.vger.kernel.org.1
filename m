@@ -2,55 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D80EB2DE4FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:38:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BFB22DE4DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:38:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729514AbgLROiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 09:38:03 -0500
-Received: from www262.sakura.ne.jp ([202.181.97.72]:62541 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728281AbgLROiB (ORCPT
+        id S1729158AbgLROhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 09:37:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729141AbgLROhC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 09:38:01 -0500
-Received: from fsav402.sakura.ne.jp (fsav402.sakura.ne.jp [133.242.250.101])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 0BIEaFQr098344;
-        Fri, 18 Dec 2020 23:36:15 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav402.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp);
- Fri, 18 Dec 2020 23:36:15 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 0BIEaEDS098333
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Fri, 18 Dec 2020 23:36:15 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH 2/4] hung_task: Replace "did_panic" with is_be_panic()
-To:     Pavel Machek <pavel@ucw.cz>, Xiaoming Ni <nixiaoming@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        dmurphy@ti.com, akpm@linux-foundation.org, keescook@chromium.org,
-        gpiccoli@canonical.com, wangle6@huawei.com
-References: <20201218114406.61906-1-nixiaoming@huawei.com>
- <20201218114406.61906-3-nixiaoming@huawei.com>
- <20201218125957.GA20160@duo.ucw.cz>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <eddf7043-4bbe-7440-6c3e-ff272f722a86@i-love.sakura.ne.jp>
-Date:   Fri, 18 Dec 2020 23:36:13 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Fri, 18 Dec 2020 09:37:02 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 759E1C0617A7
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 06:36:21 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id y23so2803654wmi.1
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 06:36:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=YWmqcLqIz38MWpPJhReutWXbyy1oVWYK/A38RJq0qsI=;
+        b=lZhtw4YVxqpHai4JdTeB2XrEhV07UVXh4y06cpjxeZXmu0zybW6wx/zJTsTei8FO8Y
+         yqNOOxnpygr6dwpi2uMVNgYRv/lcmczfh2IpIqToLi2GT9xxuycSKDH2UplkwMTMfYn1
+         WI4iNR58MRcmQv8P3hEOIAOF9kDiKSQ62FLPY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=YWmqcLqIz38MWpPJhReutWXbyy1oVWYK/A38RJq0qsI=;
+        b=g/dWlGKG35CbrnQ32miLDkOWuQWzt3862kym+LZPR9uowQYFIbxiVNomt35cMm9dyX
+         W7C0EqhND5iecE7dHMr/fqU8eGQiEjMKIIRXxjv7LgDdaQu27epF1Vf4J/nqmLo1B54N
+         RWdGdDTxVtRyuR9uaYhaeeyEFT3SR9fuGvQLiqUWsKwRsRAOuBBsPETEs9oAx7VF9DNt
+         mUPx/bpTDUHWeFX/h6z73UojrJ52gFTFDEQjhpzDRDA30Sl4KqaDpOtRg/CEUbK61+jF
+         ZghaGBB90mmg8IwqODy0Q+hhTvp3Yh3L6HsPQcfgqDeP70V7jxZTuXkFg8G+I+txnI/W
+         ZmHQ==
+X-Gm-Message-State: AOAM531dtZDizvbViWbrclEqN3isOJqep4uqNBIlljGceO7vW7kulKSr
+        CO1CD6xgfUEkFBUgUkulWuFJVw==
+X-Google-Smtp-Source: ABdhPJyqSRESDqSGQsY84t7M09sfQ8lcUyY2DVr2zPqGMIH/QznauwStZ8c9xSk3OEOK/jBzpLA9Jw==
+X-Received: by 2002:a1c:7d94:: with SMTP id y142mr4537787wmc.105.1608302180213;
+        Fri, 18 Dec 2020 06:36:20 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id t1sm14644464wro.27.2020.12.18.06.36.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Dec 2020 06:36:19 -0800 (PST)
+Date:   Fri, 18 Dec 2020 15:36:17 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Sandeep Patil <sspatil@google.com>,
+        dri-devel@lists.freedesktop.org,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        James Jones <jajones@nvidia.com>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        =?iso-8859-1?Q?=D8rjan?= Eide <orjan.eide@arm.com>,
+        linux-media@vger.kernel.org,
+        Suren Baghdasaryan <surenb@google.com>,
+        Daniel Mentz <danielmentz@google.com>
+Subject: Re: [RFC][PATCH 2/3] dma-buf: system_heap: Add pagepool support to
+ system heap
+Message-ID: <X9y+YZujWBTHMuH3@phenom.ffwll.local>
+Mail-Followup-To: John Stultz <john.stultz@linaro.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Sandeep Patil <sspatil@google.com>, dri-devel@lists.freedesktop.org,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        James Jones <jajones@nvidia.com>, Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        =?iso-8859-1?Q?=D8rjan?= Eide <orjan.eide@arm.com>,
+        linux-media@vger.kernel.org, Suren Baghdasaryan <surenb@google.com>,
+        Daniel Mentz <danielmentz@google.com>
+References: <20201217230612.32397-1-john.stultz@linaro.org>
+ <20201217230612.32397-2-john.stultz@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20201218125957.GA20160@duo.ucw.cz>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201217230612.32397-2-john.stultz@linaro.org>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/12/18 21:59, Pavel Machek wrote:
-> On Fri 2020-12-18 19:44:04, Xiaoming Ni wrote:
-> Plus.. is_being_panic is not really english. "is_paniccing" would be
-> closer...?
+On Thu, Dec 17, 2020 at 11:06:11PM +0000, John Stultz wrote:
+> Reuse/abuse the pagepool code from the network code to speed
+> up allocation performance.
+> 
+> This is similar to the ION pagepool usage, but tries to
+> utilize generic code instead of a custom implementation.
+> 
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: Liam Mark <lmark@codeaurora.org>
+> Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
+> Cc: Laura Abbott <labbott@kernel.org>
+> Cc: Brian Starkey <Brian.Starkey@arm.com>
+> Cc: Hridya Valsaraju <hridya@google.com>
+> Cc: Suren Baghdasaryan <surenb@google.com>
+> Cc: Sandeep Patil <sspatil@google.com>
+> Cc: Daniel Mentz <danielmentz@google.com>
+> Cc: Ørjan Eide <orjan.eide@arm.com>
+> Cc: Robin Murphy <robin.murphy@arm.com>
+> Cc: Ezequiel Garcia <ezequiel@collabora.com>
+> Cc: Simon Ser <contact@emersion.fr>
+> Cc: James Jones <jajones@nvidia.com>
+> Cc: linux-media@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: John Stultz <john.stultz@linaro.org>
 
-Or in_panic() ?
+We also have one of these in ttm. I think we should have at most one of
+these for the gpu ecosystem overall, maybe as a helper that can be plugged
+into all the places.
+
+Or I'm kinda missing something, which could be since I only glanced at
+yours for a bit. But it's also called page pool for buffer allocations,
+and I don't think there's that many ways to implement that really :-)
+-Daniel
+
+> ---
+>  drivers/dma-buf/heaps/Kconfig       |  1 +
+>  drivers/dma-buf/heaps/system_heap.c | 68 +++++++++++++++++++++++++++--
+>  2 files changed, 65 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/dma-buf/heaps/Kconfig b/drivers/dma-buf/heaps/Kconfig
+> index ecf65204f714..fa5e1c330cce 100644
+> --- a/drivers/dma-buf/heaps/Kconfig
+> +++ b/drivers/dma-buf/heaps/Kconfig
+> @@ -4,6 +4,7 @@ config DMABUF_HEAPS_DEFERRED_FREE
+>  config DMABUF_HEAPS_SYSTEM
+>  	bool "DMA-BUF System Heap"
+>  	depends on DMABUF_HEAPS
+> +	select PAGE_POOL
+>  	help
+>  	  Choose this option to enable the system dmabuf heap. The system heap
+>  	  is backed by pages from the buddy allocator. If in doubt, say Y.
+> diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+> index 17e0e9a68baf..885e30894b77 100644
+> --- a/drivers/dma-buf/heaps/system_heap.c
+> +++ b/drivers/dma-buf/heaps/system_heap.c
+> @@ -20,6 +20,7 @@
+>  #include <linux/scatterlist.h>
+>  #include <linux/slab.h>
+>  #include <linux/vmalloc.h>
+> +#include <net/page_pool.h>
+>  
+>  static struct dma_heap *sys_heap;
+>  
+> @@ -53,6 +54,7 @@ static gfp_t order_flags[] = {HIGH_ORDER_GFP, LOW_ORDER_GFP, LOW_ORDER_GFP};
+>   */
+>  static const unsigned int orders[] = {8, 4, 0};
+>  #define NUM_ORDERS ARRAY_SIZE(orders)
+> +struct page_pool *pools[NUM_ORDERS];
+>  
+>  static struct sg_table *dup_sg_table(struct sg_table *table)
+>  {
+> @@ -281,18 +283,59 @@ static void system_heap_vunmap(struct dma_buf *dmabuf, struct dma_buf_map *map)
+>  	dma_buf_map_clear(map);
+>  }
+>  
+> +static int system_heap_clear_pages(struct page **pages, int num, pgprot_t pgprot)
+> +{
+> +	void *addr = vmap(pages, num, VM_MAP, pgprot);
+> +
+> +	if (!addr)
+> +		return -ENOMEM;
+> +	memset(addr, 0, PAGE_SIZE * num);
+> +	vunmap(addr);
+> +	return 0;
+> +}
+> +
+> +static int system_heap_zero_buffer(struct system_heap_buffer *buffer)
+> +{
+> +	struct sg_table *sgt = &buffer->sg_table;
+> +	struct sg_page_iter piter;
+> +	struct page *pages[32];
+> +	int p = 0;
+> +	int ret = 0;
+> +
+> +	for_each_sgtable_page(sgt, &piter, 0) {
+> +		pages[p++] = sg_page_iter_page(&piter);
+> +		if (p == ARRAY_SIZE(pages)) {
+> +			ret = system_heap_clear_pages(pages, p, PAGE_KERNEL);
+> +			if (ret)
+> +				return ret;
+> +			p = 0;
+> +		}
+> +	}
+> +	if (p)
+> +		ret = system_heap_clear_pages(pages, p, PAGE_KERNEL);
+> +
+> +	return ret;
+> +}
+> +
+>  static void system_heap_dma_buf_release(struct dma_buf *dmabuf)
+>  {
+>  	struct system_heap_buffer *buffer = dmabuf->priv;
+>  	struct sg_table *table;
+>  	struct scatterlist *sg;
+> -	int i;
+> +	int i, j;
+> +
+> +	/* Zero the buffer pages before adding back to the pool */
+> +	system_heap_zero_buffer(buffer);
+>  
+>  	table = &buffer->sg_table;
+>  	for_each_sg(table->sgl, sg, table->nents, i) {
+>  		struct page *page = sg_page(sg);
+>  
+> -		__free_pages(page, compound_order(page));
+> +		for (j = 0; j < NUM_ORDERS; j++) {
+> +			if (compound_order(page) == orders[j])
+> +				break;
+> +		}
+> +		page_pool_put_full_page(pools[j], page, false);
+>  	}
+>  	sg_free_table(table);
+>  	kfree(buffer);
+> @@ -322,8 +365,7 @@ static struct page *alloc_largest_available(unsigned long size,
+>  			continue;
+>  		if (max_order < orders[i])
+>  			continue;
+> -
+> -		page = alloc_pages(order_flags[i], orders[i]);
+> +		page = page_pool_alloc_pages(pools[i], order_flags[i]);
+>  		if (!page)
+>  			continue;
+>  		return page;
+> @@ -428,6 +470,24 @@ static const struct dma_heap_ops system_heap_ops = {
+>  static int system_heap_create(void)
+>  {
+>  	struct dma_heap_export_info exp_info;
+> +	int i;
+> +
+> +	for (i = 0; i < NUM_ORDERS; i++) {
+> +		struct page_pool_params pp;
+> +
+> +		memset(&pp, 0, sizeof(pp));
+> +		pp.order = orders[i];
+> +		pools[i] = page_pool_create(&pp);
+> +
+> +		if (IS_ERR(pools[i])) {
+> +			int j;
+> +
+> +			pr_err("%s: page pool creation failed!\n", __func__);
+> +			for (j = 0; j < i; j++)
+> +				page_pool_destroy(pools[j]);
+> +			return PTR_ERR(pools[i]);
+> +		}
+> +	}
+>  
+>  	exp_info.name = "system";
+>  	exp_info.ops = &system_heap_ops;
+> -- 
+> 2.17.1
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
