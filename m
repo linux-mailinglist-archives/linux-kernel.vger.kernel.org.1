@@ -2,234 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1843E2DE31F
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 14:14:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7D622DE320
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 14:15:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727304AbgLRNNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 08:13:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48290 "EHLO
+        id S1726435AbgLRNO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 08:14:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgLRNNn (ORCPT
+        with ESMTP id S1725885AbgLRNO0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 08:13:43 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54736C0617A7
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 05:13:03 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id o17so5331568lfg.4
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 05:13:03 -0800 (PST)
+        Fri, 18 Dec 2020 08:14:26 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 879B2C0617A7
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 05:13:46 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id r4so2500652wmh.5
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 05:13:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LVSskhXaTH9jorKIwhUTBla/HmI/wv9IQeWGzoEsFnM=;
-        b=yn+RxTNVJdU1uNUk9KTEH94GV6CraoCNG3bJJck0gryWTMLAgpjmSk7dlD3C0XdMYB
-         R7T2EoeB2UXLHdoBRbl9CG+GhPcXUw83JXEMNh02mimndZBGvSCFUSxo8HvUqiGMeoAR
-         Ue5hNxDTvlvAW/JqhHVI3OywybPE+yqw8fIKFkCwyUNrtVNJszPqMX305ebZbRXPpd0l
-         Jr/YZNcfgDhE1RgemDUAktS3gnI5DGzCa/rj0tI5hqGvJjPCOZ7EGjKoPsP8euiaRhO2
-         pt+ZBl4yPu0IL9DsA0UBcU5/3MzjCz7RqclAEdUF0VQPJfwcwcjhIfqqvy4z/dygCXbx
-         l7iA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=PUVQS6CtIWduzl99LlA0iAcZSxRdzwKzX+tvELGUUxo=;
+        b=qa6KPiTj08B7VyjNIm5SSCKcAwhv1NukA2OGlBZOQFkZJr3uORyWkDbpJcNpkEgi4s
+         nun0mSNR0aR+M1djrx/Q6s6Ejn4bKCuJ+oAKDzXqBYSRJDKRKNQBA1Q1q5Uv/RAu1inu
+         TOMDRCO8pZEFYaYgIqKA1ObTXDSNYpnRB3X5F3ItTrYCU0mGkXcsN3lcmhtjS1uy2nTe
+         9aO2spbYglhLcJOpxya0xTNNTbB1K/8di+BT1crsku3dr1Iqw4f4os/IlClkk+iBnmMA
+         LAqGkNiRXWDhtKeLAcYELGSRKqwHFMeC3EGUdDN8KuillWr87K0MzKEm9YhsaOM9X+Vo
+         c4XQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LVSskhXaTH9jorKIwhUTBla/HmI/wv9IQeWGzoEsFnM=;
-        b=pSnJrZ3BaHfkL7+eyMiM9kfTAR2+CNh4GkRr3qosKttkj6Ws1iKXcfKj0yCwtnUxGF
-         hRJZe3iWbH5fksWSxA3W7OLSzYP7YClypAzGeZRuu4ptUzd6mWIHsaxcdhoCiv32K+Ve
-         b7oScIPvE++phJ68AcDA3HDKzCm0Xb5aUrkZ7KxHSMVvs/NoooFFAR3XBzl2uThNgw9u
-         fbGFyLfT+c1r/q00ylizjr0SAaXWVSvCYtFwIOcuTcg6o5SCF663NTjOm98QKiuaaOsc
-         SwPvTfac29AKhk70zGtwX1JxivC0e0hhUuPsq59uUircqf36PwYXX9T796sCOdsW/ZKh
-         vblA==
-X-Gm-Message-State: AOAM530Eix/8BjfRFl0JnUHmSUo/Yi/tsciKYQIe1DVH8+0Y3rqj7jNn
-        Nr02FIyMQq6FAsM2yABQbZVlWDjS7fjJE+IaUCh3TA==
-X-Google-Smtp-Source: ABdhPJwivhaI1YMsiYo0fx9M4my/+mnjcSuJyuBwd4Hdw0AJTbsyEgTFNADcmbyZKwv1Q/VuKteIzCd5qZAMpqIbrsU=
-X-Received: by 2002:a2e:9916:: with SMTP id v22mr1793686lji.221.1608297181777;
- Fri, 18 Dec 2020 05:13:01 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=PUVQS6CtIWduzl99LlA0iAcZSxRdzwKzX+tvELGUUxo=;
+        b=j2CvGlpNAdy6x7PgkDHO8jX87Q31dc2JyMhFPli16iDTpmrXTWWcztLdMOj70Jlmog
+         cjd2Rhpa/ZR1VMjRSSRE7Ft/XtZPTE/pnNN5eAKJt6ywDqXCaZvpSKetn65GixhWEstC
+         azYfGcx28WcAu6PuAGdjWgMS0RxFHd5ihXYk8/yXidYN0fNMlfKA8bTP6UkQCX3EnBEt
+         LCXV/xfnFtyGTSH9YcAd69e1H/I9cmZWXlXRlYPdNE/Z7Fzhn2SKJjTjDDBYSz2no4t3
+         edxElUNuovwdtQx7xQjadWxeMjN936ConrTvV6UvHIsq4wLWRqe9Dc6YmTg98/ACtyC/
+         uPdw==
+X-Gm-Message-State: AOAM533OnkH/tjDOIfM7UKHsaks3iKsFGgg/ejUh4bbkmQ37Q98dTCDY
+        WmsiKiCAPW7exBxGMRq+cu6iiA==
+X-Google-Smtp-Source: ABdhPJyN50l7VG2cM89yTTsLTEGHtcWLFqr+RQWuBiU2twvWtFsud6ffciBugHbjjOI1UiloucSiJQ==
+X-Received: by 2002:a1c:4843:: with SMTP id v64mr4222832wma.186.1608297225168;
+        Fri, 18 Dec 2020 05:13:45 -0800 (PST)
+Received: from dell ([91.110.221.216])
+        by smtp.gmail.com with ESMTPSA id w189sm11866853wmg.31.2020.12.18.05.13.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Dec 2020 05:13:44 -0800 (PST)
+Date:   Fri, 18 Dec 2020 13:13:42 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>, Pavel Machek <pavel@ucw.cz>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Brown <broonie@kernel.org>, netdev@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: Fix JSON pointers
+Message-ID: <20201218131342.GQ207743@dell>
+References: <20201217223429.354283-1-robh@kernel.org>
 MIME-Version: 1.0
-References: <1608283672-18240-1-git-send-email-xuewen.yan94@gmail.com>
-In-Reply-To: <1608283672-18240-1-git-send-email-xuewen.yan94@gmail.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 18 Dec 2020 14:12:50 +0100
-Message-ID: <CAKfTPtC9bfoMeYhhmjQoZyPRYvWLa=4L4qFC_B4vWUMRh8nz4g@mail.gmail.com>
-Subject: Re: [PATCH v3] sched/fair: Avoid stale CPU util_est value for
- schedutil in task dequeue
-To:     Xuewen Yan <xuewen.yan94@gmail.com>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Patrick Bellasi <patrick.bellasi@arm.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        =?UTF-8?B?546L56eRIChLZSBXYW5nKQ==?= <Ke.Wang@unisoc.com>,
-        Ryan Y <xuewyan@foxmail.com>,
-        Xuewen Yan <Xuewen.Yan@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201217223429.354283-1-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Dec 2020 at 10:28, Xuewen Yan <xuewen.yan94@gmail.com> wrote:
->
-> From: Xuewen Yan <xuewen.yan@unisoc.com>
->
-> CPU (root cfs_rq) estimated utilization (util_est) is currently used in
-> dequeue_task_fair() to drive frequency selection before it is updated.
->
-> with:
->
-> CPU_util        : rq->cfs.avg.util_avg
-> CPU_util_est    : rq->cfs.avg.util_est
-> CPU_utilization : max(CPU_util, CPU_util_est)
-> task_util       : p->se.avg.util_avg
-> task_util_est   : p->se.avg.util_est
->
-> dequeue_task_fair():
->
->     /* (1) CPU_util and task_util update + inform schedutil about
->            CPU_utilization changes */
->     for_each_sched_entity() /* 2 loops */
->         (dequeue_entity() ->) update_load_avg() -> cfs_rq_util_change()
->          -> cpufreq_update_util() ->...-> sugov_update_[shared\|single]
->          -> sugov_get_util() -> cpu_util_cfs()
->
->     /* (2) CPU_util_est and task_util_est update */
->     util_est_dequeue()
->
-> cpu_util_cfs() uses CPU_utilization which could lead to a false (too
-> high) utilization value for schedutil in task ramp-down or ramp-up
-> scenarios during task dequeue.
->
-> To mitigate the issue split the util_est update (2) into:
->
->  (A) CPU_util_est update in util_est_dequeue()
->  (B) task_util_est update in util_est_update()
->
-> Place (A) before (1) and keep (B) where (2) is. The latter is necessary
-> since (B) relies on task_util update in (1).
->
+On Thu, 17 Dec 2020, Rob Herring wrote:
 
-maybe add a
-Fixes: 7f65ea42eb00 ("sched/fair: Add util_est on top of PELT")
-
-> Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
-> Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-
+> The correct syntax for JSON pointers begins with a '/' after the '#'.
+> Without a '/', the string should be interpretted as a subschema
+> identifier. The jsonschema module currently doesn't handle subschema
+> identifiers and incorrectly allows JSON pointers to begin without a '/'.
+> Let's fix this before it becomes a problem when jsonschema module is
+> fixed.
+> 
+> Converted with:
+> perl -p -i -e 's/yaml#definitions/yaml#\/definitions/g' `find Documentation/devicetree/bindings/ -name "*.yaml"`
+> 
+> Cc: Maxime Ripard <mripard@kernel.org>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Cc: Guenter Roeck <linux@roeck-us.net>
+> Cc: Jonathan Cameron <jic23@kernel.org>
+> Cc: Lars-Peter Clausen <lars@metafoo.de>
+> Cc: Lee Jones <lee.jones@linaro.org>
+> Cc: Daniel Thompson <daniel.thompson@linaro.org>
+> Cc: Jingoo Han <jingoohan1@gmail.com>
+> Cc: Pavel Machek <pavel@ucw.cz>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Andrew Lunn <andrew@lunn.ch>
+> Cc: Florian Fainelli <f.fainelli@gmail.com>
+> Cc: Sebastian Reichel <sre@kernel.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: netdev@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
-> Changes since v2:
-> -modify the comment
-> -move util_est_dequeue above within_margin()
-> -modify the tab and space
->
-> Changes since v1:
-> -change the util_est_dequeue/update to inline type
-> -use unsigned int enqueued rather than util_est in util_est_dequeue
-> -remove "cpu" var
->
-> ---
->  kernel/sched/fair.c | 43 ++++++++++++++++++++++++++++---------------
->  1 file changed, 28 insertions(+), 15 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index ae7ceba..f3a1b7a 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -3932,6 +3932,22 @@ static inline void util_est_enqueue(struct cfs_rq *cfs_rq,
->         trace_sched_util_est_cfs_tp(cfs_rq);
->  }
->
-> +static inline void util_est_dequeue(struct cfs_rq *cfs_rq,
-> +                                   struct task_struct *p)
-> +{
-> +       unsigned int enqueued;
-> +
-> +       if (!sched_feat(UTIL_EST))
-> +               return;
-> +
-> +       /* Update root cfs_rq's estimated utilization */
-> +       enqueued  = cfs_rq->avg.util_est.enqueued;
-> +       enqueued -= min_t(unsigned int, enqueued, _task_util_est(p));
-> +       WRITE_ONCE(cfs_rq->avg.util_est.enqueued, enqueued);
-> +
-> +       trace_sched_util_est_cfs_tp(cfs_rq);
-> +}
-> +
->  /*
->   * Check if a (signed) value is within a specified (unsigned) margin,
->   * based on the observation that:
-> @@ -3945,23 +3961,16 @@ static inline bool within_margin(int value, int margin)
->         return ((unsigned int)(value + margin - 1) < (2 * margin - 1));
->  }
->
-> -static void
-> -util_est_dequeue(struct cfs_rq *cfs_rq, struct task_struct *p, bool task_sleep)
-> +static inline void util_est_update(struct cfs_rq *cfs_rq,
-> +                                  struct task_struct *p,
-> +                                  bool task_sleep)
->  {
->         long last_ewma_diff;
->         struct util_est ue;
-> -       int cpu;
->
->         if (!sched_feat(UTIL_EST))
->                 return;
->
-> -       /* Update root cfs_rq's estimated utilization */
-> -       ue.enqueued  = cfs_rq->avg.util_est.enqueued;
-> -       ue.enqueued -= min_t(unsigned int, ue.enqueued, _task_util_est(p));
-> -       WRITE_ONCE(cfs_rq->avg.util_est.enqueued, ue.enqueued);
-> -
-> -       trace_sched_util_est_cfs_tp(cfs_rq);
-> -
->         /*
->          * Skip update of task's estimated utilization when the task has not
->          * yet completed an activation, e.g. being migrated.
-> @@ -4001,8 +4010,7 @@ static inline bool within_margin(int value, int margin)
->          * To avoid overestimation of actual task utilization, skip updates if
->          * we cannot grant there is idle time in this CPU.
->          */
-> -       cpu = cpu_of(rq_of(cfs_rq));
-> -       if (task_util(p) > capacity_orig_of(cpu))
-> +       if (task_util(p) > capacity_orig_of(cpu_of(rq_of(cfs_rq))))
->                 return;
->
->         /*
-> @@ -4085,8 +4093,11 @@ static inline int newidle_balance(struct rq *rq, struct rq_flags *rf)
->  util_est_enqueue(struct cfs_rq *cfs_rq, struct task_struct *p) {}
->
->  static inline void
-> -util_est_dequeue(struct cfs_rq *cfs_rq, struct task_struct *p,
-> -                bool task_sleep) {}
-> +util_est_dequeue(struct cfs_rq *cfs_rq, struct task_struct *p) {}
-> +
-> +static inline void
-> +util_est_update(struct cfs_rq *cfs_rq, struct task_struct *p,
-> +               bool task_sleep) {}
->  static inline void update_misfit_status(struct task_struct *p, struct rq *rq) {}
->
->  #endif /* CONFIG_SMP */
-> @@ -5589,6 +5600,8 @@ static void dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
->         int idle_h_nr_running = task_has_idle_policy(p);
->         bool was_sched_idle = sched_idle_rq(rq);
->
-> +       util_est_dequeue(&rq->cfs, p);
-> +
->         for_each_sched_entity(se) {
->                 cfs_rq = cfs_rq_of(se);
->                 dequeue_entity(cfs_rq, se, flags);
-> @@ -5639,7 +5652,7 @@ static void dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
->                 rq->next_balance = jiffies;
->
->  dequeue_throttle:
-> -       util_est_dequeue(&rq->cfs, p, task_sleep);
-> +       util_est_update(&rq->cfs, p, task_sleep);
->         hrtick_update(rq);
->  }
->
-> --
-> 1.9.1
->
+>  .../devicetree/bindings/arm/idle-states.yaml  |  2 +-
+>  .../bus/allwinner,sun50i-a64-de2.yaml         |  2 +-
+>  .../bindings/bus/baikal,bt1-axi.yaml          |  2 +-
+>  .../bindings/connector/usb-connector.yaml     | 10 ++---
+>  .../devicetree/bindings/dma/dma-common.yaml   |  4 +-
+>  .../devicetree/bindings/dma/dma-router.yaml   |  2 +-
+>  .../devicetree/bindings/dma/ingenic,dma.yaml  |  2 +-
+>  .../bindings/dma/snps,dma-spear1340.yaml      | 10 ++---
+>  .../devicetree/bindings/eeprom/at24.yaml      |  4 +-
+>  .../devicetree/bindings/eeprom/at25.yaml      |  4 +-
+>  .../bindings/hwmon/moortec,mr75203.yaml       |  2 +-
+>  .../bindings/hwmon/sensirion,shtc1.yaml       |  4 +-
+>  .../devicetree/bindings/hwmon/ti,tmp513.yaml  |  2 +-
+>  .../bindings/iio/light/upisemi,us5182.yaml    |  2 +-
+>  .../iio/proximity/semtech,sx9310.yaml         |  6 +--
+>  .../devicetree/bindings/input/gpio-keys.yaml  | 12 +++---
+>  .../interrupt-controller/mti,gic.yaml         |  4 +-
+>  .../interrupt-controller/ti,pruss-intc.yaml   |  2 +-
+>  .../interrupt-controller/ti,sci-inta.yaml     |  2 +-
+
+>  .../bindings/leds/backlight/common.yaml       |  4 +-
+
+Acked-by: Lee Jones <lee.jones@linaro.org>
+
+>  .../devicetree/bindings/leds/common.yaml      | 16 ++++----
+>  .../devicetree/bindings/leds/leds-lp55xx.yaml | 10 ++---
+>  .../net/allwinner,sun8i-a83t-emac.yaml        |  6 +--
+>  .../bindings/net/amlogic,meson-dwmac.yaml     |  2 +-
+>  .../devicetree/bindings/net/dsa/dsa.yaml      |  6 +--
+>  .../bindings/net/ethernet-controller.yaml     | 24 ++++++------
+>  .../devicetree/bindings/net/ethernet-phy.yaml | 20 +++++-----
+>  .../bindings/net/fsl,qoriq-mc-dpmac.yaml      |  2 +-
+>  .../devicetree/bindings/net/mdio.yaml         |  2 +-
+>  .../bindings/net/mediatek,star-emac.yaml      |  2 +-
+>  .../devicetree/bindings/net/qcom,ipa.yaml     |  2 +-
+>  .../devicetree/bindings/net/snps,dwmac.yaml   | 38 +++++++++----------
+>  .../bindings/net/socionext,uniphier-ave4.yaml |  2 +-
+>  .../bindings/net/ti,cpsw-switch.yaml          |  2 +-
+>  .../devicetree/bindings/net/ti,dp83867.yaml   | 12 +++---
+>  .../devicetree/bindings/net/ti,dp83869.yaml   |  8 ++--
+>  .../bindings/net/ti,k3-am654-cpsw-nuss.yaml   |  4 +-
+>  .../bindings/net/wireless/qcom,ath11k.yaml    |  2 +-
+>  .../devicetree/bindings/phy/ti,omap-usb2.yaml |  4 +-
+>  .../power/mediatek,power-controller.yaml      | 12 +++---
+>  .../bindings/power/supply/cw2015_battery.yaml |  2 +-
+>  .../devicetree/bindings/powerpc/sleep.yaml    |  2 +-
+>  .../devicetree/bindings/serial/8250.yaml      |  6 +--
+>  .../bindings/soc/ti/k3-ringacc.yaml           |  2 +-
+>  .../sound/allwinner,sun4i-a10-codec.yaml      |  2 +-
+>  .../bindings/sound/st,stm32-sai.yaml          |  4 +-
+>  46 files changed, 138 insertions(+), 138 deletions(-)
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
