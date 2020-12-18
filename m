@@ -2,284 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9C22DE082
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 10:43:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 184FD2DE08A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 10:45:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733078AbgLRJnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 04:43:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42800 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732761AbgLRJnM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 04:43:12 -0500
-Date:   Fri, 18 Dec 2020 10:42:27 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608284550;
-        bh=8UBtkOy+EdvKbwp1+yD9OVf/OKarJDscavBZccF/vbE=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JuubyK77I2chT0Q+9DDp3GiVMW0MY8NRLaF41Dfuv36GIDFCFpHB5P7WtpB+Ux3Kd
-         +DqTbIpjNHxGw/KCuz/nZahz6QUGpusLpZtUjWnBKk9BuA/tsantQ/eBNub4Lq4Vge
-         HnkuOxhyVZi5jqoqf+sHHMKZvFW3IiY7XfA0449M2ue0LbjUtyypCK5b6SGZLn9jvv
-         kME/YHp1eIV5NrB8l0t3ALVvM33E5w7plofpjYmfvKDj9uR0S3qx+I4Cmld0kYtH+K
-         kLhdajMvYa2EF9ftHjnpSviz6hAyX243Sj6H1VOZWS+q57a+c8vUN3g86mBbNTKYyf
-         zE9R/ik3GzuDA==
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Hermes Zhang <Hermes.Zhang@axis.com>
-Cc:     Dan Murphy <dmurphy@ti.com>, Sebastian Reichel <sre@kernel.org>,
-        kernel <kernel@axis.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] power: supply: bq27xxx: Supporrt CHARGE_NOW for
- bq27z561/bq28z610/bq34z100
-Message-ID: <20201218094227.cacwoxzfu7e26mek@pali>
-References: <20201217114737.7263-1-chenhui.zhang@axis.com>
- <20201217115648.iiferqyvg7tlnmln@pali>
- <c77d50a397054b20a4945140820a54e0@XBOX03.axis.com>
+        id S2389035AbgLRJow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 04:44:52 -0500
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:34447 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725884AbgLRJov (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 04:44:51 -0500
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 0BI9hnaF028988;
+        Fri, 18 Dec 2020 18:43:50 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 0BI9hnaF028988
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1608284630;
+        bh=alQmUM5+tWJqBj5AGDAC6yCMV4c4CFP866srY1VNulo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=uW4s18H/citZM+QfCrscS8WfmMi/Mn4nct5x80/L9fR1m/GWAz3ZEpIJAyXvWBMVw
+         F7xYudp8f+khjxr5Pi4qKWlTBzCqmuQHVQeY8hdJCKynAY2+IQ/W4zrpebm3IdkSJC
+         1ydLE4+FxHBqvW64Mc/tCRBSgjRbH1T7tpGl9EJeYGM7NtaR62IAyC6MLL8UTpgWjk
+         yLnUIGKDC77pA5qEHCUFcJt0ikL0mZJa/oYcOPdvaEpTt4P8IDChI0Wq/mL7yUQh94
+         2WWzhahUkHIpKsrcJqLbn0rCBWpWnLboLhZjgBmFQ61I7VOPgaof3PhlljEubwki1k
+         1cDlqJgIB1/kw==
+X-Nifty-SrcIP: [209.85.210.169]
+Received: by mail-pf1-f169.google.com with SMTP id w6so1235918pfu.1;
+        Fri, 18 Dec 2020 01:43:50 -0800 (PST)
+X-Gm-Message-State: AOAM532SOnYrZ1bLpARS0aONbyyjNZzXdn6Cwsz0WEigWHfh/HDUnZXv
+        1Yucjq41FYQbSl4ymbxcx9VFq5q20mIJhRGN5yM=
+X-Google-Smtp-Source: ABdhPJxhOqKe4b7iWEFn5mk6GAS2pz/7Os/zKCbpu4MrKTP1oYIv1m0VhMMQWsllL5LQ9mgudsNp7eeM2e/87DkdZO4=
+X-Received: by 2002:a65:6a16:: with SMTP id m22mr3370270pgu.175.1608284629399;
+ Fri, 18 Dec 2020 01:43:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c77d50a397054b20a4945140820a54e0@XBOX03.axis.com>
-User-Agent: NeoMutt/20180716
+References: <CGME20201218075758eucas1p1605768803a5c9edce4fbe54b3e3b859a@eucas1p1.samsung.com>
+ <20201203125700.161354-1-masahiroy@kernel.org> <b9b17126-9af5-2f73-526e-91bb9fd27f71@samsung.com>
+In-Reply-To: <b9b17126-9af5-2f73-526e-91bb9fd27f71@samsung.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 18 Dec 2020 18:43:12 +0900
+X-Gmail-Original-Message-ID: <CAK7LNART2qQBY7Vc8rhMiXS_Fwty7qpWjwwfPrUegTb-gjy6sA@mail.gmail.com>
+Message-ID: <CAK7LNART2qQBY7Vc8rhMiXS_Fwty7qpWjwwfPrUegTb-gjy6sA@mail.gmail.com>
+Subject: Re: [PATCH] gcc-plugins: simplify GCC plugin-dev capability test
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Emese Revfy <re.emese@gmail.com>,
+        linux-hardening@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 17 December 2020 12:03:24 Hermes Zhang wrote:
-> Hi Pali,
-> 
-> From the TI spec (e.g. https://www.ti.com/lit/ug/tidu077/tidu077.pdf?ts=1608206347022&ref_url=https%253A%252F%252Fwww.google.com%252F) , the NAC and RC (RemainingCapacity) are different:
-> 
-> 4.5 NominalAvailableCapacity( ): 0x08/0x09
-> This read-only command pair returns the uncompensated (less than C/20 load) battery capacity
-> remaining. Units are mAh.
-> 
-> 4.7 RemainingCapacity( ): 0x0c/0x0d
-> This read-only command pair returns the compensated battery capacity remaining. Units are mAh.
+On Fri, Dec 18, 2020 at 4:58 PM Marek Szyprowski
+<m.szyprowski@samsung.com> wrote:
+>
+> Hi,
+>
+> On 03.12.2020 13:57, Masahiro Yamada wrote:
+> > Linus pointed out a third of the time in the Kconfig parse stage comes
+> > from the single invocation of cc1plus in scripts/gcc-plugin.sh [1],
+> > and directly testing plugin-version.h for existence cuts down the
+> > overhead a lot. [2]
+> >
+> > This commit takes one step further to kill the build test entirely.
+> >
+> > The small piece of code was probably intended to test the C++ designated
+> > initializer, which was not supported until C++20.
+> >
+> > In fact, with -pedantic option given, both GCC and Clang emit a warning.
+> >
+> > $ echo 'class test { public: int test; } test = { .test = 1 };' | g++ -x c++ -pedantic - -fsyntax-only
+> > <stdin>:1:43: warning: C++ designated initializers only available with '-std=c++2a' or '-std=gnu++2a' [-Wpedantic]
+> > $ echo 'class test { public: int test; } test = { .test = 1 };' | clang++ -x c++ -pedantic - -fsyntax-only
+> > <stdin>:1:43: warning: designated initializers are a C++20 extension [-Wc++20-designator]
+> > class test { public: int test; } test = { .test = 1 };
+> >                                            ^
+> > 1 warning generated.
+> >
+> > Otherwise, modern C++ compilers should be able to build the code, and
+> > hopefully skipping this test should not make any practical problem.
+> >
+> > Checking the existence of plugin-version.h is still needed to ensure
+> > the plugin-dev package is installed. The test code is now small enough
+> > to be embedded in scripts/gcc-plugins/Kconfig.
+> >
+> > [1] https://lore.kernel.org/lkml/CAHk-=wjU4DCuwQ4pXshRbwDCUQB31ScaeuDo1tjoZ0_PjhLHzQ@mail.gmail.com/
+> > [2] https://lore.kernel.org/lkml/CAHk-=whK0aQxs6Q5ijJmYF1n2ch8cVFSUzU5yUM_HOjig=+vnw@mail.gmail.com/
+> >
+> > Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+>
+> This patch landed in linux next-20201217 as commit 1e860048c53e
+> ("gcc-plugins: simplify GCC plugin-dev capability test").
+>
+> It causes a build break with my tests setup, but I'm not sure weather it
+> is really an issue of this commit or a toolchain I use. However I've
+> checked various versions of the gcc cross-compilers released by Linaro
+> at https://releases.linaro.org/components/toolchain/binaries/ and all
+> fails with the same error:
+>
+> $ make ARCH=arm
+> CROSS_COMPILE=../../cross/gcc-arm-10.2-2020.11-x86_64-arm-none-eabi/bin/arm-none-eabi-
+> zImage
+>    HOSTCXX scripts/gcc-plugins/arm_ssp_per_task_plugin.so
+> In file included from
+> /home/mszyprow/dev/cross/gcc-arm-10.2-2020.11-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/10.2.1/plugin/include/gcc-plugin.h:28:0,
+>                   from scripts/gcc-plugins/gcc-common.h:7,
+>                   from scripts/gcc-plugins/arm_ssp_per_task_plugin.c:3:
+> /home/mszyprow/dev/cross/gcc-arm-10.2-2020.11-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/10.2.1/plugin/include/system.h:687:10:
+> fatal error: gmp.h: No such file or directory
+>   #include <gmp.h>
+>            ^~~~~~~
+> compilation terminated.
+> scripts/gcc-plugins/Makefile:47: recipe for target
+> 'scripts/gcc-plugins/arm_ssp_per_task_plugin.so' failed
+> make[2]: *** [scripts/gcc-plugins/arm_ssp_per_task_plugin.so] Error 1
+> scripts/Makefile.build:496: recipe for target 'scripts/gcc-plugins' failed
+> make[1]: *** [scripts/gcc-plugins] Error 2
+> Makefile:1190: recipe for target 'scripts' failed
+> make: *** [scripts] Error 2
+>
+> Compilation works if I use the cross-gcc provided by
+> gcc-7-arm-linux-gnueabi/gcc-arm-linux-gnueabi Ubuntu packages, which is:
+>
+> $ arm-linux-gnueabi-gcc --version
+> arm-linux-gnueabi-gcc (Ubuntu/Linaro 7.5.0-3ubuntu1~18.04) 7.5.0
+>
+> Best regards
+>
+> --
+> Marek Szyprowski, PhD
+> Samsung R&D Institute Poland
+>
 
-Ok, thank you for explanation!
 
-> But for some chip e.g. bq27z561 it doesn't have the NAC Reg, so I prefer to use RC instead.
+I can compile gcc-plugins with Linaro toolchians.
 
-I see that in your patch every configuration has either NAC or RC, but
-none both (and some has none of them). Does it mean that every chip has
-NAC or RC, but not both?
+The version of mine is this:
 
-> Best Regards,
-> Hermes
-> 
-> -----Original Message-----
-> From: Pali Rohár <pali@kernel.org> 
-> Sent: 2020年12月17日 19:57
-> To: Hermes Zhang <Hermes.Zhang@axis.com>
-> Cc: Dan Murphy <dmurphy@ti.com>; Sebastian Reichel <sre@kernel.org>; kernel <kernel@axis.com>; Hermes Zhang <Hermes.Zhang@axis.com>; linux-pm@vger.kernel.org; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH] power: supply: bq27xxx: Supporrt CHARGE_NOW for bq27z561/bq28z610/bq34z100
-> 
-> On Thursday 17 December 2020 19:47:37 Hermes Zhang wrote:
-> > From: Hermes Zhang <chenhuiz@axis.com>
-> > 
-> > The CHARGE_NOW is map to REG_NAC for all the gauge chips beofre. But 
-> > for some chips (e.g. bq27z561) which doesn't have the REG_NAC, we use 
-> > REG_RC (remaining capacity) for CHARGE_NOW.
-> 
-> Hello! What is the difference between NAC and RC? Is not it same thing?
-> I'm asking because for me from this patch for power supply API purpose it is the same thing... And therefore if it does not make sense to define for bq27z561 chip BQ27XXX_REG_NAC reg value to value which you used in BQ27XXX_REG_RC (to simplify whole implementation).
-> 
-> > Signed-off-by: Hermes Zhang <chenhuiz@axis.com>
-> > ---
-> >  drivers/power/supply/bq27xxx_battery.c | 35 
-> > +++++++++++++++++++++++++-
-> >  1 file changed, 34 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/power/supply/bq27xxx_battery.c 
-> > b/drivers/power/supply/bq27xxx_battery.c
-> > index 315e0909e6a4..c1a49a598e9b 100644
-> > --- a/drivers/power/supply/bq27xxx_battery.c
-> > +++ b/drivers/power/supply/bq27xxx_battery.c
-> > @@ -110,6 +110,7 @@ enum bq27xxx_reg_index {
-> >  	BQ27XXX_REG_TTES,	/* Time-to-Empty Standby */
-> >  	BQ27XXX_REG_TTECP,	/* Time-to-Empty at Constant Power */
-> >  	BQ27XXX_REG_NAC,	/* Nominal Available Capacity */
-> > +	BQ27XXX_REG_RC,		/* Remaining Capacity */
-> >  	BQ27XXX_REG_FCC,	/* Full Charge Capacity */
-> >  	BQ27XXX_REG_CYCT,	/* Cycle Count */
-> >  	BQ27XXX_REG_AE,		/* Available Energy */
-> > @@ -145,6 +146,7 @@ static u8
-> >  		[BQ27XXX_REG_TTES] = 0x1c,
-> >  		[BQ27XXX_REG_TTECP] = 0x26,
-> >  		[BQ27XXX_REG_NAC] = 0x0c,
-> > +		[BQ27XXX_REG_RC] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_FCC] = 0x12,
-> >  		[BQ27XXX_REG_CYCT] = 0x2a,
-> >  		[BQ27XXX_REG_AE] = 0x22,
-> > @@ -169,6 +171,7 @@ static u8
-> >  		[BQ27XXX_REG_TTES] = 0x1c,
-> >  		[BQ27XXX_REG_TTECP] = 0x26,
-> >  		[BQ27XXX_REG_NAC] = 0x0c,
-> > +		[BQ27XXX_REG_RC] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_FCC] = 0x12,
-> >  		[BQ27XXX_REG_CYCT] = 0x2a,
-> >  		[BQ27XXX_REG_AE] = INVALID_REG_ADDR, @@ -193,6 +196,7 @@ static u8
-> >  		[BQ27XXX_REG_TTES] = 0x1a,
-> >  		[BQ27XXX_REG_TTECP] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_NAC] = 0x0c,
-> > +		[BQ27XXX_REG_RC] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_FCC] = 0x12,
-> >  		[BQ27XXX_REG_CYCT] = 0x2a,
-> >  		[BQ27XXX_REG_AE] = INVALID_REG_ADDR, @@ -215,6 +219,7 @@ static u8
-> >  		[BQ27XXX_REG_TTES] = 0x1c,
-> >  		[BQ27XXX_REG_TTECP] = 0x26,
-> >  		[BQ27XXX_REG_NAC] = 0x0c,
-> > +		[BQ27XXX_REG_RC] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_FCC] = 0x12,
-> >  		[BQ27XXX_REG_CYCT] = 0x2a,
-> >  		[BQ27XXX_REG_AE] = 0x22,
-> > @@ -237,6 +242,7 @@ static u8
-> >  		[BQ27XXX_REG_TTES] = 0x1a,
-> >  		[BQ27XXX_REG_TTECP] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_NAC] = 0x0c,
-> > +		[BQ27XXX_REG_RC] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_FCC] = 0x12,
-> >  		[BQ27XXX_REG_CYCT] = 0x1e,
-> >  		[BQ27XXX_REG_AE] = INVALID_REG_ADDR, @@ -257,6 +263,7 @@ static u8
-> >  		[BQ27XXX_REG_TTES] = 0x1c,
-> >  		[BQ27XXX_REG_TTECP] = 0x26,
-> >  		[BQ27XXX_REG_NAC] = 0x0c,
-> > +		[BQ27XXX_REG_RC] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_FCC] = 0x12,
-> >  		[BQ27XXX_REG_CYCT] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_AE] = 0x22,
-> > @@ -277,6 +284,7 @@ static u8
-> >  		[BQ27XXX_REG_TTES] = 0x1c,
-> >  		[BQ27XXX_REG_TTECP] = 0x26,
-> >  		[BQ27XXX_REG_NAC] = 0x0c,
-> > +		[BQ27XXX_REG_RC] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_FCC] = 0x12,
-> >  		[BQ27XXX_REG_CYCT] = 0x2a,
-> >  		[BQ27XXX_REG_AE] = 0x22,
-> > @@ -297,6 +305,7 @@ static u8
-> >  		[BQ27XXX_REG_TTES] = 0x1c,
-> >  		[BQ27XXX_REG_TTECP] = 0x26,
-> >  		[BQ27XXX_REG_NAC] = 0x0c,
-> > +		[BQ27XXX_REG_RC] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_FCC] = 0x12,
-> >  		[BQ27XXX_REG_CYCT] = 0x2a,
-> >  		[BQ27XXX_REG_AE] = 0x22,
-> > @@ -317,6 +326,7 @@ static u8
-> >  		[BQ27XXX_REG_TTES] = 0x1c,
-> >  		[BQ27XXX_REG_TTECP] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_NAC] = 0x0c,
-> > +		[BQ27XXX_REG_RC] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_FCC] = 0x12,
-> >  		[BQ27XXX_REG_CYCT] = 0x1e,
-> >  		[BQ27XXX_REG_AE] = INVALID_REG_ADDR, @@ -337,6 +347,7 @@ static u8
-> >  		[BQ27XXX_REG_TTES] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_TTECP] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_NAC] = INVALID_REG_ADDR,
-> > +		[BQ27XXX_REG_RC] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_FCC] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_CYCT] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_AE] = INVALID_REG_ADDR, @@ -361,6 +372,7 @@ static u8
-> >  		[BQ27XXX_REG_TTES] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_TTECP] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_NAC] = 0x0c,
-> > +		[BQ27XXX_REG_RC] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_FCC] = 0x12,
-> >  		[BQ27XXX_REG_CYCT] = 0x2a,
-> >  		[BQ27XXX_REG_AE] = INVALID_REG_ADDR, @@ -382,6 +394,7 @@ static u8
-> >  		[BQ27XXX_REG_TTES] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_TTECP] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_NAC] = 0x0c,
-> > +		[BQ27XXX_REG_RC] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_FCC] = 0x12,
-> >  		[BQ27XXX_REG_CYCT] = 0x2a,
-> >  		[BQ27XXX_REG_AE] = INVALID_REG_ADDR, @@ -405,6 +418,7 @@ static u8
-> >  		[BQ27XXX_REG_TTES] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_TTECP] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_NAC] = 0x0c,
-> > +		[BQ27XXX_REG_RC] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_FCC] = 0x12,
-> >  		[BQ27XXX_REG_CYCT] = 0x2a,
-> >  		[BQ27XXX_REG_AE] = INVALID_REG_ADDR, @@ -425,6 +439,7 @@ static u8
-> >  		[BQ27XXX_REG_TTES] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_TTECP] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_NAC] = 0x08,
-> > +		[BQ27XXX_REG_RC] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_FCC] = 0x0e,
-> >  		[BQ27XXX_REG_CYCT] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_AE] = INVALID_REG_ADDR, @@ -450,6 +465,7 @@ static u8
-> >  		[BQ27XXX_REG_TTES] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_TTECP] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_NAC] = INVALID_REG_ADDR,
-> > +		[BQ27XXX_REG_RC] = 0x10,
-> >  		[BQ27XXX_REG_FCC] = 0x12,
-> >  		[BQ27XXX_REG_CYCT] = 0x2a,
-> >  		[BQ27XXX_REG_AE] = 0x22,
-> > @@ -470,6 +486,7 @@ static u8
-> >  		[BQ27XXX_REG_TTES] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_TTECP] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_NAC] = INVALID_REG_ADDR,
-> > +		[BQ27XXX_REG_RC] = 0x10,
-> >  		[BQ27XXX_REG_FCC] = 0x12,
-> >  		[BQ27XXX_REG_CYCT] = 0x2a,
-> >  		[BQ27XXX_REG_AE] = 0x22,
-> > @@ -490,6 +507,7 @@ static u8
-> >  		[BQ27XXX_REG_TTES] = 0x1e,
-> >  		[BQ27XXX_REG_TTECP] = INVALID_REG_ADDR,
-> >  		[BQ27XXX_REG_NAC] = INVALID_REG_ADDR,
-> > +		[BQ27XXX_REG_RC] = 0x04,
-> >  		[BQ27XXX_REG_FCC] = 0x06,
-> >  		[BQ27XXX_REG_CYCT] = 0x2c,
-> >  		[BQ27XXX_REG_AE] = 0x24,
-> > @@ -745,6 +763,7 @@ static enum power_supply_property bq27z561_props[] = {
-> >  	POWER_SUPPLY_PROP_TIME_TO_FULL_NOW,
-> >  	POWER_SUPPLY_PROP_TECHNOLOGY,
-> >  	POWER_SUPPLY_PROP_CHARGE_FULL,
-> > +	POWER_SUPPLY_PROP_CHARGE_NOW,
-> >  	POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN,
-> >  	POWER_SUPPLY_PROP_CYCLE_COUNT,
-> >  	POWER_SUPPLY_PROP_POWER_AVG,
-> > @@ -764,6 +783,7 @@ static enum power_supply_property bq28z610_props[] = {
-> >  	POWER_SUPPLY_PROP_TIME_TO_FULL_NOW,
-> >  	POWER_SUPPLY_PROP_TECHNOLOGY,
-> >  	POWER_SUPPLY_PROP_CHARGE_FULL,
-> > +	POWER_SUPPLY_PROP_CHARGE_NOW,
-> >  	POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN,
-> >  	POWER_SUPPLY_PROP_CYCLE_COUNT,
-> >  	POWER_SUPPLY_PROP_POWER_AVG,
-> > @@ -784,6 +804,7 @@ static enum power_supply_property bq34z100_props[] = {
-> >  	POWER_SUPPLY_PROP_TIME_TO_FULL_NOW,
-> >  	POWER_SUPPLY_PROP_TECHNOLOGY,
-> >  	POWER_SUPPLY_PROP_CHARGE_FULL,
-> > +	POWER_SUPPLY_PROP_CHARGE_NOW,
-> >  	POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN,
-> >  	POWER_SUPPLY_PROP_CYCLE_COUNT,
-> >  	POWER_SUPPLY_PROP_ENERGY_NOW,
-> > @@ -1518,6 +1539,15 @@ static inline int bq27xxx_battery_read_nac(struct bq27xxx_device_info *di)
-> >  	return bq27xxx_battery_read_charge(di, BQ27XXX_REG_NAC);  }
-> >  
-> > +/*
-> > + * Return the battery Remaining Capacity in µAh
-> > + * Or < 0 if something fails.
-> > + */
-> > +static inline int bq27xxx_battery_read_rc(struct bq27xxx_device_info 
-> > +*di) {
-> > +	return bq27xxx_battery_read_charge(di, BQ27XXX_REG_RC); }
-> > +
-> >  /*
-> >   * Return the battery Full Charge Capacity in µAh
-> >   * Or < 0 if something fails.
-> > @@ -1965,7 +1995,10 @@ static int bq27xxx_battery_get_property(struct power_supply *psy,
-> >  			val->intval = POWER_SUPPLY_TECHNOLOGY_LION;
-> >  		break;
-> >  	case POWER_SUPPLY_PROP_CHARGE_NOW:
-> > -		ret = bq27xxx_simple_value(bq27xxx_battery_read_nac(di), val);
-> > +		if (di->regs[BQ27XXX_REG_NAC] != INVALID_REG_ADDR)
-> > +			ret = bq27xxx_simple_value(bq27xxx_battery_read_nac(di), val);
-> > +		else
-> > +			ret = bq27xxx_simple_value(bq27xxx_battery_read_rc(di), val);
-> >  		break;
-> >  	case POWER_SUPPLY_PROP_CHARGE_FULL:
-> >  		ret = bq27xxx_simple_value(di->cache.charge_full, val);
-> > --
-> > 2.20.1
-> > 
+masahiro@oscar:~/ref/linux-next$
+~/tools/arm-linaro-7.5/bin/arm-linux-gnueabihf-gcc --version
+arm-linux-gnueabihf-gcc (Linaro GCC 7.5-2019.12) 7.5.0
+Copyright (C) 2017 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+
+
+
+Maybe, it depends on the host environment?
+
+
+Please try this:
+
+$ sudo apt install libgmp-dev
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
