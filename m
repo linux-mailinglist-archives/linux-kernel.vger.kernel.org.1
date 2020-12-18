@@ -2,78 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89FD62DE13A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 11:43:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A932DE13D
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 11:43:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389092AbgLRKlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 05:41:40 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2269 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733146AbgLRKlk (ORCPT
+        id S2389122AbgLRKmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 05:42:33 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9631 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725897AbgLRKmc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 05:41:40 -0500
-Received: from fraeml706-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Cy5073Fhyz67Q9x;
-        Fri, 18 Dec 2020 18:37:11 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml706-chm.china.huawei.com (10.206.15.55) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Fri, 18 Dec 2020 11:40:58 +0100
-Received: from [10.210.168.198] (10.210.168.198) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 18 Dec 2020 10:40:57 +0000
-Subject: Re: [PATCH] lib/logic_pio: Fix overlap check for pio registery
-To:     Jiahui Cen <cenjiahui@huawei.com>, <linux-kernel@vger.kernel.org>
-CC:     Wei Xu <xuwei5@hisilicon.com>, Arnd Bergmann <arnd@arndb.de>,
-        "Bjorn Helgaas" <bhelgaas@google.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        <xieyingtai@huawei.com>
-References: <20201218062335.5320-1-cenjiahui@huawei.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <2cde14cd-91da-aae4-70aa-656d629259e6@huawei.com>
-Date:   Fri, 18 Dec 2020 10:40:13 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Fri, 18 Dec 2020 05:42:32 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cy54j4mVcz15Zdt;
+        Fri, 18 Dec 2020 18:41:09 +0800 (CST)
+Received: from use12-sp2.huawei.com (10.67.189.174) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 18 Dec 2020 18:41:41 +0800
+From:   Xiaoming Ni <nixiaoming@huawei.com>
+To:     <vkoul@kernel.org>, <dmaengine@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <agross@kernel.org>, <bjorn.andersson@linaro.org>
+CC:     <nixiaoming@huawei.com>, <wangle6@huawei.com>
+Subject: [PATCH] dma/qcom/gpi: Fixes a format mismatch
+Date:   Fri, 18 Dec 2020 18:41:37 +0800
+Message-ID: <20201218104137.59200-1-nixiaoming@huawei.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20201218062335.5320-1-cenjiahui@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.168.198]
-X-ClientProxiedBy: lhreml744-chm.china.huawei.com (10.201.108.194) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.189.174]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/12/2020 06:23, Jiahui Cen wrote:
-> Since the [start, end) is a half-open interval, a range with the end equal
-> to the start of another range should not be considered as overlapped.
-> 
-> Signed-off-by: Jiahui Cen <cenjiahui@huawei.com>
-> ---
->   lib/logic_pio.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/lib/logic_pio.c b/lib/logic_pio.c
-> index f32fe481b492..445d611f1dc1 100644
-> --- a/lib/logic_pio.c
-> +++ b/lib/logic_pio.c
-> @@ -57,7 +57,7 @@ int logic_pio_register_range(struct logic_pio_hwaddr *new_range)
->   		    new_range->flags == LOGIC_PIO_CPU_MMIO) {
->   			/* for MMIO ranges we need to check for overlap */
->   			if (start >= range->hw_start + range->size ||
-> -			    end < range->hw_start) {
-> +			    end <= range->hw_start) {
+drivers/dma/qcom/gpi.c:1419:3: warning: format '%lu' expects argument of
+ type 'long unsigned int', but argument 8 has type 'size_t {aka unsigned
+ int}' [-Wformat=]
+drivers/dma/qcom/gpi.c:1427:31: warning: format '%lu' expects argument of
+ type 'long unsigned int', but argument 3 has type 'size_t {aka unsigned
+ int}' [-Wformat=]
+drivers/dma/qcom/gpi.c:1447:3: warning: format '%llx' expects argument of
+ type 'long long unsigned int', but argument 4 has type 'dma_addr_t {aka
+ unsigned int}' [-Wformat=]
+drivers/dma/qcom/gpi.c:1447:3: warning: format '%llx' expects argument of
+ type 'long long unsigned int', but argument 5 has type 'phys_addr_t {aka
+ unsigned int}' [-Wformat=]
 
-It looks like your change is correct, but should not really have an 
-impact in practice since:
-a: BIOSes generally list ascending IO port CPU addresses
-b. there is space between IO port CPU address regions
+Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+---
+ drivers/dma/qcom/gpi.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Have you seen a problem here?
+diff --git a/drivers/dma/qcom/gpi.c b/drivers/dma/qcom/gpi.c
+index d2334f535de2..556c070a514c 100644
+--- a/drivers/dma/qcom/gpi.c
++++ b/drivers/dma/qcom/gpi.c
+@@ -1416,7 +1416,7 @@ static int gpi_alloc_ring(struct gpi_ring *ring, u32 elements,
+ 	len = 1 << bit;
+ 	ring->alloc_size = (len + (len - 1));
+ 	dev_dbg(gpii->gpi_dev->dev,
+-		"#el:%u el_size:%u len:%u actual_len:%llu alloc_size:%lu\n",
++		"#el:%u el_size:%u len:%u actual_len:%llu alloc_size:%zu\n",
+ 		  elements, el_size, (elements * el_size), len,
+ 		  ring->alloc_size);
+ 
+@@ -1424,7 +1424,7 @@ static int gpi_alloc_ring(struct gpi_ring *ring, u32 elements,
+ 					       ring->alloc_size,
+ 					       &ring->dma_handle, GFP_KERNEL);
+ 	if (!ring->pre_aligned) {
+-		dev_err(gpii->gpi_dev->dev, "could not alloc size:%lu mem for ring\n",
++		dev_err(gpii->gpi_dev->dev, "could not alloc size:%zu mem for ring\n",
+ 			ring->alloc_size);
+ 		return -ENOMEM;
+ 	}
+@@ -1444,8 +1444,8 @@ static int gpi_alloc_ring(struct gpi_ring *ring, u32 elements,
+ 	smp_wmb();
+ 
+ 	dev_dbg(gpii->gpi_dev->dev,
+-		"phy_pre:0x%0llx phy_alig:0x%0llx len:%u el_size:%u elements:%u\n",
+-		ring->dma_handle, ring->phys_addr, ring->len,
++		"phy_pre:%pad phy_alig:%pa len:%u el_size:%u elements:%u\n",
++		&ring->dma_handle, &ring->phys_addr, ring->len,
+ 		ring->el_size, ring->elements);
+ 
+ 	return 0;
+-- 
+2.27.0
 
-Thanks,
-John
