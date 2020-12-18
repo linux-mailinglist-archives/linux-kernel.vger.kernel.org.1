@@ -2,82 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B12DE2DEAFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 22:20:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 158812DEAFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 22:20:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728333AbgLRVSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 16:18:54 -0500
-Received: from mail-oo1-f43.google.com ([209.85.161.43]:36294 "EHLO
-        mail-oo1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725938AbgLRVSw (ORCPT
+        id S1728595AbgLRVTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 16:19:01 -0500
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:39951 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726423AbgLRVS7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 16:18:52 -0500
-Received: by mail-oo1-f43.google.com with SMTP id j8so897880oon.3;
-        Fri, 18 Dec 2020 13:18:37 -0800 (PST)
+        Fri, 18 Dec 2020 16:18:59 -0500
+Received: by mail-ot1-f48.google.com with SMTP id j12so3253386ota.7;
+        Fri, 18 Dec 2020 13:18:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Wt0mUTvYjgEGXoROiBGL2mhX+iiLbtYyfxaY4AlF4b0=;
-        b=gQOlriaV5LdmqkDxpyuItd4izHsUl7jkHvmd20z08swmx7Ce3PMmEetaXLXQGSypNx
-         pmPVtQpJsVWWd1TNgmVFebQ7/LtRwdImqQJCfsXe8/nj/8z70GTmt0Z1whR+00KVYJGZ
-         zSM/YVQCWogUU0qwqDICxxkFm2PIYzh5/GNjGPNc6poekDW3xnKjxRv//SbcVsa2i/tQ
-         5Id+UAh5aOia3nUl5Bq5mtbCGpPlNgXwcfbwjw4qokZiNvWF+MyZHlQueaWkm6czmzIO
-         Z/XzHG6xvYCynUqAE2Wq3B53ZtmVi6vvh6Vilkag6rsv0iT+YjieHi7ds+A3bbDIsoFV
-         SNjg==
-X-Gm-Message-State: AOAM531Je812r59fzuoPUmJaDU+fAyGE3I/iunz3f34pE1slBk6kbN+H
-        K4OgCitgd2gz231F4TVafQ==
-X-Google-Smtp-Source: ABdhPJwT6F2L2kbZlfz78TAQW12p5MPMaWCcTiZJv/kmxWXY9jGqABo5u7uXi2dOQHOzcAfCzvikWw==
-X-Received: by 2002:a4a:d126:: with SMTP id n6mr4253081oor.47.1608326291623;
-        Fri, 18 Dec 2020 13:18:11 -0800 (PST)
+        bh=H68oJ1veub/N/sJgxu616Ofk95w8UIImHp8Gl1T/ERU=;
+        b=lQT7iRqmMs82opvO62N5C6jeWDmPtBCMQNwOQ1U8a8lKCSR2GwfTxi8fcd+mBmXrcy
+         RGcDdBDXdQ8T6aIPlWjE3utMZklaDxAobkjm82qAtYe8+pW5DWdHxF3nXNQ7ZFchGLT1
+         appaW5cKafJjqYSkf7qU4ZcUPFeB+eyXcmWs9rBhO+bz65Iddcf2LGa/8iPP1H0iTH5k
+         hAl5PXsO4bQH5yeRqDfwHdhBdLDNsRQCguzO7GWrP6CElsqzJ305Hl6TT8b7A21ut+DZ
+         NI7IaFSGPwov42zdeImjJDnprj1HQvdFs8QDsUwmOgknJUuXWX4IiY+Y4vRoqARL9Pnv
+         NyzQ==
+X-Gm-Message-State: AOAM530agVMDKv0/Of7CmbTphSYeruitdAWbbayEwJOQazRbvkC6XgeV
+        bhYJFkk3BIBbLglFUE80cA==
+X-Google-Smtp-Source: ABdhPJy8sQG5Cy69vLmv0EPAgz9Gu+Ggh0c7KDIAvES68hWv/VkEHe57wEWEs1xemVvo1hDc3Fmn/Q==
+X-Received: by 2002:a9d:208a:: with SMTP id x10mr4243581ota.260.1608326298191;
+        Fri, 18 Dec 2020 13:18:18 -0800 (PST)
 Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id i25sm2125830oto.56.2020.12.18.13.18.09
+        by smtp.gmail.com with ESMTPSA id t24sm2213662oou.4.2020.12.18.13.18.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Dec 2020 13:18:10 -0800 (PST)
-Received: (nullmailer pid 2192063 invoked by uid 1000);
-        Fri, 18 Dec 2020 21:18:09 -0000
-Date:   Fri, 18 Dec 2020 15:18:09 -0600
+        Fri, 18 Dec 2020 13:18:17 -0800 (PST)
+Received: (nullmailer pid 2192221 invoked by uid 1000);
+        Fri, 18 Dec 2020 21:18:15 -0000
+Date:   Fri, 18 Dec 2020 15:18:15 -0600
 From:   Rob Herring <robh@kernel.org>
 To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
+Cc:     devicetree <devicetree@vger.kernel.org>,
         NXP Linux Team <linux-imx@nxp.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        devicetree <devicetree@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
         Shawn Guo <shawnguo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
         linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Fabio Estevam <festevam@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
         Sascha Hauer <s.hauer@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Ricardo Ribalda <ribalda@kernel.org>,
-        linux-media <linux-media@vger.kernel.org>
-Subject: Re: [PATCH 2/4] dt-bindings: media: nokia, smia: eliminate yamllint
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>
+Subject: Re: [PATCH 1/1] dt-bindings: clock: imx8qxp-lpcg: eliminate yamllint
  warnings
-Message-ID: <20201218211809.GE2190633@robh.at.kernel.org>
-References: <20201207042400.1498-1-thunder.leizhen@huawei.com>
- <20201207042400.1498-3-thunder.leizhen@huawei.com>
+Message-ID: <20201218211815.GF2190633@robh.at.kernel.org>
+References: <20201207045527.1607-1-thunder.leizhen@huawei.com>
+ <20201207045527.1607-2-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201207042400.1498-3-thunder.leizhen@huawei.com>
+In-Reply-To: <20201207045527.1607-2-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 07 Dec 2020 12:23:58 +0800, Zhen Lei wrote:
+On Mon, 07 Dec 2020 12:55:27 +0800, Zhen Lei wrote:
 > Eliminate the following yamllint warnings:
-> ./Documentation/devicetree/bindings/media/i2c/mipi-ccs.yaml
-> :4:1: [error] missing document start "---" (document-start)
-> :29:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
-> :32:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+> ./Documentation/devicetree/bindings/clock/imx8qxp-lpcg.yaml
+> :32:13:[warning] wrong indentation: expected 14 but found 12 (indentation)
+> :35:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
 > 
 > Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 > ---
->  Documentation/devicetree/bindings/media/i2c/mipi-ccs.yaml | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
+>  .../devicetree/bindings/clock/imx8qxp-lpcg.yaml      | 20 ++++++++++----------
+>  1 file changed, 10 insertions(+), 10 deletions(-)
 > 
 
 Applied, thanks!
