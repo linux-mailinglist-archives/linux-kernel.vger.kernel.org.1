@@ -2,67 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D04782DEB03
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 22:20:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E5412DEB06
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 22:22:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726427AbgLRVUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 16:20:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55040 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725846AbgLRVU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 16:20:29 -0500
-X-Gm-Message-State: AOAM5313z7sM/5GRlxJ0cY4qTDx+CIOXunBm6GclyCfC4U5ziYqASZ9h
-        rum/YzUyeOZpYRugJkpwmH8yZZeRBCVJEzY4dQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608326389;
-        bh=a+g5UEoM5NxyQ3jhAuGuysDaoBi8Q33J+a7X928sR4Q=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qoxf+Q5UtAGsWkJ5xkj9v25mcsePsjG6ghd6qCzHOHRgwy2a+7rbqwfa1P5aW3MaX
-         XR347v+971BNssrNpVDbpXLUZEih6hxCXl3DToDznk/58iRoxrcAUj9mFta2oDQwr3
-         uZEbchQqp61uPKeq8nbjc2LhpL5e2JQovlC5HWbSih6tB/eavfCDhuuYc8wB+HTfva
-         G9gCr7zWxAWVMNVNINOlPWxnzZQPvQP89KZm96cyaQ9YN7y5Dah+B14WctSxYNXc3l
-         r8o3igRWoJHyaPtWKv4UkRw+ktUN/A9RsqgK8ZnJzDKhNHHkxMdIuTLoNOltiHo8OL
-         rzYRrNZ/9G5cA==
-X-Google-Smtp-Source: ABdhPJx8+fT17UjOQlU9nPAMzm+E52wGYx2xiG5y0kU0vonyFLY90euAUWHxhMzieLAV3mq6BLXXHJ/WPviL7X0W090=
-X-Received: by 2002:a05:6402:352:: with SMTP id r18mr6198469edw.373.1608326387306;
- Fri, 18 Dec 2020 13:19:47 -0800 (PST)
-MIME-Version: 1.0
-References: <20201211215611.24392-1-rasmus.villemoes@prevas.dk>
- <20201218101054.25416-1-rasmus.villemoes@prevas.dk> <20201218101054.25416-2-rasmus.villemoes@prevas.dk>
-In-Reply-To: <20201218101054.25416-2-rasmus.villemoes@prevas.dk>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Fri, 18 Dec 2020 15:19:35 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKZh7iKY+i6jxU+csH_dkdq=sRHff-5+C08WRQqoGnnOQ@mail.gmail.com>
-Message-ID: <CAL_JsqKZh7iKY+i6jxU+csH_dkdq=sRHff-5+C08WRQqoGnnOQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] dt-bindings: rtc: add reset-source property
-To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Cc:     "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
-        <linux-rtc@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Qiang Zhao <qiang.zhao@nxp.com>,
-        Bruno Thomsen <bruno.thomsen@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726481AbgLRVWC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 18 Dec 2020 16:22:02 -0500
+Received: from coyote.holtmann.net ([212.227.132.17]:34021 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725778AbgLRVWC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 16:22:02 -0500
+Received: from marcel-macbook.holtmann.net (p4fefcdf9.dip0.t-ipconnect.de [79.239.205.249])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 6F417CED31;
+        Fri, 18 Dec 2020 22:28:36 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.40.0.2.32\))
+Subject: Re: [PATCH] Bluetooth: btqcomsmd: Fix a resource leak in error
+ handling paths in the probe function
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20201212094658.83861-1-christophe.jaillet@wanadoo.fr>
+Date:   Fri, 18 Dec 2020 22:21:19 +0100
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <53063008-8797-4395-B9D1-9D56D2D0D54C@holtmann.org>
+References: <20201212094658.83861-1-christophe.jaillet@wanadoo.fr>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+X-Mailer: Apple Mail (2.3654.40.0.2.32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 4:11 AM Rasmus Villemoes
-<rasmus.villemoes@prevas.dk> wrote:
->
-> Some RTCs, e.g. the pcf2127, can be used as a hardware watchdog. But
-> if the reset pin is not actually wired up, the driver exposes a
-> watchdog device that doesn't actually work.
->
-> Provide a standard binding that can be used to indicate that a given
-> RTC can perform a reset of the machine, similar to wakeup-source.
->
-> Suggested-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-> ---
->  Documentation/devicetree/bindings/rtc/rtc.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
+Hi Christophe,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+> Some resource should be released in the error handling path of the probe
+> function, as already done in the remove function.
+> 
+> The remove function was fixed in commit 5052de8deff5 ("soc: qcom: smd:
+> Transition client drivers from smd to rpmsg")
+> 
+> Fixes: 1511cc750c3d ("Bluetooth: Introduce Qualcomm WCNSS SMD based HCI driver")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+> drivers/bluetooth/btqcomsmd.c | 27 +++++++++++++++++++--------
+> 1 file changed, 19 insertions(+), 8 deletions(-)
+
+patch has been applied to bluetooth-next tree.
+
+Regards
+
+Marcel
+
