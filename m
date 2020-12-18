@@ -2,110 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABD5C2DE2F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 13:59:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7A8E2DE300
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 14:00:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726697AbgLRM6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 07:58:24 -0500
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:32888 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725971AbgLRM6Y (ORCPT
+        id S1726811AbgLRM7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 07:59:41 -0500
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:34296 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726018AbgLRM7k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 07:58:24 -0500
-Received: by mail-ot1-f45.google.com with SMTP id b24so1828068otj.0;
-        Fri, 18 Dec 2020 04:58:08 -0800 (PST)
+        Fri, 18 Dec 2020 07:59:40 -0500
+Received: by mail-ot1-f48.google.com with SMTP id a109so1820668otc.1;
+        Fri, 18 Dec 2020 04:59:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=nw9EMgBnuebmSA/eYty+YbhjJO9tx7n6Ij1TQfze3Sk=;
-        b=INdLSKvqhdp3lpERp7qLeRXILXEMbAXW5AhZ5Q0coo6EoEE8aMt62s6L5shnxl2V2f
-         SBAw2NI23ixMi6iiIBW4cG+cthOgrfAN33x5nUGPkrNrn4/Tythz9CU1g6eZcQDa4awi
-         WXUqKFxWbnSnbWe/cbBEvSuJbRatCIk0BEnVisB+Wv0J1rNWL86lSkADZ0NvjRsvlB10
-         jpij8cMi973NjgMtiRR21iabtHCh3UcoHv5v5Y6Rto7FlJIvelRLNc1DYMLQtezxxQtq
-         JHlvmW0AgbOcTBciYt7rLBiLzbbpzSu9EM+UteZ3xfzomaCFAim9/OK/wLsqdvT6rd6L
-         VWIQ==
-X-Gm-Message-State: AOAM533IFAk+Nt76KgjQYPwjFteBUP94oFpB7XjUgc9QBsB1CElDoxbh
-        +yAOUsaNU2vk+3NGHRsNEJThW5JieRWFm3pw8L0=
-X-Google-Smtp-Source: ABdhPJzF0RSOZYgTecBqyxPakGWb84W0hkuZ/n9XaI2yj+auV3WrPoUbWwHUSLvzrySPPyJvlIjyekYSBmOkSuZLCgc=
-X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr2657442otc.145.1608296263283;
- Fri, 18 Dec 2020 04:57:43 -0800 (PST)
+        bh=yDDmWva6k+onru4ElOy7d/wNOJ87lqqkD8MjbWeXtwU=;
+        b=h9l/5f8+VEgFrP0DwRt52uDcSr6FQMmcWo2QaEfEU/brQkGAK4D9HBbf9+f+1RAU0M
+         FqEdTZIrD6er/0VJnvqkIFpn/WqhZoIj6tTniMY+i3xYrPdbUHx/9yGQdH+Qu/fOHzG9
+         EiDc/RxeroC2hd0K+NW4GC/O/Ppx6gOWXmGsCS/5a+G0KxgkRf8KpQ73nDbtt7vDZ42a
+         FWfqWpGvItnoJLTTTdDY1KA5gZdSziAOn6cen0RGA9xAjnDWCtP6EMUd7p1WLu5ab9m+
+         db3gC8LHOUxLVyvsRh5YY+u8IqjS4G+G2FnJM9BuKJ4vCTMlzFQqJys0Flr3e6pNXSnN
+         6+bQ==
+X-Gm-Message-State: AOAM531iH3MAT7QXUbrw0z/uTAgqLk+Rz52Y7uTenqSwtVOgs6RcZyuX
+        lywS8EsjmxLqnBQUO8UHyd7dohfVlRzXJFspnjo=
+X-Google-Smtp-Source: ABdhPJyVnS44pT7s+1XMXMXLzgmkCPbXXe1tAtY16NLc5knQgn/2hErWmFmznw8uQihbNqN3+62Ky++aLOQYfTNMNNI=
+X-Received: by 2002:a05:6830:1f5a:: with SMTP id u26mr2667908oth.250.1608296339939;
+ Fri, 18 Dec 2020 04:58:59 -0800 (PST)
 MIME-Version: 1.0
-References: <20201213183759.223246-1-aford173@gmail.com> <20201213183759.223246-7-aford173@gmail.com>
- <CAMuHMdU+d7SZc9gh_3WS+bqd4EhXYh=kv0XvYrgUUckdQ7o5jw@mail.gmail.com> <CAHCN7xJf2T3uFLDtJxvjFYzCksWq02+CUY51_WmnU44YDJKy9Q@mail.gmail.com>
-In-Reply-To: <CAHCN7xJf2T3uFLDtJxvjFYzCksWq02+CUY51_WmnU44YDJKy9Q@mail.gmail.com>
+References: <20201217162740.1452000-1-aford173@gmail.com>
+In-Reply-To: <20201217162740.1452000-1-aford173@gmail.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 18 Dec 2020 13:57:32 +0100
-Message-ID: <CAMuHMdU5kBHV9-kBnJbtLp6zGcYRjyTxhmGsstKFnh=Qe4jcYg@mail.gmail.com>
-Subject: Re: [PATCH 06/18] arm64: dts: renesas: beacon: Configure Audio CODEC clocks
+Date:   Fri, 18 Dec 2020 13:58:48 +0100
+Message-ID: <CAMuHMdV3WKFLPKf_6nVc0bX4wXe55GtKST9whiEKpG_8wq6t6w@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: wm8962: Add optional mclk device tree binding
 To:     Adam Ford <aford173@gmail.com>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+Cc:     ALSA Development Mailing List <alsa-devel@alsa-project.org>,
         Adam Ford-BE <aford@beaconembedded.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
         <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adam,
-
-On Thu, Dec 17, 2020 at 2:33 PM Adam Ford <aford173@gmail.com> wrote:
-> On Thu, Dec 17, 2020 at 5:12 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > CC alsa-devel
-> >
-> > On Sun, Dec 13, 2020 at 7:38 PM Adam Ford <aford173@gmail.com> wrote:
-> > > With the newly added configurable clock options, the audio CODEC can
-> > > configure the mclk automatically.  Add the reference to the versaclock.
-> > > Since the devices on I2C5 can communicate at 400KHz, let's also increase
-> > > that too
-> > >
-> > > Signed-off-by: Adam Ford <aford173@gmail.com>
-> >
-> > Thanks for your patch!
-> >
-> > > --- a/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
-> > > +++ b/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
-> > > @@ -424,13 +424,15 @@ &i2c0 {
-> > >
-> > >  &i2c5 {
-> > >         status = "okay";
-> > > -       clock-frequency = <100000>;
-> > > +       clock-frequency = <400000>;
-> > >         pinctrl-0 = <&i2c5_pins>;
-> > >         pinctrl-names = "default";
-> > >
-> > >         codec: wm8962@1a {
-> > >                 compatible = "wlf,wm8962";
-> > >                 reg = <0x1a>;
-> > > +               clocks = <&versaclock6_bb 3>;
-> > > +               clock-names = "mclk";
-> >
-> > While the driver does get the (nameless) clock, the DT bindings lack any
-> > mention of a clocks property.  It would be good to update the bindings.
+On Thu, Dec 17, 2020 at 5:27 PM Adam Ford <aford173@gmail.com> wrote:
+> The driver can request an optional clock for mclk.
+> Update the txt file to reflect this.
 >
-> Agreed.  I'll push an update to add the clocks property.
+> Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 
-Thanks!
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-> > Note that arch/arm/boot/dts/imx6-logicpd-baseboard.dtsi and
-> > arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi (both by your
-> > hand) use "xclk" instead of "mclk"?
+> --- a/Documentation/devicetree/bindings/sound/wm8962.txt
+> +++ b/Documentation/devicetree/bindings/sound/wm8962.txt
+> @@ -9,6 +9,9 @@ Required properties:
+>    - reg : the I2C address of the device.
 >
-> On the schematics for the two imx boards, it's labeled as xclk, so it
-> was named as such.  For this board, the schematic names it mclk. The
-> driver doesn't care about the clock-names property, so I'll just
-> remove them.
+>  Optional properties:
+> +
 
-If there's a single clock, not using clock-names is fine.
-If you do use clock-names, the names should be clock-centric, not
-board-centric.
+This blank line is not needed (but it will probably be removed during a
+future txt-to-yaml conversion ;-)
 
-BTW, looking at the WM8962 datasheet, it's called "MCLK".
+> +  - clocks : The clock source of the mclk
+> +
+>    - spk-mono: This is a boolean property. If present, the SPK_MONO bit
+>      of R51 (Class D Control 2) gets set, indicating that the speaker is
+>      in mono mode.
+> @@ -27,6 +30,7 @@ Example:
+>  wm8962: codec@1a {
+>         compatible = "wlf,wm8962";
+>         reg = <0x1a>;
+> +       clocks = <&clks IMX6QDL_CLK_CKO>;
+>
+>         gpio-cfg = <
+>                 0x0000 /* 0:Default */
 
 Gr{oetje,eeting}s,
 
