@@ -2,96 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C5882DE0A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 10:57:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F74F2DE0AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 11:00:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732751AbgLRJ5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 04:57:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725884AbgLRJ5L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 04:57:11 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51C7DC0617B0;
-        Fri, 18 Dec 2020 01:56:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=JSLM4OfM7/trItGTOdPouTwDzw71WhBmeFz89kT06OY=; b=sN58et3oH3htVeS5g3JX1kh9Vh
-        Qzcj+BJ6D3ZaOIiKFdXVenbj+XZlh8FDcZG9+RBo3GHy852bQ5ryYYrX1nTMSef3ouh6+tb2n6qrq
-        u6I2E1zSgHB/cvWCv33p6byKUbzldvE2NRExtUpuTXMy7OBj6TxakRqEFDpgZRoYdtw1zh4sBNNu3
-        TyD2c9oZwB7vNS9+Cj1oJ7aRGdWF0Dpu7/wFkIOyX4V1vhn6w6qjwZoAxQtzqZxkRB5gfPpPxNCvB
-        uKufbIhCsgP50fW+XoUDAgaDz5Jq0Oo5lPIUO3OSAsJFQG9k0ZaNVmqc8SBGJrQgczw+UmYcJYEWa
-        HKode4/Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kqCUb-0006z4-EG; Fri, 18 Dec 2020 09:56:09 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DC5DC300B22;
-        Fri, 18 Dec 2020 10:56:07 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A50FC2027619D; Fri, 18 Dec 2020 10:56:07 +0100 (CET)
-Date:   Fri, 18 Dec 2020 10:56:07 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>, tglx@linutronix.de,
-        mingo@kernel.org, bp@suse.de, luto@kernel.org, x86@kernel.org,
-        herbert@gondor.apana.org.au, dan.j.williams@intel.com,
-        ravi.v.shankar@intel.com, ning.sun@intel.com,
-        kumar.n.dwarakanath@intel.com, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [NEEDS-REVIEW] [RFC PATCH 7/8] crypto: x86/aes-kl - Support AES
- algorithm using Key Locker instructions
-Message-ID: <20201218095607.GD3021@hirez.programming.kicks-ass.net>
-References: <20201216174146.10446-1-chang.seok.bae@intel.com>
- <20201216174146.10446-8-chang.seok.bae@intel.com>
- <8353acb0-03cf-a334-b505-416e0fc58b63@intel.com>
+        id S1733024AbgLRJ7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 04:59:30 -0500
+Received: from mout.gmx.net ([212.227.17.20]:60145 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725884AbgLRJ73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 04:59:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1608285474;
+        bh=Poe+I/uv1HXYH34rR5R0KfS808Uj3LLB3gp9Re3QXqU=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=MtF7hSB+mz/+3K+MzUxZWtvXfV3o7WlP+T6Y93wb4tQeodfGIeYauRjNOXLq6dk+x
+         sPHfuyGVd0y4ThDa9UfIOpGmCriMohgEb49G/SLWQ+0YQfZkbvpPEMqlupEbhVufab
+         iAKoKmmU/WNu0O5npVFUtgBENBX/J2Hq0KmyEbpM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.178.44] ([95.91.192.147]) by mail.gmx.com (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1M1Ygt-1koooL1KW3-0032Nh; Fri, 18
+ Dec 2020 10:57:54 +0100
+Subject: Re: [PATCH] Add support for Realtek RTL838x/RTL839x switch SoCs
+To:     Bert Vermeulen <bert@biot.com>, tsbogend@alpha.franken.de,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201215183557.646034-1-bert@biot.com>
+ <fbd86bc4-5826-5b2b-5818-3ccd39a090fb@rempel-privat.de>
+ <a4d89688-347b-21af-ef29-a28cd480d2d9@biot.com>
+From:   Oleksij Rempel <linux@rempel-privat.de>
+Message-ID: <2d39c09d-6665-091c-be8f-7793b4e75ab6@rempel-privat.de>
+Date:   Fri, 18 Dec 2020 10:57:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8353acb0-03cf-a334-b505-416e0fc58b63@intel.com>
+In-Reply-To: <a4d89688-347b-21af-ef29-a28cd480d2d9@biot.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:HKnE9tzMC2kxZyQFxCTudHQnCXL3zuRxEutJQTkvS0LMg9jHq0w
+ nDZ63H92xGCTZjs2mTrTEZQDByu0BOqthBDr8vvvdQx7XQBSnhZXlIiQ4PVlvFTqO1ZWiHx
+ 9tAkdSEmgIvY+TVXUO/Diip9xPoMpnHa7Oc4CorXFfvdnCr1wTvcAromGCZVRspruWpJXkn
+ zzeGtFpbD1RbzIQLbN7TA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:SchKDOQKVyg=:8mfaSQAL41OQdWB663A7d/
+ G+X2ObdCXbOkqScqfnJTGd4W45vKVxgs8JgZyekzRvUlJ2BBjzkknopCOh9ZBaQ+QkvmQukJZ
+ Ev8wqdiaBgKiv1FutS8RoYtIz3s14bhaAp9gcT0Ua2zOE5cbfDe/14YaUGNU/6Zr68EUpb/30
+ 1A4A+eSBebXOSpkaKi6UBaKSvzNp46EVuZkciQr/Qzi7ucK6orS+BQ6DcAJAMaNlSrmkYUE0T
+ PB4QSRpFdotqNTszZqq/jnSKb5Z4DYEiiedRXE39vaz6smrg8J2Br7hM1uVfZnr7IayFbbkiA
+ +9jiSZ+AVGhFssZcK4SEeoV3mWP25S9UuMaUh0bdcA/ndNsMJ+WVluVJBX3/Ez+Pm8ktddQHL
+ yQgO5bua0Dk+gUl9nG5DBuJymzc4nn72t9aeXo4jCUJFSxurl9ziiAV6Krd6eQZHcSPp/EfaJ
+ in0LM3NltLLPOgmKoobNKpdOapnblNMYY/OBaODNW4Pn7RWx8c2/cwGSgfKmkaEp7gz1b7aHD
+ 7057aR3gAyu7/COpFH7a6MYshVFZLPFYNGW+twTGkWb7BgrfYxUDYxuBYzevIVG8n+/JsldhQ
+ yGkfP2j3wB8lMMz/5Ajn3SzIqJn7kdaAnZH0FFwu07qkzegqJjEojs8Gr6dd7iB1cLMNfL6WN
+ DCCmWVPtle3L7UnZQDQCYBdRk6T9axIG4zJktP+JvDrSdVHyHbfPjEOYpwyZdnBsgCJMLkjWZ
+ 5ZzeYLTwCW7M6GWQgrxJsgX0zmMgZixEu/IA/GqKqXbtjXd+Zdu4NO0s73ZPk9MUtii8qpe9M
+ qq/knpB2ehVkSZplnrKjUuC1xwAaK1pfSWvoGlj3nzkp4GFPWkbzf6kqOT4WgNWYOfAN15gFr
+ tZbUxyaKAwkBnnq9FcjA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 12:58:34PM -0800, Dave Hansen wrote:
-> On 12/16/20 9:41 AM, Chang S. Bae wrote:
-> > +config CRYPTO_AES_KL
-> > +	tristate "AES cipher algorithms (AES-KL)"
-> > +	depends on X86_KEYLOCKER
-> > +	select CRYPTO_AES_NI_INTEL
-> > +	help
-> > +	  Use AES Key Locker instructions for AES algorithm.
-> > +
-> > +	  AES cipher algorithms (FIPS-197). AES uses the Rijndael
-> > +	  algorithm.
-> > +
-> > +	  Rijndael appears to be consistently a very good performer in both
-> > +	  hardware and software across a wide range of computing
-> > +	  environments regardless of its use in feedback or non-feedback
-> > +	  modes. Its key setup time is excellent, and its key agility is
-> > +	  good. Rijndael's very low memory requirements make it very well
-> > +	  suited for restricted-space environments, in which it also
-> > +	  demonstrates excellent performance. Rijndael's operations are
-> > +	  among the easiest to defend against power and timing attacks.
-> > +
-> > +	  The AES specifies three key sizes: 128, 192 and 256 bits
-> > +
-> > +	  See <http://csrc.nist.gov/encryption/aes/> for more information.
-> > +
+Am 18.12.20 um 00:27 schrieb Bert Vermeulen:
+> On 12/15/20 11:11 PM, Oleksij Rempel wrote:
+>> Hello Bert,
+>>
+>> thank you for your work. Here are some comments..
+>
+> Thanks for reviewing. I will send in a V2 with your comments all handled=
+.
+>
+>> I assume, after applying all needed changes, there will be no files
+>> within
+>> arch/mips/include/asm/mach-realtek :)
+>
+> I wish! Unfortunately I need somewhere to put the early printk init
+> call, and the SoC family ID checks -- as they are heavily used in
+> various drivers.
 
-It's direct copy-pasta from CRYPTO_AES_NI_INTEL until about here.
+I would recommend you to use generic and exact SoC compatible string in
+the devicetree. It will save you and the subsystem maintainers some pain
+later. Please do not make drivers depend on the arch/* code.
 
-> > +	  For 128- and 256-bit keys, the AES cipher algorithm is
-> > +	  implemented by AES Key Locker instructions. This implementation
-> > +	  does not need an AES key once wrapped to an encoded form. For AES
-> > +	  compliance, 192-bit is processed by AES-NI instructions.
-> 
-> Giving a history lesson and high-level overview of AES doesn't quite
-> seem appropriate here, unless this is the first the kernel has seen of AES.
-
-And the new bits aren't really enlightening either, as you point out.
+=2D-
+Regards,
+Oleksij
