@@ -2,127 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 668A02DEB84
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 23:27:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22BCC2DEB8A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 23:29:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726095AbgLRW06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 17:26:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48604 "EHLO
+        id S1726287AbgLRW2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 17:28:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725813AbgLRW05 (ORCPT
+        with ESMTP id S1726117AbgLRW2t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 17:26:57 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA08C0617A7;
-        Fri, 18 Dec 2020 14:26:17 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id 91so3947423wrj.7;
-        Fri, 18 Dec 2020 14:26:16 -0800 (PST)
+        Fri, 18 Dec 2020 17:28:49 -0500
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 795F1C0617A7;
+        Fri, 18 Dec 2020 14:28:09 -0800 (PST)
+Received: by mail-il1-x131.google.com with SMTP id q1so3602426ilt.6;
+        Fri, 18 Dec 2020 14:28:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=undQte4X2FcEvPuG/YAR1Svj9MB+K1VydBFnJEQJ3j0=;
-        b=D/8EuaaHdROnnKgZudh1+gjHHjcTJyrP15sHF1tfdNXNjHCikAnzMMm8yRuXthdtQL
-         NjYBlhi4cgCZToa/9En9vH3aztLOIsYc6TLz5SGFmV3mJhfNMSjOvFMjSJjK5BX4iKj5
-         1v31BC8Q420vkDKC7VcLPJdTj6KJQuLk8Y0zTapaYz/xUoXRqB7nV1BNJ6TebsygfKuQ
-         mJAVj3gCa6Sr2XKRRWqy9vfPmJc5P6WQ76su4oS4yE8oaaKDPmWDUGDVheEdy7qDMuGE
-         k7K8yn7ibsGBtCZTxj5n2qLzXaq+N1WDDH53aS2mDog204Fml0MyzrtdDcblsjwmxA8Q
-         9udQ==
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc;
+        bh=ZjpjdjP/kx6CmrGSWKO3qDoSaGWe4tkhPwI5BTAB6Hg=;
+        b=mjniCRyiPZkXoykePXVkZ0bS77EKQD9F/T55XbhY7/Sj3RfOVyppEncN3kSwQUwToj
+         iIDx6Z0v3RoA8MLg85Jb8hiMz915VWqFAuiYUU6kEIalyXVClMt8sQGa1oftIeQOcGWk
+         F6YflUxRbzvNZl9ePaSgqfkah1KvqAcqYBPyMlhdVzPt6YjiaE388HUhFAO6lCJ+3EQy
+         bb6VF7UCtN+zWzp2AJF0JQe7OoHtltGd53ge6btLsqwb2T9aJKKf5KCF/yYlTEb74Azd
+         ZuAQvnXE+bfBwLnY4buYL8P144Cl7dAjy9ETb2FnoFyyr/YqNWvbKTtSKlT0ev09OWB4
+         qNKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=undQte4X2FcEvPuG/YAR1Svj9MB+K1VydBFnJEQJ3j0=;
-        b=aVFzI2kne1lR1eD1BLOyOiYRPkoORoQGJRONIBGuwHLOAUkYQxWd2HOSqSYRVzWc3m
-         h7+QjFooaYYegC4/8WEEInWfZrBINhYd1GBR9w3fI3o7xoMcg2pWyK8IXKHrCkzX24Sv
-         zn9rENz+Vhi+jIcUvYbZ2GC7AO3PY+UYsW9R2vCbvWsFl0xzEEVKPW5TSgsJejQSLl6N
-         XSj5gAv9iESq3RIhYB63Tcg+osOLQvio7br4DDRB1XRdF6wXx8ZIqTLpjLOj/P8DjbPy
-         CbZHqclWDG1M6VBnSGq37nbUnTV0HGyqDqLNszwpTAvCFtmqND7290g6xguh7XfaYXI7
-         p9lQ==
-X-Gm-Message-State: AOAM533XlIS0hPiCi8jvmYoZD0q+gb+JHebHKxVicqnxiEg1mSff4QWx
-        l37oPMeBxYDP4DeymytHvoM=
-X-Google-Smtp-Source: ABdhPJw1a04trNyvSCGWpW8jL6UL3dyhHbCvFT4+ZBFflDqnDWWnGf83ElAPouwz0Eh5ChMtiiyPAw==
-X-Received: by 2002:a5d:4f8a:: with SMTP id d10mr6583266wru.219.1608330375620;
-        Fri, 18 Dec 2020 14:26:15 -0800 (PST)
-Received: from [192.168.1.158] ([2.31.224.116])
-        by smtp.gmail.com with ESMTPSA id b4sm14701628wrr.30.2020.12.18.14.26.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Dec 2020 14:26:14 -0800 (PST)
-Subject: Re: [PATCH v2 06/12] software_node: Add support for fwnode_graph*()
- family of functions
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org, yong.zhi@intel.com,
-        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
-        tian.shu.qiu@intel.com, mchehab@kernel.org, robert.moore@intel.com,
-        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
-        linus.walleij@linaro.org, heikki.krogerus@linux.intel.com,
-        kitakar@gmail.com, jorhand@linux.microsoft.com
-References: <20201217234337.1983732-1-djrscally@gmail.com>
- <20201217234337.1983732-7-djrscally@gmail.com>
- <20201218203728.GC4077@smile.fi.intel.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <6ba5c14a-e88b-0bb3-86f7-a7d93741bc31@gmail.com>
-Date:   Fri, 18 Dec 2020 22:26:13 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+         :message-id:subject:to:cc;
+        bh=ZjpjdjP/kx6CmrGSWKO3qDoSaGWe4tkhPwI5BTAB6Hg=;
+        b=lg5cIEuAl/0sR/HPbl/KuViU1LR2XtCfDmBRCp1DWLJXZ98Wr0ua3c9mB09RfUHrqw
+         +QDCGVDnCUon0TbCcBjAxeWBCzEWdxIBYGrhq+yvsYcbs1llkQevMLmjnRgMxn4rSi0W
+         xhzDjXzew5/CG+TrR9CREF36B7ZMZ7M6+kpiTwvAiHi/6wLLcMXyCXLbEqHgn9Sep/bg
+         WuHWB4IDjv/f7k/hZmiwMUse7K55heTtJGFNexUz85E8Z8NJJW6ibp9gN9buecustyB/
+         vsjxWxxmaKNm4AHjLdXrEvF3u+FwFK9TxdGv8CxP/1obrDqI0IrqtnOxLcZI+R24SP43
+         oq9w==
+X-Gm-Message-State: AOAM531NN/S3SQlSBiDrB26DnAG2noGK2lS7e24u2o9QLjyBbWYKazVG
+        wAz0vxe1tzW7V+k3IXLYUsjenDhn4iY/csk0a9k=
+X-Google-Smtp-Source: ABdhPJz4V2ybF74i3zOnSHOmYeV46WBCxPwW1bWE9wxqp/hie6Lvqw4UTUeQY9H8xEQ+qX/UkbvcpHVQGAYBcXYWHHc=
+X-Received: by 2002:a05:6e02:8d:: with SMTP id l13mr6310898ilm.163.1608330488850;
+ Fri, 18 Dec 2020 14:28:08 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201218203728.GC4077@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a5e:dd01:0:0:0:0:0 with HTTP; Fri, 18 Dec 2020 14:28:08
+ -0800 (PST)
+In-Reply-To: <20201218184347.2180772-1-sam@ravnborg.org>
+References: <20201218184347.2180772-1-sam@ravnborg.org>
+From:   Kjetil Oftedal <oftedal@gmail.com>
+Date:   Fri, 18 Dec 2020 23:28:08 +0100
+Message-ID: <CALMQjD-M4MN+zcZ0t4P5hvtjbd57azmNRmsj9jvwyHFquY84Vw@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/13] sparc32: sunset sun4m and sun4d
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     David S Miller <davem@davemloft.net>, sparclinux@vger.kernel.org,
+        Andreas Larsson <andreas@gaisler.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Denis Efremov <efremov@linux.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, Willy Tarreau <w@1wt.eu>,
+        linux-kernel@vger.kernel.org, debian-sparc@lists.debian.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/12/2020 20:37, Andy Shevchenko wrote:
-> On Thu, Dec 17, 2020 at 11:43:31PM +0000, Daniel Scally wrote:
->> From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
->>
->> This implements the remaining .graph_* callbacks in the
->> fwnode operations structure for the software nodes. That makes
->> the fwnode_graph*() functions available in the drivers also
->> when software nodes are used.
->>
->> The implementation tries to mimic the "OF graph" as much as
->> possible, but there is no support for the "reg" device
->> property. The ports will need to have the index in their
->> name which starts with "port@" (for example "port@0", "port@1",
->> ...) and endpoints will use the index of the software node
->> that is given to them during creation. The port nodes can
->> also be grouped under a specially named "ports" subnode,
->> just like in DT, if necessary.
->>
->> The remote-endpoints are reference properties under the
->> endpoint nodes that are named "remote-endpoint".
-> 
-> ...
-> 
->> +	while ((port = software_node_get_next_child(parent, old))) {
->> +		if (!strncmp(to_swnode(port)->node->name, "port", 4))
->> +			return port;
->> +		old = port;
->> +	}
-> 
-> Dunno if we need defines for port and its length here.
+On 18/12/2020, Sam Ravnborg <sam@ravnborg.org> wrote:
+> The sun4m and sun4d based SPARC machines was very popular in the
+> 90'ties and was then replaced by the more powerful sparc64
+> class of machines.
+> Today there is only Gentoo that to my best knowledge supports
+> sparc32 and people have moved on to more capable HW.
+>
+> Cobham Gaisler have variants of the LEON processer that
+> runs sparc32 - and they are in production today.
+>
+> With this patchset I propose to sunset sun4m and sun4d and move
+> focus to a more streamlined support for LEON.
+>
+> One downside is that qemu supports sun4m - and we may loose
+> some testing possibilities when sun4m is dropped. qemu supports
+> LEON to some degree - I have not yet tried it out.
+>
+> Andreas from Gaisler have indicated that they may be more active
+> upstream on sparc32 - and this will only be easier with a kernel
+> where the legacy stuff is dropped.
+>
 
-Mmm, maybe a comment?
+This makes me a bit sad. But I guess I haven't had any time to put
+into the sparc32 port
+for many years, so I guess it is time to let go.
 
-> ...
-> 
->> +	ret = kstrtou32(swnode->parent->node->name + 5, 10, &endpoint->port);
-> 
-> But here at least comment is needed what 5 means ('port@' I suppose).
+But I do believe that by doing this we should make sure we are not
+putting ourselves
+in a position where the sparc kernel-developers don't have access to
+any real sparc32
+hardware.
 
-Ack - I'll add an explanatory comment (and yep, it's 'port@')
+SUN machines were at least plentiful. The LEON-family of processors
+being targeted
+towards the rad-hardened market are not so much available.
 
->> +	if (ret)
->> +		return ret;
-> 
-> 
+Maybe Gaisler can contribute some systems, or make some available remotely?
 
+Best regards,
+Kjetil Oftedal
