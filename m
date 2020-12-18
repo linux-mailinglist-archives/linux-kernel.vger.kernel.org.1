@@ -2,308 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32A292DE168
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 11:44:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8627D2DE162
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 11:44:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389215AbgLRKoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 05:44:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389171AbgLRKoR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 05:44:17 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA9DC0611CB
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 02:42:57 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kqDDk-00006y-RO; Fri, 18 Dec 2020 11:42:48 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kqDDk-0004hW-8X; Fri, 18 Dec 2020 11:42:48 +0100
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>
-Cc:     linux-serial@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH v10 3/3] leds: trigger: implement a tty trigger
-Date:   Fri, 18 Dec 2020 11:42:46 +0100
-Message-Id: <20201218104246.591315-4-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201218104246.591315-1-u.kleine-koenig@pengutronix.de>
-References: <20201218104246.591315-1-u.kleine-koenig@pengutronix.de>
+        id S2389162AbgLRKoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 05:44:03 -0500
+Received: from mga17.intel.com ([192.55.52.151]:8878 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733203AbgLRKoC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 05:44:02 -0500
+IronPort-SDR: hj8NBBJ4itUeosBvIlhKFXdU+PZkQzsUMrofJno/ybkW5HFHZDAZ09ruPdafjyHFdJnVJHmQpu
+ WSQoJ7kglOZQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9838"; a="155219341"
+X-IronPort-AV: E=Sophos;i="5.78,430,1599548400"; 
+   d="scan'208";a="155219341"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2020 02:43:21 -0800
+IronPort-SDR: SliPYRcW6PO2xPex3YY3vRk24Nh4V/QO8Q+wElDTpYW26Zqo8859m3KvcsxxEFy/xLGgLPM3vk
+ 872yq74cCtGQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,430,1599548400"; 
+   d="scan'208";a="380410064"
+Received: from orsmsx605.amr.corp.intel.com ([10.22.229.18])
+  by orsmga007.jf.intel.com with ESMTP; 18 Dec 2020 02:43:21 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 18 Dec 2020 02:43:20 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Fri, 18 Dec 2020 02:43:20 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.106)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Fri, 18 Dec 2020 02:43:20 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DlWhLYM1qximnHuBXzQRW49QMc76DUlaCNANScR7z85OltNd7AE+OIPkj0y+FANsdX2ss6MjUeMXiRAU/s+VIJ368U1jFdQe5ZY/5ptqVpCpaADucoHccGKjypUIoULuLTik7Q7k/pKlwDN+Il6YVXSArNAAAsFAIM1LXCqHKRCQsrOwMFnkdO6IChuCQdWGmT1RFwnBM3Kmew3VuavWVSGNV60czuJGw5RPZxyMGRNOIJSe0p166Jvc5gupmciIS64ziNzpZTqui/HbQVpXrCLWN9H0WdIKtZ48VNQwuQTfy+62oaVqxLofR/C/KgTqdY6JFFcwUrcymVOVDOsOmw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mRAQzUMQs5hpo5iBWORKRz/N3TR1Tbb3ZAz+wwg4XsY=;
+ b=U/fUwJ7PLbPn3lJN4+BGeSCP09U5sIftPNNrMgD+gZBXAUVGOLjcZECUB/2qRZNYiFfSIMyPZNSRQ2bJEbCKtgmoFNPhOzoJZxUre/nxFYrCrAISp8J6ry1ZRrOrS3ToYB2vCw6EILV6LRuh9CjHKJfvMwxNNgrwUNbvVO0Yq1Ab7mh5YYScWnfwjMtxlDXvv9HJtBZLaYSXbsL1xetygHf0XbjRzQ8rQOkOGrtuxmuzZ0PtTiW17lgtIUsRZU19S7gUKKw7WST40cMTWUXi4wLVzsCI/PmvX8fEM25ObMvjVpDYDqNr2B7B0dh4jfbodyIRfcY2kOlrNLgqpFkclw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mRAQzUMQs5hpo5iBWORKRz/N3TR1Tbb3ZAz+wwg4XsY=;
+ b=tQl+8drsGPbD91AyVUHIdxU36+AWai0WAruY26uZUbumnbGhxZ8TI0sNZyOWrY9F3uHfVL7A/B1so6PwHr0VkDDztXUCF1pN/l7tHLVHTdW7PB/CEmgSYq0+9KDAU2igOR9Acxc8CK8sKxmuCtUS/SRXOTogm8zXOtz2Yz2mn+0=
+Received: from BY5PR11MB4056.namprd11.prod.outlook.com (2603:10b6:a03:18c::17)
+ by BY5PR11MB4209.namprd11.prod.outlook.com (2603:10b6:a03:1cc::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Fri, 18 Dec
+ 2020 10:43:18 +0000
+Received: from BY5PR11MB4056.namprd11.prod.outlook.com
+ ([fe80::a556:7843:c77:936a]) by BY5PR11MB4056.namprd11.prod.outlook.com
+ ([fe80::a556:7843:c77:936a%5]) with mapi id 15.20.3654.025; Fri, 18 Dec 2020
+ 10:43:18 +0000
+From:   "Bae, Chang Seok" <chang.seok.bae@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, "bp@suse.de" <bp@suse.de>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "Sun, Ning" <ning.sun@intel.com>,
+        "Dwarakanath, Kumar N" <kumar.n.dwarakanath@intel.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
+Subject: Re: [RFC PATCH 6/8] selftests/x86: Test Key Locker internal key
+ maintenance
+Thread-Topic: [RFC PATCH 6/8] selftests/x86: Test Key Locker internal key
+ maintenance
+Thread-Index: AQHW09NgX2Hb4aAMg0azd+toSyT6zKn8oUqAgAAMOQA=
+Date:   Fri, 18 Dec 2020 10:43:18 +0000
+Message-ID: <8ED5F7C0-B224-42E5-AE15-1891732C1076@intel.com>
+References: <20201216174146.10446-1-chang.seok.bae@intel.com>
+ <20201216174146.10446-7-chang.seok.bae@intel.com>
+ <20201218095927.GE3021@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201218095927.GE3021@hirez.programming.kicks-ass.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.4)
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [112.148.21.62]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b367a51a-6fc3-4275-1241-08d8a341bb57
+x-ms-traffictypediagnostic: BY5PR11MB4209:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR11MB4209F015B965C880C4DC24DED8C30@BY5PR11MB4209.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3513;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 6JXg3GeJrMLerTWFdTRQTrbTKNs++J87gIVSfsAHwsQVw+SO5eGpVEsrTI51Z7+h3vhShpiMQbMuZzNWv18An/ld/+Wmnr5WnR97cADbW9m4dbsELPkvf7+cBv/iAg+Kf+XAxiSj7DHPQVnPHarup5uEspThOB4ZlFcKU16BGfEkJOycW8NkLoCSSZKaJvxwIJ2jUOaquRzDJufghRzloi4dt9LX/s6Y4K10+uBiUQJO1D1lqwqlprK2NL15UBj0ewUcKfJfPo3svq5/oWDHe88yXEG/SVHb4frD+wEh9TIC/RWNpMeXnOqdm+/EmTtqTQA07HO86CAUppH/s/fh0/u2tGRH/TuxlB1aWuUTXEPpy1gDaech17EkG1HFDtD1
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4056.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(366004)(136003)(346002)(396003)(7416002)(2616005)(76116006)(2906002)(4744005)(54906003)(5660300002)(66946007)(8936002)(36756003)(316002)(6486002)(91956017)(33656002)(8676002)(4326008)(26005)(71200400001)(86362001)(478600001)(66446008)(66556008)(64756008)(66476007)(6512007)(6506007)(6916009)(53546011)(186003)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?BSZQhr738QG/1y3FjuaHEo8ayEWmnx6564kkFeadQnH2bGGRlZHNvbNsLkim?=
+ =?us-ascii?Q?VfqPvdkTplq1jQin/loHwUp4h+TJhPZXqRBPafhapLVTOIQE8xuYZl8CMHud?=
+ =?us-ascii?Q?8gHImHg6jK6TRxYg4VLtT1FCsAM+nGF3PBm5HeRQWJAQKhQaj4NLaoqJ3cqz?=
+ =?us-ascii?Q?RUy9NhqnK2wYPUvwjVlWbR6nbiNvx+ZlNS3c9j/q8BaCegK19YqfW24XZBNP?=
+ =?us-ascii?Q?DGFo5GCXe/OSXlQoOLbFv8cJRK8ibCyp0xERLjHdREGYVolY50UCgEQgvuDr?=
+ =?us-ascii?Q?LfZKVZmfz8gEN8LDRSY1z29n2EZc9uWmB814QqEL5+VXN9unyMtqdgOlLw4y?=
+ =?us-ascii?Q?u3OA977BY/t7pwm5lloGdyQTG6ZMbEJjOOecoTKJjmWU2jTEB7VxqZWFaRH3?=
+ =?us-ascii?Q?vt2ZOUoNDzOBpFYUl3OUOCDWlMClLgRH7NhWsmpFkDCmvoyA4Ips+MKXR887?=
+ =?us-ascii?Q?rs4kA3ZeqnxILpv6R/Z+6B2DhYWC3u6pAdepS7KdWuRCq2EIiLrJcpuQPLn2?=
+ =?us-ascii?Q?iUbcuQWRG+TUkttQiqU3yetf4yoKAP6kSgIY9ZyyDz8RPUNXLBhpT2pOZlli?=
+ =?us-ascii?Q?hqd1evZIw/cG7zjB+KxFQH1sPdPE87YRwGW6cQScx3dZstYXTv2ke3axnB1e?=
+ =?us-ascii?Q?tDohYF/OBuyyPKD5iVCGnNQQjBBFoAEi6HFasVxPOJHBjplFqS9PX6H/5RMj?=
+ =?us-ascii?Q?v4JzpKQGV1cdSG9eM1AuE2oKiq7FfoMRkFLRj9uHUaedTahr90qjIqqcIINk?=
+ =?us-ascii?Q?u6GdNiiGKTf5KKF1lDQXeu6Jb7YQxqCQY4BLORTo9/UXHbIPhU6WKhqj1C0R?=
+ =?us-ascii?Q?jFwvGc+9VoGABaNVOXTRKu2y/TKRPoV+PeVdQGKOfVp78Xm8A1m7r4gEEs20?=
+ =?us-ascii?Q?/8ImuzGXESVbGIOygc14MlPYVwOyn0k+WbIlaDdDoJ3+lGGoNuhky5P49xEV?=
+ =?us-ascii?Q?u65e+qCTWA7tVtlwcv5qnX+WC/BpJRTXjVWmbzX8DIUOo+eGY6WYUx1gxzhF?=
+ =?us-ascii?Q?pHKf?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <688F3AADED412E47B2BBB704871B7274@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4056.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b367a51a-6fc3-4275-1241-08d8a341bb57
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Dec 2020 10:43:18.1993
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: DC9gOL5fVLEYacnsfRPqkjAbRO/0U+yE0VnOPScWk92Omsi1lDwkR/Xt5BeHFnP3f5SMlXbzXlHvhOJmWC+5vZo8GqR6I8B9uV1VJ238zPs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4209
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Usage is as follows:
 
-	myled=ledname
-	tty=ttyS0
+> On Dec 18, 2020, at 18:59, Peter Zijlstra <peterz@infradead.org> wrote:
+>=20
+> On Wed, Dec 16, 2020 at 09:41:44AM -0800, Chang S. Bae wrote:
+>> +	/* ENCODEKEY128 %EAX */
+>> +	asm volatile (".byte 0xf3, 0xf, 0x38, 0xfa, 0xc0");
+>=20
+> This is lacking a binutils version number.
 
-	echo tty > /sys/class/leds/$myled/trigger
-	echo $tty > /sys/class/leds/$myled/ttyname
+I will add the version number when any new release begins to support
+this.
 
-. When this new trigger is active it periodically checks the tty's
-statistics and when it changed since the last check the led is flashed
-once.
-
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- .../ABI/testing/sysfs-class-led-trigger-tty   |   6 +
- drivers/leds/trigger/Kconfig                  |   9 +
- drivers/leds/trigger/Makefile                 |   1 +
- drivers/leds/trigger/ledtrig-tty.c            | 188 ++++++++++++++++++
- 4 files changed, 204 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-class-led-trigger-tty
- create mode 100644 drivers/leds/trigger/ledtrig-tty.c
-
-diff --git a/Documentation/ABI/testing/sysfs-class-led-trigger-tty b/Documentation/ABI/testing/sysfs-class-led-trigger-tty
-new file mode 100644
-index 000000000000..2bf6b24e781b
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-class-led-trigger-tty
-@@ -0,0 +1,6 @@
-+What:		/sys/class/leds/<led>/ttyname
-+Date:		Dec 2020
-+KernelVersion:	5.10
-+Contact:	linux-leds@vger.kernel.org
-+Description:
-+		Specifies the tty device name of the triggering tty
-diff --git a/drivers/leds/trigger/Kconfig b/drivers/leds/trigger/Kconfig
-index ce9429ca6dde..b77a01bd27f4 100644
---- a/drivers/leds/trigger/Kconfig
-+++ b/drivers/leds/trigger/Kconfig
-@@ -144,4 +144,13 @@ config LEDS_TRIGGER_AUDIO
- 	  the audio mute and mic-mute changes.
- 	  If unsure, say N
- 
-+config LEDS_TRIGGER_TTY
-+	tristate "LED Trigger for TTY devices"
-+	depends on TTY
-+	help
-+	  This allows LEDs to be controlled by activity on ttys which includes
-+	  serial devices like /dev/ttyS0.
-+
-+	  When build as a module this driver will be called ledtrig-tty.
-+
- endif # LEDS_TRIGGERS
-diff --git a/drivers/leds/trigger/Makefile b/drivers/leds/trigger/Makefile
-index 733a83e2a718..25c4db97cdd4 100644
---- a/drivers/leds/trigger/Makefile
-+++ b/drivers/leds/trigger/Makefile
-@@ -15,3 +15,4 @@ obj-$(CONFIG_LEDS_TRIGGER_PANIC)	+= ledtrig-panic.o
- obj-$(CONFIG_LEDS_TRIGGER_NETDEV)	+= ledtrig-netdev.o
- obj-$(CONFIG_LEDS_TRIGGER_PATTERN)	+= ledtrig-pattern.o
- obj-$(CONFIG_LEDS_TRIGGER_AUDIO)	+= ledtrig-audio.o
-+obj-$(CONFIG_LEDS_TRIGGER_TTY)		+= ledtrig-tty.o
-diff --git a/drivers/leds/trigger/ledtrig-tty.c b/drivers/leds/trigger/ledtrig-tty.c
-new file mode 100644
-index 000000000000..c1e87c0d23c3
---- /dev/null
-+++ b/drivers/leds/trigger/ledtrig-tty.c
-@@ -0,0 +1,188 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/delay.h>
-+#include <linux/leds.h>
-+#include <linux/module.h>
-+#include <linux/slab.h>
-+#include <linux/tty.h>
-+#include <uapi/linux/serial.h>
-+
-+struct ledtrig_tty_data {
-+	struct led_classdev *led_cdev;
-+	struct delayed_work dwork;
-+	struct mutex mutex;
-+	const char *ttyname;
-+	struct tty_struct *tty;
-+	int rx, tx;
-+};
-+
-+static void ledtrig_tty_halt(struct ledtrig_tty_data *trigger_data)
-+{
-+	cancel_delayed_work_sync(&trigger_data->dwork);
-+}
-+
-+static void ledtrig_tty_restart(struct ledtrig_tty_data *trigger_data)
-+{
-+	schedule_delayed_work(&trigger_data->dwork, 0);
-+}
-+
-+static ssize_t ttyname_show(struct device *dev,
-+			    struct device_attribute *attr, char *buf)
-+{
-+	struct ledtrig_tty_data *trigger_data = led_trigger_get_drvdata(dev);
-+	ssize_t len = 0;
-+
-+	mutex_lock(&trigger_data->mutex);
-+
-+	if (trigger_data->ttyname)
-+		len = sprintf(buf, "%s\n", trigger_data->ttyname);
-+
-+	mutex_unlock(&trigger_data->mutex);
-+
-+	return len;
-+}
-+
-+static ssize_t ttyname_store(struct device *dev,
-+			     struct device_attribute *attr, const char *buf,
-+			     size_t size)
-+{
-+	struct ledtrig_tty_data *trigger_data = led_trigger_get_drvdata(dev);
-+	char *ttyname;
-+	ssize_t ret = size;
-+	bool running;
-+
-+	if (size > 0 && buf[size - 1] == '\n')
-+		size -= 1;
-+
-+	if (size) {
-+		ttyname = kmemdup_nul(buf, size, GFP_KERNEL);
-+		if (!ttyname) {
-+			ret = -ENOMEM;
-+			goto out_unlock;
-+		}
-+	} else {
-+		ttyname = NULL;
-+	}
-+
-+	mutex_lock(&trigger_data->mutex);
-+
-+	running = trigger_data->ttyname != NULL;
-+
-+	kfree(trigger_data->ttyname);
-+	tty_kref_put(trigger_data->tty);
-+	trigger_data->tty = NULL;
-+
-+	trigger_data->ttyname = ttyname;
-+
-+out_unlock:
-+	mutex_unlock(&trigger_data->mutex);
-+
-+	if (ttyname && !running)
-+		ledtrig_tty_restart(trigger_data);
-+
-+	return ret;
-+}
-+static DEVICE_ATTR_RW(ttyname);
-+
-+static void ledtrig_tty_work(struct work_struct *work)
-+{
-+	struct ledtrig_tty_data *trigger_data =
-+		container_of(work, struct ledtrig_tty_data, dwork.work);
-+	struct serial_icounter_struct icount;
-+	int ret;
-+
-+	mutex_lock(&trigger_data->mutex);
-+
-+	if (!trigger_data->ttyname) {
-+		/* exit without rescheduling */
-+		mutex_unlock(&trigger_data->mutex);
-+		return;
-+	}
-+
-+	/* try to get the tty corresponding to $ttyname */
-+	if (!trigger_data->tty) {
-+		dev_t devno;
-+		struct tty_struct *tty;
-+		int ret;
-+
-+		ret = tty_dev_name_to_number(trigger_data->ttyname, &devno);
-+		if (ret < 0)
-+			/*
-+			 * A device with this name might appear later, so keep
-+			 * retrying.
-+			 */
-+			goto out;
-+
-+		tty = tty_kopen_shared(devno);
-+		if (IS_ERR(tty) || !tty)
-+			/* What to do? retry or abort */
-+			goto out;
-+
-+		trigger_data->tty = tty;
-+	}
-+
-+	ret = tty_get_icount(trigger_data->tty, &icount);
-+	if (ret) {
-+		dev_info(trigger_data->tty->dev, "Failed to get icount, stopped polling\n");
-+		mutex_unlock(&trigger_data->mutex);
-+		return;
-+	}
-+
-+	if (icount.rx != trigger_data->rx ||
-+	    icount.tx != trigger_data->tx) {
-+		led_set_brightness(trigger_data->led_cdev, LED_ON);
-+
-+		trigger_data->rx = icount.rx;
-+		trigger_data->tx = icount.tx;
-+	} else {
-+		led_set_brightness(trigger_data->led_cdev, LED_OFF);
-+	}
-+
-+out:
-+	mutex_unlock(&trigger_data->mutex);
-+	schedule_delayed_work(&trigger_data->dwork, msecs_to_jiffies(100));
-+}
-+
-+static struct attribute *ledtrig_tty_attrs[] = {
-+	&dev_attr_ttyname.attr,
-+	NULL
-+};
-+ATTRIBUTE_GROUPS(ledtrig_tty);
-+
-+static int ledtrig_tty_activate(struct led_classdev *led_cdev)
-+{
-+	struct ledtrig_tty_data *trigger_data;
-+
-+	trigger_data = kzalloc(sizeof(*trigger_data), GFP_KERNEL);
-+	if (!trigger_data)
-+		return -ENOMEM;
-+
-+	led_set_trigger_data(led_cdev, trigger_data);
-+
-+	INIT_DELAYED_WORK(&trigger_data->dwork, ledtrig_tty_work);
-+	trigger_data->led_cdev = led_cdev;
-+	mutex_init(&trigger_data->mutex);
-+
-+	return 0;
-+}
-+
-+static void ledtrig_tty_deactivate(struct led_classdev *led_cdev)
-+{
-+	struct ledtrig_tty_data *trigger_data = led_get_trigger_data(led_cdev);
-+
-+	cancel_delayed_work_sync(&trigger_data->dwork);
-+
-+	kfree(trigger_data);
-+}
-+
-+static struct led_trigger ledtrig_tty = {
-+	.name = "tty",
-+	.activate = ledtrig_tty_activate,
-+	.deactivate = ledtrig_tty_deactivate,
-+	.groups = ledtrig_tty_groups,
-+};
-+module_led_trigger(ledtrig_tty);
-+
-+MODULE_AUTHOR("Uwe Kleine-König <u.kleine-koenig@pengutronix.de>");
-+MODULE_DESCRIPTION("UART LED trigger");
-+MODULE_LICENSE("GPL v2");
--- 
-2.29.2
-
+Thanks,
+Chang
