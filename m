@@ -2,118 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13AFE2DEAE5
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 22:20:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1D6A2DEAEB
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 22:20:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727369AbgLRVRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 16:17:44 -0500
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:47981 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725843AbgLRVRo (ORCPT
+        id S1727470AbgLRVRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 16:17:51 -0500
+Received: from mail-oo1-f46.google.com ([209.85.161.46]:44651 "EHLO
+        mail-oo1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725843AbgLRVRt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 16:17:44 -0500
-X-Originating-IP: 86.202.109.140
-Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id EF20A60003;
-        Fri, 18 Dec 2020 21:16:58 +0000 (UTC)
-Date:   Fri, 18 Dec 2020 22:16:58 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        alsa-devel@alsa-project.org, Kiran Patil <kiran.patil@intel.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        David Miller <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Parav Pandit <parav@mellanox.com>, lee.jones@linaro.org
-Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
-Message-ID: <20201218211658.GH3143569@piout.net>
-References: <20201217211937.GA3177478@piout.net>
- <X9xV+8Mujo4dhfU4@kroah.com>
- <20201218131709.GA5333@sirena.org.uk>
- <20201218140854.GW552508@nvidia.com>
- <20201218155204.GC5333@sirena.org.uk>
- <20201218162817.GX552508@nvidia.com>
- <20201218180310.GD5333@sirena.org.uk>
- <20201218184150.GY552508@nvidia.com>
- <20201218203211.GE5333@sirena.org.uk>
- <20201218205856.GZ552508@nvidia.com>
+        Fri, 18 Dec 2020 16:17:49 -0500
+Received: by mail-oo1-f46.google.com with SMTP id j21so885954oou.11;
+        Fri, 18 Dec 2020 13:17:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jEbr5s4D+ZYMzO40gLC2UnGAo9wF8hMz62vqs5D6Is0=;
+        b=BzKcxc46alylRqRDJgwY6l7Kleua2U29hCYMZYGRvVRWfh8+OV6qfdFzx2iyxVuO5v
+         AHNlDbCbC1CGQ6zNi/0XihKaobZVWMyltUqrKOpfvLpP+d3wBwgcjCU4qtLdbCJOvppl
+         8FNhogY7juIsugkm821O2bzcjX9a2JK2pCi43owv65L1dtorTfBw+HVGPfoj/OlNqs+K
+         OGJ94B3OZ8x3UjfxBxUxb7wZ2xbVmMT87R76ckmj7dfpZkGkGBPVG1NlGdgUqbUeUSqL
+         3e9kqOvCqFhZgMS2GGX+nVWP6+KadTO4J37ZkcXPdJS+UE6Qw1h/vLQxPdHY5mSy02eL
+         2K4A==
+X-Gm-Message-State: AOAM530xhM6ZrxbXtMSftO3vu45zJvu6gKIuLYW+YQJUVQUOyCOYcNPw
+        rHO9OcUzJNGxOwfIspIKMA==
+X-Google-Smtp-Source: ABdhPJz1hrSQ11VEvWW1bcr9TnHL55sCBxx5SwUaddzYOjGxqP6qsmV4Le1WPCV8esAZOjxClkh9Gg==
+X-Received: by 2002:a4a:4f0f:: with SMTP id c15mr4258954oob.75.1608326228529;
+        Fri, 18 Dec 2020 13:17:08 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id i1sm2197006otr.81.2020.12.18.13.17.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Dec 2020 13:17:07 -0800 (PST)
+Received: (nullmailer pid 2190532 invoked by uid 1000);
+        Fri, 18 Dec 2020 21:17:06 -0000
+Date:   Fri, 18 Dec 2020 15:17:06 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Karol Gugala <kgugala@antmicro.com>,
+        linux-mediatek <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stafford Horne <shorne@gmail.com>
+Subject: Re: [PATCH 3/5] dt-bindings: soc: add the required property
+ 'additionalProperties'
+Message-ID: <20201218211706.GA2190351@robh.at.kernel.org>
+References: <20201204093813.1275-1-thunder.leizhen@huawei.com>
+ <20201204093813.1275-4-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201218205856.GZ552508@nvidia.com>
+In-Reply-To: <20201204093813.1275-4-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/12/2020 16:58:56-0400, Jason Gunthorpe wrote:
-> On Fri, Dec 18, 2020 at 08:32:11PM +0000, Mark Brown wrote:
+On Fri, 04 Dec 2020 17:38:11 +0800, Zhen Lei wrote:
+> When I do dt_binding_check for any YAML file, below wanring is always
+> reported:
 > 
-> > > So, I strongly suspect, MFD should create mfd devices on a MFD bus
-> > > type.
-> > 
-> > Historically people did try to create custom bus types, as I have
-> > pointed out before there was then pushback that these were duplicating
-> > the platform bus so everything uses platform bus.
+> xxx/soc/litex/litex,soc-controller.yaml: 'additionalProperties' is a required property
+> xxx/soc/litex/litex,soc-controller.yaml: ignoring, error in schema:
+> warning: no schema found in file: xxx/soc/litex/litex,soc-controller.yaml
 > 
-> Yes, I vaugely remember..
-> 
-> I don't know what to say, it seems Greg doesn't share this view of
-> platform devices as a universal device.
-> 
-> Reading between the lines, I suppose things would have been happier
-> with some kind of inheritance scheme where platform device remained as
-> only instantiated directly in board files, while drivers could bind to
-> OF/DT/ACPI/FPGA/etc device instantiations with minimal duplication &
-> boilerplate.
-> 
-> And maybe that is exactly what we have today with platform devices,
-> though the name is now unfortunate.
-> 
-> > I can't tell the difference between what it's doing and what SOF is
-> > doing, the code I've seen is just looking at the system it's running
-> > on and registering a fixed set of client devices.  It looks slightly
-> > different because it's registering a device at a time with some wrapper
-> > functions involved but that's what the code actually does.
-> 
-> SOF's aux bus usage in general seems weird to me, but if you think
-> it fits the mfd scheme of primarily describing HW to partition vs
-> describing a SW API then maybe it should use mfd.
-> 
-> The only problem with mfd as far as SOF is concerned was Greg was not
-> happy when he saw PCI stuff in the MFD subsystem.
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  Documentation/devicetree/bindings/soc/litex/litex,soc-controller.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
 
-But then again, what about non-enumerable devices on the PCI device? I
-feel this would exactly fit MFD. This is a collection of IPs that exist
-as standalone but in this case are grouped in a single device.
-
-Note that I then have another issue because the kernel doesn't support
-irq controllers on PCI and this is exactly what my SoC has. But for now,
-I can just duplicate the irqchip driver in the MFD driver.
-
-> This whole thing started when Intel first proposed to directly create
-> platform_device's in their ethernet driver and Greg had a quite strong
-> NAK to that.
-
-Let me point to drivers/net/ethernet/cadence/macb_pci.c which is a
-fairly recent example. It does exactly that and I'm not sure you could
-do it otherwise while still not having to duplicate most of macb_probe.
-
-
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Applied, thanks!
