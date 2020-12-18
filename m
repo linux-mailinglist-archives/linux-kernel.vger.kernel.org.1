@@ -2,126 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 422732DEA0D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 21:17:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A662DEA10
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 21:17:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387434AbgLRUOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 15:14:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56622 "EHLO
+        id S2387444AbgLRUPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 15:15:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727626AbgLRUOv (ORCPT
+        with ESMTP id S1727892AbgLRUPI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 15:14:51 -0500
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88420C06138C
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 12:14:11 -0800 (PST)
-Received: by mail-qv1-xf2e.google.com with SMTP id bd6so1496882qvb.9
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 12:14:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+6dOcXCZmIRThv69enwRAoT3Ssvc0OhfvILN9vdlg4o=;
-        b=jHvWhOqW9gjdg6bCt0oq8HPNAPiqjsnvVkc2ZUdCGpEZNIdSLT+GDPCECJElwUYAxA
-         Y1pIExXfv/DBr7VTF+bFuxD1/qc48sp4jjZGVoGH32YbTQAwsodVlyqEal+TFhSvUReR
-         bQH7LL5BN51mLTZ7XWLywXYOanGqutzAK76tB+8PuUq+RbgeAnOhwHP+K4O7eHiCyJ6Z
-         PbkZyuovTuop9ttweKxiab8tuHcdQfnii8DrxMLWuGsSk2o7ieWZHMk1nqidqmHDP5kd
-         mRvodxQKAx0bRwGOtG28y4RrryymGsGvvkNhr00Frg6N6/bpTYHvKS3sn6joFWSellTo
-         IV4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+6dOcXCZmIRThv69enwRAoT3Ssvc0OhfvILN9vdlg4o=;
-        b=tK35RzgM++eE/J9OECWFtB/j+761Rvz42Xsu7ERHV7q6vEh6xDfYMdFDxcqar0qNF2
-         fen6vvWEB2RW6+d5qmpU16p+zotExA67gn4JdWOR/IudrJsZunk3HooyDvMTnSwuIyFN
-         9BytNONQAOsX2Egi5I6YKH6S/kBpnlJiXABTlEDujvTWJENCx3vxwvNi8PwCv/kTJD14
-         eQX0Pnq6nLKmGR//ojfYdhEbZKBIu2c3ADSJxQOsudPwJ2CMrbxCwaSGt8bGTW1pd9am
-         aTof8fPtIrjhTwh2kAFZHsF+DvrfqxUIlR0eEGolDaFdSIGsGilwySN5wnNHEcAdSIvX
-         iW0g==
-X-Gm-Message-State: AOAM530l8Dxn62SvSpiDWO8z5eP1BkZ1iAXV2ZdfmNfhm8PAAaRY+pqy
-        ksQy7VKyTEPENxjoA1OZLPqOgw==
-X-Google-Smtp-Source: ABdhPJz7x65BC/4X9IrtWfhOoatGUO93t2Fz3LqYQnC1yk/9wcYLKCu/MCpGx2+lmEtdYxTq7GxBsw==
-X-Received: by 2002:a05:6214:15c1:: with SMTP id p1mr6432035qvz.8.1608322450319;
-        Fri, 18 Dec 2020 12:14:10 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id p15sm6479556qke.11.2020.12.18.12.14.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Dec 2020 12:14:09 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kqM8e-00CtcB-SK; Fri, 18 Dec 2020 16:14:08 -0400
-Date:   Fri, 18 Dec 2020 16:14:08 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        alsa-devel@alsa-project.org, Kiran Patil <kiran.patil@intel.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        David Miller <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Parav Pandit <parav@mellanox.com>
-Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
-Message-ID: <20201218201408.GP5487@ziepe.ca>
-References: <X8usiKhLCU3PGL9J@kroah.com>
- <20201217211937.GA3177478@piout.net>
- <X9xV+8Mujo4dhfU4@kroah.com>
- <20201218131709.GA5333@sirena.org.uk>
- <20201218140854.GW552508@nvidia.com>
- <20201218155204.GC5333@sirena.org.uk>
- <20201218162817.GX552508@nvidia.com>
- <20201218180310.GD5333@sirena.org.uk>
- <20201218184150.GY552508@nvidia.com>
- <20201218190911.GT207743@dell>
+        Fri, 18 Dec 2020 15:15:08 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 026AFC061285
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 12:14:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=tsFXi74Czj02JDF9/OuTcw7Z9zt3ff2QLJVrYO5uDG4=; b=jszN6HtG83b0un0SVKOh6aX60G
+        BeI5zZ3g0lMPofZBfaMzd2GPSYpO4+KYnQFk4pqPQtMNnDlzm+0EPWRJiJ9xUvPcxeAQT8nsweMtz
+        hQY1skK/ro43KugfxAc51sKxsbHkBaBsNBcxnraDEh7j9oExvLmdwju5w4YXGwXSVQsl+ubvD77Sj
+        4uqQkD/7mXPPqSB8YXxAmAEnlab7UMnGcU5ZSF3e/A/yIMBgSZonn6RceOkRxaM2W7g5u2JIVdvEf
+        yH7MzhGrkVv7jbKBebUwOa9ZcZXoAFuClge+xMVYXpM2/TaI+uYGN8wOxpcViAMKJO/BVFO5PBDR+
+        w0iGQqbA==;
+Received: from [2601:1c0:6280:3f0::64ea]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kqM8p-0001Cd-VP; Fri, 18 Dec 2020 20:14:20 +0000
+Subject: Re: [PATCH] JFS: more checks for invalid superblock
+To:     kernel test robot <lkp@intel.com>, linux-kernel@vger.kernel.org
+Cc:     kbuild-all@lists.01.org,
+        syzbot+36315852ece4132ec193@syzkaller.appspotmail.com,
+        Dave Kleikamp <shaggy@kernel.org>,
+        jfs-discussion@lists.sourceforge.net
+References: <20201218051920.6229-1-rdunlap@infradead.org>
+ <202012181528.QLtx4Ix4-lkp@intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <b0133786-91d2-1d7e-3ebb-00ee63b62eb6@infradead.org>
+Date:   Fri, 18 Dec 2020 12:14:15 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201218190911.GT207743@dell>
+In-Reply-To: <202012181528.QLtx4Ix4-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 07:09:11PM +0000, Lee Jones wrote:
+On 12/17/20 11:23 PM, kernel test robot wrote:
+> Hi Randy,
+> 
+> Thank you for the patch! Perhaps something to improve:
+> 
+> [auto build test WARNING on shaggy/jfs-next]
+> [also build test WARNING on linux/master linus/master v5.10 next-20201217]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+> 
+> url:    https://github.com/0day-ci/linux/commits/Randy-Dunlap/JFS-more-checks-for-invalid-superblock/20201218-132143
+> base:   https://github.com/kleikamp/linux-shaggy jfs-next
+> config: i386-randconfig-s002-20201217 (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
+> reproduce:
+>         # apt-get install sparse
+>         # sparse version: v0.6.3-184-g1b896707-dirty
+>         # https://github.com/0day-ci/linux/commit/11cb0575aca69504da8b7984fc7f3e439b1a2331
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Randy-Dunlap/JFS-more-checks-for-invalid-superblock/20201218-132143
+>         git checkout 11cb0575aca69504da8b7984fc7f3e439b1a2331
+>         # save the attached .config to linux build tree
+>         make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=i386 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> 
+> "sparse warnings: (new ones prefixed by >>)"
+>>> fs/jfs/jfs_mount.c:373:17: sparse: sparse: restricted __le32 degrades to integer
+> 
 
-> ACPI, DT and MFD are not busses.  
+Thank you. I have fixed that.
 
-And yet ACPI and PNP have a bus:
-  extern struct bus_type acpi_bus_type;
-  extern struct bus_type pnp_bus_type;
+-- 
+~Randy
 
-Why? Because in the driver core if you subclass struct device and want
-to bind drivers, as both PNP and ACPI do, you must place those devices
-on a bus with a bus_type matching the device type. Thus subclassing
-the device means subclassing the bus as well.
-
-The purpose of the bus_type is to match drivers to devices and provide
-methods to the driver core. The bus_type also defines the unique name
-space of the device names.
-
-It is confusing because the word bus immediately makes people think of
-physical objects like I2C, PCI, etc, but that is not what bus_type
-does in the object model of the driver core, IMHO.
-
-So, if you subclass struct device for MFD's usage, then you must also
-create a bus_type to handle driver binding. The MFD bus_type. Just
-like auxillary does.
-
-Making a mfd subclass is the logical thing for a subsystem to do,
-co-opting another subsystem's bus_type is just really weird/abusive.
-
-auxillary bus shows how all these parts work, and it is simple enough
-to see the pieces clearly.
-
-Jason
