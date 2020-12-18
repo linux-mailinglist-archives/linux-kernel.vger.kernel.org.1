@@ -2,94 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF40C2DE80E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 18:35:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AEEC2DE882
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 18:44:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732297AbgLRRc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 12:32:56 -0500
-Received: from honk.sigxcpu.org ([24.134.29.49]:49060 "EHLO honk.sigxcpu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731972AbgLRRcz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 12:32:55 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 3B9A7FB03;
-        Fri, 18 Dec 2020 18:32:14 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 3i-ldZmZMy2L; Fri, 18 Dec 2020 18:32:11 +0100 (CET)
-Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id 008E143FE1; Fri, 18 Dec 2020 18:32:08 +0100 (CET)
-From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Vinod Koul <vkoul@kernel.org>,
-        =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Michael Walle <michael@walle.cc>,
-        Max Krummenacher <max.oss.09@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 3/3] arm64: defconfig: Enable more DM/MD targets as modules
-Date:   Fri, 18 Dec 2020 18:32:08 +0100
-Message-Id: <199c0c18dbb2b1fed98f2c99ed74c4b794dcd79e.1608312654.git.agx@sigxcpu.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1608312654.git.agx@sigxcpu.org>
-References: <cover.1608312654.git.agx@sigxcpu.org>
+        id S1732618AbgLRRnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 12:43:49 -0500
+Received: from saphodev.broadcom.com ([192.19.232.172]:42844 "EHLO
+        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728246AbgLRRnt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 12:43:49 -0500
+Received: from [10.136.13.65] (lbrmn-lnxub113.ric.broadcom.net [10.136.13.65])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by relay.smtp-ext.broadcom.com (Postfix) with ESMTPS id 7B9FB80DF;
+        Fri, 18 Dec 2020 09:32:10 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 7B9FB80DF
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+        s=dkimrelay; t=1608312731;
+        bh=h5hEddcP3Sei2BEVtxNVjlgWNGIa0QHdTFP0mGxVgPg=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=JY6mDCu4kdtoBCdx0RP4p0Uesc3xo1WE8L1XSYnCKDwjAMLBBdA9VwgRBFSAL/K1n
+         X8d24QLKvqP3KM6WZ/yP0x6GOjkM63T18wz4OnLgiybgsSvYsdvoZ48mTHpFxj6lL4
+         HvHocDSMu5BtgwpcdImX0OtzjNcQEobKqvMjY7GQ=
+Subject: Re: [PATCH v2 2/2] hwrng: iproc-rng200: Move enable/disable in
+ separate function
+To:     matthias.bgg@kernel.org, mpm@selenic.com,
+        herbert@gondor.apana.org.au, rjui@broadcom.com,
+        sbranden@broadcom.com, f.fainelli@gmail.com
+Cc:     linux-kernel@vger.kernel.org, Julia.Lawall@inria.fr,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, nsaenzjulienne@suse.de,
+        linux-crypto@vger.kernel.org, Matthias Brugger <mbrugger@suse.com>
+References: <20201218105708.28480-1-matthias.bgg@kernel.org>
+ <20201218105708.28480-2-matthias.bgg@kernel.org>
+From:   Scott Branden <scott.branden@broadcom.com>
+Message-ID: <fe0bd5cf-b48b-d7e6-c20c-6f8d0ae7aeb5@broadcom.com>
+Date:   Fri, 18 Dec 2020 09:32:09 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201218105708.28480-2-matthias.bgg@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-CA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Most notably DM_CRYPT for disk encryption but things like snapshot, etc.
-are useful on embedded as well and the others make sense on arm64
-servers.
 
-CONFIG_BLK_DEV_MD gets dropped because other config options like
-CONFIG_MD_RAID0 depend on it.
 
-Signed-off-by: Guido Günther <agx@sigxcpu.org>
----
- arch/arm64/configs/defconfig | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 6f5f03237db6..060bebe0d35d 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -296,10 +296,27 @@ CONFIG_SATA_RCAR=y
- CONFIG_PATA_PLATFORM=y
- CONFIG_PATA_OF_PLATFORM=y
- CONFIG_MD=y
--CONFIG_BLK_DEV_MD=m
- CONFIG_BLK_DEV_DM=m
-+CONFIG_DM_CRYPT=m
-+CONFIG_DM_SNAPSHOT=m
-+CONFIG_DM_THIN_PROVISIONING=m
-+CONFIG_DM_WRITECACHE=m
- CONFIG_DM_MIRROR=m
-+CONFIG_DM_LOG_USERSPACE=m
-+CONFIG_DM_RAID=m
- CONFIG_DM_ZERO=m
-+CONFIG_DM_MULTIPATH=m
-+CONFIG_DM_MULTIPATH_QL=m
-+CONFIG_DM_MULTIPATH_ST=m
-+CONFIG_DM_MULTIPATH_HST=m
-+CONFIG_DM_MULTIPATH_IOA=m
-+CONFIG_DM_DELAY=m
-+CONFIG_DM_DUST=m
-+CONFIG_DM_UEVENT=y
-+CONFIG_DM_FLAKEY=m
-+CONFIG_DM_VERITY=m
-+CONFIG_DM_LOG_WRITES=m
-+CONFIG_DM_INTEGRITY=m
- CONFIG_NETDEVICES=y
- CONFIG_MACVLAN=m
- CONFIG_MACVTAP=m
--- 
-2.29.2
+On 2020-12-18 2:57 a.m., matthias.bgg@kernel.org wrote:
+> From: Matthias Brugger <mbrugger@suse.com>
+>
+> We are calling the same code for enable and disable the block in various
+> parts of the driver. Put that code into a new function to reduce code
+> duplication.
+>
+> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
+> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Acked-by: Scott Branden <scott.branden@broadcom.com>
+>
+> ---
+>
+> Changes in v2:
+> - rename function to iproc_rng200_enable_set()
+> - use u32 value instead of uint32_t
+>
+>  drivers/char/hw_random/iproc-rng200.c | 35 ++++++++++++---------------
+>  1 file changed, 16 insertions(+), 19 deletions(-)
+>
+> diff --git a/drivers/char/hw_random/iproc-rng200.c b/drivers/char/hw_random/iproc-rng200.c
+> index 70cd818a0f31..a43743887db1 100644
+> --- a/drivers/char/hw_random/iproc-rng200.c
+> +++ b/drivers/char/hw_random/iproc-rng200.c
+> @@ -53,14 +53,24 @@ struct iproc_rng200_dev {
+>  
+>  #define to_rng_priv(rng)	container_of(rng, struct iproc_rng200_dev, rng)
+>  
+> -static void iproc_rng200_restart(void __iomem *rng_base)
+> +static void iproc_rng200_enable_set(void __iomem *rng_base, bool enable)
+>  {
+> -	uint32_t val;
+> +	u32 val;
+>  
+> -	/* Disable RBG */
+>  	val = ioread32(rng_base + RNG_CTRL_OFFSET);
+>  	val &= ~RNG_CTRL_RNG_RBGEN_MASK;
+> +
+> +	if (enable)
+> +		val |= RNG_CTRL_RNG_RBGEN_ENABLE;
+> +
+>  	iowrite32(val, rng_base + RNG_CTRL_OFFSET);
+> +}
+> +
+> +static void iproc_rng200_restart(void __iomem *rng_base)
+> +{
+> +	uint32_t val;
+> +
+> +	iproc_rng200_enable_set(rng_base, false);
+>  
+>  	/* Clear all interrupt status */
+>  	iowrite32(0xFFFFFFFFUL, rng_base + RNG_INT_STATUS_OFFSET);
+> @@ -82,11 +92,7 @@ static void iproc_rng200_restart(void __iomem *rng_base)
+>  	val &= ~RBG_SOFT_RESET;
+>  	iowrite32(val, rng_base + RBG_SOFT_RESET_OFFSET);
+>  
+> -	/* Enable RBG */
+> -	val = ioread32(rng_base + RNG_CTRL_OFFSET);
+> -	val &= ~RNG_CTRL_RNG_RBGEN_MASK;
+> -	val |= RNG_CTRL_RNG_RBGEN_ENABLE;
+> -	iowrite32(val, rng_base + RNG_CTRL_OFFSET);
+> +	iproc_rng200_enable_set(rng_base, true);
+>  }
+>  
+>  static int iproc_rng200_read(struct hwrng *rng, void *buf, size_t max,
+> @@ -153,13 +159,8 @@ static int iproc_rng200_read(struct hwrng *rng, void *buf, size_t max,
+>  static int iproc_rng200_init(struct hwrng *rng)
+>  {
+>  	struct iproc_rng200_dev *priv = to_rng_priv(rng);
+> -	uint32_t val;
+>  
+> -	/* Setup RNG. */
+> -	val = ioread32(priv->base + RNG_CTRL_OFFSET);
+> -	val &= ~RNG_CTRL_RNG_RBGEN_MASK;
+> -	val |= RNG_CTRL_RNG_RBGEN_ENABLE;
+> -	iowrite32(val, priv->base + RNG_CTRL_OFFSET);
+> +	iproc_rng200_enable_set(priv->base, true);
+>  
+>  	return 0;
+>  }
+> @@ -167,12 +168,8 @@ static int iproc_rng200_init(struct hwrng *rng)
+>  static void iproc_rng200_cleanup(struct hwrng *rng)
+>  {
+>  	struct iproc_rng200_dev *priv = to_rng_priv(rng);
+> -	uint32_t val;
+>  
+> -	/* Disable RNG hardware */
+> -	val = ioread32(priv->base + RNG_CTRL_OFFSET);
+> -	val &= ~RNG_CTRL_RNG_RBGEN_MASK;
+> -	iowrite32(val, priv->base + RNG_CTRL_OFFSET);
+> +	iproc_rng200_enable_set(priv->base, false);
+>  }
+>  
+>  static int iproc_rng200_probe(struct platform_device *pdev)
 
