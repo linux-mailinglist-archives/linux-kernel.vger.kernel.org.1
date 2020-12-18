@@ -2,80 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C08212DE2E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 13:39:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF7582DE2E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 13:45:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726567AbgLRMjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 07:39:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43052 "EHLO
+        id S1726587AbgLRMof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 07:44:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725903AbgLRMjn (ORCPT
+        with ESMTP id S1726395AbgLRMoe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 07:39:43 -0500
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3064AC0617A7
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 04:39:03 -0800 (PST)
-Received: by mail-oo1-xc2a.google.com with SMTP id o5so492113oop.12
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 04:39:03 -0800 (PST)
+        Fri, 18 Dec 2020 07:44:34 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE593C061282
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 04:43:53 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id q22so3033637eja.2
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 04:43:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=uny.ac.id; s=google;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=d3V4QOJC6Zns0BzYJsUyLUmRfjC0z++zc/5qfY38kbg=;
-        b=P6hDbnedOj+GeM6bPRMFVpnwenucgGyFgTvLZ6CUKBuiVnu1BIPPiITarpM4aOwNah
-         Pl7BkuFHt+ZmJRW4uDDZLJQ2fatLxGd8q/PJyAbOrThjy13ruNXyXphXoXLQEWwWCbXq
-         +baKywN/MX7eS7hXJYbgEyX50XnIdRgmk/0lI=
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VP62gLy4L6lfMGIRwtzfjFvE+h27PxSa+U0ikjWYO+Y=;
+        b=X0hCklMnpRKCi/ALhX9mvgOwcS8w3p+GTPamqE39ttdKNscia4P58KD++FD2plVHEo
+         A2UZwBioUoldfE+g1gnuZazRSXRtwyTvuOxtpxexB4ny4bAneoWMowNMk9+NyYIUf2tE
+         fpmcwGa+RSYTcM6j2JIqqfqaD4QUyoutw2JvGnjh8ZNCVnoEaeXMnhl6/rs6njNIjw2u
+         EnZXSgbc0WUzbI2WF28Za2/SO0iaCFCLXz58pWOZi2/vvGDTdfQOlTVEBtshkQw+6Pxj
+         sj7yDpUPFFgfKQa11E681HdSZboZCp+5rRtgc3lOCDMxrce9g0AJLJRq1ieG7Dd3HOBR
+         Wphw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=d3V4QOJC6Zns0BzYJsUyLUmRfjC0z++zc/5qfY38kbg=;
-        b=Ef50NmeVljia3aKAB9YLg0Rhcvc1RYSTbCZtGfu2bXT2XsbaushQNQTXNITHcSD076
-         Y/cKofQp+rXHZefzb9k+IqkeKp41xKzRf2vbxSGXSooyfZfdWHDgQuMVvPgx5rf4j2bs
-         geGS7D/UOQtgjFC+194cI9Kb4tDhUH8n5GlmWDmASf45PKHjtBC4WA1jJ5LLVm+DvP+L
-         BKKyKKiXusipLo/du2iHC4QGgZDtAhYua2hoPQ8vaT5ZU6FCOFBoQYiTWuI/3W4UhXeC
-         7UdBII9V0H+08crwQHtC161qF2CDhY1CgNitIwMG87HlEeF3wNsjSQEFp+zltE0FkhwF
-         LdfA==
-X-Gm-Message-State: AOAM531+PZuDv5vmbTzBVp8XECK4u3S5JkB5JcZDv+iuhxor02HZNLJC
-        OlaGMxvoEp2WjQblpp23DKgCNOOVg6qUFvTPs0hVAQXQM/jbJ6OSxjKGRtxA6EnaRLSOBsOWqQn
-        HeSMPcbnwXPayOjnPIMxqgW5uchi+hNYJCg==
-X-Google-Smtp-Source: ABdhPJwR6r9h+Geoj/o7tWR3mDO6FVASE2h8H9mcecH6vhFeFEgkZwEu26Um+R0OSZGeL/LFgahnKrFQl2OfbSxAYD4=
-X-Received: by 2002:a4a:a9ce:: with SMTP id h14mr1278408oon.59.1608295142416;
- Fri, 18 Dec 2020 04:39:02 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VP62gLy4L6lfMGIRwtzfjFvE+h27PxSa+U0ikjWYO+Y=;
+        b=ZRj6Kbq+gvyauLDgABfjjDPVROxYgF+g52slpPpr31uGInnEGvaLzMUCgccHZ4kakz
+         K6GfqkIjgMA+uO8eBY6hqnZGdQdMk1cbCbf7/Kjxi8HF+gtCRxtND9WHmvLZdKNkxhaq
+         KKRw8rv1sOAlYHiTY4gB+DeMbSjUu2Kf0hMYujgy5InGJrjVaZw4XOyj7oIzD0ZfrU2t
+         c8T716kJ7SapKT7bfMTaOAy7D2ZxKABlo/7CvL91PXCSTee2m27Qxis0hdN4gC8A6pkH
+         rp2t5q4P/m8ixncs5og6S4VhO15GwRx4mNNRBa0Q47DQCdgfHZuDkP6GrIwwanxe+sfr
+         TXYA==
+X-Gm-Message-State: AOAM530UXpEyIToMddbMEohhTJi3JZyRdXtMixS/7Y6Z+fGKOyWBcQyY
+        4WHlbtpfHdn7dpCLADthN2N6HohzoewdxiamKeFJCA==
+X-Google-Smtp-Source: ABdhPJxxe+sAeq95UrfMrz6gv/whvetHEI4cy28Afan/x1ZYOwwIJMl5u7ZOqiPw7wthIMpPxtIbVN5HmHYvjWudbsA=
+X-Received: by 2002:a17:906:7d98:: with SMTP id v24mr3816705ejo.129.1608295432506;
+ Fri, 18 Dec 2020 04:43:52 -0800 (PST)
 MIME-Version: 1.0
-Received: by 2002:a4a:dc09:0:0:0:0:0 with HTTP; Fri, 18 Dec 2020 04:39:02
- -0800 (PST)
-Reply-To: suniew321@gmail.com
-From:   Sunie Wendy <mulyana@uny.ac.id>
-Date:   Fri, 18 Dec 2020 13:39:02 +0100
-Message-ID: <CAM_7gQGNrA2+0DMwPVLyOUJ3EoKkx_t7o9EvudJSgBBrTp=KNw@mail.gmail.com>
-Subject: Hello
-To:     undisclosed-recipients:;
+References: <20201217185243.3288048-1-pasha.tatashin@soleen.com>
+ <20201217185243.3288048-9-pasha.tatashin@soleen.com> <20201218104655.GW32193@dhcp22.suse.cz>
+In-Reply-To: <20201218104655.GW32193@dhcp22.suse.cz>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Fri, 18 Dec 2020 07:43:15 -0500
+Message-ID: <CA+CK2bCn++2Sk4-Eunibj6f+JoOL77uJQXGU2+dScHQ3RgC7_Q@mail.gmail.com>
+Subject: Re: [PATCH v4 08/10] mm/gup: limit number of gup migration failures,
+ honor failures
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
-I sent a letter to your mail but got no reply  from you. Did you
-receive my previous mail please i wait to read your mail soon on my
-email address at ( suniew321@gmail.com ) respond to me
+On Fri, Dec 18, 2020 at 5:46 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Thu 17-12-20 13:52:41, Pavel Tatashin wrote:
+> [...]
+> > +#define PINNABLE_MIGRATE_MAX 10
+> > +#define PINNABLE_ISOLATE_MAX 100
+>
+> Why would we need to limit the isolation retries. Those should always be
+> temporary failure unless I am missing something.
 
---=20
+Actually, during development, I was retrying isolate errors
+infinitely, but during testing found a hung where when FOLL_TOUCH
+without FOLL_WRITE is passed (fault in kernel without write flag), the
+zero page is faulted. The isolation of the zero page was failing every
+time, therefore the process was hanging.
 
+Since then, I fixed this problem by adding FOLL_WRITE unconditionally
+to FOLL_LONGTERM, but I was worried about other possible bugs that
+would cause hangs, so decided to limit isolation errors. If you think
+it its not necessary, I can unlimit isolate retires.
 
+> I am not sure about the
+> PINNABLE_MIGRATE_MAX either. Why do we want to limit that? migrate_pages
+> already implements its retry logic why do you want to count retries on
+> top of that? I do agree that the existing logic is suboptimal because
 
--------------------------------------------Untuk mendukung =E2=80=9CGerakan=
- UNY=20
-Hijau=E2=80=9D, disarankan tidak mencetak email ini dan lampirannya.
-(To support=20
-the =E2=80=9CGreen UNY movement=E2=80=9D, it is recommended not to print th=
-e contents of=20
-this email and its attachments)
-Universitas Negeri Yogyakarta
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=20
-www.uny.ac.id <http://www.uny.ac.id>
--------------------------------------------
+True, but again, just recently, I worked on a race bug where pages can
+end up in per-cpu list after lru_add_drain_all() but before isolation,
+so I think retry is necessary.
 
+> the migration failure might be ephemeral or permanent but that should be
+> IMHO addressed at migrate_pages (resp. unmap_and_move) and simply report
+> failures that are permanent - e.g. any potential pre-existing long term
+> pin - if that is possible at all. If not what would cause permanent
+> migration failure? OOM?
+
+Yes, OOM is the main cause for migration failures. And also a few
+cases described in movable zone comment, where it is possible during
+boot some pages can be allocated by memblock in movable zone due to
+lack of memory resources (even if those resources were added later),
+hardware page poisoning is another rare example.
+
+> --
+> Michal Hocko
+> SUSE Labs
