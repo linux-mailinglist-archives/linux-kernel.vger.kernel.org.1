@@ -2,56 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EF7C2DE99F
+	by mail.lfdr.de (Postfix) with ESMTP id EBC0C2DE9A0
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 20:13:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732799AbgLRTL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 14:11:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36122 "EHLO mail.kernel.org"
+        id S1733127AbgLRTMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 14:12:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728074AbgLRTL1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 14:11:27 -0500
-Subject: Re: [GIT PULL] more s390 updates for 5.11 merge window
+        id S1732969AbgLRTMr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 14:12:47 -0500
+X-Gm-Message-State: AOAM531w/AVn/JOAraZA2uzhyPB754cq8l7A/6ATQGvAYVhaijY2XG9p
+        GIn809jJkAQPVsIb2lkYijtbW+tPZMA2+NiiurY=
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608318647;
-        bh=lcnpOXEv71koEbCDjN6b3afzbIXtrzPS1UHavDGKYOE=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=D7NuqtoD9+TLMpsm0smox6X9rfVW5lzrDQK5tCv8FvcrbIuVB/3pb3/C8i9VhNv3A
-         cyr+BCM9Lcyx+RIXxCkSTiZfDmNuCyQxJUaVQCNKP2uar4h3zUA/qZgOOqzQ9qZZIw
-         G+RlwXO9lJlXxRP1lfYGcbaZ5Kzk66YNtaAY8Nxx+eC+tEAKa+1I/EFB56Wzw27gPe
-         Mjs9eZbGM+/QccTTMh/LR3egMDoFaLV6cLjfZzRCHBGxai967n7AQ5e4JKupHZuN6m
-         PrzET1ftzEkerTe9av9F7FA+0/lxuie+25MHwjPDHl4Tt3x7QLPHcDwWCAdi86pRNd
-         /Fv6Ogv7EAjkQ==
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201218185312.GA5261@osiris>
-References: <20201218185312.GA5261@osiris>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201218185312.GA5261@osiris>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.11-2
-X-PR-Tracked-Commit-Id: dfdc6e73cdcf011a04568231132916c6d06b861f
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a087241716a6cea8518ca33839276a9648d91cef
-Message-Id: <160831864695.5982.15231788755591792279.pr-tracker-bot@kernel.org>
-Date:   Fri, 18 Dec 2020 19:10:46 +0000
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+        s=k20201202; t=1608318737;
+        bh=URaSneZyJ5V1zt1qyhgBSKobWWAmbXcUNROkoAPm0b4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=btIBaPqtRcANPLErHvNsY9N2/x5ew3Pg6Ya3J5Ujasx4y46mAxZjt/eSotYw5izUA
+         O6KezxX5Xs6WCDS+FtkJZEhuEfn3RHmeg5xclpsWo5AuAfJ/BUBih4LoXWteX45sfA
+         cjZ+Z7LZuYIMB0LQFzOysNGdnkMPw5TjhuJ5EJI7lwML208y/3adFJ+rC4kRQ/T7t/
+         mV65y3WzEWnhPmKhxgNy+KFcZrWYaRQYwTD16ZBC6g7ZFtS2EFgabbVwHNcpaJA+/C
+         E0dIwiYY4uQisMl6mwajvrdhdyCTtygltnY3VWuzyANzca1tesrBCQ3F15ASVZEEKI
+         LCoAvikigGKXQ==
+X-Google-Smtp-Source: ABdhPJw6DkAMltlKAmiO5rFpS6nrrQsu9eZX3emJ6MKuCHbhn64wWODVNnE7HBG4Ri1YBxD4BpZsfWGKRZaUFMoPzdY=
+X-Received: by 2002:aca:dd03:: with SMTP id u3mr3866250oig.47.1608318736292;
+ Fri, 18 Dec 2020 11:12:16 -0800 (PST)
+MIME-Version: 1.0
+References: <5fdc89c3.1c69fb81.c9707.68bb@mx.google.com> <3e1680ed-94b8-74c9-ffe6-c2bd71f2a705@collabora.com>
+ <20201218140018.GZ1551@shell.armlinux.org.uk> <CAMj1kXH-z91_EOpw8_5DCm22DiaU7FxzsCMmWV3-4=uM-FCM1g@mail.gmail.com>
+In-Reply-To: <CAMj1kXH-z91_EOpw8_5DCm22DiaU7FxzsCMmWV3-4=uM-FCM1g@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 18 Dec 2020 20:12:05 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGnLCwXFRJAcmgLxRq6LXH5pyi1T8d0_5DPur4ez7yAPQ@mail.gmail.com>
+Message-ID: <CAMj1kXGnLCwXFRJAcmgLxRq6LXH5pyi1T8d0_5DPur4ez7yAPQ@mail.gmail.com>
+Subject: Re: next/master bisection: baseline.login on ox820-cloudengines-pogoplug-series-3
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Guillaume Tucker <guillaume.tucker@collabora.com>,
+        kernelci-results@groups.io,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Abbott Liu <liuwenliang@huawei.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "kernelci@groups.io" <kernelci@groups.io>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 18 Dec 2020 19:53:12 +0100:
+On Fri, 18 Dec 2020 at 15:01, Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> On Fri, 18 Dec 2020 at 15:00, Russell King - ARM Linux admin
+> <linux@armlinux.org.uk> wrote:
+> >
+> > On Fri, Dec 18, 2020 at 01:48:09PM +0000, Guillaume Tucker wrote:
+> > > Please see the bisection report below about a boot failure on
+> > > ox820-cloudengines-pogoplug-series-3.  There was also a bisection
+> > > yesterday with next-20201216 which landed on the same commit, on
+> > > the same platform and also with oxnas_v6_defconfig.  I'm not
+> > > aware of any other platform on kernelci.org showing the same
+> > > regression.
+> >
+> > Ah, I bet I know what's happening.
+> >
+> > We test for the presence of VFP by issuing an instruction to read
+> > FPSID. If VFP is not present, this will raise an undefined instruction
+> > exception, and we expect to head into the vfp_testing_entry code.
+> >
+> > I bet Pogoplug, being an ARM11 MPCore platform, either raises an
+> > exception here.
+> >
+> > We probably need to also rework the code in vfp_init() as well to
+> > register a temporary hook when reading the FPSID.
+> >
+>
+> Thanks for diagnosing that - I wasn't quite sure what was going on.
+>
+> I will look into this later today.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.11-2
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a087241716a6cea8518ca33839276a9648d91cef
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Working again with my fix applied:
