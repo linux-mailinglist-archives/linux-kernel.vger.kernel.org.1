@@ -2,155 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 651FF2DEA43
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 21:34:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA04C2DEA46
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 21:34:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387520AbgLRUdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 15:33:07 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:51190 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730516AbgLRUdG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S2387535AbgLRUdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 15:33:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47780 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387492AbgLRUdG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 18 Dec 2020 15:33:06 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BIKU9j8080499;
-        Fri, 18 Dec 2020 20:31:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=HFbuznatVGjBL5fQc775ihF3yH3VtHWOJZWPjh0mMbw=;
- b=Hr8v9OBA5wGVN0MRKOiF3bLUsZfyLVpIgGJcb4KBKJ23Y5itqItR0wkk4ed3CG1lgrdg
- ZOzEUSqmQZrjLbunzos0mvdYFeP+dNugLV4OC2SgTJK9A0Y+5kVwLpeM6Kdqpv2hCx/Z
- tlKZOH0CMwHe4UPR11uvha2E1bB4iv8SzMXJrtx8x4dhSpQEOU2XXhu2qwbBvRjRAS+l
- OrQmoFCbYwSTPQRUOQY5jjUashwy9glaleFNjCMbbPwGj75t1Z08ix52kAp3AeCSzY65
- +cTdqdfqma9tD7DSqtdfTa0Dowx+ZleRCDsLfoEW8R0hxCs8xoR9/rGT6Mx90h6B/wQj Ag== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 35ckcbvay9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 18 Dec 2020 20:31:54 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BIKVNbj026269;
-        Fri, 18 Dec 2020 20:31:53 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 35d7esqf7r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Dec 2020 20:31:53 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BIKVpUE023714;
-        Fri, 18 Dec 2020 20:31:52 GMT
-Received: from [192.168.0.190] (/68.201.65.98)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 18 Dec 2020 12:31:51 -0800
-Subject: Re: [PATCH v2] JFS: more checks for invalid superblock
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     syzbot+36315852ece4132ec193@syzkaller.appspotmail.com,
-        kernel test robot <lkp@intel.com>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        jfs-discussion@lists.sourceforge.net
-References: <20201218201716.26613-1-rdunlap@infradead.org>
-From:   Dave Kleikamp <dave.kleikamp@oracle.com>
-Message-ID: <285a8ede-c901-7d8c-bd3a-e9ce8962e714@oracle.com>
-Date:   Fri, 18 Dec 2020 14:31:50 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+Date:   Fri, 18 Dec 2020 20:32:11 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608323545;
+        bh=k7mZa1Db33KpTT5s4Uwf4FgA1fS6r85FOeZ5aqVIEIU=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Tl4HfRDBx/GegI5g9piovvRek4amjx318VmTrnZ9w4OwIXuIG3DF6PIuju1dw4PTX
+         prtq7Fp1Xf2K1AuILyHN3i7QpNbptNKr+IIXp9D9tosc9dsPwvB/t1xvOjNCG6Y/H0
+         YkLqYOhXohLoODT1sQcuTbD3pNThLnuFtq28bim5QymPLb9pN/aklDplHJcCAnUb2G
+         L8Bv59ttURYon0zLZlyU4UflQ5bmQID9ajYNGpObnyDzPa/wKtN9htk5U+nVm08sEg
+         m1c0v4+gdvRgVDUywWkmKvIX34hWsljD6dfshxYLlWUc2VxqOkI4YYqz9icxASM+es
+         YJdDWBHoBXI3Q==
+From:   Mark Brown <broonie@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        alsa-devel@alsa-project.org, Kiran Patil <kiran.patil@intel.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        David Miller <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Parav Pandit <parav@mellanox.com>, lee.jones@linaro.org
+Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
+Message-ID: <20201218203211.GE5333@sirena.org.uk>
+References: <CAPcyv4iLG7V9JT34La5PYfyM9378acbLnkShx=6pOmpPK7yg3A@mail.gmail.com>
+ <X8usiKhLCU3PGL9J@kroah.com>
+ <20201217211937.GA3177478@piout.net>
+ <X9xV+8Mujo4dhfU4@kroah.com>
+ <20201218131709.GA5333@sirena.org.uk>
+ <20201218140854.GW552508@nvidia.com>
+ <20201218155204.GC5333@sirena.org.uk>
+ <20201218162817.GX552508@nvidia.com>
+ <20201218180310.GD5333@sirena.org.uk>
+ <20201218184150.GY552508@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20201218201716.26613-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9839 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 bulkscore=0
- suspectscore=0 adultscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012180138
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9839 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- priorityscore=1501 mlxscore=0 suspectscore=0 adultscore=0 phishscore=0
- malwarescore=0 impostorscore=0 lowpriorityscore=0 clxscore=1011
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012180138
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="PPYy/fEw/8QCHSq3"
+Content-Disposition: inline
+In-Reply-To: <20201218184150.GY552508@nvidia.com>
+X-Cookie: Password:
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks! This looks good and reasonable. I'll try to get it pushed out to 
--next in the next few days.
 
-Shaggy
+--PPYy/fEw/8QCHSq3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 12/18/20 2:17 PM, Randy Dunlap wrote:
-> syzbot is feeding invalid superblock data to JFS for mount testing.
-> JFS does not check several of the fields -- just assumes that they
-> are good since the JFS_MAGIC and version fields are good.
-> 
-> In this case (syzbot reproducer), we have s_l2bsize == 0xda0c,
-> pad == 0xf045, and s_state == 0x50, all of which are invalid IMO.
-> Having s_l2bsize == 0xda0c causes this UBSAN warning:
->    UBSAN: shift-out-of-bounds in fs/jfs/jfs_mount.c:373:25
->    shift exponent -9716 is negative
-> 
-> s_l2bsize can be tested for correctness. pad can be tested for non-0
-> and punted. s_state can be tested for its valid values and punted.
-> 
-> Do those 3 tests and if any of them fails, report the superblock as
-> invalid/corrupt and let fsck handle it.
-> 
-> With this patch, chkSuper() says this when JFS_DEBUG is enabled:
->    jfs_mount: Mount Failure: superblock is corrupt!
->    Mount JFS Failure: -22
->    jfs_mount failed w/return code = -22
-> 
-> The obvious problem with this method is that next week there could
-> be another syzbot test that uses different fields for invalid values,
-> this making this like a game of whack-a-mole.
-> 
-> syzkaller link: https://syzkaller.appspot.com/bug?extid=36315852ece4132ec193
-> 
-> Reported-by: syzbot+36315852ece4132ec193@syzkaller.appspotmail.com
-> Reported-by: kernel test robot <lkp@intel.com> # v2
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Dave Kleikamp <shaggy@kernel.org>
-> Cc: jfs-discussion@lists.sourceforge.net
-> ---
-> v2: fix sparse __le32 warning (lkp robot)
-> 
->   fs/jfs/jfs_filsys.h |    1 +
->   fs/jfs/jfs_mount.c  |   10 ++++++++++
->   2 files changed, 11 insertions(+)
-> 
-> --- lnx-510.orig/fs/jfs/jfs_mount.c
-> +++ lnx-510/fs/jfs/jfs_mount.c
-> @@ -37,6 +37,7 @@
->   #include <linux/fs.h>
->   #include <linux/buffer_head.h>
->   #include <linux/blkdev.h>
-> +#include <linux/log2.h>
->   
->   #include "jfs_incore.h"
->   #include "jfs_filsys.h"
-> @@ -366,6 +367,15 @@ static int chkSuper(struct super_block *
->   	sbi->bsize = bsize;
->   	sbi->l2bsize = le16_to_cpu(j_sb->s_l2bsize);
->   
-> +	/* check some fields for possible corruption */
-> +	if (sbi->l2bsize != ilog2((u32)bsize) ||
-> +	    j_sb->pad != 0 ||
-> +	    le32_to_cpu(j_sb->s_state) > FM_STATE_MAX) {
-> +		rc = -EINVAL;
-> +		jfs_err("jfs_mount: Mount Failure: superblock is corrupt!");
-> +		goto out;
-> +	}
-> +
->   	/*
->   	 * For now, ignore s_pbsize, l2bfactor.  All I/O going through buffer
->   	 * cache.
-> --- lnx-510.orig/fs/jfs/jfs_filsys.h
-> +++ lnx-510/fs/jfs/jfs_filsys.h
-> @@ -268,5 +268,6 @@
->   				 * fsck() must be run to repair
->   				 */
->   #define	FM_EXTENDFS 0x00000008	/* file system extendfs() in progress */
-> +#define	FM_STATE_MAX 0x0000000f	/* max value of s_state */
->   
->   #endif				/* _H_JFS_FILSYS */
-> 
+On Fri, Dec 18, 2020 at 02:41:50PM -0400, Jason Gunthorpe wrote:
+> On Fri, Dec 18, 2020 at 06:03:10PM +0000, Mark Brown wrote:
+
+> > If it's not supposed to use platform devices so I'm assuming that the
+> > intention is that it should use aux devices, otherwise presumably it'd
+> > be making some new clone of the platform bus but I've not seen anyone
+> > suggesting this.
+
+> I wouldn't assume that, I certainly don't want to see all the HW
+> related items in platform_device cloned roughly into aux device.
+
+> I've understood the bus type should be basically related to the thing
+> that is creating the device. In a clean view platform code creates
+> platform devices. DT should create DT devices, ACPI creates ACPI
+> devices, PNP does pnp devices, etc
+
+Ah, so we *used* to do that and in fact at least acpi_device still
+exists but it was realized that this was causing a lot of effort with
+boilerplate - like Lee said board files, ACPI and DT are all just
+enumeration methods which have zero effect on the underlying hardware so
+you end up having duplication on both the bus and driver side.  Since
+this applies to all non-enumerable buses this process gets repeated for
+all of them, we wouldn't just have an of_device we'd have of_i2c_device,
+of_spi_device, of_1wire_device and so on or have to jump through hoops
+to map things into the actual bus type.  See eca3930163ba8884060ce9d9
+(of: Merge of_platform_bus_type with platform_bus_type) for part of this
+getting unwound.
+
+Fundamentally this is conflating physical bus type and enumeration
+method, for enumerable buses they are of course the same (mostly) but
+for non-enumerable buses not so much.
+
+> So, I strongly suspect, MFD should create mfd devices on a MFD bus
+> type.
+
+Historically people did try to create custom bus types, as I have
+pointed out before there was then pushback that these were duplicating
+the platform bus so everything uses platform bus.
+
+> Alexandre's point is completely valid, and I think is the main
+> challenge here, somehow avoiding duplication.
+
+> If we were to look at it with some OOP viewpoint I'd say the generic
+> HW resource related parts should be some shared superclass between
+> 'struct device' and 'struct platform/pnp/pci/acpi/mfd/etc_device'.
+
+Right, duplication is the big issue with separate firmware based bus
+types particularly as we consider all non-enumerable buses.  I think
+what you're looking for here is multiple inheritance, that's potentially
+interesting but it's pretty much what we have already TBH.  We have the
+physical bus type as a primary type for devices but we also can enquire
+if they also have the properties of a DT or ACPI object and then use
+those APIs on them.
+
+Consider also FPGAs which can have the same problem Alexandre raised,
+there's the parent device for the FPGA and then we can instantiate
+bitstreams within that which may expose standard IPs which can also
+appear directly within a SoC.
+
+> > > The places I see aux device being used are a terrible fit for the cell
+> > > idea. If there are MFD drivers that are awkardly crammed into that
+> > > cell description then maybe they should be aux devices?
+
+> > When you say the MFD cell model it's not clear what you mean - I *think*
+> > you're referring to the idea of the subdevices getting all the
+
+> I mean using static "struct mfd_cell" arrays to describe things.
+
+OK, but then SOF has been actively pushed into using auxiliary devices
+since there is a desire to avoid using mfd_cells on PCI devices rather
+than the fact that it wasn't able to use a static array, and of course
+you might have devices with a mix of static and dynamic functions, or
+functions that can be both static and dynamic.
+
+> > Look at something like wm8994 for example - the subdevices just know
+> > which addresses in the device I2C/SPI regmap to work with but some of
+> > them have interrupts passed through to them (and could potentially also
+> > have separate subdevices for clocks and pinctrl).  These subdevices are
+> > not memory mapped, not enumerated by firmware and the hardware has
+> > indistinct separation of functions in the register map compared to how
+> > Linux models the chips.
+
+> wm8994 seems to fit in the mfd_cell static arrays pretty well..
+
+I can't tell the difference between what it's doing and what SOF is
+doing, the code I've seen is just looking at the system it's running
+on and registering a fixed set of client devices.  It looks slightly
+different because it's registering a device at a time with some wrapper
+functions involved but that's what the code actually does.
+
+Clearly there's something other than just the registration method going
+on here.
+
+--PPYy/fEw/8QCHSq3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/dEcoACgkQJNaLcl1U
+h9Dm3Qf+LvCppUIG0y7HXRZYLp+1HOlN8M+sp19Wq4MznAs+tmiEitSg2oduI6VS
+IU8r1EmDjL95wDsXFirSPzs+HbNxhOiTd/5vqgA4fBypxy3TYyhnhd1DWyq18T+t
+Tskz/3SktXCO9x7LlPrWbrEbIKJOkQz65dKIrQ+KpDZ62flhnNlE/vMeGOY8vTmg
+LfNSdEAdHETxzvBCGqinCBv2NHJT38RXrB/IC89cl6Tep0PUXt6Inqlg1C1MtwFT
+9QtQZpn9lznr2oxUB6gTbZwmnYABHnK00a4uzU5rqMedWTWYuJoTECjYfZAAvu70
+nn1zTw/DzitPu9qhkCb83kMTBgL7xg==
+=BJk5
+-----END PGP SIGNATURE-----
+
+--PPYy/fEw/8QCHSq3--
