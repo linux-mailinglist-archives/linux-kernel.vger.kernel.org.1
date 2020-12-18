@@ -2,272 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BFB22DE4DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:38:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE2432DE50A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:43:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729158AbgLROhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 09:37:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729141AbgLROhC (ORCPT
+        id S1727945AbgLROly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 09:41:54 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:53076 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725932AbgLROlx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 09:37:02 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 759E1C0617A7
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 06:36:21 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id y23so2803654wmi.1
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 06:36:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=YWmqcLqIz38MWpPJhReutWXbyy1oVWYK/A38RJq0qsI=;
-        b=lZhtw4YVxqpHai4JdTeB2XrEhV07UVXh4y06cpjxeZXmu0zybW6wx/zJTsTei8FO8Y
-         yqNOOxnpygr6dwpi2uMVNgYRv/lcmczfh2IpIqToLi2GT9xxuycSKDH2UplkwMTMfYn1
-         WI4iNR58MRcmQv8P3hEOIAOF9kDiKSQ62FLPY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=YWmqcLqIz38MWpPJhReutWXbyy1oVWYK/A38RJq0qsI=;
-        b=g/dWlGKG35CbrnQ32miLDkOWuQWzt3862kym+LZPR9uowQYFIbxiVNomt35cMm9dyX
-         W7C0EqhND5iecE7dHMr/fqU8eGQiEjMKIIRXxjv7LgDdaQu27epF1Vf4J/nqmLo1B54N
-         RWdGdDTxVtRyuR9uaYhaeeyEFT3SR9fuGvQLiqUWsKwRsRAOuBBsPETEs9oAx7VF9DNt
-         mUPx/bpTDUHWeFX/h6z73UojrJ52gFTFDEQjhpzDRDA30Sl4KqaDpOtRg/CEUbK61+jF
-         ZghaGBB90mmg8IwqODy0Q+hhTvp3Yh3L6HsPQcfgqDeP70V7jxZTuXkFg8G+I+txnI/W
-         ZmHQ==
-X-Gm-Message-State: AOAM531dtZDizvbViWbrclEqN3isOJqep4uqNBIlljGceO7vW7kulKSr
-        CO1CD6xgfUEkFBUgUkulWuFJVw==
-X-Google-Smtp-Source: ABdhPJyqSRESDqSGQsY84t7M09sfQ8lcUyY2DVr2zPqGMIH/QznauwStZ8c9xSk3OEOK/jBzpLA9Jw==
-X-Received: by 2002:a1c:7d94:: with SMTP id y142mr4537787wmc.105.1608302180213;
-        Fri, 18 Dec 2020 06:36:20 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id t1sm14644464wro.27.2020.12.18.06.36.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Dec 2020 06:36:19 -0800 (PST)
-Date:   Fri, 18 Dec 2020 15:36:17 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Sandeep Patil <sspatil@google.com>,
-        dri-devel@lists.freedesktop.org,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        James Jones <jajones@nvidia.com>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        =?iso-8859-1?Q?=D8rjan?= Eide <orjan.eide@arm.com>,
-        linux-media@vger.kernel.org,
-        Suren Baghdasaryan <surenb@google.com>,
-        Daniel Mentz <danielmentz@google.com>
-Subject: Re: [RFC][PATCH 2/3] dma-buf: system_heap: Add pagepool support to
- system heap
-Message-ID: <X9y+YZujWBTHMuH3@phenom.ffwll.local>
-Mail-Followup-To: John Stultz <john.stultz@linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Sandeep Patil <sspatil@google.com>, dri-devel@lists.freedesktop.org,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        James Jones <jajones@nvidia.com>, Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        =?iso-8859-1?Q?=D8rjan?= Eide <orjan.eide@arm.com>,
-        linux-media@vger.kernel.org, Suren Baghdasaryan <surenb@google.com>,
-        Daniel Mentz <danielmentz@google.com>
-References: <20201217230612.32397-1-john.stultz@linaro.org>
- <20201217230612.32397-2-john.stultz@linaro.org>
+        Fri, 18 Dec 2020 09:41:53 -0500
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BIEWCFL031958;
+        Fri, 18 Dec 2020 09:39:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
+ to : cc : references : in-reply-to : mime-version : message-id :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=/nS1ZT32K5g6u05vb/ouY0Xy92r7TYZJv3aBQ6ccv4Q=;
+ b=fo2goudPnH013gRk19Qv05a08gAugF9CkvwR/Wuq7DOJE4E3lI7T+dm4PK55CY9uY5+y
+ sUq5YN6swwlXAhG2rG035GkOXpBfVpSCFDoi5qiDcQV2dWCe1DuSchQldLF1PkZJSr3a
+ 2sLKuu50DqIUqSXQ3O06SF/xrFB/GRWsHEuRg2Mt4nSEKoOkrOPPS+oLqfCbX6ZdnDQL
+ +VXu4aHxdTKEoayRpyafMyKME/cA3ral6KDMuKHZSfnzCzQdKSWR0wbdRsiGzLMc5gyr
+ k1na1ehFik9jOv4Zr+WCHINnzsPXshL4SxVzwc9oSDuJeJT5nV/c5SQJJS8AxrKm+jsF sQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35gv0fbufm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Dec 2020 09:39:36 -0500
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BIEWrKs033799;
+        Fri, 18 Dec 2020 09:39:17 -0500
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35gv0fbu9u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Dec 2020 09:39:16 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BIEccA8005718;
+        Fri, 18 Dec 2020 14:39:02 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03ams.nl.ibm.com with ESMTP id 35cng8eedw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Dec 2020 14:39:02 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BIEd0G76357252
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 18 Dec 2020 14:39:00 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 433F011C050;
+        Fri, 18 Dec 2020 14:39:00 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6FB6111C04A;
+        Fri, 18 Dec 2020 14:38:59 +0000 (GMT)
+Received: from localhost (unknown [9.85.94.234])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 18 Dec 2020 14:38:59 +0000 (GMT)
+Date:   Fri, 18 Dec 2020 20:08:56 +0530
+From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Subject: Re: [PATCH 3/4] perf tools: Update powerpc's syscall.tbl
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>
+References: <1608278364-6733-1-git-send-email-yangtiezhu@loongson.cn>
+        <1608278364-6733-4-git-send-email-yangtiezhu@loongson.cn>
+        <20201218112659.GB325926@kernel.org> <20201218113209.GD325926@kernel.org>
+In-Reply-To: <20201218113209.GD325926@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201217230612.32397-2-john.stultz@linaro.org>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+User-Agent: astroid/v0.15-13-gb675b421
+ (https://github.com/astroidmail/astroid)
+Message-Id: <1608301824.eljlhiafee.naveen@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-18_09:2020-12-18,2020-12-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
+ malwarescore=0 bulkscore=0 adultscore=0 phishscore=0 impostorscore=0
+ lowpriorityscore=0 suspectscore=0 spamscore=0 mlxlogscore=999
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012180099
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 11:06:11PM +0000, John Stultz wrote:
-> Reuse/abuse the pagepool code from the network code to speed
-> up allocation performance.
-> 
-> This is similar to the ION pagepool usage, but tries to
-> utilize generic code instead of a custom implementation.
-> 
-> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> Cc: Liam Mark <lmark@codeaurora.org>
-> Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
-> Cc: Laura Abbott <labbott@kernel.org>
-> Cc: Brian Starkey <Brian.Starkey@arm.com>
-> Cc: Hridya Valsaraju <hridya@google.com>
-> Cc: Suren Baghdasaryan <surenb@google.com>
-> Cc: Sandeep Patil <sspatil@google.com>
-> Cc: Daniel Mentz <danielmentz@google.com>
-> Cc: Ørjan Eide <orjan.eide@arm.com>
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Cc: Ezequiel Garcia <ezequiel@collabora.com>
-> Cc: Simon Ser <contact@emersion.fr>
-> Cc: James Jones <jajones@nvidia.com>
-> Cc: linux-media@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: John Stultz <john.stultz@linaro.org>
+Hi Arnaldo,
 
-We also have one of these in ttm. I think we should have at most one of
-these for the gpu ecosystem overall, maybe as a helper that can be plugged
-into all the places.
+Arnaldo Carvalho de Melo wrote:
+> Em Fri, Dec 18, 2020 at 08:26:59AM -0300, Arnaldo Carvalho de Melo escrev=
+eu:
+>> Em Fri, Dec 18, 2020 at 03:59:23PM +0800, Tiezhu Yang escreveu:
+>> > This silences the following tools/perf/ build warning:
+>> > Warning: Kernel ABI header at 'tools/perf/arch/powerpc/entry/syscalls/=
+syscall.tbl' differs from latest version at 'arch/powerpc/kernel/syscalls/s=
+yscall.tbl'
+>>=20
+>> Hi Ravi, Naveen,
+>>=20
+>> 	Can I get your Reviewed-by or Acked-by for this change and the
+>> other that adds s390's syscall.tbl to check_headers.sh so that we get
+>=20
+> oops s/s390/powerpc/g :-)
+>=20
+>> notified when the copy drifts, so that we can see if it still continues
+>> working and we can get new syscalls to be supported in things like 'perf
+>> trace'?
 
-Or I'm kinda missing something, which could be since I only glanced at
-yours for a bit. But it's also called page pool for buffer allocations,
-and I don't think there's that many ways to implement that really :-)
--Daniel
+Yes, this looks good to me:
+Reviewed-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
 
-> ---
->  drivers/dma-buf/heaps/Kconfig       |  1 +
->  drivers/dma-buf/heaps/system_heap.c | 68 +++++++++++++++++++++++++++--
->  2 files changed, 65 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/dma-buf/heaps/Kconfig b/drivers/dma-buf/heaps/Kconfig
-> index ecf65204f714..fa5e1c330cce 100644
-> --- a/drivers/dma-buf/heaps/Kconfig
-> +++ b/drivers/dma-buf/heaps/Kconfig
-> @@ -4,6 +4,7 @@ config DMABUF_HEAPS_DEFERRED_FREE
->  config DMABUF_HEAPS_SYSTEM
->  	bool "DMA-BUF System Heap"
->  	depends on DMABUF_HEAPS
-> +	select PAGE_POOL
->  	help
->  	  Choose this option to enable the system dmabuf heap. The system heap
->  	  is backed by pages from the buddy allocator. If in doubt, say Y.
-> diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
-> index 17e0e9a68baf..885e30894b77 100644
-> --- a/drivers/dma-buf/heaps/system_heap.c
-> +++ b/drivers/dma-buf/heaps/system_heap.c
-> @@ -20,6 +20,7 @@
->  #include <linux/scatterlist.h>
->  #include <linux/slab.h>
->  #include <linux/vmalloc.h>
-> +#include <net/page_pool.h>
->  
->  static struct dma_heap *sys_heap;
->  
-> @@ -53,6 +54,7 @@ static gfp_t order_flags[] = {HIGH_ORDER_GFP, LOW_ORDER_GFP, LOW_ORDER_GFP};
->   */
->  static const unsigned int orders[] = {8, 4, 0};
->  #define NUM_ORDERS ARRAY_SIZE(orders)
-> +struct page_pool *pools[NUM_ORDERS];
->  
->  static struct sg_table *dup_sg_table(struct sg_table *table)
->  {
-> @@ -281,18 +283,59 @@ static void system_heap_vunmap(struct dma_buf *dmabuf, struct dma_buf_map *map)
->  	dma_buf_map_clear(map);
->  }
->  
-> +static int system_heap_clear_pages(struct page **pages, int num, pgprot_t pgprot)
-> +{
-> +	void *addr = vmap(pages, num, VM_MAP, pgprot);
-> +
-> +	if (!addr)
-> +		return -ENOMEM;
-> +	memset(addr, 0, PAGE_SIZE * num);
-> +	vunmap(addr);
-> +	return 0;
-> +}
-> +
-> +static int system_heap_zero_buffer(struct system_heap_buffer *buffer)
-> +{
-> +	struct sg_table *sgt = &buffer->sg_table;
-> +	struct sg_page_iter piter;
-> +	struct page *pages[32];
-> +	int p = 0;
-> +	int ret = 0;
-> +
-> +	for_each_sgtable_page(sgt, &piter, 0) {
-> +		pages[p++] = sg_page_iter_page(&piter);
-> +		if (p == ARRAY_SIZE(pages)) {
-> +			ret = system_heap_clear_pages(pages, p, PAGE_KERNEL);
-> +			if (ret)
-> +				return ret;
-> +			p = 0;
-> +		}
-> +	}
-> +	if (p)
-> +		ret = system_heap_clear_pages(pages, p, PAGE_KERNEL);
-> +
-> +	return ret;
-> +}
-> +
->  static void system_heap_dma_buf_release(struct dma_buf *dmabuf)
->  {
->  	struct system_heap_buffer *buffer = dmabuf->priv;
->  	struct sg_table *table;
->  	struct scatterlist *sg;
-> -	int i;
-> +	int i, j;
-> +
-> +	/* Zero the buffer pages before adding back to the pool */
-> +	system_heap_zero_buffer(buffer);
->  
->  	table = &buffer->sg_table;
->  	for_each_sg(table->sgl, sg, table->nents, i) {
->  		struct page *page = sg_page(sg);
->  
-> -		__free_pages(page, compound_order(page));
-> +		for (j = 0; j < NUM_ORDERS; j++) {
-> +			if (compound_order(page) == orders[j])
-> +				break;
-> +		}
-> +		page_pool_put_full_page(pools[j], page, false);
->  	}
->  	sg_free_table(table);
->  	kfree(buffer);
-> @@ -322,8 +365,7 @@ static struct page *alloc_largest_available(unsigned long size,
->  			continue;
->  		if (max_order < orders[i])
->  			continue;
-> -
-> -		page = alloc_pages(order_flags[i], orders[i]);
-> +		page = page_pool_alloc_pages(pools[i], order_flags[i]);
->  		if (!page)
->  			continue;
->  		return page;
-> @@ -428,6 +470,24 @@ static const struct dma_heap_ops system_heap_ops = {
->  static int system_heap_create(void)
->  {
->  	struct dma_heap_export_info exp_info;
-> +	int i;
-> +
-> +	for (i = 0; i < NUM_ORDERS; i++) {
-> +		struct page_pool_params pp;
-> +
-> +		memset(&pp, 0, sizeof(pp));
-> +		pp.order = orders[i];
-> +		pools[i] = page_pool_create(&pp);
-> +
-> +		if (IS_ERR(pools[i])) {
-> +			int j;
-> +
-> +			pr_err("%s: page pool creation failed!\n", __func__);
-> +			for (j = 0; j < i; j++)
-> +				page_pool_destroy(pools[j]);
-> +			return PTR_ERR(pools[i]);
-> +		}
-> +	}
->  
->  	exp_info.name = "system";
->  	exp_info.ops = &system_heap_ops;
-> -- 
-> 2.17.1
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+FWIW, I had posted a similar patch back in April, but glad to have this=20
+go in ;)
+http://lkml.kernel.org/r/20200220063740.785913-1-naveen.n.rao@linux.vnet.ib=
+m.com
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+
+Thanks,
+Naveen
+
