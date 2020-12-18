@@ -2,105 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECCA92DE6AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 16:34:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 477E42DE6B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 16:34:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728338AbgLRPeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 10:34:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgLRPeR (ORCPT
+        id S1728554AbgLRPe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 10:34:28 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:3157 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725878AbgLRPe1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 10:34:17 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55CE1C06138C
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 07:33:37 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id u19so2781470edx.2
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 07:33:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vQLHp84/L9U/ihCT8VfX+s5+pC9qLQ5ItLSujKOjqfo=;
-        b=PSaCXVorV9N6hgWS5S2oA6nGbi2jvEosNxw2csDkCTtQwSh9dq6ZLjcNN/zQ8w62KX
-         d7DMqdLUJ3hqRA4B79yg/w0mdqtCH2aqZJ6Szpcw389A8TwD6k65+gh39HITRzkk2ekf
-         yziVZK6lwzW+4fDMkNbILlTUyMPzmMTkyOTOhzRasliNm9kV+IZBNCkxfqaecBrwV/TB
-         fIo6kuHI40S8XOlyQRH60Scl9BahJl/QBzsmrmCw2JPUpL2zP487pvTviFqeN7jnqSmr
-         qfeXMBsvccF/uQ1zeVonCgyzXzbFnqKDm3tp1prSwWIveKW7jBZFs+vh1DSk8tf9Mewv
-         FoVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vQLHp84/L9U/ihCT8VfX+s5+pC9qLQ5ItLSujKOjqfo=;
-        b=Rjp9v/TVcaw1iBcwm98dqNeHrncCiXgq+M76jaqR7AMvbEjgNEjlvpLsrBmT1auhEe
-         2MBkKSPzdJK/4zKpaa8Rwu4i6ztvnxIG5KruyWXcvwhXGHx25zj3M6HJeSlmB7qqCwA2
-         N0H+g3E7D+x+WBvR6FnuDRRXS/4MviutQDa/nAth//p7f4j07W1zPtC+toJN2IO2/ZrU
-         w4dDyD+MrTze7BUucClEs5A0WewphGwSw6ODCLOslrYN3uMorzOZl/FC41soOC6i3bPx
-         c2wSKS2VK2uYDtl9PCrfLa18Bbq8ukPY0HOsgaHrX2S0EGLqLeElvDctKCSHNLp9Uv5C
-         ocYg==
-X-Gm-Message-State: AOAM532hG3en+DLIrceYu1JioS5851TrcroFC9lWGrHt5AD4h/0w6DBX
-        ZA8yjIdUC22Sz912meNlNcpy3YhrqH+1mByV0vpxCA==
-X-Google-Smtp-Source: ABdhPJy7/5uKUHba6f7gwuVlwUuuX2xLgWtneNUdQVPgyORTO3atXdYK91RrwgHjFhEAr8oKn0iG2Olkp/Zn9Oe6zcE=
-X-Received: by 2002:a05:6402:a53:: with SMTP id bt19mr5029336edb.104.1608305615830;
- Fri, 18 Dec 2020 07:33:35 -0800 (PST)
+        Fri, 18 Dec 2020 10:34:27 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fdccbdb0000>; Fri, 18 Dec 2020 07:33:47 -0800
+Received: from [10.26.73.104] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 18 Dec
+ 2020 15:33:38 +0000
+Subject: Re: [PATCH] gcc-plugins: simplify GCC plugin-dev capability test
+From:   Jon Hunter <jonathanh@nvidia.com>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+CC:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Emese Revfy <re.emese@gmail.com>,
+        <linux-hardening@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+References: <CGME20201218075758eucas1p1605768803a5c9edce4fbe54b3e3b859a@eucas1p1.samsung.com>
+ <20201203125700.161354-1-masahiroy@kernel.org>
+ <b9b17126-9af5-2f73-526e-91bb9fd27f71@samsung.com>
+ <CAK7LNART2qQBY7Vc8rhMiXS_Fwty7qpWjwwfPrUegTb-gjy6sA@mail.gmail.com>
+ <9f959875-1a30-b1a1-b626-3805e24a6df3@samsung.com>
+ <e5b06d9a-9b24-2440-e0c2-8bf7095eccd9@nvidia.com>
+ <25030057-86b1-5619-25fd-acfa0728b850@samsung.com>
+ <4ab4f62f-8b37-01e1-f81c-270155b13a51@nvidia.com>
+Message-ID: <7e691a61-bf4b-0594-8d6d-36d62a5def0b@nvidia.com>
+Date:   Fri, 18 Dec 2020 15:33:36 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <1606479915-7259-1-git-send-email-ingleswapnil@gmail.com>
- <CAHg0HuzKb0e21bo3V53zskKtk+zaJXhxkU8m4w6Q2DWoWPkU6w@mail.gmail.com>
- <CAJCWmDdEPa23XDZ8pdStH=PgMszq4N6mHmNWtUA5Fn4THSNRmw@mail.gmail.com>
- <CAMGffEm2LVxXJP-HseTqihcCvPeYOkCsaFHVNKXDZAYxCPzwTA@mail.gmail.com> <a36bef5e-f7e3-c29b-8e65-38dc92812850@kernel.dk>
-In-Reply-To: <a36bef5e-f7e3-c29b-8e65-38dc92812850@kernel.dk>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Fri, 18 Dec 2020 16:33:25 +0100
-Message-ID: <CAMGffEk9mB=obJTtUq-xaay4XTx37OM7VQN24SLSTfcXoC-2GA@mail.gmail.com>
-Subject: Re: [PATCH] block/rnbd: Adding name to the Contributors List
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        swapnil ingle <ingleswapnil@gmail.com>,
-        linux-rdma@vger.kernel.org,
-        "open list:RNBD BLOCK DRIVERS" <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <4ab4f62f-8b37-01e1-f81c-270155b13a51@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1608305627; bh=odSmLfTxrpZot9VnSSEPJy+l6LjXBu7/qmxNqGpwNp8=;
+        h=Subject:From:To:CC:References:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=C2uI9yVKVlz8ad8fIlMzAOeFWPr7FYEHAFVDH7mZDWcH4ntrEqavDASBKgv0qjQIq
+         sz9y2GdmH9b96cpFrclG2jVrxQybNv8GwxNOsuU35GPwyNBKI4pXY4Hc5R0rw1KGii
+         NI/fKPYjuo9n9sLQgPHqqu9tRSi42OJ3tEhhEz5j+JGU0YuJowNvp6yWy9D444RBIm
+         dgZD48aN0rRvUXqPtGugiKlxc/kc3RR4aRv4j+xgEKJsaa6ZR1XfA4U1Vr3u+M3RmP
+         vkMZ46DtlQ0wi/EgiszwvMyZfsGDmdd63nR2L9X2OWXsynwgPNYFzPZSvS2TEGqo1b
+         flMrWPRv9XoZQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Jens
-On Fri, Dec 18, 2020 at 3:53 PM Jens Axboe <axboe@kernel.dk> wrote:
->
-> On 12/17/20 11:46 PM, Jinpu Wang wrote:
-> > Hi Jens,
-> >
-> > On Thu, Dec 17, 2020 at 6:44 PM swapnil ingle <ingleswapnil@gmail.com> wrote:
-> >>
-> >> Adding linux-rdma@vger.kernel.org
-> >>
-> >> On Fri, Nov 27, 2020 at 1:54 PM Danil Kipnis <danil.kipnis@cloud.ionos.com> wrote:
-> >>>
-> >>> On Fri, Nov 27, 2020 at 1:31 PM Swapnil Ingle <ingleswapnil@gmail.com> wrote:
-> >>>>
-> >>>> Adding name to the Contributors List
-> >>>>
-> >>>> Signed-off-by: Swapnil Ingle <ingleswapnil@gmail.com>
-> >>>
-> >>> Acked-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
-> > Can you pick up this patch, or do you need a resend from me or Swapnil?
->
-> Just include as part of the next series of patches. Though I do question
-> why we need such a contributors list to begin with, if you do git log on
-> the rnbd/ directory it'd show you anyway.
-Thanks for the suggestion, we will include it as part of next series.
-The initial reason to have such contributors list was to give credit
-to people who worked on
-the project in the past, Swapnil's name was missed.
->
-> I'd also suggest moving the parts of the README that makes sense into a
-> proper Documentation/ file, nobody is going to find it deep in the
-> kernel source tree as it is.
-Sounds good, will do it.
->
-> --
-> Jens Axboe
->
-Thanks
-Jack
+
+On 18/12/2020 15:12, Jon Hunter wrote:
+> 
+> On 18/12/2020 15:09, Marek Szyprowski wrote:
+>>
+>> On 18.12.2020 16:03, Jon Hunter wrote:
+>>> On 18/12/2020 10:05, Marek Szyprowski wrote:
+>>>> On 18.12.2020 10:43, Masahiro Yamada wrote:
+>>>>> On Fri, Dec 18, 2020 at 4:58 PM Marek Szyprowski
+>>>>> <m.szyprowski@samsung.com> wrote:
+>>>>>> On 03.12.2020 13:57, Masahiro Yamada wrote:
+>>>>>>> Linus pointed out a third of the time in the Kconfig parse stage comes
+>>>>>>> from the single invocation of cc1plus in scripts/gcc-plugin.sh [1],
+>>>>>>> and directly testing plugin-version.h for existence cuts down the
+>>>>>>> overhead a lot. [2]
+>>>>>>>
+>>>>>>> This commit takes one step further to kill the build test entirely.
+>>>>>>>
+>>>>>>> The small piece of code was probably intended to test the C++ designated
+>>>>>>> initializer, which was not supported until C++20.
+>>>>>>>
+>>>>>>> In fact, with -pedantic option given, both GCC and Clang emit a warning.
+>>>>>>>
+>>>>>>> $ echo 'class test { public: int test; } test = { .test = 1 };' | g++ -x c++ -pedantic - -fsyntax-only
+>>>>>>> <stdin>:1:43: warning: C++ designated initializers only available with '-std=c++2a' or '-std=gnu++2a' [-Wpedantic]
+>>>>>>> $ echo 'class test { public: int test; } test = { .test = 1 };' | clang++ -x c++ -pedantic - -fsyntax-only
+>>>>>>> <stdin>:1:43: warning: designated initializers are a C++20 extension [-Wc++20-designator]
+>>>>>>> class test { public: int test; } test = { .test = 1 };
+>>>>>>>                                              ^
+>>>>>>> 1 warning generated.
+>>>>>>>
+>>>>>>> Otherwise, modern C++ compilers should be able to build the code, and
+>>>>>>> hopefully skipping this test should not make any practical problem.
+>>>>>>>
+>>>>>>> Checking the existence of plugin-version.h is still needed to ensure
+>>>>>>> the plugin-dev package is installed. The test code is now small enough
+>>>>>>> to be embedded in scripts/gcc-plugins/Kconfig.
+>>>>>>>
+>>>>>>> [1] https://protect2.fireeye.com/v1/url?k=03db90e1-5c40a828-03da1bae-0cc47a336fae-4cc36f5830aeb78d&q=1&e=dfdc1cf9-82d6-4ca5-b35d-1782e918bde3&u=https%3A%2F%2Flore.kernel.org%2Flkml%2FCAHk-%3DwjU4DCuwQ4pXshRbwDCUQB31ScaeuDo1tjoZ0_PjhLHzQ%40mail.gmail.com%2F
+>>>>>>> [2] https://protect2.fireeye.com/v1/url?k=965b670a-c9c05fc3-965aec45-0cc47a336fae-e34339513ff747c0&q=1&e=dfdc1cf9-82d6-4ca5-b35d-1782e918bde3&u=https%3A%2F%2Flore.kernel.org%2Flkml%2FCAHk-%3DwhK0aQxs6Q5ijJmYF1n2ch8cVFSUzU5yUM_HOjig%3D%2Bvnw%40mail.gmail.com%2F
+>>>>>>>
+>>>>>>> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+>>>>>>> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+>>>>>> This patch landed in linux next-20201217 as commit 1e860048c53e
+>>>>>> ("gcc-plugins: simplify GCC plugin-dev capability test").
+>>>>>>
+>>>>>> It causes a build break with my tests setup, but I'm not sure weather it
+>>>>>> is really an issue of this commit or a toolchain I use. However I've
+>>>>>> checked various versions of the gcc cross-compilers released by Linaro
+>>>>>> at https://protect2.fireeye.com/v1/url?k=053727b6-5aac1f7f-0536acf9-0cc47a336fae-5bd799e7ce6b1b9b&q=1&e=dfdc1cf9-82d6-4ca5-b35d-1782e918bde3&u=https%3A%2F%2Freleases.linaro.org%2Fcomponents%2Ftoolchain%2Fbinaries%2F and all
+>>>>>> fails with the same error:
+>>>>>>
+>>>>>> $ make ARCH=arm
+>>>>>> CROSS_COMPILE=../../cross/gcc-arm-10.2-2020.11-x86_64-arm-none-eabi/bin/arm-none-eabi-
+>>>>>> zImage
+>>>>>>      HOSTCXX scripts/gcc-plugins/arm_ssp_per_task_plugin.so
+>>>>>> In file included from
+>>>>>> /home/mszyprow/dev/cross/gcc-arm-10.2-2020.11-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/10.2.1/plugin/include/gcc-plugin.h:28:0,
+>>>>>>                     from scripts/gcc-plugins/gcc-common.h:7,
+>>>>>>                     from scripts/gcc-plugins/arm_ssp_per_task_plugin.c:3:
+>>>>>> /home/mszyprow/dev/cross/gcc-arm-10.2-2020.11-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/10.2.1/plugin/include/system.h:687:10:
+>>>>>> fatal error: gmp.h: No such file or directory
+>>>>>>     #include <gmp.h>
+>>>>>>              ^~~~~~~
+>>>>>> compilation terminated.
+>>>>>> scripts/gcc-plugins/Makefile:47: recipe for target
+>>>>>> 'scripts/gcc-plugins/arm_ssp_per_task_plugin.so' failed
+>>>>>> make[2]: *** [scripts/gcc-plugins/arm_ssp_per_task_plugin.so] Error 1
+>>>>>> scripts/Makefile.build:496: recipe for target 'scripts/gcc-plugins' failed
+>>>>>> make[1]: *** [scripts/gcc-plugins] Error 2
+>>>>>> Makefile:1190: recipe for target 'scripts' failed
+>>>>>> make: *** [scripts] Error 2
+>>>>>>
+>>>>>> Compilation works if I use the cross-gcc provided by
+>>>>>> gcc-7-arm-linux-gnueabi/gcc-arm-linux-gnueabi Ubuntu packages, which is:
+>>>>>>
+>>>>>> $ arm-linux-gnueabi-gcc --version
+>>>>>> arm-linux-gnueabi-gcc (Ubuntu/Linaro 7.5.0-3ubuntu1~18.04) 7.5.0
+>>>>>>
+>>>>> I can compile gcc-plugins with Linaro toolchians.
+>>>>>
+>>>>> The version of mine is this:
+>>>>>
+>>>>> masahiro@oscar:~/ref/linux-next$
+>>>>> ~/tools/arm-linaro-7.5/bin/arm-linux-gnueabihf-gcc --version
+>>>>> arm-linux-gnueabihf-gcc (Linaro GCC 7.5-2019.12) 7.5.0
+>>>>> Copyright (C) 2017 Free Software Foundation, Inc.
+>>>>> This is free software; see the source for copying conditions.  There is NO
+>>>>> warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+>>>>>
+>>>>>
+>>>>>
+>>>>>
+>>>>> Maybe, it depends on the host environment?
+>>>>>
+>>>>>
+>>>>> Please try this:
+>>>>>
+>>>>> $ sudo apt install libgmp-dev
+>>>> Indeed, it was missing on my setup. Sorry for the noise.
+>>>
+>>> So this change also breaks the build on our farm build machines and
+>>> while we can request that packages are installed on these machines, it
+>>> takes time. Is there anyway to avoid this?
+>>
+>> You can temporarily revert 1e860048c53e (this patch).
+> 
+> 
+> Again that works locally, but these automated builders just pull the
+> latest -next branch and build.
+
+
+However, if you are saying that this is a problem/bug with our builders,
+then of course we will have to get this fixed.
+
+Jon
+
+-- 
+nvpublic
