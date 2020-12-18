@@ -2,79 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D3742DE3A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:02:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58F222DE3A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:04:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726657AbgLROCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 09:02:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53304 "EHLO mail.kernel.org"
+        id S1727031AbgLROET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 09:04:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725854AbgLROCT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 09:02:19 -0500
-X-Gm-Message-State: AOAM533sL/sWqRHbc4OAyr0LWI7W2qP28JCZXxiMPb1KMRl++tXDGDWN
-        9wiqh4fpUvn6fEwgjs3H7OiaHBQpUEL5rYS8Jh4=
+        id S1725776AbgLROES (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 09:04:18 -0500
+X-Gm-Message-State: AOAM5301BaKFkObMcolD4EGpfJg5BLybewS46+ug52zePNY6F9LbJkDb
+        56NSqMJpX1zmaqrdseW620blrJWymtlih6jtug==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608300098;
-        bh=miwkI0PmCMwOfEXPMjjP6cSe57nffSfctnHXxbZBarQ=;
+        s=k20201202; t=1608300217;
+        bh=O1DafvJd+vpBjnHu7VqZwdOPe6Eat+vdexFWMyOdf8s=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=IrFvXWjU7XE/SwiW2mr9MmGVUUVu17jdixAOieaOxrr01qkOfqyQAJXPYzst51SMg
-         whjovhe+t2IDYYO5nipr5cUm4FYOE6nyqK4dLCuu/ehL25zwJQP927m+Ndg1VL9Km5
-         4qnIYzQpaIoNyxqLo5iFVoeBiYHQkB2mAgT/dPlPUfm2NC81eaQxATmekf/jSq8N60
-         Il58b/vyic66fMkp2FDFDOShFciGO/7bda81XfDUj01mIVx2CVen6H0qsHYpA9w2WD
-         xgi6aIjkE5KVnUaNti4bWtMkJ8uOm3a4IweJb3xGAM3b7THJTQFoCp1n3eyGYJK0Tl
-         WZFQvCqjbCObQ==
-X-Google-Smtp-Source: ABdhPJxoDnRSrK0Cqu7UIi/AivYvrI05XKsd5SNNHqDhT7Ha5gZK7VwqkVmmVt/9eg2/LO0vNAQrZZEYHtwmtkhben4=
-X-Received: by 2002:a05:6830:1c24:: with SMTP id f4mr2833570ote.108.1608300097855;
- Fri, 18 Dec 2020 06:01:37 -0800 (PST)
+        b=QspUt0WI8gJy+YRba8uV+QTdzJiqcbh5aDZK44bjpjDyMBVHEJ3aD77l2Xu8IgRMr
+         Y8cb6yuJ7s9ipTs7NOOO4NHEgHm0EYg+cHkeuuLQYDDrvWuMI9pxXNZEB8eT89zU8N
+         7dnpWtrc37PUEwcuqrbuCg2id5D36oHBE70bQ+dqN+tVG+FuIvlckkA9ykJR2CtopF
+         +XxpliEyYSQ3fRMpQvQJnC9OW3P/MASH+sRA8FrQjMdujZyqyao+tE3M4w51DVE7I6
+         hBYW3RclpZ4+EIAqsqy+SEPjJv7KL5GxeGX9UxEHElN5nieCpArcM7l9fOOwYoPrrZ
+         cnzhCTlNpYxiQ==
+X-Google-Smtp-Source: ABdhPJzZOEqrsFJFwxnsklPBIeh2RjmWMC1VVgKTVP6zBJTiorisDYuH7i1GjzMkJ5LwNYj39gjyRlpzR/FYCIHYTBA=
+X-Received: by 2002:a05:6402:352:: with SMTP id r18mr4421311edw.373.1608300216031;
+ Fri, 18 Dec 2020 06:03:36 -0800 (PST)
 MIME-Version: 1.0
-References: <5fdc89c3.1c69fb81.c9707.68bb@mx.google.com> <3e1680ed-94b8-74c9-ffe6-c2bd71f2a705@collabora.com>
- <20201218140018.GZ1551@shell.armlinux.org.uk>
-In-Reply-To: <20201218140018.GZ1551@shell.armlinux.org.uk>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 18 Dec 2020 15:01:26 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXH-z91_EOpw8_5DCm22DiaU7FxzsCMmWV3-4=uM-FCM1g@mail.gmail.com>
-Message-ID: <CAMj1kXH-z91_EOpw8_5DCm22DiaU7FxzsCMmWV3-4=uM-FCM1g@mail.gmail.com>
-Subject: Re: next/master bisection: baseline.login on ox820-cloudengines-pogoplug-series-3
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Guillaume Tucker <guillaume.tucker@collabora.com>,
-        kernelci-results@groups.io,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Abbott Liu <liuwenliang@huawei.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "kernelci@groups.io" <kernelci@groups.io>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <20201217173708.6940-1-nramas@linux.microsoft.com>
+ <20201217173708.6940-3-nramas@linux.microsoft.com> <20201217200510.GA105447@robh.at.kernel.org>
+ <0b17fbee-cfe9-8cb2-01d1-02b6a61a14f5@linux.microsoft.com>
+ <CAL_Jsq+-HOkxtxOO=zyRbDuGVNZoMy589qoVANciNionsdsGCw@mail.gmail.com> <5dda6968-ca14-1695-3058-7c12653521ba@linux.microsoft.com>
+In-Reply-To: <5dda6968-ca14-1695-3058-7c12653521ba@linux.microsoft.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 18 Dec 2020 08:03:24 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJoyhOrWQiKq_q+7dpCj3MEsRtbGZ=SDxmeVswjQr-9sw@mail.gmail.com>
+Message-ID: <CAL_JsqJoyhOrWQiKq_q+7dpCj3MEsRtbGZ=SDxmeVswjQr-9sw@mail.gmail.com>
+Subject: Re: [PATCH v12 2/4] powerpc: Move arch independent ima kexec
+ functions to drivers/of/kexec.c
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        "AKASHI, Takahiro" <takahiro.akashi@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        James Morse <james.morse@arm.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        vincenzo.frascino@arm.com, Mark Rutland <mark.rutland@arm.com>,
+        dmitry.kasatkin@gmail.com, James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Allison Randal <allison@lohutok.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Bhupesh Sharma <bhsharma@redhat.com>,
+        Matthias Brugger <mbrugger@suse.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, tao.li@vivo.com,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Prakhar Srivastava <prsriva@linux.microsoft.com>,
+        balajib@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Dec 2020 at 15:00, Russell King - ARM Linux admin
-<linux@armlinux.org.uk> wrote:
+On Fri, Dec 18, 2020 at 12:25 AM Lakshmi Ramasubramanian
+<nramas@linux.microsoft.com> wrote:
 >
-> On Fri, Dec 18, 2020 at 01:48:09PM +0000, Guillaume Tucker wrote:
-> > Please see the bisection report below about a boot failure on
-> > ox820-cloudengines-pogoplug-series-3.  There was also a bisection
-> > yesterday with next-20201216 which landed on the same commit, on
-> > the same platform and also with oxnas_v6_defconfig.  I'm not
-> > aware of any other platform on kernelci.org showing the same
-> > regression.
+> On 12/17/20 2:01 PM, Rob Herring wrote:
 >
-> Ah, I bet I know what's happening.
+> >
+> > [...]
+> >
+> >>>> +#ifdef CONFIG_IMA_KEXEC
+> >>>> +/**
+> >>>> + * arch_ima_add_kexec_buffer - do arch-specific steps to add the IMA buffer
+> >>>> + *
+> >>>> + * @image: kimage struct to set IMA buffer data
+> >>>> + * @load_addr: Starting address where IMA buffer is loaded at
+> >>>> + * @size: Number of bytes in the IMA buffer
+> >>>> + *
+> >>>> + * Architectures should use this function to pass on the IMA buffer
+> >>>> + * information to the next kernel.
+> >>>> + *
+> >>>> + * Return: 0 on success, negative errno on error.
+> >>>> + */
+> >>>> +int arch_ima_add_kexec_buffer(struct kimage *image, unsigned long load_addr,
+> >>>> +                          size_t size)
+> >>>
+> >>> This should be a static inline in asm/kexec.h.
+> >>
+> >> arch_ima_add_kexec_buffer() is identical for powerpc and arm64.
+> >> Would it be better to "static inline" this function in "of.h" instead of
+> >> duplicating it in "asm/kexec.h" for powerpc and arm64?
+> >
+> > No, think about what it is specific to and place it there. It has
+> > nothing to do with DT really. All it is is a wrapper to access the
+> > struct members in kimage_arch. So it belongs where they are declared.
+> > Now perhaps ima_buffer_addr and ima_buffer_size shouldn't be arch
+> > specific, but that's a separate issue.
+> >
 >
-> We test for the presence of VFP by issuing an instruction to read
-> FPSID. If VFP is not present, this will raise an undefined instruction
-> exception, and we expect to head into the vfp_testing_entry code.
+> Since "struct kimage" definition is not available in "asm/kexec.h",
+> defining arch_ima_add_kexec_buffer() in this header file results in the
+> following build error:
 >
-> I bet Pogoplug, being an ARM11 MPCore platform, either raises an
-> exception here.
+> ./arch/powerpc/include/asm/kexec.h: In function 'arch_ima_add_kexec_buffer':
+> ./arch/powerpc/include/asm/kexec.h:139:7: error: 'struct kimage' has no
+> member named 'arch'
+>    139 |  image->arch.ima_buffer_addr = load_addr;
 >
-> We probably need to also rework the code in vfp_init() as well to
-> register a temporary hook when reading the FPSID.
->
+> I think it would be appropriate to make arch_ima_add_kexec_buffer() a
+> static inline function in "security/integrity/ima/ima_kexec.c" - the
+> only file where this function is used.
 
-Thanks for diagnosing that - I wasn't quite sure what was going on.
+Even better. It doesn't need to be 'inline' then. The compiler will
+inline it without.
 
-I will look into this later today.
+Rob
