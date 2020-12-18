@@ -2,80 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1D1C2DDD21
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 03:55:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE3FD2DDD25
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 03:58:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732651AbgLRCzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 21:55:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732637AbgLRCzO (ORCPT
+        id S1732293AbgLRC6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 21:58:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37161 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730792AbgLRC6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 21:55:14 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A469EC0617B0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 18:54:34 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id iq13so515565pjb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 18:54:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=GwED+zkYeoip+RZibjgPn/mm0NWtqDJz8jS6yQF5rtQ=;
-        b=Fjz026Fj+U+yopuLKa45dVwvE/dvan9ptbFl1JEDmh73VydkBs3d9049RmEvb5SjFm
-         lHP98SA3NwDtndnopUn4/776YqRPA1ZWq6W6c9HA0M22XPPT8KPuko4N9GZfGUtSBr5J
-         +LY36YGJDF7XpjjHObtWawr2j+5Vv5xuaegfU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=GwED+zkYeoip+RZibjgPn/mm0NWtqDJz8jS6yQF5rtQ=;
-        b=N6/fA4Gyt/f4Vg2mdIgm6rkGyQ60KLo4mz5gP4727KNRhklPYT5TeCnVVSPZtBbE1/
-         6I6BxwkVWix9jyHJqWOwTwrS0oWHouoYydql5fIn0NRyWPfNBoeWigL4j6rcTnwFdMSr
-         FDPP9n8xqVwReL2MdR4Qe53rnosJma6u95TWqIDiKac82hVA0SoECYmIgvXYvTOQ3mHp
-         nDrrfcFbDtWnMJJgWBHPfwsg+0SsGEiMbrSRv/ag63xRmtqMMXdVgLo3CcAptngv+C4s
-         pZ8p8qjN32qWLbY5odbPHq0YgPXLb34TxM8Tdqds7MrR5xGbxpXKMNt+1EaZ6I7ePWj5
-         E6pA==
-X-Gm-Message-State: AOAM531oi3cCm5u7F28FI9TLr1O/YmzVNGoWlFdIaf26dsaAAQgpXIoz
-        aJLORm3KbQlGxI4406qmLzZTpA==
-X-Google-Smtp-Source: ABdhPJy/B+rPaUdHI8pBnouZyK0jvxnhdNkswCz1agyWTg/Di2JurWpyCScgEsiAmXNZh0Hyv1Ex2w==
-X-Received: by 2002:a17:90a:f194:: with SMTP id bv20mr2195451pjb.11.1608260074306;
-        Thu, 17 Dec 2020 18:54:34 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id l197sm7099056pfd.97.2020.12.17.18.54.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 18:54:33 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 17 Dec 2020 21:58:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608260209;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2ePTASZu7o5kc6K1mUETLMnjXTOm0ohdFm+SE6FW+4Q=;
+        b=h+2SrHDYWCmexBAZmL6qKW6VeZbrkrR0UTnRfYSGDYrTWV5sMlw3bzNDfFxK6cWdjWJceI
+        ThogXm6oIN69rMWdLrlaop868R/9XEiQK34IomaB0mSB4aOOih2fOV4yARGKeF50FbPktE
+        GkQtRb1wm7XEs0z4zumPEco/KHpaMek=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-565-OLEgDrvnOK2yHbrNBpqEig-1; Thu, 17 Dec 2020 21:56:48 -0500
+X-MC-Unique: OLEgDrvnOK2yHbrNBpqEig-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 89BA7107ACF5;
+        Fri, 18 Dec 2020 02:56:46 +0000 (UTC)
+Received: from [10.72.12.111] (ovpn-12-111.pek2.redhat.com [10.72.12.111])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C19BB1A8A1;
+        Fri, 18 Dec 2020 02:56:36 +0000 (UTC)
+Subject: Re: [PATCH 00/21] Control VQ support in vDPA
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     eperezma@redhat.com, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lulu@redhat.com, eli@mellanox.com,
+        lingshan.zhu@intel.com, rob.miller@broadcom.com,
+        stefanha@redhat.com, sgarzare@redhat.com
+References: <20201216064818.48239-1-jasowang@redhat.com>
+ <20201216044051-mutt-send-email-mst@kernel.org>
+ <aa061fcb-9395-3a1b-5d6e-76b5454dfb6c@redhat.com>
+ <20201217025410-mutt-send-email-mst@kernel.org>
+ <61b60985-142b-10f2-58b8-1d9f57c0cfca@redhat.com>
+ <20201217163513-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <c120d0ce-7d42-ab6e-1040-ab85985f7cbe@redhat.com>
+Date:   Fri, 18 Dec 2020 10:56:34 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201217142842.v3.4.I666b37646de9652cef438ac7c2c6c2053367fc6b@changeid>
-References: <20201217142842.v3.1.I99ee04f0cb823415df59bd4f550d6ff5756e43d6@changeid> <20201217142842.v3.4.I666b37646de9652cef438ac7c2c6c2053367fc6b@changeid>
-Subject: Re: [PATCH v3 4/4] spi: spi-geni-qcom: Print an error when we timeout setting the CS
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     msavaliy@qti.qualcomm.com, akashast@codeaurora.org,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org
-To:     Douglas Anderson <dianders@chromium.org>,
-        Mark Brown <broonie@kernel.org>
-Date:   Thu, 17 Dec 2020 18:54:32 -0800
-Message-ID: <160826007235.1580929.15942404538098977025@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <20201217163513-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Douglas Anderson (2020-12-17 14:29:14)
-> If we're using geni to manage the chip select line (don't do it--use a
-> GPIO!) and we happen to get a timeout waiting for the chip select
-> command to be completed, no errors are printed even though things
-> might not be in the best shape.  Let's add a print.
->=20
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+On 2020/12/18 上午6:28, Michael S. Tsirkin wrote:
+> On Thu, Dec 17, 2020 at 05:02:49PM +0800, Jason Wang wrote:
+>> On 2020/12/17 下午3:58, Michael S. Tsirkin wrote:
+>>> On Thu, Dec 17, 2020 at 11:30:18AM +0800, Jason Wang wrote:
+>>>> On 2020/12/16 下午5:47, Michael S. Tsirkin wrote:
+>>>>> On Wed, Dec 16, 2020 at 02:47:57PM +0800, Jason Wang wrote:
+>>>>>> Hi All:
+>>>>>>
+>>>>>> This series tries to add the support for control virtqueue in vDPA.
+>>>>>>
+>>>>>> Control virtqueue is used by networking device for accepting various
+>>>>>> commands from the driver. It's a must to support multiqueue and other
+>>>>>> configurations.
+>>>>>>
+>>>>>> When used by vhost-vDPA bus driver for VM, the control virtqueue
+>>>>>> should be shadowed via userspace VMM (Qemu) instead of being assigned
+>>>>>> directly to Guest. This is because Qemu needs to know the device state
+>>>>>> in order to start and stop device correctly (e.g for Live Migration).
+>>>>>>
+>>>>>> This requies to isolate the memory mapping for control virtqueue
+>>>>>> presented by vhost-vDPA to prevent guest from accesing it directly.
+>>>>>> To achieve this, vDPA introduce two new abstractions:
+>>>>>>
+>>>>>> - address space: identified through address space id (ASID) and a set
+>>>>>>                     of memory mapping in maintained
+>>>>>> - virtqueue group: the minimal set of virtqueues that must share an
+>>>>>>                     address space
+>>>>> How will this support the pretty common case where control vq
+>>>>> is programmed by the kernel through the PF, and others by the VFs?
+>>>> In this case, the VF parent need to provide a software control vq and decode
+>>>> the command then send them to VF.
+>>> But how does that tie to the address space infrastructure?
+>> In this case, address space is not a must.
+> That's ok, problem is I don't see how address space is going
+> to work in this case at all.
+>
+> There's no address space there that userspace/guest can control.
+>
+
+The virtqueue group is mandated by parent but the association between 
+virtqueue group and address space is under the control of userspace (Qemu).
+
+A simple but common case is that:
+
+1) Device advertise two virtqueue groups: group 0 contains RX and TX, 
+group 1 contains CVQ.
+2) Device advertise two address spaces
+
+Then, for vhost-vDPA using by VM:
+
+1) associate group 0 with as 0, group 1 with as 1 (via vhost-vDPA 
+VHOST_VDPA_SET_GROUP_ASID)
+2) Publish guest memory mapping via IOTLB asid 0
+3) Publish control virtqueue mapping via IOTLB asid 1
+
+Then the DMA is totally isolated in this case.
+
+For vhost-vDPA using by DPDK or virtio-vDPA
+
+1) associate group 0 and group 1 with as 0
+
+since we don't need DMA isolation in this case.
+
+In order to let it be controlled by Guest, we need extend virtio spec to 
+support those concepts.
+
+Thanks
+
+
