@@ -2,175 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C55812DE1E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 12:22:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B48AA2DE1EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 12:22:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733183AbgLRLWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 06:22:09 -0500
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:55409 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732738AbgLRLWI (ORCPT
+        id S1733221AbgLRLW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 06:22:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732738AbgLRLW0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 06:22:08 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id C2BEF561;
-        Fri, 18 Dec 2020 06:21:21 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 18 Dec 2020 06:21:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
-        message-id:subject:from:to:cc:date:in-reply-to:references
-        :content-type:mime-version:content-transfer-encoding; s=fm2; bh=
-        SqyhWMi/PGkVyTI04ViuD8ZEuCxEARw0R2isPdSVH2w=; b=1ccZ4lDIrlYd+lJ8
-        4Wf5bGYR2JaAc3T8qAthFM8muI64Ek3NzIS2wICFfPdV8gHbD4ou2vMHx07R7mAU
-        F/BM3OP5ZjWEZFr+RD+SIKLcaOoOu12UtgQP/F8Z0HW+cC8BsXNBX7O+POnUOZwu
-        NLtgvBtrmGPtLifhsj7QtW6mKWN+W/LakHmrhKbdGCil2M78w05gOLZHYqFO9QC3
-        cpXZAng8CRqzxE8pNqHbpI0jYouG3fi9DJOuWGivAsx39drfsdnTkERGcwxmXC2K
-        LCNv05K3rtYritXZDDpzxcks/2NKkARx+kcHcV0f/iQPUgWpwBbQxEoYzQZ9D2l0
-        jVE84g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=SqyhWMi/PGkVyTI04ViuD8ZEuCxEARw0R2isPdSVH
-        2w=; b=W3QpuwELxpYgES5lIBUaxxhCco7yiPweVtsIqUMoXcQnNlnFvMjuMenh2
-        1rLOgBQTgwo/r+DgArNp5eAcGIkXg1U0cfdmBKyv1UEDQj47r9YQES+ESMBlzD+E
-        k44P+8VuAuhbgZ8DtqUVl5/dCErsHD2gQZ2TwR3rF9qvsxeiAxiTFltq5rR2iSVf
-        JywR7oapMJaH48jonulxYvz/XJViyQK61u6qABD4VWGzXJppss0htlKwuk+b8bUd
-        7Bf+UO++Yp5/nMnWMEQhOZnSvMdRgVaCt2ydF2uFmKmfvPJzPpd2/5idL57JRMb1
-        svguXRQ33ut65xvwNS7uHLg3bXaaA==
-X-ME-Sender: <xms:r5DcXxs2-ZI1354qnb6JF_x09KjCiPtad_KWqPlcKhERhbgOa1k72g>
-    <xme:r5DcX6dnkg1pYOOnj6_5JjwRONHfP_SHuZ2GK7iyBOYkh2QNwNkBFkbUzePOd7Twd
-    n2caHi_h-ig>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeliedgvdejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkffuhffvffgjfhgtfggggfesthejredttderjeenucfhrhhomhepkfgrnhcu
-    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
-    effeettedvgeduvdevfeevfeettdffudduheeuiefhueevgfevheffledugefgjeenucfk
-    phepuddtiedrieelrddvgeejrddvtdehnecuvehluhhsthgvrhfuihiivgeptdenucfrrg
-    hrrghmpehmrghilhhfrhhomheprhgrvhgvnhesthhhvghmrgifrdhnvght
-X-ME-Proxy: <xmx:r5DcX0yEyqc0bnj9vMHZqY_GrWq1tJLapVzEhH3moAvynQzs0FzwZA>
-    <xmx:r5DcX4MICocVjsDTpqqIpWcVrQexiDf4NEi9dnqsYHaWZlzlM6qHkw>
-    <xmx:r5DcXx8W8zFMFu8jt7009EdZn6gB17ASIZ90c2ujpCJvqQw3hh_PoQ>
-    <xmx:sZDcX6MpESFgPsU5izZpIGusRlk6FuiqeyEGKkn5cmhFQolp0S4x-2UCkvA>
-Received: from mickey.themaw.net (106-69-247-205.dyn.iinet.net.au [106.69.247.205])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 90049240062;
-        Fri, 18 Dec 2020 06:21:15 -0500 (EST)
-Message-ID: <f21e92d683c609b14e559209a1a1bed2f7c3649e.camel@themaw.net>
-Subject: Re: [PATCH v2 0/6] kernfs: proposed locking and concurrency
- improvement
-From:   Ian Kent <raven@themaw.net>
-To:     Fox Chen <foxhlchen@gmail.com>
-Cc:     Tejun Heo <tj@kernel.org>, Greg KH <gregkh@linuxfoundation.org>,
-        akpm@linux-foundation.org, dhowells@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        miklos@szeredi.hu, ricklind@linux.vnet.ibm.com,
-        sfr@canb.auug.org.au, viro@zeniv.linux.org.uk
-Date:   Fri, 18 Dec 2020 19:21:10 +0800
-In-Reply-To: <CAC2o3DJhx+dJX-oMKSTNabWYyRB750VABib+OZ=7UX6rGJZD5g@mail.gmail.com>
-References: <bde0b6c32f2b055c1ad1401b45c4adf61aab6876.camel@themaw.net>
-         <CAC2o3DJdHuQxY7Rn5uXUprS7i8ri1qB=wOUM2rdZkWt4yJHv1w@mail.gmail.com>
-         <3e97846b52a46759c414bff855e49b07f0d908fc.camel@themaw.net>
-         <CAC2o3DLGtx15cgra3Y92UBdQRBKGckqOkDmwBV-aV-EpUqO5SQ@mail.gmail.com>
-         <efb7469c7bad2f6458c9a537b8e3623e7c303c21.camel@themaw.net>
-         <da4f730bbbb20c0920599ca5afc316e2c092b7d8.camel@themaw.net>
-         <CAC2o3DJsvB6kj=S6D3q+_OBjgez9Q9B5s3-_gjUjaKmb2MkTHQ@mail.gmail.com>
-         <c4002127c72c07a00e8ba0fae6b0ebf5ba8e08e7.camel@themaw.net>
-         <a39b73a53778094279522f1665be01ce15fb21f4.camel@themaw.net>
-         <c8a6c9adc3651e64cf694f580a8cb3d87d7cb893.camel@themaw.net>
-         <X9t1xVTZ/ApIvPMg@mtj.duckdns.org>
-         <67a3012a6a215001c8be9344aee1c99897ff8b7e.camel@themaw.net>
-         <CAC2o3DJhx+dJX-oMKSTNabWYyRB750VABib+OZ=7UX6rGJZD5g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        Fri, 18 Dec 2020 06:22:26 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E89C0617B0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 03:21:46 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id r7so1746153wrc.5
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 03:21:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0NUjTMUcVO0qCGXSkD6m+wQ/vz/jVZRScuhTw7dmgyQ=;
+        b=WDbuL0avnM8ZM5Ifop4nzsFT0UVBrCayTg2OQ/wcpBNbBsg2t1J4wfT+Xt1526aGMd
+         lgR/Y2+eHn7iv2bKf37gYC0pfYeJPdICkURqEx1GeTmhvwvzpw9NyB4oLYf+0yWp7vyt
+         awyyW4QxHEW7Cj3xRoH6zNAR8yP0XvIYU0fkgiRPQiXr7mlPh5ka9AbBFqodzi4s6wac
+         nKx6MJlFJqETKBgl4BjEfl/ms6kpyG6J7D+P6qTZrORgKL3Bz14Rf2HGSjX4jAMUO5/t
+         XZ5OTEz5Os+3OKO8pV/btHE0n9NBwMYefYyi6yombnfCrRHH69odnu3DXFz+s/TyBMd5
+         OTPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0NUjTMUcVO0qCGXSkD6m+wQ/vz/jVZRScuhTw7dmgyQ=;
+        b=LRQtqcnQ3aBniEALk763gbjju0CxEkNEep5Fkc0tOwNuzmpHS19Pz84umF6pYMYHfN
+         hwjKOxDT+GnY6ySa7dSczgWROIfinCi0F+tU2TC2YZ7BKUWOOejEPkeFG0tpm70oB7Jk
+         Ao4sjYKxKyqp788VnQHXA8x5iVlrnxAzHmqG0gYUV7+z5IGbKDZsnGscvmBO3+myyPOG
+         PS3PdOe2jw4KMX/YA6TPb2KstPrONQa1214a400iK5G8hPDbOnSCcwDpZBCdDyYc1y6B
+         Yc9d1NFpsgRHqm+DA/pIqZm6JJMn9q678RPzih7j0UL6fQUud6q4l7VqNFt6KbOyeETl
+         wjcg==
+X-Gm-Message-State: AOAM530ULF2qzbeEX2ICQfZV83IidLECgyz5iXWAb0ZofpMxSj3x1ImH
+        7Dl35HBcBV3NFV6j84oxlIXhw8wORHK+kJABeR87mw==
+X-Google-Smtp-Source: ABdhPJybkChIZsOPvxtUy5vzSoQk4jpCJqUZ7nImjtynHuGJ03k9ybgEfmROhIcueQfPsaFyVblhAdNV8cHWX2SdHy8=
+X-Received: by 2002:a5d:65ca:: with SMTP id e10mr3952897wrw.42.1608290505273;
+ Fri, 18 Dec 2020 03:21:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20201210134648.272857-1-maxime@cerno.tech> <20201210134648.272857-5-maxime@cerno.tech>
+In-Reply-To: <20201210134648.272857-5-maxime@cerno.tech>
+From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date:   Fri, 18 Dec 2020 11:21:28 +0000
+Message-ID: <CAPY8ntC+SFwJNKQB==xSee_zc5UUKJSczsmy7U6gATsN8Xrvmw@mail.gmail.com>
+Subject: Re: [PATCH 04/15] drm/vc4: hdmi: Fix up CEC registers
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Eric Anholt <eric@anholt.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Jason Cooper <jason@lakedaemon.net>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-rpi-kernel@lists.infradead.org,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Dom Cobley <popcornmix@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-12-18 at 16:01 +0800, Fox Chen wrote:
-> On Fri, Dec 18, 2020 at 3:36 PM Ian Kent <raven@themaw.net> wrote:
-> > On Thu, 2020-12-17 at 10:14 -0500, Tejun Heo wrote:
-> > > Hello,
-> > > 
-> > > On Thu, Dec 17, 2020 at 07:48:49PM +0800, Ian Kent wrote:
-> > > > > What could be done is to make the kernfs node attr_mutex
-> > > > > a pointer and dynamically allocate it but even that is too
-> > > > > costly a size addition to the kernfs node structure as
-> > > > > Tejun has said.
-> > > > 
-> > > > I guess the question to ask is, is there really a need to
-> > > > call kernfs_refresh_inode() from functions that are usually
-> > > > reading/checking functions.
-> > > > 
-> > > > Would it be sufficient to refresh the inode in the write/set
-> > > > operations in (if there's any) places where things like
-> > > > setattr_copy() is not already called?
-> > > > 
-> > > > Perhaps GKH or Tejun could comment on this?
-> > > 
-> > > My memory is a bit hazy but invalidations on reads is how sysfs
-> > > namespace is
-> > > implemented, so I don't think there's an easy around that. The
-> > > only
-> > > thing I
-> > > can think of is embedding the lock into attrs and doing xchg
-> > > dance
-> > > when
-> > > attaching it.
-> > 
-> > Sounds like your saying it would be ok to add a lock to the
-> > attrs structure, am I correct?
-> > 
-> > Assuming it is then, to keep things simple, use two locks.
-> > 
-> > One global lock for the allocation and an attrs lock for all the
-> > attrs field updates including the kernfs_refresh_inode() update.
-> > 
-> > The critical section for the global lock could be reduced and it
-> > changed to a spin lock.
-> > 
-> > In __kernfs_iattrs() we would have something like:
-> > 
-> > take the allocation lock
-> > do the allocated checks
-> >   assign if existing attrs
-> >   release the allocation lock
-> >   return existing if found
-> > othewise
-> >   release the allocation lock
-> > 
-> > allocate and initialize attrs
-> > 
-> > take the allocation lock
-> > check if someone beat us to it
-> >   free and grab exiting attrs
-> > otherwise
-> >   assign the new attrs
-> > release the allocation lock
-> > return attrs
-> > 
-> > Add a spinlock to the attrs struct and use it everywhere for
-> > field updates.
-> > 
-> > Am I on the right track or can you see problems with this?
-> > 
-> > Ian
-> > 
-> 
-> umm, we update the inode in kernfs_refresh_inode, right??  So I guess
-> the problem is how can we protect the inode when kernfs_refresh_inode
-> is called, not the attrs??
+Hi Maxime & Dom
 
-But the attrs (which is what's copied from) were protected by the
-mutex lock (IIUC) so dealing with the inode attributes implies
-dealing with the kernfs node attrs too.
+On Thu, 10 Dec 2020 at 13:46, Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> From: Dom Cobley <popcornmix@gmail.com>
+>
+> The commit 311e305fdb4e ("drm/vc4: hdmi: Implement a register layout
+> abstraction") forgot one CEC register, and made a copy and paste mistake
+> for another one. Fix those mistakes.
+>
+> Fixes: 311e305fdb4e ("drm/vc4: hdmi: Implement a register layout abstraction")
+> Signed-off-by: Dom Cobley <popcornmix@gmail.com>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
-For example in kernfs_iop_setattr() the call to setattr_copy() copies
-the node attrs to the inode under the same mutex lock. So, if a read
-lock is used the copy in kernfs_refresh_inode() is no longer protected,
-it needs to be protected in a different way.
+Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
 
-Ian
-
+> ---
+>  drivers/gpu/drm/vc4/vc4_hdmi_regs.h | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi_regs.h b/drivers/gpu/drm/vc4/vc4_hdmi_regs.h
+> index 013fd57febd8..20a1438a72cb 100644
+> --- a/drivers/gpu/drm/vc4/vc4_hdmi_regs.h
+> +++ b/drivers/gpu/drm/vc4/vc4_hdmi_regs.h
+> @@ -29,6 +29,7 @@ enum vc4_hdmi_field {
+>         HDMI_CEC_CPU_MASK_SET,
+>         HDMI_CEC_CPU_MASK_STATUS,
+>         HDMI_CEC_CPU_STATUS,
+> +       HDMI_CEC_CPU_SET,
+>
+>         /*
+>          * Transmit data, first byte is low byte of the 32-bit reg.
+> @@ -199,9 +200,10 @@ static const struct vc4_hdmi_register vc4_hdmi_fields[] = {
+>         VC4_HDMI_REG(HDMI_TX_PHY_RESET_CTL, 0x02c0),
+>         VC4_HDMI_REG(HDMI_TX_PHY_CTL_0, 0x02c4),
+>         VC4_HDMI_REG(HDMI_CEC_CPU_STATUS, 0x0340),
+> +       VC4_HDMI_REG(HDMI_CEC_CPU_SET, 0x0344),
+>         VC4_HDMI_REG(HDMI_CEC_CPU_CLEAR, 0x0348),
+>         VC4_HDMI_REG(HDMI_CEC_CPU_MASK_STATUS, 0x034c),
+> -       VC4_HDMI_REG(HDMI_CEC_CPU_MASK_SET, 0x034c),
+> +       VC4_HDMI_REG(HDMI_CEC_CPU_MASK_SET, 0x0350),
+>         VC4_HDMI_REG(HDMI_CEC_CPU_MASK_CLEAR, 0x0354),
+>         VC4_HDMI_REG(HDMI_RAM_PACKET_START, 0x0400),
+>  };
+> --
+> 2.28.0
+>
