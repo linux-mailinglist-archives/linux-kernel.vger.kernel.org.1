@@ -2,125 +2,421 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 767292DDE96
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 07:26:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDB352DDE9B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 07:29:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732828AbgLRG0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 01:26:15 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:41910 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732647AbgLRG0P (ORCPT
+        id S1732849AbgLRG1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 01:27:14 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:23550 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732678AbgLRG1N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 01:26:15 -0500
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id C95CC20B717A;
-        Thu, 17 Dec 2020 22:25:33 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C95CC20B717A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1608272734;
-        bh=etZWIFSAunWvvTytCwaw4eRuJpjTSSwN3EVqRwxTxgo=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=dPeYTdzlbJyy71yFOMqIIPpxr4tH8rS154kSISMKYsrQ299j4AjVgYC8DJFV3V2zW
-         EUckcDbECnnMo+b9KomsWtVYJj2oS79xkCOdcjWtxtVs5CULWLV9KZn5z3r6OqO19P
-         90dxam6rHhIKp8WnQe2IMDyJw3W6j0heDI8ijGy8=
-Subject: Re: [PATCH v12 2/4] powerpc: Move arch independent ima kexec
- functions to drivers/of/kexec.c
-To:     Rob Herring <robh@kernel.org>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        "AKASHI, Takahiro" <takahiro.akashi@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        James Morse <james.morse@arm.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        vincenzo.frascino@arm.com, Mark Rutland <mark.rutland@arm.com>,
-        dmitry.kasatkin@gmail.com, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Allison Randal <allison@lohutok.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Bhupesh Sharma <bhsharma@redhat.com>,
-        Matthias Brugger <mbrugger@suse.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, tao.li@vivo.com,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Prakhar Srivastava <prsriva@linux.microsoft.com>,
-        balajib@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree@vger.kernel.org
-References: <20201217173708.6940-1-nramas@linux.microsoft.com>
- <20201217173708.6940-3-nramas@linux.microsoft.com>
- <20201217200510.GA105447@robh.at.kernel.org>
- <0b17fbee-cfe9-8cb2-01d1-02b6a61a14f5@linux.microsoft.com>
- <CAL_Jsq+-HOkxtxOO=zyRbDuGVNZoMy589qoVANciNionsdsGCw@mail.gmail.com>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <5dda6968-ca14-1695-3058-7c12653521ba@linux.microsoft.com>
-Date:   Thu, 17 Dec 2020 22:25:33 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 18 Dec 2020 01:27:13 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608272832; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Ci1RMDYuVkrZKakFCS9kv682lkAbxTxsLfD4j3hMbEc=;
+ b=ZoCThizqV3b9p86WWq24ghl3ivRb5Pp5iv+VyAkdSPM1ertidSt1+g2DlHIWNK/88qiJac5Z
+ 7i9Uw7Gt9HBLO6wgxfsZuwgm27Mw54VOKOsVHEREp54pfVcOvM4TZOVfOD3qC72MGil6UEne
+ 3YJuEMS/MfB4mljbLwcBEuXkdrY=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5fdc4b82bfd08afb0d40b75a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Dec 2020 06:26:10
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5AF2CC43465; Fri, 18 Dec 2020 06:26:09 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E1134C433ED;
+        Fri, 18 Dec 2020 06:26:06 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <CAL_Jsq+-HOkxtxOO=zyRbDuGVNZoMy589qoVANciNionsdsGCw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Fri, 18 Dec 2020 14:26:06 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Stanley Chu <stanley.chu@mediatek.com>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        saravanak@google.com, salyzyn@google.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 1/3] scsi: ufs: Protect some contexts from unexpected
+ clock scaling
+In-Reply-To: <1608011011.10163.9.camel@mtkswgap22>
+References: <1607877104-8916-1-git-send-email-cang@codeaurora.org>
+ <1607877104-8916-2-git-send-email-cang@codeaurora.org>
+ <1608011011.10163.9.camel@mtkswgap22>
+Message-ID: <0d80c723a707e1cf719c714cb7141dde@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/17/20 2:01 PM, Rob Herring wrote:
+On 2020-12-15 13:43, Stanley Chu wrote:
+> Hi Can,
+> 
+> On Sun, 2020-12-13 at 08:31 -0800, Can Guo wrote:
+>> In contexts like suspend, shutdown and error handling, we need to 
+>> suspend
+>> devfreq to make sure these contexts won't be disturbed by clock 
+>> scaling.
+>> However, suspending devfreq is not enough since users can still 
+>> trigger a
+>> clock scaling by manipulating the sysfs node clkscale_enable and 
+>> devfreq
+>> sysfs nodes like min/max_freq and governor. Add one more flag in 
+>> struct
+>> clk_scaling such that these contexts can prevent clock scaling from 
+>> being
+>> invoked through above sysfs nodes.
+>> 
+>> Signed-off-by: Can Guo <cang@codeaurora.org>
+>> ---
+>>  drivers/scsi/ufs/ufshcd.c | 83 
+>> +++++++++++++++++++++++++++++++----------------
+>>  drivers/scsi/ufs/ufshcd.h |  2 ++
+>>  2 files changed, 57 insertions(+), 28 deletions(-)
+>> 
+>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>> index 0c148fc..4ccdd2b 100644
+>> --- a/drivers/scsi/ufs/ufshcd.c
+>> +++ b/drivers/scsi/ufs/ufshcd.c
+>> @@ -1147,12 +1147,22 @@ static int ufshcd_clock_scaling_prepare(struct 
+>> ufs_hba *hba)
+>>  	 */
+>>  	ufshcd_scsi_block_requests(hba);
+>>  	down_write(&hba->clk_scaling_lock);
+>> -	if (ufshcd_wait_for_doorbell_clr(hba, DOORBELL_CLR_TOUT_US)) {
+>> +
+>> +	if (!hba->clk_scaling.is_allowed)
+>> +		ret = -EAGAIN;
+>> +	else if (ufshcd_wait_for_doorbell_clr(hba, DOORBELL_CLR_TOUT_US))
+>>  		ret = -EBUSY;
+>> +
+>> +	if (ret) {
+>>  		up_write(&hba->clk_scaling_lock);
+>>  		ufshcd_scsi_unblock_requests(hba);
+>> +		goto out;
+>>  	}
+>> 
+>> +	/* let's not get into low power until clock scaling is completed */
+>> +	ufshcd_hold(hba, false);
+>> +
+>> +out:
+>>  	return ret;
+>>  }
+>> 
+>> @@ -1160,6 +1170,7 @@ static void 
+>> ufshcd_clock_scaling_unprepare(struct ufs_hba *hba)
+>>  {
+>>  	up_write(&hba->clk_scaling_lock);
+>>  	ufshcd_scsi_unblock_requests(hba);
+>> +	ufshcd_release(hba);
+>>  }
+>> 
+>>  /**
+>> @@ -1175,12 +1186,9 @@ static int ufshcd_devfreq_scale(struct ufs_hba 
+>> *hba, bool scale_up)
+>>  {
+>>  	int ret = 0;
+>> 
+>> -	/* let's not get into low power until clock scaling is completed */
+>> -	ufshcd_hold(hba, false);
+>> -
+>>  	ret = ufshcd_clock_scaling_prepare(hba);
+>>  	if (ret)
+>> -		goto out;
+>> +		return ret;
+>> 
+>>  	/* scale down the gear before scaling down clocks */
+>>  	if (!scale_up) {
+>> @@ -1212,8 +1220,6 @@ static int ufshcd_devfreq_scale(struct ufs_hba 
+>> *hba, bool scale_up)
+>> 
+>>  out_unprepare:
+>>  	ufshcd_clock_scaling_unprepare(hba);
+>> -out:
+>> -	ufshcd_release(hba);
+>>  	return ret;
+>>  }
+>> 
+>> @@ -1487,7 +1493,7 @@ static ssize_t 
+>> ufshcd_clkscale_enable_show(struct device *dev,
+>>  {
+>>  	struct ufs_hba *hba = dev_get_drvdata(dev);
+>> 
+>> -	return snprintf(buf, PAGE_SIZE, "%d\n", 
+>> hba->clk_scaling.is_allowed);
+>> +	return snprintf(buf, PAGE_SIZE, "%d\n", 
+>> hba->clk_scaling.is_enabled);
+>>  }
+>> 
+>>  static ssize_t ufshcd_clkscale_enable_store(struct device *dev,
+>> @@ -1496,12 +1502,20 @@ static ssize_t 
+>> ufshcd_clkscale_enable_store(struct device *dev,
+>>  	struct ufs_hba *hba = dev_get_drvdata(dev);
+>>  	u32 value;
+>>  	int err;
+>> +	unsigned long flags;
+>> +	bool update = true;
+>> 
+>>  	if (kstrtou32(buf, 0, &value))
+>>  		return -EINVAL;
+>> 
+>>  	value = !!value;
+>> -	if (value == hba->clk_scaling.is_allowed)
+>> +	spin_lock_irqsave(hba->host->host_lock, flags);
+>> +	if (value == hba->clk_scaling.is_enabled)
+>> +		update = false;
+>> +	else
+>> +		hba->clk_scaling.is_enabled = value;
+>> +	spin_unlock_irqrestore(hba->host->host_lock, flags);
+>> +	if (!update)
+>>  		goto out;
+>> 
+>>  	pm_runtime_get_sync(hba->dev);
+>> @@ -1510,8 +1524,6 @@ static ssize_t 
+>> ufshcd_clkscale_enable_store(struct device *dev,
+>>  	cancel_work_sync(&hba->clk_scaling.suspend_work);
+>>  	cancel_work_sync(&hba->clk_scaling.resume_work);
+>> 
+>> -	hba->clk_scaling.is_allowed = value;
+>> -
+>>  	if (value) {
+>>  		ufshcd_resume_clkscaling(hba);
+>>  	} else {
+>> @@ -1845,8 +1857,6 @@ static void ufshcd_init_clk_scaling(struct 
+>> ufs_hba *hba)
+>>  	snprintf(wq_name, sizeof(wq_name), "ufs_clkscaling_%d",
+>>  		 hba->host->host_no);
+>>  	hba->clk_scaling.workq = create_singlethread_workqueue(wq_name);
+>> -
+>> -	ufshcd_clkscaling_init_sysfs(hba);
+>>  }
+>> 
+>>  static void ufshcd_exit_clk_scaling(struct ufs_hba *hba)
+>> @@ -1854,6 +1864,8 @@ static void ufshcd_exit_clk_scaling(struct 
+>> ufs_hba *hba)
+>>  	if (!ufshcd_is_clkscaling_supported(hba))
+>>  		return;
+>> 
+>> +	if (hba->devfreq)
+>> +		device_remove_file(hba->dev, &hba->clk_scaling.enable_attr);
+>>  	destroy_workqueue(hba->clk_scaling.workq);
+>>  	ufshcd_devfreq_remove(hba);
+>>  }
+>> @@ -1918,7 +1930,7 @@ static void ufshcd_clk_scaling_start_busy(struct 
+>> ufs_hba *hba)
+>>  	if (!hba->clk_scaling.active_reqs++)
+>>  		queue_resume_work = true;
+>> 
+>> -	if (!hba->clk_scaling.is_allowed || hba->pm_op_in_progress)
+>> +	if (!hba->clk_scaling.is_enabled || hba->pm_op_in_progress)
+>>  		return;
+>> 
+>>  	if (queue_resume_work)
+>> @@ -4987,7 +4999,8 @@ static void __ufshcd_transfer_req_compl(struct 
+>> ufs_hba *hba,
+>>  				complete(hba->dev_cmd.complete);
+>>  			}
+>>  		}
+>> -		if (ufshcd_is_clkscaling_supported(hba))
+>> +		if (ufshcd_is_clkscaling_supported(hba) &&
+>> +		    hba->clk_scaling.active_reqs > 0)
+>>  			hba->clk_scaling.active_reqs--;
+>>  	}
+>> 
+>> @@ -5650,18 +5663,25 @@ static void ufshcd_err_handling_prepare(struct 
+>> ufs_hba *hba)
+>>  		ufshcd_vops_resume(hba, UFS_RUNTIME_PM);
+>>  	} else {
+>>  		ufshcd_hold(hba, false);
+>> -		if (hba->clk_scaling.is_allowed) {
+>> +		if (hba->clk_scaling.is_enabled) {
+>>  			cancel_work_sync(&hba->clk_scaling.suspend_work);
+>>  			cancel_work_sync(&hba->clk_scaling.resume_work);
+>>  			ufshcd_suspend_clkscaling(hba);
+>>  		}
+>>  	}
+>> +	down_write(&hba->clk_scaling_lock);
+>> +	hba->clk_scaling.is_allowed = false;
+>> +	up_write(&hba->clk_scaling_lock);
+>>  }
+>> 
+>>  static void ufshcd_err_handling_unprepare(struct ufs_hba *hba)
+>>  {
+>>  	ufshcd_release(hba);
+>> -	if (hba->clk_scaling.is_allowed)
+>> +
+>> +	down_write(&hba->clk_scaling_lock);
+>> +	hba->clk_scaling.is_allowed = true;
+>> +	up_write(&hba->clk_scaling_lock);
+>> +	if (hba->clk_scaling.is_enabled)
+>>  		ufshcd_resume_clkscaling(hba);
+>>  	pm_runtime_put(hba->dev);
+>>  }
+>> @@ -7620,12 +7640,14 @@ static int ufshcd_add_lus(struct ufs_hba *hba)
+>>  			sizeof(struct ufs_pa_layer_attr));
+>>  		hba->clk_scaling.saved_pwr_info.is_valid = true;
+>>  		if (!hba->devfreq) {
+>> +			hba->clk_scaling.is_allowed = true;
+> 
+> Perhaps moving this line after ufshcd_devfreq_init() is successful?
+
+devfreq starts to work even before ufshcd_devfreq_init() returns,
+I don't want to block it, hence put it before ufshcd_devfreq_init().
+If devfreq fails to initialize, clk_scaling and its related sysfs
+nodes anyways won't work and clk_scaling->is_enabled is false, so
+we are safe.
 
 > 
-> [...]
+>>  			ret = ufshcd_devfreq_init(hba);
+>>  			if (ret)
+>>  				goto out;
+>> -		}
+>> 
+>> -		hba->clk_scaling.is_allowed = true;
+>> +			hba->clk_scaling.is_enabled = true;
+>> +			ufshcd_clkscaling_init_sysfs(hba);
+>> +		}
+>>  	}
+>> 
+>>  	ufs_bsg_probe(hba);
+>> @@ -8491,11 +8513,14 @@ static int ufshcd_suspend(struct ufs_hba *hba, 
+>> enum ufs_pm_op pm_op)
+>>  	ufshcd_hold(hba, false);
+>>  	hba->clk_gating.is_suspended = true;
+>> 
+>> -	if (hba->clk_scaling.is_allowed) {
+>> +	if (hba->clk_scaling.is_enabled) {
+>>  		cancel_work_sync(&hba->clk_scaling.suspend_work);
+>>  		cancel_work_sync(&hba->clk_scaling.resume_work);
+>>  		ufshcd_suspend_clkscaling(hba);
+>>  	}
+>> +	down_write(&hba->clk_scaling_lock);
+>> +	hba->clk_scaling.is_allowed = false;
+>> +	up_write(&hba->clk_scaling_lock);
+>> 
+>>  	if (req_dev_pwr_mode == UFS_ACTIVE_PWR_MODE &&
+>>  			req_link_state == UIC_LINK_ACTIVE_STATE) {
+>> @@ -8592,8 +8617,6 @@ static int ufshcd_suspend(struct ufs_hba *hba, 
+>> enum ufs_pm_op pm_op)
+>>  	goto out;
+>> 
+>>  set_link_active:
+>> -	if (hba->clk_scaling.is_allowed)
+>> -		ufshcd_resume_clkscaling(hba);
+>>  	ufshcd_vreg_set_hpm(hba);
+>>  	if (ufshcd_is_link_hibern8(hba) && !ufshcd_uic_hibern8_exit(hba))
+>>  		ufshcd_set_link_active(hba);
+>> @@ -8603,7 +8626,10 @@ static int ufshcd_suspend(struct ufs_hba *hba, 
+>> enum ufs_pm_op pm_op)
+>>  	if (!ufshcd_set_dev_pwr_mode(hba, UFS_ACTIVE_PWR_MODE))
+>>  		ufshcd_disable_auto_bkops(hba);
+>>  enable_gating:
+>> -	if (hba->clk_scaling.is_allowed)
+>> +	down_write(&hba->clk_scaling_lock);
+>> +	hba->clk_scaling.is_allowed = true;
+>> +	up_write(&hba->clk_scaling_lock);
+>> +	if (hba->clk_scaling.is_enabled)
+>>  		ufshcd_resume_clkscaling(hba);
+>>  	hba->clk_gating.is_suspended = false;
+>>  	hba->dev_info.b_rpm_dev_flush_capable = false;
+>> @@ -8701,7 +8727,10 @@ static int ufshcd_resume(struct ufs_hba *hba, 
+>> enum ufs_pm_op pm_op)
+>> 
+>>  	hba->clk_gating.is_suspended = false;
+>> 
+>> -	if (hba->clk_scaling.is_allowed)
+>> +	down_write(&hba->clk_scaling_lock);
+>> +	hba->clk_scaling.is_allowed = true;
+>> +	up_write(&hba->clk_scaling_lock);
+>> +	if (hba->clk_scaling.is_enabled)
+>>  		ufshcd_resume_clkscaling(hba);
+>> 
+>>  	/* Enable Auto-Hibernate if configured */
+>> @@ -8725,8 +8754,6 @@ static int ufshcd_resume(struct ufs_hba *hba, 
+>> enum ufs_pm_op pm_op)
+>>  	ufshcd_vreg_set_lpm(hba);
+>>  disable_irq_and_vops_clks:
+>>  	ufshcd_disable_irq(hba);
+>> -	if (hba->clk_scaling.is_allowed)
+>> -		ufshcd_suspend_clkscaling(hba);
+>>  	ufshcd_setup_clocks(hba, false);
+>>  	if (ufshcd_is_clkgating_allowed(hba)) {
+>>  		hba->clk_gating.state = CLKS_OFF;
+>> @@ -8915,6 +8942,8 @@ int ufshcd_shutdown(struct ufs_hba *hba)
+>> 
+>>  	pm_runtime_get_sync(hba->dev);
+>> 
+>> +	ufshcd_exit_clk_scaling(hba);
+>> +
+>>  	ret = ufshcd_suspend(hba, UFS_SHUTDOWN_PM);
+>>  out:
+>>  	if (ret)
+>> @@ -8944,8 +8973,6 @@ void ufshcd_remove(struct ufs_hba *hba)
+>> 
+>>  	ufshcd_exit_clk_scaling(hba);
+>>  	ufshcd_exit_clk_gating(hba);
+>> -	if (ufshcd_is_clkscaling_supported(hba))
+>> -		device_remove_file(hba->dev, &hba->clk_scaling.enable_attr);
+>>  	ufshcd_hba_exit(hba);
+>>  }
+>>  EXPORT_SYMBOL_GPL(ufshcd_remove);
+>> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+>> index e0f00a4..9fcecba 100644
+>> --- a/drivers/scsi/ufs/ufshcd.h
+>> +++ b/drivers/scsi/ufs/ufshcd.h
+>> @@ -382,6 +382,7 @@ struct ufs_saved_pwr_info {
+>>   * @workq: workqueue to schedule devfreq suspend/resume work
+>>   * @suspend_work: worker to suspend devfreq
+>>   * @resume_work: worker to resume devfreq
+>> + * @is_enabled: tracks if scaling is currently enabled or not
+>>   * @is_allowed: tracks if scaling is currently allowed or not
+>>   * @is_busy_started: tracks if busy period has started or not
+>>   * @is_suspended: tracks if devfreq is suspended or not
+>> @@ -396,6 +397,7 @@ struct ufs_clk_scaling {
+>>  	struct workqueue_struct *workq;
+>>  	struct work_struct suspend_work;
+>>  	struct work_struct resume_work;
+>> +	bool is_enabled;
+>>  	bool is_allowed;
+>>  	bool is_busy_started;
+>>  	bool is_suspended;
 > 
->>>> +#ifdef CONFIG_IMA_KEXEC
->>>> +/**
->>>> + * arch_ima_add_kexec_buffer - do arch-specific steps to add the IMA buffer
->>>> + *
->>>> + * @image: kimage struct to set IMA buffer data
->>>> + * @load_addr: Starting address where IMA buffer is loaded at
->>>> + * @size: Number of bytes in the IMA buffer
->>>> + *
->>>> + * Architectures should use this function to pass on the IMA buffer
->>>> + * information to the next kernel.
->>>> + *
->>>> + * Return: 0 on success, negative errno on error.
->>>> + */
->>>> +int arch_ima_add_kexec_buffer(struct kimage *image, unsigned long load_addr,
->>>> +                          size_t size)
->>>
->>> This should be a static inline in asm/kexec.h.
->>
->> arch_ima_add_kexec_buffer() is identical for powerpc and arm64.
->> Would it be better to "static inline" this function in "of.h" instead of
->> duplicating it in "asm/kexec.h" for powerpc and arm64?
+> Now there are more and more "similar boolean attributes" regarding
+> clk-scaling control, maybe add more comprehensive comments to describe
+> them?
 > 
-> No, think about what it is specific to and place it there. It has
-> nothing to do with DT really. All it is is a wrapper to access the
-> struct members in kimage_arch. So it belongs where they are declared.
-> Now perhaps ima_buffer_addr and ima_buffer_size shouldn't be arch
-> specific, but that's a separate issue.
+> Otherwise this patch looks good to me.
+
+Sure, I will give more words to the new flag.
+
+Thanks,
+
+Can Guo.
+
 > 
-
-Since "struct kimage" definition is not available in "asm/kexec.h", 
-defining arch_ima_add_kexec_buffer() in this header file results in the 
-following build error:
-
-./arch/powerpc/include/asm/kexec.h: In function 'arch_ima_add_kexec_buffer':
-./arch/powerpc/include/asm/kexec.h:139:7: error: 'struct kimage' has no 
-member named 'arch'
-   139 |  image->arch.ima_buffer_addr = load_addr;
-
-I think it would be appropriate to make arch_ima_add_kexec_buffer() a 
-static inline function in "security/integrity/ima/ima_kexec.c" - the 
-only file where this function is used.
-
-This will also enable sharing this function for powerpc and arm64 
-architectures.
-
-thanks,
-  -lakshmi
+> Feel free to add
+> Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
