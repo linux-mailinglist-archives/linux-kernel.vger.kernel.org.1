@@ -2,79 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F4452DDDA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 05:12:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1EB52DDDAF
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 05:27:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732043AbgLREKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 23:10:55 -0500
-Received: from mga04.intel.com ([192.55.52.120]:1629 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726798AbgLREKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 23:10:54 -0500
-IronPort-SDR: vlHx6bbjJjI+grb7aJxu/u1uz2PzT+WnFFSp0BezImIwRft+pCRxk1H3qu3y8PHJzP0A9drZfm
- RexXxJL6Zh3A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9838"; a="172810701"
-X-IronPort-AV: E=Sophos;i="5.78,429,1599548400"; 
-   d="scan'208";a="172810701"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2020 20:10:13 -0800
-IronPort-SDR: A8u2UZH5a9Ii6dfZcq04bAX2OwOham5rhmAyowRSRBJduIiiyn3HqDkqgXP4Y95DSUsg50PLbn
- q5u/5uck4oEw==
-X-IronPort-AV: E=Sophos;i="5.78,429,1599548400"; 
-   d="scan'208";a="338679461"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2020 20:10:12 -0800
-Date:   Thu, 17 Dec 2020 20:10:12 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-doc@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [NEEDS-REVIEW] [PATCH V3 04/10] x86/pks: Preserve the PKRS MSR
- on context switch
-Message-ID: <20201218041012.GC2506510@iweiny-DESK2.sc.intel.com>
-References: <20201106232908.364581-1-ira.weiny@intel.com>
- <20201106232908.364581-5-ira.weiny@intel.com>
- <ff685068-6821-ca35-7fa8-732a66cbf266@intel.com>
+        id S1732005AbgLREVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 23:21:48 -0500
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:60751 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727017AbgLREVs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Dec 2020 23:21:48 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=weichen.chen@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0UIz3wKA_1608265250;
+Received: from localhost(mailfrom:weichen.chen@linux.alibaba.com fp:SMTPD_---0UIz3wKA_1608265250)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 18 Dec 2020 12:21:04 +0800
+From:   weichenchen <weichen.chen@linux.alibaba.com>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     liuhangbin@gmail.com, dsahern@kernel.org, jdike@akamai.com,
+        mrv@mojatatu.com, lirongqing@baidu.com,
+        nikolay@cumulusnetworks.com, roopa@cumulusnetworks.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        splendidsky.cwc@alibaba-inc.com, yanxu.zw@alibaba-inc.com,
+        weichenchen <weichen.chen@linux.alibaba.com>
+Subject: [PATCH] net: neighbor: fix a crash caused by mod zero
+Date:   Fri, 18 Dec 2020 12:20:19 +0800
+Message-Id: <20201218042019.52096-1-weichen.chen@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1 (Apple Git-117)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ff685068-6821-ca35-7fa8-732a66cbf266@intel.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 12:41:50PM -0800, Dave Hansen wrote:
-> On 11/6/20 3:29 PM, ira.weiny@intel.com wrote:
-> >  void disable_TSC(void)
-> > @@ -644,6 +668,8 @@ void __switch_to_xtra(struct task_struct *prev_p, struct task_struct *next_p)
-> >  
-> >  	if ((tifp ^ tifn) & _TIF_SLD)
-> >  		switch_to_sld(tifn);
-> > +
-> > +	pks_sched_in();
-> >  }
-> 
-> Does the selftest for this ever actually schedule()?
+pneigh_enqueue() tries to obtain a random delay by mod
+NEIGH_VAR(p, PROXY_DELAY). However, NEIGH_VAR(p, PROXY_DELAY)
+migth be zero at that point because someone could write zero
+to /proc/sys/net/ipv4/neigh/[device]/proxy_delay after the
+callers check it.
 
-At this point I'm not sure.  This code has been in since the beginning.  So its
-seen a lot of soak time.
+This patch double-checks NEIGH_VAR(p, PROXY_DELAY) in
+pneigh_enqueue() to ensure not to take zero as modulus.
 
-> 
-> I see it talking about context switching, but I don't immediately see
-> how it would.
+Signed-off-by: weichenchen <weichen.chen@linux.alibaba.com>
+---
+ net/core/neighbour.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-We were trying to force parent and child to run on the same CPU.  I suspect
-something is wrong in the timing of that test.
+diff --git a/net/core/neighbour.c b/net/core/neighbour.c
+index 9500d28a43b0..eb5d015c53d3 100644
+--- a/net/core/neighbour.c
++++ b/net/core/neighbour.c
+@@ -1570,9 +1570,14 @@ void pneigh_enqueue(struct neigh_table *tbl, struct neigh_parms *p,
+ 		    struct sk_buff *skb)
+ {
+ 	unsigned long now = jiffies;
++	unsigned long sched_next;
+ 
+-	unsigned long sched_next = now + (prandom_u32() %
+-					  NEIGH_VAR(p, PROXY_DELAY));
++	int delay = NEIGH_VAR(p, PROXY_DELAY);
++
++	if (delay <= 0)
++		sched_next = now;
++	else
++		sched_next = now + (prandom_u32() % delay);
+ 
+ 	if (tbl->proxy_queue.qlen > NEIGH_VAR(p, PROXY_QLEN)) {
+ 		kfree_skb(skb);
+-- 
+2.20.1 (Apple Git-117)
 
-Ira
