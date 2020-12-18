@@ -2,162 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F3F2DE0E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 11:22:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4C052DE0E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 11:24:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389034AbgLRKVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 05:21:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732938AbgLRKVt (ORCPT
+        id S2389074AbgLRKXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 05:23:10 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:44262 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733163AbgLRKXK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 05:21:49 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F72C0617A7;
-        Fri, 18 Dec 2020 02:21:08 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id c133so1808939wme.4;
-        Fri, 18 Dec 2020 02:21:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=t++cdbMmD+rlMQoSOM011lRfbvo658HBQtNF3MOsvfw=;
-        b=Fv+Vz9wt6lrMy8+uCq2aqmOrOlMNDdl/6sD3QH2UtBypu8LBZWFv5C/kJNsr2tbyEB
-         l4em2fi9NeNDXck09JLQmWHRtjm4JtT6dpLGQHRYsq9FjGBpRvmKvlzzMYgSMngqL0CD
-         y8NHd0ExNxri5cesSJSMwLCFEjrzNJkIwclyn133R2Wda78KiOBlCFsHbD+yYSA3Vjrh
-         uMsfRSvN3DAAcAhv52FAP6nn0YTcpxyIyYsA16xRlYtSwwRcBsYDwONfFOR4BGaMontx
-         5L8anOsi1ZKCxe7QPhe9ZYFvQXVBM7Ny3jq17u9cv2/icYNw1pwQM1wbHWcJw+o/uvpi
-         hg6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=t++cdbMmD+rlMQoSOM011lRfbvo658HBQtNF3MOsvfw=;
-        b=PK7MjjpZ7ZNKCLnJdiE50VrZ+zUmMhzmuYh/5X37eDsVH/GSznhZx8Ir+HQtqL1Crs
-         jBOgsPdwAl06wRhhkUU/Yb4uXHsdnsyjBpSKVPOT9rR6Vpuq8pXzeV4yWxDjQ/Lm2FyJ
-         wjysYXoQaOrSL0xJ0jlcewQioiVp2gEv1g43rGusPCZ2Eccspivgs3wskCs/XX7Co0wQ
-         MXKBH5GuuwTt3C/Xmebv/YGXd2BBUcH7oqS/0JQQ4KmP7i2Qye+m+vyxzH2F83xCdRSR
-         7OiUekYi5y3FiJKaTxNLUw3HK8wQr5MRhyeiIRGdmK3n5O+eO2FDr6pTFnzFYfZlFXSu
-         vTKA==
-X-Gm-Message-State: AOAM532nBgrFCyWSigyn562vIRPZW96eip0behJ4+SH+MTNjapo3ovBO
-        gRx5yoUlOW3gWHm7E0MAVwDYOx9SQfHNUg==
-X-Google-Smtp-Source: ABdhPJxij2LUPwGMyIHY5GB2IQfsCwQ6/XHJ81aWqtiS/E0vT9kB0CHB72WCzB3a8ptvq3xvLH9o5Q==
-X-Received: by 2002:a1c:9dd8:: with SMTP id g207mr3482486wme.15.1608286867533;
-        Fri, 18 Dec 2020 02:21:07 -0800 (PST)
-Received: from [192.168.1.143] ([170.253.51.130])
-        by smtp.gmail.com with ESMTPSA id z8sm11259259wmg.17.2020.12.18.02.21.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Dec 2020 02:21:06 -0800 (PST)
-Subject: Re: [PATCH -V6 RESEND 2/3] NOT kernel/man-pages:
- man2/set_mempolicy.2: Add mode flag MPOL_F_NUMA_BALANCING
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Rafael Aquini <aquini@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Rik van Riel <riel@surriel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>, linux-api@vger.kernel.org
-References: <20201202084234.15797-1-ying.huang@intel.com>
- <20201202084234.15797-3-ying.huang@intel.com>
- <48e758d7-9961-e28e-26f5-3bb381d36309@gmail.com>
- <87pn3klnq6.fsf@yhuang-dev.intel.com>
-From:   "Alejandro Colomar (mailing lists; readonly)" 
-        <alx.mailinglists@gmail.com>
-Message-ID: <60283b9f-7616-15f6-b521-c15995907fb6@gmail.com>
-Date:   Fri, 18 Dec 2020 11:21:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Fri, 18 Dec 2020 05:23:10 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BIAJulT050545;
+        Fri, 18 Dec 2020 10:22:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=yZVSy6EAEkuFTl3w094FI33pOcFr9o89On5Z47ID5tI=;
+ b=FB8bov3xvzptM61+kZ4s5lYukNeGaugdn2PMrCNCuwUAi56DzeABMbp4kkPICHulFjCD
+ /Xt+cm4WYgTxet6F/Pqa8l6hB8u9vedqCu2UgD6rSnh4r1JqR4S7ayb2yshEdajktRKB
+ 9dwdP6qZddyzJx/V7u5Js7UY9DXSg8ZVT6lPR/X7+8W8Ri5KH9/gBrT17hQlcpQzzctM
+ e6EHSqv3n+GiLdDub+o8PZTUU+bkSC6mt1zJokPDIIIDUgraoghHROwCn8K6rGjfie0I
+ HL7zoy0mYCq93Ue/MSCd9Y+2OJ+Tu8VffC7jNJ/WEeZ4b0OYrWtAQt4oPbPRGoNHqdpz Gw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 35ckcbsv92-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 18 Dec 2020 10:22:26 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BIAFMns186416;
+        Fri, 18 Dec 2020 10:22:26 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 35e6eujq18-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 18 Dec 2020 10:22:26 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0BIAMP4P021858;
+        Fri, 18 Dec 2020 10:22:25 GMT
+Received: from jian-L460.jp.oracle.com (/10.191.3.55)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 18 Dec 2020 02:22:24 -0800
+From:   Jacob Wen <jian.w.wen@oracle.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     akpm@linux-foundation.org, jian.w.wen@oracle.com
+Subject: [PATCH] mm/vmscan: DRY cleanup for do_try_to_free_pages()
+Date:   Fri, 18 Dec 2020 18:22:17 +0800
+Message-Id: <20201218102217.186836-1-jian.w.wen@oracle.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <87pn3klnq6.fsf@yhuang-dev.intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9838 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=35 mlxscore=0 phishscore=0
+ bulkscore=0 suspectscore=0 malwarescore=0 mlxlogscore=999 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012180075
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9838 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ priorityscore=1501 mlxscore=0 suspectscore=0 adultscore=6 phishscore=0
+ malwarescore=0 impostorscore=0 lowpriorityscore=0 clxscore=1015
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012180075
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Huang, Ying,
+This patch reduces repetition of set_task_reclaim_state() around
+do_try_to_free_pages().
 
-Sorry I forgot to answer.
-See below.
+Signed-off-by: Jacob Wen <jian.w.wen@oracle.com>
+---
+ mm/vmscan.c | 27 ++++++++++++++++-----------
+ 1 file changed, 16 insertions(+), 11 deletions(-)
 
-BTW, Linux 5.10 has been released recently;
-is this series already merged for 5.11?
-If not yet, could you just write '5.??' and we'll fix it (and add a
-commit number in a comment) when we know the definitive version?
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 257cba79a96d..4bc244b23686 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -3023,6 +3023,10 @@ static unsigned long do_try_to_free_pages(struct zonelist *zonelist,
+ 	pg_data_t *last_pgdat;
+ 	struct zoneref *z;
+ 	struct zone *zone;
++	unsigned long ret;
++
++	set_task_reclaim_state(current, &sc->reclaim_state);
++
+ retry:
+ 	delayacct_freepages_start();
+ 
+@@ -3069,12 +3073,16 @@ static unsigned long do_try_to_free_pages(struct zonelist *zonelist,
+ 
+ 	delayacct_freepages_end();
+ 
+-	if (sc->nr_reclaimed)
+-		return sc->nr_reclaimed;
++	if (sc->nr_reclaimed) {
++		ret = sc->nr_reclaimed;
++		goto out;
++	}
+ 
+ 	/* Aborted reclaim to try compaction? don't OOM, then */
+-	if (sc->compaction_ready)
+-		return 1;
++	if (sc->compaction_ready) {
++		ret = 1;
++		goto out;
++	}
+ 
+ 	/*
+ 	 * We make inactive:active ratio decisions based on the node's
+@@ -3101,7 +3109,10 @@ static unsigned long do_try_to_free_pages(struct zonelist *zonelist,
+ 		goto retry;
+ 	}
+ 
+-	return 0;
++	ret = 0;
++out:
++	set_task_reclaim_state(current, NULL);
++	return ret;
+ }
+ 
+ static bool allow_direct_reclaim(pg_data_t *pgdat)
+@@ -3269,13 +3280,11 @@ unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
+ 	if (throttle_direct_reclaim(sc.gfp_mask, zonelist, nodemask))
+ 		return 1;
+ 
+-	set_task_reclaim_state(current, &sc.reclaim_state);
+ 	trace_mm_vmscan_direct_reclaim_begin(order, sc.gfp_mask);
+ 
+ 	nr_reclaimed = do_try_to_free_pages(zonelist, &sc);
+ 
+ 	trace_mm_vmscan_direct_reclaim_end(nr_reclaimed);
+-	set_task_reclaim_state(current, NULL);
+ 
+ 	return nr_reclaimed;
+ }
+@@ -3347,7 +3356,6 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+ 	 */
+ 	struct zonelist *zonelist = node_zonelist(numa_node_id(), sc.gfp_mask);
+ 
+-	set_task_reclaim_state(current, &sc.reclaim_state);
+ 	trace_mm_vmscan_memcg_reclaim_begin(0, sc.gfp_mask);
+ 	noreclaim_flag = memalloc_noreclaim_save();
+ 
+@@ -3355,7 +3363,6 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+ 
+ 	memalloc_noreclaim_restore(noreclaim_flag);
+ 	trace_mm_vmscan_memcg_reclaim_end(nr_reclaimed);
+-	set_task_reclaim_state(current, NULL);
+ 
+ 	return nr_reclaimed;
+ }
+@@ -4023,11 +4030,9 @@ unsigned long shrink_all_memory(unsigned long nr_to_reclaim)
+ 
+ 	fs_reclaim_acquire(sc.gfp_mask);
+ 	noreclaim_flag = memalloc_noreclaim_save();
+-	set_task_reclaim_state(current, &sc.reclaim_state);
+ 
+ 	nr_reclaimed = do_try_to_free_pages(zonelist, &sc);
+ 
+-	set_task_reclaim_state(current, NULL);
+ 	memalloc_noreclaim_restore(noreclaim_flag);
+ 	fs_reclaim_release(sc.gfp_mask);
+ 
+-- 
+2.25.1
 
-Thanks,
-
-Alex
-
-On 12/8/20 9:13 AM, Huang, Ying wrote:
-> Hi, Alex,
-> 
-> Sorry for late, I just notice this email today.
-> 
-> "Alejandro Colomar (mailing lists; readonly)"
-> <alx.mailinglists@gmail.com> writes:
-> 
->> Hi Huang Ying,
->>
->> Please see a few fixes below.
->>
->> Michael, as always, some question for you too ;)
->>
->> Thanks,
->>
->> Alex
->>
->> On 12/2/20 9:42 AM, Huang Ying wrote:
->>> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
->>> ---
->>>  man2/set_mempolicy.2 | 9 +++++++++
->>>  1 file changed, 9 insertions(+)
->>>
->>> diff --git a/man2/set_mempolicy.2 b/man2/set_mempolicy.2
->>> index 68011eecb..3754b3e12 100644
->>> --- a/man2/set_mempolicy.2
->>> +++ b/man2/set_mempolicy.2
->>> @@ -113,6 +113,12 @@ A nonempty
->>>  .I nodemask
->>>  specifies node IDs that are relative to the set of
->>>  node IDs allowed by the process's current cpuset.
->>> +.TP
->>> +.BR MPOL_F_NUMA_BALANCING " (since Linux 5.11)"
->>
->> I'd prefer it to be in alphabetical order (rather than just adding at
->> the bottom).
-> 
-> That's OK for me.  But it's better to be done in another patch to
-> distinguish contents from pure order change?
-
-Yes, if you could do a series of 2 patches with a reordering first, it
-would be great.
-
-> 
->> That way, when lists grow, it's easier to find things.
->>
->>> +Enable the Linux kernel NUMA balancing for the task if it is supported
->>> +by kernel.
->>
->> I'd s/Linux kernel/kernel/ when it doesn't specifically refer to the
->> Linux kernel to differentiate it from other kernels.  It only adds noise
->> (IMHO).  mtk?
-> 
-> Sure.  Will fix this and all following comments below.  Thanks a lot for
-> your help!  I am new to man pages.
-
-Thank you!
-
-> 
-> Best Regards,
-> Huang, Ying
-> 
