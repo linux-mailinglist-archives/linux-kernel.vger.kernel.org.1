@@ -2,83 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A212DE7C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 18:00:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B0AA2DE7C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 18:04:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732058AbgLRRAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 12:00:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725797AbgLRRAU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 12:00:20 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9B32C061282
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 08:59:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=+xN9GQRorrUGy150P3shy7r3NADexgIi08+DtMTl7Js=; b=g3Q59fqOx9DsUxJUKJorQaUhot
-        97VRI3w+Yrvz6gfvgXBeIg2tY0xSmaj2UyCdY5gZc09+Zya1TiyHMwn4Dqwanz0kXbDBEr0lgyq+I
-        q2scXZvRREVhcBm4UTnz+NPIn3gud21neOLzO7c9nKU0IJHvKuzSCN1eeao0MMXx47JQhhOgY8FNa
-        aXk5kqfHjVGkwKjkOdOD+UJjNrnbvGwsuanKMspWzolqQloccEVVescD3nMxVK8r/MR05aM7FO51I
-        odCu6Xr9hLufdyG+ose8ND27YtuJ+IlNMJe9xiy6lIWFCsFAxOTKygvWBzBtjTKprfmS5NS1edSav
-        OOleA0fA==;
-Received: from [2601:1c0:6280:3f0::64ea]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kqJ6I-0006FS-KV; Fri, 18 Dec 2020 16:59:30 +0000
-Subject: Re: [PATCH] add pin memory method for checkout add restore
-To:     hejingxian <hejingxian@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Cc:     Hushiyuan <hushiyuan@huawei.com>,
-        "hewenliang (C)" <hewenliang4@huawei.com>
-References: <a68df79992c04bbf8167748dbeca1fcc@huawei.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <cff4fee2-af5a-c77c-c085-7a2aaa6c40ff@infradead.org>
-Date:   Fri, 18 Dec 2020 08:59:26 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <a68df79992c04bbf8167748dbeca1fcc@huawei.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1731276AbgLRRDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 12:03:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54210 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725797AbgLRRDq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 12:03:46 -0500
+From:   Ard Biesheuvel <ardb@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-crypto@vger.kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Dave Martin <dave.martin@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: [RFC PATCH 0/5] running kernel mode SIMD with softirqs disabled
+Date:   Fri, 18 Dec 2020 18:01:01 +0100
+Message-Id: <20201218170106.23280-1-ardb@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+[ TL;DR for the non-ARM folks on CC: disabling softirq processing when using
+  SIMD in kernel mode could reduce complexity and improve performance, but we
+  need to decide whether we can do this, and how much softirq processing
+  latency we can tolerate. If we can find a satisfactory solution for this,
+  we might do the same for x86 and 32-bit ARM as well. ]
 
-On 12/18/20 6:25 AM, hejingxian wrote:
-> diff --git a/drivers/char/Kconfig b/drivers/char/Kconfig
-> index 26956c0..73af2f0 100644
-> --- a/drivers/char/Kconfig
-> +++ b/drivers/char/Kconfig
-> @@ -560,3 +560,10 @@ config RANDOM_TRUST_BOOTLOADER
->        booloader is trustworthy so it will be added to the kernel's entropy
->        pool. Otherwise, say N here so it will be regarded as device input that
->        only mixes the entropy pool.
-> +
-> +config PIN_MEMORY_DEV
-> +       bool "/dev/pinmem character device"
-> +       depends PIN_MEMORY
+The crypto API provides two ways to invoke symmetric encryption algorithms:
+- synchronously, where the transformation is guaranteed to be done by the
+  time the function returns;
+- asynchronously, where the function may return with a -EINPROGRESS return code,
+  and a completion will be signalled when the transformation is done.
 
-	depends on
+The latter is mainly intended for h/w accelerators, where the throughput would
+be severely limited by the latency otherwise. However, it is also being used
+for software algorithms based on SIMD instructions, which cannot be issued from
+any context (the rules are not the same on each architecture, but typically,
+SIMD can be used in task context, or in softirq context if it was not taken
+while the SIMD was already in use in kernel mode).
 
-> +       default n
+Many users of the crypto API exist in the kernel today that opt out of this
+asynchronous interface (802.11, macsec, kerberos, sw kTLS), or use a library
+interface which is fundamentally synchronous (wireguard). This means we end
+up using a degraded mode for the contended case (a scalar fallback) as well
+as the uncontended case (generic GCM/CCM/CTR chaining mode templates wrapped
+around the SIMD cipher as opposed to accelerated implementations of the full
+chaining modes in question). Note that scalar AES runs ~20x slower than the
+SIMD instruction based version.
 
-Don't need default n, it's already the default.
+So let's address this for arm64, by reorganizing kernel mode SIMD support so
+that the SIMD unit can always be assumed to be available. This means we need
+to defer softirq processing when grabbing the NEON unit in task context, so
+that any use of it in softirq context is guaranteed not to interrupt any code
+that was already using the NEON.
 
-> +       help
-> +       pin memory driver
+This obviously impacts softirq processing latency, which is why the existing
+conditional NEON yield support is modified to take pending softirqs into
+account.
 
-Better help text, please. Also, it should be indented by 2 (more) spaces.
+As an example of how this impacts the code, the existing arm64 GCM driver is
+updated to:
+- Add yield support - currently, the pending softirq check is performed every
+  64 bytes of input, which is way too often - one of the desired outcomes of
+  this RFC is getting a reasonable ballpark for how long we want to run with
+  softirqs disabled.
+- Remove the existing scalar fallbacks, which are no longer needed.
 
+Questions:
+- what did I miss or break horribly?
+- does any of this matter for RT? AIUI, RT runs softirqs from a dedicated
+  kthread, so I don't think it cares.
+- what would be a reasonable upper bound to keep softirqs disabled? I suppose
+  100s of cycles or less is overkill, but I'm not sure how to derive a better
+  answer.
+- could we do the same on x86, now that kernel_fpu_begin/end is no longer
+  expensive?
 
-thanks.
+Cc: Dave Martin <dave.martin@arm.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Eric Biggers <ebiggers@kernel.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Ingo Molnar <mingo@kernel.org>
+
+Ard Biesheuvel (5):
+  crypto: aead - disallow en/decrypt for non-task or non-softirq context
+  crypto: skcipher - disallow en/decrypt for non-task or non-softirq
+    context
+  crypto: arm64/gcm-aes-ce - add NEON yield support
+  arm64: fpsimd: run kernel mode NEON with softirqs disabled
+  crypto: arm64/gcm-aes-ce - remove non-SIMD fallback path
+
+ arch/arm64/crypto/ghash-ce-core.S  | 115 ++++++-----
+ arch/arm64/crypto/ghash-ce-glue.c  | 209 +++++---------------
+ arch/arm64/include/asm/assembler.h |  19 +-
+ arch/arm64/kernel/asm-offsets.c    |   2 +
+ arch/arm64/kernel/fpsimd.c         |   4 +-
+ crypto/aead.c                      |  10 +
+ crypto/skcipher.c                  |  10 +
+ 7 files changed, 155 insertions(+), 214 deletions(-)
+
 -- 
-~Randy
+2.17.1
 
