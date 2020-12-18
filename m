@@ -2,142 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC5232DE370
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 14:47:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBA9B2DE377
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 14:49:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726848AbgLRNqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 08:46:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726677AbgLRNqr (ORCPT
+        id S1727254AbgLRNsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 08:48:06 -0500
+Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:26015 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727074AbgLRNsF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 08:46:47 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F2BFC061285
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 05:46:07 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id t30so2251813wrb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 05:46:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Ka1x3IgXnDKEVbUNgJSUcPN8PzFVanlFrtTuT6E8rts=;
-        b=D86dpjGakhZl+5XAKRbJimghynE7rov8qUJl/t75gAK4y/Fp5ssvHO49HPwJtIaWW7
-         X0ZJnoyYSQEoJHAhiXySsnJJYjhmZB45KowbpkHybNPtkPHbDggsC/oXZOIjNV0OxfIP
-         JtLk8ioNSYQNcBqUgcvb8hGzTjMFok0Z5d20D9TGp+gj3yAWd0tBwAcawAEAoclM3CeV
-         hlVaCtzhQlhb3gLpgfbarf5Mch5uuBb3PuxZXm6+Qk42SmEjVCjqSdKkAl+v/+V8XpWa
-         kzHRKLbBkT4RUsGzpF0vZVjKR15UffhOdqNzvt5OEAGmcdsDkI4BoE2RGEi1CeWWnZHq
-         NPTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Ka1x3IgXnDKEVbUNgJSUcPN8PzFVanlFrtTuT6E8rts=;
-        b=kTdy7ZQnVYzRsqdcSu3zCFpXRQyPMYDNDZCjluapMHFa/fuHoiVC11PxBkZ6+xlIwg
-         DbDjdBwZSfyhfimLMRZA6gkOnNJdm5GnLKslCX/pXPfXRlXUxQFPKPVxuihAcp5A6X4O
-         S34qQWKTxaoO6efFsy4vwl0GHZVNeyfcYbkXA3lAkTMZ1vEraqoqzJPAgtnsUbtL6vt4
-         /46YEN9BkT47JhXhEzMvxv6/HTiFeoqpL8w9H1mspuDRFsbcBVIqbHorAnBB7MNnb8WH
-         7HBnHvutC68ty5PFjjoKhK4z442urt6+4WAnSuTIwOeW0jg1JrJX+UyQPpEhmm9jFmQJ
-         M9EA==
-X-Gm-Message-State: AOAM5333yx3eILTcTmkbGu3C+Zf4UGH77un/CxrQK9QFqVqmsZBr2joH
-        49uaZrKgJfhoZrsmn50AhFF3Uw==
-X-Google-Smtp-Source: ABdhPJzuzueQDnbBnCkvc22NOc11UsjLlpycV2v2yPaJ9/Pn3FrNYBjDBsPM3Sqix1VPGW3J6EwCWQ==
-X-Received: by 2002:a5d:52c1:: with SMTP id r1mr4590809wrv.255.1608299166077;
-        Fri, 18 Dec 2020 05:46:06 -0800 (PST)
-Received: from dell ([91.110.221.216])
-        by smtp.gmail.com with ESMTPSA id l1sm14124574wrq.64.2020.12.18.05.46.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Dec 2020 05:46:05 -0800 (PST)
-Date:   Fri, 18 Dec 2020 13:46:03 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        alsa-devel@alsa-project.org, Kiran Patil <kiran.patil@intel.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        David Miller <davem@davemloft.net>,
+        Fri, 18 Dec 2020 08:48:05 -0500
+Received: from [192.168.42.210] ([93.22.133.192])
+        by mwinf5d71 with ME
+        id 5pmF2400849DTe503pmFRW; Fri, 18 Dec 2020 14:46:20 +0100
+X-ME-Helo: [192.168.42.210]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 18 Dec 2020 14:46:20 +0100
+X-ME-IP: 93.22.133.192
+Subject: Re: [PATCH] mmc: sdhci-sprd: Fix some resource leaks in the remove
+ function
+To:     Orson Zhai <orsonzhai@gmail.com>
+Cc:     adrian.hunter@intel.com, Ulf Hansson <ulf.hansson@linaro.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Lyra Zhang <zhang.lyra@gmail.com>, linux-mmc@vger.kernel.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Parav Pandit <parav@mellanox.com>
-Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
-Message-ID: <20201218134603.GS207743@dell>
-References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
- <X8ogtmrm7tOzZo+N@kroah.com>
- <CAPcyv4iLG7V9JT34La5PYfyM9378acbLnkShx=6pOmpPK7yg3A@mail.gmail.com>
- <X8usiKhLCU3PGL9J@kroah.com>
- <20201217211937.GA3177478@piout.net>
- <X9xV+8Mujo4dhfU4@kroah.com>
- <20201218131709.GA5333@sirena.org.uk>
+        kernel-janitors@vger.kernel.org, billows.wu@unisoc.com,
+        Wu Hongtao <wuht06@gmail.com>
+References: <20201217204236.163446-1-christophe.jaillet@wanadoo.fr>
+ <CA+H2tpGkv0sPQ2e6OfUVuW2xFx-KSpZy_vYY3TG_9JBWvFZxAA@mail.gmail.com>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <83712f89-deb7-b266-8e8a-99f0df4c6782@wanadoo.fr>
+Date:   Fri, 18 Dec 2020 14:46:17 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <CA+H2tpGkv0sPQ2e6OfUVuW2xFx-KSpZy_vYY3TG_9JBWvFZxAA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201218131709.GA5333@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Dec 2020, Mark Brown wrote:
-
-> On Fri, Dec 18, 2020 at 08:10:51AM +0100, Greg KH wrote:
-> > On Thu, Dec 17, 2020 at 10:19:37PM +0100, Alexandre Belloni wrote:
+Le 17/12/2020 à 23:55, Orson Zhai a écrit :
+> + cc: Billows
 > 
-> > > There is something I don't get from the documentation and it is what is
-> > > this introducing that couldn't already be done using platform drivers
-> > > and platform devices?
+> Hi Christophe,
+> On Fri, Dec 18, 2020 at 4:50 AM Christophe JAILLET
+> <christophe.jaillet@wanadoo.fr> wrote:
+>>
+>> 'sdhci_remove_host()' and 'sdhci_pltfm_free()' should be used in place of
+>> 'mmc_remove_host()' and 'mmc_free_host()'.
+>>
+>> This avoids some resource leaks, is more in line with the error handling
+>> path of the probe function, and is more consistent with other drivers.
+>>
+>> Fixes: fb8bd90f83c4 ("mmc: sdhci-sprd: Add Spreadtrum's initial host controller")
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>> ---
+>> Other adjustment may be needed.
+>> I'm not sure at all of the 0 passed to 'sdhci_remove_host()'. Some drivers
+>> pass 0, some have some more complicated computation.
+>> ---
+>>   drivers/mmc/host/sdhci-sprd.c | 6 +++---
+>>   1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/mmc/host/sdhci-sprd.c b/drivers/mmc/host/sdhci-sprd.c
+>> index f85171edabeb..5dc36efff47f 100644
+>> --- a/drivers/mmc/host/sdhci-sprd.c
+>> +++ b/drivers/mmc/host/sdhci-sprd.c
+>> @@ -708,14 +708,14 @@ static int sdhci_sprd_remove(struct platform_device *pdev)
+>>   {
+>>          struct sdhci_host *host = platform_get_drvdata(pdev);
+>>          struct sdhci_sprd_host *sprd_host = TO_SPRD_HOST(host);
+>> -       struct mmc_host *mmc = host->mmc;
+>>
+>> -       mmc_remove_host(mmc);
+>> +       sdhci_remove_host(host, 0);
+>> +
+>>          clk_disable_unprepare(sprd_host->clk_sdio);
+>>          clk_disable_unprepare(sprd_host->clk_enable);
+>>          clk_disable_unprepare(sprd_host->clk_2x_enable);
+>>
+>> -       mmc_free_host(mmc);
+>> +       sdhci_pltfm_free(pdev);
 > 
-> > Because platform drivers and devices should ONLY be for actual platform
-> > devices.  Do NOT use that interface to fake up a non-platform device
-> > (i.e. something that is NOT connected to a cpu through a memory-mapped
-> > or direct-firmware interface).
+> I saw a lot of drivers also use mmc_free_host().
+> Do you have patches elsewhere to clean them?
 > 
-> > Do not abuse the platform code anymore than it currently is, it's bad
-> > enough what has been done to it over time, let's not make it any worse.
+
+As far as I can see, all drivers that use 'mmc_free_host' also use 
+'mmc_alloc_host'. (based on 5.10.1 and unless error)
+
+The only exception is 'sdhci-sprd.c'.
+
+So no, I don't plan any other clean-up.
+
+
+
+To spot it, I run one of my own cocci script which compare functions 
+called in the remove function and in the error handling path of the probe.
+
+So I caught this one because 'mmc_free_host' is used in the porbe and 
+'sdhci_pltfm_free' in the remove function.
+
+
+CJ
+
+> Thanks,
+> -Orson
 > 
-> I am not clear on why you're giving direct-firmware devices (which I
-> assume means things like ARM SCMI where we're talking directly to some
-> firmware?) a pass here but not for example a GPIO controlled devices.
-> If this is mainly about improving abstractions it seems like the
-> boundary here isn't great.  Or perhaps I'm just missing what
-> direct-firmware is supposed to mean?
+>>
+>>          return 0;
+>>   }
+>> --
+>> 2.27.0
+>>
 > 
-> In any case, to be clear part of what you're saying here is that all
-> I2C and SPI MFDs should be rewritten to use this new bus - I've just
-> copied Lee in again since he keeps getting missed from these threads.
-> As previously discussed this will need the auxilliary bus extending to
-> support at least interrupts and possibly also general resources.
 
-Thanks Mark.
-
-Not entirely sure why this needed an entirely new subsystem to handle
-non-MMIO Multi-Functional Devices (MFD).  Or why I was not approached
-by any of the developers during the process.
-
-Having 2 entirely separate subsystems where MFDs can now be registered
-sounds confusing and convoluted at best.  Why not simply extend actual
-MFD to be capable of registering non-pure platform devices via other
-means?  By doing so you keep things bound to a central location
-resulting in less chance of misuse.
-
-I turn away MFD implementation abuses all the time.  Seeing as the 2
-subsystems are totally disjoint, this just unwittingly opened up
-another back-channel opportunity for those abuses to make it into the
-mainline kernel.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
