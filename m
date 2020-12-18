@@ -2,84 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 852962DDF48
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 08:56:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E312DDF59
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 09:02:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732879AbgLRHzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 02:55:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732322AbgLRHzg (ORCPT
+        id S1732978AbgLRICJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 03:02:09 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:37748 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725298AbgLRICI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 02:55:36 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 879DDC0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 23:54:56 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id ga15so1878697ejb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 23:54:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GlSOutxcnfCnpQdRS/INoC9PGjfzxT8xh0q9X7xLImU=;
-        b=WESp/LVuEddoDp031yghvRr5ezOYqVnEnWkYtSkedOiry0aUZ/QkWuUaEx2y+pUdaP
-         da3AKB64dMb5TCAiKdP1jMH8W7ilcDj+6m8XS1rgN/keiHoUCosMXfE154Puuz1zVdk7
-         aYczcX9Ihc/Me44MMKXhAVMqNybhh3ppZFIl30jBs7HCh7aaf183g0X+NaXJe6lHtMsj
-         uOom9/e/pLb64DDNqOd4bjz+aqNkx9+aHlD/jBurn8bcHoeS3lygOOUsC9ouRhuq4DWt
-         PpaCIiwlOnGxAjWU05Q12P8PZoS4aase0lajlD3ErEAmsvnCol/WowZOjThRA4RTX0Pd
-         OgWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GlSOutxcnfCnpQdRS/INoC9PGjfzxT8xh0q9X7xLImU=;
-        b=XPf1MpX/2R4yFnEc6FynMAIzDbTBPSEpZzse7afr7/yorAQgrVIZ0o7hMPCVbR7+yY
-         8eK8rY+739TOCXBGngYYXxQpP04hjvLTIw8toH0Z328tkcwRLwDHbE5SI9sOaH8h8zcr
-         v0IoD4E390oZ2jEjdwh3M992uMUtqJZLgxbpeirkyVjoo+51h5ofAFVRuZlQV6rI1jXo
-         lkE/SWuSQlqSqtpHk/Nea41tpa20/SfkGMFzy9CoVkepsia3+Kh8GDOXev0q1lU7Tawf
-         +3d9/FOoTJEekh3hM68VgBzjSdzihuXyyJEKGgrK85kd6jRti0TDGcvkMP9j4YzJ3rcz
-         40ww==
-X-Gm-Message-State: AOAM533eV7YMqVGJONpKOrTrvfuQ4xCRhGwKj8qY0alpdkdb51QZ9jzO
-        EN/N6gmUfSnYmF9ndBkU0mT8AWxpYsIv0dVLa2EhSw==
-X-Google-Smtp-Source: ABdhPJx95FmF+WWZ0ANmUoY+SFO6NW+6z+DkqqwA9AtuCoduSQA+YnBINs8WXjsr9XhKY5E4YXU+gVJwpZjl0pjvMPw=
-X-Received: by 2002:a17:906:b745:: with SMTP id fx5mr2740918ejb.103.1608278093688;
- Thu, 17 Dec 2020 23:54:53 -0800 (PST)
+        Fri, 18 Dec 2020 03:02:08 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BI819MM074020;
+        Fri, 18 Dec 2020 02:01:09 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1608278469;
+        bh=xcTb8qYiKGxzuikMSclKbE3udkTmV/7/x9FE2GiyPCY=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=M6kmSKQhQqfl9YhUZn+PY7onXrKICFx16ivOSLZEzuUwQxoNPbe7/LhS3qT/Zf/NC
+         BFQDS48jCOjy0hf/NCOlfy135TosuJM4QUTjUlI7hz5gfIqfMvfUxcosZgSISs+M99
+         RxoLxSc6bxk4QMKcSYSPMz+zUgvRfYaBgmzUqxkc=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BI819jR071370
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 18 Dec 2020 02:01:09 -0600
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 18
+ Dec 2020 02:01:08 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 18 Dec 2020 02:01:08 -0600
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BI815GB029687;
+        Fri, 18 Dec 2020 02:01:06 -0600
+Subject: Re: [PATCH] dt-bindings: display: bridge: tc358768: Remove maintainer
+ information
+To:     Sam Ravnborg <sam@ravnborg.org>
+CC:     Rob Herring <robh@kernel.org>, <devicetree@vger.kernel.org>,
+        <jernej.skrabec@siol.net>, <narmstrong@baylibre.com>,
+        <airlied@linux.ie>, <jonas@kwiboo.se>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <a.hajda@samsung.com>, <robh+dt@kernel.org>,
+        <Laurent.pinchart@ideasonboard.com>
+References: <20201215124227.1872-1-peter.ujfalusi@ti.com>
+ <1608042367.307112.3775381.nullmailer@robh.at.kernel.org>
+ <90d45716-4f4e-7379-07fd-74eff793e498@ti.com>
+ <20201217172556.GA1339623@ravnborg.org>
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+Message-ID: <dfc9fe88-40c6-93c8-4c25-a0c977579ebf@ti.com>
+Date:   Fri, 18 Dec 2020 10:02:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-References: <1608219249-6297-1-git-send-email-loic.poulain@linaro.org> <20201217085847.413f2d53@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201217085847.413f2d53@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Loic Poulain <loic.poulain@linaro.org>
-Date:   Fri, 18 Dec 2020 09:01:30 +0100
-Message-ID: <CAMZdPi8f3=1Z2iMg03fBNe5bQBz+2VXHZLmf--z-AaPffanirw@mail.gmail.com>
-Subject: Re: [PATCH v2] net: mhi: Add raw IP mode support
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     David Miller <davem@davemloft.net>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201217172556.GA1339623@ravnborg.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jakub,
+Hi Sam,
 
-On Thu, 17 Dec 2020 at 17:58, Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Thu, 17 Dec 2020 16:34:09 +0100 Loic Poulain wrote:
-> > MHI net is protocol agnostic, the payload protocol depends on the modem
-> > configuration, which can be either RMNET (IP muxing and aggregation) or
-> > raw IP. This patch adds support for incomming IPv4/IPv6 packets, that
-> > was previously unconditionnaly reported as RMNET packets.
->
-> Now it sounds a lot more like an extension than a fix. Is the interface
-> usable without this change? If it is we should merge this into net-next
-> after the merge window.
+On 17/12/2020 19.25, Sam Ravnborg wrote:
+>>> dtschema/dtc warnings/errors:
+>>> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/bridge/toshiba,tc358768.yaml: 'maintainers' is a required property
+>>> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/bridge/toshiba,tc358768.yaml: ignoring, error in schema: 
+>>> warning: no schema found in file: ./Documentation/devicetree/bindings/display/bridge/toshiba,tc358768.yaml
+>>
+>> Right, so it is not that easy to not been able to maintain this... :o
+>>
+>> Who should be documented as maintainer?
+>> Andrzej, Neil, David or Daniel?
+> 
+> I have no problem being listed as maintainer despite my very limited
+> knowledge on the HW. So unless you end up volunteering then just
+> add me.
 
-Yes, without this change, interface is usable when modem is configured
-with RMNET protocol, it's an extension to raw ip support.
+thank you. it is not easy to give up on something one has spent time on,
+but without the hardware and manual it would be not right to just move
+it to my private email as I did for the DMA and Audio drivers:
 
->
-> Either way you need to cc netdev for this patch to get into patchwork.
+https://lore.kernel.org/lkml/20201215130512.8753-1-peter.ujfalusi@ti.com/
 
-I'll resubmit after the merge window.
+https://lore.kernel.org/lkml/20201215131348.11282-1-peter.ujfalusi@ti.com/
 
-Thanks,
-Loic
+I'll send v2 as may last patch from ti.com
+
+- Péter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
