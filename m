@@ -2,57 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5033D2DEA91
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 21:56:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E66272DEA9B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 21:56:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726308AbgLRUzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 15:55:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50738 "EHLO mail.kernel.org"
+        id S1726202AbgLRUzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 15:55:47 -0500
+Received: from leonov.paulk.fr ([185.233.101.22]:42878 "EHLO leonov.paulk.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725854AbgLRUzR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 15:55:17 -0500
-Subject: Re: [GIT PULL] xfs: new code for 5.11
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608324876;
-        bh=/EZMjwCMh/Ud9L/N29ElYrTIvm99/Kz8CeiNdOYCORw=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=B1UBmA+iCgeib63dlTpbpaRyqaGefMHvSuhTiLEdvfpVgOUlh6yYgzBVVWcNzyHeP
-         2K2p+cD9g07DTUsxQ7rwVCwT1gmJVIyYa6zATfQ0f58SV0Tra+jRQnrdnlff5y3UHN
-         +hdlKutCyu/arWbjp4ClpY6xB/TvMKhYO8kSQYC6s+z9ZlqzsdrsUzAX7o7BLjGjVj
-         S345w4LndTynEQsh3aDqGiFQMaspWPtzOe4OZaAtqlykno/TMiXNwtYJurZ+6yuq7K
-         FVNXlQdB0qTchM/y0dZX4OAjsO+2SNi21oL5cHet8a4gZ1eZ4LDT627HtAzIUV/MML
-         fd68TF63Dbdkg==
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201218171242.GH6918@magnolia>
-References: <20201218171242.GH6918@magnolia>
-X-PR-Tracked-List-Id: <linux-xfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201218171242.GH6918@magnolia>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.11-merge-4
-X-PR-Tracked-Commit-Id: e82226138b20d4f638426413e83c6b5db532c6a2
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a0b96314870f7eff6d15a242cb162dfc46b3c284
-Message-Id: <160832487637.19372.7448008445325982345.pr-tracker-bot@kernel.org>
-Date:   Fri, 18 Dec 2020 20:54:36 +0000
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        david@fromorbit.com, linux-kernel@vger.kernel.org,
-        sandeen@sandeen.net, hch@lst.de
+        id S1725775AbgLRUzq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 15:55:46 -0500
+Received: from gagarine.paulk.fr (gagarine [192.168.1.127])
+        by leonov.paulk.fr (Postfix) with ESMTPS id E5A6EBFDE9;
+        Fri, 18 Dec 2020 21:55:03 +0100 (CET)
+Received: by gagarine.paulk.fr (Postfix, from userid 114)
+        id 58D14C1D27; Fri, 18 Dec 2020 21:55:03 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on gagarine.paulk.fr
+X-Spam-Level: 
+X-Spam-Status: No, score=0.0 required=5.0 tests=none autolearn=unavailable
+        autolearn_force=no version=3.4.2
+Received: from localhost.localdomain (collins [192.168.1.129])
+        by gagarine.paulk.fr (Postfix) with ESMTP id 4F57AC1D23;
+        Fri, 18 Dec 2020 21:54:38 +0100 (CET)
+From:   Paul Kocialkowski <contact@paulk.fr>
+To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Paul Kocialkowski <contact@paulk.fr>
+Subject: [PATCH v2 2/2] ARM: dts: sun8i-v3s: Add PWM controller and pins definitions
+Date:   Fri, 18 Dec 2020 21:54:36 +0100
+Message-Id: <20201218205436.2326872-2-contact@paulk.fr>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201218205436.2326872-1-contact@paulk.fr>
+References: <20201218205436.2326872-1-contact@paulk.fr>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 18 Dec 2020 09:12:42 -0800:
+This introduces definitions for the PWM controller found in the V3s,
+as well as associated pins. This fashion of the controller has two PWM
+outputs and is register-compatible with the A20.
 
-> git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.11-merge-4
+Both PWM outputs were tested on a Lichee Pi Zero with a simple
+transistor-LED setup.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a0b96314870f7eff6d15a242cb162dfc46b3c284
+Signed-off-by: Paul Kocialkowski <contact@paulk.fr>
+---
+ arch/arm/boot/dts/sun8i-v3s.dtsi | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-Thank you!
-
+diff --git a/arch/arm/boot/dts/sun8i-v3s.dtsi b/arch/arm/boot/dts/sun8i-v3s.dtsi
+index bff822b9fa01..f02aa988156d 100644
+--- a/arch/arm/boot/dts/sun8i-v3s.dtsi
++++ b/arch/arm/boot/dts/sun8i-v3s.dtsi
+@@ -404,6 +404,16 @@ spi0_pins: spi0-pins {
+ 				pins = "PC0", "PC1", "PC2", "PC3";
+ 				function = "spi0";
+ 			};
++
++			pwm0_pin: pwm0-pin {
++				pins = "PB4";
++				function = "pwm0";
++			};
++
++			pwm1_pin: pwm1-pin {
++				pins = "PB5";
++				function = "pwm1";
++			};
+ 		};
+ 
+ 		timer@1c20c00 {
+@@ -422,6 +432,15 @@ wdt0: watchdog@1c20ca0 {
+ 			clocks = <&osc24M>;
+ 		};
+ 
++		pwm: pwm@1c21400 {
++			compatible = "allwinner,sun8i-v3s-pwm",
++				     "allwinner,sun7i-a20-pwm";
++			reg = <0x01c21400 0xc>;
++			clocks = <&osc24M>;
++			#pwm-cells = <3>;
++			status = "disabled";
++		};
++
+ 		lradc: lradc@1c22800 {
+ 			compatible = "allwinner,sun4i-a10-lradc-keys";
+ 			reg = <0x01c22800 0x400>;
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.29.2
+
