@@ -2,172 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F9562DE058
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 10:21:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AED562DE05C
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 10:23:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388963AbgLRJUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 04:20:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31141 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732777AbgLRJUO (ORCPT
+        id S2388978AbgLRJWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 04:22:51 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:34346 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726798AbgLRJWu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 04:20:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608283128;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ejcHzuD9fFPSUG7/hU65XXRSqtWaCKdWCMMhWat4xMU=;
-        b=iC6R/RP7TzoErWvZBPlF3P/T3jyt1ec09A5sGQEjgfEkP7hljYY0cB7vBPYpoJAQnQyw9Z
-        unbFtcKQurEWXtUHuaxnc+PQ63pD4w2GDdXZ5+5qGxPpg9JtFDJMXnJ3oHsQIuEQbiUBRx
-        r8K/FJxC8QSkScZqFCZoKv3YneaeeSs=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-181-b8GP4o6mOpSRRnhCDVOO0Q-1; Fri, 18 Dec 2020 04:18:46 -0500
-X-MC-Unique: b8GP4o6mOpSRRnhCDVOO0Q-1
-Received: by mail-ed1-f71.google.com with SMTP id y19so818746edw.16
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 01:18:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=ejcHzuD9fFPSUG7/hU65XXRSqtWaCKdWCMMhWat4xMU=;
-        b=eIX0FyZm25/0iROi+7p77dEe/C2DOSySI8g7zM5XH8u9n535yuF0SRbGIS0y0R3sBQ
-         f0ZaMqw5zqKxEjylHJS/S3dxr2fbmW/bsdfGPG0Mw+piPhHlSdugIrOi6WblRX8ePao7
-         hFc36lnHe8x+NQJvmXDcUUEqvt1iSw65zqNRuPgMmRHcR4JyDiisoTbjH3O8JllNGGfz
-         i2zdXoiNKxK7LgN/XJg6MKECepYJ4zed/K5AoB9lcYK4CkIjt2e8Ekpiaqxw+dcRtIFS
-         hUZZjXhCVXHTeciTBcxtXEWQR0V9ULuos72ja1rCVnQ32cA1iXiUSDsm9rbwhPwAXT3H
-         PytQ==
-X-Gm-Message-State: AOAM530+AFtx3wFaXhrUQSg7is2yhwuyLE8Llu1i59GknUrh/P9oP2dW
-        BpOTqiqdfZsH56rsekMcb82KT6G3O2vmT8kcp8Kc9PKHf5QkQ4rLh2rm+InK4TDQY9G7WxFInKz
-        +OmvV3hnXSoSgd3cVHy4nhqhz
-X-Received: by 2002:a17:906:cc9c:: with SMTP id oq28mr3078134ejb.224.1608283125341;
-        Fri, 18 Dec 2020 01:18:45 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzRlPQTAZK6n6UAHdwvwvC4SS1JkxSjJMpsyMSplOZqd1Lw14LdiOywycWCjjf7X9vdO2EVfA==
-X-Received: by 2002:a17:906:cc9c:: with SMTP id oq28mr3078122ejb.224.1608283125176;
-        Fri, 18 Dec 2020 01:18:45 -0800 (PST)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id cf17sm24352748edb.16.2020.12.18.01.18.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Dec 2020 01:18:44 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
-        Richard Herbert <rherbert@sympatico.ca>
-Subject: Re: [PATCH 3/4] KVM: x86/mmu: Use raw level to index into MMIO
- walks' sptes array
-In-Reply-To: <20201218003139.2167891-4-seanjc@google.com>
-References: <20201218003139.2167891-1-seanjc@google.com>
- <20201218003139.2167891-4-seanjc@google.com>
-Date:   Fri, 18 Dec 2020 10:18:43 +0100
-Message-ID: <87o8irtqto.fsf@vitty.brq.redhat.com>
+        Fri, 18 Dec 2020 04:22:50 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BI9LAP1008846;
+        Fri, 18 Dec 2020 03:21:10 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1608283270;
+        bh=JEhxrJdzKkqBCohlls58hFvXO71eHtV3nMjA4ot8kec=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=TNkE43jsNjtIWDE7xi/763JHr1wjk9kawqnaGaQIvGzKSyREyM3WQ4UrxomrAvJUj
+         RQKx5Tywu+JOqKRymxnfTSPqhsdGu7GQ+SQzs21KtND4Lnr1I2APZSUUborrJL5lK4
+         OJ8M+yrBEfwEVfUeJNm6xzOwSsENlgoQd9Go7rcE=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BI9LAb9021593
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 18 Dec 2020 03:21:10 -0600
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 18
+ Dec 2020 03:21:09 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 18 Dec 2020 03:21:09 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BI9L9Iu079866;
+        Fri, 18 Dec 2020 03:21:09 -0600
+Date:   Fri, 18 Dec 2020 14:51:08 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>
+CC:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <broonie@kernel.org>, <robh+dt@kernel.org>, <lukas@wunner.de>,
+        <bbrezillon@kernel.org>, <tudor.ambarus@microchip.com>,
+        <linux-spi@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v4 5/9] spi: spi-mem: Mark dummy transfers by setting
+ dummy_data bit
+Message-ID: <20201218092106.skwej2g6bk3oksbb@ti.com>
+References: <1608236927-28701-1-git-send-email-skomatineni@nvidia.com>
+ <1608236927-28701-6-git-send-email-skomatineni@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1608236927-28701-6-git-send-email-skomatineni@nvidia.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> writes:
+Hi Sowjanya,
 
-> Bump the size of the sptes array by one and use the raw level of the
-> SPTE to index into the sptes array.  Using the SPTE level directly
-> improves readability by eliminating the need to reason out why the level
-> is being adjusted when indexing the array.  The array is on the stack
-> and is not explicitly initialized; bumping its size is nothing more than
-> a superficial adjustment to the stack frame.
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+On 17/12/20 12:28PM, Sowjanya Komatineni wrote:
+> This patch marks dummy transfer by setting dummy_data bit to 1.
+> 
+> Controllers supporting dummy transfer by hardware use this bit field
+> to skip software transfer of dummy bytes and use hardware dummy bytes
+> transfer.
+
+What is the benefit you get from this change? You add complexity in 
+spi-mem and the controller driver, so that must come with some benefits. 
+Here I don't see any. The transfer will certainly take the same amount 
+of time because the number or period of the dummy cycles has not 
+changed. So why is this needed?
+ 
+> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
 > ---
->  arch/x86/kvm/mmu/mmu.c     | 15 +++++++--------
->  arch/x86/kvm/mmu/tdp_mmu.c |  2 +-
->  2 files changed, 8 insertions(+), 9 deletions(-)
->
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 52f36c879086..4798a4472066 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -3500,7 +3500,7 @@ static int get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes, int *root_level
->  		leaf = iterator.level;
->  		spte = mmu_spte_get_lockless(iterator.sptep);
+>  drivers/spi/spi-mem.c   | 1 +
+>  include/linux/spi/spi.h | 2 ++
+>  2 files changed, 3 insertions(+)
+> 
+> diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+> index f3a3f19..c64371c 100644
+> --- a/drivers/spi/spi-mem.c
+> +++ b/drivers/spi/spi-mem.c
+> @@ -354,6 +354,7 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+>  		xfers[xferpos].tx_buf = tmpbuf + op->addr.nbytes + 1;
+>  		xfers[xferpos].len = op->dummy.nbytes;
+>  		xfers[xferpos].tx_nbits = op->dummy.buswidth;
+> +		xfers[xferpos].dummy_data = 1;
+>  		spi_message_add_tail(&xfers[xferpos], &msg);
+>  		xferpos++;
+>  		totalxferlen += op->dummy.nbytes;
+> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+> index aa09fdc..708f2f5 100644
+> --- a/include/linux/spi/spi.h
+> +++ b/include/linux/spi/spi.h
+> @@ -827,6 +827,7 @@ extern void spi_res_release(struct spi_controller *ctlr,
+>   *      transfer. If 0 the default (from @spi_device) is used.
+>   * @bits_per_word: select a bits_per_word other than the device default
+>   *      for this transfer. If 0 the default (from @spi_device) is used.
+> + * @dummy_data: indicates transfer is dummy bytes transfer.
+>   * @cs_change: affects chipselect after this transfer completes
+>   * @cs_change_delay: delay between cs deassert and assert when
+>   *      @cs_change is set and @spi_transfer is not the last in @spi_message
+> @@ -939,6 +940,7 @@ struct spi_transfer {
+>  	struct sg_table tx_sg;
+>  	struct sg_table rx_sg;
 >  
-> -		sptes[leaf - 1] = spte;
-> +		sptes[leaf] = spte;
->  
->  		if (!is_shadow_present_pte(spte))
->  			break;
-> @@ -3514,7 +3514,7 @@ static int get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes, int *root_level
->  /* return true if reserved bit is detected on spte. */
->  static bool get_mmio_spte(struct kvm_vcpu *vcpu, u64 addr, u64 *sptep)
->  {
-> -	u64 sptes[PT64_ROOT_MAX_LEVEL];
-> +	u64 sptes[PT64_ROOT_MAX_LEVEL + 1];
->  	struct rsvd_bits_validate *rsvd_check;
->  	int root, leaf, level;
->  	bool reserved = false;
-> @@ -3537,16 +3537,15 @@ static bool get_mmio_spte(struct kvm_vcpu *vcpu, u64 addr, u64 *sptep)
->  	rsvd_check = &vcpu->arch.mmu->shadow_zero_check;
->  
->  	for (level = root; level >= leaf; level--) {
-> -		if (!is_shadow_present_pte(sptes[level - 1]))
-> +		if (!is_shadow_present_pte(sptes[level]))
->  			break;
->  		/*
->  		 * Use a bitwise-OR instead of a logical-OR to aggregate the
->  		 * reserved bit and EPT's invalid memtype/XWR checks to avoid
->  		 * adding a Jcc in the loop.
->  		 */
-> -		reserved |= __is_bad_mt_xwr(rsvd_check, sptes[level - 1]) |
-> -			    __is_rsvd_bits_set(rsvd_check, sptes[level - 1],
-> -					       level);
-> +		reserved |= __is_bad_mt_xwr(rsvd_check, sptes[level]) |
-> +			    __is_rsvd_bits_set(rsvd_check, sptes[level], level);
->  	}
->  
->  	if (reserved) {
-> @@ -3554,10 +3553,10 @@ static bool get_mmio_spte(struct kvm_vcpu *vcpu, u64 addr, u64 *sptep)
->  		       __func__, addr);
->  		for (level = root; level >= leaf; level--)
->  			pr_err("------ spte 0x%llx level %d.\n",
-> -			       sptes[level - 1], level);
-> +			       sptes[level], level);
->  	}
->  
-> -	*sptep = sptes[leaf - 1];
-> +	*sptep = sptes[leaf];
->  
->  	return reserved;
->  }
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index a4f9447f8327..efef571806ad 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -1160,7 +1160,7 @@ int kvm_tdp_mmu_get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes,
->  
->  	tdp_mmu_for_each_pte(iter, mmu, gfn, gfn + 1) {
->  		leaf = iter.level;
-> -		sptes[leaf - 1] = iter.old_spte;
-> +		sptes[leaf] = iter.old_spte;
->  	}
->  
->  	return leaf;
-
-An alretnitive solution would've been to reverse the array and fill it
-like
-
- sptes[PT64_ROOT_MAX_LEVEL - leaf] = iter.old_spte;
-
-but this may not reach the goal of 'improved readability' :-)
-
-Also, we may add an MMU_DEBUG ifdef-ed check that sptes[0] remains
-intact.
-
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> +	unsigned	dummy_data:1;
+>  	unsigned	cs_change:1;
+>  	unsigned	tx_nbits:3;
+>  	unsigned	rx_nbits:3;
+> -- 
+> 2.7.4
+> 
 
 -- 
-Vitaly
-
+Regards,
+Pratyush Yadav
+Texas Instruments India
