@@ -2,81 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B49442DEA06
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 21:14:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 422732DEA0D
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 21:17:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387406AbgLRUOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 15:14:35 -0500
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:44009 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726697AbgLRUOe (ORCPT
+        id S2387434AbgLRUOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 15:14:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727626AbgLRUOv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 15:14:34 -0500
-Received: by mail-ot1-f51.google.com with SMTP id q25so3068238otn.10;
-        Fri, 18 Dec 2020 12:14:19 -0800 (PST)
+        Fri, 18 Dec 2020 15:14:51 -0500
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88420C06138C
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 12:14:11 -0800 (PST)
+Received: by mail-qv1-xf2e.google.com with SMTP id bd6so1496882qvb.9
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 12:14:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+6dOcXCZmIRThv69enwRAoT3Ssvc0OhfvILN9vdlg4o=;
+        b=jHvWhOqW9gjdg6bCt0oq8HPNAPiqjsnvVkc2ZUdCGpEZNIdSLT+GDPCECJElwUYAxA
+         Y1pIExXfv/DBr7VTF+bFuxD1/qc48sp4jjZGVoGH32YbTQAwsodVlyqEal+TFhSvUReR
+         bQH7LL5BN51mLTZ7XWLywXYOanGqutzAK76tB+8PuUq+RbgeAnOhwHP+K4O7eHiCyJ6Z
+         PbkZyuovTuop9ttweKxiab8tuHcdQfnii8DrxMLWuGsSk2o7ieWZHMk1nqidqmHDP5kd
+         mRvodxQKAx0bRwGOtG28y4RrryymGsGvvkNhr00Frg6N6/bpTYHvKS3sn6joFWSellTo
+         IV4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=g3RrY/5H2pNsMpu6ivf90VzQI9V5J/8AaKgeKCK7dbQ=;
-        b=YSQhqZ9YIDghOHfmWxXYxWXQwdbV2rdkCFx3AqQSnqnm+d7yBrbWmSNp14vFgnC+Ab
-         GZ1USHiviPy8j7Ots2wvKplRaWpa5KrM1rEgFgw4AnIdT0zFm90AutXtLUwKp/WgDd6y
-         PnKJhHQLxCV7w7sKfjYV2eEZOoCUfF6u0cw+DjlTSM3TSEJLac+km/RmGTq4GqdXxmHm
-         NbxqEuLE6gItIuVmq8CORD3qs6R56BUnUV9Sr6hKvlFWAIUh/ELVhwLFMBeEwSwnF7jP
-         81NQS7sJqyaoiVL1Zc47bP47Tn0uioIpOF+jMRoWF5jcbB3roX82yd7uO7EFdtsk6TN1
-         RhpA==
-X-Gm-Message-State: AOAM533OBslp2BtE/9wkA40NYXrqCOc/sRV2XLb1TzMoVYxO1fPpeCib
-        puYXRFZSSI8/xQ+4LuIILA==
-X-Google-Smtp-Source: ABdhPJyWxEs+KjRXMhcvoXJully+6tpRF+3fCMbOaLUN5jp5Oj0gdCDCFzDQrDoc79eGUooarLmJPQ==
-X-Received: by 2002:a9d:46f:: with SMTP id 102mr4185215otc.293.1608322433172;
-        Fri, 18 Dec 2020 12:13:53 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id u76sm451886oia.48.2020.12.18.12.13.51
+        bh=+6dOcXCZmIRThv69enwRAoT3Ssvc0OhfvILN9vdlg4o=;
+        b=tK35RzgM++eE/J9OECWFtB/j+761Rvz42Xsu7ERHV7q6vEh6xDfYMdFDxcqar0qNF2
+         fen6vvWEB2RW6+d5qmpU16p+zotExA67gn4JdWOR/IudrJsZunk3HooyDvMTnSwuIyFN
+         9BytNONQAOsX2Egi5I6YKH6S/kBpnlJiXABTlEDujvTWJENCx3vxwvNi8PwCv/kTJD14
+         eQX0Pnq6nLKmGR//ojfYdhEbZKBIu2c3ADSJxQOsudPwJ2CMrbxCwaSGt8bGTW1pd9am
+         aTof8fPtIrjhTwh2kAFZHsF+DvrfqxUIlR0eEGolDaFdSIGsGilwySN5wnNHEcAdSIvX
+         iW0g==
+X-Gm-Message-State: AOAM530l8Dxn62SvSpiDWO8z5eP1BkZ1iAXV2ZdfmNfhm8PAAaRY+pqy
+        ksQy7VKyTEPENxjoA1OZLPqOgw==
+X-Google-Smtp-Source: ABdhPJz7x65BC/4X9IrtWfhOoatGUO93t2Fz3LqYQnC1yk/9wcYLKCu/MCpGx2+lmEtdYxTq7GxBsw==
+X-Received: by 2002:a05:6214:15c1:: with SMTP id p1mr6432035qvz.8.1608322450319;
+        Fri, 18 Dec 2020 12:14:10 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id p15sm6479556qke.11.2020.12.18.12.14.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Dec 2020 12:13:52 -0800 (PST)
-Received: (nullmailer pid 2092213 invoked by uid 1000);
-        Fri, 18 Dec 2020 20:13:50 -0000
-Date:   Fri, 18 Dec 2020 14:13:50 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Fabio Estevam <festevam@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] dt-bindings: clock: imx8qxp-lpcg: eliminate yamllint
- warnings
-Message-ID: <20201218201350.GA2089699@robh.at.kernel.org>
-References: <20201207045527.1607-1-thunder.leizhen@huawei.com>
- <20201207045527.1607-2-thunder.leizhen@huawei.com>
- <160820093389.1580929.3915867007740168331@swboyd.mtv.corp.google.com>
+        Fri, 18 Dec 2020 12:14:09 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kqM8e-00CtcB-SK; Fri, 18 Dec 2020 16:14:08 -0400
+Date:   Fri, 18 Dec 2020 16:14:08 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        alsa-devel@alsa-project.org, Kiran Patil <kiran.patil@intel.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        David Miller <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Parav Pandit <parav@mellanox.com>
+Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
+Message-ID: <20201218201408.GP5487@ziepe.ca>
+References: <X8usiKhLCU3PGL9J@kroah.com>
+ <20201217211937.GA3177478@piout.net>
+ <X9xV+8Mujo4dhfU4@kroah.com>
+ <20201218131709.GA5333@sirena.org.uk>
+ <20201218140854.GW552508@nvidia.com>
+ <20201218155204.GC5333@sirena.org.uk>
+ <20201218162817.GX552508@nvidia.com>
+ <20201218180310.GD5333@sirena.org.uk>
+ <20201218184150.GY552508@nvidia.com>
+ <20201218190911.GT207743@dell>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <160820093389.1580929.3915867007740168331@swboyd.mtv.corp.google.com>
+In-Reply-To: <20201218190911.GT207743@dell>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 02:28:53AM -0800, Stephen Boyd wrote:
-> Quoting Zhen Lei (2020-12-06 20:55:27)
-> > Eliminate the following yamllint warnings:
-> > ./Documentation/devicetree/bindings/clock/imx8qxp-lpcg.yaml
-> > :32:13:[warning] wrong indentation: expected 14 but found 12 (indentation)
-> > :35:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
-> > 
-> > Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> > ---
-> 
-> Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+On Fri, Dec 18, 2020 at 07:09:11PM +0000, Lee Jones wrote:
 
-If I tagged it, I was expecting you to pick up. But I'm gathering up all 
-the fixes for what landed in Linus' tree, so I'll apply.
+> ACPI, DT and MFD are not busses.  
 
-Rob
+And yet ACPI and PNP have a bus:
+  extern struct bus_type acpi_bus_type;
+  extern struct bus_type pnp_bus_type;
+
+Why? Because in the driver core if you subclass struct device and want
+to bind drivers, as both PNP and ACPI do, you must place those devices
+on a bus with a bus_type matching the device type. Thus subclassing
+the device means subclassing the bus as well.
+
+The purpose of the bus_type is to match drivers to devices and provide
+methods to the driver core. The bus_type also defines the unique name
+space of the device names.
+
+It is confusing because the word bus immediately makes people think of
+physical objects like I2C, PCI, etc, but that is not what bus_type
+does in the object model of the driver core, IMHO.
+
+So, if you subclass struct device for MFD's usage, then you must also
+create a bus_type to handle driver binding. The MFD bus_type. Just
+like auxillary does.
+
+Making a mfd subclass is the logical thing for a subsystem to do,
+co-opting another subsystem's bus_type is just really weird/abusive.
+
+auxillary bus shows how all these parts work, and it is simple enough
+to see the pieces clearly.
+
+Jason
