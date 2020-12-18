@@ -2,511 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBA142DE79E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 17:49:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A66572DE7A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 17:50:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730084AbgLRQsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 11:48:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725803AbgLRQsn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 11:48:43 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F6B5C0617A7
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 08:48:02 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id r3so2922580wrt.2
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 08:48:02 -0800 (PST)
+        id S1731672AbgLRQui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 11:50:38 -0500
+Received: from mail-vi1eur05on2052.outbound.protection.outlook.com ([40.107.21.52]:53793
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726708AbgLRQuh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 11:50:37 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Be8QZlEZLMldIAAU5O+pKpBNSckkW+QN4hKo23nmV7YAHw1x0tj3sRhPO13mo6pMbDqjHgRqbkhc3hWSNZmKaYXi9MaMsAFrHofRNkJVSiO9Gx5qZ02dfAtRDChzVvjMYMwVOsWo5X+/76STSRlMaDeHP3eulbPnxbROwKt1A1bs36Lf6QV70pDPMlK4TpYPhEad8gitxsz0Q4PZq6Nyh+JV4i3hzU81cXjAiVpitxjGqf7JsFTKtgRG1GQHOGQOzjJAcdCkMUKSIicxObZNyLffgt2L8gq2b3nuvaGkxeM5NBLG313UlfeF96x1ciFtuaKUCVzRSyKA6xxvRzDBBA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nIJ3rekNko5yDVHyvfeaztY9wQVKHpFCAchsBBQ1RgI=;
+ b=GIBFQRRco9J82SlJj+4vddZGQBIJLMHwTShv5eQUcEBTZELuF9RXn2wVaPocE6T/MfXrCsTWLkPfyQlhMCHEdiLoqSvZkRsz2mBY6rW5Ex3mSzqGea4i8TsDdP2SewvxReSX/owdyusJXalzEQ8DLWtl6g/UmJjcsP6AXOT/VVHG6YPcgf9ZV7SqUQiGRV/QINXaeIa37mSxCsod0EKU7z1t0FUWhpwnMuuOWsG3KaI7TQGcI5SZ2N5lClYMbwtngekj2dR5gwvlgUStZHivkfL0YdkDhsjkBb3Ob4yc9rPSgk24eih9i80KGtbPVcmC/vJSCUdQw8J+UFeycZOOGg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=diasemi.com; dmarc=pass action=none header.from=diasemi.com;
+ dkim=pass header.d=diasemi.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=bnEQw/aYrr7VNZqvVLf6g/s3MGtwQiwUxlyILhcpr3c=;
-        b=fP9mY7r7X+jUcxGGzV80Xk2Oooyg0QVGqIsYdLKSFzC0/MZ9SWuxEQslTntRDMih3L
-         +AP2jlMiZ3OXkqrgwPxNimxxDb4b4HlMOFZ1beEUKpYTFQNmDF+syc3RiOmgXIvp/5oF
-         TML714tciIwDv6pEtWjIuXoaZKHt+DCkTP1u8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=bnEQw/aYrr7VNZqvVLf6g/s3MGtwQiwUxlyILhcpr3c=;
-        b=W5dwfiy9rC+hDwTK3q/fnt98TtDrjhnuiOw9ZmUvAwy0jEc1EvugY11wmuaAg7Wu6r
-         lGngoVrCK4DzBDEUMOWc8UM2vio7qXcDV9RChbrsrSCPSx0YUwmHVoVDzl5XYXeFqmsz
-         c9UQMwoFOftPmwNZFpm4zRFU7avyE5sN4ZesZrg3I5n8HASCZuywkGojLzXZRIclMyk6
-         q6fZ72J6w06uXInOvseVg0vR3p8n0HDfFnZmHBhFqqYntxNASna8o0IGnZqn17z179Ki
-         /caobSl698CZEG4MkSRs11orKyX3F9QBJi3XoboSS26D0M6Lf3zHh9GW2eQByyyoJZGu
-         xqxA==
-X-Gm-Message-State: AOAM5300cffI04UTBZsyMBE1olOLWTJ3XJD8BK8izv1iNa8Cz680257R
-        pbsKLfNnuTswL1DJRiqTy3Y3UQ==
-X-Google-Smtp-Source: ABdhPJzzowBIJfYzEjswi999hasqC8m6AvbxF3E90aEsN0Wt4tB7TO//uC40oFCE5q39zb5r16jlmA==
-X-Received: by 2002:a5d:504b:: with SMTP id h11mr5392472wrt.337.1608310081326;
-        Fri, 18 Dec 2020 08:48:01 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id f14sm11882659wme.14.2020.12.18.08.48.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Dec 2020 08:48:00 -0800 (PST)
-Date:   Fri, 18 Dec 2020 17:47:53 +0100
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Dave Airlie <airlied@gmail.com>, Linux MM <linux-mm@kvack.org>
-Subject: [PULL] drm-next, part 2 + fixes
-Message-ID: <X9zdOXnqo6hzR5wu@phenom.ffwll.local>
-Mail-Followup-To: Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Dave Airlie <airlied@gmail.com>, Linux MM <linux-mm@kvack.org>
+ d=dialogsemiconductor.onmicrosoft.com;
+ s=selector1-dialogsemiconductor-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nIJ3rekNko5yDVHyvfeaztY9wQVKHpFCAchsBBQ1RgI=;
+ b=0aS+KEKXonux+551VjPet7PakohjoynVLMiO4p6im4c3ZFPZSOrGkWJOCCZ7YT5OvR0em45ERXtaAecRUDDDXde3sGdCjYxp86que4ru8ihCnnHbLqWh5+4Ysw6z08VBWLHPGeJsisa/4MegKnTIKrMB5kEXJWB8o8IKL46ipwM=
+Received: from AM6PR10MB1926.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:209:35::12)
+ by AM6PR10MB2984.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:e5::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Fri, 18 Dec
+ 2020 16:49:48 +0000
+Received: from AM6PR10MB1926.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::8805:7516:b929:e052]) by AM6PR10MB1926.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::8805:7516:b929:e052%7]) with mapi id 15.20.3654.026; Fri, 18 Dec 2020
+ 16:49:48 +0000
+From:   Roy Im <roy.im.opensource@diasemi.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>
+CC:     Roy Im <roy.im.opensource@diasemi.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] Input: da7280 - protect OF match table with CONFIG_OF
+Thread-Topic: [PATCH] Input: da7280 - protect OF match table with CONFIG_OF
+Thread-Index: AQHW1QoRSbw/Sew23UOcP0mEXBFrv6n9EGgA
+Date:   Fri, 18 Dec 2020 16:49:48 +0000
+Message-ID: <AM6PR10MB1926A5AB8951B4DE62A96EE385C30@AM6PR10MB1926.EURPRD10.PROD.OUTLOOK.COM>
+References: <X9xRLVPt9eBi0CT6@google.com>
+In-Reply-To: <X9xRLVPt9eBi0CT6@google.com>
+Accept-Language: ko-KR, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=diasemi.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [1.234.57.63]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: aaed37c5-90bb-4e88-609a-08d8a374ee53
+x-ms-traffictypediagnostic: AM6PR10MB2984:
+x-ms-exchange-sharedmailbox-routingagent-processed: True
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM6PR10MB2984D7AC90C4E93D42CC8D01A2C30@AM6PR10MB2984.EURPRD10.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:243;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: uj6VnUx2FrLaFGqqLjGFx/1vkad05w0TMD/4saVIb6E/vl1TUPTKbJqnfu2L+//xtNY4DKyNYz7sFvOVdkHwhnmVS/x0OtCBRvU9OcbkCA9wKFeWr4M6PSa1wBI7EfyCMsmyisb/4223FKaITTA/TyHryf1TQsizL26tr0hAIjdoACB8AF5U3Av7F0eHWEHEvzkiG1vEnuJ5glr7tJRRnJfgRdwaCnibOXOgfTe400Y8eAVoYbcYHkwmEhKGP5lcDpXNxeuE5c3JdktXUDq+HtMA0rgNd107+ARP3S1f4FJvUMvExJO3ZQ8GIvF2kM6IXXumIIRuijKosjOCvM25aw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR10MB1926.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(346002)(39850400004)(376002)(136003)(396003)(366004)(33656002)(26005)(66476007)(7696005)(316002)(71200400001)(110136005)(2906002)(64756008)(8936002)(66946007)(55016002)(54906003)(5660300002)(66446008)(66556008)(8676002)(86362001)(186003)(9686003)(6506007)(52536014)(4744005)(53546011)(4326008)(76116006)(478600001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: uodTL+mtN3ID5cnqdcORWRKM702jFHfOHFNQmUZ0fJ3P8Z75v28uboH/y2LIt0ODBTNuCmN2tiEDiIaLdeAOp/BOXxRvyPOfy8jtC/4ZIUjejQJFLD+Ik/21MBx+Hh1esIh+My0V5+a+l9/6ovYOWcc5mfIBpLoYImut4RfNPKBai4YiPIGcQ/M0uVPsOyAoWcqSWa+uzzkxmk6j0jkpIZh7alUG7n3Okb2QFfOKUwLm/86BkfDvmovRQVAdqtz4kwKAyP7ZpoZZ6Jho2QPp8CE6sToQdHQ0BiMqHCcd5VvDxWXUyyFys1Xpx7cET+a7yGz7wueVGHgMGG9tXLM+wuAaKQgAgmVcFCyPIgFhxU84QgOk+uaGyZWA5IxEFJpuUN4A0J5wB2SEdZtrpVLTpaaBdB9I3H8bhOSP8X1OkEkk2E2uOKFBrU4L9xxBTktBY0ZXjYzx0IVinry0J6wuD5wOXq0KtH81vswHR8J2rqmw4pxtZm/d7RuEt9LroPZIzIe5ePvZZjuIZpUwB6Upz9ccf1vKFxvrS7SUvQo4mv8S+mCZlrntKqIq/S9wx1l8LeUj+fahn1HF29c/IS6IXSVxYzCAq9Qy9RSsNIJf9q0Hr0DzkasP/DkADehVb4l9J9xpJ2Ta5hHXkbm8hTNEnLXBxcAUqgEb/rh3Wwz29vZCg0/Iccmfrx2P2dA5cckHtUgvEedSfN6X1mQuBb+ZdYpbHfnAmlADeeK20j4gY0E=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+X-OriginatorOrg: diasemi.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR10MB1926.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: aaed37c5-90bb-4e88-609a-08d8a374ee53
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Dec 2020 16:49:48.1621
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Zo9AJTOQIkbNPCUz11/7nTGVqYpJ11qXe28xKYQnpYIIBUSPR7xKzA/mLer2ITshZjY6cpHJSYOqxx87hfOYVA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR10MB2984
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Friday, December 18, 2020 3:50 PM, Dmitry Torokhov wrote:
+
+> The OF match table is only used when OF is enabled.
+>=20
+> Fixes: cd3f609823a5 ("Input: new da7280 haptic driver")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> ---
+>  drivers/input/misc/da7280.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/drivers/input/misc/da7280.c b/drivers/input/misc/da7280.c in=
+dex 2f698a8c1d65..b08610d6e575 100644
+> --- a/drivers/input/misc/da7280.c
+> +++ b/drivers/input/misc/da7280.c
+> @@ -1300,11 +1300,13 @@ static int __maybe_unused da7280_resume(struct de=
+vice *dev)
+>  	return retval;
+>  }
+>=20
+> +#ifdef CONFIG_OF
+>  static const struct of_device_id da7280_of_match[] =3D {
+>  	{ .compatible =3D "dlg,da7280", },
+>  	{ }
+>  };
+>  MODULE_DEVICE_TABLE(of, da7280_of_match);
+> +#endif
+>=20
+>  static const struct i2c_device_id da7280_i2c_id[] =3D {
+>  	{ "da7280", },
+> --
+> 2.29.2.729.g45daf8777d-goog
+>=20
+>=20
+> --
+> Dmitry
+
+Thanks!
+
+Acked-by: Roy Im <roy.im.opensource@diasemi.com>
 
-Merge window -fixes pull, but bigger: We've somehow missed one subtree
-pull (which also contained the amdgpu multihop fix you cherry-pick, oops).
-But that pull was pending for almost 3 weeks on the list and most of it
-for even longer in linux-next, so really not seeing a reason why it should
-be delayed. It contains vma_set_file helper, acked by Andrew and reviewed
-by other mm folks, and a few other smaller things. Otherwise this is all
-fixes, overview below&in the tag.
-
-Dave's back next week, there's some minor things in-flight, you'll get a
-nice Christmas pull before -rc1 I think. I'll be around until Tue next
-week still.
-
-Cheers, Daniel
-
-PS: I remembered my pgp passphrase, somewhat shocking :-)
-
-drm-next-2020-12-18:
-UAPI Changes:
-
-- Only enable char/agp uapi when CONFIG_DRM_LEGACY is set
-
-Cross-subsystem Changes:
-
-- vma_set_file helper to make vma->vm_file changing less brittle,
-  acked by Andrew
-
-Core Changes:
-
-- dma-buf heaps improvements
-- pass full atomic modeset state to driver callbacks
-- shmem helpers: cached bo by default
-- cleanups for fbdev, fb-helpers
-- better docs for drm modes and SCALING_FITLER uapi
-- ttm: fix dma32 page pool regression
-
-Driver Changes:
-
-- multi-hop regression fixes for amdgpu, radeon, nouveau
-- lots of small amdgpu hw enabling fixes (display, pm, ...)
-- fixes for imx, mcde, meson, some panels, virtio, qxl, i915, all
-  fairly minor
-- some cleanups for legacy drm/fbdev drivers
-
-Cheers, Daniel
-
-The following changes since commit 1d36dffa5d887715dacca0f717f4519b7be5e498:
-
-  Merge tag 'drm-next-2020-12-11' of git://anongit.freedesktop.org/drm/drm (2020-12-14 11:07:56 -0800)
-
-are available in the Git repository at:
-
-  git://anongit.freedesktop.org/drm/drm tags/drm-next-2020-12-18
-
-for you to fetch changes up to 4efd7faba5e0687ae9143b7e6a19547ede20a7dd:
-
-  Merge tag 'drm-intel-next-fixes-2020-12-18' of git://anongit.freedesktop.org/drm/drm-intel into drm-next (2020-12-18 16:22:10 +0100)
-
-----------------------------------------------------------------
-UAPI Changes:
-
-- Only enable char/agp uapi when CONFIG_DRM_LEGACY is set
-
-Cross-subsystem Changes:
-
-- vma_set_file helper to make vma->vm_file changing less brittle,
-  acked by Andrew
-
-Core Changes:
-
-- dma-buf heaps improvements
-- pass full atomic modeset state to driver callbacks
-- shmem helpers: cached bo by default
-- cleanups for fbdev, fb-helpers
-- better docs for drm modes and SCALING_FITLER uapi
-- ttm: fix dma32 page pool regression
-
-Driver Changes:
-
-- multi-hop regression fixes for amdgpu, radeon, nouveau
-- lots of small amdgpu hw enabling fixes (display, pm, ...)
-- fixes for imx, mcde, meson, some panels, virtio, qxl, i915, all
-  fairly minor
-- some cleanups for legacy drm/fbdev drivers
-
-----------------------------------------------------------------
-Aditya Swarup (1):
-      drm/i915/tgl: Fix REVID macros for TGL to fetch correct stepping
-
-Alex Deucher (10):
-      drm/amdgpu/display: move link_bandwidth_kbps under CONFIG_DRM_AMD_DC_DCN
-      drm/amdgpu: split BOCO and ATPX handling
-      drm/amdgpu: add check for ACPI power resources
-      drm/amdgpu: update amdgpu_device_supports_boco()
-      drm/amdgpu: support runtime pm for GPUs that support BOCO
-      drm/amdgpu: no need to call pci_ignore_hotplug for _PR3
-      drm/amdgpu: simplify logic in atpx resume handling
-      drm/amdgpu: print what method we are using for runtime pm
-      drm/amdgpu: fix regression in vbios reservation handling on headless
-      drm/amdgpu/disply: fix documentation warnings in display manager
-
-Anthoine Bourgeois (3):
-      drm/virtio: suffix create blob call with _ioctl like any ioctl
-      drm/virtio: fix a file name comment reference
-      virtio-gpu api: Add a comment on VIRTIO_GPU_SHM_ID_HOST_VISIBLE
-
-Anthony Koo (1):
-      drm/amd/display: [FW Promotion] Release 0.0.46
-
-Aric Cyr (4):
-      drm/amd/display: HP Reverb G2 VR fails to light up
-      drm/amd/display: Only update FP2 for full updates
-      drm/amd/display: Fix cleanup typo in MPCC visual confirm
-      drm/amd/display: 3.2.116
-
-Bernard Zhao (1):
-      drm/via: fix assignment in if condition
-
-Chris Wilson (2):
-      Revert "drm/i915: re-order if/else ladder for hpd_irq_setup"
-      drm/i915: Fix mismatch between misplaced vma check and vma insert
-
-Christian König (7):
-      drm/amdgpu: fix check order in amdgpu_bo_move
-      mm: mmap: fix fput in error path v2
-      mm: introduce vma_set_file function v5
-      drm/ttm: fix DMA32 handling in the global page pool
-      drm/amdgpu: limit the amdgpu_vm_update_ptes trace point
-      drm/radeon: fix check order in radeon_bo_move
-      drm/qxl: don't allocate a dma_address array
-
-Colin Ian King (2):
-      drm/mcde: fix masking and bitwise-or on variable val
-      drm/amdgpu: Fix spelling mistake "Heterogenous" -> "Heterogeneous"
-
-Daniel Vetter (6):
-      char/agp: Disable frontend without CONFIG_DRM_LEGACY
-      Merge tag 'drm-misc-next-2020-11-27-1' of git://anongit.freedesktop.org/drm/drm-misc into drm-next
-      dma-buf: Fix kerneldoc formatting
-      Merge tag 'drm-misc-next-fixes-2020-12-15' of git://anongit.freedesktop.org/drm/drm-misc into drm-next
-      Merge tag 'amd-drm-fixes-5.11-2020-12-16' of git://people.freedesktop.org/~agd5f/linux into drm-next
-      Merge tag 'drm-intel-next-fixes-2020-12-18' of git://anongit.freedesktop.org/drm/drm-intel into drm-next
-
-Dave Airlie (1):
-      drm/nouveau: fix multihop when move doesn't work.
-
-Eric Bernstein (1):
-      drm/amd/display: add dcn30_link_encoder_validate_output_with_stream to header
-
-Evan Quan (12):
-      drm/amd/pm: support power source switch on Sienna Cichlid
-      drm/amd/pm: correct power limit setting for SMU V11
-      drm/amd/pm: correct the gpo control for sienna cichlid
-      drm/amd/pm: expose the firmware_capability from firmware_info table
-      drm/amdgpu: new macro for determining 2ND_USB20PORT support
-      drm/amd/pm: new SMC message for 2nd usb2.0 port workaround
-      drm/amd/pm: fulfill sienna cichlid 2nd usb2.0 port workaround
-      drm/amd/pm: typo fix (CUSTOM -> COMPUTE)
-      drm/amd/pm: fulfill the sienna cichlid UMD PSTATE profiling clocks
-      drm/amd/pm: correct the data structure for activity monitor coeff exchange
-      drm/amd/pm: update the data strucutre for SMU metrics exchange
-      drm/amd/pm: add deep sleep control for uclk and fclk
-
-Felipe (1):
-      drm/amd/display: Fix OGAM LUT calculation precision
-
-Flora Cui (1):
-      drm/amd/display: drop retired CONFIG_DRM_AMD_DC_DCN3_0
-
-Guido Günther (1):
-      drm: mxsfb: Silence -EPROBE_DEFER while waiting for bridge
-
-Gurchetan Singh (2):
-      drm/virtio: use fence_id when processing fences
-      drm/virtio: rename sync_seq and last_seq
-
-Gustavo A. R. Silva (4):
-      drm: Fix fall-through warnings for Clang
-      drm/via: Fix fall-through warnings for Clang
-      video: fbdev: lxfb_ops: Fix fall-through warnings for Clang
-      video: fbdev: pm2fb: Fix fall-through warnings for Clang
-
-Jake Wang (1):
-      drm/amd/display: updated wm table for Renoir
-
-Jiange Zhao (1):
-      drm/amdgpu/SRIOV: Extend VF reset request wait period
-
-Jiansong Chen (1):
-      drm/amdkfd: correct pipe offset calculation
-
-John Stultz (5):
-      dma-buf: system_heap: Rework system heap to use sgtables instead of pagelists
-      dma-buf: heaps: Move heap-helper logic into the cma_heap implementation
-      dma-buf: heaps: Remove heap-helpers code
-      dma-buf: heaps: Skip sync if not mapped
-      dma-buf: system_heap: Allocate higher order pages if available
-
-Laurentiu Palcu (3):
-      drm/imx/dcss: fix rotations for Vivante tiled formats
-      drm/imx/dcss: fix coccinelle warning
-      drm/imx/dcss: allow using nearest neighbor interpolation scaling
-
-Leo (Hanghong) Ma (1):
-      drm/amd/display: Add DP info frame update for dcn30
-
-Likun Gao (1):
-      drm/amdgpu: add judgement for suspend/resume sequence
-
-Linus Walleij (7):
-      drm/panel: s6e63m0: Fix and extend MCS table
-      drm/panel: s6e63m0: Implement 28 backlight levels
-      drm/panel: s6e63m0: Fix init sequence
-      drm/mcde: Fix RGB/BGR bug
-      drm/mcde: Break out DSI set-up routine
-      drm/mcde: Support DPI output
-      drm/mcde: Fix uninitialized value
-
-Lionel Landwerlin (1):
-      drm/i915/perf: also include Gen11 in OATAILPTR workaround
-
-Luben Tuikov (1):
-      drm/amdgpu: Fix missing prototype warning
-
-Lukas F. Hartmann (2):
-      dt-bindings: display/panel: add Innolux N125HCE-GN1
-      panel-simple: add Innolux N125HCE-GN1
-
-Maarten Lankhorst (1):
-      dma-buf/dma-resv: Respect num_fences when initializing the shared fence list.
-
-Marc Zyngier (2):
-      drm/meson: dw-hdmi: Disable clocks on driver teardown
-      drm/meson: dw-hdmi: Enable the iahb clock early enough
-
-Martin Leung (1):
-      drm/amd/display: delay fp2 programming until vactive before lock
-
-Max Tseng (1):
-      drm/amd/display: Add missing DP_SEC register definitions and masks
-
-Maxime Ripard (1):
-      drm: Pass the full state to connectors atomic functions
-
-Rodrigo Siqueira (2):
-      drm/amd/display: Drop unnecessary function call
-      drm/amd/display: Add get_dig_frontend implementation for DCEx
-
-Simon Ser (4):
-      drm: improve kernel-docs in drm_mode.h
-      drm: document drm_mode_get_connector
-      drm: document drm_mode_modeinfo
-      drm: fix kernel-doc warnings for SCALING_FILTER
-
-Souptick Joarder (2):
-      drm/amd/display: Fixed kernel test robot warning
-      drm/amd/display: Adding prototype for dccg21_update_dpp_dto()
-
-Stanley.Yang (1):
-      drm/amdgpu: skip load smu and sdma microcode on sriov for SIENNA_CICHLID
-
-Tao Zhou (2):
-      drm/amdgpu: set mode1 reset as default for dimgrey_cavefish
-      drm/amdgpu: print mmhub client name for dimgrey_cavefish
-
-Thomas Zimmermann (12):
-      drm/shmem-helper: Use cached mappings by default
-      drm/shmem-helper: Removed drm_gem_shmem_create_object_cached()
-      drm/fb-helper: Call dirty helper after writing to fbdev
-      drm/fb-helper: Unmap client buffer during shutdown
-      drm/client: Depend on GEM object kmap ref-counting
-      drm/fb-helper: Rename dirty worker to damage worker
-      drm/fb-helper: Return early in damage worker
-      drm/fb-helper: Separate shadow-buffer flushing and calling dirty callback
-      drm/fb-helper: Move damage blit code and its setup into separate routine
-      drm/fb-helper: Restore damage area upon errors
-      drm/fb-helper: Copy dma-buf map before flushing shadow fb
-      drm/fb-helper: Acquire modeset lock around shadow-buffer flushing
-
-Tom Rix (2):
-      drm/amdgpu: remove h from printk format specifier
-      drm/radeon: remove h from printk format specifier
-
-Victor Lu (1):
-      drm/amd/display: Change pstate expected timeout warning to 180us on linux
-
-Wayne Lin (1):
-      drm/amd/display: Fix to be able to stop crc calculation
-
-Xiaomeng Hou (3):
-      drm/amd/pm: update the smu v11.5 smc header for vangogh
-      drm/amd/pm: inform SMU RLC status thus enable/disable DPM feature for vangogh
-      drm/amdgpu/sdma5.2: soft reset sdma blocks before setup and start sdma
-
-Yifan Zhang (1):
-      drm/amdkfd: correct amdgpu_amdkfd_gpuvm_alloc_memory_of_gpu log.
-
- .../bindings/display/panel/panel-simple.yaml       |   2 +
- Documentation/driver-api/dma-buf.rst               |   2 +-
- drivers/char/agp/Makefile                          |   6 +-
- drivers/char/agp/agp.h                             |   5 +
- drivers/dma-buf/dma-buf.c                          |  19 +-
- drivers/dma-buf/dma-resv.c                         |   2 +-
- drivers/dma-buf/heaps/Makefile                     |   1 -
- drivers/dma-buf/heaps/cma_heap.c                   | 329 ++++++++++++---
- drivers/dma-buf/heaps/heap-helpers.c               | 274 -------------
- drivers/dma-buf/heaps/heap-helpers.h               |  53 ---
- drivers/dma-buf/heaps/system_heap.c                | 414 ++++++++++++++++---
- drivers/gpu/drm/amd/amdgpu/amdgpu.h                |   8 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c           |   8 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c   |   2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c         |  43 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c            |  25 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_gmc.c            |   9 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c            |  17 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_trace.h          |   5 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c            |  53 ++-
- drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c            |   4 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_vce.c            |   2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c            |   4 +-
- drivers/gpu/drm/amd/amdgpu/mmhub_v2_0.c            |   1 +
- drivers/gpu/drm/amd/amdgpu/mxgpu_ai.c              |  11 +-
- drivers/gpu/drm/amd/amdgpu/mxgpu_ai.h              |   3 +-
- drivers/gpu/drm/amd/amdgpu/mxgpu_nv.c              |  11 +-
- drivers/gpu/drm/amd/amdgpu/mxgpu_nv.h              |   1 +
- drivers/gpu/drm/amd/amdgpu/nv.c                    |   1 +
- drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c             |  42 +-
- drivers/gpu/drm/amd/amdkfd/Kconfig                 |   2 +-
- .../gpu/drm/amd/amdkfd/kfd_device_queue_manager.c  |   4 +-
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c  |  29 +-
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h  |  21 +-
- .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crc.c  |  13 +-
- .../amd/display/amdgpu_dm/amdgpu_dm_mst_types.c    |   5 +-
- .../drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c  |  12 +-
- drivers/gpu/drm/amd/display/dc/core/dc.c           |  20 +
- drivers/gpu/drm/amd/display/dc/core/dc_link.c      |   3 -
- drivers/gpu/drm/amd/display/dc/dc.h                |   2 +-
- .../gpu/drm/amd/display/dc/dce/dce_link_encoder.c  |  44 +-
- .../gpu/drm/amd/display/dc/dce/dce_link_encoder.h  |   2 +
- .../display/dc/dce120/dce120_timing_generator.c    |   2 +-
- .../gpu/drm/amd/display/dc/dcn10/dcn10_hubbub.c    |   6 +-
- .../drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c  |   2 +-
- drivers/gpu/drm/amd/display/dc/dcn10/dcn10_optc.c  |  15 +-
- drivers/gpu/drm/amd/display/dc/dcn10/dcn10_optc.h  |   2 +-
- .../amd/display/dc/dcn10/dcn10_stream_encoder.h    |   6 +
- drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c |  29 +-
- .../amd/display/dc/dcn20/dcn20_stream_encoder.h    |   2 +
- drivers/gpu/drm/amd/display/dc/dcn21/dcn21_dccg.h  |   1 +
- .../amd/display/dc/dcn30/dcn30_dio_link_encoder.c  |   2 +-
- .../amd/display/dc/dcn30/dcn30_dio_link_encoder.h  |   4 +
- drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c |   2 +-
- drivers/gpu/drm/amd/display/dc/dcn30/dcn30_optc.c  |   2 +-
- .../drm/amd/display/dc/inc/hw/timing_generator.h   |   2 +-
- drivers/gpu/drm/amd/display/dmub/inc/dmub_cmd.h    |  62 +--
- .../drm/amd/display/modules/color/color_gamma.c    |  22 +-
- drivers/gpu/drm/amd/include/atomfirmware.h         |   1 +
- drivers/gpu/drm/amd/pm/inc/amdgpu_smu.h            |   1 +
- drivers/gpu/drm/amd/pm/inc/smu_types.h             |   4 +-
- drivers/gpu/drm/amd/pm/inc/smu_v11_0_7_ppsmc.h     |   6 +-
- drivers/gpu/drm/amd/pm/inc/smu_v11_5_ppsmc.h       |   2 +-
- drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c          |  10 +-
- .../drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c    | 287 ++++++++-----
- .../drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.h    |   4 +
- drivers/gpu/drm/amd/pm/swsmu/smu11/smu_v11_0.c     |  46 ++-
- drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c   |   9 +-
- drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.h   |   4 +
- drivers/gpu/drm/drm_atomic_helper.c                |   8 +-
- drivers/gpu/drm/drm_blend.c                        |   2 +-
- drivers/gpu/drm/drm_bufs.c                         |   1 +
- drivers/gpu/drm/drm_client.c                       |   4 -
- drivers/gpu/drm/drm_crtc.c                         |  12 +-
- drivers/gpu/drm/drm_fb_helper.c                    | 155 ++++---
- drivers/gpu/drm/drm_gem_shmem_helper.c             |  40 +-
- drivers/gpu/drm/etnaviv/etnaviv_gem.c              |   4 +-
- drivers/gpu/drm/i915/display/intel_dp_mst.c        |   7 +-
- drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c         |   3 +-
- drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c     |   2 +-
- drivers/gpu/drm/i915/gem/i915_gem_mman.c           |   5 +-
- drivers/gpu/drm/i915/i915_drv.h                    |  12 +-
- drivers/gpu/drm/i915/i915_irq.c                    |  27 +-
- drivers/gpu/drm/i915/i915_perf.c                   |   2 +-
- drivers/gpu/drm/imx/dcss/dcss-dev.h                |   3 +
- drivers/gpu/drm/imx/dcss/dcss-plane.c              |  24 +-
- drivers/gpu/drm/imx/dcss/dcss-scaler.c             |  47 ++-
- drivers/gpu/drm/lima/lima_gem.c                    |   2 +-
- drivers/gpu/drm/mcde/Kconfig                       |   1 +
- drivers/gpu/drm/mcde/Makefile                      |   2 +-
- drivers/gpu/drm/mcde/mcde_clk_div.c                | 192 +++++++++
- drivers/gpu/drm/mcde/mcde_display.c                | 456 ++++++++++++++++-----
- drivers/gpu/drm/mcde/mcde_display_regs.h           |  91 +++-
- drivers/gpu/drm/mcde/mcde_drm.h                    |  10 +
- drivers/gpu/drm/mcde/mcde_drv.c                    |  46 ++-
- drivers/gpu/drm/meson/meson_dw_hdmi.c              |  51 ++-
- drivers/gpu/drm/mgag200/mgag200_drv.c              |   1 -
- drivers/gpu/drm/msm/msm_gem.c                      |   4 +-
- drivers/gpu/drm/mxsfb/mxsfb_drv.c                  |  10 +-
- drivers/gpu/drm/nouveau/dispnv50/disp.c            |   5 +-
- drivers/gpu/drm/nouveau/nouveau_bo.c               |  31 +-
- drivers/gpu/drm/omapdrm/omap_gem.c                 |   3 +-
- drivers/gpu/drm/panel/panel-samsung-s6e63m0.c      | 345 ++++++++++++----
- drivers/gpu/drm/panel/panel-simple.c               |  28 ++
- drivers/gpu/drm/panfrost/panfrost_gem.c            |   2 +-
- drivers/gpu/drm/qxl/qxl_ttm.c                      |   2 +-
- drivers/gpu/drm/radeon/radeon_ttm.c                |  54 ++-
- drivers/gpu/drm/radeon/radeon_uvd.c                |   2 +-
- drivers/gpu/drm/radeon/radeon_vce.c                |   2 +-
- drivers/gpu/drm/ttm/ttm_pool.c                     |  22 +
- drivers/gpu/drm/udl/udl_drv.c                      |   2 -
- drivers/gpu/drm/v3d/v3d_bo.c                       |   2 +-
- drivers/gpu/drm/vc4/vc4_txp.c                      |   4 +-
- drivers/gpu/drm/vgem/vgem_drv.c                    |   3 +-
- drivers/gpu/drm/via/via_irq.c                      |   1 +
- drivers/gpu/drm/via/via_verifier.c                 |   7 +-
- drivers/gpu/drm/virtio/virtgpu_debugfs.c           |   4 +-
- drivers/gpu/drm/virtio/virtgpu_drv.h               |   8 +-
- drivers/gpu/drm/virtio/virtgpu_fence.c             |  13 +-
- drivers/gpu/drm/virtio/virtgpu_ioctl.c             |   7 +-
- drivers/gpu/drm/virtio/virtgpu_object.c            |   1 -
- drivers/gpu/drm/vkms/vkms_drv.c                    |   1 -
- drivers/gpu/drm/vkms/vkms_writeback.c              |   7 +-
- drivers/staging/android/ashmem.c                   |   6 +-
- drivers/video/fbdev/geode/lxfb_ops.c               |   1 +
- drivers/video/fbdev/pm2fb.c                        |   1 +
- include/drm/drm_fb_helper.h                        |  14 +-
- include/drm/drm_gem_shmem_helper.h                 |   7 +-
- include/drm/drm_modes.h                            |   3 +
- include/drm/drm_modeset_helper_vtables.h           |  13 +-
- include/linux/dma-buf-map.h                        |   2 +-
- include/linux/mm.h                                 |   2 +
- include/uapi/drm/drm_mode.h                        | 165 ++++++--
- include/uapi/linux/virtio_gpu.h                    |   4 +
- mm/mmap.c                                          |   2 +-
- mm/util.c                                          |  12 +
- 136 files changed, 2806 insertions(+), 1255 deletions(-)
- delete mode 100644 drivers/dma-buf/heaps/heap-helpers.c
- delete mode 100644 drivers/dma-buf/heaps/heap-helpers.h
- create mode 100644 drivers/gpu/drm/mcde/mcde_clk_div.c
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
