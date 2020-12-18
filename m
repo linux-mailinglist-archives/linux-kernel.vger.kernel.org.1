@@ -2,127 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ABCC2DE20D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 12:34:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 402682DE214
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 12:39:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726227AbgLRLeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 06:34:03 -0500
-Received: from foss.arm.com ([217.140.110.172]:33638 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725710AbgLRLeC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 06:34:02 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7AB8D1FB;
-        Fri, 18 Dec 2020 03:33:16 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9EA633F66E;
-        Fri, 18 Dec 2020 03:33:14 -0800 (PST)
-References: <20201218103258.GA3040@hirez.programming.kicks-ass.net>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        dietmar.eggemann@arm.com, patrick.bellasi@matbug.net,
-        lenb@kernel.org, linux-kernel@vger.kernel.org,
-        ionela.voinescu@arm.com, qperret@google.com,
-        viresh.kumar@linaro.org
-Subject: Re: [PATCH] sched: Add schedutil overview
-In-reply-to: <20201218103258.GA3040@hirez.programming.kicks-ass.net>
-Date:   Fri, 18 Dec 2020 11:33:09 +0000
-Message-ID: <jhjsg83s616.mognet@arm.com>
+        id S1726254AbgLRLit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 06:38:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725710AbgLRLis (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 06:38:48 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 060F8C0617A7
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 03:38:08 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id d13so1757299wrc.13
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 03:38:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aoWRWWsuuMiJYUiJ8ref+3sTcxGYyjAa+0+yB4BqHyE=;
+        b=AvZqdIZugmy8fz42MgEo3JGpxLGI1jqAzQ+K83/MQzqa8S0Ed/57+iVER2/DHBDud7
+         RK9Dmm3AKP7BsQWhlAU8iEYqlKmsylzmP7L8PpdEdABuLGw0LX09uu1SxKnkx9PZrKlu
+         n3IxJGftbpq/p5tKuxrLfmqpYWSQyEec0DMPJpmiz3dT/5zN36m9naF/STFklDW4AD5D
+         NZBPUcAL2zIFDG1PtCbydQ1FTAooZSn5+gfuFu4NT24GmEt3XdhmUJAdZi4hoChQ+ajk
+         OuqvuOK690WL/3hVJ6c2NsoTtqa6OqYLbn3HAPUdH/ezxWmUatS5URoumFDqmUiGg6uV
+         bcCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aoWRWWsuuMiJYUiJ8ref+3sTcxGYyjAa+0+yB4BqHyE=;
+        b=oWXXhYNQ25RHjnvvB2F6OeoPXncSJ0JnrIjpmeIBS/YLcH1QOv3a0KCwrLe4sjV6fp
+         rrQTCWBP8UmgNTygb7RBDEvmg/ykCwYviewOI3sN9QEw1V5pbnjYM71WpM89laFI600Y
+         cyHlKApQXtEW672+Wd78HPBXZsC6CAyhTb2NbnKdA5rgK5aUk8YuEJJAPPYk3+xeZphM
+         hoXtuy10QmoYtqui15M1WHzIiEoZbgnOXNJUiVuDkkwSpwjISGo0jweTmd2q0T0otHYA
+         iX4E0tElM6ARvV5Nh44vdgBxREtZDvPLyyCdUfrXpgHq6vTCgso4HU1taUgdzc2HG9/y
+         qk3A==
+X-Gm-Message-State: AOAM533kJ8xo6u853HNTshW02pAnyRKbDbYeEaFY+gTYO6E4dXAbrX82
+        gaUH1BywHRnOmVl/bcXCiKXCsx5KBXXtb2UqSgmtjg==
+X-Google-Smtp-Source: ABdhPJxt9Qjxw7c5+Hh3aD8hBJUskegWQUD6m2kBGo4SogNADwmeYKiy6yDfkcMp9JIo6fNbuwpX5x7KlTUVnh3igRE=
+X-Received: by 2002:adf:d18a:: with SMTP id v10mr3901140wrc.273.1608291486699;
+ Fri, 18 Dec 2020 03:38:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201210134648.272857-1-maxime@cerno.tech> <20201210134648.272857-9-maxime@cerno.tech>
+In-Reply-To: <20201210134648.272857-9-maxime@cerno.tech>
+From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date:   Fri, 18 Dec 2020 11:37:50 +0000
+Message-ID: <CAPY8ntA7dS1Ew+mF=xRdWFF0P071=O5X7vVKt7O_iiTdUbJM5g@mail.gmail.com>
+Subject: Re: [PATCH 08/15] drm/vc4: hdmi: Introduce a CEC clock
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Eric Anholt <eric@anholt.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Jason Cooper <jason@lakedaemon.net>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-rpi-kernel@lists.infradead.org,
+        DRI Development <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Maxime
 
-Hi,
-
-Have some more nits below
-
-On 18/12/20 10:32, Peter Zijlstra wrote:
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  Documentation/scheduler/schedutil.txt |  168 ++++++++++++++++++++++++++++++++++
->  1 file changed, 168 insertions(+)
+On Thu, 10 Dec 2020 at 13:47, Maxime Ripard <maxime@cerno.tech> wrote:
 >
-> --- /dev/null
-> +++ b/Documentation/scheduler/schedutil.txt
-[...]
-> +Frequency- / CPU Invariance
-> +---------------------------
-> +
-> +Because consuming the CPU for 50% at 1GHz is not the same as consuming the CPU
-> +for 50% at 2GHz, nor is running 50% on a LITTLE CPU the same as running 50% on
-> +a big CPU, we allow architectures to scale the time delta with two ratios, one
-> +Dynamic Voltage and Frequency Scaling (DVFS) ratio and one microarch ratio.
-> +
-> +For simple DVFS architectures (where software is in full control) we trivially
-> +compute the ratio as:
-> +
-> +	    f_cur
-> +  r_dvfs := -----
-> +            f_max
-> +
-> +For more dynamic systems where the hardware is in control of DVFS (Intel,
-> +ARMv8.4-AMU) we use hardware counters to provide us this ratio. For Intel
+> While the BCM2835 had the CEC clock derived from the HSM clock, the
+> BCM2711 has a dedicated parent clock for it.
+>
+> Let's introduce a separate clock for it so that we can handle both
+> cases.
+>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> ---
+>  drivers/gpu/drm/vc4/vc4_hdmi.c | 9 ++++++++-
+>  drivers/gpu/drm/vc4/vc4_hdmi.h | 1 +
+>  2 files changed, 9 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> index b93ee3e26e2b..0debd22bc992 100644
+> --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
+> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> @@ -145,7 +145,7 @@ static void vc4_hdmi_cec_update_clk_div(struct vc4_hdmi *vc4_hdmi)
+>          * Set the clock divider: the hsm_clock rate and this divider
+>          * setting will give a 40 kHz CEC clock.
+>          */
+> -       clk_cnt = clk_get_rate(vc4_hdmi->hsm_clock) / CEC_CLOCK_FREQ;
+> +       clk_cnt = clk_get_rate(vc4_hdmi->cec_clock) / CEC_CLOCK_FREQ;
+>         value |= clk_cnt << VC4_HDMI_CEC_DIV_CLK_CNT_SHIFT;
+>         HDMI_WRITE(HDMI_CEC_CNTRL_1, value);
+>  }
+> @@ -1740,6 +1740,7 @@ static int vc4_hdmi_init_resources(struct vc4_hdmi *vc4_hdmi)
+>                 return PTR_ERR(vc4_hdmi->hsm_clock);
+>         }
+>         vc4_hdmi->audio_clock = vc4_hdmi->hsm_clock;
+> +       vc4_hdmi->cec_clock = vc4_hdmi->hsm_clock;
+>
+>         return 0;
+>  }
+> @@ -1833,6 +1834,12 @@ static int vc5_hdmi_init_resources(struct vc4_hdmi *vc4_hdmi)
+>                 return PTR_ERR(vc4_hdmi->audio_clock);
+>         }
+>
+> +       vc4_hdmi->cec_clock = devm_clk_get(dev, "cec");
+> +       if (IS_ERR(vc4_hdmi->cec_clock)) {
+> +               DRM_ERROR("Failed to get CEC clock\n");
+> +               return PTR_ERR(vc4_hdmi->cec_clock);
+> +       }
 
-Nit: To me this reads as if the presence of AMUs entail 'hardware is in
-control of DVFS', which doesn't seem right. How about:
+Aren't we adding to the DT binding here and breaking backwards compatibility?
+Admittedly CEC didn't work before (and was masked out) for vc5, but do
+we need to worry about those with existing DT files that currently
+work happily?
 
-  For more dynamic systems where the hardware is in control of DVFS we use
-  hardware counters (Intel APERF/MPERF, ARMv8.4-AMU) to provide us this
-  ratio.
+Otherwise I'm happy with the patch.
 
-> +Schedutil / DVFS
-> +----------------
-> +
-> +Every time the scheduler load tracking is updated (task wakeup, task
-> +migration, time progression) we call out to schedutil to update the hardware
-> +DVFS state.
-> +
-> +The basis is the CPU runqueue's 'running' metric, which per the above it is
-> +the frequency invariant utilization estimate of the CPU. From this we compute
-> +a desired frequency like:
-> +
-> +             max( running, util_est );	if UTIL_EST
-> +  u_cfs := { running;			otherwise
-> +
-> +  u_clamp := clamp( u_cfs, u_min, u_max )
-> +
-> +  u := u_cfs + u_rt + u_irq + u_dl;	[approx. see source for more detail]
-> +
-> +  f_des := min( f_max, 1.25 u * f_max )
-> +
+  Dave
 
-In schedutil_cpu_util(), uclamp clamps both u_cfs and u_rt. I'm afraid the
-below might just bring more confusion; what do you think?
-
-               clamp( u_cfs + u_rt, u_min, u_max );      if UCLAMP_TASK
-  u_clamp := { u_cfs + u_rt;                             otherwise
-
-  u := u_clamp + u_irq + u_dl;	    [approx. see source for more detail]
-
-(also, does this need a word about runnable rt tasks => goto max?)
-
-> +XXX IO-wait; when the update is due to a task wakeup from IO-completion we
-> +boost 'u' above.
 > +
-> +This frequency is then used to select a P-state/OPP or directly munged into a
-> +CPPC style request to the hardware.
-> +
-> +XXX: deadline tasks (Sporadic Task Model) allows us to calculate a hard f_min
-> +required to satisfy the workload.
-> +
-> +Because these callbacks are directly from the scheduler, the DVFS hardware
-> +interaction should be 'fast' and non-blocking. Schedutil supports
-> +rate-limiting DVFS requests for when hardware interaction is slow and
-> +expensive, this reduces effectiveness.
-> +
-> +For more information see: kernel/sched/cpufreq_schedutil.c
-> +
+>         vc4_hdmi->reset = devm_reset_control_get(dev, NULL);
+>         if (IS_ERR(vc4_hdmi->reset)) {
+>                 DRM_ERROR("Failed to get HDMI reset line\n");
+> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.h b/drivers/gpu/drm/vc4/vc4_hdmi.h
+> index 720914761261..adc4bf33ff15 100644
+> --- a/drivers/gpu/drm/vc4/vc4_hdmi.h
+> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.h
+> @@ -155,6 +155,7 @@ struct vc4_hdmi {
+>         bool cec_tx_ok;
+>         bool cec_irq_was_rx;
+>
+> +       struct clk *cec_clock;
+>         struct clk *pixel_clock;
+>         struct clk *hsm_clock;
+>         struct clk *audio_clock;
+> --
+> 2.28.0
+>
