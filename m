@@ -2,157 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5177B2DE20A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 12:32:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ABCC2DE20D
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 12:34:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726182AbgLRLcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 06:32:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48710 "EHLO mail.kernel.org"
+        id S1726227AbgLRLeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 06:34:03 -0500
+Received: from foss.arm.com ([217.140.110.172]:33638 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725710AbgLRLcf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 06:32:35 -0500
-Date:   Fri, 18 Dec 2020 08:32:09 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608291114;
-        bh=vgj+lu9Xy21UHCvYQuyDBumcV+RLtxLTw1h5/m6Sl+g=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=u2Yw+uI8dV/gAqX0yuW7eOeaexFlXMPPN0gDrC5tAfyT8DRdVjd89/sPEr9sabCAQ
-         LmXmiPaaOJGt5pSdNBqLX+XyEvX7pGqFEX9oRdww0xOIbvXK04qnNkFVz66rDgk9dW
-         /ayASQEP3GSu+zDwPaxSCmHtqVqEUIAid/1je/Mj4GbhvSAwioAro/PBF1UcTAgFda
-         uiEqeOCA+t4ApY3Xyuj7oFhg4DIF62MeyD5VGRkElw/Fr5Ip8f6lhEmoEiSbUrmF2O
-         iny5k4WNQNt7FhvpW8nAluOsbIQJTSP6drnJpjnG4TX/dp51s9OoKHMAvgC4a2MLeo
-         1tlxr+bFpN7HA==
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH 3/4] perf tools: Update powerpc's syscall.tbl
-Message-ID: <20201218113209.GD325926@kernel.org>
-References: <1608278364-6733-1-git-send-email-yangtiezhu@loongson.cn>
- <1608278364-6733-4-git-send-email-yangtiezhu@loongson.cn>
- <20201218112659.GB325926@kernel.org>
+        id S1725710AbgLRLeC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 06:34:02 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7AB8D1FB;
+        Fri, 18 Dec 2020 03:33:16 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9EA633F66E;
+        Fri, 18 Dec 2020 03:33:14 -0800 (PST)
+References: <20201218103258.GA3040@hirez.programming.kicks-ass.net>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        dietmar.eggemann@arm.com, patrick.bellasi@matbug.net,
+        lenb@kernel.org, linux-kernel@vger.kernel.org,
+        ionela.voinescu@arm.com, qperret@google.com,
+        viresh.kumar@linaro.org
+Subject: Re: [PATCH] sched: Add schedutil overview
+In-reply-to: <20201218103258.GA3040@hirez.programming.kicks-ass.net>
+Date:   Fri, 18 Dec 2020 11:33:09 +0000
+Message-ID: <jhjsg83s616.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201218112659.GB325926@kernel.org>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Dec 18, 2020 at 08:26:59AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Fri, Dec 18, 2020 at 03:59:23PM +0800, Tiezhu Yang escreveu:
-> > This silences the following tools/perf/ build warning:
-> > Warning: Kernel ABI header at 'tools/perf/arch/powerpc/entry/syscalls/syscall.tbl' differs from latest version at 'arch/powerpc/kernel/syscalls/syscall.tbl'
-> 
-> Hi Ravi, Naveen,
-> 
-> 	Can I get your Reviewed-by or Acked-by for this change and the
-> other that adds s390's syscall.tbl to check_headers.sh so that we get
 
-oops s/s390/powerpc/g :-)
+Hi,
 
-> notified when the copy drifts, so that we can see if it still continues
-> working and we can get new syscalls to be supported in things like 'perf
-> trace'?
-> 
-> Thanks,
-> 
-> - Arnaldo
->  
-> > Just make them same:
-> > cp arch/powerpc/kernel/syscalls/syscall.tbl tools/perf/arch/powerpc/entry/syscalls/syscall.tbl
-> > 
-> > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> > ---
-> >  tools/perf/arch/powerpc/entry/syscalls/syscall.tbl | 25 ++++++++++++++++------
-> >  1 file changed, 18 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/tools/perf/arch/powerpc/entry/syscalls/syscall.tbl b/tools/perf/arch/powerpc/entry/syscalls/syscall.tbl
-> > index b168364..1275dae 100644
-> > --- a/tools/perf/arch/powerpc/entry/syscalls/syscall.tbl
-> > +++ b/tools/perf/arch/powerpc/entry/syscalls/syscall.tbl
-> > @@ -9,7 +9,9 @@
-> >  #
-> >  0	nospu	restart_syscall			sys_restart_syscall
-> >  1	nospu	exit				sys_exit
-> > -2	nospu	fork				ppc_fork
-> > +2	32	fork				ppc_fork			sys_fork
-> > +2	64	fork				sys_fork
-> > +2	spu	fork				sys_ni_syscall
-> >  3	common	read				sys_read
-> >  4	common	write				sys_write
-> >  5	common	open				sys_open			compat_sys_open
-> > @@ -158,7 +160,9 @@
-> >  119	32	sigreturn			sys_sigreturn			compat_sys_sigreturn
-> >  119	64	sigreturn			sys_ni_syscall
-> >  119	spu	sigreturn			sys_ni_syscall
-> > -120	nospu	clone				ppc_clone
-> > +120	32	clone				ppc_clone			sys_clone
-> > +120	64	clone				sys_clone
-> > +120	spu	clone				sys_ni_syscall
-> >  121	common	setdomainname			sys_setdomainname
-> >  122	common	uname				sys_newuname
-> >  123	common	modify_ldt			sys_ni_syscall
-> > @@ -240,7 +244,9 @@
-> >  186	spu	sendfile			sys_sendfile64
-> >  187	common	getpmsg				sys_ni_syscall
-> >  188	common 	putpmsg				sys_ni_syscall
-> > -189	nospu	vfork				ppc_vfork
-> > +189	32	vfork				ppc_vfork			sys_vfork
-> > +189	64	vfork				sys_vfork
-> > +189	spu	vfork				sys_ni_syscall
-> >  190	common	ugetrlimit			sys_getrlimit			compat_sys_getrlimit
-> >  191	common	readahead			sys_readahead			compat_sys_readahead
-> >  192	32	mmap2				sys_mmap2			compat_sys_mmap2
-> > @@ -316,8 +322,8 @@
-> >  248	32	clock_nanosleep			sys_clock_nanosleep_time32
-> >  248	64	clock_nanosleep			sys_clock_nanosleep
-> >  248	spu	clock_nanosleep			sys_clock_nanosleep
-> > -249	32	swapcontext			ppc_swapcontext			ppc32_swapcontext
-> > -249	64	swapcontext			ppc64_swapcontext
-> > +249	32	swapcontext			ppc_swapcontext			compat_sys_swapcontext
-> > +249	64	swapcontext			sys_swapcontext
-> >  249	spu	swapcontext			sys_ni_syscall
-> >  250	common	tgkill				sys_tgkill
-> >  251	32	utimes				sys_utimes_time32
-> > @@ -456,7 +462,7 @@
-> >  361	common	bpf				sys_bpf
-> >  362	nospu	execveat			sys_execveat			compat_sys_execveat
-> >  363	32	switch_endian			sys_ni_syscall
-> > -363	64	switch_endian			ppc_switch_endian
-> > +363	64	switch_endian			sys_switch_endian
-> >  363	spu	switch_endian			sys_ni_syscall
-> >  364	common	userfaultfd			sys_userfaultfd
-> >  365	common	membarrier			sys_membarrier
-> > @@ -516,6 +522,11 @@
-> >  432	common	fsmount				sys_fsmount
-> >  433	common	fspick				sys_fspick
-> >  434	common	pidfd_open			sys_pidfd_open
-> > -435	nospu	clone3				ppc_clone3
-> > +435	32	clone3				ppc_clone3			sys_clone3
-> > +435	64	clone3				sys_clone3
-> > +435	spu	clone3				sys_ni_syscall
-> > +436	common	close_range			sys_close_range
-> >  437	common	openat2				sys_openat2
-> >  438	common	pidfd_getfd			sys_pidfd_getfd
-> > +439	common	faccessat2			sys_faccessat2
-> > +440	common	process_madvise			sys_process_madvise
-> > -- 
-> > 2.1.0
-> > 
-> 
-> -- 
-> 
-> - Arnaldo
+Have some more nits below
 
--- 
+On 18/12/20 10:32, Peter Zijlstra wrote:
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  Documentation/scheduler/schedutil.txt |  168 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 168 insertions(+)
+>
+> --- /dev/null
+> +++ b/Documentation/scheduler/schedutil.txt
+[...]
+> +Frequency- / CPU Invariance
+> +---------------------------
+> +
+> +Because consuming the CPU for 50% at 1GHz is not the same as consuming the CPU
+> +for 50% at 2GHz, nor is running 50% on a LITTLE CPU the same as running 50% on
+> +a big CPU, we allow architectures to scale the time delta with two ratios, one
+> +Dynamic Voltage and Frequency Scaling (DVFS) ratio and one microarch ratio.
+> +
+> +For simple DVFS architectures (where software is in full control) we trivially
+> +compute the ratio as:
+> +
+> +	    f_cur
+> +  r_dvfs := -----
+> +            f_max
+> +
+> +For more dynamic systems where the hardware is in control of DVFS (Intel,
+> +ARMv8.4-AMU) we use hardware counters to provide us this ratio. For Intel
 
-- Arnaldo
+Nit: To me this reads as if the presence of AMUs entail 'hardware is in
+control of DVFS', which doesn't seem right. How about:
+
+  For more dynamic systems where the hardware is in control of DVFS we use
+  hardware counters (Intel APERF/MPERF, ARMv8.4-AMU) to provide us this
+  ratio.
+
+> +Schedutil / DVFS
+> +----------------
+> +
+> +Every time the scheduler load tracking is updated (task wakeup, task
+> +migration, time progression) we call out to schedutil to update the hardware
+> +DVFS state.
+> +
+> +The basis is the CPU runqueue's 'running' metric, which per the above it is
+> +the frequency invariant utilization estimate of the CPU. From this we compute
+> +a desired frequency like:
+> +
+> +             max( running, util_est );	if UTIL_EST
+> +  u_cfs := { running;			otherwise
+> +
+> +  u_clamp := clamp( u_cfs, u_min, u_max )
+> +
+> +  u := u_cfs + u_rt + u_irq + u_dl;	[approx. see source for more detail]
+> +
+> +  f_des := min( f_max, 1.25 u * f_max )
+> +
+
+In schedutil_cpu_util(), uclamp clamps both u_cfs and u_rt. I'm afraid the
+below might just bring more confusion; what do you think?
+
+               clamp( u_cfs + u_rt, u_min, u_max );      if UCLAMP_TASK
+  u_clamp := { u_cfs + u_rt;                             otherwise
+
+  u := u_clamp + u_irq + u_dl;	    [approx. see source for more detail]
+
+(also, does this need a word about runnable rt tasks => goto max?)
+
+> +XXX IO-wait; when the update is due to a task wakeup from IO-completion we
+> +boost 'u' above.
+> +
+> +This frequency is then used to select a P-state/OPP or directly munged into a
+> +CPPC style request to the hardware.
+> +
+> +XXX: deadline tasks (Sporadic Task Model) allows us to calculate a hard f_min
+> +required to satisfy the workload.
+> +
+> +Because these callbacks are directly from the scheduler, the DVFS hardware
+> +interaction should be 'fast' and non-blocking. Schedutil supports
+> +rate-limiting DVFS requests for when hardware interaction is slow and
+> +expensive, this reduces effectiveness.
+> +
+> +For more information see: kernel/sched/cpufreq_schedutil.c
+> +
