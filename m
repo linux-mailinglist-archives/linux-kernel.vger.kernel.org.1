@@ -2,132 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9066B2DE04F
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 10:17:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F9562DE058
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 10:21:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388977AbgLRJQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 04:16:09 -0500
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:26550 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730833AbgLRJQI (ORCPT
+        id S2388963AbgLRJUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 04:20:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31141 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732777AbgLRJUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 04:16:08 -0500
-X-IronPort-AV: E=Sophos;i="5.78,430,1599494400"; 
-   d="scan'208";a="102711642"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 18 Dec 2020 17:15:17 +0800
-Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
-        by cn.fujitsu.com (Postfix) with ESMTP id 61E5048990D2;
-        Fri, 18 Dec 2020 17:15:15 +0800 (CST)
-Received: from irides.mr (10.167.225.141) by G08CNEXMBPEKD05.g08.fujitsu.local
- (10.167.33.204) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 18 Dec
- 2020 17:15:15 +0800
-Subject: Re: [RFC PATCH v3 0/9] fsdax: introduce fs query to support reflink
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-CC:     Jane Chu <jane.chu@oracle.com>, <linux-kernel@vger.kernel.org>,
-        <linux-xfs@vger.kernel.org>, <linux-nvdimm@lists.01.org>,
-        <linux-mm@kvack.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-raid@vger.kernel.org>, <dan.j.williams@intel.com>,
-        <david@fromorbit.com>, <hch@lst.de>, <song@kernel.org>,
-        <rgoldwyn@suse.de>, <qi.fuli@fujitsu.com>, <y-goto@fujitsu.com>
-References: <20201215121414.253660-1-ruansy.fnst@cn.fujitsu.com>
- <7fc7ba7c-f138-4944-dcc7-ce4b3f097528@oracle.com>
- <a57c44dd-127a-3bd2-fcb3-f1373572de27@cn.fujitsu.com>
- <20201218034907.GG6918@magnolia>
-From:   Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
-Message-ID: <16ac8000-2892-7491-26a0-84de4301f168@cn.fujitsu.com>
-Date:   Fri, 18 Dec 2020 17:13:23 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Fri, 18 Dec 2020 04:20:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608283128;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ejcHzuD9fFPSUG7/hU65XXRSqtWaCKdWCMMhWat4xMU=;
+        b=iC6R/RP7TzoErWvZBPlF3P/T3jyt1ec09A5sGQEjgfEkP7hljYY0cB7vBPYpoJAQnQyw9Z
+        unbFtcKQurEWXtUHuaxnc+PQ63pD4w2GDdXZ5+5qGxPpg9JtFDJMXnJ3oHsQIuEQbiUBRx
+        r8K/FJxC8QSkScZqFCZoKv3YneaeeSs=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-181-b8GP4o6mOpSRRnhCDVOO0Q-1; Fri, 18 Dec 2020 04:18:46 -0500
+X-MC-Unique: b8GP4o6mOpSRRnhCDVOO0Q-1
+Received: by mail-ed1-f71.google.com with SMTP id y19so818746edw.16
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 01:18:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=ejcHzuD9fFPSUG7/hU65XXRSqtWaCKdWCMMhWat4xMU=;
+        b=eIX0FyZm25/0iROi+7p77dEe/C2DOSySI8g7zM5XH8u9n535yuF0SRbGIS0y0R3sBQ
+         f0ZaMqw5zqKxEjylHJS/S3dxr2fbmW/bsdfGPG0Mw+piPhHlSdugIrOi6WblRX8ePao7
+         hFc36lnHe8x+NQJvmXDcUUEqvt1iSw65zqNRuPgMmRHcR4JyDiisoTbjH3O8JllNGGfz
+         i2zdXoiNKxK7LgN/XJg6MKECepYJ4zed/K5AoB9lcYK4CkIjt2e8Ekpiaqxw+dcRtIFS
+         hUZZjXhCVXHTeciTBcxtXEWQR0V9ULuos72ja1rCVnQ32cA1iXiUSDsm9rbwhPwAXT3H
+         PytQ==
+X-Gm-Message-State: AOAM530+AFtx3wFaXhrUQSg7is2yhwuyLE8Llu1i59GknUrh/P9oP2dW
+        BpOTqiqdfZsH56rsekMcb82KT6G3O2vmT8kcp8Kc9PKHf5QkQ4rLh2rm+InK4TDQY9G7WxFInKz
+        +OmvV3hnXSoSgd3cVHy4nhqhz
+X-Received: by 2002:a17:906:cc9c:: with SMTP id oq28mr3078134ejb.224.1608283125341;
+        Fri, 18 Dec 2020 01:18:45 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzRlPQTAZK6n6UAHdwvwvC4SS1JkxSjJMpsyMSplOZqd1Lw14LdiOywycWCjjf7X9vdO2EVfA==
+X-Received: by 2002:a17:906:cc9c:: with SMTP id oq28mr3078122ejb.224.1608283125176;
+        Fri, 18 Dec 2020 01:18:45 -0800 (PST)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id cf17sm24352748edb.16.2020.12.18.01.18.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Dec 2020 01:18:44 -0800 (PST)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
+        Richard Herbert <rherbert@sympatico.ca>
+Subject: Re: [PATCH 3/4] KVM: x86/mmu: Use raw level to index into MMIO
+ walks' sptes array
+In-Reply-To: <20201218003139.2167891-4-seanjc@google.com>
+References: <20201218003139.2167891-1-seanjc@google.com>
+ <20201218003139.2167891-4-seanjc@google.com>
+Date:   Fri, 18 Dec 2020 10:18:43 +0100
+Message-ID: <87o8irtqto.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201218034907.GG6918@magnolia>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.167.225.141]
-X-ClientProxiedBy: G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) To
- G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204)
-X-yoursite-MailScanner-ID: 61E5048990D2.AA872
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: ruansy.fnst@cn.fujitsu.com
-X-Spam-Status: No
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Sean Christopherson <seanjc@google.com> writes:
 
+> Bump the size of the sptes array by one and use the raw level of the
+> SPTE to index into the sptes array.  Using the SPTE level directly
+> improves readability by eliminating the need to reason out why the level
+> is being adjusted when indexing the array.  The array is on the stack
+> and is not explicitly initialized; bumping its size is nothing more than
+> a superficial adjustment to the stack frame.
+>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kvm/mmu/mmu.c     | 15 +++++++--------
+>  arch/x86/kvm/mmu/tdp_mmu.c |  2 +-
+>  2 files changed, 8 insertions(+), 9 deletions(-)
+>
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 52f36c879086..4798a4472066 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -3500,7 +3500,7 @@ static int get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes, int *root_level
+>  		leaf = iterator.level;
+>  		spte = mmu_spte_get_lockless(iterator.sptep);
+>  
+> -		sptes[leaf - 1] = spte;
+> +		sptes[leaf] = spte;
+>  
+>  		if (!is_shadow_present_pte(spte))
+>  			break;
+> @@ -3514,7 +3514,7 @@ static int get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes, int *root_level
+>  /* return true if reserved bit is detected on spte. */
+>  static bool get_mmio_spte(struct kvm_vcpu *vcpu, u64 addr, u64 *sptep)
+>  {
+> -	u64 sptes[PT64_ROOT_MAX_LEVEL];
+> +	u64 sptes[PT64_ROOT_MAX_LEVEL + 1];
+>  	struct rsvd_bits_validate *rsvd_check;
+>  	int root, leaf, level;
+>  	bool reserved = false;
+> @@ -3537,16 +3537,15 @@ static bool get_mmio_spte(struct kvm_vcpu *vcpu, u64 addr, u64 *sptep)
+>  	rsvd_check = &vcpu->arch.mmu->shadow_zero_check;
+>  
+>  	for (level = root; level >= leaf; level--) {
+> -		if (!is_shadow_present_pte(sptes[level - 1]))
+> +		if (!is_shadow_present_pte(sptes[level]))
+>  			break;
+>  		/*
+>  		 * Use a bitwise-OR instead of a logical-OR to aggregate the
+>  		 * reserved bit and EPT's invalid memtype/XWR checks to avoid
+>  		 * adding a Jcc in the loop.
+>  		 */
+> -		reserved |= __is_bad_mt_xwr(rsvd_check, sptes[level - 1]) |
+> -			    __is_rsvd_bits_set(rsvd_check, sptes[level - 1],
+> -					       level);
+> +		reserved |= __is_bad_mt_xwr(rsvd_check, sptes[level]) |
+> +			    __is_rsvd_bits_set(rsvd_check, sptes[level], level);
+>  	}
+>  
+>  	if (reserved) {
+> @@ -3554,10 +3553,10 @@ static bool get_mmio_spte(struct kvm_vcpu *vcpu, u64 addr, u64 *sptep)
+>  		       __func__, addr);
+>  		for (level = root; level >= leaf; level--)
+>  			pr_err("------ spte 0x%llx level %d.\n",
+> -			       sptes[level - 1], level);
+> +			       sptes[level], level);
+>  	}
+>  
+> -	*sptep = sptes[leaf - 1];
+> +	*sptep = sptes[leaf];
+>  
+>  	return reserved;
+>  }
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index a4f9447f8327..efef571806ad 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -1160,7 +1160,7 @@ int kvm_tdp_mmu_get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes,
+>  
+>  	tdp_mmu_for_each_pte(iter, mmu, gfn, gfn + 1) {
+>  		leaf = iter.level;
+> -		sptes[leaf - 1] = iter.old_spte;
+> +		sptes[leaf] = iter.old_spte;
+>  	}
+>  
+>  	return leaf;
 
-On 2020/12/18 上午11:49, Darrick J. Wong wrote:
-> On Fri, Dec 18, 2020 at 10:44:26AM +0800, Ruan Shiyang wrote:
->>
->>
->> On 2020/12/17 上午4:55, Jane Chu wrote:
->>> Hi, Shiyang,
->>>
->>> On 12/15/2020 4:14 AM, Shiyang Ruan wrote:
->>>> The call trace is like this:
->>>> memory_failure()
->>>>    pgmap->ops->memory_failure()      => pmem_pgmap_memory_failure()
->>>>     gendisk->fops->corrupted_range() => - pmem_corrupted_range()
->>>>                                         - md_blk_corrupted_range()
->>>>      sb->s_ops->currupted_range()    => xfs_fs_corrupted_range()
->>>>       xfs_rmap_query_range()
->>>>        xfs_currupt_helper()
->>>>         * corrupted on metadata
->>>>             try to recover data, call xfs_force_shutdown()
->>>>         * corrupted on file data
->>>>             try to recover data, call mf_dax_mapping_kill_procs()
->>>>
->>>> The fsdax & reflink support for XFS is not contained in this patchset.
->>>>
->>>> (Rebased on v5.10)
->>>
->>> So I tried the patchset with pmem error injection, the SIGBUS payload
->>> does not look right -
->>>
->>> ** SIGBUS(7): **
->>> ** si_addr(0x(nil)), si_lsb(0xC), si_code(0x4, BUS_MCEERR_AR) **
->>>
->>> I expect the payload looks like
->>>
->>> ** si_addr(0x7f3672e00000), si_lsb(0x15), si_code(0x4, BUS_MCEERR_AR) **
->>
->> Thanks for testing.  I test the SIGBUS by writing a program which calls
->> madvise(... ,MADV_HWPOISON) to inject memory-failure.  It just shows that
->> the program is killed by SIGBUS.  I cannot get any detail from it.  So,
->> could you please show me the right way(test tools) to test it?
-> 
-> I'm assuming that Jane is using a program that calls sigaction to
-> install a SIGBUS handler, and dumps the entire siginfo_t structure
-> whenever it receives one...
+An alretnitive solution would've been to reverse the array and fill it
+like
 
-OK.  Let me try it and figure out what's wrong in it.
+ sptes[PT64_ROOT_MAX_LEVEL - leaf] = iter.old_spte;
 
+but this may not reach the goal of 'improved readability' :-)
 
---
-Thanks,
-Ruan Shiyang.
+Also, we may add an MMU_DEBUG ifdef-ed check that sptes[0] remains
+intact.
 
-> 
-> --D
-> 
->>
->> --
->> Thanks,
->> Ruan Shiyang.
->>
->>>
->>> thanks,
->>> -jane
->>>
->>>
->>>
->>>
->>>
->>>
->>
->>
-> 
-> 
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 
+-- 
+Vitaly
 
