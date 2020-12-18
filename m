@@ -2,109 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7827E2DEAD4
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 22:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F692DEAD6
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 22:16:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727618AbgLRVMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 16:12:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37126 "EHLO
+        id S1727053AbgLRVPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 16:15:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726499AbgLRVMF (ORCPT
+        with ESMTP id S1725966AbgLRVPT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 16:12:05 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B5CCC0617A7
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 13:11:50 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id u203so3174081ybb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 13:11:50 -0800 (PST)
+        Fri, 18 Dec 2020 16:15:19 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CFA2C0617A7;
+        Fri, 18 Dec 2020 13:14:38 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id lt17so5217442ejb.3;
+        Fri, 18 Dec 2020 13:14:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cFsnWYgZv7EVrgBXFoXDcyOnuUF1YGc0qpDAPXty7qM=;
-        b=E909suHsydiiXo6eDGwHUVoYI1cTbo8JAJZP8XMJD1W9CDP3Ett0Bg5T9kog8+0dpc
-         f5ElkEHiSQ4oeKjj5l2xsyYlGw7O6beXkNQnMAMc2lvdq/EAcY8cVldzUexjVaxvzvWw
-         AQz2Iu2E4meXkccmmjsXL19T+vA3sNsRrHt6MZScx46BULV0KHZlN7i5c0eMi2c3CkZ3
-         lchsrvpcvnS9PU5PpfuWIhJceVMldtdPA0QGzCdbyqITHCfteAMDTo0IeuF+eR5xZ5d+
-         UfiM2so+Q0xlYuFrXwPLLdgjnmy5ShkKwyz/oP+lOoWgVuME4XXHEaSQTZaQicia8X4U
-         +qfQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uJi4jtdQuDqGEt07PwiKJC5d4j2By/gmdsJ1oEq9SmE=;
+        b=X96lW4YyddkMCGcpnFVQcxHKWJpRXLQGtNfY0KeuG9rZ7WidgjVPDjQJcPVREzwhgt
+         kaERPrOoXOsUW4vPLIwudaBt4ZnfQ9mOolzG3XosMDehPQ7771mZIckJQfW/yPQp2JH0
+         qriaLwmBtGLbg9GXJWUlOvwQXi7XOX6WEmumypasBSffHY2pzshRG6Cp+PB1OhbwTXoJ
+         xj1wqeWzNPpgYVhnBgquGGFBOUWdbxUTLgo4Phk1e9nJJBTOL8HCybL3qtIfR1zekEk5
+         eJ8kOgD/4ZezvN6PRS7unp6GG/blfNzz/y8L6FaQ+qa/cg8vhZTldb+OH928fYg2FkaW
+         9IFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cFsnWYgZv7EVrgBXFoXDcyOnuUF1YGc0qpDAPXty7qM=;
-        b=J2RhZhqfUuwPNuaumIImJKuIEI/nqD88ZiubXE4Os3ME69+32tQiyVeFBrxmnDIhjV
-         s5FwyLpLu7saKLjON7Aphy0Rs5JrNZqplLFRFCAnfV45BK96HAEmrAeFHJB66XxTu1s4
-         fbeFoEjlz3F99yD6iW856o8qQ1shrvy/ZxLoqPPDFe7eyfKlIBXdAyzFTTvI2aCnWvY3
-         7RSg0ix0rHYGhONA9Wky5qd1LIlX18X/qanWKls4/gQCkU54rd0a7sgVZSI/iqv5WgY4
-         vebo8imKmsUeBfZIjbm8kcfuYfZQ++AUfGdjdZEGECwLwW+CbeSEPQFW6qVx8Zw6srum
-         ZTuw==
-X-Gm-Message-State: AOAM530d23vCG1RN/Jta3H51YK1ZTz6fayOblmQ+uGXGdZsBpvN+gnzO
-        C3Fe0QDi9VsPZWcOyPF7vHwGfdC2WCGW8fVeDt82n1vvL2op6+/z
-X-Google-Smtp-Source: ABdhPJxo9vQhx5jAiwh3efAFGegWPXZc5sMvpOTSOYmtS93t0tF6VZI9BN3Hpbxzt0UpZAnOc12Vhp2kJlaPyIMW2tc=
-X-Received: by 2002:a25:6604:: with SMTP id a4mr8745791ybc.412.1608325909702;
- Fri, 18 Dec 2020 13:11:49 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uJi4jtdQuDqGEt07PwiKJC5d4j2By/gmdsJ1oEq9SmE=;
+        b=M1WXPVbgkVaZ9LTS6rLtrEU3Q6uqz1nwJO1yzMgQfmt3auVsGhBDazz1NMcZB9zP54
+         is33Sx15ub5rawW5A4hvstC+/dmAqHiTSBuBncpJ+PJfypS+1N9xQjeTiB5bd1sI3iZG
+         2oCLLTos7MAXcPY8FbPECr82RTRmmiw8iSnFhpqHy8Q99MPSTimjnaZ5agePWLwoD9Fa
+         o02i/nm3i6koVP19UrW3+Gy/7lLXnQ3C57cjAXEskpO7A9fCvWa+qUr40p5+Jx0pp6CA
+         mk2a+PiudKuxO3JdO0zzzHm4QL75VrqXTgTDCis0WeH8Z8BfHnEajMbzhEsJVZ1pRttW
+         Fp5A==
+X-Gm-Message-State: AOAM5313+8WTVIN1GJX9n36c4oJOKTuUc4p58caPMN7baqvXR4e16tif
+        Cx1x8RgF8ZksHv+hYw8OJGA=
+X-Google-Smtp-Source: ABdhPJw6cfqLcNBFKhfsYZ7y4u4m6Y8S+FxO1GoYiHTXIqCkoJN6PZtOEFwdWXFR7Ntz69Kzy0/D/Q==
+X-Received: by 2002:a17:906:ae4e:: with SMTP id lf14mr6058062ejb.310.1608326077264;
+        Fri, 18 Dec 2020 13:14:37 -0800 (PST)
+Received: from skbuf ([188.25.2.120])
+        by smtp.gmail.com with ESMTPSA id g10sm25455239edu.97.2020.12.18.13.14.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Dec 2020 13:14:36 -0800 (PST)
+Date:   Fri, 18 Dec 2020 23:14:35 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     netdev@vger.kernel.org, andrew@lunn.ch,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Murali Krishna Policharla <murali.policharla@broadcom.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "open list:BROADCOM SYSTEMPORT ETHERNET DRIVER" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net] net: systemport: set dev->max_mtu to
+ UMAC_MAX_MTU_SIZE
+Message-ID: <20201218211435.mjdknhltolu4gvqr@skbuf>
+References: <20201218173843.141046-1-f.fainelli@gmail.com>
+ <20201218202441.ppcxswvlix3xszsn@skbuf>
+ <c178b5db-3de4-5f02-eee3-c9e69393174a@gmail.com>
+ <20201218205220.jb3kh7v23gtpymmx@skbuf>
+ <b8e61c3f-179f-7d8f-782a-86a8c69c5a75@gmail.com>
+ <20201218210250.owahylqnagtssbsw@skbuf>
+ <cf2daa3c-8f64-0f58-5a42-2182cec5ba4a@gmail.com>
 MIME-Version: 1.0
-References: <20201218031703.3053753-1-saravanak@google.com>
-In-Reply-To: <20201218031703.3053753-1-saravanak@google.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Fri, 18 Dec 2020 13:11:13 -0800
-Message-ID: <CAGETcx9K8f8c+AT_AVtbgDn3=N9YtytoThj-KX_JQO9KfvTr1Q@mail.gmail.com>
-Subject: Re: [PATCH v1 0/5] Enable fw_devlink=on by default
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Android Kernel Team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Marc Zyngier <maz@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cf2daa3c-8f64-0f58-5a42-2182cec5ba4a@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 7:17 PM Saravana Kannan <saravanak@google.com> wrote:
->
-> As discussed in LPC 2020, cyclic dependencies in firmware that couldn't
-> be broken using logic was one of the last remaining reasons
-> fw_devlink=on couldn't be set by default.
->
-> This series changes fw_devlink so that when a cyclic dependency is found
-> in firmware, the links between those devices fallback to permissive mode
-> behavior. This way, the rest of the system still benefits from
-> fw_devlink, but the ambiguous cases fallback to permissive mode.
->
-> Setting fw_devlink=on by default brings a bunch of benefits (currently,
-> only for systems with device tree firmware):
-> * Significantly cuts down deferred probes.
-> * Device probe is effectively attempted in graph order.
-> * Makes it much easier to load drivers as modules without having to
->   worry about functional dependencies between modules (depmod is still
->   needed for symbol dependencies).
->
-> Greg/Rafael,
->
-> Can we get this pulled into 5.11-rc1 or -rc2 soon please? I expect to
-> see some issues due to device drivers that aren't following best
-> practices (they don't expose the device to driver core). Want to
-> identify those early on and try to have them fixed before 5.11 release.
-> See [1] for an example of such a case.
->
-> If we do end up have to revert anything, it'll just be Patch 5/5 (a one
-> liner).
->
-> Marc,
->
-> You had hit issues with fw_devlink=on before on some of your systems.
-> Want to give this a shot?
+On Fri, Dec 18, 2020 at 01:08:58PM -0800, Florian Fainelli wrote:
+> On 12/18/20 1:02 PM, Vladimir Oltean wrote:
+> > On Fri, Dec 18, 2020 at 12:54:33PM -0800, Florian Fainelli wrote:
+> >> On 12/18/20 12:52 PM, Vladimir Oltean wrote:
+> >>> On Fri, Dec 18, 2020 at 12:30:20PM -0800, Florian Fainelli wrote:
+> >>>> On 12/18/20 12:24 PM, Vladimir Oltean wrote:
+> >>>>> Hi Florian,
+> >>>>>
+> >>>>> On Fri, Dec 18, 2020 at 09:38:43AM -0800, Florian Fainelli wrote:
+> >>>>>> The driver is already allocating receive buffers of 2KiB and the
+> >>>>>> Ethernet MAC is configured to accept frames up to UMAC_MAX_MTU_SIZE.
+> >>>>>>
+> >>>>>> Fixes: bfcb813203e6 ("net: dsa: configure the MTU for switch ports")
+> >>>>>> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> >>>>>> ---
+> >>>>>>  drivers/net/ethernet/broadcom/bcmsysport.c | 1 +
+> >>>>>>  1 file changed, 1 insertion(+)
+> >>>>>>
+> >>>>>> diff --git a/drivers/net/ethernet/broadcom/bcmsysport.c b/drivers/net/ethernet/broadcom/bcmsysport.c
+> >>>>>> index 0fdd19d99d99..b1ae9eb8f247 100644
+> >>>>>> --- a/drivers/net/ethernet/broadcom/bcmsysport.c
+> >>>>>> +++ b/drivers/net/ethernet/broadcom/bcmsysport.c
+> >>>>>> @@ -2577,6 +2577,7 @@ static int bcm_sysport_probe(struct platform_device *pdev)
+> >>>>>>  			 NETIF_F_HW_VLAN_CTAG_TX;
+> >>>>>>  	dev->hw_features |= dev->features;
+> >>>>>>  	dev->vlan_features |= dev->features;
+> >>>>>> +	dev->max_mtu = UMAC_MAX_MTU_SIZE;
+> >>>>>>  
+> >>>>>>  	/* Request the WOL interrupt and advertise suspend if available */
+> >>>>>>  	priv->wol_irq_disabled = 1;
+> >>>>>> -- 
+> >>>>>> 2.25.1
+> >>>>>>
+> >>>>>
+> >>>>> Do you want to treat the SYSTEMPORT Lite differently?
+> >>>>>
+> >>>>> 	/* Set maximum frame length */
+> >>>>> 	if (!priv->is_lite)
+> >>>>> 		umac_writel(priv, UMAC_MAX_MTU_SIZE, UMAC_MAX_FRAME_LEN);
+> >>>>> 	else
+> >>>>> 		gib_set_pad_extension(priv);
+> >>>>
+> >>>> SYSTEMPORT Lite does not actually validate the frame length, so setting
+> >>>> a maximum number to the buffer size we allocate could work, but I don't
+> >>>> see a reason to differentiate the two types of MACs here.
+> >>>
+> >>> And if the Lite doesn't validate the frame length, then shouldn't it
+> >>> report a max_mtu equal to the max_mtu of the attached DSA switch, plus
+> >>> the Broadcom tag length? Doesn't the b53 driver support jumbo frames?
+> >>
+> >> And how would I do that without create a horrible layering violation in
+> >> either the systemport driver or DSA? Yes the b53 driver supports jumbo
+> >> frames.
+> > 
+> > Sorry, I don't understand where is the layering violation (maybe it doesn't
+> > help me either that I'm not familiar with Broadcom architectures).
+> > 
+> > Is the SYSTEMPORT Lite always used as a DSA master, or could it also be
+> > used standalone? What would be the issue with hardcoding a max_mtu value
+> > which is large enough for b53 to use jumbo frames?
+> 
+> SYSTEMPORT Lite is always used as a DSA master AFAICT given its GMII
+> Integration Block (GIB) was specifically designed with another MAC and
+> particularly that of a switch on the other side.
+> 
+> The layering violation I am concerned with is that we do not know ahead
+> of time which b53 switch we are going to be interfaced with, and they
+> have various limitations on the sizes they support. Right now b53 only
+> concerns itself with returning JMS_MAX_SIZE, but I am fairly positive
+> this needs fixing given the existing switches supported by the driver.
 
-Marc,
-
-If you decide to test this, please also pull in this patch. It should
-fix all your interrupt issues.
-
-https://lore.kernel.org/lkml/20201218210750.3455872-1-saravanak@google.com/
-
--Saravana
+Maybe we don't need to over-engineer this. As long as you report a large
+enough max_mtu in the SYSTEMPORT Lite driver to accomodate for all
+possible revisions of embedded switches, and the max_mtu of the switch
+itself is still accurate and representative of the switch revision limits,
+I think that's good enough.
