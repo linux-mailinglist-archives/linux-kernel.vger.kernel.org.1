@@ -2,94 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 717502DE9E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 20:48:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F01F2DE9EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 20:51:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733280AbgLRTrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 14:47:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733261AbgLRTrz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 14:47:55 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32155C0617A7
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 11:47:15 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id q22so2125694pfk.12
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 11:47:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yg7MsJ706SbGSnOta6LMLPM0AHpDF071o+e8GGkKZg8=;
-        b=MmZc/KovMFwoplkadFGMaox8iCBzd4feey0XKRQQeUKfkxGVDdJ8XqmymSiZkcfiZj
-         Hs9uHSwN2IiqYE6wlEk2FJT0FPzYqQTBP3bwa8OF5UbBc4ArZvUECBYhuP9vJXPCbHwg
-         uss+tj7Bj/m53hp1dUCizS1vCS20ZubPt8XnM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yg7MsJ706SbGSnOta6LMLPM0AHpDF071o+e8GGkKZg8=;
-        b=QgXnyikb2bNLP5Oz8XQypwRwd8K6d0i8NtMVNUrz+rvW08ohy41FZl1BTjPmKG/8g0
-         8P5Ubc2hYN78IFdRYwKF3DYNEUb2o5qOMjWNvgbwio892IKxN7rnDaHlbRql8l1reblS
-         NIPj0fL+5EVcXc6gSrUjyCpu7e7phsLt1iuy6wsEImTQfYzy6ZXFLjWAOPVnWeuao0j3
-         6MTbUn+HrvVkQOAe+Av6DGbWlXsKNyxXmDaOAo/G/58+NIgS8xj4+PViXjv/daE+8ck8
-         EsZcELDd421b0G9jFmlnvP67m+6pD5X9CnX9m0v68RAA6bhM3RXV1HvLTrTSOoiBx9Yo
-         c4sA==
-X-Gm-Message-State: AOAM531zWLWDcfasGqpObeKOvxyAtdsNPd7khpa1wvdHFjUb13gAnBoa
-        1R7eSMBc+f9+PFi/S2QXHZPV1w==
-X-Google-Smtp-Source: ABdhPJy717r6dsRuH1Jj7QxMmKipllOb0j2Wah/uZFjOeYQ1zQicv7sNnkUOzI5HpY2uspOqq+zTMA==
-X-Received: by 2002:a63:5004:: with SMTP id e4mr5607622pgb.338.1608320834644;
-        Fri, 18 Dec 2020 11:47:14 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id t25sm9493002pgv.30.2020.12.18.11.47.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Dec 2020 11:47:13 -0800 (PST)
-Date:   Fri, 18 Dec 2020 11:47:12 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+73d662376f16e2a7336d@syzkaller.appspotmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: upstream boot error: UBSAN: null-ptr-deref in corrupted
-Message-ID: <202012181131.A231B861@keescook>
-References: <000000000000b6cd8d05b6a640ae@google.com>
- <CACT4Y+a2itFzrrE63s0E0zEYzWRhg3eRy+zUishW2dqYrywsnw@mail.gmail.com>
+        id S1733304AbgLRTv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 14:51:29 -0500
+Received: from leonov.paulk.fr ([185.233.101.22]:42842 "EHLO leonov.paulk.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726718AbgLRTv2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 14:51:28 -0500
+Received: from gagarine.paulk.fr (gagarine [192.168.1.127])
+        by leonov.paulk.fr (Postfix) with ESMTPS id 3D4F1BFD9A;
+        Fri, 18 Dec 2020 20:50:47 +0100 (CET)
+Received: by gagarine.paulk.fr (Postfix, from userid 114)
+        id B1EC3C1D4A; Fri, 18 Dec 2020 20:50:46 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on gagarine.paulk.fr
+X-Spam-Level: 
+X-Spam-Status: No, score=0.0 required=5.0 tests=none autolearn=unavailable
+        autolearn_force=no version=3.4.2
+Received: from localhost.localdomain (collins [192.168.1.129])
+        by gagarine.paulk.fr (Postfix) with ESMTP id 8C268C1D31;
+        Fri, 18 Dec 2020 20:50:35 +0100 (CET)
+From:   Paul Kocialkowski <contact@paulk.fr>
+To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Paul Kocialkowski <contact@paulk.fr>
+Subject: [PATCH] ARM: dts: sun8i-v3s: Add CSI0 MCLK pin definition
+Date:   Fri, 18 Dec 2020 20:50:33 +0100
+Message-Id: <20201218195033.2301127-1-contact@paulk.fr>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+a2itFzrrE63s0E0zEYzWRhg3eRy+zUishW2dqYrywsnw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 11:38:30AM +0100, Dmitry Vyukov wrote:
-> On Thu, Dec 17, 2020 at 11:14 AM syzbot
-> <syzbot+73d662376f16e2a7336d@syzkaller.appspotmail.com> wrote:
-> >
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    accefff5 Merge tag 'arm-soc-omap-genpd-5.11' of git://git...
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=14567b7f500000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=1e6efc730c219bd4
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=73d662376f16e2a7336d
-> > compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+73d662376f16e2a7336d@syzkaller.appspotmail.com
-> 
-> +Kees
-> 
-> Not sure if it's related to UBSAN or not, but we didn't used to get
-> empty stack traces.
-> Either way syzbot can't boot the upstream kernel anymore.
+This adds a device-tree definition for the CSI0 MCLK pin,
+which can be used for feeding MIPI CSI-2 sensors.
 
-_none_ of them? :(
+Signed-off-by: Paul Kocialkowski <contact@paulk.fr>
+---
+ arch/arm/boot/dts/sun8i-v3s.dtsi | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Are you able to see which UBSAN config is tweaking this?
-
+diff --git a/arch/arm/boot/dts/sun8i-v3s.dtsi b/arch/arm/boot/dts/sun8i-v3s.dtsi
+index a9f5795d4e57..bff822b9fa01 100644
+--- a/arch/arm/boot/dts/sun8i-v3s.dtsi
++++ b/arch/arm/boot/dts/sun8i-v3s.dtsi
+@@ -337,6 +337,12 @@ pio: pinctrl@1c20800 {
+ 			interrupt-controller;
+ 			#interrupt-cells = <3>;
+ 
++			/omit-if-no-ref/
++			csi0_mclk_pin: csi0-mclk-pin {
++				pins = "PE20";
++				function = "csi_mipi";
++			};
++
+ 			/omit-if-no-ref/
+ 			csi1_8bit_pins: csi1-8bit-pins {
+ 				pins = "PE0", "PE2", "PE3", "PE8", "PE9",
 -- 
-Kees Cook
+2.29.2
+
