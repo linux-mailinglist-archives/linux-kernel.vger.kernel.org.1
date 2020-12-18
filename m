@@ -2,83 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CAEC2DEA55
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 21:42:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49AE92DEA5A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 21:44:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728170AbgLRUl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 15:41:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48780 "EHLO mail.kernel.org"
+        id S1730440AbgLRUnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 15:43:50 -0500
+Received: from mga02.intel.com ([134.134.136.20]:47247 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725870AbgLRUl6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 15:41:58 -0500
-Date:   Fri, 18 Dec 2020 20:41:02 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608324077;
-        bh=EO5DKg/J2N3fqUQx4Bo6zO96z1Rm0SCzL3yMl3UL5xo=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZTWooaXYeyj0GlG1hIPoys+JgKQkE0UhQJblM+rerAEGTH+Da/jEldiaS3YIuVfj6
-         rw7dPMfhZX2GbM0b9sWWO+bg5K5XFB7fGIpfZN2wn1MjeTrd/UM5yq33r1AqB9Mtxt
-         loX6TYyXZFYvAfaBzQPgtYGmrLicI2s8Ggng+qZPF7XyIv41xPuS8i/ENyZsn/oYBC
-         woPUeH561cz6qWcik0/SmMXRAW92dKSctk1LOVxwxto4XfY9URgz3l8G1I6PAg4qXz
-         XE89WBTpxw1+Q7bQ7gqJcJAd4PHqnPwKyHxoGxXAzEGUDHm93J8WGLzQDfv+GjFncY
-         kb04dCKQRruFQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     Sowjanya Komatineni <skomatineni@nvidia.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, robh+dt@kernel.org,
-        lukas@wunner.de, bbrezillon@kernel.org,
-        tudor.ambarus@microchip.com, linux-spi@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 5/9] spi: spi-mem: Mark dummy transfers by setting
- dummy_data bit
-Message-ID: <20201218204102.GF5333@sirena.org.uk>
-References: <1608236927-28701-1-git-send-email-skomatineni@nvidia.com>
- <1608236927-28701-6-git-send-email-skomatineni@nvidia.com>
- <20201218092106.skwej2g6bk3oksbb@ti.com>
- <20201218105759.43789ccf@collabora.com>
- <31c395ee-d7a6-edc5-a790-89fad91a0a27@nvidia.com>
- <20201218191936.hb6sq7zr3zdirar7@ti.com>
+        id S1726175AbgLRUnu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 15:43:50 -0500
+IronPort-SDR: 4yoi1/gAbaJHGqT98AV8MaafVFW3+lve17xIs0J7DNhST8TQlvLT0xxo43P6D/C0z+gAGkvnDh
+ g8vwIBd4KcEw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9839"; a="162552756"
+X-IronPort-AV: E=Sophos;i="5.78,431,1599548400"; 
+   d="scan'208";a="162552756"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2020 12:42:04 -0800
+IronPort-SDR: FGMcq3QwsCmxzmDQpIJ5sd/3kNP9SatPg7WSJ33jbWB4qo7dN9OfynKOquzgHyb8G6C2gzA/2X
+ IzhuunNVfphA==
+X-IronPort-AV: E=Sophos;i="5.78,431,1599548400"; 
+   d="scan'208";a="489926367"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2020 12:41:56 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kqMaX-00FgPF-7Z; Fri, 18 Dec 2020 22:42:57 +0200
+Date:   Fri, 18 Dec 2020 22:42:57 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
+        lenb@kernel.org, gregkh@linuxfoundation.org, yong.zhi@intel.com,
+        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
+        tian.shu.qiu@intel.com, mchehab@kernel.org, robert.moore@intel.com,
+        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
+        linus.walleij@linaro.org, heikki.krogerus@linux.intel.com,
+        kitakar@gmail.com, jorhand@linux.microsoft.com
+Subject: Re: [PATCH v2 11/12] acpi: Add acpi_dev_get_next_match_dev() and
+ helper macro
+Message-ID: <20201218204257.GD4077@smile.fi.intel.com>
+References: <20201217234337.1983732-1-djrscally@gmail.com>
+ <20201217234337.1983732-12-djrscally@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="SnV5plBeK2Ge1I9g"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201218191936.hb6sq7zr3zdirar7@ti.com>
-X-Cookie: Password:
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201217234337.1983732-12-djrscally@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Dec 17, 2020 at 11:43:36PM +0000, Daniel Scally wrote:
+> To ensure we handle situations in which multiple sensors of the same
+> model (and therefore _HID) are present in a system, we need to be able
+> to iterate over devices matching a known _HID but unknown _UID and _HRV
+>  - add acpi_dev_get_next_match_dev() to accommodate that possibility and
+> change acpi_dev_get_first_match_dev() to simply call the new function
+> with a NULL starting point. Add an iterator macro for convenience.
 
---SnV5plBeK2Ge1I9g
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+...
 
-On Sat, Dec 19, 2020 at 12:49:38AM +0530, Pratyush Yadav wrote:
+> - * acpi_dev_get_first_match_dev - Return the first match of ACPI device
+> + * acpi_dev_get_next_match_dev - Return the next match of ACPI device
+> + * @adev: Pointer to the previous acpi_device matching this hid, uid and hrv
 
-> Anyway, if the SPI maintainers think this is worth it, I won't object.
+A nit: @hid, @uid and @hrv
 
-This gets kind of circular, for me it's a question of if there's some
-meaningful benefit from using the feature vs the cost to support it and
-=66rom the sounds of it we don't have numbers on the benefits from using
-it at present.
+>   * @hid: Hardware ID of the device.
+>   * @uid: Unique ID of the device, pass NULL to not check _UID
+>   * @hrv: Hardware Revision of the device, pass -1 to not check _HRV
 
---SnV5plBeK2Ge1I9g
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+With Best Regards,
+Andy Shevchenko
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/dE90ACgkQJNaLcl1U
-h9DvAAf/XmZq+AlzG4Q3Oydn2OQmtPfGB6QLybKV5qBqk5sQYzG5XRwlYXdCSXgc
-6je3SXKlqQUA+02ncjwG5DxjzjV8RSb8tEUwfQjowMm3jcGpk77K8QXC6RvJKfTJ
-ARY5NXoJO9PKJZTeNxrUMT50j/8daZywKN9yycr1GN7dIrP9xmP0u2N/Mn2Y5h/d
-MoffzBnmGSEhwuUNzwRj9vVpFqHRYSj8WHWsADBbgMxkqwHlJGLMbu3YUqGX9YD0
-FvWhN17C8DAsuHly0LGtI1Fy9SuRq9u6oNqqmaKqi/X3hQA0uXrGLC6gd0rEBovs
-Mu1hQUmSKbtq4frwYYX3muF2uV54nA==
-=dasX
------END PGP SIGNATURE-----
-
---SnV5plBeK2Ge1I9g--
