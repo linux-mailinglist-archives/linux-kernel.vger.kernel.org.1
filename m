@@ -2,116 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 821962DDEF4
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 08:17:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC0E72DDEF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 08:17:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732798AbgLRHRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 02:17:01 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:54995 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1732322AbgLRHRA (ORCPT
+        id S1732950AbgLRHRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 02:17:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732618AbgLRHRF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 02:17:00 -0500
-X-UUID: e68527d1d73447cab287e8ae6f90a952-20201218
-X-UUID: e68527d1d73447cab287e8ae6f90a952-20201218
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
-        (envelope-from <chaotian.jing@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1315769706; Fri, 18 Dec 2020 15:16:15 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 18 Dec 2020 15:16:13 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 18 Dec 2020 15:16:12 +0800
-From:   Chaotian Jing <chaotian.jing@mediatek.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-CC:     Chaotian Jing <chaotian.jing@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-mmc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>
-Subject: [PATCH] mmc: mediatek: fix race condition between msdc_request_timeout and irq
-Date:   Fri, 18 Dec 2020 15:16:11 +0800
-Message-ID: <20201218071611.12276-1-chaotian.jing@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Fri, 18 Dec 2020 02:17:05 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA7AC0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 23:16:25 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id z12so826619pjn.1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 23:16:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ApqerofOaEIKVsWbd43tuQ+Rw2I8tWIcPWDX1I3W53A=;
+        b=UAJIKEGSbpSZkC/GgKXecPne8+PC5lwlixKKGZVu5LyQCxsHV+IMqv5fqFLMjh9vAg
+         OZTlDJoBuLvNqL6EZl2KHKhRN9BNqv92+iIoeedZJAdajhD5a24yUq9sHpBIgTK1ObNI
+         r8z3OwDRSTTJPg9BDvdOHnmx4czylI12E7QJjLtEd96+J7s/8MShT2syR1V4InehVVuM
+         zjPbea09Ef3w73FaW6HVRWPbiE0nVAruH0ORj15ArLqMuBWbePOYVhk7OqEPHmvzksZ4
+         4GinLVyg33Pm7dSLfhOjO3BeIIj9vrUrireY/e1HvK8B5hTYpdD4bfvWWzcqtn0dlKlb
+         quFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ApqerofOaEIKVsWbd43tuQ+Rw2I8tWIcPWDX1I3W53A=;
+        b=LR6sKAUTMrShrm9VG0hdwWHP0cF3WariGKP2jZDQHmcB9y05mq2mdRjYZjT7ehwYLe
+         nk71nIotcotD69PMpnto8pPgYC3eiACziPpHV7UdSImuu9Sqan6HuQP+lJym76wjG23a
+         lPXKSqQzsOhSDYeYZ4eOgFua3EoJ7Dwif2YHXFKHKkLPTB5E7cAZ4oqFLo6U6Nrpms4R
+         UXiyz55HvJQKTAqV0IANpH2MlI7hoZD8t+taBr3I4V0XnKvRMz3foO+JHi1fSG8Bobx0
+         siHS7hUnUVRR4pOyiAIHLmZ7DLBQTpJlVMXeV9tz4RGD//Xp3YrDNjZYPx3PLdtdMUOK
+         gmFQ==
+X-Gm-Message-State: AOAM533ggSKrV9nW1JaBWMAXx/AG4EWbDyQeMDk6kkf7mFjbzxzxKm8k
+        YtC6qyQSRtThZs9F6/HOK8DgXg==
+X-Google-Smtp-Source: ABdhPJwwkdb1HZhf5VmdNZ4g8n96cGhrXc8cKebn9Z8gCoxJuUr7hL/V8at4qPDw1zBoKcKg0fmzpQ==
+X-Received: by 2002:a17:90a:9512:: with SMTP id t18mr3027950pjo.206.1608275784627;
+        Thu, 17 Dec 2020 23:16:24 -0800 (PST)
+Received: from localhost ([122.172.20.109])
+        by smtp.gmail.com with ESMTPSA id e5sm7794908pfc.76.2020.12.17.23.16.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 17 Dec 2020 23:16:23 -0800 (PST)
+Date:   Fri, 18 Dec 2020 12:46:21 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     bjorn.andersson@linaro.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        ulf.hansson@linaro.org, jorge.ramirez-ortiz@linaro.org,
+        broonie@kernel.org, lgirdwood@gmail.com, daniel.lezcano@linaro.org,
+        nks@flawful.org, agross@kernel.org, robh+dt@kernel.org,
+        rjw@rjwysocki.net, konrad.dybcio@somainline.org,
+        martin.botka@somainline.org, marijn.suijten@somainline.org,
+        phone-devel@vger.kernel.org
+Subject: Re: [PATCH 12/13] cpufreq: qcom-hw: Implement CPRh aware OSM
+ programming
+Message-ID: <20201218071621.i6bc2xgn6kthvmuw@vireshk-i7>
+References: <20201126184559.3052375-1-angelogioacchino.delregno@somainline.org>
+ <20201126184559.3052375-13-angelogioacchino.delregno@somainline.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201126184559.3052375-13-angelogioacchino.delregno@somainline.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-when get request SW timeout, if CMD/DAT xfer done irq coming right now,
-then there is race between the msdc_request_timeout work and irq handler,
-and the host->cmd and host->data may set to NULL in irq handler. also,
-current flow ensure that only one path can go to msdc_request_done(), so
-no need check the return value of cancel_delayed_work().
+On 26-11-20, 19:45, AngeloGioacchino Del Regno wrote:
+> On new SoCs (SDM845 onwards) the Operating State Manager (OSM) is
+> being programmed in the bootloader and write-protected by the
+> hypervisor, leaving to the OS read-only access to some of its
+> registers (in order to read the Lookup Tables and also some
+> status registers) and write access to the p-state register, for
+> for the OS to request a specific performance state to trigger a
+> DVFS switch on the CPU through the OSM hardware.
+> 
+> On old SoCs though (MSM8998, SDM630/660 and variants), the
+> bootloader will *not* initialize the OSM (and the CPRh, as it
+> is a requirement for it) before booting the OS, making any
+> request to trigger a performance state change ineffective, as
+> the hardware doesn't have any Lookup Table, nor is storing any
+> parameter to trigger a DVFS switch. In this case, basically all
+> of the OSM registers are *not* write protected for the OS, even
+> though some are - but write access is granted through SCM calls.
+> 
+> This commit introduces support for OSM programming, which has to
+> be done on these old SoCs that were distributed (almost?) always
+> with a bootloader that does not do any CPRh nor OSM init before
+> booting the kernel.
+> In order to program the OSM on these SoCs, it is necessary to
+> fullfill a "special" requirement: the Core Power Reduction
+> Hardened (CPRh) hardware block must be initialized, as the OSM
+> is "talking" to it in order to perform the Voltage part of DVFS;
+> here, we are calling initialization of this through Linux generic
+> power domains, specifically by requesting a genpd attach from the
+> qcom-cpufreq-hw driver, which will give back voltages associated
+> to each CPU frequency that has been declared in the OPPs, scaled
+> and interpolated with the previous one, and will also give us
+> parameters for the Array Power Mux (APM) and mem-acc, in order
+> for this driver to be then able to generate the Lookup Tables
+> that will be finally programmed to the OSM hardware.
+> 
+> After writing the parameters to the OSM and enabling it, all the
+> programming work will never happen anymore until a OS reboot, so
+> all of the allocations and "the rest" will be disposed-of: this
+> is done mainly to leave the code that was referred only to the
+> new SoCs intact, as to also emphasize on the fact that the OSM
+> HW is, in the end, the exact same; apart some register offsets
+> that are slightly different, the entire logic is the same.
+> 
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> ---
+>  drivers/cpufreq/qcom-cpufreq-hw.c | 914 +++++++++++++++++++++++++++++-
+>  1 file changed, 884 insertions(+), 30 deletions(-)
 
-Signed-off-by: Chaotian Jing <chaotian.jing@mediatek.com>
----
- drivers/mmc/host/mtk-sd.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+This is a lot of code, I need someone from Qcom's team to review it
+and make sure it doesn't break anything for the existing platforms.
 
-diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
-index de09c6347524..898ed1b023df 100644
---- a/drivers/mmc/host/mtk-sd.c
-+++ b/drivers/mmc/host/mtk-sd.c
-@@ -1127,13 +1127,13 @@ static void msdc_track_cmd_data(struct msdc_host *host,
- static void msdc_request_done(struct msdc_host *host, struct mmc_request *mrq)
- {
- 	unsigned long flags;
--	bool ret;
- 
--	ret = cancel_delayed_work(&host->req_timeout);
--	if (!ret) {
--		/* delay work already running */
--		return;
--	}
-+	/*
-+	 * No need check the return value of cancel_delayed_work, as only ONE
-+	 * path will go here!
-+	 */
-+	cancel_delayed_work(&host->req_timeout);
-+
- 	spin_lock_irqsave(&host->lock, flags);
- 	host->mrq = NULL;
- 	spin_unlock_irqrestore(&host->lock, flags);
-@@ -1155,7 +1155,7 @@ static bool msdc_cmd_done(struct msdc_host *host, int events,
- 	bool done = false;
- 	bool sbc_error;
- 	unsigned long flags;
--	u32 *rsp = cmd->resp;
-+	u32 *rsp;
- 
- 	if (mrq->sbc && cmd == mrq->cmd &&
- 	    (events & (MSDC_INT_ACMDRDY | MSDC_INT_ACMDCRCERR
-@@ -1176,6 +1176,7 @@ static bool msdc_cmd_done(struct msdc_host *host, int events,
- 
- 	if (done)
- 		return true;
-+	rsp = cmd->resp;
- 
- 	sdr_clr_bits(host->base + MSDC_INTEN, cmd_ints_mask);
- 
-@@ -1363,7 +1364,7 @@ static void msdc_data_xfer_next(struct msdc_host *host,
- static bool msdc_data_xfer_done(struct msdc_host *host, u32 events,
- 				struct mmc_request *mrq, struct mmc_data *data)
- {
--	struct mmc_command *stop = data->stop;
-+	struct mmc_command *stop;
- 	unsigned long flags;
- 	bool done;
- 	unsigned int check_data = events &
-@@ -1379,6 +1380,7 @@ static bool msdc_data_xfer_done(struct msdc_host *host, u32 events,
- 
- 	if (done)
- 		return true;
-+	stop = data->stop;
- 
- 	if (check_data || (stop && stop->error)) {
- 		dev_dbg(host->dev, "DMA status: 0x%8X\n",
 -- 
-2.18.0
-
+viresh
