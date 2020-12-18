@@ -2,173 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C9D52DDD31
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 04:12:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B7FC2DDD37
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 04:19:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732230AbgLRDLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 22:11:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40874 "EHLO
+        id S1732477AbgLRDRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 22:17:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727196AbgLRDLi (ORCPT
+        with ESMTP id S1726796AbgLRDRs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 22:11:38 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC194C0617B0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 19:10:51 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id lj6so542657pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 19:10:51 -0800 (PST)
+        Thu, 17 Dec 2020 22:17:48 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3ECDC0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 19:17:07 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id h75so962667ybg.18
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 19:17:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:cc:from:to:message-id;
-        bh=6r+rwvnvoTRYwgFoEYoaymOS5INCCnce7UgFQ4WFGVY=;
-        b=cw2avKYalGd12U43Lb4GYObHOfOWJfqJ2dpP7Bq6OLfSe6w0RoM1QmSdgZL32TWO9i
-         FPKp67E3RsGTuSfibl62w4MvgHaC5IdvC/063seoAJcKPZo14yNFz8f8s5+dshUP1odg
-         16gAZSW33yR5eNRjbxwfdwlcbvXnWM8xhuswuX3L/D+LSN3En9T68PzBLAtCirMCVK53
-         5EsZoHLwDaW9gzajnNsdYE79RM+ydoIo45zrO9BGvoLAYv7vUgzkGJy7xOVgY2oNb5ra
-         LI7wqttDwZfe0Bz+bU/VnRF3P0N+N8HBqgbzsWJKXcxD4v/RIaPkcdYSPv+K+7y9jpeg
-         lUdg==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=tFsp6CH4m43xFAZz/38v7JzYiv1DTpcXEDDEsiEkpXE=;
+        b=tDe0ASi54Tv7G07RldVhCqkUsWK32D6bMs0uxW4Un41XoPdSo+geG6Cn0h+95C0Gum
+         ppDl0HU33qGgqLEsFg9hzICvzZSE7t87DGpzvakZdHU+iCYx0WfBOiqzYROI3R1aAn9C
+         MYx3h4JtATcVi08xOVdnCqiJw6qLaJkirw0qVmDpt4t2M/E2atBZ9TENz0Vb2N5bNPx8
+         xCmGRcQn+vu7n0Gx18ArGLOVyWhlGMxycKo5y/7anBgEZceaz0DTciPi/TtjTXLCArIX
+         Bn9Jc01D+W6rmBBplpDENbBqBXf1EEf+rFjHOA7I2qCe4Q8dT7CbkphH4VsvdH7tur7K
+         DvnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:cc:from:to:message-id;
-        bh=6r+rwvnvoTRYwgFoEYoaymOS5INCCnce7UgFQ4WFGVY=;
-        b=hWnisPueFn6F4Hdu4WFpWknNVIglGVihdNO/n+4252WWGBSPd9ByedmeLgjr0XEBPn
-         hCUEDOF8OrDzNOaPLXlpv1Al4do6g9LJs6nm4H7+0vqx/qYAMB2dwV8lRtJkzSedC7Ba
-         lfWQZgtKj6D8d9hSq1g3wQlP41LGkjbhXxotygV9qJhvKSrTgqJf7fkPHYQiXARPBo8u
-         xRKN8wgul1hB0shnaUH/5cRRKVladIkNzVQXm+qJoVbon0AO/qhKGjK1ACkYCyztckBu
-         5xTpftjGSSSH8rnTu5dno4hrPHbeaYakTP63i9V8hLPa4vKoAQvX5fDpEPDTM+mWZABq
-         G5RQ==
-X-Gm-Message-State: AOAM53263oao8f7ofd+WFoVoJstoQz+gHUTb/4QPo7+tpBlxsWAQVzy5
-        JQvEggwnDxyhQQLNhlbPAqkbQviDDMYA04ZL
-X-Google-Smtp-Source: ABdhPJz1bXIxgl6WIpo/fjz/232QIrEPoGOunsXqY0VyemuWfpl4RGNRx78FXAxE0RyE92u9/0GUDw==
-X-Received: by 2002:a17:902:6b87:b029:da:79a5:26f0 with SMTP id p7-20020a1709026b87b02900da79a526f0mr1985097plk.81.1608261051394;
-        Thu, 17 Dec 2020 19:10:51 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id e5sm7052054pfc.76.2020.12.17.19.10.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 19:10:50 -0800 (PST)
-Date:   Thu, 17 Dec 2020 19:10:50 -0800 (PST)
-X-Google-Original-Date: Thu, 17 Dec 2020 19:10:48 PST (-0800)
-Subject: [GIT PULL] RISC-V Patches for the 5.11 Merge Window, Part 1
-CC:         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <mhng-9bb2f707-7aac-4141-8e3b-edc1b463fcd6@palmerdabbelt-glaptop>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=tFsp6CH4m43xFAZz/38v7JzYiv1DTpcXEDDEsiEkpXE=;
+        b=L+Lq2ruB4REQB5oYZXQVcagBOFhjVuO7MF1qUuIIh4ODYTAUDedgQUXtX92Ok4L5uC
+         G4YVpJ1H7vsFdLSBF7gnqyZFSqEmovSlM4bsHxvcfTMLffZNQhTvLX3AOLTvWcgp/ZwU
+         3bKeNq1dE4Se31qZihsOh9vSeUyMl6Co97+crM4izMuld21lSktjnPrnKdmtwHdjpfn3
+         WriDet+LtddOx4qQG6y5fUXya/UJJVU8SMwARnFe2pH4wPCALEQ15ApzVbg0G1ZJhzC0
+         hMKAOxt+dSewAkPigjPdxFMTeviYTeT08WQ/KsOZwMJE8dmYEt/2SAtlWfEi4+YkM6QM
+         fi4A==
+X-Gm-Message-State: AOAM533dn7lZskQLS3kTwJ1PVdJdwS6pFdt3s5TZG6ocCEBvwKSKuuc9
+        D6nLUGuDaCkdI2HkgHbVjDzivkz+ESIsV7c=
+X-Google-Smtp-Source: ABdhPJwXYDCs0xOa27xaFklH0qHkL/POwlXVjtGUooXF52Cf5F27MOwP6alBJYKDRfomuklQ12ykzhCwbIW3wis=
+Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:7220:84ff:fe09:fedc])
+ (user=saravanak job=sendgmr) by 2002:a25:818e:: with SMTP id
+ p14mr3302026ybk.425.1608261427017; Thu, 17 Dec 2020 19:17:07 -0800 (PST)
+Date:   Thu, 17 Dec 2020 19:16:58 -0800
+Message-Id: <20201218031703.3053753-1-saravanak@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.684.gfbc64c5ab5-goog
+Subject: [PATCH v1 0/5] Enable fw_devlink=on by default
+From:   Saravana Kannan <saravanak@google.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Saravana Kannan <saravanak@google.com>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Marc Zyngier <maz@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+As discussed in LPC 2020, cyclic dependencies in firmware that couldn't
+be broken using logic was one of the last remaining reasons
+fw_devlink=on couldn't be set by default.
 
-  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+This series changes fw_devlink so that when a cyclic dependency is found
+in firmware, the links between those devices fallback to permissive mode
+behavior. This way, the rest of the system still benefits from
+fw_devlink, but the ambiguous cases fallback to permissive mode.
 
-are available in the Git repository at:
+Setting fw_devlink=on by default brings a bunch of benefits (currently,
+only for systems with device tree firmware):
+* Significantly cuts down deferred probes.
+* Device probe is effectively attempted in graph order.
+* Makes it much easier to load drivers as modules without having to
+  worry about functional dependencies between modules (depmod is still
+  needed for symbol dependencies).
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.11-mw0
+Greg/Rafael,
 
-for you to fetch changes up to 7d95a88f9254b711a3a95106fc73f6a3a9866a40:
+Can we get this pulled into 5.11-rc1 or -rc2 soon please? I expect to
+see some issues due to device drivers that aren't following best
+practices (they don't expose the device to driver core). Want to
+identify those early on and try to have them fixed before 5.11 release.
+See [1] for an example of such a case.
 
-  Add and use a generic version of devmem_is_allowed() (2020-12-11 12:30:26 -0800)
+If we do end up have to revert anything, it'll just be Patch 5/5 (a one
+liner).
 
-----------------------------------------------------------------
-RISC-V Patches for the 5.11 Merge Window, Part 1
+Marc,
 
-We have a handful of new kernel features for 5.11:
+You had hit issues with fw_devlink=on before on some of your systems.
+Want to give this a shot?
 
-* Support for the contiguous memory allocator.
-* Support for IRQ Time Accounting
-* Support for stack tracing
-* Support for strict /dev/mem
-* Support for kernel section protection
+Jisheng,
 
-I'm being a bit conservative on the cutoff for this round due to the
-timing, so this is all the new development I'm going to take for this
-cycle (even if some of it probably normally would have been OK).  There
-are, however, some fixes on the list that I will likely be sending along
-either later this week or early next week.
+Want to fix up one of those gpio drivers you were having problems with?
 
-There is one issue in here: one of my test configurations
-(PREEMPT{,_DEBUG}=y) fails to boot on QEMU 5.0.0 (from April) as of the
-.text.init alignment patch.  With any luck we'll sort out the issue, but
-given how many bugs get fixed all over the place and how unrelated those
-features seem my guess is that we're just running into something that's
-been lurking for a while and has already been fixed in the newer QEMU
-(though I wouldn't be surprised if it's one of these implicit
-assumptions we have in the boot flow).  If it was hardware I'd be
-strongly inclined to look more closely, but given that users can upgrade
-their simulators I'm less worried about it.
+Thanks,
+Saravana
 
-There are two merge conflicts, both in build files.  They're both a bit
-clunky: arch/riscv/Kconfig is out of order (I have a script that's
-supposed to keep them in order, I'll fix it) and lib/Makefile is out of
-order (though GENERIC_LIB here doesn't mean quite what it does above).
+[1] - https://lore.kernel.org/lkml/CAGETcx9PiX==mLxB9PO8Myyk6u2vhPVwTMsA5NkD-ywH5xhusw@mail.gmail.com/
 
-----------------------------------------------------------------
-Atish Patra (4):
-      RISC-V: Initialize SBI early
-      RISC-V: Align the .init.text section
-      RISC-V: Protect all kernel sections including init early
-      RISC-V: Move dynamic relocation section under __init
+Cc: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Cc: Kevin Hilman <khilman@baylibre.com>
+Cc: John Stultz <john.stultz@linaro.org>
+Cc: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc: Marc Zyngier <maz@kernel.org>
 
-Kefeng Wang (9):
-      riscv: Fix compressed Image formats build
-      riscv: Clean up boot dir
-      riscv: Ignore Image.* and loader.bin
-      riscv: Enable CMA support
-      riscv: Add HAVE_IRQ_TIME_ACCOUNTING
-      riscv: Cleanup stacktrace
-      riscv: Make stack walk callback consistent with generic code
-      riscv: Enable ARCH_STACKWALK
-      riscv: kernel: Drop unused clean rule
+Saravana Kannan (5):
+  driver core: Add debug logs for device link related probe deferrals
+  driver core: Add device link support for INFERRED flag
+  driver core: Have fw_devlink use DL_FLAG_INFERRED
+  driver core: Handle cycles in device links created by fw_devlink
+  driver core: Set fw_devlink=on by default
 
-Nick Kossifidis (1):
-      RISC-V: Add kernel image sections to the resource tree
+ drivers/base/core.c    | 101 +++++++++++++++++++++++++++++++++++------
+ include/linux/device.h |   2 +
+ 2 files changed, 90 insertions(+), 13 deletions(-)
 
-Nylon Chen (1):
-      riscv: provide memmove implementation
+-- 
+2.29.2.684.gfbc64c5ab5-goog
 
-Palmer Dabbelt (5):
-      lib: Add a generic version of devmem_is_allowed()
-      RISC-V: Use the new generic devmem_is_allowed()
-      arm: Use the generic devmem_is_allowed()
-      arm64: Use the generic devmem_is_allowed()
-      Add and use a generic version of devmem_is_allowed()
-
-Souptick Joarder (1):
-      riscv: Fixed kernel test robot warning
-
- .../features/time/irq-time-acct/arch-support.txt   |   2 +-
- arch/arm/Kconfig                                   |   2 +-
- arch/arm/include/asm/io.h                          |   1 -
- arch/arm/mm/mmap.c                                 |  22 ---
- arch/arm64/Kconfig                                 |   2 +-
- arch/arm64/include/asm/io.h                        |   2 -
- arch/arm64/mm/mmap.c                               |  21 ---
- arch/riscv/Kconfig                                 |   3 +
- arch/riscv/Makefile                                |   6 +
- arch/riscv/boot/.gitignore                         |   3 +-
- arch/riscv/boot/Makefile                           |   2 +-
- arch/riscv/include/asm/sections.h                  |   2 +
- arch/riscv/include/asm/set_memory.h                |   4 +
- arch/riscv/include/asm/stacktrace.h                |  17 ++
- arch/riscv/include/asm/string.h                    |   8 +-
- arch/riscv/kernel/Makefile                         |   2 -
- arch/riscv/kernel/asm-offsets.c                    |   2 +
- arch/riscv/kernel/head.S                           |   1 -
- arch/riscv/kernel/perf_callchain.c                 |  10 +-
- arch/riscv/kernel/riscv_ksyms.c                    |   2 +
- arch/riscv/kernel/setup.c                          | 179 ++++++++++++++++++++-
- arch/riscv/kernel/stacktrace.c                     |  62 ++-----
- arch/riscv/kernel/vmlinux.lds.S                    |  63 +++++---
- arch/riscv/lib/Makefile                            |   1 +
- arch/riscv/lib/memmove.S                           |  64 ++++++++
- arch/riscv/mm/init.c                               |  52 +++---
- arch/riscv/mm/pageattr.c                           |   6 +
- include/asm-generic/io.h                           |   4 +
- lib/Kconfig                                        |   3 +
- lib/Kconfig.debug                                  |   2 +-
- lib/Makefile                                       |   2 +
- lib/devmem_is_allowed.c                            |  27 ++++
- 32 files changed, 402 insertions(+), 177 deletions(-)
- create mode 100644 arch/riscv/include/asm/stacktrace.h
- create mode 100644 arch/riscv/lib/memmove.S
- create mode 100644 lib/devmem_is_allowed.c
