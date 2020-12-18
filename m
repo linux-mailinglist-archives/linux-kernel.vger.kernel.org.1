@@ -2,108 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 155562DE3B5
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8CD2DE3B6
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:10:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727032AbgLROJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 09:09:47 -0500
-Received: from nat-hk.nvidia.com ([203.18.50.4]:20939 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725982AbgLROJr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 09:09:47 -0500
-Received: from HKMAIL103.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fdcb7fe0000>; Fri, 18 Dec 2020 22:09:02 +0800
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL103.nvidia.com
- (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 18 Dec
- 2020 14:09:00 +0000
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.171)
- by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 18 Dec 2020 14:09:00 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JoYn5ucAb62TBndhdo+39D7KTtQVPjq+OLzQ4hgrbDlB+EXonyWGYw+vnkxWSNpVVdO88yPUSP1flStOcbrCsB4meeMWJsOdLMXoeVzxWw8z5BvVX2xXDgJ7vXeN0CnxzlqiyCDsNo1Xhu9mRFMeOzLhZyVJvxF7J/t6iDrM/n68dR63JYD7zyiZYzmLsC9vxU3jfv15RFTRjExVFGi8FTBpHIKQtu8MuCe+bAMRgnEXvKIArQwAefd95EQ7Iuykd42g0I/jso4lk2F06+YIPWm4oNHGMpnM4fj9xLaSArOmoFIOu/UJ7r+Vp34S13cy6ZQltfw3ybLhUsoP6xlXLA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FqxdLmDnf0NVpgTU0lP9G0CPHgb64TOJPJ/P8z8Dc8U=;
- b=ltvny34KhEquTQoAFGZJSF7E5cVJxFSTZqvN/nr/GEm0FR353/qZOw1Yo1AEx2xTG9bHu4uxEVTBH3qY+LHOSb6cWFOn+gpPpHhjcZmrIy+ggjUHJEkPDzcxpnlq6z8jKEDPLp6nk/xYVrJJJEM9r/ObRlZgS7Kx6wBpJS+YeUdAiEMJ63ZZa6o3UeT3hky1ma5m2PNvvPqYv2xq2vkt2Nnx1lpyyARe8f2DTVulEn7yIV+TGEA1SavfbKPacx8oq9TmybDfmedRqtwRHWYvU0q+nchWhRYZyJu2IQYsADCoGrBBbR3m2ETWuZJrs7eAdKU5Ybx/oGBR/Qu0cIH5xw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4041.namprd12.prod.outlook.com (2603:10b6:5:210::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Fri, 18 Dec
- 2020 14:08:55 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3676.025; Fri, 18 Dec 2020
- 14:08:55 +0000
-Date:   Fri, 18 Dec 2020 10:08:54 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     Greg KH <gregkh@linuxfoundation.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        <alsa-devel@alsa-project.org>, Kiran Patil <kiran.patil@intel.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        "Liam Girdwood" <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        "Dave Ertman" <david.m.ertman@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        David Miller <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Parav Pandit <parav@mellanox.com>, <lee.jones@linaro.org>
-Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
-Message-ID: <20201218140854.GW552508@nvidia.com>
-References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
- <X8ogtmrm7tOzZo+N@kroah.com>
- <CAPcyv4iLG7V9JT34La5PYfyM9378acbLnkShx=6pOmpPK7yg3A@mail.gmail.com>
- <X8usiKhLCU3PGL9J@kroah.com> <20201217211937.GA3177478@piout.net>
- <X9xV+8Mujo4dhfU4@kroah.com> <20201218131709.GA5333@sirena.org.uk>
+        id S1727152AbgLROJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 09:09:51 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:34364 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725982AbgLROJu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 09:09:50 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BIE901h089178;
+        Fri, 18 Dec 2020 08:09:00 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1608300540;
+        bh=MP/aflp2kqPzZRgdYXg9m6RlHVOpsuvLhLq090MhZCI=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=DX2nq+GxbLDSzpLg38r1TBqCBOax+DnNY31pAoP3+mf+ueMDk7eNGm1CXeA3y+s9T
+         3r1akq/U1axTTJqJtxucDM9B5YJUAQUqMXY1Z62eT0NZTHbhGcAdyaG5YLGCZzSIHG
+         Wg/AS2TsjlVzbGzVOANRCqouSejVQceiT7ldAnwU=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BIE90q6078843
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 18 Dec 2020 08:09:00 -0600
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 18
+ Dec 2020 08:09:00 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 18 Dec 2020 08:09:00 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BIE90on036430;
+        Fri, 18 Dec 2020 08:09:00 -0600
+Date:   Fri, 18 Dec 2020 08:09:00 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Tero Kristo <t-kristo@ti.com>
+CC:     <linux-kernel@vger.kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Tero Kristo <kristo@kernel.org>
+Subject: Re: [PATCH] MAINTAINERS: Update my email address and maintainer
+ level status
+Message-ID: <20201218140900.5ys46co2bshgwmuc@monotype>
+References: <20201217130721.23555-1-t-kristo@ti.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20201218131709.GA5333@sirena.org.uk>
-X-ClientProxiedBy: BL1PR13CA0392.namprd13.prod.outlook.com
- (2603:10b6:208:2c2::7) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0392.namprd13.prod.outlook.com (2603:10b6:208:2c2::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.13 via Frontend Transport; Fri, 18 Dec 2020 14:08:55 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kqGRC-00Cg9S-2d; Fri, 18 Dec 2020 10:08:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1608300542; bh=FqxdLmDnf0NVpgTU0lP9G0CPHgb64TOJPJ/P8z8Dc8U=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=P3bQzSnN2N1kR/c2ruQqvBBXyTIAePZxtznSnSZhxZocH22xrPnPMcj0epcAhzBiA
-         D2vmq54B8kq4cn44ri+yJbT/cof450WbIaOnnHoZXAeLrE997aQUbKX2rnnklVGbn1
-         p74dBh7ZBNnLPfXVybBas5TYj/NqNd72EgVNZb5/MP3Ws4P+R1l77WLOMcGEGbEiPd
-         mh0ICzdJRO9rHLkVfkX/ltcd2BMyUwYBYjo1ceYgoVuwBoumn+19eE16OK+7z3/5ia
-         9ZZMYIi6KcCcmBzG1bISAhIox3/suLl/uM/DB2suG9/l+F97CILWWgkAu7O2VZXFvp
-         4lSalwb8Kp8Bg==
+In-Reply-To: <20201217130721.23555-1-t-kristo@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 01:17:09PM +0000, Mark Brown wrote:
+On 15:07-20201217, Tero Kristo wrote:
+> My employment with TI is ending tomorrow, so update the email address
+> entry in the maintainers file. Also, I don't expect to spend that much
+> time with maintaining TI code anymore, so downgrade the status level to
+> odd fixes only on areas where I remain as the main contact point for
+> now, and move myself as secondary contact point where someone else has
+> taken over the maintainership.
+> 
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: Michael Turquette <mturquette@baylibre.com>
+> Cc: Nishanth Menon <nm@ti.com>
+> Cc: Santosh Shilimkar <ssantosh@kernel.org>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Tony Luck <tony.luck@intel.com>
+> Signed-off-by: Tero Kristo <t-kristo@ti.com>
+> Signed-off-by: Tero Kristo <kristo@kernel.org>
 
-> As previously discussed this will need the auxilliary bus extending to
-> support at least interrupts and possibly also general resources.
+Thanks Tero. Much appreciate your help and continued support..
 
-I thought the recent LWN article summed it up nicely, auxillary bus is
-for gluing to subsystems together using a driver specific software API
-to connect to the HW, MFD is for splitting a physical HW into disjoint
-regions of HW.
+Acked-by: Nishanth Menon <nm@ti.com>
 
-Maybe there is some overlap, but if you want to add HW representations
-to the general auxillary device then I think you are using it for the
-wrong thing.
+> ---
+>  MAINTAINERS | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index f59ebd1eda3d..c362d8d9d316 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2615,8 +2615,8 @@ S:	Maintained
+>  F:	drivers/power/reset/keystone-reset.c
+>  
+>  ARM/TEXAS INSTRUMENTS K3 ARCHITECTURE
+> -M:	Tero Kristo <t-kristo@ti.com>
+>  M:	Nishanth Menon <nm@ti.com>
+> +M:	Tero Kristo <kristo@kernel.org>
+>  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>  S:	Supported
+>  F:	Documentation/devicetree/bindings/arm/ti/k3.yaml
+> @@ -6465,9 +6465,9 @@ S:	Maintained
+>  F:	drivers/edac/skx_*.[ch]
+>  
+>  EDAC-TI
+> -M:	Tero Kristo <t-kristo@ti.com>
+> +M:	Tero Kristo <kristo@kernel.org>
+>  L:	linux-edac@vger.kernel.org
+> -S:	Maintained
+> +S:	Odd Fixes
+>  F:	drivers/edac/ti_edac.c
+>  
+>  EDIROL UA-101/UA-1000 DRIVER
+> @@ -17503,7 +17503,7 @@ F:	drivers/iio/dac/ti-dac7612.c
+>  
+>  TEXAS INSTRUMENTS' SYSTEM CONTROL INTERFACE (TISCI) PROTOCOL DRIVER
+>  M:	Nishanth Menon <nm@ti.com>
+> -M:	Tero Kristo <t-kristo@ti.com>
+> +M:	Tero Kristo <kristo@kernel.org>
+>  M:	Santosh Shilimkar <ssantosh@kernel.org>
+>  L:	linux-arm-kernel@lists.infradead.org
+>  S:	Maintained
+> @@ -17647,9 +17647,9 @@ S:	Maintained
+>  F:	drivers/clk/clk-cdce706.c
+>  
+>  TI CLOCK DRIVER
+> -M:	Tero Kristo <t-kristo@ti.com>
+> +M:	Tero Kristo <kristo@kernel.org>
+>  L:	linux-omap@vger.kernel.org
+> -S:	Maintained
+> +S:	Odd Fixes
+>  F:	drivers/clk/ti/
+>  F:	include/linux/clk/ti.h
+>  
+> -- 
+> 2.17.1
+> 
+> --
+> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
-Jason
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
