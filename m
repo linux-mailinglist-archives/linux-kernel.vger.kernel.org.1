@@ -2,176 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F53C2DDE7C
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 07:14:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 434402DDE80
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 07:17:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732750AbgLRGNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 01:13:33 -0500
-Received: from mail-vi1eur05on2042.outbound.protection.outlook.com ([40.107.21.42]:55455
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726045AbgLRGNc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 01:13:32 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ePUZWwQggjcd1FaD4Hz6IB8cPBhOa02C89uO6swGrCYCEAe1xqzDAoDLH/zIoeaXrOY13gkBCz83xIYtO3I/5+dI+oOZp8RsfJA+L/1xPJYNbeqzYRvbUruD8aEKjXPJrvuZR+sldfaJdP6cjjVM24gM09X9A1s3HMmhePsI7uitU4KcwYL4U97vCOO8Ug69984R/d9Nnm5H5kwHMwIidZ1Jc0EBDOyuuGJ/KT+pUkGSwLINXCq0vP1emghtjUsAqcZMT56Jq7d4UJkRhGHzLVvgMdonkjxlJlayGvBX4HI6Em4953ZueW/iKTowwsmdGnlnwuf3YwpnCPdWlB85aA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J2xbs9tTKjF8wAcETwjp7ViIoDoxhSiIAWNIyxD1J18=;
- b=dz3rJLMtH26riT8+daYth5jyEINjrL/gPpOxjydU6OIHWM68/kMDqxExkE0A1j0alt0tEtMZVOf5GlLKLWRP4sr5gb5IVLNphJxAWitFGzN9Ov2OInu2o7uExdaujWl2JfXjiBg0riG8EkQeewZV62Lkfd7GrfkKN5V/DtgujoJTjbhwGHM8hv5ZWcnLWAMkkVCyDoPauylW/yXOQNS8Go0OtjO2gFkMMrIahbQjo+vmHPbbREZxAFc6lcnnejkU4f3mp3sAwUem7Yjdo/cKwhWmJsDWyDFWZMdYAcyc1col1CkTmxUDYlEPCDPV5oziPTwnPUE8YVc8vB4lUqpSUA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J2xbs9tTKjF8wAcETwjp7ViIoDoxhSiIAWNIyxD1J18=;
- b=I+if6rzPIG40NUMEigIttUsdGLKXANxDqPkF4srC1q1ejRKe5jg5VCJaV3I17zhw0YqiDw6I/MZe3n+dDooIAa9bt0bI0+1OsveOVOSJoFo4uTr1rLxx+qqArVrQECyg6wiWTGwYeK8L9EuB043CqAYBuBwFsYTJAV07PTD3wp0=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oss.nxp.com;
-Received: from AM0PR04MB5636.eurprd04.prod.outlook.com (2603:10a6:208:130::22)
- by AM8PR04MB7364.eurprd04.prod.outlook.com (2603:10a6:20b:1db::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.25; Fri, 18 Dec
- 2020 06:12:43 +0000
-Received: from AM0PR04MB5636.eurprd04.prod.outlook.com
- ([fe80::a891:518d:935c:30dd]) by AM0PR04MB5636.eurprd04.prod.outlook.com
- ([fe80::a891:518d:935c:30dd%6]) with mapi id 15.20.3654.020; Fri, 18 Dec 2020
- 06:12:43 +0000
-Date:   Fri, 18 Dec 2020 11:42:29 +0530
-From:   Calvin Johnson <calvin.johnson@oss.nxp.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, "linux.cj" <linux.cj@gmail.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        netdev <netdev@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [net-next PATCH v2 10/14] device property: Introduce
- fwnode_get_id()
-Message-ID: <20201218061229.GE14594@lsv03152.swis.in-blr01.nxp.com>
-References: <20201215164315.3666-1-calvin.johnson@oss.nxp.com>
- <20201215164315.3666-11-calvin.johnson@oss.nxp.com>
- <CAHp75Vef7Ln2hwx8BYao3SFxB8U2QTsfxPpxA_jxmujAMFpboA@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vef7Ln2hwx8BYao3SFxB8U2QTsfxPpxA_jxmujAMFpboA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [14.142.151.118]
-X-ClientProxiedBy: SG2PR01CA0102.apcprd01.prod.exchangelabs.com
- (2603:1096:3:15::28) To AM0PR04MB5636.eurprd04.prod.outlook.com
- (2603:10a6:208:130::22)
+        id S1732752AbgLRGRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 01:17:04 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:11963 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728146AbgLRGRD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 01:17:03 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608272197; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=LTW17UsHmSpSoJcBXlNHnM6V9HWBmm35DKkl0BCtoaM=;
+ b=iQ+T3y90uxwR5raNyltw/p67HhQcWRqsSoq19twPbuNE+duLpzdg+qlWCIVBt5IKvGR+q0Nl
+ 3UvHmh6GF+IDILIG/4menWO+w+zcsZqlbc9PtIe7vaXg04UicIq9SBvF4y3nxgbOajobYkb7
+ 77dRXSUK2MQS60vbH7uaFo95oLY=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5fdc492bf5e9af65f8e44b59 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Dec 2020 06:16:11
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 16F35C43461; Fri, 18 Dec 2020 06:16:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 70198C433CA;
+        Fri, 18 Dec 2020 06:16:09 +0000 (UTC)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from lsv03152.swis.in-blr01.nxp.com (14.142.151.118) by SG2PR01CA0102.apcprd01.prod.exchangelabs.com (2603:1096:3:15::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Fri, 18 Dec 2020 06:12:36 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: d49d64d5-4552-4e8f-f96a-08d8a31bee70
-X-MS-TrafficTypeDiagnostic: AM8PR04MB7364:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM8PR04MB7364D37C6E1711B451F2F7E2D2C30@AM8PR04MB7364.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: bHJbmg+L64nB4XjZKb9GXRjWfOqs30wJpXihoL61yVX58i9oHzHc/QUnxr5C8vjNAZl20uzfuPNGv5fyXQegWeVIZOYDC9IQbkv7a1X2N4dvHqDK6niK4mA9N6d4wCCpJYgIhP+rF09imRcJAl/3vHgC7hl5rcKlmH/F5tFNY18hOSDJ4pTboSSNgukFpD4SACZXGtlZPxO5kbq2oi5PnE10EwAf3YiMFN/NP31ZqWlNG97HBHfcpjCAMKCgh9pDeFrAOtpFcSoeBkEOd73JbjOlN72g/k/xg6bVaKNAlc9zyszMahDe1u1IPvshHgW8IqKmxu4MdI1HIiDQ6bB/Iks1aEGa8jR5WLEETjFLSEMYHPImnbJawfJgobkWsaVVH98c5Kv5vJcsjYV7yEgpfFoBv77s2eWQ06T3SZmGrwDSUtRzVEK5HFzL2EnusQji
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5636.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(376002)(39860400002)(136003)(396003)(9686003)(4326008)(66476007)(83380400001)(54906003)(86362001)(2906002)(5660300002)(66556008)(8936002)(66946007)(55016002)(956004)(186003)(6916009)(52116002)(26005)(44832011)(53546011)(478600001)(7416002)(6506007)(6666004)(55236004)(1076003)(33656002)(1006002)(7696005)(8676002)(16526019)(316002)(110426006);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?oJR/Wq2Pf79sE7xQDDdUo+cWhb/Y1RWLWQZ1bySDbCqY9KO1zCMJGHGD+3Ya?=
- =?us-ascii?Q?Bx6Nn6vJu+K+QxUg0q/j8Da3Xp6hG6t6Sx4nszA/GFiKFDFHiqE5qpS6N/aO?=
- =?us-ascii?Q?u531WMFu9H/E16emuyzitkiC/BYuYLEYJ5RQb1EVGFZuvhDFyJV23gsC/ugh?=
- =?us-ascii?Q?BPk8TmLrs/zWk2wYlkPlyiY8VU+6y3uX4A41aO8RnkplzwYZYnflcsG/J5AX?=
- =?us-ascii?Q?9QGB7v5OEBGujRxzp0v0GY43S/0p2CG5yT2ANhyG5BOlfJPLVUSlGxKcu35N?=
- =?us-ascii?Q?fnAmAwWi69Q91BwqjvZZS1PsKuswideW1e0qDTI/NI4ePMFZqlDtNEhwL3HP?=
- =?us-ascii?Q?3Smm0Obc51K211BmDv78jz5I4iWRXnpLOXsOjuRB65HzKJCzBfY73FObbaRa?=
- =?us-ascii?Q?R1k1uCyWAXBB2U1R4tiRMVvCmO45xO1apNO7aCIZhkIHKwTwL3u6KdN8cv03?=
- =?us-ascii?Q?gsRk6nbHjA+w//fg2YihnLfoMvr1tQ+nYQ1AngqoeYGOa3H7iJ2/W3lPoawo?=
- =?us-ascii?Q?uyda/FXSjrQW8Nyl67ScxuDVHrysYz8JTwRZe3nakIFxT8RTPZXWSq8QHQNF?=
- =?us-ascii?Q?TXjTMiwTegRGcWP1DICYZKcArCi6ud7DTOyvyypfNYHToGP5Q6rmkd4mOAmz?=
- =?us-ascii?Q?fQA3bf/yCzyA5cjQJpLgdiHXKla1o9rvWCkmLdyuZhAPcS2T0kWMzincQI8j?=
- =?us-ascii?Q?33aN2dZ1IJF3VzBvuWAEXbOG8JvH24lyyWymV431yBJWGlP0MTcf9Z0wOGcL?=
- =?us-ascii?Q?r0lXau+GbwrJvmrKzJIt/zNccoXcfusWYSt8pXkmLP4taKS9zCfeTHWiXvyJ?=
- =?us-ascii?Q?7pxQPqcwLp7FsuoRG005rsCwuyZFGVNWY9mFgBxUeE1XSqLG1gAt3jS394XL?=
- =?us-ascii?Q?KoIEN7G4o/ioTRlagTaew89g1SUCPbOIC6N6q3WY5odeB01BtSeHSrbDw6KH?=
- =?us-ascii?Q?wgWZDoKlWw/9crpCvF88OIjQ39Ikz0ABpCYmj8uof2g/F/7/OzYoua5Djv9J?=
- =?us-ascii?Q?ura+?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5636.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Dec 2020 06:12:43.1281
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-Network-Message-Id: d49d64d5-4552-4e8f-f96a-08d8a31bee70
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3ZmS4Pk9IwkCbmIWCcKPvdjX8aHVhU1uIg7hIZHx04OnnDXJYDFuEc8EypdKsK7rRbr13dOcQEhLRctNAMiYZw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7364
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 18 Dec 2020 14:16:09 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Stanley Chu <stanley.chu@mediatek.com>
+Cc:     linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
+        avri.altman@wdc.com, alim.akhtar@samsung.com, jejb@linux.ibm.com,
+        beanhuo@micron.com, asutoshd@codeaurora.org,
+        matthias.bgg@gmail.com, bvanassche@acm.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
+        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
+        chaotian.jing@mediatek.com, cc.chou@mediatek.com,
+        jiajie.hao@mediatek.com, alice.chao@mediatek.com
+Subject: Re: [PATCH v2 3/4] scsi: ufs: Cleanup and refactor clk-scaling
+ feature
+In-Reply-To: <20201216131639.4128-4-stanley.chu@mediatek.com>
+References: <20201216131639.4128-1-stanley.chu@mediatek.com>
+ <20201216131639.4128-4-stanley.chu@mediatek.com>
+Message-ID: <cda3a961b396c48e95b32dd70961ef1b@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 07:45:16PM +0200, Andy Shevchenko wrote:
-> On Tue, Dec 15, 2020 at 6:44 PM Calvin Johnson
-> <calvin.johnson@oss.nxp.com> wrote:
-> >
-> > Using fwnode_get_id(), get the reg property value for DT node
-> > and get the _ADR object value for ACPI node.
+On 2020-12-16 21:16, Stanley Chu wrote:
+> Manipulate clock scaling related stuff only if the host capability
+> supports clock scaling feature to avoid redundant code execution.
 > 
-> and -> or
+> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 64 ++++++++++++++++++++-------------------
+>  1 file changed, 33 insertions(+), 31 deletions(-)
 > 
-> ...
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 9cc16598136d..ce0528f2e2ed 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -1448,9 +1448,6 @@ static void ufshcd_suspend_clkscaling(struct 
+> ufs_hba *hba)
+>  	unsigned long flags;
+>  	bool suspend = false;
 > 
-> > +/**
-> > + * fwnode_get_id - Get the id of a fwnode.
-> > + * @fwnode: firmware node
-> > + * @id: id of the fwnode
-> > + *
-> > + * Returns 0 on success or a negative errno.
-> > + */
-> > +int fwnode_get_id(struct fwnode_handle *fwnode, u32 *id)
-> > +{
-> > +       unsigned long long adr;
-> > +       acpi_status status;
-> > +
-> > +       if (is_of_node(fwnode)) {
-> > +               return of_property_read_u32(to_of_node(fwnode), "reg", id);
+> -	if (!ufshcd_is_clkscaling_supported(hba))
+> -		return;
+> -
+>  	cancel_work_sync(&hba->clk_scaling.suspend_work);
+>  	cancel_work_sync(&hba->clk_scaling.resume_work);
 > 
-> ACPI nodes can hold reg property as well. I would rather think about
+> @@ -1470,9 +1467,6 @@ static void ufshcd_resume_clkscaling(struct 
+> ufs_hba *hba)
+>  	unsigned long flags;
+>  	bool resume = false;
 > 
-> ret = fwnode_property_read_u32(fwnode, "reg", id)
-> if (!(ret && is_acpi_node(fwnode)))
->   return ret;
+> -	if (!ufshcd_is_clkscaling_supported(hba))
+> -		return;
+> -
+>  	spin_lock_irqsave(hba->host->host_lock, flags);
+>  	if (hba->clk_scaling.is_suspended) {
+>  		resume = true;
+> @@ -5642,6 +5636,26 @@ static inline void
+> ufshcd_schedule_eh_work(struct ufs_hba *hba)
+>  	}
+>  }
 > 
-Got it. Will rework on it.
-> > +       } else if (is_acpi_node(fwnode)) {
+> +static void ufshcd_clk_scaling_allow(struct ufs_hba *hba, bool allow)
+> +{
+> +	down_write(&hba->clk_scaling_lock);
+> +	hba->clk_scaling.is_allowed = allow;
+> +	up_write(&hba->clk_scaling_lock);
+> +}
+> +
+> +static void ufshcd_clk_scaling_suspend(struct ufs_hba *hba, bool 
+> suspend)
+> +{
+> +	if (suspend) {
+> +		if (hba->clk_scaling.is_enabled)
+> +			ufshcd_suspend_clkscaling(hba);
+> +		ufshcd_clk_scaling_allow(hba, false);
+> +	} else {
+> +		ufshcd_clk_scaling_allow(hba, true);
+> +		if (hba->clk_scaling.is_enabled)
+> +			ufshcd_resume_clkscaling(hba);
+> +	}
+> +}
+> +
+>  static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
+>  {
+>  	pm_runtime_get_sync(hba->dev);
+> @@ -5663,23 +5677,20 @@ static void ufshcd_err_handling_prepare(struct
+> ufs_hba *hba)
+>  		ufshcd_vops_resume(hba, UFS_RUNTIME_PM);
+>  	} else {
+>  		ufshcd_hold(hba, false);
+> -		if (hba->clk_scaling.is_enabled)
+> +		if (ufshcd_is_clkscaling_supported(hba) &&
+> +		    hba->clk_scaling.is_enabled)
+>  			ufshcd_suspend_clkscaling(hba);
+>  	}
+> -	down_write(&hba->clk_scaling_lock);
+> -	hba->clk_scaling.is_allowed = false;
+> -	up_write(&hba->clk_scaling_lock);
+> +	ufshcd_clk_scaling_allow(hba, false);
+>  }
 > 
-> Redundant 'else'
+>  static void ufshcd_err_handling_unprepare(struct ufs_hba *hba)
+>  {
+>  	ufshcd_release(hba);
 > 
-> > +               status = acpi_evaluate_integer(ACPI_HANDLE_FWNODE(fwnode),
-> > +                                              METHOD_NAME__ADR, NULL, &adr);
-> > +               if (ACPI_FAILURE(status))
-> > +                       return -ENODATA;
+> -	down_write(&hba->clk_scaling_lock);
+> -	hba->clk_scaling.is_allowed = true;
+> -	up_write(&hba->clk_scaling_lock);
+> -	if (hba->clk_scaling.is_enabled)
+> -		ufshcd_resume_clkscaling(hba);
+> +	if (ufshcd_is_clkscaling_supported(hba))
+> +		ufshcd_clk_scaling_suspend(hba, false);
+> +
+>  	pm_runtime_put(hba->dev);
+>  }
 > 
-> I'm wondering if it compiles when CONFIG_ACPI=n.
-Correct. It doesn't compile for non-ACPI case. Will resolve it.
+> @@ -8507,12 +8518,8 @@ static int ufshcd_suspend(struct ufs_hba *hba,
+> enum ufs_pm_op pm_op)
+>  	ufshcd_hold(hba, false);
+>  	hba->clk_gating.is_suspended = true;
+> 
+> -	if (hba->clk_scaling.is_enabled)
+> -		ufshcd_suspend_clkscaling(hba);
+> -
+> -	down_write(&hba->clk_scaling_lock);
+> -	hba->clk_scaling.is_allowed = false;
+> -	up_write(&hba->clk_scaling_lock);
+> +	if (ufshcd_is_clkscaling_supported(hba))
+> +		ufshcd_clk_scaling_suspend(hba, true);
+> 
+>  	if (req_dev_pwr_mode == UFS_ACTIVE_PWR_MODE &&
+>  			req_link_state == UIC_LINK_ACTIVE_STATE) {
+> @@ -8618,11 +8625,9 @@ static int ufshcd_suspend(struct ufs_hba *hba,
+> enum ufs_pm_op pm_op)
+>  	if (!ufshcd_set_dev_pwr_mode(hba, UFS_ACTIVE_PWR_MODE))
+>  		ufshcd_disable_auto_bkops(hba);
+>  enable_gating:
+> -	down_write(&hba->clk_scaling_lock);
+> -	hba->clk_scaling.is_allowed = true;
+> -	up_write(&hba->clk_scaling_lock);
+> -	if (hba->clk_scaling.is_enabled)
+> -		ufshcd_resume_clkscaling(hba);
+> +	if (ufshcd_is_clkscaling_supported(hba))
+> +		ufshcd_clk_scaling_suspend(hba, false);
+> +
+>  	hba->clk_gating.is_suspended = false;
+>  	hba->dev_info.b_rpm_dev_flush_capable = false;
+>  	ufshcd_release(hba);
+> @@ -8719,11 +8724,8 @@ static int ufshcd_resume(struct ufs_hba *hba,
+> enum ufs_pm_op pm_op)
+> 
+>  	hba->clk_gating.is_suspended = false;
+> 
+> -	down_write(&hba->clk_scaling_lock);
+> -	hba->clk_scaling.is_allowed = true;
+> -	up_write(&hba->clk_scaling_lock);
+> -	if (hba->clk_scaling.is_enabled)
+> -		ufshcd_resume_clkscaling(hba);
+> +	if (ufshcd_is_clkscaling_supported(hba))
+> +		ufshcd_clk_scaling_suspend(hba, false);
+> 
+>  	/* Enable Auto-Hibernate if configured */
+>  	ufshcd_auto_hibern8_enable(hba);
 
-Thanks
-Calvin
+Thanks for the cleanup
+
+Reviewed-by: Can Guo <cang@codeaurora.org>
