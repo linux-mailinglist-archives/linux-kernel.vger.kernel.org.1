@@ -2,63 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36CCB2DDE91
+	by mail.lfdr.de (Postfix) with ESMTP id A5A2B2DDE92
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 07:26:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732795AbgLRGZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 01:25:17 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9228 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726045AbgLRGZQ (ORCPT
+        id S1732812AbgLRGZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 01:25:26 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:48749 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726045AbgLRGZ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 01:25:16 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CxzMg68jMzkrL7;
-        Fri, 18 Dec 2020 14:23:43 +0800 (CST)
-Received: from localhost (10.174.184.155) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Fri, 18 Dec 2020
- 14:24:27 +0800
-From:   Jiahui Cen <cenjiahui@huawei.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Wei Xu <xuwei5@hisilicon.com>, Arnd Bergmann <arnd@arndb.de>,
-        John Garry <john.garry@huawei.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        <xieyingtai@huawei.com>, Jiahui Cen <cenjiahui@huawei.com>
-Subject: [PATCH] lib/logic_pio: Fix overlap check for pio registery
-Date:   Fri, 18 Dec 2020 14:23:35 +0800
-Message-ID: <20201218062335.5320-1-cenjiahui@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 18 Dec 2020 01:25:26 -0500
+X-UUID: 44d4ae70b7994dada97ce3a48e45a363-20201218
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=p5Pd9MyWjtaI8OlZ0GtWLZdI6yWJxnKdwN03SSWjjoU=;
+        b=FGmVqk5sFX9LbtvduCYTP5qrv28vEi+gNb7aZreyJimC8FBi8myU8SgVLeZaFkHHoJ4/TJRa1bTzHR0RUZcS+/lOBRkjdmw+v0vsL3r3+mtfS+Eko3cQNbuTLrjkqJdhmE+QRL+ONUSohhUAG97xIi5LLVxoWGgkZ7lqqtmejPo=;
+X-UUID: 44d4ae70b7994dada97ce3a48e45a363-20201218
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 226353595; Fri, 18 Dec 2020 14:24:39 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 18 Dec 2020 14:24:38 +0800
+Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 18 Dec 2020 14:24:37 +0800
+Message-ID: <1608272678.10163.40.camel@mtkswgap22>
+Subject: Re: [PATCH v2 0/4] scsi: ufs: Cleanup and refactor clock scaling
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Can Guo <cang@codeaurora.org>
+CC:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>, <beanhuo@micron.com>,
+        <asutoshd@codeaurora.org>, <matthias.bgg@gmail.com>,
+        <bvanassche@acm.org>, <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
+        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
+        <alice.chao@mediatek.com>
+Date:   Fri, 18 Dec 2020 14:24:38 +0800
+In-Reply-To: <e939a0fd4afd1691f3e1a8182515ca64@codeaurora.org>
+References: <20201216131639.4128-1-stanley.chu@mediatek.com>
+         <e939a0fd4afd1691f3e1a8182515ca64@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.184.155]
-X-CFilter-Loop: Reflected
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the [start, end) is a half-open interval, a range with the end equal
-to the start of another range should not be considered as overlapped.
-
-Signed-off-by: Jiahui Cen <cenjiahui@huawei.com>
----
- lib/logic_pio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/lib/logic_pio.c b/lib/logic_pio.c
-index f32fe481b492..445d611f1dc1 100644
---- a/lib/logic_pio.c
-+++ b/lib/logic_pio.c
-@@ -57,7 +57,7 @@ int logic_pio_register_range(struct logic_pio_hwaddr *new_range)
- 		    new_range->flags == LOGIC_PIO_CPU_MMIO) {
- 			/* for MMIO ranges we need to check for overlap */
- 			if (start >= range->hw_start + range->size ||
--			    end < range->hw_start) {
-+			    end <= range->hw_start) {
- 				mmio_end = range->io_start + range->size;
- 			} else {
- 				ret = -EFAULT;
--- 
-2.28.0
+SGkgQ2FuLA0KDQpPbiBGcmksIDIwMjAtMTItMTggYXQgMTQ6MjAgKzA4MDAsIENhbiBHdW8gd3Jv
+dGU6DQo+IE9uIDIwMjAtMTItMTYgMjE6MTYsIFN0YW5sZXkgQ2h1IHdyb3RlOg0KPiA+IEhpLA0K
+PiA+IFRoaXMgc2VyaWVzIGNsZWFucyB1cCBhbmQgcmVmYWN0b3JzIGNsay1zY2FsaW5nIGZlYXR1
+cmUsIGFuZCBzaGFsbCBub3QNCj4gPiBjaGFuZ2UgYW55IGZ1bmN0aW9uYWxpdHkuDQo+ID4gDQo+
+ID4gVGhpcyBzZXJpZXMgaXMgYmFzZWQgb24gQ2FuJ3Mgc2VyaWVzICJUaHJlZSBjaGFuZ2VzIHJl
+bGF0ZWQgd2l0aCBVRlMNCj4gPiBjbG9jayBzY2FsaW5nIiBpbiA1LjEwL3Njc2ktZml4ZXMgYnJh
+bmNoIGluIE1hcnRpbidzIHRyZWUuDQo+ID4gDQo+IA0KPiBIaSBTdGFubGV5LA0KPiANCj4gVGhh
+bmtzIGZvciBub3RpY2luZyBteSBjaGFuZ2VzLCB3aWxsIHlvdSByZXZpZXcgdGhlbT8NCj4gSSBz
+ZWUgY3VzdG9tZXJzIG1hbmlwdWx0ZSBVRlMgc2NhbGluZyByZWxhdGVkIHN5c2ZzDQo+IG5vZGVz
+IG1vcmUgb2Z0ZW4gdGhhbiBiZWZvcmUsIHNvIHdlIG1heSB3YW50IHRvIGZpeCBpdCBhc2FwLg0K
+DQpJIGhhdmUgZ2F2ZSBteSByZXZpZXcgdGFnIGluIGFsbCBwYXRjaGVzIGluIHRoaXMgc2VyaWVz
+IDogKQ0KDQpUaGFua3MsDQpTdGFubGV5IENodQ0KDQo+IA0KPiBSZWdhcmRzLA0KPiANCj4gQ2Fu
+IEd1by4NCj4gDQo+ID4gSG93ZXZlciB0aGlzIHNlcmllcyBtYXkgbm90IGJlIHJlcXVpcmVkIHRv
+IGJlIG1lcmdlZCB0byA1LjEwLiBUaGUNCj4gPiBjaG9pY2Ugb2YgYmFzZSBicmFuY2ggaXMgc2lt
+cGx5IG1ha2luZyB0aGVzZSBwYXRjaGVzIGVhc3kgdG8gYmUNCj4gPiByZXZpZXdlZCBiZWNhdXNl
+IHRoaXMgc2VyaWVzIGlzIGJhc2VkIG9uIGNsay1zY2FsaW5nIGZpeGVzIGJ5IENhbi4gSWYNCj4g
+PiB0aGlzIHNlcmllcyBpcyBkZWNpZGVkIG5vdCBiZWluZyBtZXJnZWQgdG8gNS4xMCwgdGhlbiBJ
+IHdvdWxkIHJlYmFzZQ0KPiA+IGl0IHRvIDUuMTEvc2NzaS1xdWV1ZS4NCj4gPiANCj4gPiBDaGFu
+Z2VzIHNpbmNlIHYxOg0KPiA+ICAgLSBSZWZhY3RvciB1ZnNoY2RfY2xrX3NjYWxpbmdfc3VzcGVu
+ZCgpIGluIHBhdGNoIFszLzRdDQo+ID4gICAtIENoYW5nZSBmdW5jdGlvbiBuYW1lIGZyb20gdWZz
+aGNkX2Nsa19zY2FsaW5nX3BtKCkgdG8NCj4gPiB1ZnNoY2RfY2xrX3NjYWxpbmdfc3VzcGVuZCgp
+IGluIHBhdGNoIFszLzRdDQo+ID4gICAtIFJlZmluZSBwYXRjaCB0aXRsZXMNCj4gPiANCj4gPiBT
+dGFubGV5IENodSAoNCk6DQo+ID4gICBzY3NpOiB1ZnM6IFJlZmFjdG9yIGNhbmNlbGxpbmcgY2xr
+c2NhbGluZyB3b3Jrcw0KPiA+ICAgc2NzaTogdWZzOiBSZW1vdmUgcmVkdW5kYW50IG51bGwgY2hl
+Y2tpbmcgb2YgZGV2ZnJlcSBpbnN0YW5jZQ0KPiA+ICAgc2NzaTogdWZzOiBDbGVhbnVwIGFuZCBy
+ZWZhY3RvciBjbGstc2NhbGluZyBmZWF0dXJlDQo+ID4gICBzY3NpOiB1ZnM6IEZpeCBidWlsZCB3
+YXJuaW5nIGJ5IGluY29ycmVjdCBmdW5jdGlvbiBkZXNjcmlwdGlvbg0KPiA+IA0KPiA+ICBkcml2
+ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jIHwgOTAgKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0t
+LS0tLS0tLS0tDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCA0MyBpbnNlcnRpb25zKCspLCA0NyBkZWxl
+dGlvbnMoLSkNCg0K
 
