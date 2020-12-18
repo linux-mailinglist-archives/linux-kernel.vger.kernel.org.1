@@ -2,96 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49DD82DDCB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 02:56:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DCB92DDCAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 02:43:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732196AbgLRBwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 20:52:55 -0500
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:16830 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729402AbgLRBwz (ORCPT
+        id S1728539AbgLRBk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 20:40:58 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9225 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726851AbgLRBk5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 20:52:55 -0500
-X-IronPort-AV: E=Sophos;i="5.78,428,1599494400"; 
-   d="scan'208";a="102687556"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 18 Dec 2020 09:52:07 +0800
-Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
-        by cn.fujitsu.com (Postfix) with ESMTP id D6EE84CE4BCB;
-        Fri, 18 Dec 2020 09:52:06 +0800 (CST)
-Received: from irides.mr (10.167.225.141) by G08CNEXMBPEKD05.g08.fujitsu.local
- (10.167.33.204) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 18 Dec
- 2020 09:52:06 +0800
-Subject: Re: [RFC PATCH v3 8/9] md: Implement ->corrupted_range()
-To:     Jane Chu <jane.chu@oracle.com>, <linux-kernel@vger.kernel.org>,
-        <linux-xfs@vger.kernel.org>, <linux-nvdimm@lists.01.org>,
-        <linux-mm@kvack.org>
-CC:     <linux-fsdevel@vger.kernel.org>, <linux-raid@vger.kernel.org>,
-        <darrick.wong@oracle.com>, <david@fromorbit.com>, <hch@lst.de>,
-        <song@kernel.org>, <rgoldwyn@suse.de>, <qi.fuli@fujitsu.com>,
-        <y-goto@fujitsu.com>
-References: <20201215121414.253660-1-ruansy.fnst@cn.fujitsu.com>
- <20201215121414.253660-9-ruansy.fnst@cn.fujitsu.com>
- <100fcdf4-b2fe-d77d-e95f-52a7323d7ee1@oracle.com>
-From:   Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
-Message-ID: <8742889a-c967-d899-ff32-f4a4ebcde7ad@cn.fujitsu.com>
-Date:   Fri, 18 Dec 2020 09:50:15 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Thu, 17 Dec 2020 20:40:57 -0500
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cxs3c4W9dzkrfv;
+        Fri, 18 Dec 2020 09:39:24 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 18 Dec 2020 09:40:08 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <mst@redhat.com>, <jasowang@redhat.com>
+CC:     <sgarzare@redhat.com>, <mgurtovoy@nvidia.com>,
+        <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] vdpa: Mark macaddr_buf with static keyword
+Date:   Fri, 18 Dec 2020 09:51:35 +0800
+Message-ID: <1608256295-69649-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-In-Reply-To: <100fcdf4-b2fe-d77d-e95f-52a7323d7ee1@oracle.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.167.225.141]
-X-ClientProxiedBy: G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) To
- G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204)
-X-yoursite-MailScanner-ID: D6EE84CE4BCB.A18A3
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: ruansy.fnst@cn.fujitsu.com
-X-Spam-Status: No
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix the following sparse warning:
 
+drivers/vdpa/vdpa_sim/vdpa_sim_net.c:36:4: warning: symbol 'macaddr_buf' was not declared. Should it be static?
 
-On 2020/12/16 下午1:43, Jane Chu wrote:
-> On 12/15/2020 4:14 AM, Shiyang Ruan wrote:
->>   #ifdef CONFIG_SYSFS
->> +int bd_disk_holder_corrupted_range(struct block_device *bdev, loff_t 
->> off,
->> +                   size_t len, void *data);
->>   int bd_link_disk_holder(struct block_device *bdev, struct gendisk 
->> *disk);
->>   void bd_unlink_disk_holder(struct block_device *bdev, struct gendisk 
->> *disk);
->>   #else
->> +int bd_disk_holder_corrupted_range(struct block_device *bdev, loff_t 
->> off,
-> 
-> Did you mean
->    static inline int bd_disk_holder_corrupted_range(..
-> ?
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ drivers/vdpa/vdpa_sim/vdpa_sim_net.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Yes, it's my fault.  Thanks a lot.
-
-
---
-Thanks,
-Ruan Shiyang.
-
-> 
-> thanks,
-> -jane
-> 
->> +                   size_t len, void *data)
->> +{
->> +    return 0;
->> +}
->>   static inline int bd_link_disk_holder(struct block_device *bdev,
->>                         struct gendisk *disk)
-> 
-> 
-
+diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim_net.c b/drivers/vdpa/vdpa_sim/vdpa_sim_net.c
+index c10b698..f048242 100644
+--- a/drivers/vdpa/vdpa_sim/vdpa_sim_net.c
++++ b/drivers/vdpa/vdpa_sim/vdpa_sim_net.c
+@@ -33,7 +33,7 @@ static char *macaddr;
+ module_param(macaddr, charp, 0);
+ MODULE_PARM_DESC(macaddr, "Ethernet MAC address");
+ 
+-u8 macaddr_buf[ETH_ALEN];
++static u8 macaddr_buf[ETH_ALEN];
+ 
+ static struct vdpasim *vdpasim_net_dev;
+ 
+-- 
+2.6.2
 
