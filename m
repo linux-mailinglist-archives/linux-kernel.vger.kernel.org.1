@@ -2,298 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5A742DE7D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 18:05:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6242DE7D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 18:08:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732272AbgLRRE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 12:04:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54414 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728302AbgLRRE1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 12:04:27 -0500
-From:   Ard Biesheuvel <ardb@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-crypto@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Dave Martin <dave.martin@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: [RFC PATCH 5/5] crypto: arm64/gcm-aes-ce - remove non-SIMD fallback path
-Date:   Fri, 18 Dec 2020 18:01:06 +0100
-Message-Id: <20201218170106.23280-6-ardb@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201218170106.23280-1-ardb@kernel.org>
-References: <20201218170106.23280-1-ardb@kernel.org>
+        id S1730787AbgLRRIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 12:08:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726705AbgLRRIA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 12:08:00 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 076AAC0617A7;
+        Fri, 18 Dec 2020 09:07:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=VDkL11qZbOCFR2ZgsJ37HAAWx5+oE5S2tfVjNHUyKRI=; b=dPTZdGiT7ZP6fosgLqjU3x+sDT
+        2+JJoLRWOEZ3HlgjYZkws42ehSJLwJyoEurBge/fv9jHdIQTTGJ1bcKnbNPUFTVG7b7vNwSZ5BmyG
+        cXuieU9J9O3euvwkNcPeL4Jvq8fGwk2/s3GVFi7Ekh/13mRuQpn4g5pUF44mMr2UXSEOOBgYprwra
+        2ofljaxg3w4MrHzw7mw9d70wbYTw/8NdOI5eSv7TDrdUEPFaZxUwDpRqnAkkqOgWEGs71R7A0jJYe
+        8k3lnZJ8adnHWAIOnEI4PijqyihXd/aOGgKCchSTUdYahp3av4wuiIutmf2Xe2998GtHIJ0yi1AQ9
+        /wbiBwEQ==;
+Received: from [2601:1c0:6280:3f0::64ea]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kqJDb-0006lX-OW; Fri, 18 Dec 2020 17:07:04 +0000
+Subject: Re: [PATCH 2/4] hung_task: Replace "did_panic" with is_be_panic()
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Pavel Machek <pavel@ucw.cz>,
+        Xiaoming Ni <nixiaoming@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+        dmurphy@ti.com, akpm@linux-foundation.org, keescook@chromium.org,
+        gpiccoli@canonical.com, wangle6@huawei.com
+References: <20201218114406.61906-1-nixiaoming@huawei.com>
+ <20201218114406.61906-3-nixiaoming@huawei.com>
+ <20201218125957.GA20160@duo.ucw.cz>
+ <eddf7043-4bbe-7440-6c3e-ff272f722a86@i-love.sakura.ne.jp>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <a2279e36-3665-6328-e515-b12cdc532aa9@infradead.org>
+Date:   Fri, 18 Dec 2020 09:06:59 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <eddf7043-4bbe-7440-6c3e-ff272f722a86@i-love.sakura.ne.jp>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that kernel mode SIMD is guaranteed to be available when executing
-in task or softirq context, we no longer need scalar fallbacks to use
-when the NEON is unavailable. So get rid of them.
+On 12/18/20 6:36 AM, Tetsuo Handa wrote:
+> On 2020/12/18 21:59, Pavel Machek wrote:
+>> On Fri 2020-12-18 19:44:04, Xiaoming Ni wrote:
+>> Plus.. is_being_panic is not really english. "is_paniccing" would be
+>> closer...?
+> 
+> Or in_panic() ?
+> 
 
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- arch/arm64/crypto/ghash-ce-glue.c | 209 +++++---------------
- 1 file changed, 51 insertions(+), 158 deletions(-)
+Yes, or  in_panic_state()
 
-diff --git a/arch/arm64/crypto/ghash-ce-glue.c b/arch/arm64/crypto/ghash-ce-glue.c
-index 720cd3a58da3..15794fe21a0b 100644
---- a/arch/arm64/crypto/ghash-ce-glue.c
-+++ b/arch/arm64/crypto/ghash-ce-glue.c
-@@ -362,84 +362,36 @@ static int gcm_encrypt(struct aead_request *req)
- 
- 	err = skcipher_walk_aead_encrypt(&walk, req, false);
- 
--	if (likely(crypto_simd_usable())) {
--		do {
--			const u8 *src = walk.src.virt.addr;
--			u8 *dst = walk.dst.virt.addr;
--			int nbytes = walk.nbytes;
--
--			tag = (u8 *)&lengths;
--
--			if (unlikely(nbytes > 0 && nbytes < AES_BLOCK_SIZE)) {
--				src = dst = memcpy(buf + sizeof(buf) - nbytes,
--						   src, nbytes);
--			} else if (nbytes < walk.total) {
--				nbytes &= ~(AES_BLOCK_SIZE - 1);
--				tag = NULL;
--			}
--
--			kernel_neon_begin();
--			pmull_gcm_encrypt(nbytes, dst, src, ctx->ghash_key.h,
--					  dg, iv, ctx->aes_key.key_enc, nrounds,
--					  tag);
--			kernel_neon_end();
--
--			if (unlikely(!nbytes))
--				break;
--
--			if (unlikely(nbytes > 0 && nbytes < AES_BLOCK_SIZE))
--				memcpy(walk.dst.virt.addr,
--				       buf + sizeof(buf) - nbytes, nbytes);
--
--			err = skcipher_walk_done(&walk, walk.nbytes - nbytes);
--		} while (walk.nbytes);
--	} else {
--		while (walk.nbytes >= AES_BLOCK_SIZE) {
--			int blocks = walk.nbytes / AES_BLOCK_SIZE;
--			const u8 *src = walk.src.virt.addr;
--			u8 *dst = walk.dst.virt.addr;
--			int remaining = blocks;
--
--			do {
--				aes_encrypt(&ctx->aes_key, buf, iv);
--				crypto_xor_cpy(dst, src, buf, AES_BLOCK_SIZE);
--				crypto_inc(iv, AES_BLOCK_SIZE);
--
--				dst += AES_BLOCK_SIZE;
--				src += AES_BLOCK_SIZE;
--			} while (--remaining > 0);
--
--			ghash_do_update(blocks, dg, walk.dst.virt.addr,
--					&ctx->ghash_key, NULL);
--
--			err = skcipher_walk_done(&walk,
--						 walk.nbytes % AES_BLOCK_SIZE);
--		}
--
--		/* handle the tail */
--		if (walk.nbytes) {
--			aes_encrypt(&ctx->aes_key, buf, iv);
-+	do {
-+		const u8 *src = walk.src.virt.addr;
-+		u8 *dst = walk.dst.virt.addr;
-+		int nbytes = walk.nbytes;
- 
--			crypto_xor_cpy(walk.dst.virt.addr, walk.src.virt.addr,
--				       buf, walk.nbytes);
-+		tag = (u8 *)&lengths;
- 
--			memcpy(buf, walk.dst.virt.addr, walk.nbytes);
--			memset(buf + walk.nbytes, 0, sizeof(buf) - walk.nbytes);
-+		if (unlikely(nbytes > 0 && nbytes < AES_BLOCK_SIZE)) {
-+			src = dst = memcpy(buf + sizeof(buf) - nbytes,
-+					   src, nbytes);
-+		} else if (nbytes < walk.total) {
-+			nbytes &= ~(AES_BLOCK_SIZE - 1);
-+			tag = NULL;
- 		}
- 
--		tag = (u8 *)&lengths;
--		ghash_do_update(1, dg, tag, &ctx->ghash_key,
--				walk.nbytes ? buf : NULL);
-+		kernel_neon_begin();
-+		pmull_gcm_encrypt(nbytes, dst, src, ctx->ghash_key.h,
-+				  dg, iv, ctx->aes_key.key_enc, nrounds,
-+				  tag);
-+		kernel_neon_end();
- 
--		if (walk.nbytes)
--			err = skcipher_walk_done(&walk, 0);
-+		if (unlikely(!nbytes))
-+			break;
- 
--		put_unaligned_be64(dg[1], tag);
--		put_unaligned_be64(dg[0], tag + 8);
--		put_unaligned_be32(1, iv + GCM_IV_SIZE);
--		aes_encrypt(&ctx->aes_key, iv, iv);
--		crypto_xor(tag, iv, AES_BLOCK_SIZE);
--	}
-+		if (unlikely(nbytes > 0 && nbytes < AES_BLOCK_SIZE))
-+			memcpy(walk.dst.virt.addr,
-+			       buf + sizeof(buf) - nbytes, nbytes);
-+
-+		err = skcipher_walk_done(&walk, walk.nbytes - nbytes);
-+	} while (walk.nbytes);
- 
- 	if (err)
- 		return err;
-@@ -464,6 +416,7 @@ static int gcm_decrypt(struct aead_request *req)
- 	u64 dg[2] = {};
- 	be128 lengths;
- 	u8 *tag;
-+	int ret;
- 	int err;
- 
- 	lengths.a = cpu_to_be64(req->assoclen * 8);
-@@ -481,101 +434,41 @@ static int gcm_decrypt(struct aead_request *req)
- 
- 	err = skcipher_walk_aead_decrypt(&walk, req, false);
- 
--	if (likely(crypto_simd_usable())) {
--		int ret;
--
--		do {
--			const u8 *src = walk.src.virt.addr;
--			u8 *dst = walk.dst.virt.addr;
--			int nbytes = walk.nbytes;
--
--			tag = (u8 *)&lengths;
--
--			if (unlikely(nbytes > 0 && nbytes < AES_BLOCK_SIZE)) {
--				src = dst = memcpy(buf + sizeof(buf) - nbytes,
--						   src, nbytes);
--			} else if (nbytes < walk.total) {
--				nbytes &= ~(AES_BLOCK_SIZE - 1);
--				tag = NULL;
--			}
--
--			kernel_neon_begin();
--			ret = pmull_gcm_decrypt(nbytes, dst, src,
--						ctx->ghash_key.h,
--						dg, iv, ctx->aes_key.key_enc,
--						nrounds, tag, otag, authsize);
--			kernel_neon_end();
--
--			if (unlikely(!nbytes))
--				break;
--
--			if (unlikely(nbytes > 0 && nbytes < AES_BLOCK_SIZE))
--				memcpy(walk.dst.virt.addr,
--				       buf + sizeof(buf) - nbytes, nbytes);
--
--			err = skcipher_walk_done(&walk, walk.nbytes - nbytes);
--		} while (walk.nbytes);
--
--		if (err)
--			return err;
--		if (ret)
--			return -EBADMSG;
--	} else {
--		while (walk.nbytes >= AES_BLOCK_SIZE) {
--			int blocks = walk.nbytes / AES_BLOCK_SIZE;
--			const u8 *src = walk.src.virt.addr;
--			u8 *dst = walk.dst.virt.addr;
--
--			ghash_do_update(blocks, dg, walk.src.virt.addr,
--					&ctx->ghash_key, NULL);
--
--			do {
--				aes_encrypt(&ctx->aes_key, buf, iv);
--				crypto_xor_cpy(dst, src, buf, AES_BLOCK_SIZE);
--				crypto_inc(iv, AES_BLOCK_SIZE);
--
--				dst += AES_BLOCK_SIZE;
--				src += AES_BLOCK_SIZE;
--			} while (--blocks > 0);
-+	do {
-+		const u8 *src = walk.src.virt.addr;
-+		u8 *dst = walk.dst.virt.addr;
-+		int nbytes = walk.nbytes;
- 
--			err = skcipher_walk_done(&walk,
--						 walk.nbytes % AES_BLOCK_SIZE);
--		}
-+		tag = (u8 *)&lengths;
- 
--		/* handle the tail */
--		if (walk.nbytes) {
--			memcpy(buf, walk.src.virt.addr, walk.nbytes);
--			memset(buf + walk.nbytes, 0, sizeof(buf) - walk.nbytes);
-+		if (unlikely(nbytes > 0 && nbytes < AES_BLOCK_SIZE)) {
-+			src = dst = memcpy(buf + sizeof(buf) - nbytes,
-+					   src, nbytes);
-+		} else if (nbytes < walk.total) {
-+			nbytes &= ~(AES_BLOCK_SIZE - 1);
-+			tag = NULL;
- 		}
- 
--		tag = (u8 *)&lengths;
--		ghash_do_update(1, dg, tag, &ctx->ghash_key,
--				walk.nbytes ? buf : NULL);
--
--		if (walk.nbytes) {
--			aes_encrypt(&ctx->aes_key, buf, iv);
-+		kernel_neon_begin();
-+		ret = pmull_gcm_decrypt(nbytes, dst, src, ctx->ghash_key.h,
-+					dg, iv, ctx->aes_key.key_enc,
-+					nrounds, tag, otag, authsize);
-+		kernel_neon_end();
- 
--			crypto_xor_cpy(walk.dst.virt.addr, walk.src.virt.addr,
--				       buf, walk.nbytes);
-+		if (unlikely(!nbytes))
-+			break;
- 
--			err = skcipher_walk_done(&walk, 0);
--		}
-+		if (unlikely(nbytes > 0 && nbytes < AES_BLOCK_SIZE))
-+			memcpy(walk.dst.virt.addr,
-+			       buf + sizeof(buf) - nbytes, nbytes);
- 
--		if (err)
--			return err;
-+		err = skcipher_walk_done(&walk, walk.nbytes - nbytes);
-+	} while (walk.nbytes);
- 
--		put_unaligned_be64(dg[1], tag);
--		put_unaligned_be64(dg[0], tag + 8);
--		put_unaligned_be32(1, iv + GCM_IV_SIZE);
--		aes_encrypt(&ctx->aes_key, iv, iv);
--		crypto_xor(tag, iv, AES_BLOCK_SIZE);
-+	if (err)
-+		return err;
- 
--		if (crypto_memneq(tag, otag, authsize)) {
--			memzero_explicit(tag, AES_BLOCK_SIZE);
--			return -EBADMSG;
--		}
--	}
--	return 0;
-+	return ret ? -EBADMSG : 0;
- }
- 
- static struct aead_alg gcm_aes_alg = {
 -- 
-2.17.1
+~Randy
 
