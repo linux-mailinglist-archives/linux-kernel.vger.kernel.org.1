@@ -2,80 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECF6A2DEB01
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 22:20:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D04782DEB03
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 22:20:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728661AbgLRVTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 16:19:43 -0500
-Received: from asavdk3.altibox.net ([109.247.116.14]:40140 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725987AbgLRVTm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 16:19:42 -0500
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 6B4F220028;
-        Fri, 18 Dec 2020 22:18:54 +0100 (CET)
-Date:   Fri, 18 Dec 2020 22:18:53 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Jan Engelhardt <jengelh@inai.de>
-Cc:     David S Miller <davem@davemloft.net>, sparclinux@vger.kernel.org,
-        Andreas Larsson <andreas@gaisler.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Denis Efremov <efremov@linux.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, Willy Tarreau <w@1wt.eu>,
-        linux-kernel@vger.kernel.org, debian-sparc@lists.debian.org
-Subject: Re: [PATCH v1 01/13] sparc32: Drop sun4m/sun4d support from head_32.S
-Message-ID: <20201218211840.GB2421393@ravnborg.org>
-References: <20201218184347.2180772-1-sam@ravnborg.org>
- <20201218184347.2180772-2-sam@ravnborg.org>
- <sq2nqr43-21s-21sn-219r-9o83o310r5s9@vanv.qr>
+        id S1726427AbgLRVUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 16:20:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55040 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725846AbgLRVU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 16:20:29 -0500
+X-Gm-Message-State: AOAM5313z7sM/5GRlxJ0cY4qTDx+CIOXunBm6GclyCfC4U5ziYqASZ9h
+        rum/YzUyeOZpYRugJkpwmH8yZZeRBCVJEzY4dQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608326389;
+        bh=a+g5UEoM5NxyQ3jhAuGuysDaoBi8Q33J+a7X928sR4Q=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qoxf+Q5UtAGsWkJ5xkj9v25mcsePsjG6ghd6qCzHOHRgwy2a+7rbqwfa1P5aW3MaX
+         XR347v+971BNssrNpVDbpXLUZEih6hxCXl3DToDznk/58iRoxrcAUj9mFta2oDQwr3
+         uZEbchQqp61uPKeq8nbjc2LhpL5e2JQovlC5HWbSih6tB/eavfCDhuuYc8wB+HTfva
+         G9gCr7zWxAWVMNVNINOlPWxnzZQPvQP89KZm96cyaQ9YN7y5Dah+B14WctSxYNXc3l
+         r8o3igRWoJHyaPtWKv4UkRw+ktUN/A9RsqgK8ZnJzDKhNHHkxMdIuTLoNOltiHo8OL
+         rzYRrNZ/9G5cA==
+X-Google-Smtp-Source: ABdhPJx8+fT17UjOQlU9nPAMzm+E52wGYx2xiG5y0kU0vonyFLY90euAUWHxhMzieLAV3mq6BLXXHJ/WPviL7X0W090=
+X-Received: by 2002:a05:6402:352:: with SMTP id r18mr6198469edw.373.1608326387306;
+ Fri, 18 Dec 2020 13:19:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <sq2nqr43-21s-21sn-219r-9o83o310r5s9@vanv.qr>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=Ibmpp1ia c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=vNdoKIDsHdQOlDJFrDYA:9 a=CjuIK1q_8ugA:10
+References: <20201211215611.24392-1-rasmus.villemoes@prevas.dk>
+ <20201218101054.25416-1-rasmus.villemoes@prevas.dk> <20201218101054.25416-2-rasmus.villemoes@prevas.dk>
+In-Reply-To: <20201218101054.25416-2-rasmus.villemoes@prevas.dk>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 18 Dec 2020 15:19:35 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKZh7iKY+i6jxU+csH_dkdq=sRHff-5+C08WRQqoGnnOQ@mail.gmail.com>
+Message-ID: <CAL_JsqKZh7iKY+i6jxU+csH_dkdq=sRHff-5+C08WRQqoGnnOQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] dt-bindings: rtc: add reset-source property
+To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Cc:     "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
+        <linux-rtc@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Qiang Zhao <qiang.zhao@nxp.com>,
+        Bruno Thomsen <bruno.thomsen@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jan,
+On Fri, Dec 18, 2020 at 4:11 AM Rasmus Villemoes
+<rasmus.villemoes@prevas.dk> wrote:
+>
+> Some RTCs, e.g. the pcf2127, can be used as a hardware watchdog. But
+> if the reset pin is not actually wired up, the driver exposes a
+> watchdog device that doesn't actually work.
+>
+> Provide a standard binding that can be used to indicate that a given
+> RTC can perform a reset of the machine, similar to wakeup-source.
+>
+> Suggested-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+> ---
+>  Documentation/devicetree/bindings/rtc/rtc.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
 
-On Fri, Dec 18, 2020 at 07:52:08PM +0100, Jan Engelhardt wrote:
-> 
-> On Friday 2020-12-18 19:43, Sam Ravnborg wrote:
-> > notsup:
-> >-	.asciz	"Sparc-Linux sun4/sun4c or MMU-less not supported\n\n"
-> >-	.align 4
-> >-
-> >-sun4e_notsup:
-> >-        .asciz  "Sparc-Linux sun4e support does not exist\n\n"
-> >+	.asciz	"Sparc-Linux sun4* or MMU-less not supported\n\n"
-> > 	.align 4
-> 
-> The asterisk may lead to a moment of bewilderment; sun4u/sun4v are still 
-> supported.
-Noted, I will come up with something better.
-
-	Sam
+Reviewed-by: Rob Herring <robh@kernel.org>
