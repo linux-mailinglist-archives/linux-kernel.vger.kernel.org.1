@@ -2,199 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 342192DE04C
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 10:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF4FB2DE04B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 10:12:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388941AbgLRJLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2388956AbgLRJLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 18 Dec 2020 04:11:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41898 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728230AbgLRJLr (ORCPT
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:12005 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730833AbgLRJLs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 04:11:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608282620;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mSafa2iKpPc7BWIljDih5YUhC7jXJc4sK5czMJ5uQUs=;
-        b=KReYM/f96RzVU7vez+i9zt/rShosptJWwuk6bZwUhUnrNS1dIwMdFeHlacQ1Rmh/7EatjT
-        0oSWUi1182WWjye/s5yDNlvpU011O7Tuqyibrqk1Y5DLaKeqMH+nUp2jNYU3HCcOWy+T2a
-        DLaa+PuaNdNbIWkuVh4FJYoYgCfqmLQ=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-403-geAUyCj2MAaAHfhO_eZ_Uw-1; Fri, 18 Dec 2020 04:10:18 -0500
-X-MC-Unique: geAUyCj2MAaAHfhO_eZ_Uw-1
-Received: by mail-ej1-f72.google.com with SMTP id t17so562281ejd.12
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 01:10:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=mSafa2iKpPc7BWIljDih5YUhC7jXJc4sK5czMJ5uQUs=;
-        b=in6Cec7qPOljFpx5E2a3OtUuOe8miPn/yT+5mOh7w6HS8k2VSeTKdjX5cOiGoQ2Y9B
-         3XHMvuHiG9xkqY6kQvo2QBmFevTag+qWeBcYhgvzOgqHmyBMPoH8o576umzIv++bwYEw
-         e8pxzxs/dT94tI4ROFPcgZtiiLjul97ycOwk0ClYkk3ImreSz1Xn1hTuloMlE5jduV7e
-         fO7e//t01z+Ft4E3R3DAhunqOzRyLYFIXc2Q0XaifB4lI7cDjLA4R3Alof8rkK7j/QNz
-         B7KhqZN1rIWu3HExOdjy3eoN6yiYCiZ0YdJcKQUiWikQ/8xe7Bbmq2eEpWogfjTcsgjz
-         T0jw==
-X-Gm-Message-State: AOAM533P12qI7tLV5gjsGObM7K9P/kXYO73ytK7echeKVV4BK9Iq9nLc
-        03ZbchAFqSrK0K1fARPaYjMj+ytYjfaQOCx4zouMGip8n3adBooZAi5VGcs422Ep9bBevpV61C4
-        QobXoaATc12uzRYViE2jBpCMO
-X-Received: by 2002:a17:907:429d:: with SMTP id ny21mr3000467ejb.290.1608282617444;
-        Fri, 18 Dec 2020 01:10:17 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw3xSZm3Yxv4Um6vmCs6roOxEe25yN6/mhZj9seqlOjpkSs6TxRvSGSisa5DH2+v3vzrX750Q==
-X-Received: by 2002:a17:907:429d:: with SMTP id ny21mr3000448ejb.290.1608282617269;
-        Fri, 18 Dec 2020 01:10:17 -0800 (PST)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id gt11sm5221411ejb.67.2020.12.18.01.10.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Dec 2020 01:10:16 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
-        Richard Herbert <rherbert@sympatico.ca>
-Subject: Re: [PATCH 2/4] KVM: x86/mmu: Get root level from walkers when
- retrieving MMIO SPTE
-In-Reply-To: <20201218003139.2167891-3-seanjc@google.com>
-References: <20201218003139.2167891-1-seanjc@google.com>
- <20201218003139.2167891-3-seanjc@google.com>
-Date:   Fri, 18 Dec 2020 10:10:15 +0100
-Message-ID: <87r1nntr7s.fsf@vitty.brq.redhat.com>
+        Fri, 18 Dec 2020 04:11:48 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fdc722b0001>; Fri, 18 Dec 2020 01:11:07 -0800
+Received: from [10.2.61.104] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 18 Dec
+ 2020 09:11:00 +0000
+Subject: Re: [PATCH v4 09/10] selftests/vm: test flag is broken
+From:   John Hubbard <jhubbard@nvidia.com>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <akpm@linux-foundation.org>, <vbabka@suse.cz>, <mhocko@suse.com>,
+        <david@redhat.com>, <osalvador@suse.de>,
+        <dan.j.williams@intel.com>, <sashal@kernel.org>,
+        <tyhicks@linux.microsoft.com>, <iamjoonsoo.kim@lge.com>,
+        <mike.kravetz@oracle.com>, <rostedt@goodmis.org>,
+        <mingo@redhat.com>, <jgg@ziepe.ca>, <peterz@infradead.org>,
+        <mgorman@suse.de>, <willy@infradead.org>, <rientjes@google.com>,
+        <linux-doc@vger.kernel.org>, <ira.weiny@intel.com>,
+        <linux-kselftest@vger.kernel.org>
+References: <20201217185243.3288048-1-pasha.tatashin@soleen.com>
+ <20201217185243.3288048-10-pasha.tatashin@soleen.com>
+ <8879f12c-2aed-1615-1298-7cf9596acc95@nvidia.com>
+Message-ID: <d0b1fec7-cc18-68d2-c574-639e665c137c@nvidia.com>
+Date:   Fri, 18 Dec 2020 01:11:00 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:84.0) Gecko/20100101
+ Thunderbird/84.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <8879f12c-2aed-1615-1298-7cf9596acc95@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1608282667; bh=3mPuCxRz8KYq0pwcFButq0DOd57iVq04TlvZG8ID//Y=;
+        h=Subject:From:To:References:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=sMmU4YUHis88+7q8FOrjOMAnSAnAGKQ2GV412pBnkj07s0+IB6Dg0kzx6uXmT0FoA
+         D9CtmbOLgNVPgEL4CjkpMgfDKZUoBsABCOj6FR/OT/Ayv3A7Mi/9K3LqDeVL/gVFke
+         11h//FrtmvBwAkHQd9dQi5uFLVyxVWtTN0/BFa3iWKJUUNLnLaN1+yvzelntj+5Qmb
+         kDkaFu3PaOExGyCeNYrlZUXyb1rhU+0ACDWvwHnqWWBu/Q9bo/NUDFniBG8FrVCx00
+         pINgEsVY0Wx6JmiWmFHoZO5zfTsFHpPRXyi8VquTqtYw9OmKYL1wIDKPMQmV2kWytw
+         vENCsi8xBVWIg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> writes:
+On 12/18/20 1:06 AM, John Hubbard wrote:
+>> Add a new test_flags field, to allow raw gup_flags to work.
+> 
+> I think .test_control_flags field would be a good name, to make it very
+> clear that it's not destined for gup_flags. Just .test_flags is not quite
+> as clear a distinction from .gup_flags, as .test_control_flags is, IMHO.
+> 
 
-> Get the so called "root" level from the low level shadow page table
-> walkers instead of manually attempting to calculate it higher up the
-> stack, e.g. in get_mmio_spte().  When KVM is using PAE shadow paging,
-> the starting level of the walk, from the callers perspective, is not
-> the CR3 root but rather the PDPTR "root".  Checking for reserved bits
-> from the CR3 root causes get_mmio_spte() to consume uninitialized stack
-> data due to indexing into sptes[] for a level that was not filled by
-> get_walk().  This can result in false positives and/or negatives
-> depending on what garbage happens to be on the stack.
->
-> Opportunistically nuke a few extra newlines.
->
-> Fixes: 95fb5b0258b7 ("kvm: x86/mmu: Support MMIO in the TDP MMU")
-> Reported-by: Richard Herbert <rherbert@sympatico.ca>
-> Cc: Ben Gardon <bgardon@google.com>
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/mmu/mmu.c     | 15 ++++++---------
->  arch/x86/kvm/mmu/tdp_mmu.c |  5 ++++-
->  arch/x86/kvm/mmu/tdp_mmu.h |  4 +++-
->  3 files changed, 13 insertions(+), 11 deletions(-)
->
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index a48cd12c01d7..52f36c879086 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -3485,16 +3485,16 @@ static bool mmio_info_in_cache(struct kvm_vcpu *vcpu, u64 addr, bool direct)
->   * Return the level of the lowest level SPTE added to sptes.
->   * That SPTE may be non-present.
->   */
-> -static int get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes)
-> +static int get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes, int *root_level)
->  {
->  	struct kvm_shadow_walk_iterator iterator;
->  	int leaf = -1;
->  	u64 spte;
->  
-> -
->  	walk_shadow_page_lockless_begin(vcpu);
->  
-> -	for (shadow_walk_init(&iterator, vcpu, addr);
-> +	for (shadow_walk_init(&iterator, vcpu, addr),
-> +	     *root_level = iterator.level;
->  	     shadow_walk_okay(&iterator);
->  	     __shadow_walk_next(&iterator, spte)) {
->  		leaf = iterator.level;
-> @@ -3504,7 +3504,6 @@ static int get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes)
->  
->  		if (!is_shadow_present_pte(spte))
->  			break;
-> -
->  	}
->  
->  	walk_shadow_page_lockless_end(vcpu);
-> @@ -3517,9 +3516,7 @@ static bool get_mmio_spte(struct kvm_vcpu *vcpu, u64 addr, u64 *sptep)
->  {
->  	u64 sptes[PT64_ROOT_MAX_LEVEL];
->  	struct rsvd_bits_validate *rsvd_check;
-> -	int root = vcpu->arch.mmu->shadow_root_level;
-> -	int leaf;
-> -	int level;
-> +	int root, leaf, level;
->  	bool reserved = false;
+And maybe renaming .flags to .gup_flags, just to make it really clear.
 
-Personal taste: I would've renamed 'root' to 'root_level' (to be
-consistent with get_walk()/kvm_tdp_mmu_get_walk()) and 'level' to
-e.g. 'l' as it's only being used as an interator ('i' would also do).
 
->  
->  	if (!VALID_PAGE(vcpu->arch.mmu->root_hpa)) {
-> @@ -3528,9 +3525,9 @@ static bool get_mmio_spte(struct kvm_vcpu *vcpu, u64 addr, u64 *sptep)
->  	}
->  
->  	if (is_tdp_mmu_root(vcpu->kvm, vcpu->arch.mmu->root_hpa))
-> -		leaf = kvm_tdp_mmu_get_walk(vcpu, addr, sptes);
-> +		leaf = kvm_tdp_mmu_get_walk(vcpu, addr, sptes, &root);
->  	else
-> -		leaf = get_walk(vcpu, addr, sptes);
-> +		leaf = get_walk(vcpu, addr, sptes, &root);
->  
->  	if (unlikely(leaf < 0)) {
->  		*sptep = 0ull;
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index 50cec7a15ddb..a4f9447f8327 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -1148,13 +1148,16 @@ bool kvm_tdp_mmu_write_protect_gfn(struct kvm *kvm,
->   * Return the level of the lowest level SPTE added to sptes.
->   * That SPTE may be non-present.
->   */
-> -int kvm_tdp_mmu_get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes)
-> +int kvm_tdp_mmu_get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes,
-> +			 int *root_level)
->  {
->  	struct tdp_iter iter;
->  	struct kvm_mmu *mmu = vcpu->arch.mmu;
->  	gfn_t gfn = addr >> PAGE_SHIFT;
->  	int leaf = -1;
->  
-> +	*root_level = vcpu->arch.mmu->shadow_root_level;
-> +
->  	tdp_mmu_for_each_pte(iter, mmu, gfn, gfn + 1) {
->  		leaf = iter.level;
->  		sptes[leaf - 1] = iter.old_spte;
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-> index 556e065503f6..cbbdbadd1526 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.h
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.h
-> @@ -44,5 +44,7 @@ void kvm_tdp_mmu_zap_collapsible_sptes(struct kvm *kvm,
->  bool kvm_tdp_mmu_write_protect_gfn(struct kvm *kvm,
->  				   struct kvm_memory_slot *slot, gfn_t gfn);
->  
-> -int kvm_tdp_mmu_get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes);
-> +int kvm_tdp_mmu_get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes,
-> +			 int *root_level);
-> +
->  #endif /* __KVM_X86_MMU_TDP_MMU_H */
-
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-
+thanks,
 -- 
-Vitaly
-
+John Hubbard
+NVIDIA
