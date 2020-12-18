@@ -2,95 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB51F2DDE3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 06:54:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B692DDE42
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 06:58:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732595AbgLRFw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 00:52:56 -0500
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:55419 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732182AbgLRFwy (ORCPT
+        id S1729978AbgLRF6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 00:58:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725884AbgLRF6V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 00:52:54 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 539875C00E1;
-        Fri, 18 Dec 2020 00:51:47 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Fri, 18 Dec 2020 00:51:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=TKB9lMmMJqJL+Z4KiEL937lWMUa
-        UGHNxQPNnwVtfDQc=; b=mH4DitV96Y3zeibglkqvv6Q+wAigL0TwMm0A6hE6En0
-        dTx7Ii08KolbmuAPS2MnU47J1kwWmqsBn3WW/ha21pN5h8hXlv3cLh4egdSegZ/w
-        TivG0YgCulfs34pEOQMgvem6Em7LgUCQO9C0VSaiscClabR/aw4x5hiQ3yOQymjH
-        L+JK+DLQHaI8YUAtK8Puzep2nDgbSXiexne4HaOvGUdAtG98HVNA4ku/ZrziAtxL
-        fwQPv10Mk3QbrrpwYL1G4Mwi5/LMfqEiuHApmRNCKH81pM3p8dmUpsvXAX6WqIRs
-        GfGRJteUYU1FPiAMY3MoVTif7owRYj3rytcGflGX4Lw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=TKB9lM
-        mMJqJL+Z4KiEL937lWMUaUGHNxQPNnwVtfDQc=; b=iX21RtOlrDw2NLdSsxrvUa
-        knXePZ1ZGduojAR8N/MQ6F/ogcbcqVbRfAxzcz5rDTGol61Po7Rat57u1pjP8XLt
-        L6bir2YBiMEYMBT0Qt61ZKT91lybUmgXgDZySPHAPviZyrbiIXQrsUWGVhDmaGXh
-        gwCd0snbuDuwYTdOWKY7jt/4MxUZvKfO5icSGZF8f2LhErUYjfuorr5EU8eFkRam
-        hte0b1jSiv/Y646Y7pF7OJIKwf3ml9Jrv9momTyaksNor/rPUj/TaeWNW25Ie50W
-        +b+9IvtiZv4WHRRa0T+brA/2pmZ7uabjCAOe35f6ll2zzkdumpD3a8wcNyopC2oQ
-        ==
-X-ME-Sender: <xms:ckPcX6Da1wz2qp7t_npjbFFmjxjVRniemWuboJvaWtN9qap7u8WD9w>
-    <xme:ckPcX0jyyfnnrOk_ty3_QpVN02Sfu_Xs-TiqcA_FlTrR2cCiyv1yBYydbBrwMILS_
-    YxaE5od8PwaDQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudelhedgkeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mfdqjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepjedvud
-    fgtdeuueekvedvhfdvtdeuteelheekteethfelffdvffettdduuefghfeunecuffhomhgr
-    ihhnpehkvghrnhgvlhdrohhrghenucfkphepkeefrdekiedrjeegrdeigeenucevlhhush
-    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgr
-    hhdrtghomh
-X-ME-Proxy: <xmx:ckPcX9kwaYy0P4OzDnqzf3-uT5ygQXp1Og-_m9QZmI-A5L1aB_XEcw>
-    <xmx:ckPcX4wunMWR2AhJ07ITZcU60OyexMTrUXkjExb-ZaFTtGOresui4A>
-    <xmx:ckPcX_RdpQKNyqxXbhoRcT11gyytxYU8OFHV_9RLBEtL0kF0REWRow>
-    <xmx:c0PcX2L_nUPbzNCBt3viCEnV3lpUIpM5CSUdLELYxDFaMTyybQKtHA>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 9FB86108005F;
-        Fri, 18 Dec 2020 00:51:46 -0500 (EST)
-Date:   Fri, 18 Dec 2020 06:51:44 +0100
-From:   Greg K-H <greg@kroah.com>
-To:     Young Hsieh <youngh@uber.com>
-Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: Question for AMD patches
-Message-ID: <X9xDcN6F6yI4fWoZ@kroah.com>
-References: <1B44E762-F9F2-4E2B-BFEF-6F032BE8841E@uber.com>
- <83E7490A-EFB0-42C2-BD9D-B5E6E5BF440D@uber.com>
- <B23EF613-CE1A-482E-8AAE-7AB6FBA8B1D8@kroah.com>
- <380D416C-D23B-4F35-A944-EC3E3A8349C3@uber.com>
+        Fri, 18 Dec 2020 00:58:21 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCF6CC0617A7;
+        Thu, 17 Dec 2020 21:57:40 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CxynZ4J1kz9sWQ;
+        Fri, 18 Dec 2020 16:57:38 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1608271058;
+        bh=498ODTwHQKUhl5bzlWX6RgY+YdPsO2G85JyYlZMSVes=;
+        h=Date:From:To:Cc:Subject:From;
+        b=a0SjO8lktncDn5/CCsunBf4f/hKZ0/TytMW5F4b4emej1qUxtmejFD15f2qA0eDHx
+         ZL281ZOQQ1j/qqtXfWNuAKjVVzRSIRLN/3NF7pKyAP2O5I+vcAByPsXokgFV1KXP9L
+         ilkm+UcaU4yqnHx3g7ykW8KPG201FronKdaU6RX71ZzD0tldBgdOXargepUVP8xwdC
+         p+7ErbCBwMxxv2ZaHUEWb7KsicrOLRJZKHDWsD4XRlFtemnhQKj3ja0DZnETa5bQts
+         kPGA25fbOppcDrd2taIqT6DWw3ws7SWxtwp4TIhhNBzApGcubTFe5/DlfgOrPov0Yo
+         0anh9L2TsARRQ==
+Date:   Fri, 18 Dec 2020 16:57:37 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Steve French <smfrench@gmail.com>,
+        CIFS <linux-cifs@vger.kernel.org>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the cifs tree
+Message-ID: <20201218165737.0759162a@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <380D416C-D23B-4F35-A944-EC3E3A8349C3@uber.com>
+Content-Type: multipart/signed; boundary="Sig_/IV.rauSjuWok3/xVAc74t3I";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 05:18:16AM +0800, Young Hsieh wrote:
-> Hi Greg,
-> 
-> Thanks.  I am looking for the Essential, RAS & Perf patches for AMD Milan as follows:
-> 
+--Sig_/IV.rauSjuWok3/xVAc74t3I
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I don't see anything here :(
+Hi all,
 
+Commits
 
-> I am not familiar the rules for stable kernel patches, can you help to elaborate ?  Thanks for your assistance! :) 
+  ee04fe87f4d0 ("cifs: Re-indent cifs_swn_reconnect()")
+  2c6dd2f9742d ("cifs: Unlock on errors in cifs_swn_reconnect()")
+  fb2356b3739b ("cifs: Delete a stray unlock in cifs_swn_reconnect()")
 
-Please read:
-    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+are missing a Signed-off-by from their author.
 
-for what stable kernels are all about.
+This is the problem with the mailing list again :-(  The
+author has been recorded as
 
-thanks,
+"Dan Carpenter via samba-technical <samba-technical@lists.samba.org>"
 
-greg k-h
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/IV.rauSjuWok3/xVAc74t3I
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/cRNEACgkQAVBC80lX
+0Gz1yQgAg/ALVBix3UPfsjgKJxdAt+t9550IHEMW2fJcT3RrkZluj+VURJQvVEON
+EM4mLd5OSmTQBLqKfwynYGtZ1i3jy/cJBjYs+NnnGKbMYI7w4jJx00BDhYApelCc
++Po8O2k2CTAcPJ1HqwlXAXMZIvOUCuEpJqDsYApLwJnSGLVUmg2OFd6Au9YOg4hf
+4/poaTF47WtkaZsvpIGMZcrC5pnvs/bXbKJiNoWF4xwRl6ZKMTGhFJnBLILrt9a8
+xyKygCeMGkSCAFox8WdhMh+bwhKEJszcJGGs+wm/HLkfeiy251vdxBJtgER7OP/7
+DXp4SACbs1ImQBYJfApbSs4USwGmTg==
+=sAxD
+-----END PGP SIGNATURE-----
+
+--Sig_/IV.rauSjuWok3/xVAc74t3I--
