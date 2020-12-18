@@ -2,111 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2542E2DDF71
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 09:16:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C83EC2DDF77
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 09:18:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732984AbgLRIQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 03:16:20 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:46708 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732696AbgLRIQU (ORCPT
+        id S1733016AbgLRIRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 03:17:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28267 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728212AbgLRIRG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 03:16:20 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1608279355; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=SuZ7faFUxX/UATUsH4gDxKkN2noH4QILCl9/MoQ2O0w=; b=fFLTFvTI5oOza59/INbR/FFb3AoFUaoug5q68kTxcHt8z6U6scP+Az5M23PjnBN4DqFuTI+x
- glFE4f19v6BRBsmcAUN3ifh0TlQ85054m2HyyXL5WhMxp//sviwqtxwdqgtR5ekZ1n8UhBO0
- 3nFfw1UVeWD7l7WPw2ui5vv6DLI=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5fdc651b3d3433393dacbe98 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Dec 2020 08:15:23
- GMT
-Sender: kgunda=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4B93FC433C6; Fri, 18 Dec 2020 08:15:23 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from kgunda-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kgunda)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9D243C433ED;
-        Fri, 18 Dec 2020 08:15:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9D243C433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kgunda@codeaurora.org
-From:   Kiran Gunda <kgunda@codeaurora.org>
-To:     robh@kernel.org, swboyd@chromium.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Kiran Gunda <kgunda@codeaurora.org>
-Subject: [PATCH V4 2/2] mfd: qcom-spmi-pmic: Add support for pm6150 and pm6150l
-Date:   Fri, 18 Dec 2020 13:44:52 +0530
-Message-Id: <1608279292-24760-3-git-send-email-kgunda@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1608279292-24760-1-git-send-email-kgunda@codeaurora.org>
-References: <1608279292-24760-1-git-send-email-kgunda@codeaurora.org>
+        Fri, 18 Dec 2020 03:17:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608279340;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yJQNuWN6HgmUgv+RsZbi92+/+MM37ldG2zXD3RbUN9s=;
+        b=Xbv8GTf5FtUOvs4iRAsmSsM5tBlUwXmXYapd/ftHlNEYdC2xyb3pOJIaP9727V65bqRJbY
+        R8jTKCeFV13+ZWjNDty79mPP5s/IINhhOelWjwpTTR7/Bc+TT5LgSPL6Pqq2qRbzPzJLmn
+        4txXbL3b6vnMlmNEiQU89jHACJOCFdY=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-436-qvQDpxyQMZ-GZo4KfyMmCg-1; Fri, 18 Dec 2020 03:15:37 -0500
+X-MC-Unique: qvQDpxyQMZ-GZo4KfyMmCg-1
+Received: by mail-wr1-f72.google.com with SMTP id b8so812938wrv.14
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 00:15:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=yJQNuWN6HgmUgv+RsZbi92+/+MM37ldG2zXD3RbUN9s=;
+        b=QerCBFK4vOyiZzvp1zaGtNJjkjg2YTcbi2znzuCRpOizyCKHDkIWA87AifaWLjc+7E
+         ICw03r6TCMYJ9NdvFVvpiiL1v700Hmwbw4/wEs1lZ1GUnSOeufPEa8l+XDYvChEkIErS
+         h9jVq3dkbJaxGbZiqUjjSZTs4PLk8BzbIY4G3mNmPPCrYuu9uWRgxQwHMDIlKF2FtMbp
+         aPWAByZDe1aBTfGCcqaLxEcuuHNfKxhUO+MPx0SXtQtIFGglnABdvRno/63TYtRMKaS/
+         sXUKRgWbQS1VMwXy4uEbG9Zdct/xXT7+YDlWcCLSrpkrrDtC9W5y1+EZQtgNXd2x7PCh
+         Nmjw==
+X-Gm-Message-State: AOAM530BEs5pqKDx86K+xJxjT4Nm9BMk2qgWvdTDe+89PwTYFI/vTkqD
+        sL/sZUUghiCo3Uq+HJOQxlB6KEi6ZGu8rhyjh+wqrriaLS6ExkccOwmpZAnuLxBwkVvgyNA68c/
+        /jluq2Jl4xh/GwL1rOLrZkNFw
+X-Received: by 2002:adf:e710:: with SMTP id c16mr3007763wrm.295.1608279336680;
+        Fri, 18 Dec 2020 00:15:36 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxUFVDuslSIR7sNU3rmxCt3qjTQFKF/gKj1mKj2MVbmEs9Iy1ApdCkivOAma0zVSTrHR8vMmw==
+X-Received: by 2002:adf:e710:: with SMTP id c16mr3007739wrm.295.1608279336451;
+        Fri, 18 Dec 2020 00:15:36 -0800 (PST)
+Received: from steredhat (host-79-13-204-15.retail.telecomitalia.it. [79.13.204.15])
+        by smtp.gmail.com with ESMTPSA id k6sm10866853wmf.25.2020.12.18.00.15.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Dec 2020 00:15:35 -0800 (PST)
+Date:   Fri, 18 Dec 2020 09:15:33 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     "Zouwei (Samuel)" <zou_wei@huawei.com>
+Cc:     "mst@redhat.com" <mst@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "mgurtovoy@nvidia.com" <mgurtovoy@nvidia.com>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: =?utf-8?B?562U5aSN?= =?utf-8?Q?=3A?= [PATCH -next] vdpa: Mark
+ macaddr_buf with static keyword
+Message-ID: <20201218081533.r7lv3yx5xba46saa@steredhat>
+References: <1608256295-69649-1-git-send-email-zou_wei@huawei.com>
+ <20201218075659.zjts2fiwp2jkh2ei@steredhat>
+ <14fa1fb211784992a0e64e9810bdedef@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <14fa1fb211784992a0e64e9810bdedef@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the compatibles and PMIC ids for pm6150 and pm6150l PMICs
-found on SC7180 based platforms.
+On Fri, Dec 18, 2020 at 08:11:20AM +0000, Zouwei (Samuel) wrote:
+>Hi,
+>I run this command:
+>make allmodconfig ARCH=x86_64 CROSS_COMPILE=x86_64-linux-gnu-
+>make C=2 drivers/vdpa/vdpa_sim/vdpa_sim_net.o ARCH=x86_64 CROSS_COMPILE=x86_64-linux-gnu-
 
-Signed-off-by: Kiran Gunda <kgunda@codeaurora.org>
----
- Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml | 2 ++
- drivers/mfd/qcom-spmi-pmic.c                              | 4 ++++
- 2 files changed, 6 insertions(+)
+Yeah, I can see the warning using C=2.
+I'll use it next times.
 
-diff --git a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
-index e458dd1..2acddbc 100644
---- a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
-+++ b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
-@@ -58,6 +58,8 @@ patternProperties:
-               - qcom,pm8005
-               - qcom,pm660l
-               - qcom,pm660
-+              - qcom,pm6150l
-+              - qcom,pm6150
- 
-           - enum:
-               - qcom,spmi-pmic
-diff --git a/drivers/mfd/qcom-spmi-pmic.c b/drivers/mfd/qcom-spmi-pmic.c
-index a35d5cf..78e9084 100644
---- a/drivers/mfd/qcom-spmi-pmic.c
-+++ b/drivers/mfd/qcom-spmi-pmic.c
-@@ -38,6 +38,8 @@
- #define PM8005_SUBTYPE		0x18
- #define PM660L_SUBTYPE		0x1A
- #define PM660_SUBTYPE		0x1B
-+#define PM6150L_SUBTYPE		0x1F
-+#define PM6150_SUBTYPE		0x28
- 
- static const struct of_device_id pmic_spmi_id_table[] = {
- 	{ .compatible = "qcom,spmi-pmic", .data = (void *)COMMON_SUBTYPE },
-@@ -61,6 +63,8 @@ static const struct of_device_id pmic_spmi_id_table[] = {
- 	{ .compatible = "qcom,pm8005",    .data = (void *)PM8005_SUBTYPE },
- 	{ .compatible = "qcom,pm660l",    .data = (void *)PM660L_SUBTYPE },
- 	{ .compatible = "qcom,pm660",     .data = (void *)PM660_SUBTYPE },
-+	{ .compatible = "qcom,pm6150l",    .data = (void *)PM6150L_SUBTYPE },
-+	{ .compatible = "qcom,pm6150",     .data = (void *)PM6150_SUBTYPE },
- 	{ }
- };
- 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
- a Linux Foundation Collaborative Project
+Thanks for sharing,
+Stefano
+
+>
+>
+>-----邮件原件-----
+>发件人: Stefano Garzarella [mailto:sgarzare@redhat.com]
+>发送时间: 2020年12月18日 15:57
+>收件人: Zouwei (Samuel) <zou_wei@huawei.com>
+>抄送: mst@redhat.com; jasowang@redhat.com; mgurtovoy@nvidia.com; virtualization@lists.linux-foundation.org; linux-kernel@vger.kernel.org
+>主题: Re: [PATCH -next] vdpa: Mark macaddr_buf with static keyword
+>
+>On Fri, Dec 18, 2020 at 09:51:35AM +0800, Zou Wei wrote:
+>>Fix the following sparse warning:
+>>
+>>drivers/vdpa/vdpa_sim/vdpa_sim_net.c:36:4: warning: symbol 'macaddr_buf' was not declared. Should it be static?
+>>
+>>Reported-by: Hulk Robot <hulkci@huawei.com>
+>>Signed-off-by: Zou Wei <zou_wei@huawei.com>
+>>---
+>> drivers/vdpa/vdpa_sim/vdpa_sim_net.c | 2 +-
+>> 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+>Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+>
+>I built with W=1 but I didn't have this warning.
+>
+>Thanks for fixing,
+>Stefano
+>
+>>
+>>diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim_net.c
+>>b/drivers/vdpa/vdpa_sim/vdpa_sim_net.c
+>>index c10b698..f048242 100644
+>>--- a/drivers/vdpa/vdpa_sim/vdpa_sim_net.c
+>>+++ b/drivers/vdpa/vdpa_sim/vdpa_sim_net.c
+>>@@ -33,7 +33,7 @@ static char *macaddr;  module_param(macaddr, charp,
+>>0);  MODULE_PARM_DESC(macaddr, "Ethernet MAC address");
+>>
+>>-u8 macaddr_buf[ETH_ALEN];
+>>+static u8 macaddr_buf[ETH_ALEN];
+>>
+>> static struct vdpasim *vdpasim_net_dev;
+>>
+>>--
+>>2.6.2
+>>
+>
 
