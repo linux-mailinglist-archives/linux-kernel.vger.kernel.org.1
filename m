@@ -2,122 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 374B82DE71E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 17:03:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34E922DE720
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 17:03:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728090AbgLRQCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 11:02:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725792AbgLRQCW (ORCPT
+        id S1728397AbgLRQC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 11:02:56 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:41438 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726228AbgLRQCz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 11:02:22 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46303C06138C;
-        Fri, 18 Dec 2020 08:01:42 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id j1so1635546pld.3;
-        Fri, 18 Dec 2020 08:01:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kdhRqI/BEp6A9Y3itWAvkzj42aOw+qxe3o4UvhUzO2c=;
-        b=nBtlnt0YZCdhNgp2AwY1ZTgERaxW949bJa4cRB7Tj4RRl3wPk7UQOoFysxLqp34Lht
-         W17XbcjNxj2MczWVlPTxczeszRf/NrqmJFRg3tfYAwRUUJTRz8FZ/UYljmsK6AL8M4//
-         U79dXgsAs7p3OulI7OHKbHqjZu1wj504DOi/4dthUIAgs9DMg91eyOBMAu5js4GxiNQi
-         bW5T76VhtDNPDAV6UcInsyKQRbU/EKfQK1sPudQPZeYZnMPKIeXb4CSnwStXb0+7VkGp
-         B8JhgSQNhNh3k59xasBAAL4UX0k3sgBEsi/Gx8dYUnyyoMQ5MXjuCUW/Ixg9S6mDT6tL
-         qEfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kdhRqI/BEp6A9Y3itWAvkzj42aOw+qxe3o4UvhUzO2c=;
-        b=P5iTMAmJKH5ryCxhUYwqhClW8WKRppky87zl7j518ZUSeiQu1UagAUiW93TR9c19V6
-         ej1+WIS1POvmC3U61YD3pQ/hpbdV3aizM6gCMEsIw+mQNNxQQFLASLTSjZxDcuOvapzp
-         p+6WkCiMrDipQye06kZtNbztUEd8IZY+bofo+dhjMlhtKKhCVA7yf4qhCn+IoHx0yy6I
-         N669n+egMiswuPS+VPxImg1MiKY1WjCyirqVTbMEwnkKOYqEXa27hIKAfru62tl2dX+b
-         I+IsJI5/Pigj9sbpWtXpiMCvIT82+Xgi16knwntt0+p5AUyUqR8VAW8Cm/BM/Czi7xWj
-         hSxQ==
-X-Gm-Message-State: AOAM5311EinIR5IaVtQJcpt99+JJOfoksLbjgav0GGTOOgn0fXGX7659
-        sKTSn80sK9pDTGya1s0IvhmXUadJrJgdo4nN0XZP3FkbKjg=
-X-Google-Smtp-Source: ABdhPJzF7pTrDH4y0XKfT25f9aRZNUmpvp+v8GMT67qgvOWwFHE8iGpY2OIeW9ARjpmyYW++1w42XzS/t+wQMOoSjPE=
-X-Received: by 2002:a17:902:c244:b029:da:e63c:cede with SMTP id
- 4-20020a170902c244b02900dae63ccedemr5078018plg.0.1608307301846; Fri, 18 Dec
- 2020 08:01:41 -0800 (PST)
+        Fri, 18 Dec 2020 11:02:55 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2BDD82CF;
+        Fri, 18 Dec 2020 17:02:12 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1608307332;
+        bh=s2SHQA0PN7urDd/Qm3xpPmk0SAd9BjjKrvkA4hZemV4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OFxcFcRYphMYulyRHR3ufYN6rRoNVK6eIUT4lylN+2Ep7+NVgoerI/bkEwgOUO6hw
+         3kKeqs/9UiyviMhbz/17vdyHdsd48l6WXEfIhVNFmYIPNOhgYfC7df6hF5NykwaxoY
+         P748LH6UxsHOv9BQDiVlWzvt0x+Vu4fjo81/1afs=
+Date:   Fri, 18 Dec 2020 18:02:04 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
+        lenb@kernel.org, gregkh@linuxfoundation.org, yong.zhi@intel.com,
+        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
+        tian.shu.qiu@intel.com, mchehab@kernel.org, robert.moore@intel.com,
+        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, andriy.shevchenko@linux.intel.com,
+        linux@rasmusvillemoes.dk,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
+        linus.walleij@linaro.org, heikki.krogerus@linux.intel.com,
+        kitakar@gmail.com, jorhand@linux.microsoft.com
+Subject: Re: [PATCH v2 04/12] software_node: Enforce parent before child
+ ordering of nodes arrays
+Message-ID: <X9zSfPUmHL3kho+D@pendragon.ideasonboard.com>
+References: <20201217234337.1983732-1-djrscally@gmail.com>
+ <20201217234337.1983732-5-djrscally@gmail.com>
 MIME-Version: 1.0
-References: <20201218045134.4158709-1-drew@beagleboard.org>
-In-Reply-To: <20201218045134.4158709-1-drew@beagleboard.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 18 Dec 2020 18:01:25 +0200
-Message-ID: <CAHp75Vfwb+f3k2+mAj+jB=XsKFX-hCxx61A_PCmwz6y-YKHMcg@mail.gmail.com>
-Subject: Re: [RFC PATCH v2] pinctrl: add helper to expose pinctrl state in debugfs
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Pantelis Antoniou <pantelis.antoniou@linaro.org>,
-        Pantelis Antoniou <pantelis.antoniou@gmail.com>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tony Lindgren <tony@atomide.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201217234337.1983732-5-djrscally@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 6:52 AM Drew Fustini <drew@beagleboard.org> wrote:
->
-> BeagleBoard.org [0] currently uses an out-of-tree driver called
-> bone-pinmux-helper [1] developed by Pantelis Antoniou [2] back in 2013.
-> The driver assists users of our BeagleBone and PocketBeagle boards in
-> rapid prototyping by allowing them to change at run-time between defined
-> set of pinctrl states [3] for each pin on the expansion connectors [4].
-> This is achieved by exposing a 'state' file in sysfs for each pin which
-> is used by our 'config-pin' utility [5].
->
-> Our goal is to eliminate all out-of-tree drivers for BeagleBoard.org
-> boards and thus I have been working to replace bone-pinmux-helper with a
-> new driver that could be acceptable upstream. My understanding is that
-> debugfs, unlike sysfs, could be the appropriate mechanism to expose such
-> functionality.
+Hi Daniel,
 
-No objections here.
+Thank you for the patch.
 
-> I used the compatible string "pinctrl,state-helper" but would appreciate
-> advice on how to best name this. Should I create a new vendor prefix?
+On Thu, Dec 17, 2020 at 11:43:29PM +0000, Daniel Scally wrote:
+> Registering software_nodes with the .parent member set to point to a
+> currently unregistered software_node has the potential for problems,
+> so enforce parent -> child ordering in arrays passed in to
+> software_node_register_nodes().
+> 
+> Software nodes that are children of another software node should be
+> unregistered before their parent. To allow easy unregistering of an array
+> of software_nodes ordered parent to child, reverse the order in which
+> software_node_unregister_nodes() unregisters software_nodes.
+> 
+> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Daniel Scally <djrscally@gmail.com>
+> ---
+> Changes in v2:
+> 
+> 	- Squashed the patches that originally touched these separately
+> 	- Updated documentation
+> 
+>  drivers/base/swnode.c | 43 ++++++++++++++++++++++++++++++-------------
+>  1 file changed, 30 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+> index 615a0c93e116..cfd1faea48a7 100644
+> --- a/drivers/base/swnode.c
+> +++ b/drivers/base/swnode.c
+> @@ -692,7 +692,10 @@ swnode_register(const struct software_node *node, struct swnode *parent,
+>   * software_node_register_nodes - Register an array of software nodes
+>   * @nodes: Zero terminated array of software nodes to be registered
+>   *
+> - * Register multiple software nodes at once.
+> + * Register multiple software nodes at once. If any node in the array
+> + * has it's .parent pointer set, then it's parent **must** have been
+> + * registered before it is; either outside of this function or by
+> + * ordering the array such that parent comes before child.
+>   */
+>  int software_node_register_nodes(const struct software_node *nodes)
+>  {
+> @@ -700,33 +703,47 @@ int software_node_register_nodes(const struct software_node *nodes)
+>  	int i;
+>  
+>  	for (i = 0; nodes[i].name; i++) {
+> -		ret = software_node_register(&nodes[i]);
+> -		if (ret) {
+> -			software_node_unregister_nodes(nodes);
+> -			return ret;
+> +		const struct software_node *parent = nodes[i].parent;
+> +
+> +		if (parent && !software_node_to_swnode(parent)) {
+> +			ret = -EINVAL;
+> +			goto err_unregister_nodes;
+>  		}
+> +
+> +		ret = software_node_register(&nodes[i]);
+> +		if (ret)
+> +			goto err_unregister_nodes;
+>  	}
+>  
+>  	return 0;
+> +
+> +err_unregister_nodes:
+> +	software_node_unregister_nodes(nodes);
+> +	return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(software_node_register_nodes);
+>  
+>  /**
+>   * software_node_unregister_nodes - Unregister an array of software nodes
+> - * @nodes: Zero terminated array of software nodes to be unregistered
+> + * @nodes: Zero terminated array of software nodes to be unregistered.
 
-Here is the first concern. Why does this require to be a driver with a
-compatible string?
+Not sure if this is needed.
 
-> The P9_14_pinmux entry would cause pinctrl-state-helper to be probed.
-> The driver would create the corresponding pinctrl state file in debugfs
-> for the pin.  Here is an example of how the state can be read and
-> written from userspace:
->
-> root@beaglebone:~# cat /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P9_14_pinmux/state
-> default
-> root@beaglebone:~# echo pwm > /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P9_14_pinmux/state
-> root@beaglebone:~# cat /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P9_14_pinmux/state
-> pwm
->
-> I would very much appreciate feedback on both this general concept, and
-> also specific areas in which the code should be changed to be acceptable
-> upstream.
+>   *
+> - * Unregister multiple software nodes at once.
+> + * Unregister multiple software nodes at once. If parent pointers are set up
+> + * in any of the software nodes then the array MUST be ordered such that
 
-Two more concerns:
- - why is it OF only?
- - why has it been separated from pin control per device debug folder?
+I'd either replace **must** above with MUST, or use **must** here. I'm
+not sure if kerneldoc handles emphasis with **must**, if it does that
+seems a bit nicer to me, but it's really up to you.
 
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-> [0] http://beagleboard.org/latest-images
-> [1] https://github.com/beagleboard/linux/blob/5.4/drivers/misc/cape/beaglebone/bone-pinmux-helper.c
-> [2] https://github.com/RobertCNelson/linux-dev/blob/master/patches/drivers/ti/gpio/0001-BeagleBone-pinmux-helper.patch
-> [3] https://github.com/beagleboard/BeagleBoard-DeviceTrees/blob/v5.4.x-ti-overlays/src/arm/am335x-bone-common-univ.dtsi#L2084
-> [4] https://github.com/beagleboard/beaglebone-black/wiki/System-Reference-Manual#section-7-1
-> [5] https://github.com/beagleboard/bb.org-overlays/blob/master/tools/beaglebone-universal-io/config-pin
+> + * parents come before their children.
+>   *
+> - * NOTE: Be careful using this call if the nodes had parent pointers set up in
+> - * them before registering.  If so, it is wiser to remove the nodes
+> - * individually, in the correct order (child before parent) instead of relying
+> - * on the sequential order of the list of nodes in the array.
+> + * NOTE: If you are uncertain whether the array is ordered such that
+> + * parents will be unregistered before their children, it is wiser to
+> + * remove the nodes individually, in the correct order (child before
+> + * parent).
+>   */
+>  void software_node_unregister_nodes(const struct software_node *nodes)
+>  {
+> -	int i;
+> +	unsigned int i = 0;
+> +
+> +	while (nodes[i].name)
+> +		i++;
+>  
+> -	for (i = 0; nodes[i].name; i++)
+> +	while (i--)
+>  		software_node_unregister(&nodes[i]);
+>  }
+>  EXPORT_SYMBOL_GPL(software_node_unregister_nodes);
 
---
-With Best Regards,
-Andy Shevchenko
+-- 
+Regards,
+
+Laurent Pinchart
