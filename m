@@ -2,233 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE80F2DE11E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 11:33:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B75812DE129
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 11:37:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389181AbgLRKdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 05:33:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389134AbgLRKdv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 05:33:51 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40AE8C0617A7
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 02:33:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=ax2AvH377bhqEw2ciOZIbj8m15QW2TggSibQMuM6asU=; b=hL57ywk93WogETaxYmHwbc5Awx
-        5uKpMILYWWsq6iR5B2vUmC2DR+Z+yLp8IsE+Zse84kIaqHVy6/3H8qefgoIzmdwHlrEp2A/23IidR
-        FAwOKL2/iMwa57gljg2CxZL//kiou6e8Cgp4TBpCYggDFT2ZMbv94OLqGQPyDzYGrAPUhYvh7xRH9
-        gYBV3QPD1MmNTX4Ljmz2QhuCLnPrAi9febuV4ULwgzgkFf4XWcKhueITy61RWXXL/j0zSwy0kFGQ6
-        ZLmi2IED3q3ax0qvKw428uiycX9qcJYrIjfR5ExHItGcYSwClbAeP9XbN08UNs5Cdrvt3/QhYmAXJ
-        1fC3VXsA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kqD4H-0005wp-Mr; Fri, 18 Dec 2020 10:33:02 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9A787300B22;
-        Fri, 18 Dec 2020 11:32:58 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5786F200F0B38; Fri, 18 Dec 2020 11:32:58 +0100 (CET)
-Date:   Fri, 18 Dec 2020 11:32:58 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        dietmar.eggemann@arm.com, patrick.bellasi@matbug.net,
-        lenb@kernel.org, linux-kernel@vger.kernel.org,
-        valentin.schneider@arm.com, ionela.voinescu@arm.com,
-        qperret@google.com, viresh.kumar@linaro.org
-Subject: [PATCH] sched: Add schedutil overview
-Message-ID: <20201218103258.GA3040@hirez.programming.kicks-ass.net>
+        id S2388769AbgLRKfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 05:35:16 -0500
+Received: from mga04.intel.com ([192.55.52.120]:35862 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725897AbgLRKfQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 05:35:16 -0500
+IronPort-SDR: snXJVbd2yLZaTuTMY8/9tmJHGB5S11mfhR00bgbnfbIq0fUHxvHyTn5mV0XxxriiCFKIPnvOaY
+ 5lNCKH+gWgSg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9838"; a="172849482"
+X-IronPort-AV: E=Sophos;i="5.78,430,1599548400"; 
+   d="scan'208";a="172849482"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2020 02:34:34 -0800
+IronPort-SDR: FJUTLM5Tpuhg/YN2W7d/EJW0WbjU/JpfCgiNLc95icWE/I9HH0TnD53wwdHS6UBSEMu458fc8+
+ 55JuHgeM15Lg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,430,1599548400"; 
+   d="scan'208";a="453814575"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmsmga001.fm.intel.com with ESMTP; 18 Dec 2020 02:34:34 -0800
+Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 18 Dec 2020 02:34:33 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Fri, 18 Dec 2020 02:34:33 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.44) by
+ edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Fri, 18 Dec 2020 02:34:32 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=grou7YPHXmq2gtkzL2wzSdSo++4un6yZEeexaMKjZRh96sPY3ltIzjF9hlLnoPTox0qERCzJYa1NmvGZsU1R9G4qdjPGHX8VfXV+7vCB4wb26xOkPaEJCODvfzchX/jkP6tmpDlZ9nP3nco10IOwGMUoPgGI57LgENZa/yNnc07oCuf5n8M16ndZIu9TqcbUzx4kIIYcOksXKw4/F/WZAKHwxLkq8UfBTBROguPjEmdM2sDlsh7gtIMLnM9KwjihanlmkJZEkIwEH8CH1zFnlZciln3VuDuUVDqrKY0khaNhzLEsD9WV7kFLWVsWnZB+6cK7slc1Rg2t8HQlcyIz9w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B+xV+efbtE6ZNMPf59WBg/apeiFCAuNU9VaYovMzCUQ=;
+ b=RTSfBdOY5MxanT2Y11/oQGhfuC1DaOG1sB6qSWPhFyAGKIRDCehou8mtKUphQ4q2Donu41RCz4/XRV/jziEjkpZgFCqtN6CpqPHaZoRZ7fgfUCVhEOylMFZSKez8toP5gdKJcZypGP6HQe3Ba0bs2DT4el1u+6wCS4szNwpu8IbE/gT4baNa/9RW8u1dE63B4mx/ksA/aRxLI8wyMap2eyLF/7MSBMKSvAehfCELDR7ss0AWcleVcBe2JTfwNgq9oUqTuwjZDLCk/VjTBohzgPOg84fT26vtsAmnqXG1swZRxs/Wi3mNKfLBHv+L0iCyYk8WtuhbjMXHMRLvACD1LA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B+xV+efbtE6ZNMPf59WBg/apeiFCAuNU9VaYovMzCUQ=;
+ b=xedOfLG+GCPGKTqE77xJwh4udwweIx8MZ9rcIpHez7bOkYkorPZ7e8mxaxlxEVBP9FK+MZYGygkdOfdOCehyVLpvOQACxrVyr2TdK7k2L7wob3Diar4/0X8JgF2pbKYxROEp3JjLKH8bz/lQ/ueHI0iF/cps3+upZuDoWH3LLjk=
+Received: from BY5PR11MB4056.namprd11.prod.outlook.com (2603:10b6:a03:18c::17)
+ by BYAPR11MB3702.namprd11.prod.outlook.com (2603:10b6:a03:f7::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.15; Fri, 18 Dec
+ 2020 10:34:29 +0000
+Received: from BY5PR11MB4056.namprd11.prod.outlook.com
+ ([fe80::a556:7843:c77:936a]) by BY5PR11MB4056.namprd11.prod.outlook.com
+ ([fe80::a556:7843:c77:936a%5]) with mapi id 15.20.3654.025; Fri, 18 Dec 2020
+ 10:34:28 +0000
+From:   "Bae, Chang Seok" <chang.seok.bae@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "Sun, Ning" <ning.sun@intel.com>,
+        "Dwarakanath, Kumar N" <kumar.n.dwarakanath@intel.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 7/8] crypto: x86/aes-kl - Support AES algorithm using
+ Key Locker instructions
+Thread-Topic: [RFC PATCH 7/8] crypto: x86/aes-kl - Support AES algorithm using
+ Key Locker instructions
+Thread-Index: AQHW09NkgKbOTl1SG0GiKIj8N4sTZKn8pL0AgAAGUwA=
+Date:   Fri, 18 Dec 2020 10:34:28 +0000
+Message-ID: <61FFFEA5-3DD2-4625-9F3A-B7A589B92D95@intel.com>
+References: <20201216174146.10446-1-chang.seok.bae@intel.com>
+ <20201216174146.10446-8-chang.seok.bae@intel.com>
+ <20201218101148.GF3021@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201218101148.GF3021@hirez.programming.kicks-ass.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.4)
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [112.148.21.62]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b6f0d020-3841-4019-bb34-08d8a3407fc3
+x-ms-traffictypediagnostic: BYAPR11MB3702:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR11MB3702A1018EDA7A96103C49D9D8C30@BYAPR11MB3702.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3631;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: h5VDYNZQyKU/Jo67ivhZrIULXyWlgUFhHx+iSlUCXxafwcn8q481rjvSO5101bfZqX2AeUd+RSRLYpS7KCdj78eOhh5AWmgS+Y8r1lvZW9TIrzWHnoBVkS4IrB6uTIJkHa0KlcA+R2g9euy5qZoIuIUw0KTR9Xatm/e9qztxNQyGuAV2R1NW/ds2qQ5FFCOfOCrFgEF4RU7MfVYmxsRM2n5GZdSnlEekBQg+ChqYoDt3KANTPo9tZxZWFC/XnhEVd+HWPURgn7F5n6wNH2oB9sNMsbKW2Aw/0z2RG7JjAyU/QuY4PDNUe/+1YM0tQGyeh1xiS6M+jiLda0R1wV+6QCYGVI/Cm6vAF2bIustPyRurTARFTt0JXAf86fNrqVkB3P1J088OLfLbkS2bMAHk4wi1NFe2XSFS7KD5yBpiQqroeMAGa8ig7rOk8l6N+QnPUmvEsj8hyAfxFw0OA6WOfQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4056.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(346002)(136003)(39860400002)(376002)(7416002)(66446008)(5660300002)(316002)(966005)(53546011)(4744005)(66556008)(6506007)(36756003)(64756008)(478600001)(6512007)(2906002)(26005)(76116006)(71200400001)(186003)(86362001)(4326008)(6486002)(2616005)(54906003)(66946007)(8936002)(66476007)(83380400001)(33656002)(8676002)(6916009)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?WmZBQ29CZ3I1SUt2ZU5qNU8xK2VkaVRrOVFIL3k5M0N0Z3BMb0xIMmdIakg1?=
+ =?utf-8?B?Qzl5VHFKK01Md3VwME9abEh5Ui9jNzZwU2d4dEc4WmNuTEFjb3dtOFMrVEEy?=
+ =?utf-8?B?OXdkVGxxRXNFamN2ZFUwRitJS2lkcytGNjZhVjVxakZjNE8rcDdRWnFZMm5z?=
+ =?utf-8?B?L3FsVnpMRm5xY04yNnRWUWdFTkZNYkNpS2FNK0VJSGR3SXFRZFlvTWN2clBp?=
+ =?utf-8?B?N2M4bW1pcTNCU005eDA3QkxMMkdIbVlNYkJFRm5EQXNEYlpFM3R2VUdUaDcv?=
+ =?utf-8?B?VlBMSUxyWmZjMk43T0ZYNkl1OGRxVEFpMlF2bmpvcmJjRzVTbEtYRzZ2bXVX?=
+ =?utf-8?B?dnNUa0hxaXF5NTJHUXlVWFc0TENTK25pMDMzSDg5U2NYakhwRHlDcklXbDNY?=
+ =?utf-8?B?S3ZyOE5YTktGd2dhWE11LytPNkFXZi9YVllSd2Vub29JVUowcUluWTQ3UkIz?=
+ =?utf-8?B?L2I1a0ZROUxPMWxOdkhWRVRUSCtkcFR4MmtrNXVza3NJdnR5TW0vTEhHdnFD?=
+ =?utf-8?B?WVJ3Z2ludXB5Y3lycS9aZU1jQ05Qd1BVbXBCcEtrWVUzaXE4K3kzbTNpMDNt?=
+ =?utf-8?B?YVhDN1ppeWdKSTF2b0ZTTnB6TjhkR2ZZeHlEbTNVQVkvcEtkcmhsSGQzYVVq?=
+ =?utf-8?B?ZXRIbEMwYkY0SHpKS05oNkxuSDNzQlViaUR1M05uMm41eC8ydXdxaXJrUmll?=
+ =?utf-8?B?NWNMQ09GR3FVZ29WVUNTVDhoL0pmTFRXck01MnA0OUxJWmFYRWRJNDJQak1x?=
+ =?utf-8?B?NkZ0S2xVWGh6b05ZdTJ0M0I1SU1hK1VhUHNKTE52QkpZMDEvdkJFOGpEWUpq?=
+ =?utf-8?B?OFlwbTZHcEdDLzg3RmFHSjlNRDhjSTZHd0wyTW5acDBjYTlDWW40WlRrRldl?=
+ =?utf-8?B?TEd5MzJ0WjFrZWdoblNLUjdkRFZrR2d6VlNteWhsYmh4azlPYzUrdSs1SWZp?=
+ =?utf-8?B?djhiSktYNjFrY2tuTTRPQXF2cFh4NThRSDE5Wk9Fa21peGs5c2dZblJGMjdB?=
+ =?utf-8?B?dXpJVEJPUDdhcWphU2dhTG5MNFEzT2REdzZBbVRuVmI5bXA3MVRtOXdUTElB?=
+ =?utf-8?B?d0NuZjU5MXJFbkFUaFN4d3B2dmx1WXYvWW5zMWdrN0JwZ0FKMW9mVlQ0MUxh?=
+ =?utf-8?B?cTB4a25zNUsyeXc2R2IxOTVmL1lib3BsYWNoWDE2cHlxTGxGWm8xYmJRSi82?=
+ =?utf-8?B?dkJOcTlkTVhEVUZ6YWtMZmNlK3dXZVJMdGY1RHZnOWtYMXB2bVkySWF1VEhP?=
+ =?utf-8?B?ZzVLV3dKSXJaSE9HRlNyNFNxNndNc2tQcnp2US9yM1JrRjNDbUpjVTUrL1BF?=
+ =?utf-8?Q?D0zRr0F0xMjFLFGZ5zHYahBXPp1lHbCUTa?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <6ADF1B81B955FE42B28476F95DEFC848@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4056.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b6f0d020-3841-4019-bb34-08d8a3407fc3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Dec 2020 10:34:28.7664
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: CjXY0pPSR5l3fuQfVFyshEfUcFjk4gwu4sRU7LuSmxTT9o6uwxElQyqAQuZSPZVZw2y5gXBNpJZyCeVCBwpTOjmZOz8DcoRq3+2PpsMxs1s=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3702
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- Documentation/scheduler/schedutil.txt |  168 ++++++++++++++++++++++++++++++++++
- 1 file changed, 168 insertions(+)
-
---- /dev/null
-+++ b/Documentation/scheduler/schedutil.txt
-@@ -0,0 +1,168 @@
-+
-+
-+NOTE; all this assumes a linear relation between frequency and work capacity,
-+we know this is flawed, but it is the best workable approximation.
-+
-+
-+PELT (Per Entity Load Tracking)
-+-------------------------------
-+
-+With PELT we track some metrics across the various scheduler entities, from
-+individual tasks to task-group slices to CPU runqueues. As the basis for this
-+we use an Exponentially Weighted Moving Average (EWMA), each period (1024us)
-+is decayed such that y^32 = 0.5. That is, the most recent 32ms contribute
-+half, while the rest of history contribute the other half.
-+
-+Specifically:
-+
-+  ewma_sum(u) := u_0 + u_1*y + u_2*y^2 + ...
-+
-+  ewma(u) = ewma_sum(u) / ewma_sum(1)
-+
-+Since this is essentially a progression of an infinite geometric series, the
-+results are composable, that is ewma(A) + ewma(B) = ewma(A+B). This property
-+is key, since it gives the ability to recompose the averages when tasks move
-+around.
-+
-+Note that blocked tasks still contribute to the aggregates (task-group slices
-+and CPU runqueues), which reflects their expected contribution when they
-+resume running.
-+
-+Using this we track 2 key metrics: 'running' and 'runnable'. 'Running'
-+reflects the time an entity spends on the CPU, while 'runnable' reflects the
-+time an entity spends on the runqueue. When there is only a single task these
-+two metrics are the same, but once there is contention for the CPU 'running'
-+will decrease to reflect the fraction of time each task spends on the CPU
-+while 'runnable' will increase to reflect the amount of contention.
-+
-+For more detail see: kernel/sched/pelt.c
-+
-+
-+Frequency- / CPU Invariance
-+---------------------------
-+
-+Because consuming the CPU for 50% at 1GHz is not the same as consuming the CPU
-+for 50% at 2GHz, nor is running 50% on a LITTLE CPU the same as running 50% on
-+a big CPU, we allow architectures to scale the time delta with two ratios, one
-+Dynamic Voltage and Frequency Scaling (DVFS) ratio and one microarch ratio.
-+
-+For simple DVFS architectures (where software is in full control) we trivially
-+compute the ratio as:
-+
-+	    f_cur
-+  r_dvfs := -----
-+            f_max
-+
-+For more dynamic systems where the hardware is in control of DVFS (Intel,
-+ARMv8.4-AMU) we use hardware counters to provide us this ratio. For Intel
-+specifically, we use:
-+
-+	   APERF
-+  f_cur := ----- * P0
-+	   MPERF
-+
-+	     4C-turbo;	if available and turbo enabled
-+  f_max := { 1C-turbo;	if turbo enabled
-+	     P0;	otherwise
-+
-+                    f_cur
-+  r_dvfs := min( 1, ----- )
-+                    f_max
-+
-+We pick 4C turbo over 1C turbo to make it slightly more sustainable.
-+
-+r_cpu is determined as the ratio of highest performance level of the current
-+CPU vs the highest performance level of any other CPU in the system.
-+
-+  r_tot = r_dvfs * r_cpu
-+
-+The result is that the above 'running' and 'runnable' metrics become invariant
-+of DVFS and CPU type. IOW. we can transfer and compare them between CPUs.
-+
-+For more detail see:
-+
-+ - kernel/sched/pelt.h:update_rq_clock_pelt()
-+ - arch/x86/kernel/smpboot.c:"APERF/MPERF frequency ratio computation."
-+ - Documentation/scheduler/sched-capacity.rst:"1. CPU Capacity + 2. Task utilization"
-+
-+
-+UTIL_EST / UTIL_EST_FASTUP
-+--------------------------
-+
-+Because periodic tasks have their averages decayed while they sleep, even
-+though when running their expected utilization will be the same, they suffer a
-+(DVFS) ramp-up after they are running again.
-+
-+To alleviate this (a default enabled option) UTIL_EST drives an Infinite
-+Impulse Response (IIR) EWMA with the 'running' value on dequeue -- when it is
-+highest. A further default enabled option UTIL_EST_FASTUP modifies the IIR
-+filter to instantly increase and only decay on decrease.
-+
-+A further runqueue wide sum (of runnable tasks) is maintained of:
-+
-+  util_est := \Sum_t max( t_running, t_util_est_ewma )
-+
-+For more detail see: kernel/sched/fair.c:util_est_dequeue()
-+
-+
-+UCLAMP
-+------
-+
-+It is possible to set effective u_min and u_max clamps on each CFS or RT task;
-+the runqueue keeps an max aggregate of these clamps for all running tasks.
-+
-+For more detail see: include/uapi/linux/sched/types.h
-+
-+
-+Schedutil / DVFS
-+----------------
-+
-+Every time the scheduler load tracking is updated (task wakeup, task
-+migration, time progression) we call out to schedutil to update the hardware
-+DVFS state.
-+
-+The basis is the CPU runqueue's 'running' metric, which per the above it is
-+the frequency invariant utilization estimate of the CPU. From this we compute
-+a desired frequency like:
-+
-+             max( running, util_est );	if UTIL_EST
-+  u_cfs := { running;			otherwise
-+
-+  u_clamp := clamp( u_cfs, u_min, u_max )
-+
-+  u := u_cfs + u_rt + u_irq + u_dl;	[approx. see source for more detail]
-+
-+  f_des := min( f_max, 1.25 u * f_max )
-+
-+XXX IO-wait; when the update is due to a task wakeup from IO-completion we
-+boost 'u' above.
-+
-+This frequency is then used to select a P-state/OPP or directly munged into a
-+CPPC style request to the hardware.
-+
-+XXX: deadline tasks (Sporadic Task Model) allows us to calculate a hard f_min
-+required to satisfy the workload.
-+
-+Because these callbacks are directly from the scheduler, the DVFS hardware
-+interaction should be 'fast' and non-blocking. Schedutil supports
-+rate-limiting DVFS requests for when hardware interaction is slow and
-+expensive, this reduces effectiveness.
-+
-+For more information see: kernel/sched/cpufreq_schedutil.c
-+
-+
-+NOTES
-+-----
-+
-+ - On low-load scenarios, where DVFS is most relevant, the 'running' numbers
-+   will closely reflect utilization.
-+
-+ - In saturated scenarios task movement will cause some transient dips,
-+   suppose we have a CPU saturated with 4 tasks, then when we migrate a task
-+   to an idle CPU, the old CPU will have a 'running' value of 0.75 while the
-+   new CPU will gain 0.25. This is inevitable and time progression will
-+   correct this. XXX do we still guarantee f_max due to no idle-time?
-+
-+ - Much of the above is about avoiding DVFS dips, and independent DVFS domains
-+   having to re-learn / ramp-up when load shifts.
-+
+DQo+IE9uIERlYyAxOCwgMjAyMCwgYXQgMTk6MTEsIFBldGVyIFppamxzdHJhIDxwZXRlcnpAaW5m
+cmFkZWFkLm9yZz4gd3JvdGU6DQo+IA0KPiAqZ3JvYW4qLCBzbyB3aGF0IGFjdHVhbCB2ZXJzaW9u
+IG9mIGJpbnV0aWxzIGlzIG5lZWRlZCBhbmQgd2h5IGlzIHRoaXMNCj4gZHJpdmVyIGltcG9ydGFu
+dCBlbm91Z2ggdG8gYnVpbGQgb24gYW5jaWVudCBjcnVkIHRvIHdhcnJhbnQgYWxsIHRoaXMNCj4g
+Z3Vuaz8NCg0KVGhlIG5ldyBLZXkgTG9ja2VyIGluc3RydWN0aW9ucyBsb29rIHRvIGJlIGFkZGVk
+IGEgZmV3IG1vbnRoIGFnbyBbMV0uDQpCdXQgdGhlIGxhdGVzdCBiaW51dGlscyByZWxlYXNlICgy
+LjM1LjEpIGRvZXMgbm90IGluY2x1ZGUgdGhlbSB5ZXQuDQoNCknigJltIG9wZW4gdG8gZHJvcCB0
+aGUgbWFjcm9zIGlmIHRoZXJlIGlzIGFueSBiZXR0ZXIgd2F5IHRvIGRlZmluZSB0aGVtDQp3aXRo
+b3V0IGJpbnV0aWxzIHN1cHBvcnQuDQoNClRoYW5rcywNCkNoYW5nDQoNClsxXSBodHRwczovL3Nv
+dXJjZXdhcmUub3JnL2dpdC8/cD1iaW51dGlscy1nZGIuZ2l0O2E9Y29tbWl0O2g9YzQ2OTRmMTcy
+YjUxYTIxNjhiOGNjMTUxMDlhYjFiOTdmYzBiY2I5Yw==
