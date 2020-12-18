@@ -2,166 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D3EC2DE3AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:09:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B4A2DE3B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:10:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726212AbgLROIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 09:08:49 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:19929 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725535AbgLROIs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 09:08:48 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4Cy9gL3Ck1z9txvg;
-        Fri, 18 Dec 2020 15:07:58 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 5Ndh04yO9aS3; Fri, 18 Dec 2020 15:07:58 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4Cy9gL1tj2z9txvB;
-        Fri, 18 Dec 2020 15:07:58 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B41FD8B783;
-        Fri, 18 Dec 2020 15:07:59 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id ynTuRuN7N3DG; Fri, 18 Dec 2020 15:07:59 +0100 (CET)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.204.43])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5C2E88B75F;
-        Fri, 18 Dec 2020 15:07:59 +0100 (CET)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id F030266868; Fri, 18 Dec 2020 14:07:58 +0000 (UTC)
-Message-Id: <320d7a9ed7b379a6e0edf16d539bc22447272e65.1608299993.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] mm: Remove arch_remap() and mm-arch-hooks.h
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-um@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org
-Date:   Fri, 18 Dec 2020 14:07:58 +0000 (UTC)
+        id S1727261AbgLROKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 09:10:05 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:34250 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725982AbgLROKF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 09:10:05 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BIE8MAN089019;
+        Fri, 18 Dec 2020 08:08:22 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1608300502;
+        bh=yFeRY/FFE85wtwiBNGJkrb6gh9vkaA1wKxZHgsPHjts=;
+        h=From:To:CC:Subject:Date;
+        b=AS7kjrcwRuir6npW9rc1rE9dJyL0lN1O9HV0dTUDru1XCJus5L0coG2qlYJLDUqi9
+         di4dHyu3TLFjwAZKtMQ7O38FYdHSTYCorBYNIBE973LwUKd3SyDIuqyTDfrrGzhYwR
+         yBNDRyTur+/H64V24eGixi26vD6hxqgnJ7qgBvv0=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BIE8M7C078139
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 18 Dec 2020 08:08:22 -0600
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 18
+ Dec 2020 08:08:22 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 18 Dec 2020 08:08:22 -0600
+Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BIE8HoX035666;
+        Fri, 18 Dec 2020 08:08:18 -0600
+From:   Aswath Govindraju <a-govindraju@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vadym Kochan <vadym.kochan@plvision.eu>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/2] eeprom: eeprom_93xx46: Add support for microchip 93LC46B eeprom
+Date:   Fri, 18 Dec 2020 19:38:09 +0530
+Message-ID: <20201218140815.9501-1-a-govindraju@ti.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-powerpc was the last provider of arch_remap() and the last
-user of mm-arch-hooks.h.
+This series of patches adds support for microchip 93LC46B eeprom by
+ - Adding a new compatible string
+ - Adding a quirk to send extra bit after the address to ignore the
+   zero bit sent before data, during a read transfer.
 
-Since commit 526a9c4a7234 ("powerpc/vdso: Provide vdso_remap()"),
-arch_remap() hence mm-arch-hooks.h are not used anymore.
+Aswath Govindraju (2):
+  Documentation: devicetree: Add new compatible string for eeprom
+    microchip 93LC46B
+  misc: eeprom_93xx46: Add quirk to support Microchip 93LC46B eeprom
 
-Remove them.
+ .../devicetree/bindings/misc/eeprom-93xx46.txt    |  1 +
+ drivers/misc/eeprom/eeprom_93xx46.c               | 15 +++++++++++++++
+ include/linux/eeprom_93xx46.h                     |  2 ++
+ 3 files changed, 18 insertions(+)
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/um/include/asm/Kbuild          |  1 -
- include/asm-generic/Kbuild          |  1 -
- include/asm-generic/mm-arch-hooks.h | 16 ----------------
- include/linux/mm-arch-hooks.h       | 22 ----------------------
- mm/mremap.c                         |  3 ---
- 5 files changed, 43 deletions(-)
- delete mode 100644 include/asm-generic/mm-arch-hooks.h
- delete mode 100644 include/linux/mm-arch-hooks.h
-
-diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
-index 1c63b260ecc4..314979467db1 100644
---- a/arch/um/include/asm/Kbuild
-+++ b/arch/um/include/asm/Kbuild
-@@ -14,7 +14,6 @@ generic-y += irq_regs.h
- generic-y += irq_work.h
- generic-y += kdebug.h
- generic-y += mcs_spinlock.h
--generic-y += mm-arch-hooks.h
- generic-y += mmiowb.h
- generic-y += module.lds.h
- generic-y += param.h
-diff --git a/include/asm-generic/Kbuild b/include/asm-generic/Kbuild
-index 4365b9aa3e3f..e867eb3058d5 100644
---- a/include/asm-generic/Kbuild
-+++ b/include/asm-generic/Kbuild
-@@ -34,7 +34,6 @@ mandatory-y += kmap_size.h
- mandatory-y += kprobes.h
- mandatory-y += linkage.h
- mandatory-y += local.h
--mandatory-y += mm-arch-hooks.h
- mandatory-y += mmiowb.h
- mandatory-y += mmu.h
- mandatory-y += mmu_context.h
-diff --git a/include/asm-generic/mm-arch-hooks.h b/include/asm-generic/mm-arch-hooks.h
-deleted file mode 100644
-index 5ff0e5193f85..000000000000
---- a/include/asm-generic/mm-arch-hooks.h
-+++ /dev/null
-@@ -1,16 +0,0 @@
--/*
-- * Architecture specific mm hooks
-- */
--
--#ifndef _ASM_GENERIC_MM_ARCH_HOOKS_H
--#define _ASM_GENERIC_MM_ARCH_HOOKS_H
--
--/*
-- * This file should be included through arch/../include/asm/Kbuild for
-- * the architecture which doesn't need specific mm hooks.
-- *
-- * In that case, the generic hooks defined in include/linux/mm-arch-hooks.h
-- * are used.
-- */
--
--#endif /* _ASM_GENERIC_MM_ARCH_HOOKS_H */
-diff --git a/include/linux/mm-arch-hooks.h b/include/linux/mm-arch-hooks.h
-deleted file mode 100644
-index 9c4bedc95504..000000000000
---- a/include/linux/mm-arch-hooks.h
-+++ /dev/null
-@@ -1,22 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--/*
-- * Generic mm no-op hooks.
-- *
-- * Copyright (C) 2015, IBM Corporation
-- * Author: Laurent Dufour <ldufour@linux.vnet.ibm.com>
-- */
--#ifndef _LINUX_MM_ARCH_HOOKS_H
--#define _LINUX_MM_ARCH_HOOKS_H
--
--#include <asm/mm-arch-hooks.h>
--
--#ifndef arch_remap
--static inline void arch_remap(struct mm_struct *mm,
--			      unsigned long old_start, unsigned long old_end,
--			      unsigned long new_start, unsigned long new_end)
--{
--}
--#define arch_remap arch_remap
--#endif
--
--#endif /* _LINUX_MM_ARCH_HOOKS_H */
-diff --git a/mm/mremap.c b/mm/mremap.c
-index c5590afe7165..e43696a91260 100644
---- a/mm/mremap.c
-+++ b/mm/mremap.c
-@@ -22,7 +22,6 @@
- #include <linux/syscalls.h>
- #include <linux/mmu_notifier.h>
- #include <linux/uaccess.h>
--#include <linux/mm-arch-hooks.h>
- #include <linux/userfaultfd_k.h>
- 
- #include <asm/cacheflush.h>
-@@ -560,8 +559,6 @@ static unsigned long move_vma(struct vm_area_struct *vma,
- 		new_addr = err;
- 	} else {
- 		mremap_userfaultfd_prep(new_vma, uf);
--		arch_remap(mm, old_addr, old_addr + old_len,
--			   new_addr, new_addr + new_len);
- 	}
- 
- 	/* Conceal VM_ACCOUNT so old reservation is not undone */
 -- 
-2.25.0
+2.17.1
 
