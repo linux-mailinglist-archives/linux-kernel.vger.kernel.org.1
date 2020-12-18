@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 690502DE99B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 20:11:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B0B2DE99D
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 20:13:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728026AbgLRTLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 14:11:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36040 "EHLO mail.kernel.org"
+        id S1732766AbgLRTL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 14:11:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727387AbgLRTLT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 14:11:19 -0500
-Subject: Re: [GIT PULL] RISC-V Patches for the 5.11 Merge Window, Part 1
+        id S1727387AbgLRTL1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 14:11:27 -0500
+Subject: Re: [GIT PULL] Second set of arm64 updates for 5.11
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608318639;
-        bh=HHjqFizdZpjgkWrzLkZbiFgqfTZmzHzCGLToJgYSaD4=;
+        s=k20201202; t=1608318646;
+        bh=sCbJw+Nss/gHSdDTXDRtaAKmTYocFnQYClg3Ky73LF0=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=ca94pmBZcnUytQExMAn4yoXqDY/wuVspvi1WK6m8g8AHzSnytPU7EvX3Wnyufl9RS
-         owidJ8CyfUKEkj9LtyKGLWEvyCwqQfVGUDBKW7gI/yo/TWDkkO/xdOqkSXjXM13Iiz
-         rarxgQqNrS33bjjLb94bZf5HzEbZGB+06VSkcjrUsPiQgeUoXpotNQ6OBST1+8mGTk
-         QMhOaYpocd48FrmHszWBIMyJ7YciUHqlQjSNOKMD9muhS06urz2DLRU75mXtKxBMTK
-         ArjWhHCsah3YlkKXRE8DlOldYIAzA6aJhc2PI8+byML+5KaliTRb4NgdF2+sx9t+dl
-         qpP+n5w+Glt4w==
+        b=ZfhgBPsAcE8OyOVvkPfgxNOU84GL32CFrb/MxJLPEkWJnTnBStrO9WXt881VgC637
+         B67FFCa4AoGfVP05q3cINqLh7tB8vJXQv7i30e8fiTrIYtlAdOGgdVxteGOcIWbAxo
+         NrXTzImc0ygNIXENF6SnbtRgG3UlxEttYvLZUi2GYsW2Ao4kre374hjLQTycx7Sy1K
+         l0IZHZwh0x/gt+ColNy/OEleHEw5eRWYbxCR6WyrKPA6VvUzAKl536e2kCsXKAjdWW
+         RpDuP4hGTnKtxmNCA2I4IH0+5DYOexUyJcHGfmel6cseiQVP5PayOCmsCpYFZ0e5UB
+         XgdEqitRMCSSw==
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <mhng-9bb2f707-7aac-4141-8e3b-edc1b463fcd6@palmerdabbelt-glaptop>
-References: <mhng-9bb2f707-7aac-4141-8e3b-edc1b463fcd6@palmerdabbelt-glaptop>
-X-PR-Tracked-List-Id: <linux-riscv.lists.infradead.org>
-X-PR-Tracked-Message-Id: <mhng-9bb2f707-7aac-4141-8e3b-edc1b463fcd6@palmerdabbelt-glaptop>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.11-mw0
-X-PR-Tracked-Commit-Id: 7d95a88f9254b711a3a95106fc73f6a3a9866a40
+In-Reply-To: <20201218181713.GA13068@gaia>
+References: <20201218181713.GA13068@gaia>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201218181713.GA13068@gaia>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
+X-PR-Tracked-Commit-Id: 9fd339a45be5c06e239d45a042eab9d25de87882
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e2ae634014d3a8839a99f8897b3f6346a133a33b
-Message-Id: <160831863914.5982.8524807332166745328.pr-tracker-bot@kernel.org>
-Date:   Fri, 18 Dec 2020 19:10:39 +0000
-To:     Palmer Dabbelt <palmer@dabbelt.com>
+X-PR-Merge-Commit-Id: 5ba836eb9fdb07843cfa004e511f333745adb76e
+Message-Id: <160831864662.5982.11971277995011086429.pr-tracker-bot@kernel.org>
+Date:   Fri, 18 Dec 2020 19:10:46 +0000
+To:     Catalin Marinas <catalin.marinas@arm.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 17 Dec 2020 19:10:50 -0800 (PST):
+The pull request you sent on Fri, 18 Dec 2020 18:17:17 +0000:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.11-mw0
+> git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e2ae634014d3a8839a99f8897b3f6346a133a33b
+https://git.kernel.org/torvalds/c/5ba836eb9fdb07843cfa004e511f333745adb76e
 
 Thank you!
 
