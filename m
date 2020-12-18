@@ -2,67 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B03A82DE3FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:27:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 898F72DE403
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:29:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727845AbgLRO00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 09:26:26 -0500
-Received: from foss.arm.com ([217.140.110.172]:36412 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727358AbgLRO0Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 09:26:25 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 071E41FB;
-        Fri, 18 Dec 2020 06:25:40 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2A6EE3F66B;
-        Fri, 18 Dec 2020 06:25:38 -0800 (PST)
-References: <20201218103258.GA3040@hirez.programming.kicks-ass.net> <jhjsg83s616.mognet@arm.com> <20201218133655.GA10123@e123083-lin>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Morten Rasmussen <morten.rasmussen@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        dietmar.eggemann@arm.com, patrick.bellasi@matbug.net,
-        lenb@kernel.org, linux-kernel@vger.kernel.org,
-        ionela.voinescu@arm.com, qperret@google.com,
-        viresh.kumar@linaro.org
-Subject: Re: [PATCH] sched: Add schedutil overview
-In-reply-to: <20201218133655.GA10123@e123083-lin>
-Date:   Fri, 18 Dec 2020 14:25:33 +0000
-Message-ID: <jhjr1nnry1u.mognet@arm.com>
+        id S1727402AbgLRO15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 09:27:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726567AbgLRO14 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 09:27:56 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9638C06138C
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 06:27:15 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id 190so2524351wmz.0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 06:27:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3jAc8avduUQUrJ7esBOnKUiJwC4FE/zfHKx0EFzGBz4=;
+        b=F2xfRsnxvhpv+uKXzfqbx5DcPoqGFopHvfaBoi1q+5mqVAQZxdhyICtkh2j5WfhqO3
+         3IQecoe1Tv49RuxNLIKuyOjlDOpvEYpmBoOA22StprO4jAKztsbQ7+sOnnguCFjI1OIU
+         zCp17THqkfo1ugcRGSYGkugWd5wKQnG/laLA1EQ2k4gUck1lacj5iwMyIRm41NvG3VVB
+         GHdKvd2sH1ZWm1jABteiUuw+ekkw9Ndlqlmr1VLlCT5qzh+hOGKm7XF4bwxML3TkHtCU
+         LUYLh1XuxOUFyU627821rC71lWA0Jbhr11uUpPI06v5NPJsfZUx6OLC95ABQc83me+oS
+         AWQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3jAc8avduUQUrJ7esBOnKUiJwC4FE/zfHKx0EFzGBz4=;
+        b=hIm1f2IiLbQTBKbo/nMerPkAO7W8NzeVS6Q/tYRMONZS5V9G6HKOT3l7tiiXdUavPv
+         OTAKKH9gYltx5qq0WFXvmPV4vfhVilXWlsS6dF3ePS7lSa5V4iFRrq4vASJAV1GE8lZT
+         mY7tu5GSffoZxMmf8pvHafPYy5uUrGMjXRLX0pjP/j/yrZCff8DgH3xo+4PjlYzMIXo8
+         oQigTp7BuUVdF1JGulIoJKw+/zHJfVQ54XNbz0V6xp8fK9/nfitwVyGVm8kMmnLTxyxE
+         d1wQaSws7MUsSPmaZyNMyam1l82/hnmpRE4jiyDNGJ4fZ9URpJIzOsp8/bqcYzltbJyO
+         gXHQ==
+X-Gm-Message-State: AOAM532prCjRFvSxO7+TU/ys919v0HRT6w5fkm6U8uSRdVAMSieAToWs
+        EA4MgMx2rToMBZiYhtZrtgw0Mu7NqISYwy4QHISVJA==
+X-Google-Smtp-Source: ABdhPJx/lsgjkUBwptE2FvxilKrOPsqLIk5qAqyXF5cU65mBAdSv8EykNmw+E0J5n3tiJW833Tb9661bqGbb3yW/kKA=
+X-Received: by 2002:a1c:bc88:: with SMTP id m130mr4637467wmf.82.1608301634416;
+ Fri, 18 Dec 2020 06:27:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201210134648.272857-1-maxime@cerno.tech> <20201210134648.272857-8-maxime@cerno.tech>
+In-Reply-To: <20201210134648.272857-8-maxime@cerno.tech>
+From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date:   Fri, 18 Dec 2020 14:26:57 +0000
+Message-ID: <CAPY8ntCVgX7qHUS5Ecyjb2_rn_1amc88pFkPTU2XNVmcmO_ZBQ@mail.gmail.com>
+Subject: Re: [PATCH 07/15] drm/vc4: hdmi: Update the CEC clock divider on HSM
+ rate change
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Eric Anholt <eric@anholt.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Jason Cooper <jason@lakedaemon.net>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-rpi-kernel@lists.infradead.org,
+        DRI Development <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Maxime
 
-On 18/12/20 13:40, Morten Rasmussen wrote:
-> On Fri, Dec 18, 2020 at 11:33:09AM +0000, Valentin Schneider wrote:
->> (also, does this need a word about runnable rt tasks => goto max?)
+On Thu, 10 Dec 2020 at 13:47, Maxime Ripard <maxime@cerno.tech> wrote:
 >
-> What is actually the intended policy there? I thought it was goto max
-> unless rt was clamped, but if I read the code correctly in
-> schedutil_cpu_util() the current policy is only goto max if uclamp isn't
-> in use at all, including cfs.
+> As part of the enable sequence we might change the HSM clock rate if the
+> pixel rate is different than the one we were already dealing with.
 >
-
-Right, so the policy pretty much is: by default, if there are runnable rt
-tasks, goto max freq.
-
-When uclamp isn't used, that's hardcoded.
-
-When uclamp is in use, the default RT uclamp.min is 1024, so it "naturally"
-drives frequency selection to the max when there are runnable RT tasks
-(rq-aggregated uclamp.min == 1024). That default
-(uclamp_util_min_rt_default) can be tweaked.
-
-> The write-up looks good to me.
+> On the BCM2835 however, the CEC clock derives from the HSM clock so any
+> rate change will need to be reflected in the CEC clock divider to output
+> 40kHz.
 >
-> Reviewed-by: Morten Rasmussen <morten.rasmussen@arm.com>
+> Fixes: cd4cb49dc5bb ("drm/vc4: hdmi: Adjust HSM clock rate depending on pixel rate")
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+
+I thought we'd got a duplicate patch here, but it's moving code that
+was changed in patch 6/15 so it can be called from
+vc4_hdmi_encoder_pre_crtc_configure too. Good for confusing me!
+
+Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+
+> ---
+>  drivers/gpu/drm/vc4/vc4_hdmi.c | 39 +++++++++++++++++++++++++---------
+>  1 file changed, 29 insertions(+), 10 deletions(-)
 >
-> Morten
+> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> index 0c53d7427d15..b93ee3e26e2b 100644
+> --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
+> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> @@ -132,6 +132,27 @@ static void vc5_hdmi_reset(struct vc4_hdmi *vc4_hdmi)
+>                    HDMI_READ(HDMI_CLOCK_STOP) | VC4_DVP_HT_CLOCK_STOP_PIXEL);
+>  }
+>
+> +#ifdef CONFIG_DRM_VC4_HDMI_CEC
+> +static void vc4_hdmi_cec_update_clk_div(struct vc4_hdmi *vc4_hdmi)
+> +{
+> +       u16 clk_cnt;
+> +       u32 value;
+> +
+> +       value = HDMI_READ(HDMI_CEC_CNTRL_1);
+> +       value &= ~VC4_HDMI_CEC_DIV_CLK_CNT_MASK;
+> +
+> +       /*
+> +        * Set the clock divider: the hsm_clock rate and this divider
+> +        * setting will give a 40 kHz CEC clock.
+> +        */
+> +       clk_cnt = clk_get_rate(vc4_hdmi->hsm_clock) / CEC_CLOCK_FREQ;
+> +       value |= clk_cnt << VC4_HDMI_CEC_DIV_CLK_CNT_SHIFT;
+> +       HDMI_WRITE(HDMI_CEC_CNTRL_1, value);
+> +}
+> +#else
+> +static void vc4_hdmi_cec_update_clk_div(struct vc4_hdmi *vc4_hdmi) {}
+> +#endif
+> +
+>  static enum drm_connector_status
+>  vc4_hdmi_connector_detect(struct drm_connector *connector, bool force)
+>  {
+> @@ -761,6 +782,8 @@ static void vc4_hdmi_encoder_pre_crtc_configure(struct drm_encoder *encoder,
+>                 return;
+>         }
+>
+> +       vc4_hdmi_cec_update_clk_div(vc4_hdmi);
+> +
+>         /*
+>          * FIXME: When the pixel freq is 594MHz (4k60), this needs to be setup
+>          * at 300MHz.
+> @@ -1586,7 +1609,6 @@ static int vc4_hdmi_cec_init(struct vc4_hdmi *vc4_hdmi)
+>  {
+>         struct cec_connector_info conn_info;
+>         struct platform_device *pdev = vc4_hdmi->pdev;
+> -       u16 clk_cnt;
+>         u32 value;
+>         int ret;
+>
+> @@ -1605,17 +1627,14 @@ static int vc4_hdmi_cec_init(struct vc4_hdmi *vc4_hdmi)
+>         cec_s_conn_info(vc4_hdmi->cec_adap, &conn_info);
+>
+>         HDMI_WRITE(HDMI_CEC_CPU_MASK_SET, 0xffffffff);
+> +
+>         value = HDMI_READ(HDMI_CEC_CNTRL_1);
+> -       value &= ~VC4_HDMI_CEC_DIV_CLK_CNT_MASK;
+> -       /*
+> -        * Set the logical address to Unregistered and set the clock
+> -        * divider: the hsm_clock rate and this divider setting will
+> -        * give a 40 kHz CEC clock.
+> -        */
+> -       clk_cnt = clk_get_rate(vc4_hdmi->hsm_clock) / CEC_CLOCK_FREQ;
+> -       value |= VC4_HDMI_CEC_ADDR_MASK |
+> -                (clk_cnt << VC4_HDMI_CEC_DIV_CLK_CNT_SHIFT);
+> +       /* Set the logical address to Unregistered */
+> +       value |= VC4_HDMI_CEC_ADDR_MASK;
+>         HDMI_WRITE(HDMI_CEC_CNTRL_1, value);
+> +
+> +       vc4_hdmi_cec_update_clk_div(vc4_hdmi);
+> +
+>         ret = devm_request_threaded_irq(&pdev->dev, platform_get_irq(pdev, 0),
+>                                         vc4_cec_irq_handler,
+>                                         vc4_cec_irq_handler_thread, 0,
+> --
+> 2.28.0
+>
