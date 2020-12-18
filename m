@@ -2,347 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 888E52DE7FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 18:23:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17EA72DE7BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 18:00:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731621AbgLRRXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 12:23:31 -0500
-Received: from 10.mo177.mail-out.ovh.net ([46.105.73.133]:34464 "EHLO
-        10.mo177.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727787AbgLRRXb (ORCPT
+        id S1731972AbgLRRAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 12:00:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725797AbgLRRAI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 12:23:31 -0500
-X-Greylist: delayed 895 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Dec 2020 12:23:29 EST
-Received: from player750.ha.ovh.net (unknown [10.108.54.133])
-        by mo177.mail-out.ovh.net (Postfix) with ESMTP id CB61414A1B0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 17:58:32 +0100 (CET)
-Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
-        (Authenticated sender: steve@sk2.org)
-        by player750.ha.ovh.net (Postfix) with ESMTPSA id CE5CF19415177;
-        Fri, 18 Dec 2020 16:58:25 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-103G0054b343490-c268-4508-8761-696a483cf1bc,
-                    10A6859A360A65EA48DD728C0EA8E51A84F067FE) smtp.auth=steve@sk2.org
-X-OVh-ClientIp: 82.65.25.201
-From:   Stephen Kitt <steve@sk2.org>
-To:     linux-man@vger.kernel.org,
-        Alejandro Colomar <alx.manpages@gmail.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        linux-kernel@vger.kernel.org, Stephen Kitt <steve@sk2.org>
-Subject: [PATCH v3] close_range.2: new page documenting close_range(2)
-Date:   Fri, 18 Dec 2020 17:58:15 +0100
-Message-Id: <20201218165815.6963-1-steve@sk2.org>
-X-Mailer: git-send-email 2.20.1
+        Fri, 18 Dec 2020 12:00:08 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 296DFC0617A7
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 08:59:28 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id cw27so3065397edb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 08:59:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=l2IQ6TE/rhYWCk2P0BT6shtYVSJjLwqOvjZqkUrg3hg=;
+        b=x0bdaXnT2B4JXcqIt4PJy6h+bXPGtd8toCsOgNdWIJa1nPBCH5WTS5rerVO30HHHv+
+         0mEXFdRjcKh4IwU/rzCLurT6prPOAZRgSMIqzb+6RHbn47F53bE4mnZw4nfnwKqzLt9O
+         y2s6lpJCJeivzJE/dzH1mAeUqmd6PsLFZpksfWbC5s5r/QUjZboSHmr84aZIE5P0LJzo
+         X7gN+dmAo5f5vnJ+NP5gpsL6toXTlaOai1neElJ2mwb0KuuQoEZyD/SwUgY9jIhveiWf
+         ANrkYt1dOrFDv6aPQb04TGSt5QVD0JKHk4L6JLZ7vVZPZsgr5RluZpOmVL9LdFpgPmDm
+         3uJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l2IQ6TE/rhYWCk2P0BT6shtYVSJjLwqOvjZqkUrg3hg=;
+        b=EhuVVb7M0uF2OzMHQ9PY8EKUynkyzJKjljj9zCjCHSFPIzhjkPl3KkN+K4GmvLfn/x
+         PZQeoeQIZBtqIyyhuk2SE5eQbtT014i3O9M1hPXN5/qOzMHL4R1xDVR3+xhKBav3DeIG
+         AZvsiURH0PHZp1MepJQq437x77kcv8OgZJjkELOLjlBxTH+SZfnD7W/GPSB8MIS8YOuF
+         IvEDvKT+/VyGA0El30VElYUd0waUSoAxPg5ChwtXdqQorJXqTOh0pgjxLpc8nSQziOUB
+         T6oiXnzFUumpwYUse5ya9/LoFBHt8LFs/vwXd1gsfgLjqQ0K7gGJMArWjFo6LZP+u9Ni
+         xURQ==
+X-Gm-Message-State: AOAM532lheO8rR3LefGmyb1d54MST3rVR4UGuEx2aGN+r/ZIz55eVIgF
+        OwOV7LfUxaIMhilmekoTN+Ao0jfM9ATaXDX8zo2ADg==
+X-Google-Smtp-Source: ABdhPJzi8p93x3vt5BPfkyWakXSFrE3q9YiaTjtJjD9XWTCVmH/VzLNltbu680O+caKH/UqiktjQd9bnfrMv9AkR1X4=
+X-Received: by 2002:aa7:c3cd:: with SMTP id l13mr5242794edr.97.1608310766755;
+ Fri, 18 Dec 2020 08:59:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 16120634867417435410
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedujedrudeliedgleehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefuthgvphhhvghnucfmihhtthcuoehsthgvvhgvsehskhdvrdhorhhgqeenucggtffrrghtthgvrhhnpeetgedugfelkeeikeetgeegteevfeeufeetuefgudeiiedthfehtdeffeekvdeffeenucfkpheptddrtddrtddrtddpkedvrdeihedrvdehrddvtddunecuufhprghmkfhppfgvthifohhrkhepkedvrdeihedrvdehrddvtddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrjeehtddrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehsthgvvhgvsehskhdvrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+References: <20201106232908.364581-1-ira.weiny@intel.com> <20201106232908.364581-11-ira.weiny@intel.com>
+ <570ead2a-ff41-e730-d61d-0f59c67b1903@intel.com> <20201218040509.GD1563847@iweiny-DESK2.sc.intel.com>
+In-Reply-To: <20201218040509.GD1563847@iweiny-DESK2.sc.intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 18 Dec 2020 08:59:16 -0800
+Message-ID: <CAPcyv4hixbKqkkh4DsRgAF7fARH2n2zzHnqQa1cNrXDrH9PekA@mail.gmail.com>
+Subject: Re: [PATCH V3 10/10] x86/pks: Add PKS test code
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux MM <linux-mm@kvack.org>, linux-kselftest@vger.kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This documents close_range(2) based on information in
-278a5fbaed89dacd04e9d052f4594ffd0e0585de,
-60997c3d45d9a67daf01c56d805ae4fec37e0bd8, and
-582f1fb6b721facf04848d2ca57f34468da1813e.
+On Thu, Dec 17, 2020 at 8:05 PM Ira Weiny <ira.weiny@intel.com> wrote:
+>
+> On Thu, Dec 17, 2020 at 12:55:39PM -0800, Dave Hansen wrote:
+> > On 11/6/20 3:29 PM, ira.weiny@intel.com wrote:
+> > > +           /* Arm for context switch test */
+> > > +           write(fd, "1", 1);
+> > > +
+> > > +           /* Context switch out... */
+> > > +           sleep(4);
+> > > +
+> > > +           /* Check msr restored */
+> > > +           write(fd, "2", 1);
+> >
+> > These are always tricky.  What you ideally want here is:
+> >
+> > 1. Switch away from this task to a non-PKS task, or
+> > 2. Switch from this task to a PKS-using task, but one which has a
+> >    different PKS value
+>
+> Or both...
+>
+> >
+> > then, switch back to this task and make sure PKS maintained its value.
+> >
+> > *But*, there's no absolute guarantee that another task will run.  It
+> > would not be totally unreasonable to have the kernel just sit in a loop
+> > without context switching here if no other tasks can run.
+> >
+> > The only way you *know* there is a context switch is by having two tasks
+> > bound to the same logical CPU and make sure they run one after another.
+>
+> Ah...  We do that.
+>
+> ...
+> +       CPU_ZERO(&cpuset);
+> +       CPU_SET(0, &cpuset);
+> +       /* Two processes run on CPU 0 so that they go through context switch.  */
+> +       sched_setaffinity(getpid(), sizeof(cpu_set_t), &cpuset);
+> ...
+>
+> I think this should be ensuring that both the parent and the child are
+> running on CPU 0.  At least according to the man page they should be.
+>
+> <man>
+>         A child created via fork(2) inherits its parent's CPU affinity mask.
+> </man>
+>
+> Perhaps a better method would be to synchronize the 2 threads more to ensure
+> that we are really running at the 'same time' and forcing the context switch.
+>
+> >  This just gets itself into a state where it *CAN* context switch and
+> > prays that one will happen.
+>
+> Not sure what you mean by 'This'?  Do you mean that running on the same CPU
+> will sometimes not force a context switch?  Or do you mean that the sleeps
+> could be badly timed and the 2 threads could run 1 after the other on the same
+> CPU?  The latter is AFAICT the most likely case.
+>
 
-Signed-off-by: Stephen Kitt <steve@sk2.org>
----
-V3: fix synopsis overflow
-    copy notes from membarrier.2 re the lack of wrapper
-    semantic newlines
-    drop non-standard "USE CASES" section heading
-    add code example
-
-V2: unsigned int to match the kernel declarations
-    groff and grammar tweaks
-    CLOSE_RANGE_UNSHARE unshares *and* closes
-    Explain that EMFILE and ENOMEM can occur with C_R_U
-    "Conforming to" phrasing
-    Detailed explanation of CLOSE_RANGE_UNSHARE
-    Reading /proc isn't common
-
- man2/close_range.2 | 266 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 266 insertions(+)
- create mode 100644 man2/close_range.2
-
-diff --git a/man2/close_range.2 b/man2/close_range.2
-new file mode 100644
-index 000000000..f8f2053ac
---- /dev/null
-+++ b/man2/close_range.2
-@@ -0,0 +1,266 @@
-+.\" Copyright (c) 2020 Stephen Kitt <steve@sk2.org>
-+.\"
-+.\" %%%LICENSE_START(VERBATIM)
-+.\" Permission is granted to make and distribute verbatim copies of this
-+.\" manual provided the copyright notice and this permission notice are
-+.\" preserved on all copies.
-+.\"
-+.\" Permission is granted to copy and distribute modified versions of this
-+.\" manual under the conditions for verbatim copying, provided that the
-+.\" entire resulting derived work is distributed under the terms of a
-+.\" permission notice identical to this one.
-+.\"
-+.\" Since the Linux kernel and libraries are constantly changing, this
-+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-+.\" responsibility for errors or omissions, or for damages resulting from
-+.\" the use of the information contained herein.  The author(s) may not
-+.\" have taken the same level of care in the production of this manual,
-+.\" which is licensed free of charge, as they might when working
-+.\" professionally.
-+.\"
-+.\" Formatted or processed versions of this manual, if unaccompanied by
-+.\" the source, must acknowledge the copyright and authors of this work.
-+.\" %%%LICENSE_END
-+.\"
-+.TH CLOSE_RANGE 2 2020-12-08 "Linux" "Linux Programmer's Manual"
-+.SH NAME
-+close_range \- close all file descriptors in a given range
-+.SH SYNOPSIS
-+.nf
-+.B #include <linux/close_range.h>
-+.PP
-+.BI "int close_range(unsigned int " first ", unsigned int " last ,
-+.BI "                unsigned int " flags );
-+.fi
-+.PP
-+.IR Note :
-+There is no glibc wrapper for this system call; see NOTES.
-+.SH DESCRIPTION
-+The
-+.BR close_range ()
-+system call closes all open file descriptors from
-+.I first
-+to
-+.I last
-+(included).
-+.PP
-+Errors closing a given file descriptor are currently ignored.
-+.PP
-+.I flags
-+can be 0 or set to one or both of the following:
-+.TP
-+.B CLOSE_RANGE_UNSHARE
-+unshares the range of file descriptors from any other processes,
-+before closing them,
-+avoiding races with other threads sharing the file descriptor table.
-+.TP
-+.BR CLOSE_RANGE_CLOEXEC " (since Linux 5.10)"
-+sets the close-on-exec bit instead of immediately closing the file
-+descriptors.
-+.SH RETURN VALUE
-+On success,
-+.BR close_range ()
-+returns 0.
-+On error, \-1 is returned and
-+.I errno
-+is set to indicate the cause of the error.
-+.SH ERRORS
-+.TP
-+.B EINVAL
-+.I flags
-+is not valid, or
-+.I first
-+is greater than
-+.IR last .
-+.PP
-+The following can occur with
-+.B CLOSE_RANGE_UNSHARE
-+(when constructing the new descriptor table):
-+.TP
-+.B EMFILE
-+The per-process limit on the number of open file descriptors has been reached
-+(see the description of
-+.B RLIMIT_NOFILE
-+in
-+.BR getrlimit (2)).
-+.TP
-+.B ENOMEM
-+Insufficient kernel memory was available.
-+.SH VERSIONS
-+.BR close_range ()
-+first appeared in Linux 5.9.
-+.SH CONFORMING TO
-+.BR close_range ()
-+is a nonstandard function that is also present on FreeBSD.
-+.SH NOTES
-+Glibc does not provide a wrapper for this system call; call it using
-+.BR syscall (2).
-+.\" 278a5fbaed89dacd04e9d052f4594ffd0e0585de
-+.SS Closing all open file descriptors
-+To avoid blindly closing file descriptors in the range of possible
-+file descriptors,
-+this is sometimes implemented (on Linux) by listing open file
-+descriptors in
-+.I /proc/self/fd/
-+and calling
-+.BR close (2)
-+on each one.
-+.BR close_range ()
-+can take care of this without requiring
-+.I /proc
-+and with a single system call,
-+which provides significant performance benefits.
-+.\" 60997c3d45d9a67daf01c56d805ae4fec37e0bd8
-+.SS Closing file descriptors before exec
-+File descriptors can be closed safely using
-+.PP
-+.in +4n
-+.EX
-+/* we don't want anything past stderr here */
-+close_range(3, ~0U, CLOSE_RANGE_UNSHARE);
-+execve(....);
-+.EE
-+.in
-+.PP
-+.B CLOSE_RANGE_UNSHARE
-+is conceptually equivalent to
-+.PP
-+.in +4n
-+.EX
-+unshare(CLONE_FILES);
-+close_range(first, last, 0);
-+.EE
-+.in
-+.PP
-+but can be more efficient:
-+if the unshared range extends past the current maximum number of file
-+descriptors allocated in the caller's file descriptor table
-+(the common case when
-+.I last
-+is
-+.BR ~0U ),
-+the kernel will unshare a new file descriptor table for the caller up
-+to
-+.IR first .
-+This avoids subsequent close calls entirely;
-+the whole operation is complete once the table is unshared.
-+.\" 582f1fb6b721facf04848d2ca57f34468da1813e
-+.SS Closing files on \fBexec\fP
-+This is particularly useful in cases where multiple
-+.RB pre- exec
-+setup steps risk conflicting with each other.
-+For example, setting up a
-+.BR seccomp (2)
-+profile can conflict with a
-+.B close_range
-+call:
-+if the file descriptors are closed before the seccomp profile is set
-+up,
-+the profile setup can't use them control their closure;
-+if the file descriptors are closed afterwards,
-+the seccomp profile can't block the
-+.B close_range
-+call or any fallbacks.
-+Using
-+.B CLOSE_RANGE_CLOEXEC
-+avoids this:
-+the descriptors can be marked before the seccomp profile is set up,
-+and the profile can control access to
-+.B close_range
-+without affecting the calling process.
-+.SH EXAMPLES
-+The following program is designed to be execed by the second program
-+below.
-+It lists its open file descriptors:
-+.PP
-+.in +4n
-+.EX
-+/* listopen.c */
-+
-+#include <stdio.h>
-+#include <sys/stat.h>
-+
-+int
-+main(int argc, char *argv[])
-+{
-+    int i;
-+    struct stat buf;
-+
-+    for (i = 0; i < 100; i++) {
-+        if (!fstat(i, &buf))
-+            printf("FD %d is open.\n", i);
-+    }
-+
-+    exit(EXIT_SUCCESS);
-+)
-+.EE
-+.in
-+.PP
-+This program executes the command given on its command-line after
-+opening the files listed after the command,
-+and then using
-+.B close_range
-+to close them:
-+.PP
-+.in +4n
-+.EX
-+/* close_range.c */
-+
-+#include <fcntl.h>
-+#include <linux/close_range.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <sys/stat.h>
-+#include <sys/syscall.h>
-+#include <sys/types.h>
-+#include <unistd.h>
-+
-+int
-+main(int argc, char *argv[])
-+{
-+    char *newargv[] = { NULL };
-+    char *newenviron[] = { NULL };
-+    int i;
-+
-+    if (argc < 3) {
-+        fprintf(stderr, "Usage: %s <command-to-run> <files-to-open>\n", argv[0]);
-+        exit(EXIT_FAILURE);
-+    }
-+
-+    for (i = 2; i < argc; i++) {
-+        if (open(argv[i], O_RDONLY) == -1) {
-+            perror(argv[i]);
-+            exit(EXIT_FAILURE);
-+        }
-+    }
-+
-+    if (syscall(__NR_close_range, 3, ~0U, CLOSE_RANGE_UNSHARE) == -1) {
-+        perror("close_range");
-+        exit(EXIT_FAILURE);
-+    }
-+
-+    execve(argv[1], newargv, newenviron);
-+    perror("execve");
-+    exit(EXIT_FAILURE);
-+}
-+.EE
-+.in
-+.PP
-+We can use the second program to exec the first as follows:
-+.PP
-+.in +4n
-+.EX
-+.RB "$" " make listopen close_range"
-+.RB "$" " ./close_range ./listopen /dev/null /dev/zero"
-+FD 0 is open.
-+FD 1 is open.
-+FD 2 is open.
-+.EE
-+.in
-+.PP
-+Removing the call to
-+.B close_range
-+will show different output, with the file descriptors for the named
-+files still open.
-+.SH SEE ALSO
-+.BR close (2)
-
-base-commit: b5dae3959625f5ff378e9edf9139057d1c06bb55
--- 
-2.20.1
-
+One way to guarantee that both threads run is to just pass a message
+between them over a pipe and wait for the submitter to receive an ack
+from the other end.
