@@ -2,100 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA44E2DDEC0
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 07:54:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E1B22DDEC2
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 07:57:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732833AbgLRGyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 01:54:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46634 "EHLO
+        id S1732868AbgLRGzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 01:55:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbgLRGyg (ORCPT
+        with ESMTP id S1725860AbgLRGzX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 01:54:36 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB114C0617A7;
-        Thu, 17 Dec 2020 22:53:55 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id b8so917033plx.0;
-        Thu, 17 Dec 2020 22:53:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Hz+n8sgcprA6LhyVXY2YPhKyM2gTWxdov4mu8BPj34U=;
-        b=jkQVQ3FFyQSW3O83sApBrX9x5afL3sflJQ0+gpX4mY4FG9sJwiGzI50eAPHlt+23lY
-         mG4+NBulxSFkVZTPku26NrlLVRtIZo9LjlnY0yjV9IiQw0x+X00vN4GVwHjo20C4N3hP
-         JQ/Obht1CkMw8NfNu8wxparwImmRyHj4AzX2eAX0qla2GSBNdzEPmDO47lA8Bh0Gb7/P
-         TbXS+ZoqPWE73LdbTAuHod95cavCP5KWD49EfKv8hFm0u1sRI2Qvaz5YOW6xaG6wk9Oi
-         JX3EPANWk3KX4tnASp38hAvEMw7fvsQgEvL742LHfLaOIRR08dQsMLyQEF12m++fv2oR
-         7Muw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Hz+n8sgcprA6LhyVXY2YPhKyM2gTWxdov4mu8BPj34U=;
-        b=biy0+vufp2vrKs6D8xg/8lcmwEj1h8SWvMU9qGiNO2GY733LPhSNyiIBIwO/tF8LhW
-         R9M8ZqaJWQ6dj5EOMwFXxDF/lwqfUjE0YtzBKWz0Rpcv0y2u4ZQi7BAuxN4yPEb1rBE2
-         J5mbDizwF/frLFore/6/NyezffpYw2Yf5hvyV5btBMkbLC0j5gb/gRpw3MvXv3uzuDFY
-         DUj57e2gSiUMMicIxN7UOxE+S5SIY7aZn0kAQDNtktxGTnh+xBf/gdYAcEchRbiYH80c
-         l7KJWG6zCRc58lVq6466upxtGLVNuftDc0hdan69t+AdooUBfENkXtLUe4VK1L80J8Vd
-         RZ5g==
-X-Gm-Message-State: AOAM533/QTUieKFhL2ule9SFtkA4DOX/5hLpcUumcLFWhmputntxKkNd
-        6+mZK1rIN3P4bPKmuCI88JBK0xVI1RM=
-X-Google-Smtp-Source: ABdhPJwgDSO67k+nVlT3HiPyIVMhprCtTsvl5ncczRKCaKa9p/cWPcHQKvETkaLpHvpRoeNqPpEhEA==
-X-Received: by 2002:a17:90a:fa18:: with SMTP id cm24mr2949223pjb.220.1608274435361;
-        Thu, 17 Dec 2020 22:53:55 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id f29sm7918141pfk.32.2020.12.17.22.53.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 22:53:54 -0800 (PST)
-Date:   Thu, 17 Dec 2020 22:53:51 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     linux-input@vger.kernel.org, Rob Herring <robh@kernel.org>,
-        Paul Hollinsky <phollinsky@holtechnik.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Input: gtco - remove driver
-Message-ID: <X9xR/wTjU1tLS5JV@google.com>
-References: <X8wbBtO5KidME17K@google.com>
- <nycvar.YFH.7.76.2012171221350.25826@cbobk.fhfr.pm>
+        Fri, 18 Dec 2020 01:55:23 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE00C0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 22:54:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=eVSNY9beUisrR6DjTzyXH++4TmxxcaQeUDEUADAgt1U=; b=Xh9i/7r3Q7CTC43D9D6U4TBeLw
+        zbsXVO3dGc/0kXabTzkzBxWo6nkH4P+9vqohUSsYuuEEyrTc29TMPeJqPfYDN9MGaND6J6JN/Zudn
+        0+BVcxITXS+1/+mIMlg/AnljIuS0yDuEQeQNGZXjz3sh1j1VcQbRAsDNQfG56w8tCePWoKwX1KzJN
+        dNHkVtlOS36acsz1CwafDFRdmcKXur3zgvz3r70kfhQUi4uANuKi26r/YxxGCExy8/oxr55YpcQnO
+        m6X8yxxLstkn7d+VibZhl4mT/VnThtX5Z6zvukWe66Wx0t4R1ogIsm5QbWam6Bwk+C1q6L83TqiyJ
+        DxDJL9Sg==;
+Received: from [2601:1c0:6280:3f0::64ea]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kq9ex-0005O4-Fu; Fri, 18 Dec 2020 06:54:39 +0000
+Subject: Re: 5.10.1: UBSAN: shift-out-of-bounds in ./include/linux/log2.h:57:1
+To:     =?UTF-8?Q?Toralf_F=c3=b6rster?= <toralf.foerster@gmx.de>,
+        jgg@ziepe.ca
+Cc:     Linux Kernel <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+References: <c6e5eb81-680f-dd5c-8a81-62041a5ce50c@gmx.de>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <5c172fad-a9cf-c29d-0a27-f2b0505dc33d@infradead.org>
+Date:   Thu, 17 Dec 2020 22:54:35 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <nycvar.YFH.7.76.2012171221350.25826@cbobk.fhfr.pm>
+In-Reply-To: <c6e5eb81-680f-dd5c-8a81-62041a5ce50c@gmx.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+Hi,
 
-On Thu, Dec 17, 2020 at 12:22:17PM +0100, Jiri Kosina wrote:
-> On Sat, 5 Dec 2020, Dmitry Torokhov wrote:
+[adding linux-mm]
+
+On 12/16/20 1:54 AM, Toralf Förster wrote:
+> Hi,
 > 
-> > The driver has its own HID descriptor parsing code, that had and still
-> > has several issues discovered by syzbot and other tools. Ideally we
-> > should move the driver over to the HID subsystem, so that it uses proven
-> > parsing code.  However the devices in question are EOL, and GTCO is not
-> > willing to extend resources for that, so let's simply remove the driver.
+> I got this recently at this hardened Gentoo Linux server:
 > 
-> Acked-by: Jiri Kosina <jkosina@suse.cz>
+> Linux mr-fox 5.10.1 #1 SMP Tue Dec 15 22:09:42 CET 2020 x86_64 Intel(R)
+> Xeon(R) CPU E5-1650 v3 @ 3.50GHz GenuineIntel GNU/Linux
 > 
-> > 
-> > Note that our HID support has greatly improved over the last 10 years,
-> > we may also consider reverting 6f8d9e26e7de ("hid-core.c: Adds all GTCO
-> > CalComp Digitizers and InterWrite School Products to blacklist") and see
-> > if GTCO devices actually work with normal HID drivers.
 > 
-> Sounds like a good plan to me. Perhaps you can do that in a series 
-> together, and stage that for 5.12?
+> Dec 15 23:31:51 mr-fox kernel: [ 1974.206972]
+> ================================================================================
+> Dec 15 23:31:51 mr-fox kernel: [ 1974.206977] UBSAN: shift-out-of-bounds
+> in ./include/linux/log2.h:57:13
+> Dec 15 23:31:51 mr-fox kernel: [ 1974.206980] shift exponent 64 is too
+> large for 64-bit type 'long unsigned int'
+> Dec 15 23:31:51 mr-fox kernel: [ 1974.206982] CPU: 11 PID: 21051 Comm:
+> cc1 Tainted: G                T 5.10.1 #1
+> Dec 15 23:31:51 mr-fox kernel: [ 1974.206984] Hardware name: ASUSTeK
+> COMPUTER INC. Z10PA-U8 Series/Z10PA-U8 Series, BIOS 3703 08/02/2018
+> Dec 15 23:31:51 mr-fox kernel: [ 1974.206985] Call Trace:
+> Dec 15 23:31:51 mr-fox kernel: [ 1974.206993]  dump_stack+0x57/0x6a
+> Dec 15 23:31:51 mr-fox kernel: [ 1974.206996]  ubsan_epilogue+0x5/0x40
+> Dec 15 23:31:51 mr-fox kernel: [ 1974.206999]
+> __ubsan_handle_shift_out_of_bounds.cold+0x61/0x10e
+> Dec 15 23:31:51 mr-fox kernel: [ 1974.207002]
+> ondemand_readahead.cold+0x16/0x21
+> Dec 15 23:31:51 mr-fox kernel: [ 1974.207007]
+> generic_file_buffered_read+0x452/0x890
+> Dec 15 23:31:51 mr-fox kernel: [ 1974.207011]  new_sync_read+0x156/0x200
+> Dec 15 23:31:51 mr-fox kernel: [ 1974.207014]  vfs_read+0xf8/0x190
+> Dec 15 23:31:51 mr-fox kernel: [ 1974.207016]  ksys_read+0x65/0xe0
+> Dec 15 23:31:51 mr-fox kernel: [ 1974.207018]  do_syscall_64+0x33/0x40
+> Dec 15 23:31:51 mr-fox kernel: [ 1974.207021]
+> entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> Dec 15 23:31:51 mr-fox kernel: [ 1974.207024] RIP: 0033:0x7f01b2df198e
+> Dec 15 23:31:51 mr-fox kernel: [ 1974.207026] Code: c0 e9 b6 fe ff ff 50
+> 48 8d 3d 66 c3 09 00 e8 59 e2 01 00 66 0f 1f 84 00 00 00 00 00 64 8b 04
+> 25 18 00 00 00 85 c0 75 14 0f 05 <48> 3d 00 f0 ff ff 77 5a c3 66 0f 1f
+> 84 00 00 00 00 00 48 83 ec 28
+> Dec 15 23:31:51 mr-fox kernel: [ 1974.207028] RSP: 002b:00007fff2167e998
+> EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> Dec 15 23:31:51 mr-fox kernel: [ 1974.207030] RAX: ffffffffffffffda RBX:
+> 0000000000000000 RCX: 00007f01b2df198e
+> Dec 15 23:31:51 mr-fox kernel: [ 1974.207032] RDX: 0000000000000000 RSI:
+> 00000000054dcc50 RDI: 0000000000000004
+> Dec 15 23:31:51 mr-fox kernel: [ 1974.207033] RBP: 00000000054dcc50 R08:
+> 00000000054dcc50 R09: 0000000000000000
+> Dec 15 23:31:51 mr-fox kernel: [ 1974.207034] R10: 0000000000000000 R11:
+> 0000000000000246 R12: 00000000054dc3b0
+> Dec 15 23:31:51 mr-fox kernel: [ 1974.207035] R13: 0000000000008000 R14:
+> 00000000054c9800 R15: 0000000000000000
+> Dec 15 23:31:51 mr-fox kernel: [ 1974.207037]
+> ================================================================================
+> 
+> 
+> Known issue ?
 
-Sorry, I already zapped the driver in 5.11.
+Not that I have heard about, but that's not conclusive.
 
-Unfortunately I do not have this hardware, so while we could remove
-these devices from the blacklist we will have to do that blindly. Please
-let me know if you still want to do that.
+Looks to me like this is in mm/readahead.c:
 
-Thank you.
+static unsigned long get_init_ra_size(unsigned long size, unsigned long max)
+{
+	unsigned long newsize = roundup_pow_of_two(size);
 
+
+What filesystem?  What workload?
+
+thanks.
 -- 
-Dmitry
+~Randy
