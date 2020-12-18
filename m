@@ -2,298 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 513BF2DE8F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 19:37:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF3D02DE8FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 19:39:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728327AbgLRSgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 13:36:15 -0500
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:50261 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725766AbgLRSgN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 13:36:13 -0500
-Received: from [192.168.0.8] (ip5f5aeee5.dynamic.kabel-deutschland.de [95.90.238.229])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: buczek)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id D650220646234;
-        Fri, 18 Dec 2020 19:35:29 +0100 (CET)
-Subject: Re: v5.10.1 xfs deadlock
-To:     Brian Foster <bfoster@redhat.com>
-Cc:     linux-xfs@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        it+linux-xfs@molgen.mpg.de
-References: <b8da4aed-ee44-5d9f-88dc-3d32f0298564@molgen.mpg.de>
- <20201217194317.GD2507317@bfoster>
- <39b92850-f2ff-e4b6-0b2e-477ab3ec3c87@molgen.mpg.de>
- <20201218153533.GA2563439@bfoster>
-From:   Donald Buczek <buczek@molgen.mpg.de>
-Message-ID: <8e9a2939-220d-b12f-a24e-0fb48fa95215@molgen.mpg.de>
-Date:   Fri, 18 Dec 2020 19:35:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728582AbgLRSix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 13:38:53 -0500
+Received: from honk.sigxcpu.org ([24.134.29.49]:50606 "EHLO honk.sigxcpu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726145AbgLRSiw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 13:38:52 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id 35771FB03;
+        Fri, 18 Dec 2020 19:38:10 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 7Bdg8r9sBTr0; Fri, 18 Dec 2020 19:38:08 +0100 (CET)
+Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
+        id B611A43FDC; Fri, 18 Dec 2020 19:38:07 +0100 (CET)
+From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-power@fi.rohmeurope.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] regulators: bd718x7: Add enable times
+Date:   Fri, 18 Dec 2020 19:38:07 +0100
+Message-Id: <41fb2ed19f584f138336344e2297ae7301f72b75.1608316658.git.agx@sigxcpu.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20201218153533.GA2563439@bfoster>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.12.20 16:35, Brian Foster wrote:
-> On Thu, Dec 17, 2020 at 10:30:37PM +0100, Donald Buczek wrote:
->> On 17.12.20 20:43, Brian Foster wrote:
->>> On Thu, Dec 17, 2020 at 06:44:51PM +0100, Donald Buczek wrote:
->>>> Dear xfs developer,
->>>>
->>>> I was doing some testing on a Linux 5.10.1 system with two 100 TB xfs filesystems on md raid6 raids.
->>>>
->>>> The stress test was essentially `cp -a`ing a Linux source repository with two threads in parallel on each filesystem.
->>>>
->>>> After about on hour, the processes to one filesystem (md1) blocked, 30 minutes later the process to the other filesystem (md0) did.
->>>>
->>>>       root      7322  2167  0 Dec16 pts/1    00:00:06 cp -a /jbod/M8068/scratch/linux /jbod/M8068/scratch/1/linux.018.TMP
->>>>       root      7329  2169  0 Dec16 pts/1    00:00:05 cp -a /jbod/M8068/scratch/linux /jbod/M8068/scratch/2/linux.019.TMP
->>>>       root     13856  2170  0 Dec16 pts/1    00:00:08 cp -a /jbod/M8067/scratch/linux /jbod/M8067/scratch/2/linux.028.TMP
->>>>       root     13899  2168  0 Dec16 pts/1    00:00:05 cp -a /jbod/M8067/scratch/linux /jbod/M8067/scratch/1/linux.027.TMP
->>>>
-> 
-> Do you have any indication of whether these workloads actually hung or
-> just became incredibly slow?
+Use the typical startup times from the data sheet so boards get a
+reasonable default. Not setting any enable time can lead to board hangs
+when e.g. clocks are enabled too soon afterwards.
 
-There is zero progress. iostat doesn't show any I/O on any of the block devices (md or member)
+This fixes gpu power domain resume on the Librem 5.
 
->>>> Some info from the system (all stack traces, slabinfo) is available here: https://owww.molgen.mpg.de/~buczek/2020-12-16.info.txt
->>>>
->>>> It stands out, that there are many (549 for md0, but only 10 for md1)  "xfs-conv" threads all with stacks like this
->>>>
->>>>       [<0>] xfs_log_commit_cil+0x6cc/0x7c0
->>>>       [<0>] __xfs_trans_commit+0xab/0x320
->>>>       [<0>] xfs_iomap_write_unwritten+0xcb/0x2e0
->>>>       [<0>] xfs_end_ioend+0xc6/0x110
->>>>       [<0>] xfs_end_io+0xad/0xe0
->>>>       [<0>] process_one_work+0x1dd/0x3e0
->>>>       [<0>] worker_thread+0x2d/0x3b0
->>>>       [<0>] kthread+0x118/0x130
->>>>       [<0>] ret_from_fork+0x22/0x30
->>>>
->>>> xfs_log_commit_cil+0x6cc is
->>>>
->>>>     xfs_log_commit_cil()
->>>>       xlog_cil_push_background(log)
->>>>         xlog_wait(&cil->xc_push_wait, &cil->xc_push_lock);
->>>>
-> 
-> This looks like the transaction commit throttling code. That was
-> introduced earlier this year in v5.7 via commit 0e7ab7efe7745 ("xfs:
-> Throttle commits on delayed background CIL push"). The purpose of that
-> change was to prevent the CIL from growing too large. FWIW, I don't
-> recall that being a functional problem so it should be possible to
-> simply remove that blocking point and see if that avoids the problem or
-> if we simply stall out somewhere else, if you wanted to give that a
-> test.
+Signed-off-by: Guido Günther <agx@sigxcpu.org>
 
-Will do. Before trying with this commit reverted, I will repeat the test without any change to see if the problem is reproducible at all.
+---
+v2
+- As per review comment by Matti Vaittinen
+  https://lore.kernel.org/lkml/beba25e85db20649aa040fc0ae549895c9265f6f.camel@fi.rohmeurope.com/
+  Use defines instead of plain values
+- As per review comment by Mark Brown
+  https://lore.kernel.org/lkml/20201216130637.GC4861@sirena.org.uk/
+  Drop cover letter
+---
+ drivers/regulator/bd718x7-regulator.c | 27 ++++++++++++++++++++++++
+ include/linux/mfd/rohm-bd718x7.h      | 30 +++++++++++++++++++++++++++
+ 2 files changed, 57 insertions(+)
 
->>>> Some other threads, including the four "cp" commands are also blocking at xfs_log_commit_cil+0x6cc
->>>>
->>>> There are also single "flush" process for each md device with this stack signature:
->>>>
->>>>       [<0>] xfs_map_blocks+0xbf/0x400
->>>>       [<0>] iomap_do_writepage+0x15e/0x880
->>>>       [<0>] write_cache_pages+0x175/0x3f0
->>>>       [<0>] iomap_writepages+0x1c/0x40
->>>>       [<0>] xfs_vm_writepages+0x59/0x80
->>>>       [<0>] do_writepages+0x4b/0xe0
->>>>       [<0>] __writeback_single_inode+0x42/0x300
->>>>       [<0>] writeback_sb_inodes+0x198/0x3f0
->>>>       [<0>] __writeback_inodes_wb+0x5e/0xc0
->>>>       [<0>] wb_writeback+0x246/0x2d0
->>>>       [<0>] wb_workfn+0x26e/0x490
->>>>       [<0>] process_one_work+0x1dd/0x3e0
->>>>       [<0>] worker_thread+0x2d/0x3b0
->>>>       [<0>] kthread+0x118/0x130
->>>>       [<0>] ret_from_fork+0x22/0x30
->>>>
-> 
-> Is writeback still blocked as such or was this just a transient stack?
-
-This is frozen. I did another collection of the stack dump today and all the stack trace (related to these two filesystems) are unchanged.
-
-However, I discovered, that my original report was not correct. The above stack trace is from PID 348 ("kworker/u81:8+flush-9:0") while the other thread for the other device (PID 20, "kworker/u82:0+flush-9:1" doesn't have an identical thread, it has three more frames and is blocking at xfs_log_commit_cil+0x6cc as most other processes.
-
-     [<0>] xfs_log_commit_cil+0x6cc/0x7c0
-     [<0>] __xfs_trans_commit+0xab/0x320
-     [<0>] xfs_bmapi_convert_delalloc+0x437/0x4b0
-     [<0>] xfs_map_blocks+0x1e3/0x400
-     [<0>] iomap_do_writepage+0x15e/0x880
-     [<0>] write_cache_pages+0x175/0x3f0
-     [<0>] iomap_writepages+0x1c/0x40
-     [<0>] xfs_vm_writepages+0x59/0x80
-     [<0>] do_writepages+0x4b/0xe0
-     [<0>] __writeback_single_inode+0x42/0x300
-     [<0>] writeback_sb_inodes+0x198/0x3f0
-     [<0>] __writeback_inodes_wb+0x5e/0xc0
-     [<0>] wb_writeback+0x246/0x2d0
-     [<0>] wb_workfn+0x26e/0x490
-     [<0>] process_one_work+0x1dd/0x3e0
-     [<0>] worker_thread+0x2d/0x3b0
-     [<0>] kthread+0x118/0x130
-     [<0>] ret_from_fork+0x22/0x30
-
-> 
->>>> xfs_map_blocks+0xbf is the
->>>>
->>>>       xfs_ilock(ip, XFS_ILOCK_SHARED);
->>>>
->>>> in xfs_map_blocks().
->>>>
->>>> The system is low on free memory
->>>>
->>>>       MemTotal:       197587764 kB
->>>>       MemFree:          2196496 kB
->>>>       MemAvailable:   189895408 kB
->>>>
->>>> but responsive.
->>>>
->>>> I have an out of tree driver for the HBA ( smartpqi 2.1.6-005 pulled from linux-scsi) , but it is unlikely that this blocking is related to that, because the md block devices itself are responsive (`xxd /dev/md0` )
->>>>
->>>> I can keep the system in the state for a while. Is there an idea what was going from or an idea what data I could collect from the running system to help? I have full debug info and could walk lists or retrieve data structures with gdb.
->>>>
->>>
->>> It might be useful to dump the values under /sys/fs/xfs/<dev>/log/* for
->>> each fs to get an idea of the state of the logs as well...
->>
->>
->> root@deadbird:~# for f in /sys/fs/xfs/*/log/*; do echo $f : $(cat $f);done
->> /sys/fs/xfs/md0/log/log_head_lsn : 5:714808
->> /sys/fs/xfs/md0/log/log_tail_lsn : 5:581592
->> /sys/fs/xfs/md0/log/reserve_grant_head : 5:365981696
->> /sys/fs/xfs/md0/log/write_grant_head : 5:365981696
-> 
-> Hm, so it looks like the log is populated but not necessarily full. What
-> looks more interesting is that the grant heads (365981696 bytes) line up
-> with the physical log head (714808 512b sectors). That suggests there is
-> no outstanding transaction reservation and thus perhaps all workload
-> tasks are sitting at that throttling point just after the current
-> transaction commits and releases unused reservation. That certainly
-> shouldn't be such a longstanding blocking point as it only waits for the
-> CIL push to start.
-> 
-> Out of curiosity, have any of the above values changed since the sample
-> provided here was collected? As above, I'm curious if the filesystem
-> happens to be moving along slowly or not at all, whether the AIL has
-> been drained in the background, etc.
-
-Zero I/O on the block devices.
-All related thread have exact same stack frame after >2days
-
-> Could you post the xfs_info for the affected filesystems?
-
-buczek@deadbird:~/linux_problems/mdX_raid6_looping/tests_with_deadbird/2020-12-16-01$ xfs_info /dev/md0
-meta-data=/dev/md0               isize=512    agcount=102, agsize=268435328 blks
-          =                       sectsz=4096  attr=2, projid32bit=1
-          =                       crc=1        finobt=1, sparse=1, rmapbt=0
-          =                       reflink=1
-data     =                       bsize=4096   blocks=27348629504, imaxpct=1
-          =                       sunit=128    swidth=1792 blks
-naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
-log      =internal log           bsize=4096   blocks=521728, version=2
-          =                       sectsz=4096  sunit=1 blks, lazy-count=1
-realtime =none                   extsz=4096   blocks=0, rtextents=0
-buczek@deadbird:~/linux_problems/mdX_raid6_looping/tests_with_deadbird/2020-12-16-01$ xfs_info /dev/md1
-meta-data=/dev/md1               isize=512    agcount=102, agsize=268435328 blks
-          =                       sectsz=4096  attr=2, projid32bit=1
-          =                       crc=1        finobt=1, sparse=1, rmapbt=0
-          =                       reflink=1
-data     =                       bsize=4096   blocks=27348629504, imaxpct=1
-          =                       sunit=128    swidth=1792 blks
-naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
-log      =internal log           bsize=4096   blocks=521728, version=2
-          =                       sectsz=4096  sunit=1 blks, lazy-count=1
-realtime =none                   extsz=4096   blocks=0, rtextents=0
-
-
-> Also since it seems like you should have plenty of available log
-> reservation, are you able to perform any writable operations on the fs
-> (i.e., touch <file>)? If so, I wonder if you were able to start a new
-> copy workload on of the fs' capable of triggering the blocking threshold
-> again, if that might eventually unstick the currently blocked tasks when
-> the next CIL push occurs...
-
-When I do something like
-
-     touch /jbod/M8067/scratch/x.001
-
-This doesn't block and shortly thereafter I see momentary write activity on the md and member devices. But the blocked processes don't resume.
-
-     root@deadbird:~# iostat|grep md0 ; sleep 30 ; iostat|grep md0 ; touch /jbod/M8067/scratch/x.008 ; sleep 30 ; iostat|grep md0 ; sleep 30 ; iostat|grep md0
-     md0              25.81        52.45      2385.56         0.00   12806780  582460904          0
-     md0              25.81        52.45      2385.27         0.00   12806780  582460904          0
-     md0              25.81        52.44      2384.98         0.00   12806780  582460908          0
-     md0              25.80        52.43      2384.68         0.00   12806780  582460908          0
-
-The touched files are visible with `ls`.
-
-So then I tried something longer:
-
-     cp -a /jbod/M8067/scratch/linux /jbod/M8067/scratch/linux.001
-
-which also triggerd a few I/Os in the beginning but then came to a perceived halt (no I/O in several minutes).
-
-Interestingly, this new "cp" is not blocking on xfs_log_commit_cil+0x6cc as the four "cp" commands from the stress test but has this stack:
-
-     [<0>] balance_dirty_pages+0x31c/0xd80
-     [<0>] balance_dirty_pages_ratelimited+0x2f9/0x3c0
-     [<0>] iomap_write_actor+0x11d/0x190
-     [<0>] iomap_apply+0x117/0x2e0
-     [<0>] iomap_file_buffered_write+0x62/0x90
-     [<0>] xfs_file_buffered_aio_write+0xd3/0x320
-     [<0>] new_sync_write+0x11f/0x1b0
-     [<0>] vfs_write+0x1ea/0x250
-     [<0>] ksys_write+0xa1/0xe0
-     [<0>] do_syscall_64+0x33/0x40
-     [<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Maybe this would change if I waited a few hours more.
-
-So I will reboot the system now and retry test test exactly the same configuration as then again with 0e7ab7efe7745 ("xfs: Throttle commits on delayed background CIL push") reverted.
-
-Donald
-
-> Brian
-> 
->> /sys/fs/xfs/md1/log/log_head_lsn : 3:2963880
->> /sys/fs/xfs/md1/log/log_tail_lsn : 3:2772656
->> /sys/fs/xfs/md1/log/reserve_grant_head : 3:1517506560
->> /sys/fs/xfs/md1/log/write_grant_head : 3:1517506560
->> /sys/fs/xfs/sda1/log/log_head_lsn : 233:106253
->> /sys/fs/xfs/sda1/log/log_tail_lsn : 233:106251
->> /sys/fs/xfs/sda1/log/reserve_grant_head : 233:54403812
->> /sys/fs/xfs/sda1/log/write_grant_head : 233:54403812
->> /sys/fs/xfs/sda2/log/log_head_lsn : 84:5653
->> /sys/fs/xfs/sda2/log/log_tail_lsn : 84:5651
->> /sys/fs/xfs/sda2/log/reserve_grant_head : 84:2894336
->> /sys/fs/xfs/sda2/log/write_grant_head : 84:2894336
->>
->>
->>
->>>
->>> Brian
->>>
->>>> Best
->>>>     Donald
->>>>
->>>
->>
->> -- 
->> Donald Buczek
->> buczek@molgen.mpg.de
->> Tel: +49 30 8413 1433
->>
-> 
-
+diff --git a/drivers/regulator/bd718x7-regulator.c b/drivers/regulator/bd718x7-regulator.c
+index e6d5d98c3cea..f7597832d2c5 100644
+--- a/drivers/regulator/bd718x7-regulator.c
++++ b/drivers/regulator/bd718x7-regulator.c
+@@ -613,6 +613,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
+ 			.vsel_mask = DVS_BUCK_RUN_MASK,
+ 			.enable_reg = BD718XX_REG_BUCK1_CTRL,
+ 			.enable_mask = BD718XX_BUCK_EN,
++			.enable_time = BD71847_BUCK1_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 			.of_parse_cb = buck_set_hw_dvs_levels,
+ 		},
+@@ -646,6 +647,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
+ 			.vsel_mask = DVS_BUCK_RUN_MASK,
+ 			.enable_reg = BD718XX_REG_BUCK2_CTRL,
+ 			.enable_mask = BD718XX_BUCK_EN,
++			.enable_time = BD71847_BUCK2_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 			.of_parse_cb = buck_set_hw_dvs_levels,
+ 		},
+@@ -680,6 +682,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
+ 			.linear_range_selectors = bd71847_buck3_volt_range_sel,
+ 			.enable_reg = BD718XX_REG_1ST_NODVS_BUCK_CTRL,
+ 			.enable_mask = BD718XX_BUCK_EN,
++			.enable_time = BD71847_BUCK3_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -706,6 +709,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
+ 			.vsel_range_mask = BD71847_BUCK4_RANGE_MASK,
+ 			.linear_range_selectors = bd71847_buck4_volt_range_sel,
+ 			.enable_mask = BD718XX_BUCK_EN,
++			.enable_time = BD71847_BUCK4_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -727,6 +731,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
+ 			.vsel_mask = BD718XX_3RD_NODVS_BUCK_MASK,
+ 			.enable_reg = BD718XX_REG_3RD_NODVS_BUCK_CTRL,
+ 			.enable_mask = BD718XX_BUCK_EN,
++			.enable_time = BD71847_BUCK5_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -750,6 +755,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
+ 			.vsel_mask = BD718XX_4TH_NODVS_BUCK_MASK,
+ 			.enable_reg = BD718XX_REG_4TH_NODVS_BUCK_CTRL,
+ 			.enable_mask = BD718XX_BUCK_EN,
++			.enable_time = BD71847_BUCK6_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -775,6 +781,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
+ 			.linear_range_selectors = bd718xx_ldo1_volt_range_sel,
+ 			.enable_reg = BD718XX_REG_LDO1_VOLT,
+ 			.enable_mask = BD718XX_LDO_EN,
++			.enable_time = BD71847_LDO1_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -796,6 +803,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
+ 			.n_voltages = ARRAY_SIZE(ldo_2_volts),
+ 			.enable_reg = BD718XX_REG_LDO2_VOLT,
+ 			.enable_mask = BD718XX_LDO_EN,
++			.enable_time = BD71847_LDO2_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -818,6 +826,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
+ 			.vsel_mask = BD718XX_LDO3_MASK,
+ 			.enable_reg = BD718XX_REG_LDO3_VOLT,
+ 			.enable_mask = BD718XX_LDO_EN,
++			.enable_time = BD71847_LDO3_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -840,6 +849,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
+ 			.vsel_mask = BD718XX_LDO4_MASK,
+ 			.enable_reg = BD718XX_REG_LDO4_VOLT,
+ 			.enable_mask = BD718XX_LDO_EN,
++			.enable_time = BD71847_LDO4_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -865,6 +875,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
+ 			.linear_range_selectors = bd71847_ldo5_volt_range_sel,
+ 			.enable_reg = BD718XX_REG_LDO5_VOLT,
+ 			.enable_mask = BD718XX_LDO_EN,
++			.enable_time = BD71847_LDO5_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -889,6 +900,7 @@ static struct bd718xx_regulator_data bd71847_regulators[] = {
+ 			.vsel_mask = BD718XX_LDO6_MASK,
+ 			.enable_reg = BD718XX_REG_LDO6_VOLT,
+ 			.enable_mask = BD718XX_LDO_EN,
++			.enable_time = BD71847_LDO6_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -942,6 +954,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.vsel_mask = DVS_BUCK_RUN_MASK,
+ 			.enable_reg = BD718XX_REG_BUCK1_CTRL,
+ 			.enable_mask = BD718XX_BUCK_EN,
++			.enable_time = BD71837_BUCK1_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 			.of_parse_cb = buck_set_hw_dvs_levels,
+ 		},
+@@ -975,6 +988,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.vsel_mask = DVS_BUCK_RUN_MASK,
+ 			.enable_reg = BD718XX_REG_BUCK2_CTRL,
+ 			.enable_mask = BD718XX_BUCK_EN,
++			.enable_time = BD71837_BUCK2_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 			.of_parse_cb = buck_set_hw_dvs_levels,
+ 		},
+@@ -1005,6 +1019,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.vsel_mask = DVS_BUCK_RUN_MASK,
+ 			.enable_reg = BD71837_REG_BUCK3_CTRL,
+ 			.enable_mask = BD718XX_BUCK_EN,
++			.enable_time = BD71837_BUCK3_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 			.of_parse_cb = buck_set_hw_dvs_levels,
+ 		},
+@@ -1033,6 +1048,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.vsel_mask = DVS_BUCK_RUN_MASK,
+ 			.enable_reg = BD71837_REG_BUCK4_CTRL,
+ 			.enable_mask = BD718XX_BUCK_EN,
++			.enable_time = BD71837_BUCK4_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 			.of_parse_cb = buck_set_hw_dvs_levels,
+ 		},
+@@ -1065,6 +1081,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.linear_range_selectors = bd71837_buck5_volt_range_sel,
+ 			.enable_reg = BD718XX_REG_1ST_NODVS_BUCK_CTRL,
+ 			.enable_mask = BD718XX_BUCK_EN,
++			.enable_time = BD71837_BUCK5_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -1088,6 +1105,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.vsel_mask = BD71837_BUCK6_MASK,
+ 			.enable_reg = BD718XX_REG_2ND_NODVS_BUCK_CTRL,
+ 			.enable_mask = BD718XX_BUCK_EN,
++			.enable_time = BD71837_BUCK6_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -1109,6 +1127,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.vsel_mask = BD718XX_3RD_NODVS_BUCK_MASK,
+ 			.enable_reg = BD718XX_REG_3RD_NODVS_BUCK_CTRL,
+ 			.enable_mask = BD718XX_BUCK_EN,
++			.enable_time = BD71837_BUCK7_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -1132,6 +1151,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.vsel_mask = BD718XX_4TH_NODVS_BUCK_MASK,
+ 			.enable_reg = BD718XX_REG_4TH_NODVS_BUCK_CTRL,
+ 			.enable_mask = BD718XX_BUCK_EN,
++			.enable_time = BD71837_BUCK8_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -1157,6 +1177,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.linear_range_selectors = bd718xx_ldo1_volt_range_sel,
+ 			.enable_reg = BD718XX_REG_LDO1_VOLT,
+ 			.enable_mask = BD718XX_LDO_EN,
++			.enable_time = BD71837_LDO1_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -1178,6 +1199,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.n_voltages = ARRAY_SIZE(ldo_2_volts),
+ 			.enable_reg = BD718XX_REG_LDO2_VOLT,
+ 			.enable_mask = BD718XX_LDO_EN,
++			.enable_time = BD71837_LDO2_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -1200,6 +1222,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.vsel_mask = BD718XX_LDO3_MASK,
+ 			.enable_reg = BD718XX_REG_LDO3_VOLT,
+ 			.enable_mask = BD718XX_LDO_EN,
++			.enable_time = BD71837_LDO3_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -1222,6 +1245,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.vsel_mask = BD718XX_LDO4_MASK,
+ 			.enable_reg = BD718XX_REG_LDO4_VOLT,
+ 			.enable_mask = BD718XX_LDO_EN,
++			.enable_time = BD71837_LDO4_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -1246,6 +1270,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.vsel_mask = BD71837_LDO5_MASK,
+ 			.enable_reg = BD718XX_REG_LDO5_VOLT,
+ 			.enable_mask = BD718XX_LDO_EN,
++			.enable_time = BD71837_LDO5_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -1272,6 +1297,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.vsel_mask = BD718XX_LDO6_MASK,
+ 			.enable_reg = BD718XX_REG_LDO6_VOLT,
+ 			.enable_mask = BD718XX_LDO_EN,
++			.enable_time = BD71837_LDO6_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+@@ -1296,6 +1322,7 @@ static struct bd718xx_regulator_data bd71837_regulators[] = {
+ 			.vsel_mask = BD71837_LDO7_MASK,
+ 			.enable_reg = BD71837_REG_LDO7_VOLT,
+ 			.enable_mask = BD718XX_LDO_EN,
++			.enable_time = BD71837_LDO7_STARTUP_TIME,
+ 			.owner = THIS_MODULE,
+ 		},
+ 		.init = {
+diff --git a/include/linux/mfd/rohm-bd718x7.h b/include/linux/mfd/rohm-bd718x7.h
+index bee2474a8f9f..fba80dc2c1d5 100644
+--- a/include/linux/mfd/rohm-bd718x7.h
++++ b/include/linux/mfd/rohm-bd718x7.h
+@@ -323,4 +323,34 @@ struct bd718xx {
+ 	struct regmap_irq_chip_data *irq_data;
+ };
+ 
++/* Typical regulator startup times as per data sheet in uS */
++#define BD71847_BUCK1_STARTUP_TIME 144
++#define BD71847_BUCK2_STARTUP_TIME 162
++#define BD71847_BUCK3_STARTUP_TIME 162
++#define BD71847_BUCK4_STARTUP_TIME 240
++#define BD71847_BUCK5_STARTUP_TIME 270
++#define BD71847_BUCK6_STARTUP_TIME 200
++#define BD71847_LDO1_STARTUP_TIME  440
++#define BD71847_LDO2_STARTUP_TIME  370
++#define BD71847_LDO3_STARTUP_TIME  310
++#define BD71847_LDO4_STARTUP_TIME  400
++#define BD71847_LDO5_STARTUP_TIME  530
++#define BD71847_LDO6_STARTUP_TIME  400
++
++#define BD71837_BUCK1_STARTUP_TIME 160
++#define BD71837_BUCK2_STARTUP_TIME 180
++#define BD71837_BUCK3_STARTUP_TIME 180
++#define BD71837_BUCK4_STARTUP_TIME 180
++#define BD71837_BUCK5_STARTUP_TIME 160
++#define BD71837_BUCK6_STARTUP_TIME 240
++#define BD71837_BUCK7_STARTUP_TIME 220
++#define BD71837_BUCK8_STARTUP_TIME 200
++#define BD71837_LDO1_STARTUP_TIME  440
++#define BD71837_LDO2_STARTUP_TIME  370
++#define BD71837_LDO3_STARTUP_TIME  310
++#define BD71837_LDO4_STARTUP_TIME  400
++#define BD71837_LDO5_STARTUP_TIME  310
++#define BD71837_LDO6_STARTUP_TIME  400
++#define BD71837_LDO7_STARTUP_TIME  530
++
+ #endif /* __LINUX_MFD_BD718XX_H__ */
 -- 
-Donald Buczek
-buczek@molgen.mpg.de
-Tel: +49 30 8413 1433
+2.29.2
+
