@@ -2,189 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73EC12DE791
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 17:45:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA092DE793
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 17:45:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730519AbgLRQop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 11:44:45 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:43897 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729109AbgLRQoo (ORCPT
+        id S1731608AbgLRQpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 11:45:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728286AbgLRQpG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 11:44:44 -0500
-Received: by mail-il1-f200.google.com with SMTP id p6so2559033ils.10
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 08:44:28 -0800 (PST)
+        Fri, 18 Dec 2020 11:45:06 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 168BAC0617A7
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 08:44:26 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id 91so2881580wrj.7
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 08:44:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=t0Ae0BlblXLltnFfoNJihJIVc00OrJVjKuvUxXPzmjA=;
+        b=JNUJOrowEiPgl9if8ptB/nePbTG2zmOqCmhOl/03duibUxyt6Fgdz/yAj96No9CKOl
+         1J4cJblRP5PnL72EeAwrBloxXCWfzOZNy8+T6xuxZROfZQcKY172uyqrwjg4+9syC4TC
+         3n+DfoLYTMZ8aSb+llcJmxaKStpCyY+cX9mbX72PP50PFl4FHntr5hrFo3bivRbl4pwc
+         /6jpGK/sb1Avz29Pg485BbNMLZBQKov1lOXklV54Hgp7HDS63azgeEgvqbtnVybzQeOD
+         6z0fpzuYhvO8cMwM7mr7fKsm92lp2mfjb0sxmxEprN9ppcpdKYqFmsg3uMJB4OQ0muj9
+         yZlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=3VUHEO+si9B6ymY78I7rSRCFSjhEwSbJ7aJimbG4XBA=;
-        b=jv6OleYfJYNOBYkw7GN6nnJTaIPGSEpTsaGPyBZM/93rMTXlrDEqkvin5YVJQpNMzN
-         5Ej33AUfTQCbPxsqhMZ91/D12LNQwdW36B/NyNVMveRZg6f7R02/oZ6oqH4SQNb5tz1i
-         C2etVMtF14AT5QrFBAfFLLK757gHdpG+n3L78y+bEHwDW3Usx8MIqVprA4Fyw+fq/B74
-         1NOQ19T7mA70fio1QY3+ea1UD5QgnOxo+Lb4+ldDrp6kc/I4h+2qrJ+8du886DWwSDG4
-         U0o48X7ISwXdO2vZmxy2s5BWBFD7mw0DaxG7a1tC6aCq3R5i2N/v07nCSfR1sCXdMxtv
-         dUUQ==
-X-Gm-Message-State: AOAM531WFBwdDqcjYbhmOhgV30dgh6DKi0yzTLRYk/cAH5Tl0kw8BhTQ
-        LbhPGyxnlWgrFtOrEwHLAADiIgH0Ps/9j9Dhhcsh70SQuNXS
-X-Google-Smtp-Source: ABdhPJxwkQT7qvnYFzpxeY/oQYydehjpHWbtZsmMyWZY5LjbZzOT49BWANX3PhKMcxuvvpeFyKSmg31hXbssHgbGVAoDZXTMtFGw
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=t0Ae0BlblXLltnFfoNJihJIVc00OrJVjKuvUxXPzmjA=;
+        b=kWn4d7h3+TF1YBW9sbgHJUJq53ajmHJbIpnQslcsXkVwDTwmzye35fvOB9Knxz5N9U
+         td0JZBl/Ms4S5FiMV6VF02LZguZwNVU+lcdeKuq/s1MWJwu34dYhF91T/uNlErF8spOq
+         +UpgKhkOyscrWkXKq1eeM1xUeK/mtvHMQieY/QCUwu3WNefIwHN58lYpO1CsYLGicGdv
+         UjhGJ+lllEvKBBYMWcR008SirRiVfqPWuyLSYyHNOpDUv3AIyuDL14ad1Txh5zDeIbca
+         150YEORGUqrNb80Zc9j6MHUkGnv1fOGNGzL5Y9XSuoKARcX0n87L2MI0BoMfh9J18tPQ
+         AhjQ==
+X-Gm-Message-State: AOAM532pGSMfN9h8Td4g9guegq7FVEBsVX4ZCHrJfF+/STQYs6Yq/3cm
+        YWOb2ruQZ4EQAw9G8Facjsrr2w==
+X-Google-Smtp-Source: ABdhPJzo8FnIm/nnsrHLcn+VnuE+Xt6v+yZVDSArCtqkLoNYRbUcTO8Kp6aM2GFhZ0np7EGAOGEKcw==
+X-Received: by 2002:a5d:6209:: with SMTP id y9mr5370506wru.197.1608309864740;
+        Fri, 18 Dec 2020 08:44:24 -0800 (PST)
+Received: from holly.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id j15sm14373163wrr.85.2020.12.18.08.44.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Dec 2020 08:44:23 -0800 (PST)
+Date:   Fri, 18 Dec 2020 16:44:21 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Stefan Saecherl <stefan.saecherl@fau.de>
+Cc:     x86@kernel.org, linux-kernel@i4.cs.fau.de,
+        Lorena Kretzschmar <qy15sije@cip.cs.fau.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/kgdb: Allow removal of early BPs
+Message-ID: <20201218164421.qy5ov2lyhrfi3kr6@holly.lan>
+References: <20201214141314.5717-1-stefan.saecherl@fau.de>
 MIME-Version: 1.0
-X-Received: by 2002:a92:58dc:: with SMTP id z89mr3156048ilf.11.1608309843158;
- Fri, 18 Dec 2020 08:44:03 -0800 (PST)
-Date:   Fri, 18 Dec 2020 08:44:03 -0800
-In-Reply-To: <af4caaab-93c0-622f-9ab0-e540eb3bc049@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e3ec8005b6bfd042@google.com>
-Subject: Re: KASAN: use-after-free Read in idr_for_each (2)
-From:   syzbot <syzbot+12056a09a0311d758e60@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201214141314.5717-1-stefan.saecherl@fau.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Stefan
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-KASAN: use-after-free Read in idr_for_each
+On Mon, Dec 14, 2020 at 03:13:12PM +0100, Stefan Saecherl wrote:
+> The problem is that breakpoints that are set early (e.g. via kgdbwait)
+> cannot be deleted after boot completed (to be precise after mark_rodata_ro
+> ran).
+> 
+> When setting a breakpoint early there are executable pages that are
+> writable so the copy_to_kernel_nofault call in kgdb_arch_set_breakpoint
+> succeeds and the breakpoint is saved as type BP_BREAKPOINT.
+> 
+> Later in the boot write access to these pages is restricted. So when
+> removing the breakpoint the copy_to_kernel_nofault call in
+> kgdb_arch_remove_breakpoint is destined to fail and the breakpoint removal
+> fails. So after copy_to_kernel_nofault failed try to text_poke_kgdb which
+> can work around nonwriteability.
+> 
+> One thing to consider when doing this is that code can go away during boot
+> (e.g. .init.text). Previously kgdb_arch_remove_breakpoint handled this case
+> gracefully by just having copy_to_kernel_nofault fail but if one then calls
+> text_poke_kgdb the system dies due to the BUG_ON we moved out of
+> __text_poke.  To avoid this __text_poke now returns an error in case of a
+> nonpresent code page and the error is handled at call site.
+> 
+> Checkpatch complains about two uses of BUG_ON but the new code should not
+> trigger BUG_ON in cases where the old didn't.
+> 
+> Co-developed-by: Lorena Kretzschmar <qy15sije@cip.cs.fau.de>
+> Signed-off-by: Lorena Kretzschmar <qy15sije@cip.cs.fau.de>
+> Signed-off-by: Stefan Saecherl <stefan.saecherl@fau.de>
 
-==================================================================
-BUG: KASAN: use-after-free in radix_tree_next_slot include/linux/radix-tree.h:422 [inline]
-BUG: KASAN: use-after-free in idr_for_each+0x206/0x220 lib/idr.c:202
-Read of size 8 at addr ffff888042e76040 by task kworker/u4:5/3340
+I took this to be a gap in the kgdbtest suite so I added a couple of
+tests that cover this area. Before this patch they failed now they
+pass (at least they do for ARCH=x86).
 
-CPU: 0 PID: 3340 Comm: kworker/u4:5 Not tainted 5.10.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events_unbound io_ring_exit_work
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0xae/0x4c8 mm/kasan/report.c:385
- __kasan_report mm/kasan/report.c:545 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
- radix_tree_next_slot include/linux/radix-tree.h:422 [inline]
- idr_for_each+0x206/0x220 lib/idr.c:202
- io_destroy_buffers fs/io_uring.c:8541 [inline]
- io_ring_ctx_free fs/io_uring.c:8564 [inline]
- io_ring_exit_work+0x394/0x730 fs/io_uring.c:8639
- process_one_work+0x98d/0x1630 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+I don't see any new failures either, so:
 
-Allocated by task 28625:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
- slab_post_alloc_hook mm/slab.h:512 [inline]
- slab_alloc_node mm/slub.c:2889 [inline]
- slab_alloc mm/slub.c:2897 [inline]
- kmem_cache_alloc+0x145/0x350 mm/slub.c:2902
- radix_tree_node_alloc.constprop.0+0x7c/0x350 lib/radix-tree.c:274
- idr_get_free+0x554/0xa60 lib/radix-tree.c:1504
- idr_alloc_u32+0x170/0x2d0 lib/idr.c:46
- idr_alloc+0xc2/0x130 lib/idr.c:87
- io_provide_buffers fs/io_uring.c:4230 [inline]
- io_issue_sqe+0x3681/0x44e0 fs/io_uring.c:6264
- __io_queue_sqe+0x228/0x1120 fs/io_uring.c:6477
- io_queue_sqe+0x631/0x10f0 fs/io_uring.c:6543
- io_submit_sqe fs/io_uring.c:6616 [inline]
- io_submit_sqes+0x135a/0x2530 fs/io_uring.c:6864
- __do_sys_io_uring_enter+0x591/0x1c00 fs/io_uring.c:9174
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Freed by task 8890:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
- kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:352
- __kasan_slab_free+0x102/0x140 mm/kasan/common.c:422
- slab_free_hook mm/slub.c:1544 [inline]
- slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1577
- slab_free mm/slub.c:3140 [inline]
- kmem_cache_free+0x82/0x360 mm/slub.c:3156
- rcu_do_batch kernel/rcu/tree.c:2489 [inline]
- rcu_core+0x75d/0xf80 kernel/rcu/tree.c:2723
- __do_softirq+0x2bc/0xa77 kernel/softirq.c:343
-
-Last potentially related work creation:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_record_aux_stack+0xc0/0xf0 mm/kasan/generic.c:343
- __call_rcu kernel/rcu/tree.c:2965 [inline]
- call_rcu+0xbb/0x710 kernel/rcu/tree.c:3038
- radix_tree_node_free lib/radix-tree.c:308 [inline]
- delete_node+0x591/0x8c0 lib/radix-tree.c:571
- __radix_tree_delete+0x190/0x370 lib/radix-tree.c:1377
- radix_tree_delete_item+0xe7/0x230 lib/radix-tree.c:1428
- __io_remove_buffers fs/io_uring.c:4122 [inline]
- __io_remove_buffers fs/io_uring.c:4101 [inline]
- __io_destroy_buffers+0x161/0x200 fs/io_uring.c:8535
- idr_for_each+0x113/0x220 lib/idr.c:208
- io_destroy_buffers fs/io_uring.c:8541 [inline]
- io_ring_ctx_free fs/io_uring.c:8564 [inline]
- io_ring_exit_work+0x394/0x730 fs/io_uring.c:8639
- process_one_work+0x98d/0x1630 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
-Second to last potentially related work creation:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_record_aux_stack+0xc0/0xf0 mm/kasan/generic.c:343
- __call_rcu kernel/rcu/tree.c:2965 [inline]
- call_rcu+0xbb/0x710 kernel/rcu/tree.c:3038
- xa_node_free lib/xarray.c:258 [inline]
- xas_delete_node lib/xarray.c:494 [inline]
- update_node lib/xarray.c:756 [inline]
- xas_store+0xbeb/0x1c10 lib/xarray.c:841
- __xa_erase lib/xarray.c:1489 [inline]
- xa_erase+0xb0/0x170 lib/xarray.c:1510
- io_uring_del_task_file fs/io_uring.c:8889 [inline]
- __io_uring_files_cancel+0xdbf/0x1550 fs/io_uring.c:8925
- io_uring_files_cancel include/linux/io_uring.h:51 [inline]
- exit_files+0xe4/0x170 fs/file.c:431
- do_exit+0xb4f/0x2a00 kernel/exit.c:818
- do_group_exit+0x125/0x310 kernel/exit.c:920
- get_signal+0x3e9/0x2160 kernel/signal.c:2770
- arch_do_signal_or_restart+0x2a8/0x1eb0 arch/x86/kernel/signal.c:811
- handle_signal_work kernel/entry/common.c:147 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
- exit_to_user_mode_prepare+0x124/0x200 kernel/entry/common.c:201
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x50 kernel/entry/common.c:302
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-The buggy address belongs to the object at ffff888042e76000
- which belongs to the cache radix_tree_node of size 576
-The buggy address is located 64 bytes inside of
- 576-byte region [ffff888042e76000, ffff888042e76240)
-The buggy address belongs to the page:
-page:0000000090e8be83 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x42e76
-head:0000000090e8be83 order:1 compound_mapcount:0
-flags: 0xfff00000010200(slab|head)
-raw: 00fff00000010200 dead000000000100 dead000000000122 ffff88801084db40
-raw: ffff888042e76580 00000000800b000a 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888042e75f00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888042e75f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff888042e76000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                           ^
- ffff888042e76080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888042e76100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
+Tested-by: Daniel Thompson <daniel.thompson@linaro.org>
 
 
-Tested on:
+Daniel.
 
-commit:         dfea9fce io_uring: close a small race gap for files cancel
-git tree:       git://git.kernel.dk/linux-block
-console output: https://syzkaller.appspot.com/x/log.txt?x=1263a46b500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4db50a97037d9f3e
-dashboard link: https://syzkaller.appspot.com/bug?extid=12056a09a0311d758e60
-compiler:       gcc (GCC) 10.1.0-syz 20200507
 
+
+> ---
+>  arch/x86/kernel/alternative.c | 16 +++++++----
+>  arch/x86/kernel/kgdb.c        | 54 ++++++++++++++++++++++++-----------
+>  2 files changed, 48 insertions(+), 22 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+> index 2400ad62f330..0f145d837885 100644
+> --- a/arch/x86/kernel/alternative.c
+> +++ b/arch/x86/kernel/alternative.c
+> @@ -878,11 +878,9 @@ static void *__text_poke(void *addr, const void *opcode, size_t len)
+>  		if (cross_page_boundary)
+>  			pages[1] = virt_to_page(addr + PAGE_SIZE);
+>  	}
+> -	/*
+> -	 * If something went wrong, crash and burn since recovery paths are not
+> -	 * implemented.
+> -	 */
+> -	BUG_ON(!pages[0] || (cross_page_boundary && !pages[1]));
+> +
+> +	if (!pages[0] || (cross_page_boundary && !pages[1]))
+> +		return ERR_PTR(-EFAULT);
+>  
+>  	/*
+>  	 * Map the page without the global bit, as TLB flushing is done with
+> @@ -976,7 +974,13 @@ void *text_poke(void *addr, const void *opcode, size_t len)
+>  {
+>  	lockdep_assert_held(&text_mutex);
+>  
+> -	return __text_poke(addr, opcode, len);
+> +	addr = __text_poke(addr, opcode, len);
+> +	/*
+> +	 * If something went wrong, crash and burn since recovery paths are not
+> +	 * implemented.
+> +	 */
+> +	BUG_ON(IS_ERR(addr));
+> +	return addr;
+>  }
+>  
+>  /**
+> diff --git a/arch/x86/kernel/kgdb.c b/arch/x86/kernel/kgdb.c
+> index ff7878df96b4..e98c9c43db7c 100644
+> --- a/arch/x86/kernel/kgdb.c
+> +++ b/arch/x86/kernel/kgdb.c
+> @@ -731,6 +731,7 @@ void kgdb_arch_set_pc(struct pt_regs *regs, unsigned long ip)
+>  int kgdb_arch_set_breakpoint(struct kgdb_bkpt *bpt)
+>  {
+>  	int err;
+> +	void *addr;
+>  
+>  	bpt->type = BP_BREAKPOINT;
+>  	err = copy_from_kernel_nofault(bpt->saved_instr, (char *)bpt->bpt_addr,
+> @@ -747,8 +748,14 @@ int kgdb_arch_set_breakpoint(struct kgdb_bkpt *bpt)
+>  	 */
+>  	if (mutex_is_locked(&text_mutex))
+>  		return -EBUSY;
+> -	text_poke_kgdb((void *)bpt->bpt_addr, arch_kgdb_ops.gdb_bpt_instr,
+> -		       BREAK_INSTR_SIZE);
+> +
+> +	addr = text_poke_kgdb((void *)bpt->bpt_addr, arch_kgdb_ops.gdb_bpt_instr,
+> +				BREAK_INSTR_SIZE);
+> +	/* This should never trigger because the above call to copy_from_kernel_nofault
+> +	 * already succeeded.
+> +	 */
+> +	BUG_ON(IS_ERR(addr));
+> +
+>  	bpt->type = BP_POKE_BREAKPOINT;
+>  
+>  	return 0;
+> @@ -756,21 +763,36 @@ int kgdb_arch_set_breakpoint(struct kgdb_bkpt *bpt)
+>  
+>  int kgdb_arch_remove_breakpoint(struct kgdb_bkpt *bpt)
+>  {
+> -	if (bpt->type != BP_POKE_BREAKPOINT)
+> -		goto knl_write;
+> -	/*
+> -	 * It is safe to call text_poke_kgdb() because normal kernel execution
+> -	 * is stopped on all cores, so long as the text_mutex is not locked.
+> -	 */
+> -	if (mutex_is_locked(&text_mutex))
+> -		goto knl_write;
+> -	text_poke_kgdb((void *)bpt->bpt_addr, bpt->saved_instr,
+> -		       BREAK_INSTR_SIZE);
+> -	return 0;
+> +	void *addr;
+> +	int err;
+>  
+> -knl_write:
+> -	return copy_to_kernel_nofault((char *)bpt->bpt_addr,
+> -				  (char *)bpt->saved_instr, BREAK_INSTR_SIZE);
+> +	if (bpt->type == BP_POKE_BREAKPOINT) {
+> +		if (mutex_is_locked(&text_mutex)) {
+> +			err = copy_to_kernel_nofault((char *)bpt->bpt_addr,
+> +							(char *)bpt->saved_instr,
+> +							BREAK_INSTR_SIZE);
+> +		} else {
+> +			/*
+> +			 * It is safe to call text_poke_kgdb() because normal kernel execution
+> +			 * is stopped on all cores, so long as the text_mutex is not locked.
+> +			 */
+> +			addr = text_poke_kgdb((void *)bpt->bpt_addr,
+> +							bpt->saved_instr,
+> +							BREAK_INSTR_SIZE);
+> +			err = PTR_ERR_OR_ZERO(addr);
+> +		}
+> +	} else {
+> +		err = copy_to_kernel_nofault((char *)bpt->bpt_addr,
+> +						(char *)bpt->saved_instr,
+> +						BREAK_INSTR_SIZE);
+> +		if (err == -EFAULT && !mutex_is_locked(&text_mutex)) {
+> +			addr = text_poke_kgdb((void *)bpt->bpt_addr,
+> +						bpt->saved_instr,
+> +						BREAK_INSTR_SIZE);
+> +			err = PTR_ERR_OR_ZERO(addr);
+> +		}
+> +	}
+> +	return err;
+>  }
+>  
+>  const struct kgdb_arch arch_kgdb_ops = {
+> -- 
+> 2.20.1
