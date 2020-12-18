@@ -2,125 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2432DE50A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:43:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C57192DE50E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:44:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727945AbgLROly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 09:41:54 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:53076 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725932AbgLROlx (ORCPT
+        id S1727988AbgLROoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 09:44:13 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:40594 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726903AbgLROoN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 09:41:53 -0500
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BIEWCFL031958;
-        Fri, 18 Dec 2020 09:39:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
- to : cc : references : in-reply-to : mime-version : message-id :
- content-type : content-transfer-encoding; s=pp1;
- bh=/nS1ZT32K5g6u05vb/ouY0Xy92r7TYZJv3aBQ6ccv4Q=;
- b=fo2goudPnH013gRk19Qv05a08gAugF9CkvwR/Wuq7DOJE4E3lI7T+dm4PK55CY9uY5+y
- sUq5YN6swwlXAhG2rG035GkOXpBfVpSCFDoi5qiDcQV2dWCe1DuSchQldLF1PkZJSr3a
- 2sLKuu50DqIUqSXQ3O06SF/xrFB/GRWsHEuRg2Mt4nSEKoOkrOPPS+oLqfCbX6ZdnDQL
- +VXu4aHxdTKEoayRpyafMyKME/cA3ral6KDMuKHZSfnzCzQdKSWR0wbdRsiGzLMc5gyr
- k1na1ehFik9jOv4Zr+WCHINnzsPXshL4SxVzwc9oSDuJeJT5nV/c5SQJJS8AxrKm+jsF sQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35gv0fbufm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Dec 2020 09:39:36 -0500
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BIEWrKs033799;
-        Fri, 18 Dec 2020 09:39:17 -0500
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35gv0fbu9u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Dec 2020 09:39:16 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BIEccA8005718;
-        Fri, 18 Dec 2020 14:39:02 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03ams.nl.ibm.com with ESMTP id 35cng8eedw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Dec 2020 14:39:02 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BIEd0G76357252
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Dec 2020 14:39:00 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 433F011C050;
-        Fri, 18 Dec 2020 14:39:00 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6FB6111C04A;
-        Fri, 18 Dec 2020 14:38:59 +0000 (GMT)
-Received: from localhost (unknown [9.85.94.234])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 18 Dec 2020 14:38:59 +0000 (GMT)
-Date:   Fri, 18 Dec 2020 20:08:56 +0530
-From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Subject: Re: [PATCH 3/4] perf tools: Update powerpc's syscall.tbl
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>
-References: <1608278364-6733-1-git-send-email-yangtiezhu@loongson.cn>
-        <1608278364-6733-4-git-send-email-yangtiezhu@loongson.cn>
-        <20201218112659.GB325926@kernel.org> <20201218113209.GD325926@kernel.org>
-In-Reply-To: <20201218113209.GD325926@kernel.org>
+        Fri, 18 Dec 2020 09:44:13 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BIEgJ1h002175;
+        Fri, 18 Dec 2020 08:42:19 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1608302539;
+        bh=pTnSOVQlYaLLFPXX46y4VH9Zff6M5493tQ8KFZNlnPg=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=qVoAcJrFpHv8UTLXJKvQVTwSvNJ8ZEnkeV7DBTCkURzuONJJ6bdsu7HivHuSkK4uZ
+         rCK+HZSjzBIG4mlmB6a+4y+SMxztzzM9J38Oqaf0i/GXQ5uULFPBjYrK63pAiC3ygn
+         lNtfC3xxZpPYoxzBWgqwwMBSjjYLM6IeAMvwXP4k=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BIEgJQ7111684
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 18 Dec 2020 08:42:19 -0600
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 18
+ Dec 2020 08:42:18 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 18 Dec 2020 08:42:18 -0600
+Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BIEgEl9113653;
+        Fri, 18 Dec 2020 08:42:15 -0600
+Subject: Re: [PATCH v5] PCI: cadence: Retrain Link to work around Gen2
+ training defect.
+To:     Rob Herring <robh@kernel.org>
+CC:     Tom Joseph <tjoseph@cadence.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Nadeem Athani <nadeem@cadence.com>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Milind Parab <mparab@cadence.com>,
+        Swapnil Kashinath Jakhade <sjakhade@cadence.com>,
+        Parshuram Raju Thombare <pthombar@cadence.com>
+References: <20201215070009.27937-1-kishon@ti.com>
+ <CAL_JsqJzi7JkMcd4NZewA=w8q6BsCkrhW3JcED63R=EyE3v29Q@mail.gmail.com>
+ <1ec78477-dadc-cbef-406f-568f44b6c62d@ti.com>
+ <CAL_JsqLepmopGObX_r+7gtR+keaNtEAA3WA1j697T4jAWP8DHA@mail.gmail.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <96ca64cb-ec3a-bb83-2de3-775034ba844b@ti.com>
+Date:   Fri, 18 Dec 2020 20:12:13 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-User-Agent: astroid/v0.15-13-gb675b421
- (https://github.com/astroidmail/astroid)
-Message-Id: <1608301824.eljlhiafee.naveen@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-18_09:2020-12-18,2020-12-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
- malwarescore=0 bulkscore=0 adultscore=0 phishscore=0 impostorscore=0
- lowpriorityscore=0 suspectscore=0 spamscore=0 mlxlogscore=999
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012180099
+In-Reply-To: <CAL_JsqLepmopGObX_r+7gtR+keaNtEAA3WA1j697T4jAWP8DHA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
+Hi Rob,
 
-Arnaldo Carvalho de Melo wrote:
-> Em Fri, Dec 18, 2020 at 08:26:59AM -0300, Arnaldo Carvalho de Melo escrev=
-eu:
->> Em Fri, Dec 18, 2020 at 03:59:23PM +0800, Tiezhu Yang escreveu:
->> > This silences the following tools/perf/ build warning:
->> > Warning: Kernel ABI header at 'tools/perf/arch/powerpc/entry/syscalls/=
-syscall.tbl' differs from latest version at 'arch/powerpc/kernel/syscalls/s=
-yscall.tbl'
->>=20
->> Hi Ravi, Naveen,
->>=20
->> 	Can I get your Reviewed-by or Acked-by for this change and the
->> other that adds s390's syscall.tbl to check_headers.sh so that we get
->=20
-> oops s/s390/powerpc/g :-)
->=20
->> notified when the copy drifts, so that we can see if it still continues
->> working and we can get new syscalls to be supported in things like 'perf
->> trace'?
+On 16/12/20 10:31 pm, Rob Herring wrote:
+> On Wed, Dec 16, 2020 at 9:01 AM Kishon Vijay Abraham I <kishon@ti.com> wrote:
+>>
+>> Hi Rob,
+>>
+>> On 15/12/20 9:23 pm, Rob Herring wrote:
+>>> On Tue, Dec 15, 2020 at 1:00 AM Kishon Vijay Abraham I <kishon@ti.com> wrote:
+>>>>
+>>>> From: Nadeem Athani <nadeem@cadence.com>
+>>>>
+>>>> Cadence controller will not initiate autonomous speed change if strapped as
+>>>> Gen2. The Retrain Link bit is set as quirk to enable this speed change.
+>>>>
+>>>> Signed-off-by: Nadeem Athani <nadeem@cadence.com>
+>>>> [kishon@ti.com: Enable the workaround for TI's J721E SoC]
+>>>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+>>>> ---
+>>>> Hi Lorenzo,
+>>>> The previous version of the patch can be found at [1].
+>>>> I slightly re-worked the patch from Nadeem
+>>>> *) Removed additional Link Up Check
+>>>> *) Removed quirk from pcie-cadence-plat.c
+>>>> *) Also removed additional compatible
+>>>>    "cdns,cdns-pcie-host-quirk-retrain" added in that series
+>>>> *) Enabled the quirk for J721E
+>>>> [1] -> http://lore.kernel.org/r/20201211144236.3825-1-nadeem@cadence.com
+>>>>
+>>>>  drivers/pci/controller/cadence/pci-j721e.c    |  3 +
+>>>>  .../controller/cadence/pcie-cadence-host.c    | 67 ++++++++++++++-----
+>>>>  drivers/pci/controller/cadence/pcie-cadence.h | 11 ++-
+>>>>  3 files changed, 62 insertions(+), 19 deletions(-)
+>>>>
+>>>> diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
+>>>> index dac1ac8a7615..baf729850cb1 100644
+>>>> --- a/drivers/pci/controller/cadence/pci-j721e.c
+>>>> +++ b/drivers/pci/controller/cadence/pci-j721e.c
+>>>> @@ -64,6 +64,7 @@ enum j721e_pcie_mode {
+>>>>
+>>>>  struct j721e_pcie_data {
+>>>>         enum j721e_pcie_mode    mode;
+>>>> +       bool                    quirk_retrain_flag;
+>>>>  };
+>>>>
+>>>>  static inline u32 j721e_pcie_user_readl(struct j721e_pcie *pcie, u32 offset)
+>>>> @@ -280,6 +281,7 @@ static struct pci_ops cdns_ti_pcie_host_ops = {
+>>>>
+>>>>  static const struct j721e_pcie_data j721e_pcie_rc_data = {
+>>>>         .mode = PCI_MODE_RC,
+>>>> +       .quirk_retrain_flag = true,
+>>>>  };
+>>>>
+>>>>  static const struct j721e_pcie_data j721e_pcie_ep_data = {
+>>>> @@ -388,6 +390,7 @@ static int j721e_pcie_probe(struct platform_device *pdev)
+>>>>
+>>>>                 bridge->ops = &cdns_ti_pcie_host_ops;
+>>>>                 rc = pci_host_bridge_priv(bridge);
+>>>> +               rc->quirk_retrain_flag = data->quirk_retrain_flag;
+>>>>
+>>>>                 cdns_pcie = &rc->pcie;
+>>>>                 cdns_pcie->dev = dev;
+>>>> diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c b/drivers/pci/controller/cadence/pcie-cadence-host.c
+>>>> index 811c1cb2e8de..773c0d1137ed 100644
+>>>> --- a/drivers/pci/controller/cadence/pcie-cadence-host.c
+>>>> +++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
+>>>> @@ -77,6 +77,50 @@ static struct pci_ops cdns_pcie_host_ops = {
+>>>>         .write          = pci_generic_config_write,
+>>>>  };
+>>>>
+>>>> +static int cdns_pcie_host_wait_for_link(struct cdns_pcie *pcie)
+>>>> +{
+>>>> +       struct device *dev = pcie->dev;
+>>>> +       int retries;
+>>>> +
+>>>> +       /* Check if the link is up or not */
+>>>> +       for (retries = 0; retries < LINK_WAIT_MAX_RETRIES; retries++) {
+>>>> +               if (cdns_pcie_link_up(pcie)) {
+>>>> +                       dev_info(dev, "Link up\n");
+>>>> +                       return 0;
+>>>> +               }
+>>>> +               usleep_range(LINK_WAIT_USLEEP_MIN, LINK_WAIT_USLEEP_MAX);
+>>>> +       }
+>>>> +
+>>>> +       return -ETIMEDOUT;
+>>>> +}
+>>>> +
+>>>> +static void cdns_pcie_retrain(struct cdns_pcie *pcie)
+>>>> +{
+>>>> +       u32 lnk_cap_sls, pcie_cap_off = CDNS_PCIE_RP_CAP_OFFSET;
+>>>> +       u16 lnk_stat, lnk_ctl;
+>>>> +
+>>>> +       /*
+>>>> +        * Set retrain bit if current speed is 2.5 GB/s,
+>>>> +        * but the PCIe root port support is > 2.5 GB/s.
+>>>
+>>> If you don't have the retrain quirk, wouldn't this condition never
+>>> happen and then the function is just a nop? So this could just be
+>>> called unconditionally.
+>>
+>> Yeah, but only for the quirk we have to retrain to go to GEN2 speed
+>> mode. Else the HW will automatically retrain and go to GEN2.
+> 
+> Again, so you don't need a flag for this. Comparing the speed is
+> enough. IOW, all you need is:
+> 
+> if (current speed < advertised speed)
+>   do retrain
+> 
+> The question is the condition ever true and you don't want to do a
+> retrain? I could see higher speeds being unstable or something, but
 
-Yes, this looks good to me:
-Reviewed-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+For all GEN1 cards there will be re-train (since the Cadence IP RC is
+GEN2 or more say). This is going to be true for older Cadence IPs and
+newer Cadence IPs (where Cadence has enabled HW re-training).
 
-FWIW, I had posted a similar patch back in April, but glad to have this=20
-go in ;)
-http://lkml.kernel.org/r/20200220063740.785913-1-naveen.n.rao@linux.vnet.ib=
-m.com
+The quirk will prevent SW re-training for newer Cadence IPs when a GEN1
+card is connected.
+> then 'advertised speed' would be lowered in that case (to prevent auto
+> retraining, right?) and the condition would be false.
 
+I don't think the value in PCI_EXP_LNKCAP will change for unstable
+links. But yeah it'll fall back to GEN1 based on link training and if
+the link is unstable it'll again fall back to GEN1 on link RE-training.
 
 Thanks,
-Naveen
-
+Kishon
