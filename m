@@ -2,101 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F5972DE85C
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 18:41:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C1992DE807
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 18:32:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732707AbgLRRjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 12:39:00 -0500
-Received: from relay.smtp-ext.broadcom.com ([192.19.232.172]:42726 "EHLO
-        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728013AbgLRRi7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 12:38:59 -0500
-X-Greylist: delayed 415 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Dec 2020 12:38:58 EST
-Received: from [10.136.13.65] (lbrmn-lnxub113.ric.broadcom.net [10.136.13.65])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by relay.smtp-ext.broadcom.com (Postfix) with ESMTPS id AD18380E2;
-        Fri, 18 Dec 2020 09:31:00 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com AD18380E2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1608312662;
-        bh=ASc3+eHClKI6umumcLf09VzAeUQYT7bLZu87KGeByM4=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=kSV+/mkSOaWepR6vm/S+hVi0wHDKslY0xrBaLOW/MbqmnfjYeo3sNNAB7vSn/5p9J
-         MMMIq0VqulmPS7TiwifhjfFcz8jrikCRE1bVDXqFM9H/TjE+pnOKWPUWHQJGS8mX9m
-         nhLq1CIJI4oO4N+uZt7DzzB9muCi5F4pDGTFsNMo=
-Subject: Re: [PATCH v2 1/2] hwrng: iproc-rng200: Fix disable of the block.
-To:     matthias.bgg@kernel.org, mpm@selenic.com,
-        herbert@gondor.apana.org.au, rjui@broadcom.com,
-        sbranden@broadcom.com, f.fainelli@gmail.com
-Cc:     linux-kernel@vger.kernel.org, Julia.Lawall@inria.fr,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, nsaenzjulienne@suse.de,
-        linux-crypto@vger.kernel.org, Matthias Brugger <mbrugger@suse.com>
-References: <20201218105708.28480-1-matthias.bgg@kernel.org>
-From:   Scott Branden <scott.branden@broadcom.com>
-Message-ID: <c00991f0-c353-c273-de58-a6813ba1fa71@broadcom.com>
-Date:   Fri, 18 Dec 2020 09:30:59 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1731541AbgLRRcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 12:32:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37076 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727787AbgLRRcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 12:32:17 -0500
+X-Gm-Message-State: AOAM530eYzdjIS03DeU23l1QN0UavYealEGwaEVsaREi6cWhayzQadiG
+        Qq/APuihaVTN2/VnS0yyYq4Xtr6Ws7wgbfp7Mg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608312696;
+        bh=BGGQyU71jC8PHb+t5FSRSX4kcxy5gG40URfePe8J9nU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cC9AQytUFvAovKozDhlHSzCa40u9b51UDDu9DY6VQsEs2qwlTb7/eZ+duGTl5G1MJ
+         ltk1VO2sg5dTfQ9/rD8rASKJc+I7GyP3U29GCpmR4vNcsvQhuTGV9xRWhbP9HVb3Cr
+         GHcvUq6DPgtaiTnrm90fWn6uZTlOzXGvAz3ugrDpPpOwC9zbdWaT0hryRuRTgrwTal
+         8RHDiRRFV4faBB8B+E/aBqM+Qyr+AtKu47VmmKqT+pQW+ygXcKYgIsnYFKtt1PlFsj
+         2kRsozrN5SM3jDENsG6+VwteAIt6IsjRhBdaQHFUKX3GBUBFmwd3KMIUCI0udLN/Mh
+         Rfjes/c6AAKKA==
+X-Google-Smtp-Source: ABdhPJx+/RIAdMo/5KCMW4U0Xhm+Ecu8VxfrvTtPK9bsliEAA6f3bzT1/rBR+63O/WV/mn7yv7B+sDblEkk6WewuJ5I=
+X-Received: by 2002:a17:906:d87:: with SMTP id m7mr5100609eji.108.1608312694596;
+ Fri, 18 Dec 2020 09:31:34 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201218105708.28480-1-matthias.bgg@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-CA
+References: <20201215070009.27937-1-kishon@ti.com> <CAL_JsqJzi7JkMcd4NZewA=w8q6BsCkrhW3JcED63R=EyE3v29Q@mail.gmail.com>
+ <1ec78477-dadc-cbef-406f-568f44b6c62d@ti.com> <CAL_JsqLepmopGObX_r+7gtR+keaNtEAA3WA1j697T4jAWP8DHA@mail.gmail.com>
+ <96ca64cb-ec3a-bb83-2de3-775034ba844b@ti.com>
+In-Reply-To: <96ca64cb-ec3a-bb83-2de3-775034ba844b@ti.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 18 Dec 2020 11:31:22 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+fP4CcxVm89YkUYDK9eX2j8Yac97nMCLnxGnMakopc7g@mail.gmail.com>
+Message-ID: <CAL_Jsq+fP4CcxVm89YkUYDK9eX2j8Yac97nMCLnxGnMakopc7g@mail.gmail.com>
+Subject: Re: [PATCH v5] PCI: cadence: Retrain Link to work around Gen2
+ training defect.
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Tom Joseph <tjoseph@cadence.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Nadeem Athani <nadeem@cadence.com>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Milind Parab <mparab@cadence.com>,
+        Swapnil Kashinath Jakhade <sjakhade@cadence.com>,
+        Parshuram Raju Thombare <pthombar@cadence.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Dec 18, 2020 at 8:42 AM Kishon Vijay Abraham I <kishon@ti.com> wrote:
+>
+> Hi Rob,
+>
+> On 16/12/20 10:31 pm, Rob Herring wrote:
+> > On Wed, Dec 16, 2020 at 9:01 AM Kishon Vijay Abraham I <kishon@ti.com> wrote:
+> >>
+> >> Hi Rob,
+> >>
+> >> On 15/12/20 9:23 pm, Rob Herring wrote:
+> >>> On Tue, Dec 15, 2020 at 1:00 AM Kishon Vijay Abraham I <kishon@ti.com> wrote:
+> >>>>
+> >>>> From: Nadeem Athani <nadeem@cadence.com>
+> >>>>
+> >>>> Cadence controller will not initiate autonomous speed change if strapped as
+> >>>> Gen2. The Retrain Link bit is set as quirk to enable this speed change.
+> >>>>
+> >>>> Signed-off-by: Nadeem Athani <nadeem@cadence.com>
+> >>>> [kishon@ti.com: Enable the workaround for TI's J721E SoC]
+> >>>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> >>>> ---
+> >>>> Hi Lorenzo,
+> >>>> The previous version of the patch can be found at [1].
+> >>>> I slightly re-worked the patch from Nadeem
+> >>>> *) Removed additional Link Up Check
+> >>>> *) Removed quirk from pcie-cadence-plat.c
+> >>>> *) Also removed additional compatible
+> >>>>    "cdns,cdns-pcie-host-quirk-retrain" added in that series
+> >>>> *) Enabled the quirk for J721E
+> >>>> [1] -> http://lore.kernel.org/r/20201211144236.3825-1-nadeem@cadence.com
+> >>>>
+> >>>>  drivers/pci/controller/cadence/pci-j721e.c    |  3 +
+> >>>>  .../controller/cadence/pcie-cadence-host.c    | 67 ++++++++++++++-----
+> >>>>  drivers/pci/controller/cadence/pcie-cadence.h | 11 ++-
+> >>>>  3 files changed, 62 insertions(+), 19 deletions(-)
+> >>>>
+> >>>> diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
+> >>>> index dac1ac8a7615..baf729850cb1 100644
+> >>>> --- a/drivers/pci/controller/cadence/pci-j721e.c
+> >>>> +++ b/drivers/pci/controller/cadence/pci-j721e.c
+> >>>> @@ -64,6 +64,7 @@ enum j721e_pcie_mode {
+> >>>>
+> >>>>  struct j721e_pcie_data {
+> >>>>         enum j721e_pcie_mode    mode;
+> >>>> +       bool                    quirk_retrain_flag;
+> >>>>  };
+> >>>>
+> >>>>  static inline u32 j721e_pcie_user_readl(struct j721e_pcie *pcie, u32 offset)
+> >>>> @@ -280,6 +281,7 @@ static struct pci_ops cdns_ti_pcie_host_ops = {
+> >>>>
+> >>>>  static const struct j721e_pcie_data j721e_pcie_rc_data = {
+> >>>>         .mode = PCI_MODE_RC,
+> >>>> +       .quirk_retrain_flag = true,
+> >>>>  };
+> >>>>
+> >>>>  static const struct j721e_pcie_data j721e_pcie_ep_data = {
+> >>>> @@ -388,6 +390,7 @@ static int j721e_pcie_probe(struct platform_device *pdev)
+> >>>>
+> >>>>                 bridge->ops = &cdns_ti_pcie_host_ops;
+> >>>>                 rc = pci_host_bridge_priv(bridge);
+> >>>> +               rc->quirk_retrain_flag = data->quirk_retrain_flag;
+> >>>>
+> >>>>                 cdns_pcie = &rc->pcie;
+> >>>>                 cdns_pcie->dev = dev;
+> >>>> diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c b/drivers/pci/controller/cadence/pcie-cadence-host.c
+> >>>> index 811c1cb2e8de..773c0d1137ed 100644
+> >>>> --- a/drivers/pci/controller/cadence/pcie-cadence-host.c
+> >>>> +++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
+> >>>> @@ -77,6 +77,50 @@ static struct pci_ops cdns_pcie_host_ops = {
+> >>>>         .write          = pci_generic_config_write,
+> >>>>  };
+> >>>>
+> >>>> +static int cdns_pcie_host_wait_for_link(struct cdns_pcie *pcie)
+> >>>> +{
+> >>>> +       struct device *dev = pcie->dev;
+> >>>> +       int retries;
+> >>>> +
+> >>>> +       /* Check if the link is up or not */
+> >>>> +       for (retries = 0; retries < LINK_WAIT_MAX_RETRIES; retries++) {
+> >>>> +               if (cdns_pcie_link_up(pcie)) {
+> >>>> +                       dev_info(dev, "Link up\n");
+> >>>> +                       return 0;
+> >>>> +               }
+> >>>> +               usleep_range(LINK_WAIT_USLEEP_MIN, LINK_WAIT_USLEEP_MAX);
+> >>>> +       }
+> >>>> +
+> >>>> +       return -ETIMEDOUT;
+> >>>> +}
+> >>>> +
+> >>>> +static void cdns_pcie_retrain(struct cdns_pcie *pcie)
+> >>>> +{
+> >>>> +       u32 lnk_cap_sls, pcie_cap_off = CDNS_PCIE_RP_CAP_OFFSET;
+> >>>> +       u16 lnk_stat, lnk_ctl;
+> >>>> +
+> >>>> +       /*
+> >>>> +        * Set retrain bit if current speed is 2.5 GB/s,
+> >>>> +        * but the PCIe root port support is > 2.5 GB/s.
+> >>>
+> >>> If you don't have the retrain quirk, wouldn't this condition never
+> >>> happen and then the function is just a nop? So this could just be
+> >>> called unconditionally.
+> >>
+> >> Yeah, but only for the quirk we have to retrain to go to GEN2 speed
+> >> mode. Else the HW will automatically retrain and go to GEN2.
+> >
+> > Again, so you don't need a flag for this. Comparing the speed is
+> > enough. IOW, all you need is:
+> >
+> > if (current speed < advertised speed)
+> >   do retrain
+> >
+> > The question is the condition ever true and you don't want to do a
+> > retrain? I could see higher speeds being unstable or something, but
+>
+> For all GEN1 cards there will be re-train (since the Cadence IP RC is
+> GEN2 or more say). This is going to be true for older Cadence IPs and
+> newer Cadence IPs (where Cadence has enabled HW re-training).
+>
+> The quirk will prevent SW re-training for newer Cadence IPs when a GEN1
+> card is connected.
 
+Okay, got it.
 
-On 2020-12-18 2:57 a.m., matthias.bgg@kernel.org wrote:
-> From: Matthias Brugger <mbrugger@suse.com>
->
-> When trying to disable the block we bitwise or the control
-> register with value zero. This is confusing as using bitwise or with
-> value zero doesn't have any effect at all. Drop this as we already set
-> the enable bit to zero by appling inverted RNG_RBGEN_MASK.
->
-> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
-Acked-by: Scott Branden <scott.branden@broadcom.com>
->
-> ---
->
-> Changes in v2:
-> - fix commit message, dropping Fixes tag
-> - drop inverted RNT_RBGEN_ENABLE in disable case
->
->  drivers/char/hw_random/iproc-rng200.c | 3 ---
->  1 file changed, 3 deletions(-)
->
-> diff --git a/drivers/char/hw_random/iproc-rng200.c b/drivers/char/hw_random/iproc-rng200.c
-> index 01583faf9893..70cd818a0f31 100644
-> --- a/drivers/char/hw_random/iproc-rng200.c
-> +++ b/drivers/char/hw_random/iproc-rng200.c
-> @@ -28,7 +28,6 @@
->  #define RNG_CTRL_OFFSET					0x00
->  #define RNG_CTRL_RNG_RBGEN_MASK				0x00001FFF
->  #define RNG_CTRL_RNG_RBGEN_ENABLE			0x00000001
-> -#define RNG_CTRL_RNG_RBGEN_DISABLE			0x00000000
->  
->  #define RNG_SOFT_RESET_OFFSET				0x04
->  #define RNG_SOFT_RESET					0x00000001
-> @@ -61,7 +60,6 @@ static void iproc_rng200_restart(void __iomem *rng_base)
->  	/* Disable RBG */
->  	val = ioread32(rng_base + RNG_CTRL_OFFSET);
->  	val &= ~RNG_CTRL_RNG_RBGEN_MASK;
-> -	val |= RNG_CTRL_RNG_RBGEN_DISABLE;
->  	iowrite32(val, rng_base + RNG_CTRL_OFFSET);
->  
->  	/* Clear all interrupt status */
-> @@ -174,7 +172,6 @@ static void iproc_rng200_cleanup(struct hwrng *rng)
->  	/* Disable RNG hardware */
->  	val = ioread32(priv->base + RNG_CTRL_OFFSET);
->  	val &= ~RNG_CTRL_RNG_RBGEN_MASK;
-> -	val |= RNG_CTRL_RNG_RBGEN_DISABLE;
->  	iowrite32(val, priv->base + RNG_CTRL_OFFSET);
->  }
->  
-
+Reviewed-by: Rob Herring <robh@kernel.org>
