@@ -2,86 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F74F2DE0AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 11:00:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 264662DE0A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 10:59:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733024AbgLRJ7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 04:59:30 -0500
-Received: from mout.gmx.net ([212.227.17.20]:60145 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725884AbgLRJ73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 04:59:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1608285474;
-        bh=Poe+I/uv1HXYH34rR5R0KfS808Uj3LLB3gp9Re3QXqU=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=MtF7hSB+mz/+3K+MzUxZWtvXfV3o7WlP+T6Y93wb4tQeodfGIeYauRjNOXLq6dk+x
-         sPHfuyGVd0y4ThDa9UfIOpGmCriMohgEb49G/SLWQ+0YQfZkbvpPEMqlupEbhVufab
-         iAKoKmmU/WNu0O5npVFUtgBENBX/J2Hq0KmyEbpM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.178.44] ([95.91.192.147]) by mail.gmx.com (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1M1Ygt-1koooL1KW3-0032Nh; Fri, 18
- Dec 2020 10:57:54 +0100
-Subject: Re: [PATCH] Add support for Realtek RTL838x/RTL839x switch SoCs
-To:     Bert Vermeulen <bert@biot.com>, tsbogend@alpha.franken.de,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201215183557.646034-1-bert@biot.com>
- <fbd86bc4-5826-5b2b-5818-3ccd39a090fb@rempel-privat.de>
- <a4d89688-347b-21af-ef29-a28cd480d2d9@biot.com>
-From:   Oleksij Rempel <linux@rempel-privat.de>
-Message-ID: <2d39c09d-6665-091c-be8f-7793b4e75ab6@rempel-privat.de>
-Date:   Fri, 18 Dec 2020 10:57:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1732961AbgLRJ6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 04:58:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732804AbgLRJ6o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 04:58:44 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C72C0617A7;
+        Fri, 18 Dec 2020 01:58:03 -0800 (PST)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id DED361F4614A;
+        Fri, 18 Dec 2020 09:58:01 +0000 (GMT)
+Date:   Fri, 18 Dec 2020 10:57:59 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     Sowjanya Komatineni <skomatineni@nvidia.com>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <broonie@kernel.org>, <robh+dt@kernel.org>, <lukas@wunner.de>,
+        <bbrezillon@kernel.org>, <tudor.ambarus@microchip.com>,
+        <linux-spi@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v4 5/9] spi: spi-mem: Mark dummy transfers by setting
+ dummy_data bit
+Message-ID: <20201218105759.43789ccf@collabora.com>
+In-Reply-To: <20201218092106.skwej2g6bk3oksbb@ti.com>
+References: <1608236927-28701-1-git-send-email-skomatineni@nvidia.com>
+        <1608236927-28701-6-git-send-email-skomatineni@nvidia.com>
+        <20201218092106.skwej2g6bk3oksbb@ti.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <a4d89688-347b-21af-ef29-a28cd480d2d9@biot.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:HKnE9tzMC2kxZyQFxCTudHQnCXL3zuRxEutJQTkvS0LMg9jHq0w
- nDZ63H92xGCTZjs2mTrTEZQDByu0BOqthBDr8vvvdQx7XQBSnhZXlIiQ4PVlvFTqO1ZWiHx
- 9tAkdSEmgIvY+TVXUO/Diip9xPoMpnHa7Oc4CorXFfvdnCr1wTvcAromGCZVRspruWpJXkn
- zzeGtFpbD1RbzIQLbN7TA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:SchKDOQKVyg=:8mfaSQAL41OQdWB663A7d/
- G+X2ObdCXbOkqScqfnJTGd4W45vKVxgs8JgZyekzRvUlJ2BBjzkknopCOh9ZBaQ+QkvmQukJZ
- Ev8wqdiaBgKiv1FutS8RoYtIz3s14bhaAp9gcT0Ua2zOE5cbfDe/14YaUGNU/6Zr68EUpb/30
- 1A4A+eSBebXOSpkaKi6UBaKSvzNp46EVuZkciQr/Qzi7ucK6orS+BQ6DcAJAMaNlSrmkYUE0T
- PB4QSRpFdotqNTszZqq/jnSKb5Z4DYEiiedRXE39vaz6smrg8J2Br7hM1uVfZnr7IayFbbkiA
- +9jiSZ+AVGhFssZcK4SEeoV3mWP25S9UuMaUh0bdcA/ndNsMJ+WVluVJBX3/Ez+Pm8ktddQHL
- yQgO5bua0Dk+gUl9nG5DBuJymzc4nn72t9aeXo4jCUJFSxurl9ziiAV6Krd6eQZHcSPp/EfaJ
- in0LM3NltLLPOgmKoobNKpdOapnblNMYY/OBaODNW4Pn7RWx8c2/cwGSgfKmkaEp7gz1b7aHD
- 7057aR3gAyu7/COpFH7a6MYshVFZLPFYNGW+twTGkWb7BgrfYxUDYxuBYzevIVG8n+/JsldhQ
- yGkfP2j3wB8lMMz/5Ajn3SzIqJn7kdaAnZH0FFwu07qkzegqJjEojs8Gr6dd7iB1cLMNfL6WN
- DCCmWVPtle3L7UnZQDQCYBdRk6T9axIG4zJktP+JvDrSdVHyHbfPjEOYpwyZdnBsgCJMLkjWZ
- 5ZzeYLTwCW7M6GWQgrxJsgX0zmMgZixEu/IA/GqKqXbtjXd+Zdu4NO0s73ZPk9MUtii8qpe9M
- qq/knpB2ehVkSZplnrKjUuC1xwAaK1pfSWvoGlj3nzkp4GFPWkbzf6kqOT4WgNWYOfAN15gFr
- tZbUxyaKAwkBnnq9FcjA==
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 18.12.20 um 00:27 schrieb Bert Vermeulen:
-> On 12/15/20 11:11 PM, Oleksij Rempel wrote:
->> Hello Bert,
->>
->> thank you for your work. Here are some comments..
->
-> Thanks for reviewing. I will send in a V2 with your comments all handled=
-.
->
->> I assume, after applying all needed changes, there will be no files
->> within
->> arch/mips/include/asm/mach-realtek :)
->
-> I wish! Unfortunately I need somewhere to put the early printk init
-> call, and the SoC family ID checks -- as they are heavily used in
-> various drivers.
+On Fri, 18 Dec 2020 14:51:08 +0530
+Pratyush Yadav <p.yadav@ti.com> wrote:
 
-I would recommend you to use generic and exact SoC compatible string in
-the devicetree. It will save you and the subsystem maintainers some pain
-later. Please do not make drivers depend on the arch/* code.
+> Hi Sowjanya,
+> 
+> On 17/12/20 12:28PM, Sowjanya Komatineni wrote:
+> > This patch marks dummy transfer by setting dummy_data bit to 1.
+> > 
+> > Controllers supporting dummy transfer by hardware use this bit field
+> > to skip software transfer of dummy bytes and use hardware dummy bytes
+> > transfer.  
+> 
+> What is the benefit you get from this change? You add complexity in 
+> spi-mem and the controller driver, so that must come with some benefits. 
+> Here I don't see any. The transfer will certainly take the same amount 
+> of time because the number or period of the dummy cycles has not 
+> changed. So why is this needed?
 
-=2D-
-Regards,
-Oleksij
+Well, you don't have to queue TX bytes if you use HW-based dummy
+cycles, but I agree, I'd expect the overhead to be negligible,
+especially since we're talking about emitting a few bytes, not hundreds.
+This being said, the complexity added to the core is reasonable IMHO,
+so if it really helps reducing the CPU overhead (we might need some
+numbers to prove that), I guess it's okay.
+
+>  
+> > Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+> > ---
+> >  drivers/spi/spi-mem.c   | 1 +
+> >  include/linux/spi/spi.h | 2 ++
+> >  2 files changed, 3 insertions(+)
+> > 
+> > diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+> > index f3a3f19..c64371c 100644
+> > --- a/drivers/spi/spi-mem.c
+> > +++ b/drivers/spi/spi-mem.c
+> > @@ -354,6 +354,7 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+> >  		xfers[xferpos].tx_buf = tmpbuf + op->addr.nbytes + 1;
+> >  		xfers[xferpos].len = op->dummy.nbytes;
+> >  		xfers[xferpos].tx_nbits = op->dummy.buswidth;
+> > +		xfers[xferpos].dummy_data = 1;
+> >  		spi_message_add_tail(&xfers[xferpos], &msg);
+> >  		xferpos++;
+> >  		totalxferlen += op->dummy.nbytes;
+> > diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+> > index aa09fdc..708f2f5 100644
+> > --- a/include/linux/spi/spi.h
+> > +++ b/include/linux/spi/spi.h
+> > @@ -827,6 +827,7 @@ extern void spi_res_release(struct spi_controller *ctlr,
+> >   *      transfer. If 0 the default (from @spi_device) is used.
+> >   * @bits_per_word: select a bits_per_word other than the device default
+> >   *      for this transfer. If 0 the default (from @spi_device) is used.
+> > + * @dummy_data: indicates transfer is dummy bytes transfer.
+> >   * @cs_change: affects chipselect after this transfer completes
+> >   * @cs_change_delay: delay between cs deassert and assert when
+> >   *      @cs_change is set and @spi_transfer is not the last in @spi_message
+> > @@ -939,6 +940,7 @@ struct spi_transfer {
+> >  	struct sg_table tx_sg;
+> >  	struct sg_table rx_sg;
+> >  
+> > +	unsigned	dummy_data:1;
+> >  	unsigned	cs_change:1;
+> >  	unsigned	tx_nbits:3;
+> >  	unsigned	rx_nbits:3;
+> > -- 
+> > 2.7.4
+> >   
+> 
+
