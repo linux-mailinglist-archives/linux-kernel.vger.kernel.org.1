@@ -2,169 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB51E2DE771
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 17:29:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E00102DE777
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 17:30:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730787AbgLRQ3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 11:29:08 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:7727 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728286AbgLRQ3I (ORCPT
+        id S1731621AbgLRQ3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 11:29:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48003 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726843AbgLRQ3y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 11:29:08 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fdcd8ab0000>; Fri, 18 Dec 2020 08:28:27 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 18 Dec
- 2020 16:28:23 +0000
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.169)
- by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 18 Dec 2020 16:28:22 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EPevoOdOl1MHEkyyJHj3GAQVvXey9U1v0yuHTwzSIffDZK2pfojNQD1LVoP2btOabQkt+jf0GdpmZF22ELg5HM4NJSH/YqBGTkCj49Tk7NoblvGrF8b8KkyQVI3Nb4yFzz+BaMIlcmQkSVds8h2CaqdhkVsg1wC7hmyTc8PXkWeQD02qmHpUZR7+JH8znMFBMBlikdHQ/WH6g3Q3rJfoB0/5aqPu1+x0pXiyzPdMgFul4HXrdMt/vM4RPQWaS/drhz0DVB4Kk/N6tahvS7Y50qgw5Ty+KG258Sri2WK0gr4BhJKSptmJzwiKTEvMFZBbIVVJkQlvnFpdjgKeT0os5g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4fpFXmIERgQnZo7Ju+oBGZcu5IyKJrgxt66Mtoedtfw=;
- b=ftJ5n3sMLHf5hE6Gzok5oWem2ad2PLR7eqitDRTDIYSnc9Q/3o131jfxUGvWQXYXbzNpqY092Q0cBB2EwtZPuKdNs30/4h59wgg8oAVaKys3ap03GrupiTZP/2OqsZn7isiubh63hatwqey+hqUb89D0TbdtTek5mPsqsaytjQCcZNRxMs4hcw6VHSPm/5tsFtjzcJtrE5QZlooSksD1Xg+SQSNjkN9V//HCqwiGRie6b2ATzl3h1If5E/W6GtjK+QTnouFkxKGrRLi7T0TuqTKpyCFty1TaNmPttrzL0Y8jSZTXS9z2lZBdExm+zX8qWJYwqKXy4QXyPSBXKiLUPw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3019.namprd12.prod.outlook.com (2603:10b6:5:3d::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.15; Fri, 18 Dec
- 2020 16:28:19 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3676.025; Fri, 18 Dec 2020
- 16:28:19 +0000
-Date:   Fri, 18 Dec 2020 12:28:17 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     Greg KH <gregkh@linuxfoundation.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        <alsa-devel@alsa-project.org>, Kiran Patil <kiran.patil@intel.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        "Liam Girdwood" <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        "Dave Ertman" <david.m.ertman@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        David Miller <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Parav Pandit <parav@mellanox.com>, <lee.jones@linaro.org>
-Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
-Message-ID: <20201218162817.GX552508@nvidia.com>
-References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
- <X8ogtmrm7tOzZo+N@kroah.com>
- <CAPcyv4iLG7V9JT34La5PYfyM9378acbLnkShx=6pOmpPK7yg3A@mail.gmail.com>
- <X8usiKhLCU3PGL9J@kroah.com> <20201217211937.GA3177478@piout.net>
- <X9xV+8Mujo4dhfU4@kroah.com> <20201218131709.GA5333@sirena.org.uk>
- <20201218140854.GW552508@nvidia.com> <20201218155204.GC5333@sirena.org.uk>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201218155204.GC5333@sirena.org.uk>
-X-ClientProxiedBy: BL0PR02CA0063.namprd02.prod.outlook.com
- (2603:10b6:207:3d::40) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        Fri, 18 Dec 2020 11:29:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608308906;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tAKD8s3MkKWuWgYFWukGWEjfMKCZlP3iCMbR7PASLgc=;
+        b=DzovLskaUCMQJ4nh6PLL+T+cLwWfvIwarS6J33/GrTxvdkNjTQMzmsZtUBk6zzjl/Lnpaf
+        IbGUU1rRCmxafnI3MBpRJ61NKR+Uut28yMas7uLxOcdugR8ZBZnX3lYR1a5/huW2W3nZj9
+        mR62MfTmRZJnaR0453+TQxEzX6AdbRQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-46-FXbb6kE6OFyoFZawZRRMpw-1; Fri, 18 Dec 2020 11:28:23 -0500
+X-MC-Unique: FXbb6kE6OFyoFZawZRRMpw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8F65215722;
+        Fri, 18 Dec 2020 16:28:21 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-115-223.rdu2.redhat.com [10.10.115.223])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 62CA25C233;
+        Fri, 18 Dec 2020 16:28:20 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id C4946220BCF; Fri, 18 Dec 2020 11:28:19 -0500 (EST)
+Date:   Fri, 18 Dec 2020 11:28:19 -0500
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, amir73il@gmail.com,
+        sargun@sargun.me, miklos@szeredi.hu, willy@infradead.org,
+        jack@suse.cz, neilb@suse.com, viro@zeniv.linux.org.uk
+Subject: Re: [PATCH 3/3] overlayfs: Check writeback errors w.r.t upper in
+ ->syncfs()
+Message-ID: <20201218162819.GC3424@redhat.com>
+References: <20201216233149.39025-1-vgoyal@redhat.com>
+ <20201216233149.39025-4-vgoyal@redhat.com>
+ <20201217200856.GA707519@tleilax.poochiereds.net>
+ <20201218144418.GA3424@redhat.com>
+ <20201218150258.GA866424@tleilax.poochiereds.net>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR02CA0063.namprd02.prod.outlook.com (2603:10b6:207:3d::40) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Fri, 18 Dec 2020 16:28:19 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kqIc5-00CjNC-Ih; Fri, 18 Dec 2020 12:28:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1608308907; bh=4fpFXmIERgQnZo7Ju+oBGZcu5IyKJrgxt66Mtoedtfw=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=WMht87P7zFfRZu8ZTmtZGj32IEeVj5SPj5zlLD2XhATnkZrbSUZEGfBOULrR7OWN9
-         QyeKzz3LzGo+N+SKCJCfhITsSaEeTJ0jpnTe/1rmrX6Chodgxfk++qDMGstaZVIcs9
-         ioMonDFIMDczlGq2gmCbo2wYQwRUcBQo00Nd3jZ5WZG6jdod8NBCdmuvcTOCKz+h9t
-         EKI3EybnO/KAcRIjMVhUI6qs8YjKVKcXQKgwPOf8v75GhgLwDNyj91vN5fzJKK9Xr8
-         c6OJNvyT2/H1A1hAvBpqXrwA4R6NEJrRJRN4HguAw6YyZkURHt1boCaCQvqPXEDEPx
-         zeyeXyVS49R/w==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201218150258.GA866424@tleilax.poochiereds.net>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 03:52:04PM +0000, Mark Brown wrote:
-> On Fri, Dec 18, 2020 at 10:08:54AM -0400, Jason Gunthorpe wrote:
-> > On Fri, Dec 18, 2020 at 01:17:09PM +0000, Mark Brown wrote:
+On Fri, Dec 18, 2020 at 10:02:58AM -0500, Jeff Layton wrote:
+> On Fri, Dec 18, 2020 at 09:44:18AM -0500, Vivek Goyal wrote:
+> > On Thu, Dec 17, 2020 at 03:08:56PM -0500, Jeffrey Layton wrote:
+> > > On Wed, Dec 16, 2020 at 06:31:49PM -0500, Vivek Goyal wrote:
+> > > > Check for writeback error on overlay super block w.r.t "struct file"
+> > > > passed in ->syncfs().
+> > > > 
+> > > > As of now real error happens on upper sb. So this patch first propagates
+> > > > error from upper sb to overlay sb and then checks error w.r.t struct
+> > > > file passed in.
+> > > > 
+> > > > Jeff, I know you prefer that I should rather file upper file and check
+> > > > error directly on on upper sb w.r.t this real upper file.  While I was
+> > > > implementing that I thought what if file is on lower (and has not been
+> > > > copied up yet). In that case shall we not check writeback errors and
+> > > > return back to user space? That does not sound right though because,
+> > > > we are not checking for writeback errors on this file. Rather we
+> > > > are checking for any error on superblock. Upper might have an error
+> > > > and we should report it to user even if file in question is a lower
+> > > > file. And that's why I fell back to this approach. But I am open to
+> > > > change it if there are issues in this method.
+> > > > 
+> > > > Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+> > > > ---
+> > > >  fs/overlayfs/ovl_entry.h |  2 ++
+> > > >  fs/overlayfs/super.c     | 15 ++++++++++++---
+> > > >  2 files changed, 14 insertions(+), 3 deletions(-)
+> > > > 
+> > > > diff --git a/fs/overlayfs/ovl_entry.h b/fs/overlayfs/ovl_entry.h
+> > > > index 1b5a2094df8e..a08fd719ee7b 100644
+> > > > --- a/fs/overlayfs/ovl_entry.h
+> > > > +++ b/fs/overlayfs/ovl_entry.h
+> > > > @@ -79,6 +79,8 @@ struct ovl_fs {
+> > > >  	atomic_long_t last_ino;
+> > > >  	/* Whiteout dentry cache */
+> > > >  	struct dentry *whiteout;
+> > > > +	/* Protects multiple sb->s_wb_err update from upper_sb . */
+> > > > +	spinlock_t errseq_lock;
+> > > >  };
+> > > >  
+> > > >  static inline struct vfsmount *ovl_upper_mnt(struct ovl_fs *ofs)
+> > > > diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
+> > > > index b4d92e6fa5ce..e7bc4492205e 100644
+> > > > --- a/fs/overlayfs/super.c
+> > > > +++ b/fs/overlayfs/super.c
+> > > > @@ -291,7 +291,7 @@ int ovl_syncfs(struct file *file)
+> > > >  	struct super_block *sb = file->f_path.dentry->d_sb;
+> > > >  	struct ovl_fs *ofs = sb->s_fs_info;
+> > > >  	struct super_block *upper_sb;
+> > > > -	int ret;
+> > > > +	int ret, ret2;
+> > > >  
+> > > >  	ret = 0;
+> > > >  	down_read(&sb->s_umount);
+> > > > @@ -310,10 +310,18 @@ int ovl_syncfs(struct file *file)
+> > > >  	ret = sync_filesystem(upper_sb);
+> > > >  	up_read(&upper_sb->s_umount);
+> > > >  
+> > > > +	/* Update overlay sb->s_wb_err */
+> > > > +	if (errseq_check(&upper_sb->s_wb_err, sb->s_wb_err)) {
+> > > > +		/* Upper sb has errors since last time */
+> > > > +		spin_lock(&ofs->errseq_lock);
+> > > > +		errseq_check_and_advance(&upper_sb->s_wb_err, &sb->s_wb_err);
+> > > > +		spin_unlock(&ofs->errseq_lock);
+> > > > +	}
+> > > 
+> > > So, the problem here is that the resulting value in sb->s_wb_err is
+> > > going to end up with the REPORTED flag set (using the naming in my
+> > > latest set). So, a later opener of a file on sb->s_wb_err won't see it.
+> > > 
+> > > For instance, suppose you call sync() on the box and does the above
+> > > check and advance. Then, you open the file and call syncfs() and get
+> > > back no error because REPORTED flag was set when you opened. That error
+> > > will then be lost.
+> > 
+> > Hi Jeff,
+> > 
+> > In this patch, I am doing this only in ->syncfs() path and not in
+> > ->sync_fs() path. IOW, errseq_check_and_advance() will take place
+> > only if there is a valid "struct file" passed in. That means there
+> > is a consumer of the error and that means it should be fine to
+> > set the sb->s_wb_err as SEEN/REPORTED, right?
+> > 
+> > If we end up plumbming "struct file" in existing ->sync_fs() routine,
+> > then I will call this only if a non NULL struct file has been 
+> > passed in. Otherwise skip this step. 
+> > 
+> > IOW, sync() call will not result in errseq_check_and_advance() instead
+> > a syncfs() call will. 
+> > 
 > 
-> > > As previously discussed this will need the auxilliary bus extending to
-> > > support at least interrupts and possibly also general resources.
+> It still seems odd and I'm not sure you won't end up with weird corner
+> cases due to the flag handling. If you're doing this in the new
+> f_op->syncfs, then why bother with sb->s_wb_err at all? You can just do
+> this, and avoid the overlayfs sb altogether:
 > 
-> > I thought the recent LWN article summed it up nicely, auxillary bus is
-> > for gluing to subsystems together using a driver specific software API
-> > to connect to the HW, MFD is for splitting a physical HW into disjoint
-> > regions of HW.
+> if (errseq_check(&upper_sb->s_wb_err, file->f_sb_err)) {
+> 	/* Upper sb has errors since last time */
+> 	spin_lock(&file->f_lock);
+> 	errseq_check_and_advance(&upper_sb->s_wb_err, &file->f_sb_err);
+> 	spin_unlock(&file->f_lock);
+> }
 > 
-> This conflicts with the statements from Greg about not using the
-> platform bus for things that aren't memory mapped or "direct firmware",
-> a large proportion of MFD subfunctions are neither at least in so far as
-> I can understand what direct firmware means.
+> That's simpler than trying to propagate the error between two
+> errseq_t's. You would need to sample the upper_sb->s_wb_err at
+> open time in the overlayfs ->open handler though, to make sure
+> you're tracking the right one.
 
-I assume MFD will keep existing and it will somehow stop using
-platform device for the children it builds.
+IIUC, you are suggesting that when and overlay file is opened (lower or
+upper), always install current upper_sb->s_wb_err in f->f_sb_err.
+IOW, overide following VFS operations.
 
-That doesn't mean MFD must use aux device, so I don't see what you
-mean by conflicts?
+f->f_sb_err = file_sample_sb_err(f);
 
-If someone has a PCI device and they want to split it up, they should
-choose between aux device and MFD (assuming MFD gets fixed, as Greg
-has basically blanket NAK'd adding more of them to MFD as is)
+In ovl_open() and ovl_dir_open() with something like.
 
-> To be honest I don't find the LWN article clarifies things particularly
-> here, the rationale appears to involve some misconceptions about what
-> MFDs look like.  It looks like it assumes that MFD functions have
-> physically separate register sets for example which is not a reliable
-> feature of MFDs, nor is the assumption that there's no shared
-> functionality which appears to be there.  It also appears to assume that
-> MFD subfunctions can clearly be described by ACPI (where it would be
-> unidiomatic, we just don't see this happening for the MFDs that appear
-> on ACPI systems and I'm not sure bindings exist within ACPI) or DT
-> (where even where subfunctions are individually described it's rarely
-> doing more than enumerating that things exist).
+f->f_sb_err = errseq_sample(upper_sb->s_wb_err); 
 
-I think the MFD cell model is probably the deciding feature. If that
-cell description scheme suites the device, and it is very HW focused,
-then MFD is probably the answer.
+And then ->sync_fs() or ->syncfs(), can check for new errors w.r.t upper
+sb?
 
-The places I see aux device being used are a terrible fit for the cell
-idea. If there are MFD drivers that are awkardly crammed into that
-cell description then maybe they should be aux devices?
+if (errseq_check(&upper_sb->s_wb_err, file->f_sb_err)) {
+	/* Upper sb has errors since last time */
+	spin_lock(&file->f_lock);
+	ret = errseq_check_and_advance(&upper_sb->s_wb_err, &file->f_sb_err);
+	spin_unlock(&file->f_lock);
+}
 
-> > Maybe there is some overlap, but if you want to add HW representations
-> > to the general auxillary device then I think you are using it for the
-> > wrong thing.
+I guess I can try this. But if we don't update ovl_sb->s_wb_err, then
+question remains that how to avoid errseq_check_and_advance() call
+in SYSCALL(sycnfs). That will do more bad things in this case.
+
+This will lead back to either creating new f_op->syncfs() where fs
+is responsible for writeback error checks (and not vfs). Or plumb
+"struct file" in exisitng ->sync_fs() and let filesystems do
+error checks (instead of VFS). This will be somewhat similar to your old
+proposal here.
+
+https://lore.kernel.org/linux-fsdevel/20180518123415.28181-1-jlayton@kernel.org/
+
+So advantage of updating ovl_sb->s_wb_err is that it reduces the
+churn needed in ->sync_fs() and moving errseq_check_and_advance()
+check out of vfs syncfs().
+
 > 
-> Even for the narrowest use case for auxiliary devices that I can think
-> of I think the assumption that nobody will ever design something which
-> can wire an interrupt intended to be serviced by a subfunction is a bit
-> optimistic.  
+> > > 
+> > > >  
+> > > > +	ret2 = errseq_check_and_advance(&sb->s_wb_err, &file->f_sb_err);
+> > > >  out:
+> > > >  	up_read(&sb->s_umount);
+> > > > -	return ret;
+> > > > +	return ret ? ret : ret2;
+> > > >  }
+> > > >  
+> > > >  /**
+> > > > @@ -1903,6 +1911,7 @@ static int ovl_fill_super(struct super_block *sb, void *data, int silent)
+> > > >  	if (!cred)
+> > > >  		goto out_err;
+> > > >  
+> > > > +	spin_lock_init(&ofs->errseq_lock);
+> > > >  	/* Is there a reason anyone would want not to share whiteouts? */
+> > > >  	ofs->share_whiteout = true;
+> > > >  
+> > > > @@ -1975,7 +1984,7 @@ static int ovl_fill_super(struct super_block *sb, void *data, int silent)
+> > > >  
+> > > >  		sb->s_stack_depth = ovl_upper_mnt(ofs)->mnt_sb->s_stack_depth;
+> > > >  		sb->s_time_gran = ovl_upper_mnt(ofs)->mnt_sb->s_time_gran;
+> > > > -
+> > > > +		sb->s_wb_err = errseq_sample(&ovl_upper_mnt(ofs)->mnt_sb->s_wb_err);
+> > > 
+> > > This will mark the error on the upper_sb as REPORTED, and that's not
+> > > really that's the case if you're just using it set s_wb_err in the
+> > > overlay. You might want to use errseq_peek in this situation.
+> > 
+> > For now I am still looking at existing code and not new code. Because
+> > I belive that new code does not change existing behavior instead
+> > provides additional functionality to allow sampling the error without
+> > marking it seen as well as provide helper to not force seeing an
+> > unseen error.
+> > 
+> > So current errseq_sample() does not mark error SEEN. And if it is
+> > an unseen error, we will get 0 and be forced to see the error next
+> > time.
+> > 
+> > One small issue with this is that say upper has unseen error. Now
+> > we mount overlay and save that value in sb->s_wb_err (unseen). Say
+> > a file is opened on upper and error is now seen on upper. But
+> > we still have unseen error cached in overlay and if overlay fd is
+> > now opened, f->f_sb_err will be 0 and it will be forced to see
+> > err on next syncfs().
+> > 
+> > IOW, despite the fact that overlay fd was opened after upper sb had
+> > been marked seen, it still will see error. I think it probably is
+> > not a big issue.
+> > 
+> 
+> Good point. I was thinking about the newer code that may mark it
+> OBSERVED when you sample at open time.
+> 
+> Still, I think working with the overlayfs sb->s_wb_err is just adding
+> complexity for little benefit.  Assuming that writeback errors can only
+> happen on the upper layer, you're better off avoiding it.
 
-mlx5, for example, uses interrupts but an aux device is not assigned
-an exclusive MSI interrupt list.
+If I want to avoid ovl_sb->s_wb_err updation, I will have to move
+ret2 = errseq_check_and_advance(&sb->s_wb_err, &f.file->f_sb_err);
+check in individual filesystems. And it will still not be same. Because
+currently after ->sync_fs() call, __sync_blockdev() is called and
+then we check for writeback errors. That means, I will have to
+move __sync_blockdev() also inside ->sync_fs().
 
-These devices have a very dynamic interrupt scheme, pre-partitioning
-the MSI vector table is completely the wrong API.
+Something like.
 
-The "interrupt" API is more like:
+fs_sync_fs()
+{
+	ret = do_fs_specific_sync_stuff();
+	ret2 = __sync_blockdev();
+	ret3 = errseq_check_and_advance(&sb->s_wb_err, &f.file->f_sb_err);
+	if (ret) {
+		return ret;
+	else
+		return ret2 ? ret2 : ret3;
+}
 
-   mlx5_register_event_handler(hw_object, my_function);
+Does not look pretty.
 
-Which would call my_function from some MSI interrupt vector when
-hw_object has an event to report. There might be 1000's of dynamic
-hw_objects in the system any moment.
+Vivek
 
-As I said, I see aux device as being something that exposes a driver
-specifc SW API, not a list of generic HW resources.
-
-Jason
