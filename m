@@ -2,142 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F9E32DE3BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:10:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 155562DE3B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:10:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727336AbgLROKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 09:10:23 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:58830 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725982AbgLROKW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 09:10:22 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BIE8eL5118734;
-        Fri, 18 Dec 2020 08:08:40 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1608300520;
-        bh=cOmMPK7N76tH3xpPKjmndbcOnTWOiNkMnvf3dfW0sHE=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=qjJpn8wRe9mzcGbD3LosJuPfNT0uAVgK5FVOoBMswBoApEc1+j7QJcbF9q83QThKG
-         KjMFa1ANFzaCPbuSzRTezgmDn+mqF7XGiKBa/nJ0jzpUfSEGI7faBRQ5WkPolALptj
-         cN/bFG+3TS8bypoubRR91gORVTfZXszuoz9opIYs=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BIE8eFW079359
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 18 Dec 2020 08:08:40 -0600
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 18
- Dec 2020 08:08:39 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 18 Dec 2020 08:08:39 -0600
-Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BIE8HoZ035666;
-        Fri, 18 Dec 2020 08:08:35 -0600
-From:   Aswath Govindraju <a-govindraju@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Vadym Kochan <vadym.kochan@plvision.eu>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] misc: eeprom_93xx46: Add quirk to support Microchip 93LC46B eeprom
-Date:   Fri, 18 Dec 2020 19:38:11 +0530
-Message-ID: <20201218140815.9501-3-a-govindraju@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201218140815.9501-1-a-govindraju@ti.com>
-References: <20201218140815.9501-1-a-govindraju@ti.com>
+        id S1727032AbgLROJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 09:09:47 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:20939 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725982AbgLROJr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 09:09:47 -0500
+Received: from HKMAIL103.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fdcb7fe0000>; Fri, 18 Dec 2020 22:09:02 +0800
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL103.nvidia.com
+ (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 18 Dec
+ 2020 14:09:00 +0000
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.171)
+ by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 18 Dec 2020 14:09:00 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JoYn5ucAb62TBndhdo+39D7KTtQVPjq+OLzQ4hgrbDlB+EXonyWGYw+vnkxWSNpVVdO88yPUSP1flStOcbrCsB4meeMWJsOdLMXoeVzxWw8z5BvVX2xXDgJ7vXeN0CnxzlqiyCDsNo1Xhu9mRFMeOzLhZyVJvxF7J/t6iDrM/n68dR63JYD7zyiZYzmLsC9vxU3jfv15RFTRjExVFGi8FTBpHIKQtu8MuCe+bAMRgnEXvKIArQwAefd95EQ7Iuykd42g0I/jso4lk2F06+YIPWm4oNHGMpnM4fj9xLaSArOmoFIOu/UJ7r+Vp34S13cy6ZQltfw3ybLhUsoP6xlXLA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FqxdLmDnf0NVpgTU0lP9G0CPHgb64TOJPJ/P8z8Dc8U=;
+ b=ltvny34KhEquTQoAFGZJSF7E5cVJxFSTZqvN/nr/GEm0FR353/qZOw1Yo1AEx2xTG9bHu4uxEVTBH3qY+LHOSb6cWFOn+gpPpHhjcZmrIy+ggjUHJEkPDzcxpnlq6z8jKEDPLp6nk/xYVrJJJEM9r/ObRlZgS7Kx6wBpJS+YeUdAiEMJ63ZZa6o3UeT3hky1ma5m2PNvvPqYv2xq2vkt2Nnx1lpyyARe8f2DTVulEn7yIV+TGEA1SavfbKPacx8oq9TmybDfmedRqtwRHWYvU0q+nchWhRYZyJu2IQYsADCoGrBBbR3m2ETWuZJrs7eAdKU5Ybx/oGBR/Qu0cIH5xw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4041.namprd12.prod.outlook.com (2603:10b6:5:210::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Fri, 18 Dec
+ 2020 14:08:55 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3676.025; Fri, 18 Dec 2020
+ 14:08:55 +0000
+Date:   Fri, 18 Dec 2020 10:08:54 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     Greg KH <gregkh@linuxfoundation.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        <alsa-devel@alsa-project.org>, Kiran Patil <kiran.patil@intel.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        "Liam Girdwood" <lgirdwood@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        "Dave Ertman" <david.m.ertman@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        David Miller <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Parav Pandit <parav@mellanox.com>, <lee.jones@linaro.org>
+Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
+Message-ID: <20201218140854.GW552508@nvidia.com>
+References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <X8ogtmrm7tOzZo+N@kroah.com>
+ <CAPcyv4iLG7V9JT34La5PYfyM9378acbLnkShx=6pOmpPK7yg3A@mail.gmail.com>
+ <X8usiKhLCU3PGL9J@kroah.com> <20201217211937.GA3177478@piout.net>
+ <X9xV+8Mujo4dhfU4@kroah.com> <20201218131709.GA5333@sirena.org.uk>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201218131709.GA5333@sirena.org.uk>
+X-ClientProxiedBy: BL1PR13CA0392.namprd13.prod.outlook.com
+ (2603:10b6:208:2c2::7) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0392.namprd13.prod.outlook.com (2603:10b6:208:2c2::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.13 via Frontend Transport; Fri, 18 Dec 2020 14:08:55 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kqGRC-00Cg9S-2d; Fri, 18 Dec 2020 10:08:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1608300542; bh=FqxdLmDnf0NVpgTU0lP9G0CPHgb64TOJPJ/P8z8Dc8U=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=P3bQzSnN2N1kR/c2ruQqvBBXyTIAePZxtznSnSZhxZocH22xrPnPMcj0epcAhzBiA
+         D2vmq54B8kq4cn44ri+yJbT/cof450WbIaOnnHoZXAeLrE997aQUbKX2rnnklVGbn1
+         p74dBh7ZBNnLPfXVybBas5TYj/NqNd72EgVNZb5/MP3Ws4P+R1l77WLOMcGEGbEiPd
+         mh0ICzdJRO9rHLkVfkX/ltcd2BMyUwYBYjo1ceYgoVuwBoumn+19eE16OK+7z3/5ia
+         9ZZMYIi6KcCcmBzG1bISAhIox3/suLl/uM/DB2suG9/l+F97CILWWgkAu7O2VZXFvp
+         4lSalwb8Kp8Bg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A dummy zero bit is sent preceding the data during a read transfer by the
-Microchip 93LC46B eeprom (section 2.7 of[1]). This results in right shift
-of data during a read. In order to ignore this bit a quirk can be added to
-send an extra zero bit after the read address.
+On Fri, Dec 18, 2020 at 01:17:09PM +0000, Mark Brown wrote:
 
-Add a quirk to ignore the zero bit sent before data by adding a zero bit
-after the read address.
+> As previously discussed this will need the auxilliary bus extending to
+> support at least interrupts and possibly also general resources.
 
-[1] - https://www.mouser.com/datasheet/2/268/20001749K-277859.pdf
+I thought the recent LWN article summed it up nicely, auxillary bus is
+for gluing to subsystems together using a driver specific software API
+to connect to the HW, MFD is for splitting a physical HW into disjoint
+regions of HW.
 
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
----
- drivers/misc/eeprom/eeprom_93xx46.c | 15 +++++++++++++++
- include/linux/eeprom_93xx46.h       |  2 ++
- 2 files changed, 17 insertions(+)
+Maybe there is some overlap, but if you want to add HW representations
+to the general auxillary device then I think you are using it for the
+wrong thing.
 
-diff --git a/drivers/misc/eeprom/eeprom_93xx46.c b/drivers/misc/eeprom/eeprom_93xx46.c
-index 7c45f82b4302..b144e7981f36 100644
---- a/drivers/misc/eeprom/eeprom_93xx46.c
-+++ b/drivers/misc/eeprom/eeprom_93xx46.c
-@@ -35,6 +35,10 @@ static const struct eeprom_93xx46_devtype_data atmel_at93c46d_data = {
- 		  EEPROM_93XX46_QUIRK_INSTRUCTION_LENGTH,
- };
- 
-+static const struct eeprom_93xx46_devtype_data microchip_93LC46B_data = {
-+	.quirks = EEPROM_93XX46_QUIRK_EXTRA_READ_CYCLE,
-+};
-+
- struct eeprom_93xx46_dev {
- 	struct spi_device *spi;
- 	struct eeprom_93xx46_platform_data *pdata;
-@@ -55,6 +59,11 @@ static inline bool has_quirk_instruction_length(struct eeprom_93xx46_dev *edev)
- 	return edev->pdata->quirks & EEPROM_93XX46_QUIRK_INSTRUCTION_LENGTH;
- }
- 
-+static inline bool has_quirk_extra_read_cycle(struct eeprom_93xx46_dev *edev)
-+{
-+	return edev->pdata->quirks & EEPROM_93XX46_QUIRK_EXTRA_READ_CYCLE;
-+}
-+
- static int eeprom_93xx46_read(void *priv, unsigned int off,
- 			      void *val, size_t count)
- {
-@@ -96,6 +105,11 @@ static int eeprom_93xx46_read(void *priv, unsigned int off,
- 		dev_dbg(&edev->spi->dev, "read cmd 0x%x, %d Hz\n",
- 			cmd_addr, edev->spi->max_speed_hz);
- 
-+		if (has_quirk_extra_read_cycle(edev)) {
-+			cmd_addr <<= 1;
-+			bits += 1;
-+		}
-+
- 		spi_message_init(&m);
- 
- 		t[0].tx_buf = (char *)&cmd_addr;
-@@ -363,6 +377,7 @@ static void select_deassert(void *context)
- static const struct of_device_id eeprom_93xx46_of_table[] = {
- 	{ .compatible = "eeprom-93xx46", },
- 	{ .compatible = "atmel,at93c46d", .data = &atmel_at93c46d_data, },
-+	{ .compatible = "microchip,93LC46B", .data = &microchip_93LC46B_data, },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, eeprom_93xx46_of_table);
-diff --git a/include/linux/eeprom_93xx46.h b/include/linux/eeprom_93xx46.h
-index eec7928ff8fe..99580c22f91a 100644
---- a/include/linux/eeprom_93xx46.h
-+++ b/include/linux/eeprom_93xx46.h
-@@ -16,6 +16,8 @@ struct eeprom_93xx46_platform_data {
- #define EEPROM_93XX46_QUIRK_SINGLE_WORD_READ		(1 << 0)
- /* Instructions such as EWEN are (addrlen + 2) in length. */
- #define EEPROM_93XX46_QUIRK_INSTRUCTION_LENGTH		(1 << 1)
-+/* Add extra cycle after address during a read */
-+#define EEPROM_93XX46_QUIRK_EXTRA_READ_CYCLE		BIT(2)
- 
- 	/*
- 	 * optional hooks to control additional logic
--- 
-2.17.1
-
+Jason
