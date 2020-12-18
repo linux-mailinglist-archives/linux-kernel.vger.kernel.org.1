@@ -2,168 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E85EA2DE2E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 13:46:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E3562DE2EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 13:47:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726590AbgLRMpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 07:45:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39754 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726018AbgLRMpQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 07:45:16 -0500
-Date:   Fri, 18 Dec 2020 21:44:32 +0900
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608295476;
-        bh=f72NmqWCUcmK5bieddjCnbCo3i4yWZSGAcFJxpcjCL8=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lOH8I4GQyCHwiHK4N751VPyXBdk3L+xQW352kLOlBs9hYR3OqYdgXN5tiawBBw9W+
-         MuUhdqRDF3x+jmwj414y740/tq73mlsTsbPs/4ox5lADyZo6mkLRDE8zBrarSFpIOI
-         eyPQNaLbC9p1Ppdr1BNJOiYJlNAA9nhPkmuaBPv450YA19fuex+Ve4rbYxDKGhf4OM
-         r3ONGVU3Kuot9fGSbcYl5xEKEl5pXzkArL5A9R38a9Vg9OMdZHt/7SPbN/XqKlvmJt
-         3rSYxpp20S0OBwYapIfv1YYFpHt/p7jzrMiIESGsiKbtorLNS4Lssur6iHq/mMHVpQ
-         pO3NhrYdJ2wdA==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     0day robot <lkp@intel.com>, LKML <linux-kernel@vger.kernel.org>,
-        lkp@lists.01.org, Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        David Miller <davem@davemloft.net>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org
-Subject: Re: [x86/kprobes]  413d31338f: kernel_BUG_at_mm/vmalloc.c
-Message-Id: <20201218214432.b025656de019c64a8f4e2da5@kernel.org>
-In-Reply-To: <20201218010221.GA9731@xsang-OptiPlex-9020>
-References: <160726389867.3413805.17190350990123597258.stgit@devnote2>
-        <20201218010221.GA9731@xsang-OptiPlex-9020>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1726616AbgLRMrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 07:47:47 -0500
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:35622 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726167AbgLRMrq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 07:47:46 -0500
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201218124654euoutp0136ec1ee9d27b56edb765ea5be2d77804~R0Fc0DQ1m2508425084euoutp01N
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 12:46:54 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201218124654euoutp0136ec1ee9d27b56edb765ea5be2d77804~R0Fc0DQ1m2508425084euoutp01N
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1608295614;
+        bh=hgARtHe6jg9tVIeTEnjTZL5etidav94ZHltUhne+vbY=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=SjG0D+Kl3N7VeJIiaJ8RfYCgbN11RR7VdelXS+sc0yRrKMO7pQOBI/n71n/ALJ+qN
+         sKDTIQwLuckDkvGnpey5yK0bTCfKavAoB3K70FNDvvVeztZYrJM36Dq4HSASyw9iJ1
+         xsuRCdHY53+EEEI/ZH3Vnr0RzzXYO/9kPDyjTw2o=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20201218124649eucas1p1c729bf3ddc0b3a95d5280e400b7d0d1e~R0FX1bC0t1387013870eucas1p1O;
+        Fri, 18 Dec 2020 12:46:49 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 2E.08.27958.9B4ACDF5; Fri, 18
+        Dec 2020 12:46:49 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20201218124648eucas1p2e9fee5de6cd7d62eea61ca2fb98273d3~R0FXTUCXQ2420124201eucas1p27;
+        Fri, 18 Dec 2020 12:46:48 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201218124648eusmtrp1633c29b218d395f1f64470c06b82ff21~R0FXSogKE1505415054eusmtrp1_;
+        Fri, 18 Dec 2020 12:46:48 +0000 (GMT)
+X-AuditID: cbfec7f2-f15ff70000006d36-87-5fdca4b99bfa
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 95.F6.16282.8B4ACDF5; Fri, 18
+        Dec 2020 12:46:48 +0000 (GMT)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20201218124648eusmtip2cb96873d42e5506ed1357dfeed8126d3~R0FWtCqz-2468924689eusmtip2H;
+        Fri, 18 Dec 2020 12:46:48 +0000 (GMT)
+Subject: Re: [PATCH 7/9] arm64: dts: exynos: correct PMIC interrupt trigger
+ level on TM2
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Sylwester Nawrocki <snawrocki@kernel.org>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <e5c9f930-8e82-a8a9-9ba8-701e79c6ae6b@samsung.com>
+Date:   Fri, 18 Dec 2020 13:46:47 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.5.1
+MIME-Version: 1.0
+In-Reply-To: <20201210212903.216728-7-krzk@kernel.org>
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrDKsWRmVeSWpSXmKPExsWy7djP87o7l9yJN7j7VtZi44z1rBbXvzxn
+        tZh/5ByrxfnzG9gt7n89ymix6fE1VovLu+awWcw4v4/JonXvEXaL9qcvmR24PDat6mTzuHNt
+        D5vH5iX1Hn1bVjF6fN4kF8AaxWWTkpqTWZZapG+XwJVxaPcS9oIpXBUzdt1mamDcz9HFyMEh
+        IWAisadVtYuRk0NIYAWjxNSLIl2MXED2F0aJL9cXMEI4nxklDu05wAJSBdKw43g3M0RiOaPE
+        lFXNbBDOR0aJb89XM4NUCQtESfReWswKkhARuMIkcWRnLxtIgllAV2L6uzdgRWwChhJdb7vA
+        4rwCdhLPN59hBbFZBFQl+m81gNmiAkkS67t+QNUISpyc+QTsDE4BM4lNU5YyQcyUl9j+dg4z
+        hC0ucevJfCaQxRICHzgkpv/Zygxxt4tE14IPULawxKvjW9ghbBmJ05N7WCAamhklHp5byw7h
+        9DBKXG6awQhRZS1x59wvNlCQMQtoSqzfpQ8RdpT4c+8sOyQk+SRuvBWEOIJPYtK26cwQYV6J
+        jjYhiGo1iVnH18GtPXjhEvMERqVZSF6bheSdWUjemYWwdwEjyypG8dTS4tz01GLDvNRyveLE
+        3OLSvHS95PzcTYzABHX63/FPOxjnvvqod4iRiYPxEKMEB7OSCG/og9vxQrwpiZVVqUX58UWl
+        OanFhxilOViUxHlXzV4TLySQnliSmp2aWpBaBJNl4uCUamDqe+4hmn8rv3jXlVumXh6/H6o0
+        vr9pFcG6xFnxit/hmk9vVyTsar/ikBd96r/2jJnTDyQ53gn+2Nxq1ZF4SnSR8Pl3+zZvsfZd
+        6h2YxWfAvI435vt8Tw7PNhbTz9npN1MebNYyzl22cG+cd10W/7bA5Rwv/ivt0Xwx6STzEaXe
+        DUnHLO3vWUx8rDT5/tdlZoYr2Yv6pKfz9T4405Am/3lDZm9iIFtlct103g93Q3su6xk9tg3K
+        OfHhWErT2qR9V7NU7W64ue12mc7VuqZmslpt82khv3NO5rf5bmzrXJ7XL8KreUDxUVjycZkq
+        L4HWvL/LNm3hyPnTYX9SZJPg71kalY37XdhnrNw3/b6B5jMlluKMREMt5qLiRAD8L01pvwMA
+        AA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrPIsWRmVeSWpSXmKPExsVy+t/xe7o7ltyJN1iwztRi44z1rBbXvzxn
+        tZh/5ByrxfnzG9gt7n89ymix6fE1VovLu+awWcw4v4/JonXvEXaL9qcvmR24PDat6mTzuHNt
+        D5vH5iX1Hn1bVjF6fN4kF8AapWdTlF9akqqQkV9cYqsUbWhhpGdoaaFnZGKpZ2hsHmtlZKqk
+        b2eTkpqTWZZapG+XoJdxaPcS9oIpXBUzdt1mamDcz9HFyMkhIWAiseN4N3MXIxeHkMBSRom+
+        7mvMEAkZiZPTGlghbGGJP9e62CCK3jNKrL70jx0kISwQJdF7aTErSEJE4AqTROulK4wgCWYB
+        XYnp795Ajd3KKNE8YQPYWDYBQ4mutyCjODl4Bewknm8+A7aCRUBVov8WyDoODlGBJImzpwUh
+        SgQlTs58wgJicwqYSWyaspQJYr6ZxLzND5khbHmJ7W/nQNniEreezGeawCg0C0n7LCQts5C0
+        zELSsoCRZRWjSGppcW56brGRXnFibnFpXrpecn7uJkZgTG479nPLDsaVrz7qHWJk4mA8xCjB
+        wawkwhv64Ha8EG9KYmVValF+fFFpTmrxIUZToHcmMkuJJucDk0JeSbyhmYGpoYmZpYGppZmx
+        kjivyZE18UIC6YklqdmpqQWpRTB9TBycUg1Mc7dYP72/u8PvNkfkv7lmxyL67hvyh4nan+I6
+        OvHPmoY6TTO2Gd/mvmXbN2/ijCOfZvJP8uDXURLSeCSSlCx3qeH8nxyp4N9TnKd/WH3UvbAl
+        edcmvvRDO3SOrD5+wnGGv7Wqy6fqUo+esBknK02dP27fwzfh7c0u492aEVNn/Q7p/2r7NOKi
+        WYx5yX1Lj9eyG8smrNo7Vc57+tbcm/v01DvPye42z7Wy2/E988qqqfpXyi3Xbb72VTff1Ijz
+        poqu9WmzGamhG3mMOr+39oYnTp1q9Kj2t/WE1cVS8woXJ/48NPHh1eJKLl3BC6ecOHwf914T
+        LpaYZxQq3lRYPePRrC08qfnvvi7ZnvR/5opgQSWW4oxEQy3mouJEAEtQjjZSAwAA
+X-CMS-MailID: 20201218124648eucas1p2e9fee5de6cd7d62eea61ca2fb98273d3
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20201210212933eucas1p2741eb3aa0532ed7b8610b78a6d26c2f5
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201210212933eucas1p2741eb3aa0532ed7b8610b78a6d26c2f5
+References: <20201210212903.216728-1-krzk@kernel.org>
+        <CGME20201210212933eucas1p2741eb3aa0532ed7b8610b78a6d26c2f5@eucas1p2.samsung.com>
+        <20201210212903.216728-7-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 10.12.2020 22:29, Krzysztof Kozlowski wrote:
+> The Samsung PMIC datasheets describe the interrupt line as active low
+> with a requirement of acknowledge from the CPU.  Without specifying the
+> interrupt type in Devicetree, kernel might apply some fixed
+> configuration, not necessarily working for this hardware.
+>
+> Fixes: 01e5d2352152 ("arm64: dts: exynos: Add dts file for Exynos5433-based TM2 board")
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> ---
+>   arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi b/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
+> index 03486a8ffc67..4c5106a0860d 100644
+> --- a/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
+> +++ b/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
+> @@ -388,7 +388,7 @@ &hsi2c_0 {
+>   	pmic@66 {
+>   		compatible = "samsung,s2mps13-pmic";
+>   		interrupt-parent = <&gpa0>;
+> -		interrupts = <7 IRQ_TYPE_NONE>;
+> +		interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
+>   		reg = <0x66>;
+>   		samsung,s2mps11-wrstbi-ground;
+>   
 
-> +
->  static int arch_copy_kprobe(struct kprobe *p)
->  {
->  	struct insn insn;
->  	kprobe_opcode_t buf[MAX_INSN_SIZE];
->  	int len;
->  
-> +	memset(&p->ainsn, 0, sizeof(p->ainsn));
-
-Oops, I missed to clear the ainsn.insn here. This must be fixed.
-
-Thanks,
-
-On Fri, 18 Dec 2020 09:02:21 +0800
-kernel test robot <oliver.sang@intel.com> wrote:
-
-> 
-> Greeting,
-> 
-> FYI, we noticed the following commit (built with gcc-9):
-> 
-> commit: 413d31338fca081133c508bcabc57854765f43df ("[PATCH 1/1] x86/kprobes: Do not decode opcode in resume_execution()")
-> url: https://github.com/0day-ci/linux/commits/Masami-Hiramatsu/x86-kprobes-Classify-opcode-while-preparing-kprobe/20201206-221324
-> base: https://git.kernel.org/cgit/linux/kernel/git/tip/tip.git 238c91115cd05c71447ea071624a4c9fe661f970
-> 
-> in testcase: trinity
-> version: trinity-static-i386-x86_64-f93256fb_2019-08-28
-> with following parameters:
-> 
-> 	runtime: 300s
-> 
-> test-description: Trinity is a linux system call fuzz tester.
-> test-url: http://codemonkey.org.uk/projects/trinity/
-> 
-> 
-> on test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 -m 8G
-> 
-> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> 
-> 
-> +------------------------------------------+------------+------------+
-> |                                          | 238c91115c | 413d31338f |
-> +------------------------------------------+------------+------------+
-> | boot_successes                           | 8          | 0          |
-> | boot_failures                            | 0          | 8          |
-> | kernel_BUG_at_mm/vmalloc.c               | 0          | 8          |
-> | invalid_opcode:#[##]                     | 0          | 8          |
-> | EIP:vmalloc_to_page                      | 0          | 8          |
-> | Kernel_panic-not_syncing:Fatal_exception | 0          | 8          |
-> +------------------------------------------+------------+------------+
-> 
-> 
-> If you fix the issue, kindly add following tag
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> 
-> 
-> [    8.468076] kernel BUG at mm/vmalloc.c:364!
-> [    8.468257] invalid opcode: 0000 [#1] PREEMPT SMP PTI
-> [    8.468344] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc7-00002-g413d31338fca08 #2
-> [    8.468344] EIP: vmalloc_to_page+0x27/0x107
-> [    8.468344] Code: 89 c8 c3 55 89 c2 89 c1 c1 e9 1e 89 e5 57 56 53 53 a1 64 06 cb c1 89 55 f0 8d 1c c8 89 d0 e8 9d ff ff ff 85 c0 8b 55 f0 75 02 <0f> 0b 8b 03 8b 4b 04 89 c6 81 e6 18 0e 00 00 74 02 0f 0b 89 c3 81
-> [    8.468344] EAX: 00000000 EBX: c1f6a000 ECX: 00000000 EDX: 00000000
-> [    8.468344] ESI: d087bda5 EDI: d087bda5 EBP: d087bce0 ESP: d087bcd0
-> [    8.468344] DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS: 00010246
-> [    8.468344] CR0: 80050033 CR2: 00000000 CR3: 01f6a000 CR4: 000406b0
-> [    8.468344] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
-> [    8.468344] DR6: fffe0ff0 DR7: 00000400
-> [    8.468344] Call Trace:
-> [    8.468344]  __text_poke+0x4c/0x28f
-> [    8.468344]  ? insn_get_displacement+0x1b/0xce
-> [    8.468344]  ? cmp_ex_sort+0x17/0x17
-> [    8.468344]  text_poke+0x35/0x3a
-> [    8.468344]  arch_copy_kprobe+0x12b/0x148
-> [    8.468344]  arch_prepare_kprobe+0x48/0x6a
-> [    8.468344]  register_kprobe+0x27f/0x374
-> [    8.468344]  __register_trace_kprobe+0x6e/0x73
-> [    8.468344]  register_trace_kprobe+0x140/0x282
-> [    8.468344]  ? traceprobe_set_print_fmt+0x40/0x58
-> [    8.468344]  trace_kprobe_create+0x33e/0x3c3
-> [    8.468344]  ? __kmalloc+0xc1/0xcd
-> [    8.468344]  ? argv_split+0x5b/0xb9
-> [    8.468344]  ? trace_kprobe_create+0x3c3/0x3c3
-> [    8.468344]  create_or_delete_trace_kprobe+0x1b/0x27
-> [    8.468344]  trace_run_command+0x48/0x6b
-> [    8.468344]  trace_kprobe_run_command+0xf/0x11
-> [    8.468344]  dynevent_create+0xb/0xd
-> [    8.468344]  kprobe_event_gen_test_init+0x82/0x1e2
-> [    8.468344]  ? kprobe_event_cmd_init+0x13/0x13
-> [    8.468344]  ? init_trace_printk+0xf/0xf
-> [    8.468344]  do_one_initcall+0xaa/0x1d4
-> [    8.468344]  ? rdinit_setup+0x21/0x21
-> [    8.468344]  ? trace_initcall_level+0x72/0x76
-> [    8.468344]  do_initcalls+0xa8/0xc8
-> [    8.468344]  kernel_init_freeable+0x94/0xb9
-> [    8.468344]  ? rest_init+0xce/0xce
-> [    8.468344]  kernel_init+0x8/0xe4
-> [    8.468344]  ret_from_fork+0x1c/0x28
-> [    8.468344] Modules linked in:
-> [    8.476471] ---[ end trace 543d3449d7fd5d3a ]---
-> 
-> 
-> To reproduce:
-> 
->         # build kernel
-> 	cd linux
-> 	cp config-5.9.0-rc7-00002-g413d31338fca08 .config
-> 	make HOSTCC=gcc-9 CC=gcc-9 ARCH=i386 olddefconfig prepare modules_prepare bzImage
-> 
->         git clone https://github.com/intel/lkp-tests.git
->         cd lkp-tests
->         bin/lkp qemu -k <bzImage> job-script # job-script is attached in this email
-> 
-> 
-> 
-> Thanks,
-> Oliver Sang
-> 
-
-
+Best regards
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
+
