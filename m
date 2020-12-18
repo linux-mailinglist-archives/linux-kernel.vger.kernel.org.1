@@ -2,60 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE5782DE1B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 12:02:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 281842DE1B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 12:02:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389246AbgLRLBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 06:01:09 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45582 "EHLO mx2.suse.de"
+        id S2389283AbgLRLB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 06:01:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733207AbgLRLBJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 06:01:09 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 01B5CACF9;
-        Fri, 18 Dec 2020 11:00:28 +0000 (UTC)
-Date:   Fri, 18 Dec 2020 12:00:21 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "Sun, Ning" <ning.sun@intel.com>,
-        "Dwarakanath, Kumar N" <kumar.n.dwarakanath@intel.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 7/8] crypto: x86/aes-kl - Support AES algorithm using
- Key Locker instructions
-Message-ID: <20201218110021.GB14160@zn.tnic>
-References: <20201216174146.10446-1-chang.seok.bae@intel.com>
- <20201216174146.10446-8-chang.seok.bae@intel.com>
- <20201218101148.GF3021@hirez.programming.kicks-ass.net>
- <61FFFEA5-3DD2-4625-9F3A-B7A589B92D95@intel.com>
+        id S1733218AbgLRLB7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 06:01:59 -0500
+Date:   Fri, 18 Dec 2020 11:01:15 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Ionela Voinescu <ionela.voinescu@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 1/3] arm64: topology: Avoid the have_policy check
+Message-ID: <20201218110114.GD5258@gaia>
+References: <5ffc7b9ed03c6301ac2f710f609282959491b526.1608010334.git.viresh.kumar@linaro.org>
+ <20201217075732.blac5pbca7prmuum@vireshk-i7>
+ <20201217105524.GA15336@gaia>
+ <20201218042602.4ymy4fg2zxeo6p4n@vireshk-i7>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <61FFFEA5-3DD2-4625-9F3A-B7A589B92D95@intel.com>
+In-Reply-To: <20201218042602.4ymy4fg2zxeo6p4n@vireshk-i7>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 10:34:28AM +0000, Bae, Chang Seok wrote:
-> I’m open to drop the macros if there is any better way to define them
-> without binutils support.
+On Fri, Dec 18, 2020 at 09:56:02AM +0530, Viresh Kumar wrote:
+> On 17-12-20, 10:55, Catalin Marinas wrote:
+> > Hi Viresh,
+> > 
+> > On Thu, Dec 17, 2020 at 01:27:32PM +0530, Viresh Kumar wrote:
+> > > On 15-12-20, 11:04, Viresh Kumar wrote:
+> > > > Every time I have stumbled upon this routine, I get confused with the
+> > > > way 'have_policy' is used and I have to dig in to understand why is it
+> > > > so. Here is an attempt to make it easier to understand, and hopefully it
+> > > > is an improvement.
+> > > > 
+> > > > The 'have_policy' check was just an optimization to avoid writing
+> > > > to amu_fie_cpus in case we don't have to, but that optimization itself
+> > > > is creating more confusion than the real work. Lets just do that if all
+> > > > the CPUs support AMUs. It is much cleaner that way.
+> > > > 
+> > > > Reviewed-by: Ionela Voinescu <ionela.voinescu@arm.com>
+> > > > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> > > > ---
+> > > > V3:
+> > > > - Added Reviewed by tag.
+> > > 
+> > > Catalin, please pick the first two patches for 5.11. I will send the
+> > > last one separately later on.
+> > 
+> > I haven't figured out whether these are fixes (a cover letter would
+> > help ;)). They look like generic improvements to me
+> 
+> Right they are and since the merge window just opened I thought these
+> don't really need to wait for another full cycle to get in.
 
-Yap, make the driver build depend on the binutils version which supports
-them.
+Normally we freeze the arm64 tree around the -rc6 prior to the merging
+window to give the patches a bit of time in linux-next. This time
+around, given the holidays, Linus even stated that if not already in
+-next at 5.10, it won't be pulled: https://lkml.org/lkml/2020/12/13/290.
+
+So please re-post at -rc1 with the acks in place.
 
 -- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+Catalin
