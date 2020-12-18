@@ -2,243 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BECB2DDE17
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 06:37:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F09402DDE1B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 06:37:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731443AbgLRFff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 00:35:35 -0500
-Received: from mail-eopbgr140053.outbound.protection.outlook.com ([40.107.14.53]:9351
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725290AbgLRFfe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 00:35:34 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EtQXalxPwVgzIQwAgd85ivsk7izi6J9pIatIL0EUEU/dbAj9+0Y1g84OMyGwYopRpLho5bHFhABg8QB3eR6PNrsJhMMA7d7PcYamiW1j3KAngw8EGDnJT7+8INvVpr+UqyXjDgXRzDKTRXQNIX39lhcLzgEuUWWqpeWPBaM7aFhfzhXU9DFUOpGj7FEjjkeJ/isUZsghIwNnye2D6t3ycbCRAP44PNdka4DYAKWmJwr3FrwQx677qJug5jmJfdTmDum0N60WN5ozhtj2OklvC8d+Gw3VEBtJA0uAsewGx94Q4J2yItxxOgQvZTWcoR/uqYysXTAK3OuL3ZC7Udnt2g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dfbUzOO0nnnYLJD01N89O5SINzlaMLm3kIpFO5b2JAY=;
- b=IWtZFlBPLs2D2CUX3f5aMGmu+LJPKH0FXs8N9wquLYhCfvWp+KtLLAJFbp+RDABYUxy9PO8SBkzXXbfqqHUKr9zXmIunRHYm7y5VIbzeI9b/vYZq9MsXt/lxDO2VW7FLmu5ZSGyG7YRxBepdVwbCZd0ahMHLd+dJNQ1orXhW7tig93M/YYfSBhUtw888HHXfqnoxYu4WSp0fVaLMU34oD4TF4Ct4Xc6GeC3xEXAjXe044TZagEIWgTiW2ayRSzhCG5IwmKjWsod/s3IbyQ7bzUPwhFFnatqfyqgfDb8NBWpGEB8QKCAHgnL9WoEwZNbW555epqIV8yvVjYMXW+cgjg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dfbUzOO0nnnYLJD01N89O5SINzlaMLm3kIpFO5b2JAY=;
- b=WHZONqcMJbPPXaOnHGI8zUhg1zLGNQ7wfHNAy6ijVwI6CFb2UbCR61GmSPhMIsQ+LTpaFwie+Z1uAHR4kStF/lE+Hq5j8pf2hpLsZl+kVSBD/kzgxXOhs4xng2i6aVHr5wp/hB4El1ziIKHi/N+ouwh3CZb1BHtxJ4OYPVr8BYM=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oss.nxp.com;
-Received: from AM0PR04MB5636.eurprd04.prod.outlook.com (2603:10a6:208:130::22)
- by AM0PR04MB4228.eurprd04.prod.outlook.com (2603:10a6:208:66::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.14; Fri, 18 Dec
- 2020 05:34:43 +0000
-Received: from AM0PR04MB5636.eurprd04.prod.outlook.com
- ([fe80::a891:518d:935c:30dd]) by AM0PR04MB5636.eurprd04.prod.outlook.com
- ([fe80::a891:518d:935c:30dd%6]) with mapi id 15.20.3654.020; Fri, 18 Dec 2020
- 05:34:43 +0000
-Date:   Fri, 18 Dec 2020 11:04:23 +0530
-From:   Calvin Johnson <calvin.johnson@oss.nxp.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, "linux.cj" <linux.cj@gmail.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        netdev <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [net-next PATCH v2 06/14] net: mdiobus: Introduce
- fwnode_mdiobus_register_phy()
-Message-ID: <20201218053423.GA14594@lsv03152.swis.in-blr01.nxp.com>
-References: <20201215164315.3666-1-calvin.johnson@oss.nxp.com>
- <20201215164315.3666-7-calvin.johnson@oss.nxp.com>
- <CAHp75VcY2uOirAXGv5kFvHbNfHcZ6-gPsUMTB-_5AuBkHdu-0A@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VcY2uOirAXGv5kFvHbNfHcZ6-gPsUMTB-_5AuBkHdu-0A@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [14.142.151.118]
-X-ClientProxiedBy: SG2PR06CA0119.apcprd06.prod.outlook.com
- (2603:1096:1:1d::21) To AM0PR04MB5636.eurprd04.prod.outlook.com
- (2603:10a6:208:130::22)
+        id S1731952AbgLRFgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 00:36:44 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:43473 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726801AbgLRFgn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 00:36:43 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608269777; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=bIxzsvC8MsCGA55Fum83HNABdyD+z6GnK6PLUqTBqj0=; b=kqxu0bVLpT1OLC+r0MSNRdNxjp8ZdBVSsAWVy5UXz1eOMkGlpyQy2PIkAr9/Rhu5Kab9+PHA
+ f/FGRfknYs2PvlLGIRtlkgs28H0PVXi5cnNxQRqiHLh3jSoC+HAdc6fGykuTopstW9nSSAXP
+ e00EuAEtgEDgWoK/cVRWKeTkv+g=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
+ 5fdc3fb17549779c5b7930af (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Dec 2020 05:35:45
+ GMT
+Sender: rnayak=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 07A67C43465; Fri, 18 Dec 2020 05:35:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.0.120] (unknown [49.207.218.91])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 88093C433C6;
+        Fri, 18 Dec 2020 05:35:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 88093C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
+Subject: Re: [PATCH v4 3/4] pinctrl: qcom: Don't clear pending interrupts when
+ enabling
+To:     Douglas Anderson <dianders@chromium.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm@vger.kernel.org,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        linux-gpio@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20201211141514.v4.1.I2702919afc253e2a451bebc3b701b462b2d22344@changeid>
+ <20201211141514.v4.3.I7cf3019783720feb57b958c95c2b684940264cd1@changeid>
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+Message-ID: <71a4e7da-59da-4a7c-aa4e-45ade8c5558b@codeaurora.org>
+Date:   Fri, 18 Dec 2020 11:05:35 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from lsv03152.swis.in-blr01.nxp.com (14.142.151.118) by SG2PR06CA0119.apcprd06.prod.outlook.com (2603:1096:1:1d::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Fri, 18 Dec 2020 05:34:37 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 94ad3b62-734d-451b-e9c2-08d8a3169fb8
-X-MS-TrafficTypeDiagnostic: AM0PR04MB4228:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR04MB4228DFE0812E70099C1620D8D2C30@AM0PR04MB4228.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /KpInvuR5+2Okb71c9BScAf8OlQx0p9lNd2VrL7DQyg4EHbO4KkkYN7Hrck3aTVxm5Gf0FXLZr2mRm8JoAFP7HrBVNEIQ+z9008OgIfkrDlmi6Z5F7YQqk/wbc9+o6SI7rd+cy4H9usOItuorrRn0OCbQeIovpc+Nfmw4pLbRElp4yIxRDgiSfp+ztP5VpUw2WHrdxF8qP+6PG0kxvg6JEO26khwJgdLwQO3a8bXOblreE/CxW5gHc8Wu8PrnMiQ0jv3T7pdSl+qGHt60yk3nK82whTSm8682z7+zEJT1Q8kAlJLMf7/m9JeTK0cx1csdwicJYmV52Hm78COeJ0UaD/Y2MlZ/CI2Xni3BJjNL58uBiPZGPw1+Ix35qJbwv7pZoSLNupmQgWPhAN6a6n2IhHXRteMNqzvsMhq/CQirufjU6P/NhMieoXUE3KY413eV4Qvkn7wa2rXB4LCRpj24A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5636.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(396003)(136003)(376002)(39860400002)(7416002)(316002)(4326008)(478600001)(66476007)(6916009)(66946007)(2906002)(6506007)(26005)(54906003)(66556008)(1076003)(53546011)(956004)(86362001)(52116002)(8676002)(6666004)(55016002)(33656002)(966005)(9686003)(44832011)(1006002)(5660300002)(186003)(55236004)(16526019)(7696005)(8936002)(110426006);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?LOwW2M0jCLw/8pWrM8qCf2WxG6gwKBDXwuCJ+jUma0xax/dCjZR7Ov52LDQe?=
- =?us-ascii?Q?MgRrhvRrZ3axPgWc7f0CaAW5c/jYlVjx5GD5VGXv1PT5ibIFcqcyF+855Cn+?=
- =?us-ascii?Q?jYdJeMxj4L1hV7MYAvTQIciaTfoVRaQMgHc/NrCGZkaGhhjocOUjOtxHXcnr?=
- =?us-ascii?Q?GDX4R5ca+vk7MfmHS0eXaqfqYdmpynYXpcWLLC68Lu8sy1p/QG7VPxcNzIum?=
- =?us-ascii?Q?v0D8BD4K9Wt/7S7mCkJ7dlKmupcuHL+BIpchwdqqKycFvXVDaQC2/X8GYWGc?=
- =?us-ascii?Q?2nA5fCMKURLYFJhj3d3DPGXAhPi9oU+fPUUmALjp1Ps/7l2FV760EcQUPlYb?=
- =?us-ascii?Q?RaRXohXtN/O1omEJcYI+omAsH9p5DZzEKX2jgrIkuK5hD/rAAnX70leppESQ?=
- =?us-ascii?Q?WfOjOqSqXMPmYU0VNI9Vxrwi0h1WCQ7H3B5Nx+1hwoB5G8yhqMHa63nCPFFn?=
- =?us-ascii?Q?E1lye5xett1by9jj9YT+C8+wWzs2Bx8G0X451mgctAAVTwPJGcp5SqPHbNjF?=
- =?us-ascii?Q?wJJIYSmz0065IcFW33NDEKrFYJwnWyEfSR8a7DbINfaKTdzed4TyQeAZQPPJ?=
- =?us-ascii?Q?KIQBctm3hSCZKAlOs+wWH7RClzbFRvQhyNIvqfJl2xEfnSFOCpRKMvf+G/XW?=
- =?us-ascii?Q?T2nZXxkJHIregVzqyDi1xtTfBm3suiZtphYny21hJEzCmuoGMV9MeNRHRZqL?=
- =?us-ascii?Q?05Zb1QYSfVuhZHQocUb27cWvXMc7VN5vXczC2aHg4ADBmfEfqkA4KzngWdn7?=
- =?us-ascii?Q?FflzYE2jGG0aQJl3w1csuPBYA3Lc0j1g3zPfQwTBzvxRKp15U/j5s+Bil7p/?=
- =?us-ascii?Q?G6MlKcSW4CIM3zoOS32VG8buSIdDesij3LYc8IQdtiX3RSnPS+2ei1qXJkIa?=
- =?us-ascii?Q?0zmo6nSod5DffWwir3T4dncboEOFLI5pckjAICeJZ8xCNBDPPcuSYmBMDyRx?=
- =?us-ascii?Q?lCiDmDASeAU1mlzeVlzC63MDGwVj67Wv5Th2eVvufL679f+quDGQfwD37TGE?=
- =?us-ascii?Q?npJF?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5636.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Dec 2020 05:34:43.5489
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-Network-Message-Id: 94ad3b62-734d-451b-e9c2-08d8a3169fb8
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jA8SN9zjevNtyr0hF7ka4p4ZqMJHuc5v2D5GVwSMdd7FueJHLjwEVJ81l8jCx8mHwzcDxMX6TyZaQ5jaPFr7eg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB4228
+In-Reply-To: <20201211141514.v4.3.I7cf3019783720feb57b958c95c2b684940264cd1@changeid>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 07:33:40PM +0200, Andy Shevchenko wrote:
-> On Tue, Dec 15, 2020 at 6:44 PM Calvin Johnson
-> <calvin.johnson@oss.nxp.com> wrote:
-> >
-> > Introduce fwnode_mdiobus_register_phy() to register PHYs on the
-> > mdiobus. From the compatible string, identify whether the PHY is
-> > c45 and based on this create a PHY device instance which is
-> > registered on the mdiobus.
-> 
-> ...
-> 
-> > +int fwnode_mdiobus_register_phy(struct mii_bus *bus,
-> > +                               struct fwnode_handle *child, u32 addr)
-> > +{
-> > +       struct mii_timestamper *mii_ts;
-> > +       struct phy_device *phy;
-> > +       const char *cp;
-> > +       bool is_c45;
-> > +       u32 phy_id;
-> > +       int rc;
-> 
-> > +       if (is_of_node(child)) {
-> > +               mii_ts = of_find_mii_timestamper(to_of_node(child));
-> > +               if (IS_ERR(mii_ts))
-> > +                       return PTR_ERR(mii_ts);
-> > +       }
-> 
-> Perhaps
-> 
->                mii_ts = of_find_mii_timestamper(to_of_node(child));
-> 
-> > +
-> > +       rc = fwnode_property_read_string(child, "compatible", &cp);
-> > +       is_c45 = !(rc || strcmp(cp, "ethernet-phy-ieee802.3-c45"));
-> > +
-> > +       if (is_c45 || fwnode_get_phy_id(child, &phy_id))
-> > +               phy = get_phy_device(bus, addr, is_c45);
-> > +       else
-> > +               phy = phy_device_create(bus, addr, phy_id, 0, NULL);
-> > +       if (IS_ERR(phy)) {
-> 
-> > +               if (mii_ts && is_of_node(child))
-> > +                       unregister_mii_timestamper(mii_ts);
-> 
-> if (!IS_ERR_OR_NULL(mii_ts))
->  ...
-> 
-> However it points to the question why unregister() doesn't handle the
-> above cases.
-> I would expect unconditional call to unregister() here.
 
-This is following the logic defined in of_mdiobus_register_phy().
-https://elixir.bootlin.com/linux/latest/source/drivers/net/mdio/of_mdio.c#L107
+On 12/12/2020 3:45 AM, Douglas Anderson wrote:
+> In Linux, if a driver does disable_irq() and later does enable_irq()
+> on its interrupt, I believe it's expecting these properties:
+> * If an interrupt was pending when the driver disabled then it will
+>    still be pending after the driver re-enables.
+> * If an edge-triggered interrupt comes in while an interrupt is
+>    disabled it should assert when the interrupt is re-enabled.
+> 
+> If you think that the above sounds a lot like the disable_irq() and
+> enable_irq() are supposed to be masking/unmasking the interrupt
+> instead of disabling/enabling it then you've made an astute
+> observation.  Specifically when talking about interrupts, "mask"
+> usually means to stop posting interrupts but keep tracking them and
+> "disable" means to fully shut off interrupt detection.  It's
+> unfortunate that this is so confusing, but presumably this is all the
+> way it is for historical reasons.
+> 
+> Perhaps more confusing than the above is that, even though clients of
+> IRQs themselves don't have a way to request mask/unmask
+> vs. disable/enable calls, IRQ chips themselves can implement both.
+> ...and yet more confusing is that if an IRQ chip implements
+> disable/enable then they will be called when a client driver calls
+> disable_irq() / enable_irq().
+> 
+> It does feel like some of the above could be cleared up.  However,
+> without any other core interrupt changes it should be clear that when
+> an IRQ chip gets a request to "disable" an IRQ that it has to treat it
+> like a mask of that IRQ.
+> 
+> In any case, after that long interlude you can see that the "unmask
+> and clear" can break things.  Maulik tried to fix it so that we no
+> longer did "unmask and clear" in commit 71266d9d3936 ("pinctrl: qcom:
+> Move clearing pending IRQ to .irq_request_resources callback"), but it
+> only handled the PDC case (it also had problems, but that's the
+> subject of another patch).  Let's fix this for the non-PDC case.
+> 
+>  From my understanding the source of the phantom interrupt in the
+> non-PDC case was the one that could have been introduced in
+> msm_gpio_irq_set_type().  Let's handle that one and then get rid of
+> the clear.
+> 
+> Fixes: 4b7618fdc7e6 ("pinctrl: qcom: Add irq_enable callback for msm gpio")
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> I don't have lots of good test cases here, so hopefully someone from
+> Qualcomm can confirm that this works well for them and there isn't
+> some other phantom interrupt source that I'm not aware of.
 
-	mii_ts = of_find_mii_timestamper(child);
-	if (IS_ERR(mii_ts))
-		return PTR_ERR(mii_ts);
+I currently don;t have access to any non-PDC hardware, so could not really do
+any real tests, but the changes seem sane, so
 
-I think the logic above is correct because this function returns only if
-of_find_mii_timestamper() returns error. On NULL return, it proceeds further.
+Reviewed-by: Rajendra Nayak <rnayak@codeaurora.org>
 
 > 
-> > +               return PTR_ERR(phy);
-> > +       }
-> > +
-> > +       if (is_acpi_node(child)) {
-> > +               phy->irq = bus->irq[addr];
-> > +
-> > +               /* Associate the fwnode with the device structure so it
-> > +                * can be looked up later.
-> > +                */
-> > +               phy->mdio.dev.fwnode = child;
-> > +
-> > +               /* All data is now stored in the phy struct, so register it */
-> > +               rc = phy_device_register(phy);
-> > +               if (rc) {
-> > +                       phy_device_free(phy);
-> > +                       fwnode_handle_put(phy->mdio.dev.fwnode);
-> > +                       return rc;
-> > +               }
-> > +
-> > +               dev_dbg(&bus->dev, "registered phy at address %i\n", addr);
-> > +       } else if (is_of_node(child)) {
-> > +               rc = of_mdiobus_phy_device_register(bus, phy, to_of_node(child), addr);
-> > +               if (rc) {
+> Changes in v4:
+> - ("pinctrl: qcom: Don't clear pending interrupts when enabling") split for v4.
 > 
-> > +                       if (mii_ts)
-> > +                               unregister_mii_timestamper(mii_ts);
+>   drivers/pinctrl/qcom/pinctrl-msm.c | 32 +++++++++++++-----------------
+>   1 file changed, 14 insertions(+), 18 deletions(-)
 > 
-> Ditto.
+> diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
+> index 588df91274e2..f785646d1df7 100644
+> --- a/drivers/pinctrl/qcom/pinctrl-msm.c
+> +++ b/drivers/pinctrl/qcom/pinctrl-msm.c
+> @@ -774,7 +774,7 @@ static void msm_gpio_irq_mask(struct irq_data *d)
+>   	raw_spin_unlock_irqrestore(&pctrl->lock, flags);
+>   }
+>   
+> -static void msm_gpio_irq_clear_unmask(struct irq_data *d, bool status_clear)
+> +static void msm_gpio_irq_unmask(struct irq_data *d)
+>   {
+>   	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+>   	struct msm_pinctrl *pctrl = gpiochip_get_data(gc);
+> @@ -792,17 +792,6 @@ static void msm_gpio_irq_clear_unmask(struct irq_data *d, bool status_clear)
+>   
+>   	raw_spin_lock_irqsave(&pctrl->lock, flags);
+>   
+> -	if (status_clear) {
+> -		/*
+> -		 * clear the interrupt status bit before unmask to avoid
+> -		 * any erroneous interrupts that would have got latched
+> -		 * when the interrupt is not in use.
+> -		 */
+> -		val = msm_readl_intr_status(pctrl, g);
+> -		val &= ~BIT(g->intr_status_bit);
+> -		msm_writel_intr_status(val, pctrl, g);
+> -	}
+> -
+>   	val = msm_readl_intr_cfg(pctrl, g);
+>   	val |= BIT(g->intr_raw_status_bit);
+>   	val |= BIT(g->intr_enable_bit);
+> @@ -822,7 +811,7 @@ static void msm_gpio_irq_enable(struct irq_data *d)
+>   		irq_chip_enable_parent(d);
+>   
+>   	if (!test_bit(d->hwirq, pctrl->skip_wake_irqs))
+> -		msm_gpio_irq_clear_unmask(d, true);
+> +		msm_gpio_irq_unmask(d);
+>   }
+>   
+>   static void msm_gpio_irq_disable(struct irq_data *d)
+> @@ -837,11 +826,6 @@ static void msm_gpio_irq_disable(struct irq_data *d)
+>   		msm_gpio_irq_mask(d);
+>   }
+>   
+> -static void msm_gpio_irq_unmask(struct irq_data *d)
+> -{
+> -	msm_gpio_irq_clear_unmask(d, false);
+> -}
+> -
+>   /**
+>    * msm_gpio_update_dual_edge_parent() - Prime next edge for IRQs handled by parent.
+>    * @d: The irq dta.
+> @@ -936,6 +920,7 @@ static int msm_gpio_irq_set_type(struct irq_data *d, unsigned int type)
+>   	struct msm_pinctrl *pctrl = gpiochip_get_data(gc);
+>   	const struct msm_pingroup *g;
+>   	unsigned long flags;
+> +	bool was_enabled;
+>   	u32 val;
+>   
+>   	if (msm_gpio_needs_dual_edge_parent_workaround(d, type)) {
+> @@ -997,6 +982,7 @@ static int msm_gpio_irq_set_type(struct irq_data *d, unsigned int type)
+>   	 * could cause the INTR_STATUS to be set for EDGE interrupts.
+>   	 */
+>   	val = msm_readl_intr_cfg(pctrl, g);
+> +	was_enabled = val & BIT(g->intr_raw_status_bit);
+>   	val |= BIT(g->intr_raw_status_bit);
+>   	if (g->intr_detection_width == 2) {
+>   		val &= ~(3 << g->intr_detection_bit);
+> @@ -1046,6 +1032,16 @@ static int msm_gpio_irq_set_type(struct irq_data *d, unsigned int type)
+>   	}
+>   	msm_writel_intr_cfg(val, pctrl, g);
+>   
+> +	/*
+> +	 * The first time we set RAW_STATUS_EN it could trigger an interrupt.
+> +	 * Clear it.  This is safe because we have IRQCHIP_SET_TYPE_MASKED.
+> +	 */
+> +	if (!was_enabled) {
+> +		val = msm_readl_intr_status(pctrl, g);
+> +		val &= ~BIT(g->intr_status_bit);
+> +		msm_writel_intr_status(val, pctrl, g);
+> +	}
+> +
+>   	if (test_bit(d->hwirq, pctrl->dual_edge_irqs))
+>   		msm_gpio_update_dual_edge_pos(pctrl, g, d);
+>   
 > 
-> > +                       phy_device_free(phy);
-> > +                       return rc;
-> > +               }
-> > +
-> > +               /* phy->mii_ts may already be defined by the PHY driver. A
-> > +                * mii_timestamper probed via the device tree will still have
-> > +                * precedence.
-> > +                */
-> 
-> > +               if (mii_ts)
-> > +                       phy->mii_ts = mii_ts;
-> 
-> How is that defined? Do you need to do something with an old pointer?
 
-As the comment says, I think PHY drivers which got invoked before calling
-of_mdiobus_register_phy() may have defined phy->mii_ts.
-
-> 
-> > +       }
-> > +       return 0;
-> > +}
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
