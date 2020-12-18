@@ -2,167 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB402DE905
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 19:43:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56D662DE911
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 19:45:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729996AbgLRSmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 13:42:50 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:9257 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726059AbgLRSms (ORCPT
+        id S1727169AbgLRSop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 13:44:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725822AbgLRSoo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 13:42:48 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fdcf8000000>; Fri, 18 Dec 2020 10:42:08 -0800
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 18 Dec
- 2020 18:42:05 +0000
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.108)
- by HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 18 Dec 2020 18:42:05 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GKt5a4dCkUsCD78m0BceBQrYm8SvXrtdzLZ8AncRvOhFsWtj3PsXbYrwjcnhlffwSSrvKw9j3zyZDsc8s0vzHEfh1hKeqMKGrKM+RykRg/MMWW66JLAgi37ug2YNxwnU+yZ9XWxvEIywoLLB3fAuYyS3KTM15NN2cWx3Ftc/5xAMWaB9Rigj7AeKtIL0YlI+Q/X3tEFt4XxdL7EhYy62j7KrplmLu67Ja6deUfnlX50ziUEIEgijh5Ns+NwopM8I81tObj0Tm3g9AzDI4SIavfgX8f3iBLt7hQP25FqTueDBl4O5Dch/KGaOwiTHC7TQob8z8nAVxgmy8Vkekmg/bQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aTl/QYJ+E5k++MI7vs3WNbzaKDLhrayY6nvCdMDPaOM=;
- b=dSPnou+8RBDmBi0fFu81uZel/+TRN2x6mMjpCbRzu7noxmikbfzPj4lzpcQbpJV/OlbQ2K3/NJ9JS6QE5gO+3dTjIIXYtVOgFvt5tiEIpfTXRv3/2tToP7rjsE1iXICx1+BrWHavBHNKiqQhiGRXIAeT2q4VxZwBwKFNx5PijISz2FzKu3SF4lOStmHwnCmLoxa1XWueqwNRfSh7r3inFDAp7TB80T7XXzHs5TLryOZo5M3XTgwPjQOf+lu5LLRizJXmFQFZCgtSAuMgTuZO9vtl0lzar8azVdPSP5G2hkzJ3wWA9tCp8gLPXHxbFZoq9MfvzShcW4vScg2Ru/aTOg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4265.namprd12.prod.outlook.com (2603:10b6:5:211::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.21; Fri, 18 Dec
- 2020 18:41:52 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3676.025; Fri, 18 Dec 2020
- 18:41:52 +0000
-Date:   Fri, 18 Dec 2020 14:41:50 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     Greg KH <gregkh@linuxfoundation.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        <alsa-devel@alsa-project.org>, Kiran Patil <kiran.patil@intel.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        "Liam Girdwood" <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        "Dave Ertman" <david.m.ertman@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        David Miller <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Parav Pandit <parav@mellanox.com>, <lee.jones@linaro.org>
-Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
-Message-ID: <20201218184150.GY552508@nvidia.com>
-References: <X8ogtmrm7tOzZo+N@kroah.com>
- <CAPcyv4iLG7V9JT34La5PYfyM9378acbLnkShx=6pOmpPK7yg3A@mail.gmail.com>
- <X8usiKhLCU3PGL9J@kroah.com> <20201217211937.GA3177478@piout.net>
- <X9xV+8Mujo4dhfU4@kroah.com> <20201218131709.GA5333@sirena.org.uk>
- <20201218140854.GW552508@nvidia.com> <20201218155204.GC5333@sirena.org.uk>
- <20201218162817.GX552508@nvidia.com> <20201218180310.GD5333@sirena.org.uk>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201218180310.GD5333@sirena.org.uk>
-X-ClientProxiedBy: BL1PR13CA0352.namprd13.prod.outlook.com
- (2603:10b6:208:2c6::27) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        Fri, 18 Dec 2020 13:44:44 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC36BC0617A7;
+        Fri, 18 Dec 2020 10:44:03 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id s26so7887998lfc.8;
+        Fri, 18 Dec 2020 10:44:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6LSPXGseFdJjaxW3YvdtOcQhTKWjAIwtmDZc3IC14gU=;
+        b=KiXQhtwJHjYBNa31hK6+LMEWrVlQFzsB3lFr64+g7O5eGzwHlIqXjcHH6dAFJd8VJ1
+         hg61sox1lJniq3MsoiK61mxqCMe4mME8g66WVA1F/KUfTjewiPbCSy4yZf/yOLbpAW1f
+         92MwMuFgcFjalqM0Ko1ExGgPi6wD5MlCsFSVx/8OjG1O1tSdJtlzBoR4vQLhoXPl5Ihh
+         wPltrdTnTdEjeRLzir/ag9YRBm9Wtgn7UWHmu/uus6tPJPIr6PaMryt2cdQg8huKCYaf
+         wLlOXfCjLFzFDt9Zlo7lWIVmUMFIEw+bX1P2ztx+jrtQTGo1Nhx8M8rDhSc9m2iRwKkg
+         Hbbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=6LSPXGseFdJjaxW3YvdtOcQhTKWjAIwtmDZc3IC14gU=;
+        b=dGqZwBvdzrjxygXDC+/7j34pMHMwWn/yIBSgNuQsc4HzO7CN24oc4wuYPK4bc2EMhm
+         irRw5vdHWRO71ibzGSyS2HKnp/mlx89uWWeP25fGH7KH5I76xC5w6Bzq5R+A/t0nrD14
+         uJzKyOgUSejf8dK3i0KqS4cHwgL3EQ0uCkDfuNNaNn1Q0mJIHyQoHN/NgcJghAwL/E2C
+         6ZNI7KCUIaXy6yZRkbwAB9ltx9BHOTHpXM1kzW1fBxZODuR7xC/FyO+lmo0HOfF52bFk
+         pjH2SA0WoNDtHdfEIai5DvscLpC4boKjdBWh7n3Ld3J0qUPmrT5MEXqtcA/Ssws8bid9
+         QiRA==
+X-Gm-Message-State: AOAM532CpD770JlRrToZTlhfnJANBKgigDeX6e8V5E3P77Dj/LvUn5lY
+        fBUJen1KSIiLwpfuM6lQvjE=
+X-Google-Smtp-Source: ABdhPJyCepN0NmhiFgB+GJRpRSU3knX5RDYc8GrYZ+jJWEZ/PSHQKOvYRMJhsOTF/V9+yeaHtdNetA==
+X-Received: by 2002:a05:651c:211e:: with SMTP id a30mr2540206ljq.18.1608317041724;
+        Fri, 18 Dec 2020 10:44:01 -0800 (PST)
+Received: from saturn.localdomain ([2a00:fd00:8060:1c00:2c04:50ad:1138:9ea2])
+        by smtp.gmail.com with ESMTPSA id s7sm1116980ljp.38.2020.12.18.10.43.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Dec 2020 10:44:01 -0800 (PST)
+Sender: Sam Ravnborg <sam.ravnborg@gmail.com>
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     David S Miller <davem@davemloft.net>, sparclinux@vger.kernel.org,
+        Andreas Larsson <andreas@gaisler.com>,
+        Arnd Bergmann <arnd@kernel.org>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Denis Efremov <efremov@linux.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, Willy Tarreau <w@1wt.eu>,
+        linux-kernel@vger.kernel.org, debian-sparc@lists.debian.org,
+        gentoo-sparc@l.g.o
+Subject: [RFC PATCH 0/13] sparc32: sunset sun4m and sun4d
+Date:   Fri, 18 Dec 2020 19:43:34 +0100
+Message-Id: <20201218184347.2180772-1-sam@ravnborg.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0352.namprd13.prod.outlook.com (2603:10b6:208:2c6::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.21 via Frontend Transport; Fri, 18 Dec 2020 18:41:51 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kqKhK-00ClnT-8I; Fri, 18 Dec 2020 14:41:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1608316928; bh=aTl/QYJ+E5k++MI7vs3WNbzaKDLhrayY6nvCdMDPaOM=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=bWrIeqWfA4PnBUSffPzpK9PmtPf0dVIRGWHdu01y3TXjej7LY3VIl4pAszfmiERWM
-         9EEjSh0PuarVTix7DwYc2Mz7LshYg3+GJqsxDWm/ivF9tlVjrickmfII2RL2kCQqD6
-         1Zd8ArG+/YhKkl83sEuHtQ/OD2+LoH8SaZyZybf8/05aCwbv5SF17hI4cr+Fsfp2zZ
-         e1aiP5uXRJJMX2zmY5blyP6Sq+A+Rhz6lERW801vDQh5B02MS/wesLiowkI3scmL+8
-         IMtn4xRKI9YIfz8pq9adkB2sy74hsHjlq5elq8rGcusv0/mvzGzrT4FBymQfCtTvCJ
-         xrdg2OfBaaCVQ==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 06:03:10PM +0000, Mark Brown wrote:
-> On Fri, Dec 18, 2020 at 12:28:17PM -0400, Jason Gunthorpe wrote:
-> > On Fri, Dec 18, 2020 at 03:52:04PM +0000, Mark Brown wrote:
-> > > On Fri, Dec 18, 2020 at 10:08:54AM -0400, Jason Gunthorpe wrote:
-> 
-> > > > I thought the recent LWN article summed it up nicely, auxillary bus is
-> > > > for gluing to subsystems together using a driver specific software API
-> > > > to connect to the HW, MFD is for splitting a physical HW into disjoint
-> > > > regions of HW.
-> 
-> > > This conflicts with the statements from Greg about not using the
-> > > platform bus for things that aren't memory mapped or "direct firmware",
-> > > a large proportion of MFD subfunctions are neither at least in so far as
-> > > I can understand what direct firmware means.
-> 
-> > I assume MFD will keep existing and it will somehow stop using
-> > platform device for the children it builds.
-> 
-> If it's not supposed to use platform devices so I'm assuming that the
-> intention is that it should use aux devices, otherwise presumably it'd
-> be making some new clone of the platform bus but I've not seen anyone
-> suggesting this.
+The sun4m and sun4d based SPARC machines was very popular in the
+90'ties and was then replaced by the more powerful sparc64
+class of machines.
+Today there is only Gentoo that to my best knowledge supports
+sparc32 and people have moved on to more capable HW.
 
-I wouldn't assume that, I certainly don't want to see all the HW
-related items in platform_device cloned roughly into aux device.
+Cobham Gaisler have variants of the LEON processer that
+runs sparc32 - and they are in production today.
 
-I've understood the bus type should be basically related to the thing
-that is creating the device. In a clean view platform code creates
-platform devices. DT should create DT devices, ACPI creates ACPI
-devices, PNP does pnp devices, etc
+With this patchset I propose to sunset sun4m and sun4d and move
+focus to a more streamlined support for LEON.
 
-So, I strongly suspect, MFD should create mfd devices on a MFD bus
-type.
+One downside is that qemu supports sun4m - and we may loose
+some testing possibilities when sun4m is dropped. qemu supports
+LEON to some degree - I have not yet tried it out.
 
-Alexandre's point is completely valid, and I think is the main
-challenge here, somehow avoiding duplication.
+Andreas from Gaisler have indicated that they may be more active
+upstream on sparc32 - and this will only be easier with a kernel
+where the legacy stuff is dropped.
 
-If we were to look at it with some OOP viewpoint I'd say the generic
-HW resource related parts should be some shared superclass between
-'struct device' and 'struct platform/pnp/pci/acpi/mfd/etc_device'.
+I decided to divide up the patches to make it possible to review
+the set as some of the patches touches assembler and these parts
+could use some extra eyes if we move forward with this.
 
-> > > To be honest I don't find the LWN article clarifies things particularly
-> > > here, the rationale appears to involve some misconceptions about what
-> > > MFDs look like.  It looks like it assumes that MFD functions have
-> > > physically separate register sets for example which is not a reliable
-> > > feature of MFDs, nor is the assumption that there's no shared
-> > > functionality which appears to be there.  It also appears to assume that
-> 
-> > I think the MFD cell model is probably the deciding feature. If that
-> > cell description scheme suites the device, and it is very HW focused,
-> > then MFD is probably the answer.
-> 
-> > The places I see aux device being used are a terrible fit for the cell
-> > idea. If there are MFD drivers that are awkardly crammed into that
-> > cell description then maybe they should be aux devices?
-> 
-> When you say the MFD cell model it's not clear what you mean - I *think*
-> you're referring to the idea of the subdevices getting all the
+For now it builds with the configurations I have tried.
 
-I mean using static "struct mfd_cell" arrays to describe things.
+Looking forward for feedback if sunsetting is a good idea or not.
 
-> Look at something like wm8994 for example - the subdevices just know
-> which addresses in the device I2C/SPI regmap to work with but some of
-> them have interrupts passed through to them (and could potentially also
-> have separate subdevices for clocks and pinctrl).  These subdevices are
-> not memory mapped, not enumerated by firmware and the hardware has
-> indistinct separation of functions in the register map compared to how
-> Linux models the chips.
+	Sam
 
-wm8994 seems to fit in the mfd_cell static arrays pretty well..
+Sam Ravnborg (13):
+      sparc32: Drop sun4m/sun4d support from head_32.S
+      sparc32: Drop floppy support
+      sparc32: Drop sun4m specific led driver
+      sparc32: Drop auxio support
+      sparc32: Drop run-time patching of ipi trap
+      sparc32: Drop patching of interrupt vector
+      sparc32: Drop sun4m/sun4d specific irq handling
+      sparc32: Drop sun4d/sun4m smp support
+      sparc32: Drop pcic support
+      sparc32: Drop mbus support
+      sparc32: Drop unused mmu models
+      sparc32: drop check for sparc_model
+      sparc32: drop use of sparc_config
 
-Jason
+Note: I dunno why git does not see floppy_64.h=>floppy.h as a rename??
+
+ arch/sparc/Kconfig                  |  16 +-
+ arch/sparc/include/asm/auxio_32.h   |  73 +---
+ arch/sparc/include/asm/cpu_type.h   |  18 -
+ arch/sparc/include/asm/elf_32.h     |   2 -
+ arch/sparc/include/asm/floppy.h     | 786 ++++++++++++++++++++++++++++++++-
+ arch/sparc/include/asm/floppy_32.h  | 393 -----------------
+ arch/sparc/include/asm/floppy_64.h  | 779 ---------------------------------
+ arch/sparc/include/asm/io_32.h      |   4 +-
+ arch/sparc/include/asm/irq_32.h     |   1 -
+ arch/sparc/include/asm/mbus.h       |  97 -----
+ arch/sparc/include/asm/mxcc.h       | 138 ------
+ arch/sparc/include/asm/pcic.h       | 130 ------
+ arch/sparc/include/asm/pgtable_32.h |  24 -
+ arch/sparc/include/asm/ross.h       | 192 --------
+ arch/sparc/include/asm/swift.h      | 107 -----
+ arch/sparc/include/asm/timer_32.h   |   1 +
+ arch/sparc/include/asm/tsunami.h    |  65 ---
+ arch/sparc/include/asm/viking.h     | 255 -----------
+ arch/sparc/kernel/Makefile          |   8 +-
+ arch/sparc/kernel/apc.c             |  14 -
+ arch/sparc/kernel/auxio_32.c        | 140 ------
+ arch/sparc/kernel/cpu.c             |   1 -
+ arch/sparc/kernel/devices.c         |  10 +-
+ arch/sparc/kernel/entry.S           | 354 +--------------
+ arch/sparc/kernel/head_32.S         | 190 +-------
+ arch/sparc/kernel/ioport.c          |   6 +-
+ arch/sparc/kernel/irq.h             |  35 +-
+ arch/sparc/kernel/irq_32.c          | 127 +-----
+ arch/sparc/kernel/kernel.h          |  28 --
+ arch/sparc/kernel/led.c             | 146 -------
+ arch/sparc/kernel/leon_kernel.c     |  43 +-
+ arch/sparc/kernel/leon_pmc.c        |  14 +-
+ arch/sparc/kernel/leon_smp.c        |   3 -
+ arch/sparc/kernel/of_device_32.c    |   4 +-
+ arch/sparc/kernel/pcic.c            | 841 ------------------------------------
+ arch/sparc/kernel/pmc.c             |  10 -
+ arch/sparc/kernel/process_32.c      |  10 -
+ arch/sparc/kernel/setup_32.c        |  80 +---
+ arch/sparc/kernel/smp_32.c          | 102 +----
+ arch/sparc/kernel/sun4d_irq.c       | 519 ----------------------
+ arch/sparc/kernel/sun4d_smp.c       | 413 ------------------
+ arch/sparc/kernel/sun4m_irq.c       | 240 ----------
+ arch/sparc/kernel/sun4m_smp.c       | 273 ------------
+ arch/sparc/kernel/time_32.c         | 114 +++--
+ arch/sparc/kernel/ttable_32.S       |   9 +-
+ arch/sparc/mm/Makefile              |   1 -
+ arch/sparc/mm/hypersparc.S          | 414 ------------------
+ arch/sparc/mm/io-unit.c             |   3 -
+ arch/sparc/mm/iommu.c               |  49 +--
+ arch/sparc/mm/mm_32.h               |   1 -
+ arch/sparc/mm/srmmu.c               | 834 +----------------------------------
+ arch/sparc/mm/swift.S               | 256 -----------
+ arch/sparc/mm/tsunami.S             | 132 ------
+ arch/sparc/mm/viking.S              | 284 ------------
+ arch/sparc/prom/misc_32.c           |   2 -
+ 55 files changed, 905 insertions(+), 7886 deletions(-)
+
+
