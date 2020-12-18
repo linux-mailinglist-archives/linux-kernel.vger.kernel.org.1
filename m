@@ -2,172 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E02A2DE62B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 16:05:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BAAE2DE62E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 16:06:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731566AbgLRPD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 10:03:59 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:8220 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731531AbgLRPD5 (ORCPT
+        id S1727893AbgLRPG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 10:06:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726677AbgLRPG1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 10:03:57 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fdcc4b40001>; Fri, 18 Dec 2020 07:03:16 -0800
-Received: from [10.26.73.104] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 18 Dec
- 2020 15:03:09 +0000
-Subject: Re: [PATCH] gcc-plugins: simplify GCC plugin-dev capability test
-To:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-CC:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Emese Revfy <re.emese@gmail.com>,
-        <linux-hardening@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-References: <CGME20201218075758eucas1p1605768803a5c9edce4fbe54b3e3b859a@eucas1p1.samsung.com>
- <20201203125700.161354-1-masahiroy@kernel.org>
- <b9b17126-9af5-2f73-526e-91bb9fd27f71@samsung.com>
- <CAK7LNART2qQBY7Vc8rhMiXS_Fwty7qpWjwwfPrUegTb-gjy6sA@mail.gmail.com>
- <9f959875-1a30-b1a1-b626-3805e24a6df3@samsung.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <e5b06d9a-9b24-2440-e0c2-8bf7095eccd9@nvidia.com>
-Date:   Fri, 18 Dec 2020 15:03:07 +0000
+        Fri, 18 Dec 2020 10:06:27 -0500
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD60C0617A7
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 07:05:47 -0800 (PST)
+Received: by mail-qk1-x733.google.com with SMTP id c7so2246106qke.1
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 07:05:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=oNg9fsqgN01iZDjFmGDppzyqEcee51C5C07Q60xgAD8=;
+        b=GOxEeLjpPQyQV9lrjpq19FcBzloQtCxYDK8Znr7NnsLOS3t9R9HEFQc9ArER8I97P4
+         WQ9cA5VURzeXEeM5EcTOk1uwhrcpj4Z371c0d3DCceg7oRSw8YTufT1AzM+XplyTez58
+         1wJW28vMdE/Ya4pZ4ExLHg+pVilmRqDnq/S2W9ULGb2JSsHJJLTs4BVd9Vc2Mzz5nCOF
+         3HJOqZ3ufTUybpavulfzR46IOt91JBQLNBhUFAyIWS3i7ZZUJ3hs5JoG/B052KY7Dudv
+         G7q4Pnyn8RUXQLKr6gc3HX0vdDp4/UnmlhwEEI2Rc5rpR/hL2GehXlIAtOsxx0YgNvQo
+         sIhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oNg9fsqgN01iZDjFmGDppzyqEcee51C5C07Q60xgAD8=;
+        b=g/uK08TeicT/mNCB+5Zrp2ZP46Gu/c7v5OM3g1+S67nFSUYSaA+3/1jFUrmfX71b4s
+         miEGodBu1Dny4q14gZ0+Zf3I8mOI3sGYnRAGSlxXzQw10mLF5d0uf01yGZMjpoQEyYAH
+         88xfNEIdnxMYOeB83U3CHY7b+6dYxjK+LCzcYu2xJ49VVwzzxca4Y7jgHtk5/YhzOnXm
+         EmdD20C+BuH0RlvZoXVJFRPMpCKgUKtrKXelhoy7w1MF+HYjW+2KMn6fwRPSwXP3QN8V
+         xrKHUgvS94t24XAXrhVmqyIyBiClGtbTCWYC0xFKw5WcfCBhhzr/rUevO7NxrwyLQNfI
+         oFog==
+X-Gm-Message-State: AOAM531D+r/Kf/b+k6xNYNVSgMZ5mabD63hG/wGxxJlbtNts0Scnux0v
+        qJwuakP0csS9QKnvyJu2m6yCIbexLc+MjA==
+X-Google-Smtp-Source: ABdhPJxFsKoqc3zvhIKHNop0WtnpS02QFC4/cOUF4uDZvI+umf9+vEg91W191jekGR84q9ozG1vWqg==
+X-Received: by 2002:a37:a64b:: with SMTP id p72mr5312567qke.304.1608303946528;
+        Fri, 18 Dec 2020 07:05:46 -0800 (PST)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id s21sm5377130qtn.13.2020.12.18.07.05.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Dec 2020 07:05:45 -0800 (PST)
+Subject: Re: [PATCH v2 1/3] thermal/core: Precompute the delays from msecs to
+ jiffies
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>, rui.zhang@intel.com
+Cc:     amitk@kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, Lukasz Luba <lukasz.luba@arm.com>
+References: <20201216220337.839878-1-daniel.lezcano@linaro.org>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <6a57bf9a-c4f4-2350-8bd2-01717d966611@linaro.org>
+Date:   Fri, 18 Dec 2020 10:05:44 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <9f959875-1a30-b1a1-b626-3805e24a6df3@samsung.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20201216220337.839878-1-daniel.lezcano@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1608303796; bh=i2gqYFm8Es9As6zex1py1RDeyxb0UIj49IrIjubjQnA=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=iczPNr/KjI/Oz8oLjaL78LiLPDQ/RO5BMegfEKhPALNn/bYVQ/pfdNrJl9zUOGKmO
-         6hQtceyyfG8fx/eDxrJueUkdNrrThvMrT4hRVge7jDVa5AvZkA6mDnAXWkdQaNsVa+
-         y0lZtGLrWzgDuZoXdqTz/4AhBG/a4Q46qCRK+aaBfCN+CHf0ROKaJtLuOF1uWn/2p0
-         YXrxNnEgaDxDwLRRfEO3/+imIxr+bGMINBPzlh1qhAU/GehUHt+lgKV6Pj8f7Ep0Uv
-         c6cpp0EtRuMDIpTOlewQmhpTVkh7l5MvIVE3XzIX2mPk70AtqHsdU+PvUdTthA2rJJ
-         sEggiq2y3ihMw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 18/12/2020 10:05, Marek Szyprowski wrote:
-> On 18.12.2020 10:43, Masahiro Yamada wrote:
->> On Fri, Dec 18, 2020 at 4:58 PM Marek Szyprowski
->> <m.szyprowski@samsung.com> wrote:
->>> On 03.12.2020 13:57, Masahiro Yamada wrote:
->>>> Linus pointed out a third of the time in the Kconfig parse stage comes
->>>> from the single invocation of cc1plus in scripts/gcc-plugin.sh [1],
->>>> and directly testing plugin-version.h for existence cuts down the
->>>> overhead a lot. [2]
->>>>
->>>> This commit takes one step further to kill the build test entirely.
->>>>
->>>> The small piece of code was probably intended to test the C++ designated
->>>> initializer, which was not supported until C++20.
->>>>
->>>> In fact, with -pedantic option given, both GCC and Clang emit a warning.
->>>>
->>>> $ echo 'class test { public: int test; } test = { .test = 1 };' | g++ -x c++ -pedantic - -fsyntax-only
->>>> <stdin>:1:43: warning: C++ designated initializers only available with '-std=c++2a' or '-std=gnu++2a' [-Wpedantic]
->>>> $ echo 'class test { public: int test; } test = { .test = 1 };' | clang++ -x c++ -pedantic - -fsyntax-only
->>>> <stdin>:1:43: warning: designated initializers are a C++20 extension [-Wc++20-designator]
->>>> class test { public: int test; } test = { .test = 1 };
->>>>                                             ^
->>>> 1 warning generated.
->>>>
->>>> Otherwise, modern C++ compilers should be able to build the code, and
->>>> hopefully skipping this test should not make any practical problem.
->>>>
->>>> Checking the existence of plugin-version.h is still needed to ensure
->>>> the plugin-dev package is installed. The test code is now small enough
->>>> to be embedded in scripts/gcc-plugins/Kconfig.
->>>>
->>>> [1] https://protect2.fireeye.com/v1/url?k=03db90e1-5c40a828-03da1bae-0cc47a336fae-4cc36f5830aeb78d&q=1&e=dfdc1cf9-82d6-4ca5-b35d-1782e918bde3&u=https%3A%2F%2Flore.kernel.org%2Flkml%2FCAHk-%3DwjU4DCuwQ4pXshRbwDCUQB31ScaeuDo1tjoZ0_PjhLHzQ%40mail.gmail.com%2F
->>>> [2] https://protect2.fireeye.com/v1/url?k=965b670a-c9c05fc3-965aec45-0cc47a336fae-e34339513ff747c0&q=1&e=dfdc1cf9-82d6-4ca5-b35d-1782e918bde3&u=https%3A%2F%2Flore.kernel.org%2Flkml%2FCAHk-%3DwhK0aQxs6Q5ijJmYF1n2ch8cVFSUzU5yUM_HOjig%3D%2Bvnw%40mail.gmail.com%2F
->>>>
->>>> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
->>>> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
->>> This patch landed in linux next-20201217 as commit 1e860048c53e
->>> ("gcc-plugins: simplify GCC plugin-dev capability test").
->>>
->>> It causes a build break with my tests setup, but I'm not sure weather it
->>> is really an issue of this commit or a toolchain I use. However I've
->>> checked various versions of the gcc cross-compilers released by Linaro
->>> at https://protect2.fireeye.com/v1/url?k=053727b6-5aac1f7f-0536acf9-0cc47a336fae-5bd799e7ce6b1b9b&q=1&e=dfdc1cf9-82d6-4ca5-b35d-1782e918bde3&u=https%3A%2F%2Freleases.linaro.org%2Fcomponents%2Ftoolchain%2Fbinaries%2F and all
->>> fails with the same error:
->>>
->>> $ make ARCH=arm
->>> CROSS_COMPILE=../../cross/gcc-arm-10.2-2020.11-x86_64-arm-none-eabi/bin/arm-none-eabi-
->>> zImage
->>>     HOSTCXX scripts/gcc-plugins/arm_ssp_per_task_plugin.so
->>> In file included from
->>> /home/mszyprow/dev/cross/gcc-arm-10.2-2020.11-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/10.2.1/plugin/include/gcc-plugin.h:28:0,
->>>                    from scripts/gcc-plugins/gcc-common.h:7,
->>>                    from scripts/gcc-plugins/arm_ssp_per_task_plugin.c:3:
->>> /home/mszyprow/dev/cross/gcc-arm-10.2-2020.11-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/10.2.1/plugin/include/system.h:687:10:
->>> fatal error: gmp.h: No such file or directory
->>>    #include <gmp.h>
->>>             ^~~~~~~
->>> compilation terminated.
->>> scripts/gcc-plugins/Makefile:47: recipe for target
->>> 'scripts/gcc-plugins/arm_ssp_per_task_plugin.so' failed
->>> make[2]: *** [scripts/gcc-plugins/arm_ssp_per_task_plugin.so] Error 1
->>> scripts/Makefile.build:496: recipe for target 'scripts/gcc-plugins' failed
->>> make[1]: *** [scripts/gcc-plugins] Error 2
->>> Makefile:1190: recipe for target 'scripts' failed
->>> make: *** [scripts] Error 2
->>>
->>> Compilation works if I use the cross-gcc provided by
->>> gcc-7-arm-linux-gnueabi/gcc-arm-linux-gnueabi Ubuntu packages, which is:
->>>
->>> $ arm-linux-gnueabi-gcc --version
->>> arm-linux-gnueabi-gcc (Ubuntu/Linaro 7.5.0-3ubuntu1~18.04) 7.5.0
->>>
->>
->> I can compile gcc-plugins with Linaro toolchians.
->>
->> The version of mine is this:
->>
->> masahiro@oscar:~/ref/linux-next$
->> ~/tools/arm-linaro-7.5/bin/arm-linux-gnueabihf-gcc --version
->> arm-linux-gnueabihf-gcc (Linaro GCC 7.5-2019.12) 7.5.0
->> Copyright (C) 2017 Free Software Foundation, Inc.
->> This is free software; see the source for copying conditions.  There is NO
->> warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
->>
->>
->>
->>
->> Maybe, it depends on the host environment?
->>
->>
->> Please try this:
->>
->> $ sudo apt install libgmp-dev
+
+On 12/16/20 5:03 PM, Daniel Lezcano wrote:
+> The delays are stored in ms units and when the polling function is
+> called this delay is converted into jiffies at each call.
 > 
-> Indeed, it was missing on my setup. Sorry for the noise.
+> Instead of doing the conversion again and again, compute the jiffies
+> at init time and use the value directly when setting the polling.
+> 
+> Cc: Thara Gopinath <thara.gopinath@linaro.org>
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
+>   drivers/thermal/thermal_core.c    | 3 +++
+>   drivers/thermal/thermal_core.h    | 1 +
+>   drivers/thermal/thermal_helpers.c | 7 +++++++
+>   include/linux/thermal.h           | 7 +++++++
+>   4 files changed, 18 insertions(+)
 
+Reviewed-by: Thara Gopinath <thara.gopinath@linaro.org>
 
-So this change also breaks the build on our farm build machines and
-while we can request that packages are installed on these machines, it
-takes time. Is there anyway to avoid this?
-
-Cheers
-Jon
+> 
+> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+> index bcc2ea4f5482..2c41d4a0923f 100644
+> --- a/drivers/thermal/thermal_core.c
+> +++ b/drivers/thermal/thermal_core.c
+> @@ -1315,6 +1315,9 @@ thermal_zone_device_register(const char *type, int trips, int mask,
+>   	tz->passive_delay = passive_delay;
+>   	tz->polling_delay = polling_delay;
+>   
+> +	thermal_set_delay_jiffies(&tz->passive_delay_jiffies, passive_delay);
+> +	thermal_set_delay_jiffies(&tz->polling_delay_jiffies, polling_delay);
+> +
+>   	/* sys I/F */
+>   	/* Add nodes that are always present via .groups */
+>   	result = thermal_zone_create_device_groups(tz, mask);
+> diff --git a/drivers/thermal/thermal_core.h b/drivers/thermal/thermal_core.h
+> index e50c6b2909fe..90f9a80c8b23 100644
+> --- a/drivers/thermal/thermal_core.h
+> +++ b/drivers/thermal/thermal_core.h
+> @@ -123,6 +123,7 @@ int thermal_build_list_of_policies(char *buf);
+>   
+>   /* Helpers */
+>   void thermal_zone_set_trips(struct thermal_zone_device *tz);
+> +void thermal_set_delay_jiffies(unsigned long *delay_jiffies, int delay_ms);
+>   
+>   /* sysfs I/F */
+>   int thermal_zone_create_device_groups(struct thermal_zone_device *, int);
+> diff --git a/drivers/thermal/thermal_helpers.c b/drivers/thermal/thermal_helpers.c
+> index c94bc824e5d3..7f50f412e02a 100644
+> --- a/drivers/thermal/thermal_helpers.c
+> +++ b/drivers/thermal/thermal_helpers.c
+> @@ -175,6 +175,13 @@ void thermal_zone_set_trips(struct thermal_zone_device *tz)
+>   	mutex_unlock(&tz->lock);
+>   }
+>   
+> +void thermal_set_delay_jiffies(unsigned long *delay_jiffies, int delay_ms)
+> +{
+> +	*delay_jiffies = msecs_to_jiffies(delay_ms);
+> +	if (delay_ms > 1000)
+> +		*delay_jiffies = round_jiffies(*delay_jiffies);
+> +}
+> +
+>   static void thermal_cdev_set_cur_state(struct thermal_cooling_device *cdev,
+>   				       int target)
+>   {
+> diff --git a/include/linux/thermal.h b/include/linux/thermal.h
+> index 060a2160add4..d1b82c70de69 100644
+> --- a/include/linux/thermal.h
+> +++ b/include/linux/thermal.h
+> @@ -117,9 +117,14 @@ struct thermal_cooling_device {
+>    * @trips_disabled;	bitmap for disabled trips
+>    * @passive_delay:	number of milliseconds to wait between polls when
+>    *			performing passive cooling.
+> + * @passive_delay_jiffies: number of jiffies to wait between polls when
+> + *			performing passive cooling.
+>    * @polling_delay:	number of milliseconds to wait between polls when
+>    *			checking whether trip points have been crossed (0 for
+>    *			interrupt driven systems)
+> + * @polling_delay_jiffies: number of jiffies to wait between polls when
+> + *			checking whether trip points have been crossed (0 for
+> + *			interrupt driven systems)
+>    * @temperature:	current temperature.  This is only for core code,
+>    *			drivers should use thermal_zone_get_temp() to get the
+>    *			current temperature
+> @@ -155,6 +160,8 @@ struct thermal_zone_device {
+>   	void *devdata;
+>   	int trips;
+>   	unsigned long trips_disabled;	/* bitmap for disabled trips */
+> +	unsigned long passive_delay_jiffies;
+> +	unsigned long polling_delay_jiffies;
+>   	int passive_delay;
+>   	int polling_delay;
+>   	int temperature;
+> 
 
 -- 
-nvpublic
+Warm Regards
+Thara
