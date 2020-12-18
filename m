@@ -2,171 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDA2D2DDD3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 04:21:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3472DDD40
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 04:23:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732063AbgLRDUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 22:20:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727177AbgLRDUx (ORCPT
+        id S1732276AbgLRDVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 22:21:53 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:54829 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728109AbgLRDVw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 22:20:53 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F29E9C0617A7;
-        Thu, 17 Dec 2020 19:20:12 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id t22so690610pfl.3;
-        Thu, 17 Dec 2020 19:20:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gtA3GIEly3YIJ+GgXUGAd5q4aDboc+hlemv8auSkl3A=;
-        b=qqxVaNataHWQET6UvsVwrWEdOO99PnBYzkTivgiQsejKIdm2lEbaKZiweHvk2424pr
-         KrJ4VT6dFw+42X2QQxanyZpAlq4y7vZLRlrGivAEM3rfOFg5r1jEYr3kM0nDS3XtHIAO
-         WlRahrdZvsTf9qDosP4QGXaNRGfChCFORvUHg0JxF4yvykzL4qoktCIzMxFD+kgaAB/X
-         DlDb/3gauCpMvWhcjaLEQFIxEANWU2ON+AV17Ptv9Fmoj6btcWy6QEIsbXmeLPgTOXup
-         Yj955XjJlHZcWkV8GmHGir5EghbnP8+/UQq0Vij3nZb+VAMgAeVsKd+jBx5e2UcBP029
-         ERyA==
+        Thu, 17 Dec 2020 22:21:52 -0500
+Received: by mail-il1-f198.google.com with SMTP id z8so781056ilq.21
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 19:21:36 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gtA3GIEly3YIJ+GgXUGAd5q4aDboc+hlemv8auSkl3A=;
-        b=tEEo3H8z6zgAC/bsHw5hYSJZptdpid3zSBj+Serk8pHEsYQ1LovZZByBmRS5RXWRlP
-         dg69qs66x/mnBHey/DMge5atOcnPF+HdOjXXcLAfDw7PzDGafk0tx59+MCxJR5Rzur+f
-         YHvWLRXTwdXFyn8CgAZcJ3sG1nf++v9jEl8rF3qtYEEOfAUcncTfdOzsrI4Nj6ZviFA1
-         9KLZ+NQhbyC/kshwbKLWa5BHtHay2XdRmi3dSNehm1Jlni/KLNMilt3syORoAJy4h3QJ
-         dKgXGa0cluUJ+7v5K+OfrUu47dOhnbXLsZRGRINzPJjIJzUFl93u/mnZ35VvwupbPBge
-         H+Gw==
-X-Gm-Message-State: AOAM533q56fWg2a45lCqnFlqSEFvR9btHrwzZXXLKNDtLhG1Zof4YTJ0
-        eapTkF6XJpAp6agr7+JqP3o=
-X-Google-Smtp-Source: ABdhPJyjxRRaLoakroUv5inkgevuhM3Xs4CdaP4q7qqaXO/Tig6hhyXFbBQOAdonRstLkRU6DPmM4g==
-X-Received: by 2002:a65:6405:: with SMTP id a5mr2216655pgv.389.1608261612452;
-        Thu, 17 Dec 2020 19:20:12 -0800 (PST)
-Received: from ast-mbp ([2620:10d:c090:400::5:8bfc])
-        by smtp.gmail.com with ESMTPSA id p16sm6148764pju.47.2020.12.17.19.20.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 19:20:11 -0800 (PST)
-Date:   Thu, 17 Dec 2020 19:20:09 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Florent Revest <revest@chromium.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
-Message-ID: <20201218032009.ycmyqn2kjs3ynfbp@ast-mbp>
-References: <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com>
- <CACYkzJ7T4y7in1AsCvJ2izA3yiAke8vE9SRFRCyTPeqMnDHoyQ@mail.gmail.com>
- <e8b03cbc-c120-43d5-168c-cde5b6a97af8@fb.com>
- <CAEf4BzYz9Yf9abPBtP+swCuqvvhL0cbbbF1x-3stg9mp=a6+-A@mail.gmail.com>
- <194b5a6e6e30574a035a3e3baa98d7fde7f91f1c.camel@chromium.org>
- <CAADnVQK6GjmL19zQykYbh=THM9ktQUzfnwF_FfhUKimCxDnnkQ@mail.gmail.com>
- <CABRcYm+zjC-WH2gxtfEX5S6mZj-5_ByAzVd5zi3aRmQv-asYqg@mail.gmail.com>
- <221fb873-80fc-5407-965e-b075c964fa13@fb.com>
- <CABRcYmLL=SUsPS6qWVgTyYJ26r-QtECfeTZXkXSp7iRBDZRbZA@mail.gmail.com>
- <d29c2ed6-d99c-9d28-e6ea-d79ffd4d7e65@fb.com>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=A/Ab5VH6csyzSSUnH09GzLQ2Jq2udhjrrzzU6OdP+e4=;
+        b=UlQ2k4DZgDu1pFoGQ2/O+yfkCTHbDlpK2FNx4VylR7NjYE0WvP7m7y8g47SMKBbYM6
+         PeoUwipQuv8jPZh6B0Ke6gKiOY8nn3MG/GS1x7D+12tIKqMt3uct4upyCH+C3OVk0vjq
+         LN4Qua3STiDIyUzdkcm6823cUl2cMb59vK9hTiEIeByQ2G7bU7YP7pyyVYUW2sty0Yac
+         mbzMJg9LUKqAcF+YmT0klQGPvSKWy3jMHMIj38dnhnXKVSGm6RKxw1h5GeKohmNYjmhw
+         s4HYKpZpS/OnzgQnBKs5ChG/+ImwyhoCOi2PYWVYXKjQsSB9BNsUn/PQzkSqeKLQmHlk
+         pE7g==
+X-Gm-Message-State: AOAM531hQ49It7GUoW1bwN+YisbbBenk7lveInKHFVlp8MArkcJZIsFN
+        Gkrh5/Sen4WtSSstxa6bpgRlqukhPIQhJr70t6StioDZppsP
+X-Google-Smtp-Source: ABdhPJx/f981y5lTlUaJ4AtBGxBxXG0ry+c3jqdhMpFPQnHvxtAK2RNQBOXv0IK3E0a9qfI1G5dqovZNhlxeGdpivg8fQlbn6Lrv
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d29c2ed6-d99c-9d28-e6ea-d79ffd4d7e65@fb.com>
+X-Received: by 2002:a05:6638:b16:: with SMTP id a22mr1887819jab.56.1608261670880;
+ Thu, 17 Dec 2020 19:21:10 -0800 (PST)
+Date:   Thu, 17 Dec 2020 19:21:10 -0800
+In-Reply-To: <000000000000105ec205ac489d59@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000994d2a05b6b49959@google.com>
+Subject: Re: KASAN: use-after-free Read in service_outstanding_interrupt
+From:   syzbot <syzbot+9e04e2df4a32fb661daf@syzkaller.appspotmail.com>
+To:     andreyknvl@google.com, gregkh@linuxfoundation.org,
+        gustavoars@kernel.org, ingrassia@epigenesys.com,
+        lee.jones@linaro.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, oneukum@suse.com,
+        penguin-kernel@I-love.SAKURA.ne.jp, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 09:26:09AM -0800, Yonghong Song wrote:
-> 
-> 
-> On 12/17/20 7:31 AM, Florent Revest wrote:
-> > On Mon, Dec 14, 2020 at 7:47 AM Yonghong Song <yhs@fb.com> wrote:
-> > > On 12/11/20 6:40 AM, Florent Revest wrote:
-> > > > On Wed, Dec 2, 2020 at 10:18 PM Alexei Starovoitov
-> > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > > I still think that adopting printk/vsnprintf for this instead of
-> > > > > reinventing the wheel
-> > > > > is more flexible and easier to maintain long term.
-> > > > > Almost the same layout can be done with vsnprintf
-> > > > > with exception of \0 char.
-> > > > > More meaningful names, etc.
-> > > > > See Documentation/core-api/printk-formats.rst
-> > > > 
-> > > > I agree this would be nice. I finally got a bit of time to experiment
-> > > > with this and I noticed a few things:
-> > > > 
-> > > > First of all, because helpers only have 5 arguments, if we use two for
-> > > > the output buffer and its size and two for the format string and its
-> > > > size, we are only left with one argument for a modifier. This is still
-> > > > enough for our usecase (where we'd only use "%ps" for example) but it
-> > > > does not strictly-speaking allow for the same layout that Andrii
-> > > > proposed.
-> > > 
-> > > See helper bpf_seq_printf. It packs all arguments for format string and
-> > > puts them into an array. bpf_seq_printf will unpack them as it parsed
-> > > through the format string. So it should be doable to have more than
-> > > "%ps" in format string.
-> > 
-> > This could be a nice trick, thank you for the suggestion Yonghong :)
-> > 
-> > My understanding is that this would also require two extra args (one
-> > for the array of arguments and one for the size of this array) so it
-> > would still not fit the 5 arguments limit I described in my previous
-> > email.
-> > eg: this would not be possible:
-> > long bpf_snprintf(const char *out, u32 out_size,
-> >                    const char *fmt, u32 fmt_size,
-> >                   const void *data, u32 data_len)
-> 
-> Right. bpf allows only up to 5 parameters.
-> > 
-> > Would you then suggest that we also put the format string and its
-> > length in the first and second cells of this array and have something
-> > along the line of:
-> > long bpf_snprintf(const char *out, u32 out_size,
-> >                    const void *args, u32 args_len) ?
-> > This seems like a fairly opaque signature to me and harder to verify.
-> 
-> One way is to define an explicit type for args, something like
->    struct bpf_fmt_str_data {
->       char *fmt;
->       u64 fmt_len;
->       u64 data[];
->    };
+syzbot has found a reproducer for the following issue on:
 
-that feels a bit convoluted.
+HEAD commit:    5e60366d Merge tag 'fallthrough-fixes-clang-5.11-rc1' of g..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+console output: https://syzkaller.appspot.com/x/log.txt?x=12c5b623500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5cea7506b7139727
+dashboard link: https://syzkaller.appspot.com/bug?extid=9e04e2df4a32fb661daf
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=175adf07500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1672680f500000
 
-The reason I feel unease with the helper as was originally proposed
-and with Andrii's proposal is all the extra strlen and strcpy that
-needs to be done. In the helper we have to call kallsyms_lookup()
-which is ok interface for what it was desinged to do,
-but it's awkward to use to construct new string ("%s [%s]", sym, modname)
-or to send two strings into a ring buffer.
-Andrii's zero separator idea will simplify bpf prog, but user space
-would need to do strlen anyway if it needs to pretty print.
-If we take pain on converting addr to sym+modname let's figure out
-how to make it easy for the bpf prog to do and easy for user space to consume.
-That's why I proposed snprintf.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9e04e2df4a32fb661daf@syzkaller.appspotmail.com
 
-As far as 6 arg issue:
-long bpf_snprintf(const char *out, u32 out_size,
-                  const char *fmt, u32 fmt_size,
-                  const void *data, u32 data_len);
-Yeah. It won't work as-is, but fmt_size is unnecessary nowadays.
-The verifier understands read-only data.
-Hence the helper can be:
-long bpf_snprintf(const char *out, u32 out_size,
-                  const char *fmt,
-                  const void *data, u32 data_len);
-The 3rd arg cannot be ARG_PTR_TO_MEM.
-Instead we can introduce ARG_PTR_TO_CONST_STR in the verifier.
-See check_mem_access() where it's doing bpf_map_direct_read().
-That 'fmt' string will be accessed through the same bpf_map_direct_read().
-The verifier would need to check that it's NUL-terminated valid string.
-It should probably do % specifier checks at the same time.
-At the end bpf_snprintf() will have 5 args and when wrapped with 
-BPF_SNPRINTF() macro it will accept arbitrary number of arguments to print.
-It also will be generally useful to do all other kinds of pretty printing.
+==================================================================
+BUG: KASAN: use-after-free in usb_submit_urb+0x1210/0x1560 drivers/usb/core/urb.c:383
+Read of size 4 at addr ffff888101d21018 by task syz-executor166/4405
+
+CPU: 0 PID: 4405 Comm: syz-executor166 Not tainted 5.10.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0xae/0x4c8 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
+ usb_submit_urb+0x1210/0x1560 drivers/usb/core/urb.c:383
+ service_outstanding_interrupt.part.0+0x5f/0xa0 drivers/usb/class/cdc-wdm.c:470
+ service_outstanding_interrupt drivers/usb/class/cdc-wdm.c:465 [inline]
+ wdm_read+0x9a0/0xbd0 drivers/usb/class/cdc-wdm.c:583
+ vfs_read+0x1b5/0x570 fs/read_write.c:494
+ ksys_read+0x12d/0x250 fs/read_write.c:634
+ do_syscall_64+0x2d/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x44b529
+Code: e8 bc b4 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 8b cb fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f2dfcb6ed98 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+RAX: ffffffffffffffda RBX: 00000000006dcc38 RCX: 000000000044b529
+RDX: 0000000000001000 RSI: 0000000020001000 RDI: 0000000000000004
+RBP: 00000000006dcc30 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dcc3c
+R13: 0142006002090100 R14: 04010040a4157d25 R15: 4000000200000112
+
+Allocated by task 2632:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ kmalloc include/linux/slab.h:552 [inline]
+ kzalloc include/linux/slab.h:682 [inline]
+ usb_alloc_dev+0x51/0xef0 drivers/usb/core/usb.c:582
+ hub_port_connect drivers/usb/core/hub.c:5129 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
+ port_event drivers/usb/core/hub.c:5509 [inline]
+ hub_event+0x1def/0x42d0 drivers/usb/core/hub.c:5591
+ process_one_work+0x98d/0x15c0 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x38c/0x460 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+Freed by task 2181:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:352
+ __kasan_slab_free+0x102/0x140 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1577
+ slab_free mm/slub.c:3140 [inline]
+ kfree+0xdb/0x3a0 mm/slub.c:4122
+ device_release+0x9f/0x240 drivers/base/core.c:1962
+ kobject_cleanup lib/kobject.c:705 [inline]
+ kobject_release lib/kobject.c:736 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ kobject_put+0x1c8/0x540 lib/kobject.c:753
+ put_device+0x1b/0x30 drivers/base/core.c:3190
+ hub_port_connect drivers/usb/core/hub.c:5074 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
+ port_event drivers/usb/core/hub.c:5509 [inline]
+ hub_event+0x1c8a/0x42d0 drivers/usb/core/hub.c:5591
+ process_one_work+0x98d/0x15c0 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x38c/0x460 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+The buggy address belongs to the object at ffff888101d21000
+ which belongs to the cache kmalloc-2k of size 2048
+The buggy address is located 24 bytes inside of
+ 2048-byte region [ffff888101d21000, ffff888101d21800)
+The buggy address belongs to the page:
+page:0000000019761127 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x101d20
+head:0000000019761127 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0x200000000010200(slab|head)
+raw: 0200000000010200 dead000000000100 dead000000000122 ffff888100042000
+raw: 0000000000000000 0000000080080008 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff888101d20f00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff888101d20f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff888101d21000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                            ^
+ ffff888101d21080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888101d21100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
