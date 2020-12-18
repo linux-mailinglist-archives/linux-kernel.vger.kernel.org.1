@@ -2,104 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD192DE964
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 19:59:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 149ED2DE96D
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 20:02:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732714AbgLRS6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 13:58:55 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:55483 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726552AbgLRS6x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 13:58:53 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1608317914; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=ODdPiC7psQVXXHgo8fq1cxq4RFwNcwXkZDtOyRJi91o=; b=AnYiyhZ1aJUBMgkZrsGTuurvre9HvPK04ece6qg9Z4NBbyTm8Zdg/3XidfufMxW4krRMTEg5
- JZP5IXrGaHr0cFzdnTg6etNiVa1EneX+wL/Ozunhbwcsi9huQsLRQLIwBX/Cggdu8xBEpkN8
- jA3WJVyFqApkQVmkZDOB/A4n9A0=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5fdcfbbbbfd08afb0d366fee (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Dec 2020 18:58:03
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 19220C433ED; Fri, 18 Dec 2020 18:58:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1732886AbgLRTAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 14:00:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60748 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726876AbgLRTAC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 14:00:02 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B964FC433CA;
-        Fri, 18 Dec 2020 18:57:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B964FC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>, linux-wireless@vger.kernel.org
-Subject: Re: [PATCH -next] net: wireless/mediatek/mt7915: fix MESH ifdef block
-References: <20201218173202.23159-1-rdunlap@infradead.org>
-        <87eejnrluw.fsf@codeaurora.org>
-        <488abe6b-3893-557a-8324-1be9b75657ce@infradead.org>
-Date:   Fri, 18 Dec 2020 20:57:57 +0200
-In-Reply-To: <488abe6b-3893-557a-8324-1be9b75657ce@infradead.org> (Randy
-        Dunlap's message of "Fri, 18 Dec 2020 10:50:25 -0800")
-Message-ID: <87a6ubrlfu.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
+        by mail.kernel.org (Postfix) with ESMTPSA id 2088123B83;
+        Fri, 18 Dec 2020 18:59:22 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kqKyF-002MOH-UQ; Fri, 18 Dec 2020 18:59:20 +0000
+Date:   Fri, 18 Dec 2020 18:59:19 +0000
+Message-ID: <87sg83q6t4.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     tglx@linutronix.de, mripard@kernel.org, dan.carpenter@oracle.com,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] irqdomain: Add documentation for irq_create_of_mapping()
+In-Reply-To: <20201215200747.148439-1-christophe.jaillet@wanadoo.fr>
+References: <20201215200747.148439-1-christophe.jaillet@wanadoo.fr>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: christophe.jaillet@wanadoo.fr, tglx@linutronix.de, mripard@kernel.org, dan.carpenter@oracle.com, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Randy Dunlap <rdunlap@infradead.org> writes:
+Hi Christophe,
 
-> On 12/18/20 10:48 AM, Kalle Valo wrote:
->> Randy Dunlap <rdunlap@infradead.org> writes:
->> 
->>> Fix a build error when CONFIG_MAC80211_MESH is not enabled:
->>>
->>> ../drivers/net/wireless/mediatek/mt76/mt7915/init.c:47:2: error:
->>> expected expression before '}' token
->>>   }, {
->>>   ^
->>>
->>> Fixes: af901eb4ab80 ("mt76: mt7915: get rid of dbdc debugfs knob")
->>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->>> Cc: Shayne Chen <shayne.chen@mediatek.com>
->>> Cc: Ryder Lee <ryder.lee@mediatek.com>
->>> Cc: Lorenzo Bianconi <lorenzo@kernel.org>
->>> Cc: Felix Fietkau <nbd@nbd.name>
->>> Cc: linux-wireless@vger.kernel.org
->>> Cc: Kalle Valo <kvalo@codeaurora.org>
->> 
->> Thanks, but why -next? I would rather queue this to wireless-drivers for
->> v5.11 as af901eb4ab80 is in Linu's tree now.
->
-> Sorry, I found the build error in linux-next.
-> My bad for not checking mainline.
+On Tue, 15 Dec 2020 20:07:47 +0000,
+Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
+> 
+> Add a description for 'irq_create_of_mapping()' and make explicit the fact
+> that the resources allocated by this function can be freed by calling
+> 'irq_dispose_mapping()' when needed (i.e. error handling path, remove
+> function, ...)
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+> The wording can certainly be improved.
+> 
+> My goal is only to make clear if patches such as:
+>    https://lore.kernel.org/lkml/20201214202117.146293-1-christophe.jaillet@wanadoo.fr/
+> are needed or not.
+> ---
+>  kernel/irq/irqdomain.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+> index 6aacd342cd14..d761ece8d43e 100644
+> --- a/kernel/irq/irqdomain.c
+> +++ b/kernel/irq/irqdomain.c
+> @@ -858,6 +858,15 @@ unsigned int irq_create_fwspec_mapping(struct irq_fwspec *fwspec)
+>  }
+>  EXPORT_SYMBOL_GPL(irq_create_fwspec_mapping);
+>  
+> +/**
+> + * irq_create_of_mapping() - Map an interrupt
 
-Ah.
+I think this deserves a bit more work. My immediate questions when
+reading this are "map where? and to what?".
 
-> Shall I resend it?
+> + * @irq_data: structure of_phandle_args returned by a previous
+> + * of_irq_parse_xxx() call
 
-No need, just wanted to make sure that I'm not missing anything. I'll
-queue this for v5.11.
+That's not strictly true. A of_phandle_args structure can be created
+from scratch (and numerous drivers do that).
+
+> + *
+> + * The resources allocated by this function should be freed by
+> + * calling irq_dispose_mapping() when the mapping if not useful
+> + * anymore.
+
+This really is a bit of documentation for irq_dispose_mapping(), isn't it?
+
+> + */
+>  unsigned int irq_create_of_mapping(struct of_phandle_args *irq_data)
+>  {
+>  	struct irq_fwspec fwspec;
+
+Thanks,
+
+	M.
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Without deviation from the norm, progress is not possible.
