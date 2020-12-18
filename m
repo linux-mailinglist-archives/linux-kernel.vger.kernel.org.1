@@ -2,104 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 543E82DDD4E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 04:33:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5579E2DDD60
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 04:36:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732371AbgLRDc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 22:32:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44072 "EHLO
+        id S1732748AbgLRDfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 22:35:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727234AbgLRDc3 (ORCPT
+        with ESMTP id S1732716AbgLRDe4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 22:32:29 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F20FFC0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 19:31:48 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id x2so688286ybt.11
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 19:31:48 -0800 (PST)
+        Thu, 17 Dec 2020 22:34:56 -0500
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA6EC0617B0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 19:34:16 -0800 (PST)
+Received: by mail-qt1-x832.google.com with SMTP id h19so442216qtq.13
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 19:34:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ThANl8keVovxssa+E4sSSWUNAQHe9R0+iBJSgPR0CjQ=;
-        b=BGDeqVqg2cLTQpuTxvKjP3gI1MA/xd0DtKQcKLx4FK+dti4am/s0al9JZXeObimQEH
-         FpKJ8PVzPwDmAkpsOF4KLpYEeVi/VfTlHCXtbTDC6YmEOxGHklwOg5u5mdT2kC1fZ66y
-         1akom9kaRqC2uctz9K9+JGJiQOcJkKtDpCl4JnpX8GTPSy3wlyO7rQCeFR378LDnX/sF
-         MWOSuXFxTUrcVP2SJt+c8RYU5gyFeOpQOL3tNiVFvj1oa41q+wJ2gc5Rapnn6YUuZxuF
-         3eC12VSmOgcOdX/zjESdnveGmA8U1gUB1+bQ2tWAGHoVMsjwozsLkJwhW8LZj2n/9QMz
-         9flg==
+         :cc:content-transfer-encoding;
+        bh=IDx9TaTlrtlIy3LwyY3v6JTSWWKD8mwpXaG0JjxaS24=;
+        b=SlMzwF0y6pOpcqPiZCbUWErI2aJ4Qec2sOSWj1qThCJmeTCYXwmNW1SFma2DLd1cGu
+         f3X90sAphnaOMPe74Xo4CZ1HKqkZcVz0vOm7R4rsp2dagpU7Q9E3YzX3Xx8bYUxjVrWy
+         YxLvJxt/KVgiTZzKN9M/a5oW1BJK3y6/xD+x0EmHQzRFkB8cu802/c3uaepNFVYHfRX2
+         UotS8HmyySy66MOMexpg5TqubSpwd+ErS/ICJppgEAMixpTRcoKzgaT3WAzMvXue21tZ
+         eqCsElsHkUYH9F946WjnnJpNPrUQUQJBWJqjGHNGWGV792v9GOkr0mft2VoTxGVBch75
+         neMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ThANl8keVovxssa+E4sSSWUNAQHe9R0+iBJSgPR0CjQ=;
-        b=A1sjt0peXpPfQwGyQmRrhMtKt6QJKtkz2gBj5HMUUqDIaQGp52bFRuvKQQbo5J3tQw
-         Xb3tKLiQyOZeZ8jqydCjHJAwq0Rz3EqKMCQjlaLl7FSou1rDY3XQjie/w9nTcjDhn8oU
-         QeRXHUxrM2uudLdit52vM30+VKfeG/H0gPwiswR5KxHoMAavc9a9oX8+xkZf0Su68crM
-         cW0RpZukaLTdZuhLdVrQWAzx5gb1BRX0EWyj7cM2shcAa593pIG+ybAvr7We/vGNtV6n
-         a8b8ePdTsSnYTudM91Tpwsu/q64li5xBbGa+pdfbPA+rvInGAnPk3cME9JvKYc0a1imk
-         EghA==
-X-Gm-Message-State: AOAM531hhX2KlmUFsl1rwR0Z8OQczbzEAF5K/219qhHA5WAVAU9fzDXY
-        OBzNJbptmu54rUkIU8X5McEitQqyj+unTm+9m00=
-X-Google-Smtp-Source: ABdhPJy3Ll+wqRsWhylSQD2sMWYDJMdZvDekK95mrGCAw0tru6i060Gt6bRNUlm4ijpFCEDlDaAlEh5irfsknjEpXPE=
-X-Received: by 2002:a25:284:: with SMTP id 126mr3402389ybc.22.1608262307575;
- Thu, 17 Dec 2020 19:31:47 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=IDx9TaTlrtlIy3LwyY3v6JTSWWKD8mwpXaG0JjxaS24=;
+        b=uN1jL44xM1CpWjqyYAjeowgZuBg1+mBmLPiqcDhGwYVKldRAe5bpk7pP+7/eC7xr1F
+         1MV5LH/+sTM8uiqCFCb5sCoYkpJNVVoioK7Iacg7z0ZOob8RSngcNmSH1De8Ckn7pohP
+         KBt2JXhvAxR21kEOcbxgauOda/hmzewTwzHkVmY5o+8bbD/QmrJ3c6Iw1MsB+TS0oAwN
+         FQsEMQBZ5YGPhMhpMBAtwbcQMH/iVgg/K1xVAFgYGiz14RGxSM9raOLnr4qsSwME4qIk
+         6gBCfTlqmqgh3ROriOn4HhmcBP+SCWgWK57WcTutBY7KIihRMHXIRfAqsoNNelPQLRx2
+         VARQ==
+X-Gm-Message-State: AOAM531fIQ3COXJeHa0wsAMWUO/vjt5nh6YyJGoDUmF1cbe/+yhcLVEs
+        +Ct3W5TxDkRlG2WglgaHVmgXjYgR5UnupikytMY1bQ==
+X-Google-Smtp-Source: ABdhPJwZtCEoVgZKzc5N0KEbf32ptMfnyARzBYf+ZL81LWijXKO96aKnogXClrO8QrPsrwnDkTyOFsSD5GhOjtHB0BM=
+X-Received: by 2002:a05:622a:18d:: with SMTP id s13mr2121237qtw.306.1608262455132;
+ Thu, 17 Dec 2020 19:34:15 -0800 (PST)
 MIME-Version: 1.0
-References: <CAKwvOdmuYc8rW_H4aQG4DsJzho=F+djd68fp7mzmBp3-wY--Uw@mail.gmail.com>
- <20200710062803.GA1071395@kroah.com> <20200710125022.alry7wkymalmv3ge@wittgenstein>
- <20200710225934.GA16881@localhost> <CAHk-=wipXqemHbVnK1kQsFzGOOZ8FUXn3PKrZb5WC=KkgAjRRw@mail.gmail.com>
- <20200711210317.GA60425@localhost> <20200728204037.GC1012@bug>
- <20200729063417.GD286933@localhost> <20201217214506.GD28574@duo.ucw.cz>
-In-Reply-To: <20201217214506.GD28574@duo.ucw.cz>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Fri, 18 Dec 2020 04:31:36 +0100
-Message-ID: <CANiq72=rFzxMyxDNkobdnMZohT_qT0KfGCincYBteyoJbtr2Gw@mail.gmail.com>
-Subject: Re: Linux kernel in-tree Rust support
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Geoffrey Thomas <geofft@ldpreload.com>, jbaublitz@redhat.com,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kees Cook <keescook@chromium.org>
+References: <1608208648-13710-1-git-send-email-stefanc@marvell.com>
+In-Reply-To: <1608208648-13710-1-git-send-email-stefanc@marvell.com>
+From:   Marcin Wojtas <mw@semihalf.com>
+Date:   Fri, 18 Dec 2020 04:34:03 +0100
+Message-ID: <CAPv3WKd-=ywD4E6VBgMmkrpEtEHDXjK0ix-cJc1UKnUHAPk_BQ@mail.gmail.com>
+Subject: Re: [PATCH net v3] net: mvpp2: Fix GoP port 3 Networking Complex
+ Control configurations
+To:     Stefan Chulski <stefanc@marvell.com>
+Cc:     netdev <netdev@vger.kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        "David S. Miller" <davem@davemloft.net>, nadavh@marvell.com,
+        Yan Markman <ymarkman@marvell.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 10:45 PM Pavel Machek <pavel@ucw.cz> wrote:
+Hi Stefan,
+
+czw., 17 gru 2020 o 13:40 <stefanc@marvell.com> napisa=C5=82(a):
 >
-> Well.. not everyone has 32 cores in their notebook.
+> From: Stefan Chulski <stefanc@marvell.com>
+>
+> During GoP port 2 Networking Complex Control mode of operation configurat=
+ions,
+> also GoP port 3 mode of operation was wrongly set.
+> Patch removes these configurations.
+> GENCONF_CTRL0_PORTX naming also fixed.
+>
+> Cc: stable@vger.kernel.org
+> Fixes: f84bf386f395 ("net: mvpp2: initialize the GoP")
+> Signed-off-by: Stefan Chulski <stefanc@marvell.com>
+> ---
+>
+> Changes in v3:
+> - Added cc stable@vger.kernel.org
+> Changes in v2:
+> - Added Fixes tag.
+>
+>  drivers/net/ethernet/marvell/mvpp2/mvpp2.h      | 6 +++---
+>  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 8 ++++----
+>  2 files changed, 7 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/eth=
+ernet/marvell/mvpp2/mvpp2.h
+> index 6bd7e40..39c4e5c 100644
+> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
+> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
+> @@ -651,9 +651,9 @@
+>  #define     GENCONF_PORT_CTRL1_EN(p)                   BIT(p)
+>  #define     GENCONF_PORT_CTRL1_RESET(p)                        (BIT(p) <=
+< 28)
+>  #define GENCONF_CTRL0                                  0x1120
+> -#define     GENCONF_CTRL0_PORT0_RGMII                  BIT(0)
+> -#define     GENCONF_CTRL0_PORT1_RGMII_MII              BIT(1)
+> -#define     GENCONF_CTRL0_PORT1_RGMII                  BIT(2)
+> +#define     GENCONF_CTRL0_PORT2_RGMII                  BIT(0)
+> +#define     GENCONF_CTRL0_PORT3_RGMII_MII              BIT(1)
+> +#define     GENCONF_CTRL0_PORT3_RGMII                  BIT(2)
+>
+>  /* Various constants */
+>
+> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/ne=
+t/ethernet/marvell/mvpp2/mvpp2_main.c
+> index d64dc12..d2b0506 100644
+> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+> @@ -1231,9 +1231,9 @@ static void mvpp22_gop_init_rgmii(struct mvpp2_port=
+ *port)
+>
+>         regmap_read(priv->sysctrl_base, GENCONF_CTRL0, &val);
+>         if (port->gop_id =3D=3D 2)
+> -               val |=3D GENCONF_CTRL0_PORT0_RGMII | GENCONF_CTRL0_PORT1_=
+RGMII;
+> +               val |=3D GENCONF_CTRL0_PORT2_RGMII;
+>         else if (port->gop_id =3D=3D 3)
+> -               val |=3D GENCONF_CTRL0_PORT1_RGMII_MII;
+> +               val |=3D GENCONF_CTRL0_PORT3_RGMII_MII;
+>         regmap_write(priv->sysctrl_base, GENCONF_CTRL0, val);
+>  }
+>
+> @@ -1250,9 +1250,9 @@ static void mvpp22_gop_init_sgmii(struct mvpp2_port=
+ *port)
+>         if (port->gop_id > 1) {
+>                 regmap_read(priv->sysctrl_base, GENCONF_CTRL0, &val);
+>                 if (port->gop_id =3D=3D 2)
+> -                       val &=3D ~GENCONF_CTRL0_PORT0_RGMII;
+> +                       val &=3D ~GENCONF_CTRL0_PORT2_RGMII;
+>                 else if (port->gop_id =3D=3D 3)
+> -                       val &=3D ~GENCONF_CTRL0_PORT1_RGMII_MII;
+> +                       val &=3D ~GENCONF_CTRL0_PORT3_RGMII_MII;
+>                 regmap_write(priv->sysctrl_base, GENCONF_CTRL0, val);
+>         }
+>  }
+> --
 
-It is true that complex Rust, like complex C++, does have high
-compilation times. But it all depends on how much one relies on
-certain language features. Straightforward Rust code is quick to
-compile.
+I tested the patch and LGTM.
 
-For reference, some quick stats :-)
+Acked-by: Marcin Wojtas <mw@semihalf.com>
 
-On a given machine, building v5.10 with a minimal config under -j3
-takes 3 minutes. With Rust support enabled and 4 trivial Rust modules,
-it takes 50 seconds more. "A big increase!", you may indeed claim, but
-those 50 seconds are basically all spent on the shared Rust support.
-The actual Rust modules compile very quickly afterwards. For example,
-touching either `drivers/char/mem.c` or one of the trivial Rust
-modules takes the same time in that machine: 10 seconds.
-
-This is for a minimal config -- when you start dealing with
-`allmodconfig` builds, or when you start having a hundred Rust modules
-instead of 4, the upfront cost becomes very small per Rust module.
-
-> Okay. I did some refactoring recently and I really wished kernel was
-> in Rust (and not in C)... so lets see what happens.
-
-Indeed, I think it is definitely worth it.
-
-Cheers,
-Miguel
+Thanks,
+Marcin
