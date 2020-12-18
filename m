@@ -2,137 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 908D42DDD6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 04:51:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E0D42DDD75
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 04:54:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731599AbgLRDuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 22:50:16 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:38480 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726798AbgLRDuQ (ORCPT
+        id S1731953AbgLRDyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 22:54:43 -0500
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:35277 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726789AbgLRDym (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 22:50:16 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BI3i0TM015386;
-        Fri, 18 Dec 2020 03:49:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=LIwujB5reJPpKPd0TNJ4s00yRFeVMTgcLTo3JiXpJic=;
- b=LB/IHwsQbjaq0Bm2V6SUYRH59yiRsBVst/8PKZ7PZlHL/lBgsGbQN/1uC2Bav0O7+S4s
- hHC/e2c9bWlsQsvyTn1T83Ykdpq4E1aBZjroluXAiN/mblg94hgM1GtcsyawhGCp1iYj
- IsZIaTfX6bJC7Eqr1a3e/Viesx9qnb8otkChHKwWENKTYnpdDo1BWfEJrYncWMTUSu1E
- bx6DO6CceKpWYaILCZ/FuDBb79WF3hI47xEKDC2OpmSAiZTeoxXWwFFYfrsbprALpBYG
- RVVjKXals9/03C2h4kty5eWhAui1zELwe4VqEkBdO+rQXTTdpd7MloRSrW7+6gthCoNw Bg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 35cntmgf70-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 18 Dec 2020 03:49:14 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BI3jJO8147213;
-        Fri, 18 Dec 2020 03:49:14 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 35g3rfkd11-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Dec 2020 03:49:13 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0BI3n95J022125;
-        Fri, 18 Dec 2020 03:49:09 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 17 Dec 2020 19:49:09 -0800
-Date:   Thu, 17 Dec 2020 19:49:07 -0800
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
-Cc:     Jane Chu <jane.chu@oracle.com>, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-raid@vger.kernel.org, dan.j.williams@intel.com,
-        david@fromorbit.com, hch@lst.de, song@kernel.org, rgoldwyn@suse.de,
-        qi.fuli@fujitsu.com, y-goto@fujitsu.com
-Subject: Re: [RFC PATCH v3 0/9] fsdax: introduce fs query to support reflink
-Message-ID: <20201218034907.GG6918@magnolia>
-References: <20201215121414.253660-1-ruansy.fnst@cn.fujitsu.com>
- <7fc7ba7c-f138-4944-dcc7-ce4b3f097528@oracle.com>
- <a57c44dd-127a-3bd2-fcb3-f1373572de27@cn.fujitsu.com>
+        Thu, 17 Dec 2020 22:54:42 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 0779E5C00D1;
+        Thu, 17 Dec 2020 22:53:56 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Thu, 17 Dec 2020 22:53:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=from
+        :to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=wwSwX31MmtwgHkrLnUTYMvcRUT
+        o1S31FFAv1wRLanEM=; b=GmM7bE4MdWMuu7NHmbXTnbvqSphFDOUT2IKU8QPIrp
+        N2wx2iDvc1WHt0n4Jj+fO3X9qdyQm20wMIIQ896U/8rtTyWaj3v/G1Zr6JAQ80C3
+        X762CtjSX6olhzXK5SKTFXZrii1a5aCUQzAtAgnKG+DI4/6215tDUl+/TImAp2yX
+        nQ7tWXfCk3FMV3VPCLWMb5Yt/QscUCtvPIIm3Ck3KhyrJbdt7Yk5aT9CEiTlUT2m
+        zpNneUiUKsXoCgHNsogkfHmXeejQ1JHZNSGtrGdFg7nH+xcrQyAe/W0ruy6K6zIg
+        cBY/bvhtS5VJTgRF+iqsnLqiKMp6N/x0Wv7V9rtt931A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=wwSwX31MmtwgHkrLn
+        UTYMvcRUTo1S31FFAv1wRLanEM=; b=HdXy/JgbaS0iBcKewhztP4YWr0YXTaCTM
+        3cO9Ey0U8ynQysCxoBuIDsRH21EylC7ZgkWQYvkivGY/HGkbkIA4IH6TbGj6xDT5
+        fRQVD+RHqGqKLcmKgr3jOx6ksnhJ0Q35DfsKsKPpu1SLyU88Aa0pePEfCsT2CsDz
+        9MvASBP/04chEfttMaVQDOxfJV1ENNTCaV2p8fh5UnDzz4zIjE+x0R0OOOnINCE9
+        AMxcWj1trkkguwAvrNBmNRkvORTS1jQBVtpM7DAgxxf5lbGqJpp7FLqkj7Cxdj7n
+        JLaJ8ApHfGo9Wd+tYvvNhMZDsLqg5qWr7JKRrkvCfRRRIBB5bcqiA==
+X-ME-Sender: <xms:0ifcX851fO4n_LOWLFkxQxWyFmmLgcMA5ZIzL5x24NCu26_YmCMw8A>
+    <xme:0ifcX95Ys-IKgzIkH7IeaJwTG_0HXZHNiD2ZPCfMRi8aAKeJeZLmgdykHOTCUtjcX
+    GR5D4HTjTWwOVBYUg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudelhedgieefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+    dttdenucfhrhhomheptehnughrvgifucflvghffhgvrhihuceorghnughrvgifsegrjhdr
+    ihgurdgruheqnecuggftrfgrthhtvghrnhepieetheduveelhfdvvdejleeuhfelteevhe
+    ffgfeitdefgeekjeefieevgfehhefgnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghen
+    ucfkphepuddvtddrvddtrdejjedrvdduudenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpegrnhgurhgvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:0ifcX7eiPBBgR6UdIA92toKrlOmr5Ixivkyh77zbY_d_DI7UXYY7xw>
+    <xmx:0ifcXxIemVvEtnIWeUGneaeEp7UDcvqVJy5mCBGiU6mcFHYkEkHUmg>
+    <xmx:0ifcXwK-ESKio1KBN8niHUjfwRU5gBG9i2sHhiC1-yLe26x6Ufe-Bg>
+    <xmx:1CfcX5rWPG1IP0B0tx5Kkp4OCDEd0JhBWiI_lRvREV3uzxv0gydslg>
+Received: from localhost.localdomain (unknown [120.20.77.211])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 0F28E108005B;
+        Thu, 17 Dec 2020 22:53:49 -0500 (EST)
+From:   Andrew Jeffery <andrew@aj.id.au>
+To:     linux-mmc@vger.kernel.org
+Cc:     ulf.hansson@linaro.org, robh+dt@kernel.org, joel@jms.id.au,
+        adrian.hunter@intel.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, ryan_chen@aspeedtech.com
+Subject: [PATCH v6 0/6] mmc: sdhci-of-aspeed: Expose phase delay tuning
+Date:   Fri, 18 Dec 2020 14:23:32 +1030
+Message-Id: <20201218035338.1130849-1-andrew@aj.id.au>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <a57c44dd-127a-3bd2-fcb3-f1373572de27@cn.fujitsu.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9838 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
- spamscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012180025
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9838 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 mlxscore=0
- lowpriorityscore=0 spamscore=0 adultscore=0 malwarescore=0 suspectscore=0
- mlxlogscore=999 impostorscore=0 priorityscore=1501 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012180025
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 10:44:26AM +0800, Ruan Shiyang wrote:
-> 
-> 
-> On 2020/12/17 上午4:55, Jane Chu wrote:
-> > Hi, Shiyang,
-> > 
-> > On 12/15/2020 4:14 AM, Shiyang Ruan wrote:
-> > > The call trace is like this:
-> > > memory_failure()
-> > >   pgmap->ops->memory_failure()      => pmem_pgmap_memory_failure()
-> > >    gendisk->fops->corrupted_range() => - pmem_corrupted_range()
-> > >                                        - md_blk_corrupted_range()
-> > >     sb->s_ops->currupted_range()    => xfs_fs_corrupted_range()
-> > >      xfs_rmap_query_range()
-> > >       xfs_currupt_helper()
-> > >        * corrupted on metadata
-> > >            try to recover data, call xfs_force_shutdown()
-> > >        * corrupted on file data
-> > >            try to recover data, call mf_dax_mapping_kill_procs()
-> > > 
-> > > The fsdax & reflink support for XFS is not contained in this patchset.
-> > > 
-> > > (Rebased on v5.10)
-> > 
-> > So I tried the patchset with pmem error injection, the SIGBUS payload
-> > does not look right -
-> > 
-> > ** SIGBUS(7): **
-> > ** si_addr(0x(nil)), si_lsb(0xC), si_code(0x4, BUS_MCEERR_AR) **
-> > 
-> > I expect the payload looks like
-> > 
-> > ** si_addr(0x7f3672e00000), si_lsb(0x15), si_code(0x4, BUS_MCEERR_AR) **
-> 
-> Thanks for testing.  I test the SIGBUS by writing a program which calls
-> madvise(... ,MADV_HWPOISON) to inject memory-failure.  It just shows that
-> the program is killed by SIGBUS.  I cannot get any detail from it.  So,
-> could you please show me the right way(test tools) to test it?
+Hello,
 
-I'm assuming that Jane is using a program that calls sigaction to
-install a SIGBUS handler, and dumps the entire siginfo_t structure
-whenever it receives one...
+This series implements support for the MMC core clk-phase-* devicetree bindings
+in the Aspeed SD/eMMC driver. The relevant register was exposed on the AST2600
+and is present for both the SD/MMC controller and the dedicated eMMC
+controller.
 
---D
+v6 simply removes the typedef from v5 in favour of a struct containing the
+phase array.
 
-> 
-> --
-> Thanks,
-> Ruan Shiyang.
-> 
-> > 
-> > thanks,
-> > -jane
-> > 
-> > 
-> > 
-> > 
-> > 
-> > 
-> 
-> 
+I've just done a quick build test of v6 given the small change and more
+extensive testing done with v5. 
+
+v5 can be found here:
+
+https://lore.kernel.org/linux-mmc/20201208012615.2717412-1-andrew@aj.id.au/
+
+Please review!
+
+Cheers,
+
+Andrew
+
+Andrew Jeffery (6):
+  mmc: core: Add helper for parsing clock phase properties
+  mmc: sdhci-of-aspeed: Expose clock phase controls
+  mmc: sdhci-of-aspeed: Add AST2600 bus clock support
+  mmc: sdhci-of-aspeed: Add KUnit tests for phase calculations
+  MAINTAINERS: Add entry for the ASPEED SD/MMC driver
+  ARM: dts: rainier: Add eMMC clock phase compensation
+
+ MAINTAINERS                                  |   9 +
+ arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts |   1 +
+ drivers/mmc/core/host.c                      |  44 ++++
+ drivers/mmc/host/Kconfig                     |  14 ++
+ drivers/mmc/host/Makefile                    |   1 +
+ drivers/mmc/host/sdhci-of-aspeed-test.c      | 100 ++++++++
+ drivers/mmc/host/sdhci-of-aspeed.c           | 251 ++++++++++++++++++-
+ include/linux/mmc/host.h                     |  13 +
+ 8 files changed, 422 insertions(+), 11 deletions(-)
+ create mode 100644 drivers/mmc/host/sdhci-of-aspeed-test.c
+
+-- 
+2.27.0
+
