@@ -2,308 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 835A62DEB73
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 23:14:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4011F2DEB7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 23:17:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726176AbgLRWOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 17:14:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725925AbgLRWOj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 17:14:39 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 848A7C0617A7;
-        Fri, 18 Dec 2020 14:13:58 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id t30so3940897wrb.0;
-        Fri, 18 Dec 2020 14:13:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4Isk9hkDKCSvcrvKZcfTXquqYMaga8rBRacQ/xkv2ow=;
-        b=HUm1uFM1kzwFx/JnrcT1a7vsbTGYXdKCLNPtq/f7gnBcPMMgiMj3TR62adrCIALs0F
-         p41+8BkRRAM9JJMcBOleJtG9wUvNr7mNp/4JeOmkmhFl/F8jz8zv2wlGWQG6R4k9kXlH
-         HzlncCW+bkmwR7XQeyvHppYVSQrufic03XV4y1j0a/KXQtvF3xJpvnCyZUZAHBB1Oq4Z
-         tXmK9PeGVO4ze+uTRatjqgEWYzMhY34vQJ9MsiQTM10ueKXNkcvyPRf9Qs1JJXcZDYhm
-         Nez5rxc37xPSWqJxcjIzb13qYvG34aoEo6pHkE1P9yQp+gqgsuJUq9Lh6fZThl0GZwWp
-         xnKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4Isk9hkDKCSvcrvKZcfTXquqYMaga8rBRacQ/xkv2ow=;
-        b=fuYH6H7OSBuTO5Lh9+1Z8tQLBfCCSVFr2l4CT6vKPUwQ+vQPYHCjjllekSevaaqXVa
-         La2ZZYhmBs2pXH/Gj6HVlNH1bAAA8BXWZngZlOLInQ/SS785lPMGiTvc7eCV2NqK9Tke
-         OJpBexEbWHoUCGuO0DJJRzppMB1CsqC44za7uRmE5iknIBJrfUjMPwLRPNxRB5lNbr4B
-         H0eJM7Ns+ExxGYZN5yceQNe8s1BHjpwqZAHUS2M+V3nd/3be1OiYPJRO6O1ndqzc7UDz
-         PCZwfT2W2T/FHDgv2Whvvorn1pxKI7rGLaEE99RVkxBFuNgqcaztsGfywdHQI5ewi1Ox
-         vQ9Q==
-X-Gm-Message-State: AOAM5304ysq2XCSf71PT0cKmz6+A+kdpSOGSJIQpjQe8l0mOCX8yjqDd
-        Y4lRjgbc9pkQMhIDnzJBwHo=
-X-Google-Smtp-Source: ABdhPJxy2su7mTQxsFPb4gaOIDLeg1e9oOUlPezCiqmBL6fCMdpUZG+mVi17M9D4ZL9Ibwb7Fn2AJw==
-X-Received: by 2002:adf:f6c9:: with SMTP id y9mr6625090wrp.121.1608329637286;
-        Fri, 18 Dec 2020 14:13:57 -0800 (PST)
-Received: from [192.168.1.158] ([2.31.224.116])
-        by smtp.gmail.com with ESMTPSA id c81sm14038810wmd.6.2020.12.18.14.13.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Dec 2020 14:13:56 -0800 (PST)
-From:   Daniel Scally <djrscally@gmail.com>
-Subject: Re: [PATCH v2 06/12] software_node: Add support for fwnode_graph*()
- family of functions
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org, yong.zhi@intel.com,
-        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
-        tian.shu.qiu@intel.com, mchehab@kernel.org, robert.moore@intel.com,
-        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, andriy.shevchenko@linux.intel.com,
-        linux@rasmusvillemoes.dk,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
-        linus.walleij@linaro.org, heikki.krogerus@linux.intel.com,
-        kitakar@gmail.com, jorhand@linux.microsoft.com
-References: <20201217234337.1983732-1-djrscally@gmail.com>
- <20201217234337.1983732-7-djrscally@gmail.com>
- <X9zXPpirfS2mCFk0@pendragon.ideasonboard.com>
-Message-ID: <8d448981-ddd5-9e2e-03bc-0a67b318d379@gmail.com>
-Date:   Fri, 18 Dec 2020 22:13:54 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726092AbgLRWQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 17:16:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43082 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725843AbgLRWQl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 17:16:41 -0500
+X-Gm-Message-State: AOAM530NhiZklnNaw8fHbVl/71VL2hR8zYIQ7x/RKwqcTEOYdCRrAWw4
+        +xeO1QKyf/4CVWZ9NkMZZwukJTfOr08HQA+b3Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608329759;
+        bh=L5cHp2aBHEH2nkV21YAlr1aN5VhH2YQ9Lc4uz5DReP8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=lsoEVE30MHClxWSlfDo++WfPN3Oev8lyVreniCyTQ6iKJw39wzuNBlPUpyIsNQ46w
+         HVTEFXTB7C6GJvzLda0hAdZenXbz+cW95yt5xhlBch9RVTJRtPoG5PPBNU3s+QKuF6
+         SvTSEwm7wguEqDHrQgv88d9ihBANbzWbi87fcFEVcVDcmmEJ+CxiGg6+bHYhpiFcmN
+         9xKoYo5R0Jxybpv3sm9j0rzxkj5nITY3RfOUR1I3Gh3goDv72Yhkr008C3OmxinNCR
+         scJbDBJFurh9xSLJSuUb5aeXFUpDmLW//r1uDy6u7Yq0v7PtzDEcBpllRbGzIMOkdw
+         jb+pDRasOQcoA==
+X-Google-Smtp-Source: ABdhPJyIlsFlS0Zu4otFlCIT81qP3/RBN8BFoPBWsXrVJPxykPGGIf0yMslATK3IaeBON3VDpK68IO3FVpdHDp15HSE=
+X-Received: by 2002:a17:907:2111:: with SMTP id qn17mr5904771ejb.525.1608329757408;
+ Fri, 18 Dec 2020 14:15:57 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <X9zXPpirfS2mCFk0@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200904130000.691933-1-thierry.reding@gmail.com>
+ <20200914220829.GA330122@bogus> <20200915123648.GA3496938@ulmo>
+ <20200924112725.GA2486709@ulmo> <20201105164312.GD485884@ulmo>
+ <483cd043-980e-81fb-cccb-385206a699df@arm.com> <20201106152548.GA767203@ulmo>
+ <20201110193309.GB2303484@ulmo> <X9tyc3t2MgtiFwwb@ulmo>
+In-Reply-To: <X9tyc3t2MgtiFwwb@ulmo>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 18 Dec 2020 16:15:45 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJqupMdr8vSWPTpYEGmcjKDqoKjMCYY-BvSLpxzkovx7Q@mail.gmail.com>
+Message-ID: <CAL_JsqJqupMdr8vSWPTpYEGmcjKDqoKjMCYY-BvSLpxzkovx7Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] dt-bindings: reserved-memory: Document "active" property
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Robin Murphy <robin.murphy@arm.com>, devicetree@vger.kernel.org,
+        Frank Rowand <frowand.list@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent - thanks for comments as always
+On Thu, Dec 17, 2020 at 9:00 AM Thierry Reding <thierry.reding@gmail.com> wrote:
+>
+> On Tue, Nov 10, 2020 at 08:33:09PM +0100, Thierry Reding wrote:
+> > On Fri, Nov 06, 2020 at 04:25:48PM +0100, Thierry Reding wrote:
+> > > On Thu, Nov 05, 2020 at 05:47:21PM +0000, Robin Murphy wrote:
+> > > > On 2020-11-05 16:43, Thierry Reding wrote:
+> > > > > On Thu, Sep 24, 2020 at 01:27:25PM +0200, Thierry Reding wrote:
+> > > > > > On Tue, Sep 15, 2020 at 02:36:48PM +0200, Thierry Reding wrote:
+> > > > > > > On Mon, Sep 14, 2020 at 04:08:29PM -0600, Rob Herring wrote:
+> > > > > > > > On Fri, Sep 04, 2020 at 02:59:57PM +0200, Thierry Reding wrote:
+> > > > > > > > > From: Thierry Reding <treding@nvidia.com>
+> > > > > > > > >
+> > > > > > > > > Reserved memory regions can be marked as "active" if hardware is
+> > > > > > > > > expected to access the regions during boot and before the operating
+> > > > > > > > > system can take control. One example where this is useful is for the
+> > > > > > > > > operating system to infer whether the region needs to be identity-
+> > > > > > > > > mapped through an IOMMU.
+> > > > > > > >
+> > > > > > > > I like simple solutions, but this hardly seems adequate to solve the
+> > > > > > > > problem of passing IOMMU setup from bootloader/firmware to the OS. Like
+> > > > > > > > what is the IOVA that's supposed to be used if identity mapping is not
+> > > > > > > > used?
+> > > > > > >
+> > > > > > > The assumption here is that if the region is not active there is no need
+> > > > > > > for the IOVA to be specified because the kernel will allocate memory and
+> > > > > > > assign any IOVA of its choosing.
+> > > > > > >
+> > > > > > > Also, note that this is not meant as a way of passing IOMMU setup from
+> > > > > > > the bootloader or firmware to the OS. The purpose of this is to specify
+> > > > > > > that some region of memory is actively being accessed during boot. The
+> > > > > > > particular case that I'm looking at is where the bootloader set up a
+> > > > > > > splash screen and keeps it on during boot. The bootloader has not set up
+> > > > > > > an IOMMU mapping and the identity mapping serves as a way of keeping the
+> > > > > > > accesses by the display hardware working during the transitional period
+> > > > > > > after the IOMMU translations have been enabled by the kernel but before
+> > > > > > > the kernel display driver has had a chance to set up its own IOMMU
+> > > > > > > mappings.
+> > > > > > >
+> > > > > > > > If you know enough about the regions to assume identity mapping, then
+> > > > > > > > can't you know if active or not?
+> > > > > > >
+> > > > > > > We could alternatively add some property that describes the region as
+> > > > > > > requiring an identity mapping. But note that we can't make any
+> > > > > > > assumptions here about the usage of these regions because the IOMMU
+> > > > > > > driver simply has no way of knowing what they are being used for.
+> > > > > > >
+> > > > > > > Some additional information is required in device tree for the IOMMU
+> > > > > > > driver to be able to make that decision.
+> > > > > >
+> > > > > > Rob, can you provide any hints on exactly how you want to move this
+> > > > > > forward? I don't know in what direction you'd like to proceed.
+> > > > >
+> > > > > Hi Rob,
+> > > > >
+> > > > > do you have any suggestions on how to proceed with this? I'd like to get
+> > > > > this moving again because it's something that's been nagging me for some
+> > > > > months now. It also requires changes across two levels in the bootloader
+> > > > > stack as well as Linux and it takes quite a bit of work to make all the
+> > > > > changes, so before I go and rewrite everything I'd like to get the DT
+> > > > > bindings sorted out first.
+> > > > >
+> > > > > So just to summarize why I think this simple solution is good enough: it
+> > > > > tries to solve a very narrow and simple problem. This is not an attempt
+> > > > > at describing the firmware's full IOMMU setup to the kernel. In fact, it
+> > > > > is primarily targetted at cases where the firmware hasn't setup an IOMMU
+> > > > > at all, and we just want to make sure that when the kernel takes over
+> > > > > and does want to enable the IOMMU, that all the regions that are
+> > > > > actively being accessed by non-quiesced hardware (the most typical
+> > > > > example would be a framebuffer scanning out a splat screen or animation,
+> > > > > but it could equally well be some sort of welcoming tone or music being
+> > > > > played back) are described in device tree.
+> > > > >
+> > > > > In other words, and this is perhaps better answering your second
+> > > > > question: in addition to describing reserved memory regions, we want to
+> > > > > add a bit of information here about the usage of these memory regions.
+> > > > > Some memory regions may contain information that the kernel may want to
+> > > > > use (such an external memory frequency scaling tables) and those I would
+> > > > > describe as "inactive" memory because it isn't being accessed by
+> > > > > hardware. The framebuffer in this case is the opposite and it is being
+> > > > > actively accessed (hence it is marked "active") by hardware while the
+> > > > > kernel is busy setting everything up so that it can reconfigure that
+> > > > > hardware and take over with its own framebuffer (for the console, for
+> > > > > example). It's also not so much that we know enough about the region to
+> > > > > assume it needs identity mapping. We don't really care about that from
+> > > > > the DT point of view. In fact, depending on the rest of the system
+> > > > > configuration, we may not need identity mapping (i.e. if none of the
+> > > > > users of the reserved memory region are behind an IOMMU). But the point
+> > > > > here is that the IOMMU drivers can use this "active" property to
+> > > > > determine that if a device is using an "active" region and it is behind
+> > > > > an IOMMU, then it must identity map that region in order for the
+> > > > > hardware, which is not under the kernel's control yet, to be able to
+> > > > > continue to access that memory through an IOMMU mapping.
+> > > >
+> > > > Hmm, "active" is not a property of the memory itself, though, it's really a
+> > > > property of the device accessing it. If several distinct devices share a
+> > > > carveout region, and for simplicity the bootloader marks it as active
+> > > > because one of those devices happens to be using some part of it at boot, we
+> > > > don't really want to have to do all the reserved region setup for all the
+> > > > other devices unnecessarily, when all that matters is not disrupting one of
+> > > > them when resetting the IOMMU.
+> > > >
+> > > > That leads to another possible hiccup - some bindings already have a defined
+> > > > meaning for a "memory-region" property. If we use that to point to some
+> > > > small region for a temporary low-resolution bootsplash screen for visibility
+> > > > to an IOMMU driver, the device's own driver might also interpret it as a
+> > > > private carveout from which it is expected to allocate everything, and thus
+> > > > could end up failing to work well or at all.
+> > > >
+> > > > I agree that we should only need a relatively simple binding, and that
+> > > > piggybacking off reserved-memory nodes seems like an ideal way of getting
+> > > > address range descriptions without too much extra complexity; the tricky
+> > > > part is how best to associate those with the other information needed, which
+> > > > is really the "iommus" property of the relevant device, and how to make it
+> > > > as generically discoverable as possible. Perhaps it might be workable to
+> > > > follow almost the same approach but with a dedicated property (e.g.
+> > > > "active-memory-region") that the IOMMU code can simply scan the DT for to
+> > > > determine relevant device nodes. Otherwise properties on the IOMMU node
+> > > > itself would seem the next most practical option.
+> > >
+> > > We did recently introduce a "memory-region-names" property that's used
+> > > to add context for cases where multiple memory regions are used. Perhaps
+> > > the simplest to address the above would be to describe the region as
+> > > active by naming it "active". That has the disadvantage of restricting
+> > > the number of active regions to 1, though I suspect that may even be
+> > > enough for the vast majority of cases where we need this. This would be
+> > > similar to how we use the "dma-mem" string in the "interconnect-names"
+> > > property to specify the "DMA parent" of a device node.
+> > >
+> > > Alternatively, we could perhaps support multiple occurrences of "active"
+> > > in the "memory-region-names" property. Or we could add a bit of
+> > > flexibility by considering all memory regions whose names have an
+> > > "active-" prefix as being active.
+> > >
+> > > > We've also finally got things going on the IORT RMR side[1], which helps add
+> > > > a bit more shape to things too; beyond the actual firmware parsing, DT and
+> > > > ACPI systems should definitely be converging on the same internal
+> > > > implementation in the IOMMU layer.
+> > >
+> > > Yeah, from a quick look at that series, this actually sounds really
+> > > close to what I'm trying to achieve here.
+> > >
+> > > The patch set that I have would nicely complement the code added to
+> > > iommu_dma_get_resv_regions() for RMR regions. It's not exactly the same
+> > > code, but it's basically the DT equivalent of
+> > > iort_dev_rmr_get_resv_regions().
+> >
+> > Hi Rob,
+> >
+> > what's your preference here for DT bindings? Do you want me to reuse the
+> > existing memory-region/memory-region-names properties, or do you want
+> > something completely separate?
 
-On 18/12/2020 16:22, Laurent Pinchart wrote:
-> Hi Daniel,
-> 
-> Thank you for the patch.
-> 
-> On Thu, Dec 17, 2020 at 11:43:31PM +0000, Daniel Scally wrote:
->> From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
->>
->> This implements the remaining .graph_* callbacks in the
->> fwnode operations structure for the software nodes. That makes
->> the fwnode_graph*() functions available in the drivers also
->> when software nodes are used.
->>
->> The implementation tries to mimic the "OF graph" as much as
->> possible, but there is no support for the "reg" device
->> property. The ports will need to have the index in their
->> name which starts with "port@" (for example "port@0", "port@1",
->> ...) and endpoints will use the index of the software node
->> that is given to them during creation. The port nodes can
->> also be grouped under a specially named "ports" subnode,
->> just like in DT, if necessary.
->>
->> The remote-endpoints are reference properties under the
->> endpoint nodes that are named "remote-endpoint".
->>
->> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
->> Co-developed-by: Daniel Scally <djrscally@gmail.com>
->> Signed-off-by: Daniel Scally <djrscally@gmail.com>
->> ---
->> Changes in v2:
->>
->> 	- Changed commit to specify port name prefix as port@
->> 	- Accounted for that rename in *parse_endpoint()
->>
->>  drivers/base/swnode.c | 110 +++++++++++++++++++++++++++++++++++++++++-
->>  1 file changed, 109 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
->> index 2b90d380039b..0d14d5ebe441 100644
->> --- a/drivers/base/swnode.c
->> +++ b/drivers/base/swnode.c
->> @@ -540,6 +540,110 @@ software_node_get_reference_args(const struct fwnode_handle *fwnode,
->>  	return 0;
->>  }
->>  
->> +static struct fwnode_handle *
->> +swnode_graph_find_next_port(const struct fwnode_handle *parent,
->> +			    struct fwnode_handle *port)
->> +{
->> +	struct fwnode_handle *old = port;
->> +
->> +	while ((port = software_node_get_next_child(parent, old))) {
->> +		if (!strncmp(to_swnode(port)->node->name, "port", 4))
-> 
-> Maybe we'll need to limit this to matching on "port" or "port@[0-9]+" to
-> avoid false positives, but that can be done later, if needed.
+I think that's overloading memory-region-names as *-names is a name
+local to a binding to augment an index.
 
-Hmm yeah I guess that's a danger - ok, I'll stick it on the list.
+>
+> Hi Rob,
+>
+> I've been thinking about this some more and I think I've come up with an
+> alternative that I think you might like better than what we discussed so
+> far.
+>
+> Rather than reusing memory-region-names and guessing from the name what
+> the intended purpose was, how about we add the concept of memory region
+> specifiers to describe additional properties of reserved memory regions
+> uses? This would allow us to address Robin's concerns about describing
+> what's essentially a device property within the reserved memory region.
+>
+> The way I imagine that this would work is that the reserved memory
+> regions would gain a new property, "#memory-region-cells", that defines
+> the number of cells that make up a reserved memory region specifier,
+> much like we have #clock-cells, #reset-cells, #pwm-cells, etc. Since
+> these specifier are defined where the regions are used, they would allow
+> us to encode information about that specific use, rather than properties
+> of the regions themselves.
+>
+> This should also allow for backwards-compatibility where a missing
+> #memory-region-cells would be interpreted as 0 specifier (i.e. no
+> additional data).
+>
+> Here's how this would look for the specific example that I want to
+> solve:
+>
+>         #define MEMORY_REGION_ACTIVE 0x1
+>
+>         / {
+>                 reserved-memory {
+>                         lut: lookup-table@96060000 {
+>                                 reg = <0x96060000 0x00010000>;
+>                                 #memory-region-cells = <1>;
+>                         };
+>
+>                         fbc: framebuffer@96070000 {
+>                                 reg = <0x96070000 0x800000>;
+>                                 #memory-region-cells = <1>;
+>                         };
+>                 };
+>
+>                 ...
+>
+>                 host1x@50000000 {
+>                         ...
+>
+>                         display@54200000 {
+>                                 ...
+>                                 memory-regions = <&fbc MEMORY_REGION_ACTIVE>,
+>                                                  <&lut MEMORY_REGION_ACTIVE>;
+>                                 ...
+>                         };
+>
+>                         ...
+>                 };
+>         };
+>
+> As you can see, the reserved memory region nodes only contain properties
+> that are immediately related to the regions themselves, whereas the
+> "active" attribute now applies only for the specific use of the region
+> within display@54200000.
+>
+> What do you think?
 
+When would these regions ever not be active? Isn't just the fact that
+you have the 'memory-regions' property enough to know that they are
+active (possibly combined with seeing the display h/w is already
+enabled)? I guess if the idea is to parse 'memory-regions' for the
+whole DT and find the active ones, you'd need the flag (and presumably
+an 'iommus' property too).
 
->> +			return port;
->> +		old = port;
->> +	}
->> +
->> +	return NULL;
->> +}
->> +
->> +static struct fwnode_handle *
->> +software_node_graph_get_next_endpoint(const struct fwnode_handle *fwnode,
->> +				      struct fwnode_handle *endpoint)
->> +{
->> +	struct swnode *swnode = to_swnode(fwnode);
->> +	struct fwnode_handle *old = endpoint;
->> +	struct fwnode_handle *parent;
->> +	struct fwnode_handle *port;
->> +
->> +	if (!swnode)
->> +		return NULL;
->> +
->> +	if (endpoint) {
->> +		port = software_node_get_parent(endpoint);
-> 
-> Here the reference count to port is incremented.
-> 
->> +		parent = software_node_get_parent(port);
->> +	} else {
->> +		parent = software_node_get_named_child_node(fwnode, "ports");
->> +		if (!parent)
->> +			parent = software_node_get(&swnode->fwnode);
->> +
->> +		port = swnode_graph_find_next_port(parent, NULL);
-> 
-> But here it isn't, software_node_get_next_child() doesn't deal with
-> reference counts.
+Do you have a usecase for this outside of the display enabled by
+bootloader? Because we already have the simple-framebuffer binding of
+which the memory region is just part of it. Wouldn't the presence of a
+memory region there imply it's active as well?
 
-Not as in the kernel right now, but after patch one of this series, it does:
+Or maybe the iommu node(s) should just have a 'memory-regions' property?
 
-[PATCH v2 01/12] software_node: Fix refcounts in
-software_node_get_next_child()
-
-I'm not sure that one linked to the thread correctly, but it's here if
-you haven't seen it:
-
-https://lore.kernel.org/linux-media/20201217234337.1983732-2-djrscally@gmail.com/T/#u
-
-The tl;dr of the change is that it will now get() the next node (if
-found) and **always** put() if one is passed.
-
-
->> +	}
->> +
->> +	for (; port; port = swnode_graph_find_next_port(parent, port)) {
-> 
-> So if the loop terminates normally, the reference acquired in the first
-> branch of the if will be leaked.
-> 
->> +		endpoint = software_node_get_next_child(port, old);
->> +		if (endpoint) {
->> +			fwnode_handle_put(port);
-> 
-> While in this case the reference not acquired in the second branch of
-> the if will be released incorrectly.
-> 
-> I think it's software_node_get_next_child() that needs to be fixed if
-> I'm not mistaken.
-
-I think that's all handled in software_node_get_next_child() as amended
-by 01/12. The net effect of get_next_endpoint() should be one refcount
-increased for any endpoint returned, and 0 change to parent and any ports.
-
-
->> +			break;
->> +		}
->> +
->> +		/* No more endpoints for that port, so stop passing old */
->> +		old = NULL;
-> 
-> I wonder if you could drop the 'old' variable and use 'enpoint' in the
-> call to software_node_get_next_child(). You could then drop these two
-> lines.
-
-That won't work, because endpoint would at that point not be a child of
-the port we're passing, and the function relies on it being one:
-
-	if (!p || list_empty(&p->children) ||
-	    (c && list_is_last(&c->entry, &p->children))) {
-		fwnode_handle_put(child);
-		return NULL;
-	}
-
->> +	}
->> +
->> +	fwnode_handle_put(parent);
->> +
->> +	return endpoint;
->> +}
->> +
->> +static struct fwnode_handle *
->> +software_node_graph_get_remote_endpoint(const struct fwnode_handle *fwnode)
->> +{
->> +	struct swnode *swnode = to_swnode(fwnode);
->> +	const struct software_node_ref_args *ref;
->> +	const struct property_entry *prop;
->> +
->> +	if (!swnode)
->> +		return NULL;
->> +
->> +	prop = property_entry_get(swnode->node->properties, "remote-endpoint");
->> +	if (!prop || prop->type != DEV_PROP_REF || prop->is_inline)
->> +		return NULL;
->> +
->> +	ref = prop->pointer;
->> +
->> +	return software_node_get(software_node_fwnode(ref[0].node));
->> +}
->> +
->> +static struct fwnode_handle *
->> +software_node_graph_get_port_parent(struct fwnode_handle *fwnode)
->> +{
->> +	struct swnode *swnode = to_swnode(fwnode);
->> +	struct fwnode_handle *parent;
->> +
->> +	if (!strcmp(swnode->parent->node->name, "ports"))
->> +		parent = &swnode->parent->parent->fwnode;
->> +	else
->> +		parent = &swnode->parent->fwnode;
->> +
->> +	return software_node_get(parent);
->> +}
->> +
->> +static int
->> +software_node_graph_parse_endpoint(const struct fwnode_handle *fwnode,
->> +				   struct fwnode_endpoint *endpoint)
->> +{
->> +	struct swnode *swnode = to_swnode(fwnode);
->> +	int ret;
->> +
->> +	ret = kstrtou32(swnode->parent->node->name + 5, 10, &endpoint->port);
->> +	if (ret)
->> +		return ret;
->> +
->> +	endpoint->id = swnode->id;
->> +	endpoint->local_fwnode = fwnode;
->> +
->> +	return 0;
->> +}
->> +
->>  static const struct fwnode_operations software_node_ops = {
->>  	.get = software_node_get,
->>  	.put = software_node_put,
->> @@ -551,7 +655,11 @@ static const struct fwnode_operations software_node_ops = {
->>  	.get_parent = software_node_get_parent,
->>  	.get_next_child_node = software_node_get_next_child,
->>  	.get_named_child_node = software_node_get_named_child_node,
->> -	.get_reference_args = software_node_get_reference_args
->> +	.get_reference_args = software_node_get_reference_args,
->> +	.graph_get_next_endpoint = software_node_graph_get_next_endpoint,
->> +	.graph_get_remote_endpoint = software_node_graph_get_remote_endpoint,
->> +	.graph_get_port_parent = software_node_graph_get_port_parent,
->> +	.graph_parse_endpoint = software_node_graph_parse_endpoint,
->>  };
->>  
->>  /* -------------------------------------------------------------------------- */
-> 
+Rob
