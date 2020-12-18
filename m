@@ -2,170 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F388C2DE33A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 14:22:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6FD2DE33E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 14:23:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727026AbgLRNV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 08:21:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49518 "EHLO
+        id S1727053AbgLRNWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 08:22:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726286AbgLRNV1 (ORCPT
+        with ESMTP id S1726474AbgLRNWX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 08:21:27 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F3DC0617A7;
-        Fri, 18 Dec 2020 05:20:46 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id a9so5410059lfh.2;
-        Fri, 18 Dec 2020 05:20:46 -0800 (PST)
+        Fri, 18 Dec 2020 08:22:23 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40029C061282
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 05:21:43 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id d26so2098571wrb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 05:21:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OGRVW3Zib+bLKNC+Amev3v1cKadH0SToLHNOIADvq2o=;
-        b=pkvKvgjlTYrU0/rcHyKjHlh90stI5sOSKLqGgQy9GEpaW9fC2vF8hJQnOIt5c8SBdh
-         7On4XSt9s2ahIXDe/XUoBWn6cfWjgfCdXS4QjYXKcRgzTwdLxVEfxv9olmHEGjbZsywP
-         LYVkZAnsmZT+WJTkGNNZXB+Xa3ckIxvo8Gq4VG0KuSwnNlIhmE00z4HLFTX2FR8EronV
-         6FxqB3D2LyUlsmqSUBEpjlqc1AWMQ2FXzKZe2M4yJCz/qDh8HDKcvRnbDWKBg97PHhGf
-         3EZE7XSx/qAxFqVumF0TklBSIE4cHG0OS9qjDAVG24JPlQAjXxMUHACej1ioVnzM7P8I
-         L0vw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=F+ibjVaRawhB9by9+I/z97txlwumatdH7xKnsmPgCGQ=;
+        b=k5O8dSEmSegIR7pYA9kV2ana+UeZIpHtGeDaUNyh9fmp8oCXJhsX8wUXP68tD5eWZv
+         RJZNsMiPVsggdsokowNDv9oX1TWqyfbNOEo8AjdDAIwgyrys3P5y66kWCBOsEuPhQfec
+         eWWyJzb0+2YmlgcrJ2Vewwut/ZG8owPpSTRMsG51UIA2RshPJJEckF1PF17v/GpCTCN9
+         JmoP6ZT/ILZd8XyE1rTs3xCfMNWWFloEsQPfq5hm3XQ/W43zMNM8RXcjG3enzySy8Pjl
+         dsIx74U40ax+muXd4/dAAMrr3h1qL1rj64mYoHM78mhsD9v5orIYz88yAK90ivsTkSv1
+         QU1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OGRVW3Zib+bLKNC+Amev3v1cKadH0SToLHNOIADvq2o=;
-        b=DFE/d82pSAvaotvC5mZXFGiU45HPk2/SkwT9YZ6TTKkqBs9zZd9e7h7Ffov8BVgmDu
-         PsF55/mLarLY52Nw+UfzvNIbJVG3i3jZ3ny3PRxqz+Jveya+sRB9mvD3BPM0pftK1Nr+
-         TWTYjNq7K4YVOWBjBp0nbdSpb2iQQ0wiURFxMWybRFON+rlZYAb8ateQIJTeIpx48Fug
-         ucvi5IyG05TvUS42MBzkyQgOjlpRXA2pGmd/AGJtNpY5K/97WauXHOZHXaMNGLH3vlZV
-         hRnR2o283dovc2GR7qAbVIw6acTfDlDaaLTZTibMHpPF/k3FnqMi6KMO6QroePVhL1q7
-         Vi8A==
-X-Gm-Message-State: AOAM533dB/amjyNFD4wiSBgcYJPvhvvQae5JxNNcoRUkWfZdBy1qRn5F
-        u7xQXRt/SO/3m1A0D1wBd8gLaReFwiwkey6ayHg=
-X-Google-Smtp-Source: ABdhPJxNcBHYhpRK17C/zCYLKYTsInrzKiwsE3Gb5ARV2jH3e53ufX/o2xYcH8K0vfq/NOoWOttiMQWagPYmE+O1BBw=
-X-Received: by 2002:a2e:874d:: with SMTP id q13mr1791068ljj.323.1608297645213;
- Fri, 18 Dec 2020 05:20:45 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=F+ibjVaRawhB9by9+I/z97txlwumatdH7xKnsmPgCGQ=;
+        b=RKMYs+VLHIFdV8GToCKLPs4yv3oPQeBm+jOpxeFXljjSB7R5fiJj6DhQTPDBVHAlyK
+         wsSkOdb4NahNeSm2/vDcQhOIySr9sOhKVJuwWREaMyAbs41WE/Iwq6jNdUU0Vn78Sg4f
+         dMuPSokecWz2lP7TA/GkypKCx7Gs8lfFke+XhwxD1fqwAQVzaBoBwUu+NoWsPmJoffcp
+         XXBnxv/vhMS9lCoZypecEYNVllctv/VxumnBV5Ao9Gq0zQWjWl0B76lrB044tVLnfUp2
+         h5ETqSKk9EUtyIad+bjIZWymbzS/0TxPaiwb864wQ+e80NT4h2U4yiQTISfvEqUqw+58
+         NzcA==
+X-Gm-Message-State: AOAM532kPm6sOQ9PAxtS+3DyXbi+Az3++cZqIIBkPPprmWMPW+HO88+v
+        clJOx1dLEYU1aO67qlqlkTGpjQ==
+X-Google-Smtp-Source: ABdhPJwtBIUdA1p+Ktu1cWhF7xpUYRoQd2G/kpx1lZYPa72QSunJ0F9p0UsLXj2jqK45VkD4M5qrZw==
+X-Received: by 2002:a05:6000:11c1:: with SMTP id i1mr4613985wrx.16.1608297701780;
+        Fri, 18 Dec 2020 05:21:41 -0800 (PST)
+Received: from dell ([91.110.221.216])
+        by smtp.gmail.com with ESMTPSA id c190sm11393200wme.19.2020.12.18.05.21.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Dec 2020 05:21:41 -0800 (PST)
+Date:   Fri, 18 Dec 2020 13:21:39 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v3 3/7] mfd: Add MFD driver for ATC260x PMICs
+Message-ID: <20201218132139.GR207743@dell>
+References: <cover.1607216141.git.cristian.ciocaltea@gmail.com>
+ <f538c21de556c66390614bad778f7dc095222e8c.1607216141.git.cristian.ciocaltea@gmail.com>
+ <20201216101000.GD207743@dell>
+ <20201217231731.GA104305@BV030612LT>
 MIME-Version: 1.0
-References: <bde0b6c32f2b055c1ad1401b45c4adf61aab6876.camel@themaw.net>
- <CAC2o3DJdHuQxY7Rn5uXUprS7i8ri1qB=wOUM2rdZkWt4yJHv1w@mail.gmail.com>
- <3e97846b52a46759c414bff855e49b07f0d908fc.camel@themaw.net>
- <CAC2o3DLGtx15cgra3Y92UBdQRBKGckqOkDmwBV-aV-EpUqO5SQ@mail.gmail.com>
- <efb7469c7bad2f6458c9a537b8e3623e7c303c21.camel@themaw.net>
- <da4f730bbbb20c0920599ca5afc316e2c092b7d8.camel@themaw.net>
- <CAC2o3DJsvB6kj=S6D3q+_OBjgez9Q9B5s3-_gjUjaKmb2MkTHQ@mail.gmail.com>
- <c4002127c72c07a00e8ba0fae6b0ebf5ba8e08e7.camel@themaw.net>
- <a39b73a53778094279522f1665be01ce15fb21f4.camel@themaw.net>
- <c8a6c9adc3651e64cf694f580a8cb3d87d7cb893.camel@themaw.net>
- <X9t1xVTZ/ApIvPMg@mtj.duckdns.org> <67a3012a6a215001c8be9344aee1c99897ff8b7e.camel@themaw.net>
- <CAC2o3DJhx+dJX-oMKSTNabWYyRB750VABib+OZ=7UX6rGJZD5g@mail.gmail.com> <f21e92d683c609b14e559209a1a1bed2f7c3649e.camel@themaw.net>
-In-Reply-To: <f21e92d683c609b14e559209a1a1bed2f7c3649e.camel@themaw.net>
-From:   Fox Chen <foxhlchen@gmail.com>
-Date:   Fri, 18 Dec 2020 21:20:33 +0800
-Message-ID: <CAC2o3DKO_weLt2n6hOwU=hJ9J4fc3Qa3mUHP7rMzksJVuGnsJA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/6] kernfs: proposed locking and concurrency improvement
-To:     Ian Kent <raven@themaw.net>
-Cc:     Tejun Heo <tj@kernel.org>, Greg KH <gregkh@linuxfoundation.org>,
-        akpm@linux-foundation.org, dhowells@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        miklos@szeredi.hu, ricklind@linux.vnet.ibm.com,
-        sfr@canb.auug.org.au, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201217231731.GA104305@BV030612LT>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 7:21 PM Ian Kent <raven@themaw.net> wrote:
->
-> On Fri, 2020-12-18 at 16:01 +0800, Fox Chen wrote:
-> > On Fri, Dec 18, 2020 at 3:36 PM Ian Kent <raven@themaw.net> wrote:
-> > > On Thu, 2020-12-17 at 10:14 -0500, Tejun Heo wrote:
-> > > > Hello,
-> > > >
-> > > > On Thu, Dec 17, 2020 at 07:48:49PM +0800, Ian Kent wrote:
-> > > > > > What could be done is to make the kernfs node attr_mutex
-> > > > > > a pointer and dynamically allocate it but even that is too
-> > > > > > costly a size addition to the kernfs node structure as
-> > > > > > Tejun has said.
-> > > > >
-> > > > > I guess the question to ask is, is there really a need to
-> > > > > call kernfs_refresh_inode() from functions that are usually
-> > > > > reading/checking functions.
-> > > > >
-> > > > > Would it be sufficient to refresh the inode in the write/set
-> > > > > operations in (if there's any) places where things like
-> > > > > setattr_copy() is not already called?
-> > > > >
-> > > > > Perhaps GKH or Tejun could comment on this?
-> > > >
-> > > > My memory is a bit hazy but invalidations on reads is how sysfs
-> > > > namespace is
-> > > > implemented, so I don't think there's an easy around that. The
-> > > > only
-> > > > thing I
-> > > > can think of is embedding the lock into attrs and doing xchg
-> > > > dance
-> > > > when
-> > > > attaching it.
-> > >
-> > > Sounds like your saying it would be ok to add a lock to the
-> > > attrs structure, am I correct?
-> > >
-> > > Assuming it is then, to keep things simple, use two locks.
-> > >
-> > > One global lock for the allocation and an attrs lock for all the
-> > > attrs field updates including the kernfs_refresh_inode() update.
-> > >
-> > > The critical section for the global lock could be reduced and it
-> > > changed to a spin lock.
-> > >
-> > > In __kernfs_iattrs() we would have something like:
-> > >
-> > > take the allocation lock
-> > > do the allocated checks
-> > >   assign if existing attrs
-> > >   release the allocation lock
-> > >   return existing if found
-> > > othewise
-> > >   release the allocation lock
-> > >
-> > > allocate and initialize attrs
-> > >
-> > > take the allocation lock
-> > > check if someone beat us to it
-> > >   free and grab exiting attrs
-> > > otherwise
-> > >   assign the new attrs
-> > > release the allocation lock
-> > > return attrs
-> > >
-> > > Add a spinlock to the attrs struct and use it everywhere for
-> > > field updates.
-> > >
-> > > Am I on the right track or can you see problems with this?
-> > >
-> > > Ian
-> > >
-> >
-> > umm, we update the inode in kernfs_refresh_inode, right??  So I guess
-> > the problem is how can we protect the inode when kernfs_refresh_inode
-> > is called, not the attrs??
->
-> But the attrs (which is what's copied from) were protected by the
-> mutex lock (IIUC) so dealing with the inode attributes implies
-> dealing with the kernfs node attrs too.
->
-> For example in kernfs_iop_setattr() the call to setattr_copy() copies
-> the node attrs to the inode under the same mutex lock. So, if a read
-> lock is used the copy in kernfs_refresh_inode() is no longer protected,
-> it needs to be protected in a different way.
->
+On Fri, 18 Dec 2020, Cristian Ciocaltea wrote:
 
-Ok, I'm actually wondering why the VFS holds exclusive i_rwsem for .setattr but
- no lock for .getattr (misdocumented?? sometimes they have as you've found out)?
-What does it protect against?? Because .permission does a similar thing
-here -- updating inode attributes, the goal is to provide the same
-protection level
-for .permission as for .setattr, am I right???
+> Hi Lee,
+> 
+> Thank you for the detailed review!
+> 
+> I will prepare a new revision, but there are still a couple of open
+> points..
 
+Could you please snip your replies, leaving only the open points.
 
-thanks,
-fox
+Scrolling through lots of empty quotes or "done" comments is quite
+time consuming.  Thanks.
+
+[...]
+
+> > > +	/*
+> > > +	 * Using regmap within an atomic context (e.g. accessing a PMIC when
+> > > +	 * powering system down) is normally allowed only if the regmap type
+> > > +	 * is MMIO and the regcache type is either REGCACHE_NONE or
+> > > +	 * REGCACHE_FLAT. For slow buses like I2C and SPI, the regmap is
+> > > +	 * internally protected by a mutex which is acquired non-atomically.
+> > > +	 *
+> > > +	 * Let's improve this by using a customized locking scheme inspired
+> > > +	 * from I2C atomic transfer. See i2c_in_atomic_xfer_mode() for a
+> > > +	 * starting point.
+> > > +	 */
+> > > +	if (system_state > SYSTEM_RUNNING && irqs_disabled())
+> > 
+> > Were does system_state come from?
+> 
+> It is declared in 'include/linux/kernel.h':
+> 
+> extern enum system_states {
+> 	SYSTEM_BOOTING,
+> 	SYSTEM_SCHEDULING,
+> 	SYSTEM_RUNNING,
+> 	SYSTEM_HALT,
+> 	SYSTEM_POWER_OFF,
+> 	SYSTEM_RESTART,
+> 	SYSTEM_SUSPEND,
+> } system_state;
+> 
+> The definition is in 'init/main.c':
+> 
+> enum system_states system_state __read_mostly;
+> EXPORT_SYMBOL(system_state);
+
+Ah, it's a system wide thing.  No problem.
+
+[...]
+
+> > > +	ret = regmap_read(atc260x->regmap, atc260x->rev_reg, &chip_rev);
+> > > +	if (ret) {
+> > > +		dev_err(dev, "Failed to get chip revision\n");
+> > > +		return ret;
+> > > +	}
+> > > +
+> > > +	if (chip_rev < 0 || chip_rev > 31) {
+> > > +		dev_err(dev, "Unknown chip revision: %d\n", ret);
+> > > +		return -EINVAL;
+> > > +	}
+> > 
+> > This still seems limiting.
+> 
+> This is based on the vendor implementation. Unfortunately I don't have
+> access to a data sheet or any other source of information about the
+> management of the chip revisions.
+
+So which versions does this driver work with?  All 32?
+
+[...]
+
+> > > +const struct of_device_id atc260x_i2c_of_match[] = {
+> > > +	{ .compatible = "actions,atc2603c", .data = (void *)ATC2603C },
+> > > +	{ .compatible = "actions,atc2609a", .data = (void *)ATC2609A },
+> > > +	{ /* sentinel */ }
+> > 
+> > I think you can drop the (void *) casts.
+> 
+> Without the cast, I get the following compiler warning:
+> 
+> drivers/mfd/atc260x-i2c.c:46:46: warning: initialization of ‘const void *’
+> from ‘int’ makes pointer from integer without a cast [-Wint-conversion]
+>   { .compatible = "actions,atc2603c", .data = ATC2603C },
+
+Perhaps I'm getting confused with addresses of things.  Never mind.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
