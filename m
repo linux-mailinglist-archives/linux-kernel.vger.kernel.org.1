@@ -2,178 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C1992DE807
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 18:32:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 977CF2DE809
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 18:35:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731541AbgLRRcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 12:32:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37076 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727787AbgLRRcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 12:32:17 -0500
-X-Gm-Message-State: AOAM530eYzdjIS03DeU23l1QN0UavYealEGwaEVsaREi6cWhayzQadiG
-        Qq/APuihaVTN2/VnS0yyYq4Xtr6Ws7wgbfp7Mg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608312696;
-        bh=BGGQyU71jC8PHb+t5FSRSX4kcxy5gG40URfePe8J9nU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cC9AQytUFvAovKozDhlHSzCa40u9b51UDDu9DY6VQsEs2qwlTb7/eZ+duGTl5G1MJ
-         ltk1VO2sg5dTfQ9/rD8rASKJc+I7GyP3U29GCpmR4vNcsvQhuTGV9xRWhbP9HVb3Cr
-         GHcvUq6DPgtaiTnrm90fWn6uZTlOzXGvAz3ugrDpPpOwC9zbdWaT0hryRuRTgrwTal
-         8RHDiRRFV4faBB8B+E/aBqM+Qyr+AtKu47VmmKqT+pQW+ygXcKYgIsnYFKtt1PlFsj
-         2kRsozrN5SM3jDENsG6+VwteAIt6IsjRhBdaQHFUKX3GBUBFmwd3KMIUCI0udLN/Mh
-         Rfjes/c6AAKKA==
-X-Google-Smtp-Source: ABdhPJx+/RIAdMo/5KCMW4U0Xhm+Ecu8VxfrvTtPK9bsliEAA6f3bzT1/rBR+63O/WV/mn7yv7B+sDblEkk6WewuJ5I=
-X-Received: by 2002:a17:906:d87:: with SMTP id m7mr5100609eji.108.1608312694596;
- Fri, 18 Dec 2020 09:31:34 -0800 (PST)
+        id S1731952AbgLRRcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 12:32:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730410AbgLRRcw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 12:32:52 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8A3AC0617A7;
+        Fri, 18 Dec 2020 09:32:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=1LDFfQBYh7yjr3C0jWACsjitBa3VClxYhSmNicB3yqg=; b=gLBKl7EMKBaxkw/1xVxrjciOQD
+        uxS/T/pelMcAtfsk3lC467nNAOGvfpxFHd/hoMGK534J8zyLjPuZbk43im3aPmSGhQDQ8LFFkIo86
+        BOGZuMbGLUzfE6PIhfirAfA0VxFTGgL4BDl7lsHRUdzK6Kbh/1uhH50e0GPhtYnfHU0z5ph+S2ISm
+        AKfqvv5ZAtHRB3UnBGUPYNYZctAUPfX3pOMGTiPJvUNmLrdYIxqtASQNDixshPjiD6BNaAJvfT1b4
+        SzPtvS20CKm4HdowKFvgmD69g3n3zU5My9I64FahLlSCTVePt3BsBLci/fn81N5A8dni4iACrXyWR
+        vkF3zP2Q==;
+Received: from [2601:1c0:6280:3f0::64ea] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kqJbq-00083i-SW; Fri, 18 Dec 2020 17:32:07 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, linux-wireless@vger.kernel.org,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH -next] net: wireless/mediatek/mt7915: fix MESH ifdef block
+Date:   Fri, 18 Dec 2020 09:32:02 -0800
+Message-Id: <20201218173202.23159-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20201215070009.27937-1-kishon@ti.com> <CAL_JsqJzi7JkMcd4NZewA=w8q6BsCkrhW3JcED63R=EyE3v29Q@mail.gmail.com>
- <1ec78477-dadc-cbef-406f-568f44b6c62d@ti.com> <CAL_JsqLepmopGObX_r+7gtR+keaNtEAA3WA1j697T4jAWP8DHA@mail.gmail.com>
- <96ca64cb-ec3a-bb83-2de3-775034ba844b@ti.com>
-In-Reply-To: <96ca64cb-ec3a-bb83-2de3-775034ba844b@ti.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 18 Dec 2020 11:31:22 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+fP4CcxVm89YkUYDK9eX2j8Yac97nMCLnxGnMakopc7g@mail.gmail.com>
-Message-ID: <CAL_Jsq+fP4CcxVm89YkUYDK9eX2j8Yac97nMCLnxGnMakopc7g@mail.gmail.com>
-Subject: Re: [PATCH v5] PCI: cadence: Retrain Link to work around Gen2
- training defect.
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Tom Joseph <tjoseph@cadence.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Nadeem Athani <nadeem@cadence.com>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Milind Parab <mparab@cadence.com>,
-        Swapnil Kashinath Jakhade <sjakhade@cadence.com>,
-        Parshuram Raju Thombare <pthombar@cadence.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 8:42 AM Kishon Vijay Abraham I <kishon@ti.com> wrote:
->
-> Hi Rob,
->
-> On 16/12/20 10:31 pm, Rob Herring wrote:
-> > On Wed, Dec 16, 2020 at 9:01 AM Kishon Vijay Abraham I <kishon@ti.com> wrote:
-> >>
-> >> Hi Rob,
-> >>
-> >> On 15/12/20 9:23 pm, Rob Herring wrote:
-> >>> On Tue, Dec 15, 2020 at 1:00 AM Kishon Vijay Abraham I <kishon@ti.com> wrote:
-> >>>>
-> >>>> From: Nadeem Athani <nadeem@cadence.com>
-> >>>>
-> >>>> Cadence controller will not initiate autonomous speed change if strapped as
-> >>>> Gen2. The Retrain Link bit is set as quirk to enable this speed change.
-> >>>>
-> >>>> Signed-off-by: Nadeem Athani <nadeem@cadence.com>
-> >>>> [kishon@ti.com: Enable the workaround for TI's J721E SoC]
-> >>>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> >>>> ---
-> >>>> Hi Lorenzo,
-> >>>> The previous version of the patch can be found at [1].
-> >>>> I slightly re-worked the patch from Nadeem
-> >>>> *) Removed additional Link Up Check
-> >>>> *) Removed quirk from pcie-cadence-plat.c
-> >>>> *) Also removed additional compatible
-> >>>>    "cdns,cdns-pcie-host-quirk-retrain" added in that series
-> >>>> *) Enabled the quirk for J721E
-> >>>> [1] -> http://lore.kernel.org/r/20201211144236.3825-1-nadeem@cadence.com
-> >>>>
-> >>>>  drivers/pci/controller/cadence/pci-j721e.c    |  3 +
-> >>>>  .../controller/cadence/pcie-cadence-host.c    | 67 ++++++++++++++-----
-> >>>>  drivers/pci/controller/cadence/pcie-cadence.h | 11 ++-
-> >>>>  3 files changed, 62 insertions(+), 19 deletions(-)
-> >>>>
-> >>>> diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
-> >>>> index dac1ac8a7615..baf729850cb1 100644
-> >>>> --- a/drivers/pci/controller/cadence/pci-j721e.c
-> >>>> +++ b/drivers/pci/controller/cadence/pci-j721e.c
-> >>>> @@ -64,6 +64,7 @@ enum j721e_pcie_mode {
-> >>>>
-> >>>>  struct j721e_pcie_data {
-> >>>>         enum j721e_pcie_mode    mode;
-> >>>> +       bool                    quirk_retrain_flag;
-> >>>>  };
-> >>>>
-> >>>>  static inline u32 j721e_pcie_user_readl(struct j721e_pcie *pcie, u32 offset)
-> >>>> @@ -280,6 +281,7 @@ static struct pci_ops cdns_ti_pcie_host_ops = {
-> >>>>
-> >>>>  static const struct j721e_pcie_data j721e_pcie_rc_data = {
-> >>>>         .mode = PCI_MODE_RC,
-> >>>> +       .quirk_retrain_flag = true,
-> >>>>  };
-> >>>>
-> >>>>  static const struct j721e_pcie_data j721e_pcie_ep_data = {
-> >>>> @@ -388,6 +390,7 @@ static int j721e_pcie_probe(struct platform_device *pdev)
-> >>>>
-> >>>>                 bridge->ops = &cdns_ti_pcie_host_ops;
-> >>>>                 rc = pci_host_bridge_priv(bridge);
-> >>>> +               rc->quirk_retrain_flag = data->quirk_retrain_flag;
-> >>>>
-> >>>>                 cdns_pcie = &rc->pcie;
-> >>>>                 cdns_pcie->dev = dev;
-> >>>> diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c b/drivers/pci/controller/cadence/pcie-cadence-host.c
-> >>>> index 811c1cb2e8de..773c0d1137ed 100644
-> >>>> --- a/drivers/pci/controller/cadence/pcie-cadence-host.c
-> >>>> +++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
-> >>>> @@ -77,6 +77,50 @@ static struct pci_ops cdns_pcie_host_ops = {
-> >>>>         .write          = pci_generic_config_write,
-> >>>>  };
-> >>>>
-> >>>> +static int cdns_pcie_host_wait_for_link(struct cdns_pcie *pcie)
-> >>>> +{
-> >>>> +       struct device *dev = pcie->dev;
-> >>>> +       int retries;
-> >>>> +
-> >>>> +       /* Check if the link is up or not */
-> >>>> +       for (retries = 0; retries < LINK_WAIT_MAX_RETRIES; retries++) {
-> >>>> +               if (cdns_pcie_link_up(pcie)) {
-> >>>> +                       dev_info(dev, "Link up\n");
-> >>>> +                       return 0;
-> >>>> +               }
-> >>>> +               usleep_range(LINK_WAIT_USLEEP_MIN, LINK_WAIT_USLEEP_MAX);
-> >>>> +       }
-> >>>> +
-> >>>> +       return -ETIMEDOUT;
-> >>>> +}
-> >>>> +
-> >>>> +static void cdns_pcie_retrain(struct cdns_pcie *pcie)
-> >>>> +{
-> >>>> +       u32 lnk_cap_sls, pcie_cap_off = CDNS_PCIE_RP_CAP_OFFSET;
-> >>>> +       u16 lnk_stat, lnk_ctl;
-> >>>> +
-> >>>> +       /*
-> >>>> +        * Set retrain bit if current speed is 2.5 GB/s,
-> >>>> +        * but the PCIe root port support is > 2.5 GB/s.
-> >>>
-> >>> If you don't have the retrain quirk, wouldn't this condition never
-> >>> happen and then the function is just a nop? So this could just be
-> >>> called unconditionally.
-> >>
-> >> Yeah, but only for the quirk we have to retrain to go to GEN2 speed
-> >> mode. Else the HW will automatically retrain and go to GEN2.
-> >
-> > Again, so you don't need a flag for this. Comparing the speed is
-> > enough. IOW, all you need is:
-> >
-> > if (current speed < advertised speed)
-> >   do retrain
-> >
-> > The question is the condition ever true and you don't want to do a
-> > retrain? I could see higher speeds being unstable or something, but
->
-> For all GEN1 cards there will be re-train (since the Cadence IP RC is
-> GEN2 or more say). This is going to be true for older Cadence IPs and
-> newer Cadence IPs (where Cadence has enabled HW re-training).
->
-> The quirk will prevent SW re-training for newer Cadence IPs when a GEN1
-> card is connected.
+Fix a build error when CONFIG_MAC80211_MESH is not enabled:
 
-Okay, got it.
+../drivers/net/wireless/mediatek/mt76/mt7915/init.c:47:2: error: expected expression before '}' token
+  }, {
+  ^
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Fixes: af901eb4ab80 ("mt76: mt7915: get rid of dbdc debugfs knob")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Shayne Chen <shayne.chen@mediatek.com>
+Cc: Ryder Lee <ryder.lee@mediatek.com>
+Cc: Lorenzo Bianconi <lorenzo@kernel.org>
+Cc: Felix Fietkau <nbd@nbd.name>
+Cc: linux-wireless@vger.kernel.org
+Cc: Kalle Valo <kvalo@codeaurora.org>
+---
+ drivers/net/wireless/mediatek/mt76/mt7915/init.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- linux-next-20201218.orig/drivers/net/wireless/mediatek/mt76/mt7915/init.c
++++ linux-next-20201218/drivers/net/wireless/mediatek/mt76/mt7915/init.c
+@@ -40,9 +40,9 @@ static const struct ieee80211_iface_limi
+ 		.types = BIT(NL80211_IFTYPE_ADHOC)
+ 	}, {
+ 		.max = 16,
+-		.types = BIT(NL80211_IFTYPE_AP) |
++		.types = BIT(NL80211_IFTYPE_AP)
+ #ifdef CONFIG_MAC80211_MESH
+-			 BIT(NL80211_IFTYPE_MESH_POINT)
++			 | BIT(NL80211_IFTYPE_MESH_POINT)
+ #endif
+ 	}, {
+ 		.max = MT7915_MAX_INTERFACES,
