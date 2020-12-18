@@ -2,111 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A952DE2DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 13:36:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E6C2DE2DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 13:39:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726395AbgLRMgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 07:36:15 -0500
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:39399 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725947AbgLRMgO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 07:36:14 -0500
-Received: by mail-ot1-f47.google.com with SMTP id d8so1741468otq.6;
-        Fri, 18 Dec 2020 04:35:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6DkNUPLV4pty/yUPNr3zH12sGf0mqEAZH7OQh5zf4K8=;
-        b=Cbe+ZMZ7Hv+3wvSxKwbxHFHTesx6iENh9ELFCCka4qaJcI9pdnGy3EVVUH9z8Vy0A6
-         ddD7tO4nd0Y82lp/7iIsvsmfdssW5nV20uAi451qsU8dYKqNGBKFLXIsOQjGsy+CEmVe
-         qN9HeFOmF68Xdos0ZwrGEN3ZLCmBbudznEp3p695TUGXa3Hm3iVsRgNW0hxHbXpsXk1m
-         G8imU/OD9pAMTU8bI7jUwaybX4HyhjyIWnCvR9pVUGalHCJoy9A3IZdaLfTSyjhnRGwa
-         7iD9Z2rlPqOladaw0amBhuItZbeKxz/IgN8X9Cz4zEEIeERosFbeA0LmXvYo0Lzrws63
-         lJgw==
-X-Gm-Message-State: AOAM5308e1iUxAwzs92iJK7WPGM7vCF59dbeTw4qlz+0thm3mL3h9nck
-        N2foC/Y1Ox9UwYozPfP/FNU7U1HFHLZpDBBGEKiiu/jD
-X-Google-Smtp-Source: ABdhPJxfxl8yKvwDyX+PZdHV9q/oXdW8TwcExmFO7cyFXUgs7tlC+yddRm9fZPOke+BiKpjClwWCzDNXD7sWbAFO+/Y=
-X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr2604996otc.145.1608294933980;
- Fri, 18 Dec 2020 04:35:33 -0800 (PST)
+        id S1726516AbgLRMjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 07:39:25 -0500
+Received: from foss.arm.com ([217.140.110.172]:34940 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726062AbgLRMjY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 07:39:24 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AABBF1FB;
+        Fri, 18 Dec 2020 04:38:38 -0800 (PST)
+Received: from [10.57.34.90] (unknown [10.57.34.90])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2A12B3F66E;
+        Fri, 18 Dec 2020 04:38:37 -0800 (PST)
+Subject: Re: [PATCH 1/3] iommu/io-pgtable-arm: Prepare for modularization
+To:     "Isaac J. Manjarres" <isaacm@codeaurora.org>,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     will@kernel.org, joro@8bytes.org, pdaly@codeaurora.org,
+        pratikp@codeaurora.org, kernel-team@android.com
+References: <1608280722-19841-1-git-send-email-isaacm@codeaurora.org>
+ <1608280722-19841-2-git-send-email-isaacm@codeaurora.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <309ff39d-5fc5-83c6-d423-2d66f503c60c@arm.com>
+Date:   Fri, 18 Dec 2020 12:38:36 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-References: <cover.1602431034.git.yifeifz2@illinois.edu> <4706b0ff81f28b498c9012fd3517fe88319e7c42.1602431034.git.yifeifz2@illinois.edu>
- <CAMuHMdVU1BhmwMiHKDYmnyRHtQfeMtwtwkFLQwinfBPto-rtOQ@mail.gmail.com> <CABqSeARw2tcxEPiU4peuURZybVsFo5K+OkAK0ojADUEENMoKuA@mail.gmail.com>
-In-Reply-To: <CABqSeARw2tcxEPiU4peuURZybVsFo5K+OkAK0ojADUEENMoKuA@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 18 Dec 2020 13:35:21 +0100
-Message-ID: <CAMuHMdVYLZ3t6yieKVG7fbn1+YMQN26jZnxQ1Jo38LiSm_Eh5A@mail.gmail.com>
-Subject: Re: [PATCH v5 seccomp 5/5] seccomp/cache: Report cache data through /proc/pid/seccomp_cache
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1608280722-19841-2-git-send-email-isaacm@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi YiFei,
+On 2020-12-18 08:38, Isaac J. Manjarres wrote:
+> The io-pgtable-arm and io-pgtable-arm-v7s source files will
+> be compiled as separate modules, along with the io-pgtable
+> source. Export the symbols for the io-pgtable init function
+> structures for the io-pgtable module to use.
 
-On Thu, Dec 17, 2020 at 7:34 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
-> On Thu, Dec 17, 2020 at 6:14 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > Should there be a dependency on SECCOMP_ARCH_NATIVE?
-> > Should all architectures that implement seccomp have this?
-> >
-> > E.g. mips does select HAVE_ARCH_SECCOMP_FILTER, but doesn't
-> > have SECCOMP_ARCH_NATIVE?
-> >
-> > (noticed with preliminary out-of-tree seccomp implementation for m68k,
-> >  which doesn't have SECCOMP_ARCH_NATIVE
->
-> You are correct. This specific patch in this series was not applied,
-> and this was addressed in a follow up patch series [1]. MIPS does not
-> define SECCOMP_ARCH_NATIVE because the bitmap expects syscall numbers
-> to start from 0, whereas MIPS does not (defines
-> CONFIG_HAVE_SPARSE_SYSCALL_NR). The follow up patch makes it so that
-> any arch with HAVE_SPARSE_SYSCALL_NR (currently just MIPS) cannot have
-> CONFIG_SECCOMP_CACHE_DEBUG on, by the depend on clause.
->
-> I see that you are doing an out of tree seccomp implementation for
-> m68k. Assuming unchanged arch/xtensa/include/asm/syscall.h, something
-> like this to arch/m68k/include/asm/seccomp.h should make it work:
->
-> #define SECCOMP_ARCH_NATIVE        AUDIT_ARCH_M68K
-> #define SECCOMP_ARCH_NATIVE_NR        NR_syscalls
-> #define SECCOMP_ARCH_NATIVE_NAME    "m68k"
->
-> If the file does not exist already, arch/xtensa/include/asm/seccomp.h
-> is a good example of how the file should look like, and remember to
-> remove `generic-y += seccomp.h` from arch/m68k/include/asm/Kbuild.
->
-> [1] https://lore.kernel.org/lkml/cover.1605101222.git.yifeifz2@illinois.edu/T/
+In my current build tree, the io-pgtable glue itself is a whopping 379 
+bytes of code and data - is there really any benefit to all the 
+additional overhead of making that modular? Given the number of 
+different users (including AMD now), I think at this point we should 
+start considering this as part of the IOMMU core, and just tweak the 
+interface such that formats can register their own init_fns dynamically 
+instead of the static array that's always horrible.
 
-Thank you for your extensive explanation.
+Robin.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
+> ---
+>   drivers/iommu/io-pgtable-arm-v7s.c | 4 ++++
+>   drivers/iommu/io-pgtable-arm.c     | 8 ++++++++
+>   2 files changed, 12 insertions(+)
+> 
+> diff --git a/drivers/iommu/io-pgtable-arm-v7s.c b/drivers/iommu/io-pgtable-arm-v7s.c
+> index 1d92ac9..f062c1c 100644
+> --- a/drivers/iommu/io-pgtable-arm-v7s.c
+> +++ b/drivers/iommu/io-pgtable-arm-v7s.c
+> @@ -28,6 +28,7 @@
+>   #include <linux/iommu.h>
+>   #include <linux/kernel.h>
+>   #include <linux/kmemleak.h>
+> +#include <linux/module.h>
+>   #include <linux/sizes.h>
+>   #include <linux/slab.h>
+>   #include <linux/spinlock.h>
+> @@ -839,6 +840,7 @@ struct io_pgtable_init_fns io_pgtable_arm_v7s_init_fns = {
+>   	.alloc	= arm_v7s_alloc_pgtable,
+>   	.free	= arm_v7s_free_pgtable,
+>   };
+> +EXPORT_SYMBOL_GPL(io_pgtable_arm_v7s_init_fns);
+>   
+>   #ifdef CONFIG_IOMMU_IO_PGTABLE_ARMV7S_SELFTEST
+>   
+> @@ -984,3 +986,5 @@ static int __init arm_v7s_do_selftests(void)
+>   }
+>   subsys_initcall(arm_v7s_do_selftests);
+>   #endif
+> +
+> +MODULE_LICENSE("GPL v2");
+> diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
+> index 87def58..2623d57 100644
+> --- a/drivers/iommu/io-pgtable-arm.c
+> +++ b/drivers/iommu/io-pgtable-arm.c
+> @@ -13,6 +13,7 @@
+>   #include <linux/bitops.h>
+>   #include <linux/io-pgtable.h>
+>   #include <linux/kernel.h>
+> +#include <linux/module.h>
+>   #include <linux/sizes.h>
+>   #include <linux/slab.h>
+>   #include <linux/types.h>
+> @@ -1047,26 +1048,31 @@ struct io_pgtable_init_fns io_pgtable_arm_64_lpae_s1_init_fns = {
+>   	.alloc	= arm_64_lpae_alloc_pgtable_s1,
+>   	.free	= arm_lpae_free_pgtable,
+>   };
+> +EXPORT_SYMBOL_GPL(io_pgtable_arm_64_lpae_s1_init_fns);
+>   
+>   struct io_pgtable_init_fns io_pgtable_arm_64_lpae_s2_init_fns = {
+>   	.alloc	= arm_64_lpae_alloc_pgtable_s2,
+>   	.free	= arm_lpae_free_pgtable,
+>   };
+> +EXPORT_SYMBOL_GPL(io_pgtable_arm_64_lpae_s2_init_fns);
+>   
+>   struct io_pgtable_init_fns io_pgtable_arm_32_lpae_s1_init_fns = {
+>   	.alloc	= arm_32_lpae_alloc_pgtable_s1,
+>   	.free	= arm_lpae_free_pgtable,
+>   };
+> +EXPORT_SYMBOL_GPL(io_pgtable_arm_32_lpae_s1_init_fns);
+>   
+>   struct io_pgtable_init_fns io_pgtable_arm_32_lpae_s2_init_fns = {
+>   	.alloc	= arm_32_lpae_alloc_pgtable_s2,
+>   	.free	= arm_lpae_free_pgtable,
+>   };
+> +EXPORT_SYMBOL_GPL(io_pgtable_arm_32_lpae_s2_init_fns);
+>   
+>   struct io_pgtable_init_fns io_pgtable_arm_mali_lpae_init_fns = {
+>   	.alloc	= arm_mali_lpae_alloc_pgtable,
+>   	.free	= arm_lpae_free_pgtable,
+>   };
+> +EXPORT_SYMBOL_GPL(io_pgtable_arm_mali_lpae_init_fns);
+>   
+>   #ifdef CONFIG_IOMMU_IO_PGTABLE_LPAE_SELFTEST
+>   
+> @@ -1252,3 +1258,5 @@ static int __init arm_lpae_do_selftests(void)
+>   }
+>   subsys_initcall(arm_lpae_do_selftests);
+>   #endif
+> +
+> +MODULE_LICENSE("GPL v2");
+> 
