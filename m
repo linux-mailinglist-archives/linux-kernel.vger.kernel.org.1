@@ -2,301 +2,1060 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD412DE1F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 12:28:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F126F2DE202
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 12:31:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726059AbgLRL17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 06:27:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60250 "EHLO
+        id S1726072AbgLRLaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 06:30:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725835AbgLRL16 (ORCPT
+        with ESMTP id S1725942AbgLRLaV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 06:27:58 -0500
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3142C0617A7
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 03:27:17 -0800 (PST)
-Received: by mail-qk1-x731.google.com with SMTP id c7so1650825qke.1
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 03:27:17 -0800 (PST)
+        Fri, 18 Dec 2020 06:30:21 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD7E5C0617A7
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 03:29:40 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id x18so1254652pln.6
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 03:29:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jlS55a22vaSguJBTyotFD4ilELYeFirOCd3mUBBtxCI=;
-        b=iz6Bfa2nSzCuAqWtJY6tNgFJxAwcp3fbHEAq6VgdCiLCTC1CQMWgFKluDcyrXSiBnw
-         DvNoZ82Oha8WZRcn8qmXkRIKEpgNi9oo2iEJNhakZEM8ew+IjMKMAcMOEzhPEfrAGRlk
-         i3XPjjzseN7SuCd/H63FhHxQlUY/5YzI3LHVtY27dpA1Nn2UrFcKWiN0q/c0UJ5U5xYi
-         d1SK2YRTdtSu2hl/qENNzWPMLKqqyh4ABk9MqYzUh/p3Sga7plXHx5iZ8MvJQVAemTRn
-         28D8sVX2es+NBk8YTZCP3MC1iDzBWeVKjL5XQ5wIQt55rZPqYn7d29EAtxT2Pr2itKcO
-         /r+w==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sps1362gSd7lvEwPl8vKW9xhG05VT3tB4tLp6MKlmmk=;
+        b=ap7v13pefHinXekCo5deR9e1TiKW1OrPBLicvNPRPmSojR+bEeMjvs5j6xD+OT58nq
+         drQ+LYO34VX+JXyNqWFTYz1u5zTNZp6RYXhP1yA8q2K5Kk5RprOShG7qn0mb5YihQQhr
+         QgXyIB9Iq1Eh/nVyfE2sPl6VNcaWP+0szH+EZhgOEU0eoAa62YxaKb35bwUYIWvwn43D
+         n0XXXR2by3JHH5Zb/6BNeQoMfDtn+LQkkdsNmIwacBP1TiKQNYhZxVSTz2wyrXVzCxoB
+         Inc3xcChY2o69n0odCcvbtBjXky7DEUj0X1DcNzr/iF6vnpOuLNvAcs5oVnb6dKXrFCo
+         254Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jlS55a22vaSguJBTyotFD4ilELYeFirOCd3mUBBtxCI=;
-        b=YmPXUiBi8yJZPk4l0JS3YWOzqXW7DAeayi8pnH3tz/ho61RHpRjaXDpKVUcHXK+7DG
-         ObZRQBLva3lzY76gF0jF8l6Mr4dEzZmrf4YEoz24Tekb3ByehcemMWA3cbYH03mr9Xjc
-         waaIEGKRFp+nm5I7GuL0M2yqPIqmkDBzgug1dtzmLdxldLbFbWU5l49aoP+X4PiX1zrX
-         nVJO1lxOz9ETm5sqJgHKOyXfibDsTwGwd2UrfmO7WnrV72n3Xz8WPb+WSUskhHP8aqOi
-         +K19o0hoSCOjrjGsTwTmkzNF5Pyh+IIdNQS4D99+VFM42IUzQJb7xBXVsNncKZtgn1Kz
-         tMxw==
-X-Gm-Message-State: AOAM533un0Fjv4wx1V6qYgREl76/Pdrl81n9FsWL/hWHcWIWP++b3+95
-        ia55ZliUlFNahIGFuSfYEe8Ox8ccyRExetVdh0YjqQ==
-X-Google-Smtp-Source: ABdhPJx+Y976VfeL69cfnsMmLQhRgjH4PzR85hkeFitgVdqFZiFgLA6byn6xCrFcAu181i79eWUESSFgbJlvoll1wdw=
-X-Received: by 2002:a05:620a:713:: with SMTP id 19mr4175946qkc.424.1608290836562;
- Fri, 18 Dec 2020 03:27:16 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sps1362gSd7lvEwPl8vKW9xhG05VT3tB4tLp6MKlmmk=;
+        b=ny8QQwUeE0aHf+cOtGjSO7R/0n4yotJbXzpkNbQNCfdEsb5RdUCH3xgGjQlKqMasrx
+         29zk6LiQSz3AZSU3iAw9pQSnc6/+F41w2WOo0T+iSp7wBh3yeHS3ADdtWft0wyUbAvwR
+         F8qyl4VSH5Q80gqxE08Dt1zf1WGSvk6+5rkVZDrTeofkMXNL6s3xieeHXgoyJLzdP0Sw
+         EAkk/Ye4/YEzPZO6GBqEklBoDGOM/tUdvjWkzef0+lBKhhdUbD5EKQU5nSZc4gGW2Zbv
+         PtFBzHPmcRRBfxgsBryrfMPNLoS4thwvLIfY0DSBh6DKAHXTGfEaV96Z2Pa7J9n0mvhT
+         xmKg==
+X-Gm-Message-State: AOAM530NKzm35RpnWblw4Z5CIVe0m90KsTDZ+G3S/nBJIUEDcbEgSiRh
+        5zoDrx/FxB1pDqqNbOtYfyGsEw==
+X-Google-Smtp-Source: ABdhPJysttShuCT/U69i0Blh95SFF/sMIdg5RUvbDvEYQ7U7pl2x0p0K5tbniJrU22k0jeg5/tlb1A==
+X-Received: by 2002:a17:902:eac4:b029:da:79a5:1e88 with SMTP id p4-20020a170902eac4b02900da79a51e88mr3635427pld.78.1608290979904;
+        Fri, 18 Dec 2020 03:29:39 -0800 (PST)
+Received: from google.com (139.60.82.34.bc.googleusercontent.com. [34.82.60.139])
+        by smtp.gmail.com with ESMTPSA id 92sm7358091pjv.15.2020.12.18.03.29.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Dec 2020 03:29:39 -0800 (PST)
+Date:   Fri, 18 Dec 2020 11:29:35 +0000
+From:   Satya Tangirala <satyat@google.com>
+To:     Robin Hsu <robinh3123@gmail.com>
+Cc:     linux-f2fs-devel@lists.sourceforge.net, jaegeuk@kernel.org,
+        chao@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [f2fs-dev] [PATCH v3 2/3] f2fs-tools:sload.f2fs compression
+ support
+Message-ID: <X9ySn6wYPrKJklvN@google.com>
+References: <20201208081555.652932-1-robinh3123@gmail.com>
+ <20201208081555.652932-3-robinh3123@gmail.com>
 MIME-Version: 1.0
-References: <000000000000cb6db205b68a971c@google.com> <CAKMK7uEiS5SrBYv-2w2wWL=9G4ByoHvtiWVsPqekswZzOGmzjg@mail.gmail.com>
- <20201216161621.GH2657@paulmck-ThinkPad-P72> <CAKMK7uH1agVS=e245b=25Lv9Q+u5c7=KL-_NF8Hte10nKTqAXw@mail.gmail.com>
- <20201217152118.GR2657@paulmck-ThinkPad-P72> <X9wGBcCnhxr36WF4@boqun-archlinux>
-In-Reply-To: <X9wGBcCnhxr36WF4@boqun-archlinux>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 18 Dec 2020 12:27:04 +0100
-Message-ID: <CACT4Y+bABW7OP0RDm-Qnq2M6kKVTc=e7Tmt5Uc1+zWyD2roqrA@mail.gmail.com>
-Subject: Re: WARNING: suspicious RCU usage in modeset_lock
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        syzbot <syzbot+972b924c988834e868b2@syzkaller.appspotmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Peter Rosin <peda@axentia.se>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201208081555.652932-3-robinh3123@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 2:30 AM Boqun Feng <boqun.feng@gmail.com> wrote:
->
-> On Thu, Dec 17, 2020 at 07:21:18AM -0800, Paul E. McKenney wrote:
-> > On Thu, Dec 17, 2020 at 11:03:20AM +0100, Daniel Vetter wrote:
-> > > On Wed, Dec 16, 2020 at 5:16 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > >
-> > > > On Wed, Dec 16, 2020 at 10:52:06AM +0100, Daniel Vetter wrote:
-> > > > > On Wed, Dec 16, 2020 at 2:14 AM syzbot
-> > > > > <syzbot+972b924c988834e868b2@syzkaller.appspotmail.com> wrote:
-> > > > > >
-> > > > > > Hello,
-> > > > > >
-> > > > > > syzbot found the following issue on:
-> > > > > >
-> > > > > > HEAD commit:    94801e5c Merge tag 'pinctrl-v5.10-3' of git://git.kernel.o..
-> > > > > > git tree:       upstream
-> > > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=130558c5500000
-> > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=ee8a1012a5314210
-> > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=972b924c988834e868b2
-> > > > > > compiler:       gcc (GCC) 10.1.0-syz 20200507
-> > > > > > userspace arch: i386
-> > > > > >
-> > > > > > Unfortunately, I don't have any reproducer for this issue yet.
-> > > > > >
-> > > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > > > Reported-by: syzbot+972b924c988834e868b2@syzkaller.appspotmail.com
-> > > > > >
-> > > > > > =============================
-> > > > > > WARNING: suspicious RCU usage
-> > > > > > 5.10.0-rc7-syzkaller #0 Not tainted
-> > > > > > -----------------------------
-> > > > > > kernel/sched/core.c:7270 Illegal context switch in RCU-sched read-side critical section!
-> > > > > >
-> > > > > > other info that might help us debug this:
-> > > > > >
-> > > > > >
-> > > > > > rcu_scheduler_active = 2, debug_locks = 0
-> > > > > > 7 locks held by syz-executor.1/9232:
-> > > > > >  #0: ffffffff8b328c60 (console_lock){+.+.}-{0:0}, at: do_fb_ioctl+0x2e4/0x690 drivers/video/fbdev/core/fbmem.c:1106
-> > > > > >  #1: ffff888041bd4078 (&fb_info->lock){+.+.}-{3:3}, at: lock_fb_info include/linux/fb.h:636 [inline]
-> > > > > >  #1: ffff888041bd4078 (&fb_info->lock){+.+.}-{3:3}, at: do_fb_ioctl+0x2ee/0x690 drivers/video/fbdev/core/fbmem.c:1107
-> > > > > >  #2: ffff888041adca78 (&helper->lock){+.+.}-{3:3}, at: drm_fb_helper_pan_display+0xce/0x970 drivers/gpu/drm/drm_fb_helper.c:1448
-> > > > > >  #3: ffff8880159f01b8 (&dev->master_mutex){+.+.}-{3:3}, at: drm_master_internal_acquire+0x1d/0x70 drivers/gpu/drm/drm_auth.c:407
-> > > > > >  #4: ffff888041adc898 (&client->modeset_mutex){+.+.}-{3:3}, at: drm_client_modeset_commit_locked+0x44/0x580 drivers/gpu/drm/drm_client_modeset.c:1143
-> > > > > >  #5: ffffc90001c07730 (crtc_ww_class_acquire){+.+.}-{0:0}, at: drm_client_modeset_commit_atomic+0xb7/0x7c0 drivers/gpu/drm/drm_client_modeset.c:981
-> > > > > >  #6: ffff888015986108 (crtc_ww_class_mutex){+.+.}-{3:3}, at: ww_mutex_lock_slow include/linux/ww_mutex.h:287 [inline]
-> > > > > >  #6: ffff888015986108 (crtc_ww_class_mutex){+.+.}-{3:3}, at: modeset_lock+0x31c/0x650 drivers/gpu/drm/drm_modeset_lock.c:260
-> > > > >
-> > > > > Given that we managed to take all these locks without upsetting anyone
-> > > > > the rcu section is very deep down. And looking at the backtrace below
-> > > > > I just couldn't find anything.
-> > > > >
-> > > > > Best I can think of is that an interrupt of some sort leaked an rcu
-> > > > > section, and we got shot here. But I'd assume the rcu debugging would
-> > > > > catch this? Backtrace of the start of that rcu read side section would
-> > > > > be really useful here, but I'm not seeing that in the logs. There's
-> > > > > more stuff there, but it's just the usual "everything falls apart"
-> > > > > stuff of little value to understanding how we got there.
-> > > >
-> > > > In my experience, lockdep will indeed complain if an interrupt handler
-> > > > returns while in an RCU read-side critical section.
-> > > >
-> > > > > Adding some rcu people for more insights on what could have gone wrong here.
-> > > > > -Daniel
-> > > > >
-> > > > > > stack backtrace:
-> > > > > > CPU: 1 PID: 9232 Comm: syz-executor.1 Not tainted 5.10.0-rc7-syzkaller #0
-> > > > > > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-> > > > > > Call Trace:
-> > > > > >  __dump_stack lib/dump_stack.c:77 [inline]
-> > > > > >  dump_stack+0x107/0x163 lib/dump_stack.c:118
-> > > > > >  ___might_sleep+0x25d/0x2b0 kernel/sched/core.c:7270
-> > > > > >  __mutex_lock_common kernel/locking/mutex.c:935 [inline]
-> > > > > >  __ww_mutex_lock.constprop.0+0xa9/0x2cc0 kernel/locking/mutex.c:1111
-> > > > > >  ww_mutex_lock+0x3d/0x170 kernel/locking/mutex.c:1190
-> > > >
-> > > > Acquiring a mutex while under the influence of rcu_read_lock() will
-> > > > definitely get you this lockdep complaint, and rightfully so.
-> > > >
-> > > > If you need to acquire a mutex with RCU-like protection, one approach
-> > > > is to use SRCU.  But usually this indicates (as you suspected) that
-> > > > someone forgot to invoke rcu_read_unlock().
-> > > >
-> > > > One way to locate this is to enlist the aid of lockdep.  You can do this
-> > > > by putting something like this in the callers:
-> > > >
-> > > >         RCU_LOCKDEP_WARN(lock_is_held(&rcu_bh_lock_map) ||
-> > > >                          lock_is_held(&rcu_lock_map) ||
-> > > >                          lock_is_held(&rcu_sched_lock_map),
-> > > >                          "We are in an RCU read-side critical section");
-> > > >
-> > > > This will get you a lockdep complaint much like the one above if the
-> > > > caller is in any sort of RCU read-side critical section.  You can push
-> > > > this up the call stack one level at a time or just sprinkle it up the
-> > > > stack in one go.
-> > > >
-> > > > The complaint is specifically about RCU-sched, so you could focus on
-> > > > that using this instead:
-> > > >
-> > > >         RCU_LOCKDEP_WARN(lock_is_held(&rcu_sched_lock_map),
-> > > >                          "We are in an RCU-sched read-side critical section");
-> > > >
-> > > > This of course assumes that this is reproducible.  :-/
-> > > >
-> > > > But even if it isn't reproducible, for example, if the mutex is only
-> > > > acquired occasionally, these RCU_LOCKDEP_WARN() calls can be used to
-> > > > check assumptions about state.
-> > >
-> > > I think we're tripping over the might_sleep() all the mutexes have,
-> > > and that's not as good as yours, but good enough to catch a missing
-> > > rcu_read_unlock(). That's kinda why I'm baffled, since like almost
-> > > every 2nd function in the backtrace grabbed a mutex and it was all
-> > > fine until the very last.
-> > >
-> > > I think it would be really nice if the rcu checks could retain (in
-> > > debugging only) the backtrace of the outermost rcu_read_lock, so we
-> > > could print that when something goes wrong in cases where it's leaked.
-> > > For normal locks lockdep does that already (well not full backtrace I
-> > > think, just the function that acquired the lock, but that's often
-> > > enough). I guess that doesn't exist yet?
-> >
-> > I thought that lockdep kept those traces in order to print them in
-> > deadlock reports.  Adding Boqun for his perspective.
-> >
->
-> I'm afraid it's not the same as you expect. So yes, lockdep will keep
-> traces, however, lockdep only keep one trace entry for one usage
-> *class*, for example, if you have two function foo() and bar():
->
->         void foo(void)
->         {
->                 rcu_read_lock();
->                 ...
->         }
->
->         void bar(void)
->         {
->                 rcu_read_lock();
->                 ...
->         }
->
-> , and during runtime, both are called in thread contexts with irq
-> enabled. There will be only one trace (the first one that lockdep see)
-> getting recorded ;-(
->
-> That said, from the held lock status for this splat, I don't see a
-> rcu_read_lock_sched() is held, so I guess that the RCU read-side
-> critical section is introduced by a preempt_disable() rather than a
-> explicit rcu_read_lock_sched(), if that's the case, lockdep cannot help
-> either, because after all preempt_disable() is not a lock, lockdep won't
-> keep a trace for it.
->
-> Maybe preemption tracing can help here?
-
-Hi Boqun,
-
-Lockdep can print similar info for hard/softirqs disable in
-print_irqtrace_events:
-https://elixir.bootlin.com/linux/latest/source/kernel/locking/lockdep.c#L3896
-This looks somewhat similar to what would help for preempt_disable.
-Would it be reasonable for lockdep to record and print the last
-disable PC to provide a more complete execution context picture?
-
-
-> >                                                       Thanx, Paul
-> >
-> > > Also yes without reproducer this is kinda tough nut to crack.
-> > > -Daniel
-> > >
-> > > >
-> > > >                                                         Thanx, Paul
-> > > >
-> > > > > >  modeset_lock+0x392/0x650 drivers/gpu/drm/drm_modeset_lock.c:263
-> > > > > >  drm_modeset_lock drivers/gpu/drm/drm_modeset_lock.c:342 [inline]
-> > > > > >  drm_modeset_lock+0x50/0x90 drivers/gpu/drm/drm_modeset_lock.c:338
-> > > > > >  drm_atomic_get_plane_state+0x19d/0x510 drivers/gpu/drm/drm_atomic.c:481
-> > > > > >  drm_client_modeset_commit_atomic+0x225/0x7c0 drivers/gpu/drm/drm_client_modeset.c:994
-> > > > > >  drm_client_modeset_commit_locked+0x145/0x580 drivers/gpu/drm/drm_client_modeset.c:1145
-> > > > > >  pan_display_atomic drivers/gpu/drm/drm_fb_helper.c:1395 [inline]
-> > > > > >  drm_fb_helper_pan_display+0x28b/0x970 drivers/gpu/drm/drm_fb_helper.c:1455
-> > > > > >  fb_pan_display+0x2f7/0x6c0 drivers/video/fbdev/core/fbmem.c:925
-> > > > > >  fb_set_var+0x57f/0xda0 drivers/video/fbdev/core/fbmem.c:1043
-> > > > > >  do_fb_ioctl+0x2f9/0x690 drivers/video/fbdev/core/fbmem.c:1108
-> > > > > >  fb_compat_ioctl+0x17c/0xaf0 drivers/video/fbdev/core/fbmem.c:1315
-> > > > > >  __do_compat_sys_ioctl+0x1d3/0x230 fs/ioctl.c:842
-> > > > > >  do_syscall_32_irqs_on arch/x86/entry/common.c:78 [inline]
-> > > > > >  __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:137
-> > > > > >  do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:160
-> > > > > >  entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-> > > > > > RIP: 0023:0xf7fd8549
-> > > > > > Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
-> > > > > > RSP: 002b:00000000f55d20bc EFLAGS: 00000296 ORIG_RAX: 0000000000000036
-> > > > > > RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000004601
-> > > > > > RDX: 0000000020000240 RSI: 0000000000000000 RDI: 0000000000000000
-> > > > > > RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-> > > > > > R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-> > > > > > R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-> > > > > > detected fb_set_par error, error code: -16
-> > > > > >
-> > > > > >
-> > > > > > ---
-> > > > > > This report is generated by a bot. It may contain errors.
-> > > > > > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > > > > > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> > > > > >
-> > > > > > syzbot will keep track of this issue. See:
-> > > > > > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> > > > >
-> > > > >
-> > > > >
-> > > > > --
-> > > > > Daniel Vetter
-> > > > > Software Engineer, Intel Corporation
-> > > > > http://blog.ffwll.ch
-> > >
-> > >
-> > >
-> > > --
-> > > Daniel Vetter
-> > > Software Engineer, Intel Corporation
-> > > http://blog.ffwll.ch
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/X9wGBcCnhxr36WF4%40boqun-archlinux.
+On Tue, Dec 08, 2020 at 04:15:54PM +0800, Robin Hsu wrote:
+> From: Robin Hsu <robinhsu@google.com>
+> 
+> Add F2FS compression support for sload
+> * Support file extension filter, either default-accept or default-deny
+>   policy
+> * Support choice of compression algorithm, LZO (version 2) or LZ4
+>   (default)
+> * Support custom log of cluster size
+> * Support minimum number of compressed blocks per cluster (default 1).
+>   A cluster will not be compressed if the number can not be met.
+> * suuport -r (read-only) option
+> 
+> Signed-off-by: Robin Hsu <robinhsu@google.com>
+> ---
+>  fsck/compress_wrapper.c | 102 ++++++++++++++++++++
+>  fsck/compress_wrapper.h |  22 +++++
+>  fsck/fsck.h             |  15 +++
+>  fsck/main.c             | 141 +++++++++++++++++++++++++++-
+>  fsck/segment.c          | 202 +++++++++++++++++++++++++++++++++++++---
+>  fsck/sload.c            |  67 +++++++++++++
+>  include/f2fs_fs.h       |  76 ++++++++++++++-
+>  lib/libf2fs_io.c        |  33 +++++++
+>  8 files changed, 644 insertions(+), 14 deletions(-)
+>  create mode 100644 fsck/compress_wrapper.c
+>  create mode 100644 fsck/compress_wrapper.h
+> 
+> diff --git a/fsck/compress_wrapper.c b/fsck/compress_wrapper.c
+> new file mode 100644
+> index 0000000..2cdc4fd
+> --- /dev/null
+> +++ b/fsck/compress_wrapper.c
+> @@ -0,0 +1,102 @@
+> +/**
+> + * compress_wrapper.c
+> + *
+> + * Copyright (c) 2020 Google Inc.
+> + *   Robin Hsu <robinhsu@google.com>
+> + *   : initial created, for sload compression support
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + */
+> +#include "f2fs.h" /* for config.h for general environment (non-Android) */
+> +
+> +#include "compress_wrapper.h"
+> +#ifdef HAVE_LIBLZO2
+> +#include <lzo/lzo1x.h> /* for lzo1x_1_15_compress() */
+> +#endif
+> +#ifdef HAVE_LIBLZ4
+> +#include <lz4.h> /* for LZ4_compress_fast_extState() */
+> +#endif
+> +
+> +/*
+> + * macro/constants borrowed from kernel header (GPL-2.0):
+> + * include/linux/lzo.h, and include/linux/lz4.h
+> + */
+> +#ifdef HAVE_LIBLZO2
+> +#define lzo1x_worst_compress(x)		((x) + (x) / 16 + 64 + 3 + 2)
+> +#define LZO_WORK_SIZE			ALIGN_UP(LZO1X_1_15_MEM_COMPRESS, 8)
+> +#endif
+> +#ifdef HAVE_LIBLZ4
+> +#define LZ4_MEMORY_USAGE		14
+> +#define LZ4_MAX_INPUT_SIZE		0x7E000000 /* 2 113 929 216 bytes */
+> +#define LZ4_STREAMSIZE			(LZ4_STREAMSIZE_U64 * sizeof(long long))
+> +#define LZ4_MEM_COMPRESS		LZ4_STREAMSIZE
+> +#define LZ4_ACCELERATION_DEFAULT	1
+> +#define LZ4_WORK_SIZE			ALIGN_UP(LZ4_MEM_COMPRESS, 8)
+> +#endif
+> +
+> +#ifdef HAVE_LIBLZO2
+> +static void lzo_compress_init(struct compress_ctx *cc)
+> +{
+> +	size_t size = cc->cluster_size * F2FS_BLKSIZE;
+> +	size_t alloc = size + lzo1x_worst_compress(size)
+> +			+ COMPRESS_HEADER_SIZE + LZO_WORK_SIZE;
+> +	ASSERT((cc->private = qbuf_alloc(alloc)) != NULL);
+> +	cc->rbuf = (char *) cc->private + LZO_WORK_SIZE;
+> +	cc->cbuf = (struct compress_data *)((char *) cc->rbuf + size);
+> +}
+> +
+> +static int lzo_compress(struct compress_ctx *cc)
+> +{
+> +	int ret = lzo1x_1_15_compress(cc->rbuf, cc->rlen, cc->cbuf->cdata,
+> +			(lzo_uintp)(&cc->clen), cc->private);
+> +	cc->cbuf->clen = cpu_to_le32(cc->clen);
+> +	return ret;
+> +}
+> +#endif
+> +
+> +#ifdef HAVE_LIBLZ4
+> +static void lz4_compress_init(struct compress_ctx *cc)
+> +{
+> +	size_t size = cc->cluster_size * F2FS_BLKSIZE;
+> +	size_t alloc = size + LZ4_COMPRESSBOUND(size)
+> +			+ COMPRESS_HEADER_SIZE + LZ4_WORK_SIZE;
+> +	ASSERT((cc->private = qbuf_alloc(alloc)) != NULL);
+> +	cc->rbuf = (char *) cc->private + LZ4_WORK_SIZE;
+> +	cc->cbuf = (struct compress_data *)((char *) cc->rbuf + size);
+> +}
+> +
+> +static int lz4_compress(struct compress_ctx *cc)
+> +{
+> +	cc->clen = LZ4_compress_fast_extState(cc->private, cc->rbuf,
+> +			(char *)cc->cbuf->cdata, cc->rlen,
+> +			cc->rlen - F2FS_BLKSIZE * c.sldc_min_cbpc,
+> +			LZ4_ACCELERATION_DEFAULT);
+> +
+> +	if (!cc->clen)
+> +		return 1;
+> +
+> +	cc->cbuf->clen = cpu_to_le32(cc->clen);
+> +	return 0;
+> +}
+> +#endif
+> +
+> +const char *ca_names[] = {
+> +	"LZO",
+> +	"LZ4",
+> +	"", /* end of the name list */
+> +};
+> +
+> +compress_ops compr_ops[] = {
+> +#ifdef HAVE_LIBLZO2
+> +	{lzo_compress_init, lzo_compress},
+> +#else
+> +	{NULL, NULL},
+> +#endif
+> +#ifdef HAVE_LIBLZ4
+> +	{lz4_compress_init, lz4_compress},
+> +#else
+> +	{NULL, NULL},
+> +#endif
+> +};
+> diff --git a/fsck/compress_wrapper.h b/fsck/compress_wrapper.h
+> new file mode 100644
+> index 0000000..ec33d43
+> --- /dev/null
+> +++ b/fsck/compress_wrapper.h
+> @@ -0,0 +1,22 @@
+> +/**
+> + * compress_wrapper.h
+> + *
+> + * Copyright (c) 2020 Google Inc.
+> + *   Robin Hsu <robinhsu@google.com>
+> + *   : initial created, for sload compression support
+> + * Copyright (c) 2020 Google Inc.
+> + *   Robin Hsu <robinhsu@google.com>
+> + *  : add sload compression support
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + */
+> +
+> +#ifndef COMPRESS_WRAPPER_H
+> +#define COMPRESS_WRAPPER_H
+> +
+> +#include "f2fs_fs.h"
+> +extern compress_ops compr_ops[]; /* [0]: LZO, [1]: LZ4, */
+> +
+> +#endif /* COMPRESS_WRAPPER_H */
+> diff --git a/fsck/fsck.h b/fsck/fsck.h
+> index c5e85fe..4e866ec 100644
+> --- a/fsck/fsck.h
+> +++ b/fsck/fsck.h
+> @@ -3,6 +3,9 @@
+>   *
+>   * Copyright (c) 2013 Samsung Electronics Co., Ltd.
+>   *             http://www.samsung.com/
+> + * Copyright (c) 2020 Google Inc.
+> + *   Robin Hsu <robinhsu@google.com>
+> + *  : add sload compression support
+>   *
+>   * This program is free software; you can redistribute it and/or modify
+>   * it under the terms of the GNU General Public License version 2 as
+> @@ -266,6 +269,9 @@ int f2fs_resize(struct f2fs_sb_info *);
+>  
+>  /* sload.c */
+>  int f2fs_sload(struct f2fs_sb_info *);
+> +void sldc_erase_bufs(struct compress_ctx *cc);
+> +void sload_countblk(void);
+> +extern struct ext_tbl_op ext_filter;
+>  
+>  /* segment.c */
+>  int reserve_new_block(struct f2fs_sb_info *, block_t *,
+> @@ -282,7 +288,16 @@ block_t new_node_block(struct f2fs_sb_info *,
+>  struct quota_file;
+>  u64 f2fs_quota_size(struct quota_file *);
+>  u64 f2fs_read(struct f2fs_sb_info *, nid_t, u8 *, u64, pgoff_t);
+> +enum wr_addr_type {
+> +	WR_NORMAL = 1,
+> +	WR_COMPRESS_DATA = 2,
+> +	WR_NULL_ADDR = NULL_ADDR,  /* 0 */
+> +	WR_NEW_ADDR = NEW_ADDR, /* -1U */
+> +	WR_COMPRESS_ADDR = COMPRESS_ADDR, /* -2U */
+> +};
+>  u64 f2fs_write(struct f2fs_sb_info *, nid_t, u8 *, u64, pgoff_t);
+> +u64 f2fs_write_compress_data(struct f2fs_sb_info *, nid_t, u8 *, u64, pgoff_t);
+> +u64 f2fs_write_addrtag(struct f2fs_sb_info *, nid_t, pgoff_t, unsigned int);
+>  void f2fs_filesize_update(struct f2fs_sb_info *, nid_t, u64);
+>  
+>  int get_dnode_of_data(struct f2fs_sb_info *, struct dnode_of_data *,
+> diff --git a/fsck/main.c b/fsck/main.c
+> index b20498f..001eed0 100644
+> --- a/fsck/main.c
+> +++ b/fsck/main.c
+> @@ -13,6 +13,9 @@
+>   * Copyright (c) 2019 Google Inc.
+>   *   Robin Hsu <robinhsu@google.com>
+>   *  : add cache layer
+> + * Copyright (c) 2020 Google Inc.
+> + *   Robin Hsu <robinhsu@google.com>
+> + *  : add sload compression support
+>   *
+>   * This program is free software; you can redistribute it and/or modify
+>   * it under the terms of the GNU General Public License version 2 as
+> @@ -25,6 +28,7 @@
+>  #include <getopt.h>
+>  #include <stdbool.h>
+>  #include "quotaio.h"
+> +#include "compress_wrapper.h"
+>  
+>  struct f2fs_fsck gfsck;
+>  
+> @@ -134,6 +138,17 @@ void sload_usage()
+>  	MSG(0, "  -S sparse_mode\n");
+>  	MSG(0, "  -t mount point [prefix of target fs path, default:/]\n");
+>  	MSG(0, "  -T timestamp\n");
+> +	MSG(0, "  -c enable compression (default allow policy)\n");
+> +	MSG(0, "    ------------ Compression sub-options -----------------\n");
+> +	MSG(0, "    -L <log-of-blocks-per-cluster>, default 2\n");
+> +	MSG(0, "    -a <algorithm> compression algorithm, default LZ4\n");
+> +	MSG(0, "    -x <ext> compress files except for these extensions.\n");
+> +	MSG(0, "    -i <ext> compress files with these extensions only.\n");
+> +	MSG(0, "    * -i or -x: use it many times for multiple extensions.\n");
+> +	MSG(0, "    * -i and -x cannot be used together..\n");
+> +	MSG(0, "    -m <num> min compressed blocks per cluster\n");
+> +	MSG(0, "    -r readonly (IMMUTABLE) for compressed files\n");
+> +	MSG(0, "    ------------------------------------------------------\n");
+>  	MSG(0, "  -d debug level [default:0]\n");
+>  	MSG(0, "  -V print the version number and exit\n");
+>  	exit(1);
+> @@ -534,7 +549,7 @@ void f2fs_parse_options(int argc, char *argv[])
+>  #endif
+>  	} else if (!strcmp("sload.f2fs", prog)) {
+>  #ifdef WITH_SLOAD
+> -		const char *option_string = "C:d:f:p:s:St:T:V";
+> +		const char *option_string = "cL:a:i:x:m:rC:d:f:p:s:St:T:V";
+>  #ifdef HAVE_LIBSELINUX
+>  		int max_nr_opt = (int)sizeof(c.seopt_file) /
+>  			sizeof(c.seopt_file[0]);
+> @@ -543,8 +558,82 @@ void f2fs_parse_options(int argc, char *argv[])
+>  		char *p;
+>  
+>  		c.func = SLOAD;
+> +		c.sldc_cc.log_cluster_size = 2;
+> +		c.sldc_ca = CA_LZ4;
+> +		c.sldc_min_cbpc = 1;
+> +		c.sldc_ef = &ext_filter;
+>  		while ((option = getopt(argc, argv, option_string)) != EOF) {
+> +			unsigned int i;
+> +			int val;
+> +
+>  			switch (option) {
+> +			case 'c': /* compression support */
+> +				c.sldc_en = true;
+> +				break;
+> +			case 'L': /* compression: log of blocks-per-cluster */
+> +				c.sldc_got_opt = true;
+> +				val = atoi(optarg);
+> +				if (val < MIN_COMPRESS_LOG_SIZE ||
+> +						val > MAX_COMPRESS_LOG_SIZE) {
+> +					MSG(0, "\tError: log of blocks per"
+> +						" cluster must be in the range"
+> +						" of %d .. %d.\n",
+> +						MIN_COMPRESS_LOG_SIZE,
+> +						MAX_COMPRESS_LOG_SIZE);
+> +					error_out(prog);
+> +				}
+> +				c.sldc_cc.log_cluster_size = val;
+> +				break;
+> +			case 'a': /* compression: choose algorithm */
+> +				c.sldc_got_opt = true;
+> +				c.sldc_ca = (u8)-1;
+> +				for (i = 0; ca_names[i][0] != 0; i++) {
+> +					if (!strcmp(ca_names[i], optarg)) {
+> +						c.sldc_ca = i;
+> +						break;
+> +					}
+> +				}
+> +				if (c.sldc_ca == (u8)-1) {
+> +					MSG(0, "\tError: Unknown compression"
+> +						" algorithm %s\n", optarg);
+> +					error_out(prog);
+> +				}
+> +				break;
+> +			case 'i': /* compress only these extensions */
+> +				c.sldc_got_opt = true;
+> +				if (c.sldc_policy == FP_ALLOW) {
+> +					MSG(0, "\tError: could not mix option"
+> +							" -i and -x\n");
+> +					error_out(prog);
+> +				}
+> +				c.sldc_policy = FP_DENY;
+> +				c.sldc_ef->add(optarg);
+> +				break;
+> +			case 'x': /* compress except for these extensions */
+> +				c.sldc_got_opt = true;
+> +				if (c.sldc_policy == FP_DENY) {
+> +					MSG(0, "\tError: could not mix option"
+> +							" -i and -x\n");
+> +					error_out(prog);
+> +				}
+> +				c.sldc_policy = FP_ALLOW;
+> +				c.sldc_ef->add(optarg);
+> +				break;
+> +			case 'm': /* minimum compressed blocks per cluster */
+> +				c.sldc_got_opt = true;
+> +				val = atoi(optarg);
+> +				if (val <= 0) {
+> +					MSG(0, "\tError: minimum compressed"
+> +						" blocks per cluster must be"
+> +						" positive.\n");
+> +					error_out(prog);
+> +				}
+> +				c.sldc_min_cbpc = val;
+> +				break;
+> +			case 'r': /* compress file to set IMMUTABLE */
+> +				c.sldc_got_opt = true;
+> +				c.sldc_immutable = true;
+> +				break;
+>  			case 'C':
+>  				c.fs_config_file = absolute_path(optarg);
+>  				break;
+> @@ -602,6 +691,27 @@ void f2fs_parse_options(int argc, char *argv[])
+>  			if (err != NOERROR)
+>  				break;
+>  		}
+> +		if (c.sldc_got_opt && !c.sldc_en) {
+> +			MSG(0, "\tError: compression sub-options are used"
+> +				" without the compression enable (-c) option\n"
+> +			);
+> +			error_out(prog);
+> +		}
+> +		if (err == NOERROR && c.sldc_en) {
+> +			c.sldc_cc.cluster_size = 1
+> +				<< c.sldc_cc.log_cluster_size;
+> +			if (c.sldc_policy == FP_UNASSIGNED)
+> +				c.sldc_policy = FP_ALLOW;
+> +			if (c.sldc_min_cbpc >= c.sldc_cc.cluster_size) {
+> +				MSG(0, "\tError: minimum reduced blocks by"
+> +					" compression per cluster must be at"
+> +					" most one less than blocks per"
+> +					" cluster, i.e. %d\n",
+> +					c.sldc_cc.cluster_size - 1);
+> +				error_out(prog);
+> +			}
+> +			qbuf_init();
+> +		}
+>  #endif /* WITH_SLOAD */
+>  	}
+>  
+> @@ -812,6 +922,27 @@ static int do_resize(struct f2fs_sb_info *sbi)
+>  #endif
+>  
+>  #ifdef WITH_SLOAD
+> +int init_compr(struct f2fs_sb_info *sbi)
+> +{
+> +	if (!(sbi->raw_super->feature
+> +			& cpu_to_le32(F2FS_FEATURE_COMPRESSION))) {
+> +		MSG(0, "Error: Compression (-c) was requested "
+> +			"but the file system is not created "
+> +			"with such feature.\n");
+> +		return -1;
+> +	}
+> +	if (compr_ops[c.sldc_ca].init == NULL) {
+> +		MSG(0, "Error: The selected compression algorithm is not"
+> +				" supported\n");
+> +		return -1;
+> +	}
+> +	c.sldc_compr = compr_ops + c.sldc_ca;
+> +	c.sldc_compr->init(&c.sldc_cc);
+> +	sldc_erase_bufs(&c.sldc_cc);
+> +	c.sldc_cc.rlen = c.sldc_cc.cluster_size * F2FS_BLKSIZE;
+> +	return 0;
+> +}
+> +
+>  static int do_sload(struct f2fs_sb_info *sbi)
+>  {
+>  	if (!c.from_dir) {
+> @@ -821,6 +952,11 @@ static int do_sload(struct f2fs_sb_info *sbi)
+>  	if (!c.mount_point)
+>  		c.mount_point = "/";
+>  
+> +	if (c.sldc_en) {
+> +		if (init_compr(sbi))
+> +			return -1;
+> +	}
+> +
+>  	return f2fs_sload(sbi);
+>  }
+>  #endif
+> @@ -971,6 +1107,9 @@ retry:
+>  		return ret2;
+>  	}
+>  
+> +	if (c.func == SLOAD)
+> +		c.sldc_ef->destroy();
+> +
+>  	printf("\nDone: %lf secs\n", (get_boottime_ns() - start) / 1000000000.0);
+>  	return ret;
+>  
+> diff --git a/fsck/segment.c b/fsck/segment.c
+> index 0487f41..e4c8cea 100644
+> --- a/fsck/segment.c
+> +++ b/fsck/segment.c
+> @@ -8,6 +8,9 @@
+>   *   Hou Pengyang <houpengyang@huawei.com>
+>   *   Liu Shuoran <liushuoran@huawei.com>
+>   *   Jaegeuk Kim <jaegeuk@kernel.org>
+> + * Copyright (c) 2020 Google Inc.
+> + *   Robin Hsu <robinhsu@google.com>
+> + *  : add sload compression support
+>   *
+>   * This program is free software; you can redistribute it and/or modify
+>   * it under the terms of the GNU General Public License version 2 as
+> @@ -16,6 +19,7 @@
+>  #include "fsck.h"
+>  #include "node.h"
+>  #include "quotaio.h"
+> +#include "compress_wrapper.h"
+>  
+>  int reserve_new_block(struct f2fs_sb_info *sbi, block_t *to,
+>  			struct f2fs_summary *sum, int type, bool is_inode)
+> @@ -228,8 +232,14 @@ u64 f2fs_read(struct f2fs_sb_info *sbi, nid_t ino, u8 *buffer,
+>  	return read_count;
+>  }
+>  
+> -u64 f2fs_write(struct f2fs_sb_info *sbi, nid_t ino, u8 *buffer,
+> -					u64 count, pgoff_t offset)
+> +/*
+> + * Do not call this function directly.  Instead, call one of the following:
+> + *     u64 f2fs_write();
+> + *     u64 f2fs_write_compress_data();
+> + *     u64 f2fs_write_addrtag();
+> + */
+> +static u64 f2fs_write_ex(struct f2fs_sb_info *sbi, nid_t ino, u8 *buffer,
+> +		u64 count, pgoff_t offset, enum wr_addr_type addr_type)
+>  {
+>  	struct dnode_of_data dn;
+>  	struct node_info ni;
+> @@ -243,6 +253,19 @@ u64 f2fs_write(struct f2fs_sb_info *sbi, nid_t ino, u8 *buffer,
+>  	void* index_node = NULL;
+>  	int idirty = 0;
+>  	int err;
+> +	bool has_data = (addr_type == WR_NORMAL
+> +			|| addr_type == WR_COMPRESS_DATA);
+> +
+> +	if (count == 0)
+> +		return 0;
+> +
+> +	/*
+> +	 * Enforce calling from f2fs_write(), f2fs_write_compress_data(),
+> +	 * and f2fs_write_addrtag().   Beside, check if is properly called.
+> +	 */
+> +	ASSERT((!has_data && buffer == NULL) || (has_data && buffer != NULL));
+> +	if (addr_type != WR_NORMAL)
+> +		ASSERT(offset % F2FS_BLKSIZE == 0); /* block boundary only */
+>  
+>  	/* Memory allocation for block buffer and inode. */
+>  	blk_buffer = calloc(BLOCK_SZ, 2);
+> @@ -265,15 +288,26 @@ u64 f2fs_write(struct f2fs_sb_info *sbi, nid_t ino, u8 *buffer,
+>  			if (err)
+>  				break;
+>  			idirty |= dn.idirty;
+> -			if (index_node)
+> -				free(index_node);
+> +			free(index_node);
+>  			index_node = (dn.node_blk == dn.inode_blk) ?
+> -							NULL : dn.node_blk;
+> +					NULL : dn.node_blk;
+>  			remained_blkentries = ADDRS_PER_PAGE(sbi,
+> -						dn.node_blk, dn.inode_blk);
+> +					dn.node_blk, dn.inode_blk) -
+> +					dn.ofs_in_node;
+>  		}
+>  		ASSERT(remained_blkentries > 0);
+>  
+> +		if (!has_data) {
+> +			dn.data_blkaddr = addr_type;
+> +			set_data_blkaddr(&dn);
+> +			idirty |= dn.idirty;
+> +			if (dn.ndirty)
+> +				ASSERT(dev_write_block(dn.node_blk,
+> +						dn.node_blkaddr) >= 0);
+> +			written_count = 0;
+> +			break;
+> +		}
+> +
+>  		blkaddr = datablock_addr(dn.node_blk, dn.ofs_in_node);
+>  		if (blkaddr == NULL_ADDR || blkaddr == NEW_ADDR) {
+>  			err = new_data_block(sbi, blk_buffer,
+> @@ -281,6 +315,7 @@ u64 f2fs_write(struct f2fs_sb_info *sbi, nid_t ino, u8 *buffer,
+>  			if (err)
+>  				break;
+>  			blkaddr = dn.data_blkaddr;
+> +			idirty |= dn.idirty;
+>  		}
+>  
+>  		off_in_blk = offset % BLOCK_SZ;
+> @@ -305,9 +340,10 @@ u64 f2fs_write(struct f2fs_sb_info *sbi, nid_t ino, u8 *buffer,
+>  
+>  		dn.ofs_in_node++;
+>  		if ((--remained_blkentries == 0 || count == 0) && (dn.ndirty))
+> -			ASSERT(dev_write_block(dn.node_blk, dn.node_blkaddr) >= 0);
+> +			ASSERT(dev_write_block(dn.node_blk, dn.node_blkaddr)
+> +					>= 0);
+>  	}
+> -	if (offset > le64_to_cpu(inode->i.i_size)) {
+> +	if (addr_type == WR_NORMAL && offset > le64_to_cpu(inode->i.i_size)) {
+>  		inode->i.i_size = cpu_to_le64(offset);
+>  		idirty = 1;
+>  	}
+> @@ -315,13 +351,33 @@ u64 f2fs_write(struct f2fs_sb_info *sbi, nid_t ino, u8 *buffer,
+>  		ASSERT(inode == dn.inode_blk);
+>  		ASSERT(write_inode(inode, ni.blk_addr) >= 0);
+>  	}
+> -	if (index_node)
+> -		free(index_node);
+> +
+> +	free(index_node);
+>  	free(blk_buffer);
+>  
+>  	return written_count;
+>  }
+>  
+> +u64 f2fs_write(struct f2fs_sb_info *sbi, nid_t ino, u8 *buffer,
+> +					u64 count, pgoff_t offset)
+> +{
+> +	return f2fs_write_ex(sbi, ino, buffer, count, offset, WR_NORMAL);
+> +}
+> +
+> +u64 f2fs_write_compress_data(struct f2fs_sb_info *sbi, nid_t ino, u8 *buffer,
+> +					u64 count, pgoff_t offset)
+> +{
+> +	return f2fs_write_ex(sbi, ino, buffer, count, offset, WR_COMPRESS_DATA);
+> +}
+> +
+> +u64 f2fs_write_addrtag(struct f2fs_sb_info *sbi, nid_t ino, pgoff_t offset,
+> +		unsigned int addrtag)
+> +{
+> +	ASSERT(addrtag == COMPRESS_ADDR || addrtag == NEW_ADDR
+> +			|| addrtag == NULL_ADDR);
+> +	return f2fs_write_ex(sbi, ino, NULL, F2FS_BLKSIZE, offset, addrtag);
+> +}
+> +
+>  /* This function updates only inode->i.i_size */
+>  void f2fs_filesize_update(struct f2fs_sb_info *sbi, nid_t ino, u64 filesize)
+>  {
+> @@ -342,11 +398,59 @@ void f2fs_filesize_update(struct f2fs_sb_info *sbi, nid_t ino, u64 filesize)
+>  	free(inode);
+>  }
+>  
+> +#define MAX_BULKR_RETRY 5
+> +int bulkread(int fd, void *rbuf, size_t rsize, bool *eof)
+> +{
+> +	int n = 0;
+> +	int retry = MAX_BULKR_RETRY;
+> +	int cur;
+> +
+> +	if (!rsize)
+> +		return 0;
+> +
+> +	if (eof != NULL)
+> +		*eof = false;
+> +	while (rsize && (cur = read(fd, rbuf, rsize)) != 0) {
+> +		if (cur == -1) {
+> +			if (errno == EINTR && retry--)
+> +				continue;
+> +			return -1;
+> +		}
+> +		retry = MAX_BULKR_RETRY;
+> +
+> +		rsize -= cur;
+> +		n += cur;
+> +	}
+> +	if (eof != NULL)
+> +		*eof = (cur == 0);
+> +	return n;
+> +}
+> +
+> +u64 f2fs_fix_mutable(struct f2fs_sb_info *sbi, nid_t ino, pgoff_t offset,
+> +		unsigned int compressed)
+> +{
+> +	unsigned int i;
+> +	u64 wlen;
+> +
+> +	if (c.sldc_immutable)
+> +		return 0;
+> +
+> +	for (i = 0; i < compressed - 1; i++) {
+> +		wlen = f2fs_write_addrtag(sbi, ino,
+> +				offset + (i << F2FS_BLKSIZE_BITS), NEW_ADDR);
+> +		if (wlen)
+> +			return wlen;
+> +	}
+> +	return 0;
+> +}
+> +
+>  int f2fs_build_file(struct f2fs_sb_info *sbi, struct dentry *de)
+>  {
+>  	int fd, n;
+>  	pgoff_t off = 0;
+>  	u8 buffer[BLOCK_SZ];
+> +	struct node_info ni;
+> +	struct f2fs_node *node_blk;
+>  
+>  	if (de->ino == 0)
+>  		return -1;
+> @@ -359,8 +463,6 @@ int f2fs_build_file(struct f2fs_sb_info *sbi, struct dentry *de)
+>  
+>  	/* inline_data support */
+>  	if (de->size <= DEF_MAX_INLINE_DATA) {
+> -		struct node_info ni;
+> -		struct f2fs_node *node_blk;
+>  		int ret;
+>  
+>  		get_node_info(sbi, de->ino, &ni);
+> @@ -385,6 +487,82 @@ int f2fs_build_file(struct f2fs_sb_info *sbi, struct dentry *de)
+>  		node_blk->i.i_size = cpu_to_le64(de->size);
+>  		ASSERT(write_inode(node_blk, ni.blk_addr) >= 0);
+>  		free(node_blk);
+> +#ifdef WITH_SLOAD
+> +	} else if (c.func == SLOAD && c.sldc_en &&
+> +			c.sldc_ef->filter(de->full_path)) {
+> +		bool eof = false;
+> +		u8 *rbuf = c.sldc_cc.rbuf;
+> +		unsigned int cblocks = 0;
+> +
+> +		node_blk = calloc(BLOCK_SZ, 1);
+> +		ASSERT(node_blk);
+> +
+> +		/* read inode */
+> +		get_node_info(sbi, de->ino, &ni);
+> +		ASSERT(dev_read_block(node_blk, ni.blk_addr) >= 0);
+> +		/* update inode meta */
+> +		node_blk->i.i_compress_algrithm = c.sldc_ca;
+> +		node_blk->i.i_log_cluster_size =
+> +				c.sldc_cc.log_cluster_size;
+> +		node_blk->i.i_flags = cpu_to_le32(
+> +				F2FS_COMPR_FL |
+> +				(c.sldc_immutable ? FS_IMMUTABLE_FL : 0));
+> +		ASSERT(write_inode(node_blk, ni.blk_addr) >= 0);
+> +
+> +		while (!eof && (n = bulkread(fd, rbuf, c.sldc_cc.rlen,
+> +				&eof)) > 0) {
+> +			int ret = c.sldc_compr->compress(&c.sldc_cc);
+> +			u64 wlen;
+> +			u32 csize = ALIGN_UP(c.sldc_cc.clen +
+> +					COMPRESS_HEADER_SIZE, BLOCK_SZ);
+> +			unsigned int cur_cblk;
+> +
+> +			if (ret || n < (int)(csize + BLOCK_SZ *
+> +						c.sldc_min_cbpc)) {
+> +				wlen = f2fs_write(sbi, de->ino, rbuf, n, off);
+> +				ASSERT((int)wlen == n);
+> +			} else {
+> +				wlen = f2fs_write_addrtag(sbi, de->ino, off,
+> +						WR_COMPRESS_ADDR);
+> +				ASSERT(!wlen);
+> +				wlen = f2fs_write_compress_data(sbi, de->ino,
+> +						(u8 *)c.sldc_cc.cbuf,
+> +						csize, off + BLOCK_SZ);
+> +				ASSERT(wlen == csize);
+> +				sldc_erase_bufs(&c.sldc_cc);
+> +				cur_cblk = (c.sldc_cc.rlen - csize) / BLOCK_SZ;
+> +				cblocks += cur_cblk;
+> +				wlen = f2fs_fix_mutable(sbi, de->ino,
+> +						off + BLOCK_SZ + csize,
+> +						cur_cblk);
+> +				ASSERT(!wlen);
+> +			}
+> +			off += n;
+> +		}
+> +		if (n == -1) {
+> +			fprintf(stderr, "Load file '%s' failed: ",
+> +					de->full_path);
+> +			perror(NULL);
+> +		}
+> +		/* read inode */
+> +		get_node_info(sbi, de->ino, &ni);
+> +		ASSERT(dev_read_block(node_blk, ni.blk_addr) >= 0);
+> +		/* update inode meta */
+> +		node_blk->i.i_size = cpu_to_le64(off);
+> +		if (!c.sldc_immutable)
+> +			node_blk->i.i_compr_blocks = cpu_to_le64(cblocks);
+> +		ASSERT(write_inode(node_blk, ni.blk_addr) >= 0);
+> +		free(node_blk);
+> +
+> +		if (!c.sldc_immutable) {
+> +			sbi->total_valid_block_count += cblocks;
+> +			if (sbi->total_valid_block_count >=
+> +					sbi->user_block_count) {
+> +				ERR_MSG("Not enough space\n");
+> +				ASSERT(0);
+> +			}
+> +		}
+> +#endif
+>  	} else {
+>  		while ((n = read(fd, buffer, BLOCK_SZ)) > 0) {
+>  			f2fs_write(sbi, de->ino, buffer, n, off);
+> diff --git a/fsck/sload.c b/fsck/sload.c
+> index 14012fb..13e523a 100644
+> --- a/fsck/sload.c
+> +++ b/fsck/sload.c
+> @@ -6,6 +6,9 @@
+>   *   Hou Pengyang <houpengyang@huawei.com>
+>   *   Liu Shuoran <liushuoran@huawei.com>
+>   *   Jaegeuk Kim <jaegeuk@kernel.org>
+> + * Copyright (c) 2020 Google Inc.
+> + *   Robin Hsu <robinhsu@google.com>
+> + *  : add sload compression support
+>   *
+>   * This program is free software; you can redistribute it and/or modify
+>   * it under the terms of the GNU General Public License version 2 as
+> @@ -317,6 +320,70 @@ skip:
+>  	return 0;
+>  }
+>  
+> +typedef struct _ext_tbl {
+> +	const char *ext;
+> +	struct _ext_tbl *next; /* linked list */
+> +} ext_tbl_t;
+> +static ext_tbl_t *ext_tbl;
+> +
+> +static bool ext_found(const char *ext)
+> +{
+> +	ext_tbl_t *p = ext_tbl;
+> +
+> +	while (p != NULL && strcmp(ext, p->ext))
+> +		p = p->next;
+> +	return (p != NULL);
+> +}
+> +
+> +static const char *get_ext(const char *path)
+> +{
+> +	char *p = strrchr(path, '.');
+> +	return p == NULL ? path + strlen(path) : p + 1;
+> +}
+> +
+> +static bool ext_do_filter(const char *path)
+> +{
+> +	return (ext_found(get_ext(path)) == true) ^ (c.sldc_policy == FP_ALLOW);
+> +}
+> +
+> +static void ext_filter_add(const char *ext)
+> +{
+> +	ext_tbl_t *node;
+> +
+> +	ASSERT(ext != NULL);
+> +	if (ext_found(ext))
+> +		return; /* ext was already registered */
+> +	node = malloc(sizeof(ext_tbl_t));
+> +	ASSERT(node != NULL);
+> +	node->ext = ext;
+> +	node->next = ext_tbl;
+> +	ext_tbl = node;
+> +}
+> +
+> +static void ext_filter_destroy(void)
+> +{
+> +	ext_tbl_t *p;
+> +
+> +	while (ext_tbl != NULL) {
+> +		p = ext_tbl;
+> +		ext_tbl = p->next;
+> +		free(p);
+> +	}
+> +}
+> +
+> +struct ext_tbl_op ext_filter = {
+> +	.add = ext_filter_add,
+> +	.destroy = ext_filter_destroy,
+> +	.filter = ext_do_filter,
+> +};
+> +
+> +void sldc_erase_bufs(struct compress_ctx *cc)
+> +{
+> +	memset(cc->rbuf, 0, cc->cluster_size * F2FS_BLKSIZE);
+> +	memset(cc->cbuf->cdata, 0, cc->cluster_size * F2FS_BLKSIZE
+> +			- F2FS_BLKSIZE);
+> +}
+> +
+>  int f2fs_sload(struct f2fs_sb_info *sbi)
+>  {
+>  	int ret = 0;
+> diff --git a/include/f2fs_fs.h b/include/f2fs_fs.h
+> index 1348e39..2a2dc15 100644
+> --- a/include/f2fs_fs.h
+> +++ b/include/f2fs_fs.h
+> @@ -5,6 +5,9 @@
+>   *             http://www.samsung.com/
+>   * Copyright (c) 2019 Google Inc.
+>   *             http://www.google.com/
+> + * Copyright (c) 2020 Google Inc.
+> + *   Robin Hsu <robinhsu@google.com>
+> + *  : add sload compression support
+>   *
+>   * Dual licensed under the GPL or LGPL version 2 licenses.
+>   *
+> @@ -68,6 +71,10 @@ typedef uint16_t u_int16_t;
+>  typedef uint8_t u_int8_t;
+>  #endif
+>  
+> +/* codes from kernel's f2fs.h, GPL-v2.0 */
+> +#define MIN_COMPRESS_LOG_SIZE	2
+> +#define MAX_COMPRESS_LOG_SIZE	8
+> +
+>  typedef u_int64_t	u64;
+>  typedef u_int32_t	u32;
+>  typedef u_int16_t	u16;
+> @@ -93,6 +100,31 @@ typedef u32	__be32;
+>  typedef u64	__be64;
+>  #endif
+>  
+> +/*
+> + * code borrowed from kernel f2fs dirver: f2fs.h, GPL-2.0
+> + *  : definitions of COMPRESS_DATA_RESERVED_SIZE,
+> + *    struct compress_data, COMPRESS_HEADER_SIZE,
+> + *    and struct compress_ctx
+> + */
+> +#define COMPRESS_DATA_RESERVED_SIZE		4
+> +struct compress_data {
+> +	__le32 clen;			/* compressed data size */
+> +	__le32 chksum;			/* checksum of compressed data */
+> +	__le32 reserved[COMPRESS_DATA_RESERVED_SIZE];	/* reserved */
+> +	u8 cdata[];			/* compressed data */
+> +};
+> +#define COMPRESS_HEADER_SIZE	(sizeof(struct compress_data))
+> +/* compress context */
+> +struct compress_ctx {
+> +	unsigned int cluster_size;	/* page count in cluster */
+> +	unsigned int log_cluster_size;	/* log of cluster size */
+> +	void *rbuf;			/* compression input buffer */
+> +	struct compress_data *cbuf;	/* comprsssion output header + data */
+> +	size_t rlen;			/* valid data length in rbuf */
+> +	size_t clen;			/* valid data length in cbuf */
+> +	void *private;			/* work buf for compress algorithm */
+> +};
+> +
+>  #if HAVE_BYTESWAP_H
+>  #include <byteswap.h>
+>  #else
+> @@ -345,6 +377,25 @@ typedef struct {
+>  	bool dbg_en;
+>  } dev_cache_config_t;
+>  
+> +/* f2fs_configration: sldc_ca, the sload compress algorithm */
+> +enum {CA_LZO, CA_LZ4};
+> +extern const char *ca_names[];
+> +
+> +typedef struct  {
+> +	void (*init)(struct compress_ctx *cc);
+> +	int (*compress)(struct compress_ctx *cc);
+> +} compress_ops;
+> +
+> +#define ALIGN_UP(value, size) ((value) + ((value) % (size) > 0 ? \
+> +		(size) - (value) % (size) : 0))
+> +
+> +enum filter_policy {FP_UNASSIGNED = 0, FP_ALLOW, FP_DENY};
+> +struct ext_tbl_op {
+> +	void (*add)(const char *);
+> +	void (*destroy)(void);
+> +	bool (*filter)(const char *);
+> +};
+> +
+>  struct f2fs_configuration {
+>  	u_int32_t reserved_segments;
+>  	u_int32_t new_reserved_segments;
+> @@ -441,6 +492,24 @@ struct f2fs_configuration {
+>  
+>  	/* cache parameters */
+>  	dev_cache_config_t cache_config;
+> +
+> +	/* quick dynamic buffer */
+> +	bool qbuf_initialized;
+> +	size_t qbufsize;
+> +	void *qbuf;
+I don't think these qbuf* variables inside the f2fs_configuration are
+used anywhere - shouldn't they be removed?
+> +
+> +	/* sldc: sload compression support */
+> +	bool sldc_en;
+> +	bool sldc_use_allow_list;  /* default false to use the deny list */
+> +	struct compress_ctx sldc_cc;
+> +	u8 sldc_ca; /* compress algorithm: 0 = LZO, 1 = LZ4 */
+> +	compress_ops *sldc_compr;
+> +	enum filter_policy sldc_policy;
+> +	/* max_cppc can used to specify minimum compression rate */
+> +	unsigned int sldc_min_cbpc; /* min compressed pages per cluster */
+> +	bool sldc_got_opt;
+> +	bool sldc_immutable;
+> +	struct ext_tbl_op *sldc_ef; /* extension filter */
+>  };
+>  
+>  #ifdef CONFIG_64BIT
+> @@ -1226,6 +1295,11 @@ extern void f2fs_release_sparse_resource(void);
+>  extern int f2fs_finalize_device(void);
+>  extern int f2fs_fsync_device(void);
+>  
+> +/* quick (shared) buffer */
+> +extern void qbuf_free(void);
+> +extern void *qbuf_alloc(size_t size);
+> +extern void qbuf_init(void);
+> +
+>  extern void dcache_init(void);
+>  extern void dcache_release(void);
+>  
+> @@ -1377,7 +1451,7 @@ int f2fs_reset_zone(int, void *);
+>  extern int f2fs_reset_zones(int);
+>  extern uint32_t f2fs_get_usable_segments(struct f2fs_super_block *sb);
+>  
+> -#define SIZE_ALIGN(val, size)	((val) + (size) - 1) / (size)
+> +#define SIZE_ALIGN(val, size)	(((val) + (size) - 1) / (size))
+>  #define SEG_ALIGN(blks)		SIZE_ALIGN(blks, c.blks_per_seg)
+>  #define ZONE_ALIGN(blks)	SIZE_ALIGN(blks, c.blks_per_seg * \
+>  					c.segs_per_zone)
+> diff --git a/lib/libf2fs_io.c b/lib/libf2fs_io.c
+> index 138285d..0280896 100644
+> --- a/lib/libf2fs_io.c
+> +++ b/lib/libf2fs_io.c
+> @@ -5,6 +5,9 @@
+>   *             http://www.samsung.com/
+>   * Copyright (c) 2019 Google Inc.
+>   *             http://www.google.com/
+> + * Copyright (c) 2020 Google Inc.
+> + *   Robin Hsu <robinhsu@google.com>
+> + *  : add quick-buffer for sload compression support
+>   *
+>   * Dual licensed under the GPL or LGPL version 2 licenses.
+>   */
+> @@ -106,6 +109,36 @@ static long dcache_relocate_offset0[] = {
+>  };
+>  static int dcache_relocate_offset[16];
+>  
+> +/* quick (shared) buffer */
+> +static bool qbuf_initialized;
+> +static void *qbuf;
+> +static size_t qbufsize;
+> +void qbuf_free(void)
+> +{
+> +	ASSERT(qbuf_initialized);
+> +	if (qbuf != NULL) {
+> +		free(qbuf);
+> +		qbuf = NULL;
+> +		qbufsize = 0;
+> +	}
+> +}
+> +void *qbuf_alloc(size_t size)
+> +{
+> +	ASSERT(qbuf_initialized);
+> +	if (size > qbufsize) {
+> +		qbuf_free();
+> +		qbuf = malloc(size);
+qbufsize needs to be updated to size here.
+> +	}
+> +	return qbuf;
+> +}
+> +void qbuf_init(void)
+> +{
+> +	if (qbuf_initialized)
+> +		return;
+> +	atexit(qbuf_free);
+> +	qbuf_initialized = true;
+> +}
+Is there really a need for all this qbuf code? As far as I can tell,
+qbuf_alloc() is only ever called once during any invocation of
+sload, and it'd be better/simpler to replace that with a malloc()...
+> +
+>  static void dcache_print_statistics(void)
+>  {
+>  	long i;
+> -- 
+> 2.29.2.576.ga3fc446d84-goog
+> 
+> 
+> 
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
