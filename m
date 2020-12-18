@@ -2,263 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 949F72DE9F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 20:58:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4242DEA04
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 21:11:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730555AbgLRT6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 14:58:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44959 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727103AbgLRT6T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 14:58:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608321411;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nNU3aA3e/U4axh3TyaUrSBdOjR1YOi5LUy4z3I+wU/E=;
-        b=Pt6ahc0SALma65Z+s4kyMrgD0p80jZsrGEYAps3vZuYcZ0t/Er/QmEMSnmlNlt4bXeWhDG
-        K3FZPQASZb2XfRI3QdTIMtKsf/dmW+LI/DezlSTXZ7Pja+WIQP1PD07ThfhA/0d3UyJn/H
-        RXSaG/nzWv9SbWCBuTiaL0TnpRc8/SI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-26-sd9j2c42PqK9owmeQNzRYw-1; Fri, 18 Dec 2020 14:56:50 -0500
-X-MC-Unique: sd9j2c42PqK9owmeQNzRYw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E9990107ACE3;
-        Fri, 18 Dec 2020 19:56:47 +0000 (UTC)
-Received: from work-vm (ovpn-114-200.ams2.redhat.com [10.36.114.200])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2FF4060CD1;
-        Fri, 18 Dec 2020 19:56:44 +0000 (UTC)
-Date:   Fri, 18 Dec 2020 19:56:41 +0000
-From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
-To:     "Kalra, Ashish" <Ashish.Kalra@amd.com>
-Cc:     "Singh, Brijesh" <brijesh.singh@amd.com>,
-        Steve Rutherford <srutherford@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        Borislav Petkov <bp@suse.de>,
-        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
-        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "dovmurik@linux.vnet.ibm.com" <dovmurik@linux.vnet.ibm.com>,
-        "tobin@ibm.com" <tobin@ibm.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "frankeh@us.ibm.com" <frankeh@us.ibm.com>
-Subject: Re: [PATCH v2 1/9] KVM: x86: Add AMD SEV specific Hypercall3
-Message-ID: <20201218195641.GL2956@work-vm>
-References: <b6bc54ed6c8ae4444f3acf1ed4386010783ad386.1606782580.git.ashish.kalra@amd.com>
- <X8gyhCsEMf8QU9H/@google.com>
- <d63529ce-d613-9f83-6cfc-012a8b333e38@redhat.com>
- <X86Tlin14Ct38zDt@google.com>
- <CABayD+esy0yeKi9W3wQw+ou4y4840LPCwd-PHhN1J6Uh_fvSjA@mail.gmail.com>
- <765f86ae-7c68-6722-c6e0-c6150ce69e59@amd.com>
- <20201211225542.GA30409@ashkalra_ubuntu_server>
- <20201212045603.GA27415@ashkalra_ubuntu_server>
- <20201218193956.GJ2956@work-vm>
- <E79E09A2-F314-4B59-B7AE-07B1D422DF2B@amd.com>
+        id S2387399AbgLRULT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 15:11:19 -0500
+Received: from mga07.intel.com ([134.134.136.100]:1630 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730847AbgLRULS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 15:11:18 -0500
+IronPort-SDR: OkVPJvyLn7xkhpaCJCckDDOpQbG69uRuz8lcOlK9228imBVgM3H0e6B8DWKVhsyh8mLWpmYhtF
+ 49kcgH6R/D6w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9839"; a="239585997"
+X-IronPort-AV: E=Sophos;i="5.78,431,1599548400"; 
+   d="scan'208";a="239585997"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2020 12:10:37 -0800
+IronPort-SDR: MAnsuBJldKXtj3wMlgkccBbRzH6y+Hwe+y9uQ6XN9CvLBPUAJtWDUf6TDR1KKtki/7Mjfpac2t
+ Yc+uaFT6/2Ig==
+X-IronPort-AV: E=Sophos;i="5.78,431,1599548400"; 
+   d="scan'208";a="414239977"
+Received: from nrojasva-mobl.amr.corp.intel.com (HELO [10.209.64.102]) ([10.209.64.102])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2020 12:10:36 -0800
+Subject: Re: [PATCH V3 04/10] x86/pks: Preserve the PKRS MSR on context switch
+To:     Ira Weiny <ira.weiny@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-doc@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+References: <20201106232908.364581-1-ira.weiny@intel.com>
+ <20201106232908.364581-5-ira.weiny@intel.com>
+ <871rfoscz4.fsf@nanos.tec.linutronix.de>
+ <87mtycqcjf.fsf@nanos.tec.linutronix.de>
+ <878s9vqkrk.fsf@nanos.tec.linutronix.de>
+ <20201218194249.GE1563847@iweiny-DESK2.sc.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <8282c332-ab10-3670-415e-ed77580c4a26@intel.com>
+Date:   Fri, 18 Dec 2020 12:10:36 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20201218194249.GE1563847@iweiny-DESK2.sc.intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <E79E09A2-F314-4B59-B7AE-07B1D422DF2B@amd.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Kalra, Ashish (Ashish.Kalra@amd.com) wrote:
-> Hello Dave,
-> 
-> On Dec 18, 2020, at 1:40 PM, Dr. David Alan Gilbert <dgilbert@redhat.com> wrote:
-> 
-> ﻿* Ashish Kalra (ashish.kalra@amd.com) wrote:
-> On Fri, Dec 11, 2020 at 10:55:42PM +0000, Ashish Kalra wrote:
-> Hello All,
-> 
-> On Tue, Dec 08, 2020 at 10:29:05AM -0600, Brijesh Singh wrote:
-> 
-> On 12/7/20 9:09 PM, Steve Rutherford wrote:
-> On Mon, Dec 7, 2020 at 12:42 PM Sean Christopherson <seanjc@google.com> wrote:
-> On Sun, Dec 06, 2020, Paolo Bonzini wrote:
-> On 03/12/20 01:34, Sean Christopherson wrote:
-> On Tue, Dec 01, 2020, Ashish Kalra wrote:
-> From: Brijesh Singh <brijesh.singh@amd.com>
-> 
-> KVM hypercall framework relies on alternative framework to patch the
-> VMCALL -> VMMCALL on AMD platform. If a hypercall is made before
-> apply_alternative() is called then it defaults to VMCALL. The approach
-> works fine on non SEV guest. A VMCALL would causes #UD, and hypervisor
-> will be able to decode the instruction and do the right things. But
-> when SEV is active, guest memory is encrypted with guest key and
-> hypervisor will not be able to decode the instruction bytes.
-> 
-> Add SEV specific hypercall3, it unconditionally uses VMMCALL. The hypercall
-> will be used by the SEV guest to notify encrypted pages to the hypervisor.
-> What if we invert KVM_HYPERCALL and X86_FEATURE_VMMCALL to default to VMMCALL
-> and opt into VMCALL?  It's a synthetic feature flag either way, and I don't
-> think there are any existing KVM hypercalls that happen before alternatives are
-> patched, i.e. it'll be a nop for sane kernel builds.
-> 
-> I'm also skeptical that a KVM specific hypercall is the right approach for the
-> encryption behavior, but I'll take that up in the patches later in the series.
-> Do you think that it's the guest that should "donate" memory for the bitmap
-> instead?
-> No.  Two things I'd like to explore:
-> 
->  1. Making the hypercall to announce/request private vs. shared common across
->     hypervisors (KVM, Hyper-V, VMware, etc...) and technologies (SEV-* and TDX).
->     I'm concerned that we'll end up with multiple hypercalls that do more or
->     less the same thing, e.g. KVM+SEV, Hyper-V+SEV, TDX, etc...  Maybe it's a
->     pipe dream, but I'd like to at least explore options before shoving in KVM-
->     only hypercalls.
-> 
-> 
->  2. Tracking shared memory via a list of ranges instead of a using bitmap to
->     track all of guest memory.  For most use cases, the vast majority of guest
->     memory will be private, most ranges will be 2mb+, and conversions between
->     private and shared will be uncommon events, i.e. the overhead to walk and
->     split/merge list entries is hopefully not a big concern.  I suspect a list
->     would consume far less memory, hopefully without impacting performance.
-> For a fancier data structure, I'd suggest an interval tree. Linux
-> already has an rbtree-based interval tree implementation, which would
-> likely work, and would probably assuage any performance concerns.
-> 
-> Something like this would not be worth doing unless most of the shared
-> pages were physically contiguous. A sample Ubuntu 20.04 VM on GCP had
-> 60ish discontiguous shared regions. This is by no means a thorough
-> search, but it's suggestive. If this is typical, then the bitmap would
-> be far less efficient than most any interval-based data structure.
-> 
-> You'd have to allow userspace to upper bound the number of intervals
-> (similar to the maximum bitmap size), to prevent host OOMs due to
-> malicious guests. There's something nice about the guest donating
-> memory for this, since that would eliminate the OOM risk.
-> 
-> 
-> Tracking the list of ranges may not be bad idea, especially if we use
-> the some kind of rbtree-based data structure to update the ranges. It
-> will certainly be better than bitmap which grows based on the guest
-> memory size and as you guys see in the practice most of the pages will
-> be guest private. I am not sure if guest donating a memory will cover
-> all the cases, e.g what if we do a memory hotplug (increase the guest
-> ram from 2GB to 64GB), will donated memory range will be enough to store
-> the metadata.
-> 
-> .
-> 
-> With reference to internal discussions regarding the above, i am going
-> to look into specific items as listed below :
-> 
-> 1). "hypercall" related :
-> a). Explore the SEV-SNP page change request structure (included in GHCB),
-> see if there is something common there than can be re-used for SEV/SEV-ES
-> page encryption status hypercalls.
-> b). Explore if there is any common hypercall framework i can use in
-> Linux/KVM.
-> 
-> 2). related to the "backing" data structure - explore using a range-based
-> list or something like rbtree-based interval tree data structure
-> (as mentioned by Steve above) to replace the current bitmap based
-> implementation.
-> 
-> 
-> 
-> I do agree that a range-based list or an interval tree data structure is a
-> really good "logical" fit for the guest page encryption status tracking.
-> 
-> We can only keep track of the guest unencrypted shared pages in the
-> range(s) list (which will keep the data structure quite compact) and all
-> the guest private/encrypted memory does not really need any tracking in
-> the list, anything not in the list will be encrypted/private.
-> 
-> Also looking at a more "practical" use case, here is the current log of
-> page encryption status hypercalls when booting a linux guest :
-> 
-> ...
-> 
-> <snip>
-> 
-> [   56.146336] page_enc_status_hc invoked, gpa = 1f018000, npages  = 1, enc = 1
-> [   56.146351] page_enc_status_hc invoked, gpa = 1f00e000, npages  = 1, enc = 0
-> [   56.147261] page_enc_status_hc invoked, gpa = 1f00e000, npages  = 1, enc = 0
-> [   56.147271] page_enc_status_hc invoked, gpa = 1f018000, npages  = 1, enc = 0
-> ....
-> 
-> [   56.180730] page_enc_status_hc invoked, gpa = 1f008000, npages  = 1, enc = 0
-> [   56.180741] page_enc_status_hc invoked, gpa = 1f006000, npages  = 1, enc = 0
-> [   56.180768] page_enc_status_hc invoked, gpa = 1f008000, npages  = 1, enc = 1
-> [   56.180782] page_enc_status_hc invoked, gpa = 1f006000, npages  = 1, enc = 1
-> 
-> ....
-> [   56.197110] page_enc_status_hc invoked, gpa = 1f007000, npages  = 1, enc = 0
-> [   56.197120] page_enc_status_hc invoked, gpa = 1f005000, npages  = 1, enc = 0
-> [   56.197136] page_enc_status_hc invoked, gpa = 1f007000, npages  = 1, enc = 1
-> [   56.197148] page_enc_status_hc invoked, gpa = 1f005000, npages  = 1, enc = 1
-> ....
-> 
-> [   56.222679] page_enc_status_hc invoked, gpa = 1e83b000, npages  = 1, enc = 0
-> [   56.222691] page_enc_status_hc invoked, gpa = 1e839000, npages  = 1, enc = 0
-> [   56.222707] page_enc_status_hc invoked, gpa = 1e83b000, npages  = 1, enc = 1
-> [   56.222720] page_enc_status_hc invoked, gpa = 1e839000, npages  = 1, enc = 1
-> ....
-> 
-> [   56.313747] page_enc_status_hc invoked, gpa = 1e5eb000, npages  = 1, enc = 0
-> [   56.313771] page_enc_status_hc invoked, gpa = 1e5e9000, npages  = 1, enc = 0
-> [   56.313789] page_enc_status_hc invoked, gpa = 1e5eb000, npages  = 1, enc = 1
-> [   56.313803] page_enc_status_hc invoked, gpa = 1e5e9000, npages  = 1, enc = 1
-> ....
-> [   56.459276] page_enc_status_hc invoked, gpa = 1d767000, npages  = 100, enc = 0
-> [   56.459428] page_enc_status_hc invoked, gpa = 1e501000, npages  = 1, enc = 1
-> [   56.460037] page_enc_status_hc invoked, gpa = 1d767000, npages  = 100, enc = 1
-> [   56.460216] page_enc_status_hc invoked, gpa = 1e501000, npages  = 1, enc = 0
-> [   56.460299] page_enc_status_hc invoked, gpa = 1d767000, npages  = 100, enc = 0
-> [   56.460448] page_enc_status_hc invoked, gpa = 1e501000, npages  = 1, enc = 1
-> ....
-> 
-> As can be observed here, all guest MMIO ranges are initially setup as
-> shared, and those are all contigious guest page ranges.
-> 
-> After that the encryption status hypercalls are invoked when DMA gets
-> triggered during disk i/o while booting the guest ... here again the
-> guest page ranges are contigious, though mostly single page is touched
-> and a lot of page re-use is observed.
-> 
-> So a range-based list/structure will be a "good" fit for such usage
-> scenarios.
-> 
-> It seems surprisingly common to flick the same pages back and forth between
-> encrypted and clear for quite a while;  why is this?
-> 
-> 
-> dma_alloc_coherent()'s will allocate pages and then call
-> set_decrypted() on them and then at dma_free_coherent(), set_encrypted()
-> is called on the pages to be freed. So these observations in the logs
-> where a lot of single 4K pages are seeing C-bit transitions and
-> corresponding hypercalls are the ones associated with
-> dma_alloc_coherent().
+On 12/18/20 11:42 AM, Ira Weiny wrote:
+> Another problem would be if the kmap and kunmap happened in different
+> contexts...  :-/  I don't think that is done either but I don't know for
+> certain.
 
-It makes me wonder if it might be worth teaching it to hold onto those
-DMA pages somewhere until it needs them for something else and avoid the
-extra hypercalls; just something to think about.
+It would be really nice to put together some surveillance patches to
+help become more certain about these things.  Even a per-task counter
+would be better than nothing.
 
-Dave
+On kmap:
+	current->kmaps++;
+On kunmap:
+	current->kmaps--;
+	WARN_ON(current->kmaps < 0);
+On exit:
+	WARN_ON(current->kmaps);
 
-> Thanks,
-> Ashish
-> 
-> 
-> --
-> Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
-> 
--- 
-Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
+That would at least find imbalances.  You could take it even further by
+having a little array, say:
 
+struct one_kmap {
+	struct page *page;
+	depot_stack_handle_t handle;
+};
+
+Then:
+
+	 struct task_struct {
+		...
+	+	struct one_kmap kmaps[10];
+	 };
+
+On kmap() you make a new entry in current->kmaps[], and on kunmap() you
+try to find the corresponding entry.  If you can't find one, in the
+current task you can even go search all the other tasks and see who
+might be responsible.  If something goes and does more than 10
+simultaneous kmap()s in one thread, dump a warning and give up.  Or,
+dynamically allocate the kmaps[] array.
+
+Then you can dump out the stack of the kmap() culprit if it exits after
+a kmap() but without a corresponding kfree().
+
+Something like that should be low overhead enough to get it into things
+like the 0day debug kernel.  It should be way cheaper than something
+like lockdep.
