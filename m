@@ -2,66 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54A4B2DE668
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 16:20:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A182DE67F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 16:27:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728327AbgLRPUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 10:20:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58038 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726139AbgLRPUr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 10:20:47 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608304806;
-        bh=rGkngiNUJl4ptxqLyCL2cs5g7Qv/3qw/qDysKjxw46c=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=jd1aQAQ7/+lmrht4lQKkCQ7rwST5Dt87JyKs6mZnrUeYU3DsBgj3I1n7N05LaqOKw
-         RrNz8WLfBqGXBkjJeSLjR3yrTAu62wlja8OwfFwaqHs8pod/4fTqTiuhxfuaLE2MSY
-         iGLuTsdYKEyBTs/ILP7UdgvAzg68KCre1SjUXpr5X/99RRxSTOL6eBDsRN0rwb1AaL
-         sXB92+jYanWtSN8HH+KHb5BCvbXxUDUpKbcJ8DMKLovKQg2JJ72u8RnQ5cckRFR0Z6
-         o7IRHaUQk0wCdJnG39Vx/oV692YWSDTDXsjtCjt2GNYsfQWHAvPR6iDB74d6sqVDO6
-         mGIGaxbIQHHig==
+        id S1727154AbgLRP0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 10:26:45 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:50523 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725776AbgLRP0o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 10:26:44 -0500
+Received: by mail-il1-f199.google.com with SMTP id t8so2320199ils.17
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 07:26:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=sk5wsene1nN0m/ZwzAMFtPnzrH/E8P/WHO8ceDjivzI=;
+        b=WfzZg8mLZKiJ8/W3geozLapk4K69sggG5J3yxXBBktkDgcoVVGcSLND4pfjOoOqvwH
+         K+tK+w5yI8eq2HshStjCQauCN4tuxep4lFIHVp6e8/aLjItYNNmBHW2iaAmgjrCnHaON
+         hRckXhrqhTztNpgKuOgILEGbrJ6WZ7QRaFhn61LRout4NG0z0vHymRLBxd9Or0Sz+yLu
+         pVEQcmb8kHTeRfdb1jWUhohrRe6cvCRQb825FqYlQg0JK3DqdE+05pqzNeVoB/p0ivoq
+         r8uhXNYV8KphFT38rfVP7nqRToyzw4j9UUTMYIHex1KKt2WU8+zAvOi3T/pP47xidnTf
+         czOA==
+X-Gm-Message-State: AOAM533tUz2xMtyikOkJd2vVD40OC+AcrylzKYPX2EYmwLbkkQCNZpk0
+        UEp6olGgGGr4ftRf3z9Mef5asrI6CcSi1N/L99hq77oGnXOd
+X-Google-Smtp-Source: ABdhPJzuvrPtRbQYMrW7TokBn0kIwTaf/V843TfLKQjba/B7jwxt5ruzQvW2+psjnlXsskbIbwR8PyAsQ+KrYXz+osh7v24vwsOS
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH][next] selftests/bpf: fix spelling mistake "tranmission" ->
- "transmission"
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160830480683.29956.13434774651778716031.git-patchwork-notify@kernel.org>
-Date:   Fri, 18 Dec 2020 15:20:06 +0000
-References: <20201214223539.83168-1-colin.king@canonical.com>
-In-Reply-To: <20201214223539.83168-1-colin.king@canonical.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
-        shuah@kernel.org, andrii@kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Received: by 2002:a05:6e02:152f:: with SMTP id i15mr4326230ilu.104.1608305163890;
+ Fri, 18 Dec 2020 07:26:03 -0800 (PST)
+Date:   Fri, 18 Dec 2020 07:26:03 -0800
+In-Reply-To: <000000000000b30cad05b0fc3d74@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fbf57305b6beb939@google.com>
+Subject: Re: BUG: unable to handle kernel paging request in cfb_imageblit
+From:   syzbot <syzbot+dfd0b1c6705301cc4847@syzkaller.appspotmail.com>
+To:     b.zolnierkie@samsung.com, dan.carpenter@oracle.com,
+        dri-devel@lists.freedesktop.org, george.kennedy@oracle.com,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+syzbot suspects this issue was fixed by commit:
 
-This patch was applied to bpf/bpf.git (refs/heads/master):
+commit a49145acfb975d921464b84fe00279f99827d816
+Author: George Kennedy <george.kennedy@oracle.com>
+Date:   Tue Jul 7 19:26:03 2020 +0000
 
-On Mon, 14 Dec 2020 22:35:39 +0000 you wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> There are two spelling mistakes in output messages. Fix these.
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  tools/testing/selftests/bpf/xdpxceiver.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+    fbmem: add margin check to fb_check_caps()
 
-Here is the summary with links:
-  - [next] selftests/bpf: fix spelling mistake "tranmission" -> "transmission"
-    https://git.kernel.org/bpf/bpf/c/e79bb299ccad
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1149f30f500000
+start commit:   22fbc037 Merge tag 'for-linus' of git://git.kernel.org/pub..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4e672827d2ffab1f
+dashboard link: https://syzkaller.appspot.com/bug?extid=dfd0b1c6705301cc4847
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11ba9a5d900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17cfd4af900000
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+If the result looks correct, please mark the issue as fixed by replying with:
 
+#syz fix: fbmem: add margin check to fb_check_caps()
 
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
