@@ -2,197 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C57192DE50E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:44:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F3402DE513
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:46:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727988AbgLROoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 09:44:13 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:40594 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726903AbgLROoN (ORCPT
+        id S1728012AbgLROpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 09:45:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27015 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726567AbgLROpw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 09:44:13 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BIEgJ1h002175;
-        Fri, 18 Dec 2020 08:42:19 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1608302539;
-        bh=pTnSOVQlYaLLFPXX46y4VH9Zff6M5493tQ8KFZNlnPg=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=qVoAcJrFpHv8UTLXJKvQVTwSvNJ8ZEnkeV7DBTCkURzuONJJ6bdsu7HivHuSkK4uZ
-         rCK+HZSjzBIG4mlmB6a+4y+SMxztzzM9J38Oqaf0i/GXQ5uULFPBjYrK63pAiC3ygn
-         lNtfC3xxZpPYoxzBWgqwwMBSjjYLM6IeAMvwXP4k=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BIEgJQ7111684
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 18 Dec 2020 08:42:19 -0600
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 18
- Dec 2020 08:42:18 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 18 Dec 2020 08:42:18 -0600
-Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BIEgEl9113653;
-        Fri, 18 Dec 2020 08:42:15 -0600
-Subject: Re: [PATCH v5] PCI: cadence: Retrain Link to work around Gen2
- training defect.
-To:     Rob Herring <robh@kernel.org>
-CC:     Tom Joseph <tjoseph@cadence.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Nadeem Athani <nadeem@cadence.com>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Milind Parab <mparab@cadence.com>,
-        Swapnil Kashinath Jakhade <sjakhade@cadence.com>,
-        Parshuram Raju Thombare <pthombar@cadence.com>
-References: <20201215070009.27937-1-kishon@ti.com>
- <CAL_JsqJzi7JkMcd4NZewA=w8q6BsCkrhW3JcED63R=EyE3v29Q@mail.gmail.com>
- <1ec78477-dadc-cbef-406f-568f44b6c62d@ti.com>
- <CAL_JsqLepmopGObX_r+7gtR+keaNtEAA3WA1j697T4jAWP8DHA@mail.gmail.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <96ca64cb-ec3a-bb83-2de3-775034ba844b@ti.com>
-Date:   Fri, 18 Dec 2020 20:12:13 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 18 Dec 2020 09:45:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608302665;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CthNdoUY/FIFXJCBduT4k2Ir0PRGPQTHNOp+0Jn+7JM=;
+        b=P7kYKd1EaBJ2pQeY16aE4BNqPSLUlEGyuUH/J17wjWubKzAZkt8JNlrtmJf+npqgw/C6jY
+        91PFQbCZkKeq/G87AHO65ON3RZMggW6t+c/nmo8GqE+ImB2fX4IJg3d/hmUq5nIaEb/eg9
+        8L2aXxHSG5+9wnjhKIo8yVNlnR6Xy+o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-169-pEZB78OdMT2Hg7zsV1RQcA-1; Fri, 18 Dec 2020 09:44:21 -0500
+X-MC-Unique: pEZB78OdMT2Hg7zsV1RQcA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 43D98800688;
+        Fri, 18 Dec 2020 14:44:19 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-115-223.rdu2.redhat.com [10.10.115.223])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B815B60CED;
+        Fri, 18 Dec 2020 14:44:18 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 3E856220BCF; Fri, 18 Dec 2020 09:44:18 -0500 (EST)
+Date:   Fri, 18 Dec 2020 09:44:18 -0500
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Jeffrey Layton <jlayton@poochiereds.net>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, jlayton@kernel.org,
+        amir73il@gmail.com, sargun@sargun.me, miklos@szeredi.hu,
+        willy@infradead.org, jack@suse.cz, neilb@suse.com,
+        viro@zeniv.linux.org.uk
+Subject: Re: [PATCH 3/3] overlayfs: Check writeback errors w.r.t upper in
+ ->syncfs()
+Message-ID: <20201218144418.GA3424@redhat.com>
+References: <20201216233149.39025-1-vgoyal@redhat.com>
+ <20201216233149.39025-4-vgoyal@redhat.com>
+ <20201217200856.GA707519@tleilax.poochiereds.net>
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqLepmopGObX_r+7gtR+keaNtEAA3WA1j697T4jAWP8DHA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201217200856.GA707519@tleilax.poochiereds.net>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-On 16/12/20 10:31 pm, Rob Herring wrote:
-> On Wed, Dec 16, 2020 at 9:01 AM Kishon Vijay Abraham I <kishon@ti.com> wrote:
->>
->> Hi Rob,
->>
->> On 15/12/20 9:23 pm, Rob Herring wrote:
->>> On Tue, Dec 15, 2020 at 1:00 AM Kishon Vijay Abraham I <kishon@ti.com> wrote:
->>>>
->>>> From: Nadeem Athani <nadeem@cadence.com>
->>>>
->>>> Cadence controller will not initiate autonomous speed change if strapped as
->>>> Gen2. The Retrain Link bit is set as quirk to enable this speed change.
->>>>
->>>> Signed-off-by: Nadeem Athani <nadeem@cadence.com>
->>>> [kishon@ti.com: Enable the workaround for TI's J721E SoC]
->>>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
->>>> ---
->>>> Hi Lorenzo,
->>>> The previous version of the patch can be found at [1].
->>>> I slightly re-worked the patch from Nadeem
->>>> *) Removed additional Link Up Check
->>>> *) Removed quirk from pcie-cadence-plat.c
->>>> *) Also removed additional compatible
->>>>    "cdns,cdns-pcie-host-quirk-retrain" added in that series
->>>> *) Enabled the quirk for J721E
->>>> [1] -> http://lore.kernel.org/r/20201211144236.3825-1-nadeem@cadence.com
->>>>
->>>>  drivers/pci/controller/cadence/pci-j721e.c    |  3 +
->>>>  .../controller/cadence/pcie-cadence-host.c    | 67 ++++++++++++++-----
->>>>  drivers/pci/controller/cadence/pcie-cadence.h | 11 ++-
->>>>  3 files changed, 62 insertions(+), 19 deletions(-)
->>>>
->>>> diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
->>>> index dac1ac8a7615..baf729850cb1 100644
->>>> --- a/drivers/pci/controller/cadence/pci-j721e.c
->>>> +++ b/drivers/pci/controller/cadence/pci-j721e.c
->>>> @@ -64,6 +64,7 @@ enum j721e_pcie_mode {
->>>>
->>>>  struct j721e_pcie_data {
->>>>         enum j721e_pcie_mode    mode;
->>>> +       bool                    quirk_retrain_flag;
->>>>  };
->>>>
->>>>  static inline u32 j721e_pcie_user_readl(struct j721e_pcie *pcie, u32 offset)
->>>> @@ -280,6 +281,7 @@ static struct pci_ops cdns_ti_pcie_host_ops = {
->>>>
->>>>  static const struct j721e_pcie_data j721e_pcie_rc_data = {
->>>>         .mode = PCI_MODE_RC,
->>>> +       .quirk_retrain_flag = true,
->>>>  };
->>>>
->>>>  static const struct j721e_pcie_data j721e_pcie_ep_data = {
->>>> @@ -388,6 +390,7 @@ static int j721e_pcie_probe(struct platform_device *pdev)
->>>>
->>>>                 bridge->ops = &cdns_ti_pcie_host_ops;
->>>>                 rc = pci_host_bridge_priv(bridge);
->>>> +               rc->quirk_retrain_flag = data->quirk_retrain_flag;
->>>>
->>>>                 cdns_pcie = &rc->pcie;
->>>>                 cdns_pcie->dev = dev;
->>>> diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c b/drivers/pci/controller/cadence/pcie-cadence-host.c
->>>> index 811c1cb2e8de..773c0d1137ed 100644
->>>> --- a/drivers/pci/controller/cadence/pcie-cadence-host.c
->>>> +++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
->>>> @@ -77,6 +77,50 @@ static struct pci_ops cdns_pcie_host_ops = {
->>>>         .write          = pci_generic_config_write,
->>>>  };
->>>>
->>>> +static int cdns_pcie_host_wait_for_link(struct cdns_pcie *pcie)
->>>> +{
->>>> +       struct device *dev = pcie->dev;
->>>> +       int retries;
->>>> +
->>>> +       /* Check if the link is up or not */
->>>> +       for (retries = 0; retries < LINK_WAIT_MAX_RETRIES; retries++) {
->>>> +               if (cdns_pcie_link_up(pcie)) {
->>>> +                       dev_info(dev, "Link up\n");
->>>> +                       return 0;
->>>> +               }
->>>> +               usleep_range(LINK_WAIT_USLEEP_MIN, LINK_WAIT_USLEEP_MAX);
->>>> +       }
->>>> +
->>>> +       return -ETIMEDOUT;
->>>> +}
->>>> +
->>>> +static void cdns_pcie_retrain(struct cdns_pcie *pcie)
->>>> +{
->>>> +       u32 lnk_cap_sls, pcie_cap_off = CDNS_PCIE_RP_CAP_OFFSET;
->>>> +       u16 lnk_stat, lnk_ctl;
->>>> +
->>>> +       /*
->>>> +        * Set retrain bit if current speed is 2.5 GB/s,
->>>> +        * but the PCIe root port support is > 2.5 GB/s.
->>>
->>> If you don't have the retrain quirk, wouldn't this condition never
->>> happen and then the function is just a nop? So this could just be
->>> called unconditionally.
->>
->> Yeah, but only for the quirk we have to retrain to go to GEN2 speed
->> mode. Else the HW will automatically retrain and go to GEN2.
+On Thu, Dec 17, 2020 at 03:08:56PM -0500, Jeffrey Layton wrote:
+> On Wed, Dec 16, 2020 at 06:31:49PM -0500, Vivek Goyal wrote:
+> > Check for writeback error on overlay super block w.r.t "struct file"
+> > passed in ->syncfs().
+> > 
+> > As of now real error happens on upper sb. So this patch first propagates
+> > error from upper sb to overlay sb and then checks error w.r.t struct
+> > file passed in.
+> > 
+> > Jeff, I know you prefer that I should rather file upper file and check
+> > error directly on on upper sb w.r.t this real upper file.  While I was
+> > implementing that I thought what if file is on lower (and has not been
+> > copied up yet). In that case shall we not check writeback errors and
+> > return back to user space? That does not sound right though because,
+> > we are not checking for writeback errors on this file. Rather we
+> > are checking for any error on superblock. Upper might have an error
+> > and we should report it to user even if file in question is a lower
+> > file. And that's why I fell back to this approach. But I am open to
+> > change it if there are issues in this method.
+> > 
+> > Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+> > ---
+> >  fs/overlayfs/ovl_entry.h |  2 ++
+> >  fs/overlayfs/super.c     | 15 ++++++++++++---
+> >  2 files changed, 14 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/fs/overlayfs/ovl_entry.h b/fs/overlayfs/ovl_entry.h
+> > index 1b5a2094df8e..a08fd719ee7b 100644
+> > --- a/fs/overlayfs/ovl_entry.h
+> > +++ b/fs/overlayfs/ovl_entry.h
+> > @@ -79,6 +79,8 @@ struct ovl_fs {
+> >  	atomic_long_t last_ino;
+> >  	/* Whiteout dentry cache */
+> >  	struct dentry *whiteout;
+> > +	/* Protects multiple sb->s_wb_err update from upper_sb . */
+> > +	spinlock_t errseq_lock;
+> >  };
+> >  
+> >  static inline struct vfsmount *ovl_upper_mnt(struct ovl_fs *ofs)
+> > diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
+> > index b4d92e6fa5ce..e7bc4492205e 100644
+> > --- a/fs/overlayfs/super.c
+> > +++ b/fs/overlayfs/super.c
+> > @@ -291,7 +291,7 @@ int ovl_syncfs(struct file *file)
+> >  	struct super_block *sb = file->f_path.dentry->d_sb;
+> >  	struct ovl_fs *ofs = sb->s_fs_info;
+> >  	struct super_block *upper_sb;
+> > -	int ret;
+> > +	int ret, ret2;
+> >  
+> >  	ret = 0;
+> >  	down_read(&sb->s_umount);
+> > @@ -310,10 +310,18 @@ int ovl_syncfs(struct file *file)
+> >  	ret = sync_filesystem(upper_sb);
+> >  	up_read(&upper_sb->s_umount);
+> >  
+> > +	/* Update overlay sb->s_wb_err */
+> > +	if (errseq_check(&upper_sb->s_wb_err, sb->s_wb_err)) {
+> > +		/* Upper sb has errors since last time */
+> > +		spin_lock(&ofs->errseq_lock);
+> > +		errseq_check_and_advance(&upper_sb->s_wb_err, &sb->s_wb_err);
+> > +		spin_unlock(&ofs->errseq_lock);
+> > +	}
 > 
-> Again, so you don't need a flag for this. Comparing the speed is
-> enough. IOW, all you need is:
+> So, the problem here is that the resulting value in sb->s_wb_err is
+> going to end up with the REPORTED flag set (using the naming in my
+> latest set). So, a later opener of a file on sb->s_wb_err won't see it.
 > 
-> if (current speed < advertised speed)
->   do retrain
+> For instance, suppose you call sync() on the box and does the above
+> check and advance. Then, you open the file and call syncfs() and get
+> back no error because REPORTED flag was set when you opened. That error
+> will then be lost.
+
+Hi Jeff,
+
+In this patch, I am doing this only in ->syncfs() path and not in
+->sync_fs() path. IOW, errseq_check_and_advance() will take place
+only if there is a valid "struct file" passed in. That means there
+is a consumer of the error and that means it should be fine to
+set the sb->s_wb_err as SEEN/REPORTED, right?
+
+If we end up plumbming "struct file" in existing ->sync_fs() routine,
+then I will call this only if a non NULL struct file has been 
+passed in. Otherwise skip this step. 
+
+IOW, sync() call will not result in errseq_check_and_advance() instead
+a syncfs() call will. 
+
 > 
-> The question is the condition ever true and you don't want to do a
-> retrain? I could see higher speeds being unstable or something, but
+> >  
+> > +	ret2 = errseq_check_and_advance(&sb->s_wb_err, &file->f_sb_err);
+> >  out:
+> >  	up_read(&sb->s_umount);
+> > -	return ret;
+> > +	return ret ? ret : ret2;
+> >  }
+> >  
+> >  /**
+> > @@ -1903,6 +1911,7 @@ static int ovl_fill_super(struct super_block *sb, void *data, int silent)
+> >  	if (!cred)
+> >  		goto out_err;
+> >  
+> > +	spin_lock_init(&ofs->errseq_lock);
+> >  	/* Is there a reason anyone would want not to share whiteouts? */
+> >  	ofs->share_whiteout = true;
+> >  
+> > @@ -1975,7 +1984,7 @@ static int ovl_fill_super(struct super_block *sb, void *data, int silent)
+> >  
+> >  		sb->s_stack_depth = ovl_upper_mnt(ofs)->mnt_sb->s_stack_depth;
+> >  		sb->s_time_gran = ovl_upper_mnt(ofs)->mnt_sb->s_time_gran;
+> > -
+> > +		sb->s_wb_err = errseq_sample(&ovl_upper_mnt(ofs)->mnt_sb->s_wb_err);
+> 
+> This will mark the error on the upper_sb as REPORTED, and that's not
+> really that's the case if you're just using it set s_wb_err in the
+> overlay. You might want to use errseq_peek in this situation.
 
-For all GEN1 cards there will be re-train (since the Cadence IP RC is
-GEN2 or more say). This is going to be true for older Cadence IPs and
-newer Cadence IPs (where Cadence has enabled HW re-training).
+For now I am still looking at existing code and not new code. Because
+I belive that new code does not change existing behavior instead
+provides additional functionality to allow sampling the error without
+marking it seen as well as provide helper to not force seeing an
+unseen error.
 
-The quirk will prevent SW re-training for newer Cadence IPs when a GEN1
-card is connected.
-> then 'advertised speed' would be lowered in that case (to prevent auto
-> retraining, right?) and the condition would be false.
+So current errseq_sample() does not mark error SEEN. And if it is
+an unseen error, we will get 0 and be forced to see the error next
+time.
 
-I don't think the value in PCI_EXP_LNKCAP will change for unstable
-links. But yeah it'll fall back to GEN1 based on link training and if
-the link is unstable it'll again fall back to GEN1 on link RE-training.
+One small issue with this is that say upper has unseen error. Now
+we mount overlay and save that value in sb->s_wb_err (unseen). Say
+a file is opened on upper and error is now seen on upper. But
+we still have unseen error cached in overlay and if overlay fd is
+now opened, f->f_sb_err will be 0 and it will be forced to see
+err on next syncfs().
 
-Thanks,
-Kishon
+IOW, despite the fact that overlay fd was opened after upper sb had
+been marked seen, it still will see error. I think it probably is
+not a big issue.
+
+Vivek
+
+> 
+> >  	}
+> >  	oe = ovl_get_lowerstack(sb, splitlower, numlower, ofs, layers);
+> >  	err = PTR_ERR(oe);
+> > -- 
+> > 2.25.4
+> > 
+> 
+
