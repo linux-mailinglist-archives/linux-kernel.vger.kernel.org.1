@@ -2,145 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BED52DE344
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 14:27:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11C752DE346
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 14:27:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727304AbgLRN0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 08:26:15 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:60618 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726103AbgLRN0O (ORCPT
+        id S1727536AbgLRN0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 08:26:38 -0500
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:32835 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727102AbgLRN0h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 08:26:14 -0500
-Received: from mail-qk1-f197.google.com ([209.85.222.197])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <marcelo.cerri@canonical.com>)
-        id 1kqFlC-0000qp-RX
-        for linux-kernel@vger.kernel.org; Fri, 18 Dec 2020 13:25:31 +0000
-Received: by mail-qk1-f197.google.com with SMTP id g4so1987137qko.23
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 05:25:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4nRj/x1/BBEIyRLVmwu1D5CTUo0WYepGewTBZBVPXO8=;
-        b=aByUP7V31tRns/vG9G4N6gLwQ3mejlM4bFZrECR3T/TtaeF8ReqEzKlq7lVlG1EVCD
-         W0YoNbEwaj8WohGdNdCrX3GH1odP9if3Tz0VP95E59TMrxWdtsFWogPy8WwHMWrqlGC9
-         ofuyWo5ioWMTMcOa666kEx+2U1cNgeFWh65yUUuVd8ySwAniauOqv3wOZGChTZ+fmIp7
-         IaGRszFQykuDQlKstauj8IWSogS0oLzh3YYSRLGoztwlCTEuAWQw2AsQRIcx6BRX5r3m
-         18x2yZ5S81TE74rnUzAXymHV08/upJ+c+JgB8XCS00nja3V6SMXfvbfz1iTkGJQaitAE
-         +kLg==
-X-Gm-Message-State: AOAM533fNsEMQz/kl9c8czFwSgsf+cGT777aFfUB7IiM9NMQO+CxoXFl
-        bYTBN9YplU7Nn+T24CJCnOYTwTjcXE8X8wCWY+Xk55ZWcB+X57uNZmI/G5oxMVFCENw/M3+1GR0
-        wbkhTDOQesx/B0qTtzPpMpaRWcrvP7bZkBx4rbcT7
-X-Received: by 2002:a05:620a:2009:: with SMTP id c9mr4723859qka.159.1608297929800;
-        Fri, 18 Dec 2020 05:25:29 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx6lw4/LRHks8iglc7NxhPSCLt1LqaykwKOWiWR0B3rqdocAMUE42hTAfUGIAlEYZLFuxQ3uA==
-X-Received: by 2002:a05:620a:2009:: with SMTP id c9mr4723816qka.159.1608297929436;
-        Fri, 18 Dec 2020 05:25:29 -0800 (PST)
-Received: from valinor.lan ([177.62.158.31])
-        by smtp.gmail.com with ESMTPSA id p23sm5131963qtu.53.2020.12.18.05.25.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Dec 2020 05:25:28 -0800 (PST)
-Date:   Fri, 18 Dec 2020 10:25:19 -0300
-From:   Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>, duwe@lst.de,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Stephan =?utf-8?Q?M=C3=BCller?= <smueller@chronox.de>,
-        Willy Tarreau <w@1wt.eu>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Nicolai Stange <nstange@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        And y Lavr <andy.lavr@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Petr Tesarik <ptesarik@suse.cz>, simo@redhat.com
-Subject: Re: drivers/char/random.c needs a (new) maintainer
-Message-ID: <20201218132519.kj3nz7swsx7vvlr5@valinor.lan>
-References: <20201130151231.GA24862@lst.de>
- <CAHmME9p4vFGWh7+CKF4f3dw5r+ru5PVG0-vP77JowX8sPhin1g@mail.gmail.com>
- <20201130165339.GE5364@mit.edu>
- <CAHmME9pksS8ec17RAwCNJimt4B0xZgd3qYHUPnaT4Bj4CF7n0A@mail.gmail.com>
+        Fri, 18 Dec 2020 08:26:37 -0500
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201218132546euoutp02afa0a2071fd1a10fa8459c46576a6bea~R0nX-GIQG2716127161euoutp02M
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 13:25:46 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201218132546euoutp02afa0a2071fd1a10fa8459c46576a6bea~R0nX-GIQG2716127161euoutp02M
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1608297946;
+        bh=QfVGP0V6JC8qUrUN5ATIAPCMstFb1Wk6Iv5vGP8iQRU=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=PEDvg4gYmmKPvIYI8oNCKWAbKo0EBXktUTC+Olm5wGZWjMAQDU2ifyIMtYFly9vsp
+         QM9lZsnXQSyCnPqjbQ5aMnHWgV67aM+l4/pgUp2/HpaAHgZvvegN12HwzUSnY/m1t5
+         6+lBW56S+yv5MQRmfAV8hIYueDXZ2Yk58BVw64K4=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20201218132540eucas1p2bbabde9fd325eacff571606ce39b23d1~R0nTA5t092284622846eucas1p2L;
+        Fri, 18 Dec 2020 13:25:40 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 99.0E.27958.4DDACDF5; Fri, 18
+        Dec 2020 13:25:40 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20201218132540eucas1p101870b19e2687a31efdebfbff31776dc~R0nSmH_Su1687016870eucas1p1F;
+        Fri, 18 Dec 2020 13:25:40 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201218132540eusmtrp288ccc8cfc236052ed5d63ec6468065d0~R0nSlZlFW3196931969eusmtrp2r;
+        Fri, 18 Dec 2020 13:25:40 +0000 (GMT)
+X-AuditID: cbfec7f2-f15ff70000006d36-c2-5fdcadd48064
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 47.7E.21957.4DDACDF5; Fri, 18
+        Dec 2020 13:25:40 +0000 (GMT)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20201218132539eusmtip1f4d1a41f195c90751e6940b84721e54c~R0nR_lj0z2585625856eusmtip1Y;
+        Fri, 18 Dec 2020 13:25:39 +0000 (GMT)
+Subject: Re: [PATCH 9/9] mfd: sec-irq: Do not enforce (incorrect) interrupt
+ trigger type
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Sylwester Nawrocki <snawrocki@kernel.org>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <0f1509ef-9ae7-7a77-84b7-360b8f0071c7@samsung.com>
+Date:   Fri, 18 Dec 2020 14:25:39 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="votwx67fimlhwi32"
-Content-Disposition: inline
-In-Reply-To: <CAHmME9pksS8ec17RAwCNJimt4B0xZgd3qYHUPnaT4Bj4CF7n0A@mail.gmail.com>
+In-Reply-To: <20201210212903.216728-9-krzk@kernel.org>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrNKsWRmVeSWpSXmKPExsWy7djP87pX1t6JN9i7VN9i44z1rBbXvzxn
+        tZh/5ByrxfnzG9gt7n89ymix6fE1VovLu+awWcw4v4/JonXvEXaL9qcvmR24PDat6mTzuHNt
+        D5vH5iX1Hn1bVjF6fN4kF8AaxWWTkpqTWZZapG+XwJXx4/dj9oJ9PBW7t5o2MD7n7GLk5JAQ
+        MJHYtusFM4gtJLCCUaJ3W34XIxeQ/YVRYuXNfWwQzmdGiY2n5jLCdFze9AEqsZxR4sX6o8wQ
+        zkdGieNbV4JVCQtESXx9vQAsISJwhUniyM5eNpAEs4CuxPR3b8AWsgkYSnS97QKL8wrYSVzf
+        cYMJxGYRUJX4vGMxmC0qkCSxvusHVI2gxMmZT1hAbE4BM4n3HS+gZspLbH87hxnCFpe49WQ+
+        E8hiCYEPHBIfD+wFSnAAOS4SX345QbwgLPHq+BZ2CFtG4v9OmPpmRomH59ayQzg9jBKXm2ZA
+        PW0tcefcLzaQQcwCmhLrd+lDhB0lDp/oY4KYzydx460gxA18EpO2TYdayyvR0SYEUa0mMev4
+        Ori1By9cYp7AqDQLyWezkHwzC8k3sxD2LmBkWcUonlpanJueWmyYl1quV5yYW1yal66XnJ+7
+        iRGYnk7/O/5pB+PcVx/1DjEycTAeYpTgYFYS4Q19cDteiDclsbIqtSg/vqg0J7X4EKM0B4uS
+        OO+q2WvihQTSE0tSs1NTC1KLYLJMHJxSDUzxhfkLfqyLO3EisE5vr4jigm9OJRqHK7Uesc7Y
+        YhVgcq8mh11j1xnX27ZczH+jcwP0/vxT2Xbj3rcN/97cdsp45ZYkzrQ9kOdNtojw3ysGgsVn
+        3U8+OV/a0dG94HnDzIXZgSvmmN3Jc85lUJL6/W/V9gfGF6fw6m1ZqrTMtoMryCm940f+iTAW
+        mckZTfV7bK828Ltc/TkjxVjhXXda4ySBI4srPzznulr9aubS5EXPvtg+PJ7iIHdD+niviNmU
+        NX1ve2fzaH3d5XNK65n5F95ZP7pcvjn0X3JxO//z68KqaCZBNRYOpi+5b+0eiMzbddRI6trj
+        e3ecE1+nsNydXbyo70fw2WlGHIaG57l8zOyVWIozEg21mIuKEwFMXb4nvgMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrLIsWRmVeSWpSXmKPExsVy+t/xu7pX1t6JN5hxjc9i44z1rBbXvzxn
+        tZh/5ByrxfnzG9gt7n89ymix6fE1VovLu+awWcw4v4/JonXvEXaL9qcvmR24PDat6mTzuHNt
+        D5vH5iX1Hn1bVjF6fN4kF8AapWdTlF9akqqQkV9cYqsUbWhhpGdoaaFnZGKpZ2hsHmtlZKqk
+        b2eTkpqTWZZapG+XoJfx4/dj9oJ9PBW7t5o2MD7n7GLk5JAQMJG4vOkDWxcjF4eQwFJGiXWn
+        1zNDJGQkTk5rYIWwhSX+XOtiA7GFBN4zShxvDAKxhQWiJL6+XsAM0iwicIVJovXSFUaQBLOA
+        rsT0d2+YIaZuZZS4/H0aWDebgKFE11uISbwCdhLXd9xgArFZBFQlPu9YDGRzcIgKJEmcPS0I
+        USIocXLmExYQm1PATOJ9xws2iPlmEvM2P2SGsOUltr+dA2WLS9x6Mp9pAqPQLCTts5C0zELS
+        MgtJywJGllWMIqmlxbnpucWGesWJucWleel6yfm5mxiB8bjt2M/NOxjnvfqod4iRiYPxEKME
+        B7OSCG/og9vxQrwpiZVVqUX58UWlOanFhxhNgd6ZyCwlmpwPTAh5JfGGZgamhiZmlgamlmbG
+        SuK8W+euiRcSSE8sSc1OTS1ILYLpY+LglGpgKt1t67Wy41Peix0dMzfottiws+s6h53J6by+
+        jG93reWJebqVfDsmT3yyWly3w+3AGY/PPe8+TRR300rRjZxzM8jUKf4yr+3vb0/bLd6yJ02Y
+        MPfv+vZfdTPmPeM6z8Ie1pe6PUNpAcsm/RTDqrIixxUP3ZjNZRsfbj009+L1k/6Hds8u+zHF
+        83thiMsa3l0SGvcmpSs/XhIqGh3PkBavbDT7XNXR9Te0Py4x+W3+qjowYk/tfXWfy9xp9q/z
+        J3edO6ugankkesNinZnWgm7V/D76WguWvo62qkzYY77kfuqjshijxfoN2it091ux9+88ZnpC
+        IqPEVIL7UPO+xKY1pvmhWzN4a26sFN/LMyldiaU4I9FQi7moOBEAza/jIlADAAA=
+X-CMS-MailID: 20201218132540eucas1p101870b19e2687a31efdebfbff31776dc
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20201210212938eucas1p1297b8503e9c059f2bc77c3a429a9114e
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201210212938eucas1p1297b8503e9c059f2bc77c3a429a9114e
+References: <20201210212903.216728-1-krzk@kernel.org>
+        <CGME20201210212938eucas1p1297b8503e9c059f2bc77c3a429a9114e@eucas1p1.samsung.com>
+        <20201210212903.216728-9-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10.12.2020 22:29, Krzysztof Kozlowski wrote:
+> Interrupt line can be configured on different hardware in different way,
+> even inverted.  Therefore driver should not enforce specific trigger
+> type - edge falling - but instead rely on Devicetree to configure it.
+>
+> The Samsung PMIC drivers are used only on Devicetree boards.
+>
+> Additionally, the PMIC datasheets describe the interrupt line as active
+> low with a requirement of acknowledge from the CPU therefore the edge
+> falling is not correct.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
---votwx67fimlhwi32
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
 
-Hi, Ted and Jason.
+It looks that this together with DTS change fixes RTC alarm failure that 
+I've observed from time to time on TM2e board!
 
-Any updates on that?
+> ---
+>
+> This patch should wait till DTS changes are merged, as it relies on
+> proper Devicetree.
+> ---
+>   drivers/mfd/sec-irq.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/drivers/mfd/sec-irq.c b/drivers/mfd/sec-irq.c
+> index a98c5d165039..760f88a865ab 100644
+> --- a/drivers/mfd/sec-irq.c
+> +++ b/drivers/mfd/sec-irq.c
+> @@ -480,8 +480,7 @@ int sec_irq_init(struct sec_pmic_dev *sec_pmic)
+>   	}
+>   
+>   	ret = devm_regmap_add_irq_chip(sec_pmic->dev, sec_pmic->regmap_pmic,
+> -				       sec_pmic->irq,
+> -				       IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+> +				       sec_pmic->irq, IRQF_ONESHOT,
+>   				       sec_pmic->irq_base, sec_irq_chip,
+>   				       &sec_pmic->irq_data);
+>   	if (ret != 0) {
 
-I don't believe Torsten's concerns are simply about *applying* patches
-but more about these long periods of radio silence. That kills
-collaboration and disengage people. More than simply reviewing patches
-I would expect a maintainer to give directions and drive the
-community. Asking Jason to review Nicolai's patches was a step towards
-that, but I believe we still could benefit from better communication.
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
-Besides Nicolai's RFC, are you also planning to take another look at
-Stephan's patches?
-
-Thank you for your attention.
-
-On Tue, Dec 01, 2020 at 12:42:36PM +0100, Jason A. Donenfeld wrote:
-> On Mon, Nov 30, 2020 at 5:56 PM Theodore Y. Ts'o <tytso@mit.edu> wrote:
-> > patches this cycle.  One thing that would help me is if folks
-> > (especially Jason, if you would) could start with a detailed review of
-> > Nicolai's patches.
->=20
-> Sure, I'll take a look.
-
---=20
-Regards,
-Marcelo
-
-
---votwx67fimlhwi32
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEExJjLjAfVL0XbfEr56e82LoessAkFAl/crb4ACgkQ6e82Loes
-sAm4ZwwAiOHacvNtaLoejMX0U5yxa0JQjDppmTlGdOOXpeWkziCGIUcdE8u2UgJB
-oPoUVxeKzw04FIrdk9p+ntYwc0SDqpTQaVC7DR6k6lnkwKPFQJOF1cl5Y+JFVSOh
-9iu5IyDqeN4Q7q1ZGLuhP8JgyZoJc8KnnVsC3sOahISvQsloUK0BLQXcKY3Shei3
-AzNx9gAVZ6H9qcSOy1nODeekFgRu0pP8L0+nHoDjzLJJ9RX4/SZOrxLeCocImXnx
-n7W/a0rvzsfJd3BB+xAwDfAEZAbcqVhK9MSHML+6BuBujrRaLjZxm6FKfNRoUkG5
-/XnC3YlmbNb+DF4v93DW6CGJtwusVWzRZJ4U1VtYmeSYUx6I+QZ8M1J9laur0jpd
-7Z5HnHWgGSJY9FxzSrYQIYC86ZOeIbMEDeEiL7KSQuTFRumodrsiGaKlpzxuKn+4
-qCesN5a/8lhSZyYhnJMASvIzzBOo7M8eEkuSMicHmILlzjyFB07XjqR6gBRnLK0a
-ZDsW3XQG
-=jOSR
------END PGP SIGNATURE-----
-
---votwx67fimlhwi32--
