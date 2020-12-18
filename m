@@ -2,136 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E2EF2DEBBB
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 23:45:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B93D2DEBC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 23:53:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726338AbgLRWpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 17:45:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725836AbgLRWp3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 17:45:29 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C86C0617A7;
-        Fri, 18 Dec 2020 14:44:49 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1608331487;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RSvGwnCoAalQdHR+Ln4Q2sS79B4UxqMN+RD1afn6GC4=;
-        b=WLPlBrXYqR/QHDC+jzhTogdMRUXRoXK7xVn6httZGE/POOtKQOICxm2Vx7GbejEFjraKCp
-        8FtPz4HV4CtlPx6lsNBoWhtimmNasXfdHmGCB3HmbMpO6jtChbcJzok72ZwXgYgiPqi/+W
-        TVo3o8mEE5wxXl7oVY4N8wC2y8Fd1c5dq3sp22pGFacd1ybmBMogWCrnWhS0YH/Yv6bOLv
-        jy76FaA3txWF3rrqdIiM/E1ZuVFE2VhdGDiw8WjIanN7S0vT61aUViIeTCTFVaKx6xUytw
-        RvdtJ7Gjd4DRTiq5bs+kLdz+fgJOLnKr2p1wVbJxp5o5kFLaeENoshm8pvRMtQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1608331487;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RSvGwnCoAalQdHR+Ln4Q2sS79B4UxqMN+RD1afn6GC4=;
-        b=adzlxci9JislJbxDWr9PbAbA3shNaiVRFjiwlYUSAoyCp+6io/bqTAyHyqeJm/zADQxY5/
-        Mn3qg+DY7xHFSeBA==
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     "Weiny\, Ira" <ira.weiny@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, X86 ML <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux MM <linux-mm@kvack.org>, linux-kselftest@vger.kernel.org,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH V3 04/10] x86/pks: Preserve the PKRS MSR on context switch
-In-Reply-To: <CAPcyv4gqm5p+pVmX4JL0fT2LY0dfoT+UXAfsGLA9LMr42vp33A@mail.gmail.com>
-References: <20201106232908.364581-1-ira.weiny@intel.com> <20201106232908.364581-5-ira.weiny@intel.com> <871rfoscz4.fsf@nanos.tec.linutronix.de> <87mtycqcjf.fsf@nanos.tec.linutronix.de> <878s9vqkrk.fsf@nanos.tec.linutronix.de> <CAPcyv4h2MvybBi==3uzAjGeW0R7azHYSKwmvzMXq9eM8NzMLEg@mail.gmail.com> <875z4yrfhr.fsf@nanos.tec.linutronix.de> <CAPcyv4gqm5p+pVmX4JL0fT2LY0dfoT+UXAfsGLA9LMr42vp33A@mail.gmail.com>
-Date:   Fri, 18 Dec 2020 23:44:47 +0100
-Message-ID: <87wnxepwdc.fsf@nanos.tec.linutronix.de>
+        id S1726341AbgLRWvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 17:51:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51490 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725813AbgLRWvw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 17:51:52 -0500
+X-Gm-Message-State: AOAM531JHImXIwhRvS09h2Bn0S5t3870qku8Eqo7Hf5nj36ZyjPqv/SW
+        5SiLfx24H+AlKPBIl8ICUNxOk/grfuvL+5AtfA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608331871;
+        bh=ZtuDx1g50X2Qj4JjjYFGFSI9wY4HuxKzUzlaD0sdeXc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=vEOb/5mlu+GHcROfnlhzYbcIyFc3LRN/ip77eMCj1AYhWCqAmE95QZarZE9mpHqOw
+         jGsZOpvx34sIpz3dxeoDm7KXP1LAjRVCfXU84et96ZrT/IoENkLcCFEGm4EdA8uUEx
+         Z2csh5JehlGunr1yXsV6lt2bFV+pCo6UmlBAAd3uiNPwxgDwodemHLgRCepf7KZYO3
+         7b8xRx8XNQO99l18SrBBMRhVuZNvX9yBJXYW10Atct9HTlQiw4BciSpl5FWcheM/2L
+         VpakrWB4wWnvHX4OHcIwOdIBgGuXWY6JaryZJ0f4QV/WugpXmVnPlMtg998zW2wm99
+         pMJmFIr0lzLbw==
+X-Google-Smtp-Source: ABdhPJxNw/q/XvK7O7ILckQoP3A6uzGGD5xqlFlKtSvsxtUERlGMDiuIoFMxqKvxn6xCWNFl/+pKuZyD1KZkDAc+IKc=
+X-Received: by 2002:a05:6402:ca2:: with SMTP id cn2mr6571892edb.137.1608331869822;
+ Fri, 18 Dec 2020 14:51:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201211142933.25784-1-grzegorz.jaszczyk@linaro.org>
+ <20201211142933.25784-2-grzegorz.jaszczyk@linaro.org> <20201214225842.GA2537432@robh.at.kernel.org>
+ <CAMxfBF65ve2Pk5Uz5V1V_LfOLFUFKebVE8bzSjLT0nonuH8TDg@mail.gmail.com>
+In-Reply-To: <CAMxfBF65ve2Pk5Uz5V1V_LfOLFUFKebVE8bzSjLT0nonuH8TDg@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 18 Dec 2020 16:50:58 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKpzZvdWJodzbqQBLZ-v98n3KaoTaYM-0iQ-_71hCbW8Q@mail.gmail.com>
+Message-ID: <CAL_JsqKpzZvdWJodzbqQBLZ-v98n3KaoTaYM-0iQ-_71hCbW8Q@mail.gmail.com>
+Subject: Re: [PATCH 1/5] dt-bindings: remoteproc: Add PRU consumer bindings
+To:     Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+Cc:     Ohad Ben Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "Anna, Suman" <s-anna@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
+        <linux-remoteproc@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "Bajjuri, Praneeth" <praneeth@ti.com>,
+        Roger Quadros <rogerq@ti.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18 2020 at 13:58, Dan Williams wrote:
-> On Fri, Dec 18, 2020 at 1:06 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->> kmap_local() is fine. That can work automatically because it's strict
->> local to the context which does the mapping.
->>
->> kmap() is dubious because it's a 'global' mapping as dictated per
->> HIGHMEM. So doing the RELAXED mode for kmap() is sensible I think to
->> identify cases where the mapped address is really handed to a different
->> execution context. We want to see those cases and analyse whether this
->> can't be solved in a different way. That's why I suggested to do a
->> warning in that case.
->>
->> Also vs. the DAX use case I really meant the code in fs/dax and
->> drivers/dax/ itself which is handling this via dax_read_[un]lock.
->>
->> Does that make more sense?
+On Wed, Dec 16, 2020 at 9:55 AM Grzegorz Jaszczyk
+<grzegorz.jaszczyk@linaro.org> wrote:
 >
-> Yup, got it. The dax code can be precise wrt to PKS in a way that
-> kmap_local() cannot.
+> Hi Rob,
+>
+> On Mon, 14 Dec 2020 at 23:58, Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Fri, Dec 11, 2020 at 03:29:29PM +0100, Grzegorz Jaszczyk wrote:
+> > > From: Suman Anna <s-anna@ti.com>
+> > >
+> > > Add a YAML binding document for PRU consumers. The binding includes
+> > > all the common properties that can be used by different PRU consumer
+> > > or application nodes and supported by the PRU remoteproc driver.
+> > > These are used to configure the PRU hardware for specific user
+> > > applications.
+> > >
+> > > The application nodes themselves should define their own bindings.
+> > >
+> > > Co-developed-by: Tero Kristo <t-kristo@ti.com>
+> > > Signed-off-by: Tero Kristo <t-kristo@ti.com>
+> > > Signed-off-by: Suman Anna <s-anna@ti.com>
+> > > Co-developed-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+> > > Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+> > > ---
+> > >  .../bindings/remoteproc/ti,pru-consumer.yaml  | 64 +++++++++++++++++++
+> > >  1 file changed, 64 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,pru-consumer.yaml
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/remoteproc/ti,pru-consumer.yaml b/Documentation/devicetree/bindings/remoteproc/ti,pru-consumer.yaml
+> > > new file mode 100644
+> > > index 000000000000..2c5c5e2b6159
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/remoteproc/ti,pru-consumer.yaml
+> > > @@ -0,0 +1,64 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/remoteproc/ti,pru-consumer.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Common TI PRU Consumer Binding
+> > > +
+> > > +maintainers:
+> > > +  - Suman Anna <s-anna@ti.com>
+> > > +
+> > > +description: |
+> > > +  A PRU application/consumer/user node typically uses one or more PRU device
+> > > +  nodes to implement a PRU application/functionality. Each application/client
+> > > +  node would need a reference to at least a PRU node, and optionally define
+> > > +  some properties needed for hardware/firmware configuration. The below
+> > > +  properties are a list of common properties supported by the PRU remoteproc
+> > > +  infrastructure.
+> > > +
+> > > +  The application nodes shall define their own bindings like regular platform
+> > > +  devices, so below are in addition to each node's bindings.
+> > > +
+> > > +properties:
+> > > +  prus:
+> >
+> > ti,prus
+>
+> Thank you - I will change and post v2 but with this I will run into
+> issues when this binding will be referenced by some consumer YAML
+> binding. Running dtbs_check in such case throws:
+> ... k3-am654-base-board.dt.yaml: serial@28000: 'ti,prus' does not
+> match any of the regexes: 'pinctrl-[0-9]+'
+> In the same time if I will remove this property from that node I am getting:
+> ... k3-am654-base-board.dt.yaml: serial@28000: 'ti,prus' is a required property
+> as expected.
 
-Which makes me wonder whether we should have kmap_local_for_read()
-or something like that, which could be obviously only be RO enforced for
-the real HIGHMEM case or the (for now x86 only) enforced kmap_local()
-debug mechanics on 64bit.
+Sounds like you didn't update 'ti,prus' in whatever schema you include
+this one from.
 
-So for the !highmem case it would not magically make the existing kernel
-mapping RO, but this could be forwarded to the PKS protection. Aside of
-that it's a nice annotation in the code.
+>
+> Getting rid of the comma from this property name workarounds mentioned
+> problem (which is not proper but allows me to correctly test this
+> binding): e.g. s/ti,prus/ti-pruss/ or using the previous name without
+> a comma.
+> It seems to be an issue with dtbs_check itself which we will encounter
+> in the future.
 
-That could be used right away for all the kmap[_atomic] -> kmap_local
-conversions.
+If not, can you point me to a branch having this problem.
 
-Thanks,
-
-        tglx
----
- include/linux/highmem-internal.h |   14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
---- a/include/linux/highmem-internal.h
-+++ b/include/linux/highmem-internal.h
-@@ -32,6 +32,10 @@ static inline void kmap_flush_tlb(unsign
- #define kmap_prot PAGE_KERNEL
- #endif
- 
-+#ifndef kmap_prot_to
-+#define kmap_prot PAGE_KERNEL_RO
-+#endif
-+
- void *kmap_high(struct page *page);
- void kunmap_high(struct page *page);
- void __kmap_flush_unused(void);
-@@ -73,6 +77,11 @@ static inline void *kmap_local_page(stru
- 	return __kmap_local_page_prot(page, kmap_prot);
- }
- 
-+static inline void *kmap_local_page_for_read(struct page *page)
-+{
-+	return __kmap_local_page_prot(page, kmap_prot_ro);
-+}
-+
- static inline void *kmap_local_page_prot(struct page *page, pgprot_t prot)
- {
- 	return __kmap_local_page_prot(page, prot);
-@@ -169,6 +178,11 @@ static inline void *kmap_local_page_prot
- {
- 	return kmap_local_page(page);
- }
-+
-+static inline void *kmap_local_page_for_read(struct page *page)
-+{
-+	return kmap_local_page(page);
-+}
- 
- static inline void *kmap_local_pfn(unsigned long pfn)
- {
+Rob
