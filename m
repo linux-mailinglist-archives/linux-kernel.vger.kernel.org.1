@@ -2,92 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E1A2DE303
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 14:01:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D18B2DE306
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 14:02:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727079AbgLRNBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 08:01:01 -0500
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:46776 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726018AbgLRNBA (ORCPT
+        id S1727146AbgLRNBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 08:01:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726018AbgLRNBY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 08:01:00 -0500
-Received: by mail-ot1-f44.google.com with SMTP id w3so1755941otp.13;
-        Fri, 18 Dec 2020 05:00:44 -0800 (PST)
+        Fri, 18 Dec 2020 08:01:24 -0500
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65043C0617B0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 05:00:44 -0800 (PST)
+Received: by mail-il1-x12b.google.com with SMTP id 75so2018969ilv.13
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 05:00:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GqHdabW+m1T+9vxsF2B9K4CaE6AFzPZu+c/zny8P/SE=;
+        b=FhiDMEk6SrTf9jq223CRiMNPspZbutfIGugRIjWOyAUs3TG+qLP9K1KZVcfzQAGbMw
+         AfoUsn6dDVgW8JdeptHYZ+/twQRQtCxO+cnMAJWyaIzV0Hm+ZmYFLjoI0DTBoaxqcQq9
+         jGrSYsyGJs6ubPxxYVdsPJ9KxOca+UxbfldlXTJgQUc3QeD2j8C12vWb2R3omphpFSTw
+         pyq/O0c2uT3q9Ic30BpnetmQ5oh/MXZJtojb+Yfmj9mRTY0hKRZIMeDrnJDemwGj3hDr
+         CD5DgkihJ5LfU5EMMEZPzIAmuJhGJFMkkOMqgJlB2kjkDel3m6Qmls2OfDDTXC1AfOBm
+         Xv4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0S3AKoHHsENQymbZkyA0JK9GKORXuuB7J/baVL2Nerk=;
-        b=U7n4XSK6C2u0tQ5i+SdKuCLwUATr7Ajlld6RHiQ/SUeL16DpzIWgcMPqWDzkasfLjS
-         4v3aS15FQoC4gC1NZEfuECNjKZUNqpTir9yoOiF2JlJTJtifI9469IiyM5pEmCCzDYi/
-         0SolVBfu43yM2kALp2GVXDzn1VVa+xn2palBycY1votr9lbol90lSPffB6tcihVot3/J
-         O71CzqKNHHFP8d4YOrH5S8dRpXBMwLSCHQDp7DvKhGUXNV1uhOuvvbisoprzUX7MNRUG
-         XSpYKIrUbHHn3hnAeNk8iGQvIUNyBPWPxTjwQBOgJslVD06QJkMc9OQ2jhdB3WnkU9aR
-         HM+g==
-X-Gm-Message-State: AOAM532y3ovXwppJMUVAHeJII1PU772wcxuLjkWAAAjLzQnxlLUHaYdA
-        97HlBvoXdFBAsoalY1KRPNjvEytDesABslNJOOA=
-X-Google-Smtp-Source: ABdhPJx6pYx98TTZUrwhjmwJ/OIIyn5LP5Ueli0+x4PXbeXFFhUZIqTm8WyxJU2N1PD57Frkq2Vbw+x6tTpX4RtPhuM=
-X-Received: by 2002:a05:6830:1f5a:: with SMTP id u26mr2671058oth.250.1608296419470;
- Fri, 18 Dec 2020 05:00:19 -0800 (PST)
+        bh=GqHdabW+m1T+9vxsF2B9K4CaE6AFzPZu+c/zny8P/SE=;
+        b=jKdzT9cw6+NtTvLBR7+jQs8gbsS0qh6sq7onA1foiWfHp9Qt65n+5ZNbdwvs5MAPVN
+         KYJKK5VRRxffEFiVRVaRZ5uGrZo6bcC3CViBSq7DWCf+SFiidzI/OXoXKePsYq6H7Dpm
+         6Kx9xkAOrj3nxiWShZJh6DPLSKcKtdCUI/OStZ51PD2jsUJGNMt7DE/9UGk2tsMoBoWS
+         4wp86jUPdREr8curdiUQ00eeHuGFbklHfKzrLxddjKo1IrGiyfdIGEMSC1YoxB4FJNSt
+         +Mxmvz66PUtjgzlSiAntiQ5qtPArFRAK4n8nhjrBbAIwrMYTo7tPp3KwNzI9KBr8EWRI
+         NYAw==
+X-Gm-Message-State: AOAM5331Qo77I4ZJ2EjYjGaPtrd4KIOeDPCja0k9wRtZ3bKabwx5OYuH
+        ApaPRuY5fLHTUmz+j2UfChM9NYBzK1/xOTlkYVlMeKDN4qk=
+X-Google-Smtp-Source: ABdhPJxDUuTugyxuLhoMZvfvQkQAiEyrH4QxSTclEmKPpKnIqoGyuBk4iaCzH+adYm+GZKpFtVWbaltvJxKYSdRgae4=
+X-Received: by 2002:a05:6e02:f14:: with SMTP id x20mr3745809ilj.94.1608296441414;
+ Fri, 18 Dec 2020 05:00:41 -0800 (PST)
 MIME-Version: 1.0
-References: <20201213183759.223246-1-aford173@gmail.com> <20201213183759.223246-3-aford173@gmail.com>
- <CAMuHMdW8w-J445DRNH8Ykx7Sp2KGCCVibE5uvccmoD=iZSM-zQ@mail.gmail.com> <CAHCN7xJCxXVUJoEu4h=vBc3v=VpvXd9WnOEM5GNoCrBDeUp6aA@mail.gmail.com>
-In-Reply-To: <CAHCN7xJCxXVUJoEu4h=vBc3v=VpvXd9WnOEM5GNoCrBDeUp6aA@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 18 Dec 2020 14:00:08 +0100
-Message-ID: <CAMuHMdVqSExMAJfkRu-DuStrRa+x5ij7S48DpCtHyX=b4-Jdwg@mail.gmail.com>
-Subject: Re: [PATCH 02/18] arm64: dts: renesas: beacon kit: Fix choppy
- Bluetooth Audio
-To:     Adam Ford <aford173@gmail.com>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <0766416e-bab5-c8e7-9466-a72e965fdb8a@intel.com> <20201210143527.2398-1-jiangshanlai@gmail.com>
+In-Reply-To: <20201210143527.2398-1-jiangshanlai@gmail.com>
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+Date:   Fri, 18 Dec 2020 21:00:30 +0800
+Message-ID: <CAJhGHyAVH1z8A3J9C1U5SOCbq2Z=YeQ=3QbuZ3FC1u5ZLqgxcA@mail.gmail.com>
+Subject: Re: [PATCH V2 1/3] x86/mm/pti: handle unaligned address for pmd clone
+ in pti_clone_pagetable()
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adam,
+Hello, Dave Hansen
 
-On Thu, Dec 17, 2020 at 1:16 PM Adam Ford <aford173@gmail.com> wrote:
-> On Thu, Dec 17, 2020 at 4:41 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Sun, Dec 13, 2020 at 7:38 PM Adam Ford <aford173@gmail.com> wrote:
-> > > The Bluetooth chip is capable of operating at 4Mbps, but the
-> > > max-speed setting was on the UART node instead of the Bluetooth
-> > > node, so the chip didn't operate at the correct speed resulting
-> > > in choppy audio.  Fix this by setting the max-speed in the proper
-> > > node.
-> > >
-> > > Fixes: a1d8a344f1ca ("arm64: dts: renesas: Introduce r8a774a1-beacon-rzg2m-kit")
-> > > Signed-off-by: Adam Ford <aford173@gmail.com>
-> >
-> > Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > i.e. will queue in renesas-devel for v5.12.
+Could you help review the patches, please?
+
+I think they meet your suggestion except for forcing alignment in the
+caller.  The reason is in the code.
+
+Thanks
+Lai
+
+On Thu, Dec 10, 2020 at 9:34 PM Lai Jiangshan <jiangshanlai@gmail.com> wrote:
 >
-> Since various other patches in the series need a V2, should this be
-> included in the V2 as no-change, or should I skip this and others that
-> have been queued?  If/when they appear in your branch, I can rebase
-> the series against that branch and just submit V2's on what's missing.
+> From: Lai Jiangshan <laijs@linux.alibaba.com>
 >
-> I want to do whatever creates less work for you.
-
-I think it's best to postpone v2 until I have queued up the accepted patches
-in renesas-devel.  Probably that will happen on Monday.
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> The commit 825d0b73cd752("x86/mm/pti: Handle unaligned address gracefully
+> in pti_clone_pagetable()") handles unaligned address well for unmapped
+> PUD/PMD etc. But unaligned address for mapped pmd also needs to
+> be aware.
+>
+> For mapped pmd, if @addr is not aligned to PMD_SIZE, the next pmd
+> (PTI_CLONE_PMD or the next pmd is large) or the last ptes (PTI_CLONE_PTE)
+> in the next pmd will not be cloned when @end < @addr + PMD_SIZE in the
+> current logic in the code.
+>
+> It is not a good idea to force alignment in the caller due to one of
+> the cases (see the comments in the code), so it just handles the alignment
+> in pti_clone_pagetable().
+>
+> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+> ---
+>  arch/x86/mm/pti.c | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+>
+> diff --git a/arch/x86/mm/pti.c b/arch/x86/mm/pti.c
+> index 1aab92930569..7ee99ef13a99 100644
+> --- a/arch/x86/mm/pti.c
+> +++ b/arch/x86/mm/pti.c
+> @@ -342,6 +342,21 @@ pti_clone_pgtable(unsigned long start, unsigned long end,
+>                 }
+>
+>                 if (pmd_large(*pmd) || level == PTI_CLONE_PMD) {
+> +                       /*
+> +                        * pti_clone_kernel_text() might be called with
+> +                        * @start not aligned to PMD_SIZE. We need to make
+> +                        * it aligned, otherwise the next pmd or last ptes
+> +                        * are not cloned when @end < @addr + PMD_SIZE.
+> +                        *
+> +                        * We can't force pti_clone_kernel_text() to align
+> +                        * the @addr to PMD_SIZE when level == PTI_CLONE_PTE.
+> +                        * But the problem can still possible exist when the
+> +                        * first pmd is large. And it is not a good idea to
+> +                        * check whether the first pmd is large or not in the
+> +                        * caller, so we just simply align it here.
+> +                        */
+> +                       addr = round_down(addr, PMD_SIZE);
+> +
+>                         target_pmd = pti_user_pagetable_walk_pmd(addr);
+>                         if (WARN_ON(!target_pmd))
+>                                 return;
+> --
+> 2.19.1.6.gb485710b
+>
