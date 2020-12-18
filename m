@@ -2,120 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AA4C2DE39A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:00:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00DFC2DE3A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:02:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726908AbgLROA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 09:00:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52856 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726194AbgLROAZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 09:00:25 -0500
-X-Gm-Message-State: AOAM5339fOJsbMzH4Bi8zGVvhAFQMf0IIWAuXfSZ7OeRYyb3x0PbTyfJ
-        VU1V+0gRCPO4IP6eL4cBvOloectYZak4Ei3AOA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608299984;
-        bh=m00YljXra1Y/T/YfniHalMSRr8Wa9EbvPsqoHcbJuQ8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CIxPTTY6yOXl8Xg3nZftZRRQczo0Jus3KD18july77D71YUo7Vwlkky946XKzMkCs
-         i/a8rrnNRZbNqCgn/Ki8pk0M7dST6JN2KmBw7v4e+rtjq47OAtk1r/lCqAfuVuqRfa
-         jTjaraOSE5lY9XKZtGYF5l1GWMHmTTIgC9UJ0+WBkATPpHAvThgHFSMMrmIwenGoU9
-         3IZT4Qk6l1VDoTIiDpireKYvyGsAmnnVSrvfU+k+QTgznNwJ7Gu5wf4B0Ygnl/ypmj
-         qfrBIQYnl5zIl1MaKqfiGST9YrDnKiwoI19NGH9gAfe541TJaZZuFz+oUhEKgHHLnH
-         UZ9jieDQZDdXA==
-X-Google-Smtp-Source: ABdhPJwwXUMO1JazN6yGwB2BQ/TiRBZQQH2BQ/8487xFVIuF0HkXlCcEnxpLYWuKK744YqYdCQzbFJyAbWhQy/3FI00=
-X-Received: by 2002:a17:906:d87:: with SMTP id m7mr4161246eji.108.1608299983083;
- Fri, 18 Dec 2020 05:59:43 -0800 (PST)
+        id S1726746AbgLROBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 09:01:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726207AbgLROBh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 09:01:37 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 457DBC06138C
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 06:00:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=YsRdlIw1j0ww4MkAqOnBL7nj6Bz8RfTaAFPukAbPwQw=; b=VSpiS+DP56PSv88kUvUmc00Km
+        Qgq4423c/3W2k277eCxXw4dDlDVGnNO+IGc9hF7R3kd2AnAEy6wWC63j5Nu4iMzZAX81hsN+aeHzf
+        QlIkqIx7S6LdVkQAxXsgeJwdU0AW6dobW6TkET4UolFpwt8tqI4kBl1Pz4Rh7JnTeXN5YYexiiFZJ
+        i7MbnvsgdWju5Wkgf7UgbOJ2LFjR9m6F+Skqes/WEs0MM1St44i/I4EQnVlSnIB/URDp+7Rl7bIOh
+        gMY9KjOEsu1Ze4WoBgW/l6mmeZN0n+8JQ3tV+grdZcq+iqFnFPirfDmMNBc6bpqe/wZjw1J+HyjNG
+        tWSTyYStQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44338)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kqGIx-0005do-1m; Fri, 18 Dec 2020 14:00:23 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kqGIs-0007xC-8t; Fri, 18 Dec 2020 14:00:18 +0000
+Date:   Fri, 18 Dec 2020 14:00:18 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Guillaume Tucker <guillaume.tucker@collabora.com>
+Cc:     kernelci-results@groups.io,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Abbott Liu <liuwenliang@huawei.com>,
+        linux-kernel@vger.kernel.org,
+        "kernelci@groups.io" <kernelci@groups.io>,
+        Ingo Molnar <mingo@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: next/master bisection: baseline.login on
+ ox820-cloudengines-pogoplug-series-3
+Message-ID: <20201218140018.GZ1551@shell.armlinux.org.uk>
+References: <5fdc89c3.1c69fb81.c9707.68bb@mx.google.com>
+ <3e1680ed-94b8-74c9-ffe6-c2bd71f2a705@collabora.com>
 MIME-Version: 1.0
-References: <20201218083726.16427-1-alice.guo@oss.nxp.com> <20201218085223.GA17306@kozik-lap>
- <AM6PR04MB6053A65F794B316659CDE638E2C30@AM6PR04MB6053.eurprd04.prod.outlook.com>
- <20201218093641.GA38684@kozik-lap> <AM6PR04MB60534C972777EED96FD105D2E2C30@AM6PR04MB6053.eurprd04.prod.outlook.com>
-In-Reply-To: <AM6PR04MB60534C972777EED96FD105D2E2C30@AM6PR04MB6053.eurprd04.prod.outlook.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Fri, 18 Dec 2020 07:59:31 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLyPPpO5OVLa4baqaJ3MGjJe5p_100ULZSmuf4q8UjWGw@mail.gmail.com>
-Message-ID: <CAL_JsqLyPPpO5OVLa4baqaJ3MGjJe5p_100ULZSmuf4q8UjWGw@mail.gmail.com>
-Subject: Re: [PATCH v8 1/4] dt-bindings: soc: imx8m: add DT Binding doc for
- soc unique ID
-To:     "Alice Guo (OSS)" <alice.guo@oss.nxp.com>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3e1680ed-94b8-74c9-ffe6-c2bd71f2a705@collabora.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 4:14 AM Alice Guo (OSS) <alice.guo@oss.nxp.com> wro=
-te:
->
->
->
-> > -----Original Message-----
-> > From: Krzysztof Kozlowski <krzk@kernel.org>
-> > Sent: 2020=E5=B9=B412=E6=9C=8818=E6=97=A5 17:37
-> > To: Alice Guo (OSS) <alice.guo@oss.nxp.com>
-> > Cc: robh+dt@kernel.org; shawnguo@kernel.org; s.hauer@pengutronix.de;
-> > kernel@pengutronix.de; festevam@gmail.com; devicetree@vger.kernel.org;
-> > linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org; dl-=
-linux-imx
-> > <linux-imx@nxp.com>
-> > Subject: Re: [PATCH v8 1/4] dt-bindings: soc: imx8m: add DT Binding doc=
- for soc
-> > unique ID
-> >
-> > On Fri, Dec 18, 2020 at 09:05:00AM +0000, Alice Guo (OSS) wrote:
-> >  > > +    required:
-> > > > > +      - compatible
-> > > > > +      - nvmem-cells
-> > > > > +      - nvmem-cell-names
-> > > > > +
-> > > > > +additionalProperties: true
-> > > >
-> > > > Don't leave comments unresolved (or resolve them against review
-> > > > without discussion). Rob asked for changing it. The same as with al=
-l
-> > > > schemas - you need to describe the missing properties.
-> > > >
-> > > > Best regards,
-> > > > Krzysztof
-> > >
-> > > Hi,
-> > > Thank you for your advice. I replied to him and let him know I remain=
-ed here
-> > unchanged. There will be errors according to his suggestion.
-> >
-> > Then the solution is to correct the errors - describe missing propertie=
-s
-> > - instead of ignoring the suggestion and making a resubmit right away.
-> >
-> > Best regards,
-> > Krzysztof
->
-> Hi,
-> I am sorry I do not DT Binding doc very well.
->
-> I checked the usage of patternProperties and additionalProperties in http=
-s://json-schema.org/understanding-json-schema/reference/object.html.
-> I noticed a sentence on the website: " If additionalProperties is a boole=
-an and set to false, no additional properties will be allowed.", so I think=
- that
-> if additionalProperties is a boolean and set to true, additional properti=
-es will be allowed. Letting here unchanged is my solution to correct the er=
-rors.
-> I am not sure, I asked Rob for advice on the v6 by email, but he didn't r=
-eply to me, so I made a resubmit.
+On Fri, Dec 18, 2020 at 01:48:09PM +0000, Guillaume Tucker wrote:
+> Please see the bisection report below about a boot failure on
+> ox820-cloudengines-pogoplug-series-3.  There was also a bisection
+> yesterday with next-20201216 which landed on the same commit, on
+> the same platform and also with oxnas_v6_defconfig.  I'm not
+> aware of any other platform on kernelci.org showing the same
+> regression.
 
-You waited an hour and I was sleeping! Waiting means waiting a week.
+Ah, I bet I know what's happening.
 
-You need to add '#address-cells' and '#size-cells'.
+We test for the presence of VFP by issuing an instruction to read
+FPSID. If VFP is not present, this will raise an undefined instruction
+exception, and we expect to head into the vfp_testing_entry code.
 
-Rob
+I bet Pogoplug, being an ARM11 MPCore platform, either raises an
+exception here.
+
+We probably need to also rework the code in vfp_init() as well to
+register a temporary hook when reading the FPSID.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
