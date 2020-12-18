@@ -2,142 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DDB22DE2CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 13:26:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC3F72DE2D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 13:34:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgLRMZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 07:25:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40944 "EHLO
+        id S1726309AbgLRMdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 07:33:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726104AbgLRMZ7 (ORCPT
+        with ESMTP id S1726010AbgLRMdy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 07:25:59 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA90C0617A7
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 04:25:18 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id g185so2355470wmf.3
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 04:25:18 -0800 (PST)
+        Fri, 18 Dec 2020 07:33:54 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACC2FC06138C
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 04:33:13 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id j16so2202034edr.0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 04:33:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google;
+        d=soleen.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=zptP6/C3RZis9BrFo7fAAZrKYnn57+H7GBHOg14Q8CI=;
-        b=jCWOZpsvN/MFYNTDjM8lTtODa80v6w0yqKS0T+vYL+j/9oECDChQ+pPaaqz9Vt5Vw6
-         fKD4fcfJQu+yVAShZxEaqJTEdeVuI2JnSTybq/58dqu8QYcrDG/CUNabvUKUA+QIttf8
-         8wuxAg6wJ+BW4yqEEptP/q+ZRbkw3kJTD5SDXJ8lLJE3riADWybY9IVlI84BUrP3a8xG
-         QNiabjyYkR4AOvwiJ5TMiQzoxrlZQDJEvhKl/04DAqpzxx8qABrdU0aFt+ZHSzkbRrv2
-         Guu+H/FNRD3M06EdvdXUojrlDS3i7aMQEx7uBKEgZHgH3k5xaBECBXUHb6eU83eDxixM
-         fwfg==
+        bh=i4auixzjhc3l5kGc5mD15oPo8KZORVAz4eHOnG9WGUU=;
+        b=n6tUjhd4sqvhp8M2z4j5VFSxJeotpjxPd0CPZa5/EEkcoeLyfyDskake0eK9yxhmwy
+         S2gV2oOJzviGu9Y+HT1JnquGMls/BLX+jC+HgjKoBbCtEGWktMPT2nMVHOoLhLl0KgvG
+         peXy3mP/v5o9GPyQ8zCeJENiWt244Qtx5yIrpCIXKcHHLKce5fQ7WLALIl8MpgCHKKD0
+         q1lOXUYw01ZQ5n/Hzb1tToYlIWOWHfXBaEMR8L39XIv4/BPtOJ3zfKkyuTXHwcwSFoiD
+         GbfceUFPcWfb8QPWxwJ3/wFiCvhjXjbRR2moF52UiyqMkdZSC0eRi45AU3BnsQyx5mMJ
+         1t7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=zptP6/C3RZis9BrFo7fAAZrKYnn57+H7GBHOg14Q8CI=;
-        b=jy9Ou7Zmvol+0zO//6T5I2R9/cxpWiu/0S5vuOkBGwFufv3dRxkbfHJAvZ0YdCtj0S
-         YUSzF4s6ZwfeYt58iZ47PNJsSmefTPm6bhObzT8Z0wjNoqb1NeqqqqBrJYKFxnXwvhf5
-         RoEsi8pu+eAv4xm2f394VdykSU8gy/8ZDAPFBR88obMCTE0hd1ER0dQew37s03P+iicR
-         vt4v/tx7Uf1V6yUtF9uj0L/Xk1Ur4tENG7MtwbiUfoIWyj5jHqwbqvaA5pYrII5G4nqT
-         NosgXDJSSjX0i+sMgd8qyeKK4AP7DbgcR6vNAD4NZU50jjp9nNDxR4fwHVnbkS/JM7F5
-         6PdQ==
-X-Gm-Message-State: AOAM532szIyDQm/LWxki3Lm2DeJDsUeLjg2AhP7jFhvgPQ9lJf2iaMOL
-        EV5Q5TL0jBEAWzBbG6HYNnpibZ/hlQsdi23dQV2yAYtQtto=
-X-Google-Smtp-Source: ABdhPJwuzjSRddGf3JSGAorsM0m907uhm9GMFMicPeUh5xxdB2QH9IdsnNN2SnWpa6yGYNmoew4qfdSRh1h62k4hYr0=
-X-Received: by 2002:a1c:27c3:: with SMTP id n186mr4038981wmn.96.1608294317336;
- Fri, 18 Dec 2020 04:25:17 -0800 (PST)
+        bh=i4auixzjhc3l5kGc5mD15oPo8KZORVAz4eHOnG9WGUU=;
+        b=oPZaG0dgeGCKtTcZdmswpo5A7TtFAD7yZjkxEZa4HTgCTAG+6cCjiWOSWA47mqXZKa
+         wy9rv3rMkib+JCoOfU8/CczhXUAcn6xYKpXusMOmh5fHeTeweE018J/Qmm4E0X97mr91
+         VWdM3d6IvTn37I75ERUUYVO+npTZSfM6uTSR3qQ8AJmAOuKCT2/IzsccTKAF1BSnBRmq
+         ddL2H53ZcbVC/1bYJQvtCqG5UlfBnMMWzE7qhGqrRc5BrPSiCNzdB4XQKl2Jn93NQi1t
+         5TdPXbPQL4qzFcO58CP/pgLnolRsK5apfvqtFFrC9ns8Pzq4NO6Yh9JsNqXpD5VojjRx
+         NdHA==
+X-Gm-Message-State: AOAM530STscbxyj9CBjJ9aIc363X9kKI3HKlT2qswLcYlYrRDjFur5Q9
+        eJwo6a3PG+xDCPTdTbBBm4fiDjSAQ9TTCRq6G9HY8g==
+X-Google-Smtp-Source: ABdhPJwgiTCZzvnrnw4pePa5kEW9sgXWm1sxNmTcGwoJHPoxUO+t4XBaVGOPekgQGbQO4lfsyuEJ3CDfnv6ztzzqldQ=
+X-Received: by 2002:a50:f404:: with SMTP id r4mr4201011edm.62.1608294792260;
+ Fri, 18 Dec 2020 04:33:12 -0800 (PST)
 MIME-Version: 1.0
-References: <20201210134648.272857-1-maxime@cerno.tech> <20201210134648.272857-9-maxime@cerno.tech>
- <CAPY8ntA7dS1Ew+mF=xRdWFF0P071=O5X7vVKt7O_iiTdUbJM5g@mail.gmail.com> <20201218122334.tvdeslyyuus4hp4y@gilmour>
-In-Reply-To: <20201218122334.tvdeslyyuus4hp4y@gilmour>
-From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
-Date:   Fri, 18 Dec 2020 12:25:00 +0000
-Message-ID: <CAPY8ntDwp5+8+uB3xVR=mVTZYPLXp1CiYe5AFFium1JQaQNZNw@mail.gmail.com>
-Subject: Re: [PATCH 08/15] drm/vc4: hdmi: Introduce a CEC clock
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Eric Anholt <eric@anholt.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Jason Cooper <jason@lakedaemon.net>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-rpi-kernel@lists.infradead.org,
-        DRI Development <dri-devel@lists.freedesktop.org>
+References: <20201217185243.3288048-1-pasha.tatashin@soleen.com>
+ <20201217185243.3288048-8-pasha.tatashin@soleen.com> <20201218095058.GV32193@dhcp22.suse.cz>
+In-Reply-To: <20201218095058.GV32193@dhcp22.suse.cz>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Fri, 18 Dec 2020 07:32:36 -0500
+Message-ID: <CA+CK2bBTtVQuZMBQ=67cFQ6fLNcFi+nuPgFWOHWMWgyiQSeEzQ@mail.gmail.com>
+Subject: Re: [PATCH v4 07/10] mm/gup: change index type to long as it counts pages
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Dec 2020 at 12:23, Maxime Ripard <maxime@cerno.tech> wrote:
+On Fri, Dec 18, 2020 at 4:51 AM Michal Hocko <mhocko@suse.com> wrote:
 >
-> Hi Dave,
+> On Thu 17-12-20 13:52:40, Pavel Tatashin wrote:
+> > In __get_user_pages_locked() i counts number of pages which should be
+> > long.
 >
-> On Fri, Dec 18, 2020 at 11:37:50AM +0000, Dave Stevenson wrote:
-> > Hi Maxime
-> >
-> > On Thu, 10 Dec 2020 at 13:47, Maxime Ripard <maxime@cerno.tech> wrote:
-> > >
-> > > While the BCM2835 had the CEC clock derived from the HSM clock, the
-> > > BCM2711 has a dedicated parent clock for it.
-> > >
-> > > Let's introduce a separate clock for it so that we can handle both
-> > > cases.
-> > >
-> > > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> > > ---
-> > >  drivers/gpu/drm/vc4/vc4_hdmi.c | 9 ++++++++-
-> > >  drivers/gpu/drm/vc4/vc4_hdmi.h | 1 +
-> > >  2 files changed, 9 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> > > index b93ee3e26e2b..0debd22bc992 100644
-> > > --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-> > > +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> > > @@ -145,7 +145,7 @@ static void vc4_hdmi_cec_update_clk_div(struct vc4_hdmi *vc4_hdmi)
-> > >          * Set the clock divider: the hsm_clock rate and this divider
-> > >          * setting will give a 40 kHz CEC clock.
-> > >          */
-> > > -       clk_cnt = clk_get_rate(vc4_hdmi->hsm_clock) / CEC_CLOCK_FREQ;
-> > > +       clk_cnt = clk_get_rate(vc4_hdmi->cec_clock) / CEC_CLOCK_FREQ;
-> > >         value |= clk_cnt << VC4_HDMI_CEC_DIV_CLK_CNT_SHIFT;
-> > >         HDMI_WRITE(HDMI_CEC_CNTRL_1, value);
-> > >  }
-> > > @@ -1740,6 +1740,7 @@ static int vc4_hdmi_init_resources(struct vc4_hdmi *vc4_hdmi)
-> > >                 return PTR_ERR(vc4_hdmi->hsm_clock);
-> > >         }
-> > >         vc4_hdmi->audio_clock = vc4_hdmi->hsm_clock;
-> > > +       vc4_hdmi->cec_clock = vc4_hdmi->hsm_clock;
-> > >
-> > >         return 0;
-> > >  }
-> > > @@ -1833,6 +1834,12 @@ static int vc5_hdmi_init_resources(struct vc4_hdmi *vc4_hdmi)
-> > >                 return PTR_ERR(vc4_hdmi->audio_clock);
-> > >         }
-> > >
-> > > +       vc4_hdmi->cec_clock = devm_clk_get(dev, "cec");
-> > > +       if (IS_ERR(vc4_hdmi->cec_clock)) {
-> > > +               DRM_ERROR("Failed to get CEC clock\n");
-> > > +               return PTR_ERR(vc4_hdmi->cec_clock);
-> > > +       }
-> >
-> > Aren't we adding to the DT binding here and breaking backwards compatibility?
-> > Admittedly CEC didn't work before (and was masked out) for vc5, but do
-> > we need to worry about those with existing DT files that currently
-> > work happily?
->
-> The DT compatibility is not a worry here: I made sure the CEC clock and
-> range were part of the binding since it's been introduced:
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2e3725b05b785e73482a194b99bff3d5a1c85140
->
-> So we were not using it so far, but it was in the DT all along
+> Do we know of any caller who would like to pin so many pages it wouldn't
+> fit into an int? I suspect this is more to sync types of nr_pages and
+> the iterator right. It would be better to be explicit about this in the
+> changelog.
 
-I guess I should have read it then :-)
-In which case
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+It is to sync types. I will add it to the changelog.
+
+But, in general 32-bit increasingly becomes too small for handling
+page count proportional values. It is 8T for npages. For pinning may
+be a bit too large today, but I can image RDMA this size in the
+future.
+
+>
+> > Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+>
+> Acked-by: Michal Hocko <mhocko@suse.com>
+>
+> > ---
+> >  mm/gup.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/mm/gup.c b/mm/gup.c
+> > index 591d8e2dfc70..1ebb7cc2fbe4 100644
+> > --- a/mm/gup.c
+> > +++ b/mm/gup.c
+> > @@ -1481,7 +1481,7 @@ static long __get_user_pages_locked(struct mm_struct *mm, unsigned long start,
+> >  {
+> >       struct vm_area_struct *vma;
+> >       unsigned long vm_flags;
+> > -     int i;
+> > +     long i;
+> >
+> >       /* calculate required read or write permissions.
+> >        * If FOLL_FORCE is set, we only require the "MAY" flags.
+> > --
+> > 2.25.1
+>
+> --
+> Michal Hocko
+> SUSE Labs
