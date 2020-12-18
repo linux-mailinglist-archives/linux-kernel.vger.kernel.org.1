@@ -2,157 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 082E42DE3E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:21:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D76152DE3E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:21:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727817AbgLROUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 09:20:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726047AbgLROUL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 09:20:11 -0500
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C5AC0617B0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 06:19:30 -0800 (PST)
-Received: by mail-qv1-xf35.google.com with SMTP id 4so934525qvh.1
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 06:19:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WERPNLKxdgIzL5x4a7MSy0JBfPg8vRpdWpyRT6Y+Lx4=;
-        b=JWVockyamEBA1QzjNns4oKAV8HOKMsYdVPooYbIOFtw278D5Gt2qniBWvLXweuFSj1
-         tzoYgabP31sX8hAUUWwt4d0+LhYZklSF/9Z3Fjkyzcx403vDihglcZmVY9UWldsSa209
-         8KGP9Eedu9P7hKrxzgJg7+VYF77W8RFgrnq9eZz6CHtBH3d7cRyxqUGaefNQ/BPmrNEx
-         9oi1tjrsWCdOQocEJGzhvaO1K25b4dVre+HK05WlgxLdhuRdrs5lGz4do084bbGZMjD9
-         igN58y1WTKT0to1tcAZQOxq+tGgZe7hUtUrwUcHq0n/sMfcq1W3S32vgfSrF4OeLu0iI
-         CNLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WERPNLKxdgIzL5x4a7MSy0JBfPg8vRpdWpyRT6Y+Lx4=;
-        b=VbOuc7uGZtwiD6zRXwx3/9AaX+0KflvypIdOIvGJ6FglfNlXiqcHvdBIRYXm/MdSI6
-         msQDbR1oXARTXLzFNLyBVaum5K4gsnkneLEJN239Bm1RcTx0A4vkx/J6XlxLaiEhZVkl
-         I75OIVItWkOw4fA0BBvgEf0YETrNHqPAWH0bNgRPEOPTX3KlaVBxCtr5cBLCHxgEtRVS
-         F9SnPahzcLu2m3hV0O7KMQbUcUDx5jgbs3sRK60EXWbwFhJRtNjb0mmsPB/1kq3JATEd
-         NyfyIy+fMho6SAlbyIHanIkqpeyiJRjXQHnrMZvyp137s4XtdN0mDnbXPpPj2EbOi1jo
-         zHBQ==
-X-Gm-Message-State: AOAM533b7ldVCAeX0tkCAxugjfETn7BIzGeQQb6zLT8dhJezX0Tku2yG
-        +yS6snGTr8/dFGyAXGfwPjVQiQ==
-X-Google-Smtp-Source: ABdhPJx8/DJ78GkxbcIU1memIsL2TB3DNuXc1GCmXG+0Kwa2zwOi49IxsU0awOMhpxtgwLhA0c9ALg==
-X-Received: by 2002:a05:6214:768:: with SMTP id f8mr4637876qvz.1.1608301168974;
-        Fri, 18 Dec 2020 06:19:28 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id s130sm5426876qka.91.2020.12.18.06.19.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Dec 2020 06:19:28 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kqGbP-00CgM0-FO; Fri, 18 Dec 2020 10:19:27 -0400
-Date:   Fri, 18 Dec 2020 10:19:27 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v4 08/10] mm/gup: limit number of gup migration failures,
- honor failures
-Message-ID: <20201218141927.GM5487@ziepe.ca>
-References: <20201217185243.3288048-1-pasha.tatashin@soleen.com>
- <20201217185243.3288048-9-pasha.tatashin@soleen.com>
- <20201217205048.GL5487@ziepe.ca>
- <CA+CK2bA4F+SipkReJzFjCSC-8kZdK4yrwCQZM+TvCTrqV2CGHg@mail.gmail.com>
+        id S1727883AbgLROVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 09:21:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56124 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727404AbgLROVE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 09:21:04 -0500
+Date:   Fri, 18 Dec 2020 14:20:09 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608301223;
+        bh=Twtxz3CdLx+TMONIubg7E6ojPF7qRVa0EUIUWEAZg2Y=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lqR2VgQmrIuYy0qdUnNvVSdt+33BYqPw/41xKPo1cyRqzCvQXlJ/JtodgYR7ircIL
+         8nRUeE+1kQOYWlil+nxLXQXcV8JU6V0aGGvCaTI4l+ueNJJgFsIYmxV0fgw0MfuL2N
+         rMEw8iiY5v6Z/k+FmYGdJrqSQQs5WZwNFBcFa7T4rOJ6cM5roMaQ8gOtq79Vh8hmu2
+         5csun4QlvrYTAcbQori5UZ7EZfAlsVEeN+rdisvB4v4gVsHSfuinNCams2Yk3+oNrx
+         IlwJPsCsxv/cNb936aK1/TU5jIPUHStg4Q3S0x83xQMsWpSOB/cdJuyjpDgdK+xjpv
+         /fVYRQT0J6DpQ==
+From:   Mark Brown <broonie@kernel.org>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        alsa-devel@alsa-project.org, Kiran Patil <kiran.patil@intel.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        David Miller <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Parav Pandit <parav@mellanox.com>, lee.jones@linaro.org
+Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
+Message-ID: <20201218142009.GB5333@sirena.org.uk>
+References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <X8ogtmrm7tOzZo+N@kroah.com>
+ <CAPcyv4iLG7V9JT34La5PYfyM9378acbLnkShx=6pOmpPK7yg3A@mail.gmail.com>
+ <X8usiKhLCU3PGL9J@kroah.com>
+ <20201217211937.GA3177478@piout.net>
+ <CAPcyv4h-jg0dxKZ89yYnHsTEDj7jLWDBhBVTgEC77tLLsz92pw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="IiVenqGWf+H9Y6IX"
 Content-Disposition: inline
-In-Reply-To: <CA+CK2bA4F+SipkReJzFjCSC-8kZdK4yrwCQZM+TvCTrqV2CGHg@mail.gmail.com>
+In-Reply-To: <CAPcyv4h-jg0dxKZ89yYnHsTEDj7jLWDBhBVTgEC77tLLsz92pw@mail.gmail.com>
+X-Cookie: Password:
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 05:02:03PM -0500, Pavel Tatashin wrote:
-> Hi Jason,
-> 
-> Thank you for your comments. My replies below.
-> 
-> On Thu, Dec 17, 2020 at 3:50 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >
-> > On Thu, Dec 17, 2020 at 01:52:41PM -0500, Pavel Tatashin wrote:
-> > > +/*
-> > > + * Verify that there are no unpinnable (movable) pages, if so return true.
-> > > + * Otherwise an unpinnable pages is found return false, and unpin all pages.
-> > > + */
-> > > +static bool check_and_unpin_pages(unsigned long nr_pages, struct page **pages,
-> > > +                               unsigned int gup_flags)
-> > > +{
-> > > +     unsigned long i, step;
-> > > +
-> > > +     for (i = 0; i < nr_pages; i += step) {
-> > > +             struct page *head = compound_head(pages[i]);
-> > > +
-> > > +             step = compound_nr(head) - (pages[i] - head);
-> >
-> > You can't assume that all of a compound head is in the pages array,
-> > this assumption would only work inside the page walkers if the page
-> > was found in a PMD or something.
-> 
-> I am not sure I understand your comment. The compound head is not
-> taken from the pages array, and not assumed to be in it. It is exactly
-> the same logic as that we currently have:
-> https://soleen.com/source/xref/linux/mm/gup.c?r=a00cda3f#1565
 
-Oh, that existing logic is wrong too :( Another bug.
+--IiVenqGWf+H9Y6IX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-You can't skip pages in the pages[] array under the assumption they
-are contiguous. ie the i+=step is wrong.
+On Thu, Dec 17, 2020 at 06:39:55PM -0800, Dan Williams wrote:
 
-> >
-> > > +     if (gup_flags & FOLL_PIN) {
-> > > +             unpin_user_pages(pages, nr_pages);
-> >
-> > So we throw everything away? Why? That isn't how the old algorithm worked
-> 
-> It is exactly like the old algorithm worked: if there are pages to be
-> migrated (not pinnable pages) we unpinned everything.
-> See here:
-> https://soleen.com/source/xref/linux/mm/gup.c?r=a00cda3f#1603
+> There is room for documentation improvement here. I realize reading it
+> back now that much of the justification for "why not platform bus?"
+> happened on the list, but only a small mention made it into the
 
-Hmm, OK, but I'm not sure that is great either
+It wasn't clear from the list discussions either TBH, or at least the
+bits I happened to see (I did miss several versions of this).
 
-> cleaner, and handle errors. We must unpin everything because if we
-> fail, no pages should stay pinned, and also if we migrated some pages,
-> the pages array must be updated, so we need to call
-> __get_user_pages_locked() pin and repopulated pages array.
+> document. It turns out that platform-bus has some special integrations
+> and hacks with platform-firmware implementations. For example, the
+> ACPI companion magic
 
-However the page can't be unpinned until it is put on the LRU (and I'm
-hoping that the LRU is enough of a 'lock' to make that safe, no idea)
+Could you be more specific about the problems that these cause for users
+of the bus?
 
-> > I don't like this at all. It shouldn't be so flakey
-> >
-> > Can you do migration without the LRU?
-> 
-> I do not think it is possible, we must isolate pages before migration.
+>                      and specific platform firmware integrations in
+> platform_match(). It's also an awkward bus name to use because these
 
-I don't like this at all :( Lots of stuff relies on GUP, introducing a
-random flakiness like this not good.
+Going through a bunch of possible firmware interfaces is standard for
+buses that can't be enumerated, SPI has almost exactly the same code for
+example.  Again, I'm not clear what problem this causes?
 
-Jason
+> devices do not belong to the platform. The platform bus is for devices
+> that do not have an enumeration mechanism besides board files or
+> firmware descriptions.
+
+This is the one thing I was getting from what I did see, it was an
+abstraction thing.  I'm still unclear what the abstraction is supposed
+to be - I had thought that it was supposed to be purely for MMIO devices
+but in a parallel reply Greg is suggesting that it applies to at least
+"firmware direct" devices which I guess is things enumerated by board
+files or firmware but that makes things even less clear for me as it's
+kind of random if people try to describe the internals of devices in DT
+or not, and ACPI goes the other way and doesn't really describe some
+things that physically exist.
+
+> > We already have a bunch of drivers in tree that have to share a state
+> > and register other drivers from other subsystems for the same device.
+> > How is the auxiliary bus different?
+>=20
+> There's also custom subsystem buses that do this. Why not other
+> alternatives? They didn't capture the simultaneous mindshare of RDMA,
+> SOF, and NETDEV developers. Personally my plans for using
+
+At least in the case of SOF they were getting active pushback from
+somewhere telling them not to use MFD.
+
+> auxiliary-bus do not map cleanly to anything else in the tree. I want
+> to use it for attaching an NPEM driver (Native PCIE Enclosure
+> Management) to any PCI device driver that opts-in, but it would be
+> overkill to go create an "npem" bus for this.
+
+This is why everyone is using platform devices here - people were making
+custom buses but people (including Greg!) pointed out that these were
+just carbon copies of the platform bus.
+
+--IiVenqGWf+H9Y6IX
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/cupgACgkQJNaLcl1U
+h9D+3Af/cJECsvChdGecO5/0wRbeZDfopKmuaCEBnnT9BfHNPXohXL5Vf/tnSgr1
++EXf6ehtmxNg/UlEs2l4uqVHQyZ3g8zDX1M1zynfBfHtyLSm5wlW30hxtsPhyeMt
++VqcRxwWqUC2jLzBD5Aob+3AF5UYnZhh4kqkZ4Ow2UxTcXlDJ5GUn40UvaOkF8Tq
+uzilWabfZOPRyqwVYQ/s4oRqa9NlokjAWkiLOEChZtA9vOsZ0Gpfm+HLC4EC0ajI
+Eu6rfbm5s1YD7zqC2nSaG8ALGMDg/yjrc9aVVM5+nf3vJns3z6U0ityhhR6EaCi1
+9dcy2WqWnZC2M2OdkAaaW4Q27F5tOQ==
+=h7cR
+-----END PGP SIGNATURE-----
+
+--IiVenqGWf+H9Y6IX--
