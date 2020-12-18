@@ -2,153 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DBD92DE8A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 19:01:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DD0E2DE8A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 19:03:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727944AbgLRSAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 13:00:38 -0500
-Received: from foss.arm.com ([217.140.110.172]:39270 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726120AbgLRSAi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 13:00:38 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 47C1830E;
-        Fri, 18 Dec 2020 09:59:52 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 23BFD3F66E;
-        Fri, 18 Dec 2020 09:59:51 -0800 (PST)
-References: <20201218170919.2950-1-jiangshanlai@gmail.com> <20201218170919.2950-11-jiangshanlai@gmail.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Qian Cai <cai@redhat.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH -tip V2 10/10] workqueue: Fix affinity of kworkers when attaching into pool
-In-reply-to: <20201218170919.2950-11-jiangshanlai@gmail.com>
-Date:   Fri, 18 Dec 2020 17:59:45 +0000
-Message-ID: <jhjpn37ro4u.mognet@arm.com>
+        id S1727874AbgLRSDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 13:03:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725878AbgLRSDc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 13:03:32 -0500
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77AD6C0617B0;
+        Fri, 18 Dec 2020 10:02:52 -0800 (PST)
+Received: by mail-yb1-xb2f.google.com with SMTP id b64so2265360ybg.7;
+        Fri, 18 Dec 2020 10:02:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hdZYhfYJfGoDMDSenDh3dl/qSDDSt8Bfc0WyEJEKhF0=;
+        b=JaFfHYJw/nEOPkMDF92ey2Gyab38sfVMNiM5LE5nxPspaEsViT+qcXSvGcYfS/lHZR
+         5hkLQFqn4Sw/DC4ktXle7WylDmcS2PMR6zuKVisK/LbZj4TwKuMQYJt4xcBMGchScvnW
+         Uy8XDD2Xuw1N/xKJFiXPM6wI5S+qwWOksv8URVcZkdrqSIOW3cGto1+sYGtvvCBDFqC7
+         UHQlCzaocz3a/JeMrhBwR7aKkuYcWptX0FaoQmSi8NT1l6kTbOiktlxA6J+3sNpYVqvs
+         QTBq4Jik+HrBWuANN0JEeWtv4wp00o+cZcV+ApMeT9sSdacpS+IyZSVNLmyYYTmf3HU4
+         9EQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hdZYhfYJfGoDMDSenDh3dl/qSDDSt8Bfc0WyEJEKhF0=;
+        b=P8LtFsW3U9Le1KATQ8im3O2u1iLLR1wx6fNUkXfcadZWKA1834ZtjgeqRDx74SZRVK
+         vt1nAQzlT6gMPrUwBDa4vOmDoO9UdpOG0//NcEp6gpTEPwb18Rf1nGkLZoO/83eZzW5z
+         7dXTGHTW2VelpB2brQ5GfTeGnGOaFg8qRrG1jl7/8B1yEYad4Y2Adwl63gACdbvifGIK
+         Evqhzf5DuOxUW6cTmhp0Yh9YSGOysI/B8dZeB7zDmjxjul0ZJxakxVUJFPv0eaiUKBW/
+         tuIWKHcxoajQSyLi+a0aIEpWHiFgKBYjdAEvxLe0906hIyArwzXS/iEsyoUm69Leq0ux
+         SlMg==
+X-Gm-Message-State: AOAM532nwcEy8Istwi/NJkZApKsl9EERKdPpzFOBVU++/HnHAq/k0I/G
+        EyXGaCSFoEXHwxsn3eDE1uR0wLlT8i8bIY27r2gmWT/rpUVDUg==
+X-Google-Smtp-Source: ABdhPJzz3SMzAl+sNokZVwQtwOxk6N01hrx1uuqgZcBjhz6jimBmb1TOZxdX9bwC9AgqCVAX1Ca7VlfeA2ed6EERMlk=
+X-Received: by 2002:a25:69d1:: with SMTP id e200mr7328969ybc.3.1608314571107;
+ Fri, 18 Dec 2020 10:02:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201027204226.26906-1-pboris@amazon.com> <20201217205808.14756-1-pboris@amazon.com>
+In-Reply-To: <20201217205808.14756-1-pboris@amazon.com>
+From:   Shyam Prasad N <nspmangalore@gmail.com>
+Date:   Fri, 18 Dec 2020 23:32:41 +0530
+Message-ID: <CANT5p=oMDGHSMOCgOrz6S9tuB3BmbL4mLqsC4vqSPod8pWsTaA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] Add SMB 2 support for getting and setting SACLs
+To:     Boris Protopopov <pboris@amazon.com>
+Cc:     Steven French <sfrench@samba.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        LKML <linux-kernel@vger.kernel.org>, samjonas@amazon.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Minor comments inline...
 
-On 18/12/20 17:09, Lai Jiangshan wrote:
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
+On Fri, Dec 18, 2020 at 2:30 AM Boris Protopopov <pboris@amazon.com> wrote:
 >
-> When worker_attach_to_pool() is called, we should not put the workers
-> to pool->attrs->cpumask when there is not CPU online in it.
+> Fix passing of the additional security info via version
+> operations. Force new open when getting SACL and avoid
+> reuse of files that were previously open without
+> sufficient privileges to access SACLs.
 >
-> We have to use wq_online_cpumask in worker_attach_to_pool() to check
-> if pool->attrs->cpumask is valid rather than cpu_online_mask or
-> cpu_active_mask due to gaps between stages in cpu hot[un]plug.
->
-> So for that late-spawned per-CPU kworker case: the outgoing CPU should have
-> already been cleared from wq_online_cpumask, so it gets its affinity reset
-> to the possible mask and the subsequent wakeup will ensure it's put on an
-> active CPU.
->
-> To use wq_online_cpumask in worker_attach_to_pool(), we need to protect
-> wq_online_cpumask in wq_pool_attach_mutex and we modify workqueue_online_cpu()
-> and workqueue_offline_cpu() to enlarge wq_pool_attach_mutex protected
-> region. We also put updating wq_online_cpumask and [re|un]bind_workers()
-> in the same wq_pool_attach_mutex protected region to make the update
-> for percpu workqueue atomically.
->
-> Cc: Qian Cai <cai@redhat.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Vincent Donnefort <vincent.donnefort@arm.com>
-> Link: https://lore.kernel.org/lkml/20201210163830.21514-3-valentin.schneider@arm.com/
-> Acked-by: Valentin Schneider <valentin.schneider@arm.com>
-
-So an etiquette thing: I never actually gave an Acked-by. I did say it
-looked good to me, and that probably should've been bundled with a
-Reviewed-by, but it wasn't (I figured I'd wait for v2). Forging is bad,
-m'kay.
-
-When in doubt (e.g. someone says they're ok with your patch but don't give
-any Ack/Reviewed-by), just ask via mail or on IRC.
-
-For now, please make this a:
-
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-
-> Acked-by: Tejun Heo <tj@kernel.org>
-> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+> Signed-off-by: Boris Protopopov <pboris@amazon.com>
 > ---
->  kernel/workqueue.c | 32 +++++++++++++++-----------------
->  1 file changed, 15 insertions(+), 17 deletions(-)
 >
-> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-> index 65270729454c..eeb726598f80 100644
-> --- a/kernel/workqueue.c
-> +++ b/kernel/workqueue.c
-> @@ -310,7 +310,7 @@ static bool workqueue_freezing;		/* PL: have wqs started freezing? */
->  /* PL: allowable cpus for unbound wqs and work items */
->  static cpumask_var_t wq_unbound_cpumask;
+> After further testing, I found that the security info was not being
+> passed correctly to opts->get_acl and opts->get_acl_by_fid(). Also,
+> it turned out that files open for read were being used to fetch
+> SACL without proper privileges. This patch fixes these issues, and
+> is meant to be squashed (comments dropped) with the earlier patch.
 >
-> -/* PL: online cpus (cpu_online_mask with the going-down cpu cleared) */
-> +/* PL&A: online cpus (cpu_online_mask with the going-down cpu cleared) */
->  static cpumask_var_t wq_online_cpumask;
+> fs/cifs/cifsacl.c | 10 +++++-----
+>  fs/cifs/smb2ops.c |  4 ++--
+>  fs/cifs/smb2pdu.c |  4 +++-
+>  fs/cifs/xattr.c   | 10 ++++------
+>  4 files changed, 14 insertions(+), 14 deletions(-)
 >
->  /* CPU where unbound work was last round robin scheduled from this CPU */
-> @@ -1848,11 +1848,11 @@ static void worker_attach_to_pool(struct worker *worker,
+> diff --git a/fs/cifs/cifsacl.c b/fs/cifs/cifsacl.c
+> index 353394d9ada8..6baa121952ce 100644
+> --- a/fs/cifs/cifsacl.c
+> +++ b/fs/cifs/cifsacl.c
+> @@ -1245,7 +1245,7 @@ cifs_acl_to_fattr(struct cifs_sb_info *cifs_sb, struct cifs_fattr *fattr,
+>         int rc = 0;
+>         struct tcon_link *tlink = cifs_sb_tlink(cifs_sb);
+>         struct smb_version_operations *ops;
+> -       const u32 unused = 0;
+> +       const u32 info = 0;
+>
+>         cifs_dbg(NOISY, "converting ACL to mode for %s\n", path);
+>
+> @@ -1255,9 +1255,9 @@ cifs_acl_to_fattr(struct cifs_sb_info *cifs_sb, struct cifs_fattr *fattr,
+>         ops = tlink_tcon(tlink)->ses->server->ops;
+>
+>         if (pfid && (ops->get_acl_by_fid))
+> -               pntsd = ops->get_acl_by_fid(cifs_sb, pfid, &acllen, unused);
+> +               pntsd = ops->get_acl_by_fid(cifs_sb, pfid, &acllen, info);
+>         else if (ops->get_acl)
+> -               pntsd = ops->get_acl(cifs_sb, inode, path, &acllen, unused);
+> +               pntsd = ops->get_acl(cifs_sb, inode, path, &acllen, info);
+>         else {
+>                 cifs_put_tlink(tlink);
+>                 return -EOPNOTSUPP;
+> @@ -1295,7 +1295,7 @@ id_mode_to_cifs_acl(struct inode *inode, const char *path, __u64 nmode,
+>         struct tcon_link *tlink = cifs_sb_tlink(cifs_sb);
+>         struct smb_version_operations *ops;
+>         bool mode_from_sid, id_from_sid;
+> -       const u32 unused = 0;
+> +       const u32 info = 0;
+>
+>         if (IS_ERR(tlink))
+>                 return PTR_ERR(tlink);
+> @@ -1311,7 +1311,7 @@ id_mode_to_cifs_acl(struct inode *inode, const char *path, __u64 nmode,
+>                 return -EOPNOTSUPP;
+>         }
+>
+> -       pntsd = ops->get_acl(cifs_sb, inode, path, &secdesclen, unused);
+> +       pntsd = ops->get_acl(cifs_sb, inode, path, &secdesclen, info);
+>         if (IS_ERR(pntsd)) {
+>                 rc = PTR_ERR(pntsd);
+>                 cifs_dbg(VFS, "%s: error %d getting sec desc\n", __func__, rc);
+> diff --git a/fs/cifs/smb2ops.c b/fs/cifs/smb2ops.c
+> index d28a29728fb1..f5e198860c16 100644
+> --- a/fs/cifs/smb2ops.c
+> +++ b/fs/cifs/smb2ops.c
+> @@ -3315,9 +3315,9 @@ get_smb2_acl(struct cifs_sb_info *cifs_sb,
+>         struct cifs_ntsd *pntsd = NULL;
+>         struct cifsFileInfo *open_file = NULL;
+>
+> -       if (inode)
+> +       if (inode && !(info & SACL_SECINFO))
+>                 open_file = find_readable_file(CIFS_I(inode), true);
+> -       if (!open_file)
+> +       if (!open_file || (info & SACL_SECINFO))
+>                 return get_smb2_acl_by_path(cifs_sb, path, pacllen, info);
+>
+>         pntsd = get_smb2_acl_by_fid(cifs_sb, &open_file->fid, pacllen, info);
+Why not have an if (info & SACL_SECINFO) return
+get_smb2_acl_by_path... right at the beginning?
+Looks cleaner that way IMO.
+
+> diff --git a/fs/cifs/smb2pdu.c b/fs/cifs/smb2pdu.c
+> index 0aeb63694306..b207e1eb6803 100644
+> --- a/fs/cifs/smb2pdu.c
+> +++ b/fs/cifs/smb2pdu.c
+> @@ -3472,8 +3472,10 @@ SMB311_posix_query_info(const unsigned int xid, struct cifs_tcon *tcon,
+>  int
+>  SMB2_query_acl(const unsigned int xid, struct cifs_tcon *tcon,
+>                u64 persistent_fid, u64 volatile_fid,
+> -              void **data, u32 *plen, u32 additional_info)
+> +              void **data, u32 *plen, u32 extra_info)
 >  {
->       mutex_lock(&wq_pool_attach_mutex);
+> +       __u32 additional_info = OWNER_SECINFO | GROUP_SECINFO | DACL_SECINFO |
+> +                               extra_info;
+I still prefer having these flags set by the caller. That way, the
+caller has the flexibility to query only the subset needed.
+
+>         *plen = 0;
 >
-> -	/*
-> -	 * set_cpus_allowed_ptr() will fail if the cpumask doesn't have any
-> -	 * online CPUs.  It'll be re-applied when any of the CPUs come up.
-> -	 */
-> -	set_cpus_allowed_ptr(worker->task, pool->attrs->cpumask);
-> +	/* Is there any cpu in pool->attrs->cpumask online? */
-> +	if (cpumask_intersects(pool->attrs->cpumask, wq_online_cpumask))
-> +		WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, pool->attrs->cpumask) < 0);
-> +	else
-> +		WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, cpu_possible_mask) < 0);
+>         return query_info(xid, tcon, persistent_fid, volatile_fid,
+> diff --git a/fs/cifs/xattr.c b/fs/cifs/xattr.c
+> index 9318a2acf4ee..6b658a1172ef 100644
+> --- a/fs/cifs/xattr.c
+> +++ b/fs/cifs/xattr.c
+> @@ -340,21 +340,19 @@ static int cifs_xattr_get(const struct xattr_handler *handler,
+>                  * fetch owner, DACL, and SACL if asked for full descriptor,
+>                  * fetch owner and DACL otherwise
+>                  */
+> -               u32 acllen, additional_info = 0;
+> +               u32 acllen, extra_info;
+>                 struct cifs_ntsd *pacl;
 >
->       /*
->        * The wq_pool_attach_mutex ensures %POOL_DISASSOCIATED remains
-> @@ -5081,13 +5081,12 @@ int workqueue_online_cpu(unsigned int cpu)
->       int pi;
+>                 if (pTcon->ses->server->ops->get_acl == NULL)
+>                         goto out; /* rc already EOPNOTSUPP */
 >
->       mutex_lock(&wq_pool_mutex);
-> -	cpumask_set_cpu(cpu, wq_online_cpumask);
+>                 if (handler->flags == XATTR_CIFS_NTSD_FULL) {
+> -                       additional_info = OWNER_SECINFO | GROUP_SECINFO |
+> -                               DACL_SECINFO | SACL_SECINFO;
+> +                       extra_info = SACL_SECINFO;
+>                 } else {
+> -                       additional_info = OWNER_SECINFO | GROUP_SECINFO |
+> -                               DACL_SECINFO;
+> +                       extra_info = 0;
+>                 }
+>                 pacl = pTcon->ses->server->ops->get_acl(cifs_sb,
+> -                               inode, full_path, &acllen, additional_info);
+> +                               inode, full_path, &acllen, extra_info);
+>                 if (IS_ERR(pacl)) {
+>                         rc = PTR_ERR(pacl);
+>                         cifs_dbg(VFS, "%s: error %zd getting sec desc\n",
+> --
+> 2.18.4
 >
-> -	for_each_cpu_worker_pool(pool, cpu) {
-> -		mutex_lock(&wq_pool_attach_mutex);
-> +	mutex_lock(&wq_pool_attach_mutex);
-> +	cpumask_set_cpu(cpu, wq_online_cpumask);
-> +	for_each_cpu_worker_pool(pool, cpu)
->               rebind_workers(pool);
-> -		mutex_unlock(&wq_pool_attach_mutex);
-> -	}
-> +	mutex_unlock(&wq_pool_attach_mutex);
->
->       /* update CPU affinity of workers of unbound pools */
->       for_each_pool(pool, pi) {
-> @@ -5117,14 +5116,13 @@ int workqueue_offline_cpu(unsigned int cpu)
->       if (WARN_ON(cpu != smp_processor_id()))
->               return -1;
->
-> -	for_each_cpu_worker_pool(pool, cpu) {
-> -		mutex_lock(&wq_pool_attach_mutex);
-> -		unbind_workers(pool);
-> -		mutex_unlock(&wq_pool_attach_mutex);
-> -	}
-> -
->       mutex_lock(&wq_pool_mutex);
-> +
-> +	mutex_lock(&wq_pool_attach_mutex);
->       cpumask_clear_cpu(cpu, wq_online_cpumask);
-> +	for_each_cpu_worker_pool(pool, cpu)
-> +		unbind_workers(pool);
-> +	mutex_unlock(&wq_pool_attach_mutex);
->
->       /* update CPU affinity of workers of unbound pools */
->       for_each_pool(pool, pi) {
+
+
+-- 
+-Shyam
