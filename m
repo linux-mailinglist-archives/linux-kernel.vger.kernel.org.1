@@ -2,168 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EED2F2DDC5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 01:27:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 688982DDC65
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 01:32:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732229AbgLRAZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 19:25:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43556 "EHLO
+        id S1727135AbgLRAcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 19:32:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728179AbgLRAZW (ORCPT
+        with ESMTP id S1725930AbgLRAce (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 19:25:22 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9E38C061794
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 16:24:41 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id m203so533793ybf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 16:24:41 -0800 (PST)
+        Thu, 17 Dec 2020 19:32:34 -0500
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31C0DC0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 16:31:54 -0800 (PST)
+Received: by mail-qk1-x74a.google.com with SMTP id o65so526071qkc.21
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 16:31:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc:content-transfer-encoding;
-        bh=ERR2VE2oCwVj0NVrLHMHrJrZvp//bs46UVD4KXEsUV4=;
-        b=kGo+noPT2sAcMd9H4DHcFIPyvTbkVbBAZXLSRZGw92t40O6jtpQ1pVyIsyVdt/EG1O
-         kB2HpGKjev7+TPuMeWx9py1VLcPFBxqGVDMMHkrcVA8O9VHU2Xb+HjmoClG2L+KlBDb3
-         mQpC281cO1ZSrRuj4nL0zI3rEChn24EiDyuwL0WZ3ia9eaMMUEhC96Z0hjYY5FiqhNiy
-         s73i34Blc94eiBPAPtC4hiG4HAvhuO0rmRwZNV5G6df847xe/pOxBbTEnLoZK9BRrFUH
-         zAPODaE3aZi/5c+v+R+Dv/mM1tIUbV1vpQBh4BzAhFTRdHFUFjFd2BLcgZzkvvkBF6GL
-         40Sg==
+        h=sender:reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=2tzta+SNMsYxKKonR8VaQ9Msx9ezDvobAtQZxP1CmTo=;
+        b=amSSz5zGcCHdNrtCi5FrIruhHpn5OoUl6IA1/X5JxM4N7MvhDZqrXJM2eyE1xgR8Rr
+         2QaQDE8gdcMULMMy6eI97mlfZY1x2Bspoba0n9tpQJ/S3IHiVUSz51ZWcN/+iUgAFwUI
+         1DhsZWhpwetS7/vedXEQ4ILtQYKUVeHMfJNWvXviUwWirkQw6fXeP5iWOcZ6bn5KoQra
+         T+d6Q/TwEw+2FMgQ8SJFBZvemoXfGI/t6hZJkw3+NNSrTy5l+KYoKENttqfPB+d2ixgZ
+         UV6fdyoL7wn5XxXyBBukMU2qMPBhzHmOn/Wfupuci1GTBphgBB8GXVJxjtVlsXgIUHrj
+         ueSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc:content-transfer-encoding;
-        bh=ERR2VE2oCwVj0NVrLHMHrJrZvp//bs46UVD4KXEsUV4=;
-        b=f/d6JLaB5ox3o3H+nNQHb2aKL4vD5z2d+9/1AHH6paGLZmxpCdSimnbPPbai32TIul
-         bZYFBOwAmW4Mohhuc3SfWZeqHWdIGT8dItxI8B9IKsXDb+kEYW/CEftb3xw5ppfp/HDH
-         QEJBgqybEHunYvR+Qu11Kuy/nSKRRAu2irtt1OpHclRc0GLX8U0IDnsRXQk8aK5JZyvY
-         4FUvH2hVMxvj8PP0R9yRNO3MtPQ3ZKZBG3tJwFY1/lQKIraiIFc8jP3C7vxm/RQVSFSd
-         ucd5n4uJ42Bucru/MJJVscXb0sB7Bipt/Q7IuDrAC9L+/GSezt7GmkRglBt62BW4gVNN
-         tWnQ==
-X-Gm-Message-State: AOAM530cYJcaH5IJ1DdTQvbUiX6pn0DBn/ni0VEjDxApms3QmlMmKQgZ
-        FSyAFYl3dBYZcTVSR3Zyn0dtXTfXD1Cflrc25kg=
-X-Google-Smtp-Source: ABdhPJzNZDCIVC2LbClgGga7MLXdQa4n65MGucsJKpJdIgtXg0yTfsIN04/oazZ0QmUaUU1Szu/76HoHRO+UYrqIimo=
-Sender: "ndesaulniers via sendgmr" 
-        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:a5b:b0b:: with SMTP id
- z11mr2665128ybp.164.1608251080932; Thu, 17 Dec 2020 16:24:40 -0800 (PST)
-Date:   Thu, 17 Dec 2020 16:24:32 -0800
-In-Reply-To: <CAKwvOd=LZHzR11kuhT2EjFnUdFwu5hQmxiwqeLB2sKC0hWFY=g@mail.gmail.com>
-Message-Id: <20201218002432.788499-1-ndesaulniers@google.com>
+        h=x-gm-message-state:sender:reply-to:date:message-id:mime-version
+         :subject:from:to:cc;
+        bh=2tzta+SNMsYxKKonR8VaQ9Msx9ezDvobAtQZxP1CmTo=;
+        b=sdzZwghkPmFcfP24VAgtihOJueWkyuTgIlOwj1QxuJyCD/tmWPCbQa8UFn/itZUp0p
+         eiQ1EdwHcCenRY13/DHBKmvlYQar/brGUZzxJuJeHM4n+7vAChv3iurviJmaHdXoyDAq
+         jQi6N1BBdmXtMGhk+WwvdJjv7+RN0BlxKOIO4qyAooQqxYphRv5R8mvg5DCc9sd+VHHC
+         Fw7ohzI71BxYk0F0hYTI0crY07Mji7PAJM2CoCwsMYt8T1df7Y64E5fhGxT/ayzm6iM0
+         cICzZ1YM2bFF9lfwdu+48dKkyfw3ljfvBcuaImpO3t3DaDcC3tWR8RfBvYLIi/gcHxTx
+         YEzA==
+X-Gm-Message-State: AOAM531FV5t4O7/Dx+07XL0wqhGPUVRxrWun2lJ+l6VuDAjfDyNsQymV
+        nUl123B6cKdHqEQ+2dDmmFviyDiP0/4=
+X-Google-Smtp-Source: ABdhPJyP8JnZK9FrE2u34potBYnzNLsxVsqEiU4W380aT+tsp9or0rO/5iX8TOjLzl9M1V6ApI50oqRNUWk=
+Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+ (user=seanjc job=sendgmr) by 2002:a05:6214:184a:: with SMTP id
+ d10mr1855912qvy.41.1608251511737; Thu, 17 Dec 2020 16:31:51 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Thu, 17 Dec 2020 16:31:35 -0800
+Message-Id: <20201218003139.2167891-1-seanjc@google.com>
 Mime-Version: 1.0
-References: <CAKwvOd=LZHzR11kuhT2EjFnUdFwu5hQmxiwqeLB2sKC0hWFY=g@mail.gmail.com>
 X-Mailer: git-send-email 2.29.2.684.gfbc64c5ab5-goog
-Subject: [PATCH v2] arm64: link with -z norelro for LLD or aarch64-elf
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     kernel-team <kernel-team@android.com>,
-        Peter Smith <Peter.Smith@arm.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        stable <stable@vger.kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "=?UTF-8?q?F=C4=81ng-ru=C3=AC=20S=C3=B2ng?=" <maskray@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Alan Modra <amodra@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "kernelci . org bot" <bot@kernelci.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] KVM: x86/mmu: Bug fixes and cleanups in get_mmio_spte()
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
+        Richard Herbert <rherbert@sympatico.ca>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With GNU binutils 2.35+, linking with BFD produces warnings for vmlinux:
-aarch64-linux-gnu-ld: warning: -z norelro ignored
+Two fixes for bugs that were introduced along with the TDP MMU (though I
+strongly suspect only the one reported by Richard, fixed in patch 2/4, is
+hittable in practice).  Two additional cleanup on top to try and make the
+code a bit more readable and shave a few cycles.
 
-BFD can produce this warning when the target emulation mode does not
-support RELRO program headers, and -z relro or -z norelro is passed.
+Sean Christopherson (4):
+  KVM: x86/mmu: Use -1 to flag an undefined spte in get_mmio_spte()
+  KVM: x86/mmu: Get root level from walkers when retrieving MMIO SPTE
+  KVM: x86/mmu: Use raw level to index into MMIO walks' sptes array
+  KVM: x86/mmu: Optimize not-present/MMIO SPTE check in get_mmio_spte()
 
-Alan Modra clarifies:
-  The default linker emulation for an aarch64-linux ld.bfd is
-  -maarch64linux, the default for an aarch64-elf linker is
-  -maarch64elf.  They are not equivalent.  If you choose -maarch64elf
-  you get an emulation that doesn't support -z relro.
+ arch/x86/kvm/mmu/mmu.c     | 53 +++++++++++++++++++++-----------------
+ arch/x86/kvm/mmu/tdp_mmu.c |  9 ++++---
+ arch/x86/kvm/mmu/tdp_mmu.h |  4 ++-
+ 3 files changed, 39 insertions(+), 27 deletions(-)
 
-The ARCH=3Darm64 kernel prefers -maarch64elf, but may fall back to
--maarch64linux based on the toolchain configuration.
-
-LLD will always create RELRO program header regardless of target
-emulation.
-
-To avoid the above warning when linking with BFD, pass -z norelro only
-when linking with LLD or with -maarch64linux.
-
-Cc: Alan Modra <amodra@gmail.com>
-Cc: F=C4=81ng-ru=C3=AC S=C3=B2ng <maskray@google.com>
-Fixes: 3b92fa7485eb ("arm64: link with -z norelro regardless of CONFIG_RELO=
-CATABLE")
-Reported-by: kernelci.org bot <bot@kernelci.org>
-Reported-by: Quentin Perret <qperret@google.com>
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
-Changes V1 -> V2:
-* s/relocation types/program headers/
-* s/newer GNU binutils/GNU binutils 2.35+/
-* Pick up Ard's Ack.
-
-Note: maintainers may want to pick up the following tag:
-
-Fixes: 3bbd3db86470 ("arm64: relocatable: fix inconsistencies in linker scr=
-ipt and options")
-
-or drop the existing fixes tag (this patch is more so in response to
-change to BFD to warn than fix a kernel regression, IMO, but I don't
-care). Either way, it would be good to fix this for the newly minted
-v5.10.y.
-
-I'll probably be offline for the next two weeks for the holidays, so no
-promises on quick replies. Happy holidays+new year!
-
-
- arch/arm64/Makefile | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-index 6be9b3750250..90309208bb28 100644
---- a/arch/arm64/Makefile
-+++ b/arch/arm64/Makefile
-@@ -10,7 +10,7 @@
- #
- # Copyright (C) 1995-2001 by Russell King
-=20
--LDFLAGS_vmlinux	:=3D--no-undefined -X -z norelro
-+LDFLAGS_vmlinux	:=3D--no-undefined -X
-=20
- ifeq ($(CONFIG_RELOCATABLE), y)
- # Pass --no-apply-dynamic-relocs to restore pre-binutils-2.27 behaviour
-@@ -115,16 +115,20 @@ KBUILD_CPPFLAGS	+=3D -mbig-endian
- CHECKFLAGS	+=3D -D__AARCH64EB__
- # Prefer the baremetal ELF build target, but not all toolchains include
- # it so fall back to the standard linux version if needed.
--KBUILD_LDFLAGS	+=3D -EB $(call ld-option, -maarch64elfb, -maarch64linuxb)
-+KBUILD_LDFLAGS	+=3D -EB $(call ld-option, -maarch64elfb, -maarch64linuxb -=
-z norelro)
- UTS_MACHINE	:=3D aarch64_be
- else
- KBUILD_CPPFLAGS	+=3D -mlittle-endian
- CHECKFLAGS	+=3D -D__AARCH64EL__
- # Same as above, prefer ELF but fall back to linux target if needed.
--KBUILD_LDFLAGS	+=3D -EL $(call ld-option, -maarch64elf, -maarch64linux)
-+KBUILD_LDFLAGS	+=3D -EL $(call ld-option, -maarch64elf, -maarch64linux -z =
-norelro)
- UTS_MACHINE	:=3D aarch64
- endif
-=20
-+ifeq ($(CONFIG_LD_IS_LLD), y)
-+KBUILD_LDFLAGS	+=3D -z norelro
-+endif
-+
- CHECKFLAGS	+=3D -D__aarch64__
-=20
- ifeq ($(CONFIG_DYNAMIC_FTRACE_WITH_REGS),y)
---=20
+-- 
 2.29.2.684.gfbc64c5ab5-goog
 
