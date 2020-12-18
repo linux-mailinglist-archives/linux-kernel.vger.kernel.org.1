@@ -2,177 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 444242DE0E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 11:24:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18F3F2DE0E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 11:22:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389057AbgLRKWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 05:22:35 -0500
-Received: from mout.gmx.net ([212.227.17.20]:47619 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732938AbgLRKWe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 05:22:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1608286851;
-        bh=fKWuu7R0/DAQXyYQ05r+vlyvSs4al0erSCJKH0onFIA=;
-        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
-        b=Ko0xDgohW9/Rbo3g1T4O8EVAPvERTh3lxVWu+0TWSp6jDrKBXn9aRGl2gz0FLUwef
-         RzzmqZEPiwLY6VmwK2LAEujR2WIg8796nJ7c+3ix7jAa4rNT3S104Ts2WW5OTlTK3K
-         nbgrhb6/WnilvDDT2PY4Xo840ZwVAUGm5R8Dd5Jw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.178.23] ([77.8.212.24]) by mail.gmx.com (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MbAgq-1kEgCh1oNs-00bary; Fri, 18
- Dec 2020 11:20:51 +0100
-To:     Randy Dunlap <rdunlap@infradead.org>, jgg@ziepe.ca
-Cc:     Linux Kernel <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-References: <c6e5eb81-680f-dd5c-8a81-62041a5ce50c@gmx.de>
- <5c172fad-a9cf-c29d-0a27-f2b0505dc33d@infradead.org>
-From:   =?UTF-8?Q?Toralf_F=c3=b6rster?= <toralf.foerster@gmx.de>
-Subject: Re: 5.10.1: UBSAN: shift-out-of-bounds in ./include/linux/log2.h:57:1
-Message-ID: <43d52285-a10e-692d-daa6-6f5eb07e3132@gmx.de>
-Date:   Fri, 18 Dec 2020 11:20:47 +0100
+        id S2389034AbgLRKVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 05:21:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732938AbgLRKVt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 05:21:49 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F72C0617A7;
+        Fri, 18 Dec 2020 02:21:08 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id c133so1808939wme.4;
+        Fri, 18 Dec 2020 02:21:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=t++cdbMmD+rlMQoSOM011lRfbvo658HBQtNF3MOsvfw=;
+        b=Fv+Vz9wt6lrMy8+uCq2aqmOrOlMNDdl/6sD3QH2UtBypu8LBZWFv5C/kJNsr2tbyEB
+         l4em2fi9NeNDXck09JLQmWHRtjm4JtT6dpLGQHRYsq9FjGBpRvmKvlzzMYgSMngqL0CD
+         y8NHd0ExNxri5cesSJSMwLCFEjrzNJkIwclyn133R2Wda78KiOBlCFsHbD+yYSA3Vjrh
+         uMsfRSvN3DAAcAhv52FAP6nn0YTcpxyIyYsA16xRlYtSwwRcBsYDwONfFOR4BGaMontx
+         5L8anOsi1ZKCxe7QPhe9ZYFvQXVBM7Ny3jq17u9cv2/icYNw1pwQM1wbHWcJw+o/uvpi
+         hg6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=t++cdbMmD+rlMQoSOM011lRfbvo658HBQtNF3MOsvfw=;
+        b=PK7MjjpZ7ZNKCLnJdiE50VrZ+zUmMhzmuYh/5X37eDsVH/GSznhZx8Ir+HQtqL1Crs
+         jBOgsPdwAl06wRhhkUU/Yb4uXHsdnsyjBpSKVPOT9rR6Vpuq8pXzeV4yWxDjQ/Lm2FyJ
+         wjysYXoQaOrSL0xJ0jlcewQioiVp2gEv1g43rGusPCZ2Eccspivgs3wskCs/XX7Co0wQ
+         MXKBH5GuuwTt3C/Xmebv/YGXd2BBUcH7oqS/0JQQ4KmP7i2Qye+m+vyxzH2F83xCdRSR
+         7OiUekYi5y3FiJKaTxNLUw3HK8wQr5MRhyeiIRGdmK3n5O+eO2FDr6pTFnzFYfZlFXSu
+         vTKA==
+X-Gm-Message-State: AOAM532nBgrFCyWSigyn562vIRPZW96eip0behJ4+SH+MTNjapo3ovBO
+        gRx5yoUlOW3gWHm7E0MAVwDYOx9SQfHNUg==
+X-Google-Smtp-Source: ABdhPJxij2LUPwGMyIHY5GB2IQfsCwQ6/XHJ81aWqtiS/E0vT9kB0CHB72WCzB3a8ptvq3xvLH9o5Q==
+X-Received: by 2002:a1c:9dd8:: with SMTP id g207mr3482486wme.15.1608286867533;
+        Fri, 18 Dec 2020 02:21:07 -0800 (PST)
+Received: from [192.168.1.143] ([170.253.51.130])
+        by smtp.gmail.com with ESMTPSA id z8sm11259259wmg.17.2020.12.18.02.21.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Dec 2020 02:21:06 -0800 (PST)
+Subject: Re: [PATCH -V6 RESEND 2/3] NOT kernel/man-pages:
+ man2/set_mempolicy.2: Add mode flag MPOL_F_NUMA_BALANCING
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Rafael Aquini <aquini@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Rik van Riel <riel@surriel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>, linux-api@vger.kernel.org
+References: <20201202084234.15797-1-ying.huang@intel.com>
+ <20201202084234.15797-3-ying.huang@intel.com>
+ <48e758d7-9961-e28e-26f5-3bb381d36309@gmail.com>
+ <87pn3klnq6.fsf@yhuang-dev.intel.com>
+From:   "Alejandro Colomar (mailing lists; readonly)" 
+        <alx.mailinglists@gmail.com>
+Message-ID: <60283b9f-7616-15f6-b521-c15995907fb6@gmail.com>
+Date:   Fri, 18 Dec 2020 11:21:05 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-In-Reply-To: <5c172fad-a9cf-c29d-0a27-f2b0505dc33d@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <87pn3klnq6.fsf@yhuang-dev.intel.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:TPNQN46B5WgEoZp9vG+bj0t4o69maBowzdifN1O0gn3i4VyTg26
- r+vT8yHRC6BroBkV0go2XwZRf5FVncAq3fsX15FbMkR9CaMvky9u97nc4xrmEOvrh/DRG5D
- sWWenK7UjXll5bwDgvnjrC924ZwgNcvZwhDxmH/MYmkChO+M9JdPbGnLUuIcpQNjbfrTUlv
- L0d3OdZm2WoovATI9EaYQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:saCbT7iKshk=:HXabUr0uFjAbfO8XeuSUTe
- qBpKyW8qmFbMAbZmuJa7iW44OOFzaT14Mvvb3ImkjR3KpVBQT4MWQ8UDDGOCyIknwzMl+AOZi
- A2EaF/JZq4TBTLCm/XFovQmViFui9qgfNVYJzJAn5TVCLW0VLGUYcdxrPRlk7+rEgx457Ekgj
- wRmMrrg+Eti7GVjxvGha++pPZJ4yEck4pPxiFnTgxMz40yLk4ehXxZ/joJcX3JKkz+WBh5pyw
- S/4n3MYcG9sVRNc6xccDGPV7QiNspoKrKprAzAIrbk31MA5M3x97VMyeh2PQfvKIl9bKMqDHU
- TuBnWoalXmLOlWfQR6CCKUHjsN/l/etHdA7RepILLhsrC6GMSZRMz9AVieDUsj5igaqnAyVeQ
- jMu+2dB4XGcxGAQ4DKLA5/mSGQcrk18/y5zdRp3JNs8sWH7JAvNbt0livRhwnVAZ7lHmvlHrT
- 4ts4R88ud0L36ng6MDzmz+dLrQYEXgl3CNXQzwuVqbl3PclOexxlvvNXfzMZw/A+MlhWpUEQF
- TbwdR1sIKOUyMbl1mMuMdT/UXXberx0jMbgNUtILNOX2kYC7a8BwkkatpFzfG/Motbg+G+PTg
- ofTcKY7T5EkNgDkea3LzgeTHV5tTU5Rmp+C0Zx828bquH4SZ4uxgqg5YtdYDSce/InfW47OGA
- Qp6NAVwtZckAXxlTZLBKEJv3ugLO03K1FbbrqfVAl0EW/FxrTn45Wzjx9wEfWOnSWqD1WgemL
- WgPVT9dmfXYrSSGsu3UEg0EdULpEGfX5X91YJ8m4FxEwK8tvvNRcR/Jwwc/HS5Ww7JBfb4gIj
- pU60mnr7nTlh6zF+07k+Qar9iLW5W0HuTxTBszxReHmZ1/W/EJhjbHsEESHc6Orhpb26t//x8
- 5I7ekHXSbKCu2hps6R1g==
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/18/20 7:54 AM, Randy Dunlap wrote:
-> Hi,
->
-> [adding linux-mm]
->
-> On 12/16/20 1:54 AM, Toralf F=C3=B6rster wrote:
->> Hi,
+Hi Huang, Ying,
+
+Sorry I forgot to answer.
+See below.
+
+BTW, Linux 5.10 has been released recently;
+is this series already merged for 5.11?
+If not yet, could you just write '5.??' and we'll fix it (and add a
+commit number in a comment) when we know the definitive version?
+
+Thanks,
+
+Alex
+
+On 12/8/20 9:13 AM, Huang, Ying wrote:
+> Hi, Alex,
+> 
+> Sorry for late, I just notice this email today.
+> 
+> "Alejandro Colomar (mailing lists; readonly)"
+> <alx.mailinglists@gmail.com> writes:
+> 
+>> Hi Huang Ying,
 >>
->> I got this recently at this hardened Gentoo Linux server:
+>> Please see a few fixes below.
 >>
->> Linux mr-fox 5.10.1 #1 SMP Tue Dec 15 22:09:42 CET 2020 x86_64 Intel(R)
->> Xeon(R) CPU E5-1650 v3 @ 3.50GHz GenuineIntel GNU/Linux
+>> Michael, as always, some question for you too ;)
 >>
+>> Thanks,
 >>
->> Dec 15 23:31:51 mr-fox kernel: [ 1974.206972]
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> Dec 15 23:31:51 mr-fox kernel: [ 1974.206977] UBSAN: shift-out-of-bound=
-s
->> in ./include/linux/log2.h:57:13
->> Dec 15 23:31:51 mr-fox kernel: [ 1974.206980] shift exponent 64 is too
->> large for 64-bit type 'long unsigned int'
->> Dec 15 23:31:51 mr-fox kernel: [ 1974.206982] CPU: 11 PID: 21051 Comm:
->> cc1 Tainted: G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 T 5.10.1 #1
->> Dec 15 23:31:51 mr-fox kernel: [ 1974.206984] Hardware name: ASUSTeK
->> COMPUTER INC. Z10PA-U8 Series/Z10PA-U8 Series, BIOS 3703 08/02/2018
->> Dec 15 23:31:51 mr-fox kernel: [ 1974.206985] Call Trace:
->> Dec 15 23:31:51 mr-fox kernel: [ 1974.206993]=C2=A0 dump_stack+0x57/0x6=
-a
->> Dec 15 23:31:51 mr-fox kernel: [ 1974.206996]=C2=A0 ubsan_epilogue+0x5/=
-0x40
->> Dec 15 23:31:51 mr-fox kernel: [ 1974.206999]
->> __ubsan_handle_shift_out_of_bounds.cold+0x61/0x10e
->> Dec 15 23:31:51 mr-fox kernel: [ 1974.207002]
->> ondemand_readahead.cold+0x16/0x21
->> Dec 15 23:31:51 mr-fox kernel: [ 1974.207007]
->> generic_file_buffered_read+0x452/0x890
->> Dec 15 23:31:51 mr-fox kernel: [ 1974.207011]=C2=A0 new_sync_read+0x156=
-/0x200
->> Dec 15 23:31:51 mr-fox kernel: [ 1974.207014]=C2=A0 vfs_read+0xf8/0x190
->> Dec 15 23:31:51 mr-fox kernel: [ 1974.207016]=C2=A0 ksys_read+0x65/0xe0
->> Dec 15 23:31:51 mr-fox kernel: [ 1974.207018]=C2=A0 do_syscall_64+0x33/=
-0x40
->> Dec 15 23:31:51 mr-fox kernel: [ 1974.207021]
->> entry_SYSCALL_64_after_hwframe+0x44/0xa9
->> Dec 15 23:31:51 mr-fox kernel: [ 1974.207024] RIP: 0033:0x7f01b2df198e
->> Dec 15 23:31:51 mr-fox kernel: [ 1974.207026] Code: c0 e9 b6 fe ff ff 5=
-0
->> 48 8d 3d 66 c3 09 00 e8 59 e2 01 00 66 0f 1f 84 00 00 00 00 00 64 8b 04
->> 25 18 00 00 00 85 c0 75 14 0f 05 <48> 3d 00 f0 ff ff 77 5a c3 66 0f 1f
->> 84 00 00 00 00 00 48 83 ec 28
->> Dec 15 23:31:51 mr-fox kernel: [ 1974.207028] RSP: 002b:00007fff2167e99=
-8
->> EFLAGS: 00000246 ORIG_RAX: 0000000000000000
->> Dec 15 23:31:51 mr-fox kernel: [ 1974.207030] RAX: ffffffffffffffda RBX=
-:
->> 0000000000000000 RCX: 00007f01b2df198e
->> Dec 15 23:31:51 mr-fox kernel: [ 1974.207032] RDX: 0000000000000000 RSI=
-:
->> 00000000054dcc50 RDI: 0000000000000004
->> Dec 15 23:31:51 mr-fox kernel: [ 1974.207033] RBP: 00000000054dcc50 R08=
-:
->> 00000000054dcc50 R09: 0000000000000000
->> Dec 15 23:31:51 mr-fox kernel: [ 1974.207034] R10: 0000000000000000 R11=
-:
->> 0000000000000246 R12: 00000000054dc3b0
->> Dec 15 23:31:51 mr-fox kernel: [ 1974.207035] R13: 0000000000008000 R14=
-:
->> 00000000054c9800 R15: 0000000000000000
->> Dec 15 23:31:51 mr-fox kernel: [ 1974.207037]
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> Alex
 >>
+>> On 12/2/20 9:42 AM, Huang Ying wrote:
+>>> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+>>> ---
+>>>  man2/set_mempolicy.2 | 9 +++++++++
+>>>  1 file changed, 9 insertions(+)
+>>>
+>>> diff --git a/man2/set_mempolicy.2 b/man2/set_mempolicy.2
+>>> index 68011eecb..3754b3e12 100644
+>>> --- a/man2/set_mempolicy.2
+>>> +++ b/man2/set_mempolicy.2
+>>> @@ -113,6 +113,12 @@ A nonempty
+>>>  .I nodemask
+>>>  specifies node IDs that are relative to the set of
+>>>  node IDs allowed by the process's current cpuset.
+>>> +.TP
+>>> +.BR MPOL_F_NUMA_BALANCING " (since Linux 5.11)"
 >>
->> Known issue ?
->
-> Not that I have heard about, but that's not conclusive.
->
-> Looks to me like this is in mm/readahead.c:
->
-> static unsigned long get_init_ra_size(unsigned long size, unsigned long =
-max)
-> {
-> 	unsigned long newsize =3D roundup_pow_of_two(size);
->
->
-> What filesystem?  What workload?
+>> I'd prefer it to be in alphabetical order (rather than just adding at
+>> the bottom).
+> 
+> That's OK for me.  But it's better to be done in another patch to
+> distinguish contents from pure order change?
 
-/ is a 32 GB ext4 filesystem.
-Data are at 3 BTRFS filesystems, 1x 500 GB and 2x 1.6TB.
+Yes, if you could do a series of 2 patches with a reordering first, it
+would be great.
 
-2 Tor relays run at 100% each and utilizes the 1 GBit/s by 50%-60% [1]
+> 
+>> That way, when lists grow, it's easier to find things.
+>>
+>>> +Enable the Linux kernel NUMA balancing for the task if it is supported
+>>> +by kernel.
+>>
+>> I'd s/Linux kernel/kernel/ when it doesn't specifically refer to the
+>> Linux kernel to differentiate it from other kernels.  It only adds noise
+>> (IMHO).  mtk?
+> 
+> Sure.  Will fix this and all following comments below.  Thanks a lot for
+> your help!  I am new to man pages.
 
-7 build bots are running over the Gentoo software repostory [2]
-1 AFL bot fuzzies the Tor sources.
-Those 8 jobs are contained by a cgroup of 9 CPUs and 120 GB RAM [3],
-each job is contained further by an own sub cgroup of 1.5 CPU and 20 GB
-RAM [4]
+Thank you!
 
-The host is monitored using sysstat, the load is about 11.8, CPU[all] at
-80%, proc/s at 1800, cswchs/s at 20000 and so on.
-
-
-[1] https://metrics.torproject.org/rs.html#search/zwiebeltoralf
-[2] https://zwiebeltoralf.de/tinderbox.html
-[3] https://github.com/toralf/tinderbox/blob/master/bin/cgroup.sh
-[4] https://github.com/toralf/tinderbox/blob/master/bin/bwrap.sh#L15
-
-=2D-
-Toralf
+> 
+> Best Regards,
+> Huang, Ying
+> 
