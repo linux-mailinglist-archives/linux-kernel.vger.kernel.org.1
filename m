@@ -2,183 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3386A2DE298
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 13:13:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 614E52DE2A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 13:18:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726133AbgLRMM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 07:12:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727416AbgLRMMx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 07:12:53 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFA6BC0611CE;
-        Fri, 18 Dec 2020 04:11:53 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id y24so1435658edt.10;
-        Fri, 18 Dec 2020 04:11:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fpfHgLjNqUef0wN0lc7+nNzCiw4Mf77uS73mqGKZnIM=;
-        b=mCkVQjDpB6nuKIaWx8YJljXcOY94LkJ5nKGV8N08bV1bxTNGuPBSeyEA7vA83YccO5
-         8SHhceT0oQJtyM4+hihCu6p3LQabHOp05TLVcAjJvxFU5XGY7cWaXEgkDmAksyy2I0+g
-         GQXz2py0/u5nox0lGpJiIPgfXnZNrOHaaFMIu+Fb18rcfUbMCFCYs8sIxgvEnRmLL5tZ
-         /50BZ79EQpqx+fpGZoWK7mxElPkr6BA3JPXIhjAFvx9USGSVqIWmJGe1pWcvoLugr6qe
-         9dcUQ1QlESgvPSqMg4H3BkdqE0G8lsuKMYBV+ZH6ljEQjdTq9JqSj+kiFq84xv6DrS91
-         e0sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fpfHgLjNqUef0wN0lc7+nNzCiw4Mf77uS73mqGKZnIM=;
-        b=BhjkzMydxt6vMnpRp51S0KLDw3so1MqdEMVkt65ufS7mi1Ftt6AELy56BlUfrp0eIx
-         otd+sjMf3fxB/eFB6//h2MI8Ynk8lgjxDPUiUGrMoh6YOIMrNL0IwAb8GClbjAesLUYT
-         CE/SUftwQwEPxH6iL0lhBIQs7blSQYoZfJHWD6/bRVFgLAlnWwLfQAUq+8sISFJ3VGjx
-         eS0d8Q53PV3LZoN/SQNa7JtQakL2N/cCzJCcYHGJoOvzavZpub7ZntWas63kLu15nySe
-         0Ktlp8FSXXvcx1vVjNs3G79Mo2knGRF6m5BbL2rUQ+Exfp392u0RmxZEl/hX8JtLTuz+
-         VsWA==
-X-Gm-Message-State: AOAM531vm/luIYPS9r1cc61dgIFur75Slz0Itn+Ll2/iQrkpcxC7CNLn
-        UVQKA2zNDDhWTruwqMRPj7FwOZiC6PFntw==
-X-Google-Smtp-Source: ABdhPJzfkGsxDIrFIIAEvsjC2QCxFCNKemW4SsggW8Fc3JEQLPdbEflH3gID8c3dDMLijzQHBOqdjw==
-X-Received: by 2002:aa7:ca03:: with SMTP id y3mr4106732eds.87.1608293512052;
-        Fri, 18 Dec 2020 04:11:52 -0800 (PST)
-Received: from localhost.localdomain (93-103-18-160.static.t-2.net. [93.103.18.160])
-        by smtp.gmail.com with ESMTPSA id i13sm15852716edu.22.2020.12.18.04.11.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Dec 2020 04:11:51 -0800 (PST)
-From:   Uros Bizjak <ubizjak@gmail.com>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Uros Bizjak <ubizjak@gmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Subject: [PATCH] KVM/x86: Move definition of __ex to x86.h
-Date:   Fri, 18 Dec 2020 13:11:46 +0100
-Message-Id: <20201218121146.432286-1-ubizjak@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S1726297AbgLRMRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 07:17:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57630 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725894AbgLRMRZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 07:17:25 -0500
+From:   Mark Brown <broonie@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     alsa-devel@alsa-project.org, tiwai@suse.com,
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        plai@codeaurora.org, devicetree@vger.kernel.org,
+        rohitkr@codeaurora.org, lgirdwood@gmail.com,
+        linux-kernel@vger.kernel.org, bjorn.andersson@linaro.org,
+        srinivas.kandagatla@linaro.org, agross@kernel.org,
+        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        bgoswami@codeaurora.org, perex@perex.cz
+In-Reply-To: <1606929748-16828-1-git-send-email-srivasam@codeaurora.org>
+References: <1606929748-16828-1-git-send-email-srivasam@codeaurora.org>
+Subject: Re: [PATCH v5 0/2] Platform driver update to support playback recover after resume
+Message-Id: <160829377016.10885.14131365889928811294.b4-ty@kernel.org>
+Date:   Fri, 18 Dec 2020 12:16:10 +0000
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Merge __kvm_handle_fault_on_reboot with its sole user
-and move the definition of __ex to a common include to be
-shared between VMX and SVM.
+On Wed, 2 Dec 2020 22:52:26 +0530, Srinivasa Rao Mandadapu wrote:
+> This patch set is to add support for playback recover after hard suspend and resume.
+> It includes:
+> 1. Reverting part of previous commit, which is for handling registers invalid state
+> after hard suspend.
+> 2. Adding pm ops in component driver and do regcache sync.
+> Changes Since v1 and v2:
+>   -- Subject lines changed
+> Changes Since v3:
+>   -- Patch is splitted into 2 patches
+> Changes Since v4:
+>   -- Subject lines changed
+> 
+> [...]
 
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
----
- arch/x86/include/asm/kvm_host.h | 25 -------------------------
- arch/x86/kvm/svm/svm.c          |  2 --
- arch/x86/kvm/vmx/vmx_ops.h      |  4 +---
- arch/x86/kvm/x86.h              | 23 +++++++++++++++++++++++
- 4 files changed, 24 insertions(+), 30 deletions(-)
+Applied to
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 7e5f33a0d0e2..ff152ee1d63f 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1623,31 +1623,6 @@ enum {
- #define kvm_arch_vcpu_memslots_id(vcpu) ((vcpu)->arch.hflags & HF_SMM_MASK ? 1 : 0)
- #define kvm_memslots_for_spte_role(kvm, role) __kvm_memslots(kvm, (role).smm)
- 
--asmlinkage void kvm_spurious_fault(void);
--
--/*
-- * Hardware virtualization extension instructions may fault if a
-- * reboot turns off virtualization while processes are running.
-- * Usually after catching the fault we just panic; during reboot
-- * instead the instruction is ignored.
-- */
--#define __kvm_handle_fault_on_reboot(insn)				\
--	"666: \n\t"							\
--	insn "\n\t"							\
--	"jmp	668f \n\t"						\
--	"667: \n\t"							\
--	"1: \n\t"							\
--	".pushsection .discard.instr_begin \n\t"			\
--	".long 1b - . \n\t"						\
--	".popsection \n\t"						\
--	"call	kvm_spurious_fault \n\t"				\
--	"1: \n\t"							\
--	".pushsection .discard.instr_end \n\t"				\
--	".long 1b - . \n\t"						\
--	".popsection \n\t"						\
--	"668: \n\t"							\
--	_ASM_EXTABLE(666b, 667b)
--
- #define KVM_ARCH_WANT_MMU_NOTIFIER
- int kvm_unmap_hva_range(struct kvm *kvm, unsigned long start, unsigned long end,
- 			unsigned flags);
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index da7eb4aaf44f..0a72ab9fd568 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -42,8 +42,6 @@
- 
- #include "svm.h"
- 
--#define __ex(x) __kvm_handle_fault_on_reboot(x)
--
- MODULE_AUTHOR("Qumranet");
- MODULE_LICENSE("GPL");
- 
-diff --git a/arch/x86/kvm/vmx/vmx_ops.h b/arch/x86/kvm/vmx/vmx_ops.h
-index 692b0c31c9c8..7e3cb53c413f 100644
---- a/arch/x86/kvm/vmx/vmx_ops.h
-+++ b/arch/x86/kvm/vmx/vmx_ops.h
-@@ -4,13 +4,11 @@
- 
- #include <linux/nospec.h>
- 
--#include <asm/kvm_host.h>
- #include <asm/vmx.h>
- 
- #include "evmcs.h"
- #include "vmcs.h"
--
--#define __ex(x) __kvm_handle_fault_on_reboot(x)
-+#include "x86.h"
- 
- asmlinkage void vmread_error(unsigned long field, bool fault);
- __attribute__((regparm(0))) void vmread_error_trampoline(unsigned long field,
-diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-index e7ca622a468f..608548d05e84 100644
---- a/arch/x86/kvm/x86.h
-+++ b/arch/x86/kvm/x86.h
-@@ -7,6 +7,29 @@
- #include "kvm_cache_regs.h"
- #include "kvm_emulate.h"
- 
-+asmlinkage void kvm_spurious_fault(void);
-+
-+/*
-+ * Hardware virtualization extension instructions may fault if a
-+ * reboot turns off virtualization while processes are running.
-+ * Usually after catching the fault we just panic; during reboot
-+ * instead the instruction is ignored.
-+ */
-+#define __ex(insn)							\
-+	"666:	" insn "\n"						\
-+	"	jmp 669f\n"						\
-+	"667:\n"							\
-+	".pushsection .discard.instr_begin\n"				\
-+	".long 667b - .\n"						\
-+	".popsection\n"							\
-+	"	call kvm_spurious_fault\n"				\
-+	"668:\n"							\
-+	".pushsection .discard.instr_end\n"				\
-+	".long 668b - .\n"						\
-+	".popsection\n"							\
-+	"669:\n"							\
-+	_ASM_EXTABLE(666b, 667b)
-+
- #define KVM_DEFAULT_PLE_GAP		128
- #define KVM_VMX_DEFAULT_PLE_WINDOW	4096
- #define KVM_DEFAULT_PLE_WINDOW_GROW	2
--- 
-2.26.2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
+Thanks!
+
+[1/2] ASoC: qcom: Fix incorrect volatile registers
+      commit: 315fbe4cef98ee5fb6085bc54c7f25eb06466c70
+[2/2] ASoC: qcom: Add support for playback recover after resume
+      commit: 8d1bfc04c97407767559f6389a0f0fb060cbe25e
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
