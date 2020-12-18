@@ -2,237 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2629B2DE9DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 20:42:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C7B92DE9E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 20:43:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733261AbgLRTln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 14:41:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59764 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1733244AbgLRTlm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 14:41:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608320415;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qTqL06D7b4fb7cUvZJDJjp0eb7f5gIGXVqXJeXuddJU=;
-        b=ScUXSgQJ2d2eX22j0oGcmv3K9GcM232GdvvZtruYadUN0W6q1pNrAUVfYRAPem1rmXXuBO
-        5YtjAz3a6SUUOnI6qrOaK9PvTPHDiB1xztP6SC5qeAuKOE1Lz6AV9oHOlv52kozzjQrXmd
-        jSVpXb7Nf+RtiHyxUNunJSB44W4Bw3k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-340-yIelHva4MIC_T5AEBbVHEQ-1; Fri, 18 Dec 2020 14:40:06 -0500
-X-MC-Unique: yIelHva4MIC_T5AEBbVHEQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 965086D522;
-        Fri, 18 Dec 2020 19:40:03 +0000 (UTC)
-Received: from work-vm (ovpn-114-200.ams2.redhat.com [10.36.114.200])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BD4172CE56;
-        Fri, 18 Dec 2020 19:39:58 +0000 (UTC)
-Date:   Fri, 18 Dec 2020 19:39:56 +0000
-From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
-To:     Ashish Kalra <ashish.kalra@amd.com>
-Cc:     Brijesh Singh <brijesh.singh@amd.com>,
-        Steve Rutherford <srutherford@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        Borislav Petkov <bp@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, dovmurik@linux.vnet.ibm.com,
-        tobin@ibm.com, jejb@linux.ibm.com, frankeh@us.ibm.com
-Subject: Re: [PATCH v2 1/9] KVM: x86: Add AMD SEV specific Hypercall3
-Message-ID: <20201218193956.GJ2956@work-vm>
-References: <cover.1606782580.git.ashish.kalra@amd.com>
- <b6bc54ed6c8ae4444f3acf1ed4386010783ad386.1606782580.git.ashish.kalra@amd.com>
- <X8gyhCsEMf8QU9H/@google.com>
- <d63529ce-d613-9f83-6cfc-012a8b333e38@redhat.com>
- <X86Tlin14Ct38zDt@google.com>
- <CABayD+esy0yeKi9W3wQw+ou4y4840LPCwd-PHhN1J6Uh_fvSjA@mail.gmail.com>
- <765f86ae-7c68-6722-c6e0-c6150ce69e59@amd.com>
- <20201211225542.GA30409@ashkalra_ubuntu_server>
- <20201212045603.GA27415@ashkalra_ubuntu_server>
+        id S1733268AbgLRTnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 14:43:32 -0500
+Received: from mga12.intel.com ([192.55.52.136]:5745 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726177AbgLRTnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 14:43:31 -0500
+IronPort-SDR: 4KIKiRYW+R+ZZxxwtKF69Aq7fHMf4kxpqF1SZJt4SgyQ+rUsNbx3lZBZ7N7b5tGaq8ZOHZRpJi
+ PlJw8fnBqklQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9839"; a="154714911"
+X-IronPort-AV: E=Sophos;i="5.78,431,1599548400"; 
+   d="scan'208";a="154714911"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2020 11:42:50 -0800
+IronPort-SDR: BBwwrrlwukxd37QDB3Ll9Qrz++BOPT06uR+6+LPcKkVSGjfrA/RdeiXdJcZzBCYtIrqt3eNP4Y
+ 9u53adH5mp9w==
+X-IronPort-AV: E=Sophos;i="5.78,431,1599548400"; 
+   d="scan'208";a="370762824"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2020 11:42:49 -0800
+Date:   Fri, 18 Dec 2020 11:42:49 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-doc@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH V3 04/10] x86/pks: Preserve the PKRS MSR on context switch
+Message-ID: <20201218194249.GE1563847@iweiny-DESK2.sc.intel.com>
+References: <20201106232908.364581-1-ira.weiny@intel.com>
+ <20201106232908.364581-5-ira.weiny@intel.com>
+ <871rfoscz4.fsf@nanos.tec.linutronix.de>
+ <87mtycqcjf.fsf@nanos.tec.linutronix.de>
+ <878s9vqkrk.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201212045603.GA27415@ashkalra_ubuntu_server>
-User-Agent: Mutt/1.14.6 (2020-07-11)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <878s9vqkrk.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Ashish Kalra (ashish.kalra@amd.com) wrote:
-> On Fri, Dec 11, 2020 at 10:55:42PM +0000, Ashish Kalra wrote:
-> > Hello All,
-> > 
-> > On Tue, Dec 08, 2020 at 10:29:05AM -0600, Brijesh Singh wrote:
-> > > 
-> > > On 12/7/20 9:09 PM, Steve Rutherford wrote:
-> > > > On Mon, Dec 7, 2020 at 12:42 PM Sean Christopherson <seanjc@google.com> wrote:
-> > > >> On Sun, Dec 06, 2020, Paolo Bonzini wrote:
-> > > >>> On 03/12/20 01:34, Sean Christopherson wrote:
-> > > >>>> On Tue, Dec 01, 2020, Ashish Kalra wrote:
-> > > >>>>> From: Brijesh Singh <brijesh.singh@amd.com>
-> > > >>>>>
-> > > >>>>> KVM hypercall framework relies on alternative framework to patch the
-> > > >>>>> VMCALL -> VMMCALL on AMD platform. If a hypercall is made before
-> > > >>>>> apply_alternative() is called then it defaults to VMCALL. The approach
-> > > >>>>> works fine on non SEV guest. A VMCALL would causes #UD, and hypervisor
-> > > >>>>> will be able to decode the instruction and do the right things. But
-> > > >>>>> when SEV is active, guest memory is encrypted with guest key and
-> > > >>>>> hypervisor will not be able to decode the instruction bytes.
-> > > >>>>>
-> > > >>>>> Add SEV specific hypercall3, it unconditionally uses VMMCALL. The hypercall
-> > > >>>>> will be used by the SEV guest to notify encrypted pages to the hypervisor.
-> > > >>>> What if we invert KVM_HYPERCALL and X86_FEATURE_VMMCALL to default to VMMCALL
-> > > >>>> and opt into VMCALL?  It's a synthetic feature flag either way, and I don't
-> > > >>>> think there are any existing KVM hypercalls that happen before alternatives are
-> > > >>>> patched, i.e. it'll be a nop for sane kernel builds.
-> > > >>>>
-> > > >>>> I'm also skeptical that a KVM specific hypercall is the right approach for the
-> > > >>>> encryption behavior, but I'll take that up in the patches later in the series.
-> > > >>> Do you think that it's the guest that should "donate" memory for the bitmap
-> > > >>> instead?
-> > > >> No.  Two things I'd like to explore:
-> > > >>
-> > > >>   1. Making the hypercall to announce/request private vs. shared common across
-> > > >>      hypervisors (KVM, Hyper-V, VMware, etc...) and technologies (SEV-* and TDX).
-> > > >>      I'm concerned that we'll end up with multiple hypercalls that do more or
-> > > >>      less the same thing, e.g. KVM+SEV, Hyper-V+SEV, TDX, etc...  Maybe it's a
-> > > >>      pipe dream, but I'd like to at least explore options before shoving in KVM-
-> > > >>      only hypercalls.
-> > > >>
-> > > >>
-> > > >>   2. Tracking shared memory via a list of ranges instead of a using bitmap to
-> > > >>      track all of guest memory.  For most use cases, the vast majority of guest
-> > > >>      memory will be private, most ranges will be 2mb+, and conversions between
-> > > >>      private and shared will be uncommon events, i.e. the overhead to walk and
-> > > >>      split/merge list entries is hopefully not a big concern.  I suspect a list
-> > > >>      would consume far less memory, hopefully without impacting performance.
-> > > > For a fancier data structure, I'd suggest an interval tree. Linux
-> > > > already has an rbtree-based interval tree implementation, which would
-> > > > likely work, and would probably assuage any performance concerns.
-> > > >
-> > > > Something like this would not be worth doing unless most of the shared
-> > > > pages were physically contiguous. A sample Ubuntu 20.04 VM on GCP had
-> > > > 60ish discontiguous shared regions. This is by no means a thorough
-> > > > search, but it's suggestive. If this is typical, then the bitmap would
-> > > > be far less efficient than most any interval-based data structure.
-> > > >
-> > > > You'd have to allow userspace to upper bound the number of intervals
-> > > > (similar to the maximum bitmap size), to prevent host OOMs due to
-> > > > malicious guests. There's something nice about the guest donating
-> > > > memory for this, since that would eliminate the OOM risk.
-> > > 
-> > > 
-> > > Tracking the list of ranges may not be bad idea, especially if we use
-> > > the some kind of rbtree-based data structure to update the ranges. It
-> > > will certainly be better than bitmap which grows based on the guest
-> > > memory size and as you guys see in the practice most of the pages will
-> > > be guest private. I am not sure if guest donating a memory will cover
-> > > all the cases, e.g what if we do a memory hotplug (increase the guest
-> > > ram from 2GB to 64GB), will donated memory range will be enough to store
-> > > the metadata.
-> > > 
-> > >. 
-> > 
-> > With reference to internal discussions regarding the above, i am going
-> > to look into specific items as listed below :
-> > 
-> > 1). "hypercall" related :
-> > a). Explore the SEV-SNP page change request structure (included in GHCB),
-> > see if there is something common there than can be re-used for SEV/SEV-ES
-> > page encryption status hypercalls.
-> > b). Explore if there is any common hypercall framework i can use in 
-> > Linux/KVM.
-> > 
-> > 2). related to the "backing" data structure - explore using a range-based
-> > list or something like rbtree-based interval tree data structure
-> > (as mentioned by Steve above) to replace the current bitmap based
-> > implementation.
-> > 
-> > 
+On Fri, Dec 18, 2020 at 02:57:51PM +0100, Thomas Gleixner wrote:
+> On Thu, Dec 17 2020 at 23:43, Thomas Gleixner wrote:
+> > The only use case for this in your tree is: kmap() and the possible
+> > usage of that mapping outside of the thread context which sets it up.
+> >
+> > The only hint for doing this at all is:
+> >
+> >     Some users, such as kmap(), sometimes requires PKS to be global.
+> >
+> > 'sometime requires' is really _not_ a technical explanation.
+> >
+> > Where is the explanation why kmap() usage 'sometimes' requires this
+> > global trainwreck in the first place and where is the analysis why this
+> > can't be solved differently?
+> >
+> > Detailed use case analysis please.
 > 
-> I do agree that a range-based list or an interval tree data structure is a
-> really good "logical" fit for the guest page encryption status tracking.
+> A lengthy conversation with Dan and Dave over IRC confirmed what I was
+> suspecting.
 > 
-> We can only keep track of the guest unencrypted shared pages in the
-> range(s) list (which will keep the data structure quite compact) and all
-> the guest private/encrypted memory does not really need any tracking in
-> the list, anything not in the list will be encrypted/private.
+> The approach of this whole PKS thing is to make _all_ existing code
+> magically "work". That means aside of the obvious thread local mappings,
+> the kmap() part is needed to solve the problem of async handling where
+> the mapping is handed to some other context which then uses it and
+> notifies the context which created the mapping when done. That's the
+> principle which was used to make highmem work long time ago.
 > 
-> Also looking at a more "practical" use case, here is the current log of
-> page encryption status hypercalls when booting a linux guest :
+> IMO that was a mistake back then. The right thing would have been to
+> change the code so that it does not rely on a temporary mapping created
+> by the initiator. Instead let the initiator hand the page over to the
+> other context which then creates a temporary mapping for fiddling with
+> it. Water under the bridge...
+
+But maybe not.  We are getting rid of a lot of the kmaps and once the bulk are
+gone perhaps we can change this and remove kmap completely?
+
 > 
-> ...
+> Glueing PKS on to that kmap() thing is horrible and global PKS is pretty
+> much the opposite of what PKS wants to achieve. It's disabling
+> protection systemwide for an unspecified amount of time and for all
+> contexts.
 
-<snip>
+I agree.  This is why I have been working on converting kmap() call sites to
+kmap_local_page().[1]
 
-> [   56.146336] page_enc_status_hc invoked, gpa = 1f018000, npages  = 1, enc = 1
-> [   56.146351] page_enc_status_hc invoked, gpa = 1f00e000, npages  = 1, enc = 0
-> [   56.147261] page_enc_status_hc invoked, gpa = 1f00e000, npages  = 1, enc = 0
-> [   56.147271] page_enc_status_hc invoked, gpa = 1f018000, npages  = 1, enc = 0
-....
-
-> [   56.180730] page_enc_status_hc invoked, gpa = 1f008000, npages  = 1, enc = 0
-> [   56.180741] page_enc_status_hc invoked, gpa = 1f006000, npages  = 1, enc = 0
-> [   56.180768] page_enc_status_hc invoked, gpa = 1f008000, npages  = 1, enc = 1
-> [   56.180782] page_enc_status_hc invoked, gpa = 1f006000, npages  = 1, enc = 1
-
-....
-> [   56.197110] page_enc_status_hc invoked, gpa = 1f007000, npages  = 1, enc = 0
-> [   56.197120] page_enc_status_hc invoked, gpa = 1f005000, npages  = 1, enc = 0
-> [   56.197136] page_enc_status_hc invoked, gpa = 1f007000, npages  = 1, enc = 1
-> [   56.197148] page_enc_status_hc invoked, gpa = 1f005000, npages  = 1, enc = 1
-....
-
-> [   56.222679] page_enc_status_hc invoked, gpa = 1e83b000, npages  = 1, enc = 0
-> [   56.222691] page_enc_status_hc invoked, gpa = 1e839000, npages  = 1, enc = 0
-> [   56.222707] page_enc_status_hc invoked, gpa = 1e83b000, npages  = 1, enc = 1
-> [   56.222720] page_enc_status_hc invoked, gpa = 1e839000, npages  = 1, enc = 1
-....
-
-> [   56.313747] page_enc_status_hc invoked, gpa = 1e5eb000, npages  = 1, enc = 0
-> [   56.313771] page_enc_status_hc invoked, gpa = 1e5e9000, npages  = 1, enc = 0
-> [   56.313789] page_enc_status_hc invoked, gpa = 1e5eb000, npages  = 1, enc = 1
-> [   56.313803] page_enc_status_hc invoked, gpa = 1e5e9000, npages  = 1, enc = 1
-....
-> [   56.459276] page_enc_status_hc invoked, gpa = 1d767000, npages  = 100, enc = 0
-> [   56.459428] page_enc_status_hc invoked, gpa = 1e501000, npages  = 1, enc = 1
-> [   56.460037] page_enc_status_hc invoked, gpa = 1d767000, npages  = 100, enc = 1
-> [   56.460216] page_enc_status_hc invoked, gpa = 1e501000, npages  = 1, enc = 0
-> [   56.460299] page_enc_status_hc invoked, gpa = 1d767000, npages  = 100, enc = 0
-> [   56.460448] page_enc_status_hc invoked, gpa = 1e501000, npages  = 1, enc = 1
-....
-
-> As can be observed here, all guest MMIO ranges are initially setup as
-> shared, and those are all contigious guest page ranges.
 > 
-> After that the encryption status hypercalls are invoked when DMA gets
-> triggered during disk i/o while booting the guest ... here again the
-> guest page ranges are contigious, though mostly single page is touched 
-> and a lot of page re-use is observed. 
+> So instead of trying to make global PKS "work" we really should go and
+> take a smarter approach.
 > 
-> So a range-based list/structure will be a "good" fit for such usage
-> scenarios.
+>   1) Many kmap() use cases are strictly thread local and the mapped
+>      address is never handed to some other context, which means this can
+>      be replaced with kmap_local() now, which preserves the mapping
+>      accross preemption. PKS just works nicely on top of that.
 
-It seems surprisingly common to flick the same pages back and forth between
-encrypted and clear for quite a while;  why is this?
+Yes hence the massive kmap->kmap_thread patch set which is now becoming
+kmap_local_page().[2]
 
-Dave
+> 
+>   2) Modify kmap() so that it marks the to be mapped page as 'globaly
+>      unprotected' instead of doing this global unprotect PKS dance.
+>      kunmap() undoes that. That obviously needs some thought
+>      vs. refcounting if there are concurrent users, but that's a
+>      solvable problem either as part of struct page itself or
+>      stored in some global hash.
 
+How would this globally unprotected flag work?  I suppose if kmap created a new
+PTE we could make that PTE non-PKS protected then we don't have to fiddle with
+the register...  I think I like that idea.
 
+> 
+>   3) Have PKS modes:
+> 
+>      - STRICT:   No pardon
+>      
+>      - RELAXED:  Warn and unprotect temporary for the current context
+> 
+>      - SILENT:	 Like RELAXED, but w/o warning to make sysadmins happy.
+>                  Default should be RELAXED.
+> 
+>      - OFF:      Disable the whole PKS thing
+
+I'm not really sure how this solves the global problem but it is probably worth
+having in general.
+
+> 
+> 
+>   4) Have a smart #PF mechanism which does:
+> 
+>      if (error_code & X86_PF_PK) {
+>          page = virt_to_page(address);
+> 
+>          if (!page || !page_is_globaly_unprotected(page))
+>                  goto die;
+> 
+>          if (pks_mode == PKS_MODE_STRICT)
+>          	 goto die;
+> 
+>          WARN_ONCE(pks_mode == PKS_MODE_RELAXED, "Useful info ...");
+> 
+>          temporary_unprotect(page, regs);
+>          return;
+>      }
+
+I feel like this is very similar to what I had in the global patch you found in
+my git tree with the exception of the RELAXED mode.  I simply had globally
+unprotected or die.
+
+global_pkey_is_enabled() handles the page_is_globaly_unprotected() and
+temporary_unprotect().[3]
+
+Anyway, I'm sorry (but not sorry) that you found it.  I've been trying to get
+0-day and other testing on it and my public tree was the easiest way to do
+that.  Anyway...
+
+The patch as a whole needs work.  You are 100% correct that if a mapping is
+handed to another context it is going to suck performance wise.  It has had
+some internal review but not much.
+
+Regardless I think unprotecting a global context is the easy part.  The code
+you had a problem with (and I see is fully broken) was the restriction of
+access.  A failure to update in that direction would only result in a wider
+window of access.  I contemplated not doing a global update at all and just
+leave the access open until the next context switch.  But the code as it stands
+tries to force an update for a couple of reasons:
+
+1) kmap_local_page() removes most of the need for global pks.  So I was
+   thinking that global PKS could be a slow path.
+
+2) kmap()'s that are handed to other contexts they are likely to be 'long term'
+   and should not need to be updated 'too' often.  I will admit that I don't
+   know how often 'too often' is.
+
+But IMO these questions are best left to after the kmaps are converted.  Thus
+this patch set was just basic support.  Other uses cases beyond pmem such as
+trusted keys or secret mem don't need a global pks feature and could build on
+the patch set submitted.  I was trying to break the problem down.
+
+> 
+>      temporary_unprotect(page, regs)
+>      {
+>         key = page_to_key(page);
+> 
+> 	/* Return from #PF will establish this for the faulting context */
+>         extended_state(regs)->pks &= ~PKS_MASK(key);
+>      }
+> 
+>      This temporary unprotect is undone when the context is left, so
+>      depending on the context (thread, interrupt, softirq) the
+>      unprotected section might be way wider than actually needed, but
+>      that's still orders of magnitudes better than having this fully
+>      unrestricted global PKS mode which is completely scopeless.
+
+I'm not sure I follow you.  How would we know when the context is left?
+
+> 
+>      The above is at least restricted to the pages which are in use for
+>      a particular operation. Stray pointers during that time are
+>      obviously not caught, but that's not any different from that
+>      proposed global thingy.
+> 
+>      The warning allows to find the non-obvious places so they can be
+>      analyzed and worked on.
+
+I could add the warning for sure.
+
+> 
+>   5) The DAX case which you made "work" with dev_access_enable() and
+>      dev_access_disable(), i.e. with yet another lazy approach of
+>      avoiding to change a handful of usage sites.
+> 
+>      The use cases are strictly context local which means the global
+>      magic is not used at all. Why does it exist in the first place?
+
+I'm not following.  What is 'it'?
+
+> 
+>      Aside of that this global thing would never work at all because the
+>      refcounting is per thread and not global.
+> 
+>      So that DAX use case is just a matter of:
+> 
+>         grant/revoke_access(DEV_PKS_KEY, READ/WRITE)
+> 
+>      which is effective for the current execution context and really
+>      wants to be a distinct READ/WRITE protection and not the magic
+>      global thing which just has on/off. All usage sites know whether
+>      they want to read or write.
+>    
+>      That leaves the question about the refcount. AFAICT, nothing nests
+>      in that use case for a given execution context. I'm surely missing
+>      something subtle here.
+
+The refcount is needed for non-global pks as well as global.  I've not resolved
+if anything needs to be done with the refcount on the global update since the
+following is legal.
+
+kmap()
+kmap_local_page()
+kunmap()
+kunmap_local()
+
+Which would be a problem.  But I don't think it is ever actually done.
+
+Another problem would be if the kmap and kunmap happened in different
+contexts...  :-/  I don't think that is done either but I don't know for
+certain.
+
+Frankly, my main focus before any of this global support has been to get rid of
+as many kmaps as possible.[1]  Once that is done I think more of these
+questions can be answered better.
+
+Ira
+
+[1] https://lore.kernel.org/lkml/20201210171834.2472353-1-ira.weiny@intel.com/
+[2] https://lore.kernel.org/lkml/20201009195033.3208459-1-ira.weiny@intel.com/
+[3] Latest untested patch pushed for reference here because I can't find
+    exactly the branch you found.
+    https://github.com/weiny2/linux-kernel/commit/37439e91e141be58c13ccc4462f7782311680636
+
+> 
+>      Hmm?
+> 
 > Thanks,
-> Ashish
 > 
--- 
-Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
-
+>         tglx
+>      
