@@ -2,119 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9512B2DE962
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 19:59:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BD192DE964
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 19:59:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729588AbgLRS6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 13:58:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725789AbgLRS6j (ORCPT
+        id S1732714AbgLRS6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 13:58:55 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:55483 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726552AbgLRS6x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 13:58:39 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DF83C0617B0;
-        Fri, 18 Dec 2020 10:57:58 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id cm17so3424734edb.4;
-        Fri, 18 Dec 2020 10:57:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=VOfVRVMXwaXp0O1enJ1Uc/kEDU32Y6Pd6RfXGnyTX4g=;
-        b=GEQUloU9U6KVXvW91AE/nU8qp/mVq/ws7uB9dVDDGiEHZrbdwGSVZNHU+Z5sMm8FTs
-         Otz6qNQ3cjr9tedVRZ0pIp4iYL/6HOem2AIiFNx1Z1RknncF1axW+20Yytsqj1TOitzP
-         +PleIqQeQC3rTVDYgL/S2WUxsIyYtYfzxP841dPGAYPh6PNcBRi7MqwaqQ/1nLQWNnvS
-         2zt1vkJeCrc+klSbsW6aR7NxHv+Iy24dLFNTD+cTVuoFA3bkvxrIv0/+vllk6f2DAlmB
-         WxBob2LccXlm0wYFsqxQkV7RMgQIP+JcM9VmgQAQcgrSqxwdwWus3t5OqJZtj/nipl8p
-         nskQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=VOfVRVMXwaXp0O1enJ1Uc/kEDU32Y6Pd6RfXGnyTX4g=;
-        b=bFhapuQHt1ADDlVE/AtVNumXreceJILjKU9JWRs5ntbczhk/IW3Tu2lDGzRvEENrHc
-         QkLAnHYRRQeKIcistu/Sn3VtlxjbOPm3MWPxeLbeoYoWulskq6SmBo2K1vNXwwjxhA+9
-         mj5Pv8DofOtn7KC3Qa1kkLjjEeotjJe5FeV+E//i2tDOKeglpbKKitA27PoDFtencijT
-         h95Yav914MuwjG70G9k0xDEydtgGfHfiRmpOj5V9wN6dvksVSbR9ZkoB7bFTorUtDsxt
-         VJzCRQex6YGBIwnWCWSjSCmqEKRiKv6PdMbHGFpi1qM8PcQkAa0gFmMWQ/cLdbhnfC/1
-         BLOg==
-X-Gm-Message-State: AOAM533zHczBf4EFAIqMAlu65/MFVj4MV8jTHqmLHwf7SWqcTDqabDOQ
-        hpjTFKYPNqZi3BtYJxiSyJg=
-X-Google-Smtp-Source: ABdhPJwL8283ctIIVrS2b6Qfps7n3aFVkr06KgaBJ/VzCZ7VgoRtsT/Dnczuzj1CCTKaAuTvtOEJbw==
-X-Received: by 2002:a50:a6c2:: with SMTP id f2mr5816028edc.7.1608317877019;
-        Fri, 18 Dec 2020 10:57:57 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
-        by smtp.googlemail.com with ESMTPSA id v18sm5738048ejw.18.2020.12.18.10.57.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 18 Dec 2020 10:57:56 -0800 (PST)
-Message-ID: <2ce8e183f03855af6c16b2a555473cca3fbbfef6.camel@gmail.com>
-Subject: Re: [PATCH V3] scsi: ufs-debugfs: Add error counters
-From:   Bean Huo <huobean@gmail.com>
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Can Guo <cang@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>
-Date:   Fri, 18 Dec 2020 19:57:55 +0100
-In-Reply-To: <17957d71-d45b-d5f6-8ef2-453402a23268@intel.com>
-References: <20201218122027.27472-1-adrian.hunter@intel.com>
-         <de305f4d6034950908e8e889c4af5442431e7d15.camel@gmail.com>
-         <17957d71-d45b-d5f6-8ef2-453402a23268@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Fri, 18 Dec 2020 13:58:53 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608317914; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=ODdPiC7psQVXXHgo8fq1cxq4RFwNcwXkZDtOyRJi91o=; b=AnYiyhZ1aJUBMgkZrsGTuurvre9HvPK04ece6qg9Z4NBbyTm8Zdg/3XidfufMxW4krRMTEg5
+ JZP5IXrGaHr0cFzdnTg6etNiVa1EneX+wL/Ozunhbwcsi9huQsLRQLIwBX/Cggdu8xBEpkN8
+ jA3WJVyFqApkQVmkZDOB/A4n9A0=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5fdcfbbbbfd08afb0d366fee (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Dec 2020 18:58:03
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 19220C433ED; Fri, 18 Dec 2020 18:58:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B964FC433CA;
+        Fri, 18 Dec 2020 18:57:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B964FC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, linux-wireless@vger.kernel.org
+Subject: Re: [PATCH -next] net: wireless/mediatek/mt7915: fix MESH ifdef block
+References: <20201218173202.23159-1-rdunlap@infradead.org>
+        <87eejnrluw.fsf@codeaurora.org>
+        <488abe6b-3893-557a-8324-1be9b75657ce@infradead.org>
+Date:   Fri, 18 Dec 2020 20:57:57 +0200
+In-Reply-To: <488abe6b-3893-557a-8324-1be9b75657ce@infradead.org> (Randy
+        Dunlap's message of "Fri, 18 Dec 2020 10:50:25 -0800")
+Message-ID: <87a6ubrlfu.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-12-18 at 20:34 +0200, Adrian Hunter wrote:
-> It is OK to pass NULL or error codes as parent dentry to
-> debugfs_create_...
-> functions.
-> 
-> If ufs_debugfs_root is NULL (which won't happen) then the directory
-> will be
-> created in debugfs root i.e. /sys/kernel/debug, using the device
-> name.
-> 
-> If ufs_debugfs_root is an error code, then debugfs_create_dir will
-> return an
-> error code, and following debugfs_create_file() will return an error
-> code.
-> 
-> > 
-> > > +    debugfs_create_file("stats", 0400, hba->debugfs_root, hba,
-> > > &ufs_debugfs_stats_fops);
-> > 
-> >        if (!debugfs_create_file("stats", 0400, hba->debugfs_root,
-> > hba,
-> >                &ufs_debugfs_stats_fops)) {
-> >                debugfs_remove(hba->debugfs_root);
-> >                return -ENOMEM;
-> 
-> Being without debugfs files is not a problem, so there is no reason
-> to
-> return an error.  It is relatively rare in the kernel that code
-> checks the
-> return value of debugfs_create_file().  We really don't want to fail
-> probing
-> just because of debugfs.
-> 
-> However, because debugfs' only real resource is a small amount of
-> memory, it
-> is extremely unlikely it will fail in that sense.  Although you can
-> force it
-> to fail by adding the kernel command line parameter debugfs=off
+Randy Dunlap <rdunlap@infradead.org> writes:
 
-Adrian
-Sounds your choice is correct. thanks.
+> On 12/18/20 10:48 AM, Kalle Valo wrote:
+>> Randy Dunlap <rdunlap@infradead.org> writes:
+>> 
+>>> Fix a build error when CONFIG_MAC80211_MESH is not enabled:
+>>>
+>>> ../drivers/net/wireless/mediatek/mt76/mt7915/init.c:47:2: error:
+>>> expected expression before '}' token
+>>>   }, {
+>>>   ^
+>>>
+>>> Fixes: af901eb4ab80 ("mt76: mt7915: get rid of dbdc debugfs knob")
+>>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>>> Cc: Shayne Chen <shayne.chen@mediatek.com>
+>>> Cc: Ryder Lee <ryder.lee@mediatek.com>
+>>> Cc: Lorenzo Bianconi <lorenzo@kernel.org>
+>>> Cc: Felix Fietkau <nbd@nbd.name>
+>>> Cc: linux-wireless@vger.kernel.org
+>>> Cc: Kalle Valo <kvalo@codeaurora.org>
+>> 
+>> Thanks, but why -next? I would rather queue this to wireless-drivers for
+>> v5.11 as af901eb4ab80 is in Linu's tree now.
+>
+> Sorry, I found the build error in linux-next.
+> My bad for not checking mainline.
 
-Reviewed-by: Bean Huo <beanhuo@micron.com>
+Ah.
 
- 
+> Shall I resend it?
 
+No need, just wanted to make sure that I'm not missing anything. I'll
+queue this for v5.11.
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
