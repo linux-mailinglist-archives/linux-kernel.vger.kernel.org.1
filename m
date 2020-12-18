@@ -2,109 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5A22DEBB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 23:43:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E7D2DEBB9
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 23:45:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726297AbgLRWnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 17:43:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49962 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725880AbgLRWnd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 17:43:33 -0500
-X-Gm-Message-State: AOAM532lCQsKZVTjHJBDNQIizDwxs7cOn8pT6Z5aGMac8nIGvVuvODtP
-        sZNng2mo/u9abPWqnYYSgMTxgIz69T4HZPOfvg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608331372;
-        bh=teoJSCyQ35FKEt1l7jtvY4FHIkY/MC2pFjf82N1a7x8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rDvnvJ1UGc/yxbETR9SFwICtFriCq8S4SSVtPzMw72dOKmv+I0MUwOj9IMZE3AMf7
-         +2gjY1d0XvwnkYMgeqXRuDWFgxEvXlLIoNGPFMzl/Rb6IflnUHep5jreJWOybSR56Z
-         E4Z8j7LEZluuCZFIb85pL5xAg9+sAtUFYK8Soy55f4uYLWUZM9ChFZaTY5c7iJdrmz
-         +ao4eqgwT771hMZRAc28mZL4EU2P4H3u8h8kI1EwJojM0v0vaSR7NP7e/9TvIQ8mZJ
-         XkoxTvy2gl8AAI/669RLYd1oxQFMsfji9ElenKbnSncRuePtTM7B7oqqm4oXLzGCTD
-         xmd8Kqc+xP8zA==
-X-Google-Smtp-Source: ABdhPJw9CmTiK/5DXVy1oCGmEYJHnWGGuOTm6/bF1LcvdA7fZjYwB/Q4rwq8PO2wpAomgkDuC068Sj33ePY0fBORLGQ=
-X-Received: by 2002:a17:906:1197:: with SMTP id n23mr6123853eja.359.1608331370605;
- Fri, 18 Dec 2020 14:42:50 -0800 (PST)
+        id S1726320AbgLRWo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 17:44:27 -0500
+Received: from mail-pf1-f181.google.com ([209.85.210.181]:44458 "EHLO
+        mail-pf1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725965AbgLRWo0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 17:44:26 -0500
+Received: by mail-pf1-f181.google.com with SMTP id f9so2378281pfc.11;
+        Fri, 18 Dec 2020 14:44:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mjYQFKlw1OKFIFpIBjFxMCpNInHN23kLECgiubg/j/A=;
+        b=nScerJXXgkvUrud5S4ihLMjBuryxQg5ejRFdI6q4BYjoMYh6PgkGOYbXmSkR7hGig9
+         Iqj9vw6C1MqoXQ5XY8IVHzsaLsMx/SETHoqa6D6h5/VjVuFHKLIrIsJsXamGNGYhTtTP
+         1I8TVqBdg8QDJFFgj2kgOPUs30XYsekks9IjLM5FsFiSwfNjWuGj9OXYn5dxPFCyyc6b
+         w67dByQPv9oMMm7ev2ZniRS8IAJisKEIIIAM7r/2LHd/hWcGNzA+bpD3F3+EJdlDLlPT
+         WI51vewmrefUUgfKzmikNsSmODt8iX07TmK3UcIrXmoKqAl10fgoZH2NaHL408sjfnOJ
+         CJ3g==
+X-Gm-Message-State: AOAM533/4hieRKRQB7GTABasgHpzEqo6hG38+ZXxzEaJkTP1FpNjAAXa
+        UaYNO2GDFT8R9ghYnxmp7Lw=
+X-Google-Smtp-Source: ABdhPJxVVa1Gkt4uJ4IWKRzN8WDqjTd0sTVRJLUcGBAJZl61mODqhcKpqSAVrSXM86h2JbfnmnVboA==
+X-Received: by 2002:a63:ea4b:: with SMTP id l11mr5986767pgk.61.1608331425060;
+        Fri, 18 Dec 2020 14:43:45 -0800 (PST)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id u3sm9974174pjf.52.2020.12.18.14.43.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Dec 2020 14:43:43 -0800 (PST)
+Subject: Re: [RFC PATCH v2 2/2] blk-mq: Lockout tagset iter when freeing rqs
+To:     John Garry <john.garry@huawei.com>, axboe@kernel.dk,
+        ming.lei@redhat.com
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hch@lst.de, hare@suse.de, ppvk@codeaurora.org,
+        kashyap.desai@broadcom.com, linuxarm@huawei.com
+References: <1608203273-170555-1-git-send-email-john.garry@huawei.com>
+ <1608203273-170555-3-git-send-email-john.garry@huawei.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <df44b73d-6c42-87ee-3c25-b95a44712e05@acm.org>
+Date:   Fri, 18 Dec 2020 14:43:41 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-References: <1608199173-28760-1-git-send-email-victor.liu@nxp.com>
- <1608199173-28760-5-git-send-email-victor.liu@nxp.com> <1608231036.357497.50647.nullmailer@robh.at.kernel.org>
- <e2edc2e37b6905fd19ada4c212338c6978200fa5.camel@nxp.com>
-In-Reply-To: <e2edc2e37b6905fd19ada4c212338c6978200fa5.camel@nxp.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 18 Dec 2020 16:42:39 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLcyUJWt_gc3B01C0Y+NC61ucYNA8j1jnxTs8U1kudM=Q@mail.gmail.com>
-Message-ID: <CAL_JsqLcyUJWt_gc3B01C0Y+NC61ucYNA8j1jnxTs8U1kudM=Q@mail.gmail.com>
-Subject: Re: [PATCH 04/14] dt-bindings: display: bridge: Add i.MX8qm/qxp pixel
- combiner binding
-To:     Liu Ying <victor.liu@nxp.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Andrzej Hajda <a.hajda@samsung.com>, Vinod <vkoul@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org, Sascha Hauer <kernel@pengutronix.de>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Fabio Estevam <festevam@gmail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1608203273-170555-3-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 7:48 PM Liu Ying <victor.liu@nxp.com> wrote:
->
-> Hi,
->
-> On Thu, 2020-12-17 at 12:50 -0600, Rob Herring wrote:
-> > On Thu, 17 Dec 2020 17:59:23 +0800, Liu Ying wrote:
-> > > This patch adds bindings for i.MX8qm/qxp pixel combiner.
-> > >
-> > > Signed-off-by: Liu Ying <victor.liu@nxp.com>
-> > > ---
-> > >  .../display/bridge/fsl,imx8qxp-pixel-combiner.yaml | 160 +++++++++++++++++++++
-> > >  1 file changed, 160 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-combiner.yaml
-> > >
-> >
-> > My bot found errors running 'make dt_binding_check' on your patch:
-> >
-> > yamllint warnings/errors:
-> >
-> > dtschema/dtc warnings/errors:
-> > Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-combiner.example.dts:19:18: fatal error: dt-bindings/clock/imx8-lpcg.h: No such file or directory
-> >    19 |         #include <dt-bindings/clock/imx8-lpcg.h>
-> >       |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > compilation terminated.
-> > make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-combiner.example.dt.yaml] Error 1
-> > make[1]: *** Waiting for unfinished jobs....
-> > make: *** [Makefile:1364: dt_binding_check] Error 2
-> >
-> > See https://patchwork.ozlabs.org/patch/1417599
-> >
-> > This check can fail if there are any dependencies. The base for a patch
-> > series is generally the most recent rc1.
->
-> This series can be applied to linux-next/master branch.
+On 12/17/20 3:07 AM, John Garry wrote:
+> References to old IO sched requests are currently cleared from the
+> tagset when freeing those requests; switching elevator or changing
+> request queue depth is such a scenario in which this occurs.
+> 
+> However, this does not stop the potentially racy behaviour of freeing
+> and clearing a request reference between a tagset iterator getting a
+> reference to a request and actually dereferencing that request.
+> 
+> Such a use-after-free can be triggered, as follows:
+> 
+> ==================================================================
+> BUG: KASAN: use-after-free in bt_iter+0xa0/0x120
+> Read of size 8 at addr ffff00108d589300 by task fio/3052
+> 
+> CPU: 32 PID: 3052 Comm: fio Tainted: GW
+> 5.10.0-rc4-64839-g2dcf1ee5054f #693
+> Hardware name: Huawei Taishan 2280 /D05, BIOS Hisilicon
+> D05 IT21 Nemo 2.0 RC0 04/18/2018
+> Call trace:
+> dump_backtrace+0x0/0x2d0
+> show_stack+0x18/0x68
+> dump_stack+0x100/0x16c
+> print_address_description.constprop.12+0x6c/0x4e8
+> kasan_report+0x130/0x200
+> __asan_load8+0x9c/0xd8
+> bt_iter+0xa0/0x120
+> blk_mq_queue_tag_busy_iter+0x2d8/0x540
+> blk_mq_in_flight+0x80/0xb8
+> part_stat_show+0xd8/0x238
+> dev_attr_show+0x44/0x90
+> sysfs_kf_seq_show+0x128/0x1c8
+> kernfs_seq_show+0xa0/0xb8
+> seq_read_iter+0x1ec/0x6a0
+> seq_read+0x1d0/0x250
+> kernfs_fop_read+0x70/0x330
+> vfs_read+0xe4/0x250
+> ksys_read+0xc8/0x178
+> __arm64_sys_read+0x44/0x58
+> el0_svc_common.constprop.2+0xc4/0x1e8
+> do_el0_svc+0x90/0xa0
+> el0_sync_handler+0x128/0x178
+> el0_sync+0x158/0x180
+> 
+> This is found experimentally by running fio on 2x SCSI disks - 1x disk
+> holds the root partition. Userspace is constantly triggering the tagset
+> iter from reading the root (gen)disk partition info. And so if the IO
+> sched is constantly changed on the other disk, eventually the UAF occurs,
+> as described above.
 
-I can't know that to apply and run checks automatically. I guessed
-that reviewing this before sending, but I want it abundantly clear
-what the result of applying this might be and it wasn't mentioned in
-this patch.
+Hi John,
 
-Plus linux-next is a base no one can apply patches to, so should you
-be sending patches based on it? It's also the merge window, so maybe
-wait until rc1 when your dependency is in and the patch can actually
-be applied. Also, the drm-misc folks will still need to know they need
-to merge rc1 in before this is applied.
+Something is not clear to me. The above call stack includes
+blk_mq_queue_tag_busy_iter(). That function starts with
+percpu_ref_tryget(&q->q_usage_counter) and ends with calling
+percpu_ref_put(&q->q_usage_counter). So it will only iterate over a tag set
+if q->q_usage_counter is live. However, both blk_mq_update_nr_requests()
+and elevator_switch() start with freezing the request queue.
+blk_mq_freeze_queue() starts with killing q->q_usage_counter and waits
+until that counter has dropped to zero. In other words,
+blk_mq_queue_tag_busy_iter() should not iterate over a tag set while a tag
+set is being freed or reallocated. Does this mean that we do not yet have
+a full explanation about why the above call stack can be triggered?
 
-Rob
+Thanks,
+
+Bart.
+
+
