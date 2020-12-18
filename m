@@ -2,145 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DD582DEBAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 23:37:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C5A22DEBB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 23:43:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726231AbgLRWhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 17:37:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725901AbgLRWhH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 17:37:07 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B91D1C06138C
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 14:36:26 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id qw4so5392342ejb.12
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 14:36:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xTXy3XpNAms3ekkwQw/otErW5WULs88likHcciGFXeM=;
-        b=m3zOHE0w3r6ahzpcAgQfVzAPl2i6KJvip2SKXyaczrJEGZnlHaHWDc6Y6e6Ue/Fk3w
-         conhoHW1dPczYVsQmj2eLqr1B0wAyqCg0qSM7LzF0bAk5x3WGRvz9e63oJoCLrRPxcAo
-         NCup3hmGffugX6i074UpCmza+m0e4URw20OviQ33kIumJ5YVLEwK+806pVpfQefsT2xX
-         +qBOFn99wzNCn8q6eC1jAdUSPLxRJcloKOs+Xtbapw/PIX8mOrEx3E5skNWYliCtMaLN
-         OEAidGbLkRLvVIrKn49ZsuMwTg+JPymV16f3E3Q1jq0ujaCjujl+6wptrt/7u45O2l8Y
-         TryQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xTXy3XpNAms3ekkwQw/otErW5WULs88likHcciGFXeM=;
-        b=jfkJ7yG1YjX4bIu18Tx49E+s02DeJF1nt8ZbR63sP2IzlhVAEGH/mD/vJsjPnRFwy8
-         jSeBYramSQMvOVYkflUH9J7JafIg0K30cC3xEvn1uoy1MvvfaYZk31/HykVlGkfujquw
-         6HII8sMFYwsrTPpOuDGIjV0RgiYwp87jX8tdBI8PNP8jhfGFPXTGnm8igH6wJKIf3bsJ
-         ThWSkktHmdHLhsMdXPMKK94XF4GULYODqqkCIr9QSPCZlxnsff/T1v4ck3O4SeZfyKJ+
-         6jq9lvJVnAe6uN+DGQj1BIIpOFRxKtbzqHcuXxgliFjUxX8bhDRlWcq7guVcSOj6yB88
-         8Q0w==
-X-Gm-Message-State: AOAM532ua33lhJmbkA1UQCZJYe1fR8cjM+bHdSLEXOnBUBrMetRAr+p1
-        F8POxAyhiCEEx9FM3hoodDKyKiQHX7Q/Q87tQ0ZzYA==
-X-Google-Smtp-Source: ABdhPJxVIJsNw1VhtEN2EC6NpPsqgkomLtwJyLMDGzQEDyQsVR1b9PxyeXfVm3r7ts5mggWcfo7h1ujtbU0n5AwKaRw=
-X-Received: by 2002:a17:906:a29a:: with SMTP id i26mr6063250ejz.45.1608330985195;
- Fri, 18 Dec 2020 14:36:25 -0800 (PST)
+        id S1726297AbgLRWnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 17:43:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49962 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725880AbgLRWnd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 17:43:33 -0500
+X-Gm-Message-State: AOAM532lCQsKZVTjHJBDNQIizDwxs7cOn8pT6Z5aGMac8nIGvVuvODtP
+        sZNng2mo/u9abPWqnYYSgMTxgIz69T4HZPOfvg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608331372;
+        bh=teoJSCyQ35FKEt1l7jtvY4FHIkY/MC2pFjf82N1a7x8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rDvnvJ1UGc/yxbETR9SFwICtFriCq8S4SSVtPzMw72dOKmv+I0MUwOj9IMZE3AMf7
+         +2gjY1d0XvwnkYMgeqXRuDWFgxEvXlLIoNGPFMzl/Rb6IflnUHep5jreJWOybSR56Z
+         E4Z8j7LEZluuCZFIb85pL5xAg9+sAtUFYK8Soy55f4uYLWUZM9ChFZaTY5c7iJdrmz
+         +ao4eqgwT771hMZRAc28mZL4EU2P4H3u8h8kI1EwJojM0v0vaSR7NP7e/9TvIQ8mZJ
+         XkoxTvy2gl8AAI/669RLYd1oxQFMsfji9ElenKbnSncRuePtTM7B7oqqm4oXLzGCTD
+         xmd8Kqc+xP8zA==
+X-Google-Smtp-Source: ABdhPJw9CmTiK/5DXVy1oCGmEYJHnWGGuOTm6/bF1LcvdA7fZjYwB/Q4rwq8PO2wpAomgkDuC068Sj33ePY0fBORLGQ=
+X-Received: by 2002:a17:906:1197:: with SMTP id n23mr6123853eja.359.1608331370605;
+ Fri, 18 Dec 2020 14:42:50 -0800 (PST)
 MIME-Version: 1.0
-References: <20201217211937.GA3177478@piout.net> <X9xV+8Mujo4dhfU4@kroah.com>
- <20201218131709.GA5333@sirena.org.uk> <20201218140854.GW552508@nvidia.com>
- <20201218155204.GC5333@sirena.org.uk> <20201218162817.GX552508@nvidia.com>
- <20201218180310.GD5333@sirena.org.uk> <20201218184150.GY552508@nvidia.com>
- <20201218203211.GE5333@sirena.org.uk> <20201218205856.GZ552508@nvidia.com> <20201218211658.GH3143569@piout.net>
-In-Reply-To: <20201218211658.GH3143569@piout.net>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Fri, 18 Dec 2020 14:36:14 -0800
-Message-ID: <CAPcyv4iruqY546kM68Dy_h4J5Qc6Ry-eGyVKhAp5eufsZcNksQ@mail.gmail.com>
-Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, Mark Brown <broonie@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        alsa-devel@alsa-project.org, Kiran Patil <kiran.patil@intel.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        David Miller <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Parav Pandit <parav@mellanox.com>,
-        Lee Jones <lee.jones@linaro.org>
+References: <1608199173-28760-1-git-send-email-victor.liu@nxp.com>
+ <1608199173-28760-5-git-send-email-victor.liu@nxp.com> <1608231036.357497.50647.nullmailer@robh.at.kernel.org>
+ <e2edc2e37b6905fd19ada4c212338c6978200fa5.camel@nxp.com>
+In-Reply-To: <e2edc2e37b6905fd19ada4c212338c6978200fa5.camel@nxp.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 18 Dec 2020 16:42:39 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLcyUJWt_gc3B01C0Y+NC61ucYNA8j1jnxTs8U1kudM=Q@mail.gmail.com>
+Message-ID: <CAL_JsqLcyUJWt_gc3B01C0Y+NC61ucYNA8j1jnxTs8U1kudM=Q@mail.gmail.com>
+Subject: Re: [PATCH 04/14] dt-bindings: display: bridge: Add i.MX8qm/qxp pixel
+ combiner binding
+To:     Liu Ying <victor.liu@nxp.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Andrzej Hajda <a.hajda@samsung.com>, Vinod <vkoul@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org, Sascha Hauer <kernel@pengutronix.de>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Fabio Estevam <festevam@gmail.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 1:17 PM Alexandre Belloni
-<alexandre.belloni@bootlin.com> wrote:
+On Thu, Dec 17, 2020 at 7:48 PM Liu Ying <victor.liu@nxp.com> wrote:
 >
-> On 18/12/2020 16:58:56-0400, Jason Gunthorpe wrote:
-> > On Fri, Dec 18, 2020 at 08:32:11PM +0000, Mark Brown wrote:
-> >
-> > > > So, I strongly suspect, MFD should create mfd devices on a MFD bus
-> > > > type.
+> Hi,
+>
+> On Thu, 2020-12-17 at 12:50 -0600, Rob Herring wrote:
+> > On Thu, 17 Dec 2020 17:59:23 +0800, Liu Ying wrote:
+> > > This patch adds bindings for i.MX8qm/qxp pixel combiner.
 > > >
-> > > Historically people did try to create custom bus types, as I have
-> > > pointed out before there was then pushback that these were duplicating
-> > > the platform bus so everything uses platform bus.
+> > > Signed-off-by: Liu Ying <victor.liu@nxp.com>
+> > > ---
+> > >  .../display/bridge/fsl,imx8qxp-pixel-combiner.yaml | 160 +++++++++++++++++++++
+> > >  1 file changed, 160 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-combiner.yaml
+> > >
 > >
-> > Yes, I vaugely remember..
+> > My bot found errors running 'make dt_binding_check' on your patch:
 > >
-> > I don't know what to say, it seems Greg doesn't share this view of
-> > platform devices as a universal device.
+> > yamllint warnings/errors:
 > >
-> > Reading between the lines, I suppose things would have been happier
-> > with some kind of inheritance scheme where platform device remained as
-> > only instantiated directly in board files, while drivers could bind to
-> > OF/DT/ACPI/FPGA/etc device instantiations with minimal duplication &
-> > boilerplate.
+> > dtschema/dtc warnings/errors:
+> > Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-combiner.example.dts:19:18: fatal error: dt-bindings/clock/imx8-lpcg.h: No such file or directory
+> >    19 |         #include <dt-bindings/clock/imx8-lpcg.h>
+> >       |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > compilation terminated.
+> > make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-combiner.example.dt.yaml] Error 1
+> > make[1]: *** Waiting for unfinished jobs....
+> > make: *** [Makefile:1364: dt_binding_check] Error 2
 > >
-> > And maybe that is exactly what we have today with platform devices,
-> > though the name is now unfortunate.
+> > See https://patchwork.ozlabs.org/patch/1417599
 > >
-> > > I can't tell the difference between what it's doing and what SOF is
-> > > doing, the code I've seen is just looking at the system it's running
-> > > on and registering a fixed set of client devices.  It looks slightly
-> > > different because it's registering a device at a time with some wrapper
-> > > functions involved but that's what the code actually does.
-> >
-> > SOF's aux bus usage in general seems weird to me, but if you think
-> > it fits the mfd scheme of primarily describing HW to partition vs
-> > describing a SW API then maybe it should use mfd.
-> >
-> > The only problem with mfd as far as SOF is concerned was Greg was not
-> > happy when he saw PCI stuff in the MFD subsystem.
-> >
+> > This check can fail if there are any dependencies. The base for a patch
+> > series is generally the most recent rc1.
 >
-> But then again, what about non-enumerable devices on the PCI device? I
-> feel this would exactly fit MFD. This is a collection of IPs that exist
-> as standalone but in this case are grouped in a single device.
->
-> Note that I then have another issue because the kernel doesn't support
-> irq controllers on PCI and this is exactly what my SoC has. But for now,
-> I can just duplicate the irqchip driver in the MFD driver.
->
-> > This whole thing started when Intel first proposed to directly create
-> > platform_device's in their ethernet driver and Greg had a quite strong
-> > NAK to that.
->
-> Let me point to drivers/net/ethernet/cadence/macb_pci.c which is a
-> fairly recent example. It does exactly that and I'm not sure you could
-> do it otherwise while still not having to duplicate most of macb_probe.
->
+> This series can be applied to linux-next/master branch.
 
-This still feels an orthogonal example to the problem auxiliary-bus is
-solving. If a platform-device and a pci-device surface an IP with a
-shared programming model that's an argument for a shared library, like
-libata to house the commonality. In contrast auxiliary-bus is a
-software model for software-defined sub-functionality to be wrapped in
-a driver model. It assumes a parent-device / parent-driver hierarchy
-that platform-bus and pci-bus do not imply.
+I can't know that to apply and run checks automatically. I guessed
+that reviewing this before sending, but I want it abundantly clear
+what the result of applying this might be and it wasn't mentioned in
+this patch.
+
+Plus linux-next is a base no one can apply patches to, so should you
+be sending patches based on it? It's also the merge window, so maybe
+wait until rc1 when your dependency is in and the patch can actually
+be applied. Also, the drm-misc folks will still need to know they need
+to merge rc1 in before this is applied.
+
+Rob
