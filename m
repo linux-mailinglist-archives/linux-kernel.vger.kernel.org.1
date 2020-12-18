@@ -2,602 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE5012DE957
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 19:54:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F752DE95A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 19:55:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725987AbgLRSyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 13:54:04 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:28312 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725836AbgLRSyD (ORCPT
+        id S1732461AbgLRSyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 13:54:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730006AbgLRSyt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 13:54:03 -0500
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BIIVjTE051967;
-        Fri, 18 Dec 2020 13:53:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : mime-version : content-type; s=pp1;
- bh=iMJhzl41qQXKwSaBoYGLCRyBPb0P0WAWEU2sQGDekSc=;
- b=Opx5JXgVIAhjCTZ+wbpDLT2wzL/bYiVu47S6XENhtd+PuI+i6nTEBDLvyedb9SJQmANw
- rCAxt7vSkl/Te5Ouon5WWpex4zGhtVbDK3Pdu8jHaaZHtRpJjmJVgCXR0vz/Jyemsvtx
- Lpmh1oJWKhtr/8bOM7OIxUwkKx97pXPGBUaB0sj/A7R9S9Re57edHK+Jjz7/p+hR+OSJ
- r0wKOUMyd1qS0XIcn7/OXZJyDtXsC2arKFDK9jpCXEzulY2fAp44yvFGgS4/JRRkgprW
- WjW2RXlj0Q6SYIsbeCLAGs1C8nySi9drOSzNyahRp8hbby61F8ajXV6DdgL6UfAuLx/P RQ== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35h1rwrgpv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Dec 2020 13:53:18 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BIIq3kt015863;
-        Fri, 18 Dec 2020 18:53:17 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03ams.nl.ibm.com with ESMTP id 35cng8emj7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Dec 2020 18:53:17 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BIIrEvH39321986
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Dec 2020 18:53:14 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 78C00AE059;
-        Fri, 18 Dec 2020 18:53:14 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 19267AE045;
-        Fri, 18 Dec 2020 18:53:14 +0000 (GMT)
-Received: from osiris (unknown [9.171.50.241])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Fri, 18 Dec 2020 18:53:14 +0000 (GMT)
-Date:   Fri, 18 Dec 2020 19:53:12 +0100
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] more s390 updates for 5.11 merge window
-Message-ID: <20201218185312.GA5261@osiris>
+        Fri, 18 Dec 2020 13:54:49 -0500
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 296C7C0617A7;
+        Fri, 18 Dec 2020 10:54:09 -0800 (PST)
+Received: by mail-yb1-xb30.google.com with SMTP id w127so2818295ybw.8;
+        Fri, 18 Dec 2020 10:54:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xS0F7nVE0LZgOJjr38NIlpM7s/imAsrx6lW5J/Oc/eg=;
+        b=nMl2mSmV1mDn1esAvqbGSKKMRho1MCAmG4sEojWAifkySt6unIHwrF3l2aR8MFnvVY
+         m12vz8ZLS5Y6waGhXELCdulZc8t4Yu/dHkeIIMxMlSGkNGN9rojSkhSgyaL7lK/Yrv2F
+         yNd4QHtCLutv4/5RevSwVJz0++KxdyO/1ulrsrv+x7fH5IeyqsWWd4xD2sPalDAxptyj
+         tj7FMe8Wk2o7/B2D0vIUtfqOWcKenl+qtB8ffOdR3dOiSVQnQ+yJUbx5ZLM7ATYxCwE6
+         FHqHwurT7k92ipR60URo2/s7I9spyULb+Y536JHWqL5hlmDw/dfjKT3HUr1nPTAyVrhJ
+         DNQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xS0F7nVE0LZgOJjr38NIlpM7s/imAsrx6lW5J/Oc/eg=;
+        b=NbxUIWjKr6E30foxx7B8loDn0dXu/pQnoXxSZdTL4yqWdvlMN8aJNhtC/LKFpmTroG
+         q1BDDpdCNW2NJYcrcwfZnB76R94F9Ku6wPxNUwUmWssUaVXD7sAQwKtbwW5PBoQ8x5na
+         IvUJSJxm0GcqiVVDuZt+ftV3m/vNJaqIAH5ncW6Bm7TmMWvToXTVDsJ0Oh7b4bOvKmZS
+         cLC1sYJnrMPhjqFsy+mwDv7bA0lpfVol2gtFHHTQPDIymi3jIcWC73GKwCDVGHyjhKx1
+         CIQHYf0nu+IaoaKibQ0+xLkmjPbcudwcCmhSpbb+i5XziJQ7YvEYeGOgVWe3Zw8IqRut
+         HCQw==
+X-Gm-Message-State: AOAM531ZZkwqXu4Wt0KdJi1pl4rKgA02+TBxgdGOxzvjTcv3Htbv5BnG
+        gGEUooIuGZcfNYXwB6/ULjhSWKl7yGx9xEaIRs4=
+X-Google-Smtp-Source: ABdhPJy16oHglvcmGwj9lPsbfCYai3rb2juHH6r8Ze1QaN4tZ4H7RNlQPL+8zeJ4ElaeYZQbdhtgG2/m9swiN/ac0Ds=
+X-Received: by 2002:a25:818e:: with SMTP id p14mr7624180ybk.425.1608317648419;
+ Fri, 18 Dec 2020 10:54:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-18_10:2020-12-18,2020-12-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 spamscore=0 lowpriorityscore=0 malwarescore=0 mlxlogscore=961
- clxscore=1015 impostorscore=0 suspectscore=0 phishscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012180124
+References: <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com> <CACYkzJ7T4y7in1AsCvJ2izA3yiAke8vE9SRFRCyTPeqMnDHoyQ@mail.gmail.com>
+ <e8b03cbc-c120-43d5-168c-cde5b6a97af8@fb.com> <CAEf4BzYz9Yf9abPBtP+swCuqvvhL0cbbbF1x-3stg9mp=a6+-A@mail.gmail.com>
+ <194b5a6e6e30574a035a3e3baa98d7fde7f91f1c.camel@chromium.org>
+ <CAADnVQK6GjmL19zQykYbh=THM9ktQUzfnwF_FfhUKimCxDnnkQ@mail.gmail.com>
+ <CABRcYm+zjC-WH2gxtfEX5S6mZj-5_ByAzVd5zi3aRmQv-asYqg@mail.gmail.com>
+ <221fb873-80fc-5407-965e-b075c964fa13@fb.com> <CABRcYmLL=SUsPS6qWVgTyYJ26r-QtECfeTZXkXSp7iRBDZRbZA@mail.gmail.com>
+ <d29c2ed6-d99c-9d28-e6ea-d79ffd4d7e65@fb.com> <20201218032009.ycmyqn2kjs3ynfbp@ast-mbp>
+In-Reply-To: <20201218032009.ycmyqn2kjs3ynfbp@ast-mbp>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 18 Dec 2020 10:53:57 -0800
+Message-ID: <CAEf4BzZagDk=HZMqnX_Vvm0Nf+YxjxYARan2hUWy5tyt7qCrFA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, Florent Revest <revest@chromium.org>,
+        KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Florent Revest <revest@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Thu, Dec 17, 2020 at 7:20 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Thu, Dec 17, 2020 at 09:26:09AM -0800, Yonghong Song wrote:
+> >
+> >
+> > On 12/17/20 7:31 AM, Florent Revest wrote:
+> > > On Mon, Dec 14, 2020 at 7:47 AM Yonghong Song <yhs@fb.com> wrote:
+> > > > On 12/11/20 6:40 AM, Florent Revest wrote:
+> > > > > On Wed, Dec 2, 2020 at 10:18 PM Alexei Starovoitov
+> > > > > <alexei.starovoitov@gmail.com> wrote:
+> > > > > > I still think that adopting printk/vsnprintf for this instead of
+> > > > > > reinventing the wheel
+> > > > > > is more flexible and easier to maintain long term.
+> > > > > > Almost the same layout can be done with vsnprintf
+> > > > > > with exception of \0 char.
+> > > > > > More meaningful names, etc.
+> > > > > > See Documentation/core-api/printk-formats.rst
+> > > > >
+> > > > > I agree this would be nice. I finally got a bit of time to experiment
+> > > > > with this and I noticed a few things:
+> > > > >
+> > > > > First of all, because helpers only have 5 arguments, if we use two for
+> > > > > the output buffer and its size and two for the format string and its
+> > > > > size, we are only left with one argument for a modifier. This is still
+> > > > > enough for our usecase (where we'd only use "%ps" for example) but it
+> > > > > does not strictly-speaking allow for the same layout that Andrii
+> > > > > proposed.
+> > > >
+> > > > See helper bpf_seq_printf. It packs all arguments for format string and
+> > > > puts them into an array. bpf_seq_printf will unpack them as it parsed
+> > > > through the format string. So it should be doable to have more than
+> > > > "%ps" in format string.
+> > >
+> > > This could be a nice trick, thank you for the suggestion Yonghong :)
+> > >
+> > > My understanding is that this would also require two extra args (one
+> > > for the array of arguments and one for the size of this array) so it
+> > > would still not fit the 5 arguments limit I described in my previous
+> > > email.
+> > > eg: this would not be possible:
+> > > long bpf_snprintf(const char *out, u32 out_size,
+> > >                    const char *fmt, u32 fmt_size,
+> > >                   const void *data, u32 data_len)
+> >
+> > Right. bpf allows only up to 5 parameters.
+> > >
+> > > Would you then suggest that we also put the format string and its
+> > > length in the first and second cells of this array and have something
+> > > along the line of:
+> > > long bpf_snprintf(const char *out, u32 out_size,
+> > >                    const void *args, u32 args_len) ?
+> > > This seems like a fairly opaque signature to me and harder to verify.
+> >
+> > One way is to define an explicit type for args, something like
+> >    struct bpf_fmt_str_data {
+> >       char *fmt;
+> >       u64 fmt_len;
+> >       u64 data[];
+> >    };
+>
+> that feels a bit convoluted.
+>
+> The reason I feel unease with the helper as was originally proposed
+> and with Andrii's proposal is all the extra strlen and strcpy that
+> needs to be done. In the helper we have to call kallsyms_lookup()
+> which is ok interface for what it was desinged to do,
+> but it's awkward to use to construct new string ("%s [%s]", sym, modname)
+> or to send two strings into a ring buffer.
+> Andrii's zero separator idea will simplify bpf prog, but user space
+> would need to do strlen anyway if it needs to pretty print.
+> If we take pain on converting addr to sym+modname let's figure out
+> how to make it easy for the bpf prog to do and easy for user space to consume.
+> That's why I proposed snprintf.
 
-please pull some more small updates for s390. This is mainly to
-decouple udelay() and arch_cpu_idle() and simplify both of them,
-like I brought it up after the lockdep breakage in 5.10-rc6.
+I have nothing against snprintf support for symbols. But
+bpf_ksym_resolve() solves only a partially overlapping problem, so
+deserves to be added in addition to snprintf support. With snprintf,
+it will be hard to avoid two lookups of the same symbol to print "%s
+[%s]" form, so there is a performance loss, which is probably bigger
+than a simple search for a zero-byte. But bpf_ksym_resolve() can be
+used flexibly. You can either do two separate bpf_ksym_resolve() calls
+to get symbol name (and its length) and symbol's module (and its
+length), if you need to process it programmatically in BPF program. Or
+you can bundle it together and let user-space process it. User-space
+will need to copy data anyways because it can't stay in
+perfbuf/ringbuf for long. So scanning for zero delimiters will be
+negligible, it will just bring data into cache. All I'm saying is that
+ksym_resolve() gives flexibility which snprintf can't provide.
 
-Thanks,
-Heiko
+Additionally, with ksym_resolve() being able to return base address,
+it's now possible to do a bunch of new stuff, from in-BPF
+symbolization to additional things like correlating memory accesses or
+function calls, etc. We just need to make sure that fixed-length base
+addr is put first, before symbol name and symbol module (if they are
+requested), so that a BPF program just knows that it's at offset 0. We
+can discuss those details separately (it's just a matter of ordering
+bits), my point is that ksym_resolve() is more powerful than
+snprintf(): the latter can be used pretty much only for
+pretty-printing.
 
-The following changes since commit 586592478b1fa8bb8cd6875a9191468e9b1a8b13:
+>
+> As far as 6 arg issue:
+> long bpf_snprintf(const char *out, u32 out_size,
+>                   const char *fmt, u32 fmt_size,
+>                   const void *data, u32 data_len);
+> Yeah. It won't work as-is, but fmt_size is unnecessary nowadays.
+> The verifier understands read-only data.
+> Hence the helper can be:
+> long bpf_snprintf(const char *out, u32 out_size,
 
-  Merge tag 's390-5.11-1' of git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux (2020-12-14 16:22:26 -0800)
+With the power of BTF, we can also put these two correlated values
+into a single struct and pass a pointer to it. It will take only one
+parameter for one memory region. Alternative is the "fat pointer"
+approach that Go and Rust use, but it's less flexible overall.
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.11-2
-
-for you to fetch changes up to dfdc6e73cdcf011a04568231132916c6d06b861f:
-
-  s390/zcrypt: convert comma to semicolon (2020-12-16 14:55:50 +0100)
-
-----------------------------------------------------------------
-- Always initialize kernel stack backchain when entering the kernel, so
-  that unwinding works properly.
-
-- Fix stack  unwinder test case to avoid rare interrupt stack corruption.
-
-- Simplify udelay() and just let it busy loop instead of implementing a
-  complex logic.
-
-- arch_cpu_idle() cleanup.
-
-- Some other minor improvements.
-
-----------------------------------------------------------------
-Heiko Carstens (10):
-      s390: always clear kernel stack backchain before calling functions
-      s390: make calls to TRACE_IRQS_OFF/TRACE_IRQS_ON balanced
-      s390/test_unwind: fix CALL_ON_STACK tests
-      s390/test_unwind: use timer instead of udelay
-      s390/delay: simplify udelay
-      s390/irq: select HAVE_IRQ_EXIT_ON_IRQ_STACK
-      s390/delay: remove udelay_simple()
-      s390/idle: merge enabled_wait() and arch_cpu_idle()
-      s390/idle: remove raw_local_irq_save()/restore() from arch_cpu_idle()
-      s390/idle: allow arch_cpu_idle() to be kprobed
-
-Zheng Yongjun (1):
-      s390/zcrypt: convert comma to semicolon
-
- arch/s390/Kconfig                  |   1 +
- arch/s390/include/asm/delay.h      |  12 ++---
- arch/s390/include/asm/processor.h  |   7 ---
- arch/s390/kernel/entry.S           |  16 +++---
- arch/s390/kernel/idle.c            |  18 ++-----
- arch/s390/kernel/ipl.c             |   2 +-
- arch/s390/kernel/setup.c           |   1 -
- arch/s390/lib/delay.c              | 105 ++++---------------------------------
- arch/s390/lib/test_unwind.c        |  31 ++++++-----
- drivers/s390/cio/device.c          |   2 +-
- drivers/s390/crypto/zcrypt_cex2a.c |   2 +-
- drivers/s390/crypto/zcrypt_cex4.c  |   2 +-
- 12 files changed, 44 insertions(+), 155 deletions(-)
-
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index a60cc523d810..9e8895cb9ee7 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -153,6 +153,7 @@ config S390
- 	select HAVE_FUTEX_CMPXCHG if FUTEX
- 	select HAVE_GCC_PLUGINS
- 	select HAVE_GENERIC_VDSO
-+	select HAVE_IRQ_EXIT_ON_IRQ_STACK
- 	select HAVE_KERNEL_BZIP2
- 	select HAVE_KERNEL_GZIP
- 	select HAVE_KERNEL_LZ4
-diff --git a/arch/s390/include/asm/delay.h b/arch/s390/include/asm/delay.h
-index 4a08379cd1eb..21a8fe18fe66 100644
---- a/arch/s390/include/asm/delay.h
-+++ b/arch/s390/include/asm/delay.h
-@@ -13,14 +13,12 @@
- #ifndef _S390_DELAY_H
- #define _S390_DELAY_H
- 
--void udelay_enable(void);
--void __ndelay(unsigned long long nsecs);
--void __udelay(unsigned long long usecs);
--void udelay_simple(unsigned long long usecs);
-+void __ndelay(unsigned long nsecs);
-+void __udelay(unsigned long usecs);
- void __delay(unsigned long loops);
- 
--#define ndelay(n) __ndelay((unsigned long long) (n))
--#define udelay(n) __udelay((unsigned long long) (n))
--#define mdelay(n) __udelay((unsigned long long) (n) * 1000)
-+#define ndelay(n) __ndelay((unsigned long)(n))
-+#define udelay(n) __udelay((unsigned long)(n))
-+#define mdelay(n) __udelay((unsigned long)(n) * 1000)
- 
- #endif /* defined(_S390_DELAY_H) */
-diff --git a/arch/s390/include/asm/processor.h b/arch/s390/include/asm/processor.h
-index 6b7269f51f83..2058a435add4 100644
---- a/arch/s390/include/asm/processor.h
-+++ b/arch/s390/include/asm/processor.h
-@@ -16,14 +16,12 @@
- 
- #define CIF_NOHZ_DELAY		2	/* delay HZ disable for a tick */
- #define CIF_FPU			3	/* restore FPU registers */
--#define CIF_IGNORE_IRQ		4	/* ignore interrupt (for udelay) */
- #define CIF_ENABLED_WAIT	5	/* in enabled wait state */
- #define CIF_MCCK_GUEST		6	/* machine check happening in guest */
- #define CIF_DEDICATED_CPU	7	/* this CPU is dedicated */
- 
- #define _CIF_NOHZ_DELAY		BIT(CIF_NOHZ_DELAY)
- #define _CIF_FPU		BIT(CIF_FPU)
--#define _CIF_IGNORE_IRQ		BIT(CIF_IGNORE_IRQ)
- #define _CIF_ENABLED_WAIT	BIT(CIF_ENABLED_WAIT)
- #define _CIF_MCCK_GUEST		BIT(CIF_MCCK_GUEST)
- #define _CIF_DEDICATED_CPU	BIT(CIF_DEDICATED_CPU)
-@@ -292,11 +290,6 @@ static inline unsigned long __rewind_psw(psw_t psw, unsigned long ilc)
- 	return (psw.addr - ilc) & mask;
- }
- 
--/*
-- * Function to stop a processor until the next interrupt occurs
-- */
--void enabled_wait(void);
--
- /*
-  * Function to drop a processor into disabled wait state
-  */
-diff --git a/arch/s390/kernel/entry.S b/arch/s390/kernel/entry.S
-index 8bb9ebb71c4b..87e83164c330 100644
---- a/arch/s390/kernel/entry.S
-+++ b/arch/s390/kernel/entry.S
-@@ -413,6 +413,7 @@ ENTRY(system_call)
- 	mvc	__PT_PSW(16,%r11),__LC_SVC_OLD_PSW
- 	mvc	__PT_INT_CODE(4,%r11),__LC_SVC_ILC
- 	stg	%r14,__PT_FLAGS(%r11)
-+	xc	__SF_BACKCHAIN(8,%r15),__SF_BACKCHAIN(%r15)
- 	ENABLE_INTS
- .Lsysc_do_svc:
- 	# clear user controlled register to prevent speculative use
-@@ -429,7 +430,6 @@ ENTRY(system_call)
- 	jnl	.Lsysc_nr_ok
- 	slag	%r8,%r1,3
- .Lsysc_nr_ok:
--	xc	__SF_BACKCHAIN(8,%r15),__SF_BACKCHAIN(%r15)
- 	stg	%r2,__PT_ORIG_GPR2(%r11)
- 	stg	%r7,STACK_FRAME_OVERHEAD(%r15)
- 	lg	%r9,0(%r8,%r10)			# get system call add.
-@@ -698,8 +698,8 @@ ENTRY(pgm_check_handler)
- 	mvc	__THREAD_per_address(8,%r14),__LC_PER_ADDRESS
- 	mvc	__THREAD_per_cause(2,%r14),__LC_PER_CODE
- 	mvc	__THREAD_per_paid(1,%r14),__LC_PER_ACCESS_ID
--6:	RESTORE_SM_CLEAR_PER
--	xc	__SF_BACKCHAIN(8,%r15),__SF_BACKCHAIN(%r15)
-+6:	xc	__SF_BACKCHAIN(8,%r15),__SF_BACKCHAIN(%r15)
-+	RESTORE_SM_CLEAR_PER
- 	larl	%r1,pgm_check_table
- 	llgh	%r10,__PT_INT_CODE+2(%r11)
- 	nill	%r10,0x007f
-@@ -730,8 +730,8 @@ ENTRY(pgm_check_handler)
- # PER event in supervisor state, must be kprobes
- #
- .Lpgm_kprobe:
--	RESTORE_SM_CLEAR_PER
- 	xc	__SF_BACKCHAIN(8,%r15),__SF_BACKCHAIN(%r15)
-+	RESTORE_SM_CLEAR_PER
- 	lgr	%r2,%r11		# pass pointer to pt_regs
- 	brasl	%r14,do_per_trap
- 	j	.Lpgm_return
-@@ -777,10 +777,8 @@ ENTRY(io_int_handler)
- .Lio_skip_asce:
- 	mvc	__PT_INT_CODE(12,%r11),__LC_SUBCHANNEL_ID
- 	xc	__PT_FLAGS(8,%r11),__PT_FLAGS(%r11)
--	TSTMSK	__LC_CPU_FLAGS,_CIF_IGNORE_IRQ
--	jo	.Lio_restore
--	TRACE_IRQS_OFF
- 	xc	__SF_BACKCHAIN(8,%r15),__SF_BACKCHAIN(%r15)
-+	TRACE_IRQS_OFF
- .Lio_loop:
- 	lgr	%r2,%r11		# pass pointer to pt_regs
- 	lghi	%r3,IO_INTERRUPT
-@@ -965,10 +963,8 @@ ENTRY(ext_int_handler)
- 	mvc	__PT_INT_PARM(4,%r11),__LC_EXT_PARAMS
- 	mvc	__PT_INT_PARM_LONG(8,%r11),0(%r1)
- 	xc	__PT_FLAGS(8,%r11),__PT_FLAGS(%r11)
--	TSTMSK	__LC_CPU_FLAGS,_CIF_IGNORE_IRQ
--	jo	.Lio_restore
--	TRACE_IRQS_OFF
- 	xc	__SF_BACKCHAIN(8,%r15),__SF_BACKCHAIN(%r15)
-+	TRACE_IRQS_OFF
- 	lgr	%r2,%r11		# pass pointer to pt_regs
- 	lghi	%r3,EXT_INTERRUPT
- 	brasl	%r14,do_IRQ
-diff --git a/arch/s390/kernel/idle.c b/arch/s390/kernel/idle.c
-index 2b85096964f8..a5d4d80d6ede 100644
---- a/arch/s390/kernel/idle.c
-+++ b/arch/s390/kernel/idle.c
-@@ -9,7 +9,6 @@
- 
- #include <linux/kernel.h>
- #include <linux/kernel_stat.h>
--#include <linux/kprobes.h>
- #include <linux/notifier.h>
- #include <linux/init.h>
- #include <linux/cpu.h>
-@@ -21,22 +20,19 @@
- 
- static DEFINE_PER_CPU(struct s390_idle_data, s390_idle);
- 
--void enabled_wait(void)
-+void arch_cpu_idle(void)
- {
- 	struct s390_idle_data *idle = this_cpu_ptr(&s390_idle);
- 	unsigned long long idle_time;
--	unsigned long psw_mask, flags;
--
-+	unsigned long psw_mask;
- 
- 	/* Wait for external, I/O or machine check interrupt. */
- 	psw_mask = PSW_KERNEL_BITS | PSW_MASK_WAIT | PSW_MASK_DAT |
- 		PSW_MASK_IO | PSW_MASK_EXT | PSW_MASK_MCHECK;
- 	clear_cpu_flag(CIF_NOHZ_DELAY);
- 
--	raw_local_irq_save(flags);
--	/* Call the assembler magic in entry.S */
-+	/* psw_idle() returns with interrupts disabled. */
- 	psw_idle(idle, psw_mask);
--	raw_local_irq_restore(flags);
- 
- 	/* Account time spent with enabled wait psw loaded as idle time. */
- 	raw_write_seqcount_begin(&idle->seqcount);
-@@ -46,8 +42,8 @@ void enabled_wait(void)
- 	idle->idle_count++;
- 	account_idle_time(cputime_to_nsecs(idle_time));
- 	raw_write_seqcount_end(&idle->seqcount);
-+	raw_local_irq_enable();
- }
--NOKPROBE_SYMBOL(enabled_wait);
- 
- static ssize_t show_idle_count(struct device *dev,
- 				struct device_attribute *attr, char *buf)
-@@ -120,12 +116,6 @@ void arch_cpu_idle_enter(void)
- {
- }
- 
--void arch_cpu_idle(void)
--{
--	enabled_wait();
--	raw_local_irq_enable();
--}
--
- void arch_cpu_idle_exit(void)
- {
- }
-diff --git a/arch/s390/kernel/ipl.c b/arch/s390/kernel/ipl.c
-index 98b3aca1de8e..7a21eca498aa 100644
---- a/arch/s390/kernel/ipl.c
-+++ b/arch/s390/kernel/ipl.c
-@@ -1512,7 +1512,7 @@ static void diag308_dump(void *dump_block)
- 	while (1) {
- 		if (diag308(DIAG308_LOAD_NORMAL_DUMP, NULL) != 0x302)
- 			break;
--		udelay_simple(USEC_PER_SEC);
-+		udelay(USEC_PER_SEC);
- 	}
- }
- 
-diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
-index 1f16a03be995..1fbed91c73bc 100644
---- a/arch/s390/kernel/setup.c
-+++ b/arch/s390/kernel/setup.c
-@@ -335,7 +335,6 @@ int __init arch_early_irq_init(void)
- 	if (!stack)
- 		panic("Couldn't allocate async stack");
- 	S390_lowcore.async_stack = stack + STACK_INIT_OFFSET;
--	udelay_enable();
- 	return 0;
- }
- 
-diff --git a/arch/s390/lib/delay.c b/arch/s390/lib/delay.c
-index 68d61f2835df..f289afeb3f31 100644
---- a/arch/s390/lib/delay.c
-+++ b/arch/s390/lib/delay.c
-@@ -19,13 +19,6 @@
- #include <asm/div64.h>
- #include <asm/idle.h>
- 
--static DEFINE_STATIC_KEY_FALSE(udelay_ready);
--
--void __init udelay_enable(void)
--{
--	static_branch_enable(&udelay_ready);
--}
--
- void __delay(unsigned long loops)
- {
-         /*
-@@ -39,105 +32,25 @@ void __delay(unsigned long loops)
- }
- EXPORT_SYMBOL(__delay);
- 
--static void __udelay_disabled(unsigned long long usecs)
-+static void delay_loop(unsigned long delta)
- {
--	unsigned long cr0, cr0_new, psw_mask;
--	struct s390_idle_data idle;
--	u64 end;
-+	unsigned long end;
- 
--	end = get_tod_clock() + (usecs << 12);
--	__ctl_store(cr0, 0, 0);
--	cr0_new = cr0 & ~CR0_IRQ_SUBCLASS_MASK;
--	cr0_new |= (1UL << (63 - 52)); /* enable clock comparator irq */
--	__ctl_load(cr0_new, 0, 0);
--	psw_mask = __extract_psw() | PSW_MASK_EXT | PSW_MASK_WAIT;
--	set_clock_comparator(end);
--	set_cpu_flag(CIF_IGNORE_IRQ);
--	psw_idle(&idle, psw_mask);
--	trace_hardirqs_off();
--	clear_cpu_flag(CIF_IGNORE_IRQ);
--	set_clock_comparator(S390_lowcore.clock_comparator);
--	__ctl_load(cr0, 0, 0);
-+	end = get_tod_clock_monotonic() + delta;
-+	while (!tod_after(get_tod_clock_monotonic(), end))
-+		cpu_relax();
- }
- 
--static void __udelay_enabled(unsigned long long usecs)
-+void __udelay(unsigned long usecs)
- {
--	u64 clock_saved, end;
--
--	end = get_tod_clock_fast() + (usecs << 12);
--	do {
--		clock_saved = 0;
--		if (tod_after(S390_lowcore.clock_comparator, end)) {
--			clock_saved = local_tick_disable();
--			set_clock_comparator(end);
--		}
--		enabled_wait();
--		if (clock_saved)
--			local_tick_enable(clock_saved);
--	} while (get_tod_clock_fast() < end);
--}
--
--/*
-- * Waits for 'usecs' microseconds using the TOD clock comparator.
-- */
--void __udelay(unsigned long long usecs)
--{
--	unsigned long flags;
--
--	if (!static_branch_likely(&udelay_ready)) {
--		udelay_simple(usecs);
--		return;
--	}
--
--	preempt_disable();
--	local_irq_save(flags);
--	if (in_irq()) {
--		__udelay_disabled(usecs);
--		goto out;
--	}
--	if (in_softirq()) {
--		if (raw_irqs_disabled_flags(flags))
--			__udelay_disabled(usecs);
--		else
--			__udelay_enabled(usecs);
--		goto out;
--	}
--	if (raw_irqs_disabled_flags(flags)) {
--		local_bh_disable();
--		__udelay_disabled(usecs);
--		_local_bh_enable();
--		goto out;
--	}
--	__udelay_enabled(usecs);
--out:
--	local_irq_restore(flags);
--	preempt_enable();
-+	delay_loop(usecs << 12);
- }
- EXPORT_SYMBOL(__udelay);
- 
--/*
-- * Simple udelay variant. To be used on startup and reboot
-- * when the interrupt handler isn't working.
-- */
--void udelay_simple(unsigned long long usecs)
--{
--	u64 end;
--
--	end = get_tod_clock_fast() + (usecs << 12);
--	while (get_tod_clock_fast() < end)
--		cpu_relax();
--}
--
--void __ndelay(unsigned long long nsecs)
-+void __ndelay(unsigned long nsecs)
- {
--	u64 end;
--
- 	nsecs <<= 9;
- 	do_div(nsecs, 125);
--	end = get_tod_clock_fast() + nsecs;
--	if (nsecs & ~0xfffUL)
--		__udelay(nsecs >> 12);
--	while (get_tod_clock_fast() < end)
--		barrier();
-+	delay_loop(nsecs);
- }
- EXPORT_SYMBOL(__ndelay);
-diff --git a/arch/s390/lib/test_unwind.c b/arch/s390/lib/test_unwind.c
-index 7c988994931f..dcd8946255be 100644
---- a/arch/s390/lib/test_unwind.c
-+++ b/arch/s390/lib/test_unwind.c
-@@ -9,12 +9,12 @@
- #include <linux/kallsyms.h>
- #include <linux/kthread.h>
- #include <linux/module.h>
-+#include <linux/timer.h>
- #include <linux/slab.h>
- #include <linux/string.h>
- #include <linux/kprobes.h>
- #include <linux/wait.h>
- #include <asm/irq.h>
--#include <asm/delay.h>
- 
- #define BT_BUF_SIZE (PAGE_SIZE * 4)
- 
-@@ -205,12 +205,15 @@ static noinline int unwindme_func3(struct unwindme *u)
- /* This function must appear in the backtrace. */
- static noinline int unwindme_func2(struct unwindme *u)
- {
-+	unsigned long flags;
- 	int rc;
- 
- 	if (u->flags & UWM_SWITCH_STACK) {
--		preempt_disable();
-+		local_irq_save(flags);
-+		local_mcck_disable();
- 		rc = CALL_ON_STACK(unwindme_func3, S390_lowcore.nodat_stack, 1, u);
--		preempt_enable();
-+		local_mcck_enable();
-+		local_irq_restore(flags);
- 		return rc;
- 	} else {
- 		return unwindme_func3(u);
-@@ -223,31 +226,27 @@ static noinline int unwindme_func1(void *u)
- 	return unwindme_func2((struct unwindme *)u);
- }
- 
--static void unwindme_irq_handler(struct ext_code ext_code,
--				       unsigned int param32,
--				       unsigned long param64)
-+static void unwindme_timer_fn(struct timer_list *unused)
- {
- 	struct unwindme *u = READ_ONCE(unwindme);
- 
--	if (u && u->task == current) {
-+	if (u) {
- 		unwindme = NULL;
- 		u->task = NULL;
- 		u->ret = unwindme_func1(u);
-+		complete(&u->task_ready);
- 	}
- }
- 
-+static struct timer_list unwind_timer;
-+
- static int test_unwind_irq(struct unwindme *u)
- {
--	preempt_disable();
--	if (register_external_irq(EXT_IRQ_CLK_COMP, unwindme_irq_handler)) {
--		pr_info("Couldn't register external interrupt handler");
--		return -1;
--	}
--	u->task = current;
- 	unwindme = u;
--	udelay(1);
--	unregister_external_irq(EXT_IRQ_CLK_COMP, unwindme_irq_handler);
--	preempt_enable();
-+	init_completion(&u->task_ready);
-+	timer_setup(&unwind_timer, unwindme_timer_fn, 0);
-+	mod_timer(&unwind_timer, jiffies + 1);
-+	wait_for_completion(&u->task_ready);
- 	return u->ret;
- }
- 
-diff --git a/drivers/s390/cio/device.c b/drivers/s390/cio/device.c
-index e0005a4fc978..9e3c8b4e7fa8 100644
---- a/drivers/s390/cio/device.c
-+++ b/drivers/s390/cio/device.c
-@@ -1668,7 +1668,7 @@ void ccw_device_wait_idle(struct ccw_device *cdev)
- 		cio_tsch(sch);
- 		if (sch->schib.scsw.cmd.actl == 0)
- 			break;
--		udelay_simple(100);
-+		udelay(100);
- 	}
- }
- #endif
-diff --git a/drivers/s390/crypto/zcrypt_cex2a.c b/drivers/s390/crypto/zcrypt_cex2a.c
-index 226a5612e855..62ceeb7fc125 100644
---- a/drivers/s390/crypto/zcrypt_cex2a.c
-+++ b/drivers/s390/crypto/zcrypt_cex2a.c
-@@ -175,7 +175,7 @@ static int zcrypt_cex2a_queue_probe(struct ap_device *ap_dev)
- 	atomic_set(&zq->load, 0);
- 	ap_queue_init_state(aq);
- 	ap_queue_init_reply(aq, &zq->reply);
--	aq->request_timeout = CEX2A_CLEANUP_TIME,
-+	aq->request_timeout = CEX2A_CLEANUP_TIME;
- 	aq->private = zq;
- 	rc = zcrypt_queue_register(zq);
- 	if (rc) {
-diff --git a/drivers/s390/crypto/zcrypt_cex4.c b/drivers/s390/crypto/zcrypt_cex4.c
-index f5195bca1d85..f4a6d3744241 100644
---- a/drivers/s390/crypto/zcrypt_cex4.c
-+++ b/drivers/s390/crypto/zcrypt_cex4.c
-@@ -631,7 +631,7 @@ static int zcrypt_cex4_queue_probe(struct ap_device *ap_dev)
- 	atomic_set(&zq->load, 0);
- 	ap_queue_init_state(aq);
- 	ap_queue_init_reply(aq, &zq->reply);
--	aq->request_timeout = CEX4_CLEANUP_TIME,
-+	aq->request_timeout = CEX4_CLEANUP_TIME;
- 	aq->private = zq;
- 	rc = zcrypt_queue_register(zq);
- 	if (rc) {
+>                   const char *fmt,
+>                   const void *data, u32 data_len);
+> The 3rd arg cannot be ARG_PTR_TO_MEM.
+> Instead we can introduce ARG_PTR_TO_CONST_STR in the verifier.
+> See check_mem_access() where it's doing bpf_map_direct_read().
+> That 'fmt' string will be accessed through the same bpf_map_direct_read().
+> The verifier would need to check that it's NUL-terminated valid string.
+> It should probably do % specifier checks at the same time.
+> At the end bpf_snprintf() will have 5 args and when wrapped with
+> BPF_SNPRINTF() macro it will accept arbitrary number of arguments to print.
+> It also will be generally useful to do all other kinds of pretty printing.
