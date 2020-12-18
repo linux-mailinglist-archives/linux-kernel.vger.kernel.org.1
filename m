@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52B112DDD79
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 04:55:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E1C92DDD82
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 04:57:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732299AbgLRDyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 22:54:53 -0500
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:50569 "EHLO
+        id S1732690AbgLRDzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 22:55:19 -0500
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:43041 "EHLO
         out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726789AbgLRDyx (ORCPT
+        by vger.kernel.org with ESMTP id S1732665AbgLRDzS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 22:54:53 -0500
+        Thu, 17 Dec 2020 22:55:18 -0500
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 6EC145C00F7;
-        Thu, 17 Dec 2020 22:54:06 -0500 (EST)
+        by mailout.nyi.internal (Postfix) with ESMTP id 3B2D35C00F5;
+        Thu, 17 Dec 2020 22:54:12 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Thu, 17 Dec 2020 22:54:06 -0500
+  by compute3.internal (MEProxy); Thu, 17 Dec 2020 22:54:12 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=from
         :to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=724ecEhRDXWgZ
-        Zicro86oSLISUtE1mGbQqChDaE7fZo=; b=gT1zKlWZJ59VVo3ZH2+P+VaPrBxt7
-        6DpWjriPJInpk9n6lzLmZsH1vk2AcuR50Uu2kX36gshlakBnaggaU2sNyV/h/pCY
-        LO8f53BTMRTRopyjWqC6lqTS7pdPt6th4L7pdHWuARVxK+eFhmYD4PQ1zk6rdgWp
-        fvKOL0smPajBvHYQaJhDsElL6PgGSP4k6X8JeDvEj0C18Z3ch0R8YgT4DuqLr+Iz
-        x7zxciaFSC/IclRAtKLUtK+20zAREmvFonRhNgLmIiF6FWB+Dczf3HWwxq/wpOB8
-        mF2qLPiJRjyPAjm55fMQAbHx2PlqR0wDQARWpltYhFRpo4iNZ3d9YXCjQ==
+        :mime-version:content-transfer-encoding; s=fm1; bh=Q1VncEwVP5Sn+
+        LVJVlCf4rK+C+OhdnQWKLcdmzYhx+k=; b=k1SXvNzpHK19iAEYL4EhT92jU0tE+
+        j+tTsE1qJVJrktXaAG3YxAUa5C1ZHK6fGMbPegvhZMvF9aetvq9XOctZcLnYvWG4
+        Av45N5UKvUJRz0dyAqiFrMAuDVxyS4KL0hPG28Al8SIaDNgFUNjY/N4YA4A/jxJ8
+        vyPIOAf7VJT71ySUSF5vi4Z20dJi5XZfwYacSOO4Vy3f5zj57Jbam2ndOTSkEFTx
+        o6aeZITT6u7VALxh87FW91iYk2hYH0wHAfyjxA9iZxblEEl656yMTPRtUZ4CtGFp
+        4/5T9afX7k5OEiHv88pfS8UkStVxD6qdQe1/QSmKDxg5pPvgI+qHl+cYA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=724ecEhRDXWgZZicro86oSLISUtE1mGbQqChDaE7fZo=; b=az2WPMsu
-        EhEL+R+IjaasLlAdSFBtN1NDTzOo1fx2ihnbKQyv07jhfIXsutZLKNKfaFLS9mKw
-        +r/LQJWpKeL0RL7qODDFYRcWlSIerFvQ3bAWW/LIQ/KFTmeANVNHkai7cbMuZJgt
-        63R9ZT+wAYL8tzGmVDGRR4KFyKlV0/k8Ue4pc3iTpSiNn7nZHAI7Pai1Y7v7p+39
-        eoIhdyrD89BRIfdyTQQgOFY3INbSAru+HuTyFFlL/ZjsvqZDbJaqvfVfS24qRlO0
-        FuPCdwGd7Hiqd1pUQw5x15MGA/nlh0V/K4I5DiZK/VkmF41ST3agB965dBUrwApc
-        eOZrHXe1VNW2yg==
-X-ME-Sender: <xms:3ifcX4LNGWW-JKvy2wd0BHNTm1SBedP1-QHelcH3G3gtbZD2LML2dg>
-    <xme:3ifcX0AfXGHSWR3Fq6RCF0pjYGG8RaB_L8gZej_-KtkCOxtkBMwxz0PtICzcGVRsA
-    o5xkIcl2mn8ERlJug>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudelhedgieefucetufdoteggodetrfdotf
+        fm1; bh=Q1VncEwVP5Sn+LVJVlCf4rK+C+OhdnQWKLcdmzYhx+k=; b=N2qIFdmQ
+        BXhUnaLOsrHV0QaUMw9ZEvQhJ+pLZrViOR5l2si3bQrFmTD8bPGM73pOLUP2Z3zp
+        SBTPmfIMZURhClrVlxzAxSOmS8WfM37kHb9R8sdXuIjurT85vdtdZc6hnBRekXTG
+        l77OyYYccLXf9O55uV9qOOQE35OrLByxIOuChobAE4ASTNGuu66Gx0ZOptcHu1ou
+        DaSEQgTb5R6BpVuYi0k+lXpu7ozXqxT7oHsW2thDEPdspQ03XYB7XY6sR7ah4V/S
+        sf8SMhrb8/TtP0ak0aZ9tUZddJi7vVAMczXtJMnzClgHQilYT7cnoVBDTeOU/XcU
+        1m/jiLIAFcx63w==
+X-ME-Sender: <xms:5CfcX7BPnoJMOvvGdmBAQJxE0PVzRIwiozM_yZRgn4A5EsjRM24Oug>
+    <xme:5CfcX_dVeUWnSxznQrkloDLxYyGFgYv7yz-Wr2NIKFDeJBvIYhiFxnxmbMvC_Cb5c
+    QTR6pP2QPCt60byRw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudelhedgieegucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
     dtredttdenucfhrhhomheptehnughrvgifucflvghffhgvrhihuceorghnughrvgifsegr
     jhdrihgurdgruheqnecuggftrfgrthhtvghrnhepjefgvdevheetkeevgeegleelgfelte
     etjeffleffvdduudevieffgeetleevhfetnecukfhppeduvddtrddvtddrjeejrddvuddu
-    necuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrghilhhfrhhomheprghnug
+    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghnug
     hrvgifsegrjhdrihgurdgruh
-X-ME-Proxy: <xmx:3ifcX1vpF1fk4UlpkSJ4LCy4HFArNC9_qTJU2S9n-7u5MBwj66j-XQ>
-    <xmx:3ifcX6SI61c5N9HrWMBI3qJxiQULm5GikBtgD4jWyENyIorNImpImg>
-    <xmx:3ifcX0K_jQMVEdpzSp6rsu-tfWHsk3Ssn7aCJkrOHqqdGiaYunWzHQ>
-    <xmx:3ifcX_ONaaJ6fNoVJ2N-quFjvhIEd-qIIzi27Jdg4Vhq-mYKuAMJow>
+X-ME-Proxy: <xmx:5CfcX47FCgGRrNRfGPs_BPV06lYnFHroYpFvDM2lFcqu2uxC74_20g>
+    <xmx:5CfcXyUMv6oDzDuf_Gz0t3bmqMWQG2x63ZsYCvgsRTlUXaOv1BtitQ>
+    <xmx:5CfcX37ZSoQg2Vc0hVa-K991H5lxMt6XJ_3gRFXHOxHkQhMcArlESg>
+    <xmx:5CfcXyoVw7axqGBK3BgP56EgjMObtjSpcWZ_Y7XY6inz3kxQJd3B6Q>
 Received: from localhost.localdomain (unknown [120.20.77.211])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 14E08108005F;
-        Thu, 17 Dec 2020 22:54:00 -0500 (EST)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 55003108005B;
+        Thu, 17 Dec 2020 22:54:07 -0500 (EST)
 From:   Andrew Jeffery <andrew@aj.id.au>
 To:     linux-mmc@vger.kernel.org
 Cc:     ulf.hansson@linaro.org, robh+dt@kernel.org, joel@jms.id.au,
         adrian.hunter@intel.com, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-aspeed@lists.ozlabs.org, ryan_chen@aspeedtech.com
-Subject: [PATCH v6 2/6] mmc: sdhci-of-aspeed: Expose clock phase controls
-Date:   Fri, 18 Dec 2020 14:23:34 +1030
-Message-Id: <20201218035338.1130849-3-andrew@aj.id.au>
+Subject: [PATCH v6 3/6] mmc: sdhci-of-aspeed: Add AST2600 bus clock support
+Date:   Fri, 18 Dec 2020 14:23:35 +1030
+Message-Id: <20201218035338.1130849-4-andrew@aj.id.au>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201218035338.1130849-1-andrew@aj.id.au>
 References: <20201218035338.1130849-1-andrew@aj.id.au>
@@ -73,335 +73,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Aspeed SD/eMMC controllers expose configurable clock phase
-correction by inserting delays of up to 15 logic elements in length into
-the bus clock path. The hardware supports independent configuration for
-both bus directions on a per-slot basis.
-
-The timing delay per element encoded in the driver was experimentally
-determined by scope measurements.
-
-The phase controls for both slots are grouped together in a single
-register of the global register block of the SD/MMC controller(s), which
-drives the use of a locking scheme between the SDHCIs and the global
-register set.
+The AST2600 can achieve HS200 speeds with a change to the bus clock
+divisor behaviour. The divisor can also be more accurate with respect
+to the requested clock rate, but keep the one-hot behaviour for
+backwards compatibility with the AST2400 and AST2500.
 
 Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
 ---
- drivers/mmc/host/sdhci-of-aspeed.c | 216 +++++++++++++++++++++++++++--
- 1 file changed, 208 insertions(+), 8 deletions(-)
+ drivers/mmc/host/sdhci-of-aspeed.c | 37 ++++++++++++++++++++++++++----
+ 1 file changed, 33 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mmc/host/sdhci-of-aspeed.c b/drivers/mmc/host/sdhci-of-aspeed.c
-index 4f008ba3280e..b1a14e7dda82 100644
+index b1a14e7dda82..4b30f6a1178e 100644
 --- a/drivers/mmc/host/sdhci-of-aspeed.c
 +++ b/drivers/mmc/host/sdhci-of-aspeed.c
-@@ -6,6 +6,7 @@
- #include <linux/delay.h>
- #include <linux/device.h>
- #include <linux/io.h>
-+#include <linux/math64.h>
- #include <linux/mmc/host.h>
- #include <linux/module.h>
- #include <linux/of_address.h>
-@@ -16,9 +17,19 @@
- 
- #include "sdhci-pltfm.h"
- 
--#define ASPEED_SDC_INFO		0x00
--#define   ASPEED_SDC_S1MMC8	BIT(25)
--#define   ASPEED_SDC_S0MMC8	BIT(24)
-+#define ASPEED_SDC_INFO			0x00
-+#define   ASPEED_SDC_S1_MMC8		BIT(25)
-+#define   ASPEED_SDC_S0_MMC8		BIT(24)
-+#define ASPEED_SDC_PHASE		0xf4
-+#define   ASPEED_SDC_S1_PHASE_IN	GENMASK(25, 21)
-+#define   ASPEED_SDC_S0_PHASE_IN	GENMASK(20, 16)
-+#define   ASPEED_SDC_S1_PHASE_OUT	GENMASK(15, 11)
-+#define   ASPEED_SDC_S1_PHASE_IN_EN	BIT(10)
-+#define   ASPEED_SDC_S1_PHASE_OUT_EN	GENMASK(9, 8)
-+#define   ASPEED_SDC_S0_PHASE_OUT	GENMASK(7, 3)
-+#define   ASPEED_SDC_S0_PHASE_IN_EN	BIT(2)
-+#define   ASPEED_SDC_S0_PHASE_OUT_EN	GENMASK(1, 0)
-+#define   ASPEED_SDC_PHASE_MAX		31
- 
- struct aspeed_sdc {
- 	struct clk *clk;
-@@ -28,9 +39,36 @@ struct aspeed_sdc {
- 	void __iomem *regs;
+@@ -59,6 +59,7 @@ struct aspeed_sdhci_phase_desc {
  };
  
-+struct aspeed_sdhci_tap_param {
-+	bool valid;
-+
-+#define ASPEED_SDHCI_TAP_PARAM_INVERT_CLK	BIT(4)
-+	u8 in;
-+	u8 out;
-+};
-+
-+struct aspeed_sdhci_tap_desc {
-+	u32 tap_mask;
-+	u32 enable_mask;
-+	u8 enable_value;
-+};
-+
-+struct aspeed_sdhci_phase_desc {
-+	struct aspeed_sdhci_tap_desc in;
-+	struct aspeed_sdhci_tap_desc out;
-+};
-+
-+struct aspeed_sdhci_pdata {
-+	const struct aspeed_sdhci_phase_desc *phase_desc;
-+	size_t nr_phase_descs;
-+};
-+
- struct aspeed_sdhci {
-+	const struct aspeed_sdhci_pdata *pdata;
- 	struct aspeed_sdc *parent;
- 	u32 width_mask;
-+	struct mmc_clk_phase_map phase_map;
-+	const struct aspeed_sdhci_phase_desc *phase_desc;
+ struct aspeed_sdhci_pdata {
++	unsigned int clk_div_start;
+ 	const struct aspeed_sdhci_phase_desc *phase_desc;
+ 	size_t nr_phase_descs;
  };
- 
- static void aspeed_sdc_configure_8bit_mode(struct aspeed_sdc *sdc,
-@@ -50,10 +88,118 @@ static void aspeed_sdc_configure_8bit_mode(struct aspeed_sdc *sdc,
- 	spin_unlock(&sdc->lock);
- }
- 
-+static u32
-+aspeed_sdc_set_phase_tap(const struct aspeed_sdhci_tap_desc *desc,
-+			 u8 tap, bool enable, u32 reg)
-+{
-+	reg &= ~(desc->enable_mask | desc->tap_mask);
-+	if (enable) {
-+		reg |= tap << __ffs(desc->tap_mask);
-+		reg |= desc->enable_value << __ffs(desc->enable_mask);
-+	}
-+
-+	return reg;
-+}
-+
-+static void
-+aspeed_sdc_set_phase_taps(struct aspeed_sdc *sdc,
-+			  const struct aspeed_sdhci_phase_desc *desc,
-+			  const struct aspeed_sdhci_tap_param *taps)
-+{
-+	u32 reg;
-+
-+	spin_lock(&sdc->lock);
-+	reg = readl(sdc->regs + ASPEED_SDC_PHASE);
-+
-+	reg = aspeed_sdc_set_phase_tap(&desc->in, taps->in, taps->valid, reg);
-+	reg = aspeed_sdc_set_phase_tap(&desc->out, taps->out, taps->valid, reg);
-+
-+	writel(reg, sdc->regs + ASPEED_SDC_PHASE);
-+	spin_unlock(&sdc->lock);
-+}
-+
-+#define PICOSECONDS_PER_SECOND		1000000000000ULL
-+#define ASPEED_SDHCI_NR_TAPS		15
-+/* Measured value with *handwave* environmentals and static loading */
-+#define ASPEED_SDHCI_MAX_TAP_DELAY_PS	1253
-+static int aspeed_sdhci_phase_to_tap(struct device *dev, unsigned long rate_hz,
-+				     int phase_deg)
-+{
-+	u64 phase_period_ps;
-+	u64 prop_delay_ps;
-+	u64 clk_period_ps;
-+	unsigned int tap;
-+	u8 inverted;
-+
-+	phase_deg %= 360;
-+
-+	if (phase_deg >= 180) {
-+		inverted = ASPEED_SDHCI_TAP_PARAM_INVERT_CLK;
-+		phase_deg -= 180;
-+		dev_dbg(dev,
-+			"Inverting clock to reduce phase correction from %d to %d degrees\n",
-+			phase_deg + 180, phase_deg);
-+	} else {
-+		inverted = 0;
-+	}
-+
-+	prop_delay_ps = ASPEED_SDHCI_MAX_TAP_DELAY_PS / ASPEED_SDHCI_NR_TAPS;
-+	clk_period_ps = div_u64(PICOSECONDS_PER_SECOND, (u64)rate_hz);
-+	phase_period_ps = div_u64((u64)phase_deg * clk_period_ps, 360ULL);
-+
-+	tap = div_u64(phase_period_ps, prop_delay_ps);
-+	if (tap > ASPEED_SDHCI_NR_TAPS) {
-+		dev_warn(dev,
-+			 "Requested out of range phase tap %d for %d degrees of phase compensation at %luHz, clamping to tap %d\n",
-+			 tap, phase_deg, rate_hz, ASPEED_SDHCI_NR_TAPS);
-+		tap = ASPEED_SDHCI_NR_TAPS;
-+	}
-+
-+	return inverted | tap;
-+}
-+
-+static void
-+aspeed_sdhci_phases_to_taps(struct device *dev, unsigned long rate,
-+			    const struct mmc_clk_phase *phases,
-+			    struct aspeed_sdhci_tap_param *taps)
-+{
-+	taps->valid = phases->valid;
-+
-+	if (!phases->valid)
-+		return;
-+
-+	taps->in = aspeed_sdhci_phase_to_tap(dev, rate, phases->in_deg);
-+	taps->out = aspeed_sdhci_phase_to_tap(dev, rate, phases->out_deg);
-+}
-+
-+static void
-+aspeed_sdhci_configure_phase(struct sdhci_host *host, unsigned long rate)
-+{
-+	struct aspeed_sdhci_tap_param _taps = {0}, *taps = &_taps;
-+	struct mmc_clk_phase *params;
-+	struct aspeed_sdhci *sdhci;
-+	struct device *dev;
-+
-+	dev = host->mmc->parent;
-+	sdhci = sdhci_pltfm_priv(sdhci_priv(host));
-+
-+	if (!sdhci->phase_desc)
-+		return;
-+
-+	params = &sdhci->phase_map.phase[host->timing];
-+	aspeed_sdhci_phases_to_taps(dev, rate, params, taps);
-+	aspeed_sdc_set_phase_taps(sdhci->parent, sdhci->phase_desc, taps);
-+	dev_dbg(dev,
-+		"Using taps [%d, %d] for [%d, %d] degrees of phase correction at %luHz (%d)\n",
-+		taps->in & ASPEED_SDHCI_NR_TAPS,
-+		taps->out & ASPEED_SDHCI_NR_TAPS,
-+		params->in_deg, params->out_deg, rate, host->timing);
-+}
-+
- static void aspeed_sdhci_set_clock(struct sdhci_host *host, unsigned int clock)
+@@ -200,10 +201,13 @@ static void aspeed_sdhci_set_clock(struct sdhci_host *host, unsigned int clock)
  {
  	struct sdhci_pltfm_host *pltfm_host;
--	unsigned long parent;
-+	unsigned long parent, bus;
+ 	unsigned long parent, bus;
++	struct aspeed_sdhci *sdhci;
  	int div;
  	u16 clk;
  
-@@ -69,13 +215,17 @@ static void aspeed_sdhci_set_clock(struct sdhci_host *host, unsigned int clock)
+ 	pltfm_host = sdhci_priv(host);
++	sdhci = sdhci_pltfm_priv(pltfm_host);
++
+ 	parent = clk_get_rate(pltfm_host->clk);
+ 
+ 	sdhci_writew(host, 0, SDHCI_CLOCK_CONTROL);
+@@ -214,7 +218,23 @@ static void aspeed_sdhci_set_clock(struct sdhci_host *host, unsigned int clock)
+ 	if (WARN_ON(clock > host->max_clk))
  		clock = host->max_clk;
  
- 	for (div = 2; div < 256; div *= 2) {
--		if ((parent / div) <= clock)
-+		bus = parent / div;
-+		if (bus <= clock)
+-	for (div = 2; div < 256; div *= 2) {
++	/*
++	 * Regarding the AST2600:
++	 *
++	 * If (EMMC12C[7:6], EMMC12C[15:8] == 0) then
++	 *   period of SDCLK = period of SDMCLK.
++	 *
++	 * If (EMMC12C[7:6], EMMC12C[15:8] != 0) then
++	 *   period of SDCLK = period of SDMCLK * 2 * (EMMC12C[7:6], EMMC[15:8])
++	 *
++	 * If you keep EMMC12C[7:6] = 0 and EMMC12C[15:8] as one-hot,
++	 * 0x1/0x2/0x4/etc, you will find it is compatible to AST2400 or AST2500
++	 *
++	 * Keep the one-hot behaviour for backwards compatibility except for
++	 * supporting the value 0 in (EMMC12C[7:6], EMMC12C[15:8]), and capture
++	 * the 0-value capability in clk_div_start.
++	 */
++	for (div = sdhci->pdata->clk_div_start; div < 256; div *= 2) {
+ 		bus = parent / div;
+ 		if (bus <= clock)
  			break;
- 	}
-+
- 	div >>= 1;
- 
- 	clk = div << SDHCI_DIVIDER_SHIFT;
- 
-+	aspeed_sdhci_configure_phase(host, bus);
-+
- 	sdhci_enable_clk(host, clk);
- }
- 
-@@ -157,6 +307,7 @@ static inline int aspeed_sdhci_calculate_slot(struct aspeed_sdhci *dev,
- 
- static int aspeed_sdhci_probe(struct platform_device *pdev)
- {
-+	const struct aspeed_sdhci_pdata *aspeed_pdata;
- 	struct sdhci_pltfm_host *pltfm_host;
- 	struct aspeed_sdhci *dev;
- 	struct sdhci_host *host;
-@@ -164,12 +315,15 @@ static int aspeed_sdhci_probe(struct platform_device *pdev)
- 	int slot;
+@@ -316,6 +336,10 @@ static int aspeed_sdhci_probe(struct platform_device *pdev)
  	int ret;
  
-+	aspeed_pdata = of_device_get_match_data(&pdev->dev);
-+
+ 	aspeed_pdata = of_device_get_match_data(&pdev->dev);
++	if (!aspeed_pdata) {
++		dev_err(&pdev->dev, "Missing platform configuration data\n");
++		return -EINVAL;
++	}
+ 
  	host = sdhci_pltfm_init(pdev, &aspeed_sdhci_pdata, sizeof(*dev));
  	if (IS_ERR(host))
- 		return PTR_ERR(host);
- 
- 	pltfm_host = sdhci_priv(host);
- 	dev = sdhci_pltfm_priv(pltfm_host);
-+	dev->pdata = aspeed_pdata;
- 	dev->parent = dev_get_drvdata(pdev->dev.parent);
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-@@ -180,8 +334,17 @@ static int aspeed_sdhci_probe(struct platform_device *pdev)
+@@ -334,7 +358,7 @@ static int aspeed_sdhci_probe(struct platform_device *pdev)
  	else if (slot >= 2)
  		return -EINVAL;
  
--	dev_info(&pdev->dev, "Configuring for slot %d\n", slot);
--	dev->width_mask = !slot ? ASPEED_SDC_S0MMC8 : ASPEED_SDC_S1MMC8;
-+	if (dev->pdata && slot < dev->pdata->nr_phase_descs) {
-+		dev->phase_desc = &dev->pdata->phase_desc[slot];
-+	} else {
-+		dev_info(&pdev->dev,
-+			 "Phase control not supported for slot %d\n", slot);
-+		dev->phase_desc = NULL;
-+	}
-+
-+	dev->width_mask = !slot ? ASPEED_SDC_S0_MMC8 : ASPEED_SDC_S1_MMC8;
-+
-+	dev_info(&pdev->dev, "Configured for slot %d\n", slot);
- 
- 	sdhci_get_of_property(pdev);
- 
-@@ -199,6 +362,9 @@ static int aspeed_sdhci_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto err_sdhci_add;
- 
-+	if (dev->phase_desc)
-+		mmc_of_parse_clk_phase(host->mmc, &dev->phase_map);
-+
- 	ret = sdhci_add_host(host);
- 	if (ret)
- 		goto err_sdhci_add;
-@@ -230,10 +396,44 @@ static int aspeed_sdhci_remove(struct platform_device *pdev)
+-	if (dev->pdata && slot < dev->pdata->nr_phase_descs) {
++	if (slot < dev->pdata->nr_phase_descs) {
+ 		dev->phase_desc = &dev->pdata->phase_desc[slot];
+ 	} else {
+ 		dev_info(&pdev->dev,
+@@ -396,6 +420,10 @@ static int aspeed_sdhci_remove(struct platform_device *pdev)
  	return 0;
  }
  
-+static const struct aspeed_sdhci_phase_desc ast2600_sdhci_phase[] = {
-+	/* SDHCI/Slot 0 */
-+	[0] = {
-+		.in = {
-+			.tap_mask = ASPEED_SDC_S0_PHASE_IN,
-+			.enable_mask = ASPEED_SDC_S0_PHASE_IN_EN,
-+			.enable_value = 1,
-+		},
-+		.out = {
-+			.tap_mask = ASPEED_SDC_S0_PHASE_OUT,
-+			.enable_mask = ASPEED_SDC_S0_PHASE_OUT_EN,
-+			.enable_value = 3,
-+		},
-+	},
-+	/* SDHCI/Slot 1 */
-+	[1] = {
-+		.in = {
-+			.tap_mask = ASPEED_SDC_S1_PHASE_IN,
-+			.enable_mask = ASPEED_SDC_S1_PHASE_IN_EN,
-+			.enable_value = 1,
-+		},
-+		.out = {
-+			.tap_mask = ASPEED_SDC_S1_PHASE_OUT,
-+			.enable_mask = ASPEED_SDC_S1_PHASE_OUT_EN,
-+			.enable_value = 3,
-+		},
-+	},
++static const struct aspeed_sdhci_pdata ast2400_sdhci_pdata = {
++	.clk_div_start = 2,
 +};
 +
-+static const struct aspeed_sdhci_pdata ast2600_sdhci_pdata = {
-+	.phase_desc = ast2600_sdhci_phase,
-+	.nr_phase_descs = ARRAY_SIZE(ast2600_sdhci_phase),
-+};
-+
- static const struct of_device_id aspeed_sdhci_of_match[] = {
- 	{ .compatible = "aspeed,ast2400-sdhci", },
- 	{ .compatible = "aspeed,ast2500-sdhci", },
--	{ .compatible = "aspeed,ast2600-sdhci", },
-+	{ .compatible = "aspeed,ast2600-sdhci", .data = &ast2600_sdhci_pdata, },
- 	{ }
+ static const struct aspeed_sdhci_phase_desc ast2600_sdhci_phase[] = {
+ 	/* SDHCI/Slot 0 */
+ 	[0] = {
+@@ -426,13 +454,14 @@ static const struct aspeed_sdhci_phase_desc ast2600_sdhci_phase[] = {
  };
  
+ static const struct aspeed_sdhci_pdata ast2600_sdhci_pdata = {
++	.clk_div_start = 1,
+ 	.phase_desc = ast2600_sdhci_phase,
+ 	.nr_phase_descs = ARRAY_SIZE(ast2600_sdhci_phase),
+ };
+ 
+ static const struct of_device_id aspeed_sdhci_of_match[] = {
+-	{ .compatible = "aspeed,ast2400-sdhci", },
+-	{ .compatible = "aspeed,ast2500-sdhci", },
++	{ .compatible = "aspeed,ast2400-sdhci", .data = &ast2400_sdhci_pdata, },
++	{ .compatible = "aspeed,ast2500-sdhci", .data = &ast2400_sdhci_pdata, },
+ 	{ .compatible = "aspeed,ast2600-sdhci", .data = &ast2600_sdhci_pdata, },
+ 	{ }
+ };
 -- 
 2.27.0
 
