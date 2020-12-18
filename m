@@ -2,127 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 431E32DE325
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 14:15:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4855A2DE32E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 14:17:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727629AbgLRNPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 08:15:39 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42438 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726212AbgLRNPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 08:15:38 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1608297292; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4ED9u4YU+XtDT7l6r5t+/jBrRwKWBqQx+LhwzAb6wzQ=;
-        b=Vg2wsKjY3rLAFd2M/+Dny22SjAwfWHdBFFPXoGiNkmuXJp9niVNcpJDzQhS/cFDTGExND7
-        /vFJ6QZzs3GjBhTcPBb6vlAlzajeRUNbxO8AmeNo0eB4EpIx6TfHOssRiQValxU8Nfbm6q
-        IiU62c0O569BuNxrf4RuhoTD7z891dU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E32A1AD29;
-        Fri, 18 Dec 2020 13:14:51 +0000 (UTC)
-Date:   Fri, 18 Dec 2020 14:14:49 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v4 08/10] mm/gup: limit number of gup migration failures,
- honor failures
-Message-ID: <20201218131449.GZ32193@dhcp22.suse.cz>
-References: <20201217185243.3288048-1-pasha.tatashin@soleen.com>
- <20201217185243.3288048-9-pasha.tatashin@soleen.com>
- <20201218104655.GW32193@dhcp22.suse.cz>
- <CA+CK2bCn++2Sk4-Eunibj6f+JoOL77uJQXGU2+dScHQ3RgC7_Q@mail.gmail.com>
+        id S1727536AbgLRNRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 08:17:12 -0500
+Received: from mail-oo1-f54.google.com ([209.85.161.54]:38074 "EHLO
+        mail-oo1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726279AbgLRNRM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 08:17:12 -0500
+Received: by mail-oo1-f54.google.com with SMTP id i18so533965ooh.5;
+        Fri, 18 Dec 2020 05:16:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FNSt8Fkjm6JuWT/uYBPaEJmzaxfUJT+yoJMWo0n8xuk=;
+        b=jg48tbhvWvCY3Ec+7IB2xcoThg3US7qvCM6WsE7+/5/hpqjWfJUXglu8TYAsJvrnx8
+         KLDhSseTi10Fr8ousSGGMfEUjUQwBDsf2sGnjAcNZv60HvUm9QuXFbP9pNR74wtZflfX
+         iNngNl0/VRYsm70JIJX3jMGNkSlC9TzJ99i05GAT4QlH5k1s2VyHgCQAyKbrczXN3WrD
+         EuRE+JllxQlOr9trCF2iqJFwDBOA29rwcPT6DOt8AnbUt+hDwa/Exm8hjuzcOckAv7Bq
+         ps/IslM1GJH/3MYdI9Jj6FzprQp1HKVXV9t5ldW4PcgVm8yAEwV0OqUGloXCkSdM5vWW
+         5/IA==
+X-Gm-Message-State: AOAM533Ij2UTt6LPUR17PYm+0+MOOpYOdPTAr/IMG5JIqQL3o5+s1Hsw
+        xTRyfvKpvSErWJPFNHpbpKHQzV4D3uqIFEtd9pY=
+X-Google-Smtp-Source: ABdhPJxEZefF4VB9P0I0+F1xIwaiYLGwj0pj3vSAi5MF2r0YsXu9tkwT3qasn4rjm+dLOPWSAhjuSa2ZKWizo46ZrRk=
+X-Received: by 2002:a4a:dc1:: with SMTP id 184mr2726085oob.40.1608297390778;
+ Fri, 18 Dec 2020 05:16:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+CK2bCn++2Sk4-Eunibj6f+JoOL77uJQXGU2+dScHQ3RgC7_Q@mail.gmail.com>
+References: <20201213183759.223246-1-aford173@gmail.com> <20201213183759.223246-2-aford173@gmail.com>
+ <CAMuHMdWRieM1H5WLySVDVQds-xKgsqo-OibegJrXgonfqbAL8g@mail.gmail.com>
+ <CAHCN7xL3KU4dA=0-S7J5AEPmjAtpz4j-frEUqBD=JU7BV7g1WA@mail.gmail.com>
+ <CAMuHMdWc=qD=Oqa-7o9K1bd_OM0L7Br8BVAbDvYNraO0wAX2jw@mail.gmail.com> <CAHCN7xKsSgM+=MFOKpNZTsJJiNyx6_mqZL2g_PKhN5fWyE6y7Q@mail.gmail.com>
+In-Reply-To: <CAHCN7xKsSgM+=MFOKpNZTsJJiNyx6_mqZL2g_PKhN5fWyE6y7Q@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 18 Dec 2020 14:16:19 +0100
+Message-ID: <CAMuHMdVxzcyVuK06BqE4GQPLE8J7V5Jc-W_RSENNxEQG68krCw@mail.gmail.com>
+Subject: Re: [PATCH 01/18] arm64: dts: renesas: beacon kit: Configure
+ programmable clocks
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Luca Ceresoli <luca@lucaceresoli.net>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 18-12-20 07:43:15, Pavel Tatashin wrote:
-> On Fri, Dec 18, 2020 at 5:46 AM Michal Hocko <mhocko@suse.com> wrote:
+Hi Adam,
+
+CC Shimoda-san
+
+On Thu, Dec 17, 2020 at 12:52 PM Adam Ford <aford173@gmail.com> wrote:
+> On Thu, Dec 17, 2020 at 2:16 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Wed, Dec 16, 2020 at 6:03 PM Adam Ford <aford173@gmail.com> wrote:
+> > > On Wed, Dec 16, 2020 at 8:55 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > On Sun, Dec 13, 2020 at 7:38 PM Adam Ford <aford173@gmail.com> wrote:
+> > > > > When the board was added, clock drivers were being updated done at
+> > > > > the same time to allow the versaclock driver to properly configure
+> > > > > the modes.  Unforutnately, the updates were not applied to the board
 > >
-> > On Thu 17-12-20 13:52:41, Pavel Tatashin wrote:
-> > [...]
-> > > +#define PINNABLE_MIGRATE_MAX 10
-> > > +#define PINNABLE_ISOLATE_MAX 100
+> > > > > --- a/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
+> > > > > +++ b/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
+> > > > > @@ -5,6 +5,7 @@
+> > > > >
+> > > > >  #include <dt-bindings/gpio/gpio.h>
+> > > > >  #include <dt-bindings/input/input.h>
+> > > > > +#include <dt-bindings/clk/versaclock.h>
+> > > > >
+> > > > >  / {
+> > > > >         backlight_lvds: backlight-lvds {
+> > > > > @@ -294,12 +295,12 @@ &du_out_rgb {
+> > > > >  &ehci0 {
+> > > > >         dr_mode = "otg";
+> > > > >         status = "okay";
+> > > > > -       clocks = <&cpg CPG_MOD 703>, <&cpg CPG_MOD 704>;
+> > > > > +       clocks = <&cpg CPG_MOD 703>, <&cpg CPG_MOD 704>, <&versaclock5 3>;
+> > > >
+> > > > Why this change? You said before you don't need this
+> > > > https://lore.kernel.org/linux-renesas-soc/CAHCN7xJWbP16SA-Ok-5syNnqOZAt8OFJo2_rtg5VrNVsN2-eiQ@mail.gmail.com/
+> > > >
+> > >
+> > > I had talked with the hardware guys about buy pre-programmed
+> > > versaclock chips which would have been pre-configured and pre-enabled.
+> > > I thought it was going to happen, but it didn't, so we need the
+> > > versaclock driver to enable the reference clock for the USB
+> > > controllers, ethernet controller and audio clocks.  Previously we were
+> > > manually configuring it or it was coincidentally working. Ideally,
+> > > we'd have the clock system intentionally enable/disable the clocks
+> > > when drivers are loaded/unloaded for for power management reasons.
 > >
-> > Why would we need to limit the isolation retries. Those should always be
-> > temporary failure unless I am missing something.
-> 
-> Actually, during development, I was retrying isolate errors
-> infinitely, but during testing found a hung where when FOLL_TOUCH
-> without FOLL_WRITE is passed (fault in kernel without write flag), the
-> zero page is faulted. The isolation of the zero page was failing every
-> time, therefore the process was hanging.
+> > Can you tell me how exactly the Versaclock outputs are wired?
+>
+> The SoC is expecting a fixed external 50 MHz clock connected to
+> USB_EXTAL.  Instead of a fixed clock, we're using the Versaclock.
+> We're also using the Versaclock to drive the AVB TXCRefClk,
+> du_dotclkiun0 and du_dotclkin2 (also also called du_dotclkin3 on
+> RZ/G2N) instead of fixed clocks.
+>
+> > E.g. for USB, the bindings don't say anything about a third clock input,
+> > so I'd like to know where that clock is fed into USB.
+>
+> The way the driver is crafted, it can take in multiple clocks and it
+> goes through a list to enable them all, so I added the versaclock to
+> the array.  Without the versaclock reference, the clock doesn't get
+> turned on and the USB fails to operate.
 
-Why would you migrate zero page in the first place? Simply instantiate
-it.
- 
-> Since then, I fixed this problem by adding FOLL_WRITE unconditionally
-> to FOLL_LONGTERM, but I was worried about other possible bugs that
-> would cause hangs, so decided to limit isolation errors. If you think
-> it its not necessary, I can unlimit isolate retires.
+According to the Hardware User's Manual, USBL_EXTAL is used for USB3.0,
+while you added the clock references to the EHCI nodes.
+Are you sure EHCI is failing without this?
 
-It should have a really good reason to exist. Worries about some corner
-cases is definitely not a reason to put some awkward retry mechanism.
-My historical experience is that these things are extremely hard to get
-rid of later.
+Still, it means we need to extend the bindings/driver for
+renesas,rcar-gen3-xhci to handle USB_EXTAL.
 
-> > I am not sure about the
-> > PINNABLE_MIGRATE_MAX either. Why do we want to limit that? migrate_pages
-> > already implements its retry logic why do you want to count retries on
-> > top of that? I do agree that the existing logic is suboptimal because
-> 
-> True, but again, just recently, I worked on a race bug where pages can
-> end up in per-cpu list after lru_add_drain_all() but before isolation,
-> so I think retry is necessary.
+> The DU clocks are also expecting an array, so I added the versaclock
+> to that array as well.
 
-There are ways to make sure pages are not ending on pcp list. Have a
-look at how hotplug does that.
+For DU, the clock inputs are clearly defined in the bindings.
 
-> > the migration failure might be ephemeral or permanent but that should be
-> > IMHO addressed at migrate_pages (resp. unmap_and_move) and simply report
-> > failures that are permanent - e.g. any potential pre-existing long term
-> > pin - if that is possible at all. If not what would cause permanent
-> > migration failure? OOM?
-> 
-> Yes, OOM is the main cause for migration failures.
+> It's similar to the rationale that I'm trying to add the option clock
+> for the AVB TXC_Ref clock on the other path.  We're using the
+> versaclock there as well.  The difference is that in the case of the
+> AVB_TXCRefClk, the driver isn't expecting an array of clocks, it's
+> only expecting a single clock.  In order to enable the additional
+> clock,  I started the patch to accept the optional clock for the
+> TXCRefClk in order to get the clock system to enable the clock.
 
-Then you can treat ENOMEM as a permanent failure.
+Sure.
 
-> And also a few
-> cases described in movable zone comment, where it is possible during
-> boot some pages can be allocated by memblock in movable zone due to
-> lack of memory resources (even if those resources were added later),
+> Because the Versaclock isn't programmed to automatically start, they
+> need the consumers of the clock to request and enable them.
+>
+> I admit that I'll probably need to update the bindings to add the
+> extra clocks as optional, so if you want, I can submit additional
+> patches to add these optional clocks to their respective bindings.
 
-Do you have any examples? I find it hard to follow that somebody would
-be pinning early boot allocations.
+Thanks!
 
-> hardware page poisoning is another rare example.
+Gr{oetje,eeting}s,
 
-Could you elaborate please?
--- 
-Michal Hocko
-SUSE Labs
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
