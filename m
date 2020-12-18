@@ -2,113 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A532DE313
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 14:06:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FB3E2DE31D
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 14:09:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727337AbgLRNFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 08:05:53 -0500
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:38504 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727307AbgLRNFw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 08:05:52 -0500
-Received: by mail-ot1-f41.google.com with SMTP id j20so1813256otq.5;
-        Fri, 18 Dec 2020 05:05:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=reSTRV4dt7ZPUclP+v1NvqHl1Mq5jwxkuDW3Be0Lj/Q=;
-        b=Fgy2sOnKiEB00Kd3mEqaSK0RaOfscVQwK9yVTgWBPLH59f/DK7fTIGf7QJstq0n/SN
-         Q0msK4eQsBG8U3sJ1QsoqNGX05vEPLaD4v7HDhg/Vqvyq1F8UC81h7+h4COF5KLT1K3H
-         rKISZsTm8Tpwcjnv4K4uiKkI6n5uQ7WFEhL8pvPwrXEMCu3svYti+cwfFywERHg/km0G
-         1/QZVFHDeNIgj/E32HkG9q8RECHMMjX4L+TncYACw9/RysdMActuFgCXeTdtj2B5+gZ7
-         ghJBFNMIFdR62+YniZvRj9aubYYenuMhvN3ggBHwBFOOH7kn1lHtAWN+hPvKbgD+qzpR
-         7mEg==
-X-Gm-Message-State: AOAM531NJMcTbd9FcqCHtqXs78yHWGrruBQ9svS47Z1DQjDKspQgkLHX
-        5e44QtcQweX11Y+10Mh6wehvjd+MNqpLO71Xm1g=
-X-Google-Smtp-Source: ABdhPJzGwkhEVu5ipeVElNXuYDRlTMW/vqp/IfddZsJHun4cLC1wohvG+90Iq3eaADoRF/1rXUKP4J71SfpC0VAurNE=
-X-Received: by 2002:a9d:2203:: with SMTP id o3mr2682245ota.107.1608296711700;
- Fri, 18 Dec 2020 05:05:11 -0800 (PST)
+        id S1727384AbgLRNJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 08:09:18 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37320 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725885AbgLRNJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 08:09:17 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1608296911; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Qy4X5XGLkjjTrEVnpyl9ubxnV3suDoRLMs36eWY7vx8=;
+        b=l76U/9Q65OcRVxpjlhkrgzoI2O/GDE06QXEjmSrmOHTqE5Ih/2RQ1jIJG3bjvK1Y4ex2xq
+        8pw6RsXn2ZB7Oz9oWRONm2eAbpAwKQ3j3FevprsLmFtW13S9DlYK7cs6WEppEQvMHf0q36
+        xyYXBCkFyyT6u01tptEnHUwdGs/ZD60=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 819A5AEBE;
+        Fri, 18 Dec 2020 13:08:30 +0000 (UTC)
+Date:   Fri, 18 Dec 2020 14:08:25 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v4 05/10] mm/gup: migrate pinned pages out of movable zone
+Message-ID: <20201218130825.GY32193@dhcp22.suse.cz>
+References: <20201217185243.3288048-1-pasha.tatashin@soleen.com>
+ <20201217185243.3288048-6-pasha.tatashin@soleen.com>
+ <20201218094324.GT32193@dhcp22.suse.cz>
+ <CA+CK2bAKiWC5E4h4CZOqQrh4QzQQ-3_TUJgB=r4H23gu3cqvAA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201213183759.223246-1-aford173@gmail.com> <20201213183759.223246-5-aford173@gmail.com>
- <CAMuHMdWAQ9j1b=b7CFcjg97N7YW+7Dj14TB-MGogJGK7kFkdhg@mail.gmail.com> <CAHCN7xL10Lj8VS5WEyyEixf4ptjKchX0OMDuFAQc-JJzFa5Ubw@mail.gmail.com>
-In-Reply-To: <CAHCN7xL10Lj8VS5WEyyEixf4ptjKchX0OMDuFAQc-JJzFa5Ubw@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 18 Dec 2020 14:05:00 +0100
-Message-ID: <CAMuHMdU4b-pTAKcEKE+UW1+8p34LR2i84Opj31vR3GJ=oY1JWg@mail.gmail.com>
-Subject: Re: [PATCH 04/18] arm64: dts: renesas: beacon kit: Fix Audio Clock sources
-To:     Adam Ford <aford173@gmail.com>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+CK2bAKiWC5E4h4CZOqQrh4QzQQ-3_TUJgB=r4H23gu3cqvAA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adam,
-
-On Thu, Dec 17, 2020 at 1:01 PM Adam Ford <aford173@gmail.com> wrote:
-> On Thu, Dec 17, 2020 at 4:54 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Sun, Dec 13, 2020 at 7:38 PM Adam Ford <aford173@gmail.com> wrote:
-> > > The SoC was expecting two clock sources with different frequencies.
-> > > One to support 44.1KHz and one to support 48KHz.  With the newly added
-> > > ability to configure the programmably clock, configure both clocks.
-> > >
-> > > Beacause the SoC is expecting a fixed clock/oscillator, it doesn't
-> > > attempt to get and enable the clock for audio_clk_a. The choice to
-> > > use a fixed-factor-clock was due to the fact that it will automatically
-> > > enable the programmable clock frequency without change any code.
-> > >
-> > > Signed-off-by: Adam Ford <aford173@gmail.com>
+On Fri 18-12-20 07:24:53, Pavel Tatashin wrote:
+> On Fri, Dec 18, 2020 at 4:43 AM Michal Hocko <mhocko@suse.com> wrote:
 > >
-> > Thanks for your patch!
+> > On Thu 17-12-20 13:52:38, Pavel Tatashin wrote:
+> > > +      * 1. Pinned pages: (long-term) pinning of movable pages is avoided
+> > > +      *    when pages are pinned and faulted, but it is still possible that
+> > > +      *    address space already has pages in ZONE_MOVABLE at the time when
+> > > +      *    pages are pinned (i.e. user has touches that memory before
+> > > +      *    pinning). In such case we try to migrate them to a different zone,
+> > > +      *    but if migration fails the pages can still end-up pinned in
+> > > +      *    ZONE_MOVABLE. In such case, memory offlining might retry a long
+> > > +      *    time and will only succeed once user application unpins pages.
 > >
-> > > --- a/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
-> > > +++ b/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
-> > > @@ -250,9 +250,12 @@ ss_ep: endpoint {
-> > >  };
-> > >
-> > >  &audio_clk_a {
-> > > -       clock-frequency = <24576000>;
-> > > -       assigned-clocks = <&versaclock6_bb 4>;
-> > > -       assigned-clock-rates = <24576000>;
-> > > +       /delete-property/ clock-frequency;
-> > > +       #clock-cells = <0>;
-> > > +       compatible = "fixed-factor-clock";
-> > > +       clock-mult = <1>;
-> > > +       clock-div = <1>;
-> > > +       clocks = <&versaclock6_bb 4>;
-> > >  };
-> >
-> > Shouldn't you override the clocks property in the rcar_sound node
-> > instead, like is done in several other board DTS files (with cs2000)?
-> >
->
-> I guess there are multiple ways to do this.  Because the rcar_sound
-> was already expecting a reference to audio_clk_a, it seemed less
-> intrusive this way. The way I proposed, we can use the default
-> rcar_sound clocking and just change the audio_clk node to enable the
-> versaclock output.  The versaclock is driving the audio_clk_a
-> reference clock, so it seemed appropriate to put it there.
->
-> If you want me to change, I will.
+> > I still dislike this. Pinning can fail so there shouldn't be any reasons
+> > to break MOVABLE constrain for something that can be handled. If
+> > anything there should be a very good reasoning behind this decision
+> > documented.
+> 
+> This is basically current behaviour, after patch 8, we can never pin
+> pages in the movable zone, so I will update this comment in that
+> patch.
 
-Taking a fresh look at this, I start to like it.
-What do other people think?
-
-Gr{oetje,eeting}s,
-
-                        Geert
+Then it would be much easier for review to state that the existing
+behavior is unchanged and do not update this comment just to remove it
+in a later patch. Because this patch should be straightforward change of
+the condition which pages to migrate (+some renaming which should be
+reasonably easy to follow). Maybe it would be even better to do the
+renaming separately without any functional changes and make only the
+change in the condition here.
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Michal Hocko
+SUSE Labs
