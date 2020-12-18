@@ -2,85 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B38E82DE38E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 14:58:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 972ED2DE390
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 14:58:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725885AbgLRN6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 08:58:04 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:58486 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725535AbgLRN6D (ORCPT
+        id S1726159AbgLRN6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 08:58:35 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:52694 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725932AbgLRN6f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 08:58:03 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BIDrnEE058266;
-        Fri, 18 Dec 2020 13:56:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=uAj8JiZpRneHr+O/z5OM78d5g7FuBEj0ARu6xAVnizQ=;
- b=mNePPLfG+3prEcXPXV03F/z6I9IGA+AVYAbq25bJh263FUiqzqPzk7J6+ySE1AWxOcfT
- edvaQ6ontTruI7QwwhuuyFDYHd0M2AXK2ZPBiCjUO7G71nuSQKAZ6bV2DO2vqw3y5PKc
- ykeBkWKdu9nKCNhOwhjX96inHNVRd7Bd5ifs1EhgnPXnZB/iB97rZjUnLdqscG3vv05J
- ET2uz6Pkr+X30fOd4GSrVylNaRVe61xHXdyQaFCNoFBz4LI4RYCyiS3W7I7VN/CtAaOR
- FnWODNk8kTPZ2JxWOkHaRhmcSGHmxPlUUhLvN1ygHhi5kDUMHqg1NN50fsNzK99qP/cr hA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 35cntmjb4j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 18 Dec 2020 13:56:38 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BIDjMed154031;
-        Fri, 18 Dec 2020 13:54:37 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 35g3rg7fms-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Dec 2020 13:54:37 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BIDsWtg017951;
-        Fri, 18 Dec 2020 13:54:32 GMT
-Received: from [10.191.15.101] (/10.191.15.101)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 18 Dec 2020 05:54:32 -0800
-Subject: Re: [PATCH] mm/vmscan: DRY cleanup for do_try_to_free_pages()
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org
-References: <20201218102217.186836-1-jian.w.wen@oracle.com>
- <20201218121752.GK15600@casper.infradead.org>
-From:   Jacob Wen <jian.w.wen@oracle.com>
-Message-ID: <f28e270f-ae6d-1779-453d-b1fb3ac5a548@oracle.com>
-Date:   Fri, 18 Dec 2020 21:54:25 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 18 Dec 2020 08:58:35 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1608299872;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uclnLJa1eSPPl7Rt5PNwz5tb8qoS60bbUxt+aCthgPo=;
+        b=3RJU1L1Z1lcSYyJBgUOWyaINTPussKeZKI4WfLwzeyWP6ZigdtxbCgXiLpbLn08RCJ8/SU
+        bc1qdPkaEz9G/lZ6Br2rBi05KIBOJnEnBDInFWC6TBBVKYMEqMVHSfmKr4yA4dDjcvc33n
+        Nye3/xDUgfoMQvZ81u28FmrJblLusMGjeD+bCOPTcv0y8c3sE92Bq9fpV4rKAsTFCllMjQ
+        FjxIC6/FbUtKEwp15gOuprknbYG/dhDs+tB3CfVj6M7avhBupY+g16NzfIgz4jDFD54Deq
+        uzX7Mj9fFkh0+MSjraEpqOsRZ0LEJWCZH7uTQmsr7wo94sEwqMaocWfyxN/JgQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1608299872;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uclnLJa1eSPPl7Rt5PNwz5tb8qoS60bbUxt+aCthgPo=;
+        b=Boe/9Lm8Qxp+iYx/THw5rfPHsJrGby3kTRthA6dchBH79sZO6cHhPzfnn6Ia9VhB1UeWNI
+        iHUN3iSzL2sBPpBQ==
+To:     ira.weiny@intel.com, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     Ira Weiny <ira.weiny@intel.com>, Fenghua Yu <fenghua.yu@intel.com>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-doc@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH V3 04/10] x86/pks: Preserve the PKRS MSR on context switch
+In-Reply-To: <87mtycqcjf.fsf@nanos.tec.linutronix.de>
+References: <20201106232908.364581-1-ira.weiny@intel.com> <20201106232908.364581-5-ira.weiny@intel.com> <871rfoscz4.fsf@nanos.tec.linutronix.de> <87mtycqcjf.fsf@nanos.tec.linutronix.de>
+Date:   Fri, 18 Dec 2020 14:57:51 +0100
+Message-ID: <878s9vqkrk.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201218121752.GK15600@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9838 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
- spamscore=0 suspectscore=0 mlxscore=0 mlxlogscore=925 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012180097
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9838 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 mlxscore=0
- lowpriorityscore=0 spamscore=0 adultscore=0 malwarescore=0 suspectscore=0
- mlxlogscore=955 impostorscore=0 priorityscore=1501 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012180098
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 12/18/20 8:17 PM, Matthew Wilcox wrote:
-> On Fri, Dec 18, 2020 at 06:22:17PM +0800, Jacob Wen wrote:
->> This patch reduces repetition of set_task_reclaim_state() around
->> do_try_to_free_pages().
-> what is a DRY cleanup?
+On Thu, Dec 17 2020 at 23:43, Thomas Gleixner wrote:
+> The only use case for this in your tree is: kmap() and the possible
+> usage of that mapping outside of the thread context which sets it up.
 >
-DRY is short for "Don't repeat yourself"[1].
+> The only hint for doing this at all is:
+>
+>     Some users, such as kmap(), sometimes requires PKS to be global.
+>
+> 'sometime requires' is really _not_ a technical explanation.
+>
+> Where is the explanation why kmap() usage 'sometimes' requires this
+> global trainwreck in the first place and where is the analysis why this
+> can't be solved differently?
+>
+> Detailed use case analysis please.
 
-[1] https://en.wikipedia.org/wiki/Don%27t_repeat_yourself
+A lengthy conversation with Dan and Dave over IRC confirmed what I was
+suspecting.
+
+The approach of this whole PKS thing is to make _all_ existing code
+magically "work". That means aside of the obvious thread local mappings,
+the kmap() part is needed to solve the problem of async handling where
+the mapping is handed to some other context which then uses it and
+notifies the context which created the mapping when done. That's the
+principle which was used to make highmem work long time ago.
+
+IMO that was a mistake back then. The right thing would have been to
+change the code so that it does not rely on a temporary mapping created
+by the initiator. Instead let the initiator hand the page over to the
+other context which then creates a temporary mapping for fiddling with
+it. Water under the bridge...
+
+Glueing PKS on to that kmap() thing is horrible and global PKS is pretty
+much the opposite of what PKS wants to achieve. It's disabling
+protection systemwide for an unspecified amount of time and for all
+contexts.
+
+So instead of trying to make global PKS "work" we really should go and
+take a smarter approach.
+
+  1) Many kmap() use cases are strictly thread local and the mapped
+     address is never handed to some other context, which means this can
+     be replaced with kmap_local() now, which preserves the mapping
+     accross preemption. PKS just works nicely on top of that.
+
+  2) Modify kmap() so that it marks the to be mapped page as 'globaly
+     unprotected' instead of doing this global unprotect PKS dance.
+     kunmap() undoes that. That obviously needs some thought
+     vs. refcounting if there are concurrent users, but that's a
+     solvable problem either as part of struct page itself or
+     stored in some global hash.
+
+  3) Have PKS modes:
+
+     - STRICT:   No pardon
+     
+     - RELAXED:  Warn and unprotect temporary for the current context
+
+     - SILENT:	 Like RELAXED, but w/o warning to make sysadmins happy.
+                 Default should be RELAXED.
+
+     - OFF:      Disable the whole PKS thing
 
 
+  4) Have a smart #PF mechanism which does:
+
+     if (error_code & X86_PF_PK) {
+         page = virt_to_page(address);
+
+         if (!page || !page_is_globaly_unprotected(page))
+                 goto die;
+
+         if (pks_mode == PKS_MODE_STRICT)
+         	 goto die;
+
+         WARN_ONCE(pks_mode == PKS_MODE_RELAXED, "Useful info ...");
+
+         temporary_unprotect(page, regs);
+         return;
+     }
+
+     temporary_unprotect(page, regs)
+     {
+        key = page_to_key(page);
+
+	/* Return from #PF will establish this for the faulting context */
+        extended_state(regs)->pks &= ~PKS_MASK(key);
+     }
+
+     This temporary unprotect is undone when the context is left, so
+     depending on the context (thread, interrupt, softirq) the
+     unprotected section might be way wider than actually needed, but
+     that's still orders of magnitudes better than having this fully
+     unrestricted global PKS mode which is completely scopeless.
+
+     The above is at least restricted to the pages which are in use for
+     a particular operation. Stray pointers during that time are
+     obviously not caught, but that's not any different from that
+     proposed global thingy.
+
+     The warning allows to find the non-obvious places so they can be
+     analyzed and worked on.
+
+  5) The DAX case which you made "work" with dev_access_enable() and
+     dev_access_disable(), i.e. with yet another lazy approach of
+     avoiding to change a handful of usage sites.
+
+     The use cases are strictly context local which means the global
+     magic is not used at all. Why does it exist in the first place?
+
+     Aside of that this global thing would never work at all because the
+     refcounting is per thread and not global.
+
+     So that DAX use case is just a matter of:
+
+        grant/revoke_access(DEV_PKS_KEY, READ/WRITE)
+
+     which is effective for the current execution context and really
+     wants to be a distinct READ/WRITE protection and not the magic
+     global thing which just has on/off. All usage sites know whether
+     they want to read or write.
+   
+     That leaves the question about the refcount. AFAICT, nothing nests
+     in that use case for a given execution context. I'm surely missing
+     something subtle here.
+
+     Hmm?
+
+Thanks,
+
+        tglx
+     
