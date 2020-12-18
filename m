@@ -2,317 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191262DE3C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:13:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 042972DE3C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:17:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726855AbgLROMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 09:12:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55106 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726047AbgLROMy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 09:12:54 -0500
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        David Miller <davem@davemloft.net>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org
-Subject: [PATCH -tip v2] x86/kprobes: Do not decode opcode in resume_execution()
-Date:   Fri, 18 Dec 2020 23:12:05 +0900
-Message-Id: <160830072561.349576.3014979564448023213.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201218214432.b025656de019c64a8f4e2da5@kernel.org>
-References: <20201218214432.b025656de019c64a8f4e2da5@kernel.org>
-User-Agent: StGit/0.19
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        id S1726869AbgLROQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 09:16:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725911AbgLROQq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 09:16:46 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC5D7C0617A7;
+        Fri, 18 Dec 2020 06:16:05 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id g24so2485792edw.9;
+        Fri, 18 Dec 2020 06:16:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=+nucGu/R5qWhkpLMXuzJRlIsEJPlQwdtfmWcftTE18M=;
+        b=G43ZG+6m3i/p7EQz5uneQFP63CkYk0aezaKKXoLUPNYXKhO99iM26nSrwXIDPy8NZI
+         j4X9Hoc9NSWgKcgKMyMX/hO8u1ClSUKxDXd6NYNBmhnCmkf2AkpIEbGgQlyLPKim6Gxq
+         AlpUp2lvhnvAER4Ey7ZL9xz0Pe2n8IKsDJsxTB3GgHlyuTBf2d/L3AQnW+N4TZbQcABv
+         YXyU6IM8F0QTIqCsDGUXhHm4oFyCGeF6rQtamHR9NO2/44lptRGSru6RU/s7VJqYSWVL
+         6raqloLhRJ18XvHJX40admz55xXY562VytF7VS+VgB7vL32VEXo9brw4iVdZldLQphj9
+         Wdeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=+nucGu/R5qWhkpLMXuzJRlIsEJPlQwdtfmWcftTE18M=;
+        b=PiO0pcd+gpgMKpMYncktYSWPr/Klf95eUDfWWDPYhCKDG41hWDKelaCrOXVOpTFaYz
+         6+Uosg1GGXj7rliInXSzij88OXfKIdvCfX0OBD7RQszuQYTPRe6PsaIvMLQfx8mO7hif
+         RcmnffgdQd0Rvx2i069NPREETet7+bl+AY3+389GtsG6py5uW/je/sgL0fyN0lCIzmPj
+         54BJ8SdPJUOoohA8ZOrum8eYWlwgMGppQ5ExMu5oXU5z8kbRQpL7ECMO+bBbsEeMeWXw
+         CaHTOWOZlEGoONIcjBvJTB1R8G3jXUKKf/FGxePvCqXx6QnoUU4Pzu8BkZRZFSIxqGwW
+         HP7g==
+X-Gm-Message-State: AOAM532nqm4riN3xWrY0X9Vi/hb5Wo1gp9sTV8yNfhEt0Q8MjfYW7xt3
+        Z8THqG1hGrcBhd9SdHmQDvv6vFXtfxs=
+X-Google-Smtp-Source: ABdhPJznZhgm1nYHGiwC3Xnp3Gi4I82wja3mD/ViwXh8RfP+Gok2KBlbuZmzsBD5pzqEezxDTU3Olw==
+X-Received: by 2002:aa7:c886:: with SMTP id p6mr4695705eds.352.1608300964167;
+        Fri, 18 Dec 2020 06:16:04 -0800 (PST)
+Received: from localhost (ipbcc05d1b.dynamic.kabel-deutschland.de. [188.192.93.27])
+        by smtp.gmail.com with ESMTPSA id n8sm5580036eju.33.2020.12.18.06.16.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Dec 2020 06:16:03 -0800 (PST)
+From:   Bodo Stroesser <bostroesser@gmail.com>
+To:     linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Bodo Stroesser <bostroesser@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mike Christie <michael.christie@oracle.com>
+Subject: [PATCH] scsi: target: tcmu: Fix wrong uio handling causing big memory leak
+Date:   Fri, 18 Dec 2020 15:15:34 +0100
+Message-Id: <20201218141534.9918-1-bostroesser@gmail.com>
+X-Mailer: git-send-email 2.12.3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently kprobes x86 decodes opcode right after single
-stepping in resume_execution(). But it already decoded the
-opcode while preparing arch_specific_insn in arch_copy_kprobe().
+tcmu calls uio_unregister_device from tcmu_destroy_device.
+After that uio will never call tcmu_release for this device.
+If userspace still had the uio device open and / or mmap'ed
+during uio_unregister_device, tcmu_release will not be called and
+udev->kref will never go down to 0.
 
-This decodes opcode in arch_copy_kprobe() instead of
-resume_execution() and sets some flags which classifies
-the opcode for resuming process.
+So tcmu in this situation will not free:
+ - cmds or tmrs still in the queue or the ring
+ - all pages allocated for mailbox and cmd_ring (vmalloc)
+ - all pages allocated for data space
+ - the udev itself
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+The vmalloc'ed area is 8 MB, amount of pages allocated for data
+space depends on previous usage of the tcmu device. Theoretically
+that can be up to 1GB.
+
+This patch moves the call of uio_unregister_device to the
+beginning of tcmu_dev_kref_release, which is called when
+udev->kref drops down to zero. So we know, that uio device is
+closed and unmap'ed.
+
+In case tcmu_realease drops the last kref, we would end up doing
+the uio_unregister_device from a function called by uio_release,
+which causes the process to block forever.
+So we now do the kref_put from new worker function
+tcmu_release_work_fn which is scheduled by tcmu_release.
+
+To make userspace still aware of the device being deleted,
+tcmu_destroy_device instead of uio_unregister_device now does:
+ - sets a bit in udev, so that tcmu_open and tcmu_mmap can check
+   and fail with -EIO
+ - resets udev->uio_info->irq to 0, so uio will fail read() and
+   write() with -EIO
+ - wakes up userspace possibly waiting in read(), so the read
+   fails with -EIO
+
+Avoid possible races in tcmu_open by replacing kref_get with
+kref_get_unless_zero.
+
+Signed-off-by: Bodo Stroesser <bostroesser@gmail.com>
 ---
- Changes in v2:
-  - Fix the timing of memset() for avoiding unexpected
-    cleanup of kprobe.ainsn.insn.
----
- arch/x86/include/asm/kprobes.h |   11 ++-
- arch/x86/kernel/kprobes/core.c |  167 ++++++++++++++++++----------------------
- 2 files changed, 81 insertions(+), 97 deletions(-)
+ drivers/target/target_core_user.c | 54 ++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 50 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/include/asm/kprobes.h b/arch/x86/include/asm/kprobes.h
-index 991a7ad540c7..d20a3d6be36e 100644
---- a/arch/x86/include/asm/kprobes.h
-+++ b/arch/x86/include/asm/kprobes.h
-@@ -58,14 +58,17 @@ struct arch_specific_insn {
- 	/* copy of the original instruction */
- 	kprobe_opcode_t *insn;
- 	/*
--	 * boostable = false: This instruction type is not boostable.
--	 * boostable = true: This instruction has been boosted: we have
-+	 * boostable = 0: This instruction type is not boostable.
-+	 * boostable = 1: This instruction has been boosted: we have
- 	 * added a relative jump after the instruction copy in insn,
- 	 * so no single-step and fixup are needed (unless there's
- 	 * a post_handler).
- 	 */
--	bool boostable;
--	bool if_modifier;
-+	unsigned boostable:1;
-+	unsigned if_modifier:1;
-+	unsigned is_call:1;
-+	unsigned is_pushf:1;
-+	unsigned is_abs_ip:1;
- 	/* Number of bytes of text poked */
- 	int tp_len;
- };
-diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-index 547c7abb39f5..01440e57961b 100644
---- a/arch/x86/kernel/kprobes/core.c
-+++ b/arch/x86/kernel/kprobes/core.c
-@@ -132,26 +132,6 @@ void synthesize_relcall(void *dest, void *from, void *to)
- }
- NOKPROBE_SYMBOL(synthesize_relcall);
+diff --git a/drivers/target/target_core_user.c b/drivers/target/target_core_user.c
+index 0458bfb143f8..080760985ebf 100644
+--- a/drivers/target/target_core_user.c
++++ b/drivers/target/target_core_user.c
+@@ -21,6 +21,7 @@
+ #include <linux/configfs.h>
+ #include <linux/mutex.h>
+ #include <linux/workqueue.h>
++#include <linux/delay.h>
+ #include <net/genetlink.h>
+ #include <scsi/scsi_common.h>
+ #include <scsi/scsi_proto.h>
+@@ -109,6 +110,7 @@ struct tcmu_nl_cmd {
+ struct tcmu_dev {
+ 	struct list_head node;
+ 	struct kref kref;
++	struct work_struct release_work;
  
--/*
-- * Skip the prefixes of the instruction.
-- */
--static kprobe_opcode_t *skip_prefixes(kprobe_opcode_t *insn)
--{
--	insn_attr_t attr;
--
--	attr = inat_get_opcode_attribute((insn_byte_t)*insn);
--	while (inat_is_legacy_prefix(attr)) {
--		insn++;
--		attr = inat_get_opcode_attribute((insn_byte_t)*insn);
--	}
--#ifdef CONFIG_X86_64
--	if (inat_is_rex_prefix(attr))
--		insn++;
--#endif
--	return insn;
--}
--NOKPROBE_SYMBOL(skip_prefixes);
--
- /*
-  * Returns non-zero if INSN is boostable.
-  * RIP relative instructions are adjusted at copying time in 64 bits mode
-@@ -311,25 +291,6 @@ static int can_probe(unsigned long paddr)
- 	return (addr == paddr);
+ 	struct se_device se_dev;
+ 
+@@ -119,6 +121,7 @@ struct tcmu_dev {
+ #define TCMU_DEV_BIT_BROKEN 1
+ #define TCMU_DEV_BIT_BLOCKED 2
+ #define TCMU_DEV_BIT_TMR_NOTIFY 3
++#define TCMU_DEV_BIT_GOING_DOWN 4
+ 	unsigned long flags;
+ 
+ 	struct uio_info uio_info;
+@@ -1527,6 +1530,8 @@ static void tcmu_detach_hba(struct se_hba *hba)
+ 	hba->hba_ptr = NULL;
  }
  
--/*
-- * Returns non-zero if opcode modifies the interrupt flag.
-- */
--static int is_IF_modifier(kprobe_opcode_t *insn)
--{
--	/* Skip prefixes */
--	insn = skip_prefixes(insn);
--
--	switch (*insn) {
--	case 0xfa:		/* cli */
--	case 0xfb:		/* sti */
--	case 0xcf:		/* iret/iretd */
--	case 0x9d:		/* popf/popfd */
--		return 1;
--	}
--
--	return 0;
--}
--
- /*
-  * Copy an instruction with recovering modified instruction by kprobes
-  * and adjust the displacement if the instruction uses the %rip-relative
-@@ -411,9 +372,9 @@ static int prepare_boost(kprobe_opcode_t *buf, struct kprobe *p,
- 		synthesize_reljump(buf + len, p->ainsn.insn + len,
- 				   p->addr + insn->length);
- 		len += JMP32_INSN_SIZE;
--		p->ainsn.boostable = true;
-+		p->ainsn.boostable = 1;
- 	} else {
--		p->ainsn.boostable = false;
-+		p->ainsn.boostable = 0;
++static void tcmu_release_work_fn(struct work_struct *work);
++
+ static struct se_device *tcmu_alloc_device(struct se_hba *hba, const char *name)
+ {
+ 	struct tcmu_dev *udev;
+@@ -1542,6 +1547,8 @@ static struct se_device *tcmu_alloc_device(struct se_hba *hba, const char *name)
+ 		return NULL;
  	}
  
- 	return len;
-@@ -450,6 +411,67 @@ void free_insn_page(void *page)
- 	module_memfree(page);
++	INIT_WORK(&udev->release_work, tcmu_release_work_fn);
++
+ 	udev->hba = hba;
+ 	udev->cmd_time_out = TCMU_TIME_OUT;
+ 	udev->qfull_time_out = -1;
+@@ -1719,6 +1726,9 @@ static int tcmu_mmap(struct uio_info *info, struct vm_area_struct *vma)
+ {
+ 	struct tcmu_dev *udev = container_of(info, struct tcmu_dev, uio_info);
+ 
++	if (test_bit(TCMU_DEV_BIT_GOING_DOWN, &udev->flags))
++		return -EIO;
++
+ 	vma->vm_flags |= VM_DONTEXPAND | VM_DONTDUMP;
+ 	vma->vm_ops = &tcmu_vm_ops;
+ 
+@@ -1735,12 +1745,17 @@ static int tcmu_open(struct uio_info *info, struct inode *inode)
+ {
+ 	struct tcmu_dev *udev = container_of(info, struct tcmu_dev, uio_info);
+ 
++	if (test_bit(TCMU_DEV_BIT_GOING_DOWN, &udev->flags))
++		return -EIO;
++
+ 	/* O_EXCL not supported for char devs, so fake it? */
+ 	if (test_and_set_bit(TCMU_DEV_BIT_OPEN, &udev->flags))
+ 		return -EBUSY;
+ 
+ 	udev->inode = inode;
+-	kref_get(&udev->kref);
++	if (!kref_get_unless_zero(&udev->kref))
++		/* Race between open and device going down */
++		return -EIO;
+ 
+ 	pr_debug("open\n");
+ 
+@@ -1799,6 +1814,8 @@ static void tcmu_dev_kref_release(struct kref *kref)
+ 	bool all_expired = true;
+ 	int i;
+ 
++	uio_unregister_device(&udev->uio_info);
++
+ 	vfree(udev->mb_addr);
+ 	udev->mb_addr = NULL;
+ 
+@@ -1827,6 +1844,15 @@ static void tcmu_dev_kref_release(struct kref *kref)
+ 	call_rcu(&dev->rcu_head, tcmu_dev_call_rcu);
  }
  
-+static void set_resume_flags(struct kprobe *p, struct insn *insn)
++static void tcmu_release_work_fn(struct work_struct *work)
 +{
-+	insn_byte_t opcode = insn->opcode.bytes[0];
++	struct tcmu_dev *udev = container_of(work, struct tcmu_dev,
++					     release_work);
 +
-+	switch (opcode) {
-+	case 0xfa:		/* cli */
-+	case 0xfb:		/* sti */
-+	case 0x9d:		/* popf/popfd */
-+		/* Check whether the instruction modifies Interrupt Flag or not */
-+		p->ainsn.if_modifier = 1;
-+		break;
-+	case 0x9c:	/* pushfl */
-+		p->ainsn.is_pushf = 1;
-+		break;
-+	case 0xcf:	/* iret */
-+		p->ainsn.if_modifier = 1;
-+		fallthrough;
-+	case 0xc2:	/* ret/lret */
-+	case 0xc3:
-+	case 0xca:
-+	case 0xcb:
-+	case 0xea:	/* jmp absolute -- ip is correct */
-+		/* ip is already adjusted, no more changes required */
-+		p->ainsn.is_abs_ip = 1;
-+		/* Without resume jump, this is boostable */
-+		p->ainsn.boostable = 1;
-+		break;
-+	case 0xe8:	/* call relative - Fix return addr */
-+		p->ainsn.is_call = 1;
-+		break;
-+#ifdef CONFIG_X86_32
-+	case 0x9a:	/* call absolute -- same as call absolute, indirect */
-+		p->ainsn.is_call = 1;
-+		p->ainsn.is_abs_ip = 1;
-+		break;
-+#endif
-+	case 0xff:
-+		opcode = insn->opcode.bytes[1];
-+		if ((opcode & 0x30) == 0x10) {
-+			/*
-+			 * call absolute, indirect
-+			 * Fix return addr; ip is correct.
-+			 * But this is not boostable
-+			 */
-+			p->ainsn.is_call = 1;
-+			p->ainsn.is_abs_ip = 1;
-+			break;
-+		} else if (((opcode & 0x31) == 0x20) ||
-+			   ((opcode & 0x31) == 0x21)) {
-+			/*
-+			 * jmp near and far, absolute indirect
-+			 * ip is correct.
-+			 */
-+			p->ainsn.is_abs_ip = 1;
-+			/* Without resume jump, this is boostable */
-+			p->ainsn.boostable = 1;
-+		}
-+		break;
-+	}
++	/* release ref from open */
++	kref_put(&udev->kref, tcmu_dev_kref_release);
 +}
 +
- static int arch_copy_kprobe(struct kprobe *p)
+ static int tcmu_release(struct uio_info *info, struct inode *inode)
  {
- 	struct insn insn;
-@@ -467,8 +489,8 @@ static int arch_copy_kprobe(struct kprobe *p)
- 	 */
- 	len = prepare_boost(buf, p, &insn);
+ 	struct tcmu_dev *udev = container_of(info, struct tcmu_dev, uio_info);
+@@ -1834,8 +1860,17 @@ static int tcmu_release(struct uio_info *info, struct inode *inode)
+ 	clear_bit(TCMU_DEV_BIT_OPEN, &udev->flags);
  
--	/* Check whether the instruction modifies Interrupt Flag or not */
--	p->ainsn.if_modifier = is_IF_modifier(buf);
-+	/* Analyze the opcode and set resume flags */
-+	set_resume_flags(p, &insn);
- 
- 	/* Also, displacement change doesn't affect the first byte */
- 	p->opcode = buf[0];
-@@ -491,6 +513,9 @@ int arch_prepare_kprobe(struct kprobe *p)
- 
- 	if (!can_probe((unsigned long)p->addr))
- 		return -EILSEQ;
+ 	pr_debug("close\n");
+-	/* release ref from open */
+-	kref_put(&udev->kref, tcmu_dev_kref_release);
 +
-+	memset(&p->ainsn, 0, sizeof(p->ainsn));
++	/*
++	 * We must not put kref directly from here, since dropping down kref to
++	 * zero would implicitly call tcmu_dev_kref_release, which calls
++	 * uio_unregister_device --> process hangs forever, since tcmu_release
++	 * is called from uio.
++	 * So we leave it to tcmu_release_work_fn to put the kref.
++	 */
++	while (!schedule_work(&udev->release_work))
++		usleep_range(1000, 5000);
 +
- 	/* insn: must be on special executable page on x86. */
- 	p->ainsn.insn = get_insn_slot();
- 	if (!p->ainsn.insn)
-@@ -806,11 +831,6 @@ NOKPROBE_SYMBOL(trampoline_handler);
-  * 2) If the single-stepped instruction was a call, the return address
-  * that is atop the stack is the address following the copied instruction.
-  * We need to make it the address following the original instruction.
-- *
-- * If this is the first time we've single-stepped the instruction at
-- * this probepoint, and the instruction is boostable, boost it: add a
-- * jump instruction after the copied instruction, that jumps to the next
-- * instruction after the probepoint.
-  */
- static void resume_execution(struct kprobe *p, struct pt_regs *regs,
- 			     struct kprobe_ctlblk *kcb)
-@@ -818,59 +838,20 @@ static void resume_execution(struct kprobe *p, struct pt_regs *regs,
- 	unsigned long *tos = stack_addr(regs);
- 	unsigned long copy_ip = (unsigned long)p->ainsn.insn;
- 	unsigned long orig_ip = (unsigned long)p->addr;
--	kprobe_opcode_t *insn = p->ainsn.insn;
--
--	/* Skip prefixes */
--	insn = skip_prefixes(insn);
- 
- 	regs->flags &= ~X86_EFLAGS_TF;
--	switch (*insn) {
--	case 0x9c:	/* pushfl */
-+
-+	/* Fixup the contents of top of stack */
-+	if (p->ainsn.is_pushf) {
- 		*tos &= ~(X86_EFLAGS_TF | X86_EFLAGS_IF);
- 		*tos |= kcb->kprobe_old_flags;
--		break;
--	case 0xc2:	/* iret/ret/lret */
--	case 0xc3:
--	case 0xca:
--	case 0xcb:
--	case 0xcf:
--	case 0xea:	/* jmp absolute -- ip is correct */
--		/* ip is already adjusted, no more changes required */
--		p->ainsn.boostable = true;
--		goto no_change;
--	case 0xe8:	/* call relative - Fix return addr */
-+	} else if (p->ainsn.is_call) {
- 		*tos = orig_ip + (*tos - copy_ip);
--		break;
--#ifdef CONFIG_X86_32
--	case 0x9a:	/* call absolute -- same as call absolute, indirect */
--		*tos = orig_ip + (*tos - copy_ip);
--		goto no_change;
--#endif
--	case 0xff:
--		if ((insn[1] & 0x30) == 0x10) {
--			/*
--			 * call absolute, indirect
--			 * Fix return addr; ip is correct.
--			 * But this is not boostable
--			 */
--			*tos = orig_ip + (*tos - copy_ip);
--			goto no_change;
--		} else if (((insn[1] & 0x31) == 0x20) ||
--			   ((insn[1] & 0x31) == 0x21)) {
--			/*
--			 * jmp near and far, absolute indirect
--			 * ip is correct. And this is boostable
--			 */
--			p->ainsn.boostable = true;
--			goto no_change;
--		}
--	default:
--		break;
- 	}
- 
--	regs->ip += orig_ip - copy_ip;
-+	if (!p->ainsn.is_abs_ip)
-+		regs->ip += orig_ip - copy_ip;
- 
--no_change:
- 	restore_btf();
+ 	return 0;
  }
- NOKPROBE_SYMBOL(resume_execution);
+ 
+@@ -2166,7 +2201,18 @@ static void tcmu_destroy_device(struct se_device *dev)
+ 
+ 	tcmu_send_dev_remove_event(udev);
+ 
+-	uio_unregister_device(&udev->uio_info);
++	/*
++	 * We must not call uio_unregister_device here. If there is a userspace
++	 * process with open or mmap'ed uio device, uio would not call
++	 * tcmu_release on later unmap or close.
++	 */
++
++	/* reset uio_info->irq, so uio will reject read() and write() */
++	udev->uio_info.irq = 0;
++	/* Set bit, so we can reject later calls to tcmu_open and tcmu_mmap */
++	set_bit(TCMU_DEV_BIT_GOING_DOWN, &udev->flags);
++	/* wake up possible sleeper in uio_read(), it will return -EIO */
++	uio_event_notify(&udev->uio_info);
+ 
+ 	/* release ref from configure */
+ 	kref_put(&udev->kref, tcmu_dev_kref_release);
+-- 
+2.12.3
 
