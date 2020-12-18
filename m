@@ -2,97 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 207D92DE132
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 11:41:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89FD62DE13A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 11:43:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733201AbgLRKkR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 18 Dec 2020 05:40:17 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:53634 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725875AbgLRKkR (ORCPT
+        id S2389092AbgLRKlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 05:41:40 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2269 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733146AbgLRKlk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 05:40:17 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-197-PIVC8sKqNfOkRnhW4ZbtOA-1; Fri, 18 Dec 2020 10:38:35 +0000
-X-MC-Unique: PIVC8sKqNfOkRnhW4ZbtOA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 18 Dec 2020 10:38:35 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 18 Dec 2020 10:38:35 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Joe Perches' <joe@perches.com>,
-        Daniel West <daniel.west.dev@gmail.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-CC:     "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
-        "mchehab+huawei@kernel.org" <mchehab+huawei@kernel.org>,
-        "christian.gromm@microchip.com" <christian.gromm@microchip.com>,
-        "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] staging: most: video: fixed a parentheses coding style
- issue.
-Thread-Topic: [PATCH] staging: most: video: fixed a parentheses coding style
- issue.
-Thread-Index: AQHW1NDTd/J3KnGAs0yZSrCCE0TdLqn8mvVQgAAG7ICAAAdwsA==
-Date:   Fri, 18 Dec 2020 10:38:35 +0000
-Message-ID: <934cbebcb57a49fd8761cc8b3aaffbfa@AcuMS.aculab.com>
-References: <20201217234501.351725-1-daniel.west.dev@gmail.com>
-         <04c331f6bfce57c253cb86208ebd28f6363e04c0.camel@perches.com>
-         <d5993e314b134e038a1e4eeba32833ce@AcuMS.aculab.com>
- <c09401d003360cff41c949ccaea8ae9dc7b2c733.camel@perches.com>
-In-Reply-To: <c09401d003360cff41c949ccaea8ae9dc7b2c733.camel@perches.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 18 Dec 2020 05:41:40 -0500
+Received: from fraeml706-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Cy5073Fhyz67Q9x;
+        Fri, 18 Dec 2020 18:37:11 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml706-chm.china.huawei.com (10.206.15.55) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Fri, 18 Dec 2020 11:40:58 +0100
+Received: from [10.210.168.198] (10.210.168.198) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 18 Dec 2020 10:40:57 +0000
+Subject: Re: [PATCH] lib/logic_pio: Fix overlap check for pio registery
+To:     Jiahui Cen <cenjiahui@huawei.com>, <linux-kernel@vger.kernel.org>
+CC:     Wei Xu <xuwei5@hisilicon.com>, Arnd Bergmann <arnd@arndb.de>,
+        "Bjorn Helgaas" <bhelgaas@google.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        <xieyingtai@huawei.com>
+References: <20201218062335.5320-1-cenjiahui@huawei.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <2cde14cd-91da-aae4-70aa-656d629259e6@huawei.com>
+Date:   Fri, 18 Dec 2020 10:40:13 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <20201218062335.5320-1-cenjiahui@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.168.198]
+X-ClientProxiedBy: lhreml744-chm.china.huawei.com (10.201.108.194) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joe Perches
-> Sent: 18 December 2020 10:09
-> On Fri, 2020-12-18 at 09:49 +0000, David Laight wrote:
-> > From: Joe Perches
-> > checkpatch probably shouldn't complain about lines that end in (
-> > if they are function definitions.
+On 18/12/2020 06:23, Jiahui Cen wrote:
+> Since the [start, end) is a half-open interval, a range with the end equal
+> to the start of another range should not be considered as overlapped.
 > 
-> Opinons vary.
+> Signed-off-by: Jiahui Cen <cenjiahui@huawei.com>
+> ---
+>   lib/logic_pio.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Very few function declaration/definitions in the linux kernel use the
-> one line per argument style (gnu indent -bfde)
-> 
-> type function(
-> 	type argument1,
-> 	type argument2,
-> 	...
-> 	)
-> {
-> 	...
-> }
-> 
-> It probably shouldn't be encouraged.
+> diff --git a/lib/logic_pio.c b/lib/logic_pio.c
+> index f32fe481b492..445d611f1dc1 100644
+> --- a/lib/logic_pio.c
+> +++ b/lib/logic_pio.c
+> @@ -57,7 +57,7 @@ int logic_pio_register_range(struct logic_pio_hwaddr *new_range)
+>   		    new_range->flags == LOGIC_PIO_CPU_MMIO) {
+>   			/* for MMIO ranges we need to check for overlap */
+>   			if (start >= range->hw_start + range->size ||
+> -			    end < range->hw_start) {
+> +			    end <= range->hw_start) {
 
-The only excuse for anything like that is if there are comments for
-each parameter that are used to generate the interface documentation.
+It looks like your change is correct, but should not really have an 
+impact in practice since:
+a: BIOSes generally list ascending IO port CPU addresses
+b. there is space between IO port CPU address regions
 
-Using that style for function calls just wastes vertical space.
-At least that doesn't happen in the kernel.
+Have you seen a problem here?
 
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+Thanks,
+John
