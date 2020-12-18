@@ -2,83 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BF372DEA4D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 21:36:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A062F2DEA4E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 21:38:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387571AbgLRUgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 15:36:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387521AbgLRUgJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 15:36:09 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A4DDC06138C
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 12:35:29 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id a12so8659351lfl.6
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 12:35:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gG6mCf6v7fYse6hOM6yE0JGOuHH0YNhZes9w/QL8tHw=;
-        b=R3yzZrDSS0+vsgCuyTFWk6wTgJpFZggaojIhJX0VVtDxhasYavTkCQlwRa17W1GYPP
-         e9OjN5qMJVFNfgasUGbAsg3PkiGWvKPrNU+L7jzOl3Jc0twhpVEz+uiKveRA+lc1uk1+
-         tyHneDCy3wmIUha5NS4t8V505z4KeIu42wQ8Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gG6mCf6v7fYse6hOM6yE0JGOuHH0YNhZes9w/QL8tHw=;
-        b=JLFSsiSerwlVsLZrdeKJqlUuqw5QXL3mUrIAfVTn6Tk7hecVRpLHTmRGq7kXJeAXGj
-         1diBRvPhPRm4bmKoKShuxcFVNWUFi3sB5BOO5m23cH4TJ+Zm71BkAjdCsR/PC1KYPG5m
-         t7xAgXXgc9R1aIKm3UJsPaRdtNHiPuNPMa+9Ia815jEgwj6MpAWGa17thv+HYliO8pFr
-         TQgXtH+EW1CpBGT+7YnX0v1EYaJt0+qzT+lM+j5qrBOvf6Sx4ULQtc1wzd+XR4dxFIpu
-         jULtZMtgDd45g8MVRHnV29jqeb+McgA0J1/+BvZGt3ROe6ClNtatsBL4ILIbT5/BRSkC
-         x7ug==
-X-Gm-Message-State: AOAM532chMEtXPi+L74ehwwxNGAxYkCDaC8WDLEAIeQWtkFssbSWtmgD
-        E4sAixypx1iMy6optMSkcug4GJUUodX+5g==
-X-Google-Smtp-Source: ABdhPJySQtLzJ+O7KrkRXQGXS5YjH5u9QMDBvPRcFhZHj9tg492dTOvenakd8AecwzMOnzXrMi4snA==
-X-Received: by 2002:a19:ac07:: with SMTP id g7mr1973933lfc.125.1608323727301;
-        Fri, 18 Dec 2020 12:35:27 -0800 (PST)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id c136sm1036420lfg.306.2020.12.18.12.35.25
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Dec 2020 12:35:25 -0800 (PST)
-Received: by mail-lf1-f47.google.com with SMTP id y19so8555363lfa.13
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 12:35:25 -0800 (PST)
-X-Received: by 2002:a05:6512:789:: with SMTP id x9mr1995208lfr.487.1608323724985;
- Fri, 18 Dec 2020 12:35:24 -0800 (PST)
+        id S2387552AbgLRUh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 15:37:29 -0500
+Received: from foss.arm.com ([217.140.110.172]:41576 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726120AbgLRUh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 15:37:29 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C88FC1FB;
+        Fri, 18 Dec 2020 12:36:43 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 10A2C3F718;
+        Fri, 18 Dec 2020 12:36:42 -0800 (PST)
+References: <c9fb4ab3-a5cb-648c-6de3-c6a871e60870@roeck-us.net> <160831684292.22759.15563002516530918910.tip-bot2@tip-bot2>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Guenter Roeck <linux@roeck-us.net>, Marc Zyngier <maz@kernel.org>,
+        tglx@linutronix.de
+Subject: Re: [irqchip: irq/irqchip-next] irqchip/bcm2836: Fix IPI acknowledgement after conversion to handle_percpu_devid_irq
+Message-ID: <jhjo8iqsvgk.mognet@arm.com>
+In-reply-to: <160831684292.22759.15563002516530918910.tip-bot2@tip-bot2>
+Date:   Fri, 18 Dec 2020 20:36:37 +0000
 MIME-Version: 1.0
-References: <20201218160401.2478999-1-thierry.reding@gmail.com>
-In-Reply-To: <20201218160401.2478999-1-thierry.reding@gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 18 Dec 2020 12:35:09 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgfVj3n5qftaLwk3ZiMiKooO-vzk_XHbcRKPCpBWbtq7w@mail.gmail.com>
-Message-ID: <CAHk-=wgfVj3n5qftaLwk3ZiMiKooO-vzk_XHbcRKPCpBWbtq7w@mail.gmail.com>
-Subject: Re: [GIT PULL] pwm: Changes for v5.11-rc1
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        linux-pwm@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 8:04 AM Thierry Reding <thierry.reding@gmail.com> wrote:
+
+On 18/12/20 18:40, irqchip-bot for Marc Zyngier wrote:
+> The following commit has been merged into the irq/irqchip-next branch of irqchip:
 >
-> This is a fairly big release cycle from the PWM framework's point of
-> view.
+> Commit-ID:     d7f39c40ebb6986e7371510d1c20a4efee4a7f0d
+> Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/d7f39c40ebb6986e7371510d1c20a4efee4a7f0d
+> Author:        Marc Zyngier <maz@kernel.org>
+> AuthorDate:    Fri, 18 Dec 2020 18:03:46
+> Committer:     Marc Zyngier <maz@kernel.org>
+> CommitterDate: Fri, 18 Dec 2020 18:34:17
+>
+> irqchip/bcm2836: Fix IPI acknowledgement after conversion to handle_percpu_devid_irq
+>
+> It appears that despite its name, the bcm2836_arm_irqchip_ipi_eoi()
+> callback is an acknowledgement, and not an EOI. This means that
+> we lose IPIs that are made pending between the handling of the
+> IPI and the write to LOCAL_MAILBOX0_CLR0. With the right timing,
+> things fail nicely.
+>
+> This used to work with handle_percpu_devid_fasteoi_ipi(), which
+> started by eoi-ing the interrupt. With the standard fasteoi flow,
+> this doesn't work anymore.
+>
+> So let's use this callback for what it is, an ack. Your favourite
+> RPi-2/3 is back up and running.
+>
 
-Why does all of this have commit dates from the last day?
+Thanks for cleaning up my mess!
 
-It clearly cannot have been in linux-next in this form, at least.
-
-I pulled and then unpulled. Don't send me stuff that hasn't been in
-next without a _lot_ of explanations for why, most certainly not the
-week before Christmas.
-
-            Linus
+> Fixes: ffdad793d579 ("irqchip/bcm2836: Make IPIs use handle_percpu_devid_irq()")
+> Cc: Valentin Schneider <valentin.schneider@arm.com>
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Tested-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> Link: https://lore.kernel.org/r/c9fb4ab3-a5cb-648c-6de3-c6a871e60870@roeck-us.net
