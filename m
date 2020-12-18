@@ -2,118 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79AEB2DE6B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 16:36:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 992102DEBC1
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 23:53:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728656AbgLRPff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 10:35:35 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:16496 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726581AbgLRPfe (ORCPT
+        id S1726149AbgLRWv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 17:51:27 -0500
+Received: from mailout1.samsung.com ([203.254.224.24]:52251 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725879AbgLRWv0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 10:35:34 -0500
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BIFWrbq154446;
-        Fri, 18 Dec 2020 10:34:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=Srtr7qwQQHkels5ZLJ6Y+5ScWqzwJp6Xx2JhGqHqj+Y=;
- b=QmJQwBiGIRpRN6FzdP/7Hb5VMbVCi7s2gKyYuYeq2ZEKaAqxC/s2vaZWzyhXgFbJImW4
- SfYl0PlpX+J4tefQdBG9cLQh9j3gIl9FEIr4gntYbc0TN1qnnaitrYkyZxWm2cknWLP5
- n8I1/m1T7X1k0wWL62DE8ENXrEKb0K3EDU+VPFkrsP0kCUbp4OheLaMm3XD7Em5F58cW
- SblMw2I4ULgQ46XuZ80/JfOdgskfnihujLkZJDvXJr7SS7Acoq8FcWuVPZlldUdRIv3t
- eyRikR47yAZfeiJG2PG4iDG3mIccUAKMWVKsBwJhjMsq3wtblDA6fuEIWVPh7JAEniZE jQ== 
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35gxv98nu7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Dec 2020 10:34:02 -0500
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BIFWmQD018037;
-        Fri, 18 Dec 2020 15:34:00 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma05fra.de.ibm.com with ESMTP id 35fmywh2km-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Dec 2020 15:34:00 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BIFXwfB45220238
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Dec 2020 15:33:58 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 64927A405B;
-        Fri, 18 Dec 2020 15:33:58 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1CA58A4054;
-        Fri, 18 Dec 2020 15:33:58 +0000 (GMT)
-Received: from osiris (unknown [9.171.24.198])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Fri, 18 Dec 2020 15:33:58 +0000 (GMT)
-Date:   Fri, 18 Dec 2020 16:33:56 +0100
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>
-Subject: Re: __local_bh_enable_ip() vs lockdep
-Message-ID: <20201218153356.GA7932@osiris>
-References: <20201215190152.GA22285@osiris>
- <20201215144724.40ab7612@gandalf.local.home>
- <20201216175259.GP3040@hirez.programming.kicks-ass.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201216175259.GP3040@hirez.programming.kicks-ass.net>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-18_10:2020-12-18,2020-12-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- malwarescore=0 spamscore=0 mlxlogscore=665 adultscore=0 lowpriorityscore=0
- suspectscore=0 clxscore=1015 bulkscore=0 mlxscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012180107
+        Fri, 18 Dec 2020 17:51:26 -0500
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20201218225043epoutp013c15445a32ec85cd94188252113a1c1b~R8UptaYsB0774407744epoutp01P
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 22:50:43 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20201218225043epoutp013c15445a32ec85cd94188252113a1c1b~R8UptaYsB0774407744epoutp01P
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1608331843;
+        bh=qmJ6MBsH2JlVTRk0oWIBvfavnlcYbg8BSsz4vkManxU=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=OFsbGKIOohHt3WPTazQexfw+Qm/zYiia2yGwcLIQUCYO5GUCG9ycnfutbLu7Y9gBS
+         4zJeOZpC+8n5+6+rdaZx22eLv6gWp7HHosDFNPWGysjxLCgiP1LQ0TUMKGTaQXa7ey
+         vi4ew3R3/FHOv8ewh3FJv6i41Sied30EBaZshxwM=
+Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+        20201218225042epcas5p4de74e4f1d0d64ff06f330eb322c83faf~R8UonJfzi2377123771epcas5p4-;
+        Fri, 18 Dec 2020 22:50:42 +0000 (GMT)
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        8D.D1.33964.2423DDF5; Sat, 19 Dec 2020 07:50:42 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
+        20201218153422epcas5p42f09cbf8e40b3d68e3c037256e54d97c~R2XqHAEXd0338803388epcas5p41;
+        Fri, 18 Dec 2020 15:34:22 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201218153422epsmtrp218f4b169215282c1a6400f93f3c4fa6b~R2XqGUJPS0358503585epsmtrp2b;
+        Fri, 18 Dec 2020 15:34:22 +0000 (GMT)
+X-AuditID: b6c32a4b-ea1ff700000184ac-ce-5fdd3242564c
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B6.7F.08745.DFBCCDF5; Sat, 19 Dec 2020 00:34:22 +0900 (KST)
+Received: from ubuntu.sa.corp.samsungelectronics.net (unknown
+        [107.108.83.125]) by epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20201218153420epsmtip2af3d10892d030863cd035a092a86b5f8~R2XomA0270089100891epsmtip2Y;
+        Fri, 18 Dec 2020 15:34:20 +0000 (GMT)
+From:   Shradha Todi <shradha.t@samsung.com>
+To:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Cc:     jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
+        lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com,
+        pankaj.dubey@samsung.com, Shradha Todi <shradha.t@samsung.com>
+Subject: [PATCH] PCI: dwc: Change size to u64 for EP outbound iATU
+Date:   Fri, 18 Dec 2020 21:04:08 +0530
+Message-Id: <1608305648-31816-1-git-send-email-shradha.t@samsung.com>
+X-Mailer: git-send-email 2.7.4
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrFIsWRmVeSWpSXmKPExsWy7bCmpq6T0d14g643GhZLmjIsdt3tYLdY
+        8WUmu8XlXXPYLM7OO85m8eb3C3aLRVu/sFv837OD3aL3cK0Dp8eaeWsYPXbOusvusWBTqcem
+        VZ1sHn1bVjF6bNn/mdHj8ya5APYoLpuU1JzMstQifbsEroyVK9sZC/7yVPyY+IW5gfEeVxcj
+        J4eEgInEpWuf2bsYuTiEBHYzSiw+uJARwvnEKLG7bQsLhPOZUeLplkuMMC3Lj96HatnFKHHi
+        5D82CKeFSeLG6j1MIFVsAloSjV+7mEFsEQFricPtW8CKmAX2MEr8WHQfrEhYwEni0YNbYGNZ
+        BFQlvl37zAZi8wq4Sjzt3cUGsU5O4ua5TmaQZgmBY+wSR569ZIJIuEj8Of6aFcIWlnh1fAs7
+        hC0l8fndXqjmfImpF54CPcEBZFdILO+pgwjbSxy4MgcszCygKbF+lz5EWFZi6ql1YNOZBfgk
+        en8/gdrEK7FjHoytLPHl7x4WCFtSYt6xy1AXeEisugFxspBArETnrSOsExhlZyFsWMDIuIpR
+        MrWgODc9tdi0wDgvtVyvODG3uDQvXS85P3cTIzg5aHnvYHz04IPeIUYmDsZDjBIczEoivKEP
+        bscL8aYkVlalFuXHF5XmpBYfYpTmYFES51X6cSZOSCA9sSQ1OzW1ILUIJsvEwSnVwGTFf9vJ
+        bUdIQX+/5I4PkbEJPlpZf1luKpg8FzxjzP5r9oIuMR42ZTkp4WKNqauY5/zdfshKYrvWl2sa
+        V/KLy2qnJqY9P2S22HL97L+KS/fff1jy55yxvxnbUk3h/jatsNTTVZFiMa6zbWetXLdwYtGp
+        /m93RTqiC1+XdnWbaV5WzbXrFKyWfzKjoXbRzIWlGe78ylG/3x+2u2mu+JnZV6H31PRK3+rm
+        K2kMEj1NN9US/7zyZJZ0Zlsc1LpSsrndz3J2VtqvfVdZCrXDL380WtP29M0a/RfbGF1rLSMq
+        vv/g/fakfWfAmZMH1glum+l54aSPS9yjzwK7twlMnVlU8n0v37WdL959Fdnl6rLnkBJLcUai
+        oRZzUXEiAOwK/wp9AwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprALMWRmVeSWpSXmKPExsWy7bCSvO6/03fiDZ40Mlssacqw2HW3g91i
+        xZeZ7BaXd81hszg77zibxZvfL9gtFm39wm7xf88Odovew7UOnB5r5q1h9Ng56y67x4JNpR6b
+        VnWyefRtWcXosWX/Z0aPz5vkAtijuGxSUnMyy1KL9O0SuDJWrmxnLPjLU/Fj4hfmBsZ7XF2M
+        nBwSAiYSy4/eZwexhQR2MEpMn24EEZeU+HxxHROELSyx8t9zoBouoJomJomnd5vBEmwCWhKN
+        X7uYQWwRAVuJ+48ms4IUMQscYZToeXCXDSQhLOAk8ejBLUYQm0VAVeLbtc9gcV4BV4mnvbvY
+        IDbISdw818k8gZFnASPDKkbJ1ILi3PTcYsMCo7zUcr3ixNzi0rx0veT83E2M4EDT0trBuGfV
+        B71DjEwcjIcYJTiYlUR4Qx/cjhfiTUmsrEotyo8vKs1JLT7EKM3BoiTOe6HrZLyQQHpiSWp2
+        ampBahFMlomDU6qBaf2uc6f5DyRGlq1Zw9wjPOP6pg+/vlkYeKzcdItZlHEphw/PHHeTaiWN
+        VRsqZLT8r60R2H8mS8FOO3Lig94ZJXcDClONU/xC8hV1eKOmRohs4DSX9i1hqAxvXnIwJ37Z
+        +6cN96LDGt9kCHOc15pj8iwlYQJv85TwQ7vmVfhxPQxe1V9p+K3viq/HpqJTTfse2f791Ob4
+        SzvtS9fquDfhbetbdd9ImClySli96Fn5gVFXs/tOL7NOQ/qXub/27DV58GVS6b2C6y8++cWq
+        LIkTKGOLfLfxS1qP8V6dD1Zps5qzbvB8N1uU8W7yvcYZeRmXfjDXF3TqxmQ8n5qYElL89cWK
+        01FeK/xeP5v8w/qBEktxRqKhFnNRcSIAO7Vu2KMCAAA=
+X-CMS-MailID: 20201218153422epcas5p42f09cbf8e40b3d68e3c037256e54d97c
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20201218153422epcas5p42f09cbf8e40b3d68e3c037256e54d97c
+References: <CGME20201218153422epcas5p42f09cbf8e40b3d68e3c037256e54d97c@epcas5p4.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 06:52:59PM +0100, Peter Zijlstra wrote:
-> On Tue, Dec 15, 2020 at 02:47:24PM -0500, Steven Rostedt wrote:
-> > On Tue, 15 Dec 2020 20:01:52 +0100
-> > Heiko Carstens <hca@linux.ibm.com> wrote:
-> > 
-> > > Hello,
-> > > 
-> > > the ftrace stack tracer kernel selftest is able to trigger the warning
-> > > below from time to time. This looks like there is an ordering problem
-> > > in __local_bh_enable_ip():
-> > > first there is a call to lockdep_softirqs_on() and afterwards
-> > > preempt_count_sub() is ftraced before it was able to modify
-> > > preempt_count:
-> > 
-> > Don't run ftrace stack tracer when debugging lockdep. ;-)
-> > 
-> >   /me runs!
-> 
-> Ha!, seriously though; that seems like something we've encountered
-> before, but my google-fu is failing me.
-> 
-> Do you remember what, if anything, was the problem with this?
-> 
-> ---
-> diff --git a/kernel/softirq.c b/kernel/softirq.c
-> index d5bfd5e661fc..9d71046ea247 100644
-> --- a/kernel/softirq.c
-> +++ b/kernel/softirq.c
-> @@ -186,7 +186,7 @@ void __local_bh_enable_ip(unsigned long ip, unsigned int cnt)
->  	 * Keep preemption disabled until we are done with
->  	 * softirq processing:
->  	 */
-> -	preempt_count_sub(cnt - 1);
-> +	__preempt_count_sub(cnt - 1);
->  
->  	if (unlikely(!in_interrupt() && local_softirq_pending())) {
->  		/*
+Since outbound iATU permits size to be greater than
+4GB for which the support is also available, allow
+EP function to send u64 size instead of truncating
+to u32.
 
-FWIW,
+Signed-off-by: Shradha Todi <shradha.t@samsung.com>
+---
+ drivers/pci/controller/dwc/pcie-designware.c | 2 +-
+ drivers/pci/controller/dwc/pcie-designware.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Tested-by: Heiko Carstens <hca@linux.ibm.com>
+diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
+index 7eba3b2..6298212 100644
+--- a/drivers/pci/controller/dwc/pcie-designware.c
++++ b/drivers/pci/controller/dwc/pcie-designware.c
+@@ -325,7 +325,7 @@ void dw_pcie_prog_outbound_atu(struct dw_pcie *pci, int index, int type,
+ 
+ void dw_pcie_prog_ep_outbound_atu(struct dw_pcie *pci, u8 func_no, int index,
+ 				  int type, u64 cpu_addr, u64 pci_addr,
+-				  u32 size)
++				  u64 size)
+ {
+ 	__dw_pcie_prog_outbound_atu(pci, func_no, index, type,
+ 				    cpu_addr, pci_addr, size);
+diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
+index 28b72fb..bb33f28 100644
+--- a/drivers/pci/controller/dwc/pcie-designware.h
++++ b/drivers/pci/controller/dwc/pcie-designware.h
+@@ -307,7 +307,7 @@ void dw_pcie_prog_outbound_atu(struct dw_pcie *pci, int index,
+ 			       u64 size);
+ void dw_pcie_prog_ep_outbound_atu(struct dw_pcie *pci, u8 func_no, int index,
+ 				  int type, u64 cpu_addr, u64 pci_addr,
+-				  u32 size);
++				  u64 size);
+ int dw_pcie_prog_inbound_atu(struct dw_pcie *pci, u8 func_no, int index,
+ 			     int bar, u64 cpu_addr,
+ 			     enum dw_pcie_as_type as_type);
+-- 
+2.7.4
 
-Peter, will you make proper patch out of this?
