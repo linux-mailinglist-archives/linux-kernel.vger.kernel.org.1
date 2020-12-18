@@ -2,64 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A1E2DE0AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 11:00:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E219F2DE0B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 11:03:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733147AbgLRKAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 05:00:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733012AbgLRKAT (ORCPT
+        id S1733086AbgLRKCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 05:02:50 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2268 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728247AbgLRKCu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 05:00:19 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77BB9C0617A7;
-        Fri, 18 Dec 2020 01:59:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6fKOvh3a2GZ34rXvLOLqMenb3Y5+fW2+k0TfKgHEyRc=; b=MTsUQlIJSWJvw7bOtuQ2GJuIgU
-        nzCut7tMCmigJOpQGv3jwIA91hTiS29B4x+QogWz7kmT/qQRCeS8Ya99PIMmkw9Oli/w/u4d0ZFZl
-        Fzos0wmbI1uCY5KVOmUaU0GV8sK+gTkpTJyUcOaK1Qg56JrobEyJaH6658WOlfKbJPmSx469Cc9fF
-        fVoquPtcJvmRy7nX7f8gjuP9hy3lVGK67lsBOQltD1WtlM2tl0+D07eNIMZrcVdcwItvYUTz2ZzO1
-        S+GvY507CaqBh2HQF2tUjhkJcJg7RUEjo0C5maJxT7yIswNHRMQ5VCq2mlldW+rGZMbxqrv/L4iQ4
-        nlYM3WXg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kqCXq-0003Xf-B4; Fri, 18 Dec 2020 09:59:30 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 846F0304B92;
-        Fri, 18 Dec 2020 10:59:27 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6B01B2012B50F; Fri, 18 Dec 2020 10:59:27 +0100 (CET)
-Date:   Fri, 18 Dec 2020 10:59:27 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Chang S. Bae" <chang.seok.bae@intel.com>
-Cc:     tglx@linutronix.de, mingo@kernel.org, bp@suse.de, luto@kernel.org,
-        x86@kernel.org, herbert@gondor.apana.org.au,
-        dan.j.williams@intel.com, dave.hansen@intel.com,
-        ravi.v.shankar@intel.com, ning.sun@intel.com,
-        kumar.n.dwarakanath@intel.com, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH 6/8] selftests/x86: Test Key Locker internal key
- maintenance
-Message-ID: <20201218095927.GE3021@hirez.programming.kicks-ass.net>
-References: <20201216174146.10446-1-chang.seok.bae@intel.com>
- <20201216174146.10446-7-chang.seok.bae@intel.com>
+        Fri, 18 Dec 2020 05:02:50 -0500
+Received: from fraeml734-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Cy47J4pTjz67RPs;
+        Fri, 18 Dec 2020 17:58:20 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml734-chm.china.huawei.com (10.206.15.215) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 18 Dec 2020 11:02:07 +0100
+Received: from [10.210.168.198] (10.210.168.198) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 18 Dec 2020 10:02:06 +0000
+Subject: Re: [RFC PATCH v2 2/2] blk-mq: Lockout tagset iter when freeing rqs
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <hch@lst.de>, <hare@suse.de>,
+        <ppvk@codeaurora.org>, <bvanassche@acm.org>,
+        <kashyap.desai@broadcom.com>, <linuxarm@huawei.com>
+References: <1608203273-170555-1-git-send-email-john.garry@huawei.com>
+ <1608203273-170555-3-git-send-email-john.garry@huawei.com>
+ <20201218033125.GA2322803@T590>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <78ac690d-3c90-be90-1628-53422e1d928a@huawei.com>
+Date:   Fri, 18 Dec 2020 10:01:22 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201216174146.10446-7-chang.seok.bae@intel.com>
+In-Reply-To: <20201218033125.GA2322803@T590>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.168.198]
+X-ClientProxiedBy: lhreml744-chm.china.huawei.com (10.201.108.194) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 09:41:44AM -0800, Chang S. Bae wrote:
-> +	/* ENCODEKEY128 %EAX */
-> +	asm volatile (".byte 0xf3, 0xf, 0x38, 0xfa, 0xc0");
+On 18/12/2020 03:31, Ming Lei wrote:
+>>   3 files changed, 23 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+>> index a6df2d5df88a..853ed5b889aa 100644
+>> --- a/block/blk-mq-tag.c
+>> +++ b/block/blk-mq-tag.c
+>> @@ -358,10 +358,19 @@ void blk_mq_tagset_busy_iter(struct blk_mq_tag_set *tagset,
+>>   {
+>>   	int i;
+>>   
+>>   	for (i = 0; i < tagset->nr_hw_queues; i++) {
+>> -		if (tagset->tags && tagset->tags[i])
+>> -			__blk_mq_all_tag_iter(tagset->tags[i], fn, priv,
+>> +		if (tagset->tags && tagset->tags[i]) {
+>> +			struct blk_mq_tags *tags = tagset->tags[i];
+>> +
+>> +			if (!atomic_inc_not_zero(&tags->iter_usage_counter))
+>> +				continue;
 
-This is lacking a binutils version number. Boris, didn't you do a
-checkpatch.pl thing for that?
+Hi Ming,
+
+> When 'continue' is run, blk_mq_tagset_busy_iter()'s semantic may be
+> broken.
+
+Yeah, I did consider this, and thought that we're ok since we iter only 
+started tags here (and there would be none for the queue). But then that 
+would not work for other queues with active tags associated.
+
+> 
+>> +
+>> +			__blk_mq_all_tag_iter(tags, fn, priv,
+>>   					      BT_TAG_ITER_STARTED);
+>> +
+>> +			atomic_dec(&tags->iter_usage_counter);
+>> +		}
+>>   	}
+>>   }
+>>   EXPORT_SYMBOL(blk_mq_tagset_busy_iter);
+>> @@ -435,9 +444,14 @@ void blk_mq_queue_tag_busy_iter(struct request_queue *q, busy_iter_fn *fn,
+>>   		if (!blk_mq_hw_queue_mapped(hctx))
+>>   			continue;
+>>   
+>> +		if (!atomic_inc_not_zero(&tags->iter_usage_counter))
+>> +			continue;
+> Same with above comment.
+
+Right, similar to above.
+
+> 
+>> +
+>>   		if (tags->nr_reserved_tags)
+>>   			bt_for_each(hctx, tags->breserved_tags, fn, priv, true);
+>>   		bt_for_each(hctx, tags->bitmap_tags, fn, priv, false);
+>> +
+>> +		atomic_dec(&tags->iter_usage_counter);
+>>   	}
+>>   	blk_queue_exit(q);
+>>   }
+>> @@ -461,6 +475,8 @@ static int blk_mq_init_bitmap_tags(struct blk_mq_tags *tags,
+>>   		     round_robin, node))
+>>   		goto free_bitmap_tags;
+>>   
+>> +	atomic_set(&tags->iter_usage_counter, 1);
+>> +
+>>   	tags->bitmap_tags = &tags->__bitmap_tags;
+>>   	tags->breserved_tags = &tags->__breserved_tags;
+>>   
+>> diff --git a/block/blk-mq-tag.h b/block/blk-mq-tag.h
+>> index 7d3e6b333a4a..563019d60f05 100644
+>> --- a/block/blk-mq-tag.h
+>> +++ b/block/blk-mq-tag.h
+>> @@ -11,6 +11,9 @@ struct blk_mq_tags {
+>>   
+>>   	atomic_t active_queues;
+>>   
+>> +	/* Only interesting for driver tags */
+>> +	atomic_t	iter_usage_counter;
+>> +
+>>   	struct sbitmap_queue *bitmap_tags;
+>>   	struct sbitmap_queue *breserved_tags;
+>>   
+>> diff --git a/block/blk-mq.c b/block/blk-mq.c
+>> index 8465d7c5ebf0..a61279be0120 100644
+>> --- a/block/blk-mq.c
+>> +++ b/block/blk-mq.c
+>> @@ -2315,7 +2315,9 @@ void __blk_mq_free_rqs_ext(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
+>>   void blk_mq_free_rqs_ext(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
+>>   		     unsigned int hctx_idx, struct blk_mq_tags *ref_tags)
+>>   {
+>> +	while (atomic_cmpxchg(&ref_tags->iter_usage_counter, 1, 0) != 1);
+>>   	__blk_mq_free_rqs_ext(set, tags, hctx_idx, ref_tags);
+>> +	atomic_set(&ref_tags->iter_usage_counter, 1);
+>>   }
+> I guess it is simpler to sync the two code paths by adding mutex to 'ref_tags' and
+> holding it in both __blk_mq_free_rqs_ext() and the above two iterator helpers.
+
+But are we allowed to always sleep in the iter calling context?
+
+And that will also lockout parallel iterations, which is less than ideal.
+
+So I could look to address the issues you mention above with atomics 
+still, but maybe Bart has some better idea regarding RCU.
+
+Thanks,
+John
