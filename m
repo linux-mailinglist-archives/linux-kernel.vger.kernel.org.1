@@ -2,294 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 723352DDCDA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 03:15:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AC372DDCE5
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 03:25:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732372AbgLRCNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 21:13:24 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:54058 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732022AbgLRCNX (ORCPT
+        id S1732583AbgLRCPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 21:15:50 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:25405 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732573AbgLRCPt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 21:13:23 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BI2BeTk019914;
-        Thu, 17 Dec 2020 18:12:18 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : references
- : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=K3krahpAi/beaWANuyRuJk1wpRvW5FaE1mh/2unRJMg=;
- b=VPe+GeZD2yfHTkgixdbp1flN+PRkwFVd7bdwCBRRyirM0aXkedkVtxI6mchNLx0F+/kQ
- 5n4JHs6Zxy0/qxuWo1XJZCyeO3f+bgKLv6DzHxGFvnSDlL28WWBYlT2br4/9PZSVOlRN
- 5SaqH5dU4xu5duV9UdNkEmuszACBYNPQkms= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 35g83xkrg7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 17 Dec 2020 18:12:18 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 17 Dec 2020 18:12:16 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WdPh2sT8sur6gE9LdekadyuqSSISI93EVeSqMoaaWKh51oRgVZovRfYAmVaMb2bCpaZOqVWgZJOdIN7o/X8nA0+gZ4apxUAP5uTXRJxyzJPREb7qXJRTtKPF1S28TY7wXvLk8T06uVqbXXZPaCT/v270ym7SsmETFBHFFtNKJ2zQ80fJ12VQ2oArF9xM2x2H7oWA5/wl6aGmyFDc0dYaSAhnonnUIYn0arc1dOf7vzu6VpOUS423aEFpV4ZY78oIpLaRqHVe8Pyv5um1jKJeDwNsRPHNwzMh4c5rxFzpGinASYFdaGAF+LTmOmy14bbF1uhrQLGvmwZs09YSDkOakg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=w1/J138vR4gXGKCdVDxwhN/xEoCuJx++OYI+aJ10qdA=;
- b=hvHClnYBlDvVUzad1lJx8PseAjpJm47v0EbpVS+C6ZKHlcWBnpsN6XUqgWZdYOkoOb0e5GTKb5ya20PWjKMDNGVtVL/IX1mBa3VmBNjPCFhXurIA8U0Wm75xvx7aqROWJPlD6YQiclyp5b82BHAfdURuk4nMvHQCtlOKRoJwILhGNprIWSo8ZWyC46ZyZbQa4pBdOdhu447KtjqX+dQzXleHRqIApsiyXspXrsMh9OTLB1i2q35/DRjyoAN7g6oK8Z3ICJlrJzqHuGtekngtonAjJ3rDGoHFrgeX4FeDvZTK+zRKgc/O7VYSeVUAes7YGSfX8nsoRo3jG/kWbdCFrQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=w1/J138vR4gXGKCdVDxwhN/xEoCuJx++OYI+aJ10qdA=;
- b=XgT4xgbFeNMAXNKXeFm7hy2UbbX786nRirZwGAzErI23gA+FiQ17op0tRkKaIxf7Qiee8XFuSe16pf3nVYoZfmoEgIzpkQ7KY3UOfYUJ0q4Je9EgdxAOS6XXlQoTQSDlJMVBPjgl26sQxooMnsgL8YEg08v4coojXmxR03Ov7OM=
-Authentication-Results: googlegroups.com; dkim=none (message not signed)
- header.d=none;googlegroups.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2695.namprd15.prod.outlook.com (2603:10b6:a03:150::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Fri, 18 Dec
- 2020 02:12:15 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3654.025; Fri, 18 Dec 2020
- 02:12:15 +0000
-Subject: Re: [PATCH] btf: support ints larger than 128 bits
-To:     Sean Young <sean@mess.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        <linux-doc@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <clang-built-linux@googlegroups.com>
-References: <20201217150102.GA13532@gofer.mess.org>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <1e9594be-c21d-88d2-e3bf-0b8e3e991aa1@fb.com>
-Date:   Thu, 17 Dec 2020 18:12:11 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.1
-In-Reply-To: <20201217150102.GA13532@gofer.mess.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-Originating-IP: [2620:10d:c090:400::5:4f3]
-X-ClientProxiedBy: MW4PR03CA0366.namprd03.prod.outlook.com
- (2603:10b6:303:114::11) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21cf::12e6] (2620:10d:c090:400::5:4f3) by MW4PR03CA0366.namprd03.prod.outlook.com (2603:10b6:303:114::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.13 via Frontend Transport; Fri, 18 Dec 2020 02:12:14 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8fcc9734-4427-4a9f-4c79-08d8a2fa5707
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2695:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB26950A0295891BD1C2435D39D3C30@BYAPR15MB2695.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:2000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 45QjXk+uCFi6PwpGXsiu59rxYHIc87Jg1QCO+ULj11ytRmw0QnvNZ/mbLThea+GXhK0S7HZKl+BMl3nrIJMfeM1874YCyGQNkYh9FoKMtXyWeUTzBfbwBJnY25PMgzPMfLf0dtZqhRvxs6oPwahniaXiCZ6tFj9SGX/UoMFcCu9oVcQHdhv62RfZhZMNbZH9BbobOct9AqUngbCAWdVhMgtju9FT3sl0A6g6eC5pMI6bu3F6qM33DnFK/JRIzruoLU/pAkwFZxWgddtc3bN4YSmLhSmWi0rawqTLsMc42RNGPVli8PWz/nurUIyO4rVSfkhgWzxcWZPAHJ1R1PQDKxN5kDM/SB1dKT3V5fwFtMGJ4oI5Hs34izpUy14/vNQRMjfnBxTzkX30aGGdN2yPGkq0TbqVbhR9Iz0Rdxi+vv0N1MJY3Exb2p5lTcC/i+zkBTD96pFq6o2HaL/Ui9Njesy+cNMv7l/l2OP4kSvn6OuAEKb6ZcPtwZttr2JXjjXm
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(39860400002)(376002)(366004)(136003)(66476007)(8936002)(478600001)(8676002)(31686004)(16526019)(6486002)(186003)(66556008)(966005)(2906002)(31696002)(110136005)(36756003)(5660300002)(86362001)(921005)(2616005)(53546011)(52116002)(7416002)(66946007)(6666004)(316002)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?NGpiTnZmWC9pUGRZN2NZeDFEclJQS00xMm1lR3N1b2ZpaGt0WU1kSm1aeSt1?=
- =?utf-8?B?QmVLdEpOZGtlUTBHdVRueEljMG5xaXFUdDhycEVGSkgrME05WW52QnVoRWdx?=
- =?utf-8?B?YmJsMXhmNUttSCtuZE5SM2J1Zm11NFdRN1VwREZuWXZ6a2FJWFdQenArem55?=
- =?utf-8?B?OUt3aGI5a3JDbXJjUUM5NUw3YzlTVjVIUnpiek9KTTdxR0tMdGNyNklGcDNV?=
- =?utf-8?B?a2dJOVhacXNTNlU0NjJjejNoR2YxSUZKQkxtRm42Y0NkZ3FoTWp4SGxsZzdn?=
- =?utf-8?B?ZGVsaDMzS3IrM2MxSFMzYm5sckRoWUhsc1pBeHYrUnlseFkySXNwYkVlY216?=
- =?utf-8?B?MUpkWVZlU2tmQ1BmbEJSNjdjR1BBTFRxTm14dFBBMXN6VnpTdGxHdkx2WTVB?=
- =?utf-8?B?Z0dtbG5rOHJsZzMrL1J4RlpicXM5endrQVdyd3Q4QUVmRjkvZ1N6MDFNZjBy?=
- =?utf-8?B?RVBTT2Zhd0l3R21heHpTTDBlYVpMUFJvWVBwNHpLNEJKM2hHY3JNL1NURFhG?=
- =?utf-8?B?RlNnSmdmSDlLdGdDTWRZZUtEanJiQWhXb1pDeExIYUxkMElMS1VraGxNRW5i?=
- =?utf-8?B?Q0ZTWUNlRkNmV0ZwS2FVRFNBWFN3TUlDSjNnYllLNU5ITUZlUzlUeHhDTmRU?=
- =?utf-8?B?amZ6NmF4NkNFYWd6WmwyMEFuclFjRC9vNngySXM4SmhKcjJDc3NUN3AxT3pr?=
- =?utf-8?B?RHNsemMwaERzU3RaMHhuNUdQWnZ3bXovcmlObldZckV4U1FsMmZLenlIUnBj?=
- =?utf-8?B?bnEzV0p3aFRranlaTVJ1blEwMGR1TWdEZmttS2NrcTJwNzBzZFkwb3BMRVZn?=
- =?utf-8?B?WVQ2N3NhbWx5RzdLN3NlNXgyVjFPMFZNOHlnTnFXVERNZHRZUXhQQ2NNM2hL?=
- =?utf-8?B?eVVkVGhmYjZZWlJHZWF0UTRWVWptNVdKSjE2NlB5OXYzbHN1UXdwMXUxbFZk?=
- =?utf-8?B?NVgwZEhSOG1veTdSNGRObU0zRnVraWlFeGRWVCtnRjdYbVMxUFhBaW1XT2Za?=
- =?utf-8?B?UFhiWWYrcVUwZ0Vic2Nhc3E2a1NxRXVsWG9IYU92b0sxVXZSWkkycTdja01J?=
- =?utf-8?B?UFhDQk5uOGJZYlNPZ21hUC9rZG42U0xDTlorbzJ6aGNRYUNuWGpjNTZhNmVj?=
- =?utf-8?B?N2tMZy8wQ0kxNU1kVHBaTUtuM1RnTlhBVFl1RTB3bmtvN2hTbGNSR0xGV0xx?=
- =?utf-8?B?cElNL0p6QlE1WVZrcVlZMjlXdE5STnBlN2dxZzRSU2RVZ3paajJuMWxyWlFV?=
- =?utf-8?B?UElSUWVJZ0gwN2pCMlpXWEZ4RHB1WU5xZXJpR001SDZQZytZcDFQUTh2a1lz?=
- =?utf-8?B?RkpXSEkvN1Fad01TM1BmL1pPaUQyUDlkbEJCTTJxWGFvd1c2a0hWdEE3ZC9O?=
- =?utf-8?B?eldkTnZvaUp4MUE9PQ==?=
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Dec 2020 02:12:15.7075
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8fcc9734-4427-4a9f-4c79-08d8a2fa5707
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tU2sY+6pYoC8LfblWfl50uuFt+RPAoPS0M/kQQBjNHxHmdK5F0Qdq54vu8jbz4R3
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2695
-X-OriginatorOrg: fb.com
+        Thu, 17 Dec 2020 21:15:49 -0500
+Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20201218021505epoutp026e0f895a31636da5cf721fad197e6e5c~RrdzQEesp3133631336epoutp02h
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 02:15:05 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20201218021505epoutp026e0f895a31636da5cf721fad197e6e5c~RrdzQEesp3133631336epoutp02h
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1608257705;
+        bh=wx1FRvC7dUGiq44E8FDc2IOzuLyp1v9f10ohCHmmrT0=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=k7nPBB5eAyzOLGFgCAVyeGwC20Ak6TsYA9Ttxc6YL6O+gg4Mfk07n4FTtzuNlWTcQ
+         NeTlsqBHWQQpFJpIPEPx+8ct9plwXJNhy0U5528f28bCP0djSLJhcZ5SwSLORDUJpV
+         pwuWx3NOc/h5VGH5Drd1WL6uq+NZf8Qia4xk1dxs=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
+        20201218021504epcas2p3eb429b96d04121bf6ea90da34a572efe~RrdydDtVi1747117471epcas2p3r;
+        Fri, 18 Dec 2020 02:15:04 +0000 (GMT)
+Received: from epsmges2p3.samsung.com (unknown [182.195.40.189]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4Cxsrk5TKwzMqYkq; Fri, 18 Dec
+        2020 02:15:02 +0000 (GMT)
+X-AuditID: b6c32a47-b97ff7000000148e-2b-5fdc10a6fe59
+Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
+        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        F5.FD.05262.6A01CDF5; Fri, 18 Dec 2020 11:15:02 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: Re: Subject: [PATCH v14 1/3] scsi: ufs: Introduce HPB feature
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Stanley Chu <stanley.chu@mediatek.com>,
+        Daejun Park <daejun7.park@samsung.com>
+CC:     "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <1608256903.10163.39.camel@mtkswgap22>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20201218021502epcms2p2a66c2aa01b084edd3b06323812116c4d@epcms2p2>
+Date:   Fri, 18 Dec 2020 11:15:02 +0900
+X-CMS-MailID: 20201218021502epcms2p2a66c2aa01b084edd3b06323812116c4d
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 2 URL's were un-rewritten
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-17_17:2020-12-17,2020-12-17 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- impostorscore=0 suspectscore=0 spamscore=0 clxscore=1011 adultscore=0
- malwarescore=0 lowpriorityscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012180013
-X-FB-Internal: deliver
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA12TbUxTVxjHub2X20LS5VBhOwMVuDpH2YAWVnYYMJdhtk6mYVGzDNeVa3tD
+        yUrb9FJ0miiLbCoCMpIBY4CCGzgG62AUCmgoLWL5wBKobsprMSJTx9v84KpD1zem2bff+Z/n
+        PP/nec45PFwwQ4bz8jQFjF5DqykymOi2CSVxzWBKLuobF6KO6buByNnQTaJLX9q56I7rGols
+        k0tcVLXiwtFfxuZAdMcqRK3OD9Hx80YS1Y0WcVDZGROJmq53c5Cjr45Ep383k6jlymMOmuwK
+        Rt+bbmDoVHUbgZoa+4m3QqWOq5lSR3kZR9pbO82VVjRZMOlAfRtXWjwyQEhX5ycIaXlXKya9
+        37lZesJympMVnK1OUzG0ktFHMRqFVpmnyU2nMvfIM+SSZJE4TpyCXqeiNHQ+k07teD8r7p08
+        tbs5KqqQVhvcUhbNslTCm2l6raGAiVJp2YJ0itEp1TqxWBfP0vmsQZMbr9DmvyEWiRIl7sgc
+        teryBQehM8Ycqqkvx4qwycgSLIgHwWuwc6KMLMGCeQJgxuB8W4d7wePxQQhcM2/wxGwAO+HX
+        t6sCPSwAFDSO1XJ9ejycmGvDPEyCV2G1fdarh4K90NE4SHhy4uAbEl4eb8Z8ZnxYc2Ke8HEE
+        7GkxefUgkAStT7r8egz8u7kM93EYvPHjInedl4fP+vOEwi9mRv0xIdDp6vfrL8Lh/hWOj49B
+        09RDzFMEBKUYtPVOBPo2EuBvJzu8ZnywC5aUPvLqBHgJVg7e9xexA/7ptHiNcRAJexbrcM9Q
+        cCCExr4ED0KwBQ5NEOttFXU84v6fcfAcPGlb+083N9zyl7YN/uQyciqwLbVPJ137jFftU69z
+        GN6KPc/o2Pxchk3UJT17uZ2Y96HHvmvGahZX4q0Yh4dZMcjDqVD+PuekXMBX0p8dZvRaud6g
+        ZlgrJnF3+RUeHqbQun+KpkAuliQmJ4tSJEiSnIioF/j7fiiXC0AuXcB8yjA6Rr9+jsMLCi/i
+        FJrfLlNtNoNCQ3sAY1+QjZYeOMCkdlzMMP0asTC/vX0373Ga+Y9N5xyszPHxTILIcdBeeXMZ
+        HzJvjMhePRpQpzi0Fj3bmZljXFamVm68Qq0yNSOj1fLvFpbCoqwJ3z44dW8sLvYswUQLhZ9c
+        222zRHbJqyr23rsNcgd0AbKrSlHvrQxmsKlpp8U+7fq5x5C6P3r8yP6IJOfxUgVd/MS1re76
+        GaBqaKzPXpIctNxN3XT0g10P+e/Zpy+VVGyN7jtysUX8YE/72MvbDw+/EgKmpmVzI+Ujs4m2
+        3p5/mOILrswiU2tSzkcxnx/bqlYszVE1v9yUdZ0XxPS4huyr2hSZjSJYFS2OxfUs/S+9g3/5
+        cQQAAA==
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201215082235epcms2p88c9d8fd4dc773f6a4901dab241063306
+References: <1608256903.10163.39.camel@mtkswgap22>
+        <20201216024444epcms2p5e69281911dd675306c473df3d2cef8b2@epcms2p5>
+        <20201216024532epcms2p22b8aadbce9f0d2aae7915bdf22e2fe8f@epcms2p2>
+        <CGME20201215082235epcms2p88c9d8fd4dc773f6a4901dab241063306@epcms2p2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/17/20 7:01 AM, Sean Young wrote:
-> clang supports arbitrary length ints using the _ExtInt extension. This
-> can be useful to hold very large values, e.g. 256 bit or 512 bit types.
+Hi Daejun,
 > 
-> Larger types (e.g. 1024 bits) are possible but I am unaware of a use
-> case for these.
+> On Wed, 2020-12-16 at 11:45 +0900, Daejun Park wrote:
+> > This is a patch for the HPB initialization and adds HPB function calls to
+> > UFS core driver.
+> > 
+> > NAND flash-based storage devices, including UFS, have mechanisms to
+> > translate logical addresses of IO requests to the corresponding physical
+> > addresses of the flash storage.
+> > In UFS, Logical-address-to-Physical-address (L2P) map data, which is
+> > required to identify the physical address for the requested IOs, can only
+> > be partially stored in SRAM from NAND flash. Due to this partial loading,
+> > accessing the flash address area where the L2P information for that address
+> > is not loaded in the SRAM can result in serious performance degradation.
+> > 
+> > The basic concept of HPB is to cache L2P mapping entries in host system
+> > memory so that both physical block address (PBA) and logical block address
+> > (LBA) can be delivered in HPB read command.
+> > The HPB READ command allows to read data faster than a read command in UFS
+> > since it provides the physical address (HPB Entry) of the desired logical
+> > block in addition to its logical address. The UFS device can access the
+> > physical block in NAND directly without searching and uploading L2P mapping
+> > table. This improves read performance because the NAND read operation for
+> > uploading L2P mapping table is removed.
+> > 
+> > In HPB initialization, the host checks if the UFS device supports HPB
+> > feature and retrieves related device capabilities. Then, some HPB
+> > parameters are configured in the device.
+> > 
+> > Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+> > Reviewed-by: Can Guo <cang@codeaurora.org>
+> > Acked-by: Avri Altman <Avri.Altman@wdc.com>
+> > Tested-by: Bean Huo <beanhuo@micron.com>
+> > Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+> > ---
+> >  Documentation/ABI/testing/sysfs-driver-ufs |  80 +++
+> >  drivers/scsi/ufs/Kconfig                   |   9 +
+> >  drivers/scsi/ufs/Makefile                  |   1 +
+> >  drivers/scsi/ufs/ufs-sysfs.c               |  18 +
+> >  drivers/scsi/ufs/ufs.h                     |  13 +
+> >  drivers/scsi/ufs/ufshcd.c                  |  48 ++
+> >  drivers/scsi/ufs/ufshcd.h                  |  23 +-
+> >  drivers/scsi/ufs/ufshpb.c                  | 562 +++++++++++++++++++++
+> >  drivers/scsi/ufs/ufshpb.h                  | 167 ++++++
+> >  9 files changed, 920 insertions(+), 1 deletion(-)
+> >  create mode 100644 drivers/scsi/ufs/ufshpb.c
+> >  create mode 100644 drivers/scsi/ufs/ufshpb.h
+> > 
+> > diff --git a/Documentation/ABI/testing/sysfs-driver-ufs b/Documentation/ABI/testing/sysfs-driver-ufs
+> > index d1a352194d2e..8b16a353392c 100644
+> > --- a/Documentation/ABI/testing/sysfs-driver-ufs
+> > +++ b/Documentation/ABI/testing/sysfs-driver-ufs
+> > @@ -1019,3 +1019,83 @@ Contact:	Asutosh Das <asutoshd@codeaurora.org>
+> >  Description:	This entry shows the configured size of WriteBooster buffer.
+> >  		0400h corresponds to 4GB.
+> >  		The file is read only.
+> > +
+> > +What:		/sys/bus/platform/drivers/ufshcd/*/device_descriptor/hpb_version
+> > +Date:		December 2020
+> > +Contact:	Daejun Park <daejun7.park@samsung.com>
+> > +Description:	This entry shows the HPB specification version.
+> > +		The full information about the descriptor could be found at UFS
+> > +		HPB (Host Performance Booster) Extension specifications.
+> > +		Example: version 1.2.3 = 0123h
+> > +		The file is read only.
+> > +
+> > +What:		/sys/bus/platform/drivers/ufshcd/*/device_descriptor/hpb_control
+> > +Date:		December 2020
+> > +Contact:	Daejun Park <daejun7.park@samsung.com>
+> > +Description:	This entry shows an indication of the HPB control mode.
+> > +		00h: Host control mode
+> > +		01h: Device control mode
+> > +		The file is read only.
+> > +
+> > +What:		/sys/bus/platform/drivers/ufshcd/*/geometry_descriptor/hpb_region_size
+> > +Date:		December 2020
+> > +Contact:	Daejun Park <daejun7.park@samsung.com>
+> > +Description:	This entry shows the bHPBRegionSize which can be calculated
+> > +		as in the following (in bytes):
+> > +		HPB Region size = 512B * 2^bHPBRegionSize
+> > +		The file is read only.
+> > +
+> > +What:		/sys/bus/platform/drivers/ufshcd/*/geometry_descriptor/hpb_number_lu
+> > +Date:		December 2020
+> > +Contact:	Daejun Park <daejun7.park@samsung.com>
+> > +Description:	This entry shows the maximum number of HPB LU supported	by
+> > +		the device.
+> > +		00h: HPB is not supported by the device.
+> > +		01h ~ 20h: Maximum number of HPB LU supported by the device
+> > +		The file is read only.
+> > +
+> > +What:		/sys/bus/platform/drivers/ufshcd/*/geometry_descriptor/hpb_number_lu
+> > +Date:		December 2020
+> > +Contact:	Daejun Park <daejun7.park@samsung.com>
+> > +Description:	This entry shows the maximum number of HPB LU supported	by
+> > +		the device.
+> > +		00h: HPB is not supported by the device.
+> > +		01h ~ 20h: Maximum number of HPB LU supported by the device
+> > +		The file is read only.
 > 
-> This requires the _ExtInt extension to enabled for BPF in clang, which
-> is under review.
+> Please remove above duplicated item.
 > 
-> Link: https://clang.llvm.org/docs/LanguageExtensions.html#extended-integer-types
-> Link: https://reviews.llvm.org/D93103
-> 
-> Signed-off-by: Sean Young <sean@mess.org>
-> ---
->   Documentation/bpf/btf.rst      |  4 ++--
->   include/uapi/linux/btf.h       |  2 +-
->   tools/bpf/bpftool/btf_dumper.c | 39 ++++++++++++++++++++++++++++++++++
->   tools/include/uapi/linux/btf.h |  2 +-
->   4 files changed, 43 insertions(+), 4 deletions(-)
+> Thanks,
+> Stanley Chu
 
-Thanks for the patch. But the change is not enough and no tests in the 
-patch set.
+OK, I will remove them.
 
-For example, in kernel/bpf/btf.c, we BITS_PER_U128 to guard in various 
-places where the number of integer bits must be <= 128 bits which is
-what we supported now. In function btf_type_int_is_regular(), # of int
-bits larger than 128 considered false. The extint like 256/512bits 
-should be also regular int.
-
-extint permits non-power-of-2 bits (e.g., 192bits), to support them
-may not be necessary and this is not your use case. what do you think?
-
-lib/bpf/btf.c btf__and_int() function also has the following check,
-
-         /* byte_sz must be power of 2 */
-         if (!byte_sz || (byte_sz & (byte_sz - 1)) || byte_sz > 16)
-                 return -EINVAL;
-
-So Extint 256 bits will fail here.
-
-Please do add some selftests tools/testing/selftests/bpf
-directories:
-    - to ensure btf with newly supported int types loaded successfully
-      in kernel
-    - to ensure bpftool map [pretty] print working fine with new types
-    - to ensure kernel map pretty print works fine
-      (tests at tools/testing/selftests/bpf/prog_tests/btf.c)
-    - to ensure btf manipulation APIs works with new types.
-
-> 
-> diff --git a/Documentation/bpf/btf.rst b/Documentation/bpf/btf.rst
-> index 44dc789de2b4..784f1743dbc7 100644
-> --- a/Documentation/bpf/btf.rst
-> +++ b/Documentation/bpf/btf.rst
-> @@ -132,7 +132,7 @@ The following sections detail encoding of each kind.
->   
->     #define BTF_INT_ENCODING(VAL)   (((VAL) & 0x0f000000) >> 24)
->     #define BTF_INT_OFFSET(VAL)     (((VAL) & 0x00ff0000) >> 16)
-> -  #define BTF_INT_BITS(VAL)       ((VAL)  & 0x000000ff)
-> +  #define BTF_INT_BITS(VAL)       ((VAL)  & 0x000003ff)
->   
->   The ``BTF_INT_ENCODING`` has the following attributes::
->   
-> @@ -147,7 +147,7 @@ pretty print. At most one encoding can be specified for the int type.
->   The ``BTF_INT_BITS()`` specifies the number of actual bits held by this int
->   type. For example, a 4-bit bitfield encodes ``BTF_INT_BITS()`` equals to 4.
->   The ``btf_type.size * 8`` must be equal to or greater than ``BTF_INT_BITS()``
-> -for the type. The maximum value of ``BTF_INT_BITS()`` is 128.
-> +for the type. The maximum value of ``BTF_INT_BITS()`` is 512.
->   
->   The ``BTF_INT_OFFSET()`` specifies the starting bit offset to calculate values
->   for this int. For example, a bitfield struct member has:
-> diff --git a/include/uapi/linux/btf.h b/include/uapi/linux/btf.h
-> index 5a667107ad2c..1696fd02b302 100644
-> --- a/include/uapi/linux/btf.h
-> +++ b/include/uapi/linux/btf.h
-> @@ -84,7 +84,7 @@ struct btf_type {
->    */
->   #define BTF_INT_ENCODING(VAL)	(((VAL) & 0x0f000000) >> 24)
->   #define BTF_INT_OFFSET(VAL)	(((VAL) & 0x00ff0000) >> 16)
-> -#define BTF_INT_BITS(VAL)	((VAL)  & 0x000000ff)
-> +#define BTF_INT_BITS(VAL)	((VAL)  & 0x000003ff)
->   
->   /* Attributes stored in the BTF_INT_ENCODING */
->   #define BTF_INT_SIGNED	(1 << 0)
-> diff --git a/tools/bpf/bpftool/btf_dumper.c b/tools/bpf/bpftool/btf_dumper.c
-> index 0e9310727281..45ed45ea9962 100644
-> --- a/tools/bpf/bpftool/btf_dumper.c
-> +++ b/tools/bpf/bpftool/btf_dumper.c
-> @@ -271,6 +271,40 @@ static void btf_int128_print(json_writer_t *jw, const void *data,
->   	}
->   }
->   
-> +static void btf_bigint_print(json_writer_t *jw, const void *data, int nr_bits,
-> +			     bool is_plain_text)
-> +{
-> +	char buf[nr_bits / 4 + 1];
-> +	bool first = true;
-> +	int i;
-> +
-> +#ifdef __BIG_ENDIAN_BITFIELD
-> +	for (i = 0; i < nr_bits / 64; i++) {
-> +#else
-> +	for (i = nr_bits / 64 - 1; i >= 0; i++) {
-> +#endif
-> +		__u64 v = ((__u64 *)data)[i];
-> +
-> +		if (first) {
-> +			if (!v)
-> +				continue;
-> +
-> +			snprintf(buf, sizeof(buf), "%llx", v);
-> +
-> +			first = false;
-> +		} else {
-> +			size_t off = strlen(buf);
-> +
-> +			snprintf(buf + off, sizeof(buf) - off, "%016llx", v);
-> +		}
-> +	}
-> +
-> +	if (is_plain_text)
-> +		jsonw_printf(jw, "0x%s", buf);
-> +	else
-> +		jsonw_printf(jw, "\"0x%s\"", buf);
-> +}
-> +
->   static void btf_int128_shift(__u64 *print_num, __u16 left_shift_bits,
->   			     __u16 right_shift_bits)
->   {
-> @@ -373,6 +407,11 @@ static int btf_dumper_int(const struct btf_type *t, __u8 bit_offset,
->   		return 0;
->   	}
->   
-> +	if (nr_bits > 128) {
-> +		btf_bigint_print(jw, data, nr_bits, is_plain_text);
-> +		return 0;
-> +	}
-> +
->   	if (nr_bits == 128) {
->   		btf_int128_print(jw, data, is_plain_text);
->   		return 0;
-[...]
+Thanks,
+Daejun
