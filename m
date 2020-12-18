@@ -2,90 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCF702DE1C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 12:09:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 734C82DE1E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 12:22:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389106AbgLRLJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 06:09:22 -0500
-Received: from bin-mail-out-05.binero.net ([195.74.38.228]:42525 "EHLO
-        bin-mail-out-05.binero.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732577AbgLRLJV (ORCPT
+        id S1732959AbgLRLVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 06:21:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728205AbgLRLVn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 06:09:21 -0500
-X-Halon-ID: 581e0ce0-4121-11eb-a542-005056917a89
-Authorized-sender: andreas@gaisler.com
-Received: from andreas.got.gaisler.com (h-98-128-223-123.na.cust.bahnhof.se [98.128.223.123])
-        by bin-vsp-out-01.atm.binero.net (Halon) with ESMTPA
-        id 581e0ce0-4121-11eb-a542-005056917a89;
-        Fri, 18 Dec 2020 12:08:32 +0100 (CET)
-Subject: Re: [PATCH 1/2] futex: mark futex_detect_cmpxchg() as 'noinline'
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Sam Ravnborg <sam@ravnborg.org>, Guo Ren <guoren@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marco Elver <elver@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        sparclinux <sparclinux@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, software@gaisler.com
-References: <20190307091514.2489338-1-arnd@arndb.de>
- <X9S28TcEXd2zghzp@elver.google.com> <87czzeg5ep.fsf@nanos.tec.linutronix.de>
- <CAK8P3a0LWjNgwm605TM4dKCsn078X7NC3sEfdBSgcMNEocQ5iA@mail.gmail.com>
- <CAJF2gTRLEbBfZJ7Y6UNOMq-cwG5OYRW=+8Pfauz6v6R8ntBjYA@mail.gmail.com>
- <CAK8P3a3+WaQNyJ6Za2qfu6=0mBgU1hApnRXrdp1b1=P7wwyRUg@mail.gmail.com>
- <20201215193800.GA1098247@ravnborg.org>
- <CAK8P3a24eAYjPTw_GvEC5H9nGODjeKCVLSmfpoNSvrzew5BX4Q@mail.gmail.com>
- <6a2c250a-2c7e-81c5-705a-5904c0fc91b8@gaisler.com>
- <CAK8P3a31LRref0UfsQ3AbyohZcTN6F=6qYA-dspMaadSkP8Vrw@mail.gmail.com>
-From:   Andreas Larsson <andreas@gaisler.com>
-Message-ID: <e9be6bfd-38da-cbfa-9b54-fc4d3dd94d14@gaisler.com>
-Date:   Fri, 18 Dec 2020 12:08:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 18 Dec 2020 06:21:43 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72C69C0617B0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 03:21:03 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id a6so1977567wmc.2
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 03:21:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z9VPuMSJSoUHqzMeVGbAE30IrKxI8APrsEWW8ZWta/c=;
+        b=Jwh2WpiuqTtq8IfgRyqIkz6FNAHeEn05Ct65f/ZAFEXaiuq2+Zdo8nJKvU8sQ+RFgy
+         eWyRZ/dANLyHxjixnapLeiLAXU1HtgK956k8JebGtyN2i4I3itFeBe3BFCp2M8plyLve
+         3zku/R4re76JwoUX/OAUO6lrK4kaetW9UQlvSTLigUNfS7KuaJ5RCJZQzpeOo8SBYHPl
+         YPfw2rlG6BnY530aQwyzK9S67fh6nG1+VdTFldGxQsN62Nik22sSQA/I4lKRjZJwuIFx
+         02g/bIgrVjWKqOZjFhy6aS4iUviUj+1gh5v3E1Z0kXbFfrMeC6bG6yHan6MlY8vRAqUc
+         GTgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z9VPuMSJSoUHqzMeVGbAE30IrKxI8APrsEWW8ZWta/c=;
+        b=g1ggNWTuYoE4ZkCM9qmlEv1oZMFO9+Mmil2q59hMrxGRxcTy1D1JLfRSDjtED6YrGT
+         xD91q0UnGhpkGj6Xgd5ENb4wect4RTCUtbj1pH39pKypSjkTI9q98e+SykufadlTeWlO
+         jGSykh+DgskkcbOQ3TKD/lqFXvObkaqX5ZLFQOmbNuxhmCFawj8M7DqC6pcjRv1HEImz
+         K4M54rsSNM4KUrhMMcDrqWDCDTP/ItgOW9xh9wQPqxyZIi3bR9mC4npFmc8VMUpf5/r+
+         YntLpJX2RSkz+jCUlhum6INUmYTfSMBqQVeiMhTeeLIDIEIV6iZOwBguJWRLZi/5Ktla
+         VFhQ==
+X-Gm-Message-State: AOAM530L3hFfUAGwr95V76bJoq9AtIVaJwGQ96ycyJCmrY5w9ZFrZFuy
+        WMOW3hrJ0ESKfidDbSW/A+DGJueuWFW4xJgIEbHaiA==
+X-Google-Smtp-Source: ABdhPJyWiVYnVdrf2lovSlQt3Ng19j8UcjWhnRFH32AdooP4ukqD0DcGQGxUswg/ja6zIoPYyJVqTr0YkWIUx1S9T+s=
+X-Received: by 2002:a1c:27c3:: with SMTP id n186mr3780670wmn.96.1608290462078;
+ Fri, 18 Dec 2020 03:21:02 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a31LRref0UfsQ3AbyohZcTN6F=6qYA-dspMaadSkP8Vrw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201210134648.272857-1-maxime@cerno.tech> <20201210134648.272857-3-maxime@cerno.tech>
+In-Reply-To: <20201210134648.272857-3-maxime@cerno.tech>
+From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date:   Fri, 18 Dec 2020 11:20:45 +0000
+Message-ID: <CAPY8ntCuVWkZ6twBRPqDX_Vj5bP39pxLuHaEZ-FPveVt7VH=Yg@mail.gmail.com>
+Subject: Re: [PATCH 02/15] drm/vc4: hdmi: Move hdmi reset to bind
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Eric Anholt <eric@anholt.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Jason Cooper <jason@lakedaemon.net>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-rpi-kernel@lists.infradead.org,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Dom Cobley <popcornmix@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-17 17:43, Arnd Bergmann wrote:
-> It does make sense to require that a single kernel can work on all
-> possible hardware. So if we remove sun4m/sun4d support, all that
-> is left is LEON, and you likely wouldn't need to worry about other
-> CPUs any more.
-> 
-> However, there is still the question whether a single kernel needs
-> to work on LEON both with and without CASA. Do you still care
-> about Linux users on LEON cores that do not support CASA, or is
-> widespread enough that you just make it unconditional for both
-> SMP and non-SMP?
+Hi Maxime & Dom
 
-We are fine with unconditional CASA for both SMP and non-SMP for LEON.
+On Thu, 10 Dec 2020 at 13:46, Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> From: Dom Cobley <popcornmix@gmail.com>
+>
+> The hdmi reset got moved to a later point in the commit 9045e91a476b
+> ("drm/vc4: hdmi: Add reset callback").
+>
+> However, the reset now occurs after vc4_hdmi_cec_init and so tramples
+> the setup of registers like HDMI_CEC_CNTRL_1
+>
+> This only affects pi0-3 as on pi4 the cec registers are in a separate
+> block
 
+It does mean that this reset only happens once on bind rather than on
+every pre_crtc_configure, but as this really is the big reset the
+entire block I don't see it needing to be triggered on every
+configure.
 
-> I hope that you can make it to 5.10 then, as this contains the work
-> I did for 64-bit time_t, which is required if you have users that want to
-> run systems after 2038.
+> Fixes: 9045e91a476b ("drm/vc4: hdmi: Add reset callback")
+> Signed-off-by: Dom Cobley <popcornmix@gmail.com>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
-That is a good point! Thank you!
+Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
 
-
-> FWIW, glibc-2.31 does not have support for 64-bit time_t yet, but I
-> know there was interest in adding sparc support to the musl libc, which
-> does support 64-bit time_t.
-
-Yes, we will have to follow the developments regarding 64-bit time_t
-in GLIBC as well.
-
--- 
-Andreas
+> ---
+>  drivers/gpu/drm/vc4/vc4_hdmi.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> index 8006bddc8fbb..3df1747dd917 100644
+> --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
+> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> @@ -773,9 +773,6 @@ static void vc4_hdmi_encoder_pre_crtc_configure(struct drm_encoder *encoder,
+>                 return;
+>         }
+>
+> -       if (vc4_hdmi->variant->reset)
+> -               vc4_hdmi->variant->reset(vc4_hdmi);
+> -
+>         if (vc4_hdmi->variant->phy_init)
+>                 vc4_hdmi->variant->phy_init(vc4_hdmi, vc4_conn_state);
+>
+> @@ -1865,6 +1862,9 @@ static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
+>         vc4_hdmi->disable_wifi_frequencies =
+>                 of_property_read_bool(dev->of_node, "wifi-2.4ghz-coexistence");
+>
+> +       if (vc4_hdmi->variant->reset)
+> +               vc4_hdmi->variant->reset(vc4_hdmi);
+> +
+>         pm_runtime_enable(dev);
+>
+>         drm_simple_encoder_init(drm, encoder, DRM_MODE_ENCODER_TMDS);
+> --
+> 2.28.0
+>
