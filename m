@@ -2,128 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64ECD2DE486
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:37:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05ABF2DE417
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:34:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728666AbgLROfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 09:35:45 -0500
-Received: from mout.kundenserver.de ([212.227.126.134]:48969 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728196AbgLROfX (ORCPT
+        id S1727262AbgLROd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 09:33:56 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:59768 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726047AbgLROd4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 09:35:23 -0500
-Received: from orion.localdomain ([95.115.54.243]) by mrelayeu.kundenserver.de
- (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MO9qz-1kSO7t2hRp-00OXUo; Fri, 18 Dec 2020 15:32:16 +0100
-From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org, catalin.marinas@arm.com,
-        will@kernel.org, msalter@redhat.com, jacquiot.aurelien@gmail.com,
-        gerg@linux-m68k.org, geert@linux-m68k.org,
-        tsbogend@alpha.franken.de, James.Bottomley@HansenPartnership.com,
-        deller@gmx.de, benh@kernel.crashing.org, paulus@samba.org,
-        ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net,
-        tglx@linutronix.de, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        maz@kernel.org, tony@atomide.com, arnd@arndb.de,
-        linux-alpha@vger.kernel.org, linux-c6x-dev@linux-c6x.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: [PATCH 19/23] arch: c6x: use generic irq error counter
-Date:   Fri, 18 Dec 2020 15:31:18 +0100
-Message-Id: <20201218143122.19459-20-info@metux.net>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20201218143122.19459-1-info@metux.net>
-References: <20201218143122.19459-1-info@metux.net>
-X-Provags-ID: V03:K1:bUKbPuD/IE863dGqQP/aUVD3gMjanOmJq5smfk4HYWrMLwZeTSB
- k45+tw0yA/1Jgzwos83k90orLCs83aroaMpeBB39uP1uMMStvQ9QhtXMH4BYz0IipHOkY0v
- kH2GQ3WJCiarTYQXG5Q2sadZG2E46xZvuqbjZ+YUOPphysIBTTbyIiz3i3rbydpQdeWrHaA
- LVhGNnbvccZshL+Bhd3sQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vf+aytBGJWs=:r2eZwHED7IQmg6gl03ucQ8
- l/17rxJDH3Q0EehshvVMk0IPYVvjvVR1C65/GN46yrjD3HCMOP/rrIcikwR5HIgVGjphssKtc
- o1lv+fPa0+Hc94H5Hrr/VIr7xmqV3jwm/vnqCzDlsUPvneuBzmfR3qpEB8UAYM1h9ScjXoC2l
- MKQTwfAiMlD7plZW+Ee/8vfC1criUczadakTuunPoNaWsDY1eyC+81GByepRkc1iQUKybJcMl
- ZfT5eVrVcfhx4kg56Z6SbUPfyHAapCnNNYUJo0WSq16JFSLA6qZunWCcuhqFj0NJmHWstMF+B
- 1mDqxGu7XYmAbhrPklXsi0ZwpczbVtKfKbBJMPT4YOecjG+Y3G6ewvh1UD6PrIxn5E5d54uln
- v2eQWiQMuctBB13Iev8txxMZUc5iK4R0+3okQnQhFKSsiqpo7859MSe15Do6+
+        Fri, 18 Dec 2020 09:33:56 -0500
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BIEUkXn002175;
+        Fri, 18 Dec 2020 15:32:40 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=/ud/00DY5s40YvQUkhpV/s7XY//GtKRccKTjMzEOYxE=;
+ b=FH3XPISPuebkFCcbr2Vd5KtKB7JTgVfkIm0yVEfmPBReAWsQv2C+fe9G144KN2gRxGu+
+ 7Ru400y2IFOlrlGT9W16AGTPMvk+dMoilL7rLpmlwdzHusqSlp+dTS+aYTQRA37Y7MX4
+ w1cfWAoUJTLl6Yj8wacji9RMVt/R9bC43Ws0uV58nF3ba6+jKNrR0yp8EjpjbbYaBcuT
+ szxbKgyUDFij550KKo33Zzd22Lxl341fQYfcRd5N6UZ0dS+JDxwmehsBbadUYOdg1mwz
+ n28w8VrRNO+LhJGEezomQt9UzzB2oAHSm33osIt2vYpAozivFu0dF4b4R7yNjPsAYKTr HA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 35cpt9tb22-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Dec 2020 15:32:40 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id DBDCF100034;
+        Fri, 18 Dec 2020 15:32:34 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id BAA8225F3F6;
+        Fri, 18 Dec 2020 15:32:34 +0100 (CET)
+Received: from [10.211.14.33] (10.75.127.47) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 18 Dec
+ 2020 15:32:33 +0100
+Subject: Re: [PATCH] iio: adc: stm32-adc: Remove redundant null check before
+ clk_prepare_enable/clk_disable_unprepare
+To:     Xu Wang <vulab@iscas.ac.cn>, <jic23@kernel.org>, <lars@metafoo.de>,
+        <pmeerw@pmeerw.net>, <mcoquelin.stm32@gmail.com>,
+        <alexandre.torgue@st.com>, <krzk@kernel.org>,
+        <andy.shevchenko@gmail.com>, <olivier.moysan@st.com>,
+        <etienne.carriere@st.com>, <alexandru.ardelean@analog.com>,
+        <peter.ujfalusi@ti.com>, <linux-iio@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <linux-kernel@vger.kernel.org>
+References: <20201218093512.871-1-vulab@iscas.ac.cn>
+From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Message-ID: <ccf4d36d-dbb0-aea0-5625-4aaf6850c73d@foss.st.com>
+Date:   Fri, 18 Dec 2020 15:32:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201218093512.871-1-vulab@iscas.ac.cn>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-18_09:2020-12-18,2020-12-18 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the newly introduced irq error counter, that's already maintained
-by all callers of ack_bad_irq(), in order to remove duplicate code.
+On 12/18/20 10:35 AM, Xu Wang wrote:
+> Because clk_prepare_enable() and clk_disable_unprepare() already checked
+> NULL clock parameter, so the additional checks are unnecessary, just
+> remove them.
+> 
+> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+> ---
+>  drivers/iio/adc/stm32-adc-core.c | 29 +++++++++++------------------
+>  drivers/iio/adc/stm32-adc.c      | 14 +++++---------
+>  2 files changed, 16 insertions(+), 27 deletions(-)
 
-Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
----
- arch/c6x/include/asm/hardirq.h |  3 ---
- arch/c6x/include/asm/irq.h     |  2 --
- arch/c6x/kernel/irq.c          | 11 ++---------
- 3 files changed, 2 insertions(+), 14 deletions(-)
+Hi Xu,
 
-diff --git a/arch/c6x/include/asm/hardirq.h b/arch/c6x/include/asm/hardirq.h
-index f37d07d31040..f70f6113e53a 100644
---- a/arch/c6x/include/asm/hardirq.h
-+++ b/arch/c6x/include/asm/hardirq.h
-@@ -9,9 +9,6 @@
- #ifndef _ASM_C6X_HARDIRQ_H
- #define _ASM_C6X_HARDIRQ_H
- 
--extern void ack_bad_irq(int irq);
--#define ack_bad_irq ack_bad_irq
--
- #include <asm-generic/hardirq.h>
- 
- #endif /* _ASM_C6X_HARDIRQ_H */
-diff --git a/arch/c6x/include/asm/irq.h b/arch/c6x/include/asm/irq.h
-index 9da4d1afd0d7..f42c5747c3ee 100644
---- a/arch/c6x/include/asm/irq.h
-+++ b/arch/c6x/include/asm/irq.h
-@@ -45,6 +45,4 @@ struct pt_regs;
- 
- extern asmlinkage void c6x_do_IRQ(unsigned int prio, struct pt_regs *regs);
- 
--extern unsigned long irq_err_count;
--
- #endif /* _ASM_C6X_IRQ_H */
-diff --git a/arch/c6x/kernel/irq.c b/arch/c6x/kernel/irq.c
-index b9f7cfa2ed21..9f9d798925de 100644
---- a/arch/c6x/kernel/irq.c
-+++ b/arch/c6x/kernel/irq.c
-@@ -21,12 +21,10 @@
- #include <linux/of_irq.h>
- #include <linux/interrupt.h>
- #include <linux/kernel_stat.h>
--
-+#include <asm-generic/irq-err.h>
- #include <asm/megamod-pic.h>
- #include <asm/special_insns.h>
- 
--unsigned long irq_err_count;
--
- static DEFINE_RAW_SPINLOCK(core_irq_lock);
- 
- static void mask_core_irq(struct irq_data *data)
-@@ -114,13 +112,8 @@ void __init init_IRQ(void)
- 	set_creg(ICR, 0xfff0);
- }
- 
--void ack_bad_irq(int irq)
--{
--	irq_err_count++;
--}
--
- int arch_show_interrupts(struct seq_file *p, int prec)
- {
--	seq_printf(p, "%*s: %10lu\n", prec, "Err", irq_err_count);
-+	seq_printf(p, "%*s: %10lu\n", prec, "Err", irq_err_get());
- 	return 0;
- }
--- 
-2.11.0
+Acked-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
 
+Thanks for your patch,
+Best Regards,
+Fabrice
+
+> 
+> diff --git a/drivers/iio/adc/stm32-adc-core.c b/drivers/iio/adc/stm32-adc-core.c
+> index 9d1ad6e38e85..c088cb990193 100644
+> --- a/drivers/iio/adc/stm32-adc-core.c
+> +++ b/drivers/iio/adc/stm32-adc-core.c
+> @@ -535,20 +535,16 @@ static int stm32_adc_core_hw_start(struct device *dev)
+>  		goto err_switches_dis;
+>  	}
+>  
+> -	if (priv->bclk) {
+> -		ret = clk_prepare_enable(priv->bclk);
+> -		if (ret < 0) {
+> -			dev_err(dev, "bus clk enable failed\n");
+> -			goto err_regulator_disable;
+> -		}
+> +	ret = clk_prepare_enable(priv->bclk);
+> +	if (ret < 0) {
+> +		dev_err(dev, "bus clk enable failed\n");
+> +		goto err_regulator_disable;
+>  	}
+>  
+> -	if (priv->aclk) {
+> -		ret = clk_prepare_enable(priv->aclk);
+> -		if (ret < 0) {
+> -			dev_err(dev, "adc clk enable failed\n");
+> -			goto err_bclk_disable;
+> -		}
+> +	ret = clk_prepare_enable(priv->aclk);
+> +	if (ret < 0) {
+> +		dev_err(dev, "adc clk enable failed\n");
+> +		goto err_bclk_disable;
+>  	}
+>  
+>  	writel_relaxed(priv->ccr_bak, priv->common.base + priv->cfg->regs->ccr);
+> @@ -556,8 +552,7 @@ static int stm32_adc_core_hw_start(struct device *dev)
+>  	return 0;
+>  
+>  err_bclk_disable:
+> -	if (priv->bclk)
+> -		clk_disable_unprepare(priv->bclk);
+> +	clk_disable_unprepare(priv->bclk);
+>  err_regulator_disable:
+>  	regulator_disable(priv->vref);
+>  err_switches_dis:
+> @@ -575,10 +570,8 @@ static void stm32_adc_core_hw_stop(struct device *dev)
+>  
+>  	/* Backup CCR that may be lost (depends on power state to achieve) */
+>  	priv->ccr_bak = readl_relaxed(priv->common.base + priv->cfg->regs->ccr);
+> -	if (priv->aclk)
+> -		clk_disable_unprepare(priv->aclk);
+> -	if (priv->bclk)
+> -		clk_disable_unprepare(priv->bclk);
+> +	clk_disable_unprepare(priv->aclk);
+> +	clk_disable_unprepare(priv->bclk);
+>  	regulator_disable(priv->vref);
+>  	stm32_adc_core_switches_supply_dis(priv);
+>  	regulator_disable(priv->vdda);
+> diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+> index c067c994dae2..f7c53cea509a 100644
+> --- a/drivers/iio/adc/stm32-adc.c
+> +++ b/drivers/iio/adc/stm32-adc.c
+> @@ -546,8 +546,7 @@ static int stm32_adc_hw_stop(struct device *dev)
+>  	if (adc->cfg->unprepare)
+>  		adc->cfg->unprepare(indio_dev);
+>  
+> -	if (adc->clk)
+> -		clk_disable_unprepare(adc->clk);
+> +	clk_disable_unprepare(adc->clk);
+>  
+>  	return 0;
+>  }
+> @@ -558,11 +557,9 @@ static int stm32_adc_hw_start(struct device *dev)
+>  	struct stm32_adc *adc = iio_priv(indio_dev);
+>  	int ret;
+>  
+> -	if (adc->clk) {
+> -		ret = clk_prepare_enable(adc->clk);
+> -		if (ret)
+> -			return ret;
+> -	}
+> +	ret = clk_prepare_enable(adc->clk);
+> +	if (ret)
+> +		return ret;
+>  
+>  	stm32_adc_set_res(adc);
+>  
+> @@ -575,8 +572,7 @@ static int stm32_adc_hw_start(struct device *dev)
+>  	return 0;
+>  
+>  err_clk_dis:
+> -	if (adc->clk)
+> -		clk_disable_unprepare(adc->clk);
+> +	clk_disable_unprepare(adc->clk);
+>  
+>  	return ret;
+>  }
+> 
