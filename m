@@ -2,108 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB24D2DE0CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 11:14:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDCD42DE185
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 11:52:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389050AbgLRKNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 05:13:06 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43808 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389031AbgLRKNF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 05:13:05 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 02F0EAC7B;
-        Fri, 18 Dec 2020 10:12:23 +0000 (UTC)
-Date:   Fri, 18 Dec 2020 11:12:21 +0100
-From:   Mian Yousaf Kaukab <ykaukab@suse.de>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Vidya Sagar <vidyas@nvidia.com>, lorenzo.pieralisi@arm.com,
-        bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: dwc: tegra194: issue with card containing a bridge
-Message-ID: <20201218101221.GB52649@suse.de>
-References: <20201215102442.GA20517@suse.de>
- <9a8abc90-cf18-b0c8-3bcb-efbe03f0ca4c@nvidia.com>
- <20201215132504.GA20914@suse.de>
- <20201215154147.GA3885265@robh.at.kernel.org>
- <20201215205235.GC20914@suse.de>
- <20201217145857.GA3941403@robh.at.kernel.org>
- <20201217170635.GA52649@suse.de>
+        id S2388993AbgLRKvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 05:51:55 -0500
+Received: from 8.mo68.mail-out.ovh.net ([46.105.74.219]:54844 "EHLO
+        8.mo68.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725897AbgLRKvz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 05:51:55 -0500
+X-Greylist: delayed 1801 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Dec 2020 05:51:54 EST
+Received: from player770.ha.ovh.net (unknown [10.108.1.112])
+        by mo68.mail-out.ovh.net (Postfix) with ESMTP id 34EE4183A6B
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 11:14:12 +0100 (CET)
+Received: from RCM-web6.webmail.mail.ovh.net (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player770.ha.ovh.net (Postfix) with ESMTPSA id C61751965D5D9;
+        Fri, 18 Dec 2020 10:14:06 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Date:   Fri, 18 Dec 2020 11:14:06 +0100
+From:   Stephen Kitt <steve@sk2.org>
+To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Cc:     linux-man@vger.kernel.org,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: Re: Ping: [patch] close_range.2: new page documenting close_range(2)
+In-Reply-To: <6c32a7c3-4bed-8d5e-134f-47a4bd49dc78@gmail.com>
+References: <20201208215133.30575-1-steve@sk2.org>
+ <20201209095817.7ksihhftmnd3c3hi@wittgenstein>
+ <5f69d42d-c36d-b98a-3d00-7a5e7f489a07@gmail.com>
+ <20201209105618.okw5lgcdikg5bvae@wittgenstein>
+ <0ea38a7a-1c64-086e-3d64-38686f5b7856@gmail.com>
+ <20201212121419.odpgbaigrjhpkjnm@wittgenstein>
+ <47a388ca-bcd8-d917-0a0a-cdbd185d6998@gmail.com>
+ <6c32a7c3-4bed-8d5e-134f-47a4bd49dc78@gmail.com>
+User-Agent: Roundcube Webmail/1.4.3
+Message-ID: <c8709e99154791547af435a639154881@sk2.org>
+X-Sender: steve@sk2.org
+X-Originating-IP: 82.65.25.201
+X-Webmail-UserID: steve@sk2.org
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201217170635.GA52649@suse.de>
+X-Ovh-Tracer-Id: 9291770456798350806
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedujedrudeliedgudegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepggffhffvufgjfhgfkfigihgtgfesthekjhdttderjeenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecuggftrfgrthhtvghrnhepheeftedvhfevuedthedthfektdelleegtdevfeetveefhfekgedttdefgfetgfeunecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejjedtrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 06:06:35PM +0100, Mian Yousaf Kaukab wrote:
-> On Thu, Dec 17, 2020 at 08:58:57AM -0600, Rob Herring wrote:
-> > On Tue, Dec 15, 2020 at 09:52:35PM +0100, Mian Yousaf Kaukab wrote:
-> > > On Tue, Dec 15, 2020 at 09:41:47AM -0600, Rob Herring wrote:
-> > > > On Tue, Dec 15, 2020 at 02:25:04PM +0100, Mian Yousaf Kaukab wrote:
-> > > > > On Tue, Dec 15, 2020 at 05:45:59PM +0530, Vidya Sagar wrote:
-> > > > > > Thanks Mian for bringing it to our notice.
-> > > > > > Have you tried removing the dw_pcie_setup_rc(pp); call from pcie-tegra194.c
-> > > > > > file on top of linux-next? and does that solve the issue?
-> > > > > > 
-> > > > > > diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c
-> > > > > > b/drivers/pci/controller/dwc/pcie-tegra194.c
-> > > > > > index 5597b2a49598..1c9e9c054592 100644
-> > > > > > --- a/drivers/pci/controller/dwc/pcie-tegra194.c
-> > > > > > +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
-> > > > > > @@ -907,7 +907,7 @@ static void tegra_pcie_prepare_host(struct pcie_port
-> > > > > > *pp)
-> > > > > >                 dw_pcie_writel_dbi(pci, CFG_TIMER_CTRL_MAX_FUNC_NUM_OFF,
-> > > > > > val);
-> > > > > >         }
-> > > > > > 
-> > > > > > -       dw_pcie_setup_rc(pp);
-> > > > > > +       //dw_pcie_setup_rc(pp);
-> > > > > I still see the same issue with this change.
-> > > > > Reverting b9ac0f9dc8ea works though.
-> > > > > > 
-> > > > > >         clk_set_rate(pcie->core_clk, GEN4_CORE_CLK_FREQ);
-> > > > > > 
-> > > > > > I took a quick look at the dw_pcie_setup_rc() implementation and I'm not
-> > > > > > sure why calling it second time should create any issue for the enumeration
-> > > > > > of devices behind a switch. Perhaps I need to spend more time to debug that
-> > > > > > part.
-> > > > > > In any case, since dw_pcie_setup_rc() is already part of
-> > > > > > dw_pcie_host_init(), I think it can be removed from
-> > > > > > tegra_pcie_prepare_host() implemention.
-> > > > 
-> > > > I think the 2nd time is making the link go down is my guess. Tegra was 
-> > > > odd in that its start/stop link functions don't do link handling, so I 
-> > > > didn't implement those functions and left the link handling in the Tegra 
-> > > > driver.
-> > > > 
-> > > > Can you try the below patch. It needs some more work as it breaks 
-> > > > endpoint mode.
-> > 
-> > [...]
-> > 
-> > > Boot is ok with this patch. Some improvement in lspci as well:
-> > 
-> > Some improvement? Meaning not completely working still?
-> > 
-> > > # lspci
-> > > 0001:00:00.0 PCI bridge: NVIDIA Corporation Device 1ad2 (rev a1)
-> > > 0001:01:00.0 SATA controller: Marvell Technology Group Ltd. Device 9171 (rev 13)
-> > > 0005:00:00.0 PCI bridge: NVIDIA Corporation Device 1ad0 (rev a1)
-> > > 0005:01:00.0 PCI bridge: PLX Technology, Inc. Device 3380 (rev ab)
-> > 
-> > This patch was closer to the original flow, but would not have worked if 
-> > DLFE disabled mode was needed.
-> > 
-> > Please give this patch a try:
-> Thank you for the patch! Initial results with it looks very promising.
-> I’ll get back to you tomorrow after running a few more tests.
-Rob, thank you for your efforts! This patch fixed the issue I was seeing. FWIW:
+Hi Alex,
 
-Tested-by: Mian Yousaf Kaukab <ykaukab@suse.de>
+Le 18/12/2020 11:12, Alejandro Colomar (man-pages) a écrit :
+> Linux 5.10 has been recently released.
+> Do you have any updates for this patch?
 
-BR,
-Yousaf
+Yes, I have a v3 in preparation, with _CLOEXEC and a code example. I'll 
+wrap it up today.
+
+Regards,
+
+Stephen
