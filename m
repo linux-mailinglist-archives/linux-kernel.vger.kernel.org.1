@@ -2,93 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0AA32DE85F
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 18:41:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC42F2DE85D
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 18:41:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732987AbgLRRji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 12:39:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726242AbgLRRjh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 12:39:37 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4589C06138C;
-        Fri, 18 Dec 2020 09:38:56 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id x12so1755270plr.10;
-        Fri, 18 Dec 2020 09:38:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ACaeWtkV+q3cTh2w4YcqHiR4LP/rJ6sq24AO/HTE6FI=;
-        b=Cgn7On0b4u35B7Af3dIGjoX+3awODiIMwsXG19rDIh3f4GNrzsKT5bperGmJq8YfMF
-         Uwu3Lz7hyD4knve6jRigWBlir8xM3ffhjfMLxKgIGf1PkMWvZf8ncrc2jUVgTmj1ZLF8
-         DpQQ4MhplQEsQ2VJkqkkaPeHY/tHAbFk2b2T6TIJivoGgUIslajj7NI8IL34xUXTYhBW
-         v0z26HM/w4WZ5t7OZPorE4EyrSC+RFYJj4WGIbVxJp1QeUskzawlSS95N+k6Hxwjr2lj
-         vHQL/zgx2zFuzdD85B2XuEtg2Z7NwK4BIe3JTtMQKh8oxP9IWNPVdl7NgEa7v/mYV10U
-         VMlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ACaeWtkV+q3cTh2w4YcqHiR4LP/rJ6sq24AO/HTE6FI=;
-        b=esTsoS/xffImC4JMPt4cYk2539tSCwEbeoJBBYo6bFbBq1oDO8GkLRdmijRUiB8UKz
-         ww6IQFWawUUNL/DCJUtdVDU3h6bWCXTjqS7CD13n6PswkxBNg85Psbcczqts9RaDfayX
-         qON/ZuTIdGlA5dc1CNGmJOfttQUwH86+tag2D7qqmnwZru663glx42sZ+TV292X/TW4f
-         VtsKAFc59NHz+G0wbeyq6EW6HSfeLaOh+hTJsR3k+AohW9QzQV4lERjdW3DWvHpzfm92
-         HieXStlREVqQesL1vjtJGOWtqYsHGbJjkGOlBqiaOnmsl0ETPq86/gHfOuJSA5kQIjVV
-         98Ug==
-X-Gm-Message-State: AOAM532FWnkrfmWtIUDTeT2VvFqlUUB/786zS8P3FgiPN4cxRdDhtBgL
-        zWhW/abhY9E53a/SvyCY8zYb0hK9Rac=
-X-Google-Smtp-Source: ABdhPJxbqAjvu2zqYlE8aC4eO6ZAG0aSXf398BuFDTM7mtoLrVSeJbwX6vUZKAO3gUnAl8H59/1S6Q==
-X-Received: by 2002:a17:90a:e00f:: with SMTP id u15mr5486399pjy.88.1608313135771;
-        Fri, 18 Dec 2020 09:38:55 -0800 (PST)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id b10sm9746623pgh.15.2020.12.18.09.38.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Dec 2020 09:38:55 -0800 (PST)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     andrew@lunn.ch, olteanv@gmail.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Murali Krishna Policharla <murali.policharla@broadcom.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM SYSTEMPORT
-        ETHERNET DRIVER), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net] net: systemport: set dev->max_mtu to UMAC_MAX_MTU_SIZE
-Date:   Fri, 18 Dec 2020 09:38:43 -0800
-Message-Id: <20201218173843.141046-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728311AbgLRRjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 12:39:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40818 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726242AbgLRRje (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 12:39:34 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 43D7B239EE;
+        Fri, 18 Dec 2020 17:38:53 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kqJiN-002LOd-7s; Fri, 18 Dec 2020 17:38:51 +0000
+Date:   Fri, 18 Dec 2020 17:38:50 +0000
+Message-ID: <87v9czqaj9.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Zenghui Yu <yuzenghui@huawei.com>
+Cc:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <tglx@linutronix.de>,
+        <kvm@vger.kernel.org>, <wanghaibin.wang@huawei.com>
+Subject: Re: [PATCH] genirq/msi: Initialize msi_alloc_info to zero for msi_prepare API
+In-Reply-To: <20201218060039.1770-1-yuzenghui@huawei.com>
+References: <20201218060039.1770-1-yuzenghui@huawei.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: yuzenghui@huawei.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, tglx@linutronix.de, kvm@vger.kernel.org, wanghaibin.wang@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver is already allocating receive buffers of 2KiB and the
-Ethernet MAC is configured to accept frames up to UMAC_MAX_MTU_SIZE.
+Hi Zenghui,
 
-Fixes: bfcb813203e6 ("net: dsa: configure the MTU for switch ports")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/net/ethernet/broadcom/bcmsysport.c | 1 +
- 1 file changed, 1 insertion(+)
+On Fri, 18 Dec 2020 06:00:39 +0000,
+Zenghui Yu <yuzenghui@huawei.com> wrote:
+> 
+> Since commit 5fe71d271df8 ("irqchip/gic-v3-its: Tag ITS device as shared if
+> allocating for a proxy device"), some of the devices are wrongly marked as
+> "shared" by the ITS driver on systems equipped with the ITS(es). The
+> problem is that the @info->flags may not be initialized anywhere and we end
+> up looking at random bits on the stack. That's obviously not good.
+> 
+> The straightforward fix is to properly initialize msi_alloc_info inside the
+> .prepare callback of affected MSI domains (its-pci-msi, its-platform-msi,
+> etc). We can also perform the initialization in IRQ core layer for
+> msi_domain_prepare_irqs() API and it looks much neater to me.
+> 
+> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+> ---
+> 
+> This was noticed when I was playing with the assigned devices on arm64 and
+> VFIO failed to enable MSI-X vectors for almost all VFs (CCed kvm list in
+> case others will hit the same issue). It turned out that these VFs are
+> marked as "shared" by mistake and have trouble with the following sequence:
+> 
+> 	pci_alloc_irq_vectors(pdev, 1, 1, flag);
+> 	pci_free_irq_vectors(pdev);
+> 	pci_alloc_irq_vectors(pdev, 1, 2, flag); --> we can only get
+> 						     *one* vector
+> 
+> But besides VFIO, I guess there are already some devices get into trouble
+> at probe time and can't work properly.
+>
+>  kernel/irq/msi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/irq/msi.c b/kernel/irq/msi.c
+> index 2c0c4d6d0f83..dc0e2d7fbdfd 100644
+> --- a/kernel/irq/msi.c
+> +++ b/kernel/irq/msi.c
+> @@ -402,7 +402,7 @@ int __msi_domain_alloc_irqs(struct irq_domain *domain, struct device *dev,
+>  	struct msi_domain_ops *ops = info->ops;
+>  	struct irq_data *irq_data;
+>  	struct msi_desc *desc;
+> -	msi_alloc_info_t arg;
+> +	msi_alloc_info_t arg = { };
+>  	int i, ret, virq;
+>  	bool can_reserve;
 
-diff --git a/drivers/net/ethernet/broadcom/bcmsysport.c b/drivers/net/ethernet/broadcom/bcmsysport.c
-index 0fdd19d99d99..b1ae9eb8f247 100644
---- a/drivers/net/ethernet/broadcom/bcmsysport.c
-+++ b/drivers/net/ethernet/broadcom/bcmsysport.c
-@@ -2577,6 +2577,7 @@ static int bcm_sysport_probe(struct platform_device *pdev)
- 			 NETIF_F_HW_VLAN_CTAG_TX;
- 	dev->hw_features |= dev->features;
- 	dev->vlan_features |= dev->features;
-+	dev->max_mtu = UMAC_MAX_MTU_SIZE;
- 
- 	/* Request the WOL interrupt and advertise suspend if available */
- 	priv->wol_irq_disabled = 1;
+Thanks for having investigated this. I guess my only worry with this
+is that msi_alloc_info_t is a pretty large structure on x86, and
+zeroing it isn't totally free. But this definitely looks nicer than
+some of the alternatives (.prepare isn't a good option, as we do rely
+on the flag being set in __platform_msi_create_device_domain(), which
+calls itself .prepare).
+
+I'll queue it, and we can always revisit this later if Thomas (or
+anyone else) has a better idea.
+
+Thanks,
+
+	M.
+
 -- 
-2.25.1
-
+Without deviation from the norm, progress is not possible.
