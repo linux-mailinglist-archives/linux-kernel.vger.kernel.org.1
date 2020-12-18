@@ -2,97 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30D5B2DE310
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 14:06:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED1B82DE316
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 14:06:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727304AbgLRNFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 08:05:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727240AbgLRNE6 (ORCPT
+        id S1727382AbgLRNGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 08:06:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26717 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727228AbgLRNGV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 08:04:58 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F60EC061257
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 05:03:42 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id g185so2468733wmf.3
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 05:03:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=W7MQknUNgfLi/fumFEQOeiLKRWIy/aG8D1EJYUy6tL8=;
-        b=HGyhDl2UaSIO9RLlK8B99clY+T5Wo1ifMvC+HbSGiM+D6fE5cC5+YFiwGJDKus9dU8
-         8UE6RB6oHdSqUjh54tsxi08f01JYQL8e6YfFgnjlIUhZs0mTioYca+OS8KiYDX0eHU0F
-         jS+zA4FMt5yLgwDOQYIGWlhDGLvMQorSny2aKgFnc88dPKPSZIaP6rWSNI5R82iufUbU
-         qXguz97wMjtxbnFNBk5MAGNQL70o+XdDvN2xQSBbHlvsrEbQcN1Y9Mv/usNC7JaB0fxU
-         PqLDimdNfHYsZEZ3KTMB0c4zmuPIlH0TO3S39skzRFGdEZ7qdFNBQJuTlLuFd4DUs2JH
-         fz6A==
+        Fri, 18 Dec 2020 08:06:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608296694;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=e/CHgMLH2UdVHVqifkFPGlm0faQZyFjgpZO1JW9Bwng=;
+        b=H7siudVoExcOES8FcVNtN7nqlGhjSCp0hUA6nJiqBFbFa+ifpuNgym4CAgsEEShmf2mklb
+        aPaGStqKZuYSieThfOdDBXZ0cO3+wgNHOx3+RXcasLdsipjzx5Nl2SAnE2DArZXJ1ULfes
+        OxR3+fJhp3gDpIzBFBoh/GVqqzKhMCc=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-527-Zo7UmX0lOWSVE2VxUtgIpw-1; Fri, 18 Dec 2020 08:04:51 -0500
+X-MC-Unique: Zo7UmX0lOWSVE2VxUtgIpw-1
+Received: by mail-wr1-f69.google.com with SMTP id r8so1139028wro.22
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 05:04:51 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=W7MQknUNgfLi/fumFEQOeiLKRWIy/aG8D1EJYUy6tL8=;
-        b=Jqcz8Sk271VmcJ/e8iUuDnJF60HJcPDcEfJ8FJtlH9PYuDHhFiAlYr+8GaMlf2DFFW
-         DNslwi1Ix1+S9qri94ZoHbX5Mvz1FF57W0fis+XEhN91KBVJgcqnXgS3F2Jt8F6QD882
-         hZ3OIaJJk16EX2Cuh8B97VSqUhzKCUVTPlmUmn8U2A0n8aiN32yXQxVk/BOsDJtKFoMO
-         4XUdInRHLezhXS73ZJpx+YkeRLV8H9z+hBoQtbkkWIYqEiAxtdvAywBi6qMcWGK1rpDC
-         Rq6fb8gMnYsgknyEY88Jh/k+rW/sP775Jh5E4VCLemkOT8kcD8RHTJ+iRBrGOPs+ITBA
-         mp4g==
-X-Gm-Message-State: AOAM530lw6ye1EXUz3DXpbBtozcaOdo3srHc873zys3SbmPwWHU5M9if
-        NVAQhPX0Zy/vAgpPWW62LDg+cQ==
-X-Google-Smtp-Source: ABdhPJx2RV1GzhO+KSOtP2FIYANLwsmTin3968ImAOn9rJaC+fcjObllvyq2p6Oyn9BDPS4wO7dCNg==
-X-Received: by 2002:a7b:cbc9:: with SMTP id n9mr4065059wmi.83.1608296621351;
-        Fri, 18 Dec 2020 05:03:41 -0800 (PST)
-Received: from localhost.localdomain (dh207-99-82.xnet.hr. [88.207.99.82])
-        by smtp.googlemail.com with ESMTPSA id l1sm13945720wrq.64.2020.12.18.05.03.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Dec 2020 05:03:40 -0800 (PST)
-From:   Robert Marko <robert.marko@sartura.hr>
-To:     jdelvare@suse.com, linux@roeck-us.net, robh+dt@kernel.org,
-        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Robert Marko <robert.marko@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>
-Subject: [PATCH 3/3] MAINTAINERS: Add entry for Texas Instruments TPS23861 PoE PSE
-Date:   Fri, 18 Dec 2020 14:03:29 +0100
-Message-Id: <20201218130329.258254-3-robert.marko@sartura.hr>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201218130329.258254-1-robert.marko@sartura.hr>
-References: <20201218130329.258254-1-robert.marko@sartura.hr>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=e/CHgMLH2UdVHVqifkFPGlm0faQZyFjgpZO1JW9Bwng=;
+        b=mz5enRI0bouBcdNCZGm6Ic/q4HjFyU2h5+CNx/B0X8X1WmCYj0KjeT2gfChpxPE13u
+         oecQ+I1+XqxXsDSdxb3sOA2wxqz9hodcFn7GAvzYkwneBRX9M72b7Xc2PtBeGW++zfH3
+         w1hrztwKrtyqEKk/LHv7sUORsm+68czcbcI9O3/T1wUR0j2CdZWPVaHClUSNG3p+TsZ8
+         mKox3MZ3HWWQif4WUNxT6xW0Jt9em6U6Yz0ftgq3SPOYJqdwiDW9aHV1sFIgffE6szw+
+         1BFiy7RuC2yQBsy7YP1FgfIEnVibRCvZLCfTWdbZGD8regakqHnMgucGLuq7G5nlrh0O
+         2SQw==
+X-Gm-Message-State: AOAM530LqFpa22sf6AXQL1i9qFxCjba4LSpCxKKu0XZnYHqyqEeYmwt7
+        yDTDOt9vUV+kkIAT29SJ6U/KBM62dwBrrGmQKbC7yoshJUn63xG713niEJ14eLdp42XUiCYA6BC
+        oP2kVeKQNcDFHiCrYV7E/+hH1
+X-Received: by 2002:a5d:674c:: with SMTP id l12mr4337397wrw.399.1608296690709;
+        Fri, 18 Dec 2020 05:04:50 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwvXjhuHussNqD/bNTJR7GABzVwieD5LhDI+X6Xwo5OKXtYsMIhoNZrAqgzmYzqeytY6lA7sw==
+X-Received: by 2002:a5d:674c:: with SMTP id l12mr4337352wrw.399.1608296690473;
+        Fri, 18 Dec 2020 05:04:50 -0800 (PST)
+Received: from [192.168.3.114] (p5b0c6327.dip0.t-ipconnect.de. [91.12.99.39])
+        by smtp.gmail.com with ESMTPSA id k10sm12747574wrq.38.2020.12.18.05.04.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Dec 2020 05:04:49 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   David Hildenbrand <david@redhat.com>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v4 08/10] mm/gup: limit number of gup migration failures, honor failures
+Date:   Fri, 18 Dec 2020 14:04:48 +0100
+Message-Id: <1671AFC0-3D06-4C4E-934D-CB6DC0AFE4A1@redhat.com>
+References: <CA+CK2bCn++2Sk4-Eunibj6f+JoOL77uJQXGU2+dScHQ3RgC7_Q@mail.gmail.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        linux-kselftest@vger.kernel.org
+In-Reply-To: <CA+CK2bCn++2Sk4-Eunibj6f+JoOL77uJQXGU2+dScHQ3RgC7_Q@mail.gmail.com>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+X-Mailer: iPhone Mail (18B92)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add maintainers entry for the Texas Instruments TPS23861 PoE PSE driver.
 
-Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-Cc: Luka Perkov <luka.perkov@sartura.hr>
----
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
+> Am 18.12.2020 um 13:43 schrieb Pavel Tatashin <pasha.tatashin@soleen.com>:=
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 830244166a7c..5441be7a5c26 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -17336,6 +17336,14 @@ F:	include/dt-bindings/soc/ti,sci_pm_domain.h
- F:	include/linux/soc/ti/ti_sci_inta_msi.h
- F:	include/linux/soc/ti/ti_sci_protocol.h
- 
-+TEXAS INSTRUMENTS TPS23861 PoE PSE DRIVER
-+M:	Robert Marko <robert.marko@sartura.hr>
-+M:	Luka Perkov <luka.perkov@sartura.hr>
-+L:	linux-hwmon@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/hwmon/ti,tps23861.yaml
-+F:	drivers/hwmon/tps23861.c
-+
- THANKO'S RAREMONO AM/FM/SW RADIO RECEIVER USB DRIVER
- M:	Hans Verkuil <hverkuil@xs4all.nl>
- L:	linux-media@vger.kernel.org
--- 
-2.29.2
+>=20
+> =EF=BB=BFOn Fri, Dec 18, 2020 at 5:46 AM Michal Hocko <mhocko@suse.com> wr=
+ote:
+>>=20
+>> On Thu 17-12-20 13:52:41, Pavel Tatashin wrote:
+>> [...]
+>>> +#define PINNABLE_MIGRATE_MAX 10
+>>> +#define PINNABLE_ISOLATE_MAX 100
+>>=20
+>> Why would we need to limit the isolation retries. Those should always be
+>> temporary failure unless I am missing something.
+>=20
+> Actually, during development, I was retrying isolate errors
+> infinitely, but during testing found a hung where when FOLL_TOUCH
+> without FOLL_WRITE is passed (fault in kernel without write flag), the
+> zero page is faulted. The isolation of the zero page was failing every
+> time, therefore the process was hanging.
+>=20
+> Since then, I fixed this problem by adding FOLL_WRITE unconditionally
+> to FOLL_LONGTERM, but I was worried about other possible bugs that
+> would cause hangs, so decided to limit isolation errors. If you think
+> it its not necessary, I can unlimit isolate retires.
+>=20
+>> I am not sure about the
+>> PINNABLE_MIGRATE_MAX either. Why do we want to limit that? migrate_pages
+>> already implements its retry logic why do you want to count retries on
+>> top of that? I do agree that the existing logic is suboptimal because
+>=20
+> True, but again, just recently, I worked on a race bug where pages can
+> end up in per-cpu list after lru_add_drain_all() but before isolation,
+> so I think retry is necessary.
+>=20
+>> the migration failure might be ephemeral or permanent but that should be
+>> IMHO addressed at migrate_pages (resp. unmap_and_move) and simply report
+>> failures that are permanent - e.g. any potential pre-existing long term
+>> pin - if that is possible at all. If not what would cause permanent
+>> migration failure? OOM?
+>=20
+> Yes, OOM is the main cause for migration failures. And also a few
+> cases described in movable zone comment, where it is possible during
+> boot some pages can be allocated by memblock in movable zone due to
+> lack of memory resources (even if those resources were added later),
+> hardware page poisoning is another rare example.
+>=20
+
+How is concurrent migration handled? Like memory offlining, compaction, allo=
+c_contig_range() while trying to pin?
+
+
+>> --
+>> Michal Hocko
+>> SUSE Labs
+>=20
 
