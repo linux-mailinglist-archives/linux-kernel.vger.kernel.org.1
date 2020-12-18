@@ -2,122 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B48AA2DE1EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 12:22:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 577A42DE1F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 12:28:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733221AbgLRLW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 06:22:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732738AbgLRLW0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 06:22:26 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E89C0617B0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 03:21:46 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id r7so1746153wrc.5
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 03:21:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0NUjTMUcVO0qCGXSkD6m+wQ/vz/jVZRScuhTw7dmgyQ=;
-        b=WDbuL0avnM8ZM5Ifop4nzsFT0UVBrCayTg2OQ/wcpBNbBsg2t1J4wfT+Xt1526aGMd
-         lgR/Y2+eHn7iv2bKf37gYC0pfYeJPdICkURqEx1GeTmhvwvzpw9NyB4oLYf+0yWp7vyt
-         awyyW4QxHEW7Cj3xRoH6zNAR8yP0XvIYU0fkgiRPQiXr7mlPh5ka9AbBFqodzi4s6wac
-         nKx6MJlFJqETKBgl4BjEfl/ms6kpyG6J7D+P6qTZrORgKL3Bz14Rf2HGSjX4jAMUO5/t
-         XZ5OTEz5Os+3OKO8pV/btHE0n9NBwMYefYyi6yombnfCrRHH69odnu3DXFz+s/TyBMd5
-         OTPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0NUjTMUcVO0qCGXSkD6m+wQ/vz/jVZRScuhTw7dmgyQ=;
-        b=LRQtqcnQ3aBniEALk763gbjju0CxEkNEep5Fkc0tOwNuzmpHS19Pz84umF6pYMYHfN
-         hwjKOxDT+GnY6ySa7dSczgWROIfinCi0F+tU2TC2YZ7BKUWOOejEPkeFG0tpm70oB7Jk
-         Ao4sjYKxKyqp788VnQHXA8x5iVlrnxAzHmqG0gYUV7+z5IGbKDZsnGscvmBO3+myyPOG
-         PS3PdOe2jw4KMX/YA6TPb2KstPrONQa1214a400iK5G8hPDbOnSCcwDpZBCdDyYc1y6B
-         Yc9d1NFpsgRHqm+DA/pIqZm6JJMn9q678RPzih7j0UL6fQUud6q4l7VqNFt6KbOyeETl
-         wjcg==
-X-Gm-Message-State: AOAM530ULF2qzbeEX2ICQfZV83IidLECgyz5iXWAb0ZofpMxSj3x1ImH
-        7Dl35HBcBV3NFV6j84oxlIXhw8wORHK+kJABeR87mw==
-X-Google-Smtp-Source: ABdhPJybkChIZsOPvxtUy5vzSoQk4jpCJqUZ7nImjtynHuGJ03k9ybgEfmROhIcueQfPsaFyVblhAdNV8cHWX2SdHy8=
-X-Received: by 2002:a5d:65ca:: with SMTP id e10mr3952897wrw.42.1608290505273;
- Fri, 18 Dec 2020 03:21:45 -0800 (PST)
+        id S1726018AbgLRL11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 06:27:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47348 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725710AbgLRL10 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 06:27:26 -0500
+Date:   Fri, 18 Dec 2020 08:26:59 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608290805;
+        bh=6Z0B6mxyv6uCqlf38hy5oOGMcG6PUb7mpO2FywAT7Fw=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QZYDqs36PJPnEA7FXlADQIghuQwjEeh+orxknVjpBivHyl51Lx/q3l6fDhvrfG6FH
+         wtTKIKn/jiSrKTrJ3hoS4iZPLYoSeFPXqWozNaDxjcsbxwHk9JlqFYPrFS0MhKDdkP
+         IMpWT5iygqldXBRKewD3hdotkLWJpzo69DvzM845+WEYNd8XPv44mHG9XC/UxbrSH6
+         rkiXVHgLTtGfPhhlqQl4nv0+OuNDHn6oZqEijD7BfHl3cmB0MTj8OROl0n8RjVUkIr
+         boAhfiS/3vm1iL00tSIBXrbv1NwoG7AhCxAQ+8rQW5hN1jZuT/uACQCphvBzM3/I5S
+         hg+DG39YcJHyQ==
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH 3/4] perf tools: Update powerpc's syscall.tbl
+Message-ID: <20201218112659.GB325926@kernel.org>
+References: <1608278364-6733-1-git-send-email-yangtiezhu@loongson.cn>
+ <1608278364-6733-4-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
-References: <20201210134648.272857-1-maxime@cerno.tech> <20201210134648.272857-5-maxime@cerno.tech>
-In-Reply-To: <20201210134648.272857-5-maxime@cerno.tech>
-From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
-Date:   Fri, 18 Dec 2020 11:21:28 +0000
-Message-ID: <CAPY8ntC+SFwJNKQB==xSee_zc5UUKJSczsmy7U6gATsN8Xrvmw@mail.gmail.com>
-Subject: Re: [PATCH 04/15] drm/vc4: hdmi: Fix up CEC registers
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Eric Anholt <eric@anholt.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Jason Cooper <jason@lakedaemon.net>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-rpi-kernel@lists.infradead.org,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Dom Cobley <popcornmix@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1608278364-6733-4-git-send-email-yangtiezhu@loongson.cn>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime & Dom
+Em Fri, Dec 18, 2020 at 03:59:23PM +0800, Tiezhu Yang escreveu:
+> This silences the following tools/perf/ build warning:
+> Warning: Kernel ABI header at 'tools/perf/arch/powerpc/entry/syscalls/syscall.tbl' differs from latest version at 'arch/powerpc/kernel/syscalls/syscall.tbl'
 
-On Thu, 10 Dec 2020 at 13:46, Maxime Ripard <maxime@cerno.tech> wrote:
->
-> From: Dom Cobley <popcornmix@gmail.com>
->
-> The commit 311e305fdb4e ("drm/vc4: hdmi: Implement a register layout
-> abstraction") forgot one CEC register, and made a copy and paste mistake
-> for another one. Fix those mistakes.
->
-> Fixes: 311e305fdb4e ("drm/vc4: hdmi: Implement a register layout abstraction")
-> Signed-off-by: Dom Cobley <popcornmix@gmail.com>
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Hi Ravi, Naveen,
 
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+	Can I get your Reviewed-by or Acked-by for this change and the
+other that adds s390's syscall.tbl to check_headers.sh so that we get
+notified when the copy drifts, so that we can see if it still continues
+working and we can get new syscalls to be supported in things like 'perf
+trace'?
 
+Thanks,
+
+- Arnaldo
+ 
+> Just make them same:
+> cp arch/powerpc/kernel/syscalls/syscall.tbl tools/perf/arch/powerpc/entry/syscalls/syscall.tbl
+> 
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 > ---
->  drivers/gpu/drm/vc4/vc4_hdmi_regs.h | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi_regs.h b/drivers/gpu/drm/vc4/vc4_hdmi_regs.h
-> index 013fd57febd8..20a1438a72cb 100644
-> --- a/drivers/gpu/drm/vc4/vc4_hdmi_regs.h
-> +++ b/drivers/gpu/drm/vc4/vc4_hdmi_regs.h
-> @@ -29,6 +29,7 @@ enum vc4_hdmi_field {
->         HDMI_CEC_CPU_MASK_SET,
->         HDMI_CEC_CPU_MASK_STATUS,
->         HDMI_CEC_CPU_STATUS,
-> +       HDMI_CEC_CPU_SET,
->
->         /*
->          * Transmit data, first byte is low byte of the 32-bit reg.
-> @@ -199,9 +200,10 @@ static const struct vc4_hdmi_register vc4_hdmi_fields[] = {
->         VC4_HDMI_REG(HDMI_TX_PHY_RESET_CTL, 0x02c0),
->         VC4_HDMI_REG(HDMI_TX_PHY_CTL_0, 0x02c4),
->         VC4_HDMI_REG(HDMI_CEC_CPU_STATUS, 0x0340),
-> +       VC4_HDMI_REG(HDMI_CEC_CPU_SET, 0x0344),
->         VC4_HDMI_REG(HDMI_CEC_CPU_CLEAR, 0x0348),
->         VC4_HDMI_REG(HDMI_CEC_CPU_MASK_STATUS, 0x034c),
-> -       VC4_HDMI_REG(HDMI_CEC_CPU_MASK_SET, 0x034c),
-> +       VC4_HDMI_REG(HDMI_CEC_CPU_MASK_SET, 0x0350),
->         VC4_HDMI_REG(HDMI_CEC_CPU_MASK_CLEAR, 0x0354),
->         VC4_HDMI_REG(HDMI_RAM_PACKET_START, 0x0400),
->  };
-> --
-> 2.28.0
->
+>  tools/perf/arch/powerpc/entry/syscalls/syscall.tbl | 25 ++++++++++++++++------
+>  1 file changed, 18 insertions(+), 7 deletions(-)
+> 
+> diff --git a/tools/perf/arch/powerpc/entry/syscalls/syscall.tbl b/tools/perf/arch/powerpc/entry/syscalls/syscall.tbl
+> index b168364..1275dae 100644
+> --- a/tools/perf/arch/powerpc/entry/syscalls/syscall.tbl
+> +++ b/tools/perf/arch/powerpc/entry/syscalls/syscall.tbl
+> @@ -9,7 +9,9 @@
+>  #
+>  0	nospu	restart_syscall			sys_restart_syscall
+>  1	nospu	exit				sys_exit
+> -2	nospu	fork				ppc_fork
+> +2	32	fork				ppc_fork			sys_fork
+> +2	64	fork				sys_fork
+> +2	spu	fork				sys_ni_syscall
+>  3	common	read				sys_read
+>  4	common	write				sys_write
+>  5	common	open				sys_open			compat_sys_open
+> @@ -158,7 +160,9 @@
+>  119	32	sigreturn			sys_sigreturn			compat_sys_sigreturn
+>  119	64	sigreturn			sys_ni_syscall
+>  119	spu	sigreturn			sys_ni_syscall
+> -120	nospu	clone				ppc_clone
+> +120	32	clone				ppc_clone			sys_clone
+> +120	64	clone				sys_clone
+> +120	spu	clone				sys_ni_syscall
+>  121	common	setdomainname			sys_setdomainname
+>  122	common	uname				sys_newuname
+>  123	common	modify_ldt			sys_ni_syscall
+> @@ -240,7 +244,9 @@
+>  186	spu	sendfile			sys_sendfile64
+>  187	common	getpmsg				sys_ni_syscall
+>  188	common 	putpmsg				sys_ni_syscall
+> -189	nospu	vfork				ppc_vfork
+> +189	32	vfork				ppc_vfork			sys_vfork
+> +189	64	vfork				sys_vfork
+> +189	spu	vfork				sys_ni_syscall
+>  190	common	ugetrlimit			sys_getrlimit			compat_sys_getrlimit
+>  191	common	readahead			sys_readahead			compat_sys_readahead
+>  192	32	mmap2				sys_mmap2			compat_sys_mmap2
+> @@ -316,8 +322,8 @@
+>  248	32	clock_nanosleep			sys_clock_nanosleep_time32
+>  248	64	clock_nanosleep			sys_clock_nanosleep
+>  248	spu	clock_nanosleep			sys_clock_nanosleep
+> -249	32	swapcontext			ppc_swapcontext			ppc32_swapcontext
+> -249	64	swapcontext			ppc64_swapcontext
+> +249	32	swapcontext			ppc_swapcontext			compat_sys_swapcontext
+> +249	64	swapcontext			sys_swapcontext
+>  249	spu	swapcontext			sys_ni_syscall
+>  250	common	tgkill				sys_tgkill
+>  251	32	utimes				sys_utimes_time32
+> @@ -456,7 +462,7 @@
+>  361	common	bpf				sys_bpf
+>  362	nospu	execveat			sys_execveat			compat_sys_execveat
+>  363	32	switch_endian			sys_ni_syscall
+> -363	64	switch_endian			ppc_switch_endian
+> +363	64	switch_endian			sys_switch_endian
+>  363	spu	switch_endian			sys_ni_syscall
+>  364	common	userfaultfd			sys_userfaultfd
+>  365	common	membarrier			sys_membarrier
+> @@ -516,6 +522,11 @@
+>  432	common	fsmount				sys_fsmount
+>  433	common	fspick				sys_fspick
+>  434	common	pidfd_open			sys_pidfd_open
+> -435	nospu	clone3				ppc_clone3
+> +435	32	clone3				ppc_clone3			sys_clone3
+> +435	64	clone3				sys_clone3
+> +435	spu	clone3				sys_ni_syscall
+> +436	common	close_range			sys_close_range
+>  437	common	openat2				sys_openat2
+>  438	common	pidfd_getfd			sys_pidfd_getfd
+> +439	common	faccessat2			sys_faccessat2
+> +440	common	process_madvise			sys_process_madvise
+> -- 
+> 2.1.0
+> 
+
+-- 
+
+- Arnaldo
