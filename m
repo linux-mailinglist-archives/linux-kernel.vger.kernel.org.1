@@ -2,87 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5A2B2DDE92
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 07:26:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 767292DDE96
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 07:26:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732812AbgLRGZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 01:25:26 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:48749 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726045AbgLRGZ0 (ORCPT
+        id S1732828AbgLRG0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 01:26:15 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:41910 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732647AbgLRG0P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 01:25:26 -0500
-X-UUID: 44d4ae70b7994dada97ce3a48e45a363-20201218
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=p5Pd9MyWjtaI8OlZ0GtWLZdI6yWJxnKdwN03SSWjjoU=;
-        b=FGmVqk5sFX9LbtvduCYTP5qrv28vEi+gNb7aZreyJimC8FBi8myU8SgVLeZaFkHHoJ4/TJRa1bTzHR0RUZcS+/lOBRkjdmw+v0vsL3r3+mtfS+Eko3cQNbuTLrjkqJdhmE+QRL+ONUSohhUAG97xIi5LLVxoWGgkZ7lqqtmejPo=;
-X-UUID: 44d4ae70b7994dada97ce3a48e45a363-20201218
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 226353595; Fri, 18 Dec 2020 14:24:39 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 18 Dec 2020 14:24:38 +0800
-Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 18 Dec 2020 14:24:37 +0800
-Message-ID: <1608272678.10163.40.camel@mtkswgap22>
-Subject: Re: [PATCH v2 0/4] scsi: ufs: Cleanup and refactor clock scaling
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Can Guo <cang@codeaurora.org>
-CC:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
-        <jejb@linux.ibm.com>, <beanhuo@micron.com>,
-        <asutoshd@codeaurora.org>, <matthias.bgg@gmail.com>,
-        <bvanassche@acm.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
-        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
-        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
-        <alice.chao@mediatek.com>
-Date:   Fri, 18 Dec 2020 14:24:38 +0800
-In-Reply-To: <e939a0fd4afd1691f3e1a8182515ca64@codeaurora.org>
-References: <20201216131639.4128-1-stanley.chu@mediatek.com>
-         <e939a0fd4afd1691f3e1a8182515ca64@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Fri, 18 Dec 2020 01:26:15 -0500
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id C95CC20B717A;
+        Thu, 17 Dec 2020 22:25:33 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C95CC20B717A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1608272734;
+        bh=etZWIFSAunWvvTytCwaw4eRuJpjTSSwN3EVqRwxTxgo=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=dPeYTdzlbJyy71yFOMqIIPpxr4tH8rS154kSISMKYsrQ299j4AjVgYC8DJFV3V2zW
+         EUckcDbECnnMo+b9KomsWtVYJj2oS79xkCOdcjWtxtVs5CULWLV9KZn5z3r6OqO19P
+         90dxam6rHhIKp8WnQe2IMDyJw3W6j0heDI8ijGy8=
+Subject: Re: [PATCH v12 2/4] powerpc: Move arch independent ima kexec
+ functions to drivers/of/kexec.c
+To:     Rob Herring <robh@kernel.org>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        "AKASHI, Takahiro" <takahiro.akashi@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        James Morse <james.morse@arm.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        vincenzo.frascino@arm.com, Mark Rutland <mark.rutland@arm.com>,
+        dmitry.kasatkin@gmail.com, James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Allison Randal <allison@lohutok.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Bhupesh Sharma <bhsharma@redhat.com>,
+        Matthias Brugger <mbrugger@suse.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, tao.li@vivo.com,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Prakhar Srivastava <prsriva@linux.microsoft.com>,
+        balajib@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree@vger.kernel.org
+References: <20201217173708.6940-1-nramas@linux.microsoft.com>
+ <20201217173708.6940-3-nramas@linux.microsoft.com>
+ <20201217200510.GA105447@robh.at.kernel.org>
+ <0b17fbee-cfe9-8cb2-01d1-02b6a61a14f5@linux.microsoft.com>
+ <CAL_Jsq+-HOkxtxOO=zyRbDuGVNZoMy589qoVANciNionsdsGCw@mail.gmail.com>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <5dda6968-ca14-1695-3058-7c12653521ba@linux.microsoft.com>
+Date:   Thu, 17 Dec 2020 22:25:33 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <CAL_Jsq+-HOkxtxOO=zyRbDuGVNZoMy589qoVANciNionsdsGCw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQ2FuLA0KDQpPbiBGcmksIDIwMjAtMTItMTggYXQgMTQ6MjAgKzA4MDAsIENhbiBHdW8gd3Jv
-dGU6DQo+IE9uIDIwMjAtMTItMTYgMjE6MTYsIFN0YW5sZXkgQ2h1IHdyb3RlOg0KPiA+IEhpLA0K
-PiA+IFRoaXMgc2VyaWVzIGNsZWFucyB1cCBhbmQgcmVmYWN0b3JzIGNsay1zY2FsaW5nIGZlYXR1
-cmUsIGFuZCBzaGFsbCBub3QNCj4gPiBjaGFuZ2UgYW55IGZ1bmN0aW9uYWxpdHkuDQo+ID4gDQo+
-ID4gVGhpcyBzZXJpZXMgaXMgYmFzZWQgb24gQ2FuJ3Mgc2VyaWVzICJUaHJlZSBjaGFuZ2VzIHJl
-bGF0ZWQgd2l0aCBVRlMNCj4gPiBjbG9jayBzY2FsaW5nIiBpbiA1LjEwL3Njc2ktZml4ZXMgYnJh
-bmNoIGluIE1hcnRpbidzIHRyZWUuDQo+ID4gDQo+IA0KPiBIaSBTdGFubGV5LA0KPiANCj4gVGhh
-bmtzIGZvciBub3RpY2luZyBteSBjaGFuZ2VzLCB3aWxsIHlvdSByZXZpZXcgdGhlbT8NCj4gSSBz
-ZWUgY3VzdG9tZXJzIG1hbmlwdWx0ZSBVRlMgc2NhbGluZyByZWxhdGVkIHN5c2ZzDQo+IG5vZGVz
-IG1vcmUgb2Z0ZW4gdGhhbiBiZWZvcmUsIHNvIHdlIG1heSB3YW50IHRvIGZpeCBpdCBhc2FwLg0K
-DQpJIGhhdmUgZ2F2ZSBteSByZXZpZXcgdGFnIGluIGFsbCBwYXRjaGVzIGluIHRoaXMgc2VyaWVz
-IDogKQ0KDQpUaGFua3MsDQpTdGFubGV5IENodQ0KDQo+IA0KPiBSZWdhcmRzLA0KPiANCj4gQ2Fu
-IEd1by4NCj4gDQo+ID4gSG93ZXZlciB0aGlzIHNlcmllcyBtYXkgbm90IGJlIHJlcXVpcmVkIHRv
-IGJlIG1lcmdlZCB0byA1LjEwLiBUaGUNCj4gPiBjaG9pY2Ugb2YgYmFzZSBicmFuY2ggaXMgc2lt
-cGx5IG1ha2luZyB0aGVzZSBwYXRjaGVzIGVhc3kgdG8gYmUNCj4gPiByZXZpZXdlZCBiZWNhdXNl
-IHRoaXMgc2VyaWVzIGlzIGJhc2VkIG9uIGNsay1zY2FsaW5nIGZpeGVzIGJ5IENhbi4gSWYNCj4g
-PiB0aGlzIHNlcmllcyBpcyBkZWNpZGVkIG5vdCBiZWluZyBtZXJnZWQgdG8gNS4xMCwgdGhlbiBJ
-IHdvdWxkIHJlYmFzZQ0KPiA+IGl0IHRvIDUuMTEvc2NzaS1xdWV1ZS4NCj4gPiANCj4gPiBDaGFu
-Z2VzIHNpbmNlIHYxOg0KPiA+ICAgLSBSZWZhY3RvciB1ZnNoY2RfY2xrX3NjYWxpbmdfc3VzcGVu
-ZCgpIGluIHBhdGNoIFszLzRdDQo+ID4gICAtIENoYW5nZSBmdW5jdGlvbiBuYW1lIGZyb20gdWZz
-aGNkX2Nsa19zY2FsaW5nX3BtKCkgdG8NCj4gPiB1ZnNoY2RfY2xrX3NjYWxpbmdfc3VzcGVuZCgp
-IGluIHBhdGNoIFszLzRdDQo+ID4gICAtIFJlZmluZSBwYXRjaCB0aXRsZXMNCj4gPiANCj4gPiBT
-dGFubGV5IENodSAoNCk6DQo+ID4gICBzY3NpOiB1ZnM6IFJlZmFjdG9yIGNhbmNlbGxpbmcgY2xr
-c2NhbGluZyB3b3Jrcw0KPiA+ICAgc2NzaTogdWZzOiBSZW1vdmUgcmVkdW5kYW50IG51bGwgY2hl
-Y2tpbmcgb2YgZGV2ZnJlcSBpbnN0YW5jZQ0KPiA+ICAgc2NzaTogdWZzOiBDbGVhbnVwIGFuZCBy
-ZWZhY3RvciBjbGstc2NhbGluZyBmZWF0dXJlDQo+ID4gICBzY3NpOiB1ZnM6IEZpeCBidWlsZCB3
-YXJuaW5nIGJ5IGluY29ycmVjdCBmdW5jdGlvbiBkZXNjcmlwdGlvbg0KPiA+IA0KPiA+ICBkcml2
-ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jIHwgOTAgKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0t
-LS0tLS0tLS0tDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCA0MyBpbnNlcnRpb25zKCspLCA0NyBkZWxl
-dGlvbnMoLSkNCg0K
+On 12/17/20 2:01 PM, Rob Herring wrote:
 
+> 
+> [...]
+> 
+>>>> +#ifdef CONFIG_IMA_KEXEC
+>>>> +/**
+>>>> + * arch_ima_add_kexec_buffer - do arch-specific steps to add the IMA buffer
+>>>> + *
+>>>> + * @image: kimage struct to set IMA buffer data
+>>>> + * @load_addr: Starting address where IMA buffer is loaded at
+>>>> + * @size: Number of bytes in the IMA buffer
+>>>> + *
+>>>> + * Architectures should use this function to pass on the IMA buffer
+>>>> + * information to the next kernel.
+>>>> + *
+>>>> + * Return: 0 on success, negative errno on error.
+>>>> + */
+>>>> +int arch_ima_add_kexec_buffer(struct kimage *image, unsigned long load_addr,
+>>>> +                          size_t size)
+>>>
+>>> This should be a static inline in asm/kexec.h.
+>>
+>> arch_ima_add_kexec_buffer() is identical for powerpc and arm64.
+>> Would it be better to "static inline" this function in "of.h" instead of
+>> duplicating it in "asm/kexec.h" for powerpc and arm64?
+> 
+> No, think about what it is specific to and place it there. It has
+> nothing to do with DT really. All it is is a wrapper to access the
+> struct members in kimage_arch. So it belongs where they are declared.
+> Now perhaps ima_buffer_addr and ima_buffer_size shouldn't be arch
+> specific, but that's a separate issue.
+> 
+
+Since "struct kimage" definition is not available in "asm/kexec.h", 
+defining arch_ima_add_kexec_buffer() in this header file results in the 
+following build error:
+
+./arch/powerpc/include/asm/kexec.h: In function 'arch_ima_add_kexec_buffer':
+./arch/powerpc/include/asm/kexec.h:139:7: error: 'struct kimage' has no 
+member named 'arch'
+   139 |  image->arch.ima_buffer_addr = load_addr;
+
+I think it would be appropriate to make arch_ima_add_kexec_buffer() a 
+static inline function in "security/integrity/ima/ima_kexec.c" - the 
+only file where this function is used.
+
+This will also enable sharing this function for powerpc and arm64 
+architectures.
+
+thanks,
+  -lakshmi
