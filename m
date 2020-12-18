@@ -2,103 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DDE72DE0D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 11:14:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB24D2DE0CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 11:14:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389068AbgLRKNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 05:13:19 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:46466 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389056AbgLRKNS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 05:13:18 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1608286373; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=0qZgHrTtdOiDdGXSAh2oPnUFJwVxOdegk+F5rocDvGQ=; b=QGhznwy8N1CHsBb1ZEG9b0I2t+m09/Jpy+VIFxSQEpFuDy1RejalrWeHjbiW0bDAkSD1AGjU
- NFKGHgv6WNL8ztNsKcK93mUJhEOV9qG85LPmtX4ZXMzn8RcjeiuY196pDAy2EajDM6Y+GEXy
- QIpynYH8YlFcFcbnPspXC79k9WY=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5fdc80840564dfefcd862884 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Dec 2020 10:12:20
- GMT
-Sender: zijuhu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6AF32C43462; Fri, 18 Dec 2020 10:12:19 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from zijuhu-gv.qualcomm.com (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: zijuhu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 092B6C433ED;
-        Fri, 18 Dec 2020 10:12:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 092B6C433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=zijuhu@codeaurora.org
-From:   Zijun Hu <zijuhu@codeaurora.org>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
-        rjliao@codeaurora.org, zijuhu@codeaurora.org, tjiang@codeaurora.org
-Subject: [PATCH v1] Bluetooth: btusb: add shutdown function for wcn6855
-Date:   Fri, 18 Dec 2020 18:12:11 +0800
-Message-Id: <1608286331-15760-1-git-send-email-zijuhu@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S2389050AbgLRKNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 05:13:06 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43808 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389031AbgLRKNF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 05:13:05 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 02F0EAC7B;
+        Fri, 18 Dec 2020 10:12:23 +0000 (UTC)
+Date:   Fri, 18 Dec 2020 11:12:21 +0100
+From:   Mian Yousaf Kaukab <ykaukab@suse.de>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Vidya Sagar <vidyas@nvidia.com>, lorenzo.pieralisi@arm.com,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: dwc: tegra194: issue with card containing a bridge
+Message-ID: <20201218101221.GB52649@suse.de>
+References: <20201215102442.GA20517@suse.de>
+ <9a8abc90-cf18-b0c8-3bcb-efbe03f0ca4c@nvidia.com>
+ <20201215132504.GA20914@suse.de>
+ <20201215154147.GA3885265@robh.at.kernel.org>
+ <20201215205235.GC20914@suse.de>
+ <20201217145857.GA3941403@robh.at.kernel.org>
+ <20201217170635.GA52649@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201217170635.GA52649@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tim Jiang <tjiang@codeaurora.org>
+On Thu, Dec 17, 2020 at 06:06:35PM +0100, Mian Yousaf Kaukab wrote:
+> On Thu, Dec 17, 2020 at 08:58:57AM -0600, Rob Herring wrote:
+> > On Tue, Dec 15, 2020 at 09:52:35PM +0100, Mian Yousaf Kaukab wrote:
+> > > On Tue, Dec 15, 2020 at 09:41:47AM -0600, Rob Herring wrote:
+> > > > On Tue, Dec 15, 2020 at 02:25:04PM +0100, Mian Yousaf Kaukab wrote:
+> > > > > On Tue, Dec 15, 2020 at 05:45:59PM +0530, Vidya Sagar wrote:
+> > > > > > Thanks Mian for bringing it to our notice.
+> > > > > > Have you tried removing the dw_pcie_setup_rc(pp); call from pcie-tegra194.c
+> > > > > > file on top of linux-next? and does that solve the issue?
+> > > > > > 
+> > > > > > diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c
+> > > > > > b/drivers/pci/controller/dwc/pcie-tegra194.c
+> > > > > > index 5597b2a49598..1c9e9c054592 100644
+> > > > > > --- a/drivers/pci/controller/dwc/pcie-tegra194.c
+> > > > > > +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
+> > > > > > @@ -907,7 +907,7 @@ static void tegra_pcie_prepare_host(struct pcie_port
+> > > > > > *pp)
+> > > > > >                 dw_pcie_writel_dbi(pci, CFG_TIMER_CTRL_MAX_FUNC_NUM_OFF,
+> > > > > > val);
+> > > > > >         }
+> > > > > > 
+> > > > > > -       dw_pcie_setup_rc(pp);
+> > > > > > +       //dw_pcie_setup_rc(pp);
+> > > > > I still see the same issue with this change.
+> > > > > Reverting b9ac0f9dc8ea works though.
+> > > > > > 
+> > > > > >         clk_set_rate(pcie->core_clk, GEN4_CORE_CLK_FREQ);
+> > > > > > 
+> > > > > > I took a quick look at the dw_pcie_setup_rc() implementation and I'm not
+> > > > > > sure why calling it second time should create any issue for the enumeration
+> > > > > > of devices behind a switch. Perhaps I need to spend more time to debug that
+> > > > > > part.
+> > > > > > In any case, since dw_pcie_setup_rc() is already part of
+> > > > > > dw_pcie_host_init(), I think it can be removed from
+> > > > > > tegra_pcie_prepare_host() implemention.
+> > > > 
+> > > > I think the 2nd time is making the link go down is my guess. Tegra was 
+> > > > odd in that its start/stop link functions don't do link handling, so I 
+> > > > didn't implement those functions and left the link handling in the Tegra 
+> > > > driver.
+> > > > 
+> > > > Can you try the below patch. It needs some more work as it breaks 
+> > > > endpoint mode.
+> > 
+> > [...]
+> > 
+> > > Boot is ok with this patch. Some improvement in lspci as well:
+> > 
+> > Some improvement? Meaning not completely working still?
+> > 
+> > > # lspci
+> > > 0001:00:00.0 PCI bridge: NVIDIA Corporation Device 1ad2 (rev a1)
+> > > 0001:01:00.0 SATA controller: Marvell Technology Group Ltd. Device 9171 (rev 13)
+> > > 0005:00:00.0 PCI bridge: NVIDIA Corporation Device 1ad0 (rev a1)
+> > > 0005:01:00.0 PCI bridge: PLX Technology, Inc. Device 3380 (rev ab)
+> > 
+> > This patch was closer to the original flow, but would not have worked if 
+> > DLFE disabled mode was needed.
+> > 
+> > Please give this patch a try:
+> Thank you for the patch! Initial results with it looks very promising.
+> I’ll get back to you tomorrow after running a few more tests.
+Rob, thank you for your efforts! This patch fixed the issue I was seeing. FWIW:
 
-we should send hci reset command before bt turn off, which can reset bt
-firmware status.
+Tested-by: Mian Yousaf Kaukab <ykaukab@suse.de>
 
-Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
----
- drivers/bluetooth/btusb.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
-
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 03b83aa91277..139132463a87 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -4264,6 +4264,20 @@ static bool btusb_prevent_wake(struct hci_dev *hdev)
- 	return !device_may_wakeup(&data->udev->dev);
- }
- 
-+static int btusb_shutdown_qca(struct hci_dev *hdev)
-+{
-+	struct sk_buff *skb;
-+
-+	skb = __hci_cmd_sync(hdev, HCI_OP_RESET, 0, NULL, HCI_INIT_TIMEOUT);
-+	if (IS_ERR(skb)) {
-+		bt_dev_err(hdev, "HCI reset during shutdown failed");
-+		return PTR_ERR(skb);
-+	}
-+	kfree_skb(skb);
-+
-+	return 0;
-+}
-+
- static int btusb_probe(struct usb_interface *intf,
- 		       const struct usb_device_id *id)
- {
-@@ -4523,6 +4537,7 @@ static int btusb_probe(struct usb_interface *intf,
- 
- 	if (id->driver_info & BTUSB_QCA_WCN6855) {
- 		data->setup_on_usb = btusb_setup_qca;
-+		hdev->shutdown = btusb_shutdown_qca;
- 		hdev->set_bdaddr = btusb_set_bdaddr_wcn6855;
- 		hdev->cmd_timeout = btusb_qca_cmd_timeout;
- 		set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &hdev->quirks);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
-
+BR,
+Yousaf
