@@ -2,62 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DCB92DDCAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 02:43:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E60F2DDCBA
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 02:56:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728539AbgLRBk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 20:40:58 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9225 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726851AbgLRBk5 (ORCPT
+        id S1729573AbgLRB4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 20:56:36 -0500
+Received: from mail-pj1-f42.google.com ([209.85.216.42]:39872 "EHLO
+        mail-pj1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727148AbgLRB4f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 20:40:57 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cxs3c4W9dzkrfv;
-        Fri, 18 Dec 2020 09:39:24 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 18 Dec 2020 09:40:08 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <mst@redhat.com>, <jasowang@redhat.com>
-CC:     <sgarzare@redhat.com>, <mgurtovoy@nvidia.com>,
-        <virtualization@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] vdpa: Mark macaddr_buf with static keyword
-Date:   Fri, 18 Dec 2020 09:51:35 +0800
-Message-ID: <1608256295-69649-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        Thu, 17 Dec 2020 20:56:35 -0500
+Received: by mail-pj1-f42.google.com with SMTP id hk16so465210pjb.4;
+        Thu, 17 Dec 2020 17:56:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ejzs/9wDH46rXiWxjSID2tbI9cGlj6Llr1w/JV/Xgbk=;
+        b=XPOVBZ/tuZ4/T2MxJLiOJqdtozhmupo/o6bAnmj8UboQcVp7uKqdz8Oc5wyfaFmA6X
+         M4FuodNNkii4bg+GLpy29ZS+dx0dpyeP8c7L9pghO9dNyqHhrqVVqKdmzL9yQX+hcp+W
+         cNGZ4Ur7b4d2MJ4c1iuq+x5eu6O4h8yVBQTnODxcgmXU70Pyx4/gNe6yqEcqMdeh0ZxK
+         MAsD+YMNeVv31DSPbtYo24XFUe4y7Mfyd0jNPMKJiFY8qfcrRb9SiYCBlqEBrH3IEeRV
+         AhTkTYrz9f6eia02knRLEht18+lFb2nk0cB++zXIHJ7XTkhNHeIhXjxSGXo4x37BE9RF
+         LNsg==
+X-Gm-Message-State: AOAM530T1f4mdS7kKG7sPQfB4HnunwAaolRb7nexW6I4pDqhn99tB22c
+        GUd3brJ5Ns9+mZBbE+uUjQ8=
+X-Google-Smtp-Source: ABdhPJxZdRa6PwldpktbLodeG4FvGJXUzNaRkbOGXiXuPSuPbxUzhH+RR58PO70WUnIcdha4h5Ccgg==
+X-Received: by 2002:a17:90a:fa18:: with SMTP id cm24mr1991435pjb.220.1608256554580;
+        Thu, 17 Dec 2020 17:55:54 -0800 (PST)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id m3sm6873983pfa.134.2020.12.17.17.55.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Dec 2020 17:55:53 -0800 (PST)
+Subject: Re: [RFC PATCH v2 2/2] blk-mq: Lockout tagset iter when freeing rqs
+To:     John Garry <john.garry@huawei.com>, axboe@kernel.dk,
+        ming.lei@redhat.com
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hch@lst.de, hare@suse.de, ppvk@codeaurora.org,
+        kashyap.desai@broadcom.com, linuxarm@huawei.com
+References: <1608203273-170555-1-git-send-email-john.garry@huawei.com>
+ <1608203273-170555-3-git-send-email-john.garry@huawei.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <30c16455-6d7d-39ac-b3fc-4ee38199e683@acm.org>
+Date:   Thu, 17 Dec 2020 17:55:51 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+In-Reply-To: <1608203273-170555-3-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following sparse warning:
+On 12/17/20 3:07 AM, John Garry wrote:
+> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+> index a6df2d5df88a..853ed5b889aa 100644
+> --- a/block/blk-mq-tag.c
+> +++ b/block/blk-mq-tag.c
+> @@ -358,10 +358,19 @@ void blk_mq_tagset_busy_iter(struct blk_mq_tag_set *tagset,
+>  {
+>  	int i;
+>  
+>  	for (i = 0; i < tagset->nr_hw_queues; i++) {
+> -		if (tagset->tags && tagset->tags[i])
+> -			__blk_mq_all_tag_iter(tagset->tags[i], fn, priv,
+> +		if (tagset->tags && tagset->tags[i]) {
+> +			struct blk_mq_tags *tags = tagset->tags[i];
+> +
+> +			if (!atomic_inc_not_zero(&tags->iter_usage_counter))
+> +				continue;
+> +
+> +			__blk_mq_all_tag_iter(tags, fn, priv,
+>  					      BT_TAG_ITER_STARTED);
+> +
+> +			atomic_dec(&tags->iter_usage_counter);
+> +		}
+>  	}
+>  }
 
-drivers/vdpa/vdpa_sim/vdpa_sim_net.c:36:4: warning: symbol 'macaddr_buf' was not declared. Should it be static?
+Atomic operations are (a) more expensive than rcu_read_lock() /
+rcu_read_lock() and (b) do not provide the same guarantees.
+rcu_read_lock() has acquire semantics and rcu_read_unlock() has
+release semantics. Regular atomic operations do not have these
+semantics which means that the CPU is allowed to reorder certain
+regular loads and stores against atomic operations. Additionally,
+atomic operations are more expensive than the corresponding RCU
+primitives. In other words, I would be much happier if this patch
+series would use RCU instead of atomics.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
----
- drivers/vdpa/vdpa_sim/vdpa_sim_net.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks,
 
-diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim_net.c b/drivers/vdpa/vdpa_sim/vdpa_sim_net.c
-index c10b698..f048242 100644
---- a/drivers/vdpa/vdpa_sim/vdpa_sim_net.c
-+++ b/drivers/vdpa/vdpa_sim/vdpa_sim_net.c
-@@ -33,7 +33,7 @@ static char *macaddr;
- module_param(macaddr, charp, 0);
- MODULE_PARM_DESC(macaddr, "Ethernet MAC address");
- 
--u8 macaddr_buf[ETH_ALEN];
-+static u8 macaddr_buf[ETH_ALEN];
- 
- static struct vdpasim *vdpasim_net_dev;
- 
--- 
-2.6.2
-
+Bart.
