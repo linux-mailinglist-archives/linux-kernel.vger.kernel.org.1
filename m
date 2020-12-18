@@ -2,184 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 661C52DE3D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:19:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D152E2DE3EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:21:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727489AbgLROTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 09:19:03 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:13754 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725908AbgLROTB (ORCPT
+        id S1727916AbgLROVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 09:21:11 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:37710 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727108AbgLROVK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 09:19:01 -0500
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BIE5qDO022031;
-        Fri, 18 Dec 2020 09:18:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=3iYoFMACVWQh4220baHiiCssGjisDx4QieQjyKEbMY0=;
- b=ksOWUHNkWdzmp9aMv2BiUwNzemMrQPy8E8LH4Lnu+8we6hYc1iq8cu9X4n6r8b9cILKk
- KCylKOf1V5Z0/ULANe8xpAG05ImSXpYFrMyWW1VTpqxUFrRGrYnRW+kc9PX/NJzH3HpN
- bb2gFtj5uEO+pLu1dOJ6A9AyusPGouVryQodG+qQxWnLcHa5TRo5PfvVV5Y7C3YLSZqX
- 01GvBsT1eL1L089iozcUzElE+erGjAefcyHOYmvJncw9fQh6EjYUDQMmm4Djx1bbvXqO
- FD3mkgCKEcI1u7a084LQCiD2vwT/Dr2oC7LUaxhOmLZTbHfcFDaYcyNH+BUdHeuPFg9F 9A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35gw6ehqwg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Dec 2020 09:18:19 -0500
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BIE7geK033629;
-        Fri, 18 Dec 2020 09:18:19 -0500
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35gw6ehqvv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Dec 2020 09:18:19 -0500
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BIEIGpm012367;
-        Fri, 18 Dec 2020 14:18:17 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma02fra.de.ibm.com with ESMTP id 35cng889nc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Dec 2020 14:18:17 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BIEIEnE43516186
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Dec 2020 14:18:14 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 012F5A405B;
-        Fri, 18 Dec 2020 14:18:14 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9ABECA4064;
-        Fri, 18 Dec 2020 14:18:13 +0000 (GMT)
-Received: from ibm-vm.ibmuc.com (unknown [9.145.12.102])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 18 Dec 2020 14:18:13 +0000 (GMT)
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     borntraeger@de.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        kvm@vger.kernel.org, linux-s390@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: [PATCH v1 4/4] s390/kvm: VSIE: correctly handle MVPG when in VSIE
-Date:   Fri, 18 Dec 2020 15:18:11 +0100
-Message-Id: <20201218141811.310267-5-imbrenda@linux.ibm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201218141811.310267-1-imbrenda@linux.ibm.com>
-References: <20201218141811.310267-1-imbrenda@linux.ibm.com>
+        Fri, 18 Dec 2020 09:21:10 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BIEJQJC093197;
+        Fri, 18 Dec 2020 08:19:26 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1608301166;
+        bh=S+0GamKVCQ687Tv6EqyRvpQ1fBcSrBgLoRk//UMEKCc=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=OhInuthfyE1sUT8QW2eEhRFjnbAPn+XfqGsUV4TRoOxjVnbfsDsvCcSie1YV4266F
+         8/RGvWMmDTkhyLbGDvbXCCq2Lny1atTCTREMQH03bwULQo68I86n48w5a1mGsKnPFE
+         ZUs2go+hyKlixjJWH7kN4clMEnqDp82uw8nSOeuw=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BIEJQSm095816
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 18 Dec 2020 08:19:26 -0600
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 18
+ Dec 2020 08:19:26 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 18 Dec 2020 08:19:26 -0600
+Received: from [10.24.69.20] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BIEJNTE090472;
+        Fri, 18 Dec 2020 08:19:23 -0600
+Subject: Re: [PATCH] msi: use for_each_msi_entry_safe iterator macro
+To:     Jacob Keller <jacob.e.keller@intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>
+CC:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Stuart Yoder <stuyoder@gmail.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Nishanth Menon <nm@ti.com>, Tero Kristo <t-kristo@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+References: <20201217005557.45031-1-jacob.e.keller@intel.com>
+From:   Lokesh Vutla <lokeshvutla@ti.com>
+Message-ID: <4b3ee539-d5b0-d316-5ee0-0b7bd543c283@ti.com>
+Date:   Fri, 18 Dec 2020 19:49:22 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-18_09:2020-12-18,2020-12-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
- priorityscore=1501 phishscore=0 impostorscore=0 mlxscore=0 mlxlogscore=899
- lowpriorityscore=0 malwarescore=0 clxscore=1015 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012180099
+In-Reply-To: <20201217005557.45031-1-jacob.e.keller@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Correctly handle the MVPG instruction when issued by a VSIE guest.
 
-Fixes: a3508fbe9dc6d ("KVM: s390: vsie: initial support for nested virtualization")
-Cc: stable@vger.kernel.org
-Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
----
- arch/s390/kvm/vsie.c | 73 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 73 insertions(+)
 
-diff --git a/arch/s390/kvm/vsie.c b/arch/s390/kvm/vsie.c
-index ada49583e530..6c3069868acd 100644
---- a/arch/s390/kvm/vsie.c
-+++ b/arch/s390/kvm/vsie.c
-@@ -977,6 +977,75 @@ static int handle_stfle(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
- 	return 0;
- }
- 
-+static u64 vsie_get_register(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page, u8 reg)
-+{
-+	reg &= 0xf;
-+	switch (reg) {
-+	case 15:
-+		return vsie_page->scb_s.gg15;
-+	case 14:
-+		return vsie_page->scb_s.gg14;
-+	default:
-+		return vcpu->run->s.regs.gprs[reg];
-+	}
-+}
-+
-+static int vsie_handle_mvpg(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
-+{
-+	struct kvm_s390_sie_block *scb_s = &vsie_page->scb_s;
-+	unsigned long r1, r2, mask = PAGE_MASK;
-+	int rc;
-+
-+	if (psw_bits(scb_s->gpsw).eaba == PSW_BITS_AMODE_24BIT)
-+		mask = 0xfff000;
-+	else if (psw_bits(scb_s->gpsw).eaba == PSW_BITS_AMODE_31BIT)
-+		mask = 0x7ffff000;
-+
-+	r1 = vsie_get_register(vcpu, vsie_page, scb_s->ipb >> 20) & mask;
-+	r2 = vsie_get_register(vcpu, vsie_page, scb_s->ipb >> 16) & mask;
-+	rc = kvm_s390_vsie_mvpg_check(vcpu, r1, r2, &vsie_page->scb_o->mcic);
-+
-+	/*
-+	 * Guest translation was not successful. The host needs to forward
-+	 * the intercept to the guest and let the guest fix its page tables.
-+	 * The guest needs then to retry the instruction.
-+	 */
-+	if (rc == -ENOENT)
-+		return 1;
-+
-+	retry_vsie_icpt(vsie_page);
-+
-+	/*
-+	 * Guest translation was not successful. The page tables of the guest
-+	 * are broken. Try again and let the hardware deliver the fault.
-+	 */
-+	if (rc == -EFAULT)
-+		return 0;
-+
-+	/*
-+	 * Guest translation was successful. The host needs to fix up its
-+	 * page tables and retry the instruction in the nested guest.
-+	 * In case of failure, the instruction will intercept again, and
-+	 * a different path will be taken.
-+	 */
-+	if (!rc) {
-+		kvm_s390_shadow_fault(vcpu, vsie_page->gmap, r2);
-+		kvm_s390_shadow_fault(vcpu, vsie_page->gmap, r1);
-+		return 0;
-+	}
-+
-+	/*
-+	 * An exception happened during guest translation, it needs to be
-+	 * delivered to the guest. This can happen if the host has EDAT1
-+	 * enabled and the guest has not, or for other causes. The guest
-+	 * needs to process the exception and return to the nested guest.
-+	 */
-+	if (rc > 0)
-+		return kvm_s390_inject_prog_cond(vcpu, rc);
-+
-+	return 1;
-+}
-+
- /*
-  * Run the vsie on a shadow scb and a shadow gmap, without any further
-  * sanity checks, handling SIE faults.
-@@ -1063,6 +1132,10 @@ static int do_vsie_run(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
- 		if ((scb_s->ipa & 0xf000) != 0xf000)
- 			scb_s->ipa += 0x1000;
- 		break;
-+	case ICPT_PARTEXEC:
-+		if (scb_s->ipa == 0xb254)
-+			rc = vsie_handle_mvpg(vcpu, vsie_page);
-+		break;
- 	}
- 	return rc;
- }
--- 
-2.26.2
+On 17/12/20 6:25 am, Jacob Keller wrote:
+> Commit 81b1e6e6a859 ("platform-msi: Free descriptors in
+> platform_msi_domain_free()") introduced for_each_msi_entry_safe as an
+> iterator operating on the msi_list using the safe semantics with
+> a temporary variable.
+> 
+> A handful of locations still used the generic iterator instead of the
+> specific macro. Fix the 3 remaining cases. Add a cocci script which can
+> detect and report any misuse that is introduced in future changes.
+> 
+> Cc: Rafael J. Wysocki <rafael@kernel.org>
+> Cc: Stuart Yoder <stuyoder@gmail.com>
+> Cc: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+> Cc: Nishanth Menon <nm@ti.com>
+> Cc: Tero Kristo <t-kristo@ti.com>
+> Cc: Santosh Shilimkar <ssantosh@kernel.org>
+> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+> Signed-off-by: Jacob Keller <jacob.e.keller@intel.com>
+> ---
+
+[..snip..]
+
+>  	}
+> diff --git a/drivers/soc/ti/ti_sci_inta_msi.c b/drivers/soc/ti/ti_sci_inta_msi.c
+> index 0eb9462f609e..66f9772dcdfa 100644
+> --- a/drivers/soc/ti/ti_sci_inta_msi.c
+> +++ b/drivers/soc/ti/ti_sci_inta_msi.c
+> @@ -64,7 +64,7 @@ static void ti_sci_inta_msi_free_descs(struct device *dev)
+>  {
+>  	struct msi_desc *desc, *tmp;
+>  
+> -	list_for_each_entry_safe(desc, tmp, dev_to_msi_list(dev), list) {
+> +	for_each_msi_entry_safe(desc, tmp, dev) {
+>  		list_del(&desc->list);
+>  		free_msi_entry(desc);
+>  	}
+
+For ti_sci_inta_msi part:
+
+Reviewed-by: Lokesh Vutla <lokeshvutla@ti.com>
+
+Thanks and regards,
+Lokesh
 
