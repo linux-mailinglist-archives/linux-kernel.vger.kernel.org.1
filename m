@@ -2,50 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AEE02DEB42
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 22:46:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 330522DEB49
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 22:50:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726395AbgLRVp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 16:45:29 -0500
-Received: from coyote.holtmann.net ([212.227.132.17]:43500 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726177AbgLRVp2 (ORCPT
+        id S1726220AbgLRVuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 16:50:01 -0500
+Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:58790 "EHLO
+        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725982AbgLRVuA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 16:45:28 -0500
-Received: from marcel-macbook.holtmann.net (p4fefcdf9.dip0.t-ipconnect.de [79.239.205.249])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 209E3CED31;
-        Fri, 18 Dec 2020 22:52:04 +0100 (CET)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.40.0.2.32\))
-Subject: Re: [PATCH] Bluetooth:btmtksdio Fixed switch and case should be at
- the same indent
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20201215094730.361510-1-t.jag587@gmail.com>
-Date:   Fri, 18 Dec 2020 22:44:46 +0100
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>, matthias.bgg@gmail.com,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <8CBE5646-DEA5-4D74-AC92-79A5957BC189@holtmann.org>
-References: <20201215094730.361510-1-t.jag587@gmail.com>
-To:     Jagdish Tirumala <t.jag587@gmail.com>
-X-Mailer: Apple Mail (2.3654.40.0.2.32)
+        Fri, 18 Dec 2020 16:50:00 -0500
+Received: from dread.disaster.area (pa49-181-255-32.pa.nsw.optusnet.com.au [49.181.255.32])
+        by mail110.syd.optusnet.com.au (Postfix) with ESMTPS id 749E310676B;
+        Sat, 19 Dec 2020 08:49:16 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1kqNch-000DzC-NE; Sat, 19 Dec 2020 08:49:15 +1100
+Date:   Sat, 19 Dec 2020 08:49:15 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Donald Buczek <buczek@molgen.mpg.de>
+Cc:     linux-xfs@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        it+linux-xfs@molgen.mpg.de
+Subject: Re: v5.10.1 xfs deadlock
+Message-ID: <20201218214915.GA53382@dread.disaster.area>
+References: <b8da4aed-ee44-5d9f-88dc-3d32f0298564@molgen.mpg.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b8da4aed-ee44-5d9f-88dc-3d32f0298564@molgen.mpg.de>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0 cx=a_idp_d
+        a=TT2gYx/P4twmiiok1SQxOQ==:117 a=TT2gYx/P4twmiiok1SQxOQ==:17
+        a=kj9zAlcOel0A:10 a=zTNgK-yGK50A:10 a=pbPJX3KNAAAA:8 a=WWXfqoTBAAAA:8
+        a=7-415B0cAAAA:8 a=n4V3cln1qZeQZ-Gr4-cA:9 a=CjuIK1q_8ugA:10
+        a=oq68ferKVpmdzqj7Fr_q:22 a=G2uvcFSCWpQuK2C1375M:22
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jagdish,
-
-> Switch and case where not properly aligned
+On Thu, Dec 17, 2020 at 06:44:51PM +0100, Donald Buczek wrote:
+> Dear xfs developer,
 > 
-> Signed-off-by: Jagdish Tirumala <t.jag587@gmail.com>
-> ---
-> drivers/bluetooth/btmtksdio.c | 16 ++++++++--------
-> 1 file changed, 8 insertions(+), 8 deletions(-)
+> I was doing some testing on a Linux 5.10.1 system with two 100 TB xfs filesystems on md raid6 raids.
+> 
+> The stress test was essentially `cp -a`ing a Linux source repository with two threads in parallel on each filesystem.
+> 
+> After about on hour, the processes to one filesystem (md1) blocked, 30 minutes later the process to the other filesystem (md0) did.
+> 
+>     root      7322  2167  0 Dec16 pts/1    00:00:06 cp -a /jbod/M8068/scratch/linux /jbod/M8068/scratch/1/linux.018.TMP
+>     root      7329  2169  0 Dec16 pts/1    00:00:05 cp -a /jbod/M8068/scratch/linux /jbod/M8068/scratch/2/linux.019.TMP
+>     root     13856  2170  0 Dec16 pts/1    00:00:08 cp -a /jbod/M8067/scratch/linux /jbod/M8067/scratch/2/linux.028.TMP
+>     root     13899  2168  0 Dec16 pts/1    00:00:05 cp -a /jbod/M8067/scratch/linux /jbod/M8067/scratch/1/linux.027.TMP
+> 
+> Some info from the system (all stack traces, slabinfo) is available here: https://owww.molgen.mpg.de/~buczek/2020-12-16.info.txt
+> 
+> It stands out, that there are many (549 for md0, but only 10 for md1)  "xfs-conv" threads all with stacks like this
+> 
+>     [<0>] xfs_log_commit_cil+0x6cc/0x7c0
+>     [<0>] __xfs_trans_commit+0xab/0x320
+>     [<0>] xfs_iomap_write_unwritten+0xcb/0x2e0
+>     [<0>] xfs_end_ioend+0xc6/0x110
+>     [<0>] xfs_end_io+0xad/0xe0
+>     [<0>] process_one_work+0x1dd/0x3e0
+>     [<0>] worker_thread+0x2d/0x3b0
+>     [<0>] kthread+0x118/0x130
+>     [<0>] ret_from_fork+0x22/0x30
+> 
+> xfs_log_commit_cil+0x6cc is
+> 
+>   xfs_log_commit_cil()
+>     xlog_cil_push_background(log)
+>       xlog_wait(&cil->xc_push_wait, &cil->xc_push_lock);
+> 
+> Some other threads, including the four "cp" commands are also blocking at xfs_log_commit_cil+0x6cc
+> 
+> There are also single "flush" process for each md device with this stack signature:
+> 
+>     [<0>] xfs_map_blocks+0xbf/0x400
+>     [<0>] iomap_do_writepage+0x15e/0x880
+>     [<0>] write_cache_pages+0x175/0x3f0
+>     [<0>] iomap_writepages+0x1c/0x40
+>     [<0>] xfs_vm_writepages+0x59/0x80
+>     [<0>] do_writepages+0x4b/0xe0
+>     [<0>] __writeback_single_inode+0x42/0x300
+>     [<0>] writeback_sb_inodes+0x198/0x3f0
+>     [<0>] __writeback_inodes_wb+0x5e/0xc0
+>     [<0>] wb_writeback+0x246/0x2d0
+>     [<0>] wb_workfn+0x26e/0x490
+>     [<0>] process_one_work+0x1dd/0x3e0
+>     [<0>] worker_thread+0x2d/0x3b0
+>     [<0>] kthread+0x118/0x130
+>     [<0>] ret_from_fork+0x22/0x30
+> 
+> xfs_map_blocks+0xbf is the
+> 
+>     xfs_ilock(ip, XFS_ILOCK_SHARED);
+> 
+> in xfs_map_blocks().
 
-patch has been applied to bluetooth-next tree.
+Can you post the entire dmesg output after running
+'echo w > /proc/sysrq-trigger' to dump all the block threads to
+dmesg?
 
-Regards
+> I have an out of tree driver for the HBA ( smartpqi 2.1.6-005
+> pulled from linux-scsi) , but it is unlikely that this blocking is
+> related to that, because the md block devices itself are
+> responsive (`xxd /dev/md0` )
 
-Marcel
+My bet is that the OOT driver/hardware had dropped a log IO on the
+floor - XFS is waiting for the CIL push to complete, and I'm betting
+that is stuck waiting for iclog IO completion while writing the CIL
+to the journal. The sysrq output will tell us if this is the case,
+so that's the first place to look.
 
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
