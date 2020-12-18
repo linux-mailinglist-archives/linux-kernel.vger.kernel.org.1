@@ -2,186 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 477E42DE6B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 16:34:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79AEB2DE6B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 16:36:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728554AbgLRPe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 10:34:28 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:3157 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgLRPe1 (ORCPT
+        id S1728656AbgLRPff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 10:35:35 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:16496 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726581AbgLRPfe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 10:34:27 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fdccbdb0000>; Fri, 18 Dec 2020 07:33:47 -0800
-Received: from [10.26.73.104] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 18 Dec
- 2020 15:33:38 +0000
-Subject: Re: [PATCH] gcc-plugins: simplify GCC plugin-dev capability test
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-CC:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Emese Revfy <re.emese@gmail.com>,
-        <linux-hardening@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-References: <CGME20201218075758eucas1p1605768803a5c9edce4fbe54b3e3b859a@eucas1p1.samsung.com>
- <20201203125700.161354-1-masahiroy@kernel.org>
- <b9b17126-9af5-2f73-526e-91bb9fd27f71@samsung.com>
- <CAK7LNART2qQBY7Vc8rhMiXS_Fwty7qpWjwwfPrUegTb-gjy6sA@mail.gmail.com>
- <9f959875-1a30-b1a1-b626-3805e24a6df3@samsung.com>
- <e5b06d9a-9b24-2440-e0c2-8bf7095eccd9@nvidia.com>
- <25030057-86b1-5619-25fd-acfa0728b850@samsung.com>
- <4ab4f62f-8b37-01e1-f81c-270155b13a51@nvidia.com>
-Message-ID: <7e691a61-bf4b-0594-8d6d-36d62a5def0b@nvidia.com>
-Date:   Fri, 18 Dec 2020 15:33:36 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 18 Dec 2020 10:35:34 -0500
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BIFWrbq154446;
+        Fri, 18 Dec 2020 10:34:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=Srtr7qwQQHkels5ZLJ6Y+5ScWqzwJp6Xx2JhGqHqj+Y=;
+ b=QmJQwBiGIRpRN6FzdP/7Hb5VMbVCi7s2gKyYuYeq2ZEKaAqxC/s2vaZWzyhXgFbJImW4
+ SfYl0PlpX+J4tefQdBG9cLQh9j3gIl9FEIr4gntYbc0TN1qnnaitrYkyZxWm2cknWLP5
+ n8I1/m1T7X1k0wWL62DE8ENXrEKb0K3EDU+VPFkrsP0kCUbp4OheLaMm3XD7Em5F58cW
+ SblMw2I4ULgQ46XuZ80/JfOdgskfnihujLkZJDvXJr7SS7Acoq8FcWuVPZlldUdRIv3t
+ eyRikR47yAZfeiJG2PG4iDG3mIccUAKMWVKsBwJhjMsq3wtblDA6fuEIWVPh7JAEniZE jQ== 
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35gxv98nu7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Dec 2020 10:34:02 -0500
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BIFWmQD018037;
+        Fri, 18 Dec 2020 15:34:00 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma05fra.de.ibm.com with ESMTP id 35fmywh2km-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Dec 2020 15:34:00 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BIFXwfB45220238
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 18 Dec 2020 15:33:58 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 64927A405B;
+        Fri, 18 Dec 2020 15:33:58 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1CA58A4054;
+        Fri, 18 Dec 2020 15:33:58 +0000 (GMT)
+Received: from osiris (unknown [9.171.24.198])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Fri, 18 Dec 2020 15:33:58 +0000 (GMT)
+Date:   Fri, 18 Dec 2020 16:33:56 +0100
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>
+Subject: Re: __local_bh_enable_ip() vs lockdep
+Message-ID: <20201218153356.GA7932@osiris>
+References: <20201215190152.GA22285@osiris>
+ <20201215144724.40ab7612@gandalf.local.home>
+ <20201216175259.GP3040@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <4ab4f62f-8b37-01e1-f81c-270155b13a51@nvidia.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1608305627; bh=odSmLfTxrpZot9VnSSEPJy+l6LjXBu7/qmxNqGpwNp8=;
-        h=Subject:From:To:CC:References:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=C2uI9yVKVlz8ad8fIlMzAOeFWPr7FYEHAFVDH7mZDWcH4ntrEqavDASBKgv0qjQIq
-         sz9y2GdmH9b96cpFrclG2jVrxQybNv8GwxNOsuU35GPwyNBKI4pXY4Hc5R0rw1KGii
-         NI/fKPYjuo9n9sLQgPHqqu9tRSi42OJ3tEhhEz5j+JGU0YuJowNvp6yWy9D444RBIm
-         dgZD48aN0rRvUXqPtGugiKlxc/kc3RR4aRv4j+xgEKJsaa6ZR1XfA4U1Vr3u+M3RmP
-         vkMZ46DtlQ0wi/EgiszwvMyZfsGDmdd63nR2L9X2OWXsynwgPNYFzPZSvS2TEGqo1b
-         flMrWPRv9XoZQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201216175259.GP3040@hirez.programming.kicks-ass.net>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-18_10:2020-12-18,2020-12-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
+ malwarescore=0 spamscore=0 mlxlogscore=665 adultscore=0 lowpriorityscore=0
+ suspectscore=0 clxscore=1015 bulkscore=0 mlxscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012180107
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 18/12/2020 15:12, Jon Hunter wrote:
+On Wed, Dec 16, 2020 at 06:52:59PM +0100, Peter Zijlstra wrote:
+> On Tue, Dec 15, 2020 at 02:47:24PM -0500, Steven Rostedt wrote:
+> > On Tue, 15 Dec 2020 20:01:52 +0100
+> > Heiko Carstens <hca@linux.ibm.com> wrote:
+> > 
+> > > Hello,
+> > > 
+> > > the ftrace stack tracer kernel selftest is able to trigger the warning
+> > > below from time to time. This looks like there is an ordering problem
+> > > in __local_bh_enable_ip():
+> > > first there is a call to lockdep_softirqs_on() and afterwards
+> > > preempt_count_sub() is ftraced before it was able to modify
+> > > preempt_count:
+> > 
+> > Don't run ftrace stack tracer when debugging lockdep. ;-)
+> > 
+> >   /me runs!
 > 
-> On 18/12/2020 15:09, Marek Szyprowski wrote:
->>
->> On 18.12.2020 16:03, Jon Hunter wrote:
->>> On 18/12/2020 10:05, Marek Szyprowski wrote:
->>>> On 18.12.2020 10:43, Masahiro Yamada wrote:
->>>>> On Fri, Dec 18, 2020 at 4:58 PM Marek Szyprowski
->>>>> <m.szyprowski@samsung.com> wrote:
->>>>>> On 03.12.2020 13:57, Masahiro Yamada wrote:
->>>>>>> Linus pointed out a third of the time in the Kconfig parse stage comes
->>>>>>> from the single invocation of cc1plus in scripts/gcc-plugin.sh [1],
->>>>>>> and directly testing plugin-version.h for existence cuts down the
->>>>>>> overhead a lot. [2]
->>>>>>>
->>>>>>> This commit takes one step further to kill the build test entirely.
->>>>>>>
->>>>>>> The small piece of code was probably intended to test the C++ designated
->>>>>>> initializer, which was not supported until C++20.
->>>>>>>
->>>>>>> In fact, with -pedantic option given, both GCC and Clang emit a warning.
->>>>>>>
->>>>>>> $ echo 'class test { public: int test; } test = { .test = 1 };' | g++ -x c++ -pedantic - -fsyntax-only
->>>>>>> <stdin>:1:43: warning: C++ designated initializers only available with '-std=c++2a' or '-std=gnu++2a' [-Wpedantic]
->>>>>>> $ echo 'class test { public: int test; } test = { .test = 1 };' | clang++ -x c++ -pedantic - -fsyntax-only
->>>>>>> <stdin>:1:43: warning: designated initializers are a C++20 extension [-Wc++20-designator]
->>>>>>> class test { public: int test; } test = { .test = 1 };
->>>>>>>                                              ^
->>>>>>> 1 warning generated.
->>>>>>>
->>>>>>> Otherwise, modern C++ compilers should be able to build the code, and
->>>>>>> hopefully skipping this test should not make any practical problem.
->>>>>>>
->>>>>>> Checking the existence of plugin-version.h is still needed to ensure
->>>>>>> the plugin-dev package is installed. The test code is now small enough
->>>>>>> to be embedded in scripts/gcc-plugins/Kconfig.
->>>>>>>
->>>>>>> [1] https://protect2.fireeye.com/v1/url?k=03db90e1-5c40a828-03da1bae-0cc47a336fae-4cc36f5830aeb78d&q=1&e=dfdc1cf9-82d6-4ca5-b35d-1782e918bde3&u=https%3A%2F%2Flore.kernel.org%2Flkml%2FCAHk-%3DwjU4DCuwQ4pXshRbwDCUQB31ScaeuDo1tjoZ0_PjhLHzQ%40mail.gmail.com%2F
->>>>>>> [2] https://protect2.fireeye.com/v1/url?k=965b670a-c9c05fc3-965aec45-0cc47a336fae-e34339513ff747c0&q=1&e=dfdc1cf9-82d6-4ca5-b35d-1782e918bde3&u=https%3A%2F%2Flore.kernel.org%2Flkml%2FCAHk-%3DwhK0aQxs6Q5ijJmYF1n2ch8cVFSUzU5yUM_HOjig%3D%2Bvnw%40mail.gmail.com%2F
->>>>>>>
->>>>>>> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
->>>>>>> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
->>>>>> This patch landed in linux next-20201217 as commit 1e860048c53e
->>>>>> ("gcc-plugins: simplify GCC plugin-dev capability test").
->>>>>>
->>>>>> It causes a build break with my tests setup, but I'm not sure weather it
->>>>>> is really an issue of this commit or a toolchain I use. However I've
->>>>>> checked various versions of the gcc cross-compilers released by Linaro
->>>>>> at https://protect2.fireeye.com/v1/url?k=053727b6-5aac1f7f-0536acf9-0cc47a336fae-5bd799e7ce6b1b9b&q=1&e=dfdc1cf9-82d6-4ca5-b35d-1782e918bde3&u=https%3A%2F%2Freleases.linaro.org%2Fcomponents%2Ftoolchain%2Fbinaries%2F and all
->>>>>> fails with the same error:
->>>>>>
->>>>>> $ make ARCH=arm
->>>>>> CROSS_COMPILE=../../cross/gcc-arm-10.2-2020.11-x86_64-arm-none-eabi/bin/arm-none-eabi-
->>>>>> zImage
->>>>>>      HOSTCXX scripts/gcc-plugins/arm_ssp_per_task_plugin.so
->>>>>> In file included from
->>>>>> /home/mszyprow/dev/cross/gcc-arm-10.2-2020.11-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/10.2.1/plugin/include/gcc-plugin.h:28:0,
->>>>>>                     from scripts/gcc-plugins/gcc-common.h:7,
->>>>>>                     from scripts/gcc-plugins/arm_ssp_per_task_plugin.c:3:
->>>>>> /home/mszyprow/dev/cross/gcc-arm-10.2-2020.11-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/10.2.1/plugin/include/system.h:687:10:
->>>>>> fatal error: gmp.h: No such file or directory
->>>>>>     #include <gmp.h>
->>>>>>              ^~~~~~~
->>>>>> compilation terminated.
->>>>>> scripts/gcc-plugins/Makefile:47: recipe for target
->>>>>> 'scripts/gcc-plugins/arm_ssp_per_task_plugin.so' failed
->>>>>> make[2]: *** [scripts/gcc-plugins/arm_ssp_per_task_plugin.so] Error 1
->>>>>> scripts/Makefile.build:496: recipe for target 'scripts/gcc-plugins' failed
->>>>>> make[1]: *** [scripts/gcc-plugins] Error 2
->>>>>> Makefile:1190: recipe for target 'scripts' failed
->>>>>> make: *** [scripts] Error 2
->>>>>>
->>>>>> Compilation works if I use the cross-gcc provided by
->>>>>> gcc-7-arm-linux-gnueabi/gcc-arm-linux-gnueabi Ubuntu packages, which is:
->>>>>>
->>>>>> $ arm-linux-gnueabi-gcc --version
->>>>>> arm-linux-gnueabi-gcc (Ubuntu/Linaro 7.5.0-3ubuntu1~18.04) 7.5.0
->>>>>>
->>>>> I can compile gcc-plugins with Linaro toolchians.
->>>>>
->>>>> The version of mine is this:
->>>>>
->>>>> masahiro@oscar:~/ref/linux-next$
->>>>> ~/tools/arm-linaro-7.5/bin/arm-linux-gnueabihf-gcc --version
->>>>> arm-linux-gnueabihf-gcc (Linaro GCC 7.5-2019.12) 7.5.0
->>>>> Copyright (C) 2017 Free Software Foundation, Inc.
->>>>> This is free software; see the source for copying conditions.  There is NO
->>>>> warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
->>>>>
->>>>>
->>>>>
->>>>>
->>>>> Maybe, it depends on the host environment?
->>>>>
->>>>>
->>>>> Please try this:
->>>>>
->>>>> $ sudo apt install libgmp-dev
->>>> Indeed, it was missing on my setup. Sorry for the noise.
->>>
->>> So this change also breaks the build on our farm build machines and
->>> while we can request that packages are installed on these machines, it
->>> takes time. Is there anyway to avoid this?
->>
->> You can temporarily revert 1e860048c53e (this patch).
+> Ha!, seriously though; that seems like something we've encountered
+> before, but my google-fu is failing me.
 > 
+> Do you remember what, if anything, was the problem with this?
 > 
-> Again that works locally, but these automated builders just pull the
-> latest -next branch and build.
+> ---
+> diff --git a/kernel/softirq.c b/kernel/softirq.c
+> index d5bfd5e661fc..9d71046ea247 100644
+> --- a/kernel/softirq.c
+> +++ b/kernel/softirq.c
+> @@ -186,7 +186,7 @@ void __local_bh_enable_ip(unsigned long ip, unsigned int cnt)
+>  	 * Keep preemption disabled until we are done with
+>  	 * softirq processing:
+>  	 */
+> -	preempt_count_sub(cnt - 1);
+> +	__preempt_count_sub(cnt - 1);
+>  
+>  	if (unlikely(!in_interrupt() && local_softirq_pending())) {
+>  		/*
 
+FWIW,
 
-However, if you are saying that this is a problem/bug with our builders,
-then of course we will have to get this fixed.
+Tested-by: Heiko Carstens <hca@linux.ibm.com>
 
-Jon
-
--- 
-nvpublic
+Peter, will you make proper patch out of this?
