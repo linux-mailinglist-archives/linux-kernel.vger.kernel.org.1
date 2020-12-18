@@ -2,124 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC3F72DE2D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 13:34:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97A952DE2DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 13:36:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgLRMdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 07:33:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726010AbgLRMdy (ORCPT
+        id S1726395AbgLRMgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 07:36:15 -0500
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:39399 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725947AbgLRMgO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 07:33:54 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACC2FC06138C
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 04:33:13 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id j16so2202034edr.0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 04:33:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i4auixzjhc3l5kGc5mD15oPo8KZORVAz4eHOnG9WGUU=;
-        b=n6tUjhd4sqvhp8M2z4j5VFSxJeotpjxPd0CPZa5/EEkcoeLyfyDskake0eK9yxhmwy
-         S2gV2oOJzviGu9Y+HT1JnquGMls/BLX+jC+HgjKoBbCtEGWktMPT2nMVHOoLhLl0KgvG
-         peXy3mP/v5o9GPyQ8zCeJENiWt244Qtx5yIrpCIXKcHHLKce5fQ7WLALIl8MpgCHKKD0
-         q1lOXUYw01ZQ5n/Hzb1tToYlIWOWHfXBaEMR8L39XIv4/BPtOJ3zfKkyuTXHwcwSFoiD
-         GbfceUFPcWfb8QPWxwJ3/wFiCvhjXjbRR2moF52UiyqMkdZSC0eRi45AU3BnsQyx5mMJ
-         1t7w==
+        Fri, 18 Dec 2020 07:36:14 -0500
+Received: by mail-ot1-f47.google.com with SMTP id d8so1741468otq.6;
+        Fri, 18 Dec 2020 04:35:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=i4auixzjhc3l5kGc5mD15oPo8KZORVAz4eHOnG9WGUU=;
-        b=oPZaG0dgeGCKtTcZdmswpo5A7TtFAD7yZjkxEZa4HTgCTAG+6cCjiWOSWA47mqXZKa
-         wy9rv3rMkib+JCoOfU8/CczhXUAcn6xYKpXusMOmh5fHeTeweE018J/Qmm4E0X97mr91
-         VWdM3d6IvTn37I75ERUUYVO+npTZSfM6uTSR3qQ8AJmAOuKCT2/IzsccTKAF1BSnBRmq
-         ddL2H53ZcbVC/1bYJQvtCqG5UlfBnMMWzE7qhGqrRc5BrPSiCNzdB4XQKl2Jn93NQi1t
-         5TdPXbPQL4qzFcO58CP/pgLnolRsK5apfvqtFFrC9ns8Pzq4NO6Yh9JsNqXpD5VojjRx
-         NdHA==
-X-Gm-Message-State: AOAM530STscbxyj9CBjJ9aIc363X9kKI3HKlT2qswLcYlYrRDjFur5Q9
-        eJwo6a3PG+xDCPTdTbBBm4fiDjSAQ9TTCRq6G9HY8g==
-X-Google-Smtp-Source: ABdhPJwgiTCZzvnrnw4pePa5kEW9sgXWm1sxNmTcGwoJHPoxUO+t4XBaVGOPekgQGbQO4lfsyuEJ3CDfnv6ztzzqldQ=
-X-Received: by 2002:a50:f404:: with SMTP id r4mr4201011edm.62.1608294792260;
- Fri, 18 Dec 2020 04:33:12 -0800 (PST)
+        bh=6DkNUPLV4pty/yUPNr3zH12sGf0mqEAZH7OQh5zf4K8=;
+        b=Cbe+ZMZ7Hv+3wvSxKwbxHFHTesx6iENh9ELFCCka4qaJcI9pdnGy3EVVUH9z8Vy0A6
+         ddD7tO4nd0Y82lp/7iIsvsmfdssW5nV20uAi451qsU8dYKqNGBKFLXIsOQjGsy+CEmVe
+         qN9HeFOmF68Xdos0ZwrGEN3ZLCmBbudznEp3p695TUGXa3Hm3iVsRgNW0hxHbXpsXk1m
+         G8imU/OD9pAMTU8bI7jUwaybX4HyhjyIWnCvR9pVUGalHCJoy9A3IZdaLfTSyjhnRGwa
+         7iD9Z2rlPqOladaw0amBhuItZbeKxz/IgN8X9Cz4zEEIeERosFbeA0LmXvYo0Lzrws63
+         lJgw==
+X-Gm-Message-State: AOAM5308e1iUxAwzs92iJK7WPGM7vCF59dbeTw4qlz+0thm3mL3h9nck
+        N2foC/Y1Ox9UwYozPfP/FNU7U1HFHLZpDBBGEKiiu/jD
+X-Google-Smtp-Source: ABdhPJxfxl8yKvwDyX+PZdHV9q/oXdW8TwcExmFO7cyFXUgs7tlC+yddRm9fZPOke+BiKpjClwWCzDNXD7sWbAFO+/Y=
+X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr2604996otc.145.1608294933980;
+ Fri, 18 Dec 2020 04:35:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20201217185243.3288048-1-pasha.tatashin@soleen.com>
- <20201217185243.3288048-8-pasha.tatashin@soleen.com> <20201218095058.GV32193@dhcp22.suse.cz>
-In-Reply-To: <20201218095058.GV32193@dhcp22.suse.cz>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Fri, 18 Dec 2020 07:32:36 -0500
-Message-ID: <CA+CK2bBTtVQuZMBQ=67cFQ6fLNcFi+nuPgFWOHWMWgyiQSeEzQ@mail.gmail.com>
-Subject: Re: [PATCH v4 07/10] mm/gup: change index type to long as it counts pages
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        linux-kselftest@vger.kernel.org
+References: <cover.1602431034.git.yifeifz2@illinois.edu> <4706b0ff81f28b498c9012fd3517fe88319e7c42.1602431034.git.yifeifz2@illinois.edu>
+ <CAMuHMdVU1BhmwMiHKDYmnyRHtQfeMtwtwkFLQwinfBPto-rtOQ@mail.gmail.com> <CABqSeARw2tcxEPiU4peuURZybVsFo5K+OkAK0ojADUEENMoKuA@mail.gmail.com>
+In-Reply-To: <CABqSeARw2tcxEPiU4peuURZybVsFo5K+OkAK0ojADUEENMoKuA@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 18 Dec 2020 13:35:21 +0100
+Message-ID: <CAMuHMdVYLZ3t6yieKVG7fbn1+YMQN26jZnxQ1Jo38LiSm_Eh5A@mail.gmail.com>
+Subject: Re: [PATCH v5 seccomp 5/5] seccomp/cache: Report cache data through /proc/pid/seccomp_cache
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 4:51 AM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Thu 17-12-20 13:52:40, Pavel Tatashin wrote:
-> > In __get_user_pages_locked() i counts number of pages which should be
-> > long.
->
-> Do we know of any caller who would like to pin so many pages it wouldn't
-> fit into an int? I suspect this is more to sync types of nr_pages and
-> the iterator right. It would be better to be explicit about this in the
-> changelog.
+Hi YiFei,
 
-It is to sync types. I will add it to the changelog.
-
-But, in general 32-bit increasingly becomes too small for handling
-page count proportional values. It is 8T for npages. For pinning may
-be a bit too large today, but I can image RDMA this size in the
-future.
-
->
-> > Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
->
-> Acked-by: Michal Hocko <mhocko@suse.com>
->
-> > ---
-> >  mm/gup.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu, Dec 17, 2020 at 7:34 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> On Thu, Dec 17, 2020 at 6:14 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > Should there be a dependency on SECCOMP_ARCH_NATIVE?
+> > Should all architectures that implement seccomp have this?
 > >
-> > diff --git a/mm/gup.c b/mm/gup.c
-> > index 591d8e2dfc70..1ebb7cc2fbe4 100644
-> > --- a/mm/gup.c
-> > +++ b/mm/gup.c
-> > @@ -1481,7 +1481,7 @@ static long __get_user_pages_locked(struct mm_struct *mm, unsigned long start,
-> >  {
-> >       struct vm_area_struct *vma;
-> >       unsigned long vm_flags;
-> > -     int i;
-> > +     long i;
+> > E.g. mips does select HAVE_ARCH_SECCOMP_FILTER, but doesn't
+> > have SECCOMP_ARCH_NATIVE?
 > >
-> >       /* calculate required read or write permissions.
-> >        * If FOLL_FORCE is set, we only require the "MAY" flags.
-> > --
-> > 2.25.1
+> > (noticed with preliminary out-of-tree seccomp implementation for m68k,
+> >  which doesn't have SECCOMP_ARCH_NATIVE
 >
-> --
-> Michal Hocko
-> SUSE Labs
+> You are correct. This specific patch in this series was not applied,
+> and this was addressed in a follow up patch series [1]. MIPS does not
+> define SECCOMP_ARCH_NATIVE because the bitmap expects syscall numbers
+> to start from 0, whereas MIPS does not (defines
+> CONFIG_HAVE_SPARSE_SYSCALL_NR). The follow up patch makes it so that
+> any arch with HAVE_SPARSE_SYSCALL_NR (currently just MIPS) cannot have
+> CONFIG_SECCOMP_CACHE_DEBUG on, by the depend on clause.
+>
+> I see that you are doing an out of tree seccomp implementation for
+> m68k. Assuming unchanged arch/xtensa/include/asm/syscall.h, something
+> like this to arch/m68k/include/asm/seccomp.h should make it work:
+>
+> #define SECCOMP_ARCH_NATIVE        AUDIT_ARCH_M68K
+> #define SECCOMP_ARCH_NATIVE_NR        NR_syscalls
+> #define SECCOMP_ARCH_NATIVE_NAME    "m68k"
+>
+> If the file does not exist already, arch/xtensa/include/asm/seccomp.h
+> is a good example of how the file should look like, and remember to
+> remove `generic-y += seccomp.h` from arch/m68k/include/asm/Kbuild.
+>
+> [1] https://lore.kernel.org/lkml/cover.1605101222.git.yifeifz2@illinois.edu/T/
+
+Thank you for your extensive explanation.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
