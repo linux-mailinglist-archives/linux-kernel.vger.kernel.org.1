@@ -2,108 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E12862DE6C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 16:38:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 591F62DE6C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 16:38:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728955AbgLRPhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 10:37:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42234 "EHLO
+        id S1729015AbgLRPiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 10:38:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727817AbgLRPhi (ORCPT
+        with ESMTP id S1726677AbgLRPiD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 10:37:38 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59273C0617B0;
-        Fri, 18 Dec 2020 07:36:58 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id v2so1740505pfm.9;
-        Fri, 18 Dec 2020 07:36:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+KLSZTU5ExRpj/cZNjbTv8MS71w3sCFIMI4H99ieEKo=;
-        b=D3L/yJ8R/OunwhSbKyc2rz9lb4mfdgQquJr33FFTlqhVg6z/JACxfrmS720bcqh/Ib
-         Pw6mECItEwlQUWPQ4EJ+EJJ2tyRVYW25NC0zrIoyhgMW+8C+iFOSkenV50hekAvn7Z6y
-         BJRQumM4mlXxzFNbWqLA3Wqzx8JdX08m7T0zc6Q/jAilDAIrPXlUSuImzXGGTDyhn3S7
-         XfXgPr0sZSFXBQH0Sm7I8Zq8Dwh20lkzfCHSGuzEu6Vly96TvmUxV75SfHSbEidDQnlk
-         SHqQVtoSbC1tMVCZniDtNjymplJpvdwZEvSzq1wxQmbYSrUiDsOIU9LuCaxQ/5w13OEK
-         7qLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+KLSZTU5ExRpj/cZNjbTv8MS71w3sCFIMI4H99ieEKo=;
-        b=rUfZCmCxMtlT86M+ccMiICo7SnOsqhJRpGW+dNN4I5LUZYdqpnkUFc2lw3U9+C5of8
-         uinsbfk6oIp8fVXpPYUHnJjesgH77zM5uT3DOPpv/1b30eOhtVCecRa2tx2XGir3egR8
-         ya3eqTc/Yg5ipR6Mw+de9UQu1ouWZIcR2heZcxmk2HjtSIMGiOrJkzXMjmB06gJQcV/y
-         as+lAmnI5O+EJP3ySnw8xyhRIt56hEZnX9EdZMk8Z2Jo8fQZBH2QAkr4uGzstaZzTHvM
-         ZCFfPeyRtqave7ROU4dUcEUIdPxpppKLSkHpMqV+vtgE9RlDJthIesBcc5VU8cokbrvR
-         Xd1Q==
-X-Gm-Message-State: AOAM531lAqqvLFrL9mdCyC1aU+cOYhdKys1jYT0w1c2UOeLMNAfRmZEX
-        gFtjWZg+JQ9q11pkF/fQnNVX//ZQK2AE/NajiC8=
-X-Google-Smtp-Source: ABdhPJyhQWu/LkN+fP3nOWDXs/TSnn33BgzHb1Co9HMOBy4XiN4f0exFG/8nxg1+9UOhOdoEd6TyXUQIQCRxNmCW63I=
-X-Received: by 2002:a63:74b:: with SMTP id 72mr4681349pgh.4.1608305817763;
- Fri, 18 Dec 2020 07:36:57 -0800 (PST)
+        Fri, 18 Dec 2020 10:38:03 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 398EAC06138C
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 07:37:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=svTqbWnS5fZJM2rW9XEt3HASXaCS/mQylN9RZkeHFio=; b=er5rpXekphZJhF3hrgBsNoRdfv
+        Wr29+SAWAFg24xJlRskVR+s+/sDHpT6xSo1lXTevtkCoWjHp/vst/YxXIMqoGTy0AxwhV9HR/rjH/
+        jL2pB1+X20ORpYO14rdellgLT0dkKT8v7F6H0FccwKyjnsqUOLg4+IQwp46flANtGrO/ieztHhqmV
+        ao9MMngHMNctYbUx6qnWiNiyfu7A4uzAEyWJSkESgU0bH0VbT7BYiwyNNr6wU8mUORtlGL6xypPxI
+        wKEgjIagNbJsX+jmRw7BqCdIvVWH3M6F2FTR49Huo5xH/FseDWl4qECX/o+Wm8O0yD/myZVqfRamO
+        Aa4fTA7Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kqHoj-0001mc-Hc; Fri, 18 Dec 2020 15:37:17 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id ACD22300446;
+        Fri, 18 Dec 2020 16:37:16 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6AB2F20122356; Fri, 18 Dec 2020 16:37:16 +0100 (CET)
+Date:   Fri, 18 Dec 2020 16:37:16 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>
+Subject: Re: __local_bh_enable_ip() vs lockdep
+Message-ID: <20201218153716.GI3021@hirez.programming.kicks-ass.net>
+References: <20201215190152.GA22285@osiris>
+ <20201215144724.40ab7612@gandalf.local.home>
+ <20201216175259.GP3040@hirez.programming.kicks-ass.net>
+ <20201218153356.GA7932@osiris>
 MIME-Version: 1.0
-References: <20201215164315.3666-1-calvin.johnson@oss.nxp.com>
- <20201215164315.3666-9-calvin.johnson@oss.nxp.com> <CAHp75Vf69NuxqcJntQi+CT1QN4cpdr2LYNzo6=t-pBWcWgufPA@mail.gmail.com>
- <20201218054044.GB14594@lsv03152.swis.in-blr01.nxp.com>
-In-Reply-To: <20201218054044.GB14594@lsv03152.swis.in-blr01.nxp.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 18 Dec 2020 17:36:41 +0200
-Message-ID: <CAHp75Vd4+b9asXXVGnFAH8nuDgyzR+ocaKaf7ibdt88gpMMT9w@mail.gmail.com>
-Subject: Re: [net-next PATCH v2 08/14] net: mdiobus: Introduce fwnode_mdiobus_register()
-To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
-Cc:     Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, "linux.cj" <linux.cj@gmail.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        netdev <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201218153356.GA7932@osiris>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 7:40 AM Calvin Johnson
-<calvin.johnson@oss.nxp.com> wrote:
-> On Tue, Dec 15, 2020 at 07:53:26PM +0200, Andy Shevchenko wrote:
-> > On Tue, Dec 15, 2020 at 6:44 PM Calvin Johnson
-> > <calvin.johnson@oss.nxp.com> wrote:
+On Fri, Dec 18, 2020 at 04:33:56PM +0100, Heiko Carstens wrote:
 
-...
+> Peter, will you make proper patch out of this?
 
-> > I would rather see this as simple as
-> >
-> >      if (is_of_node(fwnode))
-> >                return of_mdiobus_register(mdio, to_of_node(fwnode));
-> >      if (is_acpi_node(fwnode))
-> >                return acpi_mdiobus_register(mdio, fwnode);
-> >
-> > where the latter one is defined somewhere in drivers/acpi/.
-> Makes sense. I'll do it. But I think it will be better to place
-> acpi_mdiobus_register() here itself in the network subsystem, maybe
-> /drivers/net/mdio/acpi_mdio.c.
-
-Even better, thanks!
-
--- 
-With Best Regards,
-Andy Shevchenko
+Yes, let me go do that now, and stick it in the quilt series before I go
+off and don't think for 2 weeks.
