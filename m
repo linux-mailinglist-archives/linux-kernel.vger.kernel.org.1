@@ -2,72 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BC412DE16E
+	by mail.lfdr.de (Postfix) with ESMTP id CA6932DE16F
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 11:46:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389251AbgLRKoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 05:44:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38434 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733203AbgLRKoy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 05:44:54 -0500
-Date:   Fri, 18 Dec 2020 10:44:10 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Ionela Voinescu <ionela.voinescu@arm.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>
-Subject: Re: arch/arm64/kernel/topology.c:367:22: sparse: sparse: dereference
- of noderef expression
-Message-ID: <20201218104410.GB5258@gaia>
-References: <202012180512.hxAiUO00-lkp@intel.com>
+        id S2389264AbgLRKpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 05:45:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733203AbgLRKpC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 05:45:02 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5F0CC0617B0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 02:44:22 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 1491F1F461AC
+Subject: Re: [PATCH 2/2] platform/chrome: cros_ec_sysfs: Add cold-ap-off to
+ sysfs reboot.
+To:     Pi-Hsun Shih <pihsun@chromium.org>
+Cc:     Nicolas Boichat <drinkcat@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20201217081423.896862-1-pihsun@chromium.org>
+ <20201217081423.896862-2-pihsun@chromium.org>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <eb669446-3874-b5c5-f943-3d6131eec4b2@collabora.com>
+Date:   Fri, 18 Dec 2020 11:44:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202012180512.hxAiUO00-lkp@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201217081423.896862-2-pihsun@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 05:00:16AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   74f602dc96dd854c7b2034947798c1e2a6b84066
-> commit: 68c5debcc06d6d24f15dbf978780fc5efc147d5e arm64: implement CPPC FFH support using AMUs
-> date:   5 weeks ago
-> config: arm64-randconfig-s032-20201217 (attached as .config)
-> compiler: aarch64-linux-gcc (GCC) 9.3.0
-> reproduce:
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # apt-get install sparse
->         # sparse version: v0.6.3-184-g1b896707-dirty
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=68c5debcc06d6d24f15dbf978780fc5efc147d5e
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 68c5debcc06d6d24f15dbf978780fc5efc147d5e
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=arm64 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> 
-> "sparse warnings: (new ones prefixed by >>)"
-> >> arch/arm64/kernel/topology.c:367:22: sparse: sparse: dereference of noderef expression
-> 
-> vim +367 arch/arm64/kernel/topology.c
-> 
->    362	
->    363	int cpc_read_ffh(int cpu, struct cpc_reg *reg, u64 *val)
->    364	{
->    365		int ret = -EOPNOTSUPP;
->    366	
->  > 367		switch ((u64)reg->address) {
+Hi Pi-Hsun,
 
-That's not a dereference but I guess sparse complains of dropping the
-__iomem. We could change the cast to (__force u64) to silence sparse.
+Thank you for your patch. I don't accept patches with an empty commit
+description. Can you add it? (maybe you could just explain more what cold-ap-off
+means here. Apart from this, the patch LGTM.
 
-Thanks for the report.
+Thanks,
+  Enric
 
--- 
-Catalin
+
+On 17/12/20 9:14, Pi-Hsun Shih wrote:
+> Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
+> ---
+>  drivers/platform/chrome/cros_ec_sysfs.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/platform/chrome/cros_ec_sysfs.c b/drivers/platform/chrome/cros_ec_sysfs.c
+> index f521a5c65091..8210fb10e839 100644
+> --- a/drivers/platform/chrome/cros_ec_sysfs.c
+> +++ b/drivers/platform/chrome/cros_ec_sysfs.c
+> @@ -28,7 +28,7 @@ static ssize_t reboot_show(struct device *dev,
+>  	int count = 0;
+>  
+>  	count += scnprintf(buf + count, PAGE_SIZE - count,
+> -			   "ro|rw|cancel|cold|disable-jump|hibernate");
+> +			   "ro|rw|cancel|cold|disable-jump|hibernate|cold-ap-off");
+>  	count += scnprintf(buf + count, PAGE_SIZE - count,
+>  			   " [at-shutdown]\n");
+>  	return count;
+> @@ -46,6 +46,7 @@ static ssize_t reboot_store(struct device *dev,
+>  		{"cancel",       EC_REBOOT_CANCEL, 0},
+>  		{"ro",           EC_REBOOT_JUMP_RO, 0},
+>  		{"rw",           EC_REBOOT_JUMP_RW, 0},
+> +		{"cold-ap-off",  EC_REBOOT_COLD_AP_OFF, 0},
+>  		{"cold",         EC_REBOOT_COLD, 0},
+>  		{"disable-jump", EC_REBOOT_DISABLE_JUMP, 0},
+>  		{"hibernate",    EC_REBOOT_HIBERNATE, 0},
+> 
