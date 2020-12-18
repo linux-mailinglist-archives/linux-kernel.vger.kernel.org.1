@@ -2,159 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0390F2DE404
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:29:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E5922DE40E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:31:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727788AbgLRO2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 09:28:05 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44298 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727425AbgLRO2F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 09:28:05 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1608301638; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rJYU3BD79AgOBcyIHbSaDSXOqTfnBGcyG8ujMIbf1EI=;
-        b=F/dMi/subvq0OtCa3rKYQerwZCQJaa2UKRP7jFIx00B6kJ+Eq6z3aO2+GeC36PpLAv/Q2J
-        qiT/BHmr1eIq6uL6TTb2FqROjZFdfeopM7dBq4ZUo4hpwTAbOl0WKbHVJpA/zpVuqQ9Zx3
-        VTbTtkOBwPuphZWUv05qxt30ybgHzEQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BE130B72C;
-        Fri, 18 Dec 2020 14:27:18 +0000 (UTC)
-Date:   Fri, 18 Dec 2020 15:27:17 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Jacob Wen <jian.w.wen@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org
-Subject: Re: [PATCH] mm/vmscan: DRY cleanup for do_try_to_free_pages()
-Message-ID: <20201218142717.GA32193@dhcp22.suse.cz>
-References: <20201218102217.186836-1-jian.w.wen@oracle.com>
- <20201218105153.GX32193@dhcp22.suse.cz>
- <f376b551-9a90-c036-d34b-b32d93107b6c@oracle.com>
+        id S1727936AbgLROaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 09:30:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727376AbgLROaN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 09:30:13 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6675C0617A7
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 06:29:32 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id q75so2789467wme.2
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 06:29:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fQcnaVeKn76lYRwiXKR4yvTyQ/9Lgo43QJdLzaw88No=;
+        b=dPH2ZMGlXf7qxs4VLNk1sqQ6DOFTn3EJphiLC07Hd/sKNpQ9O+b48p1oN5bMMLsNcw
+         hUCxxdBSaWxlRLCiL9I/Tfv7Ip15ldWsKrB+y0tzx17DQZbd5X0qybJL4dS6oezkjXuL
+         1YSWS2M66tLqmHYc3wFa0FqObn3OYwwVpqrlVgWf01NBCJq8VBu1OVSdI4xzZvIqedxg
+         0eUb8r35JQVUXYis0AZPc+9VNUaDtE9dWc6DIn2A/6aZsBXFJBtRfvgj9tL/HyxINwoa
+         hYGargZwS5AyYExBC9Pyy1MRNHD2HRaJI2tnVrHRDiAkjnG+32WYgMNbODrH25LBY6hy
+         w3JQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fQcnaVeKn76lYRwiXKR4yvTyQ/9Lgo43QJdLzaw88No=;
+        b=DEl2svOJE7J/MijSxHxWSCXhsnfdCaCD1JSwQx9MgD1ZtrKGDGGiRbvSl86kqyk/2Y
+         C1Zdx6LUwVFLOTVk6aSHntLhJCqNvR6L2lGEAdFl1tNy5pS51pPHFcSgIrrRDKjKIFp7
+         KVyDptM11Rwf/8JJL95Jb6s57ecw6F2XjI244GbfpGF2983JBPgCciyyXJ21kKjF9Q0j
+         OuY7/t+9JFJ6TbB341m81WSsfW79XnTPchlSgqJA/HGk9LtgZxhMsqetoOfPOUmtsSwL
+         16v6ZADYuCPgoWNiRbYrh82Dj0GJaa2V6Sw2a9zvUz94WdvG2ZYmDZrDfaZisqYWZv9y
+         z0oA==
+X-Gm-Message-State: AOAM532SgTSiopYwF32mYzeErh89iW/1Lfp5yqMyAGiSRE5zLMM25+Cu
+        LST+ykcT6JpMKmzygg+/sX2444Rb5qwyFoNzplOPhA==
+X-Google-Smtp-Source: ABdhPJx1zfDnyXEmVWiw9EZm8yj56h7EPNv2EiQk8r5FgzIdRnBEqEC4Oc6xyUqbtGIHIlNzOeHBGh+HWy5KnmgE0kE=
+X-Received: by 2002:a1c:bc88:: with SMTP id m130mr4645539wmf.82.1608301771650;
+ Fri, 18 Dec 2020 06:29:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f376b551-9a90-c036-d34b-b32d93107b6c@oracle.com>
+References: <20201210134648.272857-1-maxime@cerno.tech> <20201210134648.272857-13-maxime@cerno.tech>
+In-Reply-To: <20201210134648.272857-13-maxime@cerno.tech>
+From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date:   Fri, 18 Dec 2020 14:29:14 +0000
+Message-ID: <CAPY8ntCkFU47CJmDf_E1RVgprscq=BYj4o2=8ReTOfe8hd0d0Q@mail.gmail.com>
+Subject: Re: [PATCH 12/15] drm/vc4: hdmi: Don't register the CEC adapter if
+ there's no interrupts
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Eric Anholt <eric@anholt.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Jason Cooper <jason@lakedaemon.net>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-rpi-kernel@lists.infradead.org,
+        DRI Development <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 18-12-20 21:51:48, Jacob Wen wrote:
-> 
-> On 12/18/20 6:51 PM, Michal Hocko wrote:
-> > On Fri 18-12-20 18:22:17, Jacob Wen wrote:
-> > > This patch reduces repetition of set_task_reclaim_state() around
-> > > do_try_to_free_pages().
-> > The changelog really should be talking about why this is needed/useful.
-> >  From the above it is not really clear whether you aimed at doing
-> > a clean up or this is a fix for some misbehavior. I do assume the former
-> > but this should be clearly articulated.
-> 
-> How about this?
-> 
-> mm/vmscan: remove duplicate code around do_try_to_free_pages()
-> 
-> This patch moves set_task_reclaim_state() into do_try_to_free_pages()
-> to avoid unnecessary repetition. It doesn't introduce functional
-> change.
+On Thu, 10 Dec 2020 at 13:47, Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> We introduced the BCM2711 support to the vc4 HDMI controller with 5.10,
+> but this was lacking any of the interrupts of the CEC controller so we
+> have to deal with the backward compatibility.
+>
+> Do so by simply ignoring the CEC setup if the DT doesn't have the
+> interrupts property.
+>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
-This is still more about what is changed more than why it is changed. I
-would go with something like the following:
-"
-reclaim_state has to be set for all reclaim paths because it acts as a
-storage to collect reclaim feedback. Currently set_task_reclaim_state is
-called from each highlevel reclaim function. Simplify the code flow by
-moving set_task_reclaim_state into core direct reclaim function
-(do_try_to_free_pages) for all direct reclaim paths.
-"
+Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
 
-To the patch itself. I am not opposed but I do not see an urgent reason
-to take it either. The net LOC increases slightly, it makes
-do_try_to_free_pages slightly more tricky due to different early return
-paths. Highlevel direct reclaim functions do not tend to change a lot.
-
-> > > Signed-off-by: Jacob Wen <jian.w.wen@oracle.com>
-> > > ---
-> > >   mm/vmscan.c | 27 ++++++++++++++++-----------
-> > >   1 file changed, 16 insertions(+), 11 deletions(-)
-> > > 
-> > > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > > index 257cba79a96d..4bc244b23686 100644
-> > > --- a/mm/vmscan.c
-> > > +++ b/mm/vmscan.c
-> > > @@ -3023,6 +3023,10 @@ static unsigned long do_try_to_free_pages(struct zonelist *zonelist,
-> > >   	pg_data_t *last_pgdat;
-> > >   	struct zoneref *z;
-> > >   	struct zone *zone;
-> > > +	unsigned long ret;
-> > > +
-> > > +	set_task_reclaim_state(current, &sc->reclaim_state);
-> > > +
-> > >   retry:
-> > >   	delayacct_freepages_start();
-> > > @@ -3069,12 +3073,16 @@ static unsigned long do_try_to_free_pages(struct zonelist *zonelist,
-> > >   	delayacct_freepages_end();
-> > > -	if (sc->nr_reclaimed)
-> > > -		return sc->nr_reclaimed;
-> > > +	if (sc->nr_reclaimed) {
-> > > +		ret = sc->nr_reclaimed;
-> > > +		goto out;
-> > > +	}
-> > >   	/* Aborted reclaim to try compaction? don't OOM, then */
-> > > -	if (sc->compaction_ready)
-> > > -		return 1;
-> > > +	if (sc->compaction_ready) {
-> > > +		ret = 1;
-> > > +		goto out;
-> > > +	}
-> > >   	/*
-> > >   	 * We make inactive:active ratio decisions based on the node's
-> > > @@ -3101,7 +3109,10 @@ static unsigned long do_try_to_free_pages(struct zonelist *zonelist,
-> > >   		goto retry;
-> > >   	}
-> > > -	return 0;
-> > > +	ret = 0;
-> > > +out:
-> > > +	set_task_reclaim_state(current, NULL);
-> > > +	return ret;
-> > >   }
-> > >   static bool allow_direct_reclaim(pg_data_t *pgdat)
-> > > @@ -3269,13 +3280,11 @@ unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
-> > >   	if (throttle_direct_reclaim(sc.gfp_mask, zonelist, nodemask))
-> > >   		return 1;
-> > > -	set_task_reclaim_state(current, &sc.reclaim_state);
-> > >   	trace_mm_vmscan_direct_reclaim_begin(order, sc.gfp_mask);
-> > >   	nr_reclaimed = do_try_to_free_pages(zonelist, &sc);
-> > >   	trace_mm_vmscan_direct_reclaim_end(nr_reclaimed);
-> > > -	set_task_reclaim_state(current, NULL);
-> > >   	return nr_reclaimed;
-> > >   }
-> > > @@ -3347,7 +3356,6 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
-> > >   	 */
-> > >   	struct zonelist *zonelist = node_zonelist(numa_node_id(), sc.gfp_mask);
-> > > -	set_task_reclaim_state(current, &sc.reclaim_state);
-> > >   	trace_mm_vmscan_memcg_reclaim_begin(0, sc.gfp_mask);
-> > >   	noreclaim_flag = memalloc_noreclaim_save();
-> > > @@ -3355,7 +3363,6 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
-> > >   	memalloc_noreclaim_restore(noreclaim_flag);
-> > >   	trace_mm_vmscan_memcg_reclaim_end(nr_reclaimed);
-> > > -	set_task_reclaim_state(current, NULL);
-> > >   	return nr_reclaimed;
-> > >   }
-> > > @@ -4023,11 +4030,9 @@ unsigned long shrink_all_memory(unsigned long nr_to_reclaim)
-> > >   	fs_reclaim_acquire(sc.gfp_mask);
-> > >   	noreclaim_flag = memalloc_noreclaim_save();
-> > > -	set_task_reclaim_state(current, &sc.reclaim_state);
-> > >   	nr_reclaimed = do_try_to_free_pages(zonelist, &sc);
-> > > -	set_task_reclaim_state(current, NULL);
-> > >   	memalloc_noreclaim_restore(noreclaim_flag);
-> > >   	fs_reclaim_release(sc.gfp_mask);
-> > > -- 
-> > > 2.25.1
-> > > 
-
--- 
-Michal Hocko
-SUSE Labs
+> ---
+>  drivers/gpu/drm/vc4/vc4_hdmi.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> index 327638d93032..69217c68d3a4 100644
+> --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
+> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> @@ -1655,9 +1655,15 @@ static int vc4_hdmi_cec_init(struct vc4_hdmi *vc4_hdmi)
+>  {
+>         struct cec_connector_info conn_info;
+>         struct platform_device *pdev = vc4_hdmi->pdev;
+> +       struct device *dev = &pdev->dev;
+>         u32 value;
+>         int ret;
+>
+> +       if (!of_find_property(dev->of_node, "interrupts", NULL)) {
+> +               dev_warn(dev, "'interrupts' DT property is missing, no CEC\n");
+> +               return 0;
+> +       }
+> +
+>         vc4_hdmi->cec_adap = cec_allocate_adapter(&vc4_hdmi_cec_adap_ops,
+>                                                   vc4_hdmi, "vc4",
+>                                                   CEC_CAP_DEFAULTS |
+> --
+> 2.28.0
+>
