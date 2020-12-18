@@ -2,84 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0BD92DE6A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 16:34:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 939252DE6AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 16:34:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728011AbgLRPdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 10:33:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgLRPdm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 10:33:42 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C74AC0617A7;
-        Fri, 18 Dec 2020 07:33:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Ivzl+SgN1fSmo4LHwIz5rmX0mNUDsLZaBvVQA2TlPFI=; b=L7u/5ZwMZEsfNyllfNMqlLqYso
-        icEocTd4pIA4y+rJOlU5KquYog1RzGuDm+xrPIwzUi12t4SMvvcYbLdSxbb2e9leLcrFUss2Fl0n1
-        y2niBfN26cnXhCZ9uYXQ6BGCZ9/jtNplC8TR3MjoCXyF/lsWXIrAonBODAuVSzm4u8kttnbORN8A8
-        s78dbXKm0rZp0GBe4QkUW6h+kVWNXz8ZsG+PEi4uJS4MEaBOUPhMV8/g3izbi0pLERo4y8m8fDpeV
-        KJhwWf5I1RmRaDDyYH6a2gJ0lgSmvvfI51r6Pvf8Oy9GX6HwdX0LLyy6VwuADyTyP+VZn1637oxDp
-        7aEb+Cdg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kqHkB-0001Qr-8V; Fri, 18 Dec 2020 15:32:35 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CADA5300B22;
-        Fri, 18 Dec 2020 16:32:31 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B45562BFB9808; Fri, 18 Dec 2020 16:32:31 +0100 (CET)
-Date:   Fri, 18 Dec 2020 16:32:31 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Doug Smythies <dsmythies@telus.net>
-Cc:     "'Rafael J. Wysocki'" <rafael@kernel.org>,
-        'Giovanni Gherdovich' <ggherdovich@suse.com>,
-        "'Rafael J. Wysocki'" <rjw@rjwysocki.net>,
-        'Linux PM' <linux-pm@vger.kernel.org>,
-        'LKML' <linux-kernel@vger.kernel.org>,
-        'Viresh Kumar' <viresh.kumar@linaro.org>,
-        'Srinivas Pandruvada' <srinivas.pandruvada@linux.intel.com>,
-        efault@gmx.de, Mel Gorman <mgorman@suse.de>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Juri Lelli <juri.lelli@gmail.com>
-Subject: Re: [PATCH v1 0/4] cpufreq: Allow drivers to receive more
- information from the governor
-Message-ID: <20201218153231.GB2414@hirez.programming.kicks-ass.net>
-References: <20360841.iInq7taT2Z@kreacher>
- <1607445035.2673.64.camel@suse.com>
- <CAJZ5v0j2u7MrO82+ubx01kvyhDUKo11mfyofF-TAqdSLx_i3Ng@mail.gmail.com>
- <001d01d6cd96$601c8a80$20559f80$@net>
+        id S1728212AbgLRPdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 10:33:49 -0500
+Received: from mga05.intel.com ([192.55.52.43]:39108 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725878AbgLRPdp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 10:33:45 -0500
+IronPort-SDR: c7actSlnGNGRCFxogJ86ip6SARv/BV0DN26t1NoCxRHATSeGkp74gJd/KlwGDytDlltigMRAR2
+ UnAKGC/RyXqg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9839"; a="260183803"
+X-IronPort-AV: E=Sophos;i="5.78,430,1599548400"; 
+   d="scan'208";a="260183803"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2020 07:33:04 -0800
+IronPort-SDR: 6+CvPhIe2TEagrFVgsgicLDgQyHiU+2+stqbwXJUUMW48x8RU4e84m/J0bmxdRgC7c/SAs8XXy
+ TZ+LCJpxLOow==
+X-IronPort-AV: E=Sophos;i="5.78,430,1599548400"; 
+   d="scan'208";a="414077191"
+Received: from nrojasva-mobl.amr.corp.intel.com (HELO [10.209.64.102]) ([10.209.64.102])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2020 07:33:03 -0800
+Subject: Re: [NEEDS-REVIEW] [PATCH V3 04/10] x86/pks: Preserve the PKRS MSR on
+ context switch
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-doc@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+References: <20201106232908.364581-1-ira.weiny@intel.com>
+ <20201106232908.364581-5-ira.weiny@intel.com>
+ <ff685068-6821-ca35-7fa8-732a66cbf266@intel.com>
+ <20201218041012.GC2506510@iweiny-DESK2.sc.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <7666e039-d005-a732-7ec9-35ac7f36ead3@intel.com>
+Date:   Fri, 18 Dec 2020 07:33:03 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <001d01d6cd96$601c8a80$20559f80$@net>
+In-Reply-To: <20201218041012.GC2506510@iweiny-DESK2.sc.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 11:14:36AM -0800, Doug Smythies wrote:
-> At least on my system, it is most evident for some of the pipe type tests,
-> where the schedutil governor has never really known what to do. This patch
-> set seems to add enough of a downward bias that this version of the schedutil
-> governor now behaves much like the other versions
+On 12/17/20 8:10 PM, Ira Weiny wrote:
+> On Thu, Dec 17, 2020 at 12:41:50PM -0800, Dave Hansen wrote:
+>> On 11/6/20 3:29 PM, ira.weiny@intel.com wrote:
+>>>  void disable_TSC(void)
+>>> @@ -644,6 +668,8 @@ void __switch_to_xtra(struct task_struct *prev_p, struct task_struct *next_p)
+>>>  
+>>>  	if ((tifp ^ tifn) & _TIF_SLD)
+>>>  		switch_to_sld(tifn);
+>>> +
+>>> +	pks_sched_in();
+>>>  }
+>>
+>> Does the selftest for this ever actually schedule()?
+> 
+> At this point I'm not sure.  This code has been in since the beginning.  So its
+> seen a lot of soak time.
 
-Yeah, pipe relies on task-task interaction, where one task waits on
-another, and by boosting the producer the consumer can start earlier and
-we get more cycles done etc.. Rather similar to IO-wait, where by
-boosting the producer we gain throughput.
+Think about it another way.  Let's say this didn't get called on the
+first context switch away from the PKS-using task.  Would anyone notice?
+ How likely is this to happen?
 
-schedutil doesn't track anything useful here, but it is a semi common
-pattern and it would be really good if we could somehow fix this.
+The function tracers or kprobes tend to be a great tool for this, at
+least for testing whether the code path you expect to hit is getting hit.
 
-We obviously have access to the task A wakes task B information, but I'm
-not sure what to do with it, we're tried some things like this in the
-past (although for slightly different reasons) and they've always ended
-up being a mess :/
