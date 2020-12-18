@@ -2,179 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D2212DE646
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 16:13:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CB472DE64C
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 16:15:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728220AbgLRPNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 10:13:12 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:1126 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726702AbgLRPNM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 10:13:12 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fdcc6df0000>; Fri, 18 Dec 2020 07:12:31 -0800
-Received: from [10.26.73.104] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 18 Dec
- 2020 15:12:25 +0000
-Subject: Re: [PATCH] gcc-plugins: simplify GCC plugin-dev capability test
-To:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-CC:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Emese Revfy <re.emese@gmail.com>,
-        <linux-hardening@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-References: <CGME20201218075758eucas1p1605768803a5c9edce4fbe54b3e3b859a@eucas1p1.samsung.com>
- <20201203125700.161354-1-masahiroy@kernel.org>
- <b9b17126-9af5-2f73-526e-91bb9fd27f71@samsung.com>
- <CAK7LNART2qQBY7Vc8rhMiXS_Fwty7qpWjwwfPrUegTb-gjy6sA@mail.gmail.com>
- <9f959875-1a30-b1a1-b626-3805e24a6df3@samsung.com>
- <e5b06d9a-9b24-2440-e0c2-8bf7095eccd9@nvidia.com>
- <25030057-86b1-5619-25fd-acfa0728b850@samsung.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <4ab4f62f-8b37-01e1-f81c-270155b13a51@nvidia.com>
-Date:   Fri, 18 Dec 2020 15:12:23 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <25030057-86b1-5619-25fd-acfa0728b850@samsung.com>
-Content-Type: text/plain; charset="utf-8"
+        id S1727916AbgLRPPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 10:15:24 -0500
+Received: from mail-eopbgr770109.outbound.protection.outlook.com ([40.107.77.109]:4366
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727292AbgLRPPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 10:15:23 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JuS/oqHhayVwNIKFD5xIOTgFHo9FLCeCyfviE5fgaLUXPrfILk1+BKzei0tnthN8WF27+0PMw4r9EnBfhLM/L2k/TGkzK25G91hur6KNBVAnidMiHCeIeG3X/w88w4NUTx6vyRjAeb+BrJbznkJ7gDuhKBoibUnyCGISej8+2QcFtrOtB+9hfdApZ4jD6e739pPXfpYHKa5AMSubaGEyVidvI/GMqfEOhBAUwAWeDyQogo5bDyY7RCXVFf7JZhLxGLG9RnBqjXVXTkK1X+Ph2/pVMQYMIuihF0sqCLqyLge2sTiZMu96iUZj0/vV7L3fQVNjJKXbOS56W8FZ7ahruQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TG1NDWSdDGahNpTIec9s9iadWmeVMyOjCZ+30FVxfZI=;
+ b=mFGYns2nbs5hjbrBBkU0yFXbnpWtgDgwMrUZ5QX29LdjFPnEFbKEhEOZ7YW4iFxxHF7hMxJErXffqnsj3VB44pX7MAP6T3MdCvgzYyyS5ToSk30t+TOG5dpGE703zXtza7Ov5FHrYDFCPShRDVU42ZabnamA9XqhfF2LdtJoiBWCdMoulAZlZLOHyrTzik/JOw0mfEPjV4fOfZbHp9V4h4ef05xgyEtPwXvUQEia1IsVDOiQQ+B7mH7Y01yR/UWm7ymHf+9KVvSzYZCPIjij7p7nvV3SyefB5ZstFXsGy+R5etLSnXZU2vBDmP+kDnOtzIibLhw/USWy/8Bfq65bbg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TG1NDWSdDGahNpTIec9s9iadWmeVMyOjCZ+30FVxfZI=;
+ b=DLARS7MRpQCC1AX2BawsPc0dGMT+dH0cGV3iTfS+ztOwx8eeDcAiDRlX7AYObcPz5WMsvRDQiox9/5D1KXnYEUmD4FNe0s+tSaxrYKP+U+RS7ZP78vtZMgzZC37qUk+Ul3B5holViDB8byDvluCFbIsvfCQRzpZPUWNVei1vw3A=
+Received: from (2603:10b6:302:a::16) by
+ MW2PR2101MB1049.namprd21.prod.outlook.com (2603:10b6:302:a::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.2; Fri, 18 Dec
+ 2020 15:14:40 +0000
+Received: from MW2PR2101MB1052.namprd21.prod.outlook.com
+ ([fe80::b8f6:e748:cdf2:1922]) by MW2PR2101MB1052.namprd21.prod.outlook.com
+ ([fe80::b8f6:e748:cdf2:1922%8]) with mapi id 15.20.3700.013; Fri, 18 Dec 2020
+ 15:14:40 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+CC:     KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Saruhan Karademir <skarade@microsoft.com>,
+        Juan Vazquez <juvazq@microsoft.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
+Subject: RE: [PATCH 2/3] scsi: storvsc: Resolve data race in storvsc_probe()
+Thread-Topic: [PATCH 2/3] scsi: storvsc: Resolve data race in storvsc_probe()
+Thread-Index: AQHW1LPxaxM53vG1lECQS0UzSsNEUan891VA
+Date:   Fri, 18 Dec 2020 15:14:40 +0000
+Message-ID: <MW2PR2101MB105224177C24337EA5C05303D7C39@MW2PR2101MB1052.namprd21.prod.outlook.com>
+References: <20201217203321.4539-1-parri.andrea@gmail.com>
+ <20201217203321.4539-3-parri.andrea@gmail.com>
+In-Reply-To: <20201217203321.4539-3-parri.andrea@gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1608304351; bh=lj0cgIiRp4EY/qLHe2VqR/w32Vw4lOgdGII4wOr5mm0=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=SY751HPetqpEFnYv6rjJB+G9hI2s5RIauBk7Kiu8Ll/gUfPDvs8D4hgv4xLCI+Eup
-         1k/JODigLHcIxL/p1EC81mKpy3uiAeuBW6RGIuxj97CZO/pOc+CAxXbBRVfL3tZybK
-         MesleiIkNRYdMSAIPf6FFG7b/IwI8bF78lBRzQZuPgNObwj5UaFo7WNp1e9dqCNU8X
-         XjmcTrAuIfgLQRQvV7yCiWVhyTg1TXN+8KkuvgnraEeOZyaObvNhzJc0k1YCFLl7nm
-         pSSfjttyZUOidg5GycXNbj1A8gLfWuoNb5uRT8QYYjts/wy0mI0jwPb0MGdIVwT8bT
-         1GuY4mqszT7tg==
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-12-18T15:14:38Z;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=37c99b07-190b-4282-aa46-2a3127a9822e;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=microsoft.com;
+x-originating-ip: [24.22.167.197]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 6bdf4190-bf3b-4d6f-5274-08d8a367a452
+x-ms-traffictypediagnostic: MW2PR2101MB1049:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW2PR2101MB1049A6230D891C9BB09ABE09D7C39@MW2PR2101MB1049.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1751;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ij77fsTI3MAHXOCc2HRJAhwc1rBsGih9yhamvsFHL8rBquU84QgcKuvMObyqKuPM7tKH+tFJf7Oz7lNqwc/M5nkza8t8zwsYt1Li2v5OoyHUNxFxWQqmjtSBDtydgEbP0l9yGoD75UqK02+u+xhubIZEKSOH9wBiADN537wn1OEiqZcGNehmcK3QNeB3KWPgqmvtX3ee5yglFNA9+FQ1kP7l1XYaqrCOxxUEST2cP9J5GbsFaVnSTtAMGSnuJq/gms0+JaxJHFbpSEoltsfXuSp/mNe6LDEK3abrWO6Af0G3SDoLFdbKOtEumajyBifqycPULF9xSmswoRFR8Pf5BpHckLdLLtbt4VQODE7WxBpeG4MQESJyPJ2FKJjzxcBtG3g76Kn8mW1fw1RvluMdEQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB1052.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(366004)(396003)(136003)(478600001)(71200400001)(2906002)(4326008)(82960400001)(76116006)(33656002)(54906003)(110136005)(7696005)(10290500003)(9686003)(66556008)(316002)(55016002)(6506007)(8990500004)(26005)(4744005)(64756008)(83380400001)(66946007)(8936002)(186003)(86362001)(66476007)(52536014)(82950400001)(8676002)(66446008)(5660300002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?nAV8eg2qVKi9nDCvNN7xezP/WP+FE9wQCxwhrh5NeYbaI/jQPcv+Ati8x9Ga?=
+ =?us-ascii?Q?74WjsgFpFBT3UG1/cVBlTmSdy/snd2MWnQyn9uVZtL5bs+NH1bPScGwGrXJy?=
+ =?us-ascii?Q?08AnJ35rNodiIEY6nTdyFjxDKpXPDOzZSWmqG6ZXp5HAhuV3TU/jq94XnsvH?=
+ =?us-ascii?Q?RoKfCbezYzR4fPmExBzEx2UjZtmE+Ndsy7Fwao9nbpvTDThx8YwNqm9yITj+?=
+ =?us-ascii?Q?A4fgw12KPg9vcOj2aOM9KJXzQZC9fdV6ObhUu85MtvBjwVYyFhh33kMLooEU?=
+ =?us-ascii?Q?mlytPdJ1Fg94UCjU/KvEidr17go+ZFJ1ino2B3LO1WjbgleBDToRk1zt1JTz?=
+ =?us-ascii?Q?ZBreFtOlK6WqQRr+hg0vjEocPWUAO+N238aNr4ZQibmd71yjo+DTQbwFOh+M?=
+ =?us-ascii?Q?o9lX3NV6cdthtWYTF/1pcv57Aj48koOUi2dQLkFBg71Lh4wAV/45Y7MGkQ7K?=
+ =?us-ascii?Q?MbArHCCpRuEB6oSxknqyDpNJ9erfceNJYahfSryjpQUluIa5/SYzHz+G2r12?=
+ =?us-ascii?Q?RtHcYeckWX3KWc5A9OatGNZvjCFPVQtyqWbpR02YzDNk3qVyL58ew+Dd0ix+?=
+ =?us-ascii?Q?9eInYjRY3mzuGGI90OwlKY3OS+20fEjmtjRs1UDiHdGuU8yR1kvcB6T/SZPu?=
+ =?us-ascii?Q?iNe8NEzudqqnmu4SxgblO1cu9idh3PO/Uf8RlGBOsV84YEd81ulEtAWul4IK?=
+ =?us-ascii?Q?Uo7oS3MIQl873ayomVTLOfytaZEWPjWXH2gdCnDtAcWXvXpJVaJfpd46869f?=
+ =?us-ascii?Q?UqVAf7mJXuy+vkW2w1yp35mmH8/0u+HBKV+/N3Fnu7j+2nKVdrAHe5e36aA+?=
+ =?us-ascii?Q?v77E9FhildxRBbxCHcRcj/vxrwXmN1tpOqRFhc0xj9il71Wclqzygodd1A3C?=
+ =?us-ascii?Q?o+wcSL77BJApWwznqo4r+hrleioeXlZ7A+MyktFRvxuxHn45LeHQolDawTfw?=
+ =?us-ascii?Q?F6TtaenHzb6CryEkPt4YO8swAmqr5LXJDcDZSAGFqzM=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB1052.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6bdf4190-bf3b-4d6f-5274-08d8a367a452
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Dec 2020 15:14:40.5333
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wkg2n7eU5lB280nHGQKGHIFf1YsbfUeomnzEiQm5G05kVb8o4mbao/AdolAjeorTs/UZypcORwNemDaJXBAXcrklbL/1yw6xiK5WyqSuzWk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR2101MB1049
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Andrea Parri (Microsoft) <parri.andrea@gmail.com> Sent: Thursday, Dec=
+ember 17, 2020 12:33 PM
+>=20
+> vmscsi_size_delta can be written concurrently by multiple instances of
+> storvsc_probe(), corresponding to multiple synthetic IDE/SCSI devices;
+> cf. storvsc_drv's probe_type =3D=3D PROBE_PREFER_ASYNCHRONOUS.  Change th=
+e
+> global variable vmscsi_size_delta to per-synthetic-IDE/SCSI-device.
+>=20
+> Suggested-by: Dexuan Cui <decui@microsoft.com>
+> Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+> Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
+> Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+> Cc: linux-scsi@vger.kernel.org
+> ---
+>  drivers/scsi/storvsc_drv.c | 45 +++++++++++++++++++++-----------------
+>  1 file changed, 25 insertions(+), 20 deletions(-)
+>=20
 
-On 18/12/2020 15:09, Marek Szyprowski wrote:
-> 
-> On 18.12.2020 16:03, Jon Hunter wrote:
->> On 18/12/2020 10:05, Marek Szyprowski wrote:
->>> On 18.12.2020 10:43, Masahiro Yamada wrote:
->>>> On Fri, Dec 18, 2020 at 4:58 PM Marek Szyprowski
->>>> <m.szyprowski@samsung.com> wrote:
->>>>> On 03.12.2020 13:57, Masahiro Yamada wrote:
->>>>>> Linus pointed out a third of the time in the Kconfig parse stage comes
->>>>>> from the single invocation of cc1plus in scripts/gcc-plugin.sh [1],
->>>>>> and directly testing plugin-version.h for existence cuts down the
->>>>>> overhead a lot. [2]
->>>>>>
->>>>>> This commit takes one step further to kill the build test entirely.
->>>>>>
->>>>>> The small piece of code was probably intended to test the C++ designated
->>>>>> initializer, which was not supported until C++20.
->>>>>>
->>>>>> In fact, with -pedantic option given, both GCC and Clang emit a warning.
->>>>>>
->>>>>> $ echo 'class test { public: int test; } test = { .test = 1 };' | g++ -x c++ -pedantic - -fsyntax-only
->>>>>> <stdin>:1:43: warning: C++ designated initializers only available with '-std=c++2a' or '-std=gnu++2a' [-Wpedantic]
->>>>>> $ echo 'class test { public: int test; } test = { .test = 1 };' | clang++ -x c++ -pedantic - -fsyntax-only
->>>>>> <stdin>:1:43: warning: designated initializers are a C++20 extension [-Wc++20-designator]
->>>>>> class test { public: int test; } test = { .test = 1 };
->>>>>>                                              ^
->>>>>> 1 warning generated.
->>>>>>
->>>>>> Otherwise, modern C++ compilers should be able to build the code, and
->>>>>> hopefully skipping this test should not make any practical problem.
->>>>>>
->>>>>> Checking the existence of plugin-version.h is still needed to ensure
->>>>>> the plugin-dev package is installed. The test code is now small enough
->>>>>> to be embedded in scripts/gcc-plugins/Kconfig.
->>>>>>
->>>>>> [1] https://protect2.fireeye.com/v1/url?k=03db90e1-5c40a828-03da1bae-0cc47a336fae-4cc36f5830aeb78d&q=1&e=dfdc1cf9-82d6-4ca5-b35d-1782e918bde3&u=https%3A%2F%2Flore.kernel.org%2Flkml%2FCAHk-%3DwjU4DCuwQ4pXshRbwDCUQB31ScaeuDo1tjoZ0_PjhLHzQ%40mail.gmail.com%2F
->>>>>> [2] https://protect2.fireeye.com/v1/url?k=965b670a-c9c05fc3-965aec45-0cc47a336fae-e34339513ff747c0&q=1&e=dfdc1cf9-82d6-4ca5-b35d-1782e918bde3&u=https%3A%2F%2Flore.kernel.org%2Flkml%2FCAHk-%3DwhK0aQxs6Q5ijJmYF1n2ch8cVFSUzU5yUM_HOjig%3D%2Bvnw%40mail.gmail.com%2F
->>>>>>
->>>>>> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
->>>>>> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
->>>>> This patch landed in linux next-20201217 as commit 1e860048c53e
->>>>> ("gcc-plugins: simplify GCC plugin-dev capability test").
->>>>>
->>>>> It causes a build break with my tests setup, but I'm not sure weather it
->>>>> is really an issue of this commit or a toolchain I use. However I've
->>>>> checked various versions of the gcc cross-compilers released by Linaro
->>>>> at https://protect2.fireeye.com/v1/url?k=053727b6-5aac1f7f-0536acf9-0cc47a336fae-5bd799e7ce6b1b9b&q=1&e=dfdc1cf9-82d6-4ca5-b35d-1782e918bde3&u=https%3A%2F%2Freleases.linaro.org%2Fcomponents%2Ftoolchain%2Fbinaries%2F and all
->>>>> fails with the same error:
->>>>>
->>>>> $ make ARCH=arm
->>>>> CROSS_COMPILE=../../cross/gcc-arm-10.2-2020.11-x86_64-arm-none-eabi/bin/arm-none-eabi-
->>>>> zImage
->>>>>      HOSTCXX scripts/gcc-plugins/arm_ssp_per_task_plugin.so
->>>>> In file included from
->>>>> /home/mszyprow/dev/cross/gcc-arm-10.2-2020.11-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/10.2.1/plugin/include/gcc-plugin.h:28:0,
->>>>>                     from scripts/gcc-plugins/gcc-common.h:7,
->>>>>                     from scripts/gcc-plugins/arm_ssp_per_task_plugin.c:3:
->>>>> /home/mszyprow/dev/cross/gcc-arm-10.2-2020.11-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/10.2.1/plugin/include/system.h:687:10:
->>>>> fatal error: gmp.h: No such file or directory
->>>>>     #include <gmp.h>
->>>>>              ^~~~~~~
->>>>> compilation terminated.
->>>>> scripts/gcc-plugins/Makefile:47: recipe for target
->>>>> 'scripts/gcc-plugins/arm_ssp_per_task_plugin.so' failed
->>>>> make[2]: *** [scripts/gcc-plugins/arm_ssp_per_task_plugin.so] Error 1
->>>>> scripts/Makefile.build:496: recipe for target 'scripts/gcc-plugins' failed
->>>>> make[1]: *** [scripts/gcc-plugins] Error 2
->>>>> Makefile:1190: recipe for target 'scripts' failed
->>>>> make: *** [scripts] Error 2
->>>>>
->>>>> Compilation works if I use the cross-gcc provided by
->>>>> gcc-7-arm-linux-gnueabi/gcc-arm-linux-gnueabi Ubuntu packages, which is:
->>>>>
->>>>> $ arm-linux-gnueabi-gcc --version
->>>>> arm-linux-gnueabi-gcc (Ubuntu/Linaro 7.5.0-3ubuntu1~18.04) 7.5.0
->>>>>
->>>> I can compile gcc-plugins with Linaro toolchians.
->>>>
->>>> The version of mine is this:
->>>>
->>>> masahiro@oscar:~/ref/linux-next$
->>>> ~/tools/arm-linaro-7.5/bin/arm-linux-gnueabihf-gcc --version
->>>> arm-linux-gnueabihf-gcc (Linaro GCC 7.5-2019.12) 7.5.0
->>>> Copyright (C) 2017 Free Software Foundation, Inc.
->>>> This is free software; see the source for copying conditions.  There is NO
->>>> warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
->>>>
->>>>
->>>>
->>>>
->>>> Maybe, it depends on the host environment?
->>>>
->>>>
->>>> Please try this:
->>>>
->>>> $ sudo apt install libgmp-dev
->>> Indeed, it was missing on my setup. Sorry for the noise.
->>
->> So this change also breaks the build on our farm build machines and
->> while we can request that packages are installed on these machines, it
->> takes time. Is there anyway to avoid this?
-> 
-> You can temporarily revert 1e860048c53e (this patch).
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
 
-
-Again that works locally, but these automated builders just pull the
-latest -next branch and build.
-
-Jon
-
--- 
-nvpublic
