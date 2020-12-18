@@ -2,127 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E7D2DEBB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 23:45:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E2EF2DEBBB
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 23:45:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726320AbgLRWo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 17:44:27 -0500
-Received: from mail-pf1-f181.google.com ([209.85.210.181]:44458 "EHLO
-        mail-pf1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725965AbgLRWo0 (ORCPT
+        id S1726338AbgLRWpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 17:45:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725836AbgLRWp3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 17:44:26 -0500
-Received: by mail-pf1-f181.google.com with SMTP id f9so2378281pfc.11;
-        Fri, 18 Dec 2020 14:44:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mjYQFKlw1OKFIFpIBjFxMCpNInHN23kLECgiubg/j/A=;
-        b=nScerJXXgkvUrud5S4ihLMjBuryxQg5ejRFdI6q4BYjoMYh6PgkGOYbXmSkR7hGig9
-         Iqj9vw6C1MqoXQ5XY8IVHzsaLsMx/SETHoqa6D6h5/VjVuFHKLIrIsJsXamGNGYhTtTP
-         1I8TVqBdg8QDJFFgj2kgOPUs30XYsekks9IjLM5FsFiSwfNjWuGj9OXYn5dxPFCyyc6b
-         w67dByQPv9oMMm7ev2ZniRS8IAJisKEIIIAM7r/2LHd/hWcGNzA+bpD3F3+EJdlDLlPT
-         WI51vewmrefUUgfKzmikNsSmODt8iX07TmK3UcIrXmoKqAl10fgoZH2NaHL408sjfnOJ
-         CJ3g==
-X-Gm-Message-State: AOAM533/4hieRKRQB7GTABasgHpzEqo6hG38+ZXxzEaJkTP1FpNjAAXa
-        UaYNO2GDFT8R9ghYnxmp7Lw=
-X-Google-Smtp-Source: ABdhPJxVVa1Gkt4uJ4IWKRzN8WDqjTd0sTVRJLUcGBAJZl61mODqhcKpqSAVrSXM86h2JbfnmnVboA==
-X-Received: by 2002:a63:ea4b:: with SMTP id l11mr5986767pgk.61.1608331425060;
-        Fri, 18 Dec 2020 14:43:45 -0800 (PST)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id u3sm9974174pjf.52.2020.12.18.14.43.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Dec 2020 14:43:43 -0800 (PST)
-Subject: Re: [RFC PATCH v2 2/2] blk-mq: Lockout tagset iter when freeing rqs
-To:     John Garry <john.garry@huawei.com>, axboe@kernel.dk,
-        ming.lei@redhat.com
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hch@lst.de, hare@suse.de, ppvk@codeaurora.org,
-        kashyap.desai@broadcom.com, linuxarm@huawei.com
-References: <1608203273-170555-1-git-send-email-john.garry@huawei.com>
- <1608203273-170555-3-git-send-email-john.garry@huawei.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <df44b73d-6c42-87ee-3c25-b95a44712e05@acm.org>
-Date:   Fri, 18 Dec 2020 14:43:41 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Fri, 18 Dec 2020 17:45:29 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C86C0617A7;
+        Fri, 18 Dec 2020 14:44:49 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1608331487;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RSvGwnCoAalQdHR+Ln4Q2sS79B4UxqMN+RD1afn6GC4=;
+        b=WLPlBrXYqR/QHDC+jzhTogdMRUXRoXK7xVn6httZGE/POOtKQOICxm2Vx7GbejEFjraKCp
+        8FtPz4HV4CtlPx6lsNBoWhtimmNasXfdHmGCB3HmbMpO6jtChbcJzok72ZwXgYgiPqi/+W
+        TVo3o8mEE5wxXl7oVY4N8wC2y8Fd1c5dq3sp22pGFacd1ybmBMogWCrnWhS0YH/Yv6bOLv
+        jy76FaA3txWF3rrqdIiM/E1ZuVFE2VhdGDiw8WjIanN7S0vT61aUViIeTCTFVaKx6xUytw
+        RvdtJ7Gjd4DRTiq5bs+kLdz+fgJOLnKr2p1wVbJxp5o5kFLaeENoshm8pvRMtQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1608331487;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RSvGwnCoAalQdHR+Ln4Q2sS79B4UxqMN+RD1afn6GC4=;
+        b=adzlxci9JislJbxDWr9PbAbA3shNaiVRFjiwlYUSAoyCp+6io/bqTAyHyqeJm/zADQxY5/
+        Mn3qg+DY7xHFSeBA==
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     "Weiny\, Ira" <ira.weiny@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux MM <linux-mm@kvack.org>, linux-kselftest@vger.kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH V3 04/10] x86/pks: Preserve the PKRS MSR on context switch
+In-Reply-To: <CAPcyv4gqm5p+pVmX4JL0fT2LY0dfoT+UXAfsGLA9LMr42vp33A@mail.gmail.com>
+References: <20201106232908.364581-1-ira.weiny@intel.com> <20201106232908.364581-5-ira.weiny@intel.com> <871rfoscz4.fsf@nanos.tec.linutronix.de> <87mtycqcjf.fsf@nanos.tec.linutronix.de> <878s9vqkrk.fsf@nanos.tec.linutronix.de> <CAPcyv4h2MvybBi==3uzAjGeW0R7azHYSKwmvzMXq9eM8NzMLEg@mail.gmail.com> <875z4yrfhr.fsf@nanos.tec.linutronix.de> <CAPcyv4gqm5p+pVmX4JL0fT2LY0dfoT+UXAfsGLA9LMr42vp33A@mail.gmail.com>
+Date:   Fri, 18 Dec 2020 23:44:47 +0100
+Message-ID: <87wnxepwdc.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <1608203273-170555-3-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/17/20 3:07 AM, John Garry wrote:
-> References to old IO sched requests are currently cleared from the
-> tagset when freeing those requests; switching elevator or changing
-> request queue depth is such a scenario in which this occurs.
-> 
-> However, this does not stop the potentially racy behaviour of freeing
-> and clearing a request reference between a tagset iterator getting a
-> reference to a request and actually dereferencing that request.
-> 
-> Such a use-after-free can be triggered, as follows:
-> 
-> ==================================================================
-> BUG: KASAN: use-after-free in bt_iter+0xa0/0x120
-> Read of size 8 at addr ffff00108d589300 by task fio/3052
-> 
-> CPU: 32 PID: 3052 Comm: fio Tainted: GW
-> 5.10.0-rc4-64839-g2dcf1ee5054f #693
-> Hardware name: Huawei Taishan 2280 /D05, BIOS Hisilicon
-> D05 IT21 Nemo 2.0 RC0 04/18/2018
-> Call trace:
-> dump_backtrace+0x0/0x2d0
-> show_stack+0x18/0x68
-> dump_stack+0x100/0x16c
-> print_address_description.constprop.12+0x6c/0x4e8
-> kasan_report+0x130/0x200
-> __asan_load8+0x9c/0xd8
-> bt_iter+0xa0/0x120
-> blk_mq_queue_tag_busy_iter+0x2d8/0x540
-> blk_mq_in_flight+0x80/0xb8
-> part_stat_show+0xd8/0x238
-> dev_attr_show+0x44/0x90
-> sysfs_kf_seq_show+0x128/0x1c8
-> kernfs_seq_show+0xa0/0xb8
-> seq_read_iter+0x1ec/0x6a0
-> seq_read+0x1d0/0x250
-> kernfs_fop_read+0x70/0x330
-> vfs_read+0xe4/0x250
-> ksys_read+0xc8/0x178
-> __arm64_sys_read+0x44/0x58
-> el0_svc_common.constprop.2+0xc4/0x1e8
-> do_el0_svc+0x90/0xa0
-> el0_sync_handler+0x128/0x178
-> el0_sync+0x158/0x180
-> 
-> This is found experimentally by running fio on 2x SCSI disks - 1x disk
-> holds the root partition. Userspace is constantly triggering the tagset
-> iter from reading the root (gen)disk partition info. And so if the IO
-> sched is constantly changed on the other disk, eventually the UAF occurs,
-> as described above.
+On Fri, Dec 18 2020 at 13:58, Dan Williams wrote:
+> On Fri, Dec 18, 2020 at 1:06 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>> kmap_local() is fine. That can work automatically because it's strict
+>> local to the context which does the mapping.
+>>
+>> kmap() is dubious because it's a 'global' mapping as dictated per
+>> HIGHMEM. So doing the RELAXED mode for kmap() is sensible I think to
+>> identify cases where the mapped address is really handed to a different
+>> execution context. We want to see those cases and analyse whether this
+>> can't be solved in a different way. That's why I suggested to do a
+>> warning in that case.
+>>
+>> Also vs. the DAX use case I really meant the code in fs/dax and
+>> drivers/dax/ itself which is handling this via dax_read_[un]lock.
+>>
+>> Does that make more sense?
+>
+> Yup, got it. The dax code can be precise wrt to PKS in a way that
+> kmap_local() cannot.
 
-Hi John,
+Which makes me wonder whether we should have kmap_local_for_read()
+or something like that, which could be obviously only be RO enforced for
+the real HIGHMEM case or the (for now x86 only) enforced kmap_local()
+debug mechanics on 64bit.
 
-Something is not clear to me. The above call stack includes
-blk_mq_queue_tag_busy_iter(). That function starts with
-percpu_ref_tryget(&q->q_usage_counter) and ends with calling
-percpu_ref_put(&q->q_usage_counter). So it will only iterate over a tag set
-if q->q_usage_counter is live. However, both blk_mq_update_nr_requests()
-and elevator_switch() start with freezing the request queue.
-blk_mq_freeze_queue() starts with killing q->q_usage_counter and waits
-until that counter has dropped to zero. In other words,
-blk_mq_queue_tag_busy_iter() should not iterate over a tag set while a tag
-set is being freed or reallocated. Does this mean that we do not yet have
-a full explanation about why the above call stack can be triggered?
+So for the !highmem case it would not magically make the existing kernel
+mapping RO, but this could be forwarded to the PKS protection. Aside of
+that it's a nice annotation in the code.
+
+That could be used right away for all the kmap[_atomic] -> kmap_local
+conversions.
 
 Thanks,
 
-Bart.
+        tglx
+---
+ include/linux/highmem-internal.h |   14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-
+--- a/include/linux/highmem-internal.h
++++ b/include/linux/highmem-internal.h
+@@ -32,6 +32,10 @@ static inline void kmap_flush_tlb(unsign
+ #define kmap_prot PAGE_KERNEL
+ #endif
+ 
++#ifndef kmap_prot_to
++#define kmap_prot PAGE_KERNEL_RO
++#endif
++
+ void *kmap_high(struct page *page);
+ void kunmap_high(struct page *page);
+ void __kmap_flush_unused(void);
+@@ -73,6 +77,11 @@ static inline void *kmap_local_page(stru
+ 	return __kmap_local_page_prot(page, kmap_prot);
+ }
+ 
++static inline void *kmap_local_page_for_read(struct page *page)
++{
++	return __kmap_local_page_prot(page, kmap_prot_ro);
++}
++
+ static inline void *kmap_local_page_prot(struct page *page, pgprot_t prot)
+ {
+ 	return __kmap_local_page_prot(page, prot);
+@@ -169,6 +178,11 @@ static inline void *kmap_local_page_prot
+ {
+ 	return kmap_local_page(page);
+ }
++
++static inline void *kmap_local_page_for_read(struct page *page)
++{
++	return kmap_local_page(page);
++}
+ 
+ static inline void *kmap_local_pfn(unsigned long pfn)
+ {
