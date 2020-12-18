@@ -2,68 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B85102DE506
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:41:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B01462DE41B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 15:36:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728054AbgLROlF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 18 Dec 2020 09:41:05 -0500
-Received: from [183.90.58.236] ([183.90.58.236]:34488 "EHLO ns1.zackeruz.tk"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727421AbgLROlF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 09:41:05 -0500
-X-Greylist: delayed 434 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Dec 2020 09:41:04 EST
-Received: from johnlewis.co.uk (unknown [192.168.20.1])
-        by ns1.zackeruz.tk (Postfix) with ESMTPSA id 9E1BE849124
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 22:33:12 +0800 (+08)
-Reply-To: robturner.procurement@johnlewistrade.com, rob76295@gmail.com
-From:   John Lewis PLC <robert-turner@johnlewis.co.uk>
-To:     linux-kernel@vger.kernel.org
-Subject: Order Inquiry 12/18/2020 [JL]
-Date:   18 Dec 2020 14:33:12 +0000
-Message-ID: <20201218103348.0703AD3789639380@johnlewis.co.uk>
+        id S1727806AbgLROec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 09:34:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727662AbgLROeb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 09:34:31 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2258CC0617B0;
+        Fri, 18 Dec 2020 06:33:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=t2dndBPQ/dB6MBazQBkYq7w5jQZcjWAgNQl2baLPfTk=; b=Z64T0rZjYr1bLMiImNudlom4jI
+        cmmcGJt1fp+iSLy80d6lAlZMxqOWwIwelpjDcz3hd/H0Jfqb/BSoEH6L+1YBBGZbR1s+/jmF2/dCS
+        BX8S4k2mDC3YkQrfpUfA7r/D/kGXyIImspqvVnXwRznfeQAT8QCS/ewX7BxmvrRS2SL7iKKRXVV3C
+        p/ZdxZDi+84JtbQpEVV6amfyKdXv4i1bqXDG5YwsjMJmR+6k1YGYK91lzsWQ+nA2TmXB3Uu/N54vE
+        24D2ml8gHMI254glpGAoZpGHA468Bs/lVFo/97hvr2ipza1h+23G+BLSenMc/dJ/EMaPl6pbgGjOf
+        B6D0bA1A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kqGp9-0003pR-Nm; Fri, 18 Dec 2020 14:33:39 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 176DB30018A;
+        Fri, 18 Dec 2020 15:33:34 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 63AD0200926C1; Fri, 18 Dec 2020 15:33:34 +0100 (CET)
+Date:   Fri, 18 Dec 2020 15:33:34 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "Sun, Ning" <ning.sun@intel.com>,
+        "Dwarakanath, Kumar N" <kumar.n.dwarakanath@intel.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 7/8] crypto: x86/aes-kl - Support AES algorithm using
+ Key Locker instructions
+Message-ID: <20201218143334.GG3021@hirez.programming.kicks-ass.net>
+References: <20201216174146.10446-1-chang.seok.bae@intel.com>
+ <20201216174146.10446-8-chang.seok.bae@intel.com>
+ <20201218101148.GF3021@hirez.programming.kicks-ass.net>
+ <61FFFEA5-3DD2-4625-9F3A-B7A589B92D95@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <61FFFEA5-3DD2-4625-9F3A-B7A589B92D95@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear linux-kernel
+On Fri, Dec 18, 2020 at 10:34:28AM +0000, Bae, Chang Seok wrote:
+> 
+> > On Dec 18, 2020, at 19:11, Peter Zijlstra <peterz@infradead.org> wrote:
+> > 
+> > *groan*, so what actual version of binutils is needed and why is this
+> > driver important enough to build on ancient crud to warrant all this
+> > gunk?
+> 
+> The new Key Locker instructions look to be added a few month ago [1].
+> But the latest binutils release (2.35.1) does not include them yet.
+> 
+> I’m open to drop the macros if there is any better way to define them
+> without binutils support.
 
-The famous brand John Lewis PLC, is UK's largest multi-channel 
-retailer with over 76 shops and multiple expansion in Africa 
-furnished by European/Asian/American products. We are sourcing 
-for new products to attract new customers and also retain our 
-existing ones, create new partnerships with companies dealing 
-with different kinds of goods.
-
-Your company was shortlisted by our team to collaborate with as 
-we have a great market for your companies lines based on our 
-research.
-
-Send us your current catalog through email to review more about 
-your recent company's products and wholesale quote. We hope to be
-able to order with you and start a long-term friendly, 
-respectable and solid business partnership. Please we would 
-appreciate it if you could send us your stock availability via 
-email.
-
-Our payment terms are 15 days net in Europe, 30 days Net in UK 
-and 30 days net in Asia/USA as we operate with over 2640 
-suppliers around the globe for the past 50 years now. Send your 
-reply to robturner.procurement@johnlewistrade.com for us to be 
-able to treat with care and urgency.
-
-Best Regards
-
-Rob Turner
-Head Of Procurement Operations
-John Lewis PLC
-robturner.procurement@johnlewistrade.com
-Tel: +44-7451-274090
-WhatsApp: +447497483925
-www.johnlewis.com
-REGISTERED OFFICE: 171 VICTORIA STREET, LONDON SW1E 5NN
-
-
+It's just a driver, make it depend on binutils having the instructions.
