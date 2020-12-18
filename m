@@ -2,91 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A1C82DE2AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 13:19:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A88C2DE2B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 13:20:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726438AbgLRMSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 07:18:37 -0500
-Received: from mga12.intel.com ([192.55.52.136]:27540 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726302AbgLRMSg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 07:18:36 -0500
-IronPort-SDR: Fj4AbmTTNxQGwc8rIBv6wb92262VWvp62Lf0+SiBELwE1eKoYeTpEWYtn21fY+R4Ywt5OHMdln
- ZL1RI07YGS4g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9838"; a="154649968"
-X-IronPort-AV: E=Sophos;i="5.78,430,1599548400"; 
-   d="scan'208";a="154649968"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2020 04:17:55 -0800
-IronPort-SDR: CI7T4Mc/wwjGjgrH41gmusgfz+mTt7V2JowBNBib61rwCWgYV6YTO22977jfq8DxdRHptNhNLb
- PPnl/0BY/QoA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,430,1599548400"; 
-   d="scan'208";a="413986866"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.94]) ([10.237.72.94])
-  by orsmga001.jf.intel.com with ESMTP; 18 Dec 2020 04:17:53 -0800
-Subject: Re: [PATCH V2] scsi: ufs-debugfs: Add error counters
-To:     Bean Huo <huobean@gmail.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Can Guo <cang@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>
-References: <20201216185145.25800-1-adrian.hunter@intel.com>
- <920b01c29525ff1cf894a2cf9c809750533ddc13.camel@gmail.com>
- <750889b4-19b7-3c0b-c614-a8dddc2dcab2@intel.com>
- <fbb752c30a921f251b7df130c942e20548ca0997.camel@gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <ec6d7b02-759b-2c9d-df6e-129a09fded1b@intel.com>
-Date:   Fri, 18 Dec 2020 14:17:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726484AbgLRMSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 07:18:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726441AbgLRMSm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 07:18:42 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73838C0617A7
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 04:18:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=I6Jc1yJjcNRC/skT3yP0vC8c2+p2pnxaOzpHPFUwwOA=; b=AOVmnq/OYugj7hrwBq6E0fUU+3
+        L46xEaZCG5ccilFMkBnAe6XgAx9OM7OiQc1G5CPSEoSkVOhIHaDDEvxDQNka9U1DqqYppcWO2u0NZ
+        l7RAfbsLNHXW3fROkLTBSQttgh5nDLLaG5a1I8/372S15q7tHN6Pa/O2nQJ6JzRnMJRK76YVUclmv
+        1QK21mB7MgDSwO1MvlnvLaXDp02wspjb5OmHeOvP/SNc+izzMCwQzdmhXOD2fvgPeytyXnceNe33m
+        jxaV21oVi9VKoJq/NocLl5yOdEfoMr9OE/lGB3l6T7lgBBW0w2sychLlufVVaLH1KEB9t40QIqx+z
+        NA80GEdg==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kqEhk-00071q-Sa; Fri, 18 Dec 2020 12:17:52 +0000
+Date:   Fri, 18 Dec 2020 12:17:52 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jacob Wen <jian.w.wen@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org
+Subject: Re: [PATCH] mm/vmscan: DRY cleanup for do_try_to_free_pages()
+Message-ID: <20201218121752.GK15600@casper.infradead.org>
+References: <20201218102217.186836-1-jian.w.wen@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <fbb752c30a921f251b7df130c942e20548ca0997.camel@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201218102217.186836-1-jian.w.wen@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/12/20 12:57 am, Bean Huo wrote:
-> On Thu, 2020-12-17 at 11:49 +0200, Adrian Hunter wrote:
->>>
->>> The purpose of patch is acceptable, but I don't know why you choose
->>> using ufshcd_core_* here. 
->>
->> Do you mean you would like a different function name?  'ufshcd_init'
->> is used
->> already.  The module is called ufshcd-core, so ufshcd_core_* seems
->> appropriate.
->>
->>> Also. I don't know if module_init()  is a proper way here.
->>
->> Can you be more specific?  It is normal to do module initialization
->> in
->> module_init().
-> 
-> Hi Adrian
-> My concern that ufs_debugfs_init() is called in module_init(), but your
-> another debugfs initialization function ufs_debugfs_hba_init(hba)
-> called in the UFS host probe path. 
+On Fri, Dec 18, 2020 at 06:22:17PM +0800, Jacob Wen wrote:
+> This patch reduces repetition of set_task_reclaim_state() around
+> do_try_to_free_pages().
 
-It is a good question, but module dependencies and initcall ordering means
-that won't happen.  It is not unusual for modules to do initialization in
-this way, that is completed before dependent modules initialize.
-
-> 
-> If these two (module_init() and module_platform_driver())
-> initializaiton sequence always as your expectation: ufs_debugfs_init()-
-> ->ufs_debugfs_hba_init(), that is fine, otherwise, it is better just
-> group them, make it simpler.
-
-Unfortunately, doing it that way, calls to debugsfs_create_dir("ufshcd",
-NULL) could race. Losers of the race will get an error, and will not get the
-dentry they need to proceed.  Preventing the race would require adding a
-mutex.  So the other way is simpler.
+what is a DRY cleanup?
