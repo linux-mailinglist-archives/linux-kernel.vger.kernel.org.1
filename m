@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5579E2DDD60
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 04:36:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F7E2DDD65
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 04:38:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732748AbgLRDfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 22:35:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44446 "EHLO
+        id S1732714AbgLRDhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 22:37:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732716AbgLRDe4 (ORCPT
+        with ESMTP id S1728109AbgLRDhL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 22:34:56 -0500
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA6EC0617B0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 19:34:16 -0800 (PST)
-Received: by mail-qt1-x832.google.com with SMTP id h19so442216qtq.13
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 19:34:15 -0800 (PST)
+        Thu, 17 Dec 2020 22:37:11 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEB66C0617B0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 19:36:30 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id v5so466488qtv.7
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 19:36:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=semihalf-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=IDx9TaTlrtlIy3LwyY3v6JTSWWKD8mwpXaG0JjxaS24=;
-        b=SlMzwF0y6pOpcqPiZCbUWErI2aJ4Qec2sOSWj1qThCJmeTCYXwmNW1SFma2DLd1cGu
-         f3X90sAphnaOMPe74Xo4CZ1HKqkZcVz0vOm7R4rsp2dagpU7Q9E3YzX3Xx8bYUxjVrWy
-         YxLvJxt/KVgiTZzKN9M/a5oW1BJK3y6/xD+x0EmHQzRFkB8cu802/c3uaepNFVYHfRX2
-         UotS8HmyySy66MOMexpg5TqubSpwd+ErS/ICJppgEAMixpTRcoKzgaT3WAzMvXue21tZ
-         eqCsElsHkUYH9F946WjnnJpNPrUQUQJBWJqjGHNGWGV792v9GOkr0mft2VoTxGVBch75
-         neMg==
+        bh=AS4QO2aiPpRGxi4OIcY1tpp38QFNKOBoTfBX1bCvzo8=;
+        b=2D+NhQiLBB+vTHtA1vZqk/qXLnSAU7ytpRZYo8CVqZoNpl6HFYIRNc7xHw+CkunziF
+         IRJPGi0gSpATu+0p10FJOnTSfQerBpR0Dxrjs2JKGryTNNeNY2ljLO8Bk7ux1B+Tx1y1
+         9LWJGRth5Y+PbXTPtM5MEEtD60Q0vlPgflSvKZdtyReS+TVj5cUPmnSGnxyxP4f1yd+x
+         hTKNvVYeOKWhfybp5Wi8qQXkGsq74s4M5OHdPRjgi6nRZZrFBksT5WzJDLruyiQkmba1
+         EAOrwJiitibtR8k3HBiOA+4xPLxg1DpfNJwFD+TTi3/EEOxBLP8D/BVVGnmsVcRDhBHV
+         py5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=IDx9TaTlrtlIy3LwyY3v6JTSWWKD8mwpXaG0JjxaS24=;
-        b=uN1jL44xM1CpWjqyYAjeowgZuBg1+mBmLPiqcDhGwYVKldRAe5bpk7pP+7/eC7xr1F
-         1MV5LH/+sTM8uiqCFCb5sCoYkpJNVVoioK7Iacg7z0ZOob8RSngcNmSH1De8Ckn7pohP
-         KBt2JXhvAxR21kEOcbxgauOda/hmzewTwzHkVmY5o+8bbD/QmrJ3c6Iw1MsB+TS0oAwN
-         FQsEMQBZ5YGPhMhpMBAtwbcQMH/iVgg/K1xVAFgYGiz14RGxSM9raOLnr4qsSwME4qIk
-         6gBCfTlqmqgh3ROriOn4HhmcBP+SCWgWK57WcTutBY7KIihRMHXIRfAqsoNNelPQLRx2
-         VARQ==
-X-Gm-Message-State: AOAM531fIQ3COXJeHa0wsAMWUO/vjt5nh6YyJGoDUmF1cbe/+yhcLVEs
-        +Ct3W5TxDkRlG2WglgaHVmgXjYgR5UnupikytMY1bQ==
-X-Google-Smtp-Source: ABdhPJwZtCEoVgZKzc5N0KEbf32ptMfnyARzBYf+ZL81LWijXKO96aKnogXClrO8QrPsrwnDkTyOFsSD5GhOjtHB0BM=
-X-Received: by 2002:a05:622a:18d:: with SMTP id s13mr2121237qtw.306.1608262455132;
- Thu, 17 Dec 2020 19:34:15 -0800 (PST)
+        bh=AS4QO2aiPpRGxi4OIcY1tpp38QFNKOBoTfBX1bCvzo8=;
+        b=Rihsa8jgufBSyH6tvEXFIrZPIuczlGVrcL9ZF13RoE3WFm+x4gk9Kbl2cbugLXpqzh
+         qgRCdsmkFfGGY5QIc/26hU2LZaxRVCOav1YaLt1P9qyaxiMnbbA/BfFWOial/0YBiQKk
+         kma1oaEL8Dx0+A8OHPBIEJsZyExz6+3xXbg2RN5YmNxA7x/ra48R0ydjAkwMUYJTpfTu
+         TdcsLnf0Md7h5VFBqWcTTOC/ebgCGAOCVRc+daHEPSABpBLk55RmFCWiFykJpOivhoco
+         b0fhofCWbj7B/zVWLK1L65A8tMRskto6C0WOvirwzirt8RtjdPPWJABiOW/bLLCJdyuT
+         +pcw==
+X-Gm-Message-State: AOAM532ziaomnvaUvhWVUCuVz2qYLdj7PPWxXLon9zMLWwVFPoEBgRBY
+        nTBayNArC3Gv1XL66o0y3eoZGd2iphajvg57cxA+Ie3RHYzKuTrc8kY=
+X-Google-Smtp-Source: ABdhPJzJme+8LABJvm0hH+CfYwtd+4qE2JHpIaQzDZutWN4YvBLGhZZszBDXEleaGkV0cl51IrMaeJjQjRvkNTZ8yLQ=
+X-Received: by 2002:ac8:7b82:: with SMTP id p2mr2078557qtu.16.1608262590004;
+ Thu, 17 Dec 2020 19:36:30 -0800 (PST)
 MIME-Version: 1.0
-References: <1608208648-13710-1-git-send-email-stefanc@marvell.com>
-In-Reply-To: <1608208648-13710-1-git-send-email-stefanc@marvell.com>
+References: <1608216735-14501-1-git-send-email-stefanc@marvell.com>
+In-Reply-To: <1608216735-14501-1-git-send-email-stefanc@marvell.com>
 From:   Marcin Wojtas <mw@semihalf.com>
-Date:   Fri, 18 Dec 2020 04:34:03 +0100
-Message-ID: <CAPv3WKd-=ywD4E6VBgMmkrpEtEHDXjK0ix-cJc1UKnUHAPk_BQ@mail.gmail.com>
-Subject: Re: [PATCH net v3] net: mvpp2: Fix GoP port 3 Networking Complex
- Control configurations
+Date:   Fri, 18 Dec 2020 04:36:18 +0100
+Message-ID: <CAPv3WKcL_mj=Zk8MrnQ_=m1nv5EzbpurYsLadSXMNZ3BKjzQVw@mail.gmail.com>
+Subject: Re: [PATCH net v3] net: mvpp2: disable force link UP during port init procedure
 To:     Stefan Chulski <stefanc@marvell.com>
 Cc:     netdev <netdev@vger.kernel.org>,
         Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
@@ -61,8 +60,7 @@ Cc:     netdev <netdev@vger.kernel.org>,
         Jakub Kicinski <kuba@kernel.org>,
         Russell King - ARM Linux <linux@armlinux.org.uk>,
         Andrew Lunn <andrew@lunn.ch>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        stable@vger.kernel.org
+        Russell King <rmk+kernel@armlinux.org.uk>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
@@ -71,84 +69,65 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi Stefan,
 
-czw., 17 gru 2020 o 13:40 <stefanc@marvell.com> napisa=C5=82(a):
+czw., 17 gru 2020 o 15:54 <stefanc@marvell.com> napisa=C5=82(a):
 >
 > From: Stefan Chulski <stefanc@marvell.com>
 >
-> During GoP port 2 Networking Complex Control mode of operation configurat=
-ions,
-> also GoP port 3 mode of operation was wrongly set.
-> Patch removes these configurations.
-> GENCONF_CTRL0_PORTX naming also fixed.
+> Force link UP can be enabled by bootloader during tftpboot
+> and breaks NFS support.
+> Force link UP disabled during port init procedure.
 >
-> Cc: stable@vger.kernel.org
 > Fixes: f84bf386f395 ("net: mvpp2: initialize the GoP")
 > Signed-off-by: Stefan Chulski <stefanc@marvell.com>
 > ---
 >
 > Changes in v3:
-> - Added cc stable@vger.kernel.org
-> Changes in v2:
 > - Added Fixes tag.
+> Changes in v2:
+> - No changes.
 >
->  drivers/net/ethernet/marvell/mvpp2/mvpp2.h      | 6 +++---
->  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 8 ++++----
->  2 files changed, 7 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/eth=
-ernet/marvell/mvpp2/mvpp2.h
-> index 6bd7e40..39c4e5c 100644
-> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-> @@ -651,9 +651,9 @@
->  #define     GENCONF_PORT_CTRL1_EN(p)                   BIT(p)
->  #define     GENCONF_PORT_CTRL1_RESET(p)                        (BIT(p) <=
-< 28)
->  #define GENCONF_CTRL0                                  0x1120
-> -#define     GENCONF_CTRL0_PORT0_RGMII                  BIT(0)
-> -#define     GENCONF_CTRL0_PORT1_RGMII_MII              BIT(1)
-> -#define     GENCONF_CTRL0_PORT1_RGMII                  BIT(2)
-> +#define     GENCONF_CTRL0_PORT2_RGMII                  BIT(0)
-> +#define     GENCONF_CTRL0_PORT3_RGMII_MII              BIT(1)
-> +#define     GENCONF_CTRL0_PORT3_RGMII                  BIT(2)
->
->  /* Various constants */
+>  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 14 +++++++++++++-
+>  1 file changed, 13 insertions(+), 1 deletion(-)
 >
 > diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/ne=
 t/ethernet/marvell/mvpp2/mvpp2_main.c
-> index d64dc12..d2b0506 100644
+> index d2b0506..0ad3177 100644
 > --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
 > +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> @@ -1231,9 +1231,9 @@ static void mvpp22_gop_init_rgmii(struct mvpp2_port=
- *port)
+> @@ -5479,7 +5479,7 @@ static int mvpp2_port_init(struct mvpp2_port *port)
+>         struct mvpp2 *priv =3D port->priv;
+>         struct mvpp2_txq_pcpu *txq_pcpu;
+>         unsigned int thread;
+> -       int queue, err;
+> +       int queue, err, val;
 >
->         regmap_read(priv->sysctrl_base, GENCONF_CTRL0, &val);
->         if (port->gop_id =3D=3D 2)
-> -               val |=3D GENCONF_CTRL0_PORT0_RGMII | GENCONF_CTRL0_PORT1_=
-RGMII;
-> +               val |=3D GENCONF_CTRL0_PORT2_RGMII;
->         else if (port->gop_id =3D=3D 3)
-> -               val |=3D GENCONF_CTRL0_PORT1_RGMII_MII;
-> +               val |=3D GENCONF_CTRL0_PORT3_RGMII_MII;
->         regmap_write(priv->sysctrl_base, GENCONF_CTRL0, val);
->  }
+>         /* Checks for hardware constraints */
+>         if (port->first_rxq + port->nrxqs >
+> @@ -5493,6 +5493,18 @@ static int mvpp2_port_init(struct mvpp2_port *port=
+)
+>         mvpp2_egress_disable(port);
+>         mvpp2_port_disable(port);
 >
-> @@ -1250,9 +1250,9 @@ static void mvpp22_gop_init_sgmii(struct mvpp2_port=
- *port)
->         if (port->gop_id > 1) {
->                 regmap_read(priv->sysctrl_base, GENCONF_CTRL0, &val);
->                 if (port->gop_id =3D=3D 2)
-> -                       val &=3D ~GENCONF_CTRL0_PORT0_RGMII;
-> +                       val &=3D ~GENCONF_CTRL0_PORT2_RGMII;
->                 else if (port->gop_id =3D=3D 3)
-> -                       val &=3D ~GENCONF_CTRL0_PORT1_RGMII_MII;
-> +                       val &=3D ~GENCONF_CTRL0_PORT3_RGMII_MII;
->                 regmap_write(priv->sysctrl_base, GENCONF_CTRL0, val);
->         }
->  }
+> +       if (mvpp2_is_xlg(port->phy_interface)) {
+> +               val =3D readl(port->base + MVPP22_XLG_CTRL0_REG);
+> +               val &=3D ~MVPP22_XLG_CTRL0_FORCE_LINK_PASS;
+> +               val |=3D MVPP22_XLG_CTRL0_FORCE_LINK_DOWN;
+> +               writel(val, port->base + MVPP22_XLG_CTRL0_REG);
+> +       } else {
+> +               val =3D readl(port->base + MVPP2_GMAC_AUTONEG_CONFIG);
+> +               val &=3D ~MVPP2_GMAC_FORCE_LINK_PASS;
+> +               val |=3D MVPP2_GMAC_FORCE_LINK_DOWN;
+> +               writel(val, port->base + MVPP2_GMAC_AUTONEG_CONFIG);
+> +       }
+> +
+>         port->tx_time_coal =3D MVPP2_TXDONE_COAL_USEC;
+>
+>         port->txqs =3D devm_kcalloc(dev, port->ntxqs, sizeof(*port->txqs)=
+,
 > --
 
-I tested the patch and LGTM.
+I confirm the patch fixes issue - tested on CN913x-DB and RGMII port.
+Other boards there I see no regression.
 
 Acked-by: Marcin Wojtas <mw@semihalf.com>
 
