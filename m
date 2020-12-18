@@ -2,133 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE3FD2DDD25
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 03:58:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EFA22DDD30
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 04:12:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732293AbgLRC6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Dec 2020 21:58:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37161 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730792AbgLRC6P (ORCPT
+        id S1730778AbgLRDK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Dec 2020 22:10:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726951AbgLRDK6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Dec 2020 21:58:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608260209;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2ePTASZu7o5kc6K1mUETLMnjXTOm0ohdFm+SE6FW+4Q=;
-        b=h+2SrHDYWCmexBAZmL6qKW6VeZbrkrR0UTnRfYSGDYrTWV5sMlw3bzNDfFxK6cWdjWJceI
-        ThogXm6oIN69rMWdLrlaop868R/9XEiQK34IomaB0mSB4aOOih2fOV4yARGKeF50FbPktE
-        GkQtRb1wm7XEs0z4zumPEco/KHpaMek=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-565-OLEgDrvnOK2yHbrNBpqEig-1; Thu, 17 Dec 2020 21:56:48 -0500
-X-MC-Unique: OLEgDrvnOK2yHbrNBpqEig-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 89BA7107ACF5;
-        Fri, 18 Dec 2020 02:56:46 +0000 (UTC)
-Received: from [10.72.12.111] (ovpn-12-111.pek2.redhat.com [10.72.12.111])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C19BB1A8A1;
-        Fri, 18 Dec 2020 02:56:36 +0000 (UTC)
-Subject: Re: [PATCH 00/21] Control VQ support in vDPA
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     eperezma@redhat.com, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lulu@redhat.com, eli@mellanox.com,
-        lingshan.zhu@intel.com, rob.miller@broadcom.com,
-        stefanha@redhat.com, sgarzare@redhat.com
-References: <20201216064818.48239-1-jasowang@redhat.com>
- <20201216044051-mutt-send-email-mst@kernel.org>
- <aa061fcb-9395-3a1b-5d6e-76b5454dfb6c@redhat.com>
- <20201217025410-mutt-send-email-mst@kernel.org>
- <61b60985-142b-10f2-58b8-1d9f57c0cfca@redhat.com>
- <20201217163513-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <c120d0ce-7d42-ab6e-1040-ab85985f7cbe@redhat.com>
-Date:   Fri, 18 Dec 2020 10:56:34 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 17 Dec 2020 22:10:58 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2475C0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 19:10:17 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id i24so844242edj.8
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Dec 2020 19:10:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AkEXl4qStkmYT3+mIwl6Q3Q3mHzuVuFn+pGe0fZurTg=;
+        b=kAtNLYT7czydmG2yKG2/GUQcgugCOuv67CY2PquMXr8/J2nJRiSHtbHBCN23JLDI+W
+         SxB7GDNx7G5LUQ4RD6svX1zxWbWadfPb8xIxF8pqZikVdVZUTCWgM+Ok3Pxy10Yh1XYD
+         aOMAdCKu+mLPU4evb1gnQg7k3T71nSdVIJRlJsXUzcE4q3reyT4SY7fJsL/O7S5T33cO
+         uwmlZwTYjrc2LqBdepjUfliTLXsdroHSu945lTcG16Q7hJPTbKkQVtAMu6n0B30PEf7Q
+         lfn9yNx0K7yK/sVUcL6M5GlkxMo65NLuzYpBVOr7SnZqlTJF+aAVh9zf+ZZ8WrhwmDcw
+         PYuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AkEXl4qStkmYT3+mIwl6Q3Q3mHzuVuFn+pGe0fZurTg=;
+        b=W5cqluodw5BJWWa0f2SO90LhPgsFJpBeuBvyWjpTxCkCzGKi5vixnx5FZvyRjg+/Eh
+         gp/esrH8TeVpsR2F1TPeDB3GuBNXeR1kNJPVJWHYjnii3pb+DyzJCxSs49INuXWqD9os
+         U+owI/m9YIxNqr/0AeJdN8xoBCpn83PwarN5qTZ6exYWqEycgzvY5s+JDBnyJpl6VMmV
+         7CzpogxpiSdiiHeKMqSAkMDH7bEyYsYjsqSFocWP8ImCRIucmJf7FK++D9rwQTFcNrzS
+         jQRzBlTrqMH2TBdPlGmlbLHzz2xSkWF/UDbJ6sOCDMMWAUy92zd7lvZBd5h6hKNuaOa4
+         wXxA==
+X-Gm-Message-State: AOAM530rerlqrI/l0Oih35bps6wbQKEpStRUsFu/nQnxLaOaU6tYYNTu
+        C23U+FJtK88lvNXnB4OSU9uxZ8YWsn1NsuuJXEoCfg==
+X-Google-Smtp-Source: ABdhPJznkBnJXzOf7SdEY10Kh5oWG5k2t9apJPLinrpGixUO6+G+9aI+DGvwJptB+N0HUNXjeW+Tm8kH7KEVnFqM5k8=
+X-Received: by 2002:a50:e0ce:: with SMTP id j14mr2471193edl.18.1608261014688;
+ Thu, 17 Dec 2020 19:10:14 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201217163513-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20201120092251.2197-1-thunder.leizhen@huawei.com>
+In-Reply-To: <20201120092251.2197-1-thunder.leizhen@huawei.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 17 Dec 2020 19:10:04 -0800
+Message-ID: <CAPcyv4jxgbawSbYF39g857fiDCRmMACr1u-OiSWkz4M0+2UPbQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] device-dax: avoid an unnecessary check in alloc_dev_dax_range()
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jane Chu <jane.chu@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2020/12/18 上午6:28, Michael S. Tsirkin wrote:
-> On Thu, Dec 17, 2020 at 05:02:49PM +0800, Jason Wang wrote:
->> On 2020/12/17 下午3:58, Michael S. Tsirkin wrote:
->>> On Thu, Dec 17, 2020 at 11:30:18AM +0800, Jason Wang wrote:
->>>> On 2020/12/16 下午5:47, Michael S. Tsirkin wrote:
->>>>> On Wed, Dec 16, 2020 at 02:47:57PM +0800, Jason Wang wrote:
->>>>>> Hi All:
->>>>>>
->>>>>> This series tries to add the support for control virtqueue in vDPA.
->>>>>>
->>>>>> Control virtqueue is used by networking device for accepting various
->>>>>> commands from the driver. It's a must to support multiqueue and other
->>>>>> configurations.
->>>>>>
->>>>>> When used by vhost-vDPA bus driver for VM, the control virtqueue
->>>>>> should be shadowed via userspace VMM (Qemu) instead of being assigned
->>>>>> directly to Guest. This is because Qemu needs to know the device state
->>>>>> in order to start and stop device correctly (e.g for Live Migration).
->>>>>>
->>>>>> This requies to isolate the memory mapping for control virtqueue
->>>>>> presented by vhost-vDPA to prevent guest from accesing it directly.
->>>>>> To achieve this, vDPA introduce two new abstractions:
->>>>>>
->>>>>> - address space: identified through address space id (ASID) and a set
->>>>>>                     of memory mapping in maintained
->>>>>> - virtqueue group: the minimal set of virtqueues that must share an
->>>>>>                     address space
->>>>> How will this support the pretty common case where control vq
->>>>> is programmed by the kernel through the PF, and others by the VFs?
->>>> In this case, the VF parent need to provide a software control vq and decode
->>>> the command then send them to VF.
->>> But how does that tie to the address space infrastructure?
->> In this case, address space is not a must.
-> That's ok, problem is I don't see how address space is going
-> to work in this case at all.
+On Fri, Nov 20, 2020 at 1:23 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
 >
-> There's no address space there that userspace/guest can control.
->
+> Swap the calling sequence of krealloc() and __request_region(), call the
+> latter first. In this way, the value of dev_dax->nr_range does not need to
+> be considered when __request_region() failed.
 
-The virtqueue group is mandated by parent but the association between 
-virtqueue group and address space is under the control of userspace (Qemu).
+This looks ok, but I think I want to see another cleanup go in first
+before this to add a helper for trimming the last range off the set of
+ranges:
 
-A simple but common case is that:
+static void dev_dax_trim_range(struct dev_dax *dev_dax)
+{
+        int i = dev_dax->nr_range - 1;
+        struct range *range = &dev_dax->ranges[i].range;
+        struct dax_region *dax_region = dev_dax->region;
 
-1) Device advertise two virtqueue groups: group 0 contains RX and TX, 
-group 1 contains CVQ.
-2) Device advertise two address spaces
+        dev_dbg(dev, "delete range[%d]: %#llx:%#llx\n", i,
+                (unsigned long long)range->start,
+                (unsigned long long)range->end);
 
-Then, for vhost-vDPA using by VM:
+        __release_region(&dax_region->res, range->start, range_len(range));
+        if (--dev_dax->nr_range == 0) {
+                kfree(dev_dax->ranges);
+                dev_dax->ranges = NULL;
+        }
+}
 
-1) associate group 0 with as 0, group 1 with as 1 (via vhost-vDPA 
-VHOST_VDPA_SET_GROUP_ASID)
-2) Publish guest memory mapping via IOTLB asid 0
-3) Publish control virtqueue mapping via IOTLB asid 1
+Care to do a lead in patch with that cleanup, then do this one?
 
-Then the DMA is totally isolated in this case.
+I think that might also cleanup a memory leak report from Jane in
+addition to not needing the "goto" as well.
 
-For vhost-vDPA using by DPDK or virtio-vDPA
-
-1) associate group 0 and group 1 with as 0
-
-since we don't need DMA isolation in this case.
-
-In order to let it be controlled by Guest, we need extend virtio spec to 
-support those concepts.
-
-Thanks
-
-
+http://lore.kernel.org/r/c8a8a260-34c6-dbfc-1f19-25c23d01cb45@oracle.com
