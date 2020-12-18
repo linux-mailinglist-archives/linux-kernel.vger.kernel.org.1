@@ -2,92 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D40612DEB62
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 23:03:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 221CE2DEB6B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 23:08:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726203AbgLRWCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 17:02:42 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:13862 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726095AbgLRWCl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 17:02:41 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fdd26d80007>; Fri, 18 Dec 2020 14:02:00 -0800
-Received: from [10.2.61.1] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 18 Dec
- 2020 22:01:57 +0000
-Subject: Re: [PATCH v4 5/9] spi: spi-mem: Mark dummy transfers by setting
- dummy_data bit
-To:     Mark Brown <broonie@kernel.org>, Pratyush Yadav <p.yadav@ti.com>
-CC:     Boris Brezillon <boris.brezillon@collabora.com>,
-        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <robh+dt@kernel.org>, <lukas@wunner.de>, <bbrezillon@kernel.org>,
-        <tudor.ambarus@microchip.com>, <linux-spi@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-References: <1608236927-28701-1-git-send-email-skomatineni@nvidia.com>
- <1608236927-28701-6-git-send-email-skomatineni@nvidia.com>
- <20201218092106.skwej2g6bk3oksbb@ti.com>
- <20201218105759.43789ccf@collabora.com>
- <31c395ee-d7a6-edc5-a790-89fad91a0a27@nvidia.com>
- <20201218191936.hb6sq7zr3zdirar7@ti.com>
- <20201218204102.GF5333@sirena.org.uk> <20201218204414.GG5333@sirena.org.uk>
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-Message-ID: <c9343475-44b2-c9c4-1790-f6b50ec9c1bd@nvidia.com>
-Date:   Fri, 18 Dec 2020 14:01:56 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726433AbgLRWI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 17:08:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40536 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725884AbgLRWIZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 17:08:25 -0500
+X-Gm-Message-State: AOAM533y9RvtLYsBD3yW2yjf0tmDIecSPnA52eVkg0rwNy7rUB4hJnr2
+        xm2bxq412Ocfdr/7Wj7aoVL8g+OyNuvx3DlhrVo=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608329264;
+        bh=DdZYXZ9mic5N42BUxrYdf2gNMrLOI3PrI47brIBEH+I=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cj//KqD8wdgAJrFTYEXRFIF3QaYI6BasX4nW6/QgcmMIco6ODLX48fNcF9ahjxYIw
+         HRkaHz882azvkcxvTgzHD7kZ1Cq5hTeX7mPEAz7P36NB70UBtBIW4EDo1cekFtkjq4
+         kZfCz7Owob28QurN93z5PTd+VOw3MxDZ2PelKmbus+J3Ednizl3fZ5cwyfC9nMcnsV
+         Ogict2Ljic2gUVzQE9KFBVw0lWMDVQHxZ0GfQqoli9gyNRWH5b1byvGAqm+kEjefsv
+         ZqUg53YC51jlzhw4p+gz9keMZ49BVGHPON4gM9gAxnthrescV3T0KqlBr/pLus9aG4
+         WM6yan6rR7NQQ==
+X-Google-Smtp-Source: ABdhPJwIf4tUskA4IRlZs7LeHjqBFCAdVi3g2U46eriQmmoZKs4USgXMRlHbk0Uf+gbMVBIdYrt2p/7xzcErQuq2xuQ=
+X-Received: by 2002:a05:6830:2413:: with SMTP id j19mr4487905ots.251.1608329263202;
+ Fri, 18 Dec 2020 14:07:43 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201218204414.GG5333@sirena.org.uk>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1608328920; bh=8Acq9GMc6nnEBbII98wXaf5fZtYBkqKtmc92tqPAku0=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=IBjIy3g1xJgPT0QS1nye2wOATxRT9+dPfxL8LVtbKHPbqmixzQGaxpIDYKewcilpT
-         LI6ZoTrTtku07/y8t9ZZPc9yl9ZwsUyideM/rDRhxVIM1sNNbvXqPWKjWa3at9kuxs
-         fwyG32gBi7m9E8gWFVQLy75NMJraywk9hBmbV/e9N2fIdG14syJNk7RElqbr9akQQt
-         QIEG6YjZxgjx59UgkgFRpp6+eFWy9yIJLrxbCaaffk3aqyxsy4vg/+bzZfxmgp1UFH
-         X0yTNbj/mKSBYUTGxMcg8P8CrE8F5XVWyqkHJZgWUBjy92iwnsMi9aTWFow6QRlNuF
-         TgpTtcb05ScGA==
+References: <20201030151758.1241164-1-arnd@kernel.org> <20201030151758.1241164-6-arnd@kernel.org>
+ <59efce0e-a28d-9424-82ca-fb7f3a1b9c29@physik.fu-berlin.de>
+In-Reply-To: <59efce0e-a28d-9424-82ca-fb7f3a1b9c29@physik.fu-berlin.de>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 18 Dec 2020 23:07:26 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0s5Wt=9sZXAV1JzebZFXVy4qn3KNvygEfPeH3eVMyO_w@mail.gmail.com>
+Message-ID: <CAK8P3a0s5Wt=9sZXAV1JzebZFXVy4qn3KNvygEfPeH3eVMyO_w@mail.gmail.com>
+Subject: Re: [PATCH v2 05/15] ia64: convert to legacy_timer_tick
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Philip Blundell <philb@gnu.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Sam Creasey <sammy@sammy.net>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-ia64@vger.kernel.org,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Anatoly Pugachev <matorola@gmail.com>
+Content-Type: multipart/mixed; boundary="0000000000006a616f05b6c456bf"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--0000000000006a616f05b6c456bf
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 12/18/20 12:44 PM, Mark Brown wrote:
-> On Fri, Dec 18, 2020 at 08:41:02PM +0000, Mark Brown wrote:
->> On Sat, Dec 19, 2020 at 12:49:38AM +0530, Pratyush Yadav wrote:
->>> Anyway, if the SPI maintainers think this is worth it, I won't object.
->> This gets kind of circular, for me it's a question of if there's some
->> meaningful benefit from using the feature vs the cost to support it and
->> from the sounds of it we don't have numbers on the benefits from using
->> it at present.
-> ...although I do have to say looking at the implementation that the cost
-> seems low, it's just a flag set on an existing transfer.  The only issue
-> is if we'd get more win from coalesing the entire transaction (or entire
-> transmit) into a single transfer that could be DMAed and/or requires
-> fewer trips through the stack which does make it seem like an unclear
-> tradeoff from the point of view of client drivers
+On Fri, Dec 18, 2020 at 10:29 PM John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
+>
+> Hi Arnd!
+>
+> On 10/30/20 4:17 PM, Arnd Bergmann wrote:
+> > ia64 is the only architecture that calls xtime_update() in a loop,
+> > once for each jiffie that has passed since the last event.
+> >
+> > Before commit 3171a0305d62 ("[PATCH] simplify update_times (avoid
+> > jiffies/jiffies_64 aliasing problem)") in 2006, it could not actually d=
+o
+> > this any differently, but now it seems simpler to just pass the number
+> > of jiffies that passed in the meantime.
+> >
+> > While this loses the ability process interrupts in the middle of
+> > the timer tick by calling local_irq_enable(), doing so is fairly
+> > peculiar anyway and it seems better to just do what everyone
+> > else does here.
+>
+> This broke the hpsa block device driver on my HP RX2600.
 
-Using HW dummy cycles save extra software cycle of transfer which 
-involves transfer setup register writes, writing dummy bytes to TX FIFO, 
-interrupt processing.
+Hi Adrian,
 
-Implementation wise it just a single bit field added to spi_transfer and 
-on Tegra controller driver programming dummy cycles with prior transfer 
-and skipping sw dummy transfer which is actually not complex.
+Sorry for causing this bug, and thank you for bisecting it
+down to my patch.
 
- From quick check, I see HW dummy cycles transfer of 128KB shows 18 Mb/s 
-while SW transfer of bytes shows 17.3 MB/s on average.
+Do you see any other strange behavior with that patch, or is
+this the only symptom you are aware of?
 
-When back-to-back read commands are executed using HW dummy cycles will 
-definitely save cycles.
+>
+> I'm seeing this backtrace now:
+>
+> [  905.883273] usb 1-2: SerialNumber: A60020000001
+> [  905.918170]  sda: sda1 sda2 sda3
+> [  905.920107] sd 0:1:0:0: [sda] Attached SCSI disk
+> [  905.944102] usb-storage 1-2:1.0: USB Mass Storage device detected
+> [  905.944102] scsi host1: usb-storage 1-2:1.0
+> [  905.944102] usbcore: registered new interface driver usb-storage
+> [  905.944117] usbcore: registered new interface driver uas
 
+The timestamps show that time is moving forward, which is at least
+something. Do you have a feeling for whether the timestamps are
+counting in (roughly) the correct speed, or is it going much faster
+or slower than it should?
+
+To clarify: the [905.944117] numbers are seconds/microseconds
+since boot, so message would be 906 seconds after the kernel
+started.
+
+> Begin: Loading essential drivers ... done.                               =
+                                                                           =
+              > Begin: Running /scripts/init-premount ... done.            =
+                                                                           =
+                          > Begin: Mounting root file system ... Begin: Run=
+ning /scripts/local-top ... done.
+
+Ok, so it gets into user space. Is this initramfs or the actual read-only r=
+oot?
+
+> [  906.666923] hpsa 0000:05:00.0: scsi 0:1:0:0: resetting logical  Direct=
+-Access     HP       LOGICAL VOLUME   RAID-0 SSDSmartPathCap- En- Exp=3D1
+> [  906.670923] hpsa 0000:05:00.0: device is ready.
+> [  906.670923] hpsa 0000:05:00.0: scsi 0:1:0:0: reset logical  completed =
+successfully Direct-Access     HP       LOGICAL VOLUME   RAID-0 SSDSmartPat=
+hCap- En- Exp=3D1
+> done.
+> [  906.722166] rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
+> [  906.722166] rcu:     2-....: (3 ticks this GP) idle=3Dfe6/1/0x40000000=
+00000000 softirq=3D693/698 fqs=3D4
+> [  906.722166]  (detected by 0, t=3D6115 jiffies, g=3D465, q=3D80)
+This appears to be an 'rcu stall' warning, from print_cpu_stall_info(),
+indicating that timer ticks are missing.
+
+> [  909.360108] INFO: task systemd-sysv-ge:200 blocked for more than 127 s=
+econds.
+> [  909.360108]       Not tainted 5.10.0+ #130
+> [  909.360108] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disable=
+s this message.
+> [  909.360108] task:systemd-sysv-ge state:D stack:    0 pid:  200 ppid:  =
+ 189 flags:0x00000000
+> [  909.364108]
+> [  909.364108] Call Trace:
+> [  909.364423]  [<a00000010109b210>] __schedule+0x890/0x21e0
+> [  909.364423]                                 sp=3De0000100487d7b70 bsp=
+=3De0000100487d1748
+> [  909.368423]  [<a00000010109cc00>] schedule+0xa0/0x240
+> [  909.368423]                                 sp=3De0000100487d7b90 bsp=
+=3De0000100487d16e0
+> [  909.368558]  [<a00000010109ce70>] io_schedule+0x70/0xa0
+> [  909.368558]                                 sp=3De0000100487d7b90 bsp=
+=3De0000100487d16c0
+> [  909.372290]  [<a00000010109e1c0>] bit_wait_io+0x20/0xe0
+> [  909.372290]                                 sp=3De0000100487d7b90 bsp=
+=3De0000100487d1698
+> [  909.374168] rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
+> [  909.376290]  [<a00000010109d860>] __wait_on_bit+0xc0/0x1c0
+> [  909.376290]                                 sp=3De0000100487d7b90 bsp=
+=3De0000100487d1648
+> [  909.374168] rcu:     3-....: (2 ticks this GP) idle=3D19e/1/0x40000000=
+00000002 softirq=3D1581/1581 fqs=3D2
+> [  909.374168]  (detected by 0, t=3D5661 jiffies, g=3D1089, q=3D3)
+> [  909.376290]  [<a00000010109da80>] out_of_line_wait_on_bit+0x120/0x140
+> [  909.376290]                                 sp=3De0000100487d7b90 bsp=
+=3De0000100487d1610
+> [  909.374168] Task dump for CPU 3:
+> [  909.374168] task:khungtaskd      state:R  running task
+
+and this seems to be another instance of the same. I would assume that this
+is completely unrelated to the block driver and just happened to trigger du=
+ring
+the same time the driver was doing something.
+
+Can you see in your full logs if the "Oops: timer tick before it's due" war=
+ning
+triggered at any point?
+
+I've attached a patch for a partial revert of my original change, this
+should still work with the final cleanup on top, but restore the loop
+plus the local_irq_enable()/local_irq_disable() that I dropped from
+the original code. Does this make a difference?
+
+        Arnd
+
+--0000000000006a616f05b6c456bf
+Content-Type: text/x-patch; charset="US-ASCII"; name="ia64-timer-partial-revert.diff"
+Content-Disposition: attachment; filename="ia64-timer-partial-revert.diff"
+Content-Transfer-Encoding: base64
+Content-ID: <f_kiutlz1y0>
+X-Attachment-Id: f_kiutlz1y0
+
+ZGlmZiAtLWdpdCBhL2FyY2gvaWE2NC9rZXJuZWwvdGltZS5jIGIvYXJjaC9pYTY0L2tlcm5lbC90
+aW1lLmMKaW5kZXggOTQzMWVkYjA4NTA4Li5lM2Q5YzgwODhkNTYgMTAwNjQ0Ci0tLSBhL2FyY2gv
+aWE2NC9rZXJuZWwvdGltZS5jCisrKyBiL2FyY2gvaWE2NC9rZXJuZWwvdGltZS5jCkBAIC0xNjEs
+MjkgKzE2MSwzNCBAQCB2b2lkIHZ0aW1lX2FjY291bnRfaWRsZShzdHJ1Y3QgdGFza19zdHJ1Y3Qg
+KnRzaykKIHN0YXRpYyBpcnFyZXR1cm5fdAogdGltZXJfaW50ZXJydXB0IChpbnQgaXJxLCB2b2lk
+ICpkZXZfaWQpCiB7Ci0JdW5zaWduZWQgbG9uZyBjdXJfaXRtLCBuZXdfaXRtLCB0aWNrczsKKwl1
+bnNpZ25lZCBsb25nIG5ld19pdG07CiAKIAlpZiAoY3B1X2lzX29mZmxpbmUoc21wX3Byb2Nlc3Nv
+cl9pZCgpKSkgewogCQlyZXR1cm4gSVJRX0hBTkRMRUQ7CiAJfQogCiAJbmV3X2l0bSA9IGxvY2Fs
+X2NwdV9kYXRhLT5pdG1fbmV4dDsKLQljdXJfaXRtID0gaWE2NF9nZXRfaXRjKCk7CiAKLQlpZiAo
+IXRpbWVfYWZ0ZXIoY3VyX2l0bSwgbmV3X2l0bSkpIHsKKwlpZiAoIXRpbWVfYWZ0ZXIoaWE2NF9n
+ZXRfaXRjKCksIG5ld19pdG0pKQogCQlwcmludGsoS0VSTl9FUlIgIk9vcHM6IHRpbWVyIHRpY2sg
+YmVmb3JlIGl0J3MgZHVlIChpdGM9JWx4LGl0bT0lbHgpXG4iLAotCQkgICAgICAgY3VyX2l0bSwg
+bmV3X2l0bSk7Ci0JCXRpY2tzID0gMTsKLQl9IGVsc2UgewotCQl0aWNrcyA9IERJVl9ST1VORF9V
+UChjdXJfaXRtIC0gbmV3X2l0bSwKLQkJCQkgICAgIGxvY2FsX2NwdV9kYXRhLT5pdG1fZGVsdGEp
+OwotCQluZXdfaXRtICs9IHRpY2tzICogbG9jYWxfY3B1X2RhdGEtPml0bV9kZWx0YTsKLQl9CisJ
+CSAgICAgICBpYTY0X2dldF9pdGMoKSwgbmV3X2l0bSk7CisKKwl3aGlsZSAoMSkgeworCQluZXdf
+aXRtICs9IGxvY2FsX2NwdV9kYXRhLT5pdG1fZGVsdGE7CisKKwkJbGVnYWN5X3RpbWVyX3RpY2so
+c21wX3Byb2Nlc3Nvcl9pZCgpID09IHRpbWVfa2VlcGVyX2lkKTsKIAotCWlmIChzbXBfcHJvY2Vz
+c29yX2lkKCkgIT0gdGltZV9rZWVwZXJfaWQpCi0JCXRpY2tzID0gMDsKKwkJbG9jYWxfY3B1X2Rh
+dGEtPml0bV9uZXh0ID0gbmV3X2l0bTsKIAotCWxlZ2FjeV90aW1lcl90aWNrKHRpY2tzKTsKKwkJ
+aWYgKHRpbWVfYWZ0ZXIobmV3X2l0bSwgaWE2NF9nZXRfaXRjKCkpKQorCQkJYnJlYWs7CisKKwkJ
+LyoKKwkJICogQWxsb3cgSVBJcyB0byBpbnRlcnJ1cHQgdGhlIHRpbWVyIGxvb3AuCisJCSAqLwor
+CQlsb2NhbF9pcnFfZW5hYmxlKCk7CisJCWxvY2FsX2lycV9kaXNhYmxlKCk7CisJfQogCiAJZG8g
+ewogCQkvKgo=
+--0000000000006a616f05b6c456bf--
