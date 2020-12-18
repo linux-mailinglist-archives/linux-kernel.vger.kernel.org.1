@@ -2,96 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E66272DEA9B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 21:56:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A87172DEA96
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Dec 2020 21:56:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726202AbgLRUzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 15:55:47 -0500
-Received: from leonov.paulk.fr ([185.233.101.22]:42878 "EHLO leonov.paulk.fr"
+        id S1726451AbgLRUzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 15:55:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725775AbgLRUzq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 15:55:46 -0500
-Received: from gagarine.paulk.fr (gagarine [192.168.1.127])
-        by leonov.paulk.fr (Postfix) with ESMTPS id E5A6EBFDE9;
-        Fri, 18 Dec 2020 21:55:03 +0100 (CET)
-Received: by gagarine.paulk.fr (Postfix, from userid 114)
-        id 58D14C1D27; Fri, 18 Dec 2020 21:55:03 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on gagarine.paulk.fr
-X-Spam-Level: 
-X-Spam-Status: No, score=0.0 required=5.0 tests=none autolearn=unavailable
-        autolearn_force=no version=3.4.2
-Received: from localhost.localdomain (collins [192.168.1.129])
-        by gagarine.paulk.fr (Postfix) with ESMTP id 4F57AC1D23;
-        Fri, 18 Dec 2020 21:54:38 +0100 (CET)
-From:   Paul Kocialkowski <contact@paulk.fr>
-To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Paul Kocialkowski <contact@paulk.fr>
-Subject: [PATCH v2 2/2] ARM: dts: sun8i-v3s: Add PWM controller and pins definitions
-Date:   Fri, 18 Dec 2020 21:54:36 +0100
-Message-Id: <20201218205436.2326872-2-contact@paulk.fr>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201218205436.2326872-1-contact@paulk.fr>
-References: <20201218205436.2326872-1-contact@paulk.fr>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726386AbgLRUzY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 15:55:24 -0500
+Subject: Re: [GIT PULL] thermal for v5.11 #2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608324883;
+        bh=uyVz2yXarp1KJ7xXfBPqP0kc0ab5OBKStCBK4LNp7Lc=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=eUDT4X5x2apPKI9SPw/4yHES1dxGFZIRCnaqkpudvefhYAJatTksnKfgfLhD7U7n6
+         jNi9aHr9yV9haWMpojfUMLX7PSiMuVC2XdvEsP+cNqwIqBtXm8HhGV9yUPDx6MG76F
+         gRmrAdS21x13i1PHAzfYoz9gwSVIzlIxr9Bn4amVK4lDHIIzaoROi2/2fLosuBU37g
+         ZBEd9nyQfMektRAEpTfKnYJ+Fu3Lpvlj4ufguztq5Cu8tss3CRrRAnODxFRUraOZ6v
+         U9zqduG6eSYpu1t3orCaCmPdDdUwwh3vvNYisKhKNZ+whKbrBKVF64w7+SpR3E2oUu
+         1mTjMHUWSDhew==
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <bdda0e0b-56b7-025b-ad86-f790517c65b8@linaro.org>
+References: <bdda0e0b-56b7-025b-ad86-f790517c65b8@linaro.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <bdda0e0b-56b7-025b-ad86-f790517c65b8@linaro.org>
+X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git tags/thermal-v5.11-2-rc1
+X-PR-Tracked-Commit-Id: 67698880ac9d56367ebf22f8336ccab6234f9feb
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 432c19a8d965aa0123e0a81492492a7cb1da5257
+Message-Id: <160832488331.19372.589470332204463342.pr-tracker-bot@kernel.org>
+Date:   Fri, 18 Dec 2020 20:54:43 +0000
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM mailing list <linux-pm@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This introduces definitions for the PWM controller found in the V3s,
-as well as associated pins. This fashion of the controller has two PWM
-outputs and is register-compatible with the A20.
+The pull request you sent on Fri, 18 Dec 2020 09:11:51 +0100:
 
-Both PWM outputs were tested on a Lichee Pi Zero with a simple
-transistor-LED setup.
+> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git tags/thermal-v5.11-2-rc1
 
-Signed-off-by: Paul Kocialkowski <contact@paulk.fr>
----
- arch/arm/boot/dts/sun8i-v3s.dtsi | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/432c19a8d965aa0123e0a81492492a7cb1da5257
 
-diff --git a/arch/arm/boot/dts/sun8i-v3s.dtsi b/arch/arm/boot/dts/sun8i-v3s.dtsi
-index bff822b9fa01..f02aa988156d 100644
---- a/arch/arm/boot/dts/sun8i-v3s.dtsi
-+++ b/arch/arm/boot/dts/sun8i-v3s.dtsi
-@@ -404,6 +404,16 @@ spi0_pins: spi0-pins {
- 				pins = "PC0", "PC1", "PC2", "PC3";
- 				function = "spi0";
- 			};
-+
-+			pwm0_pin: pwm0-pin {
-+				pins = "PB4";
-+				function = "pwm0";
-+			};
-+
-+			pwm1_pin: pwm1-pin {
-+				pins = "PB5";
-+				function = "pwm1";
-+			};
- 		};
- 
- 		timer@1c20c00 {
-@@ -422,6 +432,15 @@ wdt0: watchdog@1c20ca0 {
- 			clocks = <&osc24M>;
- 		};
- 
-+		pwm: pwm@1c21400 {
-+			compatible = "allwinner,sun8i-v3s-pwm",
-+				     "allwinner,sun7i-a20-pwm";
-+			reg = <0x01c21400 0xc>;
-+			clocks = <&osc24M>;
-+			#pwm-cells = <3>;
-+			status = "disabled";
-+		};
-+
- 		lradc: lradc@1c22800 {
- 			compatible = "allwinner,sun4i-a10-lradc-keys";
- 			reg = <0x01c22800 0x400>;
+Thank you!
+
 -- 
-2.29.2
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
