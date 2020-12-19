@@ -2,192 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD4F2DEC9F
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 02:23:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D25692DEC9E
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 02:23:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726288AbgLSBWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 20:22:07 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:58202 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725879AbgLSBWG (ORCPT
+        id S1726221AbgLSBVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 20:21:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725879AbgLSBVu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 20:22:06 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BJ1LL4i001525;
-        Sat, 19 Dec 2020 01:21:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=hQSO5MFu84N3VcFSgjhzMr8qzFutIrqWQP36+NliQiE=;
- b=vc1Xz9hWJZUCDpU2JLXohRyIJMMmC/D3iTKszPjw1zdDER1ZEnyIeQcS/ibsNg8Nk1YK
- 56Mca4BlcTtdWcxmPNoa6y/302E7QAnbs/6snorBze5fNigACL/txyAgyfl4FVfJl9Jl
- O2U3+uGYyJGz1D5yZpd5qFbiBwTwVK8GWL3KaYziuWewlW0qfGpvN0xezu34VedmOlIb
- Vv7lSPHTY3LwzZKUiot/PgHhWZ+r2lEZQSM+C10wfstqq2ae/2pgRMPrauxW6v+KsDxD
- Q8BI35eguPCfGBRZyZm1EOVKqCTf5cnrmNMJGbbX01+MGhFPleKUoOPp6npF1tkh5SZZ zA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 35cntmmrew-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 19 Dec 2020 01:21:21 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BJ1BZIK088210;
-        Sat, 19 Dec 2020 01:19:20 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 35h7j905tg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 19 Dec 2020 01:19:20 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0BJ1JJ5A003382;
-        Sat, 19 Dec 2020 01:19:19 GMT
-Received: from localhost.localdomain (/10.159.251.245)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 18 Dec 2020 17:19:19 -0800
-Subject: Re: [PATCH] KVM/x86: Move definition of __ex to x86.h
-To:     Uros Bizjak <ubizjak@gmail.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-References: <20201218121146.432286-1-ubizjak@gmail.com>
-From:   Krish Sadhukhan <krish.sadhukhan@oracle.com>
-Message-ID: <030d8d0a-5315-8e4b-6a15-0149ca527d6b@oracle.com>
-Date:   Fri, 18 Dec 2020 17:19:18 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Fri, 18 Dec 2020 20:21:50 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E177BC0617B0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 17:21:09 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id m5so4619838wrx.9
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 17:21:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=QUtnZhHSTUhn7PA1a2z6Lv/RpUDz4hHMbvf4C1DMOfc=;
+        b=YaVJY5BPLRUSLWuB/cxB1XSe7pxQ1AXuAlzSwdah3s4vyu8h4CO86lmqEr6swWRSe1
+         Vpm3YZqPQUcDuIS3a6fLgT4hsXqlZPzc6gVj07by6lEuzoqu+94s2uWuaPOPQgotDEmY
+         NVaXL9dwI1gwCmLZekV8lPfWAU8GnRQhlFM6I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=QUtnZhHSTUhn7PA1a2z6Lv/RpUDz4hHMbvf4C1DMOfc=;
+        b=Q6LOCzKyLQanZE3dP7TEtr34ZhAbaZImrrn8zBW5uE47tAV1LDIJxTEBJeh6FWlHVd
+         O++TePW/4kFWJQzCg4p1lqzWWjSWlAivVPFLpTMaedar1Mw3O7kZ3a7TgAcQ2N97VjUM
+         ElKaZoBPWXC7z7DBjJDmCvsN++ogk/GdQcFsbFR0spv2HuaYRMNBRFBWciop1cSzMyPx
+         4g3F23KjdrRX22KRuEZnNsRxCuE50/mLJZvF+JwvObguzKkvEgdNHgNEVFtbcmubGhbg
+         FMCl53r6IjH0Vha1/BAzkBRGiu1o+p51vyKuPGKpmpu3To3Q2DG3nns+ll7O4+Ej40kr
+         mDfQ==
+X-Gm-Message-State: AOAM531s7x1vu/HRqget+666HXAHF0tTFmCFOeYng8MHfem0SHFyluVb
+        smHmu69QEMPIEAnQKb4zn6oX+/wfDaMt6g64
+X-Google-Smtp-Source: ABdhPJynQVDYY3wR0uqszBcpsiw1KNTrdA8q7tIzm8L4dfhCfXyQ8SjCK8ODDXIQuDs6/mq9XojkfQ==
+X-Received: by 2002:a5d:55c6:: with SMTP id i6mr7005610wrw.137.1608340868526;
+        Fri, 18 Dec 2020 17:21:08 -0800 (PST)
+Received: from localhost ([85.255.236.29])
+        by smtp.gmail.com with ESMTPSA id f7sm19268615wmc.1.2020.12.18.17.21.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Dec 2020 17:21:08 -0800 (PST)
+Date:   Sat, 19 Dec 2020 01:21:07 +0000
+From:   Chris Down <chris@chrisdown.name>
+To:     Jacob Wen <jian.w.wen@oracle.com>
+Cc:     Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org
+Subject: Re: [PATCH] mm/vmscan: DRY cleanup for do_try_to_free_pages()
+Message-ID: <X91Vg1Mg1nPk/Bsx@chrisdown.name>
+References: <20201218102217.186836-1-jian.w.wen@oracle.com>
+ <20201218105153.GX32193@dhcp22.suse.cz>
+ <f376b551-9a90-c036-d34b-b32d93107b6c@oracle.com>
+ <20201218142717.GA32193@dhcp22.suse.cz>
+ <63e8a821-a3f6-47a6-f438-b27c32f4a05f@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <20201218121146.432286-1-ubizjak@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9839 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999
- malwarescore=0 bulkscore=0 adultscore=0 spamscore=0 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012190002
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9839 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 mlxscore=0
- lowpriorityscore=0 spamscore=0 adultscore=0 malwarescore=0 suspectscore=0
- mlxlogscore=999 impostorscore=0 priorityscore=1501 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012190003
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <63e8a821-a3f6-47a6-f438-b27c32f4a05f@oracle.com>
+User-Agent: Mutt/2.0.3 (a51f058f) (2020-12-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Jacob Wen writes:
+>set_task_reclaim_state() is a function with 3 lines of code of which 2 
+>lines contain WARN_ON_ONCE.
+>
+>I am not comfortable with the current repetition.
 
-On 12/18/20 4:11 AM, Uros Bizjak wrote:
-> Merge __kvm_handle_fault_on_reboot with its sole user
-> and move the definition of __ex to a common include to be
-> shared between VMX and SVM.
->
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-> ---
->   arch/x86/include/asm/kvm_host.h | 25 -------------------------
->   arch/x86/kvm/svm/svm.c          |  2 --
->   arch/x86/kvm/vmx/vmx_ops.h      |  4 +---
->   arch/x86/kvm/x86.h              | 23 +++++++++++++++++++++++
->   4 files changed, 24 insertions(+), 30 deletions(-)
->
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 7e5f33a0d0e2..ff152ee1d63f 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1623,31 +1623,6 @@ enum {
->   #define kvm_arch_vcpu_memslots_id(vcpu) ((vcpu)->arch.hflags & HF_SMM_MASK ? 1 : 0)
->   #define kvm_memslots_for_spte_role(kvm, role) __kvm_memslots(kvm, (role).smm)
->   
-> -asmlinkage void kvm_spurious_fault(void);
-> -
-> -/*
-> - * Hardware virtualization extension instructions may fault if a
-> - * reboot turns off virtualization while processes are running.
-> - * Usually after catching the fault we just panic; during reboot
-> - * instead the instruction is ignored.
-> - */
-> -#define __kvm_handle_fault_on_reboot(insn)				\
-> -	"666: \n\t"							\
-> -	insn "\n\t"							\
-> -	"jmp	668f \n\t"						\
-> -	"667: \n\t"							\
-> -	"1: \n\t"							\
-> -	".pushsection .discard.instr_begin \n\t"			\
-> -	".long 1b - . \n\t"						\
-> -	".popsection \n\t"						\
-> -	"call	kvm_spurious_fault \n\t"				\
-> -	"1: \n\t"							\
-> -	".pushsection .discard.instr_end \n\t"				\
-> -	".long 1b - . \n\t"						\
-> -	".popsection \n\t"						\
-> -	"668: \n\t"							\
-> -	_ASM_EXTABLE(666b, 667b)
-> -
->   #define KVM_ARCH_WANT_MMU_NOTIFIER
->   int kvm_unmap_hva_range(struct kvm *kvm, unsigned long start, unsigned long end,
->   			unsigned flags);
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index da7eb4aaf44f..0a72ab9fd568 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -42,8 +42,6 @@
->   
->   #include "svm.h"
->   
-> -#define __ex(x) __kvm_handle_fault_on_reboot(x)
-> -
->   MODULE_AUTHOR("Qumranet");
->   MODULE_LICENSE("GPL");
->   
-> diff --git a/arch/x86/kvm/vmx/vmx_ops.h b/arch/x86/kvm/vmx/vmx_ops.h
-> index 692b0c31c9c8..7e3cb53c413f 100644
-> --- a/arch/x86/kvm/vmx/vmx_ops.h
-> +++ b/arch/x86/kvm/vmx/vmx_ops.h
-> @@ -4,13 +4,11 @@
->   
->   #include <linux/nospec.h>
->   
-> -#include <asm/kvm_host.h>
->   #include <asm/vmx.h>
->   
->   #include "evmcs.h"
->   #include "vmcs.h"
-> -
-> -#define __ex(x) __kvm_handle_fault_on_reboot(x)
-> +#include "x86.h"
->   
->   asmlinkage void vmread_error(unsigned long field, bool fault);
->   __attribute__((regparm(0))) void vmread_error_trampoline(unsigned long field,
-> diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-> index e7ca622a468f..608548d05e84 100644
-> --- a/arch/x86/kvm/x86.h
-> +++ b/arch/x86/kvm/x86.h
-> @@ -7,6 +7,29 @@
->   #include "kvm_cache_regs.h"
->   #include "kvm_emulate.h"
->   
-> +asmlinkage void kvm_spurious_fault(void);
-> +
-> +/*
-> + * Hardware virtualization extension instructions may fault if a
-> + * reboot turns off virtualization while processes are running.
-> + * Usually after catching the fault we just panic; during reboot
-> + * instead the instruction is ignored.
-> + */
-> +#define __ex(insn)							\
-> +	"666:	" insn "\n"						\
-> +	"	jmp 669f\n"						\
-> +	"667:\n"							\
-> +	".pushsection .discard.instr_begin\n"				\
-> +	".long 667b - .\n"						\
-> +	".popsection\n"							\
-> +	"	call kvm_spurious_fault\n"				\
-> +	"668:\n"							\
-> +	".pushsection .discard.instr_end\n"				\
-> +	".long 668b - .\n"						\
-> +	".popsection\n"							\
-> +	"669:\n"							\
-> +	_ASM_EXTABLE(666b, 667b)
-> +
->   #define KVM_DEFAULT_PLE_GAP		128
->   #define KVM_VMX_DEFAULT_PLE_WINDOW	4096
->   #define KVM_DEFAULT_PLE_WINDOW_GROW	2
-Reviewed-by: Krish Sadhukhan <krish.sadhukhan@oracle.com>
+Ok, but could you please go into _why_ others should feel that way too? There 
+are equally also reasons to err on the side of leaving code as-is -- since we 
+know it already works, and this code generally has pretty high inertia -- and 
+avoid mutation of code without concrete description of the benefits.
