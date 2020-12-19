@@ -2,63 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A31B72DEC91
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 02:00:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3B832DEC92
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 02:02:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726341AbgLSA6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 19:58:50 -0500
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:45919 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725948AbgLSA6t (ORCPT
+        id S1726366AbgLSBAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 20:00:52 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:56690 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726053AbgLSBAv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 19:58:49 -0500
-X-Originating-IP: 86.202.109.140
-Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id E128A60002;
-        Sat, 19 Dec 2020 00:58:06 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     linux-rtc@vger.kernel.org,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Qiang Zhao <qiang.zhao@nxp.com>, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Bruno Thomsen <bruno.thomsen@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 0/2] add reset-source RTC binding, update pcf2127 driver
-Date:   Sat, 19 Dec 2020 01:58:06 +0100
-Message-Id: <160833946513.3453721.3470869578503319105.b4-ty@bootlin.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201218101054.25416-1-rasmus.villemoes@prevas.dk>
-References: <20201211215611.24392-1-rasmus.villemoes@prevas.dk> <20201218101054.25416-1-rasmus.villemoes@prevas.dk>
+        Fri, 18 Dec 2020 20:00:51 -0500
+Received: from fsav304.sakura.ne.jp (fsav304.sakura.ne.jp [153.120.85.135])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 0BJ108Mq021270;
+        Sat, 19 Dec 2020 10:00:09 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav304.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav304.sakura.ne.jp);
+ Sat, 19 Dec 2020 10:00:08 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav304.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 0BJ104SU021250
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Sat, 19 Dec 2020 10:00:08 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: WARNING: suspicious RCU usage in modeset_lock
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        syzbot <syzbot+972b924c988834e868b2@syzkaller.appspotmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Peter Rosin <peda@axentia.se>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Boqun Feng <boqun.feng@gmail.com>
+References: <000000000000cb6db205b68a971c@google.com>
+ <CAKMK7uEiS5SrBYv-2w2wWL=9G4ByoHvtiWVsPqekswZzOGmzjg@mail.gmail.com>
+ <20201216161621.GH2657@paulmck-ThinkPad-P72>
+ <CAKMK7uH1agVS=e245b=25Lv9Q+u5c7=KL-_NF8Hte10nKTqAXw@mail.gmail.com>
+ <20201217152118.GR2657@paulmck-ThinkPad-P72>
+ <X9wGBcCnhxr36WF4@boqun-archlinux>
+ <CACT4Y+bABW7OP0RDm-Qnq2M6kKVTc=e7Tmt5Uc1+zWyD2roqrA@mail.gmail.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <c0ed329a-1349-5d07-5b60-0a89d9fb9de3@i-love.sakura.ne.jp>
+Date:   Sat, 19 Dec 2020 10:00:02 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACT4Y+bABW7OP0RDm-Qnq2M6kKVTc=e7Tmt5Uc1+zWyD2roqrA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Dec 2020 11:10:52 +0100, Rasmus Villemoes wrote:
-> This adds a reset-source RTC DT binding, as suggested by Alexandre,
-> and resends Uwe's patch making use of that property in pcf2127 driver
-> to avoid the driver exposing a watchdog that doesn't work (and
-> potentially shuffling the enumeration of the existing devices that do
-> work).
-> 
-> v3: elide the refactoring patch already in -next (5d78533a0c53 - rtc:
-> pcf2127: move watchdog initialisation to a separate function), make
-> sure to cc the DT binding list.
-> 
-> [...]
+On Wed, Dec 16, 2020 at 5:16 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> In my experience, lockdep will indeed complain if an interrupt handler
+> returns while in an RCU read-side critical section.
 
-Applied, thanks!
-
-[1/2] dt-bindings: rtc: add reset-source property
-      commit: 320d159e2d63a97a40f24cd6dfda5a57eec65b91
-[2/2] rtc: pcf2127: only use watchdog when explicitly available
-      commit: 71ac13457d9d1007effde65b54818106b2c2b525
-
-Best regards,
--- 
-Alexandre Belloni <alexandre.belloni@bootlin.com>
+Can't we add lock status checks into the beginning and the end of interrupt handler functions
+(e.g. whether "struct task_struct"->lockdep_depth did not change) ?
