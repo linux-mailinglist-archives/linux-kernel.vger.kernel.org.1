@@ -2,136 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E64962DEDFC
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 10:26:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE7EA2DEDFE
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 10:29:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726438AbgLSJ0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 04:26:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54338 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726367AbgLSJ0N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 04:26:13 -0500
-From:   Arnd Bergmann <arnd@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ia64: fix timer cleanup regression
-Date:   Sat, 19 Dec 2020 10:24:42 +0100
-Message-Id: <20201219092516.1364230-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S1726466AbgLSJ2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 04:28:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726367AbgLSJ2f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Dec 2020 04:28:35 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51041C0617B0;
+        Sat, 19 Dec 2020 01:27:55 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id v2so3034312pfm.9;
+        Sat, 19 Dec 2020 01:27:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ctmRMSbwSXsaUJmiSd13cerYbuM3368cFgF1ybIbnTk=;
+        b=TJAl+FrXpE9DBSVN6HlpabGbK1T5ePXYs0WRG220mm555kBJcqf2uiFcVg3T7VaSGT
+         LQRfLBrNHh/aIt+fc1XuNI/sRDVQV1Y3KP95RaJDRVSk50P0NEFcEK4r9rleQFjV117a
+         hrr3pBCTPsyip+3lKtfsvF/xP1jJH43EjsTWQjQmVY8HZz4ioQxJVvLsB550cgnPA9lp
+         jexkeuw/XqO4ULcgY2XV1V6gAEl52d95gftoIhuPgDBYYlZggN+CvMvzBzV4D2FX+xrm
+         sQyq8N0lYFVlXT/MQlNlKnWArV+pS5YXkwKRo8GPI1Ib19T2H+YIsGd+FizMJrl5Sv2k
+         s4Eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ctmRMSbwSXsaUJmiSd13cerYbuM3368cFgF1ybIbnTk=;
+        b=g4GIy2N3rxvQjpLujLqsV7Iaxx7uQcTl6R557ds3KBHRAaO45HDn094vpMOVnRl53T
+         PplzObH0P3p3Dr6ou27yJ19UQT8Jgi+I+kPBkTPpZF7uxj0nm+F6vqSFyUnq1feaJAHn
+         AL0zjettqVG4aYB9i0yqME/J/dQgWiCD3vaxBsluLKCbgFY1lCGdl+ZsDX98g2+CoZUE
+         fI4JgEuxPas3KaQleAxwlX08PoOCCih7a9sKUaYg6/B2lU7hks8bA8edzkYjwrqD0YMN
+         MocHLa8YNv3G0nkHHq5u9hXmjMr3n75pY5kEJnAzXZotuapyEMj7HeKvsm2cILfz1JNj
+         PiYA==
+X-Gm-Message-State: AOAM530JHkL/6dI8x55oYWZ8JJFWtiUrk05bNyAJS/whODl7yDqzOTOa
+        DY4+w6+I4ykzsnHaT6qD6NI=
+X-Google-Smtp-Source: ABdhPJwoWtXQBa4bBhOrr/hAGclT7oR71ftv1fFkA/FD/hXBOdJCLFtbTmZPAJbL75q6V94kP3HcKg==
+X-Received: by 2002:a63:5845:: with SMTP id i5mr7465833pgm.355.1608370074869;
+        Sat, 19 Dec 2020 01:27:54 -0800 (PST)
+Received: from localhost (g39.222-224-245.ppp.wakwak.ne.jp. [222.224.245.39])
+        by smtp.gmail.com with ESMTPSA id mz1sm9467603pjb.33.2020.12.19.01.27.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Dec 2020 01:27:54 -0800 (PST)
+Date:   Sat, 19 Dec 2020 18:27:51 +0900
+From:   Stafford Horne <shorne@gmail.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Karol Gugala <kgugala@antmicro.com>,
+        linux-mediatek <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH 3/5] dt-bindings: soc: add the required property
+ 'additionalProperties'
+Message-ID: <20201219092751.GI3168563@lianli.shorne-pla.net>
+References: <20201204093813.1275-1-thunder.leizhen@huawei.com>
+ <20201204093813.1275-4-thunder.leizhen@huawei.com>
+ <20201218211706.GA2190351@robh.at.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201218211706.GA2190351@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Fri, Dec 18, 2020 at 03:17:06PM -0600, Rob Herring wrote:
+> On Fri, 04 Dec 2020 17:38:11 +0800, Zhen Lei wrote:
+> > When I do dt_binding_check for any YAML file, below wanring is always
+> > reported:
+> > 
+> > xxx/soc/litex/litex,soc-controller.yaml: 'additionalProperties' is a required property
+> > xxx/soc/litex/litex,soc-controller.yaml: ignoring, error in schema:
+> > warning: no schema found in file: xxx/soc/litex/litex,soc-controller.yaml
+> > 
+> > Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> > ---
+> >  Documentation/devicetree/bindings/soc/litex/litex,soc-controller.yaml | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> 
+> Applied, thanks!
 
-A cleanup patch from my legacy timer series broke ia64 and led
-to RCU stall errors and a fast system clock:
+Thank you!
 
-[  909.360108] INFO: task systemd-sysv-ge:200 blocked for more than 127 seconds.
-[  909.360108]       Not tainted 5.10.0+ #130
-[  909.360108] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[  909.360108] task:systemd-sysv-ge state:D stack:    0 pid:  200 ppid:   189 flags:0x00000000
-[  909.364108]
-[  909.364108] Call Trace:
-[  909.364423]  [<a00000010109b210>] __schedule+0x890/0x21e0
-[  909.364423]                                 sp=e0000100487d7b70 bsp=e0000100487d1748
-[  909.368423]  [<a00000010109cc00>] schedule+0xa0/0x240
-[  909.368423]                                 sp=e0000100487d7b90 bsp=e0000100487d16e0
-[  909.368558]  [<a00000010109ce70>] io_schedule+0x70/0xa0
-[  909.368558]                                 sp=e0000100487d7b90 bsp=e0000100487d16c0
-[  909.372290]  [<a00000010109e1c0>] bit_wait_io+0x20/0xe0
-[  909.372290]                                 sp=e0000100487d7b90 bsp=e0000100487d1698
-[  909.374168] rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
-[  909.376290]  [<a00000010109d860>] __wait_on_bit+0xc0/0x1c0
-[  909.376290]                                 sp=e0000100487d7b90 bsp=e0000100487d1648
-[  909.374168] rcu:     3-....: (2 ticks this GP) idle=19e/1/0x4000000000000002 softirq=1581/1581 fqs=2
-[  909.374168]  (detected by 0, t=5661 jiffies, g=1089, q=3)
-[  909.376290]  [<a00000010109da80>] out_of_line_wait_on_bit+0x120/0x140
-[  909.376290]                                 sp=e0000100487d7b90 bsp=e0000100487d1610
-[  909.374168] Task dump for CPU 3:
-[  909.374168] task:khungtaskd      state:R  running task
-
-Revert most of my patch to make this work again, including the extra
-update_process_times()/profile_tick() and the local_irq_enable() in the
-loop that I expected not to be needed here.
-
-I have not found out exactly what goes wrong, and would suggest that
-someone with hardware access tries to convert this code into a singleshot
-clockevent driver, which should give better behavior in all cases.
-
-Reported-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Fixes: 2b49ddcef297 ("ia64: convert to legacy_timer_tick")
-Cc: John Stultz <john.stultz@linaro.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Stephen Boyd <sboyd@kernel.org>
-Cc: Frederic Weisbecker <fweisbec@gmail.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/ia64/kernel/time.c | 31 ++++++++++++++++++-------------
- 1 file changed, 18 insertions(+), 13 deletions(-)
-
-diff --git a/arch/ia64/kernel/time.c b/arch/ia64/kernel/time.c
-index 9431edb08508..e3d9c8088d56 100644
---- a/arch/ia64/kernel/time.c
-+++ b/arch/ia64/kernel/time.c
-@@ -161,29 +161,34 @@ void vtime_account_idle(struct task_struct *tsk)
- static irqreturn_t
- timer_interrupt (int irq, void *dev_id)
- {
--	unsigned long cur_itm, new_itm, ticks;
-+	unsigned long new_itm;
- 
- 	if (cpu_is_offline(smp_processor_id())) {
- 		return IRQ_HANDLED;
- 	}
- 
- 	new_itm = local_cpu_data->itm_next;
--	cur_itm = ia64_get_itc();
- 
--	if (!time_after(cur_itm, new_itm)) {
-+	if (!time_after(ia64_get_itc(), new_itm))
- 		printk(KERN_ERR "Oops: timer tick before it's due (itc=%lx,itm=%lx)\n",
--		       cur_itm, new_itm);
--		ticks = 1;
--	} else {
--		ticks = DIV_ROUND_UP(cur_itm - new_itm,
--				     local_cpu_data->itm_delta);
--		new_itm += ticks * local_cpu_data->itm_delta;
--	}
-+		       ia64_get_itc(), new_itm);
-+
-+	while (1) {
-+		new_itm += local_cpu_data->itm_delta;
-+
-+		legacy_timer_tick(smp_processor_id() == time_keeper_id);
- 
--	if (smp_processor_id() != time_keeper_id)
--		ticks = 0;
-+		local_cpu_data->itm_next = new_itm;
- 
--	legacy_timer_tick(ticks);
-+		if (time_after(new_itm, ia64_get_itc()))
-+			break;
-+
-+		/*
-+		 * Allow IPIs to interrupt the timer loop.
-+		 */
-+		local_irq_enable();
-+		local_irq_disable();
-+	}
- 
- 	do {
- 		/*
--- 
-2.29.2
-
+-Stafford
