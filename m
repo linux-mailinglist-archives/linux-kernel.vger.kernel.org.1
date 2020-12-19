@@ -2,173 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 935162DF121
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 19:57:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 981072DF129
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 20:00:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727468AbgLSS4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 13:56:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36004 "EHLO mail.kernel.org"
+        id S1727455AbgLSTAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 14:00:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725951AbgLSS43 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 13:56:29 -0500
-From:   Jakub Kicinski <kuba@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     davem@davemloft.net
-Cc:     netdev@vger.kernel.org, pv-drivers@vmware.com, doshir@vmware.com,
-        UNGLinuxDriver@microchip.com, steve.glendinning@shawell.net,
-        woojung.huh@microchip.com, ath9k-devel@qca.qualcomm.com,
-        linux-wireless@vger.kernel.org, drivers@pensando.io,
-        snelson@pensando.io, vladimir.oltean@nxp.com,
-        claudiu.manoil@nxp.com, alexandre.belloni@bootlin.com,
-        bryan.whitehead@microchip.com, o.rempel@pengutronix.de,
-        kernel@pengutronix.de, robin@protonic.nl, hkallweit1@gmail.com,
-        nic_swsd@realtek.com, lars.povlsen@microchip.com,
-        Steen.Hegelund@microchip.com, linux-kernel@vger.kernel.org,
-        corbet@lwn.net, Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH net] MAINTAINERS: remove names from mailing list maintainers
-Date:   Sat, 19 Dec 2020 10:55:38 -0800
-Message-Id: <20201219185538.750076-1-kuba@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1727418AbgLSS77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Dec 2020 13:59:59 -0500
+X-Gm-Message-State: AOAM531bn5ot72pK1YO3UVwQ5HEX2AUjHtoBMfQGv+bGxiA7ZoarDp5g
+        ssdPQSh8Igo8K1eYYRvgTd/2Wf55FJy+2KCG2uAzsQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608404359;
+        bh=B4eZS0fBD7ANLQq4VCLFVYSZSIGJI1aDHNTXq9ib300=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=gxZP1XPMESkwIdap2FsenIe/y1FPGouFYHQkH3QN7YZ1q4na9ipLAtaqxeLeEyqJt
+         U/GGJc+XeA0rhsF1x9nXYSc5K76lWWp23HJnSYfMsd2iTHs2ohKoQWtAvYzRC7115o
+         +NhSy1I+RLx8dAroYA544sHsOoCTWigtgl9s02MxLn+8yT2NhsM4YHv0jOLRc88zVu
+         SOWK865a8/Suqa7ivItY+1vBnL00fmkZm+96Ko0eEaufBYVkBR8SGhAtKnaCD6HzaG
+         cW42EKtr1XcKkrkohY4K9UqtV14znXM0XajNmKzD8hm22023qFbXB7map55bH1mrWJ
+         BYHRnl7vCYf0w==
+X-Google-Smtp-Source: ABdhPJwSMnLS4j1gMZXFBUmn0p3sEfr+b5TEKCpYtLLiW6htQPSyFqPbrYVUOP28/AGvPZFksWxhJTGEynBEotKoVGs=
+X-Received: by 2002:a5d:43c3:: with SMTP id v3mr10389136wrr.184.1608404357517;
+ Sat, 19 Dec 2020 10:59:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201216174146.10446-1-chang.seok.bae@intel.com>
+In-Reply-To: <20201216174146.10446-1-chang.seok.bae@intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Sat, 19 Dec 2020 10:59:07 -0800
+X-Gmail-Original-Message-ID: <CALCETrW+3xW8TfLp84VHFB4K7c3m+jLu+fmku6EOSe+QGJAJxQ@mail.gmail.com>
+Message-ID: <CALCETrW+3xW8TfLp84VHFB4K7c3m+jLu+fmku6EOSe+QGJAJxQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/8] x86: Support Intel Key Locker
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
+        Andrew Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>, ning.sun@intel.com,
+        kumar.n.dwarakanath@intel.com,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When searching for inactive maintainers it's useful to filter
-out mailing list addresses. Such "maintainers" will obviously
-never feature in a "From:" line of an email or a review tag.
+On Wed, Dec 16, 2020 at 9:46 AM Chang S. Bae <chang.seok.bae@intel.com> wrote:
+>
+> Key Locker [1][2] is a new security feature available in new Intel CPUs to
+> protect data encryption keys for the Advanced Encryption Standard
+> algorithm. The protection limits the amount of time an AES key is exposed
+> in memory by sealing a key and referencing it with new AES instructions.
 
-Since "L:" entries only provide the address of a mailing list
-without a fancy name extend this pattern to "M:" entries.
+I think some fundamental issues need to be worked out before we can
+enable key locker upstream at all.
 
-Alternatively we could reserve M: entries for humans only
-and move the fake "maintainers" to L:. While I'd personally
-prefer to reserve M: for humans only, I'm not 100% that's
-a great choice either, given most L: entries are in fact
-open mailing lists with public archives.
+First, how fast is LOADIWKEY?  Does it depend on the mode?  Is it
+credible to context switch the wrapping key?
 
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
----
- MAINTAINERS | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+First, on bare metal, we need to decide whether to use a wrapping key
+or a software-provided wrapping key.  Both choices have pros and cons,
+and it's not clear to me whether Linux should have a boot-time
+parameter, a runtime control, a fixed value, or something else.  If we
+use a random key, we need to figure out what to do about S5 and
+hibernation.  No matter what we do, we're going to have some issues
+with CRIU.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 28d7acdb0591..20cd4cc08dd1 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -203,8 +203,8 @@ F:	include/uapi/linux/nl80211.h
- F:	net/wireless/
- 
- 8169 10/100/1000 GIGABIT ETHERNET DRIVER
--M:	Realtek linux nic maintainers <nic_swsd@realtek.com>
- M:	Heiner Kallweit <hkallweit1@gmail.com>
-+M:	nic_swsd@realtek.com
- L:	netdev@vger.kernel.org
- S:	Maintained
- F:	drivers/net/ethernet/realtek/r8169*
-@@ -2119,7 +2119,7 @@ N:	atmel
- ARM/Microchip Sparx5 SoC support
- M:	Lars Povlsen <lars.povlsen@microchip.com>
- M:	Steen Hegelund <Steen.Hegelund@microchip.com>
--M:	Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
-+M:	UNGLinuxDriver@microchip.com
- L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
- S:	Supported
- T:	git git://github.com/microchip-ung/linux-upstream.git
-@@ -3958,7 +3958,7 @@ F:	net/can/
- CAN-J1939 NETWORK LAYER
- M:	Robin van der Gracht <robin@protonic.nl>
- M:	Oleksij Rempel <o.rempel@pengutronix.de>
--R:	Pengutronix Kernel Team <kernel@pengutronix.de>
-+R:	kernel@pengutronix.de
- L:	linux-can@vger.kernel.org
- S:	Maintained
- F:	Documentation/networking/j1939.rst
-@@ -11651,7 +11651,7 @@ F:	drivers/media/platform/atmel/atmel-isi.h
- 
- MICROCHIP KSZ SERIES ETHERNET SWITCH DRIVER
- M:	Woojung Huh <woojung.huh@microchip.com>
--M:	Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
-+M:	UNGLinuxDriver@microchip.com
- L:	netdev@vger.kernel.org
- S:	Maintained
- F:	Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
-@@ -11661,7 +11661,7 @@ F:	net/dsa/tag_ksz.c
- 
- MICROCHIP LAN743X ETHERNET DRIVER
- M:	Bryan Whitehead <bryan.whitehead@microchip.com>
--M:	Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
-+M:	UNGLinuxDriver@microchip.com
- L:	netdev@vger.kernel.org
- S:	Maintained
- F:	drivers/net/ethernet/microchip/lan743x_*
-@@ -11755,7 +11755,7 @@ F:	drivers/net/wireless/microchip/wilc1000/
- 
- MICROSEMI MIPS SOCS
- M:	Alexandre Belloni <alexandre.belloni@bootlin.com>
--M:	Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
-+M:	UNGLinuxDriver@microchip.com
- L:	linux-mips@vger.kernel.org
- S:	Supported
- F:	Documentation/devicetree/bindings/mips/mscc.txt
-@@ -12809,10 +12809,10 @@ F:	tools/objtool/
- F:	include/linux/objtool.h
- 
- OCELOT ETHERNET SWITCH DRIVER
--M:	Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
- M:	Vladimir Oltean <vladimir.oltean@nxp.com>
- M:	Claudiu Manoil <claudiu.manoil@nxp.com>
- M:	Alexandre Belloni <alexandre.belloni@bootlin.com>
-+M:	UNGLinuxDriver@microchip.com
- L:	netdev@vger.kernel.org
- S:	Supported
- F:	drivers/net/dsa/ocelot/*
-@@ -13874,7 +13874,7 @@ F:	drivers/platform/x86/peaq-wmi.c
- 
- PENSANDO ETHERNET DRIVERS
- M:	Shannon Nelson <snelson@pensando.io>
--M:	Pensando Drivers <drivers@pensando.io>
-+M:	drivers@pensando.io
- L:	netdev@vger.kernel.org
- S:	Supported
- F:	Documentation/networking/device_drivers/ethernet/pensando/ionic.rst
-@@ -14653,7 +14653,7 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git
- F:	drivers/net/wireless/ath/ath11k/
- 
- QUALCOMM ATHEROS ATH9K WIRELESS DRIVER
--M:	QCA ath9k Development <ath9k-devel@qca.qualcomm.com>
-+M:	ath9k-devel@qca.qualcomm.com
- L:	linux-wireless@vger.kernel.org
- S:	Supported
- W:	https://wireless.wiki.kernel.org/en/users/Drivers/ath9k
-@@ -18338,7 +18338,7 @@ F:	include/linux/usb/isp116x.h
- 
- USB LAN78XX ETHERNET DRIVER
- M:	Woojung Huh <woojung.huh@microchip.com>
--M:	Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
-+M:	UNGLinuxDriver@microchip.com
- L:	netdev@vger.kernel.org
- S:	Maintained
- F:	Documentation/devicetree/bindings/net/microchip,lan78xx.txt
-@@ -18452,7 +18452,7 @@ F:	drivers/net/usb/smsc75xx.*
- 
- USB SMSC95XX ETHERNET DRIVER
- M:	Steve Glendinning <steve.glendinning@shawell.net>
--M:	Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
-+M:	UNGLinuxDriver@microchip.com
- L:	netdev@vger.kernel.org
- S:	Maintained
- F:	drivers/net/usb/smsc95xx.*
-@@ -18999,7 +18999,7 @@ F:	drivers/input/mouse/vmmouse.h
- 
- VMWARE VMXNET3 ETHERNET DRIVER
- M:	Ronak Doshi <doshir@vmware.com>
--M:	"VMware, Inc." <pv-drivers@vmware.com>
-+M:	pv-drivers@vmware.com
- L:	netdev@vger.kernel.org
- S:	Maintained
- F:	drivers/net/vmxnet3/
--- 
-2.26.2
+We also need to understand the virtualization situation.  What do we
+expect hypervisors to do with Key Locker?  The only obviously
+performant way I can see for VMMs to support migration is to use the
+same wrapping key fleetwide.  (This is also the only way I can see for
+VMMs to manage the wrapping key in a way that a side channel can't
+extract it from hypervisor memory.)  But VMMs can't do this without
+some degree of cooperation from the guest.  Perhaps we should disable
+KL if CPUID.HYPERVISOR is set for now?
 
+It's a shame that the spec seems to have some holes in the key
+management mechanisms.  It would be very nice if there was a way to
+load IWKey from an SGX enclave, and it would also be nice if there was
+a way to load an IWKey that is wrapped by a different key.  Also, for
+non-random IWKey values, there doesn't seem to be a way for software
+(in an enclave or otherwise) to confirm that it's wrapping an AES key
+against a particular wrapping key, which seems to severely limit the
+ability to safely provision a new wrapped key at runtime.
+
+--Andy
