@@ -2,96 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24F182DF06F
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 17:25:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F15E2DF074
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 17:27:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727052AbgLSQZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 11:25:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43704 "EHLO
+        id S1727104AbgLSQ0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 11:26:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726752AbgLSQZp (ORCPT
+        with ESMTP id S1726752AbgLSQ0B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 11:25:45 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98329C0613CF;
-        Sat, 19 Dec 2020 08:25:05 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id w5so6289337wrm.11;
-        Sat, 19 Dec 2020 08:25:05 -0800 (PST)
+        Sat, 19 Dec 2020 11:26:01 -0500
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED728C0617B0;
+        Sat, 19 Dec 2020 08:25:20 -0800 (PST)
+Received: by mail-io1-xd2a.google.com with SMTP id n4so4971653iow.12;
+        Sat, 19 Dec 2020 08:25:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=BqrM7vBnZgy1neZwerAnSu/Di9ko8MwnICVCM0MML0s=;
-        b=SF3r1Dqgf2Xq2f7jZP5sxFnYN1VU97vC3Azay9O0/xdoRRXSBer7I9hjnXzJbr0Bk3
-         ZLCcrvUMAQhwqs46kIseJymIxgRSktEheMIufz8e8zStaQrBEUaBOvzazQsXzzlddrAD
-         J7R6wzghJ2v5KzNDtlmhEocPsie+RY5fPpqwkzHqDuATIVppupzEPuhh79NGWJ3gveWb
-         yphXdyYAOnzkuIk7ySlWKUZ/yrT39eeNSbeakW3pcCjyHseddHTkFedSL6Z7mJAr9mTL
-         ojG/TIaTWQuCtxtvR4uGusnVgbDyNKfxW0H0AJrL6F7+5WHCy1/Vi9t2xtt8V4kII5Uo
-         n9gg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7yrIFpdKx7YIVx/PDK+vupPWevNBDzPRwa4m63HE0cY=;
+        b=OhmNUdyIQa2uofyblJk7bZaNoeWRU1df0sN8cyikYP/9u258Kjf+MiQJz3CrNeZ5AJ
+         lGSLDJLYmqoCFwjG2Bra6sCM0eAuSm8Rf8Q5pEimcU+Jvm59M/pK3jGmsOK0hLSsySyz
+         6/Hhajz9bcJzXyQgOa48qs8kFhYanvJRW9M7SnmLTZb2mOyXFlUe6Q8cUhnZxumuReuI
+         med+6B2rai36zzb8wYeiz0b24C94OymfMa6VcF2MhfwS0osVFtvjlU+/kD6gOUPsmPMs
+         Xg/FtySW1FrBLHY6NdPH/2ISXxfKf5kgVjY0llpfmV3Zlt9ZywMW7o059KVxxbMTAeMk
+         huUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=BqrM7vBnZgy1neZwerAnSu/Di9ko8MwnICVCM0MML0s=;
-        b=hwCVGBI/ZvDGNRG8fchBZvOpeQLXMNAqoVNCmuxvTN5C8E3fWIgKzcFKdresDmm+tD
-         WAllEnBx3/QizH93fP46+uxKbG09yo/NSzT8TDkAlyQnRfCQls8G73iVxpO9FLzEy5v8
-         /rxKcPHggrhS1b6nPuot/Ejfuw6awYeQE50oBUvgjiHkS3uZvWK++WoIUf8eDtqOVRud
-         ZEb/e7s0e80Uiw73tJCJeLMFIbxcQ+3RUuGyEee6m0+9j5ILF6Wzm38bylTApJxn0rYb
-         xDSZ/1n8kj72I2TudIlLZ7Cbq2DdTVzNbrIL6/f9jMdGcKTuEs2o52oSucX3i3mRnVZD
-         /zWg==
-X-Gm-Message-State: AOAM530az3ExIi0AAuQYPEmKvtdrXbassKb9Ee+rbLcMIQjWON9agSSL
-        WhaZbDZgNyy+xZD6t/o1JMU=
-X-Google-Smtp-Source: ABdhPJygGQH8MdpcWrRp1zig5Kc7RNOQjILOjktzEY97h51iIwNQGLPslebtEGU3AfT3nrwMDdOA6g==
-X-Received: by 2002:a5d:6749:: with SMTP id l9mr10127199wrw.395.1608395104306;
-        Sat, 19 Dec 2020 08:25:04 -0800 (PST)
-Received: from felia.fritz.box ([2001:16b8:2dee:f900:595c:74f6:9319:8cea])
-        by smtp.gmail.com with ESMTPSA id z21sm15339063wmk.20.2020.12.19.08.25.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Dec 2020 08:25:03 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org
-Cc:     Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org,
-        Joe Perches <joe@perches.com>,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: adjust GCC PLUGINS after gcc-plugin.sh removal
-Date:   Sat, 19 Dec 2020 17:24:56 +0100
-Message-Id: <20201219162456.19790-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7yrIFpdKx7YIVx/PDK+vupPWevNBDzPRwa4m63HE0cY=;
+        b=jZvQIjLhOrRb6/Gk9puwphs95Wm/rvjZ6Jy1KGO+Z4b2Ex0yFKcY9WVa3QUoWaM/Lx
+         A81Gwtz/DaB5Gzfcd80KNa/u8ufAd+p3H04YUxz5MtP1up5gEeWf1lqlEMr7Cmr1wxOq
+         vQldL6ZY4IsiQ5BDrEbyqJ01AGpVWsM9wNWazt42PcBQDjj7uHL6rEwdYcON19kA2MmO
+         0/8fiu2OQJ1rAYYzsKh3BLzDke0oQHCvG5rkUBrKUkYqZimJBbSv71RfqC4djDdTmaUO
+         Aqhijm2FNJynJRL1EZEZNSfgYNoU/HfgDvjS8MOWqB3UR33D53tlWe+hT0OhejCxE63C
+         S3Hw==
+X-Gm-Message-State: AOAM5306PR2mB7fuhU1116tef54AsK/0ruiKln4AzgTfxP0QKvrwLkF1
+        UpHqO82g0Yjl53DWow0NkNKKDWd+aJpFvorO02w=
+X-Google-Smtp-Source: ABdhPJyOOHA1gyrkp7K79TUDdOmt6MrWbzI2dZAskGmo4htBClXaVctgTHHlPagQIPV58hSmVTWIx51zcC5s/DiB0Kk=
+X-Received: by 2002:a05:6602:1608:: with SMTP id x8mr8718768iow.72.1608395120279;
+ Sat, 19 Dec 2020 08:25:20 -0800 (PST)
+MIME-Version: 1.0
+References: <20201218221129.851003-1-shakeelb@google.com> <CAOQ4uxiyd=N-mvYWHFx6Yq1LW1BPcriZw++MAyOGB_4CDkDKYA@mail.gmail.com>
+ <CALvZod6uT+bH7NqooEbqMLC6ppcbu-v=QDQRyTcfWGUsQodYjQ@mail.gmail.com>
+In-Reply-To: <CALvZod6uT+bH7NqooEbqMLC6ppcbu-v=QDQRyTcfWGUsQodYjQ@mail.gmail.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Sat, 19 Dec 2020 18:25:08 +0200
+Message-ID: <CAOQ4uxh3vEBMs8afudFU3zxKLpcKG7KuWEGkLiH0hioncum1UA@mail.gmail.com>
+Subject: Re: [PATCH] inotify, memcg: account inotify instances to kmemcg
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Jan Kara <jack@suse.cz>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 1e860048c53e ("gcc-plugins: simplify GCC plugin-dev capability test")
-removed ./scripts/gcc-plugin.sh, but missed to adjust MAINTAINERS.
+On Sat, Dec 19, 2020 at 4:31 PM Shakeel Butt <shakeelb@google.com> wrote:
+>
+> On Sat, Dec 19, 2020 at 1:48 AM Amir Goldstein <amir73il@gmail.com> wrote:
+> >
+> > On Sat, Dec 19, 2020 at 12:11 AM Shakeel Butt <shakeelb@google.com> wrote:
+> > >
+> > > Currently the fs sysctl inotify/max_user_instances is used to limit the
+> > > number of inotify instances on the system. For systems running multiple
+> > > workloads, the per-user namespace sysctl max_inotify_instances can be
+> > > used to further partition inotify instances. However there is no easy
+> > > way to set a sensible system level max limit on inotify instances and
+> > > further partition it between the workloads. It is much easier to charge
+> > > the underlying resource (i.e. memory) behind the inotify instances to
+> > > the memcg of the workload and let their memory limits limit the number
+> > > of inotify instances they can create.
+> >
+> > Not that I have a problem with this patch, but what problem does it try to
+> > solve?
+>
+> I am aiming for the simplicity to not set another limit which can
+> indirectly be limited by memcg limits. I just want to set the memcg
+> limit on our production environment which runs multiple workloads on a
+> system and not think about setting a sensible value to
+> max_user_instances in production. I would prefer to set
+> max_user_instances to max int and let the memcg limits of the
+> workloads limit their inotify usage.
+>
 
-Hence, ./scripts/get_maintainers.pl --self-test=patterns warns:
+understood.
+and I guess the multiple workloads cannot run each in their own userns?
+because then you wouldn't need to change max_user_instances limit.
 
-  warning: no file matches    F:    scripts/gcc-plugin.sh
+> > Are you concerned of users depleting system memory by creating
+> > userns's and allocating 128 * (struct fsnotify_group) at a time?
+> >
+> > IMO, that is not what max_user_instances was meant to protect against.
+> > There are two reasons I can think of to limit user instances:
+> > 1. Pre-memgc, user allocation of events is limited to
+> >     <max_user_instances>*<max_queued_events>
+> > 2. Performance penalty. User can place <max_user_instances>
+> >     watches on the same "hot" directory, that will cause any access to
+> >     that directory by any task on the system to pay the penalty of traversing
+> >     <max_user_instances> marks and attempt to queue <max_user_instances>
+> >     events. That cost, including <max_user_instances> inotify_merge() loops
+> >     could be significant
+> >
+> > #1 is not a problem anymore, since you already took care of accounting events
+> > to the user's memcg.
+> > #2 is not addressed by your patch.
+>
+> Yes, I am not addressing #2. Our workloads in prod have their own
+> private filesystems, so this is not an issue we observed.
+>
+> >
+> > >
+> > > Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> > > ---
+> > >  fs/notify/group.c                | 14 ++++++++++++--
+> > >  fs/notify/inotify/inotify_user.c |  5 +++--
+> > >  include/linux/fsnotify_backend.h |  2 ++
+> > >  3 files changed, 17 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/fs/notify/group.c b/fs/notify/group.c
+> > > index a4a4b1c64d32..fab3cfdb4d9e 100644
+> > > --- a/fs/notify/group.c
+> > > +++ b/fs/notify/group.c
+> > > @@ -114,11 +114,12 @@ EXPORT_SYMBOL_GPL(fsnotify_put_group);
+> > >  /*
+> > >   * Create a new fsnotify_group and hold a reference for the group returned.
+> > >   */
+> > > -struct fsnotify_group *fsnotify_alloc_group(const struct fsnotify_ops *ops)
+> > > +struct fsnotify_group *fsnotify_alloc_group_gfp(const struct fsnotify_ops *ops,
+> > > +                                               gfp_t gfp)
+> > >  {
+> > >         struct fsnotify_group *group;
+> > >
+> > > -       group = kzalloc(sizeof(struct fsnotify_group), GFP_KERNEL);
+> > > +       group = kzalloc(sizeof(struct fsnotify_group), gfp);
+> > >         if (!group)
+> > >                 return ERR_PTR(-ENOMEM);
+> > >
+> > > @@ -139,6 +140,15 @@ struct fsnotify_group *fsnotify_alloc_group(const struct fsnotify_ops *ops)
+> > >
+> > >         return group;
+> > >  }
+> > > +EXPORT_SYMBOL_GPL(fsnotify_alloc_group_gfp);
+> > > +
+> > > +/*
+> > > + * Create a new fsnotify_group and hold a reference for the group returned.
+> > > + */
+> > > +struct fsnotify_group *fsnotify_alloc_group(const struct fsnotify_ops *ops)
+> > > +{
+> > > +       return fsnotify_alloc_group_gfp(ops, GFP_KERNEL);
+> > > +}
+> > >  EXPORT_SYMBOL_GPL(fsnotify_alloc_group);
+> > >
+> > >  int fsnotify_fasync(int fd, struct file *file, int on)
+> > > diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
+> > > index 59c177011a0f..7cb528c6154c 100644
+> > > --- a/fs/notify/inotify/inotify_user.c
+> > > +++ b/fs/notify/inotify/inotify_user.c
+> > > @@ -632,11 +632,12 @@ static struct fsnotify_group *inotify_new_group(unsigned int max_events)
+> > >         struct fsnotify_group *group;
+> > >         struct inotify_event_info *oevent;
+> > >
+> > > -       group = fsnotify_alloc_group(&inotify_fsnotify_ops);
+> > > +       group = fsnotify_alloc_group_gfp(&inotify_fsnotify_ops,
+> > > +                                        GFP_KERNEL_ACCOUNT);
+> > >         if (IS_ERR(group))
+> > >                 return group;
+> > >
+> > > -       oevent = kmalloc(sizeof(struct inotify_event_info), GFP_KERNEL);
+> > > +       oevent = kmalloc(sizeof(struct inotify_event_info), GFP_KERNEL_ACCOUNT);
+> > >         if (unlikely(!oevent)) {
+> > >                 fsnotify_destroy_group(group);
+> > >                 return ERR_PTR(-ENOMEM);
+> >
+> > Any reason why you did not include fanotify in this patch?
+>
+> The motivation was inotify's max_user_instances but we can charge
+> fsnotify_group for fanotify as well. Though I would prefer that to be
+> a separate patch. Let me know what you prefer?
+>
 
-Adjust entries in GGC PLUGINS section after this file removal.
+I would prefer to add the helper fsnotify_alloc_user_group()
+that will use the GFP_KERNEL_ACCOUNT allocation flags
+internally.
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on next-20201218
+fsnotify_alloc_group() is used by all backends that initialize a single
+group instance for internal use and  fsnotify_alloc_user_group() will be
+used by inotify/fanotify when users create instances.
+I see no reason to separate that to two patches.
 
-Masahiro-san, please pick this minor cleanup patch on your -next tree.
-
- MAINTAINERS | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index f5eafee83bc6..fd3b06636c5b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -7371,7 +7371,6 @@ L:	linux-hardening@vger.kernel.org
- S:	Maintained
- F:	Documentation/kbuild/gcc-plugins.rst
- F:	scripts/Makefile.gcc-plugins
--F:	scripts/gcc-plugin.sh
- F:	scripts/gcc-plugins/
- 
- GCOV BASED KERNEL PROFILING
--- 
-2.17.1
-
+Thanks,
+Amir.
