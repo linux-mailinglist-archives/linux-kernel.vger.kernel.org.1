@@ -2,95 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50BF12DEE82
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 12:28:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FC112DEE90
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 12:32:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726645AbgLSL1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 06:27:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726590AbgLSL1o (ORCPT
+        id S1726651AbgLSLcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 06:32:20 -0500
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:43756 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726447AbgLSLcT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 06:27:44 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 858FEC061285;
-        Sat, 19 Dec 2020 03:27:04 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id 6so6955646ejz.5;
-        Sat, 19 Dec 2020 03:27:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=d/tBQPaeyOF9shnc/RRcovxcYh335vYdWfJpYP/ETgc=;
-        b=I1zV8UbUdmldwa7jTgSI91IBNorED+SuLPvgGA6ZIpuuSuhRKYW1wl7hWZAPrtWkOU
-         /XZs0eN5h/N/f5bZlZeqLMTfiBC37DxVbsJ+kkwLlFNy7oJtZ7b6xTWtVYxFSng1tmvO
-         oWPez7s4mEFZ8wAuEx4RYcOYLHbrtdH/7N0Si9lSycceCSC8MCFxcXBXmBtDMa0my9gr
-         O0wmxFqikUMm9KgD/pZnAmkNlq1+GLsddJYmMITC55cHcsMXYEjV7noVY6FeE9Xy3pnv
-         lZGhyyPcRPGDCTfQsiwA5Bq5nZeRa8gEleF5Cv2ZYws7r73ZF1XVzAn5KVWJRXWqbfUu
-         Fkqg==
+        Sat, 19 Dec 2020 06:32:19 -0500
+Received: by mail-oi1-f181.google.com with SMTP id q25so5915877oij.10;
+        Sat, 19 Dec 2020 03:32:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=d/tBQPaeyOF9shnc/RRcovxcYh335vYdWfJpYP/ETgc=;
-        b=eczzbqNy7bGuI4NWjGmq0B6gl2O9f08KngvOempjxVZr46+mLmcpz81hSUiJCgYa8l
-         ImxfyBm+EofGpPus2X3IhojI4msUY9dCm7NuC5CDY2u7tk6GMhstxrP7YzNbBnaElfcx
-         PO+WlxWZbdBz054/p/Zeh8ywFn0E9ZrXDo/iDAk/8sd2DRBTA8LeJe/nKnhZziHLojB6
-         hnSiChuauiIOibAEPglPXuXSpxMyRePjhGuujDY04BxNL/RP0DCxp2DxpFToF8TZheTq
-         FekHWeYzz69lTWP8XjRdNF6hNE3mt4dPh4xEjC+pxMFdUpGaRsBZS8fmFmSZ5FXL6LQN
-         AezQ==
-X-Gm-Message-State: AOAM530gBFkn9sQDUmqqnDHfNvvF/HqxlyS7DC71sS27wuc1pNj5EuzK
-        L+dlxpI+uy6N+GbjXK6L5DQ=
-X-Google-Smtp-Source: ABdhPJziwc1eitsvgGqX0C3zrwr0S4aksv6we0tEu/L3DP2JfUYyWt0QVxKb7TBtjZENEbeb/IdmHA==
-X-Received: by 2002:a17:906:8617:: with SMTP id o23mr8068807ejx.274.1608377223349;
-        Sat, 19 Dec 2020 03:27:03 -0800 (PST)
-Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id n17sm6651785ejh.49.2020.12.19.03.27.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 19 Dec 2020 03:27:02 -0800 (PST)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, mchehab@kernel.org, jacob-chen@iotwrt.com,
-        ezequiel@collabora.com, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v1 4/4] arm64: dts: rockchip: add rga node to rk3368.dtsi
-Date:   Sat, 19 Dec 2020 12:26:53 +0100
-Message-Id: <20201219112653.10705-4-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20201219112653.10705-1-jbx6244@gmail.com>
-References: <20201219112653.10705-1-jbx6244@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VY5iQs1XdhMdo8fpc0q1mKuoMEvmaeqP5q2K2K+p/es=;
+        b=qT2DJ4fXKe2d1Tf2kk22/0aVau4AfBs7soy+EYLQAhqBcYPva2dmOzPe6dRUBVCySb
+         r7wUvyCiFQ50TzRN7wukwHtu8OBC6/AQU3DPiErCPrHhqig4FAFLmaQ/q+JvKqg2ZJDW
+         shvtubEAGiPhpDI3pD80ic2PVuWvJ76aaXvY9+xQWsm1fzEC+GHfhh14Xv0zBksoZ3S5
+         28NjcMkgS3SBxINvMBenqjSee1nDmJKcG3rQIw+XEwpf9U30sZ4ZM4sfllZt1wcEBzc7
+         pM17oVP7NzBW+I8F6kDgt/ZI01iPvLRF1zQ5q/J7ffN6JGOO7e0huUeImAYYSFsFafaz
+         CUWA==
+X-Gm-Message-State: AOAM533NofPgynSTWtwTskka7SmTS/drCvshOm7RI5eEL0WDUUjWL3oi
+        TqpXlV+fZca1e2/ViwGnEAjiDmjo3ggD/DGuI18=
+X-Google-Smtp-Source: ABdhPJyohC3iHj3sWc6wI923TS6Motje49bM1fIi6w9jBPt5DchZIB52L+vICKSlRW4BTwzDi1I2yqTL7kf3Ef8++SQ=
+X-Received: by 2002:aca:ec09:: with SMTP id k9mr5462186oih.153.1608377499098;
+ Sat, 19 Dec 2020 03:31:39 -0800 (PST)
+MIME-Version: 1.0
+References: <20201218125253.3815567-1-geert+renesas@glider.be> <0b3f6954-273c-d15d-94c3-a80c7df23f56@lucaceresoli.net>
+In-Reply-To: <0b3f6954-273c-d15d-94c3-a80c7df23f56@lucaceresoli.net>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Sat, 19 Dec 2020 12:31:27 +0100
+Message-ID: <CAMuHMdVg7xaxMsY3jFgFrLQB=irVp5gxBC89TLVscBs2Y-rcUg@mail.gmail.com>
+Subject: Re: [PATCH] clk: vc5: Use "idt,voltage-microvolt" instead of "idt,voltage-microvolts"
+To:     Luca Ceresoli <luca@lucaceresoli.net>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Adam Ford <aford173@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add rga node to the rk3368.dtsi file.
+Hi Luca,
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- arch/arm64/boot/dts/rockchip/rk3368.dtsi | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+On Fri, Dec 18, 2020 at 11:18 PM Luca Ceresoli <luca@lucaceresoli.net> wrote:
+> On 18/12/20 13:52, Geert Uytterhoeven wrote:
+> > Commit 45c940184b501fc6 ("dt-bindings: clk: versaclock5: convert to
+> > yaml") accidentally changed "idt,voltage-microvolts" to
+> > "idt,voltage-microvolt" in the DT bindings, while the driver still used
+> > the former.
+> >
+> > Update the driver to match the bindings, as
+> > Documentation/devicetree/bindings/property-units.txt actually recommends
+> > using "microvolt".
+> >
+> > Fixes: 260249f929e81d3d ("clk: vc5: Enable addition output configurations of the Versaclock")
+> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > ---
+> > There are no upstream users yet, but they are planned for v5.12, so I
+> > think this should be in v5.11-rc1.
+> >
+> > Thanks!
+> > ---
+> >  drivers/clk/clk-versaclock5.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/clk/clk-versaclock5.c b/drivers/clk/clk-versaclock5.c
+> > index c90460e7ef2153fe..43db67337bc06824 100644
+> > --- a/drivers/clk/clk-versaclock5.c
+> > +++ b/drivers/clk/clk-versaclock5.c
+> > @@ -739,8 +739,8 @@ static int vc5_update_power(struct device_node *np_output,
+> >  {
+> >       u32 value;
+> >
+> > -     if (!of_property_read_u32(np_output,
+> > -                               "idt,voltage-microvolts", &value)) {
+> > +     if (!of_property_read_u32(np_output, "idt,voltage-microvolt",
+> > +                               &value)) {
+>
+> Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3368.dtsi b/arch/arm64/boot/dts/rockchip/rk3368.dtsi
-index 3746f23dc..dad1a00e6 100644
---- a/arch/arm64/boot/dts/rockchip/rk3368.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3368.dtsi
-@@ -738,6 +738,16 @@
- 		status = "disabled";
- 	};
- 
-+	rga: rga@ff920000 {
-+		compatible = "rockchip,rk3368-rga", "rockchip,rk3288-rga";
-+		reg = <0x0 0xff920000 0x0 0x1000>;
-+		interrupts = <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>;
-+		clocks = <&cru ACLK_RGA>, <&cru HCLK_RGA>, <&cru SCLK_RGA>;
-+		clock-names = "aclk", "hclk", "sclk";
-+		resets = <&cru SRST_RGA_CORE>, <&cru SRST_RGA_AXI>, <&cru SRST_RGA_AHB>;
-+		reset-names = "core", "axi", "ahb";
-+	};
-+
- 	vop_mmu: iommu@ff930300 {
- 		compatible = "rockchip,iommu";
- 		reg = <0x0 0xff930300 0x0 0x100>;
+Thanks!
+
+> Now the example in the bindings needs the same fix. I guess you doing it
+> in your "Miscellaneous fixes and improvements" v2 series, otherwise I
+> can do that.
+
+Yep, planned for v2.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.11.0
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
