@@ -2,107 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EE462DEFB7
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 14:08:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A982DEFC4
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 14:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728658AbgLSNHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 08:07:41 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:24207 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728005AbgLSNHg (ORCPT
+        id S1726792AbgLSNOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 08:14:52 -0500
+Received: from mail-io1-f69.google.com ([209.85.166.69]:33176 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726476AbgLSNOv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 08:07:36 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1608383236; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=2rdcGMoZjvwEI14/iE0GeGMU3+IFUPK3B3exsw9OHwk=; b=o+5lrR8mkjZh2eClHECwgUBRA94KmUsgk1CE3ltx9qhgJ8WikjFRE3IySwMpap8BUrAuQ3oB
- OGZkRMTYNpQdBtQ2t2nOpmvqBVEI+QMOmwju8te56JpuhbuwXi9e2/PEfQsygEXllkfY7Lli
- PLHHxPB1Hb/pOmzhkuZ7EXLl+MQ=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5fddfaeaf5e9af65f825920c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 19 Dec 2020 13:06:50
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 62DF3C43469; Sat, 19 Dec 2020 13:06:50 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A5697C43462;
-        Sat, 19 Dec 2020 13:06:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A5697C43462
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Srinivasan Raju <srini.raju@purelifi.com>
-Cc:     mostafa.afgani@purelifi.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org (open list),
-        linux-wireless@vger.kernel.org (open list:NETWORKING DRIVERS (WIRELESS)),
-        netdev@vger.kernel.org (open list:NETWORKING DRIVERS)
-Subject: Re: [PATCH] [v11] wireless: Initial driver submission for pureLiFi STA devices
-References: <20200928102008.32568-1-srini.raju@purelifi.com>
-        <20201208115719.349553-1-srini.raju@purelifi.com>
-Date:   Sat, 19 Dec 2020 15:06:42 +0200
-In-Reply-To: <20201208115719.349553-1-srini.raju@purelifi.com> (Srinivasan
-        Raju's message of "Tue, 8 Dec 2020 17:27:04 +0530")
-Message-ID: <87sg82q719.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        Sat, 19 Dec 2020 08:14:51 -0500
+Received: by mail-io1-f69.google.com with SMTP id t23so3832816ioh.0
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 05:14:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Cu2aYISGQPzLf0fZUerl33lGzRiwpaY7H+fv9PeBU0Q=;
+        b=fIDpCLkE4UeXTQz7LDXnhnDa399n6at4y1rpwa+9srbgnHLFtOPtnlWrfQsrK4y84X
+         tA9M/QVcdkI2lrz8NzqVyQYtbgymLA996djgPB9UFNdKxfzKviZxa4utKXxlDs17Fv7G
+         9g+R1Tc6EzNTf/69H5o9SoCYs97EfffX46kzmEwTxC5piZ1k86WVdfIvqxwGhiLgXFZJ
+         2BIR5PNG61sBKrih7+klTsk8Yq6qnpvlxEOKMQXntGYleu2IyhgZhw6i5C/WPtarK0iB
+         RSbwP9w3rzcu631AJKUxrj7vPyFxU06HLwbXEkwawjrhk8ILHZ6b+e++jjpIwnTiIdct
+         Q/kA==
+X-Gm-Message-State: AOAM531XPmaWsTkzJT11DPmhDyWHn8rULwGbyCK5FkFa1U3e4mnqhyrs
+        MGjoRtoqAn5ZfhiBgZaMJbJn03g5yxA3Yq/ceDgYxfQErX+y
+X-Google-Smtp-Source: ABdhPJz5xeNYdQX8k5KLaYB+tapLYOA3m44Hc9edbJK7QCmrpplYFGIQ/mwzsr4Xa/25jQ0P0TbV7Y3LFHbf+db6znhfiooUKqQp
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Received: by 2002:a02:cf30:: with SMTP id s16mr8209401jar.144.1608383650402;
+ Sat, 19 Dec 2020 05:14:10 -0800 (PST)
+Date:   Sat, 19 Dec 2020 05:14:10 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000025169705b6d100fa@google.com>
+Subject: memory leak in video_usercopy
+From:   syzbot <syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com>
+To:     arnd@arndb.de, hverkuil-cisco@xs4all.nl,
+        laurent.pinchart@ideasonboard.com, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, mchehab@kernel.org,
+        sakari.ailus@linux.intel.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Srinivasan Raju <srini.raju@purelifi.com> writes:
+Hello,
 
-> This introduces the pureLiFi LiFi driver for LiFi-X, LiFi-XC
-> and LiFi-XL USB devices.
->
-> This driver implementation has been based on the zd1211rw driver.
->
-> Driver is based on 802.11 softMAC Architecture and uses
-> native 802.11 for configuration and management.
->
-> The driver is compiled and tested in ARM, x86 architectures and
-> compiled in powerpc architecture.
+syzbot found the following issue on:
 
-Is endianess support is properly implemented?
+HEAD commit:    a409ed15 Merge tag 'gpio-v5.11-1' of git://git.kernel.org/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10a5880f500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=37c889fb8b2761af
+dashboard link: https://syzkaller.appspot.com/bug?extid=1115e79c8df6472c612b
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14d18f9b500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=106a2c13500000
 
-> +			fw_data[tbuf_idx] =
-> +				((fw_data[tbuf_idx] & 128) >> 7) |
-> +				((fw_data[tbuf_idx] &  64) >> 5) |
-> +				((fw_data[tbuf_idx] &  32) >> 3) |
-> +				((fw_data[tbuf_idx] &  16) >> 1) |
-> +				((fw_data[tbuf_idx] &   8) << 1) |
-> +				((fw_data[tbuf_idx] &   4) << 3) |
-> +				((fw_data[tbuf_idx] &   2) << 5) |
-> +				((fw_data[tbuf_idx] &   1) << 7);
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com
 
-Is this cpu_to_le16() or what? Try avoid reinventing the wheel and use
-what kernel provides you.
+Debian GNU/Linux 9 syzkaller ttyS0
+Warning: Permanently added '10.128.10.29' (ECDSA) to the list of known hosts.
+executing program
+executing program
+BUG: memory leak
+unreferenced object 0xffff88810fb12300 (size 256):
+  comm "syz-executor399", pid 8472, jiffies 4294942333 (age 13.960s)
+  hex dump (first 32 bytes):
+    03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<000000009fd00995>] kmalloc_node include/linux/slab.h:575 [inline]
+    [<000000009fd00995>] kvmalloc_node+0x61/0xf0 mm/util.c:575
+    [<0000000096a57c4a>] kvmalloc include/linux/mm.h:773 [inline]
+    [<0000000096a57c4a>] video_usercopy+0x991/0xa50 drivers/media/v4l2-core/v4l2-ioctl.c:3303
+    [<00000000f7529cc2>] v4l2_ioctl+0x77/0x90 drivers/media/v4l2-core/v4l2-dev.c:360
+    [<0000000061b5e6a9>] vfs_ioctl fs/ioctl.c:48 [inline]
+    [<0000000061b5e6a9>] __do_sys_ioctl fs/ioctl.c:753 [inline]
+    [<0000000061b5e6a9>] __se_sys_ioctl fs/ioctl.c:739 [inline]
+    [<0000000061b5e6a9>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
+    [<000000000139479b>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<00000000d6de1c9c>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Also noticed lots of dev_info() spamming, please convert those to debug
-messages.
+BUG: memory leak
+unreferenced object 0xffff88810f934300 (size 256):
+  comm "syz-executor399", pid 8473, jiffies 4294942927 (age 8.030s)
+  hex dump (first 32 bytes):
+    03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<000000009fd00995>] kmalloc_node include/linux/slab.h:575 [inline]
+    [<000000009fd00995>] kvmalloc_node+0x61/0xf0 mm/util.c:575
+    [<0000000096a57c4a>] kvmalloc include/linux/mm.h:773 [inline]
+    [<0000000096a57c4a>] video_usercopy+0x991/0xa50 drivers/media/v4l2-core/v4l2-ioctl.c:3303
+    [<00000000f7529cc2>] v4l2_ioctl+0x77/0x90 drivers/media/v4l2-core/v4l2-dev.c:360
+    [<0000000061b5e6a9>] vfs_ioctl fs/ioctl.c:48 [inline]
+    [<0000000061b5e6a9>] __do_sys_ioctl fs/ioctl.c:753 [inline]
+    [<0000000061b5e6a9>] __se_sys_ioctl fs/ioctl.c:739 [inline]
+    [<0000000061b5e6a9>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
+    [<000000000139479b>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<00000000d6de1c9c>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-And rx_usb_enabled is racy and it will not work if there are multiple
-devices. Maybe move it to struct purelifi_usb or similar?
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
