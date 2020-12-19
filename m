@@ -2,96 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 044952DEE61
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 12:05:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE9B2DEE67
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 12:07:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726693AbgLSLFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 06:05:13 -0500
-Received: from mout.gmx.net ([212.227.15.18]:45037 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726483AbgLSLFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 06:05:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1608375795;
-        bh=uaTSZXPs8mGAHc0wJE1STHCcZRQ5t+E6vV+WWhZAebk=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=cR7nkKavwmijyx4BJ00vCGzigaiElKbB9pE2DcPw5pb3JBESgItQvky0atF1g0Bbp
-         XYhqAxQaEohmH7IAjf8ABIzmg5uGMqQsRC1DOg/NO1z6bWsNISmLRi1lusbicu0c9D
-         eSobqJtJNZHsW5FSEg0BjSx3mOmmsVctAS4MjlzA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.150.14]) by mail.gmx.com (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MgvvT-1k9Eqc25u9-00hKm1; Sat, 19
- Dec 2020 12:03:15 +0100
-Message-ID: <a8e616b333a85606c0da24465c9d7209b6991eba.camel@gmx.de>
-Subject: Re: [patch] zswap: fix zswap_frontswap_load() vs
- zsmalloc::map/unmap() might_sleep() splat
-From:   Mike Galbraith <efault@gmx.de>
-To:     Vitaly Wool <vitaly.wool@konsulko.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Minchan Kim <minchan@kernel.org>,
-        NitinGupta <ngupta@vflare.org>
-Date:   Sat, 19 Dec 2020 12:03:14 +0100
-In-Reply-To: <18669bd607ae9efbf4e00e36532c7aa167d0fa12.camel@gmx.de>
-References: <fae85e4440a8ef6f13192476bd33a4826416fc58.camel@gmx.de>
-         <aa9be27f0d247db1b25da55901b975d78537db3d.camel@gmx.de>
-         <CAM4kBBJYZzbXAixrKvy9MeO2eUsVVi8=iUBUc+pbSMXudy7hkw@mail.gmail.com>
-         <6946d6e798866276f0d635f219cdd4ad05156351.camel@gmx.de>
-         <CAM4kBBJZDqZfk+w5Wv4Ye7JythQ-Sr5-==zxeq8M5WCnHpFtEA@mail.gmail.com>
-         <18669bd607ae9efbf4e00e36532c7aa167d0fa12.camel@gmx.de>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
+        id S1726513AbgLSLGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 06:06:49 -0500
+Received: from mail-ej1-f50.google.com ([209.85.218.50]:35956 "EHLO
+        mail-ej1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726456AbgLSLGt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Dec 2020 06:06:49 -0500
+Received: by mail-ej1-f50.google.com with SMTP id lt17so6917620ejb.3;
+        Sat, 19 Dec 2020 03:06:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qNKpcAvCckFtSnR2woLhuVnvJHZHQ3Z8UruGn8Oav2o=;
+        b=cGS5gSg5NEgMqzxKDcWLlwc/Q6Dg/luGLDHr8TmCLpuOR14DLEIrsg//ij7x02i6Wk
+         OpWkvd3NmUjh6NNFfSngPxOucI1cosVQGM3RGH9tvO+ZMbNqJ4pQin7ff2Nko9MACM5D
+         UMbqvLVYaJ47ukgcpCF3pjJOFJWdDR8FvOGUBi8ycDlww0wUBnJljtJlhBRlmhSqoG07
+         dU3pHYd3CxUzYd0P23UFXaGA2Xn1grW0paq0wPrLdL81d84vgT4in/vYicDhHwjts0B+
+         SzLXTKNjSlZto4kW4HScmXCxcWeax0rWER3wd4jQovO0bzsIkVq52x0NVppsbX/V57ue
+         aFRA==
+X-Gm-Message-State: AOAM5332apcJNpXMkQ7dGBrs63pyFYa38yy3iJ97bpvX6nKvCsqR3Apg
+        UFLTghHpkSPGWIun2a8E5Ao=
+X-Google-Smtp-Source: ABdhPJzO9DNkFxh+zlxlbvHsEFM0VyzpmW79FhwTf3ogBtV+93P0q6SflgR8tQtTk1A7V51TjYNP0g==
+X-Received: by 2002:a17:907:4243:: with SMTP id np3mr7881715ejb.212.1608375966504;
+        Sat, 19 Dec 2020 03:06:06 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id n22sm26169490edr.11.2020.12.19.03.06.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Dec 2020 03:06:05 -0800 (PST)
+Date:   Sat, 19 Dec 2020 12:06:03 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Felipe Balbi <balbi@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        YongQin Liu <yongqin.liu@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>
+Subject: Re: [PATCH v2 16/18] arm64: dts: hi3660: Harmonize DWC USB3 DT nodes
+ name
+Message-ID: <20201219110603.GA8061@kozik-lap>
+References: <20201111091552.15593-1-Sergey.Semin@baikalelectronics.ru>
+ <20201111091552.15593-17-Sergey.Semin@baikalelectronics.ru>
+ <CALAqxLWGujgR7p8Vb5S_RimRVYxwm5XF-c4NkKgMH-43wEBaWg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:YhFvjMraDVR9ltDT5vH8xP9kyiH2f5djoWRLwx0aZLWhutvbmOJ
- eX/GE67Yh+19DccKxUs7hUcgmDiFuj7NCkTlL9uIoUUyM71cXn8zTPlplsuX6koG305W1/z
- nb1zCDejpZX1ZtFJoA/+DQhX+7gzCHjK4TRvXqhiw3r4ds9WtmgN2ng99vNzKOHbC5EdE6I
- L2weALDg4e58oQnBMw4dQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:irEI8XB0D0Q=:/ndnBO/AGzTxrD7dvbvWdz
- 5KIdCI8nmZSmbclLJnU2wmF43788flc5nN+klDluzIwinZoQz92ZQN7k/9yddV2ylRuPMf00i
- z3VJqW7+fRrAo1vmPn9hIHJe2v+LKhOuCKTantFnGRAY63wjmqv/nT1iI1HNxQLiCN/EZzOfV
- 7/lnVOnP5Ww8BTKiWHt61Rc61ih2OP+XeCGH3gu7e4ez7MdyeyPqtglXEs+zX8ruF/ELrH/Ux
- wrcKWEfMFU8zfNiE5Ui2Z07YEbzlcKpDFnjSZ1wbB//rCc9u9ScGppO0HabxjSEu8d8cVH3SH
- yZ520CdRn+uY/9wlKrYw2ZhAsFp3ZrlfYnmIAnBMiY/OWWreCn1KZLk9u6F7KxbFtiHZzCFMY
- CZq5QEohpzvYUwxupJ7oZ2NbkAquY41Ek+/pC7QemqEM38thIfuFZFrcOqEfHRhxSaEI4Z1sG
- n7e5lyzEpBsQewQ/oiOpjyEZzUwiyJlaZzxQTaGmKfUhcus0/URf4JpGbsHNFy0pJ5s083Dpl
- 7nuSEHZ+VjtF2HtwTg0XQkbDBAguJ2nu/BPFOjII6bPQAUAFM6Py3S9/r4wlBQ4YD6g8eFbUu
- MjdIA2U7VPK3wsV4ZGYDy0uxFG5MYpjwrZq71lBrRXOxcHroNQkYwIcDuNd1r1WkOtpVyPVOA
- 3pMbWlvFO3JQpokLX8efLiyt9w8WT/hRkNuiDdyG4RBz6aSEWssd1YZKHc1LAJZ+YleVWL0Mj
- jemy0jqlhNSElW3kQkpn+TFm8czyUrnlhgEP9mPVtRn3k85RDUdpsabQ9sa7/4wuirEERdF9H
- WFyT0G5Tnhwzg7LFfBdOcbwCw979YzGJ3922C+rRNXougs6jsezMW7uxG9XrZJSBN+jLkEZ+e
- X/htdilUflyIi/5rd2YA==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CALAqxLWGujgR7p8Vb5S_RimRVYxwm5XF-c4NkKgMH-43wEBaWg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(CC zsmalloc maintainers)
+On Fri, Dec 18, 2020 at 09:11:42PM -0800, John Stultz wrote:
+> On Wed, Nov 11, 2020 at 1:22 AM Serge Semin
+> <Sergey.Semin@baikalelectronics.ru> wrote:
+> >
+> > In accordance with the DWC USB3 bindings the corresponding node
+> > name is suppose to comply with the Generic USB HCD DT schema, which
+> > requires the USB nodes to have the name acceptable by the regexp:
+> > "^usb(@.*)?" . Make sure the "snps,dwc3"-compatible nodes are correctly
+> > named.
+> >
+> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > ---
+> >  arch/arm64/boot/dts/hisilicon/hi3660.dtsi | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+> > index d25aac5e0bf8..aea3800029b5 100644
+> > --- a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+> > +++ b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+> > @@ -1166,7 +1166,7 @@ usb_phy: usb-phy {
+> >                         };
+> >                 };
+> >
+> > -               dwc3: dwc3@ff100000 {
+> > +               dwc3: usb@ff100000 {
+> >                         compatible = "snps,dwc3";
+> >                         reg = <0x0 0xff100000 0x0 0x100000>;
+> 
+> 
+> Oof. So this patch is breaking the usb gadget functionality on HiKey960 w/ AOSP.
+> 
+> In order to choose the right controller for gadget mode with AOSP, one
+> sets the "sys.usb.controller" property, which until now for HiKey960
+> has been "ff100000.dwc3".
+> After this patch, the controller isn't found and we would have to
+> change userland to use "ff100000.usb", which would then break booting
+> on older kernels (testing various LTS releases on AOSP is one of the
+> key uses of the HiKey960).
+> 
+> So while I understand the desire to unify the schema, as HiKey960
+> really isn't likely to be used outside of AOSP, I wonder if reverting
+> this one change is in the best interest of not breaking existing
+> userland?
 
-On Sat, 2020-12-19 at 11:59 +0100, Mike Galbraith wrote:
-> On Sat, 2020-12-19 at 11:46 +0100, Vitaly Wool wrote:
-> > On Sat, 19 Dec 2020, 11:27 Mike Galbraith, <efault@gmx.de> wrote:
-> >
-> > > The kernel that generated that splat was NOT an RT kernel, it was pl=
-ain
-> > > master.today with a PREEMPT config.
-> >
-> >
-> > I see, thanks. I don't think it makes things better for zsmalloc
-> > though. From what I can see, the offending code is this:
-> >
-> > >        /* From now on, migration cannot move the object */
-> > >        pin_tag(handle);
-> >
-> > Bit spinlock is taken in pin_tag(). I find the comment above somewhat
-> > misleading, why is it necessary to take a spinlock to prevent
-> > migration? I would guess an atomic flag should normally be enough.
-> >
-> > zswap is not broken here, it is zsmalloc that needs to be fixed.
->
-> Cool, those damn bit spinlocks going away would be a case of happiness
-> for RT as well :)
->
-> 	-Mike
+The node names are not part of an ABI, are they? I expect only
+compatibles and properties to be stable. If user-space looks for
+something by name, it's a user-space's mistake.  Not mentioning that you
+also look for specific address... Imagine remapping of addresses with
+ranges (for whatever reason) - AOSP also would be broken? Addresses are
+definitely not an ABI.
+
+Best regards,
+Krzysztof
 
