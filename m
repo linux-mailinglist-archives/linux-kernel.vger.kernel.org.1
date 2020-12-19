@@ -2,255 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD9D92DEDCA
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 08:57:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50EB22DEDC7
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 08:57:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726528AbgLSH5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 02:57:07 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:42248 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726414AbgLSH5G (ORCPT
+        id S1726504AbgLSH4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 02:56:50 -0500
+Received: from mail-io1-f69.google.com ([209.85.166.69]:45522 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726375AbgLSH4t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 02:57:06 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 2CE5A1C0B77; Sat, 19 Dec 2020 08:56:08 +0100 (CET)
-Date:   Sat, 19 Dec 2020 08:56:06 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     kernel test robot <lkp@intel.com>,
-        kernel list <linux-kernel@vger.kernel.org>
-Cc:     Zheng Yongjun <zhengyongjun3@huawei.com>, kbuild-all@lists.01.org,
-        clang-built-linux@googlegroups.com,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: Re: [linux-next:master 13538/13785] /tmp/metronomefb-846872.s:300:
- Error: unrecognized opcode `zext.b a2,a2'
-Message-ID: <20201219075606.GA20870@amd>
-References: <202012191403.y8Aomjpm-lkp@intel.com>
+        Sat, 19 Dec 2020 02:56:49 -0500
+Received: by mail-io1-f69.google.com with SMTP id x7so3570268ion.12
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 23:56:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=s7h6mFvDc/Ce4O+16ifiHi7SJvQ+hFCpQ5/hLq9F0WE=;
+        b=byc5a9syEIR96SBo6A3QPqRGlowFDKSamiv4dpF0/J1i8Ok3CSBvEjAyuLqyIbuGVh
+         Jc/j5o3xdFxZ2Z/mGePLfKi/f5awB7SLPDExsfC5JVArUDKTWbHmjDdci+SsN5s3UUSk
+         MckovfKgc3a7XDnqcR7cSlHGMNGrbXmWzMiipiezBWZGu4gl357mnJMpIDdTFWvdEa0N
+         rXpQIvG7K9AW8lGGJxucBH/SK2SNAuMoXqjIV1R443vI7LRLIQAjOCiBfnx7sWO9/JAN
+         IOxThMlOix1FKU5rlDX4FBjJPucqhJiiKvNrSWD/Z9fNlh/AMdJfN8vtS55tFK+ZmH7j
+         Xspw==
+X-Gm-Message-State: AOAM532G7PajHG2k5jGmL+CFmRdGcEXHpLz8KG+xlLiKSB8LyRUIZuPT
+        Isd4sw4EieH/0YXboxYggaq9SWhGSCCCRzcwOeBidO1mPAcs
+X-Google-Smtp-Source: ABdhPJyL6kaL6yC7lhDapNwEFM/IpUCqIzxIKUgqIy+Z9+eiXOgO14e7Ej7292RRBChagRerhZVj6Ug9ir22pzfgCemOP0usSCWv
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="oyUTqETQ0mS9luUI"
-Content-Disposition: inline
-In-Reply-To: <202012191403.y8Aomjpm-lkp@intel.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+X-Received: by 2002:a92:c206:: with SMTP id j6mr7819867ilo.189.1608364568409;
+ Fri, 18 Dec 2020 23:56:08 -0800 (PST)
+Date:   Fri, 18 Dec 2020 23:56:08 -0800
+In-Reply-To: <000000000000e2852705ac9cfd73@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c4fd0405b6cc8e53@google.com>
+Subject: Re: KASAN: slab-out-of-bounds Read in lock_sock_nested
+From:   syzbot <syzbot+9a0875bc1b2ca466b484@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        luiz.dentz@gmail.com, marcel@holtmann.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot has found a reproducer for the following issue on:
 
---oyUTqETQ0mS9luUI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+HEAD commit:    a409ed15 Merge tag 'gpio-v5.11-1' of git://git.kernel.org/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=174778a7500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=20efebc728efc8ff
+dashboard link: https://syzkaller.appspot.com/bug?extid=9a0875bc1b2ca466b484
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10a4445b500000
 
-Crazy robot, stop spamming. This report is obviously bogus, yet, you
-sent me 5 copies.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9a0875bc1b2ca466b484@syzkaller.appspotmail.com
 
-Whoever is responsible for this, please sign emails with your real
-name!
+==================================================================
+BUG: KASAN: slab-out-of-bounds in __lock_acquire+0x3da6/0x54b0 kernel/locking/lockdep.c:4702
+Read of size 8 at addr ffff88801938c0a0 by task kworker/1:1/34
 
-								Pavel
+CPU: 1 PID: 34 Comm: kworker/1:1 Not tainted 5.10.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events l2cap_chan_timeout
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
+ __lock_acquire+0x3da6/0x54b0 kernel/locking/lockdep.c:4702
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x29d/0x750 kernel/locking/lockdep.c:5402
+ __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
+ _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:175
+ spin_lock_bh include/linux/spinlock.h:359 [inline]
+ lock_sock_nested+0x3b/0x110 net/core/sock.c:3049
+ l2cap_sock_teardown_cb+0xa1/0x660 net/bluetooth/l2cap_sock.c:1520
+ l2cap_chan_del+0xbc/0xaa0 net/bluetooth/l2cap_core.c:618
+ l2cap_chan_close+0x1bc/0xaf0 net/bluetooth/l2cap_core.c:823
+ l2cap_chan_timeout+0x17e/0x2f0 net/bluetooth/l2cap_core.c:436
+ process_one_work+0x98d/0x1630 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
 
+Allocated by task 11222:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
+ __do_kmalloc mm/slab.c:3659 [inline]
+ __kmalloc+0x18b/0x340 mm/slab.c:3668
+ kmalloc include/linux/slab.h:557 [inline]
+ kzalloc include/linux/slab.h:682 [inline]
+ tomoyo_get_name+0x22b/0x4c0 security/tomoyo/memory.c:173
+ tomoyo_parse_name_union+0xbc/0x160 security/tomoyo/util.c:260
+ tomoyo_update_path_acl security/tomoyo/file.c:395 [inline]
+ tomoyo_write_file+0x4c0/0x7f0 security/tomoyo/file.c:1022
+ tomoyo_write_domain2+0x116/0x1d0 security/tomoyo/common.c:1152
+ tomoyo_add_entry security/tomoyo/common.c:2042 [inline]
+ tomoyo_supervisor+0xbee/0xf20 security/tomoyo/common.c:2103
+ tomoyo_audit_path_log security/tomoyo/file.c:168 [inline]
+ tomoyo_path_permission security/tomoyo/file.c:587 [inline]
+ tomoyo_path_permission+0x270/0x3a0 security/tomoyo/file.c:573
+ tomoyo_path_perm+0x37c/0x3f0 security/tomoyo/file.c:838
+ tomoyo_path_symlink+0x94/0xe0 security/tomoyo/tomoyo.c:200
+ security_path_symlink+0xdf/0x150 security/security.c:1111
+ do_symlinkat+0x123/0x2c0 fs/namei.c:3985
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-On Sat 2020-12-19 14:19:16, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.g=
-it master
-> head:   0d52778b8710eb11cb616761a02aee0a7fd60425
-> commit: f08fdc654a5940aa23259e1ed53ab0f401ca7068 [13538/13785] leds: ss42=
-00: simplify the return expression of register_nasgpio_led()
-> config: riscv-randconfig-r014-20201217 (attached as .config)
-> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project cee1=
-e7d14f4628d6174b33640d502bff3b54ae45)
-> reproduce (this is a W=3D1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbi=
-n/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install riscv cross compiling tool for clang build
->         # apt-get install binutils-riscv64-linux-gnu
->         # https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next=
-=2Egit/commit/?id=3Df08fdc654a5940aa23259e1ed53ab0f401ca7068
->         git remote add linux-next https://git.kernel.org/pub/scm/linux/ke=
-rnel/git/next/linux-next.git
->         git fetch --no-tags linux-next master
->         git checkout f08fdc654a5940aa23259e1ed53ab0f401ca7068
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dclang make.cross AR=
-CH=3Driscv=20
->=20
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->=20
-> Note: the linux-next/master HEAD 0d52778b8710eb11cb616761a02aee0a7fd60425=
- builds fine.
->       It may have been fixed somewhere.
->=20
-> All errors (new ones prefixed by >>):
->=20
->    In file included from include/asm-generic/hardirq.h:17:
->    In file included from include/linux/irq.h:20:
->    In file included from include/linux/io.h:13:
->    In file included from arch/riscv/include/asm/io.h:149:
->    include/asm-generic/io.h:564:9: warning: performing pointer arithmetic=
- on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            return inw(addr);
->                   ^~~~~~~~~
->    arch/riscv/include/asm/io.h:56:76: note: expanded from macro 'inw'
->    #define inw(c)          ({ u16 __v; __io_pbr(); __v =3D readw_cpu((voi=
-d*)(PCI_IOBASE + (c))); __io_par(__v); __v; })
->                                                                          =
-  ~~~~~~~~~~ ^
->    arch/riscv/include/asm/mmio.h:88:76: note: expanded from macro 'readw_=
-cpu'
->    #define readw_cpu(c)            ({ u16 __r =3D le16_to_cpu((__force __=
-le16)__raw_readw(c)); __r; })
->                                                                          =
-               ^
->    include/uapi/linux/byteorder/little_endian.h:36:51: note: expanded fro=
-m macro '__le16_to_cpu'
->    #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
->                                                      ^
->    In file included from drivers/video/fbdev/metronomefb.c:28:
->    In file included from include/linux/interrupt.h:11:
->    In file included from include/linux/hardirq.h:10:
->    In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
->    In file included from include/asm-generic/hardirq.h:17:
->    In file included from include/linux/irq.h:20:
->    In file included from include/linux/io.h:13:
->    In file included from arch/riscv/include/asm/io.h:149:
->    include/asm-generic/io.h:572:9: warning: performing pointer arithmetic=
- on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            return inl(addr);
->                   ^~~~~~~~~
->    arch/riscv/include/asm/io.h:57:76: note: expanded from macro 'inl'
->    #define inl(c)          ({ u32 __v; __io_pbr(); __v =3D readl_cpu((voi=
-d*)(PCI_IOBASE + (c))); __io_par(__v); __v; })
->                                                                          =
-  ~~~~~~~~~~ ^
->    arch/riscv/include/asm/mmio.h:89:76: note: expanded from macro 'readl_=
-cpu'
->    #define readl_cpu(c)            ({ u32 __r =3D le32_to_cpu((__force __=
-le32)__raw_readl(c)); __r; })
->                                                                          =
-               ^
->    include/uapi/linux/byteorder/little_endian.h:34:51: note: expanded fro=
-m macro '__le32_to_cpu'
->    #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
->                                                      ^
->    In file included from drivers/video/fbdev/metronomefb.c:28:
->    In file included from include/linux/interrupt.h:11:
->    In file included from include/linux/hardirq.h:10:
->    In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
->    In file included from include/asm-generic/hardirq.h:17:
->    In file included from include/linux/irq.h:20:
->    In file included from include/linux/io.h:13:
->    In file included from arch/riscv/include/asm/io.h:149:
->    include/asm-generic/io.h:580:2: warning: performing pointer arithmetic=
- on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            outb(value, addr);
->            ^~~~~~~~~~~~~~~~~
->    arch/riscv/include/asm/io.h:59:68: note: expanded from macro 'outb'
->    #define outb(v,c)       ({ __io_pbw(); writeb_cpu((v),(void*)(PCI_IOBA=
-SE + (c))); __io_paw(); })
->                                                                  ~~~~~~~~=
-~~ ^
->    arch/riscv/include/asm/mmio.h:91:52: note: expanded from macro 'writeb=
-_cpu'
->    #define writeb_cpu(v, c)        ((void)__raw_writeb((v), (c)))
->                                                              ^
->    In file included from drivers/video/fbdev/metronomefb.c:28:
->    In file included from include/linux/interrupt.h:11:
->    In file included from include/linux/hardirq.h:10:
->    In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
->    In file included from include/asm-generic/hardirq.h:17:
->    In file included from include/linux/irq.h:20:
->    In file included from include/linux/io.h:13:
->    In file included from arch/riscv/include/asm/io.h:149:
->    include/asm-generic/io.h:588:2: warning: performing pointer arithmetic=
- on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            outw(value, addr);
->            ^~~~~~~~~~~~~~~~~
->    arch/riscv/include/asm/io.h:60:68: note: expanded from macro 'outw'
->    #define outw(v,c)       ({ __io_pbw(); writew_cpu((v),(void*)(PCI_IOBA=
-SE + (c))); __io_paw(); })
->                                                                  ~~~~~~~~=
-~~ ^
->    arch/riscv/include/asm/mmio.h:92:76: note: expanded from macro 'writew=
-_cpu'
->    #define writew_cpu(v, c)        ((void)__raw_writew((__force u16)cpu_t=
-o_le16(v), (c)))
->                                                                          =
-            ^
->    In file included from drivers/video/fbdev/metronomefb.c:28:
->    In file included from include/linux/interrupt.h:11:
->    In file included from include/linux/hardirq.h:10:
->    In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
->    In file included from include/asm-generic/hardirq.h:17:
->    In file included from include/linux/irq.h:20:
->    In file included from include/linux/io.h:13:
->    In file included from arch/riscv/include/asm/io.h:149:
->    include/asm-generic/io.h:596:2: warning: performing pointer arithmetic=
- on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            outl(value, addr);
->            ^~~~~~~~~~~~~~~~~
->    arch/riscv/include/asm/io.h:61:68: note: expanded from macro 'outl'
->    #define outl(v,c)       ({ __io_pbw(); writel_cpu((v),(void*)(PCI_IOBA=
-SE + (c))); __io_paw(); })
->                                                                  ~~~~~~~~=
-~~ ^
->    arch/riscv/include/asm/mmio.h:93:76: note: expanded from macro 'writel=
-_cpu'
->    #define writel_cpu(v, c)        ((void)__raw_writel((__force u32)cpu_t=
-o_le32(v), (c)))
->                                                                          =
-            ^
->    In file included from drivers/video/fbdev/metronomefb.c:28:
->    In file included from include/linux/interrupt.h:11:
->    In file included from include/linux/hardirq.h:10:
->    In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
->    In file included from include/asm-generic/hardirq.h:17:
->    In file included from include/linux/irq.h:20:
->    In file included from include/linux/io.h:13:
->    In file included from arch/riscv/include/asm/io.h:149:
->    include/asm-generic/io.h:1005:55: warning: performing pointer arithmet=
-ic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            return (port > MMIO_UPPER_LIMIT) ? NULL : PCI_IOBASE + port;
->                                                      ~~~~~~~~~~ ^
->    7 warnings generated.
->    /tmp/metronomefb-846872.s: Assembler messages:
-> >> /tmp/metronomefb-846872.s:300: Error: unrecognized opcode `zext.b a2,a=
-2'
-> >> /tmp/metronomefb-846872.s:313: Error: unrecognized opcode `zext.b a5,a=
-6'
-> >> /tmp/metronomefb-846872.s:350: Error: unrecognized opcode `zext.b a3,a=
-3'
-> >> /tmp/metronomefb-846872.s:371: Error: unrecognized opcode `zext.b a4,a=
-4'
->    /tmp/metronomefb-846872.s:409: Error: unrecognized opcode `zext.b a2,a=
-2'
-> >> /tmp/metronomefb-846872.s:433: Error: unrecognized opcode `zext.b s1,t=
-1'
-> >> /tmp/metronomefb-846872.s:521: Error: unrecognized opcode `zext.b a1,a=
-1'
->    clang-12: error: assembler command failed with exit code 1 (use -v to =
-see invocation)
->=20
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+The buggy address belongs to the object at ffff88801938c000
+ which belongs to the cache kmalloc-128 of size 128
+The buggy address is located 32 bytes to the right of
+ 128-byte region [ffff88801938c000, ffff88801938c080)
+The buggy address belongs to the page:
+page:00000000b7b67fec refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1938c
+flags: 0xfff00000000200(slab)
+raw: 00fff00000000200 ffffea00004e6508 ffffea0000a5cf48 ffff888010840400
+raw: 0000000000000000 ffff88801938c000 0000000100000010 0000000000000000
+page dumped because: kasan: bad access detected
 
+Memory state around the buggy address:
+ ffff88801938bf80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff88801938c000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff88801938c080: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+                               ^
+ ffff88801938c100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff88801938c180: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+==================================================================
 
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---oyUTqETQ0mS9luUI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl/dshYACgkQMOfwapXb+vKdBACgrK0DHje10cw77P3gk5GCAIQI
-6BAAn06l39O+pM3prYSBuhShhaZMqlWM
-=FjUP
------END PGP SIGNATURE-----
-
---oyUTqETQ0mS9luUI--
