@@ -2,81 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D642DEDBF
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 08:54:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A5DD2DEDC1
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 08:54:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbgLSHvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 02:51:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48670 "EHLO mail.kernel.org"
+        id S1726484AbgLSHws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 02:52:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726364AbgLSHvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 02:51:32 -0500
-Date:   Sat, 19 Dec 2020 08:50:47 +0100
+        id S1726364AbgLSHwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Dec 2020 02:52:47 -0500
+Date:   Sat, 19 Dec 2020 08:52:03 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1608364251;
-        bh=kBs6bq8KLqchoxQFj9AafT6V6cnuzOv01bSICdUJWjo=;
+        s=korg; t=1608364327;
+        bh=LosQleLwVUVFjt5QY+Uyi+t7QKCQXWEOOOe/fukzRmk=;
         h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zEya4XpRCfl3bLcOaRPDhq4MTc3WZNLHRoCbrovc7L+hNLncXTLXBrBQFz3fGg2iv
-         c8ezKv7QpEdbgO5WiYI8ZtnGIwIAgilS/sFBsgM/amESw+kyLWBYgUMnF1PKHijgQZ
-         F0nM7hWYHp5elcT8kZ3hUEwpv7sV1NUdT0754Tt0=
+        b=qiTPukJ6AGxGHuIMkJMTlssLWL6yyGr7J+NfD96qy+Twnl6c2vp/wdDz2Ohl11/5U
+         Ab1uWhoXQ46O/oDGkzKeV3TrcTQvLa+fzhYpA+o0PmfRJluAnRkrt51q6kfawRl2wZ
+         2uT+RYAFFhTjT7BUN2TPiOzxAPmTNGv8DQXuDaEg=
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     zhangqiumiao1@huwei.com
-Cc:     jirislaby@kernel.org, linux-kernel@vger.kernel.org,
-        zhangqiumiao <zhangqiumiao1@huawei.com>
-Subject: Re: [PATCH] tty: fix timeout equals to 0 problem in tty_ioctl
-Message-ID: <X92w15bOlII1X0Pw@kroah.com>
-References: <1608348451-24082-1-git-send-email-zhangqiumiao1@huwei.com>
+To:     Daejun Park <daejun7.park@samsung.com>
+Cc:     "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>
+Subject: Re: [PATCH v15 1/3] scsi: ufs: Introduce HPB feature
+Message-ID: <X92xI1Atgcd7z8e0@kroah.com>
+References: <20201219032952epcms2p668a76f6b5ab021f0e66c856c44d5be0d@epcms2p6>
+ <CGME20201219032952epcms2p668a76f6b5ab021f0e66c856c44d5be0d@epcms2p8>
+ <20201219033039epcms2p849fa40807c1a10934a57a0c28fc356be@epcms2p8>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1608348451-24082-1-git-send-email-zhangqiumiao1@huwei.com>
+In-Reply-To: <20201219033039epcms2p849fa40807c1a10934a57a0c28fc356be@epcms2p8>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 19, 2020 at 11:27:31AM +0800, zhangqiumiao1@huwei.com wrote:
-> From: zhangqiumiao <zhangqiumiao1@huawei.com>
-> 
-> Fix the problem that tty buffer data was not flushed when timeout=0.
-> 
-> Signed-off-by: zhangqiumiao <zhangqiumiao1@huawei.com>
-> ---
->  drivers/tty/tty_ioctl.c | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/tty/tty_ioctl.c b/drivers/tty/tty_ioctl.c
-> index 4de1c6ddb8ff..f9d4b6e22308 100644
-> --- a/drivers/tty/tty_ioctl.c
-> +++ b/drivers/tty/tty_ioctl.c
-> @@ -220,13 +220,21 @@ void tty_wait_until_sent(struct tty_struct *tty, long timeout)
->  	tty_debug_wait_until_sent(tty, "wait until sent, timeout=%ld\n", timeout);
->  
->  	if (!timeout)
-> -		timeout = MAX_SCHEDULE_TIMEOUT;
-> +		timeout = 60 * HZ;
+On Sat, Dec 19, 2020 at 12:30:39PM +0900, Daejun Park wrote:
+> @@ -323,6 +325,8 @@ static struct attribute *ufs_sysfs_device_descriptor[] = {
+>  	&dev_attr_number_of_secure_wpa.attr,
+>  	&dev_attr_psa_max_data_size.attr,
+>  	&dev_attr_psa_state_timeout.attr,
+> +	&dev_attr_hpb_version.attr,
+> +	&dev_attr_hpb_control.attr,
+>  	&dev_attr_ext_feature_sup.attr,
+>  	&dev_attr_wb_presv_us_en.attr,
+>  	&dev_attr_wb_type.attr,
 
-Why change this?
+I thought I said this before, but you are adding new sysfs files, with
+no Documentation/ABI/ update which is not allowed.
 
->  
->  	timeout = wait_event_interruptible_timeout(tty->write_wait,
->  			!tty_chars_in_buffer(tty), timeout);
-> -	if (timeout <= 0)
-> +	if (timeout < 0)
->  		return;
-
-How can timeout be 0 here?
-
-> +	if (timeout == 0) {
-> +		if (tty->ops->flush_buffer) {
-> +			pr_info("%s: flush buffer\n", __func__);
-
-Debugging code?
-
-> +			tty->ops->flush_buffer(tty);
-> +		}
-> +		return;
-> +	}
-> +
+Please fix up.
 
 thanks,
 
