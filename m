@@ -2,98 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B760D2DEE3C
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 11:48:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14AFB2DEE4C
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 11:59:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726552AbgLSKrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 05:47:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726485AbgLSKrY (ORCPT
+        id S1726578AbgLSK6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 05:58:54 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:50600 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726456AbgLSK6x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 05:47:24 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BCC9C0617B0
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 02:46:44 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id 23so12008975lfg.10
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 02:46:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=konsulko.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dqAwl5/BK7mKW8hy+rXPleawKGWEfxh8nem4l7u+e6Q=;
-        b=inY2jM40JgO+Yy60zspBzWqHc1oj6B5SejBurxU2sjpvyM7/2AgkZ/a3/Qu0GkF78A
-         U+ivBbMyIh8LIQQB82USjfCafFljwznrlYBW/7oRJHKATVaYcUaih5+n1CVFAZLKB+Bn
-         FkjVUHn5gv/nCK4ruUYzkVRL0CvFzQ11Sd/jU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dqAwl5/BK7mKW8hy+rXPleawKGWEfxh8nem4l7u+e6Q=;
-        b=bZ+QVJXDz1tUNGVj8Q6r9Fvk5Du6XAWdaQ1Beo4PhdSZiLstrkeVs3OsZFDgSBMjhx
-         /iM0v2NOjblbOhGPkubR+X9Sg1r7e7ByDkoR6neNlC313a8IKpaOoEBSIbB+UDi30S5t
-         qso8RHPB/EIBwucelEB3DvR3QcZVMQ6tEaznHqYaKZQKWpv4K65IeU+U733nAvIpUaZK
-         skbkjcN3uhiQ919KGeRxU7iWCP2zYV22Gj1+EqxwSksTnaBxaJACTq4atKJiZRvMdt8l
-         sUDFzYdQ8AZF4DLH5TQDmmIrHmzmJH8JpQs4q9o8FIH8A/pK1SIR+ntzTcULxn2rbuIU
-         QSUA==
-X-Gm-Message-State: AOAM530aD0UrCZCj6Dt0WmJUXfU7s5axDSWVYhwAVa/3G0w1UCW2VprW
-        UsxPDZPRqwvgT83fub1rnmAG/iTAS996H+3cHmqOx0aK+0iQkKlSX5g=
-X-Google-Smtp-Source: ABdhPJylwaoMYEVUDsKcbZcqrhLHToc9DzJeTxx4ntyzWqPKD5fr5i15L5QR4cR1q84Od8xOEG0B9Ml/ccaD31MFbUA=
-X-Received: by 2002:a05:6512:6cd:: with SMTP id u13mr3042997lff.288.1608374801370;
- Sat, 19 Dec 2020 02:46:41 -0800 (PST)
+        Sat, 19 Dec 2020 05:58:53 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BJAtTtY003630;
+        Sat, 19 Dec 2020 10:58:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=eJ8NhlhCDae83l+6g6h/GoQhGOAuDALhJENu/2Eo1FA=;
+ b=JLibvFbUEYWv4r7inrcs6UQmX90GgncWCKuiZZ8xoLR/31R57WASIjwM7/mRh4lfSLJ6
+ hFfNMHsgyFhglRZVIYhVFEsbBgf58GWqj7XceqOJbBOvIEuIYstMdTy/dOVWwkAWMMFZ
+ 6xxeqxzGI8NwZSoOYLDyKzb9wcrbyK1YuqJECNA6VoD/gaYGh4f+45F9gTT96vZfxcbB
+ vExaWpvrgVcOfknRaTHuaQHPKmVdMMQA6IerQRTW1Lxdu+/Wryzv36g8taBxlDf9h9Pd
+ 4B1Z440u7bHuoXXrOdaBZa4+5rgEhtGhQSxQohHVCtqc/CBjUE06PvtQ4ZoOuTo8pCZ9 Xw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 35h8xqrpkk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 19 Dec 2020 10:58:03 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BJAoLKo195664;
+        Sat, 19 Dec 2020 10:56:03 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 35h6mrug9m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 19 Dec 2020 10:56:03 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0BJAu1mi031577;
+        Sat, 19 Dec 2020 10:56:01 GMT
+Received: from mwanda (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sat, 19 Dec 2020 02:56:01 -0800
+Date:   Sat, 19 Dec 2020 13:55:54 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] nvmem: core: Fix a resource leak on error in
+ nvmem_add_cells_from_of()
+Message-ID: <X93cOvjVvzfig1Pu@mwanda>
 MIME-Version: 1.0
-References: <fae85e4440a8ef6f13192476bd33a4826416fc58.camel@gmx.de>
- <aa9be27f0d247db1b25da55901b975d78537db3d.camel@gmx.de> <CAM4kBBJYZzbXAixrKvy9MeO2eUsVVi8=iUBUc+pbSMXudy7hkw@mail.gmail.com>
- <6946d6e798866276f0d635f219cdd4ad05156351.camel@gmx.de>
-In-Reply-To: <6946d6e798866276f0d635f219cdd4ad05156351.camel@gmx.de>
-From:   Vitaly Wool <vitaly.wool@konsulko.com>
-Date:   Sat, 19 Dec 2020 11:46:29 +0100
-Message-ID: <CAM4kBBJZDqZfk+w5Wv4Ye7JythQ-Sr5-==zxeq8M5WCnHpFtEA@mail.gmail.com>
-Subject: Re: [patch] zswap: fix zswap_frontswap_load() vs zsmalloc::map/unmap()
- might_sleep() splat
-To:     Mike Galbraith <efault@gmx.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9839 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ bulkscore=0 phishscore=0 malwarescore=0 spamscore=0 suspectscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012190079
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9839 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 adultscore=0
+ lowpriorityscore=0 mlxlogscore=999 suspectscore=0 phishscore=0 bulkscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012190079
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 19 Dec 2020, 11:27 Mike Galbraith, <efault@gmx.de> wrote:
->
-> On Sat, 2020-12-19 at 11:20 +0100, Vitaly Wool wrote:
-> > Hi Mike,
-> >
-> > On Sat, Dec 19, 2020 at 11:12 AM Mike Galbraith <efault@gmx.de> wrote:
-> > >
-> > > (mailer partially munged formatting? resend)
-> > >
-> > > mm/zswap: fix zswap_frontswap_load() vs zsmalloc::map/unmap() might_sleep() splat
-> > >
-> > > zsmalloc map/unmap methods use preemption disabling bit spinlocks.  Take the
-> > > mutex outside of pool map/unmap methods in zswap_frontswap_load() as is done
-> > > in zswap_frontswap_store().
-> >
-> > oh wait... So is zsmalloc taking a spin lock in its map callback and
-> > releasing it only in unmap? In this case, I would rather keep zswap as
-> > is, mark zsmalloc as RT unsafe and have zsmalloc maintainer fix it.
->
-> The kernel that generated that splat was NOT an RT kernel, it was plain
-> master.today with a PREEMPT config.
+This doesn't call of_node_put() on the error path so it leads to a
+memory leak.
 
+Fixes: 0749aa25af82 ("nvmem: core: fix regression in of_nvmem_cell_get()")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+The kfree_const() could just be replaced with kfree().  Someone got over
+excited converting things from kfree() to kfree_const().
 
-I see, thanks. I don't think it makes things better for zsmalloc
-though. From what I can see, the offending code is this:
+ drivers/nvmem/core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
->        /* From now on, migration cannot move the object */
->        pin_tag(handle);
+diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+index 177f5bf27c6d..68ae6f24b57f 100644
+--- a/drivers/nvmem/core.c
++++ b/drivers/nvmem/core.c
+@@ -713,6 +713,7 @@ static int nvmem_add_cells_from_of(struct nvmem_device *nvmem)
+ 				cell->name, nvmem->stride);
+ 			/* Cells already added will be freed later. */
+ 			kfree_const(cell->name);
++			of_node_put(cell->np);
+ 			kfree(cell);
+ 			return -EINVAL;
+ 		}
+-- 
+2.29.2
 
-Bit spinlock is taken in pin_tag(). I find the comment above somewhat
-misleading, why is it necessary to take a spinlock to prevent
-migration? I would guess an atomic flag should normally be enough.
-
-zswap is not broken here, it is zsmalloc that needs to be fixed.
-
-Best regards,
-   Vitaly
