@@ -2,53 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA0F2DF1BB
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 22:09:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B6FD2DF1BF
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 22:09:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727783AbgLSVHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 16:07:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49524 "EHLO mail.kernel.org"
+        id S1727921AbgLSVHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 16:07:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727661AbgLSVHR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 16:07:17 -0500
-Subject: Re: [GIT PULL] i3c: Changes for 5.11
+        id S1727788AbgLSVHV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Dec 2020 16:07:21 -0500
+Subject: Re: [GIT PULL] hsi changes for 5.11
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608411997;
-        bh=Rp4INsEa+tD59YcZW7lCoK0qiFbUmetfZAEHqooOlsA=;
+        s=k20201202; t=1608412000;
+        bh=2nFm+RN+WTr9Wmv4TxNKV0y2rYiBH4YjmVbf+QhecEw=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=fKSGup2zkVjPXtRhrmvUbMNH8dWElZvK1icoskDzuzoU+k8kQB30LBVsrB9SZACAo
-         ZDvvQG1ZWkG3XnRNmt2wMqbxaywVbA5UIgXNIm+GSD7kjjngEmFztFzBWrFfj2xF0M
-         P8darrPMXkVTFDlnn/amvIU9ksIoym2j3QzIU8ePupZ1qTV1yJDWhPIUZFhNEn+tSb
-         N6eXAfedvvScem/FzfGxT1/Y+IsW+tyvOC3OgztiJgIZth1Bj2wYInIPK+jD6R+1lz
-         sibnNl+KwUWdy9pDPyqBOK3uji8e9MzQRAI/ptjn9eVRSRhyrGxq299nQtXIevy+2T
-         hxcGuUVHARaxA==
+        b=JgfSEYFG7o63rNj3DXKEWmA9rr5rJAYHkqwoan8i9mxjhCmNDONKoG3YDUk3S4Fie
+         UV7RVAttjEfaPeFJuMc132y1AqlrwSCKLBQ8ZTRmb4th4prT1kqL6pSHDbQuuJMOIJ
+         61Kbkkd5briT0kDrLEjOmXF6OGF+bsvrIg8Br/RY7vq601Au18rw0X5Gq4XGj7MEzF
+         uUcC35N7xmTeK7Iv65J+kYRRyByAvKS9gvSNDNIAN65myQkMUSrImrCgWZV158Ezrx
+         d/ICwxtOmscMQCJSv/NSeowrXn/zmNzO+vCNgCfQzFR0CLsilCLC+0h7MmXFvfuNpi
+         16SuT4xE+7LbQ==
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201219080632.686b92bc@collabora.com>
-References: <20201219080632.686b92bc@collabora.com>
-X-PR-Tracked-List-Id: <linux-i3c.lists.infradead.org>
-X-PR-Tracked-Message-Id: <20201219080632.686b92bc@collabora.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/i3c/linux.git tags/i3c/for-5.11
-X-PR-Tracked-Commit-Id: 95393f3e07ab53855b91881692a4a5b52dcdc03c
+In-Reply-To: <20201218235910.6tjqvzaxl7kne4cl@earth.universe>
+References: <20201218235910.6tjqvzaxl7kne4cl@earth.universe>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201218235910.6tjqvzaxl7kne4cl@earth.universe>
+X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/sre/linux-hsi.git tags/hsi-for-5.11
+X-PR-Tracked-Commit-Id: 8a77ed6d1fdda752f6b3203391a099f590a9454f
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 190daf19206783bb16655db14e604a0d724c4bbf
-Message-Id: <160841199713.20285.16202306581510604938.pr-tracker-bot@kernel.org>
-Date:   Sat, 19 Dec 2020 21:06:37 +0000
-To:     Boris Brezillon <boris.brezillon@collabora.com>
+X-PR-Merge-Commit-Id: c2703b66172fff39122012e42986b44c9c6ad5f1
+Message-Id: <160841200081.20285.16960557779881463952.pr-tracker-bot@kernel.org>
+Date:   Sat, 19 Dec 2020 21:06:40 +0000
+To:     Sebastian Reichel <sre@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-i3c <linux-i3c@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <abelloni@kernel.org>
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 19 Dec 2020 08:06:32 +0100:
+The pull request you sent on Sat, 19 Dec 2020 00:59:10 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/i3c/linux.git tags/i3c/for-5.11
+> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/sre/linux-hsi.git tags/hsi-for-5.11
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/190daf19206783bb16655db14e604a0d724c4bbf
+https://git.kernel.org/torvalds/c/c2703b66172fff39122012e42986b44c9c6ad5f1
 
 Thank you!
 
