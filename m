@@ -2,416 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBE582DEDF5
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 10:22:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E64962DEDFC
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 10:26:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726544AbgLSJVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 04:21:14 -0500
-Received: from mailout2.samsung.com ([203.254.224.25]:26324 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726439AbgLSJVN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 04:21:13 -0500
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20201219092027epoutp02bddeb15422dc9a4b3d26741a0ab42c95~SE6eggOtW3228432284epoutp02B
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 09:20:27 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20201219092027epoutp02bddeb15422dc9a4b3d26741a0ab42c95~SE6eggOtW3228432284epoutp02B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1608369627;
-        bh=+4yCnfwzKaSPpSNHQovytT4X1m0er/sJ2PUgnea4oBM=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=KUw+sz4TNkHMWpH/u5EtHD8TJ12bTVYhz3HhiELM3XNmiMxOCxw30yJtcHLOBY3z/
-         FATwIatSA1eDNu/dlVxwB7Mmw54rD/ih/oLg8yU8zBE2WqhZUe0F9p4ymdSqqH/BWk
-         iUtud7NDKwcJ714nmHr+C5MO8NwOpzL7Bsd+XGII=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20201219092026epcas2p41ecfc3ec2d4bb56906ca4ef3a62d1f73~SE6dTGw4f2948329483epcas2p4s;
-        Sat, 19 Dec 2020 09:20:26 +0000 (GMT)
-Received: from epsmges2p2.samsung.com (unknown [182.195.40.186]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4CygF42PqFz4x9Pp; Sat, 19 Dec
-        2020 09:20:24 +0000 (GMT)
-X-AuditID: b6c32a46-1efff7000000dbf8-2e-5fddc5d88b02
-Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
-        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        C4.1A.56312.8D5CDDF5; Sat, 19 Dec 2020 18:20:24 +0900 (KST)
-Mime-Version: 1.0
-Subject: [PATCH v16 3/3] scsi: ufs: Prepare HPB read for cached sub-region
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Daejun Park <daejun7.park@samsung.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <20201219091950epcms2p1d295b47a83b0523d33234690a9f90af3@epcms2p1>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20201219092023epcms2p2206dbf03d5129c0b54f6c9ebdc9747a1@epcms2p2>
-Date:   Sat, 19 Dec 2020 18:20:23 +0900
-X-CMS-MailID: 20201219092023epcms2p2206dbf03d5129c0b54f6c9ebdc9747a1
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrLJsWRmVeSWpSXmKPExsWy7bCmqe6No3fjDd6v4bHYePcVq8WDedvY
-        LPa2nWC3ePnzKpvF4dvv2C2mffjJbPFp/TJWi5eHNC1WPQi3aF68ns1iztkGJove/q1sFotu
-        bGOyuLxrDptF9/UdbBbLj/9jsri9hcti6dabjBad09ewWCxauJvFQcTj8hVvj8t9vUweO2fd
-        ZfeYsOgAo8f+uWvYPVpO7mfx+Pj0FotH35ZVjB6fN8l5tB/oZgrgisqxyUhNTEktUkjNS85P
-        ycxLt1XyDo53jjc1MzDUNbS0MFdSyEvMTbVVcvEJ0HXLzAF6TkmhLDGnFCgUkFhcrKRvZ1OU
-        X1qSqpCRX1xiq5RakJJTYGhYoFecmFtcmpeul5yfa2VoYGBkClSZkJNx8tcq1oJHbhWLZ69n
-        b2D8YtnFyMEhIWAisfm6XRcjF4eQwA5GietLPrCBxHkFBCX+7hDuYuTkEBbwkujsuccIYgsJ
-        KEmsvziLHSKuJ3Hr4RqwOJuAjsT0E/fZQeaICLSySPS8+8II4jALfGWS+PR8NhNIlYQAr8SM
-        9qcsELa0xPblW8G6OQX8JK5tvM4OEdeQ+LGslxnCFpW4ufotO4z9/th8RghbRKL13lmoGkGJ
-        Bz93Q8UlJY7t/gC1q15i651fYEdICPQwShzeeYsVIqEvca1jIwvEl74S966ogYRZBFQlDnWe
-        YoMocZHYt6EJbC+zgLzE9rdzmEHKmQU0Jdbv0oeEm7LEkVssMF81bPzNjs5mFuCT6Dj8Fy6+
-        Y94TqMvUJNb9XM80gVF5FiKkZyHZNQth1wJG5lWMYqkFxbnpqcVGBUbIcbuJEZzOtdx2ME55
-        +0HvECMTB+MhRgkOZiUR3tAHt+OFeFMSK6tSi/Lji0pzUosPMZoCfTmRWUo0OR+YUfJK4g1N
-        jczMDCxNLUzNjCyUxHlDV/bFCwmkJ5akZqemFqQWwfQxcXBKNTDJiMa/sNrb9j/7fVTXhsLL
-        73TWhfkHXnxxs5DzgE6kSdruwEUtPRknV5/lvrZ3z2zdm7Zxy6R/sL7a8WLl8/c7n0ra7Hlw
-        bH/jot1GIrH7Bfapfn9TeF1+x/T8VRoyPNP/yVybtTR+/hFmhh8sFjoTEi6bTp98M+6oo0B0
-        ubDod1a2eWZlhbPaXe+3ffjtffnBsbjlRedyuLT0uh05imPTlN/IXm4z3hppVvMwfvmkSq8C
-        Z4Vtjnt5VD/aHgy8szVB59HTxVu6n2lV/ih9djXWTiXTc9m/BGFjz8zLfLkPgqW9f1XmtClt
-        T1p8k52LP6SAtdjW6MXBCBPZN4VW+XcKZN8Hbz20YlvMt1UWWT5KLMUZiYZazEXFiQDoiRTN
-        cAQAAA==
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201219091802epcms2p2c86f7ae2e81aa015702572a8ef180dae
-References: <20201219091950epcms2p1d295b47a83b0523d33234690a9f90af3@epcms2p1>
-        <20201219091847epcms2p7afeebd03c47eed0b65f89375a881233e@epcms2p7>
-        <20201219091802epcms2p2c86f7ae2e81aa015702572a8ef180dae@epcms2p2>
-        <CGME20201219091802epcms2p2c86f7ae2e81aa015702572a8ef180dae@epcms2p2>
+        id S1726438AbgLSJ0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 04:26:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54338 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726367AbgLSJ0N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Dec 2020 04:26:13 -0500
+From:   Arnd Bergmann <arnd@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ia64: fix timer cleanup regression
+Date:   Sat, 19 Dec 2020 10:24:42 +0100
+Message-Id: <20201219092516.1364230-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch changes the read I/O to the HPB read I/O.
+From: Arnd Bergmann <arnd@arndb.de>
 
-If the logical address of the read I/O belongs to active sub-region, the
-HPB driver modifies the read I/O command to HPB read. It modifies the UPIU
-command of UFS instead of modifying the existing SCSI command.
+A cleanup patch from my legacy timer series broke ia64 and led
+to RCU stall errors and a fast system clock:
 
-In the HPB version 1.0, the maximum read I/O size that can be converted to
-HPB read is 4KB.
+[  909.360108] INFO: task systemd-sysv-ge:200 blocked for more than 127 seconds.
+[  909.360108]       Not tainted 5.10.0+ #130
+[  909.360108] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[  909.360108] task:systemd-sysv-ge state:D stack:    0 pid:  200 ppid:   189 flags:0x00000000
+[  909.364108]
+[  909.364108] Call Trace:
+[  909.364423]  [<a00000010109b210>] __schedule+0x890/0x21e0
+[  909.364423]                                 sp=e0000100487d7b70 bsp=e0000100487d1748
+[  909.368423]  [<a00000010109cc00>] schedule+0xa0/0x240
+[  909.368423]                                 sp=e0000100487d7b90 bsp=e0000100487d16e0
+[  909.368558]  [<a00000010109ce70>] io_schedule+0x70/0xa0
+[  909.368558]                                 sp=e0000100487d7b90 bsp=e0000100487d16c0
+[  909.372290]  [<a00000010109e1c0>] bit_wait_io+0x20/0xe0
+[  909.372290]                                 sp=e0000100487d7b90 bsp=e0000100487d1698
+[  909.374168] rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
+[  909.376290]  [<a00000010109d860>] __wait_on_bit+0xc0/0x1c0
+[  909.376290]                                 sp=e0000100487d7b90 bsp=e0000100487d1648
+[  909.374168] rcu:     3-....: (2 ticks this GP) idle=19e/1/0x4000000000000002 softirq=1581/1581 fqs=2
+[  909.374168]  (detected by 0, t=5661 jiffies, g=1089, q=3)
+[  909.376290]  [<a00000010109da80>] out_of_line_wait_on_bit+0x120/0x140
+[  909.376290]                                 sp=e0000100487d7b90 bsp=e0000100487d1610
+[  909.374168] Task dump for CPU 3:
+[  909.374168] task:khungtaskd      state:R  running task
 
-The dirty map of the active sub-region prevents an incorrect HPB read that
-has stale physical page number which is updated by previous write I/O.
+Revert most of my patch to make this work again, including the extra
+update_process_times()/profile_tick() and the local_irq_enable() in the
+loop that I expected not to be needed here.
 
-Reviewed-by: Can Guo <cang@codeaurora.org>
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Acked-by: Avri Altman <Avri.Altman@wdc.com>
-Tested-by: Bean Huo <beanhuo@micron.com>
-Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+I have not found out exactly what goes wrong, and would suggest that
+someone with hardware access tries to convert this code into a singleshot
+clockevent driver, which should give better behavior in all cases.
+
+Reported-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Fixes: 2b49ddcef297 ("ia64: convert to legacy_timer_tick")
+Cc: John Stultz <john.stultz@linaro.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: Frederic Weisbecker <fweisbec@gmail.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/scsi/ufs/ufshcd.c |   2 +
- drivers/scsi/ufs/ufshpb.c | 232 ++++++++++++++++++++++++++++++++++++++
- drivers/scsi/ufs/ufshpb.h |   2 +
- 3 files changed, 236 insertions(+)
+ arch/ia64/kernel/time.c | 31 ++++++++++++++++++-------------
+ 1 file changed, 18 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 0ec0ed237140..41554afead63 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -2600,6 +2600,8 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
- 
- 	ufshcd_comp_scsi_upiu(hba, lrbp);
- 
-+	ufshpb_prep(hba, lrbp);
-+
- 	err = ufshcd_map_sg(hba, lrbp);
- 	if (err) {
- 		lrbp->cmd = NULL;
-diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-index 65b7760c0b07..725bcff3a5c7 100644
---- a/drivers/scsi/ufs/ufshpb.c
-+++ b/drivers/scsi/ufs/ufshpb.c
-@@ -31,6 +31,29 @@ bool ufshpb_is_allowed(struct ufs_hba *hba)
- 	return !(hba->ufshpb_dev.hpb_disabled);
- }
- 
-+static int ufshpb_is_valid_srgn(struct ufshpb_region *rgn,
-+			     struct ufshpb_subregion *srgn)
-+{
-+	return rgn->rgn_state != HPB_RGN_INACTIVE &&
-+		srgn->srgn_state == HPB_SRGN_VALID;
-+}
-+
-+static bool ufshpb_is_read_cmd(struct scsi_cmnd *cmd)
-+{
-+	return req_op(cmd->request) == REQ_OP_READ;
-+}
-+
-+static bool ufshpb_is_write_or_discard_cmd(struct scsi_cmnd *cmd)
-+{
-+	return op_is_write(req_op(cmd->request)) ||
-+	       op_is_discard(req_op(cmd->request));
-+}
-+
-+static bool ufshpb_is_support_chunk(int transfer_len)
-+{
-+	return transfer_len <= HPB_MULTI_CHUNK_HIGH;
-+}
-+
- static bool ufshpb_is_general_lun(int lun)
+diff --git a/arch/ia64/kernel/time.c b/arch/ia64/kernel/time.c
+index 9431edb08508..e3d9c8088d56 100644
+--- a/arch/ia64/kernel/time.c
++++ b/arch/ia64/kernel/time.c
+@@ -161,29 +161,34 @@ void vtime_account_idle(struct task_struct *tsk)
+ static irqreturn_t
+ timer_interrupt (int irq, void *dev_id)
  {
- 	return lun < UFS_UPIU_MAX_UNIT_NUM_ID;
-@@ -98,6 +121,215 @@ static void ufshpb_set_state(struct ufshpb_lu *hpb, int state)
- 	atomic_set(&hpb->hpb_state, state);
- }
+-	unsigned long cur_itm, new_itm, ticks;
++	unsigned long new_itm;
  
-+static void ufshpb_set_ppn_dirty(struct ufshpb_lu *hpb, int rgn_idx,
-+			     int srgn_idx, int srgn_offset, int cnt)
-+{
-+	struct ufshpb_region *rgn;
-+	struct ufshpb_subregion *srgn;
-+	int set_bit_len;
-+	int bitmap_len = hpb->entries_per_srgn;
+ 	if (cpu_is_offline(smp_processor_id())) {
+ 		return IRQ_HANDLED;
+ 	}
+ 
+ 	new_itm = local_cpu_data->itm_next;
+-	cur_itm = ia64_get_itc();
+ 
+-	if (!time_after(cur_itm, new_itm)) {
++	if (!time_after(ia64_get_itc(), new_itm))
+ 		printk(KERN_ERR "Oops: timer tick before it's due (itc=%lx,itm=%lx)\n",
+-		       cur_itm, new_itm);
+-		ticks = 1;
+-	} else {
+-		ticks = DIV_ROUND_UP(cur_itm - new_itm,
+-				     local_cpu_data->itm_delta);
+-		new_itm += ticks * local_cpu_data->itm_delta;
+-	}
++		       ia64_get_itc(), new_itm);
 +
-+next_srgn:
-+	rgn = hpb->rgn_tbl + rgn_idx;
-+	srgn = rgn->srgn_tbl + srgn_idx;
++	while (1) {
++		new_itm += local_cpu_data->itm_delta;
 +
-+	if ((srgn_offset + cnt) > bitmap_len)
-+		set_bit_len = bitmap_len - srgn_offset;
-+	else
-+		set_bit_len = cnt;
++		legacy_timer_tick(smp_processor_id() == time_keeper_id);
+ 
+-	if (smp_processor_id() != time_keeper_id)
+-		ticks = 0;
++		local_cpu_data->itm_next = new_itm;
+ 
+-	legacy_timer_tick(ticks);
++		if (time_after(new_itm, ia64_get_itc()))
++			break;
 +
-+	if (rgn->rgn_state != HPB_RGN_INACTIVE &&
-+	    srgn->srgn_state == HPB_SRGN_VALID)
-+		bitmap_set(srgn->mctx->ppn_dirty, srgn_offset, set_bit_len);
-+
-+	srgn_offset = 0;
-+	if (++srgn_idx == hpb->srgns_per_rgn) {
-+		srgn_idx = 0;
-+		rgn_idx++;
-+	}
-+
-+	cnt -= set_bit_len;
-+	if (cnt > 0)
-+		goto next_srgn;
-+
-+	WARN_ON(cnt < 0);
-+}
-+
-+static bool ufshpb_test_ppn_dirty(struct ufshpb_lu *hpb, int rgn_idx,
-+				   int srgn_idx, int srgn_offset, int cnt)
-+{
-+	struct ufshpb_region *rgn;
-+	struct ufshpb_subregion *srgn;
-+	int bitmap_len = hpb->entries_per_srgn;
-+	int bit_len;
-+
-+next_srgn:
-+	rgn = hpb->rgn_tbl + rgn_idx;
-+	srgn = rgn->srgn_tbl + srgn_idx;
-+
-+	if (!ufshpb_is_valid_srgn(rgn, srgn))
-+		return true;
-+
-+	/*
-+	 * If the region state is active, mctx must be allocated.
-+	 * In this case, check whether the region is evicted or
-+	 * mctx allcation fail.
-+	 */
-+	WARN_ON(!srgn->mctx);
-+
-+	if ((srgn_offset + cnt) > bitmap_len)
-+		bit_len = bitmap_len - srgn_offset;
-+	else
-+		bit_len = cnt;
-+
-+	if (find_next_bit(srgn->mctx->ppn_dirty,
-+			  bit_len, srgn_offset) >= srgn_offset)
-+		return true;
-+
-+	srgn_offset = 0;
-+	if (++srgn_idx == hpb->srgns_per_rgn) {
-+		srgn_idx = 0;
-+		rgn_idx++;
-+	}
-+
-+	cnt -= bit_len;
-+	if (cnt > 0)
-+		goto next_srgn;
-+
-+	return false;
-+}
-+
-+static u64 ufshpb_get_ppn(struct ufshpb_lu *hpb,
-+			  struct ufshpb_map_ctx *mctx, int pos, int *error)
-+{
-+	u64 *ppn_table;
-+	struct page *page;
-+	int index, offset;
-+
-+	index = pos / (PAGE_SIZE / HPB_ENTRY_SIZE);
-+	offset = pos % (PAGE_SIZE / HPB_ENTRY_SIZE);
-+
-+	page = mctx->m_page[index];
-+	if (unlikely(!page)) {
-+		*error = -ENOMEM;
-+		dev_err(&hpb->sdev_ufs_lu->sdev_dev,
-+			"error. cannot find page in mctx\n");
-+		return 0;
-+	}
-+
-+	ppn_table = page_address(page);
-+	if (unlikely(!ppn_table)) {
-+		*error = -ENOMEM;
-+		dev_err(&hpb->sdev_ufs_lu->sdev_dev,
-+			"error. cannot get ppn_table\n");
-+		return 0;
-+	}
-+
-+	return ppn_table[offset];
-+}
-+
-+static void
-+ufshpb_get_pos_from_lpn(struct ufshpb_lu *hpb, unsigned long lpn, int *rgn_idx,
-+			int *srgn_idx, int *offset)
-+{
-+	int rgn_offset;
-+
-+	*rgn_idx = lpn >> hpb->entries_per_rgn_shift;
-+	rgn_offset = lpn & hpb->entries_per_rgn_mask;
-+	*srgn_idx = rgn_offset >> hpb->entries_per_srgn_shift;
-+	*offset = rgn_offset & hpb->entries_per_srgn_mask;
-+}
-+
-+static void
-+ufshpb_set_hpb_read_to_upiu(struct ufshpb_lu *hpb, struct ufshcd_lrb *lrbp,
-+				  u32 lpn, u64 ppn,  unsigned int transfer_len)
-+{
-+	unsigned char *cdb = lrbp->ucd_req_ptr->sc.cdb;
-+
-+	cdb[0] = UFSHPB_READ;
-+
-+	put_unaligned_be64(ppn, &cdb[6]);
-+	cdb[14] = transfer_len;
-+}
-+
-+/*
-+ * This function will set up HPB read command using host-side L2P map data.
-+ * In HPB v1.0, maximum size of HPB read command is 4KB.
-+ */
-+void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
-+{
-+	struct ufshpb_lu *hpb;
-+	struct ufshpb_region *rgn;
-+	struct ufshpb_subregion *srgn;
-+	struct scsi_cmnd *cmd = lrbp->cmd;
-+	u32 lpn;
-+	u64 ppn;
-+	unsigned long flags;
-+	int transfer_len, rgn_idx, srgn_idx, srgn_offset;
-+	int err = 0;
-+
-+	hpb = ufshpb_get_hpb_data(cmd->device);
-+	if (!hpb)
-+		return;
-+
-+	if (ufshpb_get_state(hpb) != HPB_PRESENT) {
-+		dev_notice(&hpb->sdev_ufs_lu->sdev_dev,
-+			   "%s: ufshpb state is not PRESENT", __func__);
-+		return;
-+	}
-+
-+	if (!ufshpb_is_write_or_discard_cmd(cmd) &&
-+	    !ufshpb_is_read_cmd(cmd))
-+		return;
-+
-+	transfer_len = sectors_to_logical(cmd->device, blk_rq_sectors(cmd->request));
-+	if (unlikely(!transfer_len))
-+		return;
-+
-+	lpn = sectors_to_logical(cmd->device, blk_rq_pos(cmd->request));
-+	ufshpb_get_pos_from_lpn(hpb, lpn, &rgn_idx, &srgn_idx, &srgn_offset);
-+	rgn = hpb->rgn_tbl + rgn_idx;
-+	srgn = rgn->srgn_tbl + srgn_idx;
-+
-+	/* If command type is WRITE or DISCARD, set bitmap as drity */
-+	if (ufshpb_is_write_or_discard_cmd(cmd)) {
-+		spin_lock_irqsave(&hpb->hpb_state_lock, flags);
-+		ufshpb_set_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
-+				 transfer_len);
-+		spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
-+		return;
-+	}
-+
-+	if (!ufshpb_is_support_chunk(transfer_len))
-+		return;
-+
-+	spin_lock_irqsave(&hpb->hpb_state_lock, flags);
-+	if (ufshpb_test_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
-+				   transfer_len)) {
-+		hpb->stats.miss_cnt++;
-+		spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
-+		return;
-+	}
-+
-+	ppn = ufshpb_get_ppn(hpb, srgn->mctx, srgn_offset, &err);
-+	spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
-+	if (unlikely(err)) {
 +		/*
-+		 * In this case, the region state is active,
-+		 * but the ppn table is not allocated.
-+		 * Make sure that ppn table must be allocated on
-+		 * active state.
++		 * Allow IPIs to interrupt the timer loop.
 +		 */
-+		WARN_ON(true);
-+		dev_err(hba->dev, "ufshpb_get_ppn failed. err %d\n", err);
-+		return;
++		local_irq_enable();
++		local_irq_disable();
 +	}
-+
-+	ufshpb_set_hpb_read_to_upiu(hpb, lrbp, lpn, ppn, transfer_len);
-+
-+	hpb->stats.hit_cnt++;
-+}
-+
- static struct ufshpb_req *ufshpb_get_map_req(struct ufshpb_lu *hpb,
- 					     struct ufshpb_subregion *srgn)
- {
-diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
-index 17374893e3da..43838eba3234 100644
---- a/drivers/scsi/ufs/ufshpb.h
-+++ b/drivers/scsi/ufs/ufshpb.h
-@@ -197,6 +197,7 @@ struct ufs_hba;
- struct ufshcd_lrb;
  
- #ifndef CONFIG_SCSI_UFS_HPB
-+static void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp) {}
- static void ufshpb_rsp_upiu(struct ufs_hba *hba, struct ufshcd_lrb *lrbp) {}
- static void ufshpb_resume(struct ufs_hba *hba) {}
- static void ufshpb_suspend(struct ufs_hba *hba) {}
-@@ -210,6 +211,7 @@ static bool ufshpb_is_allowed(struct ufs_hba *hba) { return false; }
- static void ufshpb_get_geo_info(struct ufs_hba *hba, u8 *geo_buf) {}
- static void ufshpb_get_dev_info(struct ufs_hba *hba, u8 *desc_buf) {}
- #else
-+void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp);
- void ufshpb_rsp_upiu(struct ufs_hba *hba, struct ufshcd_lrb *lrbp);
- void ufshpb_resume(struct ufs_hba *hba);
- void ufshpb_suspend(struct ufs_hba *hba);
+ 	do {
+ 		/*
 -- 
-2.25.1
+2.29.2
 
