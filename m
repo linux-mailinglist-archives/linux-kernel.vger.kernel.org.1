@@ -2,65 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF292DF12E
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 20:07:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DC6B2DF134
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 20:13:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727432AbgLSTHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 14:07:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39364 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726206AbgLSTHG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 14:07:06 -0500
-Date:   Sat, 19 Dec 2020 11:06:25 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608404786;
-        bh=Rpp+Mv16l3KA4MK+PhsAFQQcrHuurkbv+RCgYjbM6KA=;
-        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=gY3ZslQi2hUdW4opapLFkAvL5ULkXrYCojg0knGn6LpddftzmNN+e3nuCPCs0TsVN
-         /ecBeZ6LbqhmDu4wurRG55igb5hIDrh/mLWTvUTJrmr7BHPNU/RaHnLrLE8laI7Mlp
-         MtYKv4hkryMql8TFx0DZKVZ9keOr6z6fJXUx2Q+Oj6EyeNHs/Al2snVUZ/grjRRhtT
-         XObERVzybjKulfSL97UD5o6W49eDnuGM0B4YUmQ9T6E7LVvuKjliGDifbUFYtiQQsO
-         rWqfweBuupdlBU00tLn1nZ5odjOmzrf0nNEAWtYcY6gLD8P6sP4UQWDXzOCGhimz6n
-         /1hP3PIhzS7MQ==
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: Re: [rcu:dev.2020.12.15b 128/134] ERROR: modpost:
- "rcu_nocb_cpu_deoffload" undefined!
-Message-ID: <20201219190625.GV2657@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <202012200104.Q6vxFujD-lkp@intel.com>
+        id S1727439AbgLSTM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 14:12:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727273AbgLSTM2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Dec 2020 14:12:28 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A168C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 11:11:30 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id x16so8016786ejj.7
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 11:11:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Mamze14+WiY2yuDsLyQBfAVHfVo7/eHBt2nEYPH4G8k=;
+        b=2Ahdghb0OOvc1AqacmhlZBLWLqD8XbcxTImTHzL3iGXit5Q5jdN2lr/NQRBPmblvrQ
+         7fGTjX2033LazIAbVuSFRfW9Vi5cfDE/QblO4lazXWeL39yG8tXfJ1V+0gKz360Ef5Tq
+         RZQ5AU03CwlM4am2j/tAkJI1k5d8FhXlVE/lJ6Xr3L2i/UTny6vl1S9RPd3a0bz47gyM
+         aI3/gckBmlxQW78tldjw0CBMVsl63WfLzQagKVS8pWAF6xNj2Th2z8eVBeZc+4Xkmc+v
+         DKPfp2dBkD9hZR/nCwn1wyhK9SaMdy8Rzs/RAwRsDoFmg9+sqZuTdYrUKUuQtrRiWYyz
+         DXuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Mamze14+WiY2yuDsLyQBfAVHfVo7/eHBt2nEYPH4G8k=;
+        b=pekwpp2n0skX0nrGkAYEGBlBgHsNp8YoFwMGxS62MHZjJey4o1wUbPKwMVuJ0oT6nB
+         4gERNQjGfl93fwCmOYxt7zbXZ57mN2xBcV6xgZrz0V/gMfLp379WiXrvXN3Ed+XUrJIv
+         AxTC+6jJ6kiFZGsGO9RL7QYKcfOSSzvCZjQ9EMo9TsXf+x5gW14VkyK+E2+GJKBl6STF
+         0FiJ5rprAiqwkgXLKI4hg8+b+Ck/69sKM8a4trC5KuFjiYYo54sGtxUHwNumKnIp+3Hw
+         VPPAiPszstG/WYe4MQAH9KfFujIQMHRP0eyQPiduvUeuBntWDnn2XR3O3mqLZFg1DdgP
+         sPAA==
+X-Gm-Message-State: AOAM530/RUGZ+KPoBqhfQeTpnDb6ZZqQK/1c6HM71/NSPDApJyIOYxjf
+        B2AFskVBekSq0SuQRnu5vLlQEg==
+X-Google-Smtp-Source: ABdhPJz0qcm/+VzJYfGAJjU4D061HpbYham777R+yNcnQXOckELp4b8/ZW997jyMygKDmQPk4/qEWA==
+X-Received: by 2002:a17:906:2707:: with SMTP id z7mr9574360ejc.418.1608405088829;
+        Sat, 19 Dec 2020 11:11:28 -0800 (PST)
+Received: from localhost.localdomain ([88.207.4.44])
+        by smtp.googlemail.com with ESMTPSA id o10sm7081955eju.89.2020.12.19.11.11.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Dec 2020 11:11:28 -0800 (PST)
+From:   Robert Marko <robert.marko@sartura.hr>
+To:     jdelvare@suse.com, robh+dt@kernel.org, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Robert Marko <robert.marko@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>
+Subject: [PATCH v2 1/3] dt-bindings: hwmon: Add TI TPS23861 bindings
+Date:   Sat, 19 Dec 2020 20:11:19 +0100
+Message-Id: <20201219191121.85142-1-robert.marko@sartura.hr>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202012200104.Q6vxFujD-lkp@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 20, 2020 at 01:37:07AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2020.12.15b
-> head:   f895a17eec290b0038a6294d884a9cc92d7d6e80
-> commit: 892f898ac8cfffe89e3c7fd483c8eaf71b3f12aa [128/134] rcutorture: Test runtime toggling of CPUs' callback offloading
-> config: x86_64-rhel (attached as .config)
-> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
-> reproduce (this is a W=1 build):
->         # https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?id=892f898ac8cfffe89e3c7fd483c8eaf71b3f12aa
->         git remote add rcu https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
->         git fetch --no-tags rcu dev.2020.12.15b
->         git checkout 892f898ac8cfffe89e3c7fd483c8eaf71b3f12aa
->         # save the attached .config to linux build tree
->         make W=1 ARCH=x86_64 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>, old ones prefixed by <<):
-> 
-> >> ERROR: modpost: "rcu_nocb_cpu_deoffload" [kernel/rcu/rcutorture.ko] undefined!
+Document bindings for the Texas Instruments TPS23861 driver.
 
-Good catch!  I have queued a fix to be squashed into the original
-with attribution.
+Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+Cc: Luka Perkov <luka.perkov@sartura.hr>
+---
+ .../bindings/hwmon/ti,tps23861.yaml           | 53 +++++++++++++++++++
+ 1 file changed, 53 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/ti,tps23861.yaml
 
-							Thanx, Paul
+diff --git a/Documentation/devicetree/bindings/hwmon/ti,tps23861.yaml b/Documentation/devicetree/bindings/hwmon/ti,tps23861.yaml
+new file mode 100644
+index 000000000000..a7a801f54398
+--- /dev/null
++++ b/Documentation/devicetree/bindings/hwmon/ti,tps23861.yaml
+@@ -0,0 +1,53 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++
++$id: http://devicetree.org/schemas/hwmon/ti,tps23861.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: TI TPS23861 PoE PSE
++
++maintainers:
++  - Robert Marko <robert.marko@sartura.hr>
++
++description: |
++  The TPS23861 is a IEEE 802.3at Quad Port Power-over-Ethernet PSE Controller.
++
++  Datasheets:
++  https://www.ti.com/lit/gpn/tps23861
++
++
++properties:
++  compatible:
++    enum:
++      - ti,tps23861
++
++  reg:
++    maxItems: 1
++
++  shunt-resistor-micro-ohms:
++    description: |
++      The value of curent sense resistor in microohms.
++    items:
++      default: 255000
++      minimum: 250000
++      maximum: 255000
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++          #address-cells = <1>;
++          #size-cells = <0>;
++
++          tps23861@30 {
++              compatible = "ti,tps23861";
++              reg = <0x30>;
++              shunt-resistor-micro-ohms = <255000>;
++          };
++    };
+-- 
+2.29.2
+
