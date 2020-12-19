@@ -2,156 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA90E2DF11F
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 19:54:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 935162DF121
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 19:57:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727437AbgLSSxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 13:53:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727337AbgLSSxi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 13:53:38 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73063C0613CF;
-        Sat, 19 Dec 2020 10:52:46 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id x126so3598354pfc.7;
-        Sat, 19 Dec 2020 10:52:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=k1zIYWtnLeqCpR6G01qfhl0qjWfgWBYC7/jVFwx9GwE=;
-        b=ONF3H9nm1kc9HSePnhuciU8TbKdOmZD9ddxKmAb5SUSVv9uMe3tYyR8iX1lwdwIIRl
-         EXOuxEbPndf6H89QQVgBxcajC8YwT8Y0jkJrcJgmnseRkvjkvc+tf4FOM/pwhqN2EDJb
-         oKVgNtAKOwZJC1slAJ3jXbOHdnKzv7ZI2SughrBRPE4FUZtH2CnVzViCIXfHUgG84zbJ
-         o87MOV6eOZLA/KOkZ09cz5LDTghW8Kd3ieazDMFHNO9dx47xZMVvfwPM3Kpt+WETnaep
-         oTji+jqIrKwjB1FnSpnGFVeVEHRuCiDyLAN9gyNKLH/JdupQHE5KPSRGpfETteuaydC5
-         AGrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=k1zIYWtnLeqCpR6G01qfhl0qjWfgWBYC7/jVFwx9GwE=;
-        b=SJ9Uw6tfEI4wztO3sGdd3hi3f2KqgSlev0Ws+IQPsvsxT24qT9TmAfpDjJ4aoRvuqH
-         bCc0nTElTcF+C+4QQ9UcTl+Jzo9IF+57Vn4GGX1yacPV+dVb82kjmJ4KGlZ8mmxPwz5r
-         KQ6TxehrzEkR+eLPEwUvxHxFJQbIiAnccXRhy5n2Rr8PHhochqLT1yg4D1SSmQaeRCZZ
-         KcTk3aAx1ZC0QYodMQJ7+8+PDATqbgguuzrhbaL3I7UHGIILZobqkagy8iZGR2bASx3w
-         2IjQ0JISOy7Hoq8YAfRocigX+oC6kGuP3wzSAxNZMIie26lhz0c6kJwqlcq+wxSc+PSg
-         eLSQ==
-X-Gm-Message-State: AOAM533KdT7LltXokuO/emyzMYt0Et9o81HV0sNAt/b3nCXoA4neZbXl
-        a1/NfXatlBK2+D0fAgb25MYfzvVf3VcsWiTkWGQ=
-X-Google-Smtp-Source: ABdhPJz5HGuII/pHqYaHr7+ZtbOwTFu7GODBV+U/h1vrgnQazOUcB6ZL7+pPs4yxjBZUWSRc7v3wXh44kRIaKPNeVt0=
-X-Received: by 2002:a05:6a00:170a:b029:19d:afca:4704 with SMTP id
- h10-20020a056a00170ab029019dafca4704mr8805453pfc.7.1608403965858; Sat, 19 Dec
- 2020 10:52:45 -0800 (PST)
+        id S1727468AbgLSS4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 13:56:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36004 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725951AbgLSS43 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Dec 2020 13:56:29 -0500
+From:   Jakub Kicinski <kuba@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     davem@davemloft.net
+Cc:     netdev@vger.kernel.org, pv-drivers@vmware.com, doshir@vmware.com,
+        UNGLinuxDriver@microchip.com, steve.glendinning@shawell.net,
+        woojung.huh@microchip.com, ath9k-devel@qca.qualcomm.com,
+        linux-wireless@vger.kernel.org, drivers@pensando.io,
+        snelson@pensando.io, vladimir.oltean@nxp.com,
+        claudiu.manoil@nxp.com, alexandre.belloni@bootlin.com,
+        bryan.whitehead@microchip.com, o.rempel@pengutronix.de,
+        kernel@pengutronix.de, robin@protonic.nl, hkallweit1@gmail.com,
+        nic_swsd@realtek.com, lars.povlsen@microchip.com,
+        Steen.Hegelund@microchip.com, linux-kernel@vger.kernel.org,
+        corbet@lwn.net, Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH net] MAINTAINERS: remove names from mailing list maintainers
+Date:   Sat, 19 Dec 2020 10:55:38 -0800
+Message-Id: <20201219185538.750076-1-kuba@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20201217234337.1983732-1-djrscally@gmail.com> <20201217234337.1983732-13-djrscally@gmail.com>
- <20201218211732.GE4077@smile.fi.intel.com> <e2b4c35f-5020-c332-d97a-8ba25be0e55e@gmail.com>
-In-Reply-To: <e2b4c35f-5020-c332-d97a-8ba25be0e55e@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 19 Dec 2020 20:52:29 +0200
-Message-ID: <CAHp75VcebKas4j-vByodicHxRMrO4jkaJToSUW3iLJC2+vY_iA@mail.gmail.com>
-Subject: Re: [PATCH v2 12/12] ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        devel@acpica.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tian Shu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        kieran.bingham+renesas@ideasonboard.com,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>, jorhand@linux.microsoft.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 19, 2020 at 2:25 AM Daniel Scally <djrscally@gmail.com> wrote:
-> On 18/12/2020 21:17, Andy Shevchenko wrote:
-> > On Thu, Dec 17, 2020 at 11:43:37PM +0000, Daniel Scally wrote:
+When searching for inactive maintainers it's useful to filter
+out mailing list addresses. Such "maintainers" will obviously
+never feature in a "From:" line of an email or a review tag.
 
-...
+Since "L:" entries only provide the address of a mailing list
+without a fancy name extend this pattern to "M:" entries.
 
-> >> +    sensor->ep_properties[0] = PROPERTY_ENTRY_U32(sensor->prop_names.bus_type, 4);
-> >
-> > Does 4 has any meaning that can be described by #define ?
->
-> It's V4L2_FWNODE_BUS_TYPE_CSI2_DPHY:
->
-> https://elixir.bootlin.com/linux/latest/source/drivers/media/v4l2-core/v4l2-fwnode.c#L36
->
-> That enum's not in an accessible header, but I can define it in this
-> module's header
+Alternatively we could reserve M: entries for humans only
+and move the fake "maintainers" to L:. While I'd personally
+prefer to reserve M: for humans only, I'm not 100% that's
+a great choice either, given most L: entries are in fact
+open mailing lists with public archives.
 
-Maybe you can do a preparatory patch to make it visible to v4l2
-drivers? (Like moving to one of v4l2 headers)
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+---
+ MAINTAINERS | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-...
-
-> >> +                    if (bridge->n_sensors >= CIO2_NUM_PORTS) {
-> >> +                            dev_warn(&cio2->dev, "Exceeded available CIO2 ports\n");
-> >
-> >> +                            /* overflow i so outer loop ceases */
-> >> +                            i = ARRAY_SIZE(cio2_supported_sensors);
-> >> +                            break;
-> >
-> > Why not to create a new label below and assign ret here with probably comment
-> > why it's not an error?
->
-> Sure, I can do that, but since it wouldn't need any cleanup I could also
-> just return 0 here as Laurent suggest (but with a comment explaining why
-> that's ok as you say) - do you have a preference?
-
-While it's a good suggestion it will bring a bit of inconsistency into
-approach. Everywhere else in the function you are using the goto
-approach.
-So yes, I have a preference.
-
-> >> +                    }
-
-...
-
-> >> +                    ret = cio2_bridge_read_acpi_buffer(adev, "SSDB",
-> >> +                                                       &sensor->ssdb,
-> >> +                                                       sizeof(sensor->ssdb));
-> >> +                    if (ret < 0)
-> >
-> > if (ret) (because positive case can be returned just by next conditional).
->
-> cio2_bridge_read_acpi_buffer() returns the buffer length on success at
-> the moment, but I can change it to return 0 and have this be if (ret)
-
-Please correct this somehow, because the next failure returns it
-instead of error...
-
-> >> +                            goto err_put_adev;
-> >> +
-> >> +                    if (sensor->ssdb.lanes > 4) {
-> >> +                            dev_err(&adev->dev,
-> >> +                                    "Number of lanes in SSDB is invalid\n");
-
-...I'm even thinking that you have to assign ret here to something meaningful.
-
-> >> +                            goto err_put_adev;
-> >> +                    }
-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 28d7acdb0591..20cd4cc08dd1 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -203,8 +203,8 @@ F:	include/uapi/linux/nl80211.h
+ F:	net/wireless/
+ 
+ 8169 10/100/1000 GIGABIT ETHERNET DRIVER
+-M:	Realtek linux nic maintainers <nic_swsd@realtek.com>
+ M:	Heiner Kallweit <hkallweit1@gmail.com>
++M:	nic_swsd@realtek.com
+ L:	netdev@vger.kernel.org
+ S:	Maintained
+ F:	drivers/net/ethernet/realtek/r8169*
+@@ -2119,7 +2119,7 @@ N:	atmel
+ ARM/Microchip Sparx5 SoC support
+ M:	Lars Povlsen <lars.povlsen@microchip.com>
+ M:	Steen Hegelund <Steen.Hegelund@microchip.com>
+-M:	Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
++M:	UNGLinuxDriver@microchip.com
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+ S:	Supported
+ T:	git git://github.com/microchip-ung/linux-upstream.git
+@@ -3958,7 +3958,7 @@ F:	net/can/
+ CAN-J1939 NETWORK LAYER
+ M:	Robin van der Gracht <robin@protonic.nl>
+ M:	Oleksij Rempel <o.rempel@pengutronix.de>
+-R:	Pengutronix Kernel Team <kernel@pengutronix.de>
++R:	kernel@pengutronix.de
+ L:	linux-can@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/networking/j1939.rst
+@@ -11651,7 +11651,7 @@ F:	drivers/media/platform/atmel/atmel-isi.h
+ 
+ MICROCHIP KSZ SERIES ETHERNET SWITCH DRIVER
+ M:	Woojung Huh <woojung.huh@microchip.com>
+-M:	Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
++M:	UNGLinuxDriver@microchip.com
+ L:	netdev@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
+@@ -11661,7 +11661,7 @@ F:	net/dsa/tag_ksz.c
+ 
+ MICROCHIP LAN743X ETHERNET DRIVER
+ M:	Bryan Whitehead <bryan.whitehead@microchip.com>
+-M:	Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
++M:	UNGLinuxDriver@microchip.com
+ L:	netdev@vger.kernel.org
+ S:	Maintained
+ F:	drivers/net/ethernet/microchip/lan743x_*
+@@ -11755,7 +11755,7 @@ F:	drivers/net/wireless/microchip/wilc1000/
+ 
+ MICROSEMI MIPS SOCS
+ M:	Alexandre Belloni <alexandre.belloni@bootlin.com>
+-M:	Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
++M:	UNGLinuxDriver@microchip.com
+ L:	linux-mips@vger.kernel.org
+ S:	Supported
+ F:	Documentation/devicetree/bindings/mips/mscc.txt
+@@ -12809,10 +12809,10 @@ F:	tools/objtool/
+ F:	include/linux/objtool.h
+ 
+ OCELOT ETHERNET SWITCH DRIVER
+-M:	Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
+ M:	Vladimir Oltean <vladimir.oltean@nxp.com>
+ M:	Claudiu Manoil <claudiu.manoil@nxp.com>
+ M:	Alexandre Belloni <alexandre.belloni@bootlin.com>
++M:	UNGLinuxDriver@microchip.com
+ L:	netdev@vger.kernel.org
+ S:	Supported
+ F:	drivers/net/dsa/ocelot/*
+@@ -13874,7 +13874,7 @@ F:	drivers/platform/x86/peaq-wmi.c
+ 
+ PENSANDO ETHERNET DRIVERS
+ M:	Shannon Nelson <snelson@pensando.io>
+-M:	Pensando Drivers <drivers@pensando.io>
++M:	drivers@pensando.io
+ L:	netdev@vger.kernel.org
+ S:	Supported
+ F:	Documentation/networking/device_drivers/ethernet/pensando/ionic.rst
+@@ -14653,7 +14653,7 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git
+ F:	drivers/net/wireless/ath/ath11k/
+ 
+ QUALCOMM ATHEROS ATH9K WIRELESS DRIVER
+-M:	QCA ath9k Development <ath9k-devel@qca.qualcomm.com>
++M:	ath9k-devel@qca.qualcomm.com
+ L:	linux-wireless@vger.kernel.org
+ S:	Supported
+ W:	https://wireless.wiki.kernel.org/en/users/Drivers/ath9k
+@@ -18338,7 +18338,7 @@ F:	include/linux/usb/isp116x.h
+ 
+ USB LAN78XX ETHERNET DRIVER
+ M:	Woojung Huh <woojung.huh@microchip.com>
+-M:	Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
++M:	UNGLinuxDriver@microchip.com
+ L:	netdev@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/net/microchip,lan78xx.txt
+@@ -18452,7 +18452,7 @@ F:	drivers/net/usb/smsc75xx.*
+ 
+ USB SMSC95XX ETHERNET DRIVER
+ M:	Steve Glendinning <steve.glendinning@shawell.net>
+-M:	Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
++M:	UNGLinuxDriver@microchip.com
+ L:	netdev@vger.kernel.org
+ S:	Maintained
+ F:	drivers/net/usb/smsc95xx.*
+@@ -18999,7 +18999,7 @@ F:	drivers/input/mouse/vmmouse.h
+ 
+ VMWARE VMXNET3 ETHERNET DRIVER
+ M:	Ronak Doshi <doshir@vmware.com>
+-M:	"VMware, Inc." <pv-drivers@vmware.com>
++M:	pv-drivers@vmware.com
+ L:	netdev@vger.kernel.org
+ S:	Maintained
+ F:	drivers/net/vmxnet3/
 -- 
-With Best Regards,
-Andy Shevchenko
+2.26.2
+
