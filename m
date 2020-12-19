@@ -2,142 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8492DF184
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 21:21:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64FDF2DF187
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 21:23:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727352AbgLSUTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 15:19:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726332AbgLSUTd (ORCPT
+        id S1727791AbgLSUVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 15:21:43 -0500
+Received: from smtprelay0221.hostedemail.com ([216.40.44.221]:52270 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727599AbgLSUVn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 15:19:33 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A3E5C0617B0
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 12:18:51 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id r5so5827490eda.12
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 12:18:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tKCl0hm0vvH+bc+bs6mggnl10AKwI3SRXVyRLi1L6B0=;
-        b=YkElHEyKIBezI2/M0lST03n4UaWAm+ZaGQtYuFO/ZLe6P8I4ePURUmGxXR4/v98UsM
-         7bO8WF5a/2AzFsxnJMxy/eXfOwKvHzss6OI/TzUw6669P3OY7NpYN8ybfz8a+Cg7FG/J
-         5WKhi7Y4B5ooPa4aBEV+8jv1QEE7Iq3blQveKUqPFkw7P758qToOX4lDIx0TAZmEHxoq
-         y3utvAIUWihjq4MLQoOMVP6lFBtv29vY+y0o0faBgJM7VowajCXuk1ncUrTgL7lKROuD
-         fJZq1ONhrvkRf9CdEDKqEOFM1f+DXnrMjVVdYbt3O0g1Gt35SvKLxbrikDxfwrdwwAdl
-         HQZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tKCl0hm0vvH+bc+bs6mggnl10AKwI3SRXVyRLi1L6B0=;
-        b=sD94Fd+9bc4PQr+Z59f56gFp7PzELuHTls7I0nPx1o/drwf3gXpLTeg5g7qEpXFfAF
-         lmZVt2q6Tto7ZyK7oTGoCOzqxDkEvMMtzTPn7iahHGzbd7LYepqWWF+Q78Xkeywl0N6W
-         BreAO0YR/yMhTimP8SihxnNGpq6zrR47IuXAsWm0YwYOtF70GaPpm5gwGIU50+2c4/N3
-         PPPADN9m/5nG+YFkzNM0do6jFy/CsqgBC79uXPITuTyjw4p0mzv/qBStTgLAxcWs82xN
-         BfFX45LS2GXMuy14KmMayLi+G74aZ6Ld/pWt+eb30ihRNWzvS7DjBG73gN6hqXqd0QUj
-         vuvQ==
-X-Gm-Message-State: AOAM531gGGRVftJ3/A2lfY3YqDu/LV50jWGDvvgN73AUQhoWKabCcSm4
-        PzQ6xANUEha5nR9h9HuYv7/ktw==
-X-Google-Smtp-Source: ABdhPJw4eR6HmRiSxLwzn4C2F0zFfTelQ4QG6LgKw8DWmcXSI7zpMEB4aR3Y6ruvmi9uQ7O5LLLE7Q==
-X-Received: by 2002:aa7:d74d:: with SMTP id a13mr10243116eds.78.1608409129551;
-        Sat, 19 Dec 2020 12:18:49 -0800 (PST)
-Received: from x1 ([37.235.97.56])
-        by smtp.gmail.com with ESMTPSA id lr24sm7163904ejb.41.2020.12.19.12.18.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Dec 2020 12:18:48 -0800 (PST)
-Date:   Sat, 19 Dec 2020 12:18:42 -0800
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tony Lindgren <tony@atomide.com>
-Subject: Re: [RFC PATCH] pinctrl: add helper to expose pinctrl state in
- debugfs
-Message-ID: <20201219201842.GA30242@x1>
-References: <20201211042625.129255-1-drew@beagleboard.org>
- <CAHp75VcAbdrSnb_ag9Rc0tny3Vtqjs1if+ahk7U36V2eaKMpSw@mail.gmail.com>
- <20201211234304.GA189853@x1>
- <CAHp75Vf-=nM-M2K-v_8iyME4t6ZF-gvSZ5ePsxQFhObJ_0YHsw@mail.gmail.com>
- <20201214214419.GA1196223@x1>
- <CAHp75VeN9xLUKFBXZfo=XzNkdv=BSRJW59=cUjyY0TekF1JONA@mail.gmail.com>
- <CAHp75VdGEe9F69=uzaDiCf9C8byh6ThuCJLMch1dBXEH4MA2Sg@mail.gmail.com>
- <20201215224212.GB2086329@x1>
- <CAHp75VfbEE0t2g=uzux5=dhgAHwv15OKpVr+xrF19VskO7HnTw@mail.gmail.com>
+        Sat, 19 Dec 2020 15:21:43 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 8984B837F24A;
+        Sat, 19 Dec 2020 20:21:01 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:152:355:379:582:599:982:988:989:1152:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2693:2911:3138:3139:3140:3141:3142:3350:3698:3865:3866:3867:3868:3870:3872:4321:4425:5007:6261:6742:6743:7576:9010:9012:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:14659:14685:14777:21080:21324:21433:21451:21627:21819:30022:30029:30030:30054:30060,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: trail89_47117a927448
+X-Filterd-Recvd-Size: 1890
+Received: from perches-mx.perches.com (imap-ext [216.40.42.5])
+        (Authenticated sender: webmail@joe@perches.com)
+        by omf01.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 19 Dec 2020 20:21:00 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VfbEE0t2g=uzux5=dhgAHwv15OKpVr+xrF19VskO7HnTw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Sat, 19 Dec 2020 12:20:59 -0800
+From:   Joe Perches <joe@perches.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, pv-drivers@vmware.com,
+        doshir@vmware.com, UNGLinuxDriver@microchip.com,
+        steve.glendinning@shawell.net, woojung.huh@microchip.com,
+        ath9k-devel@qca.qualcomm.com, linux-wireless@vger.kernel.org,
+        drivers@pensando.io, snelson@pensando.io, vladimir.oltean@nxp.com,
+        claudiu.manoil@nxp.com, alexandre.belloni@bootlin.com,
+        bryan.whitehead@microchip.com, o.rempel@pengutronix.de,
+        kernel@pengutronix.de, robin@protonic.nl, hkallweit1@gmail.com,
+        nic_swsd@realtek.com, lars.povlsen@microchip.com,
+        Steen.Hegelund@microchip.com, linux-kernel@vger.kernel.org,
+        corbet@lwn.net
+Subject: Re: [PATCH net] MAINTAINERS: remove names from mailing list
+ maintainers
+In-Reply-To: <20201219185538.750076-1-kuba@kernel.org>
+References: <20201219185538.750076-1-kuba@kernel.org>
+User-Agent: Roundcube Webmail/1.4-rc2
+Message-ID: <53a3855a184f5af5b829065962ae5773@perches.com>
+X-Sender: joe@perches.com
+X-Originating-IP: [172.58.31.245]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 06:00:49PM +0200, Andy Shevchenko wrote:
-> On Wed, Dec 16, 2020 at 12:42 AM Drew Fustini <drew@beagleboard.org> wrote:
-> > On Tue, Dec 15, 2020 at 09:39:18PM +0200, Andy Shevchenko wrote:
-> > > On Tue, Dec 15, 2020 at 9:36 PM Andy Shevchenko
-> > > <andy.shevchenko@gmail.com> wrote:
-> > > > On Mon, Dec 14, 2020 at 11:44 PM Drew Fustini <drew@beagleboard.org> wrote:
-> > > > > On Mon, Dec 14, 2020 at 07:55:12PM +0200, Andy Shevchenko wrote:
-> > >
-> > > ...
-> > >
-> > > > > With regards to parent directory, I did discover there is
-> > > > > debugfs_lookup(), so I can get the dentry for "pinctrl" and create new
-> > > > > subdirectory inside of it.  This is the structure now:
-> > > > >
-> > > > > /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P2_35_pinmux/state
-> > > > > /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P2_34_pinmux/state
-> > > > > /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P2_33_pinmux/state
-> > > > > /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P2_32_pinmux/state
-> > > > > etc..
-> > >
-> > > Missed part to comment.
-> > >
-> > > I was talking about
-> > >
-> > > /sys/kernel/debug/pinctrl/<$PINCTRL>/mux/<$PIN> (maybe folder, maybe node)
-> >
-> > Thanks for the example.
-> >
-> > What would the value be "<$PINCTRL>"?  The name of the driver?
+On 2020-12-19 10:55, Jakub Kicinski wrote:
+> When searching for inactive maintainers it's useful to filter
+> out mailing list addresses. Such "maintainers" will obviously
+> never feature in a "From:" line of an email or a review tag.
 > 
-> The name of the device instance. This is already done in the pin control code.
+> Since "L:" entries only provide the address of a mailing list
+> without a fancy name extend this pattern to "M:" entries.
 
-Ah, so for the BeagleBone, that would be 44e10800.pinmux-pinctrl-single:
 
-/sys/kernel/debug/pinctrl/44e10800.pinmux-pinctrl-single/
-
-> 
-> > The "ocp:Px_yy_pinmux" directory name comes from dev_name(dev). Is that
-> > the name you were referencing in "<$PIN>"?
-> 
-> No, the <$PIN> is an actual pin on this controller. However, I think
-> we probably don't need this, just supply it as tuple of the parameters
-> to be set: like
-> echo $PIN $STATE > .../<$PINCTRL>/mux or alike.
-
-Do you mean not having a debugfs file for each pin, but instead just using the
-existing combined file?
-
-/sys/kernel/debug/pinctrl/44e10800.pinmux-pinctrl-single/pinmux-pins
-
-There is one line in there for each pin in the pinctrl-single instance.
-
-For example:
-
-pin 105 (PIN105): ocp:P2_34_pinmux (GPIO UNCLAIMED) function pinmux_P2_34_default_pin group pinmux_P2_34_default_pin
-
-So maybe one solution to changing pinctrl state could to:
-
-echo "105 gpio_pu" > /sys/kernel/debug/pinctrl/44e10800.pinmux-pinctrl-single/pinmux-pins
-
-I'll make an attempt at implementing that.
-
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
+As these are not actual people I suggest using
+R: entries and not removing the more descriptive names.
