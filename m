@@ -2,138 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A10A22DEED8
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 13:45:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 199E52DEED9
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 13:45:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726580AbgLSMpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 07:45:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726479AbgLSMpd (ORCPT
+        id S1726624AbgLSMpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 07:45:40 -0500
+Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:41995 "EHLO
+        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726479AbgLSMpg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 07:45:33 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E473C06138C
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 04:44:52 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id w1so7088384ejf.11
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 04:44:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=NkMmsvTcFvgCKGh0W4qI91nkVM/LPyxlJYr5p+foOoc=;
-        b=XdHmS1KVx7mnaH5egFpezUrxOQUtD9wgaYneo4d/472nDXjDq88dsVPgxAsnC1Xxv+
-         hI9xA2ZFKJZI02FmHoNOEMpyjSpGFdH1AtTqz0+QHon0rOzqAu33qjXLae9FqKA0oQ2D
-         y04j0M4iRxyNhxOiO27eI4FbXkaIUdWGcakUum99lIwuoqC/29Sgq0FFhNMa4SUoSHY0
-         FJTtea7vd3F5YBnpGfKdZtvT5KSC3DZpf8RFHP4pPdFmuMaN9q3g2foe7gQ+s9cof0DQ
-         cogIMy+Wp7yXMPifPbvjYErq7ufYr0ZNEymt9tOHb0LYHrcyeeWIgNhBgUXGAumWzjjk
-         0BWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=NkMmsvTcFvgCKGh0W4qI91nkVM/LPyxlJYr5p+foOoc=;
-        b=K77ih2MQlg+vml9LElMmuvs8rdQt/al81jQ99vc6cp78nhMXVLYGg0/3VCZwR6zAOI
-         ZLelm/f8oktG4c9lUnFzblGe/rIrj1DQ/4PMT37ko6JG6WlRgZPYVy2UiB5G1+GX7oQ+
-         Rs4cNz7VbY9rpywz6Ht54Kqn6NeN29lI86V4jaKqWgr3AcZCycMAocCbOBUN4MNsQANj
-         7vwLdF2CU6zvt3p/eK2UL7I5LShSfIJQZVeUO6XYJKiFbfgot6w1pJ4e2dYmENmY+EVV
-         B0LruyAmXXfeBYlpx/zMIDK96aQY6tNJGooTnwE9a7Sj8HirOvddkr6hiGaWCHLB1QJz
-         j5vw==
-X-Gm-Message-State: AOAM5314m4R4RWRuebjYY7Mr/3UuFspn01DHvkV6DsiRQObDopmi+c27
-        dCwvAHBddJ6WNLrmcSnNnAA=
-X-Google-Smtp-Source: ABdhPJwfs8eWqjjbyDLxo+NBP7Q7yexeknWwqJhrVwWI2Vj+bUabe8y4HZst6LMPV+DrX7JqSxp13g==
-X-Received: by 2002:a17:906:d152:: with SMTP id br18mr4575862ejb.297.1608381890210;
-        Sat, 19 Dec 2020 04:44:50 -0800 (PST)
-Received: from localhost (124-155-N1.p43.customer.vsm.sh. [91.106.155.124])
-        by smtp.gmail.com with ESMTPSA id be6sm26278815edb.29.2020.12.19.04.44.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 19 Dec 2020 04:44:49 -0800 (PST)
-From:   Oliver Graute <oliver.graute@gmail.com>
-To:     thierry.reding@gmail.com
-Cc:     sam@ravnborg.org, m.felsch@pengutronix.de, festevam@gmail.com,
-        Oliver Graute <oliver.graute@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1] drm/panel: simple: add SGD GKTW70SDAD1SD
-Date:   Sat, 19 Dec 2020 13:44:12 +0100
-Message-Id: <1608381853-18582-1-git-send-email-oliver.graute@gmail.com>
-X-Mailer: git-send-email 2.7.4
-X-Patchwork-Bot: notify
+        Sat, 19 Dec 2020 07:45:36 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id B49305BC;
+        Sat, 19 Dec 2020 07:44:49 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Sat, 19 Dec 2020 07:44:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=NrxrFEeftK5SEyWxieqEkdybKx2
+        8bAmQY0MRbiwbMrY=; b=cFUFCQuQh6rJ6EYk0GPqTE8o2K0PkW/H2PjkJAE0ZtI
+        oI7WHJrCAmY71ixOSPouA52v6pbAB46ZiDO24LcWPRGACj14J/I2Pj7UH+D1zMqB
+        dWsm1zblhb+Jwe4G0NE8+Oh+AeSWz/qEH/9er7ZX77E+FqdtMDMamri2ZEgdvBfm
+        XNjawNMwKXoRVUltE9qjFBMzRA24j+jXLPfu7EsrkKmXJ7u8nP7FEaepe5XeBqKS
+        loAoGQFzzpeSmd1Q2mACDAoBuccFioO2CR/KpGKozIyylct8zFpwe58j49Y3de2K
+        xwA8xe/mdlIKXnzaQWDYWpLFS3fKxKEarqYj7shz5uw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=NrxrFE
+        eftK5SEyWxieqEkdybKx28bAmQY0MRbiwbMrY=; b=FynPPEvLKSnXLn9RTHWjKh
+        ao3DhwqJQ+okSzLPhZOE/L6fq26b2XoH1OIezezFXtSiQDMMcRr0+mIITeXox4Cr
+        V+nZrA97yLHikfbZ8LBIDPgnNEL0BNAUV3+OEgmbw/pyLj2HWJ+j7qbre5grfTVN
+        dV2XCqCM4hwjqhgcgDhNDtVDSXlofPzIFLmIxXAzmJucLBWFUGcWPbYpuQgAl7K1
+        6OHwhk95+gKMYjQ2kUQG2n/WXQLYXhsdYKU+oY/uP1z3lrUauN3knsvSwxmCSAHL
+        Pi4SSJtOLihU2NdXCT0JiYoD6z7bD1DmuLNrPHR6PtVRVpUQp8CaZOaQnJe4+Obg
+        ==
+X-ME-Sender: <xms:v_XdX8d1cZbXqikal8DecO9c0TVqLaADNSpLsKi3QES0-IZ2nxG_vw>
+    <xme:v_XdX-MLimv85_pUBM2erTtw_5_uTk4tbIYA3Ns3MLpel3VL3gACB7JIHk2aTx4Cj
+    NUM30Ym0s-QEA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudelkedggeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeeuleeltd
+    ehkeeltefhleduuddvhfffuedvffduveegheekgeeiffevheegfeetgfenucffohhmrghi
+    nhepkhgvrhhnvghlrdhorhhgnecukfhppeekfedrkeeirdejgedrieegnecuvehluhhsth
+    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghh
+    rdgtohhm
+X-ME-Proxy: <xmx:v_XdX9hZGZcUw2RorIIpkK2SZrdty28PEU0NDoc24KG9TpiSwB06Bw>
+    <xmx:v_XdXx-9hoTx0NyiXBETLpLpaRgfg6pmNzaKrWxdSLLjeW66cjC4mQ>
+    <xmx:v_XdX4skIPKfTH5KQtyKxKn8zIYr6TU3EK5xWj0z22Cs-N5Rs8rwkw>
+    <xmx:wfXdX8jaU79pCPYNdpA_JTna5fmNW6pmncTjQx73-njCeMPeMdiV0g>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 6AA021080059;
+        Sat, 19 Dec 2020 07:44:47 -0500 (EST)
+Date:   Sat, 19 Dec 2020 13:46:08 +0100
+From:   Greg KH <greg@kroah.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     x86@kernel.org, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Anton Blanchard <anton@ozlabs.org>,
+        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org
+Subject: Re: [PATCH backport] membarrier: Explicitly sync remote cores when
+ SYNC_CORE is requested
+Message-ID: <X932EI8RN90rRjyP@kroah.com>
+References: <b0ddbb1195c5b9851cb3e9d079870b4752fdadb6.1607968697.git.luto@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b0ddbb1195c5b9851cb3e9d079870b4752fdadb6.1607968697.git.luto@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the Solomon Goldentek Display Model: GKTW70SDAD1SD
-to panel-simple.
+On Mon, Dec 14, 2020 at 10:00:43AM -0800, Andy Lutomirski wrote:
+> commit 758c9373d84168dc7d039cf85a0e920046b17b41 upstream
+> 
+> membarrier() does not explicitly sync_core() remote CPUs; instead, it
+> relies on the assumption that an IPI will result in a core sync.  On x86,
+> this may be true in practice, but it's not architecturally reliable.  In
+> particular, the SDM and APM do not appear to guarantee that interrupt
+> delivery is serializing.  While IRET does serialize, IPI return can
+> schedule, thereby switching to another task in the same mm that was
+> sleeping in a syscall.  The new task could then SYSRET back to usermode
+> without ever executing IRET.
+> 
+> Make this more robust by explicitly calling sync_core_before_usermode()
+> on remote cores.  (This also helps people who search the kernel tree for
+> instances of sync_core() and sync_core_before_usermode() -- one might be
+> surprised that the core membarrier code doesn't currently show up in a
+> such a search.)
+> 
+> Fixes: 70216e18e519 ("membarrier: Provide core serializing command, *_SYNC_CORE")
+> Signed-off-by: Andy Lutomirski <luto@kernel.org>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: stable@vger.kernel.org
+> Link: https://lore.kernel.org/r/776b448d5f7bd6b12690707f5ed67bcda7f1d427.1607058304.git.luto@kernel.org
+> ---
+> 
+> My stable membarrier series depends on commit 2a36ab717e8f
+> ("rseq/membarrier: Add MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ").  I don't
+> think it makes much sense to backport that feature, so here's a backport of
+> the patch that doesn't need it.
 
-The panel spec from Variscite can be found at:
-https://www.variscite.com/wp-content/uploads/2017/12/VLCD-CAP-GLD-RGB.pdf
+Now queued up to 5.4.y and 5.9.y, thanks.
 
-Signed-off-by: Oliver Graute <oliver.graute@gmail.com>
----
-
-panel-timing {
-		clock-frequency = <35000000>;
-		hactive = <800>;
-		vactive = <480>;
-		hback-porch = <39>;
-		hfront-porch = <39>;
-		vback-porch = <29>;
-		vfront-porch = <13>;
-		hsync-len = <48>;
-		vsync-len = <3>;
-		hsync-active = <0>;
-		vsync-active = <0>;
-		de-active = <1>;
-		pixelclk-active = <0>;
-	};
-
- drivers/gpu/drm/panel/panel-simple.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
-
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index c1374be..c2f20ac 100644
---- a/drivers/gpu/drm/panel/panel-simple.c
-+++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -3139,6 +3139,29 @@ static const struct panel_desc satoz_sat050at40h12r2 = {
- 	.connector_type = DRM_MODE_CONNECTOR_LVDS,
- };
- 
-+static const struct display_timing sgd_gktw70sdad1sd_timing = {
-+	.pixelclock = {35000000, 35000000, 35000000},
-+	.hactive = { 800, 800, 800},
-+	.hfront_porch = {39, 39, 39},
-+	.hback_porch = {39, 39, 39},
-+	.hsync_len = {48, 48, 48},
-+	.vactive = {480, 480, 480},
-+	.vfront_porch = {13, 13, 13},
-+	.vback_porch = {29, 29, 29},
-+	.vsync_len = {3, 3, 3},
-+};
-+
-+static const struct panel_desc sgd_gktw70sdad1sd = {
-+	.timings = &sgd_gktw70sdad1sd_timing,
-+	.num_timings = 1,
-+	.bpc = 8,
-+	.size = {
-+		.width = 153,
-+		.height = 86,
-+	},
-+	.connector_type = DRM_MODE_CONNECTOR_DPI,
-+};
-+
- static const struct drm_display_mode sharp_ld_d5116z01b_mode = {
- 	.clock = 168480,
- 	.hdisplay = 1920,
-@@ -3999,6 +4022,9 @@ static const struct of_device_id platform_of_match[] = {
- 		.compatible = "satoz,sat050at40h12r2",
- 		.data = &satoz_sat050at40h12r2,
- 	}, {
-+		.compatible = "sgd,gktw70sdad1sd",
-+		.data = &sgd_gktw70sdad1sd,
-+	}, {
- 		.compatible = "sharp,ld-d5116z01b",
- 		.data = &sharp_ld_d5116z01b,
- 	}, {
--- 
-2.7.4
-
+greg k-h
