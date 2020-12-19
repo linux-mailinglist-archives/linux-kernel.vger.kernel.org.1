@@ -2,167 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 172942DEEE5
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 13:52:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FA852DEEE8
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 13:55:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726693AbgLSMwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 07:52:21 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:55993 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgLSMwU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 07:52:20 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1608382322; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=+Y2tNsCecFLAv1aRtNyApUxY3RBrrK572xFAYbx48aQ=; b=i75OM1nCBuDC8DIBVOuXBO3VSuyZNHJX5MXBLsrjjVpyoWyuOZWPh+9B36+GNAuvlHUnhGM4
- QtRZHyG7wyfJfKg+dKmM5BM8bAxb6HGXeXt5u/m5aLDFRxI0PkwzIDPCkSwdrgw7Dup8Z2N4
- qT+W/ie20N/2TTjAvVc5ptASwp0=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5fddf754bfd08afb0ddb8284 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 19 Dec 2020 12:51:32
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 52D73C43463; Sat, 19 Dec 2020 12:51:31 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C6D25C433C6;
-        Sat, 19 Dec 2020 12:51:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C6D25C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Srinivasan Raju <srini.raju@purelifi.com>
-Cc:     mostafa.afgani@purelifi.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org (open list),
-        linux-wireless@vger.kernel.org (open list:NETWORKING DRIVERS (WIRELESS)),
-        netdev@vger.kernel.org (open list:NETWORKING DRIVERS)
-Subject: Re: [PATCH] [v11] wireless: Initial driver submission for pureLiFi STA devices
-References: <20200928102008.32568-1-srini.raju@purelifi.com>
-        <20201208115719.349553-1-srini.raju@purelifi.com>
-Date:   Sat, 19 Dec 2020 14:51:25 +0200
-In-Reply-To: <20201208115719.349553-1-srini.raju@purelifi.com> (Srinivasan
-        Raju's message of "Tue, 8 Dec 2020 17:27:04 +0530")
-Message-ID: <87wnxeq7qq.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S1726771AbgLSMyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 07:54:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42028 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726673AbgLSMyk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Dec 2020 07:54:40 -0500
+Date:   Sat, 19 Dec 2020 13:55:20 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1608382440;
+        bh=5Te/9R+PfljQzEy210BM/ZP2PlPMg9loYI54+GX0m6I=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kFS3eLAdOlufqco/li6xq45/1A7vJWSAGztqPidHtRDF/I1iunPbRKimK0ccPP7Q1
+         ESHmS8PEaHs/bw7fzSJ2ISFVAb5Kp1FLlwf74EJ9mpZOj21NRZL1zcshISTZT35Xso
+         v+b/qVARFL9IXtiZzGQUrGvveFVcmZSWYgO4wVr8=
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Avri Altman <Avri.Altman@wdc.com>
+Cc:     Daejun Park <daejun7.park@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>
+Subject: Re: [PATCH v16 1/3] scsi: ufs: Introduce HPB feature
+Message-ID: <X934OOlXSf5up8Rd@kroah.com>
+References: <20201219091802epcms2p2c86f7ae2e81aa015702572a8ef180dae@epcms2p2>
+ <CGME20201219091802epcms2p2c86f7ae2e81aa015702572a8ef180dae@epcms2p7>
+ <20201219091847epcms2p7afeebd03c47eed0b65f89375a881233e@epcms2p7>
+ <X93XuJ4lsQbBgnU+@kroah.com>
+ <DM6PR04MB6575AC2A541FCAAB60E581FBFCC20@DM6PR04MB6575.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM6PR04MB6575AC2A541FCAAB60E581FBFCC20@DM6PR04MB6575.namprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Srinivasan Raju <srini.raju@purelifi.com> writes:
+On Sat, Dec 19, 2020 at 12:48:31PM +0000, Avri Altman wrote:
+> > 
+> > 
+> > On Sat, Dec 19, 2020 at 06:18:47PM +0900, Daejun Park wrote:
+> > > +static int ufshpb_get_state(struct ufshpb_lu *hpb)
+> > > +{
+> > > +     return atomic_read(&hpb->hpb_state);
+> > > +}
+> > > +
+> > > +static void ufshpb_set_state(struct ufshpb_lu *hpb, int state)
+> > > +{
+> > > +     atomic_set(&hpb->hpb_state, state);
+> > > +}
+> > 
+> > You have a lock for the state, and yet the state is an atomic variable
+> > and you do not use the lock here at all.  You don't use the lock at all
+> > infact...
+> > 
+> > So either the lock needs to be dropped, or you need to use the lock and
+> > make the state a normal variable please.
+> hpb_state_lock is mainly protecting the list of active regions.
+> Just grep  lh_lru_rgn in patch 2/3.
 
-> This introduces the pureLiFi LiFi driver for LiFi-X, LiFi-XC
-> and LiFi-XL USB devices.
->
-> This driver implementation has been based on the zd1211rw driver.
->
-> Driver is based on 802.11 softMAC Architecture and uses
-> native 802.11 for configuration and management.
->
-> The driver is compiled and tested in ARM, x86 architectures and
-> compiled in powerpc architecture.
->
-> Signed-off-by: Srinivasan Raju <srini.raju@purelifi.com>
+Then why is the lock added in this patch if it is not used here?
 
-My first quick comments after 10 minutes of looking at this driver, so
-not complete in any way:
+thanks,
 
-Does not compile:
-
-ERROR: modpost: "upload_mac_and_serial" [drivers/net/wireless/purelifi/purelifi.ko] undefined!
-
->  MAINTAINERS                              |    5 +
->  drivers/net/wireless/Kconfig             |    1 +
->  drivers/net/wireless/Makefile            |    1 +
->  drivers/net/wireless/purelifi/Kconfig    |   27 +
->  drivers/net/wireless/purelifi/Makefile   |    3 +
->  drivers/net/wireless/purelifi/chip.c     |   93 ++
->  drivers/net/wireless/purelifi/chip.h     |   81 ++
->  drivers/net/wireless/purelifi/dbgfs.c    |  150 +++
->  drivers/net/wireless/purelifi/firmware.c |  384 ++++++++
->  drivers/net/wireless/purelifi/intf.h     |   38 +
->  drivers/net/wireless/purelifi/mac.c      |  873 ++++++++++++++++++
->  drivers/net/wireless/purelifi/mac.h      |  189 ++++
->  drivers/net/wireless/purelifi/usb.c      | 1075 ++++++++++++++++++++++
->  drivers/net/wireless/purelifi/usb.h      |  199 ++++
-
-The directory structure should be:
-
-drivers/net/wireless/<vendor>/<drivername>/<file>
-
-So please come up with a unique name for the driver which describes the
-supported hardware somehow. Calling the driver "purelifi" is imho too
-generic, what happens if/when there's a second generation hardware and
-that needs a completely new driver? Just to give examples I like names
-like rtw88 and mt76.
-
-And I would prefer that the driver name is also used as the directory
-name for firmware files, easier to find that way.
-
-> --- /dev/null
-> +++ b/drivers/net/wireless/purelifi/Makefile
-> @@ -0,0 +1,3 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +obj-$(CONFIG_PURELIFI)		:= purelifi.o
-> +purelifi-objs 		+= chip.o usb.o mac.o firmware.o dbgfs.o
-> diff --git a/drivers/net/wireless/purelifi/chip.c b/drivers/net/wireless/purelifi/chip.c
-> new file mode 100644
-> index 000000000000..9a7ccd0f98f2
-> --- /dev/null
-> +++ b/drivers/net/wireless/purelifi/chip.c
-> @@ -0,0 +1,93 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-
-Copyright missing in all files.
-
-> +#undef  LOAD_MAC_AND_SERIAL_FROM_FILE
-> +#undef  LOAD_MAC_AND_SERIAL_FROM_FLASH
-> +#define LOAD_MAC_AND_SERIAL_FROM_EP0
-
-This should be dynamic and not compile time configurable. For example
-try file first, next flash and EP0 last, or something like that.
-
-> +const struct device_attribute purelifi_attr_frequency = {
-> +	  .attr = {.name = "frequency", .mode = (0666)},
-> +	  .show = purelifi_show_sysfs,
-> +	  .store = purelifi_store_frequency,
-> +};
-> +
-> +struct device_attribute purelifi_attr_modulation = {
-> +	.attr = {.name = "modulation", .mode = (0666)},
-> +	.show = purelifi_show_modulation,
-> +	.store = purelifi_store_modulation,
-> +};
-> +
-> +const struct proc_ops  modulation_fops = {
-> +	.proc_open  = modulation_open,
-> +	.proc_read  = modulation_read,
-> +	.proc_write = modulation_write
-> +};
-
-No procfs or sysfs files in wireless drivers, please. Needs a strong
-reason to have an exception for that rule.
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+greg k-h
