@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 810882DF01D
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 16:03:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB352DF01E
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 16:05:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726771AbgLSPDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 10:03:01 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:54977 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726694AbgLSPDB (ORCPT
+        id S1726795AbgLSPEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 10:04:55 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:46315 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726578AbgLSPEy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 10:03:01 -0500
-X-UUID: 86bea7f473a84533b9a6bee3d06a20bc-20201219
-X-UUID: 86bea7f473a84533b9a6bee3d06a20bc-20201219
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        Sat, 19 Dec 2020 10:04:54 -0500
+X-UUID: 6534e6a8078f4023a85528671528bead-20201219
+X-UUID: 6534e6a8078f4023a85528671528bead-20201219
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
         (envelope-from <lecopzer.chen@mediatek.com>)
         (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1606627720; Sat, 19 Dec 2020 23:02:17 +0800
+        with ESMTP id 955308409; Sat, 19 Dec 2020 23:04:08 +0800
 Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sat, 19 Dec 2020 23:02:12 +0800
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sat, 19 Dec 2020 23:04:05 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 19 Dec 2020 23:02:12 +0800
+ Transport; Sat, 19 Dec 2020 23:04:04 +0800
 From:   Lecopzer Chen <lecopzer.chen@mediatek.com>
 To:     <oliver.sang@intel.com>
 CC:     <alexandru.elisei@arm.com>, <lecopzer.chen@mediatek.com>,
@@ -34,18 +34,21 @@ CC:     <alexandru.elisei@arm.com>, <lecopzer.chen@mediatek.com>,
         <sumit.garg@linaro.org>, <will@kernel.org>,
         <yj.chiang@mediatek.com>
 Subject: Re: [PATCH] kernel/watchdog_hld.c: Fix access percpu in preemptible context  
-Date:   Sat, 19 Dec 2020 23:02:14 +0800
-Message-ID: <20201219150214.16854-1-lecopzer.chen@mediatek.com>
+Date:   Sat, 19 Dec 2020 23:04:06 +0800
+Message-ID: <20201219150406.16925-1-lecopzer.chen@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20201219135917.GA26344@xsang-OptiPlex-9020>
 References: <20201219135917.GA26344@xsang-OptiPlex-9020>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-TM-SNTS-SMTP: 6C92B1F47AD0D5D53445CCE32F782C2A76744CD57D55A2985EB4F3FF929C696E2000:8
 X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
+
+
+Thanks a lot, I'll try to fix this in anthoer way(patch v2) to avoid
+regreesion other than arm64
 
 BRs,
 Lecopzer
