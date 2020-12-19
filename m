@@ -2,112 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 331382DF0E4
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 19:00:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 013492DF0EB
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 19:00:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727499AbgLSR7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 12:59:03 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:51390 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725562AbgLSR7A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 12:59:00 -0500
-Received: from localhost.localdomain (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id E04F920B8760;
-        Sat, 19 Dec 2020 09:57:40 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E04F920B8760
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1608400661;
-        bh=OVwA4inNau2hmijx/oPmAOP24IyIW5ZqUgc87HT/n4c=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BYvY8oFR77uNrtNi8uvYFk928ERQQrPMySXkp4MZRHkdjUzOGddbLY4oHuZoCVJzE
-         gXMYZ60NeqQYjkqg/235ZIxhe5No/45Hqigzgdxev0OAvkJTk/gwfSfptVDTxHwabq
-         Wo+Kf6RvfNRCdJaiUV1f17GXtyok9+IY0uucsfmY=
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-To:     zohar@linux.ibm.com, bauerman@linux.ibm.com, robh@kernel.org,
-        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
-        will@kernel.org, catalin.marinas@arm.com, mpe@ellerman.id.au
-Cc:     james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
-        paulus@samba.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
-        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-Subject: [PATCH v13 6/6] arm64: Add IMA log information in kimage used for kexec
-Date:   Sat, 19 Dec 2020 09:57:13 -0800
-Message-Id: <20201219175713.18888-7-nramas@linux.microsoft.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201219175713.18888-1-nramas@linux.microsoft.com>
-References: <20201219175713.18888-1-nramas@linux.microsoft.com>
+        id S1727561AbgLSSAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 13:00:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58354 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727208AbgLSR77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Dec 2020 12:59:59 -0500
+Date:   Sat, 19 Dec 2020 09:59:17 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608400758;
+        bh=pdO7yN27dVbxPgRegNWOCdEQpv/5y8Wa0WcvQGFzoF0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=holaY5/ZCCy1tufiJqgn51KOF2wx6Aj5L6gpdupdp1Aef7D3Qz+DFS+1NsIWj5dI6
+         4Y+bmaLuRfbn+jJzt71J8teHp8fKi8Fue6d4IHYtCOo3DCAPxFoAosOqoG6ryJWC8r
+         nj9LVLzSlpiAkHHG+gMXCSSekXcFU6DRuilthVueCPRd5rUQrtqshhm7oxpQN3Y7se
+         fRu6yNjjXZdvvsqcv2rNY+383gExHrktmnsZe7rMcIKcHvSuGfiqLtBQpifnpvhhHg
+         5MfeDGukiurVImv2FKWdjJKjDQREOanCavrUmQ7Fam0n/k6Z4YFMuFzPu8KOpvBqY6
+         xgocci6UgjGUg==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     <stefanc@marvell.com>
+Cc:     <netdev@vger.kernel.org>, <thomas.petazzoni@bootlin.com>,
+        <davem@davemloft.net>, <nadavh@marvell.com>,
+        <ymarkman@marvell.com>, <linux-kernel@vger.kernel.org>,
+        <linux@armlinux.org.uk>, <mw@semihalf.com>, <andrew@lunn.ch>,
+        <rmk+kernel@armlinux.org.uk>, <stable@vger.kernel.org>
+Subject: Re: [PATCH net v3] net: mvpp2: Fix GoP port 3 Networking Complex
+ Control configurations
+Message-ID: <20201219095917.67401234@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1608208648-13710-1-git-send-email-stefanc@marvell.com>
+References: <1608208648-13710-1-git-send-email-stefanc@marvell.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Address and size of the buffer containing the IMA measurement log need
-to be passed from the current kernel to the next kernel on kexec.
+On Thu, 17 Dec 2020 14:37:28 +0200 stefanc@marvell.com wrote:
+> From: Stefan Chulski <stefanc@marvell.com>
+> 
+> During GoP port 2 Networking Complex Control mode of operation configurations,
+> also GoP port 3 mode of operation was wrongly set.
+> Patch removes these configurations.
+> GENCONF_CTRL0_PORTX naming also fixed.
 
-Any existing "linux,ima-kexec-buffer" property in the device tree
-needs to be removed and its corresponding memory reservation in
-the currently running kernel needs to be freed. The address and
-size of the current kernel's IMA measurement log need to be added
-to the device tree's IMA kexec buffer node and memory for the buffer
-needs to be reserved for the log to be carried over to the next kernel
-on the kexec call.
+Testing the stable backport it looks like this addition change will be
+problematic. Not to mention it goes against the "fixes should be
+minimal" rule.
 
-Add address and size fields to "struct kimage_arch" for ARM64 platform
-to hold the address and size of the IMA measurement log buffer. Remove
-any existing "linux,ima-kexec-buffer" property in the device tree and
-free the corresponding memory reservation in the currently running
-kernel. Add "linux,ima-kexec-buffer" property to the device tree and
-reserve the memory for storing the IMA log that needs to be passed from
-the current kernel to the next one.
+Could you please send just a one liner which removes the offending
+ORing in of the bad bit?
 
-Update CONFIG_KEXEC_FILE to select CONFIG_HAVE_IMA_KEXEC to indicate
-that the IMA measurement log information is present in the device tree
-for ARM64.
+We can do the rename soon after in net-next, the trees are merged
+pretty much every week so it won't be a long wait.
 
-Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
----
- arch/arm64/Kconfig             | 1 +
- arch/arm64/include/asm/kexec.h | 5 +++++
- 2 files changed, 6 insertions(+)
-
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 1d466addb078..c85d18b1f2fd 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -1094,6 +1094,7 @@ config KEXEC
- config KEXEC_FILE
- 	bool "kexec file based system call"
- 	select KEXEC_CORE
-+	select HAVE_IMA_KEXEC
- 	help
- 	  This is new version of kexec system call. This system call is
- 	  file based and takes file descriptors as system call argument
-diff --git a/arch/arm64/include/asm/kexec.h b/arch/arm64/include/asm/kexec.h
-index d24b527e8c00..2bd19ccb6c43 100644
---- a/arch/arm64/include/asm/kexec.h
-+++ b/arch/arm64/include/asm/kexec.h
-@@ -100,6 +100,11 @@ struct kimage_arch {
- 	void *elf_headers;
- 	unsigned long elf_headers_mem;
- 	unsigned long elf_headers_sz;
-+
-+#ifdef CONFIG_IMA_KEXEC
-+	phys_addr_t ima_buffer_addr;
-+	size_t ima_buffer_size;
-+#endif
- };
- 
- extern const struct kexec_file_ops kexec_image_ops;
--- 
-2.29.2
-
+> Cc: stable@vger.kernel.org
+> Fixes: f84bf386f395 ("net: mvpp2: initialize the GoP")
+> Signed-off-by: Stefan Chulski <stefanc@marvell.com>
