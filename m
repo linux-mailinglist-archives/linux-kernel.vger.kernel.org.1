@@ -2,73 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 761D52DEFDC
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 14:30:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3422DEFE1
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 14:49:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726590AbgLSN3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 08:29:45 -0500
-Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:52940 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726528AbgLSN3o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 08:29:44 -0500
-Received: from localhost.localdomain ([93.23.13.5])
-        by mwinf5d70 with ME
-        id 6DTz2400706YL0V03DTzF8; Sat, 19 Dec 2020 14:28:00 +0100
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 19 Dec 2020 14:28:00 +0100
-X-ME-IP: 93.23.13.5
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     vkoul@kernel.org, dan.j.williams@intel.com,
-        jaswinder.singh@linaro.org
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] dmaengine: milbeaut-xdmac: Fix a resource leak in the error handling path of the probe function
-Date:   Sat, 19 Dec 2020 14:28:00 +0100
-Message-Id: <20201219132800.183254-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.27.0
+        id S1726707AbgLSNss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 08:48:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35628 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726479AbgLSNsr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Dec 2020 08:48:47 -0500
+From:   Jeff Layton <jlayton@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     viro@zeniv.linux.org.uk
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sargun@sargun.me, amir73il@gmail.com,
+        vgoyal@redhat.com
+Subject: [PATCH][RESEND] vfs: protect file->f_sb_err with f_lock
+Date:   Sat, 19 Dec 2020 08:48:04 -0500
+Message-Id: <20201219134804.20034-1-jlayton@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'disable_xdmac()' should be called in the error handling path of the
-probe function to undo a previous 'enable_xdmac()' call, as already
-done in the remove function.
+When I added the ability for syncfs to report writeback errors, I
+neglected to adequately protect file->f_sb_err. We could have racing
+updates to that value if two tasks are issuing syncfs() on the same
+fd at the same time.
 
-Fixes: a6e9be055d47 ("dmaengine: milbeaut-xdmac: Add XDMAC driver for Milbeaut platforms")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-Purely speculative
----
- drivers/dma/milbeaut-xdmac.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Fix this by protecting the f_sb_err field with the file->f_lock,
+similarly to how the f_wb_err field is protected.
 
-diff --git a/drivers/dma/milbeaut-xdmac.c b/drivers/dma/milbeaut-xdmac.c
-index 584c931e807a..d29d01e730aa 100644
---- a/drivers/dma/milbeaut-xdmac.c
-+++ b/drivers/dma/milbeaut-xdmac.c
-@@ -350,7 +350,7 @@ static int milbeaut_xdmac_probe(struct platform_device *pdev)
+Cc: stable@vger.kernel.org # v5.8+
+Fixes: 735e4ae5ba28 (vfs: track per-sb writeback errors and report them to syncfs)
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+---
+ fs/sync.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+I sent this a couple of weeks ago, but no one picked it up. No changes
+from the original posting, but added the Fixes tag and marked it for
+stable.
+
+diff --git a/fs/sync.c b/fs/sync.c
+index 1373a610dc78..3be26ff72431 100644
+--- a/fs/sync.c
++++ b/fs/sync.c
+@@ -162,7 +162,7 @@ SYSCALL_DEFINE1(syncfs, int, fd)
+ {
+ 	struct fd f = fdget(fd);
+ 	struct super_block *sb;
+-	int ret, ret2;
++	int ret, ret2 = 0;
  
- 	ret = dma_async_device_register(ddev);
- 	if (ret)
--		return ret;
-+		goto disable_xdmac;
+ 	if (!f.file)
+ 		return -EBADF;
+@@ -172,7 +172,12 @@ SYSCALL_DEFINE1(syncfs, int, fd)
+ 	ret = sync_filesystem(sb);
+ 	up_read(&sb->s_umount);
  
- 	ret = of_dma_controller_register(dev->of_node,
- 					 of_dma_simple_xlate, mdev);
-@@ -363,6 +363,8 @@ static int milbeaut_xdmac_probe(struct platform_device *pdev)
+-	ret2 = errseq_check_and_advance(&sb->s_wb_err, &f.file->f_sb_err);
++	if (errseq_check(&sb->s_wb_err, f.file->f_sb_err)) {
++		/* Something changed, must use slow path */
++		spin_lock(&f.file->f_lock);
++		ret2 = errseq_check_and_advance(&sb->s_wb_err, &f.file->f_sb_err);
++		spin_unlock(&f.file->f_lock);
++	}
  
- unregister_dmac:
- 	dma_async_device_unregister(ddev);
-+disable_xdmac:
-+	disable_xdmac(mdev);
- 	return ret;
- }
- 
+ 	fdput(f);
+ 	return ret ? ret : ret2;
 -- 
-2.27.0
+2.29.2
 
