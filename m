@@ -2,121 +2,346 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13E2C2DF23C
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 00:34:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 107A72DF249
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 00:48:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727418AbgLSXdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 18:33:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52608 "EHLO
+        id S1726792AbgLSXsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 18:48:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726527AbgLSXdw (ORCPT
+        with ESMTP id S1726527AbgLSXsE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 18:33:52 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 626A4C0613CF;
-        Sat, 19 Dec 2020 15:33:09 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id w5so6914505wrm.11;
-        Sat, 19 Dec 2020 15:33:09 -0800 (PST)
+        Sat, 19 Dec 2020 18:48:04 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD713C0617B0
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 15:47:24 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id v3so3480850plz.13
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 15:47:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=TGv42L+B9aa7qAxpWRyBbZLY6ULcN/FlT5xeAN8dMuw=;
-        b=txs63BaDu3RVQvLZajEowBUpTB2XwwuRjU9slG6rxCGc7sXPTJ9ieDRip7gzuFoyx+
-         QaUrpdv9ma+8K2TMyaUk2XiFSC10FRi/AVsP74EgbMDieTzsFuqM8NUMSLadiUQw8SMs
-         KGVBrnP9glmMr9tzk5AiD2xeD/AqoTa08k+L2TwGBCb4YoE5eJ47BgqZBQdfc93tr81F
-         sw6mawRq/WDi0MDgddnz4GDyLpkRiHbRqjgfJ3Whh9nHaJLJtY8fxJebEDszNodGCqIq
-         zEAc7CS6kXeWW1vUNiTVeCCtw1McRTo5sHcQn/0NIdipeyC65t8XOewwY7FUuyD0i1n0
-         JZYQ==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=faCYXGNXT4iGBZboME4hSaXfQUHuq/UqJ24WhoWMqqc=;
+        b=UokGDTrcU8v5YIGe6y7VO2RM2aBMUko0fbpGS7GOJuSfke5R7iE3+up0DTXIet+P8k
+         NBreFlPNrnXlVaVGVxdPPGNLIkBwRYFSBz+z8FZSNdT58ZYVGg9lEDJ1x72HdXVXytdw
+         mx4Mvzl5VCzwcmQoMgHv0U5zvOIkZRRk62nLQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TGv42L+B9aa7qAxpWRyBbZLY6ULcN/FlT5xeAN8dMuw=;
-        b=pXDrzWc1SdQSYBWTS+CNnmpSklXemLUNYcF8wuqiIQiGHPj7iDCXGmulb/RBc7ZXhO
-         FhTJWFSI83CncYWzrp6eo10cYGu3JV4FDPtUWyIgdBhfI0f50osSCFMOX2mE3+jY9hQM
-         psfj7WmKR2K4gISOyO5BXs5DEkvaT25W8q26wJDT48qWweXF2k0V26pCbCgj+BYEBz96
-         sfGo9axEOorsAP1UJL44ogp8VdsXvsqv1fGygnKRxz2vTFUuX4fkIu+flqIINynv3Yxy
-         +cEB4cFGqCZgSDC7TTns0G5Vdd3/pfxuVImdT3tYTzMipef2f//57s3GfAu7gNoeUOz4
-         u1JQ==
-X-Gm-Message-State: AOAM533iAeOngCb4G5NRM+q95ujM7IAB/P3WeB97ort4oGXtLeFreshy
-        rw+sKCq/Ksn2Df6qqznu4hA=
-X-Google-Smtp-Source: ABdhPJy3OLsPYXnsRbw4Xij6Mj6NtjxS9hHB1cnQtv7nU8dYukoTPjK1mnD7xjHwvyYV00NejCbArQ==
-X-Received: by 2002:adf:bb89:: with SMTP id q9mr11546619wrg.250.1608420788072;
-        Sat, 19 Dec 2020 15:33:08 -0800 (PST)
-Received: from [192.168.1.211] ([2.31.224.116])
-        by smtp.gmail.com with ESMTPSA id l11sm20511730wrt.23.2020.12.19.15.33.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 19 Dec 2020 15:33:07 -0800 (PST)
-Subject: Re: [PATCH v2 04/12] software_node: Enforce parent before child
- ordering of nodes arrays
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org, yong.zhi@intel.com,
-        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
-        tian.shu.qiu@intel.com, mchehab@kernel.org, robert.moore@intel.com,
-        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
-        linus.walleij@linaro.org, heikki.krogerus@linux.intel.com,
-        kitakar@gmail.com, jorhand@linux.microsoft.com
-References: <20201217234337.1983732-1-djrscally@gmail.com>
- <20201217234337.1983732-5-djrscally@gmail.com>
- <20201218202916.GA4077@smile.fi.intel.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <f7fd8cb5-6c1e-fc72-c380-cedb4a459355@gmail.com>
-Date:   Sat, 19 Dec 2020 23:33:06 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=faCYXGNXT4iGBZboME4hSaXfQUHuq/UqJ24WhoWMqqc=;
+        b=RsEXYfy1xXPU2gB9/66dRlXBCY/YsQyVoIlv43SX99589Bv58yo+RfOOS7eJRxnroN
+         Hp0a0puChxddF2GTXqFXpJmMHtxmmsECCudjNKpVtwOMHiAk/7icwlSLyHRHBwo7s5VO
+         1ZoiBdo/G37xcej0vQsB8qIoBlmVRGybLzp6aedo0V62Z/Td9T6ZeF1y9Kv5oW2qipyj
+         PQRbmmMTQfaMR4FlafiLp4wRomjEAiB+uYDi3Sezdobp6FYS4WnSK3pAOKMHxP4GINk9
+         98HeZxN7m+/FgwwHEYSoZQEtqSgK4xx3tH5BhIXrT4C9WFBkDcXxNmM/V9l5jBCjAwOB
+         7B8w==
+X-Gm-Message-State: AOAM5327PrCb4+VThTjNeVB+5FhHcm7/9HGPAAOTQWsBFKBrit9NcYbq
+        Ju599CM1Pmmz68TKw6djgdZIDA==
+X-Google-Smtp-Source: ABdhPJy0ZnF3E7W8xCjBT8SUdC7OSGI8CDrRqR91LprhaHWlPYIBpsHaGVhEgyI3uUoiT+0F19q+Fg==
+X-Received: by 2002:a17:902:ab8b:b029:da:f377:e7d7 with SMTP id f11-20020a170902ab8bb02900daf377e7d7mr10575415plr.4.1608421644095;
+        Sat, 19 Dec 2020 15:47:24 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id a19sm11865059pfi.130.2020.12.19.15.47.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Dec 2020 15:47:23 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20201218202916.GA4077@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1608279292-24760-2-git-send-email-kgunda@codeaurora.org>
+References: <1608279292-24760-1-git-send-email-kgunda@codeaurora.org> <1608279292-24760-2-git-send-email-kgunda@codeaurora.org>
+Subject: Re: [PATCH V4 1/2] mfd: qcom-spmi-pmic: Convert bindings to .yaml format
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Kiran Gunda <kgunda@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kiran Gunda <kgunda@codeaurora.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh@kernel.org, swboyd@chromium.org
+Date:   Sat, 19 Dec 2020 15:47:21 -0800
+Message-ID: <160842164192.1580929.12823359876682723808@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/12/2020 20:29, Andy Shevchenko wrote:
->> + * Register multiple software nodes at once. If any node in the array
->> + * has it's .parent pointer set, then it's parent **must** have been
-> 
-> it's => its in both cases?
+Quoting Kiran Gunda (2020-12-18 00:14:51)
+> Convert the bindings from .txt to .yaml format.
+>=20
+> Signed-off-by: Kiran Gunda <kgunda@codeaurora.org>
+> ---
+>  .../devicetree/bindings/mfd/qcom,spmi-pmic.txt     |  80 -------------
+>  .../devicetree/bindings/mfd/qcom,spmi-pmic.yaml    | 127 +++++++++++++++=
+++++++
+>  2 files changed, 127 insertions(+), 80 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.=
+txt
+>  create mode 100644 Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.=
+yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt b/D=
+ocumentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt
+> deleted file mode 100644
+> index 79367a4..0000000
+> --- a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt
+> +++ /dev/null
+> @@ -1,80 +0,0 @@
+> -          Qualcomm SPMI PMICs multi-function device bindings
+> -
+> -The Qualcomm SPMI series presently includes PM8941, PM8841 and PMA8084
+> -PMICs.  These PMICs use a QPNP scheme through SPMI interface.
+> -QPNP is effectively a partitioning scheme for dividing the SPMI extended
+> -register space up into logical pieces, and set of fixed register
+> -locations/definitions within these regions, with some of these regions
+> -specifically used for interrupt handling.
+> -
+> -The QPNP PMICs are used with the Qualcomm Snapdragon series SoCs, and are
+> -interfaced to the chip via the SPMI (System Power Management Interface) =
+bus.
+> -Support for multiple independent functions are implemented by splitting =
+the
+> -16-bit SPMI slave address space into 256 smaller fixed-size regions, 256=
+ bytes
+> -each. A function can consume one or more of these fixed-size register re=
+gions.
+> -
+> -Required properties:
+> -- compatible:      Should contain one of:
+> -                   "qcom,pm8941",
+> -                   "qcom,pm8841",
+> -                   "qcom,pma8084",
+> -                   "qcom,pm8019",
+> -                   "qcom,pm8226",
+> -                   "qcom,pm8110",
+> -                   "qcom,pma8084",
+> -                   "qcom,pmi8962",
+> -                   "qcom,pmd9635",
+> -                   "qcom,pm8994",
+> -                   "qcom,pmi8994",
+> -                   "qcom,pm8916",
+> -                   "qcom,pm8004",
+> -                   "qcom,pm8909",
+> -                   "qcom,pm8950",
+> -                   "qcom,pmi8950",
+> -                   "qcom,pm8998",
+> -                   "qcom,pmi8998",
+> -                   "qcom,pm8005",
+> -                   or generalized "qcom,spmi-pmic".
+> -- reg:             Specifies the SPMI USID slave address for this device.
+> -                   For more information see:
+> -                   Documentation/devicetree/bindings/spmi/spmi.yaml
+> -
+> -Required properties for peripheral child nodes:
+> -- compatible:      Should contain "qcom,xxx", where "xxx" is a periphera=
+l name.
+> -
+> -Optional properties for peripheral child nodes:
+> -- interrupts:      Interrupts are specified as a 4-tuple. For more infor=
+mation
+> -                   see:
+> -                   Documentation/devicetree/bindings/spmi/qcom,spmi-pmic=
+-arb.txt
+> -- interrupt-names: Corresponding interrupt name to the interrupts proper=
+ty
+> -
+> -Each child node of SPMI slave id represents a function of the PMIC. In t=
+he
+> -example below the rtc device node represents a peripheral of pm8941
+> -SID =3D 0. The regulator device node represents a peripheral of pm8941 S=
+ID =3D 1.
+> -
+> -Example:
+> -
+> -       spmi {
+> -               compatible =3D "qcom,spmi-pmic-arb";
+> -
+> -               pm8941@0 {
+> -                       compatible =3D "qcom,pm8941", "qcom,spmi-pmic";
+> -                       reg =3D <0x0 SPMI_USID>;
+> -
+> -                       rtc {
+> -                               compatible =3D "qcom,rtc";
+> -                               interrupts =3D <0x0 0x61 0x1 IRQ_TYPE_EDG=
+E_RISING>;
+> -                               interrupt-names =3D "alarm";
+> -                       };
+> -               };
+> -
+> -               pm8941@1 {
+> -                       compatible =3D "qcom,pm8941", "qcom,spmi-pmic";
+> -                       reg =3D <0x1 SPMI_USID>;
+> -
+> -                       regulator {
+> -                               compatible =3D "qcom,regulator";
+> -                               regulator-name =3D "8941_boost";
+> -                       };
+> -               };
+> -       };
+> diff --git a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml b/=
+Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
+> new file mode 100644
+> index 0000000..e458dd1
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
+> @@ -0,0 +1,127 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mfd/qcom,spmi-pmic.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm SPMI PMICs multi-function device bindings
+> +
+> +maintainers:
+> +  - Stephen Boyd <sboyd@kernel.org>
 
-Done, ty
+Someone at Qualcomm should be the maintainer here. Maybe you?
 
->> + * registered before it is; either outside of this function or by
->> + * ordering the array such that parent comes before child.
->>   */
-> 
-> ...
-> 
->> +		const struct software_node *parent = nodes[i].parent;
->> +
->> +		if (parent && !software_node_to_swnode(parent)) {
-> 
-> Can we have parent of swnode in an array not being an swnode?
-> Either comment that parent for swnode can be swnode only (Heikki, was it an
-> idea?) or check if parent is of swnode type and only that apply this
-> requirement.
+> +
+> +description: |
+> +  The Qualcomm SPMI PMICs use a QPNP scheme through SPMI interface.
 
-.parent can be a pointer to software_node only yes; I can add that to
-the document comment.
+What is QPNP?
 
->> +			ret = -EINVAL;
->> +			goto err_unregister_nodes;
->>  		}
-> 
-> ...
-> 
->> + * Unregister multiple software nodes at once. If parent pointers are set up
->> + * in any of the software nodes then the array MUST be ordered such that
->> + * parents come before their children.
-> 
-> Shouldn't be consistent with above, i.e. **must** ?
+> +  QPNP is effectively a partitioning scheme for dividing the SPMI extend=
+ed
+> +  register space up into logical pieces, and set of fixed register
+> +  locations/definitions within these regions, with some of these regions
+> +  specifically used for interrupt handling.
+> +
+> +  The QPNP PMICs are used with the Qualcomm Snapdragon series SoCs, and =
+are
+> +  interfaced to the chip via the SPMI (System Power Management Interface=
+) bus.
+> +  Support for multiple independent functions are implemented by splittin=
+g the
+> +  16-bit SPMI slave address space into 256 smaller fixed-size regions, 2=
+56 bytes
+> +  each. A function can consume one or more of these fixed-size register =
+regions.
+> +
+> +properties:
+> +  spmi_bus:
+> +    type: object
+> +    description: SPMI bus node
+> +
+> +patternProperties:
+> +  "^pmic@[0-9]$":
+> +    description: Child PMIC nodes
+> +    type: object
+> +
+> +    properties:
+> +      compatible:
+> +        items:
+> +          - enum:
+> +              # Sorted based on subtype ID the device reports
+> +              - qcom,pm8941
+> +              - qcom,pm8841
+> +              - qcom,pma8084
+> +              - qcom,pm8019
+> +              - qcom,pm8226
+> +              - qcom,pm8110
+> +              - qcom,pma8084
+> +              - qcom,pmi8962
+> +              - qcom,pmd9635
+> +              - qcom,pm8994
+> +              - qcom,pmi8994
+> +              - qcom,pm8916
+> +              - qcom,pm8004
+> +              - qcom,pm8909
+> +              - qcom,pm8950
+> +              - qcom,pmi8950
+> +              - qcom,pm8998
+> +              - qcom,pmi8998
+> +              - qcom,pm8005
+> +              - qcom,pm660l
+> +              - qcom,pm660
+> +
+> +          - enum:
+> +              - qcom,spmi-pmic
+> +
+> +      reg:
+> +        maxItems: 1
+> +        description:
+> +          Specifies the SPMI USID slave address for this device.
+> +          For more information see bindings/spmi/spmi.txt
+> +
+> +    patternProperties:
+> +      "@[0-9a-f]$":
 
-Done also
+Is that @ sign supposed to be a ^ sign? I thought the child nodes of a
+pmic node were [a-zA-Z0-9-] or some sort of regex like that. Certainly
+not an address that doesn't exist. They look to be things like 'rtc' or
+'regulator'.
 
+> +        description:
+> +          Each child node of SPMI slave id represents a function of the =
+PMIC.
+> +          In the example below the rtc device node represents a peripher=
+al of
+> +          pm8941 SID =3D 0. The regulator device node represents a perip=
+heral of
+> +          pm8941 SID =3D 1.
+> +        type: object
+> +
+> +        properties:
+> +          interrupts:
+> +            maxItems: 4
+> +            description:
+> +              Interrupts are specified as a 4-tuple. For more information
+
+Seems like minItems is also 4 though, so should be a const 4 instead?
+But then this is about how many interrupts there are, which would be 1
+or 2?  It really can't be known in case there are many interrupts for a
+child node so not sure we need to specify anything.
+
+> +              see bindings/spmi/qcom,spmi-pmic-arb.txt
+> +
+> +          interrupt-names:
+> +            description:
+> +              Corresponding interrupt name to the interrupts property
+
+I suspect we should drop these two properties and leave them up to the
+binding for the function, like rtc, or regualator, etc.
+
+> +
+> +    required:
+> +      - compatible
+> +      - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/spmi/spmi.h>
+> +
+> +    spmi_bus {
+> +        compatible =3D "qcom,spmi-pmic-arb";
+> +        #address-cells =3D <2>;
+> +        #size-cells =3D <0>;
+> +
+> +        pmic@0 {
+> +         compatible =3D "qcom,pm8941";
+> +         reg =3D <0x0 SPMI_USID>;
+> +
+> +         rtc {
+> +           compatible =3D "qcom,rtc";
+> +           interrupts =3D <0x0 0x61 0x1 0x1>;
+> +           interrupt-names =3D "alarm";
+> +          };
+> +        };
+> +
+> +        pmic@1 {
+> +         compatible =3D "qcom,pm8941";
+> +         reg =3D <0x1 SPMI_USID>;
+> +
+> +         regulator {
+> +           compatible =3D "qcom,regulator";
+> +           regulator-name =3D "8941_boost";
+> +           };
+> +          };
+> +        };
+> +...
