@@ -2,134 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B4C52DED53
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 06:26:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E2692DED61
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 06:58:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726367AbgLSF0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 00:26:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726034AbgLSF0T (ORCPT
+        id S1726367AbgLSF6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 00:58:31 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:13136 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726272AbgLSF6b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 00:26:19 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79E0EC06138C
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 21:25:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=7NOCJf6gSJieeeFiTAn8QMejK/YJVRySx4FEmsssJ68=; b=XKQR8ilZN8FePpiFjh3StysKK5
-        fScFP8g1v6IZzFxSKo19SjXdWBSt0JpmR8qJW9pvfldM/LTkJW/wwDtHbzg756Wy82tIUeMwZ/MBv
-        NCgcLUbdC0xK16HuG0foMasYvHZz9tcy0hGs55WRuSiOpIjV0bz6wGQTf9zdcP3Za1u4bGmSvhioy
-        fQUNTg1+JYMzmKF1PaBxhtbo9GDKChFuaQM+/sMlD5RrMj60KYs5lf/PYdGHilLjUCwVjINrENK9l
-        O3/hMGLyPly+zGDF9DwotcllvkNFRWvynKvRPIG6OAV34dh12mercmzkojVJRl/Nitl+BSpzgpQeL
-        wX3AWmtw==;
-Received: from [2601:1c0:6280:3f0::64ea] (helo=smtpauth.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kqUkK-0000Y1-DP; Sat, 19 Dec 2020 05:25:36 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Zaslonko Mikhail <zaslonko@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Acked-by : Ilya Leoshkevich" <iii@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Subject: [PATCH] zlib: move EXPORT_SYMBOL() and MODULE_LICENSE() out of dfltcc_syms.c
-Date:   Fri, 18 Dec 2020 21:25:30 -0800
-Message-Id: <20201219052530.28461-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Sat, 19 Dec 2020 00:58:31 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fdd965d0000>; Fri, 18 Dec 2020 21:57:49 -0800
+Received: from [10.2.61.104] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 19 Dec
+ 2020 05:57:39 +0000
+Subject: Re: [PATCH v4 10/10] selftests/vm: test faulting in kernel, and
+ verify pinnable pages
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <akpm@linux-foundation.org>, <vbabka@suse.cz>, <mhocko@suse.com>,
+        <david@redhat.com>, <osalvador@suse.de>,
+        <dan.j.williams@intel.com>, <sashal@kernel.org>,
+        <tyhicks@linux.microsoft.com>, <iamjoonsoo.kim@lge.com>,
+        <mike.kravetz@oracle.com>, <rostedt@goodmis.org>,
+        <mingo@redhat.com>, <jgg@ziepe.ca>, <peterz@infradead.org>,
+        <mgorman@suse.de>, <willy@infradead.org>, <rientjes@google.com>,
+        <linux-doc@vger.kernel.org>, <ira.weiny@intel.com>,
+        <linux-kselftest@vger.kernel.org>
+References: <20201217185243.3288048-1-pasha.tatashin@soleen.com>
+ <20201217185243.3288048-11-pasha.tatashin@soleen.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <75b6fb52-ef2c-e17b-2e43-45be913c6206@nvidia.com>
+Date:   Fri, 18 Dec 2020 21:57:39 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:84.0) Gecko/20100101
+ Thunderbird/84.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201217185243.3288048-11-pasha.tatashin@soleen.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1608357469; bh=Urx3UezC1NjgOhw5LWwZ9F3J/vnzK66k9zUaY4YSWKw=;
+        h=Subject:To:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=j6tQEZEJiZS/RosK7ErXKTFAMQWo6cywzabZ83sukknMF2Q/sgvgF/juy9/aMxbr2
+         9hngN1/K/rZ3BthNx3cwg3sdo+exR62cJ192z/cZ1XmhBqiZbQuB3rpChfQqedSe9P
+         AWVhHkU7NRPlsjdpuZxu2qLXt4TqaHwbuzsXxEVyow6B+qyj7oChAn+EA0IGOxYuPf
+         TzWaLrt31vB39APljjskVuPr83QiPB4kKnkXQN+HiaMH+zqDlBTo/qYez6hCpWlvfP
+         KbKn0pZ4KM+xfdffe9KIEID31zLhSTat9NcC9Xi5sHD4/NmJHmmh9Ov0W9IOA3kWwZ
+         1q0aR4sd3NMuQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In 11fb479ff5d9 ("zlib: export S390 symbols for zlib modules"), I added
-EXPORT_SYMBOL()s to dfltcc_inflate.c but then Mikhail said that these
-should probably be in dfltcc_syms.c with the other EXPORT_SYMBOL()s.
+On 12/17/20 10:52 AM, Pavel Tatashin wrote:
+ >
 
-However, that is contrary to the current kernel style, which places
-EXPORT_SYMBOL() immediately after the function that it applies to,
-so move all EXPORT_SYMBOL()s to their respective function locations
-and drop the dfltcc_syms.c file. Also move MODULE_LICENSE() from the
-deleted file to dfltcc.c.
+Hi Pavel,
 
-Fixes: 11fb479ff5d9 ("zlib: export S390 symbols for zlib modules")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Zaslonko Mikhail <zaslonko@linux.ibm.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Christian Borntraeger <borntraeger@de.ibm.com>
----
- lib/zlib_dfltcc/dfltcc.c         |    6 +++++-
- lib/zlib_dfltcc/dfltcc_deflate.c |    3 +++
- lib/zlib_dfltcc/dfltcc_syms.c    |   17 -----------------
- 3 files changed, 8 insertions(+), 18 deletions(-)
+This all looks good pretty good to me, with just a couple of minor
+doubts interleaved with the documentation tweaks:
 
---- linux-next-20201218.orig/lib/zlib_dfltcc/dfltcc.c
-+++ linux-next-20201218/lib/zlib_dfltcc/dfltcc.c
-@@ -1,7 +1,8 @@
- // SPDX-License-Identifier: Zlib
- /* dfltcc.c - SystemZ DEFLATE CONVERSION CALL support. */
- 
--#include <linux/zutil.h>
-+#include <linux/export.h>
-+#include <linux/module.h>
- #include "dfltcc_util.h"
- #include "dfltcc.h"
- 
-@@ -53,3 +54,6 @@ void dfltcc_reset(
-     dfltcc_state->dht_threshold = DFLTCC_DHT_MIN_SAMPLE_SIZE;
-     dfltcc_state->param.ribm = DFLTCC_RIBM;
- }
-+EXPORT_SYMBOL(dfltcc_reset);
-+
-+MODULE_LICENSE("GPL");
---- linux-next-20201218.orig/lib/zlib_dfltcc/dfltcc_deflate.c
-+++ linux-next-20201218/lib/zlib_dfltcc/dfltcc_deflate.c
-@@ -4,6 +4,7 @@
- #include "dfltcc_util.h"
- #include "dfltcc.h"
- #include <asm/setup.h>
-+#include <linux/export.h>
- #include <linux/zutil.h>
- 
- /*
-@@ -34,6 +35,7 @@ int dfltcc_can_deflate(
- 
-     return 1;
- }
-+EXPORT_SYMBOL(dfltcc_can_deflate);
- 
- static void dfltcc_gdht(
-     z_streamp strm
-@@ -277,3 +279,4 @@ again:
-         goto again; /* deflate() must use all input or all output */
-     return 1;
- }
-+EXPORT_SYMBOL(dfltcc_deflate);
---- linux-next-20201218.orig/lib/zlib_dfltcc/dfltcc_syms.c
-+++ /dev/null
-@@ -1,17 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only
--/*
-- * linux/lib/zlib_dfltcc/dfltcc_syms.c
-- *
-- * Exported symbols for the s390 zlib dfltcc support.
-- *
-- */
--
--#include <linux/init.h>
--#include <linux/module.h>
--#include <linux/zlib.h>
--#include "dfltcc.h"
--
--EXPORT_SYMBOL(dfltcc_can_deflate);
--EXPORT_SYMBOL(dfltcc_deflate);
--EXPORT_SYMBOL(dfltcc_reset);
--MODULE_LICENSE("GPL");
+a) I'm not yet sure if the is_pinnable_page() concept is a keeper. If it's
+not for some reason, then we should revisit this patch.
+
+b) I don't yet understand why FOLL_TOUCH from gup/pup is a critical part
+of the test.
+
+
+> When pages are pinned they can be faulted in userland and migrated, and
+> they can be faulted right in kernel without migration.
+> 
+> In either case, the pinned pages must end-up being pinnable (not movable).
+
+Let's delete the above two sentences, which are confusing as currently
+worded, and just keep approximately the last sentence below.
+
+> 
+> Add a new test without touching pages in userland, and use FOLL_TOUCH
+> instead. Also, verify that pinned pages are pinnable.
+
+Maybe this instead:
+
+Add a new test to gup_test, to verify that only "pinnable" pages are
+pinned. Also, use gup/pup + FOLL_TOUCH to fault in the pages, rather
+than faulting them in from user space.
+
+
+?  But I don't know why that second point is important. Is it actually
+important in order to have a valid test? If so, why?
+
+
+> 
+> Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+> ---
+>   mm/gup_test.c                         |  6 ++++++
+>   tools/testing/selftests/vm/gup_test.c | 17 +++++++++++++----
+>   2 files changed, 19 insertions(+), 4 deletions(-)
+> 
+> diff --git a/mm/gup_test.c b/mm/gup_test.c
+> index 24c70c5814ba..24fd542091ee 100644
+> --- a/mm/gup_test.c
+> +++ b/mm/gup_test.c
+> @@ -52,6 +52,12 @@ static void verify_dma_pinned(unsigned int cmd, struct page **pages,
+>   
+>   				dump_page(page, "gup_test failure");
+>   				break;
+> +			} else if (cmd == PIN_LONGTERM_BENCHMARK &&
+> +				WARN(!is_pinnable_page(page),
+> +				     "pages[%lu] is NOT pinnable but pinned\n",
+> +				     i)) {
+> +				dump_page(page, "gup_test failure");
+> +				break;
+>   			}
+>   		}
+>   		break;
+> diff --git a/tools/testing/selftests/vm/gup_test.c b/tools/testing/selftests/vm/gup_test.c
+> index 42c71483729f..f08cc97d424d 100644
+> --- a/tools/testing/selftests/vm/gup_test.c
+> +++ b/tools/testing/selftests/vm/gup_test.c
+> @@ -13,6 +13,7 @@
+>   
+>   /* Just the flags we need, copied from mm.h: */
+>   #define FOLL_WRITE	0x01	/* check pte is writable */
+> +#define FOLL_TOUCH	0x02	/* mark page accessed */
+
+
+Aha, now I see why you wanted to pass other GUP flags, in the previous
+patch. I think it's OK to pass this set of possible flags (as
+.gup_flags) through ioctl, yes.
+
+However (this is about the previous patch), I *think* we're better off
+leaving the gup_test behavior as: "default is read-only pages, but you
+can pass in -w to specify FOLL_WRITE". As opposed to passing in raw
+flags from the command line. And yes, I realize that my -F option seemed
+to recommand the latter...I'm regretting that -F approach now.
+
+The other direction to go might be to stop doing that, and shift over to
+just let the user specify FOLL_* flags directly on the command line, but
+IMHO there's no need for that (yet), and it's a little less error-prone
+to constrain it.
+
+This leads to: change the "-F 1", to some other better-named option,
+perhaps. Open to suggestion there.
+
+
+>   
+>   static char *cmd_to_str(unsigned long cmd)
+>   {
+> @@ -39,11 +40,11 @@ int main(int argc, char **argv)
+>   	unsigned long size = 128 * MB;
+>   	int i, fd, filed, opt, nr_pages = 1, thp = -1, repeats = 1, write = 1;
+>   	unsigned long cmd = GUP_FAST_BENCHMARK;
+> -	int flags = MAP_PRIVATE;
+> +	int flags = MAP_PRIVATE, touch = 0;
+
+
+Silly nit, can we put it on its own line? This pre-existing mess of
+declarations makes it hard to read everything. One item per line is
+easier on the reader, who is often just looking for a single item at a
+time. Actually why not rename it slightly while we're here (see below),
+maybe to this:
+
+	int use_foll_touch = 0;
+
+
+>   	char *file = "/dev/zero";
+>   	char *p;
+>   
+> -	while ((opt = getopt(argc, argv, "m:r:n:F:f:abctTLUuwWSHp")) != -1) {
+> +	while ((opt = getopt(argc, argv, "m:r:n:F:f:abctTLUuwWSHpz")) != -1) {
+
+Yes, this seems worth its own command line option.
+
+>   		switch (opt) {
+>   		case 'a':
+>   			cmd = PIN_FAST_BENCHMARK;
+> @@ -110,6 +111,10 @@ int main(int argc, char **argv)
+>   		case 'H':
+>   			flags |= (MAP_HUGETLB | MAP_ANONYMOUS);
+>   			break;
+> +		case 'z':
+> +			/* fault pages in gup, do not fault in userland */
+
+How about:
+			/*
+			 * Use gup/pup(FOLL_TOUCH), *instead* of faulting
+			 * pages in from user space.
+			 */
+			use_foll_touch = 1;
+
+> +			touch = 1;
+> +			break;
+>   		default:
+>   			return -1;
+>   		}
+> @@ -167,8 +172,12 @@ int main(int argc, char **argv)
+>   	else if (thp == 0)
+>   		madvise(p, size, MADV_NOHUGEPAGE);
+>   
+> -	for (; (unsigned long)p < gup.addr + size; p += PAGE_SIZE)
+> -		p[0] = 0;
+> +	if (touch) {
+> +		gup.flags |= FOLL_TOUCH;
+> +	} else {
+> +		for (; (unsigned long)p < gup.addr + size; p += PAGE_SIZE)
+> +			p[0] = 0;
+> +	}
+
+OK.
+
+>   
+>   	/* Only report timing information on the *_BENCHMARK commands: */
+>   	if ((cmd == PIN_FAST_BENCHMARK) || (cmd == GUP_FAST_BENCHMARK) ||
+> 
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
