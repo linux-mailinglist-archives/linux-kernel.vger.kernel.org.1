@@ -2,117 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA462DED1D
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 06:12:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 880DE2DED27
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 06:21:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726341AbgLSFMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 00:12:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726233AbgLSFMg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 00:12:36 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBBB8C06138C
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 21:11:55 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id 23so10885062lfg.10
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 21:11:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=afa80QgtPdN4Jjvgac+Izd16d6D6uGyqDacL95J8Kgs=;
-        b=v96uyUOCgySZ8diQts47e1XwtLAXXWxfDZ4nvwkOSmqBGPu1cHy3urMpli1Sr4Cexp
-         n4KX4cHVTs7EUJafB6V4beSO2xcFa1r+oJ4Iryde4juhkPSqUzPaCpH0tA7oQ1Cj3YVL
-         IXvRIahVtyXcuEP03XO7JMNs3xG2Bb/J7cvYINGYJiU7c+gpnCgbckc8TXHq+KSAvkSa
-         mo82FZQCxr2nUmuf0LYt5gI33ogPnp4c8wi0SKg5juZJvmVH6hQuhyXorKL/jl8ln5NY
-         HWmcL/j+K4F/X/eAL2TsGqKQIOdaP0RMZdvefRTlVQNCrfAmzrp6rXPG+ZqGgLtZdMJk
-         smNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=afa80QgtPdN4Jjvgac+Izd16d6D6uGyqDacL95J8Kgs=;
-        b=cBWh6d13YNdLr/axG1F7ZJYwoQx1sD10UN5+BDzxOEJDx3XorDgUGACCFEcXqq5Y6n
-         2kkouJVHn3qPfspt65JfmPIsA2unC/DM6O2a8U4CvPrqqyib76uCiYciX/jWt2Q3ScTs
-         m3JS6aKaNXTygwhpXascUDlgJCiKZ6U1g1yISPOsv9+XMPrNoIElEZOL0gLR+tNz56lT
-         IFEC+U1EqUl22+us/QQmwicVetB00dEOpAV/E+V/aYlcA9UzgftLczpQVP//eRldYaYZ
-         a2fk5wvtrf2+9IR57DbGVRa5EocQkDzJEp0es3Iuj31tNVqk+hwmKjvMyAchATLZEDF9
-         K5qQ==
-X-Gm-Message-State: AOAM531O88V/O3hsqLlmaPr7eO0q1sW8MqQnumpwDMc/lS9uXMYsMnYO
-        uCHYK0+VIYVVaSO1Bcaodo3LcX0xuXZsz9xMyaCorw==
-X-Google-Smtp-Source: ABdhPJwsnxxJaMYLww2D9QJdNd+4q/UnYTnJhT0tzTVHJqG5oycz+3OTASkLqi6ZlnoTvY+pFeJvV7w1QDbuFdN1C6A=
-X-Received: by 2002:a19:4a4a:: with SMTP id x71mr2877672lfa.535.1608354714024;
- Fri, 18 Dec 2020 21:11:54 -0800 (PST)
-MIME-Version: 1.0
-References: <20201111091552.15593-1-Sergey.Semin@baikalelectronics.ru> <20201111091552.15593-17-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20201111091552.15593-17-Sergey.Semin@baikalelectronics.ru>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Fri, 18 Dec 2020 21:11:42 -0800
-Message-ID: <CALAqxLWGujgR7p8Vb5S_RimRVYxwm5XF-c4NkKgMH-43wEBaWg@mail.gmail.com>
-Subject: Re: [PATCH v2 16/18] arm64: dts: hi3660: Harmonize DWC USB3 DT nodes name
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        YongQin Liu <yongqin.liu@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>
+        id S1726362AbgLSFVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 00:21:25 -0500
+Received: from mga01.intel.com ([192.55.52.88]:56415 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726034AbgLSFVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Dec 2020 00:21:24 -0500
+IronPort-SDR: IAk/BJPNyvyLmcK+Nk31RXDp4McbCrzHHeHQd3UReN0ZxUGDxIo/wxiVVvMSUhodaCwRpPhZ58
+ YkuwJG8j4p+Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9839"; a="193963134"
+X-IronPort-AV: E=Sophos;i="5.78,432,1599548400"; 
+   d="scan'208";a="193963134"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2020 21:19:39 -0800
+IronPort-SDR: AE+E2LV0skps5EhbtDDXuDXQcg/4bNLCviO87GQtjzOZpIlGjU9C2r+6EYITtfMBBA95UQ56fx
+ +18eW4zgs2DA==
+X-IronPort-AV: E=Sophos;i="5.78,432,1599548400"; 
+   d="scan'208";a="371001050"
+Received: from spandruv-desk.jf.intel.com ([10.54.75.21])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2020 21:19:38 -0800
+Message-ID: <dffbe4d3d56f29a985d84dcb9e48c7f6fba0514c.camel@linux.intel.com>
+Subject: Re: [PATCH] cpufreq: intel_pstate: Use most recent guaranteed
+ performance values
+From:   srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Len Brown <len.brown@intel.com>
+Date:   Fri, 18 Dec 2020 21:19:38 -0800
+In-Reply-To: <4600970.KDbqdY64fy@kreacher>
+References: <4600970.KDbqdY64fy@kreacher>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 1:22 AM Serge Semin
-<Sergey.Semin@baikalelectronics.ru> wrote:
->
-> In accordance with the DWC USB3 bindings the corresponding node
-> name is suppose to comply with the Generic USB HCD DT schema, which
-> requires the USB nodes to have the name acceptable by the regexp:
-> "^usb(@.*)?" . Make sure the "snps,dwc3"-compatible nodes are correctly
-> named.
->
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+On Thu, 2020-12-17 at 20:17 +0100, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> When turbo has been disabled by the BIOS, but HWP_CAP.GUARANTEED is
+> changed later, user space may want to take advantage of this
+> increased
+> guaranteed performance.
+> 
+> HWP_CAP.GUARANTEED is not a static value.  It can be adjusted by an
+> out-of-band agent or during an Intel Speed Select performance level
+> change.  The HWP_CAP.MAX is still the maximum achievable performance
+> with turbo disabled by the BIOS, so HWP_CAP.GUARANTEED can still
+> change as long as it remains less than or equal to HWP_CAP.MAX.
+> 
+> When HWP_CAP.GUARANTEED is changed, the sysfs base_frequency
+> attribute shows the most recent guaranteed frequency value. This
+> attribute can be used by user space software to update the scaling
+> min/max limits of the CPU.
+> 
+> Currently, the ->setpolicy() callback already uses the latest
+> HWP_CAP values when setting HWP_REQ, but the ->verify() callback will
+> restrict the user settings to the to old guaranteed performance value
+> which prevents user space from making use of the extra CPU capacity
+> theoretically available to it after increasing HWP_CAP.GUARANTEED.
+> 
+> To address this, read HWP_CAP in intel_pstate_verify_cpu_policy()
+> to obtain the maximum P-state that can be used and use that to
+> confine the policy max limit instead of using the cached and
+> possibly stale pstate.max_freq value for this purpose.
+> 
+> For consistency, update intel_pstate_update_perf_limits() to use the
+> maximum available P-state returned by intel_pstate_get_hwp_max() to
+> compute the maximum frequency instead of using the return value of
+> intel_pstate_get_max_freq() which, again, may be stale.
+> 
+> This issue is a side-effect of fixing the scaling frequency limits in
+> commit eacc9c5a927e ("cpufreq: intel_pstate: Fix
+> intel_pstate_get_hwp_max()
+> for turbo disabled") which currected 
+corrected
+
+Thanks,
+Srinivas
+
+> the setting of the reduced scaling
+> frequency values, but caused stale HWP_CAP.GUARANTEED to be used in
+> the case at hand.
+> 
+> Fixes: eacc9c5a927e ("cpufreq: intel_pstate: Fix
+> intel_pstate_get_hwp_max() for turbo disabled")
+> Reported-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com
+> >
+> Tested-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> Cc: 5.8+ <stable@vger.kernel.org> # 5.8+
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > ---
->  arch/arm64/boot/dts/hisilicon/hi3660.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-> index d25aac5e0bf8..aea3800029b5 100644
-> --- a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-> +++ b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-> @@ -1166,7 +1166,7 @@ usb_phy: usb-phy {
->                         };
->                 };
->
-> -               dwc3: dwc3@ff100000 {
-> +               dwc3: usb@ff100000 {
->                         compatible = "snps,dwc3";
->                         reg = <0x0 0xff100000 0x0 0x100000>;
+>  drivers/cpufreq/intel_pstate.c |   16 +++++++++++++---
+>  1 file changed, 13 insertions(+), 3 deletions(-)
+> 
+> Index: linux-pm/drivers/cpufreq/intel_pstate.c
+> ===================================================================
+> --- linux-pm.orig/drivers/cpufreq/intel_pstate.c
+> +++ linux-pm/drivers/cpufreq/intel_pstate.c
+> @@ -2207,9 +2207,9 @@ static void intel_pstate_update_perf_lim
+>  					    unsigned int policy_min,
+>  					    unsigned int policy_max)
+>  {
+> -	int max_freq = intel_pstate_get_max_freq(cpu);
+>  	int32_t max_policy_perf, min_policy_perf;
+>  	int max_state, turbo_max;
+> +	int max_freq;
+>  
+>  	/*
+>  	 * HWP needs some special consideration, because on BDX the
+> @@ -2223,6 +2223,7 @@ static void intel_pstate_update_perf_lim
+>  			cpu->pstate.max_pstate : cpu-
+> >pstate.turbo_pstate;
+>  		turbo_max = cpu->pstate.turbo_pstate;
+>  	}
+> +	max_freq = max_state * cpu->pstate.scaling;
+>  
+>  	max_policy_perf = max_state * policy_max / max_freq;
+>  	if (policy_max == policy_min) {
+> @@ -2325,9 +2326,18 @@ static void intel_pstate_adjust_policy_m
+>  static void intel_pstate_verify_cpu_policy(struct cpudata *cpu,
+>  					   struct cpufreq_policy_data
+> *policy)
+>  {
+> +	int max_freq;
+> +
+>  	update_turbo_state();
+> -	cpufreq_verify_within_limits(policy, policy->cpuinfo.min_freq,
+> -				     intel_pstate_get_max_freq(cpu));
+> +	if (hwp_active) {
+> +		int max_state, turbo_max;
+> +
+> +		intel_pstate_get_hwp_max(cpu->cpu, &turbo_max,
+> &max_state);
+> +		max_freq = max_state * cpu->pstate.scaling;
+> +	} else {
+> +		max_freq = intel_pstate_get_max_freq(cpu);
+> +	}
+> +	cpufreq_verify_within_limits(policy, policy->cpuinfo.min_freq,
+> max_freq);
+>  
+>  	intel_pstate_adjust_policy_max(cpu, policy);
+>  }
+> 
+> 
+> 
 
-
-Oof. So this patch is breaking the usb gadget functionality on HiKey960 w/ AOSP.
-
-In order to choose the right controller for gadget mode with AOSP, one
-sets the "sys.usb.controller" property, which until now for HiKey960
-has been "ff100000.dwc3".
-After this patch, the controller isn't found and we would have to
-change userland to use "ff100000.usb", which would then break booting
-on older kernels (testing various LTS releases on AOSP is one of the
-key uses of the HiKey960).
-
-So while I understand the desire to unify the schema, as HiKey960
-really isn't likely to be used outside of AOSP, I wonder if reverting
-this one change is in the best interest of not breaking existing
-userland?
-
-thanks
--john
