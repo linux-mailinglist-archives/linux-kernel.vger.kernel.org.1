@@ -2,82 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FA852DEEE8
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 13:55:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10CD72DEEEC
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 13:57:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726771AbgLSMyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 07:54:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42028 "EHLO mail.kernel.org"
+        id S1726776AbgLSM4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 07:56:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43486 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726673AbgLSMyk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 07:54:40 -0500
-Date:   Sat, 19 Dec 2020 13:55:20 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1608382440;
-        bh=5Te/9R+PfljQzEy210BM/ZP2PlPMg9loYI54+GX0m6I=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kFS3eLAdOlufqco/li6xq45/1A7vJWSAGztqPidHtRDF/I1iunPbRKimK0ccPP7Q1
-         ESHmS8PEaHs/bw7fzSJ2ISFVAb5Kp1FLlwf74EJ9mpZOj21NRZL1zcshISTZT35Xso
-         v+b/qVARFL9IXtiZzGQUrGvveFVcmZSWYgO4wVr8=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Avri Altman <Avri.Altman@wdc.com>
-Cc:     Daejun Park <daejun7.park@samsung.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>
-Subject: Re: [PATCH v16 1/3] scsi: ufs: Introduce HPB feature
-Message-ID: <X934OOlXSf5up8Rd@kroah.com>
-References: <20201219091802epcms2p2c86f7ae2e81aa015702572a8ef180dae@epcms2p2>
- <CGME20201219091802epcms2p2c86f7ae2e81aa015702572a8ef180dae@epcms2p7>
- <20201219091847epcms2p7afeebd03c47eed0b65f89375a881233e@epcms2p7>
- <X93XuJ4lsQbBgnU+@kroah.com>
- <DM6PR04MB6575AC2A541FCAAB60E581FBFCC20@DM6PR04MB6575.namprd04.prod.outlook.com>
+        id S1726648AbgLSM4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Dec 2020 07:56:46 -0500
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: [PATCH 5.10 00/16] 5.10.2-rc1 review
+Date:   Sat, 19 Dec 2020 13:57:07 +0100
+Message-Id: <20201219125339.066340030@linuxfoundation.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR04MB6575AC2A541FCAAB60E581FBFCC20@DM6PR04MB6575.namprd04.prod.outlook.com>
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-5.10.2-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.10.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.10.2-rc1
+X-KernelTest-Deadline: 2020-12-21T12:53+00:00
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 19, 2020 at 12:48:31PM +0000, Avri Altman wrote:
-> > 
-> > 
-> > On Sat, Dec 19, 2020 at 06:18:47PM +0900, Daejun Park wrote:
-> > > +static int ufshpb_get_state(struct ufshpb_lu *hpb)
-> > > +{
-> > > +     return atomic_read(&hpb->hpb_state);
-> > > +}
-> > > +
-> > > +static void ufshpb_set_state(struct ufshpb_lu *hpb, int state)
-> > > +{
-> > > +     atomic_set(&hpb->hpb_state, state);
-> > > +}
-> > 
-> > You have a lock for the state, and yet the state is an atomic variable
-> > and you do not use the lock here at all.  You don't use the lock at all
-> > infact...
-> > 
-> > So either the lock needs to be dropped, or you need to use the lock and
-> > make the state a normal variable please.
-> hpb_state_lock is mainly protecting the list of active regions.
-> Just grep  lh_lru_rgn in patch 2/3.
+This is the start of the stable review cycle for the 5.10.2 release.
+There are 16 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-Then why is the lock added in this patch if it is not used here?
+Responses should be made by Mon, 21 Dec 2020 12:53:29 +0000.
+Anything received after that time might be too late.
+
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.2-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+and the diffstat can be found below.
 
 thanks,
 
 greg k-h
+
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 5.10.2-rc1
+
+Alexander Sverdlin <alexander.sverdlin@gmail.com>
+    serial: 8250_omap: Avoid FIFO corruption caused by MDR1 access
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: pcm: oss: Fix potential out-of-bounds shift
+
+Thomas Gleixner <tglx@linutronix.de>
+    USB: sisusbvga: Make console support depend on BROKEN
+
+Oliver Neukum <oneukum@suse.com>
+    USB: UAS: introduce a quirk to set no_write_same
+
+Mika Westerberg <mika.westerberg@linux.intel.com>
+    xhci-pci: Allow host runtime PM as default for Intel Maple Ridge xHCI
+
+Hans de Goede <hdegoede@redhat.com>
+    xhci-pci: Allow host runtime PM as default for Intel Alpine Ridge LP
+
+Tejas Joglekar <Tejas.Joglekar@synopsys.com>
+    usb: xhci: Set quirk for XHCI_SG_TRB_CACHE_SIZE_QUIRK
+
+Li Jun <jun.li@nxp.com>
+    xhci: Give USB2 ports time to enter U3 in bus suspend
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: usb-audio: Fix control 'access overflow' errors from chmap
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: usb-audio: Fix potential out-of-bounds shift
+
+Oliver Neukum <oneukum@suse.com>
+    USB: add RESET_RESUME quirk for Snapscan 1212
+
+Bui Quang Minh <minhquangbui99@gmail.com>
+    USB: dummy-hcd: Fix uninitialized array use in init()
+
+Alan Stern <stern@rowland.harvard.edu>
+    USB: legotower: fix logical error in recent commit
+
+Steven Rostedt (VMware) <rostedt@goodmis.org>
+    ktest.pl: Fix the logic for truncating the size of the log file for email
+
+Steven Rostedt (VMware) <rostedt@goodmis.org>
+    ktest.pl: If size of log is too big to email, email error message
+
+Peilin Ye <yepeilin.cs@gmail.com>
+    ptrace: Prevent kernel-infoleak in ptrace_get_syscall_info()
+
+
+-------------
+
+Diffstat:
+
+ Documentation/admin-guide/kernel-parameters.txt |  1 +
+ Makefile                                        |  4 ++--
+ drivers/tty/serial/8250/8250_omap.c             |  5 -----
+ drivers/usb/core/quirks.c                       |  3 +++
+ drivers/usb/gadget/udc/dummy_hcd.c              |  2 +-
+ drivers/usb/host/xhci-hub.c                     |  4 ++++
+ drivers/usb/host/xhci-pci.c                     |  6 +++++-
+ drivers/usb/host/xhci-plat.c                    |  3 +++
+ drivers/usb/host/xhci.h                         |  1 +
+ drivers/usb/misc/legousbtower.c                 |  2 +-
+ drivers/usb/misc/sisusbvga/Kconfig              |  2 +-
+ drivers/usb/storage/uas.c                       |  3 +++
+ drivers/usb/storage/unusual_uas.h               |  7 +++++--
+ drivers/usb/storage/usb.c                       |  3 +++
+ include/linux/usb_usual.h                       |  2 ++
+ include/uapi/linux/ptrace.h                     |  3 ++-
+ sound/core/oss/pcm_oss.c                        |  6 +++++-
+ sound/usb/format.c                              |  2 ++
+ sound/usb/stream.c                              |  6 +++---
+ tools/testing/ktest/ktest.pl                    | 20 ++++++++++++--------
+ 20 files changed, 59 insertions(+), 26 deletions(-)
+
+
