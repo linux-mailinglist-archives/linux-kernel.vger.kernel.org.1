@@ -2,106 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F0E2DF1D3
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 22:36:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A9FD2DF1D2
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 22:35:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727910AbgLSVfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 16:35:52 -0500
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:34648 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727874AbgLSVfv (ORCPT
+        id S1727863AbgLSVfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 16:35:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727685AbgLSVfU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 16:35:51 -0500
-Received: from [192.168.42.210] ([93.23.15.221])
-        by mwinf5d37 with ME
-        id 6Ma4240034mA9Nd03Ma4rr; Sat, 19 Dec 2020 22:34:06 +0100
-X-ME-Helo: [192.168.42.210]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 19 Dec 2020 22:34:06 +0100
-X-ME-IP: 93.23.15.221
-Subject: Re: [PATCH] irqdomain: Add documentation for irq_create_of_mapping()
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     tglx@linutronix.de, mripard@kernel.org, dan.carpenter@oracle.com,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <20201215200747.148439-1-christophe.jaillet@wanadoo.fr>
- <87sg83q6t4.wl-maz@kernel.org>
-From:   Marion & Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <5bddaaae-d7d2-7ede-ab3f-db1ff9353c2d@wanadoo.fr>
-Date:   Sat, 19 Dec 2020 22:34:07 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <87sg83q6t4.wl-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        Sat, 19 Dec 2020 16:35:20 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F50CC0613CF;
+        Sat, 19 Dec 2020 13:34:32 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id g18so3655642pgk.1;
+        Sat, 19 Dec 2020 13:34:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=GR/9hOO/0RtdTbEih619Bg4o+4UPA19MgIbfVnUs0Mk=;
+        b=mM3SUmiME4fn4JhGrTlFqC6IKbra/T8VERe0GEmueXMz7FsbAihr+8AYYXUz/fIRLM
+         TisyCwuOThJqC3eV3M/gN+6tK3RYklfCQ6/vHv+9rk4aHrRkalYLHMlEUoCV5Hx/W9SL
+         1NoyB9ONStZg1kj+ZI6vSBAafpmTT9DK8WpJM5FJWpiXMdmHPp3njFYE73UxdoNFyriA
+         UZejynBNIeP3LDZXDekQ+rOK36aWyNVpzlbTt95Raz85yXcYMqU7JnQ8WkFsACHHV+95
+         xkdbXfzuU032PD/0czlwr0Q91C1U0gavebk6p/w4s2rbJYSTQRwZzwBJeBwrXtoafTI9
+         KWQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=GR/9hOO/0RtdTbEih619Bg4o+4UPA19MgIbfVnUs0Mk=;
+        b=Ipi7urrGkezirzOJNOWjY16PkprkbC7Po3mIn9Bs6bsyJT+lxTJ86V7P3iG7ZcAMxD
+         lL7maE9IrJwvNFjDUR6J4D3DIywfolyFC6sOb46c35z75Sq3v1wDlSFi3YIJPMULGUr/
+         H6jaRG8nlOaeK3IRpig6J0xEn1PSiu64c/xU5LCueyoFNKcEgD0X61pitY9YBFDLriHU
+         iBusqUjddnAukYIWQyaz0+2NRuK+mFbyWZeJ7qKiuPUvmRmgsGpC4BeKy1c1edIkht7i
+         anNMuesvzFL4u0uh33jHf6awTxD7Oo8fXDFydZIxIhHwAFjkVK7UnG22kfDBGuAR2qN3
+         /cmw==
+X-Gm-Message-State: AOAM533otv6GWI6eUxoBT26jp9iNxN6/w75E4eXdjFoYL7AUrV9IVLB1
+        D1rQfM5cKAfK0ygwKUaOyqGG8E+IqzIoXA==
+X-Google-Smtp-Source: ABdhPJznVOtGmo9knSrzX+2u3iwKNNv7PxvDNTT+65ljhJPaTx8P6JkuJc/KJierCvA+XyUEra7BvQ==
+X-Received: by 2002:a63:9dc1:: with SMTP id i184mr2871810pgd.409.1608413672018;
+        Sat, 19 Dec 2020 13:34:32 -0800 (PST)
+Received: from ?IPv6:2601:647:4700:9b2:c998:6c11:32cc:4648? ([2601:647:4700:9b2:c998:6c11:32cc:4648])
+        by smtp.gmail.com with ESMTPSA id il14sm10670827pjb.51.2020.12.19.13.34.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 19 Dec 2020 13:34:31 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <X95RRZ3hkebEmmaj@redhat.com>
+Date:   Sat, 19 Dec 2020 13:34:29 -0800
+Cc:     linux-mm <linux-mm@kvack.org>, Peter Xu <peterx@redhat.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable@vger.kernel.org, minchan@kernel.org,
+        Andy Lutomirski <luto@kernel.org>, yuzhao@google.com,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <EDC00345-B46E-4396-8379-98E943723809@gmail.com>
+References: <20201219043006.2206347-1-namit@vmware.com>
+ <X95RRZ3hkebEmmaj@redhat.com>
+To:     Andrea Arcangeli <aarcange@redhat.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+[ cc=E2=80=99ing some more people who have experience with similar =
+problems ]
 
-Le 18/12/2020 à 19:59, Marc Zyngier a écrit :
-> Hi Christophe,
->
-> On Tue, 15 Dec 2020 20:07:47 +0000,
-> Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
->> Add a description for 'irq_create_of_mapping()' and make explicit the fact
->> that the resources allocated by this function can be freed by calling
->> 'irq_dispose_mapping()' when needed (i.e. error handling path, remove
->> function, ...)
->>
->> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->> ---
->> The wording can certainly be improved.
->>
->> My goal is only to make clear if patches such as:
->>     https://lore.kernel.org/lkml/20201214202117.146293-1-christophe.jaillet@wanadoo.fr/
->> are needed or not.
->> ---
->>   kernel/irq/irqdomain.c | 9 +++++++++
->>   1 file changed, 9 insertions(+)
->>
->> diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
->> index 6aacd342cd14..d761ece8d43e 100644
->> --- a/kernel/irq/irqdomain.c
->> +++ b/kernel/irq/irqdomain.c
->> @@ -858,6 +858,15 @@ unsigned int irq_create_fwspec_mapping(struct irq_fwspec *fwspec)
->>   }
->>   EXPORT_SYMBOL_GPL(irq_create_fwspec_mapping);
->>   
->> +/**
->> + * irq_create_of_mapping() - Map an interrupt
-> I think this deserves a bit more work. My immediate questions when
-> reading this are "map where? and to what?".
+> On Dec 19, 2020, at 11:15 AM, Andrea Arcangeli <aarcange@redhat.com> =
+wrote:
+>=20
+> Hello,
+>=20
+> On Fri, Dec 18, 2020 at 08:30:06PM -0800, Nadav Amit wrote:
+>> Analyzing this problem indicates that there is a real bug since
+>> mmap_lock is only taken for read in mwriteprotect_range(). This might
+>=20
+> Never having to take the mmap_sem for writing, and in turn never
+> blocking, in order to modify the pagetables is quite an important
+> feature in uffd that justifies uffd instead of mprotect. It's not the
+> most important reason to use uffd, but it'd be nice if that guarantee
+> would remain also for the UFFDIO_WRITEPROTECT API, not only for the
+> other pgtable manipulations.
+>=20
+>> Consider the following scenario with 3 CPUs (cpu2 is not shown):
+>>=20
+>> cpu0				cpu1
+>> ----				----
+>> userfaultfd_writeprotect()
+>> [ write-protecting ]
+>> mwriteprotect_range()
+>> mmap_read_lock()
+>> change_protection()
+>>  change_protection_range()
+>>   ...
+>>   change_pte_range()
+>>   [ defer TLB flushes]
+>> 				userfaultfd_writeprotect()
+>> 				 mmap_read_lock()
+>> 				 change_protection()
+>> 				 [ write-unprotect ]
+>> 				 ...
+>> 				  [ unprotect PTE logically ]
+>> 				...
+>> 				[ page-fault]
+>> 				...
+>> 				wp_page_copy()
+>> 				[ set new writable page in PTE]
+>=20
+> Can't we check mm_tlb_flush_pending(vma->vm_mm) if MM_CP_UFFD_WP_ALL
+> is set and do an explicit (potentially spurious) tlb flush before
+> write-unprotect?
 
-I won't be of great help here.
-I don't know this code enough to be able to provide an accurate description.
+There is a concrete scenario that I actually encountered and then there =
+is a
+general problem.
 
->> + * @irq_data: structure of_phandle_args returned by a previous
->> + * of_irq_parse_xxx() call
-> That's not strictly true. A of_phandle_args structure can be created
-> from scratch (and numerous drivers do that).
->
->> + *
->> + * The resources allocated by this function should be freed by
->> + * calling irq_dispose_mapping() when the mapping if not useful
->> + * anymore.
-> This really is a bit of documentation for irq_dispose_mapping(), isn't it?
+In general, the kernel code assumes that PTEs that are read from the
+page-tables are coherent across all the TLBs, excluding permission =
+promotion
+(i.e., the PTE may have higher permissions in the page-tables than those
+that are cached in the TLBs).
 
-Well, I don't agree.
+We therefore need to both: (a) protect change_protection_range() from =
+the
+changes of others who might defer TLB flushes without taking mmap_sem =
+for
+write (e.g., try_to_unmap_one()); and (b) to protect others (e.g.,
+page-fault handlers) from concurrent changes of change_protection().
 
-I think it is easier to see that some resources need to be freed with a 
-dedicated function if it is explained in the description of the function 
-which allocates the resource.
+We have already encountered several similar bugs, and debugging such =
+issues
+s time consuming and these bugs impact is substantial (memory =
+corruption,
+security). So I think we should only stick to general solutions.
 
-CJ
+So perhaps your the approach of your proposed solution is feasible, but =
+it
+would have to be applied all over the place: we will need to add a check =
+for
+mm_tlb_flush_pending() and conditionally flush the TLB in every case in
+which PTEs are read and there might be an assumption that the
+access-permission reflect what the TLBs hold. This includes page-fault
+handlers, but also NUMA migration code in change_protection(), softdirty
+cleanup in clear_refs_write() and maybe others.
 
->
->> + */
->>   unsigned int irq_create_of_mapping(struct of_phandle_args *irq_data)
->>   {
->>   	struct irq_fwspec fwspec;
-> Thanks,
->
-> 	M.
->
+[ I have in mind another solution, such as keeping in each page-table a=20=
+
+=E2=80=9Ctable-generation=E2=80=9D which is the mm-generation at the =
+time of the change,
+and only flush if =E2=80=9Ctable-generation=E2=80=9D=3D=3D=E2=80=9Cmm-gene=
+ration=E2=80=9D, but it requires
+some thought on how to avoid adding new memory barriers. ]
+
+IOW: I think the change that you suggest is insufficient, and a proper
+solution is too intrusive for =E2=80=9Cstable".
+
+As for performance, I can add another patch later to remove the TLB =
+flush
+that is unnecessarily performed during change_protection_range() that =
+does
+permission promotion. I know that your concern is about the =
+=E2=80=9Cprotect=E2=80=9D case
+but I cannot think of a good immediate solution that avoids taking =
+mmap_lock
+for write.
+
+Thoughts?
+
