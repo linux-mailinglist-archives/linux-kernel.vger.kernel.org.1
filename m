@@ -2,87 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38D732DEDD5
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 09:22:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D9D82DEDE3
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 10:07:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726438AbgLSIUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 03:20:11 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9231 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726346AbgLSIUK (ORCPT
+        id S1726439AbgLSJES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 04:04:18 -0500
+Received: from mailout3.samsung.com ([203.254.224.33]:37847 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726402AbgLSJEO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 03:20:10 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cydsh3D3wzksGC;
-        Sat, 19 Dec 2020 16:18:32 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.177.9) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 19 Dec 2020 16:19:14 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v2 1/1] device-dax: avoid an unnecessary check in alloc_dev_dax_range()
-Date:   Sat, 19 Dec 2020 16:18:40 +0800
-Message-ID: <20201219081840.1149-2-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20201219081840.1149-1-thunder.leizhen@huawei.com>
-References: <20201219081840.1149-1-thunder.leizhen@huawei.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.9]
+        Sat, 19 Dec 2020 04:04:14 -0500
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20201219090331epoutp0363f653325d2f6e7cad545ff4749abee0~SErr29Z1F0395303953epoutp03y
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 09:03:31 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20201219090331epoutp0363f653325d2f6e7cad545ff4749abee0~SErr29Z1F0395303953epoutp03y
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1608368611;
+        bh=WuCZdDEh/jXoA6TvhZE/NDX8zNi3V8R4w+BE8vtaK+o=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=KDYYzKXsGCQk+ozaKCGUbA3csEhSaH5FJ5gfBcd85behw4oqflMgZIRwh07kgNK5s
+         Njm56z2bp1xUM8iF4YRhiMMFUbUZYebWUbpedaLFGJbk8pTALywtpN9LRqb9oRNya4
+         SdQ3FtJs7z3GfTP7tz/hv/We2CK3f9ZmKb7StyLo=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20201219090330epcas2p12211f875be993ffed9c975e1e5062ae6~SErq8_J4Q2759927599epcas2p1c;
+        Sat, 19 Dec 2020 09:03:30 +0000 (GMT)
+Received: from epsmges2p1.samsung.com (unknown [182.195.40.183]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4CyfsY0sWYzMqYkV; Sat, 19 Dec
+        2020 09:03:29 +0000 (GMT)
+X-AuditID: b6c32a45-34dff7000001297d-76-5fddc1e08e98
+Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
+        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        4E.1B.10621.0E1CDDF5; Sat, 19 Dec 2020 18:03:28 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: Re: [PATCH v15 1/3] scsi: ufs: Introduce HPB feature
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Daejun Park <daejun7.park@samsung.com>
+CC:     "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <X92xI1Atgcd7z8e0@kroah.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20201219090328epcms2p8d8b989962c118a9be983286e625b323e@epcms2p8>
+Date:   Sat, 19 Dec 2020 18:03:28 +0900
+X-CMS-MailID: 20201219090328epcms2p8d8b989962c118a9be983286e625b323e
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrNJsWRmVeSWpSXmKPExsWy7bCmue6Dg3fjDZYetrTYePcVq8WDedvY
+        LPa2nWC3ePnzKpvF4dvv2C2mffjJbPFp/TJWi5eHNC1WPQi3aF68ns1iztkGJove/q1sFotu
+        bGOyuLxrDptF9/UdbBbLj/9jsri9hcti6dabjBad09ewWCxauJvFQcTj8hVvj8t9vUweO2fd
+        ZfeYsOgAo8f+uWvYPVpO7mfx+Pj0FotH35ZVjB6fN8l5tB/oZgrgisqxyUhNTEktUkjNS85P
+        ycxLt1XyDo53jjc1MzDUNbS0MFdSyEvMTbVVcvEJ0HXLzAF6TkmhLDGnFCgUkFhcrKRvZ1OU
+        X1qSqpCRX1xiq5RakJJTYGhYoFecmFtcmpeul5yfa2VoYGBkClSZkJNx/2VKwQnWirVr5zM1
+        MJ5g6WLk5JAQMJH4fHsrO4gtJLCDUWLLxIguRg4OXgFBib87hEHCwgKOEjNO3WSEKFGSWH9x
+        FjtEXE/i1sM1YHE2AR2J6Sfus4O0iggESVyeZtDFyMXBLLCKTWLHyqXsEKt4JWa0P4VaKy2x
+        fflWsF5OAU2JifcWsEHENSR+LOtlhrBFJW6ufssOY78/Np8RwhaRaL13FqpGUOLBz91QcUmJ
+        Y7s/MEHY9RJb7/xiBDlCQqCHUeLwzlusEAl9iWsdG8GO4BXwlZh/6ATYAhYBVYlTC25CLXOR
+        OPVxDlg9s4C8xPa3c5hBHmMGOnT9Ln0QU0JAWeLILRaYtxo2/mZHZzML8El0HP4LF98x7wnU
+        aWoS636uZ5rAqDwLEdCzkOyahbBrASPzKkax1ILi3PTUYqMCQ+SY3cQITuVarjsYJ7/9oHeI
+        kYmD8RCjBAezkghv6IPb8UK8KYmVValF+fFFpTmpxYcYTYG+nMgsJZqcD8wmeSXxhqZGZmYG
+        lqYWpmZGFkrivKEr++KFBNITS1KzU1MLUotg+pg4OKUamGa/vz9hQjD/W+2HVsvDo38l50d/
+        tjEJZZ+Wv/ZbMHOf4Oqmea7ft2R/9NQ796PVjG3RioMN/x2/idzQ+KHqKjKr77tKR1PDwhNO
+        OS1fLTjnZwrsulfX+Oz1gWjv4vuuRSJiUh8vL15i+emy5n4dza1vUpLPbAy2UfthNtHs5gW2
+        V3vNmD/9fxNQwCO1dsX8sk0ht/d67gu9Oy24cnVOcagPm/ZsF8WDMT9U9O0MrG5t3ZTDffCP
+        Gmf151VHzkcYfF6zLq9umew6k3Mbz/+pDrWfOTNu+YRXAQ8KOB5KaxxRc3oTsaj4SzkDf129
+        Xcm7OnsWky8yTjOmx9daKnyfbGq2r3Gn/bR/Tze2dJ5bLq/EUpyRaKjFXFScCAAOWMCTbgQA
+        AA==
+DLP-Filter: Pass
 X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201219032952epcms2p668a76f6b5ab021f0e66c856c44d5be0d
+References: <X92xI1Atgcd7z8e0@kroah.com>
+        <20201219032952epcms2p668a76f6b5ab021f0e66c856c44d5be0d@epcms2p6>
+        <20201219033039epcms2p849fa40807c1a10934a57a0c28fc356be@epcms2p8>
+        <CGME20201219032952epcms2p668a76f6b5ab021f0e66c856c44d5be0d@epcms2p8>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Swap the calling sequence of krealloc() and __request_region(), call the
-latter first. In this way, the value of dev_dax->nr_range does not need to
-be considered when __request_region() failed.
+On Sat, Dec 19, 2020 at 12:30:39PM +0900, Daejun Park wrote:
+> > @@ -323,6 +325,8 @@ static struct attribute *ufs_sysfs_device_descriptor[] = {
+> >  	&dev_attr_number_of_secure_wpa.attr,
+> >  	&dev_attr_psa_max_data_size.attr,
+> >  	&dev_attr_psa_state_timeout.attr,
+> > +	&dev_attr_hpb_version.attr,
+> > +	&dev_attr_hpb_control.attr,
+> >  	&dev_attr_ext_feature_sup.attr,
+> >  	&dev_attr_wb_presv_us_en.attr,
+> >  	&dev_attr_wb_type.attr,
+> 
+> I thought I said this before, but you are adding new sysfs files, with
+> no Documentation/ABI/ update which is not allowed.
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- drivers/dax/bus.c | 20 ++++++--------------
- 1 file changed, 6 insertions(+), 14 deletions(-)
+You're right, I fixed this on patch v14. But I dropped documentation on this patch.
+I will resubmit patch.
 
-diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
-index de7b74505e75e72..359e22ece425ad2 100644
---- a/drivers/dax/bus.c
-+++ b/drivers/dax/bus.c
-@@ -772,22 +772,14 @@ static int alloc_dev_dax_range(struct dev_dax *dev_dax, u64 start,
- 		return 0;
- 	}
- 
--	ranges = krealloc(dev_dax->ranges, sizeof(*ranges)
--			* (dev_dax->nr_range + 1), GFP_KERNEL);
--	if (!ranges)
-+	alloc = __request_region(res, start, size, dev_name(dev), 0);
-+	if (!alloc)
- 		return -ENOMEM;
- 
--	alloc = __request_region(res, start, size, dev_name(dev), 0);
--	if (!alloc) {
--		/*
--		 * If this was an empty set of ranges nothing else
--		 * will release @ranges, so do it now.
--		 */
--		if (!dev_dax->nr_range) {
--			kfree(ranges);
--			ranges = NULL;
--		}
--		dev_dax->ranges = ranges;
-+	ranges = krealloc(dev_dax->ranges, sizeof(*ranges)
-+			* (dev_dax->nr_range + 1), GFP_KERNEL);
-+	if (!ranges) {
-+		__release_region(res, alloc->start, resource_size(alloc));
- 		return -ENOMEM;
- 	}
- 
--- 
-2.26.0.106.g9fadedd
-
-
+Thanks,
+Daejun
