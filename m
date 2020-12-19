@@ -2,68 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DF5E2DF1CF
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 22:32:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68F0E2DF1D3
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 22:36:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727743AbgLSVbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 16:31:39 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.51]:33032 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726471AbgLSVbj (ORCPT
+        id S1727910AbgLSVfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 16:35:52 -0500
+Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:34648 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727874AbgLSVfv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 16:31:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1608413326;
-        s=strato-dkim-0002; d=chronox.de;
-        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:From:
-        Subject:Sender;
-        bh=bN5Bo5Xp6bbNWNfibLEW05ERysjkshF+M+r+x5jX+R8=;
-        b=tIt9lphuFTJZmG5WEKR5KBegJuL6sXsKIKe1CWbHEp+l59qped/TVmHAicWb7MsbGJ
-        qAVJyHBDSm7R+cpw3YFxatH6Qkv9AanrDX5QXHQoH6F1MbGEz7JhFdDVsGa0RbyjAhvO
-        0bLLtsxXJ0of+BfCro7VlN4hWFIKostbgjCM9bx8IqX6teIaa4Pi8NfwF+AuaKXEN3CW
-        MZUDyGxDMP7NqCJydBTNBrFC5MVaAg8iqqtas0HoLToNPvCnCxBzvJ5KcEtK1OZyaqAH
-        musOid5kd7dW3DRm/HCiC0eGRrcQI/yF+iCs2sUVU/vvE2p2mOqjFpPlrVRT4h4t6E82
-        6Uew==
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPbJPSfbd7O"
-X-RZG-CLASS-ID: mo00
-Received: from positron.chronox.de
-        by smtp.strato.de (RZmta 47.9.3 DYNA|AUTH)
-        with ESMTPSA id z0431awBJLPX8J1
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Sat, 19 Dec 2020 22:25:33 +0100 (CET)
-From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
-To:     yumeng <yumeng18@huawei.com>
-Cc:     linux-crypto@vger.kernel.org, xuzaibo@huawei.com,
-        wangzhou1@hisilicon.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 4/5] crypto: hisilicon/hpre - add 'ECDH' algorithm
-Date:   Sat, 19 Dec 2020 22:25:32 +0100
-Message-ID: <4588284.GXAFRqVoOG@positron.chronox.de>
-In-Reply-To: <06fa1f72-fad8-a3e5-987a-d322918ac30a@huawei.com>
-References: <13db294664a6b2e26a892dd544c714d3e385b0cc.camel@chronox.de> <b38e3b40ef198166bff193940b8c82c41db6f13c.camel@chronox.de> <06fa1f72-fad8-a3e5-987a-d322918ac30a@huawei.com>
+        Sat, 19 Dec 2020 16:35:51 -0500
+Received: from [192.168.42.210] ([93.23.15.221])
+        by mwinf5d37 with ME
+        id 6Ma4240034mA9Nd03Ma4rr; Sat, 19 Dec 2020 22:34:06 +0100
+X-ME-Helo: [192.168.42.210]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 19 Dec 2020 22:34:06 +0100
+X-ME-IP: 93.23.15.221
+Subject: Re: [PATCH] irqdomain: Add documentation for irq_create_of_mapping()
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     tglx@linutronix.de, mripard@kernel.org, dan.carpenter@oracle.com,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <20201215200747.148439-1-christophe.jaillet@wanadoo.fr>
+ <87sg83q6t4.wl-maz@kernel.org>
+From:   Marion & Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <5bddaaae-d7d2-7ede-ab3f-db1ff9353c2d@wanadoo.fr>
+Date:   Sat, 19 Dec 2020 22:34:07 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <87sg83q6t4.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Donnerstag, 17. Dezember 2020, 04:07:30 CET schrieb yumeng:
 
-Hi yumeng,
+Le 18/12/2020 à 19:59, Marc Zyngier a écrit :
+> Hi Christophe,
+>
+> On Tue, 15 Dec 2020 20:07:47 +0000,
+> Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
+>> Add a description for 'irq_create_of_mapping()' and make explicit the fact
+>> that the resources allocated by this function can be freed by calling
+>> 'irq_dispose_mapping()' when needed (i.e. error handling path, remove
+>> function, ...)
+>>
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>> ---
+>> The wording can certainly be improved.
+>>
+>> My goal is only to make clear if patches such as:
+>>     https://lore.kernel.org/lkml/20201214202117.146293-1-christophe.jaillet@wanadoo.fr/
+>> are needed or not.
+>> ---
+>>   kernel/irq/irqdomain.c | 9 +++++++++
+>>   1 file changed, 9 insertions(+)
+>>
+>> diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+>> index 6aacd342cd14..d761ece8d43e 100644
+>> --- a/kernel/irq/irqdomain.c
+>> +++ b/kernel/irq/irqdomain.c
+>> @@ -858,6 +858,15 @@ unsigned int irq_create_fwspec_mapping(struct irq_fwspec *fwspec)
+>>   }
+>>   EXPORT_SYMBOL_GPL(irq_create_fwspec_mapping);
+>>   
+>> +/**
+>> + * irq_create_of_mapping() - Map an interrupt
+> I think this deserves a bit more work. My immediate questions when
+> reading this are "map where? and to what?".
 
-> 
-> I see in "SEC 2: Recommended Elliptic Curve Domain ParametersVersion2.0"
-> that 'Recommend Elliptic Curve Domain Parameters over Fp' are secp192,
-> secp224, secp256, secp384, and secp521, secp128 and secp320 are not
-> recommended.
-> So you mean it's better not to include secp128 and secp320, right?
+I won't be of great help here.
+I don't know this code enough to be able to provide an accurate description.
 
-Precisely because I do not see the use case in the kernel.
-> 
+>> + * @irq_data: structure of_phandle_args returned by a previous
+>> + * of_irq_parse_xxx() call
+> That's not strictly true. A of_phandle_args structure can be created
+> from scratch (and numerous drivers do that).
+>
+>> + *
+>> + * The resources allocated by this function should be freed by
+>> + * calling irq_dispose_mapping() when the mapping if not useful
+>> + * anymore.
+> This really is a bit of documentation for irq_dispose_mapping(), isn't it?
+
+Well, I don't agree.
+
+I think it is easier to see that some resources need to be freed with a 
+dedicated function if it is explained in the description of the function 
+which allocates the resource.
+
+CJ
+
+>
+>> + */
+>>   unsigned int irq_create_of_mapping(struct of_phandle_args *irq_data)
+>>   {
+>>   	struct irq_fwspec fwspec;
 > Thanks,
-
-
-Ciao
-Stephan
-
-
+>
+> 	M.
+>
