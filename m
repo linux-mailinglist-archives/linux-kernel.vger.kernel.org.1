@@ -2,109 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DFE62DEC5A
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 01:24:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 610F12DEC5D
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 01:24:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726346AbgLSAWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 19:22:54 -0500
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:51157 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725925AbgLSAWx (ORCPT
+        id S1726389AbgLSAX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 19:23:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726004AbgLSAX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 19:22:53 -0500
-X-Greylist: delayed 97350 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Dec 2020 19:22:52 EST
-X-Originating-IP: 86.202.109.140
-Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 73881E0002;
-        Sat, 19 Dec 2020 00:22:08 +0000 (UTC)
-Date:   Sat, 19 Dec 2020 01:22:08 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        alsa-devel@alsa-project.org, Kiran Patil <kiran.patil@intel.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        David Miller <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Parav Pandit <parav@mellanox.com>, lee.jones@linaro.org
-Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
-Message-ID: <20201219002208.GI3143569@piout.net>
-References: <20201218131709.GA5333@sirena.org.uk>
- <20201218140854.GW552508@nvidia.com>
- <20201218155204.GC5333@sirena.org.uk>
- <20201218162817.GX552508@nvidia.com>
- <20201218180310.GD5333@sirena.org.uk>
- <20201218184150.GY552508@nvidia.com>
- <20201218203211.GE5333@sirena.org.uk>
- <20201218205856.GZ552508@nvidia.com>
- <20201218211658.GH3143569@piout.net>
- <20201218233608.GA552508@nvidia.com>
+        Fri, 18 Dec 2020 19:23:28 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B63EFC06138C;
+        Fri, 18 Dec 2020 16:22:47 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id k10so4101581wmi.3;
+        Fri, 18 Dec 2020 16:22:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OncieEgm0eepoRss7G4i5BdrIAEupa2Kt6PNDbhIljY=;
+        b=ZyPlwQg+U8unAghXms7NL7LOS/en136C7hTf8/n2MkYg+gE8XCSpuNx67HmykTMCto
+         6OxtAKVxazMPhkdFOUrbhgdsXDV4qNDQgehkiZFVdo5Ie2au2NveAkLRMQs6lz5e411x
+         lwXQrrM0SGdqwUrXzecRdmMOZaw7m/cTbeOqds+9VaMj2Ja8iK3/MUSJFm6gMiGJypXV
+         9nJah/Jav52eMPN1xAiMQK1J1yue/VUwH3VufysBbSc/AWotEBW8aF2lmAF8KYJPP228
+         FKxRamGIMcFf5+YWsC/DBlCiGEC/XbdoXGvqQWJEqVRhbn0NSTix7r3vWyQ2kEaUY/Io
+         ABxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OncieEgm0eepoRss7G4i5BdrIAEupa2Kt6PNDbhIljY=;
+        b=PnPgQRWx4LQgl1Mj7+MweCjb8c239ZfBztMzoVilpEzdVtxYyS/qK/t5yUOvKl2Dg4
+         H1eD/uNhRZ3ETbeAG0PlGdxstvIkT/0JJYeSd9CRN628+d+s2Jgawo59isYqAduiIolU
+         jQeaT/vIvoa06p9Y26ew0Fb/AXkW2ElwUCYI21Ift/SjB8kR1fn7ciyEh0OmPNE6dgxP
+         UTYvkqNTXP52RjEVeRTN1JDLeFJSDMNC860k0fgw49ojVAsKYn8LzbbGdzDbhmcH7YZn
+         6UQBButxCMbe9al3ET2eZFay0nBEJ+Ss1rQvNo+RNynOOWKSlBi2+kRfk4fAGYdeH7Li
+         J15w==
+X-Gm-Message-State: AOAM533bp9PCvHhMQcmtYtar8R1aCpLDBaIUJ/sdlEPT1zfLXFu2FNkO
+        BYG0/eS2IVPTUedtvdaYUL4=
+X-Google-Smtp-Source: ABdhPJyY/gCg5cjMyRe1orufLTyKi8MrwWW1nNPj2bBgfMOK3DTkAgHGLR5obZqJXBndEJLbrd6oUw==
+X-Received: by 2002:a1c:ed15:: with SMTP id l21mr6090422wmh.111.1608337366384;
+        Fri, 18 Dec 2020 16:22:46 -0800 (PST)
+Received: from [192.168.1.211] ([2.31.224.116])
+        by smtp.gmail.com with ESMTPSA id x18sm18300760wrg.55.2020.12.18.16.22.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Dec 2020 16:22:45 -0800 (PST)
+Subject: Re: [PATCH v2 12/12] ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
+        lenb@kernel.org, gregkh@linuxfoundation.org, yong.zhi@intel.com,
+        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
+        tian.shu.qiu@intel.com, mchehab@kernel.org, robert.moore@intel.com,
+        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
+        linus.walleij@linaro.org, heikki.krogerus@linux.intel.com,
+        kitakar@gmail.com, jorhand@linux.microsoft.com
+References: <20201217234337.1983732-1-djrscally@gmail.com>
+ <20201217234337.1983732-13-djrscally@gmail.com>
+ <20201218211732.GE4077@smile.fi.intel.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <e2b4c35f-5020-c332-d97a-8ba25be0e55e@gmail.com>
+Date:   Sat, 19 Dec 2020 00:22:44 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201218233608.GA552508@nvidia.com>
+In-Reply-To: <20201218211732.GE4077@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/12/2020 19:36:08-0400, Jason Gunthorpe wrote:
-> On Fri, Dec 18, 2020 at 10:16:58PM +0100, Alexandre Belloni wrote:
-> 
-> > But then again, what about non-enumerable devices on the PCI device? I
-> > feel this would exactly fit MFD. This is a collection of IPs that exist
-> > as standalone but in this case are grouped in a single device.
-> 
-> So, if mfd had a mfd_device and a mfd bus_type then drivers would need
-> to have both a mfd_driver and a platform_driver to bind. Look at
-> something like drivers/char/tpm/tpm_tis.c to see how a multi-probe
-> driver is structured
-> 
-> See Mark's remarks about the old of_platform_device, to explain why we
-> don't have a 'dt_device' today
-> 
+Hi Andy, thanks for the comments
 
-So, what would that mfd_driver have that the platform_driver doesn't
-already provide?
-
-> > Note that I then have another issue because the kernel doesn't support
-> > irq controllers on PCI and this is exactly what my SoC has. But for now,
-> > I can just duplicate the irqchip driver in the MFD driver.
+On 18/12/2020 21:17, Andy Shevchenko wrote:
+> On Thu, Dec 17, 2020 at 11:43:37PM +0000, Daniel Scally wrote:
+>> Currently on platforms designed for Windows, connections between CIO2 and
+>> sensors are not properly defined in DSDT. This patch extends the ipu3-cio2
+>> driver to compensate by building software_node connections, parsing the
+>> connection properties from the sensor's SSDB buffer.
 > 
-> I think Thomas fixed that recently on x86 at least.. 
+> ...
 > 
-> Having to put dummy irq chip drivers in MFD anything sounds scary :|
+>> +	sensor->ep_properties[0] = PROPERTY_ENTRY_U32(sensor->prop_names.bus_type, 4);
 > 
+> Does 4 has any meaning that can be described by #define ?
 
-This isn't a dummy driver it is a real irqchip, what issue is there to
-register an irqchip from MFD ?
+It's V4L2_FWNODE_BUS_TYPE_CSI2_DPHY:
 
-> > Let me point to drivers/net/ethernet/cadence/macb_pci.c which is a
-> > fairly recent example. It does exactly that and I'm not sure you could
-> > do it otherwise while still not having to duplicate most of macb_probe.
+https://elixir.bootlin.com/linux/latest/source/drivers/media/v4l2-core/v4l2-fwnode.c#L36
+
+That enum's not in an accessible header, but I can define it in this
+module's header
+
+>> +static void cio2_bridge_init_swnode_names(struct cio2_sensor *sensor)
+>> +{
+>> +	snprintf(sensor->node_names.remote_port, 7, "port@%u", sensor->ssdb.link);
 > 
-> Creating a platform_device to avoid restructuring the driver's probe
-> and device logic to be generic is a *really* horrible reason to use a
-> platform device.
+> Hmm... I think you should use actual size of remote_port instead of 7.
+
+Yes ok
+
+
+>> +	strscpy(sensor->node_names.port, "port@0", sizeof(sensor->node_names.port));
 > 
+> Yeah, I would rather like to see one point of the definition of the format.
+> If it's the same as per OF case, perhaps some generic header (like fwnode.h?) is good for this?
+> In this case the 5 in one of the previous patches Also can be derived from the format.
 
-Definitively but it made it in and seemed reasonable at the time it
-seems. I stumbled upon that a while ago because I wanted to remove
-platform_data support from the macb driver and this is the last user. I
-never got the time to tackle that.
+Okedokey. It is indeed intended to match OF and ACPI case, both of which
+mandate that format (though only ACPI's functions seem to enforce it).
+fwnode.h seems as good a place as any to me, though I'm not sure there's
+anywhere in the driver code for OF or ACPI that would actually use it at
+the moment.
 
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+>> +	strscpy(sensor->node_names.endpoint, "endpoint@0", sizeof(sensor->node_names.endpoint));
+> 
+> Similar here.
+> 
+>> +}
+> 
+> ...
+> 
+>> +	for (i = 0; i < ARRAY_SIZE(cio2_supported_sensors); i++) {
+>> +		const struct cio2_sensor_config *cfg = &cio2_supported_sensors[i];
+>> +
+>> +		for_each_acpi_dev_match(adev, cfg->hid, NULL, -1) {
+> 
+>> +			if (bridge->n_sensors >= CIO2_NUM_PORTS) {
+>> +				dev_warn(&cio2->dev, "Exceeded available CIO2 ports\n");
+> 
+>> +				/* overflow i so outer loop ceases */
+>> +				i = ARRAY_SIZE(cio2_supported_sensors);
+>> +				break;
+> 
+> Why not to create a new label below and assign ret here with probably comment
+> why it's not an error?
+
+Sure, I can do that, but since it wouldn't need any cleanup I could also
+just return 0 here as Laurent suggest (but with a comment explaining why
+that's ok as you say) - do you have a preference?
+
+>> +			}
+> 
+> ...
+> 
+>> +			ret = cio2_bridge_read_acpi_buffer(adev, "SSDB",
+>> +							   &sensor->ssdb,
+>> +							   sizeof(sensor->ssdb));
+>> +			if (ret < 0)
+> 
+> if (ret) (because positive case can be returned just by next conditional).
+
+cio2_bridge_read_acpi_buffer() returns the buffer length on success at
+the moment, but I can change it to return 0 and have this be if (ret)
+
+>> +				goto err_put_adev;
+>> +
+>> +			if (sensor->ssdb.lanes > 4) {
+>> +				dev_err(&adev->dev,
+>> +					"Number of lanes in SSDB is invalid\n");
+>> +				goto err_put_adev;
+>> +			}
+> 
+> ...
+> 
+>> +			dev_info(&cio2->dev, "Found supported sensor %s\n",
+>> +				 acpi_dev_name(adev));
+>> +
+>> +			bridge->n_sensors++;
+>> +		}
+>> +	}
+> 
+> 	return 0;
+
+Okedokey
+
+> 
+>> +err_free_swnodes:
+>> +	software_node_unregister_nodes(sensor->swnodes);
+>> +err_put_adev:
+>> +	acpi_dev_put(sensor->adev);
+> 
+> err_out:
+
+Depends on question above I think
+
+>> +	return ret;
+>> +}
+> 
+> ...
+> 
+>> +enum cio2_sensor_swnodes {
+>> +	SWNODE_SENSOR_HID,
+>> +	SWNODE_SENSOR_PORT,
+>> +	SWNODE_SENSOR_ENDPOINT,
+>> +	SWNODE_CIO2_PORT,
+>> +	SWNODE_CIO2_ENDPOINT,
+> 
+>> +	NR_OF_SENSOR_SWNODES
+> 
+> Perhaps same namespace, i.e.
+> 
+> 	SWNODE_SENSOR_NR
+
+Yep, will do.
+
+Thanks
+Dan
+
