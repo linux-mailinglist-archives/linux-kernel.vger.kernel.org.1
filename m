@@ -2,89 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7511E2DF1D9
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 22:41:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B2082DF1DC
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 22:50:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727886AbgLSVlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 16:41:51 -0500
-Received: from asavdk3.altibox.net ([109.247.116.14]:33662 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726473AbgLSVlv (ORCPT
+        id S1727689AbgLSVuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 16:50:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725788AbgLSVuD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 16:41:51 -0500
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 7CD862001F;
-        Sat, 19 Dec 2020 22:40:55 +0100 (CET)
-Date:   Sat, 19 Dec 2020 22:40:54 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     David S Miller <davem@davemloft.net>, sparclinux@vger.kernel.org,
-        Andreas Larsson <andreas@gaisler.com>,
-        Arnd Bergmann <arnd@kernel.org>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Denis Efremov <efremov@linux.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, Willy Tarreau <w@1wt.eu>,
-        linux-kernel@vger.kernel.org, debian-sparc@lists.debian.org,
-        gentoo-sparc@lists.gentoo.org, info@temlib.org
-Subject: Re: [RFC PATCH 0/13] sparc32: sunset sun4m and sun4d
-Message-ID: <20201219214054.GB3132151@ravnborg.org>
-References: <20201218184347.2180772-1-sam@ravnborg.org>
+        Sat, 19 Dec 2020 16:50:03 -0500
+Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D2C5C0613CF;
+        Sat, 19 Dec 2020 13:49:06 -0800 (PST)
+Received: by mail-oo1-xc33.google.com with SMTP id j8so1441882oon.3;
+        Sat, 19 Dec 2020 13:49:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=3eP78bpFZjBe9GdjMWYp4bqLO7v9ggbKwrJKCSlZ460=;
+        b=ZgrO2KAPrWyDuRLVNEsOqX6NRgW0p7rIQPfSXUFuPCkpcSmNAFEjNRi9D4tXZZBQvO
+         pacTnyn4UQhfeP3hB4Bjh3zy9OuvhD640WvUvx7ukVcQFks/ou1+inoHn5xzte/cJ8qB
+         HtSkayVqgyWEN+SGml8oREM2hugloEyYZZaR9m98W1BfAVrRNKc12CxepCV3DLRHzOu7
+         xcGC2V6+VVA0CS0mKX0pkpHrwfYSA01/InIi33d+2aPRZUK/nOfQ15phka6/Zq7V5o8F
+         LFvHHJ0/M3t6HUkXIXjDkdEIVzo/jGzU/riAlGLsykQE89LGjUIFNVbQWFXblrS5FGTP
+         /5zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3eP78bpFZjBe9GdjMWYp4bqLO7v9ggbKwrJKCSlZ460=;
+        b=RagwBht2q7NV/r7wEBmcut3Qf3+pRky/VgwYvJ7JVmc89HJxv+fZhDjA52WxGq5FLr
+         bRbVBdPCu4tZY9sed+Kgb3kEI+R3bo63FMtOfSBZTF1vrP6i2YQmHBtGvLH2aDn+6SsU
+         zDrNAkhxJScwrSDu+0AJrxm7WwBW4NJVFR44xm2Ee2QXSyBrwBN3PDahLgASpXU7oj0+
+         dl18GMdTIjcBAaw3+SvMzC5Mea4vBHo0/fErJHdOjIjSd4LU1FFaBEpCd9IeDwPIjWMY
+         7Vb5taQ4OQUrdSVzi0pUkJrC3rrhdAGKdao2p2VHT1+r2cgQYWfV1Fh1z6AJelTJlQbh
+         QNJQ==
+X-Gm-Message-State: AOAM530EgOMIAuykoqbvr1UK/e6IyNRnB3+QIVxBjq40h+mHpG9G8y8k
+        r4hKMTxETYayHUYEFptgxBs=
+X-Google-Smtp-Source: ABdhPJxPw3kQlGidQCxJGFXtnTOYwFB8NKc2ULnZpoOrwzV0UUEsBQ41/eMRwQdEVGPvOGVF7leN3w==
+X-Received: by 2002:a4a:ddd2:: with SMTP id i18mr7190941oov.10.1608414545485;
+        Sat, 19 Dec 2020 13:49:05 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id m18sm2822487ooa.24.2020.12.19.13.49.04
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 19 Dec 2020 13:49:04 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sat, 19 Dec 2020 13:49:03 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 5.4 00/34] 5.4.85-rc1 review
+Message-ID: <20201219214903.GA22593@roeck-us.net>
+References: <20201219125341.384025953@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201218184347.2180772-1-sam@ravnborg.org>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=Ibmpp1ia c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=mgTqUXvhAAAA:8 a=mrJAqwzcyFW6BaUAzm0A:9
-        a=CjuIK1q_8ugA:10 a=VOnB0Y9YHlndsCffChEF:22
+In-Reply-To: <20201219125341.384025953@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Sat, Dec 19, 2020 at 02:02:57PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.85 release.
+> There are 34 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Mon, 21 Dec 2020 12:53:29 +0000.
+> Anything received after that time might be too late.
+> 
 
-On Fri, Dec 18, 2020 at 07:43:34PM +0100, Sam Ravnborg wrote:
-> The sun4m and sun4d based SPARC machines was very popular in the
-> 90'ties and was then replaced by the more powerful sparc64
-> class of machines.
+Build results:
+	total: 157 pass: 157 fail: 0
+Qemu test results:
+	total: 427 pass: 427 fail: 0
 
-I have received a couple of mails in private.
-One said it was better to sunset now when it is actually working,
-so there is a working state to return to.
-Another said that it would be a shame to sunset sun4m and sun4d because
-there are so many machines around, and netbsd is also active on the
-sparc32 area.
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-
-The second mail also re-reminded me of an interesting project
-implementing SPARC V8 and the sun4m platform in VHDL.
-See https://temlib.org - the author posted a new blog post a
-few months ago.
-
-temlib is, to my best knowledge, an impressive one-man project.
-And this is not enough to keep sun4m around as this would
-require real users that cannot just stay at their current kernel
-but who need to follow upstream.
-
-Please keep the inputs coming independent if you are pro or not
-for the sunset of sun4m and sun4d.
-
-	Sam
+Genter
