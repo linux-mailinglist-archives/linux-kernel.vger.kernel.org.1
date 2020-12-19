@@ -2,137 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0CD52DED8E
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 07:49:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D6C32DEDA5
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 08:08:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726395AbgLSGsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 01:48:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726254AbgLSGsX (ORCPT
+        id S1726411AbgLSHHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 02:07:20 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:49002 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726369AbgLSHHU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 01:48:23 -0500
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01504C0617B0;
-        Fri, 18 Dec 2020 22:47:42 -0800 (PST)
-Received: by mail-il1-x12c.google.com with SMTP id g1so4267321ilk.7;
-        Fri, 18 Dec 2020 22:47:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Wk6t8sHPNiHUq86Hk7vb9MNGSh7YoiBHUFBjV6/4jKk=;
-        b=c30o2HBeq05cSqOEQdOa6wiS/izSJgVnuYfYzGxwoz86xvSD31uDuvdhVrBjXPlnVL
-         n+05RZCepixgDqHiq+BnCbLwCCAvV9xJN7MOgd84TPDv1QMiYXOISq/XigO8flRbCVwb
-         FCoSJTfXW7/zN9w3qYB60SCt9+vJMvjYlLDZZtakJJmpAk9S9hFdokkL8XA8R+Lfn0NO
-         uoWu+NkmD99NIDihiuY/Q0qyfzxs5SApBTVvGV2o2vduaNf0+YGqF9djtgR5qmlNjNm7
-         Gu88cNOq5nGbQ0ZPRXMV+SFdck8fIP5clIMCMducicgU2aTChQPCsqV2Ce5YErbLM9Fd
-         Vftw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Wk6t8sHPNiHUq86Hk7vb9MNGSh7YoiBHUFBjV6/4jKk=;
-        b=aNmvvnCBgu4lEQLdOnaMDJPloQcAzexVTgCY+9wtZCOt9To71bOkgdK/8up1omAZ+P
-         5mOlA4ersV14baLhy7Xu7l3yctmskosgpseRhcYt4sr5iGqBrxBDYnWwbPbjIe4eY5Rs
-         1/KoJTQeN28XFE23vH6S4vJlzvQevt1iXynOcgkQbs1OofzN8zdC+wg5v1Wa+N6exv1g
-         Ik2QqbmtkkfcXuFgHzNdbcKAMPvWvE++uIS0PH5igvZrlhNxO6+Cd213Ywjf2wxfOjH0
-         8eqWnFcNue7hG5Q2SstkZJB+K1q2Ym8oDnS11C+pvSDMz3Ysy/wPWauDxRPDmvVL3e08
-         3V6Q==
-X-Gm-Message-State: AOAM530NYruC0//HLiGIEwa22HaFN7JmL1ziPmaDvp29dFUoYr1pkDT9
-        mmZMkbyIfmGKXyp+ic2nULE=
-X-Google-Smtp-Source: ABdhPJy9nmmL+U6aFQ6rVyueGA4/0VtZMPBuRCj/KYbNlG/RpBUitac8pxYBnh0xBXdGinmH2QZ3Ag==
-X-Received: by 2002:a92:de50:: with SMTP id e16mr7903342ilr.144.1608360462157;
-        Fri, 18 Dec 2020 22:47:42 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id p17sm8232295ils.45.2020.12.18.22.47.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Dec 2020 22:47:41 -0800 (PST)
-Date:   Fri, 18 Dec 2020 23:47:39 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Update email address for Sean Christopherson
-Message-ID: <20201219064739.GA3541709@ubuntu-m3-large-x86>
-References: <20201119183707.291864-1-sean.kvm@gmail.com>
+        Sat, 19 Dec 2020 02:07:20 -0500
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id C05081F46488;
+        Sat, 19 Dec 2020 07:06:37 +0000 (GMT)
+Date:   Sat, 19 Dec 2020 08:06:32 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-i3c <linux-i3c@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     Alexandre Belloni <abelloni@kernel.org>
+Subject: [GIT PULL] i3c: Changes for 5.11
+Message-ID: <20201219080632.686b92bc@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201119183707.291864-1-sean.kvm@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 10:37:07AM -0800, Sean Christopherson wrote:
-> From: Sean Christopherson <seanjc@google.com>
-> 
-> Update my email address to one provided by my new benefactor.
-> 
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Jarkko Sakkinen <jarkko@kernel.org>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Andy Lutomirski <luto@kernel.org>
-> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-> Cc: Wanpeng Li <wanpengli@tencent.com>
-> Cc: Jim Mattson <jmattson@google.com>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: kvm@vger.kernel.org
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
-> Resorted to sending this via a private dummy account as getting my corp
-> email to play nice with git-sendemail has been further delayed, and I
-> assume y'all are tired of getting bounces.
-> 
->  .mailmap    | 1 +
->  MAINTAINERS | 2 +-
->  2 files changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/.mailmap b/.mailmap
-> index 1e14566a3d56..a0d1685a165a 100644
-> --- a/.mailmap
-> +++ b/.mailmap
-> @@ -287,6 +287,7 @@ Santosh Shilimkar <ssantosh@kernel.org>
->  Sarangdhar Joshi <spjoshi@codeaurora.org>
->  Sascha Hauer <s.hauer@pengutronix.de>
->  S.Çağlar Onur <caglar@pardus.org.tr>
-> +Sean Christopherson <seanjc@google.com> <sean.j.christopherson@intel.com>
->  Sean Nyekjaer <sean@geanix.com> <sean.nyekjaer@prevas.dk>
->  Sebastian Reichel <sre@kernel.org> <sebastian.reichel@collabora.co.uk>
->  Sebastian Reichel <sre@kernel.org> <sre@debian.org>
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 4a34b25ecc1f..0478d9ef72fc 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -9662,7 +9662,7 @@ F:	tools/testing/selftests/kvm/s390x/
->  
->  KERNEL VIRTUAL MACHINE FOR X86 (KVM/x86)
->  M:	Paolo Bonzini <pbonzini@redhat.com>
-> -R:	Sean Christopherson <sean.j.christopherson@intel.com>
-> +R:	Sean Christopherson <seanjc@google.com>
->  R:	Vitaly Kuznetsov <vkuznets@redhat.com>
->  R:	Wanpeng Li <wanpengli@tencent.com>
->  R:	Jim Mattson <jmattson@google.com>
-> -- 
-> 2.29.2.299.gdc1121823c-goog
-> 
+Hello Linus,
 
-Not sure how it happened but commit c2b1209d852f ("MAINTAINERS: Update
-email address for Sean Christopherson") dropped the MAINTAINERS
-hunk so it still shows your @intel.com address. I almost sent a patch
-there before I realized there was a .mailmap entry while looking through
-git history.
+Here the I3C PR for 5.11. This should be my last PR (I resigned from
+my maintainer position). Alexandre Belloni (maintainer of the RTC
+subsystem) kindly proposed to take over, so he should send the I3C PRs
+from now on.
 
-Cheers,
-Nathan
+Regards,
+
+Boris 
+
+The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+
+  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/i3c/linux.git tags/i3c/for-5.11
+
+for you to fetch changes up to 95393f3e07ab53855b91881692a4a5b52dcdc03c:
+
+  i3c/master/mipi-i3c-hci: quiet maybe-unused variable warning (2020-12-17 10:31:30 +0100)
+
+----------------------------------------------------------------
+* Add the HCI driver
+* Add a missing destroy_workqueue() in an error path
+* Flag Alexandre Belloni as the new maintainer
+
+----------------------------------------------------------------
+Boris Brezillon (1):
+      i3c: Resign from my maintainer role
+
+Colin Ian King (1):
+      i3c/master: Fix uninitialized variable next_addr
+
+Nicolas Pitre (3):
+      dt-bindings: i3c: MIPI I3C Host Controller Interface
+      i3c/master: introduce the mipi-i3c-hci driver
+      i3c/master/mipi-i3c-hci: quiet maybe-unused variable warning
+
+Qinglang Miao (1):
+      i3c master: fix missing destroy_workqueue() on error in i3c_master_register
+
+ Documentation/devicetree/bindings/i3c/mipi-i3c-hci.yaml |   47 +++
+ MAINTAINERS                                             |    2 +-
+ drivers/i3c/master.c                                    |    5 +-
+ drivers/i3c/master/Kconfig                              |   13 +
+ drivers/i3c/master/Makefile                             |    1 +
+ drivers/i3c/master/mipi-i3c-hci/Makefile                |    6 +
+ drivers/i3c/master/mipi-i3c-hci/cmd.h                   |   67 ++++
+ drivers/i3c/master/mipi-i3c-hci/cmd_v1.c                |  378 +++++++++++++++++++
+ drivers/i3c/master/mipi-i3c-hci/cmd_v2.c                |  316 ++++++++++++++++
+ drivers/i3c/master/mipi-i3c-hci/core.c                  |  798 ++++++++++++++++++++++++++++++++++++++++
+ drivers/i3c/master/mipi-i3c-hci/dat.h                   |   32 ++
+ drivers/i3c/master/mipi-i3c-hci/dat_v1.c                |  184 ++++++++++
+ drivers/i3c/master/mipi-i3c-hci/dct.h                   |   16 +
+ drivers/i3c/master/mipi-i3c-hci/dct_v1.c                |   36 ++
+ drivers/i3c/master/mipi-i3c-hci/dma.c                   |  784 +++++++++++++++++++++++++++++++++++++++
+ drivers/i3c/master/mipi-i3c-hci/ext_caps.c              |  308 ++++++++++++++++
+ drivers/i3c/master/mipi-i3c-hci/ext_caps.h              |   19 +
+ drivers/i3c/master/mipi-i3c-hci/hci.h                   |  144 ++++++++
+ drivers/i3c/master/mipi-i3c-hci/ibi.h                   |   42 +++
+ drivers/i3c/master/mipi-i3c-hci/pio.c                   | 1041 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ drivers/i3c/master/mipi-i3c-hci/xfer_mode_rate.h        |   79 ++++
+ 21 files changed, 4316 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/i3c/mipi-i3c-hci.yaml
+ create mode 100644 drivers/i3c/master/mipi-i3c-hci/Makefile
+ create mode 100644 drivers/i3c/master/mipi-i3c-hci/cmd.h
+ create mode 100644 drivers/i3c/master/mipi-i3c-hci/cmd_v1.c
+ create mode 100644 drivers/i3c/master/mipi-i3c-hci/cmd_v2.c
+ create mode 100644 drivers/i3c/master/mipi-i3c-hci/core.c
+ create mode 100644 drivers/i3c/master/mipi-i3c-hci/dat.h
+ create mode 100644 drivers/i3c/master/mipi-i3c-hci/dat_v1.c
+ create mode 100644 drivers/i3c/master/mipi-i3c-hci/dct.h
+ create mode 100644 drivers/i3c/master/mipi-i3c-hci/dct_v1.c
+ create mode 100644 drivers/i3c/master/mipi-i3c-hci/dma.c
+ create mode 100644 drivers/i3c/master/mipi-i3c-hci/ext_caps.c
+ create mode 100644 drivers/i3c/master/mipi-i3c-hci/ext_caps.h
+ create mode 100644 drivers/i3c/master/mipi-i3c-hci/hci.h
+ create mode 100644 drivers/i3c/master/mipi-i3c-hci/ibi.h
+ create mode 100644 drivers/i3c/master/mipi-i3c-hci/pio.c
+ create mode 100644 drivers/i3c/master/mipi-i3c-hci/xfer_mode_rate.h
