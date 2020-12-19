@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D5C02DECEA
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 04:32:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EACD02DECF0
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 04:32:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726532AbgLSDbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 22:31:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38724 "EHLO
+        id S1726575AbgLSDcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 22:32:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726379AbgLSDbu (ORCPT
+        with ESMTP id S1726237AbgLSDbv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 22:31:50 -0500
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1631BC0611CB
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 19:30:34 -0800 (PST)
-Received: by mail-qt1-x82b.google.com with SMTP id g24so2873411qtq.12
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 19:30:34 -0800 (PST)
+        Fri, 18 Dec 2020 22:31:51 -0500
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27367C0611CD
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 19:30:35 -0800 (PST)
+Received: by mail-qv1-xf32.google.com with SMTP id a4so1645144qvd.12
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 19:30:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=LrTDV1JC3FHqRkPuc+wq4o33QEiL82RGRHhUmIGgN6s=;
-        b=FV0bA/glG6mM2oq/0OIUCIVCj6ovoytZ5Qj/7e+wkIWZ2ELS8XCIiKnF6W4r6i7jRT
-         CFWxHpAaKVstazgf50GOecmqvoxJ2c/3Af0zFXqfBCUnWWXQ3csgizyva8ZTedaBRUyp
-         SlbsXze46vnkooO1wMFJVXrx/DLreGecZ7HHnYRpDtxesRsJPbyQiaUGm95dmA1Sa3dj
-         UwcPkuerUDLJjuvenqZZs+gD6LhbxVI9wf19i/Lu9hfL5LGveHHuUCxxb05T7GkrQavn
-         jjMUfR3lwsQfMjOjnOV+SrD3sgnnXrTlpuBtEZawPuKmA0uTzkWQNSg7GdlQ1D/LA+6q
-         iT4A==
+        bh=YJE2aPOEkLIKEj61l27Ctrd7+4+SFwAw4jzWQDD0G1c=;
+        b=K77tGdpSQ+xMM14yYMq1WYAAXE96zJ8N41hgJgBFYB3OEpifFIWHJuYoP/PJyhtstG
+         H4aeCDacaVtKytY/VskSNfQEjIij2QkgzN2ym3MHhIE3xK6FOk2/wJTB5r490i7jTjOW
+         3KxOsLG/fA2f1oizKJiKhYnqyCmnTWkZ2ya/TNv2rLl6a83I1j8Zuu4s/U+VoIy0ZjJr
+         IFFk5/ogPUTi63Pqs7Wpkbot9i5z71+XNuAGxVzff9D5gN2zGzw4YOAiEEZyczIl3I85
+         YuZFH5WxHP2hB3BnmoNyiLJPYWLhIDdftVqZsOG5RZxGKj83OuvAE/W7DAdnZNXt4Iit
+         tJlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=LrTDV1JC3FHqRkPuc+wq4o33QEiL82RGRHhUmIGgN6s=;
-        b=FUjDRWTzAiLUw8fbKDrHxPk1aOYSuURpVVLxA79cCy9vrFivT3KcQnTzOqTcl3JG6G
-         i24CtoKSuNlPoXhMiGzviNNDVl1VZuYaaGzYjTtYdk+ZUWeRo3jSWgEXHdBX3lXr6/ht
-         Hc95EpY8DQFEgYW+8Kq1LhMFHwmi42Dk0yepNn7MmUW8Nx7sqkeYi6zGsluUx0jwQwMb
-         v6ZL96fVI/NxuxZ2po36yT8/rrcobINu+jW9fDuWzqcOsvc7E9zgowsrV3PDpN15NnAX
-         pNS+kQDKoTyIXbGgnHR/gGCkMDLa2orW5iJVJ71OSc+SJL2qjDaVLvk6tm8S5/9iIocr
-         GtxA==
-X-Gm-Message-State: AOAM5321bPfNRFf/yvyd/fL5bFL1bdFRSE5/8zSAgQyiEIaUwwE+SvJl
-        HORVnYg4xCeXVk+9wXym4VbS+A==
-X-Google-Smtp-Source: ABdhPJyLn6gTjUXMIfEImNEoRb2yDuEHvY0BV+clvgYgkiG4hWdWLhGB0lP4Ja9P51BVOBuZ1T5/sg==
-X-Received: by 2002:ac8:5b82:: with SMTP id a2mr7248502qta.215.1608348633318;
-        Fri, 18 Dec 2020 19:30:33 -0800 (PST)
+        bh=YJE2aPOEkLIKEj61l27Ctrd7+4+SFwAw4jzWQDD0G1c=;
+        b=QiyPB+6E8KHGzwVsdvauggIR+x8CPgbWIJchkm1AOt0rytRoETEKVE/9eASKVrTlAQ
+         kPQbV/kGLBYc2dOmKrHYOIKvtTvj9n0AZ5BHVhZvIRvQxT8/75WmKWDfLDSGMHV3mX1e
+         W9PmSGYl/n/avKQI67G8duqH+wx+dJMj0/FwK0iNnA81hCfkbnmdCFoRMPmN9WV0WAm6
+         /TokRjQD4efERcLVAsSnjWAyK8EMz4qDotvMSzxi+sgRB89oqMnsaiCiuGDQfE7TTMHl
+         00Vbj2kh3jXg5E0lMO2rhyQovx58yR4ryA4fjDWjlxoe6a5VqlgR6XhbVFw8DJRVoopB
+         xP+g==
+X-Gm-Message-State: AOAM5332f5ic7Ws4sSW3QnKVLYyNzGU1MUDV21TE+88Do6LiLsZDLnF6
+        IQApXZzr2d5J6RewuF33J4WDXw==
+X-Google-Smtp-Source: ABdhPJyup2brldzwfzliD+vFKuM/4Tbezy87g9fD3vRaKbDzEuyx3TVEO+Ivr7JYD4BjHf/NqxHrsg==
+X-Received: by 2002:a0c:b48c:: with SMTP id c12mr7632370qve.9.1608348634463;
+        Fri, 18 Dec 2020 19:30:34 -0800 (PST)
 Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.googlemail.com with ESMTPSA id y16sm4376045qki.132.2020.12.18.19.30.32
+        by smtp.googlemail.com with ESMTPSA id y16sm4376045qki.132.2020.12.18.19.30.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Dec 2020 19:30:32 -0800 (PST)
+        Fri, 18 Dec 2020 19:30:33 -0800 (PST)
 From:   Thara Gopinath <thara.gopinath@linaro.org>
 To:     herbert@gondor.apana.org.au, davem@davemloft.net,
         bjorn.andersson@linaro.org
 Cc:     ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
         linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/6] drivers: crypto: qce: common: Set data unit size to message length for AES XTS transformation
-Date:   Fri, 18 Dec 2020 22:30:25 -0500
-Message-Id: <20201219033027.3066042-5-thara.gopinath@linaro.org>
+Subject: [PATCH 5/6] drivers: crypto: qce: Remover src_tbl from qce_cipher_reqctx
+Date:   Fri, 18 Dec 2020 22:30:26 -0500
+Message-Id: <20201219033027.3066042-6-thara.gopinath@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201219033027.3066042-1-thara.gopinath@linaro.org>
 References: <20201219033027.3066042-1-thara.gopinath@linaro.org>
@@ -65,39 +65,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set the register REG_ENCR_XTS_DU_SIZE to cryptlen for AES XTS
-transformation. Anything else causes the engine to return back
-wrong results.
+src_table is unused and hence remove it from struct qce_cipher_reqctx
 
 Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
 ---
- drivers/crypto/qce/common.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/crypto/qce/cipher.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/crypto/qce/common.c b/drivers/crypto/qce/common.c
-index 5006e74c40cd..7ae0b779563f 100644
---- a/drivers/crypto/qce/common.c
-+++ b/drivers/crypto/qce/common.c
-@@ -294,15 +294,15 @@ static void qce_xtskey(struct qce_device *qce, const u8 *enckey,
- {
- 	u32 xtskey[QCE_MAX_CIPHER_KEY_SIZE / sizeof(u32)] = {0};
- 	unsigned int xtsklen = enckeylen / (2 * sizeof(u32));
--	unsigned int xtsdusize;
- 
- 	qce_cpu_to_be32p_array((__be32 *)xtskey, enckey + enckeylen / 2,
- 			       enckeylen / 2);
- 	qce_write_array(qce, REG_ENCR_XTS_KEY0, xtskey, xtsklen);
- 
--	/* xts du size 512B */
--	xtsdusize = min_t(u32, QCE_SECTOR_SIZE, cryptlen);
--	qce_write(qce, REG_ENCR_XTS_DU_SIZE, xtsdusize);
-+	/* Set data unit size to cryptlen. Anything else causes
-+	 * crypto engine to return back incorrect results.
-+	 */
-+	qce_write(qce, REG_ENCR_XTS_DU_SIZE, cryptlen);
- }
- 
- static int qce_setup_regs_skcipher(struct crypto_async_request *async_req,
+diff --git a/drivers/crypto/qce/cipher.h b/drivers/crypto/qce/cipher.h
+index cffa9fc628ff..850f257d00f3 100644
+--- a/drivers/crypto/qce/cipher.h
++++ b/drivers/crypto/qce/cipher.h
+@@ -40,7 +40,6 @@ struct qce_cipher_reqctx {
+ 	struct scatterlist result_sg;
+ 	struct sg_table dst_tbl;
+ 	struct scatterlist *dst_sg;
+-	struct sg_table src_tbl;
+ 	struct scatterlist *src_sg;
+ 	unsigned int cryptlen;
+ 	struct skcipher_request fallback_req;	// keep at the end
 -- 
 2.25.1
 
