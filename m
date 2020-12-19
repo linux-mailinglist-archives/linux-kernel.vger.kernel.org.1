@@ -2,116 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF972DF194
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 21:40:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7EDF2DF1B2
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 21:59:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727707AbgLSUks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 15:40:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726238AbgLSUkr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 15:40:47 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FDDEC0613CF
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 12:39:55 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id o17so14426674lfg.4
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 12:39:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i6WEkkm6ItmYR5Nc7WLcGl8iPUHvmHopSYUb1uCJQT0=;
-        b=OyMepeYRv3SqqZn1639l0dapTnd3++utPvIHPn/lAKEKQz8ez3nMhl3LxHjUrjCAch
-         bIwOnC79LDNLzECuWXDHNLtLFoZNVW9RT1K4iYWHcjnyQjwDShXfShciNOARkm4QAzWd
-         rztJriJMwLJToBCHJ5xgY++4IZUL1rg5qu4qE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i6WEkkm6ItmYR5Nc7WLcGl8iPUHvmHopSYUb1uCJQT0=;
-        b=fYGMCFdIdjxFp4fQfW2Pl4aRE4p8VpJMTOvaXB+JR9QBa3yfPs7meAkf7661M4B2un
-         NIQZfdb2LV10J3mgIUiNi1QwiR4A0D6zdHdbTurvsonRKJ/j6PSsy5clswSh0BDPX0aM
-         w08pvJlKjUcs2a3JEugG2gsq5J69eHPHr9SHS1W8UCD6ACe+njziALLc4Dn4W08CnPqJ
-         l0LUjvz+t6MeTq6Xb2+8JXhd5MGudy9uTkPnUseN2qY9BbAsjLocMZ7yXK0oMj5c0+nN
-         YjNyV5rw6tXmpmObXafNHegw7eVUnWHKBiMxWUsS5cxCJNSdMMT+CJX3UxyWOpQveLEN
-         1Usw==
-X-Gm-Message-State: AOAM533eiGa2e27iZMkVA4DJs/CH1BVJ2xNevJXHdQ6wZQ+kQjEXHTWP
-        5FWffN0f2g2sTkI+JtZpcToHR/1cBsr4Dg==
-X-Google-Smtp-Source: ABdhPJyjkZfpgZOwIHQpw/SPP/bzOKHOp78sEzIULxWz4wxYMJltJnQmRn1HR1f2eVkW6b5XCPVg3w==
-X-Received: by 2002:a19:42c2:: with SMTP id p185mr1832061lfa.423.1608410393568;
-        Sat, 19 Dec 2020 12:39:53 -0800 (PST)
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
-        by smtp.gmail.com with ESMTPSA id j7sm1407537lfg.114.2020.12.19.12.39.53
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 19 Dec 2020 12:39:53 -0800 (PST)
-Received: by mail-lf1-f43.google.com with SMTP id l11so14475468lfg.0
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 12:39:53 -0800 (PST)
-X-Received: by 2002:a2e:6f17:: with SMTP id k23mr4369075ljc.411.1608410073306;
- Sat, 19 Dec 2020 12:34:33 -0800 (PST)
+        id S1727553AbgLSU5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 15:57:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47758 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726249AbgLSU5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Dec 2020 15:57:06 -0500
+Date:   Sat, 19 Dec 2020 17:56:39 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608411385;
+        bh=9fsZJEeIQUUhm4YBKRNbWOgZAX7ecLavuROuXv233no=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qG+DRAcr+7H5rIQh152/tMq/RAAkmRQwLkeRRMyr+N76vfzoUHPNT/Wp05DuRqR7s
+         q5n6Cp6ofr/WglcyllkvcRoCoPgDiGj3HVI2a/5+VQK18Q0AnP8UeMT1Em9nhPI9Vr
+         snoVtwbNpDTxf3uRtUzNkENSbxIamMFg1wSsZ+uslL6W5kw0H4JeXeq0DruCix7q9n
+         MW355CDkOfLHAjcXlXQMOXxxBZ5/JkIPGPgLa7h41LE1Xv3eUU6EemXe60f4HSZz9f
+         kc7R8u0ggk++Jb2zbNPgz2luAHcF2s3n0EoohtM50An9KqHTL1ck2d9mDV7+N4NJCk
+         gYTtBWm1ZGCZg==
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     kan.liang@linux.intel.com
+Cc:     mingo@kernel.org, jolsa@redhat.com, linux-kernel@vger.kernel.org,
+        namhyung@kernel.org, eranian@google.com, ak@linux.intel.com,
+        mark.rutland@arm.com, will@kernel.org, mpe@ellerman.id.au
+Subject: Re: [PATCH V3 5/9] perf mem: Support data page size
+Message-ID: <20201219205639.GB363602@kernel.org>
+References: <20201216185805.9981-1-kan.liang@linux.intel.com>
+ <20201216185805.9981-6-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-References: <20201210150828.4b7pg5lx666r7l2u@black.fi.intel.com>
- <CAHk-=wiU8ktvak2hCj2TWJ6wMSwVsUSvi5Bjf4i1JGvpGmyUZw@mail.gmail.com>
- <20201214160724.ewhjqoi32chheone@box> <CAHk-=wi80Qp6nZC0yyewhnqvrmPx2h_yWvfq4A25ONb7z9BywQ@mail.gmail.com>
- <20201216170703.o5lpsnjfmoj7f3ml@box> <CAHk-=wiVRMADHC0qjTFAVx2Pp0DN-fT-VPC10boDdX0O4=h01w@mail.gmail.com>
- <20201217105409.2gacwgg7rco2ft3m@box> <CAHk-=wiyPTnQ9E1dT9LJtNxeVmLaykursk_MSecUqFjSb3gwAw@mail.gmail.com>
- <20201218110400.yve45r3zsv7qgfa3@box> <CAHk-=wgO2LsoKhX7MjSECo+Xrj1-Me7tzRfNcsdEZBRwJW1cQg@mail.gmail.com>
- <20201219124103.w6isern3ywc7xbur@box>
-In-Reply-To: <20201219124103.w6isern3ywc7xbur@box>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 19 Dec 2020 12:34:17 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wifcVaxaTn_RbZ=idfYFazTPwm8t5cB1rY6xEBjbcfO5g@mail.gmail.com>
-Message-ID: <CAHk-=wifcVaxaTn_RbZ=idfYFazTPwm8t5cB1rY6xEBjbcfO5g@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mm: Allow architectures to request 'old' entries when prefaulting
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201216185805.9981-6-kan.liang@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 19, 2020 at 4:41 AM Kirill A. Shutemov <kirill@shutemov.name> wrote:
->
-> @@ -2884,19 +2966,18 @@ void filemap_map_pages(struct vm_fault *vmf,
->                 if (vmf->pte)
->                         vmf->pte += xas.xa_index - last_pgoff;
->                 last_pgoff = xas.xa_index;
-> -               if (alloc_set_pte(vmf, page))
-> -                       goto unlock;
-> +               if (pte_none(*vmf->pte))
-> +                       do_set_pte(vmf, page);
-> +               /* no need to invalidate: a not-present page won't be cached */
-> +               update_mmu_cache(vma, vmf->address, vmf->pte);
->                 unlock_page(head);
-> -               goto next;
-> +               continue;
+Em Wed, Dec 16, 2020 at 10:58:01AM -0800, kan.liang@linux.intel.com escreveu:
+> From: Kan Liang <kan.liang@linux.intel.com>
+> 
+> Add option --data-page-size in "perf mem" to record/report data page
+> size.
+> 
+> Here are some examples.
+> perf mem --phys-data --data-page-size report -D
 
-This can't be right.
+So I stopped at this cset, it isn't applying to my tree, I'll test what
+I have, which is up to the patch before this one and push to Linus, as
+the window is closing.
 
-Look at what happens if "pte_none()" is not true.. It won't install
-the new pte, but it also won't drop the ref to the page.
+- Arnaldo
+ 
+>  # PID, TID, IP, ADDR, PHYS ADDR, DATA PAGE SIZE, LOCAL WEIGHT, DSRC,
+>  # SYMBOL
+> 20134 20134 0xffffffffb5bd2fd0 0x016ffff9a274e96a308 0x000000044e96a308
+> 4K  1168 0x5080144
+> /lib/modules/4.18.0-rc7+/build/vmlinux:perf_ctx_unlock
+> 20134 20134 0xffffffffb63f645c 0xffffffffb752b814 0xcfb52b814 2M 225
+> 0x26a100142 /lib/modules/4.18.0-rc7+/build/vmlinux:_raw_spin_lock
+> 20134 20134 0xffffffffb660300c 0xfffffe00016b8bb0 0x0 4K 0 0x5080144
+> /lib/modules/4.18.0-rc7+/build/vmlinux:__x86_indirect_thunk_rax
+> 
+> perf mem --phys-data --data-page-size report --stdio
+> 
+>  # To display the perf.data header info, please use
+>  # --header/--header-only options.
+>  #
+>  #
+>  # Total Lost Samples: 0
+>  #
+>  # Samples: 5K of event 'cpu/mem-loads,ldlat=30/P'
+>  # Total weight : 281234
+>  # Sort order   :
+>  # mem,sym,dso,symbol_daddr,dso_daddr,tlb,locked,phys_daddr,data_page_size
+>  #
+>  # Overhead       Samples  Memory access             Symbol
+>  # Shared Object     Data Symbol                                  Data
+>  # Object              TLB access              Locked  Data Physical
+>  # Address   Data Page Size
+>  # ........  ............  ........................
+>  # ................................  ................
+>  # ...........................................  .......................
+>  # ......................  ......  ......................
+>  # ......................
+>  #
+>     28.54%          1826  L1 or L1 hit              [k]
+> __x86_indirect_thunk_rax      [kernel.vmlinux]  [k] 0xffffb0df31b0ff28
+> [unknown]                L1 or L2 hit            No      [k]
+> 0000000000000000    4K
+>      6.02%           256  L1 or L1 hit              [.] touch_buffer
+> dtlb              [.] 0x00007ffd50109da8                       [stack]
+> L1 or L2 hit            No      [.] 0x000000042454ada8  4K
+>      3.23%             5  L1 or L1 hit              [k] clear_huge_page
+> [kernel.vmlinux]  [k] 0xffff9a2753b8ce60                       [unknown]
+> L1 or L2 hit            No      [k] 0x0000000453b8ce60  2M
+>      2.98%             4  L1 or L1 hit              [k] clear_page_erms
+> [kernel.vmlinux]  [k] 0xffffb0df31b0fd00                       [unknown]
+> L1 or L2 hit            No      [k] 0000000000000000    4K
+> 
+> Acked-by: Namhyung Kim <namhyung@kernel.org>
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
+> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+> ---
+>  tools/perf/Documentation/perf-mem.txt |  3 +++
+>  tools/perf/builtin-mem.c              | 20 +++++++++++++++++++-
+>  2 files changed, 22 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/Documentation/perf-mem.txt b/tools/perf/Documentation/perf-mem.txt
+> index 199ea0f0a6c0..66177511c5c4 100644
+> --- a/tools/perf/Documentation/perf-mem.txt
+> +++ b/tools/perf/Documentation/perf-mem.txt
+> @@ -63,6 +63,9 @@ OPTIONS
+>  --phys-data::
+>  	Record/Report sample physical addresses
+>  
+> +--data-page-size::
+> +	Record/Report sample data address page size
+> +
+>  RECORD OPTIONS
+>  --------------
+>  -e::
+> diff --git a/tools/perf/builtin-mem.c b/tools/perf/builtin-mem.c
+> index 7d6ee2208709..f3aac85aa9d4 100644
+> --- a/tools/perf/builtin-mem.c
+> +++ b/tools/perf/builtin-mem.c
+> @@ -30,6 +30,7 @@ struct perf_mem {
+>  	bool			dump_raw;
+>  	bool			force;
+>  	bool			phys_addr;
+> +	bool			data_page_size;
+>  	int			operation;
+>  	const char		*cpu_list;
+>  	DECLARE_BITMAP(cpu_bitmap, MAX_NR_CPUS);
+> @@ -124,6 +125,9 @@ static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
+>  	if (mem->phys_addr)
+>  		rec_argv[i++] = "--phys-data";
+>  
+> +	if (mem->data_page_size)
+> +		rec_argv[i++] = "--data-page-size";
+> +
+>  	for (j = 0; j < PERF_MEM_EVENTS__MAX; j++) {
+>  		e = perf_mem_events__ptr(j);
+>  		if (!e->record)
+> @@ -173,6 +177,7 @@ dump_raw_samples(struct perf_tool *tool,
+>  	struct perf_mem *mem = container_of(tool, struct perf_mem, tool);
+>  	struct addr_location al;
+>  	const char *fmt, *field_sep;
+> +	char str[PAGE_SIZE_NAME_LEN];
+>  
+>  	if (machine__resolve(machine, &al, sample) < 0) {
+>  		fprintf(stderr, "problem processing %d event, skipping it.\n",
+> @@ -209,6 +214,12 @@ dump_raw_samples(struct perf_tool *tool,
+>  			symbol_conf.field_sep);
+>  	}
+>  
+> +	if (mem->data_page_size) {
+> +		printf("%s%s",
+> +			get_page_size_name(sample->data_page_size, str),
+> +			symbol_conf.field_sep);
+> +	}
+> +
+>  	if (field_sep)
+>  		fmt = "%"PRIu64"%s0x%"PRIx64"%s%s:%s\n";
+>  	else
+> @@ -273,6 +284,9 @@ static int report_raw_events(struct perf_mem *mem)
+>  	if (mem->phys_addr)
+>  		printf("PHYS ADDR, ");
+>  
+> +	if (mem->data_page_size)
+> +		printf("DATA PAGE SIZE, ");
+> +
+>  	printf("LOCAL WEIGHT, DSRC, SYMBOL\n");
+>  
+>  	ret = perf_session__process_events(session);
+> @@ -283,7 +297,7 @@ static int report_raw_events(struct perf_mem *mem)
+>  }
+>  static char *get_sort_order(struct perf_mem *mem)
+>  {
+> -	bool has_extra_options = mem->phys_addr ? true : false;
+> +	bool has_extra_options = (mem->phys_addr | mem->data_page_size) ? true : false;
+>  	char sort[128];
+>  
+>  	/*
+> @@ -302,6 +316,9 @@ static char *get_sort_order(struct perf_mem *mem)
+>  	if (mem->phys_addr)
+>  		strcat(sort, ",phys_daddr");
+>  
+> +	if (mem->data_page_size)
+> +		strcat(sort, ",data_page_size");
+> +
+>  	return strdup(sort);
+>  }
+>  
+> @@ -447,6 +464,7 @@ int cmd_mem(int argc, const char **argv)
+>  		   " between columns '.' is reserved."),
+>  	OPT_BOOLEAN('f', "force", &mem.force, "don't complain, do it"),
+>  	OPT_BOOLEAN('p', "phys-data", &mem.phys_addr, "Record/Report sample physical addresses"),
+> +	OPT_BOOLEAN(0, "data-page-size", &mem.data_page_size, "Record/Report sample data address page size"),
+>  	OPT_END()
+>  	};
+>  	const char *const mem_subcommands[] = { "record", "report", NULL };
+> -- 
+> 2.17.1
+> 
 
-So I think it needs to be
+-- 
 
--               if (alloc_set_pte(vmf, page))
-+               if (!pte_none(*vmf->pte))
-                        goto unlock;
-+               do_set_pte(vmf, page);
-
-instead, so that the "if somebody else already filled the page table"
-case gets handled right.
-
-Hmm?
-
-              Linus
+- Arnaldo
