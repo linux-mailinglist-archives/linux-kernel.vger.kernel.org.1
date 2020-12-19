@@ -2,150 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BFF92DF097
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 18:05:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28F7B2DF099
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 18:08:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727058AbgLSREj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 12:04:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51058 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726988AbgLSREi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 12:04:38 -0500
-X-Gm-Message-State: AOAM530nRVO4byzdjQIkxha02M8QUroLBuC/2063pep9Lsd+ocRVLfxn
-        AZDqV1RX1IuCieU1cugWTnRzFHaaBNTKoZSqnEU=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608397437;
-        bh=jMd64Y98HYg9Pc5iPttx4Zs2a10gF/R04G0BXFnA1Eg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jDG87XETapDsMPsb8vl9LyXhAqeJMLaBAdf57bfHLZ+K2FxUg4aBE0D3m9yIUXFNE
-         a8tn57xC2n+om98be5nzbyP+EreK21eDSxDzu2u8py+kF7pclknsxDhZhEKuWc94ry
-         VFZZSj/GxK08AueZOKkvCN7Tjp/oywRrVxijfNZwAsPtS7cFbot7GBfKM9IqrTJeHu
-         fD8m1bsNpU7e5+d78EWwhu0hjofFj4vmK4euDP1P3479zYt33kSSmb/LXEtiyZ/K/h
-         XzWaRTItCJNiTh5QTBaQap6ecWQ0CyY8vCB1uK0CJY3xAWULMOfVBd5n4HN0dmHqN1
-         e+i0i/ZghekJQ==
-X-Google-Smtp-Source: ABdhPJy0ae32ogaCBJeS+aI32wYWUGyWLISLB3QkwQrTmS55zGVNdnrFzh0EghXebM6rtY3WnSuOwbssfMbahmmgvgA=
-X-Received: by 2002:aca:d98a:: with SMTP id q132mr6336934oig.33.1608397436892;
- Sat, 19 Dec 2020 09:03:56 -0800 (PST)
-MIME-Version: 1.0
-References: <1608325864-4033-1-git-send-email-megha.dey@intel.com> <1608325864-4033-4-git-send-email-megha.dey@intel.com>
-In-Reply-To: <1608325864-4033-4-git-send-email-megha.dey@intel.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sat, 19 Dec 2020 18:03:45 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXGhGopfg19at5N_9q89-UA4irSgMULyDXg+dKhnbRrCZQ@mail.gmail.com>
-Message-ID: <CAMj1kXGhGopfg19at5N_9q89-UA4irSgMULyDXg+dKhnbRrCZQ@mail.gmail.com>
-Subject: Re: [RFC V1 3/7] crypto: ghash - Optimized GHASH computations
-To:     Megha Dey <megha.dey@intel.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ravi.v.shankar@intel.com, tim.c.chen@intel.com,
-        andi.kleen@intel.com, dave.hansen@intel.com,
-        wajdi.k.feghali@intel.com, greg.b.tucker@intel.com,
-        robert.a.kasten@intel.com, rajendrakumar.chinnaiyan@intel.com,
-        tomasz.kantecki@intel.com, ryan.d.saffores@intel.com,
-        ilya.albrekht@intel.com, kyung.min.park@intel.com,
-        Tony Luck <tony.luck@intel.com>, ira.weiny@intel.com
+        id S1727104AbgLSRFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 12:05:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726985AbgLSRFv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Dec 2020 12:05:51 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BBDAC0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 09:05:11 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id k7so8032471ybm.13
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 09:05:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:cc;
+        bh=vRLuXOIA8ra1QfYJtJa6fHDyAv5QMA5uNL7Qfw/l2xY=;
+        b=HWimkrBOC8ZIriK9HG74tC08/J66mjh16qNL2u/hX9z4DtBTOI3PLS/VmIBgtHgm9+
+         oYOWiJCYs+V4J7ubKHvfBqo71hOpbfn4DiycoDKwTvIMnHjIiFmojmbOqYoVM348ILAa
+         r0rE4NQvpACZFo/ZvJbqEazXPskml7zeyzemvEMNIsFtA3bzK0Ybs+BMzf/DksqTnGnF
+         jwIf8UEnZ1A0sOhQTBhAg48XKATfgXZGk54r9+/IqMTjQjJcvSKPFHgZuYUKteGas+7x
+         gxdKbWiHvF+h76pCj18NzcKdblvSJq0+cgFGNZSvusbXw5aQbjQyp3madF2aEfaFT8rX
+         v1Dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :cc;
+        bh=vRLuXOIA8ra1QfYJtJa6fHDyAv5QMA5uNL7Qfw/l2xY=;
+        b=fM/YaDBtYwzmuCIAbT4wW1nz50C+2ErcQ/DiG2H0+7x+O8+gh6cLYb+PoulHtjNZ/w
+         CIhSk3nW1br8gRZap/vXqI90gfgIaQ/lRqn/UxzkQ76XuamcMmQ0emBQZFjcnUCwUGJk
+         nBv+IbWCKk5Kpziomp0VQKgDmj19Zvoa83KyLT6WQ8W2n5Cy/IUKOmWeC/9DUGrZ9X7X
+         u6nSKnH3q2bPUk9Qfs3EmgKVNqbFZVjiNvIqaz07OEFVBLUL217iK2uVSbC4aq+x6sYH
+         h0BsJdP9GjRGKxd3T/FklWdF2S455F/HED5+RWnO2AN6mGsC7kbIsKfSQU2+zVsok2rh
+         D/AA==
+X-Gm-Message-State: AOAM533K7O+jKLq2gMXybU1EXwc9HcsBu7rj60Q5YqO+yr2W1X0uN88I
+        vwMZzgNwZHlOMaf4CzRxs5XdRJIsRfaLojDOQw==
+X-Google-Smtp-Source: ABdhPJynjoV9VkSkhhIshxUKIFINAPf+sn8pGQ14p/7YjLEdfYWCJUzeZOOgVOwmhgKi8bRkAoffv0ZRs5VUt/0JYg==
+Sender: "kaleshsingh via sendgmr" <kaleshsingh@kaleshsingh.c.googlers.com>
+X-Received: from kaleshsingh.c.googlers.com ([fda3:e722:ac3:10:14:4d90:c0a8:2145])
+ (user=kaleshsingh job=sendgmr) by 2002:a5b:812:: with SMTP id
+ x18mr13542220ybp.334.1608397510135; Sat, 19 Dec 2020 09:05:10 -0800 (PST)
+Date:   Sat, 19 Dec 2020 17:04:33 +0000
+Message-Id: <20201219170433.2418867-1-kaleshsingh@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
+Subject: [PATCH] mm: mremap - Fix extent calculation
+From:   Kalesh Singh <kaleshsingh@google.com>
+Cc:     surenb@google.com, minchan@kernel.org, joelaf@google.com,
+        lokeshgidra@google.com, kaleshsingh@google.com,
+        kernel-team@android.com, linux@roeck-us.net,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Dec 2020 at 22:07, Megha Dey <megha.dey@intel.com> wrote:
->
-> From: Kyung Min Park <kyung.min.park@intel.com>
->
-> Optimize GHASH computations with the 512 bit wide VPCLMULQDQ instructions.
-> The new instruction allows to work on 4 x 16 byte blocks at the time.
-> For best parallelism and deeper out of order execution, the main loop of
-> the code works on 16 x 16 byte blocks at the time and performs reduction
-> every 48 x 16 byte blocks. Such approach needs 48 precomputed GHASH subkeys
-> and the precompute operation has been optimized as well to leverage 512 bit
-> registers, parallel carry less multiply and reduction.
->
-> VPCLMULQDQ instruction is used to accelerate the most time-consuming
-> part of GHASH, carry-less multiplication. VPCLMULQDQ instruction
-> with AVX-512F adds EVEX encoded 512 bit version of PCLMULQDQ instruction.
->
-> The glue code in ghash_clmulni_intel module overrides existing PCLMULQDQ
-> version with the VPCLMULQDQ version when the following criteria are met:
-> At compile time:
-> 1. CONFIG_CRYPTO_AVX512 is enabled
-> 2. toolchain(assembler) supports VPCLMULQDQ instructions
-> At runtime:
-> 1. VPCLMULQDQ and AVX512VL features are supported on a platform (currently
->    only Icelake)
-> 2. If compiled as built-in module, ghash_clmulni_intel.use_avx512 is set at
->    boot time or /sys/module/ghash_clmulni_intel/parameters/use_avx512 is set
->    to 1 after boot.
->    If compiled as loadable module, use_avx512 module parameter must be set:
->    modprobe ghash_clmulni_intel use_avx512=1
->
-> With new implementation, tcrypt ghash speed test shows about 4x to 10x
-> speedup improvement for GHASH calculation compared to the original
-> implementation with PCLMULQDQ when the bytes per update size is 256 Bytes
-> or above. Detailed results for a variety of block sizes and update
-> sizes are in the table below. The test was performed on Icelake based
-> platform with constant frequency set for CPU.
->
-> The average performance improvement of the AVX512 version over the current
-> implementation is as follows:
-> For bytes per update >= 1KB, we see the average improvement of 882%(~8.8x).
-> For bytes per update < 1KB, we see the average improvement of 370%(~3.7x).
->
-> A typical run of tcrypt with GHASH calculation with PCLMULQDQ instruction
-> and VPCLMULQDQ instruction shows the following results.
->
-> ---------------------------------------------------------------------------
-> |            |            |         cycles/operation         |            |
-> |            |            |       (the lower the better)     |            |
-> |    byte    |   bytes    |----------------------------------| percentage |
-> |   blocks   | per update |   GHASH test   |   GHASH test    | loss/gain  |
-> |            |            | with PCLMULQDQ | with VPCLMULQDQ |            |
-> |------------|------------|----------------|-----------------|------------|
-> |      16    |     16     |       144      |        233      |   -38.0    |
-> |      64    |     16     |       535      |        709      |   -24.5    |
-> |      64    |     64     |       210      |        146      |    43.8    |
-> |     256    |     16     |      1808      |       1911      |    -5.4    |
-> |     256    |     64     |       865      |        581      |    48.9    |
-> |     256    |    256     |       682      |        170      |   301.0    |
-> |    1024    |     16     |      6746      |       6935      |    -2.7    |
-> |    1024    |    256     |      2829      |        714      |   296.0    |
-> |    1024    |   1024     |      2543      |        341      |   645.0    |
-> |    2048    |     16     |     13219      |      13403      |    -1.3    |
-> |    2048    |    256     |      5435      |       1408      |   286.0    |
-> |    2048    |   1024     |      5218      |        685      |   661.0    |
-> |    2048    |   2048     |      5061      |        565      |   796.0    |
-> |    4096    |     16     |     40793      |      27615      |    47.8    |
-> |    4096    |    256     |     10662      |       2689      |   297.0    |
-> |    4096    |   1024     |     10196      |       1333      |   665.0    |
-> |    4096    |   4096     |     10049      |       1011      |   894.0    |
-> |    8192    |     16     |     51672      |      54599      |    -5.3    |
-> |    8192    |    256     |     21228      |       5284      |   301.0    |
-> |    8192    |   1024     |     20306      |       2556      |   694.0    |
-> |    8192    |   4096     |     20076      |       2044      |   882.0    |
-> |    8192    |   8192     |     20071      |       2017      |   895.0    |
-> ---------------------------------------------------------------------------
->
-> This work was inspired by the AES GCM mode optimization published
-> in Intel Optimized IPSEC Cryptographic library.
-> https://github.com/intel/intel-ipsec-mb/lib/avx512/gcm_vaes_avx512.asm
->
-> Co-developed-by: Greg Tucker <greg.b.tucker@intel.com>
-> Signed-off-by: Greg Tucker <greg.b.tucker@intel.com>
-> Co-developed-by: Tomasz Kantecki <tomasz.kantecki@intel.com>
-> Signed-off-by: Tomasz Kantecki <tomasz.kantecki@intel.com>
-> Signed-off-by: Kyung Min Park <kyung.min.park@intel.com>
-> Co-developed-by: Megha Dey <megha.dey@intel.com>
-> Signed-off-by: Megha Dey <megha.dey@intel.com>
+When `next < old_addr`, `next - old_addr` arithmetic underflows
+causing `extent` to be incorrect.
 
-Hello Megha,
+Make `extent` the smaller of `next - old_addr` or `old_end - old_addr`.
 
-What is the purpose of this separate GHASH module? GHASH is only used
-in combination with AES-CTR to produce GCM, and this series already
-contains a GCM driver.
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+---
+ mm/mremap.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Do cores exist that implement PCLMULQDQ but not AES-NI?
+diff --git a/mm/mremap.c b/mm/mremap.c
+index c5590afe7165..f554320281cc 100644
+--- a/mm/mremap.c
++++ b/mm/mremap.c
+@@ -358,7 +358,9 @@ static unsigned long get_extent(enum pgt_entry entry, unsigned long old_addr,
+ 
+ 	next = (old_addr + size) & mask;
+ 	/* even if next overflowed, extent below will be ok */
+-	extent = (next > old_end) ? old_end - old_addr : next - old_addr;
++	extent = next - old_addr;
++	if (extent > old_end - old_addr)
++		extent = old_end - old_addr;
+ 	next = (new_addr + size) & mask;
+ 	if (extent > next - new_addr)
+ 		extent = next - new_addr;
+-- 
+2.29.2.729.g45daf8777d-goog
 
-If not, I think we should be able to drop this patch (and remove the
-existing PCLMULQDQ GHASH driver as well)
