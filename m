@@ -2,144 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 216E62DEC41
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 01:07:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9E522DEC4A
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 01:10:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726251AbgLSAHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 19:07:39 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:49348 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725831AbgLSAHi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 19:07:38 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BJ06MVk018009;
-        Sat, 19 Dec 2020 00:06:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=h05qvuELutaWEFd0FH0nDiggcQgz3WjMZcVQ54H2AqM=;
- b=g8reo9uoK2ZSBudZW4xxmSItvP+/L42kFQiBXHAnIIwqiUYWSaYFiCVCMUJdD/XyW50R
- hVcc6UthXBb91n9ilE403Q8o7iLtw70p3Pd2drJQmMuqOLx+n6MdR4dAG/gcDaiGG39G
- 9yJ7jshd32I/5o6rwFnuFPh5N7D+RsIAq8VcnsgdlsJUwhAyWYcQMha1150F9QQiZ1lY
- el+BDhsA67ctUdZRbZDJi41WxX7IXuW25pS+nC6MRWJdGxMJMEgXyknSYJh6s/9ajfim
- vH+PMr8q1uHc5JOBSnLj/dyQJmvrxvBtK6gPNUHbLFyiP3jIK9sL+n1uyKBTs3Fr5/oG RQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 35ckcbvw8m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 19 Dec 2020 00:06:32 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BJ05OhR049261;
-        Sat, 19 Dec 2020 00:06:32 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 35g3rgsfn0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 19 Dec 2020 00:06:31 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BJ06Tmr022519;
-        Sat, 19 Dec 2020 00:06:29 GMT
-Received: from localhost (/10.159.241.141)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 18 Dec 2020 16:06:29 -0800
-From:   Stephen Brennan <stephen.s.brennan@oracle.com>
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     Stephen Brennan <stephen.s.brennan@oracle.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org,
-        Paul Moore <paul@paul-moore.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>
-Subject: [PATCH v3 2/2] proc: ensure security hook is called after exec
-Date:   Fri, 18 Dec 2020 16:06:16 -0800
-Message-Id: <20201219000616.197585-2-stephen.s.brennan@oracle.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201219000616.197585-1-stephen.s.brennan@oracle.com>
-References: <20201219000616.197585-1-stephen.s.brennan@oracle.com>
+        id S1726298AbgLSAJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 19:09:17 -0500
+Received: from mga09.intel.com ([134.134.136.24]:27012 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725948AbgLSAJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 19:09:17 -0500
+IronPort-SDR: RgM1hIb7Ppv/kJucWYGLaCY+RHJWKTgxddYfjUK4SLlg7BuaXasrG13dnvU/WfozzNssf2fvbg
+ C7nVRGKzZV4g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9839"; a="175668070"
+X-IronPort-AV: E=Sophos;i="5.78,431,1599548400"; 
+   d="scan'208";a="175668070"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2020 16:07:31 -0800
+IronPort-SDR: 5apeQInjqN1QtnzWe4LXLxbLfwawLGtuxvxGuwLtpRuitCis6i5rtlIA6G98NFCAt799C06QgB
+ EK1PpOr2QIVg==
+X-IronPort-AV: E=Sophos;i="5.78,431,1599548400"; 
+   d="scan'208";a="394032333"
+Received: from smtp.ostc.intel.com ([10.54.29.231])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2020 16:07:30 -0800
+Received: from localhost (mtg-dev.jf.intel.com [10.54.74.10])
+        by smtp.ostc.intel.com (Postfix) with ESMTP id 4DD876363;
+        Fri, 18 Dec 2020 16:07:30 -0800 (PST)
+Date:   Fri, 18 Dec 2020 16:07:30 -0800
+From:   mark gross <mgross@linux.intel.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     mgross@linux.intel.com, markgross@kernel.org, arnd@arndb.de,
+        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
+        gregkh@linuxfoundation.org, corbet@lwn.net,
+        leonard.crestez@nxp.com, palmerdabbelt@google.com,
+        paul.walmsley@sifive.com, peng.fan@nxp.com, robh+dt@kernel.org,
+        shawnguo@kernel.org, linux-kernel@vger.kernel.org,
+        Srikanth Thokala <srikanth.thokala@intel.com>,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH 06/22] misc: xlink-pcie: Add documentation for XLink PCIe
+ driver
+Message-ID: <20201219000730.GA37040@linux.intel.com>
+Reply-To: mgross@linux.intel.com
+References: <20201201223511.65542-1-mgross@linux.intel.com>
+ <20201201223511.65542-7-mgross@linux.intel.com>
+ <2fd73da0-ee89-3831-bf96-5ed130e90c4d@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9839 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
- spamscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012180164
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9839 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- priorityscore=1501 mlxscore=0 suspectscore=0 adultscore=0 phishscore=0
- malwarescore=0 impostorscore=0 lowpriorityscore=0 clxscore=1015
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012180164
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2fd73da0-ee89-3831-bf96-5ed130e90c4d@infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Smack needs its security_task_to_inode() hook to be called when a task
-execs a new executable. Store the self_exec_id of the task and call the
-hook via pid_update_inode() whenever the exec_id changes.
+On Fri, Dec 18, 2020 at 02:59:00PM -0800, Randy Dunlap wrote:
+> On 12/1/20 2:34 PM, mgross@linux.intel.com wrote:
+> > From: Srikanth Thokala <srikanth.thokala@intel.com>
+> > 
+> > Provide overview of XLink PCIe driver implementation
+> > 
+> > Cc: linux-doc@vger.kernel.org
+> > Reviewed-by: Mark Gross <mgross@linux.intel.com>
+> > Signed-off-by: Srikanth Thokala <srikanth.thokala@intel.com>
+> > ---
+> >  Documentation/vpu/index.rst      |  1 +
+> >  Documentation/vpu/xlink-pcie.rst | 91 ++++++++++++++++++++++++++++++++
+> >  2 files changed, 92 insertions(+)
+> >  create mode 100644 Documentation/vpu/xlink-pcie.rst
+> > 
+> 
+> Hi--
+> 
+> For document, chapter, section, etc., headings, please read & use
+> Documentation/doc-guide/sphinx.rst:
+> 
+> * Please stick to this order of heading adornments:
+> 
+>   1. ``=`` with overline for document title::
+> 
+>        ==============
+>        Document title
+>        ==============
+> 
+>   2. ``=`` for chapters::
+> 
+>        Chapters
+>        ========
+> 
+>   3. ``-`` for sections::
+> 
+>        Section
+>        -------
+> 
+>   4. ``~`` for subsections::
+> 
+>        Subsection
+>        ~~~~~~~~~~
+Thanks for the help!  I'm new to the sphix markup language and appreciate your
+advice.  I'll reread that doc-guide.
 
-Signed-off-by: Stephen Brennan <stephen.s.brennan@oracle.com>
----
+We'll address the issues on our next posting once the marge window closes.
 
-As discussed on the v2 of the patch, this should allow Smack to receive a
-security_task_to_inode() call only when the uid/gid changes, or when the task
-execs a new binary. I have verified that this doesn't change the performance of
-the patch set, and that we do fall out of RCU walk on tasks which have recently
-exec'd.
+thanks again for the reviews!
 
- fs/proc/base.c     | 4 +++-
- fs/proc/internal.h | 5 ++++-
- 2 files changed, 7 insertions(+), 2 deletions(-)
+--mark
 
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index 4b246e9bd5df..ad59e92e8433 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -1917,6 +1917,7 @@ struct inode *proc_pid_make_inode(struct super_block * sb,
- 	}
- 
- 	task_dump_owner(task, 0, &inode->i_uid, &inode->i_gid);
-+	ei->exec_id = task->self_exec_id;
- 	security_task_to_inode(task, inode);
- 
- out:
-@@ -1965,6 +1966,7 @@ void pid_update_inode(struct task_struct *task, struct inode *inode)
- 	task_dump_owner(task, inode->i_mode, &inode->i_uid, &inode->i_gid);
- 
- 	inode->i_mode &= ~(S_ISUID | S_ISGID);
-+	PROC_I(inode)->exec_id = task->self_exec_id;
- 	security_task_to_inode(task, inode);
- }
- 
-@@ -1979,7 +1981,7 @@ static bool pid_inode_needs_update(struct task_struct *task, struct inode *inode
- 	task_dump_owner(task, inode->i_mode, &uid, &gid);
- 	if (!uid_eq(uid, inode->i_uid) || !gid_eq(gid, inode->i_gid))
- 		return true;
--	return false;
-+	return task->self_exec_id != PROC_I(inode)->exec_id;
- }
- 
- /*
-diff --git a/fs/proc/internal.h b/fs/proc/internal.h
-index f60b379dcdc7..1df9b039dfc3 100644
---- a/fs/proc/internal.h
-+++ b/fs/proc/internal.h
-@@ -92,7 +92,10 @@ union proc_op {
- 
- struct proc_inode {
- 	struct pid *pid;
--	unsigned int fd;
-+	union {
-+		unsigned int fd;
-+		u32 exec_id;
-+	};
- 	union proc_op op;
- 	struct proc_dir_entry *pde;
- 	struct ctl_table_header *sysctl;
--- 
-2.25.1
 
+> 
+> > diff --git a/Documentation/vpu/xlink-pcie.rst b/Documentation/vpu/xlink-pcie.rst
+> > new file mode 100644
+> > index 000000000000..bc64b566989d
+> > --- /dev/null
+> > +++ b/Documentation/vpu/xlink-pcie.rst
+> > @@ -0,0 +1,91 @@
+> > +.. SPDX-License-Identifier: GPL-2.0-only
+> > +
+> > +Kernel driver: xlink-pcie driver
+> > +================================
+> > +Supported chips:
+> > +  * Intel Edge.AI Computer Vision platforms: Keem Bay
+> > +    Suffix: Bay
+> > +    Slave address: 6240
+> > +    Datasheet: Publicly available at Intel
+> > +
+> > +Author: Srikanth Thokala Srikanth.Thokala@intel.com
+> > +
+> > +-------------
+> > +Introduction:
+> 
+> No colon at end of chapter/section headings.
+> 
+> > +-------------
+> > +The xlink-pcie driver in linux-5.4 provides transport layer implementation for
+> 
+>                             Linux 5.4 (?)
+> 
+> > +the data transfers to support xlink protocol subsystem communication with the
+> 
+>                                  Xlink
+> 
+> > +peer device. i.e, between remote host system and the local Keem Bay device.
+> 
+>         device, i.e., between the remote host system and
+> 
+> > +
+> > +The Keem Bay device is an ARM based SOC that includes a vision processing
+> 
+>                              ARM-based
+> 
+> > +unit (VPU) and deep learning, neural network core in the hardware.
+> > +The xlink-pcie driver exports a functional device endpoint to the Keem Bay device
+> > +and supports two-way communication with peer device.
+> 
+>                                       with the peer device.
+> 
+> > +
+> > +------------------------
+> > +High-level architecture:
+> > +------------------------
+> > +Remote Host: IA CPU
+> > +Local Host: ARM CPU (Keem Bay)::
+> > +
+> > +        +------------------------------------------------------------------------+
+> > +        |  Remote Host IA CPU              | | Local Host ARM CPU (Keem Bay) |   |
+> > +        +==================================+=+===============================+===+
+> > +        |  User App                        | | User App                      |   |
+> > +        +----------------------------------+-+-------------------------------+---+
+> > +        |   XLink UAPI                     | | XLink UAPI                    |   |
+> > +        +----------------------------------+-+-------------------------------+---+
+> > +        |   XLink Core                     | | XLink Core                    |   |
+> > +        +----------------------------------+-+-------------------------------+---+
+> > +        |   XLink PCIe                     | | XLink PCIe                    |   |
+> > +        +----------------------------------+-+-------------------------------+---+
+> > +        |   XLink-PCIe Remote Host driver  | | XLink-PCIe Local Host driver  |   |
+> > +        +----------------------------------+-+-------------------------------+---+
+> > +        |-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:|:|:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:|
+> > +        +----------------------------------+-+-------------------------------+---+
+> > +        |     PCIe Host Controller         | | PCIe Device Controller        | HW|
+> > +        +----------------------------------+-+-------------------------------+---+
+> > +               ^                                             ^
+> > +               |                                             |
+> > +               |------------- PCIe x2 Link  -----------------|
+> > +
+> > +This XLink PCIe driver comprises of two variants:
+> > +* Local Host driver
+> > +
+> > +  * Intended for ARM CPU
+> > +  * It is based on PCI Endpoint Framework
+> > +  * Driver path: {tree}/drivers/misc/xlink-pcie/local_host
+> > +
+> > +* Remote Host driver
+> > +
+> > +       * Intended for IA CPU
+> > +       * It is a PCIe endpoint driver
+> > +       * Driver path: {tree}/drivers/misc/xlink-pcie/remote_host
+> > +
+> > +XLink PCIe communication between local host and remote host is achieved through
+> > +ring buffer management and MSI/Doorbell interrupts.
+> > +
+> > +The xlink-pcie driver subsystem registers Keem Bay device as an endpoint driver
+> 
+>                                    registers the
+> 
+> > +and provides standard linux pcie sysfs interface, # /sys/bus/pci/devices/xxxx:xx:xx.0/
+> 
+>                          Linux PCIe
+> 
+> > +
+> > +
+> > +-------------------------
+> > +XLink protocol subsystem:
+> 
+> No colon at end.
+> 
+> > +-------------------------
+> > +xlink is an abstracted control and communication subsystem based on channel
+> 
+>    Xlink
+> 
+> > +identification. It is intended to support VPU technology both at SoC level as
+> > +well as at IP level, over multiple interfaces.
+> > +
+> > +- The xlink subsystem abstracts several types of communication channels
+> 
+>          Xlink
+> 
+> > +  underneath, allowing the usage of different interfaces with the
+> > +  same function call interface.
+> > +- The Communication channels are full-duplex protocol channels allowing
+> > +  concurrent bidirectional communication.
+> > +- The xlink subsystem also supports control operations to VPU either
+> 
+>          Xlink
+> 
+> > +  from standalone local system or from remote system based on communication
+> > +  interface underneath.
+> > +- The xlink subsystem supports following communication interfaces:
+> 
+>          Xlink           supports the following
+> 
+> 
+> > +    * USB CDC
+> > +    * Gigabit Ethernet
+> > +    * PCIe
+> > +    * IPC
+> > 
+> 
+> 
+> cheers.
+> -- 
+> ~Randy
+> 
