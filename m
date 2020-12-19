@@ -2,202 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C987A2DED04
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 05:16:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D3982DED0D
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 05:35:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726313AbgLSEQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 23:16:35 -0500
-Received: from mail-db8eur05on2080.outbound.protection.outlook.com ([40.107.20.80]:49985
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726192AbgLSEQe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 23:16:34 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ru1nm4zP/YeKwqMDiLh0H2vGqqJeVXIXIcRPxK5BAcq+bCujgtr5uwrxi4L5HO8WRRa5dyZQ20Ks1kGTFpyjb642j/lCKxA7yr/6QVPT0Tv6wsGfTuoJq8lxpNSioQ9iDkEKD6esii16r/YUb7fx4zjY4vKy7Kd8OPHANQ535B057ce0o8K0TSr/xFFpvyrO4FdotyF1O1pLhhEi5MNrVKLDOjhCbm/LUD6dfMpQigzAWHIT3h1F9/JaBCyVJlfZ3maeF5+7ktZPoMmClDG11RzUrBEyKkFqHvgXmT8u9un7GIaJlOAfXHPQCF6omZEdpsCHzvDlEqFxgIUVnJEyGw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0S8lf+KFk2iMDsxqXO109PDgWq3WcPYa1dlD8eFktwU=;
- b=WuSzpVyOtAu4IohYIEGp8TcQNFQfYZ6gaG5GZwJIU1cj8sTa9oM/lXKfE584ltc9aqP3ioGV9o6j6B8eRH5FNqHJmqsS7o1prlsdmekc8NCEsN/rB6aCJbPeRYNl0zOwTJJh06Oujb94Bn46tJb5Kt4hksM++CAsy4tZZXPTVf9HvEUqQUaXUmj0ummCrotuaqACxT9p7TgVmJvjDRS8Ng8w5hsMz10c0UDfw8ItLfOrrXGoVE9eYsoUDRbfe9jrl0L7YR/8ZUasyZjYTFNh+kC8XegAEoaSmojVlWvyayi5vj49Lz2SoFENZYqsDntDK6vAiB7rJ/hfR0WAor7SuA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0S8lf+KFk2iMDsxqXO109PDgWq3WcPYa1dlD8eFktwU=;
- b=jgHQ5jvqiOXFQs9gra1Mb9fchRuYRyJ8wpchpZizvx1f/3utNDTEPxYf6QLkQZQGtp+y/jw1RvbGgFLBHQm9dtepuI/8nvL/TttAn0utvCMvE8ScUaIobVt3wpFe8dHoqMxbcgcTkz4PjK7kEH2mU2AIG7wRK/2tvDbIohsNZTo=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB3974.eurprd04.prod.outlook.com (2603:10a6:209:50::12)
- by AM7PR04MB6776.eurprd04.prod.outlook.com (2603:10a6:20b:103::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.25; Sat, 19 Dec
- 2020 04:15:45 +0000
-Received: from AM6PR04MB3974.eurprd04.prod.outlook.com
- ([fe80::ed48:b3d6:6399:5899]) by AM6PR04MB3974.eurprd04.prod.outlook.com
- ([fe80::ed48:b3d6:6399:5899%7]) with mapi id 15.20.3654.025; Sat, 19 Dec 2020
- 04:15:45 +0000
-Message-ID: <1e0b6178033c064b99546d09b4b3ef9dda3cb1ad.camel@nxp.com>
-Subject: Re: [PATCH 04/14] dt-bindings: display: bridge: Add i.MX8qm/qxp
- pixel combiner binding
-From:   Liu Ying <victor.liu@nxp.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Andrzej Hajda <a.hajda@samsung.com>, Vinod <vkoul@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org, Sascha Hauer <kernel@pengutronix.de>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Fabio Estevam <festevam@gmail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Date:   Sat, 19 Dec 2020 12:15:10 +0800
-In-Reply-To: <CAL_JsqLcyUJWt_gc3B01C0Y+NC61ucYNA8j1jnxTs8U1kudM=Q@mail.gmail.com>
-References: <1608199173-28760-1-git-send-email-victor.liu@nxp.com>
-         <1608199173-28760-5-git-send-email-victor.liu@nxp.com>
-         <1608231036.357497.50647.nullmailer@robh.at.kernel.org>
-         <e2edc2e37b6905fd19ada4c212338c6978200fa5.camel@nxp.com>
-         <CAL_JsqLcyUJWt_gc3B01C0Y+NC61ucYNA8j1jnxTs8U1kudM=Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [116.232.209.249]
-X-ClientProxiedBy: HK2PR0302CA0019.apcprd03.prod.outlook.com
- (2603:1096:202::29) To AM6PR04MB3974.eurprd04.prod.outlook.com
- (2603:10a6:209:50::12)
+        id S1726301AbgLSEeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 23:34:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726192AbgLSEe3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 23:34:29 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BB3CC0617B0;
+        Fri, 18 Dec 2020 20:34:04 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id be12so2492380plb.4;
+        Fri, 18 Dec 2020 20:34:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yoyAynmz1wcAyKdwj7JPb1oUlBRjnh/nNP8b1Gw1a2k=;
+        b=sewz8SG1Hhr94jDzCDmMJeN7/3LbxnO32ongCAGDSWXlgEfHRoPdR6ocDAZN0oRe+h
+         Pp3W7MMTndo1oCIyfSBC9GuBqgRHPCUHVUA9VLTSydMsUBn0U7HBAa8Sg2fP+X8JIKWc
+         6dm6gkAmUkhFhRPGuxvkEH6aGwpnhITUMcvIALGDCBtnAjrf/f9HuLABUzvssBAkSTDZ
+         DCTfqdFFdyfKYsH1e1cMbKFsOiQL581rIWaAMWk1szhPHRyj0mfeVBhIEuD6JW6tXxNo
+         nIeQquXrTvY+v3VyGd9dZF+6c3nUr+jvCNINxQn3Z98yOtCDs9xfXWORMeGtZP2DD6Y0
+         gfPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yoyAynmz1wcAyKdwj7JPb1oUlBRjnh/nNP8b1Gw1a2k=;
+        b=Jzgo4QuvQZi87JOAiHq9xii3wpFt3U6Mxq4ZX6HgPx7IlrM/1ZB3OLG1b6Tr8QNIgP
+         fahTSCjeYBZj4mo+6jzQhz8kMZvUwxN0h3DmmlbflsYvlvdvzXeXUpo+1gZDZ72sU8E2
+         tHu/oMQchxh61ZTrCuVDULCoMNuJmq2qstcNvsqaRvfpYjSRs/MQYgJbiIHCyC7lTbdj
+         lDqTNQckklS+ld+xgDN2t/G0z/q2vQcEtjYuzAEeWPwIZwDtFMz+QHuNqDArv92UqE2R
+         CZw89DPJ3pt6OYvpXW6PXQ1wlSLm2Zvh8jN+ad6WScsCKOm0Ytbol/QhBzaSeqtRLhh6
+         h69w==
+X-Gm-Message-State: AOAM5325Fbktji6uahQesWnawS8qhS159FEMeOYfNvYDNmacioTAa9+w
+        ihsj3IE5wMFB/2rvIutWLjM=
+X-Google-Smtp-Source: ABdhPJxoD5X9iSGSIKKaOutdsLJyUD+JyZV1Irl6iwgjqe8wTKCRGQCBDFPE/PuEI9PvUMhcvUxz4g==
+X-Received: by 2002:a17:90a:df0d:: with SMTP id gp13mr7397314pjb.151.1608352443766;
+        Fri, 18 Dec 2020 20:34:03 -0800 (PST)
+Received: from sc2-haas01-esx0118.eng.vmware.com ([66.170.99.1])
+        by smtp.gmail.com with ESMTPSA id f64sm10737029pfb.146.2020.12.18.20.34.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Dec 2020 20:34:03 -0800 (PST)
+From:   Nadav Amit <nadav.amit@gmail.com>
+X-Google-Original-From: Nadav Amit
+To:     linux-mm@kvack.org, Peter Xu <peterx@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Nadav Amit <namit@vmware.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>, stable@vger.kernel.org
+Subject: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+Date:   Fri, 18 Dec 2020 20:30:06 -0800
+Message-Id: <20201219043006.2206347-1-namit@vmware.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from vbox (116.232.209.249) by HK2PR0302CA0019.apcprd03.prod.outlook.com (2603:1096:202::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.19 via Frontend Transport; Sat, 19 Dec 2020 04:15:36 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: b278fb3b-26c2-4676-c5eb-08d8a3d4c1e5
-X-MS-TrafficTypeDiagnostic: AM7PR04MB6776:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM7PR04MB67764A61A37CB58DA25F0CDF98C20@AM7PR04MB6776.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TtJajdfEnS3woZZbB4yOd/AggZD/iOxm4eUB0bF4jQ10nn7c1tf6+rYimz0sfFXkrU779qcB6jUrYxQWsots+6FAeBy/bdF4f1B862P3sjeyCvfRBhiBxtpUaijr9itRtn5hWEl2qT4tpagfUoPD5+a8/UDa0iEEjxKiQ4K4n7TRA5J0FLevHATB2QVQe76udVO9yePFlzIxAcSRjX+OGdMgjdNtBNZGlTkADSHl+z+Mv9ZD8wYitJvL8IW79XMKgmE3nfNmLX4L2FFZWbrX6khb4SAO4ETESBMCBHvBfMGzvcLC4cdDEvxDTfqRQIxv/wNUYJNZB7+OGQYrwtY0PY53or5twzGHUOg8xpem2g4u2knPhbsU9bVYWkUwAJk5ZEbywGXYqNupROrfvoUxji/nBrInO/WJ4pakLMokj9OefBq3IqoG5IvwfEkyjRdL+SU7w3tm2ZADngXnu3Q7VASYUmnH/ewOdrnpvCuQlg/M4I9gjwDlv+83ocGgLMmnQb9WM4vXZKHdacNVffTn+g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB3974.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(136003)(346002)(376002)(366004)(396003)(2906002)(4326008)(966005)(45080400002)(6916009)(478600001)(6496006)(316002)(54906003)(4001150100001)(36756003)(186003)(26005)(6666004)(16526019)(66556008)(2616005)(8936002)(52116002)(956004)(83380400001)(6486002)(66946007)(66476007)(86362001)(8676002)(53546011)(5660300002)(7416002)(99106002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?bnRBaEVodUtCQ09PZ0VzVE43YXVaRHllTW9hb014UGw5aC9lZWNKcWJNbERI?=
- =?utf-8?B?cnJRZnVxekVRWVlpWlpaS3FkMi9ObVFSMkdvZnV4QW5SaEFiNE5UWFY5b0Fu?=
- =?utf-8?B?bkRDalBMWjdzQmtEdmR5TWJYQS92b1NtTWtqRlFRWWNuOGcvT01iN2tyc2Fx?=
- =?utf-8?B?bE9pUWM0dVdGL3lTSTNyT2lHbkd6L1dHdUhVVGI3RnJsa253dzdnOHZTQito?=
- =?utf-8?B?UDd2VHVSQ1BMN3UwV2RDQklJcEc4d203aW1ZNjBPYmVLd2hGMlJycWpCNFJv?=
- =?utf-8?B?Q3haWHhxU1JFTXpUdENhT3FBcWNPeXRXa09JRVlST0FGeXJpNldyQnMrSjhX?=
- =?utf-8?B?Z2w5S1REMXF5NTlPU09vdFZsVk5HRmdqVDhMZjVoTXUzWlBqNkNyY2JjeWsx?=
- =?utf-8?B?K1BTcVhiNGFveTRYa2s4bHpHNUlOYWFOc2Z3UGM2QkdzQVpoSWdMNWpxalNr?=
- =?utf-8?B?RmRhQksvbGhYditRakZHbVJZdFk4M0tvVjRzM0Z2anBmTDQ1a2ZOZlhrSFoy?=
- =?utf-8?B?a0lha2ROT2JEZWZ1VUlGeWNsVGh6ZGdqU1E2Q1MrclZXTWtJbTlleVJidmxW?=
- =?utf-8?B?eUlxcFQ0MEY0M0t5cExCU1dGeTIzbW9mUWZCeHJuRG5JOEQ3SU5VNWVKNE1q?=
- =?utf-8?B?NG11R09uSkZzekQ1UUFwWGhURUY4dmVvVWR4emRPYlpHd1JQTXVpTnZ2ME9p?=
- =?utf-8?B?UEFJSENML1JETFd5eUVXTFdwM2M5THg5Vk9LVFYxRDRrOU9QVzcyYlZxRGNi?=
- =?utf-8?B?aWdCRllHVkFrZktkMStyMStPSVEzRUN2bVU1YXhXYmtFc2JVY2VVMEYyUmcy?=
- =?utf-8?B?eUdzNlNSeGhjOFozMTFMRlhkcDlYMnJReVZsRFcwbkdFb3h2bk9hdmwrYjFF?=
- =?utf-8?B?YVcyRXJscjhPZ0tJYTJ4djYxTHFtc3FkU1liOEpWMlV6QmluakljNzc1dXhO?=
- =?utf-8?B?MThhQWprY2FTQmd3VFNCVTFpNS9rckdKbnN1NXJDdFlreEZFS3R3Q3dOV3o4?=
- =?utf-8?B?ZDNKbzQyWUlBSUhjVGo5cEZ2SmdhNHlNcVozcFl0TzdvTzlGL1BOaC9aanln?=
- =?utf-8?B?ZHNNdW9BaVprVUpYak9uRU1rRXZWL3ZwVTVQaUw0OW51cGtoc01oWHczM1pw?=
- =?utf-8?B?cWM1K2l6Rjd4RHBwMExiU2V5VTAzOVN3c0lUV3VWcGF4enMrZGdabjdmTU1H?=
- =?utf-8?B?UVkwMmZaOFpUN0lPVGcvM2RyZjFkWHcrTjhvWkQ0ZEhacFc4MWRVVnhmRXNr?=
- =?utf-8?B?aTg1MFdZV1pOL2RtMFZsaGo0eWZqMjliVFczWkY0WEZqOC9LbitQaFVmNTBV?=
- =?utf-8?Q?hlzqj82C2PeQTtvbUfABBigbW2MomKvzlv?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB3974.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Dec 2020 04:15:45.3311
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-Network-Message-Id: b278fb3b-26c2-4676-c5eb-08d8a3d4c1e5
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: x8gczFkG/PgG85cqj+EFqobpxgkdXVYcIK/WFawhI4SlSQ9QagIrsWO9yHPErxXqPRRCrzfzf2RUz903BYR17Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB6776
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Nadav Amit <namit@vmware.com>
 
-On Fri, 2020-12-18 at 16:42 -0600, Rob Herring wrote:
-> On Thu, Dec 17, 2020 at 7:48 PM Liu Ying <victor.liu@nxp.com> wrote:
-> > 
-> > Hi,
-> > 
-> > On Thu, 2020-12-17 at 12:50 -0600, Rob Herring wrote:
-> > > On Thu, 17 Dec 2020 17:59:23 +0800, Liu Ying wrote:
-> > > > This patch adds bindings for i.MX8qm/qxp pixel combiner.
-> > > > 
-> > > > Signed-off-by: Liu Ying <victor.liu@nxp.com>
-> > > > ---
-> > > >  .../display/bridge/fsl,imx8qxp-pixel-combiner.yaml | 160
-> > > > +++++++++++++++++++++
-> > > >  1 file changed, 160 insertions(+)
-> > > >  create mode 100644
-> > > > Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-
-> > > > pixel-combiner.yaml
-> > > > 
-> > > 
-> > > My bot found errors running 'make dt_binding_check' on your
-> > > patch:
-> > > 
-> > > yamllint warnings/errors:
-> > > 
-> > > dtschema/dtc warnings/errors:
-> > > Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-
-> > > pixel-combiner.example.dts:19:18: fatal error: dt-
-> > > bindings/clock/imx8-lpcg.h: No such file or directory
-> > >    19 |         #include <dt-bindings/clock/imx8-lpcg.h>
-> > >       |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > compilation terminated.
-> > > make[1]: *** [scripts/Makefile.lib:342:
-> > > Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-
-> > > pixel-combiner.example.dt.yaml] Error 1
-> > > make[1]: *** Waiting for unfinished jobs....
-> > > make: *** [Makefile:1364: dt_binding_check] Error 2
-> > > 
-> > > See 
-> > > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpatchwork.ozlabs.org%2Fpatch%2F1417599&amp;data=04%7C01%7Cvictor.liu%40nxp.com%7C96806e0ce6bc40c936fa08d8a3a64551%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637439281816690986%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=Cjyszb0alRE5z2OGKdZZEg5PQpH11U%2BGqVt6couCLGE%3D&amp;reserved=0
-> > > 
-> > > This check can fail if there are any dependencies. The base for a
-> > > patch
-> > > series is generally the most recent rc1.
-> > 
-> > This series can be applied to linux-next/master branch.
-> 
-> I can't know that to apply and run checks automatically. I guessed
-> that reviewing this before sending, but I want it abundantly clear
-> what the result of applying this might be and it wasn't mentioned in
-> this patch.
-> 
-> Plus linux-next is a base no one can apply patches to, so should you
-> be sending patches based on it? It's also the merge window, so maybe
+Userfaultfd self-tests fail occasionally, indicating a memory
+corruption.
 
-I sent this series based on drm-misc-next.  This series is applicable
-to linux-next/master, and may pass 'make dt_binding_check' there.
+Analyzing this problem indicates that there is a real bug since
+mmap_lock is only taken for read in mwriteprotect_range(). This might
+cause the TLBs to be in an inconsistent state due to the deferred
+batched TLB flushes.
 
-I'll mention dependencies in the future where similar situations
-appear. Thanks.
+Consider the following scenario with 3 CPUs (cpu2 is not shown):
 
-BTW, does it make sense for the bot to additionaly try linux-next if
-needed?  Maybe, that'll be helpful?
+cpu0				cpu1
+----				----
+userfaultfd_writeprotect()
+[ write-protecting ]
+mwriteprotect_range()
+ mmap_read_lock()
+ change_protection()
+  change_protection_range()
+   ...
+   change_pte_range()
+   [ defer TLB flushes]
+				userfaultfd_writeprotect()
+				 mmap_read_lock()
+				 change_protection()
+				 [ write-unprotect ]
+				 ...
+				  [ unprotect PTE logically ]
+				...
+				[ page-fault]
+				...
+				wp_page_copy()
+				[ set new writable page in PTE]
 
-Regards,
-Liu Ying
+At this point no TLB flush took place. cpu2 (not shown) might have a
+stale writable PTE, which was cached in the TLB before cpu0 called
+userfaultfd_writeprotect(), and this PTE points to a different page.
 
-> wait until rc1 when your dependency is in and the patch can actually
-> be applied. Also, the drm-misc folks will still need to know they
-> need
-> to merge rc1 in before this is applied.
-> 
-> Rob
+Therefore, write-protecting of memory, even using userfaultfd, which
+does not change the vma, requires to prevent any concurrent reader (#PF
+handler) from reading PTEs from the page-tables if any CPU might still
+hold in it TLB a PTE with higher permissions for the same address. To
+do so mmap_lock needs to be taken for write.
+
+Surprisingly, memory-unprotection using userfaultfd also poses a
+problem. Although memory unprotection is logically a promotion of PTE
+permissions, and therefore should not require a TLB flush, the current
+code might actually cause a demotion of the permission, and therefore
+requires a TLB flush.
+
+During unprotection of userfaultfd managed memory region, the PTE is not
+really made writable, but instead marked "logically" as writable, and
+left for the #PF handler to be handled later. While this is ok, the code
+currently also *removes* the write permission, and therefore makes it
+necessary to flush the TLBs.
+
+To resolve these problems, acquire mmap_lock for write when
+write-protecting userfaultfd region using ioctl's. Keep taking mmap_lock
+for read when unprotecting memory, but keep the write-bit set when
+resolving userfaultfd write-protection.
+
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Pavel Emelyanov <xemul@openvz.org>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Cc: <stable@vger.kernel.org>
+Fixes: 292924b26024 ("userfaultfd: wp: apply _PAGE_UFFD_WP bit")
+Signed-off-by: Nadav Amit <namit@vmware.com>
+---
+ mm/mprotect.c    |  3 ++-
+ mm/userfaultfd.c | 15 +++++++++++++--
+ 2 files changed, 15 insertions(+), 3 deletions(-)
+
+diff --git a/mm/mprotect.c b/mm/mprotect.c
+index ab709023e9aa..c08c4055b051 100644
+--- a/mm/mprotect.c
++++ b/mm/mprotect.c
+@@ -75,7 +75,8 @@ static unsigned long change_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
+ 		oldpte = *pte;
+ 		if (pte_present(oldpte)) {
+ 			pte_t ptent;
+-			bool preserve_write = prot_numa && pte_write(oldpte);
++			bool preserve_write = (prot_numa || uffd_wp_resolve) &&
++					      pte_write(oldpte);
+ 
+ 			/*
+ 			 * Avoid trapping faults against the zero or KSM
+diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
+index 9a3d451402d7..7423808640ef 100644
+--- a/mm/userfaultfd.c
++++ b/mm/userfaultfd.c
+@@ -652,7 +652,15 @@ int mwriteprotect_range(struct mm_struct *dst_mm, unsigned long start,
+ 	/* Does the address range wrap, or is the span zero-sized? */
+ 	BUG_ON(start + len <= start);
+ 
+-	mmap_read_lock(dst_mm);
++	/*
++	 * Although we do not change the VMA, we have to ensure deferred TLB
++	 * flushes are performed before page-faults can be handled. Otherwise
++	 * we can get inconsistent TLB state.
++	 */
++	if (enable_wp)
++		mmap_write_lock(dst_mm);
++	else
++		mmap_read_lock(dst_mm);
+ 
+ 	/*
+ 	 * If memory mappings are changing because of non-cooperative
+@@ -686,6 +694,9 @@ int mwriteprotect_range(struct mm_struct *dst_mm, unsigned long start,
+ 
+ 	err = 0;
+ out_unlock:
+-	mmap_read_unlock(dst_mm);
++	if (enable_wp)
++		mmap_write_unlock(dst_mm);
++	else
++		mmap_read_unlock(dst_mm);
+ 	return err;
+ }
+-- 
+2.25.1
 
