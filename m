@@ -2,68 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C502DF0FD
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 19:20:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0262DF100
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 19:24:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727277AbgLSSUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 13:20:04 -0500
-Received: from conuserg-09.nifty.com ([210.131.2.76]:51190 "EHLO
-        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726144AbgLSSUD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 13:20:03 -0500
-Received: from localhost.localdomain (softbank126090214151.bbtec.net [126.90.214.151]) (authenticated)
-        by conuserg-09.nifty.com with ESMTP id 0BJIIhEV028815;
-        Sun, 20 Dec 2020 03:18:44 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 0BJIIhEV028815
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1608401924;
-        bh=e6qPy+YG7dYZrKoEmX4k3IHv2jDogsg6ZSVDKuXRsUo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=vFlMFF/Kuekhl7G98TelzAPTnBcKX4325+ydFmMqUQiTrcerNir386jXDyLsHWQBm
-         BJdxqiJD/OjcBGxTgfqYiz6b+n+AXSRNb8vsM0v9ylAbngBTesmeskpCvgXJUKlAEo
-         Cj0o0Izr4SW26YviZvtCgiEORZoz4v1Xhk5cccpLhqk4Ydu2O9+r4O8wmMl5lSsubZ
-         +x+ccPxf/+SF/1aBP58+YSVPGgeX1CyPuTyqQBT+NZwmMRXYiLHF8mDxQ3yFhMhSsR
-         /rCZkwkDNdGANvwPd1C2ZBj78kY8V++M+niwXiNAi+/dRG5KNciFvVttCUmxEz8/W+
-         KfUvtc/cuQYAQ==
-X-Nifty-SrcIP: [126.90.214.151]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH] kconfig: fix return value of do_error_if()
-Date:   Sun, 20 Dec 2020 03:18:42 +0900
-Message-Id: <20201219181842.178250-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S1727402AbgLSSV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 13:21:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59868 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726144AbgLSSV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Dec 2020 13:21:58 -0500
+Date:   Sat, 19 Dec 2020 10:21:16 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608402077;
+        bh=9anSoEyGYfwJXexpe6AJSpZfREs9m9aRLDWzjrBcS+4=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=eRsUzkUv7P5atJeg5AJ+M/FUr1Xe/SC+T0zH0T9jEQz3uDHCWgy/YaWidKSZkdn8y
+         02zDl8WpDmKwYzq12Z8KXRogx7MRBtYhZY31H4nhdb6NLnQToffek+G7BA2TnT9ILK
+         QGr1dIaPIrdF/Er7oYa0GSNeUn8YhNzRgXHek1wZR/p8O+kk4IDErMzcsOGPhkdmTt
+         TksQ8wUkma8m/S4nov+Pp7PyvrxMEoKBAtDUu9eQmyrwndrMlzXMSKncUz7Kesy5Wh
+         ioMMjyr2ZAzLpjDswBwpa6iGEwfYig60X5fJJnZ+ByxepjGwvynPuAW5wsoKGAQt8V
+         S0xPrW6/LqbLA==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     weichenchen <weichen.chen@linux.alibaba.com>
+Cc:     davem@davemloft.net, liuhangbin@gmail.com, dsahern@kernel.org,
+        jdike@akamai.com, mrv@mojatatu.com, lirongqing@baidu.com,
+        nikolay@cumulusnetworks.com, roopa@cumulusnetworks.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        splendidsky.cwc@alibaba-inc.com, yanxu.zw@alibaba-inc.com
+Subject: Re: [PATCH] net: neighbor: fix a crash caused by mod zero
+Message-ID: <20201219102116.3cc0d74c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201218042019.52096-1-weichen.chen@linux.alibaba.com>
+References: <20201218042019.52096-1-weichen.chen@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kconfig expands a macro to a string. $(error-if,...) should be expanded
-to an empty string, not NULL.
+On Fri, 18 Dec 2020 12:20:19 +0800 weichenchen wrote:
+> pneigh_enqueue() tries to obtain a random delay by mod
+> NEIGH_VAR(p, PROXY_DELAY). However, NEIGH_VAR(p, PROXY_DELAY)
+> migth be zero at that point because someone could write zero
+> to /proc/sys/net/ipv4/neigh/[device]/proxy_delay after the
+> callers check it.
+> 
+> This patch double-checks NEIGH_VAR(p, PROXY_DELAY) in
+> pneigh_enqueue() to ensure not to take zero as modulus.
+> 
+> Signed-off-by: weichenchen <weichen.chen@linux.alibaba.com>
 
-Fixes: 1d6272e6fe43 ("kconfig: add 'info', 'warning-if', and 'error-if' built-in functions")
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+Let's have the caller pass in the value since it did the checking?
 
- scripts/kconfig/preprocess.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> diff --git a/net/core/neighbour.c b/net/core/neighbour.c
+> index 9500d28a43b0..eb5d015c53d3 100644
+> --- a/net/core/neighbour.c
+> +++ b/net/core/neighbour.c
+> @@ -1570,9 +1570,14 @@ void pneigh_enqueue(struct neigh_table *tbl, struct neigh_parms *p,
+>  		    struct sk_buff *skb)
+>  {
+>  	unsigned long now = jiffies;
+> +	unsigned long sched_next;
+>  
+> -	unsigned long sched_next = now + (prandom_u32() %
+> -					  NEIGH_VAR(p, PROXY_DELAY));
+> +	int delay = NEIGH_VAR(p, PROXY_DELAY);
+> +
+> +	if (delay <= 0)
 
-diff --git a/scripts/kconfig/preprocess.c b/scripts/kconfig/preprocess.c
-index 0243086fb168..0590f86df6e4 100644
---- a/scripts/kconfig/preprocess.c
-+++ b/scripts/kconfig/preprocess.c
-@@ -114,7 +114,7 @@ static char *do_error_if(int argc, char *argv[])
- 	if (!strcmp(argv[0], "y"))
- 		pperror("%s", argv[1]);
- 
--	return NULL;
-+	return xstrdup("");
- }
- 
- static char *do_filename(int argc, char *argv[])
--- 
-2.27.0
+Not that this still doesn't guarantee that the compiler won't re-read
+the value (however unlikely). We need a READ_ONCE().
+
+> +		sched_next = now;
+> +	else
+> +		sched_next = now + (prandom_u32() % delay);
+>  
+>  	if (tbl->proxy_queue.qlen > NEIGH_VAR(p, PROXY_QLEN)) {
+>  		kfree_skb(skb);
 
