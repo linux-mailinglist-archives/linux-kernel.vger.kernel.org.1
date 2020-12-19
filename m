@@ -2,150 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3A0B2DF11C
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 19:53:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA90E2DF11F
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 19:54:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727365AbgLSSwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 13:52:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37912 "EHLO
+        id S1727437AbgLSSxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 13:53:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725951AbgLSSwg (ORCPT
+        with ESMTP id S1727337AbgLSSxi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 13:52:36 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A36FC0617B0
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 10:51:47 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id x16so7972565ejj.7
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 10:51:47 -0800 (PST)
+        Sat, 19 Dec 2020 13:53:38 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73063C0613CF;
+        Sat, 19 Dec 2020 10:52:46 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id x126so3598354pfc.7;
+        Sat, 19 Dec 2020 10:52:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=UuVtne6NRlRRiqgkJFG1qI8yzmJK7lesysymWow9tUE=;
-        b=ZIHZIizsWl7FWuk08wzYrWqKL/gYMOpSQwl/x8+Ax3oAncOGoSb0+gGDkaUa8Yvp5a
-         vL5rqi032JLDE2X8luW21yGXkQgAN4IaHj337mHfiTKD19Fxdn0gUBsFXn5PmFEz3Ht9
-         zsxrPh5nopKNbwZJylzV/gdsb8J2ubf4iQjDTwTMKeE7q0qtpSU4iCoVKxEVv/jlckf0
-         TH37OhLcBRKMfviDNCJuuBKow3fz9uDaYmgUEaDLatO8hxMnIL7DFecQPiLNYVAoDDWX
-         Ut0N5qudTrVFc5Fyzqz/3U9U8z7W37VXLbaT2OQwELR8Tu2ium7xfissjw1D0CdeXjps
-         E5Ow==
+        bh=k1zIYWtnLeqCpR6G01qfhl0qjWfgWBYC7/jVFwx9GwE=;
+        b=ONF3H9nm1kc9HSePnhuciU8TbKdOmZD9ddxKmAb5SUSVv9uMe3tYyR8iX1lwdwIIRl
+         EXOuxEbPndf6H89QQVgBxcajC8YwT8Y0jkJrcJgmnseRkvjkvc+tf4FOM/pwhqN2EDJb
+         oKVgNtAKOwZJC1slAJ3jXbOHdnKzv7ZI2SughrBRPE4FUZtH2CnVzViCIXfHUgG84zbJ
+         o87MOV6eOZLA/KOkZ09cz5LDTghW8Kd3ieazDMFHNO9dx47xZMVvfwPM3Kpt+WETnaep
+         oTji+jqIrKwjB1FnSpnGFVeVEHRuCiDyLAN9gyNKLH/JdupQHE5KPSRGpfETteuaydC5
+         AGrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=UuVtne6NRlRRiqgkJFG1qI8yzmJK7lesysymWow9tUE=;
-        b=BuGRX+ZMRlrMHqn4lKkEXjCszSJwWQBSYnOQMs/5J4DWrKYbtby4uW+shsGoHAl3Xj
-         uL0IHYRZf255ZBmq4jx6RuWcdDv6cqg07pFJSynhmXroawloBNlJJPnoTwnauR4YIQQJ
-         3g+viTDZyjGg8QP1FOLW7E/kc6IDOL4fTEimVo24maA+19IEEifJqDNZ4yzweeeVcQ8f
-         8E30Ja9eDl9YJj3YU5VahGeeG0v51U6y1FM0/lMvNbqKd/q9gSDsx9pQYY1vp5vCLtul
-         KO5xwNCDSUxmC2OrMH+shfZhM25AIUwof9jB1QHqTn2VAkegNYI32yCzIqUycc02BCE6
-         Isfg==
-X-Gm-Message-State: AOAM531YSuvhBXfW0zCnqGkpXcsqGqaVAE4pTXp2omU8Cn0d7Wf9dChM
-        apuUdiCWZjhX1WYPSShiidtmMMMWMRb+3vJjpA7BHQ==
-X-Google-Smtp-Source: ABdhPJyklYvoyp5qYAskHotyTgQPw1Kw3ogQgcAvsnO/OPzqFxttZ/Ugp+RxJpMODkeylM7ffPKH6i8tNj9MHPX57F0=
-X-Received: by 2002:a17:906:edb2:: with SMTP id sa18mr8981648ejb.264.1608403905093;
- Sat, 19 Dec 2020 10:51:45 -0800 (PST)
+        bh=k1zIYWtnLeqCpR6G01qfhl0qjWfgWBYC7/jVFwx9GwE=;
+        b=SJ9Uw6tfEI4wztO3sGdd3hi3f2KqgSlev0Ws+IQPsvsxT24qT9TmAfpDjJ4aoRvuqH
+         bCc0nTElTcF+C+4QQ9UcTl+Jzo9IF+57Vn4GGX1yacPV+dVb82kjmJ4KGlZ8mmxPwz5r
+         KQ6TxehrzEkR+eLPEwUvxHxFJQbIiAnccXRhy5n2Rr8PHhochqLT1yg4D1SSmQaeRCZZ
+         KcTk3aAx1ZC0QYodMQJ7+8+PDATqbgguuzrhbaL3I7UHGIILZobqkagy8iZGR2bASx3w
+         2IjQ0JISOy7Hoq8YAfRocigX+oC6kGuP3wzSAxNZMIie26lhz0c6kJwqlcq+wxSc+PSg
+         eLSQ==
+X-Gm-Message-State: AOAM533KdT7LltXokuO/emyzMYt0Et9o81HV0sNAt/b3nCXoA4neZbXl
+        a1/NfXatlBK2+D0fAgb25MYfzvVf3VcsWiTkWGQ=
+X-Google-Smtp-Source: ABdhPJz5HGuII/pHqYaHr7+ZtbOwTFu7GODBV+U/h1vrgnQazOUcB6ZL7+pPs4yxjBZUWSRc7v3wXh44kRIaKPNeVt0=
+X-Received: by 2002:a05:6a00:170a:b029:19d:afca:4704 with SMTP id
+ h10-20020a056a00170ab029019dafca4704mr8805453pfc.7.1608403965858; Sat, 19 Dec
+ 2020 10:52:45 -0800 (PST)
 MIME-Version: 1.0
-References: <160834570161.1791850.14911670304441510419.stgit@dwillia2-desk3.amr.corp.intel.com>
- <a51de4b3-521a-1455-1236-02d813842c8c@huawei.com>
-In-Reply-To: <a51de4b3-521a-1455-1236-02d813842c8c@huawei.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Sat, 19 Dec 2020 10:51:34 -0800
-Message-ID: <CAPcyv4htMXC6CP2riTu-mnK2M71B+NPN6K3VeHX-VvA=9da9MQ@mail.gmail.com>
-Subject: Re: [PATCH] device-dax: Fix range release
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Jane Chu <jane.chu@oracle.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201217234337.1983732-1-djrscally@gmail.com> <20201217234337.1983732-13-djrscally@gmail.com>
+ <20201218211732.GE4077@smile.fi.intel.com> <e2b4c35f-5020-c332-d97a-8ba25be0e55e@gmail.com>
+In-Reply-To: <e2b4c35f-5020-c332-d97a-8ba25be0e55e@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sat, 19 Dec 2020 20:52:29 +0200
+Message-ID: <CAHp75VcebKas4j-vByodicHxRMrO4jkaJToSUW3iLJC2+vY_iA@mail.gmail.com>
+Subject: Re: [PATCH v2 12/12] ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        devel@acpica.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tian Shu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        kieran.bingham+renesas@ideasonboard.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>, jorhand@linux.microsoft.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 11:46 PM Leizhen (ThunderTown)
-<thunder.leizhen@huawei.com> wrote:
->
->
->
-> On 2020/12/19 10:41, Dan Williams wrote:
-> > There are multiple locations that open-code the release of the last
-> > range in a device-dax instance. Consolidate this into a new
-> > dev_dax_trim_range() helper.
-> >
-> > This also addresses a kmemleak report:
-> >
-> > # cat /sys/kernel/debug/kmemleak
-> > [..]
-> > unreferenced object 0xffff976bd46f6240 (size 64):
-> >    comm "ndctl", pid 23556, jiffies 4299514316 (age 5406.733s)
-> >    hex dump (first 32 bytes):
-> >      00 00 00 00 00 00 00 00 00 00 20 c3 37 00 00 00  .......... .7...
-> >      ff ff ff 7f 38 00 00 00 00 00 00 00 00 00 00 00  ....8...........
-> >    backtrace:
-> >      [<00000000064003cf>] __kmalloc_track_caller+0x136/0x379
-> >      [<00000000d85e3c52>] krealloc+0x67/0x92
-> >      [<00000000d7d3ba8a>] __alloc_dev_dax_range+0x73/0x25c
-> >      [<0000000027d58626>] devm_create_dev_dax+0x27d/0x416
-> >      [<00000000434abd43>] __dax_pmem_probe+0x1c9/0x1000 [dax_pmem_core]
-> >      [<0000000083726c1c>] dax_pmem_probe+0x10/0x1f [dax_pmem]
-> >      [<00000000b5f2319c>] nvdimm_bus_probe+0x9d/0x340 [libnvdimm]
-> >      [<00000000c055e544>] really_probe+0x230/0x48d
-> >      [<000000006cabd38e>] driver_probe_device+0x122/0x13b
-> >      [<0000000029c7b95a>] device_driver_attach+0x5b/0x60
-> >      [<0000000053e5659b>] bind_store+0xb7/0xc3
-> >      [<00000000d3bdaadc>] drv_attr_store+0x27/0x31
-> >      [<00000000949069c5>] sysfs_kf_write+0x4a/0x57
-> >      [<000000004a8b5adf>] kernfs_fop_write+0x150/0x1e5
-> >      [<00000000bded60f0>] __vfs_write+0x1b/0x34
-> >      [<00000000b92900f0>] vfs_write+0xd8/0x1d1
-> >
-> > Reported-by: Jane Chu <jane.chu@oracle.com>
-> > Cc: Zhen Lei <thunder.leizhen@huawei.com>
-> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> > ---
-> >  drivers/dax/bus.c |   44 +++++++++++++++++++++-----------------------
-> >  1 file changed, 21 insertions(+), 23 deletions(-)
-> >
-> > diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
-> > index 9761cb40d4bb..720cd140209f 100644
-> > --- a/drivers/dax/bus.c
-> > +++ b/drivers/dax/bus.c
-> > @@ -367,19 +367,28 @@ void kill_dev_dax(struct dev_dax *dev_dax)
-> >  }
-> >  EXPORT_SYMBOL_GPL(kill_dev_dax);
-> >
-> > -static void free_dev_dax_ranges(struct dev_dax *dev_dax)
-> > +static void trim_dev_dax_range(struct dev_dax *dev_dax)
-> >  {
-> > +     int i = dev_dax->nr_range - 1;
-> > +     struct range *range = &dev_dax->ranges[i].range;
-> >       struct dax_region *dax_region = dev_dax->region;
-> > -     int i;
-> >
-> >       device_lock_assert(dax_region->dev);
-> > -     for (i = 0; i < dev_dax->nr_range; i++) {
-> > -             struct range *range = &dev_dax->ranges[i].range;
-> > -
-> > -             __release_region(&dax_region->res, range->start,
-> > -                             range_len(range));
-> > +     dev_dbg(&dev_dax->dev, "delete range[%d]: %#llx:%#llx\n", i,
-> > +             (unsigned long long)range->start,
-> > +             (unsigned long long)range->end);
-> > +
-> > +     __release_region(&dax_region->res, range->start, range_len(range));
-> > +     if (--dev_dax->nr_range == 0) {
-> > +             kfree(dev_dax->ranges);
-> > +             dev_dax->ranges = NULL;
-> >       }
-> > -     dev_dax->nr_range = 0;
-> > +}
-> > +
-> > +static void free_dev_dax_ranges(struct dev_dax *dev_dax)
-> > +{
-> > +     while (dev_dax->nr_range)
-> It's better to use READ_ONCE to get the value of dev_dax->nr_range,
-> to prevent compiler optimization.
+On Sat, Dec 19, 2020 at 2:25 AM Daniel Scally <djrscally@gmail.com> wrote:
+> On 18/12/2020 21:17, Andy Shevchenko wrote:
+> > On Thu, Dec 17, 2020 at 11:43:37PM +0000, Daniel Scally wrote:
 
-...only in the case where the compiler might try to turn this into an
-infinite loop, but I don't think that can happen here outside of a
-compiler bug. Usually READ_ONCE() is contending with SMP effects that
-the compiler can't see.
+...
+
+> >> +    sensor->ep_properties[0] = PROPERTY_ENTRY_U32(sensor->prop_names.bus_type, 4);
+> >
+> > Does 4 has any meaning that can be described by #define ?
+>
+> It's V4L2_FWNODE_BUS_TYPE_CSI2_DPHY:
+>
+> https://elixir.bootlin.com/linux/latest/source/drivers/media/v4l2-core/v4l2-fwnode.c#L36
+>
+> That enum's not in an accessible header, but I can define it in this
+> module's header
+
+Maybe you can do a preparatory patch to make it visible to v4l2
+drivers? (Like moving to one of v4l2 headers)
+
+...
+
+> >> +                    if (bridge->n_sensors >= CIO2_NUM_PORTS) {
+> >> +                            dev_warn(&cio2->dev, "Exceeded available CIO2 ports\n");
+> >
+> >> +                            /* overflow i so outer loop ceases */
+> >> +                            i = ARRAY_SIZE(cio2_supported_sensors);
+> >> +                            break;
+> >
+> > Why not to create a new label below and assign ret here with probably comment
+> > why it's not an error?
+>
+> Sure, I can do that, but since it wouldn't need any cleanup I could also
+> just return 0 here as Laurent suggest (but with a comment explaining why
+> that's ok as you say) - do you have a preference?
+
+While it's a good suggestion it will bring a bit of inconsistency into
+approach. Everywhere else in the function you are using the goto
+approach.
+So yes, I have a preference.
+
+> >> +                    }
+
+...
+
+> >> +                    ret = cio2_bridge_read_acpi_buffer(adev, "SSDB",
+> >> +                                                       &sensor->ssdb,
+> >> +                                                       sizeof(sensor->ssdb));
+> >> +                    if (ret < 0)
+> >
+> > if (ret) (because positive case can be returned just by next conditional).
+>
+> cio2_bridge_read_acpi_buffer() returns the buffer length on success at
+> the moment, but I can change it to return 0 and have this be if (ret)
+
+Please correct this somehow, because the next failure returns it
+instead of error...
+
+> >> +                            goto err_put_adev;
+> >> +
+> >> +                    if (sensor->ssdb.lanes > 4) {
+> >> +                            dev_err(&adev->dev,
+> >> +                                    "Number of lanes in SSDB is invalid\n");
+
+...I'm even thinking that you have to assign ret here to something meaningful.
+
+> >> +                            goto err_put_adev;
+> >> +                    }
+
+-- 
+With Best Regards,
+Andy Shevchenko
