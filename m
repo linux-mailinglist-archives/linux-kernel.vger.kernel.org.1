@@ -2,84 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49B092DF14E
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 20:43:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0419F2DF151
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 20:45:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727433AbgLSTey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 14:34:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30357 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725896AbgLSTey (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 14:34:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608406408;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6z0RbAiLK9GTR+9ggjBwb/1gZHkBY9XWAFgiHpI1ZyE=;
-        b=Q5F6XX8pspZFXiWIBHBd3jPYKCtwpJatxicI7Ld37xREc9GGoSq524lkhAJyF3aGvRDRGk
-        EroVGStknnlC41YYPFLUUTNA296TM0OrQJap3xtTbwgBPVoiLX1DC/GHNc+SFUEMECm5KS
-        rWYvCjvEoo6kJp+wd22mQ1sq6ZacdX0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-140-bsrU9ddYNdOjEM0LL4A0Tg-1; Sat, 19 Dec 2020 14:33:26 -0500
-X-MC-Unique: bsrU9ddYNdOjEM0LL4A0Tg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C1EA9800D53;
-        Sat, 19 Dec 2020 19:33:24 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.46])
-        by smtp.corp.redhat.com (Postfix) with SMTP id B921E10016FF;
-        Sat, 19 Dec 2020 19:33:15 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Sat, 19 Dec 2020 20:33:24 +0100 (CET)
-Date:   Sat, 19 Dec 2020 20:33:14 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Pedro Alves <palves@redhat.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Jan Kratochvil <jan.kratochvil@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Simon Marchi <simon.marchi@efficios.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] ptrace: make ptrace() fail if the tracee changed its
- pid unexpectedly
-Message-ID: <20201219193313.GB9539@redhat.com>
-References: <20201217142931.GA8865@redhat.com>
- <875z50roia.fsf@x220.int.ebiederm.org>
- <fc796624-2660-8c2b-0956-2c9ba8281952@redhat.com>
+        id S1727470AbgLSTpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 14:45:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41178 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727312AbgLSTpB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Dec 2020 14:45:01 -0500
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608407061;
+        bh=fBn6lXZfV64Astfjzu3fdYVvoXy6Bi4EdeIjTgzOO3c=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=BaVxFyHCuzC8XJLD/skqqTnE3EdQyVjy7hCk8xP5vMcet3n1i62YL747IQ290G/IG
+         Skvy7D1k4p1pl+ouu1F6y5gZtMhUEipjZEHbeP/oXW2XPfxzq/8sVs5Bh/5UzcB9f0
+         KXnd66kQNUjqevXQMHr6iCS3NW5I0ZD++aCwLyCwS1ZMzUilg3iJZNrLFTvAcpfIKG
+         4itR3NJmTNn0WCk1lYId4+rT2H9tx3wirFIooqoivGrnsEBa84IJEkMdgRgc5GUebG
+         lbuMa7IZpTCcLYmkxNv9lD6PwHcb2VQfUu6uURQcUuGMyWuaoYE5EiQyBd14JgIYcD
+         Hxj2Gh4afleWw==
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fc796624-2660-8c2b-0956-2c9ba8281952@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201218201350.GA2089699@robh.at.kernel.org>
+References: <20201207045527.1607-1-thunder.leizhen@huawei.com> <20201207045527.1607-2-thunder.leizhen@huawei.com> <160820093389.1580929.3915867007740168331@swboyd.mtv.corp.google.com> <20201218201350.GA2089699@robh.at.kernel.org>
+Subject: Re: [PATCH 1/1] dt-bindings: clock: imx8qxp-lpcg: eliminate yamllint warnings
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Fabio Estevam <festevam@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Date:   Sat, 19 Dec 2020 11:44:19 -0800
+Message-ID: <160840705988.1580929.18125222574166820024@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/19, Pedro Alves wrote:
->
-> BTW, the problem was discovered by Simon Marchi when he tried to write
-> a GDB testcase for a multi-threaded exec scenario:
+Quoting Rob Herring (2020-12-18 12:13:50)
+> On Thu, Dec 17, 2020 at 02:28:53AM -0800, Stephen Boyd wrote:
+> > Quoting Zhen Lei (2020-12-06 20:55:27)
+> > > Eliminate the following yamllint warnings:
+> > > ./Documentation/devicetree/bindings/clock/imx8qxp-lpcg.yaml
+> > > :32:13:[warning] wrong indentation: expected 14 but found 12 (indenta=
+tion)
+> > > :35:9: [warning] wrong indentation: expected 10 but found 8 (indentat=
+ion)
+> > >=20
+> > > Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> > > ---
+> >=20
+> > Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+>=20
+> If I tagged it, I was expecting you to pick up. But I'm gathering up all =
 
-OOPS! Sorry Simon, yes I forgot to add reported-by. Andrew, or Eric, if
-you take this patch, could you also add
+> the fixes for what landed in Linus' tree, so I'll apply.
+>=20
 
-	Reported-by: Simon Marchi <simon.marchi@efficios.com>
-
-> I've went through GDB's code looking for potential issues with the change and whether
-> it would affect GDBs already in the wild.  Tricky corner cases abound, but I think
-> we're good.  Feel free to add my ack:
->
-> Acked-by: Pedro Alves <palves@redhat.com>
-
-Thanks!
-
-Oleg.
-
+Thanks! I don't see this in clk tree so I guess it went through arm-soc.
