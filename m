@@ -2,85 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C13282DF202
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 23:40:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C473C2DF206
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 23:45:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726532AbgLSWjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 17:39:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725944AbgLSWjR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 17:39:17 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89CC5C0613CF;
-        Sat, 19 Dec 2020 14:38:37 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id q22so8447895eja.2;
-        Sat, 19 Dec 2020 14:38:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3kfO/cCpJ6dTCtRANlf2ZvCPmTfbvJvYLOve9Fhsc3I=;
-        b=GAZNK58c3CTwPMGH0U4zl4ENKCkxRtPBrZAfMRjcgWV8qZzaeO24jM02RqHRDiR8S4
-         s8+nUWsbsvGY6u3o3MVuSdKo0RTQkr9rPGcElU8Hmb4yYcIbEJWYAiCPCpkpE8YM/fRL
-         RJnsbqCQUj0q7UwuWtNXnwD2P0Eh9y0e3dwpN5jiMdNzs5uNK8amj9otw5DonKuJQxJ8
-         isWEmUEEAFR7aBUFiT8xiuN4hTst7h37gW9acjF7KgpkGCI06TauHVTMomGaECfKOE8M
-         4OR1c8FVJnpVsTQGNhYbvGMjqVa0MHYRbtVhqGhBY1pGBEQibhKZumQTcs5fFROCD4R2
-         grNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3kfO/cCpJ6dTCtRANlf2ZvCPmTfbvJvYLOve9Fhsc3I=;
-        b=tKjqmPpGnBBpmuEdIpN8S7GCN2XyELHxV4vEa/NZI7jbEFECOCbHLXLT+PgMu3R1/K
-         bYloxO4gPA0dqiYjidY2MRziUwOdcp5OVYUjVPY8rpvwAfIyVdp6dygM76P8g3sAX3M3
-         Bl+YYm4ppyGMv/kK1lEF+MEgMcRq8sv12cfX/kjIhe8Eret2mwwdjPBzjQbRDxAYE5l5
-         wfrBJM2hJqtexZBlkpUBzlI7/qIuMPCyJILWG71hi7tQsfyTXuK4TdgQTSV7175QFgJ7
-         bTze891zFeEUFeAhAgC/b6hjgPLLb+uowWs9zcuF/EGGrJBNL/vIq1oo9gYF9+G4M5F2
-         A5iA==
-X-Gm-Message-State: AOAM5337rz7nZuQ7aoAd6SggsEHPozdA/iOJ3iIf5iE+v7KX+Ydvdx0O
-        HTTHUFtSE2wZTv9kjIyQTh2Fnn91aa967hXrHxpvtpgG
-X-Google-Smtp-Source: ABdhPJxxj3ZMJnTL47PCBo9SvjR6sePakDhWNQrUz+ATv0X2Ps8N+0EhFDIxGBr0RUV1bXeOP1AAr3Sdr1txAmDE8x0=
-X-Received: by 2002:a17:906:4050:: with SMTP id y16mr9680503ejj.537.1608417516054;
- Sat, 19 Dec 2020 14:38:36 -0800 (PST)
+        id S1726765AbgLSWnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 17:43:33 -0500
+Received: from mga06.intel.com ([134.134.136.31]:2982 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726449AbgLSWnd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Dec 2020 17:43:33 -0500
+IronPort-SDR: EG8lzHvi7qYnJYnqO3r0eYSD38I06m/uHOoiU0p5swy5qQ9uTHsF8JRXtvUhrNzrtsfEiTHeMj
+ Rua4eIoy1LOQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9839"; a="237168139"
+X-IronPort-AV: E=Sophos;i="5.78,433,1599548400"; 
+   d="scan'208";a="237168139"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2020 14:41:46 -0800
+IronPort-SDR: r64qM+yIoMn909KO2HJye5lO0Tk4Oxq1aR/lo1pw1UV760m70MhuipbW2BPSNI6mZmqiNTYHp2
+ ZVhLLgE3anDw==
+X-IronPort-AV: E=Sophos;i="5.78,433,1599548400"; 
+   d="scan'208";a="559747678"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2020 14:41:44 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id 4B5DF205F7; Sun, 20 Dec 2020 00:41:42 +0200 (EET)
+Date:   Sun, 20 Dec 2020 00:41:42 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     syzbot <syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: memory leak in video_usercopy
+Message-ID: <20201219224142.GZ26370@paasikivi.fi.intel.com>
+References: <00000000000025169705b6d100fa@google.com>
+ <CAK8P3a3AF4yFUcOEzMPf7SGkf6YVPJthHLzGtM==oGkSj+=mtg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201219125344.671832095@linuxfoundation.org> <20201219125345.376925474@linuxfoundation.org>
- <20201219215139.GA29536@amd>
-In-Reply-To: <20201219215139.GA29536@amd>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Sat, 19 Dec 2020 23:38:25 +0100
-Message-ID: <CAFBinCBRe3Oacqce1EDQpoNmEhXeUxJrA43RTA0+_fVciDJzhg@mail.gmail.com>
-Subject: Re: [PATCH 5.9 14/49] net: stmmac: dwmac-meson8b: fix mask definition
- of the m250_sel mux
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a3AF4yFUcOEzMPf7SGkf6YVPJthHLzGtM==oGkSj+=mtg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
+Hi Arnd,
 
-On Sat, Dec 19, 2020 at 10:51 PM Pavel Machek <pavel@ucw.cz> wrote:
-[...]
-> I can't say I like this one:
->
->
-> >       clk_configs->m250_mux.reg = dwmac->regs + PRG_ETH0;
-> > -     clk_configs->m250_mux.shift = PRG_ETH0_CLK_M250_SEL_SHIFT;
-> > -     clk_configs->m250_mux.mask = PRG_ETH0_CLK_M250_SEL_MASK;
-> > +     clk_configs->m250_mux.shift = __ffs(PRG_ETH0_CLK_M250_SEL_MASK);
->
-> It replaces constant with computation done at runtime; compiler can't
-> optimize it as __ffs is implemented with asm().
-what do you suggest to use instead?
-personally I don't see a problem because this is only called once at
-driver probe time.
+On Sat, Dec 19, 2020 at 03:08:14PM +0100, Arnd Bergmann wrote:
+> ,On Sat, Dec 19, 2020 at 2:15 PM syzbot
+> <syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com> wrote:
+> >
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    a409ed15 Merge tag 'gpio-v5.11-1' of git://git.kernel.org/..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=10a5880f500000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=37c889fb8b2761af
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=1115e79c8df6472c612b
+> > compiler:       gcc (GCC) 10.1.0-syz 20200507
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14d18f9b500000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=106a2c13500000
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com
+> >
+> > Debian GNU/Linux 9 syzkaller ttyS0
+> > Warning: Permanently added '10.128.10.29' (ECDSA) to the list of known hosts.
+> > executing program
+> > executing program
+> > BUG: memory leak
+> > unreferenced object 0xffff88810fb12300 (size 256):
+> >   comm "syz-executor399", pid 8472, jiffies 4294942333 (age 13.960s)
+> >   hex dump (first 32 bytes):
+> >     03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+> >     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+> >   backtrace:
+> >     [<000000009fd00995>] kmalloc_node include/linux/slab.h:575 [inline]
+> >     [<000000009fd00995>] kvmalloc_node+0x61/0xf0 mm/util.c:575
+> >     [<0000000096a57c4a>] kvmalloc include/linux/mm.h:773 [inline]
+> >     [<0000000096a57c4a>] video_usercopy+0x991/0xa50 drivers/media/v4l2-core/v4l2-ioctl.c:3303
+> >     [<00000000f7529cc2>] v4l2_ioctl+0x77/0x90 drivers/media/v4l2-core/v4l2-dev.c:360
+> >     [<0000000061b5e6a9>] vfs_ioctl fs/ioctl.c:48 [inline]
+> >     [<0000000061b5e6a9>] __do_sys_ioctl fs/ioctl.c:753 [inline]
+> >     [<0000000061b5e6a9>] __se_sys_ioctl fs/ioctl.c:739 [inline]
+> >     [<0000000061b5e6a9>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
+> >     [<000000000139479b>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+> >     [<00000000d6de1c9c>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> It seems there are commands that need both a buffer for the direct ioc
+> argument and for array_args. If that happens, we have two kvmalloc() calls
+> but only one kvfree(), and that would correctly trigger the leak detector.
+> 
+> The direct ioc argument copy happens for arguments over 128 bytes.
+> Checking the sizes of the comands with array args shows
+> 
+> VIDIOC_PREPARE_BUF, VIDIOC_QUERYBUF, VIDIOC_QBUF, VIDIOC_DQBUF:
+> v4l2_buffer, 84 bytes or less
+> 
+> VIDIOC_G_EDID, VIDIOC_S_EDID:
+> v4l2_edid, 40 bytes or less
+> 
+> VIDIOC_G_EXT_CTRLS, VIDIOC_S_EXT_CTRLS, VIDIOC_TRY_EXT_CTRLS:
+> v4l2_ext_controls, 32 bytes or less
+> 
+> VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT:
+> v4l2_format, 204 or 208 bytes
+> 
+> I would conclude it's one of the last three commands, and it could be
+> avoided either by increasing the on-stack buffer to sizeof(struct v4l2_format),
+> or by restructuring this function again to have two separate pointers
+> for alloc/free.
 
+Thanks for reporting this.
 
-Best regards,
-Martin
+I'd say the original approach was risky to begin with, and that risk
+effectively materialised here. I'd rather fix the risky construction than
+leaving it there.
+
+Considering the format IOCTLs have been unchanged (size-wise) all this
+time, it looks like it really has been broken for a few days short of a
+decade! sbuf has been 128 bytes all this time.
+
+-- 
+Kind regards,
+
+Sakari Ailus
