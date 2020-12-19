@@ -2,100 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD6BE2DF147
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 20:17:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B092DF14E
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 20:43:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727628AbgLSTQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 14:16:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54564 "EHLO
+        id S1727433AbgLSTey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 14:34:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30357 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727429AbgLSTQv (ORCPT
+        by vger.kernel.org with ESMTP id S1725896AbgLSTey (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 14:16:51 -0500
+        Sat, 19 Dec 2020 14:34:54 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608405325;
+        s=mimecast20190719; t=1608406408;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ywV9ag7r8Yesrq5smCjuibhNxqS7FDwB5/W0QCJT39A=;
-        b=f1dic8Pb8Fu/hEX9eXaq6tBfrw54swZJytnik2XJ+VJ5SIgVFH8WqcTKi9OgMsCWmR8yAz
-        BfOBmHWQvCrcNoRnnRAdwqxuMryrK5tV8f8KVL5uNjjNkuOcDMAIxxFzJKfYKgw8E31O6g
-        ZBuNfaOO9uggKuj7qwQTtpRo2mW1K/o=
+        bh=6z0RbAiLK9GTR+9ggjBwb/1gZHkBY9XWAFgiHpI1ZyE=;
+        b=Q5F6XX8pspZFXiWIBHBd3jPYKCtwpJatxicI7Ld37xREc9GGoSq524lkhAJyF3aGvRDRGk
+        EroVGStknnlC41YYPFLUUTNA296TM0OrQJap3xtTbwgBPVoiLX1DC/GHNc+SFUEMECm5KS
+        rWYvCjvEoo6kJp+wd22mQ1sq6ZacdX0=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-446-sVl4iiBhPNWNgqgvFyffmg-1; Sat, 19 Dec 2020 14:15:23 -0500
-X-MC-Unique: sVl4iiBhPNWNgqgvFyffmg-1
+ us-mta-140-bsrU9ddYNdOjEM0LL4A0Tg-1; Sat, 19 Dec 2020 14:33:26 -0500
+X-MC-Unique: bsrU9ddYNdOjEM0LL4A0Tg-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C4F1F10054FF;
-        Sat, 19 Dec 2020 19:15:21 +0000 (UTC)
-Received: from mail (ovpn-119-164.rdu2.redhat.com [10.10.119.164])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 20FBD1002382;
-        Sat, 19 Dec 2020 19:15:18 +0000 (UTC)
-Date:   Sat, 19 Dec 2020 14:15:17 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     linux-mm@kvack.org, Peter Xu <peterx@redhat.com>,
-        linux-kernel@vger.kernel.org, Nadav Amit <namit@vmware.com>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-Message-ID: <X95RRZ3hkebEmmaj@redhat.com>
-References: <20201219043006.2206347-1-namit@vmware.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C1EA9800D53;
+        Sat, 19 Dec 2020 19:33:24 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.46])
+        by smtp.corp.redhat.com (Postfix) with SMTP id B921E10016FF;
+        Sat, 19 Dec 2020 19:33:15 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Sat, 19 Dec 2020 20:33:24 +0100 (CET)
+Date:   Sat, 19 Dec 2020 20:33:14 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Pedro Alves <palves@redhat.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Jan Kratochvil <jan.kratochvil@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Simon Marchi <simon.marchi@efficios.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] ptrace: make ptrace() fail if the tracee changed its
+ pid unexpectedly
+Message-ID: <20201219193313.GB9539@redhat.com>
+References: <20201217142931.GA8865@redhat.com>
+ <875z50roia.fsf@x220.int.ebiederm.org>
+ <fc796624-2660-8c2b-0956-2c9ba8281952@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201219043006.2206347-1-namit@vmware.com>
-User-Agent: Mutt/2.0.3 (2020-12-04)
+In-Reply-To: <fc796624-2660-8c2b-0956-2c9ba8281952@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 12/19, Pedro Alves wrote:
+>
+> BTW, the problem was discovered by Simon Marchi when he tried to write
+> a GDB testcase for a multi-threaded exec scenario:
 
-On Fri, Dec 18, 2020 at 08:30:06PM -0800, Nadav Amit wrote:
-> Analyzing this problem indicates that there is a real bug since
-> mmap_lock is only taken for read in mwriteprotect_range(). This might
+OOPS! Sorry Simon, yes I forgot to add reported-by. Andrew, or Eric, if
+you take this patch, could you also add
 
-Never having to take the mmap_sem for writing, and in turn never
-blocking, in order to modify the pagetables is quite an important
-feature in uffd that justifies uffd instead of mprotect. It's not the
-most important reason to use uffd, but it'd be nice if that guarantee
-would remain also for the UFFDIO_WRITEPROTECT API, not only for the
-other pgtable manipulations.
+	Reported-by: Simon Marchi <simon.marchi@efficios.com>
 
-> Consider the following scenario with 3 CPUs (cpu2 is not shown):
-> 
-> cpu0				cpu1
-> ----				----
-> userfaultfd_writeprotect()
-> [ write-protecting ]
-> mwriteprotect_range()
->  mmap_read_lock()
->  change_protection()
->   change_protection_range()
->    ...
->    change_pte_range()
->    [ defer TLB flushes]
-> 				userfaultfd_writeprotect()
-> 				 mmap_read_lock()
-> 				 change_protection()
-> 				 [ write-unprotect ]
-> 				 ...
-> 				  [ unprotect PTE logically ]
-> 				...
-> 				[ page-fault]
-> 				...
-> 				wp_page_copy()
-> 				[ set new writable page in PTE]
+> I've went through GDB's code looking for potential issues with the change and whether
+> it would affect GDBs already in the wild.  Tricky corner cases abound, but I think
+> we're good.  Feel free to add my ack:
+>
+> Acked-by: Pedro Alves <palves@redhat.com>
 
-Can't we check mm_tlb_flush_pending(vma->vm_mm) if MM_CP_UFFD_WP_ALL
-is set and do an explicit (potentially spurious) tlb flush before
-write-unprotect?
+Thanks!
 
-Thanks,
-Andrea
+Oleg.
 
