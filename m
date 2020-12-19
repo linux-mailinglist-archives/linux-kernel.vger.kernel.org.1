@@ -2,179 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C1B92DECFB
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 04:36:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91FE92DED00
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 05:11:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726310AbgLSDgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 22:36:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726252AbgLSDgA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 22:36:00 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B0E7C061285
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 19:35:20 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id z3so2894784qtw.9
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 19:35:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XWIxnd1TBokkeQDQoDs2P8h6KNdDQQlPBRCQPqQe8vw=;
-        b=oT4McdXtX1VIEqC/VVrfo0fLp43cCBc3I5eiaj9ysuFEvUHHQvIi7jdhZ30CjQYwhm
-         5PfHpVTU8EMUWgRoXVY+IhUgByR6sbEQzsUjUSezQxTYBJA5i6MYybCK/QjmtzwO9Mhz
-         YGfjo66X6cNq1DYsVTfUk4QCRF4zftFk5BndhToeX5XBdfp+Y4LUd/hGBF6XziHM/Pkr
-         qX0LmYurv2QIwATyXDmABTbmO/7E9KJ3s1JUdrdCyO0PssTAfQdiPuwN5kBytSzr7Pe9
-         QohicqYEs+mpz+Hr9JF5QzDFQVYBgxIxMM0eb5rmeAqtqT9OZyxNsIGjtDnymKunXWtc
-         A+xQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XWIxnd1TBokkeQDQoDs2P8h6KNdDQQlPBRCQPqQe8vw=;
-        b=g9NofG1OVzwJHKp+iskA7BFv+t+lSkNca+iraOLZHg+BAhe9x3qO1gGFadr0aSeVSP
-         Ra7JvI3n92SnS7T7DLhNO8UQXGhfLQ2Esqb0xZ8MMGrv0ZlEuzYIXsnDyRohrl8F/hcD
-         al68OFWOymbhMRTIFUr8c0CmBrOJh6L/qWk3P7p4ED41dqBq5rlBzWpFUc3Z5AEcw0PW
-         X/P/zk+CeWz82i29LsWegcQXISkxmmWs4MGx75hmcfMlWHXc3RzimIkU8ACS8lekgGV1
-         6DgjSCtP0zlo+4I8H35menA5BsTVW9yjKesRgoDNA2u/EYhIKcIFgqlNfHQjzwD9dQLK
-         +uFQ==
-X-Gm-Message-State: AOAM530ETCZWSb/uDdZCDUSfV+VQ+H1+C5ZBlz2+1Ihp4DRaQ2+2OzcA
-        FpbJMMQYRulGM4Cya6Bh0v/Bog==
-X-Google-Smtp-Source: ABdhPJzaYoqA+UVM8mSoDAHP47OOIG2HtxFlJ6430vZVxDe776H3vaiKcHiP9+DgjxyAnlqWl7mMkA==
-X-Received: by 2002:ac8:464c:: with SMTP id f12mr7278436qto.272.1608348919450;
-        Fri, 18 Dec 2020 19:35:19 -0800 (PST)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id s19sm3298501qta.35.2020.12.18.19.35.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Dec 2020 19:35:18 -0800 (PST)
-Subject: Re: [PATCH] dmaengine: qcom: bam_dma: Add LOCK and UNLOCK flag bit
- support
-To:     Md Sadre Alam <mdalam@codeaurora.org>, vkoul@kernel.org,
-        corbet@lwn.net, agross@kernel.org, bjorn.andersson@linaro.org,
-        dan.j.williams@intel.com, dmaengine@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     sricharan@codeaurora.org
-References: <1608215842-15381-1-git-send-email-mdalam@codeaurora.org>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <6c85436d-e064-367e-736b-951af82256c8@linaro.org>
-Date:   Fri, 18 Dec 2020 22:35:17 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726255AbgLSEDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 23:03:46 -0500
+Received: from mga01.intel.com ([192.55.52.88]:5408 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726145AbgLSEDq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 23:03:46 -0500
+IronPort-SDR: 5bWG2aOVKXn4zwwrax6tiz8wcuabv8DsuSHXyUjjFz3RMZ3CRYp+Opz7bVHA78h4MpQKsodClN
+ dd4c8MGwkySg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9839"; a="193959699"
+X-IronPort-AV: E=Sophos;i="5.78,432,1599548400"; 
+   d="scan'208";a="193959699"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2020 20:03:05 -0800
+IronPort-SDR: yTEZ4l5UniSdpb37mGKU+ZEIzKIi2LX88H0yfft+CoR0Pn0mS0oUW/P8cFFagiNVmy0C7cY5g2
+ KkXS1VS8Cw3g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,432,1599548400"; 
+   d="scan'208";a="558867184"
+Received: from lkp-server02.sh.intel.com (HELO c4fb2a2464e8) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 18 Dec 2020 20:03:04 -0800
+Received: from kbuild by c4fb2a2464e8 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kqTSR-0000bM-CI; Sat, 19 Dec 2020 04:03:03 +0000
+Date:   Sat, 19 Dec 2020 12:02:56 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:locking/urgent] BUILD SUCCESS
+ 91ea62d58bd661827c328a2c6c02a87fa4aae88b
+Message-ID: <5fdd7b70.7bC3fyP2vfEsI5+y%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <1608215842-15381-1-git-send-email-mdalam@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  locking/urgent
+branch HEAD: 91ea62d58bd661827c328a2c6c02a87fa4aae88b  softirq: Avoid bad tracing / lockdep interaction
 
+elapsed time: 723m
 
-On 12/17/20 9:37 AM, Md Sadre Alam wrote:
-> This change will add support for LOCK & UNLOCK flag bit support
-> on CMD descriptor.
-> 
-> If DMA_PREP_LOCK flag passed in prep_slave_sg then requester of this
-> transaction wanted to lock the DMA controller for this transaction so
-> BAM driver should set LOCK bit for the HW descriptor.
-> 
-> If DMA_PREP_UNLOCK flag passed in prep_slave_sg then requester of this
-> transaction wanted to unlock the DMA controller.so BAM driver should set
-> UNLOCK bit for the HW descriptor.
-Hi,
+configs tested: 121
+configs skipped: 2
 
-This is a generic question. What is the point of LOCK/UNLOCK with 
-allocating LOCK groups to the individual dma channels? By default
-doesn't all channels fall in the same group. This would mean that
-a lock does not prevent the dma controller from not executing a
-transaction on the other channels.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
--- 
-Warm Regards
-Thara
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                     tqm8541_defconfig
+m68k                         apollo_defconfig
+arm                        mini2440_defconfig
+powerpc                 canyonlands_defconfig
+powerpc                 mpc834x_mds_defconfig
+powerpc                   motionpro_defconfig
+powerpc                      ep88xc_defconfig
+parisc                           alldefconfig
+arm                           omap1_defconfig
+mips                            e55_defconfig
+powerpc                 mpc836x_rdk_defconfig
+m68k                        mvme147_defconfig
+powerpc                 mpc837x_mds_defconfig
+powerpc                        icon_defconfig
+sh                          urquell_defconfig
+powerpc                 mpc8560_ads_defconfig
+mips                           ci20_defconfig
+sh                           se7780_defconfig
+arm                         shannon_defconfig
+mips                      maltasmvp_defconfig
+ia64                                defconfig
+powerpc               mpc834x_itxgp_defconfig
+powerpc                     sbc8548_defconfig
+mips                    maltaup_xpa_defconfig
+m68k                                defconfig
+arm                        spear3xx_defconfig
+sh                         apsh4a3a_defconfig
+arm                          tango4_defconfig
+mips                  decstation_64_defconfig
+sh                           se7206_defconfig
+powerpc                       holly_defconfig
+arm                         vf610m4_defconfig
+mips                        vocore2_defconfig
+i386                             alldefconfig
+mips                      fuloong2e_defconfig
+riscv                               defconfig
+arm                            mps2_defconfig
+openrisc                            defconfig
+ia64                          tiger_defconfig
+parisc                generic-32bit_defconfig
+arm                         lpc32xx_defconfig
+arm                           viper_defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a003-20201217
+x86_64               randconfig-a006-20201217
+x86_64               randconfig-a002-20201217
+x86_64               randconfig-a005-20201217
+x86_64               randconfig-a004-20201217
+x86_64               randconfig-a001-20201217
+i386                 randconfig-a001-20201217
+i386                 randconfig-a004-20201217
+i386                 randconfig-a003-20201217
+i386                 randconfig-a002-20201217
+i386                 randconfig-a006-20201217
+i386                 randconfig-a005-20201217
+x86_64               randconfig-a016-20201218
+x86_64               randconfig-a013-20201218
+x86_64               randconfig-a012-20201218
+x86_64               randconfig-a015-20201218
+x86_64               randconfig-a014-20201218
+x86_64               randconfig-a011-20201218
+i386                 randconfig-a014-20201217
+i386                 randconfig-a013-20201217
+i386                 randconfig-a012-20201217
+i386                 randconfig-a011-20201217
+i386                 randconfig-a015-20201217
+i386                 randconfig-a016-20201217
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-> 
-> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
-> ---
->   Documentation/driver-api/dmaengine/provider.rst | 9 +++++++++
->   drivers/dma/qcom/bam_dma.c                      | 9 +++++++++
->   include/linux/dmaengine.h                       | 5 +++++
->   3 files changed, 23 insertions(+)
-> 
-> diff --git a/Documentation/driver-api/dmaengine/provider.rst b/Documentation/driver-api/dmaengine/provider.rst
-> index ddb0a81..d7516e2 100644
-> --- a/Documentation/driver-api/dmaengine/provider.rst
-> +++ b/Documentation/driver-api/dmaengine/provider.rst
-> @@ -599,6 +599,15 @@ DMA_CTRL_REUSE
->     - This flag is only supported if the channel reports the DMA_LOAD_EOT
->       capability.
->   
-> +- DMA_PREP_LOCK
-> +
-> +  - If set , the client driver tells DMA controller I am locking you for
-> +    this transcation.
-> +
-> +- DMA_PREP_UNLOCK
-> +
-> +  - If set, the client driver will tells DMA controller I am releasing the lock
-> +
->   General Design Notes
->   ====================
->   
-> diff --git a/drivers/dma/qcom/bam_dma.c b/drivers/dma/qcom/bam_dma.c
-> index 4eeb8bb..cdbe395 100644
-> --- a/drivers/dma/qcom/bam_dma.c
-> +++ b/drivers/dma/qcom/bam_dma.c
-> @@ -58,6 +58,8 @@ struct bam_desc_hw {
->   #define DESC_FLAG_EOB BIT(13)
->   #define DESC_FLAG_NWD BIT(12)
->   #define DESC_FLAG_CMD BIT(11)
-> +#define DESC_FLAG_LOCK BIT(10)
-> +#define DESC_FLAG_UNLOCK BIT(9)
->   
->   struct bam_async_desc {
->   	struct virt_dma_desc vd;
-> @@ -644,6 +646,13 @@ static struct dma_async_tx_descriptor *bam_prep_slave_sg(struct dma_chan *chan,
->   
->   	/* fill in temporary descriptors */
->   	desc = async_desc->desc;
-> +	if (flags & DMA_PREP_CMD) {
-> +		if (flags & DMA_PREP_LOCK)
-> +			desc->flags |= cpu_to_le16(DESC_FLAG_LOCK);
-> +		if (flags & DMA_PREP_UNLOCK)
-> +			desc->flags |= cpu_to_le16(DESC_FLAG_UNLOCK);
-> +	}
-> +
->   	for_each_sg(sgl, sg, sg_len, i) {
->   		unsigned int remainder = sg_dma_len(sg);
->   		unsigned int curr_offset = 0;
-> diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
-> index dd357a7..79ccadb4 100644
-> --- a/include/linux/dmaengine.h
-> +++ b/include/linux/dmaengine.h
-> @@ -190,6 +190,9 @@ struct dma_interleaved_template {
->    *  transaction is marked with DMA_PREP_REPEAT will cause the new transaction
->    *  to never be processed and stay in the issued queue forever. The flag is
->    *  ignored if the previous transaction is not a repeated transaction.
-> + * @DMA_PREP_LOCK: tell the driver that DMA HW engine going to be locked for this
-> + *  transaction , until not seen DMA_PREP_UNLOCK flag set.
-> + * @DMA_PREP_UNLOCK: tell the driver to unlock the DMA HW engine.
->    */
->   enum dma_ctrl_flags {
->   	DMA_PREP_INTERRUPT = (1 << 0),
-> @@ -202,6 +205,8 @@ enum dma_ctrl_flags {
->   	DMA_PREP_CMD = (1 << 7),
->   	DMA_PREP_REPEAT = (1 << 8),
->   	DMA_PREP_LOAD_EOT = (1 << 9),
-> +	DMA_PREP_LOCK = (1 << 10),
-> +	DMA_PREP_UNLOCK = (1 << 11),
->   };
->   
->   /**
-> 
+clang tested configs:
+x86_64               randconfig-a016-20201217
+x86_64               randconfig-a012-20201217
+x86_64               randconfig-a013-20201217
+x86_64               randconfig-a015-20201217
+x86_64               randconfig-a014-20201217
+x86_64               randconfig-a011-20201217
 
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
