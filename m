@@ -2,253 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9E522DEC4A
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 01:10:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B25A2DEC4C
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 01:15:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726298AbgLSAJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 19:09:17 -0500
-Received: from mga09.intel.com ([134.134.136.24]:27012 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725948AbgLSAJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 19:09:17 -0500
-IronPort-SDR: RgM1hIb7Ppv/kJucWYGLaCY+RHJWKTgxddYfjUK4SLlg7BuaXasrG13dnvU/WfozzNssf2fvbg
- C7nVRGKzZV4g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9839"; a="175668070"
-X-IronPort-AV: E=Sophos;i="5.78,431,1599548400"; 
-   d="scan'208";a="175668070"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2020 16:07:31 -0800
-IronPort-SDR: 5apeQInjqN1QtnzWe4LXLxbLfwawLGtuxvxGuwLtpRuitCis6i5rtlIA6G98NFCAt799C06QgB
- EK1PpOr2QIVg==
-X-IronPort-AV: E=Sophos;i="5.78,431,1599548400"; 
-   d="scan'208";a="394032333"
-Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2020 16:07:30 -0800
-Received: from localhost (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id 4DD876363;
-        Fri, 18 Dec 2020 16:07:30 -0800 (PST)
-Date:   Fri, 18 Dec 2020 16:07:30 -0800
-From:   mark gross <mgross@linux.intel.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     mgross@linux.intel.com, markgross@kernel.org, arnd@arndb.de,
-        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
-        gregkh@linuxfoundation.org, corbet@lwn.net,
-        leonard.crestez@nxp.com, palmerdabbelt@google.com,
-        paul.walmsley@sifive.com, peng.fan@nxp.com, robh+dt@kernel.org,
-        shawnguo@kernel.org, linux-kernel@vger.kernel.org,
-        Srikanth Thokala <srikanth.thokala@intel.com>,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH 06/22] misc: xlink-pcie: Add documentation for XLink PCIe
- driver
-Message-ID: <20201219000730.GA37040@linux.intel.com>
-Reply-To: mgross@linux.intel.com
-References: <20201201223511.65542-1-mgross@linux.intel.com>
- <20201201223511.65542-7-mgross@linux.intel.com>
- <2fd73da0-ee89-3831-bf96-5ed130e90c4d@infradead.org>
+        id S1726121AbgLSAPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 19:15:06 -0500
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:18444 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725858AbgLSAPF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 19:15:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1608336905; x=1639872905;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=qlA8wVBPQMAANB3GBWMbUoKFu0jCd9V1TTnxbjRptVE=;
+  b=orEd1bUX7yPS51q465iDf/H0xs0NtbIM/Xd095BzN2U88OkDqqGMpskW
+   T8yum5jjDyt9R/j10PZQIKT+I3F4VMgj77K228SY+PJaY4ROYVL5+9jYV
+   B1eklVrlglsOPcD5N01/aoxGZNEOeknmvMmHm9NUA+SswKBxNCztsKiLT
+   Al3A7+MM+HW4JEtOFxKYetG+iYZ4qFzXmZFO9l3dDKHBcfNNlM10M1bu+
+   kFu0Ob6UFrFE1eTxXLFO/rfH7uGs2PJW5koVgCeWH2VQdKCSDSmKmIWTN
+   J0QcdAumK9VK8CsY9qn/2aocL9EBEL11AekAthqJQczNEsSpsXdvqmTuh
+   g==;
+IronPort-SDR: pR05DOFXl4viZEZG0UiBMm68t2KYsJ6tSjcq3jruHUpgAjXDQHm2eU1uHEyc9/DUhmVWUzsKYU
+ 94ty0tdUAEt9VG1HcznCrpnHMxw06yJq4wRWWWSvaopgDEBFnvxY001oL3aVzJi3phhnwnoqYj
+ BRrBI7dWKKbcYir7VIpDL+RLzNEfJZUHVFGFyhrt/2O/T9xYOSxdY8EDnSJAf9J7q+n37lgxnR
+ K++RPxNDeJuUSjNjJtNYJBkDNyH6i1lItJ5pguaNcYVc0tUAYRtvYnb7ee08iLTxgLoO06zoHz
+ Too=
+X-IronPort-AV: E=Sophos;i="5.78,431,1599494400"; 
+   d="scan'208";a="155556594"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 19 Dec 2020 08:13:59 +0800
+IronPort-SDR: RZJrYHJf1yM9b7+GDFCYB02QTTwDGv2mi1/1V3uW9XG4dw3T/PzBsTLdOj8ON1FlgTgUwQ298l
+ JKottS0K7bX1yz9W+IOqdv9m6SXrBTq3nca0JFxFykt99xV4cmgaOFixx6ir+jQYko5PdbJwhA
+ lo7c9u1cnUZMcSyQVCI/kXBLktT9iM74r9Pjml9YUBsnrHdlBE/ucLzy8ztFLEY1DEPhtZz+Ez
+ 7Mp9aehbY4MCqc3CRs6ZVXnGSqPZxdj0yaf1HT9sqZXMq0anYdzHjNGK6iaI1SlS5WlR7LFvrz
+ vEHuWz9wiqohHiWyxwgIE1gD
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2020 15:59:14 -0800
+IronPort-SDR: 6d/6ygrnX1yCCBilFFyUWFPZTNYhYNlq4sBOFOEotphNj/FE7NISXMQhQ3bMV8BkNncDGWRasv
+ XSC0e9XwPgoqtU10GzCtaz6rzTnTvSdVXkFGVWBlxQT18yut9LUnbx2GqgrKdQl7LE+CgGukbw
+ oX+g+IsuitkPV8VbGTVxu2fVt2erlBkQ7SZ9wSMNekkp1Id+4DeEEq+V6xaJZ9D5WFtC5tM+l6
+ fAGrwpstglEYIbW1x4ln3ElFHo4RIAQpDXQvnO3R0aQiILDd3yBzc7iFC1HuCyJ5hlDIwZAEhF
+ xuQ=
+WDCIronportException: Internal
+Received: from cnf009746.ad.shared (HELO jedi-01.hgst.com) ([10.86.62.26])
+  by uls-op-cesaip01.wdc.com with ESMTP; 18 Dec 2020 16:14:00 -0800
+From:   Atish Patra <atish.patra@wdc.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Atish Patra <atish.patra@wdc.com>, stable@vger.kernel.org,
+        Bin Meng <bin.meng@windriver.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        linux-riscv@lists.infradead.org, Mike Rapoport <rppt@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Bin Meng <bmeng.cn@gmail.com>
+Subject: [PATCH v2] RISC-V: Fix usage of memblock_enforce_memory_limit
+Date:   Fri, 18 Dec 2020 16:13:56 -0800
+Message-Id: <20201219001356.2887782-1-atish.patra@wdc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2fd73da0-ee89-3831-bf96-5ed130e90c4d@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 02:59:00PM -0800, Randy Dunlap wrote:
-> On 12/1/20 2:34 PM, mgross@linux.intel.com wrote:
-> > From: Srikanth Thokala <srikanth.thokala@intel.com>
-> > 
-> > Provide overview of XLink PCIe driver implementation
-> > 
-> > Cc: linux-doc@vger.kernel.org
-> > Reviewed-by: Mark Gross <mgross@linux.intel.com>
-> > Signed-off-by: Srikanth Thokala <srikanth.thokala@intel.com>
-> > ---
-> >  Documentation/vpu/index.rst      |  1 +
-> >  Documentation/vpu/xlink-pcie.rst | 91 ++++++++++++++++++++++++++++++++
-> >  2 files changed, 92 insertions(+)
-> >  create mode 100644 Documentation/vpu/xlink-pcie.rst
-> > 
-> 
-> Hi--
-> 
-> For document, chapter, section, etc., headings, please read & use
-> Documentation/doc-guide/sphinx.rst:
-> 
-> * Please stick to this order of heading adornments:
-> 
->   1. ``=`` with overline for document title::
-> 
->        ==============
->        Document title
->        ==============
-> 
->   2. ``=`` for chapters::
-> 
->        Chapters
->        ========
-> 
->   3. ``-`` for sections::
-> 
->        Section
->        -------
-> 
->   4. ``~`` for subsections::
-> 
->        Subsection
->        ~~~~~~~~~~
-Thanks for the help!  I'm new to the sphix markup language and appreciate your
-advice.  I'll reread that doc-guide.
+memblock_enforce_memory_limit accepts the maximum memory size not the
+maximum address that can be handled by kernel. Fix the function invocation
+accordingly.
 
-We'll address the issues on our next posting once the marge window closes.
+Fixes: 1bd14a66ee52 ("RISC-V: Remove any memblock representing unusable memory area")
+Cc: stable@vger.kernel.org
 
-thanks again for the reviews!
+Reported-by: Bin Meng <bin.meng@windriver.com>
+Tested-by: Bin Meng <bin.meng@windriver.com>
+Acked-by: Mike Rapoport <rppt@linux.ibm.com>
+Signed-off-by: Atish Patra <atish.patra@wdc.com>
+---
+Changes from v1->v2:
+1. Added stable-kernel in cc.
+2. Added reported/tested by tag.
+---
+ arch/riscv/mm/init.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---mark
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index 13ba533f462b..bf5379135e39 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -176,7 +176,7 @@ void __init setup_bootmem(void)
+ 	 * Make sure that any memory beyond mem_start + (-PAGE_OFFSET) is removed
+ 	 * as it is unusable by kernel.
+ 	 */
+-	memblock_enforce_memory_limit(mem_start - PAGE_OFFSET);
++	memblock_enforce_memory_limit(-PAGE_OFFSET);
+ 
+ 	/* Reserve from the start of the kernel to the end of the kernel */
+ 	memblock_reserve(vmlinux_start, vmlinux_end - vmlinux_start);
+-- 
+2.25.1
 
-
-> 
-> > diff --git a/Documentation/vpu/xlink-pcie.rst b/Documentation/vpu/xlink-pcie.rst
-> > new file mode 100644
-> > index 000000000000..bc64b566989d
-> > --- /dev/null
-> > +++ b/Documentation/vpu/xlink-pcie.rst
-> > @@ -0,0 +1,91 @@
-> > +.. SPDX-License-Identifier: GPL-2.0-only
-> > +
-> > +Kernel driver: xlink-pcie driver
-> > +================================
-> > +Supported chips:
-> > +  * Intel Edge.AI Computer Vision platforms: Keem Bay
-> > +    Suffix: Bay
-> > +    Slave address: 6240
-> > +    Datasheet: Publicly available at Intel
-> > +
-> > +Author: Srikanth Thokala Srikanth.Thokala@intel.com
-> > +
-> > +-------------
-> > +Introduction:
-> 
-> No colon at end of chapter/section headings.
-> 
-> > +-------------
-> > +The xlink-pcie driver in linux-5.4 provides transport layer implementation for
-> 
->                             Linux 5.4 (?)
-> 
-> > +the data transfers to support xlink protocol subsystem communication with the
-> 
->                                  Xlink
-> 
-> > +peer device. i.e, between remote host system and the local Keem Bay device.
-> 
->         device, i.e., between the remote host system and
-> 
-> > +
-> > +The Keem Bay device is an ARM based SOC that includes a vision processing
-> 
->                              ARM-based
-> 
-> > +unit (VPU) and deep learning, neural network core in the hardware.
-> > +The xlink-pcie driver exports a functional device endpoint to the Keem Bay device
-> > +and supports two-way communication with peer device.
-> 
->                                       with the peer device.
-> 
-> > +
-> > +------------------------
-> > +High-level architecture:
-> > +------------------------
-> > +Remote Host: IA CPU
-> > +Local Host: ARM CPU (Keem Bay)::
-> > +
-> > +        +------------------------------------------------------------------------+
-> > +        |  Remote Host IA CPU              | | Local Host ARM CPU (Keem Bay) |   |
-> > +        +==================================+=+===============================+===+
-> > +        |  User App                        | | User App                      |   |
-> > +        +----------------------------------+-+-------------------------------+---+
-> > +        |   XLink UAPI                     | | XLink UAPI                    |   |
-> > +        +----------------------------------+-+-------------------------------+---+
-> > +        |   XLink Core                     | | XLink Core                    |   |
-> > +        +----------------------------------+-+-------------------------------+---+
-> > +        |   XLink PCIe                     | | XLink PCIe                    |   |
-> > +        +----------------------------------+-+-------------------------------+---+
-> > +        |   XLink-PCIe Remote Host driver  | | XLink-PCIe Local Host driver  |   |
-> > +        +----------------------------------+-+-------------------------------+---+
-> > +        |-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:|:|:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:-:|
-> > +        +----------------------------------+-+-------------------------------+---+
-> > +        |     PCIe Host Controller         | | PCIe Device Controller        | HW|
-> > +        +----------------------------------+-+-------------------------------+---+
-> > +               ^                                             ^
-> > +               |                                             |
-> > +               |------------- PCIe x2 Link  -----------------|
-> > +
-> > +This XLink PCIe driver comprises of two variants:
-> > +* Local Host driver
-> > +
-> > +  * Intended for ARM CPU
-> > +  * It is based on PCI Endpoint Framework
-> > +  * Driver path: {tree}/drivers/misc/xlink-pcie/local_host
-> > +
-> > +* Remote Host driver
-> > +
-> > +       * Intended for IA CPU
-> > +       * It is a PCIe endpoint driver
-> > +       * Driver path: {tree}/drivers/misc/xlink-pcie/remote_host
-> > +
-> > +XLink PCIe communication between local host and remote host is achieved through
-> > +ring buffer management and MSI/Doorbell interrupts.
-> > +
-> > +The xlink-pcie driver subsystem registers Keem Bay device as an endpoint driver
-> 
->                                    registers the
-> 
-> > +and provides standard linux pcie sysfs interface, # /sys/bus/pci/devices/xxxx:xx:xx.0/
-> 
->                          Linux PCIe
-> 
-> > +
-> > +
-> > +-------------------------
-> > +XLink protocol subsystem:
-> 
-> No colon at end.
-> 
-> > +-------------------------
-> > +xlink is an abstracted control and communication subsystem based on channel
-> 
->    Xlink
-> 
-> > +identification. It is intended to support VPU technology both at SoC level as
-> > +well as at IP level, over multiple interfaces.
-> > +
-> > +- The xlink subsystem abstracts several types of communication channels
-> 
->          Xlink
-> 
-> > +  underneath, allowing the usage of different interfaces with the
-> > +  same function call interface.
-> > +- The Communication channels are full-duplex protocol channels allowing
-> > +  concurrent bidirectional communication.
-> > +- The xlink subsystem also supports control operations to VPU either
-> 
->          Xlink
-> 
-> > +  from standalone local system or from remote system based on communication
-> > +  interface underneath.
-> > +- The xlink subsystem supports following communication interfaces:
-> 
->          Xlink           supports the following
-> 
-> 
-> > +    * USB CDC
-> > +    * Gigabit Ethernet
-> > +    * PCIe
-> > +    * IPC
-> > 
-> 
-> 
-> cheers.
-> -- 
-> ~Randy
-> 
