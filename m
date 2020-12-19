@@ -2,162 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE152DECC1
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 03:45:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 630602DECC6
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 03:51:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726320AbgLSCmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 21:42:23 -0500
-Received: from mga11.intel.com ([192.55.52.93]:36282 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726177AbgLSCmX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 21:42:23 -0500
-IronPort-SDR: 7ne7D6QhqXd9CdvEEeyJjpjgkz9MwUSIW/BRzUMyhfOfRiAkjwt5OKW5w4g97zmcDXlAnfE5Bh
- W1TsbkXTsKNg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9839"; a="172037820"
-X-IronPort-AV: E=Sophos;i="5.78,432,1599548400"; 
-   d="scan'208";a="172037820"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2020 18:41:41 -0800
-IronPort-SDR: xSypGU4gHQhJKVtakX7aPx3JKV96LD61HJWIGRBGqB3Z/QGdE0teiNUwXWM92tRKiSmGHIVEX1
- aKY+2wUL9+lw==
-X-IronPort-AV: E=Sophos;i="5.78,432,1599548400"; 
-   d="scan'208";a="414450765"
-Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2020 18:41:41 -0800
-Subject: [PATCH] device-dax: Fix range release
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     linux-nvdimm@lists.01.org
-Cc:     Jane Chu <jane.chu@oracle.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 18 Dec 2020 18:41:41 -0800
-Message-ID: <160834570161.1791850.14911670304441510419.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: StGit/0.18-3-g996c
+        id S1726326AbgLSCuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 21:50:44 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:56863 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726220AbgLSCuo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 21:50:44 -0500
+Received: by mail-il1-f200.google.com with SMTP id r20so3935268ilh.23
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 18:50:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=WRrWdLXnVhXMEnkyXGJyYpT7gv4ZpleApkGyNqnGXBQ=;
+        b=Z9X4Dw3Cr15ltF8tZEu0zI9eSVnk34cKYVcKZZcB5CdCBhPc1S/RztkUFtwKomielO
+         GM4SZIiqcaxqgGZL5bib2QhaSFw+P+3y/jWfiCrT9ZtsCIt2QODmkzEouAgZu+IvP816
+         4r9rF2wBiUbBbU+Wrx1wB+WPgHD2TdPIo7Jn/UzF1li7N/YVmsZi6QcuCnuYlKdCvw7C
+         LWLwALpCuKsDRIok4pjDVd9dioh+X70TuG9JbPqVHsDJKIOfrzbbcPJxgbpRQgV/aUuD
+         +9cfCwMz1kymxKn/nLxXUm+9Ilh7bHv11DeTyFrmaz6DlwYasXEkMnchtJN0DTiyK7rJ
+         femg==
+X-Gm-Message-State: AOAM530Vwn7c3x7ZrznJ33zOcUWYlmpOGrtVTXsiH3EH1B76mTw9YXP1
+        Mk5uqjA6SA9c3NCOvXjn2IOaAZMNcayPUA2DxDmvFpSVFu35
+X-Google-Smtp-Source: ABdhPJyqSpVlgYZ7Kv69L7Yr5/7ngYre/wE2XMXivojNJWXyCwLM/npg30emmg9eBU/wh6FL2jvrnSjjBcsAiYvIXyHicYnMMf/J
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a02:9107:: with SMTP id a7mr6642547jag.12.1608346203224;
+ Fri, 18 Dec 2020 18:50:03 -0800 (PST)
+Date:   Fri, 18 Dec 2020 18:50:03 -0800
+In-Reply-To: <000000000000f415bd05a047548f@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001e7f4605b6c84833@google.com>
+Subject: Re: kernel BUG at drivers/dma-buf/dma-buf.c:LINE!
+From:   syzbot <syzbot+d6734079f30f7fc39021@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, arve@android.com,
+        christian.koenig@amd.com, christian@brauner.io,
+        colin.king@canonical.com, devel@driverdev.osuosl.org,
+        dri-devel@lists.freedesktop.org, gregkh@linuxfoundation.org,
+        hridya@google.com, jbwyatt4@gmail.com, joel@joelfernandes.org,
+        linaro-mm-sig-owner@lists.linaro.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
+        m.szyprowski@samsung.com, maco@android.com, masahiroy@kernel.org,
+        peterz@infradead.org, shuah@kernel.org, skhan@linuxfoundation.org,
+        sumit.semwal@linaro.org, surenb@google.com,
+        syzkaller-bugs@googlegroups.com, tkjos@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are multiple locations that open-code the release of the last
-range in a device-dax instance. Consolidate this into a new
-dev_dax_trim_range() helper.
+syzbot suspects this issue was fixed by commit:
 
-This also addresses a kmemleak report:
+commit e722a295cf493388dae474745d30e91e1a2ec549
+Author: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Date:   Thu Aug 27 12:36:27 2020 +0000
 
-# cat /sys/kernel/debug/kmemleak
-[..]
-unreferenced object 0xffff976bd46f6240 (size 64):
-   comm "ndctl", pid 23556, jiffies 4299514316 (age 5406.733s)
-   hex dump (first 32 bytes):
-     00 00 00 00 00 00 00 00 00 00 20 c3 37 00 00 00  .......... .7...
-     ff ff ff 7f 38 00 00 00 00 00 00 00 00 00 00 00  ....8...........
-   backtrace:
-     [<00000000064003cf>] __kmalloc_track_caller+0x136/0x379
-     [<00000000d85e3c52>] krealloc+0x67/0x92
-     [<00000000d7d3ba8a>] __alloc_dev_dax_range+0x73/0x25c
-     [<0000000027d58626>] devm_create_dev_dax+0x27d/0x416
-     [<00000000434abd43>] __dax_pmem_probe+0x1c9/0x1000 [dax_pmem_core]
-     [<0000000083726c1c>] dax_pmem_probe+0x10/0x1f [dax_pmem]
-     [<00000000b5f2319c>] nvdimm_bus_probe+0x9d/0x340 [libnvdimm]
-     [<00000000c055e544>] really_probe+0x230/0x48d
-     [<000000006cabd38e>] driver_probe_device+0x122/0x13b
-     [<0000000029c7b95a>] device_driver_attach+0x5b/0x60
-     [<0000000053e5659b>] bind_store+0xb7/0xc3
-     [<00000000d3bdaadc>] drv_attr_store+0x27/0x31
-     [<00000000949069c5>] sysfs_kf_write+0x4a/0x57
-     [<000000004a8b5adf>] kernfs_fop_write+0x150/0x1e5
-     [<00000000bded60f0>] __vfs_write+0x1b/0x34
-     [<00000000b92900f0>] vfs_write+0xd8/0x1d1
+    staging: ion: remove from the tree
 
-Reported-by: Jane Chu <jane.chu@oracle.com>
-Cc: Zhen Lei <thunder.leizhen@huawei.com>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
----
- drivers/dax/bus.c |   44 +++++++++++++++++++++-----------------------
- 1 file changed, 21 insertions(+), 23 deletions(-)
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17d4f137500000
+start commit:   abb3438d Merge tag 'm68knommu-for-v5.9-rc3' of git://git.k..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=978db74cb30aa994
+dashboard link: https://syzkaller.appspot.com/bug?extid=d6734079f30f7fc39021
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17428596900000
 
-diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
-index 9761cb40d4bb..720cd140209f 100644
---- a/drivers/dax/bus.c
-+++ b/drivers/dax/bus.c
-@@ -367,19 +367,28 @@ void kill_dev_dax(struct dev_dax *dev_dax)
- }
- EXPORT_SYMBOL_GPL(kill_dev_dax);
- 
--static void free_dev_dax_ranges(struct dev_dax *dev_dax)
-+static void trim_dev_dax_range(struct dev_dax *dev_dax)
- {
-+	int i = dev_dax->nr_range - 1;
-+	struct range *range = &dev_dax->ranges[i].range;
- 	struct dax_region *dax_region = dev_dax->region;
--	int i;
- 
- 	device_lock_assert(dax_region->dev);
--	for (i = 0; i < dev_dax->nr_range; i++) {
--		struct range *range = &dev_dax->ranges[i].range;
--
--		__release_region(&dax_region->res, range->start,
--				range_len(range));
-+	dev_dbg(&dev_dax->dev, "delete range[%d]: %#llx:%#llx\n", i,
-+		(unsigned long long)range->start,
-+		(unsigned long long)range->end);
-+
-+	__release_region(&dax_region->res, range->start, range_len(range));
-+	if (--dev_dax->nr_range == 0) {
-+		kfree(dev_dax->ranges);
-+		dev_dax->ranges = NULL;
- 	}
--	dev_dax->nr_range = 0;
-+}
-+
-+static void free_dev_dax_ranges(struct dev_dax *dev_dax)
-+{
-+	while (dev_dax->nr_range)
-+		trim_dev_dax_range(dev_dax);
- }
- 
- static void unregister_dev_dax(void *dev)
-@@ -804,15 +813,10 @@ static int alloc_dev_dax_range(struct dev_dax *dev_dax, u64 start,
- 		return 0;
- 
- 	rc = devm_register_dax_mapping(dev_dax, dev_dax->nr_range - 1);
--	if (rc) {
--		dev_dbg(dev, "delete range[%d]: %pa:%pa\n", dev_dax->nr_range - 1,
--				&alloc->start, &alloc->end);
--		dev_dax->nr_range--;
--		__release_region(res, alloc->start, resource_size(alloc));
--		return rc;
--	}
-+	if (rc)
-+		trim_dev_dax_range(dev_dax);
- 
--	return 0;
-+	return rc;
- }
- 
- static int adjust_dev_dax_range(struct dev_dax *dev_dax, struct resource *res, resource_size_t size)
-@@ -885,12 +889,7 @@ static int dev_dax_shrink(struct dev_dax *dev_dax, resource_size_t size)
- 		if (shrink >= range_len(range)) {
- 			devm_release_action(dax_region->dev,
- 					unregister_dax_mapping, &mapping->dev);
--			__release_region(&dax_region->res, range->start,
--					range_len(range));
--			dev_dax->nr_range--;
--			dev_dbg(dev, "delete range[%d]: %#llx:%#llx\n", i,
--					(unsigned long long) range->start,
--					(unsigned long long) range->end);
-+			trim_dev_dax_range(dev_dax);
- 			to_shrink -= shrink;
- 			if (!to_shrink)
- 				break;
-@@ -1267,7 +1266,6 @@ static void dev_dax_release(struct device *dev)
- 	put_dax(dax_dev);
- 	free_dev_dax_id(dev_dax);
- 	dax_region_put(dax_region);
--	kfree(dev_dax->ranges);
- 	kfree(dev_dax->pgmap);
- 	kfree(dev_dax);
- }
+If the result looks correct, please mark the issue as fixed by replying with:
 
+#syz fix: staging: ion: remove from the tree
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
