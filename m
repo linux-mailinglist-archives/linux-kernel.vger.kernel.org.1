@@ -2,135 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FF2A2DF06A
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 17:21:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC7F72DF06E
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 17:25:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726869AbgLSQVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 11:21:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52008 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726752AbgLSQVW (ORCPT
+        id S1727008AbgLSQZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 11:25:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726865AbgLSQZC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 11:21:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608394795;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KbugKKrasuGedAjovAH1wi9O5DNDUKogVJv7kX6aCak=;
-        b=Sz/Q2MP+6Wk4r21MBRSwQZZZRuEv+EfWQJ51/Mcf9e5BVZ1mv7yVSkNeSnPNFXZMGNUTJi
-        iJDYg9auqHvJGu7qjxLH/efwSpxm5wIm11LEDOJupKSHBh4yIYgRx8HO/UmGAv0QEN7hZ9
-        MKcsxuQxPMeMitNLEKybyvjEVGOcBvE=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-244-B3KnRHqLP5-lMp6DkKIMYw-1; Sat, 19 Dec 2020 11:19:52 -0500
-X-MC-Unique: B3KnRHqLP5-lMp6DkKIMYw-1
-Received: by mail-wr1-f70.google.com with SMTP id g16so3375606wrv.1
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 08:19:51 -0800 (PST)
+        Sat, 19 Dec 2020 11:25:02 -0500
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBEDAC0613CF;
+        Sat, 19 Dec 2020 08:24:22 -0800 (PST)
+Received: by mail-qt1-x833.google.com with SMTP id y15so3662510qtv.5;
+        Sat, 19 Dec 2020 08:24:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2Idw1858AaNcCEHT1+hYkeNUEED08Ky6S/MizwxAB2c=;
+        b=IGJcsVY0daqFmjd3zPw0ss8DgAC8NgHzwgf9WnT+6pJYPGE65F/uHeKVw+anR+JGuK
+         gtw2CPJreJrPGlh6WYUfSYv8hVwx1c/nV43JqtpLlZxHLq6nM2M9NYZWIfzZkI6XcrCi
+         bEUsZxZhmhFW4sBF4ZWEPWj6aJTTGrGzngb5MvOK+086NPn8w7P5IcvXo0UBnj7WS8KV
+         pQo2TmUqZIbGYNcNZxsQ4L2ruxzVQZzdA5eh2EaXzKkCIFOhmi3keOEILGit0JXHQN3+
+         vJJfNRH9Y1YR45eP5Yf5snSqzAjNZSOYCNGJOcx+23fW+TvxrHlp0J7Ime2QeaAxgsBz
+         H9CQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KbugKKrasuGedAjovAH1wi9O5DNDUKogVJv7kX6aCak=;
-        b=hONF3yoBLyjwoiEnvMGW1uKFxi9t9CR2WxCW70ZasitITJooqlvgrh0cm0X14WqS4T
-         9fVqj4EWIUs79ifNMV2rem9urLCidP7lAo9qM4wXNDmzc8ul3RPEd8ayn7sY7tKw8Nfb
-         Mpd+SSNDAXPeRUwJ386V8ZAs11Imdcn7Meg1+iY4Wls7+s2OKht4vcFaLhnAUFaer71P
-         zO4kF0PYvjGFuJSBLJ+LBavIQ/QeAhILJ2tqzIPLG3XUXDQdkE8Pqb0wGyDNzKU42B8u
-         5TO0qOSJY3BiE8YB58HbPWpl6WpBL540tHA8TVhTr8AIwFns/XQPcJum2nvT+RAqJ/FO
-         XVDw==
-X-Gm-Message-State: AOAM533XdWQ/UqqKeH+NGpA3CrIH+GZVESzxUhKggfHz1wJmwETBciph
-        YCTR/2I1EHdL1k6PEvrn3uhi/3UkvgiMvlBUb1z4Z/gMqInBr2kAj8BR2i1ETkw38GYIqj8n7zA
-        kv4esH9lYusFkEX32DD6bOzleF3LcTehSSTWYOHG5K7R/HytYNjxAv7GedUS9WZXqMR+KrwWxHg
-        ==
-X-Received: by 2002:a1c:4907:: with SMTP id w7mr8853312wma.175.1608394790428;
-        Sat, 19 Dec 2020 08:19:50 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxDoFtPKJFk+dmEFPvt/bjm9gtgE66UYP/MfbL/0VfC6d5hJoBaYApgKBKCvWHod8b+k2m62A==
-X-Received: by 2002:a1c:4907:: with SMTP id w7mr8853293wma.175.1608394790222;
-        Sat, 19 Dec 2020 08:19:50 -0800 (PST)
-Received: from ?IPv6:2001:8a0:f91f:e900:1d90:d745:3c32:c159? ([2001:8a0:f91f:e900:1d90:d745:3c32:c159])
-        by smtp.gmail.com with ESMTPSA id b73sm22150875wmb.0.2020.12.19.08.19.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 19 Dec 2020 08:19:49 -0800 (PST)
-Subject: Re: [RFC PATCH] ptrace: make ptrace() fail if the tracee changed its
- pid unexpectedly
-To:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Jan Kratochvil <jan.kratochvil@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Simon Marchi <simon.marchi@efficios.com>,
-        linux-kernel@vger.kernel.org
-References: <20201217142931.GA8865@redhat.com>
- <875z50roia.fsf@x220.int.ebiederm.org>
-From:   Pedro Alves <palves@redhat.com>
-Message-ID: <fc796624-2660-8c2b-0956-2c9ba8281952@redhat.com>
-Date:   Sat, 19 Dec 2020 16:19:31 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=2Idw1858AaNcCEHT1+hYkeNUEED08Ky6S/MizwxAB2c=;
+        b=Iw7ns6a5mAL1uqme9lxbFZMZAh/9Hr9vKTVMZCmL4/dlhjtnz6LYWN51MTIjQTwoQA
+         lfkcdainLYp2T7gh+RBhKnSXoYBOGPf8GI9Y99fkh8b8z6qIi3cn+DGuYCrvY8lPQoqa
+         6DxF1lhPagn+J8O+XD/bGgzO7okS65+dQRLcA0BTlEjz50y/VFta8ow38nLRDxHUJVYT
+         cXz0Ug+GYY1mLOl78qrSJuX/smZDyHKSIaTFeeZgAY6m3vcEDbliL1yUC30hg7eaaM+/
+         /xizGKz0S7h66OS+egZQ+xavzCzRK2ljlReG47gLbgL4p+cejj/lN2VFoHiN0ljZ8xU1
+         itww==
+X-Gm-Message-State: AOAM5311qia4al8yUpKzG1T91UmawAlzicQgp3EhXYe6sqFJsJLJoYPl
+        schasrcCKcFLNCAatVP/QlA=
+X-Google-Smtp-Source: ABdhPJz+suuSsTBU1YT+pWGS2urPFSp/SgvBWH6K4qQVbSrtoOg07nO+RQAubcPSH3JsnKepbC8twA==
+X-Received: by 2002:ac8:7b2c:: with SMTP id l12mr9813723qtu.105.1608395061778;
+        Sat, 19 Dec 2020 08:24:21 -0800 (PST)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
+        by smtp.gmail.com with ESMTPSA id m8sm497156qkh.21.2020.12.19.08.24.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Dec 2020 08:24:20 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Sat, 19 Dec 2020 11:23:47 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Ian Kent <raven@themaw.net>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Fox Chen <foxhlchen@gmail.com>, akpm@linux-foundation.org,
+        dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, miklos@szeredi.hu,
+        ricklind@linux.vnet.ibm.com, sfr@canb.auug.org.au,
+        viro@zeniv.linux.org.uk
+Subject: Re: [PATCH v2 0/6] kernfs: proposed locking and concurrency
+ improvement
+Message-ID: <X94pE6IrziQCd4ra@mtj.duckdns.org>
+References: <efb7469c7bad2f6458c9a537b8e3623e7c303c21.camel@themaw.net>
+ <da4f730bbbb20c0920599ca5afc316e2c092b7d8.camel@themaw.net>
+ <CAC2o3DJsvB6kj=S6D3q+_OBjgez9Q9B5s3-_gjUjaKmb2MkTHQ@mail.gmail.com>
+ <c4002127c72c07a00e8ba0fae6b0ebf5ba8e08e7.camel@themaw.net>
+ <a39b73a53778094279522f1665be01ce15fb21f4.camel@themaw.net>
+ <c8a6c9adc3651e64cf694f580a8cb3d87d7cb893.camel@themaw.net>
+ <X9t1xVTZ/ApIvPMg@mtj.duckdns.org>
+ <67a3012a6a215001c8be9344aee1c99897ff8b7e.camel@themaw.net>
+ <X9zDu15MvJP3NU8K@mtj.duckdns.org>
+ <37c339831d4e7f3c6db88fbca80c6c2bd835dff2.camel@themaw.net>
 MIME-Version: 1.0
-In-Reply-To: <875z50roia.fsf@x220.int.ebiederm.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <37c339831d4e7f3c6db88fbca80c6c2bd835dff2.camel@themaw.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/17/20 11:39 PM, Eric W. Biederman wrote:
+Hello,
 
->> resume the old leader L, it resumes the post-exec thread T which was
->> actually now stopped in PTHREAD_EVENT_EXEC. In this case the
->> PTHREAD_EVENT_EXEC event is lost, and the tracer can't know that the
->> tracee changed its pid.
-> 
-> The change seems sensible.  I don't expect this is common but it looks
-> painful to deal with if it happens.
+On Sat, Dec 19, 2020 at 03:08:13PM +0800, Ian Kent wrote:
+> And looking further I see there's a race that kernfs can't do anything
+> about between kernfs_refresh_inode() and fs/inode.c:update_times().
 
-Yeah, the debug session becomes completely messed up, as the ptracer has no
-idea the process is running a new image, breakpoints were wiped out, and
-the post-exec process is resumed without the ptracer having had a chance
-to install new breakpoints.  I don't see any way to deal with it without
-kernel help.
+Do kernfs files end up calling into that path tho? Doesn't look like it to
+me but if so yeah we'd need to override the update_time for kernfs.
 
-> 
-> Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> 
-> I am wondering if this should be expanded to all ptrace types for
-> consistency.  Or maybe we should set a flag to make this happen for
-> all ptrace events.
-> 
-> It just seems really odd to only worry about missing this event.
-> I admit this a threaded PTRACE_EVENT_EXEC is the only event we are
-> likely to miss but still.
+> +static int kernfs_iop_update_time(struct inode *inode, struct timespec64 *time, int flags)
+>  {
+> -	struct inode *inode = d_inode(path->dentry);
+>  	struct kernfs_node *kn = inode->i_private;
+> +	struct kernfs_iattrs *attrs;
+>  
+>  	mutex_lock(&kernfs_mutex);
+> +	attrs = kernfs_iattrs(kn);
+> +	if (!attrs) {
+> +		mutex_unlock(&kernfs_mutex);
+> +		return -ENOMEM;
+> +	}
+> +
+> +	/* Which kernfs node attributes should be updated from
+> +	 * time?
+> +	 */
+> +
+>  	kernfs_refresh_inode(kn, inode);
+>  	mutex_unlock(&kernfs_mutex);
 
-It's more about the tid stealing than the event itself.  I mean,
-we lose the event because the tid changes magically without warning.
-An exec is the only scenario where this happens.
+I don't see how this would reflect the changes from kernfs_setattr() into
+the attached inode. This would actually make the attr updates obviously racy
+- the userland visible attrs would be stale until the inode gets reclaimed
+and then when it gets reinstantiated it'd show the latest information.
 
-> 
-> Do you by any chance have any debugger/strace test cases?
-> 
-> I would think that would be the way to test to see if this breaks
-> anything.  I think I remember strace having a good test suite.
+That said, if you wanna take the direction where attr updates are reflected
+to the associated inode when the change occurs, which makes sense, the right
+thing to do would be making kernfs_setattr() update the associated inode if
+existent.
 
-I ran the GDB testsuite against this, no regressions showed up.
+Thanks.
 
-BTW, the problem was discovered by Simon Marchi when he tried to write
-a GDB testcase for a multi-threaded exec scenario:
-
- https://sourceware.org/bugzilla/show_bug.cgi?id=26754
-
-I've went through GDB's code looking for potential issues with the change and whether
-it would affect GDBs already in the wild.  Tricky corner cases abound, but I think
-we're good.  Feel free to add my ack:
-
-Acked-by: Pedro Alves <palves@redhat.com>
-
-Thanks,
-Pedro Alves
-
+-- 
+tejun
