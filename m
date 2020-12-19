@@ -2,148 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3C052DEF79
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 14:05:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EE462DEFB7
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 14:08:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728093AbgLSNEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 08:04:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52450 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728868AbgLSNE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 08:04:29 -0500
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiaochen Shen <xiaochen.shen@intel.com>,
-        Borislav Petkov <bp@suse.de>, Tony Luck <tony.luck@intel.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 5.4 34/34] x86/resctrl: Fix incorrect local bandwidth when mba_sc is enabled
-Date:   Sat, 19 Dec 2020 14:03:31 +0100
-Message-Id: <20201219125343.067191922@linuxfoundation.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201219125341.384025953@linuxfoundation.org>
-References: <20201219125341.384025953@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1728658AbgLSNHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 08:07:41 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:24207 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728005AbgLSNHg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Dec 2020 08:07:36 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608383236; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=2rdcGMoZjvwEI14/iE0GeGMU3+IFUPK3B3exsw9OHwk=; b=o+5lrR8mkjZh2eClHECwgUBRA94KmUsgk1CE3ltx9qhgJ8WikjFRE3IySwMpap8BUrAuQ3oB
+ OGZkRMTYNpQdBtQ2t2nOpmvqBVEI+QMOmwju8te56JpuhbuwXi9e2/PEfQsygEXllkfY7Lli
+ PLHHxPB1Hb/pOmzhkuZ7EXLl+MQ=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5fddfaeaf5e9af65f825920c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 19 Dec 2020 13:06:50
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 62DF3C43469; Sat, 19 Dec 2020 13:06:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A5697C43462;
+        Sat, 19 Dec 2020 13:06:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A5697C43462
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Srinivasan Raju <srini.raju@purelifi.com>
+Cc:     mostafa.afgani@purelifi.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel@vger.kernel.org (open list),
+        linux-wireless@vger.kernel.org (open list:NETWORKING DRIVERS (WIRELESS)),
+        netdev@vger.kernel.org (open list:NETWORKING DRIVERS)
+Subject: Re: [PATCH] [v11] wireless: Initial driver submission for pureLiFi STA devices
+References: <20200928102008.32568-1-srini.raju@purelifi.com>
+        <20201208115719.349553-1-srini.raju@purelifi.com>
+Date:   Sat, 19 Dec 2020 15:06:42 +0200
+In-Reply-To: <20201208115719.349553-1-srini.raju@purelifi.com> (Srinivasan
+        Raju's message of "Tue, 8 Dec 2020 17:27:04 +0530")
+Message-ID: <87sg82q719.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiaochen Shen <xiaochen.shen@intel.com>
+Srinivasan Raju <srini.raju@purelifi.com> writes:
 
-commit 06c5fe9b12dde1b62821f302f177c972bb1c81f9 upstream
+> This introduces the pureLiFi LiFi driver for LiFi-X, LiFi-XC
+> and LiFi-XL USB devices.
+>
+> This driver implementation has been based on the zd1211rw driver.
+>
+> Driver is based on 802.11 softMAC Architecture and uses
+> native 802.11 for configuration and management.
+>
+> The driver is compiled and tested in ARM, x86 architectures and
+> compiled in powerpc architecture.
 
-The MBA software controller (mba_sc) is a feedback loop which
-periodically reads MBM counters and tries to restrict the bandwidth
-below a user-specified value. It tags along the MBM counter overflow
-handler to do the updates with 1s interval in mbm_update() and
-update_mba_bw().
+Is endianess support is properly implemented?
 
-The purpose of mbm_update() is to periodically read the MBM counters to
-make sure that the hardware counter doesn't wrap around more than once
-between user samplings. mbm_update() calls __mon_event_count() for local
-bandwidth updating when mba_sc is not enabled, but calls mbm_bw_count()
-instead when mba_sc is enabled. __mon_event_count() will not be called
-for local bandwidth updating in MBM counter overflow handler, but it is
-still called when reading MBM local bandwidth counter file
-'mbm_local_bytes', the call path is as below:
+> +			fw_data[tbuf_idx] =
+> +				((fw_data[tbuf_idx] & 128) >> 7) |
+> +				((fw_data[tbuf_idx] &  64) >> 5) |
+> +				((fw_data[tbuf_idx] &  32) >> 3) |
+> +				((fw_data[tbuf_idx] &  16) >> 1) |
+> +				((fw_data[tbuf_idx] &   8) << 1) |
+> +				((fw_data[tbuf_idx] &   4) << 3) |
+> +				((fw_data[tbuf_idx] &   2) << 5) |
+> +				((fw_data[tbuf_idx] &   1) << 7);
 
-  rdtgroup_mondata_show()
-    mon_event_read()
-      mon_event_count()
-        __mon_event_count()
+Is this cpu_to_le16() or what? Try avoid reinventing the wheel and use
+what kernel provides you.
 
-In __mon_event_count(), m->chunks is updated by delta chunks which is
-calculated from previous MSR value (m->prev_msr) and current MSR value.
-When mba_sc is enabled, m->chunks is also updated in mbm_update() by
-mistake by the delta chunks which is calculated from m->prev_bw_msr
-instead of m->prev_msr. But m->chunks is not used in update_mba_bw() in
-the mba_sc feedback loop.
+Also noticed lots of dev_info() spamming, please convert those to debug
+messages.
 
-When reading MBM local bandwidth counter file, m->chunks was changed
-unexpectedly by mbm_bw_count(). As a result, the incorrect local
-bandwidth counter which calculated from incorrect m->chunks is shown to
-the user.
+And rx_usb_enabled is racy and it will not work if there are multiple
+devices. Maybe move it to struct purelifi_usb or similar?
 
-Fix this by removing incorrect m->chunks updating in mbm_bw_count() in
-MBM counter overflow handler, and always calling __mon_event_count() in
-mbm_update() to make sure that the hardware local bandwidth counter
-doesn't wrap around.
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-Test steps:
-  # Run workload with aggressive memory bandwidth (e.g., 10 GB/s)
-  git clone https://github.com/intel/intel-cmt-cat && cd intel-cmt-cat
-  && make
-  ./tools/membw/membw -c 0 -b 10000 --read
-
-  # Enable MBA software controller
-  mount -t resctrl resctrl -o mba_MBps /sys/fs/resctrl
-
-  # Create control group c1
-  mkdir /sys/fs/resctrl/c1
-
-  # Set MB throttle to 6 GB/s
-  echo "MB:0=6000;1=6000" > /sys/fs/resctrl/c1/schemata
-
-  # Write PID of the workload to tasks file
-  echo `pidof membw` > /sys/fs/resctrl/c1/tasks
-
-  # Read local bytes counters twice with 1s interval, the calculated
-  # local bandwidth is not as expected (approaching to 6 GB/s):
-  local_1=`cat /sys/fs/resctrl/c1/mon_data/mon_L3_00/mbm_local_bytes`
-  sleep 1
-  local_2=`cat /sys/fs/resctrl/c1/mon_data/mon_L3_00/mbm_local_bytes`
-  echo "local b/w (bytes/s):" `expr $local_2 - $local_1`
-
-Before fix:
-  local b/w (bytes/s): 11076796416
-
-After fix:
-  local b/w (bytes/s): 5465014272
-
-Fixes: ba0f26d8529c (x86/intel_rdt/mba_sc: Prepare for feedback loop)
-Signed-off-by: Xiaochen Shen <xiaochen.shen@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/1607063279-19437-1-git-send-email-xiaochen.shen@intel.com
-[sudip: adjust context]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- arch/x86/kernel/cpu/resctrl/monitor.c |    6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
---- a/arch/x86/kernel/cpu/resctrl/monitor.c
-+++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-@@ -280,7 +280,6 @@ static void mbm_bw_count(u32 rmid, struc
- 		return;
- 
- 	chunks = mbm_overflow_count(m->prev_bw_msr, tval);
--	m->chunks += chunks;
- 	cur_bw = (chunks * r->mon_scale) >> 20;
- 
- 	if (m->delta_comp)
-@@ -450,15 +449,14 @@ static void mbm_update(struct rdt_domain
- 	}
- 	if (is_mbm_local_enabled()) {
- 		rr.evtid = QOS_L3_MBM_LOCAL_EVENT_ID;
-+		__mon_event_count(rmid, &rr);
- 
- 		/*
- 		 * Call the MBA software controller only for the
- 		 * control groups and when user has enabled
- 		 * the software controller explicitly.
- 		 */
--		if (!is_mba_sc(NULL))
--			__mon_event_count(rmid, &rr);
--		else
-+		if (is_mba_sc(NULL))
- 			mbm_bw_count(rmid, &rr);
- 	}
- }
-
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
