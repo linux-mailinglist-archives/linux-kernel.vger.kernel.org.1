@@ -2,251 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A232DEC66
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 01:29:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9176F2DEC74
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 01:40:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726305AbgLSA25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 19:28:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34394 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726216AbgLSA24 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 19:28:56 -0500
-Date:   Fri, 18 Dec 2020 16:28:15 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1608337695;
-        bh=MxdOW1YJwHi1LBEs4sdhNuXOJG3dPFwb1MAqxaYTwik=;
-        h=From:To:Subject:From;
-        b=hCaGUM+KjxUZH9AklFi8aP83ZXsNqCnzadOLyfu/KHXJMyquMZfLnw+CvXcX9H1Ak
-         n3YFcWLIZBUUA7NY7qOUtSzQ+V+12+sLwa2dSaV3XFl99xluEsYhBr9yCHRc3TOUzZ
-         sozxyjlMY5L3avdOTXgR+Qg6M5gD3qhIsN3Pd7bk=
-From:   akpm@linux-foundation.org
-To:     broonie@kernel.org, mhocko@suse.cz, sfr@canb.auug.org.au,
-        linux-next@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        mm-commits@vger.kernel.org
-Subject:  mmotm 2020-12-18-16-27 uploaded
-Message-ID: <20201219002815.tXANZ%akpm@linux-foundation.org>
-User-Agent: s-nail v14.9.10
+        id S1726237AbgLSAkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 19:40:14 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:50680 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725914AbgLSAkN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 19:40:13 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0482D180E;
+        Sat, 19 Dec 2020 01:39:30 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1608338370;
+        bh=Mwf0q0t0LMS6PGhWBpcj+B3EqmdyeuNAiT1SG6SpHqY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EJ2cPSMkcWs8RgqA1zBGGIOT6d697PVsPE4YW+7vchJuUU83qS+8VUgnX8fDo0R6a
+         LHqmo09Q1EzHrjfeEyPdp2qqXwUKPT8+4m+1vc2Q9pOSXlFwBSHrX6GUXC+I1DuQRQ
+         FlS6Y4HW9T02cNxFS3RT1mHaoh12uWGyr7U/9xk4=
+Date:   Sat, 19 Dec 2020 02:39:22 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
+        lenb@kernel.org, gregkh@linuxfoundation.org, yong.zhi@intel.com,
+        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
+        tian.shu.qiu@intel.com, mchehab@kernel.org, robert.moore@intel.com,
+        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, andriy.shevchenko@linux.intel.com,
+        linux@rasmusvillemoes.dk,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
+        linus.walleij@linaro.org, heikki.krogerus@linux.intel.com,
+        kitakar@gmail.com, jorhand@linux.microsoft.com
+Subject: Re: [PATCH v2 12/12] ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver
+Message-ID: <X91Lum0ZPDjo1cTt@pendragon.ideasonboard.com>
+References: <20201217234337.1983732-1-djrscally@gmail.com>
+ <20201217234337.1983732-13-djrscally@gmail.com>
+ <X9zehD1xtQP/bxXu@pendragon.ideasonboard.com>
+ <5c0ae9f8-ba58-a26c-400b-7d85d01087a3@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <5c0ae9f8-ba58-a26c-400b-7d85d01087a3@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mm-of-the-moment snapshot 2020-12-18-16-27 has been uploaded to
+Hi Daniel,
 
-   https://www.ozlabs.org/~akpm/mmotm/
+On Fri, Dec 18, 2020 at 11:57:54PM +0000, Daniel Scally wrote:
+> Hi Laurent - thanks for the comments
+> 
+> On 18/12/2020 16:53, Laurent Pinchart wrote:
+> >> +static void cio2_bridge_init_property_names(struct cio2_sensor *sensor)
+> >> +{
+> >> +	strscpy(sensor->prop_names.clock_frequency, "clock-frequency",
+> >> +		sizeof(sensor->prop_names.clock_frequency));
+> >> +	strscpy(sensor->prop_names.rotation, "rotation",
+> >> +		sizeof(sensor->prop_names.rotation));
+> >> +	strscpy(sensor->prop_names.bus_type, "bus-type",
+> >> +		sizeof(sensor->prop_names.bus_type));
+> >> +	strscpy(sensor->prop_names.data_lanes, "data-lanes",
+> >> +		sizeof(sensor->prop_names.data_lanes));
+> >> +	strscpy(sensor->prop_names.remote_endpoint, "remote-endpoint",
+> >> +		sizeof(sensor->prop_names.remote_endpoint));
+> >> +	strscpy(sensor->prop_names.link_frequencies, "link-frequencies",
+> >> +		sizeof(sensor->prop_names.link_frequencies));
+> > 
+> > Just curious, was there anything not working correctly with the proposal
+> > I made ?
+> > 
+> > static const struct cio2_property_names prop_names = {
+> > 	.clock_frequency = "clock-frequency",
+> > 	.rotation = "rotation",
+> > 	.bus_type = "bus-type",
+> > 	.data_lanes = "data-lanes",
+> > 	.remote_endpoint = "remote-endpoint",
+> > };
+> > 
+> > static void cio2_bridge_init_property_names(struct cio2_sensor *sensor)
+> > {
+> > 	sensor->prop_names = prop_names;
+> > }
+> > 
+> > It generates a warning when the string is too long for the field size,
+> > which should help catching issues at compilation time.
+> 
+> Yes, though I don't know how much of a real-world problem it would have
+> been - if you recall we have the issue that the device grabs a reference
+> to the software_nodes (after we stopped delaying until after the
+> i2c_client is available), which means we can't safely free the
+> cio2_bridge struct on module unload. That also means we can't rely on
+> those pointers to string literals existing, because if the ipu3-cio2
+> module gets unloaded they'll be gone.
 
-mmotm-readme.txt says
+But the strings above are not stored as literals in .rodata, they're
+copied in prop_names (itself in .rodata), which is then copied to
+sensor->prop_names.
 
-README for mm-of-the-moment:
+> Shame, as it's way neater.
+> 
+> >> +static void cio2_bridge_init_swnode_names(struct cio2_sensor *sensor)
+> >> +{
+> >> +	snprintf(sensor->node_names.remote_port, 7, "port@%u", sensor->ssdb.link);
+> >> +	strscpy(sensor->node_names.port, "port@0", sizeof(sensor->node_names.port));
+> >> +	strscpy(sensor->node_names.endpoint, "endpoint@0", sizeof(sensor->node_names.endpoint));
+> > 
+> > I'd wrap lines, but maybe that's because I'm an old-school, 80-columns
+> > programmer :-)
+> 
+> Heh sure, I'll wrap them.
+> 
+> >> +static int cio2_bridge_connect_sensors(struct cio2_bridge *bridge,
+> >> +				       struct pci_dev *cio2)
+> >> +{
+> >> +	struct fwnode_handle *fwnode;
+> >> +	struct cio2_sensor *sensor;
+> >> +	struct acpi_device *adev;
+> >> +	unsigned int i;
+> >> +	int ret = 0;
+> >> +
+> >> +	for (i = 0; i < ARRAY_SIZE(cio2_supported_sensors); i++) {
+> >> +		const struct cio2_sensor_config *cfg = &cio2_supported_sensors[i];
+> >> +
+> >> +		for_each_acpi_dev_match(adev, cfg->hid, NULL, -1) {
+> >> +			if (bridge->n_sensors >= CIO2_NUM_PORTS) {
+> >> +				dev_warn(&cio2->dev, "Exceeded available CIO2 ports\n");
+> >> +				/* overflow i so outer loop ceases */
+> >> +				i = ARRAY_SIZE(cio2_supported_sensors);
+> >> +				break;
+> > 
+> > Or just
+> > 
+> > 				return 0;
+> > 
+> > ?
+> 
+> Derp, yes of course.
+> 
+> 
+> >> +/* Data representation as it is in ACPI SSDB buffer */
+> >> +struct cio2_sensor_ssdb {
+> >> +	u8 version;				/* 0000 */
+> >> +	u8 sku;					/* 0001 */
+> >> +	u8 guid_csi2[16];			/* 0002 */
+> >> +	u8 devfunction;				/* 0003 */
+> >> +	u8 bus;					/* 0004 */
+> >> +	u32 dphylinkenfuses;			/* 0005 */
+> >> +	u32 clockdiv;				/* 0009 */
+> >> +	u8 link;				/* 0013 */
+> >> +	u8 lanes;				/* 0014 */
+> >> +	u32 csiparams[10];			/* 0015 */
+> >> +	u32 maxlanespeed;			/* 0019 */
+> >> +	u8 sensorcalibfileidx;			/* 0023 */
+> >> +	u8 sensorcalibfileidxInMBZ[3];		/* 0024 */
+> >> +	u8 romtype;				/* 0025 */
+> >> +	u8 vcmtype;				/* 0026 */
+> >> +	u8 platforminfo;			/* 0027 */
+> > 
+> > Why stop at 27 ? :-) I'd either go all the way, or not at all. It's also
+> > quite customary to represent offset as hex values, as that's what most
+> > hex editors / viewers will show.
+> 
+> Oops - that was actually just me debugging...I guess I might actually
+> finish it, converted to hex. It came in useful reading the DSDT to have
+> that somewhere easy to refer to.
+> 
+> > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> 
+> Nice - thank you!
 
-https://www.ozlabs.org/~akpm/mmotm/
+-- 
+Regards,
 
-This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
-more than once a week.
-
-You will need quilt to apply these patches to the latest Linus release (5.x
-or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
-https://ozlabs.org/~akpm/mmotm/series
-
-The file broken-out.tar.gz contains two datestamp files: .DATE and
-.DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
-followed by the base kernel version against which this patch series is to
-be applied.
-
-This tree is partially included in linux-next.  To see which patches are
-included in linux-next, consult the `series' file.  Only the patches
-within the #NEXT_PATCHES_START/#NEXT_PATCHES_END markers are included in
-linux-next.
-
-
-A full copy of the full kernel tree with the linux-next and mmotm patches
-already applied is available through git within an hour of the mmotm
-release.  Individual mmotm releases are tagged.  The master branch always
-points to the latest release, so it's constantly rebasing.
-
-	https://github.com/hnaz/linux-mm
-
-The directory https://www.ozlabs.org/~akpm/mmots/ (mm-of-the-second)
-contains daily snapshots of the -mm tree.  It is updated more frequently
-than mmotm, and is untested.
-
-A git copy of this tree is also available at
-
-	https://github.com/hnaz/linux-mm
-
-
-
-This mmotm tree contains the following patches against 5.10:
-(patches marked "*" will be included in linux-next)
-
-  origin.patch
-* mm-memcg-bail-early-from-swap-accounting-if-memcg-disabled.patch
-* mm-memcg-warning-on-memcg-after-readahead-page-charged.patch
-* mm-memcg-remove-unused-definitions.patch
-* mm-kvm-account-kvm_vcpu_mmap-to-kmemcg.patch
-* mm-memcontrol-rewrite-mem_cgroup_page_lruvec.patch
-* epoll-check-for-events-when-removing-a-timed-out-thread-from-the-wait-queue.patch
-* epoll-simplify-signal-handling.patch
-* epoll-pull-fatal-signal-checks-into-ep_send_events.patch
-* epoll-move-eavail-next-to-the-list_empty_careful-check.patch
-* epoll-simplify-and-optimize-busy-loop-logic.patch
-* epoll-pull-all-code-between-fetch_events-and-send_event-into-the-loop.patch
-* epoll-replace-gotos-with-a-proper-loop.patch
-* epoll-eliminate-unnecessary-lock-for-zero-timeout.patch
-* kasan-drop-unnecessary-gpl-text-from-comment-headers.patch
-* kasan-kasan_vmalloc-depends-on-kasan_generic.patch
-* kasan-group-vmalloc-code.patch
-* kasan-shadow-declarations-only-for-software-modes.patch
-* kasan-rename-unpoison_shadow-to-unpoison_range.patch
-* kasan-rename-kasan_shadow_-to-kasan_granule_.patch
-* kasan-only-build-initc-for-software-modes.patch
-* kasan-split-out-shadowc-from-commonc.patch
-* kasan-define-kasan_memory_per_shadow_page.patch
-* kasan-rename-report-and-tags-files.patch
-* kasan-dont-duplicate-config-dependencies.patch
-* kasan-hide-invalid-free-check-implementation.patch
-* kasan-decode-stack-frame-only-with-kasan_stack_enable.patch
-* kasan-arm64-only-init-shadow-for-software-modes.patch
-* kasan-arm64-only-use-kasan_depth-for-software-modes.patch
-* kasan-arm64-move-initialization-message.patch
-* kasan-arm64-rename-kasan_init_tags-and-mark-as-__init.patch
-* kasan-rename-addr_has_shadow-to-addr_has_metadata.patch
-* kasan-rename-print_shadow_for_address-to-print_memory_metadata.patch
-* kasan-rename-shadow-layout-macros-to-meta.patch
-* kasan-separate-metadata_fetch_row-for-each-mode.patch
-* kasan-introduce-config_kasan_hw_tags.patch
-* arm64-enable-armv85-a-asm-arch-option.patch
-* arm64-mte-add-in-kernel-mte-helpers.patch
-* arm64-mte-reset-the-page-tag-in-page-flags.patch
-* arm64-mte-add-in-kernel-tag-fault-handler.patch
-* arm64-kasan-allow-enabling-in-kernel-mte.patch
-* arm64-mte-convert-gcr_user-into-an-exclude-mask.patch
-* arm64-mte-switch-gcr_el1-in-kernel-entry-and-exit.patch
-* kasan-mm-untag-page-address-in-free_reserved_area.patch
-* arm64-kasan-align-allocations-for-hw_tags.patch
-* arm64-kasan-add-arch-layer-for-memory-tagging-helpers.patch
-* kasan-define-kasan_granule_size-for-hw_tags.patch
-* kasan-x86-s390-update-undef-config_kasan.patch
-* kasan-arm64-expand-config_kasan-checks.patch
-* kasan-arm64-implement-hw_tags-runtime.patch
-* kasan-arm64-print-report-from-tag-fault-handler.patch
-* kasan-mm-reset-tags-when-accessing-metadata.patch
-* kasan-arm64-enable-config_kasan_hw_tags.patch
-* kasan-add-documentation-for-hardware-tag-based-mode.patch
-* kselftest-arm64-check-gcr_el1-after-context-switch.patch
-* kasan-simplify-quarantine_put-call-site.patch
-* kasan-rename-get_alloc-free_info.patch
-* kasan-introduce-set_alloc_info.patch
-* kasan-arm64-unpoison-stack-only-with-config_kasan_stack.patch
-* kasan-allow-vmap_stack-for-hw_tags-mode.patch
-* kasan-remove-__kasan_unpoison_stack.patch
-* kasan-inline-kasan_reset_tag-for-tag-based-modes.patch
-* kasan-inline-random_tag-for-hw_tags.patch
-* kasan-open-code-kasan_unpoison_slab.patch
-* kasan-inline-unpoison_range-and-check_invalid_free.patch
-* kasan-add-and-integrate-kasan-boot-parameters.patch
-* kasan-mm-check-kasan_enabled-in-annotations.patch
-* kasan-mm-rename-kasan_poison_kfree.patch
-* kasan-dont-round_up-too-much.patch
-* kasan-simplify-assign_tag-and-set_tag-calls.patch
-* kasan-clarify-comment-in-__kasan_kfree_large.patch
-* kasan-sanitize-objects-when-metadata-doesnt-fit.patch
-* kasan-mm-allow-cache-merging-with-no-metadata.patch
-* kasan-update-documentation.patch
-* mm-fix-spelling-mistake-in-kconfig-whats-whats.patch
-* epoll-convert-internal-api-to-timespec64.patch
-* epoll-add-syscall-epoll_pwait2.patch
-* epoll-wire-up-syscall-epoll_pwait2.patch
-* selftests-filesystems-expand-epoll-with-epoll_pwait2.patch
-* kasan-fix-memory-leak-of-kasan-quarantine.patch
-* lib-zlib-fix-inflating-zlib-streams-on-s390.patch
-* selftests-vm-fix-building-protection-keys-test.patch
-* mm-hugetlb-fix-deadlock-in-hugetlb_cow-error-path.patch
-* mm-generalise-cow-smc-tlb-flushing-race-comment.patch
-* proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
-* proc-kpageflags-do-not-use-uninitialized-struct-pages.patch
-* ocfs2-clear-links-count-in-ocfs2_mknod-if-an-error-occurs.patch
-* ocfs2-fix-ocfs2-corrupt-when-iputting-an-inode.patch
-* ramfs-support-o_tmpfile.patch
-* kernel-watchdog-flush-all-printk-nmi-buffers-when-hardlockup-detected.patch
-  mm.patch
-* mm-msync-exit-early-when-the-flags-is-an-ms_async-and-start-vm_start.patch
-* mm-dont-setpageworkingset-unconditionally-during-swapin.patch
-* mm-mmap-fix-the-adjusted-length-error.patch
-* mm-huge_memoryc-update-tlb-entry-if-pmd-is-changed.patch
-* mips-do-not-call-flush_tlb_all-when-setting-pmd-entry.patch
-* mm-vmscan-__isolate_lru_page_prepare-clean-up.patch
-* mm-memblock-enforce-overlap-of-memorymemblock-and-memoryreserved.patch
-* mm-fix-initialization-of-struct-page-for-holes-in-memory-layout.patch
-* mm-fix-initialization-of-struct-page-for-holes-in-memory-layout-checkpatch-fixes.patch
-* mm-make-pagecache-tagged-lookups-return-only-head-pages.patch
-* mm-shmem-use-pagevec_lookup-in-shmem_unlock_mapping.patch
-* mm-swap-optimise-get_shadow_from_swap_cache.patch
-* mm-add-fgp_entry.patch
-* mm-filemap-rename-find_get_entry-to-mapping_get_entry.patch
-* mm-filemap-add-helper-for-finding-pages.patch
-* mm-filemap-add-helper-for-finding-pages-fix.patch
-* mm-filemap-add-mapping_seek_hole_data.patch
-* mm-filemap-add-mapping_seek_hole_data-fix.patch
-* iomap-use-mapping_seek_hole_data.patch
-* mm-add-and-use-find_lock_entries.patch
-* mm-add-and-use-find_lock_entries-fix.patch
-* mm-add-an-end-parameter-to-find_get_entries.patch
-* mm-add-an-end-parameter-to-pagevec_lookup_entries.patch
-* mm-remove-nr_entries-parameter-from-pagevec_lookup_entries.patch
-* mm-pass-pvec-directly-to-find_get_entries.patch
-* mm-remove-pagevec_lookup_entries.patch
-* mmthpshmem-limit-shmem-thp-alloc-gfp_mask.patch
-* mmthpshm-limit-gfp-mask-to-no-more-than-specified.patch
-* mmthpshmem-make-khugepaged-obey-tmpfs-mount-flags.patch
-* mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings.patch
-* mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings-fix.patch
-* mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings-fix-2.patch
-* mm-add-kernel-electric-fence-infrastructure.patch
-* mm-add-kernel-electric-fence-infrastructure-fix.patch
-* mm-add-kernel-electric-fence-infrastructure-fix-2.patch
-* x86-kfence-enable-kfence-for-x86.patch
-* arm64-kfence-enable-kfence-for-arm64.patch
-* kfence-use-pt_regs-to-generate-stack-trace-on-faults.patch
-* mm-kfence-insert-kfence-hooks-for-slab.patch
-* mm-kfence-insert-kfence-hooks-for-slub.patch
-* kfence-kasan-make-kfence-compatible-with-kasan.patch
-* kfence-documentation-add-kfence-documentation.patch
-* kfence-add-test-suite.patch
-* kfence-add-test-suite-fix.patch
-* maintainers-add-entry-for-kfence.patch
-* info-task-hung-in-generic_file_write_iter.patch
-* info-task-hung-in-generic_file_write-fix.patch
-* kernel-hung_taskc-monitor-killed-tasks.patch
-* proc-sysctl-make-protected_-world-readable.patch
-* lib-optimize-cpumask_local_spread.patch
-* bitops-introduce-the-for_each_set_clump-macro.patch
-* lib-test_bitmapc-add-for_each_set_clump-test-cases.patch
-* gpio-thunderx-utilize-for_each_set_clump-macro.patch
-* gpio-xilinx-utilize-generic-bitmap_get_value-and-_set_value.patch
-* aio-simplify-read_events.patch
-  linux-next.patch
-  linux-next-rejects.patch
-* kmap-stupid-hacks-to-make-it-compile.patch
-* mm-slub-call-account_slab_page-after-slab-page-initialization.patch
-* mm-memcg-slab-pre-allocate-obj_cgroups-for-slab-caches-with-slab_account.patch
-* mm-memcg-slab-pre-allocate-obj_cgroups-for-slab-caches-with-slab_account-v2.patch
-* mm-add-definition-of-pmd_page_order.patch
-* mmap-make-mlock_future_check-global.patch
-* set_memory-allow-set_direct_map__noflush-for-multiple-pages.patch
-* set_memory-allow-set_direct_map__noflush-for-multiple-pages-fix.patch
-* set_memory-allow-querying-whether-set_direct_map_-is-actually-enabled.patch
-* set_memory-allow-querying-whether-set_direct_map_-is-actually-enabled-fix.patch
-* mm-introduce-memfd_secret-system-call-to-create-secret-memory-areas.patch
-* secretmem-use-pmd-size-pages-to-amortize-direct-map-fragmentation.patch
-* secretmem-add-memcg-accounting.patch
-* pm-hibernate-disable-when-there-are-active-secretmem-users.patch
-* arch-mm-wire-up-memfd_secret-system-call-were-relevant.patch
-* arch-mm-wire-up-memfd_secret-system-call-were-relevant-fix.patch
-* secretmem-test-add-basic-selftest-for-memfd_secret2.patch
-* secretmem-test-add-basic-selftest-for-memfd_secret2-fix.patch
-  make-sure-nobodys-leaking-resources.patch
-  releasing-resources-with-children.patch
-  mutex-subsystem-synchro-test-module.patch
-  kernel-forkc-export-kernel_thread-to-modules.patch
-  workaround-for-a-pci-restoring-bug.patch
+Laurent Pinchart
