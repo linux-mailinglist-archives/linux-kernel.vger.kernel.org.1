@@ -2,73 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D372DEEA7
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 13:17:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A19332DEEAA
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 13:19:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726561AbgLSMRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 07:17:40 -0500
-Received: from mail-ed1-f43.google.com ([209.85.208.43]:46137 "EHLO
+        id S1726590AbgLSMTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 07:19:14 -0500
+Received: from mail-ed1-f43.google.com ([209.85.208.43]:35940 "EHLO
         mail-ed1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726457AbgLSMRk (ORCPT
+        with ESMTP id S1726457AbgLSMTN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 07:17:40 -0500
-Received: by mail-ed1-f43.google.com with SMTP id b73so5037642edf.13;
-        Sat, 19 Dec 2020 04:17:23 -0800 (PST)
+        Sat, 19 Dec 2020 07:19:13 -0500
+Received: by mail-ed1-f43.google.com with SMTP id b2so5112380edm.3;
+        Sat, 19 Dec 2020 04:18:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=0HaZYWjwoz4Il+vDtKxdT28VigVltmPwXsNY0JZsWLw=;
-        b=pWTk7zeKVUHCYIq1UilywzMQPzihaW+29xQgPpZLm+NKUU7+S1xOpybbiITgQ1oemd
-         cj7cxSZCPY3rbMPko9skZbP/vp/BF3kWkIV8SlVXbi5x44GuP0lPa91y/ZKUm2xjLUZX
-         cbcMF/c4ChJEiha7KOmYi0ZU7d/CPv/wxJ/PiA0L7tayLt0BT3wGWUo0oArItlyNlaAT
-         omOIsfDPl+Lgsug7pgErpaONYOik2nJ2CnTV5QDKRTLjQ0822gi55v3EztKH88dNwKqk
-         nz15QvQeOzFTOmVz2hYnF4xFM8vwPKu2BkFg36QzLcR0rx418P4Iz9wKtB5PDw9CXvMa
-         7NVw==
-X-Gm-Message-State: AOAM532sy3dXa8/aloU/ZDncGfB0kSwrmpxRxWeBPTKEnl8mzCiIcYct
-        B03cLRj7omhKqp2jKi2Akt9hNw7Nm4vb3w==
-X-Google-Smtp-Source: ABdhPJy2jVOsbrM4Vrb1tFIcDNJB9sXjNFw3ZJKrRWw056ozcgp6AH4cQR0tRSQEdPBMbkHqlEQuTw==
-X-Received: by 2002:a50:8b61:: with SMTP id l88mr8714565edl.250.1608380218213;
-        Sat, 19 Dec 2020 04:16:58 -0800 (PST)
+        bh=Qi+cHJsutD0v/2D158E61pxGnRmCY1Auxgmi47GVOeE=;
+        b=QVwgiHdGYh7btqH/Sf+ZZRcxYwkglhRK+Ut6IZNTaCRdqPp6tdz+J2qmrGzqTmSgZo
+         WIYNl05OTctNSJACtbwkTejT7CTle9svWI3FizKoVohvRk2VYO+PWYXu22F1cDI5vVLA
+         54Ya4PssvHHEUYFxyqT5ue9izgptx+tIm+sXaKQ9x1/7D+SftQSSasdt5uBgmrwwBKVT
+         OB0kS00qQjE4UHEaGL1QPL1tMlNKoz/696tHSCzfLMUwFOp+KmuP/it1SiM4sjqDMcdV
+         ANJvV0YaVYzLxdYRbl4z4lL2pqnXBelueebYt7S5BS8zFIBcvUjmzvpm2sjkiAsN/fud
+         Xhbg==
+X-Gm-Message-State: AOAM533BuT7RcgAtqyMiUWDby6l69TbVMJcR2U/k11tUxZEdWEwshErI
+        dr8ehKQmhbXC9b+EeCnuXiM=
+X-Google-Smtp-Source: ABdhPJz3AF5UZHZA83wBIxOoi/qH0ktPREnG1PVUi4nAA1FyeEy8mQkPeLg7YijpfFupqZA6Pq/vAw==
+X-Received: by 2002:aa7:da8f:: with SMTP id q15mr8534914eds.239.1608380311889;
+        Sat, 19 Dec 2020 04:18:31 -0800 (PST)
 Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id t26sm6680248eji.22.2020.12.19.04.16.57
+        by smtp.googlemail.com with ESMTPSA id d14sm28331645edn.31.2020.12.19.04.18.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Dec 2020 04:16:57 -0800 (PST)
-Date:   Sat, 19 Dec 2020 13:16:56 +0100
+        Sat, 19 Dec 2020 04:18:30 -0800 (PST)
+Date:   Sat, 19 Dec 2020 13:18:29 +0100
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     "Alice Guo (OSS)" <alice.guo@oss.nxp.com>
 Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
         kernel@pengutronix.de, festevam@gmail.com,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, linux-imx@nxp.com
-Subject: Re: [PATCH v8 3/4] arm64: dts: imx8m: add NVMEM provider and
- consumer to read soc unique ID
-Message-ID: <20201219121656.GA13886@kozik-lap>
+Subject: Re: [PATCH v8 4/4] soc: imx8m: change to use platform driver
+Message-ID: <20201219121829.GB13886@kozik-lap>
 References: <20201218083726.16427-1-alice.guo@oss.nxp.com>
- <20201218083726.16427-3-alice.guo@oss.nxp.com>
+ <20201218083726.16427-4-alice.guo@oss.nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201218083726.16427-3-alice.guo@oss.nxp.com>
+In-Reply-To: <20201218083726.16427-4-alice.guo@oss.nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 04:37:25PM +0800, Alice Guo (OSS) wrote:
+On Fri, Dec 18, 2020 at 04:37:26PM +0800, Alice Guo (OSS) wrote:
 > From: Alice Guo <alice.guo@nxp.com>
 > 
-> In order to be able to use NVMEM APIs to read soc unique ID, add the
-> nvmem data cell and name for nvmem-cells to the "soc" node, and add a
-> nvmem node which provides soc unique ID to efuse@30350000.
+> Directly reading ocotp register depends on that bootloader enables ocotp
+> clk, which is not always effective, so change to use nvmem API. Using
+> nvmem API requires to support driver defer probe and thus change
+> soc-imx8m.c to use platform driver.
+> 
+> The other reason is that directly reading ocotp register causes kexec
+> kernel hang because the 1st kernel running will disable unused clks
+> after kernel boots up, and then ocotp clk will be disabled even if
+> bootloader enables it. When kexec kernel, ocotp clk needs to be enabled
+> before reading ocotp registers, and nvmem API with platform driver
+> supported can accomplish this.
 > 
 > Signed-off-by: Alice Guo <alice.guo@nxp.com>
 > ---
 > Changes for v8:
 >  - none
 > Changes for v7:
->  - add Reviewed-by
+>  - solve the problem "drivers/soc/imx/soc-imx8m.c:174:34: warning:
+>    unused variable"
 
-What happened with my reviewed-by?
+There was a reviewed-by part of changelog. The tag was in your commit.
+I am now confused, as changes for v8 say "none"... but shall I trust it?
 
 Best regards,
 Krzysztof
