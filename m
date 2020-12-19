@@ -2,93 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2FF62DEFCE
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 14:16:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 761D52DEFDC
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 14:30:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727262AbgLSNQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 08:16:27 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:49042 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726482AbgLSNQ1 (ORCPT
+        id S1726590AbgLSN3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 08:29:45 -0500
+Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:52940 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726528AbgLSN3o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 08:16:27 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id D5FDA1C0BB7; Sat, 19 Dec 2020 14:15:28 +0100 (CET)
-Date:   Sat, 19 Dec 2020 14:15:28 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Philip Li <philip.li@intel.com>
-Cc:     kernel test robot <lkp@intel.com>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>,
-        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: Re: [kbuild-all] Re: [linux-next:master 13538/13785]
- /tmp/metronomefb-846872.s:300: Error: unrecognized opcode `zext.b a2,a2'
-Message-ID: <20201219131528.GA18240@duo.ucw.cz>
-References: <202012191403.y8Aomjpm-lkp@intel.com>
- <20201219075606.GA20870@amd>
- <20201219102820.GA14085@intel.com>
- <20201219104006.GA14905@intel.com>
+        Sat, 19 Dec 2020 08:29:44 -0500
+Received: from localhost.localdomain ([93.23.13.5])
+        by mwinf5d70 with ME
+        id 6DTz2400706YL0V03DTzF8; Sat, 19 Dec 2020 14:28:00 +0100
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 19 Dec 2020 14:28:00 +0100
+X-ME-IP: 93.23.13.5
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     vkoul@kernel.org, dan.j.williams@intel.com,
+        jaswinder.singh@linaro.org
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] dmaengine: milbeaut-xdmac: Fix a resource leak in the error handling path of the probe function
+Date:   Sat, 19 Dec 2020 14:28:00 +0100
+Message-Id: <20201219132800.183254-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="FL5UXtIhxfXey3p5"
-Content-Disposition: inline
-In-Reply-To: <20201219104006.GA14905@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+'disable_xdmac()' should be called in the error handling path of the
+probe function to undo a previous 'enable_xdmac()' call, as already
+done in the remove function.
 
---FL5UXtIhxfXey3p5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes: a6e9be055d47 ("dmaengine: milbeaut-xdmac: Add XDMAC driver for Milbeaut platforms")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+Purely speculative
+---
+ drivers/dma/milbeaut-xdmac.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Hi!
+diff --git a/drivers/dma/milbeaut-xdmac.c b/drivers/dma/milbeaut-xdmac.c
+index 584c931e807a..d29d01e730aa 100644
+--- a/drivers/dma/milbeaut-xdmac.c
++++ b/drivers/dma/milbeaut-xdmac.c
+@@ -350,7 +350,7 @@ static int milbeaut_xdmac_probe(struct platform_device *pdev)
+ 
+ 	ret = dma_async_device_register(ddev);
+ 	if (ret)
+-		return ret;
++		goto disable_xdmac;
+ 
+ 	ret = of_dma_controller_register(dev->of_node,
+ 					 of_dma_simple_xlate, mdev);
+@@ -363,6 +363,8 @@ static int milbeaut_xdmac_probe(struct platform_device *pdev)
+ 
+ unregister_dmac:
+ 	dma_async_device_unregister(ddev);
++disable_xdmac:
++	disable_xdmac(mdev);
+ 	return ret;
+ }
+ 
+-- 
+2.27.0
 
-> > > Crazy robot, stop spamming. This report is obviously bogus, yet, you
-> > > sent me 5 copies.
-> > Thanks Pavel for input, sorry for the false positive. It tries to
-> > bisect error like below (the new error), but it may be related to
-> > assember support. We will adjust the system to not report this out
-> > wrongly. Kindly allow some time for us to resolving this.
-> >=20
-> > > > >> /tmp/metronomefb-846872.s:300: Error: unrecognized opcode `zext.=
-b a2,a2'
-> >=20
-> > Thanks
-> >=20
-> > >=20
-> > > Whoever is responsible for this, please sign emails with your real
-> > > name!
-> This is Philip who maintains the 0-day ci, and lkp@intel.com is the
-> mailing list for the team here to be contacted.
-
-Yes, so... 0-day bot normally does a really good job (and thanks for
-it).
-
-But getting emails from robot is slightly annoying, and it would be
-nice to include name of person who is primary responsible from the bot
-somewhere.
-
-If you are primary person responsible for the robot, your name should
-be somewhere in the email. Or perhaps the link in the trailer should
-lead to explanation somewhere.
-
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---FL5UXtIhxfXey3p5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iFwEABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX9388AAKCRAw5/Bqldv6
-8iuUAKCwJvnZj9AKJe3lC0oq1dgqEjdquwCY4xqggoKVoSEcV8Pok0Z/qDfKoA==
-=0AaT
------END PGP SIGNATURE-----
-
---FL5UXtIhxfXey3p5--
