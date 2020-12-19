@@ -2,242 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E16D2DEC88
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 01:56:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE262DEC8B
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 01:58:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726323AbgLSAy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 19:54:59 -0500
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:47045 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726053AbgLSAy6 (ORCPT
+        id S1726310AbgLSA6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 19:58:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725948AbgLSA6X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 19:54:58 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 621143A4;
-        Fri, 18 Dec 2020 19:53:51 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Fri, 18 Dec 2020 19:53:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
-        message-id:subject:from:to:cc:date:in-reply-to:references
-        :content-type:mime-version:content-transfer-encoding; s=fm2; bh=
-        aCQS7OThQpukbiPNplUPEwFmtIi2T3qpwrZfR7+qqJ4=; b=UqVwnco2QNeGlkq6
-        6w8iWr1z5y1joj9nsH5oXr+e4IWazojSeCRn+WFYQETMQJD3mErYjJ5a8xppJgBw
-        1FjCzsVMzpaWKU1nRl0OtRTObjhriFCDMG3ZiRTJu+r/KS+ZLj7jx8qjWFBUYgoi
-        S+g+M8TXTvc/hmrv3ZcRyLjhPX7FNbHo1Of/rB1urIgcqUDaSo/5OwumGMZ2yL2e
-        jqsIxckbhKALQV51FjUOqhKRL1sbXxhUrbz0oWUZB5fl0o04QeJjacnktdP2plda
-        uBKPOAZF7m6q7sR4gtKgogFWSMmP6NKOTRSOzf3VuoUbanXXXv+CN3lOi00kdhdw
-        GCgZtg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=aCQS7OThQpukbiPNplUPEwFmtIi2T3qpwrZfR7+qq
-        J4=; b=R3JwcwMwrLjz0pAAZHLHu7vACLPonD9cKzEjXyoKICBPWaPXw2h7uoLMu
-        G8kpj3MQcK/SwhLhkvbZn8HP+6/CQaD/pBYRwIVSftFF/k4ZknsiVvt6fWOznL/Y
-        8/jED97ujVTdznh5HPK7+4uwQZYGNo0UBNJOZkdCTxdwWNOf448aJRaJDlCudfDI
-        +v23Ye7HkNMYA+phyq87S6mE5eSwCVeVv7igvgF/kOFpXdiPgsS3AtUhF+YhtWoE
-        HrjOE7fxo5q/wU1swzUfnn4adoiqIHADtOGulmvpwBZdTOPFUEXsFwogrpQ+EJ95
-        J+M+3zS0xIv1cDxD3Q1+lyF2y67dw==
-X-ME-Sender: <xms:HE_dX28EfM7KcSL3CZlF4-2tPT-QSXoazPf1n9GpqUJRP9eDSutGSw>
-    <xme:HE_dX2u5E_eV6C8ZigdTMWxNA1ysi_ytjZn4M5jDG059mUEAOHJbKuqD8HKqKgKAr
-    2kdzKw84PBE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeljedgvdegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkffuhffvffgjfhgtfggggfesthejredttderjeenucfhrhhomhepkfgrnhcu
-    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
-    effeettedvgeduvdevfeevfeettdffudduheeuiefhueevgfevheffledugefgjeenucfk
-    phepuddtiedrieelrddvgeejrddvtdehnecuvehluhhsthgvrhfuihiivgeptdenucfrrg
-    hrrghmpehmrghilhhfrhhomheprhgrvhgvnhesthhhvghmrgifrdhnvght
-X-ME-Proxy: <xmx:HE_dX8BsAJx8t6g_Me9ABRyjnSECI-dyRsjfUFOVg3LAIEuIflPxuw>
-    <xmx:HE_dX-c5xtML1P1kEnXfAsK2N2iSrzuckzZdOdQeW28I1fmtOU4SQQ>
-    <xmx:HE_dX7P1ozKKhXeut7mKxTJpuim2Ug-HtXpm0YxO82tmYQw3SbOXYA>
-    <xmx:Hk_dX2d0WvovqjUIQauHJfNXVcwAL8uVK2z974D5YJw7nutJgR2fKAFBN0Q>
-Received: from mickey.themaw.net (106-69-247-205.dyn.iinet.net.au [106.69.247.205])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 328B5108005C;
-        Fri, 18 Dec 2020 19:53:44 -0500 (EST)
-Message-ID: <ecf41abd583d5d2c775d9d385ea2a0af7b275037.camel@themaw.net>
-Subject: Re: [PATCH v2 0/6] kernfs: proposed locking and concurrency
- improvement
-From:   Ian Kent <raven@themaw.net>
-To:     Fox Chen <foxhlchen@gmail.com>
-Cc:     Tejun Heo <tj@kernel.org>, Greg KH <gregkh@linuxfoundation.org>,
-        akpm@linux-foundation.org, dhowells@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        miklos@szeredi.hu, ricklind@linux.vnet.ibm.com,
-        sfr@canb.auug.org.au, viro@zeniv.linux.org.uk
-Date:   Sat, 19 Dec 2020 08:53:40 +0800
-In-Reply-To: <CAC2o3DKO_weLt2n6hOwU=hJ9J4fc3Qa3mUHP7rMzksJVuGnsJA@mail.gmail.com>
-References: <bde0b6c32f2b055c1ad1401b45c4adf61aab6876.camel@themaw.net>
-         <CAC2o3DJdHuQxY7Rn5uXUprS7i8ri1qB=wOUM2rdZkWt4yJHv1w@mail.gmail.com>
-         <3e97846b52a46759c414bff855e49b07f0d908fc.camel@themaw.net>
-         <CAC2o3DLGtx15cgra3Y92UBdQRBKGckqOkDmwBV-aV-EpUqO5SQ@mail.gmail.com>
-         <efb7469c7bad2f6458c9a537b8e3623e7c303c21.camel@themaw.net>
-         <da4f730bbbb20c0920599ca5afc316e2c092b7d8.camel@themaw.net>
-         <CAC2o3DJsvB6kj=S6D3q+_OBjgez9Q9B5s3-_gjUjaKmb2MkTHQ@mail.gmail.com>
-         <c4002127c72c07a00e8ba0fae6b0ebf5ba8e08e7.camel@themaw.net>
-         <a39b73a53778094279522f1665be01ce15fb21f4.camel@themaw.net>
-         <c8a6c9adc3651e64cf694f580a8cb3d87d7cb893.camel@themaw.net>
-         <X9t1xVTZ/ApIvPMg@mtj.duckdns.org>
-         <67a3012a6a215001c8be9344aee1c99897ff8b7e.camel@themaw.net>
-         <CAC2o3DJhx+dJX-oMKSTNabWYyRB750VABib+OZ=7UX6rGJZD5g@mail.gmail.com>
-         <f21e92d683c609b14e559209a1a1bed2f7c3649e.camel@themaw.net>
-         <CAC2o3DKO_weLt2n6hOwU=hJ9J4fc3Qa3mUHP7rMzksJVuGnsJA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        Fri, 18 Dec 2020 19:58:23 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4C9FC0617B0;
+        Fri, 18 Dec 2020 16:57:42 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id c5so4546151wrp.6;
+        Fri, 18 Dec 2020 16:57:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Td55Oeit3N9imCisD2GbUqp3NAMaC5VmhvHn2GBbmd8=;
+        b=VS4LntTIrB7TYNvSUqjeRYHBpnD5DXazoY9w3tacwo083sLLAVpv1CMP3+Mrs73LoG
+         ZEQ0cJjMX6WyKZyJ2Eefi+umAVEpwDoSWtsSsPXA6HtBYzXlgP9CoXBN6gVkULm0TRzJ
+         NoAckKMFRjJvBgz9OHV1QrVpTkexoDqs2p5h48Oefrh8KcUxZZs2f/nZO1TLcIRxcFBA
+         OnJpLhFibE1fA11/g7MC6kqzAOErl2vGwbqaZDHAu6r9Src6ObnLVuU60dRUHP+6+W96
+         jYizioVWV77T0Z+e+SnRMbRpbTIZJBfooDq5t7lRy9k8VsfrbkPZrt4HbsB0i9ByhlLC
+         mt8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Td55Oeit3N9imCisD2GbUqp3NAMaC5VmhvHn2GBbmd8=;
+        b=lcg9j5EHAbZM7uA1J1BU+j+4uWMTFpPJ7sYxBaHmtEu08Z+l+AdN6fDO85+qTZYf0w
+         oq229TAthFoKcfTpGT5peJHfikg4pDSpT6RZl5jDN7SR6C/tM1p6V9bnUWmlSg2x8Bl/
+         HsQ4VWRjuOevqakd6dAAR8aNFLCxHCllkAU1HGgGpyvuSltS7AJGbjNbcKS7betL3syk
+         xIxnBlGzNAilS5SMGs9TUoiqwIb2Cwv6KIUttuaHEl605+JgbgynAy2KxEWwFFvK822K
+         TCKu/vVjNLrHPjNL74ETi6CcLvy1bDxfdiGDpYEN29yPybT9FLuTcubngKRMYs2BzkW+
+         rQQg==
+X-Gm-Message-State: AOAM533PDwYEqUF2GFClazFMqEtkkaMa+8bJ8S311KQR4Vjhg7vTjT61
+        qp9hNfh8WjeSo10fZLeo/io=
+X-Google-Smtp-Source: ABdhPJyNIdfhgIk/joQM/aoEInCJTIPtkAOyu55ox6fJcLiZPh+GtCWzs6y28ZxIrDJV8C6CHyrZeg==
+X-Received: by 2002:adf:a1d5:: with SMTP id v21mr7065554wrv.24.1608339461625;
+        Fri, 18 Dec 2020 16:57:41 -0800 (PST)
+Received: from localhost (pd9e5183e.dip0.t-ipconnect.de. [217.229.24.62])
+        by smtp.gmail.com with ESMTPSA id z2sm13637018wml.23.2020.12.18.16.57.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Dec 2020 16:57:40 -0800 (PST)
+Date:   Sat, 19 Dec 2020 01:57:39 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        linux-pwm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] pwm: Changes for v5.11-rc1
+Message-ID: <X91QA5bXgPXCiS8U@ulmo>
+References: <20201218160401.2478999-1-thierry.reding@gmail.com>
+ <CAHk-=wgfVj3n5qftaLwk3ZiMiKooO-vzk_XHbcRKPCpBWbtq7w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="UuKmZbsSpvb8Shtk"
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgfVj3n5qftaLwk3ZiMiKooO-vzk_XHbcRKPCpBWbtq7w@mail.gmail.com>
+User-Agent: Mutt/2.0.3 (a51f058f) (2020-12-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-12-18 at 21:20 +0800, Fox Chen wrote:
-> On Fri, Dec 18, 2020 at 7:21 PM Ian Kent <raven@themaw.net> wrote:
-> > On Fri, 2020-12-18 at 16:01 +0800, Fox Chen wrote:
-> > > On Fri, Dec 18, 2020 at 3:36 PM Ian Kent <raven@themaw.net>
-> > > wrote:
-> > > > On Thu, 2020-12-17 at 10:14 -0500, Tejun Heo wrote:
-> > > > > Hello,
-> > > > > 
-> > > > > On Thu, Dec 17, 2020 at 07:48:49PM +0800, Ian Kent wrote:
-> > > > > > > What could be done is to make the kernfs node attr_mutex
-> > > > > > > a pointer and dynamically allocate it but even that is
-> > > > > > > too
-> > > > > > > costly a size addition to the kernfs node structure as
-> > > > > > > Tejun has said.
-> > > > > > 
-> > > > > > I guess the question to ask is, is there really a need to
-> > > > > > call kernfs_refresh_inode() from functions that are usually
-> > > > > > reading/checking functions.
-> > > > > > 
-> > > > > > Would it be sufficient to refresh the inode in the
-> > > > > > write/set
-> > > > > > operations in (if there's any) places where things like
-> > > > > > setattr_copy() is not already called?
-> > > > > > 
-> > > > > > Perhaps GKH or Tejun could comment on this?
-> > > > > 
-> > > > > My memory is a bit hazy but invalidations on reads is how
-> > > > > sysfs
-> > > > > namespace is
-> > > > > implemented, so I don't think there's an easy around that.
-> > > > > The
-> > > > > only
-> > > > > thing I
-> > > > > can think of is embedding the lock into attrs and doing xchg
-> > > > > dance
-> > > > > when
-> > > > > attaching it.
-> > > > 
-> > > > Sounds like your saying it would be ok to add a lock to the
-> > > > attrs structure, am I correct?
-> > > > 
-> > > > Assuming it is then, to keep things simple, use two locks.
-> > > > 
-> > > > One global lock for the allocation and an attrs lock for all
-> > > > the
-> > > > attrs field updates including the kernfs_refresh_inode()
-> > > > update.
-> > > > 
-> > > > The critical section for the global lock could be reduced and
-> > > > it
-> > > > changed to a spin lock.
-> > > > 
-> > > > In __kernfs_iattrs() we would have something like:
-> > > > 
-> > > > take the allocation lock
-> > > > do the allocated checks
-> > > >   assign if existing attrs
-> > > >   release the allocation lock
-> > > >   return existing if found
-> > > > othewise
-> > > >   release the allocation lock
-> > > > 
-> > > > allocate and initialize attrs
-> > > > 
-> > > > take the allocation lock
-> > > > check if someone beat us to it
-> > > >   free and grab exiting attrs
-> > > > otherwise
-> > > >   assign the new attrs
-> > > > release the allocation lock
-> > > > return attrs
-> > > > 
-> > > > Add a spinlock to the attrs struct and use it everywhere for
-> > > > field updates.
-> > > > 
-> > > > Am I on the right track or can you see problems with this?
-> > > > 
-> > > > Ian
-> > > > 
-> > > 
-> > > umm, we update the inode in kernfs_refresh_inode, right??  So I
-> > > guess
-> > > the problem is how can we protect the inode when
-> > > kernfs_refresh_inode
-> > > is called, not the attrs??
-> > 
-> > But the attrs (which is what's copied from) were protected by the
-> > mutex lock (IIUC) so dealing with the inode attributes implies
-> > dealing with the kernfs node attrs too.
-> > 
-> > For example in kernfs_iop_setattr() the call to setattr_copy()
-> > copies
-> > the node attrs to the inode under the same mutex lock. So, if a
-> > read
-> > lock is used the copy in kernfs_refresh_inode() is no longer
-> > protected,
-> > it needs to be protected in a different way.
-> > 
-> 
-> Ok, I'm actually wondering why the VFS holds exclusive i_rwsem for
-> .setattr but
->  no lock for .getattr (misdocumented?? sometimes they have as you've
-> found out)?
-> What does it protect against?? Because .permission does a similar
-> thing
-> here -- updating inode attributes, the goal is to provide the same
-> protection level
-> for .permission as for .setattr, am I right???
 
-As far as the documentation goes that's probably my misunderstanding
-of it.
+--UuKmZbsSpvb8Shtk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It does happen that the VFS makes assumptions about how call backs
-are meant to be used.
+On Fri, Dec 18, 2020 at 12:35:09PM -0800, Linus Torvalds wrote:
+> On Fri, Dec 18, 2020 at 8:04 AM Thierry Reding <thierry.reding@gmail.com>=
+ wrote:
+> >
+> > This is a fairly big release cycle from the PWM framework's point of
+> > view.
+>=20
+> Why does all of this have commit dates from the last day?
+>=20
+> It clearly cannot have been in linux-next in this form, at least.
+>=20
+> I pulled and then unpulled. Don't send me stuff that hasn't been in
+> next without a _lot_ of explanations for why, most certainly not the
+> week before Christmas.
 
-Read like call backs, like .getattr() and .permission() are meant to
-be used, well, like read like functions so the VFS should be ok to
-take locks or not based on the operation context at hand.
+I didn't realize that this would show up as all new commits. The reason
+why this happens is because the first commit in the tree is a fix for an
+issue for which Uwe had sent an alternative patch to you directly for
+inclusion in v5.10.
 
-So it's not about the locking for these call backs per se, it's about
-the context in which they are called.
+After going over the patches again as I was preparing the pull request,
+I realized that the commit message was no longer accurate, so I changed
+the commit message of the first commit, which then caused all of the
+subsequent patches (i.e. all of them) to be rewritten.
 
-For example, in link_path_walk(), at the beginning of the component
-lookup loop (essentially for the containing directory at that point),
-may_lookup() is called which leads to a call to .permission() without
-any inode lock held at that point.
+The only change that hasn't been in linux-next for at least a week is a
+bugfix I merged two days ago. The rest should be identical except for
+the commit message on that first commit.
 
-But file opens (possibly following a path walk to resolve a path)
-are different.
+For reference, here's a diff on my for-next branch that the pull request
+is based on, compared to what it was like a week ago:
 
-For example, do_filp_open() calls path_openat() which leads to a
-call to open_last_lookups(), which leads to a call to .permission()
-along the way. And in this case there are two contexts, an open()
-create or one without create, the former needing the exclusive inode
-lock and the later able to use the shared lock.
+	$ git diff for-next@{8days}..pwm/for-5.11-rc1
+	diff --git a/drivers/pwm/pwm-sun4i.c b/drivers/pwm/pwm-sun4i.c
+	index cc1eb0818648..ce5c4fc8da6f 100644
+	--- a/drivers/pwm/pwm-sun4i.c
+	+++ b/drivers/pwm/pwm-sun4i.c
+	@@ -294,12 +294,8 @@ static int sun4i_pwm_apply(struct pwm_chip *chip, str=
+uct pwm_device *pwm,
+	=20
+		ctrl |=3D BIT_CH(PWM_CLK_GATING, pwm->hwpwm);
+	=20
+	-       if (state->enabled) {
+	+       if (state->enabled)
+			ctrl |=3D BIT_CH(PWM_EN, pwm->hwpwm);
+	-       } else {
+	-               ctrl &=3D ~BIT_CH(PWM_EN, pwm->hwpwm);
+	-               ctrl &=3D ~BIT_CH(PWM_CLK_GATING, pwm->hwpwm);
+	-       }
+	=20
+		sun4i_pwm_writel(sun4i_pwm, ctrl, PWM_CTRL_REG);
+	=20
 
-So it's about the locking needed for the encompassing operation that
-is being done not about those functions specifically.
+And that corresponds to the topmost patch.
 
-TBH the VFS is very complex and Al has a much, much better
-understanding of it than I do so he would need to be the one to answer
-whether it's the file systems responsibility to use these calls in the
-way the VFS expects.
+I hope this clarifies things, and sorry for not mentioning this in the
+pull request.
 
-My belief is that if a file system needs to use a call back in a way
-that's in conflict with what the VFS expects it's the file systems'
-responsibility to deal with the side effects.
+Thierry
 
-Ian
+--UuKmZbsSpvb8Shtk
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl/dUAMACgkQ3SOs138+
+s6HJVA//eFJ4uSIFAPO7Bw0dLCDxoZORAAMg/p+L/R7impss3wcHWwoeSMbnZjjT
+2ILjl7ROTjacWx/AAp6NIgVNqS//NBsjBvE8LbArGh3NrXnmyptSNr+qa8h2Z2LH
+s2qM3iri5QhlviCXpowbFG9kLParbASD3Swmfmw7tD0ObtX+ooa67Im8gP7Gj/w/
+V/kLdFLVsaKHAOUcvVGVLTGMRkzPQZ8C+HCl37nHos3p7bHRwGfXXeaaCgjqpX+G
+szgf9skGUwCSAKFpfdWrzuOS8uxXs2jk2ofMjy8UhhH+GAHt3XkXZ/ikV7ax+wmP
+rlnOQfproPcBL1d56C7KqU6GBcHd1kWAzoy8oOWE2H5QhEqZa0V6agcQCLVfVzn2
+WFgRJwXCcIrHGBFIdxzzG91xJrIynJ+rBcxnu1lGFya2bVGTyuPV6FrhboK2CGvB
+ASQ90s2Kraz3vf3BaZ0GpKPUvIp7gvY6YErCq9IRYMOBJnueKeuWaM/9nnKfllZj
+m0x/unAo5+UKjxeAv09Hm6UqNMwd75FU1ZjY2DcYLyDjokkBCYzcUMEr3CROZvHf
+xYALLsJGL9YHqaKHy7sz9WyMMLKF1Y0uOppCf6aihMgyu4FxsBU1c1C6En1lDeAM
+2S7Mhow28rJ859TU/IEaRdgqjTFvjDmcu+Bna7yAOhvrvQ/Kl+M=
+=TJmD
+-----END PGP SIGNATURE-----
+
+--UuKmZbsSpvb8Shtk--
