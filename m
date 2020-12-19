@@ -2,90 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 370FD2DECAA
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 02:53:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C47C2DECB4
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 03:06:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726256AbgLSBto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 20:49:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725965AbgLSBtn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 20:49:43 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 391FAC0617B0;
-        Fri, 18 Dec 2020 17:49:03 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id s21so2575104pfu.13;
-        Fri, 18 Dec 2020 17:49:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2j49Gx9LYlDWXbgch6bH1paojmD1EOzxW+XQY6MZRdo=;
-        b=bfKeBCz6ASxeMkwKtCqauSuFWOsC2RQF6Fma4qvpVyhG3PHWbW1jalMFcH7BSLybSP
-         vMbZGR6G+ehSGm1k7R++SCqNbBu5NurHc6xfrNi/mgcLfChuluKFAdavXS5F4K3zPI6s
-         oFtYyLC26pHvjY8qjDVCRBxuNTvFeLSyD48RJ0T4o6GAhYLWdoYlGyO9GESEk7/DdNKo
-         ttZXtvmmUlRmSRc9WINAA66u+0HD7zCHvFFzYosnzp46MUsXcuB5pLNuc4Fl+ZySyqOD
-         VpdEL6snhkyn74uJ/KgSJ2YGzSoudRu4qPK2vR2/sUcdB8GQ+OQM76FNW6gcvDnJrEdJ
-         pN/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2j49Gx9LYlDWXbgch6bH1paojmD1EOzxW+XQY6MZRdo=;
-        b=Od6RRNMzwtWszr+czFcYS7wyhQVSNH3I5oY5mgOwocsOfEmU3aPYJTUzrnCnjQH0wB
-         w3XzjzaP1K4tm80rW9NPUFnYKTHcIa4Vm8wsP/9t0jch8y07w7/MVfB4pbqsFHmwMo6Q
-         PM6E1FhOFGXvbRN96/phc1MVsCiGFdc+O87LveUotRUjU0ud4AlMFPE4q/8W/G5sYp8v
-         JK2IpIVZl9z3k+xRBOiYxqhDo8Kmg4p52KftoueuJ5V5JT/s4faiNQgVlZgZhgW6zBeX
-         rW5MmREdPKBAy4RSDa+qc86a5nEMJiDZ6jpWSQ46NpbnXsxCjtOkTW+qTgRrEmR9ii6j
-         V7Cw==
-X-Gm-Message-State: AOAM532vy1u/mDGB/3RcXA5NAdlsGLVjsFjBfq7U6eGzindQOsnhHjyT
-        jRW75Yip72WY+50r9uslT+s=
-X-Google-Smtp-Source: ABdhPJxh1ZyRmnzJIDbIIKxPR2KDP7jR0TIBiZ9oyDFQeNX+VgI5+/z9Q2KyLmPTlqS/JxskGE1q5A==
-X-Received: by 2002:a63:d62:: with SMTP id 34mr6675669pgn.276.1608342542752;
-        Fri, 18 Dec 2020 17:49:02 -0800 (PST)
-Received: from localhost.localdomain (c-24-16-167-223.hsd1.wa.comcast.net. [24.16.167.223])
-        by smtp.gmail.com with ESMTPSA id 77sm10084904pfx.156.2020.12.18.17.49.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Dec 2020 17:49:02 -0800 (PST)
-From:   Daniel West <daniel.west.dev@gmail.com>
-To:     manishc@marvell.com, GR-Linux-NIC-Dev@marvell.com
-Cc:     gregkh@linuxfoundation.org, netdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Daniel West <daniel.west.dev@gmail.com>,
-        Daniel West <daniel.s.west.dev@gmail.com>
-Subject: [PATCH] staging: qlge: Removed duplicate word in comment.
-Date:   Fri, 18 Dec 2020 17:48:29 -0800
-Message-Id: <20201219014829.362810-1-daniel.west.dev@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S1726267AbgLSCFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 21:05:37 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:41518 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725940AbgLSCFh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 21:05:37 -0500
+Received: from [192.168.103.7] (helo=gwarestrin.arnor.me.apana.org.au)
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kqRbX-00054x-AV; Sat, 19 Dec 2020 13:04:20 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Sat, 19 Dec 2020 13:04:33 +1100
+Date:   Sat, 19 Dec 2020 13:04:33 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <dave.martin@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [RFC PATCH 0/5] running kernel mode SIMD with softirqs disabled
+Message-ID: <20201219020433.GA11077@gondor.apana.org.au>
+References: <20201218170106.23280-1-ardb@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201218170106.23280-1-ardb@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes the checkpatch warning:
+On Fri, Dec 18, 2020 at 06:01:01PM +0100, Ard Biesheuvel wrote:
+>
+> Questions:
+> - what did I miss or break horribly?
+> - does any of this matter for RT? AIUI, RT runs softirqs from a dedicated
+>   kthread, so I don't think it cares.
+> - what would be a reasonable upper bound to keep softirqs disabled? I suppose
+>   100s of cycles or less is overkill, but I'm not sure how to derive a better
+>   answer.
+> - could we do the same on x86, now that kernel_fpu_begin/end is no longer
+>   expensive?
 
-WARNING: Possible repeated word: 'and'
+If this approach works not only would it allow us to support the
+synchronous users better, it would also allow us to remove loads
+of cruft in the Crypto API that exist solely to support these SIMD
+code paths.
 
-Signed-off-by: Daniel West <daniel.s.west.dev@gmail.com>
----
- drivers/staging/qlge/qlge_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+So I eagerly await the assessment of the scheduler/RT folks on this
+approach.
 
-diff --git a/drivers/staging/qlge/qlge_main.c b/drivers/staging/qlge/qlge_main.c
-index e6b7baa12cd6..22167eca7c50 100644
---- a/drivers/staging/qlge/qlge_main.c
-+++ b/drivers/staging/qlge/qlge_main.c
-@@ -3186,7 +3186,7 @@ static void ql_enable_msix(struct ql_adapter *qdev)
- 		     "Running with legacy interrupts.\n");
- }
- 
--/* Each vector services 1 RSS ring and and 1 or more
-+/* Each vector services 1 RSS ring and 1 or more
-  * TX completion rings.  This function loops through
-  * the TX completion rings and assigns the vector that
-  * will service it.  An example would be if there are
+Thanks,
 -- 
-2.25.1
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
