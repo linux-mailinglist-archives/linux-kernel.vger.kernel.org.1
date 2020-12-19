@@ -2,101 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41D842DF1CA
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 22:22:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DF5E2DF1CF
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 22:32:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727815AbgLSVVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 16:21:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726471AbgLSVVd (ORCPT
+        id S1727743AbgLSVbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 16:31:39 -0500
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.51]:33032 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726471AbgLSVbj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 16:21:33 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30986C0617B0
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 13:20:53 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id be12so3344603plb.4
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 13:20:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=QSYWqhjbVLmtclelJMJcDqpcy4tfKh9PItzr9QwLg14=;
-        b=t4QMfoSS3WzTQ927xNBLfyET+0pEVkmYIV983Is/kxvlA4UWlPyNQ256aYi+hjHX3U
-         Rud37z36FhvP7j0Ev2GAIsacdfqYyfKLB110OmtKPQz2/+owGw18RNdcmtiD6DEISXsW
-         FXFiRj/hVa2GMAk/u7tbu3Z4oHIxQkCHB0yxMi/ASSyNXfd2EdvQUYSXu/monfjCWObQ
-         0hN6mFl07a7bU2COr5Zk78fiNXwGLbLDvKwmzpj7U2Cl4rujW2ON1VD9GCfbiQHrKlXC
-         3rF8G1h6hidcBQjsANyndmI3XPZpDavrRmH/N4c+chh7bx7tJCSWA9c34+ot4NYyLE4U
-         2GVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=QSYWqhjbVLmtclelJMJcDqpcy4tfKh9PItzr9QwLg14=;
-        b=WO4s9cCo+H1TcXpGFWLz9juGqcI71mHm+WnB43npgMwFvEnYRgs9TY9jyk1zN8OrxE
-         YHJWv0iYgVwuDs75kRTE+9IYS70jxg5PmKIZTgwSxV9BfZ0OVaOH5ZxM2BIzlZ9aHcEG
-         udVdU8PbVxAC+1fUhnKf1kxnZ91RJcHuscGmGqmSvrOpvJLtEGz2fc5D8xjqVQhcIuII
-         UCYqHlUbG9eBsLCZ5duYF+/6NkI2RiWM36ik4OsSzVFKSgUcqN2DfHVtzMJsiXGNROfa
-         f9+iZvEcy/QLh5TL74EyNGSrWfdSrrqCRs8v0mem7D8JYla/nVTgG6cufsOcsuOreZY6
-         tp1Q==
-X-Gm-Message-State: AOAM531aH87NLZVmiTvCRq35dOlWUqY8kdrwjH6/pi8Q1gnJTWBpy5tL
-        CwcsIIKAo/itDbsPuiO1Zox7Yg==
-X-Google-Smtp-Source: ABdhPJyrlaVa3wK/KDK5casWCimJDI128MQgspwVmtK93+4yzOv+5Itu5K9v2MqaOYKtP6KYsxjgug==
-X-Received: by 2002:a17:90a:cc0a:: with SMTP id b10mr10430967pju.59.1608412852462;
-        Sat, 19 Dec 2020 13:20:52 -0800 (PST)
-Received: from [192.168.1.9] ([122.164.30.66])
-        by smtp.gmail.com with ESMTPSA id h12sm12324474pgs.7.2020.12.19.13.20.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Dec 2020 13:20:51 -0800 (PST)
-Message-ID: <4fd580a2a147281704e7ae5525a0d892d2307d09.camel@rajagiritech.edu.in>
-Subject: Re: [PATCH 5.10 00/16] 5.10.2-rc1 review
-From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Date:   Sun, 20 Dec 2020 02:50:42 +0530
-In-Reply-To: <20201219125339.066340030@linuxfoundation.org>
-References: <20201219125339.066340030@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1-2 
+        Sat, 19 Dec 2020 16:31:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1608413326;
+        s=strato-dkim-0002; d=chronox.de;
+        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:From:
+        Subject:Sender;
+        bh=bN5Bo5Xp6bbNWNfibLEW05ERysjkshF+M+r+x5jX+R8=;
+        b=tIt9lphuFTJZmG5WEKR5KBegJuL6sXsKIKe1CWbHEp+l59qped/TVmHAicWb7MsbGJ
+        qAVJyHBDSm7R+cpw3YFxatH6Qkv9AanrDX5QXHQoH6F1MbGEz7JhFdDVsGa0RbyjAhvO
+        0bLLtsxXJ0of+BfCro7VlN4hWFIKostbgjCM9bx8IqX6teIaa4Pi8NfwF+AuaKXEN3CW
+        MZUDyGxDMP7NqCJydBTNBrFC5MVaAg8iqqtas0HoLToNPvCnCxBzvJ5KcEtK1OZyaqAH
+        musOid5kd7dW3DRm/HCiC0eGRrcQI/yF+iCs2sUVU/vvE2p2mOqjFpPlrVRT4h4t6E82
+        6Uew==
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPbJPSfbd7O"
+X-RZG-CLASS-ID: mo00
+Received: from positron.chronox.de
+        by smtp.strato.de (RZmta 47.9.3 DYNA|AUTH)
+        with ESMTPSA id z0431awBJLPX8J1
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Sat, 19 Dec 2020 22:25:33 +0100 (CET)
+From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
+To:     yumeng <yumeng18@huawei.com>
+Cc:     linux-crypto@vger.kernel.org, xuzaibo@huawei.com,
+        wangzhou1@hisilicon.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 4/5] crypto: hisilicon/hpre - add 'ECDH' algorithm
+Date:   Sat, 19 Dec 2020 22:25:32 +0100
+Message-ID: <4588284.GXAFRqVoOG@positron.chronox.de>
+In-Reply-To: <06fa1f72-fad8-a3e5-987a-d322918ac30a@huawei.com>
+References: <13db294664a6b2e26a892dd544c714d3e385b0cc.camel@chronox.de> <b38e3b40ef198166bff193940b8c82c41db6f13c.camel@chronox.de> <06fa1f72-fad8-a3e5-987a-d322918ac30a@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-12-19 at 13:57 +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.2 release.
-> There are 16 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied,
-> please
-> let me know.
-> 
-> Responses should be made by Mon, 21 Dec 2020 12:53:29 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.2-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-
-> stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
-hello,
+Am Donnerstag, 17. Dezember 2020, 04:07:30 CET schrieb yumeng:
 
-Compiled and booted  5.10.2-rc1+. No typical dmesg regression or
-regressions
+Hi yumeng,
 
-Tested-by: Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+> 
+> I see in "SEC 2: Recommended Elliptic Curve Domain ParametersVersion2.0"
+> that 'Recommend Elliptic Curve Domain Parameters over Fp' are secp192,
+> secp224, secp256, secp384, and secp521, secp128 and secp320 are not
+> recommended.
+> So you mean it's better not to include secp128 and secp320, right?
+
+Precisely because I do not see the use case in the kernel.
+> 
+> Thanks,
 
 
--- 
-software engineer
-rajagiri school of engineering and technology - autonomous
+Ciao
+Stephan
+
 
