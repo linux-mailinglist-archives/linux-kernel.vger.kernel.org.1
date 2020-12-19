@@ -2,180 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 774EA2DEC37
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 01:01:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97BFA2DEC42
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 01:07:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726310AbgLRX76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 18:59:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60580 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725925AbgLRX75 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 18:59:57 -0500
-Date:   Sat, 19 Dec 2020 00:59:14 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608335956;
-        bh=Dn4O932xHcMdfDpwEn/lVr2aX4q89I1DucP320WpyQM=;
-        h=From:To:Cc:Subject:From;
-        b=XaFkAHX0xJMvUbU55szD7ovv66ssmcvMBItQLgBRWGh70aDA/Ep4lUfNTpL2A4SC3
-         LBZyM6ztg8Q4JSm+c3KTaEFmYMbWuwchuc3E6FEzQQerKiR5AkcxokAE1WGYr30Jy0
-         3sE+lHTPYUlTq7mBP32+7b9X4kmGFY641dlXS54qURUCMQmkC1e2k4/a17y16K/ziB
-         dslSrYTvQ+A1POXcOU5j2HljzYQyVAREX0OThLJElBcW7g/4KaXNZFLvnVFSvwkvSF
-         8+vp/iA/hufI68NbiEyh6M+fdDurFcwuZT6S3xKBrqqqXX2SHML5jdX9yl8T+ixD7v
-         zyvVlFMR7hvCw==
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: [GIT PULL] power-supply changes for 5.11
-Message-ID: <20201218235914.cfmeap7y67hkbt4t@earth.universe>
+        id S1726115AbgLSAHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 19:07:38 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:52318 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725287AbgLSAHi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Dec 2020 19:07:38 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BJ06FvD007874;
+        Sat, 19 Dec 2020 00:06:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=zxiY7+GksnlWJv9IRLMUs6wIm9qq5bjvBFvbKqgvlng=;
+ b=cVRS1aPm18bYapDw9tLAzv3uFGMxrx48q2eUdBDy2RWSiSdqeuPU/ufUthe/ZMh6QpCG
+ tTG4Bw4mDD09mW3NqbmkdNPa132AqBdY3+aFTrZOXfYT+VNC5QczGpsMCknu5Sym59IG
+ gO/hJuv432nQAU79raUqzK4DBMYiOUPN6IkyqIDjVwCCKNo4MAGbmkhd5BBcStR5WBlI
+ L8YFPVYjksft5EyWp2nrNv+HDCKESh1RXQy2LDm8YvckFd03k6sVN8plKxw76LWYU/P1
+ t4DmlTdW/u+biRSt0z1vXkxnC4hN6RtkPdHR5EbFayB0/hLslCfOzUG127wkozoe2C9l xA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 35cn9rvqrk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 19 Dec 2020 00:06:33 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BJ05OH8151366;
+        Sat, 19 Dec 2020 00:06:32 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 35d7esvfc4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 19 Dec 2020 00:06:32 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0BJ06Rok003375;
+        Sat, 19 Dec 2020 00:06:27 GMT
+Received: from localhost (/10.159.241.141)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 18 Dec 2020 16:06:27 -0800
+From:   Stephen Brennan <stephen.s.brennan@oracle.com>
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     Stephen Brennan <stephen.s.brennan@oracle.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org,
+        Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>
+Subject: [PATCH v3 1/2] proc: Allow pid_revalidate() during LOOKUP_RCU
+Date:   Fri, 18 Dec 2020 16:06:15 -0800
+Message-Id: <20201219000616.197585-1-stephen.s.brennan@oracle.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="rz7b4gmob5uaszfp"
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9839 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 bulkscore=0
+ suspectscore=0 adultscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012180164
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9839 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
+ impostorscore=0 lowpriorityscore=0 clxscore=1015 spamscore=0
+ malwarescore=0 priorityscore=1501 phishscore=0 mlxscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012180164
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The pid_revalidate() function requires dropping from RCU into REF lookup
+mode. When many threads are resolving paths within /proc in parallel,
+this can result in heavy spinlock contention on d_locrkef as each thread
+tries to grab a reference to the /proc dentry (and drop it shortly
+thereafter).
 
---rz7b4gmob5uaszfp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Allow the pid_revalidate() function to execute under LOOKUP_RCU. When
+updates must be made to the inode, drop out of RCU and into REF mode.
 
-Hi Linus,
+Signed-off-by: Stephen Brennan <stephen.s.brennan@oracle.com>
+---
 
-The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+When running running ~100 parallel instances of "TZ=/etc/localtime ps -fe
+>/dev/null" on a 100CPU machine, the %sys utilization reaches 90%, and perf
+shows the following code path as being responsible for heavy contention on
+the d_lockref spinlock:
 
-  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+      walk_component()
+        lookup_fast()
+          unlazy_child()
+            lockref_get_not_dead(&nd->path.dentry->d_lockref)
 
-are available in the Git repository at:
+By applying this patch, %sys utilization falls to around 60% under the same
+workload. Although this particular workload is a bit contrived, we have seen
+some monitoring scripts which produced similarly high %sys time due to this
+contention.
 
-  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/sre/linux-power-supply.git tags/for-v5.11
+Changes from v3:
+- Rather than call pid_update_inode() with flags, create
+  proc_inode_needs_update() to determine whether the call can be skipped.
+- Restore the call to the security hook (see next patch).
+Changes from v2:
+- Remove get_pid_task_rcu_user() and get_proc_task_rcu(), since they were
+  unnecessary.
+- Remove the call to security_task_to_inode().
 
-for you to fetch changes up to c2362519a04a7307e386e43bc567780d0d7631c7:
+ fs/proc/base.c | 35 +++++++++++++++++++++++++----------
+ 1 file changed, 25 insertions(+), 10 deletions(-)
 
-  power: supply: Fix a typo in warning message (2020-12-13 01:00:10 +0100)
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index b3422cda2a91..4b246e9bd5df 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -1968,6 +1968,20 @@ void pid_update_inode(struct task_struct *task, struct inode *inode)
+ 	security_task_to_inode(task, inode);
+ }
+ 
++/* See if we can avoid the above call. Assumes RCU lock held */
++static bool pid_inode_needs_update(struct task_struct *task, struct inode *inode)
++{
++	kuid_t uid;
++	kgid_t gid;
++
++	if (inode->i_mode & (S_ISUID | S_ISGID))
++		return true;
++	task_dump_owner(task, inode->i_mode, &uid, &gid);
++	if (!uid_eq(uid, inode->i_uid) || !gid_eq(gid, inode->i_gid))
++		return true;
++	return false;
++}
++
+ /*
+  * Rewrite the inode's ownerships here because the owning task may have
+  * performed a setuid(), etc.
+@@ -1977,19 +1991,20 @@ static int pid_revalidate(struct dentry *dentry, unsigned int flags)
+ {
+ 	struct inode *inode;
+ 	struct task_struct *task;
++	int rv = 0;
+ 
+-	if (flags & LOOKUP_RCU)
+-		return -ECHILD;
+-
+-	inode = d_inode(dentry);
+-	task = get_proc_task(inode);
+-
++	rcu_read_lock();
++	inode = d_inode_rcu(dentry);
++	task = pid_task(proc_pid(inode), PIDTYPE_PID);
+ 	if (task) {
+-		pid_update_inode(task, inode);
+-		put_task_struct(task);
+-		return 1;
++		rv = 1;
++		if ((flags & LOOKUP_RCU) && pid_inode_needs_update(task, inode))
++			rv = -ECHILD;
++		else if (!(flags & LOOKUP_RCU))
++			pid_update_inode(task, inode);
+ 	}
+-	return 0;
++	rcu_read_unlock();
++	return rv;
+ }
+ 
+ static inline bool proc_inode_is_dead(struct inode *inode)
+-- 
+2.25.1
 
-----------------------------------------------------------------
-power supply and reset changes for the v5.11 series
-
-battery/charger driver changes:
- * collie_battery, generic-adc-battery, s3c-adc-battery: convert to GPIO descriptors (incl. ARM board files)
- * misc. cleanup and fixes
-
-reset drivers:
- * new poweroff driver for force disabling a regulator
- * Use printk format symbol resolver
- * ocelot: add support for Luton and Jaguar2
-
-----------------------------------------------------------------
-Gregory CLEMENT (2):
-      dt-bindings: reset: ocelot: Add Luton and Jaguar2 support
-      power: reset: ocelot: Add support 2 other MIPS based SoCs
-
-Hans de Goede (1):
-      power: supply: axp288_charger: Fix HP Pavilion x2 10 DMI matching
-
-Helge Deller (1):
-      power: reset: Use printk format symbol resolver
-
-Linus Walleij (10):
-      power: supply: s3c-adc-battery: Convert to GPIO descriptors
-      power: supply: collie_battery: Convert to GPIO descriptors
-      power: supply: generic-adc-battery: Use GPIO descriptors
-      power: supply: bq24190_charger: Drop unused include
-      power: supply: bq24735: Drop unused include
-      power: supply: ab8500: Use local helper
-      power: supply: ab8500: Convert to dev_pm_ops
-      power: supply: ab8500_charger: Oneshot threaded IRQs
-      power: supply: ab8500_fg: Request all IRQs as threaded
-      power: supply: ab8500: Use dev_err_probe() for IIO channels
-
-Masanari Iida (1):
-      power: supply: Fix a typo in warning message
-
-Michael Klein (2):
-      power: reset: new driver regulator-poweroff
-      Documentation: DT: binding documentation for regulator-poweroff
-
-Nigel Christian (1):
-      power: supply: pm2301_charger: remove unnecessary variable
-
-Sebastian Krzyszkowiak (5):
-      power: supply: bq25890: Use the correct range for IILIM register
-      power: supply: max17042_battery: Fix current_{avg,now} hiding with no current sense
-      power: supply: max17042_battery: Improve accuracy of current_now and current_avg readings
-      power: supply: max17042_battery: Take r_sns value into account in charge_counter
-      power: supply: max17042_battery: Export charge termination current property
-
-Tian Tao (1):
-      power: supply: Fix missing IRQF_ONESHOT as only threaded handler
-
-Timon Baetz (3):
-      power: supply: max8997-charger: Use module_platform_driver()
-      power: supply: max8997-charger: Fix platform data retrieval
-      power: supply: max8997-charger: Improve getting charger status
-
-Tom Rix (1):
-      power: supply: wm831x_power: remove unneeded break
-
-Yangtao Li (2):
-      power: supply: axp20x_usb_power: fix typo
-      power: supply: axp20x_usb_power: Use power efficient workqueue for debounce
-
-Zhang Qilong (1):
-      power: supply: bq24190_charger: fix reference leak
-
- .../bindings/power/reset/ocelot-reset.txt          |   4 +-
- .../bindings/power/reset/regulator-poweroff.yaml   |  37 +++++
- arch/arm/mach-s3c/mach-h1940.c                     |  12 +-
- arch/arm/mach-s3c/mach-rx1950.c                    |  11 +-
- arch/arm/mach-sa1100/collie.c                      |  21 +++
- drivers/power/reset/Kconfig                        |   7 +
- drivers/power/reset/Makefile                       |   1 +
- drivers/power/reset/ocelot-reset.c                 |  30 +++-
- drivers/power/reset/qnap-poweroff.c                |   8 +-
- drivers/power/reset/regulator-poweroff.c           |  82 +++++++++++
- drivers/power/reset/syscon-poweroff.c              |   8 +-
- drivers/power/supply/ab8500_btemp.c                |  68 ++++------
- drivers/power/supply/ab8500_charger.c              |  99 ++++++--------
- drivers/power/supply/ab8500_fg.c                   | 106 +++++----------
- drivers/power/supply/abx500_chargalg.c             |  19 +--
- drivers/power/supply/axp20x_usb_power.c            |  10 +-
- drivers/power/supply/axp288_charger.c              |  28 ++--
- drivers/power/supply/bq24190_charger.c             |  21 ++-
- drivers/power/supply/bq24735-charger.c             |   1 -
- drivers/power/supply/bq25890_charger.c             |   2 +-
- drivers/power/supply/collie_battery.c              | 151 +++++++++++++++------
- drivers/power/supply/generic-adc-battery.c         |  31 ++---
- drivers/power/supply/max17042_battery.c            |  23 +++-
- drivers/power/supply/max8997_charger.c             |  67 +++++----
- drivers/power/supply/pm2301_charger.c              |   3 +-
- drivers/power/supply/power_supply_sysfs.c          |   2 +-
- drivers/power/supply/s3c_adc_battery.c             |  57 ++++----
- drivers/power/supply/wm831x_power.c                |   1 -
- include/linux/power/generic-adc-battery.h          |   4 -
- include/linux/s3c_adc_battery.h                    |   3 -
- 30 files changed, 562 insertions(+), 355 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/power/reset/regulator-poweroff.yaml
- create mode 100644 drivers/power/reset/regulator-poweroff.c
-
---rz7b4gmob5uaszfp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl/dQlEACgkQ2O7X88g7
-+ppGCw/7BEtxp1amiyUOAHvVHaPjSkI4qJIRPU3tRq+a8Wosk0EZYRJN3VTwyhos
-15HmSU0YNIrqTyHIwwzbEoWP6d8o8KVj+MHJ/vea4SxJBoAMW/hbaNNWoWdJZybR
-o/cIfeNBZKAVTYqOFl+yaYT09G0I2HBywzixTaK6axKR6PI++fqTTdy9V+OBXuM7
-pEEDmXa9+rHjwUVS0cBZADQItGbL3SnzcxHKD3aoI3HEP9ANjy/dlD8HHry00U4j
-gBo57WxPCCvZIXNY3QShMbTj3i6p5arkekbVZ0N9KuRaOvSn5YtNgRrevPDYKSy/
-KmNtetJSMsALRHYTx90LoCFHzTg2lThpruiyfKlAWTW5dTw3zlgz3eRPJIR9vBce
-mgDl+SpFqaRpMZhNHmtUkDnYPnkQG9ZDlIYpCHBXFk28Zr1XVd+C8Ev+wlbHeSWE
-Nnyuz1Gck8QHVQlgb8DpO7Wa7oZCAnxoR2jlrRWN88fCmaAz1OWZKl1l+g9wfFFH
-SJKJq4TFO3lsiAoZKZAwMeZZ73vU+62rC6pbi+CMu334dOI6fQXE4HJdQlmlrfYp
-CEvWMtdUnTVJliQajKhQUd0WAsNUNLb0G4sXhe/C0Rc/kaq/oOpHjosar34odxT+
-5eprKllK6/i9KpJtf+slX/5l7AAw5A2Ph0sYjNCu9+cGOGpNPx4=
-=BmbH
------END PGP SIGNATURE-----
-
---rz7b4gmob5uaszfp--
