@@ -2,111 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C272DF063
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 17:12:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FF2A2DF06A
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 17:21:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726854AbgLSQLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 11:11:51 -0500
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:33572 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726752AbgLSQLu (ORCPT
+        id S1726869AbgLSQVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 11:21:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52008 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726752AbgLSQVW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 11:11:50 -0500
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 0BJGAkbb006938;
-        Sun, 20 Dec 2020 01:10:46 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 0BJGAkbb006938
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1608394246;
-        bh=lat0uiKUxd5PoVSVwVF/yONoUq8DBc+FK9c1SgCz/n4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mN4C+UlvPyWVROLtQYBaVIGJTFno0D1HTuJigrBgw1Y+9k/LpMVnmpN5kfuDxc8LL
-         1BoNjEwBjwsbkVV8C0pL8XPfHXH8R4rIls4Ie+B/gSYKYVr5d7Z+LD+/aNY2B+FkJj
-         jUIHVlEKcBJlUYb5zwWnf+kC07BgNlKNNPElpuV1nmiE6sfLZzmkGoR/c/B26Z4w6X
-         jN6myWNfrpLHrrphylNIBXFQSfuqLg6wXEOZYWDwn35Xdv+cwageYjAfPee+DfXX0W
-         WE9hb3OufpXJAkkmG64O3mHznEfVXMVPiYApv3eAMvICz/C4Jtkr2FZDouaZZ0ltvx
-         NDcdFl99WC+dA==
-X-Nifty-SrcIP: [209.85.215.171]
-Received: by mail-pg1-f171.google.com with SMTP id c22so3301456pgg.13;
-        Sat, 19 Dec 2020 08:10:46 -0800 (PST)
-X-Gm-Message-State: AOAM532H1dp9qTDW+1iC5Ai9pw2hKzkUegewoltQ4ASHtvBnNBUL3J8f
-        Q2N2Jt97Et3XxUfPE5VElQaK8STg4bmy6UpWeN4=
-X-Google-Smtp-Source: ABdhPJwaEL9DTLqbByNHyNky+r+lwsQWV2jCOg6YIv+t30w3ce0Brb7UMAn92ciokoZuz9KFvbJK2M3faC60G0jRKIw=
-X-Received: by 2002:a65:6a16:: with SMTP id m22mr8779173pgu.175.1608394245527;
- Sat, 19 Dec 2020 08:10:45 -0800 (PST)
+        Sat, 19 Dec 2020 11:21:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608394795;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KbugKKrasuGedAjovAH1wi9O5DNDUKogVJv7kX6aCak=;
+        b=Sz/Q2MP+6Wk4r21MBRSwQZZZRuEv+EfWQJ51/Mcf9e5BVZ1mv7yVSkNeSnPNFXZMGNUTJi
+        iJDYg9auqHvJGu7qjxLH/efwSpxm5wIm11LEDOJupKSHBh4yIYgRx8HO/UmGAv0QEN7hZ9
+        MKcsxuQxPMeMitNLEKybyvjEVGOcBvE=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-244-B3KnRHqLP5-lMp6DkKIMYw-1; Sat, 19 Dec 2020 11:19:52 -0500
+X-MC-Unique: B3KnRHqLP5-lMp6DkKIMYw-1
+Received: by mail-wr1-f70.google.com with SMTP id g16so3375606wrv.1
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 08:19:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KbugKKrasuGedAjovAH1wi9O5DNDUKogVJv7kX6aCak=;
+        b=hONF3yoBLyjwoiEnvMGW1uKFxi9t9CR2WxCW70ZasitITJooqlvgrh0cm0X14WqS4T
+         9fVqj4EWIUs79ifNMV2rem9urLCidP7lAo9qM4wXNDmzc8ul3RPEd8ayn7sY7tKw8Nfb
+         Mpd+SSNDAXPeRUwJ386V8ZAs11Imdcn7Meg1+iY4Wls7+s2OKht4vcFaLhnAUFaer71P
+         zO4kF0PYvjGFuJSBLJ+LBavIQ/QeAhILJ2tqzIPLG3XUXDQdkE8Pqb0wGyDNzKU42B8u
+         5TO0qOSJY3BiE8YB58HbPWpl6WpBL540tHA8TVhTr8AIwFns/XQPcJum2nvT+RAqJ/FO
+         XVDw==
+X-Gm-Message-State: AOAM533XdWQ/UqqKeH+NGpA3CrIH+GZVESzxUhKggfHz1wJmwETBciph
+        YCTR/2I1EHdL1k6PEvrn3uhi/3UkvgiMvlBUb1z4Z/gMqInBr2kAj8BR2i1ETkw38GYIqj8n7zA
+        kv4esH9lYusFkEX32DD6bOzleF3LcTehSSTWYOHG5K7R/HytYNjxAv7GedUS9WZXqMR+KrwWxHg
+        ==
+X-Received: by 2002:a1c:4907:: with SMTP id w7mr8853312wma.175.1608394790428;
+        Sat, 19 Dec 2020 08:19:50 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxDoFtPKJFk+dmEFPvt/bjm9gtgE66UYP/MfbL/0VfC6d5hJoBaYApgKBKCvWHod8b+k2m62A==
+X-Received: by 2002:a1c:4907:: with SMTP id w7mr8853293wma.175.1608394790222;
+        Sat, 19 Dec 2020 08:19:50 -0800 (PST)
+Received: from ?IPv6:2001:8a0:f91f:e900:1d90:d745:3c32:c159? ([2001:8a0:f91f:e900:1d90:d745:3c32:c159])
+        by smtp.gmail.com with ESMTPSA id b73sm22150875wmb.0.2020.12.19.08.19.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 19 Dec 2020 08:19:49 -0800 (PST)
+Subject: Re: [RFC PATCH] ptrace: make ptrace() fail if the tracee changed its
+ pid unexpectedly
+To:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Jan Kratochvil <jan.kratochvil@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Simon Marchi <simon.marchi@efficios.com>,
+        linux-kernel@vger.kernel.org
+References: <20201217142931.GA8865@redhat.com>
+ <875z50roia.fsf@x220.int.ebiederm.org>
+From:   Pedro Alves <palves@redhat.com>
+Message-ID: <fc796624-2660-8c2b-0956-2c9ba8281952@redhat.com>
+Date:   Sat, 19 Dec 2020 16:19:31 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20201208152857.2162093-1-geert+renesas@glider.be> <20201208152857.2162093-2-geert+renesas@glider.be>
-In-Reply-To: <20201208152857.2162093-2-geert+renesas@glider.be>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 20 Dec 2020 01:10:08 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASteax8oDjNopYw00=VFMaM9LNNWej7bXGC-+Fs9-96BA@mail.gmail.com>
-Message-ID: <CAK7LNASteax8oDjNopYw00=VFMaM9LNNWej7bXGC-+Fs9-96BA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] Documentation/kbuild: Document COMPILE_TEST dependencies
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <875z50roia.fsf@x220.int.ebiederm.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 9, 2020 at 12:29 AM Geert Uytterhoeven
-<geert+renesas@glider.be> wrote:
->
-> Document best practises for using COMPILE_TEST dependencies.
->
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
->  Documentation/kbuild/kconfig-language.rst | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->
-> diff --git a/Documentation/kbuild/kconfig-language.rst b/Documentation/kbuild/kconfig-language.rst
-> index 1cf1aebdd6cdf8fa..2b746332d8aa6bce 100644
-> --- a/Documentation/kbuild/kconfig-language.rst
-> +++ b/Documentation/kbuild/kconfig-language.rst
-> @@ -553,6 +553,17 @@ with "depends on m".  E.g.::
+On 12/17/20 11:39 PM, Eric W. Biederman wrote:
 
+>> resume the old leader L, it resumes the post-exec thread T which was
+>> actually now stopped in PTHREAD_EVENT_EXEC. In this case the
+>> PTHREAD_EVENT_EXEC event is lost, and the tracer can't know that the
+>> tracee changed its pid.
+> 
+> The change seems sensible.  I don't expect this is common but it looks
+> painful to deal with if it happens.
 
-Both applied to linux-kbuild. Thanks.
+Yeah, the debug session becomes completely messed up, as the ptracer has no
+idea the process is running a new image, breakpoints were wiped out, and
+the post-exec process is resumed without the ptracer having had a chance
+to install new breakpoints.  I don't see any way to deal with it without
+kernel help.
 
-I replaced the two-spaces between sentences
-because the majority in this file adopts
-one-space between sentences.
-(I still see some inconsistencies, though.)
+> 
+> Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> 
+> I am wondering if this should be expanded to all ptrace types for
+> consistency.  Or maybe we should set a flag to make this happen for
+> all ptrace events.
+> 
+> It just seems really odd to only worry about missing this event.
+> I admit this a threaded PTRACE_EVENT_EXEC is the only event we are
+> likely to miss but still.
 
+It's more about the tid stealing than the event itself.  I mean,
+we lose the event because the tid changes magically without warning.
+An exec is the only scenario where this happens.
 
+> 
+> Do you by any chance have any debugger/strace test cases?
+> 
+> I would think that would be the way to test to see if this breaks
+> anything.  I think I remember strace having a good test suite.
 
+I ran the GDB testsuite against this, no regressions showed up.
 
+BTW, the problem was discovered by Simon Marchi when he tried to write
+a GDB testcase for a multi-threaded exec scenario:
 
+ https://sourceware.org/bugzilla/show_bug.cgi?id=26754
 
->
->  limits FOO to module (=m) or disabled (=n).
->
-> +Compile-testing
-> +~~~~~~~~~~~~~~~
-> +If a config symbol has a dependency, but the code controlled by the config
-> +symbol can still be compiled if the dependency is not met, it is encouraged to
-> +increase build coverage by adding an "|| COMPILE_TEST" clause to the
-> +dependency.  This is especially useful for drivers for more exotic hardware, as
-> +it allows continuous-integration systems to compile-test the code on a more
-> +common system, and detect bugs that way.
-> +Note that compile-tested code should avoid crashing when run on a system where
-> +the dependency is not met.
-> +
->  Kconfig recursive dependency limitations
->  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->
-> --
-> 2.25.1
->
+I've went through GDB's code looking for potential issues with the change and whether
+it would affect GDBs already in the wild.  Tricky corner cases abound, but I think
+we're good.  Feel free to add my ack:
 
+Acked-by: Pedro Alves <palves@redhat.com>
 
--- 
-Best Regards
-Masahiro Yamada
+Thanks,
+Pedro Alves
+
