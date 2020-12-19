@@ -2,116 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30CF82DEFF7
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 15:09:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFD9C2DF004
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 15:33:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726760AbgLSOJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 09:09:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37042 "EHLO mail.kernel.org"
+        id S1726647AbgLSO3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 09:29:52 -0500
+Received: from mga06.intel.com ([134.134.136.31]:51869 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726484AbgLSOJL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 09:09:11 -0500
-X-Gm-Message-State: AOAM530TtgSoTXLhbJ7Ij6Vk5upb6bye3hQNj4SCwCdiIkZzB6DMHhJS
-        KqtXnxBMmr9yf3hid8IGvXCd2rWg+sSkXjfjxXE=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608386911;
-        bh=GCNhyMIqrW3dQUWAJB68zPdfJSZq7pVhBnvhSWVUw1c=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qj5g/pc43gm2muVdIcQ14aYoZRJgSRgCeFrGadx5W/q8XJU8YCJpGPwyRdWBpA9Vs
-         RMVwCD8ahFv1p/i7u89tgmnI+Fqa4W9qWnVDzQ3dX/L8J9tMonA3dsCpKHrIcy0vcw
-         fSZ/ayLTJ5yzoJ68XIfJe5NTlJCD4w6TkBhRfTc3oUmHpa0XTX9222R9EClQW5qype
-         L1MCWgATOPmkldaLBCJp0D2splOm1M3oFmfrpt2HSe4Xl985mKGRgdV0ZNMvkWKLEd
-         TdLCG+Amu4hvLU32naDcb9G0KUuHZ3MjfRFIS+kqtnA3Fkxb7ijapvR5MXdUj/7MlN
-         LdIfFJHDSsCYw==
-X-Google-Smtp-Source: ABdhPJzPtEoTjFlEJ9RMzHkZ6RQFbm+VIwPPqktF6pHXoBiGs2eomNI8mTim6ADtg0WbwOyIpyVJm5I1x0lZQXnlzHQ=
-X-Received: by 2002:a05:6830:1e14:: with SMTP id s20mr6293125otr.210.1608386910461;
- Sat, 19 Dec 2020 06:08:30 -0800 (PST)
+        id S1726532AbgLSO3v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Dec 2020 09:29:51 -0500
+IronPort-SDR: SpV+synNydI4tUejbzQXbUSrIlS6j36Kqid1gub3Nn4rYeT1H4j/GHy5HAuBG4nBnuVivCFJRm
+ sLRLWe+B+ZAA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9839"; a="237146495"
+X-IronPort-AV: E=Sophos;i="5.78,433,1599548400"; 
+   d="scan'208";a="237146495"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2020 06:29:10 -0800
+IronPort-SDR: sqhsoL5kNJct1TA4VoCAvonuTwTKBMQaN17fuZTz8ztMf6evkcZbYHeBd+Td1ATU+Zt8ohsrc0
+ i7nidyJ89sPg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,433,1599548400"; 
+   d="scan'208";a="341150361"
+Received: from pl-dbox.sh.intel.com (HELO intel.com) ([10.239.159.39])
+  by fmsmga008.fm.intel.com with ESMTP; 19 Dec 2020 06:29:08 -0800
+Date:   Sat, 19 Dec 2020 22:25:26 +0800
+From:   Philip Li <philip.li@intel.com>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     kernel test robot <lkp@intel.com>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: [kbuild-all] Re: [linux-next:master 13538/13785]
+ /tmp/metronomefb-846872.s:300: Error: unrecognized opcode `zext.b a2,a2'
+Message-ID: <20201219142526.GA20452@intel.com>
+References: <202012191403.y8Aomjpm-lkp@intel.com>
+ <20201219075606.GA20870@amd>
+ <20201219102820.GA14085@intel.com>
+ <20201219104006.GA14905@intel.com>
+ <20201219131528.GA18240@duo.ucw.cz>
 MIME-Version: 1.0
-References: <00000000000025169705b6d100fa@google.com>
-In-Reply-To: <00000000000025169705b6d100fa@google.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Sat, 19 Dec 2020 15:08:14 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3AF4yFUcOEzMPf7SGkf6YVPJthHLzGtM==oGkSj+=mtg@mail.gmail.com>
-Message-ID: <CAK8P3a3AF4yFUcOEzMPf7SGkf6YVPJthHLzGtM==oGkSj+=mtg@mail.gmail.com>
-Subject: Re: memory leak in video_usercopy
-To:     syzbot <syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201219131528.GA18240@duo.ucw.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-,On Sat, Dec 19, 2020 at 2:15 PM syzbot
-<syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    a409ed15 Merge tag 'gpio-v5.11-1' of git://git.kernel.org/..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=10a5880f500000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=37c889fb8b2761af
-> dashboard link: https://syzkaller.appspot.com/bug?extid=1115e79c8df6472c612b
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14d18f9b500000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=106a2c13500000
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com
->
-> Debian GNU/Linux 9 syzkaller ttyS0
-> Warning: Permanently added '10.128.10.29' (ECDSA) to the list of known hosts.
-> executing program
-> executing program
-> BUG: memory leak
-> unreferenced object 0xffff88810fb12300 (size 256):
->   comm "syz-executor399", pid 8472, jiffies 4294942333 (age 13.960s)
->   hex dump (first 32 bytes):
->     03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->   backtrace:
->     [<000000009fd00995>] kmalloc_node include/linux/slab.h:575 [inline]
->     [<000000009fd00995>] kvmalloc_node+0x61/0xf0 mm/util.c:575
->     [<0000000096a57c4a>] kvmalloc include/linux/mm.h:773 [inline]
->     [<0000000096a57c4a>] video_usercopy+0x991/0xa50 drivers/media/v4l2-core/v4l2-ioctl.c:3303
->     [<00000000f7529cc2>] v4l2_ioctl+0x77/0x90 drivers/media/v4l2-core/v4l2-dev.c:360
->     [<0000000061b5e6a9>] vfs_ioctl fs/ioctl.c:48 [inline]
->     [<0000000061b5e6a9>] __do_sys_ioctl fs/ioctl.c:753 [inline]
->     [<0000000061b5e6a9>] __se_sys_ioctl fs/ioctl.c:739 [inline]
->     [<0000000061b5e6a9>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
->     [<000000000139479b>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->     [<00000000d6de1c9c>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+On Sat, Dec 19, 2020 at 02:15:28PM +0100, Pavel Machek wrote:
+> Hi!
+> 
+> > > > Crazy robot, stop spamming. This report is obviously bogus, yet, you
+> > > > sent me 5 copies.
+> > > Thanks Pavel for input, sorry for the false positive. It tries to
+> > > bisect error like below (the new error), but it may be related to
+> > > assember support. We will adjust the system to not report this out
+> > > wrongly. Kindly allow some time for us to resolving this.
+> > > 
+> > > > > >> /tmp/metronomefb-846872.s:300: Error: unrecognized opcode `zext.b a2,a2'
+> > > 
+> > > Thanks
+> > > 
+> > > > 
+> > > > Whoever is responsible for this, please sign emails with your real
+> > > > name!
+> > This is Philip who maintains the 0-day ci, and lkp@intel.com is the
+> > mailing list for the team here to be contacted.
+> 
+> Yes, so... 0-day bot normally does a really good job (and thanks for
+> it).
+> 
+> But getting emails from robot is slightly annoying, and it would be
+> nice to include name of person who is primary responsible from the bot
+> somewhere.
+> 
+> If you are primary person responsible for the robot, your name should
+> be somewhere in the email. Or perhaps the link in the trailer should
+> lead to explanation somewhere.
+Thanks for advice, I will consider this and add the appropriate web link in
+the end of mail after polishing the current info.
 
-It seems there are commands that need both a buffer for the direct ioc
-argument and for array_args. If that happens, we have two kvmalloc() calls
-but only one kvfree(), and that would correctly trigger the leak detector.
+> 
+> Best regards,
+> 								Pavel
+> -- 
+> http://www.livejournal.com/~pavelmachek
 
-The direct ioc argument copy happens for arguments over 128 bytes.
-Checking the sizes of the comands with array args shows
 
-VIDIOC_PREPARE_BUF, VIDIOC_QUERYBUF, VIDIOC_QBUF, VIDIOC_DQBUF:
-v4l2_buffer, 84 bytes or less
-
-VIDIOC_G_EDID, VIDIOC_S_EDID:
-v4l2_edid, 40 bytes or less
-
-VIDIOC_G_EXT_CTRLS, VIDIOC_S_EXT_CTRLS, VIDIOC_TRY_EXT_CTRLS:
-v4l2_ext_controls, 32 bytes or less
-
-VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT:
-v4l2_format, 204 or 208 bytes
-
-I would conclude it's one of the last three commands, and it could be
-avoided either by increasing the on-stack buffer to sizeof(struct v4l2_format),
-or by restructuring this function again to have two separate pointers
-for alloc/free.
-
-      Arnd
