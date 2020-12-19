@@ -2,83 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 198CB2DF0C0
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 18:51:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA56A2DF0C5
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 18:53:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727200AbgLSRup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 12:50:45 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:48894 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725562AbgLSRuo (ORCPT
+        id S1727249AbgLSRwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 12:52:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725562AbgLSRwe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 12:50:44 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 952E11C0B77; Sat, 19 Dec 2020 18:49:46 +0100 (CET)
-Date:   Sat, 19 Dec 2020 18:49:45 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Maxime Ripard <mripard@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Brown <broonie@kernel.org>, netdev@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: Fix JSON pointers
-Message-ID: <20201219174945.GA25643@amd>
-References: <20201217223429.354283-1-robh@kernel.org>
+        Sat, 19 Dec 2020 12:52:34 -0500
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83A41C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 09:51:54 -0800 (PST)
+Received: by mail-oi1-x233.google.com with SMTP id l207so6713593oib.4
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 09:51:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=Bi9+8PWR8xRsIKhCEM2h2bE5clfk/H11A/Yp12L9OEg=;
+        b=jUN8UuEPAlu4QHUtm9xoZZ67pzyNPhGzGpDj2V6xRqEC6O3ZlaBmHGUCQsTr1uRQau
+         pz6EmwkOmdmXM9uyX//H+T5MK/0+g6LEmbX80m1GomCWr7koxLQ2kONoZ38tPc4X2GHS
+         COdJrIG2ti9YGjuHKFlEuSQaPIRWZoit2fHnA8zaIqwmEU1WL+a7iFCFoKl5tua3q7dJ
+         X7G4c5FFcTEF5XSQa6YDMnRt/hGFrzvyFO00Bp+xF1zq9KBl2HCg5cBeaz+6v4qM26RE
+         3S4bDPBbQmvnLngkpt60QJFcAwRcfJS8L60PcJDex2ycz+7l29Lk6Wc1eNB4PPzbKFvE
+         h+zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition:user-agent;
+        bh=Bi9+8PWR8xRsIKhCEM2h2bE5clfk/H11A/Yp12L9OEg=;
+        b=h+kFZoStE8JGaz8ZAMptog0Sp9jb795SbFo2PkGKLefyqUGlFXKmc1+jkRCAqVjxHx
+         dnZJfVv1y9CHuO9rG4aJKpopEuEsy2Z9jZ/8uQtNbAqbfRSIXpPeJqLG6fSK/RWQ3wgE
+         /1VJhKGvuJVkweQTyDHSdLyZNKmbTsxgVooP6k5MASWqEpBU6YTEc7tu88irYKzXRyOQ
+         KwyceIq3zvNVK/1pMN1s1PR3l0bqKERHzTe7g3YMhPexbo/bxTsO8+UZXK2UoUhSmpXH
+         xiv3k+TSH/s/yhWFX7lEPc5nyd3ztGhAvt0Td16dPnN75Kbkms1Nu4AZFOJFQvBY10pw
+         rvUw==
+X-Gm-Message-State: AOAM533j803XyZ5QuJKzN6ludNXldwIF+ZGrqBAGtMmLjbikhWKpzujq
+        ZUr7/RHusIsLPgbgTOMYeFU=
+X-Google-Smtp-Source: ABdhPJzl302HbXKhes494AXjy7KLvhTnVIsw6QClQhMrOYYsnFCPU+SnUD4zmIduRPFM3liguu82tw==
+X-Received: by 2002:a54:4787:: with SMTP id o7mr6496342oic.113.1608400313506;
+        Sat, 19 Dec 2020 09:51:53 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id r15sm2498257oie.33.2020.12.19.09.51.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 19 Dec 2020 09:51:52 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sat, 19 Dec 2020 09:51:51 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Kalesh Singh <kaleshsingh@google.com>
+Cc:     surenb@google.com, minchan@kernel.org, joelaf@google.com,
+        lokeshgidra@google.com, kernel-team@android.com,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: mremap - Fix extent calculation
+Message-ID: <20201219175151.GA6542@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="bp/iNruPH9dso1Pn"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201217223429.354283-1-robh@kernel.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Dec 19, 2020 at 05:04:33PM +0000, Kalesh Singh wrote:
+> When `next < old_addr`, `next - old_addr` arithmetic underflows
+> causing `extent` to be incorrect.
+> 
+> Make `extent` the smaller of `next - old_addr` or `old_end - old_addr`.
+> 
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
 
---bp/iNruPH9dso1Pn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This patch fixes the problem I had observed when booting 'parisc'
+images.
 
-On Thu 2020-12-17 16:34:29, Rob Herring wrote:
-> The correct syntax for JSON pointers begins with a '/' after the '#'.
-> Without a '/', the string should be interpretted as a subschema
-> identifier. The jsonschema module currently doesn't handle subschema
-> identifiers and incorrectly allows JSON pointers to begin without a '/'.
-> Let's fix this before it becomes a problem when jsonschema module is
-> fixed.
->=20
-> Converted with:
-> perl -p -i -e 's/yaml#definitions/yaml#\/definitions/g' `find Documentati=
-on/devicetree/bindings/ -name "*.yaml"`
->
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Acked-by: Pavel Machek <pavel@ucw.cz>
+Guenter
 
---=20
-http://www.livejournal.com/~pavelmachek
-
---bp/iNruPH9dso1Pn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl/ePTgACgkQMOfwapXb+vIsEwCgoqapZig1frJsLt79Dd1jHccN
-75EAoLe+6pWK3uzfpcvabTuRJpWKz3ku
-=1T8V
------END PGP SIGNATURE-----
-
---bp/iNruPH9dso1Pn--
+> ---
+>  mm/mremap.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/mremap.c b/mm/mremap.c
+> index c5590afe7165..f554320281cc 100644
+> --- a/mm/mremap.c
+> +++ b/mm/mremap.c
+> @@ -358,7 +358,9 @@ static unsigned long get_extent(enum pgt_entry entry, unsigned long old_addr,
+>  
+>  	next = (old_addr + size) & mask;
+>  	/* even if next overflowed, extent below will be ok */
+> -	extent = (next > old_end) ? old_end - old_addr : next - old_addr;
+> +	extent = next - old_addr;
+> +	if (extent > old_end - old_addr)
+> +		extent = old_end - old_addr;
+>  	next = (new_addr + size) & mask;
+>  	if (extent > next - new_addr)
+>  		extent = next - new_addr;
+> -- 
+> 2.29.2.729.g45daf8777d-goog
+> 
