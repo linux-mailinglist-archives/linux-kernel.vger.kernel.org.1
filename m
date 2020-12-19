@@ -2,76 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 630602DECC6
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 03:51:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD0802DECD6
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 04:21:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726326AbgLSCuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 21:50:44 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:56863 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726220AbgLSCuo (ORCPT
+        id S1726334AbgLSDTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 22:19:47 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:42192 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726252AbgLSDTr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 21:50:44 -0500
-Received: by mail-il1-f200.google.com with SMTP id r20so3935268ilh.23
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Dec 2020 18:50:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=WRrWdLXnVhXMEnkyXGJyYpT7gv4ZpleApkGyNqnGXBQ=;
-        b=Z9X4Dw3Cr15ltF8tZEu0zI9eSVnk34cKYVcKZZcB5CdCBhPc1S/RztkUFtwKomielO
-         GM4SZIiqcaxqgGZL5bib2QhaSFw+P+3y/jWfiCrT9ZtsCIt2QODmkzEouAgZu+IvP816
-         4r9rF2wBiUbBbU+Wrx1wB+WPgHD2TdPIo7Jn/UzF1li7N/YVmsZi6QcuCnuYlKdCvw7C
-         LWLwALpCuKsDRIok4pjDVd9dioh+X70TuG9JbPqVHsDJKIOfrzbbcPJxgbpRQgV/aUuD
-         +9cfCwMz1kymxKn/nLxXUm+9Ilh7bHv11DeTyFrmaz6DlwYasXEkMnchtJN0DTiyK7rJ
-         femg==
-X-Gm-Message-State: AOAM530Vwn7c3x7ZrznJ33zOcUWYlmpOGrtVTXsiH3EH1B76mTw9YXP1
-        Mk5uqjA6SA9c3NCOvXjn2IOaAZMNcayPUA2DxDmvFpSVFu35
-X-Google-Smtp-Source: ABdhPJyqSpVlgYZ7Kv69L7Yr5/7ngYre/wE2XMXivojNJWXyCwLM/npg30emmg9eBU/wh6FL2jvrnSjjBcsAiYvIXyHicYnMMf/J
+        Fri, 18 Dec 2020 22:19:47 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BJ3GT2a004791;
+        Sat, 19 Dec 2020 03:18:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=v6q6IbegRXRbGCELj5Zvab6ivdH8CTWiLtARp7czLwE=;
+ b=p1KdMGHt6c12R61yXtFiDyB+J6kaBzzMB1jPHJQfq4pfJ9NXbnF9RtzXAaX8UnbzINDV
+ 1nSaYjgw//u8xepQXXw46DNm/9s7GK8ly+eniTuQQZCu39yv3b+vAukXKDuFtBSxqztt
+ BMTLGwNQLfZnL+MFZ9R+GLbKNfEHb1SIaY0z2obzOF0Ii81wlT/AsjnxMuzTfGYMaS2V
+ VvQeCU1UXKlauy75ok6GKJnDP6wlRlZUzil/Y3PhvuTvXFmjY7tG7EvGGWI4C0xunQ55
+ qcdQAS3HR+ZVKdQI6ZGlFyIvh5d0c06ts0XZZRXrFCiNmYhj7mhUmgqtJY254hPCnKEH NQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 35h8xqr1c6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 19 Dec 2020 03:18:52 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BJ3GL6r178625;
+        Sat, 19 Dec 2020 03:18:51 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 35h6mrkvqn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 19 Dec 2020 03:18:51 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0BJ3InUJ022223;
+        Sat, 19 Dec 2020 03:18:50 GMT
+Received: from [10.191.10.149] (/10.191.10.149)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 18 Dec 2020 19:18:49 -0800
+Subject: Re: [PATCH] mm/vmscan: DRY cleanup for do_try_to_free_pages()
+To:     Chris Down <chris@chrisdown.name>
+Cc:     Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org
+References: <20201218102217.186836-1-jian.w.wen@oracle.com>
+ <20201218105153.GX32193@dhcp22.suse.cz>
+ <f376b551-9a90-c036-d34b-b32d93107b6c@oracle.com>
+ <20201218142717.GA32193@dhcp22.suse.cz>
+ <63e8a821-a3f6-47a6-f438-b27c32f4a05f@oracle.com>
+ <X91Vg1Mg1nPk/Bsx@chrisdown.name>
+From:   Jacob Wen <jian.w.wen@oracle.com>
+Message-ID: <fc257fe6-f2e4-bc53-1943-533661378fc5@oracle.com>
+Date:   Sat, 19 Dec 2020 11:18:43 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Received: by 2002:a02:9107:: with SMTP id a7mr6642547jag.12.1608346203224;
- Fri, 18 Dec 2020 18:50:03 -0800 (PST)
-Date:   Fri, 18 Dec 2020 18:50:03 -0800
-In-Reply-To: <000000000000f415bd05a047548f@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001e7f4605b6c84833@google.com>
-Subject: Re: kernel BUG at drivers/dma-buf/dma-buf.c:LINE!
-From:   syzbot <syzbot+d6734079f30f7fc39021@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, arve@android.com,
-        christian.koenig@amd.com, christian@brauner.io,
-        colin.king@canonical.com, devel@driverdev.osuosl.org,
-        dri-devel@lists.freedesktop.org, gregkh@linuxfoundation.org,
-        hridya@google.com, jbwyatt4@gmail.com, joel@joelfernandes.org,
-        linaro-mm-sig-owner@lists.linaro.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
-        m.szyprowski@samsung.com, maco@android.com, masahiroy@kernel.org,
-        peterz@infradead.org, shuah@kernel.org, skhan@linuxfoundation.org,
-        sumit.semwal@linaro.org, surenb@google.com,
-        syzkaller-bugs@googlegroups.com, tkjos@android.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <X91Vg1Mg1nPk/Bsx@chrisdown.name>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9839 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=866 adultscore=0
+ bulkscore=0 phishscore=0 malwarescore=0 spamscore=0 suspectscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012190019
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9839 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 clxscore=1011
+ priorityscore=1501 mlxscore=0 lowpriorityscore=0 adultscore=0
+ mlxlogscore=878 suspectscore=0 phishscore=0 impostorscore=0 bulkscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012190019
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
 
-commit e722a295cf493388dae474745d30e91e1a2ec549
-Author: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Date:   Thu Aug 27 12:36:27 2020 +0000
+On 12/19/20 9:21 AM, Chris Down wrote:
+> Jacob Wen writes:
+>> set_task_reclaim_state() is a function with 3 lines of code of which 
+>> 2 lines contain WARN_ON_ONCE.
+>>
+>> I am not comfortable with the current repetition.
+>
+> Ok, but could you please go into _why_ others should feel that way 
+> too? There are equally also reasons to err on the side of leaving code 
+> as-is -- since we know it already works, and this code generally has 
+> pretty high inertia -- and avoid mutation of code without concrete 
+> description of the benefits.
 
-    staging: ion: remove from the tree
+I don't get your point. The patch doesn't change code of 
+set_task_reclaim_state(), so I am fine with the repeated WARN_ON_ONCE.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17d4f137500000
-start commit:   abb3438d Merge tag 'm68knommu-for-v5.9-rc3' of git://git.k..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=978db74cb30aa994
-dashboard link: https://syzkaller.appspot.com/bug?extid=d6734079f30f7fc39021
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17428596900000
+I mean I prefer removing duplicate code to avoid going down the rabbit 
+hole of set_task_reclaim_state().
 
-If the result looks correct, please mark the issue as fixed by replying with:
+It's a fundamental principle to me to move the code into its own 
+function. I'd like to hear the others' opinions.
 
-#syz fix: staging: ion: remove from the tree
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
