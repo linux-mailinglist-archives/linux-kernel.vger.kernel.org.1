@@ -2,470 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8C982DEC85
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 01:50:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E16D2DEC88
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 01:56:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726298AbgLSAuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Dec 2020 19:50:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726209AbgLSAuV (ORCPT
+        id S1726323AbgLSAy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Dec 2020 19:54:59 -0500
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:47045 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726053AbgLSAy6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Dec 2020 19:50:21 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE34C0617B0;
-        Fri, 18 Dec 2020 16:49:40 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id d26so4494403wrb.12;
-        Fri, 18 Dec 2020 16:49:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=W9Mc2/GWr5kkacTx+E1IeeZWXaRdR++vErt47n1SNLg=;
-        b=R+eqDby12/uJchHoxQosFb5oJxQ2lSj/i1TzYOX5VbClXGst/neR+OQpjuLe8VyZZB
-         vc9Lt1i9UYSEbVx8IfI33Zv0KDFP4UPnt12CIZ54lxXxgrQKLl+VwWub3W6JGfcoTIsm
-         kRotQJJ+/6TbT5HErQsKDOj1wJHBOfloZYh5y3jiXwfg/CElKxhqlZjtyjkooGrDxQSM
-         BtWy17cXfLQgrBbtYVv+9eP5lfB4pMmb3AfRtbNvWgeFVIpoRaS3wFWaAKY6SR+dPT7i
-         FMPabhjVOA3Zv5IR2+6CvRFOaXh+763Y/jWtFoLk4BgeliNaZARC6CWbU8YcmET0HOK0
-         0BTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=W9Mc2/GWr5kkacTx+E1IeeZWXaRdR++vErt47n1SNLg=;
-        b=CsiEJkiEsltrEOww9YpeCJ8VtVwaKmGH+XCxkKojaNWraDcUBxpNsLu2LbeuCtOQkg
-         I+yDONsIBC1wAcWM5eRswOG3R2I4oL6M9YG5KYEukZwP9KxpLmZ1VMdA1PNmrBU74R0Z
-         d1TEFt82wGu3RgZJ7ZjYRU+ocPu8kg8HA8l5YLHnQ1srCEt4HMi3dEfOBFiJGNUMKzgz
-         n2hh/KyFZaQpoUPTuDb/xG9IcPWJlS+o1QrZBYQXOLdFAmThHw2L1mcfGBwu4g5b98fU
-         WTZAG5EG2hZYfDAx0eBPcjRAukqzQ/ql3yf+ObPFPP1JQI4V6wx/kNa+yUU0OVAh3S2p
-         yTOA==
-X-Gm-Message-State: AOAM5315/613iGCZUUIkKHRzoRtJ0XY+a7RtBsc4NvHvdGKgEqgC6kNP
-        HWHieybM5m3whW7/DtM0toU=
-X-Google-Smtp-Source: ABdhPJxeD9vRRRca3FcRcncNHLe5uRoBC9d/tFdNehA6hp4a47LRwjpF9WUxym9CR2X0N2wyOB2skg==
-X-Received: by 2002:adf:ba46:: with SMTP id t6mr7068877wrg.168.1608338979318;
-        Fri, 18 Dec 2020 16:49:39 -0800 (PST)
-Received: from localhost (pd9e5183e.dip0.t-ipconnect.de. [217.229.24.62])
-        by smtp.gmail.com with ESMTPSA id j10sm15212978wmj.7.2020.12.18.16.49.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Dec 2020 16:49:37 -0800 (PST)
-Date:   Sat, 19 Dec 2020 01:49:36 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>, devicetree@vger.kernel.org,
-        Frank Rowand <frowand.list@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v2 1/4] dt-bindings: reserved-memory: Document "active"
- property
-Message-ID: <X91OIMAROsbl2xT1@ulmo>
-References: <20200904130000.691933-1-thierry.reding@gmail.com>
- <20200914220829.GA330122@bogus>
- <20200915123648.GA3496938@ulmo>
- <20200924112725.GA2486709@ulmo>
- <20201105164312.GD485884@ulmo>
- <483cd043-980e-81fb-cccb-385206a699df@arm.com>
- <20201106152548.GA767203@ulmo>
- <20201110193309.GB2303484@ulmo>
- <X9tyc3t2MgtiFwwb@ulmo>
- <CAL_JsqJqupMdr8vSWPTpYEGmcjKDqoKjMCYY-BvSLpxzkovx7Q@mail.gmail.com>
+        Fri, 18 Dec 2020 19:54:58 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 621143A4;
+        Fri, 18 Dec 2020 19:53:51 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Fri, 18 Dec 2020 19:53:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
+        message-id:subject:from:to:cc:date:in-reply-to:references
+        :content-type:mime-version:content-transfer-encoding; s=fm2; bh=
+        aCQS7OThQpukbiPNplUPEwFmtIi2T3qpwrZfR7+qqJ4=; b=UqVwnco2QNeGlkq6
+        6w8iWr1z5y1joj9nsH5oXr+e4IWazojSeCRn+WFYQETMQJD3mErYjJ5a8xppJgBw
+        1FjCzsVMzpaWKU1nRl0OtRTObjhriFCDMG3ZiRTJu+r/KS+ZLj7jx8qjWFBUYgoi
+        S+g+M8TXTvc/hmrv3ZcRyLjhPX7FNbHo1Of/rB1urIgcqUDaSo/5OwumGMZ2yL2e
+        jqsIxckbhKALQV51FjUOqhKRL1sbXxhUrbz0oWUZB5fl0o04QeJjacnktdP2plda
+        uBKPOAZF7m6q7sR4gtKgogFWSMmP6NKOTRSOzf3VuoUbanXXXv+CN3lOi00kdhdw
+        GCgZtg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=aCQS7OThQpukbiPNplUPEwFmtIi2T3qpwrZfR7+qq
+        J4=; b=R3JwcwMwrLjz0pAAZHLHu7vACLPonD9cKzEjXyoKICBPWaPXw2h7uoLMu
+        G8kpj3MQcK/SwhLhkvbZn8HP+6/CQaD/pBYRwIVSftFF/k4ZknsiVvt6fWOznL/Y
+        8/jED97ujVTdznh5HPK7+4uwQZYGNo0UBNJOZkdCTxdwWNOf448aJRaJDlCudfDI
+        +v23Ye7HkNMYA+phyq87S6mE5eSwCVeVv7igvgF/kOFpXdiPgsS3AtUhF+YhtWoE
+        HrjOE7fxo5q/wU1swzUfnn4adoiqIHADtOGulmvpwBZdTOPFUEXsFwogrpQ+EJ95
+        J+M+3zS0xIv1cDxD3Q1+lyF2y67dw==
+X-ME-Sender: <xms:HE_dX28EfM7KcSL3CZlF4-2tPT-QSXoazPf1n9GpqUJRP9eDSutGSw>
+    <xme:HE_dX2u5E_eV6C8ZigdTMWxNA1ysi_ytjZn4M5jDG059mUEAOHJbKuqD8HKqKgKAr
+    2kdzKw84PBE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeljedgvdegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkffuhffvffgjfhgtfggggfesthejredttderjeenucfhrhhomhepkfgrnhcu
+    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
+    effeettedvgeduvdevfeevfeettdffudduheeuiefhueevgfevheffledugefgjeenucfk
+    phepuddtiedrieelrddvgeejrddvtdehnecuvehluhhsthgvrhfuihiivgeptdenucfrrg
+    hrrghmpehmrghilhhfrhhomheprhgrvhgvnhesthhhvghmrgifrdhnvght
+X-ME-Proxy: <xmx:HE_dX8BsAJx8t6g_Me9ABRyjnSECI-dyRsjfUFOVg3LAIEuIflPxuw>
+    <xmx:HE_dX-c5xtML1P1kEnXfAsK2N2iSrzuckzZdOdQeW28I1fmtOU4SQQ>
+    <xmx:HE_dX7P1ozKKhXeut7mKxTJpuim2Ug-HtXpm0YxO82tmYQw3SbOXYA>
+    <xmx:Hk_dX2d0WvovqjUIQauHJfNXVcwAL8uVK2z974D5YJw7nutJgR2fKAFBN0Q>
+Received: from mickey.themaw.net (106-69-247-205.dyn.iinet.net.au [106.69.247.205])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 328B5108005C;
+        Fri, 18 Dec 2020 19:53:44 -0500 (EST)
+Message-ID: <ecf41abd583d5d2c775d9d385ea2a0af7b275037.camel@themaw.net>
+Subject: Re: [PATCH v2 0/6] kernfs: proposed locking and concurrency
+ improvement
+From:   Ian Kent <raven@themaw.net>
+To:     Fox Chen <foxhlchen@gmail.com>
+Cc:     Tejun Heo <tj@kernel.org>, Greg KH <gregkh@linuxfoundation.org>,
+        akpm@linux-foundation.org, dhowells@redhat.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        miklos@szeredi.hu, ricklind@linux.vnet.ibm.com,
+        sfr@canb.auug.org.au, viro@zeniv.linux.org.uk
+Date:   Sat, 19 Dec 2020 08:53:40 +0800
+In-Reply-To: <CAC2o3DKO_weLt2n6hOwU=hJ9J4fc3Qa3mUHP7rMzksJVuGnsJA@mail.gmail.com>
+References: <bde0b6c32f2b055c1ad1401b45c4adf61aab6876.camel@themaw.net>
+         <CAC2o3DJdHuQxY7Rn5uXUprS7i8ri1qB=wOUM2rdZkWt4yJHv1w@mail.gmail.com>
+         <3e97846b52a46759c414bff855e49b07f0d908fc.camel@themaw.net>
+         <CAC2o3DLGtx15cgra3Y92UBdQRBKGckqOkDmwBV-aV-EpUqO5SQ@mail.gmail.com>
+         <efb7469c7bad2f6458c9a537b8e3623e7c303c21.camel@themaw.net>
+         <da4f730bbbb20c0920599ca5afc316e2c092b7d8.camel@themaw.net>
+         <CAC2o3DJsvB6kj=S6D3q+_OBjgez9Q9B5s3-_gjUjaKmb2MkTHQ@mail.gmail.com>
+         <c4002127c72c07a00e8ba0fae6b0ebf5ba8e08e7.camel@themaw.net>
+         <a39b73a53778094279522f1665be01ce15fb21f4.camel@themaw.net>
+         <c8a6c9adc3651e64cf694f580a8cb3d87d7cb893.camel@themaw.net>
+         <X9t1xVTZ/ApIvPMg@mtj.duckdns.org>
+         <67a3012a6a215001c8be9344aee1c99897ff8b7e.camel@themaw.net>
+         <CAC2o3DJhx+dJX-oMKSTNabWYyRB750VABib+OZ=7UX6rGJZD5g@mail.gmail.com>
+         <f21e92d683c609b14e559209a1a1bed2f7c3649e.camel@themaw.net>
+         <CAC2o3DKO_weLt2n6hOwU=hJ9J4fc3Qa3mUHP7rMzksJVuGnsJA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="9MXLSNlP1Ly1uiUS"
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqJqupMdr8vSWPTpYEGmcjKDqoKjMCYY-BvSLpxzkovx7Q@mail.gmail.com>
-User-Agent: Mutt/2.0.3 (a51f058f) (2020-12-04)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 2020-12-18 at 21:20 +0800, Fox Chen wrote:
+> On Fri, Dec 18, 2020 at 7:21 PM Ian Kent <raven@themaw.net> wrote:
+> > On Fri, 2020-12-18 at 16:01 +0800, Fox Chen wrote:
+> > > On Fri, Dec 18, 2020 at 3:36 PM Ian Kent <raven@themaw.net>
+> > > wrote:
+> > > > On Thu, 2020-12-17 at 10:14 -0500, Tejun Heo wrote:
+> > > > > Hello,
+> > > > > 
+> > > > > On Thu, Dec 17, 2020 at 07:48:49PM +0800, Ian Kent wrote:
+> > > > > > > What could be done is to make the kernfs node attr_mutex
+> > > > > > > a pointer and dynamically allocate it but even that is
+> > > > > > > too
+> > > > > > > costly a size addition to the kernfs node structure as
+> > > > > > > Tejun has said.
+> > > > > > 
+> > > > > > I guess the question to ask is, is there really a need to
+> > > > > > call kernfs_refresh_inode() from functions that are usually
+> > > > > > reading/checking functions.
+> > > > > > 
+> > > > > > Would it be sufficient to refresh the inode in the
+> > > > > > write/set
+> > > > > > operations in (if there's any) places where things like
+> > > > > > setattr_copy() is not already called?
+> > > > > > 
+> > > > > > Perhaps GKH or Tejun could comment on this?
+> > > > > 
+> > > > > My memory is a bit hazy but invalidations on reads is how
+> > > > > sysfs
+> > > > > namespace is
+> > > > > implemented, so I don't think there's an easy around that.
+> > > > > The
+> > > > > only
+> > > > > thing I
+> > > > > can think of is embedding the lock into attrs and doing xchg
+> > > > > dance
+> > > > > when
+> > > > > attaching it.
+> > > > 
+> > > > Sounds like your saying it would be ok to add a lock to the
+> > > > attrs structure, am I correct?
+> > > > 
+> > > > Assuming it is then, to keep things simple, use two locks.
+> > > > 
+> > > > One global lock for the allocation and an attrs lock for all
+> > > > the
+> > > > attrs field updates including the kernfs_refresh_inode()
+> > > > update.
+> > > > 
+> > > > The critical section for the global lock could be reduced and
+> > > > it
+> > > > changed to a spin lock.
+> > > > 
+> > > > In __kernfs_iattrs() we would have something like:
+> > > > 
+> > > > take the allocation lock
+> > > > do the allocated checks
+> > > >   assign if existing attrs
+> > > >   release the allocation lock
+> > > >   return existing if found
+> > > > othewise
+> > > >   release the allocation lock
+> > > > 
+> > > > allocate and initialize attrs
+> > > > 
+> > > > take the allocation lock
+> > > > check if someone beat us to it
+> > > >   free and grab exiting attrs
+> > > > otherwise
+> > > >   assign the new attrs
+> > > > release the allocation lock
+> > > > return attrs
+> > > > 
+> > > > Add a spinlock to the attrs struct and use it everywhere for
+> > > > field updates.
+> > > > 
+> > > > Am I on the right track or can you see problems with this?
+> > > > 
+> > > > Ian
+> > > > 
+> > > 
+> > > umm, we update the inode in kernfs_refresh_inode, right??  So I
+> > > guess
+> > > the problem is how can we protect the inode when
+> > > kernfs_refresh_inode
+> > > is called, not the attrs??
+> > 
+> > But the attrs (which is what's copied from) were protected by the
+> > mutex lock (IIUC) so dealing with the inode attributes implies
+> > dealing with the kernfs node attrs too.
+> > 
+> > For example in kernfs_iop_setattr() the call to setattr_copy()
+> > copies
+> > the node attrs to the inode under the same mutex lock. So, if a
+> > read
+> > lock is used the copy in kernfs_refresh_inode() is no longer
+> > protected,
+> > it needs to be protected in a different way.
+> > 
+> 
+> Ok, I'm actually wondering why the VFS holds exclusive i_rwsem for
+> .setattr but
+>  no lock for .getattr (misdocumented?? sometimes they have as you've
+> found out)?
+> What does it protect against?? Because .permission does a similar
+> thing
+> here -- updating inode attributes, the goal is to provide the same
+> protection level
+> for .permission as for .setattr, am I right???
 
---9MXLSNlP1Ly1uiUS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+As far as the documentation goes that's probably my misunderstanding
+of it.
 
-On Fri, Dec 18, 2020 at 04:15:45PM -0600, Rob Herring wrote:
-> On Thu, Dec 17, 2020 at 9:00 AM Thierry Reding <thierry.reding@gmail.com>=
- wrote:
-> >
-> > On Tue, Nov 10, 2020 at 08:33:09PM +0100, Thierry Reding wrote:
-> > > On Fri, Nov 06, 2020 at 04:25:48PM +0100, Thierry Reding wrote:
-> > > > On Thu, Nov 05, 2020 at 05:47:21PM +0000, Robin Murphy wrote:
-> > > > > On 2020-11-05 16:43, Thierry Reding wrote:
-> > > > > > On Thu, Sep 24, 2020 at 01:27:25PM +0200, Thierry Reding wrote:
-> > > > > > > On Tue, Sep 15, 2020 at 02:36:48PM +0200, Thierry Reding wrot=
-e:
-> > > > > > > > On Mon, Sep 14, 2020 at 04:08:29PM -0600, Rob Herring wrote:
-> > > > > > > > > On Fri, Sep 04, 2020 at 02:59:57PM +0200, Thierry Reding =
-wrote:
-> > > > > > > > > > From: Thierry Reding <treding@nvidia.com>
-> > > > > > > > > >
-> > > > > > > > > > Reserved memory regions can be marked as "active" if ha=
-rdware is
-> > > > > > > > > > expected to access the regions during boot and before t=
-he operating
-> > > > > > > > > > system can take control. One example where this is usef=
-ul is for the
-> > > > > > > > > > operating system to infer whether the region needs to b=
-e identity-
-> > > > > > > > > > mapped through an IOMMU.
-> > > > > > > > >
-> > > > > > > > > I like simple solutions, but this hardly seems adequate t=
-o solve the
-> > > > > > > > > problem of passing IOMMU setup from bootloader/firmware t=
-o the OS. Like
-> > > > > > > > > what is the IOVA that's supposed to be used if identity m=
-apping is not
-> > > > > > > > > used?
-> > > > > > > >
-> > > > > > > > The assumption here is that if the region is not active the=
-re is no need
-> > > > > > > > for the IOVA to be specified because the kernel will alloca=
-te memory and
-> > > > > > > > assign any IOVA of its choosing.
-> > > > > > > >
-> > > > > > > > Also, note that this is not meant as a way of passing IOMMU=
- setup from
-> > > > > > > > the bootloader or firmware to the OS. The purpose of this i=
-s to specify
-> > > > > > > > that some region of memory is actively being accessed durin=
-g boot. The
-> > > > > > > > particular case that I'm looking at is where the bootloader=
- set up a
-> > > > > > > > splash screen and keeps it on during boot. The bootloader h=
-as not set up
-> > > > > > > > an IOMMU mapping and the identity mapping serves as a way o=
-f keeping the
-> > > > > > > > accesses by the display hardware working during the transit=
-ional period
-> > > > > > > > after the IOMMU translations have been enabled by the kerne=
-l but before
-> > > > > > > > the kernel display driver has had a chance to set up its ow=
-n IOMMU
-> > > > > > > > mappings.
-> > > > > > > >
-> > > > > > > > > If you know enough about the regions to assume identity m=
-apping, then
-> > > > > > > > > can't you know if active or not?
-> > > > > > > >
-> > > > > > > > We could alternatively add some property that describes the=
- region as
-> > > > > > > > requiring an identity mapping. But note that we can't make =
-any
-> > > > > > > > assumptions here about the usage of these regions because t=
-he IOMMU
-> > > > > > > > driver simply has no way of knowing what they are being use=
-d for.
-> > > > > > > >
-> > > > > > > > Some additional information is required in device tree for =
-the IOMMU
-> > > > > > > > driver to be able to make that decision.
-> > > > > > >
-> > > > > > > Rob, can you provide any hints on exactly how you want to mov=
-e this
-> > > > > > > forward? I don't know in what direction you'd like to proceed.
-> > > > > >
-> > > > > > Hi Rob,
-> > > > > >
-> > > > > > do you have any suggestions on how to proceed with this? I'd li=
-ke to get
-> > > > > > this moving again because it's something that's been nagging me=
- for some
-> > > > > > months now. It also requires changes across two levels in the b=
-ootloader
-> > > > > > stack as well as Linux and it takes quite a bit of work to make=
- all the
-> > > > > > changes, so before I go and rewrite everything I'd like to get =
-the DT
-> > > > > > bindings sorted out first.
-> > > > > >
-> > > > > > So just to summarize why I think this simple solution is good e=
-nough: it
-> > > > > > tries to solve a very narrow and simple problem. This is not an=
- attempt
-> > > > > > at describing the firmware's full IOMMU setup to the kernel. In=
- fact, it
-> > > > > > is primarily targetted at cases where the firmware hasn't setup=
- an IOMMU
-> > > > > > at all, and we just want to make sure that when the kernel take=
-s over
-> > > > > > and does want to enable the IOMMU, that all the regions that are
-> > > > > > actively being accessed by non-quiesced hardware (the most typi=
-cal
-> > > > > > example would be a framebuffer scanning out a splat screen or a=
-nimation,
-> > > > > > but it could equally well be some sort of welcoming tone or mus=
-ic being
-> > > > > > played back) are described in device tree.
-> > > > > >
-> > > > > > In other words, and this is perhaps better answering your second
-> > > > > > question: in addition to describing reserved memory regions, we=
- want to
-> > > > > > add a bit of information here about the usage of these memory r=
-egions.
-> > > > > > Some memory regions may contain information that the kernel may=
- want to
-> > > > > > use (such an external memory frequency scaling tables) and thos=
-e I would
-> > > > > > describe as "inactive" memory because it isn't being accessed by
-> > > > > > hardware. The framebuffer in this case is the opposite and it i=
-s being
-> > > > > > actively accessed (hence it is marked "active") by hardware whi=
-le the
-> > > > > > kernel is busy setting everything up so that it can reconfigure=
- that
-> > > > > > hardware and take over with its own framebuffer (for the consol=
-e, for
-> > > > > > example). It's also not so much that we know enough about the r=
-egion to
-> > > > > > assume it needs identity mapping. We don't really care about th=
-at from
-> > > > > > the DT point of view. In fact, depending on the rest of the sys=
-tem
-> > > > > > configuration, we may not need identity mapping (i.e. if none o=
-f the
-> > > > > > users of the reserved memory region are behind an IOMMU). But t=
-he point
-> > > > > > here is that the IOMMU drivers can use this "active" property to
-> > > > > > determine that if a device is using an "active" region and it i=
-s behind
-> > > > > > an IOMMU, then it must identity map that region in order for the
-> > > > > > hardware, which is not under the kernel's control yet, to be ab=
-le to
-> > > > > > continue to access that memory through an IOMMU mapping.
-> > > > >
-> > > > > Hmm, "active" is not a property of the memory itself, though, it'=
-s really a
-> > > > > property of the device accessing it. If several distinct devices =
-share a
-> > > > > carveout region, and for simplicity the bootloader marks it as ac=
-tive
-> > > > > because one of those devices happens to be using some part of it =
-at boot, we
-> > > > > don't really want to have to do all the reserved region setup for=
- all the
-> > > > > other devices unnecessarily, when all that matters is not disrupt=
-ing one of
-> > > > > them when resetting the IOMMU.
-> > > > >
-> > > > > That leads to another possible hiccup - some bindings already hav=
-e a defined
-> > > > > meaning for a "memory-region" property. If we use that to point t=
-o some
-> > > > > small region for a temporary low-resolution bootsplash screen for=
- visibility
-> > > > > to an IOMMU driver, the device's own driver might also interpret =
-it as a
-> > > > > private carveout from which it is expected to allocate everything=
-, and thus
-> > > > > could end up failing to work well or at all.
-> > > > >
-> > > > > I agree that we should only need a relatively simple binding, and=
- that
-> > > > > piggybacking off reserved-memory nodes seems like an ideal way of=
- getting
-> > > > > address range descriptions without too much extra complexity; the=
- tricky
-> > > > > part is how best to associate those with the other information ne=
-eded, which
-> > > > > is really the "iommus" property of the relevant device, and how t=
-o make it
-> > > > > as generically discoverable as possible. Perhaps it might be work=
-able to
-> > > > > follow almost the same approach but with a dedicated property (e.=
-g.
-> > > > > "active-memory-region") that the IOMMU code can simply scan the D=
-T for to
-> > > > > determine relevant device nodes. Otherwise properties on the IOMM=
-U node
-> > > > > itself would seem the next most practical option.
-> > > >
-> > > > We did recently introduce a "memory-region-names" property that's u=
-sed
-> > > > to add context for cases where multiple memory regions are used. Pe=
-rhaps
-> > > > the simplest to address the above would be to describe the region as
-> > > > active by naming it "active". That has the disadvantage of restrict=
-ing
-> > > > the number of active regions to 1, though I suspect that may even be
-> > > > enough for the vast majority of cases where we need this. This woul=
-d be
-> > > > similar to how we use the "dma-mem" string in the "interconnect-nam=
-es"
-> > > > property to specify the "DMA parent" of a device node.
-> > > >
-> > > > Alternatively, we could perhaps support multiple occurrences of "ac=
-tive"
-> > > > in the "memory-region-names" property. Or we could add a bit of
-> > > > flexibility by considering all memory regions whose names have an
-> > > > "active-" prefix as being active.
-> > > >
-> > > > > We've also finally got things going on the IORT RMR side[1], whic=
-h helps add
-> > > > > a bit more shape to things too; beyond the actual firmware parsin=
-g, DT and
-> > > > > ACPI systems should definitely be converging on the same internal
-> > > > > implementation in the IOMMU layer.
-> > > >
-> > > > Yeah, from a quick look at that series, this actually sounds really
-> > > > close to what I'm trying to achieve here.
-> > > >
-> > > > The patch set that I have would nicely complement the code added to
-> > > > iommu_dma_get_resv_regions() for RMR regions. It's not exactly the =
-same
-> > > > code, but it's basically the DT equivalent of
-> > > > iort_dev_rmr_get_resv_regions().
-> > >
-> > > Hi Rob,
-> > >
-> > > what's your preference here for DT bindings? Do you want me to reuse =
-the
-> > > existing memory-region/memory-region-names properties, or do you want
-> > > something completely separate?
->=20
-> I think that's overloading memory-region-names as *-names is a name
-> local to a binding to augment an index.
->=20
-> >
-> > Hi Rob,
-> >
-> > I've been thinking about this some more and I think I've come up with an
-> > alternative that I think you might like better than what we discussed so
-> > far.
-> >
-> > Rather than reusing memory-region-names and guessing from the name what
-> > the intended purpose was, how about we add the concept of memory region
-> > specifiers to describe additional properties of reserved memory regions
-> > uses? This would allow us to address Robin's concerns about describing
-> > what's essentially a device property within the reserved memory region.
-> >
-> > The way I imagine that this would work is that the reserved memory
-> > regions would gain a new property, "#memory-region-cells", that defines
-> > the number of cells that make up a reserved memory region specifier,
-> > much like we have #clock-cells, #reset-cells, #pwm-cells, etc. Since
-> > these specifier are defined where the regions are used, they would allow
-> > us to encode information about that specific use, rather than properties
-> > of the regions themselves.
-> >
-> > This should also allow for backwards-compatibility where a missing
-> > #memory-region-cells would be interpreted as 0 specifier (i.e. no
-> > additional data).
-> >
-> > Here's how this would look for the specific example that I want to
-> > solve:
-> >
-> >         #define MEMORY_REGION_ACTIVE 0x1
-> >
-> >         / {
-> >                 reserved-memory {
-> >                         lut: lookup-table@96060000 {
-> >                                 reg =3D <0x96060000 0x00010000>;
-> >                                 #memory-region-cells =3D <1>;
-> >                         };
-> >
-> >                         fbc: framebuffer@96070000 {
-> >                                 reg =3D <0x96070000 0x800000>;
-> >                                 #memory-region-cells =3D <1>;
-> >                         };
-> >                 };
-> >
-> >                 ...
-> >
-> >                 host1x@50000000 {
-> >                         ...
-> >
-> >                         display@54200000 {
-> >                                 ...
-> >                                 memory-regions =3D <&fbc MEMORY_REGION_=
-ACTIVE>,
-> >                                                  <&lut MEMORY_REGION_AC=
-TIVE>;
-> >                                 ...
-> >                         };
-> >
-> >                         ...
-> >                 };
-> >         };
-> >
-> > As you can see, the reserved memory region nodes only contain properties
-> > that are immediately related to the regions themselves, whereas the
-> > "active" attribute now applies only for the specific use of the region
-> > within display@54200000.
-> >
-> > What do you think?
->=20
-> When would these regions ever not be active? Isn't just the fact that
-> you have the 'memory-regions' property enough to know that they are
-> active (possibly combined with seeing the display h/w is already
-> enabled)? I guess if the idea is to parse 'memory-regions' for the
-> whole DT and find the active ones, you'd need the flag (and presumably
-> an 'iommus' property too).
+It does happen that the VFS makes assumptions about how call backs
+are meant to be used.
 
-The memory-region property can also be used to provide reserved regions
-of memory for a device to use. This could be a special carveout to make
-sure the device doesn't run out of physical memory to allocate from as
-regular CMA fragments, for example.
+Read like call backs, like .getattr() and .permission() are meant to
+be used, well, like read like functions so the VFS should be ok to
+take locks or not based on the operation context at hand.
 
-Or it could be some special block of memory that a device has to use.
+So it's not about the locking for these call backs per se, it's about
+the context in which they are called.
 
-The difference here is that the "active" memory region in this case is
-actively being used while the device is booting, which isn't necessarily
-the norm for reserved memory regions.
+For example, in link_path_walk(), at the beginning of the component
+lookup loop (essentially for the containing directory at that point),
+may_lookup() is called which leads to a call to .permission() without
+any inode lock held at that point.
 
-So this is kind of like "regulator-boot-on" but for display controllers
-and memory regions.
+But file opens (possibly following a path walk to resolve a path)
+are different.
 
-The reason why we want this defined as part of the device tree is
-because this information is needed at a point very early in the boot
-process where no display driver has been loaded yet, so it's unknown
-whether the display controller is enabled or not. Furthermore, the SMMU
-driver needs this information, so it needs to be a somewhat standard DT
-binding so that it can be parsed generically because there is no device
-specific driver in play at the time.
+For example, do_filp_open() calls path_openat() which leads to a
+call to open_last_lookups(), which leads to a call to .permission()
+along the way. And in this case there are two contexts, an open()
+create or one without create, the former needing the exclusive inode
+lock and the later able to use the shared lock.
 
-> Do you have a usecase for this outside of the display enabled by
-> bootloader? Because we already have the simple-framebuffer binding of
-> which the memory region is just part of it. Wouldn't the presence of a
-> memory region there imply it's active as well?
+So it's about the locking needed for the encompassing operation that
+is being done not about those functions specifically.
 
-I don't know of a use-case other than display where this is needed right
-now. However, I could imagine that something similar could be happening
-for audio where a mobile device would be playing some welcome sound or
-music in a loop during boot.
+TBH the VFS is very complex and Al has a much, much better
+understanding of it than I do so he would need to be the one to answer
+whether it's the file systems responsibility to use these calls in the
+way the VFS expects.
 
-I don't think simple-framebuffer would work in this case either because
-it usually doesn't contain the iommus property. But even if we made that
-part of simple-framebuffer, it'd mean that the SMMU driver would have to
-special-case depending on the simple-framebuffer compatible string, and
-potentially any future similar bindings for other use-cases.
+My belief is that if a file system needs to use a call back in a way
+that's in conflict with what the VFS expects it's the file systems'
+responsibility to deal with the side effects.
 
-> Or maybe the iommu node(s) should just have a 'memory-regions' property?
+Ian
 
-I don't think that's enough information. We need to know for which
-device this memory region is active so that it can be mapped for the
-correct address space.
-
-Thierry
-
---9MXLSNlP1Ly1uiUS
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl/dTh4ACgkQ3SOs138+
-s6EDZQ//amoCkY1jKpjdW5legpDgVC1RI9KlPBwlCHGGiXM3nCiudAq3cT4/0MLq
-dFVr6zatri9fAVC43uFIRClwzDSMgZlA6MR3P/Ng6L5DCr+mCdJYuXAHmmkpfqeu
-BuBP4DWDfl2Cawfe+SUsche8GA2+yDAVSs2DJSF3yhviBeks87++MlrxdDvvPKY1
-8lXro2Lrp+/XkoxdmEDiGMW8NP4+cSuO04ec4zfK0uCSlWbc9FDe71ZhwqeYrzDd
-9XIwzlNSINuR4XE2QalNt10OMLTUOlr7t8+LwXPY3DDKKc4MRq7Q6Y+e66Z4PQOL
-mQ0L8F9StrzpF/Dg7H0ss+udx/KY2wL2ViOXzWpZIUH43B+r89n3MHz11gG/7DUc
-Z0OakJY47gnBrx6pSEsRHS7UafiDR+5jJjV8NC/4+qc5c9yz820EicCJu9FU0WW3
-jWB/RQWuVPKQP3Y5WpMfOau82Pd2fClQFYi71Vk+d71Dur/1gJwgTPxAcg7JsIjF
-KYROOAVHbo3PPs73WfKsyKZZgcptHMQxxu7dwF+XMK/kyMdJrbbhyswedFukiljy
-8Sm+b90M+U4UIos632AMXuATEIkJcjzBCEJBsgJ/E9vt8Sg5UDzFPMOv0P8rZf03
-ug1lkhX+3BbXd4JIviVKKe7ji4fCHMACwr6g6geSJZta366o4pA=
-=Slcq
------END PGP SIGNATURE-----
-
---9MXLSNlP1Ly1uiUS--
