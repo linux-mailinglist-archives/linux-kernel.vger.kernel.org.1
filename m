@@ -2,134 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C473C2DF206
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 23:45:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA6792DF208
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 23:45:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726765AbgLSWnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 17:43:33 -0500
-Received: from mga06.intel.com ([134.134.136.31]:2982 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726449AbgLSWnd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 17:43:33 -0500
-IronPort-SDR: EG8lzHvi7qYnJYnqO3r0eYSD38I06m/uHOoiU0p5swy5qQ9uTHsF8JRXtvUhrNzrtsfEiTHeMj
- Rua4eIoy1LOQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9839"; a="237168139"
-X-IronPort-AV: E=Sophos;i="5.78,433,1599548400"; 
-   d="scan'208";a="237168139"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2020 14:41:46 -0800
-IronPort-SDR: r64qM+yIoMn909KO2HJye5lO0Tk4Oxq1aR/lo1pw1UV760m70MhuipbW2BPSNI6mZmqiNTYHp2
- ZVhLLgE3anDw==
-X-IronPort-AV: E=Sophos;i="5.78,433,1599548400"; 
-   d="scan'208";a="559747678"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Dec 2020 14:41:44 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 4B5DF205F7; Sun, 20 Dec 2020 00:41:42 +0200 (EET)
-Date:   Sun, 20 Dec 2020 00:41:42 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     syzbot <syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: memory leak in video_usercopy
-Message-ID: <20201219224142.GZ26370@paasikivi.fi.intel.com>
-References: <00000000000025169705b6d100fa@google.com>
- <CAK8P3a3AF4yFUcOEzMPf7SGkf6YVPJthHLzGtM==oGkSj+=mtg@mail.gmail.com>
+        id S1726817AbgLSWog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 17:44:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726443AbgLSWof (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Dec 2020 17:44:35 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5CB4C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 14:43:55 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id v3so3392637plz.13
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 14:43:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=d7xAXTq6oLbMMb4o4VTUrJwgMbwIvvfYtXcld/9daYw=;
+        b=W5XOrx7MV7X7mAciJ5Ggx747j7pcafuxRqe4ePHnrHA49kQ+bWJ2zJUmb68Nygvzqx
+         yjj0jcxpLbwY85fBJv0Mdsgj09uh5wfBfAfXPLriju6UW63g7IBo0TaAk9NgqahZOy3V
+         xBIbmYK+PSqs8VoAjgKi1PAJgU8BxWO9hrzK6xFOV0iKtsVWl1yQJ1NSzddLRIwTFirr
+         0r/Cy2tRZgaI+1Ynghl8llYglJr7lNE6p69Z3V+dobl1EJrJM5xFn5yU9IH4KCwjzeIt
+         wv1p/Fo7nJQDdBaCB9iQ6fDecVf8vP7dRnoUQIHk+lk9MBgtyrRWijw/OzJyOJoFsNjX
+         8wjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=d7xAXTq6oLbMMb4o4VTUrJwgMbwIvvfYtXcld/9daYw=;
+        b=Ob4Rjt5bYTCIU6AQotjjcFNbaT+4vTYXEcoWZAtDa0wM6E0yA9eg8TBrJvsQ3QFsv2
+         EUdx9lf8xByfMvGwuM6ZZdpcFwKpKOWKq+T7ElbuBVmtQiLuPm0dmuH6S9oGilfbTV+u
+         8aKlrKxs3ZqzajuVUHu7y0WLUoUXZh2jmer3X1DKmU7WnSaGHn0NQ4budE9IGVKi0r/B
+         F5xcv57RhbjCFJjjYz2TubjLVQIED7XWWOMZKqe1fPhtbsPa/yoQc9ZrZJ98uKh7vmHT
+         VlrwhC1aAFQzAKg6P78MmuWG7V6J8hVmVFB7k8QTonlYgPPoGKqiNzYbRURHzFTWTx01
+         8vog==
+X-Gm-Message-State: AOAM5328/7wsILrnOpwClNMkWhNvtLrgHOiwuxyNcjedalCqetMayap8
+        Xz9la6dk9F73Tb55yb1TQWw=
+X-Google-Smtp-Source: ABdhPJz4l6IFPztYnmDHirOvj4UledmMCdc2lDgJ/roUSS6sJMS9j41xK6Bg8tIHWM7UlYGjAFEyfA==
+X-Received: by 2002:a17:90b:fd5:: with SMTP id gd21mr11083670pjb.139.1608417835230;
+        Sat, 19 Dec 2020 14:43:55 -0800 (PST)
+Received: from localhost.localdomain (c-24-16-167-223.hsd1.wa.comcast.net. [24.16.167.223])
+        by smtp.gmail.com with ESMTPSA id c6sm12813346pgl.38.2020.12.19.14.43.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Dec 2020 14:43:54 -0800 (PST)
+From:   Daniel West <daniel.west.dev@gmail.com>
+To:     Larry.Finger@lwfinger.net
+Cc:     gregkh@linuxfoundation.org, insafonov@gmail.com,
+        daniel.west.dev@gmail.com, gustavoars@kernel.org,
+        andrealmeidap1996@gmail.com, yepeilin.cs@gmail.com,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 8455/8455] staging: rtl8188eu: core: fixed a comment format issue.
+Date:   Sat, 19 Dec 2020 14:43:12 -0800
+Message-Id: <20201219224312.380126-1-daniel.west.dev@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a3AF4yFUcOEzMPf7SGkf6YVPJthHLzGtM==oGkSj+=mtg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+Fixed a checkpatch warning:
 
-On Sat, Dec 19, 2020 at 03:08:14PM +0100, Arnd Bergmann wrote:
-> ,On Sat, Dec 19, 2020 at 2:15 PM syzbot
-> <syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com> wrote:
-> >
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    a409ed15 Merge tag 'gpio-v5.11-1' of git://git.kernel.org/..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=10a5880f500000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=37c889fb8b2761af
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=1115e79c8df6472c612b
-> > compiler:       gcc (GCC) 10.1.0-syz 20200507
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14d18f9b500000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=106a2c13500000
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com
-> >
-> > Debian GNU/Linux 9 syzkaller ttyS0
-> > Warning: Permanently added '10.128.10.29' (ECDSA) to the list of known hosts.
-> > executing program
-> > executing program
-> > BUG: memory leak
-> > unreferenced object 0xffff88810fb12300 (size 256):
-> >   comm "syz-executor399", pid 8472, jiffies 4294942333 (age 13.960s)
-> >   hex dump (first 32 bytes):
-> >     03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-> >     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-> >   backtrace:
-> >     [<000000009fd00995>] kmalloc_node include/linux/slab.h:575 [inline]
-> >     [<000000009fd00995>] kvmalloc_node+0x61/0xf0 mm/util.c:575
-> >     [<0000000096a57c4a>] kvmalloc include/linux/mm.h:773 [inline]
-> >     [<0000000096a57c4a>] video_usercopy+0x991/0xa50 drivers/media/v4l2-core/v4l2-ioctl.c:3303
-> >     [<00000000f7529cc2>] v4l2_ioctl+0x77/0x90 drivers/media/v4l2-core/v4l2-dev.c:360
-> >     [<0000000061b5e6a9>] vfs_ioctl fs/ioctl.c:48 [inline]
-> >     [<0000000061b5e6a9>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-> >     [<0000000061b5e6a9>] __se_sys_ioctl fs/ioctl.c:739 [inline]
-> >     [<0000000061b5e6a9>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
-> >     [<000000000139479b>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-> >     [<00000000d6de1c9c>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> It seems there are commands that need both a buffer for the direct ioc
-> argument and for array_args. If that happens, we have two kvmalloc() calls
-> but only one kvfree(), and that would correctly trigger the leak detector.
-> 
-> The direct ioc argument copy happens for arguments over 128 bytes.
-> Checking the sizes of the comands with array args shows
-> 
-> VIDIOC_PREPARE_BUF, VIDIOC_QUERYBUF, VIDIOC_QBUF, VIDIOC_DQBUF:
-> v4l2_buffer, 84 bytes or less
-> 
-> VIDIOC_G_EDID, VIDIOC_S_EDID:
-> v4l2_edid, 40 bytes or less
-> 
-> VIDIOC_G_EXT_CTRLS, VIDIOC_S_EXT_CTRLS, VIDIOC_TRY_EXT_CTRLS:
-> v4l2_ext_controls, 32 bytes or less
-> 
-> VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT:
-> v4l2_format, 204 or 208 bytes
-> 
-> I would conclude it's one of the last three commands, and it could be
-> avoided either by increasing the on-stack buffer to sizeof(struct v4l2_format),
-> or by restructuring this function again to have two separate pointers
-> for alloc/free.
+WARNING: Block comments use * on subsequent lines
+ #4595: FILE: drivers/staging/rtl8188eu/core/rtw_mlme_ext.c:4595:
++/****************************************************************************
++
 
-Thanks for reporting this.
+The code is full of comments like this. Should the coding style
+be inforced here, even when there is a logic to the way the code
+was broken up?
 
-I'd say the original approach was risky to begin with, and that risk
-effectively materialised here. I'd rather fix the risky construction than
-leaving it there.
+Signed-off-by: Daniel West <daniel.west.dev@gmail.com>
+---
+ drivers/staging/rtl8188eu/core/rtw_mlme_ext.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-Considering the format IOCTLs have been unchanged (size-wise) all this
-time, it looks like it really has been broken for a few days short of a
-decade! sbuf has been 128 bytes all this time.
-
+diff --git a/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c b/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
+index 8794907a39f4..adf2788a416f 100644
+--- a/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
++++ b/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
+@@ -4591,11 +4591,10 @@ void mlmeext_sta_del_event_callback(struct adapter *padapter)
+ 	}
+ }
+ 
+-/****************************************************************************
+-
+-Following are the functions for the timer handlers
+-
+-*****************************************************************************/
++/*
++ *
++ *Following are the functions for the timer handlers
++ */
+ 
+ static u8 chk_ap_is_alive(struct adapter *padapter, struct sta_info *psta)
+ {
 -- 
-Kind regards,
+2.25.1
 
-Sakari Ailus
