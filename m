@@ -2,54 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF902DF1C2
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 22:09:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E671C2DF1C7
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 22:15:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727978AbgLSVH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 16:07:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49690 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726249AbgLSVH6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 16:07:58 -0500
-Subject: Re: [GIT PULL] close_range fix v5.11
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608412001;
-        bh=VNT1nPw3djPNb7eyjVvRdIizdOFMLTXGquov+KPTBFc=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=EtCtUWLk5MJRBAlUP8n7+c2HWldJCycbC+4OKWnWUoFroL1nIdXCPQN9k3HYzsQ3X
-         rPQ+9ZaRXXjgvdJ4500pF3O0TuX5I3sIOcZnxeV0rK+ObT3tNJ3B8TpV8kgbzBtsJl
-         O8+S16pSKQ71gFIfv2d4Tw/LiDiC6kbbCN1wSGDqZbm0yuejeRmXLPPE56pBFKBtL/
-         6LDMui5bYayBJ0zpoOVHfzWipNN9IZOiBaixA2g9VQzUgyoT97m9TKwffzImBzB1rI
-         8odpaqb7DSw5oVGUAJ2LWRiJuV0kxG+pRYdEVpzJAH78fxikHYqWYKcXenIuXpkIIp
-         5ZU6otiSCodsw==
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201219155821.891607-1-christian.brauner@ubuntu.com>
-References: <20201219155821.891607-1-christian.brauner@ubuntu.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201219155821.891607-1-christian.brauner@ubuntu.com>
-X-PR-Tracked-Remote: git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/close-range-cloexec-unshare-v5.11
-X-PR-Tracked-Commit-Id: 6abc20f8f879d891930f37186b19c9dc3ecc34dd
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 467f8165a2b0e6accf3d0dd9c8089b1dbde29f7f
-Message-Id: <160841200179.20285.7535392095294540087.pr-tracker-bot@kernel.org>
-Date:   Sat, 19 Dec 2020 21:06:41 +0000
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        id S1727758AbgLSVNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 16:13:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46887 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726458AbgLSVND (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Dec 2020 16:13:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608412297;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=dTGtJY+9wNly4hZX1MdxzXhtCkjgVNIWSrDydIXdAMU=;
+        b=HVMR4v4MSDKtJpYxYzVYw5E/BHzNZTGVbXHSGsUXDVEYDxjluXun2E3Mt9knFFiQyhIOs6
+        9llDlX5jtJXUFHlzD+1U8ciQ0ph6WhM/kZi2FKKPZY7svyt8SF37C99soRlozHCy/bhrfg
+        7eFqU2TwSDnz9lyCp4VJ1kmrkRhBepE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-572-O8TbT4HqM-O4kPtYb3tHPQ-1; Sat, 19 Dec 2020 16:11:35 -0500
+X-MC-Unique: O8TbT4HqM-O4kPtYb3tHPQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3E5EA180A093;
+        Sat, 19 Dec 2020 21:11:34 +0000 (UTC)
+Received: from max.home.com (ovpn-115-196.ams2.redhat.com [10.36.115.196])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E2E561A7C1;
+        Sat, 19 Dec 2020 21:11:29 +0000 (UTC)
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        cluster-devel@redhat.com, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] GFS2 changes for 5.11
+Date:   Sat, 19 Dec 2020 22:11:27 +0100
+Message-Id: <20201219211127.287454-1-agruenba@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 19 Dec 2020 16:58:21 +0100:
+Hi Linus,
 
-> git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/close-range-cloexec-unshare-v5.11
+could you please pull the following gfs2 changes for 5.11?
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/467f8165a2b0e6accf3d0dd9c8089b1dbde29f7f
+Thanks a lot,
+Andreas
 
-Thank you!
+The following changes since commit dd0ecf544125639e54056d851e4887dbb94b6d2f:
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+  gfs2: Fix deadlock between gfs2_{create_inode,inode_lookup} and delete_work_func (2020-12-01 00:21:10 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git tags/gfs2-for-5.11
+
+for you to fetch changes up to 6e5c4ea37a99e5b97aba227fc43f3682d4bc0496:
+
+  gfs2: in signal_our_withdraw wait for unfreeze of _this_ fs only (2020-12-03 17:04:41 +0100)
+
+----------------------------------------------------------------
+Changes in gfs2:
+* Don't wait for unfreeze of the wrong filesystems.
+* Remove an obsolete delete_work_func hack and an incorrect sb_start_write.
+* Minor documentation updates and cosmetic care.
+
+----------------------------------------------------------------
+Andreas Gruenbacher (2):
+      gfs2: Make inode operations static
+      Revert "GFS2: Prevent delete work from occurring on glocks used for create"
+
+Andrew Price (2):
+      Documentation: Update filesystems/gfs2.rst
+      MAINTAINERS: Add gfs2 bug tracker link
+
+Bob Peterson (2):
+      gfs2: Remove sb_start_write from gfs2_statfs_sync
+      gfs2: in signal_our_withdraw wait for unfreeze of _this_ fs only
+
+Tom Rix (1):
+      gfs2: remove trailing semicolons from macro definitions
+
+ Documentation/filesystems/gfs2.rst | 37 ++++++++++++++++++-------------------
+ MAINTAINERS                        |  2 +-
+ fs/gfs2/glock.c                    |  8 --------
+ fs/gfs2/incore.h                   |  1 -
+ fs/gfs2/inode.c                    | 16 ++++++++--------
+ fs/gfs2/inode.h                    |  3 ---
+ fs/gfs2/super.c                    |  2 --
+ fs/gfs2/util.c                     |  2 +-
+ fs/gfs2/util.h                     |  6 +++---
+ 9 files changed, 31 insertions(+), 46 deletions(-)
+
