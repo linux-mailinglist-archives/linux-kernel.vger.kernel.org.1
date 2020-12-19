@@ -2,51 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B6FD2DF1BF
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 22:09:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FAE22DF1C1
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Dec 2020 22:09:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727921AbgLSVHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 16:07:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49556 "EHLO mail.kernel.org"
+        id S1727952AbgLSVH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 16:07:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727788AbgLSVHV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 16:07:21 -0500
-Subject: Re: [GIT PULL] hsi changes for 5.11
+        id S1727787AbgLSVHU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Dec 2020 16:07:20 -0500
+Subject: Re: [GIT PULL] pwm: Changes for v5.11-rc1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1608412000;
-        bh=2nFm+RN+WTr9Wmv4TxNKV0y2rYiBH4YjmVbf+QhecEw=;
+        bh=KLg2cKySGiiS/TfxsYaRABdXT+o88LG050RgYe211h8=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=JgfSEYFG7o63rNj3DXKEWmA9rr5rJAYHkqwoan8i9mxjhCmNDONKoG3YDUk3S4Fie
-         UV7RVAttjEfaPeFJuMc132y1AqlrwSCKLBQ8ZTRmb4th4prT1kqL6pSHDbQuuJMOIJ
-         61Kbkkd5briT0kDrLEjOmXF6OGF+bsvrIg8Br/RY7vq601Au18rw0X5Gq4XGj7MEzF
-         uUcC35N7xmTeK7Iv65J+kYRRyByAvKS9gvSNDNIAN65myQkMUSrImrCgWZV158Ezrx
-         d/ICwxtOmscMQCJSv/NSeowrXn/zmNzO+vCNgCfQzFR0CLsilCLC+0h7MmXFvfuNpi
-         16SuT4xE+7LbQ==
+        b=rRzLK4Fma4udmbwD4u5JJNC15C2KZoIzVojHECXG9DirQXJFxy6kdjnb445gEhq0T
+         FJ3iSwpIreXQRwzbhlLrtp4Ml+3cngJTlZPOwu7WfajFntxW7xpDKPWKNAAjGxBu7q
+         205N60maaMeHzqz+propXYwWYrb++7dIVJX0iJ0u54F4vtaswQtRvdcwiowJlG02br
+         U1KiuWPp0+UYs5ZWv2MNzFJvky3uA3XibDSp7alRnMgq9RLlbR2SlBefuhN0urKBcS
+         IcwRANjnZuI9JsgDZFJp0haZ1z91bertO2LGE69PrWjy9jtBOsTys6kKeQNKzThQTe
+         5BP9D/QDQ7cWw==
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201218235910.6tjqvzaxl7kne4cl@earth.universe>
-References: <20201218235910.6tjqvzaxl7kne4cl@earth.universe>
+In-Reply-To: <20201218160401.2478999-1-thierry.reding@gmail.com>
+References: <20201218160401.2478999-1-thierry.reding@gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201218235910.6tjqvzaxl7kne4cl@earth.universe>
-X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/sre/linux-hsi.git tags/hsi-for-5.11
-X-PR-Tracked-Commit-Id: 8a77ed6d1fdda752f6b3203391a099f590a9454f
+X-PR-Tracked-Message-Id: <20201218160401.2478999-1-thierry.reding@gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/thierry.reding/linux-pwm.git tags/pwm/for-5.11-rc1
+X-PR-Tracked-Commit-Id: 6eefb79d6f5bc4086bd02c76f1072dd4a8d9d9f6
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c2703b66172fff39122012e42986b44c9c6ad5f1
-Message-Id: <160841200081.20285.16960557779881463952.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: d56154c7e8ba090126a5a2cb76098628bc2216a2
+Message-Id: <160841200042.20285.2500639931783873174.pr-tracker-bot@kernel.org>
 Date:   Sat, 19 Dec 2020 21:06:40 +0000
-To:     Sebastian Reichel <sre@kernel.org>
+To:     Thierry Reding <thierry.reding@gmail.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 19 Dec 2020 00:59:10 +0100:
+The pull request you sent on Fri, 18 Dec 2020 17:04:01 +0100:
 
-> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/sre/linux-hsi.git tags/hsi-for-5.11
+> git://git.kernel.org/pub/scm/linux/kernel/git/thierry.reding/linux-pwm.git tags/pwm/for-5.11-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c2703b66172fff39122012e42986b44c9c6ad5f1
+https://git.kernel.org/torvalds/c/d56154c7e8ba090126a5a2cb76098628bc2216a2
 
 Thank you!
 
