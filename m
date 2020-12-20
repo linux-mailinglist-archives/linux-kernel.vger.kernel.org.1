@@ -2,100 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6550E2DF382
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 05:08:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0BBE2DF383
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 05:15:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727052AbgLTEIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 23:08:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726217AbgLTEIE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 23:08:04 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52363C0613CF
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 20:07:24 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id i24so6405889edj.8
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 20:07:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wOf8+A262GmOiEINk0rmRSARiAG9AAz8GlRftMSrMUg=;
-        b=tVIzn00AiVt6Z+BacumkSdrwTo41xF8yNb7ZGnIZO3w9rJE83Qqz2LnkKGAa528x/Z
-         dgszo95Fb6joP2TWI8VUxnWtJqJSv92TGc4vmg0ebzD2gs+OuxAjPCyp7drmqcNM7d1m
-         ElfTE3vxYNDNeTWZDC3na+/iJHRLkP56afQ6SDZaoVXGDLUcok8pLZkhp7MP4ofmNyQH
-         cp9jiILsSeuiDaFHIOiKNOVW8ut61NFRh7gLq+wqab88zn3ECbBM9zswKBzm1VVR+kQe
-         9zGUn4b5wdLdsLOkpVgZNQ7T9mXSWdWoUKQsjZlxUQrZJ3p30ZcCv4Jk2pOSStzqGlyG
-         cKdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wOf8+A262GmOiEINk0rmRSARiAG9AAz8GlRftMSrMUg=;
-        b=ta3UlViEBLuVTzr3ZBOUiXPKr33re6BuALpf96JNKLBVnOTZAn1MrUlfMp6qQKg43S
-         4A66UTIIjgHgL0s/2xk3hS4PpGqVzQY1Ayahj7tu7UVGAN8wZXD7RMghac65ReEqEXtX
-         gnYlsH3EVgwxykblW9gLwysHVq+CDfPunhswN7DNgsbu4GkEi5sdvhBd0+R/D4tAZJ/7
-         6LRSrCz1xD6vNtSp31KrR2EK8QoXA5oO8jSFCevLSYQBHRqUWxX20H9DelzM2cbU1V1Q
-         6hn6/O4uJYDWa/7nIHPeidoItVfNwEesRADS7+D6ChjFYDuEmULYDXdWiAA6yxrxhSRE
-         r2Xg==
-X-Gm-Message-State: AOAM532b0vVJu72ARVYfwd86HZJDzfjCUFZKvqFU2qiMlIOE3uXMA6UX
-        78jAfXNyTPN5O0qCDJKr8eJsHgHwj4zfV1qHfoNtRg==
-X-Google-Smtp-Source: ABdhPJyFCkCTDMEKhRzBCZSvwPxUNNzCRb89KLm4awpKTLrq05HwzS1MDuXkyvhQB1RJW2ONi4lcVB3kzVan50pORdw=
-X-Received: by 2002:aa7:cdc3:: with SMTP id h3mr10998852edw.52.1608437242889;
- Sat, 19 Dec 2020 20:07:22 -0800 (PST)
+        id S1727032AbgLTENw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 23:13:52 -0500
+Received: from mout.gmx.net ([212.227.17.21]:48635 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726217AbgLTENw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Dec 2020 23:13:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1608437511;
+        bh=sqqrDsEkHGOfeDhHB51ZzokCNHLsv/ZDYKB2d2VTg9c=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=bjv/5P4ViB7PTrZrqpXc0Rh0Vb8KBqyyY+/vTxTeQJVhNcZKylV2gftnisU30bZEh
+         QmzeTtM0Vq4BrAvl3z3OTjRBuwarQUOgtg8Rs7Sm6ACNeVO2zm9Lt0cVmFPf/lHQBn
+         ySiFzd4/OQbghRQHkPhdRqoS7S9mE5tdVJ2Fhyk8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.150.14]) by mail.gmx.com (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MsYqp-1jxLm036eR-00u5qP; Sun, 20
+ Dec 2020 05:11:51 +0100
+Message-ID: <5f72f88c55e3365883f597c01dc471520281d8d3.camel@gmx.de>
+Subject: Re: [PATCH] zsmalloc: do not use bit_spin_lock
+From:   Mike Galbraith <efault@gmx.de>
+To:     Vitaly Wool <vitaly.wool@konsulko.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>
+Cc:     Barry Song <song.bao.hua@hisilicon.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Minchan Kim <minchan@kernel.org>,
+        NitinGupta <ngupta@vflare.org>
+Date:   Sun, 20 Dec 2020 05:11:48 +0100
+In-Reply-To: <c9c97ae293f5d7321ff30ac6ead49751560dd354.camel@gmx.de>
+References: <18669bd607ae9efbf4e00e36532c7aa167d0fa12.camel@gmx.de>
+         <20201220002228.38697-1-vitaly.wool@konsulko.com>
+         <c9c97ae293f5d7321ff30ac6ead49751560dd354.camel@gmx.de>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-References: <20201211102437.3929348-1-anders.roxell@linaro.org> <20201214152447.GC9149@alpha.franken.de>
-In-Reply-To: <20201214152447.GC9149@alpha.franken.de>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sun, 20 Dec 2020 09:37:11 +0530
-Message-ID: <CA+G9fYuyq8da6oF-6KaVHmA2TpT7fOG5F4ZDbK=MpzYMg_ufAw@mail.gmail.com>
-Subject: Re: [PATCH v2] mips: lib: uncached: fix non-standard usage of
- variable 'sp'
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Anders Roxell <anders.roxell@linaro.org>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-mips@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        lkft-triage@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:HvFhn8s9aIfvYGFUq2WvGBJ9VR+vkLG0luEdCTyl2tq6ZFt0A8/
+ wdvUm9CiRPIqGksZPWxfoy3iWa1uBXJKfy6TPcaAQTUohy6m0ZvQzOo/D0JSuvbiiTpJEK5
+ CV/mo6A5mNJq7OfLnKOJ10RqEAyArLM5E5ihhvPybBds7h3wBa3g27ZMMtbRWz5yzclvlqk
+ ZJR0OV+AICUy1PWa2kgJQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:x9TJ9pKgYOI=:X8CmEWKbhMHmp50ibfuTJB
+ F9DOnxGMtF1BjyvUKljvimL2DgCDO9qUj71M2YTixj/NnFHYhG0P4bbqFLUSMWDE4ckYQ5+ej
+ iEj3Pg1pXyR44uamFAkqEg+PY8z/4qKanHziyR5x7QKvoHoPCxHyR9g3QBh8tT3ONUae7v5QF
+ +d22ueDya2rlrwEt9Q4BFkqSRaJQK+kV+AjPlfwSxlN/kei1/HNIlP/UAdv/Fdqs4PjJjCQ6x
+ +b0hScMwytAFGTbIva6kRCaVGR8tQUDdB8WbnErN/YzkWa9EPBCFns5oq5TJQMV/5i2ICDQmn
+ bSFHwDW9MrcHDy7ONarlOakEVPVCZbkUx9D7m54pnzhAuldWbKRMlI3yNcmmGjyYYcJyEZEd6
+ vx0f/Aqb+SJcJp6suvBuqZuB0WHFgJaczgaikd4rU6mrqVbMBtUEjkQozfkZa4bfGQXc+e6lB
+ k2cq8Gt2rVFmRhTCrM8gda6sJWeeYqCQcaCbaZI9eN86MCOcNJjMUsWaRr+VB3ZdGnTt1JQWm
+ TUtxNrir//DjnBNvSubCXil2iIx5Mnyh94CJkIUHfLwQe/wDp8bWh7YnhQVft2Fc3x3enriPe
+ KMpB7mZTbb5EMZDhksEt0dYaBiUHHfpD9TErHWqr6ZWrKZnY0LS4OML3rt7Q+fbFcDKqgUNu+
+ f2rM9VdkWUhntsBxaMugoZNmhEaznCWNnTLkGOx3oB3In/r6BPHAP0nyEAr6qJsE1L3hsvKjz
+ 3Ky5GWR+JXON0ADtU1zpIBXVTjEx2u9ep/ba5qn9utm7suujx66gTayJrVSK7mBSmpfxZsls2
+ E6hocWf1Ve3lsg5mAudOAy62RcBFyQzQRPsYT911Ps/8n99Jmb6H09OCT8HzQAFHTSSd8DYMd
+ vL9zqaY7HJt71uuGRV/Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Dec 2020 at 21:05, Thomas Bogendoerfer
-<tsbogend@alpha.franken.de> wrote:
->
-> On Fri, Dec 11, 2020 at 11:24:37AM +0100, Anders Roxell wrote:
-> > When building mips tinyconfig with clang the following warning show up:
+On Sun, 2020-12-20 at 02:23 +0100, Mike Galbraith wrote:
+> On Sun, 2020-12-20 at 02:22 +0200, Vitaly Wool wrote:
+> > zsmalloc takes bit spinlock in its _map() callback and releases it
+> > only in unmap() which is unsafe and leads to zswap complaining
+> > about scheduling in atomic context.
 > >
-> > arch/mips/lib/uncached.c:45:6: warning: variable 'sp' is uninitialized when used here [-Wuninitialized]
-> >         if (sp >= (long)CKSEG0 && sp < (long)CKSEG2)
-> >             ^~
-> > arch/mips/lib/uncached.c:40:18: note: initialize the variable 'sp' to silence this warning
-> >         register long sp __asm__("$sp");
-> >                         ^
-> >                          = 0
-> > 1 warning generated.
-
-<trimp>
-
-> > [1] https://docs.w3cub.com/gcc~10/local-register-variables
-> > Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
-> > ---
-> >  arch/mips/lib/uncached.c | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > To fix that and to improve RT properties of zsmalloc, remove that
+> > bit spinlock completely and use a bit flag instead.
 >
-> applied to mips-next.
+> It also does get_cpu_var() in map(), put_cpu_var() in unmap().
 
-We have noticed these build failures on stable tree also.
-May I request you to initiate the process to get into the stable tree
-and for the following branches.
- - linux-5.10.y
- - linux-5.9.y
- - linux-5.4.y
- - linux-4.19.y
+Bah, I forgot to mention the config dependent rwlock, it's held across
+map()/unmap() as well, so there are two more hurdles, not one.
 
-- Naresh
+	-Mike
+
