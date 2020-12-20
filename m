@@ -2,81 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62DE72DF473
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 09:31:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C75F32DF476
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 09:31:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727557AbgLTI34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 03:29:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48009 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727474AbgLTI34 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 03:29:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608452910;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=G6aWyCslmxLP7ODhCz+X7C8SvlMRFnnUzbWQk6otugg=;
-        b=d6GHzs/T2iS+MD0WFjuMpc6y79mFacwtCQceJOv2F1Gsvf7ZnxCBaUKpfGTqRhg2B4jqkh
-        s8epA2BsnBmFeJawhLjaytiUga/47DahtR7aO8wavLPBKt2X2TL2XRnpkwsRX6q4zWZwy8
-        URvKeoE83ibR2XDWGHZZOUf9/O5JPOo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-335-y-fGJi0YPCSXyWvApYLK0g-1; Sun, 20 Dec 2020 03:28:26 -0500
-X-MC-Unique: y-fGJi0YPCSXyWvApYLK0g-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E19F5801817;
-        Sun, 20 Dec 2020 08:28:24 +0000 (UTC)
-Received: from MiWiFi-R3L-srv.redhat.com (ovpn-12-22.pek2.redhat.com [10.72.12.22])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7D92A60C13;
-        Sun, 20 Dec 2020 08:28:22 +0000 (UTC)
-From:   Baoquan He <bhe@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
-        gopakumarr@vmware.com, rppt@kernel.org, david@redhat.com,
-        bhe@redhat.com
-Subject: [PATCH v2 5/5] mm: remove unneeded local variable in free_area_init_core
-Date:   Sun, 20 Dec 2020 16:27:54 +0800
-Message-Id: <20201220082754.6900-6-bhe@redhat.com>
-In-Reply-To: <20201220082754.6900-1-bhe@redhat.com>
-References: <20201220082754.6900-1-bhe@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        id S1727623AbgLTIax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 03:30:53 -0500
+Received: from spam.zju.edu.cn ([61.164.42.155]:45412 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727474AbgLTIax (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Dec 2020 03:30:53 -0500
+Received: from localhost.localdomain (unknown [10.192.85.18])
+        by mail-app3 (Coremail) with SMTP id cC_KCgAXzw5qC99fGvNYAA--.32924S4;
+        Sun, 20 Dec 2020 16:29:34 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Sascha Hauer <s.hauer@pengutronix.de>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] net: ethernet: mvneta: Fix error handling in mvneta_probe
+Date:   Sun, 20 Dec 2020 16:29:30 +0800
+Message-Id: <20201220082930.21623-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cC_KCgAXzw5qC99fGvNYAA--.32924S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7Xw13ZF4DJF1DCF1UuryUZFb_yoWfZrcEgr
+        WxuFs3Ww45Kryjyw1jyr45C34Ik3Z8XF1vyFsrtFZ3tayxJ3Wjqr1v9FZ2vryDWw40qF9r
+        Ar42vrZIy3s3tjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbcxFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxF
+        aVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
+        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxG
+        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
+        CI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
+        cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgUMBlZdtRf+rwAKs-
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Local variable 'zone_start_pfn' is not needed since there's only
-one call site in free_area_init_core(). Let's remove it and pass
-zone->zone_start_pfn directly to init_currently_empty_zone().
+When mvneta_port_power_up() fails, we should execute
+cleanup functions after label err_netdev to avoid memleak.
 
-Signed-off-by: Baoquan He <bhe@redhat.com>
+Fixes: 41c2b6b4f0f80 ("net: ethernet: mvneta: Add back interface mode validation")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 ---
- mm/page_alloc.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/ethernet/marvell/mvneta.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 7f0a917ab858..189a86253c93 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -6986,7 +6986,6 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
- 	for (j = 0; j < MAX_NR_ZONES; j++) {
- 		struct zone *zone = pgdat->node_zones + j;
- 		unsigned long size, freesize, memmap_pages;
--		unsigned long zone_start_pfn = zone->zone_start_pfn;
- 
- 		size = zone->spanned_pages;
- 		freesize = zone->present_pages;
-@@ -7035,7 +7034,7 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
- 
- 		set_pageblock_order();
- 		setup_usemap(zone);
--		init_currently_empty_zone(zone, zone_start_pfn, size);
-+		init_currently_empty_zone(zone, zone->zone_start_pfn, size);
- 		memmap_init_zone(zone);
+diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
+index 563ceac3060f..3369ec717a51 100644
+--- a/drivers/net/ethernet/marvell/mvneta.c
++++ b/drivers/net/ethernet/marvell/mvneta.c
+@@ -5255,7 +5255,7 @@ static int mvneta_probe(struct platform_device *pdev)
+ 	err = mvneta_port_power_up(pp, pp->phy_interface);
+ 	if (err < 0) {
+ 		dev_err(&pdev->dev, "can't power up port\n");
+-		return err;
++		goto err_netdev;
  	}
- }
+ 
+ 	/* Armada3700 network controller does not support per-cpu
 -- 
-2.17.2
+2.17.1
 
