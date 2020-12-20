@@ -2,111 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A9F2DF2AA
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 02:53:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C8002DF2AE
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 03:01:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726997AbgLTBwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 20:52:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726660AbgLTBwM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 20:52:12 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03F2CC0613CF;
-        Sat, 19 Dec 2020 17:51:27 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id x12so3618473plr.10;
-        Sat, 19 Dec 2020 17:51:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hMEfLBWoIp7OwRZhC3MXdh4+fV0q2Jqz8suvTSU9g7Q=;
-        b=in3HcGYjy8UKlzXf+PLrKZwg+zQVtsDfmeFRTANZbhvEJy+G5o29W+yed0e3rEhyJQ
-         rMT3g8hNY6/iGm/VhrLYKVyXGWTRDdS0kDYY1ykPdk+woOFaazRpiFXLgHx9OWJlaINO
-         W0U4Z/GOOB2UoEd8e+6ppNGMs2U7xZIzmuY6WF0dVm0kfbDCjmzyEytDy8OPRFW/Rv39
-         eMGLag6xd1bxwdUxDMejl0/xj7BJ//JMB1nBhVYJvg5KUxr5Em4OaBbkRnnVvyScRtI8
-         GAo/07/ZJ3avs5Z5YZ97HQB48inRUctOgmQDi4x2RMJURNfSd7QLEcfWMDmHIR5h3sTW
-         jxHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hMEfLBWoIp7OwRZhC3MXdh4+fV0q2Jqz8suvTSU9g7Q=;
-        b=hdm0mGaWWWV7mESuwreibCmpCL8zDLr5xHE+D4mFFCZxTQCQk8P71MgT9le3n5X/UT
-         dyB2R4vIy4i1yk2J2bNsyd0n9yx+QIYRrCkPG2e9NOe2nqj0s69vo6n8QjZQJ6qIiaXr
-         y4MUjIrJ3nOArkof9gdrW9kbJztri2YKqNtSBFslOVxkvkIzfGqVA4hXOErhPL1uxo78
-         tKhY03yHJvtrtWa6H6zYjFb6mbkjJQtRKFOLzsBqQiGHkcr93G4TzeP/TNZtoThPjZt/
-         43kPp6rQTPgBWVz3cGCzhuefoL9YWuBemqfoRcLI2OXKWrXy+LYW9xafHbFR3qYsuekk
-         Wq/w==
-X-Gm-Message-State: AOAM531Z9zIkxFfhsBPJj92VRLigTS2o4YH4+by8e9WZhEmmx176E2f1
-        Ux2Bmp56+xSHgRehTd0b8dccPIAr6SoLFQp4
-X-Google-Smtp-Source: ABdhPJz8YzwHPjAPP3NjeGZO/cc0UDuyz73QK4rLo10pHU4W61/9rJBY4Db5S8tv/22fwGhuS60tfw==
-X-Received: by 2002:a17:90a:394f:: with SMTP id n15mr11312605pjf.121.1608429087231;
-        Sat, 19 Dec 2020 17:51:27 -0800 (PST)
-Received: from max-surface.hsd1.ca.comcast.net ([2601:647:5680:1d90:ed06:7751:4b34:9d75])
-        by smtp.gmail.com with ESMTPSA id js9sm12368718pjb.2.2020.12.19.17.51.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Dec 2020 17:51:26 -0800 (PST)
-From:   Max Leiter <maxwell.leiter@gmail.com>
-To:     linux-iio@vger.kernel.org
-Cc:     blaz@mxxn.io, matt.ranostay@konsulko.com,
-        Max Leiter <maxwell.leiter@gmail.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] iio:light:apds9960 add detection for MSHW0184 ACPI device in apds9960 driver
-Date:   Sat, 19 Dec 2020 17:50:55 -0800
-Message-Id: <20201220015057.107246-1-maxwell.leiter@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        id S1727034AbgLTB6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 20:58:18 -0500
+Received: from mout.gmx.net ([212.227.15.19]:53835 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726732AbgLTB6R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Dec 2020 20:58:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1608429380;
+        bh=vXUawh3kPUtcXgR/FybC5uzJbN+zai3TrH7SO3d14Is=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=FfTBJHB83Yn9N/NPeJ6Mm7Cpa80BgLt/qZjztz4UZd06McV1++e4xqp0y8Mr1iw+C
+         NDRnvFjYJjJV5bWllZgHNMZ0y1IInbjVmsCeOyJwOZoFMAxV7F/UP0IeNRFeSLpVdy
+         +hJCwipa1TIZY2sh8ayvBFdO1Aml5CxlXN2aonbM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.150.14]) by mail.gmx.com (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MFKGZ-1ktFkL0NFx-00FgeW; Sun, 20
+ Dec 2020 02:56:20 +0100
+Message-ID: <53dd6a82bbb2a9a102b420899281633a3e1b37a8.camel@gmx.de>
+Subject: Re: [PATCH] zsmalloc: do not use bit_spin_lock
+From:   Mike Galbraith <efault@gmx.de>
+To:     Vitaly Wool <vitaly.wool@konsulko.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>
+Cc:     Barry Song <song.bao.hua@hisilicon.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Minchan Kim <minchan@kernel.org>,
+        NitinGupta <ngupta@vflare.org>
+Date:   Sun, 20 Dec 2020 02:56:18 +0100
+In-Reply-To: <20201220002228.38697-1-vitaly.wool@konsulko.com>
+References: <18669bd607ae9efbf4e00e36532c7aa167d0fa12.camel@gmx.de>
+         <20201220002228.38697-1-vitaly.wool@konsulko.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:VGiNPUjzT+E+GM6QKupqdR66ABAQZq/3HoCKx4v30GHTPaPvsFP
+ +5vRKde64mKEUlumbSbzH5aYBuuTHgqGC6VPqZUpQ+av4KNyoCh/w5xt4XJGuLeocrNpN71
+ 1XttEmGwlpKHWTXpjYpCkjbCP46dcKYveW/WMaBKhRFf1z1m4IF0U8y0HuGmrDsPmlw6OoG
+ 7GbDYrs1pFw3QpYEP+K2g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:HyBZqduQu1Y=:ONBy/YVfBUPMs+eb+D58Cx
+ RBBiazb/NqBC4wgVA8oj+MI07e4a7YvQA1E9fpxHGdXYgaMmQjeLg6iaO3/0B4pIN8rfKXs2y
+ rEs4FeHkMX1HSNYW5Ilz4i27X9lTNnwPPWjy/pK8sx7eRTBHzloz6b3HTbY6mV7596F4xWqG3
+ aDAGOfdjBzt3fvhSwIi9whddOCgVTfSZm0uz4I5bXc7iGPjLWKW/+N4SNzl9oRbx6/rKzfl3y
+ 5V2jcGTGlmnYzNCLg+ZViTorMVCfKQXEPzjX3L4Bo622k0VJ/PpfisvoEVy179dJNhPWZn/wz
+ 8/CGdpkcHpCvKrwm8Xsumbvkta3vPBSg+ul2emxuZfkOWYsFrOJz/FgQl/UrkaE+uEj5ddqRR
+ yl8XlvGj4y3BtUF9UbOyDZr7CMaiJY8fyTpzZdDJ2k2OSKFybn2PVUuR33YZQyzh/Gvm441V0
+ VDDb71AWVyginlL4GVU7Q5X2SpZcz+LAWGADrSV/747/TUw/AmXcgmCjYLbYyKbpgr9jvqiLh
+ eXcMdcxnveUGfxPTEKmIQsNHbNSQ5NtjTHuxOpyUuJ97mq1Cl2LcHTxiOi2evQDymZhe3RaTe
+ Org470QE1cBEvY5uoUvchbNMCTNa0TsB5wh3vioA9Uk3eeNbt01o0FKjpYqaG8XlylEPcPsZM
+ VXC/0Me/BC+rKzyt8xeqc/MAFjjh52QfsSaeBblP7CZYAFgLLiYuSGexu3hgdSLyd/qOo53nL
+ tlzlzu4Uxxl8HT8Jla2HDLpJcBlhBnrMdwm1/HQqx+a+0pXBhcQJ/Udc5rOkGqdJX1uN2axDY
+ CZezCObgCJXu3Adh8hdiz3b7L+ZrMXG9BjIcKC2j5vFPvEKtA0aYHzR1zJ4LCD1uT4NCuefe+
+ nOxCYvyGKlno4xxdbi0Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The device is used in the Microsoft Surface Book 3 and Surface Pro 7
+On Sun, 2020-12-20 at 02:22 +0200, Vitaly Wool wrote:
+> zsmalloc takes bit spinlock in its _map() callback and releases it
+> only in unmap() which is unsafe and leads to zswap complaining
+> about scheduling in atomic context.
+>
+> To fix that and to improve RT properties of zsmalloc, remove that
+> bit spinlock completely and use a bit flag instead.
 
-Signed-off-by: Max Leiter <maxwell.leiter@gmail.com>
----
- drivers/iio/light/apds9960.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/iio/light/apds9960.c b/drivers/iio/light/apds9960.c
-index 9afb3fcc74e6..20719141c03a 100644
---- a/drivers/iio/light/apds9960.c
-+++ b/drivers/iio/light/apds9960.c
-@@ -8,6 +8,7 @@
-  * TODO: gesture + proximity calib offsets
-  */
- 
-+#include <linux/acpi.h>
- #include <linux/module.h>
- #include <linux/init.h>
- #include <linux/interrupt.h>
-@@ -1113,6 +1114,12 @@ static const struct i2c_device_id apds9960_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, apds9960_id);
- 
-+static const struct acpi_device_id apds9960_acpi_match[] = {
-+	{ "MSHW0184" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(acpi, apds9960_acpi_match);
-+
- static const struct of_device_id apds9960_of_match[] = {
- 	{ .compatible = "avago,apds9960" },
- 	{ }
-@@ -1124,6 +1131,7 @@ static struct i2c_driver apds9960_driver = {
- 		.name	= APDS9960_DRV_NAME,
- 		.of_match_table = apds9960_of_match,
- 		.pm	= &apds9960_pm_ops,
-+		.acpi_match_table = apds9960_acpi_match,
- 	},
- 	.probe		= apds9960_probe,
- 	.remove		= apds9960_remove,
--- 
-2.29.2
+> -static void pin_tag(unsigned long handle) __acquires(bitlock)
+> +static void pin_tag(unsigned long handle)
+>  {
+> -	bit_spin_lock(HANDLE_PIN_BIT, (unsigned long *)handle);
+> +	preempt_disable();
+> +	while(test_and_set_bit(HANDLE_PIN_BIT, (unsigned long *)handle))
+> +		cpu_relax();
+> +	preempt_enable();
+>  }
+
+If try doesn't need to disable preemption, neither does pin.
+
+	-Mike
+
 
