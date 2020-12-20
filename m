@@ -2,146 +2,347 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55B9E2DF3E0
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 06:35:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF3112DF3EC
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 06:44:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727159AbgLTFew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 00:34:52 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:36269 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726113AbgLTFev (ORCPT
+        id S1727248AbgLTFns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 00:43:48 -0500
+Received: from labrats.qualcomm.com ([199.106.110.90]:29195 "EHLO
+        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726099AbgLTFnr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 00:34:51 -0500
-Received: by mail-il1-f197.google.com with SMTP id z15so6362657ilb.3
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 21:34:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=mLmvw2D4onMuVrha2AwCYupS5mB8c89IZkH+Ha+dCow=;
-        b=ne5MYJDoi4+aWmIZ7SfEDJp7GP1lKikRztX9gKOwoFGVTDQlgMEYnsCHigBXHguxT3
-         c7jU+yaOVNgSHaxTqWBRnMw09oc0jU+zy1ns/PlPloJb8VWPBaFgtJZ8y3FjxvmLPMsG
-         1/Dk9qkZRerTNM1Bax5VyCJRNz648GMLbKivOSfnrmUthHOJKkVfPih2zh24m4/6hiZM
-         bD+UrFNIJyAY3uTmp4YNy57FUfv3mJ8JKZswNNkHdrEp+1K817xMXPi7dHYF7Am/1U/C
-         U8x25WlEUlAj1kmQkTCtXH+OAT13EhWhPqF3tyvxZcUvzBzsKzDnaWBqeNKG6Bg9P+X4
-         Ss2Q==
-X-Gm-Message-State: AOAM533g8dKAI1DXqqJsUIi+zkEexfEomHHcZLExAaE1hEK0Vyv/Bibv
-        K9TCikkrQQOLA4nJ4zS4LqkNAuQ+556jgCooQOb9OjyeSARC
-X-Google-Smtp-Source: ABdhPJz/waTa+UfOitMCD53w4kXFMdR69jRQ9L2dl2IGkS3lyWkWe2gkzjLlQCkdn3m7v5VndgPAuIsMS0zAmjctdtcAedBCh/6t
-MIME-Version: 1.0
-X-Received: by 2002:a92:5e9d:: with SMTP id f29mr12015151ilg.266.1608442450389;
- Sat, 19 Dec 2020 21:34:10 -0800 (PST)
-Date:   Sat, 19 Dec 2020 21:34:10 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e5b07c05b6deb081@google.com>
-Subject: general protection fault in j1939_netdev_notify (2)
-From:   syzbot <syzbot+5138c4dd15a0401bec7b@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, hkallweit1@gmail.com, kernel@pengutronix.de,
-        kuba@kernel.org, linux-can@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux@rempel-privat.de,
-        mkl@pengutronix.de, netdev@vger.kernel.org, robin@protonic.nl,
-        socketcan@hartkopp.net, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        Sun, 20 Dec 2020 00:43:47 -0500
+IronPort-SDR: 5Eg2bAC1RJMt6sL3Y6O14yK/uwBUP3cvmjPsi8U/442NN/hMHMEcjQURX6NLsv1E7u9u+4P9OJ
+ hFrf3fZkFORVX4vWnaF2dgfbqxsIbl4B92xbeyu8VJssky18+4DbRHFZ2E3Yxh082skbS3inbr
+ QrU45Z9HTdzRRb7RP9GcvYI13kXBDua82ERxVnRYQdeAP7KDBQCiRXNkOmYT1/SaodP8Oacr9C
+ /IS9Cm+Dd5dRj/l7N8oSRU1zWvC4EjE7xY5D4lw4jI441JAq0f5nK8yPIvuymc4B+mDjiZ/otP
+ dno=
+X-IronPort-AV: E=Sophos;i="5.78,434,1599548400"; 
+   d="scan'208";a="29398169"
+Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
+  by labrats.qualcomm.com with ESMTP; 19 Dec 2020 21:42:57 -0800
+X-QCInternal: smtphost
+Received: from wsp769891wss.qualcomm.com (HELO stor-presley.qualcomm.com) ([192.168.140.85])
+  by ironmsg02-sd.qualcomm.com with ESMTP; 19 Dec 2020 21:42:56 -0800
+Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
+        id E0F35212A8; Sat, 19 Dec 2020 21:42:55 -0800 (PST)
+From:   Can Guo <cang@codeaurora.org>
+To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        saravanak@google.com, salyzyn@google.com, cang@codeaurora.org
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Satya Tangirala <satyat@google.com>,
+        linux-kernel@vger.kernel.org (open list),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support),
+        linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support)
+Subject: [PATCH v6 1/3] scsi: ufs: Protect some contexts from unexpected clock scaling
+Date:   Sat, 19 Dec 2020 21:42:45 -0800
+Message-Id: <1608442968-38560-2-git-send-email-cang@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1608442968-38560-1-git-send-email-cang@codeaurora.org>
+References: <1608442968-38560-1-git-send-email-cang@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+In contexts like suspend, shutdown and error handling, we need to suspend
+devfreq to make sure these contexts won't be disturbed by clock scaling.
+However, suspending devfreq is not enough since users can still trigger a
+clock scaling by manipulating the sysfs node clkscale_enable and devfreq
+sysfs nodes like min/max_freq and governor. Add one more flag in struct
+clk_scaling such that these contexts can prevent clock scaling from being
+invoked through above sysfs nodes.
 
-syzbot found the following issue on:
-
-HEAD commit:    d635a69d Merge tag 'net-next-5.11' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1315f123500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c3556e4856b17a95
-dashboard link: https://syzkaller.appspot.com/bug?extid=5138c4dd15a0401bec7b
-compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12955123500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10f2f30f500000
-
-The issue was bisected to:
-
-commit 497a5757ce4e8f37219a3989ac6a561eb9a8e6c7
-Author: Heiner Kallweit <hkallweit1@gmail.com>
-Date:   Sat Nov 7 20:50:56 2020 +0000
-
-    tun: switch to net core provided statistics counters
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=143b845b500000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=163b845b500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=123b845b500000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5138c4dd15a0401bec7b@syzkaller.appspotmail.com
-Fixes: 497a5757ce4e ("tun: switch to net core provided statistics counters")
-
-general protection fault, probably for non-canonical address 0xe000080fe8c072f1: 0000 [#1] PREEMPT SMP KASAN
-KASAN: probably user-memory-access in range [0x0000607f46039788-0x0000607f4603978f]
-CPU: 1 PID: 8472 Comm: syz-executor635 Not tainted 5.10.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:j1939_ndev_to_priv net/can/j1939/main.c:219 [inline]
-RIP: 0010:j1939_priv_get_by_ndev_locked net/can/j1939/main.c:231 [inline]
-RIP: 0010:j1939_priv_get_by_ndev net/can/j1939/main.c:243 [inline]
-RIP: 0010:j1939_netdev_notify+0x115/0x320 net/can/j1939/main.c:353
-Code: 00 74 08 48 89 df e8 ba 1e 48 f9 48 8b 1b 48 85 db 0f 84 f0 00 00 00 4c 89 64 24 08 48 81 c3 28 60 00 00 48 89 d8 48 c1 e8 03 <42> 80 3c 30 00 74 08 48 89 df e8 8c 1e 48 f9 4c 8b 23 4d 85 e4 0f
-RSP: 0018:ffffc90000e9fd68 EFLAGS: 00010202
-RAX: 00000c0fe8c072f1 RBX: 0000607f46039788 RCX: ffff88801456d040
-RDX: ffff88801456d040 RSI: 0000000000000118 RDI: 0000000000000118
-RBP: 0000000000000118 R08: ffffffff8870585d R09: fffff520001d3fa5
-R10: fffff520001d3fa5 R11: 0000000000000000 R12: 0000000000000010
-R13: 1ffff1100293e848 R14: dffffc0000000000 R15: ffff8880149f4244
-FS:  0000000001d13880(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000080 CR3: 000000001402f000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- notifier_call_chain kernel/notifier.c:83 [inline]
- raw_notifier_call_chain+0xe7/0x170 kernel/notifier.c:410
- call_netdevice_notifiers_info net/core/dev.c:2022 [inline]
- call_netdevice_notifiers_extack net/core/dev.c:2034 [inline]
- call_netdevice_notifiers+0xeb/0x150 net/core/dev.c:2048
- __tun_chr_ioctl+0x2337/0x4860 drivers/net/tun.c:3093
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x440359
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fffd37b9c98 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440359
-RDX: 0000000000000118 RSI: 00000000400454cd RDI: 0000000000000003
-RBP: 00000000006ca018 R08: 00000000004002c8 R09: 00000000004002c8
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401b60
-R13: 0000000000401bf0 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
----[ end trace 7688a2c3c10da2e1 ]---
-RIP: 0010:j1939_ndev_to_priv net/can/j1939/main.c:219 [inline]
-RIP: 0010:j1939_priv_get_by_ndev_locked net/can/j1939/main.c:231 [inline]
-RIP: 0010:j1939_priv_get_by_ndev net/can/j1939/main.c:243 [inline]
-RIP: 0010:j1939_netdev_notify+0x115/0x320 net/can/j1939/main.c:353
-Code: 00 74 08 48 89 df e8 ba 1e 48 f9 48 8b 1b 48 85 db 0f 84 f0 00 00 00 4c 89 64 24 08 48 81 c3 28 60 00 00 48 89 d8 48 c1 e8 03 <42> 80 3c 30 00 74 08 48 89 df e8 8c 1e 48 f9 4c 8b 23 4d 85 e4 0f
-RSP: 0018:ffffc90000e9fd68 EFLAGS: 00010202
-RAX: 00000c0fe8c072f1 RBX: 0000607f46039788 RCX: ffff88801456d040
-RDX: ffff88801456d040 RSI: 0000000000000118 RDI: 0000000000000118
-RBP: 0000000000000118 R08: ffffffff8870585d R09: fffff520001d3fa5
-R10: fffff520001d3fa5 R11: 0000000000000000 R12: 0000000000000010
-R13: 1ffff1100293e848 R14: dffffc0000000000 R15: ffff8880149f4244
-FS:  0000000001d13880(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000080 CR3: 000000001402f000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
+Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
+Reviewed-by: Bean Huo <beanhuo@micron.com>
+Signed-off-by: Can Guo <cang@codeaurora.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/scsi/ufs/ufshcd.c | 81 +++++++++++++++++++++++++++++++----------------
+ drivers/scsi/ufs/ufshcd.h |  6 +++-
+ 2 files changed, 58 insertions(+), 29 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 0c148fc..79752a7 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -1147,12 +1147,22 @@ static int ufshcd_clock_scaling_prepare(struct ufs_hba *hba)
+ 	 */
+ 	ufshcd_scsi_block_requests(hba);
+ 	down_write(&hba->clk_scaling_lock);
+-	if (ufshcd_wait_for_doorbell_clr(hba, DOORBELL_CLR_TOUT_US)) {
++
++	if (!hba->clk_scaling.is_allowed)
++		ret = -EAGAIN;
++	else if (ufshcd_wait_for_doorbell_clr(hba, DOORBELL_CLR_TOUT_US))
+ 		ret = -EBUSY;
++
++	if (ret) {
+ 		up_write(&hba->clk_scaling_lock);
+ 		ufshcd_scsi_unblock_requests(hba);
++		goto out;
+ 	}
+ 
++	/* let's not get into low power until clock scaling is completed */
++	ufshcd_hold(hba, false);
++
++out:
+ 	return ret;
+ }
+ 
+@@ -1160,6 +1170,7 @@ static void ufshcd_clock_scaling_unprepare(struct ufs_hba *hba)
+ {
+ 	up_write(&hba->clk_scaling_lock);
+ 	ufshcd_scsi_unblock_requests(hba);
++	ufshcd_release(hba);
+ }
+ 
+ /**
+@@ -1175,12 +1186,9 @@ static int ufshcd_devfreq_scale(struct ufs_hba *hba, bool scale_up)
+ {
+ 	int ret = 0;
+ 
+-	/* let's not get into low power until clock scaling is completed */
+-	ufshcd_hold(hba, false);
+-
+ 	ret = ufshcd_clock_scaling_prepare(hba);
+ 	if (ret)
+-		goto out;
++		return ret;
+ 
+ 	/* scale down the gear before scaling down clocks */
+ 	if (!scale_up) {
+@@ -1212,8 +1220,6 @@ static int ufshcd_devfreq_scale(struct ufs_hba *hba, bool scale_up)
+ 
+ out_unprepare:
+ 	ufshcd_clock_scaling_unprepare(hba);
+-out:
+-	ufshcd_release(hba);
+ 	return ret;
+ }
+ 
+@@ -1487,7 +1493,7 @@ static ssize_t ufshcd_clkscale_enable_show(struct device *dev,
+ {
+ 	struct ufs_hba *hba = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%d\n", hba->clk_scaling.is_allowed);
++	return snprintf(buf, PAGE_SIZE, "%d\n", hba->clk_scaling.is_enabled);
+ }
+ 
+ static ssize_t ufshcd_clkscale_enable_store(struct device *dev,
+@@ -1496,12 +1502,20 @@ static ssize_t ufshcd_clkscale_enable_store(struct device *dev,
+ 	struct ufs_hba *hba = dev_get_drvdata(dev);
+ 	u32 value;
+ 	int err;
++	unsigned long flags;
++	bool update = true;
+ 
+ 	if (kstrtou32(buf, 0, &value))
+ 		return -EINVAL;
+ 
+ 	value = !!value;
+-	if (value == hba->clk_scaling.is_allowed)
++	spin_lock_irqsave(hba->host->host_lock, flags);
++	if (value == hba->clk_scaling.is_enabled)
++		update = false;
++	else
++		hba->clk_scaling.is_enabled = value;
++	spin_unlock_irqrestore(hba->host->host_lock, flags);
++	if (!update)
+ 		goto out;
+ 
+ 	pm_runtime_get_sync(hba->dev);
+@@ -1510,8 +1524,6 @@ static ssize_t ufshcd_clkscale_enable_store(struct device *dev,
+ 	cancel_work_sync(&hba->clk_scaling.suspend_work);
+ 	cancel_work_sync(&hba->clk_scaling.resume_work);
+ 
+-	hba->clk_scaling.is_allowed = value;
+-
+ 	if (value) {
+ 		ufshcd_resume_clkscaling(hba);
+ 	} else {
+@@ -1845,8 +1857,6 @@ static void ufshcd_init_clk_scaling(struct ufs_hba *hba)
+ 	snprintf(wq_name, sizeof(wq_name), "ufs_clkscaling_%d",
+ 		 hba->host->host_no);
+ 	hba->clk_scaling.workq = create_singlethread_workqueue(wq_name);
+-
+-	ufshcd_clkscaling_init_sysfs(hba);
+ }
+ 
+ static void ufshcd_exit_clk_scaling(struct ufs_hba *hba)
+@@ -1854,6 +1864,8 @@ static void ufshcd_exit_clk_scaling(struct ufs_hba *hba)
+ 	if (!ufshcd_is_clkscaling_supported(hba))
+ 		return;
+ 
++	if (hba->devfreq)
++		device_remove_file(hba->dev, &hba->clk_scaling.enable_attr);
+ 	destroy_workqueue(hba->clk_scaling.workq);
+ 	ufshcd_devfreq_remove(hba);
+ }
+@@ -1918,7 +1930,7 @@ static void ufshcd_clk_scaling_start_busy(struct ufs_hba *hba)
+ 	if (!hba->clk_scaling.active_reqs++)
+ 		queue_resume_work = true;
+ 
+-	if (!hba->clk_scaling.is_allowed || hba->pm_op_in_progress)
++	if (!hba->clk_scaling.is_enabled || hba->pm_op_in_progress)
+ 		return;
+ 
+ 	if (queue_resume_work)
+@@ -4987,7 +4999,8 @@ static void __ufshcd_transfer_req_compl(struct ufs_hba *hba,
+ 				complete(hba->dev_cmd.complete);
+ 			}
+ 		}
+-		if (ufshcd_is_clkscaling_supported(hba))
++		if (ufshcd_is_clkscaling_supported(hba) &&
++		    hba->clk_scaling.active_reqs > 0)
+ 			hba->clk_scaling.active_reqs--;
+ 	}
+ 
+@@ -5650,18 +5663,25 @@ static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
+ 		ufshcd_vops_resume(hba, UFS_RUNTIME_PM);
+ 	} else {
+ 		ufshcd_hold(hba, false);
+-		if (hba->clk_scaling.is_allowed) {
++		if (hba->clk_scaling.is_enabled) {
+ 			cancel_work_sync(&hba->clk_scaling.suspend_work);
+ 			cancel_work_sync(&hba->clk_scaling.resume_work);
+ 			ufshcd_suspend_clkscaling(hba);
+ 		}
+ 	}
++	down_write(&hba->clk_scaling_lock);
++	hba->clk_scaling.is_allowed = false;
++	up_write(&hba->clk_scaling_lock);
+ }
+ 
+ static void ufshcd_err_handling_unprepare(struct ufs_hba *hba)
+ {
+ 	ufshcd_release(hba);
+-	if (hba->clk_scaling.is_allowed)
++
++	down_write(&hba->clk_scaling_lock);
++	hba->clk_scaling.is_allowed = true;
++	up_write(&hba->clk_scaling_lock);
++	if (hba->clk_scaling.is_enabled)
+ 		ufshcd_resume_clkscaling(hba);
+ 	pm_runtime_put(hba->dev);
+ }
+@@ -7620,12 +7640,14 @@ static int ufshcd_add_lus(struct ufs_hba *hba)
+ 			sizeof(struct ufs_pa_layer_attr));
+ 		hba->clk_scaling.saved_pwr_info.is_valid = true;
+ 		if (!hba->devfreq) {
++			hba->clk_scaling.is_allowed = true;
+ 			ret = ufshcd_devfreq_init(hba);
+ 			if (ret)
+ 				goto out;
+-		}
+ 
+-		hba->clk_scaling.is_allowed = true;
++			hba->clk_scaling.is_enabled = true;
++			ufshcd_clkscaling_init_sysfs(hba);
++		}
+ 	}
+ 
+ 	ufs_bsg_probe(hba);
+@@ -8491,11 +8513,14 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	ufshcd_hold(hba, false);
+ 	hba->clk_gating.is_suspended = true;
+ 
+-	if (hba->clk_scaling.is_allowed) {
++	if (hba->clk_scaling.is_enabled) {
+ 		cancel_work_sync(&hba->clk_scaling.suspend_work);
+ 		cancel_work_sync(&hba->clk_scaling.resume_work);
+ 		ufshcd_suspend_clkscaling(hba);
+ 	}
++	down_write(&hba->clk_scaling_lock);
++	hba->clk_scaling.is_allowed = false;
++	up_write(&hba->clk_scaling_lock);
+ 
+ 	if (req_dev_pwr_mode == UFS_ACTIVE_PWR_MODE &&
+ 			req_link_state == UIC_LINK_ACTIVE_STATE) {
+@@ -8592,8 +8617,6 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	goto out;
+ 
+ set_link_active:
+-	if (hba->clk_scaling.is_allowed)
+-		ufshcd_resume_clkscaling(hba);
+ 	ufshcd_vreg_set_hpm(hba);
+ 	if (ufshcd_is_link_hibern8(hba) && !ufshcd_uic_hibern8_exit(hba))
+ 		ufshcd_set_link_active(hba);
+@@ -8603,7 +8626,10 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	if (!ufshcd_set_dev_pwr_mode(hba, UFS_ACTIVE_PWR_MODE))
+ 		ufshcd_disable_auto_bkops(hba);
+ enable_gating:
+-	if (hba->clk_scaling.is_allowed)
++	down_write(&hba->clk_scaling_lock);
++	hba->clk_scaling.is_allowed = true;
++	up_write(&hba->clk_scaling_lock);
++	if (hba->clk_scaling.is_enabled)
+ 		ufshcd_resume_clkscaling(hba);
+ 	hba->clk_gating.is_suspended = false;
+ 	hba->dev_info.b_rpm_dev_flush_capable = false;
+@@ -8701,7 +8727,10 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 
+ 	hba->clk_gating.is_suspended = false;
+ 
+-	if (hba->clk_scaling.is_allowed)
++	down_write(&hba->clk_scaling_lock);
++	hba->clk_scaling.is_allowed = true;
++	up_write(&hba->clk_scaling_lock);
++	if (hba->clk_scaling.is_enabled)
+ 		ufshcd_resume_clkscaling(hba);
+ 
+ 	/* Enable Auto-Hibernate if configured */
+@@ -8725,8 +8754,6 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	ufshcd_vreg_set_lpm(hba);
+ disable_irq_and_vops_clks:
+ 	ufshcd_disable_irq(hba);
+-	if (hba->clk_scaling.is_allowed)
+-		ufshcd_suspend_clkscaling(hba);
+ 	ufshcd_setup_clocks(hba, false);
+ 	if (ufshcd_is_clkgating_allowed(hba)) {
+ 		hba->clk_gating.state = CLKS_OFF;
+@@ -8944,8 +8971,6 @@ void ufshcd_remove(struct ufs_hba *hba)
+ 
+ 	ufshcd_exit_clk_scaling(hba);
+ 	ufshcd_exit_clk_gating(hba);
+-	if (ufshcd_is_clkscaling_supported(hba))
+-		device_remove_file(hba->dev, &hba->clk_scaling.enable_attr);
+ 	ufshcd_hba_exit(hba);
+ }
+ EXPORT_SYMBOL_GPL(ufshcd_remove);
+diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+index e0f00a4..5737679 100644
+--- a/drivers/scsi/ufs/ufshcd.h
++++ b/drivers/scsi/ufs/ufshcd.h
+@@ -382,7 +382,10 @@ struct ufs_saved_pwr_info {
+  * @workq: workqueue to schedule devfreq suspend/resume work
+  * @suspend_work: worker to suspend devfreq
+  * @resume_work: worker to resume devfreq
+- * @is_allowed: tracks if scaling is currently allowed or not
++ * @is_enabled: tracks if scaling is currently enabled or not, controlled by
++		clkscale_enable sysfs node
++ * @is_allowed: tracks if scaling is currently allowed or not, used to block
++		clock scaling which is not invoked from devfreq governor
+  * @is_busy_started: tracks if busy period has started or not
+  * @is_suspended: tracks if devfreq is suspended or not
+  */
+@@ -396,6 +399,7 @@ struct ufs_clk_scaling {
+ 	struct workqueue_struct *workq;
+ 	struct work_struct suspend_work;
+ 	struct work_struct resume_work;
++	bool is_enabled;
+ 	bool is_allowed;
+ 	bool is_busy_started;
+ 	bool is_suspended;
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
