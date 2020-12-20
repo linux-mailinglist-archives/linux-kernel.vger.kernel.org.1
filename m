@@ -2,213 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 718F52DF4F3
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 10:55:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98E912DF4F4
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 10:59:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727410AbgLTJzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 04:55:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727120AbgLTJze (ORCPT
+        id S1727319AbgLTJ7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 04:59:38 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:11222 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727109AbgLTJ7h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 04:55:34 -0500
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30424C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 01:54:50 -0800 (PST)
-Received: by mail-il1-x134.google.com with SMTP id v3so6277492ilo.5
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 01:54:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=g1f+hTqJ01sTRRK/QRqCfkwd/KCqqcEThWLus7s2oL8=;
-        b=KO0s5hkNfoe/HC+Lo6UxShdkpn5i8FtDgEZQeFoyZOnSVPubj7oYpPjvH0tqybGefX
-         3ecsUHL0N6yBTXk+jSaYiDXIcqr0hpOF21yjZ77YkbVYaO4lcqfZcS1l/E/YHAiw7WJp
-         CYgDTmQs3gbTipvWuc+UOZsXMCv6g3xJJJOMaqZvHoKW3qpDH2Awrg/6t/jybqU7M4m+
-         86g+qtJLaID/LToDTFQT84HVzxwXys5m7LykpSMAQe/8D3wvNBsE4TFFNF32ADkBYMfK
-         OiaIbVfChL+FJJ2yDOjBGwUNPjv4tHPJ8LZHeOewEkrmgi4lsPOauaFRfJNqvWCtUmWC
-         XZjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=g1f+hTqJ01sTRRK/QRqCfkwd/KCqqcEThWLus7s2oL8=;
-        b=Mi3CI1MhPY3NBFU82w90zOohVDq/zX+Vs77NDvOGEixtjv3WBmDtGwfTNXH0jrs4Fs
-         BrM7yKXJw3fzORLvci/vxSca7j50NgRIigFfnd/0zyoQiK740L0PHQ9KX5yvenwpnu2m
-         irVpdZ55Hzlloo1jNeV1wBoV9SxfzbyCN6CV0EGVQ/Zgclua8K4wm3Jx1+kZvc3FsC+Q
-         irilK3uw6acI6V8U9bK37TJPvB9CiorKtxwlMANAapuAmY8C/T5abAskB/rh8VVR4+an
-         vJ26GS1yYvvj1dEPusSBZp26C7BG+LTWi2YvONRyRuffAp7gTLRUSScZv6LaaGRi4d/B
-         TXEw==
-X-Gm-Message-State: AOAM532hgQt1E6r/zUSuqOYMuNp/4qUtsB6ChTTZgaYIYhMFDitper9m
-        uxJc5gZo5Y9kwPRuqjp5azoC/g==
-X-Google-Smtp-Source: ABdhPJwFXRHS7o4frczZ+ABNBpZU+cZA2RhD15NOmpz8TH5RvcGdGctXc98YQroLdgxv8GyB8XuMjg==
-X-Received: by 2002:a92:d0d:: with SMTP id 13mr1203977iln.209.1608458089138;
-        Sun, 20 Dec 2020 01:54:49 -0800 (PST)
-Received: from google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
-        by smtp.gmail.com with ESMTPSA id d1sm20445472ioh.3.2020.12.20.01.54.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Dec 2020 01:54:48 -0800 (PST)
-Date:   Sun, 20 Dec 2020 02:54:44 -0700
-From:   Yu Zhao <yuzhao@google.com>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        linux-mm <linux-mm@kvack.org>, Peter Xu <peterx@redhat.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable@vger.kernel.org, minchan@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
+        Sun, 20 Dec 2020 04:59:37 -0500
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BK9X2R7167077;
+        Sun, 20 Dec 2020 04:58:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id; s=pp1;
+ bh=jw/91xp8hHyOptgK34c31yu4XbTBXyVskWj4TFEXipU=;
+ b=Ea82lCdBA7TqO4PiZWKF0dd2y6/RYsoxBEtmQCKHwdPqHJiN7lSZWZnOzxwMyh99OI/9
+ NpYDU0qvS6dqkaXj+7eb4Bq5quFTJ7++d+36OLv++SlZWH4G/dgQ9ApeKNj/VJhZNATi
+ mDq/Kpe84NmpDqXTw+7YbFB9tbL0BTDjcXOP1fHcbYy/bCfi71TZGJXX969k9tH7gptL
+ zNiHESe0tC4wMvNwYmsDlHxa3eBb+qmQd/F/nsWNpbjzgFy9BmyfaFUfmi910Vh0s7sl
+ dW9aiZcpJC7RUzhpwO4R57omX6kc4nVRStckn4ScT/sNPmW3guCYtOvx6GWBfScauCzg GQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35j419ga8y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 20 Dec 2020 04:58:37 -0500
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BK9Xl1S168258;
+        Sun, 20 Dec 2020 04:58:37 -0500
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35j419ga8p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 20 Dec 2020 04:58:37 -0500
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BK9r0cM031716;
+        Sun, 20 Dec 2020 09:58:35 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma02fra.de.ibm.com with ESMTP id 35hdgure96-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 20 Dec 2020 09:58:35 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BK9wVnL19792182
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 20 Dec 2020 09:58:32 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5686EAE04D;
+        Sun, 20 Dec 2020 09:58:32 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D58A4AE045;
+        Sun, 20 Dec 2020 09:58:31 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Sun, 20 Dec 2020 09:58:31 +0000 (GMT)
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-Message-ID: <X98fZOiLNmnDQKhN@google.com>
-References: <20201219043006.2206347-1-namit@vmware.com>
- <X95RRZ3hkebEmmaj@redhat.com>
- <EDC00345-B46E-4396-8379-98E943723809@gmail.com>
- <X97pprdcRXusLGnq@google.com>
- <DDA15360-D6D4-46A8-95A4-5EE34107A407@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <DDA15360-D6D4-46A8-95A4-5EE34107A407@gmail.com>
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH] epoll: fix compat syscall wire up of epoll_pwait2
+Date:   Sun, 20 Dec 2020 10:58:30 +0100
+Message-Id: <20201220095830.17843-1-hca@linux.ibm.com>
+X-Mailer: git-send-email 2.17.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-20_02:2020-12-19,2020-12-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxlogscore=661
+ priorityscore=1501 malwarescore=0 bulkscore=0 impostorscore=0 mlxscore=0
+ suspectscore=0 phishscore=0 adultscore=0 lowpriorityscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012200071
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 20, 2020 at 12:06:38AM -0800, Nadav Amit wrote:
-> > On Dec 19, 2020, at 10:05 PM, Yu Zhao <yuzhao@google.com> wrote:
-> > 
-> > On Sat, Dec 19, 2020 at 01:34:29PM -0800, Nadav Amit wrote:
-> >> [ cc’ing some more people who have experience with similar problems ]
-> >> 
-> >>> On Dec 19, 2020, at 11:15 AM, Andrea Arcangeli <aarcange@redhat.com> wrote:
-> >>> 
-> >>> Hello,
-> >>> 
-> >>> On Fri, Dec 18, 2020 at 08:30:06PM -0800, Nadav Amit wrote:
-> >>>> Analyzing this problem indicates that there is a real bug since
-> >>>> mmap_lock is only taken for read in mwriteprotect_range(). This might
-> >>> 
-> >>> Never having to take the mmap_sem for writing, and in turn never
-> >>> blocking, in order to modify the pagetables is quite an important
-> >>> feature in uffd that justifies uffd instead of mprotect. It's not the
-> >>> most important reason to use uffd, but it'd be nice if that guarantee
-> >>> would remain also for the UFFDIO_WRITEPROTECT API, not only for the
-> >>> other pgtable manipulations.
-> >>> 
-> >>>> Consider the following scenario with 3 CPUs (cpu2 is not shown):
-> >>>> 
-> >>>> cpu0				cpu1
-> >>>> ----				----
-> >>>> userfaultfd_writeprotect()
-> >>>> [ write-protecting ]
-> >>>> mwriteprotect_range()
-> >>>> mmap_read_lock()
-> >>>> change_protection()
-> >>>> change_protection_range()
-> >>>>  ...
-> >>>>  change_pte_range()
-> >>>>  [ defer TLB flushes]
-> >>>> 				userfaultfd_writeprotect()
-> >>>> 				 mmap_read_lock()
-> >>>> 				 change_protection()
-> >>>> 				 [ write-unprotect ]
-> >>>> 				 ...
-> >>>> 				  [ unprotect PTE logically ]
-> >>>> 				...
-> >>>> 				[ page-fault]
-> >>>> 				...
-> >>>> 				wp_page_copy()
-> >>>> 				[ set new writable page in PTE]
-> > 
-> > I don't see any problem in this example -- wp_page_copy() calls
-> > ptep_clear_flush_notify(), which should take care of the stale entry
-> > left by cpu0.
-> > 
-> > That being said, I suspect the memory corruption you observed is
-> > related this example, with cpu1 running something else that flushes
-> > conditionally depending on pte_write().
-> > 
-> > Do you know which type of pages were corrupted? file, anon, etc.
-> 
-> First, Yu, you are correct. My analysis is incorrect, but let me have
-> another try (below). To answer your (and Andrea’s) question - this happens
-> with upstream without any changes, excluding a small fix to the selftest,
-> since it failed (got stuck) due to missing wake events. [1]
-> 
-> We are talking about anon memory.
-> 
-> So to correct myself, I think that what I really encountered was actually
-> during MM_CP_UFFD_WP_RESOLVE (i.e., when the protection is removed). The
-> problem was that in this case the “write”-bit was removed during unprotect.
+Commit b0a0c2615f6f ("epoll: wire up syscall epoll_pwait2") wired up
+the 64 bit syscall instead of the compat variant in a couple of places.
 
-Thanks. You are right about when the problem happens: UFD write-
-UNprotecting. But it's not UFD write-UNprotecting that removes the
-writable bit -- the bit can only be removed during COW or UFD
-write-protecting. So your original example was almost correct, except
-the last line describing cpu1.
+Cc: Willem de Bruijn <willemb@google.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Fixes: b0a0c2615f6f ("epoll: wire up syscall epoll_pwait2")
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+---
+ arch/arm64/include/asm/unistd32.h         | 2 +-
+ arch/mips/kernel/syscalls/syscall_n32.tbl | 2 +-
+ arch/s390/kernel/syscalls/syscall.tbl     | 2 +-
+ arch/sparc/kernel/syscalls/syscall.tbl    | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-The problem is how do_wp_page() handles non-COW pages. (For COW pages,
-do_wp_page() works correctly by either reusing an existing page or
-make a new copy out of it.) In UFD case, the existing page may not
-have been properly write-protected. As you pointed out, the tlb flush
-may not be done yet. Making a copy can potentially race with the
-writer on cpu2.
+diff --git a/arch/arm64/include/asm/unistd32.h b/arch/arm64/include/asm/unistd32.h
+index f4bca2b90218..cccfbbefbf95 100644
+--- a/arch/arm64/include/asm/unistd32.h
++++ b/arch/arm64/include/asm/unistd32.h
+@@ -890,7 +890,7 @@ __SYSCALL(__NR_faccessat2, sys_faccessat2)
+ #define __NR_process_madvise 440
+ __SYSCALL(__NR_process_madvise, sys_process_madvise)
+ #define __NR_epoll_pwait2 441
+-__SYSCALL(__NR_epoll_pwait2, sys_epoll_pwait2)
++__SYSCALL(__NR_epoll_pwait2, compat_sys_epoll_pwait2)
+ 
+ /*
+  * Please add new compat syscalls above this comment and update
+diff --git a/arch/mips/kernel/syscalls/syscall_n32.tbl b/arch/mips/kernel/syscalls/syscall_n32.tbl
+index ad9c3dd0ab1f..0f03ad223f33 100644
+--- a/arch/mips/kernel/syscalls/syscall_n32.tbl
++++ b/arch/mips/kernel/syscalls/syscall_n32.tbl
+@@ -379,4 +379,4 @@
+ 438	n32	pidfd_getfd			sys_pidfd_getfd
+ 439	n32	faccessat2			sys_faccessat2
+ 440	n32	process_madvise			sys_process_madvise
+-441	n32	epoll_pwait2			sys_epoll_pwait2
++441	n32	epoll_pwait2			compat_sys_epoll_pwait2
+diff --git a/arch/s390/kernel/syscalls/syscall.tbl b/arch/s390/kernel/syscalls/syscall.tbl
+index 14f6525886a8..d443423495e5 100644
+--- a/arch/s390/kernel/syscalls/syscall.tbl
++++ b/arch/s390/kernel/syscalls/syscall.tbl
+@@ -443,4 +443,4 @@
+ 438  common	pidfd_getfd		sys_pidfd_getfd			sys_pidfd_getfd
+ 439  common	faccessat2		sys_faccessat2			sys_faccessat2
+ 440  common	process_madvise		sys_process_madvise		sys_process_madvise
+-441  common	epoll_pwait2		sys_epoll_pwait2		sys_epoll_pwait2
++441  common	epoll_pwait2		sys_epoll_pwait2		compat_sys_epoll_pwait2
+diff --git a/arch/sparc/kernel/syscalls/syscall.tbl b/arch/sparc/kernel/syscalls/syscall.tbl
+index c7da4c3271e6..40d8c7cd8298 100644
+--- a/arch/sparc/kernel/syscalls/syscall.tbl
++++ b/arch/sparc/kernel/syscalls/syscall.tbl
+@@ -486,4 +486,4 @@
+ 438	common	pidfd_getfd			sys_pidfd_getfd
+ 439	common	faccessat2			sys_faccessat2
+ 440	common	process_madvise			sys_process_madvise
+-441	common	epoll_pwait2			sys_epoll_pwait2
++441	common	epoll_pwait2			sys_epoll_pwait2		compat_sys_epoll_pwait2
+-- 
+2.17.1
 
-Should we fix the problem by ensuring integrity of the copy? IMO, no,
-because do_wp_page() shouldn't copy at all in this case. It seems it
-was recently broken by
-
-  be068f29034f mm: fix misplaced unlock_page in do_wp_page()
-  09854ba94c6a mm: do_wp_page() simplification
-
-I haven't study them carefully. But if you could just revert them and
-run the test again, we'd know where exactly to look at next.
-
-> Sorry for the strange formatting to fit within 80 columns:
-> 
-> 
-> [ Start: PTE is writable ]
-> 
-> cpu0				cpu1			cpu2
-> ----				----			----
-> 							[ Writable PTE 
-> 							  cached in TLB ]
-> userfaultfd_writeprotect()				
-> [ write-*unprotect* ]
-> mwriteprotect_range()
-> mmap_read_lock()
-> change_protection()
-> 
-> change_protection_range()
->  ...
->  change_pte_range()
->  [ *clear* “write”-bit ]
->  [ defer TLB flushes]
-> 				[ page-fault ]
-> 				…
-> 				wp_page_copy()
-> 				 cow_user_page()
-> 				  [ copy page ]
-> 							[ write to old
-> 							  page ]
-> 				…
-> 				 set_pte_at_notify()
-> 
-> [ End: cpu2 write not copied form old to new page. ]
-> 
-> 
-> So this was actually resolved by the second part of the patch - changing
-> preserve_write in change_pte_range(). I removed the acquisition of mmap_lock
-> for write, left the change in change_pte_range() and the test passes.
-> 
-> Let me give some more thought on whether a mmap_lock is needed 
-> for write. I need to rehash this TLB flushing algorithm.
-> 
-> Thanks,
-> Nadav
-> 
-> [1] https://lore.kernel.org/patchwork/patch/1346386
