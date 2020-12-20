@@ -2,94 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF3972DF460
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 09:08:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E3602DF463
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 09:08:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727300AbgLTIGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 03:06:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45952 "EHLO
+        id S1727349AbgLTIHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 03:07:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726696AbgLTIGj (ORCPT
+        with ESMTP id S1726696AbgLTIH3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 03:06:39 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F5AC0613CF;
-        Sun, 20 Dec 2020 00:05:58 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id g20so9273405ejb.1;
-        Sun, 20 Dec 2020 00:05:58 -0800 (PST)
+        Sun, 20 Dec 2020 03:07:29 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D90C0613CF;
+        Sun, 20 Dec 2020 00:06:42 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id b5so4663591pjl.0;
+        Sun, 20 Dec 2020 00:06:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=877C8AVqjHKt77VYGcchG1ePZwRG53cwgcE+oR4LK7w=;
-        b=CzH1zD7ufC530iXBCdTSQZW8gQqFpDNbCJ6wgkZyJBssbN5CldUlVIAOXi8P0RvhRv
-         59zl21T16Ah6FqT+2h6eSdv5tpNlSqHWQ48pnDseAMiOiiwPfSma00AvKq2I7GiL3pxL
-         mp9E6leksJMEyv/DNLv3elCfVr6hcOin1oewezdnIAyZuuR0YY72kAQXmtnVqQR6hY07
-         VK38yKSVK78eOmQO1oX29lZyxUazD7NPbImc/7QYdqnEjLz1pM2YzOlTtC/RvcmceSNw
-         25x4MvHWMXLcWNmuMp3VwMZHoLAkMPUxO6+f6yyyFKeH7jKojDEYwF7XkHSgA5/hHKaE
-         pXAA==
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=3Wcun+zv/hhQE2K3TcWCKWB24fTPBiCA4UQ28awSatM=;
+        b=I7yhK5wXqmGnt4AwF/BbAz/ynHIuyVIarnQXVsSVeupjujJdEMpZ6QnSvmvqaZE5fg
+         AGk5XJbnKwCrWDICN0byKxPNEYzqXPCQkZHrjG0XPebHvPK9D8kHudqiwmBAgZs7KBt+
+         i+Ff8k3SQWJdFj6Byu434Xs9126dZnExTR5qvwjNCyi6SS+R4TD4gIxNJnuGDQ+2/+7m
+         icjJp+JmD29qB2fZfnD6eEuhffOk5Dsio5fJmoGOdazVwFJEiL333USGDYPqlBeioLcs
+         Qh8tsnahBUi2M/nMggb4SLqn63m5HU9CeOOSgZtbhWIaZRj5czh/HZFbsfnL8D+dA5IH
+         m3ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=877C8AVqjHKt77VYGcchG1ePZwRG53cwgcE+oR4LK7w=;
-        b=sAss1jbcV6e3MHFkwHgwGnDUU1K5VkrfB7jnQgSdQuujbO4QL18oKu28N0vwBaBlwU
-         aKE5Gu1XijVvaEnrBhQjWPlb7jFZZ2Dopg9yQkOVlx6brc+7MrWCAUydcVurA4KaDAYb
-         2PB3E8jhlrdkx4RGaqy+E6bee97M57xzvX+FphdQLE9Mv5BsccDY4WNpMGIl/U9h9cYO
-         lQkrPeNhZs16JKLimDClKGgcPFe22pEltgCqOeCia+cwKjyDSp9EGbLjNYHBMEVO57a9
-         JtGI1Wscm8Mpg30tciNvJf2oa7z/v1LspSFaLiyk/+GfXxNxhU75zs6OhZCxto9zyejB
-         oJTg==
-X-Gm-Message-State: AOAM531p+z0ZYQJ4WN1+YeWKNrG1OK11pKUl687NXTe22loFgw9MSYjb
-        EG0wtBMvHLYFy9lYWrIxO9Y=
-X-Google-Smtp-Source: ABdhPJynVMZurDmNSLenosgb8bMP8vdQ10DonTxTAGAoNGqz/N57p65eFrgSPRBf8uOb3zTFquW+sg==
-X-Received: by 2002:a17:906:4a47:: with SMTP id a7mr11035401ejv.345.1608451556949;
-        Sun, 20 Dec 2020 00:05:56 -0800 (PST)
-Received: from skbuf ([188.25.2.120])
-        by smtp.gmail.com with ESMTPSA id cb21sm27615807edb.57.2020.12.20.00.05.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Dec 2020 00:05:56 -0800 (PST)
-Date:   Sun, 20 Dec 2020 10:05:55 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        Zhao Qiang <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Andrew Lunn <andrew@lunn.ch>, linux-kernel@vger.kernel.org,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: Re: [PATCH net v2 1/3] ethernet: ucc_geth: set dev->max_mtu to 1518
-Message-ID: <20201220080555.tgv3ndlkhzbvcpx7@skbuf>
-References: <20201218105538.30563-1-rasmus.villemoes@prevas.dk>
- <20201218105538.30563-2-rasmus.villemoes@prevas.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201218105538.30563-2-rasmus.villemoes@prevas.dk>
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=3Wcun+zv/hhQE2K3TcWCKWB24fTPBiCA4UQ28awSatM=;
+        b=bV2V5kDIUtBConrNnXxtB3GzZs2ILaIh5iHXign8FE6FoBwqcni3G332Dqg/dUa6qF
+         hsIIgcmo7by4YUbt/vf1ck6XBqA6fCPyzrZezeB55bp9CIPpq+xj1dzMDuE9r0W8Q2is
+         o5FaF6waolLXSidvtknWoevRYprR3AJUVUwwMGXkbtwh6Wc6ksdV0sMAsDysBeTiWd1N
+         4pdQBXSOmitMQbZxsCebv9szQyk9b0iZ3AkyxwTVF5azv4BcaSWGVtR24ZZu+OvUDbUm
+         19aquWFpCqHWwRgBPmOd8yhwMCG4eU5lSHggEphQh9OVzaCAKXTUm2OyhDYRv6D+22Qd
+         xWQg==
+X-Gm-Message-State: AOAM5312kgZoQ3wGtLIu7b8/6pPizhj1Ge5ZSGXvWQWDktYpTZUpKyII
+        akiQxElcHsuRNDPapFtsnEY=
+X-Google-Smtp-Source: ABdhPJwPlS6ZPqw+MisTBKarDSPQd+plS4TfpstHjZVwno3BIEi3z/ZaweENtfBX2IsioSakFZ/DaQ==
+X-Received: by 2002:a17:90a:398d:: with SMTP id z13mr12209076pjb.1.1608451601658;
+        Sun, 20 Dec 2020 00:06:41 -0800 (PST)
+Received: from [10.0.1.10] (c-24-4-128-201.hsd1.ca.comcast.net. [24.4.128.201])
+        by smtp.gmail.com with ESMTPSA id s29sm13830137pgn.65.2020.12.20.00.06.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 20 Dec 2020 00:06:40 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <X97pprdcRXusLGnq@google.com>
+Date:   Sun, 20 Dec 2020 00:06:38 -0800
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        linux-mm <linux-mm@kvack.org>, Peter Xu <peterx@redhat.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable@vger.kernel.org, minchan@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <DDA15360-D6D4-46A8-95A4-5EE34107A407@gmail.com>
+References: <20201219043006.2206347-1-namit@vmware.com>
+ <X95RRZ3hkebEmmaj@redhat.com>
+ <EDC00345-B46E-4396-8379-98E943723809@gmail.com>
+ <X97pprdcRXusLGnq@google.com>
+To:     Yu Zhao <yuzhao@google.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 11:55:36AM +0100, Rasmus Villemoes wrote:
-> All the buffers and registers are already set up appropriately for an
-> MTU slightly above 1500, so we just need to expose this to the
-> networking stack. AFAICT, there's no need to implement .ndo_change_mtu
-> when the receive buffers are always set up to support the max_mtu.
-> 
-> This fixes several warnings during boot on our mpc8309-board with an
-> embedded mv88e6250 switch:
-> 
-> mv88e6085 mdio@e0102120:10: nonfatal error -34 setting MTU 1500 on port 0
-> ...
-> mv88e6085 mdio@e0102120:10: nonfatal error -34 setting MTU 1500 on port 4
-> ucc_geth e0102000.ethernet eth1: error -22 setting MTU to 1504 to include DSA overhead
-> 
-> The last line explains what the DSA stack tries to do: achieving an MTU
-> of 1500 on-the-wire requires that the master netdevice connected to
-> the CPU port supports an MTU of 1500+the tagging overhead.
-> 
-> Fixes: bfcb813203e6 ("net: dsa: configure the MTU for switch ports")
-> Cc: Vladimir Oltean <vladimir.oltean@nxp.com>
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-> ---
+> On Dec 19, 2020, at 10:05 PM, Yu Zhao <yuzhao@google.com> wrote:
+>=20
+> On Sat, Dec 19, 2020 at 01:34:29PM -0800, Nadav Amit wrote:
+>> [ cc=E2=80=99ing some more people who have experience with similar =
+problems ]
+>>=20
+>>> On Dec 19, 2020, at 11:15 AM, Andrea Arcangeli <aarcange@redhat.com> =
+wrote:
+>>>=20
+>>> Hello,
+>>>=20
+>>> On Fri, Dec 18, 2020 at 08:30:06PM -0800, Nadav Amit wrote:
+>>>> Analyzing this problem indicates that there is a real bug since
+>>>> mmap_lock is only taken for read in mwriteprotect_range(). This =
+might
+>>>=20
+>>> Never having to take the mmap_sem for writing, and in turn never
+>>> blocking, in order to modify the pagetables is quite an important
+>>> feature in uffd that justifies uffd instead of mprotect. It's not =
+the
+>>> most important reason to use uffd, but it'd be nice if that =
+guarantee
+>>> would remain also for the UFFDIO_WRITEPROTECT API, not only for the
+>>> other pgtable manipulations.
+>>>=20
+>>>> Consider the following scenario with 3 CPUs (cpu2 is not shown):
+>>>>=20
+>>>> cpu0				cpu1
+>>>> ----				----
+>>>> userfaultfd_writeprotect()
+>>>> [ write-protecting ]
+>>>> mwriteprotect_range()
+>>>> mmap_read_lock()
+>>>> change_protection()
+>>>> change_protection_range()
+>>>>  ...
+>>>>  change_pte_range()
+>>>>  [ defer TLB flushes]
+>>>> 				userfaultfd_writeprotect()
+>>>> 				 mmap_read_lock()
+>>>> 				 change_protection()
+>>>> 				 [ write-unprotect ]
+>>>> 				 ...
+>>>> 				  [ unprotect PTE logically ]
+>>>> 				...
+>>>> 				[ page-fault]
+>>>> 				...
+>>>> 				wp_page_copy()
+>>>> 				[ set new writable page in PTE]
+>=20
+> I don't see any problem in this example -- wp_page_copy() calls
+> ptep_clear_flush_notify(), which should take care of the stale entry
+> left by cpu0.
+>=20
+> That being said, I suspect the memory corruption you observed is
+> related this example, with cpu1 running something else that flushes
+> conditionally depending on pte_write().
+>=20
+> Do you know which type of pages were corrupted? file, anon, etc.
 
-Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+First, Yu, you are correct. My analysis is incorrect, but let me have
+another try (below). To answer your (and Andrea=E2=80=99s) question - =
+this happens
+with upstream without any changes, excluding a small fix to the =
+selftest,
+since it failed (got stuck) due to missing wake events. [1]
+
+We are talking about anon memory.
+
+So to correct myself, I think that what I really encountered was =
+actually
+during MM_CP_UFFD_WP_RESOLVE (i.e., when the protection is removed). The
+problem was that in this case the =E2=80=9Cwrite=E2=80=9D-bit was =
+removed during unprotect.
+Sorry for the strange formatting to fit within 80 columns:
+
+
+[ Start: PTE is writable ]
+
+cpu0				cpu1			cpu2
+----				----			----
+							[ Writable PTE=20=
+
+							  cached in TLB =
+]
+userfaultfd_writeprotect()			=09
+[ write-*unprotect* ]
+mwriteprotect_range()
+mmap_read_lock()
+change_protection()
+
+change_protection_range()
+ ...
+ change_pte_range()
+ [ *clear* =E2=80=9Cwrite=E2=80=9D-bit ]
+ [ defer TLB flushes]
+				[ page-fault ]
+				=E2=80=A6
+				wp_page_copy()
+				 cow_user_page()
+				  [ copy page ]
+							[ write to old
+							  page ]
+				=E2=80=A6
+				 set_pte_at_notify()
+
+[ End: cpu2 write not copied form old to new page. ]
+
+
+So this was actually resolved by the second part of the patch - changing
+preserve_write in change_pte_range(). I removed the acquisition of =
+mmap_lock
+for write, left the change in change_pte_range() and the test passes.
+
+Let me give some more thought on whether a mmap_lock is needed=20
+for write. I need to rehash this TLB flushing algorithm.
+
+Thanks,
+Nadav
+
+[1] https://lore.kernel.org/patchwork/patch/1346386=
