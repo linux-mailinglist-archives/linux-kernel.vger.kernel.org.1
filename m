@@ -2,148 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CF822DF6FB
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 23:05:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2D502DF868
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 05:54:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728334AbgLTWDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 17:03:25 -0500
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:5550 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726507AbgLTWDY (ORCPT
+        id S1727569AbgLUEwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 23:52:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725497AbgLUEwY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 17:03:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1608501803; x=1640037803;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=NsP9KppwOP6Xw5BYDHKTLYODrOXpsDVxJ/C0AEMkesg=;
-  b=dP5y1k2TupFlZRwvaHFnXxSRcIuMKM5gDG4TfegG66V9Yh7BzgPHjaxB
-   jfB9OjXT6CVrQNNUXAY8nUyFxdtzGz/etmCL8W+KtB0BNa39Mam7PkOjX
-   jmysp9x64rcLlwJbc55BH3w0Lk5OMwE37BI67q+2ndpOZqIHQDPuGEEQh
-   AUFdPUEp0WlHumFHHtjKAxI5WMLPz5hEQOA98BUkuy+Osd0iXryryWoYz
-   QwdTVfB5Ie4ixQ0vj90MURP2yJsWODR8zWXXL5S2VwSZJZYqMN0TZYX/4
-   c5fDt7/maNtF4wXE/jQuwQCfMv28pUAspwEQyo/TPonb9n5w0NcwoRBYG
-   g==;
-IronPort-SDR: fCrvGApBrkxsTXtoSGptxDbljUwegJNbW3UkU0oHO2MYEV8ZYTmgLN20CZolgbc3YtBSguxBg+
- AsIrPqCUS7Rq71mR1+ycwBt0j06dMFyvTosv6vnNKLzqLMmEVb9DR0Fv0iw5KelPrsrGJoDsIe
- yxESbCS/5YvjbVGKk3l6miX+h0rzWqvQEOpdSlvDM/nwVZx0KFPMikBD/dbBr0ntdihrClmJnj
- aJJ+RVDiDw2La5KPOdK1qE6sxgoROiQ/VIhXXyoh6srW7NoCmYu71SYO3uVVMM76dZUOitDL4X
- ap4=
-X-IronPort-AV: E=Sophos;i="5.78,435,1599494400"; 
-   d="scan'208";a="155646190"
-Received: from mail-dm6nam10lp2102.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.102])
-  by ob1.hgst.iphmx.com with ESMTP; 21 Dec 2020 06:02:17 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Bd1agXO7xXeUfi4LWFBNHT0U0GTXZ3I8ZliZo31GfS4srpgqQhiNpZVeYZ0tT4DfSDyweHMCIl/Z1TaWl2DRKTB2T5Raaaa6QJUpPfZZ1Y30DFx6FFlP5laDBJJwBxkTOcuJnLuUgdz0XX7yh9qVouT1IjLsdvWOukSRjFmylJJbexw1dVb5dTTSBB4WJrbMcD9kDHfPZMlINmY4Ws+e1ar+aZQ+AhuEE7HKM0GZOmDRRqc0IACUfNcZcx1X+iy7JiZ0gQNLIZoFBB+cp3eNqrSlw9niG1o/Btv5DEO4254bvNZwssEOWpyzcET4TZv481LwzCD5EPTsvJKXkOzoQw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rsSepHIzlQmO5vlGfgH+O9XU1q3cYDrF4tQvNcSJiNs=;
- b=ALyO15VnB2+T0Z4zuYPg5csD33UeaMdDAdKfunDMou5WkmK3NNDn1cA0O1tKdyNFS7sNhZt1pitkqM5kX2hEM8O5Hy+V8QjWxH2B2lMYcNU2Lm/1IhoQNksgDBxVyoagmosn0reuo5ME55oKUkYTORSrsOf3VOmFNAL4ieMLwiJvrKiRi/fS8CfC0vlIU/nXbkcZqEv/+tVJgifiD+Z95buSko5V+S77I/cKBPpA1tRDpAYXegFGHFiTYf86ExwzzssPLfnC6T13ZCWNRvHO1kAGfhefmBSMwdJyoSuHkZERcMlcri875J7ShcqYbVgqsshrmG9PahoGiCZSG1+E6A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Sun, 20 Dec 2020 23:52:24 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05D41C061282
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 20:51:05 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id w6so5802737pfu.1
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 20:51:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rsSepHIzlQmO5vlGfgH+O9XU1q3cYDrF4tQvNcSJiNs=;
- b=Z+b5Xm2+wMOruJx3mKjAgONSVgbH0nrzz+ZSQ5ANuziaXJhAYZebFMG/syFObzermjQuKg6gMWJICoaF0kFeU2Hce/cSUu14tm4uTILt6lBZ00HH4cc5B+MoWNtDMraOELvBlyFsltVakrBQRQYCFWkD0Td6dNvYtPUO3/2R/Gg=
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
- DM6PR04MB4154.namprd04.prod.outlook.com (2603:10b6:5:9a::11) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3676.25; Sun, 20 Dec 2020 22:02:15 +0000
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::a564:c676:b866:34f6]) by DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::a564:c676:b866:34f6%9]) with mapi id 15.20.3676.033; Sun, 20 Dec 2020
- 22:02:15 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "kernel-team@android.com" <kernel-team@android.com>
-CC:     "cang@codeaurora.org" <cang@codeaurora.org>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>
-Subject: RE: [PATCH] scsi: ufs: fix livelock of ufshcd_clear_ua_wluns
-Thread-Topic: [PATCH] scsi: ufs: fix livelock of ufshcd_clear_ua_wluns
-Thread-Index: AQHW1O5Lq9Xt0bukCk2VnSNzzSWPAqoAjHbQ
-Date:   Sun, 20 Dec 2020 22:02:15 +0000
-Message-ID: <DM6PR04MB6575B8729A62E6FB9F19930CFCC10@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20201218033131.2624065-1-jaegeuk@kernel.org>
-In-Reply-To: <20201218033131.2624065-1-jaegeuk@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [77.138.4.172]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: c35baa68-0b7e-40c1-a6b0-08d8a532e955
-x-ms-traffictypediagnostic: DM6PR04MB4154:
-x-microsoft-antispam-prvs: <DM6PR04MB41543FE6BD031E495FF7330DFCC10@DM6PR04MB4154.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:4941;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: WW0UvhcUWjXeHsHjjhQOUGEftMcD9m/RUHjfQ0CwFusf+vlOq7yynfwHiNwSZfM5wVCoEovuTSyVAPAcA9qSh1m/b5o7SLT5LxXbAzbJ/Wa7jjCdeg0yOKT81OGc21cDSZCN8Fezs6VuQOWy65YfUj5ozZDEwMPT0dOft8XQhX6WWBI9E8xJ36/pWmsls+qYuTUhWpqvYY7MJPS4Yo6Vl2XVnshUYKDFpwSYR6hGbRkED7yBq43GQjP6YF1znaWbPp3VPcp4eJmnu+bACI9orpUqdfzN2L/0siVtmiRuJ/7zicalqToSpr9KO8cfWL2MP7aqAtqfUrFegmZWB1PyfTK3jnqQ9jSELcC79YlmUCCVDItn4gI//GRM/LhlbngYvlTNUFmGV7wQaXU+ZHxEDw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39850400004)(376002)(366004)(136003)(396003)(76116006)(2906002)(5660300002)(4326008)(55016002)(86362001)(83380400001)(71200400001)(4744005)(9686003)(6506007)(33656002)(478600001)(316002)(8936002)(8676002)(54906003)(186003)(26005)(110136005)(66556008)(66446008)(66476007)(66946007)(64756008)(52536014)(7696005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?CEpd1nb4KsrxrgipDZJ6XW2NBstLDK88koookGvR5/Qeien+do8NUAsdoPP3?=
- =?us-ascii?Q?8pw69M/mwI/Pq3h/3O2uoTXuevGTpuDyba1Hsag5bSQ4okGotfSpsbFAD/4I?=
- =?us-ascii?Q?BMv41G/Lk6tFGeWXPDozJbw+HOYvK+v0WjYQZApBKKJNnBlYHrJ19a5co9tW?=
- =?us-ascii?Q?K8E1BHp/0/ZR7bt/xanbIH+oXkGGkE24LML+x3huW1QK08d0S7yndFM13j3t?=
- =?us-ascii?Q?g32QUbI1+zxoSwAr7/sdsyOb0dKeK2FRuyr7fhXSyjqJWwfSRulqCqh143nx?=
- =?us-ascii?Q?/4VtHqYLB/7kcNqaLgHhuYgpbvag7Xcg8lDJYo4U1vaSTlrw24BIqjv20ox8?=
- =?us-ascii?Q?J6ZNWOF/HOL0/m0hIO8BYP+nshKLXSROZOGotwIt2UxhfpJY2hlCgcqh7Rzs?=
- =?us-ascii?Q?c9FTwXrCnMFTi+XW+IJVXEAKo5Szsgi9wX9zEmQZmxr3Zhu5t4+HBi/XYVgd?=
- =?us-ascii?Q?KQb8AAKxdmiBkngmWSrQ0CM2xcX8pNCw3g5H7F3HFJNAKiGboiyio8VBmkry?=
- =?us-ascii?Q?jI9BSMdzKu/jArh3VDswe348gldimh10xw2N88sOnYJuRDcs/NlUSIiQDqIc?=
- =?us-ascii?Q?G3VkgmQdZpTbTdo9ZjD7bhQWXnwrlW3MSCxPGc+LYW39SsqGJSM3PPBnaLjL?=
- =?us-ascii?Q?R1Et28P6hjUjyt66W2r9WWTaLo1ADezx204EYHfAPzr1PxYw7CJgVODpSpj1?=
- =?us-ascii?Q?tcwGmGXsO7CiO5Spmetr5iaN+LvBy0e7VdoV7EjLfyFfxL2zMYJ5pu6Xm5jQ?=
- =?us-ascii?Q?ezbh/Y6GSBMaSER+NdYF8ZSJAE//FPdSt9wd0q9YRwMAZ0EI9Rs+jEbXvOM8?=
- =?us-ascii?Q?aG81LoMjliq9fRS1/HfSbHg7xK9ZpUyw/h4Rto0bMR91o/51x5JfrDHUsH3P?=
- =?us-ascii?Q?7CIswXXjv3FmWb2SPmwY+kcpVLEyGMgrHeqlJsC0L6Gujz/S+ZeTPI3cKs8+?=
- =?us-ascii?Q?i3x4Dn/xiPC75Y2wqYR/qg9WiQaqgev0DI0N0KElcQo=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=konsulko.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tFwj2LZf4TLQNNH65N7opFkGsQwhxBKDS8aHDIPcOm8=;
+        b=Nx1V9KdO5Yrw/1AStKJgg12eyjQZaE/VM2l4IUPDMCSpTpVMKRmXM0iFPUktL57Pe/
+         I3mGg6dBvaiJTbJtwP7lrCK0+R19rnLx+61KDrFPv5E8wQEabMMoJwJoFBC/KPZXem/g
+         E2ekJgj5EI4SJ4fdSSzm4kPBp+h7+IVYOwoFg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tFwj2LZf4TLQNNH65N7opFkGsQwhxBKDS8aHDIPcOm8=;
+        b=gBXiQirsQ20jti23yKHfiQR6p5C+2hvaqm/btvI6AUEmCo2fJL93dTAzbtff16PMOF
+         Wf/bfOkgzqAoXg0kRtDz1tTuYqsHFDqeUoRJb6DFOEj9gRmDWcoWkiopASq+evmhBXBZ
+         QK6NVudcrn2id+8coNLQTS7kOX2nD6aMq/7lxj4ArK4EUaRRXcQ2ggJWTwnN2H9nlsRB
+         NtOcrFk/3hLpdScVp9hJQDn2Ga3tV2+6/z3bH/kj81CH03QKAJ/cdX/6pJ01tyCH5KuB
+         NE8ATNwBS0NIun62crUaqeqX6eaPCAxdfnWrQbdbe6e3ONnDFvqgBaZLxNKsjlvmxV6+
+         JgiA==
+X-Gm-Message-State: AOAM5321+9ObRMQ9Y7HEQDoGk7PcUnx7xOe45IIHaSqgPJqHwFDD5kGB
+        l81Mt8JQ+Pl0s3/M4Ose2w9/fBCG/E0cs3vG8YRaFtZ6aYc=
+X-Google-Smtp-Source: ABdhPJw4EvQ8YAcdeno25kx2F7wcU4ii766MTfu6d3ULxpmbq85YOz8LMcEk6T+b8ZRQRDbyOIdk9NUQmpGglZn606I=
+X-Received: by 2002:a05:6e02:102f:: with SMTP id o15mr13978956ilj.142.1608501928572;
+ Sun, 20 Dec 2020 14:05:28 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c35baa68-0b7e-40c1-a6b0-08d8a532e955
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Dec 2020 22:02:15.3701
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: zm+JquOuUB8DjEifZ1Y6lkn4GdecRhKbvsSQHW/lu7LkBre/9in6XnbZlUihXMLXZ5ycyPiihI7qrLyizEGYwQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB4154
+References: <20201220015057.107246-1-maxwell.leiter@gmail.com>
+In-Reply-To: <20201220015057.107246-1-maxwell.leiter@gmail.com>
+From:   Matt Ranostay <matt.ranostay@konsulko.com>
+Date:   Sun, 20 Dec 2020 14:05:17 -0800
+Message-ID: <CAJCx=gm2hbfRePezjEh14a=DENX2dj8gc+SW8T-1NDWQY4eSTg@mail.gmail.com>
+Subject: Re: [PATCH] iio:light:apds9960 add detection for MSHW0184 ACPI device
+ in apds9960 driver
+To:     Max Leiter <maxwell.leiter@gmail.com>
+Cc:     "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
+        blaz@mxxn.io, Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi J,
-=20
->=20
-> When gate_work/ungate_work gets an error during hibern8_enter or exit,
->  ufshcd_err_handler()
->    ufshcd_scsi_block_requests()
->    ufshcd_reset_and_restore()
->      ufshcd_clear_ua_wluns() -> stuck
->    ufshcd_scsi_unblock_requests()
->=20
-> In order to avoid it, ufshcd_clear_ua_wluns() can be called per recovery
-> flows
-> such as suspend/resume, link_recovery, and error_handler.
-Not sure that suspend/resume are UAC events?
-=20
-Also the 'fixes' tag is missing.
+On Sat, Dec 19, 2020 at 5:51 PM Max Leiter <maxwell.leiter@gmail.com> wrote:
+>
+> The device is used in the Microsoft Surface Book 3 and Surface Pro 7
+>
+> Signed-off-by: Max Leiter <maxwell.leiter@gmail.com>
 
-Thanks,
-Avri
+Reviewed-by: Matt Ranostay <matt.ranostay@konsulko.com>
+
+> ---
+>  drivers/iio/light/apds9960.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> diff --git a/drivers/iio/light/apds9960.c b/drivers/iio/light/apds9960.c
+> index 9afb3fcc74e6..20719141c03a 100644
+> --- a/drivers/iio/light/apds9960.c
+> +++ b/drivers/iio/light/apds9960.c
+> @@ -8,6 +8,7 @@
+>   * TODO: gesture + proximity calib offsets
+>   */
+>
+> +#include <linux/acpi.h>
+>  #include <linux/module.h>
+>  #include <linux/init.h>
+>  #include <linux/interrupt.h>
+> @@ -1113,6 +1114,12 @@ static const struct i2c_device_id apds9960_id[] = {
+>  };
+>  MODULE_DEVICE_TABLE(i2c, apds9960_id);
+>
+> +static const struct acpi_device_id apds9960_acpi_match[] = {
+> +       { "MSHW0184" },
+> +       { }
+> +};
+> +MODULE_DEVICE_TABLE(acpi, apds9960_acpi_match);
+> +
+>  static const struct of_device_id apds9960_of_match[] = {
+>         { .compatible = "avago,apds9960" },
+>         { }
+> @@ -1124,6 +1131,7 @@ static struct i2c_driver apds9960_driver = {
+>                 .name   = APDS9960_DRV_NAME,
+>                 .of_match_table = apds9960_of_match,
+>                 .pm     = &apds9960_pm_ops,
+> +               .acpi_match_table = apds9960_acpi_match,
+>         },
+>         .probe          = apds9960_probe,
+>         .remove         = apds9960_remove,
+> --
+> 2.29.2
+>
