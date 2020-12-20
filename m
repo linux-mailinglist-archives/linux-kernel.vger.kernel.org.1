@@ -2,69 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7F62DF586
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 14:28:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 638A72DF58C
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 14:31:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727557AbgLTN1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 08:27:46 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:48568 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727427AbgLTN1o (ORCPT
+        id S1727561AbgLTNbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 08:31:13 -0500
+Received: from out28-220.mail.aliyun.com ([115.124.28.220]:38377 "EHLO
+        out28-220.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726886AbgLTNbM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 08:27:44 -0500
-Received: by mail-il1-f199.google.com with SMTP id f4so7011275ilu.15
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 05:27:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=n9Ie067/gR4fMXT4E00lmBGNgEGmIS/KXKirsqgDKdg=;
-        b=k/34hbgIuKaFz9JX1bWJ0AsQ5D/+g86JdPBXb18CiYwi1RMwUR+a+77lw1ccd2Gvx4
-         nI1uyWl2J9wB5LFO21f4QyaRREsrbCWpQG2v+e5cTludraRw3P9f2dB0+BYdz8X307WL
-         VWme7ezbEoo0EXSlwmnajjUA0DCohMNmc5OhkX4Pw3B3n+bjvE1DoEiA97HKAh+57vsF
-         5VKSBAX9sudik28KVcveYZkI21GRnEGijAdxiv5NP4CzHZTI09rQlJCxDbnGVnU67Ei0
-         xpt9ySOw+h5rFxPq6JjkJwrS7RgZ9YXADTfM2sffHxpYLgqQAPhTqTnkiSNhT+KOp3g4
-         zKBQ==
-X-Gm-Message-State: AOAM530m8OQ9qCrqrjjDwSzwe1ob9+lVWnJh/IsnycwNk09qobffCte5
-        4Rlm++8HvikYH8UqDcpylIv8cFubC7PlgLKJKbQwtuDndWRq
-X-Google-Smtp-Source: ABdhPJz0WV+bq4gWjQqAdJcKPoyN5LkRsTcO1cLvkLXZ8xk1JhB7qn+3g0G6GSBE/4x5ruMJpzGZwe6nquxbutZpUUb0aujXgxKR
+        Sun, 20 Dec 2020 08:31:12 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.0916407|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.0169022-0.00133033-0.981767;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047194;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=7;RT=7;SR=0;TI=SMTPD_---.J9MmYQd_1608471027;
+Received: from 192.168.10.152(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.J9MmYQd_1608471027)
+          by smtp.aliyun-inc.com(10.147.42.241);
+          Sun, 20 Dec 2020 21:30:28 +0800
+Subject: Re: [PATCH] hwrng: ingenic - Fix a resource leak in an error handling
+ path
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        mpm@selenic.com, herbert@gondor.apana.org.au, aric.pzqi@ingenic.com
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <20201219075207.176279-1-christophe.jaillet@wanadoo.fr>
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Message-ID: <c5bb8f9a-c4a7-7ecb-eccb-a31abc7316a2@wanyeetech.com>
+Date:   Sun, 20 Dec 2020 21:30:27 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-X-Received: by 2002:a02:8482:: with SMTP id f2mr11518809jai.93.1608470823699;
- Sun, 20 Dec 2020 05:27:03 -0800 (PST)
-Date:   Sun, 20 Dec 2020 05:27:03 -0800
-In-Reply-To: <00000000000089904d057f1e0ae0@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000014086305b6e54cfc@google.com>
-Subject: Re: general protection fault in rose_send_frame
-From:   syzbot <syzbot+7078ae989d857fe17988@syzkaller.appspotmail.com>
-To:     anmol.karan123@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        linux-hams@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, ralf@linux-mips.org,
-        syzkaller-bugs@googlegroups.com, yepeilin.cs@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201219075207.176279-1-christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+Hi Christophe,
 
-commit 3b3fd068c56e3fbea30090859216a368398e39bf
-Author: Anmol Karn <anmol.karan123@gmail.com>
-Date:   Thu Nov 19 19:10:43 2020 +0000
+On 2020/12/19 下午3:52, Christophe JAILLET wrote:
+> In case of error, we should call 'clk_disable_unprepare()' to undo a
+> previous 'clk_prepare_enable()' call, as already done in the remove
+> function.
+>
+> Fixes: 406346d22278 ("hwrng: ingenic - Add hardware TRNG for Ingenic X1830")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>   drivers/char/hw_random/ingenic-trng.c | 6 +++++-
+>   1 file changed, 5 insertions(+), 1 deletion(-)
 
-    rose: Fix Null pointer dereference in rose_send_frame()
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=139e2b9b500000
-start commit:   23ee3e4e Merge tag 'pci-v5.8-fixes-2' of git://git.kernel...
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f87a5e4232fdb267
-dashboard link: https://syzkaller.appspot.com/bug?extid=7078ae989d857fe17988
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=157e8964900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10046c54900000
+Thanks for fixing it, and apologize for my carelessness.
 
-If the result looks correct, please mark the issue as fixed by replying with:
+Tested-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
 
-#syz fix: rose: Fix Null pointer dereference in rose_send_frame()
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> diff --git a/drivers/char/hw_random/ingenic-trng.c b/drivers/char/hw_random/ingenic-trng.c
+> index 954a8411d67d..0eb80f786f4d 100644
+> --- a/drivers/char/hw_random/ingenic-trng.c
+> +++ b/drivers/char/hw_random/ingenic-trng.c
+> @@ -113,13 +113,17 @@ static int ingenic_trng_probe(struct platform_device *pdev)
+>   	ret = hwrng_register(&trng->rng);
+>   	if (ret) {
+>   		dev_err(&pdev->dev, "Failed to register hwrng\n");
+> -		return ret;
+> +		goto err_unprepare_clk;
+>   	}
+>   
+>   	platform_set_drvdata(pdev, trng);
+>   
+>   	dev_info(&pdev->dev, "Ingenic DTRNG driver registered\n");
+>   	return 0;
+> +
+> +err_unprepare_clk:
+> +	clk_disable_unprepare(trng->clk);
+> +	return ret;
+>   }
+>   
+>   static int ingenic_trng_remove(struct platform_device *pdev)
