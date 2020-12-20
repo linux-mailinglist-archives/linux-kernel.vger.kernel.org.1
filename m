@@ -2,70 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6E952DF531
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 12:26:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA67F2DF533
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 12:26:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727408AbgLTLYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 06:24:39 -0500
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:34809 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727222AbgLTLYi (ORCPT
+        id S1727437AbgLTL0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 06:26:42 -0500
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:44578 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727120AbgLTL0l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 06:24:38 -0500
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1kqwoe-003U75-NG; Sun, 20 Dec 2020 12:23:56 +0100
-Received: from dynamic-078-055-173-192.78.55.pool.telefonica.de ([78.55.173.192] helo=[192.168.1.10])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1kqwoe-003wHr-Gd; Sun, 20 Dec 2020 12:23:56 +0100
-Subject: Re: [PATCH] m68k: Enable seccomp architecture tracking
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org
-Cc:     YiFei Zhu <yifeifz2@illinois.edu>,
-        Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
-References: <20201220085141.1573113-1-geert@linux-m68k.org>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <49a17a22-c657-8e26-6c84-36ef01264c5d@physik.fu-berlin.de>
-Date:   Sun, 20 Dec 2020 12:23:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Sun, 20 Dec 2020 06:26:41 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R611e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UJ9GEf9_1608463556;
+Received: from B-D1K7ML85-0059.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0UJ9GEf9_1608463556)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 20 Dec 2020 19:25:56 +0800
+Subject: Re: [PATCH] ovl: fix dentry leak in ovl_get_redirect
+To:     Liangyan <liangyan.peng@linux.alibaba.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201218161751.234759-1-liangyan.peng@linux.alibaba.com>
+From:   Joseph Qi <joseph.qi@linux.alibaba.com>
+Message-ID: <ec73c709-656c-7e53-7a59-de9603a5bba0@linux.alibaba.com>
+Date:   Sun, 20 Dec 2020 19:25:56 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
 MIME-Version: 1.0
-In-Reply-To: <20201220085141.1573113-1-geert@linux-m68k.org>
+In-Reply-To: <20201218161751.234759-1-liangyan.peng@linux.alibaba.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 78.55.173.192
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert!
 
-On 12/20/20 9:51 AM, Geert Uytterhoeven wrote:
-> To enable seccomp constant action bitmaps, we need to have a static
-> mapping to the audit architecture and system call table size.
+
+On 12/19/20 12:17 AM, Liangyan wrote:
+> We need to lock d_parent->d_lock before dget_dlock, or this may
+> have d_lockref updated parallelly like calltrace below which will
+> cause dentry->d_lockref leak and risk a crash.
 > 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> npm-20576 [028] .... 5705749.040094:
+> [28] ovl_set_redirect+0x11c/0x310 //tmp = dget_dlock(d->d_parent);
+> [28]?  ovl_set_redirect+0x5/0x310
+> [28] ovl_rename+0x4db/0x790 [overlay]
+> [28] vfs_rename+0x6e8/0x920
+> [28] do_renameat2+0x4d6/0x560
+> [28] __x64_sys_rename+0x1c/0x20
+> [28] do_syscall_64+0x55/0x1a0
+> [28] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> npm-20574 [036] .... 5705749.040094:
+> [36] __d_lookup+0x107/0x140 //dentry->d_lockref.count++;
+> [36] lookup_fast+0xe0/0x2d0
+> [36] walk_component+0x48/0x350
+> [36] link_path_walk+0x1bf/0x650
+> [36]?  path_init+0x1f6/0x2f0
+> [36] path_lookupat+0x82/0x210
+> [36] filename_lookup+0xb8/0x1a0
+> [36]?  __audit_getname+0xa2/0xb0
+> [36]?  getname_flags+0xb9/0x1e0
+> [36]?  vfs_statx+0x73/0xe0
+> [36] vfs_statx+0x73/0xe0
+> [36] __do_sys_statx+0x3b/0x80
+> [36]?  syscall_trace_enter+0x1ae/0x2c0
+> [36] do_syscall_64+0x55/0x1a0
+> [36] entry_SYSCALL_64_
+> 
+> [   49.799059] PGD 800000061fed7067 P4D 800000061fed7067 PUD 61fec5067 PMD 0
+> [   49.799689] Oops: 0002 [#1] SMP PTI
+> [   49.800019] CPU: 2 PID: 2332 Comm: node Not tainted 4.19.24-7.20.al7.x86_64 #1
+> [   49.800678] Hardware name: Alibaba Cloud Alibaba Cloud ECS, BIOS 8a46cfe 04/01/2014
+> [   49.801380] RIP: 0010:_raw_spin_lock+0xc/0x20
+> [   49.803470] RSP: 0018:ffffac6fc5417e98 EFLAGS: 00010246
+> [   49.803949] RAX: 0000000000000000 RBX: ffff93b8da3446c0 RCX: 0000000a00000000
+> [   49.804600] RDX: 0000000000000001 RSI: 000000000000000a RDI: 0000000000000088
+> [   49.805252] RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff993cf040
+> [   49.805898] R10: ffff93b92292e580 R11: ffffd27f188a4b80 R12: 0000000000000000
+> [   49.806548] R13: 00000000ffffff9c R14: 00000000fffffffe R15: ffff93b8da3446c0
+> [   49.807200] FS:  00007ffbedffb700(0000) GS:ffff93b927880000(0000) knlGS:0000000000000000
+> [   49.807935] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   49.808461] CR2: 0000000000000088 CR3: 00000005e3f74006 CR4: 00000000003606a0
+> [   49.809113] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [   49.809758] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [   49.810410] Call Trace:
+> [   49.810653]  d_delete+0x2c/0xb0
+> [   49.810951]  vfs_rmdir+0xfd/0x120
+> [   49.811264]  do_rmdir+0x14f/0x1a0
+> [   49.811573]  do_syscall_64+0x5b/0x190
+> [   49.811917]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [   49.812385] RIP: 0033:0x7ffbf505ffd7
+> [   49.814404] RSP: 002b:00007ffbedffada8 EFLAGS: 00000297 ORIG_RAX: 0000000000000054
+> [   49.815098] RAX: ffffffffffffffda RBX: 00007ffbedffb640 RCX: 00007ffbf505ffd7
+> [   49.815744] RDX: 0000000004449700 RSI: 0000000000000000 RDI: 0000000006c8cd50
+> [   49.816394] RBP: 00007ffbedffaea0 R08: 0000000000000000 R09: 0000000000017d0b
+> [   49.817038] R10: 0000000000000000 R11: 0000000000000297 R12: 0000000000000012
+> [   49.817687] R13: 00000000072823d8 R14: 00007ffbedffb700 R15: 00000000072823d8
+> [   49.818338] Modules linked in: pvpanic cirrusfb button qemu_fw_cfg atkbd libps2 i8042
+> [   49.819052] CR2: 0000000000000088
+> [   49.819368] ---[ end trace 4e652b8aa299aa2d ]---
+> [   49.819796] RIP: 0010:_raw_spin_lock+0xc/0x20
+> [   49.821880] RSP: 0018:ffffac6fc5417e98 EFLAGS: 00010246
+> [   49.822363] RAX: 0000000000000000 RBX: ffff93b8da3446c0 RCX: 0000000a00000000
+> [   49.823008] RDX: 0000000000000001 RSI: 000000000000000a RDI: 0000000000000088
+> [   49.823658] RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff993cf040
+> [   49.825404] R10: ffff93b92292e580 R11: ffffd27f188a4b80 R12: 0000000000000000
+> [   49.827147] R13: 00000000ffffff9c R14: 00000000fffffffe R15: ffff93b8da3446c0
+> [   49.828890] FS:  00007ffbedffb700(0000) GS:ffff93b927880000(0000) knlGS:0000000000000000
+> [   49.830725] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   49.832359] CR2: 0000000000000088 CR3: 00000005e3f74006 CR4: 00000000003606a0
+> [   49.834085] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [   49.835792] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> 
+> Fixes: a6c606551141 ("ovl: redirect on rename-dir")
+> Signed-off-by: Liangyan <liangyan.peng@linux.alibaba.com>
+> Suggested-by: Joseph Qi <joseph.qi@linux.alibaba.com>
 > ---
-> Needed for CONFIG_SECCOMP_CACHE_DEBUG.
-> Note that upstream doesn't have m68k seccomp support yet.
+>  fs/overlayfs/dir.c | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+> 
+> diff --git a/fs/overlayfs/dir.c b/fs/overlayfs/dir.c
+> index 28a075b5f5b2..9831e7046038 100644
+> --- a/fs/overlayfs/dir.c
+> +++ b/fs/overlayfs/dir.c
+> @@ -973,6 +973,7 @@ static char *ovl_get_redirect(struct dentry *dentry, bool abs_redirect)
+>  	for (d = dget(dentry); !IS_ROOT(d);) {
+>  		const char *name;
+>  		int thislen;
+> +		struct dentry *parent = NULL;
+>  
+>  		spin_lock(&d->d_lock);
+>  		name = ovl_dentry_get_redirect(d);
+> @@ -992,7 +993,26 @@ static char *ovl_get_redirect(struct dentry *dentry, bool abs_redirect)
+>  
+>  		buflen -= thislen;
+>  		memcpy(&buf[buflen], name, thislen);
+> +		parent = d->d_parent;
+> +		if (unlikely(!spin_trylock(&parent->d_lock))) {
+> +			rcu_read_lock();
+> +			spin_unlock(&d->d_lock);
+> +again:
+> +			parent = READ_ONCE(d->d_parent);
+> +			spin_lock(&parent->d_lock);
+> +			if (unlikely(parent != dentry->d_parent)) {
+> +				spin_unlock(&parent->d_lock);
+> +				goto again;
+> +			}
+> +			rcu_read_unlock();
+> +			if (parent != d)
+> +				spin_lock_nested(&d->d_lock, DENTRY_D_LOCK_NESTED);
+> +			else
+> +				parent = NULL;
 
-Have we added SECCOMP support for m68k to the kernel yet?
+It seems that parent can't be NULL since d is not root.
+So the above logic can be simplified with:
+spin_lock(&d->d_lock);
 
-It's actually something I was hoping to do over the holidays ;-).
+> +		}
+>  		tmp = dget_dlock(d->d_parent);
 
-Adrian
+Use parent directly.
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+Joseph
 
+> +		if (parent)
+> +			spin_unlock(&parent->d_lock);
+>  		spin_unlock(&d->d_lock);
+>  
+>  		dput(d);
+> 
