@@ -2,89 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F17AA2DF6C5
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 21:16:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B32282DF921
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 07:07:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728306AbgLTUPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 15:15:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48314 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727130AbgLTUPb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 15:15:31 -0500
-X-Gm-Message-State: AOAM533yyAsNtl8Ei61tZzJI5+UujS+sfIGzeZFcSyKqHmo/mreOabIY
-        jeA11DFQdeu6Yx8zt9HcSoz5DXrYqRjNCbcW3MQ=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608495291;
-        bh=7am4UsebiBgtGgl0iply8PUli5JbFVpWeHcirmVJ4u4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=StgPQ6zrnn5S/spd4KvWmpEukOpLOh0NRZ5plvtwMjcUOoXUgiyaLVa0X/TS86PWc
-         +47G8JVz2G4jmNU11GFyYCCsWF3IhxITEBPCBF+/sxbva8haAk6ojdoioxF32JwDtX
-         VGuqb3qRpCiyojjYrzV7T7JeTk8coWcApc8euDwchkUzHVU28XBgA4Ieow1E8tIsfQ
-         Z4IDoftQfCz6N12SSMRR0bd9qEQ8BQN+SDGYSQD0BunecRmwqKNamXg9iPJhH1DCG3
-         EVa0VDd+Z3nSBMmnV8m9QEPmDEejrZ6eu9b5FK6IVPy140c9HkmJw45EpN3cml62j/
-         vyfRmGB/73xqg==
-X-Google-Smtp-Source: ABdhPJyxGVi+NvR0d2WpjBSmnsgLFl1g9pum5y/F6l8abjXUDtthBIX9EJc80tbb3D+jR+5cbd9U6xLgNSI4XGzy5VU=
-X-Received: by 2002:a05:6830:1e14:: with SMTP id s20mr9864557otr.210.1608495290991;
- Sun, 20 Dec 2020 12:14:50 -0800 (PST)
+        id S1728352AbgLUGG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 01:06:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725984AbgLUGG0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 01:06:26 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FED2C0613D3
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 22:05:46 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id lb18so5544356pjb.5
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 22:05:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:subject:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/5I+IwRWc6yQaXHGrTaY4QXvxkqMztX8GLLvJNaqk9E=;
+        b=Hd4HuEMllJJEoa/SS2OsonS1BJlQfxzuBz16/REMsf8ufv/5+RuJz4IKMXzCdhBNU/
+         qFHd1Fx4AZPQwQjT1xziamasIjEYoqcs4AwD8Jkpje4Lk/51aCN0gG/ClLqArUSB8khu
+         KdV7p7EyTDEXGcB4VL3G6aXCxUzOIrPQuki4NFfBXn/8zOn9eekzWbrncwFtEOXetnGm
+         sIO6cAdW03LU3RVCnCdMhC3374WDNDxhZkXj5VWpbJjXA9YXNaWxByCeUik3R+OfVXdj
+         1CmhqDSYBAPQ7kVBhuonjrU9socBsNCavOJqs4R73co839NcoXjDJnvMfKbIWXekiC1M
+         uK2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/5I+IwRWc6yQaXHGrTaY4QXvxkqMztX8GLLvJNaqk9E=;
+        b=Firf8fYX2iunX/u/9FKMlVTUjqD64iG9sRN1zcymqR7WNoLQFUaNZMXsQLe+Ui+sDH
+         oSN4cQ9Ok5OMDg1UYeOyesKMIn/cH8Pe6bOkXxdm9EHVvGm7dh7xfyv9jVnHKoEAYPh8
+         SLZDJmrqoKb7sK6FMMpvgQ23CLxGVmQdC7NZtM7L3Hq9tKN+I/vgx3hWZXCV9ZgPQ/Pf
+         DLa24H5wFXMqWBACUupwjedGyDmav8wCE8DZkqNcDb2ImB4kwgZbwuGjSHxAsmd+wmzb
+         nxt/H/IXlwWAIecHB72kQNvd/9s61CE3wFpLBMW3QNMZndReImpuq99u+D8gWgP1vmHn
+         dfzg==
+X-Gm-Message-State: AOAM530jlxmXFODvsfQkJwQtXdZjXlVVPqukiiReu66/8NP/Ta//xh+H
+        knW1CAzjQjhy32vWVpWF66v2Fqa3o1unWQ==
+X-Google-Smtp-Source: ABdhPJw7V/aqh2FEI4h4RrbwnB+ZyOTeaGsRVfub7RkBdm2z1yqOnvyQl6xkyxFM37roY3x4dYhExg==
+X-Received: by 2002:a17:902:7c0a:b029:da:62c8:90cb with SMTP id x10-20020a1709027c0ab02900da62c890cbmr13521856pll.59.1608497223942;
+        Sun, 20 Dec 2020 12:47:03 -0800 (PST)
+Received: from hermes.local (204-195-22-127.wavecable.com. [204.195.22.127])
+        by smtp.gmail.com with ESMTPSA id h24sm14687489pfq.13.2020.12.20.12.47.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Dec 2020 12:47:03 -0800 (PST)
+Date:   Sun, 20 Dec 2020 12:46:42 -0800
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [ANNOUNCE] iproute2-5.10
+Message-ID: <20201220124642.53cb4311@hermes.local>
 MIME-Version: 1.0
-References: <20201220095830.17843-1-hca@linux.ibm.com> <CAK8P3a1NPMbKnuZ7-b0qbVVtLHT2YG6eEtzKUOf4AZkcu5VO4g@mail.gmail.com>
- <CA+FuTSeKfSouk7SV0cfuZ122J3fAc_ddy_a9unyCRq4F7f6+pw@mail.gmail.com> <CAHk-=wjXFfeCHdhAwH8ciXhMJwAc3dOnCAug4G8=eb=+zFnkTQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wjXFfeCHdhAwH8ciXhMJwAc3dOnCAug4G8=eb=+zFnkTQ@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Sun, 20 Dec 2020 21:14:34 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a37qym_RKvCcKn1o53qBuA1gEk4FwPJ644LcPSJW-DrfA@mail.gmail.com>
-Message-ID: <CAK8P3a37qym_RKvCcKn1o53qBuA1gEk4FwPJ644LcPSJW-DrfA@mail.gmail.com>
-Subject: Re: [PATCH] epoll: fix compat syscall wire up of epoll_pwait2
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Anvin <hpa@zytor.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 20, 2020 at 7:51 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Sun, Dec 20, 2020 at 10:22 AM Willem de Bruijn
-> <willemdebruijn.kernel@gmail.com> wrote:
-> >
-> > Slightly tangential, it's not immediately clear to me why in
-> > arch/x86/entry/syscalls/syscall_32.tbl epoll_pwait does not need a
-> > compat entry, unlike on other architectures and unlike signalfd.
->
-> Hmm. Good question. That looks like a bug to me. Probably nobody
-> noticed because it's so rarely used.
->
-> Or maybe I'm missing something too.
->
-> Adding x86 entry code people to the participants.
+Just in time for the holidays, new iproute2!
 
-The sigset_t argument is actually compatible between x86-32 and x86-64
-because
+This update is smaller than usual, not a lot of new features.
+It does NOT include libbpf, that will be merged in 5.11 (iproute2-next).
 
-- The bits are in the same order on little-endian machines
-- _NSIG is the same as _COMPAT_NSIG (unlike old sparc kernels)
-- accessing a 64-bit with 32-bit alignment is always allowed on x86
+Download:
+    https://www.kernel.org/pub/linux/utils/net/iproute2/iproute2-5.10.0.tar.gz
 
-All other architectures with compat mode support big-endian
-code at least as an option, so they have to use the compat
-version.
+Repository for upcoming release:
+    git://git.kernel.org/pub/scm/network/iproute2/iproute2.git
 
-         Arnd
+And future release (net-next):
+    git://git.kernel.org/pub/scm/network/iproute2/iproute2-next.git
+
+Thanks for all the contributions.
+
+Report problems (or enhancements) to the netdev@vger.kernel.org mailing list.
+
+---
+Andrea Claudi (4):
+      man: tc-flower: fix manpage
+      devlink: fix memory leak in cmd_dev_flash()
+      tc: pedit: fix memory leak in print_pedit
+      ss: mptcp: fix add_addr_accepted stat print
+
+Antony Antony (2):
+      ip xfrm: support printing XFRMA_SET_MARK_MASK attribute in states
+      ip xfrm: support setting XFRMA_SET_MARK_MASK attribute in states
+
+Ciara Loftus (1):
+      ss: add support for xdp statistics
+
+David Ahern (5):
+      Update kernel headers
+      Update kernel headers
+      Update kernel headers
+      Update kernel headers
+      Update kernel headers
+
+Guillaume Nault (5):
+      m_vlan: add pop_eth and push_eth actions
+      m_mpls: add mac_push action
+      m_mpls: test the 'mac_push' action after 'modify'
+      tc-vlan: fix help and error message strings
+      tc-mpls: fix manpage example and help message string
+
+Hoang Le (1):
+      tipc: support 128bit node identity for peer removing
+
+Jacob Keller (2):
+      devlink: support setting the overwrite mask attribute
+      devlink: display elapsed time during flash update
+
+Jakub Kicinski (1):
+      ip: promote missed packets to the -s row
+
+Jiri Pirko (1):
+      devlink: Add health reporter test command support
+
+Johannes Berg (5):
+      libnetlink: add rtattr_for_each_nested() iteration macro
+      libnetlink: add nl_print_policy() helper
+      genl: ctrl: support dumping netlink policy
+      genl: ctrl: print op -> policy idx mapping
+      libnetlink: define __aligned conditionally
+
+Luca Boccassi (2):
+      ip/netns: use flock when setting up /run/netns
+      tc/mqprio: json-ify output
+
+Nikolay Aleksandrov (6):
+      bridge: mdb: add support for source address
+      bridge: mdb: print fast_leave flag
+      bridge: mdb: show igmpv3/mldv2 flags
+      bridge: mdb: print filter mode when available
+      bridge: mdb: print source list when available
+      bridge: mdb: print protocol when available
+
+Parav Pandit (2):
+      devlink: Show external port attribute
+      devlink: Show controller number of a devlink port
+
+Roopa Prabhu (1):
+      iplink: add support for protodown reason
+
+Stephen Hemminger (15):
+      v5.9.0
+      uapi: updates from 5.10-rc1
+      tc/m_gate: fix spelling errors
+      man: fix spelling errors
+      rdma: fix spelling error in comment
+      uapi: update kernel headers from 5.10-rc2
+      bridge: report correct version
+      devlink: fix uninitialized warning
+      bridge: fix string length warning
+      tc: fix compiler warnings in ip6 pedit
+      misc: fix compiler warning in ifstat and nstat
+      f_u32: fix compiler gcc-10 compiler warning
+      uapi: update devlink.h
+      uapi: update devlink.h
+      uapi: merge in change to bpf.h
+
+Tuong Lien (2):
+      tipc: add option to set master key for encryption
+      tipc: add option to set rekeying for encryption
+
+Wei Wang (1):
+      iproute2: ss: add support to expose various inet sockopts
+
