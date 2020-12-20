@@ -2,112 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE86E2DF5A5
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 15:27:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 342982DF5AC
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 15:32:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727654AbgLTOYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 09:24:41 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:37896 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727489AbgLTOYj (ORCPT
+        id S1727629AbgLTO3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 09:29:10 -0500
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:46953 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727487AbgLTO3J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 09:24:39 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-239--4zdmDidPLOfipD4dYIEDA-1; Sun, 20 Dec 2020 14:23:00 +0000
-X-MC-Unique: -4zdmDidPLOfipD4dYIEDA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Sun, 20 Dec 2020 14:22:57 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Sun, 20 Dec 2020 14:22:57 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Julian Calaby' <julian.calaby@gmail.com>,
-        Romain Dolbeau <romain@dolbeau.org>
-CC:     Sam Ravnborg <sam@ravnborg.org>,
-        David S Miller <davem@davemloft.net>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        Andreas Larsson <andreas@gaisler.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Denis Efremov <efremov@linux.com>,
-        "Dmitry Safonov" <0x7f454c46@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        "Mark Rutland" <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Pekka Enberg" <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Stephen Rothwell" <sfr@canb.auug.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Will Deacon" <will@kernel.org>, Willy Tarreau <w@1wt.eu>,
-        LKML <linux-kernel@vger.kernel.org>,
-        debian-sparc <debian-sparc@lists.debian.org>,
-        "gentoo-sparc@lists.gentoo.org" <gentoo-sparc@lists.gentoo.org>,
-        "info@temlib.org" <info@temlib.org>
-Subject: RE: [RFC PATCH 0/13] sparc32: sunset sun4m and sun4d
-Thread-Topic: [RFC PATCH 0/13] sparc32: sunset sun4m and sun4d
-Thread-Index: AQHW1q4JwyC+PXoQ40294z1p+0W3HaoAB2cA
-Date:   Sun, 20 Dec 2020 14:22:57 +0000
-Message-ID: <1afa7f144a154d1597212f026a329cc8@AcuMS.aculab.com>
-References: <20201218184347.2180772-1-sam@ravnborg.org>
- <20201219214054.GB3132151@ravnborg.org>
- <CADuzgbqBx7cajLg5-9+bqoUvHV4heoNjBH-cakU5YGV549Gdxg@mail.gmail.com>
- <CAGRGNgUxGY3wz5sDVJqO8hB=yw=-symr0tGXQeQ1ovqwb6-e9w@mail.gmail.com>
-In-Reply-To: <CAGRGNgUxGY3wz5sDVJqO8hB=yw=-symr0tGXQeQ1ovqwb6-e9w@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sun, 20 Dec 2020 09:29:09 -0500
+Received: by mail-ot1-f54.google.com with SMTP id w3so6539573otp.13
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 06:28:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KF5+wP+7KlD78JIfhqBLESbVDiU8JmERcp1ag/IZslk=;
+        b=Aykkh7B7s3nw03R70wvLLmfVbfGPVy0rSoZcckLdeAFT4GQbHQ3wR13sCIWw0Hy9Ox
+         Eer3zU8Rq1ci+HxAuV7BvQyi99MG6INsruiWEXrJZNWbg3FaJZbUZLAgYsL8EXL3xopG
+         JrTrwnbS4mff50ZfU0qfubaMRDjX5W/eDbn5gcP2jx+7fB15Q3qWN6bVIAwCwk9T2aFD
+         zlPgObmw46Qr+mjolIAxAtxupWHA8r4opJWa8g5UqFmb5i3vjSBspN+vfWQSH9/6GOLX
+         UNvN9rFY11Kq/XGnJkRGBFG+75nrmxSwJ20xO9YWmhQ6unBE8PevbGGXkPHj56fK5m4+
+         D/eg==
+X-Gm-Message-State: AOAM5328vziwRkhwwVchCF7khS7AHuftjkFgaZWal1R5oHjTGBKU6fHA
+        E0M9Rlzz/ZbT6Hf7arTHRb2Tz7j6xz1pPRsi1Eg=
+X-Google-Smtp-Source: ABdhPJzMK1uiaAN7IbtSoE6qYewgu28eYIxsdob3rWrrC4BIV5Q5HiKpvdwVtEf4WT6Q17Ycwzsh+IL/FcdurzDUWSQ=
+X-Received: by 2002:a9d:2203:: with SMTP id o3mr9021505ota.107.1608474508291;
+ Sun, 20 Dec 2020 06:28:28 -0800 (PST)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+References: <20201220085141.1573113-1-geert@linux-m68k.org> <49a17a22-c657-8e26-6c84-36ef01264c5d@physik.fu-berlin.de>
+In-Reply-To: <49a17a22-c657-8e26-6c84-36ef01264c5d@physik.fu-berlin.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Sun, 20 Dec 2020 15:28:17 +0100
+Message-ID: <CAMuHMdUY5OY2s63AJE-EUVLGTM_z9st3iupQv_pWTt84tvN1hQ@mail.gmail.com>
+Subject: Re: [PATCH] m68k: Enable seccomp architecture tracking
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogSnVsaWFuIENhbGFieQ0KPiBTZW50OiAyMCBEZWNlbWJlciAyMDIwIDA4OjU1DQo+IA0K
-PiBPbiBTdW4sIERlYyAyMCwgMjAyMCBhdCA2OjQ2IFBNIFJvbWFpbiBEb2xiZWF1IDxyb21haW5A
-ZG9sYmVhdS5vcmc+IHdyb3RlOg0KPiA+DQo+ID4gTGUgc2FtLiAxOSBkw6ljLiAyMDIwIMOgIDIy
-OjQxLCBTYW0gUmF2bmJvcmcgPHNhbUByYXZuYm9yZy5vcmc+IGEgw6ljcml0IDoNCj4gPiA+IEFu
-b3RoZXIgc2FpZCB0aGF0IGl0IHdvdWxkIGJlIGEgc2hhbWUgdG8gc3Vuc2V0IHN1bjRtIGFuZCBz
-dW40ZCBiZWNhdXNlDQo+ID4gPiB0aGVyZSBhcmUgc28gbWFueSBtYWNoaW5lcyBhcm91bmQsIGFu
-ZCBuZXRic2QgaXMgYWxzbyBhY3RpdmUgb24gdGhlDQo+ID4gPiBzcGFyYzMyIGFyZWEuDQoNClRo
-ZSBhZHZhbnRhZ2Ugb2YgbmV0YnNkIGlzIHRoYXQgdGhlIGJ1aWxkIGdpdmVzIHlvdSBhIGtlcm5l
-bCBhbmQgdXNlcnNwYWNlDQpmcm9tIHRoZSBzYW1lIHNvdXJjZSB0cmVlIGFuZCBpdCBpcyBkZXNp
-Z25lZCB0byBjcm9zcyBidWlsZC4NCkV2ZW4gdGhlIGNvbXBpbGVycyBnZXQgYnVpbHQgLSBzbyBh
-bGwgeW91IG5lZWQgaXMgYSBuYXRpdmUgY29tcGlsZXINCnRoYXQgd2lsbCBjb21waWxlIHRoZSAo
-cHJvYmFibHkgc2xpZ2h0bHkgb2xkZXIpIHZlcnNpb24gb2YgZ2NjLg0KVGhpcyB1c2VkIHRvIGJl
-IHByb2JsZW1hdGljIGJlY2F1c2UgZ2NjIHNvdXJjZXMgdGVuZGVkIHRvIHVzZSBnY2Mtb25seQ0K
-ZmVhdHVyZXMgKHdoaWNoIGhhdmUgYmVlbiBkZXByZWNhdGVkKS4NCg0KVGhlIHVzZXJzcGFjZSB3
-aWxsIGFsc28gYmUgYSBsb3QgbGVzcyBibG9hdGVkIHRoYW4gYSB0eXBpY2FsIExpbnV4LA0KYnV0
-IG1vcmUgY29tcGxldGUgdGhhbiB0aGUgJ2J1c3lib3gnIHRvb2xzIG9mdGVuIHVzZWQgb24gc21h
-bGwvZW1iZWRkZWQNCkxpbnV4IHN5c3RlbXMuDQoNCj4gPiBZZXMsIHRob3NlIHdlcmUgcGxlbnRp
-ZnVsIGJhY2sgaW4gdGhlIGRheSBhbmQgdGhlcmUncyBzdGlsbCBxdWl0ZSBhIGZldyBhcm91bmQu
-DQo+IA0KPiBJIGhhdmUgdGhyZWU6IHR3byBTcGFyY1N0YXRpb24gMTBzIGFuZCBhIFNwYXJjU3Rh
-dGlvbiBMWC4NCj4gDQo+IElmIEkgd2FudCB0byBydW4gdGhlbSwgYXNzdW1pbmcgdGhlIGhhcmR3
-YXJlIHN0aWxsIHdvcmtzLCBJIG5lZWQgdG8NCj4gbmV0Ym9vdCB0aGVtIGFzIEkgY2Fubm90IGZp
-bmQgd29ya2luZywgY29tcGF0aWJsZSBIRERzIGZvciB0aGVtIGFzDQo+IGV2ZXJ5dGhpbmcgaGFz
-IHN3aXRjaGVkIHRvIFNBVEEgb3IgU0FTLg0KDQpJIHRyYXNoZWQgdGhlIFBTVSBvbiBteSBzdW4z
-IHRyeWluZyB0byBnZXQgbmV0Ym9vdCB0byB3b3JrLg0KVGhlIG1haW4gcHJvYmxlbSBzZWVtZWQg
-dG8gYmUgdGhhdCB0aGUgc3dpdGNoaW5nIGZldCB3YXNuJ3QNCmFjdHVhbGx5IHJhdGVkIGZvciAy
-NDB2IGlucHV0ISAobmVlZHMgdG8gYmUgYSA0MDB2IGRldmljZSkuDQoNCkkgbmV2ZXIgZGlkIGdl
-dCBhcm91bmQgdG8gY29ubmVjdGluZyBhbiBBVFggcHN1IHVwIHRvIHRoZSBjb25uZWN0b3IuDQoN
-CglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwg
-TW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzog
-MTM5NzM4NiAoV2FsZXMpDQo=
+Hi Adrian,
 
+On Sun, Dec 20, 2020 at 12:24 PM John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
+> On 12/20/20 9:51 AM, Geert Uytterhoeven wrote:
+> > To enable seccomp constant action bitmaps, we need to have a static
+> > mapping to the audit architecture and system call table size.
+> >
+> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > ---
+> > Needed for CONFIG_SECCOMP_CACHE_DEBUG.
+> > Note that upstream doesn't have m68k seccomp support yet.
+>
+> Have we added SECCOMP support for m68k to the kernel yet?
+
+No, but I have applied locally the patches floating on the list...
+
+> It's actually something I was hoping to do over the holidays ;-).
+
+Happy to hear that!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
