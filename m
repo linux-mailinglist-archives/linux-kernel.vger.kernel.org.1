@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5260A2DF379
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 04:52:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A650E2DF37F
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 05:00:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727109AbgLTDwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 22:52:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35436 "EHLO
+        id S1727072AbgLTD7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 22:59:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726217AbgLTDwf (ORCPT
+        with ESMTP id S1726217AbgLTD7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 22:52:35 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE629C0613CF
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 19:51:51 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id lt17so8904145ejb.3
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 19:51:51 -0800 (PST)
+        Sat, 19 Dec 2020 22:59:48 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22A86C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 19:59:02 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id b73so6357159edf.13
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 19:59:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=WEt+jTrm0BdEnBPIQup/rX1s+V0mK53Gdb2FrPCFsYo=;
-        b=Tf20zmccODfBV22C2IWo1MJveshVVoQX7gSlY6eh4elD8rgAMKWdVABLGnCdC434dk
-         5NgWJ4vBI73VmBiWZPePG+0tqGHK+NuwOZ7K9+k52EkKhreb/Ex07crk9j9uM5mLJKZE
-         xi3cySAQpY7vhaMILuGVgprhW5FPe0f1fAgZpkDXVHVuM9XYw95YHSGZ6vkmzXF1lg/8
-         1GGK4Qgw56otpT8CqE4ahflb3bMIxyRDF2K0L6N0yjT32BsOS1uSFJ4r4zPOt2EqjjQw
-         G7IJs+6PGKh2loB7XU4TLjqWbln2XUJPQS8o9yMx2ZWY9tNmMbpy3KLKMs4uOxV/EEr7
-         A8gA==
+        bh=CpVG5+20fZuuKagS75ftPUVVQHYk7FTwghfVPwE69Rk=;
+        b=iqLCHTe8dsoR4Br8dJPTdUMwqhQuGfeQ00KTAae6kgLeU+QQ+ftEZxTWx6shQ+76wQ
+         RcssaUjRZdn7yUFfeD0BmJ8f2hIK7fKYl8mE3I8THpspJbonFMxTUSC19jLV3rZgy4VV
+         ia0sNASgslmNoOaKvBz6FMtan5/LemVhhjBi5UCBDEBv+3drhaOd1KDTmO0aBZvUCY55
+         duQXZPn99pxAPHU020eqJVeltb5/6B5a4aaWBytMKSdJvoWGxdF70yC7xzzm5e1nTpXy
+         3ZaDcM4Xhguop+OWzeiPBBvjlrOnwjcdGYW1jqFkQcSAsWHgtYZjiiXKCeKMVBV9friJ
+         +IDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=WEt+jTrm0BdEnBPIQup/rX1s+V0mK53Gdb2FrPCFsYo=;
-        b=AC5YQiKFZjiCEKjDaIb92FXJc/ecnhQ5Xdw1sZxlu8CZzVQ5pGKfSUN/y6qK+n03U0
-         2NcyrG81s6pcguuraMEeMLyrQcS0piXkGuzQ6W/4x2wLcsI3cxuPRLVkCqLkVVorq1Zr
-         wqszMriLFb6iWsuyUcoiCR+kphGJ0naIzaFfcbY2mvTpJWh5TdITXm6TIzt5MCqBDf9N
-         9/kDr8jz1cexMNGvddnpRVGWFJ6Xkr0fRbp0Kiz26Z9OPSpcZ+gznY0jPG9ELDQvcfWX
-         tvD2zITaTjnjDmvf+Bu37u4hTaEsme1b/7ryiw/j5gVRfv3Yf92XjXDPt+UxZUPCpCDh
-         zUGA==
-X-Gm-Message-State: AOAM531LiP9TGfkygUw2gct27Jo54M2uxqQPOFYUtd/J9mGQ/lUB3b2Q
-        LraaAVAxz+X6YmcG3sm9WQvgB5nOD0vhTeouiUkwDA==
-X-Google-Smtp-Source: ABdhPJwAJ+XW0irEifTk3iKfKaOHbh43eetocpcWbMAxYd6LwiMKa8RtgneLvGCU8G2q46Q7C/WsWYikgUawHZ9obFU=
-X-Received: by 2002:a17:906:4443:: with SMTP id i3mr8896466ejp.133.1608436310399;
- Sat, 19 Dec 2020 19:51:50 -0800 (PST)
+        bh=CpVG5+20fZuuKagS75ftPUVVQHYk7FTwghfVPwE69Rk=;
+        b=c1Qu4shBXlv6Mk3qCqPVQ5PQlIBh27EeayGXdSGfgncn1V4m7R6MVnplMR2rmSsstM
+         bD73aIZzLW+beFkO5XpAEK7ah07646HH5q5F9MdlFLbBfXiMo3V5XvcV0aQdxKB6vsRx
+         EkRey0cxCFJbrcikqlutDVsAQzSOKoq7RvErUYmQuKNZ9/QNbcRkmdlXkJ0v9E9a3n8y
+         H6pvo54jlCtzny4tMot0h4xcpehfQsIzgDyCL1GWKWQFMHmbAEjN5PZ6OD/zEk30v62B
+         aH4JplU2+47uT55XAybcWq45Adj0mrvIZbVmwdUaNdS8zpW9cQFfGbWtfFYF9txzSLmB
+         23Pw==
+X-Gm-Message-State: AOAM530HCipmaLxgNdj6CKQVhClgrHLBI+ynUL1ZZC+YTVewnFDUixuR
+        7cweIrrMd0KNzw4qnNW0DzwhMmp6kIbavyRNVKSFHQ==
+X-Google-Smtp-Source: ABdhPJxfdM0tqyOlmoBkQHv6Y1wnQXSVD+wdrjhwZvEh0WHqxNtjxIW4qrByHs5f/U4gq9K394wFaqeR1zar6yaqOms=
+X-Received: by 2002:aa7:d75a:: with SMTP id a26mr10759019eds.230.1608436740594;
+ Sat, 19 Dec 2020 19:59:00 -0800 (PST)
 MIME-Version: 1.0
-References: <20201219125344.671832095@linuxfoundation.org>
-In-Reply-To: <20201219125344.671832095@linuxfoundation.org>
+References: <20201219125341.384025953@linuxfoundation.org>
+In-Reply-To: <20201219125341.384025953@linuxfoundation.org>
 From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sun, 20 Dec 2020 09:21:39 +0530
-Message-ID: <CA+G9fYusU=a==UJKY5ZFq16SCR_XJ6u4rYORr7hvyVCZpmkPVA@mail.gmail.com>
-Subject: Re: [PATCH 5.9 00/49] 5.9.16-rc1 review
+Date:   Sun, 20 Dec 2020 09:28:49 +0530
+Message-ID: <CA+G9fYsHWVvU9XG2vWhuUaKt2wgsrCP9=ohHv=DOnok4NmiDfA@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/34] 5.4.85-rc1 review
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     open list <linux-kernel@vger.kernel.org>,
         Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
@@ -65,17 +65,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 19 Dec 2020 at 18:28, Greg Kroah-Hartman
+On Sat, 19 Dec 2020 at 18:33, Greg Kroah-Hartman
 <gregkh@linuxfoundation.org> wrote:
 >
-> ------------------
-> Note, I would like to make this the past, or next-to-last 5.9.y kernel
-> to be released.  If anyone knows of any reason they can not move to the
-> 5.10.y kernel now, please let me know!
-> ------------------
->
-> This is the start of the stable review cycle for the 5.9.16 release.
-> There are 49 patches in this series, all will be posted as a response
+> This is the start of the stable review cycle for the 5.4.85 release.
+> There are 34 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 >
@@ -84,16 +78,15 @@ On Sat, 19 Dec 2020 at 18:28, Greg Kroah-Hartman
 >
 > The whole patch series can be found in one patch at:
 >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.9.16-rc1.gz
+5.4.85-rc1.gz
 > or in the git tree and branch at:
 >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.9.y
+-rc.git linux-5.4.y
 > and the diffstat can be found below.
 >
 > thanks,
 >
 > greg k-h
-
 
 Results from Linaro=E2=80=99s test farm.
 No regressions on arm64, arm, x86_64, and i386.
@@ -103,21 +96,22 @@ Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 Summary
 ------------------------------------------------------------------------
 
-kernel: 5.9.16-rc1
-git repo: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-git branch: linux-5.9.y
-git commit: 345f3d037fc5bdbbc65a33c917192261fdd58393
-git describe: v5.9.14-156-g345f3d037fc5
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.9.=
-y/build/v5.9.14-156-g345f3d037fc5
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.9.=
-y/build/v5.9.15-50-g345f3d037fc5
+kernel: 5.4.85-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.4.y
+git commit: bcf35e05a52636bd982a253c1ed928d3b128a332
+git describe: v5.4.84-35-gbcf35e05a526
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
+y/build/v5.4.83-72-gbcf35e05a526
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
+y/build/v5.4.84-35-gbcf35e05a526
 
-No regressions (compared to build v5.9.14-106-g609d95a95925)
+No regressions (compared to build v5.4.83-37-gfbaf54ae613a)
 
-No fixes (compared to build v5.9.14-106-g609d95a95925)
+No fixes (compared to build v5.4.83-37-gfbaf54ae613a)
 
-Ran 57227 total tests in the following environments and test suites.
+Ran 45558 total tests in the following environments and test suites.
 
 Environments
 --------------
@@ -140,7 +134,6 @@ Environments
 - qemu-arm64-kasan
 - qemu-arm-clang
 - qemu_i386
-- qemu-i386-clang
 - qemu_x86_64
 - qemu-x86_64-clang
 - qemu_x86_64-compat
@@ -151,6 +144,7 @@ Environments
 - sh
 - sparc
 - x15
+- x15
 - x86
 - x86-kasan
 
@@ -158,12 +152,10 @@ Test Suites
 -----------
 * build
 * fwts
-* igt-gpu-tools
 * install-android-platform-tools-r2600
 * kselftest
 * kselftest-vsyscall-mode-native
 * kselftest-vsyscall-mode-none
-* kunit
 * kvm-unit-tests
 * libhugetlbfs
 * linux-log-parser
@@ -198,7 +190,6 @@ Test Suites
 * rcutorture
 * v4l2-compliance
 
-
---
+--=20
 Linaro LKFT
 https://lkft.linaro.org
