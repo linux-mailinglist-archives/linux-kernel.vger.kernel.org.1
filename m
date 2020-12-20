@@ -2,87 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA1602DF59A
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 15:04:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA8C2DF59F
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 15:17:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727512AbgLTN7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 08:59:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25208 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726467AbgLTN7h (ORCPT
+        id S1727582AbgLTOP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 09:15:58 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:49800 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727251AbgLTOP6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 08:59:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608472690;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ygmL3q/5ll9cPmj4O5J98mOLWYORoXLNBSNGUyVxYN4=;
-        b=HtqpMG6PU5CaStv9KQICKgogecGqQfrsaiJdAWMIvEcfil7bM4pFQJHTprfQPyJdD8zhsY
-        7yk1ANaftS713jURmCImMI4kkqMaUTN+Rckf08a6s4FxWHDUkSFD7Gq6BAfdH8DaP2fwqX
-        jFpnlJvrz7NMFYx4J8zYJsl8HimZTzw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-274-qLGM88QXPemeFrVfmyVfEA-1; Sun, 20 Dec 2020 08:58:08 -0500
-X-MC-Unique: qLGM88QXPemeFrVfmyVfEA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E75BF1842141;
-        Sun, 20 Dec 2020 13:58:06 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.9])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 141E960C61;
-        Sun, 20 Dec 2020 13:58:04 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Sun, 20 Dec 2020 14:58:06 +0100 (CET)
-Date:   Sun, 20 Dec 2020 14:58:03 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>
-Subject: Re: [RFC] exit: do exit_task_work() before shooting off mm
-Message-ID: <20201220135803.GA16470@redhat.com>
-References: <abab9af4e0d26358538a45a2826650e9cefd2924.1606961931.git.asml.silence@gmail.com>
- <20201208013722.GG3579531@ZenIV.linux.org.uk>
- <ce5be208-99eb-f7bd-e602-9361008ff83c@gmail.com>
+        Sun, 20 Dec 2020 09:15:58 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id DB4D3593;
+        Sun, 20 Dec 2020 15:15:14 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1608473715;
+        bh=mtycxV6Yp4+99KCEYE4NN9LxWCUweyK93tCjkQpZ3Q0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ldC7/1MBVBBf6A577AkoHnxnowXtRmaSLS7nCdYIOzGW6cyZhK8+uflrNoWXRTP2r
+         qZabN3O9JiNuHxdgOHlrlJRpgccl+xhO/zSoy61G9GSIrzbN0n4sWRCafD+l5Z39it
+         y+JT5Z3moHHqhnV08Bv/9ird34QYo1IROYY2KuLk=
+Date:   Sun, 20 Dec 2020 16:15:07 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     linux-media@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
+        syzbot <syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: [PATCH 1/1] v4l: ioctl: Fix memory leak in video_usercopy
+Message-ID: <X99cazC7wzN8N9Vo@pendragon.ideasonboard.com>
+References: <20201220110651.13432-1-sakari.ailus@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ce5be208-99eb-f7bd-e602-9361008ff83c@gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20201220110651.13432-1-sakari.ailus@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/20, Pavel Begunkov wrote:
->
-> On 08/12/2020 01:37, Al Viro wrote:
-> > On Thu, Dec 03, 2020 at 02:30:46AM +0000, Pavel Begunkov wrote:
-> >> Handle task works and lock it earlier before it starts killing off
-> >> task's resources like mm. io_uring makes use of it a lot and it'd
-> >> nicer to have all added task_work finding tasks in a consistent state.
+Hi Sakari,
 
-I too do not understand this patch. task_work_add() will fail after
-exit_task_work(). This means that, for example, exit_files() will use
-schedule_delayed_work().
+Thank you for the patch.
 
-> One more moment, after we've set PF_EXITING any task_work_run() would be
-> equivalent to exit_task_work()
+On Sun, Dec 20, 2020 at 01:06:51PM +0200, Sakari Ailus wrote:
+> When an IOCTL with argument size larger than 128 that also used array
+> arguments were handled, two memory allocations were made but alas, only
+> the latter one of them was released.
 
-Yes, currently task_work_run() can not be called after exit_signals().
-And shouldn't be called imo ;)
+Alas, this fills my heart with sorrow indeed :-)
 
-> io_uring
-> may want (currently doesn't) to run works for cancellation purposes.
+> This happened because there was only
+> a single local variable to hold such a temporary allocation.
+> 
+> Fix this by adding separate variables to hold the pointers to the
+> temporary allocations.
+> 
+> Reported-by: Arnd Bergmann <arnd@kernel.org>
+> Reported-by: syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com
+> Fixes: d14e6d76ebf7 ("[media] v4l: Add multi-planar ioctl handling code")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> ---
+>  drivers/media/v4l2-core/v4l2-ioctl.c | 31 +++++++++++++---------------
+>  1 file changed, 14 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+> index 3198abdd538ce..f42a779948779 100644
+> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
+> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+> @@ -3283,7 +3283,7 @@ video_usercopy(struct file *file, unsigned int orig_cmd, unsigned long arg,
+>  	       v4l2_kioctl func)
+>  {
+>  	char	sbuf[128];
+> -	void    *mbuf = NULL;
+> +	void    *mbuf = NULL, *array_buf = NULL;
+>  	void	*parg = (void *)arg;
+>  	long	err  = -EINVAL;
+>  	bool	has_array_args;
+> @@ -3318,27 +3318,21 @@ video_usercopy(struct file *file, unsigned int orig_cmd, unsigned long arg,
+>  	has_array_args = err;
+>  
+>  	if (has_array_args) {
+> -		/*
+> -		 * When adding new types of array args, make sure that the
+> -		 * parent argument to ioctl (which contains the pointer to the
+> -		 * array) fits into sbuf (so that mbuf will still remain
+> -		 * unused up to here).
+> -		 */
+> -		mbuf = kvmalloc(array_size, GFP_KERNEL);
+> +		array_buf = kvmalloc(array_size, GFP_KERNEL);
+>  		err = -ENOMEM;
+> -		if (NULL == mbuf)
+> +		if (array_buf == NULL)
+>  			goto out_array_args;
+>  		err = -EFAULT;
+>  		if (in_compat_syscall())
+> -			err = v4l2_compat_get_array_args(file, mbuf, user_ptr,
+> -							 array_size, orig_cmd,
+> -							 parg);
+> +			err = v4l2_compat_get_array_args(file, array_buf,
+> +							 user_ptr, array_size,
+> +							 orig_cmd, parg);
+>  		else
+> -			err = copy_from_user(mbuf, user_ptr, array_size) ?
+> +			err = copy_from_user(array_buf, user_ptr, array_size) ?
+>  								-EFAULT : 0;
+>  		if (err)
+>  			goto out_array_args;
+> -		*kernel_ptr = mbuf;
+> +		*kernel_ptr = array_buf;
+>  	}
+>  
+>  	/* Handles IOCTL */
+> @@ -3360,12 +3354,14 @@ video_usercopy(struct file *file, unsigned int orig_cmd, unsigned long arg,
+>  		if (in_compat_syscall()) {
+>  			int put_err;
+>  
+> -			put_err = v4l2_compat_put_array_args(file, user_ptr, mbuf,
+> -							     array_size, orig_cmd,
+> +			put_err = v4l2_compat_put_array_args(file, user_ptr,
+> +							     array_buf,
+> +							     array_size,
+> +							     orig_cmd,
+>  							     parg);
 
-Please see https://lore.kernel.org/io-uring/20200407163816.GB9655@redhat.com/
+orig_cmd and pargs would fit on the same line if you want to.
 
-> Shouldn't it be like below (not tested)? Also simplifies task_work_run().
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-I'd prefer the patch from the link above, but your version looks correct too.
-However, I still think it would be better to not abuse task_work_run() too
-much...
+>  			if (put_err)
+>  				err = put_err;
+> -		} else if (copy_to_user(user_ptr, mbuf, array_size)) {
+> +		} else if (copy_to_user(user_ptr, array_buf, array_size)) {
+>  			err = -EFAULT;
+>  		}
+>  		goto out_array_args;
+> @@ -3381,6 +3377,7 @@ video_usercopy(struct file *file, unsigned int orig_cmd, unsigned long arg,
+>  	if (video_put_user((void __user *)arg, parg, cmd, orig_cmd))
+>  		err = -EFAULT;
+>  out:
+> +	kvfree(array_buf);
+>  	kvfree(mbuf);
+>  	return err;
+>  }
 
-Oleg.
+-- 
+Regards,
 
+Laurent Pinchart
