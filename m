@@ -2,192 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D302DF4F1
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 10:54:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 718F52DF4F3
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 10:55:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727347AbgLTJya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 04:54:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34166 "EHLO
+        id S1727410AbgLTJzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 04:55:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726377AbgLTJy2 (ORCPT
+        with ESMTP id S1727120AbgLTJze (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 04:54:28 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE859C0613CF;
-        Sun, 20 Dec 2020 01:53:44 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id 23so16530074lfg.10;
-        Sun, 20 Dec 2020 01:53:44 -0800 (PST)
+        Sun, 20 Dec 2020 04:55:34 -0500
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30424C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 01:54:50 -0800 (PST)
+Received: by mail-il1-x134.google.com with SMTP id v3so6277492ilo.5
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 01:54:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=YAPbCIAtqizrJjOjmuHJe0YU4+eOKzCw3UhT/xACS9Y=;
-        b=uNilJg+VN8l7sryqjTpuWhaIkxynXcIN41x9XJKmGYAGIs5aZWmW/0DBN6jNqqhQY0
-         UBXllN5HoBhxs4KJ3Wg6cJJIRE9YYKbj4nfirBBLbasKBgCxnMcz48a/4ou+yH1YFxti
-         9Ru+YPYej4SEadN0aXRIEx94AhAll7JQmTU/Tpo02R2l8e8ljSHVDOwclOZ2QJepGbsJ
-         JvRMakTbA1G9MzUVQI26yOf5GV+6pgpasquFlLJ+ZKMw5N2e28q+8588Z5s4DCMjjkcB
-         C3Zo+rUDuLtBMUrsxGE177n1u8gURcC7RQXV3fEMJjz0p/xuA/ebuL0tSRprvuK4SL9W
-         QtvQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=g1f+hTqJ01sTRRK/QRqCfkwd/KCqqcEThWLus7s2oL8=;
+        b=KO0s5hkNfoe/HC+Lo6UxShdkpn5i8FtDgEZQeFoyZOnSVPubj7oYpPjvH0tqybGefX
+         3ecsUHL0N6yBTXk+jSaYiDXIcqr0hpOF21yjZ77YkbVYaO4lcqfZcS1l/E/YHAiw7WJp
+         CYgDTmQs3gbTipvWuc+UOZsXMCv6g3xJJJOMaqZvHoKW3qpDH2Awrg/6t/jybqU7M4m+
+         86g+qtJLaID/LToDTFQT84HVzxwXys5m7LykpSMAQe/8D3wvNBsE4TFFNF32ADkBYMfK
+         OiaIbVfChL+FJJ2yDOjBGwUNPjv4tHPJ8LZHeOewEkrmgi4lsPOauaFRfJNqvWCtUmWC
+         XZjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=YAPbCIAtqizrJjOjmuHJe0YU4+eOKzCw3UhT/xACS9Y=;
-        b=nigUBfcoTmt0fULknfrARwUerNma2cw17MEFC8owD6sr58iuQOkSwl1uTWIWo6Z53K
-         lF1FgPWZl/Dg419ycHrDfFZSqcyZCoS7iyMOwc5zMq3CDojMrQFu9vbWWUbxuP0PBy7f
-         arTxnRdt+tnUleC+x094djHNhzyMpPp0qzkce/GNFGF9m12D53jy2DbQ6gg75GCVoHsj
-         tiM58KAas0mup9ryhxckx/EA3e+rQNUuHqV18qNKHrpBiZHeurSnX/O72+1j7DusWjVu
-         1j8/GexrCrhWJh1QhlL3UQS+IeREG9mE2NIso+lbyg5yiqu9XlMgxAOmd1WM4eSVbR5G
-         hwWw==
-X-Gm-Message-State: AOAM533+as12jalY4lRv9mNKu3JXUEYX7PdpswU8JfH6qBbp35e/bQ/U
-        6mqHG65ONXukshlBKIAtixXTJYLWwKhWTmOnpV4=
-X-Google-Smtp-Source: ABdhPJyidYH/jZQnw8Yhn8T6FbcUyLfAuAEQdKHRksNb1LZ6nZOU7Bd0rbXg/ehKJFE9d0W5zXdIIX+UmNiH7Kxw8iI=
-X-Received: by 2002:a2e:3a17:: with SMTP id h23mr5183276lja.435.1608458022771;
- Sun, 20 Dec 2020 01:53:42 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=g1f+hTqJ01sTRRK/QRqCfkwd/KCqqcEThWLus7s2oL8=;
+        b=Mi3CI1MhPY3NBFU82w90zOohVDq/zX+Vs77NDvOGEixtjv3WBmDtGwfTNXH0jrs4Fs
+         BrM7yKXJw3fzORLvci/vxSca7j50NgRIigFfnd/0zyoQiK740L0PHQ9KX5yvenwpnu2m
+         irVpdZ55Hzlloo1jNeV1wBoV9SxfzbyCN6CV0EGVQ/Zgclua8K4wm3Jx1+kZvc3FsC+Q
+         irilK3uw6acI6V8U9bK37TJPvB9CiorKtxwlMANAapuAmY8C/T5abAskB/rh8VVR4+an
+         vJ26GS1yYvvj1dEPusSBZp26C7BG+LTWi2YvONRyRuffAp7gTLRUSScZv6LaaGRi4d/B
+         TXEw==
+X-Gm-Message-State: AOAM532hgQt1E6r/zUSuqOYMuNp/4qUtsB6ChTTZgaYIYhMFDitper9m
+        uxJc5gZo5Y9kwPRuqjp5azoC/g==
+X-Google-Smtp-Source: ABdhPJwFXRHS7o4frczZ+ABNBpZU+cZA2RhD15NOmpz8TH5RvcGdGctXc98YQroLdgxv8GyB8XuMjg==
+X-Received: by 2002:a92:d0d:: with SMTP id 13mr1203977iln.209.1608458089138;
+        Sun, 20 Dec 2020 01:54:49 -0800 (PST)
+Received: from google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
+        by smtp.gmail.com with ESMTPSA id d1sm20445472ioh.3.2020.12.20.01.54.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Dec 2020 01:54:48 -0800 (PST)
+Date:   Sun, 20 Dec 2020 02:54:44 -0700
+From:   Yu Zhao <yuzhao@google.com>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        linux-mm <linux-mm@kvack.org>, Peter Xu <peterx@redhat.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable@vger.kernel.org, minchan@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+Message-ID: <X98fZOiLNmnDQKhN@google.com>
+References: <20201219043006.2206347-1-namit@vmware.com>
+ <X95RRZ3hkebEmmaj@redhat.com>
+ <EDC00345-B46E-4396-8379-98E943723809@gmail.com>
+ <X97pprdcRXusLGnq@google.com>
+ <DDA15360-D6D4-46A8-95A4-5EE34107A407@gmail.com>
 MIME-Version: 1.0
-References: <20201218184347.2180772-1-sam@ravnborg.org> <20201219214054.GB3132151@ravnborg.org>
- <CADuzgbqBx7cajLg5-9+bqoUvHV4heoNjBH-cakU5YGV549Gdxg@mail.gmail.com>
- <CAGRGNgUxGY3wz5sDVJqO8hB=yw=-symr0tGXQeQ1ovqwb6-e9w@mail.gmail.com> <CADuzgbqZQ5oMxUh5XhmzqGpVgU+m6L-42TucOhACDviKYpaCMg@mail.gmail.com>
-In-Reply-To: <CADuzgbqZQ5oMxUh5XhmzqGpVgU+m6L-42TucOhACDviKYpaCMg@mail.gmail.com>
-From:   Julian Calaby <julian.calaby@gmail.com>
-Date:   Sun, 20 Dec 2020 20:53:30 +1100
-Message-ID: <CAGRGNgXoC04Uco3Fd8O8i2Hu-0WM3-W3CiLAZ0e_1j7Z8ZzUGw@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/13] sparc32: sunset sun4m and sun4d
-To:     Romain Dolbeau <romain@dolbeau.org>
-Cc:     Sam Ravnborg <sam@ravnborg.org>,
-        David S Miller <davem@davemloft.net>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        Andreas Larsson <andreas@gaisler.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Denis Efremov <efremov@linux.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, Willy Tarreau <w@1wt.eu>,
-        LKML <linux-kernel@vger.kernel.org>,
-        debian-sparc <debian-sparc@lists.debian.org>,
-        gentoo-sparc@lists.gentoo.org, info@temlib.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <DDA15360-D6D4-46A8-95A4-5EE34107A407@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Romain,
+On Sun, Dec 20, 2020 at 12:06:38AM -0800, Nadav Amit wrote:
+> > On Dec 19, 2020, at 10:05 PM, Yu Zhao <yuzhao@google.com> wrote:
+> > 
+> > On Sat, Dec 19, 2020 at 01:34:29PM -0800, Nadav Amit wrote:
+> >> [ cc’ing some more people who have experience with similar problems ]
+> >> 
+> >>> On Dec 19, 2020, at 11:15 AM, Andrea Arcangeli <aarcange@redhat.com> wrote:
+> >>> 
+> >>> Hello,
+> >>> 
+> >>> On Fri, Dec 18, 2020 at 08:30:06PM -0800, Nadav Amit wrote:
+> >>>> Analyzing this problem indicates that there is a real bug since
+> >>>> mmap_lock is only taken for read in mwriteprotect_range(). This might
+> >>> 
+> >>> Never having to take the mmap_sem for writing, and in turn never
+> >>> blocking, in order to modify the pagetables is quite an important
+> >>> feature in uffd that justifies uffd instead of mprotect. It's not the
+> >>> most important reason to use uffd, but it'd be nice if that guarantee
+> >>> would remain also for the UFFDIO_WRITEPROTECT API, not only for the
+> >>> other pgtable manipulations.
+> >>> 
+> >>>> Consider the following scenario with 3 CPUs (cpu2 is not shown):
+> >>>> 
+> >>>> cpu0				cpu1
+> >>>> ----				----
+> >>>> userfaultfd_writeprotect()
+> >>>> [ write-protecting ]
+> >>>> mwriteprotect_range()
+> >>>> mmap_read_lock()
+> >>>> change_protection()
+> >>>> change_protection_range()
+> >>>>  ...
+> >>>>  change_pte_range()
+> >>>>  [ defer TLB flushes]
+> >>>> 				userfaultfd_writeprotect()
+> >>>> 				 mmap_read_lock()
+> >>>> 				 change_protection()
+> >>>> 				 [ write-unprotect ]
+> >>>> 				 ...
+> >>>> 				  [ unprotect PTE logically ]
+> >>>> 				...
+> >>>> 				[ page-fault]
+> >>>> 				...
+> >>>> 				wp_page_copy()
+> >>>> 				[ set new writable page in PTE]
+> > 
+> > I don't see any problem in this example -- wp_page_copy() calls
+> > ptep_clear_flush_notify(), which should take care of the stale entry
+> > left by cpu0.
+> > 
+> > That being said, I suspect the memory corruption you observed is
+> > related this example, with cpu1 running something else that flushes
+> > conditionally depending on pte_write().
+> > 
+> > Do you know which type of pages were corrupted? file, anon, etc.
+> 
+> First, Yu, you are correct. My analysis is incorrect, but let me have
+> another try (below). To answer your (and Andrea’s) question - this happens
+> with upstream without any changes, excluding a small fix to the selftest,
+> since it failed (got stuck) due to missing wake events. [1]
+> 
+> We are talking about anon memory.
+> 
+> So to correct myself, I think that what I really encountered was actually
+> during MM_CP_UFFD_WP_RESOLVE (i.e., when the protection is removed). The
+> problem was that in this case the “write”-bit was removed during unprotect.
 
-On Sun, Dec 20, 2020 at 8:26 PM Romain Dolbeau <romain@dolbeau.org> wrote:
->
-> Le dim. 20 d=C3=A9c. 2020 =C3=A0 09:54, Julian Calaby <julian.calaby@gmai=
-l.com> a =C3=A9crit :
-> > If I want to run them, assuming the hardware still works, I need to
-> > netboot them as I cannot find working, compatible HDDs for them as
-> > everything has switched to SATA or SAS.
->
-> SCSI2SD (<http://www.codesrc.com/mediawiki/index.php/SCSI2SD>)
-> are a bit expensive, but solve that problem (I own both a V5 and a V6,
-> both work well in my SPARCstations, tried sun4c and sun4m).
-> As it takes micro-sd cards, it's quite easy to keep multiple OSes
-> on hand.
+Thanks. You are right about when the problem happens: UFD write-
+UNprotecting. But it's not UFD write-UNprotecting that removes the
+writable bit -- the bit can only be removed during COW or UFD
+write-protecting. So your original example was almost correct, except
+the last line describing cpu1.
 
-I'd forgotten about that. Fair point =3D)
+The problem is how do_wp_page() handles non-COW pages. (For COW pages,
+do_wp_page() works correctly by either reusing an existing page or
+make a new copy out of it.) In UFD case, the existing page may not
+have been properly write-protected. As you pointed out, the tlb flush
+may not be done yet. Making a copy can potentially race with the
+writer on cpu2.
 
-> > Then there's the issue of finding a monitor as they're not
-> > electrically compatible with VGA
->
-> Huh? There is Sun's 13W3-to-vga adapters and cables, and many
-> monitors will sync to Sun's frequency (though not the most recent
-> LCDs whose analog circuitry is pathetic compared to old-school
-> CRTs). Some framebuffers will output 1280x1024 (rarer than for
-> 1152x900), and some can be coerced to do almost anything with
-> some Forth knowledge (see e.g.
-> <https://github.com/rdolbeau/SunTurboGX>, again blowing my
-> own horn here sorry...).
+Should we fix the problem by ensuring integrity of the copy? IMO, no,
+because do_wp_page() shouldn't copy at all in this case. It seems it
+was recently broken by
 
-Yeah, my issue is that I have no CRTs anymore - all my monitors are
-LCDs and none of them sync to the frequencies SUNs use.
+  be068f29034f mm: fix misplaced unlock_page in do_wp_page()
+  09854ba94c6a mm: do_wp_page() simplification
 
-So yeah, you can make adapters (i have home-made adapters to convert
-both ways) however out of the 4 monitors I own with VGA ports, none of
-them sync to Sun frequencies.
+I haven't study them carefully. But if you could just revert them and
+run the test again, we'd know where exactly to look at next.
 
-> > (...) booting one up for fun is simply impractical
->
-> An SCSI2SD and either a null-modem serial cable or a
-> Sun keyboard/13w3 cable/17"LCD combo and you're good to
-> go. You might need another unix-like box to netboot the system.
-
-That's almost exactly what I was planning to do, but I'd still be
-lacking a Linux distro to run.
-
-> > I believe that Gentoo is architecture-neutral enough that it'd work,
-> > but I believe that you'll have to compile everything - there'll be no
-> > pre-built anything for sparc32
->
-> Trying gentoo is on my todo list... has been for a long time :-(
-
-Same.
-
-IIRC there's some ancient versions that have the bits to netboot a
-SparcStation so you can then do the necessary stuff to install the
-minimal binaries and stuff, at which point you can do the various
-configurations, pull in the latest portage tree and emerge world,
-however the last time I tried this, the disk I was using - my last one
-- failed somewhere in the middle of that process.
-
-> > and as it's fairly slow hardware by
-> > today's standards, that's going to take a long time, however you could
-> > probably use distcc and cross-compilers to speed it up.
->
-> Isn't that what Qemu is for ? :-) I've managed to recompile LLVM
-> and clang in NetBSD 9 for my SS20, one by cross-compiling
-> (LLVM requires too much memory), the other in QEmu.
-> Unfortunately, Qemu doesn't yet support mt-tcg (multithreaded
-> emulation) for sparc so single-core only - still faster than the HW,
-> mostly because of incomparably faster I/O.
-
-My distcc plan was to have it talk to a cross compiler on my x86
-desktop. I never got to the point where it would have actually used
-it.
-
-> > If there were more people using it or more testing, or more distros
-> > supporting it - not just (theoretically?) working on it - then I'd be
-> > fighting to keep it.
->
-> I wish I had some arguments for that point... I will just re-mention Qemu=
-,
-> as it makes testing quite easy and reasonably not-too-slow.
-
-QEMU is somewhat slow and never _exactly_ the same as real hardware,
-so I can see why distros might not use it as a build machine or
-whatever. And if they do build for QEMU and it doesn't work on real
-hardware, then we have a distro that's only for virtual hardware and
-that seems pointless.
-
-You're right that with the right bits and pieces resurrecting a
-Sparc32 machine is relatively "easy", however there's still no modern
-distros supporting this ancient hardware so the upstream kernel has
-most likely bitrotted.
-
-I still don't think it's worth saving.
-
-Thanks,
-
---=20
-Julian Calaby
-
-Email: julian.calaby@gmail.com
-Profile: http://www.google.com/profiles/julian.calaby/
+> Sorry for the strange formatting to fit within 80 columns:
+> 
+> 
+> [ Start: PTE is writable ]
+> 
+> cpu0				cpu1			cpu2
+> ----				----			----
+> 							[ Writable PTE 
+> 							  cached in TLB ]
+> userfaultfd_writeprotect()				
+> [ write-*unprotect* ]
+> mwriteprotect_range()
+> mmap_read_lock()
+> change_protection()
+> 
+> change_protection_range()
+>  ...
+>  change_pte_range()
+>  [ *clear* “write”-bit ]
+>  [ defer TLB flushes]
+> 				[ page-fault ]
+> 				…
+> 				wp_page_copy()
+> 				 cow_user_page()
+> 				  [ copy page ]
+> 							[ write to old
+> 							  page ]
+> 				…
+> 				 set_pte_at_notify()
+> 
+> [ End: cpu2 write not copied form old to new page. ]
+> 
+> 
+> So this was actually resolved by the second part of the patch - changing
+> preserve_write in change_pte_range(). I removed the acquisition of mmap_lock
+> for write, left the change in change_pte_range() and the test passes.
+> 
+> Let me give some more thought on whether a mmap_lock is needed 
+> for write. I need to rehash this TLB flushing algorithm.
+> 
+> Thanks,
+> Nadav
+> 
+> [1] https://lore.kernel.org/patchwork/patch/1346386
