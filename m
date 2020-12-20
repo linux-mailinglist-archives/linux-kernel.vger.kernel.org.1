@@ -2,66 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDEDD2DF2D3
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 03:59:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 507892DF2DA
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 04:18:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727153AbgLTC7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 21:59:42 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9232 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726882AbgLTC7l (ORCPT
+        id S1727034AbgLTDSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 22:18:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726865AbgLTDSG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 21:59:41 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cz6jT4S6zzksqv;
-        Sun, 20 Dec 2020 10:58:05 +0800 (CST)
-Received: from [10.67.102.197] (10.67.102.197) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Sun, 20 Dec 2020 10:58:52 +0800
-Subject: Re: [PATCH 2/4] hung_task: Replace "did_panic" with is_be_panic()
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Pavel Machek <pavel@ucw.cz>
-CC:     <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>,
-        <dmurphy@ti.com>, <akpm@linux-foundation.org>,
-        <keescook@chromium.org>, <gpiccoli@canonical.com>,
-        <wangle6@huawei.com>
-References: <20201218114406.61906-1-nixiaoming@huawei.com>
- <20201218114406.61906-3-nixiaoming@huawei.com>
- <20201218125957.GA20160@duo.ucw.cz>
- <eddf7043-4bbe-7440-6c3e-ff272f722a86@i-love.sakura.ne.jp>
- <a2279e36-3665-6328-e515-b12cdc532aa9@infradead.org>
-From:   Xiaoming Ni <nixiaoming@huawei.com>
-Message-ID: <d5c62a81-2b52-5add-98c9-bb75e9b2f436@huawei.com>
-Date:   Sun, 20 Dec 2020 10:58:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.0.1
+        Sat, 19 Dec 2020 22:18:06 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83199C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 19:17:21 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id cm17so6373923edb.4
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 19:17:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=NOqBvgFKmLKDvg0GnR9LA/BsC6RX8/kf376irSoDDoo=;
+        b=A36IRKFEDouVtmkwQz2qf6aNo9bvig/U9FYoOZcon91hFVX8dezSQRWljKyT6Zyo8g
+         F25cGJVJvKbv9HnG4A3pvMoHQURGYmq+W0u4m+WQUSvZG/aC/RIxxthVS8drUagV4WCT
+         E2ljJntL2zBjlsL6NYcXcNr0gDV/uCN6FBPcUUjPsOuV5iTuh06nV6yEB3u3FsZXoLwp
+         Fv5M+lR6JcCGhLiquhPavFjxni38wR/xRrEszzTOiVYVqJsb/iu5Hv3SQ85/mi0OPO8G
+         dNf/JXFzSrVoal+xGnmZaCls990HOalqurfWstBCwQRXVW3/PnDbh3nwxPYNQJETi7U9
+         CtEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=NOqBvgFKmLKDvg0GnR9LA/BsC6RX8/kf376irSoDDoo=;
+        b=BngPlBPvClNI5BWWlXMbc4OBP1oWW8BlGhcMbzEz15a6s7opZKJDIJYnrq9ga1BxCi
+         jBBZCVM2fE1gPGF+HIDfs+zqfsTRZNfDgVDU9y19AsH1qgXvU4WRlMKqB8D7yDD4KUhT
+         CXHb2mBf7nj0u/02R2Ds+t6QzRI1IaFC2D2Jq2OmA6qJpjqOZY6uRw788a56QNbWrHfZ
+         ExPM3jlbkLAJUyaWXQMQxMkQLLxnlRrEk6CIBFHgTjCwV/mqtAbYMLNzOnnmLBPd3Ylj
+         Sd5XqniXEimxjO2wQNyfSxkRdJqip25pjZacGL1yh2G9UsYl06BA086x6I8QHvOzHiFw
+         sdXw==
+X-Gm-Message-State: AOAM5326C+ymUQ3VghNHTCSx/SdwlUhUlpWiF5MQukdIBNxv0ya4bh+n
+        Qx26jqvz+5TPpJZPCLZtPneU8Y8B8yBfysdPX//JJf1YiaZR1JUm
+X-Google-Smtp-Source: ABdhPJxBOBH57qliq8Qa4g56UDYlU+0++R4T+s2V4UTmE9phzQ13htz507EXu+cBPteTe+b6QfydS15DmisuFx3Su/M=
+X-Received: by 2002:aa7:d75a:: with SMTP id a26mr10683531eds.230.1608434239991;
+ Sat, 19 Dec 2020 19:17:19 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <a2279e36-3665-6328-e515-b12cdc532aa9@infradead.org>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.197]
-X-CFilter-Loop: Reflected
+References: <20201219125339.066340030@linuxfoundation.org>
+In-Reply-To: <20201219125339.066340030@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sun, 20 Dec 2020 08:47:08 +0530
+Message-ID: <CA+G9fYs_Dsb6hsHqna5S6VmBN8A-8YruVMFyNFfy7fxauosZ3A@mail.gmail.com>
+Subject: Re: [PATCH 5.10 00/16] 5.10.2-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/12/19 1:06, Randy Dunlap wrote:
-> On 12/18/20 6:36 AM, Tetsuo Handa wrote:
->> On 2020/12/18 21:59, Pavel Machek wrote:
->>> On Fri 2020-12-18 19:44:04, Xiaoming Ni wrote:
->>> Plus.. is_being_panic is not really english. "is_paniccing" would be
->>> closer...?
->>
->> Or in_panic() ?
->>
-> 
-> Yes, or  in_panic_state()
-> 
+On Sat, 19 Dec 2020 at 18:26, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.2 release.
+> There are 16 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Mon, 21 Dec 2020 12:53:29 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.10.2-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Thank you,
-I'll resend the patch later on according to your suggestion.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Thanks
-Xiaoming Ni
-.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 5.10.2-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.10.y
+git commit: c96cfd687a3f1d1d461dd4a73eb51410c4fd45d8
+git describe: v5.10.1-17-gc96cfd687a3f
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10=
+.y/build/v5.10.1-17-gc96cfd687a3f
+
+No regressions (compared to build v5.10.1)
+
+No fixes (compared to build v5.10.1)
+
+Ran 51496 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arc
+- arm
+- arm64
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- parisc
+- powerpc
+- qemu-arm-clang
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-i386-clang
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu-x86_64-kcsan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- riscv
+- s390
+- sh
+- sparc
+- x15
+- x86
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* fwts
+* install-android-platform-tools-r2600
+* kselftest
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-none
+* kunit
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fs-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* perf
+* rcutorture
+* v4l2-compliance
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
