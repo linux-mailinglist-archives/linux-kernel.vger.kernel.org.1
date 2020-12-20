@@ -2,541 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C71552DF7BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 03:51:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CF822DF6FB
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 23:05:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727440AbgLUCtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 21:49:33 -0500
-Received: from 18.mo3.mail-out.ovh.net ([87.98.172.162]:32943 "EHLO
-        18.mo3.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725497AbgLUCtc (ORCPT
+        id S1728334AbgLTWDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 17:03:25 -0500
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:5550 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726507AbgLTWDY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 21:49:32 -0500
-X-Greylist: delayed 8399 seconds by postgrey-1.27 at vger.kernel.org; Sun, 20 Dec 2020 21:49:30 EST
-Received: from player716.ha.ovh.net (unknown [10.108.42.167])
-        by mo3.mail-out.ovh.net (Postfix) with ESMTP id E577C2708A7
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 23:01:02 +0100 (CET)
-Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
-        (Authenticated sender: steve@sk2.org)
-        by player716.ha.ovh.net (Postfix) with ESMTPSA id 6C655194A6848;
-        Sun, 20 Dec 2020 22:00:55 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-100R003df47d4bf-8fc5-404e-860e-80c8d5619ddc,
-                    B6E58838008068FDF3022E22B316484108BE3B31) smtp.auth=steve@sk2.org
-X-OVh-ClientIp: 82.65.25.201
-Date:   Sun, 20 Dec 2020 23:00:53 +0100
-From:   Stephen Kitt <steve@sk2.org>
-To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Cc:     linux-man@vger.kernel.org,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] close_range.2: new page documenting close_range(2)
-Message-ID: <20201220230053.733f3036@heffalump.sk2.org>
-In-Reply-To: <e2ece8dc-9379-0e56-bbfa-ffc5f6b5ca2c@gmail.com>
-References: <20201218165815.6963-1-steve@sk2.org>
-        <e2ece8dc-9379-0e56-bbfa-ffc5f6b5ca2c@gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Sun, 20 Dec 2020 17:03:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1608501803; x=1640037803;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=NsP9KppwOP6Xw5BYDHKTLYODrOXpsDVxJ/C0AEMkesg=;
+  b=dP5y1k2TupFlZRwvaHFnXxSRcIuMKM5gDG4TfegG66V9Yh7BzgPHjaxB
+   jfB9OjXT6CVrQNNUXAY8nUyFxdtzGz/etmCL8W+KtB0BNa39Mam7PkOjX
+   jmysp9x64rcLlwJbc55BH3w0Lk5OMwE37BI67q+2ndpOZqIHQDPuGEEQh
+   AUFdPUEp0WlHumFHHtjKAxI5WMLPz5hEQOA98BUkuy+Osd0iXryryWoYz
+   QwdTVfB5Ie4ixQ0vj90MURP2yJsWODR8zWXXL5S2VwSZJZYqMN0TZYX/4
+   c5fDt7/maNtF4wXE/jQuwQCfMv28pUAspwEQyo/TPonb9n5w0NcwoRBYG
+   g==;
+IronPort-SDR: fCrvGApBrkxsTXtoSGptxDbljUwegJNbW3UkU0oHO2MYEV8ZYTmgLN20CZolgbc3YtBSguxBg+
+ AsIrPqCUS7Rq71mR1+ycwBt0j06dMFyvTosv6vnNKLzqLMmEVb9DR0Fv0iw5KelPrsrGJoDsIe
+ yxESbCS/5YvjbVGKk3l6miX+h0rzWqvQEOpdSlvDM/nwVZx0KFPMikBD/dbBr0ntdihrClmJnj
+ aJJ+RVDiDw2La5KPOdK1qE6sxgoROiQ/VIhXXyoh6srW7NoCmYu71SYO3uVVMM76dZUOitDL4X
+ ap4=
+X-IronPort-AV: E=Sophos;i="5.78,435,1599494400"; 
+   d="scan'208";a="155646190"
+Received: from mail-dm6nam10lp2102.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.102])
+  by ob1.hgst.iphmx.com with ESMTP; 21 Dec 2020 06:02:17 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Bd1agXO7xXeUfi4LWFBNHT0U0GTXZ3I8ZliZo31GfS4srpgqQhiNpZVeYZ0tT4DfSDyweHMCIl/Z1TaWl2DRKTB2T5Raaaa6QJUpPfZZ1Y30DFx6FFlP5laDBJJwBxkTOcuJnLuUgdz0XX7yh9qVouT1IjLsdvWOukSRjFmylJJbexw1dVb5dTTSBB4WJrbMcD9kDHfPZMlINmY4Ws+e1ar+aZQ+AhuEE7HKM0GZOmDRRqc0IACUfNcZcx1X+iy7JiZ0gQNLIZoFBB+cp3eNqrSlw9niG1o/Btv5DEO4254bvNZwssEOWpyzcET4TZv481LwzCD5EPTsvJKXkOzoQw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rsSepHIzlQmO5vlGfgH+O9XU1q3cYDrF4tQvNcSJiNs=;
+ b=ALyO15VnB2+T0Z4zuYPg5csD33UeaMdDAdKfunDMou5WkmK3NNDn1cA0O1tKdyNFS7sNhZt1pitkqM5kX2hEM8O5Hy+V8QjWxH2B2lMYcNU2Lm/1IhoQNksgDBxVyoagmosn0reuo5ME55oKUkYTORSrsOf3VOmFNAL4ieMLwiJvrKiRi/fS8CfC0vlIU/nXbkcZqEv/+tVJgifiD+Z95buSko5V+S77I/cKBPpA1tRDpAYXegFGHFiTYf86ExwzzssPLfnC6T13ZCWNRvHO1kAGfhefmBSMwdJyoSuHkZERcMlcri875J7ShcqYbVgqsshrmG9PahoGiCZSG1+E6A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rsSepHIzlQmO5vlGfgH+O9XU1q3cYDrF4tQvNcSJiNs=;
+ b=Z+b5Xm2+wMOruJx3mKjAgONSVgbH0nrzz+ZSQ5ANuziaXJhAYZebFMG/syFObzermjQuKg6gMWJICoaF0kFeU2Hce/cSUu14tm4uTILt6lBZ00HH4cc5B+MoWNtDMraOELvBlyFsltVakrBQRQYCFWkD0Td6dNvYtPUO3/2R/Gg=
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
+ DM6PR04MB4154.namprd04.prod.outlook.com (2603:10b6:5:9a::11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3676.25; Sun, 20 Dec 2020 22:02:15 +0000
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::a564:c676:b866:34f6]) by DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::a564:c676:b866:34f6%9]) with mapi id 15.20.3676.033; Sun, 20 Dec 2020
+ 22:02:15 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "kernel-team@android.com" <kernel-team@android.com>
+CC:     "cang@codeaurora.org" <cang@codeaurora.org>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>
+Subject: RE: [PATCH] scsi: ufs: fix livelock of ufshcd_clear_ua_wluns
+Thread-Topic: [PATCH] scsi: ufs: fix livelock of ufshcd_clear_ua_wluns
+Thread-Index: AQHW1O5Lq9Xt0bukCk2VnSNzzSWPAqoAjHbQ
+Date:   Sun, 20 Dec 2020 22:02:15 +0000
+Message-ID: <DM6PR04MB6575B8729A62E6FB9F19930CFCC10@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20201218033131.2624065-1-jaegeuk@kernel.org>
+In-Reply-To: <20201218033131.2624065-1-jaegeuk@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [77.138.4.172]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: c35baa68-0b7e-40c1-a6b0-08d8a532e955
+x-ms-traffictypediagnostic: DM6PR04MB4154:
+x-microsoft-antispam-prvs: <DM6PR04MB41543FE6BD031E495FF7330DFCC10@DM6PR04MB4154.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: WW0UvhcUWjXeHsHjjhQOUGEftMcD9m/RUHjfQ0CwFusf+vlOq7yynfwHiNwSZfM5wVCoEovuTSyVAPAcA9qSh1m/b5o7SLT5LxXbAzbJ/Wa7jjCdeg0yOKT81OGc21cDSZCN8Fezs6VuQOWy65YfUj5ozZDEwMPT0dOft8XQhX6WWBI9E8xJ36/pWmsls+qYuTUhWpqvYY7MJPS4Yo6Vl2XVnshUYKDFpwSYR6hGbRkED7yBq43GQjP6YF1znaWbPp3VPcp4eJmnu+bACI9orpUqdfzN2L/0siVtmiRuJ/7zicalqToSpr9KO8cfWL2MP7aqAtqfUrFegmZWB1PyfTK3jnqQ9jSELcC79YlmUCCVDItn4gI//GRM/LhlbngYvlTNUFmGV7wQaXU+ZHxEDw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39850400004)(376002)(366004)(136003)(396003)(76116006)(2906002)(5660300002)(4326008)(55016002)(86362001)(83380400001)(71200400001)(4744005)(9686003)(6506007)(33656002)(478600001)(316002)(8936002)(8676002)(54906003)(186003)(26005)(110136005)(66556008)(66446008)(66476007)(66946007)(64756008)(52536014)(7696005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?CEpd1nb4KsrxrgipDZJ6XW2NBstLDK88koookGvR5/Qeien+do8NUAsdoPP3?=
+ =?us-ascii?Q?8pw69M/mwI/Pq3h/3O2uoTXuevGTpuDyba1Hsag5bSQ4okGotfSpsbFAD/4I?=
+ =?us-ascii?Q?BMv41G/Lk6tFGeWXPDozJbw+HOYvK+v0WjYQZApBKKJNnBlYHrJ19a5co9tW?=
+ =?us-ascii?Q?K8E1BHp/0/ZR7bt/xanbIH+oXkGGkE24LML+x3huW1QK08d0S7yndFM13j3t?=
+ =?us-ascii?Q?g32QUbI1+zxoSwAr7/sdsyOb0dKeK2FRuyr7fhXSyjqJWwfSRulqCqh143nx?=
+ =?us-ascii?Q?/4VtHqYLB/7kcNqaLgHhuYgpbvag7Xcg8lDJYo4U1vaSTlrw24BIqjv20ox8?=
+ =?us-ascii?Q?J6ZNWOF/HOL0/m0hIO8BYP+nshKLXSROZOGotwIt2UxhfpJY2hlCgcqh7Rzs?=
+ =?us-ascii?Q?c9FTwXrCnMFTi+XW+IJVXEAKo5Szsgi9wX9zEmQZmxr3Zhu5t4+HBi/XYVgd?=
+ =?us-ascii?Q?KQb8AAKxdmiBkngmWSrQ0CM2xcX8pNCw3g5H7F3HFJNAKiGboiyio8VBmkry?=
+ =?us-ascii?Q?jI9BSMdzKu/jArh3VDswe348gldimh10xw2N88sOnYJuRDcs/NlUSIiQDqIc?=
+ =?us-ascii?Q?G3VkgmQdZpTbTdo9ZjD7bhQWXnwrlW3MSCxPGc+LYW39SsqGJSM3PPBnaLjL?=
+ =?us-ascii?Q?R1Et28P6hjUjyt66W2r9WWTaLo1ADezx204EYHfAPzr1PxYw7CJgVODpSpj1?=
+ =?us-ascii?Q?tcwGmGXsO7CiO5Spmetr5iaN+LvBy0e7VdoV7EjLfyFfxL2zMYJ5pu6Xm5jQ?=
+ =?us-ascii?Q?ezbh/Y6GSBMaSER+NdYF8ZSJAE//FPdSt9wd0q9YRwMAZ0EI9Rs+jEbXvOM8?=
+ =?us-ascii?Q?aG81LoMjliq9fRS1/HfSbHg7xK9ZpUyw/h4Rto0bMR91o/51x5JfrDHUsH3P?=
+ =?us-ascii?Q?7CIswXXjv3FmWb2SPmwY+kcpVLEyGMgrHeqlJsC0L6Gujz/S+ZeTPI3cKs8+?=
+ =?us-ascii?Q?i3x4Dn/xiPC75Y2wqYR/qg9WiQaqgev0DI0N0KElcQo=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- boundary="Sig_/fRt+fLRzLUwZyTg/GIF=MWN"; protocol="application/pgp-signature"
-X-Ovh-Tracer-Id: 14528049448548322774
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedujedrvddttddgudeifecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkjghfofggtgesghdtreerredtvdenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecuggftrfgrthhtvghrnhepjeekffdvhfejkeffudekhedvtddvhfeiheehvdehkeetkedufeejffeuueevvddvnecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejudeirdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c35baa68-0b7e-40c1-a6b0-08d8a532e955
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Dec 2020 22:02:15.3701
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: zm+JquOuUB8DjEifZ1Y6lkn4GdecRhKbvsSQHW/lu7LkBre/9in6XnbZlUihXMLXZ5ycyPiihI7qrLyizEGYwQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB4154
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/fRt+fLRzLUwZyTg/GIF=MWN
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi Alex,
-
-On Sat, 19 Dec 2020 15:00:00 +0100, "Alejandro Colomar (man-pages)"
-<alx.manpages@gmail.com> wrote:
-> Please see some comments below.
-> It's looking good ;)
-
-Thanks for your review and patience!
-
-> On 12/18/20 5:58 PM, Stephen Kitt wrote:
-> > This documents close_range(2) based on information in
-> > 278a5fbaed89dacd04e9d052f4594ffd0e0585de,
-> > 60997c3d45d9a67daf01c56d805ae4fec37e0bd8, and
-> > 582f1fb6b721facf04848d2ca57f34468da1813e.
-> >=20
-> > Signed-off-by: Stephen Kitt <steve@sk2.org>
-> > ---
-> > V3: fix synopsis overflow
-> >     copy notes from membarrier.2 re the lack of wrapper
-> >     semantic newlines
-> >     drop non-standard "USE CASES" section heading
-> >     add code example
-> >=20
-> > V2: unsigned int to match the kernel declarations
-> >     groff and grammar tweaks
-> >     CLOSE_RANGE_UNSHARE unshares *and* closes
-> >     Explain that EMFILE and ENOMEM can occur with C_R_U
-> >     "Conforming to" phrasing
-> >     Detailed explanation of CLOSE_RANGE_UNSHARE
-> >     Reading /proc isn't common
-> >=20
-> >  man2/close_range.2 | 266 +++++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 266 insertions(+)
-> >  create mode 100644 man2/close_range.2
-> >=20
-> > diff --git a/man2/close_range.2 b/man2/close_range.2
-> > new file mode 100644
-> > index 000000000..f8f2053ac
-> > --- /dev/null
-> > +++ b/man2/close_range.2
-> > @@ -0,0 +1,266 @@
-> > +.\" Copyright (c) 2020 Stephen Kitt <steve@sk2.org>
-> > +.\"
-> > +.\" %%%LICENSE_START(VERBATIM)
-> > +.\" Permission is granted to make and distribute verbatim copies of th=
-is
-> > +.\" manual provided the copyright notice and this permission notice are
-> > +.\" preserved on all copies.
-> > +.\"
-> > +.\" Permission is granted to copy and distribute modified versions of
-> > this +.\" manual under the conditions for verbatim copying, provided th=
-at
-> > the +.\" entire resulting derived work is distributed under the terms o=
-f a
-> > +.\" permission notice identical to this one.
-> > +.\"
-> > +.\" Since the Linux kernel and libraries are constantly changing, this
-> > +.\" manual page may be incorrect or out-of-date.  The author(s) assume=
- no
-> > +.\" responsibility for errors or omissions, or for damages resulting f=
-rom
-> > +.\" the use of the information contained herein.  The author(s) may not
-> > +.\" have taken the same level of care in the production of this manual,
-> > +.\" which is licensed free of charge, as they might when working
-> > +.\" professionally.
-> > +.\"
-> > +.\" Formatted or processed versions of this manual, if unaccompanied by
-> > +.\" the source, must acknowledge the copyright and authors of this wor=
-k.
-> > +.\" %%%LICENSE_END
-> > +.\"
-> > +.TH CLOSE_RANGE 2 2020-12-08 "Linux" "Linux Programmer's Manual"
-> > +.SH NAME
-> > +close_range \- close all file descriptors in a given range
-> > +.SH SYNOPSIS
-> > +.nf
-> > +.B #include <linux/close_range.h>
-> > +.PP
-> > +.BI "int close_range(unsigned int " first ", unsigned int " last ,
-> > +.BI "                unsigned int " flags );
-> > +.fi
-> > +.PP
-> > +.IR Note :
-> > +There is no glibc wrapper for this system call; see NOTES.
-> > +.SH DESCRIPTION
-> > +The
-> > +.BR close_range ()
-> > +system call closes all open file descriptors from
-> > +.I first
-> > +to
-> > +.I last
-> > +(included).
-> > +.PP
-> > +Errors closing a given file descriptor are currently ignored.
-> > +.PP
-> > +.I flags
-> > +can be 0 or set to one or both of the following:
-> > +.TP
-> > +.B CLOSE_RANGE_UNSHARE
-> > +unshares the range of file descriptors from any other processes,
-> > +before closing them,
-> > +avoiding races with other threads sharing the file descriptor table.
-> > +.TP
-> > +.BR CLOSE_RANGE_CLOEXEC " (since Linux 5.10)" =20
->=20
-> |sort
->=20
-> I prefer alphabetic order rather than adding new items at the bottom.
-> When lists grow, it becomes difficult to find what you're looking for.
->=20
-> CLOEXEC should go before UNSHARE.
-
-That makes sense.
-
-> > +sets the close-on-exec bit instead of immediately closing the file
-> > +descriptors. =20
->=20
-> [
-> sets the close-on-exec bit instead of
-> immediately closing the file descriptors.
-> ]
-
-Is this for semantic reasons, or to balance the lines and make them easier =
-to
-read in the roff source?
-
-> > +.SH RETURN VALUE
-> > +On success,
-> > +.BR close_range ()
-> > +returns 0.
-> > +On error, \-1 is returned and
-> > +.I errno
-> > +is set to indicate the cause of the error.
-> > +.SH ERRORS
-> > +.TP
-> > +.B EINVAL
-> > +.I flags
-> > +is not valid, or
-> > +.I first
-> > +is greater than
-> > +.IR last .
-> > +.PP
-> > +The following can occur with
-> > +.B CLOSE_RANGE_UNSHARE
-> > +(when constructing the new descriptor table):
-> > +.TP
-> > +.B EMFILE
-> > +The per-process limit on the number of open file descriptors has been
-> > reached +(see the description of
-> > +.B RLIMIT_NOFILE
-> > +in
-> > +.BR getrlimit (2)).
-> > +.TP
-> > +.B ENOMEM
-> > +Insufficient kernel memory was available.
-> > +.SH VERSIONS
-> > +.BR close_range ()
-> > +first appeared in Linux 5.9.
-> > +.SH CONFORMING TO
-> > +.BR close_range ()
-> > +is a nonstandard function that is also present on FreeBSD.
-> > +.SH NOTES
-> > +Glibc does not provide a wrapper for this system call; call it using
-> > +.BR syscall (2).
-> > +.\" 278a5fbaed89dacd04e9d052f4594ffd0e0585de
-> > +.SS Closing all open file descriptors =20
->=20
-> The comment with the commit would be better inside the section it refers
-> to, so:
->=20
-> [
-> .SS Closing all open file descriptors
-> .\" 278a5fbaed89dacd04e9d052f4594ffd0e0585de
-> ]
-
-Indeed!
-
-> > +To avoid blindly closing file descriptors in the range of possible
-> > +file descriptors, =20
->=20
-> [
-> To avoid blindly closing file descriptors
-> in the range of possible file descriptors,
-> ]
->=20
-> > +this is sometimes implemented (on Linux) by listing open file
-> > +descriptors in =20
->=20
-> [
-> this is sometimes implemented (on Linux)
-> by listing open file descriptors in
-> ]
->=20
-> > +.I /proc/self/fd/
-> > +and calling
-> > +.BR close (2)
-> > +on each one.
-> > +.BR close_range ()
-> > +can take care of this without requiring
-> > +.I /proc
-> > +and with a single system call, =20
->=20
-> s/with/within/
->=20
-> > +which provides significant performance benefits.
-> > +.\" 60997c3d45d9a67daf01c56d805ae4fec37e0bd8
-> > +.SS Closing file descriptors before exec =20
->=20
-> [
-> .SS Closing file descriptors before exec
-> .\" 60997c3d45d9a67daf01c56d805ae4fec37e0bd8
-> ]
->=20
-> > +File descriptors can be closed safely using
-> > +.PP
-> > +.in +4n
-> > +.EX
-> > +/* we don't want anything past stderr here */
-> > +close_range(3, ~0U, CLOSE_RANGE_UNSHARE); =20
-> > +execve(....);> +.EE =20
-> > +.in
-> > +.PP
-> > +.B CLOSE_RANGE_UNSHARE
-> > +is conceptually equivalent to
-> > +.PP
-> > +.in +4n
-> > +.EX
-> > +unshare(CLONE_FILES);
-> > +close_range(first, last, 0);
-> > +.EE
-> > +.in
-> > +.PP
-> > +but can be more efficient:
-> > +if the unshared range extends past the current maximum number of file
-> > +descriptors allocated in the caller's file descriptor table =20
->=20
-> [
-> if the unshared range extends past
-> the current maximum number of file descriptors allocated
-> in the caller's file descriptor table
-> ]
->=20
-> > +(the common case when
-> > +.I last
-> > +is
-> > +.BR ~0U ), =20
->=20
-> Literal values are not (usually) formatted.
->=20
-> [
-> .I last
-> is ~0U),
-> ]
->=20
-> > +the kernel will unshare a new file descriptor table for the caller up
-> > +to =20
->=20
-> [
-> the kernel will unshare a new file descriptor table for the caller up to
-> ]
->=20
-> > +.IR first .
-> > +This avoids subsequent close calls entirely;
-> > +the whole operation is complete once the table is unshared.
-> > +.\" 582f1fb6b721facf04848d2ca57f34468da1813e
-> > +.SS Closing files on \fBexec\fP =20
->=20
-> [
-> .SS Closing files on \fBexec\fP
-> .\" 582f1fb6b721facf04848d2ca57f34468da1813e
-> ]
->=20
-> > +This is particularly useful in cases where multiple
-> > +.RB pre- exec
-> > +setup steps risk conflicting with each other.
-> > +For example, setting up a
-> > +.BR seccomp (2)
-> > +profile can conflict with a
-> > +.B close_range =20
->=20
-> .BR close_range ()
->=20
-> > +call:
-> > +if the file descriptors are closed before the seccomp profile is set =
+Hi J,
 =20
 >=20
-> .BR seccomp (2)
+> When gate_work/ungate_work gets an error during hibern8_enter or exit,
+>  ufshcd_err_handler()
+>    ufshcd_scsi_block_requests()
+>    ufshcd_reset_and_restore()
+>      ufshcd_clear_ua_wluns() -> stuck
+>    ufshcd_scsi_unblock_requests()
 >=20
-> > +up, =20
->=20
-> Please, split at a different point.
->=20
-> > +the profile setup can't use them control their closure; =20
->=20
-> I don't understand what you wanted to say.  them?
+> In order to avoid it, ufshcd_clear_ua_wluns() can be called per recovery
+> flows
+> such as suspend/resume, link_recovery, and error_handler.
+Not sure that suspend/resume are UAC events?
+=20
+Also the 'fixes' tag is missing.
 
-Oops, I meant "the profile setup can't use them itself, or control their
-closure".
-
->=20
-> > +if the file descriptors are closed afterwards,
-> > +the seccomp profile can't block the
-> > +.B close_range =20
->=20
-> .BR close_range ()
->=20
-> > +call or any fallbacks.
-> > +Using
-> > +.B CLOSE_RANGE_CLOEXEC
-> > +avoids this:
-> > +the descriptors can be marked before the seccomp profile is set up, =20
->=20
-> .BR seccomp (2)
->=20
-> > +and the profile can control access to
-> > +.B close_range =20
->=20
-> .BR close_range ()
->=20
-> > +without affecting the calling process.
-> > +.SH EXAMPLES
-> > +The following program is designed to be execed by the second program
-> > +below.
-> > +It lists its open file descriptors:
-> > +.PP
-> > +.in +4n
-> > +.EX
-> > +/* listopen.c */
-> > +
-> > +#include <stdio.h>
-> > +#include <sys/stat.h>
-> > +
-> > +int
-> > +main(int argc, char *argv[])
-> > +{
-> > +    int i; =20
->=20
-> We use C99 declarations for loop indices.
->=20
-> > +    struct stat buf;
-> > +
-> > +    for (i =3D 0; i < 100; i++) { =20
->=20
->     for (int i =3D 0; i < 100; i++) {
->=20
-> > +        if (!fstat(i, &buf))
-> > +            printf("FD %d is open.\n", i); =20
->=20
-> s/\\/\\e/
->=20
-> see: d1a719857b7eb68f5e5c1c965089038dee683240
->=20
-> I sometimes forget to fix those after copying the program to the page.
-> My solution is to copy the rendered text from the man page to a file
-> and then compile, and those errors become obvious ;)
-
-Ah yes, good catch. I was looking into automating checks for the source code
-included in man pages throughout the project, but that throws a spanner in
-the works!
-
->=20
-> > +    }
-> > +
-> > +    exit(EXIT_SUCCESS);
-> > +)
-> > +.EE
-> > +.in
-> > +.PP
-> > +This program executes the command given on its command-line after
-> > +opening the files listed after the command,
-> > +and then using =20
->=20
-> s/using/uses/
->=20
-> > +.B close_range =20
->=20
-> .BR close_range ()
->=20
-> > +to close them:
-> > +.PP
-> > +.in +4n
-> > +.EX
-> > +/* close_range.c */
-> > +
-> > +#include <fcntl.h>
-> > +#include <linux/close_range.h>
-> > +#include <stdio.h>
-> > +#include <stdlib.h>
-> > +#include <sys/stat.h>
-> > +#include <sys/syscall.h>
-> > +#include <sys/types.h>
-> > +#include <unistd.h>
-> > +
-> > +int
-> > +main(int argc, char *argv[])
-> > +{
-> > +    char *newargv[] =3D { NULL };
-> > +    char *newenviron[] =3D { NULL };
-> > +    int i; =20
->=20
-> dd
->=20
-> > +
-> > +    if (argc < 3) {
-> > +        fprintf(stderr, "Usage: %s <command-to-run> <files-to-open>\n",
-> > argv[0]); =20
->=20
-> s/\\/\\e/
->=20
-> > +        exit(EXIT_FAILURE);
-> > +    }
-> > +
-> > +    for (i =3D 2; i < argc; i++) { =20
->=20
->     for (int i =3D 2; i < argc; i++) {
->=20
-> > +        if (open(argv[i], O_RDONLY) =3D=3D -1) {
-> > +            perror(argv[i]);
-> > +            exit(EXIT_FAILURE);
-> > +        }
-> > +    }
-> > +
-> > +    if (syscall(__NR_close_range, 3, ~0U, CLOSE_RANGE_UNSHARE) =3D=3D =
--1) {
-> > +        perror("close_range");
-> > +        exit(EXIT_FAILURE);
-> > +    }
-> > +
-> > +    execve(argv[1], newargv, newenviron);
-> > +    perror("execve");
-> > +    exit(EXIT_FAILURE);
-> > +}
-> > +.EE
-> > +.in
-> > +.PP
-> > +We can use the second program to exec the first as follows:
-> > +.PP
-> > +.in +4n
-> > +.EX
-> > +.RB "$" " make listopen close_range"
-> > +.RB "$" " ./close_range ./listopen /dev/null /dev/zero"
-> > +FD 0 is open.
-> > +FD 1 is open.
-> > +FD 2 is open.
-> > +.EE
-> > +.in
-> > +.PP
-> > +Removing the call to
-> > +.B close_range =20
->=20
-> .BR close_range ()
->=20
-> > +will show different output, with the file descriptors for the named
-> > +files still open. =20
->=20
-> [
-> will show different output,
-> with the file descriptors for the named files still open.
-> ]
-
-Thanks, I'll send a v4 with all the fixes above.
-
-Regards,
-
-Stephen
-
---Sig_/fRt+fLRzLUwZyTg/GIF=MWN
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEnPVX/hPLkMoq7x0ggNMC9Yhtg5wFAl/fyZUACgkQgNMC9Yht
-g5xFZBAAidkwTET2IWumCyIGRVKnjmz2Fh2rlVXbhlRPIEsylpZkCQYl9od18ETg
-MTG6sv5GbA1ZO6zdAqbgvj0ex5L0tlMJrAA45yn10Q4aC43ykroJ7Sz5j9BZBpue
-cWASz4powcFfV19Vdk/Aj0zgYN3L1xJtwHGOSMzhK3v3QadO/2dEfO9J3Pim+UcW
-cRTGrZuuGYEvCEcCm59Ea0v3s8oSealdyQkkseNyWmVgdcejEKhU1Bdbu84w4OZ+
-0Qs0T2MJ+Dy/HEBK9CwmCNLBRHVXDkYtYvtFkcubL48kf3jLbjoNwda4B4LO6qaO
-YESShB4040udOcBORA5U53fxuVSVMQUFmqvRvEAUeiEBAM+bn5Kil9fZrgVrPzK7
-Twx3rNxgQ4AiqelIVhnQ/OmklrG8drl01bcNDCWK5evQ58TYJmAsjcbSUUXG+zTO
-o7p9WZtWJnJVbt6JATM6I3H+YCQk4zceMXIdzFCkZ6sy3SebzQjKIIUG/JuXcqgw
-4xml4as1cXWtZPg6//W99FnMZ8qNl7I8YyJ19obDY33nrqOSmsfyuqkAFdwBByUS
-un+/UrLK/RehtfiZHuX8qXXiEixw0nVYPrTZkHgOK1GZ/omHlCVgJ+JyLESagrvi
-cN2gIKriZy5aN50lmTQRyjQ6an1bsMY9dC9YtR8NSx45u1MMPIU=
-=ytE6
------END PGP SIGNATURE-----
-
---Sig_/fRt+fLRzLUwZyTg/GIF=MWN--
+Thanks,
+Avri
