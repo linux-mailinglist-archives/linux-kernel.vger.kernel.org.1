@@ -2,132 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B1802DF60F
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 17:16:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C69A2DF615
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 17:23:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727711AbgLTQQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 11:16:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726896AbgLTQQb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 11:16:31 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0905CC0613CF;
-        Sun, 20 Dec 2020 08:15:49 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5C26A593;
-        Sun, 20 Dec 2020 17:15:47 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1608480947;
-        bh=VZLJPMjPtyGsIw6ilq6Yr9TNEQ0z+NX3LMCImjnLscc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YcrCH8A1jls8EPKYeV8GAPY4UwxotKCpPZUoHJZBnISXHhyP5TaOPMVcb/cR7Zemv
-         CLuJ/QFeDkWqlYTnue/FzOMrLM04WtZG6dH7a67ckkEkHVvybsc/32ks0ekvPgPg8i
-         ieojYrgP1uOoCuUMclvgM9dILLUicDPMdSax/1Z0=
-Date:   Sun, 20 Dec 2020 18:15:39 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 4/9] media: uvcvideo: Entity defined get_info and
- get_cur
-Message-ID: <X994q+x5mEAaLeZQ@pendragon.ideasonboard.com>
-References: <20201215154439.69062-1-ribalda@chromium.org>
- <20201215154439.69062-5-ribalda@chromium.org>
+        id S1727715AbgLTQWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 11:22:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50422 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726772AbgLTQWS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Dec 2020 11:22:18 -0500
+Date:   Sun, 20 Dec 2020 17:21:35 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608481297;
+        bh=nTD1H+SG3XEKFMx5RD66ucs1UuPn0oFn/eNKNkyotjo=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RjKaS/EwabSnF+suE6ABylso8DGGmPUhzrnjppWZ48AORRj8AcDRU31eZSA9fjEQT
+         5pHkLYuPboCfa1qEySEl1Bl1z9G9AnLJzH6AsvK+1tt/pIXV6vqcVnJItambNNRq2g
+         OmHo0rBVKFSiXQJCnaEaxT5lzCxeg8OCR3Ii/qANBdZCiu48jX1YGYfLC9FnOeCw+F
+         hH2izGJ1qoCCGpSk/kHmUMbtZo3Fo1gXnjktMHv/ENcm78iWRWxkkmRzt3/Jv4u+tj
+         A0NW6Rq5P5Utp1g42isAh5/c4j0DFTIMxbG2Au8aIqhfwb2/72ZQTY1LpHINGR0DNW
+         eHFu1WlNBwTkg==
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Marek Behun <marek.behun@nic.cz>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Terry Zhou <bjzhou@marvell.com>,
+        Konstantin Porotchkin <kostap@marvell.com>
+Subject: Re: [PATCH] clk: mvebu: a3700: fix the XTAL MODE pin to MPP1_9
+Message-ID: <20201220162135.yyijnczu6dxgnpda@pali>
+References: <20201106100039.11385-1-pali@kernel.org>
+ <160842189035.1580929.16863503861561557281@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201215154439.69062-5-ribalda@chromium.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <160842189035.1580929.16863503861561557281@swboyd.mtv.corp.google.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo,
-
-Thank you for the patch.
-
-Maybe s/Entity defined/Allow entity-defined/ in the subject line ?
-
-On Tue, Dec 15, 2020 at 04:44:34PM +0100, Ricardo Ribalda wrote:
-> Allows controls to get their properties and current value
-> from an entity-defined function instead of via a query to the USB
-> device.
+On Saturday 19 December 2020 15:51:30 Stephen Boyd wrote:
+> Quoting Pali Rohár (2020-11-06 02:00:39)
+> > From: Terry Zhou <bjzhou@marvell.com>
+> > 
+> > There is an error in the current code that the XTAL MODE
+> > pin was set to NB MPP1_31 which should be NB MPP1_9.
+> > The latch register of NB MPP1_9 has different offset of 0x8.
+> > 
+> > Signed-off-by: Terry Zhou <bjzhou@marvell.com>
+> > [pali: Fix pin name in commit message]
+> > Signed-off-by: Pali Rohár <pali@kernel.org>
+> > Fixes: 7ea8250406a6 ("clk: mvebu: Add the xtal clock for Armada 3700 SoC")
+> > Cc: stable@vger.kernel.org
+> > 
+> > ---
 > 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> ---
->  drivers/media/usb/uvc/uvc_ctrl.c | 22 ++++++++++++++++++----
->  drivers/media/usb/uvc/uvcvideo.h |  5 +++++
->  2 files changed, 23 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-> index 9f6174a10e73..531816762892 100644
-> --- a/drivers/media/usb/uvc/uvc_ctrl.c
-> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
-> @@ -980,10 +980,20 @@ static int __uvc_ctrl_get(struct uvc_video_chain *chain,
->  		return -EACCES;
->  
->  	if (!ctrl->loaded) {
-> -		ret = uvc_query_ctrl(chain->dev, UVC_GET_CUR, ctrl->entity->id,
-> -				chain->dev->intfnum, ctrl->info.selector,
-> +		if (ctrl->entity->get_cur) {
-> +			ret = ctrl->entity->get_cur(chain->dev,
-> +				ctrl->entity,
-> +				ctrl->info.selector,
->  				uvc_ctrl_data(ctrl, UVC_CTRL_DATA_CURRENT),
->  				ctrl->info.size);
-> +		} else {
-> +			ret = uvc_query_ctrl(chain->dev, UVC_GET_CUR,
-> +				ctrl->entity->id,
-> +				chain->dev->intfnum,
-> +				ctrl->info.selector,
-> +				uvc_ctrl_data(ctrl, UVC_CTRL_DATA_CURRENT),
-> +				ctrl->info.size);
+> Applied to clk-next
 
-We could possibly set entity->get_cur by default to a function wrapping
-uvc_query_ctrl() to avoid the condition here. This isn't mandatory for
-now though, but I'll toy with it on top of the series to avoid storing
-function pointers in a non-const structure.
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> +		}
->  		if (ret < 0)
->  			return ret;
->  
-> @@ -1687,8 +1697,12 @@ static int uvc_ctrl_get_flags(struct uvc_device *dev,
->  	if (data == NULL)
->  		return -ENOMEM;
->  
-> -	ret = uvc_query_ctrl(dev, UVC_GET_INFO, ctrl->entity->id, dev->intfnum,
-> -			     info->selector, data, 1);
-> +	if (ctrl->entity->get_info)
-> +		ret = ctrl->entity->get_info(dev, ctrl->entity,
-> +					     ctrl->info.selector, data);
-> +	else
-> +		ret = uvc_query_ctrl(dev, UVC_GET_INFO, ctrl->entity->id,
-> +				     dev->intfnum, info->selector, data, 1);
->  	if (!ret)
->  		info->flags |= (data[0] & UVC_CONTROL_CAP_GET ?
->  				UVC_CTRL_FLAG_GET_CUR : 0)
-> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> index 00f985001c1d..ae464ba83f4f 100644
-> --- a/drivers/media/usb/uvc/uvcvideo.h
-> +++ b/drivers/media/usb/uvc/uvcvideo.h
-> @@ -353,6 +353,11 @@ struct uvc_entity {
->  	u8 bNrInPins;
->  	u8 *baSourceID;
->  
-> +	int (*get_info)(struct uvc_device *dev, struct uvc_entity *entity,
-> +			u8 cs, u8 *caps);
-> +	int (*get_cur)(struct uvc_device *dev, struct uvc_entity *entity,
-> +		       u8 cs, void *data, u16 size);
-> +
->  	unsigned int ncontrols;
->  	struct uvc_control *controls;
->  };
-
--- 
-Regards,
-
-Laurent Pinchart
+Hello Stephen! As this is fix also for stable releases, could you please
+queue this patch for 5.11 release?
