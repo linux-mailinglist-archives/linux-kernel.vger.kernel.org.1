@@ -2,263 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 147892DF5CF
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 16:13:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B24A72DF5D3
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 16:19:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727693AbgLTPNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 10:13:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39318 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727590AbgLTPNS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 10:13:18 -0500
-From:   guoren@kernel.org
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     guoren@kernel.org, arnd@arndb.de
-Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-arch@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH v2 1/5] csky: Remove custom asm/atomic.h implementation
-Date:   Sun, 20 Dec 2020 15:12:22 +0000
-Message-Id: <1608477146-60070-1-git-send-email-guoren@kernel.org>
-X-Mailer: git-send-email 2.7.4
+        id S1727695AbgLTPSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 10:18:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727651AbgLTPSj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Dec 2020 10:18:39 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26F37C0613CF;
+        Sun, 20 Dec 2020 07:17:57 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id s26so17612710lfc.8;
+        Sun, 20 Dec 2020 07:17:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7e0LepHwj7nYia6u6S4PeKtDYxxlSlm1C6EG28R9AXI=;
+        b=OLW1s/WNHCx7Jx2XhDZBCLncjTN1M868BCUTETZYtEmbOGMV4GQka4yNY824UAjZxZ
+         eXG5B5Fdq9BZJze9x99gUBnftrIH41nRCcDK3QPfY9becL9rnXjGp6oz/n23zou8PuQF
+         LPOl32382BayvGLvzMQ+DKkYxLcPIpOz/slNU3Qeczaar2j6yJTRcCgNd6bIcpIWsG0F
+         /7XTk6uhpY9vnSuQ34L3HjJ3vD/J2rvCoynJpYNVWG/yiJOfMfBTvCCMiaEy9eaC58Kv
+         kfk2aTp1irQUdHHbr9MMq0dTiIEqWuE+20cRYEyRFDRQF0gZIFfTziAvBeOnnRBLBF47
+         Zn8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7e0LepHwj7nYia6u6S4PeKtDYxxlSlm1C6EG28R9AXI=;
+        b=edu62oy1laEw5VZWDjgykaMZiyJM+BZeBV1vFv43f4gFI6tYsuLTp2WH00ovhuk6L9
+         o1ACIOKfAjTpQY3Ckpf4Ngp4EdXIzYgMWXu9FaBXTQp7EeGmKj2rXtLtPFfw6Z818QF1
+         8mBGdMvxI+GxJEHtgNfAgfvSiq3poi8B0Cy1relcIB6vY3T0po6zJAlefVRFa+l8qoGL
+         x63C1VG3aG+vahfW0V0r7nEjWDkKHjL0yzBGg4ZXJndSrhiRxqet5eHYKBJhJ9vXTSAi
+         q3v0fZNumSApI07UscmuxEg27HEMDxltYrgjxXPFLhTBTd/TA8MmkrAk4/2MeCBd8qcY
+         8DJQ==
+X-Gm-Message-State: AOAM5334tWSkP8+bDSjRlncMAVH6Xe3fZp0mlMK65XbGuQ5/ujZ3bRbp
+        3QD0imcPlgE91CnfDE06c94=
+X-Google-Smtp-Source: ABdhPJzs/+UvvfyXtHrDzeDFzBhxrpL4ml36osp+ANrMPr9W9VC0WNqRSW71t3rTQvu5DnFSdadFVg==
+X-Received: by 2002:a19:58f:: with SMTP id 137mr5103258lff.0.1608477475198;
+        Sun, 20 Dec 2020 07:17:55 -0800 (PST)
+Received: from kari-VirtualBox (87-95-193-210.bb.dnainternet.fi. [87.95.193.210])
+        by smtp.gmail.com with ESMTPSA id u10sm1676173lfm.156.2020.12.20.07.17.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Dec 2020 07:17:54 -0800 (PST)
+Date:   Sun, 20 Dec 2020 17:17:52 +0200
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Daniel West <daniel.west.dev@gmail.com>
+Cc:     manishc@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        gregkh@linuxfoundation.org, netdev@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Daniel West <daniel.s.west.dev@gmail.com>
+Subject: Re: [PATCH] staging: qlge: Removed duplicate word in comment.
+Message-ID: <20201220151752.xadu24n57nocsfeg@kari-VirtualBox>
+References: <20201219014829.362810-1-daniel.west.dev@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201219014829.362810-1-daniel.west.dev@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
+On Fri, Dec 18, 2020 at 05:48:29PM -0800, Daniel West wrote:
+> This patch fixes the checkpatch warning:
+> 
+> WARNING: Possible repeated word: 'and'
+> 
+> Signed-off-by: Daniel West <daniel.s.west.dev@gmail.com>
+> ---
+>  drivers/staging/qlge/qlge_main.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/qlge/qlge_main.c b/drivers/staging/qlge/qlge_main.c
+> index e6b7baa12cd6..22167eca7c50 100644
+> --- a/drivers/staging/qlge/qlge_main.c
+> +++ b/drivers/staging/qlge/qlge_main.c
+> @@ -3186,7 +3186,7 @@ static void ql_enable_msix(struct ql_adapter *qdev)
+>  		     "Running with legacy interrupts.\n");
+>  }
+>  
+> -/* Each vector services 1 RSS ring and and 1 or more
+> +/* Each vector services 1 RSS ring and 1 or more
+>   * TX completion rings.  This function loops through
+>   * the TX completion rings and assigns the vector that
+>   * will service it.  An example would be if there are
 
-Use generic atomic implementation based on cmpxchg. So remove csky
-asm/atomic.h.
+Patch it self looks good. I nit pick a little bit because this is
+staging and were here to learn mostly. You should use imperative mood
+in subject line. So Removed -> Remove. Also no period in subject line.
 
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Arnd Bergmann <arnd@kernel.org>
-Cc: Paul E. McKenney <paulmck@kernel.org>
----
- arch/csky/include/asm/atomic.h | 212 -----------------------------------------
- 1 file changed, 212 deletions(-)
- delete mode 100644 arch/csky/include/asm/atomic.h
+I'm also confused by your email. Other patch which you send has sign of
+is with daniel.s.west.dev and another is daniel.west.dev. So do you use
+both? I also think that you made this email becouse you want to get all 
+lkml mails. That is perfectly fine and many does this. But many does it
+just for reading. That way if someone needs to send you email it wont be
+lost because  you do not read that email anymore. Many does that they
+still send  messages from they real email so that email do get so many
+emails. This is ofcourse your decission I'm just telling you options.
 
-diff --git a/arch/csky/include/asm/atomic.h b/arch/csky/include/asm/atomic.h
-deleted file mode 100644
-index e369d73..00000000
---- a/arch/csky/include/asm/atomic.h
-+++ /dev/null
-@@ -1,212 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--
--#ifndef __ASM_CSKY_ATOMIC_H
--#define __ASM_CSKY_ATOMIC_H
--
--#include <linux/version.h>
--#include <asm/cmpxchg.h>
--#include <asm/barrier.h>
--
--#ifdef CONFIG_CPU_HAS_LDSTEX
--
--#define __atomic_add_unless __atomic_add_unless
--static inline int __atomic_add_unless(atomic_t *v, int a, int u)
--{
--	unsigned long tmp, ret;
--
--	smp_mb();
--
--	asm volatile (
--	"1:	ldex.w		%0, (%3) \n"
--	"	mov		%1, %0   \n"
--	"	cmpne		%0, %4   \n"
--	"	bf		2f	 \n"
--	"	add		%0, %2   \n"
--	"	stex.w		%0, (%3) \n"
--	"	bez		%0, 1b   \n"
--	"2:				 \n"
--		: "=&r" (tmp), "=&r" (ret)
--		: "r" (a), "r"(&v->counter), "r"(u)
--		: "memory");
--
--	if (ret != u)
--		smp_mb();
--
--	return ret;
--}
--
--#define ATOMIC_OP(op, c_op)						\
--static inline void atomic_##op(int i, atomic_t *v)			\
--{									\
--	unsigned long tmp;						\
--									\
--	asm volatile (							\
--	"1:	ldex.w		%0, (%2) \n"				\
--	"	" #op "		%0, %1   \n"				\
--	"	stex.w		%0, (%2) \n"				\
--	"	bez		%0, 1b   \n"				\
--		: "=&r" (tmp)						\
--		: "r" (i), "r"(&v->counter)				\
--		: "memory");						\
--}
--
--#define ATOMIC_OP_RETURN(op, c_op)					\
--static inline int atomic_##op##_return(int i, atomic_t *v)		\
--{									\
--	unsigned long tmp, ret;						\
--									\
--	smp_mb();							\
--	asm volatile (							\
--	"1:	ldex.w		%0, (%3) \n"				\
--	"	" #op "		%0, %2   \n"				\
--	"	mov		%1, %0   \n"				\
--	"	stex.w		%0, (%3) \n"				\
--	"	bez		%0, 1b   \n"				\
--		: "=&r" (tmp), "=&r" (ret)				\
--		: "r" (i), "r"(&v->counter)				\
--		: "memory");						\
--	smp_mb();							\
--									\
--	return ret;							\
--}
--
--#define ATOMIC_FETCH_OP(op, c_op)					\
--static inline int atomic_fetch_##op(int i, atomic_t *v)			\
--{									\
--	unsigned long tmp, ret;						\
--									\
--	smp_mb();							\
--	asm volatile (							\
--	"1:	ldex.w		%0, (%3) \n"				\
--	"	mov		%1, %0   \n"				\
--	"	" #op "		%0, %2   \n"				\
--	"	stex.w		%0, (%3) \n"				\
--	"	bez		%0, 1b   \n"				\
--		: "=&r" (tmp), "=&r" (ret)				\
--		: "r" (i), "r"(&v->counter)				\
--		: "memory");						\
--	smp_mb();							\
--									\
--	return ret;							\
--}
--
--#else /* CONFIG_CPU_HAS_LDSTEX */
--
--#include <linux/irqflags.h>
--
--#define __atomic_add_unless __atomic_add_unless
--static inline int __atomic_add_unless(atomic_t *v, int a, int u)
--{
--	unsigned long tmp, ret, flags;
--
--	raw_local_irq_save(flags);
--
--	asm volatile (
--	"	ldw		%0, (%3) \n"
--	"	mov		%1, %0   \n"
--	"	cmpne		%0, %4   \n"
--	"	bf		2f	 \n"
--	"	add		%0, %2   \n"
--	"	stw		%0, (%3) \n"
--	"2:				 \n"
--		: "=&r" (tmp), "=&r" (ret)
--		: "r" (a), "r"(&v->counter), "r"(u)
--		: "memory");
--
--	raw_local_irq_restore(flags);
--
--	return ret;
--}
--
--#define ATOMIC_OP(op, c_op)						\
--static inline void atomic_##op(int i, atomic_t *v)			\
--{									\
--	unsigned long tmp, flags;					\
--									\
--	raw_local_irq_save(flags);					\
--									\
--	asm volatile (							\
--	"	ldw		%0, (%2) \n"				\
--	"	" #op "		%0, %1   \n"				\
--	"	stw		%0, (%2) \n"				\
--		: "=&r" (tmp)						\
--		: "r" (i), "r"(&v->counter)				\
--		: "memory");						\
--									\
--	raw_local_irq_restore(flags);					\
--}
--
--#define ATOMIC_OP_RETURN(op, c_op)					\
--static inline int atomic_##op##_return(int i, atomic_t *v)		\
--{									\
--	unsigned long tmp, ret, flags;					\
--									\
--	raw_local_irq_save(flags);					\
--									\
--	asm volatile (							\
--	"	ldw		%0, (%3) \n"				\
--	"	" #op "		%0, %2   \n"				\
--	"	stw		%0, (%3) \n"				\
--	"	mov		%1, %0   \n"				\
--		: "=&r" (tmp), "=&r" (ret)				\
--		: "r" (i), "r"(&v->counter)				\
--		: "memory");						\
--									\
--	raw_local_irq_restore(flags);					\
--									\
--	return ret;							\
--}
--
--#define ATOMIC_FETCH_OP(op, c_op)					\
--static inline int atomic_fetch_##op(int i, atomic_t *v)			\
--{									\
--	unsigned long tmp, ret, flags;					\
--									\
--	raw_local_irq_save(flags);					\
--									\
--	asm volatile (							\
--	"	ldw		%0, (%3) \n"				\
--	"	mov		%1, %0   \n"				\
--	"	" #op "		%0, %2   \n"				\
--	"	stw		%0, (%3) \n"				\
--		: "=&r" (tmp), "=&r" (ret)				\
--		: "r" (i), "r"(&v->counter)				\
--		: "memory");						\
--									\
--	raw_local_irq_restore(flags);					\
--									\
--	return ret;							\
--}
--
--#endif /* CONFIG_CPU_HAS_LDSTEX */
--
--#define atomic_add_return atomic_add_return
--ATOMIC_OP_RETURN(add, +)
--#define atomic_sub_return atomic_sub_return
--ATOMIC_OP_RETURN(sub, -)
--
--#define atomic_fetch_add atomic_fetch_add
--ATOMIC_FETCH_OP(add, +)
--#define atomic_fetch_sub atomic_fetch_sub
--ATOMIC_FETCH_OP(sub, -)
--#define atomic_fetch_and atomic_fetch_and
--ATOMIC_FETCH_OP(and, &)
--#define atomic_fetch_or atomic_fetch_or
--ATOMIC_FETCH_OP(or, |)
--#define atomic_fetch_xor atomic_fetch_xor
--ATOMIC_FETCH_OP(xor, ^)
--
--#define atomic_and atomic_and
--ATOMIC_OP(and, &)
--#define atomic_or atomic_or
--ATOMIC_OP(or, |)
--#define atomic_xor atomic_xor
--ATOMIC_OP(xor, ^)
--
--#undef ATOMIC_FETCH_OP
--#undef ATOMIC_OP_RETURN
--#undef ATOMIC_OP
--
--#include <asm-generic/atomic.h>
--
--#endif /* __ASM_CSKY_ATOMIC_H */
--- 
-2.7.4
-
+--
+Kari Argillander
