@@ -2,220 +2,541 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5192F2DF848
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 05:34:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C71552DF7BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 03:51:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727888AbgLUEd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 23:33:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727475AbgLUEd4 (ORCPT
+        id S1727440AbgLUCtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 21:49:33 -0500
+Received: from 18.mo3.mail-out.ovh.net ([87.98.172.162]:32943 "EHLO
+        18.mo3.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725497AbgLUCtc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 23:33:56 -0500
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28879C0613D3;
-        Sun, 20 Dec 2020 20:33:16 -0800 (PST)
-Received: by mail-qk1-x72d.google.com with SMTP id w79so7859103qkb.5;
-        Sun, 20 Dec 2020 20:33:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zHVLZgXZIM4TmTpEy58xQ29e7tTOwbkWogxRTq7+Q/4=;
-        b=PuMdkLqUKZ7QZHpvt4nWcW+HrLc96qLy/8UkSDe3ajBfbYuow3YExknr6ih5JNDi9p
-         vYGezxmrwWzS5aqS9bUaeKJn66HRIRIcbQNLkMs+tipN3nbBRqxJK3EbCAEhTwQff72V
-         iagOBZ4hMRcstIZ2s1ql3ZI0dyx0H6xrz+u0fHilm95zqkmbHh21UNwsyg/m62s0qyrZ
-         gY41nsVQBw2sIpzAs6607Du2ihwHJVvAgt7q6XW1TlnxQmWdHMjUPPEkAheWfsC/LMUx
-         iG2UR2o99G0lH4FHk9lOtf6WujCJV8r3UdmeKtZOS2NQxyk1ljUuIzZc9CmMHGGtLdQY
-         INdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zHVLZgXZIM4TmTpEy58xQ29e7tTOwbkWogxRTq7+Q/4=;
-        b=tNsjY9Ufl16dLzw4oyJEjUVtDPjpUqgCONmY/pRpTk/7taaoxkkF00LBGEGXqqcD6F
-         Ua9omlkxmPb+f3d9yNLruEjbac/Lf0kSQ+wTGxHHo5cj2g7wb9wio/OZ066VAB+O3zgV
-         wMfjd5pVzE/aUY9R/KRPCGaEk3zuz9+DHrJedTXSS+A9qZlBW2Uc82pyqBTLV3/ZEFaF
-         TbFdp70dM2Plyib/gVKiShPD74ALzWnsm8HsAXnLGEKmrvyG/XGKzzqPeLLFrTghVJiO
-         u1pF3TJbYb9uXOyyPTrl0/fD/en2D5zkeWeahsyfo2khFzsd+h1S/RmNiMVNPsq3IawY
-         5LaQ==
-X-Gm-Message-State: AOAM5329Y1ONct0OZsZaoSFCMmJPHiwGEmHha/KmxdY1ehBeTGt1yd0S
-        zu5nyz3E1bBiH8Z5HwZ2ZSK+jNeWJpoSHg==
-X-Google-Smtp-Source: ABdhPJxQYKDnKqi5QQeQYX5N/kXcW237Lj96UfceqIIDhm6a0q6YtWQykgru6JIZT8IKLM6tWGgyBw==
-X-Received: by 2002:a37:a342:: with SMTP id m63mr15005445qke.120.1608500645040;
-        Sun, 20 Dec 2020 13:44:05 -0800 (PST)
-Received: from shinobu (072-189-064-225.res.spectrum.com. [72.189.64.225])
-        by smtp.gmail.com with ESMTPSA id d190sm10151158qkc.14.2020.12.20.13.44.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Dec 2020 13:44:04 -0800 (PST)
-Date:   Sun, 20 Dec 2020 16:44:01 -0500
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     David Lechner <david@lechnology.com>, David.Laight@ACULAB.COM
-Cc:     jic23@kernel.org, kernel@pengutronix.de,
-        linux-stm32@st-md-mailman.stormreply.com, a.fatoum@pengutronix.de,
-        kamel.bouhara@bootlin.com, gwendal@chromium.org,
-        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com
-Subject: Re: [PATCH v6 0/5] Introduce the Counter character device interface
-Message-ID: <X9/Foc6wGl5dR1yK@shinobu>
-References: <cover.1606075915.git.vilhelm.gray@gmail.com>
- <6f0d78ae-9724-f67f-f133-a1148a5f1688@lechnology.com>
+        Sun, 20 Dec 2020 21:49:32 -0500
+X-Greylist: delayed 8399 seconds by postgrey-1.27 at vger.kernel.org; Sun, 20 Dec 2020 21:49:30 EST
+Received: from player716.ha.ovh.net (unknown [10.108.42.167])
+        by mo3.mail-out.ovh.net (Postfix) with ESMTP id E577C2708A7
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 23:01:02 +0100 (CET)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player716.ha.ovh.net (Postfix) with ESMTPSA id 6C655194A6848;
+        Sun, 20 Dec 2020 22:00:55 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-100R003df47d4bf-8fc5-404e-860e-80c8d5619ddc,
+                    B6E58838008068FDF3022E22B316484108BE3B31) smtp.auth=steve@sk2.org
+X-OVh-ClientIp: 82.65.25.201
+Date:   Sun, 20 Dec 2020 23:00:53 +0100
+From:   Stephen Kitt <steve@sk2.org>
+To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Cc:     linux-man@vger.kernel.org,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] close_range.2: new page documenting close_range(2)
+Message-ID: <20201220230053.733f3036@heffalump.sk2.org>
+In-Reply-To: <e2ece8dc-9379-0e56-bbfa-ffc5f6b5ca2c@gmail.com>
+References: <20201218165815.6963-1-steve@sk2.org>
+        <e2ece8dc-9379-0e56-bbfa-ffc5f6b5ca2c@gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="D0h9yNnjO8W6xx5O"
-Content-Disposition: inline
-In-Reply-To: <6f0d78ae-9724-f67f-f133-a1148a5f1688@lechnology.com>
+ boundary="Sig_/fRt+fLRzLUwZyTg/GIF=MWN"; protocol="application/pgp-signature"
+X-Ovh-Tracer-Id: 14528049448548322774
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedujedrvddttddgudeifecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkjghfofggtgesghdtreerredtvdenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecuggftrfgrthhtvghrnhepjeekffdvhfejkeffudekhedvtddvhfeiheehvdehkeetkedufeejffeuueevvddvnecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejudeirdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---D0h9yNnjO8W6xx5O
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+--Sig_/fRt+fLRzLUwZyTg/GIF=MWN
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Dec 13, 2020 at 05:15:14PM -0600, David Lechner wrote:
-> On 11/22/20 2:29 PM, William Breathitt Gray wrote:
-> >=20
-> > 1. Should standard Counter component data types be defined as u8 or u32?
-> >=20
-> >     Many standard Counter component types such COUNTER_COMP_SIGNAL_LEVEL
-> >     have standard values defined (e.g. COUNTER_SIGNAL_LEVEL_LOW and
-> >     COUNTER_SIGNAL_LEVEL_HIGH). These values are currently handled by t=
-he
-> >     Counter subsystem code as u8 data types.
-> >=20
-> >     If u32 is used for these values instead, C enum structures could be
-> >     used by driver authors to implicitly cast these values via the driv=
-er
-> >     callback parameters.
-> >=20
-> >     This question is primarily addressed to David Lechner. I'm somewhat
-> >     confused about how this setup would look in device drivers. I've go=
-ne
-> >     ahead and refactored the code to support u32 enums, and pushed it to
-> >     a separate branch on my repository called counter_chrdev_v6_u32_enu=
-m:
-> >     https://gitlab.com/vilhelmgray/iio/-/tree/counter_chrdev_v6_u32_enum
-> >=20
-> >     Please check it out and let me know what you think. Is this the
-> >     support you had in mind? I'm curious to see an example of how would
-> >     your driver callback functions would look in this case. If everythi=
-ng
-> >     works out fine, then I'll submit this branch as v7 of this patchset.
->=20
-> I haven't had time to look at this in depth, but just superficially looki=
-ng
-> at it, it is mostly there. The driver callback would just use the enum ty=
-pe
-> in place of u32. For example:
->=20
-> static int ti_eqep_function_write(struct counter_device *counter,
-> 				  struct counter_count *count,
-> 				  enum counter_function function)
->=20
-> and the COUNTER_FUNCTION_* constants would be defined as:
->=20
-> enum counter_function {
-> 	COUNTER_FUNCTION_INCREASE,
-> 	...
-> };
->=20
-> instead of using #define macros.
->=20
-> One advantage I see to using u8, at least in the user API data structures,
-> is that it increases the number of events that fit in the kfifo buffer by
-> a significant factor.
->=20
-> And that is not to say that we couldn't do both: have the user API structs
-> use u8 for enum values and still use u32/strong enum types internally in
-> the callback functions.
+Hi Alex,
 
-I'm including David Laight because he initially opposed enums in favor
-of fixed size types when we discussed this in an earlier revision:
-https://lkml.org/lkml/2020/5/3/159
+On Sat, 19 Dec 2020 15:00:00 +0100, "Alejandro Colomar (man-pages)"
+<alx.manpages@gmail.com> wrote:
+> Please see some comments below.
+> It's looking good ;)
 
-However, there have been significant changes to this patchset so the
-context now is different than those earlier discussions (i.e. we're no
-longer discussing ioctl calls).
+Thanks for your review and patience!
 
-I think reimplementing these constants as enums as described could work.
-If we do so, should the enum constants be given specific values? For
-example:
-
-enum counter_function {
-	COUNTER_FUNCTION_INCREASE =3D 0,
-	COUNTER_FUNCTION_DECREASE =3D 1,
-	...
-};
-
+> On 12/18/20 5:58 PM, Stephen Kitt wrote:
+> > This documents close_range(2) based on information in
+> > 278a5fbaed89dacd04e9d052f4594ffd0e0585de,
+> > 60997c3d45d9a67daf01c56d805ae4fec37e0bd8, and
+> > 582f1fb6b721facf04848d2ca57f34468da1813e.
+> >=20
+> > Signed-off-by: Stephen Kitt <steve@sk2.org>
+> > ---
+> > V3: fix synopsis overflow
+> >     copy notes from membarrier.2 re the lack of wrapper
+> >     semantic newlines
+> >     drop non-standard "USE CASES" section heading
+> >     add code example
+> >=20
+> > V2: unsigned int to match the kernel declarations
+> >     groff and grammar tweaks
+> >     CLOSE_RANGE_UNSHARE unshares *and* closes
+> >     Explain that EMFILE and ENOMEM can occur with C_R_U
+> >     "Conforming to" phrasing
+> >     Detailed explanation of CLOSE_RANGE_UNSHARE
+> >     Reading /proc isn't common
+> >=20
+> >  man2/close_range.2 | 266 +++++++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 266 insertions(+)
+> >  create mode 100644 man2/close_range.2
+> >=20
+> > diff --git a/man2/close_range.2 b/man2/close_range.2
+> > new file mode 100644
+> > index 000000000..f8f2053ac
+> > --- /dev/null
+> > +++ b/man2/close_range.2
+> > @@ -0,0 +1,266 @@
+> > +.\" Copyright (c) 2020 Stephen Kitt <steve@sk2.org>
+> > +.\"
+> > +.\" %%%LICENSE_START(VERBATIM)
+> > +.\" Permission is granted to make and distribute verbatim copies of th=
+is
+> > +.\" manual provided the copyright notice and this permission notice are
+> > +.\" preserved on all copies.
+> > +.\"
+> > +.\" Permission is granted to copy and distribute modified versions of
+> > this +.\" manual under the conditions for verbatim copying, provided th=
+at
+> > the +.\" entire resulting derived work is distributed under the terms o=
+f a
+> > +.\" permission notice identical to this one.
+> > +.\"
+> > +.\" Since the Linux kernel and libraries are constantly changing, this
+> > +.\" manual page may be incorrect or out-of-date.  The author(s) assume=
+ no
+> > +.\" responsibility for errors or omissions, or for damages resulting f=
+rom
+> > +.\" the use of the information contained herein.  The author(s) may not
+> > +.\" have taken the same level of care in the production of this manual,
+> > +.\" which is licensed free of charge, as they might when working
+> > +.\" professionally.
+> > +.\"
+> > +.\" Formatted or processed versions of this manual, if unaccompanied by
+> > +.\" the source, must acknowledge the copyright and authors of this wor=
+k.
+> > +.\" %%%LICENSE_END
+> > +.\"
+> > +.TH CLOSE_RANGE 2 2020-12-08 "Linux" "Linux Programmer's Manual"
+> > +.SH NAME
+> > +close_range \- close all file descriptors in a given range
+> > +.SH SYNOPSIS
+> > +.nf
+> > +.B #include <linux/close_range.h>
+> > +.PP
+> > +.BI "int close_range(unsigned int " first ", unsigned int " last ,
+> > +.BI "                unsigned int " flags );
+> > +.fi
+> > +.PP
+> > +.IR Note :
+> > +There is no glibc wrapper for this system call; see NOTES.
+> > +.SH DESCRIPTION
+> > +The
+> > +.BR close_range ()
+> > +system call closes all open file descriptors from
+> > +.I first
+> > +to
+> > +.I last
+> > +(included).
+> > +.PP
+> > +Errors closing a given file descriptor are currently ignored.
+> > +.PP
+> > +.I flags
+> > +can be 0 or set to one or both of the following:
+> > +.TP
+> > +.B CLOSE_RANGE_UNSHARE
+> > +unshares the range of file descriptors from any other processes,
+> > +before closing them,
+> > +avoiding races with other threads sharing the file descriptor table.
+> > +.TP
+> > +.BR CLOSE_RANGE_CLOEXEC " (since Linux 5.10)" =20
 >=20
-> >=20
-> > 2. How should we handle "raw" timestamps?
-> >=20
-> >     Ahmad Fatoum brought up the possibility of returning "raw" timestam=
-ps
-> >     similar to what the network stack offers (see the network stack
-> >     SOF_TIMESTAMPING_{RAW,SYS}_HARDWARE support).
-> >=20
-> >     I'm not very familiar with the networking stack code, but if I
-> >     understand correctly the SOF_TIMESTAMPING_RAW_HARDWARE timestamps a=
-re
-> >     values returned from the device. If so, I suspect we would be able =
+> |sort
+>=20
+> I prefer alphabetic order rather than adding new items at the bottom.
+> When lists grow, it becomes difficult to find what you're looking for.
+>=20
+> CLOEXEC should go before UNSHARE.
+
+That makes sense.
+
+> > +sets the close-on-exec bit instead of immediately closing the file
+> > +descriptors. =20
+>=20
+> [
+> sets the close-on-exec bit instead of
+> immediately closing the file descriptors.
+> ]
+
+Is this for semantic reasons, or to balance the lines and make them easier =
 to
-> >     support these "raw" timestamps by defining them as Counter Extensio=
-ns
-> >     and returning them in struct counter_event elements similar to the
-> >     other Extension values.
+read in the roff source?
+
+> > +.SH RETURN VALUE
+> > +On success,
+> > +.BR close_range ()
+> > +returns 0.
+> > +On error, \-1 is returned and
+> > +.I errno
+> > +is set to indicate the cause of the error.
+> > +.SH ERRORS
+> > +.TP
+> > +.B EINVAL
+> > +.I flags
+> > +is not valid, or
+> > +.I first
+> > +is greater than
+> > +.IR last .
+> > +.PP
+> > +The following can occur with
+> > +.B CLOSE_RANGE_UNSHARE
+> > +(when constructing the new descriptor table):
+> > +.TP
+> > +.B EMFILE
+> > +The per-process limit on the number of open file descriptors has been
+> > reached +(see the description of
+> > +.B RLIMIT_NOFILE
+> > +in
+> > +.BR getrlimit (2)).
+> > +.TP
+> > +.B ENOMEM
+> > +Insufficient kernel memory was available.
+> > +.SH VERSIONS
+> > +.BR close_range ()
+> > +first appeared in Linux 5.9.
+> > +.SH CONFORMING TO
+> > +.BR close_range ()
+> > +is a nonstandard function that is also present on FreeBSD.
+> > +.SH NOTES
+> > +Glibc does not provide a wrapper for this system call; call it using
+> > +.BR syscall (2).
+> > +.\" 278a5fbaed89dacd04e9d052f4594ffd0e0585de
+> > +.SS Closing all open file descriptors =20
 >=20
-> Is nanosecond resolution good enough? In the TI eQEP driver I considered
-> returning the raw timer value, but quickly realized that it would not be
-> very nice to expect the user code to know the clock rate of the timer. It
-> was very easy to get the clock rate in the kernel and just convert the
-> timer value to nanoseconds before returning it to userspace.
+> The comment with the commit would be better inside the section it refers
+> to, so:
 >=20
-> So if there is some specialized case where it can be solved no other way
-> besides using raw timestamps, then sure, include it. Otherwise I think we
-> should stick with nanoseconds for time values when possible.
+> [
+> .SS Closing all open file descriptors
+> .\" 278a5fbaed89dacd04e9d052f4594ffd0e0585de
+> ]
 
-Given that the struct counter_event 'timestamp' member serves as the
-identification vessel for correlating component values to a single event
-(i.e. component values of a given event will share the same unique
-timestamp), I believe it's prudent to standardize this timestamp format
-on the kernel monotonic time as we have currently done so via our
-ktime_get_ns() call.
+Indeed!
 
-There are cases where it is understandably better to use a timestamp
-provided directly by the hardware (e.g. keeping timestamping close to
-data collection). For these cases, we can retrieve these "raw"
-timestamps via a Counter Extension: users would get their "raw"
-timestamp via the struct counter_event 'value' member, and just treat
-the 'timestamp' member as a unique event identification number.
+> > +To avoid blindly closing file descriptors in the range of possible
+> > +file descriptors, =20
+>=20
+> [
+> To avoid blindly closing file descriptors
+> in the range of possible file descriptors,
+> ]
+>=20
+> > +this is sometimes implemented (on Linux) by listing open file
+> > +descriptors in =20
+>=20
+> [
+> this is sometimes implemented (on Linux)
+> by listing open file descriptors in
+> ]
+>=20
+> > +.I /proc/self/fd/
+> > +and calling
+> > +.BR close (2)
+> > +on each one.
+> > +.BR close_range ()
+> > +can take care of this without requiring
+> > +.I /proc
+> > +and with a single system call, =20
+>=20
+> s/with/within/
+>=20
+> > +which provides significant performance benefits.
+> > +.\" 60997c3d45d9a67daf01c56d805ae4fec37e0bd8
+> > +.SS Closing file descriptors before exec =20
+>=20
+> [
+> .SS Closing file descriptors before exec
+> .\" 60997c3d45d9a67daf01c56d805ae4fec37e0bd8
+> ]
+>=20
+> > +File descriptors can be closed safely using
+> > +.PP
+> > +.in +4n
+> > +.EX
+> > +/* we don't want anything past stderr here */
+> > +close_range(3, ~0U, CLOSE_RANGE_UNSHARE); =20
+> > +execve(....);> +.EE =20
+> > +.in
+> > +.PP
+> > +.B CLOSE_RANGE_UNSHARE
+> > +is conceptually equivalent to
+> > +.PP
+> > +.in +4n
+> > +.EX
+> > +unshare(CLONE_FILES);
+> > +close_range(first, last, 0);
+> > +.EE
+> > +.in
+> > +.PP
+> > +but can be more efficient:
+> > +if the unshared range extends past the current maximum number of file
+> > +descriptors allocated in the caller's file descriptor table =20
+>=20
+> [
+> if the unshared range extends past
+> the current maximum number of file descriptors allocated
+> in the caller's file descriptor table
+> ]
+>=20
+> > +(the common case when
+> > +.I last
+> > +is
+> > +.BR ~0U ), =20
+>=20
+> Literal values are not (usually) formatted.
+>=20
+> [
+> .I last
+> is ~0U),
+> ]
+>=20
+> > +the kernel will unshare a new file descriptor table for the caller up
+> > +to =20
+>=20
+> [
+> the kernel will unshare a new file descriptor table for the caller up to
+> ]
+>=20
+> > +.IR first .
+> > +This avoids subsequent close calls entirely;
+> > +the whole operation is complete once the table is unshared.
+> > +.\" 582f1fb6b721facf04848d2ca57f34468da1813e
+> > +.SS Closing files on \fBexec\fP =20
+>=20
+> [
+> .SS Closing files on \fBexec\fP
+> .\" 582f1fb6b721facf04848d2ca57f34468da1813e
+> ]
+>=20
+> > +This is particularly useful in cases where multiple
+> > +.RB pre- exec
+> > +setup steps risk conflicting with each other.
+> > +For example, setting up a
+> > +.BR seccomp (2)
+> > +profile can conflict with a
+> > +.B close_range =20
+>=20
+> .BR close_range ()
+>=20
+> > +call:
+> > +if the file descriptors are closed before the seccomp profile is set =
+=20
+>=20
+> .BR seccomp (2)
+>=20
+> > +up, =20
+>=20
+> Please, split at a different point.
+>=20
+> > +the profile setup can't use them control their closure; =20
+>=20
+> I don't understand what you wanted to say.  them?
 
-William Breathitt Gray
+Oops, I meant "the profile setup can't use them itself, or control their
+closure".
 
---D0h9yNnjO8W6xx5O
-Content-Type: application/pgp-signature; name="signature.asc"
+>=20
+> > +if the file descriptors are closed afterwards,
+> > +the seccomp profile can't block the
+> > +.B close_range =20
+>=20
+> .BR close_range ()
+>=20
+> > +call or any fallbacks.
+> > +Using
+> > +.B CLOSE_RANGE_CLOEXEC
+> > +avoids this:
+> > +the descriptors can be marked before the seccomp profile is set up, =20
+>=20
+> .BR seccomp (2)
+>=20
+> > +and the profile can control access to
+> > +.B close_range =20
+>=20
+> .BR close_range ()
+>=20
+> > +without affecting the calling process.
+> > +.SH EXAMPLES
+> > +The following program is designed to be execed by the second program
+> > +below.
+> > +It lists its open file descriptors:
+> > +.PP
+> > +.in +4n
+> > +.EX
+> > +/* listopen.c */
+> > +
+> > +#include <stdio.h>
+> > +#include <sys/stat.h>
+> > +
+> > +int
+> > +main(int argc, char *argv[])
+> > +{
+> > +    int i; =20
+>=20
+> We use C99 declarations for loop indices.
+>=20
+> > +    struct stat buf;
+> > +
+> > +    for (i =3D 0; i < 100; i++) { =20
+>=20
+>     for (int i =3D 0; i < 100; i++) {
+>=20
+> > +        if (!fstat(i, &buf))
+> > +            printf("FD %d is open.\n", i); =20
+>=20
+> s/\\/\\e/
+>=20
+> see: d1a719857b7eb68f5e5c1c965089038dee683240
+>=20
+> I sometimes forget to fix those after copying the program to the page.
+> My solution is to copy the rendered text from the man page to a file
+> and then compile, and those errors become obvious ;)
+
+Ah yes, good catch. I was looking into automating checks for the source code
+included in man pages throughout the project, but that throws a spanner in
+the works!
+
+>=20
+> > +    }
+> > +
+> > +    exit(EXIT_SUCCESS);
+> > +)
+> > +.EE
+> > +.in
+> > +.PP
+> > +This program executes the command given on its command-line after
+> > +opening the files listed after the command,
+> > +and then using =20
+>=20
+> s/using/uses/
+>=20
+> > +.B close_range =20
+>=20
+> .BR close_range ()
+>=20
+> > +to close them:
+> > +.PP
+> > +.in +4n
+> > +.EX
+> > +/* close_range.c */
+> > +
+> > +#include <fcntl.h>
+> > +#include <linux/close_range.h>
+> > +#include <stdio.h>
+> > +#include <stdlib.h>
+> > +#include <sys/stat.h>
+> > +#include <sys/syscall.h>
+> > +#include <sys/types.h>
+> > +#include <unistd.h>
+> > +
+> > +int
+> > +main(int argc, char *argv[])
+> > +{
+> > +    char *newargv[] =3D { NULL };
+> > +    char *newenviron[] =3D { NULL };
+> > +    int i; =20
+>=20
+> dd
+>=20
+> > +
+> > +    if (argc < 3) {
+> > +        fprintf(stderr, "Usage: %s <command-to-run> <files-to-open>\n",
+> > argv[0]); =20
+>=20
+> s/\\/\\e/
+>=20
+> > +        exit(EXIT_FAILURE);
+> > +    }
+> > +
+> > +    for (i =3D 2; i < argc; i++) { =20
+>=20
+>     for (int i =3D 2; i < argc; i++) {
+>=20
+> > +        if (open(argv[i], O_RDONLY) =3D=3D -1) {
+> > +            perror(argv[i]);
+> > +            exit(EXIT_FAILURE);
+> > +        }
+> > +    }
+> > +
+> > +    if (syscall(__NR_close_range, 3, ~0U, CLOSE_RANGE_UNSHARE) =3D=3D =
+-1) {
+> > +        perror("close_range");
+> > +        exit(EXIT_FAILURE);
+> > +    }
+> > +
+> > +    execve(argv[1], newargv, newenviron);
+> > +    perror("execve");
+> > +    exit(EXIT_FAILURE);
+> > +}
+> > +.EE
+> > +.in
+> > +.PP
+> > +We can use the second program to exec the first as follows:
+> > +.PP
+> > +.in +4n
+> > +.EX
+> > +.RB "$" " make listopen close_range"
+> > +.RB "$" " ./close_range ./listopen /dev/null /dev/zero"
+> > +FD 0 is open.
+> > +FD 1 is open.
+> > +FD 2 is open.
+> > +.EE
+> > +.in
+> > +.PP
+> > +Removing the call to
+> > +.B close_range =20
+>=20
+> .BR close_range ()
+>=20
+> > +will show different output, with the file descriptors for the named
+> > +files still open. =20
+>=20
+> [
+> will show different output,
+> with the file descriptors for the named files still open.
+> ]
+
+Thanks, I'll send a v4 with all the fixes above.
+
+Regards,
+
+Stephen
+
+--Sig_/fRt+fLRzLUwZyTg/GIF=MWN
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAl/fxZgACgkQhvpINdm7
-VJKLehAA5cAgHtNTbv7O2gXXtw1DlrdZsdHggtenoS1MP01cKBNxOAoZSvV8+jUf
-OUZ1CQWVyuP8IA70XOx9q/JDQ1+mRCvU8YXTNdyy5tF378AU9runStnq2N1Yrnb0
-UOidB1F0M5+Nd2p59+ePtte8gCW+7sUrhoXbssGVegyvciLEiR191JiPU5xEjnJD
-R78myGve1R68FqlkRXyWVKjQU3INmjfGEmgSs/v2fi1/sNq/0iGqEVn6Vi3EAmBN
-BTYSqnoq8QT8H495CshmKjiPg5WBfBYv02+WadJXGlr+uIReW3rSaV2aTk8XEvsv
-i37GBFfnJxtAlXiGGe6g/7d0NwARYXQedD2TQYAsiAu6QmE3FCwKczOTcNjOyxmC
-WIRMCnw79VJQVLqTSiBoHY6zD3RGVFIWeBLY/nRb6jo0p690suctgj/dpwRGNZgc
-GxQQKq3mU4YC2CBg4lYGn0H9X8XpvDSbBS3ibDqKHrjIDCog7By0aodY399D3FI/
-OSp+jN16FWMZEz8wUJO9wfheAEX74TqlsZkT+Oobqq9xzQ9lGKxrLXh9X9wbjBsH
-u4vzW7ghGq0fItqt4v3iQePX7/KAUqoVpr7xG2vP+pjhC+wPGcLa7DHtQDcdPa4P
-2ogQ7O7FGU8ZrAV3+EOomqlsSbrze8zgkBgKJ6Y3omO/0ef0oyk=
-=7e/y
+iQIzBAEBCgAdFiEEnPVX/hPLkMoq7x0ggNMC9Yhtg5wFAl/fyZUACgkQgNMC9Yht
+g5xFZBAAidkwTET2IWumCyIGRVKnjmz2Fh2rlVXbhlRPIEsylpZkCQYl9od18ETg
+MTG6sv5GbA1ZO6zdAqbgvj0ex5L0tlMJrAA45yn10Q4aC43ykroJ7Sz5j9BZBpue
+cWASz4powcFfV19Vdk/Aj0zgYN3L1xJtwHGOSMzhK3v3QadO/2dEfO9J3Pim+UcW
+cRTGrZuuGYEvCEcCm59Ea0v3s8oSealdyQkkseNyWmVgdcejEKhU1Bdbu84w4OZ+
+0Qs0T2MJ+Dy/HEBK9CwmCNLBRHVXDkYtYvtFkcubL48kf3jLbjoNwda4B4LO6qaO
+YESShB4040udOcBORA5U53fxuVSVMQUFmqvRvEAUeiEBAM+bn5Kil9fZrgVrPzK7
+Twx3rNxgQ4AiqelIVhnQ/OmklrG8drl01bcNDCWK5evQ58TYJmAsjcbSUUXG+zTO
+o7p9WZtWJnJVbt6JATM6I3H+YCQk4zceMXIdzFCkZ6sy3SebzQjKIIUG/JuXcqgw
+4xml4as1cXWtZPg6//W99FnMZ8qNl7I8YyJ19obDY33nrqOSmsfyuqkAFdwBByUS
+un+/UrLK/RehtfiZHuX8qXXiEixw0nVYPrTZkHgOK1GZ/omHlCVgJ+JyLESagrvi
+cN2gIKriZy5aN50lmTQRyjQ6an1bsMY9dC9YtR8NSx45u1MMPIU=
+=ytE6
 -----END PGP SIGNATURE-----
 
---D0h9yNnjO8W6xx5O--
+--Sig_/fRt+fLRzLUwZyTg/GIF=MWN--
