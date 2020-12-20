@@ -2,98 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E77F2DF62A
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 17:57:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E28F32DF630
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 18:00:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727769AbgLTQ4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 11:56:16 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:50586 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726496AbgLTQ4O (ORCPT
+        id S1727764AbgLTQ7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 11:59:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726410AbgLTQ7e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 11:56:14 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A88202CF;
-        Sun, 20 Dec 2020 17:55:32 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1608483332;
-        bh=T1JdTctvTUXQISdbX9BX67WYHtL9aq0Jtfgvp/4pSX0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g8XzQFugpqQ90iWyQSPTnIm/U0OBwg4lSpmbpI9HVMhxZJQ6BT8QHKj6oI09dQGUz
-         aA79SBjpDm80SRevYa8CRcdBL5ORny/tsBTKepghKUWzoVJ9iEjqZGWvCxAQPVPhZK
-         YO8k9P2PimS+CyMOOyrfOfMvsMH5+UX6Gza3csjs=
-Date:   Sun, 20 Dec 2020 18:55:25 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 6/9] media: uvcvideo: Add Privacy control based on
- EXT_GPIO
-Message-ID: <X9+B/ShcGjjCY9PC@pendragon.ideasonboard.com>
-References: <20201215154439.69062-1-ribalda@chromium.org>
- <20201215154439.69062-7-ribalda@chromium.org>
+        Sun, 20 Dec 2020 11:59:34 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C5CC061282
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 08:58:54 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id m12so18064384lfo.7
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 08:58:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uG36SVtGZNLo5oW/bVnZMGTMymJIO49OHCGCdp4VCfs=;
+        b=fY0fwrA+gMEzT7rtnezO0S+mj3jAAw+g0jYnicWbLwGmVeOPFkc00pjMN5A9A+kVJn
+         9rS3kuCoAR+3NcV7IF4WRcW2hsWlYbqqSGKD4y040eG8iAbABasxQb3YvsvtCicbbOWu
+         +K8mrAIpqf5Us0L7PdTZej2k0r1HcSqdRPiUCFap8Btft5YhITP5eNTACT1w1V99snm9
+         oPVy6rbiGL8Yy1Zc4YKLxS9lRHDbKLAh+mY5fuyABKH6UBGIxPCpkL9bhAnbl1MV1HiV
+         J++4UcXtO8tWIiVxguckjlixNuuT3XkB9Ubmjk7Al+c0WH+y+3FEqlw8LwQ9j2OqyNNg
+         jnug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uG36SVtGZNLo5oW/bVnZMGTMymJIO49OHCGCdp4VCfs=;
+        b=FQ3tUK1ID4XZJecKt66LGhj+n8de8IWOJYa82pJIzwW/u/7d9PTecrp4nxy86qdgbP
+         3PYqo5m1j5UUpzyOdVGcOgT2jLuQqDsVU6o83/mzuORLD8XOXzGCMDDbHjUGgOKSn1Qs
+         RECaXxS6fvDsL0XFFG+8XasEC8Phpi2loryE85z0qJY6kvbvqDDgaCBWODs7FoNn/s6j
+         F4501Q0cF8YHjuPM/S6f49z807JS5lVDjjEKH5mwKQ3cpe5HwY2etjGIcn+iM2L/9Nfk
+         t9AKOu007fFaHVhFAIjWZhwr2douHyyhGZ8zaIZUPsVEmOJz/QImlgm0abtPxI+e7qqb
+         oznw==
+X-Gm-Message-State: AOAM530lNxlwrjFEIhMMlr9PMUx3myQgCVgc43ZClSBQ8F0dW3daHOvz
+        25yL0+xRDxprl0ZTmG7PplB/7Q==
+X-Google-Smtp-Source: ABdhPJzCE2R7UO+j0vvpp4Fw8Jn0u2V4l53bTvlExXDUOb7iPcslFZHUytgfEG9o1CVUkfBfoWUeqw==
+X-Received: by 2002:a19:5f59:: with SMTP id a25mr5254081lfj.310.1608483532908;
+        Sun, 20 Dec 2020 08:58:52 -0800 (PST)
+Received: from eriador.lumag.spb.ru ([188.162.64.15])
+        by smtp.gmail.com with ESMTPSA id t30sm1696638lft.266.2020.12.20.08.58.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Dec 2020 08:58:52 -0800 (PST)
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] Add support for Qualcomm QCA639x chips family
+Date:   Sun, 20 Dec 2020 19:58:41 +0300
+Message-Id: <20201220165845.3712599-1-dmitry.baryshkov@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201215154439.69062-7-ribalda@chromium.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo,
+Qualcomm QCA639x is a family of WiFi + Bluetooth chips, with BT part
+being controlled through the UART and WiFi being present on PCIe
+bus. Both blocks share common power sources wich should be turned on
+before either of devices can be probed. Declare common 'qca639x' driver
+providing a power domain to be used by both BT and WiFi parts.
 
-Thank you for the patch.
 
-On Tue, Dec 15, 2020 at 04:44:36PM +0100, Ricardo Ribalda wrote:
-> Add a new control and mapping for Privacy controls connected to
-> UVC_GUID_EXT_GPIO_CONTROLLERs.
-> 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> ---
->  drivers/media/usb/uvc/uvc_ctrl.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-> index 53da1d984883..511927e8b746 100644
-> --- a/drivers/media/usb/uvc/uvc_ctrl.c
-> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
-> @@ -347,6 +347,14 @@ static const struct uvc_control_info uvc_ctrls[] = {
->  				| UVC_CTRL_FLAG_RESTORE
->  				| UVC_CTRL_FLAG_AUTO_UPDATE,
->  	},
-> +	{
-> +		.entity		= UVC_GUID_EXT_GPIO_CONTROLLER,
-> +		.selector	= UVC_CT_PRIVACY_CONTROL,
-> +		.index		= 0,
-> +		.size		= 1,
-> +		.flags		= UVC_CTRL_FLAG_GET_CUR
-> +				| UVC_CTRL_FLAG_AUTO_UPDATE,
-> +	},
->  };
->  
->  static const struct uvc_menu_info power_line_frequency_controls[] = {
-> @@ -735,6 +743,16 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  		.v4l2_type	= V4L2_CTRL_TYPE_BOOLEAN,
->  		.data_type	= UVC_CTRL_DATA_TYPE_BOOLEAN,
->  	},
-> +	{
-> +		.id		= V4L2_CID_PRIVACY,
-> +		.name		= "Privacy",
-> +		.entity		= UVC_GUID_EXT_GPIO_CONTROLLER,
-> +		.selector	= UVC_CT_PRIVACY_CONTROL,
-> +		.size		= 1,
-> +		.offset		= 0,
-> +		.v4l2_type	= V4L2_CTRL_TYPE_BOOLEAN,
-> +		.data_type	= UVC_CTRL_DATA_TYPE_BOOLEAN,
-> +	},
->  };
->  
->  /* ------------------------------------------------------------------------
-
--- 
-Regards,
-
-Laurent Pinchart
