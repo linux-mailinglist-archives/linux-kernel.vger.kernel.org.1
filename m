@@ -2,111 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EECF2DF6E9
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 22:36:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66F772DF6EE
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 22:46:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728330AbgLTVgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 16:36:13 -0500
-Received: from ozlabs.org ([203.11.71.1]:52071 "EHLO ozlabs.org"
+        id S1728367AbgLTVoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 16:44:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726593AbgLTVgM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 16:36:12 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CzbVb4DBMz9sVj;
-        Mon, 21 Dec 2020 08:35:19 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1608500125;
-        bh=qF+qCkedQK7QMmZ9A2Uw7sX/ShESWgakVFo45yxtuqY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rSd1jTiOFEAHr7sWzpIfzTFwN6A1C8adWUM2Fk90hu86iXg3Ls8ZQWv+5GTFGipra
-         4uZJOwoyM1E0ToGBqhTwPELfoCm1hH/WYTCGFv3Gf+YvvD82V7f3pKzGPv4LQnYVRK
-         j14kz7hnFGyi7FhIXLpr93d57zjFUcpHhlNfNG1ldTGi6rwEiukvG9jc4sSQxj4BJy
-         KydtBxgk5BHq26kxRW2XafCBu53W0+Zq/NviNyZoGyISxV2VZ1F/NFZNkRD5Ks+AKb
-         HT2xTz3/5n0XJQEUGxQ2BAEXtigPtusONWTH+ujH/tBudcSHuI/gy4tyB23QNW24Cj
-         jo3ah8mjRpyXQ==
-Date:   Mon, 21 Dec 2020 08:35:18 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Stephen Boyd <sboyd@kernel.org>,
-        Mike Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Fixes tag needs some work in the clk tree
-Message-ID: <20201221083518.5ef7357c@canb.auug.org.au>
-In-Reply-To: <CAMuHMdWAtUK6qDOAXZ3-qy69ZzbfZb_Z=bSvx-0S-42dfUiw9w@mail.gmail.com>
-References: <20201208090555.7159b138@canb.auug.org.au>
-        <CAMuHMdVYoxUOUL0zNAPzTJUSR3vGzcJWMzvtCKK=ZxyM=8hk+A@mail.gmail.com>
-        <160753498332.1580929.15118515893187584689@swboyd.mtv.corp.google.com>
-        <CAMuHMdWAtUK6qDOAXZ3-qy69ZzbfZb_Z=bSvx-0S-42dfUiw9w@mail.gmail.com>
+        id S1727446AbgLTVoQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Dec 2020 16:44:16 -0500
+Date:   Sun, 20 Dec 2020 22:43:33 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608500615;
+        bh=zRypDAurjZALqdycTeLM6FlnjpYaL3xGyF7Jl1kx6wo=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VJF6f1B8B2qhaBmMVTYvthwdFabElcMLeF5plZQPkiJCep81WhVNZF82y3T2DxTiB
+         LtL666DiCuXarYr8K/jV0btKq7GIrC5hk5NA+HeRKVvjyDfjqRgZIk6Sg01GBMxPtm
+         AF7DnduLJmI0C8vZL7yHQ1pa2EUks2QlRj3Q1OTR9XBCs3+VvmGCgt5jEzOhgVx7jV
+         rBwGSi/qAPgZpf+ydtMzwsUuA6UIQqNntcLRW+4Bhq1lvXMWtXJz62kL1r7AdLRcOs
+         LIJZXb8718PqTumZO5gzRLuXtoYjqdw8lqlYbMK/c6ASp6NgCgh9JfDuy6iPSpxqk1
+         YRze22M4a03RA==
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Tsuchiya Yuto <kitakar@gmail.com>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>, verdre@v0yd.nl
+Subject: Re: [PATCH 0/3] mwifiex: disable ps_mode by default for stability
+Message-ID: <20201220214333.rxtkt72niq7adfin@pali>
+References: <20201028142433.18501-1-kitakar@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Wl28/xdXoEpx_aD2uWBr3mn";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201028142433.18501-1-kitakar@gmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Wl28/xdXoEpx_aD2uWBr3mn
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello!
 
-Hi Geert,
+Please CC me in future for mwifiex discussion :-)
 
-On Thu, 10 Dec 2020 08:52:41 +0100 Geert Uytterhoeven <geert@linux-m68k.org=
-> wrote:
->
-> > trees can be pulled into linux-next? That would find this earlier. =20
->=20
-> That sounds like a great idea, also for pinctrl.
-> Can you please add the following:
->     git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers.g=
-it
-> renesas-clk
->     git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers.g=
-it
-> renesas-pinctrl
-> ?
+On Wednesday 28 October 2020 23:24:30 Tsuchiya Yuto wrote:
+> Hello all,
+> 
+> On Microsoft Surface devices (PCIe-88W8897), we are observing stability
+> issues when ps_mode (IEEE power_save) is enabled, then eventually causes
+> firmware crash. Especially on 5GHz APs, the connection is completely
+> unstable and almost unusable.
+> 
+> I think the most desirable change is to fix the ps_mode itself. But is
+> seems to be hard work [1], I'm afraid we have to go this way.
+> 
+> Therefore, the first patch of this series disables the ps_mode by default
+> instead of enabling it on driver init. I'm not sure if explicitly
+> disabling it is really required or not. I don't have access to the details
+> of this chip. Let me know if it's enough to just remove the code that
+> enables ps_mode.
+> 
+> The Second patch adds a new module parameter named "allow_ps_mode". Since
+> other wifi drivers just disable power_save by default by module parameter
+> like this, I also added this.
+> 
+> The third patch adds a message when ps_mode will be changed. Useful when
+> diagnosing connection issues.
 
-Added from today.  Called clk-renesas and pinctrl-renesas respectively.
+There are more issues with power save API and implementation in mwifiex.
 
-Thanks for adding your subsystem tree as a participant of linux-next.  As
-you may know, this is not a judgement of your code.  The purpose of
-linux-next is for integration testing and to lower the impact of
-conflicts between subsystems in the next merge window.=20
+See my email for more details:
+https://lore.kernel.org/linux-wireless/20200609111544.v7u5ort3yk4s7coy@pali/T/#u
 
-You will need to ensure that the patches/commits in your tree/series have
-been:
-     * submitted under GPL v2 (or later) and include the Contributor's
-        Signed-off-by,
-     * posted to the relevant mailing list,
-     * reviewed by you (or another maintainer of your subsystem tree),
-     * successfully unit tested, and=20
-     * destined for the current or next Linux merge window.
+These patches would just break power save API and reporting status to
+userspace even more due to WIPHY_FLAG_PS_ON_BY_DEFAULT and
+CONFIG_CFG80211_DEFAULT_PS options.
 
-Basically, this should be just what you would send to Linus (or ask him
-to fetch).  It is allowed to be rebased if you deem it necessary.
+I would suggest to first fix issues mentioned in my email and then start
+providing a way how to blacklist or whitelist power save feature
+depending on firmware or card/chip version.
 
---=20
-Cheers,
-Stephen Rothwell=20
-sfr@canb.auug.org.au
+From my experience I know that e.g. 88W8997 cards have lot of bugs in
+their firmware and I'm not aware that bugs are going to be fixed... So
+we really need workarounds, like disabling power save mode to have cards
+usable.
 
---Sig_/Wl28/xdXoEpx_aD2uWBr3mn
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/fw5YACgkQAVBC80lX
-0GwDzggAgADeVZ0ZJDNfRCTsw8nanqshO91BVHA/MQdeEbjBSZa86oEops/jTd6n
-PO3av4QSMgYZMEcB5KNqHDyEFgJRL7G+OuQPUF4EPJ0ey1g96FPFRJxdnUjevCKl
-yvu7xG+7NO8W2CWuDLUpSRoTjXYeywpqUD1GdAl7KrF418PrXQrPCTSe/e/nK+tD
-+Iy9PVX+d6qShAAuwc84CPvD+DvZn3UTs3CUO6v9QeGo9XbKp5KmJkRjLu6lO8+d
-y3W7FLywZMprjqJ3cVBfZwB+CemYZOALj9Pt3u2wRMNTttPBfXxaOZgwYissM+sA
-e+vCaTKdDvTKpB3n9wNBkcHbGIekzw==
-=sfV2
------END PGP SIGNATURE-----
-
---Sig_/Wl28/xdXoEpx_aD2uWBr3mn--
+> Thanks,
+> Tsuchiya Yuto
+> 
+> [1] https://bugzilla.kernel.org/show_bug.cgi?id=109681
+> 
+> Tsuchiya Yuto (3):
+>   mwifiex: disable ps_mode explicitly by default instead
+>   mwifiex: add allow_ps_mode module parameter
+>   mwifiex: print message when changing ps_mode
+> 
+>  .../net/wireless/marvell/mwifiex/cfg80211.c   | 23 +++++++++++++++++++
+>  .../net/wireless/marvell/mwifiex/sta_cmd.c    | 11 ++++++---
+>  2 files changed, 31 insertions(+), 3 deletions(-)
+> 
+> -- 
+> 2.29.1
+> 
