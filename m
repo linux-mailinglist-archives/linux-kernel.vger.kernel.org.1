@@ -2,92 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F6C32DF652
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 18:50:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECDCF2DF657
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 18:57:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727768AbgLTRuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 12:50:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57954 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727621AbgLTRuM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 12:50:12 -0500
-X-Gm-Message-State: AOAM532fX3ZEitY8vX8TpMD3BLnOWMAiOzWkl2RzSJNxv3rD742gpRe6
-        zH6iPYiGMVb5+ufiBXeoIgaIPBi0mZ4CItfXtj8=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608486570;
-        bh=iqp7gUniW01cFIdAe/0kjZ8VQGLxFBk/ZcEA3tr8OgA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=lVA5iy3RnN5NMkXR+rvQPyPQwEdd4+pkEzV+s4yFYx8aAtP3YkpuyL7oIKpgSoKz+
-         pp3s2l0TVs58AFJelPCM12d0A56Dt9wyBrIwKMA2KHDAm7/A+epMpADhJ7MTx4HVm7
-         wn7UPYoxsz1Jgfxwg0tEMh23M6xVmwOgmlmHNK+uQU0fl9/fwDJqRJX9fXnFmHeiOI
-         /3Tihq/quPiz5XGePD/Ge5DW8h9Rm1Swg0pLynu3T/IFgdoLwslx4HYuK+fW+T+3tH
-         v3TpjbI9eWnLp0HlfM5g5Z06OogGtq+4unPLYY7eUog0irLl2AmrDIKFfSlg/ZxG8P
-         bBMSh4W9VgeEw==
-X-Google-Smtp-Source: ABdhPJykjGV9LSsGbTTTe2PJBFyDya6l+Fbx0dVC2hpEZ9YGnkZZDZFhzdBB5yyQhBuNS5/ttLQ7QB665uMCRI5xNNY=
-X-Received: by 2002:a9d:7a4b:: with SMTP id z11mr9589019otm.305.1608486570097;
- Sun, 20 Dec 2020 09:49:30 -0800 (PST)
+        id S1727439AbgLTR5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 12:57:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727319AbgLTR5n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Dec 2020 12:57:43 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AD66C061285
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 09:56:55 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id o19so18352677lfo.1
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 09:56:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7b0gkK7KHhPn0zAFL1kzHO6kSwnlYNj5eys9b5uk2rw=;
+        b=SMVUrbTSnmrB0Nxh4cqTA47ayzjD7TZ0pGasqhIK5my/U27HsopJpWZRPolSCLgXct
+         EOfHJpdcCZpPJLDSzxZbpaKTMBcEAe9a8w+JG7sNePREMfvlOXVbHtpiY837q0KnhiFX
+         NVj5qVDh2xyIwdudtze0eVoMej9PyBbkFMj9ZbnPtMP8gC9H3ut72bJDzebryrdEu+vU
+         RG6S4KWpOckZ6O+3wa7CC3wscuax1MYXrMSNaVYwKTFYN8qhsJ1/yL6+mtCyALpaKKxA
+         i8k2xsF0O1vkT626bHsBWX6vaBzzzJIGWXshV99/LzfXrNZBh3DbVFpWYwrEoPe+ypjv
+         DFMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7b0gkK7KHhPn0zAFL1kzHO6kSwnlYNj5eys9b5uk2rw=;
+        b=oSbIRP4RfCZqNi3+6MELBRJtN1pqa/jDhTUHQfFbRd1jHiVw7HrGt4wfS4xL6k7gFp
+         dLcN8WYUaoIYF90xIXxcUSycWNdzsG6ETOVEIPnBbcO3Uut1R7UW0pGzWtMssasl2aXs
+         auaFqzhouqvvgmlDM1Lq2iTzHX4y2VqzdsWLc0fe/l8MrE+T4csMfTYdlXmik7E0/NO/
+         JaqTgE8uRuUEpY9wN+ibTx1F4xCeklrBOODE6LF+0LSApdQMqJSvipkvIJV43pieKKns
+         HzVUymHYaSxgrB6OJQajODp7QjNPUmYJcpwt+ByMDyKIZF1Ndff8ZNv4IO1KR5FhBD/C
+         OA3w==
+X-Gm-Message-State: AOAM532ZUB4WePS/WTnkmi02HU0cVGLt07Utq3ApIHlu6Cfb2epyRRxT
+        RWC0NDIlsptUFIlxjJbHvfzM7w2paYWZAuGtbcg5aw==
+X-Google-Smtp-Source: ABdhPJzaVhazd1F3HG5VODuP++uhv/7yUtoVoYzQQW89NkZx6JtS7/VnMpWrWMU5nPPqW+c4xEbt7oo2VNMCPYtgNrQ=
+X-Received: by 2002:a05:6512:1082:: with SMTP id j2mr4983204lfg.347.1608487013528;
+ Sun, 20 Dec 2020 09:56:53 -0800 (PST)
 MIME-Version: 1.0
-References: <20190307091514.2489338-1-arnd@arndb.de> <X9S28TcEXd2zghzp@elver.google.com>
- <87czzeg5ep.fsf@nanos.tec.linutronix.de> <CAK8P3a0LWjNgwm605TM4dKCsn078X7NC3sEfdBSgcMNEocQ5iA@mail.gmail.com>
- <CAJF2gTRLEbBfZJ7Y6UNOMq-cwG5OYRW=+8Pfauz6v6R8ntBjYA@mail.gmail.com>
- <CAK8P3a3+WaQNyJ6Za2qfu6=0mBgU1hApnRXrdp1b1=P7wwyRUg@mail.gmail.com> <CAJF2gTQUPXzRL4P2ghoSt6t+pyAJ7A9dqdD6VWYNdOmJjd2HQg@mail.gmail.com>
-In-Reply-To: <CAJF2gTQUPXzRL4P2ghoSt6t+pyAJ7A9dqdD6VWYNdOmJjd2HQg@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Sun, 20 Dec 2020 18:49:13 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3mrD7U__T-X2jr1Mw9Xk=dBE=Fuid_BHNE85GcX0g-rg@mail.gmail.com>
-Message-ID: <CAK8P3a3mrD7U__T-X2jr1Mw9Xk=dBE=Fuid_BHNE85GcX0g-rg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] futex: mark futex_detect_cmpxchg() as 'noinline'
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Marco Elver <elver@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        sparclinux <sparclinux@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
+References: <20201220044608.1258123-1-shakeelb@google.com> <CAOQ4uxi4b-zXfWhLNQ+aGWn2qG3vqMCjkJnhrugc0+oER1EjUA@mail.gmail.com>
+In-Reply-To: <CAOQ4uxi4b-zXfWhLNQ+aGWn2qG3vqMCjkJnhrugc0+oER1EjUA@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Sun, 20 Dec 2020 09:56:42 -0800
+Message-ID: <CALvZod4oTAysAqW9aotPgx1Qx+aL91LEiR5OiMt27=e3VJ6aVQ@mail.gmail.com>
+Subject: Re: [PATCH v2] inotify, memcg: account inotify instances to kmemcg
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 20, 2020 at 4:46 PM Guo Ren <guoren@kernel.org> wrote:
-> On Tue, Dec 15, 2020 at 7:26 PM Arnd Bergmann <arnd@kernel.org> wrote:
+On Sun, Dec 20, 2020 at 3:32 AM Amir Goldstein <amir73il@gmail.com> wrote:
+>
+> On Sun, Dec 20, 2020 at 6:46 AM Shakeel Butt <shakeelb@google.com> wrote:
 > >
-> > On Tue, Dec 15, 2020 at 7:09 AM Guo Ren <guoren@kernel.org> wrote:
-> > > On Mon, Dec 14, 2020 at 9:15 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> > > > I had a look at what other architectures always implement
-> > > > futex_atomic_cmpxchg_inatomic() or can use the asm-generic non-SMP version,
-> > > > and I found that it's pretty much all of them, the odd ones being just sparc32
-> > > > and csky, which use asm-generic/futex.h but do have an SMP option,
-> > > > as well as xtensa
-> > > >
-> > > > I would guess that for csky, this is a mistake, as the architecture is fairly
-> > > > new and should be able to implement it. Not sure about sparc32.
-> > >
-> > > The c610, c807, c810 don't support SMP, so futex_cmpxchg_enabled = 1
-> > > with asm-generic's implementation.
-> > > For c860, there is no HAVE_FUTEX_CMPXCHG and cmpxchg_inatomic/inuser
-> > > implementation, so futex_cmpxchg_enabled = 0.
-> > >
-> > > Thx for point it out, we'll implement cmpxchg_inatomic/inuser for C860
-> > > and still use asm-generic for non-smp CPUs.
+> > Currently the fs sysctl inotify/max_user_instances is used to limit the
+> > number of inotify instances on the system. For systems running multiple
+> > workloads, the per-user namespace sysctl max_inotify_instances can be
+> > used to further partition inotify instances. However there is no easy
+> > way to set a sensible system level max limit on inotify instances and
+> > further partition it between the workloads. It is much easier to charge
+> > the underlying resource (i.e. memory) behind the inotify instances to
+> > the memcg of the workload and let their memory limits limit the number
+> > of inotify instances they can create.
 > >
-> > Sounds good to me.
-> Done: https://lore.kernel.org/linux-csky/1608478763-60148-3-git-send-email-guoren@kernel.org/T/#u
+> > With inotify instances charged to memcg, the admin can simply set
+> > max_user_instances to INT_MAX and let the memcg limits of the jobs limit
+> > their inotify instances.
+> >
+> > Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
 
-Thanks!
-
-Can you clarify if there are any dependencies on the other patches in
-that series?
-
-I'd like to take the futex patch through the asm-generic tree along with the
-patches for the other architectures.
-
-       Arnd
+Thanks a lot.
