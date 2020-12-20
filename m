@@ -2,201 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD93A2DF700
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 23:14:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90F832DF8D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 06:27:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728363AbgLTWMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 17:12:39 -0500
-Received: from mout.gmx.net ([212.227.17.20]:38585 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728323AbgLTWMi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 17:12:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1608502243;
-        bh=eI4ISoOrH8j7uXDzoSYv8qN9USEKKYcPmamcCJeVddU=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=j5xpEmJ/r+Xjb1NZmS45ZoB8p76hqgIQc49vmxC/8gw6MGv1Yo7vX4TtSNVbFDEYo
-         40Qync4pQ2/6NZoV5GenOTEKY/VbiD0zetskhCqcn5YT4t7eCkrZuQi5uXE8Qedn+Y
-         nIB3udhoiSPWUEWYm2AiaD4fTrbJAnlY+i4zaF7Y=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.150.14]) by mail.gmx.com (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MjjCF-1kNZVo05pz-00lFWD; Sun, 20
- Dec 2020 23:10:43 +0100
-Message-ID: <afa2dee794ae7b2d1f23fed85ff514d43485762b.camel@gmx.de>
-Subject: Re: [PATCH] zsmalloc: do not use bit_spin_lock
-From:   Mike Galbraith <efault@gmx.de>
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Minchan Kim <minchan@kernel.org>,
-        NitinGupta <ngupta@vflare.org>
-Date:   Sun, 20 Dec 2020 23:10:41 +0100
-In-Reply-To: <44a69faf3ac54b5883a4b0d99d51a0b0@hisilicon.com>
-References: <18669bd607ae9efbf4e00e36532c7aa167d0fa12.camel@gmx.de>
-         <20201220002228.38697-1-vitaly.wool@konsulko.com>
-         <c9c97ae293f5d7321ff30ac6ead49751560dd354.camel@gmx.de>
-         <80d3be3d47356bf0bd6c5a9d9dc658ca3da292be.camel@gmx.de>
-         <44a69faf3ac54b5883a4b0d99d51a0b0@hisilicon.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
+        id S1728396AbgLUF0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 00:26:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726514AbgLUF0Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 00:26:16 -0500
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CCCAC0613D3;
+        Sun, 20 Dec 2020 21:25:36 -0800 (PST)
+Received: by mail-qk1-x72a.google.com with SMTP id b64so7873182qkc.12;
+        Sun, 20 Dec 2020 21:25:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iHUDQ1k2CkOqj9FzPxwhDlQR1OsVrOcQRdYUCJ3pKxI=;
+        b=QoHtCfWS5mhOotpg0TOcdHlv84na7MJSw5iGrn18QYCCbzaRWuCSMCW42/Gp3vUEtA
+         AM9i1lHs+unWJWbf4CVRpM+GvkvaJcRFUbzquGyNLe2K+oyMKQ6sh83F4J0GWE+LKl7u
+         5rclWBWSkFiyH0spyiNYEZjSfUEx1KkLfMnfaJCnGCZ4GoLeMRX2cbWhbTcbSYAm0E7+
+         wJpXVZRf+l4DxqkD+4qRLXmMWstMAUOV+/oAlzP6+YKqYsJd2k1z6S7TdfZKt0aicPui
+         oaVwGaavuyugWEJzhMi3o9wCf1FpLEkZ1yJ7R/aslkOw1f2pDLqVPBKtdbCFpfGRGi+w
+         xujg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iHUDQ1k2CkOqj9FzPxwhDlQR1OsVrOcQRdYUCJ3pKxI=;
+        b=WPH+2skLbXV2k5EJkrBkGkLYv7pm2fMcWWObRsode1DiqBfPBX225fhvKa1aKjSMG7
+         hnhlcC5e0a7PWI0baob+M/+iIv0qE9me5E/8AOzLew7ftnnXS3oybwOfBUOKYJBbaF1y
+         4jPeMZAa3H+S+QDHmXe05S4ym4XLYYLjpY1ocByiGIMTt/HA89FPTUxXb8TT6SxjpW/P
+         F1A5Aw7kOsJfk1c/j/gFkHH3hSenkIElhTbV3uRG11MJGAaGlRLoMZ6RThisr/LHECyu
+         IPynxuDv8AyW/j/e2Ursgj7zyTMt+YY2zbhCXu6A3lK0Scy99uPTI02PZsiq5wQV/NHD
+         BG7A==
+X-Gm-Message-State: AOAM531X2fZuIRt9dy2BYoV/K1G8f0UmlVUWB3pfgAtd/emzN02Qn30b
+        u/r1Y85cSNljdAk6emps6PxMzU69BmxdYg==
+X-Google-Smtp-Source: ABdhPJy/lhw8bdJnqAii5GkK9Ugrghmpb/5Yu9iidDmt2clYqF6tyGWtwr/nSSuIjmHP5GYBJqwZEA==
+X-Received: by 2002:ac8:3987:: with SMTP id v7mr14022819qte.144.1608502281672;
+        Sun, 20 Dec 2020 14:11:21 -0800 (PST)
+Received: from shinobu (072-189-064-225.res.spectrum.com. [72.189.64.225])
+        by smtp.gmail.com with ESMTPSA id 128sm4721459qki.26.2020.12.20.14.11.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Dec 2020 14:11:20 -0800 (PST)
+Date:   Sun, 20 Dec 2020 17:11:18 -0500
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     David Lechner <david@lechnology.com>
+Cc:     jic23@kernel.org, kernel@pengutronix.de,
+        linux-stm32@st-md-mailman.stormreply.com, a.fatoum@pengutronix.de,
+        kamel.bouhara@bootlin.com, gwendal@chromium.org,
+        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        syednwaris@gmail.com, patrick.havelange@essensium.com,
+        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH v6 1/5] counter: Internalize sysfs interface code
+Message-ID: <X9/MBla990ctfpL4@shinobu>
+References: <cover.1606075915.git.vilhelm.gray@gmail.com>
+ <950660d49af7d12b09bc9d3b1db6f8ff74209c26.1606075915.git.vilhelm.gray@gmail.com>
+ <9fe4090e-2780-31b8-8ffa-2c665c6a2a4e@lechnology.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:zYXuOJz9Zihv9Q5Tnk0nGMwDPYRmKOZf68Yz9gcNyEcGfoZ2jmK
- kgcJncvqi9v6TluUj2nexkTvaPbRUOrRSDVoWRc9SeR4lPuOstWXJaeMCCcN1Is0fruVAFW
- vA5EB2s/ADFthflISnrbB8gsbVrV4C1QBYe88H48phIk0dIs+eHM3yzSTACOkPjriBbprgo
- maubg2mDudCeiTj+JexWA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:1kWgq11Q1sQ=:4wYLvFGJQdJul8+iljO6dl
- ZpbGrJnVc2NOCVQWEaToWUq3H/ewj3T0u15ndGrCTlmXzkn4+5OZsWS9sCtL/P6wK6edJIanF
- L+Flq1Fd0K07OW2J8/VB27e26qUuCCnfOSwPtRMe8cMKUckdxzFKuZ2/+8jIcOG88MwNZ84lY
- B0flUkmj43vemgh9xv4c77+4HdndCWPelTQzBaAoqXMVkmOP86BoUAbhXWzSYYxZCd1nTUuuM
- KI0Jlw9hL1sZiEcJqKms9Yu9ba73yLH9PbZ4vZrn8SHdlJzE84L0DveOAbZDG4S7dihQMSKFi
- miCxiu5sZkUI1KCQQ53KZ7c288DXwxfWKantQ05ZQjMJ3suLOCwYTT4pHgPFWZily3SkMLNYg
- wI7KP42PReGZ7AByeiwmDxIi2FwH9tqJO3WBYrbf29F3MeaXCPNajQN+eOw7R/Sw4xAiHJg8j
- mSfcSvpXSsjcSk16jHPWriRNYVB7Eqo8F+O1/f+sniS4T+zxCUg1KN+TsELOyp+rer0cVemQv
- DMZZYYRpwOqTBJsaECYvA9doczEYZMSNRaCBlqajZrnPui4BS1I5aXOFGhdFvy3VczYWeYA0V
- P/W6Up48I63IGilngcliikmQdyTCQ7DFOXub0IgOb+ljocNLw+EgTGdG3+7IHpRueFwVp39t3
- XryJIOZFN56G8AiUx13W/3n/9azbXyH+1KIdw9+WZ1lPxrOOnqd2Q4e7N5Irh596F22EbSj4j
- pOdX+01AbJ3yTTwLcKtqjZlyXKoTeH5ekIgvH3HXm87zQqI4DMY0/bgzS/ozLSF7nwj0mauzD
- cob/hZ65UAiGiby8MOI6ICtLxOmFjJElKorBVRwOg5+gVCkCYIltvH2lVGpHVMrA5iCwnRJLM
- 3U/j/VNpxDhGG7WdQiqA==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="uc5EkbJdgRcRyiTh"
+Content-Disposition: inline
+In-Reply-To: <9fe4090e-2780-31b8-8ffa-2c665c6a2a4e@lechnology.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-12-20 at 21:20 +0000, Song Bao Hua (Barry Song) wrote:
->
-> > -----Original Message-----
-> > From: Mike Galbraith [mailto:efault@gmx.de]
-> > Sent: Sunday, December 20, 2020 8:48 PM
-> > To: Vitaly Wool <vitaly.wool@konsulko.com>; LKML
-> > <linux-kernel@vger.kernel.org>; linux-mm <linux-mm@kvack.org>
-> > Cc: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>; Sebastian =
-Andrzej
-> > Siewior <bigeasy@linutronix.de>; Minchan Kim <minchan@kernel.org>; Nit=
-inGupta
-> > <ngupta@vflare.org>
-> > Subject: Re: [PATCH] zsmalloc: do not use bit_spin_lock
-> >
-> > On Sun, 2020-12-20 at 02:23 +0100, Mike Galbraith wrote:
-> > > On Sun, 2020-12-20 at 02:22 +0200, Vitaly Wool wrote:
-> > > > zsmalloc takes bit spinlock in its _map() callback and releases it
-> > > > only in unmap() which is unsafe and leads to zswap complaining
-> > > > about scheduling in atomic context.
-> > > >
-> > > > To fix that and to improve RT properties of zsmalloc, remove that
-> > > > bit spinlock completely and use a bit flag instead.
-> > >
-> > > It also does get_cpu_var() in map(), put_cpu_var() in unmap().
-> >
-> > That aside, the bit spinlock removal seems to hold up to beating in RT=
-.
-> > I stripped out the RT changes to replace the bit spinlocks, applied th=
-e
-> > still needed atm might_sleep() fix, and ltp zram and zswap test are
-> > running in a loop with no signs that it's a bad idea, so I hope that
-> > makes it in (minus the preempt disabled spin which I whacked), as it
-> > makes zsmalloc markedly more RT friendly.
-> >
-> > RT changes go from:
-> >  1 file changed, 79 insertions(+), 6 deletions(-)
-> > to:
-> >  1 file changed, 8 insertions(+), 3 deletions(-)
-> >
->
-> Sorry, would you like to show the change for
-> "8 insertions(+), 3 deletions(-)"?
 
-Sure.
-=2D--
- mm/zsmalloc.c |   11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+--uc5EkbJdgRcRyiTh
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-=2D-- a/mm/zsmalloc.c
-+++ b/mm/zsmalloc.c
-@@ -57,6 +57,7 @@
- #include <linux/wait.h>
- #include <linux/pagemap.h>
- #include <linux/fs.h>
-+#include <linux/local_lock.h>
+On Sun, Dec 13, 2020 at 05:15:00PM -0600, David Lechner wrote:
+> On 11/22/20 2:29 PM, William Breathitt Gray wrote:
+>=20
+> >   14 files changed, 1806 insertions(+), 2546 deletions(-)
+>=20
+> It would be really nice if we could break this down into smaller
+> pieces and start getting it merged. It is really tough to keep
+> reviewing this much code in one patch over and over again.
 
- #define ZSPAGE_MAGIC	0x58
+Yes, this is a pretty massive patch. I could break this across the
+individual files affected to make it simpler to review, but in the end
+all those patches would need to end up squashed together before merge
+again (for the sake of git bisect), so the effort feels somewhat moot.
 
-@@ -293,6 +294,7 @@ struct zspage {
- };
+Luckily, I don't think there will be much change in the next revision
+since it's looking like it'll mainly be a few bug fixes; hopefully this
+coming version 7 will be the final revision before merge.
 
- struct mapping_area {
-+	local_lock_t lock;
- 	char *vm_buf; /* copy buffer for objects that span pages */
- 	char *vm_addr; /* address of kmap_atomic()'ed pages */
- 	enum zs_mapmode vm_mm; /* mapping mode */
-@@ -455,7 +457,9 @@ MODULE_ALIAS("zpool-zsmalloc");
- #endif /* CONFIG_ZPOOL */
+> Here are some initial findings from testing:
+>=20
+>=20
+> > +static void counter_device_release(struct device *dev)
+> > +{
+> > +	struct counter_device *const counter =3D dev_get_drvdata(dev);
+> > +
+> > +	counter_chrdev_remove(counter);
+> > +	ida_simple_remove(&counter_ida, counter->id);
+> > +}
+>=20
+>=20
+> I got the following error after `modprobe -r ti-eqep`:
+>=20
+> [ 1186.045766] ------------[ cut here ]------------
+> [ 1186.050647] WARNING: CPU: 0 PID: 2625 at lib/refcount.c:28 counter_dev=
+ice_release+0x10/0x24 [counter]
+> [ 1186.059976] refcount_t: underflow; use-after-free.
+> [ 1186.064790] Modules linked in: aes_arm_bs(+) crypto_simd cryptd ccm us=
+b_f_mass_storage usb_f_acm u_serial usb_f_ecm rfcomm usb_f_rndis u_ether li=
+bcomposite aes_arm aes_generic cmac bnep wl18xx wlcore mac80211 libarc4 sha=
+256_generic libsha256 sha256_arm cfg80211 ti_am335x_adc kfifo_buf omap_aes_=
+driver omap_crypto omap_sham crypto_engine pm33xx ti_emif_sram hci_uart oma=
+p_rng btbcm rng_core ti_eqep(-) counter bluetooth c_can_platform c_can ecdh=
+_generic bmp280_spi ecc can_dev libaes bmp280_i2c bmp280 industrialio omap_=
+mailbox musb_dsps wlcore_sdio musb_hdrc udc_core usbcore wkup_m3_ipc at24 o=
+map_wdt phy_am335x watchdog phy_am335x_control ti_am335x_tscadc phy_generic=
+ wkup_m3_rproc usb_common cppi41 rtc_omap leds_gpio led_class cpufreq_dt pw=
+m_tiehrpwm autofs4
+> [ 1186.132376] CPU: 0 PID: 2625 Comm: modprobe Not tainted 5.10.0-rc7bone=
+-counter+ #23
+> [ 1186.140070] Hardware name: Generic AM33XX (Flattened Device Tree)
+> [ 1186.146225] [<c0110d70>] (unwind_backtrace) from [<c010b640>] (show_st=
+ack+0x10/0x14)
+> [ 1186.154017] [<c010b640>] (show_stack) from [<c09a0c98>] (dump_stack+0x=
+c4/0xe4)
+> [ 1186.161285] [<c09a0c98>] (dump_stack) from [<c0137ba0>] (__warn+0xd8/0=
+x100)
+> [ 1186.168284] [<c0137ba0>] (__warn) from [<c099c8e4>] (warn_slowpath_fmt=
++0x94/0xbc)
+> [ 1186.175814] [<c099c8e4>] (warn_slowpath_fmt) from [<bf10b0e8>] (counte=
+r_device_release+0x10/0x24 [counter])
+> [ 1186.185632] [<bf10b0e8>] (counter_device_release [counter]) from [<c06=
+67118>] (device_release+0x30/0xa4)
+> [ 1186.195163] [<c0667118>] (device_release) from [<c057f73c>] (kobject_p=
+ut+0x94/0x104)
+> [ 1186.202944] [<c057f73c>] (kobject_put) from [<c057f73c>] (kobject_put+=
+0x94/0x104)
+> [ 1186.210472] [<c057f73c>] (kobject_put) from [<bf19004c>] (ti_eqep_remo=
+ve+0x10/0x30 [ti_eqep])
+> [ 1186.219047] [<bf19004c>] (ti_eqep_remove [ti_eqep]) from [<c066f390>] =
+(platform_drv_remove+0x24/0x3c)
+> [ 1186.228313] [<c066f390>] (platform_drv_remove) from [<c066d934>] (devi=
+ce_release_driver_internal+0xfc/0x1d0)
+> [ 1186.238187] [<c066d934>] (device_release_driver_internal) from [<c066d=
+a78>] (driver_detach+0x58/0xa8)
+> [ 1186.247456] [<c066da78>] (driver_detach) from [<c066c5ec>] (bus_remove=
+_driver+0x4c/0xa0)
+> [ 1186.255594] [<c066c5ec>] (bus_remove_driver) from [<c01dd150>] (sys_de=
+lete_module+0x180/0x264)
+> [ 1186.264250] [<c01dd150>] (sys_delete_module) from [<c0100080>] (ret_fa=
+st_syscall+0x0/0x54)
+> [ 1186.272551] Exception stack(0xd247ffa8 to 0xd247fff0)
+> [ 1186.277629] ffa0:                   004fb478 004fb478 004fb4b4 0000080=
+0 b3bfcf00 00000000
+> [ 1186.285847] ffc0: 004fb478 004fb478 004fb478 00000081 00000000 be97490=
+0 be974a55 004fb478
+> [ 1186.294062] ffe0: 004f8f5c be97352c 004ddd97 b6d11d68
+> [ 1186.299253] ---[ end trace e1c61dea091f1078 ]---
 
- /* per-cpu VM mapping areas for zspage accesses that cross page
-boundaries */
--static DEFINE_PER_CPU(struct mapping_area, zs_map_area);
-+static DEFINE_PER_CPU(struct mapping_area, zs_map_area) =3D {
-+	.lock	=3D INIT_LOCAL_LOCK(lock),
-+};
+I noticed that I'm calling counter_chrdev_remove() twice: once in
+counter_unregister(), and again in counter_device_release(). I suspect
+this is what's causing the refcount to underflow. I'll test and verify
+that this is the culprit.
 
- static bool is_zspage_isolated(struct zspage *zspage)
- {
-@@ -1276,7 +1280,8 @@ void *zs_map_object(struct zs_pool *pool
- 	class =3D pool->size_class[class_idx];
- 	off =3D (class->size * obj_idx) & ~PAGE_MASK;
+In fact, I don't think I need to define a counter_device_release()
+callback at all, would I? These cleanup function calls could be moved to
+counter_unregister() instead.
 
--	area =3D &get_cpu_var(zs_map_area);
-+	local_lock(&zs_map_area.lock);
-+	area =3D this_cpu_ptr(&zs_map_area);
- 	area->vm_mm =3D mm;
- 	if (off + class->size <=3D PAGE_SIZE) {
- 		/* this object is contained entirely within a page */
-@@ -1330,7 +1335,7 @@ void zs_unmap_object(struct zs_pool *poo
+> > +static ssize_t counter_comp_u8_store(struct device *dev,
+> > +				     struct device_attribute *attr,
+> > +				     const char *buf, size_t len)
+> > +{
+> > +	const struct counter_attribute *const a =3D to_counter_attribute(attr=
+);
+> > +	struct counter_device *const counter =3D dev_get_drvdata(dev);
+> > +	struct counter_count *const count =3D a->parent;
+> > +	struct counter_synapse *const synapse =3D a->comp.priv;
+> > +	const struct counter_available *const avail =3D a->comp.priv;
+> > +	int err;
+> > +	bool bool_data;
+> > +	int idx;
+> > +	u8 data;
+> > +
+> > +	switch (a->comp.type) {
+> > +	case COUNTER_COMP_BOOL:
+> > +		err =3D kstrtobool(buf, &bool_data);
+> > +		data =3D bool_data;
+> > +		break;
+> > +	case COUNTER_COMP_FUNCTION:
+> > +		err =3D find_in_string_array(&data, count->functions_list,
+> > +					   count->num_functions, buf,
+> > +					   counter_function_str);
+> > +		break;
+> > +	case COUNTER_COMP_SYNAPSE_ACTION:
+> > +		err =3D find_in_string_array(&data, synapse->actions_list,
+> > +					   synapse->num_actions, buf,
+> > +					   counter_synapse_action_str);
+> > +		break;
+> > +	case COUNTER_COMP_ENUM:
+> > +		idx =3D __sysfs_match_string(avail->strs, avail->num_items, buf);
+> > +		if (idx < 0)
+> > +			return idx;
+> > +		data =3D idx;
+> > +		break;
+> > +	case COUNTER_COMP_COUNT_MODE:
+> > +		err =3D find_in_string_array(&data, avail->enums,
+> > +					   avail->num_items, buf,
+> > +					   counter_count_mode_str);
+> > +		break;
+> > +	default:
+> > +		err =3D kstrtou8(buf, 0, &data);
+> > +		break;
+> > +	}
+> > +	if (err)
+>=20
+> This needs to be `if (err < 0)`. There are cases where the functions
+> above return positive values. (And to be overly safe, it probably wouldn't
+> hurt to use err < 0 everywhere - not just in this function.)
 
- 		__zs_unmap_object(area, pages, off, class->size);
- 	}
--	put_cpu_var(zs_map_area);
-+	local_unlock(&zs_map_area.lock);
+Ack.
 
- 	migrate_read_unlock(zspage);
- 	unpin_tag(handle);
+William Breathitt Gray
 
+--uc5EkbJdgRcRyiTh
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> BTW, your original patch looks not right as
-> crypto_wait_req(crypto_acomp_decompress()...)
-> can sleep too.
->
-> [copy from your original patch with comment]
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -1258,20 +1258,20 @@ static int zswap_frontswap_load(unsigned
->
->  	/* decompress */
->  	dlen =3D PAGE_SIZE;
-> +	acomp_ctx =3D raw_cpu_ptr(entry->pool->acomp_ctx);
-> +	mutex_lock(acomp_ctx->mutex);
->  	src =3D zpool_map_handle(entry->pool->zpool, entry->handle, ZPOOL_MM_R=
-O);
->  	if (zpool_evictable(entry->pool->zpool))
->  		src +=3D sizeof(struct zswap_header);
->
-> -	acomp_ctx =3D raw_cpu_ptr(entry->pool->acomp_ctx);
-> -	mutex_lock(acomp_ctx->mutex);
->  	sg_init_one(&input, src, entry->length);
->  	sg_init_table(&output, 1);
->  	sg_set_page(&output, page, PAGE_SIZE, 0);
->  	acomp_request_set_params(acomp_ctx->req, &input, &output, entry->lengt=
-h, dlen);
->
-> /*!!!!!!!!!!!!!!!!
->  * here crypto could sleep
->  !!!!!!!!!!!!!!*/
+-----BEGIN PGP SIGNATURE-----
 
-Hohum, another one for my Bitmaster-9000 patch shredder.
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAl/fzAYACgkQhvpINdm7
+VJJiAg/9F1Dlf+iVCNclJFIuXxKcGqR+ojOXb8JSegF1H/8l6T+ffbp/gxhovPzD
+86urwluDDgVTPr0tLP4gkiqJkPO7Iw2HjvaCJQGQ24M+LssVmjS/0fiQsQXzOBsv
+PXeV+AtbeGdrwcf9FU/4XAyYZm2OneJZJMxGmhxsqvVAqQZB/QaTvzR7mr5DnMwH
+O3M7IiGzNQ6OzINKGFmKHZiJr9OQmu1LE7c2PhZjn++aHXFgEDYtLqtvj/a3xqm3
+Mu3kiIpJVVREnErvK6nHFLpSGyKiLpwqp8/XQ5KONmQs75qeqqoH7PSEDWm01zd4
+3O1ZM6NDWfiyc7/fvE8YL4KT767Vfryb5mGA0IQ0xUgRTBds9jJAHZ/Iz53k0bwH
+qOeD9festidjFF9+7ohEWMl//4VDVGajja1SwGp2pTvge0sHk5OUNHVG8l1DzGGd
+Vk7CbfI3Rp7hggieSibJ4r4GdBPJ76NfcGg4CD2GUeZ9RLIowqvdiW/XdOK+EVji
+6dgZpZ4EbdKgsUEceJBZUUfqvmaEdUD/LNNdWgKSbUZisYmAM+7z4buddEA4wFQ7
+OXoc/J5Wl5wWQIEh5mgezMKfj0ohwqiTXL2WzvuSh0diEZaxp3mmjZknrvDkmSzJ
+qh3TKz+uJ72IPZ4qL6CX3Y3Ra5x04ebLxJo0gzo1ed0KwbSMyfM=
+=qN6v
+-----END PGP SIGNATURE-----
 
-	-Mike
-
-
+--uc5EkbJdgRcRyiTh--
