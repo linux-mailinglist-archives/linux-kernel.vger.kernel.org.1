@@ -2,87 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 588F12DF549
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 12:54:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05EBD2DF554
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 13:07:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727434AbgLTLxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 06:53:04 -0500
-Received: from mga07.intel.com ([134.134.136.100]:7600 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727283AbgLTLxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 06:53:04 -0500
-IronPort-SDR: ulHYCO2sENqJ+OrjUUWBvKKCX+OXJ5cvTsTENy7/wB0QRU3HbQzTV91cSXr2Vx2Yu8WRL6orIf
- 6caiIAnqk20A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9840"; a="239716628"
-X-IronPort-AV: E=Sophos;i="5.78,434,1599548400"; 
-   d="scan'208";a="239716628"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2020 03:51:17 -0800
-IronPort-SDR: kdnMBHoC3Ozpv7vbOEMxKmnWpvHex4g2+/g1DWtvC56YBNqyI/nl5QgU3cXyVGVdBtUU3+hqsD
- a8MvPpOnL48w==
-X-IronPort-AV: E=Sophos;i="5.78,434,1599548400"; 
-   d="scan'208";a="395611472"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2020 03:51:15 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id B4724203DF; Sun, 20 Dec 2020 13:51:13 +0200 (EET)
-Date:   Sun, 20 Dec 2020 13:51:13 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        syzbot <syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: [PATCH 1/1] v4l: ioctl: Fix memory leak in video_usercopy
-Message-ID: <20201220115113.GA26370@paasikivi.fi.intel.com>
-References: <20201220110651.13432-1-sakari.ailus@linux.intel.com>
- <CAK8P3a3s=yU=PW7zLc4M83DksxAsb=v8r4U6aAySj2-nmeczjA@mail.gmail.com>
+        id S1727474AbgLTMFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 07:05:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727387AbgLTMF2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Dec 2020 07:05:28 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 004BCC0617B0
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 04:04:47 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id c133so7117403wme.4
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 04:04:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qrn+x9lX3jcTz2wVgUBrM7DkKsxjXEra+Jy1eyLqErQ=;
+        b=naOTe06SHxPS/6OBbwjbFP5gEyKx1oosTrOeIpFENcucHkj6M4BfldEb5/KPevKmPh
+         GEvTH5RMMRe8fhVSGC9wo6nFZZgYw7UuM5HUcD11IYQnXd9kNy3KL0KT73L/CUfAd/zr
+         VqwkA7HvmRn839TISjpwe3EHBnX2wevB/duyQQGMN/q2vNXgBIwvahKUWHWKkeo+picP
+         an/z/7NZC0ZBN9sH+GcEFEn0pGKl2erSIACTjL2vrUkSXWaQqrFrZmXOKPlcUF39/qrd
+         tTjO1+HcQBilpqR+04mYryhDX+0xRWnwVe6rI5tgRh/6A1aPAovhMMOGYvrQB0QO91YH
+         vOJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qrn+x9lX3jcTz2wVgUBrM7DkKsxjXEra+Jy1eyLqErQ=;
+        b=YOOzyxydQBfFSfsEOHmBAMfY+KUk+PGzLXhaCiJcYsN3sBW40M0GrV3wm7zToymgvQ
+         60+OCY4Rf6EcWQ2AYPq/myBzWUrj9WC0uco0QJ2GAoqFkuO6dtATSMNNQEtSI6yAx87z
+         59H3Dq2djiuQk9vSDQbh2Yqlx6eT/3NJj3d9Fr26LMtYDIkV3QgLQ6mdv8Arm/Wn4qgb
+         J/kQoxwW08tUrZ9GibDeDzY+GTnxutMHW+Tfqo3KgpvjuZ8kXJsBfHPDAQYMFSYXBfiC
+         tPyfw3iD8DHXZojkH6ck1SoqQhP5E8PedhYXv6oRTUUQvig3Luwf2S0tPw8eYF/Vsi2I
+         9oUQ==
+X-Gm-Message-State: AOAM530/003GlVimzwNsLsT6MuJ5SbBmi4PRCWA9/MTmQDkvcGxE+hOl
+        afDztKj0hVNIO/b8R+0h3SKJZLPAZTEMBQ==
+X-Google-Smtp-Source: ABdhPJxKHrA3iDITLiCdMUF/9mnzJFyxnL6Rem0UwUvdhjFOojYMyvms6s//StCF5cJVpP/1sBw0Mg==
+X-Received: by 2002:a7b:c208:: with SMTP id x8mr11862312wmi.179.1608465886268;
+        Sun, 20 Dec 2020 04:04:46 -0800 (PST)
+Received: from larix.localdomain ([2001:1715:4e26:a7e0:ed35:e18a:5e36:8c84])
+        by smtp.gmail.com with ESMTPSA id g5sm21652517wro.60.2020.12.20.04.04.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Dec 2020 04:04:45 -0800 (PST)
+Date:   Sun, 20 Dec 2020 13:05:19 +0100
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.4 08/10] selftests/bpf: Fix array access with
+ signed variable test
+Message-ID: <X989/9omnIGyDvzV@larix.localdomain>
+References: <20201220033457.2728519-1-sashal@kernel.org>
+ <20201220033457.2728519-8-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a3s=yU=PW7zLc4M83DksxAsb=v8r4U6aAySj2-nmeczjA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201220033457.2728519-8-sashal@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 20, 2020 at 12:36:23PM +0100, Arnd Bergmann wrote:
-> On Sun, Dec 20, 2020 at 12:06 PM Sakari Ailus
-> <sakari.ailus@linux.intel.com> wrote:
-> >
-> > When an IOCTL with argument size larger than 128 that also used array
-> > arguments were handled, two memory allocations were made but alas, only
-> > the latter one of them was released. This happened because there was only
-> > a single local variable to hold such a temporary allocation.
-> >
-> > Fix this by adding separate variables to hold the pointers to the
-> > temporary allocations.
-> >
-> > Reported-by: Arnd Bergmann <arnd@kernel.org>
-> > Reported-by: syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com
-> > Fixes: d14e6d76ebf7 ("[media] v4l: Add multi-planar ioctl handling code")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Hi,
+
+On Sat, Dec 19, 2020 at 10:34:55PM -0500, Sasha Levin wrote:
+> From: Jean-Philippe Brucker <jean-philippe@linaro.org>
 > 
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
-
-Thanks!
-
+> [ Upstream commit 77ce220c0549dcc3db8226c61c60e83fc59dfafc ]
 > 
-> >  out:
-> > +       kvfree(array_buf);
-> >         kvfree(mbuf);
+> The test fails because of a recent fix to the verifier, even though this
+
+That fix is commit b02709587ea3 ("bpf: Fix propagation of 32-bit signed
+bounds from 64-bit bounds.") upstream, which only needed backport to 5.9.
+So although backporting this patch to 5.4 shouldn't break anything, I
+wouldn't bother. 
+
+Thanks,
+Jean
+
+> program is valid. In details what happens is:
 > 
-> I think it would make sense to change mbuf back to kzalloc()/kfree
-> after this, since the size of the ioctl argument has an upper bound
-> of 2^_IOC_SIZEBITS (16KB), which does not need the vmalloc
-> path, unlike the array args.
-
-Good point. I can send a patch for that, too.
-
--- 
-Sakari Ailus
+>     7: (61) r1 = *(u32 *)(r0 +0)
+> 
+> Load a 32-bit value, with signed bounds [S32_MIN, S32_MAX]. The bounds
+> of the 64-bit value are [0, U32_MAX]...
+> 
+>     8: (65) if r1 s> 0xffffffff goto pc+1
+> 
+> ... therefore this is always true (the operand is sign-extended).
+> 
+>     10: (b4) w2 = 11
+>     11: (6d) if r2 s> r1 goto pc+1
+> 
+> When true, the 64-bit bounds become [0, 10]. The 32-bit bounds are still
+> [S32_MIN, 10].
+> 
+>     13: (64) w1 <<= 2
+> 
+> Because this is a 32-bit operation, the verifier propagates the new
+> 32-bit bounds to the 64-bit ones, and the knowledge gained from insn 11
+> is lost.
+> 
+>     14: (0f) r0 += r1
+>     15: (7a) *(u64 *)(r0 +0) = 4
+> 
+> Then the verifier considers r0 unbounded here, rejecting the test. To
+> make the test work, change insn 8 to check the sign of the 32-bit value.
+> 
+> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> Acked-by: John Fastabend <john.fastabend@gmail.com>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  tools/testing/selftests/bpf/verifier/array_access.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/verifier/array_access.c b/tools/testing/selftests/bpf/verifier/array_access.c
+> index f3c33e128709b..a80d806ead15f 100644
+> --- a/tools/testing/selftests/bpf/verifier/array_access.c
+> +++ b/tools/testing/selftests/bpf/verifier/array_access.c
+> @@ -68,7 +68,7 @@
+>  	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
+>  	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 9),
+>  	BPF_LDX_MEM(BPF_W, BPF_REG_1, BPF_REG_0, 0),
+> -	BPF_JMP_IMM(BPF_JSGT, BPF_REG_1, 0xffffffff, 1),
+> +	BPF_JMP32_IMM(BPF_JSGT, BPF_REG_1, 0xffffffff, 1),
+>  	BPF_MOV32_IMM(BPF_REG_1, 0),
+>  	BPF_MOV32_IMM(BPF_REG_2, MAX_ENTRIES),
+>  	BPF_JMP_REG(BPF_JSGT, BPF_REG_2, BPF_REG_1, 1),
+> -- 
+> 2.27.0
+> 
