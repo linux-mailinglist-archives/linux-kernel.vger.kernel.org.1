@@ -2,114 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F420D2DF67F
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 19:35:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D922DF687
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 19:44:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727311AbgLTSfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 13:35:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726470AbgLTSfV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 13:35:21 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3B27C061282;
-        Sun, 20 Dec 2020 10:34:40 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id o19so18498603lfo.1;
-        Sun, 20 Dec 2020 10:34:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=SVuAJrANiRaA9JvhqiN+Qpg12pt/XXaO5N8Q251ZVXo=;
-        b=g0YfBv9Y+Z4Ov6uvvyMmMSO8QAxEodnSGt1Q/xrtSeNlNNvJ6Ei1bxSeMtyZFxaS32
-         GMwB4oYAfVNQf3wXSpVheHoh3hMtvQ+WUqfdkBuyyXBmUnV+RW0pU3nTdQfpXMH29oWO
-         wHrVouS3H6dIYVB0SEnAXa/QscIJsEHYk+A14ko1+NqCFxl3tbY87Q+4nt70E5RFaUit
-         9Avj1QU3w1reztQzSCkIKGo4lWQXodMzg1ETMVsg3/4j1v1iFnPb/KcnypCyrHVFB7kf
-         KC7pvLRBNrazpYLxKOXxLwabcFIY8JQIUecHoWVbMfurUqxJhtY3Jsr7ovlkuNPblO76
-         1qGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SVuAJrANiRaA9JvhqiN+Qpg12pt/XXaO5N8Q251ZVXo=;
-        b=DuKfSzI5X1rGSEO29vzPV9FQDc3ZkVTasQQHOlqMs/0lyTBlCsU2r0BbtcpSW8ubPF
-         sW9D6iXr2kLVTsbMSF6YeZArDei2kR5VIGPKuR0icwiJ2z5mfbWLPXdl62HwREkxtrqw
-         xKGM+M3ss7lg73rNx5r1+f6ee8yl7c2nEZpK6TeVn+e/9XwqzgOgBrYov+sLIq+phJc9
-         el6eo1VlVq/FBB8CGHINgF7tM9cTnb/pOGJnXxoq+srAgIs3rU/YcMr2CsJF1CeM7c5H
-         e1k64nmGFUDsNjR7zWcqmYzD36K5T2HRCuxyW/k7ULrJhpwJDrWUMlW/wB4cC/6nRmTK
-         6uyg==
-X-Gm-Message-State: AOAM530xe5SwVlrP7CwQAyEk7ViCN2IcrXUQTHOlywlIro5v5gM2eYiU
-        69hvjIf5Lj/HiOr96sqdCyjG+4JSJm4=
-X-Google-Smtp-Source: ABdhPJysdwKJBGLnQ8yhCh1b1/dODKQ+0Vt3EPS6VcrkoitE53cyd/UT9rBF7QWyBhAxqnAW0Mp/1A==
-X-Received: by 2002:a2e:240f:: with SMTP id k15mr5679769ljk.506.1608489278886;
-        Sun, 20 Dec 2020 10:34:38 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id z26sm1890253ljn.98.2020.12.20.10.34.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 20 Dec 2020 10:34:38 -0800 (PST)
-Subject: Re: [PATCH v2 41/48] memory: tegra20-emc: Use
- devm_tegra_core_dev_init_opp_table()
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20201217180638.22748-1-digetx@gmail.com>
- <20201217180638.22748-42-digetx@gmail.com> <20201219110216.GB5323@kozik-lap>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <ea983cb9-c15a-2de2-ba14-35597bdcb2b8@gmail.com>
-Date:   Sun, 20 Dec 2020 21:34:37 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        id S1727347AbgLTSnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 13:43:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33850 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726470AbgLTSnt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Dec 2020 13:43:49 -0500
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608489788;
+        bh=txSTanMz3B5hhIJNGnxdQxcgi9WHUwPCFDYaxgyHtRk=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=DqtoSip1NMQMUegw2fUCkTL2siK7AAoyOsUAmB5h43wPqRsOl07+T+QGR7i9rbxNz
+         0l1I8cDu3MwquECrhY4ShrShPSTGsmHQ+dwNKO1LDGq5JVJvtex9cZgQBpIz6CBnGK
+         D/Db15kvrE8nvuPnTnbNKipQKdcLl2oaX7QqftQ54Uwswy+mJB65GwGDfqMdB+V50L
+         WLEdcL+NMpOhZNT6Tf6PYuNWog4adpIlTYRv302XNQ4CrRpp4eURJVYCLm7HXzV6B6
+         S77MnsO3OyjJeO8gJpqL0NlQV/3KASQwuKoVQmHVhbBR3Yp1zWPsRQ4WMuIIBn4vAP
+         PuRCHLzkbV7/A==
 MIME-Version: 1.0
-In-Reply-To: <20201219110216.GB5323@kozik-lap>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAFr9PXmAe9o5KtTG58twpumWi3A=7YfsM7b7pOwRTk1f=jCKQQ@mail.gmail.com>
+References: <20201114135044.724385-1-daniel@0x0f.com> <20201114135044.724385-4-daniel@0x0f.com> <160843899675.1580929.13271525932327387602@swboyd.mtv.corp.google.com> <CAFr9PXmAe9o5KtTG58twpumWi3A=7YfsM7b7pOwRTk1f=jCKQQ@mail.gmail.com>
+Subject: Re: [PATCH 3/6] clk: mstar: MStar/SigmaStar MPLL driver
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     DTML <devicetree@vger.kernel.org>, linux-clk@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Willy Tarreau <w@1wt.eu>
+To:     Daniel Palmer <daniel@0x0f.com>
+Date:   Sun, 20 Dec 2020 10:43:07 -0800
+Message-ID: <160848978734.1580929.11702930284423878688@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-19.12.2020 14:02, Krzysztof Kozlowski пишет:
-> On Thu, Dec 17, 2020 at 09:06:31PM +0300, Dmitry Osipenko wrote:
->> Use common devm_tegra_core_dev_init_opp_table() helper for the OPP table
->> initialization.
->>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  drivers/memory/tegra/tegra20-emc.c | 57 +++---------------------------
->>  1 file changed, 4 insertions(+), 53 deletions(-)
-> 
-> If there was no more Tegra MC work planned, this could easily go via
-> Tegra SoC tree. However I expect still work of your interconnect
-> patches, so maybe it's better to stick these in same tree.
+Quoting Daniel Palmer (2020-12-19 22:42:40)
+> > > +
+> > > +static int msc313_mpll_remove(struct platform_device *pdev)
+> > > +{
+> > > +       struct msc313_mpll *mpll =3D platform_get_drvdata(pdev);
+> > > +       int i;
+> > > +
+> > > +       for (i =3D 0; i < ARRAY_SIZE(output_dividers); i++)
+> > > +               clk_hw_unregister_fixed_factor(to_divider_hw(mpll, i)=
+);
+> >
+> > Maybe add a devm_ for this if it doesn't exist.
+>=20
+> I did think about adding this. Would I need to do that in a separate
+> series or would it be ok to roll it into this one?
+>=20
 
-I'll re-send the remaining interconnect patches soon.
-
-> In such case I would need a stable tag with the
-> devm_tegra_core_dev_init_opp_table() helper for memory controller tree.
-
-Perhaps will be better to drop these memory changes for now from this
-series since they are optional, i.e. memory drivers will work properly
-because voltage changes are done by the OPP core and these patches just
-replace the duplicated code with a new common helper which doesn't add
-new features to the memory drivers. It should be fine to get back to
-these memory patches once interconnect patchset will be fully merged.
-I'll take it into account in v3, thanks.
+Can be part of the same series.
