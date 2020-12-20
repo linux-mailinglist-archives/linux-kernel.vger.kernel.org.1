@@ -2,96 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2BC32DF510
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 12:09:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 005BC2DF513
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 12:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727349AbgLTLFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 06:05:40 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:58070 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727076AbgLTLFk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 06:05:40 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BKAwg3X005816;
-        Sun, 20 Dec 2020 03:02:46 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0220;
- bh=a9qmBmRPfawjMhGn0bzMS3ZzLiiICStBEX4CiZ9DOFY=;
- b=FKovx+32UIhP/TMQJb/NdSeaVW07ISzeuIrlxyRI2oFCpzms8EYVEzJvTcgSoU/tL7QP
- PUqvcvoR5gLaN0zD98nWxnuYFlzSNbabCifBS9avTfEvvdN5ikPzDQSKgTeXzeqt/8e4
- KpVGsNa+hefEuXIxzXw7JEMAPnWqHp1XGGU/m6Gknllv900KkuTJlxwW508PxvLyr+TT
- A7qVUIi+1F0RrgaDEk+qUm27o2OYien/4XHbMwj/Y1lVs/ChVsQE5X9Po8tLIQJTtpRM
- Ar+HL36xV88CMsL3k9ZbNSc5Llee47QAyl6Z4GIBfHT2FzOGBvjb20foEJla0QGSIXOA WA== 
-Received: from sc-exch03.marvell.com ([199.233.58.183])
-        by mx0b-0016f401.pphosted.com with ESMTP id 35j4wvg1bb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Sun, 20 Dec 2020 03:02:46 -0800
-Received: from SC-EXCH04.marvell.com (10.93.176.84) by SC-EXCH03.marvell.com
- (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 20 Dec
- 2020 03:02:45 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH04.marvell.com
- (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 20 Dec
- 2020 03:02:44 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sun, 20 Dec 2020 03:02:44 -0800
-Received: from stefan-pc.marvell.com (unknown [10.5.25.21])
-        by maili.marvell.com (Postfix) with ESMTP id 14B813F703F;
-        Sun, 20 Dec 2020 03:02:41 -0800 (PST)
-From:   <stefanc@marvell.com>
-To:     <netdev@vger.kernel.org>
-CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
-        <nadavh@marvell.com>, <ymarkman@marvell.com>,
-        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
-        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
-        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>
-Subject: [PATCH net v4] net: mvpp2: Fix GoP port 3 Networking Complex Control configurations
-Date:   Sun, 20 Dec 2020 13:02:29 +0200
-Message-ID: <1608462149-1702-1-git-send-email-stefanc@marvell.com>
-X-Mailer: git-send-email 1.9.1
+        id S1727403AbgLTLIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 06:08:00 -0500
+Received: from mga18.intel.com ([134.134.136.126]:30539 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727128AbgLTLH7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Dec 2020 06:07:59 -0500
+IronPort-SDR: nwGo2nRkOr51BZWfqFihsbAbQX/pRVM+49CObDS5dqCMh86XvPGJvS8RHMtrM3Y1Xk0EPyPPGv
+ pcv33zIMUFtg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9840"; a="163353599"
+X-IronPort-AV: E=Sophos;i="5.78,434,1599548400"; 
+   d="scan'208";a="163353599"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2020 03:06:13 -0800
+IronPort-SDR: C7+H2FL7TMkTQ42yBlELOUKfNFRnWy2Vhr8mbI1fMVp3wEEAAzNdXxQPE7wQAX/xkRkcGhGlFF
+ Ely/8hYZIcvg==
+X-IronPort-AV: E=Sophos;i="5.78,434,1599548400"; 
+   d="scan'208";a="341808315"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2020 03:06:11 -0800
+Received: from punajuuri.localdomain (punajuuri.localdomain [192.168.240.130])
+        by paasikivi.fi.intel.com (Postfix) with ESMTP id DF34420337;
+        Sun, 20 Dec 2020 13:06:08 +0200 (EET)
+Received: from sailus by punajuuri.localdomain with local (Exim 4.92)
+        (envelope-from <sakari.ailus@linux.intel.com>)
+        id 1kqwY7-0003VN-K9; Sun, 20 Dec 2020 13:06:51 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     linux-media@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        syzbot <syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: [PATCH 1/1] v4l: ioctl: Fix memory leak in video_usercopy
+Date:   Sun, 20 Dec 2020 13:06:51 +0200
+Message-Id: <20201220110651.13432-1-sakari.ailus@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-20_03:2020-12-19,2020-12-20 signatures=0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Chulski <stefanc@marvell.com>
+When an IOCTL with argument size larger than 128 that also used array
+arguments were handled, two memory allocations were made but alas, only
+the latter one of them was released. This happened because there was only
+a single local variable to hold such a temporary allocation.
 
-During GoP port 2 Networking Complex Control mode of operation configurations,
-also GoP port 3 mode of operation was wrongly set.
-Patch removes these configurations.
+Fix this by adding separate variables to hold the pointers to the
+temporary allocations.
 
-Fixes: f84bf386f395 ("net: mvpp2: initialize the GoP")
-Acked-by: Marcin Wojtas <mw@semihalf.com>
-Signed-off-by: Stefan Chulski <stefanc@marvell.com>
+Reported-by: Arnd Bergmann <arnd@kernel.org>
+Reported-by: syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com
+Fixes: d14e6d76ebf7 ("[media] v4l: Add multi-planar ioctl handling code")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 ---
+ drivers/media/v4l2-core/v4l2-ioctl.c | 31 +++++++++++++---------------
+ 1 file changed, 14 insertions(+), 17 deletions(-)
 
-Changes in v4:
-- Remove rename change.
-Changes in v3:
-- No changes.
-Changes in v2:
-- Added Fixes tag.
-
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-index d64dc12..82c6bef 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -1231,7 +1231,7 @@ static void mvpp22_gop_init_rgmii(struct mvpp2_port *port)
+diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+index 3198abdd538ce..f42a779948779 100644
+--- a/drivers/media/v4l2-core/v4l2-ioctl.c
++++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+@@ -3283,7 +3283,7 @@ video_usercopy(struct file *file, unsigned int orig_cmd, unsigned long arg,
+ 	       v4l2_kioctl func)
+ {
+ 	char	sbuf[128];
+-	void    *mbuf = NULL;
++	void    *mbuf = NULL, *array_buf = NULL;
+ 	void	*parg = (void *)arg;
+ 	long	err  = -EINVAL;
+ 	bool	has_array_args;
+@@ -3318,27 +3318,21 @@ video_usercopy(struct file *file, unsigned int orig_cmd, unsigned long arg,
+ 	has_array_args = err;
  
- 	regmap_read(priv->sysctrl_base, GENCONF_CTRL0, &val);
- 	if (port->gop_id == 2)
--		val |= GENCONF_CTRL0_PORT0_RGMII | GENCONF_CTRL0_PORT1_RGMII;
-+		val |= GENCONF_CTRL0_PORT0_RGMII;
- 	else if (port->gop_id == 3)
- 		val |= GENCONF_CTRL0_PORT1_RGMII_MII;
- 	regmap_write(priv->sysctrl_base, GENCONF_CTRL0, val);
+ 	if (has_array_args) {
+-		/*
+-		 * When adding new types of array args, make sure that the
+-		 * parent argument to ioctl (which contains the pointer to the
+-		 * array) fits into sbuf (so that mbuf will still remain
+-		 * unused up to here).
+-		 */
+-		mbuf = kvmalloc(array_size, GFP_KERNEL);
++		array_buf = kvmalloc(array_size, GFP_KERNEL);
+ 		err = -ENOMEM;
+-		if (NULL == mbuf)
++		if (array_buf == NULL)
+ 			goto out_array_args;
+ 		err = -EFAULT;
+ 		if (in_compat_syscall())
+-			err = v4l2_compat_get_array_args(file, mbuf, user_ptr,
+-							 array_size, orig_cmd,
+-							 parg);
++			err = v4l2_compat_get_array_args(file, array_buf,
++							 user_ptr, array_size,
++							 orig_cmd, parg);
+ 		else
+-			err = copy_from_user(mbuf, user_ptr, array_size) ?
++			err = copy_from_user(array_buf, user_ptr, array_size) ?
+ 								-EFAULT : 0;
+ 		if (err)
+ 			goto out_array_args;
+-		*kernel_ptr = mbuf;
++		*kernel_ptr = array_buf;
+ 	}
+ 
+ 	/* Handles IOCTL */
+@@ -3360,12 +3354,14 @@ video_usercopy(struct file *file, unsigned int orig_cmd, unsigned long arg,
+ 		if (in_compat_syscall()) {
+ 			int put_err;
+ 
+-			put_err = v4l2_compat_put_array_args(file, user_ptr, mbuf,
+-							     array_size, orig_cmd,
++			put_err = v4l2_compat_put_array_args(file, user_ptr,
++							     array_buf,
++							     array_size,
++							     orig_cmd,
+ 							     parg);
+ 			if (put_err)
+ 				err = put_err;
+-		} else if (copy_to_user(user_ptr, mbuf, array_size)) {
++		} else if (copy_to_user(user_ptr, array_buf, array_size)) {
+ 			err = -EFAULT;
+ 		}
+ 		goto out_array_args;
+@@ -3381,6 +3377,7 @@ video_usercopy(struct file *file, unsigned int orig_cmd, unsigned long arg,
+ 	if (video_put_user((void __user *)arg, parg, cmd, orig_cmd))
+ 		err = -EFAULT;
+ out:
++	kvfree(array_buf);
+ 	kvfree(mbuf);
+ 	return err;
+ }
 -- 
-1.9.1
+2.20.1
 
