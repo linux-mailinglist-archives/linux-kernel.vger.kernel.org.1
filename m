@@ -2,170 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B32282DF921
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 07:07:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 786C82DF8DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 06:41:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728352AbgLUGG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 01:06:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49918 "EHLO
+        id S1727854AbgLUFji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 00:39:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725984AbgLUGG0 (ORCPT
+        with ESMTP id S1727066AbgLUFjg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 01:06:26 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FED2C0613D3
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 22:05:46 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id lb18so5544356pjb.5
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 22:05:46 -0800 (PST)
+        Mon, 21 Dec 2020 00:39:36 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62487C0613D3;
+        Sun, 20 Dec 2020 21:38:56 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id z21so5696415pgj.4;
+        Sun, 20 Dec 2020 21:38:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:subject:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/5I+IwRWc6yQaXHGrTaY4QXvxkqMztX8GLLvJNaqk9E=;
-        b=Hd4HuEMllJJEoa/SS2OsonS1BJlQfxzuBz16/REMsf8ufv/5+RuJz4IKMXzCdhBNU/
-         qFHd1Fx4AZPQwQjT1xziamasIjEYoqcs4AwD8Jkpje4Lk/51aCN0gG/ClLqArUSB8khu
-         KdV7p7EyTDEXGcB4VL3G6aXCxUzOIrPQuki4NFfBXn/8zOn9eekzWbrncwFtEOXetnGm
-         sIO6cAdW03LU3RVCnCdMhC3374WDNDxhZkXj5VWpbJjXA9YXNaWxByCeUik3R+OfVXdj
-         1CmhqDSYBAPQ7kVBhuonjrU9socBsNCavOJqs4R73co839NcoXjDJnvMfKbIWXekiC1M
-         uK2g==
+        d=gmail.com; s=20161025;
+        h=date:from:cc:subject:message-id:mime-version:content-disposition;
+        bh=Ua2/mrhX7ym2QXGBEungLOzE+u2b0KzmVzT/pkdbpzo=;
+        b=uBQONVucB+rIvkwClOZ8NcgHT8yprJdrlfDyYY49kJO/4UfCAQD/ALefIv2FwSzsPh
+         hAHAd5U8PI2xBQQfyfdh1X0/qjxGyp1iSIdhzhEbg60xZ6yh9L1WC/rAHUevfskvLWcv
+         DYkVkrWlHs5c3OJ79deH2dQTDI8XmVqsm2KmJ8+94RPOthyG0q/mSdMo/rPA/MyHlssA
+         5irNWwCv/u4hR52Y+317ZFLjcTWSu2vbIrEqWMQ4XNvok6O020jABgcvJvpjoYCSkhzw
+         ERYRAHvrLSwF8rHcdn+V7DbsxFWhxm6FMNl6sSStXqZA+Ycrj3/ZOwmPmAuTaBbnXWEB
+         1bVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/5I+IwRWc6yQaXHGrTaY4QXvxkqMztX8GLLvJNaqk9E=;
-        b=Firf8fYX2iunX/u/9FKMlVTUjqD64iG9sRN1zcymqR7WNoLQFUaNZMXsQLe+Ui+sDH
-         oSN4cQ9Ok5OMDg1UYeOyesKMIn/cH8Pe6bOkXxdm9EHVvGm7dh7xfyv9jVnHKoEAYPh8
-         SLZDJmrqoKb7sK6FMMpvgQ23CLxGVmQdC7NZtM7L3Hq9tKN+I/vgx3hWZXCV9ZgPQ/Pf
-         DLa24H5wFXMqWBACUupwjedGyDmav8wCE8DZkqNcDb2ImB4kwgZbwuGjSHxAsmd+wmzb
-         nxt/H/IXlwWAIecHB72kQNvd/9s61CE3wFpLBMW3QNMZndReImpuq99u+D8gWgP1vmHn
-         dfzg==
-X-Gm-Message-State: AOAM530jlxmXFODvsfQkJwQtXdZjXlVVPqukiiReu66/8NP/Ta//xh+H
-        knW1CAzjQjhy32vWVpWF66v2Fqa3o1unWQ==
-X-Google-Smtp-Source: ABdhPJw7V/aqh2FEI4h4RrbwnB+ZyOTeaGsRVfub7RkBdm2z1yqOnvyQl6xkyxFM37roY3x4dYhExg==
-X-Received: by 2002:a17:902:7c0a:b029:da:62c8:90cb with SMTP id x10-20020a1709027c0ab02900da62c890cbmr13521856pll.59.1608497223942;
-        Sun, 20 Dec 2020 12:47:03 -0800 (PST)
-Received: from hermes.local (204-195-22-127.wavecable.com. [204.195.22.127])
-        by smtp.gmail.com with ESMTPSA id h24sm14687489pfq.13.2020.12.20.12.47.03
+        h=x-gm-message-state:date:from:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=Ua2/mrhX7ym2QXGBEungLOzE+u2b0KzmVzT/pkdbpzo=;
+        b=CFHfGHc75wIKwMx8MkTjtbw0JsT7vUXUQMKpxq4EaJQSIgQpw6xyV6Aro+w2KKYpxQ
+         ywDw76bRO0PUSoFhVDVJ811qJs4hzUF0qdYJory1Y98R0IghNNIyCc8GG6PodX4KaEtb
+         57DKzxypNwN7UZ9B+RJHKM5Y3hrVh5zfhxmfSj52sWYkodQiqIAWtWpcfhtaTOAuXmcD
+         gnXz7Q7ge1Forp8lEayeKUEUns5T/X7zos0Dxe0+1avGWrVQBlHDk2Mb6wag37W1efZ3
+         MulyAF3nw/cdttInIFcXieqYyMSHf1w+c2nZCsEA+jGGzWkzjPeWS5enfOIDGl/eBJNt
+         t/QA==
+X-Gm-Message-State: AOAM533YPWZpkkE7RyBTiJlOMRXCNwlz6CnIGzoFjW7zwKzwAHpQk8MS
+        0RGYnQJgBgYRED61WoBYs/5KF4ynI9UbIw==
+X-Google-Smtp-Source: ABdhPJzgQswpROGP7j52LG+e4qEzK3ZKxIdFWseQ6PpDkbHVyLu7hzqPW3nmwO5DqrNMhq9K9iDaqQ==
+X-Received: by 2002:a63:924f:: with SMTP id s15mr12434339pgn.360.1608497287041;
+        Sun, 20 Dec 2020 12:48:07 -0800 (PST)
+Received: from localhost ([103.248.31.152])
+        by smtp.gmail.com with ESMTPSA id 11sm1361643pgz.22.2020.12.20.12.48.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Dec 2020 12:47:03 -0800 (PST)
-Date:   Sun, 20 Dec 2020 12:46:42 -0800
-From:   Stephen Hemminger <stephen@networkplumber.org>
-To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [ANNOUNCE] iproute2-5.10
-Message-ID: <20201220124642.53cb4311@hermes.local>
+        Sun, 20 Dec 2020 12:48:06 -0800 (PST)
+Date:   Mon, 21 Dec 2020 02:17:53 +0530
+From:   'Amey Narkhede' <ameynarkhede03@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
+Subject: Fwd: Re: [PATCH] block: aoe: replace use of __constant_htons to htons
+Message-ID: <20201220204753.zduzo6l6bqojlbnd@archlinux>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: message/rfc822
+Content-Disposition: inline
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just in time for the holidays, new iproute2!
+Date: Mon, 21 Dec 2020 01:50:23 +0530
+From: 'Amey Narkhede' <ameynarkhede03@gmail.com>
+To: David Laight <David.Laight@aculab.com>
+Subject: Re: [PATCH] block: aoe: replace use of __constant_htons to htons
+Message-ID: <20201220202019.j7x64yahapgilr7u@archlinux>
+References: <20201220164625.94105-1-ameynarkhede03@gmail.com>
+ <d708db73308747feb0484287a09c443e@AcuMS.aculab.com>
+Content-Disposition: inline
+In-Reply-To: <d708db73308747feb0484287a09c443e@AcuMS.aculab.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
 
-This update is smaller than usual, not a lot of new features.
-It does NOT include libbpf, that will be merged in 5.11 (iproute2-next).
+On 20/12/20 07:35PM, David Laight wrote:
+> From: Amey Narkhede
+> > Sent: 20 December 2020 16:46
+> >
+> > The macro htons expands to __swab16 which has special
+> > case for constants in little endian case. In big
+> > endian case both __constant_htons and htons macros
+> > expand to the same code. So, replace __constant_htons
+> > with htons to get rid of the definition of __constant_htons
+> > completely.
+> >
+> ...
+> >  static struct packet_type aoe_pt __read_mostly = {
+> > -	.type = __constant_htons(ETH_P_AOE),
+> > +	.type = htons(ETH_P_AOE),
+> >  	.func = aoenet_rcv,
+>
+> Does this cause grief if someone is doing a COMPILE_TEST on LE?
+>
+> 	David
+>
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
+>
+I did COMPILE_TEST on my x86_64 machine and it compiled
+without any problems.
+I assume that was the point or am I missing
+something? I'm a beginner contributor so please
+let me know if there any mistakes.
 
-Download:
-    https://www.kernel.org/pub/linux/utils/net/iproute2/iproute2-5.10.0.tar.gz
-
-Repository for upcoming release:
-    git://git.kernel.org/pub/scm/network/iproute2/iproute2.git
-
-And future release (net-next):
-    git://git.kernel.org/pub/scm/network/iproute2/iproute2-next.git
-
-Thanks for all the contributions.
-
-Report problems (or enhancements) to the netdev@vger.kernel.org mailing list.
-
----
-Andrea Claudi (4):
-      man: tc-flower: fix manpage
-      devlink: fix memory leak in cmd_dev_flash()
-      tc: pedit: fix memory leak in print_pedit
-      ss: mptcp: fix add_addr_accepted stat print
-
-Antony Antony (2):
-      ip xfrm: support printing XFRMA_SET_MARK_MASK attribute in states
-      ip xfrm: support setting XFRMA_SET_MARK_MASK attribute in states
-
-Ciara Loftus (1):
-      ss: add support for xdp statistics
-
-David Ahern (5):
-      Update kernel headers
-      Update kernel headers
-      Update kernel headers
-      Update kernel headers
-      Update kernel headers
-
-Guillaume Nault (5):
-      m_vlan: add pop_eth and push_eth actions
-      m_mpls: add mac_push action
-      m_mpls: test the 'mac_push' action after 'modify'
-      tc-vlan: fix help and error message strings
-      tc-mpls: fix manpage example and help message string
-
-Hoang Le (1):
-      tipc: support 128bit node identity for peer removing
-
-Jacob Keller (2):
-      devlink: support setting the overwrite mask attribute
-      devlink: display elapsed time during flash update
-
-Jakub Kicinski (1):
-      ip: promote missed packets to the -s row
-
-Jiri Pirko (1):
-      devlink: Add health reporter test command support
-
-Johannes Berg (5):
-      libnetlink: add rtattr_for_each_nested() iteration macro
-      libnetlink: add nl_print_policy() helper
-      genl: ctrl: support dumping netlink policy
-      genl: ctrl: print op -> policy idx mapping
-      libnetlink: define __aligned conditionally
-
-Luca Boccassi (2):
-      ip/netns: use flock when setting up /run/netns
-      tc/mqprio: json-ify output
-
-Nikolay Aleksandrov (6):
-      bridge: mdb: add support for source address
-      bridge: mdb: print fast_leave flag
-      bridge: mdb: show igmpv3/mldv2 flags
-      bridge: mdb: print filter mode when available
-      bridge: mdb: print source list when available
-      bridge: mdb: print protocol when available
-
-Parav Pandit (2):
-      devlink: Show external port attribute
-      devlink: Show controller number of a devlink port
-
-Roopa Prabhu (1):
-      iplink: add support for protodown reason
-
-Stephen Hemminger (15):
-      v5.9.0
-      uapi: updates from 5.10-rc1
-      tc/m_gate: fix spelling errors
-      man: fix spelling errors
-      rdma: fix spelling error in comment
-      uapi: update kernel headers from 5.10-rc2
-      bridge: report correct version
-      devlink: fix uninitialized warning
-      bridge: fix string length warning
-      tc: fix compiler warnings in ip6 pedit
-      misc: fix compiler warning in ifstat and nstat
-      f_u32: fix compiler gcc-10 compiler warning
-      uapi: update devlink.h
-      uapi: update devlink.h
-      uapi: merge in change to bpf.h
-
-Tuong Lien (2):
-      tipc: add option to set master key for encryption
-      tipc: add option to set rekeying for encryption
-
-Wei Wang (1):
-      iproute2: ss: add support to expose various inet sockopts
-
+Amey
