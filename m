@@ -2,90 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 380A02DF3E8
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 06:43:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A4C2DF428
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 07:10:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727075AbgLTFnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 00:43:46 -0500
-Received: from labrats.qualcomm.com ([199.106.110.90]:23395 "EHLO
-        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726099AbgLTFnq (ORCPT
+        id S1726997AbgLTGGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 01:06:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726113AbgLTGGN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 00:43:46 -0500
-IronPort-SDR: RCN3T0Uid7HhfOQilNLdImPJtMoutoSW4oODCDaA5dqXhd0Tz4MrYGo7jkjVNMakN7bfiij6xk
- LbxmgqkqKOivwQUCiHtyIIN/QmInTYGuM9SuwLTww42V5WaGPOVW2/jtEkJ6ukbXnXOYC1KEDP
- EYbfDMIsu/WHPWmnpK8nEbyMIX4vyCzZdpVYKMSb2LxV2rxiTCo3RZERiR/7NtlkbxYLH3DK4v
- 6B8jmu23ViY2FrcS+Kf6O4MjJT6HW7scwx+0Tl/yyEivgMFROS4Ij9Gsl8TqbmWZdmFxWNHEVy
- jDo=
-X-IronPort-AV: E=Sophos;i="5.78,434,1599548400"; 
-   d="scan'208";a="47599281"
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by labrats.qualcomm.com with ESMTP; 19 Dec 2020 21:43:06 -0800
-X-QCInternal: smtphost
-Received: from stor-presley.qualcomm.com ([192.168.140.85])
-  by ironmsg04-sd.qualcomm.com with ESMTP; 19 Dec 2020 21:43:05 -0800
-Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
-        id 1FB79212A8; Sat, 19 Dec 2020 21:43:05 -0800 (PST)
-From:   Can Guo <cang@codeaurora.org>
-To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, rnayak@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com, cang@codeaurora.org
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-kernel@vger.kernel.org (open list),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
-        support),
-        linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC
-        support)
-Subject: [PATCH v6 3/3] scsi: ufs: Revert "Make sure clk scaling happens only when HBA is runtime ACTIVE"
-Date:   Sat, 19 Dec 2020 21:42:47 -0800
-Message-Id: <1608442968-38560-4-git-send-email-cang@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1608442968-38560-1-git-send-email-cang@codeaurora.org>
-References: <1608442968-38560-1-git-send-email-cang@codeaurora.org>
+        Sun, 20 Dec 2020 01:06:13 -0500
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A0AFC0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 22:05:32 -0800 (PST)
+Received: by mail-il1-x12c.google.com with SMTP id r17so6001360ilo.11
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 22:05:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=3PPLg+PyRHcRYpZXYU0/asVVIWhX7CVrUOdST+JsHR0=;
+        b=e9wxcQKAFmPoEefwuZbY4XDYd4tBIR1mNJrmj/KVWvI/UZUztU7+L4iHz+Ve9enOI+
+         E2lrFuoODyJXy71rDvSN4jQw1/jWVkaHsoHX8wOHb2M0vig7rxn0n3iT9Jr5ij4N+5Op
+         FUID7+AbzTYOVJ1KMLZsFkggc51AVCic7CrJd31xeO34IKxcmQQD7SjEAOT2tSv3WueV
+         jrWSVojFo//oZQnc8LOGMxJxPVxHA/Sp9paANaQEYBlp2RZkxJ0I38bCB8jI1OG+VxtS
+         Zwddmly0CxNmChMl8rVCN5c2w1PqfAOk35/xeloRR92oDb42Hcy1egNuuW3yeIWjVB6G
+         qFvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=3PPLg+PyRHcRYpZXYU0/asVVIWhX7CVrUOdST+JsHR0=;
+        b=lWWyazch5j4RcrDDJ8wbp/i3npPmusG8Y8Lpi1iWMMaEexbco1Br8fZ1OF5+WoTyvI
+         F5QMV03E80VQTvNKAg+rpwzUXqVIboCn9pgol7cBZl9EmGUhNuSjzTPApWxKhzp/sCeX
+         jkntk54SypW7RcGv/R3236oiLxI8ndNPf64vQcPQwDKJ489xtXXskUeunKxuXw9Aknfm
+         DcRQHFucrsMAbmeKisoBtooCwjT0XImt732t5/djmSe7mTmw3Aion/ozNGjzqhMTBwiY
+         RVQk9AkdSyfwEMDf58/kdTsezpN7bimcNcMgeW9H5wx5IjW3gqz57fncrDoWeTCuYpsn
+         AwSA==
+X-Gm-Message-State: AOAM532ZbkR5NysCbwbOTTwgPaaPZNAuk3PQfvTMsVqXVY0j4S5YGCNi
+        kHgZmboqQOkly176ik16/Clvfg==
+X-Google-Smtp-Source: ABdhPJyy9yVMnwfNic7VftM2KcUqOrVxMDy8+CIcb0HITMOOPzzKatb6Pr6CA9cJOtnPTOc4U8HISA==
+X-Received: by 2002:a92:d7d2:: with SMTP id g18mr11631723ilq.2.1608444331660;
+        Sat, 19 Dec 2020 22:05:31 -0800 (PST)
+Received: from google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
+        by smtp.gmail.com with ESMTPSA id f13sm12714253iog.18.2020.12.19.22.05.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Dec 2020 22:05:30 -0800 (PST)
+Date:   Sat, 19 Dec 2020 23:05:26 -0700
+From:   Yu Zhao <yuzhao@google.com>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        linux-mm <linux-mm@kvack.org>, Peter Xu <peterx@redhat.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable@vger.kernel.org, minchan@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+Message-ID: <X97pprdcRXusLGnq@google.com>
+References: <20201219043006.2206347-1-namit@vmware.com>
+ <X95RRZ3hkebEmmaj@redhat.com>
+ <EDC00345-B46E-4396-8379-98E943723809@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <EDC00345-B46E-4396-8379-98E943723809@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 73cc291c27024 ("Make sure clk scaling happens only when HBA is
-runtime ACTIVE") is no longer needed since commit f7a42540928a8 ("scsi:
-ufs: Protect some contexts from unexpected clock scaling") is a more
-mature fix to protect UFS LLD stability from clock scaling invoked through
-sysfs nodes by users.
+On Sat, Dec 19, 2020 at 01:34:29PM -0800, Nadav Amit wrote:
+> [ cc’ing some more people who have experience with similar problems ]
+> 
+> > On Dec 19, 2020, at 11:15 AM, Andrea Arcangeli <aarcange@redhat.com> wrote:
+> > 
+> > Hello,
+> > 
+> > On Fri, Dec 18, 2020 at 08:30:06PM -0800, Nadav Amit wrote:
+> >> Analyzing this problem indicates that there is a real bug since
+> >> mmap_lock is only taken for read in mwriteprotect_range(). This might
+> > 
+> > Never having to take the mmap_sem for writing, and in turn never
+> > blocking, in order to modify the pagetables is quite an important
+> > feature in uffd that justifies uffd instead of mprotect. It's not the
+> > most important reason to use uffd, but it'd be nice if that guarantee
+> > would remain also for the UFFDIO_WRITEPROTECT API, not only for the
+> > other pgtable manipulations.
+> > 
+> >> Consider the following scenario with 3 CPUs (cpu2 is not shown):
+> >> 
+> >> cpu0				cpu1
+> >> ----				----
+> >> userfaultfd_writeprotect()
+> >> [ write-protecting ]
+> >> mwriteprotect_range()
+> >> mmap_read_lock()
+> >> change_protection()
+> >>  change_protection_range()
+> >>   ...
+> >>   change_pte_range()
+> >>   [ defer TLB flushes]
+> >> 				userfaultfd_writeprotect()
+> >> 				 mmap_read_lock()
+> >> 				 change_protection()
+> >> 				 [ write-unprotect ]
+> >> 				 ...
+> >> 				  [ unprotect PTE logically ]
+> >> 				...
+> >> 				[ page-fault]
+> >> 				...
+> >> 				wp_page_copy()
+> >> 				[ set new writable page in PTE]
 
-Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
-Signed-off-by: Can Guo <cang@codeaurora.org>
----
- drivers/scsi/ufs/ufshcd.c | 7 -------
- 1 file changed, 7 deletions(-)
+I don't see any problem in this example -- wp_page_copy() calls
+ptep_clear_flush_notify(), which should take care of the stale entry
+left by cpu0.
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 2dee21e..7229a1b 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -1300,15 +1300,8 @@ static int ufshcd_devfreq_target(struct device *dev,
- 	}
- 	spin_unlock_irqrestore(hba->host->host_lock, irq_flags);
- 
--	pm_runtime_get_noresume(hba->dev);
--	if (!pm_runtime_active(hba->dev)) {
--		pm_runtime_put_noidle(hba->dev);
--		ret = -EAGAIN;
--		goto out;
--	}
- 	start = ktime_get();
- 	ret = ufshcd_devfreq_scale(hba, scale_up);
--	pm_runtime_put(hba->dev);
- 
- 	trace_ufshcd_profile_clk_scaling(dev_name(hba->dev),
- 		(scale_up ? "up" : "down"),
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+That being said, I suspect the memory corruption you observed is
+related this example, with cpu1 running something else that flushes
+conditionally depending on pte_write().
 
+Do you know which type of pages were corrupted? file, anon, etc.
+
+> > Can't we check mm_tlb_flush_pending(vma->vm_mm) if MM_CP_UFFD_WP_ALL
+> > is set and do an explicit (potentially spurious) tlb flush before
+> > write-unprotect?
+> 
+> There is a concrete scenario that I actually encountered and then there is a
+> general problem.
+> 
+> In general, the kernel code assumes that PTEs that are read from the
+> page-tables are coherent across all the TLBs, excluding permission promotion
+> (i.e., the PTE may have higher permissions in the page-tables than those
+> that are cached in the TLBs).
+> 
+> We therefore need to both: (a) protect change_protection_range() from the
+> changes of others who might defer TLB flushes without taking mmap_sem for
+> write (e.g., try_to_unmap_one()); and (b) to protect others (e.g.,
+> page-fault handlers) from concurrent changes of change_protection().
+> 
+> We have already encountered several similar bugs, and debugging such issues
+> s time consuming and these bugs impact is substantial (memory corruption,
+> security). So I think we should only stick to general solutions.
+> 
+> So perhaps your the approach of your proposed solution is feasible, but it
+> would have to be applied all over the place: we will need to add a check for
+> mm_tlb_flush_pending() and conditionally flush the TLB in every case in
+> which PTEs are read and there might be an assumption that the
+> access-permission reflect what the TLBs hold. This includes page-fault
+> handlers, but also NUMA migration code in change_protection(), softdirty
+> cleanup in clear_refs_write() and maybe others.
+> 
+> [ I have in mind another solution, such as keeping in each page-table a 
+> “table-generation” which is the mm-generation at the time of the change,
+> and only flush if “table-generation”==“mm-generation”, but it requires
+> some thought on how to avoid adding new memory barriers. ]
+> 
+> IOW: I think the change that you suggest is insufficient, and a proper
+> solution is too intrusive for “stable".
+> 
+> As for performance, I can add another patch later to remove the TLB flush
+> that is unnecessarily performed during change_protection_range() that does
+> permission promotion. I know that your concern is about the “protect” case
+> but I cannot think of a good immediate solution that avoids taking mmap_lock
+> for write.
+> 
+> Thoughts?
+> 
