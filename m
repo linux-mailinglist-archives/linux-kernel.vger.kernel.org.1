@@ -2,96 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F23D42DF4DA
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 10:40:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 271BB2DF4DB
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 10:42:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727779AbgLTJjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 04:39:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727253AbgLTJi5 (ORCPT
+        id S1727391AbgLTJl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 04:41:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22377 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727159AbgLTJl7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 04:38:57 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 616AAC0611C5;
-        Sun, 20 Dec 2020 01:37:36 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id y17so7635812wrr.10;
-        Sun, 20 Dec 2020 01:37:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=m10UBKJBthWio+4ksO5Z9Dkd3ZlCqAP161BEeEUt8Io=;
-        b=Fg56ouWKeELsC3gulKYGH9X/1JCpTssb5w30C25D0v76Pjnli6Uid5/0e7Z8z6Xuau
-         r/a7ztFYheYj7ZabNG1i64tAhiO04ld/eDKQHFTJ0IPBsNAej89wj+ytt+Mk5/vYY9JU
-         rgboWdBMEBXH+U7+O5ZShKd/uev3uq/MLq5xi8ODeW8JaZCO9OKci5f3rtIjpz0GTD5I
-         bY9xLWnqvpG00iEx0eudZ8nKMvFXvoFyFUONVz6EBqZgUH9qxruf6OOn8sBNhRnWmSiw
-         kXAtKJCVEJRc6bKrDJgbNmXuh5ou/nqwF/YuC8uHyJVZzi8aw7VmOqJ9B7duOX72IzUI
-         CcSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=m10UBKJBthWio+4ksO5Z9Dkd3ZlCqAP161BEeEUt8Io=;
-        b=L9EcBgUQJSg7SvV7FOY9BkYqBIVzhDVG6w47ZZfm3IoE7VEcYETB9ApuzGBFDWAQCM
-         Q1mXWq7oh6y01iMCnlgRSop8YItOwS0hKSTfbVhs/UikMaXuDKZv1gVdQIbHCQ2OOEMq
-         oXBAudon9o84GA7xAxaVvSCkSvEGpiyKPnBK14bZbq2eNrqYRVHqVsfN3YPpIvAjVg1x
-         EG2kaOZoxD3PXCHnnHhvv/DWHoryMte0gO1Ivw3VbB6G9MgWRPb+xEkreN122oSqF12K
-         sP5LImTnAGOAtw+tVoTCTJ1JrvSc4a3D0ei5MPvRNZdeEhbC5beMMHXSZ7qj2IQXaC2e
-         OCPw==
-X-Gm-Message-State: AOAM531Mv18v5RA9IY0j6ixl+l8FR1z7BHGTh8JVk1+M1bXrvjciQYCM
-        a7ysIrImTyhAXaDWl7SO9mo=
-X-Google-Smtp-Source: ABdhPJxgna1g9KEcF/nCu2xv/8twa9Rpyn+HagZQsSNOiyywJOhPxqAqkl2Z21X2KWIrXD4FBS18WA==
-X-Received: by 2002:a5d:69cf:: with SMTP id s15mr12816468wrw.372.1608457055138;
-        Sun, 20 Dec 2020 01:37:35 -0800 (PST)
-Received: from localhost.localdomain (188.red-81-44-87.dynamicip.rima-tde.net. [81.44.87.188])
-        by smtp.gmail.com with ESMTPSA id o8sm21288819wrm.17.2020.12.20.01.37.33
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 20 Dec 2020 01:37:34 -0800 (PST)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     sboyd@kernel.org
-Cc:     robh+dt@kernel.org, john@phrozen.org, tsbogend@alpha.franken.de,
-        gregkh@linuxfoundation.org, gch981213@gmail.com,
-        hackpascal@gmail.com, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, devel@driverdev.osuosl.org,
-        neil@brown.name
-Subject: [PATCH v5 6/6] MAINTAINERS: add MT7621 CLOCK maintainer
-Date:   Sun, 20 Dec 2020 10:37:24 +0100
-Message-Id: <20201220093724.4906-7-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201220093724.4906-1-sergio.paracuellos@gmail.com>
-References: <20201220093724.4906-1-sergio.paracuellos@gmail.com>
+        Sun, 20 Dec 2020 04:41:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608457232;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Qu181/SxorcHfWdvdcSj+pkwAFVA8G1yAvMSmmXwoBY=;
+        b=OTgqvvLaaV9F2TkJxisc/Ara2Xtm0ktSN0x6lqlHwELMMkVhSgME+dctV1/sNBz03/RhIq
+        VP05HAWOZpfX7Rr0x20IYyd0V9wdX9WGROJQuUrTZjfDsr/ryisY5fzTmTluj4tK2Va0W/
+        cPurN3tji28VaY7V52B8bUu4+94zWTo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-217-BXSYY0nONT25flmeROQzhA-1; Sun, 20 Dec 2020 04:40:30 -0500
+X-MC-Unique: BXSYY0nONT25flmeROQzhA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 744291005504;
+        Sun, 20 Dec 2020 09:40:29 +0000 (UTC)
+Received: from [10.36.112.16] (ovpn-112-16.ams2.redhat.com [10.36.112.16])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 438AD2CD65;
+        Sun, 20 Dec 2020 09:40:28 +0000 (UTC)
+Subject: Re: [PATCH v1 0/4] s390/kvm: fix MVPG when in VSIE
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     borntraeger@de.ibm.com, frankja@linux.ibm.com, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org
+References: <20201218141811.310267-1-imbrenda@linux.ibm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <5947ede7-7f9f-cdaa-b827-75a5715e4f12@redhat.com>
+Date:   Sun, 20 Dec 2020 10:40:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201218141811.310267-1-imbrenda@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding myself as maintainer for mt7621 clock driver.
+On 18.12.20 15:18, Claudio Imbrenda wrote:
+> The current handling of the MVPG instruction when executed in a nested
+> guest is wrong, and can lead to the nested guest hanging.
 
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
----
- MAINTAINERS | 6 ++++++
- 1 file changed, 6 insertions(+)
+Hi,
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index f5eafee83bc6..f0c51d9760ec 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11247,6 +11247,12 @@ L:	linux-wireless@vger.kernel.org
- S:	Maintained
- F:	drivers/net/wireless/mediatek/mt7601u/
- 
-+MEDIATEK MT7621 CLOCK DRIVER
-+M:	Sergio Paracuellos <sergio.paracuellos@gmail.com>
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
-+F:	drivers/clk/ralink/clk-mt7621.c
-+
- MEDIATEK MT7621/28/88 I2C DRIVER
- M:	Stefan Roese <sr@denx.de>
- L:	linux-i2c@vger.kernel.org
+thanks for spotting and debugging! Is this related to nested guests
+hanging while migrating (mentioned by Janosch at some point)?
+
+Or can this not be reproduced with actual Linux guests?
+
+Thanks!
+
+> 
+> This patchset fixes the behaviour to be more architecturally correct,
+> and fixes the hangs observed.
+> 
+> Claudio Imbrenda (4):
+>   s390/kvm: VSIE: stop leaking host addresses
+>   s390/kvm: extend guest_translate for MVPG interpretation
+>   s390/kvm: add kvm_s390_vsie_mvpg_check needed for VSIE MVPG
+>   s390/kvm: VSIE: correctly handle MVPG when in VSIE
+> 
+>  arch/s390/kvm/gaccess.c | 88 ++++++++++++++++++++++++++++++++++++++---
+>  arch/s390/kvm/gaccess.h |  3 ++
+>  arch/s390/kvm/vsie.c    | 78 +++++++++++++++++++++++++++++++++---
+>  3 files changed, 159 insertions(+), 10 deletions(-)
+> 
+
+
 -- 
-2.25.1
+Thanks,
+
+David / dhildenb
 
