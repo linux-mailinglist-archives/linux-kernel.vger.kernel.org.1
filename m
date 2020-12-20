@@ -2,78 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 150A82DF465
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 09:15:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0ED2DF46E
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 09:31:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727319AbgLTIO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 03:14:29 -0500
-Received: from spam.zju.edu.cn ([61.164.42.155]:44396 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727190AbgLTIO3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 03:14:29 -0500
-Received: from localhost.localdomain (unknown [10.192.85.18])
-        by mail-app3 (Coremail) with SMTP id cC_KCgA3_+ydB99fmttYAA--.15457S4;
-        Sun, 20 Dec 2020 16:13:22 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Ursula Braun <ubraun@linux.ibm.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
-        Divya Indi <divya.indi@oracle.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] IB/sa: Fix memleak in ib_nl_make_request
-Date:   Sun, 20 Dec 2020 16:13:14 +0800
-Message-Id: <20201220081317.18728-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgA3_+ydB99fmttYAA--.15457S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrtF4rAr1fKFW7Wr4rKw43trb_yoWfXrg_Kr
-        4jvF97XrW5CFn2kr47Kw4fWrn0vwn5Xrn3urs7K34fC345JF93W3yxZFyfC3W7GwsFkr4U
-        J39rJwn3AF4fKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbVxFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
-        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
-        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
-        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
-        c2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r
-        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
-        x0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY
-        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
-        73UjIFyTuYvjfUoOJ5UUUUU
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgUMBlZdtRf+rwAHsy
+        id S1727339AbgLTI3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 03:29:32 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28611 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727043AbgLTI3c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Dec 2020 03:29:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608452885;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=DUjf0b7Cp0HBk1u4zghdBX7mQ4cTJHbAWmAcP28K9Oo=;
+        b=hq68T6dcKKT5M7pPfRghFASlvUT+T4cWtiBKuJd0BFfwP0vgIseVCYuuI7CYpN+1x4uVe9
+        KM1SfFtpbJx4NGBJbZlue/j0Lr+PuKklLle5hb9X/98XMQ0OyYfMaiQ65qMb7nN9+2CNBC
+        vLn/jYssOh+GKbCmv7WRmwGWuZe+xGc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-582-BZpv9fMcNgmuY6AH8FCnrQ-1; Sun, 20 Dec 2020 03:28:03 -0500
+X-MC-Unique: BZpv9fMcNgmuY6AH8FCnrQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3B7E5800D53;
+        Sun, 20 Dec 2020 08:28:02 +0000 (UTC)
+Received: from MiWiFi-R3L-srv.redhat.com (ovpn-12-22.pek2.redhat.com [10.72.12.22])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4049C60C13;
+        Sun, 20 Dec 2020 08:27:55 +0000 (UTC)
+From:   Baoquan He <bhe@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
+        gopakumarr@vmware.com, rppt@kernel.org, david@redhat.com,
+        bhe@redhat.com
+Subject: [PATCH v2 0/5] Fix the incorrect memmep defer init handling and do some cleanup 
+Date:   Sun, 20 Dec 2020 16:27:49 +0800
+Message-Id: <20201220082754.6900-1-bhe@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When rdma_nl_multicast() fails, skb should be freed
-just like when ibnl_put_msg() fails.
+VMware reported the performance regression during memmap_init() invocation.
+And they bisected to commit 73a6e474cb376 ("mm: memmap_init: iterate over
+memblock regions rather that check each PFN") causing it.
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- drivers/infiniband/core/sa_query.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+https://lore.kernel.org/linux-mm/DM6PR05MB52921FF90FA01CC337DD23A1A4080@DM6PR05MB5292.namprd05.prod.outlook.com/
 
-diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
-index 89a831fa1885..8bd23b5cc913 100644
---- a/drivers/infiniband/core/sa_query.c
-+++ b/drivers/infiniband/core/sa_query.c
-@@ -873,8 +873,10 @@ static int ib_nl_make_request(struct ib_sa_query *query, gfp_t gfp_mask)
- 	spin_lock_irqsave(&ib_nl_request_lock, flags);
- 	ret = rdma_nl_multicast(&init_net, skb, RDMA_NL_GROUP_LS, gfp_flag);
- 
--	if (ret)
-+	if (ret) {
-+		nlmsg_free(skb);
- 		goto out;
-+	}
- 
- 	/* Put the request on the list.*/
- 	delay = msecs_to_jiffies(sa_local_svc_timeout_ms);
+After investigation, it's caused by incorrect memmap init defer handling
+in memmap_init_zone() after commit 73a6e474cb376. The current
+memmap_init_zone() only handle one memory region of one zone, while
+memmap_init() iterates over all its memory regions and pass them one by
+one into memmap_init_zone() to handle.
+
+So in this patchset, patch 1/5 fixes the bug observed by VMware. Patch
+2~5/5 clean up codes.
+accordingly.
+
+VMware helped do the testing for the patch 1 of v1 version which was based
+on master branch of Linus's tree on their VMware ESI platform, while the
+patch 1 is not changed in functionality in v2. And I haven't got a
+ia64 machine to compile or test, will really appreciate if anyone can help
+compile this patchset on one. This patchset is based on the latest next/master,
+only did the basic test.  
+
+Baoquan He (5):
+  mm: memmap defer init dosn't work as expected
+  mm: rename memmap_init() and memmap_init_zone()
+  mm: simplify parater of function memmap_init_zone()
+  mm: simplify parameter of setup_usemap()
+  mm: remove unneeded local variable in free_area_init_core
+
+ arch/ia64/include/asm/pgtable.h |  3 +-
+ arch/ia64/mm/init.c             | 16 +++++----
+ include/linux/mm.h              |  5 +--
+ mm/memory_hotplug.c             |  2 +-
+ mm/page_alloc.c                 | 60 ++++++++++++++++-----------------
+ 5 files changed, 43 insertions(+), 43 deletions(-)
+
 -- 
-2.17.1
+2.17.2
 
