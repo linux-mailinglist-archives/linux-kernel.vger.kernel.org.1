@@ -2,95 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A86F92DF61E
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 17:42:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73CC42DF620
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 17:49:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727701AbgLTQm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 11:42:27 -0500
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:37724 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727112AbgLTQm0 (ORCPT
+        id S1727727AbgLTQrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 11:47:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727130AbgLTQrs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 11:42:26 -0500
-Received: by mail-ot1-f53.google.com with SMTP id o11so6772504ote.4;
-        Sun, 20 Dec 2020 08:42:11 -0800 (PST)
+        Sun, 20 Dec 2020 11:47:48 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4490EC061282;
+        Sun, 20 Dec 2020 08:47:06 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id v29so4852120pgk.12;
+        Sun, 20 Dec 2020 08:47:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3GGwcqj5QcILd/o4zZQ2OFy6KS5ZUG4l14PNl55Tprs=;
+        b=oSCmzqV69zAMP1/pKLOrLgQE4KYhHzfyRoe/HeFolWkAjXYZiWCsKs04JdDyyF5+2N
+         9gnYS1IzSbWUT6nceIrNj7YeK+TeKnxPN6QpR7ejDi4Qs2nVxmFwA63EGE8pwvSNNEuR
+         n9RpUuBdhQw2zvQAn9TQkLqy9W8IndPUk/UBvv9h0OUVQgFgP9E2X8vZb93BWbj1evl2
+         0okyreoBSiLJbidNQqJiFV1mpfbQ2viLFo9uUmKa3BWVTK7u2Z4RDu2rCr7l0S9RkgG9
+         k92Hf+KAJ1Z915GnkVAcf8LrDV0EOjaAomYsSdsz+POjnOC7sFGbposlrlvwtoPS6EMb
+         sCKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uMR8UsOOJm/t0/BOhlXp0IthO+C1BPZiiQ0XR2+w7ww=;
-        b=tN4EttWdmxiS6dAbsrwdkDa8g0SkhM+tMitDgKwse15nmbt7NwxspFaQ/YOe3wMXqc
-         TRmRg3OE05AbI1AgMuZsY1vrRjFpYbUOLhxchjPIEud4ooZsU9mtqWsdNKiidBZ2Nfaw
-         NGsRzJ8SVA+r4rWTQDcHqCZ/kIKrpfTmPFO6its6kemJtZZxnBF1LQX0Q1SQBLMq7kQ3
-         ujGywnmNMkvHFjvZVl/cHKRVGVLe2wp/j1PCnGKMVmXTEjeupg2x3sDfgOucvqTM3SLa
-         h1ZmpVptmpICbodn6fFtP1cZHdK4CMxJJENWSeJH9jKwY7VwI7lysNLaZmamR8xUYSHS
-         SBKw==
-X-Gm-Message-State: AOAM533++AxVjw6f4PjXTKV0JMpQwvIZFr7C4Tv6ks++BIrGY86W2bPM
-        OqJfJRi6BomaedVDNmyZVLOL0F7E908l9ERSQi8=
-X-Google-Smtp-Source: ABdhPJxu1NdQ2VEEArUeKHXHU7STlJr8bQSiHLupXAthuz+qkIMoCfQJFz8lBMF+7/LsFVi3fOFkILZwTDH18FoJqZ4=
-X-Received: by 2002:a9d:67da:: with SMTP id c26mr9552050otn.321.1608482505856;
- Sun, 20 Dec 2020 08:41:45 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3GGwcqj5QcILd/o4zZQ2OFy6KS5ZUG4l14PNl55Tprs=;
+        b=oy4fqRNuvOAr/fFi3Anf1ZHRaFoNK3cbiwCMuyxFR9efnZW7pxRin5nf0zV2QoF9Ce
+         cgfy8LOWYSjEjDZiWO9IpeZ+/q4kUM9dbDvOR2p0iHi8yjcjvKGqPzsbsreT3QTbNjdg
+         67CLLMufHeMWXuPYGmsZ6q2nMUMSPvBRagcXrJti8w8qudh9ta+ev4PSmbC5nrYNMRsc
+         HcRohrHOKCSCI/XouXYQPsv0N7btKocdOH/zRBJwF1hg0Z1C90V1ew/Br859QGK6kCql
+         cW/glXBUkdm3jJpyCyIx/g4WEAEltiPXFdALTES+AnVpKu26RXbYeADwZjtIygWc+daF
+         xUJg==
+X-Gm-Message-State: AOAM531QEH0BMchSK2/VoVW9EyllR2/gWIrNbdRgRQLpb9XweBc3sYyI
+        RHlF5USCKtMtGaYj5Mso43AxDibGEd0P2Q==
+X-Google-Smtp-Source: ABdhPJxlNREJvZUznnH4W081+kh22BPYoFhgcylego25mbEk1tDClbAHM/SobAZpcBsxprer5OLqww==
+X-Received: by 2002:a63:131a:: with SMTP id i26mr12129440pgl.232.1608482825985;
+        Sun, 20 Dec 2020 08:47:05 -0800 (PST)
+Received: from localhost.localdomain ([103.248.31.152])
+        by smtp.googlemail.com with ESMTPSA id q23sm14715473pfg.18.2020.12.20.08.47.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Dec 2020 08:47:05 -0800 (PST)
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     justin@coraid.com
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Amey Narkhede <ameynarkhede03@gmail.com>
+Subject: [PATCH] block: aoe: replace use of __constant_htons to htons
+Date:   Sun, 20 Dec 2020 22:16:25 +0530
+Message-Id: <20201220164625.94105-1-ameynarkhede03@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <4600970.KDbqdY64fy@kreacher> <dffbe4d3d56f29a985d84dcb9e48c7f6fba0514c.camel@linux.intel.com>
-In-Reply-To: <dffbe4d3d56f29a985d84dcb9e48c7f6fba0514c.camel@linux.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Sun, 20 Dec 2020 17:41:30 +0100
-Message-ID: <CAJZ5v0jemyvcEFr1n=ZTBnisOW2K2MfhkxJmppEfqqogYcNbmA@mail.gmail.com>
-Subject: Re: [PATCH] cpufreq: intel_pstate: Use most recent guaranteed
- performance values
-To:     srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Len Brown <len.brown@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 19, 2020 at 6:21 AM srinivas pandruvada
-<srinivas.pandruvada@linux.intel.com> wrote:
->
-> On Thu, 2020-12-17 at 20:17 +0100, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > When turbo has been disabled by the BIOS, but HWP_CAP.GUARANTEED is
-> > changed later, user space may want to take advantage of this
-> > increased
-> > guaranteed performance.
-> >
-> > HWP_CAP.GUARANTEED is not a static value.  It can be adjusted by an
-> > out-of-band agent or during an Intel Speed Select performance level
-> > change.  The HWP_CAP.MAX is still the maximum achievable performance
-> > with turbo disabled by the BIOS, so HWP_CAP.GUARANTEED can still
-> > change as long as it remains less than or equal to HWP_CAP.MAX.
-> >
-> > When HWP_CAP.GUARANTEED is changed, the sysfs base_frequency
-> > attribute shows the most recent guaranteed frequency value. This
-> > attribute can be used by user space software to update the scaling
-> > min/max limits of the CPU.
-> >
-> > Currently, the ->setpolicy() callback already uses the latest
-> > HWP_CAP values when setting HWP_REQ, but the ->verify() callback will
-> > restrict the user settings to the to old guaranteed performance value
-> > which prevents user space from making use of the extra CPU capacity
-> > theoretically available to it after increasing HWP_CAP.GUARANTEED.
-> >
-> > To address this, read HWP_CAP in intel_pstate_verify_cpu_policy()
-> > to obtain the maximum P-state that can be used and use that to
-> > confine the policy max limit instead of using the cached and
-> > possibly stale pstate.max_freq value for this purpose.
-> >
-> > For consistency, update intel_pstate_update_perf_limits() to use the
-> > maximum available P-state returned by intel_pstate_get_hwp_max() to
-> > compute the maximum frequency instead of using the return value of
-> > intel_pstate_get_max_freq() which, again, may be stale.
-> >
-> > This issue is a side-effect of fixing the scaling frequency limits in
-> > commit eacc9c5a927e ("cpufreq: intel_pstate: Fix
-> > intel_pstate_get_hwp_max()
-> > for turbo disabled") which currected
-> corrected
+The macro htons expands to __swab16 which has special
+case for constants in little endian case. In big
+endian case both __constant_htons and htons macros
+expand to the same code. So, replace __constant_htons
+with htons to get rid of the definition of __constant_htons
+completely.
 
-Right, thanks!
+Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+---
+ drivers/block/aoe/aoecmd.c | 2 +-
+ drivers/block/aoe/aoenet.c | 3 +--
+ 2 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/block/aoe/aoecmd.c b/drivers/block/aoe/aoecmd.c
+index 313f0b946fe2..7a5374a57b55 100644
+--- a/drivers/block/aoe/aoecmd.c
++++ b/drivers/block/aoe/aoecmd.c
+@@ -69,7 +69,7 @@ new_skb(ulong len)
+ 		skb_reserve(skb, MAX_HEADER);
+ 		skb_reset_mac_header(skb);
+ 		skb_reset_network_header(skb);
+-		skb->protocol = __constant_htons(ETH_P_AOE);
++		skb->protocol = htons(ETH_P_AOE);
+ 		skb_checksum_none_assert(skb);
+ 	}
+ 	return skb;
+diff --git a/drivers/block/aoe/aoenet.c b/drivers/block/aoe/aoenet.c
+index 63773a90581d..2532e35774e0 100644
+--- a/drivers/block/aoe/aoenet.c
++++ b/drivers/block/aoe/aoenet.c
+@@ -192,7 +192,7 @@ aoenet_rcv(struct sk_buff *skb, struct net_device *ifp, struct packet_type *pt,
+ }
+
+ static struct packet_type aoe_pt __read_mostly = {
+-	.type = __constant_htons(ETH_P_AOE),
++	.type = htons(ETH_P_AOE),
+ 	.func = aoenet_rcv,
+ };
+
+@@ -220,4 +220,3 @@ aoenet_exit(void)
+ 	skb_queue_purge(&skbtxq);
+ 	dev_remove_pack(&aoe_pt);
+ }
+-
+--
+2.29.2
