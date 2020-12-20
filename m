@@ -2,268 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1221D2DF5F3
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 16:41:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 798F42DF5F9
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 16:44:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727773AbgLTPkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 10:40:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44906 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727711AbgLTPkS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 10:40:18 -0500
-From:   guoren@kernel.org
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     guoren@kernel.org, arnd@arndb.de
-Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-arch@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
-        Peter Zijlstra k <peterz@infradead.org>
-Subject: [PATCH v2 5/5] csky: Cleanup asm/spinlock.h
-Date:   Sun, 20 Dec 2020 15:39:23 +0000
-Message-Id: <1608478763-60148-5-git-send-email-guoren@kernel.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1608478763-60148-1-git-send-email-guoren@kernel.org>
-References: <1608478763-60148-1-git-send-email-guoren@kernel.org>
+        id S1727743AbgLTPnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 10:43:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727674AbgLTPny (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Dec 2020 10:43:54 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74EC3C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 07:43:11 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id 11so4998255pfu.4
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 07:43:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=f2K9z82uKLQRqxlPI5YC0r+MUup62BfY2UmSYqpCXHw=;
+        b=TCPqZVloeEYbIsnBdKiOmLpNUvfrePtpCyWhM+NkKLlKsFyROcy2uhTn10Q5INz4e8
+         bdcqc4wqgq48agwZHQCk3Dfa0DL7VjrosrwH38pMl+sSK/Nj+QTfncQhpVDVSkcn/zzZ
+         bQko0Da0r+mnclK9n1qXbxdUhC6mf6HvGU0rRbVCqWz6STYpEb3Ye7o3sRX3Vro/57Vl
+         S3gDnWUFQFGPbBXWMXSyPGr7+i2dZx10jKzQr0cFh8jplwN497RJg7ud2746iZ0H/ndn
+         kK7OUTElUkppxY1a8yr1vWN4nJ7oqwGD79w23Wvt7KqYfRaNp1cx/d5CBKjJUFeBzbGn
+         HT/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=f2K9z82uKLQRqxlPI5YC0r+MUup62BfY2UmSYqpCXHw=;
+        b=GZAB/4AWW1BbHZ6wa+ykQXy86fsiQaPiuqppJ4S3eJTgexvFHd8Fi6NW2OSUVAsExN
+         mrFecFKHhuVeC03BwKfSkOwHhMVmCB3/JKTs9XenAkfda4p42pl6xbTwByyw5LNt8W5s
+         /3SsIkf/ouBOC5cHFGntw4IwKKD2JXwzVvk3Ax9RIxzinMLtAdqEbH9/5r3kw2DohBTo
+         0t01yLU0pgdv/nW2Bh04m19c2oNJ0aQlhXjCRsHSoBrfqr01R2b1RLLfsKgTXALyVztl
+         x4BYbQXcF6PLJnK4fs3MvTr2yCAHjRKyRp6q64s7eZYbiDdWeiB4iGx/+ee+1ZGpGEwF
+         fKRA==
+X-Gm-Message-State: AOAM532mO1MLrf7NF/URJ0Lkm5QmFcdzT1BjPTdIT1EHhJLCCB3hmOWT
+        AU/cnvPyJdZj9O2NNyjU6fw=
+X-Google-Smtp-Source: ABdhPJzvGGthomWXqQvKwgHmDHkkrcklt86wXTrdWXlu7Gby6xPHyx3lpGf0JMU+ji6Zj9ULULvGgw==
+X-Received: by 2002:a62:80ce:0:b029:19d:b280:5019 with SMTP id j197-20020a6280ce0000b029019db2805019mr11760836pfd.43.1608478990900;
+        Sun, 20 Dec 2020 07:43:10 -0800 (PST)
+Received: from rae.kim ([122.37.26.177])
+        by smtp.gmail.com with ESMTPSA id g5sm14344644pfr.87.2020.12.20.07.43.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Dec 2020 07:43:10 -0800 (PST)
+Sender: Rae Kim <raekim@gmail.com>
+Date:   Mon, 21 Dec 2020 00:43:05 +0900
+From:   Rae Kim <rae.kim@gmail.com>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Leesoo Ahn <dev@ooseel.net>, linux-kernel@vger.kernel.org,
+        Leesoo Ahn <lsahn@ooseel.net>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Peter Collingbourne <pcc@google.com>,
+        Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Subject: Re: [PATCH] signal: Don't init struct kernel_siginfo fields to zero
+ again
+Message-ID: <20201220154305.ixlm4mwesyfexq57@rae.kim>
+References: <20201220074555.12655-1-lsahn@ooseel.net>
+ <20201220142134.GB16470@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201220142134.GB16470@redhat.com>
+User-Agent: NeoMutt/20201127
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
 
-There are two implementation of spinlock in arch/csky:
- - simple one (NR_CPU = 1,2)
- - tick's one (NR_CPU = 3,4)
-Remove the simple one.
+It looks like compiler optimization is smart enough to know that
+assigning zero is unnecessary after clear_siginfo() which is memset()
+under the hood. At least in my x86_64 machine, w/ or w/o this patch,
+there is no difference in final compiled machine code. (I've compared
+"objdump -d" results for "__send_signal()", "do_tkill()", and
+"collect_signal()")
 
-There is already smp_mb in spinlock, so remove the definition of
-smp_mb__after_spinlock.
+Wouldn't it be nicer to have more information for both human and
+compiler since it doesn't generate extra machine code?
 
-Link: https://lore.kernel.org/linux-csky/20200807081253.GD2674@hirez.programming.kicks-ass.net/#t
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Cc: Peter Zijlstra <peterz@infradead.org>k
-Cc: Arnd Bergmann <arnd@arndb.de>
----
- arch/csky/Kconfig                      |   2 +-
- arch/csky/include/asm/spinlock.h       | 167 ---------------------------------
- arch/csky/include/asm/spinlock_types.h |  10 --
- 3 files changed, 1 insertion(+), 178 deletions(-)
-
-diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
-index e254dc2..5ebb05a 100644
---- a/arch/csky/Kconfig
-+++ b/arch/csky/Kconfig
-@@ -7,7 +7,7 @@ config CSKY
- 	select ARCH_HAS_SYNC_DMA_FOR_CPU
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
- 	select ARCH_USE_BUILTIN_BSWAP
--	select ARCH_USE_QUEUED_RWLOCKS if NR_CPUS>2
-+	select ARCH_USE_QUEUED_RWLOCKS
- 	select ARCH_WANT_FRAME_POINTERS if !CPU_CK610
- 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT
- 	select COMMON_CLK
-diff --git a/arch/csky/include/asm/spinlock.h b/arch/csky/include/asm/spinlock.h
-index 7cf3f2b..69f5aa2 100644
---- a/arch/csky/include/asm/spinlock.h
-+++ b/arch/csky/include/asm/spinlock.h
-@@ -6,8 +6,6 @@
- #include <linux/spinlock_types.h>
- #include <asm/barrier.h>
- 
--#ifdef CONFIG_QUEUED_RWLOCKS
--
- /*
-  * Ticket-based spin-locking.
-  */
-@@ -88,169 +86,4 @@ static inline int arch_spin_is_contended(arch_spinlock_t *lock)
- 
- #include <asm/qrwlock.h>
- 
--/* See include/linux/spinlock.h */
--#define smp_mb__after_spinlock()	smp_mb()
--
--#else /* CONFIG_QUEUED_RWLOCKS */
--
--/*
-- * Test-and-set spin-locking.
-- */
--static inline void arch_spin_lock(arch_spinlock_t *lock)
--{
--	u32 *p = &lock->lock;
--	u32 tmp;
--
--	asm volatile (
--		"1:	ldex.w		%0, (%1) \n"
--		"	bnez		%0, 1b   \n"
--		"	movi		%0, 1    \n"
--		"	stex.w		%0, (%1) \n"
--		"	bez		%0, 1b   \n"
--		: "=&r" (tmp)
--		: "r"(p)
--		: "cc");
--	smp_mb();
--}
--
--static inline void arch_spin_unlock(arch_spinlock_t *lock)
--{
--	smp_mb();
--	WRITE_ONCE(lock->lock, 0);
--}
--
--static inline int arch_spin_trylock(arch_spinlock_t *lock)
--{
--	u32 *p = &lock->lock;
--	u32 tmp;
--
--	asm volatile (
--		"1:	ldex.w		%0, (%1) \n"
--		"	bnez		%0, 2f   \n"
--		"	movi		%0, 1    \n"
--		"	stex.w		%0, (%1) \n"
--		"	bez		%0, 1b   \n"
--		"	movi		%0, 0    \n"
--		"2:				 \n"
--		: "=&r" (tmp)
--		: "r"(p)
--		: "cc");
--
--	if (!tmp)
--		smp_mb();
--
--	return !tmp;
--}
--
--#define arch_spin_is_locked(x)	(READ_ONCE((x)->lock) != 0)
--
--/*
-- * read lock/unlock/trylock
-- */
--static inline void arch_read_lock(arch_rwlock_t *lock)
--{
--	u32 *p = &lock->lock;
--	u32 tmp;
--
--	asm volatile (
--		"1:	ldex.w		%0, (%1) \n"
--		"	blz		%0, 1b   \n"
--		"	addi		%0, 1    \n"
--		"	stex.w		%0, (%1) \n"
--		"	bez		%0, 1b   \n"
--		: "=&r" (tmp)
--		: "r"(p)
--		: "cc");
--	smp_mb();
--}
--
--static inline void arch_read_unlock(arch_rwlock_t *lock)
--{
--	u32 *p = &lock->lock;
--	u32 tmp;
--
--	smp_mb();
--	asm volatile (
--		"1:	ldex.w		%0, (%1) \n"
--		"	subi		%0, 1    \n"
--		"	stex.w		%0, (%1) \n"
--		"	bez		%0, 1b   \n"
--		: "=&r" (tmp)
--		: "r"(p)
--		: "cc");
--}
--
--static inline int arch_read_trylock(arch_rwlock_t *lock)
--{
--	u32 *p = &lock->lock;
--	u32 tmp;
--
--	asm volatile (
--		"1:	ldex.w		%0, (%1) \n"
--		"	blz		%0, 2f   \n"
--		"	addi		%0, 1    \n"
--		"	stex.w		%0, (%1) \n"
--		"	bez		%0, 1b   \n"
--		"	movi		%0, 0    \n"
--		"2:				 \n"
--		: "=&r" (tmp)
--		: "r"(p)
--		: "cc");
--
--	if (!tmp)
--		smp_mb();
--
--	return !tmp;
--}
--
--/*
-- * write lock/unlock/trylock
-- */
--static inline void arch_write_lock(arch_rwlock_t *lock)
--{
--	u32 *p = &lock->lock;
--	u32 tmp;
--
--	asm volatile (
--		"1:	ldex.w		%0, (%1) \n"
--		"	bnez		%0, 1b   \n"
--		"	subi		%0, 1    \n"
--		"	stex.w		%0, (%1) \n"
--		"	bez		%0, 1b   \n"
--		: "=&r" (tmp)
--		: "r"(p)
--		: "cc");
--	smp_mb();
--}
--
--static inline void arch_write_unlock(arch_rwlock_t *lock)
--{
--	smp_mb();
--	WRITE_ONCE(lock->lock, 0);
--}
--
--static inline int arch_write_trylock(arch_rwlock_t *lock)
--{
--	u32 *p = &lock->lock;
--	u32 tmp;
--
--	asm volatile (
--		"1:	ldex.w		%0, (%1) \n"
--		"	bnez		%0, 2f   \n"
--		"	subi		%0, 1    \n"
--		"	stex.w		%0, (%1) \n"
--		"	bez		%0, 1b   \n"
--		"	movi		%0, 0    \n"
--		"2:				 \n"
--		: "=&r" (tmp)
--		: "r"(p)
--		: "cc");
--
--	if (!tmp)
--		smp_mb();
--
--	return !tmp;
--}
--
--#endif /* CONFIG_QUEUED_RWLOCKS */
- #endif /* __ASM_CSKY_SPINLOCK_H */
-diff --git a/arch/csky/include/asm/spinlock_types.h b/arch/csky/include/asm/spinlock_types.h
-index 88b8243..8ff0f6f 100644
---- a/arch/csky/include/asm/spinlock_types.h
-+++ b/arch/csky/include/asm/spinlock_types.h
-@@ -22,16 +22,6 @@ typedef struct {
- 
- #define __ARCH_SPIN_LOCK_UNLOCKED	{ { 0 } }
- 
--#ifdef CONFIG_QUEUED_RWLOCKS
- #include <asm-generic/qrwlock_types.h>
- 
--#else /* CONFIG_NR_CPUS > 2 */
--
--typedef struct {
--	u32 lock;
--} arch_rwlock_t;
--
--#define __ARCH_RW_LOCK_UNLOCKED		{ 0 }
--
--#endif /* CONFIG_QUEUED_RWLOCKS */
- #endif /* __ASM_CSKY_SPINLOCK_TYPES_H */
--- 
-2.7.4
-
+On Sun, Dec 20, 2020 at 03:21:35PM +0100, Oleg Nesterov wrote:
+> On 12/20, Leesoo Ahn wrote:
+> >
+> > clear_siginfo() is responsible for clearing struct kernel_siginfo object.
+> > It's obvious that manually initializing those fields is needless as
+> > a commit[1] explains why the function introduced and its guarantee that
+> > all bits in the struct are cleared after it.
+> >
+> > [1]: commit 8c5dbf2ae00b ("signal: Introduce clear_siginfo")
+> >
+> > Signed-off-by: Leesoo Ahn <lsahn@ooseel.net>
+> 
+> Acked-by: Oleg Nesterov <oleg@redhat.com>
+> 
+> 
+> > ---
+> >  kernel/signal.c | 21 ---------------------
+> >  1 file changed, 21 deletions(-)
+> > 
+> > diff --git a/kernel/signal.c b/kernel/signal.c
+> > index 5736c55aaa1a..8f49fa3ade33 100644
+> > --- a/kernel/signal.c
+> > +++ b/kernel/signal.c
+> > @@ -603,10 +603,7 @@ static void collect_signal(int sig, struct sigpending *list, kernel_siginfo_t *i
+> >  		 */
+> >  		clear_siginfo(info);
+> >  		info->si_signo = sig;
+> > -		info->si_errno = 0;
+> >  		info->si_code = SI_USER;
+> > -		info->si_pid = 0;
+> > -		info->si_uid = 0;
+> >  	}
+> >  }
+> >  
+> > @@ -1120,7 +1117,6 @@ static int __send_signal(int sig, struct kernel_siginfo *info, struct task_struc
+> >  		case (unsigned long) SEND_SIG_NOINFO:
+> >  			clear_siginfo(&q->info);
+> >  			q->info.si_signo = sig;
+> > -			q->info.si_errno = 0;
+> >  			q->info.si_code = SI_USER;
+> >  			q->info.si_pid = task_tgid_nr_ns(current,
+> >  							task_active_pid_ns(t));
+> > @@ -1133,10 +1129,7 @@ static int __send_signal(int sig, struct kernel_siginfo *info, struct task_struc
+> >  		case (unsigned long) SEND_SIG_PRIV:
+> >  			clear_siginfo(&q->info);
+> >  			q->info.si_signo = sig;
+> > -			q->info.si_errno = 0;
+> >  			q->info.si_code = SI_KERNEL;
+> > -			q->info.si_pid = 0;
+> > -			q->info.si_uid = 0;
+> >  			break;
+> >  		default:
+> >  			copy_siginfo(&q->info, info);
+> > @@ -1623,10 +1616,7 @@ void force_sig(int sig)
+> >  
+> >  	clear_siginfo(&info);
+> >  	info.si_signo = sig;
+> > -	info.si_errno = 0;
+> >  	info.si_code = SI_KERNEL;
+> > -	info.si_pid = 0;
+> > -	info.si_uid = 0;
+> >  	force_sig_info(&info);
+> >  }
+> >  EXPORT_SYMBOL(force_sig);
+> > @@ -1659,7 +1649,6 @@ int force_sig_fault_to_task(int sig, int code, void __user *addr
+> >  
+> >  	clear_siginfo(&info);
+> >  	info.si_signo = sig;
+> > -	info.si_errno = 0;
+> >  	info.si_code  = code;
+> >  	info.si_addr  = addr;
+> >  #ifdef __ARCH_SI_TRAPNO
+> > @@ -1691,7 +1680,6 @@ int send_sig_fault(int sig, int code, void __user *addr
+> >  
+> >  	clear_siginfo(&info);
+> >  	info.si_signo = sig;
+> > -	info.si_errno = 0;
+> >  	info.si_code  = code;
+> >  	info.si_addr  = addr;
+> >  #ifdef __ARCH_SI_TRAPNO
+> > @@ -1712,7 +1700,6 @@ int force_sig_mceerr(int code, void __user *addr, short lsb)
+> >  	WARN_ON((code != BUS_MCEERR_AO) && (code != BUS_MCEERR_AR));
+> >  	clear_siginfo(&info);
+> >  	info.si_signo = SIGBUS;
+> > -	info.si_errno = 0;
+> >  	info.si_code = code;
+> >  	info.si_addr = addr;
+> >  	info.si_addr_lsb = lsb;
+> > @@ -1726,7 +1713,6 @@ int send_sig_mceerr(int code, void __user *addr, short lsb, struct task_struct *
+> >  	WARN_ON((code != BUS_MCEERR_AO) && (code != BUS_MCEERR_AR));
+> >  	clear_siginfo(&info);
+> >  	info.si_signo = SIGBUS;
+> > -	info.si_errno = 0;
+> >  	info.si_code = code;
+> >  	info.si_addr = addr;
+> >  	info.si_addr_lsb = lsb;
+> > @@ -1740,7 +1726,6 @@ int force_sig_bnderr(void __user *addr, void __user *lower, void __user *upper)
+> >  
+> >  	clear_siginfo(&info);
+> >  	info.si_signo = SIGSEGV;
+> > -	info.si_errno = 0;
+> >  	info.si_code  = SEGV_BNDERR;
+> >  	info.si_addr  = addr;
+> >  	info.si_lower = lower;
+> > @@ -1755,7 +1740,6 @@ int force_sig_pkuerr(void __user *addr, u32 pkey)
+> >  
+> >  	clear_siginfo(&info);
+> >  	info.si_signo = SIGSEGV;
+> > -	info.si_errno = 0;
+> >  	info.si_code  = SEGV_PKUERR;
+> >  	info.si_addr  = addr;
+> >  	info.si_pkey  = pkey;
+> > @@ -1934,7 +1918,6 @@ bool do_notify_parent(struct task_struct *tsk, int sig)
+> >  
+> >  	clear_siginfo(&info);
+> >  	info.si_signo = sig;
+> > -	info.si_errno = 0;
+> >  	/*
+> >  	 * We are under tasklist_lock here so our parent is tied to
+> >  	 * us and cannot change.
+> > @@ -2033,7 +2016,6 @@ static void do_notify_parent_cldstop(struct task_struct *tsk,
+> >  
+> >  	clear_siginfo(&info);
+> >  	info.si_signo = SIGCHLD;
+> > -	info.si_errno = 0;
+> >  	/*
+> >  	 * see comment in do_notify_parent() about the following 4 lines
+> >  	 */
+> > @@ -2506,7 +2488,6 @@ static int ptrace_signal(int signr, kernel_siginfo_t *info)
+> >  	if (signr != info->si_signo) {
+> >  		clear_siginfo(info);
+> >  		info->si_signo = signr;
+> > -		info->si_errno = 0;
+> >  		info->si_code = SI_USER;
+> >  		rcu_read_lock();
+> >  		info->si_pid = task_pid_vnr(current->parent);
+> > @@ -3660,7 +3641,6 @@ static inline void prepare_kill_siginfo(int sig, struct kernel_siginfo *info)
+> >  {
+> >  	clear_siginfo(info);
+> >  	info->si_signo = sig;
+> > -	info->si_errno = 0;
+> >  	info->si_code = SI_USER;
+> >  	info->si_pid = task_tgid_vnr(current);
+> >  	info->si_uid = from_kuid_munged(current_user_ns(), current_uid());
+> > @@ -3833,7 +3813,6 @@ static int do_tkill(pid_t tgid, pid_t pid, int sig)
+> >  
+> >  	clear_siginfo(&info);
+> >  	info.si_signo = sig;
+> > -	info.si_errno = 0;
+> >  	info.si_code = SI_TKILL;
+> >  	info.si_pid = task_tgid_vnr(current);
+> >  	info.si_uid = from_kuid_munged(current_user_ns(), current_uid());
+> > -- 
+> > 2.26.2
+> > 
+> 
