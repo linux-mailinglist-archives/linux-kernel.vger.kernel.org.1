@@ -2,140 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05EBD2DF554
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 13:07:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81F0C2DF55A
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 13:10:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727474AbgLTMFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 07:05:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727387AbgLTMF2 (ORCPT
+        id S1727494AbgLTMKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 07:10:36 -0500
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:60025 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726751AbgLTMKf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 07:05:28 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 004BCC0617B0
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 04:04:47 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id c133so7117403wme.4
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 04:04:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qrn+x9lX3jcTz2wVgUBrM7DkKsxjXEra+Jy1eyLqErQ=;
-        b=naOTe06SHxPS/6OBbwjbFP5gEyKx1oosTrOeIpFENcucHkj6M4BfldEb5/KPevKmPh
-         GEvTH5RMMRe8fhVSGC9wo6nFZZgYw7UuM5HUcD11IYQnXd9kNy3KL0KT73L/CUfAd/zr
-         VqwkA7HvmRn839TISjpwe3EHBnX2wevB/duyQQGMN/q2vNXgBIwvahKUWHWKkeo+picP
-         an/z/7NZC0ZBN9sH+GcEFEn0pGKl2erSIACTjL2vrUkSXWaQqrFrZmXOKPlcUF39/qrd
-         tTjO1+HcQBilpqR+04mYryhDX+0xRWnwVe6rI5tgRh/6A1aPAovhMMOGYvrQB0QO91YH
-         vOJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qrn+x9lX3jcTz2wVgUBrM7DkKsxjXEra+Jy1eyLqErQ=;
-        b=YOOzyxydQBfFSfsEOHmBAMfY+KUk+PGzLXhaCiJcYsN3sBW40M0GrV3wm7zToymgvQ
-         60+OCY4Rf6EcWQ2AYPq/myBzWUrj9WC0uco0QJ2GAoqFkuO6dtATSMNNQEtSI6yAx87z
-         59H3Dq2djiuQk9vSDQbh2Yqlx6eT/3NJj3d9Fr26LMtYDIkV3QgLQ6mdv8Arm/Wn4qgb
-         J/kQoxwW08tUrZ9GibDeDzY+GTnxutMHW+Tfqo3KgpvjuZ8kXJsBfHPDAQYMFSYXBfiC
-         tPyfw3iD8DHXZojkH6ck1SoqQhP5E8PedhYXv6oRTUUQvig3Luwf2S0tPw8eYF/Vsi2I
-         9oUQ==
-X-Gm-Message-State: AOAM530/003GlVimzwNsLsT6MuJ5SbBmi4PRCWA9/MTmQDkvcGxE+hOl
-        afDztKj0hVNIO/b8R+0h3SKJZLPAZTEMBQ==
-X-Google-Smtp-Source: ABdhPJxKHrA3iDITLiCdMUF/9mnzJFyxnL6Rem0UwUvdhjFOojYMyvms6s//StCF5cJVpP/1sBw0Mg==
-X-Received: by 2002:a7b:c208:: with SMTP id x8mr11862312wmi.179.1608465886268;
-        Sun, 20 Dec 2020 04:04:46 -0800 (PST)
-Received: from larix.localdomain ([2001:1715:4e26:a7e0:ed35:e18a:5e36:8c84])
-        by smtp.gmail.com with ESMTPSA id g5sm21652517wro.60.2020.12.20.04.04.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Dec 2020 04:04:45 -0800 (PST)
-Date:   Sun, 20 Dec 2020 13:05:19 +0100
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.4 08/10] selftests/bpf: Fix array access with
- signed variable test
-Message-ID: <X989/9omnIGyDvzV@larix.localdomain>
-References: <20201220033457.2728519-1-sashal@kernel.org>
- <20201220033457.2728519-8-sashal@kernel.org>
+        Sun, 20 Dec 2020 07:10:35 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=liangyan.peng@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UJADkMp_1608466181;
+Received: from localhost(mailfrom:liangyan.peng@linux.alibaba.com fp:SMTPD_---0UJADkMp_1608466181)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 20 Dec 2020 20:09:49 +0800
+From:   Liangyan <liangyan.peng@linux.alibaba.com>
+To:     Miklos Szeredi <miklos@szeredi.hu>, linux-unionfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, joseph.qi@linux.alibaba.com,
+        liangyan.peng@linux.alibaba.com
+Subject: [PATCH v2] ovl: fix  dentry leak in ovl_get_redirect
+Date:   Sun, 20 Dec 2020 20:09:27 +0800
+Message-Id: <20201220120927.115232-1-liangyan.peng@linux.alibaba.com>
+X-Mailer: git-send-email 2.14.4.44.g2045bb6
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201220033457.2728519-8-sashal@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+We need to lock d_parent->d_lock before dget_dlock, or this may
+have d_lockref updated parallelly like calltrace below which will
+cause dentry->d_lockref leak and risk a crash.
 
-On Sat, Dec 19, 2020 at 10:34:55PM -0500, Sasha Levin wrote:
-> From: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> 
-> [ Upstream commit 77ce220c0549dcc3db8226c61c60e83fc59dfafc ]
-> 
-> The test fails because of a recent fix to the verifier, even though this
+npm-20576 [028] .... 5705749.040094:
+[28] ovl_set_redirect+0x11c/0x310 //tmp = dget_dlock(d->d_parent);
+[28]?  ovl_set_redirect+0x5/0x310
+[28] ovl_rename+0x4db/0x790 [overlay]
+[28] vfs_rename+0x6e8/0x920
+[28] do_renameat2+0x4d6/0x560
+[28] __x64_sys_rename+0x1c/0x20
+[28] do_syscall_64+0x55/0x1a0
+[28] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-That fix is commit b02709587ea3 ("bpf: Fix propagation of 32-bit signed
-bounds from 64-bit bounds.") upstream, which only needed backport to 5.9.
-So although backporting this patch to 5.4 shouldn't break anything, I
-wouldn't bother. 
+npm-20574 [036] .... 5705749.040094:
+[36] __d_lookup+0x107/0x140 //dentry->d_lockref.count++;
+[36] lookup_fast+0xe0/0x2d0
+[36] walk_component+0x48/0x350
+[36] link_path_walk+0x1bf/0x650
+[36]?  path_init+0x1f6/0x2f0
+[36] path_lookupat+0x82/0x210
+[36] filename_lookup+0xb8/0x1a0
+[36]?  __audit_getname+0xa2/0xb0
+[36]?  getname_flags+0xb9/0x1e0
+[36]?  vfs_statx+0x73/0xe0
+[36] vfs_statx+0x73/0xe0
+[36] __do_sys_statx+0x3b/0x80
+[36]?  syscall_trace_enter+0x1ae/0x2c0
+[36] do_syscall_64+0x55/0x1a0
+[36] entry_SYSCALL_64_
 
-Thanks,
-Jean
+[   49.799059] PGD 800000061fed7067 P4D 800000061fed7067 PUD 61fec5067 PMD 0
+[   49.799689] Oops: 0002 [#1] SMP PTI
+[   49.800019] CPU: 2 PID: 2332 Comm: node Not tainted 4.19.24-7.20.al7.x86_64 #1
+[   49.800678] Hardware name: Alibaba Cloud Alibaba Cloud ECS, BIOS 8a46cfe 04/01/2014
+[   49.801380] RIP: 0010:_raw_spin_lock+0xc/0x20
+[   49.803470] RSP: 0018:ffffac6fc5417e98 EFLAGS: 00010246
+[   49.803949] RAX: 0000000000000000 RBX: ffff93b8da3446c0 RCX: 0000000a00000000
+[   49.804600] RDX: 0000000000000001 RSI: 000000000000000a RDI: 0000000000000088
+[   49.805252] RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff993cf040
+[   49.805898] R10: ffff93b92292e580 R11: ffffd27f188a4b80 R12: 0000000000000000
+[   49.806548] R13: 00000000ffffff9c R14: 00000000fffffffe R15: ffff93b8da3446c0
+[   49.807200] FS:  00007ffbedffb700(0000) GS:ffff93b927880000(0000) knlGS:0000000000000000
+[   49.807935] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   49.808461] CR2: 0000000000000088 CR3: 00000005e3f74006 CR4: 00000000003606a0
+[   49.809113] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[   49.809758] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[   49.810410] Call Trace:
+[   49.810653]  d_delete+0x2c/0xb0
+[   49.810951]  vfs_rmdir+0xfd/0x120
+[   49.811264]  do_rmdir+0x14f/0x1a0
+[   49.811573]  do_syscall_64+0x5b/0x190
+[   49.811917]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   49.812385] RIP: 0033:0x7ffbf505ffd7
+[   49.814404] RSP: 002b:00007ffbedffada8 EFLAGS: 00000297 ORIG_RAX: 0000000000000054
+[   49.815098] RAX: ffffffffffffffda RBX: 00007ffbedffb640 RCX: 00007ffbf505ffd7
+[   49.815744] RDX: 0000000004449700 RSI: 0000000000000000 RDI: 0000000006c8cd50
+[   49.816394] RBP: 00007ffbedffaea0 R08: 0000000000000000 R09: 0000000000017d0b
+[   49.817038] R10: 0000000000000000 R11: 0000000000000297 R12: 0000000000000012
+[   49.817687] R13: 00000000072823d8 R14: 00007ffbedffb700 R15: 00000000072823d8
+[   49.818338] Modules linked in: pvpanic cirrusfb button qemu_fw_cfg atkbd libps2 i8042
+[   49.819052] CR2: 0000000000000088
+[   49.819368] ---[ end trace 4e652b8aa299aa2d ]---
+[   49.819796] RIP: 0010:_raw_spin_lock+0xc/0x20
+[   49.821880] RSP: 0018:ffffac6fc5417e98 EFLAGS: 00010246
+[   49.822363] RAX: 0000000000000000 RBX: ffff93b8da3446c0 RCX: 0000000a00000000
+[   49.823008] RDX: 0000000000000001 RSI: 000000000000000a RDI: 0000000000000088
+[   49.823658] RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff993cf040
+[   49.825404] R10: ffff93b92292e580 R11: ffffd27f188a4b80 R12: 0000000000000000
+[   49.827147] R13: 00000000ffffff9c R14: 00000000fffffffe R15: ffff93b8da3446c0
+[   49.828890] FS:  00007ffbedffb700(0000) GS:ffff93b927880000(0000) knlGS:0000000000000000
+[   49.830725] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   49.832359] CR2: 0000000000000088 CR3: 00000005e3f74006 CR4: 00000000003606a0
+[   49.834085] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[   49.835792] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-> program is valid. In details what happens is:
-> 
->     7: (61) r1 = *(u32 *)(r0 +0)
-> 
-> Load a 32-bit value, with signed bounds [S32_MIN, S32_MAX]. The bounds
-> of the 64-bit value are [0, U32_MAX]...
-> 
->     8: (65) if r1 s> 0xffffffff goto pc+1
-> 
-> ... therefore this is always true (the operand is sign-extended).
-> 
->     10: (b4) w2 = 11
->     11: (6d) if r2 s> r1 goto pc+1
-> 
-> When true, the 64-bit bounds become [0, 10]. The 32-bit bounds are still
-> [S32_MIN, 10].
-> 
->     13: (64) w1 <<= 2
-> 
-> Because this is a 32-bit operation, the verifier propagates the new
-> 32-bit bounds to the 64-bit ones, and the knowledge gained from insn 11
-> is lost.
-> 
->     14: (0f) r0 += r1
->     15: (7a) *(u64 *)(r0 +0) = 4
-> 
-> Then the verifier considers r0 unbounded here, rejecting the test. To
-> make the test work, change insn 8 to check the sign of the 32-bit value.
-> 
-> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> Acked-by: John Fastabend <john.fastabend@gmail.com>
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  tools/testing/selftests/bpf/verifier/array_access.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/verifier/array_access.c b/tools/testing/selftests/bpf/verifier/array_access.c
-> index f3c33e128709b..a80d806ead15f 100644
-> --- a/tools/testing/selftests/bpf/verifier/array_access.c
-> +++ b/tools/testing/selftests/bpf/verifier/array_access.c
-> @@ -68,7 +68,7 @@
->  	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
->  	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 9),
->  	BPF_LDX_MEM(BPF_W, BPF_REG_1, BPF_REG_0, 0),
-> -	BPF_JMP_IMM(BPF_JSGT, BPF_REG_1, 0xffffffff, 1),
-> +	BPF_JMP32_IMM(BPF_JSGT, BPF_REG_1, 0xffffffff, 1),
->  	BPF_MOV32_IMM(BPF_REG_1, 0),
->  	BPF_MOV32_IMM(BPF_REG_2, MAX_ENTRIES),
->  	BPF_JMP_REG(BPF_JSGT, BPF_REG_2, BPF_REG_1, 1),
-> -- 
-> 2.27.0
-> 
+Fixes: a6c606551141 ("ovl: redirect on rename-dir")
+Signed-off-by: Liangyan <liangyan.peng@linux.alibaba.com>
+Suggested-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+---
+ fs/overlayfs/dir.c | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
+
+diff --git a/fs/overlayfs/dir.c b/fs/overlayfs/dir.c
+index 28a075b5f5b2..a78d35017371 100644
+--- a/fs/overlayfs/dir.c
++++ b/fs/overlayfs/dir.c
+@@ -973,6 +973,7 @@ static char *ovl_get_redirect(struct dentry *dentry, bool abs_redirect)
+ 	for (d = dget(dentry); !IS_ROOT(d);) {
+ 		const char *name;
+ 		int thislen;
++		struct dentry *parent = NULL;
+ 
+ 		spin_lock(&d->d_lock);
+ 		name = ovl_dentry_get_redirect(d);
+@@ -992,7 +993,22 @@ static char *ovl_get_redirect(struct dentry *dentry, bool abs_redirect)
+ 
+ 		buflen -= thislen;
+ 		memcpy(&buf[buflen], name, thislen);
+-		tmp = dget_dlock(d->d_parent);
++		parent = d->d_parent;
++		if (unlikely(!spin_trylock(&parent->d_lock))) {
++			rcu_read_lock();
++			spin_unlock(&d->d_lock);
++again:
++			parent = READ_ONCE(d->d_parent);
++			spin_lock(&parent->d_lock);
++			if (unlikely(parent != d->d_parent)) {
++				spin_unlock(&parent->d_lock);
++				goto again;
++			}
++			rcu_read_unlock();
++			spin_lock_nested(&d->d_lock, DENTRY_D_LOCK_NESTED);
++		}
++		tmp = dget_dlock(parent);
++		spin_unlock(&parent->d_lock);
+ 		spin_unlock(&d->d_lock);
+ 
+ 		dput(d);
+-- 
+2.14.4.44.g2045bb6
+
