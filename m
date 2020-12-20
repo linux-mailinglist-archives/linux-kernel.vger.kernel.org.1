@@ -2,172 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA67F2DF533
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 12:26:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 974C12DF53E
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 12:32:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727437AbgLTL0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 06:26:42 -0500
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:44578 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727120AbgLTL0l (ORCPT
+        id S1727424AbgLTLcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 06:32:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727126AbgLTLb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 06:26:41 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R611e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UJ9GEf9_1608463556;
-Received: from B-D1K7ML85-0059.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0UJ9GEf9_1608463556)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sun, 20 Dec 2020 19:25:56 +0800
-Subject: Re: [PATCH] ovl: fix dentry leak in ovl_get_redirect
-To:     Liangyan <liangyan.peng@linux.alibaba.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201218161751.234759-1-liangyan.peng@linux.alibaba.com>
-From:   Joseph Qi <joseph.qi@linux.alibaba.com>
-Message-ID: <ec73c709-656c-7e53-7a59-de9603a5bba0@linux.alibaba.com>
-Date:   Sun, 20 Dec 2020 19:25:56 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.1
+        Sun, 20 Dec 2020 06:31:59 -0500
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A9FC0613CF;
+        Sun, 20 Dec 2020 03:31:19 -0800 (PST)
+Received: by mail-il1-x131.google.com with SMTP id k8so6395301ilr.4;
+        Sun, 20 Dec 2020 03:31:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dLKcl/ocYUMPZqPT65EG6xHxr8q8Hzrk3PLO4y1nDoE=;
+        b=B7tmzQi7dyxcDYjSX5nBnSc7NFQuaQ4gm1TcB10vXHasMa2Jq6RPJCnrIUgIcaqPDv
+         juhx4d4vfkvlANTEDL44Mw60b8i6HXAGlLRlvSFKV8fMOUq2ternc7EUBZpSDdBuTUHX
+         coEVpWWJfhFhz2X9gibXlmMfTCF58NvKEu/8b5Q4jag3vl60v9qJ49yNsPudHr1uEl5f
+         H6Uk8oFa3o7PBZE9evcLGJexk7QgShBHR2BdeShXfXJKvu5hK/8n6CkmU8DhK4G+lqpl
+         ADFIol1ybEXe6eB8h5RrBDwr1dr2b+DUaq5nA9DFp2JVmWWtPgJnFhvgIHPWk++UzOwJ
+         LPPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dLKcl/ocYUMPZqPT65EG6xHxr8q8Hzrk3PLO4y1nDoE=;
+        b=PWSfQeq7bY5eIDlC+PaC6z83/qa43LPyiH2VsaplPI4wNzo0sKsQLPMdncoin9BQDx
+         X06gez8Dg92WTqBWd2F3bWAcS7JYMLU5tQl+Ec469VkTpEig9ydbdaSc0ptW5JCaBtSq
+         ChVx/2dwpeWCzJIEHDMn4O1bOX/jiaFZG6hageAVTGQWBuchPA1bZl11bYzSyLWeOqzw
+         pQ/0piD+OzpqRy/aS8VMWwh5h01OqiLRjP4I26gCrJ50a8WvcSyOTcKkBKCpHYS/rao3
+         8sfdcq9DORdOo9d88F2cjmJ/f3e2cef8XuEI6hGDAvcZV0Z/P7F+wUrVU7w+i/Q8FOGZ
+         N0Ow==
+X-Gm-Message-State: AOAM533uYBv7Gq/1A6Q3eKLQPNmjepBChkn2KUsZUFkFWAfI7/43JLNy
+        nOOte6IMLjg83reCB54nLX+EV/gfUNXEeyT2iMUBJV6Za48=
+X-Google-Smtp-Source: ABdhPJznjmnveLVsH9lbdcoN7k8t477ijt0wBGVz18rU3LVeFdbomeZewWDLF0HgF7HjnfKI+PlmUYw6+v6+3AhUYCs=
+X-Received: by 2002:a05:6e02:60f:: with SMTP id t15mr12290195ils.250.1608463878479;
+ Sun, 20 Dec 2020 03:31:18 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201218161751.234759-1-liangyan.peng@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201218221129.851003-1-shakeelb@google.com> <CAOQ4uxiyd=N-mvYWHFx6Yq1LW1BPcriZw++MAyOGB_4CDkDKYA@mail.gmail.com>
+ <CALvZod6uT+bH7NqooEbqMLC6ppcbu-v=QDQRyTcfWGUsQodYjQ@mail.gmail.com>
+ <CAOQ4uxh3vEBMs8afudFU3zxKLpcKG7KuWEGkLiH0hioncum1UA@mail.gmail.com> <CALvZod6fua_SQ=1+MX_R52w8PVbFafSHgjcmhXdaRWkZtfe+cg@mail.gmail.com>
+In-Reply-To: <CALvZod6fua_SQ=1+MX_R52w8PVbFafSHgjcmhXdaRWkZtfe+cg@mail.gmail.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Sun, 20 Dec 2020 13:31:07 +0200
+Message-ID: <CAOQ4uxhNw12XSb7dVbUAGh+LdDzpVaF=LozoPTuXOjL8DGXn4Q@mail.gmail.com>
+Subject: Re: [PATCH] inotify, memcg: account inotify instances to kmemcg
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Jan Kara <jack@suse.cz>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Dec 20, 2020 at 6:24 AM Shakeel Butt <shakeelb@google.com> wrote:
+>
+> On Sat, Dec 19, 2020 at 8:25 AM Amir Goldstein <amir73il@gmail.com> wrote:
+> >
+> > On Sat, Dec 19, 2020 at 4:31 PM Shakeel Butt <shakeelb@google.com> wrote:
+> > >
+> > > On Sat, Dec 19, 2020 at 1:48 AM Amir Goldstein <amir73il@gmail.com> wrote:
+> > > >
+> > > > On Sat, Dec 19, 2020 at 12:11 AM Shakeel Butt <shakeelb@google.com> wrote:
+> > > > >
+> > > > > Currently the fs sysctl inotify/max_user_instances is used to limit the
+> > > > > number of inotify instances on the system. For systems running multiple
+> > > > > workloads, the per-user namespace sysctl max_inotify_instances can be
+> > > > > used to further partition inotify instances. However there is no easy
+> > > > > way to set a sensible system level max limit on inotify instances and
+> > > > > further partition it between the workloads. It is much easier to charge
+> > > > > the underlying resource (i.e. memory) behind the inotify instances to
+> > > > > the memcg of the workload and let their memory limits limit the number
+> > > > > of inotify instances they can create.
+> > > >
+> > > > Not that I have a problem with this patch, but what problem does it try to
+> > > > solve?
+> > >
+> > > I am aiming for the simplicity to not set another limit which can
+> > > indirectly be limited by memcg limits. I just want to set the memcg
+> > > limit on our production environment which runs multiple workloads on a
+> > > system and not think about setting a sensible value to
+> > > max_user_instances in production. I would prefer to set
+> > > max_user_instances to max int and let the memcg limits of the
+> > > workloads limit their inotify usage.
+> > >
+> >
+> > understood.
+> > and I guess the multiple workloads cannot run each in their own userns?
+> > because then you wouldn't need to change max_user_instances limit.
+> >
+>
+> No workloads can run in their own user namespace but please note that
+> max_user_instances is shared between all the user namespaces.
 
+/proc/sys/fs/inotify/max_user_instances is shared between all the user
+namespaces, but it only controls the init_user_ns limits.
+/proc/sys/user/max_inotify_instances is per user ns and it is the one that
+actually controls the inotify limits in non init_user_ns.
 
-On 12/19/20 12:17 AM, Liangyan wrote:
-> We need to lock d_parent->d_lock before dget_dlock, or this may
-> have d_lockref updated parallelly like calltrace below which will
-> cause dentry->d_lockref leak and risk a crash.
-> 
-> npm-20576 [028] .... 5705749.040094:
-> [28] ovl_set_redirect+0x11c/0x310 //tmp = dget_dlock(d->d_parent);
-> [28]?  ovl_set_redirect+0x5/0x310
-> [28] ovl_rename+0x4db/0x790 [overlay]
-> [28] vfs_rename+0x6e8/0x920
-> [28] do_renameat2+0x4d6/0x560
-> [28] __x64_sys_rename+0x1c/0x20
-> [28] do_syscall_64+0x55/0x1a0
-> [28] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> npm-20574 [036] .... 5705749.040094:
-> [36] __d_lookup+0x107/0x140 //dentry->d_lockref.count++;
-> [36] lookup_fast+0xe0/0x2d0
-> [36] walk_component+0x48/0x350
-> [36] link_path_walk+0x1bf/0x650
-> [36]?  path_init+0x1f6/0x2f0
-> [36] path_lookupat+0x82/0x210
-> [36] filename_lookup+0xb8/0x1a0
-> [36]?  __audit_getname+0xa2/0xb0
-> [36]?  getname_flags+0xb9/0x1e0
-> [36]?  vfs_statx+0x73/0xe0
-> [36] vfs_statx+0x73/0xe0
-> [36] __do_sys_statx+0x3b/0x80
-> [36]?  syscall_trace_enter+0x1ae/0x2c0
-> [36] do_syscall_64+0x55/0x1a0
-> [36] entry_SYSCALL_64_
-> 
-> [   49.799059] PGD 800000061fed7067 P4D 800000061fed7067 PUD 61fec5067 PMD 0
-> [   49.799689] Oops: 0002 [#1] SMP PTI
-> [   49.800019] CPU: 2 PID: 2332 Comm: node Not tainted 4.19.24-7.20.al7.x86_64 #1
-> [   49.800678] Hardware name: Alibaba Cloud Alibaba Cloud ECS, BIOS 8a46cfe 04/01/2014
-> [   49.801380] RIP: 0010:_raw_spin_lock+0xc/0x20
-> [   49.803470] RSP: 0018:ffffac6fc5417e98 EFLAGS: 00010246
-> [   49.803949] RAX: 0000000000000000 RBX: ffff93b8da3446c0 RCX: 0000000a00000000
-> [   49.804600] RDX: 0000000000000001 RSI: 000000000000000a RDI: 0000000000000088
-> [   49.805252] RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff993cf040
-> [   49.805898] R10: ffff93b92292e580 R11: ffffd27f188a4b80 R12: 0000000000000000
-> [   49.806548] R13: 00000000ffffff9c R14: 00000000fffffffe R15: ffff93b8da3446c0
-> [   49.807200] FS:  00007ffbedffb700(0000) GS:ffff93b927880000(0000) knlGS:0000000000000000
-> [   49.807935] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   49.808461] CR2: 0000000000000088 CR3: 00000005e3f74006 CR4: 00000000003606a0
-> [   49.809113] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [   49.809758] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [   49.810410] Call Trace:
-> [   49.810653]  d_delete+0x2c/0xb0
-> [   49.810951]  vfs_rmdir+0xfd/0x120
-> [   49.811264]  do_rmdir+0x14f/0x1a0
-> [   49.811573]  do_syscall_64+0x5b/0x190
-> [   49.811917]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [   49.812385] RIP: 0033:0x7ffbf505ffd7
-> [   49.814404] RSP: 002b:00007ffbedffada8 EFLAGS: 00000297 ORIG_RAX: 0000000000000054
-> [   49.815098] RAX: ffffffffffffffda RBX: 00007ffbedffb640 RCX: 00007ffbf505ffd7
-> [   49.815744] RDX: 0000000004449700 RSI: 0000000000000000 RDI: 0000000006c8cd50
-> [   49.816394] RBP: 00007ffbedffaea0 R08: 0000000000000000 R09: 0000000000017d0b
-> [   49.817038] R10: 0000000000000000 R11: 0000000000000297 R12: 0000000000000012
-> [   49.817687] R13: 00000000072823d8 R14: 00007ffbedffb700 R15: 00000000072823d8
-> [   49.818338] Modules linked in: pvpanic cirrusfb button qemu_fw_cfg atkbd libps2 i8042
-> [   49.819052] CR2: 0000000000000088
-> [   49.819368] ---[ end trace 4e652b8aa299aa2d ]---
-> [   49.819796] RIP: 0010:_raw_spin_lock+0xc/0x20
-> [   49.821880] RSP: 0018:ffffac6fc5417e98 EFLAGS: 00010246
-> [   49.822363] RAX: 0000000000000000 RBX: ffff93b8da3446c0 RCX: 0000000a00000000
-> [   49.823008] RDX: 0000000000000001 RSI: 000000000000000a RDI: 0000000000000088
-> [   49.823658] RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff993cf040
-> [   49.825404] R10: ffff93b92292e580 R11: ffffd27f188a4b80 R12: 0000000000000000
-> [   49.827147] R13: 00000000ffffff9c R14: 00000000fffffffe R15: ffff93b8da3446c0
-> [   49.828890] FS:  00007ffbedffb700(0000) GS:ffff93b927880000(0000) knlGS:0000000000000000
-> [   49.830725] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   49.832359] CR2: 0000000000000088 CR3: 00000005e3f74006 CR4: 00000000003606a0
-> [   49.834085] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [   49.835792] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> 
-> Fixes: a6c606551141 ("ovl: redirect on rename-dir")
-> Signed-off-by: Liangyan <liangyan.peng@linux.alibaba.com>
-> Suggested-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-> ---
->  fs/overlayfs/dir.c | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
-> 
-> diff --git a/fs/overlayfs/dir.c b/fs/overlayfs/dir.c
-> index 28a075b5f5b2..9831e7046038 100644
-> --- a/fs/overlayfs/dir.c
-> +++ b/fs/overlayfs/dir.c
-> @@ -973,6 +973,7 @@ static char *ovl_get_redirect(struct dentry *dentry, bool abs_redirect)
->  	for (d = dget(dentry); !IS_ROOT(d);) {
->  		const char *name;
->  		int thislen;
-> +		struct dentry *parent = NULL;
->  
->  		spin_lock(&d->d_lock);
->  		name = ovl_dentry_get_redirect(d);
-> @@ -992,7 +993,26 @@ static char *ovl_get_redirect(struct dentry *dentry, bool abs_redirect)
->  
->  		buflen -= thislen;
->  		memcpy(&buf[buflen], name, thislen);
-> +		parent = d->d_parent;
-> +		if (unlikely(!spin_trylock(&parent->d_lock))) {
-> +			rcu_read_lock();
-> +			spin_unlock(&d->d_lock);
-> +again:
-> +			parent = READ_ONCE(d->d_parent);
-> +			spin_lock(&parent->d_lock);
-> +			if (unlikely(parent != dentry->d_parent)) {
-> +				spin_unlock(&parent->d_lock);
-> +				goto again;
-> +			}
-> +			rcu_read_unlock();
-> +			if (parent != d)
-> +				spin_lock_nested(&d->d_lock, DENTRY_D_LOCK_NESTED);
-> +			else
-> +				parent = NULL;
+That said, I see that it is always initialized to MAX_INT on non init user ns,
+which is exactly the setup that you are aiming at:
 
-It seems that parent can't be NULL since d is not root.
-So the above logic can be simplified with:
-spin_lock(&d->d_lock);
+$ unshare -U
+$ cat /proc/sys/user/max_inotify_instances
+2147483647
+$ cat /proc/sys/fs/inotify/max_user_instances
+128
 
-> +		}
->  		tmp = dget_dlock(d->d_parent);
-
-Use parent directly.
-
-Joseph
-
-> +		if (parent)
-> +			spin_unlock(&parent->d_lock);
->  		spin_unlock(&d->d_lock);
->  
->  		dput(d);
-> 
+Thanks,
+Amir.
