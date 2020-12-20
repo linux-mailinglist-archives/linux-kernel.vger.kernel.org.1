@@ -2,291 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A77A2DF648
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 18:24:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BED5A2DF64B
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 18:26:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727771AbgLTRWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 12:22:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727112AbgLTRWw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 12:22:52 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9ABEC061282;
-        Sun, 20 Dec 2020 09:22:01 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 259882CF;
-        Sun, 20 Dec 2020 18:22:00 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1608484920;
-        bh=BrUKPcXf9SBhDMAKj5aOc39wV7qUiJTwO1wve9aeAEM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UVIwVvUCewfmwzHS6vw2N9GEfXskyfTNHw9RwYZ3UqwiRQcFJkurY00U1zkW6k4s4
-         JXvzaH8GAIUU5Z/betqbg4hMfvovPbgGedonzZIfWYYNoH9M+RfFLK0UZkwCFXXfgq
-         ICQ/JDo+db1A13tQ8hEIM3pxCJbjA9U2pkhI1fyk=
-Date:   Sun, 20 Dec 2020 19:21:52 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 9/9] media: uvcvideo: Implement
- UVC_QUIRK_PRIVACY_DURING_STREAM
-Message-ID: <X9+IMF9yIdzPrkgg@pendragon.ideasonboard.com>
-References: <20201215154439.69062-1-ribalda@chromium.org>
- <20201215154439.69062-10-ribalda@chromium.org>
+        id S1727808AbgLTRZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 12:25:17 -0500
+Received: from mga18.intel.com ([134.134.136.126]:27113 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727745AbgLTRZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Dec 2020 12:25:16 -0500
+IronPort-SDR: kIMAnrlcRa56w/vFJj2kcK00TzTz+FzaOy+EEXlANAwnIVoxodFqdDW7N2+E4UZdvUOb9xt1+U
+ 5l1aUdeQ0RKg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9841"; a="163370750"
+X-IronPort-AV: E=Sophos;i="5.78,435,1599548400"; 
+   d="scan'208";a="163370750"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2020 09:23:26 -0800
+IronPort-SDR: c7R+7h+hiZ44AsrrBOv+h3Y4AVOjl/PITCiy+hBdjR8wJQ1gwTNOPlwU9/t+BHFy0I1GHOMTmf
+ kiukFm5TPirw==
+X-IronPort-AV: E=Sophos;i="5.78,435,1599548400"; 
+   d="scan'208";a="371902073"
+Received: from aantonov-mobl.ccr.corp.intel.com (HELO [10.252.58.250]) ([10.252.58.250])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2020 09:23:24 -0800
+Subject: Re: [PATCH 0/5] perf stat: Introduce --iiostat mode to provide I/O
+ performance metrics
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, jolsa@redhat.com,
+        alexander.shishkin@linux.intel.com, mark.rutland@arm.com,
+        namhyung@kernel.org, mingo@redhat.com, peterz@infradead.org,
+        Ian Rogers <irogers@google.com>
+References: <20201210090340.14358-1-alexander.antonov@linux.intel.com>
+ <20201214132828.GD238399@kernel.org>
+ <20201215030430.GA1538637@tassilo.jf.intel.com>
+ <20201215135849.GD252952@kernel.org>
+From:   Alexander Antonov <alexander.antonov@linux.intel.com>
+Message-ID: <bea68d24-8b21-c4a7-5cd4-14d31b484222@linux.intel.com>
+Date:   Sun, 20 Dec 2020 20:23:21 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201215154439.69062-10-ribalda@chromium.org>
+In-Reply-To: <20201215135849.GD252952@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo,
+On 12/15/2020 4:58 PM, Arnaldo Carvalho de Melo wrote:
+> Em Mon, Dec 14, 2020 at 07:04:30PM -0800, Andi Kleen escreveu:
+>>> My first thought was: Why not have a 'perf iiostat' subcommand?
+>   
+>> Same would apply to a lot of options in perf stat.
+>   
+>> I guess you could add some aliases to "perf" that give shortcuts
+>> for common perf stat command lines.
+> Yeah, and we have a mechanism for that, that was exercised only in the
+> 'perf archive' case:
+>
+> ~/libexec/perf-core/perf-archive
+>
+> I tried this and it works:
+>
+> [root@five ~]# ls -la ~/bin/perf
+> lrwxrwxrwx. 1 root root 19 Feb 18  2020 /root/bin/perf -> /home/acme/bin/perf
+> [root@five ~]# vim ~acme/libexec/perf-core/perf-cgtop
+> [root@five ~]# chmod +x ~acme/libexec/perf-core/perf-cgtop
+> [root@five ~]# cat ~acme/libexec/perf-core/perf-cgtop
+> perf top --hierarchy --all-cgroups -s cgroup,dso,sym $*
+> [root@five ~]# perf cgtop
+> [root@five ~]#
+>
+> use 'e' to expand collapse the current level (+ -> -), 'E'/'C' to
+> expand/collapse all levels.
+>
+> 'perf help' doesn't show it, which is a shame, I'll add support for it
+> to traverse ~/libexec/perf-core/perf-* and get the first non interpreter
+> comment line as a description for the command, so to add a new one is
+> just a matter of dropping a shell + man page, no need to change the perf
+> binary.
+>
+>
+> To test that '$*' at the end:
+>
+> [root@five ~]# perf cgtop -U
+>
+> I.e.:
+>
+> [acme@five perf]$ perf top -h -U
+>
+>   Usage: perf top [<options>]
+>
+>      -U, --hide_user_symbols
+>                            hide user symbols
+>
+> [acme@five perf]$
+>
+> And it works, just kernel level samples grouped in an hierarchy, first
+> cgroup, then dso, then the symbol.
+>
+> Also, using this with the 'P' hotkey:
+>
+> [root@five ~]# perf cgtop --percent-limit 1
+>
+> Shows how it looks like:
+>
+> [root@five ~]# cat perf.hist.0
+> -  86.77%        /user.slice/user-1000.slice/session-2.scope
+>     -  36.18%        [kernel]
+>            2.24%        [k] unmap_page_range
+>            1.15%        [k] clear_page_rep
+>            1.10%        [k] add_mm_counter_fast
+>            1.03%        [k] alloc_set_pte
+>            1.03%        [k] handle_mm_fault
+>     -  17.65%        libc-2.32.so
+>            2.04%        [.] _int_malloc
+>            1.82%        [.] __memmove_avx_unaligned_erms
+>            1.48%        [.] __strlen_avx2
+>            1.13%        [.] _int_free
+>            1.12%        [.] malloc
+>     -   8.09%        make
+>            1.65%        [.] jhash_string
+>            1.05%        [.] hash_find_slot
+>     -   6.90%        ld-2.32.so
+>            2.03%        [.] do_lookup_x
+>            1.49%        [.] _dl_lookup_symbol_x
+>     -   4.78%        cc1
+>     -   4.60%        libperl.so.5.32.0
+>     -   2.86%        bash
+>     -   1.98%        libselinux.so.1
+>     -   1.61%        libpython2.7.so.1.0
+>     -   1.06%        libpcre2-8.so.0.10.0
+> -   9.17%        /user.slice/user-1000.slice/session-4.scope
+>     -   4.66%        perf
+>     -   2.40%        libc-2.32.so
+>     -   1.82%        [kernel]
+> -   4.04%        /
+>     -   4.02%        [kernel]
+> [root@five ~]#
+>
+> So 'perf iiostat' would become:
+>
+> [root@five ~]# cat ~acme/libexec/perf-core/perf-iiostat
+> perf stat --iiostat $*
+> [root@five ~]#
+>
+> There are parameters to that '--iiostat' in the current patchset that
+> may complicates this tho, with some changes I guess we get what we want.
+>
+> - Arnaldo
 
-Thank you for the patch.
+Hello Arnaldo,
+Sorry for delayed response.
 
-On Tue, Dec 15, 2020 at 04:44:39PM +0100, Ricardo Ribalda wrote:
-> Some devices, can only read the privacy_pin if the device is
-> streaming.
+This is the interesting approach to get shorter command. Thank you for the
+explanation. I will update the patchset.
 
-:-(
-
-> This patch implement a quirk for such devices, in order to avoid invalid
-> reads and/or spurious events.
-> 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> ---
->  drivers/media/usb/uvc/uvc_driver.c | 97 ++++++++++++++++++++++++++----
->  drivers/media/usb/uvc/uvc_queue.c  |  3 +
->  drivers/media/usb/uvc/uvcvideo.h   |  6 ++
->  3 files changed, 94 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-> index e49491250e87..61313019e226 100644
-> --- a/drivers/media/usb/uvc/uvc_driver.c
-> +++ b/drivers/media/usb/uvc/uvc_driver.c
-> @@ -7,6 +7,7 @@
->   */
->  
->  #include <linux/atomic.h>
-> +#include <linux/dmi.h>
->  #include <linux/gpio/consumer.h>
->  #include <linux/kernel.h>
->  #include <linux/list.h>
-> @@ -1471,13 +1472,39 @@ static int uvc_parse_control(struct uvc_device *dev)
->  	return 0;
->  }
->  
-> +static bool uvc_ext_gpio_is_streaming(struct uvc_device *dev)
-> +{
-> +	struct uvc_streaming *streaming;
-> +
-> +	list_for_each_entry(streaming, &dev->streams, list) {
-> +		if (uvc_queue_streaming(&streaming->queue))
-> +			return true;
-> +	}
-> +
-> +	return false;
-> +}
-> +
-> +/* Update the cached value and return true if it has changed */
-> +static bool uvc_gpio_update_value(struct uvc_entity *unit, u8 *new_val)
-> +{
-> +	*new_val = gpiod_get_value(unit->gpio.gpio_privacy);
-> +
-> +	return atomic_xchg(&unit->gpio.gpio_privacy_value, *new_val) !=
-> +								      *new_val;
-
-That's a weird indentation. Also, as the left hand side modifies
-*new_val, does C guarantee the order in which the two operands to != are
-evaluated ? Could the code be written in an easier to read way ?
-
-> +}
-> +
->  static int uvc_gpio_get_cur(struct uvc_device *dev, struct uvc_entity *entity,
->  			    u8 cs, void *data, u16 size)
->  {
->  	if (cs != UVC_CT_PRIVACY_CONTROL || size < 1)
->  		return -EINVAL;
->  
-> -	*(uint8_t *)data = gpiod_get_value(entity->gpio.gpio_privacy);
-> +	if ((dev->quirks & UVC_QUIRK_PRIVACY_DURING_STREAM) &&
-> +	    !uvc_ext_gpio_is_streaming(dev))
-> +		return -EBUSY;
-> +
-> +	uvc_gpio_update_value(entity, (uint8_t *)data);
-> +
->  	return 0;
->  }
->  
-> @@ -1491,26 +1518,69 @@ static int uvc_gpio_get_info(struct uvc_device *dev, struct uvc_entity *entity,
->  	return 0;
->  }
->  
-> -static irqreturn_t uvc_privacy_gpio_irq(int irq, void *data)
-> +static struct uvc_entity *uvc_find_ext_gpio_unit(struct uvc_device *dev)
->  {
-> -	struct uvc_device *dev = data;
-> -	struct uvc_video_chain *chain;
->  	struct uvc_entity *unit;
-> -	u8 value;
->  
-> -	/* GPIO entities are always on the first chain */
-> -	chain = list_first_entry(&dev->chains, struct uvc_video_chain, list);
->  	list_for_each_entry(unit, &dev->entities, list) {
-> -		if (UVC_ENTITY_TYPE(unit) != UVC_EXT_GPIO_UNIT)
-> -			continue;
-> -		value = gpiod_get_value(unit->gpio.gpio_privacy);
-> -		uvc_ctrl_status_event(NULL, chain, unit->controls, &value);
-> -		return IRQ_HANDLED;
-> +		if (UVC_ENTITY_TYPE(unit) == UVC_EXT_GPIO_UNIT)
-> +			return unit;
->  	}
->  
-> +	return unit;
-> +}
-> +
-> +void uvc_privacy_gpio_event(struct uvc_device *dev)
-> +{
-> +	struct uvc_entity *unit;
-> +	struct uvc_video_chain *chain;
-> +	u8 new_value;
-> +
-> +	unit = uvc_find_ext_gpio_unit(dev);
-> +	if (WARN_ONCE(!unit, "Unable to find entity ext_gpio_unit"))
-> +		return;
-> +
-> +	if (!uvc_gpio_update_value(unit, &new_value))
-> +		return;
-
-If VIDIOC_G_CTRL() is called before the IRQ is processed, this
-uvc_gpio_update_value() call will return false, and no event will be
-generated. I don't think that's right, and even should be generated
-every time the control changes.
-
-> +
-> +	/* GPIO entities are always on the first chain */
-> +	chain = list_first_entry(&dev->chains, struct uvc_video_chain, list);
-> +	uvc_ctrl_status_event(NULL, chain, unit->controls, &new_value);
-> +}
-> +
-> +static irqreturn_t uvc_privacy_gpio_irq(int irq, void *data)
-> +{
-> +	struct uvc_device *dev = data;
-> +
-> +	/* Ignore privacy events during streamoff */
-> +	if (dev->quirks & UVC_QUIRK_PRIVACY_DURING_STREAM)
-> +		if (!uvc_ext_gpio_is_streaming(dev))
-> +			return IRQ_HANDLED;
-
-	if (dev->quirks & UVC_QUIRK_PRIVACY_DURING_STREAM) {
-		if (!uvc_ext_gpio_is_streaming(dev))
-			return IRQ_HANDLED;
-	}
-
-There's a potential race condition with VIDIOC_STREAMON and
-VIDIOC_STREAMOFF. Could you explain what the device does exactly when
-not streaming ? As the GPIO isn't tied to the UVC controller, how comes
-the streaming state influences it ? Any hope the firmware could be fixed
-instead ?
-
-> +
-> +	uvc_privacy_gpio_event(dev);
-> +
->  	return IRQ_HANDLED;
->  }
->  
-> +static const struct dmi_system_id privacy_valid_during_streamon[] = {
-> +	{
-> +		.ident = "HP Elite c1030 Chromebook",
-> +		.matches = {
-> +			DMI_MATCH(DMI_SYS_VENDOR, "HP"),
-> +			DMI_MATCH(DMI_PRODUCT_NAME, "Jinlon"),
-> +		},
-> +	},
-> +	{
-> +		.ident = "HP Pro c640 Chromebook",
-> +		.matches = {
-> +			DMI_MATCH(DMI_SYS_VENDOR, "HP"),
-> +			DMI_MATCH(DMI_PRODUCT_NAME, "Dratini"),
-> +		},
-> +	},
-> +	{ } /* terminate list */
-> +};
-> +
-> +
->  static int uvc_parse_gpio(struct uvc_device *dev)
->  {
->  	struct uvc_entity *unit;
-> @@ -1545,6 +1615,9 @@ static int uvc_parse_gpio(struct uvc_device *dev)
->  	if (irq == -EPROBE_DEFER)
->  		return -EPROBE_DEFER;
->  
-> +	if (dmi_check_system(privacy_valid_during_streamon))
-> +		dev->quirks |= UVC_QUIRK_PRIVACY_DURING_STREAM;
-> +
->  	if (irq < 0)
->  		return 0;
->  
-> diff --git a/drivers/media/usb/uvc/uvc_queue.c b/drivers/media/usb/uvc/uvc_queue.c
-> index cd60c6c1749e..e800d491303f 100644
-> --- a/drivers/media/usb/uvc/uvc_queue.c
-> +++ b/drivers/media/usb/uvc/uvc_queue.c
-> @@ -337,9 +337,12 @@ int uvc_dequeue_buffer(struct uvc_video_queue *queue, struct v4l2_buffer *buf,
->  int uvc_queue_streamon(struct uvc_video_queue *queue, enum v4l2_buf_type type)
->  {
->  	int ret;
-> +	struct uvc_streaming *stream = uvc_queue_to_stream(queue);
->  
->  	mutex_lock(&queue->mutex);
->  	ret = vb2_streamon(&queue->queue, type);
-> +	if (stream->dev->quirks & UVC_QUIRK_PRIVACY_DURING_STREAM)
-> +		uvc_privacy_gpio_event(stream->dev);
->  	mutex_unlock(&queue->mutex);
->  
->  	return ret;
-> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> index 2b5ba4b02d3a..2a95b3ed3ea8 100644
-> --- a/drivers/media/usb/uvc/uvcvideo.h
-> +++ b/drivers/media/usb/uvc/uvcvideo.h
-> @@ -6,6 +6,7 @@
->  #error "The uvcvideo.h header is deprecated, use linux/uvcvideo.h instead."
->  #endif /* __KERNEL__ */
->  
-> +#include <linux/atomic.h>
->  #include <linux/gpio/consumer.h>
->  #include <linux/kernel.h>
->  #include <linux/poll.h>
-> @@ -209,6 +210,7 @@
->  #define UVC_QUIRK_RESTORE_CTRLS_ON_INIT	0x00000400
->  #define UVC_QUIRK_FORCE_Y8		0x00000800
->  #define UVC_QUIRK_FORCE_BPP		0x00001000
-> +#define UVC_QUIRK_PRIVACY_DURING_STREAM	0x00002000
->  
->  /* Format flags */
->  #define UVC_FMT_FLAG_COMPRESSED		0x00000001
-> @@ -359,6 +361,7 @@ struct uvc_entity {
->  			u8  bControlSize;
->  			u8  *bmControls;
->  			struct gpio_desc *gpio_privacy;
-> +			atomic_t  gpio_privacy_value;
->  		} gpio;
->  	};
->  
-> @@ -815,6 +818,9 @@ extern const struct v4l2_file_operations uvc_fops;
->  int uvc_mc_register_entities(struct uvc_video_chain *chain);
->  void uvc_mc_cleanup_entity(struct uvc_entity *entity);
->  
-> +/* Privacy gpio */
-> +void uvc_privacy_gpio_event(struct uvc_device *dev);
-> +
->  /* Video */
->  int uvc_video_init(struct uvc_streaming *stream);
->  int uvc_video_suspend(struct uvc_streaming *stream);
-
--- 
-Regards,
-
-Laurent Pinchart
+- Alexander
