@@ -2,157 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49F562DF4B2
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 10:35:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E15592DF4BB
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 10:38:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727599AbgLTJe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 04:34:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727519AbgLTJez (ORCPT
+        id S1727421AbgLTJhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 04:37:45 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:41468 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727129AbgLTJho (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 04:34:55 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C090C0619D2
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 01:32:58 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id i24so6746783edj.8
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 01:32:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=FN/bEnipr2y9sCYb7N5bkHhgN7bbMj0oywhCqcGevOA=;
-        b=v8peECqPJNg/N1Yfh3YW+bJ2bILnI7awKKkhkrReWPnl/5fCBwvh+TNnZL67PVh4Kn
-         XSAEFs4KQysDNHgmyqYGHyUw9GcCBRNi1aPsjDTCeVlZATkgeAjb+lT79oiyCzXQ/9cR
-         xscBUogVFwPiyRmtTZVALTDMzdaDCcOASaVV16cYXs0Sev/lOcwrihNeYZz0iM6rlqMv
-         bQdRfPQBffPJG8gSggx//jcGxC7PYp65g0iXUT5Uf6/wINmN4ZbWmA3a4eXu+qPI8nbT
-         DfY0pWzvnr0zzb05kzuox4X9DfH5M7uCS7OBQf3tn+Sn1PPAhi/TBPLK/G0bft3s7/JR
-         rdjQ==
+        Sun, 20 Dec 2020 04:37:44 -0500
+Received: by mail-il1-f198.google.com with SMTP id f19so6695675ilk.8
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 01:37:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=FN/bEnipr2y9sCYb7N5bkHhgN7bbMj0oywhCqcGevOA=;
-        b=c4PgLwZqYoIFAl39OxhkDoBjoIusApPdmk2wLLHDpXKvwnouFYTBOLxv3M10okHXiO
-         JHnS34M6letYbRZxQ1mOFWwj63pQR/+tTAUv/jX+Coqg3q/UZAR9SzuaTRFPtUmJf6y/
-         XoKcFLVqJ3jmqq8bkqrt3WKNsUXFlRHJeuCBW/BLkmpx4zf/teq/QTZ5cJMzAK0BHT5S
-         ssSPHosgoRipIlh3qW5KBKZHnBJrPLtRXAk2yAomD9BqyUJwWMRFKJsKb7FgZwbx8Rfh
-         Gqtsx7x56vYzDcPAMQ7pDq10j9Anq+VFOO73o5vsUwZEnC8dtG1+TNeURN50aqLo5gXp
-         H8Vw==
-X-Gm-Message-State: AOAM530d6C8SD+6/RvXg5izLgR3rj6ykDvPyaA/yei7jduo4uWZEFOfp
-        TR9dvhaO7t+eUxFaQcQYynLqXA==
-X-Google-Smtp-Source: ABdhPJwIq0fpyvaSJl94muY+RZpxPYGkdSjzDhObLqGyYZFmguawYXQVibjrORbz3oIU2JcDnXSFEA==
-X-Received: by 2002:a05:6402:2292:: with SMTP id cw18mr11885156edb.336.1608456777231;
-        Sun, 20 Dec 2020 01:32:57 -0800 (PST)
-Received: from localhost.localdomain (hst-221-118.medicom.bg. [84.238.221.118])
-        by smtp.gmail.com with ESMTPSA id z12sm7769814ejr.17.2020.12.20.01.32.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Dec 2020 01:32:56 -0800 (PST)
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-To:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     vgarodia@codeaurora.org, acourbot@chromium.org,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH v2 5/5] venus: vdec: Handle DRC after drain
-Date:   Sun, 20 Dec 2020 11:31:30 +0200
-Message-Id: <20201220093130.10177-6-stanimir.varbanov@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201220093130.10177-1-stanimir.varbanov@linaro.org>
-References: <20201220093130.10177-1-stanimir.varbanov@linaro.org>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=0fT5mqBE94g71/WluOC6bf1J/UQhmIMm/DUDfbpZB9U=;
+        b=FokUUj6a2CqkphV8QlrFUAZS0Kxv66UDxfFrLQ6eWEbVtKbHzLHW1SYOpbeBR5ID7r
+         299Bt5z322O66ghxj8u//jRky8ccPCO/ucapd0wgq3iZzBNKZD7E01EHsrjP3Jr7k3Tx
+         GvgAkgFWngC5nHncg61a79tpSc3f9F82tVJpP9RT9K+XFegKcWn+SBm4hQmxBXysgDpZ
+         faMcDalzleQGHS5H+8SEWPGoXvAXo1dD1/I8uq+o5OjNqz/qzXkBdtq/3zdAEN1yyA7j
+         cWUh3C0h99BF+kN/jJ9B7jqXAMZqQ/rDeRYOGsgN8/SwdacmHyJzccUH8Dkda8ZpVCg5
+         vQig==
+X-Gm-Message-State: AOAM532YO7xz1yCqAALqq6iaPg2yNYmJtXSDKZOTZeDyl5DjdVE4DhUB
+        777CLipjR8TypJwdXzsg/2/vQ9oy4bpMgX5nm5yvmZadRIfL
+X-Google-Smtp-Source: ABdhPJy/2OvStEVOk368NFkl05TcHnoLfL9VubxJP+qHGmxR1gjcoH5bassxkyk/ywRnffzn1GiHR9p3jFp67h07+mij430mJ0zN
+MIME-Version: 1.0
+X-Received: by 2002:a5d:8704:: with SMTP id u4mr10573638iom.3.1608457023536;
+ Sun, 20 Dec 2020 01:37:03 -0800 (PST)
+Date:   Sun, 20 Dec 2020 01:37:03 -0800
+In-Reply-To: <000000000000264c6305a9c74d9b@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008647f705b6e215de@google.com>
+Subject: Re: INFO: rcu detected stall in tipc_release
+From:   syzbot <syzbot+3654c027d861c6df4b06@syzkaller.appspotmail.com>
+To:     Markus.Elfring@web.de, bp@alien8.de, coreteam@netfilter.org,
+        davem@davemloft.net, fw@strlen.de, fweisbec@gmail.com,
+        hdanton@sina.com, hpa@zytor.com, jmaloy@redhat.com,
+        jmattson@google.com, joro@8bytes.org, kadlec@netfilter.org,
+        kuba@kernel.org, kuznet@ms2.inr.ac.ru, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mingo@kernel.org, mingo@redhat.com,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        pablo@netfilter.org, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com, subashab@codeaurora.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        tuong.t.lien@dektech.com.au, vkuznets@redhat.com,
+        wanpengli@tencent.com, x86@kernel.org, yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fritz Koenig <frkoenig@chromium.org>
+syzbot suspects this issue was fixed by commit:
 
-If the DRC is near the end of the stream the client
-may send a V4L2_DEC_CMD_STOP before the DRC occurs.
-V4L2_DEC_CMD_STOP puts the driver into the
-VENUS_DEC_STATE_DRAIN state.  DRC must be aware so
-that after the DRC event the state can be restored
-correctly.
+commit cc00bcaa589914096edef7fb87ca5cee4a166b5c
+Author: Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
+Date:   Wed Nov 25 18:27:22 2020 +0000
 
-Signed-off-by: Fritz Koenig <frkoenig@chromium.org>
-Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
----
+    netfilter: x_tables: Switch synchronization to RCU
 
-Changes since v2 (from Fritz):
- - moved state transition from vdec_event_notify to vdec_event_change. 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1445cb37500000
+start commit:   7cc2a8ea Merge tag 'block-5.8-2020-07-01' of git://git.ker..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7be693511b29b338
+dashboard link: https://syzkaller.appspot.com/bug?extid=3654c027d861c6df4b06
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12948233100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11344c05100000
 
- drivers/media/platform/qcom/venus/core.h |  1 +
- drivers/media/platform/qcom/venus/vdec.c | 14 ++++++++++++--
- 2 files changed, 13 insertions(+), 2 deletions(-)
+If the result looks correct, please mark the issue as fixed by replying with:
 
-diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-index db0e6738281e..765ab7ed881b 100644
---- a/drivers/media/platform/qcom/venus/core.h
-+++ b/drivers/media/platform/qcom/venus/core.h
-@@ -413,6 +413,7 @@ struct venus_inst {
- 	unsigned int core_acquired: 1;
- 	unsigned int bit_depth;
- 	bool next_buf_last;
-+	bool drain_active;
- };
- 
- #define IS_V1(core)	((core)->res->hfi_version == HFI_VERSION_1XX)
-diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
-index d27f4fd0ca01..6cc35ffe2d6e 100644
---- a/drivers/media/platform/qcom/venus/vdec.c
-+++ b/drivers/media/platform/qcom/venus/vdec.c
-@@ -519,8 +519,10 @@ vdec_decoder_cmd(struct file *file, void *fh, struct v4l2_decoder_cmd *cmd)
- 
- 		ret = hfi_session_process_buf(inst, &fdata);
- 
--		if (!ret && inst->codec_state == VENUS_DEC_STATE_DECODING)
-+		if (!ret && inst->codec_state == VENUS_DEC_STATE_DECODING) {
- 			inst->codec_state = VENUS_DEC_STATE_DRAIN;
-+			inst->drain_active = true;
-+		}
- 	}
- 
- unlock:
-@@ -969,9 +971,13 @@ static int vdec_start_capture(struct venus_inst *inst)
- 
- 	inst->codec_state = VENUS_DEC_STATE_DECODING;
- 
-+	if (inst->drain_active)
-+		inst->codec_state = VENUS_DEC_STATE_DRAIN;
-+
- 	inst->streamon_cap = 1;
- 	inst->sequence_cap = 0;
- 	inst->reconfig = false;
-+	inst->drain_active = false;
- 
- 	return 0;
- 
-@@ -1097,6 +1103,7 @@ static int vdec_stop_capture(struct venus_inst *inst)
- 		fallthrough;
- 	case VENUS_DEC_STATE_DRAIN:
- 		inst->codec_state = VENUS_DEC_STATE_STOPPED;
-+		inst->drain_active = false;
- 		fallthrough;
- 	case VENUS_DEC_STATE_SEEK:
- 		vdec_cancel_dst_buffers(inst);
-@@ -1296,8 +1303,10 @@ static void vdec_buf_done(struct venus_inst *inst, unsigned int buf_type,
- 
- 			v4l2_event_queue_fh(&inst->fh, &ev);
- 
--			if (inst->codec_state == VENUS_DEC_STATE_DRAIN)
-+			if (inst->codec_state == VENUS_DEC_STATE_DRAIN) {
-+				inst->drain_active = false;
- 				inst->codec_state = VENUS_DEC_STATE_STOPPED;
-+			}
- 		}
- 
- 		if (!bytesused)
-@@ -1373,6 +1382,7 @@ static void vdec_event_change(struct venus_inst *inst,
- 		inst->codec_state = VENUS_DEC_STATE_CAPTURE_SETUP;
- 		break;
- 	case VENUS_DEC_STATE_DECODING:
-+	case VENUS_DEC_STATE_DRAIN:
- 		inst->codec_state = VENUS_DEC_STATE_DRC;
- 		break;
- 	default:
--- 
-2.17.1
+#syz fix: netfilter: x_tables: Switch synchronization to RCU
 
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
