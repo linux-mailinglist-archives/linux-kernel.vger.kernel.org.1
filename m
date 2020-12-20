@@ -2,180 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5492DF392
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 05:48:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D248A2DF393
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 05:50:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727077AbgLTErF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 23:47:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726815AbgLTErE (ORCPT
+        id S1727200AbgLTEsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 23:48:46 -0500
+Received: from mail.efficios.com ([167.114.26.124]:47556 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726997AbgLTEsp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 23:47:04 -0500
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 522F2C0613CF
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 20:46:24 -0800 (PST)
-Received: by mail-pj1-x104a.google.com with SMTP id c21so4719622pjr.8
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 20:46:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=E+KTnvzcs5JsFh57zt07bVvSESBSRodeL+PTYDq6f7o=;
-        b=qj8HlWI6tZdIhw+rewCG3QHQBdMh6oLbeBtQ+FixjcusoK13IpGxkq1c5YE1l0+eed
-         zVbZJyKTvERT2TmdB6CoDbR2axOfXqPV+x+SH9aRLg97bazsi7cmiq3eFZ0yQhqWHZEy
-         jgTHQcQ6a/mSLbMqdCnl27zxAAxByeE4hwS28Z2Li9884mzx+AjeLqF0yib0RXZ3UI2u
-         yr1M5kJApUa7IIcCezfZgD/w0duGJqFLvVYPyzuImbmnY+45dm2nvZ93Jo7PYFiInYCP
-         DlUNzl8HjhbvqG9YQoZDbPUkKthc31dhOEb1TcZwuILm8RNXEho31q5o839xZWh11zgW
-         ASpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=E+KTnvzcs5JsFh57zt07bVvSESBSRodeL+PTYDq6f7o=;
-        b=Pe1J8dgv2Y2OODS794Hx73fn6JSR9OBr1Ycfp2PuxR3GeEpga8Ov4kGllpfG7RMHaw
-         oN5rb1aKKZMLC5Od0+6ehjc+YJho1sIKiSPWmx+k6XV4hxZQK6nxjFFMtxDvVPOnjhSP
-         OGsifSEEeZdx4NkcWylUVg2z0+8dytWANDADgnU2NQ75wwcTvbUkM45m9k2Noawuf0st
-         FO0jIi2gb/56SeZ4/u+jIsocqUbxSG9gtTLJ5bPtjE1fCkQB91TE9/BKV+7UCgp8dk6i
-         GoJc2g4EF6WsH67Jy6X9pwVJA+bz2SGPj2pLj2SOGMtfr4DbqzkAGshdqSXb9nRmVwjb
-         +3dQ==
-X-Gm-Message-State: AOAM531ekx4xZuFw3s4es61XEvmXMjQO6bWmnlEjPVrNIH92oXpWjqCL
-        KLy8N6ij4Zji064Ary84iuSwuWoJ8OOr0A==
-X-Google-Smtp-Source: ABdhPJwVJYVnWO4MvhahOTUFhh8SBrFUbCSc2epgLCW/93Vp5fokqG7+kT7R9YX7Y71yLo815QdY7cUMMVgCmQ==
-Sender: "shakeelb via sendgmr" <shakeelb@shakeelb.svl.corp.google.com>
-X-Received: from shakeelb.svl.corp.google.com ([100.116.77.44]) (user=shakeelb
- job=sendgmr) by 2002:a17:90b:3011:: with SMTP id hg17mr11851579pjb.22.1608439583347;
- Sat, 19 Dec 2020 20:46:23 -0800 (PST)
-Date:   Sat, 19 Dec 2020 20:46:08 -0800
-Message-Id: <20201220044608.1258123-1-shakeelb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.684.gfbc64c5ab5-goog
-Subject: [PATCH v2] inotify, memcg: account inotify instances to kmemcg
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Sat, 19 Dec 2020 23:48:45 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id C7E622E839A;
+        Sat, 19 Dec 2020 23:48:04 -0500 (EST)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id pw1zU6eRf8YH; Sat, 19 Dec 2020 23:48:04 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 675252E82A4;
+        Sat, 19 Dec 2020 23:48:04 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 675252E82A4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1608439684;
+        bh=Lk9DAUYi457LuXbQYMHGuDJkzWjmmcJLZglkXK6gdHw=;
+        h=To:From:Message-ID:Date:MIME-Version;
+        b=c6qMSWj/rXRgc+w9P5B9j/pUvKf1WrVNVIYvgpXZs81z3aETr/hxYWMc79qxO/JSd
+         TkWX9JDN3jtfIF8pXEGRwDoq9zUcjSekmTK7Z4lOcduLbKDJozDIInq/oH6kZGSk9g
+         RuGudvFqshw5ZSAW0ZfT5AjkEpduEjbpKrHOMFIHKdNTY8lUWvLh9HoCAafwP4XWdN
+         DQsVGpYflypPBFd2ZMRRVfG1kOT53tfH6al8GfuOkDsOtYJtuJIvr84o2mZ7nni4tu
+         XU+Exo3qztVl+/sR3MQWF/b6keZ9K1edV1J9fISQNim8ai7w7tAnPect5u8NwSIDXz
+         KjvGOLnKbzryQ==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id HqLyW-hjsYlV; Sat, 19 Dec 2020 23:48:04 -0500 (EST)
+Received: from [10.0.0.213] (192-222-157-6.qc.cable.ebox.net [192.222.157.6])
+        by mail.efficios.com (Postfix) with ESMTPSA id 315AE2E82A3;
+        Sat, 19 Dec 2020 23:48:04 -0500 (EST)
+Subject: Re: [RFC PATCH] ptrace: make ptrace() fail if the tracee changed its
+ pid unexpectedly
+To:     Oleg Nesterov <oleg@redhat.com>, Pedro Alves <palves@redhat.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Jan Kratochvil <jan.kratochvil@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        linux-kernel@vger.kernel.org
+References: <20201217142931.GA8865@redhat.com>
+ <875z50roia.fsf@x220.int.ebiederm.org>
+ <fc796624-2660-8c2b-0956-2c9ba8281952@redhat.com>
+ <20201219193313.GB9539@redhat.com>
+From:   Simon Marchi <simon.marchi@efficios.com>
+Message-ID: <e8644e25-042f-6c52-533a-da097fc566e9@efficios.com>
+Date:   Sat, 19 Dec 2020 23:48:03 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <20201219193313.GB9539@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the fs sysctl inotify/max_user_instances is used to limit the
-number of inotify instances on the system. For systems running multiple
-workloads, the per-user namespace sysctl max_inotify_instances can be
-used to further partition inotify instances. However there is no easy
-way to set a sensible system level max limit on inotify instances and
-further partition it between the workloads. It is much easier to charge
-the underlying resource (i.e. memory) behind the inotify instances to
-the memcg of the workload and let their memory limits limit the number
-of inotify instances they can create.
+On 2020-12-19 2:33 p.m., Oleg Nesterov wrote:
+> OOPS! Sorry Simon, yes I forgot to add reported-by. Andrew, or Eric, if
+> you take this patch, could you also add
+> 
+> 	Reported-by: Simon Marchi <simon.marchi@efficios.com>
 
-With inotify instances charged to memcg, the admin can simply set
-max_user_instances to INT_MAX and let the memcg limits of the jobs limit
-their inotify instances.
+I tried the original reproducer on a patched kernel, and it looks good.
+GDB's behavior is still not super clean when this situation happens: a
+PTRACE_GETREGS on the (disappeared) leader now fails with ESRCH (that's
+what we want), and that interrupts the "continue" command and
+unexpectedly brings back the prompt while leaving the other thread
+running.  But that is all logic that will have to be fixed inside GDB.
 
-Signed-off-by: Shakeel Butt <shakeelb@google.com>
----
-Changes since v1:
-- introduce fsnotify_alloc_user_group() and convert fanotify in addition
-  to inotify to use that function. [suggested by Amir]
+So, feel free to add
 
- fs/notify/fanotify/fanotify_user.c |  2 +-
- fs/notify/group.c                  | 25 ++++++++++++++++++++-----
- fs/notify/inotify/inotify_user.c   |  4 ++--
- include/linux/fsnotify_backend.h   |  1 +
- 4 files changed, 24 insertions(+), 8 deletions(-)
+  Acked-by: Simon Marchi <simon.marchi@efficios.com>
 
-diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-index 3e01d8f2ab90..7e7afc2b62e1 100644
---- a/fs/notify/fanotify/fanotify_user.c
-+++ b/fs/notify/fanotify/fanotify_user.c
-@@ -976,7 +976,7 @@ SYSCALL_DEFINE2(fanotify_init, unsigned int, flags, unsigned int, event_f_flags)
- 		f_flags |= O_NONBLOCK;
- 
- 	/* fsnotify_alloc_group takes a ref.  Dropped in fanotify_release */
--	group = fsnotify_alloc_group(&fanotify_fsnotify_ops);
-+	group = fsnotify_alloc_user_group(&fanotify_fsnotify_ops);
- 	if (IS_ERR(group)) {
- 		free_uid(user);
- 		return PTR_ERR(group);
-diff --git a/fs/notify/group.c b/fs/notify/group.c
-index a4a4b1c64d32..ffd723ffe46d 100644
---- a/fs/notify/group.c
-+++ b/fs/notify/group.c
-@@ -111,14 +111,12 @@ void fsnotify_put_group(struct fsnotify_group *group)
- }
- EXPORT_SYMBOL_GPL(fsnotify_put_group);
- 
--/*
-- * Create a new fsnotify_group and hold a reference for the group returned.
-- */
--struct fsnotify_group *fsnotify_alloc_group(const struct fsnotify_ops *ops)
-+static struct fsnotify_group *__fsnotify_alloc_group(
-+				const struct fsnotify_ops *ops, gfp_t gfp)
- {
- 	struct fsnotify_group *group;
- 
--	group = kzalloc(sizeof(struct fsnotify_group), GFP_KERNEL);
-+	group = kzalloc(sizeof(struct fsnotify_group), gfp);
- 	if (!group)
- 		return ERR_PTR(-ENOMEM);
- 
-@@ -139,8 +137,25 @@ struct fsnotify_group *fsnotify_alloc_group(const struct fsnotify_ops *ops)
- 
- 	return group;
- }
-+
-+/*
-+ * Create a new fsnotify_group and hold a reference for the group returned.
-+ */
-+struct fsnotify_group *fsnotify_alloc_group(const struct fsnotify_ops *ops)
-+{
-+	return __fsnotify_alloc_group(ops, GFP_KERNEL);
-+}
- EXPORT_SYMBOL_GPL(fsnotify_alloc_group);
- 
-+/*
-+ * Create a new fsnotify_group and hold a reference for the group returned.
-+ */
-+struct fsnotify_group *fsnotify_alloc_user_group(const struct fsnotify_ops *ops)
-+{
-+	return __fsnotify_alloc_group(ops, GFP_KERNEL_ACCOUNT);
-+}
-+EXPORT_SYMBOL_GPL(fsnotify_alloc_user_group);
-+
- int fsnotify_fasync(int fd, struct file *file, int on)
- {
- 	struct fsnotify_group *group = file->private_data;
-diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
-index 59c177011a0f..266d17e8ecb9 100644
---- a/fs/notify/inotify/inotify_user.c
-+++ b/fs/notify/inotify/inotify_user.c
-@@ -632,11 +632,11 @@ static struct fsnotify_group *inotify_new_group(unsigned int max_events)
- 	struct fsnotify_group *group;
- 	struct inotify_event_info *oevent;
- 
--	group = fsnotify_alloc_group(&inotify_fsnotify_ops);
-+	group = fsnotify_alloc_user_group(&inotify_fsnotify_ops);
- 	if (IS_ERR(group))
- 		return group;
- 
--	oevent = kmalloc(sizeof(struct inotify_event_info), GFP_KERNEL);
-+	oevent = kmalloc(sizeof(struct inotify_event_info), GFP_KERNEL_ACCOUNT);
- 	if (unlikely(!oevent)) {
- 		fsnotify_destroy_group(group);
- 		return ERR_PTR(-ENOMEM);
-diff --git a/include/linux/fsnotify_backend.h b/include/linux/fsnotify_backend.h
-index a2e42d3cd87c..e5409b83e731 100644
---- a/include/linux/fsnotify_backend.h
-+++ b/include/linux/fsnotify_backend.h
-@@ -470,6 +470,7 @@ static inline void fsnotify_update_flags(struct dentry *dentry)
- 
- /* create a new group */
- extern struct fsnotify_group *fsnotify_alloc_group(const struct fsnotify_ops *ops);
-+extern struct fsnotify_group *fsnotify_alloc_user_group(const struct fsnotify_ops *ops);
- /* get reference to a group */
- extern void fsnotify_get_group(struct fsnotify_group *group);
- /* drop reference on a group from fsnotify_alloc_group */
--- 
-2.29.2.684.gfbc64c5ab5-goog
+too.
 
+Thanks!
+
+Simon
