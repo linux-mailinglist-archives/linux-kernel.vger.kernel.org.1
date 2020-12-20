@@ -2,76 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC912DF297
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 02:29:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F5C42DF296
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 02:25:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727049AbgLTBZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 20:25:39 -0500
-Received: from mout.gmx.net ([212.227.15.18]:35387 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726803AbgLTBZi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 20:25:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1608427430;
-        bh=Ce9S6zrCQf0NChxGGpooimbJN6N08uPt4ubX6/bcgIQ=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=DUWpuql0D50N/j4H+x1vvXtsvi3pOU2QL8/5lJEXwnG/ApY4ev8rY//Va/D5ErEU8
-         RPPR+67WxcU9l6/Ohpp42rGCVCh57HKU9AabFgj7t+uhDM8lFM9fSsLSuy83WA8T67
-         dCPauCoCyZPDrVbBY+gDXsWwKHttOGfgvJD59MGQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.150.14]) by mail.gmx.com (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mzhj9-1jvp393CJV-00viGb; Sun, 20
- Dec 2020 02:23:50 +0100
-Message-ID: <c9c97ae293f5d7321ff30ac6ead49751560dd354.camel@gmx.de>
-Subject: Re: [PATCH] zsmalloc: do not use bit_spin_lock
-From:   Mike Galbraith <efault@gmx.de>
-To:     Vitaly Wool <vitaly.wool@konsulko.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>
-Cc:     Barry Song <song.bao.hua@hisilicon.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Minchan Kim <minchan@kernel.org>,
-        NitinGupta <ngupta@vflare.org>
-Date:   Sun, 20 Dec 2020 02:23:49 +0100
-In-Reply-To: <20201220002228.38697-1-vitaly.wool@konsulko.com>
-References: <18669bd607ae9efbf4e00e36532c7aa167d0fa12.camel@gmx.de>
-         <20201220002228.38697-1-vitaly.wool@konsulko.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
+        id S1727002AbgLTBYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 20:24:52 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:53423 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726915AbgLTBYv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Dec 2020 20:24:51 -0500
+Received: by mail-il1-f200.google.com with SMTP id q2so6008917ilt.20
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 17:24:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=b6Rz9SpGo3gliA4WwCwaVIirtj/lEHbQR0C+NTE/jEA=;
+        b=cRhj/5mXzVpIAbFQDQkMICPzml5BlRIhiftNvD+5REwIXCsngOlqPf5YkT4zUFmaD+
+         K3WN/96eRz2Us2+fqvDadpkzMIvtDoofkr1EsD/JMJRpv24xqZHF/JeSWvsc23bsmphq
+         wLEdHUOjhEsyg4qynuWDoZtTZ8aPaQ5KRDYnryRPE8bFrxTKwsj4WuwXaPIRDvdrPL58
+         jyI3VlI8CgWmRX3PDU0/kg8p7u3EHKYSuH6aHVTVCpRajDTVFrvqJQik5iBN1pOEznPC
+         nH62so+S8a30msrzFBKPUpfW0Cwb6alWXEKCcqkHj/eZ4Ocv+3WhrXg1vszzglxA6oY7
+         9cow==
+X-Gm-Message-State: AOAM532traVDGfgr8TMHbKQjYguW9al6Vps0U6w7YbbF7SPBBWTseq+U
+        NwGGERQsei+zwKqFmu8auF4JciiQYKiPzrvCHgfPY0pRFn44
+X-Google-Smtp-Source: ABdhPJyYIH5BZbXS9Ocrm8a2yKvqz7SLhEnZk2w6B36KaofKtaBuEh2ejG51w68RPzj8wMrEXXsRmSi9PSo4hFSq0FqrFnlWFH0G
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ax83T0xYQBFJVPHbUHlYTrPgRB/Ee2Y7lhC9LgoB66EzLjnZ4S9
- WJ8dtz4Va8Rkvg8hhJPRMXpW2n9w2u/bsZFtSBauU1vxrCdciB8rFzMDmShI/ZMSviLut+P
- kqkR2FzgQhpBzSdo+5jqYZsWkdT7Z/q9e94G/EEKxGD5gZ7UGyYgi+52iK56e3HLCtr2/37
- J2GPFeL526alLAJKeqi6Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:suzbf/ZH2+g=:89lWwvuF2Bio+yeNtbWWMp
- xu+GM4I4dv86q3igfO1Y+JPnvqU3xNSdFGZAplGGzEjBjBBS1ltBOcj//TooCkKvhwYfQ2nCa
- zd+P6/K7B6DksOZC5beeuWVVSy5NSKZcXr3B76HMMZmhEN0rUgggeSkoj4A2Tcrz5JjKrAy9i
- 6QucYBA/JUKcHRYkncSz8MalBbBaqISM+WqbNFBnjsSvXMtKQMdq3Ujg7nl/xs2HAYR5e8/kF
- z/9AkBJkE8v7y0TM+OojO7rDLGVRC+jBe9wW+KDOo+QI+fyeRgi9thKQ4e6wha8+3y5nPkQm0
- p0Yvou40VUuwSZlAh/u4FzcCbFw/BlsbD/CCbuE32Alds9zRmmvsDSrGdk38ZR/ag/9230v1z
- cVVWeyI9ooso0YUVF/OhbansPlJlnwD7n9jQ6AcVglBoW3f/4OlohjhINxZb85nUYaNhzQC5b
- 2ZVos3Mrxk5Dm5Q6+fAWvy73xmnHkGowtM5ST2m6MRH7+Q6YJtp08spFHF8nz4hoj8p0B3sN9
- xFaN8nQCQaX7/mtGBZbS+LUYvh2lymHDKrCx3f/SHJO1eiXhgfpXQRQT4tEL6f1z09P2CL6Ny
- WumiRIwinIExnzh9D5KdeJyKU9xx0L2EUnM2nU8wtSvMNR05IFxg2CFY1coZjHhAWeQb7BczG
- PjuwMVNLQHLcnLIEiU2k9dKk+g1Bg25RMY7CLRvaIu/cy6wf+4h4HI+1Q7BWJMkmxSEp0gNNp
- RweW9OTXEWALp479tFyt7j71JjU1ImHek0bn0vyHam6Ks8qKQir7FMFYD8TuHADoiPffqh8OK
- khy70wH39+3MClAM4YQ+mSIUzYDbW4oGm+QnmdCRAsYPSvPIr7x96FbRBdtfknBrNMdCmHisY
- 4cVwld1y8mLTfBVMN/WA==
+X-Received: by 2002:a5e:db4d:: with SMTP id r13mr9693729iop.65.1608427450297;
+ Sat, 19 Dec 2020 17:24:10 -0800 (PST)
+Date:   Sat, 19 Dec 2020 17:24:10 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d26fda05b6db3298@google.com>
+Subject: KASAN: use-after-free Read in io_ring_ctx_wait_and_kill
+From:   syzbot <syzbot+fef004c4db2d363bacd3@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-12-20 at 02:22 +0200, Vitaly Wool wrote:
-> zsmalloc takes bit spinlock in its _map() callback and releases it
-> only in unmap() which is unsafe and leads to zswap complaining
-> about scheduling in atomic context.
->
-> To fix that and to improve RT properties of zsmalloc, remove that
-> bit spinlock completely and use a bit flag instead.
+Hello,
 
-It also does get_cpu_var() in map(), put_cpu_var() in unmap().
+syzbot found the following issue on:
 
-	-Mike
+HEAD commit:    a409ed15 Merge tag 'gpio-v5.11-1' of git://git.kernel.org/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1425527b500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f7c39e7211134bc0
+dashboard link: https://syzkaller.appspot.com/bug?extid=fef004c4db2d363bacd3
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+fef004c4db2d363bacd3@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: use-after-free in __mutex_lock_common kernel/locking/mutex.c:938 [inline]
+BUG: KASAN: use-after-free in __mutex_lock+0x102f/0x1110 kernel/locking/mutex.c:1103
+Read of size 8 at addr ffff888073de33e0 by task syz-executor.1/13101
+
+CPU: 1 PID: 13101 Comm: syz-executor.1 Not tainted 5.10.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0xae/0x4c8 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
+ __mutex_lock_common kernel/locking/mutex.c:938 [inline]
+ __mutex_lock+0x102f/0x1110 kernel/locking/mutex.c:1103
+ io_ring_ctx_wait_and_kill+0x21/0x450 fs/io_uring.c:8648
+ io_uring_release+0x3e/0x50 fs/io_uring.c:8687
+ __fput+0x283/0x920 fs/file_table.c:280
+ task_work_run+0xdd/0x190 kernel/task_work.c:140
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb89/0x2a00 kernel/exit.c:823
+ do_group_exit+0x125/0x310 kernel/exit.c:920
+ get_signal+0x3e9/0x2160 kernel/signal.c:2770
+ arch_do_signal_or_restart+0x2a8/0x1eb0 arch/x86/kernel/signal.c:811
+ handle_signal_work kernel/entry/common.c:147 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
+ exit_to_user_mode_prepare+0x124/0x200 kernel/entry/common.c:201
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+ syscall_exit_to_user_mode+0x19/0x50 kernel/entry/common.c:302
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45e149
+Code: Unable to access opcode bytes at RIP 0x45e11f.
+RSP: 002b:00007f2290236be8 EFLAGS: 00000206 ORIG_RAX: 00000000000001a9
+RAX: fffffffffffffff4 RBX: 0000000020000080 RCX: 000000000045e149
+RDX: 00000000200b0000 RSI: 0000000020000080 RDI: 0000000000000001
+RBP: 000000000119c080 R08: 0000000020000000 R09: 0000000020000000
+R10: 0000000020000100 R11: 0000000000000206 R12: 00000000200b0000
+R13: 00000000200a0000 R14: 0000000020000000 R15: 0000000020000100
+
+Allocated by task 13101:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ kmalloc include/linux/slab.h:552 [inline]
+ kzalloc include/linux/slab.h:682 [inline]
+ io_ring_ctx_alloc fs/io_uring.c:1268 [inline]
+ io_uring_create fs/io_uring.c:9480 [inline]
+ io_uring_setup+0x1d5b/0x38b0 fs/io_uring.c:9613
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 37:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:352
+ __kasan_slab_free+0x102/0x140 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1577
+ slab_free mm/slub.c:3140 [inline]
+ kfree+0xdb/0x3c0 mm/slub.c:4122
+ process_one_work+0x98d/0x1630 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+Last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_record_aux_stack+0xc0/0xf0 mm/kasan/generic.c:343
+ insert_work+0x48/0x370 kernel/workqueue.c:1331
+ __queue_work+0x5c1/0xfb0 kernel/workqueue.c:1497
+ queue_work_on+0xc7/0xd0 kernel/workqueue.c:1524
+ io_uring_create fs/io_uring.c:9586 [inline]
+ io_uring_setup+0x1358/0x38b0 fs/io_uring.c:9613
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff888073de3000
+ which belongs to the cache kmalloc-2k of size 2048
+The buggy address is located 992 bytes inside of
+ 2048-byte region [ffff888073de3000, ffff888073de3800)
+The buggy address belongs to the page:
+page:000000002686ff6f refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x73de0
+head:000000002686ff6f order:3 compound_mapcount:0 compound_pincount:0
+flags: 0xfff00000010200(slab|head)
+raw: 00fff00000010200 dead000000000100 dead000000000122 ffff888010842000
+raw: 0000000000000000 0000000000080008 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff888073de3280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888073de3300: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff888073de3380: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                                       ^
+ ffff888073de3400: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888073de3480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
