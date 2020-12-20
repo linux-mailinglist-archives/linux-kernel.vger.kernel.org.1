@@ -2,92 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC1AB2DF55C
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 13:16:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C460C2DF56A
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 13:46:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727511AbgLTMQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 07:16:04 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:49582 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727420AbgLTMQC (ORCPT
+        id S1727482AbgLTMlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 07:41:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726635AbgLTMlT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 07:16:02 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1608466548; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=ucBVWkTy0hmL1N8oXUoYIXrS3gtZs4sukW42yuHiy7w=;
- b=Bnj6ZsLfMqYn8eHrU6NFZmzDXdr+h5b2Rvm1/oPUpHZFzrNzhyuvajnZxnVK1f/Vyt8+pa9I
- XI2+M17D44Z+8TY9p0Vtv5C7CxCCFvG5IDg4Fu/sWuriXU5wj7Q5r3SxJIQFv+DYv+GUvVc3
- 0ebaz3llfgcINOU0LvUW4MBpZIY=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5fdf4052bfd08afb0de46192 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 20 Dec 2020 12:15:14
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9BB59C43463; Sun, 20 Dec 2020 12:15:13 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 217AFC433CA;
-        Sun, 20 Dec 2020 12:15:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 217AFC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        Sun, 20 Dec 2020 07:41:19 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BECDC0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 04:40:03 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id z12so4627014pjn.1
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 04:40:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jtxiRMfkRL1YRiP7RlXXAREOdwgbveWdB9KWOtaNwU4=;
+        b=RqpWxpaTDaliHG3jV+Hzf3asb5bZ1FMSpbLtNNFwHSDEkmuBQO4yU7nV7ajtqaeevu
+         BJ0qaGsaxDTGsA0AtVSANKYJ15N1HMG/fsN3Su4q8DBjMvaEn1VNkwUpi2fdmLMChHHL
+         UW+4X/tziA2JSgPYKmuVYgVF+0gGEM+nptNEF88Il8xdhsCLoXMwjYeyMwnoPSXmRTp8
+         wZyhjVdlbtyUJL3Z77+OmXUjyTUeQg6A+f+IDPllNgH6fmAoZi+tocaJJoLM9Y3G67+l
+         /QCmc3BpTWLueqmKnO9lYIbrErvNdCZY7WJKyV8KHdhrHm0zlRYVgAEP5Tmp2cFzkn2s
+         GGwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jtxiRMfkRL1YRiP7RlXXAREOdwgbveWdB9KWOtaNwU4=;
+        b=mBJBC5FN7bCIO3rLGFskTnJUoSszNWL7Nx8YrDqQUyqgcuhkPASZmhc63ke/0NNa6L
+         bkTmGalM5UOJjY+I9grHCB6vQmRs1idNTDwaTmm/nJ27LtQVxjETLtJsEojrX9mG5Asf
+         54VLsxMb5WjS4wVGjNTrNyuUTlHnv/RJpNG8qCj16n2E5jAGrFFmPK97v/AIACc0f7Bq
+         CIj7ZGQHa+PKdVnLkscvuMT/8KvW2+eaC3HCJTrbRNu+x+n3TMwHTpmybyoNbd33uUDt
+         pBct95YxoYXEyrT8uOHFcBM52DFD2NPgbrbl7BdbwSrKNC4zoHAYz2X6eQuJeu8hMn7m
+         6hDw==
+X-Gm-Message-State: AOAM532f6muq2If5B1ecWkQ6YKS7201qroOaMNqXlidVwj7rxhF5uoFJ
+        voVw62Oq5mXzTf49pKisRKY3Ow==
+X-Google-Smtp-Source: ABdhPJyVwAzyLybxUH37C7/5e2VQOzyFvgGDV7+GpK0DQa07WEAiMo45Ff9QoKqRzlPH0cK1E3t9cA==
+X-Received: by 2002:a17:90b:203:: with SMTP id fy3mr13281579pjb.231.1608468002812;
+        Sun, 20 Dec 2020 04:40:02 -0800 (PST)
+Received: from localhost ([61.120.150.72])
+        by smtp.gmail.com with ESMTPSA id f64sm14421047pfb.146.2020.12.20.04.40.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Dec 2020 04:40:02 -0800 (PST)
+From:   John Wang <wangzhiqiang.bj@bytedance.com>
+To:     xuxiaohan@bytedance.com, yulei.sh@bytedance.com, joel@jms.id.au
+Cc:     Samuel Mendoza-Jonas <sam@mendozajonas.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Gavin Shan <gwshan@linux.vnet.ibm.com>,
+        netdev@vger.kernel.org (open list:NETWORKING [GENERAL]),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] net/ncsi: Use real net-device for response handler
+Date:   Sun, 20 Dec 2020 20:39:57 +0800
+Message-Id: <20201220123957.1694-1-wangzhiqiang.bj@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [-next] mt76: mt7915: fix MESH ifdef block
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20201218173202.23159-1-rdunlap@infradead.org>
-References: <20201218173202.23159-1-rdunlap@infradead.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>, linux-wireless@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20201220121513.9BB59C43463@smtp.codeaurora.org>
-Date:   Sun, 20 Dec 2020 12:15:13 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Randy Dunlap <rdunlap@infradead.org> wrote:
+When aggregating ncsi interfaces and dedicated interfaces to bond
+interfaces, the ncsi response handler will use the wrong net device to
+find ncsi_dev, so that the ncsi interface will not work properly.
+Here, we use the net device registered to packet_type to fix it.
 
-> Fix a build error when CONFIG_MAC80211_MESH is not enabled:
-> 
-> ../drivers/net/wireless/mediatek/mt76/mt7915/init.c:47:2: error: expected expression before '}' token
->   }, {
->   ^
-> 
-> Fixes: af901eb4ab80 ("mt76: mt7915: get rid of dbdc debugfs knob")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Shayne Chen <shayne.chen@mediatek.com>
-> Cc: Ryder Lee <ryder.lee@mediatek.com>
-> Cc: Lorenzo Bianconi <lorenzo@kernel.org>
-> Cc: Felix Fietkau <nbd@nbd.name>
-> Cc: linux-wireless@vger.kernel.org
-> Cc: Kalle Valo <kvalo@codeaurora.org>
+Fixes: 138635cc27c9 ("net/ncsi: NCSI response packet handler")
+Signed-off-by: John Wang <wangzhiqiang.bj@bytedance.com>
+---
+ net/ncsi/ncsi-rsp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Patch applied to wireless-drivers.git, thanks.
-
-0bd157fa2aaa mt76: mt7915: fix MESH ifdef block
-
+diff --git a/net/ncsi/ncsi-rsp.c b/net/ncsi/ncsi-rsp.c
+index a94bb59793f0..60ae32682904 100644
+--- a/net/ncsi/ncsi-rsp.c
++++ b/net/ncsi/ncsi-rsp.c
+@@ -1120,7 +1120,7 @@ int ncsi_rcv_rsp(struct sk_buff *skb, struct net_device *dev,
+ 	int payload, i, ret;
+ 
+ 	/* Find the NCSI device */
+-	nd = ncsi_find_dev(dev);
++	nd = ncsi_find_dev(pt->dev);
+ 	ndp = nd ? TO_NCSI_DEV_PRIV(nd) : NULL;
+ 	if (!ndp)
+ 		return -ENODEV;
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20201218173202.23159-1-rdunlap@infradead.org/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.25.1
 
