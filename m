@@ -2,194 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A650E2DF37F
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 05:00:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6550E2DF382
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 05:08:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727072AbgLTD7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 22:59:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36536 "EHLO
+        id S1727052AbgLTEIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 23:08:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726217AbgLTD7s (ORCPT
+        with ESMTP id S1726217AbgLTEIE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 22:59:48 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22A86C0613CF
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 19:59:02 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id b73so6357159edf.13
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 19:59:02 -0800 (PST)
+        Sat, 19 Dec 2020 23:08:04 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52363C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 20:07:24 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id i24so6405889edj.8
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 20:07:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=CpVG5+20fZuuKagS75ftPUVVQHYk7FTwghfVPwE69Rk=;
-        b=iqLCHTe8dsoR4Br8dJPTdUMwqhQuGfeQ00KTAae6kgLeU+QQ+ftEZxTWx6shQ+76wQ
-         RcssaUjRZdn7yUFfeD0BmJ8f2hIK7fKYl8mE3I8THpspJbonFMxTUSC19jLV3rZgy4VV
-         ia0sNASgslmNoOaKvBz6FMtan5/LemVhhjBi5UCBDEBv+3drhaOd1KDTmO0aBZvUCY55
-         duQXZPn99pxAPHU020eqJVeltb5/6B5a4aaWBytMKSdJvoWGxdF70yC7xzzm5e1nTpXy
-         3ZaDcM4Xhguop+OWzeiPBBvjlrOnwjcdGYW1jqFkQcSAsWHgtYZjiiXKCeKMVBV9friJ
-         +IDg==
+         :cc;
+        bh=wOf8+A262GmOiEINk0rmRSARiAG9AAz8GlRftMSrMUg=;
+        b=tVIzn00AiVt6Z+BacumkSdrwTo41xF8yNb7ZGnIZO3w9rJE83Qqz2LnkKGAa528x/Z
+         dgszo95Fb6joP2TWI8VUxnWtJqJSv92TGc4vmg0ebzD2gs+OuxAjPCyp7drmqcNM7d1m
+         ElfTE3vxYNDNeTWZDC3na+/iJHRLkP56afQ6SDZaoVXGDLUcok8pLZkhp7MP4ofmNyQH
+         cp9jiILsSeuiDaFHIOiKNOVW8ut61NFRh7gLq+wqab88zn3ECbBM9zswKBzm1VVR+kQe
+         9zGUn4b5wdLdsLOkpVgZNQ7T9mXSWdWoUKQsjZlxUQrZJ3p30ZcCv4Jk2pOSStzqGlyG
+         cKdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=CpVG5+20fZuuKagS75ftPUVVQHYk7FTwghfVPwE69Rk=;
-        b=c1Qu4shBXlv6Mk3qCqPVQ5PQlIBh27EeayGXdSGfgncn1V4m7R6MVnplMR2rmSsstM
-         bD73aIZzLW+beFkO5XpAEK7ah07646HH5q5F9MdlFLbBfXiMo3V5XvcV0aQdxKB6vsRx
-         EkRey0cxCFJbrcikqlutDVsAQzSOKoq7RvErUYmQuKNZ9/QNbcRkmdlXkJ0v9E9a3n8y
-         H6pvo54jlCtzny4tMot0h4xcpehfQsIzgDyCL1GWKWQFMHmbAEjN5PZ6OD/zEk30v62B
-         aH4JplU2+47uT55XAybcWq45Adj0mrvIZbVmwdUaNdS8zpW9cQFfGbWtfFYF9txzSLmB
-         23Pw==
-X-Gm-Message-State: AOAM530HCipmaLxgNdj6CKQVhClgrHLBI+ynUL1ZZC+YTVewnFDUixuR
-        7cweIrrMd0KNzw4qnNW0DzwhMmp6kIbavyRNVKSFHQ==
-X-Google-Smtp-Source: ABdhPJxfdM0tqyOlmoBkQHv6Y1wnQXSVD+wdrjhwZvEh0WHqxNtjxIW4qrByHs5f/U4gq9K394wFaqeR1zar6yaqOms=
-X-Received: by 2002:aa7:d75a:: with SMTP id a26mr10759019eds.230.1608436740594;
- Sat, 19 Dec 2020 19:59:00 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=wOf8+A262GmOiEINk0rmRSARiAG9AAz8GlRftMSrMUg=;
+        b=ta3UlViEBLuVTzr3ZBOUiXPKr33re6BuALpf96JNKLBVnOTZAn1MrUlfMp6qQKg43S
+         4A66UTIIjgHgL0s/2xk3hS4PpGqVzQY1Ayahj7tu7UVGAN8wZXD7RMghac65ReEqEXtX
+         gnYlsH3EVgwxykblW9gLwysHVq+CDfPunhswN7DNgsbu4GkEi5sdvhBd0+R/D4tAZJ/7
+         6LRSrCz1xD6vNtSp31KrR2EK8QoXA5oO8jSFCevLSYQBHRqUWxX20H9DelzM2cbU1V1Q
+         6hn6/O4uJYDWa/7nIHPeidoItVfNwEesRADS7+D6ChjFYDuEmULYDXdWiAA6yxrxhSRE
+         r2Xg==
+X-Gm-Message-State: AOAM532b0vVJu72ARVYfwd86HZJDzfjCUFZKvqFU2qiMlIOE3uXMA6UX
+        78jAfXNyTPN5O0qCDJKr8eJsHgHwj4zfV1qHfoNtRg==
+X-Google-Smtp-Source: ABdhPJyFCkCTDMEKhRzBCZSvwPxUNNzCRb89KLm4awpKTLrq05HwzS1MDuXkyvhQB1RJW2ONi4lcVB3kzVan50pORdw=
+X-Received: by 2002:aa7:cdc3:: with SMTP id h3mr10998852edw.52.1608437242889;
+ Sat, 19 Dec 2020 20:07:22 -0800 (PST)
 MIME-Version: 1.0
-References: <20201219125341.384025953@linuxfoundation.org>
-In-Reply-To: <20201219125341.384025953@linuxfoundation.org>
+References: <20201211102437.3929348-1-anders.roxell@linaro.org> <20201214152447.GC9149@alpha.franken.de>
+In-Reply-To: <20201214152447.GC9149@alpha.franken.de>
 From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sun, 20 Dec 2020 09:28:49 +0530
-Message-ID: <CA+G9fYsHWVvU9XG2vWhuUaKt2wgsrCP9=ohHv=DOnok4NmiDfA@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/34] 5.4.85-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
+Date:   Sun, 20 Dec 2020 09:37:11 +0530
+Message-ID: <CA+G9fYuyq8da6oF-6KaVHmA2TpT7fOG5F4ZDbK=MpzYMg_ufAw@mail.gmail.com>
+Subject: Re: [PATCH v2] mips: lib: uncached: fix non-standard usage of
+ variable 'sp'
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Anders Roxell <anders.roxell@linaro.org>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-mips@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        lkft-triage@lists.linaro.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 19 Dec 2020 at 18:33, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Mon, 14 Dec 2020 at 21:05, Thomas Bogendoerfer
+<tsbogend@alpha.franken.de> wrote:
 >
-> This is the start of the stable review cycle for the 5.4.85 release.
-> There are 34 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> On Fri, Dec 11, 2020 at 11:24:37AM +0100, Anders Roxell wrote:
+> > When building mips tinyconfig with clang the following warning show up:
+> >
+> > arch/mips/lib/uncached.c:45:6: warning: variable 'sp' is uninitialized when used here [-Wuninitialized]
+> >         if (sp >= (long)CKSEG0 && sp < (long)CKSEG2)
+> >             ^~
+> > arch/mips/lib/uncached.c:40:18: note: initialize the variable 'sp' to silence this warning
+> >         register long sp __asm__("$sp");
+> >                         ^
+> >                          = 0
+> > 1 warning generated.
+
+<trimp>
+
+> > [1] https://docs.w3cub.com/gcc~10/local-register-variables
+> > Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+> > ---
+> >  arch/mips/lib/uncached.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
 >
-> Responses should be made by Mon, 21 Dec 2020 12:53:29 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.85-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+> applied to mips-next.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+We have noticed these build failures on stable tree also.
+May I request you to initiate the process to get into the stable tree
+and for the following branches.
+ - linux-5.10.y
+ - linux-5.9.y
+ - linux-5.4.y
+ - linux-4.19.y
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.4.85-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.4.y
-git commit: bcf35e05a52636bd982a253c1ed928d3b128a332
-git describe: v5.4.84-35-gbcf35e05a526
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
-y/build/v5.4.83-72-gbcf35e05a526
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
-y/build/v5.4.84-35-gbcf35e05a526
-
-No regressions (compared to build v5.4.83-37-gfbaf54ae613a)
-
-No fixes (compared to build v5.4.83-37-gfbaf54ae613a)
-
-Ran 45558 total tests in the following environments and test suites.
-
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- parisc
-- powerpc
-- qemu_arm
-- qemu_arm64
-- qemu-arm64-clang
-- qemu_arm64-compat
-- qemu-arm64-kasan
-- qemu-arm-clang
-- qemu_i386
-- qemu_x86_64
-- qemu-x86_64-clang
-- qemu_x86_64-compat
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x15
-- x86
-- x86-kasan
-
-Test Suites
------------
-* build
-* fwts
-* install-android-platform-tools-r2600
-* kselftest
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-none
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fs-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* perf
-* rcutorture
-* v4l2-compliance
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+- Naresh
