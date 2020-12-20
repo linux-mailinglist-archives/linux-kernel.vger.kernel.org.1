@@ -2,80 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 638A72DF58C
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 14:31:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61F2C2DF591
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 14:42:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727561AbgLTNbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 08:31:13 -0500
-Received: from out28-220.mail.aliyun.com ([115.124.28.220]:38377 "EHLO
-        out28-220.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726886AbgLTNbM (ORCPT
+        id S1727533AbgLTNmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 08:42:02 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:8693 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726938AbgLTNmB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 08:31:12 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.0916407|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.0169022-0.00133033-0.981767;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047194;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=7;RT=7;SR=0;TI=SMTPD_---.J9MmYQd_1608471027;
-Received: from 192.168.10.152(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.J9MmYQd_1608471027)
-          by smtp.aliyun-inc.com(10.147.42.241);
-          Sun, 20 Dec 2020 21:30:28 +0800
-Subject: Re: [PATCH] hwrng: ingenic - Fix a resource leak in an error handling
- path
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        mpm@selenic.com, herbert@gondor.apana.org.au, aric.pzqi@ingenic.com
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <20201219075207.176279-1-christophe.jaillet@wanadoo.fr>
-From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Message-ID: <c5bb8f9a-c4a7-7ecb-eccb-a31abc7316a2@wanyeetech.com>
-Date:   Sun, 20 Dec 2020 21:30:27 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Sun, 20 Dec 2020 08:42:01 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fdf54800000>; Sun, 20 Dec 2020 05:41:20 -0800
+Received: from [10.26.72.208] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 20 Dec
+ 2020 13:41:18 +0000
+Subject: Re: [PATCH 5.10 00/16] 5.10.2-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <stable@vger.kernel.org>, linux-tegra <linux-tegra@vger.kernel.org>
+References: <20201219125339.066340030@linuxfoundation.org>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <cf66826d-0de4-da22-da2b-809856d3cfb2@nvidia.com>
+Date:   Sun, 20 Dec 2020 13:41:15 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201219075207.176279-1-christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201219125339.066340030@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1608471680; bh=Rzq0MSxiBeaq0bD5VHmLUntdsrEBy7AI/RlrYnWe4QA=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=ccPplzCdDaNvsGNxU21Sdn6ONCxIkPw14U4aMYBlV1S2YoMmKdu5GuNpYDOUtK1q4
+         9QPf+t0aOAMv1Cjv3o4HGrQ9Y/U24v6ripjMZxBUdYKunubf9mH3R65ehllMzaw59h
+         IR4ZiySjS+BwJO6mC75UOoRZbA+kgDPvCfJMtTRPBhdLRhePKnP+vJZA/agXTL5uAs
+         R0Wh0Tj+CNIWH/95fllZcO1cpLOEcd5JHMMsN9vlP/EQpH35nhVytY42rH3rl0azoj
+         ltqzLmOKm/sEc5mQQWfHU1z/fkXvKpKaEx4CuOsLgjoWujWcNcHPIdJsgzpiIOiLbS
+         SHecb9jpCFyBg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
 
-On 2020/12/19 下午3:52, Christophe JAILLET wrote:
-> In case of error, we should call 'clk_disable_unprepare()' to undo a
-> previous 'clk_prepare_enable()' call, as already done in the remove
-> function.
->
-> Fixes: 406346d22278 ("hwrng: ingenic - Add hardware TRNG for Ingenic X1830")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->   drivers/char/hw_random/ingenic-trng.c | 6 +++++-
->   1 file changed, 5 insertions(+), 1 deletion(-)
+On 19/12/2020 12:57, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.2 release.
+> There are 16 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Mon, 21 Dec 2020 12:53:29 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.2-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
 
-Thanks for fixing it, and apologize for my carelessness.
+Test results for stable-v5.10:
+    12 builds:	12 pass, 0 fail
+    26 boots:	26 pass, 0 fail
+    64 tests:	63 pass, 1 fail
 
-Tested-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+Linux version:	5.10.2-rc1-gc96cfd687a3f
+Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
+                tegra194-p2972-0000, tegra20-ventana,
+                tegra210-p2371-2180, tegra210-p3450-0000,
+                tegra30-cardhu-a04
+
+Test failures:	tegra194-p2972-0000: boot.py
 
 
-> diff --git a/drivers/char/hw_random/ingenic-trng.c b/drivers/char/hw_random/ingenic-trng.c
-> index 954a8411d67d..0eb80f786f4d 100644
-> --- a/drivers/char/hw_random/ingenic-trng.c
-> +++ b/drivers/char/hw_random/ingenic-trng.c
-> @@ -113,13 +113,17 @@ static int ingenic_trng_probe(struct platform_device *pdev)
->   	ret = hwrng_register(&trng->rng);
->   	if (ret) {
->   		dev_err(&pdev->dev, "Failed to register hwrng\n");
-> -		return ret;
-> +		goto err_unprepare_clk;
->   	}
->   
->   	platform_set_drvdata(pdev, trng);
->   
->   	dev_info(&pdev->dev, "Ingenic DTRNG driver registered\n");
->   	return 0;
-> +
-> +err_unprepare_clk:
-> +	clk_disable_unprepare(trng->clk);
-> +	return ret;
->   }
->   
->   static int ingenic_trng_remove(struct platform_device *pdev)
+Same warning failure as before. The fix for this is now in the mainline
+if you would like to pick it up ...
+
+commit c9f64d1fc101c64ea2be1b2e562b4395127befc9
+Author: Thierry Reding <treding@nvidia.com>
+Date:   Tue Nov 10 08:37:57 2020 +0100
+
+    net: ipconfig: Avoid spurious blank lines in boot log
+
+
+Otherwise ...
+
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
+
+Cheers
+Jon
+
+-- 
+nvpublic
