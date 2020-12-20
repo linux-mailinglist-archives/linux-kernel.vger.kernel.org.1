@@ -2,102 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 336BC2DF4EE
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 10:51:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2BE62DF4EB
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 10:51:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727427AbgLTJvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 04:51:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726377AbgLTJvI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 04:51:08 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FCBDC0617B0;
-        Sun, 20 Dec 2020 01:50:28 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id d13so7629968wrc.13;
-        Sun, 20 Dec 2020 01:50:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=IWuhldxwHU0GrGepZfTUu2uv7Uiis+sD+/VmSDV/jZc=;
-        b=flS0PQkk6kf4/B/P1RwX6xggHhh/J/p5x4O6LkGu5G92KwODjXHQvdpR2T9stjD2kP
-         cKXHrDSUHwrQsO8m+LrZbkwkmo96y6jZ2/hSB+qsObt3e3iHUkriQOy6elIs2sjTnwJi
-         jlqDDRlD84oo8LNkYCMWAw3qkRhtXrO+n7KH6xhKNVnuBctquKfJksNiTMGOMyLWmBeL
-         zrmb35BrKe02BRofDGSYgib7r2klnsVBbdifM7brRYBsuE+414Qfz2woJtItFB4lhr7P
-         g0aKO8mPguC+mc3M4xuW8KoOux/d/bzzBv+tphmi4w3oUh214/q0KdS9oCTCeZr5+QnK
-         +vGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=IWuhldxwHU0GrGepZfTUu2uv7Uiis+sD+/VmSDV/jZc=;
-        b=YYtRoVOk7SR+rsFVscrFs7FS8sOog5yIPZkwtUC7PvmlfcPRVGwNK6jB+6ZzqibNmZ
-         yJ7YWT97ZSoWOlGoSFMkk0xFWIdsJZwk+S0YZvrK9f5ned6ysSBOg1HOtRxA8wxXpmJ/
-         lasKpUHItGmpV1WpTwz9OLAh4Yy0Pj1quP2rrdvOLY8WBE0dxVBssgGMZlQJJN7k/2z0
-         xTXRR6hZ4FpDxMO+0qAPT1QNXFx/5R0snX43Mgme+jrNNDjYNr1q9FW7NDwMj9eFhha1
-         gz6kmycNSkneWzPWAXAEeV1r83ewzLW3/KXchSFL7YV7aOBhvWqRnGosLj+UjNxSSCPE
-         8zaQ==
-X-Gm-Message-State: AOAM532QBOBieoNy5aRi/OV3FXp7yQHtouSin/9+UdsiL2JmXXze16JR
-        G9VeV2+me1qaOkHRf5O5L+Q=
-X-Google-Smtp-Source: ABdhPJwLzKdnNDNZnOI2lSWTMWsv0L9VyT6d7TevaODXX1DuA8FAG6f8Z0qqGNWhk17jIfMTpK9TnA==
-X-Received: by 2002:adf:d0c6:: with SMTP id z6mr12994986wrh.10.1608457826835;
-        Sun, 20 Dec 2020 01:50:26 -0800 (PST)
-Received: from felia.fritz.box ([2001:16b8:2de5:4000:d8f2:de32:a0d6:1baa])
-        by smtp.gmail.com with ESMTPSA id y68sm20402475wmc.0.2020.12.20.01.50.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Dec 2020 01:50:26 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+        id S1727319AbgLTJu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 04:50:58 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34202 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726377AbgLTJu5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Dec 2020 04:50:57 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3483CAC7F;
+        Sun, 20 Dec 2020 09:50:16 +0000 (UTC)
+Subject: Re: [RFC PATCH] badblocks: Improvement badblocks_set() for handling
+ multiple ranges
 To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Gabriele Paoloni <gabriele.paoloni@intel.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: mark dca driver orphan
-Date:   Sun, 20 Dec 2020 10:50:10 +0100
-Message-Id: <20201220095010.20227-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        linux-block@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-raid <linux-raid@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        NeilBrown <neilb@suse.de>
+References: <20201203171535.67715-1-colyli@suse.de>
+ <CAPcyv4j6n-ZQMS3b3JoRGcr6kEFdHxtLqimyouMP93KXLZFamA@mail.gmail.com>
+From:   Coly Li <colyli@suse.de>
+Message-ID: <e58ff56f-4995-b2f6-fb0d-7b1ef8d8deb8@suse.de>
+Date:   Sun, 20 Dec 2020 17:50:10 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
+MIME-Version: 1.0
+In-Reply-To: <CAPcyv4j6n-ZQMS3b3JoRGcr6kEFdHxtLqimyouMP93KXLZFamA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The dca driver did not have any maintainer section since its inclusion.
-As discussed with Dan Williams, there is no maintainer for this driver
-since the initial developers moved away.
+On 12/18/20 11:25 AM, Dan Williams wrote:
+> [ add Neil, original gooodguy who wrote badblocks ]
+> 
+> 
+> On Thu, Dec 3, 2020 at 9:16 AM Coly Li <colyli@suse.de> wrote:
+>>
+>> Recently I received a bug report that current badblocks code does not
+>> properly handle multiple ranges. For example,
+>>         badblocks_set(bb, 32, 1, true);
+>>         badblocks_set(bb, 34, 1, true);
+>>         badblocks_set(bb, 36, 1, true);
+>>         badblocks_set(bb, 32, 12, true);
+>> Then indeed badblocks_show() reports,
+>>         32 3
+>>         36 1
+>> But the expected bad blocks table should be,
+>>         32 12
+>> Obviously only the first 2 ranges are merged and badblocks_set() returns
+>> and ignores the rest setting range.
+>>
+>> This behavior is improper, if the caller of badblocks_set() wants to set
+>> a range of blocks into bad blocks table, all of the blocks in the range
+>> should be handled even the previous part encountering failure.
+>>
+>> The desired way to set bad blocks range by badblocks_set() is,
+>> - Set as many as blocks in the setting range into bad blocks table.
+>> - Merge the bad blocks ranges and occupy as less as slots in the bad
+>>   blocks table.
+>> - Fast.
+>>
+>> Indeed the above proposal is complicated, especially with the following
+>> restrictions,
+>> - The setting bad blocks range can be ackknowledged or not acknowledged.
 
-Introduce a new DIRECT CACHE ACCESS (DCA) DRIVER section and mark the
-driver orphan.
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on next-20201218 and current master
+Hi Dan,
 
-Dan, please pick this trivial clarification patch.
+> 
+> s/ackknowledged/acknowledged/
+> 
+> I'd run checkpatch --codespell for future versions...
 
- MAINTAINERS | 5 +++++
- 1 file changed, 5 insertions(+)
+Thanks for the hint. I will do it next time.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index f5eafee83bc6..c8cc5e1a759f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5223,6 +5223,11 @@ L:	linux-i2c@vger.kernel.org
- S:	Maintained
- F:	drivers/i2c/busses/i2c-diolan-u2c.c
- 
-+DIRECT CACHE ACCESS (DCA) DRIVER
-+S:	Orphan
-+F:	drivers/dca/
-+F:	include/linux/dca.h
-+
- DIRECTORY NOTIFICATION (DNOTIFY)
- M:	Jan Kara <jack@suse.cz>
- R:	Amir Goldstein <amir73il@gmail.com>
--- 
-2.17.1
+
+> 
+>> - The bad blocks table size is limited.
+>> - Memory allocation should be avoided.
+>>
+>> This patch is an initial effort to improve badblocks_set() for setting
+>> bad blocks range when it covers multiple already set bad ranges in the
+>> bad blocks table, and to do it as fast as possible.
+>>
+>> The basic idea of the patch is to categorize all possible bad blocks
+>> range setting combinationsinto to much less simplified and more less
+>> special conditions. Inside badblocks_set() there is an implicit loop
+>> composed by jumping between labels 're_insert' and 'update_sectors'. No
+>> matter how large the setting bad blocks range is, in every loop just a
+>> minimized range from the head is handled by a pre-defined behavior from
+>> one of the categorized conditions. The logic is simple and code flow is
+>> manageable.
+>>
+>> This patch is unfinished yet, it only improves badblocks_set() and not
+>> touch badblocks_clear() and badblocks_show() yet. I post it earlier
+>> because this patch will be large (more then 1000 lines of change), I
+>> want more people to give me comments earlier before I go too far away.
+>>
+> 
+> I wonder if this isn't indication that the base data structure should
+> be replaced... but I have not had a chance to devote deeper thought to
+> this.
+> 
+
+No existing data structure changed. Even the in-memory badblocks table I
+don't change it at all. I just fix the report issue by handle more
+corner cases, on-disk and in-memory stuffs are untouched and consistent.
+
+
+Coly Li
+
+> 
+>> The code logic is tested as user space programmer, this patch passes
+>> compiling but not tested in kernel mode yet. Right now it is only for
+>> RFC purpose. I will post tested patch in further versions.
+>>
+>> Thank you in advance for any review or comments on this patch.
+>>
+
+[snipped]
 
