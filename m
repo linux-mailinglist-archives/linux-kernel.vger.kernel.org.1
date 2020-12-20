@@ -2,166 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6192DF441
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 07:51:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E59F2DF448
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 08:14:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727309AbgLTGv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 01:51:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727120AbgLTGv2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 01:51:28 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C096C0613CF;
-        Sat, 19 Dec 2020 22:50:48 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id v2so4521305pfm.9;
-        Sat, 19 Dec 2020 22:50:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GxxzTBDSRDHyuhWRw4W2qqZlaU5pdzFe8fEwTaUs9WE=;
-        b=gzqoY1gK/EQtK1qgxt9rkz7xbvNxdeH/QWq71v7oqV2qklg/yCCdyGLEwdsYDaGMZt
-         lsYsodqKyEWk2MMVKW1qf+SzlRRNgcFsgaNvvy1UJtdiR9IoKJQ2o7F5SlFLWKB63u6+
-         3EFpst5/1I2QNV+tuCO74oNJk+dDWRA/vD2gUAanvIIXYvJCm0xsLZwTrTHT71gPEp72
-         j3/qtQHKtB5ZIkIivBeWpKgmHoXcy1SI/weHLS+4WXUptBS+RdiFh8omC9FScHUVtnlg
-         e4hAvYyfq0Uv+jdgYAV4s2OzmlUkMabN6afVI5MuRQBLlAWMMSbSaz9V2Dw8+B2IlBCL
-         aH3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GxxzTBDSRDHyuhWRw4W2qqZlaU5pdzFe8fEwTaUs9WE=;
-        b=ATp0dvvg2UBBccwMzqtJ11L1f6sgN5/c9u4WhkdpyDwlAYSp92NU6wfhaI1KNYF88a
-         p5QbpLG2C7orwj6ts//zYohP5vY6yA5VtmgJxgQWX6TpuMxzHlJ2mQUCYtS1KxiTzQRV
-         gXULmhCrZotjxJpd9UTKffX54g7HNgXu+rbna4UykfzYZYn1BZGeLkF2TKlO5MOuMdZ1
-         zifCi4OhwSq7vyBEsEW7Ij944zRiz6249e+qH0svTfnaiNIut/xTtxbA98/oBVeYTEbN
-         g+TMxgq68sD3YWlF5uswBtEImcHh+6J0afw4ccRld7w2nxDGM9VbUzFVvFLalP4tlDP4
-         i0yQ==
-X-Gm-Message-State: AOAM530jXJkIuRB7SilCYinjfouBl2aRvea/NDNeKOMFT1vG791a+vc/
-        PPmys8DSEpCIQJr27yvtxvg=
-X-Google-Smtp-Source: ABdhPJxMe09hsE9jwnlOmDLbZhHlSE4vk3ID1ryYwiMBtx05aKRzON/oHJrTPtebB0lZsHsufi9b1g==
-X-Received: by 2002:a62:ea17:0:b029:1ad:4788:7815 with SMTP id t23-20020a62ea170000b02901ad47887815mr3057594pfh.1.1608447047524;
-        Sat, 19 Dec 2020 22:50:47 -0800 (PST)
-Received: from noah.hsd1.ca.comcast.net ([2601:642:c300:6ca0:1800:e2b9:9586:956b])
-        by smtp.googlemail.com with ESMTPSA id p15sm12579758pgl.19.2020.12.19.22.50.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Dec 2020 22:50:47 -0800 (PST)
-From:   noah <goldstein.w.n@gmail.com>
-Cc:     goldstein.w.n@gmail.com, noah <goldstein.n@wustl.edu>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        id S1727211AbgLTHOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 02:14:36 -0500
+Received: from spam.zju.edu.cn ([61.164.42.155]:36276 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726996AbgLTHOf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Dec 2020 02:14:35 -0500
+X-Greylist: delayed 459 seconds by postgrey-1.27 at vger.kernel.org; Sun, 20 Dec 2020 02:14:31 EST
+Received: from localhost.localdomain (unknown [10.192.85.18])
+        by mail-app4 (Coremail) with SMTP id cS_KCgAHz3DF995fUqhSAA--.51071S4;
+        Sun, 20 Dec 2020 15:05:47 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     "David S. Miller" <davem@davemloft.net>, linux-ide@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] fs: io_uring.c: Add skip option for __io_sqe_files_update
-Date:   Sun, 20 Dec 2020 01:50:25 -0500
-Message-Id: <20201220065025.116516-1-goldstein.w.n@gmail.com>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Subject: [PATCH] ide: pci: Fix memleak in ide_pci_init_two
+Date:   Sun, 20 Dec 2020 15:05:40 +0800
+Message-Id: <20201220070541.7515-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cS_KCgAHz3DF995fUqhSAA--.51071S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrKFyUCry5tF48GF1fJrWrZrb_yoWDAwcEk3
+        93Zrs8XrW8uFyUJr47Cr17ZryvkFZ0vrWv9wsFyr4fWasxZa4Durn7AF43CF4UWa1UZFyU
+        Ar4DXr4rZryjyjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2kFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
+        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
+        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv
+        6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
+        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48J
+        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
+        IF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgUMBlZdtRf+rwAFsw
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: noah <goldstein.n@wustl.edu>
+When do_ide_setup_pci_device() fails, host allocated
+by ide_host_alloc() may not have been freed, which
+leads to memleak.
 
-This patch makes it so that specify a file descriptor value of -2 will
-skip updating the corresponding fixed file index.
-
-This will allow for users to reduce the number of syscalls necessary
-to update a sparse file range when using the fixed file option.
-
-Signed-off-by: noah <goldstein.w.n@gmail.com>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 ---
- fs/io_uring.c | 72 ++++++++++++++++++++++++++-------------------------
- 1 file changed, 37 insertions(+), 35 deletions(-)
+ drivers/ide/setup-pci.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 6f9392c35eef..43ab2b7a87d4 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -7876,42 +7876,44 @@ static int __io_sqe_files_update(struct io_ring_ctx *ctx,
- 			err = -EFAULT;
- 			break;
- 		}
--		i = array_index_nospec(up->offset, ctx->nr_user_files);
--		table = &ctx->file_data->table[i >> IORING_FILE_TABLE_SHIFT];
--		index = i & IORING_FILE_TABLE_MASK;
--		if (table->files[index]) {
--			file = table->files[index];
--			err = io_queue_file_removal(data, file);
--			if (err)
--				break;
--			table->files[index] = NULL;
--			needs_switch = true;
--		}
--		if (fd != -1) {
--			file = fget(fd);
--			if (!file) {
--				err = -EBADF;
--				break;
--			}
--			/*
--			 * Don't allow io_uring instances to be registered. If
--			 * UNIX isn't enabled, then this causes a reference
--			 * cycle and this instance can never get freed. If UNIX
--			 * is enabled we'll handle it just fine, but there's
--			 * still no point in allowing a ring fd as it doesn't
--			 * support regular read/write anyway.
--			 */
--			if (file->f_op == &io_uring_fops) {
--				fput(file);
--				err = -EBADF;
--				break;
--			}
--			table->files[index] = file;
--			err = io_sqe_file_register(ctx, file, i);
--			if (err) {
-+		if (fd != -2) {
-+			i = array_index_nospec(up->offset, ctx->nr_user_files);
-+			table = &ctx->file_data->table[i >> IORING_FILE_TABLE_SHIFT];
-+			index = i & IORING_FILE_TABLE_MASK;
-+			if (table->files[index]) {
-+				file = table->files[index];
-+				err = io_queue_file_removal(data, file);
-+				if (err)
-+					break;
- 				table->files[index] = NULL;
--				fput(file);
--				break;
-+				needs_switch = true;
-+			}
-+			if (fd != -1) {
-+				file = fget(fd);
-+				if (!file) {
-+					err = -EBADF;
-+					break;
-+				}
-+				/*
-+				 * Don't allow io_uring instances to be registered. If
-+				 * UNIX isn't enabled, then this causes a reference
-+				 * cycle and this instance can never get freed. If UNIX
-+				 * is enabled we'll handle it just fine, but there's
-+				 * still no point in allowing a ring fd as it doesn't
-+				 * support regular read/write anyway.
-+				 */
-+				if (file->f_op == &io_uring_fops) {
-+					fput(file);
-+					err = -EBADF;
-+					break;
-+				}
-+				table->files[index] = file;
-+				err = io_sqe_file_register(ctx, file, i);
-+				if (err) {
-+					table->files[index] = NULL;
-+					fput(file);
-+					break;
-+				}
- 			}
- 		}
- 		nr_args--;
+diff --git a/drivers/ide/setup-pci.c b/drivers/ide/setup-pci.c
+index fdc8e813170c..c7da5368fcd4 100644
+--- a/drivers/ide/setup-pci.c
++++ b/drivers/ide/setup-pci.c
+@@ -586,7 +586,7 @@ int ide_pci_init_two(struct pci_dev *dev1, struct pci_dev *dev2,
+ 		 * do_ide_setup_pci_device() on the first device!
+ 		 */
+ 		if (ret < 0)
+-			goto out_free_bars;
++			goto out_free_host;
+ 
+ 		/* fixup IRQ */
+ 		if (ide_pci_is_in_compatibility_mode(pdev[i])) {
+@@ -597,11 +597,11 @@ int ide_pci_init_two(struct pci_dev *dev1, struct pci_dev *dev2,
+ 	}
+ 
+ 	ret = ide_host_register(host, d, hws);
+-	if (ret)
+-		ide_host_free(host);
+-	else
++	if (!ret)
+ 		goto out;
+ 
++out_free_host:
++	ide_host_free(host);
+ out_free_bars:
+ 	i = n_ports / 2;
+ 	while (i--)
 -- 
-2.29.2
+2.17.1
 
