@@ -2,154 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98E912DF4F4
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 10:59:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 488D52DF4FC
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 11:20:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727319AbgLTJ7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 04:59:38 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:11222 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727109AbgLTJ7h (ORCPT
+        id S1727338AbgLTKPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 05:15:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25789 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726849AbgLTKPa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 04:59:37 -0500
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BK9X2R7167077;
-        Sun, 20 Dec 2020 04:58:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id; s=pp1;
- bh=jw/91xp8hHyOptgK34c31yu4XbTBXyVskWj4TFEXipU=;
- b=Ea82lCdBA7TqO4PiZWKF0dd2y6/RYsoxBEtmQCKHwdPqHJiN7lSZWZnOzxwMyh99OI/9
- NpYDU0qvS6dqkaXj+7eb4Bq5quFTJ7++d+36OLv++SlZWH4G/dgQ9ApeKNj/VJhZNATi
- mDq/Kpe84NmpDqXTw+7YbFB9tbL0BTDjcXOP1fHcbYy/bCfi71TZGJXX969k9tH7gptL
- zNiHESe0tC4wMvNwYmsDlHxa3eBb+qmQd/F/nsWNpbjzgFy9BmyfaFUfmi910Vh0s7sl
- dW9aiZcpJC7RUzhpwO4R57omX6kc4nVRStckn4ScT/sNPmW3guCYtOvx6GWBfScauCzg GQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35j419ga8y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 20 Dec 2020 04:58:37 -0500
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BK9Xl1S168258;
-        Sun, 20 Dec 2020 04:58:37 -0500
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35j419ga8p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 20 Dec 2020 04:58:37 -0500
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BK9r0cM031716;
-        Sun, 20 Dec 2020 09:58:35 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma02fra.de.ibm.com with ESMTP id 35hdgure96-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 20 Dec 2020 09:58:35 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BK9wVnL19792182
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 20 Dec 2020 09:58:32 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5686EAE04D;
-        Sun, 20 Dec 2020 09:58:32 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D58A4AE045;
-        Sun, 20 Dec 2020 09:58:31 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Sun, 20 Dec 2020 09:58:31 +0000 (GMT)
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH] epoll: fix compat syscall wire up of epoll_pwait2
-Date:   Sun, 20 Dec 2020 10:58:30 +0100
-Message-Id: <20201220095830.17843-1-hca@linux.ibm.com>
-X-Mailer: git-send-email 2.17.1
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-20_02:2020-12-19,2020-12-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxlogscore=661
- priorityscore=1501 malwarescore=0 bulkscore=0 impostorscore=0 mlxscore=0
- suspectscore=0 phishscore=0 adultscore=0 lowpriorityscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012200071
+        Sun, 20 Dec 2020 05:15:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608459243;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=L7WBlnc4uBH3yp60EsaVmDi0Gnm0WESlPJ7pAkexlYE=;
+        b=DRy611g2dWyYHGJ6E0rKQqgcsFC1pYd2V4n23wkCciITpt08V4+/SijjNNdwLqvLiB+ozu
+        mwo7rGasgm2Lo4YJA0SacV3BA0svf0GCiY7cZ3SwyMNuar+YqvGF7cwsYwwRZ39MO2NEEW
+        FuZ3TdC6mHUGcDy83zKzW5Rs0v7AA3M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-99-EkyDCo7HO9-EaJpq7SKZJg-1; Sun, 20 Dec 2020 05:14:01 -0500
+X-MC-Unique: EkyDCo7HO9-EaJpq7SKZJg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2519615720;
+        Sun, 20 Dec 2020 10:14:00 +0000 (UTC)
+Received: from [10.36.112.16] (ovpn-112-16.ams2.redhat.com [10.36.112.16])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A9D996294D;
+        Sun, 20 Dec 2020 10:13:58 +0000 (UTC)
+Subject: Re: [PATCH v1 4/4] s390/kvm: VSIE: correctly handle MVPG when in VSIE
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     borntraeger@de.ibm.com, frankja@linux.ibm.com, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org, stable@vger.kernel.org
+References: <20201218141811.310267-1-imbrenda@linux.ibm.com>
+ <20201218141811.310267-5-imbrenda@linux.ibm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <6836573a-a49d-9d9f-49e0-96b5aa479c52@redhat.com>
+Date:   Sun, 20 Dec 2020 11:13:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+MIME-Version: 1.0
+In-Reply-To: <20201218141811.310267-5-imbrenda@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit b0a0c2615f6f ("epoll: wire up syscall epoll_pwait2") wired up
-the 64 bit syscall instead of the compat variant in a couple of places.
+On 18.12.20 15:18, Claudio Imbrenda wrote:
+> Correctly handle the MVPG instruction when issued by a VSIE guest.
+> 
 
-Cc: Willem de Bruijn <willemb@google.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Fixes: b0a0c2615f6f ("epoll: wire up syscall epoll_pwait2")
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
----
- arch/arm64/include/asm/unistd32.h         | 2 +-
- arch/mips/kernel/syscalls/syscall_n32.tbl | 2 +-
- arch/s390/kernel/syscalls/syscall.tbl     | 2 +-
- arch/sparc/kernel/syscalls/syscall.tbl    | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+I remember that MVPG SIE documentation was completely crazy and full of
+corner cases. :)
 
-diff --git a/arch/arm64/include/asm/unistd32.h b/arch/arm64/include/asm/unistd32.h
-index f4bca2b90218..cccfbbefbf95 100644
---- a/arch/arm64/include/asm/unistd32.h
-+++ b/arch/arm64/include/asm/unistd32.h
-@@ -890,7 +890,7 @@ __SYSCALL(__NR_faccessat2, sys_faccessat2)
- #define __NR_process_madvise 440
- __SYSCALL(__NR_process_madvise, sys_process_madvise)
- #define __NR_epoll_pwait2 441
--__SYSCALL(__NR_epoll_pwait2, sys_epoll_pwait2)
-+__SYSCALL(__NR_epoll_pwait2, compat_sys_epoll_pwait2)
- 
- /*
-  * Please add new compat syscalls above this comment and update
-diff --git a/arch/mips/kernel/syscalls/syscall_n32.tbl b/arch/mips/kernel/syscalls/syscall_n32.tbl
-index ad9c3dd0ab1f..0f03ad223f33 100644
---- a/arch/mips/kernel/syscalls/syscall_n32.tbl
-+++ b/arch/mips/kernel/syscalls/syscall_n32.tbl
-@@ -379,4 +379,4 @@
- 438	n32	pidfd_getfd			sys_pidfd_getfd
- 439	n32	faccessat2			sys_faccessat2
- 440	n32	process_madvise			sys_process_madvise
--441	n32	epoll_pwait2			sys_epoll_pwait2
-+441	n32	epoll_pwait2			compat_sys_epoll_pwait2
-diff --git a/arch/s390/kernel/syscalls/syscall.tbl b/arch/s390/kernel/syscalls/syscall.tbl
-index 14f6525886a8..d443423495e5 100644
---- a/arch/s390/kernel/syscalls/syscall.tbl
-+++ b/arch/s390/kernel/syscalls/syscall.tbl
-@@ -443,4 +443,4 @@
- 438  common	pidfd_getfd		sys_pidfd_getfd			sys_pidfd_getfd
- 439  common	faccessat2		sys_faccessat2			sys_faccessat2
- 440  common	process_madvise		sys_process_madvise		sys_process_madvise
--441  common	epoll_pwait2		sys_epoll_pwait2		sys_epoll_pwait2
-+441  common	epoll_pwait2		sys_epoll_pwait2		compat_sys_epoll_pwait2
-diff --git a/arch/sparc/kernel/syscalls/syscall.tbl b/arch/sparc/kernel/syscalls/syscall.tbl
-index c7da4c3271e6..40d8c7cd8298 100644
---- a/arch/sparc/kernel/syscalls/syscall.tbl
-+++ b/arch/sparc/kernel/syscalls/syscall.tbl
-@@ -486,4 +486,4 @@
- 438	common	pidfd_getfd			sys_pidfd_getfd
- 439	common	faccessat2			sys_faccessat2
- 440	common	process_madvise			sys_process_madvise
--441	common	epoll_pwait2			sys_epoll_pwait2
-+441	common	epoll_pwait2			sys_epoll_pwait2		compat_sys_epoll_pwait2
+Looking at arch/s390/kvm/intercept.c:handle_mvpg_pei(), I can spot that
+
+1. "This interception can only happen for guests with DAT disabled ..."
+2. KVM does not make use of any mvpg state inside the SCB.
+
+Can this be observed with Linux guests?
+
+
+Can I get some information on what information is stored at [0xc0, 0xd)
+inside the SCB? I assume it's:
+
+0xc0: guest physical address of source PTE
+0xc8: guest physical address of target PTE
+
+
+Also, which conditions have to be met such that we get a ICPT_PARTEXEC:
+
+a) State of guest DAT (I assume off?)
+b) State of PTEs: What happens if there is no PTE (I assume we need two
+PTEs, otherwise no such intercept)? I assume we get an intercept if one
+of both PTEs is not present or the destination PTE is protected. Correct?
+
+So, when we (g1) get an intercept for g3, can we be sure 0xc0 and 0xc8
+in the scb are both valid g1 addresses pointing at our PTE, and what do
+we know about these PTEs (one not present or destination protected)?
+
+[...]
+>  /*
+>   * Run the vsie on a shadow scb and a shadow gmap, without any further
+>   * sanity checks, handling SIE faults.
+> @@ -1063,6 +1132,10 @@ static int do_vsie_run(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
+>  		if ((scb_s->ipa & 0xf000) != 0xf000)
+>  			scb_s->ipa += 0x1000;
+>  		break;
+> +	case ICPT_PARTEXEC:
+> +		if (scb_s->ipa == 0xb254)
+
+Old code hat "/* MVPG only */" - why is this condition now necessary?
+
+> +			rc = vsie_handle_mvpg(vcpu, vsie_page);
+> +		break;
+>  	}
+>  	return rc;
+>  }
+> 
+
+
 -- 
-2.17.1
+Thanks,
+
+David / dhildenb
 
