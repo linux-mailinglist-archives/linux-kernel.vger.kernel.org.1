@@ -2,81 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE962DF39F
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 06:10:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A476F2DF3DF
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 06:31:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726815AbgLTFJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 00:09:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39238 "EHLO mail.kernel.org"
+        id S1727001AbgLTFbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 00:31:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41252 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725929AbgLTFJs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 00:09:48 -0500
-X-Gm-Message-State: AOAM532QemnG3fs4GBpPIR01pNobjeejCRjTn0PDPdztfor2ivbltfoq
-        ja18JYOl8ptgazsq9IkF6LpblSID0B5iBX4JkTSNOA==
+        id S1725763AbgLTFbK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Dec 2020 00:31:10 -0500
+Content-Type: text/plain; charset="utf-8"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608440948;
-        bh=GNcHtmmK5oaVHaZAxSYIqYGpmWW61XjeRJLDrDtv2VI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=T/epbYFYuycN0qKI9D1avY2WbZqHTdNEyWd0n+45yZ+ZrgTeKIf4qwe4wRec+1cbZ
-         EUq3Cm3p+vNfq+0qmde90fCRwzvqopBgFPssOVNikkmMZLrnMWpM8jz41NRm7UzJhO
-         grzi98MO+nrmOBIUeCvz/x449p/xPnxPXyL1fY9NB6Wuwk7/RIANbGyO0VWe4QR/vu
-         gzetq+3WDKTw743MVuGIImcnzj2j0egswYC/ZksOeh6p63rREFnkJ35qRrQ/WvBIPO
-         MFYgZHSaE256ZjoEFpunCatVrHTuUGaKfE/mykdjvfpL5UHkqiTa4dUUKAaGTKf6K5
-         KEO2HdQnp+3Kw==
-X-Google-Smtp-Source: ABdhPJzRfUXXtBNRVLdrQskI9tuQL5lQhyNiDuGzVHYJBbQJs+oYq9S8tszPEoNxK7BkmOZtu8050lTm+wugzRPAAhc=
-X-Received: by 2002:adf:e64b:: with SMTP id b11mr11996469wrn.257.1608440946397;
- Sat, 19 Dec 2020 21:09:06 -0800 (PST)
+        s=k20201202; t=1608442230;
+        bh=Qdp7EFwkVoAyU8h9N+P7QV/Zm+mzSlLdhJZueQ/2kCc=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=sN5VYnuFYQUKtsSck81JTIJ0Q+DmZr9EJ9WoDQ/TCXhktxDUGF2a0BpekviXPmfQX
+         nZ1fP4BiU7+DOrRfhd4bowztoqdt4faaE3TD6skhMuJv1LhDwA7IJ0nnigA9cOFxGu
+         Y2IdIkzwV0CN8IhhCWLthxxE9sYXyZYB4GUbiA3IANHR8kKcvVe13FI1HkZOZdcZJt
+         euwikrbgMa15eokDlvOZH1QuYXGsrLhHB3Gg9z8SqARK5HaJFKJm3I+GNrukQEMsDj
+         uA4GWfUfzaWHJLVRFlwgqwX2A2Z6J0Whwz9DVZO48IGpPA0ZywNCCwyFct1yaZTA5w
+         E8OQ2FhSh9vJQ==
 MIME-Version: 1.0
-References: <20201219043006.2206347-1-namit@vmware.com> <X95RRZ3hkebEmmaj@redhat.com>
- <EDC00345-B46E-4396-8379-98E943723809@gmail.com> <CALCETrVtsdeOtGWMUcmT1dzDBxRpecpZDe02L61qEmJmFxSvYw@mail.gmail.com>
- <X967yWAoaTejRk5y@redhat.com>
-In-Reply-To: <X967yWAoaTejRk5y@redhat.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Sat, 19 Dec 2020 21:08:55 -0800
-X-Gmail-Original-Message-ID: <CALCETrVVa-cfogKZirRrP5tmy-gCDtb=jTpLk648BpBQsK9Z5A@mail.gmail.com>
-Message-ID: <CALCETrVVa-cfogKZirRrP5tmy-gCDtb=jTpLk648BpBQsK9Z5A@mail.gmail.com>
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-To:     Andrea Arcangeli <aarcange@redhat.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        linux-mm <linux-mm@kvack.org>, Peter Xu <peterx@redhat.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <160842266128.1580929.15786525540819499647@swboyd.mtv.corp.google.com>
+References: <20201202123446.21902-1-info@metux.net> <160842266128.1580929.15786525540819499647@swboyd.mtv.corp.google.com>
+Subject: Re: [PATCH v3] drivers: clk: make gpio-gated clock support optional
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     mturquette@baylibre.com, matthias.bgg@gmail.com,
+        linux-clk@vger.kernel.org, linux-riscv@lists.infradead.org
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        linux-kernel@vger.kernel.org
+Date:   Sat, 19 Dec 2020 21:30:28 -0800
+Message-ID: <160844222880.1580929.12780984836660049815@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 19, 2020 at 6:49 PM Andrea Arcangeli <aarcange@redhat.com> wrote:
->
-> On Sat, Dec 19, 2020 at 06:01:39PM -0800, Andy Lutomirski wrote:
-> > I missed the beginning of this thread, but it looks to me like
-> > userfaultfd changes PTEs with not locking except mmap_read_lock().  It
->
-> There's no mmap_read_lock, I assume you mean mmap_lock for reading.
+Quoting Stephen Boyd (2020-12-19 16:04:21)
+> Quoting Enrico Weigelt, metux IT consult (2020-12-02 04:34:46)
+> > The gpio-gate-clock / gpio-mux-clock driver isn't used much,
+> > just by a few ARM SoCs, so there's no need to always include
+> > it unconditionally.
+> >=20
+> > Thus make it optional, but keep it enabled by default.
+> >=20
+> > changes v3: default to y when gpiolib enabled
+> >             fix depends on gpiolib to uppercase
+> >=20
+> > changes v2: added missing dependency on gpiolib
+> >=20
+> > Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+> > ---
+>=20
+> Applied to clk-next
 
-Yes.
+And now reverted
 
->
-> The ptes are changed always with the PT lock, in fact there's no
-> problem with the PTE updates. The only difference with mprotect
-> runtime is that the mmap_lock is taken for reading. And the effect
-> contested for this change doesn't affect the PTE, but supposedly the
-> tlb flushing deferral.
+In file included from include/linux/device.h:32:0,
+                 from drivers/clk/clk-gpio.c:17:
+include/linux/device/driver.h:290:1: warning: data definition has no type o=
+r storage class
+ device_initcall(__driver##_init);
+ ^
+include/linux/platform_device.h:258:2: note: in expansion of macro 'builtin=
+_driver'
+  builtin_driver(__platform_driver, platform_driver_register)
+  ^~~~~~~~~~~~~~
+drivers/clk/clk-gpio.c:249:1: note: in expansion of macro 'builtin_platform=
+_driver'
+ builtin_platform_driver(gpio_clk_driver);
+ ^~~~~~~~~~~~~~~~~~~~~~~
+include/linux/device/driver.h:290:1: error: type defaults to 'int' in decla=
+ration of 'device_initcall' [-Werror=3Dimplicit-int]
+ device_initcall(__driver##_init);
+ ^
+include/linux/platform_device.h:258:2: note: in expansion of macro 'builtin=
+_driver'
+  builtin_driver(__platform_driver, platform_driver_register)
+  ^~~~~~~~~~~~~~
+drivers/clk/clk-gpio.c:249:1: note: in expansion of macro 'builtin_platform=
+_driver'
+ builtin_platform_driver(gpio_clk_driver);
+ ^~~~~~~~~~~~~~~~~~~~~~~
+drivers/clk/clk-gpio.c:249:1: warning: parameter names (without types) in f=
+unction declaration
+In file included from include/linux/device.h:32:0,
+                 from drivers/clk/clk-gpio.c:17:
+drivers/clk/clk-gpio.c:249:25: warning: 'gpio_clk_driver_init' defined but =
+not used [-Wunused-function]
+ builtin_platform_driver(gpio_clk_driver);
+                         ^
+include/linux/device/driver.h:286:19: note: in definition of macro 'builtin=
+_driver'
+ static int __init __driver##_init(void) \
+                   ^~~~~~~~
+drivers/clk/clk-gpio.c:249:1: note: in expansion of macro 'builtin_platform=
+_driver'
+ builtin_platform_driver(gpio_clk_driver);
+ ^~~~~~~~~~~~~~~~~~~~~~~
 
-Can you point me at where the lock ends up being taken in this path?
-I apparently missed it somewhere.
-
-> Anyway to wait the wrprotect to do the deferred flush, before the
-> unprotect can even start, one more mutex in the mm to take in all
-> callers of change_protection_range with the mmap_lock for reading may
-> be enough.
-
-I'll read the code again tomorrow.
+It looks like it needs to be a bool Kconfig to match how it used to be.
+A module would be interesting, but would require more changes
+presumably, like getting rid of builtin_platform_driver() and replacing
+it with module_platform_driver().
