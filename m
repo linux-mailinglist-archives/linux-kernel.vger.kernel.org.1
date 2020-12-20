@@ -2,138 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86EBC2DF2CD
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 03:39:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A7D2DF2CF
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 03:52:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727290AbgLTCic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 21:38:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49330 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727105AbgLTCic (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 21:38:32 -0500
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, CK Hu <ck.hu@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Subject: [PATCH 5/5] soc / drm: mediatek: Move mtk mutex driver to soc folder
-Date:   Sun, 20 Dec 2020 10:36:55 +0800
-Message-Id: <20201220023655.30795-6-chunkuang.hu@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201220023655.30795-1-chunkuang.hu@kernel.org>
-References: <20201220023655.30795-1-chunkuang.hu@kernel.org>
+        id S1726985AbgLTCvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 21:51:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37681 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726788AbgLTCvW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Dec 2020 21:51:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608432595;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NoHRpV085pjeRA/k08rN9TlOWSM2SBKc9GvOdVexZRU=;
+        b=PL7HL7DYXR3kMLnG3ZQ3yVRpYytkHB04z4vd8CkuFLLxdM5/WWf73AlpBW2IyDetbdH3+Y
+        kevc8CWfhRcBMWs/qYMFFUIbYLK6vId6aaaQahH1RbDvVtTV7UkCIeQUH5AqU4wwjgDyzz
+        fucfa1QOssXijuwVLG4TaZZX0M7LBkY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-114-sbqyOewWMcmhWZBgBKFAcQ-1; Sat, 19 Dec 2020 21:49:52 -0500
+X-MC-Unique: sbqyOewWMcmhWZBgBKFAcQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2A2B21005513;
+        Sun, 20 Dec 2020 02:49:50 +0000 (UTC)
+Received: from mail (ovpn-119-164.rdu2.redhat.com [10.10.119.164])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9989F19D9C;
+        Sun, 20 Dec 2020 02:49:45 +0000 (UTC)
+Date:   Sat, 19 Dec 2020 21:49:45 -0500
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Nadav Amit <nadav.amit@gmail.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        linux-mm <linux-mm@kvack.org>, Peter Xu <peterx@redhat.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+Message-ID: <X967yWAoaTejRk5y@redhat.com>
+References: <20201219043006.2206347-1-namit@vmware.com>
+ <X95RRZ3hkebEmmaj@redhat.com>
+ <EDC00345-B46E-4396-8379-98E943723809@gmail.com>
+ <CALCETrVtsdeOtGWMUcmT1dzDBxRpecpZDe02L61qEmJmFxSvYw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALCETrVtsdeOtGWMUcmT1dzDBxRpecpZDe02L61qEmJmFxSvYw@mail.gmail.com>
+User-Agent: Mutt/2.0.3 (2020-12-04)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: CK Hu <ck.hu@mediatek.com>
+On Sat, Dec 19, 2020 at 06:01:39PM -0800, Andy Lutomirski wrote:
+> I missed the beginning of this thread, but it looks to me like
+> userfaultfd changes PTEs with not locking except mmap_read_lock().  It
 
-mtk mutex is used by DRM and MDP driver, and its function is SoC-specific,
-so move it to soc folder.
+There's no mmap_read_lock, I assume you mean mmap_lock for reading.
 
-Signed-off-by: CK Hu <ck.hu@mediatek.com>
-Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
----
- drivers/gpu/drm/mediatek/Makefile                              | 3 +--
- drivers/gpu/drm/mediatek/mtk_drm_crtc.c                        | 2 +-
- drivers/gpu/drm/mediatek/mtk_drm_drv.c                         | 1 -
- drivers/gpu/drm/mediatek/mtk_drm_drv.h                         | 1 -
- drivers/soc/mediatek/Makefile                                  | 1 +
- .../{gpu/drm/mediatek/mtk_mutex.c => soc/mediatek/mtk-mutex.c} | 2 ++
- .../mtk_mutex.h => include/linux/soc/mediatek/mtk-mutex.h      | 0
- 7 files changed, 5 insertions(+), 5 deletions(-)
- rename drivers/{gpu/drm/mediatek/mtk_mutex.c => soc/mediatek/mtk-mutex.c} (99%)
- rename drivers/gpu/drm/mediatek/mtk_mutex.h => include/linux/soc/mediatek/mtk-mutex.h (100%)
+The ptes are changed always with the PT lock, in fact there's no
+problem with the PTE updates. The only difference with mprotect
+runtime is that the mmap_lock is taken for reading. And the effect
+contested for this change doesn't affect the PTE, but supposedly the
+tlb flushing deferral.
 
-diff --git a/drivers/gpu/drm/mediatek/Makefile b/drivers/gpu/drm/mediatek/Makefile
-index 09979c4c340a..01d06332f767 100644
---- a/drivers/gpu/drm/mediatek/Makefile
-+++ b/drivers/gpu/drm/mediatek/Makefile
-@@ -9,8 +9,7 @@ mediatek-drm-y := mtk_disp_color.o \
- 		  mtk_drm_gem.o \
- 		  mtk_drm_plane.o \
- 		  mtk_dsi.o \
--		  mtk_dpi.o \
--		  mtk_mutex.o
-+		  mtk_dpi.o
- 
- obj-$(CONFIG_DRM_MEDIATEK) += mediatek-drm.o
- 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-index 23d9abc4f46c..d7bd07916d74 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-@@ -7,6 +7,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/soc/mediatek/mtk-cmdq.h>
- #include <linux/soc/mediatek/mtk-mmsys.h>
-+#include <linux/soc/mediatek/mtk-mutex.h>
- 
- #include <asm/barrier.h>
- #include <soc/mediatek/smi.h>
-@@ -22,7 +23,6 @@
- #include "mtk_drm_ddp_comp.h"
- #include "mtk_drm_gem.h"
- #include "mtk_drm_plane.h"
--#include "mtk_mutex.h"
- 
- /*
-  * struct mtk_drm_crtc - MediaTek specific crtc structure.
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-index 907a69eb6d51..d1232124b650 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-@@ -602,7 +602,6 @@ static struct platform_driver mtk_drm_platform_driver = {
- };
- 
- static struct platform_driver * const mtk_drm_drivers[] = {
--	&mtk_mutex_driver,
- 	&mtk_disp_color_driver,
- 	&mtk_disp_ovl_driver,
- 	&mtk_disp_rdma_driver,
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.h b/drivers/gpu/drm/mediatek/mtk_drm_drv.h
-index c7220f267a62..f7cd95903a4e 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_drv.h
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.h
-@@ -46,7 +46,6 @@ struct mtk_drm_private {
- 	struct drm_atomic_state *suspend_state;
- };
- 
--extern struct platform_driver mtk_mutex_driver;
- extern struct platform_driver mtk_disp_color_driver;
- extern struct platform_driver mtk_disp_ovl_driver;
- extern struct platform_driver mtk_disp_rdma_driver;
-diff --git a/drivers/soc/mediatek/Makefile b/drivers/soc/mediatek/Makefile
-index b6908db534c2..90270f8114ed 100644
---- a/drivers/soc/mediatek/Makefile
-+++ b/drivers/soc/mediatek/Makefile
-@@ -6,3 +6,4 @@ obj-$(CONFIG_MTK_PMIC_WRAP) += mtk-pmic-wrap.o
- obj-$(CONFIG_MTK_SCPSYS) += mtk-scpsys.o
- obj-$(CONFIG_MTK_SCPSYS_PM_DOMAINS) += mtk-pm-domains.o
- obj-$(CONFIG_MTK_MMSYS) += mtk-mmsys.o
-+obj-$(CONFIG_MTK_MMSYS) += mtk-mutex.o
-diff --git a/drivers/gpu/drm/mediatek/mtk_mutex.c b/drivers/soc/mediatek/mtk-mutex.c
-similarity index 99%
-rename from drivers/gpu/drm/mediatek/mtk_mutex.c
-rename to drivers/soc/mediatek/mtk-mutex.c
-index e16b1772317c..f2597ebf52db 100644
---- a/drivers/gpu/drm/mediatek/mtk_mutex.c
-+++ b/drivers/soc/mediatek/mtk-mutex.c
-@@ -459,3 +459,5 @@ struct platform_driver mtk_mutex_driver = {
- 		.of_match_table = mutex_driver_dt_match,
- 	},
- };
-+
-+builtin_platform_driver(mtk_mutex_driver);
-diff --git a/drivers/gpu/drm/mediatek/mtk_mutex.h b/include/linux/soc/mediatek/mtk-mutex.h
-similarity index 100%
-rename from drivers/gpu/drm/mediatek/mtk_mutex.h
-rename to include/linux/soc/mediatek/mtk-mutex.h
--- 
-2.17.1
+The change_protection_range is identical to what already happens with
+zap_page_range. zap_page_range is called with mmap_lock for reading
+in MADV_DONTNEED, and by munmap with mmap_lock for
+writing. change_protection_range is called with mmap_lock for writing
+by mprotect, and mmap_lock for reading by UFFDIO_WRITEPROTECT.
+
+> also calls inc_tlb_flush_pending(), which is very explicitly
+> documented as requiring the pagetable lock.  Those docs must be wrong,
+
+The comment in inc_tlb_flush_pending() shows the pagetable lock is
+taken after inc_tlb_flush_pending():
+
+	 *	atomic_inc(&mm->tlb_flush_pending);
+	 *	spin_lock(&ptl);
+
+> because mprotect() uses the mmap_sem write lock, which is just fine,
+> but ISTM some kind of mutual exclusion with proper acquire/release
+> ordering is indeed needed.  So the userfaultfd code seems bogus.
+
+If there's a bug, it'd be nice to fix without taking the mmap_lock for
+writing.
+
+The vma is guaranteed not modified, so I think it'd be pretty bad if
+we had to give in the mmap_lock for writing just to wait for a tlb
+flush that is issued deferred in the context of
+userfaultfd_writeprotect.
+
+> I think userfaultfd either needs to take a real lock (probably doesn't
+> matter which) or the core rules about PTEs need to be rewritten.
+
+It's not exactly clear how the do_wp_page could run on cpu1 before the
+unprotect did an extra flush, I guess the trace needs one more
+cpu/thread?
+
+Anyway to wait the wrprotect to do the deferred flush, before the
+unprotect can even start, one more mutex in the mm to take in all
+callers of change_protection_range with the mmap_lock for reading may
+be enough.
+
+Thanks,
+Andrea
 
