@@ -2,86 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40F012DF482
+	by mail.lfdr.de (Postfix) with ESMTP id ACCDA2DF483
 	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 09:54:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727427AbgLTIw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 03:52:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52922 "EHLO
+        id S1727455AbgLTIwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 03:52:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727335AbgLTIw2 (ORCPT
+        with ESMTP id S1727344AbgLTIwm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 03:52:28 -0500
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A61AFC0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 00:51:46 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by xavier.telenet-ops.be with bizsmtp
-        id 6Yrj2400C4C55Sk01YrjKP; Sun, 20 Dec 2020 09:51:43 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kquRL-00CPg7-1S; Sun, 20 Dec 2020 09:51:43 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kquRK-006bNv-H9; Sun, 20 Dec 2020 09:51:42 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-m68k@lists.linux-m68k.org
-Cc:     YiFei Zhu <yifeifz2@illinois.edu>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: Enable seccomp architecture tracking
-Date:   Sun, 20 Dec 2020 09:51:41 +0100
-Message-Id: <20201220085141.1573113-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        Sun, 20 Dec 2020 03:52:42 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FBF6C061282
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 00:52:02 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id d9so6131335iob.6
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 00:52:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=w8c/XeH3OhekJ65ae7Kgx4wvrNHsagFJtU/k//HI1M4=;
+        b=YMSjafd6Z2zq89rEKkoTKZ/rpuUTS1q+QTc+UUitpCCne530mDPOFiDIDjTEUsMdRT
+         +0ZxCmIIHD4BXPs6Duvj2OyajmAOWdhkz5yewC3D17VU00IQygHx3l3c/Sm0OKtIISiW
+         w7MePh8WRnqBwZzH6Pr/kqcKxqcWi1sLHlcqCOeouZTZz6TaaCNH+LKbDieQmNn6s/Nf
+         3WwSHTZLHIMB8R7CsIT7xFjFXST6tQybxx2Xi32/j1xV3kmi6ylsEoLWQodyLLvm46W1
+         n6T8tlojb4LAOAlVvhAdf6NEW/NOdcgkDHqmSg9dxjUc5txkeitFzDgRjgzppKf5d5lv
+         cR1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=w8c/XeH3OhekJ65ae7Kgx4wvrNHsagFJtU/k//HI1M4=;
+        b=rBFJLnPyXujp0CHI0FEgyBM4kXgqPRNscyLpgfgrYTaplhp5BItLFzwWaykZv+7YQE
+         Ve+k+E2AXLSKOEaXTkFALAgKPUXtUl3edzxYDxpUQHaOt38pjyvoNzfkqoWWMdvNy7Sr
+         Fh7owjp4JXfRUxl8tomDyywKzSlj7LOge3yOQplPCdOUwForGlQwxPqNC3JAi2vkfZx7
+         9qXjDQmFplA2FvS70++HFGJY+NkDgAzyvBQPoePu33gGInis5vJDtHHZ7OEPROKOlsZF
+         nJgeVhZsbIXsGpJti1GL0o6a/VnL5qD1uIxZTIDlosPptm79KnCEsQ6ghLVq3eOYfXR9
+         hQDQ==
+X-Gm-Message-State: AOAM532oTVEPl69GUBQbGBJJmQn4jhoG9uCSWTEL56VCARJekdCt24mf
+        vgzew98A87VQHlQpvI1lNhG7wS5dtQ5/2WSb2fI=
+X-Google-Smtp-Source: ABdhPJyWtwahbrOCWKkgpwYXpuTw8UpnmhIQaW9Fm/mqd2Z3fZt7HE8h20HLeiDj5YSCQnmoh7qchbUaccnruZFbmSM=
+X-Received: by 2002:a05:6602:1cb:: with SMTP id w11mr10320647iot.45.1608454321761;
+ Sun, 20 Dec 2020 00:52:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201215214656.649896-1-bert@biot.com> <410ca5c2-96a0-ffd0-e1c0-316fe37ff4d5@microchip.com>
+ <faaa83e9-e702-abfc-e298-fda1fa224b69@biot.com>
+In-Reply-To: <faaa83e9-e702-abfc-e298-fda1fa224b69@biot.com>
+From:   Chuanhong Guo <gch981213@gmail.com>
+Date:   Sun, 20 Dec 2020 16:51:50 +0800
+Message-ID: <CAJsYDVLEggVBAm2zXe1V7jeAAwXACHrEj6UgiL9Wc-cNq=Zuww@mail.gmail.com>
+Subject: Re: [PATCH] Add spi-nor driver for Realtek RTL838x/RTL839x switch SoCs
+To:     Bert Vermeulen <bert@biot.com>
+Cc:     Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mark Brown <broonie@kernel.org>, john.garry@huawei.com,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        vadivel.muruganx.ramuthevar@linux.intel.com,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To enable seccomp constant action bitmaps, we need to have a static
-mapping to the audit architecture and system call table size.
+Hi!
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-Needed for CONFIG_SECCOMP_CACHE_DEBUG.
-Note that upstream doesn't have m68k seccomp support yet.
+On Sun, Dec 20, 2020 at 7:01 AM Bert Vermeulen <bert@biot.com> wrote:
+>
+> On 12/16/20 9:30 AM, Tudor.Ambarus@microchip.com wrote:
+> > On 12/15/20 11:46 PM, Bert Vermeulen wrote:
+> >> This driver supports the spiflash core in all RTL838x/RTL839x SoCs,
+> >> and likely some older models as well (RTL8196C).
+> >>
+> > Can we use SPIMEM and move this under drivers/spi/ instead?
+>
+> I wasn't aware spimem was the thing to use for new drivers. I will rewrite
+> the driver to that API.
 
- arch/m68k/include/asm/Kbuild    |  1 -
- arch/m68k/include/asm/seccomp.h | 11 +++++++++++
- 2 files changed, 11 insertions(+), 1 deletion(-)
- create mode 100644 arch/m68k/include/asm/seccomp.h
+Are there any limitations preventing this from being implemented as a
+generic SPI controller?
+spi-nor and spi-mem are designed for controllers which can only perform
+spi-mem/spi-nor specific transfers. I can't find such limitations from
+your current driver code.
 
-diff --git a/arch/m68k/include/asm/Kbuild b/arch/m68k/include/asm/Kbuild
-index d9f0f283707ff352..1bff55aa2d54e2ce 100644
---- a/arch/m68k/include/asm/Kbuild
-+++ b/arch/m68k/include/asm/Kbuild
-@@ -4,5 +4,4 @@ generic-y += extable.h
- generic-y += kvm_para.h
- generic-y += local64.h
- generic-y += mcs_spinlock.h
--generic-y += seccomp.h
- generic-y += spinlock.h
-diff --git a/arch/m68k/include/asm/seccomp.h b/arch/m68k/include/asm/seccomp.h
-new file mode 100644
-index 0000000000000000..feefe511dd1f370d
---- /dev/null
-+++ b/arch/m68k/include/asm/seccomp.h
-@@ -0,0 +1,11 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+#ifndef _ASM_M68K_SECCOMP_H
-+#define _ASM_M68K_SECCOMP_H
-+
-+#include <asm-generic/seccomp.h>
-+
-+#define SECCOMP_ARCH_NATIVE		AUDIT_ARCH_M68K
-+#define SECCOMP_ARCH_NATIVE_NR		NR_syscalls
-+#define SECCOMP_ARCH_NATIVE_NAME	"m68k"
-+
-+#endif /* _ASM_M68K_SECCOMP_H */
+BTW I found a SPI controller driver for RTL8196C here: [0]
+It seems pretty similar to the controller you are working on.
+
+[0]: https://github.com/hackpascal/lede-rtl8196c/blob/realtek/target/linux/realtek/files/drivers/spi/spi-realtek.c
+
 -- 
-2.25.1
-
+Regards,
+Chuanhong Guo
