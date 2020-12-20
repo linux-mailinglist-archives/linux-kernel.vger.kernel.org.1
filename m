@@ -2,110 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CFB72DF4E1
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 10:46:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64AF82DF4E4
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 10:48:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727335AbgLTJqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 04:46:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38096 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726377AbgLTJqb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 04:46:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608457504;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hZuuWYgsYqtOq9pElDc1NbTuuW8utHaswvEIseLkrwU=;
-        b=LP4t6JFnHEIXYUt3hsyrVaFGMqnNLltixmaxaqF2ZMXFeFDiCg+cdihCH3a0MjXTubfPpe
-        zH4192iMiqCeY86VD65jYk7GcxAL+5LPiO/GFRnR69di9NUsBpzMrd39cdmYhbrHr7zvl3
-        SJR2j/lgUJVO8k8sxURljb+cmqHs/GM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-282-4szOjY9POcaa_QH5pkrEHg-1; Sun, 20 Dec 2020 04:45:00 -0500
-X-MC-Unique: 4szOjY9POcaa_QH5pkrEHg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2AA7F15720;
-        Sun, 20 Dec 2020 09:44:59 +0000 (UTC)
-Received: from [10.36.112.16] (ovpn-112-16.ams2.redhat.com [10.36.112.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CE42E5C1B4;
-        Sun, 20 Dec 2020 09:44:57 +0000 (UTC)
-Subject: Re: [PATCH v1 1/4] s390/kvm: VSIE: stop leaking host addresses
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        linux-kernel@vger.kernel.org
-Cc:     borntraeger@de.ibm.com, frankja@linux.ibm.com, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, stable@vger.kernel.org
-References: <20201218141811.310267-1-imbrenda@linux.ibm.com>
- <20201218141811.310267-2-imbrenda@linux.ibm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <b1a31982-a967-7439-1a7c-3c948deeb79d@redhat.com>
-Date:   Sun, 20 Dec 2020 10:44:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1727391AbgLTJrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 04:47:00 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33048 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726377AbgLTJrA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Dec 2020 04:47:00 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B8CDCAC7B;
+        Sun, 20 Dec 2020 09:46:18 +0000 (UTC)
+To:     antlists <antlists@youngman.org.uk>, axboe@kernel.dk,
+        dan.j.williams@intel.com, vishal.l.verma@intel.com
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-nvdimm@lists.01.org
+References: <20201203171535.67715-1-colyli@suse.de>
+ <3f4bf4c4-1f1f-b1a6-5d91-2dbe02f61e67@youngman.org.uk>
+From:   Coly Li <colyli@suse.de>
+Subject: Re: [RFC PATCH] badblocks: Improvement badblocks_set() for handling
+ multiple ranges
+Message-ID: <c50e7c65-d7bf-e957-d8eb-efed6c24f089@suse.de>
+Date:   Sun, 20 Dec 2020 17:46:14 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
 MIME-Version: 1.0
-In-Reply-To: <20201218141811.310267-2-imbrenda@linux.ibm.com>
+In-Reply-To: <3f4bf4c4-1f1f-b1a6-5d91-2dbe02f61e67@youngman.org.uk>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.12.20 15:18, Claudio Imbrenda wrote:
-> The addresses in the SIE control block of the host should not be
-> forwarded to the guest. They are only meaningful to the host, and
-> moreover it would be a clear security issue.
+On 12/20/20 4:02 AM, antlists wrote:
+> On 03/12/2020 17:15, Coly Li wrote:
+>> This patch is an initial effort to improve badblocks_set() for setting
+>> bad blocks range when it covers multiple already set bad ranges in the
+>> bad blocks table, and to do it as fast as possible.
+> 
+> Is this your patch, or submitted as part of the bug report?
 
-It's really almost impossible for someone without access to
-documentation to understand what we leak. I assume we're leaking the g1
-address of a page table (entry), used for translation of g2->g3 to g1.
-Can you try making that clearer?
-
-In that case, it's pretty much a random number (of a random page used as
-a leave page table) and does not let g1 identify locations of symbols
-etc. If so, I don't think this is a "clear security issue" and suggest
-squashing this into the actual fix (#p4 I assume).
-
-@Christian, @Janosch? Am I missing something?
+This is not finished yet. The final version should go into upstream as a
+fix for current badblocks routines.
 
 > 
-> Subsequent patches will actually put the right values in the guest SIE
-> control block.
+> "Heavily based on MD badblocks code from Neil Brown"
 > 
-> Fixes: a3508fbe9dc6d ("KVM: s390: vsie: initial support for nested virtualization")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-> ---
->  arch/s390/kvm/vsie.c | 5 -----
->  1 file changed, 5 deletions(-)
+> How much has this code got to do with the mdraid subsystem? Because
+> badblocks in mdraid has an appalling reputation, with many people
+> wanting to just rip it out.
+
+This is in-memory data structure management which is almost irrelevant
+to md raid or other on-disk layout.
+
+
 > 
-> diff --git a/arch/s390/kvm/vsie.c b/arch/s390/kvm/vsie.c
-> index 4f3cbf6003a9..ada49583e530 100644
-> --- a/arch/s390/kvm/vsie.c
-> +++ b/arch/s390/kvm/vsie.c
-> @@ -416,11 +416,6 @@ static void unshadow_scb(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
->  		memcpy((void *)((u64)scb_o + 0xc0),
->  		       (void *)((u64)scb_s + 0xc0), 0xf0 - 0xc0);
->  		break;
-> -	case ICPT_PARTEXEC:
-> -		/* MVPG only */
-> -		memcpy((void *)((u64)scb_o + 0xc0),
-> -		       (void *)((u64)scb_s + 0xc0), 0xd0 - 0xc0);
-> -		break;
->  	}
->  
->  	if (scb_s->ihcpu != 0xffffU)
+> If this code is separate from the mdraid implementation, any chance you
+> can work with it, and fix that at the same time? Or make it redundant! I
+
+This is 100% separated from md raid, as well as current badblocks code,
+it is just about combine or split some [start, length] extent in a
+table. The purpose of this patch is to fixing some reported issue from
+users and our customers.
+
+> don't quite see why mdraid should need a badblocks list given modern
+> disk drives.
 > 
 
+For me the motivation is just people report bugs and I fix it. If there
+is new code to replace it in upstream, then I just continue to maintain
+the new code for our users and customers.
 
--- 
-Thanks,
+> And it's on my to-do list (if I can find the time!!!) to integrate
+> dm-integrity into mdraid, at which point md badblocks should be irrelevant.
+> 
+> Hope I'm not being a shower of cold water, and if you want to fix all
+> this, good on you, but to the extent that this is relevant to
+> linux-raid, I think a lot of people will be asking "What's the point?"
 
-David / dhildenb
+Currently blocks/badblocks.c is used by md raid and nvdimm code, and the
+badblocks table is irrelevant to any of these two subsystems.
 
+If there will be better code for similar or better functionality, it
+should be cool. For me, if the reporting bug is fixed, no difference in
+my view :-)
+
+Thanks.
+
+Coly Li
