@@ -2,228 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 830182DF2BA
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 03:22:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98DDD2DF2BB
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 03:27:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727023AbgLTCWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 21:22:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56381 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726765AbgLTCWg (ORCPT
+        id S1727075AbgLTCYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 21:24:51 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:44959 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726761AbgLTCYu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 21:22:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608430868;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9zeAQetcjgmSvWdd3NI+EASB0L+QdlqdeWqKzcViEfI=;
-        b=gCSiZ/2/3SGnqRYUwbALwxC4VX5uIEpjfngXOrKAWVDEjg6MFC2zFYsH/R21YKK2Ocx5tR
-        mxybzF1xIv/A8j7alrREeWhUBM+VgNTDtHFmIx5mnxtbq8I9Js2ryV2YjcmUldPOvvvf66
-        hiQZmLyJgQ83vIcvGdkaFo+5dSziAK4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-207-LM3L3jgIPQifBGX3icIUWg-1; Sat, 19 Dec 2020 21:21:06 -0500
-X-MC-Unique: LM3L3jgIPQifBGX3icIUWg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 98C95800D55;
-        Sun, 20 Dec 2020 02:21:04 +0000 (UTC)
-Received: from mail (ovpn-119-164.rdu2.redhat.com [10.10.119.164])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 63DE960BE2;
-        Sun, 20 Dec 2020 02:21:00 +0000 (UTC)
-Date:   Sat, 19 Dec 2020 21:20:59 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     linux-mm <linux-mm@kvack.org>, Peter Xu <peterx@redhat.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable@vger.kernel.org, minchan@kernel.org,
-        Andy Lutomirski <luto@kernel.org>, yuzhao@google.com,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-Message-ID: <X961C3heiGSJ5qVL@redhat.com>
-References: <20201219043006.2206347-1-namit@vmware.com>
- <X95RRZ3hkebEmmaj@redhat.com>
- <EDC00345-B46E-4396-8379-98E943723809@gmail.com>
- <DD367393-D1B3-4A84-AF92-9C6BAEAB40DC@gmail.com>
+        Sat, 19 Dec 2020 21:24:50 -0500
+Received: by mail-il1-f197.google.com with SMTP id c76so6091495ilf.11
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 18:24:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=e/+45KsrkxuceWPsi1nn3MJusxIcgpOYQGU/ooaZp5A=;
+        b=toyssD86rY+Pe9pm1HQOtLbvwDn0M+hQ7SQECrEWVPimBp4JQMz/prCRs3v8HYzGLF
+         5ojs4jCDpWEMM5XeKt5PoA6UdaphDO0UIvsk10VMoghma9f5StUzK4YN6BPWTvloWP3S
+         UHVG6Hwa8qzzWzhz8y6Y7aMpmQPOw6zz+9zLkNrTshbrK+ZZkTvcqjSGurU78Is3FgPq
+         4IyuNxU5KxV120bYH2pYlIVg1+ctA+EzUuMGtKOlsDAoNf4WXVatNDaISBCWZEzDDtiG
+         fgEYzaIpZzhyXrLgBcAMImyn6yB5vPzAvUQBS0H7VfVBN7pKFa/w6/MO6t2bcE/2dreD
+         Ua+g==
+X-Gm-Message-State: AOAM530mAPoOFpF4/Uu/+5CKbwXtoGUnrldXBPBool1dVvOk8YLjdg8K
+        gX+pfDatAGf/DeENdZjkT8c3shRjGhHVEcG73YSXeTa2BPnX
+X-Google-Smtp-Source: ABdhPJz5GbqlxCYGWPbFsIbV9s7lX8WQ0OekktVcVTiGZdhCjRGuGHdXr1b48+rZCvw2K0bCVD9o7R8uMD8rJCkg/iiYwVRqDwSz
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <DD367393-D1B3-4A84-AF92-9C6BAEAB40DC@gmail.com>
-User-Agent: Mutt/2.0.3 (2020-12-04)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Received: by 2002:a92:ce47:: with SMTP id a7mr11393170ilr.261.1608431049879;
+ Sat, 19 Dec 2020 18:24:09 -0800 (PST)
+Date:   Sat, 19 Dec 2020 18:24:09 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005fb61b05b6dc095b@google.com>
+Subject: WARNING: suspicious RCU usage in wiphy_apply_custom_regulatory
+From:   syzbot <syzbot+27771d4abcd9b7a1f5d3@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, ilan.peer@intel.com, johannes.berg@intel.com,
+        johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        luciano.coelho@intel.com, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 19, 2020 at 02:06:02PM -0800, Nadav Amit wrote:
-> > On Dec 19, 2020, at 1:34 PM, Nadav Amit <nadav.amit@gmail.com> wrote:
-> > 
-> > [ cc’ing some more people who have experience with similar problems ]
-> > 
-> >> On Dec 19, 2020, at 11:15 AM, Andrea Arcangeli <aarcange@redhat.com> wrote:
-> >> 
-> >> Hello,
-> >> 
-> >> On Fri, Dec 18, 2020 at 08:30:06PM -0800, Nadav Amit wrote:
-> >>> Analyzing this problem indicates that there is a real bug since
-> >>> mmap_lock is only taken for read in mwriteprotect_range(). This might
-> >> 
-> >> Never having to take the mmap_sem for writing, and in turn never
-> >> blocking, in order to modify the pagetables is quite an important
-> >> feature in uffd that justifies uffd instead of mprotect. It's not the
-> >> most important reason to use uffd, but it'd be nice if that guarantee
-> >> would remain also for the UFFDIO_WRITEPROTECT API, not only for the
-> >> other pgtable manipulations.
-> >> 
-> >>> Consider the following scenario with 3 CPUs (cpu2 is not shown):
-> >>> 
-> >>> cpu0				cpu1
-> >>> ----				----
-> >>> userfaultfd_writeprotect()
-> >>> [ write-protecting ]
-> >>> mwriteprotect_range()
-> >>> mmap_read_lock()
-> >>> change_protection()
-> >>> change_protection_range()
-> >>>  ...
-> >>>  change_pte_range()
-> >>>  [ defer TLB flushes]
-> >>> 				userfaultfd_writeprotect()
-> >>> 				 mmap_read_lock()
-> >>> 				 change_protection()
-> >>> 				 [ write-unprotect ]
-> >>> 				 ...
-> >>> 				  [ unprotect PTE logically ]
+Hello,
 
-Is the uffd selftest failing with upstream or after your kernel
-modification that removes the tlb flush from unprotect?
+syzbot found the following issue on:
 
-			} else if (uffd_wp_resolve) {
-				/*
-				 * Leave the write bit to be handled
-				 * by PF interrupt handler, then
-				 * things like COW could be properly
-				 * handled.
-				 */
-				ptent = pte_clear_uffd_wp(ptent);
-			}
+HEAD commit:    d635a69d Merge tag 'net-next-5.11' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14502c13500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c3556e4856b17a95
+dashboard link: https://syzkaller.appspot.com/bug?extid=27771d4abcd9b7a1f5d3
+compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1593f703500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=176dc937500000
 
-Upstraem this will still do pages++, there's a tlb flush before
-change_protection can return here, so I'm confused.
+The issue was bisected to:
+
+commit beee246951571cc5452176f3dbfe9aa5a10ba2b9
+Author: Ilan Peer <ilan.peer@intel.com>
+Date:   Sun Nov 29 15:30:51 2020 +0000
+
+    cfg80211: Save the regulatory domain when setting custom regulatory
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12fcc77f500000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=11fcc77f500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=16fcc77f500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+27771d4abcd9b7a1f5d3@syzkaller.appspotmail.com
+Fixes: beee24695157 ("cfg80211: Save the regulatory domain when setting custom regulatory")
+
+=============================
+WARNING: suspicious RCU usage
+5.10.0-syzkaller #0 Not tainted
+-----------------------------
+net/wireless/reg.c:144 suspicious rcu_dereference_check() usage!
+
+other info that might help us debug this:
 
 
-> >>> 				...
-> >>> 				[ page-fault]
-> >>> 				...
-> >>> 				wp_page_copy()
-> >>> 				[ set new writable page in PTE]
-> >> 
-> >> Can't we check mm_tlb_flush_pending(vma->vm_mm) if MM_CP_UFFD_WP_ALL
-> >> is set and do an explicit (potentially spurious) tlb flush before
-> >> write-unprotect?
-> > 
-> > There is a concrete scenario that I actually encountered and then there is a
-> > general problem.
-> > 
-> > In general, the kernel code assumes that PTEs that are read from the
-> > page-tables are coherent across all the TLBs, excluding permission promotion
-> > (i.e., the PTE may have higher permissions in the page-tables than those
-> > that are cached in the TLBs).
-> > 
-> > We therefore need to both: (a) protect change_protection_range() from the
-> > changes of others who might defer TLB flushes without taking mmap_sem for
-> > write (e.g., try_to_unmap_one()); and (b) to protect others (e.g.,
-> > page-fault handlers) from concurrent changes of change_protection().
-> > 
-> > We have already encountered several similar bugs, and debugging such issues
-> > s time consuming and these bugs impact is substantial (memory corruption,
-> > security). So I think we should only stick to general solutions.
-> > 
-> > So perhaps your the approach of your proposed solution is feasible, but it
-> > would have to be applied all over the place: we will need to add a check for
-> > mm_tlb_flush_pending() and conditionally flush the TLB in every case in
-> > which PTEs are read and there might be an assumption that the
-> > access-permission reflect what the TLBs hold. This includes page-fault
-> > handlers, but also NUMA migration code in change_protection(), softdirty
-> > cleanup in clear_refs_write() and maybe others.
-> > 
-> > [ I have in mind another solution, such as keeping in each page-table a 
-> > “table-generation” which is the mm-generation at the time of the change,
-> > and only flush if “table-generation”==“mm-generation”, but it requires
-> > some thought on how to avoid adding new memory barriers. ]
-> > 
-> > IOW: I think the change that you suggest is insufficient, and a proper
-> > solution is too intrusive for “stable".
-> > 
-> > As for performance, I can add another patch later to remove the TLB flush
-> > that is unnecessarily performed during change_protection_range() that does
-> > permission promotion. I know that your concern is about the “protect” case
+rcu_scheduler_active = 2, debug_locks = 1
+2 locks held by syz-executor434/8467:
+ #0: ffffffff8cd0bd70 (cb_lock){++++}-{3:3}, at: genl_rcv+0x15/0x40 net/netlink/genetlink.c:810
+ #1: ffffffff8cd0bc28 (genl_mutex){+.+.}-{3:3}, at: genl_lock net/netlink/genetlink.c:33 [inline]
+ #1: ffffffff8cd0bc28 (genl_mutex){+.+.}-{3:3}, at: genl_rcv_msg+0xb1/0x1280 net/netlink/genetlink.c:798
 
-You may want to check flush_tlb_fix_spurious_fault for other archs
-before proceeding with your patch later, assuming it wasn't already applied.
+stack backtrace:
+CPU: 1 PID: 8467 Comm: syz-executor434 Not tainted 5.10.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x137/0x1be lib/dump_stack.c:120
+ get_wiphy_regdom net/wireless/reg.c:144 [inline]
+ wiphy_apply_custom_regulatory+0x784/0x910 net/wireless/reg.c:2574
+ mac80211_hwsim_new_radio+0x1eb3/0x3930 drivers/net/wireless/mac80211_hwsim.c:3247
+ hwsim_new_radio_nl+0xb07/0xf60 drivers/net/wireless/mac80211_hwsim.c:3822
+ genl_family_rcv_msg_doit net/netlink/genetlink.c:739 [inline]
+ genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+ genl_rcv_msg+0xe4e/0x1280 net/netlink/genetlink.c:800
+ netlink_rcv_skb+0x190/0x3a0 net/netlink/af_netlink.c:2494
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x780/0x930 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x9a8/0xd40 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg net/socket.c:672 [inline]
+ ____sys_sendmsg+0x519/0x800 net/socket.c:2336
+ ___sys_sendmsg net/socket.c:2390 [inline]
+ __sys_sendmsg+0x2bc/0x370 net/socket.c:2423
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x440309
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffeafb01018 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440309
+RDX: 0000000000000000 RSI: 00000000200001c0 RDI: 0000000000000003
+RBP: 00000000006ca018 R08: 0000000000000000 R09: 00000000004002c8
+R10: 0000000000401ba0 R11: 0000000000000246 R12: 0000000000401b10
+R13: 0000000000401ba0 R14: 0000000000000000 R15: 0000000000000000
 
-> > but I cannot think of a good immediate solution that avoids taking mmap_lock
-> > for write.
-> > 
-> > Thoughts?
-> 
-> On a second thought (i.e., I don’t know what I was thinking), doing so —
-> checking mm_tlb_flush_pending() on every PTE read which is potentially
 
-Note the part "if MM_CP_UFFD_WP_ALL is set" and probably just
-MM_CP_UFFD_WP.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-> dangerous and flushing if needed - can lead to huge amount of TLB flushes
-> and shootodowns as the counter might be elevated for considerable amount of
-> time.
-> 
-> So this solution seems to me as a no-go.
-
-I don't share your concern. What matters is the PT lock, so it
-wouldn't be one per pte, but a least an order 9 higher, but let's
-assume one flush per pte.
-
-It's either huge mapping and then it's likely running without other
-tlb flushing in background (postcopy snapshotting), or it's a granular
-protect with distributed shared memory in which case the number of
-changd ptes or huge_pmds tends to be always 1 anyway. So it doesn't
-matter if it's deferred.
-
-I agree it may require a larger tlb flush review not just mprotect
-though, but it didn't sound particularly complex. Note the
-UFFDIO_WRITEPROTECT is still relatively recent so backports won't
-risk to reject so heavy as to require a band-aid.
-
-My second thought is, I don't see exactly the bug and it's not clear
-if it's upstream reproducing this, but assuming this happens on
-upstream, even ignoring everything else happening in the tlb flush
-code, this sounds like purely introduced by userfaultfd_writeprotect()
-vs userfaultfd_writeprotect() (since it's the only place changing
-protection with mmap_sem for reading and note we already unmap and
-flush tlb with mmap_sem for reading in MADV_DONTNEED/MADV_FREE clears
-the dirty bit etc..). Flushing tlbs with mmap_sem for reading is
-nothing new, the only new thing is the flush after wrprotect.
-
-So instead of altering any tlb flush code, would it be possible to
-just stick to mmap_lock for reading and then serialize
-userfaultfd_writeprotect() against itself with an additional
-mm->mmap_wprotect_lock mutex? That'd be a very local change to
-userfaultfd too.
-
-Can you look if the rule mmap_sem for reading plus a new
-mm->mmap_wprotect_lock mutex or the mmap_sem for writing, whenever
-wrprotecting ptes, is enough to comply with the current tlb flushing
-code, so not to require any change non local to uffd (modulo the
-additional mutex).
-
-Thanks,
-Andrea
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
