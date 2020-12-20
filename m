@@ -2,104 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B832DF36C
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 04:45:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D6192DF371
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 04:47:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727439AbgLTDov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 22:44:51 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:52677 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726898AbgLTDou (ORCPT
+        id S1727272AbgLTDp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 22:45:57 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:10053 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726912AbgLTDp4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 22:44:50 -0500
-Received: by mail-il1-f199.google.com with SMTP id h4so6185561ilq.19
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Dec 2020 19:44:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=UubbcTnFvAdUtoFBZ+hCLa1NkxHJbmCBB4mCfGjoNzc=;
-        b=dgLa2FJF96eZO2lE0dx3daJX8JCYDOUHKeqQaJ7Y3A/RzeQ390qcCZzw8hgryX2QfJ
-         D7cy5S4KeRbw6uRN5WNIO0oD0Ez9ldMuNGMdUNP2fBXlFqVUbCAHDGySC/whlslBlQLA
-         X19hzmMN8rP+2SXIVdSBT6Ob8bZUGxaU7T2H6J+UQIcBUKSv+pLerbofEv56vq5/ZWDA
-         TxsnEiNsjGDT8YpbxKuyF+5Jf9xg2oQ8hYepzvDq/o3WmkSsa3te8H5Lv0Z4vcJgBrbj
-         sWwbCzKtUYeHydh8htbVhP8u/A2X0x1mgtBx8qywi2gMS9ou3s85m0YkiLkxmRE2c5qW
-         8NJw==
-X-Gm-Message-State: AOAM530MsbZCYEedWHEPQ26gOqIFGdbt2YuDiS50RhYzqiCdN6NOTrza
-        ziRKjZCIofrTro+tNcT14zACJ1pMvDnKa+KMfFIjH2/59JzT
-X-Google-Smtp-Source: ABdhPJwX8qhKyoJbSUGIjokthVh4nyAx842fsSvzfDHXWiEmnnqdEUEqxVEYbhdSZOaR0ktXGNs/z1Mse29eILcxDLbZtoHhmPI9
+        Sat, 19 Dec 2020 22:45:56 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cz7ks2xkczM6xs;
+        Sun, 20 Dec 2020 11:44:21 +0800 (CST)
+Received: from use12-sp2.huawei.com (10.67.189.174) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Sun, 20 Dec 2020 11:45:07 +0800
+From:   Xiaoming Ni <nixiaoming@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>,
+        <pavel@ucw.cz>, <dmurphy@ti.com>, <akpm@linux-foundation.org>,
+        <keescook@chromium.org>, <gpiccoli@canonical.com>,
+        <penguin-kernel@i-love.sakura.ne.jp>, <rdunlap@infradead.org>
+CC:     <nixiaoming@huawei.com>, <wangle6@huawei.com>
+Subject: [PATCH v2 0/4] panic: Add new API in_panic_state()
+Date:   Sun, 20 Dec 2020 11:45:01 +0800
+Message-ID: <20201220034505.113118-1-nixiaoming@huawei.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-Received: by 2002:a02:c850:: with SMTP id r16mr10235491jao.18.1608435849939;
- Sat, 19 Dec 2020 19:44:09 -0800 (PST)
-Date:   Sat, 19 Dec 2020 19:44:09 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007acf2605b6dd2767@google.com>
-Subject: WARNING in ext4_evict_inode
-From:   syzbot <syzbot+f3e5bd9358af6c9a28c5@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.189.174]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+For some features (such as hang_task, ledtrig-activity, ledtrig-heartbeat)
+different processing logics need to be performed based on whether the
+current system is in panic state:
+	1: Register hook for panic_notifier_list.
+	2. Assign a value to the global variable in the hook function.
+	3. Determine whether the system is in panic state based on the
+          global variable and perform different processing.
+Duplicate code snippets exist, and the timing judgment is relatively lag.
+Therefore, consider extracting the new API: bool in_panic_state(void).
 
-syzbot found the following issue on:
+----------------
 
-HEAD commit:    3db1a3fa Merge tag 'staging-5.11-rc1' of git://git.kernel...
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=15c2f30f500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2764fc28a92339f9
-dashboard link: https://syzkaller.appspot.com/bug?extid=f3e5bd9358af6c9a28c5
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+v2: Rename api to in_panic_state as recommended by Pavel Machek, Tetsuo
+ Handa, Randy Dunlap.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+v1: https://lore.kernel.org/lkml/20201218114406.61906-1-nixiaoming@huawei.com/
+  API name: is_being_panic
+----------------
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f3e5bd9358af6c9a28c5@syzkaller.appspotmail.com
+Xiaoming Ni (4):
+  panic: Add new API in_panic_state()
+  hung_task: Replace "did_panic" with in_panic_state()
+  leds:trigger:ledtrig-activity Replace "panic_detected" with
+    in_panic_state()
+  leds:trigger:ledtrig-heartbeat: Replace "panic_heartbeats" with
+    in_panic_state()
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 8514 at fs/ext4/inode.c:229 ext4_evict_inode+0x112c/0x1800 fs/ext4/inode.c:229
-Modules linked in:
-CPU: 1 PID: 8514 Comm: syz-executor.1 Not tainted 5.10.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:ext4_evict_inode+0x112c/0x1800 fs/ext4/inode.c:229
-Code: 05 72 d6 d3 0a 01 e8 ea 75 ae 06 e9 08 f5 ff ff c7 44 24 2c 06 00 00 00 c7 44 24 28 06 00 00 00 e9 9f f6 ff ff e8 54 29 6b ff <0f> 0b e9 34 f4 ff ff e8 48 29 6b ff e8 73 07 57 ff 31 ff 41 89 c5
-RSP: 0018:ffffc9000166fcb8 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 1ffff920002cdf9e RCX: ffffffff8205683e
-RDX: ffff8880125fb580 RSI: ffffffff8205740c RDI: 0000000000000005
-RBP: ffff888059bf0338 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
-R13: ffff888015bb1070 R14: ffffffff895fec20 R15: ffff888059bf4b00
-FS:  000000000258e940(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b30522000 CR3: 0000000047a9c000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- evict+0x2ed/0x750 fs/inode.c:578
- iput_final fs/inode.c:1654 [inline]
- iput.part.0+0x3fe/0x820 fs/inode.c:1680
- iput+0x58/0x70 fs/inode.c:1670
- do_unlinkat+0x40b/0x660 fs/namei.c:3903
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45dea7
-Code: 00 66 90 b8 58 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 57 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 8d b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fff0cd52098 EFLAGS: 00000246 ORIG_RAX: 0000000000000057
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 000000000045dea7
-RDX: 00007fff0cd520b0 RSI: 00007fff0cd520b0 RDI: 00007fff0cd52140
-RBP: 0000000000000714 R08: 0000000000000000 R09: 000000000000001b
-R10: 0000000000000015 R11: 0000000000000246 R12: 00007fff0cd531d0
-R13: 000000000258fa60 R14: 0000000000000000 R15: 00000000000ab9e5
+ drivers/leds/trigger/ledtrig-activity.c  | 19 +------------------
+ drivers/leds/trigger/ledtrig-heartbeat.c | 19 +------------------
+ include/linux/kernel.h                   |  1 +
+ kernel/hung_task.c                       | 17 +----------------
+ kernel/panic.c                           |  6 ++++++
+ 5 files changed, 10 insertions(+), 52 deletions(-)
 
+-- 
+2.27.0
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
