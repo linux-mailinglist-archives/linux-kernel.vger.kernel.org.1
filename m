@@ -2,118 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A7D2DF2CF
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 03:52:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDEDD2DF2D3
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 03:59:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726985AbgLTCvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Dec 2020 21:51:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37681 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726788AbgLTCvW (ORCPT
+        id S1727153AbgLTC7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Dec 2020 21:59:42 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9232 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726882AbgLTC7l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Dec 2020 21:51:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608432595;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NoHRpV085pjeRA/k08rN9TlOWSM2SBKc9GvOdVexZRU=;
-        b=PL7HL7DYXR3kMLnG3ZQ3yVRpYytkHB04z4vd8CkuFLLxdM5/WWf73AlpBW2IyDetbdH3+Y
-        kevc8CWfhRcBMWs/qYMFFUIbYLK6vId6aaaQahH1RbDvVtTV7UkCIeQUH5AqU4wwjgDyzz
-        fucfa1QOssXijuwVLG4TaZZX0M7LBkY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-114-sbqyOewWMcmhWZBgBKFAcQ-1; Sat, 19 Dec 2020 21:49:52 -0500
-X-MC-Unique: sbqyOewWMcmhWZBgBKFAcQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2A2B21005513;
-        Sun, 20 Dec 2020 02:49:50 +0000 (UTC)
-Received: from mail (ovpn-119-164.rdu2.redhat.com [10.10.119.164])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9989F19D9C;
-        Sun, 20 Dec 2020 02:49:45 +0000 (UTC)
-Date:   Sat, 19 Dec 2020 21:49:45 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Nadav Amit <nadav.amit@gmail.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        linux-mm <linux-mm@kvack.org>, Peter Xu <peterx@redhat.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-Message-ID: <X967yWAoaTejRk5y@redhat.com>
-References: <20201219043006.2206347-1-namit@vmware.com>
- <X95RRZ3hkebEmmaj@redhat.com>
- <EDC00345-B46E-4396-8379-98E943723809@gmail.com>
- <CALCETrVtsdeOtGWMUcmT1dzDBxRpecpZDe02L61qEmJmFxSvYw@mail.gmail.com>
+        Sat, 19 Dec 2020 21:59:41 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cz6jT4S6zzksqv;
+        Sun, 20 Dec 2020 10:58:05 +0800 (CST)
+Received: from [10.67.102.197] (10.67.102.197) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.498.0; Sun, 20 Dec 2020 10:58:52 +0800
+Subject: Re: [PATCH 2/4] hung_task: Replace "did_panic" with is_be_panic()
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Pavel Machek <pavel@ucw.cz>
+CC:     <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>,
+        <dmurphy@ti.com>, <akpm@linux-foundation.org>,
+        <keescook@chromium.org>, <gpiccoli@canonical.com>,
+        <wangle6@huawei.com>
+References: <20201218114406.61906-1-nixiaoming@huawei.com>
+ <20201218114406.61906-3-nixiaoming@huawei.com>
+ <20201218125957.GA20160@duo.ucw.cz>
+ <eddf7043-4bbe-7440-6c3e-ff272f722a86@i-love.sakura.ne.jp>
+ <a2279e36-3665-6328-e515-b12cdc532aa9@infradead.org>
+From:   Xiaoming Ni <nixiaoming@huawei.com>
+Message-ID: <d5c62a81-2b52-5add-98c9-bb75e9b2f436@huawei.com>
+Date:   Sun, 20 Dec 2020 10:58:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.0.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrVtsdeOtGWMUcmT1dzDBxRpecpZDe02L61qEmJmFxSvYw@mail.gmail.com>
-User-Agent: Mutt/2.0.3 (2020-12-04)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <a2279e36-3665-6328-e515-b12cdc532aa9@infradead.org>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.197]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 19, 2020 at 06:01:39PM -0800, Andy Lutomirski wrote:
-> I missed the beginning of this thread, but it looks to me like
-> userfaultfd changes PTEs with not locking except mmap_read_lock().  It
+On 2020/12/19 1:06, Randy Dunlap wrote:
+> On 12/18/20 6:36 AM, Tetsuo Handa wrote:
+>> On 2020/12/18 21:59, Pavel Machek wrote:
+>>> On Fri 2020-12-18 19:44:04, Xiaoming Ni wrote:
+>>> Plus.. is_being_panic is not really english. "is_paniccing" would be
+>>> closer...?
+>>
+>> Or in_panic() ?
+>>
+> 
+> Yes, or  in_panic_state()
+> 
 
-There's no mmap_read_lock, I assume you mean mmap_lock for reading.
+Thank you,
+I'll resend the patch later on according to your suggestion.
 
-The ptes are changed always with the PT lock, in fact there's no
-problem with the PTE updates. The only difference with mprotect
-runtime is that the mmap_lock is taken for reading. And the effect
-contested for this change doesn't affect the PTE, but supposedly the
-tlb flushing deferral.
-
-The change_protection_range is identical to what already happens with
-zap_page_range. zap_page_range is called with mmap_lock for reading
-in MADV_DONTNEED, and by munmap with mmap_lock for
-writing. change_protection_range is called with mmap_lock for writing
-by mprotect, and mmap_lock for reading by UFFDIO_WRITEPROTECT.
-
-> also calls inc_tlb_flush_pending(), which is very explicitly
-> documented as requiring the pagetable lock.  Those docs must be wrong,
-
-The comment in inc_tlb_flush_pending() shows the pagetable lock is
-taken after inc_tlb_flush_pending():
-
-	 *	atomic_inc(&mm->tlb_flush_pending);
-	 *	spin_lock(&ptl);
-
-> because mprotect() uses the mmap_sem write lock, which is just fine,
-> but ISTM some kind of mutual exclusion with proper acquire/release
-> ordering is indeed needed.  So the userfaultfd code seems bogus.
-
-If there's a bug, it'd be nice to fix without taking the mmap_lock for
-writing.
-
-The vma is guaranteed not modified, so I think it'd be pretty bad if
-we had to give in the mmap_lock for writing just to wait for a tlb
-flush that is issued deferred in the context of
-userfaultfd_writeprotect.
-
-> I think userfaultfd either needs to take a real lock (probably doesn't
-> matter which) or the core rules about PTEs need to be rewritten.
-
-It's not exactly clear how the do_wp_page could run on cpu1 before the
-unprotect did an extra flush, I guess the trace needs one more
-cpu/thread?
-
-Anyway to wait the wrprotect to do the deferred flush, before the
-unprotect can even start, one more mutex in the mm to take in all
-callers of change_protection_range with the mmap_lock for reading may
-be enough.
-
-Thanks,
-Andrea
-
+Thanks
+Xiaoming Ni
+.
