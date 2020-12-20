@@ -2,259 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D0992DF507
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 11:39:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F30152DF50B
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 11:56:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727298AbgLTKgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 05:36:13 -0500
-Received: from mout.gmx.net ([212.227.17.20]:37703 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726110AbgLTKgM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 05:36:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1608460474;
-        bh=T3tvc13X96jYmLdbmV+DJl2kKQzkqTs1dBrFBXng1bQ=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=PtlL9g7uz8mucHimzJJ4/YFlMnkNHtXscaR0LFUJYq1IvQ5QHmsaZqJU0MTkJL5yO
-         qhDG+HsVNoYutH7aq65WAFtzVNVkJ+iJPoYM8a7NUn1ZYXyXJAcCKkjvtqAuFFwKId
-         9PT9yRmVRYx7VKbqe43w/Xqz3+WAih0hpvP8dmA0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.178.23] ([77.6.90.85]) by mail.gmx.com (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MbAgq-1kFfLm05d2-00baUG; Sun, 20
- Dec 2020 11:34:34 +0100
-Subject: Re: 5.10.1: UBSAN: shift-out-of-bounds in ./include/linux/log2.h:57:1
-To:     Randy Dunlap <rdunlap@infradead.org>, jgg@ziepe.ca
-Cc:     Linux Kernel <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        axboe <axboe@kernel.dk>
-References: <c6e5eb81-680f-dd5c-8a81-62041a5ce50c@gmx.de>
- <5c172fad-a9cf-c29d-0a27-f2b0505dc33d@infradead.org>
- <43d52285-a10e-692d-daa6-6f5eb07e3132@gmx.de>
- <1affc309-709b-556e-fe51-72e59e83f90c@infradead.org>
-From:   =?UTF-8?Q?Toralf_F=c3=b6rster?= <toralf.foerster@gmx.de>
-Message-ID: <84c7a7e1-5f19-2578-3274-4b1bf4f348f6@gmx.de>
-Date:   Sun, 20 Dec 2020 11:34:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <1affc309-709b-556e-fe51-72e59e83f90c@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1727365AbgLTKxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 05:53:04 -0500
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:16738 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726541AbgLTKxD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Dec 2020 05:53:03 -0500
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BKAk7G5026174;
+        Sun, 20 Dec 2020 02:50:05 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pfpt0220;
+ bh=xewrPprrNTz7OBc1nW+ajHDqM7SlvHGoJ1XWILNbrsU=;
+ b=ThYrWQ2b8UMw/TkcI81MFslAZ/zU2ArpUbf3co5o6Mo93jM+NLPKKlAwqKa5PZIR/aIv
+ 2VZcqCygHzgPZ/vu4e9yWfuFyQc7LSYiMJN0tk/RfLdeTbjVvgDNjUyBHCZ4VVXE0Sfr
+ NL69fBHvkXPJWK7CDbWr/VmE99Rms9jSZLP4cQmh2AjEJBjKFEhWhOBHO3qPo4oIALJO
+ DScRFd9oE0EPDMc25oDWxYkmGqIsWDqHJQWAkGLyPncCMMzip3MT72BTKwX0omPVy5rd
+ J37NhOYslI3HaS72OKOi7AUviwu15DnGlCE7BvRBC4/EXN8qmyLao2SI9Gk9VOnPy7pN Tg== 
+Received: from sc-exch03.marvell.com ([199.233.58.183])
+        by mx0a-0016f401.pphosted.com with ESMTP id 35hfru1vrj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Sun, 20 Dec 2020 02:50:04 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 20 Dec
+ 2020 02:50:04 -0800
+Received: from SC-EXCH03.marvell.com (10.93.176.83) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 20 Dec
+ 2020 02:50:03 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.49) by
+ SC-EXCH03.marvell.com (10.93.176.83) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Sun, 20 Dec 2020 02:50:03 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=da502pOYtAajD9uCdknBO1MXgj2CRguW9g8xXRVAIhmgavZrod5X8zuoRwRwhTWNOEfGNnL5MlJnokoGrRrkNPt3rDPpF5OL92KVwF59XUcUnTUVGA9WS4fWE8L6kuRFbBIyfY1vqxrBFDMHAcFnC17mTysIBLe2M0W2hM4BlSp3D21v/qq5DoZwiGPU3iqS9V6UKXWlXriTY3M+klotjybtAPfFG+8xyCx27agwEwJX95FOdLZvyL2O4n/RHkcvIdVVh5lcNXvDQbuBUX98zoOlMjTIJ4WWncYG9eX5WXY+MTkaJPqlGUkH18yjIjmMn4f5SzR1O595JySnQqbzbg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xewrPprrNTz7OBc1nW+ajHDqM7SlvHGoJ1XWILNbrsU=;
+ b=DvMufptbMSxfnjvs3f8Uo24SXkirwMDOk1kBZlucccKboG4NuVilAFmY4Jeq1XCtY5zvC9oVKVOujrD4TctAbptDmZw/B17IO+LzHnyvoszYLY62flI+IE3M0PKJjIFSgxesVcgjWD0gFus8O4Te8KAURBbbkURpFYxroAsY34dIO+U4s1lok2fXS0XG81ealmlTVnkAS0nxZgQWU+2ep7qIJU7bx8foGSD4g6XpVBsX3+a/MohbwQqd/zpBAcnOEDE4QwAfMA0CMKwCc+IlTT6Ab5KXttQwTwwG2QUUbjkjvH/3E7fazPF+lUKNsBjLFYgIXbIqRhAwer1kAy7mZw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xewrPprrNTz7OBc1nW+ajHDqM7SlvHGoJ1XWILNbrsU=;
+ b=IyiCPyzajyukWXRjSVYCbLZUwHr+QHhChk6mCgI2XxC5Cj+FmRiaMuco9gQ9Ks7xa/0K7cD07XT1iuDw0FD3KdoX9XHbY4WyNd04kyW2AGcjP8MDsevPbWlfe5wFyWVhoQIuR67UCotm8+uIklbzxDlca3bR6xdQonoWNc+pa1Y=
+Received: from CO6PR18MB3873.namprd18.prod.outlook.com (2603:10b6:5:350::23)
+ by MWHPR18MB1167.namprd18.prod.outlook.com (2603:10b6:300:a3::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.29; Sun, 20 Dec
+ 2020 10:49:59 +0000
+Received: from CO6PR18MB3873.namprd18.prod.outlook.com
+ ([fe80::ed55:e9b3:f86c:3e5b]) by CO6PR18MB3873.namprd18.prod.outlook.com
+ ([fe80::ed55:e9b3:f86c:3e5b%7]) with mapi id 15.20.3676.031; Sun, 20 Dec 2020
+ 10:49:59 +0000
+From:   Stefan Chulski <stefanc@marvell.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "thomas.petazzoni@bootlin.com" <thomas.petazzoni@bootlin.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Nadav Haklai <nadavh@marvell.com>,
+        Yan Markman <ymarkman@marvell.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "mw@semihalf.com" <mw@semihalf.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "rmk+kernel@armlinux.org.uk" <rmk+kernel@armlinux.org.uk>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [EXT] Re: [PATCH net v3] net: mvpp2: Fix GoP port 3 Networking
+ Complex Control configurations
+Thread-Topic: [EXT] Re: [PATCH net v3] net: mvpp2: Fix GoP port 3 Networking
+ Complex Control configurations
+Thread-Index: AQHW1HFsFppZFHLMZkWdy2soZ3S/Dan+uHOAgAEZlIA=
+Date:   Sun, 20 Dec 2020 10:49:58 +0000
+Message-ID: <CO6PR18MB38730422BDF0FF5310117B05B0C10@CO6PR18MB3873.namprd18.prod.outlook.com>
+References: <1608208648-13710-1-git-send-email-stefanc@marvell.com>
+ <20201219095917.67401234@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201219095917.67401234@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Accept-Language: en-US
 Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=marvell.com;
+x-originating-ip: [62.67.24.210]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d08d4b73-02dd-4f46-0367-08d8a4d4fef4
+x-ms-traffictypediagnostic: MWHPR18MB1167:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR18MB1167C4902F50EEF953D3D323B0C10@MWHPR18MB1167.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: NaYZRvOhbyWfeVQNOOri1S94jUV/Gdhr7kEQcx+Zdtd56OuskpEYxMUorAf++hk5jqb42n/Vwwc+NrKM3P2doWgbknAM71NajPmURfqnxTcgKsP5SihwWPQqLfrKfDpD1SaZ0dXat2Ww3QowF79JP3EtD5SkRCpAzmOYL+ZrJ5zjNSVcpF3klIMt6V6rYrYhx2EF5nDEDAwi/Cet8eDW3uMRSe9kWOSOKyR2qfSw8qSUrENzmSfa0kpiNC9ZdI1jXKV3call5KlQcJX0VLa+vir8DrXWbdJ6pyebtTnLCY4ZaHseZ4Gd4LwBe5VgyaxAKaqN1dBTClWBLvSGhU97NL51ufexMI7r9HEwjeh2JrGOHOkoP8i2bRL2mHXL5nbRvj1T1UZHxQh9F+ZCxuZmgA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR18MB3873.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(396003)(346002)(39850400004)(376002)(71200400001)(54906003)(64756008)(86362001)(66556008)(4744005)(186003)(66476007)(66446008)(5660300002)(52536014)(26005)(6506007)(6916009)(8676002)(7416002)(478600001)(55016002)(66946007)(33656002)(2906002)(4326008)(9686003)(7696005)(76116006)(316002)(8936002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?rg3FDfqjO24YqQ2nn96JqMdcT1cCEHHFMUalo1856mcutXWm3AwRWY9B+Hh2?=
+ =?us-ascii?Q?NrQoJT6EZ2uALtl2Vz2nZ/1PRG4RTfHI4UdxHFWJmTO5rxm3vnhKmmdoUhpQ?=
+ =?us-ascii?Q?CFirCziYpimAlMTk3jAsFCXa/c5uSTYlW6ILCO2bu9KfL/EHXJxTVy5QTj2g?=
+ =?us-ascii?Q?Eeoh0iL+GEhODg76SZpgeRjMSLlar3sn0D+kasIyNkiEcunJ1j8eJpu/Vb9Z?=
+ =?us-ascii?Q?KoCb3YomwDim8RUiunM9LBhgzuLLpO+8YLHd55yqucwulO5h/UpHAcM7qBQe?=
+ =?us-ascii?Q?WDpO3Pg2ZZqxouyvQ4FsJcV61L17nxeLopzu2jdvlVE8c9jr+lGgHUad471m?=
+ =?us-ascii?Q?4ftm7usNR/dBDXvOD9qImeIB2xKWBkUYwp6E8vZ6VrEU3po4lS90nE82HBgp?=
+ =?us-ascii?Q?gvhNd/DlYpqRH0W/CGK+lobdwBYJHKs246mQg1U46CAo1Z8bqrus7zD+JSPb?=
+ =?us-ascii?Q?IcQM44APJwkyfPjEVqFtUuwpLNp+eHc1JttGh2Jwsr/0PA2Y8ofiykCP+t9O?=
+ =?us-ascii?Q?WyYaQHZhffqY6Cgh4aE0sRPFd7qWAyuOtynpg1YpkFxB0CgV7ZlwYRis3+jU?=
+ =?us-ascii?Q?DQrUYHM2ZXWbgFqvP7jiayvQgBZ7MUV3F4qGmvF9tsGSVakdLbOnUKi6oSlV?=
+ =?us-ascii?Q?J1raSBdCzLkZC7WN2nHNTficyRSvQZitsBEs36RwY/cJErg/d7WoJF+YuDrr?=
+ =?us-ascii?Q?DqgTVYrWtpjtWQmwED/4AiOjJQQfxphLnCtcgofkhKH52fL5j+kklvrQLJk6?=
+ =?us-ascii?Q?8FhI3LF0PFZaidgaE28h5bq4B5xPJt0D2tp+zIw5JRJawg87dO+RghA+6+ot?=
+ =?us-ascii?Q?eWjnv8gCrdXMoMxnGK4jBsjHak2KWO/ndGIX3A5m20Cbc0LJ0c1lath4dgEn?=
+ =?us-ascii?Q?xu580OkzuWHwGW5rNrCdm0Zsnj5kJcR84GPaayDAEhVw7CFrtEU0tyUSeA9E?=
+ =?us-ascii?Q?XqS8B74ldSlR0ZrlGuIsBKD2nM+APYjhdCvVntNG7FI=3D?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:v2yAsVxiGHkb8L4dUOon/VUqHaPZVnaTk7IZGyVahCJyi89RcvT
- L+HUdJiyzYsRz5/6lVmyVxc74+rlOYTWMbNThfzqszQr/pO8UDsoR5uuUGSw2PKtOeEyEBP
- QcgkugwlFBH2dRvQoIPaxSVH7DclHcwi9uQL5sWbdFXGgyKzQIofk1IjAJTV0FcP5tPlGHr
- 3+YK+955WyO74xpDXJwXg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:HlbHWoWCjaw=:/bR1q7JJwW4c8fbAInBcka
- LJ/Ym7Y1O2TnQ0+PR/T5/P4mmTLUx4ZKPHcUrI9H0xf+WaJuiap/DV21Ot/+FGbkApuV4CVab
- OC5fJBMq+53JJcBvPaCYm9TiQDCKJAc6hCtkTNNe/on6+aHsjSBQf9tZLm116QGGE1moMgL1o
- nbOiZ4ZFeOfuGMqjOjZ159O4iZwYeIQBgcQ7m6+SjRDuV7JfHDMFz7kAgFLChEZCMGy2HzK1w
- KVODJAakmTC/wQkqyZRZGF3rnT4BDLEkBvPnCkpKB7Jscp3lsHPdowDx6zUL8EPKicqMELC07
- wlGs8+7Ad+5CIhIIgUncgpjOURcH7hGBZe50uKC1RlclURSAy6t19c2R9CgyRBQwGK4wxhnM8
- vQ3DKFRg4g8GFTsaEVc4705JVj8I8FymEmdYgGV+K4G0tpKcooi+Jke+tJHvwgjGoYtlIfUhL
- VCBB23kp8L9ox40P8ByYnRT28RLNPU4WiHmMULPBIFPB4Tuu2LFEZ/g0i8H2kqAKxEph8RdEr
- DCC/S+VRdnl1LW+hdluRTQ+LDpaB0hJDh+G7y2rwXpAsSLytcH+L7NpoBPefilE7aljg69uxJ
- Lu6QtKg9pVBaAyXiIxoxYY0CHmB9Y3Spodr70Ws3XbtQQwPHjbLO3WOopAD6lnyMr82Ee+/qb
- EQ+mCZREmNVwuhRtojLrFauCI5avCSeQcOMQznI0c8bIRZvOnjbB8GCoQb3bZA9Xw8WBx3flY
- p7OMrAbSBNd9J4yfYxSbhgrD2zsEoH4Rw0SrYH015FLUx8+bH5GsR65ezf9np+5Y4xbKvG2GJ
- kPjCYU6LfmKkA49JJJ/6eEHibQ+Bbec/uwb+NC6bX4COIrpL5RDhHMjywrNk8fbjQ4m2SBT8P
- MNHn6Ux4FvLIcPFihtbQ==
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR18MB3873.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d08d4b73-02dd-4f46-0367-08d8a4d4fef4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Dec 2020 10:49:58.9704
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: k6c/Gw73NuuXt6Cfwvl21J4i2hFn713aeigw56QwH/DVZCOECKBjWARk88/t0peiFGdumRYg53j2EbQNELSDDw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR18MB1167
+X-OriginatorOrg: marvell.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-20_03:2020-12-19,2020-12-20 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/20/20 2:09 AM, Randy Dunlap wrote:
-> On 12/18/20 2:20 AM, Toralf F=C3=B6rster wrote:
->> On 12/18/20 7:54 AM, Randy Dunlap wrote:
->>> Hi,
->>>
->>> [adding linux-mm]
->>>
->>> On 12/16/20 1:54 AM, Toralf F=C3=B6rster wrote:
->>>> Hi,
->>>>
->>>> I got this recently at this hardened Gentoo Linux server:
->>>>
->>>> Linux mr-fox 5.10.1 #1 SMP Tue Dec 15 22:09:42 CET 2020 x86_64 Intel(=
-R)
->>>> Xeon(R) CPU E5-1650 v3 @ 3.50GHz GenuineIntel GNU/Linux
->>>>
->>>>
->>>> Dec 15 23:31:51 mr-fox kernel: [ 1974.206972]
->>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>>> Dec 15 23:31:51 mr-fox kernel: [ 1974.206977] UBSAN: shift-out-of-bou=
-nds
->>>> in ./include/linux/log2.h:57:13
->>>> Dec 15 23:31:51 mr-fox kernel: [ 1974.206980] shift exponent 64 is to=
-o
->>>> large for 64-bit type 'long unsigned int'
->>>> Dec 15 23:31:51 mr-fox kernel: [ 1974.206982] CPU: 11 PID: 21051 Comm=
-:
->>>> cc1 Tainted: G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 T 5.10.1 #1
->>>> Dec 15 23:31:51 mr-fox kernel: [ 1974.206984] Hardware name: ASUSTeK
->>>> COMPUTER INC. Z10PA-U8 Series/Z10PA-U8 Series, BIOS 3703 08/02/2018
->>>> Dec 15 23:31:51 mr-fox kernel: [ 1974.206985] Call Trace:
->>>> Dec 15 23:31:51 mr-fox kernel: [ 1974.206993]=C2=A0 dump_stack+0x57/0=
-x6a
->>>> Dec 15 23:31:51 mr-fox kernel: [ 1974.206996]=C2=A0 ubsan_epilogue+0x=
-5/0x40
->>>> Dec 15 23:31:51 mr-fox kernel: [ 1974.206999]
->>>> __ubsan_handle_shift_out_of_bounds.cold+0x61/0x10e
->>>> Dec 15 23:31:51 mr-fox kernel: [ 1974.207002]
->>>> ondemand_readahead.cold+0x16/0x21
->>>> Dec 15 23:31:51 mr-fox kernel: [ 1974.207007]
->>>> generic_file_buffered_read+0x452/0x890
->>>> Dec 15 23:31:51 mr-fox kernel: [ 1974.207011]=C2=A0 new_sync_read+0x1=
-56/0x200
->>>> Dec 15 23:31:51 mr-fox kernel: [ 1974.207014]=C2=A0 vfs_read+0xf8/0x1=
-90
->>>> Dec 15 23:31:51 mr-fox kernel: [ 1974.207016]=C2=A0 ksys_read+0x65/0x=
-e0
->>>> Dec 15 23:31:51 mr-fox kernel: [ 1974.207018]=C2=A0 do_syscall_64+0x3=
-3/0x40
->>>> Dec 15 23:31:51 mr-fox kernel: [ 1974.207021]
->>>> entry_SYSCALL_64_after_hwframe+0x44/0xa9
->>>> Dec 15 23:31:51 mr-fox kernel: [ 1974.207024] RIP: 0033:0x7f01b2df198=
-e
->>>> Dec 15 23:31:51 mr-fox kernel: [ 1974.207026] Code: c0 e9 b6 fe ff ff=
- 50
->>>> 48 8d 3d 66 c3 09 00 e8 59 e2 01 00 66 0f 1f 84 00 00 00 00 00 64 8b =
-04
->>>> 25 18 00 00 00 85 c0 75 14 0f 05 <48> 3d 00 f0 ff ff 77 5a c3 66 0f 1=
-f
->>>> 84 00 00 00 00 00 48 83 ec 28
->>>> Dec 15 23:31:51 mr-fox kernel: [ 1974.207028] RSP: 002b:00007fff2167e=
-998
->>>> EFLAGS: 00000246 ORIG_RAX: 0000000000000000
->>>> Dec 15 23:31:51 mr-fox kernel: [ 1974.207030] RAX: ffffffffffffffda R=
-BX:
->>>> 0000000000000000 RCX: 00007f01b2df198e
->>>> Dec 15 23:31:51 mr-fox kernel: [ 1974.207032] RDX: 0000000000000000 R=
-SI:
->>>> 00000000054dcc50 RDI: 0000000000000004
->>>> Dec 15 23:31:51 mr-fox kernel: [ 1974.207033] RBP: 00000000054dcc50 R=
-08:
->>>> 00000000054dcc50 R09: 0000000000000000
->>>> Dec 15 23:31:51 mr-fox kernel: [ 1974.207034] R10: 0000000000000000 R=
-11:
->>>> 0000000000000246 R12: 00000000054dc3b0
->>>> Dec 15 23:31:51 mr-fox kernel: [ 1974.207035] R13: 0000000000008000 R=
-14:
->>>> 00000000054c9800 R15: 0000000000000000
->>>> Dec 15 23:31:51 mr-fox kernel: [ 1974.207037]
->>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>>>
->>>>
->>>> Known issue ?
->>>
->>> Not that I have heard about, but that's not conclusive.
->>>
->>> Looks to me like this is in mm/readahead.c:
->>>
->>> static unsigned long get_init_ra_size(unsigned long size, unsigned lon=
-g max)
->>> {
->>>  =C2=A0=C2=A0=C2=A0=C2=A0unsigned long newsize =3D roundup_pow_of_two(=
-size);
->>>
->>>
->>> What filesystem?=C2=A0 What workload?
->>
->> / is a 32 GB ext4 filesystem.
->> Data are at 3 BTRFS filesystems, 1x 500 GB and 2x 1.6TB.
->>
->> 2 Tor relays run at 100% each and utilizes the 1 GBit/s by 50%-60% [1]
->>
->> 7 build bots are running over the Gentoo software repostory [2]
->> 1 AFL bot fuzzies the Tor sources.
->> Those 8 jobs are contained by a cgroup of 9 CPUs and 120 GB RAM [3],
->> each job is contained further by an own sub cgroup of 1.5 CPU and 20 GB
->> RAM [4]
->>
->> The host is monitored using sysstat, the load is about 11.8, CPU[all] a=
-t
->> 80%, proc/s at 1800, cswchs/s at 20000 and so on.
->>
->>
->> [1] https://metrics.torproject.org/rs.html#search/zwiebeltoralf
->> [2] https://zwiebeltoralf.de/tinderbox.html
->> [3] https://github.com/toralf/tinderbox/blob/master/bin/cgroup.sh
->> [4] https://github.com/toralf/tinderbox/blob/master/bin/bwrap.sh#L15
->>
->> --
->
-> Hi Toralf,
->
-> Is this something that happens more than once?
+> External Email
+>=20
+> ----------------------------------------------------------------------
+> On Thu, 17 Dec 2020 14:37:28 +0200 stefanc@marvell.com wrote:
+> > From: Stefan Chulski <stefanc@marvell.com>
+> >
+> > During GoP port 2 Networking Complex Control mode of operation
+> > configurations, also GoP port 3 mode of operation was wrongly set.
+> > Patch removes these configurations.
+> > GENCONF_CTRL0_PORTX naming also fixed.
+>=20
+> Testing the stable backport it looks like this addition change will be
+> problematic. Not to mention it goes against the "fixes should be minimal"=
+ rule.
+>=20
+> Could you please send just a one liner which removes the offending ORing =
+in
+> of the bad bit?
+>=20
+> We can do the rename soon after in net-next, the trees are merged pretty
+> much every week so it won't be a long wait.
 
-Till now only once.
+I would repost with single line change.
 
-> I think we would like to find out what is causing it.
-> I see a couple of problems.
->
-> (a)
->    UBSAN: shift-out-of-bounds in ./include/linux/log2.h:57:13
->    shift exponent 64 is too large for 64-bit type 'long unsigned int'
->
-> <linux/log2.h>:57: is like so:
->
->      50	/**
->      51	 * __roundup_pow_of_two() - round up to nearest power of two
->      52	 * @n: value to round up
->      53	 */
->      54	static inline __attribute__((const))
->      55	unsigned long __roundup_pow_of_two(unsigned long n)
->      56	{
->      57		return 1UL << fls_long(n - 1);
->      58	}
->
-> It's OK/valid for fls_long() [fls64()] to return 64 for a bit
-> position -- it just means the high-order bit in a 64-bit value.
-> So this code should either always subtract 1 from fls_long() or
-> do that if fls_long() =3D=3D 64.
->
->
-> (b) in mm/readahead.c:get_init_ra_size():
->
->     305	/*
->     306	 * Set the initial window size, round to next power of 2 and squ=
-are
->     307	 * for small size, x 4 for medium, and x 2 for large
->     308	 * for 128k (32 page) max ra
->     309	 * 1-8 page =3D 32k initial, > 8 page =3D 128k initial
->     310	 */
->     311	static unsigned long get_init_ra_size(unsigned long size, unsign=
-ed long max)
->     312	{
->     313		unsigned long newsize =3D roundup_pow_of_two(size);
->
-> It looks like 'size' is either extremely large or it might be negative i=
-f
-> it were a signed long instead of unsigned, so maybe it's 0x80000000_0000=
-0000
-> or 0xffffffff_ffffffff or something similar. I think that we should add =
-a
-> WARN_ON_ONCE() there to try to catch whatever it is.
->
->
-> Is this something that you could test if I send some patches?
-
-Sure, no problem
-
-> Unless other people have some other ideas, that is...
->
-> thanks.
->
-
-
-=2D-
-Toralf
+Regards,
+Stefan.
