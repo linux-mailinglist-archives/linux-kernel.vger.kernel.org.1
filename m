@@ -2,157 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD01E2DF52B
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 12:11:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF6C52DF52D
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 12:15:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727439AbgLTLKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 06:10:12 -0500
-Received: from lb3-smtp-cloud8.xs4all.net ([194.109.24.29]:41361 "EHLO
-        lb3-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727291AbgLTLKL (ORCPT
+        id S1727381AbgLTLO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 06:14:29 -0500
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:20860 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727113AbgLTLO2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 06:10:11 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id qwaYkRcz68AynqwackjwCk; Sun, 20 Dec 2020 12:09:27 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1608462567; bh=q8ilWY1qGyiTeZdgJd88aLkPFq/KCfKtmyIVxGZQLP0=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=edXKEkOFDiPEfn5zvs2R5ilkbYHyHyDqv8NkM3Etha/qWIMDP/wMXj0TnHfKbxj9f
-         2/6SG0/y9NQbZY8+Sqz/PH69DkLBYMhp8/js660/kdKyCoFissFnNH4AECdnK/eJcS
-         D69Rkw0KiZluhRdbgpJgD4YdwNCVeuWK7nlGeU7jVcFbzNhP7TAKYlqKRYQMWqgslt
-         n25c56KLGKYXUHH1KwpUYSnUA4JcYLFN91zNfBq2mT7VNCzbcDfBEonAtNpZa1WvH6
-         L+uitSBcXMxwP4Be1ylvajxcaiF7THWrQV+dghkMeRK/+On40L1sRihz2qwF7Vj2oy
-         f4n11NcjLcjEA==
-Subject: Re: [PATCH 1/1] v4l: ioctl: Fix memory leak in video_usercopy
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        syzbot <syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sun, 20 Dec 2020 06:14:28 -0500
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BKBAVpT005614;
+        Sun, 20 Dec 2020 03:11:38 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pfpt0220;
+ bh=SuY0wyrB4++bY2Wa6bim6xAu22PfO4UJyVdL1wv8oMo=;
+ b=QTvaGlhaHlxnrK+8XwRDZ+U4nvH7AMMIXC2qzkzdLP9CWzgPqdloYBzrdAM0KKyKSkSh
+ wUnsWHg+Yp+QaR0OyRps7vIRp78fxvwS3vGzzPsGdpMuz3YaratPda5l7irIbn7xNa+Z
+ cR4ztZLbWm9o56USSHqWjLjuqRw8CBttPuxw1PIf8QYVVgTWDDt8Drqj5dNj588m6ZCs
+ AFn5ZL7ULolXqTQq/HeaMVpZneJlb2f3DoFWus9TgRggpS+ttNiDtOHYknlSF5RhbfPN
+ ztd8c3IRXHgePZWiJv3KlpqSM4vTQz3vkyphY1AZa8ybQI2iisGvakineuGYt2TnAsae AQ== 
+Received: from sc-exch01.marvell.com ([199.233.58.181])
+        by mx0a-0016f401.pphosted.com with ESMTP id 35hfru1wmg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Sun, 20 Dec 2020 03:11:38 -0800
+Received: from SC-EXCH02.marvell.com (10.93.176.82) by SC-EXCH01.marvell.com
+ (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 20 Dec
+ 2020 03:11:37 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.103)
+ by SC-EXCH02.marvell.com (10.93.176.82) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Sun, 20 Dec 2020 03:11:37 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HvOzzHW7CnOuQAF7yEe6ONrnJH21ZUNNv3B1gMpKf/g4PsA2IVhwMFtNvK35F8vblgwInBRo3a2u/sNvphD20l3PHgroi8WRP6tKOhtAt74GQx2Vy0Y05blXxcv8x2QZ8c95McZcDCdXhxS/wRnBOvyfTXgBUehpKnNR0EimodsYQq/Gg2z0lcv4R8tZLRK4FrLlA3iyT/Lpbs3iOIt7/0T04lNMIkYA1RQXiSiaIEz6GaxZBWWyiRtC1VIU/4mt5dIpihuDRTJtcwaeDaEirauGyaJv2zViMc/2ADeVuzC+NPMNfH3/DfJQsXhclp9sNsZm2ogY87Pm3mrQ+g6zvA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SuY0wyrB4++bY2Wa6bim6xAu22PfO4UJyVdL1wv8oMo=;
+ b=BazBaAxSn12jdkB/3jJIKCTQqUtuaAiGAMaZqbTjc4oEhXt/O/5AiG+xGI8VXVljhQCSSrmGGIvPptw2mHwrIa5t/0YjED6JMRPSWYi2nqkXKpk84c15py5OvTLOIuNNwDjPJBGtmXYKdSl24DFQoVDDSfNITw3dVFS/3le7hzmsOQkPo5dvWhKNc9Yy4t7LPghPPOGkKGimP6TOr8REVZQz6eLA4x3QIDRdtBupPQ0lwxJZ6n5QAOvlfEKlaIoDkH6TT093aKn2OIqLjqUHsgzEcIZuiiST/MgiFlGZ8diDRNppkgE3VdcC/rTDbnVPlKYCvXw52TdHkRQT9HasGw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SuY0wyrB4++bY2Wa6bim6xAu22PfO4UJyVdL1wv8oMo=;
+ b=ESP1QmgAoZxFFk2gD2rJkoZQMpcDuqcVx/HxL+LGD2aEdu1vsrbO/ibksKapBXh+dll8arOp0YqjPBXW/PKsDo8HHZhQ0oXwoM1SC4MDNjf/z6qeKMuP0uNAjlwLjfcz03slBD81YnWWr1mNtEXMP9YE46jjmwOredNchlEV+0E=
+Received: from CO6PR18MB3873.namprd18.prod.outlook.com (2603:10b6:5:350::23)
+ by MWHPR1801MB1950.namprd18.prod.outlook.com (2603:10b6:301:69::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.25; Sun, 20 Dec
+ 2020 11:11:35 +0000
+Received: from CO6PR18MB3873.namprd18.prod.outlook.com
+ ([fe80::ed55:e9b3:f86c:3e5b]) by CO6PR18MB3873.namprd18.prod.outlook.com
+ ([fe80::ed55:e9b3:f86c:3e5b%7]) with mapi id 15.20.3676.031; Sun, 20 Dec 2020
+ 11:11:35 +0000
+From:   Stefan Chulski <stefanc@marvell.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "thomas.petazzoni@bootlin.com" <thomas.petazzoni@bootlin.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Nadav Haklai <nadavh@marvell.com>,
+        Yan Markman <ymarkman@marvell.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-References: <20201220110651.13432-1-sakari.ailus@linux.intel.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <2db0cf77-680c-3a67-19b1-43c342467c82@xs4all.nl>
-Date:   Sun, 20 Dec 2020 12:09:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <20201220110651.13432-1-sakari.ailus@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "mw@semihalf.com" <mw@semihalf.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "rmk+kernel@armlinux.org.uk" <rmk+kernel@armlinux.org.uk>,
+        Liron Himi <lironh@marvell.com>
+Subject: RE: [EXT] Re: [PATCH net-next] net: mvpp2: prs: improve ipv4 parse
+ flow
+Thread-Topic: [EXT] Re: [PATCH net-next] net: mvpp2: prs: improve ipv4 parse
+ flow
+Thread-Index: AQHW1I7bWzRLWj25WE2No6/WVppXYKn+uXeAgAEdkvA=
+Date:   Sun, 20 Dec 2020 11:11:35 +0000
+Message-ID: <CO6PR18MB3873C6157D3F89092964B14FB0C10@CO6PR18MB3873.namprd18.prod.outlook.com>
+References: <1608221278-15043-1-git-send-email-stefanc@marvell.com>
+ <20201219100345.22d86122@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201219100345.22d86122@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfCaK1SSCXt5ylbHGsL1+8d0YMWdeQCJH76C750TWjAhiqa0+oYaAv6WUozT70zkN2JOITxesAV9LccQOK8KPsDsDlmUVlEMnl8nS+KxB+38kUafUNow9
- LQB1hsawbgLi1GQggvlY8xTNTklroRiGJYW0ASB33yPerPx9MCbpkeXYk6+vswjFExxZpzcROs7NIiS7/UT0gLNLwEwXLmzvLbcSq3fPjNAS1Fs/Bdn7eQqk
- H45sNVE68vCTM+1Yv3oPGjO4RBZEf+Pmq68CTc90Zlc/fDZPwj4YBDzTSM80JyddxHkKIQO4qGl/Wbwns1p/oeiKbNDJk9d0Zo1Qioq/A1kYbRIOAUW88RNi
- 1VvXxFBGfK0qfmpDlAnzQZotvw5JJiRcef/OZ3f43lSg0X6spmzZcKpLl0wSWv4DEnTApKTPQI4B67cjKeSq85dDeLmueEplIp2gnaUBo+GZHWCiW/iMtOmJ
- SZS/5/sI7Pb7Toiv/gY2JNRu0YN5bEhFEdXjUM0c4C9oqTgmfK8GJz+JJk/idL68L/9H156eGGPy4yvk
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=marvell.com;
+x-originating-ip: [62.67.24.210]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d7be7b3e-aef8-473a-742e-08d8a4d803a4
+x-ms-traffictypediagnostic: MWHPR1801MB1950:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR1801MB1950F77B5E0743B040713535B0C10@MWHPR1801MB1950.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: sU99iVqExizpL6cQM3YPczXcXozaJRj/aB2hOZB3ositexD/h/lNp+NvNbAJrxkWEXxxqZ6EV+z3BWHrG0hOucW6VohHnSgsvf5gijjjz4iEaV/gDfGB798xVP4WuKq1idjJgfoo19AZkNhNhkVk7iHdATbr+vhdHQwq9P18FhZ/OPHIG4429+pSM94krpxsxFQVFJDk5aPrgc7vJthGzTk3SC/B6LsVhBMdLsRHcC8+lXY2qcHnY5MnMqtmXBFjJsSXG/K3Mpg8UZs/Ff2s3bxGEQmARo42MJ3qs+UOl/NPKA+KSiU3Jf+ZelEyxSuRTUxdIFXaVEBqJdGsXNL3hCdF+dGRYixMb7x47C2gY3xbgvYbAxTxDsWcVxXu+Tb5vR52n8liLNZu5+HFrrr2Y+TLE4c0Q9nZnNPkDpLvxoNxMU0ORR79pBX0IzDRTJfyEkl4HARSgbnWfjMvdunWLA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR18MB3873.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(396003)(39850400004)(136003)(346002)(5660300002)(966005)(86362001)(8676002)(478600001)(6916009)(7696005)(6506007)(8936002)(66446008)(83380400001)(316002)(9686003)(55016002)(71200400001)(54906003)(66556008)(66476007)(107886003)(2906002)(64756008)(52536014)(33656002)(4326008)(66946007)(26005)(76116006)(186003)(19627235002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?6z4iLgz0GZlPcIEGOKbnvbaWvKALVzXRs2N9lGqHFNHVn1E2WN/Xa/SIHOg0?=
+ =?us-ascii?Q?VajuF/BrCF/dMEHK5QuqD8CgR//Gl6dE6fdDheU6FfIasdU49P9O5E8Pe+a4?=
+ =?us-ascii?Q?LXQ0k1XakRj0jdWLEJai7HUAd8LSAVf/6S0uIJ5vtV7WvZXa5hHdRwjY/H9O?=
+ =?us-ascii?Q?qYE1g7YpdAObdzIh+Ovl+8u9Jfcjl/0cAPAC5WtWSFRQTOJeFIXEqhoG/k3d?=
+ =?us-ascii?Q?EtP7XfX8xjcyon2xrkKZYvGibrx+1GZAST/aEwRmnVCUwcArxpct6ist3GpB?=
+ =?us-ascii?Q?Aiq1xHEhXoW6DihNX7zXeuiDgxz/X3aqqOyNVc18fduPbajsdd+1rETWzx9A?=
+ =?us-ascii?Q?PJtPwnV9Z4vfgC1z4hb5WH1KcY9cpkBhLntkidqGdMl79ea0IXa6zbcJDDpd?=
+ =?us-ascii?Q?EqCJfTE3Zahn7uMKOhCJKoWfjWOizD95r6WF+j1rPT+3TjpLhN5FJ0QCQeaR?=
+ =?us-ascii?Q?7/GG6opTSsb7YF0sCPoIU2lSldPsQpK7UCSKrW3DnhDkSAzLznouD2/IMcnY?=
+ =?us-ascii?Q?SAwAdOxJlIoYyDSxP4bdp1oXEIdG6PLTphWNTBAgjEz9CCCRLqBlFbMMNWMJ?=
+ =?us-ascii?Q?4cwgR5tf/N1YaaF+G4FSOhguj2yhG/NHq9T7H31zz2u1JlivCPBgaWZnXa+0?=
+ =?us-ascii?Q?zjhGjjTDSUq2DqI1bfmYjBLdHDKhaNwbjrQSeZchrU9YLPCIDczRJnG9WJzI?=
+ =?us-ascii?Q?tJooRHy/u0H6/6k2w47yc6vOASl2BRyRKCJGAmgg+PNpPtKCjeXqNeP0scF3?=
+ =?us-ascii?Q?zud5X5SnN0aszofWF4n8Tcn6m6/V8WHhLA9+TDTAMSnUy9a2yWbzGt8GJ0Wz?=
+ =?us-ascii?Q?eamBdqIm/UxcwWpik+ov5QTEDHpoZnnRTCdFBBX3j1zBSpql7g2aHwOOS3eh?=
+ =?us-ascii?Q?XxakUuL3tZ59EmFBX6I0rv6Dz44iH8yawi19tu228JaB5PkgMnTndj0O/2RY?=
+ =?us-ascii?Q?ELHiFEnSW1TrFOajotwij+8uoGWvrWW2BDm11T/EOCk=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR18MB3873.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d7be7b3e-aef8-473a-742e-08d8a4d803a4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Dec 2020 11:11:35.3178
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: T+OI9GpjLh6x8TJPUvY4j3yZZNToGcnoGyC2VIP1oU9xSSh3vvvcHB0ej0QsvsNMB+KQZd7uUA+w0YVQf9ZSZA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1801MB1950
+X-OriginatorOrg: marvell.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-20_03:2020-12-19,2020-12-20 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/12/2020 12:06, Sakari Ailus wrote:
-> When an IOCTL with argument size larger than 128 that also used array
-> arguments were handled, two memory allocations were made but alas, only
-> the latter one of them was released. This happened because there was only
-> a single local variable to hold such a temporary allocation.
-> 
-> Fix this by adding separate variables to hold the pointers to the
-> temporary allocations.
-> 
-> Reported-by: Arnd Bergmann <arnd@kernel.org>
-> Reported-by: syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com
-> Fixes: d14e6d76ebf7 ("[media] v4l: Add multi-planar ioctl handling code")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+>=20
+> ----------------------------------------------------------------------
+> On Thu, 17 Dec 2020 18:07:58 +0200 stefanc@marvell.com wrote:
+> > From: Stefan Chulski <stefanc@marvell.com>
+> >
+> > Patch didn't fix any issue, just improve parse flow and align ipv4
+> > parse flow with ipv6 parse flow.
+> >
+> > Currently ipv4 kenguru parser first check IP protocol(TCP/UDP) and
+> > then destination IP address.
+> > Patch introduce reverse ipv4 parse, first destination IP address
+> > parsed and only then IP protocol.
+> > This would allow extend capability for packet L4 parsing and align
+> > ipv4 parsing flow with ipv6.
+> >
+> > Suggested-by: Liron Himi <lironh@marvell.com>
+> > Signed-off-by: Stefan Chulski <stefanc@marvell.com>
+>=20
+> This one will need to wait until after the merge window
+>=20
+> --
+>=20
+> # Form letter - net-next is closed
+>=20
+> We have already sent the networking pull request for 5.11 and therefore n=
+et-
+> next is closed for new drivers, features, code refactoring and optimizati=
+ons.
+> We are currently accepting bug fixes only.
+>=20
+> Please repost when net-next reopens after 5.11-rc1 is cut.
 
-Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+OK, Thanks.
 
-Regards,
+> Look out for the announcement on the mailing list or check:
+> https://urldefense.proofpoint.com/v2/url?u=3Dhttp-3A__vger.kernel.org_-
+> 7Edavem_net-
+> 2Dnext.html&d=3DDwICAg&c=3DnKjWec2b6R0mOyPaz7xtfQ&r=3DDDQ3dKwkTIxKAl
+> 6_Bs7GMx4zhJArrXKN2mDMOXGh7lg&m=3D2CcDqbEJMvxpx15rGBe2og6oh1eZ
+> hVee8xvK-mjfd0E&s=3Dr1d6bSIPQmjwJqe-
+> mkU_s5wyqHOU82D18G6SkVuUg5A&e=3D
+>=20
+> RFC patches sent for review only are obviously welcome at any time.
 
-	Hans
+If I post RFC patches for review only, should I add some prefix or tag for =
+this?
+And if all reviewers OK with change(or no comments at all), should I repost=
+ this patch again after net-next opened?
 
-> ---
->  drivers/media/v4l2-core/v4l2-ioctl.c | 31 +++++++++++++---------------
->  1 file changed, 14 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-> index 3198abdd538ce..f42a779948779 100644
-> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
-> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-> @@ -3283,7 +3283,7 @@ video_usercopy(struct file *file, unsigned int orig_cmd, unsigned long arg,
->  	       v4l2_kioctl func)
->  {
->  	char	sbuf[128];
-> -	void    *mbuf = NULL;
-> +	void    *mbuf = NULL, *array_buf = NULL;
->  	void	*parg = (void *)arg;
->  	long	err  = -EINVAL;
->  	bool	has_array_args;
-> @@ -3318,27 +3318,21 @@ video_usercopy(struct file *file, unsigned int orig_cmd, unsigned long arg,
->  	has_array_args = err;
->  
->  	if (has_array_args) {
-> -		/*
-> -		 * When adding new types of array args, make sure that the
-> -		 * parent argument to ioctl (which contains the pointer to the
-> -		 * array) fits into sbuf (so that mbuf will still remain
-> -		 * unused up to here).
-> -		 */
-> -		mbuf = kvmalloc(array_size, GFP_KERNEL);
-> +		array_buf = kvmalloc(array_size, GFP_KERNEL);
->  		err = -ENOMEM;
-> -		if (NULL == mbuf)
-> +		if (array_buf == NULL)
->  			goto out_array_args;
->  		err = -EFAULT;
->  		if (in_compat_syscall())
-> -			err = v4l2_compat_get_array_args(file, mbuf, user_ptr,
-> -							 array_size, orig_cmd,
-> -							 parg);
-> +			err = v4l2_compat_get_array_args(file, array_buf,
-> +							 user_ptr, array_size,
-> +							 orig_cmd, parg);
->  		else
-> -			err = copy_from_user(mbuf, user_ptr, array_size) ?
-> +			err = copy_from_user(array_buf, user_ptr, array_size) ?
->  								-EFAULT : 0;
->  		if (err)
->  			goto out_array_args;
-> -		*kernel_ptr = mbuf;
-> +		*kernel_ptr = array_buf;
->  	}
->  
->  	/* Handles IOCTL */
-> @@ -3360,12 +3354,14 @@ video_usercopy(struct file *file, unsigned int orig_cmd, unsigned long arg,
->  		if (in_compat_syscall()) {
->  			int put_err;
->  
-> -			put_err = v4l2_compat_put_array_args(file, user_ptr, mbuf,
-> -							     array_size, orig_cmd,
-> +			put_err = v4l2_compat_put_array_args(file, user_ptr,
-> +							     array_buf,
-> +							     array_size,
-> +							     orig_cmd,
->  							     parg);
->  			if (put_err)
->  				err = put_err;
-> -		} else if (copy_to_user(user_ptr, mbuf, array_size)) {
-> +		} else if (copy_to_user(user_ptr, array_buf, array_size)) {
->  			err = -EFAULT;
->  		}
->  		goto out_array_args;
-> @@ -3381,6 +3377,7 @@ video_usercopy(struct file *file, unsigned int orig_cmd, unsigned long arg,
->  	if (video_put_user((void __user *)arg, parg, cmd, orig_cmd))
->  		err = -EFAULT;
->  out:
-> +	kvfree(array_buf);
->  	kvfree(mbuf);
->  	return err;
->  }
-> 
-
+Thanks,
+Stefan.
