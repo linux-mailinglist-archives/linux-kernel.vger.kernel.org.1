@@ -2,113 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7443E2DF947
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 07:33:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28F8D2DF6C0
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 21:06:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728378AbgLUGci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 01:32:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727211AbgLUGci (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 01:32:38 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 506C2C0613D3;
-        Sun, 20 Dec 2020 22:31:57 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id c7so8503137edv.6;
-        Sun, 20 Dec 2020 22:31:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=upGN1dBVZ/btBdBBPeURAqi5iKi4W8RMHZ52S9FrN+g=;
-        b=f//lnvun2qaI2b2XF05irRBMFR0/xFM8ZlFjdmAkLPMpOeF8Pgv70DgDp8TbunYqZT
-         +cv36wy/8zLg02Gtz12XmbbbuSuA28nxEDmJoiLwI3BTJgHYmRlj6knCWNDmtsnEjkPV
-         RQcUhCMwt9qP8SJJ32kqOeYioj3UClqalDVGxsi5xKSRgL9R91ZSj0vyrGdt+mij3H1H
-         vcPqc1tUeGT9OUpPtMhiKl8z0aOYEHE4gI197kA+svK5FJ5/Jfnk8PSzTEshQvpVhWbv
-         et0gvNOXxXjSypfOvvbbCPxdvaYbNvV7B4mJeNJuq/dbHaf4sID+w5Wv6q8aKP5VH2hU
-         DdtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=upGN1dBVZ/btBdBBPeURAqi5iKi4W8RMHZ52S9FrN+g=;
-        b=NVyWdvDMn+XBvOlUxXsp0eo48f9XjrX23Z8hR31BA84l1DWTkxx3rtepS6RT8ZzeiT
-         DWNejQ1CPf0IDfSFZTCYwu7sTTUOsXe3nhDdWStgQ4QG3l5oKkrqEjpd4upWiIjrLbJ3
-         XNLj4LCrHAxjMqDE1w2mtcRgCSft0NQ79U/AVwibDcnv4lOFUw7jKpZ4VWsuqL35vKr9
-         SXXGAAaGv4wciIv8EEH0D+j5/xhx/+k5soe1XCgzETJmI0+W3kyQG5r1uAAc3A30TEQj
-         N2ipr0r/l8q49JC3aSw5ayDAxYVJUVam0GkzBQzcIekcAxGjybxE5gA1mH0lSbBRSytJ
-         fDuw==
-X-Gm-Message-State: AOAM532ghJ6nMDsF0QgDh/Epy4NgSprzdbyYRqGSPfdv0HvreCXOxng2
-        uypH/MX1CDFlhe1Jc5SHWqyloQyIFqPmEw==
-X-Google-Smtp-Source: ABdhPJzkanZ/GzLadDBfPDG5a7XQywIW2Otp1yk1ztP6juHx1KH1AX/SUNLY/Dm4lbUI4J/gb9pzAQ==
-X-Received: by 2002:a05:6512:368d:: with SMTP id d13mr5150213lfs.414.1608493836961;
-        Sun, 20 Dec 2020 11:50:36 -0800 (PST)
-Received: from kari-VirtualBox (87-95-193-210.bb.dnainternet.fi. [87.95.193.210])
-        by smtp.gmail.com with ESMTPSA id k21sm1907262ljb.43.2020.12.20.11.50.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Dec 2020 11:50:36 -0800 (PST)
-Date:   Sun, 20 Dec 2020 21:50:33 +0200
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     kjlu@umn.edu, "David S. Miller" <davem@davemloft.net>,
-        linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ide: pci: Fix memleak in ide_pci_init_two
-Message-ID: <20201220195033.due2e4ukijaah23a@kari-VirtualBox>
-References: <20201220070541.7515-1-dinghao.liu@zju.edu.cn>
+        id S1727457AbgLTUFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 15:05:00 -0500
+Received: from mga04.intel.com ([192.55.52.120]:48224 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726584AbgLTUE7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Dec 2020 15:04:59 -0500
+IronPort-SDR: BRUTK9Y3akF9OYpvzDRck7TQ/IcQXNYJWuL4M3DWmz9XwIRGuen1ZwDjKyE21lsiaDYfUiIyrG
+ 9V6n9xSQUZsw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9841"; a="173083092"
+X-IronPort-AV: E=Sophos;i="5.78,435,1599548400"; 
+   d="scan'208";a="173083092"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2020 12:03:13 -0800
+IronPort-SDR: l602xz4+dCrLeRZIo8SWGxswrw4R53CS+/g8gnnnFgBAacXoaq8SlUIH3HprmJRNx49KrkUdZE
+ YED5jy6UaFdg==
+X-IronPort-AV: E=Sophos;i="5.78,435,1599548400"; 
+   d="scan'208";a="381594956"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2020 12:03:10 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id 31977203DF; Sun, 20 Dec 2020 22:03:07 +0200 (EET)
+Date:   Sun, 20 Dec 2020 22:03:07 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     linux-media@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
+        syzbot <syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: [PATCH 1/1] v4l: ioctl: Fix memory leak in video_usercopy
+Message-ID: <20201220200307.GB26370@paasikivi.fi.intel.com>
+References: <20201220110651.13432-1-sakari.ailus@linux.intel.com>
+ <X99cazC7wzN8N9Vo@pendragon.ideasonboard.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201220070541.7515-1-dinghao.liu@zju.edu.cn>
+In-Reply-To: <X99cazC7wzN8N9Vo@pendragon.ideasonboard.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 20, 2020 at 03:05:40PM +0800, Dinghao Liu wrote:
-> When do_ide_setup_pci_device() fails, host allocated
-> by ide_host_alloc() may not have been freed, which
-> leads to memleak.
+Hi Laurent,
+
+On Sun, Dec 20, 2020 at 04:15:07PM +0200, Laurent Pinchart wrote:
+> Hi Sakari,
 > 
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> ---
->  drivers/ide/setup-pci.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+> Thank you for the patch.
 > 
-> diff --git a/drivers/ide/setup-pci.c b/drivers/ide/setup-pci.c
-> index fdc8e813170c..c7da5368fcd4 100644
-> --- a/drivers/ide/setup-pci.c
-> +++ b/drivers/ide/setup-pci.c
-> @@ -586,7 +586,7 @@ int ide_pci_init_two(struct pci_dev *dev1, struct pci_dev *dev2,
->  		 * do_ide_setup_pci_device() on the first device!
->  		 */
->  		if (ret < 0)
-> -			goto out_free_bars;
-> +			goto out_free_host;
->  
->  		/* fixup IRQ */
->  		if (ide_pci_is_in_compatibility_mode(pdev[i])) {
-> @@ -597,11 +597,11 @@ int ide_pci_init_two(struct pci_dev *dev1, struct pci_dev *dev2,
->  	}
->  
->  	ret = ide_host_register(host, d, hws);
-> -	if (ret)
-> -		ide_host_free(host);
-> -	else
-> +	if (!ret)
->  		goto out;
+> On Sun, Dec 20, 2020 at 01:06:51PM +0200, Sakari Ailus wrote:
+> > When an IOCTL with argument size larger than 128 that also used array
+> > arguments were handled, two memory allocations were made but alas, only
+> > the latter one of them was released.
+> 
+> Alas, this fills my heart with sorrow indeed :-)
+> 
+> > This happened because there was only
+> > a single local variable to hold such a temporary allocation.
+> > 
+> > Fix this by adding separate variables to hold the pointers to the
+> > temporary allocations.
+> > 
+> > Reported-by: Arnd Bergmann <arnd@kernel.org>
+> > Reported-by: syzbot+1115e79c8df6472c612b@syzkaller.appspotmail.com
+> > Fixes: d14e6d76ebf7 ("[media] v4l: Add multi-planar ioctl handling code")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> > ---
+> >  drivers/media/v4l2-core/v4l2-ioctl.c | 31 +++++++++++++---------------
+> >  1 file changed, 14 insertions(+), 17 deletions(-)
+> > 
+> > diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+> > index 3198abdd538ce..f42a779948779 100644
+> > --- a/drivers/media/v4l2-core/v4l2-ioctl.c
+> > +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+> > @@ -3283,7 +3283,7 @@ video_usercopy(struct file *file, unsigned int orig_cmd, unsigned long arg,
+> >  	       v4l2_kioctl func)
+> >  {
+> >  	char	sbuf[128];
+> > -	void    *mbuf = NULL;
+> > +	void    *mbuf = NULL, *array_buf = NULL;
+> >  	void	*parg = (void *)arg;
+> >  	long	err  = -EINVAL;
+> >  	bool	has_array_args;
+> > @@ -3318,27 +3318,21 @@ video_usercopy(struct file *file, unsigned int orig_cmd, unsigned long arg,
+> >  	has_array_args = err;
+> >  
+> >  	if (has_array_args) {
+> > -		/*
+> > -		 * When adding new types of array args, make sure that the
+> > -		 * parent argument to ioctl (which contains the pointer to the
+> > -		 * array) fits into sbuf (so that mbuf will still remain
+> > -		 * unused up to here).
+> > -		 */
+> > -		mbuf = kvmalloc(array_size, GFP_KERNEL);
+> > +		array_buf = kvmalloc(array_size, GFP_KERNEL);
+> >  		err = -ENOMEM;
+> > -		if (NULL == mbuf)
+> > +		if (array_buf == NULL)
+> >  			goto out_array_args;
+> >  		err = -EFAULT;
+> >  		if (in_compat_syscall())
+> > -			err = v4l2_compat_get_array_args(file, mbuf, user_ptr,
+> > -							 array_size, orig_cmd,
+> > -							 parg);
+> > +			err = v4l2_compat_get_array_args(file, array_buf,
+> > +							 user_ptr, array_size,
+> > +							 orig_cmd, parg);
+> >  		else
+> > -			err = copy_from_user(mbuf, user_ptr, array_size) ?
+> > +			err = copy_from_user(array_buf, user_ptr, array_size) ?
+> >  								-EFAULT : 0;
+> >  		if (err)
+> >  			goto out_array_args;
+> > -		*kernel_ptr = mbuf;
+> > +		*kernel_ptr = array_buf;
+> >  	}
+> >  
+> >  	/* Handles IOCTL */
+> > @@ -3360,12 +3354,14 @@ video_usercopy(struct file *file, unsigned int orig_cmd, unsigned long arg,
+> >  		if (in_compat_syscall()) {
+> >  			int put_err;
+> >  
+> > -			put_err = v4l2_compat_put_array_args(file, user_ptr, mbuf,
+> > -							     array_size, orig_cmd,
+> > +			put_err = v4l2_compat_put_array_args(file, user_ptr,
+> > +							     array_buf,
+> > +							     array_size,
+> > +							     orig_cmd,
+> >  							     parg);
+> 
+> orig_cmd and pargs would fit on the same line if you want to.
+> 
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-Maybe 
-	if (ret)
-		goto out_free_host;
+Thanks!
 
-	return 0;
+I'll send v2.
 
-would be more clear here. But this is just small nit.
+> 
+> >  			if (put_err)
+> >  				err = put_err;
+> > -		} else if (copy_to_user(user_ptr, mbuf, array_size)) {
+> > +		} else if (copy_to_user(user_ptr, array_buf, array_size)) {
+> >  			err = -EFAULT;
+> >  		}
+> >  		goto out_array_args;
+> > @@ -3381,6 +3377,7 @@ video_usercopy(struct file *file, unsigned int orig_cmd, unsigned long arg,
+> >  	if (video_put_user((void __user *)arg, parg, cmd, orig_cmd))
+> >  		err = -EFAULT;
+> >  out:
+> > +	kvfree(array_buf);
+> >  	kvfree(mbuf);
+> >  	return err;
+> >  }
+> 
 
->  
-> +out_free_host:
-> +	ide_host_free(host);
->  out_free_bars:
->  	i = n_ports / 2;
->  	while (i--)
+-- 
+Kind regards,
 
+Sakari Ailus
