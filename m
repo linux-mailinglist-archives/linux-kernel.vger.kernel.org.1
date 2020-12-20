@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0912DF471
+	by mail.lfdr.de (Postfix) with ESMTP id E0FF72DF472
 	for <lists+linux-kernel@lfdr.de>; Sun, 20 Dec 2020 09:31:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727440AbgLTI3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 03:29:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36905 "EHLO
+        id S1727470AbgLTI3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 03:29:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35990 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727043AbgLTI3s (ORCPT
+        by vger.kernel.org with ESMTP id S1727043AbgLTI3x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 03:29:48 -0500
+        Sun, 20 Dec 2020 03:29:53 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608452901;
+        s=mimecast20190719; t=1608452907;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=n0g34m/KCff5RmPKhid8aMrdNLzjpYVILvAVkWIl6Jk=;
-        b=FvaWj75jBeHKIgj4l4S5jdVGTGN33Kh5J/DW/8wlyqA9zOGJzGf+0HjVa3pRiCd8yw5VFM
-        +YldObAcrh3QbJ+7JTtXQ54V6Vpe9rAUaE/eApzXKqx72jfiy8EbkRDmQOJQ3eSpXKGPxV
-        P1wCoBq2hJtwkqsycGmTx0yCKN5pEq8=
+        bh=dqF3OKhxr17IUwJ34K5airZU1BciWL9ISo9Hcrx3KMk=;
+        b=HncEORnOxJir6/9C+VngWXyhoHo6Gp9VhSo6y4GcnhWowRmwElhqlYs7n0RE7VR1JrBshL
+        bTFXeDlKQdYUr51BigcSy34XBUX1gss0IeZf9/SyDorQNV/1bHACRw1ENkPJfup7aa+9YR
+        kpN6T9F60qUDNGGlKdhGM+BLCj4f1L4=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-381-8S9O5UwxMDaO2dVlr-xrxw-1; Sun, 20 Dec 2020 03:28:17 -0500
-X-MC-Unique: 8S9O5UwxMDaO2dVlr-xrxw-1
+ us-mta-378-tN_ja1CHN8uybVLa_kf2Lg-1; Sun, 20 Dec 2020 03:28:23 -0500
+X-MC-Unique: tN_ja1CHN8uybVLa_kf2Lg-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AF1BD1800D42;
-        Sun, 20 Dec 2020 08:28:15 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 00912801817;
+        Sun, 20 Dec 2020 08:28:22 +0000 (UTC)
 Received: from MiWiFi-R3L-srv.redhat.com (ovpn-12-22.pek2.redhat.com [10.72.12.22])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4EEE660C13;
-        Sun, 20 Dec 2020 08:28:13 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3934D60C13;
+        Sun, 20 Dec 2020 08:28:15 +0000 (UTC)
 From:   Baoquan He <bhe@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
         gopakumarr@vmware.com, rppt@kernel.org, david@redhat.com,
         bhe@redhat.com
-Subject: [PATCH v2 3/5] mm: simplify parater of function memmap_init_zone()
-Date:   Sun, 20 Dec 2020 16:27:52 +0800
-Message-Id: <20201220082754.6900-4-bhe@redhat.com>
+Subject: [PATCH v2 4/5] mm: simplify parameter of setup_usemap()
+Date:   Sun, 20 Dec 2020 16:27:53 +0800
+Message-Id: <20201220082754.6900-5-bhe@redhat.com>
 In-Reply-To: <20201220082754.6900-1-bhe@redhat.com>
 References: <20201220082754.6900-1-bhe@redhat.com>
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
@@ -47,128 +47,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As David suggested, simply passing 'struct zone *zone' is enough. We can
-get all needed information from 'struct zone*' easily.
+Parameter 'zone' has got needed information, let's remove other
+unnecessary parameters.
 
-Suggested-by: David Hildenbrand <david@redhat.com>
 Signed-off-by: Baoquan He <bhe@redhat.com>
 ---
- arch/ia64/include/asm/pgtable.h |  3 +--
- arch/ia64/mm/init.c             | 12 +++++++-----
- mm/page_alloc.c                 | 20 ++++++++++----------
- 3 files changed, 18 insertions(+), 17 deletions(-)
+ mm/page_alloc.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
-diff --git a/arch/ia64/include/asm/pgtable.h b/arch/ia64/include/asm/pgtable.h
-index dce2ff37df65..2c81394a2430 100644
---- a/arch/ia64/include/asm/pgtable.h
-+++ b/arch/ia64/include/asm/pgtable.h
-@@ -520,8 +520,7 @@ extern struct page *zero_page_memmap_ptr;
- 
- #  ifdef CONFIG_VIRTUAL_MEM_MAP
-   /* arch mem_map init routine is needed due to holes in a virtual mem_map */
--    extern void memmap_init_zone(unsigned long size, int nid, unsigned long zone,
--			     unsigned long start_pfn);
-+    extern void memmap_init_zone(struct zone *zone);
- #  endif /* CONFIG_VIRTUAL_MEM_MAP */
- # endif /* !__ASSEMBLY__ */
- 
-diff --git a/arch/ia64/mm/init.c b/arch/ia64/mm/init.c
-index c8e68e92beb3..ccbda1a74c95 100644
---- a/arch/ia64/mm/init.c
-+++ b/arch/ia64/mm/init.c
-@@ -541,12 +541,14 @@ virtual_memmap_init(u64 start, u64 end, void *arg)
- 	return 0;
- }
- 
--void __meminit
--memmap_init_zone(unsigned long size, int nid, unsigned long zone,
--	     unsigned long start_pfn)
-+void __meminit memmap_init_zone(struct zone *zone)
- {
-+	unsigned long size = zone->spanned_pages;
-+	int nid = zone_to_nid(zone), zone_id = zone_idx(zone);
-+	unsigned long start_pfn = zone->zone_start_pfn;
-+
- 	if (!vmem_map) {
--		memmap_init_range(size, nid, zone, start_pfn, start_pfn + size,
-+		memmap_init_range(size, nid, zone_id, start_pfn, start_pfn + size,
- 				 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
- 	} else {
- 		struct page *start;
-@@ -556,7 +558,7 @@ memmap_init_zone(unsigned long size, int nid, unsigned long zone,
- 		args.start = start;
- 		args.end = start + size;
- 		args.nid = nid;
--		args.zone = zone;
-+		args.zone = zone_id;
- 
- 		efi_memmap_walk(virtual_memmap_init, &args);
- 	}
 diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 4b46326099d9..7a6626351ed7 100644
+index 7a6626351ed7..7f0a917ab858 100644
 --- a/mm/page_alloc.c
 +++ b/mm/page_alloc.c
-@@ -6292,16 +6292,16 @@ static inline u64 init_unavailable_range(unsigned long spfn, unsigned long epfn,
+@@ -6824,25 +6824,22 @@ static unsigned long __init usemap_size(unsigned long zone_start_pfn, unsigned l
+ 	return usemapsize / 8;
  }
- #endif
  
--void __init __weak memmap_init_zone(unsigned long size, int nid,
--			       unsigned long zone,
--			       unsigned long zone_start_pfn)
-+void __init __weak memmap_init_zone(struct zone *zone)
+-static void __ref setup_usemap(struct pglist_data *pgdat,
+-				struct zone *zone,
+-				unsigned long zone_start_pfn,
+-				unsigned long zonesize)
++static void __ref setup_usemap(struct zone *zone)
  {
- 	unsigned long start_pfn, end_pfn, hole_start_pfn = 0;
--	unsigned long zone_end_pfn = zone_start_pfn + size;
-+	int i, nid = zone_to_nid(zone), zone_id = zone_idx(zone);
-+	unsigned long zone_start_pfn = zone->zone_start_pfn;
-+	unsigned long zone_end_pfn = zone_start_pfn + zone->spanned_pages;
- 	u64 pgcnt = 0;
--	int i;
- 
- 	for_each_mem_pfn_range(i, nid, &start_pfn, &end_pfn, NULL) {
-+		unsigned long size;
- 		start_pfn = clamp(start_pfn, zone_start_pfn, zone_end_pfn);
- 		end_pfn = clamp(end_pfn, zone_start_pfn, zone_end_pfn);
- 		hole_start_pfn = clamp(hole_start_pfn, zone_start_pfn,
-@@ -6309,13 +6309,13 @@ void __init __weak memmap_init_zone(unsigned long size, int nid,
- 
- 		if (end_pfn > start_pfn) {
- 			size = end_pfn - start_pfn;
--			memmap_init_range(size, nid, zone, start_pfn, zone_end_pfn,
-+			memmap_init_range(size, nid, zone_id, start_pfn, zone_end_pfn,
- 					 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
- 		}
- 
- 		if (hole_start_pfn < start_pfn)
- 			pgcnt += init_unavailable_range(hole_start_pfn,
--							start_pfn, zone, nid);
-+							start_pfn, zone_id, nid);
- 		hole_start_pfn = end_pfn;
+-	unsigned long usemapsize = usemap_size(zone_start_pfn, zonesize);
++	unsigned long usemapsize = usemap_size(zone->zone_start_pfn,
++					       zone->spanned_pages);
+ 	zone->pageblock_flags = NULL;
+ 	if (usemapsize) {
+ 		zone->pageblock_flags =
+ 			memblock_alloc_node(usemapsize, SMP_CACHE_BYTES,
+-					    pgdat->node_id);
++					    zone_to_nid(zone));
+ 		if (!zone->pageblock_flags)
+ 			panic("Failed to allocate %ld bytes for zone %s pageblock flags on node %d\n",
+-			      usemapsize, zone->name, pgdat->node_id);
++			      usemapsize, zone->name, zone_to_nid(zone));
  	}
- 
-@@ -6328,11 +6328,11 @@ void __init __weak memmap_init_zone(unsigned long size, int nid,
- 	 */
- 	if (hole_start_pfn < zone_end_pfn)
- 		pgcnt += init_unavailable_range(hole_start_pfn, zone_end_pfn,
--						zone, nid);
-+						zone_id, nid);
- 
- 	if (pgcnt)
- 		pr_info("%s: Zeroed struct page in unavailable ranges: %lld\n",
--			zone_names[zone], pgcnt);
-+			zone_names[zone_id], pgcnt);
  }
+ #else
+-static inline void setup_usemap(struct pglist_data *pgdat, struct zone *zone,
+-				unsigned long zone_start_pfn, unsigned long zonesize) {}
++static inline void setup_usemap(struct zone *zone) {}
+ #endif /* CONFIG_SPARSEMEM */
  
- static int zone_batchsize(struct zone *zone)
-@@ -7039,7 +7039,7 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
+ #ifdef CONFIG_HUGETLB_PAGE_SIZE_VARIABLE
+@@ -7037,7 +7034,7 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
+ 			continue;
+ 
  		set_pageblock_order();
- 		setup_usemap(pgdat, zone, zone_start_pfn, size);
+-		setup_usemap(pgdat, zone, zone_start_pfn, size);
++		setup_usemap(zone);
  		init_currently_empty_zone(zone, zone_start_pfn, size);
--		memmap_init_zone(size, nid, j, zone_start_pfn);
-+		memmap_init_zone(zone);
+ 		memmap_init_zone(zone);
  	}
- }
- 
 -- 
 2.17.2
 
