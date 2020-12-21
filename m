@@ -2,88 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D81A32E011A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 20:38:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A40B2E0121
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 20:38:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726737AbgLUThD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 14:37:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgLUThC (ORCPT
+        id S1726618AbgLUTh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 14:37:58 -0500
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:35696 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726146AbgLUTh6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 14:37:02 -0500
-Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3EDC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 11:36:22 -0800 (PST)
-Received: by mail-vk1-xa2a.google.com with SMTP id m145so2494399vke.7
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 11:36:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EZZyncXwiQja2UVR2OiYE7gDJBGuNncgyLsAmPzZ+/c=;
-        b=narslOk3Hvt1RGe1zhxswCbmFdemKIq+FjDkobRs9/VXBSyC/AGRgfWNpjsxSkR5r1
-         oR4AJeSoxTEmamC0ao9bd5IZvgbscauG+A/E1+kCVgrbVBM3Jbw9/mk8A0rlgmZt32ur
-         PjCYHGOXuQ0I667rjRyoz5PhqsLI9sq3LcXLJO9hmN6OpUS4X6MQBJXgHFJT0+DIiCpQ
-         Vq7yVMVNH+75Zua8fVt6YyWqQDANSF7XBhSn1AF+EOwQL+TpGVYJMm8DBlBEvqyroy4E
-         XV2AbfJGDXx1VGpECcBLSF8XE4k0eT9/JdZs8DfB7FFDvjdTqPLGSrSFBx2veWzvPqM5
-         dWAA==
+        Mon, 21 Dec 2020 14:37:58 -0500
+Received: by mail-oi1-f181.google.com with SMTP id s2so12423798oij.2;
+        Mon, 21 Dec 2020 11:37:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EZZyncXwiQja2UVR2OiYE7gDJBGuNncgyLsAmPzZ+/c=;
-        b=cZpznDXYA+BKxtoT5kNBiP55u2t6R/IsRlztl8lErh6y3zRVUbZBrMhInyqJpmDZn9
-         sCKyMI3w+h6KPM9zmSW9n4Rkgcf31ieiscSuaWXlxcW+6aiCC46yYQUBrCJ9RlLLQedz
-         ysdLQdurE6XOGx46w5pwCzZYJmwf7j2Kdr/AqPH3RiyTT1PO2qK5OlOth/Aw0QD0t3LY
-         y05LrmPufocopiMtSk2X8KtSi5cNkz73TCKKnSRji55rPXsxnWu8tOJVRvSYVRsm6Zik
-         2LbaRi2gVtAifMhZwGDKAWg2IpTy/u+1ZDafzOHRxd0LVSP4mpbSTKBupPWXszy58Cl+
-         RaXA==
-X-Gm-Message-State: AOAM5316z0hoPhT7cz843ltAoTn4oou5NdrXgTtJjCT149aJ+9RPOwRD
-        +BnqHpQ5/ju54MwDYSvlll5glbPskQYoD124jkHzrwqet5w=
-X-Google-Smtp-Source: ABdhPJyrBEPum1+Ha9e9MR1wjXKQOrZ3ZlZ+t43OuSExGikpJ4e9J5AL9z/TcGa4LoqHca85LwSbFzl0qcZ3/g7+1hQ=
-X-Received: by 2002:a1f:5cc2:: with SMTP id q185mr14390621vkb.23.1608579381365;
- Mon, 21 Dec 2020 11:36:21 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Q18NZxhvIxRINjWva11fV4XGSXxm/kjXgjBXhmlaf7Q=;
+        b=Zp/re2CBKlbICt+UlgqVCUciVrf+pClbfhCNwnKMaRyrCVFdfMwbrQdzSCCGkCoym/
+         CIemP5/1mvj4cIDozi4RfuCNR7enX25HKlt8Zoba72PTN9esnwa7LkV8PhRkV7unCL2R
+         ZDcz+SIH1ccVMDODt/c3b5zbiYs4zuaaQmebgvy6yuKCEPuy9BtON1cXQIuqz33Y2oin
+         60l9udJUzF2YX/jymIWB4/NauwLpQnKeIVAvlp19phT6jsTAC6x1NYto5xBChsa5HhjE
+         oro/llhbLsEKih0ZbXzNBRbdsbtQD7ReG8ExeiSI+/Jqx+KZaB123dHzF/ZoLIev+5Qg
+         KjUg==
+X-Gm-Message-State: AOAM531tZEZb+PJCuGQKnP0YQ+DFNEZkl0qFa8E3/ZZ/quefNPFTP4ED
+        w0UM2qVpI2BIkQ6+GYYu0w==
+X-Google-Smtp-Source: ABdhPJwT/ITKR0tXg/1ddqMlf21lgfBAiRqRwlsfzNzLb+nCGUKxM9b0nx1d9t1knadgyrBINu3zMA==
+X-Received: by 2002:aca:4c90:: with SMTP id z138mr12042714oia.142.1608579436938;
+        Mon, 21 Dec 2020 11:37:16 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id s26sm4001068otd.8.2020.12.21.11.37.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 11:37:16 -0800 (PST)
+Received: (nullmailer pid 422266 invoked by uid 1000);
+        Mon, 21 Dec 2020 19:37:14 -0000
+Date:   Mon, 21 Dec 2020 12:37:14 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Claudiu Beznea <claudiu.beznea@microchip.com>,
+        mark.rutland@arm.com, nicolas.ferre@microchip.com,
+        ludovic.desroches@microchip.com, sre@kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH 2/3] dt-bindings: atmel-sysreg: add
+ microchip,sama7g5-shdwc
+Message-ID: <20201221193714.GA420008@robh.at.kernel.org>
+References: <1608123453-1423-1-git-send-email-claudiu.beznea@microchip.com>
+ <1608123453-1423-3-git-send-email-claudiu.beznea@microchip.com>
+ <20201216134100.GG2814589@piout.net>
 MIME-Version: 1.0
-References: <20201217020311.491799-1-yuxiangyang4@huawei.com>
- <20201217022306.GB15600@casper.infradead.org> <CAFqt6zYeDstXBHP+DCyBdmL4vDFBGekv7jrknU5c175sKVax4w@mail.gmail.com>
- <20201218095756.18d259ea243e434a8a90403a@linux-foundation.org>
-In-Reply-To: <20201218095756.18d259ea243e434a8a90403a@linux-foundation.org>
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-Date:   Tue, 22 Dec 2020 01:06:14 +0530
-Message-ID: <CAFqt6zbNoDAxdNEYY_noLjEHJ5xMP__e=cyB5y6GZ-agnaPfdg@mail.gmail.com>
-Subject: Re: [PATCH] mm/filemap: Fix warning: no previous prototype
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Xiangyang Yu <yuxiangyang4@huawei.com>,
-        Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201216134100.GG2814589@piout.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 11:27 PM Andrew Morton
-<akpm@linux-foundation.org> wrote:
->
-> On Fri, 18 Dec 2020 09:39:30 +0530 Souptick Joarder <jrdr.linux@gmail.com> wrote:
->
-> > On Thu, Dec 17, 2020 at 7:53 AM Matthew Wilcox <willy@infradead.org> wrote:
-> > >
-> > > On Thu, Dec 17, 2020 at 10:03:11AM +0800, Xiangyang Yu wrote:
-> > > > Fixed the warning when building with warnings enabled (W=1),
-> > > > This function is only used in filemap.c, so mark this function
-> > > > with 'static'.
-> > >
-> > > Good grief, no.  Look at the git history before proposing a patch.
-> >
-> > revert "mm/filemap: add static for function __add_to_page_cache_locked"
-> > Revert commit 3351b16af494 ("mm/filemap: add static for function
-> > __add_to_page_cache_locked") due to incompatibility with
-> > ALLOW_ERROR_INJECTION which result in build errors.
-> >
->
-> How about we add a prototype for __add_to_page_cache_locked() to squash
-> the warning, along with a comment explaining what's going on?
->
-I think adding a prototype will silence some kernel test robot warning
-and future efforts to make it static. I will post a patch.
+On Wed, Dec 16, 2020 at 02:41:00PM +0100, Alexandre Belloni wrote:
+> On 16/12/2020 14:57:32+0200, Claudiu Beznea wrote:
+> > Add compatible for Microchip SAMA7G5's shutdown controller.
+> > 
+> > Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> > ---
+> >  Documentation/devicetree/bindings/arm/atmel-sysregs.txt | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> I'm pretty sure the first comment you'll get is to convert this file to
+> yaml ;)
+
+I certainly wouldn't object, but just for a new compatible not requiring 
+that (yet).
+
+> > diff --git a/Documentation/devicetree/bindings/arm/atmel-sysregs.txt b/Documentation/devicetree/bindings/arm/atmel-sysregs.txt
+> > index 62cd4e89817c..7990358ac06e 100644
+> > --- a/Documentation/devicetree/bindings/arm/atmel-sysregs.txt
+> > +++ b/Documentation/devicetree/bindings/arm/atmel-sysregs.txt
+> > @@ -91,7 +91,8 @@ SHDWC SAMA5D2-Compatible Shutdown Controller
+> >  1) shdwc node
+> >  
+> >  required properties:
+> > -- compatible: should be "atmel,sama5d2-shdwc" or "microchip,sam9x60-shdwc".
+> > +- compatible: should be "atmel,sama5d2-shdwc", "microchip,sam9x60-shdwc" or
+> > +  "microchip,sama7g5-shdwc"
+> >  - reg: should contain registers location and length
+> >  - clocks: phandle to input clock.
+> >  - #address-cells: should be one. The cell is the wake-up input index.
+> > @@ -103,7 +104,7 @@ optional properties:
+> >    microseconds. It's usually a board-related property.
+> >  - atmel,wakeup-rtc-timer: boolean to enable Real-Time Clock wake-up.
+> >  
+> > -optional microchip,sam9x60-shdwc properties:
+> > +optional microchip,sam9x60-shdwc or microchip,sama7g5-shdwc properties:
+> >  - atmel,wakeup-rtt-timer: boolean to enable Real-time Timer Wake-up.
+> >  
+> >  The node contains child nodes for each wake-up input that the platform uses.
+> > -- 
+> > 2.7.4
+> > 
+> 
+> -- 
+> Alexandre Belloni, Bootlin
+> Embedded Linux and Kernel engineering
+> https://bootlin.com
