@@ -2,109 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91FA82E0090
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:59:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADF5E2E008E
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:59:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726567AbgLUS6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 13:58:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53207 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726107AbgLUS6X (ORCPT
+        id S1726427AbgLUS6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:58:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725811AbgLUS6E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:58:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608577016;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=0P9gqTF5NJutgnKLmiG7SIpCqHStiXXr4oP0SmsdN/I=;
-        b=etXi700aWfORY2LL1LcNB34abv0jKZtPGhzmFIeIF2omFh3aUpfAt9urO/V0aEnVUCttxg
-        UAvbHbXBbQy8cgFBuQuLVCPZdpTm9+fslI4hL3IYx05m16XrCOY+IcQimJPd3wmi5pLDvF
-        VlU9pyD7W0agQ0pHomoq1H3hRLmAyhk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-566-C39A1X1vP5WGIZkzW_-19A-1; Mon, 21 Dec 2020 13:56:51 -0500
-X-MC-Unique: C39A1X1vP5WGIZkzW_-19A-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7F832800D55;
-        Mon, 21 Dec 2020 18:56:50 +0000 (UTC)
-Received: from x1.localdomain (ovpn-115-12.ams2.redhat.com [10.36.115.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5E9EA60C64;
-        Mon, 21 Dec 2020 18:56:48 +0000 (UTC)
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH] genirq: Fix [devm_]irq_alloc_desc returning irq 0
-Date:   Mon, 21 Dec 2020 19:56:47 +0100
-Message-Id: <20201221185647.226146-1-hdegoede@redhat.com>
+        Mon, 21 Dec 2020 13:58:04 -0500
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92828C0613D6;
+        Mon, 21 Dec 2020 10:57:24 -0800 (PST)
+Received: by mail-qt1-x82d.google.com with SMTP id a6so7317779qtw.6;
+        Mon, 21 Dec 2020 10:57:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cElhcZNm2VH8i/cYThR7pA2axscEXIqRP6jzTA+ItnI=;
+        b=kbsl16KmA3LValskyJ0UyOS4jCb+3f967y6f/GWmrtwQEdmmcBgFM4Fjo8ItNuZgmN
+         jDrVV4Y3wjariyzCu9KQG3sHOLu/df4Fg5+Xa5hunvMUmHo3EjmC3JvyDcjxTXeCzBst
+         fynuWEJRaNlfvgtM2TvtKutmuD11tjoDE0b/EGu3cpRaMZOn1KJPSn59opoRQQbRtrU5
+         0RT0UpIbBf/KeM97xfhxLfnjulULOg1Qx8cUfMt2FoYGa58QJ/UZ9nx8cUyUhMx/dsqY
+         2O4ceT9y70DWwaWS3wwA1l6+j24LseZPhKPU/9q1hi+j0QXUJaDoBi/KeegaUWo+aN42
+         SIUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cElhcZNm2VH8i/cYThR7pA2axscEXIqRP6jzTA+ItnI=;
+        b=kC/oW54lGJNCl4tYPaRDQhJPWcsbs3+B66vuuAX23mAFsmcVSBSgyVUkJTMW5zEn+/
+         InZXGXhzn+AoReg+DBknJT6hWBAiX0fhGlYj4hyeD9ny8QgrvLSbhtWxO2svp/5FAfcN
+         DrVDHA2jH8B3oXXXnV3oJUhqvVojWxl2jwOAWQrP+7UkS+wlLxEFNblHDUezhA4yHcHR
+         InP6BPj0wjjZQMllHePFHpgogT84Rn70uiRT0pMCKEvG8oGxAngh2RetJ/SLYhhLId4p
+         pgnAavKdVJGC32vQU62BLj3FliXKBSxFCztrxVKKCFyW0pCUJuXlFwYt4+Urp2pY9Qc5
+         SUIQ==
+X-Gm-Message-State: AOAM533rxZZHL9Xn+jnpzsltoq9Ue3M2Vi4Ugo93khyDKblV5iVGwqci
+        UppGv0+bEsIffCV/LZCXcTipebh66+Lle3FH0Bg=
+X-Google-Smtp-Source: ABdhPJzyLrMQ8ycuXsop4tziI6RiOyhBJIwxEPsvizoxLd0t5dz+0oJN5ijUb5U4bVhvOYF4LxhypqIWyqNYIn9BEcc=
+X-Received: by 2002:ac8:5806:: with SMTP id g6mr17655674qtg.292.1608577043802;
+ Mon, 21 Dec 2020 10:57:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20201220211109.129946-1-ubizjak@gmail.com> <X+DnRcYVNdkkgI3j@google.com>
+In-Reply-To: <X+DnRcYVNdkkgI3j@google.com>
+From:   Uros Bizjak <ubizjak@gmail.com>
+Date:   Mon, 21 Dec 2020 19:57:12 +0100
+Message-ID: <CAFULd4aBWqQmwYNo74_zmP22Lu79jnRJVu5+PrKkOD2Dbp6-FQ@mail.gmail.com>
+Subject: Re: [PATCH v2] KVM/x86: Move definition of __ex to x86.h
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit a85a6c86c25b ("driver core: platform: Clarify that IRQ 0
-is invalid"), having a linux-irq with number 0 will trigger a WARN
-when calling platform_get_irq*() to retrieve that linux-irq.
+On Mon, Dec 21, 2020 at 7:19 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Sun, Dec 20, 2020, Uros Bizjak wrote:
+> > Merge __kvm_handle_fault_on_reboot with its sole user
+>
+> There's also a comment in vmx.c above kvm_cpu_vmxoff() that should be updated.
+> Alternatively, and probably preferably for me, what about keeping the long
+> __kvm_handle_fault_on_reboot() name for the macro itself and simply moving the
+> __ex() macro?
+>
+> That would also allow keeping kvm_spurious_fault() and
+> __kvm_handle_fault_on_reboot() where they are (for no reason other than to avoid
+> code churn).  Though I'm also ok if folks would prefer to move everything to
+> x86.h.
 
-Since [devm_]irq_alloc_desc allocs 1 single irq and since irq 0 is
-normally not used, it would return 0 before this commit, triggering
-that WARN. This happens e.g. on Intel Bay Trail and Cherry Trail
-devices using the LPE audio engine for HDMI audio:
+The new patch is vaguely based on our correspondence on the prototype patch:
 
-[   22.761392] ------------[ cut here ]------------
-[   22.761405] 0 is an invalid IRQ number
-[   22.761462] WARNING: CPU: 3 PID: 472 at drivers/base/platform.c:238 platform_get_irq_optional+0x108/0x180
-[   22.761470] Modules linked in: snd_hdmi_lpe_audio(+) ...
-...
-[   22.762133] Call Trace:
-[   22.762158]  platform_get_irq+0x17/0x30
-[   22.762182]  hdmi_lpe_audio_probe+0x4a/0x6c0 [snd_hdmi_lpe_audio]
-...
-[   22.762726] ---[ end trace ceece38854223a0b ]---
+--q--
+Moving this to asm/kvm_host.h is a bit sketchy as __ex() isn't exactly the
+most unique name.  arch/x86/kvm/x86.h would probably be a better
+destination as it's "private".  __ex() is only used in vmx.c, nested.c and
+svm.c, all of which already include x86.h.
+--/q--
 
-Change the 'from' parameter passed to __[devm_]irq_alloc_descs() by the
-[devm_]irq_alloc_desc macros from 0 to 1, so that these macros
-will no longer return 0.
+where you mentioned that x86.h would be a better destination for
+__ex(). IMO, __kvm_handle_fault_on_reboot also belongs in x86.h, as it
+deals with a low-level access to the processor, and there is really no
+reason for this #define to be available for the whole x86 architecture
+directory. I remember looking for the __kvm_handle_falult_on_reboot,
+and was surprised to find it in a global x86 include directory.
 
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Fixes: a85a6c86c25b ("driver core: platform: Clarify that IRQ 0 is invalid")
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
-A quick grep for 'irq_alloc_desc\(' shows only 2 users of irq_alloc_desc():
-1. drivers/gpu/drm/i915/display/intel_lpe_audio.c
-2. drivers/sh/intc/virq.c
-But that might very well be an incomplete list.
----
- include/linux/irq.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I tried to keep __ex as a redefine to __kvm_hanlde_fault_on_reboot in
+x86.h, but it just looked weird, since __ex is the only user and the
+introductory document explains in detail, what
+__kvm_hanlde_fault_on_reboot (aka __ex) does.
 
-diff --git a/include/linux/irq.h b/include/linux/irq.h
-index c54365309e97..a36d35c25996 100644
---- a/include/linux/irq.h
-+++ b/include/linux/irq.h
-@@ -922,7 +922,7 @@ int __devm_irq_alloc_descs(struct device *dev, int irq, unsigned int from,
- 	__irq_alloc_descs(irq, from, cnt, node, THIS_MODULE, NULL)
- 
- #define irq_alloc_desc(node)			\
--	irq_alloc_descs(-1, 0, 1, node)
-+	irq_alloc_descs(-1, 1, 1, node)
- 
- #define irq_alloc_desc_at(at, node)		\
- 	irq_alloc_descs(at, at, 1, node)
-@@ -937,7 +937,7 @@ int __devm_irq_alloc_descs(struct device *dev, int irq, unsigned int from,
- 	__devm_irq_alloc_descs(dev, irq, from, cnt, node, THIS_MODULE, NULL)
- 
- #define devm_irq_alloc_desc(dev, node)				\
--	devm_irq_alloc_descs(dev, -1, 0, 1, node)
-+	devm_irq_alloc_descs(dev, -1, 1, 1, node)
- 
- #define devm_irq_alloc_desc_at(dev, at, node)			\
- 	devm_irq_alloc_descs(dev, at, at, 1, node)
--- 
-2.28.0
-
+Uros.
