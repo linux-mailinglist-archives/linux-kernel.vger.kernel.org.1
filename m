@@ -2,96 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 957172DFC30
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 14:06:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CB652DFC38
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 14:10:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727140AbgLUNF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 08:05:57 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9544 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726789AbgLUNF4 (ORCPT
+        id S1726923AbgLUNJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 08:09:26 -0500
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:43068 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725807AbgLUNJ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 08:05:56 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D006m55Mlzhw7F;
-        Mon, 21 Dec 2020 21:04:32 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 21 Dec 2020 21:05:06 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
-        <tzimmermann@suse.de>, <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] gpu: drm: Replace simple_strtol by simple_strtoul
-Date:   Mon, 21 Dec 2020 21:05:41 +0800
-Message-ID: <20201221130541.1975-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        Mon, 21 Dec 2020 08:09:26 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=weichen.chen@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0UJJwcON_1608556101;
+Received: from localhost(mailfrom:weichen.chen@linux.alibaba.com fp:SMTPD_---0UJJwcON_1608556101)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 21 Dec 2020 21:08:41 +0800
+From:   weichenchen <weichen.chen@linux.alibaba.com>
+To:     kuba@kernel.org
+Cc:     splendidsky.cwc@alibaba-inc.com, yanxu.zw@alibaba-inc.com,
+        weichenchen <weichen.chen@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hangbin Liu <liuhangbin@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        Roman Mashak <mrv@mojatatu.com>,
+        Vasily Averin <vvs@virtuozzo.com>,
+        Jeff Dike <jdike@akamai.com>,
+        Li RongQing <lirongqing@baidu.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] net: neighbor: fix a crash caused by mod zero
+Date:   Mon, 21 Dec 2020 21:07:44 +0800
+Message-Id: <20201221130754.12628-1-weichen.chen@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1 (Apple Git-117)
+In-Reply-To: <20201219102116.3cc0d74c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20201219102116.3cc0d74c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The simple_strtol() function is deprecated, use simple_strtoul() instead.
+pneigh_enqueue() tries to obtain a random delay by mod
+NEIGH_VAR(p, PROXY_DELAY). However, NEIGH_VAR(p, PROXY_DELAY)
+migth be zero at that point because someone could write zero
+to /proc/sys/net/ipv4/neigh/[device]/proxy_delay after the
+callers check it.
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+This patch double-checks NEIGH_VAR(p, PROXY_DELAY) in
+pneigh_enqueue() to ensure not to take zero as modulus.
+
+Signed-off-by: weichenchen <weichen.chen@linux.alibaba.com>
 ---
- drivers/gpu/drm/drm_modes.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+V2:
+    - Use READ_ONCE() to prevent the complier from re-reading
+      NEIGH_VAR(p, PROXY_DELAY).
+    - Give a hint to the complier that delay <= 0 is unlikely
+      to happen.
 
-diff --git a/drivers/gpu/drm/drm_modes.c b/drivers/gpu/drm/drm_modes.c
-index 501b4fe55a3d..048d6a2c1623 100644
---- a/drivers/gpu/drm/drm_modes.c
-+++ b/drivers/gpu/drm/drm_modes.c
-@@ -1395,7 +1395,7 @@ static int drm_mode_parse_cmdline_bpp(const char *str, char **end_ptr,
- 		return -EINVAL;
+Note: I don't think having the caller pass in the value is a
+good idea mainly because delay should be only decided by
+/proc/sys/net/ipv4/neigh/[device]/proxy_delay rather than the
+caller.
+---
+ net/core/neighbour.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/net/core/neighbour.c b/net/core/neighbour.c
+index 9500d28a43b0..7b03d3f129c0 100644
+--- a/net/core/neighbour.c
++++ b/net/core/neighbour.c
+@@ -1570,9 +1570,14 @@ void pneigh_enqueue(struct neigh_table *tbl, struct neigh_parms *p,
+ 		    struct sk_buff *skb)
+ {
+ 	unsigned long now = jiffies;
++	unsigned long sched_next;
  
- 	str++;
--	bpp = simple_strtol(str, end_ptr, 10);
-+	bpp = simple_strtoul(str, end_ptr, 10);
- 	if (*end_ptr == str)
- 		return -EINVAL;
+-	unsigned long sched_next = now + (prandom_u32() %
+-					  NEIGH_VAR(p, PROXY_DELAY));
++	int delay = READ_ONCE(NEIGH_VAR(p, PROXY_DELAY));
++
++	if (unlikely(delay <= 0))
++		sched_next = now;
++	else
++		sched_next = now + (prandom_u32() % delay);
  
-@@ -1414,7 +1414,7 @@ static int drm_mode_parse_cmdline_refresh(const char *str, char **end_ptr,
- 		return -EINVAL;
- 
- 	str++;
--	refresh = simple_strtol(str, end_ptr, 10);
-+	refresh = simple_strtoul(str, end_ptr, 10);
- 	if (*end_ptr == str)
- 		return -EINVAL;
- 
-@@ -1486,7 +1486,7 @@ static int drm_mode_parse_cmdline_res_mode(const char *str, unsigned int length,
- 	int remaining, i;
- 	char *end_ptr;
- 
--	xres = simple_strtol(str, &end_ptr, 10);
-+	xres = simple_strtoul(str, &end_ptr, 10);
- 	if (end_ptr == str)
- 		return -EINVAL;
- 
-@@ -1495,7 +1495,7 @@ static int drm_mode_parse_cmdline_res_mode(const char *str, unsigned int length,
- 	end_ptr++;
- 
- 	str = end_ptr;
--	yres = simple_strtol(str, &end_ptr, 10);
-+	yres = simple_strtoul(str, &end_ptr, 10);
- 	if (end_ptr == str)
- 		return -EINVAL;
- 
-@@ -1553,7 +1553,7 @@ static int drm_mode_parse_cmdline_int(const char *delim, unsigned int *int_ret)
- 		return -EINVAL;
- 
- 	value = delim + 1;
--	*int_ret = simple_strtol(value, &endp, 10);
-+	*int_ret = simple_strtoul(value, &endp, 10);
- 
- 	/* Make sure we have parsed something */
- 	if (endp == value)
+ 	if (tbl->proxy_queue.qlen > NEIGH_VAR(p, PROXY_QLEN)) {
+ 		kfree_skb(skb);
 -- 
-2.22.0
+2.20.1 (Apple Git-117)
 
