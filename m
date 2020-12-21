@@ -2,99 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58BBA2DFA2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 09:53:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8705A2DFA33
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 09:55:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728067AbgLUIws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 03:52:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726083AbgLUIws (ORCPT
+        id S1728190AbgLUIyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 03:54:51 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:33331 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727401AbgLUIyv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 03:52:48 -0500
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E46B0C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 00:52:07 -0800 (PST)
-Received: by mail-qv1-xf2e.google.com with SMTP id p12so4088206qvj.13
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 00:52:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8qKCILQuPxtNGC0KokeuabRQiz8j0EzP8ss9vMtRJ/s=;
-        b=ljMnF4kXTh+rlfgGGfOtBXETNoDO/OUEZZmp5uyi8291WY0rW5X2Oen/kUUr4FonP7
-         ntvV2pPq1HzUSUbnefJsOk2xnzK+yBNgXyau02As3Tk+bBbhxgXHgL9L13ZMSJxQe26+
-         u4fVxXjCyfDTO9isZhlZf9xDNsR4afKI+LqoA=
+        Mon, 21 Dec 2020 03:54:51 -0500
+Received: by mail-io1-f70.google.com with SMTP id t23so5082719ioh.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 00:54:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8qKCILQuPxtNGC0KokeuabRQiz8j0EzP8ss9vMtRJ/s=;
-        b=f4BRl/7yUIsHmbeJe/9g+WEabE53Pg5zLfrYWSiks7Gbs5GLm670E+Po3qHLE3VbJR
-         uLLfl0824atnjOC6cRwDkYxIplN73fXgLuJbSftdue7wBYTKr/PIe39tIT9oVztMfsU7
-         b0iTZjuWnefnnFsFrwXHuo3cQlsXufUcWVYACEKYFUFhzOsrtTnNII7SXdR2q0klOpur
-         mvpe6yv5VV144qUo97KTYRQRnIuz+kcwOKUXi8fpxI3XO2KnYYtcqdas+Lg/WJChNxFs
-         KBIpY6s0xNNTvsBxOtViCVvQIvwvpWrLJ2hHpAOuygE2ZvWajsCMRigMfrU4rkv4e48v
-         11nQ==
-X-Gm-Message-State: AOAM5336ZHy4zmvgm9a5JUFTqcXpom1ElgrhxFv54soQ4iveCiUD/Tec
-        3B05PiAvT/IgZTqUSW1CSWA+OVPZYvrIhqM1K+o+JA==
-X-Google-Smtp-Source: ABdhPJwFYHrXu3pafECFOZGz6Ntg1TFkEIWytSpgCb6xGX2GhMePLZ019Ky+9cAPobzPPe22v51njYl9woYl9NI97KU=
-X-Received: by 2002:a05:6214:140d:: with SMTP id n13mr16093482qvx.45.1608540727170;
- Mon, 21 Dec 2020 00:52:07 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=2ynIvZyu/Mq8I0y4+W/1wGFuqsNw7/hbTUXKut/HCW8=;
+        b=Ax4x3PbDwu1575x7y9Tu5trZMXJUnGCr3vtI9se6SjXNQr99QlyvxgNpttAYu0qATT
+         l/V5k+Iq72YbyUFyBGXujkElh73/pR/cjFqrh0lJ8P+7AFedPuUJt8DkZGp5jc2sjL8S
+         8OfTvaTkzZ75spvRCtHQcK3yW2GS9WM3g4M92Zsc9zhk2tShNYNFJ99OGw2y+Xr8TVPT
+         ikqbSzIUoqAiMy1QugMyjzzd++PU17qsWI/yOZsP4JAhImhhoIBBygOU37dX0usy4WlC
+         q0ZjXiutwlDoh7wRHLs45aV6NkNdkwgl5N5M9g/SQq5X+ycY1SR2kXUO6P8aQb+0a+u+
+         Ku3Q==
+X-Gm-Message-State: AOAM532ZE0cPR9/hUs9XR2ifg1DJ6SOtotm1lD7O1vgWSONszdmhLxPr
+        9hDye83pYC6D8Po07gvSzUtTz+rEAsUecbLZcIKOyy9JKggp
+X-Google-Smtp-Source: ABdhPJzar/byIQ4ZD44/83nGoCtUGavdwhNG9csm/7hV+2D2XX77WIBljGPE7hr4xmu6ih9ykLZDa5bZJHvGhUoR8GDfS0/68JYb
 MIME-Version: 1.0
-References: <20201114135044.724385-1-daniel@0x0f.com> <20201114135044.724385-3-daniel@0x0f.com>
- <160843556037.1580929.13575770228476494246@swboyd.mtv.corp.google.com>
- <CAFr9PX=f=HyHBk4s3e_vnMDC53R1X18m7sKFCLMMjitPm+8oEQ@mail.gmail.com> <160848984935.1580929.936824086681978646@swboyd.mtv.corp.google.com>
-In-Reply-To: <160848984935.1580929.936824086681978646@swboyd.mtv.corp.google.com>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Mon, 21 Dec 2020 17:51:56 +0900
-Message-ID: <CAFr9PX=oLqQqvykiwOGAGg1H2CG0BTEqn0TuSrijodjxY52LxQ@mail.gmail.com>
-Subject: Re: [PATCH 2/6] dt-bindings: clk: mstar msc313 mpll binding description
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     DTML <devicetree@vger.kernel.org>, linux-clk@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Willy Tarreau <w@1wt.eu>
+X-Received: by 2002:a05:6e02:e45:: with SMTP id l5mr15361557ilk.294.1608540849804;
+ Mon, 21 Dec 2020 00:54:09 -0800 (PST)
+Date:   Mon, 21 Dec 2020 00:54:09 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f599c005b6f59913@google.com>
+Subject: memory leak in mcba_usb_probe
+From:   syzbot <syzbot+57281c762a3922e14dfe@syzkaller.appspotmail.com>
+To:     a.darwish@linutronix.de, bigeasy@linutronix.de,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, stern@rowland.harvard.edu,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+Hello,
 
-On Mon, 21 Dec 2020 at 03:44, Stephen Boyd <sboyd@kernel.org> wrote:
->
-> Quoting Daniel Palmer (2020-12-19 22:35:41)
-> > Hi Stephen,
-> >
-> > On Sun, 20 Dec 2020 at 12:39, Stephen Boyd <sboyd@kernel.org> wrote:
-> > > > +  clock-output-names:
-> > > > +    minItems: 8
-> > > > +    maxItems: 8
-> > > > +    description: |
-> > > > +      This should provide a name for the internal PLL clock and then
-> > > > +      a name for each of the divided outputs.
-> > >
-> > > Is this necessary?
-> >
-> > I found without the names specified in the dt probing of muxes that
-> > depend on the outputs but appear earlier didn't work.
-> > Also this same PLL layout seems to be used in some other places so
-> > eventually I was thinking this driver would get used for those PLLs
-> > with different output names.
->
-> Still seems like it could be auto-generated based on dev_name() +
-> number.
+syzbot found the following issue on:
 
-At one point I had something similar to that where the output names
-were generated at probe.
-Without the clock outputs listed in the device tree clock muxes that
-source clocks from the mpll couldn't probe properly as they couldn't
-look up all of their parents if they probed before the mpll.
-Maybe I'm doing something wrong there? I couldn't find a way to always
-resolve all of the parents or defer the probe of the muxes until the
-mpll clocks are registered.
+HEAD commit:    467f8165 Merge tag 'close-range-cloexec-unshare-v5.11' of ..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15933e0f500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=37c889fb8b2761af
+dashboard link: https://syzkaller.appspot.com/bug?extid=57281c762a3922e14dfe
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14fe2b9b500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13bd2287500000
 
-Cheers,
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+57281c762a3922e14dfe@syzkaller.appspotmail.com
 
-Daniel
+BUG: memory leak
+unreferenced object 0xffff88811101c080 (size 64):
+  comm "kworker/0:2", pid 56, jiffies 4294942309 (age 8.240s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000e42b7c1c>] kmalloc include/linux/slab.h:557 [inline]
+    [<00000000e42b7c1c>] hcd_buffer_alloc+0x149/0x190 drivers/usb/core/buffer.c:134
+    [<0000000042899d1a>] usb_alloc_coherent+0x42/0x60 drivers/usb/core/usb.c:897
+    [<00000000abbb04b6>] mcba_usb_start drivers/net/can/usb/mcba_usb.c:644 [inline]
+    [<00000000abbb04b6>] mcba_usb_probe+0x27b/0x430 drivers/net/can/usb/mcba_usb.c:846
+    [<00000000b5e48b67>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+    [<00000000a0416f71>] really_probe+0x159/0x480 drivers/base/dd.c:561
+    [<00000000cce96f4d>] driver_probe_device+0x84/0x100 drivers/base/dd.c:745
+    [<00000000b0116c0e>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:851
+    [<00000000da4bf16e>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
+    [<00000000e826f962>] __device_attach+0x122/0x250 drivers/base/dd.c:919
+    [<00000000fb35d32b>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
+    [<0000000083f168a1>] device_add+0x5be/0xc30 drivers/base/core.c:3091
+    [<000000002b4245b1>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2164
+    [<00000000fa502fa0>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
+    [<000000004e1ab3a9>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
+    [<00000000a0416f71>] really_probe+0x159/0x480 drivers/base/dd.c:561
+    [<00000000cce96f4d>] driver_probe_device+0x84/0x100 drivers/base/dd.c:745
+
+BUG: memory leak
+unreferenced object 0xffff88811101c0c0 (size 64):
+  comm "kworker/0:2", pid 56, jiffies 4294942309 (age 8.240s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000e42b7c1c>] kmalloc include/linux/slab.h:557 [inline]
+    [<00000000e42b7c1c>] hcd_buffer_alloc+0x149/0x190 drivers/usb/core/buffer.c:134
+    [<0000000042899d1a>] usb_alloc_coherent+0x42/0x60 drivers/usb/core/usb.c:897
+    [<00000000abbb04b6>] mcba_usb_start drivers/net/can/usb/mcba_usb.c:644 [inline]
+    [<00000000abbb04b6>] mcba_usb_probe+0x27b/0x430 drivers/net/can/usb/mcba_usb.c:846
+    [<00000000b5e48b67>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+    [<00000000a0416f71>] really_probe+0x159/0x480 drivers/base/dd.c:561
+    [<00000000cce96f4d>] driver_probe_device+0x84/0x100 drivers/base/dd.c:745
+    [<00000000b0116c0e>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:851
+    [<00000000da4bf16e>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
+    [<00000000e826f962>] __device_attach+0x122/0x250 drivers/base/dd.c:919
+    [<00000000fb35d32b>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
+    [<0000000083f168a1>] device_add+0x5be/0xc30 drivers/base/core.c:3091
+    [<000000002b4245b1>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2164
+    [<00000000fa502fa0>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
+    [<000000004e1ab3a9>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
+    [<00000000a0416f71>] really_probe+0x159/0x480 drivers/base/dd.c:561
+    [<00000000cce96f4d>] driver_probe_device+0x84/0x100 drivers/base/dd.c:745
+
+BUG: memory leak
+unreferenced object 0xffff88811101c100 (size 64):
+  comm "kworker/0:2", pid 56, jiffies 4294942309 (age 8.240s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000e42b7c1c>] kmalloc include/linux/slab.h:557 [inline]
+    [<00000000e42b7c1c>] hcd_buffer_alloc+0x149/0x190 drivers/usb/core/buffer.c:134
+    [<0000000042899d1a>] usb_alloc_coherent+0x42/0x60 drivers/usb/core/usb.c:897
+    [<00000000abbb04b6>] mcba_usb_start drivers/net/can/usb/mcba_usb.c:644 [inline]
+    [<00000000abbb04b6>] mcba_usb_probe+0x27b/0x430 drivers/net/can/usb/mcba_usb.c:846
+    [<00000000b5e48b67>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+    [<00000000a0416f71>] really_probe+0x159/0x480 drivers/base/dd.c:561
+    [<00000000cce96f4d>] driver_probe_device+0x84/0x100 drivers/base/dd.c:745
+    [<00000000b0116c0e>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:851
+    [<00000000da4bf16e>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
+    [<00000000e826f962>] __device_attach+0x122/0x250 drivers/base/dd.c:919
+    [<00000000fb35d32b>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
+    [<0000000083f168a1>] device_add+0x5be/0xc30 drivers/base/core.c:3091
+    [<000000002b4245b1>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2164
+    [<00000000fa502fa0>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
+    [<000000004e1ab3a9>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
+    [<00000000a0416f71>] really_probe+0x159/0x480 drivers/base/dd.c:561
+    [<00000000cce96f4d>] driver_probe_device+0x84/0x100 drivers/base/dd.c:745
+
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
