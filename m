@@ -2,157 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D8AD2E0210
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 22:31:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2E32E020C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 22:29:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725961AbgLUVas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 16:30:48 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2341 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725791AbgLUVas (ORCPT
+        id S1726371AbgLUV2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 16:28:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725857AbgLUV2t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 16:30:48 -0500
-Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4D0CJg134Jz13VGd;
-        Tue, 22 Dec 2020 05:28:51 +0800 (CST)
-Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
- DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Tue, 22 Dec 2020 05:25:40 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Tue, 22 Dec 2020 05:25:41 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.002;
- Tue, 22 Dec 2020 05:25:40 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Shakeel Butt <shakeelb@google.com>
-CC:     Vitaly Wool <vitaly.wool@konsulko.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Mike Galbraith <efault@gmx.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
+        Mon, 21 Dec 2020 16:28:49 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49708C0613D3;
+        Mon, 21 Dec 2020 13:28:09 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id s26so27044434lfc.8;
+        Mon, 21 Dec 2020 13:28:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=bLr5Ro0ubgQqubrx7Ma+5B4hOKbAzHwBtKu9P4mpJmk=;
+        b=mGms/gnbEam/O2YVyX5kBLkwdmvcvQEyzaVdcLr7fjnfdwixdk1GAgtuhJXXYnh5S5
+         k1L12g5sYMbFDgrgyDaBy1GbqPthmDFvns9T33CVDy6pkzyTIBDeY8zLbsE32xMeLpOu
+         fjVEpRRmTM/qfmlIhck+h3ay6wmFNAYZz+tTDLH6LOCEI79/7KTvlpC/ttHSDCwLiNoL
+         1B1NJVq8JnGG/iU33lehKpg01o4SrCFiklYdcWARDd+C1iRMSW3towbSbGyR+aC8+xQ8
+         wwtjriOn5NKQtMMHdibRigfjCadC0BRbRynbJUh7SCYllL8tNU/7XKMXQtF3HauRIsfV
+         oATA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=bLr5Ro0ubgQqubrx7Ma+5B4hOKbAzHwBtKu9P4mpJmk=;
+        b=k3+c8q+WqQGaCNVvGfghknTHiLGyY2JIiRQkV1yoIs4ddugQdLbZuIbxWpWqYZN+NK
+         +6wZc6zX/f2mz2kX58YxIhxnpJg0S2Jewk7LbyVJUoZbjsnvb4bto71GrOtaA1K/DpKk
+         pEaiOlCS/M6BaY8qJQIyt6MXx5pQ6N32TS634otdedaIU7N5OSfTT3j9WD/hRJT/Ngiz
+         rOvSVxeWlnWQ1S2xOtVUwvu6M/uIqWawaN4bbjK9ydsduMAYvRhzhxrlZoLi8QAANHc2
+         XoA/IyEezzLME8FYHTdICBmAMdCKb3Y/+1F5DCVyt5XF0wihS/5UbB37eTRZ8KU/YCzz
+         M/kQ==
+X-Gm-Message-State: AOAM5310Z5X66pS/CORDsw0QQYpGbo/aeC9k+SgnsqPidxsp0yYn24yN
+        U005CplclxR9r9X75sNav0GyV84Gd7fTtg==
+X-Google-Smtp-Source: ABdhPJzaRCvzDzIFxZxPERKpRDFtMBMExTN1LPdLp1gJW0P5cZPG8uItYX3VKdwW5yGuPw9id/v3WA==
+X-Received: by 2002:a2e:7816:: with SMTP id t22mr7848794ljc.449.1608586087805;
+        Mon, 21 Dec 2020 13:28:07 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id a11sm2242049lfl.22.2020.12.21.13.28.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 13:28:07 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Mon, 21 Dec 2020 22:28:05 +0100
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        NitinGupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: RE: [PATCH] zsmalloc: do not use bit_spin_lock
-Thread-Topic: [PATCH] zsmalloc: do not use bit_spin_lock
-Thread-Index: AQHW1mZAeBjE5clI7UKUuMSOCQsyuqoBSTyAgAAghwCAAAhXgIAAhndA//+NyICAAIW5IA==
-Date:   Mon, 21 Dec 2020 21:25:40 +0000
-Message-ID: <8cc0e01fd03245a4994f2e0f54b264fa@hisilicon.com>
-References: <18669bd607ae9efbf4e00e36532c7aa167d0fa12.camel@gmx.de>
- <20201220002228.38697-1-vitaly.wool@konsulko.com>
- <X+DaMSJE22nUC0tl@google.com>
- <CAM4kBBKnW6K-mbPno4SpvhUBiykP4zeFm_CNzssDkReURbuU7w@mail.gmail.com>
- <CALvZod69OtXkdOJPzuY5XfXz_ro0V7OmqW4OY9B_emqwroxW4w@mail.gmail.com>
- <e5cd8a0a5df84081a11359ede6e746bc@hisilicon.com>
- <CALvZod7EZnEWb_65FjSNdx+-S_4pLHyS5rYiU-D3hFLRMXS6Lw@mail.gmail.com>
-In-Reply-To: <CALvZod7EZnEWb_65FjSNdx+-S_4pLHyS5rYiU-D3hFLRMXS6Lw@mail.gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.200.103]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 2/2] rcu-tasks: add RCU-tasks self tests
+Message-ID: <20201221212805.GA28289@pc638.lan>
+References: <20201209202732.5896-1-urezki@gmail.com>
+ <20201209202732.5896-2-urezki@gmail.com>
+ <20201216154959.GA2408@pc638.lan>
+ <20201216232955.GO2657@paulmck-ThinkPad-P72>
+ <20201221153809.GA24756@pc638.lan>
+ <20201221171805.GW2657@paulmck-ThinkPad-P72>
+ <20201221184539.GA24895@pc638.lan>
+ <20201221192906.GX2657@paulmck-ThinkPad-P72>
+ <20201221194848.GA2558@pc638.lan>
+ <20201221204513.GY2657@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201221204513.GY2657@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogU2hha2VlbCBCdXR0IFtt
-YWlsdG86c2hha2VlbGJAZ29vZ2xlLmNvbV0NCj4gU2VudDogVHVlc2RheSwgRGVjZW1iZXIgMjIs
-IDIwMjAgMTA6MDMgQU0NCj4gVG86IFNvbmcgQmFvIEh1YSAoQmFycnkgU29uZykgPHNvbmcuYmFv
-Lmh1YUBoaXNpbGljb24uY29tPg0KPiBDYzogVml0YWx5IFdvb2wgPHZpdGFseS53b29sQGtvbnN1
-bGtvLmNvbT47IE1pbmNoYW4gS2ltIDxtaW5jaGFuQGtlcm5lbC5vcmc+Ow0KPiBNaWtlIEdhbGJy
-YWl0aCA8ZWZhdWx0QGdteC5kZT47IExLTUwgPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+
-OyBsaW51eC1tbQ0KPiA8bGludXgtbW1Aa3ZhY2sub3JnPjsgU2ViYXN0aWFuIEFuZHJ6ZWogU2ll
-d2lvciA8YmlnZWFzeUBsaW51dHJvbml4LmRlPjsNCj4gTml0aW5HdXB0YSA8bmd1cHRhQHZmbGFy
-ZS5vcmc+OyBTZXJnZXkgU2Vub3poYXRza3kNCj4gPHNlcmdleS5zZW5vemhhdHNreS53b3JrQGdt
-YWlsLmNvbT47IEFuZHJldyBNb3J0b24NCj4gPGFrcG1AbGludXgtZm91bmRhdGlvbi5vcmc+DQo+
-IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIHpzbWFsbG9jOiBkbyBub3QgdXNlIGJpdF9zcGluX2xvY2sN
-Cj4gDQo+IE9uIE1vbiwgRGVjIDIxLCAyMDIwIGF0IDEyOjA2IFBNIFNvbmcgQmFvIEh1YSAoQmFy
-cnkgU29uZykNCj4gPHNvbmcuYmFvLmh1YUBoaXNpbGljb24uY29tPiB3cm90ZToNCj4gPg0KPiA+
-DQo+ID4NCj4gPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4gPiBGcm9tOiBTaGFr
-ZWVsIEJ1dHQgW21haWx0bzpzaGFrZWVsYkBnb29nbGUuY29tXQ0KPiA+ID4gU2VudDogVHVlc2Rh
-eSwgRGVjZW1iZXIgMjIsIDIwMjAgODo1MCBBTQ0KPiA+ID4gVG86IFZpdGFseSBXb29sIDx2aXRh
-bHkud29vbEBrb25zdWxrby5jb20+DQo+ID4gPiBDYzogTWluY2hhbiBLaW0gPG1pbmNoYW5Aa2Vy
-bmVsLm9yZz47IE1pa2UgR2FsYnJhaXRoIDxlZmF1bHRAZ214LmRlPjsgTEtNTA0KPiA+ID4gPGxp
-bnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+OyBsaW51eC1tbSA8bGludXgtbW1Aa3ZhY2sub3Jn
-PjsgU29uZyBCYW8NCj4gSHVhDQo+ID4gPiAoQmFycnkgU29uZykgPHNvbmcuYmFvLmh1YUBoaXNp
-bGljb24uY29tPjsgU2ViYXN0aWFuIEFuZHJ6ZWogU2lld2lvcg0KPiA+ID4gPGJpZ2Vhc3lAbGlu
-dXRyb25peC5kZT47IE5pdGluR3VwdGEgPG5ndXB0YUB2ZmxhcmUub3JnPjsgU2VyZ2V5DQo+IFNl
-bm96aGF0c2t5DQo+ID4gPiA8c2VyZ2V5LnNlbm96aGF0c2t5LndvcmtAZ21haWwuY29tPjsgQW5k
-cmV3IE1vcnRvbg0KPiA+ID4gPGFrcG1AbGludXgtZm91bmRhdGlvbi5vcmc+DQo+ID4gPiBTdWJq
-ZWN0OiBSZTogW1BBVENIXSB6c21hbGxvYzogZG8gbm90IHVzZSBiaXRfc3Bpbl9sb2NrDQo+ID4g
-Pg0KPiA+ID4gT24gTW9uLCBEZWMgMjEsIDIwMjAgYXQgMTE6MjAgQU0gVml0YWx5IFdvb2wgPHZp
-dGFseS53b29sQGtvbnN1bGtvLmNvbT4NCj4gd3JvdGU6DQo+ID4gPiA+DQo+ID4gPiA+IE9uIE1v
-biwgRGVjIDIxLCAyMDIwIGF0IDY6MjQgUE0gTWluY2hhbiBLaW0gPG1pbmNoYW5Aa2VybmVsLm9y
-Zz4gd3JvdGU6DQo+ID4gPiA+ID4NCj4gPiA+ID4gPiBPbiBTdW4sIERlYyAyMCwgMjAyMCBhdCAw
-MjoyMjoyOEFNICswMjAwLCBWaXRhbHkgV29vbCB3cm90ZToNCj4gPiA+ID4gPiA+IHpzbWFsbG9j
-IHRha2VzIGJpdCBzcGlubG9jayBpbiBpdHMgX21hcCgpIGNhbGxiYWNrIGFuZCByZWxlYXNlcyBp
-dA0KPiA+ID4gPiA+ID4gb25seSBpbiB1bm1hcCgpIHdoaWNoIGlzIHVuc2FmZSBhbmQgbGVhZHMg
-dG8genN3YXAgY29tcGxhaW5pbmcNCj4gPiA+ID4gPiA+IGFib3V0IHNjaGVkdWxpbmcgaW4gYXRv
-bWljIGNvbnRleHQuDQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gVG8gZml4IHRoYXQgYW5kIHRv
-IGltcHJvdmUgUlQgcHJvcGVydGllcyBvZiB6c21hbGxvYywgcmVtb3ZlIHRoYXQNCj4gPiA+ID4g
-PiA+IGJpdCBzcGlubG9jayBjb21wbGV0ZWx5IGFuZCB1c2UgYSBiaXQgZmxhZyBpbnN0ZWFkLg0K
-PiA+ID4gPiA+DQo+ID4gPiA+ID4gSSBkb24ndCB3YW50IHRvIHVzZSBzdWNoIG9wZW4gY29kZSBm
-b3IgdGhlIGxvY2suDQo+ID4gPiA+ID4NCj4gPiA+ID4gPiBJIHNlZSBmcm9tIE1pa2UncyBwYXRj
-aCwgcmVjZW50IHpzd2FwIGNoYW5nZSBpbnRyb2R1Y2VkIHRoZSBsb2NrZGVwDQo+ID4gPiA+ID4g
-c3BsYXQgYnVnIGFuZCB5b3Ugd2FudCB0byBpbXByb3ZlIHpzbWFsbG9jIHRvIGZpeCB0aGUgenN3
-YXAgYnVnIGFuZA0KPiA+ID4gPiA+IGludHJvZHVjZSB0aGlzIHBhdGNoIHdpdGggYWxsb3dpbmcg
-cHJlZW1wdGlvbiBlbmFibGluZy4NCj4gPiA+ID4NCj4gPiA+ID4gVGhpcyB1bmRlcnN0YW5kaW5n
-IGlzIHVwc2lkZSBkb3duLiBUaGUgY29kZSBpbiB6c3dhcCB5b3UgYXJlIHJlZmVycmluZw0KPiA+
-ID4gPiB0byBpcyBub3QgYnVnZ3kuICBZb3UgbWF5IGNsYWltIHRoYXQgaXQgaXMgc3Vib3B0aW1h
-bCBidXQgdGhlcmUgaXMNCj4gPiA+ID4gbm90aGluZyB3cm9uZyBpbiB0YWtpbmcgYSBtdXRleC4N
-Cj4gPiA+ID4NCj4gPiA+DQo+ID4gPiBJcyB0aGlzIHN1Ym9wdGltYWwgZm9yIGFsbCBvciBqdXN0
-IHRoZSBoYXJkd2FyZSBhY2NlbGVyYXRvcnM/IFNvcnJ5LCBJDQo+ID4gPiBhbSBub3QgdmVyeSBm
-YW1pbGlhciB3aXRoIHRoZSBjcnlwdG8gQVBJLiBJZiBJIHNlbGVjdCBsem8gb3IgbHo0IGFzIGEN
-Cj4gPiA+IHpzd2FwIGNvbXByZXNzb3Igd2lsbCB0aGUgW2RlXWNvbXByZXNzaW9uIGJlIGFzeW5j
-IG9yIHN5bmM/DQo+ID4NCj4gPiBSaWdodCBub3csIGluIGNyeXB0byBzdWJzeXN0ZW0sIG5ldyBk
-cml2ZXJzIGFyZSByZXF1aXJlZCB0byB3cml0ZSBiYXNlZCBvbg0KPiA+IGFzeW5jIEFQSXMuIFRo
-ZSBvbGQgc3luYyBBUEkgY2FuJ3Qgd29yayBpbiBuZXcgYWNjZWxlcmF0b3IgZHJpdmVycyBhcyB0
-aGV5DQo+ID4gYXJlIG5vdCBzdXBwb3J0ZWQgYXQgYWxsLg0KPiA+DQo+ID4gT2xkIGRyaXZlcnMg
-YXJlIHVzZWQgdG8gc3luYywgYnV0IHRoZXkndmUgZ290IGFzeW5jIHdyYXBwZXJzIHRvIHN1cHBv
-cnQgYXN5bmMNCj4gPiBBUElzLiBFZy4NCj4gPiBjcnlwdG86IGFjb21wIC0gYWRkIHN1cHBvcnQg
-Zm9yIGx6NCB2aWEgc2NvbXANCj4gPg0KPiBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20v
-bGludXgva2VybmVsL2dpdC90b3J2YWxkcy9saW51eC5naXQvY29tbWl0Lw0KPiBjcnlwdG8vbHo0
-LmM/aWQ9OGNkOTMzMGUwYTYxNWM5MzEwMzdkNGRlZjk4YjVjZTBkNTQwZjA4ZA0KPiA+DQo+ID4g
-Y3J5cHRvOiBhY29tcCAtIGFkZCBzdXBwb3J0IGZvciBsem8gdmlhIHNjb21wDQo+ID4NCj4gaHR0
-cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGlu
-dXguZ2l0L2NvbW1pdC8NCj4gY3J5cHRvL2x6by5jP2lkPWFjOWQyYzRiMzllMDIyZDJjNjE0ODZi
-ZmMzM2I3MzBjZmQwMjg5OGUNCj4gPg0KPiA+IHNvIHRoZXkgYXJlIHN1cHBvcnRpbmcgYXN5bmMg
-QVBJcyBidXQgdGhleSBhcmUgc3RpbGwgd29ya2luZyBpbiBzeW5jIG1vZGUNCj4gYXMNCj4gPiB0
-aG9zZSBvbGQgZHJpdmVycyBkb24ndCBzbGVlcC4NCj4gPg0KPiANCj4gR29vZCB0byBrbm93IHRo
-YXQgdGhvc2UgYXJlIHN5bmMgYmVjYXVzZSBJIHdhbnQgdGhlbSB0byBiZSBzeW5jLg0KPiBQbGVh
-c2Ugbm90ZSB0aGF0IHpzd2FwIGlzIGEgY2FjaGUgaW4gZnJvbnQgb2YgYSByZWFsIHN3YXAgYW5k
-IHRoZSBsb2FkDQo+IG9wZXJhdGlvbiBpcyBsYXRlbmN5IHNlbnNpdGl2ZSBhcyBpdCBjb21lcyBp
-biB0aGUgcGFnZSBmYXVsdCBwYXRoIGFuZA0KPiBkaXJlY3RseSBpbXBhY3RzIHRoZSBhcHBsaWNh
-dGlvbnMuIEkgZG91YnQgZGVjb21wcmVzc2luZyBzeW5jaHJvbm91c2x5DQo+IGEgNGsgcGFnZSBv
-biBhIGNwdSB3aWxsIGJlIGNvc3RsaWVyIHRoYW4gYXN5bmNocm9ub3VzbHkgZGVjb21wcmVzc2lu
-Zw0KPiB0aGUgc2FtZSBwYWdlIGZyb20gaGFyZHdhcmUgYWNjZWxlcmF0b3JzLg0KDQpJZiB5b3Ug
-cmVhZCB0aGUgb2xkIHBhcGVyOg0KaHR0cHM6Ly93d3cuaWJtLmNvbS9zdXBwb3J0L3BhZ2VzL25l
-dy1saW51eC16c3dhcC1jb21wcmVzc2lvbi1mdW5jdGlvbmFsaXR5DQpCZWNhdXNlIHRoZSBoYXJk
-d2FyZSBhY2NlbGVyYXRvciBzcGVlZHMgdXAgY29tcHJlc3Npb24sIGxvb2tpbmcgYXQgdGhlIHpz
-d2FwDQptZXRyaWNzIHdlIG9ic2VydmVkIHRoYXQgdGhlcmUgd2VyZSBtb3JlIHN0b3JlIGFuZCBs
-b2FkIHJlcXVlc3RzIGluIGEgZ2l2ZW4NCmFtb3VudCBvZiB0aW1lLCB3aGljaCBmaWxsZWQgdXAg
-dGhlIHpzd2FwIHBvb2wgZmFzdGVyIHRoYW4gYSBzb2Z0d2FyZQ0KY29tcHJlc3Npb24gcnVuLiBC
-ZWNhdXNlIG9mIHRoaXMgYmVoYXZpb3IsIHdlIHNldCB0aGUgbWF4X3Bvb2xfcGVyY2VudA0KcGFy
-YW1ldGVyIHRvIDMwIGZvciB0aGUgaGFyZHdhcmUgY29tcHJlc3Npb24gcnVucyAtIHRoaXMgbWVh
-bnMgdGhhdCB6c3dhcA0KY2FuIHVzZSB1cCB0byAzMCUgb2YgdGhlIDEwR0Igb2YgdG90YWwgbWVt
-b3J5Lg0KDQpTbyB1c2luZyBoYXJkd2FyZSBhY2NlbGVyYXRvcnMsIHdlIGdldCBhIGNoYW5jZSB0
-byBzcGVlZCB1cCBjb21wcmVzc2lvbg0Kd2hpbGUgZGVjcmVhc2luZyBjcHUgdXRpbGl6YXRpb24u
-DQoNCkJUVywgSWYgaXQgaXMgbm90IGVhc3kgdG8gY2hhbmdlIHpzbWFsbG9jLCBvbmUgcXVpY2sg
-d29ya2Fyb3VuZCB3ZSBtaWdodCBkbw0KaW4genN3YXAgaXMgYWRkaW5nIHRoZSBiZWxvdyBhZnRl
-ciBhcHBseWluZyBNaWtlJ3Mgb3JpZ2luYWwgcGF0Y2g6DQoNCmlmKGluX2F0b21pYygpKSAvKiBm
-b3IgenNtYWxsb2MgKi8NCgl3aGlsZSghdHJ5X3dhaXRfZm9yX2NvbXBsZXRpb24oJnJlcS0+ZG9u
-ZSk7DQplbHNlIC8qIGZvciB6YnVkLCB6M2ZvbGQgKi8NCgljcnlwdG9fd2FpdF9yZXEoLi4uLik7
-DQoNCmNyeXB0b193YWl0X3JlcSgpIGlzIGFjdHVhbGx5IGRvaW5nIHdhaXRfZm9yX2NvbXBsZXRp
-b24oKToNCnN0YXRpYyBpbmxpbmUgaW50IGNyeXB0b193YWl0X3JlcShpbnQgZXJyLCBzdHJ1Y3Qg
-Y3J5cHRvX3dhaXQgKndhaXQpDQp7DQoJc3dpdGNoIChlcnIpIHsNCgljYXNlIC1FSU5QUk9HUkVT
-UzoNCgljYXNlIC1FQlVTWToNCgkJd2FpdF9mb3JfY29tcGxldGlvbigmd2FpdC0+Y29tcGxldGlv
-bik7DQoJCXJlaW5pdF9jb21wbGV0aW9uKCZ3YWl0LT5jb21wbGV0aW9uKTsNCgkJZXJyID0gd2Fp
-dC0+ZXJyOw0KCQlicmVhazsNCgl9DQoNCglyZXR1cm4gZXJyOw0KfQ0KDQpUaGFua3MNCkJhcnJ5
-DQo=
+On Mon, Dec 21, 2020 at 12:45:13PM -0800, Paul E. McKenney wrote:
+> On Mon, Dec 21, 2020 at 08:48:48PM +0100, Uladzislau Rezki wrote:
+> > On Mon, Dec 21, 2020 at 11:29:06AM -0800, Paul E. McKenney wrote:
+> > > On Mon, Dec 21, 2020 at 07:45:39PM +0100, Uladzislau Rezki wrote:
+> > > > On Mon, Dec 21, 2020 at 09:18:05AM -0800, Paul E. McKenney wrote:
+> > > > > On Mon, Dec 21, 2020 at 04:38:09PM +0100, Uladzislau Rezki wrote:
+> > > > > > On Wed, Dec 16, 2020 at 03:29:55PM -0800, Paul E. McKenney wrote:
+> > > > > > > On Wed, Dec 16, 2020 at 04:49:59PM +0100, Uladzislau Rezki wrote:
+> > > > > 
+> > > > > [ . . . ]
+> > > > > 
+> > > > > > > > 2.20.1
+> > > > > > > 
+> > > > > > > Again, much improved!
+> > > > > > > 
+> > > > > > See below the v3 version. I hope i fixed all comments :)
+> > > > > > 
+> > > > > > >From 06f7adfd84cbb1994d0e2693ee9dcdfd272a9bd0 Mon Sep 17 00:00:00 2001
+> > > > > > From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+> > > > > > Date: Wed, 9 Dec 2020 21:27:32 +0100
+> > > > > > Subject: [PATCH v3 1/1] rcu-tasks: Add RCU-tasks self tests
+> > > > > > 
+> > > > > > This commit adds self tests for early-boot use of RCU-tasks grace periods.
+> > > > > > It tests all three variants (Rude, Tasks, and Tasks Trace) and covers
+> > > > > > both synchronous (e.g., synchronize_rcu_tasks()) and asynchronous (e.g.,
+> > > > > > call_rcu_tasks()) grace-period APIs.
+> > > > > > 
+> > > > > > Self-tests are run only in kernels built with CONFIG_PROVE_RCU=y.
+> > > > > > 
+> > > > > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > > > 
+> > > > > Much better!
+> > > > > 
+> > > > > I pulled this in, but made one small additional change.  Please let me
+> > > > > know if this is problematic.
+> > > > > 
+> > > > > 							Thanx, Paul
+> > > > > 
+> > > > > ------------------------------------------------------------------------
+> > > > > 
+> > > > > commit 93372198b5c9efdfd288aa3b3ee41c1f90866886
+> > > > > Author: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > > > Date:   Wed Dec 9 21:27:32 2020 +0100
+> > > > > 
+> > > > >     rcu-tasks: Add RCU-tasks self tests
+> > > > >     
+> > > > >     This commit adds self tests for early-boot use of RCU-tasks grace periods.
+> > > > >     It tests all three variants (Rude, Tasks, and Tasks Trace) and covers
+> > > > >     both synchronous (e.g., synchronize_rcu_tasks()) and asynchronous (e.g.,
+> > > > >     call_rcu_tasks()) grace-period APIs.
+> > > > >     
+> > > > >     Self-tests are run only in kernels built with CONFIG_PROVE_RCU=y.
+> > > > >     
+> > > > >     Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > > >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > > 
+> > > > > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> > > > > index 3660755..35a2cd5 100644
+> > > > > --- a/kernel/rcu/tasks.h
+> > > > > +++ b/kernel/rcu/tasks.h
+> > > > > @@ -1224,6 +1224,40 @@ void show_rcu_tasks_gp_kthreads(void)
+> > > > >  }
+> > > > >  #endif /* #ifndef CONFIG_TINY_RCU */
+> > > > >  
+> > > > > +struct rcu_tasks_test_desc {
+> > > > > +	struct rcu_head rh;
+> > > > > +	const char *name;
+> > > > > +	bool notrun;
+> > > > > +};
+> > > > > +
+> > > > > +static struct rcu_tasks_test_desc tests[] = {
+> > > > > +	{
+> > > > > +		.name = "call_rcu_tasks()",
+> > > > > +		/* If not defined, the test is skipped. */
+> > > > > +		.notrun = !IS_ENABLED(CONFIG_TASKS_RCU),
+> > > > > +	},
+> > > > > +	{
+> > > > > +		.name = "call_rcu_tasks_rude()",
+> > > > > +		/* If not defined, the test is skipped. */
+> > > > > +		.notrun = !IS_ENABLED(CONFIG_TASKS_RUDE_RCU),
+> > > > > +	},
+> > > > > +	{
+> > > > > +		.name = "call_rcu_tasks_trace()",
+> > > > > +		/* If not defined, the test is skipped. */
+> > > > > +		.notrun = !IS_ENABLED(CONFIG_TASKS_TRACE_RCU)
+> > > > > +	}
+> > > > > +};
+> > > > > +
+> > > > > +static void test_rcu_tasks_callback(struct rcu_head *rhp)
+> > > > > +{
+> > > > > +	struct rcu_tasks_test_desc *rttd =
+> > > > > +		container_of(rhp, struct rcu_tasks_test_desc, rh);
+> > > > > +
+> > > > > +	pr_info("Callback from %s invoked.\n", rttd->name);
+> > > > That is fine! We can output the name instead of executed counter.
+> > > > Doing so makes it completely clear who triggers the callback.
+> > > 
+> > > And we also need to make it not trigger when CONFIG_PROVE_RCU=n.
+> > > While in the area, we might as well leave anything that is needed only
+> > > by CONFIG_PROVE_RCU=y undefined when CONFIG_PROVE_RCU=n.
+> > > 
+> > > How about the following?
+> > > 
+> > > 							Thanx, Paul
+> > > 
+> > > ------------------------------------------------------------------------
+> > > 
+> > > commit f7a1ac0d3504e0518745da7f98573c1b13587f3e
+> > > Author: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > Date:   Wed Dec 9 21:27:32 2020 +0100
+> > > 
+> > >     rcu-tasks: Add RCU-tasks self tests
+> > >     
+> > >     This commit adds self tests for early-boot use of RCU-tasks grace periods.
+> > >     It tests all three variants (Rude, Tasks, and Tasks Trace) and covers
+> > >     both synchronous (e.g., synchronize_rcu_tasks()) and asynchronous (e.g.,
+> > >     call_rcu_tasks()) grace-period APIs.
+> > >     
+> > >     Self-tests are run only in kernels built with CONFIG_PROVE_RCU=y.
+> > >     
+> > >     Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > >     [ paulmck: Handle CONFIG_PROVE_RCU=n and identify test cases' callbacks. ]
+> > >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > 
+> > > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> > > index 3660755..af7c194 100644
+> > > --- a/kernel/rcu/tasks.h
+> > > +++ b/kernel/rcu/tasks.h
+> > > @@ -1224,6 +1224,82 @@ void show_rcu_tasks_gp_kthreads(void)
+> > >  }
+> > >  #endif /* #ifndef CONFIG_TINY_RCU */
+> > >  
+> > > +#ifdef CONFIG_PROVE_RCU
+> > > +struct rcu_tasks_test_desc {
+> > > +	struct rcu_head rh;
+> > > +	const char *name;
+> > > +	bool notrun;
+> > > +};
+> > > +
+> > > +static struct rcu_tasks_test_desc tests[] = {
+> > > +	{
+> > > +		.name = "call_rcu_tasks()",
+> > > +		/* If not defined, the test is skipped. */
+> > > +		.notrun = !IS_ENABLED(CONFIG_TASKS_RCU),
+> > > +	},
+> > > +	{
+> > > +		.name = "call_rcu_tasks_rude()",
+> > > +		/* If not defined, the test is skipped. */
+> > > +		.notrun = !IS_ENABLED(CONFIG_TASKS_RUDE_RCU),
+> > > +	},
+> > > +	{
+> > > +		.name = "call_rcu_tasks_trace()",
+> > > +		/* If not defined, the test is skipped. */
+> > > +		.notrun = !IS_ENABLED(CONFIG_TASKS_TRACE_RCU)
+> > > +	}
+> > > +};
+> > > +
+> > > +static void test_rcu_tasks_callback(struct rcu_head *rhp)
+> > > +{
+> > > +	struct rcu_tasks_test_desc *rttd =
+> > > +		container_of(rhp, struct rcu_tasks_test_desc, rh);
+> > > +
+> > > +	pr_info("Callback from %s invoked.\n", rttd->name);
+> > > +
+> > > +	rttd->notrun = true;
+> > > +}
+> > > +
+> > > +static void rcu_tasks_initiate_self_tests(void)
+> > > +{
+> > > +	pr_info("Running RCU-tasks wait API self tests\n");
+> > > +#ifdef CONFIG_TASKS_RCU
+> > > +	synchronize_rcu_tasks();
+> > > +	call_rcu_tasks(&tests[0].rh, test_rcu_tasks_callback);
+> > > +#endif
+> > > +
+> > > +#ifdef CONFIG_TASKS_RUDE_RCU
+> > > +	synchronize_rcu_tasks_rude();
+> > > +	call_rcu_tasks_rude(&tests[1].rh, test_rcu_tasks_callback);
+> > > +#endif
+> > > +
+> > > +#ifdef CONFIG_TASKS_TRACE_RCU
+> > > +	synchronize_rcu_tasks_trace();
+> > > +	call_rcu_tasks_trace(&tests[2].rh, test_rcu_tasks_callback);
+> > > +#endif
+> > > +}
+> > > +
+> > > +static int rcu_tasks_verify_self_tests(void)
+> > > +{
+> > > +	int ret = 0;
+> > > +	int i;
+> > > +
+> > > +	for (i = 0; i < ARRAY_SIZE(tests); i++) {
+> > > +		if (!tests[i].notrun) {		// still hanging.
+> > > +			pr_err("%s has been failed.\n", tests[i].name);
+> > > +			ret = -1;
+> > > +		}
+> > > +	}
+> > > +
+> > > +	if (ret)
+> > > +		WARN_ON(1);
+> > > +
+> > > +	return ret;
+> > > +}
+> > > +late_initcall(rcu_tasks_verify_self_tests);
+> > > +#else /* #ifdef CONFIG_PROVE_RCU */
+> > > +static void rcu_tasks_initiate_self_tests(void) { }
+> > > +#endif /* #else #ifdef CONFIG_PROVE_RCU */
+> > > +
+> > >  void __init rcu_init_tasks_generic(void)
+> > >  {
+> > >  #ifdef CONFIG_TASKS_RCU
+> > > @@ -1237,6 +1313,9 @@ void __init rcu_init_tasks_generic(void)
+> > >  #ifdef CONFIG_TASKS_TRACE_RCU
+> > >  	rcu_spawn_tasks_trace_kthread();
+> > >  #endif
+> > > +
+> > > +	// Run the self-tests.
+> > > +	rcu_tasks_initiate_self_tests();
+> > >  }
+> > >  
+> > >  #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
+> > That makes sense to me. I missed that point. There is no
+> > reason in wasting of extra cycles which affect a boot up
+> > time if built without CONFIG_PROVE_RCU.
+> 
+> If CONFIG_PROVE_RCU=n, then rcu_tasks_initiate_self_tests is an empty
+> function.  So the compiler should be able to eliminate all runtime
+> overhead from rcu_tasks_initiate_self_tests() when CONFIG_PROVE_RCU=n.
+> 
+> Or am I missing your point?
+> 
+That is correct, i mean your description. I wanted to underline
+that the late_initcall(rcu_tasks_verify_self_tests); was called
+even for CONFIG_PROVE_RCU=n, what would affect a boot time with
+disabled option. Of-course that extra time would be negligible.
+From the other hand, why we should introduce it if it can be
+avoided.
+
+Your last change fixes that :)
+
+--
+Vlad Rezki
