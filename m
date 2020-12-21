@@ -2,90 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 250F02DFFF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:37:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AEAF2DFFFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:40:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727168AbgLUShT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 13:37:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727093AbgLUShO (ORCPT
+        id S1727199AbgLUSiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:38:01 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:62016 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725910AbgLUSiA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:37:14 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A8B5C061248;
-        Mon, 21 Dec 2020 10:36:34 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id g24so10527492edw.9;
-        Mon, 21 Dec 2020 10:36:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=oNd3Cj9ofLW7wsKsWYoo4m+jvoyCrPWYva0lGSx6HLI=;
-        b=iS2yVEm0mrQBkSIzs31UmsZ8tWjNIpcJE29cPmW6sbugzwVDkaARPZkD3lgzrlAFhe
-         3Z3qqcrfvufI8FsD0iCzzr4fw58v3BSxMyAlGMdWldSoL6Hl6fki+72imeQHD+cqVYSg
-         6s+gDNUd4j2JRU0pAghzMbys1e8uFqkTyCavTSfJ5rSJYWXgyQCxLPAyvbocG5vDhbgO
-         XRYNdF20Mn4R/jnfRnTyObyUl0cksHEMOLNb8UX4b+0TYWADoWcg4JRaoenze1t9LLPF
-         u9uobKiLp3exk3Bg6VOQMlXXqxQrY5aKTVzoHfS8CXAWIq1PU1neVlWjPsVP/FmANnft
-         aAnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=oNd3Cj9ofLW7wsKsWYoo4m+jvoyCrPWYva0lGSx6HLI=;
-        b=Ik23OK5FAbNHEhh6vDjfXZzvJdo9OnnQzEu+kFM0RO/ApoX3dfumeB5BXxtqWMru85
-         U8reea62EcS9BDuEKkNCjrVp0c8WDGvEyg7ytaUetO2HkYOaH+brILSmqNHJe5B+4qNV
-         4BGgyABPm34BbRGqAtkKuA1jPFKg5ixzIJquFpsRUVApHyacO73JfgGnBFDkSpal39d4
-         oPeeRiJtb1NpGOfxVX/xUET4EaxOkPxqsxF5oDPFH/j3lj6dibi7Gw2lc7TGVYMls/lf
-         KpqghpF4MFcEUDHHRVMJGBIKeUHvFuYHpBTrm3xUxq8U+qEF6wtagoKwdwO6tH6Hogbo
-         BEDA==
-X-Gm-Message-State: AOAM530cgGnqw1d7KgmCBie4otbv4ndrnbBSQLVqTjSMH61jxjhmWLSV
-        dWcKoFIvWiX6/WwRfg6P/CIwy5WNB9I=
-X-Google-Smtp-Source: ABdhPJyD0W/TddTDIYPKP1wBicmpB8JUJSeMPnIuBd+Ypyt07Y/3n769MYyET0XEuVsR4qEKglpLXA==
-X-Received: by 2002:a05:6402:308b:: with SMTP id de11mr16882835edb.205.1608575793147;
-        Mon, 21 Dec 2020 10:36:33 -0800 (PST)
-Received: from localhost.localdomain (p200300f137019000428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:3701:9000:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id ld2sm9390408ejb.73.2020.12.21.10.36.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 10:36:32 -0800 (PST)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     linux-amlogic@lists.infradead.org, jbrunet@baylibre.com
-Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH 2/2] dt-bindings: clock: meson8b: remove non-existing clock macros
-Date:   Mon, 21 Dec 2020 19:36:24 +0100
-Message-Id: <20201221183624.932649-3-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201221183624.932649-1-martin.blumenstingl@googlemail.com>
-References: <20201221183624.932649-1-martin.blumenstingl@googlemail.com>
+        Mon, 21 Dec 2020 13:38:00 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608575856; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=+7IUQX8UG4nANB6kFLyJRu/+ACYHTL99hUFDp7Y8Ufw=; b=u9Rh7mx4CUFvRaRDbTtd3T8bG0wZsydYGQ+Y0ZYFioK13LHYxIvdl9yKh1ic1H9wK8knWJX+
+ aH2KqDVcWI9zHS4S1/kNRAzAtDq4TTablSLI0jryGU+R5MnTRtWgs+coAhdpJX7pCwEiBqMd
+ qgirmaE2gMUr+MGuxgKpkqLt4Zo=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5fe0eb54120d248bb5761219 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 21 Dec 2020 18:37:08
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3C576C43467; Mon, 21 Dec 2020 18:37:07 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 315D1C43461;
+        Mon, 21 Dec 2020 18:37:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 315D1C43461
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Rakesh Pillai <pillair@codeaurora.org>
+Cc:     ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] ath10k: Fixes during subsystem recovery
+References: <1593197633-9014-1-git-send-email-pillair@codeaurora.org>
+Date:   Mon, 21 Dec 2020 20:37:01 +0200
+In-Reply-To: <1593197633-9014-1-git-send-email-pillair@codeaurora.org> (Rakesh
+        Pillai's message of "Sat, 27 Jun 2020 00:23:51 +0530")
+Message-ID: <87k0tbngz6.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CLKID_UNUSED and CLKID_XTAL aren't valid clocks. Remove them since
-there are no consumers of this anymore.
+Rakesh Pillai <pillair@codeaurora.org> writes:
 
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
- include/dt-bindings/clock/meson8b-clkc.h | 2 --
- 1 file changed, 2 deletions(-)
+> This patch series includes some fixes when the device
+> is in recovery mode, i.e. when the firmware goes down.
+>
+> - Pausing TX queues when FW goes down
+> - Removed unwanted/extra error logging in pkt TX path
+> - Skipping wait for FW response for delete cmds
+> - Handling the -ESHUTDOWN error code in case of SSR.
+>
+> Rakesh Pillai (2):
+>   ath10k: Pause the tx queues when firmware is down
+>   ath10k: Skip wait for delete response if firmware is down
 
-diff --git a/include/dt-bindings/clock/meson8b-clkc.h b/include/dt-bindings/clock/meson8b-clkc.h
-index 4c5965ae1df4..f33781338eda 100644
---- a/include/dt-bindings/clock/meson8b-clkc.h
-+++ b/include/dt-bindings/clock/meson8b-clkc.h
-@@ -6,8 +6,6 @@
- #ifndef __MESON8B_CLKC_H
- #define __MESON8B_CLKC_H
- 
--#define CLKID_UNUSED		0
--#define CLKID_XTAL		1
- #define CLKID_PLL_FIXED		2
- #define CLKID_PLL_VID		3
- #define CLKID_PLL_SYS		4
+This has been tested only on WCN3990. How do I know that this doesn't
+break other hardware families?
+
 -- 
-2.29.2
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
