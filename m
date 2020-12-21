@@ -2,69 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BCDB2E00A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 20:03:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DBBC2E00B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 20:09:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727052AbgLUTDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 14:03:40 -0500
-Received: from mail-oo1-f49.google.com ([209.85.161.49]:37972 "EHLO
-        mail-oo1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726089AbgLUTDj (ORCPT
+        id S1726776AbgLUTIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 14:08:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726561AbgLUTIP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 14:03:39 -0500
-Received: by mail-oo1-f49.google.com with SMTP id i18so2451169ooh.5;
-        Mon, 21 Dec 2020 11:03:23 -0800 (PST)
+        Mon, 21 Dec 2020 14:08:15 -0500
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E1E0C0613D3;
+        Mon, 21 Dec 2020 11:07:35 -0800 (PST)
+Received: by mail-qk1-x735.google.com with SMTP id n142so9791663qkn.2;
+        Mon, 21 Dec 2020 11:07:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GbpsUkSd+e7TcRd395bHWxiDfx2JhrbmRFnL9iD0Fcw=;
+        b=V4A2jgjsTtSbL4AIeYrZtfIBmEeLyvlfBpsYIX6S3vpeFDmp2s/WaVynIWbTuW85Lu
+         JYcFRu0h2VN2oBwFd+zmqjZ3GnstDOQD+siFMK4fTPFJhOEegcMTIkFxbCDKgLkdeCnH
+         V1AkvxKvI6b+5Z9+lvjlPCokTLtIzJJQshpalkxyrSS5DJ/ilbAcW6/sGHotXDnEZF0s
+         8gj1TyD6x5ss8vvnk2H+1dPAHGg1gRtjZbuvNyQMDQWIxos8su3o0O/5glmuPyJ8wOtN
+         3hUkk5ZJIRs17ifSM0eR4sJVKfYyuBvR04Rfco2xYuVOsyGVi1WetCPmGbwXWSmizUo3
+         5OmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Earwzkg2j67FO3Ak/SUyX6/pJix93QKNyv4RXTk8VKs=;
-        b=dmUdC2PSkN7EJTzP/40dSYtyUC8eFtd/3rEenb6keewQjE9/QzOmYshmYUfTzrby2h
-         qu/T2fXiseEzk6/P72k4KePcrZ2U81shG3L/+NFElSjUkK8hROnst2JBbJzqc8XM1ThA
-         Un/bEAk7NCxvO46U6QVsEOIzKr3oEze8PmOvs8x0RK6u+VTnX3KgbQJuAOuEdD3EjHco
-         IpBgCNnaxwI0J9n+wDNfVod2oYwgllZJhDvT818GRHb8iR6Q6VSdhM2luemzH6fpW7az
-         6sqJ4Ss9DUhTkXeTr7OVu+HsrkHB9fDvfiO8vVkE4kUOhhZb5UKj44EH793iKNgWODTA
-         sE0A==
-X-Gm-Message-State: AOAM533cAXZZj8DXkedBUj2QT8A4zgIp75NfRsiQ+leQc+esZJSSwMN8
-        vMPO+iL/7ybpICZjxRMkpcMTwulGqQ==
-X-Google-Smtp-Source: ABdhPJzAcjCETSKeMR/A226dBBPX14G7rMH/HBR+hTsu4ZRtW8IqQTSzYObPT/YSJAFLylMUyVeNMw==
-X-Received: by 2002:a4a:ddd2:: with SMTP id i18mr12494663oov.10.1608577378282;
-        Mon, 21 Dec 2020 11:02:58 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id l6sm3968928otf.34.2020.12.21.11.02.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 11:02:57 -0800 (PST)
-Received: (nullmailer pid 369568 invoked by uid 1000);
-        Mon, 21 Dec 2020 19:02:54 -0000
-Date:   Mon, 21 Dec 2020 12:02:54 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
-Subject: Re: [PATCH] dt-bindings: phy: Rename Intel Keem Bay USB PHY bindings
-Message-ID: <20201221190254.GA369513@robh.at.kernel.org>
-References: <20201216084729.3811627-1-geert+renesas@glider.be>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GbpsUkSd+e7TcRd395bHWxiDfx2JhrbmRFnL9iD0Fcw=;
+        b=IBTh/PyhPNdPuSsl6HzJnD6dJS3wpDqy3bI1JBSsi/cZas4MdJfwwPK9WuG3FHfELN
+         sIanYC53cgEEchy/tON40BwGuPILR2oNKjWr1eC+lsSrOlAFMyE/hwdGMlMPZnlkOrrT
+         xqtdCxj8+QujP7J9NY5cqhkGFI/14iKTGjSrnfaf/CmpSXS33LCf4YZ32DvKHJWRvPRd
+         7D9q7MtzQ+8rMrXTJ3qCBXgj2U+RYvToD7FOX9YDjb9M9ydDtMV3vp1DadknLu7TjWpr
+         0CNIRm99EoW4f8f9UMV9CPuugCrEoJiRYn4KRXCJsGGK7aoSdCXCO5B6i3P7qg3OYZAj
+         keOw==
+X-Gm-Message-State: AOAM532nhAsQfPWvUZP6HuzDXgW2tOMy68uJNwYlLRGt75sbVn4iFd0a
+        Fb5wKVPvCm5Toe4sPr9Ma1frsaT0mN5a27+41fc=
+X-Google-Smtp-Source: ABdhPJw09jvOJD6qujUAvKr0CkXCtF9DtgsGFZ0Ku0R+3kyJCKvf68vCm4EMsfkimMWKPJEzk/DR28vl5I95QfNydI4=
+X-Received: by 2002:a37:a0cb:: with SMTP id j194mr18854122qke.292.1608577654243;
+ Mon, 21 Dec 2020 11:07:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201216084729.3811627-1-geert+renesas@glider.be>
+References: <20201220211109.129946-1-ubizjak@gmail.com> <X+DnRcYVNdkkgI3j@google.com>
+ <CAFULd4aBWqQmwYNo74_zmP22Lu79jnRJVu5+PrKkOD2Dbp6-FQ@mail.gmail.com>
+In-Reply-To: <CAFULd4aBWqQmwYNo74_zmP22Lu79jnRJVu5+PrKkOD2Dbp6-FQ@mail.gmail.com>
+From:   Uros Bizjak <ubizjak@gmail.com>
+Date:   Mon, 21 Dec 2020 20:07:23 +0100
+Message-ID: <CAFULd4Zc4V1x19bzyP4-xLMtBATkB1AYh=+-jQ3yttLRcuYxtA@mail.gmail.com>
+Subject: Re: [PATCH v2] KVM/x86: Move definition of __ex to x86.h
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Dec 2020 09:47:29 +0100, Geert Uytterhoeven wrote:
-> This is the only file not using the "intel,keembay-*" pattern.
-> Fortunately the actual compatible value is already following the
-> standard scheme.
-> 
-> Fixes: 4086afa2a1627939 ("dt-bindings: phy: Add Intel Keem Bay USB PHY bindings")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
->  .../{intel,phy-keembay-usb.yaml => intel,keembay-phy-usb.yaml}  | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->  rename Documentation/devicetree/bindings/phy/{intel,phy-keembay-usb.yaml => intel,keembay-phy-usb.yaml} (93%)
-> 
+On Mon, Dec 21, 2020 at 7:57 PM Uros Bizjak <ubizjak@gmail.com> wrote:
+>
+> On Mon, Dec 21, 2020 at 7:19 PM Sean Christopherson <seanjc@google.com> wrote:
+> >
+> > On Sun, Dec 20, 2020, Uros Bizjak wrote:
+> > > Merge __kvm_handle_fault_on_reboot with its sole user
+> >
+> > There's also a comment in vmx.c above kvm_cpu_vmxoff() that should be updated.
 
-Acked-by: Rob Herring <robh@kernel.org>
+IMO, this comment could read:
+
+/* Just like cpu_vmxoff(), but with the fault on reboot handling. */
+static void kvm_cpu_vmxoff(void)
+
+Uros.
