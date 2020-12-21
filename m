@@ -2,195 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74D7C2DF981
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 08:37:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9F22DF987
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 08:37:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726546AbgLUHgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 02:36:33 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:62370 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726008AbgLUHgd (ORCPT
+        id S1726826AbgLUHg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 02:36:59 -0500
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:34158 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726603AbgLUHg6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 02:36:33 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1608536172; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=cIizDPRICPgg/bSArezwSPToM2+vbpPt0D05PpcHIg4=;
- b=M/7/Z8msxsHq+oSuHVfu1RxP52579StAdC/gTO3Ae0Hyl/WAOdqn9A86dCtRqtHcs/XgP5I/
- C9xVBAAWuF6nBKVzzTb1CPuiohFA2F+/232qu0ZglZUJq18ZLXW1iY+HeJQZgsRloAezsjt3
- aUSCCAgHJk8w7ru7X/6FuxriCis=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
- 5fe050520564dfefcd460bc2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 21 Dec 2020 07:35:46
- GMT
-Sender: mdalam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9A31CC43464; Mon, 21 Dec 2020 07:35:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: mdalam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 721FCC433CA;
-        Mon, 21 Dec 2020 07:35:44 +0000 (UTC)
+        Mon, 21 Dec 2020 02:36:58 -0500
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201221073604euoutp015847dfe74b7a05c3d05fe72af03881ec~Sqx5uoNVf3015030150euoutp01V
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 07:36:04 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201221073604euoutp015847dfe74b7a05c3d05fe72af03881ec~Sqx5uoNVf3015030150euoutp01V
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1608536164;
+        bh=z2/Q8BvO8qamiabVE8QS5VDyz3a05waBzY2w8BXLjmE=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=U+D4D8Au7N113WFfXRsiohNmburvYAkeAxL0PCO3ir1AKRnQrFv7qxsAiwanfKxFX
+         d8RS5RObAHUP+nZj04mmjTK3EKxTH6ZlvNnAJ10fphh5BRu7L6Ojb2916zWGU04rBW
+         1aSuF2/5skfWC9KqjWSpYtXvcNntmay7OeQAZ1mc=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20201221073603eucas1p2a7fe137011a7de60d21afc5ddc95f905~Sqx5boaaZ0214502145eucas1p2f;
+        Mon, 21 Dec 2020 07:36:03 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 54.95.44805.36050EF5; Mon, 21
+        Dec 2020 07:36:03 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20201221073603eucas1p17cc68c0a43db3cfb15cea2b02211bc08~Sqx4235m62579925799eucas1p1u;
+        Mon, 21 Dec 2020 07:36:03 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201221073603eusmtrp2077692bccd15e93a0b532a386639716e~Sqx42IPtn1413814138eusmtrp2-;
+        Mon, 21 Dec 2020 07:36:03 +0000 (GMT)
+X-AuditID: cbfec7f4-b37ff7000000af05-63-5fe05063a13e
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 08.F6.21957.26050EF5; Mon, 21
+        Dec 2020 07:36:03 +0000 (GMT)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20201221073602eusmtip1e12053b2c47b198201e4c178d52b1b6a~Sqx4NtcyD2921929219eusmtip1A;
+        Mon, 21 Dec 2020 07:36:02 +0000 (GMT)
+Subject: Re: [PATCH 9/9] mfd: sec-irq: Do not enforce (incorrect) interrupt
+ trigger type
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sylwester Nawrocki <snawrocki@kernel.org>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <52a1b7c6-c7f1-f5eb-09f6-d84663912db8@samsung.com>
+Date:   Mon, 21 Dec 2020 08:36:02 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 21 Dec 2020 13:05:44 +0530
-From:   mdalam@codeaurora.org
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     vkoul@kernel.org, corbet@lwn.net, agross@kernel.org,
-        bjorn.andersson@linaro.org, dan.j.williams@intel.com,
-        dmaengine@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        sricharan@codeaurora.org
-Subject: Re: [PATCH] dmaengine: qcom: bam_dma: Add LOCK and UNLOCK flag bit
- support
-In-Reply-To: <6c85436d-e064-367e-736b-951af82256c8@linaro.org>
-References: <1608215842-15381-1-git-send-email-mdalam@codeaurora.org>
- <6c85436d-e064-367e-736b-951af82256c8@linaro.org>
-Message-ID: <9769c54acf54617a17346fea60ee38b6@codeaurora.org>
-X-Sender: mdalam@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+In-Reply-To: <20201218142247.GA2847@kozik-lap>
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Se0hTcRjld+8ed4vFbSp+LCsaKWg4LSquKT3owf4oSiowpWzqTaVpumUP
+        C9LKrGliZmVTUMK1pc3HfL9Cl2ZiuWo0rexhabmtCGtlWmZut4f/ne9853C+Ax+BC8vZIiI+
+        8RCtSJTJxRw+q/7uhMk/evvryMCnXX5UdUElm+p3vGdTxZ19bMpkquJSr752Icrw1sKmzM1F
+        HKrAdBujMto6uVTmiBVfx5cays5zpIOWVo60pvSkNKe2DEm/GBZuZ4fzQ2JoefxhWhGwZh8/
+        7m1mOzdpgH+0Z9rOTUNDhArxCCBXwI302xwV4hNCUofgikWHMYMDgb1Tz3GqhOQXBJo3qX8d
+        hk99GMNrERRUBTGGMQTNXdUugxsZDl/tJbgTu5O+0D81znaKcHIAA03PJHIuOOQyUH1UuQwC
+        cg080QxznZhFeoPZlOFK8CCjoFL1/Y9mHvRcG2Y5MY+UgP7FqCsAJxfB6brCP9gTng0XY8yl
+        HwhwWP0ZvBHGbY9YDHYDW3ctl8FeMN1U7KoM5GkEQ316LjNkIzCfKkCMKhgG+yZnriBmEnyh
+        sjmAodfDnXs5mJMGci4MfJzH3DAX8uqv4gwtgHNnhYzaB9TdFf9iOx4+xnORWD2rmXpWG/Ws
+        Nur/uSWIVYY86RRlQiytXJ5IH5EoZQnKlMRYSfTBBAOa+afeX92ORqS1jUmMCCOQEQGBi90F
+        q0SvIoWCGNmxVFpxMFKRIqeVRjSfYIk9BVG1tyKFZKzsEH2AppNoxd8tRvBEaViTpqG87YnJ
+        t5HXsdmrKmKrn9aR7pMunG41e14yBD3z5dvD8/dHB4kKj1/8uc2jxb2ydzzYcWJUkXfKh5/9
+        YupzS0eZYPX0eaPEqMsK3bU2PGECf/ryut6m49lE84eas+6179VOlfrXCuJyAyRuk/Lq+4UT
+        z/v1Nattjl+pjfXJSy+7ZVppi1eyvF0gqnsQOuJfVLFjQ5A9UPwwL816uCLgQol3BJjnxN/U
+        Dr6jVXdDVp7Zc6fp2xZs/LJ3lOVEjC4pwltPW0RnF9SLPb7ZSFvY4lUTyaOa9NFdiqv55Rnr
+        rD7m3WOmhQ+Kbizy2NnVG/IjJWxJ66brr6uTKo7vaSDELGWcbJkfrlDKfgOjFGL2vgMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrHIsWRmVeSWpSXmKPExsVy+t/xu7rJAQ/iDdqOM1lsnLGe1eL6l+es
+        FvOPnGO1OH9+A7vF/a9HGS02Pb7GanF51xw2ixnn9zFZtO49wm7R/vQlswOXx6ZVnWwed67t
+        YfPYvKTeo2/LKkaPz5vkAlij9GyK8ktLUhUy8otLbJWiDS2M9AwtLfSMTCz1DI3NY62MTJX0
+        7WxSUnMyy1KL9O0S9DIetx9gL7jBVXHy/2v2BsaHHF2MnBwSAiYSm96fY+pi5OIQEljKKHF7
+        xVdWiISMxMlpDVC2sMSfa11sEEXvGSUWb5/HCJIQFoiS+Pp6ATOILSKgKXH973ewBmaBW0wS
+        x0+JQDT0MUl87XoL1sAmYCjR9RZkEicHr4CdxNWlT9hBbBYBVYnL51uBzuDgEBVIkjh7WhCi
+        RFDi5MwnLCA2p4CexNq7L5gh5ptJzNv8EMqWl2jeOhvKFpe49WQ+0wRGoVlI2mchaZmFpGUW
+        kpYFjCyrGEVSS4tz03OLDfWKE3OLS/PS9ZLzczcxAiNy27Gfm3cwznv1Ue8QIxMH4yFGCQ5m
+        JRFeM6n78UK8KYmVValF+fFFpTmpxYcYTYHemcgsJZqcD0wJeSXxhmYGpoYmZpYGppZmxkri
+        vFvnrokXEkhPLEnNTk0tSC2C6WPi4JRqYOpaVcO+e3GB6bbS7l8TIx8ytunZzT14tK8+9d+y
+        Zc1cMW9e9jdt2Jv1drVASKmg7M+LbbWPlQ0W2geeXi14gO/xClktFrZ72tzVCS3p+z+48FsW
+        3Dv453qVsedjoXuK15T0zqsduHypJrRqnrwKr2P52X9aaVUTuwpTpdIl1Tyr1hwXDwq0b1Bx
+        k1nPWZV2Z+U2iQ9HvtwUtUybInMhpznHil1KJG9+cUVz3++j7EIbX2kufJ97aDn722dW3hN2
+        H+Vk3PtCt154v9IjlZLU+1vuHE2at2219JNQ5+Or211Lku+n6+1YbXQ2LHbWpAD29fXO9isO
+        Tps497eMf5tJUlU71yetr0rT4t88v+iwUomlOCPRUIu5qDgRALPrM/NRAwAA
+X-CMS-MailID: 20201221073603eucas1p17cc68c0a43db3cfb15cea2b02211bc08
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20201210212938eucas1p1297b8503e9c059f2bc77c3a429a9114e
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201210212938eucas1p1297b8503e9c059f2bc77c3a429a9114e
+References: <20201210212903.216728-1-krzk@kernel.org>
+        <CGME20201210212938eucas1p1297b8503e9c059f2bc77c3a429a9114e@eucas1p1.samsung.com>
+        <20201210212903.216728-9-krzk@kernel.org>
+        <0f1509ef-9ae7-7a77-84b7-360b8f0071c7@samsung.com>
+        <20201218142247.GA2847@kozik-lap>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-19 09:05, Thara Gopinath wrote:
-> On 12/17/20 9:37 AM, Md Sadre Alam wrote:
->> This change will add support for LOCK & UNLOCK flag bit support
->> on CMD descriptor.
->> 
->> If DMA_PREP_LOCK flag passed in prep_slave_sg then requester of this
->> transaction wanted to lock the DMA controller for this transaction so
->> BAM driver should set LOCK bit for the HW descriptor.
->> 
->> If DMA_PREP_UNLOCK flag passed in prep_slave_sg then requester of this
->> transaction wanted to unlock the DMA controller.so BAM driver should 
->> set
->> UNLOCK bit for the HW descriptor.
-> Hi,
-> 
-> This is a generic question. What is the point of LOCK/UNLOCK with
-> allocating LOCK groups to the individual dma channels? By default
-> doesn't all channels fall in the same group. This would mean that
-> a lock does not prevent the dma controller from not executing a
-> transaction on the other channels.
-> 
+Hi Krzysztof,
 
-The Pipe Locking/Unlocking will be only on command-descriptor.
-Upon encountering a command descriptor with LOCK bit set, the BAM
-will lock all other pipes not related to the current pipe group, and 
-keep
-handling the current pipe only until it sees the UNLOCK set then it will
-release all locked pipes.
+On 18.12.2020 15:22, Krzysztof Kozlowski wrote:
+> On Fri, Dec 18, 2020 at 02:25:39PM +0100, Marek Szyprowski wrote:
+>> On 10.12.2020 22:29, Krzysztof Kozlowski wrote:
+>>> Interrupt line can be configured on different hardware in different way,
+>>> even inverted.  Therefore driver should not enforce specific trigger
+>>> type - edge falling - but instead rely on Devicetree to configure it.
+>>>
+>>> The Samsung PMIC drivers are used only on Devicetree boards.
+>>>
+>>> Additionally, the PMIC datasheets describe the interrupt line as active
+>>> low with a requirement of acknowledge from the CPU therefore the edge
+>>> falling is not correct.
+>>>
+>>> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+>> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+>>
+>> It looks that this together with DTS change fixes RTC alarm failure that
+>> I've observed from time to time on TM2e board!
+> Great! I'll add this to the commit msg.
+>
+> Thanks for testing.
 
-The actual locking is done on the new descriptor fetching for 
-publishing,
-i.e. locked pipe will not fetch new descriptors even if it got 
-event/events
-adding more descriptors for this pipe (locked pipe).
+BTW, while playing with this, maybe it would make sense to fix the 
+reported interrupt type for the PMIC sub-interrupts:
 
-The bam LOCKING mechanism is needed where different cores needs to share
-same hardware block which use bam for their transaction. So if both 
-cores
-wanted to access the hardware block in parallel via bam, then locking 
-mechanism
-is needed for bam pipes.
+# grep s2mps /proc/interrupts
+120:          0      gpa0   7 Level     s2mps13
+121:          0   s2mps13  10 Edge      rtc-alarm0
 
-> --
-> Warm Regards
-> Thara
-> 
->> 
->> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
->> ---
->>   Documentation/driver-api/dmaengine/provider.rst | 9 +++++++++
->>   drivers/dma/qcom/bam_dma.c                      | 9 +++++++++
->>   include/linux/dmaengine.h                       | 5 +++++
->>   3 files changed, 23 insertions(+)
->> 
->> diff --git a/Documentation/driver-api/dmaengine/provider.rst 
->> b/Documentation/driver-api/dmaengine/provider.rst
->> index ddb0a81..d7516e2 100644
->> --- a/Documentation/driver-api/dmaengine/provider.rst
->> +++ b/Documentation/driver-api/dmaengine/provider.rst
->> @@ -599,6 +599,15 @@ DMA_CTRL_REUSE
->>     - This flag is only supported if the channel reports the 
->> DMA_LOAD_EOT
->>       capability.
->>   +- DMA_PREP_LOCK
->> +
->> +  - If set , the client driver tells DMA controller I am locking you 
->> for
->> +    this transcation.
->> +
->> +- DMA_PREP_UNLOCK
->> +
->> +  - If set, the client driver will tells DMA controller I am 
->> releasing the lock
->> +
->>   General Design Notes
->>   ====================
->>   diff --git a/drivers/dma/qcom/bam_dma.c b/drivers/dma/qcom/bam_dma.c
->> index 4eeb8bb..cdbe395 100644
->> --- a/drivers/dma/qcom/bam_dma.c
->> +++ b/drivers/dma/qcom/bam_dma.c
->> @@ -58,6 +58,8 @@ struct bam_desc_hw {
->>   #define DESC_FLAG_EOB BIT(13)
->>   #define DESC_FLAG_NWD BIT(12)
->>   #define DESC_FLAG_CMD BIT(11)
->> +#define DESC_FLAG_LOCK BIT(10)
->> +#define DESC_FLAG_UNLOCK BIT(9)
->>     struct bam_async_desc {
->>   	struct virt_dma_desc vd;
->> @@ -644,6 +646,13 @@ static struct dma_async_tx_descriptor 
->> *bam_prep_slave_sg(struct dma_chan *chan,
->>     	/* fill in temporary descriptors */
->>   	desc = async_desc->desc;
->> +	if (flags & DMA_PREP_CMD) {
->> +		if (flags & DMA_PREP_LOCK)
->> +			desc->flags |= cpu_to_le16(DESC_FLAG_LOCK);
->> +		if (flags & DMA_PREP_UNLOCK)
->> +			desc->flags |= cpu_to_le16(DESC_FLAG_UNLOCK);
->> +	}
->> +
->>   	for_each_sg(sgl, sg, sg_len, i) {
->>   		unsigned int remainder = sg_dma_len(sg);
->>   		unsigned int curr_offset = 0;
->> diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
->> index dd357a7..79ccadb4 100644
->> --- a/include/linux/dmaengine.h
->> +++ b/include/linux/dmaengine.h
->> @@ -190,6 +190,9 @@ struct dma_interleaved_template {
->>    *  transaction is marked with DMA_PREP_REPEAT will cause the new 
->> transaction
->>    *  to never be processed and stay in the issued queue forever. The 
->> flag is
->>    *  ignored if the previous transaction is not a repeated 
->> transaction.
->> + * @DMA_PREP_LOCK: tell the driver that DMA HW engine going to be 
->> locked for this
->> + *  transaction , until not seen DMA_PREP_UNLOCK flag set.
->> + * @DMA_PREP_UNLOCK: tell the driver to unlock the DMA HW engine.
->>    */
->>   enum dma_ctrl_flags {
->>   	DMA_PREP_INTERRUPT = (1 << 0),
->> @@ -202,6 +205,8 @@ enum dma_ctrl_flags {
->>   	DMA_PREP_CMD = (1 << 7),
->>   	DMA_PREP_REPEAT = (1 << 8),
->>   	DMA_PREP_LOAD_EOT = (1 << 9),
->> +	DMA_PREP_LOCK = (1 << 10),
->> +	DMA_PREP_UNLOCK = (1 << 11),
->>   };
->>     /**
->> 
+Best regards
+
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
+
