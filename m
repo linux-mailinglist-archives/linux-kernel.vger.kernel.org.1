@@ -2,171 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D275D2DFAEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 11:15:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9812DFAFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 11:23:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726317AbgLUKPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 05:15:11 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2273 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725804AbgLUKPL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 05:15:11 -0500
-Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CzwG00mfWz67S8b;
-        Mon, 21 Dec 2020 18:10:32 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 21 Dec 2020 11:14:28 +0100
-Received: from [10.210.168.224] (10.210.168.224) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 21 Dec 2020 10:14:27 +0000
-Subject: Re: [PATCH 00/11] scsi: libsas: Remove in_interrupt() check
-To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        Jason Yan <yanaijie@huawei.com>,
-        "Artur Paszkiewicz" <artur.paszkiewicz@intel.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>
-CC:     <linux-scsi@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
-        Hannes Reinecke <hare@suse.com>
-References: <20201218204354.586951-1-a.darwish@linutronix.de>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <9674052e-3deb-2a45-6082-4a40a472a219@huawei.com>
-Date:   Mon, 21 Dec 2020 10:13:42 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1726488AbgLUKXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 05:23:42 -0500
+Received: from mga05.intel.com ([192.55.52.43]:11752 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725796AbgLUKXm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 05:23:42 -0500
+IronPort-SDR: fq4WAh9/8GzWh5LiMCr33F+oPJDvsno9QMZu6G0z3FPnncavWE1034LdXDDOIv/o/dq5dqnlya
+ EmdhfjzN3tFQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9841"; a="260435755"
+X-IronPort-AV: E=Sophos;i="5.78,436,1599548400"; 
+   d="scan'208";a="260435755"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2020 02:21:56 -0800
+IronPort-SDR: VfLDvac3fdFGdpCf23qdjQpfyWmKH3bg+KqqFuFCDCXXjnSj0R9/JiHSqwvM80aDuFoCn1gkGs
+ DqKKQtVal4Xw==
+X-IronPort-AV: E=Sophos;i="5.78,436,1599548400"; 
+   d="scan'208";a="491515405"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2020 02:21:49 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id D2725205F7; Mon, 21 Dec 2020 12:21:47 +0200 (EET)
+Date:   Mon, 21 Dec 2020 12:21:47 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        devel@acpica.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tian Shu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        kieran.bingham+renesas@ideasonboard.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>, jorhand@linux.microsoft.com
+Subject: Re: [PATCH v2 12/12] ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver
+Message-ID: <20201221102147.GJ26370@paasikivi.fi.intel.com>
+References: <20201217234337.1983732-1-djrscally@gmail.com>
+ <20201217234337.1983732-13-djrscally@gmail.com>
+ <20201218211732.GE4077@smile.fi.intel.com>
+ <e2b4c35f-5020-c332-d97a-8ba25be0e55e@gmail.com>
+ <CAHp75VcebKas4j-vByodicHxRMrO4jkaJToSUW3iLJC2+vY_iA@mail.gmail.com>
+ <e86fc26d-8c2f-c8a6-fc2e-ec612fd5d158@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201218204354.586951-1-a.darwish@linutronix.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.168.224]
-X-ClientProxiedBy: lhreml739-chm.china.huawei.com (10.201.108.189) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e86fc26d-8c2f-c8a6-fc2e-ec612fd5d158@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/12/2020 20:43, Ahmed S. Darwish wrote:
-> Folks,
+Hi Daniel, Andy,
+
+On Sat, Dec 19, 2020 at 11:48:51PM +0000, Daniel Scally wrote:
+> On 19/12/2020 18:52, Andy Shevchenko wrote:
+> > On Sat, Dec 19, 2020 at 2:25 AM Daniel Scally <djrscally@gmail.com> wrote:
+> >> On 18/12/2020 21:17, Andy Shevchenko wrote:
+> >>> On Thu, Dec 17, 2020 at 11:43:37PM +0000, Daniel Scally wrote:
+> > 
+> > ...
+> > 
+> >>>> +    sensor->ep_properties[0] = PROPERTY_ENTRY_U32(sensor->prop_names.bus_type, 4);
+> >>>
+> >>> Does 4 has any meaning that can be described by #define ?
+> >>
+> >> It's V4L2_FWNODE_BUS_TYPE_CSI2_DPHY:
+> >>
+> >> https://elixir.bootlin.com/linux/latest/source/drivers/media/v4l2-core/v4l2-fwnode.c#L36
+> >>
+> >> That enum's not in an accessible header, but I can define it in this
+> >> module's header
+> > 
+> > Maybe you can do a preparatory patch to make it visible to v4l2
+> > drivers? (Like moving to one of v4l2 headers)
 > 
-> In the discussion about preempt count consistency across kernel
-> configurations:
+> Sure ok, guess media/v4l2-fwnode.h makes the most sense.
+
+Yes, please.
+
 > 
->    https://lkml.kernel.org/r/20200914204209.256266093@linutronix.de
+> > ...
+> > 
+> >>>> +                    if (bridge->n_sensors >= CIO2_NUM_PORTS) {
+> >>>> +                            dev_warn(&cio2->dev, "Exceeded available CIO2 ports\n");
+> >>>
+> >>>> +                            /* overflow i so outer loop ceases */
+> >>>> +                            i = ARRAY_SIZE(cio2_supported_sensors);
+> >>>> +                            break;
+> >>>
+> >>> Why not to create a new label below and assign ret here with probably comment
+> >>> why it's not an error?
+> >>
+> >> Sure, I can do that, but since it wouldn't need any cleanup I could also
+> >> just return 0 here as Laurent suggest (but with a comment explaining why
+> >> that's ok as you say) - do you have a preference?
+> > 
+> > While it's a good suggestion it will bring a bit of inconsistency into
+> > approach. Everywhere else in the function you are using the goto
+> > approach.
+> > So yes, I have a preference.
 > 
-> it was concluded that the usage of in_interrupt() and related context
-> checks should be removed from non-core code.
-> 
-> This includes memory allocation mode decisions (GFP_*). In the long run,
-> usage of in_interrupt() and its siblings should be banned from driver
-> code completely.
-> 
-> This series addresses SCSI libsas. Basically, the function:
-> 
->    => drivers/scsi/libsas/sas_init.c:
->    struct asd_sas_event *sas_alloc_event(struct asd_sas_phy *phy)
->    {
->          ...
->          gfp_t flags = in_interrupt() ? GFP_ATOMIC : GFP_KERNEL;
->          event = kmem_cache_zalloc(sas_event_cache, flags);
+> No problem
 
-Hi Ahmed,
+Laurent also commented on the return code.
 
-Firstly I would say that it would be nice to just remove all the atomic 
-context calls. But that may require significant LLDD rework and 
-participation from driver stakeholders.
+I might just handle this as an error. The earlier ports are fine, but
+there's also a problem with the data here. It'd be easier to spot that this
+way, and we can change this in the future if need be.
 
-However, considering function sas_alloc_event() again:
+-- 
+Kind regards,
 
-	gfp_t flags = in_interrupt() ? GFP_ATOMIC : GFP_KERNEL;
-
-	...
-
-	event = kmem_cache_zalloc(sas_event_cache, flags);
-	if (!event)
-		return NULL;
-
-	atomic_inc(&phy->event_nr);
-
-	if (atomic_read(&phy->event_nr) > phy->ha->event_thres) {
-		/* Code to shutdown the phy */
-	}
-
-	return event;
-
-
-So default for phy->ha->event_thres is 32, and I can't imagine that 
-anyone has ever reconfigured this via sysfs or even required a value 
-that large. Maybe Jason (cc'ed) knows better. It's an arbitrary value to 
-say that the PHY is malfunctioning. I do note that there is the circular 
-path sas_alloc_event() -> sas_notify_phy_event() -> sas_alloc_event() 
-there also.
-
-Anyway, if the 32x event memories were per-allocated, maybe there is a 
-clean method to manage this memory, which even works in atomic context, 
-so we could avoid this rework (ignoring the context bugs you reported 
-for a moment). I do also note that the sas_event_cache size is not huge.
-
-Anyway, I'll look at the rest of the series.
-
-Thanks,
-John
-
->          ...
->    }
-> 
-> is transformed so that callers explicitly pass the gfp_t memory
-> allocation flags. Affected libsas clients are modified accordingly.
-> 
-> The first six patches have "Fixes: " tags and address bugs the were
-> noticed during the context analysis.
-> 
-> Thanks!
-> 
-> 8<--------------
-> 
-> Ahmed S. Darwish (11):
->    Documentation: scsi: libsas: Remove notify_ha_event()
->    scsi: libsas: Introduce a _gfp() variant of event notifiers
->    scsi: mvsas: Pass gfp_t flags to libsas event notifiers
->    scsi: isci: port: link down: Pass gfp_t flags
->    scsi: isci: port: link up: Pass gfp_t flags
->    scsi: isci: port: broadcast change: Pass gfp_t flags
->    scsi: libsas: Pass gfp_t flags to event notifiers
->    scsi: pm80xx: Pass gfp_t flags to libsas event notifiers
->    scsi: aic94xx: Pass gfp_t flags to libsas event notifiers
->    scsi: hisi_sas: Pass gfp_t flags to libsas event notifiers
->    scsi: libsas: event notifiers: Remove non _gfp() variants
-> 
->   Documentation/scsi/libsas.rst          |  5 ++--
->   drivers/scsi/aic94xx/aic94xx_scb.c     | 18 ++++++------
->   drivers/scsi/hisi_sas/hisi_sas.h       |  3 +-
->   drivers/scsi/hisi_sas/hisi_sas_main.c  | 26 ++++++++++--------
->   drivers/scsi/hisi_sas/hisi_sas_v1_hw.c |  5 ++--
->   drivers/scsi/hisi_sas/hisi_sas_v2_hw.c |  5 ++--
->   drivers/scsi/hisi_sas/hisi_sas_v3_hw.c |  5 ++--
->   drivers/scsi/isci/port.c               | 14 ++++++----
->   drivers/scsi/libsas/sas_event.c        | 21 ++++++++------
->   drivers/scsi/libsas/sas_init.c         | 11 ++++----
->   drivers/scsi/libsas/sas_internal.h     |  4 +--
->   drivers/scsi/mvsas/mv_sas.c            | 22 +++++++--------
->   drivers/scsi/pm8001/pm8001_hwi.c       | 38 +++++++++++++-------------
->   drivers/scsi/pm8001/pm8001_sas.c       |  8 +++---
->   drivers/scsi/pm8001/pm80xx_hwi.c       | 30 ++++++++++----------
->   include/scsi/libsas.h                  |  4 +--
->   16 files changed, 116 insertions(+), 103 deletions(-)
-> 
-> base-commit: 2c85ebc57b3e1817b6ce1a6b703928e113a90442
-> --
-> 2.29.2
-> .
-> 
-
+Sakari Ailus
