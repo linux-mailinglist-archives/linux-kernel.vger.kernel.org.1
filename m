@@ -2,81 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BA012DFF91
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:21:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 434BA2DFFA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:24:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726351AbgLUSUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 13:20:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726288AbgLUSUh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:20:37 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D050C061282
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:19:57 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id g3so6044354plp.2
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:19:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Y7YXrofGy04EzPSBwy2tiG07JmHeqpoCbscVvl8zlbI=;
-        b=jCxSWg/NjWqzN7+hxsfq82SMexR5j2/J24cKKtOw+kLXken1XstTX1XQRly2g4Ud1j
-         KXJZq3LWiAIp1P6vrZneUIbIOsHGs6i1Yx3QkdH79//bhlG4dcldZpt9Z37kkJhECEzH
-         0MCptAZ64WmvwwdG6HbqXu8smD+o9fGTz+aQa5Pu03BP2aajZMHHVAMk5mVIFp95bDLq
-         +UmeU+ML/jJDokTcNsiZ9zZQmV2t0eIltfeeLDyG8tD6gj0XwxKVOaFWkvWnCklxanjM
-         8vhS5Ztmskyib8PVsKBhxavFfIjLjI1+16HqCYoHDarAUxAYOXYnW5FfyRFR5CkhRyvI
-         xrRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Y7YXrofGy04EzPSBwy2tiG07JmHeqpoCbscVvl8zlbI=;
-        b=X46BxL7yLyRxCYbRvoDLT9rCVQYaCsM2QGw2ZF44N6zlaLPVbYzLutGF/L+qkbJElJ
-         KUmKC28RvT0mEbyHbHkdqcHJb3394oNOyW/bIfxuLqQ8D1lRwDsSqpH/H7KWhDz/WEvZ
-         hOTAP3ANX9fdB37sCzo+uTI+sm4zGy+IZoywtVq8GOl5/XlNQF7uNoYUAjqkNmMiGdCZ
-         +ZI6Tg6glMKpVHevXswf/aVSW2KTfPY4igy8sit77DoC6OmwAaf0zQXPXtQZ74eB0Nja
-         G+AMxei+8I8J0xCjjYpUMgec9G26uxl3lnNb2B6+4xdt9cE+zZB2OqciAxTPJepFJ5Fn
-         83mg==
-X-Gm-Message-State: AOAM532kLcgwgNbVsxtq2wNOqjCpy7vjClZbQoyeHcg+olWtViL4x9cS
-        zmim+DQL6qGXviGK3KX5rHmQrg==
-X-Google-Smtp-Source: ABdhPJyHWlfTxHlQHF3IJV0kFO0bBSvy0Z3c4b0a4D4A49KgheCW20J5Ryw7q0wwOE+UQG+erHzUmA==
-X-Received: by 2002:a17:90b:46d2:: with SMTP id jx18mr18724013pjb.106.1608574796679;
-        Mon, 21 Dec 2020 10:19:56 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id gb9sm2507692pjb.40.2020.12.21.10.19.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 10:19:56 -0800 (PST)
-Date:   Mon, 21 Dec 2020 10:19:49 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Krish Sadhukhan <krish.sadhukhan@oracle.com>
-Subject: Re: [PATCH v2] KVM/x86: Move definition of __ex to x86.h
-Message-ID: <X+DnRcYVNdkkgI3j@google.com>
-References: <20201220211109.129946-1-ubizjak@gmail.com>
+        id S1726387AbgLUSXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:23:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46740 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726230AbgLUSXc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 13:23:32 -0500
+X-Gm-Message-State: AOAM533QpgqTX/sHV15rEAgd5dgXZ8pURXbEn5GO1NfxOz+HscMEfJol
+        xuBF6I5aiQIJJpohI+hQVpYlpQ1rPJRQAVF6CG26Jw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608574971;
+        bh=09s/7/3Abqx6UuMNj0u19lQ8gCTkTlZe5NqmmaxK9+4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Bo2Fa9gWLOSAKLQOzb6Oj9YP9nN27xyxcbVrrkxKTgaUUis9adXsAlE2/PQ08Uour
+         5ZXP8SsubuI5xmfpmWXU21mr+asURMlTMcL11Tuiyw8dcRfdrofSVP77gCtiTk6SfP
+         IPdvY2lQIoggfdku1N5Os27Lp/UWEHNZa6Jn72Iwo4rpHUAF3Vn2q6w6ubIbhZ+EwB
+         +8Cc9hqwT2ogGzrD48wKxfs6128Ln/14xdpWV17jgR7fpdIzaU/2iDlSypRZqflsX/
+         36Sp7GH5M9zSlW8VmJyOrL1xQO+qqc3WLwdmRlieo+GiTaaU/ogXQ9qHelRL4WEjrA
+         DFuE9CfYmVvqg==
+X-Google-Smtp-Source: ABdhPJwjTRqYw8V9Gi4qEwVzEP3KAOAipT6YS4V/aZhUnVFW91AADzWb0GD1KyN5B6hdVMCwN/jvFo6XDpkmv5gcYbs=
+X-Received: by 2002:a1c:630b:: with SMTP id x11mr17742545wmb.138.1608574969815;
+ Mon, 21 Dec 2020 10:22:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201220211109.129946-1-ubizjak@gmail.com>
+References: <20201219043006.2206347-1-namit@vmware.com> <X95RRZ3hkebEmmaj@redhat.com>
+ <EDC00345-B46E-4396-8379-98E943723809@gmail.com> <CALCETrVtsdeOtGWMUcmT1dzDBxRpecpZDe02L61qEmJmFxSvYw@mail.gmail.com>
+ <X967yWAoaTejRk5y@redhat.com> <CALCETrVVa-cfogKZirRrP5tmy-gCDtb=jTpLk648BpBQsK9Z5A@mail.gmail.com>
+ <X+Djjd8dW12u+rSR@redhat.com>
+In-Reply-To: <X+Djjd8dW12u+rSR@redhat.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Mon, 21 Dec 2020 10:22:38 -0800
+X-Gmail-Original-Message-ID: <CALCETrUUkGj00Z0HRuYOpjP8uGgbbs539EwG8tc71+PJR_=z_Q@mail.gmail.com>
+Message-ID: <CALCETrUUkGj00Z0HRuYOpjP8uGgbbs539EwG8tc71+PJR_=z_Q@mail.gmail.com>
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+To:     Andrea Arcangeli <aarcange@redhat.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        linux-mm <linux-mm@kvack.org>, Peter Xu <peterx@redhat.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 20, 2020, Uros Bizjak wrote:
-> Merge __kvm_handle_fault_on_reboot with its sole user
+On Mon, Dec 21, 2020 at 10:04 AM Andrea Arcangeli <aarcange@redhat.com> wrote:
+>
+> Hello,
+>
+> On Sat, Dec 19, 2020 at 09:08:55PM -0800, Andy Lutomirski wrote:
+> > On Sat, Dec 19, 2020 at 6:49 PM Andrea Arcangeli <aarcange@redhat.com> wrote:
+> > > The ptes are changed always with the PT lock, in fact there's no
+> > > problem with the PTE updates. The only difference with mprotect
+> > > runtime is that the mmap_lock is taken for reading. And the effect
+> > > contested for this change doesn't affect the PTE, but supposedly the
+> > > tlb flushing deferral.
+> >
+> > Can you point me at where the lock ends up being taken in this path?
+>
+> pte_offset_map_lock in change_pte_range, as in mprotect, no difference.
+>
+> As I suspected on my follow up, the bug described wasn't there, but
+> I'll look at the new theory posted.
 
-There's also a comment in vmx.c above kvm_cpu_vmxoff() that should be updated.
-Alternatively, and probably preferably for me, what about keeping the long
-__kvm_handle_fault_on_reboot() name for the macro itself and simply moving the
-__ex() macro?
-
-That would also allow keeping kvm_spurious_fault() and
-__kvm_handle_fault_on_reboot() where they are (for no reason other than to avoid
-code churn).  Though I'm also ok if folks would prefer to move everything to
-x86.h.
-
-> and move the definition of __ex to a common include to be
-> shared between VMX and SVM.
+Indeed.
