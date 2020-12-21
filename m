@@ -2,32 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74DD22E029A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 23:44:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE252E029D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 23:48:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726131AbgLUWnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 17:43:16 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2918 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725938AbgLUWnQ (ORCPT
+        id S1726112AbgLUWrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 17:47:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725780AbgLUWrV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 17:43:16 -0500
-Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4D0Dws1wW0z57bw;
-        Tue, 22 Dec 2020 06:41:49 +0800 (CST)
-Received: from dggemi709-chm.china.huawei.com (10.3.20.108) by
- DGGEMM402-HUB.china.huawei.com (10.3.20.210) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Tue, 22 Dec 2020 06:42:31 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemi709-chm.china.huawei.com (10.3.20.108) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Tue, 22 Dec 2020 06:42:31 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.002;
- Tue, 22 Dec 2020 06:42:31 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Vitaly Wool <vitaly.wool@konsulko.com>
-CC:     Shakeel Butt <shakeelb@google.com>,
+        Mon, 21 Dec 2020 17:47:21 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 518D3C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 14:46:41 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id m12so27499768lfo.7
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 14:46:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/AfJEBowGBxkRxnhlgm7nBxEgLEWRyN9OfwXe/9fsqg=;
+        b=fSqzTZQR7v+u7E0vrT63yT2Uu6EXrJkep0j3q3iTpEF/SORenchmn8wZQ2piH6XJFE
+         +DxRUN5ycoozdYXA7q58X6YdpYMlPJ/yQLpHw18SedCpwGVJayAdmjWrLcfu2RCTQBNA
+         nTwC/kmbZYoyoO3JnvUfer+IvcXzPNfcNVpwjLRh2Jskq35VroqKlM8cJG7GA9diiLfm
+         gAFh4Cl5nRGAoHwmpTDr5fLFzt8KqaW74SL6s8CdWiZk2Tqqn/XJg9DT13ClzZll+8Zl
+         ANtyM64orMq4KddP+We1MWIvwZ0wDC7ICgw9OwI8j4ypYjU+RbWu0eGDDPMby4Gk8XaM
+         rc2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/AfJEBowGBxkRxnhlgm7nBxEgLEWRyN9OfwXe/9fsqg=;
+        b=ZIoyo7i+8SVcdVXSqqI7mRtYkZnWCiRg5W5pPgk6zMmhx9oNyvEaIxRq8BUPtAxR04
+         8f168usKvnUSQ6zgk+jxkqWOuGitESxlvQgI/aK3hOvoBq3iqNqkQIYUurBZgJ5SPyQA
+         bhjT0VVNZEgITlzTkDFjEoZgZ4/eSFAU7yBNaHqwHDhVwBARDFACXI7lr2FcKUOXslHK
+         x1v0QRFwifrXB4Vwev3oA9ccsZv8sM7cYnCVKMdmQ8XsBLob6W1JEXIX+Yf9Yk/lXbF6
+         PpblfdF6ckCB8FZ4aBPddWfb038e2h/JTzsFdJg8+SA3r+q5xdRrccDfPHG4eX4BVxfE
+         ndkQ==
+X-Gm-Message-State: AOAM53064G3B9zjlK0HeHPlWOvfeiqhYAg/QmnoONz9wZo5bS4AjY0e8
+        A9ua2CzdZLdJxtSN0argxYttMMSwi00nNXOnsao0Jg==
+X-Google-Smtp-Source: ABdhPJxslHGZHNL6K3MgA1b/ZHjKA5S69wU62qy3fUKVAYHBIwuW6YdDMPZqQ6G9LnJ83GHZdt9gtbUYZmJLeij83yc=
+X-Received: by 2002:a05:651c:234:: with SMTP id z20mr8044530ljn.456.1608590799507;
+ Mon, 21 Dec 2020 14:46:39 -0800 (PST)
+MIME-Version: 1.0
+References: <18669bd607ae9efbf4e00e36532c7aa167d0fa12.camel@gmx.de>
+ <20201220002228.38697-1-vitaly.wool@konsulko.com> <X+DaMSJE22nUC0tl@google.com>
+ <CAM4kBBKnW6K-mbPno4SpvhUBiykP4zeFm_CNzssDkReURbuU7w@mail.gmail.com>
+ <CALvZod69OtXkdOJPzuY5XfXz_ro0V7OmqW4OY9B_emqwroxW4w@mail.gmail.com>
+ <e5cd8a0a5df84081a11359ede6e746bc@hisilicon.com> <CALvZod7EZnEWb_65FjSNdx+-S_4pLHyS5rYiU-D3hFLRMXS6Lw@mail.gmail.com>
+ <8cc0e01fd03245a4994f2e0f54b264fa@hisilicon.com>
+In-Reply-To: <8cc0e01fd03245a4994f2e0f54b264fa@hisilicon.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 21 Dec 2020 14:46:28 -0800
+Message-ID: <CALvZod7rj4X3M5o5agCzzSKkuLhb8z0Q+41sqNN2bcJLa=z5vA@mail.gmail.com>
+Subject: Re: [PATCH] zsmalloc: do not use bit_spin_lock
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+Cc:     Vitaly Wool <vitaly.wool@konsulko.com>,
         Minchan Kim <minchan@kernel.org>,
         Mike Galbraith <efault@gmx.de>,
         LKML <linux-kernel@vger.kernel.org>,
@@ -36,167 +66,125 @@ CC:     Shakeel Butt <shakeelb@google.com>,
         NitinGupta <ngupta@vflare.org>,
         Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>
-Subject: RE: [PATCH] zsmalloc: do not use bit_spin_lock
-Thread-Topic: [PATCH] zsmalloc: do not use bit_spin_lock
-Thread-Index: AQHW1mZAeBjE5clI7UKUuMSOCQsyuqoBSTyAgAAghwCAAAhXgIAAhndA//+NyICAAIW5IP//jYeAgACME8A=
-Date:   Mon, 21 Dec 2020 22:42:31 +0000
-Message-ID: <db7e3244668e45e99b8141592ac92731@hisilicon.com>
-References: <18669bd607ae9efbf4e00e36532c7aa167d0fa12.camel@gmx.de>
- <20201220002228.38697-1-vitaly.wool@konsulko.com>
- <X+DaMSJE22nUC0tl@google.com>
- <CAM4kBBKnW6K-mbPno4SpvhUBiykP4zeFm_CNzssDkReURbuU7w@mail.gmail.com>
- <CALvZod69OtXkdOJPzuY5XfXz_ro0V7OmqW4OY9B_emqwroxW4w@mail.gmail.com>
- <e5cd8a0a5df84081a11359ede6e746bc@hisilicon.com>
- <CALvZod7EZnEWb_65FjSNdx+-S_4pLHyS5rYiU-D3hFLRMXS6Lw@mail.gmail.com>
- <8cc0e01fd03245a4994f2e0f54b264fa@hisilicon.com>
- <CAM4kBB+xUa8zXSRSuB0z5FCdPNmUpDfcC4Vqu7wzAkf0b+RXqw@mail.gmail.com>
-In-Reply-To: <CAM4kBB+xUa8zXSRSuB0z5FCdPNmUpDfcC4Vqu7wzAkf0b+RXqw@mail.gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.200.103]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogVml0YWx5IFdvb2wgW21h
-aWx0bzp2aXRhbHkud29vbEBrb25zdWxrby5jb21dDQo+IFNlbnQ6IFR1ZXNkYXksIERlY2VtYmVy
-IDIyLCAyMDIwIDExOjEyIEFNDQo+IFRvOiBTb25nIEJhbyBIdWEgKEJhcnJ5IFNvbmcpIDxzb25n
-LmJhby5odWFAaGlzaWxpY29uLmNvbT4NCj4gQ2M6IFNoYWtlZWwgQnV0dCA8c2hha2VlbGJAZ29v
-Z2xlLmNvbT47IE1pbmNoYW4gS2ltIDxtaW5jaGFuQGtlcm5lbC5vcmc+OyBNaWtlDQo+IEdhbGJy
-YWl0aCA8ZWZhdWx0QGdteC5kZT47IExLTUwgPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+
-OyBsaW51eC1tbQ0KPiA8bGludXgtbW1Aa3ZhY2sub3JnPjsgU2ViYXN0aWFuIEFuZHJ6ZWogU2ll
-d2lvciA8YmlnZWFzeUBsaW51dHJvbml4LmRlPjsNCj4gTml0aW5HdXB0YSA8bmd1cHRhQHZmbGFy
-ZS5vcmc+OyBTZXJnZXkgU2Vub3poYXRza3kNCj4gPHNlcmdleS5zZW5vemhhdHNreS53b3JrQGdt
-YWlsLmNvbT47IEFuZHJldyBNb3J0b24NCj4gPGFrcG1AbGludXgtZm91bmRhdGlvbi5vcmc+DQo+
-IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIHpzbWFsbG9jOiBkbyBub3QgdXNlIGJpdF9zcGluX2xvY2sN
-Cj4gDQo+IE9uIE1vbiwgRGVjIDIxLCAyMDIwIGF0IDEwOjMwIFBNIFNvbmcgQmFvIEh1YSAoQmFy
-cnkgU29uZykNCj4gPHNvbmcuYmFvLmh1YUBoaXNpbGljb24uY29tPiB3cm90ZToNCj4gPg0KPiA+
-DQo+ID4NCj4gPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4gPiBGcm9tOiBTaGFr
-ZWVsIEJ1dHQgW21haWx0bzpzaGFrZWVsYkBnb29nbGUuY29tXQ0KPiA+ID4gU2VudDogVHVlc2Rh
-eSwgRGVjZW1iZXIgMjIsIDIwMjAgMTA6MDMgQU0NCj4gPiA+IFRvOiBTb25nIEJhbyBIdWEgKEJh
-cnJ5IFNvbmcpIDxzb25nLmJhby5odWFAaGlzaWxpY29uLmNvbT4NCj4gPiA+IENjOiBWaXRhbHkg
-V29vbCA8dml0YWx5Lndvb2xAa29uc3Vsa28uY29tPjsgTWluY2hhbiBLaW0NCj4gPG1pbmNoYW5A
-a2VybmVsLm9yZz47DQo+ID4gPiBNaWtlIEdhbGJyYWl0aCA8ZWZhdWx0QGdteC5kZT47IExLTUwg
-PGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+Ow0KPiBsaW51eC1tbQ0KPiA+ID4gPGxpbnV4
-LW1tQGt2YWNrLm9yZz47IFNlYmFzdGlhbiBBbmRyemVqIFNpZXdpb3IgPGJpZ2Vhc3lAbGludXRy
-b25peC5kZT47DQo+ID4gPiBOaXRpbkd1cHRhIDxuZ3VwdGFAdmZsYXJlLm9yZz47IFNlcmdleSBT
-ZW5vemhhdHNreQ0KPiA+ID4gPHNlcmdleS5zZW5vemhhdHNreS53b3JrQGdtYWlsLmNvbT47IEFu
-ZHJldyBNb3J0b24NCj4gPiA+IDxha3BtQGxpbnV4LWZvdW5kYXRpb24ub3JnPg0KPiA+ID4gU3Vi
-amVjdDogUmU6IFtQQVRDSF0genNtYWxsb2M6IGRvIG5vdCB1c2UgYml0X3NwaW5fbG9jaw0KPiA+
-ID4NCj4gPiA+IE9uIE1vbiwgRGVjIDIxLCAyMDIwIGF0IDEyOjA2IFBNIFNvbmcgQmFvIEh1YSAo
-QmFycnkgU29uZykNCj4gPiA+IDxzb25nLmJhby5odWFAaGlzaWxpY29uLmNvbT4gd3JvdGU6DQo+
-ID4gPiA+DQo+ID4gPiA+DQo+ID4gPiA+DQo+ID4gPiA+ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdl
-LS0tLS0NCj4gPiA+ID4gPiBGcm9tOiBTaGFrZWVsIEJ1dHQgW21haWx0bzpzaGFrZWVsYkBnb29n
-bGUuY29tXQ0KPiA+ID4gPiA+IFNlbnQ6IFR1ZXNkYXksIERlY2VtYmVyIDIyLCAyMDIwIDg6NTAg
-QU0NCj4gPiA+ID4gPiBUbzogVml0YWx5IFdvb2wgPHZpdGFseS53b29sQGtvbnN1bGtvLmNvbT4N
-Cj4gPiA+ID4gPiBDYzogTWluY2hhbiBLaW0gPG1pbmNoYW5Aa2VybmVsLm9yZz47IE1pa2UgR2Fs
-YnJhaXRoIDxlZmF1bHRAZ214LmRlPjsNCj4gTEtNTA0KPiA+ID4gPiA+IDxsaW51eC1rZXJuZWxA
-dmdlci5rZXJuZWwub3JnPjsgbGludXgtbW0gPGxpbnV4LW1tQGt2YWNrLm9yZz47IFNvbmcNCj4g
-QmFvDQo+ID4gPiBIdWENCj4gPiA+ID4gPiAoQmFycnkgU29uZykgPHNvbmcuYmFvLmh1YUBoaXNp
-bGljb24uY29tPjsgU2ViYXN0aWFuIEFuZHJ6ZWogU2lld2lvcg0KPiA+ID4gPiA+IDxiaWdlYXN5
-QGxpbnV0cm9uaXguZGU+OyBOaXRpbkd1cHRhIDxuZ3VwdGFAdmZsYXJlLm9yZz47IFNlcmdleQ0K
-PiA+ID4gU2Vub3poYXRza3kNCj4gPiA+ID4gPiA8c2VyZ2V5LnNlbm96aGF0c2t5LndvcmtAZ21h
-aWwuY29tPjsgQW5kcmV3IE1vcnRvbg0KPiA+ID4gPiA+IDxha3BtQGxpbnV4LWZvdW5kYXRpb24u
-b3JnPg0KPiA+ID4gPiA+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIHpzbWFsbG9jOiBkbyBub3QgdXNl
-IGJpdF9zcGluX2xvY2sNCj4gPiA+ID4gPg0KPiA+ID4gPiA+IE9uIE1vbiwgRGVjIDIxLCAyMDIw
-IGF0IDExOjIwIEFNIFZpdGFseSBXb29sIDx2aXRhbHkud29vbEBrb25zdWxrby5jb20+DQo+ID4g
-PiB3cm90ZToNCj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiBPbiBNb24sIERlYyAyMSwgMjAyMCBh
-dCA2OjI0IFBNIE1pbmNoYW4gS2ltIDxtaW5jaGFuQGtlcm5lbC5vcmc+IHdyb3RlOg0KPiA+ID4g
-PiA+ID4gPg0KPiA+ID4gPiA+ID4gPiBPbiBTdW4sIERlYyAyMCwgMjAyMCBhdCAwMjoyMjoyOEFN
-ICswMjAwLCBWaXRhbHkgV29vbCB3cm90ZToNCj4gPiA+ID4gPiA+ID4gPiB6c21hbGxvYyB0YWtl
-cyBiaXQgc3BpbmxvY2sgaW4gaXRzIF9tYXAoKSBjYWxsYmFjayBhbmQgcmVsZWFzZXMNCj4gaXQN
-Cj4gPiA+ID4gPiA+ID4gPiBvbmx5IGluIHVubWFwKCkgd2hpY2ggaXMgdW5zYWZlIGFuZCBsZWFk
-cyB0byB6c3dhcCBjb21wbGFpbmluZw0KPiA+ID4gPiA+ID4gPiA+IGFib3V0IHNjaGVkdWxpbmcg
-aW4gYXRvbWljIGNvbnRleHQuDQo+ID4gPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+ID4gPiBUbyBm
-aXggdGhhdCBhbmQgdG8gaW1wcm92ZSBSVCBwcm9wZXJ0aWVzIG9mIHpzbWFsbG9jLCByZW1vdmUg
-dGhhdA0KPiA+ID4gPiA+ID4gPiA+IGJpdCBzcGlubG9jayBjb21wbGV0ZWx5IGFuZCB1c2UgYSBi
-aXQgZmxhZyBpbnN0ZWFkLg0KPiA+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gPiBJIGRvbid0IHdh
-bnQgdG8gdXNlIHN1Y2ggb3BlbiBjb2RlIGZvciB0aGUgbG9jay4NCj4gPiA+ID4gPiA+ID4NCj4g
-PiA+ID4gPiA+ID4gSSBzZWUgZnJvbSBNaWtlJ3MgcGF0Y2gsIHJlY2VudCB6c3dhcCBjaGFuZ2Ug
-aW50cm9kdWNlZCB0aGUgbG9ja2RlcA0KPiA+ID4gPiA+ID4gPiBzcGxhdCBidWcgYW5kIHlvdSB3
-YW50IHRvIGltcHJvdmUgenNtYWxsb2MgdG8gZml4IHRoZSB6c3dhcCBidWcNCj4gYW5kDQo+ID4g
-PiA+ID4gPiA+IGludHJvZHVjZSB0aGlzIHBhdGNoIHdpdGggYWxsb3dpbmcgcHJlZW1wdGlvbiBl
-bmFibGluZy4NCj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiBUaGlzIHVuZGVyc3RhbmRpbmcgaXMg
-dXBzaWRlIGRvd24uIFRoZSBjb2RlIGluIHpzd2FwIHlvdSBhcmUgcmVmZXJyaW5nDQo+ID4gPiA+
-ID4gPiB0byBpcyBub3QgYnVnZ3kuICBZb3UgbWF5IGNsYWltIHRoYXQgaXQgaXMgc3Vib3B0aW1h
-bCBidXQgdGhlcmUgaXMNCj4gPiA+ID4gPiA+IG5vdGhpbmcgd3JvbmcgaW4gdGFraW5nIGEgbXV0
-ZXguDQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gSXMgdGhpcyBzdWJvcHRpbWFs
-IGZvciBhbGwgb3IganVzdCB0aGUgaGFyZHdhcmUgYWNjZWxlcmF0b3JzPyBTb3JyeSwNCj4gSQ0K
-PiA+ID4gPiA+IGFtIG5vdCB2ZXJ5IGZhbWlsaWFyIHdpdGggdGhlIGNyeXB0byBBUEkuIElmIEkg
-c2VsZWN0IGx6byBvciBsejQgYXMNCj4gYQ0KPiA+ID4gPiA+IHpzd2FwIGNvbXByZXNzb3Igd2ls
-bCB0aGUgW2RlXWNvbXByZXNzaW9uIGJlIGFzeW5jIG9yIHN5bmM/DQo+ID4gPiA+DQo+ID4gPiA+
-IFJpZ2h0IG5vdywgaW4gY3J5cHRvIHN1YnN5c3RlbSwgbmV3IGRyaXZlcnMgYXJlIHJlcXVpcmVk
-IHRvIHdyaXRlIGJhc2VkDQo+IG9uDQo+ID4gPiA+IGFzeW5jIEFQSXMuIFRoZSBvbGQgc3luYyBB
-UEkgY2FuJ3Qgd29yayBpbiBuZXcgYWNjZWxlcmF0b3IgZHJpdmVycyBhcw0KPiB0aGV5DQo+ID4g
-PiA+IGFyZSBub3Qgc3VwcG9ydGVkIGF0IGFsbC4NCj4gPiA+ID4NCj4gPiA+ID4gT2xkIGRyaXZl
-cnMgYXJlIHVzZWQgdG8gc3luYywgYnV0IHRoZXkndmUgZ290IGFzeW5jIHdyYXBwZXJzIHRvIHN1
-cHBvcnQNCj4gYXN5bmMNCj4gPiA+ID4gQVBJcy4gRWcuDQo+ID4gPiA+IGNyeXB0bzogYWNvbXAg
-LSBhZGQgc3VwcG9ydCBmb3IgbHo0IHZpYSBzY29tcA0KPiA+ID4gPg0KPiA+ID4NCj4gaHR0cHM6
-Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXgu
-Z2l0L2NvbW1pdC8NCj4gPiA+IGNyeXB0by9sejQuYz9pZD04Y2Q5MzMwZTBhNjE1YzkzMTAzN2Q0
-ZGVmOThiNWNlMGQ1NDBmMDhkDQo+ID4gPiA+DQo+ID4gPiA+IGNyeXB0bzogYWNvbXAgLSBhZGQg
-c3VwcG9ydCBmb3IgbHpvIHZpYSBzY29tcA0KPiA+ID4gPg0KPiA+ID4NCj4gaHR0cHM6Ly9naXQu
-a2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0L2Nv
-bW1pdC8NCj4gPiA+IGNyeXB0by9sem8uYz9pZD1hYzlkMmM0YjM5ZTAyMmQyYzYxNDg2YmZjMzNi
-NzMwY2ZkMDI4OThlDQo+ID4gPiA+DQo+ID4gPiA+IHNvIHRoZXkgYXJlIHN1cHBvcnRpbmcgYXN5
-bmMgQVBJcyBidXQgdGhleSBhcmUgc3RpbGwgd29ya2luZyBpbiBzeW5jIG1vZGUNCj4gPiA+IGFz
-DQo+ID4gPiA+IHRob3NlIG9sZCBkcml2ZXJzIGRvbid0IHNsZWVwLg0KPiA+ID4gPg0KPiA+ID4N
-Cj4gPiA+IEdvb2QgdG8ga25vdyB0aGF0IHRob3NlIGFyZSBzeW5jIGJlY2F1c2UgSSB3YW50IHRo
-ZW0gdG8gYmUgc3luYy4NCj4gPiA+IFBsZWFzZSBub3RlIHRoYXQgenN3YXAgaXMgYSBjYWNoZSBp
-biBmcm9udCBvZiBhIHJlYWwgc3dhcCBhbmQgdGhlIGxvYWQNCj4gPiA+IG9wZXJhdGlvbiBpcyBs
-YXRlbmN5IHNlbnNpdGl2ZSBhcyBpdCBjb21lcyBpbiB0aGUgcGFnZSBmYXVsdCBwYXRoIGFuZA0K
-PiA+ID4gZGlyZWN0bHkgaW1wYWN0cyB0aGUgYXBwbGljYXRpb25zLiBJIGRvdWJ0IGRlY29tcHJl
-c3Npbmcgc3luY2hyb25vdXNseQ0KPiA+ID4gYSA0ayBwYWdlIG9uIGEgY3B1IHdpbGwgYmUgY29z
-dGxpZXIgdGhhbiBhc3luY2hyb25vdXNseSBkZWNvbXByZXNzaW5nDQo+ID4gPiB0aGUgc2FtZSBw
-YWdlIGZyb20gaGFyZHdhcmUgYWNjZWxlcmF0b3JzLg0KPiA+DQo+ID4gSWYgeW91IHJlYWQgdGhl
-IG9sZCBwYXBlcjoNCj4gPg0KPiBodHRwczovL3d3dy5pYm0uY29tL3N1cHBvcnQvcGFnZXMvbmV3
-LWxpbnV4LXpzd2FwLWNvbXByZXNzaW9uLWZ1bmN0aW9uYWxpdA0KPiB5DQo+ID4gQmVjYXVzZSB0
-aGUgaGFyZHdhcmUgYWNjZWxlcmF0b3Igc3BlZWRzIHVwIGNvbXByZXNzaW9uLCBsb29raW5nIGF0
-IHRoZSB6c3dhcA0KPiA+IG1ldHJpY3Mgd2Ugb2JzZXJ2ZWQgdGhhdCB0aGVyZSB3ZXJlIG1vcmUg
-c3RvcmUgYW5kIGxvYWQgcmVxdWVzdHMgaW4gYSBnaXZlbg0KPiA+IGFtb3VudCBvZiB0aW1lLCB3
-aGljaCBmaWxsZWQgdXAgdGhlIHpzd2FwIHBvb2wgZmFzdGVyIHRoYW4gYSBzb2Z0d2FyZQ0KPiA+
-IGNvbXByZXNzaW9uIHJ1bi4gQmVjYXVzZSBvZiB0aGlzIGJlaGF2aW9yLCB3ZSBzZXQgdGhlIG1h
-eF9wb29sX3BlcmNlbnQNCj4gPiBwYXJhbWV0ZXIgdG8gMzAgZm9yIHRoZSBoYXJkd2FyZSBjb21w
-cmVzc2lvbiBydW5zIC0gdGhpcyBtZWFucyB0aGF0IHpzd2FwDQo+ID4gY2FuIHVzZSB1cCB0byAz
-MCUgb2YgdGhlIDEwR0Igb2YgdG90YWwgbWVtb3J5Lg0KPiA+DQo+ID4gU28gdXNpbmcgaGFyZHdh
-cmUgYWNjZWxlcmF0b3JzLCB3ZSBnZXQgYSBjaGFuY2UgdG8gc3BlZWQgdXAgY29tcHJlc3Npb24N
-Cj4gPiB3aGlsZSBkZWNyZWFzaW5nIGNwdSB1dGlsaXphdGlvbi4NCj4gPg0KPiA+IEJUVywgSWYg
-aXQgaXMgbm90IGVhc3kgdG8gY2hhbmdlIHpzbWFsbG9jLCBvbmUgcXVpY2sgd29ya2Fyb3VuZCB3
-ZSBtaWdodCBkbw0KPiA+IGluIHpzd2FwIGlzIGFkZGluZyB0aGUgYmVsb3cgYWZ0ZXIgYXBwbHlp
-bmcgTWlrZSdzIG9yaWdpbmFsIHBhdGNoOg0KPiA+DQo+ID4gaWYoaW5fYXRvbWljKCkpIC8qIGZv
-ciB6c21hbGxvYyAqLw0KPiA+ICAgICAgICAgd2hpbGUoIXRyeV93YWl0X2Zvcl9jb21wbGV0aW9u
-KCZyZXEtPmRvbmUpOw0KPiA+IGVsc2UgLyogZm9yIHpidWQsIHozZm9sZCAqLw0KPiA+ICAgICAg
-ICAgY3J5cHRvX3dhaXRfcmVxKC4uLi4pOw0KPiANCj4gSSBkb24ndCB0aGluayBJJ20gZ29pbmcg
-dG8gYWNrIHRoaXMsIHNvcnJ5Lg0KPiANCg0KRmFpciBlbm91Z2guIEFuZCBJIGFtIGFsc28gdGhp
-bmtpbmcgaWYgd2UgY2FuIG1vdmUgenBvb2xfdW5tYXBfaGFuZGxlKCkNCnF1aXRlIGFmdGVyIHpw
-b29sX21hcF9oYW5kbGUoKSBhcyBiZWxvdzoNCg0KCWRsZW4gPSBQQUdFX1NJWkU7DQoJc3JjID0g
-enBvb2xfbWFwX2hhbmRsZShlbnRyeS0+cG9vbC0+enBvb2wsIGVudHJ5LT5oYW5kbGUsIFpQT09M
-X01NX1JPKTsNCglpZiAoenBvb2xfZXZpY3RhYmxlKGVudHJ5LT5wb29sLT56cG9vbCkpDQoJCXNy
-YyArPSBzaXplb2Yoc3RydWN0IHpzd2FwX2hlYWRlcik7DQorCXpwb29sX3VubWFwX2hhbmRsZShl
-bnRyeS0+cG9vbC0+enBvb2wsIGVudHJ5LT5oYW5kbGUpOw0KDQoJYWNvbXBfY3R4ID0gcmF3X2Nw
-dV9wdHIoZW50cnktPnBvb2wtPmFjb21wX2N0eCk7DQoJbXV0ZXhfbG9jayhhY29tcF9jdHgtPm11
-dGV4KTsNCglzZ19pbml0X29uZSgmaW5wdXQsIHNyYywgZW50cnktPmxlbmd0aCk7DQoJc2dfaW5p
-dF90YWJsZSgmb3V0cHV0LCAxKTsNCglzZ19zZXRfcGFnZSgmb3V0cHV0LCBwYWdlLCBQQUdFX1NJ
-WkUsIDApOw0KCWFjb21wX3JlcXVlc3Rfc2V0X3BhcmFtcyhhY29tcF9jdHgtPnJlcSwgJmlucHV0
-LCAmb3V0cHV0LCBlbnRyeS0+bGVuZ3RoLCBkbGVuKTsNCglyZXQgPSBjcnlwdG9fd2FpdF9yZXEo
-Y3J5cHRvX2Fjb21wX2RlY29tcHJlc3MoYWNvbXBfY3R4LT5yZXEpLCAmYWNvbXBfY3R4LT53YWl0
-KTsNCgltdXRleF91bmxvY2soYWNvbXBfY3R4LT5tdXRleCk7DQoNCi0JenBvb2xfdW5tYXBfaGFu
-ZGxlKGVudHJ5LT5wb29sLT56cG9vbCwgZW50cnktPmhhbmRsZSk7DQoNClNpbmNlIHNyYyBpcyBh
-bHdheXMgbG93IG1lbW9yeSBhbmQgd2Ugb25seSBuZWVkIGl0cyB2aXJ0dWFsIGFkZHJlc3MNCnRv
-IGdldCB0aGUgcGFnZSBvZiBzcmMgaW4gc2dfaW5pdF9vbmUoKS4gV2UgZG9uJ3QgYWN0dWFsbHkg
-cmVhZCBpdA0KYnkgQ1BVIGFueXdoZXJlLg0KDQo+IEJlc3QgcmVnYXJkcywNCj4gICAgVml0YWx5
-DQo+IA0KPiA+IGNyeXB0b193YWl0X3JlcSgpIGlzIGFjdHVhbGx5IGRvaW5nIHdhaXRfZm9yX2Nv
-bXBsZXRpb24oKToNCj4gPiBzdGF0aWMgaW5saW5lIGludCBjcnlwdG9fd2FpdF9yZXEoaW50IGVy
-ciwgc3RydWN0IGNyeXB0b193YWl0ICp3YWl0KQ0KPiA+IHsNCj4gPiAgICAgICAgIHN3aXRjaCAo
-ZXJyKSB7DQo+ID4gICAgICAgICBjYXNlIC1FSU5QUk9HUkVTUzoNCj4gPiAgICAgICAgIGNhc2Ug
-LUVCVVNZOg0KPiA+ICAgICAgICAgICAgICAgICB3YWl0X2Zvcl9jb21wbGV0aW9uKCZ3YWl0LT5j
-b21wbGV0aW9uKTsNCj4gPiAgICAgICAgICAgICAgICAgcmVpbml0X2NvbXBsZXRpb24oJndhaXQt
-PmNvbXBsZXRpb24pOw0KPiA+ICAgICAgICAgICAgICAgICBlcnIgPSB3YWl0LT5lcnI7DQo+ID4g
-ICAgICAgICAgICAgICAgIGJyZWFrOw0KPiA+ICAgICAgICAgfQ0KPiA+DQo+ID4gICAgICAgICBy
-ZXR1cm4gZXJyOw0KPiA+IH0NCj4gPg0KVGhhbmtzDQpCYXJyeQ0K
+On Mon, Dec 21, 2020 at 1:30 PM Song Bao Hua (Barry Song)
+<song.bao.hua@hisilicon.com> wrote:
+>
+>
+>
+> > -----Original Message-----
+> > From: Shakeel Butt [mailto:shakeelb@google.com]
+> > Sent: Tuesday, December 22, 2020 10:03 AM
+> > To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> > Cc: Vitaly Wool <vitaly.wool@konsulko.com>; Minchan Kim <minchan@kernel.org>;
+> > Mike Galbraith <efault@gmx.de>; LKML <linux-kernel@vger.kernel.org>; linux-mm
+> > <linux-mm@kvack.org>; Sebastian Andrzej Siewior <bigeasy@linutronix.de>;
+> > NitinGupta <ngupta@vflare.org>; Sergey Senozhatsky
+> > <sergey.senozhatsky.work@gmail.com>; Andrew Morton
+> > <akpm@linux-foundation.org>
+> > Subject: Re: [PATCH] zsmalloc: do not use bit_spin_lock
+> >
+> > On Mon, Dec 21, 2020 at 12:06 PM Song Bao Hua (Barry Song)
+> > <song.bao.hua@hisilicon.com> wrote:
+> > >
+> > >
+> > >
+> > > > -----Original Message-----
+> > > > From: Shakeel Butt [mailto:shakeelb@google.com]
+> > > > Sent: Tuesday, December 22, 2020 8:50 AM
+> > > > To: Vitaly Wool <vitaly.wool@konsulko.com>
+> > > > Cc: Minchan Kim <minchan@kernel.org>; Mike Galbraith <efault@gmx.de>; LKML
+> > > > <linux-kernel@vger.kernel.org>; linux-mm <linux-mm@kvack.org>; Song Bao
+> > Hua
+> > > > (Barry Song) <song.bao.hua@hisilicon.com>; Sebastian Andrzej Siewior
+> > > > <bigeasy@linutronix.de>; NitinGupta <ngupta@vflare.org>; Sergey
+> > Senozhatsky
+> > > > <sergey.senozhatsky.work@gmail.com>; Andrew Morton
+> > > > <akpm@linux-foundation.org>
+> > > > Subject: Re: [PATCH] zsmalloc: do not use bit_spin_lock
+> > > >
+> > > > On Mon, Dec 21, 2020 at 11:20 AM Vitaly Wool <vitaly.wool@konsulko.com>
+> > wrote:
+> > > > >
+> > > > > On Mon, Dec 21, 2020 at 6:24 PM Minchan Kim <minchan@kernel.org> wrote:
+> > > > > >
+> > > > > > On Sun, Dec 20, 2020 at 02:22:28AM +0200, Vitaly Wool wrote:
+> > > > > > > zsmalloc takes bit spinlock in its _map() callback and releases it
+> > > > > > > only in unmap() which is unsafe and leads to zswap complaining
+> > > > > > > about scheduling in atomic context.
+> > > > > > >
+> > > > > > > To fix that and to improve RT properties of zsmalloc, remove that
+> > > > > > > bit spinlock completely and use a bit flag instead.
+> > > > > >
+> > > > > > I don't want to use such open code for the lock.
+> > > > > >
+> > > > > > I see from Mike's patch, recent zswap change introduced the lockdep
+> > > > > > splat bug and you want to improve zsmalloc to fix the zswap bug and
+> > > > > > introduce this patch with allowing preemption enabling.
+> > > > >
+> > > > > This understanding is upside down. The code in zswap you are referring
+> > > > > to is not buggy.  You may claim that it is suboptimal but there is
+> > > > > nothing wrong in taking a mutex.
+> > > > >
+> > > >
+> > > > Is this suboptimal for all or just the hardware accelerators? Sorry, I
+> > > > am not very familiar with the crypto API. If I select lzo or lz4 as a
+> > > > zswap compressor will the [de]compression be async or sync?
+> > >
+> > > Right now, in crypto subsystem, new drivers are required to write based on
+> > > async APIs. The old sync API can't work in new accelerator drivers as they
+> > > are not supported at all.
+> > >
+> > > Old drivers are used to sync, but they've got async wrappers to support async
+> > > APIs. Eg.
+> > > crypto: acomp - add support for lz4 via scomp
+> > >
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/
+> > crypto/lz4.c?id=8cd9330e0a615c931037d4def98b5ce0d540f08d
+> > >
+> > > crypto: acomp - add support for lzo via scomp
+> > >
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/
+> > crypto/lzo.c?id=ac9d2c4b39e022d2c61486bfc33b730cfd02898e
+> > >
+> > > so they are supporting async APIs but they are still working in sync mode
+> > as
+> > > those old drivers don't sleep.
+> > >
+> >
+> > Good to know that those are sync because I want them to be sync.
+> > Please note that zswap is a cache in front of a real swap and the load
+> > operation is latency sensitive as it comes in the page fault path and
+> > directly impacts the applications. I doubt decompressing synchronously
+> > a 4k page on a cpu will be costlier than asynchronously decompressing
+> > the same page from hardware accelerators.
+>
+> If you read the old paper:
+> https://www.ibm.com/support/pages/new-linux-zswap-compression-functionality
+> Because the hardware accelerator speeds up compression, looking at the zswap
+> metrics we observed that there were more store and load requests in a given
+> amount of time, which filled up the zswap pool faster than a software
+> compression run. Because of this behavior, we set the max_pool_percent
+> parameter to 30 for the hardware compression runs - this means that zswap
+> can use up to 30% of the 10GB of total memory.
+>
+> So using hardware accelerators, we get a chance to speed up compression
+> while decreasing cpu utilization.
+>
+
+I don't care much about the compression. It's the decompression or
+more specifically the latency of decompression I really care about.
+
+Compression happens on reclaim, so latency is not really an issue.
+Reclaim can be pressure-based or proactive. I think async batched
+compression by accelerators makes a lot of sense. Though I doubt zswap
+is the right layer for that. To me adding "async batched compression
+support by accelerators" in zram looks more natural as the kernel
+already has async block I/O support.
+
+For decompression, I would like as low latency as possible which I
+think is only possible by doing decompression on a cpu synchronously.
