@@ -2,117 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D3B32DF865
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 05:51:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A2A2DF88C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 06:13:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728282AbgLUEuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 23:50:35 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9543 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727219AbgLUEud (ORCPT
+        id S1726601AbgLUFNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 00:13:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725497AbgLUFNW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 23:50:33 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Czn7737k1zhv3g;
-        Mon, 21 Dec 2020 12:49:07 +0800 (CST)
-Received: from [10.174.185.179] (10.174.185.179) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 21 Dec 2020 12:49:40 +0800
-Subject: Re: [PATCH] genirq/msi: Initialize msi_alloc_info to zero for
- msi_prepare API
-To:     Marc Zyngier <maz@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <tglx@linutronix.de>,
-        <kvm@vger.kernel.org>, <wanghaibin.wang@huawei.com>
-References: <20201218060039.1770-1-yuzenghui@huawei.com>
- <87v9czqaj9.wl-maz@kernel.org>
-From:   Zenghui Yu <yuzenghui@huawei.com>
-Message-ID: <48a318c3-ed5e-98fa-fcb1-502df088b78c@huawei.com>
-Date:   Mon, 21 Dec 2020 12:49:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Mon, 21 Dec 2020 00:13:22 -0500
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9866C061282
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 21:12:41 -0800 (PST)
+Received: by mail-il1-x12c.google.com with SMTP id q1so7812311ilt.6
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 21:12:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=vswCukahHI84DC0lcMezNvVlWnF1S1S3+uLVpnYj1r4=;
+        b=HE7XS3E//8ycSGXzh/6H9wdve7qwxdJnIX0qC9Nq/ALqPuwX+9S+FoblZ4cSaIGpU9
+         w+xfm0NHcWJ5fYhrcK1TNQijEJwhfCsrCFRg18Vn0J3H1hteYiDr9HKw4DrFSpsZmNp3
+         Zqfm+XrdIUynL5Sqq4wZZ7sb+URJAmTM15lnZgpIKVdwLm7eMvGdOxjHxcFwZ8YydWBc
+         yOeMc+8u+HyB70bg/nSRAQtp9elax1o7QVDMhnJz/IqX8AFNrojW6uEWtbCYHvP/jLsS
+         S0ShJikwivPRoSml0mrF9lCpWbXWCFamtvwHXB8j+ISPGlf3ztqWRfgtFs6zJC7nLsPx
+         0UyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=vswCukahHI84DC0lcMezNvVlWnF1S1S3+uLVpnYj1r4=;
+        b=dLI73AfRfzy+t8JlAHDCnOgMWpcSKQjdXs7IYc20RqoPN2c+KpOYG4kvpHB/+fnefK
+         4cdcgpRxMs4bRszuWQykN0AGTpbYp1UgZx47CJsygJYlQxPL/cg8t7NmYQG1j6ksbsXb
+         Q1mNu88ZXBjO7Q5pwFe1G+qvYhU56SgLtKNEmuhmN2LwKiMQSZ48ueZN3kXzyO+vfYBY
+         vFLq/zQslAerWKgmyklisnD+IIRMHhYj4pYwy8LF8l7S/Eyj8XHt2X5RK1FZe9rCwWke
+         dxyeKaLLVKI4TWBbrKkF7TO3DFe//BsxxzmvqIg0zIjiG0nxK6Pl2NEDcqCilCGD4qAA
+         Giaw==
+X-Gm-Message-State: AOAM531K+7/uroty22MIWRdpUkG1hc0v8+JY9wj2Tx7Kl8wrCL79kWVx
+        dPc5u9Tyi4x6D9d46C8dNfH5fg==
+X-Google-Smtp-Source: ABdhPJy/28dluEI2zZ26w5IG4pu144SzvEEQhZSVKHNJeLBhF12fU9+UXV21cI4kTSy4bJMamlVOsQ==
+X-Received: by 2002:a05:6e02:f93:: with SMTP id v19mr14874422ilo.154.1608527560929;
+        Sun, 20 Dec 2020 21:12:40 -0800 (PST)
+Received: from google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
+        by smtp.gmail.com with ESMTPSA id a9sm21528543ion.53.2020.12.20.21.12.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Dec 2020 21:12:40 -0800 (PST)
+Date:   Sun, 20 Dec 2020 22:12:36 -0700
+From:   Yu Zhao <yuzhao@google.com>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        linux-mm <linux-mm@kvack.org>, Peter Xu <peterx@redhat.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable@vger.kernel.org, minchan@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+Message-ID: <X+AuxIkwmyo/9TD/@google.com>
+References: <20201219043006.2206347-1-namit@vmware.com>
+ <X95RRZ3hkebEmmaj@redhat.com>
+ <EDC00345-B46E-4396-8379-98E943723809@gmail.com>
+ <DD367393-D1B3-4A84-AF92-9C6BAEAB40DC@gmail.com>
+ <X961C3heiGSJ5qVL@redhat.com>
+ <729A8C1E-FC5B-4F46-AE01-85E00C66DFFF@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <87v9czqaj9.wl-maz@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.185.179]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <729A8C1E-FC5B-4F46-AE01-85E00C66DFFF@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
-
-On 2020/12/19 1:38, Marc Zyngier wrote:
-> Hi Zenghui,
+On Sun, Dec 20, 2020 at 08:36:15PM -0800, Nadav Amit wrote:
+> > On Dec 19, 2020, at 6:20 PM, Andrea Arcangeli <aarcange@redhat.com> wrote:
+> > 
+> > On Sat, Dec 19, 2020 at 02:06:02PM -0800, Nadav Amit wrote:
+> >>> On Dec 19, 2020, at 1:34 PM, Nadav Amit <nadav.amit@gmail.com> wrote:
+> >>> 
+> >>> [ cc’ing some more people who have experience with similar problems ]
+> >>> 
+> >>>> On Dec 19, 2020, at 11:15 AM, Andrea Arcangeli <aarcange@redhat.com> wrote:
+> >>>> 
+> >>>> Hello,
+> >>>> 
+> >>>> On Fri, Dec 18, 2020 at 08:30:06PM -0800, Nadav Amit wrote:
+> >>>>> Analyzing this problem indicates that there is a real bug since
+> >>>>> mmap_lock is only taken for read in mwriteprotect_range(). This might
+> >>>> 
+> >>>> Never having to take the mmap_sem for writing, and in turn never
+> >>>> blocking, in order to modify the pagetables is quite an important
+> >>>> feature in uffd that justifies uffd instead of mprotect. It's not the
+> >>>> most important reason to use uffd, but it'd be nice if that guarantee
+> >>>> would remain also for the UFFDIO_WRITEPROTECT API, not only for the
+> >>>> other pgtable manipulations.
+> >>>> 
+> >>>>> Consider the following scenario with 3 CPUs (cpu2 is not shown):
+> >>>>> 
+> >>>>> cpu0				cpu1
+> >>>>> ----				----
+> >>>>> userfaultfd_writeprotect()
+> >>>>> [ write-protecting ]
+> >>>>> mwriteprotect_range()
+> >>>>> mmap_read_lock()
+> >>>>> change_protection()
+> >>>>> change_protection_range()
+> >>>>> ...
+> >>>>> change_pte_range()
+> >>>>> [ defer TLB flushes]
+> >>>>> 				userfaultfd_writeprotect()
+> >>>>> 				 mmap_read_lock()
+> >>>>> 				 change_protection()
+> >>>>> 				 [ write-unprotect ]
+> >>>>> 				 ...
+> >>>>> 				  [ unprotect PTE logically ]
+> > 
+> > Is the uffd selftest failing with upstream or after your kernel
+> > modification that removes the tlb flush from unprotect?
 > 
-> On Fri, 18 Dec 2020 06:00:39 +0000,
-> Zenghui Yu <yuzenghui@huawei.com> wrote:
->>
->> Since commit 5fe71d271df8 ("irqchip/gic-v3-its: Tag ITS device as shared if
->> allocating for a proxy device"), some of the devices are wrongly marked as
->> "shared" by the ITS driver on systems equipped with the ITS(es). The
->> problem is that the @info->flags may not be initialized anywhere and we end
->> up looking at random bits on the stack. That's obviously not good.
->>
->> The straightforward fix is to properly initialize msi_alloc_info inside the
->> .prepare callback of affected MSI domains (its-pci-msi, its-platform-msi,
->> etc). We can also perform the initialization in IRQ core layer for
->> msi_domain_prepare_irqs() API and it looks much neater to me.
->>
->> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
->> ---
->>
->> This was noticed when I was playing with the assigned devices on arm64 and
->> VFIO failed to enable MSI-X vectors for almost all VFs (CCed kvm list in
->> case others will hit the same issue). It turned out that these VFs are
->> marked as "shared" by mistake and have trouble with the following sequence:
->>
->> 	pci_alloc_irq_vectors(pdev, 1, 1, flag);
->> 	pci_free_irq_vectors(pdev);
->> 	pci_alloc_irq_vectors(pdev, 1, 2, flag); --> we can only get
->> 						     *one* vector
->>
->> But besides VFIO, I guess there are already some devices get into trouble
->> at probe time and can't work properly.
->>
->>   kernel/irq/msi.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/kernel/irq/msi.c b/kernel/irq/msi.c
->> index 2c0c4d6d0f83..dc0e2d7fbdfd 100644
->> --- a/kernel/irq/msi.c
->> +++ b/kernel/irq/msi.c
->> @@ -402,7 +402,7 @@ int __msi_domain_alloc_irqs(struct irq_domain *domain, struct device *dev,
->>   	struct msi_domain_ops *ops = info->ops;
->>   	struct irq_data *irq_data;
->>   	struct msi_desc *desc;
->> -	msi_alloc_info_t arg;
->> +	msi_alloc_info_t arg = { };
->>   	int i, ret, virq;
->>   	bool can_reserve;
+> Please see my reply to Yu. I was wrong in this analysis, and I sent a
+> correction to my analysis. The problem actually happens when
+> userfaultfd_writeprotect() unprotects the memory.
 > 
-> Thanks for having investigated this. I guess my only worry with this
-> is that msi_alloc_info_t is a pretty large structure on x86, and
-> zeroing it isn't totally free.
+> > 			} else if (uffd_wp_resolve) {
+> > 				/*
+> > 				 * Leave the write bit to be handled
+> > 				 * by PF interrupt handler, then
+> > 				 * things like COW could be properly
+> > 				 * handled.
+> > 				 */
+> > 				ptent = pte_clear_uffd_wp(ptent);
+> > 			}
+> > 
+> > Upstraem this will still do pages++, there's a tlb flush before
+> > change_protection can return here, so I'm confused.
+> > 
+> 
+> You are correct. The problem I encountered with userfaultfd_writeprotect()
+> is during unprotecting path.
+> 
+> Having said that, I think that there are additional scenarios that are
+> problematic. Consider for instance madvise_dontneed_free() that is racing
+> with userfaultfd_writeprotect(). If madvise_dontneed_free() completed
+> removing the PTEs, but still did not flush, change_pte_range() will see
+> non-present PTEs, say a flush is not needed, and then
+> change_protection_range() will not do a flush, and return while
+> the memory is still not protected.
+> 
+> > I don't share your concern. What matters is the PT lock, so it
+> > wouldn't be one per pte, but a least an order 9 higher, but let's
+> > assume one flush per pte.
+> > 
+> > It's either huge mapping and then it's likely running without other
+> > tlb flushing in background (postcopy snapshotting), or it's a granular
+> > protect with distributed shared memory in which case the number of
+> > changd ptes or huge_pmds tends to be always 1 anyway. So it doesn't
+> > matter if it's deferred.
+> > 
+> > I agree it may require a larger tlb flush review not just mprotect
+> > though, but it didn't sound particularly complex. Note the
+> > UFFDIO_WRITEPROTECT is still relatively recent so backports won't
+> > risk to reject so heavy as to require a band-aid.
+> > 
+> > My second thought is, I don't see exactly the bug and it's not clear
+> > if it's upstream reproducing this, but assuming this happens on
+> > upstream, even ignoring everything else happening in the tlb flush
+> > code, this sounds like purely introduced by userfaultfd_writeprotect()
+> > vs userfaultfd_writeprotect() (since it's the only place changing
+> > protection with mmap_sem for reading and note we already unmap and
+> > flush tlb with mmap_sem for reading in MADV_DONTNEED/MADV_FREE clears
+> > the dirty bit etc..). Flushing tlbs with mmap_sem for reading is
+> > nothing new, the only new thing is the flush after wrprotect.
+> > 
+> > So instead of altering any tlb flush code, would it be possible to
+> > just stick to mmap_lock for reading and then serialize
+> > userfaultfd_writeprotect() against itself with an additional
+> > mm->mmap_wprotect_lock mutex? That'd be a very local change to
+> > userfaultfd too.
+> > 
+> > Can you look if the rule mmap_sem for reading plus a new
+> > mm->mmap_wprotect_lock mutex or the mmap_sem for writing, whenever
+> > wrprotecting ptes, is enough to comply with the current tlb flushing
+> > code, so not to require any change non local to uffd (modulo the
+> > additional mutex).
+> 
+> So I did not fully understand your solution, but I took your point and
+> looked again on similar cases. To be fair, despite my experience with these
+> deferred TLB flushes as well as Peter Zijlstra’s great documentation, I keep
+> getting confused (e.g., can’t we somehow combine tlb_flush_batched and
+> tlb_flush_pending ?)
+> 
+> As I said before, my initial scenario was wrong, and the problem is not
+> userfaultfd_writeprotect() racing against itself. This one seems actually
+> benign to me.
+> 
+> Nevertheless, I do think there is a problem in change_protection_range().
+> Specifically, see the aforementioned scenario of a race between
+> madvise_dontneed_free() and userfaultfd_writeprotect().
+> 
+> So an immediate solution for such a case can be resolve without holding
+> mmap_lock for write, by just adding a test for mm_tlb_flush_nested() in
+> change_protection_range():
+> 
+>         /*
+> 	 * Only flush the TLB if we actually modified any entries
+> 	 * or if there are pending TLB flushes.
+> 	 */
+>         if (pages || mm_tlb_flush_nested(mm))
+>                 flush_tlb_range(vma, start, end);
+>  
+> To be fair, I am not confident I did not miss other problematic cases.
+> 
+> But for now, this change, with the preserve_write change should address the
+> immediate issues. Let me know if you agree.
+> 
+> Let me know whether you agree.
 
-It seems that x86 will zero the whole msi_alloc_info_t structure at the
-beginning of its .prepare (pci_msi_prepare()/init_irq_alloc_info()). If
-this really affects something, I think we can easily address it with
-some cleanup (on top of this patch).
+The problem starts in UFD, and is related to tlb flush. But its focal
+point is in do_wp_page(). I'd suggest you look at function and see
+what it does before and after the commits I listed, with the following
+conditions
 
-> But this definitely looks nicer than
-> some of the alternatives (.prepare isn't a good option, as we do rely
-> on the flag being set in __platform_msi_create_device_domain(), which
-> calls itself .prepare).
+PageAnon(), !PageKsm(), !PageSwapCache(), !pte_write(),
+page_mapcount() = 1, page_count() > 1 or PageLocked()
 
-Indeed, thanks for fixing the commit message.
-
-> I'll queue it, and we can always revisit this later if Thomas (or
-> anyone else) has a better idea.
-
-Thanks!
-
-
-Zenghui
+when it runs against the two UFD examples you listed.
