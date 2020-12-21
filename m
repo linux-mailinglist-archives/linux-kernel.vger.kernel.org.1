@@ -2,249 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22DAB2DFB39
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 11:54:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 017C02DFB41
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 11:54:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726491AbgLUKwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 05:52:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36906 "EHLO
+        id S1726785AbgLUKxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 05:53:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725807AbgLUKwd (ORCPT
+        with ESMTP id S1726112AbgLUKxf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 05:52:33 -0500
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8D5AC061282
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 02:51:52 -0800 (PST)
-Received: by mail-oi1-x22f.google.com with SMTP id 15so10850222oix.8
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 02:51:52 -0800 (PST)
+        Mon, 21 Dec 2020 05:53:35 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7142FC0613D6;
+        Mon, 21 Dec 2020 02:52:55 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id t16so10599064wra.3;
+        Mon, 21 Dec 2020 02:52:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=MNobEilaD0h1UawZqnqzshuQEXfNf6QvqrdcgX0cMjQ=;
-        b=dHSFfanVm4ow6eIvl0iRyabcaty+3B3PDQwZTQUnM710BAkk2LIfArzbjS4qQsXpJU
-         f4VwdCAoJ+ZQudclnRlZ2q6Mb7Bt0Qav6TQYFGXraJb/8NgpogVjZ3qgEyM8HJ3CT311
-         4FbMKcKCBUEYaqs/pz9ublufxybe4jInJtch90bvPlRbJaLRIXQ/nFnVFbPSR6WtMfLn
-         urUrgPuQQ4kbc+Jxs0gPmrOha5EeIWzIaZ2bq/FRSKLW6ka/1hDPlHOuz7E3KiJNtqvg
-         o8tQuptHdbwwkgu/Jk/GPIDQjBcpKocTerfFOeTbJfBAwaWrGhy9veJPPRs/iq1UtTqP
-         LO8Q==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=UwwnMwR2kfUcWRxk8iTnFBRRH6uRfKSxOocUF3HIakM=;
+        b=c0fXFtpGPZpKDXElftRtOWRuvSUR20VZQT52u9Z0QEqNgGXxMojaqvycQPlQiGjerM
+         zVehpwzGRrMfJ5ofvCFCZIViVQ9EAaVgGxEad+7Bd7s8rJmDFitKPc4JT7zZ42A6wUVX
+         DP4cqoc3PQ7s0x6DpZGC0JHKEKl+45etvo1zKaVYFshoO/iA/fWyDnIj6U/I5fvIv0TZ
+         Q2M3UE+L83bx9Z0N6j8PKsgTWBFgEdAsWu6iD/6YRhHlfa9vnKuwXqide9HZxWAQkHG7
+         IDAstFAqUp6Tdt/CkNQcVqKrkr2bf3PPctbu5VeAp/epyj0khTZgyYaGaszc/D/Y1aKF
+         ufsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=MNobEilaD0h1UawZqnqzshuQEXfNf6QvqrdcgX0cMjQ=;
-        b=dkuwOV4MDpB/1XjajtK2I7EJPxUKXSPpf22RVkiIXA+KpO8TrTYgqUX3cvyWPfBX/t
-         SdIrPCQV0kyt6i55cPUvNJXcKw6ulS7cz7V4zNqYPoKnq+L/BlFSi0PVSOdgRw3e1F1J
-         pOncvbo1UkwzJTx/qjmBr7dR0ncJ3EsMKQ9XcW+3AweoIGcrQR333bF3QJJqIfwm7vwN
-         5LYTDJq8T+8Y0EmjPIFx3pGaO/S1QAduww8zGNVbX3kHCru3Gb9Gvi3pufYz6Y6tFil3
-         kY2gSk6rNhfuy7MvMRQaJdWX3xpqqnb7vIrCerAYoEOP6C5ZeYDU5KDnyUMM6R1xsW4l
-         c9ZQ==
-X-Gm-Message-State: AOAM533YDLPMN2eI8SvvIkpZ7HwubgTyh0NUeOu6K473fdpK9kNryqfw
-        D7WGoPf0UM0e/dS4ZGoczb73mhnC9h1yPJcGpRk=
-X-Google-Smtp-Source: ABdhPJy0JJYoLHrIqteOw9R2MMMleBY69h0cj+ODrRDaNLimV5Z/aRdAnAEcut/KdKcewAUG5qGx9ayD+KDHMNVNqt8=
-X-Received: by 2002:aca:c492:: with SMTP id u140mr10446437oif.51.1608547912229;
- Mon, 21 Dec 2020 02:51:52 -0800 (PST)
-MIME-Version: 1.0
-References: <1597912530-5374-1-git-send-email-gene.chen.richtek@gmail.com> <CAE+NS37_YY1aVYv-MBsxoBXCkvj7+fBK+vZke9yG7eY1aMHLKQ@mail.gmail.com>
-In-Reply-To: <CAE+NS37_YY1aVYv-MBsxoBXCkvj7+fBK+vZke9yG7eY1aMHLKQ@mail.gmail.com>
-From:   Gene Chen <gene.chen.richtek@gmail.com>
-Date:   Mon, 21 Dec 2020 18:51:40 +0800
-Message-ID: <CAE+NS36_HCJvk4_f_8G=5Lke87jCgHO-i0HJ-Q27vhDkacFGEw@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: mfd: mediatek: Add bindings for MT6360 PMIC
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=UwwnMwR2kfUcWRxk8iTnFBRRH6uRfKSxOocUF3HIakM=;
+        b=QZs1nsdny8lBWh+C0wtwBc4TuWVUred1dbIlWoMpyCMH5up/3ikb5Xeurl2a/0B274
+         tFPORM/OZNB/g6KXMneDPakdk+d5U6Q4h5f54XxHmuNMmIQfy8j3i81MfNv5tJcYVojx
+         LLdJwVPP1m8x+jPDwQyowp6AD/aN0qZcnik5BQFpMn8ijTdXHBQdoLTYTWcOughcDO04
+         DHm5DALm+4PcT+Ur7rZfkEQroBNCDVkYoXtq4k+/rqdYv6G3x4Otw9zUtUSj9G0KXozm
+         HsSwDJpnl0RBOuLd0eQD8QROgJ3tIELd4PsyivlCrmCt2zcfcgdAPuZr9Q25DH1zlZGv
+         GK/g==
+X-Gm-Message-State: AOAM533d6xwUyM2nGjCb6ClN3AdRkwOM5+Wb9hAed+51/IeM7figfWl0
+        G6AchxYiY1nv68VntLMKfxs=
+X-Google-Smtp-Source: ABdhPJyDRD1hyEkZAhGiG6vgtYKzIOhhOFbhtoE0B0prFL8jZXxIwDDe6LhiOl1y+4R6z6DTsrtz8A==
+X-Received: by 2002:a5d:4c49:: with SMTP id n9mr18203106wrt.30.1608547974186;
+        Mon, 21 Dec 2020 02:52:54 -0800 (PST)
+Received: from [192.168.1.211] ([2.31.224.116])
+        by smtp.gmail.com with ESMTPSA id l5sm26600567wrv.44.2020.12.21.02.52.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Dec 2020 02:52:53 -0800 (PST)
+Subject: Re: [PATCH v2 12/12] ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        devel@acpica.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tian Shu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        kieran.bingham+renesas@ideasonboard.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>, jorhand@linux.microsoft.com
+References: <20201217234337.1983732-1-djrscally@gmail.com>
+ <20201217234337.1983732-13-djrscally@gmail.com>
+ <20201218211732.GE4077@smile.fi.intel.com>
+ <e2b4c35f-5020-c332-d97a-8ba25be0e55e@gmail.com>
+ <CAHp75VcebKas4j-vByodicHxRMrO4jkaJToSUW3iLJC2+vY_iA@mail.gmail.com>
+ <e86fc26d-8c2f-c8a6-fc2e-ec612fd5d158@gmail.com>
+ <20201221102147.GJ26370@paasikivi.fi.intel.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <5ba6ada9-c8a6-fa66-b8d6-5769b7bcdfea@gmail.com>
+Date:   Mon, 21 Dec 2020 10:52:52 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201221102147.GJ26370@paasikivi.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Reviewers,
 
-    Should I wait for all sub-devices dt-binding review done, then
-send the integral binding document?
+On 21/12/2020 10:21, Sakari Ailus wrote:
+> Hi Daniel, Andy,
+>
+> On Sat, Dec 19, 2020 at 11:48:51PM +0000, Daniel Scally wrote:
+>> On 19/12/2020 18:52, Andy Shevchenko wrote:
+>>> On Sat, Dec 19, 2020 at 2:25 AM Daniel Scally <djrscally@gmail.com> wrote:
+>>>> On 18/12/2020 21:17, Andy Shevchenko wrote:
+>>>>> On Thu, Dec 17, 2020 at 11:43:37PM +0000, Daniel Scally wrote:
+>>> ...
+>>>
+>>>>>> +    sensor->ep_properties[0] = PROPERTY_ENTRY_U32(sensor->prop_names.bus_type, 4);
+>>>>> Does 4 has any meaning that can be described by #define ?
+>>>> It's V4L2_FWNODE_BUS_TYPE_CSI2_DPHY:
+>>>>
+>>>> https://elixir.bootlin.com/linux/latest/source/drivers/media/v4l2-core/v4l2-fwnode.c#L36
+>>>>
+>>>> That enum's not in an accessible header, but I can define it in this
+>>>> module's header
+>>> Maybe you can do a preparatory patch to make it visible to v4l2
+>>> drivers? (Like moving to one of v4l2 headers)
+>> Sure ok, guess media/v4l2-fwnode.h makes the most sense.
+> Yes, please.
+Done for the next version
+>
+>>> ...
+>>>
+>>>>>> +                    if (bridge->n_sensors >= CIO2_NUM_PORTS) {
+>>>>>> +                            dev_warn(&cio2->dev, "Exceeded available CIO2 ports\n");
+>>>>>> +                            /* overflow i so outer loop ceases */
+>>>>>> +                            i = ARRAY_SIZE(cio2_supported_sensors);
+>>>>>> +                            break;
+>>>>> Why not to create a new label below and assign ret here with probably comment
+>>>>> why it's not an error?
+>>>> Sure, I can do that, but since it wouldn't need any cleanup I could also
+>>>> just return 0 here as Laurent suggest (but with a comment explaining why
+>>>> that's ok as you say) - do you have a preference?
+>>> While it's a good suggestion it will bring a bit of inconsistency into
+>>> approach. Everywhere else in the function you are using the goto
+>>> approach.
+>>> So yes, I have a preference.
+>> No problem
+> Laurent also commented on the return code.
+>
+> I might just handle this as an error. The earlier ports are fine, but
+> there's also a problem with the data here. It'd be easier to spot that this
+> way, and we can change this in the future if need be.
 
-Gene Chen <gene.chen.richtek@gmail.com> =E6=96=BC 2020=E5=B9=B411=E6=9C=881=
-3=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=881:54=E5=AF=AB=E9=81=93=EF=
-=BC=9A
->
-> Dear Reviewers,
->
->    Please let me know if there is anything need to be revised.
->
-> Gene Chen <gene.chen.richtek@gmail.com> =E6=96=BC 2020=E5=B9=B48=E6=9C=88=
-20=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=884:36=E5=AF=AB=E9=81=93=EF=
-=BC=9A
-> >
-> > From: Gene Chen <gene_chen@richtek.com>
-> >
-> > Add bindings for MT6360 PMIC
-> >
-> > Signed-off-by: Gene Chen <gene_chen@richtek.com>
-> > ---
-> >  Documentation/devicetree/bindings/mfd/mt6360.yaml | 142 ++++++++++++++=
-++++++++
-> >  1 file changed, 142 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/mfd/mt6360.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/mfd/mt6360.yaml b/Docume=
-ntation/devicetree/bindings/mfd/mt6360.yaml
-> > new file mode 100644
-> > index 0000000..5ad1afd
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/mfd/mt6360.yaml
-> > @@ -0,0 +1,142 @@
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/mfd/mt6360.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: MT6360 PMIC from MediaTek Integrated
-> > +
-> > +maintainers:
-> > +  - Gene Chen <gene_chen@richtek.com>
-> > +
-> > +description: |
-> > +  MT6360 is a PMIC device with the following sub modules.
-> > +  It is interfaced to host controller using I2C interface.
-> > +
-> > +  This document describes the binding for PMIC device and its sub modu=
-le.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: mediatek,mt6360
-> > +
-> > +  reg:
-> > +    description:
-> > +      I2C device address.
-> > +    maxItems: 1
-> > +
-> > +  wakeup-source: true
-> > +
-> > +  interrupts:
-> > +    maxItems: 1
-> > +
-> > +  interrupt-names:
-> > +      enum:
-> > +        - IRQB
-> > +
-> > +  interrupt-controller: true
-> > +
-> > +  "#interrupt-cells":
-> > +    const: 1
-> > +    description:
-> > +      The first cell is the IRQ number.
-> > +
-> > +  regulator:
-> > +    $ref: ../regulator/mt6360-regulator.yaml
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - interrupts
-> > +  - interrupt-controller
-> > +  - "#interrupt-cells"
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/interrupt-controller/irq.h>
-> > +    #include <dt-bindings/regulator/mediatek,mt6360-regulator.h>
-> > +    i2c {
-> > +        #address-cells =3D <1>;
-> > +        #size-cells =3D <0>;
-> > +
-> > +        mt6360@34 {
-> > +            compatible =3D "mediatek,mt6360";
-> > +            reg =3D <0x34>;
-> > +            wakeup-source;
-> > +            interrupts-extended =3D <&gpio26 0 IRQ_TYPE_LEVEL_LOW>;
-> > +            interrupt-names =3D "IRQB";
-> > +            interrupt-controller;
-> > +            #interrupt-cells =3D <1>;
-> > +            regulator {
-> > +                compatible =3D "mediatek,mt6360-regulator";
-> > +                LDO_VIN3-supply =3D <&BUCK2>;
-> > +                buck1 {
-> > +                    regulator-compatible =3D "BUCK1";
-> > +                    regulator-name =3D "mt6360,buck1";
-> > +                    regulator-min-microvolt =3D <300000>;
-> > +                    regulator-max-microvolt =3D <1300000>;
-> > +                    regulator-allowed-modes =3D <MT6360_OPMODE_NORMAL
-> > +                                               MT6360_OPMODE_LP
-> > +                                               MT6360_OPMODE_ULP>;
-> > +                };
-> > +                BUCK2: buck2 {
-> > +                regulator-compatible =3D "BUCK2";
-> > +                    regulator-name =3D "mt6360,buck2";
-> > +                    regulator-min-microvolt =3D <300000>;
-> > +                    regulator-max-microvolt =3D <1300000>;
-> > +                    regulator-allowed-modes =3D <MT6360_OPMODE_NORMAL
-> > +                                               MT6360_OPMODE_LP
-> > +                                               MT6360_OPMODE_ULP>;
-> > +                };
-> > +                ldo6 {
-> > +                    regulator-compatible =3D "LDO6";
-> > +                    regulator-name =3D "mt6360,ldo6";
-> > +                    regulator-min-microvolt =3D <500000>;
-> > +                    regulator-max-microvolt =3D <2100000>;
-> > +                    regulator-allowed-modes =3D <MT6360_OPMODE_NORMAL
-> > +                                               MT6360_OPMODE_LP>;
-> > +                };
-> > +                ldo7 {
-> > +                    regulator-compatible =3D "LDO7";
-> > +                    regulator-name =3D "mt6360,ldo7";
-> > +                    regulator-min-microvolt =3D <500000>;
-> > +                    regulator-max-microvolt =3D <2100000>;
-> > +                    regulator-allowed-modes =3D <MT6360_OPMODE_NORMAL
-> > +                                               MT6360_OPMODE_LP>;
-> > +                };
-> > +                ldo1 {
-> > +                    regulator-compatible =3D "LDO1";
-> > +                    regulator-name =3D "mt6360,ldo1";
-> > +                    regulator-min-microvolt =3D <1200000>;
-> > +                    regulator-max-microvolt =3D <3600000>;
-> > +                    regulator-allowed-modes =3D <MT6360_OPMODE_NORMAL
-> > +                                               MT6360_OPMODE_LP>;
-> > +                };
-> > +                ldo2 {
-> > +                    regulator-compatible =3D "LDO2";
-> > +                    regulator-name =3D "mt6360,ldo2";
-> > +                    regulator-min-microvolt =3D <1200000>;
-> > +                    regulator-max-microvolt =3D <3600000>;
-> > +                    regulator-allowed-modes =3D <MT6360_OPMODE_NORMAL
-> > +                                               MT6360_OPMODE_LP>;
-> > +                };
-> > +                ldo3 {
-> > +                    regulator-compatible =3D "LDO3";
-> > +                    regulator-name =3D "mt6360,ldo3";
-> > +                    regulator-min-microvolt =3D <1200000>;
-> > +                    regulator-max-microvolt =3D <3600000>;
-> > +                    regulator-allowed-modes =3D <MT6360_OPMODE_NORMAL
-> > +                                               MT6360_OPMODE_LP>;
-> > +                };
-> > +                ldo5 {
-> > +                    regulator-compatible =3D "LDO5";
-> > +                    regulator-name =3D "mt6360,ldo5";
-> > +                    regulator-min-microvolt =3D <2700000>;
-> > +                    regulator-max-microvolt =3D <3600000>;
-> > +                    regulator-allowed-modes =3D <MT6360_OPMODE_NORMAL
-> > +                                               MT6360_OPMODE_LP>;
-> > +                };
-> > +            };
-> > +        };
-> > +    };
-> > --
-> > 2.7.4
-> >
+
+You mean just raise an error with dev_err()? Or fail the probe and
+unwind the 4 sensors that were already connected successfully? I'm fine
+with that if so - we have no in scope devices where that will be a
+problem at the moment.
+
