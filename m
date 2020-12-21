@@ -2,254 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CD9E2DF7C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 03:55:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2402DF7E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 03:58:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728412AbgLUCzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 21:55:24 -0500
-Received: from relmlor2.renesas.com ([210.160.252.172]:9923 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728376AbgLUCzV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 21:55:21 -0500
-X-IronPort-AV: E=Sophos;i="5.78,436,1599490800"; 
-   d="scan'208";a="66411311"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie6.idc.renesas.com with ESMTP; 21 Dec 2020 11:54:45 +0900
-Received: from localhost.localdomain (unknown [10.166.252.89])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 1729741BA036;
-        Mon, 21 Dec 2020 11:54:45 +0900 (JST)
-From:   Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-To:     marek.vasut+renesas@gmail.com, lee.jones@linaro.org,
-        matti.vaittinen@fi.rohmeurope.com, lgirdwood@gmail.com,
-        broonie@kernel.org, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com
-Cc:     khiem.nguyen.xt@renesas.com, linux-power@fi.rohmeurope.com,
-        linux-gpio@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Subject: [PATCH v4 12/12] mfd: bd9571mwv: Add support for BD9574MWF
-Date:   Mon, 21 Dec 2020 11:54:39 +0900
-Message-Id: <1608519279-13341-13-git-send-email-yoshihiro.shimoda.uh@renesas.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1608519279-13341-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
-References: <1608519279-13341-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+        id S1728520AbgLUC4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 21:56:18 -0500
+Received: from ozlabs.org ([203.11.71.1]:48337 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728509AbgLUC4R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Dec 2020 21:56:17 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Czkbz74JRz9sVm;
+        Mon, 21 Dec 2020 13:55:27 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1608519329;
+        bh=f4F491BaNqc7Qn32ON9IjfLdZLIb3j3TCOzNOfuntzo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=sJI6B+KhK58CUPZBBm444cUWSbM6Mjuuf78WKNQs1MsfEE6zfrKNG6HWOUUmsy+1i
+         13fYJj47TG26IMIPicKsxjM8buABVDWrBiTyWNufcNiK09Nau6E958smtHBsr2tCEq
+         TVelB1yaWwlOGn1KdfDzwW2ukDdHe3dhLsj9jZV8txuR9VPhfcR5Td7ThXukXvfD/+
+         V12pu7fSEju9Oqk2S1gplocdlQ+K/0SxmzIQHD1ZUzdBz7TBJ4zPOEumYdz7d9bo7c
+         uW9lFciCObDRN97CbRnaHkgGpJMqI5r3zDAw4X7JIoJSw4Efy2mV4lDpOZVMtO7Ln1
+         FkdFcMH3Fmt5Q==
+Date:   Mon, 21 Dec 2020 13:55:27 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the akpm-current tree
+Message-ID: <20201221135527.4cbdb11a@canb.auug.org.au>
+In-Reply-To: <1608517898.9171.6.camel@mtksdccf07>
+References: <20201221131017.128c89b1@canb.auug.org.au>
+        <1608517898.9171.6.camel@mtksdccf07>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/nHyfFR7u4_cuD3Z=5bTr1+k";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Khiem Nguyen <khiem.nguyen.xt@renesas.com>
+--Sig_/nHyfFR7u4_cuD3Z=5bTr1+k
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The new PMIC BD9574MWF inherits features from BD9571MWV.
-Add the support of new PMIC to existing bd9571mwv driver.
+Hi Kuan-Ying,
 
-Signed-off-by: Khiem Nguyen <khiem.nguyen.xt@renesas.com>
-Co-developed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
----
- drivers/mfd/bd9571mwv.c       | 83 +++++++++++++++++++++++++++++++++++++++++--
- include/linux/mfd/bd9571mwv.h | 17 +++++++--
- 2 files changed, 95 insertions(+), 5 deletions(-)
+On Mon, 21 Dec 2020 10:31:38 +0800 Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.co=
+m> wrote:
+>
+> On Mon, 2020-12-21 at 13:10 +1100, Stephen Rothwell wrote:
+> >=20
+> > After merging the akpm-current tree, today's linux-next build (x86_64
+> > allmodconfig) failed like this:
+> >=20
+> > mm/kasan/quarantine.c: In function 'quarantine_put':
+> > mm/kasan/quarantine.c:207:15: error: 'info' undeclared (first use in th=
+is function)
+> >   207 |   qlink_free(&info->quarantine_link, cache);
+> >       |               ^~~~
+> >=20
+> > Caused by commit
+> >=20
+> >   120d593a8650 ("kasan: fix memory leak of kasan quarantine")
+> >=20
+> > interacting with commit
+> >=20
+> >   cfbc92088e1d ("kasan: rename get_alloc/free_info")
+> >=20
+> > Can we please get this sorted out once and for all?
+> >=20
+> > I have applied the following patch for today:
+> >=20
+> > From: Stephen Rothwell <sfr@canb.auug.org.au>
+> > Date: Mon, 21 Dec 2020 13:07:42 +1100
+> > Subject: [PATCH] kasan: fix memory leak of kasan quarantine fix
+> >=20
+> > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> > ---
+> >  mm/kasan/quarantine.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >=20
+> > diff --git a/mm/kasan/quarantine.c b/mm/kasan/quarantine.c
+> > index 3f3b3d902c18..091a57f942b3 100644
+> > --- a/mm/kasan/quarantine.c
+> > +++ b/mm/kasan/quarantine.c
+> > @@ -204,7 +204,7 @@ bool quarantine_put(struct kmem_cache *cache, void =
+*object)
+> > =20
+> >  	q =3D this_cpu_ptr(&cpu_quarantine);
+> >  	if (q->offline) {
+> > -		qlink_free(&info->quarantine_link, cache);
+> > +		qlink_free(&meta->quarantine_link, cache); // free once
+> >  		local_irq_restore(flags);
+> >  		return false;  // free twice
+> >  	}
+> > --=20
+> > 2.29.2
+> >  =20
+>=20
+> Please just drop this patch "kasan: fix memory leak of kasan quarantine"
+> from linux-next. Otherwise, it would cause double free issue.
 
-diff --git a/drivers/mfd/bd9571mwv.c b/drivers/mfd/bd9571mwv.c
-index c905ab4..ab753a9 100644
---- a/drivers/mfd/bd9571mwv.c
-+++ b/drivers/mfd/bd9571mwv.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-- * ROHM BD9571MWV-M MFD driver
-+ * ROHM BD9571MWV-M and BD9574MVF-M core driver
-  *
-  * Copyright (C) 2017 Marek Vasut <marek.vasut+renesas@gmail.com>
-  * Copyright (C) 2020 Renesas Electronics Corporation
-@@ -11,6 +11,7 @@
- #include <linux/i2c.h>
- #include <linux/interrupt.h>
- #include <linux/mfd/core.h>
-+#include <linux/mfd/rohm-generic.h>
- #include <linux/module.h>
- 
- #include <linux/mfd/bd9571mwv.h>
-@@ -118,6 +119,79 @@ static const struct bd957x_ddata bd9571mwv_ddata = {
- 	.num_cells = ARRAY_SIZE(bd9571mwv_cells),
- };
- 
-+static const struct mfd_cell bd9574mwf_cells[] = {
-+	{ .name = "bd9574mwf-regulator", },
-+	{ .name = "bd9574mwf-gpio", },
-+};
-+
-+static const struct regmap_range bd9574mwf_readable_yes_ranges[] = {
-+	regmap_reg_range(BD9571MWV_VENDOR_CODE, BD9571MWV_PRODUCT_REVISION),
-+	regmap_reg_range(BD9571MWV_BKUP_MODE_CNT, BD9571MWV_BKUP_MODE_CNT),
-+	regmap_reg_range(BD9571MWV_DVFS_VINIT, BD9571MWV_DVFS_SETVMAX),
-+	regmap_reg_range(BD9571MWV_DVFS_SETVID, BD9571MWV_DVFS_MONIVDAC),
-+	regmap_reg_range(BD9571MWV_GPIO_IN, BD9571MWV_GPIO_IN),
-+	regmap_reg_range(BD9571MWV_GPIO_INT, BD9571MWV_GPIO_INTMASK),
-+	regmap_reg_range(BD9571MWV_INT_INTREQ, BD9571MWV_INT_INTMASK),
-+};
-+
-+static const struct regmap_access_table bd9574mwf_readable_table = {
-+	.yes_ranges	= bd9574mwf_readable_yes_ranges,
-+	.n_yes_ranges	= ARRAY_SIZE(bd9574mwf_readable_yes_ranges),
-+};
-+
-+static const struct regmap_range bd9574mwf_writable_yes_ranges[] = {
-+	regmap_reg_range(BD9571MWV_BKUP_MODE_CNT, BD9571MWV_BKUP_MODE_CNT),
-+	regmap_reg_range(BD9571MWV_DVFS_SETVID, BD9571MWV_DVFS_SETVID),
-+	regmap_reg_range(BD9571MWV_GPIO_DIR, BD9571MWV_GPIO_OUT),
-+	regmap_reg_range(BD9571MWV_GPIO_INT_SET, BD9571MWV_GPIO_INTMASK),
-+	regmap_reg_range(BD9571MWV_INT_INTREQ, BD9571MWV_INT_INTMASK),
-+};
-+
-+static const struct regmap_access_table bd9574mwf_writable_table = {
-+	.yes_ranges	= bd9574mwf_writable_yes_ranges,
-+	.n_yes_ranges	= ARRAY_SIZE(bd9574mwf_writable_yes_ranges),
-+};
-+
-+static const struct regmap_range bd9574mwf_volatile_yes_ranges[] = {
-+	regmap_reg_range(BD9571MWV_DVFS_MONIVDAC, BD9571MWV_DVFS_MONIVDAC),
-+	regmap_reg_range(BD9571MWV_GPIO_IN, BD9571MWV_GPIO_IN),
-+	regmap_reg_range(BD9571MWV_GPIO_INT, BD9571MWV_GPIO_INT),
-+	regmap_reg_range(BD9571MWV_INT_INTREQ, BD9571MWV_INT_INTREQ),
-+};
-+
-+static const struct regmap_access_table bd9574mwf_volatile_table = {
-+	.yes_ranges	= bd9574mwf_volatile_yes_ranges,
-+	.n_yes_ranges	= ARRAY_SIZE(bd9574mwf_volatile_yes_ranges),
-+};
-+
-+static const struct regmap_config bd9574mwf_regmap_config = {
-+	.reg_bits	= 8,
-+	.val_bits	= 8,
-+	.cache_type	= REGCACHE_RBTREE,
-+	.rd_table	= &bd9574mwf_readable_table,
-+	.wr_table	= &bd9574mwf_writable_table,
-+	.volatile_table	= &bd9574mwf_volatile_table,
-+	.max_register	= 0xff,
-+};
-+
-+static struct regmap_irq_chip bd9574mwf_irq_chip = {
-+	.name		= "bd9574mwf",
-+	.status_base	= BD9571MWV_INT_INTREQ,
-+	.mask_base	= BD9571MWV_INT_INTMASK,
-+	.ack_base	= BD9571MWV_INT_INTREQ,
-+	.init_ack_masked = true,
-+	.num_regs	= 1,
-+	.irqs		= bd9571mwv_irqs,
-+	.num_irqs	= ARRAY_SIZE(bd9571mwv_irqs),
-+};
-+
-+static const struct bd957x_ddata bd9574mwf_ddata = {
-+	.regmap_config = &bd9574mwf_regmap_config,
-+	.irq_chip = &bd9574mwf_irq_chip,
-+	.cells = bd9574mwf_cells,
-+	.num_cells = ARRAY_SIZE(bd9574mwf_cells),
-+};
-+
- static int bd957x_identify(struct device *dev, struct regmap *regmap)
- {
- 	unsigned int value;
-@@ -171,6 +245,9 @@ static int bd9571mwv_probe(struct i2c_client *client,
- 	case BD9571MWV_PRODUCT_CODE_BD9571MWV:
- 		ddata = &bd9571mwv_ddata;
- 		break;
-+	case BD9571MWV_PRODUCT_CODE_BD9574MWF:
-+		ddata = &bd9574mwf_ddata;
-+		break;
- 	default:
- 		dev_err(dev, "Unsupported device 0x%x\n", ret);
- 		return -ENODEV;
-@@ -200,12 +277,14 @@ static int bd9571mwv_probe(struct i2c_client *client,
- 
- static const struct of_device_id bd9571mwv_of_match_table[] = {
- 	{ .compatible = "rohm,bd9571mwv", },
-+	{ .compatible = "rohm,bd9574mwf", },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, bd9571mwv_of_match_table);
- 
- static const struct i2c_device_id bd9571mwv_id_table[] = {
--	{ "bd9571mwv", 0 },
-+	{ "bd9571mwv", ROHM_CHIP_TYPE_BD9571 },
-+	{ "bd9574mwf", ROHM_CHIP_TYPE_BD9574 },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(i2c, bd9571mwv_id_table);
-diff --git a/include/linux/mfd/bd9571mwv.h b/include/linux/mfd/bd9571mwv.h
-index e1716ec..8efd99d 100644
---- a/include/linux/mfd/bd9571mwv.h
-+++ b/include/linux/mfd/bd9571mwv.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0-only */
- /*
-- * ROHM BD9571MWV-M driver
-+ * ROHM BD9571MWV-M and BD9574MWF-M driver
-  *
-  * Copyright (C) 2017 Marek Vasut <marek.vasut+renesas@gmail.com>
-  * Copyright (C) 2020 Renesas Electronics Corporation
-@@ -14,11 +14,12 @@
- #include <linux/device.h>
- #include <linux/regmap.h>
- 
--/* List of registers for BD9571MWV */
-+/* List of registers for BD9571MWV and BD9574MWF */
- #define BD9571MWV_VENDOR_CODE			0x00
- #define BD9571MWV_VENDOR_CODE_VAL		0xdb
- #define BD9571MWV_PRODUCT_CODE			0x01
- #define BD9571MWV_PRODUCT_CODE_BD9571MWV	0x60
-+#define BD9571MWV_PRODUCT_CODE_BD9574MWF	0x74
- #define BD9571MWV_PRODUCT_REVISION		0x02
- 
- #define BD9571MWV_I2C_FUSA_MODE			0x10
-@@ -48,6 +49,7 @@
- #define BD9571MWV_VD33_VID			0x44
- 
- #define BD9571MWV_DVFS_VINIT			0x50
-+#define BD9574MWF_VD09_VINIT			0x51
- #define BD9571MWV_DVFS_SETVMAX			0x52
- #define BD9571MWV_DVFS_BOOSTVID			0x53
- #define BD9571MWV_DVFS_SETVID			0x54
-@@ -61,6 +63,7 @@
- #define BD9571MWV_GPIO_INT_SET			0x64
- #define BD9571MWV_GPIO_INT			0x65
- #define BD9571MWV_GPIO_INTMASK			0x66
-+#define BD9574MWF_GPIO_MUX			0x67
- 
- #define BD9571MWV_REG_KEEP(n)			(0x70 + (n))
- 
-@@ -70,6 +73,8 @@
- #define BD9571MWV_PROT_ERROR_STATUS2		0x83
- #define BD9571MWV_PROT_ERROR_STATUS3		0x84
- #define BD9571MWV_PROT_ERROR_STATUS4		0x85
-+#define BD9574MWF_PROT_ERROR_STATUS5		0x86
-+#define BD9574MWF_SYSTEM_ERROR_STATUS		0x87
- 
- #define BD9571MWV_INT_INTREQ			0x90
- #define BD9571MWV_INT_INTREQ_MD1_INT		BIT(0)
-@@ -82,6 +87,12 @@
- #define BD9571MWV_INT_INTREQ_BKUP_TRG_INT	BIT(7)
- #define BD9571MWV_INT_INTMASK			0x91
- 
-+#define BD9574MWF_SSCG_CNT			0xA0
-+#define BD9574MWF_POFFB_MRB			0xA1
-+#define BD9574MWF_SMRB_WR_PROT			0xA2
-+#define BD9574MWF_SMRB_ASSERT			0xA3
-+#define BD9574MWF_SMRB_STATUS			0xA4
-+
- #define BD9571MWV_ACCESS_KEY			0xff
- 
- /* Define the BD9571MWV IRQ numbers */
-@@ -91,7 +102,7 @@ enum bd9571mwv_irqs {
- 	BD9571MWV_IRQ_MD2_E2,
- 	BD9571MWV_IRQ_PROT_ERR,
- 	BD9571MWV_IRQ_GP,
--	BD9571MWV_IRQ_128H_OF,
-+	BD9571MWV_IRQ_128H_OF,	/* BKUP_HOLD on BD9574MWF */
- 	BD9571MWV_IRQ_WDT_OF,
- 	BD9571MWV_IRQ_BKUP_TRG,
- };
--- 
-2.7.4
+OK, so for today I have reverted my fix patch and 120d593a8650 ("kasan:
+fix memory leak of kasan quarantine").
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/nHyfFR7u4_cuD3Z=5bTr1+k
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/gDp8ACgkQAVBC80lX
+0GxN7ggAj/R2SMp5gZdUUQl2mbWK2pbglp2idMOQ+VNz6hqtPSHaAz2hWp4choVy
+mqiJ4t/YjKoJ8BbvdEvlOFSP2jiuY/4eFlz3ZNVT+x7pEmBaEYKRweIWbpXpe/cO
+uJwmiogIH1ZST6s+PtCbJ66iQImGouqhaC4YtZjlU4odQ9rF/IiiSYQ4d92g7MEr
+gTW63bKFybLAx9lNWzgI/AVUFBuwrmFZ0eDacZvg5VzGD3qWyp62Al5RJ1bnKAB7
+KW6bMoyj2d+b1NzEpgJ5LUgn6BjqwF2azGMpcv7ZMIGf6YZsGalMDIOOBGJWwIhP
+s+EgdrnM3zS9s9XRTLvX3zDetvlOUg==
+=DsWf
+-----END PGP SIGNATURE-----
+
+--Sig_/nHyfFR7u4_cuD3Z=5bTr1+k--
