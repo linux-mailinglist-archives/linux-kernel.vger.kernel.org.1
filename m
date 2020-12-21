@@ -2,146 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A37402DFBB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 13:08:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D78162DFBC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 13:13:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726327AbgLUMIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 07:08:04 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2275 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725942AbgLUMID (ORCPT
+        id S1726652AbgLUMMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 07:12:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726027AbgLUMMq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 07:08:03 -0500
-Received: from fraeml738-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Czyp12pKHz67Qrw;
-        Mon, 21 Dec 2020 20:04:57 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml738-chm.china.huawei.com (10.206.15.219) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 21 Dec 2020 13:07:21 +0100
-Received: from [10.210.168.224] (10.210.168.224) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 21 Dec 2020 12:07:20 +0000
-Subject: Re: [RFC PATCH v2 2/2] blk-mq: Lockout tagset iter when freeing rqs
-To:     Bart Van Assche <bvanassche@acm.org>, <axboe@kernel.dk>,
-        <ming.lei@redhat.com>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <hch@lst.de>, <hare@suse.de>, <ppvk@codeaurora.org>,
-        <kashyap.desai@broadcom.com>, <linuxarm@huawei.com>
-References: <1608203273-170555-1-git-send-email-john.garry@huawei.com>
- <1608203273-170555-3-git-send-email-john.garry@huawei.com>
- <df44b73d-6c42-87ee-3c25-b95a44712e05@acm.org>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <4d2004bb-4444-7a63-7c72-1759e3037cfd@huawei.com>
-Date:   Mon, 21 Dec 2020 12:06:35 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Mon, 21 Dec 2020 07:12:46 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61CBCC0613D3;
+        Mon, 21 Dec 2020 04:12:06 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1krK2W-002uPH-LQ; Mon, 21 Dec 2020 12:11:48 +0000
+Date:   Mon, 21 Dec 2020 12:11:48 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Joseph Qi <joseph.qi@linux.alibaba.com>
+Cc:     Liangyan <liangyan.peng@linux.alibaba.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] ovl: fix dentry leak in ovl_get_redirect
+Message-ID: <20201221121148.GP3579531@ZenIV.linux.org.uk>
+References: <20201220120927.115232-1-liangyan.peng@linux.alibaba.com>
+ <20201221062653.GO3579531@ZenIV.linux.org.uk>
+ <52a76e73-d46b-d0fd-a75a-76b4a86149b3@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <df44b73d-6c42-87ee-3c25-b95a44712e05@acm.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.168.224]
-X-ClientProxiedBy: lhreml739-chm.china.huawei.com (10.201.108.189) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <52a76e73-d46b-d0fd-a75a-76b4a86149b3@linux.alibaba.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/12/2020 22:43, Bart Van Assche wrote:
-> On 12/17/20 3:07 AM, John Garry wrote:
->> References to old IO sched requests are currently cleared from the
->> tagset when freeing those requests; switching elevator or changing
->> request queue depth is such a scenario in which this occurs.
->>
->> However, this does not stop the potentially racy behaviour of freeing
->> and clearing a request reference between a tagset iterator getting a
->> reference to a request and actually dereferencing that request.
->>
->> Such a use-after-free can be triggered, as follows:
->>
->> ==================================================================
->> BUG: KASAN: use-after-free in bt_iter+0xa0/0x120
->> Read of size 8 at addr ffff00108d589300 by task fio/3052
->>
->> CPU: 32 PID: 3052 Comm: fio Tainted: GW
->> 5.10.0-rc4-64839-g2dcf1ee5054f #693
->> Hardware name: Huawei Taishan 2280 /D05, BIOS Hisilicon
->> D05 IT21 Nemo 2.0 RC0 04/18/2018
->> Call trace:
->> dump_backtrace+0x0/0x2d0
->> show_stack+0x18/0x68
->> dump_stack+0x100/0x16c
->> print_address_description.constprop.12+0x6c/0x4e8
->> kasan_report+0x130/0x200
->> __asan_load8+0x9c/0xd8
->> bt_iter+0xa0/0x120
->> blk_mq_queue_tag_busy_iter+0x2d8/0x540
->> blk_mq_in_flight+0x80/0xb8
->> part_stat_show+0xd8/0x238
->> dev_attr_show+0x44/0x90
->> sysfs_kf_seq_show+0x128/0x1c8
->> kernfs_seq_show+0xa0/0xb8
->> seq_read_iter+0x1ec/0x6a0
->> seq_read+0x1d0/0x250
->> kernfs_fop_read+0x70/0x330
->> vfs_read+0xe4/0x250
->> ksys_read+0xc8/0x178
->> __arm64_sys_read+0x44/0x58
->> el0_svc_common.constprop.2+0xc4/0x1e8
->> do_el0_svc+0x90/0xa0
->> el0_sync_handler+0x128/0x178
->> el0_sync+0x158/0x180
->>
->> This is found experimentally by running fio on 2x SCSI disks - 1x disk
->> holds the root partition. Userspace is constantly triggering the tagset
->> iter from reading the root (gen)disk partition info. And so if the IO
->> sched is constantly changed on the other disk, eventually the UAF occurs,
->> as described above.
+On Mon, Dec 21, 2020 at 07:14:44PM +0800, Joseph Qi wrote:
+> Hi Viro,
 > 
-> Hi John,
-
-Hi Bart,
-
+> On 12/21/20 2:26 PM, Al Viro wrote:
+> > On Sun, Dec 20, 2020 at 08:09:27PM +0800, Liangyan wrote:
+> > 
+> >> +++ b/fs/overlayfs/dir.c
+> >> @@ -973,6 +973,7 @@ static char *ovl_get_redirect(struct dentry *dentry, bool abs_redirect)
+> >>  	for (d = dget(dentry); !IS_ROOT(d);) {
+> >>  		const char *name;
+> >>  		int thislen;
+> >> +		struct dentry *parent = NULL;
+> >>  
+> >>  		spin_lock(&d->d_lock);
+> >>  		name = ovl_dentry_get_redirect(d);
+> >> @@ -992,7 +993,22 @@ static char *ovl_get_redirect(struct dentry *dentry, bool abs_redirect)
+> >>  
+> >>  		buflen -= thislen;
+> >>  		memcpy(&buf[buflen], name, thislen);
+> >> -		tmp = dget_dlock(d->d_parent);
+> >> +		parent = d->d_parent;
+> >> +		if (unlikely(!spin_trylock(&parent->d_lock))) {
+> >> +			rcu_read_lock();
+> >> +			spin_unlock(&d->d_lock);
+> >> +again:
+> >> +			parent = READ_ONCE(d->d_parent);
+> >> +			spin_lock(&parent->d_lock);
+> >> +			if (unlikely(parent != d->d_parent)) {
+> >> +				spin_unlock(&parent->d_lock);
+> >> +				goto again;
+> >> +			}
+> >> +			rcu_read_unlock();
+> >> +			spin_lock_nested(&d->d_lock, DENTRY_D_LOCK_NESTED);
+> >> +		}
+> >> +		tmp = dget_dlock(parent);
+> >> +		spin_unlock(&parent->d_lock);
+> >>  		spin_unlock(&d->d_lock);
+> > 
+> > Yecchhhh....  What's wrong with just doing
+> > 		spin_unlock(&d->d_lock);
+> > 		parent = dget_parent(d);
+> > 		dput(d);
+> > 		d = parent;
+> > instead of that?
+> > 
 > 
-> Something is not clear to me. The above call stack includes
-> blk_mq_queue_tag_busy_iter(). That function starts with
-> percpu_ref_tryget(&q->q_usage_counter) and ends with calling
-> percpu_ref_put(&q->q_usage_counter). So it will only iterate over a tag set
-> if q->q_usage_counter is live. However, both blk_mq_update_nr_requests()
-> and elevator_switch() start with freezing the request queue.
-> blk_mq_freeze_queue() starts with killing q->q_usage_counter and waits
-> until that counter has dropped to zero. In other words,
-> blk_mq_queue_tag_busy_iter() should not iterate over a tag set while a tag
-> set is being freed or reallocated. 
+> Now race happens on non-RCU path in lookup_fast(), I'm afraid d_seq can
+> not close the race window.
 
-Right, this is what I thought, but Ming reminded me 
-"blk_mq_queue_tag_busy_iter() can be run on another request queue just
-between one driver tag is allocated and updating the request map, so one
-extra request reference still can be grabbed."
-
-> Does this mean that we do not yet have
-> a full explanation about why the above call stack can be triggered?
-
-We understand it, and I'll describe my experiment in detail:
-a. fio runs on 2x disks, sda (root partition disk) and sdb.
-b. for sda, userpace triggers blk_mq_queue_tag_busy_iter(), as in 
-stackframe above. Since its request queue is not frozen, it will iter 
-the busy tags.
-c. on sdb, I continuously change the IO scheduler.
-
-So sdb request queue gets frozen as we switch IO sched, but we could 
-have this sequence of events:
-- blk_mq_queue_tag_busy_iter() on sda takes reference to a sdb request
-    - Getting a tag and updating ->rqs[] in tagset is not atomic
-- requests for sdb cleared in tagset and request memory is freed
-- blk_mq_queue_tag_busy_iter() on sda still holds reference to sdb 
-request and dereferences it -> UAF
-
-Hope it's clear. It is a bit unlikely, I will admit, but it still can 
-happen and UAF is never good. So please let me know if other idea to solve.
-
-Thanks,
-John
+Explain, please.  What exactly are you observing?
