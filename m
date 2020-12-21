@@ -2,118 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91AE62DFA78
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 10:51:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 234482DFB11
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 11:30:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727199AbgLUJuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 04:50:46 -0500
-Received: from mga18.intel.com ([134.134.136.126]:21973 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726030AbgLUJup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 04:50:45 -0500
-IronPort-SDR: yvFMMTOOcKZXZnAcNXukPlpCkIZ7/MbtBoQzL/YCyumqOTxPOI++zP+S6kf7ULR7CAMZvgxIEY
- HTL/cfbyZeMA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9841"; a="163425485"
-X-IronPort-AV: E=Sophos;i="5.78,436,1599548400"; 
-   d="scan'208";a="163425485"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2020 01:21:25 -0800
-IronPort-SDR: ZsYYsjfQymkNrlz2gNxFQTYaoGP4sN2o6dq4IWGgbSwH9hgigMuWqf0tuNueN1j9a1Z2fYAiOE
- A+WbzBokbxAA==
-X-IronPort-AV: E=Sophos;i="5.78,436,1599548400"; 
-   d="scan'208";a="372380899"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2020 01:21:18 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id EF9F6205F7; Mon, 21 Dec 2020 11:21:16 +0200 (EET)
-Date:   Mon, 21 Dec 2020 11:21:16 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org, yong.zhi@intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
-        linus.walleij@linaro.org, heikki.krogerus@linux.intel.com,
-        kitakar@gmail.com, jorhand@linux.microsoft.com,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH v2 05/12] software_node: unregister software_nodes in
- reverse order
-Message-ID: <20201221092116.GG26370@paasikivi.fi.intel.com>
-References: <20201217234337.1983732-1-djrscally@gmail.com>
- <20201217234337.1983732-6-djrscally@gmail.com>
+        id S1726739AbgLUK33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 05:29:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726309AbgLUK32 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 05:29:28 -0500
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30398C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 02:28:48 -0800 (PST)
+Received: by mail-qt1-x835.google.com with SMTP id b9so6234781qtr.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 02:28:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6M/YwkCYIyGlJVAYe704Xk3oPcJUgFz/KZ270jgPQzU=;
+        b=KJb2taVRBZB8INRt0J7DosLa2gmPLDQJL4D704CX7AKJTkz6hYU3Hm3HVdtNoC8BPE
+         4M5ZgBi2xvXGJq+GvOOQiZyzGT7gJ8ckWQH76Aw3BZSV+kfPK87t3oyQA6sK3xJn+7Tg
+         AEilKWBc9AfOAC9J7daFVbeH6XNHkkOaWFl3/kN+BgD2QSWc1uUtgScEe0RwtIjRJo+7
+         +38/0DDGt/x0IUuo6ek5AqWqmXVrrMoKOT51K6o5DTTbtfvW9vlPeub1gdnNClqWd+L5
+         gCAXZwQk14aW5LyRU3QLHnZf3FKNIliwpzOOjhkX9T22z/gmWjp72z9IZd/EVYfMINw+
+         KLeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6M/YwkCYIyGlJVAYe704Xk3oPcJUgFz/KZ270jgPQzU=;
+        b=IXxE9Tv/QdNmU6wyFC8ybdx4op8pPsqzKJCDg7vzK048jAa81k7S7PBTjkZajblSBQ
+         9PzRZ0GXRms7gV6Pyxc9ZRztus+pMMEkE/Yp5ej9YEeRgtROj++97IPSQmw7h7MBJFjT
+         yjhQrsmfTxDX81WaXzo9zpD8O/ZjrhJ+6n3Xg0k8aCYArcJPEn8/YSX8fHnCsHsKdAYL
+         1a5zFx2SYiiUJHPpBXb2E/vRB50HRV7+ZJ2w3IUit3h9HRjvUD/vYUGqXLHtZNU4VZsg
+         wmOjrLrirJql7tcpxfh5nJS6Xw0ljqIFMTKAhzGa1oO6eXcYA+HojCL4SIwzgs7AAKhz
+         Idrw==
+X-Gm-Message-State: AOAM531xMzC3x11n/mXMJJtvf8hGm3b4pOkj05aGcTAGCxhvUBTYaj/j
+        wO77IvzOlku3sR3FkGnjQWr0dnqd28hTZuWNO/AebTd8hlg=
+X-Google-Smtp-Source: ABdhPJzy05k7aN1jFIeWNe77asiU17/4WYNEu2MvhoBXizH3PyaLmma7rEiKGjOIUOL6+owIYb4FJQnLzDT/iJVRW7w=
+X-Received: by 2002:ac8:5ac3:: with SMTP id d3mr15794400qtd.66.1608542498564;
+ Mon, 21 Dec 2020 01:21:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201217234337.1983732-6-djrscally@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <000000000000264c6305a9c74d9b@google.com> <0000000000008647f705b6e215de@google.com>
+In-Reply-To: <0000000000008647f705b6e215de@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 21 Dec 2020 10:21:27 +0100
+Message-ID: <CACT4Y+YnmECGRg7yOrkCQAw6OSm6TeEzOCBnJE7F32aoL0_2RQ@mail.gmail.com>
+Subject: Re: INFO: rcu detected stall in tipc_release
+To:     syzbot <syzbot+3654c027d861c6df4b06@syzkaller.appspotmail.com>
+Cc:     Markus Elfring <Markus.Elfring@web.de>,
+        Borislav Petkov <bp@alien8.de>, coreteam@netfilter.org,
+        David Miller <davem@davemloft.net>,
+        Florian Westphal <fw@strlen.de>,
+        =?UTF-8?B?RnLDqWTDqXJpYyBXZWlzYmVja2Vy?= <fweisbec@gmail.com>,
+        Hillf Danton <hdanton@sina.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, jmaloy@redhat.com,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kadlec@netfilter.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        KVM list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        netdev <netdev@vger.kernel.org>,
+        NetFilter <netfilter-devel@vger.kernel.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "Christopherson, Sean J" <sean.j.christopherson@intel.com>,
+        subashab@codeaurora.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        tuong.t.lien@dektech.com.au,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, wanpengli@tencent.com,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+On Sun, Dec 20, 2020 at 10:37 AM syzbot
+<syzbot+3654c027d861c6df4b06@syzkaller.appspotmail.com> wrote:
+>
+> syzbot suspects this issue was fixed by commit:
+>
+> commit cc00bcaa589914096edef7fb87ca5cee4a166b5c
+> Author: Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
+> Date:   Wed Nov 25 18:27:22 2020 +0000
+>
+>     netfilter: x_tables: Switch synchronization to RCU
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1445cb37500000
+> start commit:   7cc2a8ea Merge tag 'block-5.8-2020-07-01' of git://git.ker..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=7be693511b29b338
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3654c027d861c6df4b06
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12948233100000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11344c05100000
+>
+> If the result looks correct, please mark the issue as fixed by replying with:
+>
+> #syz fix: netfilter: x_tables: Switch synchronization to RCU
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-On Thu, Dec 17, 2020 at 11:43:30PM +0000, Daniel Scally wrote:
-> To maintain consistency with software_node_unregister_nodes(), reverse
-> the order in which the software_node_unregister_node_group() function
-> unregisters nodes.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Daniel Scally <djrscally@gmail.com>
-> ---
-> Changes in v2:
-> 
-> 	- Initialised i properly
-> 
->  drivers/base/swnode.c | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
-> index cfd1faea48a7..2b90d380039b 100644
-> --- a/drivers/base/swnode.c
-> +++ b/drivers/base/swnode.c
-> @@ -778,16 +778,22 @@ EXPORT_SYMBOL_GPL(software_node_register_node_group);
->   * software_node_unregister_node_group - Unregister a group of software nodes
->   * @node_group: NULL terminated array of software node pointers to be unregistered
->   *
-> - * Unregister multiple software nodes at once.
-> + * Unregister multiple software nodes at once. The array will be unwound in
-> + * reverse order (I.E. last entry first) and thus if any member of the array
-> + * has its .parent member set then they should appear later in the array such
-> + * that they are unregistered first.
->   */
->  void software_node_unregister_node_group(const struct software_node **node_group)
->  {
-> -	unsigned int i;
-> +	unsigned int i = 0;
->  
->  	if (!node_group)
->  		return;
->  
-> -	for (i = 0; node_group[i]; i++)
-> +	while (node_group[i]->name)
-
-Why is this change made? node_group is a NULL-terminated array, and the
-above accesses the name pointer on each entry before checking the entry is
-non-NULL. Or do I miss something here?
-
-> +		i++;
-> +
-> +	while (i--)
->  		software_node_unregister(node_group[i]);
->  }
->  EXPORT_SYMBOL_GPL(software_node_unregister_node_group);
-
--- 
-Regards,
-
-Sakari Ailus
+It's not immediately obvious that this is indeed the fix for this, but
+also not obvious that this is not the fix for this. Bisection log
+looks plausible.
+Was this bug in tipc fixed? Is it the fix?
+If I don't hear better suggestions I will close this bug as fixed by
+this commit later.
