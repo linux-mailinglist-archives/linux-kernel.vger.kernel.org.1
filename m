@@ -2,91 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C1BF2DFA9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 10:57:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A83072DFA8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 10:57:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726554AbgLUJzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 04:55:41 -0500
-Received: from regular1.263xmail.com ([211.150.70.196]:55030 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726486AbgLUJzk (ORCPT
+        id S1726218AbgLUJyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 04:54:39 -0500
+Received: from mail-02.mail-europe.com ([51.89.119.103]:40268 "EHLO
+        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725857AbgLUJyi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 04:55:40 -0500
-Received: from localhost (unknown [192.168.167.13])
-        by regular1.263xmail.com (Postfix) with ESMTP id 655B21F0E;
-        Mon, 21 Dec 2020 17:49:54 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-Received: from localhost.localdomain (unknown [14.18.236.70])
-        by smtp.263.net (postfix) whith ESMTP id P20470T140379059910400S1608544185429896_;
-        Mon, 21 Dec 2020 17:49:55 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <86eb62f6e5743ac4fd5988dd6125c28f>
-X-RL-SENDER: yili@winhong.com
-X-SENDER: yili@winhong.com
-X-LOGIN-NAME: yili@winhong.com
-X-FST-TO: colyli@suse.de
-X-SENDER-IP: 14.18.236.70
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Yi Li <yili@winhong.com>
-To:     colyli@suse.de
-Cc:     yilikernel@gmail.com, kent.overstreet@gmail.com, hch@lst.de,
-        linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yi Li <yili@winhong.com>
-Subject: [PATCH v4] bcache:remove a superfluous check in register_bcache
-Date:   Mon, 21 Dec 2020 17:49:43 +0800
-Message-Id: <20201221094943.1712589-1-yili@winhong.com>
-X-Mailer: git-send-email 2.25.3
-In-Reply-To: <4891349b-2136-eb8b-758d-f937b558b1c0@suse.de>
-References: <4891349b-2136-eb8b-758d-f937b558b1c0@suse.de>
+        Mon, 21 Dec 2020 04:54:38 -0500
+Date:   Mon, 21 Dec 2020 09:53:08 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1608544393;
+        bh=uD0o1RGxUdohZwqEit8GaCkXhH2zAclkKXfTpSwZqmA=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=v1/gSWJFAIavvqux48lCUMXon24cFXEdnlWCehvuz7kr+MfqPgN7kTQO3R8yeEQfb
+         gLavYZs84MGdghM0yn1DhKEd9iRigNVDEWwQVzTRrbm0kKeaYoTNw2/wMEkMS45k6L
+         Yud8YFHv1XeVSEdngr8n1ixZVw6i7gOWXWJO7IB8=
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+From:   Timon Baetz <timon.baetz@protonmail.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Timon Baetz <timon.baetz@protonmail.com>
+Reply-To: Timon Baetz <timon.baetz@protonmail.com>
+Subject: [PATCH v2 1/6] extcon: max8997: Add CHGINS and CHGRM interrupt handling
+Message-ID: <20201221095001.595366-1-timon.baetz@protonmail.com>
+In-Reply-To: <20201202203516.43053-1-timon.baetz@protonmail.com>
+References: <20201202203516.43053-1-timon.baetz@protonmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There have no reassign the bdev after check It is IS_ERR.
-the double check !IS_ERR(bdev) is superfluous.
+This allows the MAX8997 charger to set the current limit depending on
+the detected extcon charger type.
 
-After commit 4e7b5671c6a8 ("block: remove i_bdev"),
-"Switch the block device lookup interfaces to directly work with a dev_t
-so that struct block_device references are only acquired by the
-blkdev_get variants (and the blk-cgroup special case).  This means that
-we now don't need an extra reference in the inode and can generally
-simplify handling of struct block_device to keep the lookups contained
-in the core block layer code."
-
-so after lookup_bdev call, there no need to do bdput.
-
-remove a superfluous check the bdev & don't call bdput after lookup_bdev.
-
-Fixes: 4e7b5671c6a8("block: remove i_bdev")
-Signed-off-by: Yi Li <yili@winhong.com>
+Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
 ---
- drivers/md/bcache/super.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/extcon/extcon-max8997.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-index 0e06d721cd8e..a4752ac410dc 100644
---- a/drivers/md/bcache/super.c
-+++ b/drivers/md/bcache/super.c
-@@ -2535,8 +2535,6 @@ static ssize_t register_bcache(struct kobject *k, struct kobj_attribute *attr,
- 			else
- 				err = "device busy";
- 			mutex_unlock(&bch_register_lock);
--			if (!IS_ERR(bdev))
--				bdput(bdev);
- 			if (attr == &ksysfs_register_quiet)
- 				goto done;
- 		}
--- 
-2.25.3
-
+diff --git a/drivers/extcon/extcon-max8997.c b/drivers/extcon/extcon-max899=
+7.c
+index 337b0eea4e62..e1408075ef7d 100644
+--- a/drivers/extcon/extcon-max8997.c
++++ b/drivers/extcon/extcon-max8997.c
+@@ -44,6 +44,8 @@ static struct max8997_muic_irq muic_irqs[] =3D {
+ =09{ MAX8997_MUICIRQ_ChgDetRun,=09"muic-CHGDETRUN" },
+ =09{ MAX8997_MUICIRQ_ChgTyp,=09"muic-CHGTYP" },
+ =09{ MAX8997_MUICIRQ_OVP,=09=09"muic-OVP" },
++=09{ MAX8997_PMICIRQ_CHGINS,=09"pmic-CHGINS" },
++=09{ MAX8997_PMICIRQ_CHGRM,=09"pmic-CHGRM" },
+ };
+=20
+ /* Define supported cable type */
+@@ -538,6 +540,8 @@ static void max8997_muic_irq_work(struct work_struct *w=
+ork)
+ =09case MAX8997_MUICIRQ_DCDTmr:
+ =09case MAX8997_MUICIRQ_ChgDetRun:
+ =09case MAX8997_MUICIRQ_ChgTyp:
++=09case MAX8997_PMICIRQ_CHGINS:
++=09case MAX8997_PMICIRQ_CHGRM:
+ =09=09/* Handle charger cable */
+ =09=09ret =3D max8997_muic_chg_handler(info);
+ =09=09break;
+--=20
+2.25.1
 
 
