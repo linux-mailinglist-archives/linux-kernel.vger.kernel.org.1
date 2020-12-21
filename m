@@ -2,142 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FED82E003F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:46:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F8D2E0044
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:46:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727086AbgLUSpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 13:45:18 -0500
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:46942 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727015AbgLUSpR (ORCPT
+        id S1727341AbgLUSqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:46:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727319AbgLUSqF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:45:17 -0500
-Received: by mail-oi1-f177.google.com with SMTP id q205so12193357oig.13;
-        Mon, 21 Dec 2020 10:45:02 -0800 (PST)
+        Mon, 21 Dec 2020 13:46:05 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6E8DC061793
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:45:24 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id o13so26113161lfr.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:45:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z1NJtCKrT5aOW2x87MSIaGkuS9YMPQEi6Wvh0DzkfmQ=;
+        b=WGQF0hLI1ONKDp8qNn8LUAsqCC/F9IKlBvHTrClCmrxDT9zLY1ZU6+ec+NQhNtzVvu
+         FZqiru3fCqV5YvtYbFUpd13yXtge52/4d057zJrIp/0LjcPjEv9j78X3/PRSi24uDQJ3
+         7Hn655r/YAKN9E2BdIZdODUXJ3Ws6w164XMv0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WWBYjY6yUTnOC9KU1g2rDC6EQI4nGKdxUE9a6H16YTA=;
-        b=bdjl6YwQWS1gxehInNbUKe2ro/JVraYpd0TipJsVhbnm6PxrtKjv6dS7LSTfekuOx+
-         aAYE9+79SVRR4WK6urVOFFQ045wkki/HDx7vTATJGyuEtvubZrpK91djBjFqteTAlB1K
-         BYABYY+Jlr3lvxqv1F45oD5DubHMQTotD+JRRxDxJQ5F2l0rjvZCFWaCAF/YzdiVYRuq
-         TECo56lpX05jR4pYLv3UoyylHmGu1lDFG291/OQIfOm3KrngpgL7XCkKDmOGWdzRQ2Wg
-         GWvOE2BsF01i5sZ9aieHZka1NbecUjVu8237d7aV3cZa8OmimWCuKVquPO7ESgMG+Dse
-         +PVg==
-X-Gm-Message-State: AOAM530A2/Bm0tKywtglIQK/Tx2pPJh3iaoD0sGarbVQhdYDP5zSwYuG
-        2j5yFVacCwwbyVi/7ONxbBPiklCssg==
-X-Google-Smtp-Source: ABdhPJxSTwka874noWHFkT1NgVKEOOgBGUJtsWNuYPFuZ8cOJ0ovZKYke7z3cf9FGFFrXRvd+BGrnw==
-X-Received: by 2002:a05:6808:3c3:: with SMTP id o3mr12307111oie.24.1608576276873;
-        Mon, 21 Dec 2020 10:44:36 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id h30sm3407306ooi.12.2020.12.21.10.44.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 10:44:36 -0800 (PST)
-Received: (nullmailer pid 339755 invoked by uid 1000);
-        Mon, 21 Dec 2020 18:44:34 -0000
-Date:   Mon, 21 Dec 2020 11:44:34 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Cristian Pop <cristian.pop@analog.com>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jic23@kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 1/3] dt-bindings: iio: dac: AD5766 yaml documentation
-Message-ID: <20201221184434.GA331914@robh.at.kernel.org>
-References: <20201218171231.58794-1-cristian.pop@analog.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z1NJtCKrT5aOW2x87MSIaGkuS9YMPQEi6Wvh0DzkfmQ=;
+        b=laCUbQW8cpcFQARf5ATdz0Dg5una3euEP7jz1PkHvSQcxVeXAGqh/8G0394BG+uh3+
+         aPMRSq4ps15+5MKlXvkx7E20Wa/gvP7HifNXMZ1dJsfL3xuKSxiW+PxPrf3L8FeljavJ
+         z3Roe6acTDey1Knw8B9g98xuYYBDNcqlWwPhmu7jOPyWJRmUfINqhovQa6e5AV2iZ6jD
+         vRmsnDgUbe+uyy9e+mcpJNH5BEsYDJ9DFnY0XEwxLtAQUFzyzIA+E4x+1QLXigycF93i
+         EJAHOY1zpAzR9j4fGdgcSW8ZSajESA1sI4pYCc+aRLvY8NeX/7eaZ+yXzPTap1lPbJfc
+         ofNA==
+X-Gm-Message-State: AOAM532b0p4V+0urL0jILrA5QxG47RVfAdHZfhwTnde5x3iAVt2FLVbS
+        vsP2ThNDLNWpVoDV+JnLxo2LxvR72UE6tQ==
+X-Google-Smtp-Source: ABdhPJwlasBwO5U5r2FqZJIe9qP5VxNxDIqbE+cg8EwvhxHfJc0wTVdnNaS3fdx5VEEkWZnni6ItoQ==
+X-Received: by 2002:a19:804a:: with SMTP id b71mr6879431lfd.504.1608576323123;
+        Mon, 21 Dec 2020 10:45:23 -0800 (PST)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id w202sm2161471lff.182.2020.12.21.10.45.22
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Dec 2020 10:45:22 -0800 (PST)
+Received: by mail-lf1-f41.google.com with SMTP id h22so16565103lfu.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:45:22 -0800 (PST)
+X-Received: by 2002:a2e:9d89:: with SMTP id c9mr8326818ljj.220.1608576321880;
+ Mon, 21 Dec 2020 10:45:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201218171231.58794-1-cristian.pop@analog.com>
+References: <20201221015214.3466681-1-sboyd@kernel.org>
+In-Reply-To: <20201221015214.3466681-1-sboyd@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 21 Dec 2020 10:45:05 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiJUQz6hoosBKpKtupiix1pAS6GCd1bPVK5nW8umPFzAw@mail.gmail.com>
+Message-ID: <CAHk-=wiJUQz6hoosBKpKtupiix1pAS6GCd1bPVK5nW8umPFzAw@mail.gmail.com>
+Subject: Re: [GIT PULL] clk changes for the merge window
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        linux-clk@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 07:12:29PM +0200, Cristian Pop wrote:
-> This adds device tree bindings for the AD5766 DAC.
-> 
-> Signed-off-by: Cristian Pop <cristian.pop@analog.com>
-> ---
->  Changelog v4:
-> 	- Add range selection
-> 	- Reset is GPIO_ACTIVE_LOW
-> 	
->  .../bindings/iio/dac/adi,ad5766.yaml          | 64 +++++++++++++++++++
->  1 file changed, 64 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml b/Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml
-> new file mode 100644
-> index 000000000000..846b5ee50761
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml
-> @@ -0,0 +1,64 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +# Copyright 2020 Analog Devices Inc.
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/dac/adi,ad5766.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Analog Devices AD5766 DAC device driver
-> +
-> +maintainers:
-> +  - Cristian Pop <cristian.pop@analog.com>
-> +
-> +description: |
-> +  Bindings for the Analog Devices AD5766 current DAC device. Datasheet can be
-> +  found here:
-> +    https://www.analog.com/media/en/technical-documentation/data-sheets/ad5766-5767.pdf
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - adi,ad5766
-> +      - adi,ad5767
-> +
-> +  output-range:
-> +    description: Select converter output range.
+On Sun, Dec 20, 2020 at 5:52 PM Stephen Boyd <sboyd@kernel.org> wrote:
+>
+>   https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-for-linus
 
-Something standard for DACs? If not needs a vendor prefix and type. 
+Of 134 non-merge commits, 22 were committed in the last 48 hours.
 
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  spi-max-frequency:
-> +    maximum: 1000000
-> +
-> +  spi-cpol: true
-> +
-> +  reset-gpios:
-> +    description: GPIO spec for the RESET pin. If specified, it will be asserted
-> +      during driver probe. As the line is active low, it should be marked
-> +      GPIO_ACTIVE_LOW.
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - output-range
-> +  - reg
-> +  - spi-max-frequency
-> +  - spi-cpol
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    spi {
-> +          #address-cells = <1>;
-> +          #size-cells = <0>;
-> +          
-> +          ad5766@0 {
-> +              compatible = "adi,ad5766";
-> +              output-range = <(-5) 5>;
-> +              reg = <0>;
-> +              spi-cpol;
-> +              spi-max-frequency = <1000000>;
-> +              reset-gpios = <&gpio 22 0>;
-> +            };
-> +      };
-> -- 
-> 2.17.1
-> 
+I took this, but I'm somewhat pissed off about this. And the next
+person who does this to me will get a blunt reply to just go and hide
+in a cold, dark ditch somewhere, because between family xmas prep and
+people who do things too late, I know which one matters more.
+
+             Linus
