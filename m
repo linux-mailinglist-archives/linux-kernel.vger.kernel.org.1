@@ -2,67 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67FE62E00AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 20:09:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0B242E00AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 20:09:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726330AbgLUTIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 14:08:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55546 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725780AbgLUTIK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 14:08:10 -0500
-Date:   Mon, 21 Dec 2020 11:07:28 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608577649;
-        bh=mVMpxRgVbjqNwdwri6h6wUuxC8sIdUi3TgWil6YcDxo=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=KSqQNDmWh4BBGkZfDc/8l6sN7aRCvvjpnBOe6DRzWQo/7kvd4zZHpo8ue99bdeafO
-         gDpsGlO/fDWJaq2chzxcI3ARaRL50VNLbK+1b/94BvKn0LHg5Ydgj8itYD6bglG+Xj
-         5fW/2mUbrKKTnGyNkgUcjUU4JvogIfH/1uVBziQeQUPYkFodlQjayZl1F0stmUpQuZ
-         kXisE1q8NqykH+sTlg5cMMePQm//k1yvieW6vJjP4u8Kc6TNsDyHwr5/2cND8SUHpF
-         h0RgYzwB2KDfarbTq7Iy18dvFrlwoNmblr3nDhFiXHytnfEgEvZl1EF5sye9MMfJgZ
-         qrN9/pXbgRytg==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Stefan Chulski <stefanc@marvell.com>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "thomas.petazzoni@bootlin.com" <thomas.petazzoni@bootlin.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        Nadav Haklai <nadavh@marvell.com>,
-        Yan Markman <ymarkman@marvell.com>,
+        id S1726569AbgLUTIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 14:08:15 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:57986 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726345AbgLUTIO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 14:08:14 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 245031C0B7C; Mon, 21 Dec 2020 20:07:33 +0100 (CET)
+Date:   Mon, 21 Dec 2020 20:07:32 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Dexuan Cui <decui@microsoft.com>
+Cc:     "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "mw@semihalf.com" <mw@semihalf.com>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        "rmk+kernel@armlinux.org.uk" <rmk+kernel@armlinux.org.uk>,
-        Liron Himi <lironh@marvell.com>
-Subject: Re: [EXT] Re: [PATCH net-next] net: mvpp2: prs: improve ipv4 parse
- flow
-Message-ID: <20201221110728.22e91152@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <CO6PR18MB3873C6157D3F89092964B14FB0C10@CO6PR18MB3873.namprd18.prod.outlook.com>
-References: <1608221278-15043-1-git-send-email-stefanc@marvell.com>
-        <20201219100345.22d86122@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CO6PR18MB3873C6157D3F89092964B14FB0C10@CO6PR18MB3873.namprd18.prod.outlook.com>
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>
+Subject: Re: How can a userspace program tell if the system supports the ACPI
+ S4 state (Suspend-to-Disk)?
+Message-ID: <20201221190731.GA19905@amd>
+References: <MWHPR21MB0863BA3D689DDEC3CA6BC262BFC91@MWHPR21MB0863.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="BOKacYhQ+x31HxR3"
+Content-Disposition: inline
+In-Reply-To: <MWHPR21MB0863BA3D689DDEC3CA6BC262BFC91@MWHPR21MB0863.namprd21.prod.outlook.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 20 Dec 2020 11:11:35 +0000 Stefan Chulski wrote:
-> > RFC patches sent for review only are obviously welcome at any time.  
-> 
-> If I post RFC patches for review only, should I add some prefix or tag for this?
 
-Include RFC in the tag: [RFC net-next] or [PATCH RFC net-next],
-this way patchwork will automatically mark it as RFC and we'll
-know you're not expecting us to apply the patch.
+--BOKacYhQ+x31HxR3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> And if all reviewers OK with change(or no comments at all), should I
-> repost this patch again after net-next opened?
+On Sat 2020-12-12 01:20:30, Dexuan Cui wrote:
+> Hi all,
+> It looks like Linux can hibernate even if the system does not support the=
+ ACPI
+> S4 state, as long as the system can shut down, so "cat /sys/power/state"
+> always contains "disk", unless we specify the kernel parameter "nohiberna=
+te"
+> or we use LOCKDOWN_HIBERNATION.
+>=20
+> In some scenarios IMO it can still be useful if the userspace is able to =
+detect
+> if the ACPI S4 state is supported or not, e.g. when a Linux guest runs on=
+=20
+> Hyper-V, Hyper-V uses the virtual ACPI S4 state as an indicator of the pr=
+oper
+> support of the tool stack on the host, i.e. the guest is discouraged from=
+=20
+> trying hibernation if the state is not supported.
 
-Sure, if there are no comments or you're confident the change is
-correct there is no need for an RFC posting. I'm guessing that was 
-your question? If you're asking if you _have_ to repost even if there 
-are not comments the answer is yes, we don't queue patches "to be
-applied later", fresh posting will be needed.
+Umm. Does not sound like exactly strong reason to me.
+
+If ACPI S4 is special to the hypervisor, perhaps that should be
+reported to userspace...?
+
+> I know we can check the S4 state by 'dmesg':
+>=20
+> # dmesg |grep ACPI: | grep support
+> [    3.034134] ACPI: (supports S0 S4 S5)
+>=20
+> But this method is unreliable because the kernel msg buffer can be filled
+> and overwritten. Is there any better method? If not, do you think if the
+> below patch is appropriate? Thanks!
+
+
+> @@ -600,8 +601,12 @@ static ssize_t state_show(struct kobject *kobj, stru=
+ct kobj_attribute *attr,
+>                         s +=3D sprintf(s,"%s ", pm_states[i]);
+>=20
+>  #endif
+> -       if (hibernation_available())
+> -               s +=3D sprintf(s, "disk ");
+> +       if (hibernation_available()) {
+> +               if (acpi_sleep_state_supported(ACPI_STATE_S4))
+> +                       s +=3D sprintf(s, "disk+ ");
+> +               else
+> +                       s +=3D sprintf(s, "disk ");
+> +       }
+>         if (s !=3D buf)
+
+Will this compile on all the systems?
+
+Certainly needs documentation.
+
+Plus if ACPI S4 is supported, kernel can support both normal
+hibernation and ACPI S4... so perhaps it should list two entries? And
+"disk+" sounds wrong, "acpidisk"?
+
+=2E..and that would bring next question. Usespace writes "disk" there
+and uses different file to select between S4 and S5...
+
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--BOKacYhQ+x31HxR3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl/g8nMACgkQMOfwapXb+vLkgwCeMW2fXbRDW6Sr2dCIQGMICYaX
+sBsAoJgURNDoL/yTSiY5EuI7q+BdCwvx
+=HAYT
+-----END PGP SIGNATURE-----
+
+--BOKacYhQ+x31HxR3--
