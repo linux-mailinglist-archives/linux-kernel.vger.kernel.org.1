@@ -2,168 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6A012DFADF
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 11:13:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3DBA2DFAA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 10:58:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726773AbgLUKLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 05:11:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726320AbgLUKLT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 05:11:19 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93100C0611CA;
-        Mon, 21 Dec 2020 02:10:24 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id l207so10770657oib.4;
-        Mon, 21 Dec 2020 02:10:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1443+lWFVVr9sW1ieQ6dMKPKu52PYVGdhFAGnK3Ssb0=;
-        b=aAoi4mNLEf7POkGO1vA2aB8tk52UJ6GH4jT4vcXPIIjsaAr4VmjPMTXSLUXMD2PqRa
-         YYjXpiFoaS/eX6f4nAEATD0jsj0OsBfGIBkc/L+liO4IQvxASrACZekxhEzzjyxpHpmy
-         oQyPvunGW+qhxF+G5ZzJHoTAUDyLKiBKIKQPdTXyHONws2qQ+HjJBiT7D29SFJbX0tpk
-         yH2KQIKAboGBxmG1VLE83ZyGrmXwZHUTLQB9UmtaB+67XKXnE8m89dgnN1+j7s4UI/fU
-         BqbS/MKDuR92ExyoHkF3+mBncFjkvWXrkY6PyO+yD4upx5bu8CAkqa9xBk4fmHHib7k7
-         2Orw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=1443+lWFVVr9sW1ieQ6dMKPKu52PYVGdhFAGnK3Ssb0=;
-        b=XaIOrbpZZhydzjsxSbaY9WQ+fmfqEI/ESCfhq+TIX9LZNwULsJJ4aJ1CRYNDfl37Ne
-         Ma4TYyXhMT4r7U8Q1DlwL2zs5SA18vhcJSOVdYFRYbRIfgO5AN/a+7pea44K4XMh18sv
-         3ViQ0oyGiPm29CGW5nnhbxyP6HgjXXuKNq/gEeUcmnqtdJcnAsZ8phvbQN3eEZCZ5jy5
-         Zt8GVQKP4sGWT+0ag6q3pjXBsgnGvQ7gfEt0fIsgwHkuj32RrkINw239f0OA+H0522n8
-         LWP0XSzAefSWWAMnlhyZE/diNwvhzY/I97VhJ1PylvcKP49EYQIDfWlNEqqB2Gj/NlYv
-         FP/w==
-X-Gm-Message-State: AOAM5325Wrk3hu69icFT1z6zNRIqnnlgPcdk31//xICrlMEsqPEs8Lua
-        EsFNp2McN4XZKyjdCoPWea9IxXJoScg=
-X-Google-Smtp-Source: ABdhPJzvtRk6W8/aZj9x9UDm4ep5pemmnH1ZpjtdSaKIZ8Qu0n+el3TmN8XxJ3zBx8GHye3GkcRbEQ==
-X-Received: by 2002:aca:b145:: with SMTP id a66mr10630983oif.92.1608544978511;
-        Mon, 21 Dec 2020 02:02:58 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d124sm3616669oib.54.2020.12.21.02.02.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Dec 2020 02:02:57 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v3] Compiler Attributes: remove CONFIG_ENABLE_MUST_CHECK
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        "Jason A . Donenfeld" <Jason@zx2c4.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        wireguard@lists.zx2c4.com
-References: <20201128193335.219395-1-masahiroy@kernel.org>
- <20201212161831.GA28098@roeck-us.net>
- <CANiq72=e9Csgpcu3MdLGB77dL_QBn6PpqoG215YUHZLNCUGP0w@mail.gmail.com>
- <8f645b94-80e5-529c-7b6a-d9b8d8c9685e@roeck-us.net>
- <CANiq72kML=UmMLyKcorYwOhp2oqjfz7_+JN=EmPp05AapHbFSg@mail.gmail.com>
- <X9YwXZvjSWANm4wR@kroah.com>
- <CANiq72=UzRTkh6bcNSjE-kSgBJYX12+zQUYphZ1GcY-7kNxaLA@mail.gmail.com>
- <CAK7LNARXa1CQSFJjcqN7Y_8dZ1CSGqjoeox3oGAS_3=4QrHs9g@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
- RYHA7RCEK2dh6dDccykQk3bC90xXMPg+O3R+C/SkwcnUak1UZaeK/SwQbq/t0tkMzYDRxfJ7
- nyFiKxUehbNF3r9qlJgPqONwX5vJy4/GvDHdddSCxV41P/ejsZ8PykxyJs98UWhF54tGRWFl
- 7i1xvaDB9lN5WTLRKSO7wICuLiSz5WZHXMkyF4d+/O5ll7yz/o/JxK5vO/sduYDIlFTvBZDh
- gzaEtNf5tQjsjG4io8E0Yq0ViobLkS2RTNZT8ICq/Jmvl0SpbHRvYwa2DhNsK0YjHFQBB0FX
- IdhdUEzNefcNcYvqigJpdICoP2e4yJSyflHFO4dr0OrdnGLe1Zi/8Xo/2+M1dSSEt196rXaC
- kwu2KgIgmkRBb3cp2vIBBIIowU8W3qC1+w+RdMUrZxKGWJ3juwcgveJlzMpMZNyM1jobSXZ0
- VHGMNJ3MwXlrEFPXaYJgibcg6brM6wGfX/LBvc/haWw4yO24lT5eitm4UBdIy9pKkKmHHh7s
- jfZJkB5fWKVdoCv/omy6UyH6ykLOPFugl+hVL2Prf8xrXuZe1CMS7ID9Lc8FaL1ROIN/W8Vk
- BIsJMaWOhks//7d92Uf3EArDlDShwR2+D+AMon8NULuLBHiEUQARAQABzTJHdWVudGVyIFJv
- ZWNrIChMaW51eCBhY2NvdW50KSA8bGludXhAcm9lY2stdXMubmV0PsLBgQQTAQIAKwIbAwYL
- CQgHAwIGFQgCCQoLBBYCAwECHgECF4ACGQEFAlVcphcFCRmg06EACgkQyx8mb86fmYFg0RAA
- nzXJzuPkLJaOmSIzPAqqnutACchT/meCOgMEpS5oLf6xn5ySZkl23OxuhpMZTVX+49c9pvBx
- hpvl5bCWFu5qC1jC2eWRYU+aZZE4sxMaAGeWenQJsiG9lP8wkfCJP3ockNu0ZXXAXwIbY1O1
- c+l11zQkZw89zNgWgKobKzrDMBFOYtAh0pAInZ9TSn7oA4Ctejouo5wUugmk8MrDtUVXmEA9
- 7f9fgKYSwl/H7dfKKsS1bDOpyJlqhEAH94BHJdK/b1tzwJCFAXFhMlmlbYEk8kWjcxQgDWMu
- GAthQzSuAyhqyZwFcOlMCNbAcTSQawSo3B9yM9mHJne5RrAbVz4TWLnEaX8gA5xK3uCNCeyI
- sqYuzA4OzcMwnnTASvzsGZoYHTFP3DQwf2nzxD6yBGCfwNGIYfS0i8YN8XcBgEcDFMWpOQhT
- Pu3HeztMnF3HXrc0t7e5rDW9zCh3k2PA6D2NV4fews9KDFhLlTfCVzf0PS1dRVVWM+4jVl6l
- HRIAgWp+2/f8dx5vPc4Ycp4IsZN0l1h9uT7qm1KTwz+sSl1zOqKD/BpfGNZfLRRxrXthvvY8
- BltcuZ4+PGFTcRkMytUbMDFMF9Cjd2W9dXD35PEtvj8wnEyzIos8bbgtLrGTv/SYhmPpahJA
- l8hPhYvmAvpOmusUUyB30StsHIU2LLccUPPOwU0ETofVZwEQALlLbQeBDTDbwQYrj0gbx3bq
- 7kpKABxN2MqeuqGr02DpS9883d/t7ontxasXoEz2GTioevvRmllJlPQERVxM8gQoNg22twF7
- pB/zsrIjxkE9heE4wYfN1AyzT+AxgYN6f8hVQ7Nrc9XgZZe+8IkuW/Nf64KzNJXnSH4u6nJM
- J2+Dt274YoFcXR1nG76Q259mKwzbCukKbd6piL+VsT/qBrLhZe9Ivbjq5WMdkQKnP7gYKCAi
- pNVJC4enWfivZsYupMd9qn7Uv/oCZDYoBTdMSBUblaLMwlcjnPpOYK5rfHvC4opxl+P/Vzyz
- 6WC2TLkPtKvYvXmdsI6rnEI4Uucg0Au/Ulg7aqqKhzGPIbVaL+U0Wk82nz6hz+WP2ggTrY1w
- ZlPlRt8WM9w6WfLf2j+PuGklj37m+KvaOEfLsF1v464dSpy1tQVHhhp8LFTxh/6RWkRIR2uF
- I4v3Xu/k5D0LhaZHpQ4C+xKsQxpTGuYh2tnRaRL14YMW1dlI3HfeB2gj7Yc8XdHh9vkpPyuT
- nY/ZsFbnvBtiw7GchKKri2gDhRb2QNNDyBnQn5mRFw7CyuFclAksOdV/sdpQnYlYcRQWOUGY
- HhQ5eqTRZjm9z+qQe/T0HQpmiPTqQcIaG/edgKVTUjITfA7AJMKLQHgp04Vylb+G6jocnQQX
- JqvvP09whbqrABEBAAHCwWUEGAECAA8CGwwFAlVcpi8FCRmg08MACgkQyx8mb86fmYHNRQ/+
- J0OZsBYP4leJvQF8lx9zif+v4ZY/6C9tTcUv/KNAE5leyrD4IKbnV4PnbrVhjq861it/zRQW
- cFpWQszZyWRwNPWUUz7ejmm9lAwPbr8xWT4qMSA43VKQ7ZCeTQJ4TC8kjqtcbw41SjkjrcTG
- wF52zFO4bOWyovVAPncvV9eGA/vtnd3xEZXQiSt91kBSqK28yjxAqK/c3G6i7IX2rg6pzgqh
- hiH3/1qM2M/LSuqAv0Rwrt/k+pZXE+B4Ud42hwmMr0TfhNxG+X7YKvjKC+SjPjqp0CaztQ0H
- nsDLSLElVROxCd9m8CAUuHplgmR3seYCOrT4jriMFBtKNPtj2EE4DNV4s7k0Zy+6iRQ8G8ng
- QjsSqYJx8iAR8JRB7Gm2rQOMv8lSRdjva++GT0VLXtHULdlzg8VjDnFZ3lfz5PWEOeIMk7Rj
- trjv82EZtrhLuLjHRCaG50OOm0hwPSk1J64R8O3HjSLdertmw7eyAYOo4RuWJguYMg5DRnBk
- WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
- HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <55261f67-deb5-4089-5548-62bc091016ec@roeck-us.net>
-Date:   Mon, 21 Dec 2020 02:02:55 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <CAK7LNARXa1CQSFJjcqN7Y_8dZ1CSGqjoeox3oGAS_3=4QrHs9g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S1726822AbgLUJ5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 04:57:44 -0500
+Received: from mail-vi1eur05on2065.outbound.protection.outlook.com ([40.107.21.65]:31264
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726246AbgLUJ5j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 04:57:39 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ndDn42gF2Zxk+4e6Rgx3JDYVgEn7GpSmg0LzrTcwGsLF8bYZjPmWsvK9eObkjIOe0Tzl4XiwTJZ5U1K4+lxyQY74CnRy3DQRWeQUJQgXkKwuvjvhpdFr0BrYMhTZOfcVkwqlToVZyItwUCoSVAmYm5MLU9Snw5Or3vsy6XcO1e/KffSkYKZPM3vcTwsowM+mlMfthAjf3A84CNAniTGBcuF3W/jU5BVOyxIWK29lHdakuNUM48dlKIbvidE9N9sqxBAW7pjziky/v8B0cIAUm/e3g/DHGlDedGtYP0JqLW0YVqnG/RBD+ODBbGuuABBlFrR2hDu1ht6liX/4msL0bg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kxyAEYC9fNgncJU7wK1Q2XHfhkIatQ4PvMXiftmtP3o=;
+ b=R1So1vTiyJVQ7Eea072T2BTeFimqsGexiSkdXZXrKj1vrXC1XDmZLUkJ5r/gJlzyOoxqRSI99c/fDPEaoDHoeTaY/v6zpCdicFcmIFTyB9BqJNus9CI+reNiFEvzzu+Y5LUwtfbH46AI5znTO1jFQxT6b/lvv52j8hZb4a8r+GDfWDYRD3Ynno0UTZIjbA8ULRk2Hru/1YSIh17R1p4N53ZjRlpR+KGt1/QDasxYAwQUr3s4/2ppZ94tm37btmw1NbPCcQ1iZ7I7isCu/SWtu+p4i4x+fCGOXB1UI1oariQMkUn+QtLaUPu+vHlI9poYh0ye2S8FIdKS8eSX/Z6Tvw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kxyAEYC9fNgncJU7wK1Q2XHfhkIatQ4PvMXiftmtP3o=;
+ b=JkU+DnE/m2lHBSsvhO8sAKiAtrcw0Yy4vidETxkzxfuH+89E46XzFJ1QYrisVrZMnFkMH9VANpSBzKVsS646FoqDY1lCsl1DB8QNUP4JqesdybS+kK6M9PYwFo3wCroygcvzy/UoQsh29Nmpa3nZ6uiVk/46BamOdn3x0C5HoXQ=
+Authentication-Results: wizery.com; dkim=none (message not signed)
+ header.d=none;wizery.com; dmarc=none action=none header.from=oss.nxp.com;
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB7PR04MB4633.eurprd04.prod.outlook.com (2603:10a6:5:36::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.33; Mon, 21 Dec
+ 2020 09:38:10 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c964:9:850a:fc5]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c964:9:850a:fc5%10]) with mapi id 15.20.3676.033; Mon, 21 Dec 2020
+ 09:38:10 +0000
+From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+To:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        mathieu.poirier@linaro.org, o.rempel@pengutronix.de
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com,
+        linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        paul@crapouillou.net, matthias.bgg@gmail.com, agross@kernel.org,
+        patrice.chotard@st.com, Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH 0/8] remoteproc: imx_rproc: support iMX8MQ/M
+Date:   Mon, 21 Dec 2020 18:06:24 +0800
+Message-Id: <20201221100632.7197-1-peng.fan@oss.nxp.com>
+X-Mailer: git-send-email 2.28.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.71]
+X-ClientProxiedBy: SG2PR02CA0110.apcprd02.prod.outlook.com
+ (2603:1096:4:92::26) To DB6PR0402MB2760.eurprd04.prod.outlook.com
+ (2603:10a6:4:a1::14)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from linux-1xn6.ap.freescale.net (119.31.174.71) by SG2PR02CA0110.apcprd02.prod.outlook.com (2603:1096:4:92::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.28 via Frontend Transport; Mon, 21 Dec 2020 09:38:05 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 945f31dc-7d2d-42f3-c335-08d8a594212f
+X-MS-TrafficTypeDiagnostic: DB7PR04MB4633:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB7PR04MB4633E1CC8E805649651EBFF7C9C00@DB7PR04MB4633.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jUFEKEV3d045/3W3Za5IKin22MEVRj2X5jnaeGljr3WAjZSgRmQikJH7jJp1Eg/JitZwboADlASOXg5vc/oB1zuG17gyIP3HOWNOmRf22R/2e4W9XI54JGZPp6vX7v23djKa8fo1nkcMb6c8Ff/R2IocBDe9kUX/hw620c+Y5haZPjYIlb+gkxey1AwSRajsIjhLNFsRWGvxNWdSiJt5zxvxu+CGTL2Qb9HSYGzjEn8GvNeWcl7oobFIYYwjW9TNB9Abpn4NIt+a4aRhGkAPGPvL83bKg2G2fp6GGzYoTiEU0S7TL4e4dRp11qT1IKefqRqgDOPCpi2HNEOEdLMfKFN1sf/A84rpNUNleUjHxfbgmdwyynUTefjFlKlniuIkNibB59n/Y+AGom1v7+O+uaCnUKH8BNJqwQh3dNl0YQJnaN5HYiGP24ZDEcEAozPfDVyV8K3pX5yMxOI35S/i4xlLMchooGp0n2KXkmYY6G8PNt7Tte4vSsvWlR1SvLaaxLgjQTNQTRF6IpLxE1Ua1w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(136003)(366004)(396003)(66476007)(2616005)(4326008)(66556008)(16526019)(86362001)(956004)(6666004)(5660300002)(6512007)(316002)(52116002)(966005)(6486002)(66946007)(6506007)(7416002)(83380400001)(478600001)(8936002)(2906002)(8676002)(186003)(1076003)(26005)(32563001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?H89vXQDKaFjepkHNMhJ1rmMSfsWirg3TT0HHOepG6Q9Q865FgzfEd+bPiqm+?=
+ =?us-ascii?Q?tHKN9M41/p4udS3p2d5Z5UjMT8awtnzE8H0kJj6DApQ38tq6xtGfrl86yFz3?=
+ =?us-ascii?Q?Z64QtmZr4je+x+PKwr796iek2kAIE9JXsMKIfo+90CBF7HAQQXgo9M3n8kEo?=
+ =?us-ascii?Q?ZTDlM365Uy8to25MMJ/o7iUMLfoZ3lHjUMjSGKZv752qqXRUScNL7IM8fcwn?=
+ =?us-ascii?Q?+fDbpJeIDoV2982JLrn07sMWkIV8TbLgAIS1IUbarYXTCH48SHtvGXLVWpIy?=
+ =?us-ascii?Q?cO+nWD+wBeGdLxyyYD2H8Tfw3uUwquMUPeWtgeaffTVnu1yekXr4APMdpF+Q?=
+ =?us-ascii?Q?kGVsIfpjCxCVznBhBCU9An9zQpLNWseB9ulW4aa6owJiiA6xRDwFZj+q+Y3u?=
+ =?us-ascii?Q?7wZ2clFXU7ZkUDqn1i2k6C4dzWIeoS8R/Fn/ZaHSuSKKtCoCxaoiVV3rfncg?=
+ =?us-ascii?Q?451qAwt/u4jdM3ErHSGXe7sdnxD9q2icWnNDbaoX0cJ1yWVaK6GyCxP8A+bX?=
+ =?us-ascii?Q?Gtsf6cFaPA95rJeh67x91pznbpeJO0TgwBfAxS9EJfhrSpxxMCRrZ5jcKCpq?=
+ =?us-ascii?Q?sOHIJwNw0olWyl1Z3QRAuFwAAp0+aw1FXZzW+oQC1DjU2H52f4JEdAm0aFvp?=
+ =?us-ascii?Q?txAbnKAhXxPHLwG7a4+XDxCSfICbiwPaiqx5jyUUATalfSHIp1ersFMABkkB?=
+ =?us-ascii?Q?2uXxwVnSgXtoUWKYXvOnwf7ru6CTeAAwcSpICTuauRYIV7Zwh70VtAL0bgU6?=
+ =?us-ascii?Q?uksIReWpxGEtNIQwKDJj81Vs+CnoVAVr78FdMt9EJQ1eIfePHgP2ABb3znyF?=
+ =?us-ascii?Q?BHJQC5/6A3CnHKrUIQ8u5ExBvtSTGaGnTJ8E9BYYC3TS+NxmAheUahhYDJIZ?=
+ =?us-ascii?Q?kUnOlbTy5oGfj2EkizQj1WzFlC1S8woDTitIu57IvSZj4Vu85PxhgA/Y1Z1d?=
+ =?us-ascii?Q?Y5+Czf1lLsFkC9NRfT/eP5d9/PeiAiZdDn6JpskH1C4IHnWQPItVcrL59r9K?=
+ =?us-ascii?Q?n2lC?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Dec 2020 09:38:10.2346
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-Network-Message-Id: 945f31dc-7d2d-42f3-c335-08d8a594212f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nfXhBxD8mZf0l0ZEzym3gjRycLof7t1vKhVtu9QDucA9lVt+QZiHgVyKtJOQhWqolKqwOzP6krKO2UjBRTin3g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB4633
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/20/20 10:18 PM, Masahiro Yamada wrote:
-> On Mon, Dec 14, 2020 at 12:27 AM Miguel Ojeda
-> <miguel.ojeda.sandonis@gmail.com> wrote:
->>
->> On Sun, Dec 13, 2020 at 4:16 PM Greg KH <gregkh@linuxfoundation.org> wrote:
->>>
->>> Because if you get a report of something breaking for your change, you
->>> need to work to resolve it, not argue about it.  Otherwise it needs to
->>> be dropped/reverted.
->>
->> Nobody has argued that. In fact, I explicitly said the opposite: "So I
->> think we can fix them as they come.".
->>
->> I am expecting Masahiro to follow up. It has been less than 24 hours
->> since the report, on a weekend.
->>
->> Cheers,
->> Miguel
-> 
-> 
-> Sorry for the delay.
-> 
-> Now I sent out the fix for lantiq_etop.c
-> 
-> https://lore.kernel.org/patchwork/patch/1355595/
-> 
+From: Peng Fan <peng.fan@nxp.com>
 
-next-20201218, alpha:allmodconfig:
+V4:
+ According to Bjorn's comments, add is_iomem for da to va usage
+ 1/8, 2/8 is new patch
+ 3/8, follow Bjorn's comments to correct/update the err msg.
+ 6/8, new patch
+ 8/8, use dev_err_probe to simplify code, use queue_work instead schedule_delayed_work
+ https://lkml.org/lkml/2020/12/4/82
 
-fs/binfmt_em86.c: In function 'load_em86':
-fs/binfmt_em86.c:66:2: error: ignoring return value of 'remove_arg_zero' declared with attribute 'warn_unused_result'
+V3:
+ Since I was quite busy in the past days, V3 is late
+ Rebased on Linux-next
+ Add R-b tags
+ 1/7: Add R-b tag of Mathieu, add comments
+ 4/7: Typo fix
+ 5/7: Add R-b tag of Mathieu, drop index Per Mathieu's comments
+ 6/7: Add R-b tag of Mathieu
+ 7/7: Add comment for vqid << 16, drop unneeded timeout settings of mailbox
+      Use queue_work instead of schedule_delayed_work
+      free mbox channels when remove
 
-With a change like this, I'd have expected that there is a coccinelle
-script or similar to ensure that claims made in the commit message
-are true.
+V2:
+ Rebased on linux-next
+ Dropped early boot feature to make patchset simple.
+ Drop rsc-da
+ https://patchwork.kernel.org/project/linux-remoteproc/cover/20200927064131.24101-1-peng.fan@nxp.com/
 
-Guenter
+V1:
+ https://patchwork.kernel.org/cover/11682461/
+
+This patchset is to support i.MX8MQ/M coproc.
+The early boot feature was dropped to make the patchset small in V2.
+
+Since i.MX specific TCM memory requirement, add elf platform hook.
+Several patches have got reviewed by Oleksij and Mathieu in v1.
+
+Peng Fan (8):
+  remoteproc: introduce is_iomem to rproc_mem_entry
+  remoteproc: add is_iomem to da_to_va
+  remoteproc: imx_rproc: correct err message
+  remoteproc: imx_rproc: use devm_ioremap
+  remoteproc: imx_rproc: add i.MX specific parse fw hook
+  remoteproc: imx_rproc: support i.MX8MQ/M
+  remoteproc: imx_rproc: ignore mapping vdev regions
+  remoteproc: imx_proc: enable virtio/mailbox
+
+ drivers/remoteproc/imx_rproc.c             | 259 ++++++++++++++++++++-
+ drivers/remoteproc/ingenic_rproc.c         |   2 +-
+ drivers/remoteproc/keystone_remoteproc.c   |   2 +-
+ drivers/remoteproc/mtk_scp.c               |   6 +-
+ drivers/remoteproc/omap_remoteproc.c       |   2 +-
+ drivers/remoteproc/pru_rproc.c             |   2 +-
+ drivers/remoteproc/qcom_q6v5_adsp.c        |   2 +-
+ drivers/remoteproc/qcom_q6v5_pas.c         |   2 +-
+ drivers/remoteproc/qcom_q6v5_wcss.c        |   2 +-
+ drivers/remoteproc/qcom_wcnss.c            |   2 +-
+ drivers/remoteproc/remoteproc_core.c       |   7 +-
+ drivers/remoteproc/remoteproc_coredump.c   |   8 +-
+ drivers/remoteproc/remoteproc_debugfs.c    |   2 +-
+ drivers/remoteproc/remoteproc_elf_loader.c |  21 +-
+ drivers/remoteproc/remoteproc_internal.h   |   2 +-
+ drivers/remoteproc/st_slim_rproc.c         |   2 +-
+ drivers/remoteproc/ti_k3_dsp_remoteproc.c  |   2 +-
+ drivers/remoteproc/ti_k3_r5_remoteproc.c   |   2 +-
+ drivers/remoteproc/wkup_m3_rproc.c         |   2 +-
+ include/linux/remoteproc.h                 |   4 +-
+ 20 files changed, 298 insertions(+), 35 deletions(-)
+
+-- 
+2.28.0
+
