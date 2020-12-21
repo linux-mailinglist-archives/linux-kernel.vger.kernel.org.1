@@ -2,89 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A412DFA28
+	by mail.lfdr.de (Postfix) with ESMTP id 97E212DFA29
 	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 09:51:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727858AbgLUIvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 03:51:44 -0500
-Received: from spam.zju.edu.cn ([61.164.42.155]:8864 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726168AbgLUIvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 03:51:44 -0500
-Received: from localhost.localdomain (unknown [10.192.85.18])
-        by mail-app3 (Coremail) with SMTP id cC_KCgA37w7WYeBfFXRhAA--.42123S4;
-        Mon, 21 Dec 2020 16:50:34 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] net/mlx5e: Fix two double free cases
-Date:   Mon, 21 Dec 2020 16:50:31 +0800
-Message-Id: <20201221085031.6591-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgA37w7WYeBfFXRhAA--.42123S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7uFWDXr1UXFWDKF47Cr18Grg_yoW8GF1Dpa
-        1rCr9FgFyfX34UXayDAFWFqw1rCw4ktay0g3WS934Svr1DGrW0vFyrWrWDAF97GFWUWF4a
-        qw1xAw1UAF4DJa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkI1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW0oVCq3wA2z4x0Y4vEx4A2
-        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
-        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
-        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
-        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv
-        6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
-        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48J
-        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
-        IF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
-        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgUMBlZdtRf+rwANs4
+        id S1727453AbgLUIvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 03:51:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726492AbgLUIvj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 03:51:39 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 049C3C061248
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 00:50:58 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id d13so10170191wrc.13
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 00:50:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=HiUxImaTMOJxBS0lS8gkXi8Ib4VLGRDfAmzxV9NVmjs=;
+        b=thNONzPi8sHYjiuDHZLfrDYWcQjyZ8LFHza7xvBDfME60d6EqXe41jaro8uB3hPdn6
+         q+v2Ch8u0v0nUUDgYiPErLoAZjdYfbE+fEmjR4wFfoHEFKxOOcYH2Hz+bgfv9yAnioXJ
+         YBRhNs+DpkTM07zNtGuEox+HraoKiLnj4v3C5hUVatDd057Ss8JHK0o22HQNZ+2yT3+K
+         oSdYXsFULAkroiowZPYuCAdqU25m0qU7N+QzyvUVKNwGB6y2ZptWbliVn11xhOpFb4An
+         FT8aQu/wAsfdsPmTDHis1NhPV30iPp4U4ZDWx1MaLjyk4E0SZvHbWEgUdQ+6aAdpobA8
+         TZHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=HiUxImaTMOJxBS0lS8gkXi8Ib4VLGRDfAmzxV9NVmjs=;
+        b=jqHCtBlHpru55461lZDTsTlYhRzubYQp8Ugjm7EICt/kXSsOAhGbAr4YlQ1svyp0Yw
+         NiYq1YNVN/DpOA4hoTvr2HH3bniI4yJ9WzyIvxoYITfsWN0dmZDCTh8l3PqzTjdMxBCD
+         6DUjXQicIhftVw08lSDOMcSYDYudo1vFi8D3FML6bgiL3dUcn+5zTxlx2X7rGAKAayR8
+         Gr/qRx+Ps383YJc+OYcUolhaOveZaFYz2Mqarb5m11a+YQYSEdlhkMLcd/lpKomJ+ez7
+         MrtDt++jCCsjQTvwQ3X1x7JCStUlRGw2YFwt5u69MclqVIgS3kWXX90qLRi+ap+LsQ+/
+         W15Q==
+X-Gm-Message-State: AOAM5330Bzo1p0n3HGIhZCZUCuPfgcop6vPZTKQZZYoMYncnDIl2zkym
+        yM1nPj7r+rQ/AazkReJAYUJFbg==
+X-Google-Smtp-Source: ABdhPJz0CfnJMqRakjbLvxsa3wOtw8VE5NpYf1AuUOoYPDYUwgIWZv82mIQcXWXUwOm657ra4/VwFg==
+X-Received: by 2002:adf:ba8b:: with SMTP id p11mr14910550wrg.328.1608540657646;
+        Mon, 21 Dec 2020 00:50:57 -0800 (PST)
+Received: from dell ([91.110.221.144])
+        by smtp.gmail.com with ESMTPSA id q143sm22522944wme.28.2020.12.21.00.50.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 00:50:57 -0800 (PST)
+Date:   Mon, 21 Dec 2020 08:50:55 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Kiran Gunda <kgunda@codeaurora.org>
+Cc:     robh@kernel.org, swboyd@chromium.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V4 1/2] mfd: qcom-spmi-pmic: Convert bindings to .yaml
+ format
+Message-ID: <20201221085055.GC4825@dell>
+References: <1608279292-24760-1-git-send-email-kgunda@codeaurora.org>
+ <1608279292-24760-2-git-send-email-kgunda@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1608279292-24760-2-git-send-email-kgunda@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mlx5e_create_ttc_table_groups() frees ft->g on failure of
-kvzalloc(), but such failure will be caught by its caller
-in mlx5e_create_ttc_table() and ft->g will be freed again
-in mlx5e_destroy_flow_table(). The same issue also occurs
-in mlx5e_create_ttc_table_groups().
+On Fri, 18 Dec 2020, Kiran Gunda wrote:
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- drivers/net/ethernet/mellanox/mlx5/core/en_fs.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+> Convert the bindings from .txt to .yaml format.
+> 
+> Signed-off-by: Kiran Gunda <kgunda@codeaurora.org>
+> ---
+>  .../devicetree/bindings/mfd/qcom,spmi-pmic.txt     |  80 -------------
+>  .../devicetree/bindings/mfd/qcom,spmi-pmic.yaml    | 127 +++++++++++++++++++++
+>  2 files changed, 127 insertions(+), 80 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt
+>  create mode 100644 Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c b/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
-index fa8149f6eb08..63323c5b6a50 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
-@@ -940,10 +940,8 @@ static int mlx5e_create_ttc_table_groups(struct mlx5e_ttc_table *ttc,
- 	if (!ft->g)
- 		return -ENOMEM;
- 	in = kvzalloc(inlen, GFP_KERNEL);
--	if (!in) {
--		kfree(ft->g);
-+	if (!in)
- 		return -ENOMEM;
--	}
- 
- 	/* L4 Group */
- 	mc = MLX5_ADDR_OF(create_flow_group_in, in, match_criteria);
-@@ -1085,10 +1083,8 @@ static int mlx5e_create_inner_ttc_table_groups(struct mlx5e_ttc_table *ttc)
- 	if (!ft->g)
- 		return -ENOMEM;
- 	in = kvzalloc(inlen, GFP_KERNEL);
--	if (!in) {
--		kfree(ft->g);
-+	if (!in)
- 		return -ENOMEM;
--	}
- 
- 	/* L4 Group */
- 	mc = MLX5_ADDR_OF(create_flow_group_in, in, match_criteria);
+What are the other patches that I was not cc'ed on?
+
+Generally it's a bad idea to send only some patches of a set to some
+maintainers.  Best for everyone to have full visibility.
+
+Also looks like you're missing a cover-letter [PATCH 0/4] which adds
+to the opaqueness/confusion.
+
 -- 
-2.17.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
