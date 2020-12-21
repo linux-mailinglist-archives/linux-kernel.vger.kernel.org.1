@@ -2,220 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EF472DFCC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 15:25:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59FA62DFCC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 15:24:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727220AbgLUOYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 09:24:34 -0500
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:45843 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726964AbgLUOYd (ORCPT
+        id S1727198AbgLUOYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 09:24:08 -0500
+Received: from mail-wm1-f50.google.com ([209.85.128.50]:38645 "EHLO
+        mail-wm1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726844AbgLUOYH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 09:24:33 -0500
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 0BLENeiM009502;
-        Mon, 21 Dec 2020 23:23:40 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 0BLENeiM009502
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1608560620;
-        bh=1hRY++GCfLHpcZB+7KhM/wVvZL/yFccxiREnXS+ESIM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=FBPd+h6Hgk48sIlUjqqs+s1+sX9C71WJ78Wx+zFrm29sKMNBDY78bqWsYFaDwg7eW
-         11W8qZ4FG8H9vtqm95MI+Dc21jTx88dOmRRiLu+5Nc+s765Scq1i2JRqVQw7ETrrQh
-         utx6teRvXlcT+26251WPXzZyoRXA0xRg81ldAXY55RmSOPLk1VQcMyQFzit6ia2HNF
-         3H/W3fgJtgiiwfeJXyuW6RuXDgkMMC1g1124aewS3ywfEl8WEb/U5W0j/GOFV1f/iT
-         6f1k3OeREU3TDqmVzcFi+RLnYCLELTpFNp3VB7ssnpY12Nly2Hv0FbKSspm0/GxF51
-         BVKqrDWHWNhLA==
-X-Nifty-SrcIP: [209.85.210.179]
-Received: by mail-pf1-f179.google.com with SMTP id s21so6507247pfu.13;
-        Mon, 21 Dec 2020 06:23:40 -0800 (PST)
-X-Gm-Message-State: AOAM530DJAyFfMEyy9zOV4fBTfLJLJs1GFikJdhN8PicCfcC2PpH40LB
-        I1561WFrW18U4nhBMrAACRo14lc8m1YUx8Vk7F0=
-X-Google-Smtp-Source: ABdhPJwH3sJkjhXcLjVUKaT5f0pHeEcFuFakTiIjXEF/m3XVDkT7YAaaIv/65ZFbXIV1M1qnIGv9AkVIGmuqGCzlcU0=
-X-Received: by 2002:a62:d142:0:b029:19e:62a0:ca1a with SMTP id
- t2-20020a62d1420000b029019e62a0ca1amr15496931pfl.80.1608560619529; Mon, 21
- Dec 2020 06:23:39 -0800 (PST)
+        Mon, 21 Dec 2020 09:24:07 -0500
+Received: by mail-wm1-f50.google.com with SMTP id g185so11086548wmf.3;
+        Mon, 21 Dec 2020 06:23:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=t92iU2s6tie/otzdcUrjmsNAfZxVxfg7pY63xjxoqR0=;
+        b=J/HROd+z0t942Hu5enguHoPMdFtajdIqK3eTDQhVqdsnENye/eFlo2KpFcsll56WNB
+         O1GEtZnyOIee627js04uiecP6mrkvlUlBx+mjAFKVNAleimtPZD7yWvXdh0H93p4lWrt
+         068h/CKO1fd8UJkPc5SL36EJJiKJ8zZ7QzKskDWeEmdi8dIOJ9rBav8NqwzzOALAaAes
+         ExYBUKZELcBlYj5tAkq8ebnXCPMDI6RsXF8baQLE8Uiw2Lu7SNX8ceDhVeRzxkM4j8wq
+         kJoZtGcWl9kK71laTe8UbI7Wdjnb9kBwV7uhQUgNWg3ow22R48XaxEBYeuX/BqX+oZRf
+         3pug==
+X-Gm-Message-State: AOAM533yERmcTUGirr1AfMuV5b2oEwEQiLejekYKunm3APK2cW5JaPKt
+        NI2+Bs19yrLQNH8XGgfl8K4=
+X-Google-Smtp-Source: ABdhPJydHMJbjUHhJ6XejcwGmjRgE3+AwUk9spdEBcvmCbwYVI0W9dTUWUeG2jHzkMrCpRq4wEDJAQ==
+X-Received: by 2002:a1c:6144:: with SMTP id v65mr16759171wmb.125.1608560604690;
+        Mon, 21 Dec 2020 06:23:24 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id h29sm29546011wrc.68.2020.12.21.06.23.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 06:23:23 -0800 (PST)
+Date:   Mon, 21 Dec 2020 15:23:22 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Timon Baetz <timon.baetz@protonmail.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH v2 5/6] ARM: dts: exynos: Added top-off charging
+ regulator node for i9100
+Message-ID: <20201221142322.GE33797@kozik-lap>
+References: <20201202203516.43053-1-timon.baetz@protonmail.com>
+ <20201221095001.595366-1-timon.baetz@protonmail.com>
+ <20201221095001.595366-5-timon.baetz@protonmail.com>
 MIME-Version: 1.0
-References: <20201212165431.150750-1-masahiroy@kernel.org> <20201212165431.150750-3-masahiroy@kernel.org>
- <20201212174828.GA17179@nautica>
-In-Reply-To: <20201212174828.GA17179@nautica>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Mon, 21 Dec 2020 23:23:02 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATOMnNDt5E8j1qkj=FELezZ551Amfz3i=eMiSUg0nygCg@mail.gmail.com>
-Message-ID: <CAK7LNATOMnNDt5E8j1qkj=FELezZ551Amfz3i=eMiSUg0nygCg@mail.gmail.com>
-Subject: Re: [PATCH 3/3] kbuild: rewrite ld-version.sh in shell script
-To:     Dominique Martinet <asmadeus@codewreck.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201221095001.595366-5-timon.baetz@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 13, 2020 at 2:48 AM Dominique Martinet
-<asmadeus@codewreck.org> wrote:
->
-> Masahiro Yamada wrote on Sun, Dec 13, 2020:
-> > This script was written in awk in spite of the file extension '.sh'.
-> > Rewrite it as a shell script.
->
-> Wow! I wasn't expecting so much, would have sent some rework after the
-> upcoming merge window.
-> Thank you.
->
-> Some comments below that you can probably ignore, this works for me.
->
->
-> > diff --git a/scripts/ld-version.sh b/scripts/ld-version.sh
-> > index 0f8a2c0f9502..c214aeb3200d 100755
-> > --- a/scripts/ld-version.sh
-> > +++ b/scripts/ld-version.sh
-> > @@ -1,11 +1,22 @@
-> > -#!/usr/bin/awk -f
-> > +#!/bin/sh
-> >  # SPDX-License-Identifier: GPL-2.0
-> > -# extract linker version number from stdin and turn into single number
-> > -     {
-> > -     gsub(".*\\)", "");
-> > -     gsub(".*version ", "");
-> > -     gsub("-.*", "");
-> > -     split($1,a, ".");
-> > -     print a[1]*10000 + a[2]*100 + a[3];
-> > -     exit
-> > -     }
-> > +#
-> > +# Usage: $ ./scripts/ld-version.sh ld
-> > +#
-> > +# Print the linker version of `ld' in a 5 or 6-digit form
-> > +# such as `23501' for GNU ld 2.35.1 etc.
-> > +
-> > +first_line="$($* --version | head -n 1)"
->
-> Just nitpicking: this ($*) would fail if the argument contains spaces,
-> it's generally better to use "$@" or "$1" (with quotes)
+On Mon, Dec 21, 2020 at 09:53:35AM +0000, Timon Baetz wrote:
+> Value taken from Galaxy S2 vendor kernel [0] which always sets 200mA.
 
-This is just a copy-paste work based on scripts/lld-version.sh.
+Subject: "Add", not "Added", as in Linux coding style.
 
-"$@" is better, I agree.
+> 
+> Also rearrange regulators based on definition in max8997.h.
+> 
+> [0] https://github.com/krzk/linux-vendor-backup/blob/samsung/galaxy-s2-epic-4g-touch-sph-d710-exynos4210-dump/drivers/power/sec_battery_u1.c#L1525
+> 
+> Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
+> ---
+>  arch/arm/boot/dts/exynos4210-i9100.dts | 21 ++++++++++++++-------
+>  1 file changed, 14 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/arm/boot/dts/exynos4210-i9100.dts b/arch/arm/boot/dts/exynos4210-i9100.dts
+> index 586d801af0b5..fec6da64f7c1 100644
+> --- a/arch/arm/boot/dts/exynos4210-i9100.dts
+> +++ b/arch/arm/boot/dts/exynos4210-i9100.dts
+> @@ -560,6 +560,16 @@ safe2_sreg: ESAFEOUT2 {
+>  				regulator-boot-on;
+>  			};
+>  
+> +			EN32KHZ_AP {
+> +				regulator-name = "EN32KHZ_AP";
+> +				regulator-always-on;
+> +			};
+> +
+> +			EN32KHZ_CP {
+> +				regulator-name = "EN32KHZ_CP";
+> +				regulator-always-on;
+> +			};
+> +
+>  			charger_reg: CHARGER {
+>  				regulator-name = "CHARGER";
+>  				regulator-min-microamp = <200000>;
+> @@ -573,13 +583,10 @@ chargercv_reg: CHARGER_CV {
+>  				regulator-always-on;
+>  			};
+>  
+> -			EN32KHZ_AP {
+> -				regulator-name = "EN32KHZ_AP";
+> -				regulator-always-on;
+> -			};
+> -
+> -			EN32KHZ_CP {
+> -				regulator-name = "EN32KHZ_CP";
+> +			chargertopoff_reg: CHARGER_TOPOFF {
 
+No need for label "chargertopoff_reg".
 
-
-
-> Probably doesn't matter here as gcc/clang-version scripts have the same
-> problem, so if someone had a problem with that they probably would have
-> reported it there.
-
-Talking about gcc/clang-version, "$1" is not acceptable because the first
-word of the arguments may not be the compiler.
-
-For example, when CC="ccache gcc" is passed in,
-scripts/gcc-version.sh  ccache  gcc
-must return the gcc version.
-
-
-
-
-Difference between "$@" and "$*" matters only
-when it is directly passed to some command.
-
-
-masahiro@grover:~$ set  "a   b"  c  d
-masahiro@grover:~$ ls  "$*"
-ls: cannot access 'a   b c d': No such file or directory
-masahiro@grover:~$ ls  "$@"
-ls: cannot access 'a   b': No such file or directory
-ls: cannot access 'c': No such file or directory
-ls: cannot access 'd': No such file or directory
-
-
-"$*" was expanded into a single string, 'a   b c d'.
-It forgot which spaces were the part of the argument,
-and which spaces were argument delimiters.
-
-In contrast, "$@" was expanded into three arguments,
-'a   b', 'c', and 'd'.
-It correctly preserved the original arguments.
-
-
-
-Let me continue some more experiments...
-
-
-masahiro@grover:~$ set  "a   b"  c  d
-masahiro@grover:~$ compiler="$*"
-masahiro@grover:~$ ls "$compiler"
-ls: cannot access 'a   b c d': No such file or directory
-masahiro@grover:~$ ls $compiler
-ls: cannot access 'a': No such file or directory
-ls: cannot access 'b': No such file or directory
-ls: cannot access 'c': No such file or directory
-ls: cannot access 'd': No such file or directory
-
-
-
-masahiro@grover:~$ set  "a   b"  c  d
-masahiro@grover:~$ compiler="$@"
-masahiro@grover:~$ ls "$compiler"
-ls: cannot access 'a   b c d': No such file or directory
-masahiro@grover:~$ ls $compiler
-ls: cannot access 'a': No such file or directory
-ls: cannot access 'b': No such file or directory
-ls: cannot access 'c': No such file or directory
-ls: cannot access 'd': No such file or directory
-
-
-The result is the same.
-So, whichever we use, after it is assigned to the variable "compiler",
-it forgets the origin of the spaces.
-
-
-If we really want to preserve the passed arguments,
-we need to use "$@" directly in scripts/gcc-version.sh
-like this:
-
-MAJOR=$(echo __GNUC__ | "$@" -E -x c - | tail -n 1)
-
-If we do this,
-
-  scripts/gcc-version.sh  ccache gcc
-
-will succeed, and
-
-  scripts/gcc-version.sh  "ccache gcc"
-
-will fail.
-
-
-
-
-> > +
-> > +if ! ( echo $first_line | grep -q "GNU ld"); then
-> > +     echo 0
-> > +     exit 1
-> > +fi
-> > +
-> > +# Distributions may append an extra string like 2.35-15.fc33
-> > +# Take the part that consists of numbers and dots.
-> > +VERSION=$(echo $first_line | sed 's/.* \([^ ]*\)$/\1/' | sed 's/^\(^[0-9.]*\).*/\1/')
-> > +MAJOR=$(echo $VERSION | cut -d . -f 1)
-> > +MINOR=$(echo $VERSION | cut -d . -f 2)
-> > +PATCHLEVEL=$(echo $VERSION | cut -d . -f 3)
-> > +printf "%d%02d%02d\\n" $MAJOR $MINOR $PATCHLEVEL
->
-> There is a bug if there is no dot at all (e.g. if binutils ever releases
-> a version 3 and call it version 3 and not 3.0, the script would print
-> 30303 because cut when no delimiter is found always returns the whole
-> string)
-> This can be fixed by artificially appending a dot to VERSION:
-> VERSION=$(echo $first_line | sed 's/.* \([^ ]*\)$/\1/' | sed 's/^\(^[0-9.]*\).*/\1./')
->
-> I'm not sure it's worth worrying about either.
-
-Ah, good catch.
-
-
-
---
-Best Regards
-Masahiro Yamada
+Best regards,
+Krzysztof
