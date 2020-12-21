@@ -2,138 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35EBF2DFF71
+	by mail.lfdr.de (Postfix) with ESMTP id A3ADF2DFF72
 	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:16:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726105AbgLUSOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 13:14:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52763 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725783AbgLUSOH (ORCPT
+        id S1726190AbgLUSOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:14:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725852AbgLUSOT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:14:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608574360;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FNWljgMN9GP4v/GttfkerKbzxoxWratIwvuxaoSFccA=;
-        b=TQavvN1imdTyxhQ7SDhJm+HTPHncLYZBiPgWyjDO+9+c1+xk5lvhx2qct4Hqpyof+LImJK
-        a3jbGftqVEFxrqebMVw+mdOF2AH4KAVHYw0wPrcwo1wY1ttOCl0VQ01EAF6v6njBWYE9kV
-        Pl6FE/mRvFdckKyKhTiE+Y7FEJ7m6X8=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-500-3Kt_t5QMN06RP2mAvzo26Q-1; Mon, 21 Dec 2020 13:12:37 -0500
-X-MC-Unique: 3Kt_t5QMN06RP2mAvzo26Q-1
-Received: by mail-wm1-f69.google.com with SMTP id w204so7831273wmb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:12:36 -0800 (PST)
+        Mon, 21 Dec 2020 13:14:19 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E41D9C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:13:38 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id k10so10726719wmi.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:13:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GQbcSVOsPCGaFVLHXPexgbeoL6ycThesvgfDmyuAMdM=;
+        b=TjtUeUUL8XFB8w6WM2SKsvg2aJrSoj73Ps+COjP65bpxXKmf+Iux57nUTE5ck/el4E
+         DVge4nfCSgjZxjUaztJ0Ly+friOlMb3hp8+9F5BK7Kee6kWndbcgvy4f6mtWVNdYZdw9
+         k9kzHYOUDppHyaJeUpmxnqDbYbmixx9+pqkq5fVjzIaHAa5zbG0cnHrkKUZH+j/1ydUt
+         j4VeC8GKqaG3uwyWxW6I03yqLRSsbBJn5qyVE1KogmAme0rDftJpZJK5X542UCE7/Vlp
+         hcgXskk9u0+Awtr7QAkIMsOWZpx28nTHsWDEgbMeQ+pXx82T8VDw4ndM0/nGnt4+SaB7
+         oD9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=FNWljgMN9GP4v/GttfkerKbzxoxWratIwvuxaoSFccA=;
-        b=KXY9UCZ17Z0sIoWeqXVo9dGWh1bPzAivjmtZpLwmNkUw4zyS7FnrevtuTkA5wOkUPT
-         TI2TQUPhYjuW3LnBHyxP8e5j1rPiX/UHrw2EJfmVHsmj/gVOE6TzR1n2IZjOsvwfV7WT
-         /FSpyZ4Ml+ZkAHJLOt5w2HgoSrPpE/z0hrJKUB/EGadJ2PJY38SF1inlyzk4NvPUJc3V
-         ZTdr0PUwh+DGrDWiBLBh5b4IekIMjrOxEcbe1K8jPl9fM0K0Z5TLgCaYxnEb47CsCRdz
-         pu/DM2BKSJ6kSjSRmhhiBC9QOV3CdclxJhirZ/tnBnqKS/8esgLfIVCqWvKzF/mrbcF8
-         xC+Q==
-X-Gm-Message-State: AOAM530UWEuW0k+pAdxs3RUpEcc/rNN0nawtwzz1sr//AoFoTNkcJI4Z
-        LBUwr1uGiSSQwm+PhbM7+QJnX6bqxgDKK17v+kfF04QfHoLSlt/6rmnSpxgu1bVvBONPl2fcBa+
-        c6PjWLr2T+FLYRGmxW0X/wnFl
-X-Received: by 2002:adf:ce84:: with SMTP id r4mr19650806wrn.91.1608574355729;
-        Mon, 21 Dec 2020 10:12:35 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzacrgwP2Niy/JAPK2sTsrTEybPDcKTOmrRzQkSs/hVxQi/hairbdj4Xxk29BZYytT0R93dOw==
-X-Received: by 2002:adf:ce84:: with SMTP id r4mr19650775wrn.91.1608574355458;
-        Mon, 21 Dec 2020 10:12:35 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id r7sm19534725wmh.2.2020.12.21.10.12.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Dec 2020 10:12:34 -0800 (PST)
-Subject: Re: [PATCH] KVM: SVM: Add register operand to vmsave call in
- sev_es_vcpu_load
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>
-References: <20201219063711.3526947-1-natechancellor@gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f6d61324-4243-e5ed-9450-6ee8f9b1f44b@redhat.com>
-Date:   Mon, 21 Dec 2020 19:12:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        bh=GQbcSVOsPCGaFVLHXPexgbeoL6ycThesvgfDmyuAMdM=;
+        b=MU1F4jwl9ib+sYlLxpnp4453BIK5un0ikzjnx9dhx6xQ0ySJzI2YAa4g96i/EFNLpp
+         hlxwc3cyZ+jOrsxG1MbCXc3/Fv5CxGfIM5hhiGYVJ2EnYCzGtDrZ5Hf8pw63AbueDOpy
+         gV6rVnzHo5ZeRe6aJKloaSPL3vsHAT7GN7ZYU6Z18GYI1VpVsh4YAokj5+e+5UrZ6/BY
+         r8GBgVkgzkzgzv4rVw/zNgThSveUX4IHjIPjecFhOCKuQt+VoZt4JuffnSZDfXytVwOz
+         DOOAdyhtzIeIi9Kinl72PN899SzLkrVJOTQp4+3OxkmTtFM8HSgdLUNPvejUTqRSEKOm
+         w0Hg==
+X-Gm-Message-State: AOAM5314v68bEKYuC9sbO1G1DOrbOQ1SVVvqID5L1nZK/bCB7FGcz9hR
+        Cjs6r5z+hU+l1vKIQp330Oo=
+X-Google-Smtp-Source: ABdhPJyeOiJprk7Loi5JMfeVJeXoygn8F3xrMlXyoZ+NdnXtYx5wV+SeSXTz82byTmiVlk7T1BLSYQ==
+X-Received: by 2002:a1c:7d88:: with SMTP id y130mr17483165wmc.158.1608574417702;
+        Mon, 21 Dec 2020 10:13:37 -0800 (PST)
+Received: from localhost.localdomain (p200300f137019000428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:3701:9000:428d:5cff:feb9:9db8])
+        by smtp.googlemail.com with ESMTPSA id m11sm23434936wmi.16.2020.12.21.10.13.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 10:13:37 -0800 (PST)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     linux-amlogic@lists.infradead.org, khilman@baylibre.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        narmstrong@baylibre.com,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH 0/5] Thermal zone configuration for Meson8/Meson8b/Meson8m2
+Date:   Mon, 21 Dec 2020 19:13:01 +0100
+Message-Id: <20201221181306.904272-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20201219063711.3526947-1-natechancellor@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/12/20 07:37, Nathan Chancellor wrote:
-> When using LLVM's integrated assembler (LLVM_IAS=1) while building
-> x86_64_defconfig + CONFIG_KVM=y + CONFIG_KVM_AMD=y, the following build
-> error occurs:
-> 
->   $ make LLVM=1 LLVM_IAS=1 arch/x86/kvm/svm/sev.o
->   arch/x86/kvm/svm/sev.c:2004:15: error: too few operands for instruction
->           asm volatile(__ex("vmsave") : : "a" (__sme_page_pa(sd->save_area)) : "memory");
->                        ^
->   arch/x86/kvm/svm/sev.c:28:17: note: expanded from macro '__ex'
->   #define __ex(x) __kvm_handle_fault_on_reboot(x)
->                   ^
->   ./arch/x86/include/asm/kvm_host.h:1646:10: note: expanded from macro '__kvm_handle_fault_on_reboot'
->           "666: \n\t"                                                     \
->                   ^
->   <inline asm>:2:2: note: instantiated into assembly here
->           vmsave
->           ^
->   1 error generated.
-> 
-> This happens because LLVM currently does not support calling vmsave
-> without the fixed register operand (%rax for 64-bit and %eax for
-> 32-bit). This will be fixed in LLVM 12 but the kernel currently supports
-> LLVM 10.0.1 and newer so this needs to be handled.
-> 
-> Add the proper register using the _ASM_AX macro, which matches the
-> vmsave call in vmenter.S.
-> 
-> Fixes: 861377730aa9 ("KVM: SVM: Provide support for SEV-ES vCPU loading")
-> Link: https://reviews.llvm.org/D93524
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1216
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> ---
->   arch/x86/kvm/svm/sev.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index e57847ff8bd2..958370758ed0 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -2001,7 +2001,7 @@ void sev_es_vcpu_load(struct vcpu_svm *svm, int cpu)
->   	 * of which one step is to perform a VMLOAD. Since hardware does not
->   	 * perform a VMSAVE on VMRUN, the host savearea must be updated.
->   	 */
-> -	asm volatile(__ex("vmsave") : : "a" (__sme_page_pa(sd->save_area)) : "memory");
-> +	asm volatile(__ex("vmsave %%"_ASM_AX) : : "a" (__sme_page_pa(sd->save_area)) : "memory");
->   
->   	/*
->   	 * Certain MSRs are restored on VMEXIT, only save ones that aren't
-> 
+This adds the thermal zone configuration on Meson8/Meson8b/Meson8m2
+SoCs. The thermal sensor reading is taken from SAR ADC. With
+"generic-adc-thermal" it is then used to configure the thermal zone.
 
-Queued, thanks.
+CPU and GPU frequencies can both be managed. The vendor kernel also
+manages the number of active GPU pixel processor cores. This is not
+supported yet so we skip it.
 
-Paolo
+
+Martin Blumenstingl (5):
+  ARM: dts: meson: move iio-hwmon for the SoC temperature to meson.dtsi
+  ARM: dts: meson: add the ADC thermal sensor to meson.dtsi
+  ARM: dts: meson8: add the thermal-zones with cooling configuration
+  ARM: dts: meson8b: add the thermal-zones with cooling configuration
+  ARM: multi_v7_defconfig: Enable support for the ADC thermal sensor
+
+ arch/arm/boot/dts/meson.dtsi              | 12 +++++
+ arch/arm/boot/dts/meson8.dtsi             | 54 +++++++++++++++++++++++
+ arch/arm/boot/dts/meson8b-ec100.dts       |  5 ---
+ arch/arm/boot/dts/meson8b-mxq.dts         |  5 ---
+ arch/arm/boot/dts/meson8b-odroidc1.dts    |  5 ---
+ arch/arm/boot/dts/meson8b.dtsi            | 54 +++++++++++++++++++++++
+ arch/arm/boot/dts/meson8m2-mxiii-plus.dts |  5 ---
+ arch/arm/configs/multi_v7_defconfig       |  1 +
+ 8 files changed, 121 insertions(+), 20 deletions(-)
+
+-- 
+2.29.2
 
