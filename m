@@ -2,78 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D00072DFC5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 14:43:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ACB92DFC5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 14:44:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726661AbgLUNnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 08:43:04 -0500
-Received: from mail-wr1-f45.google.com ([209.85.221.45]:41128 "EHLO
-        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725891AbgLUNnE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 08:43:04 -0500
-Received: by mail-wr1-f45.google.com with SMTP id a12so11097951wrv.8;
-        Mon, 21 Dec 2020 05:42:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Q7UNQoTHgmNv0BAESI8aO2Rq115t5X5vM58d1YEnIy0=;
-        b=r6oFLA78mM/UDqhypsChyL6b65YKvPiujs65jrnlPv6BuGHpNXvDq2F9llT25xQQRr
-         kbhDoC4KXvnWWsT63+fxJ2pk18w9TPuTJkpNIXD/QuC+jOcF5iWJb+rdqqyPMB66bzvk
-         UZJ/0Lqb8Px2Sl4uro6HFS8YbuvLhdUgEZM3vX2kyDegWZI96X6a6NIM5eNzDaST3wjT
-         KC02FFffqCrPToifjB3spioUkaZOteZd0C6n1yNpNhdP+U4n6Uw1v3izZITJ3Dz39MhZ
-         X6FFbcx5La2Ltc4NuHkKXPs2lkFHojegSz2TRFOI8WYMDzkYLMPkAJV5p2CDFpbttlVS
-         ZEow==
-X-Gm-Message-State: AOAM530x1V08FUBbjl5f7xUx2WmGLbg+vSSMPccfM1NsTauALimW531p
-        YBdstVxgE0Nn2X2sMOBwZbg=
-X-Google-Smtp-Source: ABdhPJymVDA0bI+881pIn4JFoYBD9LMIxTN50zgdnPwGpdqqCeBJDIVJe6Tpq4ndw22Vkn+wRg8jjQ==
-X-Received: by 2002:adf:bc87:: with SMTP id g7mr18642151wrh.147.1608558141976;
-        Mon, 21 Dec 2020 05:42:21 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id n11sm8360854wra.9.2020.12.21.05.42.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 05:42:20 -0800 (PST)
-Date:   Mon, 21 Dec 2020 14:42:19 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Li Yang <leoyang.li@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-amarula@amarulasolutions.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v2 1/6] arm64: defconfig: Enable REGULATOR_PF8X00
-Message-ID: <20201221134219.GA31176@kozik-lap>
-References: <20201221113151.94515-1-jagan@amarulasolutions.com>
- <20201221113151.94515-2-jagan@amarulasolutions.com>
+        id S1726894AbgLUNol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 08:44:41 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56334 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725806AbgLUNol (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 08:44:41 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2C8A6AC63;
+        Mon, 21 Dec 2020 13:43:59 +0000 (UTC)
+Date:   Mon, 21 Dec 2020 14:43:53 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>, naoya.horiguchi@nec.com,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH v10 03/11] mm/hugetlb: Free the vmemmap
+ pages associated with each HugeTLB page
+Message-ID: <20201221134345.GA19324@linux>
+References: <20201217121303.13386-1-songmuchun@bytedance.com>
+ <20201217121303.13386-4-songmuchun@bytedance.com>
+ <20201221091123.GB14343@linux>
+ <CAMZfGtVnS=_m4fpGBfDpOpdgzP02QCteUQn-gGiLADWfGiVJ=A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201221113151.94515-2-jagan@amarulasolutions.com>
+In-Reply-To: <CAMZfGtVnS=_m4fpGBfDpOpdgzP02QCteUQn-gGiLADWfGiVJ=A@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 05:01:46PM +0530, Jagan Teki wrote:
-> Enable PF8X00 regulator driver by default as it used in
-> some of i.MX8MM hardware platforms.
-> 
-> Engicam i.Core MX8M Mini SoM is using the PF8121A family PMIC. 
-> 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> ---
-> Changes for v2:
-> - updated commit message
-> 
->  arch/arm64/configs/defconfig | 1 +
->  1 file changed, 1 insertion(+)
+On Mon, Dec 21, 2020 at 07:25:15PM +0800, Muchun Song wrote:
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Should we add a BUG_ON in vmemmap_remap_free() for now?
+> 
+>         BUG_ON(reuse != start + PAGE_SIZE);
 
-Best regards,
-Krzysztof
+I do not think we have to, plus we would be BUG_ing for some specific use
+case in "generic" function.
+Maybe others think different though.
+
+-- 
+Oscar Salvador
+SUSE L3
