@@ -2,118 +2,371 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C46C2DF7A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 03:11:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EB382DF86D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 05:54:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727173AbgLUCLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 21:11:05 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:39187 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726919AbgLUCLF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 21:11:05 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Czjbt0W4Qz9sVj;
-        Mon, 21 Dec 2020 13:10:18 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1608516618;
-        bh=V9UVI2PvqIaf/yrp5phh+JLtvpEaSk5a+6OJkvKRgA0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=JlR4vlgwiHv8P3K9mkE6zxphLr1lQOOzSndCREQxGXqxZpMUzT8Z8rqpLENqvsLSr
-         7qs6RttPY9sqV1o4cbmpwMI9Krg6TWurpRZ/XdmeFFsRNF3//8ay4GB5fwtVGczc10
-         zRJihweKqdNy0i/mFO66rdUJmF5BGOlx0qaJeLyeWgbvIWu6Jk2BKGH4R3zXl9G4N0
-         CaRwkP5+GX74c6V3kaJu6j+Oat1yhS6cJlaikpvMPZI91n0x1Iac1fR5pi87U+QmAv
-         vxml8ORwcE/5LUxIETqKkcqVOpm/yFb9tmZ4ODN86Eqtl2oqH/eZ15/IweaT6QeZq/
-         HqCoVtFQggCWw==
-Date:   Mon, 21 Dec 2020 13:10:17 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andrey Konovalov <andreyknvl@google.com>,
-        Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the akpm-current tree
-Message-ID: <20201221131017.128c89b1@canb.auug.org.au>
+        id S1728401AbgLUEyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 23:54:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728378AbgLUEyj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Dec 2020 23:54:39 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57821C061282
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 20:53:59 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id e2so5631681pgi.5
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 20:53:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z8nUgXXr4gmphfYkGDSdKR/yaNjlB+snIU3z29dtuO0=;
+        b=CFTaxcaCBM9h1WplhSBTLnJNW21DX5HpaNsFW4iLnBo+LwJpwODan+3Ow4g2gks0cL
+         tpQEsMEU9GYYHHgw61jhi3Ls4HMZDu7w9/BTK69iSYD5RifeAYwFf44Y8pV20riOjDAm
+         SO+u3oN/EHlmu7ssIi43WNdlyH1XJzfUavBcY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z8nUgXXr4gmphfYkGDSdKR/yaNjlB+snIU3z29dtuO0=;
+        b=H0Xgp98c1vBbTqShcRup7Z39RAw1oYjmBY6rtlNvGaTLvCYxiJglCZdw44jWhTKf5o
+         jqXaAtemKdVM45YCShL575XD2xkMZvtTOVdExfJfhbpe6D9pX9oi2pzPDDnIP21T6DqN
+         KBjp0w3/bQbQJLNnn9l6zz+uyW2djCbaxJtG9m6dWcx10mVN7mTssMrwdAhRkTYHffEQ
+         4e+NODBxY5UI2aWPp1sUJuHZO2/jTyGJ/hy04gYgvlGQtFjxx78u8NvnRV/fnEnfFIw3
+         o46njTESLn2olH8AzRbicsqLPja51OvvXiSjkaqBLioLLs/9S3gwBlm3PNuS8raln6WD
+         x2JQ==
+X-Gm-Message-State: AOAM532xSW2XbqMektJefgGMmi1683a6EGZDHi79NCzZqzAJGzPD26Ka
+        2zml2kwIeYpUDf0RWkqqjeIbFWmRi+MI2g==
+X-Google-Smtp-Source: ABdhPJy7UbEJP/+WpCYZ+kkMkInF1kGKkDO7nnOzUun6FtK8iyFJaQs4p+FYFf/P90Gpv1od+4sDtA==
+X-Received: by 2002:a5e:de08:: with SMTP id e8mr12583296iok.203.1608516760195;
+        Sun, 20 Dec 2020 18:12:40 -0800 (PST)
+Received: from mail-io1-f48.google.com (mail-io1-f48.google.com. [209.85.166.48])
+        by smtp.gmail.com with ESMTPSA id f6sm21020761ioh.2.2020.12.20.18.12.39
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 20 Dec 2020 18:12:39 -0800 (PST)
+Received: by mail-io1-f48.google.com with SMTP id o6so7480856iob.10
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 18:12:39 -0800 (PST)
+X-Received: by 2002:a5d:8d8b:: with SMTP id b11mr11861196ioj.68.1608516759003;
+ Sun, 20 Dec 2020 18:12:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/BzH8.PRlEOqjyuYVlKL7+7/";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20201215154439.69062-1-ribalda@chromium.org> <20201215154439.69062-10-ribalda@chromium.org>
+ <X9+IMF9yIdzPrkgg@pendragon.ideasonboard.com> <CANiDSCtSuHFnS85xUsfv9KSKFzaT-KLHeadCzr+5bBRRYZ-arQ@mail.gmail.com>
+ <X+ADp39sCVv0Jnzs@pendragon.ideasonboard.com>
+In-Reply-To: <X+ADp39sCVv0Jnzs@pendragon.ideasonboard.com>
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Mon, 21 Dec 2020 03:12:28 +0100
+X-Gmail-Original-Message-ID: <CANiDSCuAtvqJMTwoZF6vw8i7dvcN_1+OPb-hyfEfLJV1X5Sj4g@mail.gmail.com>
+Message-ID: <CANiDSCuAtvqJMTwoZF6vw8i7dvcN_1+OPb-hyfEfLJV1X5Sj4g@mail.gmail.com>
+Subject: Re: [PATCH v4 9/9] media: uvcvideo: Implement UVC_QUIRK_PRIVACY_DURING_STREAM
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/BzH8.PRlEOqjyuYVlKL7+7/
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Laurent
 
-Hi all,
+On Mon, Dec 21, 2020 at 3:08 AM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Ricardo,
+>
+> On Mon, Dec 21, 2020 at 02:10:18AM +0100, Ricardo Ribalda wrote:
+> > On Sun, Dec 20, 2020 at 6:22 PM Laurent Pinchart wrote:
+> > > On Tue, Dec 15, 2020 at 04:44:39PM +0100, Ricardo Ribalda wrote:
+> > > > Some devices, can only read the privacy_pin if the device is
+> > > > streaming.
+> > >
+> > > :-(
+> >
+> > :"-(
+> >
+> > > > This patch implement a quirk for such devices, in order to avoid invalid
+> > > > reads and/or spurious events.
+> > > >
+> > > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > > > ---
+> > > >  drivers/media/usb/uvc/uvc_driver.c | 97 ++++++++++++++++++++++++++----
+> > > >  drivers/media/usb/uvc/uvc_queue.c  |  3 +
+> > > >  drivers/media/usb/uvc/uvcvideo.h   |  6 ++
+> > > >  3 files changed, 94 insertions(+), 12 deletions(-)
+> > > >
+> > > > diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+> > > > index e49491250e87..61313019e226 100644
+> > > > --- a/drivers/media/usb/uvc/uvc_driver.c
+> > > > +++ b/drivers/media/usb/uvc/uvc_driver.c
+> > > > @@ -7,6 +7,7 @@
+> > > >   */
+> > > >
+> > > >  #include <linux/atomic.h>
+> > > > +#include <linux/dmi.h>
+> > > >  #include <linux/gpio/consumer.h>
+> > > >  #include <linux/kernel.h>
+> > > >  #include <linux/list.h>
+> > > > @@ -1471,13 +1472,39 @@ static int uvc_parse_control(struct uvc_device *dev)
+> > > >       return 0;
+> > > >  }
+> > > >
+> > > > +static bool uvc_ext_gpio_is_streaming(struct uvc_device *dev)
+> > > > +{
+> > > > +     struct uvc_streaming *streaming;
+> > > > +
+> > > > +     list_for_each_entry(streaming, &dev->streams, list) {
+> > > > +             if (uvc_queue_streaming(&streaming->queue))
+> > > > +                     return true;
+> > > > +     }
+> > > > +
+> > > > +     return false;
+> > > > +}
+> > > > +
+> > > > +/* Update the cached value and return true if it has changed */
+> > > > +static bool uvc_gpio_update_value(struct uvc_entity *unit, u8 *new_val)
+> > > > +{
+> > > > +     *new_val = gpiod_get_value(unit->gpio.gpio_privacy);
+> > > > +
+> > > > +     return atomic_xchg(&unit->gpio.gpio_privacy_value, *new_val) !=
+> > > > +                                                                   *new_val;
+> > >
+> > > That's a weird indentation. Also, as the left hand side modifies
+> > > *new_val, does C guarantee the order in which the two operands to != are
+> > > evaluated ? Could the code be written in an easier to read way ?
+> > >
+> > > > +}
+> > > > +
+> > > >  static int uvc_gpio_get_cur(struct uvc_device *dev, struct uvc_entity *entity,
+> > > >                           u8 cs, void *data, u16 size)
+> > > >  {
+> > > >       if (cs != UVC_CT_PRIVACY_CONTROL || size < 1)
+> > > >               return -EINVAL;
+> > > >
+> > > > -     *(uint8_t *)data = gpiod_get_value(entity->gpio.gpio_privacy);
+> > > > +     if ((dev->quirks & UVC_QUIRK_PRIVACY_DURING_STREAM) &&
+> > > > +         !uvc_ext_gpio_is_streaming(dev))
+> > > > +             return -EBUSY;
+> > > > +
+> > > > +     uvc_gpio_update_value(entity, (uint8_t *)data);
+> > > > +
+> > > >       return 0;
+> > > >  }
+> > > >
+> > > > @@ -1491,26 +1518,69 @@ static int uvc_gpio_get_info(struct uvc_device *dev, struct uvc_entity *entity,
+> > > >       return 0;
+> > > >  }
+> > > >
+> > > > -static irqreturn_t uvc_privacy_gpio_irq(int irq, void *data)
+> > > > +static struct uvc_entity *uvc_find_ext_gpio_unit(struct uvc_device *dev)
+> > > >  {
+> > > > -     struct uvc_device *dev = data;
+> > > > -     struct uvc_video_chain *chain;
+> > > >       struct uvc_entity *unit;
+> > > > -     u8 value;
+> > > >
+> > > > -     /* GPIO entities are always on the first chain */
+> > > > -     chain = list_first_entry(&dev->chains, struct uvc_video_chain, list);
+> > > >       list_for_each_entry(unit, &dev->entities, list) {
+> > > > -             if (UVC_ENTITY_TYPE(unit) != UVC_EXT_GPIO_UNIT)
+> > > > -                     continue;
+> > > > -             value = gpiod_get_value(unit->gpio.gpio_privacy);
+> > > > -             uvc_ctrl_status_event(NULL, chain, unit->controls, &value);
+> > > > -             return IRQ_HANDLED;
+> > > > +             if (UVC_ENTITY_TYPE(unit) == UVC_EXT_GPIO_UNIT)
+> > > > +                     return unit;
+> > > >       }
+> > > >
+> > > > +     return unit;
+> > > > +}
+> > > > +
+> > > > +void uvc_privacy_gpio_event(struct uvc_device *dev)
+> > > > +{
+> > > > +     struct uvc_entity *unit;
+> > > > +     struct uvc_video_chain *chain;
+> > > > +     u8 new_value;
+> > > > +
+> > > > +     unit = uvc_find_ext_gpio_unit(dev);
+> > > > +     if (WARN_ONCE(!unit, "Unable to find entity ext_gpio_unit"))
+> > > > +             return;
+> > > > +
+> > > > +     if (!uvc_gpio_update_value(unit, &new_value))
+> > > > +             return;
+> > >
+> > > If VIDIOC_G_CTRL() is called before the IRQ is processed, this
+> > > uvc_gpio_update_value() call will return false, and no event will be
+> > > generated. I don't think that's right, and even should be generated
+> > > every time the control changes.
+> > >
+> > I was almost sure that get_cur had also the events wired.... but no.
+> >
+> > > > +
+> > > > +     /* GPIO entities are always on the first chain */
+> > > > +     chain = list_first_entry(&dev->chains, struct uvc_video_chain, list);
+> > > > +     uvc_ctrl_status_event(NULL, chain, unit->controls, &new_value);
+> > > > +}
+> > > > +
+> > > > +static irqreturn_t uvc_privacy_gpio_irq(int irq, void *data)
+> > > > +{
+> > > > +     struct uvc_device *dev = data;
+> > > > +
+> > > > +     /* Ignore privacy events during streamoff */
+> > > > +     if (dev->quirks & UVC_QUIRK_PRIVACY_DURING_STREAM)
+> > > > +             if (!uvc_ext_gpio_is_streaming(dev))
+> > > > +                     return IRQ_HANDLED;
+> > >
+> > >         if (dev->quirks & UVC_QUIRK_PRIVACY_DURING_STREAM) {
+> > >                 if (!uvc_ext_gpio_is_streaming(dev))
+> > >                         return IRQ_HANDLED;
+> > >         }
+> > >
+> > > There's a potential race condition with VIDIOC_STREAMON and
+> > > VIDIOC_STREAMOFF. Could you explain what the device does exactly when
+> > > not streaming ? As the GPIO isn't tied to the UVC controller, how comes
+> > > the streaming state influences it ? Any hope the firmware could be fixed
+> > > instead ?
+> >
+> > In the affected devices, the privacy_pin is an output of the camera
+> > module instead of an independent pin.
+>
+> So the privacy switch is an input of a camera module, which then output
+> its state on a GPIO instead of exposing it through the UVC privacy
+> control ? Amazing design !
 
-After merging the akpm-current tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+Dont kill the messenger...
 
-mm/kasan/quarantine.c: In function 'quarantine_put':
-mm/kasan/quarantine.c:207:15: error: 'info' undeclared (first use in this f=
-unction)
-  207 |   qlink_free(&info->quarantine_link, cache);
-      |               ^~~~
+>
+> > When the camera is not streaming, the camera does not drive the pin,
+> > so the system reads whatever pull-up, pull-down the pin is configured
+> > by default in the firmware/hardware.
+> >
+> > Unfortunately the only way to fix it would be to change the module, or
+> > the firmware of the module, and neigher things are not feasable :(. So
+> > we have to use a quirk for them.
+> > Future models have this fixed.
+>
+> Changing the hardware, obviously. Changing the firmware of the module...
+> Someone needs to be scolded along the development chain, can you take
+> care of that at least ? ;-)
 
-Caused by commit
+Will do my best ;)
 
-  120d593a8650 ("kasan: fix memory leak of kasan quarantine")
+>
+> Thinking more about this, do you have a use case for knowing the state
+> of the privacy switch when not streaming ?
 
-interacting with commit
+Notify user space that the switch has toggled, to provide visual
+feedback of the action.
 
-  cfbc92088e1d ("kasan: rename get_alloc/free_info")
+>
+> > Regarding the race condition... The use of the atomic_t was to avoid
+> > that race, but what I did not realise was that by default get_cur does
+> > not send an event... So I am working on a new series, which also
+> > includes a fix for the async_control wq.
+> >
+> > Thanks for your review!!!
+> >
+> > > > +
+> > > > +     uvc_privacy_gpio_event(dev);
+> > > > +
+> > > >       return IRQ_HANDLED;
+> > > >  }
+> > > >
+> > > > +static const struct dmi_system_id privacy_valid_during_streamon[] = {
+> > > > +     {
+> > > > +             .ident = "HP Elite c1030 Chromebook",
+> > > > +             .matches = {
+> > > > +                     DMI_MATCH(DMI_SYS_VENDOR, "HP"),
+> > > > +                     DMI_MATCH(DMI_PRODUCT_NAME, "Jinlon"),
+> > > > +             },
+> > > > +     },
+> > > > +     {
+> > > > +             .ident = "HP Pro c640 Chromebook",
+> > > > +             .matches = {
+> > > > +                     DMI_MATCH(DMI_SYS_VENDOR, "HP"),
+> > > > +                     DMI_MATCH(DMI_PRODUCT_NAME, "Dratini"),
+> > > > +             },
+> > > > +     },
+> > > > +     { } /* terminate list */
+> > > > +};
+> > > > +
+> > > > +
+> > > >  static int uvc_parse_gpio(struct uvc_device *dev)
+> > > >  {
+> > > >       struct uvc_entity *unit;
+> > > > @@ -1545,6 +1615,9 @@ static int uvc_parse_gpio(struct uvc_device *dev)
+> > > >       if (irq == -EPROBE_DEFER)
+> > > >               return -EPROBE_DEFER;
+> > > >
+> > > > +     if (dmi_check_system(privacy_valid_during_streamon))
+> > > > +             dev->quirks |= UVC_QUIRK_PRIVACY_DURING_STREAM;
+> > > > +
+> > > >       if (irq < 0)
+> > > >               return 0;
+> > > >
+> > > > diff --git a/drivers/media/usb/uvc/uvc_queue.c b/drivers/media/usb/uvc/uvc_queue.c
+> > > > index cd60c6c1749e..e800d491303f 100644
+> > > > --- a/drivers/media/usb/uvc/uvc_queue.c
+> > > > +++ b/drivers/media/usb/uvc/uvc_queue.c
+> > > > @@ -337,9 +337,12 @@ int uvc_dequeue_buffer(struct uvc_video_queue *queue, struct v4l2_buffer *buf,
+> > > >  int uvc_queue_streamon(struct uvc_video_queue *queue, enum v4l2_buf_type type)
+> > > >  {
+> > > >       int ret;
+> > > > +     struct uvc_streaming *stream = uvc_queue_to_stream(queue);
+> > > >
+> > > >       mutex_lock(&queue->mutex);
+> > > >       ret = vb2_streamon(&queue->queue, type);
+> > > > +     if (stream->dev->quirks & UVC_QUIRK_PRIVACY_DURING_STREAM)
+> > > > +             uvc_privacy_gpio_event(stream->dev);
+> > > >       mutex_unlock(&queue->mutex);
+> > > >
+> > > >       return ret;
+> > > > diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+> > > > index 2b5ba4b02d3a..2a95b3ed3ea8 100644
+> > > > --- a/drivers/media/usb/uvc/uvcvideo.h
+> > > > +++ b/drivers/media/usb/uvc/uvcvideo.h
+> > > > @@ -6,6 +6,7 @@
+> > > >  #error "The uvcvideo.h header is deprecated, use linux/uvcvideo.h instead."
+> > > >  #endif /* __KERNEL__ */
+> > > >
+> > > > +#include <linux/atomic.h>
+> > > >  #include <linux/gpio/consumer.h>
+> > > >  #include <linux/kernel.h>
+> > > >  #include <linux/poll.h>
+> > > > @@ -209,6 +210,7 @@
+> > > >  #define UVC_QUIRK_RESTORE_CTRLS_ON_INIT      0x00000400
+> > > >  #define UVC_QUIRK_FORCE_Y8           0x00000800
+> > > >  #define UVC_QUIRK_FORCE_BPP          0x00001000
+> > > > +#define UVC_QUIRK_PRIVACY_DURING_STREAM      0x00002000
+> > > >
+> > > >  /* Format flags */
+> > > >  #define UVC_FMT_FLAG_COMPRESSED              0x00000001
+> > > > @@ -359,6 +361,7 @@ struct uvc_entity {
+> > > >                       u8  bControlSize;
+> > > >                       u8  *bmControls;
+> > > >                       struct gpio_desc *gpio_privacy;
+> > > > +                     atomic_t  gpio_privacy_value;
+> > > >               } gpio;
+> > > >       };
+> > > >
+> > > > @@ -815,6 +818,9 @@ extern const struct v4l2_file_operations uvc_fops;
+> > > >  int uvc_mc_register_entities(struct uvc_video_chain *chain);
+> > > >  void uvc_mc_cleanup_entity(struct uvc_entity *entity);
+> > > >
+> > > > +/* Privacy gpio */
+> > > > +void uvc_privacy_gpio_event(struct uvc_device *dev);
+> > > > +
+> > > >  /* Video */
+> > > >  int uvc_video_init(struct uvc_streaming *stream);
+> > > >  int uvc_video_suspend(struct uvc_streaming *stream);
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
 
-Can we please get this sorted out once and for all?
 
-I have applied the following patch for today:
 
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Mon, 21 Dec 2020 13:07:42 +1100
-Subject: [PATCH] kasan: fix memory leak of kasan quarantine fix
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- mm/kasan/quarantine.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/mm/kasan/quarantine.c b/mm/kasan/quarantine.c
-index 3f3b3d902c18..091a57f942b3 100644
---- a/mm/kasan/quarantine.c
-+++ b/mm/kasan/quarantine.c
-@@ -204,7 +204,7 @@ bool quarantine_put(struct kmem_cache *cache, void *obj=
-ect)
-=20
- 	q =3D this_cpu_ptr(&cpu_quarantine);
- 	if (q->offline) {
--		qlink_free(&info->quarantine_link, cache);
-+		qlink_free(&meta->quarantine_link, cache);
- 		local_irq_restore(flags);
- 		return false;
- 	}
---=20
-2.29.2
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/BzH8.PRlEOqjyuYVlKL7+7/
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/gBAkACgkQAVBC80lX
-0GwNWwgAlrPv8jREH+leMyZMw3LsinVBn78o0VzTDvbB42A9m78FaswrnAeLzgc7
-CR9vfvzP6kZ/Pbdx2OcpAdzwEl56eRDc+R3xtopGlCyz42ROHFZDJlpHOGIU23QS
-XFtFi4q6BfzNd3HTh23akVIIRfdHRKZHSyQ8t+/4Hjf16y6Us83AsGvpvOF21vqJ
-ojrJnCwhf2E8SvHHP/snW018wJDWeUoCIQxnS53Ny6bVm0vitQFoejuDZJr6tjK1
-U0U/aJs0UTetNAKCaMsx1ENhbm+3d0cIjsU/7gayuz3PgeoazXYHvfr3bXbR5N6i
-JRS3n9fyL1ydQ5uCSJQ8QvPbAEkFVA==
-=wVjd
------END PGP SIGNATURE-----
-
---Sig_/BzH8.PRlEOqjyuYVlKL7+7/--
+-- 
+Ricardo Ribalda
