@@ -2,243 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3AC72DFBD9
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 13:29:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B3152DFBD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 13:27:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726716AbgLUM27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 07:28:59 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:19985 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725807AbgLUM25 (ORCPT
+        id S1726665AbgLUM11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 07:27:27 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:52632 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726173AbgLUM10 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 07:28:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1608553562;
-        s=strato-dkim-0002; d=hartkopp.net;
-        h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:From:
-        Subject:Sender;
-        bh=SbD4hSbPipS+g1Ay3/o8KasZvvZKwV35sLmkWfN4Zxs=;
-        b=ZWw8pOhUhX+9GzT3Kp7QoIbTZUyou/EI8TQMyBgssbtVY1yLXqkDy16Q7AZUcaFC8q
-        +OdAZ4OcqOpPs72CNPW1yIlOSUfBAZnXC5iiX2ZGeF8qifLleoHYoq0wfgl+jx563gyW
-        tMFeon5lf2/4yemKwtzz7v9jpkZ2gUhIyHfirQTgIwsaCgsHddGajwUmMv3uy7rMqSPB
-        QAxsclfhKtyWO/7F5yIB2tVCkwX9utQaNfQQLoMlYkwQFHbijGA5fR5NiMfiu29hPNn7
-        ftUCD9s38+fX1ST6Q10n26n+KJ6bEqcdz8awsILmPgP3H9ziILFNL+qUJxXMxli/Ndrj
-        BTKg==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1o3TMaFqTEVR9J8xty10="
-X-RZG-CLASS-ID: mo00
-Received: from [192.168.10.177]
-        by smtp.strato.de (RZmta 47.10.0 SBL|AUTH)
-        with ESMTPSA id Q06fc3wBLCPp0g4
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Mon, 21 Dec 2020 13:25:51 +0100 (CET)
-Subject: Re: general protection fault in j1939_netdev_notify (2)
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     linux@rempel-privat.de, mkl@pengutronix.de, robin@protonic.nl,
-        davem@davemloft.net,
-        syzbot <syzbot+5138c4dd15a0401bec7b@syzkaller.appspotmail.com>,
-        hkallweit1@gmail.com, kuba@kernel.org,
-        syzkaller-bugs@googlegroups.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-can@vger.kernel.org,
-        kernel@pengutronix.de
-References: <000000000000e5b07c05b6deb081@google.com>
- <d9be63e3-a432-aa5c-d3a9-17138d1953d3@hartkopp.net>
- <20201220143734.dm2nz3eadhqfcx36@pengutronix.de>
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-Message-ID: <822244cd-3b4e-f3e8-c11e-2edb701ca30d@hartkopp.net>
-Date:   Mon, 21 Dec 2020 13:25:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Mon, 21 Dec 2020 07:27:26 -0500
+X-UUID: 4c68ba0aa9d74be7b99f7817a22da234-20201221
+X-UUID: 4c68ba0aa9d74be7b99f7817a22da234-20201221
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <qii.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1132859232; Mon, 21 Dec 2020 20:26:39 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 21 Dec 2020 20:26:36 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 21 Dec 2020 20:26:35 +0800
+From:   <qii.wang@mediatek.com>
+To:     <robh+dt@kernel.org>
+CC:     <matthias.bgg@gmail.com>, <mark.rutland@arm.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>,
+        <qii.wang@mediatek.com>
+Subject: [PATCH] arm64: dts: mediatek: Correct i2c clock of MT8192
+Date:   Mon, 21 Dec 2020 20:26:30 +0800
+Message-ID: <1608553590-26459-1-git-send-email-qii.wang@mediatek.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-In-Reply-To: <20201220143734.dm2nz3eadhqfcx36@pengutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Qii Wang <qii.wang@mediatek.com>
 
+imp wrapper clock is the i2c source clock of MT8192
 
-On 20.12.20 15:37, Oleksij Rempel wrote:
-> Hello Oliver,
-> 
-> On Sun, Dec 20, 2020 at 02:18:27PM +0100, Oliver Hartkopp wrote:
->> Hello Oleksij,
->>
->> I assume there is some ndev->ml_priv value set - but not from a CAN
->> netdevice.
-> 
-> it is kind of CAN device :)
+Signed-off-by: Qii Wang <qii.wang@mediatek.com>
+---
+ arch/arm64/boot/dts/mediatek/mt8192.dtsi | 43 ++++++++++++++++++++++++--------
+ 1 file changed, 33 insertions(+), 10 deletions(-)
 
-No, it is not.
+diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
+index faea0d9..9c194a8 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
+@@ -17,6 +17,19 @@
+ 	#address-cells = <2>;
+ 	#size-cells = <2>;
+ 
++	aliases {
++		i2c0 = &i2c0;
++		i2c1 = &i2c1;
++		i2c2 = &i2c2;
++		i2c3 = &i2c3;
++		i2c4 = &i2c4;
++		i2c5 = &i2c5;
++		i2c6 = &i2c6;
++		i2c7 = &i2c7;
++		i2c8 = &i2c8;
++		i2c9 = &i2c9;
++	};
++
+ 	clk26m: oscillator0 {
+ 		compatible = "fixed-clock";
+ 		#clock-cells = <0>;
+@@ -593,7 +606,8 @@
+ 			reg = <0 0x11cb0000 0 0x1000>,
+ 			      <0 0x10217300 0 0x80>;
+ 			interrupts = <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH 0>;
+-			clocks = <&clk26m>, <&clk26m>;
++			clocks = <&imp_iic_wrap_e CLK_IMP_IIC_WRAP_E_I2C3>,
++				 <&infracfg CLK_INFRA_AP_DMA>;
+ 			clock-names = "main", "dma";
+ 			clock-div = <1>;
+ 			#address-cells = <1>;
+@@ -612,7 +626,8 @@
+ 			reg = <0 0x11d00000 0 0x1000>,
+ 			      <0 0x10217600 0 0x180>;
+ 			interrupts = <GIC_SPI 119 IRQ_TYPE_LEVEL_HIGH 0>;
+-			clocks = <&clk26m>, <&clk26m>;
++			clocks = <&imp_iic_wrap_s CLK_IMP_IIC_WRAP_S_I2C7>,
++				 <&infracfg CLK_INFRA_AP_DMA>;
+ 			clock-names = "main", "dma";
+ 			clock-div = <1>;
+ 			#address-cells = <1>;
+@@ -625,7 +640,8 @@
+ 			reg = <0 0x11d01000 0 0x1000>,
+ 			      <0 0x10217780 0 0x180>;
+ 			interrupts = <GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH 0>;
+-			clocks = <&clk26m>, <&clk26m>;
++			clocks = <&imp_iic_wrap_s CLK_IMP_IIC_WRAP_S_I2C8>,
++				 <&infracfg CLK_INFRA_AP_DMA>;
+ 			clock-names = "main", "dma";
+ 			clock-div = <1>;
+ 			#address-cells = <1>;
+@@ -638,7 +654,8 @@
+ 			reg = <0 0x11d02000 0 0x1000>,
+ 			      <0 0x10217900 0 0x180>;
+ 			interrupts = <GIC_SPI 121 IRQ_TYPE_LEVEL_HIGH 0>;
+-			clocks = <&clk26m>, <&clk26m>;
++			clocks = <&imp_iic_wrap_s CLK_IMP_IIC_WRAP_S_I2C9>,
++				 <&infracfg CLK_INFRA_AP_DMA>;
+ 			clock-names = "main", "dma";
+ 			clock-div = <1>;
+ 			#address-cells = <1>;
+@@ -657,7 +674,8 @@
+ 			reg = <0 0x11d20000 0 0x1000>,
+ 			      <0 0x10217100 0 0x80>;
+ 			interrupts = <GIC_SPI 113 IRQ_TYPE_LEVEL_HIGH 0>;
+-			clocks = <&clk26m>, <&clk26m>;
++			clocks = <&imp_iic_wrap_ws CLK_IMP_IIC_WRAP_WS_I2C1>,
++				 <&infracfg CLK_INFRA_AP_DMA>;
+ 			clock-names = "main", "dma";
+ 			clock-div = <1>;
+ 			#address-cells = <1>;
+@@ -670,7 +688,8 @@
+ 			reg = <0 0x11d21000 0 0x1000>,
+ 			      <0 0x10217180 0 0x180>;
+ 			interrupts = <GIC_SPI 114 IRQ_TYPE_LEVEL_HIGH 0>;
+-			clocks = <&clk26m>, <&clk26m>;
++			clocks = <&imp_iic_wrap_ws CLK_IMP_IIC_WRAP_WS_I2C2>,
++				 <&infracfg CLK_INFRA_AP_DMA>;
+ 			clock-names = "main", "dma";
+ 			clock-div = <1>;
+ 			#address-cells = <1>;
+@@ -683,7 +702,8 @@
+ 			reg = <0 0x11d22000 0 0x1000>,
+ 			      <0 0x10217380 0 0x180>;
+ 			interrupts = <GIC_SPI 116 IRQ_TYPE_LEVEL_HIGH 0>;
+-			clocks = <&clk26m>, <&clk26m>;
++			clocks = <&imp_iic_wrap_ws CLK_IMP_IIC_WRAP_WS_I2C4>,
++				 <&infracfg CLK_INFRA_AP_DMA>;
+ 			clock-names = "main", "dma";
+ 			clock-div = <1>;
+ 			#address-cells = <1>;
+@@ -702,7 +722,8 @@
+ 			reg = <0 0x11e00000 0 0x1000>,
+ 			      <0 0x10217500 0 0x80>;
+ 			interrupts = <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH 0>;
+-			clocks = <&clk26m>, <&clk26m>;
++			clocks = <&imp_iic_wrap_w CLK_IMP_IIC_WRAP_W_I2C5>,
++				 <&infracfg CLK_INFRA_AP_DMA>;
+ 			clock-names = "main", "dma";
+ 			clock-div = <1>;
+ 			#address-cells = <1>;
+@@ -721,7 +742,8 @@
+ 			reg = <0 0x11f00000 0 0x1000>,
+ 			      <0 0x10217080 0 0x80>;
+ 			interrupts = <GIC_SPI 112 IRQ_TYPE_LEVEL_HIGH 0>;
+-			clocks = <&clk26m>, <&clk26m>;
++			clocks = <&imp_iic_wrap_n CLK_IMP_IIC_WRAP_N_I2C0>,
++				 <&infracfg CLK_INFRA_AP_DMA>;
+ 			clock-names = "main", "dma";
+ 			clock-div = <1>;
+ 			#address-cells = <1>;
+@@ -734,7 +756,8 @@
+ 			reg = <0 0x11f01000 0 0x1000>,
+ 			      <0 0x10217580 0 0x80>;
+ 			interrupts = <GIC_SPI 118 IRQ_TYPE_LEVEL_HIGH 0>;
+-			clocks = <&clk26m>, <&clk26m>;
++			clocks = <&imp_iic_wrap_n CLK_IMP_IIC_WRAP_N_I2C6>,
++				 <&infracfg CLK_INFRA_AP_DMA>;
+ 			clock-names = "main", "dma";
+ 			clock-div = <1>;
+ 			#address-cells = <1>;
+-- 
+1.9.1
 
-Team and bonding devices copy elements like dev->type but do not take 
-care about the CAN specific ml_priv.
-
-I don't know if this is the case here. I can take a look later.
-
->> What was the reason to fiddle with the 'priv' stuff in j1939_netdev_notify()
->> before checking if it was a CAN device?
->>
->> Would this patch fix the issue then?
-> 
-> No, j1939_priv_get_by_ndev() already has an internal test for
-> ARPHRD_CAN. One of this tests can be removed, to make the code clear.
-> So, we get netdev with ARPHRD_CAN and ml_priv == something.
-> 
-> Right now I do not know how to fix it.
-> 
-> Ideas?
-
-IMO the patch is still an improvement as it swaps the testing and 
-reduces complexity.
-
-Regards,
-Oliver
-
-> 
->> diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
->> index bb914d8b4216..6940f98b81fb 100644
->> --- a/net/can/j1939/main.c
->> +++ b/net/can/j1939/main.c
->> @@ -348,26 +348,25 @@ static int j1939_netdev_notify(struct notifier_block
->> *nb,
->>   			       unsigned long msg, void *data)
->>   {
->>   	struct net_device *ndev = netdev_notifier_info_to_dev(data);
->>   	struct j1939_priv *priv;
->>
->> +	if (ndev->type != ARPHRD_CAN)
->> +		goto notify_done;
->> +
->>   	priv = j1939_priv_get_by_ndev(ndev);
->>   	if (!priv)
->>   		goto notify_done;
->>
->> -	if (ndev->type != ARPHRD_CAN)
->> -		goto notify_put;
->> -
->>   	switch (msg) {
->>   	case NETDEV_DOWN:
->>   		j1939_cancel_active_session(priv, NULL);
->>   		j1939_sk_netdev_event_netdown(priv);
->>   		j1939_ecu_unmap_all(priv);
->>   		break;
->>   	}
->>
->> -notify_put:
->>   	j1939_priv_put(priv);
->>
->>   notify_done:
->>   	return NOTIFY_DONE;
->>   }
->>
->> If so, I can send a proper patch if you like.
->>
->> Best regards,
->> Oliver
->>
->>
->> On 20.12.20 06:34, syzbot wrote:
->>> Hello,
->>>
->>> syzbot found the following issue on:
->>>
->>> HEAD commit:    d635a69d Merge tag 'net-next-5.11' of git://git.kernel.org..
->>> git tree:       upstream
->>> console output: https://syzkaller.appspot.com/x/log.txt?x=1315f123500000
->>> kernel config:  https://syzkaller.appspot.com/x/.config?x=c3556e4856b17a95
->>> dashboard link: https://syzkaller.appspot.com/bug?extid=5138c4dd15a0401bec7b
->>> compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
->>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12955123500000
->>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10f2f30f500000
->>>
->>> The issue was bisected to:
->>>
->>> commit 497a5757ce4e8f37219a3989ac6a561eb9a8e6c7
->>> Author: Heiner Kallweit <hkallweit1@gmail.com>
->>> Date:   Sat Nov 7 20:50:56 2020 +0000
->>>
->>>       tun: switch to net core provided statistics counters
->>>
->>> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=143b845b500000
->>> final oops:     https://syzkaller.appspot.com/x/report.txt?x=163b845b500000
->>> console output: https://syzkaller.appspot.com/x/log.txt?x=123b845b500000
->>>
->>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->>> Reported-by: syzbot+5138c4dd15a0401bec7b@syzkaller.appspotmail.com
->>> Fixes: 497a5757ce4e ("tun: switch to net core provided statistics counters")
->>>
->>> general protection fault, probably for non-canonical address 0xe000080fe8c072f1: 0000 [#1] PREEMPT SMP KASAN
->>> KASAN: probably user-memory-access in range [0x0000607f46039788-0x0000607f4603978f]
->>> CPU: 1 PID: 8472 Comm: syz-executor635 Not tainted 5.10.0-syzkaller #0
->>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->>> RIP: 0010:j1939_ndev_to_priv net/can/j1939/main.c:219 [inline]
->>> RIP: 0010:j1939_priv_get_by_ndev_locked net/can/j1939/main.c:231 [inline]
->>> RIP: 0010:j1939_priv_get_by_ndev net/can/j1939/main.c:243 [inline]
->>> RIP: 0010:j1939_netdev_notify+0x115/0x320 net/can/j1939/main.c:353
->>> Code: 00 74 08 48 89 df e8 ba 1e 48 f9 48 8b 1b 48 85 db 0f 84 f0 00 00 00 4c 89 64 24 08 48 81 c3 28 60 00 00 48 89 d8 48 c1 e8 03 <42> 80 3c 30 00 74 08 48 89 df e8 8c 1e 48 f9 4c 8b 23 4d 85 e4 0f
->>> RSP: 0018:ffffc90000e9fd68 EFLAGS: 00010202
->>> RAX: 00000c0fe8c072f1 RBX: 0000607f46039788 RCX: ffff88801456d040
->>> RDX: ffff88801456d040 RSI: 0000000000000118 RDI: 0000000000000118
->>> RBP: 0000000000000118 R08: ffffffff8870585d R09: fffff520001d3fa5
->>> R10: fffff520001d3fa5 R11: 0000000000000000 R12: 0000000000000010
->>> R13: 1ffff1100293e848 R14: dffffc0000000000 R15: ffff8880149f4244
->>> FS:  0000000001d13880(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
->>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>> CR2: 0000000020000080 CR3: 000000001402f000 CR4: 00000000001506e0
->>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->>> Call Trace:
->>>    notifier_call_chain kernel/notifier.c:83 [inline]
->>>    raw_notifier_call_chain+0xe7/0x170 kernel/notifier.c:410
->>>    call_netdevice_notifiers_info net/core/dev.c:2022 [inline]
->>>    call_netdevice_notifiers_extack net/core/dev.c:2034 [inline]
->>>    call_netdevice_notifiers+0xeb/0x150 net/core/dev.c:2048
->>>    __tun_chr_ioctl+0x2337/0x4860 drivers/net/tun.c:3093
->>>    vfs_ioctl fs/ioctl.c:48 [inline]
->>>    __do_sys_ioctl fs/ioctl.c:753 [inline]
->>>    __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:739
->>>    do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->>>    entry_SYSCALL_64_after_hwframe+0x44/0xa9
->>> RIP: 0033:0x440359
->>> Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
->>> RSP: 002b:00007fffd37b9c98 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
->>> RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440359
->>> RDX: 0000000000000118 RSI: 00000000400454cd RDI: 0000000000000003
->>> RBP: 00000000006ca018 R08: 00000000004002c8 R09: 00000000004002c8
->>> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401b60
->>> R13: 0000000000401bf0 R14: 0000000000000000 R15: 0000000000000000
->>> Modules linked in:
->>> ---[ end trace 7688a2c3c10da2e1 ]---
->>> RIP: 0010:j1939_ndev_to_priv net/can/j1939/main.c:219 [inline]
->>> RIP: 0010:j1939_priv_get_by_ndev_locked net/can/j1939/main.c:231 [inline]
->>> RIP: 0010:j1939_priv_get_by_ndev net/can/j1939/main.c:243 [inline]
->>> RIP: 0010:j1939_netdev_notify+0x115/0x320 net/can/j1939/main.c:353
->>> Code: 00 74 08 48 89 df e8 ba 1e 48 f9 48 8b 1b 48 85 db 0f 84 f0 00 00 00 4c 89 64 24 08 48 81 c3 28 60 00 00 48 89 d8 48 c1 e8 03 <42> 80 3c 30 00 74 08 48 89 df e8 8c 1e 48 f9 4c 8b 23 4d 85 e4 0f
->>> RSP: 0018:ffffc90000e9fd68 EFLAGS: 00010202
->>> RAX: 00000c0fe8c072f1 RBX: 0000607f46039788 RCX: ffff88801456d040
->>> RDX: ffff88801456d040 RSI: 0000000000000118 RDI: 0000000000000118
->>> RBP: 0000000000000118 R08: ffffffff8870585d R09: fffff520001d3fa5
->>> R10: fffff520001d3fa5 R11: 0000000000000000 R12: 0000000000000010
->>> R13: 1ffff1100293e848 R14: dffffc0000000000 R15: ffff8880149f4244
->>> FS:  0000000001d13880(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
->>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>> CR2: 0000000020000080 CR3: 000000001402f000 CR4: 00000000001506e0
->>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->>>
->>>
->>> ---
->>> This report is generated by a bot. It may contain errors.
->>> See https://goo.gl/tpsmEJ for more information about syzbot.
->>> syzbot engineers can be reached at syzkaller@googlegroups.com.
->>>
->>> syzbot will keep track of this issue. See:
->>> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->>> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
->>> syzbot can test patches for this issue, for details see:
->>> https://goo.gl/tpsmEJ#testing-patches
->>>
->>
-> 
