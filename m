@@ -2,160 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B2302DFCE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 15:37:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3EC12E0032
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:43:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727095AbgLUOhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 09:37:03 -0500
-Received: from foss.arm.com ([217.140.110.172]:51082 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726499AbgLUOhD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 09:37:03 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 349F61FB;
-        Mon, 21 Dec 2020 06:36:17 -0800 (PST)
-Received: from [10.37.8.22] (unknown [10.37.8.22])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D20C63F6CF;
-        Mon, 21 Dec 2020 06:36:15 -0800 (PST)
-Subject: Re: [PATCH] arm64: do not descend to vdso directories twice
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Michael Ellerman <mpe@ellerman.id.au>, linux-kernel@vger.kernel.org
-References: <20201218024540.1102650-1-masahiroy@kernel.org>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <55dc2724-cdfe-28ad-395d-707fe9bae2db@arm.com>
-Date:   Mon, 21 Dec 2020 14:39:44 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727534AbgLUSmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:42:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726123AbgLUSmW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 13:42:22 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C08FEC0611C5
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:41:41 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id y19so25941994lfa.13
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:41:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ee3GcxK/K+Y6PzuaCUF7iaCAOxWV/hTPMt+xGfVrDt0=;
+        b=pRwTtxCVxgLfzM8eZOEuzgR9Nyss+lWHtEDJodQKaBzcv51dNf8sUqA6CkD3DuSeRd
+         ikchtYSHqEDoqoGybPOUIWN8Hxi6om6xl+RnMZprvk91XSW/J9TC8fNMHNmY275gGzAj
+         F9uepVtceoOvEBSdRvdIcwaGkPO9qjcgB5ZxE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ee3GcxK/K+Y6PzuaCUF7iaCAOxWV/hTPMt+xGfVrDt0=;
+        b=d+8zhdk82hSf9a2QLz0X8N2ZhekM9nqWTiYn2a6scb/DOUqtZ+gdKGRxsnohp0x2LP
+         K2GUDtbi9yJqfBblNX+9OEsLvhUf9thNbz/T31Qvtqp5435e+J29pc0NnvIouFphveEy
+         P+0hAK2fmF/NzA99jLsO2Z9+vXAR6KIgyFJTsH37tRW2ZIesksYuVsh3fjdV5es+YX3U
+         uHvzqCFvQepW3OTfC4ad/1g5PYG7Kkp0Yl6aUiPuUxV4eij9E7zRVyRWNpwhvW9toR6U
+         W1LMICCiN9jC4dWeQfO7Rd3qLeWGkOETSs1vmB0x6o29Ar+B7psU2XuxYP7RZDE6jam9
+         F9yw==
+X-Gm-Message-State: AOAM533er9r1t5mv/6z+2oKuFALWoNhW+LWSDpYzGLwc4WVJ3+Xki51V
+        oqgxGxV8LjJp+B9ps6nZN6JZUZJq8ggvv9lQcF+sZhDej3ucN50e
+X-Google-Smtp-Source: ABdhPJz1OlJBqmiyAdLKtCN9U7Y8HOnVSRK4oYvhL5a/OcSvwvEuiNoeSNHNf7e6NrEiHIW7RQm43Qz57hC7S8UcfRM=
+X-Received: by 2002:a17:906:1c92:: with SMTP id g18mr8822995ejh.522.1608561598933;
+ Mon, 21 Dec 2020 06:39:58 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201218024540.1102650-1-masahiroy@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201221113151.94515-1-jagan@amarulasolutions.com>
+ <20201221113151.94515-3-jagan@amarulasolutions.com> <20201221134625.GB31176@kozik-lap>
+ <CAMty3ZAi0B=fSRfpQG4bgE+Jt6GVhzRb_FZjCL3VQXp9vn-FEw@mail.gmail.com> <20201221140501.GE31176@kozik-lap>
+In-Reply-To: <20201221140501.GE31176@kozik-lap>
+From:   Jagan Teki <jagan@amarulasolutions.com>
+Date:   Mon, 21 Dec 2020 20:09:47 +0530
+Message-ID: <CAMty3ZA4K8GvTfmrV1Mz6zp1w+iF0FvE04CODZUsHvg+J+a1nw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/6] dt-bindings: arm: fsl: Add Engicam i.Core MX8M
+ Mini C.TOUCH 2.0
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Li Yang <leoyang.li@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-amarula <linux-amarula@amarulasolutions.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Masahiro,
+On Mon, Dec 21, 2020 at 7:35 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> On Mon, Dec 21, 2020 at 07:29:22PM +0530, Jagan Teki wrote:
+> > On Mon, Dec 21, 2020 at 7:16 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> > >
+> > > On Mon, Dec 21, 2020 at 05:01:47PM +0530, Jagan Teki wrote:
+> > > > i.Core MX8M Mini is an EDIMM SoM based on NXP i.MX8M Mini from Engicam.
+> > > >
+> > > > C.TOUCH 2.0 is a general purpose carrier board with capacitive
+> > > > touch interface support.
+> > > >
+> > > > i.Core MX8M Mini needs to mount on top of this Carrier board for
+> > > > creating complete i.Core MX8M Mini C.TOUCH 2.0 board.
+> > > >
+> > > > Add bindings for it.
+> > > >
+> > > > Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+> > > > ---
+> > > > Changes for v2:
+> > > > - updated commit message
+> > > >
+> > > >  Documentation/devicetree/bindings/arm/fsl.yaml | 2 ++
+> > > >  1 file changed, 2 insertions(+)
+> > > >
+> > > > diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+> > > > index 67980dcef66d..e653e0a43016 100644
+> > > > --- a/Documentation/devicetree/bindings/arm/fsl.yaml
+> > > > +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+> > > > @@ -667,6 +667,8 @@ properties:
+> > > >          items:
+> > > >            - enum:
+> > > >                - beacon,imx8mm-beacon-kit  # i.MX8MM Beacon Development Kit
+> > > > +              - engicam,icore-mx8mm               # i.MX8MM Engicam i.Core MX8M Mini SOM
+> > > > +              - engicam,icore-mx8mm-ctouch2       # i.MX8MM Engicam i.Core MX8M Mini C.TOUCH 2.0
+> > >
+> > > Please test your DTS against new schema with dtbs_check. This won't
+> > > match.
+> >
+> > Sorry, not sure I understand clearly here.
+> >
+> > This the dts file ie used matched compatible.
+> > compatible = "engicam,icore-mx8mm-ctouch2", "engicam,icore-mx8mm",
+> >                      "fsl,imx8mm";
+> >
+> > I did build the dtbs_check without showing any issues like,
+> >
+> > $ make ARCH=arm64 dtbs_check
+> > ...
+> >
+> >     From schema: /w/dt-schema/dt-schema/dtschema/schemas/property-units.yaml
+> >   DTC     arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm-ctouch2.dtb
+> >   DTC     arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm-ctouch2-of10.dtb
+> >   DTC     arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm-edimm2.2.dtb
+> > ..
+> >
+> > Can you let me know what I missed here?
+>
+> You pasted here output of validating with property-units.yaml (or
+> something else), not the schema which you changed. If you want to limit
+> the tests, use DT_SCHEMA_FILES.
+>
+> I mentioned about exactly the same problem in yout previous v1
+> at patch #5. No changes here stil.
 
-On 12/18/20 2:45 AM, Masahiro Yamada wrote:
-> arm64 descends into each vdso directory twice; first in vdso_prepare,
-> second during the ordinary build process.
-> 
-> PPC mimicked it and uncovered a problem [1]. In the first descend,
-> Kbuild directly visits the vdso directories, therefore it does not
-> inherit subdir-ccflags-y from upper directories.
-> 
-> This means the command line parameters may differ between the two.
-> If it happens, the offset values in the generated headers might be
-> different from real offsets of vdso.so in the kernel.
-> 
-> This potential danger should be avoided. The vdso directories are
-> built in the vdso_prepare stage, so the second descend is unneeded.
-> 
-> [1]: https://lore.kernel.org/linux-kbuild/CAK7LNARAkJ3_-4gX0VA2UkapbOftuzfSTVMBbgbw=HD8n7N+7w@mail.gmail.com/T/#ma10dcb961fda13f36d42d58fa6cb2da988b7e73a
-> 
+Yes, I usually did that check before posting. Please check the build
+log below and fsl.yaml binding is fine to build.
 
-I could not reproduce the problem you are reporting on arm64. Could you please
-provide some steps?
+# make dt_binding_check DT_SCHEMA_FILES=arm/fsl.yaml
+  HOSTCC  scripts/basic/fixdep
+  HOSTCC  scripts/dtc/dtc.o
+  HOSTCC  scripts/dtc/flattree.o
+  HOSTCC  scripts/dtc/fstree.o
+  HOSTCC  scripts/dtc/data.o
+  HOSTCC  scripts/dtc/livetree.o
+  HOSTCC  scripts/dtc/treesource.o
+  HOSTCC  scripts/dtc/srcpos.o
+  HOSTCC  scripts/dtc/checks.o
+  HOSTCC  scripts/dtc/util.o
+  LEX     scripts/dtc/dtc-lexer.lex.c
+  YACC    scripts/dtc/dtc-parser.tab.[ch]
+  HOSTCC  scripts/dtc/dtc-lexer.lex.o
+  HOSTCC  scripts/dtc/dtc-parser.tab.o
+  HOSTCC  scripts/dtc/yamltree.o
+  HOSTLD  scripts/dtc/dtc
+  CHKDT   Documentation/devicetree/bindings/processed-schema-examples.json
+/w/linux/Documentation/devicetree/bindings/soc/litex/litex,soc-controller.yaml:
+'additionalProperties' is a required property
+/w/linux/Documentation/devicetree/bindings/soc/mediatek/devapc.yaml:
+'additionalProperties' is a required property
+/w/linux/Documentation/devicetree/bindings/media/coda.yaml:
+'additionalProperties' is a required property
+/w/linux/Documentation/devicetree/bindings/serial/litex,liteuart.yaml:
+'additionalProperties' is a required property
+  SCHEMA  Documentation/devicetree/bindings/processed-schema-examples.json
+/w/linux/Documentation/devicetree/bindings/soc/litex/litex,soc-controller.yaml:
+ignoring, error in schema:
+warning: no schema found in file:
+./Documentation/devicetree/bindings/soc/litex/litex,soc-controller.yaml
+/w/linux/Documentation/devicetree/bindings/soc/mediatek/devapc.yaml:
+ignoring, error in schema:
+warning: no schema found in file:
+./Documentation/devicetree/bindings/soc/mediatek/devapc.yaml
+/w/linux/Documentation/devicetree/bindings/media/coda.yaml: ignoring,
+error in schema:
+warning: no schema found in file:
+./Documentation/devicetree/bindings/media/coda.yaml
+/w/linux/Documentation/devicetree/bindings/serial/litex,liteuart.yaml:
+ignoring, error in schema:
+warning: no schema found in file:
+./Documentation/devicetree/bindings/serial/litex,liteuart.yaml
+#
 
-In my case the vDSO library is not rebuilt as a result of the procedure reported
-in the email you linked at [1].
-
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
-> 
->  arch/arm64/Makefile                                | 10 ++++++----
->  arch/arm64/kernel/Makefile                         |  5 +++--
->  arch/arm64/kernel/{vdso/vdso.S => vdso-wrap.S}     |  0
->  arch/arm64/kernel/vdso/Makefile                    |  1 -
->  arch/arm64/kernel/{vdso32/vdso.S => vdso32-wrap.S} |  0
->  arch/arm64/kernel/vdso32/Makefile                  |  1 -
->  6 files changed, 9 insertions(+), 8 deletions(-)
->  rename arch/arm64/kernel/{vdso/vdso.S => vdso-wrap.S} (100%)
->  rename arch/arm64/kernel/{vdso32/vdso.S => vdso32-wrap.S} (100%)
-> 
-> diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-> index 6a87d592bd00..f18d20a68170 100644
-> --- a/arch/arm64/Makefile
-> +++ b/arch/arm64/Makefile
-> @@ -179,10 +179,12 @@ ifeq ($(KBUILD_EXTMOD),)
->  # this hack.
->  prepare: vdso_prepare
->  vdso_prepare: prepare0
-> -	$(Q)$(MAKE) $(build)=arch/arm64/kernel/vdso include/generated/vdso-offsets.h
-> -	$(if $(CONFIG_COMPAT_VDSO),$(Q)$(MAKE) \
-> -		$(build)=arch/arm64/kernel/vdso32  \
-> -		include/generated/vdso32-offsets.h)
-> +	$(Q)$(MAKE) $(build)=arch/arm64/kernel/vdso \
-> +	include/generated/vdso-offsets.h arch/arm64/kernel/vdso/vdso.so
-> +ifdef CONFIG_COMPAT_VDSO
-> +	$(Q)$(MAKE) $(build)=arch/arm64/kernel/vdso32 \
-> +	include/generated/vdso32-offsets.h arch/arm64/kernel/vdso32/vdso.so
-> +endif
->  endif
-
-The reason why it is currently done in two phases (a bit hacky as per comment)
-is because vdso-offsets.h is required to be generated before compiling kernel/.
-Please refer to the comment in arch/arm64/Makefile.
-
-Could you explain how your change satisfies the dependency?
-
->  
->  define archhelp
-> diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
-> index 86364ab6f13f..42f6ad2c7eac 100644
-> --- a/arch/arm64/kernel/Makefile
-> +++ b/arch/arm64/kernel/Makefile
-> @@ -59,9 +59,10 @@ obj-$(CONFIG_CRASH_CORE)		+= crash_core.o
->  obj-$(CONFIG_ARM_SDE_INTERFACE)		+= sdei.o
->  obj-$(CONFIG_ARM64_PTR_AUTH)		+= pointer_auth.o
->  obj-$(CONFIG_ARM64_MTE)			+= mte.o
-> +obj-y					+= vdso-wrap.o
-> +obj-$(CONFIG_COMPAT_VDSO)		+= vdso32-wrap.o
->  
-> -obj-y					+= vdso/ probes/
-> -obj-$(CONFIG_COMPAT_VDSO)		+= vdso32/
-> +obj-y					+= probes/
->  head-y					:= head.o
->  extra-y					+= $(head-y) vmlinux.lds
->  
-> diff --git a/arch/arm64/kernel/vdso/vdso.S b/arch/arm64/kernel/vdso-wrap.S
-> similarity index 100%
-> rename from arch/arm64/kernel/vdso/vdso.S
-> rename to arch/arm64/kernel/vdso-wrap.S
-> diff --git a/arch/arm64/kernel/vdso/Makefile b/arch/arm64/kernel/vdso/Makefile
-> index a8f8e409e2bf..85222f64f394 100644
-> --- a/arch/arm64/kernel/vdso/Makefile
-> +++ b/arch/arm64/kernel/vdso/Makefile
-> @@ -45,7 +45,6 @@ endif
->  # Disable gcov profiling for VDSO code
->  GCOV_PROFILE := n
->  
-> -obj-y += vdso.o
->  targets += vdso.lds
->  CPPFLAGS_vdso.lds += -P -C -U$(ARCH)
->  
-> diff --git a/arch/arm64/kernel/vdso32/vdso.S b/arch/arm64/kernel/vdso32-wrap.S
-> similarity index 100%
-> rename from arch/arm64/kernel/vdso32/vdso.S
-> rename to arch/arm64/kernel/vdso32-wrap.S
-> diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
-> index a1e0f91e6cea..789ad420f16b 100644
-> --- a/arch/arm64/kernel/vdso32/Makefile
-> +++ b/arch/arm64/kernel/vdso32/Makefile
-> @@ -155,7 +155,6 @@ c-obj-vdso-gettimeofday := $(addprefix $(obj)/, $(c-obj-vdso-gettimeofday))
->  asm-obj-vdso := $(addprefix $(obj)/, $(asm-obj-vdso))
->  obj-vdso := $(c-obj-vdso) $(c-obj-vdso-gettimeofday) $(asm-obj-vdso)
->  
-> -obj-y += vdso.o
->  targets += vdso.lds
->  CPPFLAGS_vdso.lds += -P -C -U$(ARCH)
->  
-> 
-
--- 
-Regards,
-Vincenzo
+Jagan.
