@@ -2,188 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D1BD2DFFD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:33:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7D42DFFE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:35:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727063AbgLUScm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 13:32:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725962AbgLUScl (ORCPT
+        id S1726472AbgLUSe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:34:58 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:63314 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726323AbgLUSe6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:32:41 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CEEFC0613D6;
-        Mon, 21 Dec 2020 10:32:01 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id h186so6949350pfe.0;
-        Mon, 21 Dec 2020 10:32:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=HCY8w6wAd8FcQcRYUZs1swNNxWTGmV4HkMU4xhZmf5g=;
-        b=PfmrzFqttYHr+qoFvUFefQjYiMHfeA+60gzbWd15gpG17mHkTC9KsHiFQdIuIjtj6c
-         yewrJepM7uUGnPB5TpGejklEnCzxA3Ey0OO8Wse6VqTzWCNvXMTIZkmvYFRqHYdSfoJk
-         N0CNw0vycja9C1HqyLM6TWWPEyMHxcFy2ch5QioPDVYLTqaaDWxZrKP3tU7mUqt3Noz8
-         1YlnP2pbrQzrrIfC6g5culARrcmSRbYdEfpYx+8J/uSz4hXM88DWhw3tMEIvon/csl9j
-         piXUzoLub2Zqmzq4F215ZNxDWchtEB4LQs1Tvve1QX+zqLBNtU3RjsviIfkTsxycZfOV
-         CwtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=HCY8w6wAd8FcQcRYUZs1swNNxWTGmV4HkMU4xhZmf5g=;
-        b=snfhKiaM9bbovXokng+80ZY85m7RD0Wx5FOLxRDdzUx5YxZXCRN9YvpkQCPD0WZJyv
-         cvIHxSN427F3HBsYsmrHIGjvrC3dmCdtL6Ufiz95Xe4MfaU+uSexlVh8qMgdfgVzASiR
-         SLbXf0vzh43Ok9cuzecMfbY5/Ihw1QyzEFlt1JpjYblY3MPeo1gSKpYTiQ/vBbfZhPpE
-         Pfd+e3KUoc5si2/NhM+oLA4Ud9MwT2F1hUzi4Wo7kzYSRvsIABZfEynJVZ/JK45UUcSK
-         DrpilN7+WUxkxuyeVpmyEDg2zrOerl4NTVpDXZlFUR2YLEs73cEj/7dtRiu9HtuhwLYO
-         Zf/g==
-X-Gm-Message-State: AOAM530C9q90cw4SxSTcotKlgjqnhEnHkO0Kh5kgmPaaD5/BHbiJ4jEz
-        ENomiQcSaKyfK94rCF/44ZU=
-X-Google-Smtp-Source: ABdhPJzDuUUuKqtLU7584aeLXqn4qvLTbBvwOuj3NGYyNc7XzZ5zLZRRkrrvAtr+sUMza55iYtZriw==
-X-Received: by 2002:a63:1d12:: with SMTP id d18mr16202857pgd.314.1608575520652;
-        Mon, 21 Dec 2020 10:32:00 -0800 (PST)
-Received: from ?IPv6:2601:647:4700:9b2:104c:8d35:de28:b8dc? ([2601:647:4700:9b2:104c:8d35:de28:b8dc])
-        by smtp.gmail.com with ESMTPSA id k21sm16041734pfu.7.2020.12.21.10.31.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 21 Dec 2020 10:31:59 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-From:   Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <20201221172711.GE6640@xz-x1>
-Date:   Mon, 21 Dec 2020 10:31:57 -0800
-Cc:     Yu Zhao <yuzhao@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable@vger.kernel.org, minchan@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <76B4F49B-ED61-47EA-9BE4-7F17A26B610D@gmail.com>
-References: <20201219043006.2206347-1-namit@vmware.com>
- <X95RRZ3hkebEmmaj@redhat.com>
- <EDC00345-B46E-4396-8379-98E943723809@gmail.com>
- <X97pprdcRXusLGnq@google.com>
- <DDA15360-D6D4-46A8-95A4-5EE34107A407@gmail.com>
- <20201221172711.GE6640@xz-x1>
-To:     Peter Xu <peterx@redhat.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        Mon, 21 Dec 2020 13:34:58 -0500
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BLIJekM091767;
+        Mon, 21 Dec 2020 13:34:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=YU06tA5Y+2CkSqIdHmYkXHp40yKZjqBBZKZGBv97pUI=;
+ b=JCZt9joueI/Bfc/wnqQU6OlNktUFAyjGqq/X83RQ33BliRau0qR1Qor0I8mejFBnqS8W
+ mSPvyGgUY2MAegM+Zd0+3R8McvwaXbnHLhHUDLkJkgvBsc9kKYubNurxHQPE6dMDHRKn
+ BUYO+apN8pBdyTkK3HOUJpGDW+xO2zOLdni/Auu8lgAX9GCvmMdF0WuJMBdjY4+NBt3i
+ fsX/l0X5xGqXan825tqXQpbJfOaaxDTIXDh0yqc/M4zuiVNmTEw+sKGTQyS8G2gs8sqp
+ wRQnkdbMXjFy/IPcCD3Dv68yRgQY2kKw2aYy796TWYzTydVz+0j99ee5RdrBzkSe8+PG Ww== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35k0vwrabh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Dec 2020 13:34:02 -0500
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BLINsK1106818;
+        Mon, 21 Dec 2020 13:34:02 -0500
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35k0vwrab4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Dec 2020 13:34:02 -0500
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BLIRdHG021966;
+        Mon, 21 Dec 2020 18:33:01 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma01wdc.us.ibm.com with ESMTP id 35h958sa07-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Dec 2020 18:33:01 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BLIX03024248626
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 21 Dec 2020 18:33:00 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9AE66136055;
+        Mon, 21 Dec 2020 18:33:00 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 585D6136051;
+        Mon, 21 Dec 2020 18:33:00 +0000 (GMT)
+Received: from v0005c16 (unknown [9.211.87.162])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Mon, 21 Dec 2020 18:33:00 +0000 (GMT)
+Message-ID: <d64b8971e5d14106e3f51fd4f0328762ec35cd7c.camel@linux.ibm.com>
+Subject: Re: [PATCH 1/2] hwmon: (pmbus) Add a NO_PEC flag to probe chips
+ with faulty CAPABILITY
+From:   Eddie James <eajames@linux.ibm.com>
+To:     Guenter Roeck <linux@roeck-us.net>, linux-hwmon@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, jdelvare@suse.com, bjwyman@gmail.com
+Date:   Mon, 21 Dec 2020 12:32:59 -0600
+In-Reply-To: <f96ded73-93de-dc7d-36af-7f100e71817a@roeck-us.net>
+References: <20201221163058.33257-1-eajames@linux.ibm.com>
+         <20201221163058.33257-2-eajames@linux.ibm.com>
+         <f96ded73-93de-dc7d-36af-7f100e71817a@roeck-us.net>
+Organization: IBM
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-21_10:2020-12-21,2020-12-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ malwarescore=0 bulkscore=0 spamscore=0 mlxscore=0 impostorscore=0
+ phishscore=0 mlxlogscore=999 adultscore=0 priorityscore=1501
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012210126
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Dec 21, 2020, at 9:27 AM, Peter Xu <peterx@redhat.com> wrote:
->=20
-> Hi, Nadav,
->=20
-> On Sun, Dec 20, 2020 at 12:06:38AM -0800, Nadav Amit wrote:
->=20
-> [...]
->=20
->> So to correct myself, I think that what I really encountered was =
-actually
->> during MM_CP_UFFD_WP_RESOLVE (i.e., when the protection is removed). =
-The
->> problem was that in this case the =E2=80=9Cwrite=E2=80=9D-bit was =
-removed during unprotect.
->> Sorry for the strange formatting to fit within 80 columns:
->=20
-> I assume I can ignore the race mentioned in the commit message but =
-only refer
-> to this one below.  However I'm still confused.  Please see below.
->=20
->> [ Start: PTE is writable ]
->>=20
->> cpu0				cpu1			cpu2
->> ----				----			----
->> 							[ Writable PTE=20=
+On Mon, 2020-12-21 at 08:54 -0800, Guenter Roeck wrote:
+> On 12/21/20 8:30 AM, Eddie James wrote:
+> > Some PMBus chips don't respond with valid data when reading the
+> > CAPABILITY register. For instance the register may report that the
+> > chip supports PEC when in reality it does not. For such chips, PEC
+> > must not be enabled while probing the chip, so add a flag so that
+> > device drivers can force PEC off.
+> > 
+> 
+> I think the flag should indicate that the capability register
+> shall not be read/used. That the capability register is currently
+> only used to check for PEC is secondary. We might,for example,
+> start using it to check for alert support or to check the numeric
+> format.
 
->> 							  cached in TLB =
-]
->=20
-> Here cpu2 got writable pte in tlb.  But why?
->=20
-> If below is an unprotect, it means it must have been protected once by
-> userfaultfd, right?  If so, the previous change_protection_range() =
-which did
-> the wr-protect should have done a tlb flush already before it returns =
-(since
-> pages>0 - we protected one pte at least).  Then I can't see why cpu2 =
-tlb has
-> stall data.
+OK, that makes sense. I'll rename the flag in v2, how does
+PMBUS_NO_CAPABILITY sound?
 
-Thanks, Peter. Just as you can munprotect() a region which was not =
-protected
-before, you can ufff-unprotect a region that was not protected before. =
-It
-might be that the user tried to unprotect a large region, which was
-partially protected and partially unprotected.
+Thanks for the quick reply,
+Eddie
 
-The selftest obviously blindly unprotect some regions to check for bugs.
-
-So to your question - it was not write-protected (think about initial =
-copy
-without write-protecting).
-
-> If I assume cpu2 doesn't have that cached tlb, then "write to old =
-page" won't
-> happen either, because cpu1/cpu2 will all go through the cow path and =
-pgtable
-> lock should serialize them.
->=20
->> userfaultfd_writeprotect()			=09
->> [ write-*unprotect* ]
->> mwriteprotect_range()
->> mmap_read_lock()
->> change_protection()
->>=20
->> change_protection_range()
->> ...
->> change_pte_range()
->> [ *clear* =E2=80=9Cwrite=E2=80=9D-bit ]
->> [ defer TLB flushes]
->> 				[ page-fault ]
->> 				=E2=80=A6
->> 				wp_page_copy()
->> 				 cow_user_page()
->> 				  [ copy page ]
->> 							[ write to old
->> 							  page ]
->> 				=E2=80=A6
->> 				 set_pte_at_notify()
->>=20
->> [ End: cpu2 write not copied form old to new page. ]
->=20
-> Could you share how to reproduce the problem?  I would be glad to give =
-it a
-> shot as well.
-
-You can run the selftests/userfaultfd with my small patch [1]. I ran it =
-with
-the following parameters: =E2=80=9C ./userfaultfd anon 100 100 =E2=80=9C. =
-I think that it is
-more easily reproducible with =E2=80=9Cmitigations=3Doff idle=3Dpoll=E2=80=
-=9D as kernel
-parameters.
-
-[1] https://lore.kernel.org/patchwork/patch/1346386/
-
->=20
->> [1] https://lore.kernel.org/patchwork/patch/1346386
->=20
-> PS: Sorry to not have read the other series of yours.  It seems to =
-need some
-> chunk of time so I postponed it a bit due to other things; but I'll =
-read at
-> least the fixes very soon.
-
-Thanks again, I will post RFCv2 with some numbers soon.
+> 
+> Thanks,
+> Guenter
+> 
+> > Signed-off-by: Eddie James <eajames@linux.ibm.com>
+> > ---
+> >  drivers/hwmon/pmbus/pmbus_core.c |  8 +++++---
+> >  include/linux/pmbus.h            | 10 ++++++++++
+> >  2 files changed, 15 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/hwmon/pmbus/pmbus_core.c
+> > b/drivers/hwmon/pmbus/pmbus_core.c
+> > index 192442b3b7a2..3de1657dde35 100644
+> > --- a/drivers/hwmon/pmbus/pmbus_core.c
+> > +++ b/drivers/hwmon/pmbus/pmbus_core.c
+> > @@ -2204,9 +2204,11 @@ static int pmbus_init_common(struct
+> > i2c_client *client, struct pmbus_data *data,
+> >  	}
+> >  
+> >  	/* Enable PEC if the controller supports it */
+> > -	ret = i2c_smbus_read_byte_data(client, PMBUS_CAPABILITY);
+> > -	if (ret >= 0 && (ret & PB_CAPABILITY_ERROR_CHECK))
+> > -		client->flags |= I2C_CLIENT_PEC;
+> > +	if (!(data->flags & PMBUS_NO_PEC)) {
+> > +		ret = i2c_smbus_read_byte_data(client,
+> > PMBUS_CAPABILITY);
+> > +		if (ret >= 0 && (ret & PB_CAPABILITY_ERROR_CHECK))
+> > +			client->flags |= I2C_CLIENT_PEC;
+> > +	}
+> >  
+> >  	/*
+> >  	 * Check if the chip is write protected. If it is, we can not
+> > clear
+> > diff --git a/include/linux/pmbus.h b/include/linux/pmbus.h
+> > index 1ea5bae708a1..9bdc8a581b03 100644
+> > --- a/include/linux/pmbus.h
+> > +++ b/include/linux/pmbus.h
+> > @@ -34,6 +34,16 @@
+> >   */
+> >  #define PMBUS_WRITE_PROTECTED	BIT(1)
+> >  
+> > +/*
+> > + * PMBUS_NO_PEC
+> > + *
+> > + * Some PMBus chips don't respond with valid data when reading the
+> > CAPABILITY
+> > + * register. In this case, the register may report that the chip
+> > supports PEC
+> > + * with bit 7 (PB_CAPABILITY_ERROR_CHECK) when in reality it's not
+> > supported.
+> > + * For such chips, PEC must not be enabled before probing the
+> > chip.
+> > + */
+> > +#define PMBUS_NO_PEC			BIT(2)
+> > +
+> >  struct pmbus_platform_data {
+> >  	u32 flags;		/* Device specific flags */
+> >  
+> > 
 
