@@ -2,49 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F2102DFCD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 15:30:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E0AE2DFCE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 15:36:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727121AbgLUOaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 09:30:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54458 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727012AbgLUOaO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 09:30:14 -0500
-Date:   Mon, 21 Dec 2020 19:59:29 +0530
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608560973;
-        bh=Bh+HPbGzk4zFoKHZMp6c/AcuLdArCcV9nV0lsORyENI=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ULCkR4hY8UlQKXZWyc0gzb5SaIk7k5Ec6jwnEDtbWtnfFtNKtA/CsN7pqjWJSzyb6
-         K7XZrmsXnIIfczV8iPPsxPxWE5qulwZnaK+3KyhD/0xHiBeWDBNX7Felqfj9sJaEez
-         rWb7eswT6e48BaDoxKGotM3P15NbDX0K8gYHXvnr7UpwUQpCUDd2ydp0rRTqA0x+d9
-         Jg9AHZcf/GvsGwsFjXjVug+pfyhOHa7mrSTh1YTvP4E9jNlZximbGBmJBx2Im0zhJ0
-         joxNB3t/yNuDWELllj365PD69e7HSVdMip6ycJffBlQh5hAHlSkXw9He6YtPRCf/M9
-         BJrJWAvNl/FlA==
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
-Cc:     dan.j.williams@intel.com, michal.simek@xilinx.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        git@xilinx.com
-Subject: Re: [PATCH 0/3] dmaengine: xilinx_dma: coverity fixes
-Message-ID: <20201221142929.GF3323@vkoul-mobl>
-References: <1608228615-7413-1-git-send-email-radhey.shyam.pandey@xilinx.com>
+        id S1727168AbgLUOfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 09:35:38 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:9907 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726949AbgLUOfh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 09:35:37 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4D026F6PYCz7JFZ;
+        Mon, 21 Dec 2020 22:34:13 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 21 Dec 2020 22:34:44 +0800
+From:   John Garry <john.garry@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <rafael@kernel.org>,
+        <maz@kernel.org>, <tglx@linutronix.de>
+CC:     <linux-kernel@vger.kernel.org>, <dan.carpenter@oracle.com>,
+        John Garry <john.garry@huawei.com>
+Subject: [PATCH] Driver core: platform: Add extra error check in devm_platform_get_irqs_affinity()
+Date:   Mon, 21 Dec 2020 22:30:55 +0800
+Message-ID: <1608561055-231244-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1608228615-7413-1-git-send-email-radhey.shyam.pandey@xilinx.com>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17-12-20, 23:40, Radhey Shyam Pandey wrote:
-> This patch series fix coverity warnings for xilinx_dma driver.
-> No functional change. These patches are picked from xilinx 
-> linux tree and posted for upstream.
+The current check of nvec < minvec for nvec returned from
+platform_irq_count() will not detect a negative error code in nvec.
 
-Looks good, can you please add fixes tag and make it one line in last
-patch (I think it would fit now)
+This is because minvec is unsigned, and, as such, nvec is promoted to
+unsigned in that check, which will make it a huge number (if it contained
+-EPROBE_DEFER).
 
+In practice, an error should not occur in nvec for the only in-tree
+user, but add a check anyway.
+
+Fixes: e15f2fa959f2 ("driver core: platform: Add devm_platform_get_irqs_affinity()")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: John Garry <john.garry@huawei.com>
+---
+I hope that this can go through either irqchip or driver/core trees, thanks!
+
+diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+index 95fd1549f87d..8456d8384ac8 100644
+--- a/drivers/base/platform.c
++++ b/drivers/base/platform.c
+@@ -366,6 +366,8 @@ int devm_platform_get_irqs_affinity(struct platform_device *dev,
+ 		return -ERANGE;
+ 
+ 	nvec = platform_irq_count(dev);
++	if (nvec < 0)
++		return nvec;
+ 
+ 	if (nvec < minvec)
+ 		return -ENOSPC;
 -- 
-~Vinod
+2.26.2
+
