@@ -2,66 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D59812DFC29
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 14:05:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2949A2DFC2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 14:06:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726701AbgLUNEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 08:04:00 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9634 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725807AbgLUND7 (ORCPT
+        id S1727096AbgLUNFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 08:05:41 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:10055 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726924AbgLUNFk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 08:03:59 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4D004T3wcYz15h11;
-        Mon, 21 Dec 2020 21:02:33 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 21 Dec 2020 21:03:08 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <keescook@chromium.org>, <anton@enomsg.org>, <ccross@android.com>,
-        <tony.luck@intel.com>, <linux-kernel@vger.kernel.org>
-CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] fs/pstore: Add missing unlock to avoid mismatched lock
-Date:   Mon, 21 Dec 2020 21:03:43 +0800
-Message-ID: <20201221130343.1862-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        Mon, 21 Dec 2020 08:05:40 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D006C4ncBzM7Zp;
+        Mon, 21 Dec 2020 21:04:03 +0800 (CST)
+Received: from [10.174.184.155] (10.174.184.155) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 21 Dec 2020 21:04:38 +0800
+Subject: Re: [PATCH] lib/logic_pio: Fix overlap check for pio registery
+To:     John Garry <john.garry@huawei.com>, <linux-kernel@vger.kernel.org>
+CC:     Wei Xu <xuwei5@hisilicon.com>, Arnd Bergmann <arnd@arndb.de>,
+        "Bjorn Helgaas" <bhelgaas@google.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        <xieyingtai@huawei.com>
+References: <20201218062335.5320-1-cenjiahui@huawei.com>
+ <2cde14cd-91da-aae4-70aa-656d629259e6@huawei.com>
+ <006ad6ce-d6b2-59cb-8209-aca3f6e53fec@huawei.com>
+ <5df9663b-7c6a-6652-2561-9d3889ff94bc@huawei.com>
+From:   Jiahui Cen <cenjiahui@huawei.com>
+Message-ID: <e3fdeba7-9058-8618-9ca8-486f58d4f383@huawei.com>
+Date:   Mon, 21 Dec 2020 21:04:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
+In-Reply-To: <5df9663b-7c6a-6652-2561-9d3889ff94bc@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.184.155]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix a missing unlock in the error branch.
+Hi John,
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- fs/pstore/zone.c | 2 ++
- 1 file changed, 2 insertions(+)
+On 2020/12/21 19:12, John Garry wrote:
+> On 21/12/2020 03:24, Jiahui Cen wrote:
+>> Hi John,
+>>
+>> On 2020/12/18 18:40, John Garry wrote:
+>>> On 18/12/2020 06:23, Jiahui Cen wrote:
+>>>> Since the [start, end) is a half-open interval, a range with the end equal
+>>>> to the start of another range should not be considered as overlapped.
+>>>>
+>>>> Signed-off-by: Jiahui Cen<cenjiahui@huawei.com>
+>>>> ---
+>>>>    lib/logic_pio.c | 2 +-
+>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/lib/logic_pio.c b/lib/logic_pio.c
+>>>> index f32fe481b492..445d611f1dc1 100644
+>>>> --- a/lib/logic_pio.c
+>>>> +++ b/lib/logic_pio.c
+>>>> @@ -57,7 +57,7 @@ int logic_pio_register_range(struct logic_pio_hwaddr *new_range)
+>>>>                new_range->flags == LOGIC_PIO_CPU_MMIO) {
+>>>>                /* for MMIO ranges we need to check for overlap */
+>>>>                if (start >= range->hw_start + range->size ||
+>>>> -                end < range->hw_start) {
+>>>> +                end <= range->hw_start) {
+>>> It looks like your change is correct, but should not really have an impact in practice since:
+>>> a: BIOSes generally list ascending IO port CPU addresses
+>>> b. there is space between IO port CPU address regions
+>>>
+>>> Have you seen a problem here?
+>>>
+>> No serious problem. I found it just when I was working on adding support of
+>> pci expander bridge for Arm in QEMU. I found the IO window of some extended
+>> root bus could not be registered when I inserted the extended buses' _CRS
+>> info into DSDT table in the x86 way, which does not sort the buses.
+>>
+>> Though root buses should be sorted in QEMU, would it be better to accept
+>> those non-ascending IO windows?
+>>
+> 
+> ok, so it seems that you have seen a real problem, and this issue is not just detected by code analysis.
+> 
+>> BTW, for b, it seems to be no space between IO windows of different root buses
+>> generated by EDK2. Or maybe I missed something obvious.
+> 
+> I don't know about that. Anyway, your change looks ok.
+> 
+> Reviewed-by: John Garry <john.garry@huawei.com>
+> 
+> BTW, for your virt env, will there be requirement to unregister PCI MMIO ranges? Currently we don't see that in non-virt world.
+> 
 
-diff --git a/fs/pstore/zone.c b/fs/pstore/zone.c
-index 3ce89216670c..569404d56db0 100644
---- a/fs/pstore/zone.c
-+++ b/fs/pstore/zone.c
-@@ -1403,6 +1403,7 @@ int register_pstore_zone(struct pstore_zone_info *info)
- 		goto fail_free;
- 	}
- 	mutex_unlock(&pstore_zone_cxt.pstore_zone_info_lock);
-+	mutex_unlock(&cxt->pstore_zone_info_lock);
- 
- 	return 0;
- 
-@@ -1414,6 +1415,7 @@ int register_pstore_zone(struct pstore_zone_info *info)
- fail_out:
- 	pstore_zone_cxt.pstore_zone_info = NULL;
- 	mutex_unlock(&pstore_zone_cxt.pstore_zone_info_lock);
-+	mutex_unlock(&cxt->pstore_zone_info_lock);
- 	return err;
- }
- EXPORT_SYMBOL_GPL(register_pstore_zone);
--- 
-2.22.0
+Thanks for your review.
 
+And currently there is no such a requirement in my virt env.
+
+Thanks,
+Jiahui
