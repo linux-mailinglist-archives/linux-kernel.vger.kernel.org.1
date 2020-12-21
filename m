@@ -2,80 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD4042DFFC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:30:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C57962DFE23
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 17:44:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726303AbgLUSaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 13:30:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725857AbgLUSaH (ORCPT
+        id S1725849AbgLUQoG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Dec 2020 11:44:06 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:54377 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725777AbgLUQoF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:30:07 -0500
-Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 680E7C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:29:27 -0800 (PST)
-Received: by mail-vk1-xa2c.google.com with SMTP id m145so2451307vke.7
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:29:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6ELvVP/n7i2Ng8CC0EnLp4ayJVNwTBu02YrgJ6HOBfI=;
-        b=Tug0cZ8xodGcLA6XrK1J62WOD0AFD+2EYA9zmnHmG9EqNzovb17oRPYvt+RvXtKgMy
-         tzOCS/sQ4cIovEVeGeeeEnu8cL9ynAAg2/hn7tF9BwSlcdimIr6HlCeCBWMy/XHUEad4
-         pO9Q06bNGwS32LRqcLYmEvMRO87k8JHjeClA8pDqVoEDE+vil/liKF6DLBG925YCRNSJ
-         miZ8BiHQQZXoRe/OAAMonIBs6iJ1WXX1WX8fjIOr2zIDu2VPLZbOb8F7+eeOXuaFKQXv
-         QinAiLF9b2BlEUu8FJJu96RHnLb3mFi1Nwk8fZ9czlzmwp36g85DwYS3fVVshBbiHDr3
-         No/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=6ELvVP/n7i2Ng8CC0EnLp4ayJVNwTBu02YrgJ6HOBfI=;
-        b=ejCp5TEcvhfsHqUxVDcgoushyBhmbZmWQg34Rgfbj83n6PzkYJVUEQ8rn29b4EwcNz
-         csRVHmUCrKm8m64pM+yRq7oxP2MpRIWcGL9gjxT02tAKUy9T5KrGBZXjNgTgxmqvRbLS
-         l6tzW381TLAsCfPAW7wQvWXCluoCehaTFd5qOq5T2GU5SDsrDLWAzOnD9ErTgCEvOGnK
-         KKp1P01mLi+a22UOnFA2IGhws0YnqOzeX3bTOWgbm0aRW8tSA6yQQlcqY+p0jgOZ3pqw
-         o7F8xGqhOpjRHbsdFL1O4sy0I8GABuf2ZS2mqAHTUidA6OLEx5mncmo0wrJfU2jncaDx
-         yoSw==
-X-Gm-Message-State: AOAM533cgNlu36A/QNvkr9MApvgJFbtYRiHn2bzdfsVyGXEdt7jwCCu/
-        YYl47Z6DMlyXcVeSabk7GvqXeX5YgvU=
-X-Google-Smtp-Source: ABdhPJxRZ43tgS5mMc74Xg3iU6JsNHFSQnk7OKCTSgQ4piFfUEKfnH5s904NdbY8+9sahMeYSmWglg==
-X-Received: by 2002:aa7:8708:0:b029:19e:924:345a with SMTP id b8-20020aa787080000b029019e0924345amr16127731pfo.54.1608568908259;
-        Mon, 21 Dec 2020 08:41:48 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id s10sm17234713pgg.76.2020.12.21.08.41.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 08:41:47 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Mon, 21 Dec 2020 08:41:45 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Nitin Gupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/zsmalloc: replace if (cond) BUG() with BUG_ON()
-Message-ID: <X+DQSQMzXCvty6bW@google.com>
-References: <1607743586-80303-1-git-send-email-alex.shi@linux.alibaba.com>
+        Mon, 21 Dec 2020 11:44:05 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mtapsc-5-b9x0mQY4PWebkGD87-Qp8A-1; Mon, 21 Dec 2020 16:42:26 +0000
+X-MC-Unique: b9x0mQY4PWebkGD87-Qp8A-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Mon, 21 Dec 2020 16:42:23 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Mon, 21 Dec 2020 16:42:23 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Segher Boessenkool' <segher@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+CC:     Xiaoming Ni <nixiaoming@huawei.com>,
+        "ravi.bangoria@linux.ibm.com" <ravi.bangoria@linux.ibm.com>,
+        "mikey@neuling.org" <mikey@neuling.org>,
+        "yanaijie@huawei.com" <yanaijie@huawei.com>,
+        "haren@linux.ibm.com" <haren@linux.ibm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "npiggin@gmail.com" <npiggin@gmail.com>,
+        "wangle6@huawei.com" <wangle6@huawei.com>,
+        "paulus@samba.org" <paulus@samba.org>,
+        "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Subject: RE: [PATCH] powerpc:Don't print raw EIP/LR hex values in dump_stack()
+ and show_regs()
+Thread-Topic: [PATCH] powerpc:Don't print raw EIP/LR hex values in
+ dump_stack() and show_regs()
+Thread-Index: AQHW17dukx+1atuJ10yi7rVw0MWNE6oBwFGw
+Date:   Mon, 21 Dec 2020 16:42:23 +0000
+Message-ID: <ad814ccf34c14c76b45e50b6e7741c3a@AcuMS.aculab.com>
+References: <20201221032758.12143-1-nixiaoming@huawei.com>
+ <2279fc96-1f10-0c3f-64d9-734f18758620@csgroup.eu>
+ <20201221163130.GZ2672@gate.crashing.org>
+In-Reply-To: <20201221163130.GZ2672@gate.crashing.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1607743586-80303-1-git-send-email-alex.shi@linux.alibaba.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 12, 2020 at 11:26:25AM +0800, Alex Shi wrote:
-> coccinelle reports some warning:
-> WARNING: Use BUG_ON instead of if condition followed by BUG.
+From: Segher Boessenkool
+> Sent: 21 December 2020 16:32
 > 
-> It could be fixed by BUG_ON().
+> On Mon, Dec 21, 2020 at 04:17:21PM +0100, Christophe Leroy wrote:
+> > Le 21/12/2020 à 04:27, Xiaoming Ni a écrit :
+> > >Since the commit 2b0e86cc5de6 ("powerpc/fsl_booke/32: implement KASLR
+> > >infrastructure"), the powerpc system is ready to support KASLR.
+> > >To reduces the risk of invalidating address randomization, don't print the
+> > >EIP/LR hex values in dump_stack() and show_regs().
 > 
-> Reported-by: abaci@linux.alibaba.com
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> > I think your change is not enough to hide EIP address, see below a dump
+> > with you patch, you get "Faulting instruction address: 0xc03a0c14"
+> 
+> As far as I can see the patch does nothing to the GPR printout.  Often
+> GPRs contain code addresses.  As one example, the LR is moved via a GPR
+> (often GPR0, but not always) for storing on the stack.
+> 
+> So this needs more work.
 
-Acked-by: Minchan Kim <minchan@kernel.org>
+If the dump_stack() is from an oops you need the real EIP value
+on order to stand any chance of making headway.
 
-Thanks.
+Otherwise you might just as well just print 'borked - tough luck'.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
