@@ -2,138 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 326FA2DFB45
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 11:59:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FABB2DFB4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 12:05:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726044AbgLUK71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 05:59:27 -0500
-Received: from mga06.intel.com ([134.134.136.31]:8795 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725898AbgLUK70 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 05:59:26 -0500
-IronPort-SDR: E8me36LRLhbuBPaD0Z+v1uPKd6jFKT0K6X+DK6HSIPca1CGxwktM6CN/PYWkOMFk8Pl7z7nHmI
- dEGAIMlMCyCA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9841"; a="237273217"
-X-IronPort-AV: E=Sophos;i="5.78,436,1599548400"; 
-   d="scan'208";a="237273217"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2020 02:57:40 -0800
-IronPort-SDR: rgl18WKC6PsWs6q4I3s+395OQJynOrNu+wzz/IIef7cvNS4HBhkk4JJAh2ae5WKuETt8+eMfTd
- a2w+OU5iniLw==
-X-IronPort-AV: E=Sophos;i="5.78,436,1599548400"; 
-   d="scan'208";a="415756307"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2020 02:57:34 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 528DF205F7; Mon, 21 Dec 2020 12:57:32 +0200 (EET)
-Date:   Mon, 21 Dec 2020 12:57:32 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        devel@acpica.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tian Shu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        kieran.bingham+renesas@ideasonboard.com,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>, jorhand@linux.microsoft.com
-Subject: Re: [PATCH v2 12/12] ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver
-Message-ID: <20201221105732.GL26370@paasikivi.fi.intel.com>
-References: <20201217234337.1983732-1-djrscally@gmail.com>
- <20201217234337.1983732-13-djrscally@gmail.com>
- <20201218211732.GE4077@smile.fi.intel.com>
- <e2b4c35f-5020-c332-d97a-8ba25be0e55e@gmail.com>
- <CAHp75VcebKas4j-vByodicHxRMrO4jkaJToSUW3iLJC2+vY_iA@mail.gmail.com>
- <e86fc26d-8c2f-c8a6-fc2e-ec612fd5d158@gmail.com>
- <20201221102147.GJ26370@paasikivi.fi.intel.com>
- <5ba6ada9-c8a6-fa66-b8d6-5769b7bcdfea@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5ba6ada9-c8a6-fa66-b8d6-5769b7bcdfea@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1725975AbgLULEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 06:04:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725811AbgLULEM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 06:04:12 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B46BC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 03:03:31 -0800 (PST)
+Received: by ozlabs.org (Postfix, from userid 1034)
+        id 4CzxR45BPPz9sVt; Mon, 21 Dec 2020 22:03:28 +1100 (AEDT)
+From:   Michael Ellerman <patch-notifications@ellerman.id.au>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Mackerras <paulus@samba.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+In-Reply-To: <a1d31f84ddb0926813b17fcd5cc7f3fa7b4deac2.1602759123.git.christophe.leroy@csgroup.eu>
+References: <a1d31f84ddb0926813b17fcd5cc7f3fa7b4deac2.1602759123.git.christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH] powerpc: force inlining of csum_partial() to avoid multiple csum_partial() with GCC10
+Message-Id: <160854857836.1696279.559566714940514857.b4-ty@ellerman.id.au>
+Date:   Mon, 21 Dec 2020 22:03:28 +1100 (AEDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 10:52:52AM +0000, Daniel Scally wrote:
+On Thu, 15 Oct 2020 10:52:20 +0000 (UTC), Christophe Leroy wrote:
+> 	ppc-linux-objdump -d vmlinux | grep -e "<csum_partial>" -e "<__csum_partial>"
 > 
-> On 21/12/2020 10:21, Sakari Ailus wrote:
-> > Hi Daniel, Andy,
-> >
-> > On Sat, Dec 19, 2020 at 11:48:51PM +0000, Daniel Scally wrote:
-> >> On 19/12/2020 18:52, Andy Shevchenko wrote:
-> >>> On Sat, Dec 19, 2020 at 2:25 AM Daniel Scally <djrscally@gmail.com> wrote:
-> >>>> On 18/12/2020 21:17, Andy Shevchenko wrote:
-> >>>>> On Thu, Dec 17, 2020 at 11:43:37PM +0000, Daniel Scally wrote:
-> >>> ...
-> >>>
-> >>>>>> +    sensor->ep_properties[0] = PROPERTY_ENTRY_U32(sensor->prop_names.bus_type, 4);
-> >>>>> Does 4 has any meaning that can be described by #define ?
-> >>>> It's V4L2_FWNODE_BUS_TYPE_CSI2_DPHY:
-> >>>>
-> >>>> https://elixir.bootlin.com/linux/latest/source/drivers/media/v4l2-core/v4l2-fwnode.c#L36
-> >>>>
-> >>>> That enum's not in an accessible header, but I can define it in this
-> >>>> module's header
-> >>> Maybe you can do a preparatory patch to make it visible to v4l2
-> >>> drivers? (Like moving to one of v4l2 headers)
-> >> Sure ok, guess media/v4l2-fwnode.h makes the most sense.
-> > Yes, please.
-> Done for the next version
-> >
-> >>> ...
-> >>>
-> >>>>>> +                    if (bridge->n_sensors >= CIO2_NUM_PORTS) {
-> >>>>>> +                            dev_warn(&cio2->dev, "Exceeded available CIO2 ports\n");
-> >>>>>> +                            /* overflow i so outer loop ceases */
-> >>>>>> +                            i = ARRAY_SIZE(cio2_supported_sensors);
-> >>>>>> +                            break;
-> >>>>> Why not to create a new label below and assign ret here with probably comment
-> >>>>> why it's not an error?
-> >>>> Sure, I can do that, but since it wouldn't need any cleanup I could also
-> >>>> just return 0 here as Laurent suggest (but with a comment explaining why
-> >>>> that's ok as you say) - do you have a preference?
-> >>> While it's a good suggestion it will bring a bit of inconsistency into
-> >>> approach. Everywhere else in the function you are using the goto
-> >>> approach.
-> >>> So yes, I have a preference.
-> >> No problem
-> > Laurent also commented on the return code.
-> >
-> > I might just handle this as an error. The earlier ports are fine, but
-> > there's also a problem with the data here. It'd be easier to spot that this
-> > way, and we can change this in the future if need be.
+> With gcc9 I get:
 > 
+> 	c0017ef8 <__csum_partial>:
+> 	c00182fc:	4b ff fb fd 	bl      c0017ef8 <__csum_partial>
+> 	c0018478:	4b ff fa 80 	b       c0017ef8 <__csum_partial>
+> 	c03e8458:	4b c2 fa a0 	b       c0017ef8 <__csum_partial>
+> 	c03e8518:	4b c2 f9 e1 	bl      c0017ef8 <__csum_partial>
+> 	c03ef410:	4b c2 8a e9 	bl      c0017ef8 <__csum_partial>
+> 	c03f0b24:	4b c2 73 d5 	bl      c0017ef8 <__csum_partial>
+> 	c04279a4:	4b bf 05 55 	bl      c0017ef8 <__csum_partial>
+> 	c0429820:	4b be e6 d9 	bl      c0017ef8 <__csum_partial>
+> 	c0429944:	4b be e5 b5 	bl      c0017ef8 <__csum_partial>
+> 	c042b478:	4b be ca 81 	bl      c0017ef8 <__csum_partial>
+> 	c042b554:	4b be c9 a5 	bl      c0017ef8 <__csum_partial>
+> 	c045f15c:	4b bb 8d 9d 	bl      c0017ef8 <__csum_partial>
+> 	c0492190:	4b b8 5d 69 	bl      c0017ef8 <__csum_partial>
+> 	c0492310:	4b b8 5b e9 	bl      c0017ef8 <__csum_partial>
+> 	c0495594:	4b b8 29 65 	bl      c0017ef8 <__csum_partial>
+> 	c049c420:	4b b7 ba d9 	bl      c0017ef8 <__csum_partial>
+> 	c049c870:	4b b7 b6 89 	bl      c0017ef8 <__csum_partial>
+> 	c049c930:	4b b7 b5 c9 	bl      c0017ef8 <__csum_partial>
+> 	c04a9ca0:	4b b6 e2 59 	bl      c0017ef8 <__csum_partial>
+> 	c04bdde4:	4b b5 a1 15 	bl      c0017ef8 <__csum_partial>
+> 	c04be480:	4b b5 9a 79 	bl      c0017ef8 <__csum_partial>
+> 	c04be710:	4b b5 97 e9 	bl      c0017ef8 <__csum_partial>
+> 	c04c969c:	4b b4 e8 5d 	bl      c0017ef8 <__csum_partial>
+> 	c04ca2fc:	4b b4 db fd 	bl      c0017ef8 <__csum_partial>
+> 	c04cf5bc:	4b b4 89 3d 	bl      c0017ef8 <__csum_partial>
+> 	c04d0440:	4b b4 7a b9 	bl      c0017ef8 <__csum_partial>
 > 
-> You mean just raise an error with dev_err()? Or fail the probe and
-> unwind the 4 sensors that were already connected successfully? I'm fine
+> [...]
 
-Both.
+Applied to powerpc/next.
 
-> with that if so - we have no in scope devices where that will be a
-> problem at the moment.
+[1/1] powerpc: force inlining of csum_partial() to avoid multiple csum_partial() with GCC10
+      https://git.kernel.org/powerpc/c/328e7e487a464aad024fbde6663b7859df082b7b
 
-I guess there will be quite a few additional things to address before
-getting anything with four sensors working.
-
--- 
-Regards,
-
-Sakari Ailus
+cheers
