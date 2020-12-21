@@ -2,164 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26AC62DFDD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 17:01:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 132432DFDD9
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 17:02:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725927AbgLUQAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 11:00:40 -0500
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:59080 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725865AbgLUQAk (ORCPT
+        id S1726008AbgLUQBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 11:01:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38971 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725820AbgLUQBo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 11:00:40 -0500
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 0BLFxkuQ006174;
-        Tue, 22 Dec 2020 00:59:46 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 0BLFxkuQ006174
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1608566386;
-        bh=v9iKmafeCvaighgEpCalcZ1NwA7eYUmABzv31kcyXUY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=uCOlCsQHRkqZOrP+gvNkTzvsW6x8jXDGaquN0Rum4iqEynVuwcE9lJSGFbxAY9sFA
-         uXgL8x+NheOmnFk86tnGbUB3ekukQPz700q2a/pkQm9sDLQmRpHCv/+Mic5n5xCrrU
-         pRAEjxjJj8mV1BjGcTRKY4PJKKx/6qPKm2BcGnwxr1+2sAh2eU2OL3iGYSxsHHpf2S
-         byXk9AFJD6/qppuDzlcISR6PffOoNjxY72GaqlsiTHzolYizISX/T2XSIH3XwiC0OM
-         6CF+x2TLWh2lfzt0A4bI2Ul+Ax5b+Tio+P5CzQrjhk8lkWSBaVwhWimqd70tnaYyXg
-         sMAlMxVk6xQjA==
-X-Nifty-SrcIP: [209.85.215.178]
-Received: by mail-pg1-f178.google.com with SMTP id f17so6581848pge.6;
-        Mon, 21 Dec 2020 07:59:46 -0800 (PST)
-X-Gm-Message-State: AOAM5329D3FYDUVwdhrDkW/om+cJ6CDST2yZQsMnymYdWaOI6O0ZNJ78
-        1pJg0b1EwXeX/Yw0Dwux78mCuUIwcIwFGL0ZR7s=
-X-Google-Smtp-Source: ABdhPJzd43I2fCS5WlqxLQAMXfnDeU2v1Nd4N3AEKoXo4krGXsN8zQeEpZjkNePsHNmngarkHZ6IRkan7wM1uLlcvr0=
-X-Received: by 2002:aa7:9501:0:b029:155:3b11:d5c4 with SMTP id
- b1-20020aa795010000b02901553b11d5c4mr15778878pfp.76.1608566385497; Mon, 21
- Dec 2020 07:59:45 -0800 (PST)
+        Mon, 21 Dec 2020 11:01:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608566418;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=f9ktLnnvSqo4qDYoG72uj35ketj6iNKNm8K0dv0IwXU=;
+        b=YM3T3oq0pP6G42dvAGYZBGvTJTgbmVIR7QEwv6Qt5Sg9JboT8TSSyFQgPvsxikfZOzVEE4
+        8cVO7O7W8S+odAyu7gRVRZdoNxPlVAraXYEuxdgalKAETEm01hO/doJDvzEQHqXC8z4tM2
+        FgkbdYps9BjTbVYh0PbHDTlUABRnP3g=
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
+ [209.85.210.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-82-TiH7LelKMDS30iWuPCHi5w-1; Mon, 21 Dec 2020 11:00:17 -0500
+X-MC-Unique: TiH7LelKMDS30iWuPCHi5w-1
+Received: by mail-ot1-f72.google.com with SMTP id j22so5227299otq.16
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 08:00:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f9ktLnnvSqo4qDYoG72uj35ketj6iNKNm8K0dv0IwXU=;
+        b=rahpKDh9++B1+CQKEKUOw7aEJVvsx3NlNC8h7ySiD0ZHDFg+DPi0oITaVJfeFpY4kU
+         TsRNxWpZhlSJhuJZIsh2046IVaOXWzsc3Gjxzr9PK3u6KKpY0DYuff2DnGs5sSg1gi51
+         QDhXAN2YmgpD1tAf1cMItcP/cdEAKdRypUTFDDOW1VNuTu0qAJshZzruz/ICm7Cr54ZN
+         hE0Zxn+khBfSoOJaUf2GmmofFEK+Zs2gzsVPKvwgZE9G+60xs359vU6q34bI5i39rmBj
+         CA084x8hWiTtdyWmWmocxQbWZBDM0i1tKYHyCpgvVgAwz1KaLUkQXSxu3h7O3QcjCyhd
+         WDDg==
+X-Gm-Message-State: AOAM532fONLltf6VzeLGxchLOyqz9aZWIfPxOOmihwWrQy10kBIK2L8V
+        btsjMSPts3aNG4KtWONB+wJMaGvJWZbniYNypQmhCRNYTgilwq8Au/IpE7Ho5NoH1XZr5Ko88ci
+        wo7dxVAvuOfRbn+ZraeN9Oj66
+X-Received: by 2002:a9d:4715:: with SMTP id a21mr12941613otf.220.1608566416281;
+        Mon, 21 Dec 2020 08:00:16 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwwN/2SSmcvPltqlVzgYxlriRwZSsmMyce3N1hNtIrklWPD2ZFlawXcqMtAnS6qsxhxt6Ft+w==
+X-Received: by 2002:a9d:4715:: with SMTP id a21mr12941597otf.220.1608566416096;
+        Mon, 21 Dec 2020 08:00:16 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id 8sm3784513oii.45.2020.12.21.08.00.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 08:00:15 -0800 (PST)
+From:   trix@redhat.com
+To:     fenghua.yu@intel.com, reinette.chatre@intel.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] x86/resctrl: add printf attribute to log function
+Date:   Mon, 21 Dec 2020 08:00:09 -0800
+Message-Id: <20201221160009.3752017-1-trix@redhat.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20201221054323.247483-1-masahiroy@kernel.org> <20201221152645.GH3026679@lunn.ch>
-In-Reply-To: <20201221152645.GH3026679@lunn.ch>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 22 Dec 2020 00:59:08 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQ9vhB6iYHeGV3xcyo8_iLqmGJeJUYOvbdHqN9Wn0mEJg@mail.gmail.com>
-Message-ID: <CAK7LNAQ9vhB6iYHeGV3xcyo8_iLqmGJeJUYOvbdHqN9Wn0mEJg@mail.gmail.com>
-Subject: Re: [PATCH] net: lantiq_etop: check the result of request_irq()
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 12:26 AM Andrew Lunn <andrew@lunn.ch> wrote:
->
-> On Mon, Dec 21, 2020 at 02:43:23PM +0900, Masahiro Yamada wrote:
-> > The declaration of request_irq() in <linux/interrupt.h> is marked as
-> > __must_check.
-> >
-> > Without the return value check, I see the following warnings:
-> >
-> > drivers/net/ethernet/lantiq_etop.c: In function 'ltq_etop_hw_init':
-> > drivers/net/ethernet/lantiq_etop.c:273:4: warning: ignoring return value of 'request_irq', declared with attribute warn_unused_result [-Wunused-result]
-> >   273 |    request_irq(irq, ltq_etop_dma_irq, 0, "etop_tx", priv);
-> >       |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > drivers/net/ethernet/lantiq_etop.c:281:4: warning: ignoring return value of 'request_irq', declared with attribute warn_unused_result [-Wunused-result]
-> >   281 |    request_irq(irq, ltq_etop_dma_irq, 0, "etop_rx", priv);
-> >       |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >
-> > Reported-by: Miguel Ojeda <ojeda@kernel.org>
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > ---
-> >
-> >  drivers/net/ethernet/lantiq_etop.c | 13 +++++++++++--
-> >  1 file changed, 11 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/net/ethernet/lantiq_etop.c b/drivers/net/ethernet/lantiq_etop.c
-> > index 2d0c52f7106b..960494f9752b 100644
-> > --- a/drivers/net/ethernet/lantiq_etop.c
-> > +++ b/drivers/net/ethernet/lantiq_etop.c
-> > @@ -264,13 +264,18 @@ ltq_etop_hw_init(struct net_device *dev)
-> >       for (i = 0; i < MAX_DMA_CHAN; i++) {
-> >               int irq = LTQ_DMA_CH0_INT + i;
-> >               struct ltq_etop_chan *ch = &priv->ch[i];
-> > +             int ret;
-> >
-> >               ch->idx = ch->dma.nr = i;
-> >               ch->dma.dev = &priv->pdev->dev;
-> >
-> >               if (IS_TX(i)) {
-> >                       ltq_dma_alloc_tx(&ch->dma);
-> > -                     request_irq(irq, ltq_etop_dma_irq, 0, "etop_tx", priv);
-> > +                     ret = request_irq(irq, ltq_etop_dma_irq, 0, "etop_tx", priv);
-> > +                     if (ret) {
-> > +                             netdev_err(dev, "failed to request irq\n");
-> > +                             return ret;
->
-> You need to cleanup what ltq_dma_alloc_tx() did.
+From: Tom Rix <trix@redhat.com>
 
+Attributing the function allows the compiler to more thoroughly
+check the use of the function with -Wformat and similar flags.
 
-Any failure from this function will roll back
-in the following paths:
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ arch/x86/kernel/cpu/resctrl/internal.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-  ltq_etop_hw_exit()
-     -> ltq_etop_free_channel()
-          -> ltq_dma_free()
-
-
-So, dma is freed anyway.
-
-One problem I see is,
-ltq_etop_hw_exit() frees all DMA channels,
-some of which may not have been allocated yet.
-
-If it is a bug, it is an existing bug.
-
-
->
-> > +                     }
-> >               } else if (IS_RX(i)) {
-> >                       ltq_dma_alloc_rx(&ch->dma);
-> >                       for (ch->dma.desc = 0; ch->dma.desc < LTQ_DESC_NUM;
-> > @@ -278,7 +283,11 @@ ltq_etop_hw_init(struct net_device *dev)
-> >                               if (ltq_etop_alloc_skb(ch))
-> >                                       return -ENOMEM;
-
-
-This -ENOMEM does not roll back anything here.
-
-As stated above, dma_free_coherent() is called.
-The problem is, ltq_etop_hw_exit() rolls back too much.
-
-If your requirement is "this driver is completely wrong. Please rewrite it",
-sorry, I cannot (unless I am paid to do so).
-
-I am just following this driver's roll-back model.
-
-Please do not expect more to a person who
-volunteers to eliminate build warnings.
-
-Of course, if somebody volunteers to rewrite this driver correctly,
-that is appreciated.
-
-
-
-> >                       ch->dma.desc = 0;
-> > -                     request_irq(irq, ltq_etop_dma_irq, 0, "etop_rx", priv);
-> > +                     ret = request_irq(irq, ltq_etop_dma_irq, 0, "etop_rx", priv);
-> > +                     if (ret) {
-> > +                             netdev_err(dev, "failed to request irq\n");
-> > +                             return ret;
->
-> And here you need to cleanup ltq_dma_alloc_rx().
->
->     Andrew
-
-
-
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index ee71c47844cb..c4d320d02fd5 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -572,6 +572,7 @@ union cpuid_0x10_x_edx {
+ 
+ void rdt_last_cmd_clear(void);
+ void rdt_last_cmd_puts(const char *s);
++__printf(1, 2)
+ void rdt_last_cmd_printf(const char *fmt, ...);
+ 
+ void rdt_ctrl_update(void *arg);
 -- 
-Best Regards
-Masahiro Yamada
+2.27.0
+
