@@ -2,81 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21CB72DFD0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 15:53:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 437CD2DFD24
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 16:01:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727093AbgLUOwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 09:52:33 -0500
-Received: from www.zeus03.de ([194.117.254.33]:56340 "EHLO mail.zeus03.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726844AbgLUOwc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 09:52:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=k1; bh=vJdxuZga1Antqxavromd5prZHeSB
-        Nup8FYJ2dVFwB9E=; b=FUltQ97tb2G9LffXGwsaxjArZQPENGj2MOguniUtH+5Q
-        Oxvq9AlC5+WF0TiQbKu0J7OhZqtNB+KpgLUA+skCgYBgouqTBLvF0mtlLt87OCEk
-        PvHsdpjqRsRVQWpV4LAVjmUWIOtb0wLxc9jZSMLPizeWjk4QYxky9Xie1x5Td9A=
-Received: (qmail 537972 invoked from network); 21 Dec 2020 15:51:49 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 21 Dec 2020 15:51:49 +0100
-X-UD-Smtp-Session: l3s3148p1@KWcAmfq2tskgAwDPXwIpAOUwDQytQs2L
-Date:   Mon, 21 Dec 2020 15:51:48 +0100
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     linux-renesas-soc@vger.kernel.org
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/5] arm64: dts: renesas: r8a779a0: Add RWDT node
-Message-ID: <20201221145148.GA2585@kunai>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-renesas-soc@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201218173731.12839-1-wsa+renesas@sang-engineering.com>
- <20201218173731.12839-4-wsa+renesas@sang-engineering.com>
+        id S1726303AbgLUPBS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Dec 2020 10:01:18 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:58116 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725878AbgLUPBS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 10:01:18 -0500
+Received: from mail-lf1-f71.google.com ([209.85.167.71])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1krMfr-0001kB-1p
+        for linux-kernel@vger.kernel.org; Mon, 21 Dec 2020 15:00:35 +0000
+Received: by mail-lf1-f71.google.com with SMTP id o16so11003114lfo.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 07:00:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2HrR4BVYQUvAjQoPfFaQYFukLKKNtMzMHVbjOUtWsik=;
+        b=VrVt4Qx2a4VbzyHkqhL5exVu/DCB9hiZrc+5a0ReiHaknDI5G5lh8N385gX8GU1nTG
+         HrTleFeQtYI7zZSBexxZn854XU2gpUddG7mIObI20I4wOde8iVXtUQ8j1g335rGGNIwm
+         7E/HOnMrdTmEiTb9QXAECgX5N4uMJ98d0JAjx5ebi8hqIIsMnXW+m5ePNIn7NOZm5wK1
+         EN8LK6Ksy1Rsnvvmr6dmssBPdyjPvwqqCoidOfqGEf0GrKiZMSHw3fvf2Bqwemi0BwZ0
+         NFMVreQAdOCcV2fvTpxWte9xivgPKJPWtJsCP1Kt2TlVO+jBwpK6Yi0Lm54ESK3mTMek
+         NNwg==
+X-Gm-Message-State: AOAM530120oc14ArpS5PpywJENYnxZndmSghlofhIZOQBXXBHXG1GoiT
+        6q56rPTyUJieoJ0AJLPDixOh1SctmPcETzgDl9XEoWOAaFXnvXS8zfrtx0bvQ7ZTpQjyqsY68El
+        u2IdIB+AcaZW0ZhPYW/8pRw9bvvyJjw5rEWe0R6ZeNw4kHnxpPo/rocpNPA==
+X-Received: by 2002:a19:c211:: with SMTP id l17mr6580973lfc.194.1608562834374;
+        Mon, 21 Dec 2020 07:00:34 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx50x1wx97kIAOj7t2hLJfegJ6FqWVIBRMbXVvLJ3tTGGTBIikjyhrOMcur5cI0CsEFRRSdmp2dSZ8JNi8tmko=
+X-Received: by 2002:a19:c211:: with SMTP id l17mr6580948lfc.194.1608562834034;
+ Mon, 21 Dec 2020 07:00:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="FCuugMFkClbJLl1L"
-Content-Disposition: inline
-In-Reply-To: <20201218173731.12839-4-wsa+renesas@sang-engineering.com>
+References: <20201221135206.17671-1-kai.heng.feng@canonical.com> <20e74dc1-1f1d-6dee-19a7-e9a975b66606@linaro.org>
+In-Reply-To: <20e74dc1-1f1d-6dee-19a7-e9a975b66606@linaro.org>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Mon, 21 Dec 2020 23:00:22 +0800
+Message-ID: <CAAd53p5WRVMgSquOC69Yq3DO+itSR44273bLWiF7wXUxFZMDhg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] thermal: int340x: Add critical callback to override
+ default shutdown behavior
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     "Zhang, Rui" <rui.zhang@intel.com>, amitk@kernel.org,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Peter Kaestle <peter@piie.net>,
+        Gayatri Kammela <gayatri.kammela@intel.com>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Dec 21, 2020 at 9:59 PM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+>
+> On 21/12/2020 14:52, Kai-Heng Feng wrote:
+> > We are seeing thermal shutdown on Intel based mobile workstations, the
+> > shutdown happens during the first trip handle in
+> > thermal_zone_device_register():
+> > kernel: thermal thermal_zone15: critical temperature reached (101 C), shutting down
+> >
+> > However, we shouldn't do a thermal shutdown here, since
+> > 1) We may want to use a dedicated daemon, Intel's thermald in this case,
+> > to handle thermal shutdown.
+> >
+> > 2) For ACPI based system, _CRT doesn't mean shutdown unless it's inside
+> > ThermalZone namespace. ACPI Spec, 11.4.4 _CRT (Critical Temperature):
+> > "... If this object it present under a device, the device’s driver
+> > evaluates this object to determine the device’s critical cooling
+> > temperature trip point. This value may then be used by the device’s
+> > driver to program an internal device temperature sensor trip point."
+> >
+> > So a "critical trip" here merely means we should take a more aggressive
+> > cooling method.
+> >
+> > As int340x device isn't present under ACPI ThermalZone, override the
+> > default .critical callback to prevent surprising thermal shutdown.
+> >
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>
+> I'll submit those changes for v5.11-rc1 and change the subject by:
+>
+> thermal: int340x: Fix unexpected shutdown at critical temperature
+> thermal: pch: Fix unexpected shutdown at critical temperature
+>
+> Sounds good ?
 
---FCuugMFkClbJLl1L
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Sounds good to me. Thanks!
 
+Kai-Heng
 
-> +			reg = <0 0xe6020000 0 0x0c>;
-
-I just understood that we sort by reg value and not by name. So, this
-needs to be moved to another place then.
-
-
-
---FCuugMFkClbJLl1L
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/gtoAACgkQFA3kzBSg
-KbYzkQ//XyZ5EqE1iTWBixhRqcLIJc451x45aLhPSeuRU5+fp3sDUkHcRf9xsXmz
-jxCzxyz0+ZEKVDeSX28Ye8CTYmlXf5XtMRLlGJ7RTsgAUudycijKWfgBhF3kOB8f
-c1UftJyyovz6XCTyeoRxSnSDL2jpFG+kUX0l3ELfaLOqyw8n2SRezOmszq6fU4W+
-3kCpZrnfVi4IuDTpsAlYIY4O0wjDpiIa+yt0Hf3jbKYxM0bnkXMgFsvZLYDqtRQh
-axiXpj0YDSJa6e03RVDCKXBeRxcn+v0Tjbw2LSkKPySZ8hQ++c9p2vCyUdE9n2mJ
-Oqbx3up5kwoROyukMx8agMTzhd/meLRNCplIWcTs6yfAnd8S/YilqhdaVsUrruGG
-T9s/W3y4W6RzAq3xLhngxOtzpYW5d2VhKflo9rPHVXkph5MPi7OMu0+v7vtda+rc
-tN1wtQynAPHxleI8X2xFGu5Xbsh2QKvct82MoLMPdP2OY+DgrUfXsYmBZWF2KetT
-DWRkceD0G0sYHUrZDGl6i460hDZxH75D2HbEyAV18/JhgMotQWzcSwdhHs993qTw
-n0NyB8obOoD/81jCCWZkrboLocV22/ohpgArCQFwJt6ote/MTR+wndDLrvnqIzoR
-qg+JCXDw8++VNYSI46VwSzL7jMg07CQy9nN27UN5yGSQn2xqZnw=
-=sReO
------END PGP SIGNATURE-----
-
---FCuugMFkClbJLl1L--
+>
+> > ---
+> >  drivers/thermal/intel/int340x_thermal/int3400_thermal.c     | 6 ++++++
+> >  .../thermal/intel/int340x_thermal/int340x_thermal_zone.c    | 6 ++++++
+> >  2 files changed, 12 insertions(+)
+> >
+> > diff --git a/drivers/thermal/intel/int340x_thermal/int3400_thermal.c b/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
+> > index 823354a1a91a..9778a6dba939 100644
+> > --- a/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
+> > +++ b/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
+> > @@ -431,9 +431,15 @@ static int int3400_thermal_change_mode(struct thermal_zone_device *thermal,
+> >       return result;
+> >  }
+> >
+> > +static void int3400_thermal_critical(struct thermal_zone_device *thermal)
+> > +{
+> > +     dev_dbg(&thermal->device, "%s: critical temperature reached\n", thermal->type);
+> > +}
+> > +
+> >  static struct thermal_zone_device_ops int3400_thermal_ops = {
+> >       .get_temp = int3400_thermal_get_temp,
+> >       .change_mode = int3400_thermal_change_mode,
+> > +     .critical = int3400_thermal_critical,
+> >  };
+> >
+> >  static struct thermal_zone_params int3400_thermal_params = {
+> > diff --git a/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c b/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
+> > index 6e479deff76b..d1248ba943a4 100644
+> > --- a/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
+> > +++ b/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
+> > @@ -146,12 +146,18 @@ static int int340x_thermal_get_trip_hyst(struct thermal_zone_device *zone,
+> >       return 0;
+> >  }
+> >
+> > +static void int340x_thermal_critical(struct thermal_zone_device *zone)
+> > +{
+> > +     dev_dbg(&zone->device, "%s: critical temperature reached\n", zone->type);
+> > +}
+> > +
+> >  static struct thermal_zone_device_ops int340x_thermal_zone_ops = {
+> >       .get_temp       = int340x_thermal_get_zone_temp,
+> >       .get_trip_temp  = int340x_thermal_get_trip_temp,
+> >       .get_trip_type  = int340x_thermal_get_trip_type,
+> >       .set_trip_temp  = int340x_thermal_set_trip_temp,
+> >       .get_trip_hyst =  int340x_thermal_get_trip_hyst,
+> > +     .critical       = int340x_thermal_critical,
+> >  };
+> >
+> >  static int int340x_thermal_get_trip_config(acpi_handle handle, char *name,
+> >
+>
+>
+> --
+> <http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+>
+> Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+> <http://twitter.com/#!/linaroorg> Twitter |
+> <http://www.linaro.org/linaro-blog/> Blog
