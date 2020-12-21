@@ -2,97 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33A2A2DFB7E
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 12:28:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C369A2DFB9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 12:38:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgLUL1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 06:27:37 -0500
-Received: from mga03.intel.com ([134.134.136.65]:16561 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725907AbgLUL1g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 06:27:36 -0500
-IronPort-SDR: 8trWpxcyvhZLqpxlZUTtwQ3/XH0FoeeeE/RsRcF0v1CsjEUYWGru11nYuMZNLUqvlxCPiySgNE
- fE88+RlQJquw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9841"; a="175811325"
-X-IronPort-AV: E=Sophos;i="5.78,436,1599548400"; 
-   d="scan'208";a="175811325"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2020 03:25:50 -0800
-IronPort-SDR: Ruzlnmfcv9D1b7FsVnR64liNeineniqLbyQ/pLIu2fSbduGK6T9jBHtkTqcX239cJEUN41NB7C
- UpEroqRA8Zsw==
-X-IronPort-AV: E=Sophos;i="5.78,436,1599548400"; 
-   d="scan'208";a="563511809"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2020 03:25:44 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1krJKu-00GJki-KA; Mon, 21 Dec 2020 13:26:44 +0200
-Date:   Mon, 21 Dec 2020 13:26:44 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Daniel Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-media@vger.kernel.org,
-        devel@acpica.org, rjw@rjwysocki.net, lenb@kernel.org,
-        gregkh@linuxfoundation.org, yong.zhi@intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        linux@rasmusvillemoes.dk,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
-        linus.walleij@linaro.org, heikki.krogerus@linux.intel.com,
-        kitakar@gmail.com, jorhand@linux.microsoft.com,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH v2 05/12] software_node: unregister software_nodes in
- reverse order
-Message-ID: <20201221112644.GJ4077@smile.fi.intel.com>
-References: <20201217234337.1983732-1-djrscally@gmail.com>
- <20201217234337.1983732-6-djrscally@gmail.com>
- <20201221092116.GG26370@paasikivi.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201221092116.GG26370@paasikivi.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S1726227AbgLULh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 06:37:29 -0500
+Received: from spam.zju.edu.cn ([210.32.2.5]:23398 "EHLO zju.edu.cn"
+        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725791AbgLULh2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 06:37:28 -0500
+X-Greylist: delayed 484 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Dec 2020 06:37:25 EST
+Received: from localhost.localdomain (unknown [10.192.85.18])
+        by mail-app2 (Coremail) with SMTP id by_KCgAnDwKhhuBf2PhfAA--.59381S4;
+        Mon, 21 Dec 2020 19:27:33 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net/mlx5e: Fix memleak in mlx5e_create_l2_table_groups
+Date:   Mon, 21 Dec 2020 19:27:31 +0800
+Message-Id: <20201221112731.32545-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: by_KCgAnDwKhhuBf2PhfAA--.59381S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7GF47XrW3KrW5tFWDur1kuFg_yoWfXwc_Gr
+        y8X3Z5X3yYvr4Ykw1jgrZ8J3yIkrn8ur4SyFZIqFy5Jw1Uur4Uu3yfua4xXF4xGFyUK34D
+        tFZxt3W3A3yjvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2AFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
+        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
+        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv
+        6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
+        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48J
+        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
+        IF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgUMBlZdtRf+rwAPs6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 11:21:16AM +0200, Sakari Ailus wrote:
-> On Thu, Dec 17, 2020 at 11:43:30PM +0000, Daniel Scally wrote:
-> > To maintain consistency with software_node_unregister_nodes(), reverse
-> > the order in which the software_node_unregister_node_group() function
-> > unregisters nodes.
+When mlx5_create_flow_group() fails, ft->g should be
+freed just like when kvzalloc() fails. The caller of
+mlx5e_create_l2_table_groups() does not catch this
+issue on failure, which leads to memleak.
 
-...
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en_fs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> >  void software_node_unregister_node_group(const struct software_node **node_group)
-> >  {
-> > -	unsigned int i;
-> > +	unsigned int i = 0;
-> >  
-> >  	if (!node_group)
-> >  		return;
-> >  
-> > -	for (i = 0; node_group[i]; i++)
-> > +	while (node_group[i]->name)
-> 
-> Why is this change made? node_group is a NULL-terminated array, and the
-> above accesses the name pointer on each entry before checking the entry is
-> non-NULL. Or do I miss something here?
-
-I believe it's a copy'n'paste typo.
-
-> > +		i++;
-> > +
-> > +	while (i--)
-> >  		software_node_unregister(node_group[i]);
-> >  }
-
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c b/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
+index fa8149f6eb08..72de1009b104 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
+@@ -1390,6 +1390,7 @@ static int mlx5e_create_l2_table_groups(struct mlx5e_l2_table *l2_table)
+ 	ft->g[ft->num_groups] = NULL;
+ 	mlx5e_destroy_groups(ft);
+ 	kvfree(in);
++	kfree(ft->g);
+ 
+ 	return err;
+ }
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.17.1
 
