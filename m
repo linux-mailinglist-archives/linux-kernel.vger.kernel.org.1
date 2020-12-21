@@ -2,104 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38C972DFCA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 15:16:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E79162DFCB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 15:20:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727189AbgLUOPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 09:15:50 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:9128 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726841AbgLUOPo (ORCPT
+        id S1727057AbgLUOUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 09:20:04 -0500
+Received: from mail-wr1-f45.google.com ([209.85.221.45]:44460 "EHLO
+        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726612AbgLUOUD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 09:15:44 -0500
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BLEEqBo016490;
-        Mon, 21 Dec 2020 09:15:02 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 35hfa9w6m7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Dec 2020 09:15:02 -0500
-Received: from SCSQMBX10.ad.analog.com (SCSQMBX10.ad.analog.com [10.77.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 0BLEF0l4047589
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 21 Dec 2020 09:15:01 -0500
-Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by SCSQMBX10.ad.analog.com
- (10.77.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2; Mon, 21 Dec 2020
- 06:14:59 -0800
-Received: from zeus.spd.analog.com (10.66.68.11) by scsqmbx10.ad.analog.com
- (10.77.17.5) with Microsoft SMTP Server id 15.2.721.2 via Frontend Transport;
- Mon, 21 Dec 2020 06:14:59 -0800
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0BLEEqnp030685;
-        Mon, 21 Dec 2020 09:14:56 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <dragos.bogdan@analog.com>, <broonie@kernel.org>,
-        <robh+dt@kernel.org>, <andy.shevchenko@gmail.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH v5 3/3] spi: dt-bindings: document zero value for spi-{rx,tx}-bus-width properties
-Date:   Mon, 21 Dec 2020 16:19:06 +0200
-Message-ID: <20201221141906.48922-3-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201221141906.48922-1-alexandru.ardelean@analog.com>
-References: <20201221141906.48922-1-alexandru.ardelean@analog.com>
+        Mon, 21 Dec 2020 09:20:03 -0500
+Received: by mail-wr1-f45.google.com with SMTP id w5so11207112wrm.11;
+        Mon, 21 Dec 2020 06:19:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=j0lmMik1k5i6nuzbQhkwVj6/AmGBYXDatcnotMUxz6g=;
+        b=He05Q1gQalfQ+JDTn7e3egO8JmfaiOnOVdh23SUfw/Nv7dpLeaR22/cZs4tV1WpHOX
+         1vDJwFoQQ7d6ofQLTSrygm+HsZWGINgP4e94LfQ+LlE/bJEazwgK0S2ElmGAUji47BZo
+         e3pJYv6mOsBux9WrmIxHp684WrtgTvbANoAO8TKRLc8xn4enpkZdjBjD718OxBG9Wizf
+         u0QDsRPxZVF2fX724sOmaCLCa87dzeuhBFcbkIqC5lQgK2+xLeKJt5aUag1PfeTHZHe6
+         HAyHZEtxbmv7ciScfdHsOOxI3qk4M7sAW+1lUZ5GIf2c185eKncXRrEG6xOmLlJ0PFvH
+         I/cg==
+X-Gm-Message-State: AOAM53389fuLHH8rImSluFGCB4POO5vqh1P+uK8o3KOMmM2jcPiAEwqN
+        gI4e27R/beZYbIg1iNv5Mp0=
+X-Google-Smtp-Source: ABdhPJyQpl8RbhxrrL3WFCwkhC3BWHFtbejFd/BhmHWGSAnT3lFzs0PF8LdZ0TbCB6JdtNxtVnMbjA==
+X-Received: by 2002:adf:f681:: with SMTP id v1mr18674306wrp.133.1608560361776;
+        Mon, 21 Dec 2020 06:19:21 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id v1sm19169888wmj.31.2020.12.21.06.19.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 06:19:20 -0800 (PST)
+Date:   Mon, 21 Dec 2020 15:19:19 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Timon Baetz <timon.baetz@protonmail.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH v2 3/6] ARM: dts: exynos: Fix charging regulator voltage
+ and current for i9100
+Message-ID: <20201221141919.GC33797@kozik-lap>
+References: <20201202203516.43053-1-timon.baetz@protonmail.com>
+ <20201221095001.595366-1-timon.baetz@protonmail.com>
+ <20201221095001.595366-3-timon.baetz@protonmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-21_08:2020-12-21,2020-12-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
- bulkscore=0 lowpriorityscore=0 adultscore=0 phishscore=0 suspectscore=0
- priorityscore=1501 mlxlogscore=843 malwarescore=0 mlxscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012210102
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201221095001.595366-3-timon.baetz@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Following a change to the SPI framework, providing a value of zero for
-'spi-rx-bus-width' and 'spi-tx-bus-width' is now possible and will
-essentially mean that no RX or TX is allowed.
+On Mon, Dec 21, 2020 at 09:53:22AM +0000, Timon Baetz wrote:
+> Set CHARGER current and CHARGER_CV voltage according to Galaxy S2 vendor
+> sources [0,1].
 
-Reviewed-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
+Mention that the vendor sources are for Galaxy S2 Epic 4G Touch SPH-D710
+Android.
 
-Changelog v4 -> v5:
-* https://lore.kernel.org/linux-spi/20201203140531.74470-3-alexandru.ardelean@analog.com/
-* added 'Reviewed-by: Rob Herring <robh@kernel.org>'
+This seems to depend on driver changes, so it will have to wait till
+they reach mainline.
 
- Documentation/devicetree/bindings/spi/spi-controller.yaml | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/spi/spi-controller.yaml b/Documentation/devicetree/bindings/spi/spi-controller.yaml
-index 5f505810104d..06786f1b43d2 100644
---- a/Documentation/devicetree/bindings/spi/spi-controller.yaml
-+++ b/Documentation/devicetree/bindings/spi/spi-controller.yaml
-@@ -152,8 +152,9 @@ patternProperties:
-       spi-rx-bus-width:
-         description:
-           Bus width to the SPI bus used for read transfers.
-+          If 0 is provided, then no RX will be possible on this device.
-         $ref: /schemas/types.yaml#/definitions/uint32
--        enum: [1, 2, 4, 8]
-+        enum: [0, 1, 2, 4, 8]
-         default: 1
- 
-       spi-rx-delay-us:
-@@ -163,8 +164,9 @@ patternProperties:
-       spi-tx-bus-width:
-         description:
-           Bus width to the SPI bus used for write transfers.
-+          If 0 is provided, then no TX will be possible on this device.
-         $ref: /schemas/types.yaml#/definitions/uint32
--        enum: [1, 2, 4, 8]
-+        enum: [0, 1, 2, 4, 8]
-         default: 1
- 
-       spi-tx-delay-us:
--- 
-2.17.1
-
+Best regards,
+Krzysztof
