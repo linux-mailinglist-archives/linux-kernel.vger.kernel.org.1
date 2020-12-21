@@ -2,357 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 747F92E0171
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 21:12:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C4F2E013A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 20:51:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726268AbgLUUL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 15:11:57 -0500
-Received: from 10.mo68.mail-out.ovh.net ([46.105.79.203]:60625 "EHLO
-        10.mo68.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725782AbgLUUL5 (ORCPT
+        id S1725975AbgLUTt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 14:49:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725780AbgLUTt0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 15:11:57 -0500
-Received: from player771.ha.ovh.net (unknown [10.108.42.73])
-        by mo68.mail-out.ovh.net (Postfix) with ESMTP id E50DC181B85
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 20:47:18 +0100 (CET)
-Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
-        (Authenticated sender: steve@sk2.org)
-        by player771.ha.ovh.net (Postfix) with ESMTPSA id 97E381979DBD0;
-        Mon, 21 Dec 2020 19:47:11 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-99G0039a35bce2-3516-462d-98bf-733b93d04579,
-                    A98814B0FADA3C5872731A5F91035151D8D30146) smtp.auth=steve@sk2.org
-X-OVh-ClientIp: 82.65.25.201
-From:   Stephen Kitt <steve@sk2.org>
-To:     linux-man@vger.kernel.org,
-        Alejandro Colomar <alx.manpages@gmail.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        linux-kernel@vger.kernel.org, Stephen Kitt <steve@sk2.org>
-Subject: [PATCH v5] close_range.2: new page documenting close_range(2)
-Date:   Mon, 21 Dec 2020 20:46:56 +0100
-Message-Id: <20201221194656.22111-1-steve@sk2.org>
-X-Mailer: git-send-email 2.20.1
+        Mon, 21 Dec 2020 14:49:26 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 972AEC0613D3;
+        Mon, 21 Dec 2020 11:48:45 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id i24so10725960edj.8;
+        Mon, 21 Dec 2020 11:48:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=REHRRpEqcqIxtzDgCEnLfnlCBNOPVwyGaF2sWG0peaw=;
+        b=I75EkRKy9tco2xXRkMTScAvl0XTsFdcdghintw0/yakTylDRDM0gY0iwi/2B1f0LMI
+         KybCNLMyFEx5wL+UY9IMHQrheJEYGLXeno66GKp8M2xyeCFgk3rUxvJhyt8SyuZp93+z
+         DIXtFRzPnrVn//ijRv6ZsF9hbnOrvOzBDQCPILTih8MckZWCPfCInQySmzmMfDdMhVJq
+         DWE3KoDdWQjdk8lnHQ/R5yoKuAm501e3/qp8nksov+UcM8kf/KewUDDMQVxcZVrqkDHs
+         rZD8Jivs82lgws0/dVrDqsHo1Ep3jyzpO5yBMHNyVlee455JOTibQHKKhxWs+5t2pycr
+         c5Zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=REHRRpEqcqIxtzDgCEnLfnlCBNOPVwyGaF2sWG0peaw=;
+        b=WX/Cj8tLagua4Hl4K4gUUxE/VPVxJHTa4vPB/bIUY+c4Nh2L+HRnVuzLZnxhQucUzb
+         GIJ5CkGHdqJp7kp/yynzHjgT9dtOOAhLPFYDgV3IVcCRDAmJaN2Ipsv/2gNpz+9vtLPU
+         +Lu6XzhOlley/KLjpQyWqVMnz8Ro1hz6Clkhd/jWtuzYVV66+5UHRvkorVsM9V6pZ3Ms
+         5K/dGlxhczgdvuJvH1CjXf/2bEAvuEjwAQgP3tyd06uGntYfHtOaUWwh+6woVtSw0q83
+         S+plRabQp0+FRAzly1PCyxmtHdmjxjVo6etEeZ3LXhwyKH7cfJ4YFsGytRzkNvSv0Kpe
+         nAQg==
+X-Gm-Message-State: AOAM532AYWguduLASa3zx2FkQr7uK/Dfbk0o+Kyho4f453SJ4diimLnV
+        x6qxmST5r/ZNx3Muo/fYcNcOfOdZVvFP6g==
+X-Google-Smtp-Source: ABdhPJx6v9VyJ2Qck17brnwjDjndTtBIhNvf5t6aDkT7+bbFSUQiA4206Z/iyEWbbZazfWPw2X4OLQ==
+X-Received: by 2002:a50:c3c5:: with SMTP id i5mr17332512edf.166.1608580123766;
+        Mon, 21 Dec 2020 11:48:43 -0800 (PST)
+Received: from localhost.localdomain (93-103-18-160.static.t-2.net. [93.103.18.160])
+        by smtp.gmail.com with ESMTPSA id qp16sm9450347ejb.74.2020.12.21.11.48.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 11:48:43 -0800 (PST)
+From:   Uros Bizjak <ubizjak@gmail.com>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Uros Bizjak <ubizjak@gmail.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>
+Subject: [PATCH v3] KVM/x86: Move definition of __ex to x86.h
+Date:   Mon, 21 Dec 2020 20:48:00 +0100
+Message-Id: <20201221194800.46962-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 18142188150336802066
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedujedrvddtvddgudefvdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecuggftrfgrthhtvghrnhepteegudfgleekieekteeggeetveefueefteeugfduieeitdfhhedtfeefkedvfeefnecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejjedurdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This documents close_range(2) based on information in
-278a5fbaed89dacd04e9d052f4594ffd0e0585de,
-60997c3d45d9a67daf01c56d805ae4fec37e0bd8, and
-582f1fb6b721facf04848d2ca57f34468da1813e.
+Merge __kvm_handle_fault_on_reboot with its sole user
+and move the definition of __ex to a common include to be
+shared between VMX and SVM.
 
-Signed-off-by: Stephen Kitt <steve@sk2.org>
+v2: Rebase to the latest kvm/queue.
+
+v3: Incorporate changes from review comments.
+
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+Reviewed-by: Krish Sadhukhan <krish.sadhukhan@oracle.com>
 ---
-V5: clarification of the open/close_range/execve sequence
+ arch/x86/include/asm/kvm_host.h | 25 -------------------------
+ arch/x86/kvm/svm/sev.c          |  2 --
+ arch/x86/kvm/svm/svm.c          |  2 --
+ arch/x86/kvm/vmx/vmx.c          |  4 +---
+ arch/x86/kvm/vmx/vmx_ops.h      |  4 +---
+ arch/x86/kvm/x86.h              | 24 ++++++++++++++++++++++++
+ 6 files changed, 26 insertions(+), 35 deletions(-)
 
-V4: sort flags alphabetically
-    move commit references inside the corresponding section
-    more semantic newlines
-    unformat numeric constants
-    more formatting for function references
-    escape C backslashes
-    C99 loop indices
-
-V3: fix synopsis overflow
-    copy notes from membarrier.2 re the lack of wrapper
-    semantic newlines
-    drop non-standard "USE CASES" section heading
-    add code example
-
-V2: unsigned int to match the kernel declarations
-    groff and grammar tweaks
-    CLOSE_RANGE_UNSHARE unshares *and* closes
-    Explain that EMFILE and ENOMEM can occur with C_R_U
-    "Conforming to" phrasing
-    Detailed explanation of CLOSE_RANGE_UNSHARE
-    Reading /proc isn't common
-
- man2/close_range.2 | 267 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 267 insertions(+)
- create mode 100644 man2/close_range.2
-
-diff --git a/man2/close_range.2 b/man2/close_range.2
-new file mode 100644
-index 000000000..0677a9bf9
---- /dev/null
-+++ b/man2/close_range.2
-@@ -0,0 +1,267 @@
-+.\" Copyright (c) 2020 Stephen Kitt <steve@sk2.org>
-+.\"
-+.\" %%%LICENSE_START(VERBATIM)
-+.\" Permission is granted to make and distribute verbatim copies of this
-+.\" manual provided the copyright notice and this permission notice are
-+.\" preserved on all copies.
-+.\"
-+.\" Permission is granted to copy and distribute modified versions of this
-+.\" manual under the conditions for verbatim copying, provided that the
-+.\" entire resulting derived work is distributed under the terms of a
-+.\" permission notice identical to this one.
-+.\"
-+.\" Since the Linux kernel and libraries are constantly changing, this
-+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-+.\" responsibility for errors or omissions, or for damages resulting from
-+.\" the use of the information contained herein.  The author(s) may not
-+.\" have taken the same level of care in the production of this manual,
-+.\" which is licensed free of charge, as they might when working
-+.\" professionally.
-+.\"
-+.\" Formatted or processed versions of this manual, if unaccompanied by
-+.\" the source, must acknowledge the copyright and authors of this work.
-+.\" %%%LICENSE_END
-+.\"
-+.TH CLOSE_RANGE 2 2020-12-08 "Linux" "Linux Programmer's Manual"
-+.SH NAME
-+close_range \- close all file descriptors in a given range
-+.SH SYNOPSIS
-+.nf
-+.B #include <linux/close_range.h>
-+.PP
-+.BI "int close_range(unsigned int " first ", unsigned int " last ,
-+.BI "                unsigned int " flags );
-+.fi
-+.PP
-+.IR Note :
-+There is no glibc wrapper for this system call; see NOTES.
-+.SH DESCRIPTION
-+The
-+.BR close_range ()
-+system call closes all open file descriptors from
-+.I first
-+to
-+.I last
-+(included).
-+.PP
-+Errors closing a given file descriptor are currently ignored.
-+.PP
-+.I flags
-+can be 0 or set to one or both of the following:
-+.TP
-+.BR CLOSE_RANGE_CLOEXEC " (since Linux 5.10)"
-+sets the close-on-exec bit instead of
-+immediately closing the file descriptors.
-+.TP
-+.B CLOSE_RANGE_UNSHARE
-+unshares the range of file descriptors from any other processes,
-+before closing them,
-+avoiding races with other threads sharing the file descriptor table.
-+.SH RETURN VALUE
-+On success,
-+.BR close_range ()
-+returns 0.
-+On error, \-1 is returned and
-+.I errno
-+is set to indicate the cause of the error.
-+.SH ERRORS
-+.TP
-+.B EINVAL
-+.I flags
-+is not valid, or
-+.I first
-+is greater than
-+.IR last .
-+.PP
-+The following can occur with
-+.B CLOSE_RANGE_UNSHARE
-+(when constructing the new descriptor table):
-+.TP
-+.B EMFILE
-+The per-process limit on the number of open file descriptors has been reached
-+(see the description of
-+.B RLIMIT_NOFILE
-+in
-+.BR getrlimit (2)).
-+.TP
-+.B ENOMEM
-+Insufficient kernel memory was available.
-+.SH VERSIONS
-+.BR close_range ()
-+first appeared in Linux 5.9.
-+.SH CONFORMING TO
-+.BR close_range ()
-+is a nonstandard function that is also present on FreeBSD.
-+.SH NOTES
-+Glibc does not provide a wrapper for this system call; call it using
-+.BR syscall (2).
-+.SS Closing all open file descriptors
-+.\" 278a5fbaed89dacd04e9d052f4594ffd0e0585de
-+To avoid blindly closing file descriptors
-+in the range of possible file descriptors,
-+this is sometimes implemented (on Linux)
-+by listing open file descriptors in
-+.I /proc/self/fd/
-+and calling
-+.BR close (2)
-+on each one.
-+.BR close_range ()
-+can take care of this without requiring
-+.I /proc
-+and within a single system call,
-+which provides significant performance benefits.
-+.SS Closing file descriptors before exec
-+.\" 60997c3d45d9a67daf01c56d805ae4fec37e0bd8
-+File descriptors can be closed safely using
-+.PP
-+.in +4n
-+.EX
-+/* we don't want anything past stderr here */
-+close_range(3, ~0U, CLOSE_RANGE_UNSHARE);
-+execve(....);
-+.EE
-+.in
-+.PP
-+.B CLOSE_RANGE_UNSHARE
-+is conceptually equivalent to
-+.PP
-+.in +4n
-+.EX
-+unshare(CLONE_FILES);
-+close_range(first, last, 0);
-+.EE
-+.in
-+.PP
-+but can be more efficient:
-+if the unshared range extends past
-+the current maximum number of file descriptors allocated
-+in the caller's file descriptor table
-+(the common case when
-+.I last
-+is ~0U),
-+the kernel will unshare a new file descriptor table for the caller up to
-+.IR first .
-+This avoids subsequent close calls entirely;
-+the whole operation is complete once the table is unshared.
-+.SS Closing files on \fBexec\fP
-+.\" 582f1fb6b721facf04848d2ca57f34468da1813e
-+This is particularly useful in cases where multiple
-+.RB pre- exec
-+setup steps risk conflicting with each other.
-+For example, setting up a
-+.BR seccomp (2)
-+profile can conflict with a
-+.BR close_range ()
-+call:
-+if the file descriptors are closed before the
-+.BR seccomp (2)
-+profile is set up,
-+the profile setup can't use them itself,
-+or control their closure;
-+if the file descriptors are closed afterwards,
-+the seccomp profile can't block the
-+.BR close_range ()
-+call or any fallbacks.
-+Using
-+.B CLOSE_RANGE_CLOEXEC
-+avoids this:
-+the descriptors can be marked before the
-+.BR seccomp (2)
-+profile is set up,
-+and the profile can control access to
-+.BR close_range ()
-+without affecting the calling process.
-+.SH EXAMPLES
-+The following program is designed to be execed by the second program
-+below.
-+It lists its open file descriptors:
-+.PP
-+.in +4n
-+.EX
-+/* listopen.c */
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 39707e72b062..a78e4b1a5d77 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1634,31 +1634,6 @@ enum {
+ #define kvm_arch_vcpu_memslots_id(vcpu) ((vcpu)->arch.hflags & HF_SMM_MASK ? 1 : 0)
+ #define kvm_memslots_for_spte_role(kvm, role) __kvm_memslots(kvm, (role).smm)
+ 
+-asmlinkage void kvm_spurious_fault(void);
+-
+-/*
+- * Hardware virtualization extension instructions may fault if a
+- * reboot turns off virtualization while processes are running.
+- * Usually after catching the fault we just panic; during reboot
+- * instead the instruction is ignored.
+- */
+-#define __kvm_handle_fault_on_reboot(insn)				\
+-	"666: \n\t"							\
+-	insn "\n\t"							\
+-	"jmp	668f \n\t"						\
+-	"667: \n\t"							\
+-	"1: \n\t"							\
+-	".pushsection .discard.instr_begin \n\t"			\
+-	".long 1b - . \n\t"						\
+-	".popsection \n\t"						\
+-	"call	kvm_spurious_fault \n\t"				\
+-	"1: \n\t"							\
+-	".pushsection .discard.instr_end \n\t"				\
+-	".long 1b - . \n\t"						\
+-	".popsection \n\t"						\
+-	"668: \n\t"							\
+-	_ASM_EXTABLE(666b, 667b)
+-
+ #define KVM_ARCH_WANT_MMU_NOTIFIER
+ int kvm_unmap_hva_range(struct kvm *kvm, unsigned long start, unsigned long end,
+ 			unsigned flags);
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index e57847ff8bd2..ba492b6d37a0 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -25,8 +25,6 @@
+ #include "cpuid.h"
+ #include "trace.h"
+ 
+-#define __ex(x) __kvm_handle_fault_on_reboot(x)
+-
+ static u8 sev_enc_bit;
+ static int sev_flush_asids(void);
+ static DECLARE_RWSEM(sev_deactivate_lock);
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 941e5251e13f..733d9f98a121 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -42,8 +42,6 @@
+ 
+ #include "svm.h"
+ 
+-#define __ex(x) __kvm_handle_fault_on_reboot(x)
+-
+ MODULE_AUTHOR("Qumranet");
+ MODULE_LICENSE("GPL");
+ 
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 75c9c6a0a3a4..b82f2689f2d7 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -2320,9 +2320,7 @@ static void vmclear_local_loaded_vmcss(void)
+ }
+ 
+ 
+-/* Just like cpu_vmxoff(), but with the __kvm_handle_fault_on_reboot()
+- * tricks.
+- */
++/* Just like cpu_vmxoff(), but with the fault handling. */
+ static void kvm_cpu_vmxoff(void)
+ {
+ 	asm volatile (__ex("vmxoff"));
+diff --git a/arch/x86/kvm/vmx/vmx_ops.h b/arch/x86/kvm/vmx/vmx_ops.h
+index 692b0c31c9c8..7e3cb53c413f 100644
+--- a/arch/x86/kvm/vmx/vmx_ops.h
++++ b/arch/x86/kvm/vmx/vmx_ops.h
+@@ -4,13 +4,11 @@
+ 
+ #include <linux/nospec.h>
+ 
+-#include <asm/kvm_host.h>
+ #include <asm/vmx.h>
+ 
+ #include "evmcs.h"
+ #include "vmcs.h"
+-
+-#define __ex(x) __kvm_handle_fault_on_reboot(x)
++#include "x86.h"
+ 
+ asmlinkage void vmread_error(unsigned long field, bool fault);
+ __attribute__((regparm(0))) void vmread_error_trampoline(unsigned long field,
+diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
+index c5ee0f5ce0f1..5b16d2b5c3bc 100644
+--- a/arch/x86/kvm/x86.h
++++ b/arch/x86/kvm/x86.h
+@@ -8,6 +8,30 @@
+ #include "kvm_cache_regs.h"
+ #include "kvm_emulate.h"
+ 
++asmlinkage void kvm_spurious_fault(void);
 +
-+#include <stdio.h>
-+#include <sys/stat.h>
++/*
++ * Handle a fault on a hardware virtualization (VMX or SVM) instruction.
++ *
++ * Hardware virtualization extension instructions may fault if a reboot turns
++ * off virtualization while processes are running.  Usually after catching the
++ * fault we just panic; during reboot instead the instruction is ignored.
++ */
++#define __ex(insn)							\
++	"666:	" insn "\n"						\
++	"	jmp 669f\n"						\
++	"667:\n"							\
++	"	.pushsection .discard.instr_begin\n"			\
++	"	.long 667b - .\n"					\
++	"	.popsection\n"						\
++	"	call kvm_spurious_fault\n"				\
++	"668:\n"							\
++	"	.pushsection .discard.instr_end\n"			\
++	"	.long 668b - .\n"					\
++	"	.popsection\n"						\
++	"669:\n"							\
++	_ASM_EXTABLE(666b, 667b)
 +
-+int
-+main(int argc, char *argv[])
-+{
-+    struct stat buf;
-+
-+    for (int i = 0; i < 100; i++) {
-+        if (!fstat(i, &buf))
-+            printf("FD %d is open.\en", i);
-+    }
-+
-+    exit(EXIT_SUCCESS);
-+)
-+.EE
-+.in
-+.PP
-+This program executes the command given on its command-line,
-+after opening the files listed after the command
-+and then using
-+.BR close_range ()
-+to close them:
-+.PP
-+.in +4n
-+.EX
-+/* close_range.c */
-+
-+#include <fcntl.h>
-+#include <linux/close_range.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <sys/stat.h>
-+#include <sys/syscall.h>
-+#include <sys/types.h>
-+#include <unistd.h>
-+
-+int
-+main(int argc, char *argv[])
-+{
-+    char *newargv[] = { NULL };
-+    char *newenviron[] = { NULL };
-+
-+    if (argc < 3) {
-+        fprintf(stderr, "Usage: %s <command-to-run> <files-to-open>\en", argv[0]);
-+        exit(EXIT_FAILURE);
-+    }
-+
-+    for (int i = 2; i < argc; i++) {
-+        if (open(argv[i], O_RDONLY) == -1) {
-+            perror(argv[i]);
-+            exit(EXIT_FAILURE);
-+        }
-+    }
-+
-+    if (syscall(__NR_close_range, 3, ~0U, CLOSE_RANGE_UNSHARE) == -1) {
-+        perror("close_range");
-+        exit(EXIT_FAILURE);
-+    }
-+
-+    execve(argv[1], newargv, newenviron);
-+    perror("execve");
-+    exit(EXIT_FAILURE);
-+}
-+.EE
-+.in
-+.PP
-+We can use the second program to exec the first as follows:
-+.PP
-+.in +4n
-+.EX
-+.RB "$" " make listopen close_range"
-+.RB "$" " ./close_range ./listopen /dev/null /dev/zero"
-+FD 0 is open.
-+FD 1 is open.
-+FD 2 is open.
-+.EE
-+.in
-+.PP
-+Removing the call to
-+.BR close_range ()
-+will show different output,
-+with the file descriptors for the named files still open.
-+.SH SEE ALSO
-+.BR close (2)
-
-base-commit: b5dae3959625f5ff378e9edf9139057d1c06bb55
+ #define KVM_DEFAULT_PLE_GAP		128
+ #define KVM_VMX_DEFAULT_PLE_WINDOW	4096
+ #define KVM_DEFAULT_PLE_WINDOW_GROW	2
 -- 
-2.20.1
+2.29.2
 
