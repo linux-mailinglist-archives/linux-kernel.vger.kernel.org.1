@@ -2,97 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D31122DFFED
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:37:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B2302DFCE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 15:37:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727070AbgLUSgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 13:36:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726127AbgLUSgi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:36:38 -0500
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ADDAC061793;
-        Mon, 21 Dec 2020 10:35:58 -0800 (PST)
-Received: by mail-il1-x135.google.com with SMTP id g1so9777246ilk.7;
-        Mon, 21 Dec 2020 10:35:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LhmLpbImfktD9rtiJGAflrESaA7xFsBYHnmh6LfS2Ls=;
-        b=FBWqccZU9KieCRmfheuIw/ighBbgCIsb4g/imu3WpdLuAcGb4XJYoX8UH3FL5Kc/1q
-         iDqGvC2hHaXQKIL2Lo0IZa5Pc1n9XGc0dSdxrtaZd6AWJ+g73iUhvCEfrMWGOVs40b6Z
-         +DBJTLKSs6hYUkkRqP31UMcCmeTYFRMbIKPHck0AzOOp0YjonovMUI1PwOAbYxz6ZL12
-         8Yj9QWBFz5NDAXEZ8rmpR37JPlhnTwzHH3rvIDV5GYy4qKpArTTGzWyLlXA2j8aXz1zM
-         PuVKKXVZlIBaZ+2rbC9HIje6eqalX25x/4S8O/QN+/oW55VIMpOVKjVKu8F2zSLIqaRX
-         gTcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LhmLpbImfktD9rtiJGAflrESaA7xFsBYHnmh6LfS2Ls=;
-        b=jut3ngtd8Apqn40y+pIupbxu9BcbX/LgOTYAQ05fdfLxj1qoAsDHYFNKRVzYsroMaI
-         kZlXk+p0JN7ZPClApcgkjmPuD1Bvoga1pWGwWWXxAfpE3OoykqcA2S27euPgUcZdFfOo
-         I+/Q4RWj+1CFdYsHJWG54ag+PABR9iPM41z0r2U7JS7t02x1XQJb3aHvIxtFSMyWS5Yl
-         SiJ/ofXhvvDyDQWXWl02XY/WPfV30Atw3UK0orgLzeCZ6G7M2sPqEDYH69g+qixsANLk
-         dK2GrHl6GJZ47/LIkVRC7InENdpWcJRVRxUrqQDOeZIMpT7xvvm2VX/APVwGnLnQ4Y3h
-         fzZQ==
-X-Gm-Message-State: AOAM530IYXZCbl4EBWmNIng3s7Jhy9pT5xJU8F2Qxb4c/jpEBsQ2KsGG
-        YnX9ocWhGeiCQH1EKbrp+fZmC4qrDa/h49yCYQmqc4HSYD8=
-X-Google-Smtp-Source: ABdhPJzCXqSBMwof0shNIMhkp6pAbOXGp6t70+NwzERiqV+5xsZC1S2EdvNprvn5L28TiJaPUZ9+JCPiIvKrOsgL0qU=
-X-Received: by 2002:a63:c04b:: with SMTP id z11mr15546680pgi.74.1608561353881;
- Mon, 21 Dec 2020 06:35:53 -0800 (PST)
+        id S1727095AbgLUOhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 09:37:03 -0500
+Received: from foss.arm.com ([217.140.110.172]:51082 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726499AbgLUOhD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 09:37:03 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 349F61FB;
+        Mon, 21 Dec 2020 06:36:17 -0800 (PST)
+Received: from [10.37.8.22] (unknown [10.37.8.22])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D20C63F6CF;
+        Mon, 21 Dec 2020 06:36:15 -0800 (PST)
+Subject: Re: [PATCH] arm64: do not descend to vdso directories twice
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Michael Ellerman <mpe@ellerman.id.au>, linux-kernel@vger.kernel.org
+References: <20201218024540.1102650-1-masahiroy@kernel.org>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <55dc2724-cdfe-28ad-395d-707fe9bae2db@arm.com>
+Date:   Mon, 21 Dec 2020 14:39:44 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201221141906.48922-1-alexandru.ardelean@analog.com>
- <20201221141906.48922-2-alexandru.ardelean@analog.com> <CAHp75VfR1eNMry8JwJoFuaU48KZ6rdBWau=yaR1AnsaRSLTC=g@mail.gmail.com>
-In-Reply-To: <CAHp75VfR1eNMry8JwJoFuaU48KZ6rdBWau=yaR1AnsaRSLTC=g@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 21 Dec 2020 16:36:42 +0200
-Message-ID: <CAHp75VftBQEK10Z7pkD18fpr8B7ipCXUXVx=1Hnuq-2w=z2hgQ@mail.gmail.com>
-Subject: Re: [PATCH v5 2/3] spi: Add SPI_NO_TX/RX support
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     linux-spi <linux-spi@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Bogdan, Dragos" <dragos.bogdan@analog.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201218024540.1102650-1-masahiroy@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 4:34 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Mon, Dec 21, 2020 at 4:15 PM Alexandru Ardelean
-> <alexandru.ardelean@analog.com> wrote:
-> >
-> > From: Dragos Bogdan <dragos.bogdan@analog.com>
-> >
-> > Transmit/receive only is a valid SPI mode. For example, the MOSI/TX line
-> > might be missing from an ADC while for a DAC the MISO/RX line may be
-> > optional. This patch adds these two new modes: SPI_NO_TX and
-> > SPI_NO_RX. This way, the drivers will be able to identify if any of
-> > these two lines is missing and to adjust the transfers accordingly.
-> >
-> > Signed-off-by: Dragos Bogdan <dragos.bogdan@analog.com>
->
-> Missed Co-developed-by: Alexandru ... ?
->
-> Anyway, looks good to me,
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Hi Masahiro,
 
-One nit, though...
+On 12/18/20 2:45 AM, Masahiro Yamada wrote:
+> arm64 descends into each vdso directory twice; first in vdso_prepare,
+> second during the ordinary build process.
+> 
+> PPC mimicked it and uncovered a problem [1]. In the first descend,
+> Kbuild directly visits the vdso directories, therefore it does not
+> inherit subdir-ccflags-y from upper directories.
+> 
+> This means the command line parameters may differ between the two.
+> If it happens, the offset values in the generated headers might be
+> different from real offsets of vdso.so in the kernel.
+> 
+> This potential danger should be avoided. The vdso directories are
+> built in the vdso_prepare stage, so the second descend is unneeded.
+> 
+> [1]: https://lore.kernel.org/linux-kbuild/CAK7LNARAkJ3_-4gX0VA2UkapbOftuzfSTVMBbgbw=HD8n7N+7w@mail.gmail.com/T/#ma10dcb961fda13f36d42d58fa6cb2da988b7e73a
+> 
 
-> > -               "setup: can not select dual and quad at the same time\n");
-> > +               "setup: can not select any two of dual, quad and no-rx/tx "
-> > +               "at the same time\n");
+I could not reproduce the problem you are reporting on arm64. Could you please
+provide some steps?
 
-Can we avoid splitting string literals which are assumed to be on one
-line when printed?
+In my case the vDSO library is not rebuilt as a result of the procedure reported
+in the email you linked at [1].
+
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+>  arch/arm64/Makefile                                | 10 ++++++----
+>  arch/arm64/kernel/Makefile                         |  5 +++--
+>  arch/arm64/kernel/{vdso/vdso.S => vdso-wrap.S}     |  0
+>  arch/arm64/kernel/vdso/Makefile                    |  1 -
+>  arch/arm64/kernel/{vdso32/vdso.S => vdso32-wrap.S} |  0
+>  arch/arm64/kernel/vdso32/Makefile                  |  1 -
+>  6 files changed, 9 insertions(+), 8 deletions(-)
+>  rename arch/arm64/kernel/{vdso/vdso.S => vdso-wrap.S} (100%)
+>  rename arch/arm64/kernel/{vdso32/vdso.S => vdso32-wrap.S} (100%)
+> 
+> diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
+> index 6a87d592bd00..f18d20a68170 100644
+> --- a/arch/arm64/Makefile
+> +++ b/arch/arm64/Makefile
+> @@ -179,10 +179,12 @@ ifeq ($(KBUILD_EXTMOD),)
+>  # this hack.
+>  prepare: vdso_prepare
+>  vdso_prepare: prepare0
+> -	$(Q)$(MAKE) $(build)=arch/arm64/kernel/vdso include/generated/vdso-offsets.h
+> -	$(if $(CONFIG_COMPAT_VDSO),$(Q)$(MAKE) \
+> -		$(build)=arch/arm64/kernel/vdso32  \
+> -		include/generated/vdso32-offsets.h)
+> +	$(Q)$(MAKE) $(build)=arch/arm64/kernel/vdso \
+> +	include/generated/vdso-offsets.h arch/arm64/kernel/vdso/vdso.so
+> +ifdef CONFIG_COMPAT_VDSO
+> +	$(Q)$(MAKE) $(build)=arch/arm64/kernel/vdso32 \
+> +	include/generated/vdso32-offsets.h arch/arm64/kernel/vdso32/vdso.so
+> +endif
+>  endif
+
+The reason why it is currently done in two phases (a bit hacky as per comment)
+is because vdso-offsets.h is required to be generated before compiling kernel/.
+Please refer to the comment in arch/arm64/Makefile.
+
+Could you explain how your change satisfies the dependency?
+
+>  
+>  define archhelp
+> diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
+> index 86364ab6f13f..42f6ad2c7eac 100644
+> --- a/arch/arm64/kernel/Makefile
+> +++ b/arch/arm64/kernel/Makefile
+> @@ -59,9 +59,10 @@ obj-$(CONFIG_CRASH_CORE)		+= crash_core.o
+>  obj-$(CONFIG_ARM_SDE_INTERFACE)		+= sdei.o
+>  obj-$(CONFIG_ARM64_PTR_AUTH)		+= pointer_auth.o
+>  obj-$(CONFIG_ARM64_MTE)			+= mte.o
+> +obj-y					+= vdso-wrap.o
+> +obj-$(CONFIG_COMPAT_VDSO)		+= vdso32-wrap.o
+>  
+> -obj-y					+= vdso/ probes/
+> -obj-$(CONFIG_COMPAT_VDSO)		+= vdso32/
+> +obj-y					+= probes/
+>  head-y					:= head.o
+>  extra-y					+= $(head-y) vmlinux.lds
+>  
+> diff --git a/arch/arm64/kernel/vdso/vdso.S b/arch/arm64/kernel/vdso-wrap.S
+> similarity index 100%
+> rename from arch/arm64/kernel/vdso/vdso.S
+> rename to arch/arm64/kernel/vdso-wrap.S
+> diff --git a/arch/arm64/kernel/vdso/Makefile b/arch/arm64/kernel/vdso/Makefile
+> index a8f8e409e2bf..85222f64f394 100644
+> --- a/arch/arm64/kernel/vdso/Makefile
+> +++ b/arch/arm64/kernel/vdso/Makefile
+> @@ -45,7 +45,6 @@ endif
+>  # Disable gcov profiling for VDSO code
+>  GCOV_PROFILE := n
+>  
+> -obj-y += vdso.o
+>  targets += vdso.lds
+>  CPPFLAGS_vdso.lds += -P -C -U$(ARCH)
+>  
+> diff --git a/arch/arm64/kernel/vdso32/vdso.S b/arch/arm64/kernel/vdso32-wrap.S
+> similarity index 100%
+> rename from arch/arm64/kernel/vdso32/vdso.S
+> rename to arch/arm64/kernel/vdso32-wrap.S
+> diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
+> index a1e0f91e6cea..789ad420f16b 100644
+> --- a/arch/arm64/kernel/vdso32/Makefile
+> +++ b/arch/arm64/kernel/vdso32/Makefile
+> @@ -155,7 +155,6 @@ c-obj-vdso-gettimeofday := $(addprefix $(obj)/, $(c-obj-vdso-gettimeofday))
+>  asm-obj-vdso := $(addprefix $(obj)/, $(asm-obj-vdso))
+>  obj-vdso := $(c-obj-vdso) $(c-obj-vdso-gettimeofday) $(asm-obj-vdso)
+>  
+> -obj-y += vdso.o
+>  targets += vdso.lds
+>  CPPFLAGS_vdso.lds += -P -C -U$(ARCH)
+>  
+> 
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Regards,
+Vincenzo
