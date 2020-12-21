@@ -2,311 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 416572E013B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 20:51:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC4E2E013E
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 20:51:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726112AbgLUTte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 14:49:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37044 "EHLO
+        id S1726317AbgLUTvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 14:51:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgLUTtd (ORCPT
+        with ESMTP id S1726161AbgLUTvI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 14:49:33 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E453BC0613D6;
-        Mon, 21 Dec 2020 11:48:52 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id 23so26442535lfg.10;
-        Mon, 21 Dec 2020 11:48:52 -0800 (PST)
+        Mon, 21 Dec 2020 14:51:08 -0500
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 994D8C0613D3;
+        Mon, 21 Dec 2020 11:50:28 -0800 (PST)
+Received: by mail-oi1-x22b.google.com with SMTP id l207so12450097oib.4;
+        Mon, 21 Dec 2020 11:50:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=VxKqYC0qX+AWYqwpjKMzO3aIuYfpEz9R//qvdpbDZj4=;
-        b=OeQxlAfo2cvecPUv3lw/UrSqz6z73bkj5r4OaSQgdCSHj2v/OhFWd73qke0kcFVmjE
-         InwN27TP3LejZKgzwATiBbRU0oKDa4vkTeujm5LdytAhDp8ldd8cLcnra5sTgfg0OL6b
-         kge4M9W3ndh/vEXqSPNxYH0DCYs2VJTbkKMR3tKjwgX+BvnwZngt6icMwGfyhrz1j7do
-         gz7BZTUUUUxzWu3B4WL4PHzsKgGSaIj94Gr6gW540YO4taJHRR4XXRSX5HdgMriqqU+4
-         BmqNm3NiBVZoDY2mrA1mFxr59yr2crZc1plCc253Xxf4PUhQ1WGFLVQohksUAFjP6diE
-         2p5w==
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EKHYKYvJjr3SdNV5NJTpZB/AVd6o6kMyWNYzPfDbcJc=;
+        b=YnXqy4eXAFUfb3hjUiHXsYInF3Oc2mtZnO/TB8nfwAaTHeA37m/d6ewTHREipO8DV7
+         Hh7p4CfD3gHI7eMtGXxeOQqxb0sLu4BSSjT/qMZBuEU5ucUzX74/tb1ckPOEyxsk8Lmf
+         Jl7d8+KNZ/KPwq3hNvuK8HsnneueBecghDuCixOWKMWKXduVPPfm7C7sYEIvg4lzQpTI
+         Ufe1LmNSMDPB3asTurRECDfSaMLCWCvpm6GvDYkbDIwney/WkQqT3lCUab4KloXfVGD/
+         37eNollIh5mENPH6JICo0VdKF3jw/+roj1BwC9SUBc3TKkcsUwyEDNzfQ+S2zvzjUQx7
+         FwSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VxKqYC0qX+AWYqwpjKMzO3aIuYfpEz9R//qvdpbDZj4=;
-        b=VhALeAfSrc0bOfpbhKavWJLlnYV/Z8p9xOLIQ1cM86BUcLUNVxb70UESDXIaXVUQjR
-         pfg5y+1X9+twZrVsVGwiQEesEOmW/n6LjFACth6pUgKjJEVBwAUsO7kbI5+uMGiBIGVJ
-         3WamEGgm7NDHcMpkdx8yNiYkAaOBF+ptKPqlDDVWE5Emh8oW9K27TRav9UtbvrP1rye7
-         7zW2HfGj2MdTxdMj/Z3gDuBPLjhg1LpkAG5PUHa1nMSU/1Csg8QdJBNxNNWEqN0FXfX/
-         kOqcHE5QZVgczodz3nsHIQ6jfVH14AW71eh2YSCjGy6bV/LwQX5wT9Sp5dPa9LugLT9V
-         cSMw==
-X-Gm-Message-State: AOAM5324o3+XfA+X9rnGbmNWof5BOhrKKi4zqUCfYCZwvXi4gMwUgiDp
-        bEtnBxHNSSiuF4A7XMm80HP8nHFjYnzwBw==
-X-Google-Smtp-Source: ABdhPJwhGx+6KvoTaJbN4iNDp8yqSE/f7etlBRYxW5jOnyj3Kthy+m5XYjIgTOlEfghbOz8Li4DTBQ==
-X-Received: by 2002:a05:651c:114:: with SMTP id a20mr7698060ljb.392.1608580131385;
-        Mon, 21 Dec 2020 11:48:51 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id 187sm2194024lfo.16.2020.12.21.11.48.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 11:48:50 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Mon, 21 Dec 2020 20:48:48 +0100
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 2/2] rcu-tasks: add RCU-tasks self tests
-Message-ID: <20201221194848.GA2558@pc638.lan>
-References: <20201209202732.5896-1-urezki@gmail.com>
- <20201209202732.5896-2-urezki@gmail.com>
- <20201216154959.GA2408@pc638.lan>
- <20201216232955.GO2657@paulmck-ThinkPad-P72>
- <20201221153809.GA24756@pc638.lan>
- <20201221171805.GW2657@paulmck-ThinkPad-P72>
- <20201221184539.GA24895@pc638.lan>
- <20201221192906.GX2657@paulmck-ThinkPad-P72>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EKHYKYvJjr3SdNV5NJTpZB/AVd6o6kMyWNYzPfDbcJc=;
+        b=WMcilFwJeIBcNqyNpL/GzpbEPC7nnv2g8FAX+SWahLRTTMnrK+PIMgS0lkXSu0iU8w
+         /dqFMWVhWO6ZsjYi8fRJlMsdz65gD+lePT3Tv+aRwSmGbTEJGPYwMM7JpqrwJCEkwtpg
+         Y/Jiu0zmt1y1jUpS+S9OgWWeoNklkRPsd9FDsVhjXkl8/PefT2YeaTKx5uPpE10+JvpE
+         eaV3PMk8u4tQAqTQR4b4XQGu6c6b7lZGxEdHulSkzD7fOI1WGkgW24uJWmKdN2B/OzLU
+         2E09+ln0IN/fSapwSFl1lDSLtx/bFfja3YunRP8kadicpTy4JwK5LBwG+I1zgNhhglIW
+         ZOfg==
+X-Gm-Message-State: AOAM5327lvRhy1JuscwoE0rPUbqp5mLvIYIzUey319onGBTroGX+FNxF
+        Wa68zvEeZV8E8VhvjZPS83uLmVj4iKcPmIYh43o=
+X-Google-Smtp-Source: ABdhPJyTF8Ofb7lnfU1nNVBGH3z83jxGYZHPN6muNzO3z236Fn3gpYFV724Nul736pJL7mdxpOixxpXuNOkl2dee1oA=
+X-Received: by 2002:aca:3306:: with SMTP id z6mr1799369oiz.141.1608580228062;
+ Mon, 21 Dec 2020 11:50:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201221192906.GX2657@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201219135036.3216017-1-martin.blumenstingl@googlemail.com>
+In-Reply-To: <20201219135036.3216017-1-martin.blumenstingl@googlemail.com>
+From:   Thomas Graichen <thomas.graichen@googlemail.com>
+Date:   Mon, 21 Dec 2020 20:50:14 +0100
+Message-ID: <CAOUEw12Ldi9Kv2Gd=OCEgeVa+jv_FM1HqGRQBiEYCo==8PcrWA@mail.gmail.com>
+Subject: Re: [PATCH] net: stmmac: dwmac-meson8b: ignore the second clock input
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     netdev@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        davem@davemloft.net, kuba@kernel.org, khilman@baylibre.com,
+        jbrunet@baylibre.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 11:29:06AM -0800, Paul E. McKenney wrote:
-> On Mon, Dec 21, 2020 at 07:45:39PM +0100, Uladzislau Rezki wrote:
-> > On Mon, Dec 21, 2020 at 09:18:05AM -0800, Paul E. McKenney wrote:
-> > > On Mon, Dec 21, 2020 at 04:38:09PM +0100, Uladzislau Rezki wrote:
-> > > > On Wed, Dec 16, 2020 at 03:29:55PM -0800, Paul E. McKenney wrote:
-> > > > > On Wed, Dec 16, 2020 at 04:49:59PM +0100, Uladzislau Rezki wrote:
-> > > 
-> > > [ . . . ]
-> > > 
-> > > > > > 2.20.1
-> > > > > 
-> > > > > Again, much improved!
-> > > > > 
-> > > > See below the v3 version. I hope i fixed all comments :)
-> > > > 
-> > > > >From 06f7adfd84cbb1994d0e2693ee9dcdfd272a9bd0 Mon Sep 17 00:00:00 2001
-> > > > From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-> > > > Date: Wed, 9 Dec 2020 21:27:32 +0100
-> > > > Subject: [PATCH v3 1/1] rcu-tasks: Add RCU-tasks self tests
-> > > > 
-> > > > This commit adds self tests for early-boot use of RCU-tasks grace periods.
-> > > > It tests all three variants (Rude, Tasks, and Tasks Trace) and covers
-> > > > both synchronous (e.g., synchronize_rcu_tasks()) and asynchronous (e.g.,
-> > > > call_rcu_tasks()) grace-period APIs.
-> > > > 
-> > > > Self-tests are run only in kernels built with CONFIG_PROVE_RCU=y.
-> > > > 
-> > > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > 
-> > > Much better!
-> > > 
-> > > I pulled this in, but made one small additional change.  Please let me
-> > > know if this is problematic.
-> > > 
-> > > 							Thanx, Paul
-> > > 
-> > > ------------------------------------------------------------------------
-> > > 
-> > > commit 93372198b5c9efdfd288aa3b3ee41c1f90866886
-> > > Author: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > Date:   Wed Dec 9 21:27:32 2020 +0100
-> > > 
-> > >     rcu-tasks: Add RCU-tasks self tests
-> > >     
-> > >     This commit adds self tests for early-boot use of RCU-tasks grace periods.
-> > >     It tests all three variants (Rude, Tasks, and Tasks Trace) and covers
-> > >     both synchronous (e.g., synchronize_rcu_tasks()) and asynchronous (e.g.,
-> > >     call_rcu_tasks()) grace-period APIs.
-> > >     
-> > >     Self-tests are run only in kernels built with CONFIG_PROVE_RCU=y.
-> > >     
-> > >     Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > 
-> > > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > > index 3660755..35a2cd5 100644
-> > > --- a/kernel/rcu/tasks.h
-> > > +++ b/kernel/rcu/tasks.h
-> > > @@ -1224,6 +1224,40 @@ void show_rcu_tasks_gp_kthreads(void)
-> > >  }
-> > >  #endif /* #ifndef CONFIG_TINY_RCU */
-> > >  
-> > > +struct rcu_tasks_test_desc {
-> > > +	struct rcu_head rh;
-> > > +	const char *name;
-> > > +	bool notrun;
-> > > +};
-> > > +
-> > > +static struct rcu_tasks_test_desc tests[] = {
-> > > +	{
-> > > +		.name = "call_rcu_tasks()",
-> > > +		/* If not defined, the test is skipped. */
-> > > +		.notrun = !IS_ENABLED(CONFIG_TASKS_RCU),
-> > > +	},
-> > > +	{
-> > > +		.name = "call_rcu_tasks_rude()",
-> > > +		/* If not defined, the test is skipped. */
-> > > +		.notrun = !IS_ENABLED(CONFIG_TASKS_RUDE_RCU),
-> > > +	},
-> > > +	{
-> > > +		.name = "call_rcu_tasks_trace()",
-> > > +		/* If not defined, the test is skipped. */
-> > > +		.notrun = !IS_ENABLED(CONFIG_TASKS_TRACE_RCU)
-> > > +	}
-> > > +};
-> > > +
-> > > +static void test_rcu_tasks_callback(struct rcu_head *rhp)
-> > > +{
-> > > +	struct rcu_tasks_test_desc *rttd =
-> > > +		container_of(rhp, struct rcu_tasks_test_desc, rh);
-> > > +
-> > > +	pr_info("Callback from %s invoked.\n", rttd->name);
-> > That is fine! We can output the name instead of executed counter.
-> > Doing so makes it completely clear who triggers the callback.
-> 
-> And we also need to make it not trigger when CONFIG_PROVE_RCU=n.
-> While in the area, we might as well leave anything that is needed only
-> by CONFIG_PROVE_RCU=y undefined when CONFIG_PROVE_RCU=n.
-> 
-> How about the following?
-> 
-> 							Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
-> commit f7a1ac0d3504e0518745da7f98573c1b13587f3e
-> Author: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> Date:   Wed Dec 9 21:27:32 2020 +0100
-> 
->     rcu-tasks: Add RCU-tasks self tests
->     
->     This commit adds self tests for early-boot use of RCU-tasks grace periods.
->     It tests all three variants (Rude, Tasks, and Tasks Trace) and covers
->     both synchronous (e.g., synchronize_rcu_tasks()) and asynchronous (e.g.,
->     call_rcu_tasks()) grace-period APIs.
->     
->     Self-tests are run only in kernels built with CONFIG_PROVE_RCU=y.
->     
->     Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
->     [ paulmck: Handle CONFIG_PROVE_RCU=n and identify test cases' callbacks. ]
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index 3660755..af7c194 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -1224,6 +1224,82 @@ void show_rcu_tasks_gp_kthreads(void)
->  }
->  #endif /* #ifndef CONFIG_TINY_RCU */
->  
-> +#ifdef CONFIG_PROVE_RCU
-> +struct rcu_tasks_test_desc {
-> +	struct rcu_head rh;
-> +	const char *name;
-> +	bool notrun;
-> +};
-> +
-> +static struct rcu_tasks_test_desc tests[] = {
-> +	{
-> +		.name = "call_rcu_tasks()",
-> +		/* If not defined, the test is skipped. */
-> +		.notrun = !IS_ENABLED(CONFIG_TASKS_RCU),
-> +	},
-> +	{
-> +		.name = "call_rcu_tasks_rude()",
-> +		/* If not defined, the test is skipped. */
-> +		.notrun = !IS_ENABLED(CONFIG_TASKS_RUDE_RCU),
-> +	},
-> +	{
-> +		.name = "call_rcu_tasks_trace()",
-> +		/* If not defined, the test is skipped. */
-> +		.notrun = !IS_ENABLED(CONFIG_TASKS_TRACE_RCU)
-> +	}
-> +};
-> +
-> +static void test_rcu_tasks_callback(struct rcu_head *rhp)
-> +{
-> +	struct rcu_tasks_test_desc *rttd =
-> +		container_of(rhp, struct rcu_tasks_test_desc, rh);
-> +
-> +	pr_info("Callback from %s invoked.\n", rttd->name);
-> +
-> +	rttd->notrun = true;
-> +}
-> +
-> +static void rcu_tasks_initiate_self_tests(void)
-> +{
-> +	pr_info("Running RCU-tasks wait API self tests\n");
-> +#ifdef CONFIG_TASKS_RCU
-> +	synchronize_rcu_tasks();
-> +	call_rcu_tasks(&tests[0].rh, test_rcu_tasks_callback);
-> +#endif
-> +
-> +#ifdef CONFIG_TASKS_RUDE_RCU
-> +	synchronize_rcu_tasks_rude();
-> +	call_rcu_tasks_rude(&tests[1].rh, test_rcu_tasks_callback);
-> +#endif
-> +
-> +#ifdef CONFIG_TASKS_TRACE_RCU
-> +	synchronize_rcu_tasks_trace();
-> +	call_rcu_tasks_trace(&tests[2].rh, test_rcu_tasks_callback);
-> +#endif
-> +}
-> +
-> +static int rcu_tasks_verify_self_tests(void)
-> +{
-> +	int ret = 0;
-> +	int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(tests); i++) {
-> +		if (!tests[i].notrun) {		// still hanging.
-> +			pr_err("%s has been failed.\n", tests[i].name);
-> +			ret = -1;
-> +		}
-> +	}
-> +
-> +	if (ret)
-> +		WARN_ON(1);
-> +
-> +	return ret;
-> +}
-> +late_initcall(rcu_tasks_verify_self_tests);
-> +#else /* #ifdef CONFIG_PROVE_RCU */
-> +static void rcu_tasks_initiate_self_tests(void) { }
-> +#endif /* #else #ifdef CONFIG_PROVE_RCU */
-> +
->  void __init rcu_init_tasks_generic(void)
->  {
->  #ifdef CONFIG_TASKS_RCU
-> @@ -1237,6 +1313,9 @@ void __init rcu_init_tasks_generic(void)
->  #ifdef CONFIG_TASKS_TRACE_RCU
->  	rcu_spawn_tasks_trace_kthread();
->  #endif
-> +
-> +	// Run the self-tests.
-> +	rcu_tasks_initiate_self_tests();
->  }
->  
->  #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
-That makes sense to me. I missed that point. There is no
-reason in wasting of extra cycles which affect a boot up
-time if built without CONFIG_PROVE_RCU.
+On Sat, Dec 19, 2020 at 2:52 PM Martin Blumenstingl
+<martin.blumenstingl@googlemail.com> wrote:
+>
+> The dwmac glue registers on Amlogic Meson8b and newer SoCs has two clock
+> inputs:
+> - Meson8b and Meson8m2: MPLL2 and MPLL2 (the same parent is wired to
+>   both inputs)
+> - GXBB, GXL, GXM, AXG, G12A, G12B, SM1: FCLK_DIV2 and MPLL2
+>
+> All known vendor kernels and u-boots are using the first input only. We
+> let the common clock framework automatically choose the "right" parent.
+> For some boards this causes a problem though, specificially with G12A and
+> newer SoCs. The clock input is used for generating the 125MHz RGMII TX
+> clock. For the two input clocks this means on G12A:
+> - FCLK_DIV2: 999999985Hz / 8 = 124999998.125Hz
+> - MPLL2: 499999993Hz / 4 = 124999998.25Hz
+>
+> In theory MPLL2 is the "better" clock input because it's gets us 0.125Hz
+> closer to the requested frequency than FCLK_DIV2. In reality however
+> there is a resource conflict because MPLL2 is needed to generate some of
+> the audio clocks. dwmac-meson8b probes first and sets up the clock tree
+> with MPLL2. This works fine until the audio driver comes and "steals"
+> the MPLL2 clocks and configures it with it's own rate (294909637Hz). The
+> common clock framework happily changes the MPLL2 rate but does not
+> reconfigure our RGMII TX clock tree, which then ends up at 73727409Hz,
+> which is more than 40% off the requested 125MHz.
+>
+> Don't use the second clock input for now to force the common clock
+> framework to always select the first parent. This mimics the behavior
+> from the vendor driver and fixes the clock resource conflict with the
+> audio driver on G12A boards. Once the common clock framework can handle
+> this situation this change can be reverted again.
+>
+> Fixes: 566e8251625304 ("net: stmmac: add a glue driver for the Amlogic Meson 8b / GXBB DWMAC")
+> Reported-by: Thomas Graichen <thomas.graichen@gmail.com>
+> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
---
-Vlad Rezki
+Tested-by: thomas graichen <thomas.graichen@gmail.com>
+
+> ---
+>  drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
+> index 459ae715b33d..f184b00f5116 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
+> @@ -135,7 +135,7 @@ static int meson8b_init_rgmii_tx_clk(struct meson8b_dwmac *dwmac)
+>         struct device *dev = dwmac->dev;
+>         static const struct clk_parent_data mux_parents[] = {
+>                 { .fw_name = "clkin0", },
+> -               { .fw_name = "clkin1", },
+> +               { .index = -1, },
+>         };
+>         static const struct clk_div_table div_table[] = {
+>                 { .div = 2, .val = 2, },
+> --
+> 2.29.2
+>
