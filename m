@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD1E42DFA03
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 09:39:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C81B2DFA04
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 09:39:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728114AbgLUIiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 03:38:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45566 "EHLO
+        id S1728203AbgLUIiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 03:38:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgLUIiR (ORCPT
+        with ESMTP id S1726492AbgLUIiR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 21 Dec 2020 03:38:17 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D547C0611CA
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 00:37:18 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id t6so5260608plq.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 00:37:18 -0800 (PST)
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93DE2C0611CB
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 00:37:21 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id b5so6046461pjl.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 00:37:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=b41ba1W2ldSG8KVAp1Q9RnWVHFezJ/i7w5LipFnjCC4=;
-        b=tp7l5aUBba2mqatBtxBI1D8MVFq38CUJzZvJY8uMXHtt/XBBulxtQv3L4y3LZNXJIK
-         E6XgRoDZNyEv6VAptUYRtfwYFsF7lW6n6DeH+7W0cTPdhkmxKkRCmED4PW4TodEhK3ZU
-         d42Ycj+EP4rwtHWMuxe304024Be28cvX++GFOYq74mc2ubeaH8zWR1AmpYF1y765IEDh
-         ql9wgR6N1jBQ45zdHDbyJAH3AwAMdjTv6W28dtR2v4kz39SzlGHdg5MA/cTIHIv9IB0R
-         biZtL0WRhmNgkRRQ80HSgP+fNlZJ1c9aLFSrboOnU3+3x54JV/azJiaMEI/pTHbBy413
-         Kllw==
+        bh=qC/KW84FKO1uWhq/iQKC4RiY953AolFLy2isLyLZ8NU=;
+        b=vDLV4T67hukz2oUaAa1PZI+7ZJ5RWYBI8jxvfsQm7BqJAaysxlklN3BMcW/yrwqqZF
+         ku43TiGnv6Q5splpxewS9S/gSbL/hf9scarV/rD9Cqay2CWD8E6F1pefrx8gHGQkgiD7
+         +nF3+1Qr9ClrHts2Qytx2rulMU/VBfbnhRGkR3nGjkdPYRWoXebPnX4vPyzLf1Wu3eoK
+         4lVC7PIknGcf+jraTOnruEf+LCoCq4XqsKZnKlplrmdIIBvsyVi8QKPnsVv4DsVK1w8G
+         7iFSMVAgPoK6gi3tLM7KKWgqBQ8a/E6L7YX0Ot2gcA74guf2jJ0686L33Op//3jPK9X/
+         twbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=b41ba1W2ldSG8KVAp1Q9RnWVHFezJ/i7w5LipFnjCC4=;
-        b=AL6iJ0geusC2dkvvWJtjKfNA/wqfyQIAgvS6lnw+iWhONJFQ5jmaQiA9NEEgpfw5dF
-         uqKtrjxHbzGuuFGiteoM0l0vF0263sHeANdIsZLqdECmfgaM+9WYr151czBy92OYpOhd
-         JtJRBk9V8bAd8biLRXpr+62RLxEMH8TVF0z057HSYiSLgmObKY+KqRRilzKF58JVDsC2
-         MU2ZWsbBAs2ZGqX71op5XMYHxLsZOu9Nu9m323wYm5gW3uWBOxLKjHEggd0AlC5gAl6S
-         DruD1k8HnFIuV/r7Cs/+xwVLaGEL6SFr9PXYa6U7M/HnuVp5Mf+UYwUSrBCdfOYYjORm
-         vBbA==
-X-Gm-Message-State: AOAM530QmyAI1Ne3Sj8o3zQHD8Lfaeh03MMof6F+dxo1xvHgYPkbL5a5
-        dR7Vkf37mFsB6vgR2Pi/Ylq42A==
-X-Google-Smtp-Source: ABdhPJz8K2lFPB+LYaUhTkF5BikoiG6xN8o+YhFsl4UMIY1BmsWUswZUh39KzXuHgV/+j8AwWf6AKA==
-X-Received: by 2002:a17:902:8685:b029:dc:299c:a2c7 with SMTP id g5-20020a1709028685b02900dc299ca2c7mr15559270plo.33.1608539837724;
-        Mon, 21 Dec 2020 00:37:17 -0800 (PST)
+        bh=qC/KW84FKO1uWhq/iQKC4RiY953AolFLy2isLyLZ8NU=;
+        b=oIzEBbO2D4sjwah/oKaFyEHFsRJ7jrRzuTlzjXi8/ZHQ4PTQAKz7v3tWZqRgzvrT6i
+         a4xkv6+KukgmkIUmkAcDI8u7qFrT3lLc+HOl8gSAnMuY4Ngv83lGk27Qmdb0adDu/KBj
+         dCBOIjx9kfFUWKJZzdno0CPsZmQcF1cQNMgbT21Nb1cZTPmY8UuuPjs6KcfX6aRrn5gp
+         8Mu3cB9CNBv8AXtYxU72wDdkNv5ZP0KpAiaWMNU5YqBPkC7cFGfCbLSNyu5eta4IDqsX
+         QGGEm0Ff1gq6iWwslRAEoRX4XSdntQojcDCWfCmHmCdDQ4k5++ob7kjajtrn7vJp27sw
+         0bQA==
+X-Gm-Message-State: AOAM531A6wLrorCbhJVNS/IZURwy/kcbmanhn5dgOjTvIBkczzsae5Kr
+        mw68/SWr1focbquegUyi7BJb9w==
+X-Google-Smtp-Source: ABdhPJwMhcaqiDCjJnO9qL88BjjIIl3m/LvWB3vcbRFpwq9cI6Z3pS+rP1nmveSeTumqt9WmLvMTEA==
+X-Received: by 2002:a17:90a:77c1:: with SMTP id e1mr16499862pjs.141.1608539841122;
+        Mon, 21 Dec 2020 00:37:21 -0800 (PST)
 Received: from localhost ([45.137.216.7])
-        by smtp.gmail.com with ESMTPSA id x15sm15980340pfa.80.2020.12.21.00.37.16
+        by smtp.gmail.com with ESMTPSA id r68sm15829563pfr.113.2020.12.21.00.37.20
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 21 Dec 2020 00:37:17 -0800 (PST)
+        Mon, 21 Dec 2020 00:37:20 -0800 (PST)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         John Garry <john.garry@huawei.com>,
@@ -64,9 +64,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Dave Martin <Dave.Martin@arm.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v1 6/7] perf arm-spe: Bail out if the trace is later than perf event
-Date:   Mon, 21 Dec 2020 16:35:56 +0800
-Message-Id: <20201221083557.27642-7-leo.yan@linaro.org>
+Subject: [PATCH v1 7/7] perf arm-spe: Don't wait for PERF_RECORD_EXIT event
+Date:   Mon, 21 Dec 2020 16:35:57 +0800
+Message-Id: <20201221083557.27642-8-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201221083557.27642-1-leo.yan@linaro.org>
 References: <20201221083557.27642-1-leo.yan@linaro.org>
@@ -74,84 +74,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's possible that record in Arm SPE trace is later than perf event and
-vice versa.  This asks to correlate the perf events and Arm SPE
-synthesized events to be processed in the manner of correct timing.
+When decode Arm SPE trace, it waits for PERF_RECORD_EXIT event (the last
+perf event) for processing trace data, which is needless and even might
+cause logic error, e.g. it might fail to correlate perf events with Arm
+SPE events correctly.
 
-To achieve the time ordering, this patch reverses the flow, it firstly
-calls arm_spe_sample() and then calls arm_spe_decode().  By comparing
-the timestamp value and detect the perf event is coming earlier than Arm
-SPE trace data, it bails out from the decoding loop, the last record is
-pushed into auxtrace stack and is deferred to generate sample.  To track
-the timestamp, everytime it updates timestamp for the latest record.
+So this patch removes the condition checking for PERF_RECORD_EXIT event.
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 ---
- tools/perf/util/arm-spe.c | 37 ++++++++++++++++++++++++++++++++++---
- 1 file changed, 34 insertions(+), 3 deletions(-)
+ tools/perf/util/arm-spe.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
 diff --git a/tools/perf/util/arm-spe.c b/tools/perf/util/arm-spe.c
-index 2b008b973387..6bf2e4ff5342 100644
+index 6bf2e4ff5342..7b7812eea117 100644
 --- a/tools/perf/util/arm-spe.c
 +++ b/tools/perf/util/arm-spe.c
-@@ -353,12 +353,36 @@ static int arm_spe_sample(struct arm_spe_queue *speq)
- static int arm_spe_run_decoder(struct arm_spe_queue *speq, u64 *timestamp)
- {
- 	struct arm_spe *spe = speq->spe;
-+	struct arm_spe_record *record;
- 	int ret;
+@@ -636,11 +636,7 @@ static int arm_spe_process_event(struct perf_session *session,
+ 					sample->time);
+ 		}
+ 	} else if (timestamp) {
+-		if (event->header.type == PERF_RECORD_EXIT) {
+-			err = arm_spe_process_queues(spe, timestamp);
+-			if (err)
+-				return err;
+-		}
++		err = arm_spe_process_queues(spe, timestamp);
+ 	}
  
- 	if (!spe->kernel_start)
- 		spe->kernel_start = machine__kernel_start(spe->machine);
- 
- 	while (1) {
-+		/*
-+		 * The usual logic is firstly to decode the packets, and then
-+		 * based the record to synthesize sample; but here the flow is
-+		 * reversed: it calls arm_spe_sample() for synthesizing samples
-+		 * prior to arm_spe_decode().
-+		 *
-+		 * Two reasons for this code logic:
-+		 * 1. Firstly, when setup queue in arm_spe__setup_queue(), it
-+		 * has decoded trace data and generated a record, but the record
-+		 * is left to generate sample until run to here, so it's correct
-+		 * to synthesize sample for the left record.
-+		 * 2. After decoding trace data, it needs to compare the record
-+		 * timestamp with the coming perf event, if the record timestamp
-+		 * is later than the perf event, it needs bail out and pushs the
-+		 * record into auxtrace heap, thus the record can be deferred to
-+		 * synthesize sample until run to here at the next time; so this
-+		 * can correlate samples between Arm SPE trace data and other
-+		 * perf events with correct time ordering.
-+		 */
-+		ret = arm_spe_sample(speq);
-+		if (ret)
-+			return ret;
-+
- 		ret = arm_spe_decode(speq->decoder);
- 		if (!ret) {
- 			pr_debug("No data or all data has been processed.\n");
-@@ -372,10 +396,17 @@ static int arm_spe_run_decoder(struct arm_spe_queue *speq, u64 *timestamp)
- 		if (ret < 0)
- 			continue;
- 
--		ret = arm_spe_sample(speq);
--		if (ret)
--			return ret;
-+		record = &speq->decoder->record;
- 
-+		/* Update timestamp for the last record */
-+		if (record->timestamp > speq->timestamp)
-+			speq->timestamp = record->timestamp;
-+
-+		/*
-+		 * If the timestamp of the queue is later than timestamp of the
-+		 * coming perf event, bail out so can allow the perf event to
-+		 * be processed ahead.
-+		 */
- 		if (!spe->timeless_decoding && speq->timestamp >= *timestamp) {
- 			*timestamp = speq->timestamp;
- 			return 0;
+ 	return err;
 -- 
 2.17.1
 
