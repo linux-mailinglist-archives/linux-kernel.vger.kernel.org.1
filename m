@@ -2,95 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D4C2DFEE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 18:20:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51D972DFEEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 18:20:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726396AbgLURSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 12:18:37 -0500
-Received: from smtprelay0196.hostedemail.com ([216.40.44.196]:56252 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725930AbgLURSg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 12:18:36 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 3995118037D2A;
-        Mon, 21 Dec 2020 17:17:55 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,coupons@perches.com,,RULES_HIT:41:355:379:599:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:1801:2197:2198:2199:2200:2393:2559:2562:2828:2903:2908:3138:3139:3140:3141:3142:3353:3622:3653:3865:3867:3868:3870:3871:3873:3874:4250:4321:4605:5007:7903:10004:10400:10848:11232:11233:11658:11914:12043:12297:12740:12895:13019:13069:13095:13161:13229:13311:13357:13439:13894:14181:14659:14721:21080:21221:21433:21627:21939:30054:30069:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: tray82_421167e27459
-X-Filterd-Recvd-Size: 2771
-Received: from XPS-9350.home (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf17.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 21 Dec 2020 17:17:53 +0000 (UTC)
-Message-ID: <fa637be6bb02336a3df6e3c3fdc800b9b17d079f.camel@perches.com>
-Subject: Re: [PATCH 2/2] checkpatch: kconfig: add missing types to regex
-From:   Joe Perches <coupons@perches.com>
-To:     Nicolai Fischer <nicolai.fischer@fau.de>,
-        linux-kernel@vger.kernel.org
-Cc:     apw@canonical.com, johannes.czekay@fau.de,
-        linux-kernel@i4.cs.fau.de
-Date:   Mon, 21 Dec 2020 09:17:52 -0800
-In-Reply-To: <5d7cef4f-071d-0504-74df-bd944a11dd70@fau.de>
-References: <a9797282-84c3-2c8f-73a0-d751a8201541@fau.de>
-         <1f3b50a6f343dd252c043b2e5b7d47bca8514ee7.camel@perches.com>
-         <5d7cef4f-071d-0504-74df-bd944a11dd70@fau.de>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S1726500AbgLURSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 12:18:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60026 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725930AbgLURSr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 12:18:47 -0500
+Date:   Mon, 21 Dec 2020 09:18:05 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608571086;
+        bh=hRwqD0VhUV7p15cXHAo2g5jrugv7tZUYeRciom14PMk=;
+        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ODePjfM8X9V8+1wVOx9kMQogydBWyRw995wPS0/pi3UXMWLJktWZrwFwFS1PU6QIL
+         MJMPLRH/ly0qx+dPhk80ZB/CMytMJoYx42IrzJU2ouWnIVE8nQPrfH91p2O7hU3HfW
+         6WpaylgNa6zD5kscGTQBtSVUJQkxh69YKGYqWuAwQ/28/bc6h2ulyP3XDska429QOR
+         Z5yQ2KMWk11pBIIQn2iImmDsgzO+YG5BzTMbNMUK5CAHPix7K9l1w4Mt9HDt9QJt+/
+         JrPtPSROyE0wfh46Bgx7u3JF9YPDiQ0+dzSyIcwcSKcn2GH3eg8FwH0LatQjktNOU1
+         VpjvRgEdMrAAg==
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 2/2] rcu-tasks: add RCU-tasks self tests
+Message-ID: <20201221171805.GW2657@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201209202732.5896-1-urezki@gmail.com>
+ <20201209202732.5896-2-urezki@gmail.com>
+ <20201216154959.GA2408@pc638.lan>
+ <20201216232955.GO2657@paulmck-ThinkPad-P72>
+ <20201221153809.GA24756@pc638.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201221153809.GA24756@pc638.lan>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-12-21 at 16:08 +0100, Nicolai Fischer wrote:
-> On Sun, 2020-12-20 at 20:16 +0100, Joe Perches wrote:
-> > On Mon, 2020-12-14 at 11:24 +0100, Nicolai Fischer wrote:
-> > > Kconfig parsing does not recognise all type attributes.
-> > > This adds the missing 'int', 'sting' and 'hex' types.
-> > []
-> > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> > []
-> > > @@ -3321,7 +3321,7 @@ sub process {
-> > >  				next if ($f =~ /^-/);
-> > >  				last if (!$file && $f =~ /^\@\@/);
-> > >  
-> > > 
-> > > -				if ($lines[$ln - 1] =~ /^\+\s*(?:bool|tristate|prompt)\s*["']/) {
-> > > +				if ($lines[$ln - 1] =~ /^\+\s*(?:bool|tristate|int|hex|string|prompt)\s*["']/) {
-> > >  					$is_start = 1;
-> > >  				} elsif ($lines[$ln - 1] =~ /^\+\s*help$/) {
-> > >  					$length = -1;
+On Mon, Dec 21, 2020 at 04:38:09PM +0100, Uladzislau Rezki wrote:
+> On Wed, Dec 16, 2020 at 03:29:55PM -0800, Paul E. McKenney wrote:
+> > On Wed, Dec 16, 2020 at 04:49:59PM +0100, Uladzislau Rezki wrote:
+
+[ . . . ]
+
+> > > 2.20.1
 > > 
-> > Another thing that could be done is to enforce the "extra 2 spaces"
-> > indent by capturing the whitespace before the help keyword:
+> > Again, much improved!
 > > 
-> > 				} elsif ($lines[$ln - 1] =~ /^\+\s*help$/) {
-> > 
-> > could be
-> > 
-> > 				} elsif ($lines[$ln - 1] =~ /^\+(\s*)help\s*$/) {
-> > 
-> > with $1 used to validate the extra indent.
-> > 
-> > 
+> See below the v3 version. I hope i fixed all comments :)
 > 
+> >From 06f7adfd84cbb1994d0e2693ee9dcdfd272a9bd0 Mon Sep 17 00:00:00 2001
+> From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+> Date: Wed, 9 Dec 2020 21:27:32 +0100
+> Subject: [PATCH v3 1/1] rcu-tasks: Add RCU-tasks self tests
 > 
-> In case the indent does not match, should we display a new warning as in our previous patch?
+> This commit adds self tests for early-boot use of RCU-tasks grace periods.
+> It tests all three variants (Rude, Tasks, and Tasks Trace) and covers
+> both synchronous (e.g., synchronize_rcu_tasks()) and asynchronous (e.g.,
+> call_rcu_tasks()) grace-period APIs.
+> 
+> Self-tests are run only in kernels built with CONFIG_PROVE_RCU=y.
+> 
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-Sure, but in a separate patch and ensure blank lines are ignored.
+Much better!
 
-+                               if ($l !~ /^\ {2}/) {
-+                                       $wrong_indent = 1;
-                                }
+I pulled this in, but made one small additional change.  Please let me
+know if this is problematic.
 
-The message you used:
-+                               WARN("CONFIG_DESCRIPTION",
-+                                       "help text is not indented 2 spaces more than the help keyword\n" . $herecurr);
+							Thanx, Paul
 
-is IMO a bit oddly phrased and could/should test only
-the first line after the help keyword and show the help
-line using $hereprev.
+------------------------------------------------------------------------
 
+commit 93372198b5c9efdfd288aa3b3ee41c1f90866886
+Author: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Date:   Wed Dec 9 21:27:32 2020 +0100
 
+    rcu-tasks: Add RCU-tasks self tests
+    
+    This commit adds self tests for early-boot use of RCU-tasks grace periods.
+    It tests all three variants (Rude, Tasks, and Tasks Trace) and covers
+    both synchronous (e.g., synchronize_rcu_tasks()) and asynchronous (e.g.,
+    call_rcu_tasks()) grace-period APIs.
+    
+    Self-tests are run only in kernels built with CONFIG_PROVE_RCU=y.
+    
+    Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 3660755..35a2cd5 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -1224,6 +1224,40 @@ void show_rcu_tasks_gp_kthreads(void)
+ }
+ #endif /* #ifndef CONFIG_TINY_RCU */
+ 
++struct rcu_tasks_test_desc {
++	struct rcu_head rh;
++	const char *name;
++	bool notrun;
++};
++
++static struct rcu_tasks_test_desc tests[] = {
++	{
++		.name = "call_rcu_tasks()",
++		/* If not defined, the test is skipped. */
++		.notrun = !IS_ENABLED(CONFIG_TASKS_RCU),
++	},
++	{
++		.name = "call_rcu_tasks_rude()",
++		/* If not defined, the test is skipped. */
++		.notrun = !IS_ENABLED(CONFIG_TASKS_RUDE_RCU),
++	},
++	{
++		.name = "call_rcu_tasks_trace()",
++		/* If not defined, the test is skipped. */
++		.notrun = !IS_ENABLED(CONFIG_TASKS_TRACE_RCU)
++	}
++};
++
++static void test_rcu_tasks_callback(struct rcu_head *rhp)
++{
++	struct rcu_tasks_test_desc *rttd =
++		container_of(rhp, struct rcu_tasks_test_desc, rh);
++
++	pr_info("Callback from %s invoked.\n", rttd->name);
++
++	rttd->notrun = true;
++}
++
+ void __init rcu_init_tasks_generic(void)
+ {
+ #ifdef CONFIG_TASKS_RCU
+@@ -1237,7 +1271,45 @@ void __init rcu_init_tasks_generic(void)
+ #ifdef CONFIG_TASKS_TRACE_RCU
+ 	rcu_spawn_tasks_trace_kthread();
+ #endif
++
++	// Run the self-tests.
++	if (IS_ENABLED(CONFIG_PROVE_RCU)) {
++		pr_info("Running RCU-tasks wait API self tests\n");
++#ifdef CONFIG_TASKS_RCU
++		synchronize_rcu_tasks();
++		call_rcu_tasks(&tests[0].rh, test_rcu_tasks_callback);
++#endif
++
++#ifdef CONFIG_TASKS_RUDE_RCU
++		synchronize_rcu_tasks_rude();
++		call_rcu_tasks_rude(&tests[1].rh, test_rcu_tasks_callback);
++#endif
++
++#ifdef CONFIG_TASKS_TRACE_RCU
++		synchronize_rcu_tasks_trace();
++		call_rcu_tasks_trace(&tests[2].rh, test_rcu_tasks_callback);
++#endif
++	}
++}
++
++static int rcu_tasks_verify_self_tests(void)
++{
++	int ret = 0;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(tests); i++) {
++		if (!tests[i].notrun) {		// still hanging.
++			pr_err("%s has been failed.\n", tests[i].name);
++			ret = -1;
++		}
++	}
++
++	if (ret)
++		WARN_ON(1);
++
++	return ret;
+ }
++late_initcall(rcu_tasks_verify_self_tests);
+ 
+ #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
+ static inline void rcu_tasks_bootup_oddness(void) {}
