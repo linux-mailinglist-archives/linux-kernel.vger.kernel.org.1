@@ -2,86 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3E3E2DFF3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:05:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F16642DFF36
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:05:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726470AbgLUSFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 13:05:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52754 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725785AbgLUSFo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:05:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608573857;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6sjtlrhGUxO16NzG5DkLPHVO+T8orGHfRBW16dyzHT4=;
-        b=dD8umJMzniuf9lZvWHWdABkktUEdTDbv/yuo555GpGPw8TFitUhyQR6pddTTcFOqs4JiEy
-        b6buBOiRs/m4/GoCkkRRKWkqOqKkYZ5qfSemp+MzcKVsHBOUDnMCKabBv06TDZXV7B1suJ
-        mHy50U0UdSgKhRJggEFwIOtem704Nlc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-184-vMu3G7ZzMYmvWk1oEPPh9A-1; Mon, 21 Dec 2020 13:04:14 -0500
-X-MC-Unique: vMu3G7ZzMYmvWk1oEPPh9A-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B32A06D24B;
-        Mon, 21 Dec 2020 18:04:01 +0000 (UTC)
-Received: from mail (ovpn-112-5.rdu2.redhat.com [10.10.112.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2C9041E5;
-        Mon, 21 Dec 2020 18:03:58 +0000 (UTC)
-Date:   Mon, 21 Dec 2020 13:03:57 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Nadav Amit <nadav.amit@gmail.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        linux-mm <linux-mm@kvack.org>, Peter Xu <peterx@redhat.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-Message-ID: <X+Djjd8dW12u+rSR@redhat.com>
-References: <20201219043006.2206347-1-namit@vmware.com>
- <X95RRZ3hkebEmmaj@redhat.com>
- <EDC00345-B46E-4396-8379-98E943723809@gmail.com>
- <CALCETrVtsdeOtGWMUcmT1dzDBxRpecpZDe02L61qEmJmFxSvYw@mail.gmail.com>
- <X967yWAoaTejRk5y@redhat.com>
- <CALCETrVVa-cfogKZirRrP5tmy-gCDtb=jTpLk648BpBQsK9Z5A@mail.gmail.com>
+        id S1726417AbgLUSFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:05:21 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:35974 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725902AbgLUSFU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 13:05:20 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1krPXt-00DBHi-F6; Mon, 21 Dec 2020 19:04:33 +0100
+Date:   Mon, 21 Dec 2020 19:04:33 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Hauke Mehrtens <hauke@hauke-m.de>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: [PATCH] net: lantiq_etop: check the result of request_irq()
+Message-ID: <20201221180433.GE3107610@lunn.ch>
+References: <20201221054323.247483-1-masahiroy@kernel.org>
+ <20201221152645.GH3026679@lunn.ch>
+ <CAK7LNAQ9vhB6iYHeGV3xcyo8_iLqmGJeJUYOvbdHqN9Wn0mEJg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALCETrVVa-cfogKZirRrP5tmy-gCDtb=jTpLk648BpBQsK9Z5A@mail.gmail.com>
-User-Agent: Mutt/2.0.3 (2020-12-04)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <CAK7LNAQ9vhB6iYHeGV3xcyo8_iLqmGJeJUYOvbdHqN9Wn0mEJg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On Sat, Dec 19, 2020 at 09:08:55PM -0800, Andy Lutomirski wrote:
-> On Sat, Dec 19, 2020 at 6:49 PM Andrea Arcangeli <aarcange@redhat.com> wrote:
-> > The ptes are changed always with the PT lock, in fact there's no
-> > problem with the PTE updates. The only difference with mprotect
-> > runtime is that the mmap_lock is taken for reading. And the effect
-> > contested for this change doesn't affect the PTE, but supposedly the
-> > tlb flushing deferral.
+On Tue, Dec 22, 2020 at 12:59:08AM +0900, Masahiro Yamada wrote:
+> On Tue, Dec 22, 2020 at 12:26 AM Andrew Lunn <andrew@lunn.ch> wrote:
+> >
+> > On Mon, Dec 21, 2020 at 02:43:23PM +0900, Masahiro Yamada wrote:
+> > > The declaration of request_irq() in <linux/interrupt.h> is marked as
+> > > __must_check.
+> > >
+> > > Without the return value check, I see the following warnings:
+> > >
+> > > drivers/net/ethernet/lantiq_etop.c: In function 'ltq_etop_hw_init':
+> > > drivers/net/ethernet/lantiq_etop.c:273:4: warning: ignoring return value of 'request_irq', declared with attribute warn_unused_result [-Wunused-result]
+> > >   273 |    request_irq(irq, ltq_etop_dma_irq, 0, "etop_tx", priv);
+> > >       |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > drivers/net/ethernet/lantiq_etop.c:281:4: warning: ignoring return value of 'request_irq', declared with attribute warn_unused_result [-Wunused-result]
+> > >   281 |    request_irq(irq, ltq_etop_dma_irq, 0, "etop_rx", priv);
+> > >       |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > >
+> > > Reported-by: Miguel Ojeda <ojeda@kernel.org>
+> > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > > ---
+> > >
+> > >  drivers/net/ethernet/lantiq_etop.c | 13 +++++++++++--
+> > >  1 file changed, 11 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/net/ethernet/lantiq_etop.c b/drivers/net/ethernet/lantiq_etop.c
+> > > index 2d0c52f7106b..960494f9752b 100644
+> > > --- a/drivers/net/ethernet/lantiq_etop.c
+> > > +++ b/drivers/net/ethernet/lantiq_etop.c
+> > > @@ -264,13 +264,18 @@ ltq_etop_hw_init(struct net_device *dev)
+> > >       for (i = 0; i < MAX_DMA_CHAN; i++) {
+> > >               int irq = LTQ_DMA_CH0_INT + i;
+> > >               struct ltq_etop_chan *ch = &priv->ch[i];
+> > > +             int ret;
+> > >
+> > >               ch->idx = ch->dma.nr = i;
+> > >               ch->dma.dev = &priv->pdev->dev;
+> > >
+> > >               if (IS_TX(i)) {
+> > >                       ltq_dma_alloc_tx(&ch->dma);
+> > > -                     request_irq(irq, ltq_etop_dma_irq, 0, "etop_tx", priv);
+> > > +                     ret = request_irq(irq, ltq_etop_dma_irq, 0, "etop_tx", priv);
+> > > +                     if (ret) {
+> > > +                             netdev_err(dev, "failed to request irq\n");
+> > > +                             return ret;
+> >
+> > You need to cleanup what ltq_dma_alloc_tx() did.
 > 
-> Can you point me at where the lock ends up being taken in this path?
+> 
+> Any failure from this function will roll back
+> in the following paths:
+> 
+>   ltq_etop_hw_exit()
+>      -> ltq_etop_free_channel()
+>           -> ltq_dma_free()
+> 
+> 
+> So, dma is freed anyway.
+> 
+> One problem I see is,
+> ltq_etop_hw_exit() frees all DMA channels,
+> some of which may not have been allocated yet.
+> 
+> If it is a bug, it is an existing bug.
+> 
+> 
+> >
+> > > +                     }
+> > >               } else if (IS_RX(i)) {
+> > >                       ltq_dma_alloc_rx(&ch->dma);
+> > >                       for (ch->dma.desc = 0; ch->dma.desc < LTQ_DESC_NUM;
+> > > @@ -278,7 +283,11 @@ ltq_etop_hw_init(struct net_device *dev)
+> > >                               if (ltq_etop_alloc_skb(ch))
+> > >                                       return -ENOMEM;
+> 
+> 
+> This -ENOMEM does not roll back anything here.
+> 
+> As stated above, dma_free_coherent() is called.
+> The problem is, ltq_etop_hw_exit() rolls back too much.
+> 
+> If your requirement is "this driver is completely wrong. Please rewrite it",
+> sorry, I cannot (unless I am paid to do so).
+> 
+> I am just following this driver's roll-back model.
+> 
+> Please do not expect more to a person who
+> volunteers to eliminate build warnings.
+> 
+> Of course, if somebody volunteers to rewrite this driver correctly,
+> that is appreciated.
 
-pte_offset_map_lock in change_pte_range, as in mprotect, no difference.
+Hi Hauke
 
-As I suspected on my follow up, the bug described wasn't there, but
-I'll look at the new theory posted.
+Do you still have this hardware? Do you have time to take a look at
+the cleanup code?
 
-Thanks,
-Andrea
-
+Thanks
+	Andrew
