@@ -2,144 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7DAE2DF835
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 05:26:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7936A2DF839
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 05:29:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726641AbgLUEZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 23:25:50 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:59716 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725308AbgLUEZu (ORCPT
+        id S1727458AbgLUE3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 23:29:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726345AbgLUE3l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 23:25:50 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1608524730; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=En2K2o4SNOWEm5Xvdc5IP6FiohNN1iBzFuGQTffyEi8=;
- b=VjompbnbrkIT+Sg0cyETlx/l4/OhsbWzdpkqeRAOOEEPSjP06ICzSNw3BJrHKH8SQME+XVgl
- qJfauHgviw2kPBwo7WtQiQZZ99pNIZbPLO8DuyHTH+ukBOiHIyzic4kiSJ5y/dV6YIA216ye
- 6E1uhNgBdEpcwn1j9DFbVjhlC9Y=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5fe0239ff5e9af65f83da20e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 21 Dec 2020 04:25:03
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DE036C43464; Mon, 21 Dec 2020 04:25:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2FA8CC433C6;
-        Mon, 21 Dec 2020 04:25:02 +0000 (UTC)
+        Sun, 20 Dec 2020 23:29:41 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C2ECC0613D3
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 20:29:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=RtEAlOpEBEbxdKJENf0X8/PxK1k1dkBAwswBPT8os68=; b=ZwHVTJld6G4brrf9x0h75RubyF
+        kDs8i0fpPe8VtVlqC7LJ10KwKicGqJy7hYvTG6IW2dSBCGYGC9dswQY8mFdvBfcp8mXekdONTOsSm
+        TDjgHvN4I2wSsvGCIl7Y1OwN838pqfUPmot/CSQX+nk0eL/+KXT82mR1HAqliBvszwaYV8T291HI0
+        W58Hrbz23+azbYCGd3j+XW9+iuFnP5Xv4a8acd6q7Yy8aJH2+8S5zSQEssaLrzaQVOjqobRM6wDvJ
+        82bS63VqLMd0TbdL3HGO8bk6f049Y3kVNRXMxyTVzwa1ur4yXdxYc0iT69SiUZ9nZYe3K2KIl6tra
+        dc4cnadg==;
+Received: from [2601:1c0:6280:3f0::64ea] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1krCoY-0002Rc-4o; Mon, 21 Dec 2020 04:28:55 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Weijie Yang <weijie.yang@samsung.com>,
+        Seth Jennings <sjennings@variantweb.net>,
+        Seth Jennings <sjenning@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Vitaly Wool <vitaly.wool@konsulko.com>, linux-mm@kvack.org
+Subject: [PATCH] mm: zswap: clean up confusing comment
+Date:   Sun, 20 Dec 2020 20:28:48 -0800
+Message-Id: <20201221042848.13980-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 21 Dec 2020 12:25:02 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, bvanassche@acm.org,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com
-Subject: Re: [PATCH] scsi: ufs: fix livelock of ufshcd_clear_ua_wluns
-In-Reply-To: <20201218033131.2624065-1-jaegeuk@kernel.org>
-References: <20201218033131.2624065-1-jaegeuk@kernel.org>
-Message-ID: <153e563a381c580f76447a12df9f4138@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-18 11:31, Jaegeuk Kim wrote:
-> When gate_work/ungate_work gets an error during hibern8_enter or exit,
->  ufshcd_err_handler()
->    ufshcd_scsi_block_requests()
->    ufshcd_reset_and_restore()
->      ufshcd_clear_ua_wluns() -> stuck
->    ufshcd_scsi_unblock_requests()
-> 
-> In order to avoid it, ufshcd_clear_ua_wluns() can be called per 
-> recovery flows
-> such as suspend/resume, link_recovery, and error_handler.
-> 
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> ---
->  drivers/scsi/ufs/ufshcd.c | 14 +++++++++-----
->  1 file changed, 9 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index e221add25a7e..e711def829cd 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -3963,6 +3963,8 @@ int ufshcd_link_recovery(struct ufs_hba *hba)
->  	if (ret)
->  		dev_err(hba->dev, "%s: link recovery failed, err %d",
->  			__func__, ret);
-> +	else
-> +		ufshcd_clear_ua_wluns(hba);
-> 
->  	return ret;
->  }
-> @@ -5968,6 +5970,8 @@ static void ufshcd_err_handler(struct work_struct 
-> *work)
->  	ufshcd_scsi_unblock_requests(hba);
->  	ufshcd_err_handling_unprepare(hba);
->  	up(&hba->eh_sem);
-> +
+Correct wording and change one duplicated word (it) to "it is".
 
-Maybe add a check like if (!err && needs_reset) as error handler
-also handles non-fatal errors which do not require a full reset
-and restore?
+Fixes: 0ab0abcf5115 ("mm/zswap: refactor the get/put routines")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Weijie Yang <weijie.yang@samsung.com>
+Cc: Seth Jennings <sjennings@variantweb.net>
+Cc: Seth Jennings <sjenning@redhat.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Dan Streetman <ddstreet@ieee.org>
+Cc: Vitaly Wool <vitaly.wool@konsulko.com>
+Cc: linux-mm@kvack.org
+---
+ mm/zswap.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-> +	ufshcd_clear_ua_wluns(hba);
->  }
-> 
->  /**
-> @@ -6908,14 +6912,11 @@ static int
-> ufshcd_host_reset_and_restore(struct ufs_hba *hba)
->  	ufshcd_set_clk_freq(hba, true);
-> 
->  	err = ufshcd_hba_enable(hba);
-> -	if (err)
-> -		goto out;
-> 
->  	/* Establish the link again and restore the device */
-> -	err = ufshcd_probe_hba(hba, false);
->  	if (!err)
-> -		ufshcd_clear_ua_wluns(hba);
-> -out:
-> +		err = ufshcd_probe_hba(hba, false);
-> +
->  	if (err)
->  		dev_err(hba->dev, "%s: Host init failed %d\n", __func__, err);
->  	ufshcd_update_evt_hist(hba, UFS_EVT_HOST_RESET, (u32)err);
-> @@ -8745,6 +8746,7 @@ static int ufshcd_suspend(struct ufs_hba *hba,
-> enum ufs_pm_op pm_op)
->  		ufshcd_resume_clkscaling(hba);
->  	hba->clk_gating.is_suspended = false;
->  	hba->dev_info.b_rpm_dev_flush_capable = false;
-> +	ufshcd_clear_ua_wluns(hba);
->  	ufshcd_release(hba);
->  out:
->  	if (hba->dev_info.b_rpm_dev_flush_capable) {
-> @@ -8855,6 +8857,8 @@ static int ufshcd_resume(struct ufs_hba *hba,
-> enum ufs_pm_op pm_op)
->  		cancel_delayed_work(&hba->rpm_dev_flush_recheck_work);
->  	}
-> 
-> +	ufshcd_clear_ua_wluns(hba);
-> +
->  	/* Schedule clock gating in case of no access to UFS device yet */
->  	ufshcd_release(hba);
+--- linux-next-20201218.orig/mm/zswap.c
++++ linux-next-20201218/mm/zswap.c
+@@ -1022,10 +1022,10 @@ static int zswap_writeback_entry(struct
+ 
+ 	/*
+ 	* if we get here due to ZSWAP_SWAPCACHE_EXIST
+-	* a load may happening concurrently
+-	* it is safe and okay to not free the entry
++	* a load may be happening concurrently.
++	* it is safe and okay to not free the entry.
+ 	* if we free the entry in the following put
+-	* it it either okay to return !0
++	* it is also okay to return !0
+ 	*/
+ fail:
+ 	spin_lock(&tree->lock);
