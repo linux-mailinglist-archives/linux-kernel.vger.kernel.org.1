@@ -2,223 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E0882DF843
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 05:34:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B61742DF80F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 04:39:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727355AbgLUEdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 23:33:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726864AbgLUEdE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 23:33:04 -0500
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B36DC0613D3;
-        Sun, 20 Dec 2020 20:32:24 -0800 (PST)
-Received: by mail-qv1-xf34.google.com with SMTP id et9so3925613qvb.10;
-        Sun, 20 Dec 2020 20:32:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=RGHUG3YS9PlJTlCOsXIUaVWRNdpgvr2K2PPmz+gxhDY=;
-        b=XEmACCz/oBW8KpdmFP65y2OmfKersoYJGYoS1JM6sPEmGnRoCz4pfVKQoOIYr5lrk+
-         iq02YDaAT+f4A6P1moYcyl2LXknuPsaYb480dNRK/YN6ZC5mnU7gkao+G1z00dUqO2+m
-         MNwZXf3+7myWlnIN2tndHM3SlE6pNG5Uued4fvxQ6eZnme4wydgN0tyAxO5GpNi4e39y
-         iCGo1K2dhnw2omUsh+rbiD9UbxRaiUIvuoiZl5xIS/Oqr+r44dGRAAssAS/huehr40ca
-         vjbDKHkuJsUhfHenof7ljlJCkl8vXS6dfhHA4YNvuWlMuK+lBX/MpLf/BlQPHzBuxwRM
-         WIJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=RGHUG3YS9PlJTlCOsXIUaVWRNdpgvr2K2PPmz+gxhDY=;
-        b=Y67tDx3iSbK6SvB/LuZ/q2gJtPqd1L3uVgs4GX5h9XfG1rt/mKI2Azk6lj4zkd3rwJ
-         kVDw2av3RRJTwIasncPaktqWxR5s+fjrvQG6FIGKUdPiP4ElNAYmUvgueRt4y2DClGJG
-         dmyICn977bpUmrWP4vm0Y+COeeYs55mE+mstJVpi1NHjB4eCDU1ZllWutRPV4MMIq8jB
-         g2x4wjya+zNc8Ifrgs9aL+2oyh/SyeUj3eF835ao4jQ9fFDLApkK3O5yg1cislzvTkRt
-         lOxRGKEl6pOp/zfsSRcQ4h/7A2YLR0G/OG4q9n+6OVZ16fjOGbNRn9k63uKYl2J/N84A
-         rwvA==
-X-Gm-Message-State: AOAM530QlASdP0IF9BKikuu/2EXJ+VAjNjx0rHm1MvZjqYPs/zY0m4oE
-        5v7bMTYaPzmuHMw5Xu810NzCC/824e1LaQ==
-X-Google-Smtp-Source: ABdhPJy2vx8dxbMeNtjO8DuPkEpXCO2mR8iu5ujBlJatrx8oO4h8ea5O0c7MzCAJxH0Ztkx1Q3WtKA==
-X-Received: by 2002:a17:902:b90c:b029:db:f23d:d684 with SMTP id bf12-20020a170902b90cb02900dbf23dd684mr14617589plb.43.1608521592635;
-        Sun, 20 Dec 2020 19:33:12 -0800 (PST)
-Received: from [10.0.1.14] (c-24-4-128-201.hsd1.ca.comcast.net. [24.4.128.201])
-        by smtp.gmail.com with ESMTPSA id jx4sm13608056pjb.24.2020.12.20.19.33.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 20 Dec 2020 19:33:11 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-From:   Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <X98fZOiLNmnDQKhN@google.com>
-Date:   Sun, 20 Dec 2020 19:33:09 -0800
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        linux-mm <linux-mm@kvack.org>, Peter Xu <peterx@redhat.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable@vger.kernel.org, minchan@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <3680387D-65F1-4078-A19D-F77DE8544B96@gmail.com>
-References: <20201219043006.2206347-1-namit@vmware.com>
- <X95RRZ3hkebEmmaj@redhat.com>
- <EDC00345-B46E-4396-8379-98E943723809@gmail.com>
- <X97pprdcRXusLGnq@google.com>
- <DDA15360-D6D4-46A8-95A4-5EE34107A407@gmail.com>
- <X98fZOiLNmnDQKhN@google.com>
-To:     Yu Zhao <yuzhao@google.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        id S1726536AbgLUDiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 22:38:52 -0500
+Received: from mga02.intel.com ([134.134.136.20]:9441 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725308AbgLUDiv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Dec 2020 22:38:51 -0500
+IronPort-SDR: /QZ+yMIHYFMzW8OHwbgXL71rj2bwfuHJS2OmikUOKvECJb3YKOC7Yr+ANpwR/yYqhkUa6HwlRD
+ 0PUh/ayw/nvA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9841"; a="162729648"
+X-IronPort-AV: E=Sophos;i="5.78,436,1599548400"; 
+   d="scan'208";a="162729648"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2020 19:38:11 -0800
+IronPort-SDR: 7sVttmY8nnPVY6zZbIUzG7ZGryPNO4JyJYMVMSqPznypG0B4qFG0/MKzm9TIndFr9KLS+bvUYs
+ laWEUbsRLeOA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,436,1599548400"; 
+   d="scan'208";a="340478915"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by orsmga003.jf.intel.com with ESMTP; 20 Dec 2020 19:38:09 -0800
+Date:   Mon, 21 Dec 2020 11:33:46 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Tom Rix <trix@redhat.com>
+Cc:     "Wu, Hao" <hao.wu@intel.com>, "mdf@kernel.org" <mdf@kernel.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "lgoncalv@redhat.com" <lgoncalv@redhat.com>
+Subject: Re: [PATCH v3 2/3] fpga: dfl: add the userspace I/O device support
+  for DFL devices
+Message-ID: <20201221033346.GE14854@yilunxu-OptiPlex-7050>
+References: <1608183881-18692-1-git-send-email-yilun.xu@intel.com>
+ <1608183881-18692-3-git-send-email-yilun.xu@intel.com>
+ <DM6PR11MB381997F5E297408A68BF5F2185C30@DM6PR11MB3819.namprd11.prod.outlook.com>
+ <0d3f1f40-9f89-0ec2-96c4-b8b087f31382@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0d3f1f40-9f89-0ec2-96c4-b8b087f31382@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Dec 20, 2020, at 1:54 AM, Yu Zhao <yuzhao@google.com> wrote:
->=20
-> On Sun, Dec 20, 2020 at 12:06:38AM -0800, Nadav Amit wrote:
->>> On Dec 19, 2020, at 10:05 PM, Yu Zhao <yuzhao@google.com> wrote:
->>>=20
->>> On Sat, Dec 19, 2020 at 01:34:29PM -0800, Nadav Amit wrote:
->>>> [ cc=E2=80=99ing some more people who have experience with similar =
-problems ]
->>>>=20
->>>>> On Dec 19, 2020, at 11:15 AM, Andrea Arcangeli =
-<aarcange@redhat.com> wrote:
->>>>>=20
->>>>> Hello,
->>>>>=20
->>>>> On Fri, Dec 18, 2020 at 08:30:06PM -0800, Nadav Amit wrote:
->>>>>> Analyzing this problem indicates that there is a real bug since
->>>>>> mmap_lock is only taken for read in mwriteprotect_range(). This =
-might
->>>>>=20
->>>>> Never having to take the mmap_sem for writing, and in turn never
->>>>> blocking, in order to modify the pagetables is quite an important
->>>>> feature in uffd that justifies uffd instead of mprotect. It's not =
-the
->>>>> most important reason to use uffd, but it'd be nice if that =
-guarantee
->>>>> would remain also for the UFFDIO_WRITEPROTECT API, not only for =
-the
->>>>> other pgtable manipulations.
->>>>>=20
->>>>>> Consider the following scenario with 3 CPUs (cpu2 is not shown):
->>>>>>=20
->>>>>> cpu0				cpu1
->>>>>> ----				----
->>>>>> userfaultfd_writeprotect()
->>>>>> [ write-protecting ]
->>>>>> mwriteprotect_range()
->>>>>> mmap_read_lock()
->>>>>> change_protection()
->>>>>> change_protection_range()
->>>>>> ...
->>>>>> change_pte_range()
->>>>>> [ defer TLB flushes]
->>>>>> 				userfaultfd_writeprotect()
->>>>>> 				 mmap_read_lock()
->>>>>> 				 change_protection()
->>>>>> 				 [ write-unprotect ]
->>>>>> 				 ...
->>>>>> 				  [ unprotect PTE logically ]
->>>>>> 				...
->>>>>> 				[ page-fault]
->>>>>> 				...
->>>>>> 				wp_page_copy()
->>>>>> 				[ set new writable page in PTE]
->>>=20
->>> I don't see any problem in this example -- wp_page_copy() calls
->>> ptep_clear_flush_notify(), which should take care of the stale entry
->>> left by cpu0.
->>>=20
->>> That being said, I suspect the memory corruption you observed is
->>> related this example, with cpu1 running something else that flushes
->>> conditionally depending on pte_write().
->>>=20
->>> Do you know which type of pages were corrupted? file, anon, etc.
->>=20
->> First, Yu, you are correct. My analysis is incorrect, but let me have
->> another try (below). To answer your (and Andrea=E2=80=99s) question - =
-this happens
->> with upstream without any changes, excluding a small fix to the =
-selftest,
->> since it failed (got stuck) due to missing wake events. [1]
->>=20
->> We are talking about anon memory.
->>=20
->> So to correct myself, I think that what I really encountered was =
-actually
->> during MM_CP_UFFD_WP_RESOLVE (i.e., when the protection is removed). =
-The
->> problem was that in this case the =E2=80=9Cwrite=E2=80=9D-bit was =
-removed during unprotect.
->=20
-> Thanks. You are right about when the problem happens: UFD write-
-> UNprotecting. But it's not UFD write-UNprotecting that removes the
-> writable bit -- the bit can only be removed during COW or UFD
-> write-protecting. So your original example was almost correct, except
-> the last line describing cpu1.
+On Fri, Dec 18, 2020 at 05:59:17AM -0800, Tom Rix wrote:
+> 
+> On 12/18/20 12:05 AM, Wu, Hao wrote:
+> >> Subject: [PATCH v3 2/3] fpga: dfl: add the userspace I/O device support for
+> >> DFL devices
+> >>
+> >> This patch supports the DFL drivers be written in userspace. This is
+> >> realized by exposing the userspace I/O device interfaces.
+> >>
+> >> The driver leverages the uio_pdrv_genirq, it adds the uio_pdrv_genirq
+> >> platform device with the DFL device's resources, and let the generic UIO
+> >> platform device driver provide support to userspace access to kernel
+> >> interrupts and memory locations.
+> >>
+> >> The driver matches DFL devices in a different way. It has no device id
+> >> table, instead it matches any DFL device which could not be handled by
+> >> other DFL drivers.
+> > Looks like we want to build UIO driver as the default/generic driver for DFL,
 
-The scenario is a bit confusing, so stay with me. The idea behind uffd
-unprotect is indeed only to mark the PTE logically as uffd-unprotected, =
-and
-not to *set* the writable bit, allowing the #PF handler to do COW or
-whatever correctly upon #PF.
+I'm not going to make UIO as the default driver for DFL devs, the driver
+module will not be autoloaded. I want to provide a choice to operate on
+the unhandled devs in userspace. Insmod it if it helps otherwise leave
+it.
 
-However, the problem that we have is that if a page is already writable,
-write-unprotect *clears* the writable bit, making it write-protected (at
-least for anonymous pages). This is not good from performance =
-point-of-view,
-but also a correctness issue, as I pointed out.
+> > it seems fine but my concern is that UIO has its own limitation, if some day,
+> > dfl device is extended, but UIO has limitation, then we may need to select 
+> > another one as the default driver.. or we can just match them using 
 
-In some more detail: mwriteprotect_range() uses vm_get_page_prot() to
-compute the new protection. For anonymous private memory, at least on =
-x86,
-this means the write-bit in the protection is clear. So later,
-change_pte_range() *clears* the write-bit during *unprotection*.
+I think we may not have to select a "default" driver, if we have a
+better way for userspace accessing, we could load that module, leave
+UIO.
 
-That=E2=80=99s the reason the second part of my patch - the change to =
-preserve_write
-- fixes the problem.
+> > id_table as we know UIO meets the requirement for those DFL devices?
 
-> The problem is how do_wp_page() handles non-COW pages. (For COW pages,
-> do_wp_page() works correctly by either reusing an existing page or
-> make a new copy out of it.) In UFD case, the existing page may not
-> have been properly write-protected. As you pointed out, the tlb flush
-> may not be done yet. Making a copy can potentially race with the
-> writer on cpu2.
+As we discussed, the drawback is that we should always change the code to
+support a new dfl device for user accessing. But it is OK to me if the
+generic UIO match rule is not considered proper.
 
-Just to clarify the difference - You regard a scenario of UFFD
-write-protect, while I am pretty sure the problem I encountered is =
-during
-write-unprotect.
+> 
+> When we have multiple defaults, could this be handled in the configury ?
 
-I am not sure we are on the same page (but we may be). The problem I =
-have is
-with cow_user_page() that is called by do_wp_page() before any TLB flush
-took place (either by change_protection_range() or by do_wp_page() which
-does flush, but after the copy).
+I think we don't have to select a "default".
 
-Let me know if you regard a different scenario.
+> 
+> Tom
+> 
+> >
+> >> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> >> ---
+> >> v2: switch to the new matching algorithem. It matches DFL devices which
+> >>      could not be handled by other DFL drivers.
+> >>     refacor the code about device resources filling.
+> >>     fix some comments.
+> >> v3: split the dfl.c changes out of this patch.
+> >>     some minor fixes
+> >> ---
+> >>  drivers/fpga/Kconfig        |  10 ++++
+> >>  drivers/fpga/Makefile       |   1 +
+> >>  drivers/fpga/dfl-uio-pdev.c | 110
+> >> ++++++++++++++++++++++++++++++++++++++++++++
+> >>  3 files changed, 121 insertions(+)
+> >>  create mode 100644 drivers/fpga/dfl-uio-pdev.c
+> >>
+> >> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
+> >> index 5d7f0ae..7a88af9 100644
+> >> --- a/drivers/fpga/Kconfig
+> >> +++ b/drivers/fpga/Kconfig
+> >> @@ -202,6 +202,16 @@ config FPGA_DFL_NIOS_INTEL_PAC_N3000
+> >>  	  the card. It also instantiates the SPI master (spi-altera) for
+> >>  	  the card's BMC (Board Management Controller).
+> >>
+> >> +config FPGA_DFL_UIO_PDEV
+> >> +	tristate "FPGA DFL Driver for Userspace I/O platform devices"
+> >> +	depends on FPGA_DFL && UIO_PDRV_GENIRQ
+> >> +	help
+> >> +	  Enable this to allow some DFL drivers be written in userspace. It
+> >> +	  adds the uio_pdrv_genirq platform device with the DFL feature's
+> >> +	  resources, and lets the generic UIO platform device driver provide
+> >> +	  support for userspace access to kernel interrupts and memory
+> >> +	  locations.
+> > If we consider this as a default driver for everybody in DFL, then we could
+> > consider build it into the core, otherwise it always requires to be loaded
+> > manually, right?
 
-> Should we fix the problem by ensuring integrity of the copy? IMO, no,
-> because do_wp_page() shouldn't copy at all in this case. It seems it
-> was recently broken by
->=20
->  be068f29034f mm: fix misplaced unlock_page in do_wp_page()
->  09854ba94c6a mm: do_wp_page() simplification
->=20
-> I haven't study them carefully. But if you could just revert them and
-> run the test again, we'd know where exactly to look at next.
+It should be loaded manually. I don't want to make this as default.
 
-These patches regard the wp_page_reuse() case, which makes me think we
-are not on the same page. I do not see a problem with wp_page_reuse()
-since it does not make a copy of the page. If you can explain what I
-am missing, it would be great.
+> >
+> >> +
+> >>  config FPGA_DFL_PCI
+> >>  	tristate "FPGA DFL PCIe Device Driver"
+> >>  	depends on PCI && FPGA_DFL
+> >> diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
+> >> index 18dc9885..8847fe0 100644
+> >> --- a/drivers/fpga/Makefile
+> >> +++ b/drivers/fpga/Makefile
+> >> @@ -45,6 +45,7 @@ dfl-afu-objs := dfl-afu-main.o dfl-afu-region.o dfl-afu-
+> >> dma-region.o
+> >>  dfl-afu-objs += dfl-afu-error.o
+> >>
+> >>  obj-$(CONFIG_FPGA_DFL_NIOS_INTEL_PAC_N3000)	+= dfl-n3000-nios.o
+> >> +obj-$(CONFIG_FPGA_DFL_UIO_PDEV)		+= dfl-uio-pdev.o
+> >>
+> >>  # Drivers for FPGAs which implement DFL
+> >>  obj-$(CONFIG_FPGA_DFL_PCI)		+= dfl-pci.o
+> >> diff --git a/drivers/fpga/dfl-uio-pdev.c b/drivers/fpga/dfl-uio-pdev.c
+> >> new file mode 100644
+> >> index 0000000..8c57233
+> >> --- /dev/null
+> >> +++ b/drivers/fpga/dfl-uio-pdev.c
+> >> @@ -0,0 +1,110 @@
+> >> +// SPDX-License-Identifier: GPL-2.0
+> >> +/*
+> >> + * DFL driver for Userspace I/O platform devices
+> >> + *
+> >> + * Copyright (C) 2020 Intel Corporation, Inc.
+> >> + */
+> >> +#include <linux/dfl.h>
+> >> +#include <linux/errno.h>
+> >> +#include <linux/kernel.h>
+> >> +#include <linux/module.h>
+> >> +#include <linux/platform_device.h>
+> >> +#include <linux/slab.h>
+> >> +#include <linux/uio_driver.h>
+> >> +
+> >> +#include "dfl.h"
+> >> +
+> >> +#define DRIVER_NAME "dfl-uio-pdev"
+> >> +
+> >> +static struct dfl_driver dfl_uio_pdev_driver;
+> >> +
+> >> +static int check_for_other_drv_match(struct device_driver *drv, void *data)
+> >> +{
+> >> +	struct dfl_driver *ddrv = to_dfl_drv(drv);
+> >> +	struct dfl_device *ddev = data;
+> >> +
+> >> +	/* skip myself */
+> >> +	if (ddrv == &dfl_uio_pdev_driver)
+> >> +		return 0;
+> >> +
+> >> +	return dfl_match_device(ddev, ddrv);
+> >> +}
+> >> +
+> >> +static int dfl_uio_pdev_match(struct dfl_device *ddev)
+> >> +{
+> >> +	/*
+> >> +	 * If any other driver wants the device, leave the device to this other
+> >> +	 * driver.
+> >> +	 */
+> >> +	if (bus_for_each_drv(&dfl_bus_type, NULL, ddev,
+> >> check_for_other_drv_match))
+> >> +		return 0;
+> >> +
+> >> +	return 1;
+> >> +}
+> >> +
+> >> +static int dfl_uio_pdev_probe(struct dfl_device *ddev)
+> >> +{
+> >> +	struct device *dev = &ddev->dev;
+> >> +	struct platform_device_info pdevinfo = { 0 };
+> >> +	struct uio_info uio_pdata = { 0 };
+> >> +	struct platform_device *uio_pdev;
+> >> +	struct resource *res;
+> >> +	int i;
+> >> +
+> >> +	pdevinfo.name = "uio_pdrv_genirq";
+> >> +
+> >> +	res = kcalloc(ddev->num_irqs + 1, sizeof(*res), GFP_KERNEL);
+> >> +	if (!res)
+> >> +		return -ENOMEM;
+> >> +
+> >> +	res[0].parent = &ddev->mmio_res;
+> >> +	res[0].flags = IORESOURCE_MEM;
+> >> +	res[0].start = ddev->mmio_res.start;
+> >> +	res[0].end = ddev->mmio_res.end;
+> >> +
+> >> +	/* then add irq resource */
+> >> +	for (i = 0; i < ddev->num_irqs; i++) {
+> >> +		res[i + 1].flags = IORESOURCE_IRQ;
+> >> +		res[i + 1].start = ddev->irqs[i];
+> >> +		res[i + 1].end = ddev->irqs[i];
+> >> +	}
+> > How many interrupts UIO could support? or we need some
+> > warning or just even return error here?
 
+Yes, I can add some warning here.
+
+Thanks,
+Yilun
