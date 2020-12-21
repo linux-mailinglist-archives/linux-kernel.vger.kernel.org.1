@@ -2,330 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EFC22DF999
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 08:53:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45C862DF99B
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 08:53:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726608AbgLUHwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 02:52:50 -0500
-Received: from alexa-out-tai-02.qualcomm.com ([103.229.16.227]:21325 "EHLO
-        alexa-out-tai-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726200AbgLUHwu (ORCPT
+        id S1726931AbgLUHxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 02:53:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726200AbgLUHxQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 02:52:50 -0500
-Received: from ironmsg02-tai.qualcomm.com ([10.249.140.7])
-  by alexa-out-tai-02.qualcomm.com with ESMTP; 21 Dec 2020 15:52:06 +0800
-X-QCInternal: smtphost
-Received: from cbsp-sh-gv.ap.qualcomm.com (HELO cbsp-sh-gv.qualcomm.com) ([10.231.249.68])
-  by ironmsg02-tai.qualcomm.com with ESMTP; 21 Dec 2020 15:51:34 +0800
-Received: by cbsp-sh-gv.qualcomm.com (Postfix, from userid 393357)
-        id 8217E2993; Mon, 21 Dec 2020 15:51:33 +0800 (CST)
-From:   Ziqi Chen <ziqichen@codeaurora.org>
-To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        cang@codeaurora.org, hongwus@codeaurora.org, rnayak@codeaurora.org,
-        vinholikatti@gmail.com, jejb@linux.vnet.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
-        ziqichen@codeaurora.org, kwmad.kim@samsung.com,
-        stanley.chu@mediatek.com
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Satya Tangirala <satyat@google.com>,
-        linux-mediatek@lists.infradead.org (moderated list:UNIVERSAL FLASH
-        STORAGE HOST CONTROLLER DRIVER...),
-        linux-kernel@vger.kernel.org (open list),
-        linux-arm-msm@vger.kernel.org (open list:ARM/QUALCOMM SUPPORT),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
-        support)
-Subject: [PATCH RFC v3 1/1] scsi: ufs: Fix ufs power down/on specs violation
-Date:   Mon, 21 Dec 2020 15:51:24 +0800
-Message-Id: <1608537091-78575-1-git-send-email-ziqichen@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Mon, 21 Dec 2020 02:53:16 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79203C0613D3;
+        Sun, 20 Dec 2020 23:52:36 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id 81so7998113ioc.13;
+        Sun, 20 Dec 2020 23:52:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:date:from:to:cc:message-id;
+        bh=32DDC0q+uszZ0Ejp9S8Hy8G9jJ+L/tHA6lMXdW+eduo=;
+        b=LqVlDOWC8PLdlGTlUWDkzN0bToya11+ZHBm/OIhoGgINAwqW44PynHXf4oYRLYSOMQ
+         fqnH7kFI3JWhTiubnL9D3KpY40jo7+/b4ENWGlJg4HDQvWePru/9r4663NUmCeZ1KbXA
+         yFfUZ+UkLiDCldnYHJsI9VuSw5qabhruQri4YAKLFhAiC/IrKGj4zKWZSDMM5C+VP5me
+         KBrW2ThhqzaBs9uDkrrfJI2liIhgsgkelqFlZ3jbjIwaZ1l5rB3VsSvCPLiJBxCTTpEU
+         VPkV/O8dCeXxqEKFYnnOgo27KfRjLL3s4PqgWZ6EQfyZBL08VS69+y9NOg6eekI/n/Z9
+         Neqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:date:from:to:cc:message-id;
+        bh=32DDC0q+uszZ0Ejp9S8Hy8G9jJ+L/tHA6lMXdW+eduo=;
+        b=bX9fdg/MRY/gXi7ouOHHXofqD+X9xmQa2tVsTbPndEryPp1ASI5z8bsiBuUUldd4Ui
+         MZZoSmB9HICSLtd6SwE5liVMb/wEEI/Qt+01oE4G132zbOFb7DCvva5y2JIddp8gQw5L
+         j7Y3UQDT/FzlIub+MyVz4Q4btFI+BUdqIPNyvZ59eK0I37sNrnSOyiGDyc7EeZT5nsWu
+         UVQqx2kDyTK8aEMHGCVLVIO1REOB8Enicg4+oMEmpwpTTnMl6V7LPDncrzLpioK8/lFi
+         oxsH46hdTbdK5/oQbfzooqvn5L8HVoOrdLvhhRQ6HLEd4rWo3QlX1JxXSMxhioLXBR1M
+         v9tQ==
+X-Gm-Message-State: AOAM532spTZvxxi1p3O7c+D2SHmFqs80N34BjSAMWWH/Jpz5crP7Isql
+        6dg1TztWAn/dIKhJB2raGMQ=
+X-Google-Smtp-Source: ABdhPJxkN0fry11zLBWKVbJ++GCsFX1hFULd/Fz5nuCEDRr2tXYaAJW4IJE1ofGVniTuGNs+y1oVKA==
+X-Received: by 2002:a6b:8e92:: with SMTP id q140mr13357104iod.182.1608537155738;
+        Sun, 20 Dec 2020 23:52:35 -0800 (PST)
+Received: from gmail.com ([62.102.148.68])
+        by smtp.gmail.com with ESMTPSA id f3sm12195369ilu.74.2020.12.20.23.52.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Dec 2020 23:52:35 -0800 (PST)
+Subject: [PATCH] docs: driver-model: bus.rst: Clean up the formatting, expound, modernize
+Date:   Mon, 21 Dec 2020 07:52:00 -0000
+From:   Michael Witten <mfwitten@gmail.com>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <3dc7d8abd06941fca5071b0ede9b6088@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per specs, e.g, JESD220E chapter 7.2, while powering
-off/on the ufs device, RST_N signal and REF_CLK signal
-should be between VSS(Ground) and VCCQ/VCCQ2.
+* The reStructuredText had some indentation issues.
 
-To flexibly control device reset line, re-name the function
-ufschd_vops_device_reset(sturct ufs_hba *hba) to ufshcd_
-vops_toggle_device_reset(sturct ufs_hba *hba, bool down). The
-new parameter "bool down" is used to separate device reset
-line pulling down from pulling up.
+* The HTML output was not properly formatted in places.
 
-Cc: Kiwoong Kim <kwmad.kim@samsung.com>
-Cc: Stanley Chu <stanley.chu@mediatek.com>
-Signed-off-by: Ziqi Chen <ziqichen@codeaurora.org>
+* Some of the details were lacking or needed clarification (especially
+  with regard to how a `struct bus_type` object should be defined).
+
+* The sysfs example hierarchy appeared outdated; I've updated it with
+  output based on what my own system currently displays.
+
+Signed-off-by: Michael Witten <mfwitten@gmail.com>
 ---
- drivers/scsi/ufs/ufs-mediatek.c | 27 +++++++++-----------------
- drivers/scsi/ufs/ufs-qcom.c     | 22 ++++++++++-----------
- drivers/scsi/ufs/ufshcd.c       | 43 ++++++++++++++++++++++++++++++-----------
- drivers/scsi/ufs/ufshcd.h       | 10 +++++-----
- 4 files changed, 56 insertions(+), 46 deletions(-)
+ Documentation/driver-api/driver-model/bus.rst | 110 +++++++++++++--------
+ 1 file changed, 67 insertions(+), 43 deletions(-)
 
-diff --git a/drivers/scsi/ufs/ufs-mediatek.c b/drivers/scsi/ufs/ufs-mediatek.c
-index 80618af..bff2c42 100644
---- a/drivers/scsi/ufs/ufs-mediatek.c
-+++ b/drivers/scsi/ufs/ufs-mediatek.c
-@@ -841,27 +841,18 @@ static int ufs_mtk_link_startup_notify(struct ufs_hba *hba,
- 	return ret;
- }
+diff --git a/Documentation/driver-api/driver-model/bus.rst b/Documentation/driver-api/driver-model/bus.rst
+index 016b15a6e8ea..68a95389b1eb 100644
+--- a/Documentation/driver-api/driver-model/bus.rst
++++ b/Documentation/driver-api/driver-model/bus.rst
+@@ -4,34 +4,58 @@ Bus Types
  
--static int ufs_mtk_device_reset(struct ufs_hba *hba)
-+static int ufs_mtk_toggle_device_reset(struct ufs_hba *hba, bool down)
- {
- 	struct arm_smccc_res res;
- 
--	ufs_mtk_device_reset_ctrl(0, res);
+ Definition
+ ~~~~~~~~~~
+-See the kerneldoc for the struct bus_type.
 -
--	/*
--	 * The reset signal is active low. UFS devices shall detect
--	 * more than or equal to 1us of positive or negative RST_n
--	 * pulse width.
--	 *
--	 * To be on safe side, keep the reset low for at least 10us.
--	 */
--	usleep_range(10, 15);
+-int bus_register(struct bus_type * bus);
++* ``struct bus_type``;
++* ``int bus_register(struct bus_type *bus);``
+ 
+ 
+ Declaration
+ ~~~~~~~~~~~
+ 
+-Each bus type in the kernel (PCI, USB, etc) should declare one static
+-object of this type. They must initialize the name field, and may
+-optionally initialize the match callback::
++For each bus type (PCI, USB, etc), there should be code that defines
++one object of type ``struct bus_type``:
++
++1. The definition should declare a file-scope identifier that has
++   external linkage.
++
++   * There should be a header that provides a declaration of this
++     identifier.
++
++   * The identifier should be explicitly exported.
++
++2. The definition should initialize the ``name`` member. Other
++   members may also be initialized (such as the ``match`` callback
++   member).
++
++For instance, here is the definition for the PCI bus type::
+ 
+-   struct bus_type pci_bus_type = {
+-          .name	= "pci",
+-          .match	= pci_bus_match,
+-   };
++	struct bus_type pci_bus_type = {
++		.name          = "pci",               // REQUIRED
++		.match         = pci_bus_match,
++		.uevent        = pci_uevent,
++		.probe         = pci_device_probe,
++		.remove        = pci_device_remove,
++		.shutdown      = pci_device_shutdown,
++		.dev_groups    = pci_dev_groups,
++		.bus_groups    = pci_bus_groups,
++		.drv_groups    = pci_drv_groups,
++		.pm            = PCI_PM_OPS_PTR,
++		.num_vf        = pci_bus_num_vf,
++		.dma_configure = pci_dma_configure,
++	};
+ 
+-The structure should be exported to drivers in a header file:
++	EXPORT_SYMBOL(pci_bus_type);
+ 
+-extern struct bus_type pci_bus_type;
++The relevant API header should include the following declaration::
++
++	extern struct bus_type pci_bus_type;
+ 
+ 
+ Registration
+ ~~~~~~~~~~~~
+ 
+-When a bus driver is initialized, it calls bus_register. This
+-initializes the rest of the fields in the bus object and inserts it
+-into a global list of bus types. Once the bus object is registered,
++During initialization of a bus driver, ``bus_register()`` is called; this
++initializes the rest of the fields in the bus type object and inserts it
++into a global list of bus types. Once the bus type object is registered,
+ the fields in it are usable by the bus driver.
+ 
+ 
+@@ -61,22 +85,25 @@ does not have a driver associated with it.
+ Device and Driver Lists
+ ~~~~~~~~~~~~~~~~~~~~~~~
+ 
+-The lists of devices and drivers are intended to replace the local
+-lists that many buses keep. They are lists of struct devices and
+-struct device_drivers, respectively. Bus drivers are free to use the
+-lists as they please, but conversion to the bus-specific type may be
+-necessary.
++There are generic facilities for keeping lists of devices and drivers:
++
++* There is a list of ``struct device`` objects.
++* There is a list of ``struct device_driver`` objects.
++
++Bus drivers are free to use the lists as they please, but conversion
++to a bus-specific type may be necessary.
+ 
+ The LDM core provides helper functions for iterating over each list::
+ 
+-  int bus_for_each_dev(struct bus_type * bus, struct device * start,
+-		       void * data,
+-		       int (*fn)(struct device *, void *));
++	int bus_for_each_dev(struct bus_type *bus, struct device *start,
++	                     void *data,
++	                     int (*fn)(struct device *, void *));
+ 
+-  int bus_for_each_drv(struct bus_type * bus, struct device_driver * start,
+-		       void * data, int (*fn)(struct device_driver *, void *));
++	int bus_for_each_drv(struct bus_type *bus, struct device_driver *start,
++	                     void *data,
++	                     int (*fn)(struct device_driver *, void *));
+ 
+-These helpers iterate over the respective list, and call the callback
++These helpers iterate over the respective list, and call the callback (``fn``)
+ for each device or driver in the list. All list accesses are
+ synchronized by taking the bus's lock (read currently). The reference
+ count on each object in the list is incremented before the callback is
+@@ -112,9 +139,9 @@ hierarchy::
+ 
+ 	/sys/bus/pci/
+ 	|-- devices
+-	|   |-- 00:00.0 -> ../../../root/pci0/00:00.0
+-	|   |-- 00:01.0 -> ../../../root/pci0/00:01.0
+-	|   `-- 00:02.0 -> ../../../root/pci0/00:02.0
++	|   |-- 0000:00:00.0 -> ../../../devices/pci0000:00/0000:00:00.0
++	|   |-- 0000:00:02.0 -> ../../../devices/pci0000:00/0000:00:02.0
++	|   `-- 0000:00:14.0 -> ../../../devices/pci0000:00/0000:00:14.0
+ 	`-- drivers
+ 
+ 
+@@ -123,23 +150,20 @@ Exporting Attributes
+ 
+ ::
+ 
+-  struct bus_attribute {
+-	struct attribute	attr;
+-	ssize_t (*show)(struct bus_type *, char * buf);
+-	ssize_t (*store)(struct bus_type *, const char * buf, size_t count);
+-  };
 -
--	ufs_mtk_device_reset_ctrl(1, res);
+-Bus drivers can export attributes using the BUS_ATTR_RW macro that works
+-similarly to the DEVICE_ATTR_RW macro for devices. For example, a
+-definition like this::
 -
--	/* Some devices may need time to respond to rst_n */
--	usleep_range(10000, 15000);
-+	if (down) {
-+		ufs_mtk_device_reset_ctrl(0, res);
-+	} else {
-+		ufs_mtk_device_reset_ctrl(1, res);
+-	static BUS_ATTR_RW(debug);
++	struct bus_attribute {
++		struct attribute attr;
++		ssize_t (*show)(struct bus_type *, char *buf);
++		ssize_t (*store)(struct bus_type *, const char *buf, size_t count);
++	};
  
--	dev_info(hba->dev, "device reset done\n");
-+		/* Some devices may need time to respond to rst_n */
-+		usleep_range(10000, 15000);
-+	}
+-is equivalent to declaring::
++Bus drivers can export attributes using the ``BUS_ATTR_RW()`` macro that works
++similarly to the ``DEVICE_ATTR_RW()`` macro for devices. For example, the
++following are equivalent:
  
- 	return 0;
- }
-@@ -1052,7 +1043,7 @@ static const struct ufs_hba_variant_ops ufs_hba_mtk_vops = {
- 	.suspend             = ufs_mtk_suspend,
- 	.resume              = ufs_mtk_resume,
- 	.dbg_register_dump   = ufs_mtk_dbg_register_dump,
--	.device_reset        = ufs_mtk_device_reset,
-+	.toggle_device_reset        = ufs_mtk_toggle_device_reset,
- 	.event_notify        = ufs_mtk_event_notify,
- };
+-	static bus_attribute bus_attr_debug;
++* ``static BUS_ATTR_RW(debug);``
++* ``static bus_attribute bus_attr_debug;``
  
-diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
-index 2206b1e..c2ccaa5 100644
---- a/drivers/scsi/ufs/ufs-qcom.c
-+++ b/drivers/scsi/ufs/ufs-qcom.c
-@@ -1404,12 +1404,13 @@ static void ufs_qcom_dump_dbg_regs(struct ufs_hba *hba)
- }
+-This can then be used to add and remove the attribute from the bus's
++This can then be used to add or remove the attribute from the bus's
+ sysfs directory using::
  
- /**
-- * ufs_qcom_device_reset() - toggle the (optional) device reset line
-+ * ufs_qcom_toggle_device_reset() - toggle the (optional) device reset line
-  * @hba: per-adapter instance
-+ * @down: pull down or pull up device reset line
-  *
-  * Toggles the (optional) reset line to reset the attached device.
-  */
--static int ufs_qcom_device_reset(struct ufs_hba *hba)
-+static int ufs_qcom_toggle_device_reset(struct ufs_hba *hba, bool down)
- {
- 	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
- 
-@@ -1417,15 +1418,12 @@ static int ufs_qcom_device_reset(struct ufs_hba *hba)
- 	if (!host->device_reset)
- 		return -EOPNOTSUPP;
- 
--	/*
--	 * The UFS device shall detect reset pulses of 1us, sleep for 10us to
--	 * be on the safe side.
--	 */
--	gpiod_set_value_cansleep(host->device_reset, 1);
--	usleep_range(10, 15);
--
--	gpiod_set_value_cansleep(host->device_reset, 0);
--	usleep_range(10, 15);
-+	if (down) {
-+		gpiod_set_value_cansleep(host->device_reset, 1);
-+	} else {
-+		gpiod_set_value_cansleep(host->device_reset, 0);
-+		usleep_range(10, 15);
-+	}
- 
- 	return 0;
- }
-@@ -1473,7 +1471,7 @@ static const struct ufs_hba_variant_ops ufs_hba_qcom_vops = {
- 	.suspend		= ufs_qcom_suspend,
- 	.resume			= ufs_qcom_resume,
- 	.dbg_register_dump	= ufs_qcom_dump_dbg_regs,
--	.device_reset		= ufs_qcom_device_reset,
-+	.toggle_device_reset		= ufs_qcom_toggle_device_reset,
- 	.config_scaling_param = ufs_qcom_config_scaling_param,
- 	.program_key		= ufs_qcom_ice_program_key,
- };
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index e221add..2ee905f 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -585,7 +585,20 @@ static void ufshcd_device_reset(struct ufs_hba *hba)
- {
- 	int err;
- 
--	err = ufshcd_vops_device_reset(hba);
-+	err = ufshcd_vops_toggle_device_reset(hba, true);
-+	if (err) {
-+		dev_err(hba->dev, "device reset pulling down failure: %d\n", err);
-+		return;
-+	}
-+
-+	/*
-+	 * The reset signal is active low. The UFS device
-+	 * shall detect reset pulses of 1us, sleep for at
-+	 * least 10us to be on the safe side.
-+	 */
-+	usleep_range(10, 15);
-+
-+	err = ufshcd_vops_toggle_device_reset(hba, false);
- 
- 	if (!err) {
- 		ufshcd_set_ufs_dev_active(hba);
-@@ -593,7 +606,11 @@ static void ufshcd_device_reset(struct ufs_hba *hba)
- 			hba->wb_enabled = false;
- 			hba->wb_buf_flush_enabled = false;
- 		}
-+		dev_info(hba->dev, "device reset done\n");
-+	} else {
-+		dev_err(hba->dev, "device reset pulling up failure: %d\n", err);
- 	}
-+
- 	if (err != -EOPNOTSUPP)
- 		ufshcd_update_evt_hist(hba, UFS_EVT_DEV_RESET, err);
- }
-@@ -8686,8 +8703,6 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 	if (ret)
- 		goto set_dev_active;
- 
--	ufshcd_vreg_set_lpm(hba);
--
- disable_clks:
- 	/*
- 	 * Call vendor specific suspend callback. As these callbacks may access
-@@ -8703,6 +8718,9 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 	 */
- 	ufshcd_disable_irq(hba);
- 
-+	if (ufshcd_is_link_off(hba))
-+		ufshcd_vops_toggle_device_reset(hba, true);
-+
- 	ufshcd_setup_clocks(hba, false);
- 
- 	if (ufshcd_is_clkgating_allowed(hba)) {
-@@ -8711,6 +8729,8 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 					hba->clk_gating.state);
- 	}
- 
-+	ufshcd_vreg_set_lpm(hba);
-+
- 	/* Put the host controller in low power mode if possible */
- 	ufshcd_hba_vreg_set_lpm(hba);
- 	goto out;
-@@ -8778,18 +8798,19 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 	old_link_state = hba->uic_link_state;
- 
- 	ufshcd_hba_vreg_set_hpm(hba);
-+
-+	ret = ufshcd_vreg_set_hpm(hba);
-+	if (ret)
-+		goto out;
-+
- 	/* Make sure clocks are enabled before accessing controller */
- 	ret = ufshcd_setup_clocks(hba, true);
- 	if (ret)
--		goto out;
-+		goto disable_vreg;
- 
- 	/* enable the host irq as host controller would be active soon */
- 	ufshcd_enable_irq(hba);
- 
--	ret = ufshcd_vreg_set_hpm(hba);
--	if (ret)
--		goto disable_irq_and_vops_clks;
--
- 	/*
- 	 * Call vendor specific resume callback. As these callbacks may access
- 	 * vendor specific host controller register space call them when the
-@@ -8797,7 +8818,7 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 	 */
- 	ret = ufshcd_vops_resume(hba, pm_op);
- 	if (ret)
--		goto disable_vreg;
-+		goto disable_irq_and_vops_clks;
- 
- 	/* For DeepSleep, the only supported option is to have the link off */
- 	WARN_ON(ufshcd_is_ufs_dev_deepsleep(hba) && !ufshcd_is_link_off(hba));
-@@ -8864,8 +8885,6 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 	ufshcd_link_state_transition(hba, old_link_state, 0);
- vendor_suspend:
- 	ufshcd_vops_suspend(hba, pm_op);
--disable_vreg:
--	ufshcd_vreg_set_lpm(hba);
- disable_irq_and_vops_clks:
- 	ufshcd_disable_irq(hba);
- 	if (hba->clk_scaling.is_allowed)
-@@ -8876,6 +8895,8 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 		trace_ufshcd_clk_gating(dev_name(hba->dev),
- 					hba->clk_gating.state);
- 	}
-+disable_vreg:
-+	ufshcd_vreg_set_lpm(hba);
- out:
- 	hba->pm_op_in_progress = 0;
- 	if (ret)
-diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index 9bb5f0e..dccc3eb 100644
---- a/drivers/scsi/ufs/ufshcd.h
-+++ b/drivers/scsi/ufs/ufshcd.h
-@@ -319,7 +319,7 @@ struct ufs_pwr_mode_info {
-  * @resume: called during host controller PM callback
-  * @dbg_register_dump: used to dump controller debug information
-  * @phy_initialization: used to initialize phys
-- * @device_reset: called to issue a reset pulse on the UFS device
-+ * @toggle_device_reset: called to change logic level of reset gpio on the UFS device
-  * @program_key: program or evict an inline encryption key
-  * @event_notify: called to notify important events
-  */
-@@ -350,7 +350,7 @@ struct ufs_hba_variant_ops {
- 	int     (*resume)(struct ufs_hba *, enum ufs_pm_op);
- 	void	(*dbg_register_dump)(struct ufs_hba *hba);
- 	int	(*phy_initialization)(struct ufs_hba *);
--	int	(*device_reset)(struct ufs_hba *hba);
-+	int	(*toggle_device_reset)(struct ufs_hba *hba, bool down);
- 	void	(*config_scaling_param)(struct ufs_hba *hba,
- 					struct devfreq_dev_profile *profile,
- 					void *data);
-@@ -1216,10 +1216,10 @@ static inline void ufshcd_vops_dbg_register_dump(struct ufs_hba *hba)
- 		hba->vops->dbg_register_dump(hba);
- }
- 
--static inline int ufshcd_vops_device_reset(struct ufs_hba *hba)
-+static inline int ufshcd_vops_toggle_device_reset(struct ufs_hba *hba, bool down)
- {
--	if (hba->vops && hba->vops->device_reset)
--		return hba->vops->device_reset(hba);
-+	if (hba->vops && hba->vops->toggle_device_reset)
-+		return hba->vops->toggle_device_reset(hba, down);
- 
- 	return -EOPNOTSUPP;
- }
+ 	int bus_create_file(struct bus_type *, struct bus_attribute *);
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.22.0
 
