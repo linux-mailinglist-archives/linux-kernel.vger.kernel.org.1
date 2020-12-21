@@ -2,161 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48C9B2DFB27
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 11:43:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E18302DFB2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 11:46:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726904AbgLUKl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 05:41:59 -0500
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:36195 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726873AbgLUKl7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 05:41:59 -0500
-Received: by mail-ot1-f50.google.com with SMTP id d20so8464655otl.3;
-        Mon, 21 Dec 2020 02:41:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VKSwhPok9DbPjtgaPkb092ITW/Kf3j3ORcdbyVDtOwY=;
-        b=uKPm4bbujGoO2Xks1y/a3+/ZpZNQxP068c2tPSIpQAeNDqYPQPIYyUG5tLeLeEedVF
-         Ozc1QsN4SHx9ezrOOo2zQ3jCuWSQ/xkB//5a8GWpkdOWVlBhQcdzMydQ5P3GesucLkZi
-         5h5naLQHkicZU8ncDlHMyeAlQB06kgoFdtNAxRLJhgxHb9hrdLS3bvKXVTm8q/MVEwL2
-         ehLzTA07edlQJg/2fqu1U5x0GQdynzvJnePmknjaE3fNzi1JeWY29VfAOfhGcYZEs4ue
-         t74XkWcSS04wyZQjAUFJpcIBaeVO347XxEx1RZ3JRiugooo2E347mj1K5vaUgEK4JME+
-         tdzw==
-X-Gm-Message-State: AOAM530NOI8D0gjK2MhIHIkrmz/sh8pODYlSOM5c26d4tA0tZ2RTQWnw
-        1dy2O1HGEhQdXcTiIo8Rih+Tx2zVw63iUx7neHM=
-X-Google-Smtp-Source: ABdhPJypy6Ca3J5+6Qt5GG9StEeiz2AsA2iucE9yUQnwN94wIMOaev98qPCgmRbdl4Her9of0tu+2xhMhJF711mSM5Y=
-X-Received: by 2002:a9d:745a:: with SMTP id p26mr11759419otk.206.1608547277784;
- Mon, 21 Dec 2020 02:41:17 -0800 (PST)
+        id S1726758AbgLUKpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 05:45:10 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40598 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726628AbgLUKpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 05:45:10 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 52188ADD6;
+        Mon, 21 Dec 2020 10:44:27 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 06B2F1E1332; Mon, 21 Dec 2020 11:44:27 +0100 (CET)
+Date:   Mon, 21 Dec 2020 11:44:26 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Shakeel Butt <shakeelb@google.com>, Jan Kara <jack@suse.cz>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] inotify, memcg: account inotify instances to kmemcg
+Message-ID: <20201221104426.GA13601@quack2.suse.cz>
+References: <20201220044608.1258123-1-shakeelb@google.com>
+ <CAOQ4uxi4b-zXfWhLNQ+aGWn2qG3vqMCjkJnhrugc0+oER1EjUA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20360841.iInq7taT2Z@kreacher> <3827230.0GnL3RTcl1@kreacher> <000901d6d489$0c26dd50$247497f0$@net>
-In-Reply-To: <000901d6d489$0c26dd50$247497f0$@net>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 21 Dec 2020 11:41:06 +0100
-Message-ID: <CAJZ5v0g_KbKNJNqjDSqESds73LHmtpcLJdM8mk_xErT1NPvi3w@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] cpufreq: Allow drivers to receive more information
- from the governor
-To:     Doug Smythies <dsmythies@telus.net>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Giovanni Gherdovich <ggherdovich@suse.com>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOQ4uxi4b-zXfWhLNQ+aGWn2qG3vqMCjkJnhrugc0+oER1EjUA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 4:27 PM Doug Smythies <dsmythies@telus.net> wrote:
->
-> On 2020.12.14 12:02 Rafael J. Wysocki wrote:
->
-> > Hi,
->
-> Hi Rafael,
->
-> V2 test results below are new, other results are partially re-stated:
->
-> For readers that do not want to read on, I didn't find anything different than with
-> the other versions. This was more just due diligence.
+On Sun 20-12-20 13:32:46, Amir Goldstein wrote:
+> On Sun, Dec 20, 2020 at 6:46 AM Shakeel Butt <shakeelb@google.com> wrote:
+> >
+> > Currently the fs sysctl inotify/max_user_instances is used to limit the
+> > number of inotify instances on the system. For systems running multiple
+> > workloads, the per-user namespace sysctl max_inotify_instances can be
+> > used to further partition inotify instances. However there is no easy
+> > way to set a sensible system level max limit on inotify instances and
+> > further partition it between the workloads. It is much easier to charge
+> > the underlying resource (i.e. memory) behind the inotify instances to
+> > the memcg of the workload and let their memory limits limit the number
+> > of inotify instances they can create.
+> >
+> > With inotify instances charged to memcg, the admin can simply set
+> > max_user_instances to INT_MAX and let the memcg limits of the jobs limit
+> > their inotify instances.
+> >
+> > Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
 
-Thanks a lot for the data, much appreciated as always!
+The patch looks good to me. Thanks for review Amir. I've picked the
+patch to my tree although it's currently in flux as we're currently in the
+middle of the merge window. So I won't push out the branch with the patch
+yet since I plan on rebasing it on top of -rc1 anyway.
 
-> Legend:
->
-> hwp: Kernel 5.10-rc6, HWP enabled; intel_cpufreq
-> rfc (or rjw): Kernel 5.10-rc6 + this patch set, HWP enabled; intel_cpu-freq; schedutil
-> no-hwp: Kernel 5.10-rc6, HWP disabled; intel_cpu-freq
-> acpi (or acpi-cpufreq): Kernel 5.10-rc6, HWP disabled; acpi-cpufreq; schedutil
-> patch: Kernel 5.10-rc7 + V1 patch set, HWP enabled; intel_cpu-freq; schedutil
-> v2: Kernel 5.10-rc7 + V2 patch set, HWP enabled; intel_cpu-freq; schedutil
->
-> Fixed work packet, fixed period, periodic workflow, load sweep up/down:
->
-> load work/sleep frequency: 73 Hertz:
->
-> hwp: Average: 12.00822 watts
-> rjw: Average: 10.18089 watts
-> no-hwp: Average: 10.21947 watts
-> acpi-cpufreq: Average:  9.06585 watts
-> patch: Average: 10.26060 watts
-> v2: Average: 10.50444
->
-> load work/sleep frequency: 113 Hertz:
->
-> hwp: Average: 12.01056
-> rjw: Average: 10.12303
-> no-hwp: Average: 10.08228
-> acpi-cpufreq: Average:  9.02215
-> patch: Average: 10.27055
-> v2: Average: 10.31097
->
-> load work/sleep frequency: 211 Hertz:
->
-> hwp: Average: 12.16067
-> rjw: Average: 10.24413
-> no-hwp: Average: 10.12463
-> acpi-cpufreq: Average:  9.19175
-> patch: Average: 10.33000
-> v2: Average: 10.39811
->
-> load work/sleep frequency: 347 Hertz:
->
-> hwp: Average: 12.34169
-> rjw: Average: 10.79980
-> no-hwp: Average: 10.57296
-> acpi-cpufreq: Average:  9.84709
-> patch: Average: 10.67029
-> v2: Average: 10.93143
->
-> load work/sleep frequency: 401 Hertz:
->
-> hwp: Average: 12.42562
-> rjw: Average: 11.12465
-> no-hwp: Average: 11.24203
-> acpi-cpufreq: Average: 10.78670
-> patch: Average: 10.94514
-> v2: Average: 11.50324
->
->
-> Serialized single threaded via PIDs per second method:
-> A.K.A fixed work packet, variable period
-> Results:
->
-> Execution times (seconds. Less is better):
->
-> no-hwp:
->
-> performance: Samples: 382  ; Average: 10.54450  ; Stand Deviation:  0.01564 ; Maximum: 10.61000 ; Minimum: 10.50000
->
-> schedutil: Samples: 293  ; Average: 13.73416  ; Stand Deviation:  0.73395 ; Maximum: 15.46000 ; Minimum: 11.68000
-> acpi: Samples: 253  ; Average: 15.94889  ; Stand Deviation:  1.28219 ; Maximum: 18.66000 ; Minimum: 12.04000
->
-> hwp:
->
-> schedutil: Samples: 380  ; Average: 10.58287  ; Stand Deviation:  0.01864 ; Maximum: 10.64000 ; Minimum: 10.54000
-> patch: Samples: 276  ; Average: 14.57029 ; Stand Deviation:  0.89771 ; Maximum: 16.04000 ; Minimum: 11.68000
-> rfc: Samples: 271  ; Average: 14.86037  ; Stand Deviation:  0.84164 ; Maximum: 16.04000 ; Minimum: 12.21000
-> v2: Samples: 274  ; Average: 14.67978  ; Stand Deviation:  1.03378 ; Maximum: 16.07000 ; Minimum: 11.43000
->
-> Power (watts. More indicates higher CPU frequency and better performance. Sample time = 1 second.):
->
-> no-hwp:
->
-> performance: Samples: 4000  ; Average: 25.41355  ; Stand Deviation:  0.22156 ; Maximum: 26.01996 ; Minimum: 24.08807
->
-> schedutil: Samples: 4000  ; Average: 12.58863  ; Stand Deviation:  5.48600 ; Maximum: 25.50934 ; Minimum:  7.54559
-> acpi: Samples: 4000  ; Average:  9.57924  ; Stand Deviation:  5.41157 ; Maximum: 25.06366 ; Minimum:  5.51129
->
-> hwp:
->
-> schedutil: Samples: 4000  ; Average: 25.24245  ; Stand Deviation:  0.19539 ; Maximum: 25.93671 ; Minimum: 24.14746
-> patch: Samples: 4000  ; Average: 11.07225  ; Stand Deviation:  5.63142 ; Maximum: 24.99493 ; Minimum:  3.67548
-> rfc: Samples: 4000  ; Average: 10.35842  ; Stand Deviation:  4.77915 ; Maximum: 24.95953 ; Minimum:  7.26202
-> v2: Samples: 4000  ; Average: 10.98284  ; Stand Deviation:  5.48859 ; Maximum: 25.76331 ; Minimum:  7.53790
->
->
+								Honza
+
+> > Changes since v1:
+> > - introduce fsnotify_alloc_user_group() and convert fanotify in addition
+> >   to inotify to use that function. [suggested by Amir]
+> >
+> >  fs/notify/fanotify/fanotify_user.c |  2 +-
+> >  fs/notify/group.c                  | 25 ++++++++++++++++++++-----
+> >  fs/notify/inotify/inotify_user.c   |  4 ++--
+> >  include/linux/fsnotify_backend.h   |  1 +
+> >  4 files changed, 24 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
+> > index 3e01d8f2ab90..7e7afc2b62e1 100644
+> > --- a/fs/notify/fanotify/fanotify_user.c
+> > +++ b/fs/notify/fanotify/fanotify_user.c
+> > @@ -976,7 +976,7 @@ SYSCALL_DEFINE2(fanotify_init, unsigned int, flags, unsigned int, event_f_flags)
+> >                 f_flags |= O_NONBLOCK;
+> >
+> >         /* fsnotify_alloc_group takes a ref.  Dropped in fanotify_release */
+> > -       group = fsnotify_alloc_group(&fanotify_fsnotify_ops);
+> > +       group = fsnotify_alloc_user_group(&fanotify_fsnotify_ops);
+> >         if (IS_ERR(group)) {
+> >                 free_uid(user);
+> >                 return PTR_ERR(group);
+> > diff --git a/fs/notify/group.c b/fs/notify/group.c
+> > index a4a4b1c64d32..ffd723ffe46d 100644
+> > --- a/fs/notify/group.c
+> > +++ b/fs/notify/group.c
+> > @@ -111,14 +111,12 @@ void fsnotify_put_group(struct fsnotify_group *group)
+> >  }
+> >  EXPORT_SYMBOL_GPL(fsnotify_put_group);
+> >
+> > -/*
+> > - * Create a new fsnotify_group and hold a reference for the group returned.
+> > - */
+> > -struct fsnotify_group *fsnotify_alloc_group(const struct fsnotify_ops *ops)
+> > +static struct fsnotify_group *__fsnotify_alloc_group(
+> > +                               const struct fsnotify_ops *ops, gfp_t gfp)
+> >  {
+> >         struct fsnotify_group *group;
+> >
+> > -       group = kzalloc(sizeof(struct fsnotify_group), GFP_KERNEL);
+> > +       group = kzalloc(sizeof(struct fsnotify_group), gfp);
+> >         if (!group)
+> >                 return ERR_PTR(-ENOMEM);
+> >
+> > @@ -139,8 +137,25 @@ struct fsnotify_group *fsnotify_alloc_group(const struct fsnotify_ops *ops)
+> >
+> >         return group;
+> >  }
+> > +
+> > +/*
+> > + * Create a new fsnotify_group and hold a reference for the group returned.
+> > + */
+> > +struct fsnotify_group *fsnotify_alloc_group(const struct fsnotify_ops *ops)
+> > +{
+> > +       return __fsnotify_alloc_group(ops, GFP_KERNEL);
+> > +}
+> >  EXPORT_SYMBOL_GPL(fsnotify_alloc_group);
+> >
+> > +/*
+> > + * Create a new fsnotify_group and hold a reference for the group returned.
+> > + */
+> > +struct fsnotify_group *fsnotify_alloc_user_group(const struct fsnotify_ops *ops)
+> > +{
+> > +       return __fsnotify_alloc_group(ops, GFP_KERNEL_ACCOUNT);
+> > +}
+> > +EXPORT_SYMBOL_GPL(fsnotify_alloc_user_group);
+> > +
+> >  int fsnotify_fasync(int fd, struct file *file, int on)
+> >  {
+> >         struct fsnotify_group *group = file->private_data;
+> > diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
+> > index 59c177011a0f..266d17e8ecb9 100644
+> > --- a/fs/notify/inotify/inotify_user.c
+> > +++ b/fs/notify/inotify/inotify_user.c
+> > @@ -632,11 +632,11 @@ static struct fsnotify_group *inotify_new_group(unsigned int max_events)
+> >         struct fsnotify_group *group;
+> >         struct inotify_event_info *oevent;
+> >
+> > -       group = fsnotify_alloc_group(&inotify_fsnotify_ops);
+> > +       group = fsnotify_alloc_user_group(&inotify_fsnotify_ops);
+> >         if (IS_ERR(group))
+> >                 return group;
+> >
+> > -       oevent = kmalloc(sizeof(struct inotify_event_info), GFP_KERNEL);
+> > +       oevent = kmalloc(sizeof(struct inotify_event_info), GFP_KERNEL_ACCOUNT);
+> >         if (unlikely(!oevent)) {
+> >                 fsnotify_destroy_group(group);
+> >                 return ERR_PTR(-ENOMEM);
+> > diff --git a/include/linux/fsnotify_backend.h b/include/linux/fsnotify_backend.h
+> > index a2e42d3cd87c..e5409b83e731 100644
+> > --- a/include/linux/fsnotify_backend.h
+> > +++ b/include/linux/fsnotify_backend.h
+> > @@ -470,6 +470,7 @@ static inline void fsnotify_update_flags(struct dentry *dentry)
+> >
+> >  /* create a new group */
+> >  extern struct fsnotify_group *fsnotify_alloc_group(const struct fsnotify_ops *ops);
+> > +extern struct fsnotify_group *fsnotify_alloc_user_group(const struct fsnotify_ops *ops);
+> >  /* get reference to a group */
+> >  extern void fsnotify_get_group(struct fsnotify_group *group);
+> >  /* drop reference on a group from fsnotify_alloc_group */
+> > --
+> > 2.29.2.684.gfbc64c5ab5-goog
+> >
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
