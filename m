@@ -2,87 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91ED02DF855
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 05:42:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CAF02DF85C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 05:45:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727903AbgLUElq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 23:41:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36600 "EHLO
+        id S1727475AbgLUEpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 23:45:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725785AbgLUElq (ORCPT
+        with ESMTP id S1725785AbgLUEpF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 23:41:46 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC449C0613D3
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 20:41:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=RgtfVilODBWu/BQGzDM3OF/pOjyop/4FNc+1HpoSaF8=; b=F6PPr2nv6gr1/uwR4YCyQhnsmF
-        aqkEPMV5llTocBl8TXqWqqc5h5ckQ4Nt1w784qEGweVp83sQbD907W+7sKO51Ed/0Cvky/f/Uj2/e
-        BtcwHgva4Kc4tDveN/2nFoWvoTHhwnBX7f8mWYOMOeXpoecHmNrvZJK1ZdmihlHJ8cTc8jQwPphKw
-        7bureBUq7k5oQWRNI39bSf9ZYxPCAM1We2D683yMekgp/8FGmC1H79fKu43Sd9Bkk+AVO1VUYI++0
-        lOFS9ozQwMZy2zVqCkZKCGOqnICKXQPLCYGBEcv81sNjmFnBwxMenAPsqiSvLrBAK3IoUwOMKQOcs
-        YBW7T10g==;
-Received: from [2601:1c0:6280:3f0::64ea] (helo=smtpauth.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1krD0I-00036Z-M4; Mon, 21 Dec 2020 04:41:03 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [PATCH v2] kernel: sched: delete repeated words in comments
-Date:   Sun, 20 Dec 2020 20:40:58 -0800
-Message-Id: <20201221044058.15301-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Sun, 20 Dec 2020 23:45:05 -0500
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ABE7C0613D3
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 20:44:25 -0800 (PST)
+Received: by mail-il1-x12b.google.com with SMTP id 2so7751498ilg.9
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 20:44:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=p8JksJ1UE+8rqp4HYul0mL9E6FM1BsI4Tkdvg3Hw2OY=;
+        b=R1h03FujlY+KgN5boGgDxp45kSuW98V/MCScMBkzOiKe02XkYO8H8H0Ilp0WctVBsN
+         v+dpxuv17skD1Ux1jEuCx+2nPsM7GHd3Hl2pvGl5BRe0zRfmxpd24I7ra4FIcqTiQJZV
+         5cFk+m/AgBYi8V8K1lLtFX2G0143VugwnvFmAWxWHIiZKRqkFsrnZjE/kDSjrkVoVwiU
+         1rSTz40MZ4E4lspUpO+A4egnLtrkg/QtaT6FPikQLR7MGSAkB7GCkaDO4p+tVE8exRTD
+         KulBRNcUBr+GtUVnC/7y/ZhdK/bROJdDFPRpIq5I0TXofzfBlKUvcHNIx/YHzl6ACNuE
+         tj7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=p8JksJ1UE+8rqp4HYul0mL9E6FM1BsI4Tkdvg3Hw2OY=;
+        b=T7bM5Gs+vQe6GqCZJdCVaLgmb68QbNAOMPTqM2rvZgU/ETOWiPypZt3ui+WxkjbTrq
+         k0ERQnkyS/9/3pgq7NnioBYuUPceeAreGyPTv/kquSw30Mzn7Fxr7HWhFeNRaOk4IlTr
+         Bg6CMMAna6mSRpKsljEgQp0dm+IDFB/I0WFr0tnL12SLykQLTv32GKkB87nFY0sTVP4W
+         bnwlhhYfpe0w4zPN2+d4N4v00pDiQKjAjrNVro91xevMdjitxEKnnV39Lsv0qDJV9jWi
+         FLWmbK1nkdD3fWbY8mtI9wfWxczB5j55/qzNjpcTenhIaGDo3mW7s1mA96sb9jC3TC6B
+         WFFQ==
+X-Gm-Message-State: AOAM531OBYhpnDcNAue4YRuqSDxJl4xJViJRXUJv1a+Jxo0YARlCLhST
+        r8zpVyqYnj3do2HbOw2eCI/8RrUmI7ZT4A==
+X-Google-Smtp-Source: ABdhPJwrDHPeqcY3HZhvnXxaX4FDb199mgH0soAhXc71NIMSD+41+jSEqh4vkN90QyGaFMwqWa9P9g==
+X-Received: by 2002:a92:ce47:: with SMTP id a7mr15272146ilr.261.1608525864712;
+        Sun, 20 Dec 2020 20:44:24 -0800 (PST)
+Received: from google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
+        by smtp.gmail.com with ESMTPSA id q5sm12155640ile.48.2020.12.20.20.44.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Dec 2020 20:44:23 -0800 (PST)
+Date:   Sun, 20 Dec 2020 21:44:19 -0700
+From:   Yu Zhao <yuzhao@google.com>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        linux-mm <linux-mm@kvack.org>, Peter Xu <peterx@redhat.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable@vger.kernel.org, minchan@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+Message-ID: <X+AoIwSqkKMo7Oxg@google.com>
+References: <20201219043006.2206347-1-namit@vmware.com>
+ <X95RRZ3hkebEmmaj@redhat.com>
+ <EDC00345-B46E-4396-8379-98E943723809@gmail.com>
+ <X97pprdcRXusLGnq@google.com>
+ <DDA15360-D6D4-46A8-95A4-5EE34107A407@gmail.com>
+ <X98fZOiLNmnDQKhN@google.com>
+ <3680387D-65F1-4078-A19D-F77DE8544B96@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <3680387D-65F1-4078-A19D-F77DE8544B96@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop repeated words in kernel/sched/.
-{in, not}
+On Sun, Dec 20, 2020 at 07:33:09PM -0800, Nadav Amit wrote:
+> > On Dec 20, 2020, at 1:54 AM, Yu Zhao <yuzhao@google.com> wrote:
+> > 
+> > On Sun, Dec 20, 2020 at 12:06:38AM -0800, Nadav Amit wrote:
+> >>> On Dec 19, 2020, at 10:05 PM, Yu Zhao <yuzhao@google.com> wrote:
+> >>> 
+> >>> On Sat, Dec 19, 2020 at 01:34:29PM -0800, Nadav Amit wrote:
+> >>>> [ cc’ing some more people who have experience with similar problems ]
+> >>>> 
+> >>>>> On Dec 19, 2020, at 11:15 AM, Andrea Arcangeli <aarcange@redhat.com> wrote:
+> >>>>> 
+> >>>>> Hello,
+> >>>>> 
+> >>>>> On Fri, Dec 18, 2020 at 08:30:06PM -0800, Nadav Amit wrote:
+> >>>>>> Analyzing this problem indicates that there is a real bug since
+> >>>>>> mmap_lock is only taken for read in mwriteprotect_range(). This might
+> >>>>> 
+> >>>>> Never having to take the mmap_sem for writing, and in turn never
+> >>>>> blocking, in order to modify the pagetables is quite an important
+> >>>>> feature in uffd that justifies uffd instead of mprotect. It's not the
+> >>>>> most important reason to use uffd, but it'd be nice if that guarantee
+> >>>>> would remain also for the UFFDIO_WRITEPROTECT API, not only for the
+> >>>>> other pgtable manipulations.
+> >>>>> 
+> >>>>>> Consider the following scenario with 3 CPUs (cpu2 is not shown):
+> >>>>>> 
+> >>>>>> cpu0				cpu1
+> >>>>>> ----				----
+> >>>>>> userfaultfd_writeprotect()
+> >>>>>> [ write-protecting ]
+> >>>>>> mwriteprotect_range()
+> >>>>>> mmap_read_lock()
+> >>>>>> change_protection()
+> >>>>>> change_protection_range()
+> >>>>>> ...
+> >>>>>> change_pte_range()
+> >>>>>> [ defer TLB flushes]
+> >>>>>> 				userfaultfd_writeprotect()
+> >>>>>> 				 mmap_read_lock()
+> >>>>>> 				 change_protection()
+> >>>>>> 				 [ write-unprotect ]
+> >>>>>> 				 ...
+> >>>>>> 				  [ unprotect PTE logically ]
+> >>>>>> 				...
+> >>>>>> 				[ page-fault]
+> >>>>>> 				...
+> >>>>>> 				wp_page_copy()
+> >>>>>> 				[ set new writable page in PTE]
+> >>> 
+> >>> I don't see any problem in this example -- wp_page_copy() calls
+> >>> ptep_clear_flush_notify(), which should take care of the stale entry
+> >>> left by cpu0.
+> >>> 
+> >>> That being said, I suspect the memory corruption you observed is
+> >>> related this example, with cpu1 running something else that flushes
+> >>> conditionally depending on pte_write().
+> >>> 
+> >>> Do you know which type of pages were corrupted? file, anon, etc.
+> >> 
+> >> First, Yu, you are correct. My analysis is incorrect, but let me have
+> >> another try (below). To answer your (and Andrea’s) question - this happens
+> >> with upstream without any changes, excluding a small fix to the selftest,
+> >> since it failed (got stuck) due to missing wake events. [1]
+> >> 
+> >> We are talking about anon memory.
+> >> 
+> >> So to correct myself, I think that what I really encountered was actually
+> >> during MM_CP_UFFD_WP_RESOLVE (i.e., when the protection is removed). The
+> >> problem was that in this case the “write”-bit was removed during unprotect.
+> > 
+> > Thanks. You are right about when the problem happens: UFD write-
+> > UNprotecting. But it's not UFD write-UNprotecting that removes the
+> > writable bit -- the bit can only be removed during COW or UFD
+> > write-protecting. So your original example was almost correct, except
+> > the last line describing cpu1.
+> 
+> The scenario is a bit confusing, so stay with me. The idea behind uffd
+> unprotect is indeed only to mark the PTE logically as uffd-unprotected, and
+> not to *set* the writable bit, allowing the #PF handler to do COW or
+> whatever correctly upon #PF.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
----
-v2: rebase, resend
+Right.
 
- kernel/sched/fair.c       |    2 +-
- kernel/sched/membarrier.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+> However, the problem that we have is that if a page is already writable,
+> write-unprotect *clears* the writable bit, making it write-protected (at
+> least for anonymous pages). This is not good from performance point-of-view,
+> but also a correctness issue, as I pointed out.
+> 
+> In some more detail: mwriteprotect_range() uses vm_get_page_prot() to
+> compute the new protection. For anonymous private memory, at least on x86,
+> this means the write-bit in the protection is clear. So later,
+> change_pte_range() *clears* the write-bit during *unprotection*.
 
---- linux-next-20201218.orig/kernel/sched/fair.c
-+++ linux-next-20201218/kernel/sched/fair.c
-@@ -5133,7 +5133,7 @@ static void do_sched_cfs_slack_timer(str
- /*
-  * When a group wakes up we want to make sure that its quota is not already
-  * expired/exceeded, otherwise it may be allowed to steal additional ticks of
-- * runtime as update_curr() throttling can not not trigger until it's on-rq.
-+ * runtime as update_curr() throttling can not trigger until it's on-rq.
-  */
- static void check_enqueue_throttle(struct cfs_rq *cfs_rq)
- {
---- linux-next-20201218.orig/kernel/sched/membarrier.c
-+++ linux-next-20201218/kernel/sched/membarrier.c
-@@ -454,7 +454,7 @@ static int sync_runqueues_membarrier_sta
- 
- 	/*
- 	 * For each cpu runqueue, if the task's mm match @mm, ensure that all
--	 * @mm's membarrier state set bits are also set in in the runqueue's
-+	 * @mm's membarrier state set bits are also set in the runqueue's
- 	 * membarrier state. This ensures that a runqueue scheduling
- 	 * between threads which are users of @mm has its membarrier state
- 	 * updated.
+Agreed.
+
+> That’s the reason the second part of my patch - the change to preserve_write
+> - fixes the problem.
+
+Yes, it fixes a part of the problem.
+
+But what if there is no writable bit there for you to preserve? If the
+bit was cleared by COW, e.g., KSM, fork, etc., no problem, because they
+guarantee the flush. If it was cleared by a priory UFD write-protecting,
+you still would run into the same problem because of the deterred flush.
+And you are trying to fix this part of the problem by grabbing
+mmap_write_lock. I think I understand your patch correctly.
+
+Both parts of the problem were introduced by the commits I listed, and
+your patch does fix the problem. I'm just saying it's not an optimal fix
+because for the second part of the problem:
+1) there is no need to grab mmap_write_lock
+2) there is no need to make a copy in do_wp_page() if the write bit was
+cleared by UFD write-protecting (non-COW case).
+
+The fix should be done in do_wp_page(), i.e., to handle non-COW pages
+correctly. Preserving the write bit can be considered separately as an
+optimization, not a fix. (It eliminates unnecessary page faults.)
+
+> > The problem is how do_wp_page() handles non-COW pages. (For COW pages,
+> > do_wp_page() works correctly by either reusing an existing page or
+> > make a new copy out of it.) In UFD case, the existing page may not
+> > have been properly write-protected. As you pointed out, the tlb flush
+> > may not be done yet. Making a copy can potentially race with the
+> > writer on cpu2.
+> 
+> Just to clarify the difference - You regard a scenario of UFFD
+> write-protect, while I am pretty sure the problem I encountered is during
+> write-unprotect.
+> 
+> I am not sure we are on the same page (but we may be). The problem I have is
+> with cow_user_page() that is called by do_wp_page() before any TLB flush
+> took place (either by change_protection_range() or by do_wp_page() which
+> does flush, but after the copy).
+> 
+> Let me know if you regard a different scenario.
+> 
+> > Should we fix the problem by ensuring integrity of the copy? IMO, no,
+> > because do_wp_page() shouldn't copy at all in this case. It seems it
+> > was recently broken by
+> > 
+> >  be068f29034f mm: fix misplaced unlock_page in do_wp_page()
+> >  09854ba94c6a mm: do_wp_page() simplification
+> > 
+> > I haven't study them carefully. But if you could just revert them and
+> > run the test again, we'd know where exactly to look at next.
+> 
+> These patches regard the wp_page_reuse() case, which makes me think we
+> are not on the same page. I do not see a problem with wp_page_reuse()
+> since it does not make a copy of the page. If you can explain what I
+> am missing, it would be great.
+> 
