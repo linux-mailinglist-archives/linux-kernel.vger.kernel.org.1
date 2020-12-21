@@ -2,162 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DAC22DFB55
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 12:05:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA7982DFB5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 12:08:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726627AbgLULEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 06:04:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38946 "EHLO
+        id S1726221AbgLULIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 06:08:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726526AbgLULEp (ORCPT
+        with ESMTP id S1725892AbgLULIi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 06:04:45 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74FAEC061285;
-        Mon, 21 Dec 2020 03:04:05 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id c79so6271239pfc.2;
-        Mon, 21 Dec 2020 03:04:05 -0800 (PST)
+        Mon, 21 Dec 2020 06:08:38 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22078C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 03:07:57 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id z12so5977633pjn.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 03:07:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=m4RXLnH7YBILbODpuDyfo9E1AOFVv93WhdclcHi3eRM=;
-        b=mA4rkZ2mW5ilVtJlHTLxyUJbz4DtMizPCLvCnvGrHm7XoPsPZE3HcUISa+DINhe1cX
-         VnYcPtgRrVmlD6iNUktCM9CvhFg9hFAd2+NL7spFpNLgaisQkXQoLUa7nGIHVPR+fLpN
-         2I17vlr0JuScYxcSiGi7rInpQQyijOiIzaxI1+JQAQKmHHDxFUhD5SvuVRafD4MnaZjZ
-         t+INoEhNht+H8bbDqe5ZGkOUwFQsAaOgVpDusW+3UvbbW2dXhteuIdvNxb1BJcVLbT9p
-         vjMw8oeCMmbo4M6zu3eUhnpqj05Y8DMRrEtXs18/xyx62faIELK50YvCt56IRRchkFkj
-         VxRA==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BOlZCOLM2fiX9IZHU6rHTKDZB2KqCTIIheGSQkZLkzk=;
+        b=keW0J8Q4lXZv+SIUf1De3T7sb3p2+MR0Lv0chpM09bx0Nf5BD8D5xSd/IAc7+zxacC
+         TWPoC21wd4gx+W52iqF52xIef/afr+jhVsi7ICGWneMOi4bju/knXoiROvRkFBMcggys
+         gkA4Ik1i+mImdXy06ZzmVZofmSfej86CBElBp5x9DGRYfeQd4HWCLFRlbaKjaowPGAsJ
+         IVkAjGPr4+BIpMFGmzi2+qnWEg3k/aB5NkTtneAyxaWGJsaxzm+lfSEVxypucCTxG0Lf
+         p3NLvydg4KDMuXdIT3HZUgFFg5XlzjgZy5lcvJZS07IWPc3vUWStqiexCXRwm73UpQh6
+         Onmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=m4RXLnH7YBILbODpuDyfo9E1AOFVv93WhdclcHi3eRM=;
-        b=WnlMOqHLZ6C8jQ/pOjT4lqV2GNqdcfx9quoEABklUrqcSSCn+aw7PEngGsrClxGlyE
-         ZBVbak6RBHqWJyKBSlBGJiPV1o7GJHwUok1PJ9ynWv9sCt1e0y83UNAnl4DelNoT24uf
-         FYbiwIXJ3ca2kXrdB4VedY1v9QoWX/8fNXjLpDPn2ScQAutXJlS8lIdi/OEuSR6mXFW+
-         QReYFc3G8Jr3n2SrbDt561Axe/QVVVkMq2vwE2GMHFqQVRFl/ejAbbvbF1uDtCeqHEMc
-         a31rRtMXCavPiG9axJJNnt6fz0ukIqotocxWoifX/E9MnN5MKAeZja0xH78nzo1wkqfk
-         mTGw==
-X-Gm-Message-State: AOAM530IWm/qifT1tRWRUQ3yPAzGcP28SI47LkmPF4nn/ZZziZHCoCCR
-        DmCTHPuJnDIOx9bdqEfM2TjcKqEz6Y5fOw==
-X-Google-Smtp-Source: ABdhPJxfsK/TKyeT0KVqf2ULDbwG5cq5edfGnp7+WRd1iwL7NlFlagqlJMZ9LY5DQLObCcAUtGM3gQ==
-X-Received: by 2002:a62:1ccb:0:b029:1ad:8138:dc42 with SMTP id c194-20020a621ccb0000b02901ad8138dc42mr6727056pfc.0.1608548645079;
-        Mon, 21 Dec 2020 03:04:05 -0800 (PST)
-Received: from localhost ([103.248.31.152])
-        by smtp.gmail.com with ESMTPSA id 84sm16889194pfy.9.2020.12.21.03.04.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 03:04:04 -0800 (PST)
-Date:   Mon, 21 Dec 2020 16:33:56 +0530
-From:   'Amey Narkhede' <ameynarkhede03@gmail.com>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] block: aoe: replace use of __constant_htons to htons
-Message-ID: <20201221110356.6x2h2ip6o3hlwztd@archlinux>
-References: <20201220164625.94105-1-ameynarkhede03@gmail.com>
- <d708db73308747feb0484287a09c443e@AcuMS.aculab.com>
- <20201220202019.j7x64yahapgilr7u@archlinux>
- <c5df63bdc5a94ebdac9505a64f2cece5@AcuMS.aculab.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BOlZCOLM2fiX9IZHU6rHTKDZB2KqCTIIheGSQkZLkzk=;
+        b=BeuYuTHyr9LU0pAXTyXoLSOmWHKAQ5L8hkgi4W1GSStSq99A306Pp3/RLER+SmuuEw
+         +Chq3AsQUmjH+TmuedxLEUWGFveHP1jOcSc8SmGJgsgc8uL8Nst//Dq1BvTHgL225zPt
+         v4zNTKf3vxYsYM59E26fSIiA4p42ny1klgYynTb0SM+TcF/aNYHLh7fXafRt842Gp+fQ
+         rzj8AUF3naSNx0zhSs1XbH0QSVNWoGOdNQEWK4nkgL3W2w98/4cyxoWzMtg+0oEdewm1
+         wpPId4y95Kbl/7HfsCp/ruDq2rhYRwxmRw0SirEn+jqMwd+jaAI3xSY6ILE+hd71edgK
+         dy3w==
+X-Gm-Message-State: AOAM532QO4L9OY5y5nRwAlac1v4RSF5s2GkKalkHHpbBSvyxnc9r+9ry
+        R+wJbruRfufpLNSc3CTvsWOzOhTxpV2cx13zw17nnQ==
+X-Google-Smtp-Source: ABdhPJwoJStF1A669nR7sEzwHJAQg6sembIt+S/xmXLOZRFLjO1my0AFoe54teplQtqVoxYW3ICQo1YTApqa6dAcBYs=
+X-Received: by 2002:a17:902:8503:b029:dc:44f:62d8 with SMTP id
+ bj3-20020a1709028503b02900dc044f62d8mr15600526plb.34.1608548876589; Mon, 21
+ Dec 2020 03:07:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="pglt4qwsfzwfhuk6"
-Content-Disposition: inline
-In-Reply-To: <c5df63bdc5a94ebdac9505a64f2cece5@AcuMS.aculab.com>
+References: <20201217121303.13386-1-songmuchun@bytedance.com>
+ <20201217121303.13386-5-songmuchun@bytedance.com> <20201221102703.GA15804@linux>
+In-Reply-To: <20201221102703.GA15804@linux>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Mon, 21 Dec 2020 19:07:18 +0800
+Message-ID: <CAMZfGtW0jzNchLqieAudyk4TsaAUtYEdoC=j+gkkVLJBaKg3pA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v10 04/11] mm/hugetlb: Defer freeing of
+ HugeTLB pages
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>, naoya.horiguchi@nec.com,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Dec 21, 2020 at 6:27 PM Oscar Salvador <osalvador@suse.de> wrote:
+>
+> On Thu, Dec 17, 2020 at 08:12:56PM +0800, Muchun Song wrote:
+> > In the subsequent patch, we will allocate the vmemmap pages when free
+> > HugeTLB pages. But update_and_free_page() is called from a non-task
+> > context(and hold hugetlb_lock), so we can defer the actual freeing in
+> > a workqueue to prevent from using GFP_ATOMIC to allocate the vmemmap
+> > pages.
+>
+> I think we would benefit from a more complete changelog, at least I had
+> to stare at the code for a while in order to grasp what are we trying
+> to do and the reasons behind.
 
---pglt4qwsfzwfhuk6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+OK. Will do.
 
-On 20/12/21 09:23AM, David Laight wrote:
-> From: 'Amey Narkhede' <ameynarkhede03@gmail.com>
-> > Sent: 20 December 2020 20:20
-> > To: David Laight <David.Laight@ACULAB.COM>
-> > Subject: Re: [PATCH] block: aoe: replace use of __constant_htons to htons
+>
+> > +static void __free_hugepage(struct hstate *h, struct page *page);
+> > +
+> > +/*
+> > + * As update_and_free_page() is be called from a non-task context(and hold
+> > + * hugetlb_lock), we can defer the actual freeing in a workqueue to prevent
+> > + * use GFP_ATOMIC to allocate a lot of vmemmap pages.
+>
+> The above implies that update_and_free_page() is __always__ called from a
+> non-task context, but that is not always the case?
+
+IIUC, here is always the case.
+
+>
+> > +static void update_hpage_vmemmap_workfn(struct work_struct *work)
+> >  {
+> > -     int i;
+> > +     struct llist_node *node;
+> > +     struct page *page;
 > >
-> > On 20/12/20 07:35PM, David Laight wrote:
-> > > From: Amey Narkhede
-> > > > Sent: 20 December 2020 16:46
-> > > >
-> > > > The macro htons expands to __swab16 which has special
-> > > > case for constants in little endian case. In big
-> > > > endian case both __constant_htons and htons macros
-> > > > expand to the same code. So, replace __constant_htons
-> > > > with htons to get rid of the definition of __constant_htons
-> > > > completely.
-> > > >
-> > > ...
-> > > >  static struct packet_type aoe_pt __read_mostly = {
-> > > > -	.type = __constant_htons(ETH_P_AOE),
-> > > > +	.type = htons(ETH_P_AOE),
-> > > >  	.func = aoenet_rcv,
-> > >
-> > > Does this cause grief if someone is doing a COMPILE_TEST on LE?
-> > >
-> > > 	David
-> > >
-> > > -
-> > > Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> > > Registration No: 1397386 (Wales)
-> > >
-> > I did COMPILE_TEST on my x86_64 machine and it compiled
-> > without any problems.
-> > I assume that was the point or am I missing
-> > something? I'm a beginner contributor so please
-> > let me know if there any mistakes.
+> > +     node = llist_del_all(&hpage_update_freelist);
+> > +
+> > +     while (node) {
+> > +             page = container_of((struct address_space **)node,
+> > +                                  struct page, mapping);
+> > +             node = node->next;
+> > +             page->mapping = NULL;
+> > +             __free_hugepage(page_hstate(page), page);
+> > +
+> > +             cond_resched();
+> > +     }
+> > +}
+> > +static DECLARE_WORK(hpage_update_work, update_hpage_vmemmap_workfn);
 >
-> It depends on exactly how the bswap functions are defined.
->
-> You can't have anything that contains a function call (or asm) for a
-> static initialiser or case label.
-> The bswap functions have used the builtin_constant() check to switch
-> between an asm block and C expression.
-> So the C expression is used for constants - so evaluated by the compiler,
-> and the asm for variables.
-> Last I looked this wasn't valid for initialisers - so the __constant_bswap()
-> exists for these cases.
->
-> Now, it might be that, on more recent gcc __builtin_bswap() is used.
-> This might be valid for constants in initialisers.
-> Whether the same is true for CLANG is another issue.
->
-> Basically it is all complex and partially historic.
->
-> So you may need to use __constant_htons() for initialisers
-> and case labels.
-> For constants in code it doesn't matter whether you use the __constant form.
-> For variables in code the __constant form is likely to generate horrid code.
->
-> FWIW you'll get more credit for finding real bugs than stylistic changes.
->
-> 	David
->
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
->
-Thanks for thee detail explanation.
-Actually I was submitting stylistic changes to get
-familiar with email and patch based workflows
+> I wonder if this should be moved to hugetlb_vmemmap.c
 
-Amey
+Maybe I can do a try.
 
---pglt4qwsfzwfhuk6
-Content-Type: application/pgp-signature; name="signature.asc"
+>
+> > +/*
+> > + * This is where the call to allocate vmemmmap pages will be inserted.
+> > + */
+>
+> I think this should go in the changelog.
 
------BEGIN PGP SIGNATURE-----
+OK. Will do.
 
-iQEzBAABCAAdFiEEb5tNK+B4oWmn+0Z9BBTsy/Z3yzYFAl/ggRwACgkQBBTsy/Z3
-yzYPmAgAj9feO9UUbbeCG7DTkaIBhNMpNLZKvL43vcz3WGtDjxYzYPtobHwJWPAE
-bbMcHYGtAgulWogYVNHW5YDHufc1C/0I/mvtobDOyuaVzw8dC8h8VA7kVwnZV+uZ
-2mHoEa4dQZlPjo4JcfV0OO1RGqGGO5GRQ5fke+QzELm75DIx2/1qAIUz1lXvLsMQ
-yCTOIk0Brrce1o9tRvoXzwha+c3QXVxjsQyN3K5296v01FgTkk0DOkvNl/X4lDWJ
-+rwaH0XJu8Gz5i0dGNa+gcl3IlhezAQXVq98sKMrx/0zZgBaiGZDZCRg43UWJnWD
-0SxEi4heFn70eTAh+ESp2l/FUa4lTA==
-=HrGu
------END PGP SIGNATURE-----
+>
+> > +static void __free_hugepage(struct hstate *h, struct page *page)
+> > +{
+> > +     int i;
+> > +
+> >       for (i = 0; i < pages_per_huge_page(h); i++) {
+> >               page[i].flags &= ~(1 << PG_locked | 1 << PG_error |
+> >                               1 << PG_referenced | 1 << PG_dirty |
+> > @@ -1313,13 +1377,17 @@ static void update_and_free_page(struct hstate *h, struct page *page)
+> >       set_page_refcounted(page);
+> >       if (hstate_is_gigantic(h)) {
+> >               /*
+> > -              * Temporarily drop the hugetlb_lock, because
+> > -              * we might block in free_gigantic_page().
+> > +              * Temporarily drop the hugetlb_lock only when this type of
+> > +              * HugeTLB page does not support vmemmap optimization (which
+> > +              * context do not hold the hugetlb_lock), because we might
+> > +              * block in free_gigantic_page().
+>
+> "
+>  /*
+>   * Temporarily drop the hugetlb_lock, because we might block
+>   * in free_gigantic_page(). Only drop it in case the vmemmap
+>   * optimization is disabled, since that context does not hold
+>   * the lock.
+>   */
+> " ?
 
---pglt4qwsfzwfhuk6--
+Thanks a lot.
+
+>
+>
+> Oscar Salvador
+> SUSE L3
+
+
+
+-- 
+Yours,
+Muchun
