@@ -2,119 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B7DB2E02CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 00:06:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B6FC2E02D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 00:13:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726095AbgLUXF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 18:05:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39046 "EHLO
+        id S1726016AbgLUXNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 18:13:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgLUXF6 (ORCPT
+        with ESMTP id S1725780AbgLUXNH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 18:05:58 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D5BEC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 15:05:16 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id j1so6422280pld.3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 15:05:16 -0800 (PST)
+        Mon, 21 Dec 2020 18:13:07 -0500
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F734C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 15:12:27 -0800 (PST)
+Received: by mail-io1-xd36.google.com with SMTP id r9so10351425ioo.7
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 15:12:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=LeoeYnCQ4DjHLLXlMxxQJshzAfmMhw5UEdcS2SRtSy4=;
-        b=Ftr369q9NwaPNhLcUHiuHQkp7Le7NZyiC2K8bG8lqMkcSxIRbREQK8cxCw70jEIuk8
-         fpp3rw8vRTQdVoVnGfKISRtuIiESfmbNppyrNt8ynyBTm/fFNSZWNe9NKKFHw73j2EOi
-         MciYSOFxYWYGeua+iAl+sW7GAK8JrXbknG6J5fSWd/+uKj4puUY2R/kqJLt5B7gat645
-         mFkkWbw+S99Am+DWBg9bzDUErbsm1cfqhI3LHqFmbGfFfpBgiYecSmBxz9y9acucMYSW
-         kC9nVAF30TWUs4Z64IX6kLG10PsWpyV8VfQsp48dJmOXPKl2O54EjArdzjDyf6ZTztJJ
-         Nl9A==
+         :content-disposition:in-reply-to;
+        bh=+Y8ZZnXUThIraa3kqic3ZC5rSXsBos2RLv0vNdKIdp8=;
+        b=DxVK5T7xYuc3JN8wgvZmILR7izqYuIuOuZP8y9YDH+UGCLq1U5ffM+vkNZbFyoyFfY
+         QjYsdKEH4NUBglLU6ZfspgzE2jYzSZms3pYlhjcTdJn9SjgMvNWaFrpdpf2+NwYffk5Y
+         VDfiSGmiABKqKfOouHbwEBvyuwGer/TmjR0q2AcU7C+G7TZzNug02zhc7TYu4A1TEvOb
+         tV9OmyCeuLeeM5d7FNX4qEcVjsHxvCmsGjLVKs/PABt6O0pe9orzgp5di2aZrq96wVTY
+         3rAWaegB1d30JCP0tyjrQ5p61WdzS6iZF2DEwaK+yokbaAXymj2kq8FtCS2EPSlGfS/D
+         CCSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=LeoeYnCQ4DjHLLXlMxxQJshzAfmMhw5UEdcS2SRtSy4=;
-        b=JJR+40tgwVHhn/PczdCB5Tq6lvxt6/1XX0cRKHMmX7PWa7qqMryt5fGecBfgryRa6t
-         r2Mdkh0PCl/jxuUL8jcAKhet0F63sWn/NEIEf89GgiamIumoesw0p93BcrC9dI09PsRB
-         5hzEAUh7tlGx2tXrjsbCbuCVtsbwqNiYzS7fhLlamao/AErAw5Ro8UBpJOPXyAXd1iUk
-         7zU1C02QbWE85mu8p/OrFOLE1A+WLWYXgOeZqEFcZwusOBhGsl8kW7gjhW3UWOHONLho
-         CAV2HsMKAtTL/1AXYhIDXsTlYKmkMPjjIza4rPn68dCLR3K30+/Cxkf5s3TCqiRRPkQu
-         WDBQ==
-X-Gm-Message-State: AOAM531mJCDnMloD8h9b7ooAW2poK04XC3sodx/hNqj0MNMrU6oa/Bbw
-        OkWhN0sOWpOBhfZJjHqo9BzQJg==
-X-Google-Smtp-Source: ABdhPJymkZ99e3soMAm7qGBFf5xuPRNrUkIcWAxP77eBmgNUrWJtwOrB/MUJpfwVsDfW1PLtlQ4oKw==
-X-Received: by 2002:a17:902:9b91:b029:db:f003:c5eb with SMTP id y17-20020a1709029b91b02900dbf003c5ebmr18176770plp.1.1608591915873;
-        Mon, 21 Dec 2020 15:05:15 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id w27sm14034183pfq.104.2020.12.21.15.05.14
+         :mime-version:content-disposition:in-reply-to;
+        bh=+Y8ZZnXUThIraa3kqic3ZC5rSXsBos2RLv0vNdKIdp8=;
+        b=J7/oqE01MCtSsIeEcF7LT+a0ei77UAgbKJZud181/OZbmgiSn/LGausrWt2V9dcb8B
+         K6V7k9+4YeZ9Jrmcf2AKu3jjoWURMENoRewXRwUIFBfuMYfCUC/W23vgWDXKFB9ep8LS
+         MIRCB37HH7aOhvB4V2UQuHI9T8+TNekcpiPeTEMgUON08Q16pciMEc3cQBkRVtpqWyou
+         QnBvlvrtoo8vKNULcMWvAHG/nDGxCeXfpo8QUrhxEnYeKU5/EdtiAKCVaPhCbzEYd+7j
+         TbUyIV6trcmGAIME9ibTw7+/qfjgKLgPIBDacmQdfYHKvgFNBXwfTPr6isV0nqd3Tn6i
+         6beg==
+X-Gm-Message-State: AOAM531vzi1Zp+9+bxXA2YtLDQf3Ncej90qr3QzuP0VEv11JeZ5DZhdR
+        5w7vb8iLKrWFOwWjh9+5VSm+1g==
+X-Google-Smtp-Source: ABdhPJxrNJhpu7hO5zHS9Bem7JnYOOhxdWF9WY7zd5k89jhc62Lw8mKAmazIWoJLYzLC8veIw6+tLA==
+X-Received: by 2002:a02:3541:: with SMTP id y1mr16433792jae.66.1608592346477;
+        Mon, 21 Dec 2020 15:12:26 -0800 (PST)
+Received: from google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
+        by smtp.gmail.com with ESMTPSA id c15sm13515002ils.87.2020.12.21.15.12.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 15:05:15 -0800 (PST)
-Date:   Mon, 21 Dec 2020 15:05:08 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Krish Sadhukhan <krish.sadhukhan@oracle.com>
-Cc:     Uros Bizjak <ubizjak@gmail.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v3] KVM/x86: Move definition of __ex to x86.h
-Message-ID: <X+EqJB/k1kxSWE7m@google.com>
-References: <20201221194800.46962-1-ubizjak@gmail.com>
- <a773afca-7f28-2392-74ad-0895da3f75ca@oracle.com>
+        Mon, 21 Dec 2020 15:12:25 -0800 (PST)
+Date:   Mon, 21 Dec 2020 16:12:21 -0700
+From:   Yu Zhao <yuzhao@google.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Nadav Amit <nadav.amit@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+Message-ID: <X+Er1Rjv1W7rzcw7@google.com>
+References: <DDA15360-D6D4-46A8-95A4-5EE34107A407@gmail.com>
+ <20201221172711.GE6640@xz-x1>
+ <76B4F49B-ED61-47EA-9BE4-7F17A26B610D@gmail.com>
+ <X+D0hTZCrWS3P5Pi@google.com>
+ <CAHk-=wg_UBuo7ro1fpEGkMyFKA1+PxrE85f9J_AhUfr-nJPpLQ@mail.gmail.com>
+ <9E301C7C-882A-4E0F-8D6D-1170E792065A@gmail.com>
+ <CAHk-=wg-Y+svNy3CDkJjj0X_CJkSbpERLg64-Vqwq5u7SC4z0g@mail.gmail.com>
+ <X+ESkna2z3WjjniN@google.com>
+ <1FCC8F93-FF29-44D3-A73A-DF943D056680@gmail.com>
+ <20201221223041.GL6640@xz-x1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a773afca-7f28-2392-74ad-0895da3f75ca@oracle.com>
+In-Reply-To: <20201221223041.GL6640@xz-x1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020, Krish Sadhukhan wrote:
+On Mon, Dec 21, 2020 at 05:30:41PM -0500, Peter Xu wrote:
+> On Mon, Dec 21, 2020 at 01:49:55PM -0800, Nadav Amit wrote:
+> > BTW: In general, I think that you are right, and that changing of PTEs
+> > should not require taking mmap_lock for write. However, I am not sure
+> > cow_user_page() is not the only one that poses a problem and whether a more
+> > systematic solution is needed. If cow_user_pages() is the only problem, do
+> > you think it is possible to do the copying while holding the PTL? It works
+> > for normal-pages, but I am not sure whether special-pages pose special
+> > problems.
+> > 
+> > Anyhow, this is an enhancement that we can try later.
 > 
-> On 12/21/20 11:48 AM, Uros Bizjak wrote:
-> > diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-> > index c5ee0f5ce0f1..5b16d2b5c3bc 100644
-> > --- a/arch/x86/kvm/x86.h
-> > +++ b/arch/x86/kvm/x86.h
-> > @@ -8,6 +8,30 @@
-> >   #include "kvm_cache_regs.h"
-> >   #include "kvm_emulate.h"
-> > +asmlinkage void kvm_spurious_fault(void);
-> > +
-> > +/*
-> > + * Handle a fault on a hardware virtualization (VMX or SVM) instruction.
-> > + *
-> > + * Hardware virtualization extension instructions may fault if a reboot turns
-> > + * off virtualization while processes are running.  Usually after catching the
-> > + * fault we just panic; during reboot instead the instruction is ignored.
-> > + */
-> > +#define __ex(insn)							\
+> AFAIU mprotect() is the only one who modifies the pte using the mmap write
+> lock.  NUMA balancing is also using read mmap lock when changing pte
+> protections,
+
+NUMA balance doesn't clear pte_write() -- I would not call setting
+pte_none() a change of protection.
+
+> while my understanding is mprotect() used write lock only because
+> it manipulates the address space itself (aka. vma layout) rather than modifying
+> the ptes, so it needs to.
+
+Yes, and personally, I would only take mmap lock for write when I
+change VMAs, not PTE protections.
+
+> At the pte level, it seems always to be the pgtable lock that serializes things.
 > 
+> So it's perfectly legal to me for e.g. a driver to modify ptes with the read
+> lock of mmap_sem, unless I'm severely mistaken.. as long as the pgtable lock is
+> taken when doing so.
 > 
-> While the previous name was too elaborate, this new name is very cryptic. 
-> Unless we are saving for space,it's better to give a somewhat descriptive
-> name.
+> If there's a driver that manipulated the ptes, changed the content of the page,
+> recover the ptes to origin, and all these happen right after wp_page_copy()
+> unlocked the pgtable lock but before wp_page_copy() retakes the same lock
+> again, we may face the same issue finding that the page got copied contains
+> corrupted data at last.  While I don't know what to blame on the driver either
+> because it seems to be exactly following the rules.
+> 
+> I believe changing into write lock would solve the race here because tlb
+> flushing would be guaranteed along the way, but I'm just a bit worried it's not
+> the best way to go..
 
-We are saving for space in a way.  Not so much to actually save lines of code,
-but to avoid stealing the focus from the code that matters.  __ex() is cryptic
-for the completely unfamiliar, but I'm worried that anything more verbose will
-harm the readability of the code where it is used, which is usually what's more
-important in the long run.  
-
-__ex() does have some meaning, as it's connected to the various ex_handler_*()
-helpers.  ex_handle() is the best semi-verbose alternative that I can think of,
-but even that is too long for my liking when reading the inline asm flows.  And
-it's not like ex_handle() tells the whole story; the reader still has to go to
-the definition to understand what it does, or worse, will make incorrect
-assumptions about how exceptions are handled.
-
-E.g. with the short version, my eyes gravitate toward vmxoff/vmsave without
-getting stuck on the verbose wrapper.
-
-	asm volatile (__ex("vmxoff"));
-
-	asm volatile(__ex("vmsave") : : "a" (__sme_page_pa(sd->save_area)) : "memory");
-
-vs.
-
-	asm volatile (ex_handle("vmxoff"));
-
-	asm volatile(ex_handle("vmsave") : : "a" (__sme_page_pa(sd->save_area)) : "memory");
+I can't say I disagree with you but the man has made the call and I
+think we should just move on.
