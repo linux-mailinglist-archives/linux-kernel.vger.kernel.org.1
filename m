@@ -2,101 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB7A92DFF7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:17:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3C042DFF7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:17:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726689AbgLUSQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 13:16:27 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:25689 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726666AbgLUSQ0 (ORCPT
+        id S1726709AbgLUSQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:16:30 -0500
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:43374 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726666AbgLUSQa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:16:26 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1608574563; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=advVr5rSg5zOOn4yjOEJUBXVBEt3L/mvo2faQIC58Bc=; b=qefva7Qu4BQn9EXp7p2BjycuFDlnUeKc6EOhs64myISEhuvMI7/2tro8R+viujeizFEs0xww
- nBws1dKTsPMxLcsNo/lTzi9XhH+Wd5/6068rKdpb7bQl6YujudQ6FQJ+P5H/ZVCDPvjMMnHY
- LnlQLIJqaOPODIePWXiigtuLxVs=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5fe0e63fda4719818836360b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 21 Dec 2020 18:15:27
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4CE6DC43464; Mon, 21 Dec 2020 18:15:27 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E500AC433ED;
-        Mon, 21 Dec 2020 18:15:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E500AC433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Zekun Shen <bruceshenzk@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ath10k@lists.infradead.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH] net: ath10k: santity check for ep connectivity
-References: <20200622022055.16028-1-bruceshenzk@gmail.com>
-Date:   Mon, 21 Dec 2020 20:15:22 +0200
-In-Reply-To: <20200622022055.16028-1-bruceshenzk@gmail.com> (Zekun Shen's
-        message of "Sun, 21 Jun 2020 22:20:54 -0400")
-Message-ID: <87sg7znhz9.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        Mon, 21 Dec 2020 13:16:30 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R911e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=liangyan.peng@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UJNHBfZ_1608574546;
+Received: from LiangyandeMacBook-Pro.local(mailfrom:liangyan.peng@linux.alibaba.com fp:SMTPD_---0UJNHBfZ_1608574546)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 22 Dec 2020 02:15:47 +0800
+Subject: Re: [PATCH v2] ovl: fix dentry leak in ovl_get_redirect
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201220120927.115232-1-liangyan.peng@linux.alibaba.com>
+ <20201221062653.GO3579531@ZenIV.linux.org.uk>
+ <52a76e73-d46b-d0fd-a75a-76b4a86149b3@linux.alibaba.com>
+ <20201221121148.GP3579531@ZenIV.linux.org.uk>
+ <b7c5da61-6c17-fe19-957c-4c8b6d6e86fe@linux.alibaba.com>
+ <20201221173538.GQ3579531@ZenIV.linux.org.uk>
+From:   Liangyan <liangyan.peng@linux.alibaba.com>
+Message-ID: <f3e1d7bc-b350-6fe6-7a26-7c65f7122023@linux.alibaba.com>
+Date:   Tue, 22 Dec 2020 02:15:46 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20201221173538.GQ3579531@ZenIV.linux.org.uk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Zekun Shen <bruceshenzk@gmail.com> writes:
+Exactly, i missed this definition of d_lock and treat it as a single 
+member in dentry.
+#define d_lock	d_lockref.lock
 
-> Function ep_rx_complete is being called without NULL checking
-> in ath10k_htc_rx_completion_handler. Without such check, mal-
-> formed packet is able to cause jump to NULL.
->
-> ep->service_id seems a good candidate for sanity check as it is
-> used in usb.c.
->
-> Signed-off-by: Zekun Shen <bruceshenzk@gmail.com>
-> ---
->  drivers/net/wireless/ath/ath10k/htc.c | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-> index 31df6dd04..e00794d97 100644
-> --- a/drivers/net/wireless/ath/ath10k/htc.c
-> +++ b/drivers/net/wireless/ath/ath10k/htc.c
-> @@ -450,6 +450,11 @@ void ath10k_htc_rx_completion_handler(struct ath10k *ar, struct sk_buff *skb)
->  
->  	ep = &htc->endpoint[eid];
->  
-> +	if (ep->service_id == 0) {
-> +		ath10k_warn(ar, "HTC Rx: ep %d is not connect\n", eid);
-> +		goto out;
-> +	}
+Thanks for the explanation. i will post a new patch as your suggestion.
 
-I think using ATH10K_HTC_SVC_ID_UNUSED is more descriptive than zero, as
-ath10k_htc_reset_endpoint_states() uses it. I fixed in the pending
-branch.
+Regards,
+Liangyan
 
-I think also ath10k_htc_process_credit_report() might have a similar
-problem, can you take a look?
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+On 20/12/22 上午1:35, Al Viro wrote:
+> On Tue, Dec 22, 2020 at 12:51:27AM +0800, Liangyan wrote:
+>> This is the race scenario based on call trace we captured which cause the
+>> dentry leak.
+>>
+>>
+>>       CPU 0                                CPU 1
+>> ovl_set_redirect                       lookup_fast
+>>    ovl_get_redirect                       __d_lookup
+>>      dget_dlock
+>>        //no lock protection here            spin_lock(&dentry->d_lock)
+>>        dentry->d_lockref.count++            dentry->d_lockref.count++
+>>
+>>
+>> If we use dget_parent instead, we may have this race.
+>>
+>>
+>>       CPU 0                                    CPU 1
+>> ovl_set_redirect                           lookup_fast
+>>    ovl_get_redirect                           __d_lookup
+>>      dget_parent
+>>        raw_seqcount_begin(&dentry->d_seq)      spin_lock(&dentry->d_lock)
+>>        lockref_get_not_zero(&ret->d_lockref)   dentry->d_lockref.count++
+> 
+> And?
+> 
+> lockref_get_not_zero() will observe ->d_lock held and fall back to
+> taking it.
+> 
+> The whole point of lockref is that counter and spinlock are next to each
+> other.  Fastpath in lockref_get_not_zero is cmpxchg on both, and
+> it is taken only if ->d_lock is *NOT* locked.  And the slow path
+> there will do spin_lock() around the manipulations of ->count.
+> 
+> Note that ->d_lock is simply ->d_lockref.lock; ->d_seq has nothing
+> to do with the whole thing.
+> 
+> The race in mainline is real; if you can observe anything of that
+> sort with dget_parent(), we have much worse problem.  Consider
+> dget() vs. lookup_fast() - no overlayfs weirdness in sight and the
+> same kind of concurrent access.
+> 
+> Again, lockref primitives can be safely mixed with other threads
+> doing operations on ->count while holding ->lock.
+> 
