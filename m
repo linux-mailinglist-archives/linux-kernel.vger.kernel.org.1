@@ -2,114 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E17F62DFF6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:14:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E832DFEE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 18:20:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725961AbgLUSNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 13:13:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725852AbgLUSNf (ORCPT
+        id S1726309AbgLURQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 12:16:55 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:32789 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726190AbgLURQy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:13:35 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54D0EC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:12:55 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id a12so12001258wrv.8
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:12:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RDT3CMWkb5v4KlAY6bNjmDFLqwN6ZEiRSV+Z6DSzr0s=;
-        b=jrj8LYfQ+G2abRBjq/EQNO52IGqX1ROGqjr73asfsMUx2io1t/Kj5vaWeNRQ05QBws
-         7ORYHBk1SfigU2h39+yGI1Lk3AhN50Cgw2pM71/m4zP1hwb+ikD3+K55GDIFL6cu4N9x
-         ZXqkVEqq4e9zYCD39Pgl2Yl2UyuINtmv3u1EhVxYVIV2oRUT+oNTfNWmFPJ0oiSuI1AA
-         DmducotL7D+1FUZXOZvqHAm9lf7QMa82bUozYx7IzidUTWK7x6Iib27Ho/jYH5ne0Z0S
-         Of1Dbmmu0Q124UefwB1rJjBdPSQEFSj36Hggs/J2Zs9T0HFyX0niq795BUINRYC4pEQ5
-         L9qw==
+        Mon, 21 Dec 2020 12:16:54 -0500
+Received: from mail-lf1-f72.google.com ([209.85.167.72])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1krOn5-00031j-Mr
+        for linux-kernel@vger.kernel.org; Mon, 21 Dec 2020 17:16:11 +0000
+Received: by mail-lf1-f72.google.com with SMTP id i7so11566430lfi.4
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 09:16:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=RDT3CMWkb5v4KlAY6bNjmDFLqwN6ZEiRSV+Z6DSzr0s=;
-        b=EaLzecAVYFeawdDTwGXBoHJydesrwNEtcjzYhItpc+x+IgG0kAukMXZcNjzCzGAuf7
-         bdyCzJQv++06e7BqBVcpQn1ep7n9OecIrvUkdXVH3i/8YUHvEeR66+JrChkxx84BRmag
-         RIcROtmmolWz9DoXhp40epR+j3crPxt4GPOj+/sZ6tfX24tkpFFtl09jObF9CHoUOXcS
-         avdF0JoJ10tnPP+xW2DcO4e+hyS7W6skJQNWWnz1cbkApUak32hjbJXokh1/7taOq0hW
-         +ZnL5x2HiAa1yz1CAYj1YMPFZzlmQzfwr6VyyTkPdDnacwu4mOyYLFbajrOHqwp5n8YX
-         GkEA==
-X-Gm-Message-State: AOAM530pLtcjfdtf1ldK7NgNzT5GhX+3MwcRbp3fQncSo2fIx9izhDDt
-        dCkclyF0bx4XTXo2WWtZsEEogiUohqPVeUxzZ0pls3t4CQ==
-X-Google-Smtp-Source: ABdhPJwPBtlia5uDw63ingozAyc7AR0jROeP8m6nydP3bWYSBIMRH20XUWt+8TeXFSZsv23dBiOY4HZ+Ga0eJQoO4Vg=
-X-Received: by 2002:a17:907:d9e:: with SMTP id go30mr15735065ejc.488.1608570889830;
- Mon, 21 Dec 2020 09:14:49 -0800 (PST)
+        bh=2Pz4SBTDx6BMkbLDQ5nrfRYm9x7WmPr6bGZI10+5Wso=;
+        b=uICQQM6g3fIWJ4fcmcOloNRDFHLdu2SvKZ1rHiuKWZIEoFSZRv84rAxxvVVdHxOwG/
+         3QeHNjd8BildOZeyB7OLgVrjDNdaYL3WCECm8J+LnGGuVkqsNKihdaPw/912cYqdQpCF
+         g4PwPb933wkFMTmzfpNUIXWNxz7u3Rpe/XOCA7MtuHDf0b65CN3G1vUwtEvCAlMyNyHD
+         trZmDMekNqK6UudfrKUHrECJqUsvvnIoLOIY4PmfGyiVnuxSbza4sMcqndE/9d+K8O9B
+         pIc1sB+3Uebh8Ofmg62ohnpBnSbO83MgdzOYDd+Ia54f10d+sxEYkRWnR3oRfPi89vIV
+         nosg==
+X-Gm-Message-State: AOAM530Dl8KqDdXtHMxIVWaI8njUV5a5f2WFSWL1mjnsdUupppuJp2Pc
+        GI8Zd8NFu+BVNF+G407R9ALmgJZRdi2NsAF2zUFgVPevd+WhuuOzLdMO12nAoXEiaF7/OUSWAyt
+        jQZ8APk0Ce9u1BUqexNuH0NnvOZUxlR9r+Tn659aMBU1YgvLLFYuS/KOvZw==
+X-Received: by 2002:a05:651c:118b:: with SMTP id w11mr1574952ljo.402.1608570971159;
+        Mon, 21 Dec 2020 09:16:11 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy2YXycweLB9saylOYpQELQXyDWheqBfUKEeeBhg9fBTp5dxHBt0XV6PKI9T7tz8LDvPKU6uC6XcVCTDVBIws8=
+X-Received: by 2002:a05:651c:118b:: with SMTP id w11mr1574936ljo.402.1608570970912;
+ Mon, 21 Dec 2020 09:16:10 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1608225886.git.rgb@redhat.com> <982b9adffbd32264a853fe7f4f06f0d0a882c11d.1608225886.git.rgb@redhat.com>
-In-Reply-To: <982b9adffbd32264a853fe7f4f06f0d0a882c11d.1608225886.git.rgb@redhat.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 21 Dec 2020 12:14:38 -0500
-Message-ID: <CAHC9VhSTuBJ3LXxMY=nD7qBzmKLDjXY0V3hsuN34_siq_xRrig@mail.gmail.com>
-Subject: Re: [PATCH ghak90 v10 01/11] audit: collect audit task parameters
-To:     Richard Guy Briggs <rgb@redhat.com>
-Cc:     Linux Containers List <containers@lists.linux-foundation.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux-Audit Mailing List <linux-audit@redhat.com>,
-        Linux FSdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux NetDev Upstream Mailing List <netdev@vger.kernel.org>,
-        Netfilter Devel List <netfilter-devel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        David Howells <dhowells@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Simo Sorce <simo@redhat.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        mpatel@redhat.com, Serge Hallyn <serge@hallyn.com>
+References: <20201214060621.1102931-1-kai.heng.feng@canonical.com>
+ <20201216124726.2842197-1-kai.heng.feng@canonical.com> <s5h5z51oj12.wl-tiwai@suse.de>
+ <CAAd53p6kORC1GsW5zt+=0=J5ki43iriO-OqtFvf5W67LWhyyhA@mail.gmail.com>
+ <s5hzh2dn3oa.wl-tiwai@suse.de> <CAAd53p6Ef2zFX_t3y1c6O7BmHnxYGtGSfgzXAMQSom1ainWXzg@mail.gmail.com>
+ <s5hsg85n2km.wl-tiwai@suse.de> <s5hmtydn0yg.wl-tiwai@suse.de>
+ <CAAd53p6MMFh=HCNF9pyrJc9hVMZWFe7_8MvBcBHVWARqHU_TTA@mail.gmail.com>
+ <s5h7dpfk06y.wl-tiwai@suse.de> <CAAd53p53w0H6tsb4JgQtFTkYinniicTYBs2uk7tc=heP2dM_Cw@mail.gmail.com>
+ <s5hft3zf6mi.wl-tiwai@suse.de>
+In-Reply-To: <s5hft3zf6mi.wl-tiwai@suse.de>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Tue, 22 Dec 2020 01:15:59 +0800
+Message-ID: <CAAd53p7TOBwee6dfY8uY=2P6wGJ9Uf551LVp95jLwz7SA9PWFA@mail.gmail.com>
+Subject: Re: [PATCH v2] ALSA: hda: Continue to probe when codec probe fails
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     tiwai@suse.com, Jaroslav Kysela <perex@perex.cz>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        nouveau@lists.freedesktop.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 11:57 AM Richard Guy Briggs <rgb@redhat.com> wrote:
->
-> The audit-related parameters in struct task_struct should ideally be
-> collected together and accessed through a standard audit API and the audit
-> structures made opaque to other kernel subsystems.
->
-> Collect the existing loginuid, sessionid and audit_context together in a
-> new opaque struct audit_task_info called "audit" in struct task_struct.
->
-> Use kmem_cache to manage this pool of memory.
-> Un-inline audit_free() to be able to always recover that memory.
->
-> Please see the upstream github issues
-> https://github.com/linux-audit/audit-kernel/issues/81
-> https://github.com/linux-audit/audit-kernel/issues/90
->
-> Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
-> Acked-by: Neil Horman <nhorman@tuxdriver.com>
-> Reviewed-by: Ondrej Mosnacek <omosnace@redhat.com>
+On Tue, Dec 22, 2020 at 12:47 AM Takashi Iwai <tiwai@suse.de> wrote:
+[snip]
+> But what happens if you plug the HDMI cable later and want to use the
+> HDMI audio?  It won't work with your fix, right?
 
-Did Neil and Ondrej really ACK/Review the changes that you made here
-in v10 or are you just carrying over the ACK/Review?  I'm hopeful it
-is the former, because I'm going to be a little upset if it is the
-latter.
+No it won't.
+It's possible to fix from nouveau, but it's at the mercy of Nvidia to
+fix their proprietary driver, which many users use.
 
-> ---
->  fs/io-wq.c            |   8 +--
->  fs/io_uring.c         |  16 ++---
->  include/linux/audit.h |  49 +++++---------
->  include/linux/sched.h |   7 +-
->  init/init_task.c      |   3 +-
->  init/main.c           |   2 +
->  kernel/audit.c        | 154 +++++++++++++++++++++++++++++++++++++++++-
->  kernel/audit.h        |   7 ++
->  kernel/auditsc.c      |  24 ++++---
->  kernel/fork.c         |   1 -
->  10 files changed, 205 insertions(+), 66 deletions(-)
+Kai-Heng
 
--- 
-paul moore
-www.paul-moore.com
+>
+>
+> Takashi
