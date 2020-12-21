@@ -2,96 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3C042DFF7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:17:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BCA52DFF87
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:19:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726709AbgLUSQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 13:16:30 -0500
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:43374 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726666AbgLUSQa (ORCPT
+        id S1725982AbgLUSSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:18:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725909AbgLUSSl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:16:30 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R911e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=liangyan.peng@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UJNHBfZ_1608574546;
-Received: from LiangyandeMacBook-Pro.local(mailfrom:liangyan.peng@linux.alibaba.com fp:SMTPD_---0UJNHBfZ_1608574546)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 22 Dec 2020 02:15:47 +0800
-Subject: Re: [PATCH v2] ovl: fix dentry leak in ovl_get_redirect
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201220120927.115232-1-liangyan.peng@linux.alibaba.com>
- <20201221062653.GO3579531@ZenIV.linux.org.uk>
- <52a76e73-d46b-d0fd-a75a-76b4a86149b3@linux.alibaba.com>
- <20201221121148.GP3579531@ZenIV.linux.org.uk>
- <b7c5da61-6c17-fe19-957c-4c8b6d6e86fe@linux.alibaba.com>
- <20201221173538.GQ3579531@ZenIV.linux.org.uk>
-From:   Liangyan <liangyan.peng@linux.alibaba.com>
-Message-ID: <f3e1d7bc-b350-6fe6-7a26-7c65f7122023@linux.alibaba.com>
-Date:   Tue, 22 Dec 2020 02:15:46 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.0
+        Mon, 21 Dec 2020 13:18:41 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EBE5C061282
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:18:00 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id k10so10740510wmi.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:18:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=nrR9WDuqpZ4La0kb0TH5GDl9XnLQA1hKY10137zFkno=;
+        b=LDOBybMZF3sIbVRykwkewM3vK28vBCZgO4ssvTMLn7WaQ/7EoJhG7LoraIa6BrXVX+
+         TD6VOKiY9f3+eXENNuaRwO2m6Z8GnVMJCLZQb5Nk5KDofjsfKmJ2Cb1zqUPYdMFe4RFM
+         Zqeg5N2GAnoAsZ4KNn+f8K8WIzsyVoZPotykc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=nrR9WDuqpZ4La0kb0TH5GDl9XnLQA1hKY10137zFkno=;
+        b=rZ7Gx5FyMG7Vr/x+Inasvvdg8tXCAxYdn1wala1nVo0MkOzn/59gEY3ogOgL5uqunf
+         YSIepecBxbv/EwSDsRXHxa6bDLttMT1qdsRCqOCf0GqYbS/WceNpvOuYp1pBt5GAGPn/
+         Ks6yiu8MMX/BuQzZ+OQ+/gShpcVfq6ywpdw247s5PSONCfn2iiI95utd745zoAylE9kQ
+         tvVak6N8WgZrCZ+XLWVlfxinl/v/VQNCmt3/WdW+1yoa9GzcB7lCzUpDD/oCWtipId4J
+         rZk8P9SogOQzhQQriwEcXvWBTSqTk5F9X2ooih26PMSlNYU8L1j/BTdI2ujrgS5+hNx9
+         Uzqg==
+X-Gm-Message-State: AOAM531WGzfZqdHdCI914aD2Gh2rzTeK+SP8IJGEmCz2BVN1RapDISvc
+        z2VDRIJV2KA39TJi35wdNKMmpDcmRqQguYqGscY=
+X-Google-Smtp-Source: ABdhPJzppDtHHWrSNToUgdtCSdftcvo3RHHcW+vUbYsJiyNo4fnI7+Jw4GXQ+zlOxqzWhRtB+UT6pw==
+X-Received: by 2002:a1c:23d5:: with SMTP id j204mr18052023wmj.130.1608574679359;
+        Mon, 21 Dec 2020 10:17:59 -0800 (PST)
+Received: from alco.lan ([80.71.134.83])
+        by smtp.gmail.com with ESMTPSA id n17sm23559282wmc.33.2020.12.21.10.17.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 10:17:58 -0800 (PST)
+From:   Ricardo Ribalda <ribalda@chromium.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Ricardo Ribalda <ribalda@chromium.org>
+Subject: [PATCH v5 04/12] media: uvcvideo: Allow extra entities
+Date:   Mon, 21 Dec 2020 19:17:57 +0100
+Message-Id: <20201221181757.814417-1-ribalda@chromium.org>
+X-Mailer: git-send-email 2.29.2.684.gfbc64c5ab5-goog
+In-Reply-To: <20201221164819.792019-5-ribalda@chromium.org>
+References: <20201221164819.792019-5-ribalda@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <20201221173538.GQ3579531@ZenIV.linux.org.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Exactly, i missed this definition of d_lock and treat it as a single 
-member in dentry.
-#define d_lock	d_lockref.lock
+Increase the size of the id, to avoid collisions with entities
+implemented by the driver that are not part of the UVC device.
 
-Thanks for the explanation. i will post a new patch as your suggestion.
+Entities exposed by the UVC device use IDs 0-255, extra entities
+implemented by the driver (such as the GPIO entity) use IDs 256 and
+up.
 
-Regards,
-Liangyan
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+---
+Sorry for a duplicated patch, the previous one the spacing was wrong :(
 
-On 20/12/22 上午1:35, Al Viro wrote:
-> On Tue, Dec 22, 2020 at 12:51:27AM +0800, Liangyan wrote:
->> This is the race scenario based on call trace we captured which cause the
->> dentry leak.
->>
->>
->>       CPU 0                                CPU 1
->> ovl_set_redirect                       lookup_fast
->>    ovl_get_redirect                       __d_lookup
->>      dget_dlock
->>        //no lock protection here            spin_lock(&dentry->d_lock)
->>        dentry->d_lockref.count++            dentry->d_lockref.count++
->>
->>
->> If we use dget_parent instead, we may have this race.
->>
->>
->>       CPU 0                                    CPU 1
->> ovl_set_redirect                           lookup_fast
->>    ovl_get_redirect                           __d_lookup
->>      dget_parent
->>        raw_seqcount_begin(&dentry->d_seq)      spin_lock(&dentry->d_lock)
->>        lockref_get_not_zero(&ret->d_lockref)   dentry->d_lockref.count++
-> 
-> And?
-> 
-> lockref_get_not_zero() will observe ->d_lock held and fall back to
-> taking it.
-> 
-> The whole point of lockref is that counter and spinlock are next to each
-> other.  Fastpath in lockref_get_not_zero is cmpxchg on both, and
-> it is taken only if ->d_lock is *NOT* locked.  And the slow path
-> there will do spin_lock() around the manipulations of ->count.
-> 
-> Note that ->d_lock is simply ->d_lockref.lock; ->d_seq has nothing
-> to do with the whole thing.
-> 
-> The race in mainline is real; if you can observe anything of that
-> sort with dget_parent(), we have much worse problem.  Consider
-> dget() vs. lookup_fast() - no overlayfs weirdness in sight and the
-> same kind of concurrent access.
-> 
-> Again, lockref primitives can be safely mixed with other threads
-> doing operations on ->count while holding ->lock.
-> 
+ drivers/media/usb/uvc/uvc_driver.c | 2 +-
+ drivers/media/usb/uvc/uvcvideo.h   | 7 ++++++-
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+index bfbc5a4d4ca6..82cdd1bb28dc 100644
+--- a/drivers/media/usb/uvc/uvc_driver.c
++++ b/drivers/media/usb/uvc/uvc_driver.c
+@@ -1024,7 +1024,7 @@ static const u8 uvc_media_transport_input_guid[16] =
+ 	UVC_GUID_UVC_MEDIA_TRANSPORT_INPUT;
+ static const u8 uvc_processing_guid[16] = UVC_GUID_UVC_PROCESSING;
+ 
+-static struct uvc_entity *uvc_alloc_entity(u16 type, u8 id,
++static struct uvc_entity *uvc_alloc_entity(u16 type, u16 id,
+ 		unsigned int num_pads, unsigned int extra_size)
+ {
+ 	struct uvc_entity *entity;
+diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+index 0a3404091665..aa96e54b8896 100644
+--- a/drivers/media/usb/uvc/uvcvideo.h
++++ b/drivers/media/usb/uvc/uvcvideo.h
+@@ -301,7 +301,12 @@ struct uvc_entity {
+ 					 * chain. */
+ 	unsigned int flags;
+ 
+-	u8 id;
++	/*
++	 * Entities exposed by the UVC device use IDs 0-255, extra entities
++	 * implemented by the driver (such as the GPIO entity) use IDs 256 and
++	 * up.
++	 */
++	u16 id;
+ 	u16 type;
+ 	char name[64];
+ 	u8 guid[16];
+-- 
+2.29.2.684.gfbc64c5ab5-goog
+
