@@ -2,95 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E28B2DFCF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 15:40:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 207832DFCFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 15:44:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727086AbgLUOkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 09:40:13 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:53028 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726214AbgLUOkM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 09:40:12 -0500
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BLEZCLI006619;
-        Mon, 21 Dec 2020 09:39:19 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 35hfa9w8gj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Dec 2020 09:39:19 -0500
-Received: from SCSQMBX11.ad.analog.com (SCSQMBX11.ad.analog.com [10.77.17.10])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 0BLEdHbQ049459
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Mon, 21 Dec 2020 09:39:17 -0500
-Received: from SCSQCASHYB6.ad.analog.com (10.77.17.132) by
- SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Mon, 21 Dec 2020 06:39:16 -0800
-Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
- SCSQCASHYB6.ad.analog.com (10.77.17.132) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.721.2;
- Mon, 21 Dec 2020 06:39:16 -0800
-Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Mon, 21 Dec 2020 06:39:16 -0800
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0BLEd9nG031672;
-        Mon, 21 Dec 2020 09:39:13 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <robh+dt@kernel.org>, <lars@metafoo.de>,
-        <linux-fpga@vger.kernel.org>, <mdf@kernel.org>,
-        <dragos.bogdan@analog.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH 2/2] dt-bindings: clock: adi,axi-clkgen: add Zynq & ZynqMP compatible strings
-Date:   Mon, 21 Dec 2020 16:42:24 +0200
-Message-ID: <20201221144224.50814-2-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201221144224.50814-1-alexandru.ardelean@analog.com>
-References: <20201221144224.50814-1-alexandru.ardelean@analog.com>
+        id S1727191AbgLUOni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 09:43:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56948 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727126AbgLUOni (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 09:43:38 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4306822BEF;
+        Mon, 21 Dec 2020 14:42:56 +0000 (UTC)
+Date:   Mon, 21 Dec 2020 14:42:55 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Matt Ranostay <matt.ranostay@konsulko.com>
+Cc:     Max Leiter <maxwell.leiter@gmail.com>,
+        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
+        blaz@mxxn.io, Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] iio:light:apds9960 add detection for MSHW0184 ACPI
+ device in apds9960 driver
+Message-ID: <20201221144255.5657887f@archlinux>
+In-Reply-To: <CAJCx=gm2hbfRePezjEh14a=DENX2dj8gc+SW8T-1NDWQY4eSTg@mail.gmail.com>
+References: <20201220015057.107246-1-maxwell.leiter@gmail.com>
+        <CAJCx=gm2hbfRePezjEh14a=DENX2dj8gc+SW8T-1NDWQY4eSTg@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-21_08:2020-12-21,2020-12-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
- bulkscore=0 lowpriorityscore=0 adultscore=0 phishscore=0 suspectscore=0
- priorityscore=1501 mlxlogscore=999 malwarescore=0 mlxscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012210104
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The axi-clkgen driver now supports ZynqMP (UltraScale) as well, however the
-driver needs to use different PFD & VCO limits.
+On Sun, 20 Dec 2020 14:05:17 -0800
+Matt Ranostay <matt.ranostay@konsulko.com> wrote:
 
-For ZynqMP, these needs to be selected by using the
-'adi,zynqmp-axi-clkgen-2.00.a' string. For consistency a
-'adi,zynq-axi-clkgen-2.00.a' has been added which should behave as the
-original compatible string (i.e. 'adi,axi-clkgen-2.00.a').
+> On Sat, Dec 19, 2020 at 5:51 PM Max Leiter <maxwell.leiter@gmail.com> wrote:
+> >
+> > The device is used in the Microsoft Surface Book 3 and Surface Pro 7
+> >
+> > Signed-off-by: Max Leiter <maxwell.leiter@gmail.com>  
+> 
+> Reviewed-by: Matt Ranostay <matt.ranostay@konsulko.com>
+Applied to the togreg branch of iio.git and pushed out as testing for
+the autobuilders to see if we missed anything.
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- Documentation/devicetree/bindings/clock/adi,axi-clkgen.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+Thanks,
 
-diff --git a/Documentation/devicetree/bindings/clock/adi,axi-clkgen.yaml b/Documentation/devicetree/bindings/clock/adi,axi-clkgen.yaml
-index 0d06387184d6..398954ec6767 100644
---- a/Documentation/devicetree/bindings/clock/adi,axi-clkgen.yaml
-+++ b/Documentation/devicetree/bindings/clock/adi,axi-clkgen.yaml
-@@ -20,6 +20,8 @@ properties:
-   compatible:
-     enum:
-       - adi,axi-clkgen-2.00.a
-+      - adi,zynq-axi-clkgen-2.00.a
-+      - adi,zynqmp-axi-clkgen-2.00.a
- 
-   clocks:
-     description:
--- 
-2.17.1
+Jonathan
+
+> 
+> > ---
+> >  drivers/iio/light/apds9960.c | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> >
+> > diff --git a/drivers/iio/light/apds9960.c b/drivers/iio/light/apds9960.c
+> > index 9afb3fcc74e6..20719141c03a 100644
+> > --- a/drivers/iio/light/apds9960.c
+> > +++ b/drivers/iio/light/apds9960.c
+> > @@ -8,6 +8,7 @@
+> >   * TODO: gesture + proximity calib offsets
+> >   */
+> >
+> > +#include <linux/acpi.h>
+> >  #include <linux/module.h>
+> >  #include <linux/init.h>
+> >  #include <linux/interrupt.h>
+> > @@ -1113,6 +1114,12 @@ static const struct i2c_device_id apds9960_id[] = {
+> >  };
+> >  MODULE_DEVICE_TABLE(i2c, apds9960_id);
+> >
+> > +static const struct acpi_device_id apds9960_acpi_match[] = {
+> > +       { "MSHW0184" },
+> > +       { }
+> > +};
+> > +MODULE_DEVICE_TABLE(acpi, apds9960_acpi_match);
+> > +
+> >  static const struct of_device_id apds9960_of_match[] = {
+> >         { .compatible = "avago,apds9960" },
+> >         { }
+> > @@ -1124,6 +1131,7 @@ static struct i2c_driver apds9960_driver = {
+> >                 .name   = APDS9960_DRV_NAME,
+> >                 .of_match_table = apds9960_of_match,
+> >                 .pm     = &apds9960_pm_ops,
+> > +               .acpi_match_table = apds9960_acpi_match,
+> >         },
+> >         .probe          = apds9960_probe,
+> >         .remove         = apds9960_remove,
+> > --
+> > 2.29.2
+> >  
 
