@@ -2,239 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 081832DFB9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 12:42:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BBFF2DFBAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 12:58:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726648AbgLULjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 06:39:36 -0500
-Received: from mail-pf1-f181.google.com ([209.85.210.181]:39592 "EHLO
-        mail-pf1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726316AbgLULjf (ORCPT
+        id S1726246AbgLUL6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 06:58:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725771AbgLUL56 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 06:39:35 -0500
-Received: by mail-pf1-f181.google.com with SMTP id m6so6301056pfm.6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 03:39:20 -0800 (PST)
+        Mon, 21 Dec 2020 06:57:58 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CECBC0613D3;
+        Mon, 21 Dec 2020 03:57:18 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id i24so9301825edj.8;
+        Mon, 21 Dec 2020 03:57:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=D1SdyTtuFBbZo+GeEb6UhFf7p1TbonbHMIxr8E0IyNM=;
+        b=Ye5NLzGYUIqjKRdjny1Q712KjVU2opQXzHSiRK0d0idpVzvIMIaKmdUFJx2dJsvLa2
+         TQjyUp+sJIpM9h77oxhfxXA6uhrYix7QwTlwIZRj8MtsAuz8nqWrYyewNRgH+JKp2yaS
+         5WWYcGPBQYwOt1QU6yY8dvQTiQ1BWvsnKW2QqZG4Z9Oqkb+vlRCQHqmIXnmxYUKjWCDQ
+         w83w7fAQj3xD7HtwKhXcky33oQdtsqoXrmVpDi6sBWsAZHK1UC54n1SWZflaTqRsK2Ve
+         zcwm90p3hmnQv6g6MWm85M0MdOEX5NzlDn2ic8G9pjugHZO7y/zLydP9nBZsjZ7+6C8Z
+         jfZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zhDL0oFXoLD77Gyqz56Rx7XV0UlGmp5Wa/giIo3BeYk=;
-        b=rUqqegpnpO93bR+raxq1kex3q1nt79BCMemqZe/BCbO49OHxPXVsQHoRYk7fDmqv2N
-         8RJaWuOpGIOpVB8uyqoNAQB5z47v4KPNFkdPjxqdoNQVMGGDmgeMGxfhijiBOjudlZ1B
-         wjZdX4xSjWiGFWtA3VwruLILXZvMUURo3sfRjAfauUuaDWeE5aY7Qwx9o36NBZiKQF8s
-         5SpLxogQsQu1zo/nU7Am44o3bVmg9XHnoHOhJYoP1KkQiKJfLj4NrGnzVyQDYTrVKmJI
-         n1FIi3R4FkDUYXLgubrEyzlEyA/JLSUH7FjhAT77XrTY0NKKRhmXOcaW8xmM629AvjjG
-         eRYw==
-X-Gm-Message-State: AOAM531Ydmq5Whpf+PB9ViW/YBTiOIIQmXsEeud0ZzJXfOaZBvhqbg/b
-        RBpMqEd+oHYAL6NJ+wgs3zo=
-X-Google-Smtp-Source: ABdhPJzWKtOTxupz1ZgfgJVgWGb6FihqwwPrxT8B8aw6kDyZXLFFOMmToGKDRnjztW9iLaVNP8W7QQ==
-X-Received: by 2002:a65:688a:: with SMTP id e10mr15012731pgt.347.1608550734804;
-        Mon, 21 Dec 2020 03:38:54 -0800 (PST)
-Received: from localhost.localdomain ([49.236.93.237])
-        by smtp.gmail.com with ESMTPSA id e10sm12653107pgu.42.2020.12.21.03.38.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Dec 2020 03:38:54 -0800 (PST)
-Subject: Re: [PATCH] signal: Don't init struct kernel_siginfo fields to zero
- again
-To:     Rae Kim <rae.kim@gmail.com>, Oleg Nesterov <oleg@redhat.com>
-Cc:     Leesoo Ahn <dev@ooseel.net>, linux-kernel@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Peter Collingbourne <pcc@google.com>,
-        Zhiqiang Liu <liuzhiqiang26@huawei.com>
-References: <20201220074555.12655-1-lsahn@ooseel.net>
- <20201220142134.GB16470@redhat.com> <20201220154305.ixlm4mwesyfexq57@rae.kim>
-From:   Leesoo Ahn <lsahn@ooseel.net>
-Message-ID: <185e982b-35c3-f57d-7db7-d23df49102d4@ooseel.net>
-Date:   Mon, 21 Dec 2020 20:38:50 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=D1SdyTtuFBbZo+GeEb6UhFf7p1TbonbHMIxr8E0IyNM=;
+        b=KcwmKC1g3CMHoqZPbbXQ4l00ZVdKwU4oESCBCF9PMUzs3zGTe7KgYh1fHoXLGIov1c
+         MW9L3Nq3HAG+lWMluDXN5ScyM3HPOGuRgIGjx63Ify0mPXnkqvrNSOD29y6ve5DN2DJZ
+         WArAbwj8EjIh9cKJ3gptgnp3aJbNk4VXtHhNfNJNgXlMFxmDFj/UNAFvCDarxK4R/Pis
+         /rF1r5jp01LuvF0lbASdcST19QrT4WOGg7Xl9uqVIcO062LjoLT+gSduPY8rwqYFj9yK
+         gG/eAddaNxUzKoQJMLdZ6sb3vcbwFp9h860K7lhOSV/xBs/odrsns81emFykp5Xq6qMo
+         EV+w==
+X-Gm-Message-State: AOAM530//jzVbwVvDfqxWhgj7vFxbfoj8o4zyF8eXY316v+R+uyF8DCE
+        gC+QS0xY8xQxJj/pCskklIY=
+X-Google-Smtp-Source: ABdhPJwWiV8YbhKsl5hEA2wObCWB8satrfPYQBdDBA6Gi5q/nAUN9anac1HYiv1kqBWvRSE/5uLFcQ==
+X-Received: by 2002:a05:6402:8d9:: with SMTP id d25mr15396335edz.278.1608551836837;
+        Mon, 21 Dec 2020 03:57:16 -0800 (PST)
+Received: from BV030612LT ([188.24.159.61])
+        by smtp.gmail.com with ESMTPSA id a20sm29110331edr.70.2020.12.21.03.57.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 03:57:16 -0800 (PST)
+Date:   Mon, 21 Dec 2020 13:57:13 +0200
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v3 3/7] mfd: Add MFD driver for ATC260x PMICs
+Message-ID: <20201221115713.GA155203@BV030612LT>
+References: <cover.1607216141.git.cristian.ciocaltea@gmail.com>
+ <f538c21de556c66390614bad778f7dc095222e8c.1607216141.git.cristian.ciocaltea@gmail.com>
+ <20201216101000.GD207743@dell>
+ <20201217231731.GA104305@BV030612LT>
+ <20201218132139.GR207743@dell>
+ <20201218160710.GA134686@BV030612LT>
+ <20201221081015.GA4825@dell>
 MIME-Version: 1.0
-In-Reply-To: <20201220154305.ixlm4mwesyfexq57@rae.kim>
-Content-Type: text/plain; charset=euc-kr; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201221081015.GA4825@dell>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-20. 12. 21. ¿ÀÀü 12:43¿¡ Rae Kim ÀÌ(°¡) ¾´ ±Û:
+On Mon, Dec 21, 2020 at 08:10:15AM +0000, Lee Jones wrote:
+> On Fri, 18 Dec 2020, Cristian Ciocaltea wrote:
 > 
-> It looks like compiler optimization is smart enough to know that
-> assigning zero is unnecessary after clear_siginfo() which is memset()
-> under the hood. At least in my x86_64 machine, w/ or w/o this patch,
-> there is no difference in final compiled machine code. (I've compared
-> "objdump -d" results for "__send_signal()", "do_tkill()", and
-> "collect_signal()")
+> > On Fri, Dec 18, 2020 at 01:21:39PM +0000, Lee Jones wrote:
+> > > On Fri, 18 Dec 2020, Cristian Ciocaltea wrote:
+> > > 
+> > > > Hi Lee,
+> > > > 
+> > > > Thank you for the detailed review!
+> > > > 
+> > > > I will prepare a new revision, but there are still a couple of open
+> > > > points..
+> > > 
+> > > Could you please snip your replies, leaving only the open points.
+> > > 
+> > > Scrolling through lots of empty quotes or "done" comments is quite
+> > > time consuming.  Thanks.
+> > 
+> > Sure, I'll take that into account.
+> > 
+> > > [...]
+> > > 
+> > > > > > +	ret = regmap_read(atc260x->regmap, atc260x->rev_reg, &chip_rev);
+> > > > > > +	if (ret) {
+> > > > > > +		dev_err(dev, "Failed to get chip revision\n");
+> > > > > > +		return ret;
+> > > > > > +	}
+> > > > > > +
+> > > > > > +	if (chip_rev < 0 || chip_rev > 31) {
+> > > > > > +		dev_err(dev, "Unknown chip revision: %d\n", ret);
+> > > > > > +		return -EINVAL;
+> > > > > > +	}
+> > > > > 
+> > > > > This still seems limiting.
+> > > > 
+> > > > This is based on the vendor implementation. Unfortunately I don't have
+> > > > access to a data sheet or any other source of information about the
+> > > > management of the chip revisions.
+> > > 
+> > > So which versions does this driver work with?  All 32?
+> > 
+> > I'm not even sure there are so many revisions, I guess that's just a
+> > rough validation for a vendor reserved range.
+> > 
+> > For the moment, the only place where the functionality is affected
+> > by the chip revision is in the regulator driver - there is a special
+> > handling for the ATC2603C rev.B chip variant.
+> > 
+> > I expect some additional handling might be required for new drivers
+> > bringing support for the other functions provided by the hardware.
 > 
-> Wouldn't it be nicer to have more information for both human and
-> compiler since it doesn't generate extra machine code?
+> The current patch seems to insinuate that 32 versions are currently
+> supported.  What is the chip_rev for the ATC2603C rev.B?
 
-I think the patch is still worth in human perspective even if there is no
-difference on machine code. Because someone could get confused by
-initializing them twice at the point, for example, why still try to init
-even though clear_siginfo() takes all the responsibility, so they could
-waste more time to figure out the code.
+I only own the rev.A for the ATC2603C variant, for which I read '0' from
+the chip rev register.
 
-Leesoo
+However what really matters for the driver is not the raw value, but the
+one computed via:
 
-> 
-> On Sun, Dec 20, 2020 at 03:21:35PM +0100, Oleg Nesterov wrote:
->> On 12/20, Leesoo Ahn wrote:
->>>
->>> clear_siginfo() is responsible for clearing struct kernel_siginfo object.
->>> It's obvious that manually initializing those fields is needless as
->>> a commit[1] explains why the function introduced and its guarantee that
->>> all bits in the struct are cleared after it.
->>>
->>> [1]: commit 8c5dbf2ae00b ("signal: Introduce clear_siginfo")
->>>
->>> Signed-off-by: Leesoo Ahn <lsahn@ooseel.net>
->>
->> Acked-by: Oleg Nesterov <oleg@redhat.com>
->>
->>
->>> ---
->>>   kernel/signal.c | 21 ---------------------
->>>   1 file changed, 21 deletions(-)
->>>
->>> diff --git a/kernel/signal.c b/kernel/signal.c
->>> index 5736c55aaa1a..8f49fa3ade33 100644
->>> --- a/kernel/signal.c
->>> +++ b/kernel/signal.c
->>> @@ -603,10 +603,7 @@ static void collect_signal(int sig, struct sigpending *list, kernel_siginfo_t *i
->>>   		 */
->>>   		clear_siginfo(info);
->>>   		info->si_signo = sig;
->>> -		info->si_errno = 0;
->>>   		info->si_code = SI_USER;
->>> -		info->si_pid = 0;
->>> -		info->si_uid = 0;
->>>   	}
->>>   }
->>>   
->>> @@ -1120,7 +1117,6 @@ static int __send_signal(int sig, struct kernel_siginfo *info, struct task_struc
->>>   		case (unsigned long) SEND_SIG_NOINFO:
->>>   			clear_siginfo(&q->info);
->>>   			q->info.si_signo = sig;
->>> -			q->info.si_errno = 0;
->>>   			q->info.si_code = SI_USER;
->>>   			q->info.si_pid = task_tgid_nr_ns(current,
->>>   							task_active_pid_ns(t));
->>> @@ -1133,10 +1129,7 @@ static int __send_signal(int sig, struct kernel_siginfo *info, struct task_struc
->>>   		case (unsigned long) SEND_SIG_PRIV:
->>>   			clear_siginfo(&q->info);
->>>   			q->info.si_signo = sig;
->>> -			q->info.si_errno = 0;
->>>   			q->info.si_code = SI_KERNEL;
->>> -			q->info.si_pid = 0;
->>> -			q->info.si_uid = 0;
->>>   			break;
->>>   		default:
->>>   			copy_siginfo(&q->info, info);
->>> @@ -1623,10 +1616,7 @@ void force_sig(int sig)
->>>   
->>>   	clear_siginfo(&info);
->>>   	info.si_signo = sig;
->>> -	info.si_errno = 0;
->>>   	info.si_code = SI_KERNEL;
->>> -	info.si_pid = 0;
->>> -	info.si_uid = 0;
->>>   	force_sig_info(&info);
->>>   }
->>>   EXPORT_SYMBOL(force_sig);
->>> @@ -1659,7 +1649,6 @@ int force_sig_fault_to_task(int sig, int code, void __user *addr
->>>   
->>>   	clear_siginfo(&info);
->>>   	info.si_signo = sig;
->>> -	info.si_errno = 0;
->>>   	info.si_code  = code;
->>>   	info.si_addr  = addr;
->>>   #ifdef __ARCH_SI_TRAPNO
->>> @@ -1691,7 +1680,6 @@ int send_sig_fault(int sig, int code, void __user *addr
->>>   
->>>   	clear_siginfo(&info);
->>>   	info.si_signo = sig;
->>> -	info.si_errno = 0;
->>>   	info.si_code  = code;
->>>   	info.si_addr  = addr;
->>>   #ifdef __ARCH_SI_TRAPNO
->>> @@ -1712,7 +1700,6 @@ int force_sig_mceerr(int code, void __user *addr, short lsb)
->>>   	WARN_ON((code != BUS_MCEERR_AO) && (code != BUS_MCEERR_AR));
->>>   	clear_siginfo(&info);
->>>   	info.si_signo = SIGBUS;
->>> -	info.si_errno = 0;
->>>   	info.si_code = code;
->>>   	info.si_addr = addr;
->>>   	info.si_addr_lsb = lsb;
->>> @@ -1726,7 +1713,6 @@ int send_sig_mceerr(int code, void __user *addr, short lsb, struct task_struct *
->>>   	WARN_ON((code != BUS_MCEERR_AO) && (code != BUS_MCEERR_AR));
->>>   	clear_siginfo(&info);
->>>   	info.si_signo = SIGBUS;
->>> -	info.si_errno = 0;
->>>   	info.si_code = code;
->>>   	info.si_addr = addr;
->>>   	info.si_addr_lsb = lsb;
->>> @@ -1740,7 +1726,6 @@ int force_sig_bnderr(void __user *addr, void __user *lower, void __user *upper)
->>>   
->>>   	clear_siginfo(&info);
->>>   	info.si_signo = SIGSEGV;
->>> -	info.si_errno = 0;
->>>   	info.si_code  = SEGV_BNDERR;
->>>   	info.si_addr  = addr;
->>>   	info.si_lower = lower;
->>> @@ -1755,7 +1740,6 @@ int force_sig_pkuerr(void __user *addr, u32 pkey)
->>>   
->>>   	clear_siginfo(&info);
->>>   	info.si_signo = SIGSEGV;
->>> -	info.si_errno = 0;
->>>   	info.si_code  = SEGV_PKUERR;
->>>   	info.si_addr  = addr;
->>>   	info.si_pkey  = pkey;
->>> @@ -1934,7 +1918,6 @@ bool do_notify_parent(struct task_struct *tsk, int sig)
->>>   
->>>   	clear_siginfo(&info);
->>>   	info.si_signo = sig;
->>> -	info.si_errno = 0;
->>>   	/*
->>>   	 * We are under tasklist_lock here so our parent is tied to
->>>   	 * us and cannot change.
->>> @@ -2033,7 +2016,6 @@ static void do_notify_parent_cldstop(struct task_struct *tsk,
->>>   
->>>   	clear_siginfo(&info);
->>>   	info.si_signo = SIGCHLD;
->>> -	info.si_errno = 0;
->>>   	/*
->>>   	 * see comment in do_notify_parent() about the following 4 lines
->>>   	 */
->>> @@ -2506,7 +2488,6 @@ static int ptrace_signal(int signr, kernel_siginfo_t *info)
->>>   	if (signr != info->si_signo) {
->>>   		clear_siginfo(info);
->>>   		info->si_signo = signr;
->>> -		info->si_errno = 0;
->>>   		info->si_code = SI_USER;
->>>   		rcu_read_lock();
->>>   		info->si_pid = task_pid_vnr(current->parent);
->>> @@ -3660,7 +3641,6 @@ static inline void prepare_kill_siginfo(int sig, struct kernel_siginfo *info)
->>>   {
->>>   	clear_siginfo(info);
->>>   	info->si_signo = sig;
->>> -	info->si_errno = 0;
->>>   	info->si_code = SI_USER;
->>>   	info->si_pid = task_tgid_vnr(current);
->>>   	info->si_uid = from_kuid_munged(current_user_ns(), current_uid());
->>> @@ -3833,7 +3813,6 @@ static int do_tkill(pid_t tgid, pid_t pid, int sig)
->>>   
->>>   	clear_siginfo(&info);
->>>   	info.si_signo = sig;
->>> -	info.si_errno = 0;
->>>   	info.si_code = SI_TKILL;
->>>   	info.si_pid = task_tgid_vnr(current);
->>>   	info.si_uid = from_kuid_munged(current_user_ns(), current_uid());
->>> -- 
->>> 2.26.2
->>>
->>
+atc260x->ic_ver = __ffs(chip_rev + 1U);
 
+This is basically a translation of the raw value to a chip version
+that is used in the context of the special handling mentioned above:
+
+enum atc260x_ver {
+	ATC260X_A = 0,
+	ATC260X_B,
+	ATC260X_C,
+	ATC260X_D,
+	ATC260X_E,
+	ATC260X_F,
+	ATC260X_G,
+	ATC260X_H,
+};
+
+So we actually could handle up to 8 chip versions with the current
+management scheme.
+
+> -- 
+> Lee Jones [æŽç¼æ–¯]
+> Senior Technical Lead - Developer Services
+> Linaro.org â”‚ Open source software for Arm SoCs
+> Follow Linaro: Facebook | Twitter | Blog
