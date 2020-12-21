@@ -2,233 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A2A2DF88C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 06:13:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D058F2DF88D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 06:16:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726601AbgLUFNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 00:13:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41638 "EHLO
+        id S1727926AbgLUFOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 00:14:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725497AbgLUFNW (ORCPT
+        with ESMTP id S1727340AbgLUFOJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 00:13:22 -0500
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9866C061282
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 21:12:41 -0800 (PST)
-Received: by mail-il1-x12c.google.com with SMTP id q1so7812311ilt.6
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 21:12:41 -0800 (PST)
+        Mon, 21 Dec 2020 00:14:09 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CE50C0613D3;
+        Sun, 20 Dec 2020 21:13:29 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id x22so8712516wmc.5;
+        Sun, 20 Dec 2020 21:13:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=vswCukahHI84DC0lcMezNvVlWnF1S1S3+uLVpnYj1r4=;
-        b=HE7XS3E//8ycSGXzh/6H9wdve7qwxdJnIX0qC9Nq/ALqPuwX+9S+FoblZ4cSaIGpU9
-         w+xfm0NHcWJ5fYhrcK1TNQijEJwhfCsrCFRg18Vn0J3H1hteYiDr9HKw4DrFSpsZmNp3
-         Zqfm+XrdIUynL5Sqq4wZZ7sb+URJAmTM15lnZgpIKVdwLm7eMvGdOxjHxcFwZ8YydWBc
-         yOeMc+8u+HyB70bg/nSRAQtp9elax1o7QVDMhnJz/IqX8AFNrojW6uEWtbCYHvP/jLsS
-         S0ShJikwivPRoSml0mrF9lCpWbXWCFamtvwHXB8j+ISPGlf3ztqWRfgtFs6zJC7nLsPx
-         0UyQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=lLDJBIJ2YYNuh2CnTnkqFja+9uBc8NH5OZ465zjG1e0=;
+        b=kPNDbFnpD7iBvL8GXzD68h40CmDNoKVu8BoXOP80o6fMKA/DKJvljX7bNE9nq9da0o
+         gNWuBK0whcPuN26S4JlpDQUslAw5VTRF3bwqqLA7tqfj/NLaFncpkUjQunj/lETzyLT6
+         VgfkWOYLDBFuviCrmoMu7VYQLaJ8guzVe+NaiD7j5xSNrLar0EmgnKDNfANz7x8J01AI
+         ef4FZBmwnZGS3XbfyetlnY1H7bq5qyvrpAe2641+rJKevlco5V4JqzGoJuXA72XClgJR
+         0yVTaW/GgMBV59+5IIg/xDZ26mVo29onoMDgDNAf70xHZ3WdWnEiudAc7feObqq4IrBB
+         FyUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=vswCukahHI84DC0lcMezNvVlWnF1S1S3+uLVpnYj1r4=;
-        b=dLI73AfRfzy+t8JlAHDCnOgMWpcSKQjdXs7IYc20RqoPN2c+KpOYG4kvpHB/+fnefK
-         4cdcgpRxMs4bRszuWQykN0AGTpbYp1UgZx47CJsygJYlQxPL/cg8t7NmYQG1j6ksbsXb
-         Q1mNu88ZXBjO7Q5pwFe1G+qvYhU56SgLtKNEmuhmN2LwKiMQSZ48ueZN3kXzyO+vfYBY
-         vFLq/zQslAerWKgmyklisnD+IIRMHhYj4pYwy8LF8l7S/Eyj8XHt2X5RK1FZe9rCwWke
-         dxyeKaLLVKI4TWBbrKkF7TO3DFe//BsxxzmvqIg0zIjiG0nxK6Pl2NEDcqCilCGD4qAA
-         Giaw==
-X-Gm-Message-State: AOAM531K+7/uroty22MIWRdpUkG1hc0v8+JY9wj2Tx7Kl8wrCL79kWVx
-        dPc5u9Tyi4x6D9d46C8dNfH5fg==
-X-Google-Smtp-Source: ABdhPJy/28dluEI2zZ26w5IG4pu144SzvEEQhZSVKHNJeLBhF12fU9+UXV21cI4kTSy4bJMamlVOsQ==
-X-Received: by 2002:a05:6e02:f93:: with SMTP id v19mr14874422ilo.154.1608527560929;
-        Sun, 20 Dec 2020 21:12:40 -0800 (PST)
-Received: from google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
-        by smtp.gmail.com with ESMTPSA id a9sm21528543ion.53.2020.12.20.21.12.39
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=lLDJBIJ2YYNuh2CnTnkqFja+9uBc8NH5OZ465zjG1e0=;
+        b=IxH3oKEExiKzolG3f43pSqpPwdrWnC9urw3PSV/H3aaFMVFmFlTwIUYA6PeXayzmrL
+         Fx4Hr5QsFOF5NBPVQhyWTfnbbUUUNPUmlbF2azSBsHw8N1RBadMqzx2IR7uiN0W4HADt
+         iwClh56F2lLySfTlr8SE4eJ5VVrfhpuEDCNvSPMQ/ANA1YhJBnUK7SFKZQl9h5d32eF4
+         A8yNG9u39/FSFpaFVja4DTKex7XZJbX3HB3KD1UFfJ0yuoIxnutuQ7Cz4kRFGhG/FB44
+         fo0TP2JW0IUVIlTQUfiU9Vw1idEB7ABFkTmUqZAjhTEkglGqaO6lnyxP/2sIHtKJPH8P
+         PcAA==
+X-Gm-Message-State: AOAM533UUFgjX3YmA6VAgdUsusfWCQLxA/5jsP6PUgExjhArAG5jF/BC
+        k5V5b5jF4FvLmR5lNelyZNA=
+X-Google-Smtp-Source: ABdhPJxilLxWAa1GB0cvaXvue0KuVY/Q1aXIWqgyYMiKucCJaNaWS7R/N3pkOeVwn/QfOzZBDCJiIg==
+X-Received: by 2002:a7b:cb54:: with SMTP id v20mr8483618wmj.148.1608527608118;
+        Sun, 20 Dec 2020 21:13:28 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2dcc:3600:8456:e09e:aa48:2c57])
+        by smtp.gmail.com with ESMTPSA id p8sm21341535wru.50.2020.12.20.21.13.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Dec 2020 21:12:40 -0800 (PST)
-Date:   Sun, 20 Dec 2020 22:12:36 -0700
-From:   Yu Zhao <yuzhao@google.com>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        linux-mm <linux-mm@kvack.org>, Peter Xu <peterx@redhat.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable@vger.kernel.org, minchan@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-Message-ID: <X+AuxIkwmyo/9TD/@google.com>
-References: <20201219043006.2206347-1-namit@vmware.com>
- <X95RRZ3hkebEmmaj@redhat.com>
- <EDC00345-B46E-4396-8379-98E943723809@gmail.com>
- <DD367393-D1B3-4A84-AF92-9C6BAEAB40DC@gmail.com>
- <X961C3heiGSJ5qVL@redhat.com>
- <729A8C1E-FC5B-4F46-AE01-85E00C66DFFF@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <729A8C1E-FC5B-4F46-AE01-85E00C66DFFF@gmail.com>
+        Sun, 20 Dec 2020 21:13:27 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        linux-pm@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Tom Rix <trix@redhat.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] cpufreq: intel_pstate: remove obsolete functions
+Date:   Mon, 21 Dec 2020 06:13:20 +0100
+Message-Id: <20201221051320.18391-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 20, 2020 at 08:36:15PM -0800, Nadav Amit wrote:
-> > On Dec 19, 2020, at 6:20 PM, Andrea Arcangeli <aarcange@redhat.com> wrote:
-> > 
-> > On Sat, Dec 19, 2020 at 02:06:02PM -0800, Nadav Amit wrote:
-> >>> On Dec 19, 2020, at 1:34 PM, Nadav Amit <nadav.amit@gmail.com> wrote:
-> >>> 
-> >>> [ cc’ing some more people who have experience with similar problems ]
-> >>> 
-> >>>> On Dec 19, 2020, at 11:15 AM, Andrea Arcangeli <aarcange@redhat.com> wrote:
-> >>>> 
-> >>>> Hello,
-> >>>> 
-> >>>> On Fri, Dec 18, 2020 at 08:30:06PM -0800, Nadav Amit wrote:
-> >>>>> Analyzing this problem indicates that there is a real bug since
-> >>>>> mmap_lock is only taken for read in mwriteprotect_range(). This might
-> >>>> 
-> >>>> Never having to take the mmap_sem for writing, and in turn never
-> >>>> blocking, in order to modify the pagetables is quite an important
-> >>>> feature in uffd that justifies uffd instead of mprotect. It's not the
-> >>>> most important reason to use uffd, but it'd be nice if that guarantee
-> >>>> would remain also for the UFFDIO_WRITEPROTECT API, not only for the
-> >>>> other pgtable manipulations.
-> >>>> 
-> >>>>> Consider the following scenario with 3 CPUs (cpu2 is not shown):
-> >>>>> 
-> >>>>> cpu0				cpu1
-> >>>>> ----				----
-> >>>>> userfaultfd_writeprotect()
-> >>>>> [ write-protecting ]
-> >>>>> mwriteprotect_range()
-> >>>>> mmap_read_lock()
-> >>>>> change_protection()
-> >>>>> change_protection_range()
-> >>>>> ...
-> >>>>> change_pte_range()
-> >>>>> [ defer TLB flushes]
-> >>>>> 				userfaultfd_writeprotect()
-> >>>>> 				 mmap_read_lock()
-> >>>>> 				 change_protection()
-> >>>>> 				 [ write-unprotect ]
-> >>>>> 				 ...
-> >>>>> 				  [ unprotect PTE logically ]
-> > 
-> > Is the uffd selftest failing with upstream or after your kernel
-> > modification that removes the tlb flush from unprotect?
-> 
-> Please see my reply to Yu. I was wrong in this analysis, and I sent a
-> correction to my analysis. The problem actually happens when
-> userfaultfd_writeprotect() unprotects the memory.
-> 
-> > 			} else if (uffd_wp_resolve) {
-> > 				/*
-> > 				 * Leave the write bit to be handled
-> > 				 * by PF interrupt handler, then
-> > 				 * things like COW could be properly
-> > 				 * handled.
-> > 				 */
-> > 				ptent = pte_clear_uffd_wp(ptent);
-> > 			}
-> > 
-> > Upstraem this will still do pages++, there's a tlb flush before
-> > change_protection can return here, so I'm confused.
-> > 
-> 
-> You are correct. The problem I encountered with userfaultfd_writeprotect()
-> is during unprotecting path.
-> 
-> Having said that, I think that there are additional scenarios that are
-> problematic. Consider for instance madvise_dontneed_free() that is racing
-> with userfaultfd_writeprotect(). If madvise_dontneed_free() completed
-> removing the PTEs, but still did not flush, change_pte_range() will see
-> non-present PTEs, say a flush is not needed, and then
-> change_protection_range() will not do a flush, and return while
-> the memory is still not protected.
-> 
-> > I don't share your concern. What matters is the PT lock, so it
-> > wouldn't be one per pte, but a least an order 9 higher, but let's
-> > assume one flush per pte.
-> > 
-> > It's either huge mapping and then it's likely running without other
-> > tlb flushing in background (postcopy snapshotting), or it's a granular
-> > protect with distributed shared memory in which case the number of
-> > changd ptes or huge_pmds tends to be always 1 anyway. So it doesn't
-> > matter if it's deferred.
-> > 
-> > I agree it may require a larger tlb flush review not just mprotect
-> > though, but it didn't sound particularly complex. Note the
-> > UFFDIO_WRITEPROTECT is still relatively recent so backports won't
-> > risk to reject so heavy as to require a band-aid.
-> > 
-> > My second thought is, I don't see exactly the bug and it's not clear
-> > if it's upstream reproducing this, but assuming this happens on
-> > upstream, even ignoring everything else happening in the tlb flush
-> > code, this sounds like purely introduced by userfaultfd_writeprotect()
-> > vs userfaultfd_writeprotect() (since it's the only place changing
-> > protection with mmap_sem for reading and note we already unmap and
-> > flush tlb with mmap_sem for reading in MADV_DONTNEED/MADV_FREE clears
-> > the dirty bit etc..). Flushing tlbs with mmap_sem for reading is
-> > nothing new, the only new thing is the flush after wrprotect.
-> > 
-> > So instead of altering any tlb flush code, would it be possible to
-> > just stick to mmap_lock for reading and then serialize
-> > userfaultfd_writeprotect() against itself with an additional
-> > mm->mmap_wprotect_lock mutex? That'd be a very local change to
-> > userfaultfd too.
-> > 
-> > Can you look if the rule mmap_sem for reading plus a new
-> > mm->mmap_wprotect_lock mutex or the mmap_sem for writing, whenever
-> > wrprotecting ptes, is enough to comply with the current tlb flushing
-> > code, so not to require any change non local to uffd (modulo the
-> > additional mutex).
-> 
-> So I did not fully understand your solution, but I took your point and
-> looked again on similar cases. To be fair, despite my experience with these
-> deferred TLB flushes as well as Peter Zijlstra’s great documentation, I keep
-> getting confused (e.g., can’t we somehow combine tlb_flush_batched and
-> tlb_flush_pending ?)
-> 
-> As I said before, my initial scenario was wrong, and the problem is not
-> userfaultfd_writeprotect() racing against itself. This one seems actually
-> benign to me.
-> 
-> Nevertheless, I do think there is a problem in change_protection_range().
-> Specifically, see the aforementioned scenario of a race between
-> madvise_dontneed_free() and userfaultfd_writeprotect().
-> 
-> So an immediate solution for such a case can be resolve without holding
-> mmap_lock for write, by just adding a test for mm_tlb_flush_nested() in
-> change_protection_range():
-> 
->         /*
-> 	 * Only flush the TLB if we actually modified any entries
-> 	 * or if there are pending TLB flushes.
-> 	 */
->         if (pages || mm_tlb_flush_nested(mm))
->                 flush_tlb_range(vma, start, end);
->  
-> To be fair, I am not confident I did not miss other problematic cases.
-> 
-> But for now, this change, with the preserve_write change should address the
-> immediate issues. Let me know if you agree.
-> 
-> Let me know whether you agree.
+percent_fp() was used in intel_pstate_pid_reset(), which was removed in
+commit 9d0ef7af1f2d ("cpufreq: intel_pstate: Do not use PID-based P-state
+selection") and hence, percent_fp() is unused since then.
 
-The problem starts in UFD, and is related to tlb flush. But its focal
-point is in do_wp_page(). I'd suggest you look at function and see
-what it does before and after the commits I listed, with the following
-conditions
+percent_ext_fp() was last used in intel_pstate_update_perf_limits(), which
+was refactored in commit 1a4fe38add8b ("cpufreq: intel_pstate: Remove
+max/min fractions to limit performance"), and hence, percent_ext_fp() is
+unused since then.
 
-PageAnon(), !PageKsm(), !PageSwapCache(), !pte_write(),
-page_mapcount() = 1, page_count() > 1 or PageLocked()
+make CC=clang W=1 points us those unused functions:
 
-when it runs against the two UFD examples you listed.
+drivers/cpufreq/intel_pstate.c:79:23: warning: unused function 'percent_fp' [-Wunused-function]
+static inline int32_t percent_fp(int percent)
+                      ^
+
+drivers/cpufreq/intel_pstate.c:94:23: warning: unused function 'percent_ext_fp' [-Wunused-function]
+static inline int32_t percent_ext_fp(int percent)
+                      ^
+
+Remove those obsolete functions.
+
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+applies cleanly on current master and next-20201221
+
+Srinivas, Len, Rafael, Viresh, please pick this minor non-urgent cleanup patch.
+
+ drivers/cpufreq/intel_pstate.c | 10 ----------
+ 1 file changed, 10 deletions(-)
+
+diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+index 2a4db856222f..0e35dd247986 100644
+--- a/drivers/cpufreq/intel_pstate.c
++++ b/drivers/cpufreq/intel_pstate.c
+@@ -76,11 +76,6 @@ static inline int ceiling_fp(int32_t x)
+ 	return ret;
+ }
+ 
+-static inline int32_t percent_fp(int percent)
+-{
+-	return div_fp(percent, 100);
+-}
+-
+ static inline u64 mul_ext_fp(u64 x, u64 y)
+ {
+ 	return (x * y) >> EXT_FRAC_BITS;
+@@ -91,11 +86,6 @@ static inline u64 div_ext_fp(u64 x, u64 y)
+ 	return div64_u64(x << EXT_FRAC_BITS, y);
+ }
+ 
+-static inline int32_t percent_ext_fp(int percent)
+-{
+-	return div_ext_fp(percent, 100);
+-}
+-
+ /**
+  * struct sample -	Store performance sample
+  * @core_avg_perf:	Ratio of APERF/MPERF which is the actual average
+-- 
+2.17.1
+
