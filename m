@@ -2,91 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C88D92DFF6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:14:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB7A92DFF7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:17:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725995AbgLUSOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 13:14:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725785AbgLUSN7 (ORCPT
+        id S1726689AbgLUSQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:16:27 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:25689 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726666AbgLUSQ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:13:59 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99D8AC061285
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:13:43 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id v14so10719859wml.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:13:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=CYNvrmyBcR24qaTBP8yatBcY626HdS4K9apXn77mSNM=;
-        b=lD267zahUVgA3DLau9u4L0oNjrXSi3d0rZHEzzA3ci0+hZfHJbDbQeSqa8dyZZgm8A
-         Qiha3IP/O97P1NRVUm0/yueKbU9MfRiUZHURyi+oJEyoYaZM7wI6vFuICqR6Gc2kZRdw
-         FwOC3bM/EiuB+KT3rgLfkgO+GNvW3GF6mmoRWejfhG1mIfGBt4ybgUSmynzTnDj25MP2
-         JrWt0W1TCL+AK9vAssOHE5EH8fl7HjedxcbAkXmylnqJweqfKLeZK61Lywe7lAnDG9N+
-         Lzlq+ssfe7dKMtc9646Gzs9+XgQ4WV6b5gJbQ7QGW1Mv/Az/unY+Zh2fkPyDh56cNYGW
-         9jXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=CYNvrmyBcR24qaTBP8yatBcY626HdS4K9apXn77mSNM=;
-        b=DzC7TIq/f9L2yZjgWNHMaJjjMcPZ2BQXiatHhnDtuCS/Oncl4ZCKO+2PGl9Bkngs1T
-         uAhPa9SJmIcZZo8lv6iYzBKfb/lHu8QFNC/cQtXxIDPeBpFfPiJl6Gj9c2gFa8fZnWyY
-         tRZJ4IUnLX58lCE2s0MSRLBk7FVuch8Ggj/Etwkiqg/nFl03TKLRqDbLJAUpX4KbrFOg
-         0/b3rP//4P1n50yG3QGR28XGeJ5GCbtnvjSHUAIlCFtQh09kTs7EDrvcwiHljyrHssv3
-         x04+WQScQi4kzGm8Xuj2xprTuLIHeV8ang6xpvBv8YqGfSOrVVxNw/pyEXFIG+uB6chN
-         C7/w==
-X-Gm-Message-State: AOAM531oH8SMuaPtWx3BuOPzKq59FBa6Df/oxwrl0PV3N7HwT2JusrRu
-        ecv1poPnWBKA0Js2LW8GFpbF3mXTmlI=
-X-Google-Smtp-Source: ABdhPJxbLR3uHnt07Oa6Z3aVJYz+7qis1B/0BHuj/Kq0dNDM4BADbUR3yfKav7Fm5wX8dC42z5Lizg==
-X-Received: by 2002:a7b:c1c1:: with SMTP id a1mr17698718wmj.104.1608574422400;
-        Mon, 21 Dec 2020 10:13:42 -0800 (PST)
-Received: from localhost.localdomain (p200300f137019000428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:3701:9000:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id m11sm23434936wmi.16.2020.12.21.10.13.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 10:13:41 -0800 (PST)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     linux-amlogic@lists.infradead.org, khilman@baylibre.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        narmstrong@baylibre.com,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH 5/5] ARM: multi_v7_defconfig: Enable support for the ADC thermal sensor
-Date:   Mon, 21 Dec 2020 19:13:06 +0100
-Message-Id: <20201221181306.904272-6-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201221181306.904272-1-martin.blumenstingl@googlemail.com>
-References: <20201221181306.904272-1-martin.blumenstingl@googlemail.com>
+        Mon, 21 Dec 2020 13:16:26 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608574563; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=advVr5rSg5zOOn4yjOEJUBXVBEt3L/mvo2faQIC58Bc=; b=qefva7Qu4BQn9EXp7p2BjycuFDlnUeKc6EOhs64myISEhuvMI7/2tro8R+viujeizFEs0xww
+ nBws1dKTsPMxLcsNo/lTzi9XhH+Wd5/6068rKdpb7bQl6YujudQ6FQJ+P5H/ZVCDPvjMMnHY
+ LnlQLIJqaOPODIePWXiigtuLxVs=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5fe0e63fda4719818836360b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 21 Dec 2020 18:15:27
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4CE6DC43464; Mon, 21 Dec 2020 18:15:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E500AC433ED;
+        Mon, 21 Dec 2020 18:15:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E500AC433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Zekun Shen <bruceshenzk@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ath10k@lists.infradead.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH] net: ath10k: santity check for ep connectivity
+References: <20200622022055.16028-1-bruceshenzk@gmail.com>
+Date:   Mon, 21 Dec 2020 20:15:22 +0200
+In-Reply-To: <20200622022055.16028-1-bruceshenzk@gmail.com> (Zekun Shen's
+        message of "Sun, 21 Jun 2020 22:20:54 -0400")
+Message-ID: <87sg7znhz9.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-32-bit Amlogic Meson platforms are using a special ADC channel to read
-the SoC temperature. Enable the "generic ADC thermal" driver so this
-data can be used to cool the SoC for example by reduing the maximum CPU
-and GPU frequencies temporarily.
+Zekun Shen <bruceshenzk@gmail.com> writes:
 
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
- arch/arm/configs/multi_v7_defconfig | 1 +
- 1 file changed, 1 insertion(+)
+> Function ep_rx_complete is being called without NULL checking
+> in ath10k_htc_rx_completion_handler. Without such check, mal-
+> formed packet is able to cause jump to NULL.
+>
+> ep->service_id seems a good candidate for sanity check as it is
+> used in usb.c.
+>
+> Signed-off-by: Zekun Shen <bruceshenzk@gmail.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/htc.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
+> index 31df6dd04..e00794d97 100644
+> --- a/drivers/net/wireless/ath/ath10k/htc.c
+> +++ b/drivers/net/wireless/ath/ath10k/htc.c
+> @@ -450,6 +450,11 @@ void ath10k_htc_rx_completion_handler(struct ath10k *ar, struct sk_buff *skb)
+>  
+>  	ep = &htc->endpoint[eid];
+>  
+> +	if (ep->service_id == 0) {
+> +		ath10k_warn(ar, "HTC Rx: ep %d is not connect\n", eid);
+> +		goto out;
+> +	}
 
-diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-index c5f25710fedc..0a55240ce2fc 100644
---- a/arch/arm/configs/multi_v7_defconfig
-+++ b/arch/arm/configs/multi_v7_defconfig
-@@ -515,6 +515,7 @@ CONFIG_ARMADA_THERMAL=y
- CONFIG_BCM2711_THERMAL=m
- CONFIG_BCM2835_THERMAL=m
- CONFIG_BRCMSTB_THERMAL=m
-+CONFIG_GENERIC_ADC_THERMAL=m
- CONFIG_ST_THERMAL_MEMMAP=y
- CONFIG_UNIPHIER_THERMAL=y
- CONFIG_DA9063_WATCHDOG=m
+I think using ATH10K_HTC_SVC_ID_UNUSED is more descriptive than zero, as
+ath10k_htc_reset_endpoint_states() uses it. I fixed in the pending
+branch.
+
+I think also ath10k_htc_process_credit_report() might have a similar
+problem, can you take a look?
+
 -- 
-2.29.2
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
