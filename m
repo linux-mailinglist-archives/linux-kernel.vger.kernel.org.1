@@ -2,153 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C2AE2DF9D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 09:20:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C2FD2DF9E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 09:26:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727524AbgLUITm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 03:19:42 -0500
-Received: from mail-bn8nam11on2082.outbound.protection.outlook.com ([40.107.236.82]:19777
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726068AbgLUITl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 03:19:41 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YPuMrEc7vuNc9SFXhJgTo6goSFxgk1J1ESmMXl13DZYPrmjyhULv00VeIh0Bgh7ZYoVBcvaJCQSNPuFvjJDEqO3KCCVjSEEhm+4gl3EBuZmpKTLOMIAGW4opiRcn4AQteob4Wxsnh2iko4nc+6iFJmk/qe1a2Is74UFuONF2w44km/M9NRvVMjo9w5EUVauH+ZxMaAStJrZpdJ8EmeEatpHvAEOJe+Jici6AHHz2vf8wqn7YI86h9PHocbQK7N6pZBGi838sVrIKxahKdC7xzKhyePr9ZeUJ3X7cSBJ3cmjFmrTC5t3OcIDFpQgVdR4N0C7qyj5DQkIxFWbsJN2T3g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pnGroRQ7kMQ3WIvqz1vUqM0lyWNEpsyi4xblcbHvJdE=;
- b=F0uzsHBsuNtHmRwbDfXbPoNQxQ6dzz9zj90tUbn2vqaYyYmtZK0iwR05GTsXCJBsJslyR/LhIF7Ed19EJxE897g+zGm/oa+BJDM1Qx6Va6rN7WR0zcqZsOkcYHZNWlyiYIhq7Wgb+g25y6379MJ8vYBskrIsT81Y/j59uU7gMbnK7s+OEGmWHf2HfRgeN3sUAnq7WYcFsin+sXrW1Nu7Z5f2N1oekqW9I766nKQFMNGTTl5xtGAuVi9TRp9u4uvMmKl/ACqXIP9r3BURrrAUUd/xSX2yG4Jw8gDYOMZeh4NKH2WTjKQnneR4j5kDz1wkTPymj1/R91RH3krKL0JhSg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pnGroRQ7kMQ3WIvqz1vUqM0lyWNEpsyi4xblcbHvJdE=;
- b=WKPj6tmtV0Z2JGUXHzrjtnfnFsJg6Xk/6Q5riqPHN4wNeL+wuXKFIyfWo2JmQizaLsk7lfwv+Pg8vrbSTGlUGo25vh+IptQCR/DCBoTP64yX0sVIXD847prx9fBcBoIicV2fMHlddr9Dwe6ynOWLm+uip2qw6qkawVves3P2l3M=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=synaptics.com;
-Received: from BN8PR03MB4724.namprd03.prod.outlook.com (2603:10b6:408:96::21)
- by BN6PR03MB3252.namprd03.prod.outlook.com (2603:10b6:405:43::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Mon, 21 Dec
- 2020 08:18:51 +0000
-Received: from BN8PR03MB4724.namprd03.prod.outlook.com
- ([fe80::e192:4c65:5936:1fb4]) by BN8PR03MB4724.namprd03.prod.outlook.com
- ([fe80::e192:4c65:5936:1fb4%5]) with mapi id 15.20.3676.033; Mon, 21 Dec 2020
- 08:18:51 +0000
-Date:   Mon, 21 Dec 2020 16:18:22 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Marc Zyngier <maz@kernel.org>
-Subject: Re: [PATCH v1 0/5] Enable fw_devlink=on by default
-Message-ID: <20201221161822.572e5cbe@xhacker.debian>
-In-Reply-To: <20201218031703.3053753-1-saravanak@google.com>
-References: <20201218031703.3053753-1-saravanak@google.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.147.44.204]
-X-ClientProxiedBy: BYAPR07CA0022.namprd07.prod.outlook.com
- (2603:10b6:a02:bc::35) To BN8PR03MB4724.namprd03.prod.outlook.com
- (2603:10b6:408:96::21)
+        id S1727389AbgLUI0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 03:26:15 -0500
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:49868 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727280AbgLUI0O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 03:26:14 -0500
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201221082522euoutp01d24bd696ec87b8edeb00abdca136c78d~Src9H0Toe0292202922euoutp015
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 08:25:22 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201221082522euoutp01d24bd696ec87b8edeb00abdca136c78d~Src9H0Toe0292202922euoutp015
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1608539122;
+        bh=aXYOZaoJwEphzZdnF8VsSwt3JU/V9YyroOepbj1WWl4=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=UWKVDO3Bed/neeQJvsQA+zaS2zGhxfgrceip1yHEaskwF2/+c+y4aYP0X2SGzdLYt
+         t+fmgIIgeYP8Adsd6O0DAkP7tXlLKmRiDTgiB0Zj+YS/yaOb3F9ZA9mkTnwrsUXsY7
+         WveThpAmMfihDvA2qeOxP6olm8F7WDInNDlY9Wyw=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20201221082520eucas1p1ad2f5624bdf307d304398b52504429af~Src6zmK0n0284802848eucas1p1N;
+        Mon, 21 Dec 2020 08:25:20 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id F9.8D.44805.0FB50EF5; Mon, 21
+        Dec 2020 08:25:20 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20201221082519eucas1p194b4112f452aad59054656bca7b7680d~Src6V8hOt2280822808eucas1p1B;
+        Mon, 21 Dec 2020 08:25:19 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201221082519eusmtrp25c7b09b5855be28f8dc327ca0839cc3b~Src6VPWuq0863008630eusmtrp2A;
+        Mon, 21 Dec 2020 08:25:19 +0000 (GMT)
+X-AuditID: cbfec7f4-b4fff7000000af05-55-5fe05bf0076e
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 60.9B.16282.FEB50EF5; Mon, 21
+        Dec 2020 08:25:19 +0000 (GMT)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20201221082519eusmtip2983f22edeba8fe361a544a9160520007~Src5yFWzx0091300913eusmtip2N;
+        Mon, 21 Dec 2020 08:25:19 +0000 (GMT)
+Subject: Re: [PATCH 9/9] mfd: sec-irq: Do not enforce (incorrect) interrupt
+ trigger type
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sylwester Nawrocki <snawrocki@kernel.org>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <04ff52f6-a3e7-10cd-5d19-e953d1e158d7@samsung.com>
+Date:   Mon, 21 Dec 2020 09:25:18 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.5.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (192.147.44.204) by BYAPR07CA0022.namprd07.prod.outlook.com (2603:10b6:a02:bc::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.30 via Frontend Transport; Mon, 21 Dec 2020 08:18:48 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 38416836-7ab5-402f-ccd9-08d8a5890ce5
-X-MS-TrafficTypeDiagnostic: BN6PR03MB3252:
-X-Microsoft-Antispam-PRVS: <BN6PR03MB32521AD4C709FB12B6C2E3E6EDC00@BN6PR03MB3252.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: onfnbbGBTCs3xNaVKi1awJWX4iTa5XilvpUFJz0ruEFMfOZn/PWidAuSPcGxiT6GnCFAWYA8GzdfQxmJgYU28CzxZMyzHfWgWgynik0LDzHSA/8PEWETjLnyhj/NNoisM3rB//DLZJJIvTRyXoOhiNWRWtNg2FHnRybKj5WK/bCUXGteuRTx10ewk349yu4RN7uIp4kUHnKHhLKXjqg4Oml4O2H3vkNtNrryt0e2m9b4+rk93+AoYFCss/nqwjpMnHgPKZ+j0aHKchY0mwg1HC/4sLWZyqmqVY864XS/Pxr1AkD1o3/OkhXxRt0WQ1zC
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR03MB4724.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(366004)(396003)(39850400004)(376002)(8676002)(8936002)(478600001)(26005)(9686003)(52116002)(6506007)(55016002)(66476007)(66556008)(66946007)(16526019)(7696005)(54906003)(6916009)(86362001)(2906002)(186003)(1076003)(6666004)(316002)(956004)(83380400001)(4326008)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?FB7qx6xRCMC7xf98n9BGVILdpY01M+aXWgxAmxqsao+V3657fGj/tzfVjxnK?=
- =?us-ascii?Q?z/IPEOwD781xT1XurbTwRl39AEL7fSxFHD8UxmulsA284GabYKw6u+Pkk9Nn?=
- =?us-ascii?Q?RZiIqjFSkW0L4hRg1i3qEigz7dhvu36qcVQC9iFW8YgHxAL78l2Clg1IQcvK?=
- =?us-ascii?Q?AE74CVktJyoIE/tnMvVUNhOkutkUUWNuy3xZllG74Kli8yJctxo/8tN8BKf5?=
- =?us-ascii?Q?qa2saNA3sJGKkWfH5SuOfxlxlEY5ZvPVbLxJHzmtpvoTMZIn5D3zbKT5A9iR?=
- =?us-ascii?Q?Z/0lYFjU7N/HrNQ8ORqQlAhTcz87o/DTH0zK8+kTnVwsH3iLY8uRXsIAdfEY?=
- =?us-ascii?Q?n8Z3tCA8n08Jip2OXv+is251ns/iVVQ5nEmljpCWXxqA2cezsauSwGSM/XSv?=
- =?us-ascii?Q?5BBGc9SsMSVxm+Wuhx10S6J7+SoUXE+Rjvti42hpxu8FRox87h/G6gq0UaRe?=
- =?us-ascii?Q?bnUlXVYiV466tt+IlMSHTsca8TcyxwsEt+qw9GzMMScitNuGka9RbTXS8nqq?=
- =?us-ascii?Q?XAszlJzlLiFa6Zwrle/9NKH6L2G5/oE3JubWB1VIqxtdRqfXVG2spAEMzTfd?=
- =?us-ascii?Q?Ae6SVPelerGBjdI+vbwfZm+I6T9oK6ICxX/C9SoYOAxLZRXy0WN5Z1tFDbbR?=
- =?us-ascii?Q?bd90c4IyJrA29CCt3oLtX4rDp1JyiI5dnGDiuY1Gu/48FFUXDK2UONxQ7XsZ?=
- =?us-ascii?Q?iUsblQm3LRLj5MDg0VLooxakCNNDl7bPa0AXydEKpC8TnOTUJLgwprlbE90G?=
- =?us-ascii?Q?acJF4qkJZK/A2gq/Ckh2rWs6S2SN+qR7ItQQHUzPiIpRXWagt6+kxgC2yZY7?=
- =?us-ascii?Q?3M+nsBunJloI0Lo/hJcqHdyYFZhmZDJy0SUgNcv0F25fusNmTRajhDL/KmJY?=
- =?us-ascii?Q?UUatLzSeKWeGAPR8Q4Jqn1dQYoYBbqgSwvuvIec3jDwOxCsSHgTRBDH7h0RX?=
- =?us-ascii?Q?fw3i2cMky5jR0engjVg4PEVVmavb86ER3AeWkoXcVnxdsY2/uW8kn5KER7cH?=
- =?us-ascii?Q?ljV6?=
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR03MB4724.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Dec 2020 08:18:51.7245
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-Network-Message-Id: 38416836-7ab5-402f-ccd9-08d8a5890ce5
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ptrdYWckobv3QcIk6ocWFrdBa9Bj/t5mv4Ye+muV4WnWpI+vQgReDQvPDO3NODQ4BN1j8RlFE1spX6vZj9L8mA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR03MB3252
+In-Reply-To: <20201221075500.GA3386@kozik-lap>
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrFKsWRmVeSWpSXmKPExsWy7djPc7ofoh/EG9z+w26xccZ6VovrX56z
+        Wsw/co7V4vz5DewW978eZbTY9Pgaq8XlXXPYLGac38dk0br3CLtF+9OXzA5cHptWdbJ53Lm2
+        h81j85J6j74tqxg9Pm+SC2CN4rJJSc3JLEst0rdL4Mo4dpuz4ABfxde9b9gaGL9ydzFyckgI
+        mEj8+f+RpYuRi0NIYAWjxNmWE+wgCSGBL4wSy095QyQ+M0r8erCfDabjwKWnzBBFyxklXt6s
+        gbA/Mkqs3AbWLCwQJfH19QKwGhEBTYnrf7+zggxiFrjBJLH05C9GkASbgKFE19susKG8AnYS
+        azZ/ZwGxWQRUJe5PXgcWFxVIkljf9QOqRlDi5MwnYDWcAnoSz49cALOZBeQlmrfOZoawxSVu
+        PZnPBLJMQuANh8S/pw+YIK52kbj4sosZwhaWeHV8CzuELSPxfydMQzOjxMNza9khnB5GictN
+        Mxghqqwl7pz7BXQGB9AKTYn1u/Qhwo4Sh0/0MYGEJQT4JG68FYQ4gk9i0rbpzBBhXomONiGI
+        ajWJWcfXwa09eOES8wRGpVlIXpuF5J1ZSN6ZhbB3ASPLKkbx1NLi3PTUYqO81HK94sTc4tK8
+        dL3k/NxNjMDkdPrf8S87GJe/+qh3iJGJg/EQowQHs5IIr5nU/Xgh3pTEyqrUovz4otKc1OJD
+        jNIcLErivElb1sQLCaQnlqRmp6YWpBbBZJk4OKUamHzMJTeIJkZJf0jaeOVh/uQ3hadu8X2x
+        CWacHLDUXsJ55l+XIKeyDZPa5dacW/Wi+HlETPyMje9WTT/0aLrc5N5lhrJf7j6Yzu7kPk0/
+        7XLoNalH4v36246FRX6/culefPZRNmUG19SJAduELCdM3pGuf+CB0TE5xQAbt++Fcn/KXRd1
+        OLDsf//p56ucO+rH5+3nb/0+Q/Pm9iQTYU25pL9lLVf2/JZe6ftB9ofZy3R/6ZBvxku3rl3/
+        9VSTZuiHefqmW3pMHCS+dZV/KI8MX250Xkrt3aPfvaqVp/iXS94z+LDxWHC1uVZe/VJTd8/l
+        9qHPXyqu6pqlXHDyavdeKwMfgZ74xOqE99K9nz/Pk1ViKc5INNRiLipOBAC1fanCvQMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrLIsWRmVeSWpSXmKPExsVy+t/xe7rvox/EG0zuVrfYOGM9q8X1L89Z
+        LeYfOcdqcf78BnaL+1+PMlpsenyN1eLyrjlsFjPO72OyaN17hN2i/elLZgcuj02rOtk87lzb
+        w+axeUm9R9+WVYwenzfJBbBG6dkU5ZeWpCpk5BeX2CpFG1oY6RlaWugZmVjqGRqbx1oZmSrp
+        29mkpOZklqUW6dsl6GUcu81ZcICv4uveN2wNjF+5uxg5OSQETCQOXHrK3MXIxSEksJRR4vnk
+        3cwQCRmJk9MaWCFsYYk/17rYIIreM0r8+f4bLCEsECXx9fUCsAYRAU2J63+/g8WZBW4xSRw/
+        JQLR8JxJomHSBLAEm4ChRNdbkEmcHLwCdhJrNn9nAbFZBFQl7k9eBxTn4BAVSJI4e1oQokRQ
+        4uTMJ2AlnAJ6Es+PXGCBmG8mMW/zQ2YIW16ieetsKFtc4taT+UwTGIVmIWmfhaRlFpKWWUha
+        FjCyrGIUSS0tzk3PLTbSK07MLS7NS9dLzs/dxAiMx23Hfm7Zwbjy1Ue9Q4xMHIyHGCU4mJVE
+        eM2k7scL8aYkVlalFuXHF5XmpBYfYjQFemcis5Rocj4wIeSVxBuaGZgamphZGphamhkrifOa
+        HFkTLySQnliSmp2aWpBaBNPHxMEp1cDEvnfn06UOab6WjvuSX98w6xaeysPq+mNP+KeMXacs
+        Wde8yM1+l5LzZBLfMol93LPmPMkSV4+orM1gdHjp90fLdu+LGa3n1l16NUtx0Q2psx29ud/v
+        av5p82vhb3y87mJ8i9HpeMMSyUS1h0kb+7qqlm1waHnomP8r79Jrt1uX74Rs/+ZY2LBeLXLR
+        5ImrJp7QEp+7sSrznM2eW+ZLT5jzB2/+G3LG3FRtsUyqmPQ+iZMy17bkGG+y1ipqkPXeUbTI
+        pct+uXfN+vTEiZZV+ZWP7m2b/lhQs+PC9lfT27IY/i8+O2Pjte8PZXTjN+9hj5VmmrnFXu/H
+        vmcXStzXb5ff5dZq8XntWjlznqffzyxtV2Ipzkg01GIuKk4EAIBdJhpQAwAA
+X-CMS-MailID: 20201221082519eucas1p194b4112f452aad59054656bca7b7680d
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20201210212938eucas1p1297b8503e9c059f2bc77c3a429a9114e
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201210212938eucas1p1297b8503e9c059f2bc77c3a429a9114e
+References: <20201210212903.216728-1-krzk@kernel.org>
+        <CGME20201210212938eucas1p1297b8503e9c059f2bc77c3a429a9114e@eucas1p1.samsung.com>
+        <20201210212903.216728-9-krzk@kernel.org>
+        <0f1509ef-9ae7-7a77-84b7-360b8f0071c7@samsung.com>
+        <20201218142247.GA2847@kozik-lap>
+        <52a1b7c6-c7f1-f5eb-09f6-d84663912db8@samsung.com>
+        <20201221075500.GA3386@kozik-lap>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Dec 2020 19:16:58 -0800 Saravana Kannan wrote:
+On 21.12.2020 08:55, Krzysztof Kozlowski wrote:
+> On Mon, Dec 21, 2020 at 08:36:02AM +0100, Marek Szyprowski wrote:
+>> On 18.12.2020 15:22, Krzysztof Kozlowski wrote:
+>>> On Fri, Dec 18, 2020 at 02:25:39PM +0100, Marek Szyprowski wrote:
+>>>> On 10.12.2020 22:29, Krzysztof Kozlowski wrote:
+>>>>> Interrupt line can be configured on different hardware in different way,
+>>>>> even inverted.  Therefore driver should not enforce specific trigger
+>>>>> type - edge falling - but instead rely on Devicetree to configure it.
+>>>>>
+>>>>> The Samsung PMIC drivers are used only on Devicetree boards.
+>>>>>
+>>>>> Additionally, the PMIC datasheets describe the interrupt line as active
+>>>>> low with a requirement of acknowledge from the CPU therefore the edge
+>>>>> falling is not correct.
+>>>>>
+>>>>> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+>>>> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+>>>>
+>>>> It looks that this together with DTS change fixes RTC alarm failure that
+>>>> I've observed from time to time on TM2e board!
+>>> Great! I'll add this to the commit msg.
+>>>
+>>> Thanks for testing.
+>> BTW, while playing with this, maybe it would make sense to fix the
+>> reported interrupt type for the PMIC sub-interrupts:
+>>
+>> # grep s2mps /proc/interrupts
+>> 120:          0      gpa0   7 Level     s2mps13
+>> 121:          0   s2mps13  10 Edge      rtc-alarm0
+> I also spotted this. It's a virtual interrupt and I am not sure whether
+> we can actually configure it when the hardware does not allow to set the
+> type (the regmap_irq_type requires register offsets).
 
+I know that it is virtual, but maybe the regmap code could simply copy 
+the interrupt type from its parent interrupt?
 
-> 
-> 
-> As discussed in LPC 2020, cyclic dependencies in firmware that couldn't
-> be broken using logic was one of the last remaining reasons
-> fw_devlink=on couldn't be set by default.
-> 
-> This series changes fw_devlink so that when a cyclic dependency is found
-> in firmware, the links between those devices fallback to permissive mode
-> behavior. This way, the rest of the system still benefits from
-> fw_devlink, but the ambiguous cases fallback to permissive mode.
-> 
-> Setting fw_devlink=on by default brings a bunch of benefits (currently,
-> only for systems with device tree firmware):
-> * Significantly cuts down deferred probes.
-> * Device probe is effectively attempted in graph order.
-> * Makes it much easier to load drivers as modules without having to
->   worry about functional dependencies between modules (depmod is still
->   needed for symbol dependencies).
-> 
-> Greg/Rafael,
-> 
-> Can we get this pulled into 5.11-rc1 or -rc2 soon please? I expect to
-> see some issues due to device drivers that aren't following best
-> practices (they don't expose the device to driver core). Want to
-> identify those early on and try to have them fixed before 5.11 release.
-> See [1] for an example of such a case.
-> 
-> If we do end up have to revert anything, it'll just be Patch 5/5 (a one
-> liner).
-> 
-> Marc,
-> 
-> You had hit issues with fw_devlink=on before on some of your systems.
-> Want to give this a shot?
-> 
-> Jisheng,
-> 
-> Want to fix up one of those gpio drivers you were having problems with?
-> 
+Best regards
 
-Hi Saravana,
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
-I didn't send fix for the gpio-dwapb.c in last development window, so can
-send patch once 5.11-rc1 is released.
-
-thanks
