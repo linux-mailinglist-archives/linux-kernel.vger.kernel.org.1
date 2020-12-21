@@ -2,89 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C63C2DFF1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:01:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC1F2DFF29
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:03:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726000AbgLUSA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 13:00:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48084 "EHLO
+        id S1726150AbgLUSDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:03:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725881AbgLUSAz (ORCPT
+        with ESMTP id S1725850AbgLUSDX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:00:55 -0500
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58BBDC0613D6;
-        Mon, 21 Dec 2020 09:59:40 -0800 (PST)
-Received: by mail-oi1-x231.google.com with SMTP id q205so12052424oig.13;
-        Mon, 21 Dec 2020 09:59:40 -0800 (PST)
+        Mon, 21 Dec 2020 13:03:23 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EB8FC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:02:42 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id d17so14652138ejy.9
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:02:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ui6zW1fAECFc2gEXxsQFOudLu4o+hfhu76Kgy65HxoY=;
-        b=hfnfZnWeAbRa89kvAzfU4bxp+7siuL/T++w7vu3Ku0U3lQZxxT6lBcku6eVoWmxuOI
-         3gx4emQJQI0k80u0iv3IeHID3WyGkuxHYuLSwNXyw0cw/lrMk3HK//v1aJqdFRX3C6P1
-         4QSCvksLXiG0rWfYUblpDBOKN4no0ySG3dJtFGnT19P0Bd7YqgR2+3q+dufz8uZ4y+gL
-         Uwi38udGgqYs3+I0CXPaUZSHhg4WbgPAgkUVLr/VhoMjKywCMwQ5LgB9WY//veND7PYS
-         hHCX0Cc0atgkW5s7jDitfIFRBoNIonlyMClkf085d03zv5F7IuIIBdBooonNPMZTdau1
-         GZTw==
+        bh=kMPwSByM5Ofrk9Kvk8b94+hVOdCU16NWvETZQDOg+ns=;
+        b=RzcksibqGzUEPSFE0m8P+JWb11CJAU3jMWh0XO1JtfV/WtL4MjWV6XkqYK5EZ5Q2nU
+         TrDmyMWHSL26YBIbESRADOXyfBW7UB2f3zCeuNcC+uzPKF1Rwww9NXaogzewXr3/tczT
+         WNz6Yz6iyaqyz5eQbs0CIQPzpL191Qeth/q5I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ui6zW1fAECFc2gEXxsQFOudLu4o+hfhu76Kgy65HxoY=;
-        b=Hyj1osNyhr4UHME8thr6/ss2M9LHXmxTEd2wZDHkS+WU45xxEiJTVMrjGiIM4k7v6k
-         kFLbKAhy8oZur1HAqZJ9gO5Q4jFOjzK0UK+EmEfKfgOla9qiQziGHK9XTBsHHg0K45yN
-         4DI2aHYK0uCuN9MReFEbL4+i0Qvr3/TeUtw4SNIcH9Dy0LkfOSGlK/S7lhBMUicbxQ9Y
-         jdHo2wVF79BfT/ZcXYCB+uafcxw5csbCTHxtpkZvt61JscV7geRkpeDkKajse1MAXHjy
-         33dZQmHUcTfkZ//F/Eo/v96rOlxIxc6wida36u0DCvtAbGwaHs/chRvSik7JXohkOY8O
-         +leQ==
-X-Gm-Message-State: AOAM533YXhFUmQKwnE1kmNSnPCxW2PEfJdTJZRpdvVqWVkx0GsxNsacD
-        UcUeoKvRKGhLJVyTsWv3jX8HrnJePJzHNVuyDOgU6KWXkYs=
-X-Google-Smtp-Source: ABdhPJxT5ASjlLeSdcAjns1ixlfwE9Db42btuJN9lT60t5QwUpywkIS1QWUP00XT8pQBJJKOVI7SGPUuizg32BZrM+I=
-X-Received: by 2002:a17:90b:a17:: with SMTP id gg23mr18502363pjb.129.1608572166918;
- Mon, 21 Dec 2020 09:36:06 -0800 (PST)
+        bh=kMPwSByM5Ofrk9Kvk8b94+hVOdCU16NWvETZQDOg+ns=;
+        b=PvhaUZiiAEcJRZBBCP7NvT8JvSHY2dPna6o83C6ZAik0UbuMELqZyMrBVmhWKUUF+l
+         aiT2Ruxg7Iv9j24fcRY+pIho4mCX5dPCABTJ7KJE5zfohP513la+5lFZatQwwxaLBPHQ
+         E1c8+/0ILBbglBUCBD+qtMqKzBT9xrbo89YO/NaiIMMf+m8iTNdBFz/p0SaB8o5GY5zh
+         XV2wTRv2G+vA/sBXBYQQJsFqbsfPVVkbUWU0RiXwVcNHmUReUNxWGp5+RMlis3GynA/w
+         hZ9R6/bOgBjeaUWMxJp6QfYpsmbEJIBu9i2fYvDEryMqklZ3rlipn6qVhIUSlxFQp1kL
+         5E5w==
+X-Gm-Message-State: AOAM533hfzMM3qd9HBa7HV60jEriPd5Alti0h6X1D5lfVqwqJ60mZ/4D
+        /4QJmqqpAT6FRuDUdAOto0Fjlb2z8zrvBg==
+X-Google-Smtp-Source: ABdhPJx44rZpudTHvD6TfUk3fr+Aup1rNnk9RhLLagmBBpElDskm8JzbAGhHZx4VhEej/xhHWD1+Mw==
+X-Received: by 2002:a05:651c:48e:: with SMTP id s14mr8294210ljc.159.1608572286250;
+        Mon, 21 Dec 2020 09:38:06 -0800 (PST)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id q16sm2149012lfb.8.2020.12.21.09.38.05
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Dec 2020 09:38:05 -0800 (PST)
+Received: by mail-lf1-f47.google.com with SMTP id o17so25651369lfg.4
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 09:38:05 -0800 (PST)
+X-Received: by 2002:a2e:9b13:: with SMTP id u19mr7549776lji.48.1608572285100;
+ Mon, 21 Dec 2020 09:38:05 -0800 (PST)
 MIME-Version: 1.0
-References: <20201221151551.52511-1-alexandru.ardelean@analog.com>
-In-Reply-To: <20201221151551.52511-1-alexandru.ardelean@analog.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 21 Dec 2020 19:36:55 +0200
-Message-ID: <CAHp75Ve6GHU50WO3Ygmfz8GU=22jpLi+JeDoA3TiY8bp76T09A@mail.gmail.com>
-Subject: Re: [PATCH v4] iio: Handle enumerated properties with gaps
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>
+References: <365031.1608567254@warthog.procyon.org.uk>
+In-Reply-To: <365031.1608567254@warthog.procyon.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 21 Dec 2020 09:37:49 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whRD1YakfPKE72htDBzTKA73x3aEwi44ngYFf4WCk+1kQ@mail.gmail.com>
+Message-ID: <CAHk-=whRD1YakfPKE72htDBzTKA73x3aEwi44ngYFf4WCk+1kQ@mail.gmail.com>
+Subject: Re: [RFC][PATCH] afs: Work around strnlen() oops with CONFIG_FORTIFIED_SOURCE=y
+To:     David Howells <dhowells@redhat.com>
+Cc:     Daniel Axtens <dja@axtens.net>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        linux-afs@lists.infradead.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 5:11 PM Alexandru Ardelean
-<alexandru.ardelean@analog.com> wrote:
+On Mon, Dec 21, 2020 at 8:14 AM David Howells <dhowells@redhat.com> wrote:
 >
-> From: Lars-Peter Clausen <lars@metafoo.de>
->
-> Some enums might have gaps or reserved values in the middle of their value
-> range. E.g. consider a 2-bit enum where the values 0, 1 and 3 have a
-> meaning, but 2 is a reserved value and can not be used.
->
-> Add support for such enums to the IIO enum helper functions. A reserved
-> values is marked by setting its entry in the items array to NULL rather
-> than the normal descriptive string value.
+> CONFIG_FORTIFIED_SOURCE=y now causes an oops in strnlen() from afs (see
+> attached patch for an explanation).  Is replacing the use with memchr() the
+> right approach?  Or should I be calling __real_strnlen() or whatever it's
+> called?
 
-...
+Ugh. No.
 
-> I tried a few shots at working with 'lib/string.c', and that went
-> slow. The __sysfs_match_string_with_gaps() approach has stalled.
-> https://lore.kernel.org/linux-iio/20190422140251.8960-1-alexandru.ardelean@analog.com/
+> AFS has a structured layout in its directory contents (AFS dirs are
+> downloaded as files and parsed locally by the client for lookup/readdir).
+> The slots in the directory are defined by union afs_xdr_dirent.  This,
+> however, only directly allows a name of a length that will fit into that
+> union.  To support a longer name, the next 1-8 contiguous entries are
+> annexed to the first one and the name flows across these.
 
-Hmm... If you are not going to push that forward, perhaps better is to  provide
-iio_sysfs_match_string() and if we need it in the future for other
-users, it would be easier to find and export. Also it will be a matter
-of one line change in the caller.
+I htink the right fix would be to try to create a type that actually
+describes that.
 
--- 
-With Best Regards,
-Andy Shevchenko
+IOW, maybe the afs_xdr_dirent union could be written something like
+
+  union afs_xdr_dirent {
+          struct {
+                  u8              valid;
+                  u8              unused[1];
+                  __be16          hash_next;
+                  __be32          vnode;
+                  __be32          unique;
+                  u8              name[];
+         } u;
+          u8                      extended_name[32];
+  } __packed;
+
+instead, and have a big comment about how "name[]" is that
+"16+overflow+next entries" thing?
+
+I didn't check how you currently use that ->name thing (not a good
+identifier to grep for..), so you might want some other model - like
+using a separate union case for this "unconstrained name" case.
+
+In fact, maybe that separate union struct is a better model anyway, to
+act as even more of documentation about the different cases..
+
+              Linus
