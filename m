@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D9282E0042
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:46:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 302EA2E003C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:46:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727314AbgLUSqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 13:46:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55388 "EHLO
+        id S1726802AbgLUSoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:44:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727280AbgLUSqB (ORCPT
+        with ESMTP id S1726598AbgLUSoG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:46:01 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD1BC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:45:20 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id v14so10817447wml.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:45:20 -0800 (PST)
+        Mon, 21 Dec 2020 13:44:06 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1998DC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:43:26 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id 3so11931470wmg.4
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:43:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=qPSq8Qf3oa+zDwHMEyCyB9kgDU9ZtwoI+tmmh5RXbH8=;
-        b=HlnjMoT59rU/B9gGWIQ7KZMrB3raq1PufLD3CQG7Ag9LG8pc0bzeCx9BeWI4n5aOzT
-         MyegdMcpsXln4DMElmsRTXDAj727kvyHsfD6qMoruL4BiPqpj9FTMDkFUS1nPvsSR/Hx
-         atALFDOSSa1m4CR1QxF0psYtrdZbAr7jEPfSo=
+        bh=Dw71v3CL2kM3raQJeeszspBPFX2F58JASjvYTnrWOCM=;
+        b=XOv3mP7zUK4jneYBbu/i4GBH/kEqUFHETXAhDBUJrLmK6HUbonxcaTAu8F6Ohru5UX
+         rAwsaNimKdp05wcbnmOu2XsGfPhqgup77quWUSS7RUvUrIC5KaJoj1wTz3ChGWOBMAyZ
+         nHwzAKxwOKTYmMRmeebWMQueyrhZ3SqPLyluU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=qPSq8Qf3oa+zDwHMEyCyB9kgDU9ZtwoI+tmmh5RXbH8=;
-        b=amfmtykSq9iMflSWt1Cy3HukEPRMdxXqNe85k3kfyceJ5Ju5txK5yud7sqHLTpZzIn
-         BI2xb0lGixBKZ6FFkPKAK9XrU/WcnUbem0Du+QdLxl4mRLtau9VVeUzPMgYm0VAX6dSE
-         9EUYF5vfYwjMlgAKdvOIwFew3y+Z3zHQBljNXElv4krKXTAxW+8DToaYsdssG6VWMuRK
-         kl/puMtCBDmWM4gmIGiMLsYY0frWQKdBevRk8rHGJquzrv9HNTmN6liMs8EB5ziWc5h2
-         eTn/sy58unvngbmrZzRHdEsXremzsRuhQGSp03gonhVJfQzg21x4398GBsVZ6zf1uIMd
-         NLZg==
-X-Gm-Message-State: AOAM532N4/20U2f8LKLM6+xrZ5qi5uTMNkgVaLI8BzbMczuvalLkm1W0
-        G5Cyamtw8+CKsp1eOOX+fAjp5DotT3RHvn8bEI0=
-X-Google-Smtp-Source: ABdhPJzwr+Ql4FgZh2mD5Zb+KIel/a8kyCyrrS8u7Yhn3O0hJGqu71Zn8JBJfVPSL3UGIsGS3Gat2A==
-X-Received: by 2002:a1c:3c09:: with SMTP id j9mr17557080wma.180.1608569308037;
+        bh=Dw71v3CL2kM3raQJeeszspBPFX2F58JASjvYTnrWOCM=;
+        b=p+uLCUmdo8iFU1t4GkdCwUFiMxN37d8aGcEWnoatevJIiu8t+UlyCkt9YqMLhYYCsV
+         mUvfpcCDSIIm9MkebkzphXC22FfuzHBz/qWzyPcZbykvKrV6lvxeH0qT3qrQsCNddOJX
+         7ebfYt+IjNTBO7HAaZXgm9We9Jel+Iux6bK/FhwjM7/ip7AL7M9aYCqm9onViw8p3hWd
+         ans19xVJmrtuTtFAM5SrADl7QziOd1x1FKoMKUSBghpmdurtXlhtDS9X86s2p1wXg9P/
+         1jPxhxuTR2XX8IVv7WAxMwI/mw44X/waK4rL0uKqBWb/adMziQNsgo6T31FBZYbOnTEj
+         u2Og==
+X-Gm-Message-State: AOAM533SEkkunEje6Q0RohcrxdcnkCpELRysonEhrTC1Q3yynlECZM8S
+        7lm6VIySWw4LsribPYV/If9Wha6LVBz6sAqQH6c=
+X-Google-Smtp-Source: ABdhPJydw13iQ9B5q81Px8W3R+OZXO2wPlxvontCOvnnKaWO5tOhYWFAenan2mUZOZgLkc6o+nEe5Q==
+X-Received: by 2002:a1c:7f8c:: with SMTP id a134mr15711577wmd.184.1608569308687;
         Mon, 21 Dec 2020 08:48:28 -0800 (PST)
 Received: from alco.lan ([80.71.134.83])
-        by smtp.gmail.com with ESMTPSA id o125sm24581109wmo.30.2020.12.21.08.48.27
+        by smtp.gmail.com with ESMTPSA id o125sm24581109wmo.30.2020.12.21.08.48.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 08:48:27 -0800 (PST)
+        Mon, 21 Dec 2020 08:48:28 -0800 (PST)
 From:   Ricardo Ribalda <ribalda@chromium.org>
 To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
         linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH v5 08/12] media: uvcvideo: Add Privacy control based on EXT_GPIO
-Date:   Mon, 21 Dec 2020 17:48:15 +0100
-Message-Id: <20201221164819.792019-9-ribalda@chromium.org>
+Subject: [PATCH v5 09/12] media: uvcvideo: Implement UVC_QUIRK_PRIVACY_DURING_STREAM
+Date:   Mon, 21 Dec 2020 17:48:16 +0100
+Message-Id: <20201221164819.792019-10-ribalda@chromium.org>
 X-Mailer: git-send-email 2.29.2.684.gfbc64c5ab5-goog
 In-Reply-To: <20201221164819.792019-1-ribalda@chromium.org>
 References: <20201221164819.792019-1-ribalda@chromium.org>
@@ -62,51 +62,165 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new control and mapping for Privacy controls connected to
-UVC_GUID_EXT_GPIO_CONTROLLERs.
+Some devices, can only read the privacy_pin if the device is
+streaming.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+This patch implement a quirk for such devices, in order to avoid invalid
+reads and/or spurious events.
+
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- drivers/media/usb/uvc/uvc_ctrl.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ drivers/media/usb/uvc/uvc_driver.c | 57 ++++++++++++++++++++++++++++--
+ drivers/media/usb/uvc/uvc_queue.c  |  3 ++
+ drivers/media/usb/uvc/uvcvideo.h   |  4 +++
+ 3 files changed, 61 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-index a430fa666897..374822b1ee94 100644
---- a/drivers/media/usb/uvc/uvc_ctrl.c
-+++ b/drivers/media/usb/uvc/uvc_ctrl.c
-@@ -347,6 +347,14 @@ static const struct uvc_control_info uvc_ctrls[] = {
- 				| UVC_CTRL_FLAG_RESTORE
- 				| UVC_CTRL_FLAG_AUTO_UPDATE,
- 	},
-+	{
-+		.entity		= UVC_GUID_EXT_GPIO_CONTROLLER,
-+		.selector	= UVC_CT_PRIVACY_CONTROL,
-+		.index		= 0,
-+		.size		= 1,
-+		.flags		= UVC_CTRL_FLAG_GET_CUR
-+				| UVC_CTRL_FLAG_AUTO_UPDATE,
-+	},
- };
+diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+index 72516101fdd0..7af37d4bd60a 100644
+--- a/drivers/media/usb/uvc/uvc_driver.c
++++ b/drivers/media/usb/uvc/uvc_driver.c
+@@ -7,6 +7,7 @@
+  */
  
- static const struct uvc_menu_info power_line_frequency_controls[] = {
-@@ -735,6 +743,16 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
- 		.v4l2_type	= V4L2_CTRL_TYPE_BOOLEAN,
- 		.data_type	= UVC_CTRL_DATA_TYPE_BOOLEAN,
- 	},
-+	{
-+		.id		= V4L2_CID_PRIVACY,
-+		.name		= "Privacy",
-+		.entity		= UVC_GUID_EXT_GPIO_CONTROLLER,
-+		.selector	= UVC_CT_PRIVACY_CONTROL,
-+		.size		= 1,
-+		.offset		= 0,
-+		.v4l2_type	= V4L2_CTRL_TYPE_BOOLEAN,
-+		.data_type	= UVC_CTRL_DATA_TYPE_BOOLEAN,
-+	},
- };
+ #include <linux/atomic.h>
++#include <linux/dmi.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/kernel.h>
+ #include <linux/list.h>
+@@ -1472,6 +1473,17 @@ static int uvc_parse_control(struct uvc_device *dev)
+ /* -----------------------------------------------------------------------------
+  * Privacy GPIO
+  */
++static bool uvc_gpio_is_streaming(struct uvc_device *dev)
++{
++	struct uvc_streaming *streaming;
++
++	list_for_each_entry(streaming, &dev->streams, list) {
++		if (uvc_queue_streaming(&streaming->queue))
++			return true;
++	}
++
++	return false;
++}
  
- /* ------------------------------------------------------------------------
+ 
+ static u8 uvc_gpio_update_value(struct uvc_device *dev,
+@@ -1499,7 +1511,12 @@ static int uvc_gpio_get_cur(struct uvc_device *dev, struct uvc_entity *entity,
+ 	if (cs != UVC_CT_PRIVACY_CONTROL || size < 1)
+ 		return -EINVAL;
+ 
++	if ((dev->quirks & UVC_QUIRK_PRIVACY_DURING_STREAM) &&
++	    !uvc_gpio_is_streaming(dev))
++		return -EBUSY;
++
+ 	*(uint8_t *)data = uvc_gpio_update_value(dev, entity);
++
+ 	return 0;
+ }
+ 
+@@ -1528,19 +1545,50 @@ static struct uvc_entity *uvc_gpio_find_entity(struct uvc_device *dev)
+ 	return NULL;
+ }
+ 
+-static irqreturn_t uvc_gpio_irq(int irq, void *data)
++void uvc_privacy_gpio_event(struct uvc_device *dev)
+ {
+-	struct uvc_device *dev = data;
+ 	struct uvc_entity *unit;
+ 
++
+ 	unit = uvc_gpio_find_entity(dev);
+ 	if (!unit)
+-		return IRQ_HANDLED;
++		return;
+ 
+ 	uvc_gpio_update_value(dev, unit);
++}
++
++static irqreturn_t uvc_gpio_irq(int irq, void *data)
++{
++	struct uvc_device *dev = data;
++
++	/* Ignore privacy events during streamoff */
++	if (dev->quirks & UVC_QUIRK_PRIVACY_DURING_STREAM)
++		if (!uvc_gpio_is_streaming(dev))
++			return IRQ_HANDLED;
++
++	uvc_privacy_gpio_event(dev);
++
+ 	return IRQ_HANDLED;
+ }
+ 
++static const struct dmi_system_id privacy_valid_during_streamon[] = {
++	{
++		.ident = "HP Elite c1030 Chromebook",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "HP"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Jinlon"),
++		},
++	},
++	{
++		.ident = "HP Pro c640 Chromebook",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "HP"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Dratini"),
++		},
++	},
++	{ } /* terminate list */
++};
++
+ static int uvc_gpio_parse(struct uvc_device *dev)
+ {
+ 	struct uvc_entity *unit;
+@@ -1577,6 +1625,9 @@ static int uvc_gpio_parse(struct uvc_device *dev)
+ 
+ 	list_add_tail(&unit->list, &dev->entities);
+ 
++	if (dmi_check_system(privacy_valid_during_streamon))
++		dev->quirks |= UVC_QUIRK_PRIVACY_DURING_STREAM;
++
+ 	return 0;
+ }
+ 
+diff --git a/drivers/media/usb/uvc/uvc_queue.c b/drivers/media/usb/uvc/uvc_queue.c
+index cd60c6c1749e..e800d491303f 100644
+--- a/drivers/media/usb/uvc/uvc_queue.c
++++ b/drivers/media/usb/uvc/uvc_queue.c
+@@ -337,9 +337,12 @@ int uvc_dequeue_buffer(struct uvc_video_queue *queue, struct v4l2_buffer *buf,
+ int uvc_queue_streamon(struct uvc_video_queue *queue, enum v4l2_buf_type type)
+ {
+ 	int ret;
++	struct uvc_streaming *stream = uvc_queue_to_stream(queue);
+ 
+ 	mutex_lock(&queue->mutex);
+ 	ret = vb2_streamon(&queue->queue, type);
++	if (stream->dev->quirks & UVC_QUIRK_PRIVACY_DURING_STREAM)
++		uvc_privacy_gpio_event(stream->dev);
+ 	mutex_unlock(&queue->mutex);
+ 
+ 	return ret;
+diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+index 079a407ebba5..32c1ba246d97 100644
+--- a/drivers/media/usb/uvc/uvcvideo.h
++++ b/drivers/media/usb/uvc/uvcvideo.h
+@@ -209,6 +209,7 @@
+ #define UVC_QUIRK_RESTORE_CTRLS_ON_INIT	0x00000400
+ #define UVC_QUIRK_FORCE_Y8		0x00000800
+ #define UVC_QUIRK_FORCE_BPP		0x00001000
++#define UVC_QUIRK_PRIVACY_DURING_STREAM	0x00002000
+ 
+ /* Format flags */
+ #define UVC_FMT_FLAG_COMPRESSED		0x00000001
+@@ -826,6 +827,9 @@ extern const struct v4l2_file_operations uvc_fops;
+ int uvc_mc_register_entities(struct uvc_video_chain *chain);
+ void uvc_mc_cleanup_entity(struct uvc_entity *entity);
+ 
++/* Privacy gpio */
++void uvc_privacy_gpio_event(struct uvc_device *dev);
++
+ /* Video */
+ int uvc_video_init(struct uvc_streaming *stream);
+ int uvc_video_suspend(struct uvc_streaming *stream);
 -- 
 2.29.2.684.gfbc64c5ab5-goog
 
