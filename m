@@ -2,129 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 460992E00DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 20:21:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C26F2E00DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 20:21:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726829AbgLUTU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 14:20:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60804 "EHLO
+        id S1726207AbgLUTVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 14:21:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726121AbgLUTU2 (ORCPT
+        with ESMTP id S1725818AbgLUTVT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 14:20:28 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D11C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 11:19:48 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id l23so6986561pjg.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 11:19:48 -0800 (PST)
+        Mon, 21 Dec 2020 14:21:19 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7D27C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 11:20:38 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id a12so26330586lfl.6
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 11:20:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WtizPFqIUsbgTk5ZUrZ8KiSKXylfonEzY0kSBt4n3QA=;
-        b=Mt22q0LphIerpJ6ZPHpk+kXQKlq3p1GmAfA+r40ZSGd7rnEuT8VLNOXxtJ9a/omgg/
-         R9T6PxUFmSoFgiDAden/8ODlmo3pKOTmbVWEgtCK/qZ6snnwrB7bL8W3DW76tZtYWj0K
-         ichq0UXkyD9uWbsTWGZLC22/+TxRSSrcxHjWAfk8mMM6Kual/FQY5yfOX4q9LGCtyvv5
-         /DUlf+NCH0B4FRqxulAz/zIh4Ptv4V0i/awZSORItek+ZaO0pcqTRzxPW+XfQ+X+Sn39
-         uqoyh+2GQCthU3kIDA4tPlO1zNd69Sf4ntY6X3hzZs9Vf6+dn+nSYtW/EcWEhLUkKYcK
-         hYPw==
+        d=konsulko.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vUnUklljz54AklJ/4EYyGGDSEKEpQNWIZ2ClZ96iVF4=;
+        b=d1K2ld8SA6F/za4a6CZm0iTta7Dp706o9UHjEsvzJYHNeT9VXuoH+dWLNfm7MB8S2a
+         Q/SIVL8bJtZTpimpbTyhsEQT11FnAqTZuAuNR0y6CCyP7Vg6esvDJMcvz+EZdwyk5NAB
+         4ttGSZuBDYPJmBUSv0vOh1uzULKDGV8/TT5LU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WtizPFqIUsbgTk5ZUrZ8KiSKXylfonEzY0kSBt4n3QA=;
-        b=Y+M32GRmMIQOnci5x+yy6fnZCGCJ48x7Ie7GLsqqdsfZ0Q5DVUlDwRaALVUZf2/PAb
-         458SmSMrddJ1pFLcEpdYD36yHKzrirsC/g01o+HaDpvdOZLlaD2dJ38st4D6KR5SRwSc
-         HdE0pU/Dz3VEnZdtyXEDbzb8OrzjpFv/1ON11Ez89nPTWrfhrfYFYO117ZblJOp3Rlui
-         DOct6YaxHQJLDH9XEQt4uJ6YejAdD303fwt2jKXEbfjFpNGcbK1x1Y9z653HBDEht5uc
-         CezKQbF9b8mBr35XC1PHbHB+stZLrva4b7ug4LJpinphueC3n5rO1IAH0B8fNZBZ05kd
-         Vidw==
-X-Gm-Message-State: AOAM533X7tKg4cY1SOIji1USFJ87ocbM2etqOhiT7WzAzvg8etnxCTRC
-        RA8AI529X+knRusvgjBTVIxD4Q==
-X-Google-Smtp-Source: ABdhPJz0Sv4gY1tNUjJc/rLJljNUCFgw6jCNcjw5sVpEbSnS2EZNzHrVAqkGoC1cfC+satTVKgeOgA==
-X-Received: by 2002:a17:902:854b:b029:db:c725:edcd with SMTP id d11-20020a170902854bb02900dbc725edcdmr17972443plo.64.1608578388081;
-        Mon, 21 Dec 2020 11:19:48 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id cu4sm16848943pjb.18.2020.12.21.11.19.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 11:19:47 -0800 (PST)
-Date:   Mon, 21 Dec 2020 11:19:40 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     kvm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Krish Sadhukhan <krish.sadhukhan@oracle.com>
-Subject: Re: [PATCH v2] KVM/x86: Move definition of __ex to x86.h
-Message-ID: <X+D1TPXRuTggnvHv@google.com>
-References: <20201220211109.129946-1-ubizjak@gmail.com>
- <X+DnRcYVNdkkgI3j@google.com>
- <CAFULd4aBWqQmwYNo74_zmP22Lu79jnRJVu5+PrKkOD2Dbp6-FQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vUnUklljz54AklJ/4EYyGGDSEKEpQNWIZ2ClZ96iVF4=;
+        b=clYHdkKvEjW2hgs8hcy30bJ3bpkGJNIa54j6IMJLjl4dU1E+3kF2hsgvvYyelsvlD3
+         vkYhzJiprCCZ0OmMIQLfIGuy006iIUexdkjUP6Hnl/12IPdRz03xK0wUtwuUaPt36a/7
+         J8QTp5NmNt5aqs9fp//zs8meILPfBx0En8H8e+Y0sScTFeLfJjwucp17hmiErBg4pnRD
+         K1qNhhHYeRvQV4HTQ8051c0nHAwaB0K2ns1id696IE9jk2McV5JR4lPW6b7FaIiRQduZ
+         9FTpKUnXJjKCJjN+3kDJJyB3oWANMOGMoUnJXEdo0fBNKw9z5cjlUVrc2405mUeynNoc
+         DKYw==
+X-Gm-Message-State: AOAM5331COx8ryNSPXpDskLSVA0+As+pfiNzx+1gVTNuMnMDNs3rMj/e
+        vmWdzABIeobt36JzxAq7cILMXHanJkVoWQV7Z5OA/daS2p+7W9w8
+X-Google-Smtp-Source: ABdhPJzqa7NO56hNQ/VQuBNjQXKjNoRtYGbC1iIsUZiW++x/B/Fr0mahPbfbElKMX4ZIrropW1FBP2BGkUKY6suQAyA=
+X-Received: by 2002:a2e:b8c4:: with SMTP id s4mr5369682ljp.269.1608578437281;
+ Mon, 21 Dec 2020 11:20:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFULd4aBWqQmwYNo74_zmP22Lu79jnRJVu5+PrKkOD2Dbp6-FQ@mail.gmail.com>
+References: <18669bd607ae9efbf4e00e36532c7aa167d0fa12.camel@gmx.de>
+ <20201220002228.38697-1-vitaly.wool@konsulko.com> <X+DaMSJE22nUC0tl@google.com>
+In-Reply-To: <X+DaMSJE22nUC0tl@google.com>
+From:   Vitaly Wool <vitaly.wool@konsulko.com>
+Date:   Mon, 21 Dec 2020 20:20:26 +0100
+Message-ID: <CAM4kBBKnW6K-mbPno4SpvhUBiykP4zeFm_CNzssDkReURbuU7w@mail.gmail.com>
+Subject: Re: [PATCH] zsmalloc: do not use bit_spin_lock
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Mike Galbraith <efault@gmx.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        NitinGupta <ngupta@vflare.org>,
+        sergey.senozhatsky.work@gmail.com,
+        Andrew Morton <akpm@linux-foundation.org>, shakeelb@google.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020, Uros Bizjak wrote:
-> On Mon, Dec 21, 2020 at 7:19 PM Sean Christopherson <seanjc@google.com> wrote:
+On Mon, Dec 21, 2020 at 6:24 PM Minchan Kim <minchan@kernel.org> wrote:
+>
+> On Sun, Dec 20, 2020 at 02:22:28AM +0200, Vitaly Wool wrote:
+> > zsmalloc takes bit spinlock in its _map() callback and releases it
+> > only in unmap() which is unsafe and leads to zswap complaining
+> > about scheduling in atomic context.
 > >
-> > On Sun, Dec 20, 2020, Uros Bizjak wrote:
-> > > Merge __kvm_handle_fault_on_reboot with its sole user
+> > To fix that and to improve RT properties of zsmalloc, remove that
+> > bit spinlock completely and use a bit flag instead.
+>
+> I don't want to use such open code for the lock.
+>
+> I see from Mike's patch, recent zswap change introduced the lockdep
+> splat bug and you want to improve zsmalloc to fix the zswap bug and
+> introduce this patch with allowing preemption enabling.
+
+This understanding is upside down. The code in zswap you are referring
+to is not buggy.  You may claim that it is suboptimal but there is
+nothing wrong in taking a mutex.
+
+> https://lore.kernel.org/linux-mm/fae85e4440a8ef6f13192476bd33a4826416fc58.camel@gmx.de/
+>
+> zs_[un/map]_object is designed to be used in fast path(i.e.,
+> zs_map_object/4K page copy/zs_unmap_object) so the spinlock is
+> perfectly fine for API point of view. However, zswap introduced
+> using the API with mutex_lock/crypto_wait_req where allowing
+> preemption, which was wrong.
+
+Taking a spinlock in one callback and releasing it in another is
+unsafe and error prone. What if unmap was called on completion of a
+DMA-like transfer from another context, like a threaded IRQ handler?
+In that case this spinlock might never be released.
+
+Anyway I can come up with a zswap patch explicitly stating that
+zsmalloc is not fully compliant with zswap / zpool API to avoid
+confusion for the time being. Would that be ok with you?
+
+Best regards,
+   Vitaly
+
+> Furthermore, the zs_map_object already has a few more places where
+> disablepreemptions(migrate_read_lock, get_cpu_var and kmap_atomic).
+>
+> Without making those locks preemptible all at once, zswap will still
+> see the lockdep warning.
+>
 > >
-> > There's also a comment in vmx.c above kvm_cpu_vmxoff() that should be updated.
-> > Alternatively, and probably preferably for me, what about keeping the long
-> > __kvm_handle_fault_on_reboot() name for the macro itself and simply moving the
-> > __ex() macro?
+> > Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.com>
+> > ---
+> >  mm/zsmalloc.c | 13 ++++++++-----
+> >  1 file changed, 8 insertions(+), 5 deletions(-)
 > >
-> > That would also allow keeping kvm_spurious_fault() and
-> > __kvm_handle_fault_on_reboot() where they are (for no reason other than to avoid
-> > code churn).  Though I'm also ok if folks would prefer to move everything to
-> > x86.h.
-> 
-> The new patch is vaguely based on our correspondence on the prototype patch:
-> 
-> --q--
-> Moving this to asm/kvm_host.h is a bit sketchy as __ex() isn't exactly the
-> most unique name.  arch/x86/kvm/x86.h would probably be a better
-> destination as it's "private".  __ex() is only used in vmx.c, nested.c and
-> svm.c, all of which already include x86.h.
-> --/q--
-> 
-> where you mentioned that x86.h would be a better destination for
-> __ex().
-
-Ya, thankfully I still agree with my past self on this one :-)
-
-> IMO, __kvm_handle_fault_on_reboot also belongs in x86.h, as it
-> deals with a low-level access to the processor, and there is really no
-> reason for this #define to be available for the whole x86 architecture
-> directory. I remember looking for the __kvm_handle_falult_on_reboot,
-> and was surprised to find it in a global x86 include directory.
-
-Works for me.  If you have a strong preference for moving everything to x86.h,
-then let's do that.
-
-> I tried to keep __ex as a redefine to __kvm_hanlde_fault_on_reboot in
-> x86.h, but it just looked weird, since __ex is the only user and the
-> introductory document explains in detail, what
-> __kvm_hanlde_fault_on_reboot (aka __ex) does.
-
-I like the verbose name because it very quickly reminds what the macro does; I
-somehow manage to forget every few months.  I agree it's a bit superfluous since
-the comment explains exactly what goes on.  And I can see how
-__kvm_handle_fault_on_reboot() would be misleading as it also "handles" faults
-at all other times as well.
-
-What if we add a one-line synopsis in the comment to state the (very) high-level
-purpose of the function?  We could also opportunistically clean up the
-formatting in the existing comment to save a line, e.g.:
-
-/*
- * Handle a fault on a hardware virtualization (VMX or SVM) instruction.
- *
- * Hardware virtualization extension instructions may fault if a reboot turns
- * off virtualization while processes are running.  Usually after catching the
- * fault we just panic; during reboot instead the instruction is ignored.
- */
+> > diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
+> > index 7289f502ffac..ff26546a7fed 100644
+> > --- a/mm/zsmalloc.c
+> > +++ b/mm/zsmalloc.c
+> > @@ -876,22 +876,25 @@ static unsigned long obj_to_head(struct page *page, void *obj)
+> >
+> >  static inline int testpin_tag(unsigned long handle)
+> >  {
+> > -     return bit_spin_is_locked(HANDLE_PIN_BIT, (unsigned long *)handle);
+> > +     return test_bit(HANDLE_PIN_BIT, (unsigned long *)handle);
+> >  }
+> >
+> >  static inline int trypin_tag(unsigned long handle)
+> >  {
+> > -     return bit_spin_trylock(HANDLE_PIN_BIT, (unsigned long *)handle);
+> > +     return !test_and_set_bit(HANDLE_PIN_BIT, (unsigned long *)handle);
+> >  }
+> >
+> > -static void pin_tag(unsigned long handle) __acquires(bitlock)
+> > +static void pin_tag(unsigned long handle)
+> >  {
+> > -     bit_spin_lock(HANDLE_PIN_BIT, (unsigned long *)handle);
+> > +     preempt_disable();
+> > +     while(test_and_set_bit(HANDLE_PIN_BIT, (unsigned long *)handle))
+> > +             cpu_relax();
+> > +     preempt_enable();
+> >  }
+> >
+> >  static void unpin_tag(unsigned long handle) __releases(bitlock)
+> >  {
+> > -     bit_spin_unlock(HANDLE_PIN_BIT, (unsigned long *)handle);
+> > +     clear_bit(HANDLE_PIN_BIT, (unsigned long *)handle);
+> >  }
+> >
+> >  static void reset_page(struct page *page)
+> > --
+> > 2.20.1
+> >
