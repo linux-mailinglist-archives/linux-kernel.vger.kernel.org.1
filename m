@@ -2,193 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D39712DFDAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 16:44:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 787772DFFEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:37:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725844AbgLUPn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 10:43:58 -0500
-Received: from mail-wm1-f52.google.com ([209.85.128.52]:55604 "EHLO
-        mail-wm1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725777AbgLUPn6 (ORCPT
+        id S1727035AbgLUSg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:36:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726855AbgLUSg0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 10:43:58 -0500
-Received: by mail-wm1-f52.google.com with SMTP id x22so10255726wmc.5;
-        Mon, 21 Dec 2020 07:43:40 -0800 (PST)
+        Mon, 21 Dec 2020 13:36:26 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D7FAC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:35:46 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id q137so9692266iod.9
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:35:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YliUtlY76/UIPuQ5v8deFXxZeb8eSvRLcMxme2JxEEk=;
+        b=HDksKqgKauZN6tvbdPBgggj8IeeTS2c7JRuSWMI+pRG1FwKAhMCJxMCv7JOIqk50wv
+         3X1HRLkpEKIsTmGLQK6vIyf/RMl8sqUJoc0+IVGVdkvPNiQkOjCyDbUhahzYluorDnrk
+         1PDsuxVXgwT/JnDR/e8fyiqWr/gjcp4gXGi2ngqD9bS5/EBS76qfZPKMvDBaRcXFxHGt
+         YOSyX7QbQ/Koym0Jms6BgoWpgnw/5heVHu2j7+FeQsRTUWVZEWILea7Byq/nnV5Cq6bO
+         YDDYicvRlZMY5s2D5oa9p6I/4Nwjhwv9qDpErWN/14vrvlkMgsgZNqe/YH2kcc3Fnt+d
+         1eOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eBXm2ENZyMbUD/+MQkl1th7hjWBElaB2QBhgzFuNMgk=;
-        b=pvUIYUflpCpo4w0XbAUkdVv5GcbXNhFxmhUHGm3HGJ8gV0VklfPOSl7O6ZjtIBxVOP
-         tiVW3maPf6bPvn5xvBjgHjNlw0GhEMZ/fXIQigkrIQ8nrvGQHxBqSeXF360+W4q6tvIn
-         j5eg/UpeAh+tkjTIlygBIHcSMKGnp7DqVHXuhkLsIR6TDZf+6BvU2QWRQEVykPTTKS4f
-         VJff0FNvpuC/vFXFuyq3Xrs/Oy9ERsXHBix/nEGDHrgmkbIqgA3+SskPQ5mVPTY2X/vI
-         w2zPT5vnlH5pvCo0tMhMhfNpXYewm//TJgTuo/dvojEdZdVquWHI8PeSfyJTa01wfqGz
-         nR/A==
-X-Gm-Message-State: AOAM531gMTXX2H86YZcc0pA43XNG1VsZwDunJAGRuAk7/0OJ32OMv7tF
-        J3aZuedHC84r/PexZSHirog=
-X-Google-Smtp-Source: ABdhPJzNKXswqKaexwUhV0ogVLvDGB0INsUBzTOsZEnTRDA4tEoNmgFKAq6a4KamldZzTxW0jAU7vg==
-X-Received: by 2002:a05:600c:313:: with SMTP id q19mr17067442wmd.126.1608565394608;
-        Mon, 21 Dec 2020 07:43:14 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id v4sm24840766wrw.42.2020.12.21.07.43.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 07:43:13 -0800 (PST)
-Date:   Mon, 21 Dec 2020 16:43:11 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Timon Baetz <timon.baetz@protonmail.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH v2 2/6] power: supply: max8997_charger: Set CHARGER
- current limit
-Message-ID: <20201221154311.GA43240@kozik-lap>
-References: <20201202203516.43053-1-timon.baetz@protonmail.com>
- <20201221095001.595366-1-timon.baetz@protonmail.com>
- <20201221095001.595366-2-timon.baetz@protonmail.com>
- <20201221141627.GB33797@kozik-lap>
- <20201221163455.2c3f095d.timon.baetz@protonmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YliUtlY76/UIPuQ5v8deFXxZeb8eSvRLcMxme2JxEEk=;
+        b=i3VFtzb7VO4t0kEIemcLnu3ngK3vZTgLOX0YIMe4zCxjQQ4cCGM1e2YlhJAdi+ZMzU
+         ue5gw6gpu5Ar4OgNXWYZSxaqI7fCg/csGtUJvLSd0Gj6kOz7DbqSpF9hVXf7hXoLpL7b
+         zlhVUUtjqKZJsXCd64wdoDxiJdJ79uXdCfWR2010FDn17YrIhIiNnQOor0V5Xl/M6GZR
+         wvx8bw/9MEhElkW4/OqJe+ee6ZItQ/KmCGcSmq6EniP+iyM6J4B+nulUoAh3KTmY2J2r
+         sF1XdXNr+HjFs5DOL/wcaqaWaKQ9v023cZyP88pQc6M/p/zsqSAkPBwTu9bRwoWHpMmL
+         WeJg==
+X-Gm-Message-State: AOAM530UiSYxb/AkvnBO/fnjMTPf75GMVZQw+yfeereIC+vuglpMXkoq
+        UsgKg3LzP76B2FsBO2kGVTUjFFk07vgkgVKAbhzjcqI2qDTu98GF
+X-Google-Smtp-Source: ABdhPJxKT6tC6/ndV2N5i1FwKZxN3yOMknKcMYRbpSq6pVUOWTKpPSP2SnmFD7tg+Np8Z6fWmUqBTLjQBM+VPNs1bYw=
+X-Received: by 2002:a63:480f:: with SMTP id v15mr2249541pga.341.1608565986866;
+ Mon, 21 Dec 2020 07:53:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201221163455.2c3f095d.timon.baetz@protonmail.com>
+References: <20201217121303.13386-1-songmuchun@bytedance.com>
+ <20201217121303.13386-4-songmuchun@bytedance.com> <20201221091123.GB14343@linux>
+ <CAMZfGtVnS=_m4fpGBfDpOpdgzP02QCteUQn-gGiLADWfGiVJ=A@mail.gmail.com> <20201221134345.GA19324@linux>
+In-Reply-To: <20201221134345.GA19324@linux>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Mon, 21 Dec 2020 23:52:30 +0800
+Message-ID: <CAMZfGtVTqYXOvTHSay-6WS+gtDSCtcN5ksnkj8hJgrUs_XWoWQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v10 03/11] mm/hugetlb: Free the vmemmap
+ pages associated with each HugeTLB page
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>, naoya.horiguchi@nec.com,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 03:35:07PM +0000, Timon Baetz wrote:
-> On Mon, 21 Dec 2020 15:16:27 +0100, Krzysztof Kozlowski wrote:
-> > On Mon, Dec 21, 2020 at 09:53:15AM +0000, Timon Baetz wrote:
-> > > Register for extcon notification and set charging current depending on
-> > > the detected cable type. Current values are taken from vendor kernel,
-> > > where most charger types end up setting 650mA [0].
-> > >
-> > > Also enable and disable the CHARGER regulator based on extcon events.
-> > >
-> > > [0] https://github.com/krzk/linux-vendor-backup/blob/samsung/galaxy-s2-epic-4g-touch-sph-d710-exynos4210-dump/drivers/misc/max8997-muic.c#L1675-L1678
-> > >
-> > > Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
-> > > ---
-> > >  drivers/mfd/max8997.c                  |  4 +-
-> > >  drivers/power/supply/max8997_charger.c | 94 ++++++++++++++++++++++++++
-> > >  2 files changed, 96 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/drivers/mfd/max8997.c b/drivers/mfd/max8997.c
-> > > index 68d8f2b95287..55d3a6f97783 100644
-> > > --- a/drivers/mfd/max8997.c
-> > > +++ b/drivers/mfd/max8997.c
-> > > @@ -29,9 +29,9 @@
-> > >  static const struct mfd_cell max8997_devs[] = {
-> > >  	{ .name = "max8997-pmic", },
-> > >  	{ .name = "max8997-rtc", },
-> > > -	{ .name = "max8997-battery", },
-> > > +	{ .name = "max8997-battery", .of_compatible = "maxim,max8997-battery", },
-> > >  	{ .name = "max8997-haptic", },
-> > > -	{ .name = "max8997-muic", },
-> > > +	{ .name = "max8997-muic", .of_compatible = "maxim,max8997-muic", },  
-> > 
-> > Undocumented bindings. The checkpatch should complain about it, so I
-> > assume you did not run it. Please run the checkpatch.
-> > 
-> > >  	{ .name = "max8997-led", .id = 1 },
-> > >  	{ .name = "max8997-led", .id = 2 },
-> > >  };
-> > > diff --git a/drivers/power/supply/max8997_charger.c b/drivers/power/supply/max8997_charger.c
-> > > index 1947af25879a..6e8750e455ea 100644
-> > > --- a/drivers/power/supply/max8997_charger.c
-> > > +++ b/drivers/power/supply/max8997_charger.c
-> > > @@ -6,12 +6,14 @@
-> > >  //  MyungJoo Ham <myungjoo.ham@samsung.com>
-> > >
-> > >  #include <linux/err.h>
-> > > +#include <linux/extcon.h>
-> > >  #include <linux/module.h>
-> > >  #include <linux/slab.h>
-> > >  #include <linux/platform_device.h>
-> > >  #include <linux/power_supply.h>
-> > >  #include <linux/mfd/max8997.h>
-> > >  #include <linux/mfd/max8997-private.h>
-> > > +#include <linux/regulator/consumer.h>
-> > >
-> > >  /* MAX8997_REG_STATUS4 */
-> > >  #define DCINOK_SHIFT		1
-> > > @@ -31,6 +33,10 @@ struct charger_data {
-> > >  	struct device *dev;
-> > >  	struct max8997_dev *iodev;
-> > >  	struct power_supply *battery;
-> > > +	struct regulator *reg;
-> > > +	struct extcon_dev *edev;
-> > > +	struct notifier_block extcon_nb;
-> > > +	struct work_struct extcon_work;
-> > >  };
-> > >
-> > >  static enum power_supply_property max8997_battery_props[] = {
-> > > @@ -88,6 +94,67 @@ static int max8997_battery_get_property(struct power_supply *psy,
-> > >  	return 0;
-> > >  }
-> > >
-> > > +static void max8997_battery_extcon_evt_stop_work(void *data)
-> > > +{
-> > > +	struct charger_data *charger = data;
-> > > +
-> > > +	cancel_work_sync(&charger->extcon_work);
-> > > +}
-> > > +
-> > > +static void max8997_battery_extcon_evt_worker(struct work_struct *work)
-> > > +{
-> > > +	struct charger_data *charger =
-> > > +	    container_of(work, struct charger_data, extcon_work);
-> > > +	struct extcon_dev *edev = charger->edev;
-> > > +	int current_limit, ret;
-> > > +
-> > > +	if (extcon_get_state(edev, EXTCON_CHG_USB_SDP) > 0) {
-> > > +		dev_dbg(charger->dev, "USB SDP charger is connected\n");
-> > > +		current_limit = 450000;
-> > > +	} else if (extcon_get_state(edev, EXTCON_CHG_USB_DCP) > 0) {
-> > > +		dev_dbg(charger->dev, "USB DCP charger is connected\n");
-> > > +		current_limit = 650000;
-> > > +	} else if (extcon_get_state(edev, EXTCON_CHG_USB_FAST) > 0) {
-> > > +		dev_dbg(charger->dev, "USB FAST charger is connected\n");
-> > > +		current_limit = 650000;
-> > > +	} else if (extcon_get_state(edev, EXTCON_CHG_USB_SLOW) > 0) {
-> > > +		dev_dbg(charger->dev, "USB SLOW charger is connected\n");
-> > > +		current_limit = 650000;
-> > > +	} else if (extcon_get_state(edev, EXTCON_CHG_USB_CDP) > 0) {
-> > > +		dev_dbg(charger->dev, "USB CDP charger is connected\n");
-> > > +		current_limit = 650000;
-> > > +	} else {
-> > > +		dev_dbg(charger->dev, "USB charger is diconnected\n");
-> > > +		current_limit = -1;
-> > > +	}
-> > > +
-> > > +	if (current_limit > 0) {
-> > > +		ret = regulator_set_current_limit(charger->reg, current_limit, current_limit);
-> > > +		if (ret) {
-> > > +			dev_err(charger->dev, "failed to set current limit: %d\n", ret);
-> > > +			goto regulator_disable;  
-> > 
-> > Unusual error path... if regulator was not enabled before and
-> > regulator_set_current_limit() failed, you disable the regulator? Why?
-> > Wasn't it already disabled?
-> 
-> Because I thought you asked me to in v1 of this patch:
-> > Failure of setting the current should rather disable the charging.
-> 
-> I probably misunderstood you comment then. So I guess it should just
-> return?
+On Mon, Dec 21, 2020 at 9:44 PM Oscar Salvador <osalvador@suse.de> wrote:
+>
+> On Mon, Dec 21, 2020 at 07:25:15PM +0800, Muchun Song wrote:
+>
+> > Should we add a BUG_ON in vmemmap_remap_free() for now?
+> >
+> >         BUG_ON(reuse != start + PAGE_SIZE);
+>
+> I do not think we have to, plus we would be BUG_ing for some specific use
+> case in "generic" function.
 
-Yes, I was not specific enough. In v1 you enabled the charging even in
-case of regulator_set_current_limit() error. Instead, the charging
-should not be enabled, so just return here with error.
+The vmemmap_remap_range() walks page table range [start, end),
+if reuse is equal to (start + PAGE_SIZE), the range can adjust to
+[start - PAGE_SIZE, end). But if not, we need some work to
+implement the "generic" function.
 
-Best regards,
-Krzysztof
+  - adjust range to [min(start, reuse), end) and call
+    vmemmap_remap_rangeand which skip the hole
+    which is [reuse + PAGE_SIZE, start) or [end, reuse).
+  - call vmemmap_remap_range(reuse, reuse + PAGE_SIZE)
+    to get the reuse page.Then, call vmemmap_remap_range(start, end)
+    again to remap.
 
+Which one do you prefer?
+
+> Maybe others think different though.
+>
+> --
+> Oscar Salvador
+> SUSE L3
+
+
+
+--
+Yours,
+Muchun
