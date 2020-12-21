@@ -2,133 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2402DF7E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 03:58:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ADCF2DF7ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 04:00:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728520AbgLUC4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 21:56:18 -0500
-Received: from ozlabs.org ([203.11.71.1]:48337 "EHLO ozlabs.org"
+        id S1728407AbgLUC7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 21:59:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728509AbgLUC4R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 21:56:17 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Czkbz74JRz9sVm;
-        Mon, 21 Dec 2020 13:55:27 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1608519329;
-        bh=f4F491BaNqc7Qn32ON9IjfLdZLIb3j3TCOzNOfuntzo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=sJI6B+KhK58CUPZBBm444cUWSbM6Mjuuf78WKNQs1MsfEE6zfrKNG6HWOUUmsy+1i
-         13fYJj47TG26IMIPicKsxjM8buABVDWrBiTyWNufcNiK09Nau6E958smtHBsr2tCEq
-         TVelB1yaWwlOGn1KdfDzwW2ukDdHe3dhLsj9jZV8txuR9VPhfcR5Td7ThXukXvfD/+
-         V12pu7fSEju9Oqk2S1gplocdlQ+K/0SxmzIQHD1ZUzdBz7TBJ4zPOEumYdz7d9bo7c
-         uW9lFciCObDRN97CbRnaHkgGpJMqI5r3zDAw4X7JIoJSw4Efy2mV4lDpOZVMtO7Ln1
-         FkdFcMH3Fmt5Q==
-Date:   Mon, 21 Dec 2020 13:55:27 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the akpm-current tree
-Message-ID: <20201221135527.4cbdb11a@canb.auug.org.au>
-In-Reply-To: <1608517898.9171.6.camel@mtksdccf07>
-References: <20201221131017.128c89b1@canb.auug.org.au>
-        <1608517898.9171.6.camel@mtksdccf07>
+        id S1728330AbgLUC7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Dec 2020 21:59:33 -0500
+X-Gm-Message-State: AOAM530pn7rmVqsXiGABYed+AGXkkwhMXinScdLrDPtSmqT7VKU8Bgih
+        ZYpHWHa4Pw9hBWIjvELU5inmTbeoBw5vCtKLt1k=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608519532;
+        bh=SZun7TJm7wCXlJxQxcZrzlk8v6yvxc/nAR0yaGvTZu8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=KnNET7Lg40h3y5kFwF1waDYdIM8Do0+T2isXSZpLIjVJHXvg0BfIqCvJkjtPxCkFL
+         JQ7bVyERdGu/FzYlZN2MFSyeEjnd8gJ+1rkJYGwWLnDgJOk2E3cuNbfkGamcAXyIJt
+         RMlA7a9j81ZzSxufNR4vdFhkUY3qFMU9f83PuMzCGRsLWOebk5ePK36HIpwhNKW/60
+         LxhwVNCvg15YNnvXcdpq/+x2hWELFpHcDPUW8hh+bygmQb8g3op7OveZMBhcW/qUqz
+         q08W5Pw2YELINNhxFI52BjULPc5Txzzm6f5Q+b0SDTzALSBP/+LqoDI5iuJkGJO2nl
+         VFOEUSt0b+YLA==
+X-Google-Smtp-Source: ABdhPJx09BMHVq0KkSgpUsvrCS7aZUZUQ68ReymvsEtc1ivryBp80GH4ho6nbTRrPxmTlRcdp7vXNmLo69BQ/g4I9GA=
+X-Received: by 2002:a19:c511:: with SMTP id w17mr5425729lfe.557.1608519530327;
+ Sun, 20 Dec 2020 18:58:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/nHyfFR7u4_cuD3Z=5bTr1+k";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20190307091514.2489338-1-arnd@arndb.de> <X9S28TcEXd2zghzp@elver.google.com>
+ <87czzeg5ep.fsf@nanos.tec.linutronix.de> <CAK8P3a0LWjNgwm605TM4dKCsn078X7NC3sEfdBSgcMNEocQ5iA@mail.gmail.com>
+ <CAJF2gTRLEbBfZJ7Y6UNOMq-cwG5OYRW=+8Pfauz6v6R8ntBjYA@mail.gmail.com>
+ <CAK8P3a3+WaQNyJ6Za2qfu6=0mBgU1hApnRXrdp1b1=P7wwyRUg@mail.gmail.com>
+ <CAJF2gTQUPXzRL4P2ghoSt6t+pyAJ7A9dqdD6VWYNdOmJjd2HQg@mail.gmail.com> <CAK8P3a3mrD7U__T-X2jr1Mw9Xk=dBE=Fuid_BHNE85GcX0g-rg@mail.gmail.com>
+In-Reply-To: <CAK8P3a3mrD7U__T-X2jr1Mw9Xk=dBE=Fuid_BHNE85GcX0g-rg@mail.gmail.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Mon, 21 Dec 2020 10:58:38 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTSc5FS-iUZUiEygviFwa17e=iBncmL+mZ_BORbSthmxiQ@mail.gmail.com>
+Message-ID: <CAJF2gTSc5FS-iUZUiEygviFwa17e=iBncmL+mZ_BORbSthmxiQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] futex: mark futex_detect_cmpxchg() as 'noinline'
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Marco Elver <elver@google.com>, Arnd Bergmann <arnd@arndb.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org,
+        sparclinux <sparclinux@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/nHyfFR7u4_cuD3Z=5bTr1+k
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Arnd,
 
-Hi Kuan-Ying,
-
-On Mon, 21 Dec 2020 10:31:38 +0800 Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.co=
-m> wrote:
+On Mon, Dec 21, 2020 at 1:49 AM Arnd Bergmann <arnd@kernel.org> wrote:
 >
-> On Mon, 2020-12-21 at 13:10 +1100, Stephen Rothwell wrote:
-> >=20
-> > After merging the akpm-current tree, today's linux-next build (x86_64
-> > allmodconfig) failed like this:
-> >=20
-> > mm/kasan/quarantine.c: In function 'quarantine_put':
-> > mm/kasan/quarantine.c:207:15: error: 'info' undeclared (first use in th=
-is function)
-> >   207 |   qlink_free(&info->quarantine_link, cache);
-> >       |               ^~~~
-> >=20
-> > Caused by commit
-> >=20
-> >   120d593a8650 ("kasan: fix memory leak of kasan quarantine")
-> >=20
-> > interacting with commit
-> >=20
-> >   cfbc92088e1d ("kasan: rename get_alloc/free_info")
-> >=20
-> > Can we please get this sorted out once and for all?
-> >=20
-> > I have applied the following patch for today:
-> >=20
-> > From: Stephen Rothwell <sfr@canb.auug.org.au>
-> > Date: Mon, 21 Dec 2020 13:07:42 +1100
-> > Subject: [PATCH] kasan: fix memory leak of kasan quarantine fix
-> >=20
-> > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> > ---
-> >  mm/kasan/quarantine.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >=20
-> > diff --git a/mm/kasan/quarantine.c b/mm/kasan/quarantine.c
-> > index 3f3b3d902c18..091a57f942b3 100644
-> > --- a/mm/kasan/quarantine.c
-> > +++ b/mm/kasan/quarantine.c
-> > @@ -204,7 +204,7 @@ bool quarantine_put(struct kmem_cache *cache, void =
-*object)
-> > =20
-> >  	q =3D this_cpu_ptr(&cpu_quarantine);
-> >  	if (q->offline) {
-> > -		qlink_free(&info->quarantine_link, cache);
-> > +		qlink_free(&meta->quarantine_link, cache); // free once
-> >  		local_irq_restore(flags);
-> >  		return false;  // free twice
-> >  	}
-> > --=20
-> > 2.29.2
-> >  =20
->=20
-> Please just drop this patch "kasan: fix memory leak of kasan quarantine"
-> from linux-next. Otherwise, it would cause double free issue.
+> On Sun, Dec 20, 2020 at 4:46 PM Guo Ren <guoren@kernel.org> wrote:
+> > On Tue, Dec 15, 2020 at 7:26 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> > >
+> > > On Tue, Dec 15, 2020 at 7:09 AM Guo Ren <guoren@kernel.org> wrote:
+> > > > On Mon, Dec 14, 2020 at 9:15 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> > > > > I had a look at what other architectures always implement
+> > > > > futex_atomic_cmpxchg_inatomic() or can use the asm-generic non-SMP version,
+> > > > > and I found that it's pretty much all of them, the odd ones being just sparc32
+> > > > > and csky, which use asm-generic/futex.h but do have an SMP option,
+> > > > > as well as xtensa
+> > > > >
+> > > > > I would guess that for csky, this is a mistake, as the architecture is fairly
+> > > > > new and should be able to implement it. Not sure about sparc32.
+> > > >
+> > > > The c610, c807, c810 don't support SMP, so futex_cmpxchg_enabled = 1
+> > > > with asm-generic's implementation.
+> > > > For c860, there is no HAVE_FUTEX_CMPXCHG and cmpxchg_inatomic/inuser
+> > > > implementation, so futex_cmpxchg_enabled = 0.
+> > > >
+> > > > Thx for point it out, we'll implement cmpxchg_inatomic/inuser for C860
+> > > > and still use asm-generic for non-smp CPUs.
+> > >
+> > > Sounds good to me.
+> > Done: https://lore.kernel.org/linux-csky/1608478763-60148-3-git-send-email-guoren@kernel.org/T/#u
+>
+> Thanks!
+>
+> Can you clarify if there are any dependencies on the other patches in
+> that series?
+No dependency.
 
-OK, so for today I have reverted my fix patch and 120d593a8650 ("kasan:
-fix memory leak of kasan quarantine").
+>
+> I'd like to take the futex patch through the asm-generic tree along with the
+> patches for the other architectures.
+You take the futex patch and I'll remove it from my tree.
 
---=20
-Cheers,
-Stephen Rothwell
+-- 
+Best Regards
+ Guo Ren
 
---Sig_/nHyfFR7u4_cuD3Z=5bTr1+k
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/gDp8ACgkQAVBC80lX
-0GxN7ggAj/R2SMp5gZdUUQl2mbWK2pbglp2idMOQ+VNz6hqtPSHaAz2hWp4choVy
-mqiJ4t/YjKoJ8BbvdEvlOFSP2jiuY/4eFlz3ZNVT+x7pEmBaEYKRweIWbpXpe/cO
-uJwmiogIH1ZST6s+PtCbJ66iQImGouqhaC4YtZjlU4odQ9rF/IiiSYQ4d92g7MEr
-gTW63bKFybLAx9lNWzgI/AVUFBuwrmFZ0eDacZvg5VzGD3qWyp62Al5RJ1bnKAB7
-KW6bMoyj2d+b1NzEpgJ5LUgn6BjqwF2azGMpcv7ZMIGf6YZsGalMDIOOBGJWwIhP
-s+EgdrnM3zS9s9XRTLvX3zDetvlOUg==
-=DsWf
------END PGP SIGNATURE-----
-
---Sig_/nHyfFR7u4_cuD3Z=5bTr1+k--
+ML: https://lore.kernel.org/linux-csky/
