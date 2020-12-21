@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E892E022B
+	by mail.lfdr.de (Postfix) with ESMTP id ABCE72E022C
 	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 22:45:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726531AbgLUVpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 16:45:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58448 "EHLO mail.kernel.org"
+        id S1726564AbgLUVpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 16:45:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726429AbgLUVpV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 16:45:21 -0500
+        id S1726429AbgLUVpW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 16:45:22 -0500
 Received: from localhost.localdomain (c-73-209-127-30.hsd1.il.comcast.net [73.209.127.30])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3676522A83;
-        Mon, 21 Dec 2020 21:44:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B04AC22AAA;
+        Mon, 21 Dec 2020 21:44:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608587079;
-        bh=/qy0bM+j5hZZjQJEtULv2eJetkKOH0uuUlk0fFjXFtg=;
+        s=k20201202; t=1608587081;
+        bh=HCHz4uU83qXokjVFQ2uLiZUV9IvWcjE9twzkv+fmMDc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:In-Reply-To:
          References:From;
-        b=V5NVIqB8LAivDtoob0nsCMF9rvm/WjYSlyvKVBo9g2LfZ9pboGuhtAjxawnYxNeN4
-         8mVZG26nsRwgM7McTpwOI+UBGM0gjgk4RZVX969+obILrrQls+C2/R4MQUXym4UgWW
-         fGBG0v4P4rVYqql5wbNfjDKAcHXRahW6nqjN058X2RMrlK8b0fVQubbx9GeccRcibK
-         ZsSkHxNB3CgNNiaYLksWq/ntt/E5hM4ms4c+Y7ZMH2RQZR7u3+HS6UNKuMtgoEinlk
-         q6wAk+Wupd8Thc+mbzlm49kmzbZW2wyjqyC3NDpzDR/CBpHe032vqCpxvt3BPh74w9
-         /swZNgerTWGxA==
+        b=KpTLMFOvVVm2T03in1OjzQIV2tyIFvTaL0Y5PAZdWDzgy+vaEQJv3FDUlj9y/SRdi
+         KyUQqlm4HL1jMtJmJF48Pql1coW0OjED/BBWd5ppAr8zROkREGLFsMvWh68Yodwh5l
+         UD7oNVan9P+Udm9v5McjJf03NHWwuWu9NvtAjkV3RjijbdvWW3PwCJoNqM6JH0Ernu
+         YGS7Sy2OOY77R/zznj3f26CVHINI1F2qikFOGyId/hpQZQ0Lb1fJwKeQxfXkzFihS1
+         2/qrjp+oqwnyLCKWIiHMSs53xz6d+lrVMd/5d2/GPOUjLXbc56s0imrDQZ8iSWPC9G
+         frN9yvAfX3K3g==
 From:   Tom Zanussi <zanussi@kernel.org>
 To:     rostedt@goodmis.org, axelrasmussen@google.com
 Cc:     mhiramat@kernel.org, dan.carpenter@oracle.com,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v5 3/5] tracing: Update synth command errors
-Date:   Mon, 21 Dec 2020 15:44:29 -0600
-Message-Id: <9c6f559ff46b597312509974a3546e82fdc0907f.1608586464.git.zanussi@kernel.org>
+Subject: [PATCH v5 4/5] tracing: Add a backward-compatibility check for synthetic event creation
+Date:   Mon, 21 Dec 2020 15:44:30 -0600
+Message-Id: <fd1299dbfc04a338b017576afb669a8b0d2a527f.1608586464.git.zanussi@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <cover.1608586464.git.zanussi@kernel.org>
 References: <cover.1608586464.git.zanussi@kernel.org>
@@ -43,169 +43,407 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since array types are handled differently, errors referencing them
-also need to be handled differently.  Add and use a new
-INVALID_ARRAY_SPEC error.  Also add INVALID_CMD and INVALID_DYN_CMD to
-catch and display the correct form for badly-formed commands, which
-can also be used in place of CMD_INCOMPLETE, which is removed, and
-remove CMD_TOO_LONG, since it's no longer used.
+The synthetic event parsing rework requiring semicolons between
+synthetic event fields.  That requirement breaks existing users who
+might already have used the old form, so this adds a pre-parsing pass
+that adds semicolons between fields to any string missing them.  If
+none are required, the original string is used.
+
+In the future, if/when new features are added, the requirement will be
+that any string containing the new feature will be required to use
+semicolons, and the audit_old_buffer() check can check for those and
+avoid the pre-parsing semicolon pass altogether.
+
+As it stands, the pre-parsing pass creates a new string with
+semicolons only if one or more semicolons were actually needed and
+only if no errors were found in pre-parsing.  The assumption is that
+the real parsing pass will find and flag any errors and the user
+should see them in reference to the original unmodified string.
+
+[ zanussi: Added missing variable initializations reported by Dan
+  Carpenter <dan.carpenter@oracle.com> and kernel test robot
+  <lkp@intel.com> ]
 
 Signed-off-by: Tom Zanussi <zanussi@kernel.org>
 ---
- kernel/trace/trace_events_synth.c | 71 +++++++++++++++++++++++++++----
- 1 file changed, 63 insertions(+), 8 deletions(-)
+ kernel/trace/trace_events_synth.c | 292 ++++++++++++++++++++++++++++--
+ 1 file changed, 272 insertions(+), 20 deletions(-)
 
 diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
-index 66ccbab3483b..2a9c8bf74bb2 100644
+index 2a9c8bf74bb2..2aaa1a202beb 100644
 --- a/kernel/trace/trace_events_synth.c
 +++ b/kernel/trace/trace_events_synth.c
-@@ -23,13 +23,14 @@
- #undef ERRORS
- #define ERRORS	\
- 	C(BAD_NAME,		"Illegal name"),		\
--	C(CMD_INCOMPLETE,	"Incomplete command"),		\
-+	C(INVALID_CMD,		"Command must be of the form: <name> field[;field] ..."),\
-+	C(INVALID_DYN_CMD,	"Command must be of the form: s or -:[synthetic/]<name> field[;field] ..."),\
- 	C(EVENT_EXISTS,		"Event already exists"),	\
- 	C(TOO_MANY_FIELDS,	"Too many fields"),		\
- 	C(INCOMPLETE_TYPE,	"Incomplete type"),		\
- 	C(INVALID_TYPE,		"Invalid type"),		\
--	C(INVALID_FIELD,	"Invalid field"),		\
--	C(CMD_TOO_LONG,		"Command too long"),
-+	C(INVALID_FIELD,        "Invalid field"),		\
-+	C(INVALID_ARRAY_SPEC,	"Invalid array specification"),
- 
- #undef C
- #define C(a, b)		SYNTH_ERR_##a
-@@ -651,6 +652,10 @@ static struct synth_field *parse_synth_field(int argc, char **argv,
- 
- 	size = synth_field_size(field->type);
- 	if (size < 0) {
-+		if (array)
-+			synth_err(SYNTH_ERR_INVALID_ARRAY_SPEC, errpos(field_name));
-+		else
-+			synth_err(SYNTH_ERR_INVALID_TYPE, errpos(field_type));
- 		ret = -EINVAL;
- 		goto free;
- 	} else if (size == 0) {
-@@ -1171,7 +1176,7 @@ static int __create_synth_event(const char *name, const char *raw_fields)
- 	mutex_lock(&event_mutex);
- 
- 	if (name[0] == '\0') {
--		synth_err(SYNTH_ERR_CMD_INCOMPLETE, 0);
-+		synth_err(SYNTH_ERR_INVALID_CMD, 0);
- 		ret = -EINVAL;
- 		goto out;
- 	}
-@@ -1221,6 +1226,7 @@ static int __create_synth_event(const char *name, const char *raw_fields)
- 		argv_free(argv);
- 
- 		if (consumed < argc) {
-+			synth_err(SYNTH_ERR_INVALID_CMD, 0);
- 			ret = -EINVAL;
- 			goto err;
- 		}
-@@ -1229,7 +1235,7 @@ static int __create_synth_event(const char *name, const char *raw_fields)
- 	}
- 
- 	if (n_fields == 0) {
--		synth_err(SYNTH_ERR_CMD_INCOMPLETE, 0);
-+		synth_err(SYNTH_ERR_INVALID_CMD, 0);
- 		ret = -EINVAL;
- 		goto err;
- 	}
-@@ -1367,6 +1373,37 @@ int synth_event_delete(const char *event_name)
+@@ -1373,6 +1373,243 @@ int synth_event_delete(const char *event_name)
  }
  EXPORT_SYMBOL_GPL(synth_event_delete);
  
-+static int check_command(const char *raw_command)
++static int save_synth_field(int argc, char **argv, int *consumed,
++			    struct seq_buf *s, bool *added_semi)
 +{
-+	char **argv = NULL, *cmd, *saved_cmd, *name_and_field;
-+	int argc, ret = 0;
++	const char *prefix = NULL, *field_name, *field_type = argv[0];
++	const char *save_field_type, *array, *next_tok;
++	int len, ret = -EINVAL;
++	struct seq_buf f;
++	ssize_t size;
++	char *tmp;
 +
-+	cmd = saved_cmd = kstrdup(raw_command, GFP_KERNEL);
-+	if (!cmd)
-+		return -ENOMEM;
++	*added_semi = false;
 +
-+	name_and_field = strsep(&cmd, ";");
-+	if (!name_and_field) {
-+		ret = -EINVAL;
-+		goto free;
++	if (field_type[0] == ';')
++		field_type++;
++
++	if (!strcmp(field_type, "unsigned")) {
++		if (argc < 3)
++			goto out;
++		prefix = "unsigned";
++		field_type = argv[1];
++		field_name = argv[2];
++		*consumed = 3;
++	} else {
++		field_type = argv[0];
++		field_name = argv[1];
++		*consumed = 2;
 +	}
 +
-+	argv = argv_split(GFP_KERNEL, name_and_field, &argc);
-+	if (!argv) {
++	len = strlen(field_name);
++	array = strchr(field_name, '[');
++	if (array)
++		len -= strlen(array);
++	else if (field_name[len - 1] == ';')
++		len--;
++
++	tmp = kmemdup_nul(field_name, len, GFP_KERNEL);
++	if (!tmp) {
 +		ret = -ENOMEM;
-+		goto free;
++		goto out;
 +	}
 +
-+	if (argc < 3)
-+		ret = -EINVAL;
-+free:
-+	kfree(saved_cmd);
-+	if (argv)
-+		argv_free(argv);
++	if (!is_good_name(tmp)) {
++		kfree(tmp);
++		goto out;
++	}
 +
++	kfree(tmp);
++
++	save_field_type = field_type;
++	if (field_type[0] == ';')
++		field_type++;
++	len = strlen(field_type) + 1;
++
++	if (array)
++		len += strlen(array);
++
++	if (prefix)
++		len += strlen(prefix) + 1;
++
++	tmp = kzalloc(len, GFP_KERNEL);
++	if (!tmp) {
++		ret = -ENOMEM;
++		goto out;
++	}
++
++	seq_buf_init(&f, tmp, len);
++	if (prefix) {
++		seq_buf_puts(&f, prefix);
++		seq_buf_putc(&f, ' ');
++	}
++	seq_buf_puts(&f, field_type);
++	if (array) {
++		seq_buf_puts(&f, array);
++		if (f.buffer[f.len - 1] == ';')
++			f.len--;
++	}
++	if (WARN_ON_ONCE(!seq_buf_buffer_left(&f))) {
++		kfree(tmp);
++		goto out;
++	}
++
++	f.buffer[f.len] = '\0';
++
++	field_type = save_field_type;
++
++	size = synth_field_size(tmp);
++	if (size < 0 || ((size == 0) && (!synth_field_is_string(tmp)))) {
++		kfree(tmp);
++		goto out;
++	}
++
++	kfree(tmp);
++
++	if (prefix) {
++		seq_buf_puts(s, prefix);
++		seq_buf_putc(s, ' ');
++	}
++	seq_buf_puts(s, field_type);
++	seq_buf_putc(s, ' ');
++	seq_buf_puts(s, field_name);
++	if (field_name[strlen(field_name) - 1] == ';')
++		seq_buf_putc(s, ' ');
++
++	if (*consumed < argc) {
++		next_tok = argv[*consumed];
++		if (field_name[strlen(field_name) - 1] != ';' &&
++		    next_tok[0] != ';') {
++			seq_buf_puts(s, "; ");
++			*added_semi = true;
++		}
++	}
++
++	ret = 0;
++ out:
 +	return ret;
 +}
 +
- static int create_or_delete_synth_event(const char *raw_command)
- {
- 	char *name = NULL, *fields, *p;
-@@ -1378,9 +1415,17 @@ static int create_or_delete_synth_event(const char *raw_command)
- 
- 	last_cmd_set(raw_command);
- 
-+	ret = check_command(raw_command);
-+	if (ret) {
-+		synth_err(SYNTH_ERR_INVALID_CMD, 0);
-+		return ret;
++static char *insert_semicolons(const char *raw_command)
++{
++	int i, argc = 0, consumed = 0, n_fields = 0, semis_added = 0;
++	char *name, **argv, **save_argv = NULL, *buf = NULL;
++	int ret = -EINVAL;
++	struct seq_buf s;
++	bool added_semi;
++
++	argv = argv_split(GFP_KERNEL, raw_command, &argc);
++	if (!argv)
++		return NULL;
++
++	if (!argc)
++		goto free;
++
++	name = argv[0];
++	save_argv = argv;
++	argv++;
++	argc--;
++
++	buf = kzalloc(MAX_DYNEVENT_CMD_LEN, GFP_KERNEL);
++	if (!buf) {
++		ret = -ENOMEM;
++		goto err;
 +	}
 +
- 	p = strpbrk(raw_command, " \t");
--	if (!p)
-+	if (!p) {
-+		synth_err(SYNTH_ERR_INVALID_CMD, 0);
- 		return -EINVAL;
++	seq_buf_init(&s, buf, MAX_DYNEVENT_CMD_LEN);
++
++	seq_buf_puts(&s, name);
++	seq_buf_putc(&s, ' ');
++
++	if (name[0] == '\0' || argc < 1)
++		goto err;
++
++	for (i = 0; i < argc - 1; i++) {
++		if (strcmp(argv[i], ";") == 0) {
++			seq_buf_puts(&s, " ; ");
++			continue;
++		}
++
++		if (n_fields == SYNTH_FIELDS_MAX)
++			goto err;
++
++		ret = save_synth_field(argc - i, &argv[i], &consumed,
++				       &s, &added_semi);
++		if (ret)
++			goto err;
++
++		if (added_semi)
++			semis_added++;
++
++		i += consumed - 1;
 +	}
++
++	if (i < argc && strcmp(argv[i], ";") != 0)
++		goto err;
++
++	if (!semis_added) {
++		kfree(buf);
++		buf = NULL;
++		goto free;
++	}
++
++	if (WARN_ON_ONCE(!seq_buf_buffer_left(&s)))
++		goto err;
++
++	buf[s.len] = '\0';
++ free:
++	if (save_argv)
++		argv_free(save_argv);
++
++	return buf;
++ err:
++	kfree(buf);
++	buf = ERR_PTR(ret);
++
++	goto free;
++}
++
++static bool audit_old_buffer(const char *cmd)
++{
++	/* as of now, every cmd is an old cmd */
++	return true;
++}
++
++/**
++ * get_parseable_cmd - Return a modifiable string for parsing
++ * @raw_command: The command to start with
++ *
++ * Create a cmd string that can be modified by the caller for command
++ * parsing purposes. If successful, the caller must free the command
++ * returned.
++ *
++ * The input string will first be checked to see whether or not it can
++ * be considered an 'old command' - a command that doesn't require
++ * semicolons between fields - for which backward compatibility must
++ * be maintained.  If it can be considered an old command, a semicolon
++ * will be added between any two fields missing one.  If no semicolons
++ * were required, or if the preparsing required for the pass
++ * encountered errors, a modifiable copy of the original string will
++ * be returned.
++ *
++ * Return: parseable cmd if successful, error or NULL string otherwise.
++ */
++static char *get_parseable_cmd(const char *raw_command)
++{
++	char *cmd = NULL;
++
++	if (audit_old_buffer(raw_command))
++		cmd = insert_semicolons(raw_command);
++
++	if (IS_ERR_OR_NULL(cmd)) {
++		cmd = kstrdup(raw_command, GFP_KERNEL);
++		if (!cmd)
++			cmd = ERR_PTR(-ENOMEM);
++	}
++
++	return cmd;
++}
++
+ static int check_command(const char *raw_command)
+ {
+ 	char **argv = NULL, *cmd, *saved_cmd, *name_and_field;
+@@ -1406,28 +1643,33 @@ static int check_command(const char *raw_command)
  
- 	name = kmemdup_nul(raw_command, p - raw_command, GFP_KERNEL);
+ static int create_or_delete_synth_event(const char *raw_command)
+ {
+-	char *name = NULL, *fields, *p;
++	char *name = NULL, *fields, *p, *cmd;
+ 	int ret = 0;
+ 
+ 	raw_command = skip_spaces(raw_command);
+ 	if (raw_command[0] == '\0')
+ 		return ret;
+ 
+-	last_cmd_set(raw_command);
++	cmd = get_parseable_cmd(raw_command);
++	if (IS_ERR(cmd))
++		return PTR_ERR(cmd);
+ 
+-	ret = check_command(raw_command);
++	last_cmd_set(cmd);
++
++	ret = check_command(cmd);
+ 	if (ret) {
+ 		synth_err(SYNTH_ERR_INVALID_CMD, 0);
+-		return ret;
++		goto free;
+ 	}
+ 
+-	p = strpbrk(raw_command, " \t");
++	p = strpbrk(cmd, " \t");
+ 	if (!p) {
+ 		synth_err(SYNTH_ERR_INVALID_CMD, 0);
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto free;
+ 	}
+ 
+-	name = kmemdup_nul(raw_command, p - raw_command, GFP_KERNEL);
++	name = kmemdup_nul(cmd, p - cmd, GFP_KERNEL);
  	if (!name)
-@@ -1954,8 +1999,10 @@ static int create_synth_event(const char *raw_command)
- 	last_cmd_set(raw_command);
+ 		return -ENOMEM;
  
- 	p = strpbrk(raw_command, " \t");
--	if (!p)
-+	if (!p) {
-+		synth_err(SYNTH_ERR_INVALID_CMD, 0);
- 		return -EINVAL;
-+	}
+@@ -1441,6 +1683,7 @@ static int create_or_delete_synth_event(const char *raw_command)
+ 	ret = __create_synth_event(name, fields);
+ free:
+ 	kfree(name);
++	kfree(cmd);
+ 
+ 	return ret;
+ }
+@@ -1988,7 +2231,7 @@ EXPORT_SYMBOL_GPL(synth_event_trace_end);
+ 
+ static int create_synth_event(const char *raw_command)
+ {
+-	char *fields, *p;
++	char *fields, *p, *cmd;
+ 	const char *name;
+ 	int len, ret = 0;
+ 
+@@ -1996,20 +2239,27 @@ static int create_synth_event(const char *raw_command)
+ 	if (raw_command[0] == '\0')
+ 		return ret;
+ 
+-	last_cmd_set(raw_command);
++	cmd = get_parseable_cmd(raw_command);
++	if (IS_ERR(cmd))
++		return PTR_ERR(cmd);
++
++	last_cmd_set(cmd);
+ 
+-	p = strpbrk(raw_command, " \t");
++	p = strpbrk(cmd, " \t");
+ 	if (!p) {
+ 		synth_err(SYNTH_ERR_INVALID_CMD, 0);
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto free;
+ 	}
  
  	fields = skip_spaces(p);
  
-@@ -1968,13 +2015,21 @@ static int create_synth_event(const char *raw_command)
+-	name = raw_command;
++	name = cmd;
+ 
+-	if (name[0] != 's' || name[1] != ':')
+-		return -ECANCELED;
++	if (name[0] != 's' || name[1] != ':') {
++		ret = -ECANCELED;
++		goto free;
++	}
+ 	name += 2;
+ 
  	/* This interface accepts group name prefix */
- 	if (strchr(name, '/')) {
+@@ -2017,26 +2267,28 @@ static int create_synth_event(const char *raw_command)
  		len = str_has_prefix(name, SYNTH_SYSTEM "/");
--		if (len == 0)
-+		if (len == 0) {
-+			synth_err(SYNTH_ERR_INVALID_DYN_CMD, 0);
- 			return -EINVAL;
-+		}
+ 		if (len == 0) {
+ 			synth_err(SYNTH_ERR_INVALID_DYN_CMD, 0);
+-			return -EINVAL;
++			ret = -EINVAL;
++			goto free;
+ 		}
  		name += len;
  	}
  
- 	len = name - raw_command;
+-	len = name - raw_command;
++	len = name - cmd;
  
-+	ret = check_command(raw_command + len);
-+	if (ret) {
-+		synth_err(SYNTH_ERR_INVALID_CMD, 0);
-+		return ret;
-+	}
-+
- 	name = kmemdup_nul(raw_command + len, p - raw_command - len, GFP_KERNEL);
+-	ret = check_command(raw_command + len);
++	ret = check_command(cmd + len);
+ 	if (ret) {
+ 		synth_err(SYNTH_ERR_INVALID_CMD, 0);
+-		return ret;
++		goto free;
+ 	}
+ 
+-	name = kmemdup_nul(raw_command + len, p - raw_command - len, GFP_KERNEL);
++	name = kmemdup_nul(cmd + len, p - cmd - len, GFP_KERNEL);
  	if (!name)
  		return -ENOMEM;
+ 
+ 	ret = __create_synth_event(name, fields);
+-
+ 	kfree(name);
++ free:
++	kfree(cmd);
+ 
+ 	return ret;
+ }
 -- 
 2.17.1
 
