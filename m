@@ -2,83 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14D1E2E0116
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 20:36:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D81A32E011A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 20:38:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726979AbgLUTga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 14:36:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59338 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726156AbgLUTg3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 14:36:29 -0500
-Date:   Mon, 21 Dec 2020 11:35:46 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608579348;
-        bh=2lqgR00qc9wFs3OvQRFyNxaQ1yrUzpoIxKyixIV+lOg=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UJECePVyuuV27UbPmCG/5VNZMeQ9BS5BQ6F4N7OBfyYihowf2buhmsMWU28UJNLra
-         xUwSxcrNdEXBMk98h3DXLICiXGxMK2rQo+iR89hh0Lw5ZdYQOhq+UDSjRYAZYOUThu
-         OB3QZeDOD0j1lLXEjRN/mhJ+gFcz9S9f6v+coUA3AJmWncTWTvZ7pzlIxvfH3gVZep
-         lEL06kkO9hflcRKQ7QNT1Rd8FEpk+qaSwz09yBfC++jRMWZTJ64TvHIEdgRIuXu8NG
-         vPKWPm6/9sFKSUtSY8tyfKd8P+UFfu2kolhYj2lMSGvwRtDOymL3qQ0H1W91phgkLP
-         nbDrJeaIy9T4A==
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Avri Altman <Avri.Altman@wdc.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>
-Subject: Re: [PATCH] scsi: ufs: fix livelock of ufshcd_clear_ua_wluns
-Message-ID: <X+D5EhJ8QzNoeHQw@google.com>
-References: <20201218033131.2624065-1-jaegeuk@kernel.org>
- <DM6PR04MB6575B8729A62E6FB9F19930CFCC10@DM6PR04MB6575.namprd04.prod.outlook.com>
- <X+C9+1p1CbssKRdO@google.com>
- <DM6PR04MB65753B9D31B3643C757E4E23FCC00@DM6PR04MB6575.namprd04.prod.outlook.com>
- <X+DZMwSHsskcEgZE@google.com>
- <DM6PR04MB657558D8353199D53586F654FCC00@DM6PR04MB6575.namprd04.prod.outlook.com>
+        id S1726737AbgLUThD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 14:37:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725885AbgLUThC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 14:37:02 -0500
+Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3EDC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 11:36:22 -0800 (PST)
+Received: by mail-vk1-xa2a.google.com with SMTP id m145so2494399vke.7
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 11:36:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EZZyncXwiQja2UVR2OiYE7gDJBGuNncgyLsAmPzZ+/c=;
+        b=narslOk3Hvt1RGe1zhxswCbmFdemKIq+FjDkobRs9/VXBSyC/AGRgfWNpjsxSkR5r1
+         oR4AJeSoxTEmamC0ao9bd5IZvgbscauG+A/E1+kCVgrbVBM3Jbw9/mk8A0rlgmZt32ur
+         PjCYHGOXuQ0I667rjRyoz5PhqsLI9sq3LcXLJO9hmN6OpUS4X6MQBJXgHFJT0+DIiCpQ
+         Vq7yVMVNH+75Zua8fVt6YyWqQDANSF7XBhSn1AF+EOwQL+TpGVYJMm8DBlBEvqyroy4E
+         XV2AbfJGDXx1VGpECcBLSF8XE4k0eT9/JdZs8DfB7FFDvjdTqPLGSrSFBx2veWzvPqM5
+         dWAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EZZyncXwiQja2UVR2OiYE7gDJBGuNncgyLsAmPzZ+/c=;
+        b=cZpznDXYA+BKxtoT5kNBiP55u2t6R/IsRlztl8lErh6y3zRVUbZBrMhInyqJpmDZn9
+         sCKyMI3w+h6KPM9zmSW9n4Rkgcf31ieiscSuaWXlxcW+6aiCC46yYQUBrCJ9RlLLQedz
+         ysdLQdurE6XOGx46w5pwCzZYJmwf7j2Kdr/AqPH3RiyTT1PO2qK5OlOth/Aw0QD0t3LY
+         y05LrmPufocopiMtSk2X8KtSi5cNkz73TCKKnSRji55rPXsxnWu8tOJVRvSYVRsm6Zik
+         2LbaRi2gVtAifMhZwGDKAWg2IpTy/u+1ZDafzOHRxd0LVSP4mpbSTKBupPWXszy58Cl+
+         RaXA==
+X-Gm-Message-State: AOAM5316z0hoPhT7cz843ltAoTn4oou5NdrXgTtJjCT149aJ+9RPOwRD
+        +BnqHpQ5/ju54MwDYSvlll5glbPskQYoD124jkHzrwqet5w=
+X-Google-Smtp-Source: ABdhPJyrBEPum1+Ha9e9MR1wjXKQOrZ3ZlZ+t43OuSExGikpJ4e9J5AL9z/TcGa4LoqHca85LwSbFzl0qcZ3/g7+1hQ=
+X-Received: by 2002:a1f:5cc2:: with SMTP id q185mr14390621vkb.23.1608579381365;
+ Mon, 21 Dec 2020 11:36:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR04MB657558D8353199D53586F654FCC00@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20201217020311.491799-1-yuxiangyang4@huawei.com>
+ <20201217022306.GB15600@casper.infradead.org> <CAFqt6zYeDstXBHP+DCyBdmL4vDFBGekv7jrknU5c175sKVax4w@mail.gmail.com>
+ <20201218095756.18d259ea243e434a8a90403a@linux-foundation.org>
+In-Reply-To: <20201218095756.18d259ea243e434a8a90403a@linux-foundation.org>
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+Date:   Tue, 22 Dec 2020 01:06:14 +0530
+Message-ID: <CAFqt6zbNoDAxdNEYY_noLjEHJ5xMP__e=cyB5y6GZ-agnaPfdg@mail.gmail.com>
+Subject: Re: [PATCH] mm/filemap: Fix warning: no previous prototype
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Xiangyang Yu <yuxiangyang4@huawei.com>,
+        Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/21, Avri Altman wrote:
-> > 
-> > 
-> > On 12/21, Avri Altman wrote:
-> > > > > > When gate_work/ungate_work gets an error during hibern8_enter or
-> > > > exit,
-> > > > > >  ufshcd_err_handler()
-> > > > > >    ufshcd_scsi_block_requests()
-> > > > > >    ufshcd_reset_and_restore()
-> > > > > >      ufshcd_clear_ua_wluns() -> stuck
-> > > > > >    ufshcd_scsi_unblock_requests()
-> > > > > >
-> > > > > > In order to avoid it, ufshcd_clear_ua_wluns() can be called per
-> > recovery
-> > > > > > flows
-> > > > > > such as suspend/resume, link_recovery, and error_handler.
-> > > > > Not sure that suspend/resume are UAC events?
-> > > >
-> > > > Could you elaborate a bit? The goal is to clear UAC after UFS reset
-> > happens.
-> > > So why calling it on every suspend and resume?
-> > 
-> > 1. If UAC was cleared, there's no impact.
-> But the command is still sent.
-
-No, ufshcd_clear_ua_wluns() will return by hba->wlun_dev_clr_ua.
-
-> 
-> > 2. ufshcd_link_recovery() can reset UFS directly by ufs_mtk_resume().
-> > 3. ufshcd_suspend can call ufshcd_host_reset_and_restore() as well.
-> Seems excessive IMO.
-> Why not selectively send when indeed required, e.g. on reset?
-
-I think hba->wlun_dev_clr_ua is the indicator whether there was a reset or not.
+On Fri, Dec 18, 2020 at 11:27 PM Andrew Morton
+<akpm@linux-foundation.org> wrote:
+>
+> On Fri, 18 Dec 2020 09:39:30 +0530 Souptick Joarder <jrdr.linux@gmail.com> wrote:
+>
+> > On Thu, Dec 17, 2020 at 7:53 AM Matthew Wilcox <willy@infradead.org> wrote:
+> > >
+> > > On Thu, Dec 17, 2020 at 10:03:11AM +0800, Xiangyang Yu wrote:
+> > > > Fixed the warning when building with warnings enabled (W=1),
+> > > > This function is only used in filemap.c, so mark this function
+> > > > with 'static'.
+> > >
+> > > Good grief, no.  Look at the git history before proposing a patch.
+> >
+> > revert "mm/filemap: add static for function __add_to_page_cache_locked"
+> > Revert commit 3351b16af494 ("mm/filemap: add static for function
+> > __add_to_page_cache_locked") due to incompatibility with
+> > ALLOW_ERROR_INJECTION which result in build errors.
+> >
+>
+> How about we add a prototype for __add_to_page_cache_locked() to squash
+> the warning, along with a comment explaining what's going on?
+>
+I think adding a prototype will silence some kernel test robot warning
+and future efforts to make it static. I will post a patch.
