@@ -2,78 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80ED12DFCBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 15:22:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 753562DFCBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 15:23:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727143AbgLUOVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 09:21:38 -0500
-Received: from mail-wr1-f53.google.com ([209.85.221.53]:33384 "EHLO
-        mail-wr1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726214AbgLUOVi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 09:21:38 -0500
-Received: by mail-wr1-f53.google.com with SMTP id t30so11259633wrb.0;
-        Mon, 21 Dec 2020 06:21:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+ewiW74906x1++gP791fj9PLs6tTKhYh32TyRNms0o0=;
-        b=ePT/P+eckCPEj0RyjoCtGkJJxFZk+OATezQ5W0jqn6ry8bXjt9EqYArJ0Yb8RqvzYn
-         2yg+CE8L5djdzi4a9DHvX0SNyV1VitF3+5Elst5KTFQ8LbcSw+7dHYubYbPfV87nqnx4
-         bcgnULDi4U1kH6ziVpX7GpzuFP+9Hg1U3L9wXjF8CMNvmWhS7k9HG2J1h4Oil1x30nMv
-         qvNz4DOLoLUCQpK7BfahcvprSpAGHUlCphy/UsiHxhViEV9d1+vZb6q3vSq1z9o63eov
-         0s/9/P5+pDlGMywBsqaZBb6dgfte2LRpsX91xdlKYEanotiR7he6fR8w7Nb1zCOl76yx
-         gsbg==
-X-Gm-Message-State: AOAM5330kNnA23Jy8pTUdD6Eq6n9FWmIgW9rEHnC9/DxzfQUCk5g4Qx+
-        Rk49UMtqFsDDhKzVfSWQ2Gg=
-X-Google-Smtp-Source: ABdhPJyWuFQKjoX+E4KuV3uYrs65VH4s7/Y9xZqQroMiJ2K4+FKekfhlWixn4hIsr6+PnHla09pACA==
-X-Received: by 2002:a5d:6cd4:: with SMTP id c20mr18037560wrc.57.1608560455465;
-        Mon, 21 Dec 2020 06:20:55 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id y13sm22618540wrl.63.2020.12.21.06.20.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 06:20:54 -0800 (PST)
-Date:   Mon, 21 Dec 2020 15:20:49 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Timon Baetz <timon.baetz@protonmail.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        id S1727178AbgLUOXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 09:23:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51924 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726848AbgLUOXP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 09:23:15 -0500
+Date:   Mon, 21 Dec 2020 19:52:30 +0530
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608560554;
+        bh=SqtEboAk0qd7ZTX5Jqa9whnweGmlKEOCqrijvdgNhqg=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UeSf5XtXJsUe6a0O/9Pc20cEAMFQh/AENbDrRZEt7yhefwRNcHz4B53zaW0Pb1Oho
+         x0mx6d3Tnrw26tM710ugH6Zne6wSANiIEZF467nXzbxw/gn9UvcrmXIUO1t6ttzFjp
+         9TA+v1gWDavb8j4T71V445APgxIGJRPZ5QhExleuk1qIKqXYRAF0OF8FXD0gVAcd/m
+         LR1bsaJ7/Cc6njwaDq7lDvbUf9V3Hr4ttunit0blYL/YQlnle/n6ocJw0UeIAPyMmy
+         9QnJ58xuT9gIQ3qxQjN1jp1zSo6FbUTlICnFw+bE44cG4/3/KzS7DJcRKAyzlfgnDE
+         BIAF9EFuEhX7Q==
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     sean.wang@mediatek.com, dan.j.williams@intel.com,
+        matthias.bgg@gmail.com, dmaengine@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH v2 4/6] ARM: dts: exynos: Added muic and charger nodes
- for i9100
-Message-ID: <20201221142049.GD33797@kozik-lap>
-References: <20201202203516.43053-1-timon.baetz@protonmail.com>
- <20201221095001.595366-1-timon.baetz@protonmail.com>
- <20201221095001.595366-4-timon.baetz@protonmail.com>
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] dmaengine: mediatek: mtk-hsdma: Fix a resource leak in
+ the error handling path of the probe function
+Message-ID: <20201221142230.GD3323@vkoul-mobl>
+References: <20201219124718.182664-1-christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201221095001.595366-4-timon.baetz@protonmail.com>
+In-Reply-To: <20201219124718.182664-1-christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 09:53:28AM +0000, Timon Baetz wrote:
-> muic node is only used for extcon consumers.
-> charger node is used to specify muic and regulator.
-> 
-> Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
-> ---
->  arch/arm/boot/dts/exynos4210-i9100.dts | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+On 19-12-20, 13:47, Christophe JAILLET wrote:
+> 'mtk_hsdma_hw_deinit()' should be called in the error handling path of the
+> probe function to undo a previous 'mtk_hsdma_hw_init()' call, as already
+> done in the remove function.
 
-Arrange your patches within the patchset in a way preserving
-bisectability. If 3/7 is applied, the charger will be off because kernel
-disables unused regulators.
+Applied, thanks
 
-Best regards,
-Krzysztof
+-- 
+~Vinod
