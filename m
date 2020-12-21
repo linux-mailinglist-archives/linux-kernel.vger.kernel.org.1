@@ -2,103 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41AF92DF9A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 08:56:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F23032DF9A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 08:58:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727274AbgLUHzp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Dec 2020 02:55:45 -0500
-Received: from mail-wr1-f42.google.com ([209.85.221.42]:45412 "EHLO
-        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726671AbgLUHzp (ORCPT
+        id S1727416AbgLUH4x convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Dec 2020 02:56:53 -0500
+Received: from mail-wm1-f43.google.com ([209.85.128.43]:37398 "EHLO
+        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726275AbgLUH4w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 02:55:45 -0500
-Received: by mail-wr1-f42.google.com with SMTP id d26so10024252wrb.12;
-        Sun, 20 Dec 2020 23:55:28 -0800 (PST)
+        Mon, 21 Dec 2020 02:56:52 -0500
+Received: by mail-wm1-f43.google.com with SMTP id q75so10021627wme.2;
+        Sun, 20 Dec 2020 23:56:36 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=znSQ7G6ShgfRAu0enyoUCiiiW1s/5uV//O9alA1Ox50=;
-        b=qa+rxVd0ykTShEznZ/Jrw+/yMOR2DbwUg4TBcz5On8NPf4kTKaoSycv0g+9BehpTAj
-         bBqCBtiufIlxHGk8j6dVJ0XynB5in0h9kZC44B0d64gUwZWUCg7AoaR6OqKpOa6aI8zI
-         ac1FvAt2cyp092ZyefQWlOS6l7+7MrKuluirJvgba24pilf78hYMTd1ynJFKZyLhDlpw
-         l3942leC3SfYo+jgTuAcAFZQyy/9lw0cZ4Q5CIfmjDmczTxIY4Xz0mTlI6vAP0L26c0p
-         ALu0ARgplFWHuo+PzVjrmLJuxc5mJ0mQeVVMX4UH7RyOju6B2SW1WUnGQ8R9cI4nhEXu
-         1MYw==
-X-Gm-Message-State: AOAM531mRHsG/Qx/WupTfhwOiqsnVj1J69Jja/YO1H822Mlr7jL0mKlE
-        kfHgkjnJX/kEy9hIr8Avl+o2ZV9fdwCFAw==
-X-Google-Smtp-Source: ABdhPJyPWbZvdBSLqy/vD7OyJFbjO8pTTiS14rbwY6hPhCLGsIXE1BDLLnhujm3pteZCTnlcOi6l4A==
-X-Received: by 2002:a5d:570e:: with SMTP id a14mr17079864wrv.126.1608537303051;
-        Sun, 20 Dec 2020 23:55:03 -0800 (PST)
+        bh=IZitIFlnmtD/PO5Bk34PbB1x1heRpMsN4+voHWPHlpA=;
+        b=HFTXOMOynIha6BBImFRKN/SNpdBZ39r5s9q+Y/8URiSkxQ766FRnHmzlQJNsuBt3TE
+         cRWo2h3Gb7/pCsOTsIta1+Hzk87pGzboLUf0H6qlwBbiGI7M7+OGq5PCDH/V0Vm/J4hy
+         Eib5ycbypAlAQ2X/lOVF6JrbWuqifYvV1BUqSip6VTX5ydH5bQpCJ0dPuPYrLxpOjisi
+         cdIqX3njfzJoKDY8Qe3vp6wgYUk+UIqqLG9jPr0zEghMn2JoLWzTExexmtDnESqzGgRB
+         Pt9S9m9aVGASZhycWcdsEFoCFxsU75oraWv0vF2uipfB7HYpAebRG1CRgs/4s0CECeee
+         NyuA==
+X-Gm-Message-State: AOAM5307qdNCT6yglexqRl3H3q7ILV4k5GN5WAptoVF/VoaNrJqb9ciT
+        M6128/b/iEnP9I9yyJoAJZA=
+X-Google-Smtp-Source: ABdhPJxSbsQTInETAB2FkKIVe2Wtk/wsibniVXFrCgz90c+UdyaXSTMwiIi3gvc1lDyrW/LGI02ZzA==
+X-Received: by 2002:a7b:c385:: with SMTP id s5mr15154043wmj.170.1608537370489;
+        Sun, 20 Dec 2020 23:56:10 -0800 (PST)
 Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id a12sm28599181wrh.71.2020.12.20.23.55.01
+        by smtp.googlemail.com with ESMTPSA id b9sm23706221wmd.32.2020.12.20.23.56.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Dec 2020 23:55:01 -0800 (PST)
-Date:   Mon, 21 Dec 2020 08:55:00 +0100
+        Sun, 20 Dec 2020 23:56:09 -0800 (PST)
+Date:   Mon, 21 Dec 2020 08:56:08 +0100
 From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sylwester Nawrocki <snawrocki@kernel.org>
-Subject: Re: [PATCH 9/9] mfd: sec-irq: Do not enforce (incorrect) interrupt
- trigger type
-Message-ID: <20201221075500.GA3386@kozik-lap>
-References: <20201210212903.216728-1-krzk@kernel.org>
- <CGME20201210212938eucas1p1297b8503e9c059f2bc77c3a429a9114e@eucas1p1.samsung.com>
- <20201210212903.216728-9-krzk@kernel.org>
- <0f1509ef-9ae7-7a77-84b7-360b8f0071c7@samsung.com>
- <20201218142247.GA2847@kozik-lap>
- <52a1b7c6-c7f1-f5eb-09f6-d84663912db8@samsung.com>
+To:     "Alice Guo (OSS)" <alice.guo@oss.nxp.com>
+Cc:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: Re: [PATCH v8 3/4] arm64: dts: imx8m: add NVMEM provider and
+ consumer to read soc unique ID
+Message-ID: <20201221075608.GB3386@kozik-lap>
+References: <20201218083726.16427-1-alice.guo@oss.nxp.com>
+ <20201218083726.16427-3-alice.guo@oss.nxp.com>
+ <20201219121656.GA13886@kozik-lap>
+ <AM6PR04MB605316DAE14009BB28804AB3E2C00@AM6PR04MB6053.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8BIT
-In-Reply-To: <52a1b7c6-c7f1-f5eb-09f6-d84663912db8@samsung.com>
+In-Reply-To: <AM6PR04MB605316DAE14009BB28804AB3E2C00@AM6PR04MB6053.eurprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 08:36:02AM +0100, Marek Szyprowski wrote:
-> Hi Krzysztof,
+On Mon, Dec 21, 2020 at 03:10:52AM +0000, Alice Guo (OSS) wrote:
 > 
-> On 18.12.2020 15:22, Krzysztof Kozlowski wrote:
-> > On Fri, Dec 18, 2020 at 02:25:39PM +0100, Marek Szyprowski wrote:
-> >> On 10.12.2020 22:29, Krzysztof Kozlowski wrote:
-> >>> Interrupt line can be configured on different hardware in different way,
-> >>> even inverted.  Therefore driver should not enforce specific trigger
-> >>> type - edge falling - but instead rely on Devicetree to configure it.
-> >>>
-> >>> The Samsung PMIC drivers are used only on Devicetree boards.
-> >>>
-> >>> Additionally, the PMIC datasheets describe the interrupt line as active
-> >>> low with a requirement of acknowledge from the CPU therefore the edge
-> >>> falling is not correct.
-> >>>
-> >>> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> >> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> >>
-> >> It looks that this together with DTS change fixes RTC alarm failure that
-> >> I've observed from time to time on TM2e board!
-> > Great! I'll add this to the commit msg.
-> >
-> > Thanks for testing.
 > 
-> BTW, while playing with this, maybe it would make sense to fix the 
-> reported interrupt type for the PMIC sub-interrupts:
+> > -----Original Message-----
+> > From: Krzysztof Kozlowski <krzk@kernel.org>
+> > Sent: 2020年12月19日 20:17
+> > To: Alice Guo (OSS) <alice.guo@oss.nxp.com>
+> > Cc: robh+dt@kernel.org; shawnguo@kernel.org; s.hauer@pengutronix.de;
+> > kernel@pengutronix.de; festevam@gmail.com; devicetree@vger.kernel.org;
+> > linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org; dl-linux-imx
+> > <linux-imx@nxp.com>
+> > Subject: Re: [PATCH v8 3/4] arm64: dts: imx8m: add NVMEM provider and
+> > consumer to read soc unique ID
+> > 
+> > On Fri, Dec 18, 2020 at 04:37:25PM +0800, Alice Guo (OSS) wrote:
+> > > From: Alice Guo <alice.guo@nxp.com>
+> > >
+> > > In order to be able to use NVMEM APIs to read soc unique ID, add the
+> > > nvmem data cell and name for nvmem-cells to the "soc" node, and add a
+> > > nvmem node which provides soc unique ID to efuse@30350000.
+> > >
+> > > Signed-off-by: Alice Guo <alice.guo@nxp.com>
+> > > ---
+> > > Changes for v8:
+> > >  - none
+> > > Changes for v7:
+> > >  - add Reviewed-by
+> > 
+> > What happened with my reviewed-by?
+> > 
+> > Best regards,
+> > Krzysztof
 > 
-> # grep s2mps /proc/interrupts
-> 120:          0      gpa0   7 Level     s2mps13
-> 121:          0   s2mps13  10 Edge      rtc-alarm0
+> Hi,
+> I forgot to add reviewed-by. ☹
 
-I also spotted this. It's a virtual interrupt and I am not sure whether
-we can actually configure it when the hardware does not allow to set the
-type (the regmap_irq_type requires register offsets).
+It was there already, so you had to remove it for some reason... but you
+kept the changelog.
 
 Best regards,
 Krzysztof
-
