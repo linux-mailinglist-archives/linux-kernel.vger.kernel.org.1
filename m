@@ -2,103 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98D8A2E01AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 21:54:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C19A2E01B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 21:55:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726033AbgLUUww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 15:52:52 -0500
-Received: from atlmailgw2.ami.com ([63.147.10.42]:59180 "EHLO
-        atlmailgw2.ami.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgLUUww (ORCPT
+        id S1726104AbgLUUyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 15:54:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54200 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725780AbgLUUyR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 15:52:52 -0500
-X-AuditID: ac10606f-231ff70000001934-b6-5fe10afa0ac2
-Received: from atlms1.us.megatrends.com (atlms1.us.megatrends.com [172.16.96.144])
-        (using TLS with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by atlmailgw2.ami.com (Symantec Messaging Gateway) with SMTP id 92.00.06452.BFA01EF5; Mon, 21 Dec 2020 15:52:11 -0500 (EST)
-Received: from ami-us-wk.us.megatrends.com (172.16.98.207) by
- atlms1.us.megatrends.com (172.16.96.144) with Microsoft SMTP Server (TLS) id
- 14.3.468.0; Mon, 21 Dec 2020 15:52:10 -0500
-From:   Hongwei Zhang <hongweiz@ami.com>
-To:     <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <openbmc@lists.ozlabs.org>, Jakub Kicinski <kuba@kernel.org>,
-        David S Miller <davem@davemloft.net>
-CC:     Hongwei Zhang <hongweiz@ami.com>, netdev <netdev@vger.kernel.org>,
-        Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>
-Subject: [Aspeed, v1 1/1] net: ftgmac100: Change the order of getting MAC address
-Date:   Mon, 21 Dec 2020 15:51:57 -0500
-Message-ID: <20201221205157.31501-2-hongweiz@ami.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201221205157.31501-1-hongweiz@ami.com>
-References: <20201221205157.31501-1-hongweiz@ami.com>
+        Mon, 21 Dec 2020 15:54:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608583970;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YISt5j4b8XAb8GNT7dnsvmnkE22RNgIdTlImdupifmU=;
+        b=DGBQZcf0pJ3iJ7VJ1xWubLRp0evF4DvpT7ZVpYcIXwMUgdKZowv5dbhsoz9Ce4zYucFA+h
+        VexD8Bjo3+rNyXJqkKD6j9cQOmGP5/MI2WPC0M2MCWsoILnEvvIpl4NFp8augtxQmuS82M
+        ARKBOYULMiJnvGTVNQU36AtbdN5Yf+w=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-452-Y-LlExs1OneXozbAn18_zQ-1; Mon, 21 Dec 2020 15:52:48 -0500
+X-MC-Unique: Y-LlExs1OneXozbAn18_zQ-1
+Received: by mail-qt1-f197.google.com with SMTP id v9so8712119qtw.12
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 12:52:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=YISt5j4b8XAb8GNT7dnsvmnkE22RNgIdTlImdupifmU=;
+        b=Vi2B6INP+sAolHP27pHw04ApKT4RORMs1EKiMTWPSYyMMIAJJrGcGRPS6EKEnRRHhT
+         ljaTa6yK0DFsR2j5MgDAponUB79T36LwoWZZd7Cw0aQSvI+jO39/iAFqHKSdk3M8Pqj2
+         X4tFKb+E3y/JLif7bFtjq5n+vRtYcx1uEweATZ/+MeRC6puKzmY/UWYpzSIhPbR8a0hn
+         f+3H/f+pVAdvQVoIJRRvc5eXnrkxTJprMxV3YVwJ9HusA2lWa8RhSAbjj4knQjOd0r2j
+         G/HZFNPIYckMCfs7YVjNJzTeFp3hKatUcDpIiZ6OWDk5dxjJ8aW0uxlaq2ZY4gIinZce
+         lEIw==
+X-Gm-Message-State: AOAM532BhuDKSjvU1LXm81nOxNd8Ja1nhZe8tZnnggNQm3KwFi1poTV4
+        58SKtKmU8rYm+hmB1DELLwaBb458c/HzoWkeTr8CmHLcn8ipMJv+SjY7cDudUFKsSWcNcefGVoG
+        hBXvaeD2nISgOQVbFMjCwW23X
+X-Received: by 2002:ac8:1c6a:: with SMTP id j39mr18262160qtk.341.1608583968347;
+        Mon, 21 Dec 2020 12:52:48 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxlTQNtGfgcc75KoX43sIvGUMqc1M5QQjfDVaI6Wi++irNpTyfAAD7kpHTPTCFPsWuJ85Dxgg==
+X-Received: by 2002:ac8:1c6a:: with SMTP id j39mr18262143qtk.341.1608583968088;
+        Mon, 21 Dec 2020 12:52:48 -0800 (PST)
+Received: from xz-x1 ([142.126.83.202])
+        by smtp.gmail.com with ESMTPSA id y67sm1521029qka.68.2020.12.21.12.52.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 12:52:47 -0800 (PST)
+Date:   Mon, 21 Dec 2020 15:52:45 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Nadav Amit <namit@vmware.com>
+Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: Re: [RFC PATCH 03/13] selftests/vm/userfaultfd: wake after copy
+ failure
+Message-ID: <20201221205245.GJ6640@xz-x1>
+References: <20201129004548.1619714-1-namit@vmware.com>
+ <20201129004548.1619714-4-namit@vmware.com>
+ <20201221192846.GH6640@xz-x1>
+ <2B08ECCA-A7D2-4743-8956-571CB8788FDA@vmware.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.16.98.207]
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrJLMWRmVeSWpSXmKPExsWyRiBhgu5vrofxBj++ClvsusxhMed8C4vF
-        7/N/mS0ubOtjtWhefY7Z4vKuOWwWxxaIWZxqecHiwOFxtX0Xu8eWlTeZPC5+PMbssWlVJ5vH
-        +RkLGT0+b5ILYIvisklJzcksSy3St0vgylhwaDt7wQy+io4lJ9gaGB9wdzFyckgImEicnzmN
-        vYuRi0NIYBeTxORLjUxQDqPEypmv2UCq2ATUJPZungOWEBFYzSjRs+EXI4jDLNDBKDH1xVd2
-        kCphgUCJzq1rGUFsFgFViS0PXjCB2LwCphIbW3azQ+yTl1i94QAziM0pYCZxZOYnFhBbCKjm
-        +vZuFoh6QYmTM5+A2cwCEhIHX7xghqiRlbh16DETxBxFiQe/vrNOYBSYhaRlFpKWBYxMqxiF
-        EktychMzc9LLjfQSczP1kvNzNzFCgjt/B+PHj+aHGJk4GA8xSnAwK4nwmkndjxfiTUmsrEot
-        yo8vKs1JLT7EKM3BoiTOu8r9aLyQQHpiSWp2ampBahFMlomDU6qB8fjM561cAVcazYK/yq3p
-        XSNwovFamNfkoghHc/P/s7InNoqGXjUs3C5meevOwRVMR/Tl/GPkXqYrqU5cr2pbffGXSDWL
-        TtfNQ7+udWuyXb1Z6Ny6dG2i/JOIE6unpSbyJcp+Z5Pbdua35nvpk1FLDAJNN+b/X/Soby/T
-        Kb0NCxNvxizwrSr+osRSnJFoqMVcVJwIANsjPEBcAgAA
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2B08ECCA-A7D2-4743-8956-571CB8788FDA@vmware.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change the order of reading MAC address, try to read it from MAC chip
-first, if it's not availabe, then try to read it from device tree.
+On Mon, Dec 21, 2020 at 07:51:52PM +0000, Nadav Amit wrote:
+> > On Dec 21, 2020, at 11:28 AM, Peter Xu <peterx@redhat.com> wrote:
+> > 
+> > On Sat, Nov 28, 2020 at 04:45:38PM -0800, Nadav Amit wrote:
+> >> From: Nadav Amit <namit@vmware.com>
+> >> 
+> >> When userfaultfd copy-ioctl fails since the PTE already exists, an
+> >> -EEXIST error is returned and the faulting thread is not woken. The
+> >> current userfaultfd test does not wake the faulting thread in such case.
+> >> The assumption is presumably that another thread set the PTE through
+> >> copy/wp ioctl and would wake the faulting thread or that alternatively
+> >> the fault handler would realize there is no need to "must_wait" and
+> >> continue. This is not necessarily true.
+> >> 
+> >> There is an assumption that the "must_wait" tests in handle_userfault()
+> >> are sufficient to provide definitive answer whether the offending PTE is
+> >> populated or not. However, userfaultfd_must_wait() test is lockless.
+> >> Consequently, concurrent calls to ptep_modify_prot_start(), for
+> >> instance, can clear the PTE and can cause userfaultfd_must_wait()
+> >> to wrongly assume it is not populated and a wait is needed.
+> > 
+> > Yes userfaultfd_must_wait() is lockless, however my understanding is that we'll
+> > enqueue before reading the page table, which seems to me that we'll always get
+> > notified even the race happens.  Should apply to either UFFDIO_WRITEPROTECT or
+> > UFFDIO_COPY, iiuc, as long as we follow the order of (1) modify pgtable (2)
+> > wake sleeping threads.  Then it also means that when must_wait() returned true,
+> > it should always get waked up when fault resolved.
+> > 
+> > Taking UFFDIO_COPY as example, even if UFFDIO_COPY happen right before
+> > must_wait() calls:
+> > 
+> >       worker thread                       uffd thread
+> >       -------------                       -----------
+> > 
+> >   handle_userfault
+> >    spin_lock(fault_pending_wqh)
+> >    enqueue()
+> >    set_current_state(INTERRUPTIBLE)
+> >    spin_unlock(fault_pending_wqh)
+> >    must_wait()
+> >      lockless walk page table
+> >                                           UFFDIO_COPY
+> >                                             fill in the hole
+> >                                             wake up threads
+> >                                               (this will wake up worker thread too?)
+> >    schedule()
+> >      (which may return immediately?)
+> > 
+> > While here fault_pending_wqh is lock protected. I just feel like there's some
+> > other reason to cause the thread to stall.  Or did I miss something?
+> 
+> But what happens if the copy completed before the enqueuing? Assume
+> the page is write-protected during UFFDIO_COPY:
+> 
+> 
+> cpu0					cpu1		
+> ----					----			
+> handle_userfault
+> 					UFFDIO_COPY
+> 					[ write-protected ]
+> 				 	 fill in the hole
+> 				 	 wake up threads
+> 				 	 [nothing to wake]
+> 							
+> 					UFFD_WP (unprotect)
+> 					 logically marks as unprotected
+> 					 [nothing to wake]
+> 
+>  spin_lock(fault_pending_wqh)
+>   enqueue()
+>   set_current_state(INTERRUPTIBLE)
+>   spin_unlock(fault_pending_wqh)
+>   must_wait()
+> 
+> 					[ #PF on the same PTE
+> 					 due to write-protection ]
+> 
+> 					...
+> 					 wp_page_copy()
+> 					  ptep_clear_flush_notify()
+> 					  [ PTE is clear ]
+> 					
+>    lockless walk page table
+>     pte_none(*pte) -> must wait
+> 
+> Note that additional scenarios are possible. For instance, instead of
+> wp_page_copy(), we can have other change_pte_range() (due to worker’s
+> mprotect() or NUMA balancing), calling ptep_modify_prot_start() and clearing
+> the PTE.
+> 
+> Am I missing something?
 
-Fixes: 35c54922dc97 ("ARM: dts: tacoma: Add reserved memory for ramoops")
-Signed-off-by: Hongwei Zhang <hongweiz@ami.com>
----
- drivers/net/ethernet/faraday/ftgmac100.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+Ah I see your point, thanks.  I think you're right:
 
-diff --git a/drivers/net/ethernet/faraday/ftgmac100.c b/drivers/net/ethernet/faraday/ftgmac100.c
-index 65cd25372020..9be69cbdab96 100644
---- a/drivers/net/ethernet/faraday/ftgmac100.c
-+++ b/drivers/net/ethernet/faraday/ftgmac100.c
-@@ -184,14 +184,7 @@ static void ftgmac100_initial_mac(struct ftgmac100 *priv)
- 	unsigned int l;
- 	void *addr;
- 
--	addr = device_get_mac_address(priv->dev, mac, ETH_ALEN);
--	if (addr) {
--		ether_addr_copy(priv->netdev->dev_addr, mac);
--		dev_info(priv->dev, "Read MAC address %pM from device tree\n",
--			 mac);
--		return;
--	}
--
-+	/* Read from Chip if not from chip */
- 	m = ioread32(priv->base + FTGMAC100_OFFSET_MAC_MADR);
- 	l = ioread32(priv->base + FTGMAC100_OFFSET_MAC_LADR);
- 
-@@ -205,7 +198,18 @@ static void ftgmac100_initial_mac(struct ftgmac100 *priv)
- 	if (is_valid_ether_addr(mac)) {
- 		ether_addr_copy(priv->netdev->dev_addr, mac);
- 		dev_info(priv->dev, "Read MAC address %pM from chip\n", mac);
--	} else {
-+		return;
-+	}
-+
-+	/* Read from Chip if not from device tree */
-+	addr = device_get_mac_address(priv->dev, mac, ETH_ALEN);
-+	if (addr) {
-+		ether_addr_copy(priv->netdev->dev_addr, mac);
-+		dev_info(priv->dev, "Read MAC address %pM from device tree\n",
-+				mac);
-+		return;
-+	}
-+	else {
- 		eth_hw_addr_random(priv->netdev);
- 		dev_info(priv->dev, "Generated random MAC address %pM\n",
- 			 priv->netdev->dev_addr);
+Reviewed-by: Peter Xu <peterx@redhat.com>
+
+Would you mind adding something like above into the commit message if you're
+going to repost?  IMHO it would even be nicer to mention why
+UFFDIO_WRITEPROTECT does not need this extra wakeup (I think it's because it'll
+do the wakeup unconditionally anyway).
+
 -- 
-2.17.1
+Peter Xu
 
