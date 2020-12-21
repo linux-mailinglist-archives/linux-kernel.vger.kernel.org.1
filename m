@@ -2,171 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7DF2DF906
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 06:58:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2682DF909
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 06:58:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728494AbgLUF52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 00:57:28 -0500
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:59042 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727063AbgLUF52 (ORCPT
+        id S1728185AbgLUF6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 00:58:20 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:39284 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728519AbgLUF6U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 00:57:28 -0500
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 0BL5qWvF013664;
-        Mon, 21 Dec 2020 13:52:38 +0800 (GMT-8)
-        (envelope-from chiawei_wang@aspeedtech.com)
-Received: from ChiaWeiWang-PC.aspeed.com (192.168.2.66) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 21 Dec
- 2020 13:56:09 +0800
-From:   "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>
-To:     <lee.jones@linaro.org>, <robh+dt@kernel.org>, <joel@jms.id.au>,
-        <andrew@aj.id.au>, <linus.walleij@linaro.org>, <minyard@acm.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <openbmc@lists.ozlabs.org>
-CC:     <BMC-SW@aspeedtech.com>, <haiyue.wang@linux.intel.com>,
-        <cyrilbur@gmail.com>, <rlippert@google.com>
-Subject: [PATCH v3 5/5] soc: aspeed: Adapt to new LPC device tree layout
-Date:   Mon, 21 Dec 2020 13:56:23 +0800
-Message-ID: <20201221055623.31463-6-chiawei_wang@aspeedtech.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201221055623.31463-1-chiawei_wang@aspeedtech.com>
-References: <20201221055623.31463-1-chiawei_wang@aspeedtech.com>
+        Mon, 21 Dec 2020 00:58:20 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608530275; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=sEY+xIJ0XXXuL7Fjm7+Q2MBFKhj3vlIlLwjAvEKA18A=; b=tEPZad5wChkcKdJmxldeoQkdtfPSKS5M0wQxoRwtN+gVwxgaAJeTGF3UK/lnyPbojUvtcPRE
+ y9ZWFgDrjKkqKdZLbzs6gDGWAzTI3ym0TN5bRe54eIhc1skT9FKnsVaVvkn5avzWUwiaQwWt
+ TwkkVWWQz/CT+PLCIPwo78kW1s0=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 5fe0394475ab652e87bad55e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 21 Dec 2020 05:57:24
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 009E3C433CA; Mon, 21 Dec 2020 05:57:23 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from x230.qca.qualcomm.com (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A35E9C433CA;
+        Mon, 21 Dec 2020 05:57:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A35E9C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Srinivasan Raju <srini.raju@purelifi.com>
+Cc:     Mostafa Afgani <mostafa.afgani@purelifi.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list\:NETWORKING DRIVERS \(WIRELESS\)" 
+        <linux-wireless@vger.kernel.org>,
+        "open list\:NETWORKING DRIVERS" <netdev@vger.kernel.org>
+Subject: Re: [PATCH] [v11] wireless: Initial driver submission for pureLiFi STA devices
+References: <20200928102008.32568-1-srini.raju@purelifi.com>
+        <20201208115719.349553-1-srini.raju@purelifi.com>
+        <87o8iqq6os.fsf@codeaurora.org>
+        <CWXP265MB17998064FCE8FCE6B313FAD1E0C00@CWXP265MB1799.GBRP265.PROD.OUTLOOK.COM>
+Date:   Mon, 21 Dec 2020 07:57:17 +0200
+In-Reply-To: <CWXP265MB17998064FCE8FCE6B313FAD1E0C00@CWXP265MB1799.GBRP265.PROD.OUTLOOK.COM>
+        (Srinivasan Raju's message of "Mon, 21 Dec 2020 05:52:16 +0000")
+Message-ID: <877dpbd7lu.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [192.168.2.66]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 0BL5qWvF013664
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add check against LPC device v2 compatible string to
-ensure that the fixed device tree layout is adopted.
-The LPC register offsets are also fixed accordingly.
+Srinivasan Raju <srini.raju@purelifi.com> writes:
 
-Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
----
- drivers/soc/aspeed/aspeed-lpc-ctrl.c  | 20 ++++++++++++++------
- drivers/soc/aspeed/aspeed-lpc-snoop.c | 23 +++++++++++++++--------
- 2 files changed, 29 insertions(+), 14 deletions(-)
+>> I see lots of magic numbers in the driver like 2, 0x33 and 0x34 here.
+>> Please convert the magic numbers to proper defines explaining the
+>> meaning. And for vendor commands you could even use enum to group
+>> them better in .h file somewhere.
+>
+> Hi Kalle,
+>
+> Thanks for reviewing the driver, We will work on the comments.
 
-diff --git a/drivers/soc/aspeed/aspeed-lpc-ctrl.c b/drivers/soc/aspeed/aspeed-lpc-ctrl.c
-index 439bcd6b8c4a..b04074949240 100644
---- a/drivers/soc/aspeed/aspeed-lpc-ctrl.c
-+++ b/drivers/soc/aspeed/aspeed-lpc-ctrl.c
-@@ -18,15 +18,15 @@
- 
- #define DEVICE_NAME	"aspeed-lpc-ctrl"
- 
--#define HICR5 0x0
-+#define HICR5 0x80
- #define HICR5_ENL2H	BIT(8)
- #define HICR5_ENFWH	BIT(10)
- 
--#define HICR6 0x4
-+#define HICR6 0x84
- #define SW_FWH2AHB	BIT(17)
- 
--#define HICR7 0x8
--#define HICR8 0xc
-+#define HICR7 0x88
-+#define HICR8 0x8c
- 
- struct aspeed_lpc_ctrl {
- 	struct miscdevice	miscdev;
-@@ -215,6 +215,7 @@ static int aspeed_lpc_ctrl_probe(struct platform_device *pdev)
- 	struct device_node *node;
- 	struct resource resm;
- 	struct device *dev;
-+	struct device_node *lpc_np;
- 	int rc;
- 
- 	dev = &pdev->dev;
-@@ -270,8 +271,15 @@ static int aspeed_lpc_ctrl_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	lpc_ctrl->regmap = syscon_node_to_regmap(
--			pdev->dev.parent->of_node);
-+	lpc_np = pdev->dev.parent->of_node;
-+	if (!of_device_is_compatible(lpc_np, "aspeed,ast2400-lpc-v2") &&
-+	    !of_device_is_compatible(lpc_np, "aspeed,ast2500-lpc-v2") &&
-+	    !of_device_is_compatible(lpc_np, "aspeed,ast2600-lpc-v2")) {
-+		dev_err(dev, "unsupported LPC device binding\n");
-+		return -ENODEV;
-+	}
-+
-+	lpc_ctrl->regmap = syscon_node_to_regmap(lpc_np);
- 	if (IS_ERR(lpc_ctrl->regmap)) {
- 		dev_err(dev, "Couldn't get regmap\n");
- 		return -ENODEV;
-diff --git a/drivers/soc/aspeed/aspeed-lpc-snoop.c b/drivers/soc/aspeed/aspeed-lpc-snoop.c
-index 682ba0eb4eba..63c3d9b8ba61 100644
---- a/drivers/soc/aspeed/aspeed-lpc-snoop.c
-+++ b/drivers/soc/aspeed/aspeed-lpc-snoop.c
-@@ -28,26 +28,25 @@
- #define NUM_SNOOP_CHANNELS 2
- #define SNOOP_FIFO_SIZE 2048
- 
--#define HICR5	0x0
-+#define HICR5	0x80
- #define HICR5_EN_SNP0W		BIT(0)
- #define HICR5_ENINT_SNP0W	BIT(1)
- #define HICR5_EN_SNP1W		BIT(2)
- #define HICR5_ENINT_SNP1W	BIT(3)
--
--#define HICR6	0x4
-+#define HICR6	0x84
- #define HICR6_STR_SNP0W		BIT(0)
- #define HICR6_STR_SNP1W		BIT(1)
--#define SNPWADR	0x10
-+#define SNPWADR	0x90
- #define SNPWADR_CH0_MASK	GENMASK(15, 0)
- #define SNPWADR_CH0_SHIFT	0
- #define SNPWADR_CH1_MASK	GENMASK(31, 16)
- #define SNPWADR_CH1_SHIFT	16
--#define SNPWDR	0x14
-+#define SNPWDR	0x94
- #define SNPWDR_CH0_MASK		GENMASK(7, 0)
- #define SNPWDR_CH0_SHIFT	0
- #define SNPWDR_CH1_MASK		GENMASK(15, 8)
- #define SNPWDR_CH1_SHIFT	8
--#define HICRB	0x80
-+#define HICRB	0x100
- #define HICRB_ENSNP0D		BIT(14)
- #define HICRB_ENSNP1D		BIT(15)
- 
-@@ -258,6 +257,7 @@ static int aspeed_lpc_snoop_probe(struct platform_device *pdev)
- {
- 	struct aspeed_lpc_snoop *lpc_snoop;
- 	struct device *dev;
-+	struct device_node *lpc_np;
- 	u32 port;
- 	int rc;
- 
-@@ -267,8 +267,15 @@ static int aspeed_lpc_snoop_probe(struct platform_device *pdev)
- 	if (!lpc_snoop)
- 		return -ENOMEM;
- 
--	lpc_snoop->regmap = syscon_node_to_regmap(
--			pdev->dev.parent->of_node);
-+	lpc_np = pdev->dev.parent->of_node;
-+	if (!of_device_is_compatible(lpc_np, "aspeed,ast2400-lpc-v2") &&
-+	    !of_device_is_compatible(lpc_np, "aspeed,ast2500-lpc-v2") &&
-+	    !of_device_is_compatible(lpc_np, "aspeed,ast2600-lpc-v2")) {
-+		dev_err(dev, "unsupported LPC device binding\n");
-+		return -ENODEV;
-+	}
-+
-+	lpc_snoop->regmap = syscon_node_to_regmap(lpc_np);
- 	if (IS_ERR(lpc_snoop->regmap)) {
- 		dev_err(dev, "Couldn't get regmap\n");
- 		return -ENODEV;
+I haven't had time to do a throrough review yet, but I suggest fixing
+the stuff I commented and submitting v12. I'll then do a new review with
+v12.
+
 -- 
-2.17.1
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
