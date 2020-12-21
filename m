@@ -2,161 +2,488 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4A302DFF43
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:08:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 439322DFF4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:09:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726529AbgLUSG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 13:06:26 -0500
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:7049 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725985AbgLUSGZ (ORCPT
+        id S1726601AbgLUSGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:06:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726567AbgLUSGu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:06:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1608573984; x=1640109984;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=amZvUOWFS7IiUWuBRcLWif8pzVfGOJWWQH/Pq3DZHjs=;
-  b=JkaZDGNkaGmppIXk9QQtV3HKjkL/X+06FBfw8ZDhCW/Rk/T//8PvWpwZ
-   kUW2RAWjiZDZ/20m0YncVTOWT1PMO1esk+do8jHQoU5T+ZzOJ6RCta0z4
-   y9vCeZfzKsHY6BNRnzT89gDdWVaH75624MtK3F/OYJHFYJQNde8WFxd0s
-   xfCipVugSGzoUkzyRwHcoL9DnPGo0qlmTfRiPsqvG2FrzC/BYBZo94hrl
-   UZPs+W/4fdPK9CpY6g1EhPc5HudZDOIEuACy7wiSLyY61aqkpt85p5IBx
-   xGWONf2vl/nrUYzdyjsx5u55sC2/+1Tanrt/GRligLHPHvFfK7yTF28kM
-   g==;
-IronPort-SDR: FC3PEtQhWkYzFjB9I8HuxR/PWdHHhtfeTkc+0k8/j+vU+Ly+PTHM22O3SsGelhSVA7FSxSNMPs
- GAe9qyvSAKpSlqS3c9w72ZyJ7r8I0lsw4OJZY0QBGR8tSTtsGB3CmRmC3qPhtXoBlsUKumBLFE
- ZQLlr8muvByZu/hjdsD6Yv2rE39AK3narV4LMC52bOt5YZJz4qAwyD3ebryItE3z+TJap9F6Tn
- +LdNP0zPZnpfPbNQ9R8b9F0zM9+F/T4REoSpmaTAvIrASK9FPxptYsfzmxEenFQoC8hBtR67iT
- ZM8=
-X-IronPort-AV: E=Sophos;i="5.78,436,1599494400"; 
-   d="scan'208";a="160153291"
-Received: from mail-bl2nam02lp2058.outbound.protection.outlook.com (HELO NAM02-BL2-obe.outbound.protection.outlook.com) ([104.47.38.58])
-  by ob1.hgst.iphmx.com with ESMTP; 22 Dec 2020 02:05:17 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Tza749vIEookiULJygiQIlaJKdiCWOcQ3gidzCby9isrPG83ZNpwXgXVvS6OVfSldJlS6ktoGJc8mf4TrO+QaCD2RaypC5CU1VFFwQduXyEqE5b4ioNO+FD/pwD4rmMuU6Rutr1E0TiVdKVgdpYcrtX4Lcn4OXSfxIiPSQMh/myib7PivFkl5hkVe7Di4Vfqihq3ymAcJNbYkHwNHrSZzZ2Km6f6bCIAYdaxhSRRWD7xtm/9hDieQNmPb9XUa7SvQOoWlMPvwVABoGqo9ZOMN6npinIAC77jG4dqogHuiXZaS77gyuMrlpWdonxYbjx0wFwYGG/7MsWyGIKECARhiA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WdLrnFCV308jA34zsSY2qWNxJnj/SFLYF8fpUQpLihY=;
- b=VcQkGGcr89YZwiSJOQjbGLF60p4qmaiQ1s6NBZ5DzPvSKgtGcF795Czo2MM2/cTFsWA3/0XY6cZaSammuUribp3aC0fcdcTw9a0FQpOX1Vkwo5snjghaHRL2koHn2bH/HsMJ6OYn8Fg0PMDcVxOR3x0oNz98DPTw3a/1WU7htnK368Fr7Pm+nq4sxLMyzj5pDWw/pxpM+sYHI4cGaSIPTY0uZIuYYjT2oDrTPKNZh0vrPdFd5V7pLoPZ22cvsqzrQhke22/uyK7nSsbI5ZeHx3EzfJG1rM5rwW+7rj0TE9+MPNdsM57JWUH3dZY2gi1+3RXht3M14nhEzH+IYyqSUQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WdLrnFCV308jA34zsSY2qWNxJnj/SFLYF8fpUQpLihY=;
- b=q6wrWN90Cpc6d1q5AgJGZBQ77d033ngJ5C7S2l8Qu0AG4tDhZHfKFxbbbGegpPm7AadVY/tMQ4yacy3uIpOjoVPxtOiRxCGJtnXKfJ8Hc0vXwhrsgZTU4ffs9urvWfPjNxnvnKKF2QbOlqYtqyF8suKBYI4/g8DUYAGhSgXcwFg=
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
- DM6PR04MB5082.namprd04.prod.outlook.com (2603:10b6:5:1a::17) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3676.25; Mon, 21 Dec 2020 18:05:15 +0000
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::a564:c676:b866:34f6]) by DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::a564:c676:b866:34f6%9]) with mapi id 15.20.3676.033; Mon, 21 Dec 2020
- 18:05:15 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>
-Subject: RE: [PATCH] scsi: ufs: fix livelock of ufshcd_clear_ua_wluns
-Thread-Topic: [PATCH] scsi: ufs: fix livelock of ufshcd_clear_ua_wluns
-Thread-Index: AQHW1O5Lq9Xt0bukCk2VnSNzzSWPAqoAjHbQgAEkMYCAABqVAIAABd2AgAAK2YA=
-Date:   Mon, 21 Dec 2020 18:05:15 +0000
-Message-ID: <DM6PR04MB657558D8353199D53586F654FCC00@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20201218033131.2624065-1-jaegeuk@kernel.org>
- <DM6PR04MB6575B8729A62E6FB9F19930CFCC10@DM6PR04MB6575.namprd04.prod.outlook.com>
- <X+C9+1p1CbssKRdO@google.com>
- <DM6PR04MB65753B9D31B3643C757E4E23FCC00@DM6PR04MB6575.namprd04.prod.outlook.com>
- <X+DZMwSHsskcEgZE@google.com>
-In-Reply-To: <X+DZMwSHsskcEgZE@google.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [77.138.4.172]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: e4901311-49a1-4646-4abc-08d8a5daf7df
-x-ms-traffictypediagnostic: DM6PR04MB5082:
-x-microsoft-antispam-prvs: <DM6PR04MB5082056671CEFEFEDE35D9D2FCC00@DM6PR04MB5082.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:5236;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: p2i8hP1j1P7A9n5lWdtaQXdylYogxbMIgYlNls2u6KH9BszymdsGEJITlos6N7XRV1OdZPVKRT0xxDndhIlcfzWYw80/1FgmXByNz7zRRsoLufjPocFxJDxO6utGI2w0dP0MJge3w5o6MlYSaI+q0Ya5rnEVVyri8jk95yBl8G03Y1IU2XUQ/FnVqQB1ndpfpzfpBoVFllBqiroXYfpnZWYRk47udSZ7HSzZG3t7GOLw0HbXrKD2U3NG1nmIzpSevDNSehhyL0muVyVVbr+d7yTi+5qKwmtfYDMdkpVsumxFtt1i7AEkyqbHbtbRFS/Yb9sPh1Se74T27KNC6jVZtV7hQsbRvm2CoRbRGdTo0CiDXZoWMtrxSljR5I1TcDYB0uB7Ynukmy+TS4UGBpsukg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(346002)(396003)(376002)(366004)(4744005)(2906002)(55016002)(5660300002)(8676002)(86362001)(186003)(4326008)(26005)(52536014)(66446008)(6916009)(64756008)(6506007)(8936002)(7696005)(33656002)(71200400001)(66476007)(316002)(66946007)(76116006)(83380400001)(9686003)(478600001)(54906003)(66556008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?NlZAnDZrBbZpa1JFDV1KGtPGgapX/YmseJWCiWSFzOZyduavwi9kaKCfv+0P?=
- =?us-ascii?Q?cilQ032cvq0aiISNYBP0cxAfavgTB+FQLvhS0TxThcl7Gk7WzT28yHaPD3WY?=
- =?us-ascii?Q?H5582Z1U4nrxvF4UWn1kZKIdyApyyNgVIunVRd7NsvIkTH8q8OI5ID1jBMmv?=
- =?us-ascii?Q?PYe0xXomjkQpOi/P8Rtr7YFv2w2gPa69hqK+bH8ftfVwVAFW1WHag86OBJmo?=
- =?us-ascii?Q?j7vKk15vM0elH/7S7rNRngm1px/jCh4cCJ9kupaO4A0gdAytSVKXv6aoQUqJ?=
- =?us-ascii?Q?PI2s9F6rp1XxGbdFR6BvsVdUI6+fzbb1GYe0Zu/YCs/uIkKdFqlYpUH0v8DQ?=
- =?us-ascii?Q?GNBicym2XiMMzr2fxlrdZTNYcrtz4rQ2gHs3wg7MhlZ+8fb9usYS4nee5Mq8?=
- =?us-ascii?Q?Sn1lQQoH56yBvdsmx4f7Z6ehfDMzqVs7D/EeN9nB0RaSMAAzXU8jir34GpXC?=
- =?us-ascii?Q?LnDtUGlWoeYQhOUZYeH4Ik3KTCSTM7LMOQzS1saJe9t64mqD1/FjM8l2cU5D?=
- =?us-ascii?Q?bKmcEtuLvL2gjydty0I4vVtfl0wcd3ELRgqK5eE+e6cVXdVVVX2FLURRtIf0?=
- =?us-ascii?Q?+qkTbcjtp4L3lLPzQSN0OwsS9zUztJkJXkIGwQdi6Tr4RkE/RCB7ArS1s2ac?=
- =?us-ascii?Q?9nVgMYL/awWhCSrFmzufOLlpQky1i5rDXsWIW9TBF3m7HjDUNvdKCfZSaZIN?=
- =?us-ascii?Q?rkkBKPhRw2OzBl+YdeEXEksqeagWMY6tUXshvjwgTF3cYqlvKP1jho99hu+m?=
- =?us-ascii?Q?UWtYt9DXTvAPrHnTiN9IJcTPOfOVx3ssPV3QWCrhdq5BV25rp4hQ9EDPKkZv?=
- =?us-ascii?Q?I4J2nIpDTR2A2TT4L8lumrm0nDJdX70Ok2TzmaXaWRJeqYJIkgWUKKrk7DrI?=
- =?us-ascii?Q?Dr2JOIuvcLH9C0u3R1Ss1svsbjgFZanf+bvYv7dgLukFTygQSEwS13YgXQzF?=
- =?us-ascii?Q?REj4v7VfenDqLUTXmwi8Wynw3vi+rmceF1IupGSd82c=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 21 Dec 2020 13:06:50 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FFAEC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:06:09 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1krPZK-0008S6-TX; Mon, 21 Dec 2020 19:06:02 +0100
+Received: from mtr by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1krPZH-0006Ar-4o; Mon, 21 Dec 2020 19:05:59 +0100
+Date:   Mon, 21 Dec 2020 19:05:59 +0100
+From:   Michael Tretter <m.tretter@pengutronix.de>
+To:     Manish Narani <manish.narani@xilinx.com>
+Cc:     gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        michal.simek@xilinx.com, balbi@kernel.org, p.zabel@pengutronix.de,
+        devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, git@xilinx.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [RESEND PATCH v3 2/2] usb: dwc3: Add driver for Xilinx platforms
+Message-ID: <20201221180559.GA24909@pengutronix.de>
+References: <1608015291-52007-1-git-send-email-manish.narani@xilinx.com>
+ <1608015291-52007-3-git-send-email-manish.narani@xilinx.com>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e4901311-49a1-4646-4abc-08d8a5daf7df
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Dec 2020 18:05:15.2367
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 2jTicC7i2MmbYYD0OAcrMe/Dl1qt5fnHvDpBXUvatalBZBeYyUG5TkCF9EjJY0RfjY6oG7aBySdkWe5fNqaGcw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB5082
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1608015291-52007-3-git-send-email-manish.narani@xilinx.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 17:49:09 up 19 days,  5:16, 60 users,  load average: 1.04, 0.49,
+ 0.23
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: mtr@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->=20
->=20
-> On 12/21, Avri Altman wrote:
-> > > > > When gate_work/ungate_work gets an error during hibern8_enter or
-> > > exit,
-> > > > >  ufshcd_err_handler()
-> > > > >    ufshcd_scsi_block_requests()
-> > > > >    ufshcd_reset_and_restore()
-> > > > >      ufshcd_clear_ua_wluns() -> stuck
-> > > > >    ufshcd_scsi_unblock_requests()
-> > > > >
-> > > > > In order to avoid it, ufshcd_clear_ua_wluns() can be called per
-> recovery
-> > > > > flows
-> > > > > such as suspend/resume, link_recovery, and error_handler.
-> > > > Not sure that suspend/resume are UAC events?
-> > >
-> > > Could you elaborate a bit? The goal is to clear UAC after UFS reset
-> happens.
-> > So why calling it on every suspend and resume?
->=20
-> 1. If UAC was cleared, there's no impact.
-But the command is still sent.
+On Tue, 15 Dec 2020 12:24:51 +0530, Manish Narani wrote:
+> Add a new driver for supporting Xilinx platforms. This driver is used
+> for some sequence of operations required for Xilinx USB controllers.
+> This driver is also used to choose between PIPE clock coming from SerDes
+> and the Suspend Clock. Before the controller is out of reset, the clock
+> selection should be changed to PIPE clock in order to make the USB
+> controller work. There is a register added in Xilinx USB controller
+> register space for the same.
+> 
+> Signed-off-by: Manish Narani <manish.narani@xilinx.com>
+> ---
+>  drivers/usb/dwc3/Kconfig          |   9 +
+>  drivers/usb/dwc3/Makefile         |   1 +
+>  drivers/usb/dwc3/dwc3-of-simple.c |   1 -
+>  drivers/usb/dwc3/dwc3-xilinx.c    | 334 ++++++++++++++++++++++++++++++
+>  4 files changed, 344 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/usb/dwc3/dwc3-xilinx.c
+> 
+> diff --git a/drivers/usb/dwc3/Kconfig b/drivers/usb/dwc3/Kconfig
+> index 7a2304565a73..0e00e6dfccd8 100644
+> --- a/drivers/usb/dwc3/Kconfig
+> +++ b/drivers/usb/dwc3/Kconfig
+> @@ -139,4 +139,13 @@ config USB_DWC3_QCOM
+>  	  for peripheral mode support.
+>  	  Say 'Y' or 'M' if you have one such device.
+>  
+> +config USB_DWC3_XILINX
+> +	tristate "Xilinx Platforms"
+> +	depends on (ARCH_ZYNQMP || ARCH_VERSAL) && OF
+> +	default USB_DWC3
+> +	help
+> +	  Support Xilinx SoCs with DesignWare Core USB3 IP.
+> +	  This driver handles both ZynqMP and Versal SoC operations.
+> +	  Say 'Y' or 'M' if you have one such device.
+> +
+>  endif
+> diff --git a/drivers/usb/dwc3/Makefile b/drivers/usb/dwc3/Makefile
+> index ae86da0dc5bd..add567578b1f 100644
+> --- a/drivers/usb/dwc3/Makefile
+> +++ b/drivers/usb/dwc3/Makefile
+> @@ -51,3 +51,4 @@ obj-$(CONFIG_USB_DWC3_MESON_G12A)	+= dwc3-meson-g12a.o
+>  obj-$(CONFIG_USB_DWC3_OF_SIMPLE)	+= dwc3-of-simple.o
+>  obj-$(CONFIG_USB_DWC3_ST)		+= dwc3-st.o
+>  obj-$(CONFIG_USB_DWC3_QCOM)		+= dwc3-qcom.o
+> +obj-$(CONFIG_USB_DWC3_XILINX)		+= dwc3-xilinx.o
+> diff --git a/drivers/usb/dwc3/dwc3-of-simple.c b/drivers/usb/dwc3/dwc3-of-simple.c
+> index e62ecd22b3ed..71fd620c5161 100644
+> --- a/drivers/usb/dwc3/dwc3-of-simple.c
+> +++ b/drivers/usb/dwc3/dwc3-of-simple.c
+> @@ -172,7 +172,6 @@ static const struct dev_pm_ops dwc3_of_simple_dev_pm_ops = {
+>  
+>  static const struct of_device_id of_dwc3_simple_match[] = {
+>  	{ .compatible = "rockchip,rk3399-dwc3" },
+> -	{ .compatible = "xlnx,zynqmp-dwc3" },
+>  	{ .compatible = "cavium,octeon-7130-usb-uctl" },
+>  	{ .compatible = "sprd,sc9860-dwc3" },
+>  	{ .compatible = "allwinner,sun50i-h6-dwc3" },
+> diff --git a/drivers/usb/dwc3/dwc3-xilinx.c b/drivers/usb/dwc3/dwc3-xilinx.c
+> new file mode 100644
+> index 000000000000..7e485951d2f7
+> --- /dev/null
+> +++ b/drivers/usb/dwc3/dwc3-xilinx.c
+> @@ -0,0 +1,334 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/**
+> + * dwc3-xilinx.c - Xilinx DWC3 controller specific glue driver
+> + *
+> + * Authors: Manish Narani <manish.narani@xilinx.com>
+> + *          Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>
+> + */
+> +
+> +#include <linux/module.h>
+> +#include <linux/kernel.h>
+> +#include <linux/slab.h>
+> +#include <linux/clk.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/dma-mapping.h>
+> +#include <linux/of_platform.h>
+> +#include <linux/pm_runtime.h>
+> +#include <linux/reset.h>
+> +#include <linux/of_address.h>
+> +#include <linux/delay.h>
+> +#include <linux/firmware/xlnx-zynqmp.h>
+> +#include <linux/io.h>
+> +
+> +#include <linux/phy/phy.h>
+> +
+> +/* USB phy reset mask register */
+> +#define XLNX_USB_PHY_RST_EN			0x001C
+> +#define XLNX_PHY_RST_MASK			0x1
+> +
+> +/* Xilinx USB 3.0 IP Register */
+> +#define XLNX_USB_TRAFFIC_ROUTE_CONFIG		0x005C
+> +#define XLNX_USB_TRAFFIC_ROUTE_FPD		0x1
+> +
+> +/* Versal USB Reset ID */
+> +#define VERSAL_USB_RESET_ID			0xC104036
+> +
+> +#define XLNX_USB_FPD_PIPE_CLK			0x7c
+> +#define PIPE_CLK_DESELECT			1
+> +#define PIPE_CLK_SELECT				0
+> +#define XLNX_USB_FPD_POWER_PRSNT		0x80
+> +#define PIPE_POWER_ON				1
+> +#define PIPE_POWER_OFF				0
 
-> 2. ufshcd_link_recovery() can reset UFS directly by ufs_mtk_resume().
-> 3. ufshcd_suspend can call ufshcd_host_reset_and_restore() as well.
-Seems excessive IMO.
-Why not selectively send when indeed required, e.g. on reset?
+Don't use values for the defines, but rather define the bit. Its name in the
+register reference is "option". Therefore, define it as
+
+	#define FPD_POWER_PRSNT_OPTION			BIT(0)
+
+and set/unset the bit in the code. The same for the other registers/bits.
+
+> +
+> +struct dwc3_xlnx {
+> +	int				num_clocks;
+> +	struct clk_bulk_data		*clks;
+> +	struct device			*dev;
+> +	void __iomem			*regs;
+> +	int				(*pltfm_init)(struct dwc3_xlnx *data);
+> +};
+> +
+> +static void dwc3_xlnx_mask_phy_rst(struct dwc3_xlnx *priv_data, bool mask)
+> +{
+> +	u32 reg;
+> +
+> +	/*
+> +	 * Enable or disable ULPI PHY reset from USB Controller.
+> +	 * This does not actually reset the phy, but just controls
+> +	 * whether USB controller can or cannot reset ULPI PHY.
+> +	 */
+> +	reg = readl(priv_data->regs + XLNX_USB_PHY_RST_EN);
+> +
+> +	if (mask)
+> +		reg &= ~XLNX_PHY_RST_MASK;
+> +	else
+> +		reg |= XLNX_PHY_RST_MASK;
+> +
+> +	writel(reg, priv_data->regs + XLNX_USB_PHY_RST_EN);
+> +}
+> +
+> +static int dwc3_xlnx_init_versal(struct dwc3_xlnx *priv_data)
+> +{
+> +	struct device		*dev = priv_data->dev;
+> +	int			ret;
+> +
+> +	dwc3_xlnx_mask_phy_rst(priv_data, false);
+> +
+> +	/* Assert and De-assert reset */
+> +	ret = zynqmp_pm_reset_assert(VERSAL_USB_RESET_ID,
+> +				     PM_RESET_ACTION_ASSERT);
+> +	if (ret < 0) {
+> +		dev_err_probe(dev, ret, "failed to assert Reset\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = zynqmp_pm_reset_assert(VERSAL_USB_RESET_ID,
+> +				     PM_RESET_ACTION_RELEASE);
+> +	if (ret < 0) {
+> +		dev_err_probe(dev, ret, "failed to De-assert Reset\n");
+> +		return ret;
+> +	}
+> +
+> +	dwc3_xlnx_mask_phy_rst(priv_data, true);
+> +
+> +	return 0;
+> +}
+> +
+> +static int dwc3_xlnx_init_zynqmp(struct dwc3_xlnx *priv_data)
+> +{
+> +	struct device		*dev = priv_data->dev;
+> +	struct reset_control	*crst, *hibrst, *apbrst;
+> +	struct phy		*usb3_phy;
+> +	int			ret;
+> +	u32			reg;
+> +
+> +	crst = devm_reset_control_get_exclusive(dev, "usb_crst");
+
+The resets and reset-names are not documented in the dt-binding.
+
+> +	if (IS_ERR(crst)) {
+> +		ret = PTR_ERR(crst);
+> +		dev_err_probe(dev, ret,
+> +			      "failed to get core reset signal\n");
+> +		goto err;
+> +	}
+> +
+> +	hibrst = devm_reset_control_get_exclusive(dev, "usb_hibrst");
+> +	if (IS_ERR(hibrst)) {
+> +		ret = PTR_ERR(hibrst);
+> +		dev_err_probe(dev, ret,
+> +			      "failed to get hibernation reset signal\n");
+> +		goto err;
+> +	}
+> +
+> +	apbrst = devm_reset_control_get_exclusive(dev, "usb_apbrst");
+> +	if (IS_ERR(apbrst)) {
+> +		ret = PTR_ERR(apbrst);
+> +		dev_err_probe(dev, ret,
+> +			      "failed to get APB reset signal\n");
+> +		goto err;
+> +	}
+> +
+> +	ret = reset_control_assert(crst);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to assert core reset\n");
+> +		goto err;
+> +	}
+> +
+> +	ret = reset_control_assert(hibrst);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to assert hibernation reset\n");
+> +		goto err;
+> +	}
+> +
+> +	ret = reset_control_assert(apbrst);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to assert APB reset\n");
+> +		goto err;
+> +	}
+> +
+> +	usb3_phy = devm_phy_get(dev, "usb3-phy");
+
+Error handling is missing.
+
+The "usb3-phy" phy binding in not documented in the dt-binding.
+
+Thanks,
+
+Michael
+
+> +
+> +	ret = phy_init(usb3_phy);
+> +	if (ret < 0) {
+> +		phy_exit(usb3_phy);
+> +		goto err;
+> +	}
+> +
+> +	ret = reset_control_deassert(apbrst);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to release APB reset\n");
+> +		goto err;
+> +	}
+> +
+> +	/* Set PIPE Power Present signal in FPD Power Present Register*/
+> +	writel(PIPE_POWER_ON, priv_data->regs + XLNX_USB_FPD_POWER_PRSNT);
+> +
+> +	/* Set the PIPE Clock Select bit in FPD PIPE Clock register */
+> +	writel(PIPE_CLK_SELECT, priv_data->regs + XLNX_USB_FPD_PIPE_CLK);
+> +
+> +	ret = reset_control_deassert(crst);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to release core reset\n");
+> +		goto err;
+> +	}
+> +
+> +	ret = reset_control_deassert(hibrst);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to release hibernation reset\n");
+> +		goto err;
+> +	}
+> +
+> +	ret = phy_power_on(usb3_phy);
+> +	if (ret < 0) {
+> +		phy_exit(usb3_phy);
+> +		goto err;
+> +	}
+> +
+> +	/*
+> +	 * This routes the USB DMA traffic to go through FPD path instead
+> +	 * of reaching DDR directly. This traffic routing is needed to
+> +	 * make SMMU and CCI work with USB DMA.
+> +	 */
+> +	if (of_dma_is_coherent(dev->of_node) || device_iommu_mapped(dev)) {
+> +		reg = readl(priv_data->regs + XLNX_USB_TRAFFIC_ROUTE_CONFIG);
+> +		reg |= XLNX_USB_TRAFFIC_ROUTE_FPD;
+> +		writel(reg, priv_data->regs + XLNX_USB_TRAFFIC_ROUTE_CONFIG);
+> +	}
+> +
+> +err:
+> +	return ret;
+> +}
+> +
+> +static const struct of_device_id dwc3_xlnx_of_match[] = {
+> +	{
+> +		.compatible = "xlnx,zynqmp-dwc3",
+> +		.data = &dwc3_xlnx_init_zynqmp,
+> +	},
+> +	{
+> +		.compatible = "xlnx,versal-dwc3",
+> +		.data = &dwc3_xlnx_init_versal,
+> +	},
+> +	{ /* Sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, dwc3_xlnx_of_match);
+> +
+> +static int dwc3_xlnx_probe(struct platform_device *pdev)
+> +{
+> +	struct dwc3_xlnx		*priv_data;
+> +	struct device			*dev = &pdev->dev;
+> +	struct device_node		*np = dev->of_node;
+> +	const struct of_device_id	*match;
+> +	void __iomem			*regs;
+> +	int				ret;
+> +
+> +	priv_data = devm_kzalloc(dev, sizeof(*priv_data), GFP_KERNEL);
+> +	if (!priv_data)
+> +		return -ENOMEM;
+> +
+> +	regs = devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(regs)) {
+> +		ret = PTR_ERR(regs);
+> +		dev_err_probe(dev, ret, "failed to map registers\n");
+> +		return ret;
+> +	}
+> +
+> +	match = of_match_node(dwc3_xlnx_of_match, pdev->dev.of_node);
+> +
+> +	priv_data->pltfm_init = match->data;
+> +	priv_data->regs = regs;
+> +	priv_data->dev = dev;
+> +
+> +	platform_set_drvdata(pdev, priv_data);
+> +
+> +	ret = devm_clk_bulk_get_all(priv_data->dev, &priv_data->clks);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	priv_data->num_clocks = ret;
+> +
+> +	ret = clk_bulk_prepare_enable(priv_data->num_clocks, priv_data->clks);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = priv_data->pltfm_init(priv_data);
+> +	if (ret)
+> +		goto err_clk_put;
+> +
+> +	ret = of_platform_populate(np, NULL, NULL, dev);
+> +	if (ret)
+> +		goto err_clk_put;
+> +
+> +	pm_runtime_set_active(dev);
+> +	pm_runtime_enable(dev);
+> +	pm_suspend_ignore_children(dev, false);
+> +	pm_runtime_get_sync(dev);
+> +
+> +	return 0;
+> +
+> +err_clk_put:
+> +	clk_bulk_disable_unprepare(priv_data->num_clocks, priv_data->clks);
+> +	clk_bulk_put_all(priv_data->num_clocks, priv_data->clks);
+> +
+> +	return ret;
+> +}
+> +
+> +static int dwc3_xlnx_remove(struct platform_device *pdev)
+> +{
+> +	struct dwc3_xlnx	*priv_data = platform_get_drvdata(pdev);
+> +	struct device		*dev = &pdev->dev;
+> +
+> +	of_platform_depopulate(dev);
+> +
+> +	clk_bulk_disable_unprepare(priv_data->num_clocks, priv_data->clks);
+> +	clk_bulk_put_all(priv_data->num_clocks, priv_data->clks);
+> +	priv_data->num_clocks = 0;
+> +
+> +	pm_runtime_disable(dev);
+> +	pm_runtime_put_noidle(dev);
+> +	pm_runtime_set_suspended(dev);
+> +
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused dwc3_xlnx_suspend_common(struct device *dev)
+> +{
+> +	struct dwc3_xlnx *priv_data = dev_get_drvdata(dev);
+> +
+> +	clk_bulk_disable(priv_data->num_clocks, priv_data->clks);
+> +
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused dwc3_xlnx_resume_common(struct device *dev)
+> +{
+> +	struct dwc3_xlnx *priv_data = dev_get_drvdata(dev);
+> +
+> +	return clk_bulk_enable(priv_data->num_clocks, priv_data->clks);
+> +}
+> +
+> +static int __maybe_unused dwc3_xlnx_runtime_idle(struct device *dev)
+> +{
+> +	pm_runtime_mark_last_busy(dev);
+> +	pm_runtime_autosuspend(dev);
+> +
+> +	return 0;
+> +}
+> +
+> +static UNIVERSAL_DEV_PM_OPS(dwc3_xlnx_dev_pm_ops, dwc3_xlnx_suspend_common,
+> +			    dwc3_xlnx_resume_common, dwc3_xlnx_runtime_idle);
+> +
+> +static struct platform_driver dwc3_xlnx_driver = {
+> +	.probe		= dwc3_xlnx_probe,
+> +	.remove		= dwc3_xlnx_remove,
+> +	.driver		= {
+> +		.name		= "dwc3-xilinx",
+> +		.of_match_table	= dwc3_xlnx_of_match,
+> +		.pm		= &dwc3_xlnx_dev_pm_ops,
+> +	},
+> +};
+> +
+> +module_platform_driver(dwc3_xlnx_driver);
+> +
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_DESCRIPTION("Xilinx DWC3 controller specific glue driver");
+> +MODULE_AUTHOR("Manish Narani <manish.narani@xilinx.com>");
+> +MODULE_AUTHOR("Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>");
+> -- 
+> 2.17.1
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
+
+-- 
+Pengutronix e.K.                           | Michael Tretter             |
+Steuerwalder Str. 21                       | https://www.pengutronix.de/ |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
