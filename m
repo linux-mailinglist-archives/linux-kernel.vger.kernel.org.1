@@ -2,140 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6CC22DFF38
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:05:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 627BB2DFF21
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:01:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725913AbgLUSFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 13:05:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725807AbgLUSF3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:05:29 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3114BC0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:04:49 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id f14so6576534pju.4
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:04:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=/uAxBrvdDC73TZp+IQZEOJGWsfHQdihTLi9dAWQtrSE=;
-        b=mkLMg3gaqGSEPm5adLDLrlCFvaVoR/w6A23AMV3Z5AX6e/ysILXx6OHMWwUga/vLU8
-         HnbVnuqeyEsBfK9rFIzMUzDw1fCgWczOJ2P3bEk9L3Kdqb7DZiOt/hJYY+pRTH5P3DnT
-         OgatzO7l7YH+PIotdA1nfWUoStjda9g7Qiyic=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=/uAxBrvdDC73TZp+IQZEOJGWsfHQdihTLi9dAWQtrSE=;
-        b=hUT55RASQ77Ui3zmekefwsHiwIMvshF8fnAoIxnVxbIuxDkBjPWFCrKqK2qCtjljYy
-         sh+X+/p1P7pLkrXyKSzP9UezTSFDjIDgdRd6wunphP5NU69BHOYyFKETEWVh1hMuhpqa
-         NgRx7bLf94+ZXUXGzWFV+H8vmy+jvODSb8RIeuoXRmTmgw+mRQ3gBQR8aGmCFU9zpBoN
-         CWAU8O9avwTRIcEaRSAc64clOT2lrVVHHGu5q6WDRVRo21s6SKfjbQFlJycRDRWDPs55
-         O+W+U4XCD8MnW33uevn8lSp6y3kLlT+wKZvnmbiP6KpjvJpW+zhYTd0VjO27yV/lkpC+
-         Vk1g==
-X-Gm-Message-State: AOAM530XtOuAxtK+NA1MFh3CMUl3S3xWsrLPuWgCidHOePGz9WBv8Gq9
-        7QWZO3AGDbepXNxugQZylf+WC1zhjR7jMzZmo9UMcBuoo1Qajg==
-X-Google-Smtp-Source: ABdhPJyV0goa8SGmlmymnQKepQstMMHuhDMRNmJgzQdCMoAr+K8sd66iCURLhWXfRpoINdcwNfpYX6V8wLVS0SVk9rc=
-X-Received: by 2002:a67:c983:: with SMTP id y3mr13124134vsk.59.1608573510353;
- Mon, 21 Dec 2020 09:58:30 -0800 (PST)
+        id S1726057AbgLUSBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:01:07 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49680 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726010AbgLUSBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 13:01:06 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 99C07AD09;
+        Mon, 21 Dec 2020 18:00:24 +0000 (UTC)
+Date:   Mon, 21 Dec 2020 19:00:19 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>, naoya.horiguchi@nec.com,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH v10 03/11] mm/hugetlb: Free the vmemmap
+ pages associated with each HugeTLB page
+Message-ID: <20201221180019.GA2884@localhost.localdomain>
+References: <20201217121303.13386-1-songmuchun@bytedance.com>
+ <20201217121303.13386-4-songmuchun@bytedance.com>
+ <20201221091123.GB14343@linux>
+ <CAMZfGtVnS=_m4fpGBfDpOpdgzP02QCteUQn-gGiLADWfGiVJ=A@mail.gmail.com>
+ <20201221134345.GA19324@linux>
+ <CAMZfGtVTqYXOvTHSay-6WS+gtDSCtcN5ksnkj8hJgrUs_XWoWQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201204111038.v1.1.I4557a89427f61427e65d85bc51cca9e65607488e@changeid>
- <ec27a562-d53b-a947-1a93-bd55a2dfcc91@gmail.com>
-In-Reply-To: <ec27a562-d53b-a947-1a93-bd55a2dfcc91@gmail.com>
-From:   Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Date:   Mon, 21 Dec 2020 09:58:18 -0800
-Message-ID: <CANFp7mXdz8jYB0=tkj-mzWETo+M-Tx9ecTwEquh-JoDXRT54qw@mail.gmail.com>
-Subject: Re: [PATCH v1] Bluetooth: Set missing suspend task bits
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Howard Chung <howardchung@google.com>,
-        Bluez mailing list <linux-bluetooth@vger.kernel.org>,
-        Alain Michaud <alainm@chromium.org>,
-        Manish Mandlik <mmandlik@chromium.org>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        Marcel Holtmann <marcel@holtmann.org>, apusaka@chromium.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtVTqYXOvTHSay-6WS+gtDSCtcN5ksnkj8hJgrUs_XWoWQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
+On Mon, Dec 21, 2020 at 11:52:30PM +0800, Muchun Song wrote:
+> On Mon, Dec 21, 2020 at 9:44 PM Oscar Salvador <osalvador@suse.de> wrote:
+> >
+> > On Mon, Dec 21, 2020 at 07:25:15PM +0800, Muchun Song wrote:
+> >
+> > > Should we add a BUG_ON in vmemmap_remap_free() for now?
+> > >
+> > >         BUG_ON(reuse != start + PAGE_SIZE);
+> >
+> > I do not think we have to, plus we would be BUG_ing for some specific use
+> > case in "generic" function.
+> 
+> The vmemmap_remap_range() walks page table range [start, end),
+> if reuse is equal to (start + PAGE_SIZE), the range can adjust to
+> [start - PAGE_SIZE, end). But if not, we need some work to
+> implement the "generic" function.
+> 
+>   - adjust range to [min(start, reuse), end) and call
+>     vmemmap_remap_rangeand which skip the hole
+>     which is [reuse + PAGE_SIZE, start) or [end, reuse).
+>   - call vmemmap_remap_range(reuse, reuse + PAGE_SIZE)
+>     to get the reuse page.Then, call vmemmap_remap_range(start, end)
+>     again to remap.
+> 
+> Which one do you prefer?
 
-https://git.kernel.org/pub/scm/linux/kernel/git/bluetooth/bluetooth-next.gi=
-t/commit/?id=3D295fa2a5647b13681594bb1bcc76c74619035218
-should fix this issue.
+I would not overcomplicate things at this stage.
+Just follow my sugestion and add a BUG_ON as you said, that might be the
+easier way now.
+We can overthink this in the future when some other usecases come
+around, right?
 
-Your issue seems the same as the one I encountered -- the
-SUSPEND_DISABLE bit (0x4) wasn't being cleared by the request
-completion handler.
+Thanks
 
-Thanks,
-Abhishek
 
-On Mon, Dec 21, 2020 at 6:35 AM Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> 04.12.2020 06:14, Howard Chung =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > From: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> >
-> > When suspending, mark SUSPEND_SCAN_ENABLE and SUSPEND_SCAN_DISABLE task=
-s
-> > correctly when either classic or le scanning is modified.
-> >
-> > Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> > Signed-off-by: Howard Chung <howardchung@google.com>
-> > Reviewed-by: Alain Michaud <alainm@chromium.org>
-> > ---
-> >
-> >  net/bluetooth/hci_request.c | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
-> >
-> > diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
-> > index 80dc451d6e124..71bffd7454720 100644
-> > --- a/net/bluetooth/hci_request.c
-> > +++ b/net/bluetooth/hci_request.c
-> > @@ -707,6 +707,9 @@ void hci_req_add_le_scan_disable(struct hci_request=
- *req, bool rpa_le_conn)
-> >               return;
-> >       }
-> >
-> > +     if (hdev->suspended)
-> > +             set_bit(SUSPEND_SCAN_DISABLE, hdev->suspend_tasks);
-> > +
-> >       if (use_ext_scan(hdev)) {
-> >               struct hci_cp_le_set_ext_scan_enable cp;
-> >
-> > @@ -1159,6 +1162,11 @@ static void hci_req_set_event_filter(struct hci_=
-request *req)
-> >               scan =3D SCAN_PAGE;
-> >       }
-> >
-> > +     if (scan)
-> > +             set_bit(SUSPEND_SCAN_ENABLE, hdev->suspend_tasks);
-> > +     else
-> > +             set_bit(SUSPEND_SCAN_DISABLE, hdev->suspend_tasks);
-> > +
-> >       hci_req_add(req, HCI_OP_WRITE_SCAN_ENABLE, 1, &scan);
-> >  }
-> >
-> >
->
-> Hi,
->
-> This commit caused a regression on entering into suspend for Broadcom
-> Bluetooth 4330 on Nexus 7:
->
->  Bluetooth: hci0: Timed out waiting for suspend events
->  Bluetooth: hci0: Suspend timeout bit: 4
->  Bluetooth: hci0: Suspend notifier action (3) failed: -110
->
-> I don't see this problem using BCM4329 chip on another device.
->
-> Please fix, thanks in advance.
+-- 
+Oscar Salvador
+SUSE L3
