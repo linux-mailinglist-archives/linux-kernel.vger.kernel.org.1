@@ -2,74 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C325B2DFAF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 11:20:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A74192DFA5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 10:48:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726528AbgLUKS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 05:18:58 -0500
-Received: from mga01.intel.com ([192.55.52.88]:56311 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725878AbgLUKS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 05:18:57 -0500
-IronPort-SDR: J52zfc7KSzJg1Y72Xo+4taJffezve30wXYTtDAJ7O6U3t15QE3/soxIWXLMUmUi/G7NF003olM
- h3X9YNtFo7RA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9841"; a="194126864"
-X-IronPort-AV: E=Sophos;i="5.78,436,1599548400"; 
-   d="scan'208";a="194126864"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2020 01:10:30 -0800
-IronPort-SDR: NOgRH+wOHRqW6oMR+GxgAx/fv8YFyD3viuutQ+OljaIDrX23PcP9EA1HUlFgoeo7sETXNsymER
- v/78P+YI5Adg==
-X-IronPort-AV: E=Sophos;i="5.78,436,1599548400"; 
-   d="scan'208";a="456111247"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2020 01:10:24 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id B6962205F7; Mon, 21 Dec 2020 11:10:22 +0200 (EET)
-Date:   Mon, 21 Dec 2020 11:10:22 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org, yong.zhi@intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
-        linus.walleij@linaro.org, heikki.krogerus@linux.intel.com,
-        kitakar@gmail.com, jorhand@linux.microsoft.com,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH v2 02/12] property: Return true in
- fwnode_device_is_available for NULL ops
-Message-ID: <20201221091022.GF26370@paasikivi.fi.intel.com>
-References: <20201217234337.1983732-1-djrscally@gmail.com>
- <20201217234337.1983732-3-djrscally@gmail.com>
+        id S1727913AbgLUJsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 04:48:43 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2272 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726128AbgLUJr7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 04:47:59 -0500
+Received: from fraeml705-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Cztv02F6lz67SY5;
+        Mon, 21 Dec 2020 17:09:00 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml705-chm.china.huawei.com (10.206.15.54) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Mon, 21 Dec 2020 10:11:24 +0100
+Received: from [10.210.168.224] (10.210.168.224) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 21 Dec 2020 09:11:22 +0000
+Subject: Re: [PATCH 01/11] Documentation: scsi: libsas: Remove
+ notify_ha_event()
+To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Daniel Wagner <dwagner@suse.de>,
+        Jason Yan <yanaijie@huawei.com>,
+        "Artur Paszkiewicz" <artur.paszkiewicz@intel.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>
+CC:     <linux-scsi@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>
+References: <20201218204354.586951-1-a.darwish@linutronix.de>
+ <20201218204354.586951-2-a.darwish@linutronix.de>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <46a3c918-b40e-7cf8-49da-c8cd5d0b884a@huawei.com>
+Date:   Mon, 21 Dec 2020 09:10:38 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201217234337.1983732-3-djrscally@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201218204354.586951-2-a.darwish@linutronix.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.168.224]
+X-ClientProxiedBy: lhreml739-chm.china.huawei.com (10.201.108.189) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 11:43:27PM +0000, Daniel Scally wrote:
-> Some types of fwnode_handle do not implement the device_is_available()
-> check, such as those created by software_nodes. There isn't really a
-> meaningful way to check for the availability of a device that doesn't
-> actually exist, so if the check isn't implemented just assume that the
-> "device" is present.
+On 18/12/2020 20:43, Ahmed S. Darwish wrote:
+> The ->notify_ha_event() hook has long been removed from the libsas event
+> interface.
 > 
-> Suggested-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Daniel Scally <djrscally@gmail.com>
+> Remove it from documentation.
+> 
+> Fixes: 042ebd293b86 ("scsi: libsas: kill useless ha_event and do some cleanup")
+> Signed-off-by: Ahmed S. Darwish<a.darwish@linutronix.de>
+> Cc:stable@vger.kernel.org
+> Cc: John Garry<john.garry@huawei.com>
+> Cc: Jason Yan<yanaijie@huawei.com>
 
-For this and the 3rd patch:
-
-Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-
--- 
-Sakari Ailus
+Reviewed-by: John Garry <john.garry@huawei.com>
