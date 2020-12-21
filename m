@@ -2,98 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A622DF85A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 05:45:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1DD32DF833
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 05:19:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728365AbgLUEoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 23:44:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727475AbgLUEoN (ORCPT
+        id S1726591AbgLUET2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 23:19:28 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:51506 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725497AbgLUET2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 23:44:13 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CC39C0613D3
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 20:43:33 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id x126so5767903pfc.7
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 20:43:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=YiK3nNAapDck5oM0vIZvOeVHLmCqQzK2Pm1yBiPMxvk=;
-        b=MYfuRDv0xeoTpKEakODc++27b6vEVH1g0l5TJlYzpxpAAiLCZyC5ub+fu9SZwatRY/
-         uN6AZrg1hqw35V1DKBCzo5BB/TlQ7JqAtKWpLs3EwTcYydwqo3S0gVTnwvvfmdiDPYDY
-         xr/bhuqwM3a3xMS+YALBzPwh+wQ6xhjPll/SA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YiK3nNAapDck5oM0vIZvOeVHLmCqQzK2Pm1yBiPMxvk=;
-        b=q6+LwcvlbjjRRYVY3XRNwsYlm5gcbymT2waR3kGy162jkxbkxB9CaHIDq4TK1jv0UO
-         ky5fL/SUYLlWodOOFUSH4jZE5osPBuSZ/sbzFNHDx2s02LT6y6fKdQo/8VhbraYH6RvD
-         vlScB4cab3yWsCrTrvHsJtFiN75lyOvBYugROve4Ndn06FzMYjfuqTNifetED5sGzNDL
-         h+22gOW6XM0K6v9hnwTD6YX3dYmiWBISWxBwphsIwt3Pt7yMdB3Ct0VEJ5ZDLx3dtFYS
-         3Dr4xzAo+qWhnps06tLY3yO8a0BuHVmjln+RJ/7OmR6eDgIQtC8o2QPGds0W6VN8QJp0
-         VdIw==
-X-Gm-Message-State: AOAM5338qKKvMc3EjwYPj3iMyy/w0xSh2PeaBQTV2POH1OgmirVcyjfH
-        XBWRXEixl3pYqixDNlxEkj/Rs3pX1VYJE6Eg
-X-Google-Smtp-Source: ABdhPJzgIGT3T5mdCCHdZfKVgSZ2PeeNPXcJG/nmwkIc7RAFxC85BP7jQm6LxK1AAxDWtR/WWI+STw==
-X-Received: by 2002:a05:6a00:804:b029:198:28cb:5564 with SMTP id m4-20020a056a000804b029019828cb5564mr13557326pfk.34.1608523960654;
-        Sun, 20 Dec 2020 20:12:40 -0800 (PST)
-Received: from kafuu-chino.c.googlers.com.com (105.219.229.35.bc.googleusercontent.com. [35.229.219.105])
-        by smtp.googlemail.com with ESMTPSA id y19sm14823118pfp.211.2020.12.20.20.12.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Dec 2020 20:12:39 -0800 (PST)
-From:   Pi-Hsun Shih <pihsun@chromium.org>
-Cc:     Pi-Hsun Shih <pihsun@chromium.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 2/2] platform/chrome: cros_ec_sysfs: Add cold-ap-off to sysfs reboot.
-Date:   Mon, 21 Dec 2020 12:12:24 +0800
-Message-Id: <20201221041231.14516-2-pihsun@chromium.org>
-X-Mailer: git-send-email 2.29.2.684.gfbc64c5ab5-goog
-In-Reply-To: <20201221041231.14516-1-pihsun@chromium.org>
-References: <20201221041231.14516-1-pihsun@chromium.org>
+        Sun, 20 Dec 2020 23:19:28 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608524349; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=HtTA0h+2QaseQndGgzLFJv+a6WB+K2zR6Dk09vehWqg=;
+ b=Kzn8lVrZ/QefEW4TuDdurd/qLV8REANemfP+AR6Vm8l6Gqt0yezEiqwsOhgr2xvaXfBPIPR5
+ 2BecPUAOE3COISGzlmPgYER3fDUB8xsr43BdYQBYpiHtQcA6su5nWJAoESuWzCllMIpTO5KN
+ dyR0OUyvM534MbMLhz3IuET9dUk=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
+ 5fe022217549779c5b60bfb4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 21 Dec 2020 04:18:41
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 69CB2C433CA; Mon, 21 Dec 2020 04:18:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 48513C433CA;
+        Mon, 21 Dec 2020 04:18:39 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 21 Dec 2020 09:48:39 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Subject: Re: [PATCH] soc: qcom: socinfo: Open read access to all for debugfs
+In-Reply-To: <20201216071926.3147108-1-swboyd@chromium.org>
+References: <20201216071926.3147108-1-swboyd@chromium.org>
+Message-ID: <c628612f7931c49767349a325c979b3b@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add cold-ap-off to ChromeOS EC sysfs reboot file option, corresponds to
-the EC_REBOOT_COLD_AP_OFF flag, that will reset EC and keep AP off.
+On 2020-12-16 12:49, Stephen Boyd wrote:
+> There doesn't seem to be any reason to limit this to only root user
+> readable. Let's make it readable by all so that random programs can
+> read the debugfs files in here instead of just root. The information is
+> just that, informational, so this is fine.
+> 
+> Cc: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> Cc: Douglas Anderson <dianders@chromium.org>
+> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>  drivers/soc/qcom/socinfo.c | 40 +++++++++++++++++++-------------------
+>  1 file changed, 20 insertions(+), 20 deletions(-)
+> 
 
-Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
----
- drivers/platform/chrome/cros_ec_sysfs.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Reviewed-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
 
-diff --git a/drivers/platform/chrome/cros_ec_sysfs.c b/drivers/platform/chrome/cros_ec_sysfs.c
-index f521a5c65091..8210fb10e839 100644
---- a/drivers/platform/chrome/cros_ec_sysfs.c
-+++ b/drivers/platform/chrome/cros_ec_sysfs.c
-@@ -28,7 +28,7 @@ static ssize_t reboot_show(struct device *dev,
- 	int count = 0;
- 
- 	count += scnprintf(buf + count, PAGE_SIZE - count,
--			   "ro|rw|cancel|cold|disable-jump|hibernate");
-+			   "ro|rw|cancel|cold|disable-jump|hibernate|cold-ap-off");
- 	count += scnprintf(buf + count, PAGE_SIZE - count,
- 			   " [at-shutdown]\n");
- 	return count;
-@@ -46,6 +46,7 @@ static ssize_t reboot_store(struct device *dev,
- 		{"cancel",       EC_REBOOT_CANCEL, 0},
- 		{"ro",           EC_REBOOT_JUMP_RO, 0},
- 		{"rw",           EC_REBOOT_JUMP_RW, 0},
-+		{"cold-ap-off",  EC_REBOOT_COLD_AP_OFF, 0},
- 		{"cold",         EC_REBOOT_COLD, 0},
- 		{"disable-jump", EC_REBOOT_DISABLE_JUMP, 0},
- 		{"hibernate",    EC_REBOOT_HIBERNATE, 0},
+> diff --git a/drivers/soc/qcom/socinfo.c b/drivers/soc/qcom/socinfo.c
+> index b44ede48decc..4e4946d9e4ab 100644
+> --- a/drivers/soc/qcom/socinfo.c
+> +++ b/drivers/soc/qcom/socinfo.c
+> @@ -258,7 +258,7 @@ static const struct file_operations qcom_ ##name##
+> _ops = {		\
+>  }
+> 
+>  #define DEBUGFS_ADD(info, name)						\
+> -	debugfs_create_file(__stringify(name), 0400,			\
+> +	debugfs_create_file(__stringify(name), 0444,			\
+>  			    qcom_socinfo->dbg_root,			\
+>  			    info, &qcom_ ##name## _ops)
+> 
+> @@ -349,14 +349,14 @@ static void socinfo_debugfs_init(struct
+> qcom_socinfo *qcom_socinfo,
+> 
+>  	qcom_socinfo->info.fmt = __le32_to_cpu(info->fmt);
+> 
+> -	debugfs_create_x32("info_fmt", 0400, qcom_socinfo->dbg_root,
+> +	debugfs_create_x32("info_fmt", 0444, qcom_socinfo->dbg_root,
+>  			   &qcom_socinfo->info.fmt);
+> 
+>  	switch (qcom_socinfo->info.fmt) {
+>  	case SOCINFO_VERSION(0, 15):
+>  		qcom_socinfo->info.nmodem_supported = 
+> __le32_to_cpu(info->nmodem_supported);
+> 
+> -		debugfs_create_u32("nmodem_supported", 0400, qcom_socinfo->dbg_root,
+> +		debugfs_create_u32("nmodem_supported", 0444, qcom_socinfo->dbg_root,
+>  				   &qcom_socinfo->info.nmodem_supported);
+>  		fallthrough;
+>  	case SOCINFO_VERSION(0, 14):
+> @@ -365,19 +365,19 @@ static void socinfo_debugfs_init(struct
+> qcom_socinfo *qcom_socinfo,
+>  		qcom_socinfo->info.num_defective_parts =
+> __le32_to_cpu(info->num_defective_parts);
+>  		qcom_socinfo->info.ndefective_parts_array_offset =
+> __le32_to_cpu(info->ndefective_parts_array_offset);
+> 
+> -		debugfs_create_u32("num_clusters", 0400, qcom_socinfo->dbg_root,
+> +		debugfs_create_u32("num_clusters", 0444, qcom_socinfo->dbg_root,
+>  				   &qcom_socinfo->info.num_clusters);
+> -		debugfs_create_u32("ncluster_array_offset", 0400, 
+> qcom_socinfo->dbg_root,
+> +		debugfs_create_u32("ncluster_array_offset", 0444, 
+> qcom_socinfo->dbg_root,
+>  				   &qcom_socinfo->info.ncluster_array_offset);
+> -		debugfs_create_u32("num_defective_parts", 0400, 
+> qcom_socinfo->dbg_root,
+> +		debugfs_create_u32("num_defective_parts", 0444, 
+> qcom_socinfo->dbg_root,
+>  				   &qcom_socinfo->info.num_defective_parts);
+> -		debugfs_create_u32("ndefective_parts_array_offset", 0400,
+> qcom_socinfo->dbg_root,
+> +		debugfs_create_u32("ndefective_parts_array_offset", 0444,
+> qcom_socinfo->dbg_root,
+>  				   &qcom_socinfo->info.ndefective_parts_array_offset);
+>  		fallthrough;
+>  	case SOCINFO_VERSION(0, 13):
+>  		qcom_socinfo->info.nproduct_id = __le32_to_cpu(info->nproduct_id);
+> 
+> -		debugfs_create_u32("nproduct_id", 0400, qcom_socinfo->dbg_root,
+> +		debugfs_create_u32("nproduct_id", 0444, qcom_socinfo->dbg_root,
+>  				   &qcom_socinfo->info.nproduct_id);
+>  		DEBUGFS_ADD(info, chip_id);
+>  		fallthrough;
+> @@ -389,12 +389,12 @@ static void socinfo_debugfs_init(struct
+> qcom_socinfo *qcom_socinfo,
+>  		qcom_socinfo->info.raw_device_num =
+>  			__le32_to_cpu(info->raw_device_num);
+> 
+> -		debugfs_create_x32("chip_family", 0400, qcom_socinfo->dbg_root,
+> +		debugfs_create_x32("chip_family", 0444, qcom_socinfo->dbg_root,
+>  				   &qcom_socinfo->info.chip_family);
+> -		debugfs_create_x32("raw_device_family", 0400,
+> +		debugfs_create_x32("raw_device_family", 0444,
+>  				   qcom_socinfo->dbg_root,
+>  				   &qcom_socinfo->info.raw_device_family);
+> -		debugfs_create_x32("raw_device_number", 0400,
+> +		debugfs_create_x32("raw_device_number", 0444,
+>  				   qcom_socinfo->dbg_root,
+>  				   &qcom_socinfo->info.raw_device_num);
+>  		fallthrough;
+> @@ -403,7 +403,7 @@ static void socinfo_debugfs_init(struct
+> qcom_socinfo *qcom_socinfo,
+>  	case SOCINFO_VERSION(0, 9):
+>  		qcom_socinfo->info.foundry_id = __le32_to_cpu(info->foundry_id);
+> 
+> -		debugfs_create_u32("foundry_id", 0400, qcom_socinfo->dbg_root,
+> +		debugfs_create_u32("foundry_id", 0444, qcom_socinfo->dbg_root,
+>  				   &qcom_socinfo->info.foundry_id);
+>  		fallthrough;
+>  	case SOCINFO_VERSION(0, 8):
+> @@ -415,7 +415,7 @@ static void socinfo_debugfs_init(struct
+> qcom_socinfo *qcom_socinfo,
+>  		qcom_socinfo->info.hw_plat_subtype =
+>  			__le32_to_cpu(info->hw_plat_subtype);
+> 
+> -		debugfs_create_u32("hardware_platform_subtype", 0400,
+> +		debugfs_create_u32("hardware_platform_subtype", 0444,
+>  				   qcom_socinfo->dbg_root,
+>  				   &qcom_socinfo->info.hw_plat_subtype);
+>  		fallthrough;
+> @@ -423,28 +423,28 @@ static void socinfo_debugfs_init(struct
+> qcom_socinfo *qcom_socinfo,
+>  		qcom_socinfo->info.accessory_chip =
+>  			__le32_to_cpu(info->accessory_chip);
+> 
+> -		debugfs_create_u32("accessory_chip", 0400,
+> +		debugfs_create_u32("accessory_chip", 0444,
+>  				   qcom_socinfo->dbg_root,
+>  				   &qcom_socinfo->info.accessory_chip);
+>  		fallthrough;
+>  	case SOCINFO_VERSION(0, 4):
+>  		qcom_socinfo->info.plat_ver = __le32_to_cpu(info->plat_ver);
+> 
+> -		debugfs_create_u32("platform_version", 0400,
+> +		debugfs_create_u32("platform_version", 0444,
+>  				   qcom_socinfo->dbg_root,
+>  				   &qcom_socinfo->info.plat_ver);
+>  		fallthrough;
+>  	case SOCINFO_VERSION(0, 3):
+>  		qcom_socinfo->info.hw_plat = __le32_to_cpu(info->hw_plat);
+> 
+> -		debugfs_create_u32("hardware_platform", 0400,
+> +		debugfs_create_u32("hardware_platform", 0444,
+>  				   qcom_socinfo->dbg_root,
+>  				   &qcom_socinfo->info.hw_plat);
+>  		fallthrough;
+>  	case SOCINFO_VERSION(0, 2):
+>  		qcom_socinfo->info.raw_ver  = __le32_to_cpu(info->raw_ver);
+> 
+> -		debugfs_create_u32("raw_version", 0400, qcom_socinfo->dbg_root,
+> +		debugfs_create_u32("raw_version", 0444, qcom_socinfo->dbg_root,
+>  				   &qcom_socinfo->info.raw_ver);
+>  		fallthrough;
+>  	case SOCINFO_VERSION(0, 1):
+> @@ -461,11 +461,11 @@ static void socinfo_debugfs_init(struct
+> qcom_socinfo *qcom_socinfo,
+> 
+>  		dentry = debugfs_create_dir(socinfo_image_names[i],
+>  					    qcom_socinfo->dbg_root);
+> -		debugfs_create_file("name", 0400, dentry, &versions[i],
+> +		debugfs_create_file("name", 0444, dentry, &versions[i],
+>  				    &qcom_image_name_ops);
+> -		debugfs_create_file("variant", 0400, dentry, &versions[i],
+> +		debugfs_create_file("variant", 0444, dentry, &versions[i],
+>  				    &qcom_image_variant_ops);
+> -		debugfs_create_file("oem", 0400, dentry, &versions[i],
+> +		debugfs_create_file("oem", 0444, dentry, &versions[i],
+>  				    &qcom_image_oem_ops);
+>  	}
+>  }
+> 
+> base-commit: 2c85ebc57b3e1817b6ce1a6b703928e113a90442
+
 -- 
-2.29.2.684.gfbc64c5ab5-goog
-
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
