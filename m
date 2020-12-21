@@ -2,79 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2BA2DFC70
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 14:53:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95F072DFC73
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 14:53:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726891AbgLUNxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 08:53:08 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:56942 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726302AbgLUNxH (ORCPT
+        id S1726991AbgLUNxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 08:53:18 -0500
+Received: from mail-wm1-f52.google.com ([209.85.128.52]:53226 "EHLO
+        mail-wm1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726612AbgLUNxR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 08:53:07 -0500
-Received: from 36-229-229-222.dynamic-ip.hinet.net ([36.229.229.222] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1krLbm-0004ub-GD; Mon, 21 Dec 2020 13:52:19 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     rui.zhang@intel.com, daniel.lezcano@linaro.org, amitk@kernel.org
-Cc:     andrzej.p@collabora.com, mjg59@google.com,
-        srinivas.pandruvada@linux.intel.com,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Andres Freund <andres@anarazel.de>,
-        Chuhong Yuan <hslester96@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Akinobu Mita <akinobu.mita@gmail.com>,
-        linux-pm@vger.kernel.org (open list:THERMAL),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/2] thermal: intel_pch_thermal: Add critical callback to override default shutdown behavior
-Date:   Mon, 21 Dec 2020 21:52:03 +0800
-Message-Id: <20201221135206.17671-2-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201221135206.17671-1-kai.heng.feng@canonical.com>
-References: <20201221135206.17671-1-kai.heng.feng@canonical.com>
+        Mon, 21 Dec 2020 08:53:17 -0500
+Received: by mail-wm1-f52.google.com with SMTP id a6so9942353wmc.2;
+        Mon, 21 Dec 2020 05:53:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZGMHpoCRLlbOSEzZjyZVGgOPbJYrjNNdJ+KlSJquj+Q=;
+        b=fVBFKEvAy4x+iU+af9o/SiLvpi02hIkA6puaSWPR6BF8qFUD116hMHZOgy7brmZ75N
+         LiHbBqvs5iSsGXnr85Gp3eK7WzAWR0OaoVaPeWoG6v5TM9ISYl7+y1bnIc4u8iSNtXqR
+         +0aq+V+NUbwfOd7rvCGecnt18iJKF1jKYT4T4I60VdnzEGql9gFvbUVN4EheRNApjBK9
+         MfMAj1pDV739BCvLvdXytvA5exxRfjm7cun2x4HHS47vRUqi0TLN+xPbpjlRJy8jzZFh
+         rrltBJZt4Xk/4r+EzeyTsZEMYgD6/ebUsHFYt2vGfP9crMQcIwf6U+r7dRVlfiAVdujP
+         MeSg==
+X-Gm-Message-State: AOAM5311iD1ptsvDvUJzC0hjumeWShKP2FVzopZwpU5Tx8w3Hn+SyXqs
+        rl3FoRv/CBwI0vo/z4cKN/o=
+X-Google-Smtp-Source: ABdhPJyn9o9z9crVuHtjXoAdSRRjx8DzRlfUgq/b6lvll+qePrGU8R5O4xYbBX9OMsmd2QtgJ8jqcQ==
+X-Received: by 2002:a1c:7d94:: with SMTP id y142mr16765008wmc.105.1608558754985;
+        Mon, 21 Dec 2020 05:52:34 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id z3sm27811592wrn.59.2020.12.21.05.52.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 05:52:33 -0800 (PST)
+Date:   Mon, 21 Dec 2020 14:52:32 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Jagan Teki <jagan@amarulasolutions.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Li Yang <leoyang.li@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-amarula@amarulasolutions.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Matteo Lisi <matteo.lisi@engicam.com>
+Subject: Re: [PATCH v2 3/6] arm64: dts: imx8mm: Add Engicam i.Core MX8M Mini
+ SoM
+Message-ID: <20201221135232.GC31176@kozik-lap>
+References: <20201221113151.94515-1-jagan@amarulasolutions.com>
+ <20201221113151.94515-4-jagan@amarulasolutions.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201221113151.94515-4-jagan@amarulasolutions.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Like previous patch, the intel_pch_thermal device is not in ACPI
-ThermalZone namespace, so a critical trip doesn't mean shutdown.
+On Mon, Dec 21, 2020 at 05:01:48PM +0530, Jagan Teki wrote:
+> i.Core MX8M Mini is an EDIMM SoM based on NXP i.MX8M Mini
+> from Engicam.
+> 
+> General features:
+> - NXP i.MX8M Mini
+> - Up to 2GB LDDR4
+> - 8/16GB eMMC
+> - Gigabit Ethernet
+> - USB 2.0 Host/OTG
+> - PCIe Gen2 interface
+> - I2S
+> - MIPI DSI to LVDS
+> - rest of i.MX8M Mini features
+> 
+> i.Core MX8M Mini needs to mount on top of Engicam baseboards
+> for creating complete platform solutions.
+> 
+> Add support for it.
+> 
+> Signed-off-by: Matteo Lisi <matteo.lisi@engicam.com>
+> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+> ---
+> Changes for v2:
+> - updated commit message
+> - add cpu nodes
+> - add fec1 node
+> - fixed pmic tree comments
+> - dropped engicam from filename since it aligned with imx6 engicam
+>   dts files naming conventions.
 
-Override the default .critical callback to prevent surprising thermal
-shutdoown.
+Thanks for the changes.
 
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- drivers/thermal/intel/intel_pch_thermal.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+> 
+>  .../dts/freescale/imx8mm-icore-mx8mm.dtsi     | 232 ++++++++++++++++++
+>  1 file changed, 232 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm.dtsi
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm.dtsi
+> new file mode 100644
+> index 000000000000..e67865fd102a
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm.dtsi
+> @@ -0,0 +1,232 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Copyright (c) 2018 NXP
+> + * Copyright (c) 2019 Engicam srl
+> + * Copyright (c) 2020 Amarula Solutons(India)
+> + */
+> +
+> +/ {
+> +	compatible = "engicam,icore-mx8mm", "fsl,imx8mm";
+> +};
+> +
+> +&A53_0 {
+> +	cpu-supply = <&reg_buck4>;
+> +};
+> +
+> +&A53_1 {
+> +	cpu-supply = <&reg_buck4>;
+> +};
+> +
+> +&A53_2 {
+> +	cpu-supply = <&reg_buck4>;
+> +};
+> +
+> +&A53_3 {
+> +	cpu-supply = <&reg_buck4>;
+> +};
+> +
+> +&fec1 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_fec1>;
+> +	phy-mode = "rgmii-id";
+> +	phy-handle = <&ethphy>;
+> +
+> +	mdio {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		ethphy: ethernet-phy@3 {
+> +			compatible = "ethernet-phy-ieee802.3-c22";
+> +			reg = <3>;
+> +			reset-gpios = <&gpio3 7 GPIO_ACTIVE_LOW>;
+> +			reset-assert-us = <10000>;
+> +		};
+> +	};
+> +};
+> +
+> +&i2c1 {
+> +	clock-frequency = <400000>;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_i2c1>;
+> +	status = "okay";
+> +
+> +	pmic@8 {
+> +		compatible = "nxp,pf8121a";
+> +		reg = <0x08>;
+> +
+> +		regulators {
+> +			reg_ldo1: ldo1 {
+> +				regulator-max-microvolt = <5000000>;
+> +				regulator-min-microvolt = <1500000>;
 
-diff --git a/drivers/thermal/intel/intel_pch_thermal.c b/drivers/thermal/intel/intel_pch_thermal.c
-index 41723c6c6c0c..527c91f5960b 100644
---- a/drivers/thermal/intel/intel_pch_thermal.c
-+++ b/drivers/thermal/intel/intel_pch_thermal.c
-@@ -326,10 +326,16 @@ static int pch_get_trip_temp(struct thermal_zone_device *tzd, int trip, int *tem
- 	return 0;
- }
- 
-+static void pch_critical(struct thermal_zone_device *tzd)
-+{
-+	dev_dbg(&tzd->device, "%s: critical temperature reached\n", tzd->type);
-+}
-+
- static struct thermal_zone_device_ops tzd_ops = {
- 	.get_temp = pch_thermal_get_temp,
- 	.get_trip_type = pch_get_trip_type,
- 	.get_trip_temp = pch_get_trip_temp,
-+	.critical = pch_critical,
- };
- 
- enum board_ids {
--- 
-2.29.2
+I mentioned previously min/max hoping it will be obvious (as most or
+even all of DTS follow this convention... although not example in your
+regulator) but let be more specific: first min, then max. Don't reverse
+the logic. See also example in the regulator.yaml.
 
+Best regards,
+Krzysztof
