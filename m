@@ -2,103 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E5C2DFB05
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 11:27:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0139E2DFAB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 11:02:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgLUK0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 05:26:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725898AbgLUK0Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 05:26:24 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7804C061793
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 02:25:43 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id 190so9387791wmz.0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 02:25:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=0Vv2JbmBAjngC3pMRGSx1cPuMWHtt6tiXQKcY+Kelgw=;
-        b=TLglt5AQvjZgZmdtnh/EyevOANMYsHXzcV/JGMkqoYtFMBAB4kYQ/FqDpNBbyLj48D
-         YFxH24jMq6+64MYkJlnI6seNq47sfrXEI+5MhdutCJwZVSkm48VuGXPf1v1VNOJsdxlv
-         iHthvFWR/wkc83nv1NiMeo2ZqObxpNRmpONRObi9+XxrKHLCmAkJ/phEI4ldc2oInkdo
-         JUHNZwIT9NV6u4DS+PMxv7l3sd8oxRa1+zUHbr+0w0Qmq4tLYEe2EE/qyUhhFL/1NBbX
-         Ay/tfe9NA/6jbseLr44dJdVM/Q9g5/cYjg5ReXw9X+mdgjkMjyKP0GxowkASkcKWE3Ii
-         DiIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=0Vv2JbmBAjngC3pMRGSx1cPuMWHtt6tiXQKcY+Kelgw=;
-        b=plcRdJKl4DR51qq9zLFo2blOHLHVt28xhzFxHAiLwDsNNj5w13z6zooF0lWh3mpREw
-         nJPqjF5hZ6NlS6lJLnDQDSSc0rh5Ax1DplA8eqE65lEBUcDl5LaBca212cQMZlAh5260
-         yDPRezYZOgzZ2Zl4GTf1eNBQ218zwnoEmFd7X8qw0uO0EgQcxNbuKRiusCLiDYyEj2NX
-         y8j6RO37zISdvXPgdLsYBjIsObkHIpLKyNlYNwfNYg9PgPT2rWxK/fdMjt4IjjaDRyRf
-         rHuO70gY0bAv9ehkk7pcghpBirqtDUNI7FoKVDRhdvOdg0/boGR1Hf7w5zK8Ayxi3C8S
-         SKDA==
-X-Gm-Message-State: AOAM531Z0xPI/OT7LzXA7hGScMDP1x/qbDo4JHE+RMZ9wbGDhobtJsEE
-        2jLFlJ6IuEOOzP/Xkgr7Y+UJLFnsCW735d2V
-X-Google-Smtp-Source: ABdhPJwV1UaD4rwmRRKU3eYSK2VySTMJPM9TCAXi8auRr8LxcUXt/74B0bP1dkXBIbzejKLTyh/UWg==
-X-Received: by 2002:a1c:7d58:: with SMTP id y85mr5910588wmc.50.1608544757077;
-        Mon, 21 Dec 2020 01:59:17 -0800 (PST)
-Received: from dell ([91.110.221.144])
-        by smtp.gmail.com with ESMTPSA id e16sm27858733wra.94.2020.12.21.01.59.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 01:59:16 -0800 (PST)
-Date:   Mon, 21 Dec 2020 09:59:12 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Timon Baetz <timon.baetz@protonmail.com>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH v2 2/6] power: supply: max8997_charger: Set CHARGER
- current limit
-Message-ID: <20201221095912.GB53991@dell>
-References: <20201202203516.43053-1-timon.baetz@protonmail.com>
- <20201221095001.595366-1-timon.baetz@protonmail.com>
- <20201221095001.595366-2-timon.baetz@protonmail.com>
+        id S1726200AbgLUKCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 05:02:20 -0500
+Received: from first.geanix.com ([116.203.34.67]:58062 "EHLO first.geanix.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725854AbgLUKCM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 05:02:12 -0500
+Received: from zen.. (unknown [185.17.218.86])
+        by first.geanix.com (Postfix) with ESMTPSA id DDFF6487688;
+        Mon, 21 Dec 2020 10:01:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
+        t=1608544889; bh=QoIAAJdcJ2xARRst3umA4sJ7s7wi/Qvh4ASN+q/gFmw=;
+        h=From:To:Cc:Subject:Date;
+        b=L61J9MVQVz0CvG/ywTsNVAhA8yuwqWZizP0l97nYX2IXq3mbR8d5YhcUzSkxw035V
+         TLufyfev/ejpinvQjGC4r7+9+6+uwY15YNG05diQtfYwtgHpuJgyaPIxS06Rt6kD9b
+         jnO/y0TcfMcNl1diIUnbX/hdpLsCwnLofqYw5kT2jFIC0KqjGjIHyp+yD3VCe4flAo
+         f9Mvtfl0KkkSGPu00dN4yEvZCnAtgY3+Jdy9sRX3HCL3UtWqW9YoV/hOLdSPapaE++
+         X/ZeTV/CjXZDCq4prHW5P7u2wXwB+/xppvFg/LKrrHOM7b7HJRYryTXKeJ4FfAm+ia
+         uZBkJDrx0zoWQ==
+From:   Sean Nyekjaer <sean@geanix.com>
+To:     Han Xu <han.xu@nxp.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Cc:     Sean Nyekjaer <sean@geanix.com>, stable@vger.kernel.org,
+        =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: rawnand: gpmi: fix dst bit offset when extracting raw payload
+Date:   Mon, 21 Dec 2020 11:00:13 +0100
+Message-Id: <20201221100013.2715675-1-sean@geanix.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201221095001.595366-2-timon.baetz@protonmail.com>
+X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on ff3d05386fc5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Dec 2020, Timon Baetz wrote:
+Re-add the multiply by 8 to "step * eccsize" to correct the destination bit offset
+when extracting the data payload in gpmi_ecc_read_page_raw().
 
-> Register for extcon notification and set charging current depending on
-> the detected cable type. Current values are taken from vendor kernel,
-> where most charger types end up setting 650mA [0].
-> 
-> Also enable and disable the CHARGER regulator based on extcon events.
-> 
-> [0] https://github.com/krzk/linux-vendor-backup/blob/samsung/galaxy-s2-epic-4g-touch-sph-d710-exynos4210-dump/drivers/misc/max8997-muic.c#L1675-L1678
-> 
-> Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
-> ---
->  drivers/mfd/max8997.c                  |  4 +-
+Fixes: e5e5631cc889 ("mtd: rawnand: gpmi: Use nand_extract_bits()")
+Cc: stable@vger.kernel.org
+Reported-by: Martin Hundebøll <martin@geanix.com>
+Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+---
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Please split this out into a separate patch.
-
->  drivers/power/supply/max8997_charger.c | 94 ++++++++++++++++++++++++++
->  2 files changed, 96 insertions(+), 2 deletions(-)
-
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+index dc8104e67506..f0726e69a312 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+@@ -1611,7 +1611,7 @@ static int gpmi_ecc_read_page_raw(struct nand_chip *chip, uint8_t *buf,
+ 	/* Extract interleaved payload data and ECC bits */
+ 	for (step = 0; step < nfc_geo->ecc_chunk_count; step++) {
+ 		if (buf)
+-			nand_extract_bits(buf, step * eccsize, tmp_buf,
++			nand_extract_bits(buf, step * eccsize * 8, tmp_buf,
+ 					  src_bit_off, eccsize * 8);
+ 		src_bit_off += eccsize * 8;
+ 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.29.2
+
