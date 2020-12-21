@@ -2,126 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 460222DFD51
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 16:16:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBE352DFD4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 16:13:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726024AbgLUPPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 10:15:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34912 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725782AbgLUPPa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 10:15:30 -0500
-Date:   Mon, 21 Dec 2020 07:14:47 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608563689;
-        bh=Iu9TuhJ7NDvhFKKeIzHd4mGP0QOBHupZAguizw7gbiA=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T8DMub7MxY8tOQ9YY08z0bgQQSsOY+P8aNc1dOCCKiRArpHAS6Hu9RzeHMzmuEHW5
-         qLJmnPrWRdg93LaOlP90BWYHmIALafjfEzIGv/C3svodn9gyVKEIhHW5X1CQdsmIZ5
-         SOBPWkj/36YqsVCkaGzjZTmr1Xquspwb+ndvspGsMDAMnE/ZR1eTajYAtWbRiuW+RL
-         X/0gLVST9ybIsXBehGqlmy7m+eNNdllHP+yhoJyqLWmCzhJ4qhYQ6alO5kE6sKbL1o
-         dVoZhgp6zkqLSuI562ZCMbWvfd8U0diDnL8k8D7paR53ziM4kcVEJD6T/vg/TgixAJ
-         QsotNGWA1T5aQ==
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Can Guo <cang@codeaurora.org>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, bvanassche@acm.org,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com
-Subject: Re: [PATCH] scsi: ufs: fix livelock of ufshcd_clear_ua_wluns
-Message-ID: <X+C75+WtgktRI9cA@google.com>
-References: <20201218033131.2624065-1-jaegeuk@kernel.org>
- <153e563a381c580f76447a12df9f4138@codeaurora.org>
+        id S1725985AbgLUPMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 10:12:38 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:49024 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725857AbgLUPMh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 10:12:37 -0500
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BLF0Qj8026470;
+        Mon, 21 Dec 2020 10:11:43 -0500
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 35hc8bdpxb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Dec 2020 10:11:43 -0500
+Received: from SCSQMBX11.ad.analog.com (SCSQMBX11.ad.analog.com [10.77.17.10])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 0BLFBfhL051814
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Mon, 21 Dec 2020 10:11:41 -0500
+Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
+ SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Mon, 21 Dec 2020 07:11:40 -0800
+Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Mon, 21 Dec 2020 07:11:40 -0800
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0BLFBbKm001107;
+        Mon, 21 Dec 2020 10:11:38 -0500
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <jic23@kernel.org>, <lars@metafoo.de>, <andy.shevchenko@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v4] iio: Handle enumerated properties with gaps
+Date:   Mon, 21 Dec 2020 17:15:51 +0200
+Message-ID: <20201221151551.52511-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <153e563a381c580f76447a12df9f4138@codeaurora.org>
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-21_08:2020-12-21,2020-12-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 suspectscore=0 adultscore=0 mlxlogscore=860 spamscore=0
+ lowpriorityscore=0 mlxscore=0 bulkscore=0 clxscore=1015 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012210107
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/21, Can Guo wrote:
-> On 2020-12-18 11:31, Jaegeuk Kim wrote:
-> > When gate_work/ungate_work gets an error during hibern8_enter or exit,
-> >  ufshcd_err_handler()
-> >    ufshcd_scsi_block_requests()
-> >    ufshcd_reset_and_restore()
-> >      ufshcd_clear_ua_wluns() -> stuck
-> >    ufshcd_scsi_unblock_requests()
-> > 
-> > In order to avoid it, ufshcd_clear_ua_wluns() can be called per recovery
-> > flows
-> > such as suspend/resume, link_recovery, and error_handler.
-> > 
-> > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> > ---
-> >  drivers/scsi/ufs/ufshcd.c | 14 +++++++++-----
-> >  1 file changed, 9 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> > index e221add25a7e..e711def829cd 100644
-> > --- a/drivers/scsi/ufs/ufshcd.c
-> > +++ b/drivers/scsi/ufs/ufshcd.c
-> > @@ -3963,6 +3963,8 @@ int ufshcd_link_recovery(struct ufs_hba *hba)
-> >  	if (ret)
-> >  		dev_err(hba->dev, "%s: link recovery failed, err %d",
-> >  			__func__, ret);
-> > +	else
-> > +		ufshcd_clear_ua_wluns(hba);
-> > 
-> >  	return ret;
-> >  }
-> > @@ -5968,6 +5970,8 @@ static void ufshcd_err_handler(struct work_struct
-> > *work)
-> >  	ufshcd_scsi_unblock_requests(hba);
-> >  	ufshcd_err_handling_unprepare(hba);
-> >  	up(&hba->eh_sem);
-> > +
-> 
-> Maybe add a check like if (!err && needs_reset) as error handler
-> also handles non-fatal errors which do not require a full reset
-> and restore?
+From: Lars-Peter Clausen <lars@metafoo.de>
 
-I see. Let me add it in v2.
+Some enums might have gaps or reserved values in the middle of their value
+range. E.g. consider a 2-bit enum where the values 0, 1 and 3 have a
+meaning, but 2 is a reserved value and can not be used.
 
-> 
-> > +	ufshcd_clear_ua_wluns(hba);
-> >  }
-> > 
-> >  /**
-> > @@ -6908,14 +6912,11 @@ static int
-> > ufshcd_host_reset_and_restore(struct ufs_hba *hba)
-> >  	ufshcd_set_clk_freq(hba, true);
-> > 
-> >  	err = ufshcd_hba_enable(hba);
-> > -	if (err)
-> > -		goto out;
-> > 
-> >  	/* Establish the link again and restore the device */
-> > -	err = ufshcd_probe_hba(hba, false);
-> >  	if (!err)
-> > -		ufshcd_clear_ua_wluns(hba);
-> > -out:
-> > +		err = ufshcd_probe_hba(hba, false);
-> > +
-> >  	if (err)
-> >  		dev_err(hba->dev, "%s: Host init failed %d\n", __func__, err);
-> >  	ufshcd_update_evt_hist(hba, UFS_EVT_HOST_RESET, (u32)err);
-> > @@ -8745,6 +8746,7 @@ static int ufshcd_suspend(struct ufs_hba *hba,
-> > enum ufs_pm_op pm_op)
-> >  		ufshcd_resume_clkscaling(hba);
-> >  	hba->clk_gating.is_suspended = false;
-> >  	hba->dev_info.b_rpm_dev_flush_capable = false;
-> > +	ufshcd_clear_ua_wluns(hba);
-> >  	ufshcd_release(hba);
-> >  out:
-> >  	if (hba->dev_info.b_rpm_dev_flush_capable) {
-> > @@ -8855,6 +8857,8 @@ static int ufshcd_resume(struct ufs_hba *hba,
-> > enum ufs_pm_op pm_op)
-> >  		cancel_delayed_work(&hba->rpm_dev_flush_recheck_work);
-> >  	}
-> > 
-> > +	ufshcd_clear_ua_wluns(hba);
-> > +
-> >  	/* Schedule clock gating in case of no access to UFS device yet */
-> >  	ufshcd_release(hba);
+Add support for such enums to the IIO enum helper functions. A reserved
+values is marked by setting its entry in the items array to NULL rather
+than the normal descriptive string value.
+
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
+
+Nearly 1 year and a half since I last touched this:
+https://lore.kernel.org/linux-iio/20190508111913.7276-3-alexandru.ardelean@analog.com/
+
+I tried a few shots at working with 'lib/string.c', and that went
+slow. The __sysfs_match_string_with_gaps() approach has stalled.
+https://lore.kernel.org/linux-iio/20190422140251.8960-1-alexandru.ardelean@analog.com/
+
+I also tried to update the __sysfs_match_string() implementation based
+on what the docstring said,
+https://lore.kernel.org/lkml/20200212144723.21884-1-alexandru.ardelean@analog.com/
+
+but then I just fixed the docstring to match
+what the behavior does:
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next-history.git/commit/lib/string.c?id=c11d3fa0116a6bc832a9e387427caa16f8de5ef2
+
+In the end, for this patch, it means expanding the
+__sysfs_match_string() helper.
+
+ drivers/iio/industrialio-core.c | 20 ++++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+index e9ee9363fed0..a88494066811 100644
+--- a/drivers/iio/industrialio-core.c
++++ b/drivers/iio/industrialio-core.c
+@@ -470,8 +470,11 @@ ssize_t iio_enum_available_read(struct iio_dev *indio_dev,
+ 	if (!e->num_items)
+ 		return 0;
+ 
+-	for (i = 0; i < e->num_items; ++i)
++	for (i = 0; i < e->num_items; ++i) {
++		if (!e->items[i])
++			continue;
+ 		len += scnprintf(buf + len, PAGE_SIZE - len, "%s ", e->items[i]);
++	}
+ 
+ 	/* replace last space with a newline */
+ 	buf[len - 1] = '\n';
+@@ -492,7 +495,7 @@ ssize_t iio_enum_read(struct iio_dev *indio_dev,
+ 	i = e->get(indio_dev, chan);
+ 	if (i < 0)
+ 		return i;
+-	else if (i >= e->num_items)
++	else if (i >= e->num_items || !e->items[i])
+ 		return -EINVAL;
+ 
+ 	return snprintf(buf, PAGE_SIZE, "%s\n", e->items[i]);
+@@ -504,16 +507,21 @@ ssize_t iio_enum_write(struct iio_dev *indio_dev,
+ 	size_t len)
+ {
+ 	const struct iio_enum *e = (const struct iio_enum *)priv;
++	unsigned int i;
+ 	int ret;
+ 
+ 	if (!e->set)
+ 		return -EINVAL;
+ 
+-	ret = __sysfs_match_string(e->items, e->num_items, buf);
+-	if (ret < 0)
+-		return ret;
++	for (i = 0; i < e->num_items; i++) {
++		if (e->items[i] && sysfs_streq(buf, e->items[i]))
++			break;
++	}
++
++	if (i == e->num_items)
++		return -EINVAL;
+ 
+-	ret = e->set(indio_dev, chan, ret);
++	ret = e->set(indio_dev, chan, i);
+ 	return ret ? ret : len;
+ }
+ EXPORT_SYMBOL_GPL(iio_enum_write);
+-- 
+2.17.1
+
