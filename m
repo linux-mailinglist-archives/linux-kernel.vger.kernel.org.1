@@ -2,113 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1055B2E022E
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 22:46:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCF842E0230
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 22:50:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726327AbgLUVp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 16:45:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58596 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725783AbgLUVp4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 16:45:56 -0500
-Received: from localhost.localdomain (c-73-209-127-30.hsd1.il.comcast.net [73.209.127.30])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 056F522B2C;
-        Mon, 21 Dec 2020 21:44:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608587082;
-        bh=xgOBus5e/9Dm2CNFG/dmYKTPsdUbEBzhnA2rRSLxD64=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:In-Reply-To:
-         References:From;
-        b=GwzCs+ptYShdswBU7sVfCsPNCGK0Gd8gB6LsSO3ksYRVLOIW/UAhRYrxhoiAlcxQS
-         YMlJXJQQ05Z6XeyMb27jTa/xbzyM3ff0E7+W5A76dpUcars9W+NUb2hWb+MWZuTM8R
-         a2h93X4Q2OhcG2o5pljR5PzJU+bCFKEImWTFcHiu2WOBHwTZe+NYhFQlG+aMI27wHd
-         78QaloiPTCjR+jrSOltTsx0EiHi2e4f/bbP+CQMLun3k84cbafHu0Pw40Fg74vy//E
-         aE3dZ9+onEO9asqJyVdSTZe9L+1xmfa2Co9qNlx5Kb11xbxMc/TXaOLZt4E0P6V6Z5
-         uemlBDZ+CKkYA==
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     rostedt@goodmis.org, axelrasmussen@google.com
-Cc:     mhiramat@kernel.org, dan.carpenter@oracle.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v5 5/5] selftests/ftrace: Update synthetic event syntax errors
-Date:   Mon, 21 Dec 2020 15:44:31 -0600
-Message-Id: <d314da19a66934f82102cffee104daaf72c32773.1608586464.git.zanussi@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1608586464.git.zanussi@kernel.org>
-References: <cover.1608586464.git.zanussi@kernel.org>
-In-Reply-To: <cover.1608586464.git.zanussi@kernel.org>
-References: <cover.1608586464.git.zanussi@kernel.org>
+        id S1726103AbgLUVts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 16:49:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725848AbgLUVtr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 16:49:47 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABE15C0613D3;
+        Mon, 21 Dec 2020 13:49:07 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id b5so193067pjl.0;
+        Mon, 21 Dec 2020 13:49:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+FYR4QlIrV7Uo+1R8C6OqoNhPOdSs1swgFiPbk9OqFk=;
+        b=tYXHnBSiD10qBUjqnTt6Hwb01VTwo9uBj+wAqoM8ruWPtsYhqGhqBP84jV+vtfb+wi
+         WfGrUXalRrlmEZxBt4jR6a4I070pMRTgs5/jVGUVo9W+W9GsP0n+k0N3RivbX4opF9K2
+         1fxkduQ9wnUlCPZ1WHs2LlVS1ggG5U1noWq5bBm1QrEmbyKdgUyPFn0C3GWya76hPURA
+         cKBvHzSZGqp3MQ8OTFjcQa74sHVI75d2N/z3dURRhT1ELsZ/+Jb/jzdvXlKKsOsRMLP5
+         Uc/ZAbXZ8hoLJ0fXeaxeBN+qRFA74FhewzYf6CZYKyyyV+OtGA/EZumyfm3HjVmM3ZKF
+         oiuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+FYR4QlIrV7Uo+1R8C6OqoNhPOdSs1swgFiPbk9OqFk=;
+        b=XZ0T57HWmNtf/1a9PINvv5LaTSAKZVrMmp/vNelnfs6mxyynv8GN16vQPN0jBcNo2o
+         uGDZ5RhLz3HigRjISGLfc1/j+mLcwHFtiXXfUb4Ca7jmXHp3Z4NbJDznAoME/iL3cazJ
+         rvgTbz/j44zKYktS6DqbdB5zd3lZilnwbIMPGzREUMZbR2bgtOrm9191f69vTpzRZr7p
+         etgqcQuqyZh2Cl+icQlattOlCXjXGA3smALLeoEHVk6yqUdLJs1SyBpvdh1hTpPZcMY0
+         RITPh3Rv+i3usA5USnNo+D7fjbOaeT3REQHHDC9joB2tbLRzjJJAq6f33UKyg89G/U+E
+         3nUQ==
+X-Gm-Message-State: AOAM531WGCTLZZxZOH27DjVGhE6Kezfd9cGuevx0L10gzT/NzjIdexSw
+        sYYxTi6YO9u0WrB402SuN/mV2iE1w4c=
+X-Google-Smtp-Source: ABdhPJz/KODIFXC6Z3Os4C+wDb7uNyoGDKjqgDhX7r7ij6eBChGBleQaDVvEz3FB+7KXiPmlBS3/Cg==
+X-Received: by 2002:a17:902:59dd:b029:db:cda3:39c0 with SMTP id d29-20020a17090259ddb02900dbcda339c0mr18037417plj.81.1608587346341;
+        Mon, 21 Dec 2020 13:49:06 -0800 (PST)
+Received: from [10.230.29.166] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id p9sm17989574pfq.109.2020.12.21.13.49.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Dec 2020 13:49:05 -0800 (PST)
+Subject: Re: [PATCH net] net: systemport: set dev->max_mtu to
+ UMAC_MAX_MTU_SIZE
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     netdev@vger.kernel.org, andrew@lunn.ch,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Murali Krishna Policharla <murali.policharla@broadcom.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "open list:BROADCOM SYSTEMPORT ETHERNET DRIVER" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20201218173843.141046-1-f.fainelli@gmail.com>
+ <20201218202441.ppcxswvlix3xszsn@skbuf>
+ <c178b5db-3de4-5f02-eee3-c9e69393174a@gmail.com>
+ <20201218205220.jb3kh7v23gtpymmx@skbuf>
+ <b8e61c3f-179f-7d8f-782a-86a8c69c5a75@gmail.com>
+ <20201218210250.owahylqnagtssbsw@skbuf>
+ <cf2daa3c-8f64-0f58-5a42-2182cec5ba4a@gmail.com>
+ <20201218211435.mjdknhltolu4gvqr@skbuf>
+ <f558368a-ec7f-c604-9be5-bd5b810b5bfa@gmail.com>
+Message-ID: <6d54c372-86bc-b28f-00b0-c22e46215116@gmail.com>
+Date:   Mon, 21 Dec 2020 13:49:03 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <f558368a-ec7f-c604-9be5-bd5b810b5bfa@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some of the synthetic event errors and positions have changed in the
-code - update those and add several more tests.
 
-Also add a runtime check to ensure that the kernel supports dynamic
-strings in synthetic events, which these tests require.
 
-Fixes: 81ff92a93d95 (selftests/ftrace: Add test case for synthetic
-event syntax errors)
+On 12/18/2020 1:17 PM, Florian Fainelli wrote:
+>>>>>>> SYSTEMPORT Lite does not actually validate the frame length, so setting
+>>>>>>> a maximum number to the buffer size we allocate could work, but I don't
+>>>>>>> see a reason to differentiate the two types of MACs here.
+>>>>>>
+>>>>>> And if the Lite doesn't validate the frame length, then shouldn't it
+>>>>>> report a max_mtu equal to the max_mtu of the attached DSA switch, plus
+>>>>>> the Broadcom tag length? Doesn't the b53 driver support jumbo frames?
+>>>>>
+>>>>> And how would I do that without create a horrible layering violation in
+>>>>> either the systemport driver or DSA? Yes the b53 driver supports jumbo
+>>>>> frames.
+>>>>
+>>>> Sorry, I don't understand where is the layering violation (maybe it doesn't
+>>>> help me either that I'm not familiar with Broadcom architectures).
+>>>>
+>>>> Is the SYSTEMPORT Lite always used as a DSA master, or could it also be
+>>>> used standalone? What would be the issue with hardcoding a max_mtu value
+>>>> which is large enough for b53 to use jumbo frames?
+>>>
+>>> SYSTEMPORT Lite is always used as a DSA master AFAICT given its GMII
+>>> Integration Block (GIB) was specifically designed with another MAC and
+>>> particularly that of a switch on the other side.
+>>>
+>>> The layering violation I am concerned with is that we do not know ahead
+>>> of time which b53 switch we are going to be interfaced with, and they
+>>> have various limitations on the sizes they support. Right now b53 only
+>>> concerns itself with returning JMS_MAX_SIZE, but I am fairly positive
+>>> this needs fixing given the existing switches supported by the driver.
+>>
+>> Maybe we don't need to over-engineer this. As long as you report a large
+>> enough max_mtu in the SYSTEMPORT Lite driver to accomodate for all
+>> possible revisions of embedded switches, and the max_mtu of the switch
+>> itself is still accurate and representative of the switch revision limits,
+>> I think that's good enough.
+> 
+> I suppose that is fair, v2 coming, thanks!
 
-Reported-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Tom Zanussi <zanussi@kernel.org>
----
- .../trigger-synthetic_event_syntax_errors.tc  | 35 ++++++++++++++-----
- 1 file changed, 27 insertions(+), 8 deletions(-)
-
-diff --git a/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc
-index ada594fe16cb..955e3ceea44b 100644
---- a/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc
-+++ b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc
-@@ -1,19 +1,38 @@
- #!/bin/sh
- # SPDX-License-Identifier: GPL-2.0
- # description: event trigger - test synthetic_events syntax parser errors
--# requires: synthetic_events error_log
-+# requires: synthetic_events error_log "char name[]' >> synthetic_events":README
- 
- check_error() { # command-with-error-pos-by-^
-     ftrace_errlog_check 'synthetic_events' "$1" 'synthetic_events'
- }
- 
-+check_dyn_error() { # command-with-error-pos-by-^
-+    ftrace_errlog_check 'synthetic_events' "$1" 'dynamic_events'
-+}
-+
- check_error 'myevent ^chr arg'			# INVALID_TYPE
--check_error 'myevent ^char str[];; int v'	# INVALID_TYPE
--check_error 'myevent char ^str]; int v'		# INVALID_NAME
--check_error 'myevent char ^str;[]'		# INVALID_NAME
--check_error 'myevent ^char str[; int v'		# INVALID_TYPE
--check_error '^mye;vent char str[]'		# BAD_NAME
--check_error 'myevent char str[]; ^int'		# INVALID_FIELD
--check_error '^myevent'				# INCOMPLETE_CMD
-+check_error 'myevent ^unsigned arg'		# INCOMPLETE_TYPE
-+
-+check_error 'myevent char ^str]; int v'		# BAD_NAME
-+check_error '^mye-vent char str[]'		# BAD_NAME
-+check_error 'myevent char ^st-r[]'		# BAD_NAME
-+
-+check_error 'myevent char str;^[]'		# INVALID_FIELD
-+check_error 'myevent char str; ^int'		# INVALID_FIELD
-+
-+check_error 'myevent char ^str[; int v'		# INVALID_ARRAY_SPEC
-+check_error 'myevent char ^str[kdjdk]'		# INVALID_ARRAY_SPEC
-+check_error 'myevent char ^str[257]'		# INVALID_ARRAY_SPEC
-+
-+check_error '^mye;vent char str[]'		# INVALID_CMD
-+check_error '^myevent ; char str[]'		# INVALID_CMD
-+check_error '^myevent; char str[]'		# INVALID_CMD
-+check_error '^myevent ;char str[]'		# INVALID_CMD
-+check_error '^; char str[]'			# INVALID_CMD
-+check_error '^;myevent char str[]'		# INVALID_CMD
-+check_error '^myevent'				# INVALID_CMD
-+
-+check_dyn_error '^s:junk/myevent char str['	# INVALID_DYN_CMD
- 
- exit 0
+I was going to issue a v2 for this patch, but given that we don't
+allocate buffers larger than 2KiB and there is really no need to
+implement ndo_change_mtu(), is there really a point not to use
+UMAC_MAX_MTU_SIZE for both variants of the SYSTEMPORT MAC?
 -- 
-2.17.1
-
+Florian
