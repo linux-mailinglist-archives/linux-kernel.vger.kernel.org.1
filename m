@@ -2,78 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD472DFEEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 18:29:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01ECF2DFEF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 18:29:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726218AbgLURUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 12:20:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60422 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725833AbgLURU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 12:20:29 -0500
-Date:   Mon, 21 Dec 2020 09:19:47 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608571189;
-        bh=wPj0xjQToUwmlmERjSRgyfHiQl2REANx9BVSI/YNQuc=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oeF8bzI3NpfW3FgxfVfdNpMS0A969fYXYj7RSORAwoNRum1QXQEliaIr3qJt08GsD
-         /olvm77hJJIEvSRnWIXtQ5AKTYhAchQZvus/s1NXO0oknybC6K3qco0mIiINFXFecc
-         rerbnlajLZY22Q5/n2RHifh4Nu86QpWwmqXUfOfp5KQzCR/E+0lhyljikPwS/XEsmc
-         UPIvpCHeAzW0AlMkHahI7670I/DsgsLti2ynanW8XrZsniuzG2s/pjGX38z++vBgZ5
-         /SWsKeYZya68gOFZKpLu3caN2m/I1LIuc1cEFvgpSTRql6Dl4jiY1yZ5UkyVxFr6M7
-         1iIgWsZHFVQ4A==
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Avri Altman <Avri.Altman@wdc.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>
-Subject: Re: [PATCH] scsi: ufs: fix livelock of ufshcd_clear_ua_wluns
-Message-ID: <X+DZMwSHsskcEgZE@google.com>
-References: <20201218033131.2624065-1-jaegeuk@kernel.org>
- <DM6PR04MB6575B8729A62E6FB9F19930CFCC10@DM6PR04MB6575.namprd04.prod.outlook.com>
- <X+C9+1p1CbssKRdO@google.com>
- <DM6PR04MB65753B9D31B3643C757E4E23FCC00@DM6PR04MB6575.namprd04.prod.outlook.com>
+        id S1726033AbgLURYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 12:24:38 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:32906 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725997AbgLURYi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 12:24:38 -0500
+Received: from 36-229-229-222.dynamic-ip.hinet.net ([36.229.229.222] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1krOuU-0003TV-7K; Mon, 21 Dec 2020 17:23:51 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     rui.zhang@intel.com, daniel.lezcano@linaro.org, amitk@kernel.org
+Cc:     andrzej.p@collabora.com, mjg59@google.com,
+        srinivas.pandruvada@linux.intel.com,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-pm@vger.kernel.org (open list:THERMAL),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2 1/2] thermal: int340x: Fix unexpected shutdown at critical temperature
+Date:   Tue, 22 Dec 2020 01:23:43 +0800
+Message-Id: <20201221172345.36976-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR04MB65753B9D31B3643C757E4E23FCC00@DM6PR04MB6575.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/21, Avri Altman wrote:
-> > > > When gate_work/ungate_work gets an error during hibern8_enter or
-> > exit,
-> > > >  ufshcd_err_handler()
-> > > >    ufshcd_scsi_block_requests()
-> > > >    ufshcd_reset_and_restore()
-> > > >      ufshcd_clear_ua_wluns() -> stuck
-> > > >    ufshcd_scsi_unblock_requests()
-> > > >
-> > > > In order to avoid it, ufshcd_clear_ua_wluns() can be called per recovery
-> > > > flows
-> > > > such as suspend/resume, link_recovery, and error_handler.
-> > > Not sure that suspend/resume are UAC events?
-> > 
-> > Could you elaborate a bit? The goal is to clear UAC after UFS reset happens.
-> So why calling it on every suspend and resume?
+We are seeing thermal shutdown on Intel based mobile workstations, the
+shutdown happens during the first trip handle in
+thermal_zone_device_register():
+kernel: thermal thermal_zone15: critical temperature reached (101 C), shutting down
 
-1. If UAC was cleared, there's no impact. 
-2. ufshcd_link_recovery() can reset UFS directly by ufs_mtk_resume().
-3. ufshcd_suspend can call ufshcd_host_reset_and_restore() as well.
+However, we shouldn't do a thermal shutdown here, since
+1) We may want to use a dedicated daemon, Intel's thermald in this case,
+to handle thermal shutdown.
 
-> 
-> > 
-> > >
-> > > Also the 'fixes' tag is missing.
-> > 
-> > Added. Thanks,
-> > 
-> > >
-> > > Thanks,
-> > > Avri
+2) For ACPI based system, _CRT doesn't mean shutdown unless it's inside
+ThermalZone namespace. ACPI Spec, 11.4.4 _CRT (Critical Temperature):
+"... If this object it present under a device, the device’s driver
+evaluates this object to determine the device’s critical cooling
+temperature trip point. This value may then be used by the device’s
+driver to program an internal device temperature sensor trip point."
+
+So a "critical trip" here merely means we should take a more aggressive
+cooling method.
+
+As int340x device isn't present under ACPI ThermalZone, override the
+default .critical callback to prevent surprising thermal shutdown.
+
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+v2:
+ - Amend subject.
+ - Remove int3400 device.
+
+ .../thermal/intel/int340x_thermal/int340x_thermal_zone.c    | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c b/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
+index 6e479deff76b..d1248ba943a4 100644
+--- a/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
++++ b/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
+@@ -146,12 +146,18 @@ static int int340x_thermal_get_trip_hyst(struct thermal_zone_device *zone,
+ 	return 0;
+ }
+ 
++static void int340x_thermal_critical(struct thermal_zone_device *zone)
++{
++	dev_dbg(&zone->device, "%s: critical temperature reached\n", zone->type);
++}
++
+ static struct thermal_zone_device_ops int340x_thermal_zone_ops = {
+ 	.get_temp       = int340x_thermal_get_zone_temp,
+ 	.get_trip_temp	= int340x_thermal_get_trip_temp,
+ 	.get_trip_type	= int340x_thermal_get_trip_type,
+ 	.set_trip_temp	= int340x_thermal_set_trip_temp,
+ 	.get_trip_hyst =  int340x_thermal_get_trip_hyst,
++	.critical	= int340x_thermal_critical,
+ };
+ 
+ static int int340x_thermal_get_trip_config(acpi_handle handle, char *name,
+-- 
+2.29.2
+
