@@ -2,77 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 232FE2DFBCA
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 13:21:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87C912DFBCE
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 13:23:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726573AbgLUMVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 07:21:09 -0500
-Received: from conuserg-11.nifty.com ([210.131.2.78]:29379 "EHLO
-        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726302AbgLUMVJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 07:21:09 -0500
-Received: from grover.flets-west.jp (softbank126090214151.bbtec.net [126.90.214.151]) (authenticated)
-        by conuserg-11.nifty.com with ESMTP id 0BLCJeD8020122;
-        Mon, 21 Dec 2020 21:19:41 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 0BLCJeD8020122
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1608553181;
-        bh=JLjvabwiiqZORWv+oTjs4oddxbNIzMH5ENS/Q7Ac9KI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Rg/mqfVksPCpYmggcT3s/LPUTG74zOHlbZElBeGt/W/sLGCffsiHhQrAFhu9goj4W
-         IPaipglZNeHIrRV8cq7kOp9asV/XWnNDRBl8wtfhr67SWa6pY/fkQh104ap4gGzj8/
-         mQApKgR4tZK0VLKAnebCUhoOQMFAP1TyzjeltOK1oCL4YTHPhxA5dRocaZgFp6Zeu6
-         YHbzIneQOvXelsKB7KoO8O6ddiam0R4q1cs7Ebd6UrHwTz9vewI75FNncDLtmmo1jz
-         pFMHT7mUHTCISalenmz+fU0N4lh+xVj3p6tWhZdXrjT66IlBsrrVAyB56GJwhnIP7m
-         6vUtXfbrEhp5g==
-X-Nifty-SrcIP: [126.90.214.151]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH] fs: binfmt_em86: check the result of remove_arg_zero()
-Date:   Mon, 21 Dec 2020 21:19:33 +0900
-Message-Id: <20201221121933.293635-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S1726659AbgLUMW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 07:22:56 -0500
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:37255 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725973AbgLUMWz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 07:22:55 -0500
+Received: from [192.168.0.8] (ip5f5aef0c.dynamic.kabel-deutschland.de [95.90.239.12])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: buczek)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 4115B2064784C;
+        Mon, 21 Dec 2020 13:22:12 +0100 (CET)
+Subject: Re: v5.10.1 xfs deadlock
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     linux-xfs@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        it+linux-xfs@molgen.mpg.de
+References: <b8da4aed-ee44-5d9f-88dc-3d32f0298564@molgen.mpg.de>
+ <20201218214915.GA53382@dread.disaster.area>
+From:   Donald Buczek <buczek@molgen.mpg.de>
+Message-ID: <c89ecac6-f5bb-52b8-4fcd-9098983cdf2e@molgen.mpg.de>
+Date:   Mon, 21 Dec 2020 13:22:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201218214915.GA53382@dread.disaster.area>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following warning:
+On 18.12.20 22:49, Dave Chinner wrote:
+> On Thu, Dec 17, 2020 at 06:44:51PM +0100, Donald Buczek wrote:
+>> Dear xfs developer,
+>>
+>> I was doing some testing on a Linux 5.10.1 system with two 100 TB xfs filesystems on md raid6 raids.
+>>
+>> The stress test was essentially `cp -a`ing a Linux source repository with two threads in parallel on each filesystem.
+>>
+>> After about on hour, the processes to one filesystem (md1) blocked, 30 minutes later the process to the other filesystem (md0) did.
+>>
+>>      root      7322  2167  0 Dec16 pts/1    00:00:06 cp -a /jbod/M8068/scratch/linux /jbod/M8068/scratch/1/linux.018.TMP
+>>      root      7329  2169  0 Dec16 pts/1    00:00:05 cp -a /jbod/M8068/scratch/linux /jbod/M8068/scratch/2/linux.019.TMP
+>>      root     13856  2170  0 Dec16 pts/1    00:00:08 cp -a /jbod/M8067/scratch/linux /jbod/M8067/scratch/2/linux.028.TMP
+>>      root     13899  2168  0 Dec16 pts/1    00:00:05 cp -a /jbod/M8067/scratch/linux /jbod/M8067/scratch/1/linux.027.TMP
+>>
+>> Some info from the system (all stack traces, slabinfo) is available here: https://owww.molgen.mpg.de/~buczek/2020-12-16.info.txt
+>>
+>> It stands out, that there are many (549 for md0, but only 10 for md1)  "xfs-conv" threads all with stacks like this
+>>
+>>      [<0>] xfs_log_commit_cil+0x6cc/0x7c0
+>>      [<0>] __xfs_trans_commit+0xab/0x320
+>>      [<0>] xfs_iomap_write_unwritten+0xcb/0x2e0
+>>      [<0>] xfs_end_ioend+0xc6/0x110
+>>      [<0>] xfs_end_io+0xad/0xe0
+>>      [<0>] process_one_work+0x1dd/0x3e0
+>>      [<0>] worker_thread+0x2d/0x3b0
+>>      [<0>] kthread+0x118/0x130
+>>      [<0>] ret_from_fork+0x22/0x30
+>>
+>> xfs_log_commit_cil+0x6cc is
+>>
+>>    xfs_log_commit_cil()
+>>      xlog_cil_push_background(log)
+>>        xlog_wait(&cil->xc_push_wait, &cil->xc_push_lock);
+>>
+>> Some other threads, including the four "cp" commands are also blocking at xfs_log_commit_cil+0x6cc
+>>
+>> There are also single "flush" process for each md device with this stack signature:
+>>
+>>      [<0>] xfs_map_blocks+0xbf/0x400
+>>      [<0>] iomap_do_writepage+0x15e/0x880
+>>      [<0>] write_cache_pages+0x175/0x3f0
+>>      [<0>] iomap_writepages+0x1c/0x40
+>>      [<0>] xfs_vm_writepages+0x59/0x80
+>>      [<0>] do_writepages+0x4b/0xe0
+>>      [<0>] __writeback_single_inode+0x42/0x300
+>>      [<0>] writeback_sb_inodes+0x198/0x3f0
+>>      [<0>] __writeback_inodes_wb+0x5e/0xc0
+>>      [<0>] wb_writeback+0x246/0x2d0
+>>      [<0>] wb_workfn+0x26e/0x490
+>>      [<0>] process_one_work+0x1dd/0x3e0
+>>      [<0>] worker_thread+0x2d/0x3b0
+>>      [<0>] kthread+0x118/0x130
+>>      [<0>] ret_from_fork+0x22/0x30
+>>
+>> xfs_map_blocks+0xbf is the
+>>
+>>      xfs_ilock(ip, XFS_ILOCK_SHARED);
+>>
+>> in xfs_map_blocks().
+> 
+> Can you post the entire dmesg output after running
+> 'echo w > /proc/sysrq-trigger' to dump all the block threads to
+> dmesg?
+> 
+>> I have an out of tree driver for the HBA ( smartpqi 2.1.6-005
+>> pulled from linux-scsi) , but it is unlikely that this blocking is
+>> related to that, because the md block devices itself are
+>> responsive (`xxd /dev/md0` )
+> 
+> My bet is that the OOT driver/hardware had dropped a log IO on the
+> floor - XFS is waiting for the CIL push to complete, and I'm betting
+> that is stuck waiting for iclog IO completion while writing the CIL
+> to the journal. The sysrq output will tell us if this is the case,
+> so that's the first place to look.
 
-fs/binfmt_em86.c: In function 'load_em86':
-fs/binfmt_em86.c:66:2: warning: ignoring return value of 'remove_arg_zero', declared with attribute warn_unused_result [-Wunused-result]
-   66 |  remove_arg_zero(bprm);
-      |  ^~~~~~~~~~~~~~~~~~~~~
+I think you are right here, and I'm sorry for blaming the wrong layer.
 
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+I've got the system into another (though little different) zero-progress situation. This time it happened on md0 only while md1 was still working.
 
- fs/binfmt_em86.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+I think, this should be prove, that the failure is on the block layer of the member disks:
 
-diff --git a/fs/binfmt_em86.c b/fs/binfmt_em86.c
-index 06b9b9fddf70..ba1e22b2e2a3 100644
---- a/fs/binfmt_em86.c
-+++ b/fs/binfmt_em86.c
-@@ -63,7 +63,9 @@ static int load_em86(struct linux_binprm *bprm)
- 	 * This is done in reverse order, because of how the
- 	 * user environment and arguments are stored.
- 	 */
--	remove_arg_zero(bprm);
-+	retval = remove_arg_zero(bprm);
-+	if (retval)
-+		return retval;
- 	retval = copy_string_kernel(bprm->filename, bprm);
- 	if (retval < 0) return retval; 
- 	bprm->argc++;
+     root:deadbird:/scratch/local/# for f in /sys/devices/virtual/block/md?/md/rd*/block/inflight;do echo $f: $(cat $f);done
+     /sys/devices/virtual/block/md0/md/rd0/block/inflight: 1 0
+     /sys/devices/virtual/block/md0/md/rd1/block/inflight: 1 0
+     /sys/devices/virtual/block/md0/md/rd10/block/inflight: 1 0
+     /sys/devices/virtual/block/md0/md/rd11/block/inflight: 1 0
+     /sys/devices/virtual/block/md0/md/rd12/block/inflight: 1 0
+     /sys/devices/virtual/block/md0/md/rd13/block/inflight: 1 0
+     /sys/devices/virtual/block/md0/md/rd14/block/inflight: 1 0
+     /sys/devices/virtual/block/md0/md/rd15/block/inflight: 1 0
+     /sys/devices/virtual/block/md0/md/rd2/block/inflight: 1 0
+     /sys/devices/virtual/block/md0/md/rd3/block/inflight: 1 0
+     /sys/devices/virtual/block/md0/md/rd4/block/inflight: 1 0
+     /sys/devices/virtual/block/md0/md/rd5/block/inflight: 1 0
+     /sys/devices/virtual/block/md0/md/rd6/block/inflight: 1 0
+     /sys/devices/virtual/block/md0/md/rd7/block/inflight: 1 0
+     /sys/devices/virtual/block/md0/md/rd8/block/inflight: 1 0
+     /sys/devices/virtual/block/md0/md/rd9/block/inflight: 1 0
+     /sys/devices/virtual/block/md1/md/rd0/block/inflight: 0 0
+     /sys/devices/virtual/block/md1/md/rd1/block/inflight: 0 0
+     /sys/devices/virtual/block/md1/md/rd10/block/inflight: 0 0
+     /sys/devices/virtual/block/md1/md/rd11/block/inflight: 0 0
+     /sys/devices/virtual/block/md1/md/rd12/block/inflight: 0 0
+     /sys/devices/virtual/block/md1/md/rd13/block/inflight: 0 0
+     /sys/devices/virtual/block/md1/md/rd14/block/inflight: 0 0
+     /sys/devices/virtual/block/md1/md/rd15/block/inflight: 0 0
+     /sys/devices/virtual/block/md1/md/rd2/block/inflight: 0 0
+     /sys/devices/virtual/block/md1/md/rd3/block/inflight: 0 0
+     /sys/devices/virtual/block/md1/md/rd4/block/inflight: 0 0
+     /sys/devices/virtual/block/md1/md/rd5/block/inflight: 0 0
+     /sys/devices/virtual/block/md1/md/rd6/block/inflight: 0 0
+     /sys/devices/virtual/block/md1/md/rd7/block/inflight: 0 0
+     /sys/devices/virtual/block/md1/md/rd8/block/inflight: 0 0
+     /sys/devices/virtual/block/md1/md/rd9/block/inflight: 0 0
+
+Best
+
+   Donald
+
+> 
+> Cheers,
+> 
+> Dave.
+> 
 -- 
-2.27.0
-
+Donald Buczek
+buczek@molgen.mpg.de
+Tel: +49 30 8413 1433
