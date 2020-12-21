@@ -2,151 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAB1A2DFF8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:19:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB9D82DFF13
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 18:59:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726181AbgLUSTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 13:19:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726094AbgLUSTl (ORCPT
+        id S1725870AbgLUR5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 12:57:31 -0500
+Received: from mail-ua1-f50.google.com ([209.85.222.50]:35414 "EHLO
+        mail-ua1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725782AbgLUR5a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:19:41 -0500
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA9C1C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:19:00 -0800 (PST)
-Received: by mail-il1-x130.google.com with SMTP id w12so9692723ilm.12
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:19:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bOLplW+5pp4JzOv86AiZeqRbE94ulVTnl+pKmMDmJSY=;
-        b=HFWrQ9mvEZW6tq7gtcoW2W6O1cpRXIGiH7jNwK3Ivwz/2zIGkq9l678qT9/RTsTR4+
-         rItrhVmzPjQ2w0Yg+izh2swEM4bjuu8ijBXO45WGBF2ARYlueahJHDb4A/8AYANw6fvT
-         Gre+GIq7Ivj8wjoeIrWS2uhywzjU2dL7uCatGwBOLNsRVtRMwr4i5CeMfRWWio1ohGYG
-         f6P9Mb3+AJI2jgHOcmveCnMPmKz95m3SX6vcIxhXSwIxNDl2fi8Y3rQLho4y9vTBzvJT
-         /cVTftNX5dEHmdWPo+Dg6PqABaa8slheL5lY7yXey9mUqeszVoUfSypa64MjKyjBCgmx
-         kmIA==
+        Mon, 21 Dec 2020 12:57:30 -0500
+Received: by mail-ua1-f50.google.com with SMTP id y21so3567688uag.2;
+        Mon, 21 Dec 2020 09:57:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bOLplW+5pp4JzOv86AiZeqRbE94ulVTnl+pKmMDmJSY=;
-        b=DQn6UWnvEu6XMBeJq4qnvIkF+5+CztRp+3JhyYaNGKsrLj3uaXhq9RYPny2FP47v57
-         V3uD7ydYHdCb6z4AmMNN4veZPa75jsg3MxiCFSyHpNQORUMg49sZzUriWQRFNHY0W5tA
-         fSGFkRo9WE5g2i0m3VAwL5V3HM9WVJBIFgLNoZWU4IIy+H4i2ggu9RU1RIK9ocZOsNVu
-         M9mhLgqMR1g6zgHpC+0i2cKMUqurIpIS8jUdnCmExqYffRLTbsJEZfSuCrmRBtM1Y2+A
-         ct+S+7BFeXcR3+EGOkFniwgjormK1CgS7LRsuuYSGCbXzsgxYc8SIktHx5HdK6vRVzhs
-         yNqw==
-X-Gm-Message-State: AOAM5334zUS2esTyVkCClsqFk06pdu3iU3KPC0LGdzyt5vOqkEb3LLQL
-        kvsrv36gfsaW7Njx5oFsP/uig1kfRF3NoQ==
-X-Google-Smtp-Source: ABdhPJzoQsNIctzyZlXh2aS6dXgzLjXlPRuPIlOiMY/6q2NocJbmuerTxlGVGSP70Q2xmfv0qYogTw==
-X-Received: by 2002:a63:2b42:: with SMTP id r63mr15934021pgr.316.1608572898493;
-        Mon, 21 Dec 2020 09:48:18 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id 82sm17865501pfv.117.2020.12.21.09.48.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 09:48:17 -0800 (PST)
-Date:   Mon, 21 Dec 2020 09:48:10 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>
-Subject: Re: [PATCH] KVM: SVM: Add register operand to vmsave call in
- sev_es_vcpu_load
-Message-ID: <X+Df2oQczVBmwEzi@google.com>
-References: <20201219063711.3526947-1-natechancellor@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MrAF3XcfgmbCY17OqyOzfLrhkI98KCYJDR2DMtLfdY8=;
+        b=FARL21fepaGwlqbh/znW1t6ArcgYhrw+vNSqHVaHhhpo12JPUl6ZgqPMfJovTSkS1V
+         YRZweEnvWbfysQwqaJaBhUsQEruNg/YIqjIhXc3ko4T+y0czYl5jzOJ0hfQuExluwubW
+         ncZ6DYd09EWUET9T3FIkl/QhY4G0cYZFKyskfQSkx89JirSj9SgbDXzbVqai1OrdbHN5
+         Xe2JVYjhVNrUsL9I/dfxDq+notIe/d88ifeo8V9/PS0lryRGl0WG2+36t7UI37NJBTcd
+         K2fNFt9wjRTM0c5zBAlOhUOeVofj1wiW0PBJy/pHaYbyYuJcAPmiScGJYqU7t13G7+He
+         dk6g==
+X-Gm-Message-State: AOAM532NMv9GRv9x+BOjE8Qe3nBdYdq2SRZDOfTRFTP2h2hHfY6lv4TU
+        1KxGhCON57ztne31MZvtGgHg0WxijSaBHElZADc=
+X-Google-Smtp-Source: ABdhPJzVdL7B8bTZxy+rQMk6er8L4T5ie68H4w9L1UEygB7FM35lOkrdx7hEzcfKNr2eDQb6J0Pb9eQgDYeA07DY5rA=
+X-Received: by 2002:ab0:1e4a:: with SMTP id n10mr13442742uak.98.1608573409390;
+ Mon, 21 Dec 2020 09:56:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201219063711.3526947-1-natechancellor@gmail.com>
+References: <20201214060621.1102931-1-kai.heng.feng@canonical.com>
+ <20201216124726.2842197-1-kai.heng.feng@canonical.com> <s5h5z51oj12.wl-tiwai@suse.de>
+ <CAAd53p6kORC1GsW5zt+=0=J5ki43iriO-OqtFvf5W67LWhyyhA@mail.gmail.com>
+ <s5hzh2dn3oa.wl-tiwai@suse.de> <CAAd53p6Ef2zFX_t3y1c6O7BmHnxYGtGSfgzXAMQSom1ainWXzg@mail.gmail.com>
+ <s5hsg85n2km.wl-tiwai@suse.de> <s5hmtydn0yg.wl-tiwai@suse.de>
+ <CAAd53p6MMFh=HCNF9pyrJc9hVMZWFe7_8MvBcBHVWARqHU_TTA@mail.gmail.com>
+ <s5h7dpfk06y.wl-tiwai@suse.de> <CAAd53p53w0H6tsb4JgQtFTkYinniicTYBs2uk7tc=heP2dM_Cw@mail.gmail.com>
+In-Reply-To: <CAAd53p53w0H6tsb4JgQtFTkYinniicTYBs2uk7tc=heP2dM_Cw@mail.gmail.com>
+From:   Ilia Mirkin <imirkin@alum.mit.edu>
+Date:   Mon, 21 Dec 2020 12:56:38 -0500
+Message-ID: <CAKb7UvjWX7xbwMKtnad5EVy16nY1M-A13YJeRWyUwHzemcVswA@mail.gmail.com>
+Subject: Re: [Nouveau] [PATCH v2] ALSA: hda: Continue to probe when codec
+ probe fails
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     Takashi Iwai <tiwai@suse.de>,
+        "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        nouveau <nouveau@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        tiwai@suse.com, Bjorn Helgaas <bhelgaas@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Mike Rapoport <rppt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020, Nathan Chancellor wrote:
-> When using LLVM's integrated assembler (LLVM_IAS=1) while building
-> x86_64_defconfig + CONFIG_KVM=y + CONFIG_KVM_AMD=y, the following build
-> error occurs:
-> 
->  $ make LLVM=1 LLVM_IAS=1 arch/x86/kvm/svm/sev.o
->  arch/x86/kvm/svm/sev.c:2004:15: error: too few operands for instruction
->          asm volatile(__ex("vmsave") : : "a" (__sme_page_pa(sd->save_area)) : "memory");
->                       ^
->  arch/x86/kvm/svm/sev.c:28:17: note: expanded from macro '__ex'
->  #define __ex(x) __kvm_handle_fault_on_reboot(x)
->                  ^
->  ./arch/x86/include/asm/kvm_host.h:1646:10: note: expanded from macro '__kvm_handle_fault_on_reboot'
->          "666: \n\t"                                                     \
->                  ^
->  <inline asm>:2:2: note: instantiated into assembly here
->          vmsave
->          ^
->  1 error generated.
-> 
-> This happens because LLVM currently does not support calling vmsave
-> without the fixed register operand (%rax for 64-bit and %eax for
-> 32-bit). This will be fixed in LLVM 12 but the kernel currently supports
-> LLVM 10.0.1 and newer so this needs to be handled.
-> 
-> Add the proper register using the _ASM_AX macro, which matches the
-> vmsave call in vmenter.S.
+On Mon, Dec 21, 2020 at 11:33 AM Kai-Heng Feng
+<kai.heng.feng@canonical.com> wrote:
+>
+> [+Cc nouveau]
+>
+> On Fri, Dec 18, 2020 at 4:06 PM Takashi Iwai <tiwai@suse.de> wrote:
+> [snip]
+> > > Quite possibly the system doesn't power up HDA controller when there's
+> > > no external monitor.
+> > > So when it's connected to external monitor, it's still needed for HDMI audio.
+> > > Let me ask the user to confirm this.
+> >
+> > Yeah, it's the basic question whether the HD-audio is supposed to work
+> > on this machine at all.  If yes, the current approach we take makes
+> > less sense - instead we should rather make the HD-audio controller
+> > working.
+>
+> Yea, confirmed that the Nvidia HDA works when HDMI is connected prior boot.
+>
+> > > > - The second problem is that pci_enable_device() ignores the error
+> > > >   returned from pci_set_power_state() if it's -EIO.  And the
+> > > >   inaccessible access error returns -EIO, although it's rather a fatal
+> > > >   problem.  So the driver believes as the PCI device gets enabled
+> > > >   properly.
+> > >
+> > > This was introduced in 2005, by Alan's 11f3859b1e85 ("[PATCH] PCI: Fix
+> > > regression in pci_enable_device_bars") to fix UHCI controller.
+> > >
+> > > >
+> > > > - The third problem is that HD-audio driver blindly believes the
+> > > >   codec_mask read from the register even if it's a read failure as I
+> > > >   already showed.
+> > >
+> > > This approach has least regression risk.
+> >
+> > Yes, but it assumes that HD-audio is really non-existent.
+>
+> I really don't know any good approach to address this.
+> On Windows, HDA PCI is "hidden" until HDMI cable is plugged, then the
+> driver will flag the magic bit to make HDA audio appear on the PCI
+> bus.
+> IIRC the current approach is to make nouveau and device link work.
 
-There are also two instances in tools/testing/selftests/kvm/lib/x86_64/svm.c
-that likely need to be fixed.
- 
-> Fixes: 861377730aa9 ("KVM: SVM: Provide support for SEV-ES vCPU loading")
-> Link: https://reviews.llvm.org/D93524
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1216
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> ---
->  arch/x86/kvm/svm/sev.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index e57847ff8bd2..958370758ed0 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -2001,7 +2001,7 @@ void sev_es_vcpu_load(struct vcpu_svm *svm, int cpu)
->  	 * of which one step is to perform a VMLOAD. Since hardware does not
->  	 * perform a VMSAVE on VMRUN, the host savearea must be updated.
->  	 */
-> -	asm volatile(__ex("vmsave") : : "a" (__sme_page_pa(sd->save_area)) : "memory");
-> +	asm volatile(__ex("vmsave %%"_ASM_AX) : : "a" (__sme_page_pa(sd->save_area)) : "memory");
+I don't have the full context of this discussion, but the kernel
+force-enables the HDA subfunction nowadays, irrespective of nouveau or
+nvidia or whatever:
 
-I vote to add a helper in svm.h to encode VMSAVE, even if there is only the one
-user.  Between the rAX behavior (it _must_ be rAX) and taking the HPA of the
-VMCB, the semantics of VMSAVE are just odd enough to cause a bit of head
-scratching when reading the code for the first time.  E.g. something like:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/quirks.c?h=v5.10#n5267
 
-void vmsave(struct page *vmcb)
-{
-	/*
-	 * VMSAVE takes the HPA of a VMCB in rAX (hardcoded by VMSAVE itself).
-	 * The _ASM_AX operand is required to specify the address size, which
-	 * means VMSAVE cannot consume a 64-bit address outside of 64-bit mode.
-	 */
-	hpa_t vmcb_pa = __sme_page_pa(vmcb);
+Cheers,
 
-	BUG_ON(!IS_ENABLED(CONFIG_X86_64) && (vmcb_pa >> 32));
-
-	asm volatile(__ex("vmsave %%"_ASM_AX) : : "a" (vmcb_pa) : "memory");
-}
-
->  
->  	/*
->  	 * Certain MSRs are restored on VMEXIT, only save ones that aren't
-> -- 
-> 2.30.0.rc0
-> 
+  -ilia
