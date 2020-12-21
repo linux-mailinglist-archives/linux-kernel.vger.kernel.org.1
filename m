@@ -2,265 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C972DF87F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 06:05:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 369CC2DF7A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 03:37:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727593AbgLUFEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 00:04:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727217AbgLUFEh (ORCPT
+        id S1727313AbgLUCfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 21:35:04 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:59359 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725902AbgLUCfD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 00:04:37 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61CE0C0611C5
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 21:03:49 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id c22so5621562pgg.13
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 21:03:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FY6z7JqllprlHMBYTUwFN6QjJFrlD6KrEW0CH05eYAQ=;
-        b=R5jqp/JCDiAl3vkcOvnBFYNZhIBwEVup8M88NBZ90iM2d+RsHW2tIJdsz4zEJP8HDV
-         PGSN+FdwA08HUWTXjsSmVqkjGBjj/DFDSa+wnOLQ1hBtjYN3hcwDLRVccIDoSWZuCVzX
-         yAkRD5CfFTxOyjAyh32CA5lpwzAv4CA7bHrl4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FY6z7JqllprlHMBYTUwFN6QjJFrlD6KrEW0CH05eYAQ=;
-        b=pKgmzyJgncNC8D9LRyL6949ish8/AzL7oxyLfC6Rd36GQmo91+j3o6vg9IxvcOXGeD
-         9vpvw0aejjDmKXnyumnwf0B4eSRIck2Y936DIsr6YnYr+3Zc9eIdTOUFuW1RRs1xC9IQ
-         RgvwNgKx48IS3GAmeszLtNSN5zOPNKUJisvq83Qrb1duRsQ9Ek+3pysaHlIMuoSpTVCm
-         6cdByCyIfgMho6TiFtVMYfCY/fZfoGO8hAtY2m/gJBIrEqt5nt9K+hT795dxrEEJNyz/
-         rk0KsvXpjLlz65Q4+dx9vVg4e5Lpsw3R8IaefO9DjXtgIHAK9ta6/CusgDKmt8gTG+Yd
-         sAfg==
-X-Gm-Message-State: AOAM533NxRFo1lbDVF5VHYuEI6Lm0QIJcaIm7ASIGPU3CXF6sJCZsTUG
-        7JI37ewyOKSXiQLCndxJ2VNiRNrA5Rm8tcFUQOAj/vPSD7Q4jw==
-X-Google-Smtp-Source: ABdhPJwqJjAstIPLLxsW1pe9oXKXOonBFCoT1lAtap0NVVd+ocFlsOOdNe1FWwMq647hX6mxfUZuyRapZInbgS/mrlw=
-X-Received: by 2002:a1f:6743:: with SMTP id m3mr11694643vki.10.1608517992770;
- Sun, 20 Dec 2020 18:33:12 -0800 (PST)
-MIME-Version: 1.0
-References: <1605700894-32699-1-git-send-email-hsin-hsiung.wang@mediatek.com> <1605700894-32699-3-git-send-email-hsin-hsiung.wang@mediatek.com>
-In-Reply-To: <1605700894-32699-3-git-send-email-hsin-hsiung.wang@mediatek.com>
-From:   Nicolas Boichat <drinkcat@chromium.org>
-Date:   Mon, 21 Dec 2020 10:33:02 +0800
-Message-ID: <CANMq1KDsNRk0FWDO3bnbhLrXPhW7O_OVD_a7Q01+ZvuGWL3dhA@mail.gmail.com>
-Subject: Re: [PATCH v4 2/5] soc: mediatek: pwrap: add arbiter capability
-To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Fei Shao <fshao@chromium.org>,
-        Argus Lin <argus.lin@mediatek.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        Sun, 20 Dec 2020 21:35:03 -0500
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20201221023421epoutp02fa1e08e69a0453bf8c4db82978ae6c63~SmqeO4a3m2345223452epoutp02e
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 02:34:21 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20201221023421epoutp02fa1e08e69a0453bf8c4db82978ae6c63~SmqeO4a3m2345223452epoutp02e
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1608518061;
+        bh=fp4gOiOqykL1GaKNYZ64zOTsAI/FgsMnXVzzo7HTXGM=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=HH9GbKtlrpQpZ3ni46AsKS/sLD3VI9VIGeDMcBw/XjZExuj2gbylFj4iJzKKUVpsd
+         hocLgd9yqYN/hI+K5TbN6N2rSSpDkL6cPmnlrNjcws4FDThdzUXCulHx66ldYYxrg4
+         Y6IIpNUt3v57lRZ+sKw2+fjercS/9sVWzm0cjlnk=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
+        20201221023413epcas2p2b762a4709dca3e78daefd59426cabb44~SmqXN_8Mg1103811038epcas2p2w;
+        Mon, 21 Dec 2020 02:34:13 +0000 (GMT)
+Received: from epsmges2p3.samsung.com (unknown [182.195.40.189]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4Czk7S2m18zMqYkn; Mon, 21 Dec
+        2020 02:34:12 +0000 (GMT)
+X-AuditID: b6c32a47-b81ff7000000148e-7a-5fe009a3cc90
+Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
+        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        83.1F.05262.3A900EF5; Mon, 21 Dec 2020 11:34:11 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: Re: [PATCH v16 1/3] scsi: ufs: Introduce HPB feature
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Avri Altman <Avri.Altman@wdc.com>
+CC:     Daejun Park <daejun7.park@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <X934OOlXSf5up8Rd@kroah.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20201221023407epcms2p1e5aaaff4fffcee73a0ecf422b078e888@epcms2p1>
+Date:   Mon, 21 Dec 2020 11:34:07 +0900
+X-CMS-MailID: 20201221023407epcms2p1e5aaaff4fffcee73a0ecf422b078e888
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA12Te1BUZRjG5zvncM4uzTKHa1/gBB0nE+O22NJHSOpotg40MZFTY2PrGTjD
+        YntzL2ZbTIwk0BJIQwmzQ4ggWCuyAS6sIC6wiFQwqFTgCgIzUBBBSJgSSu0F0um/3zzzvu/z
+        vN+Fh/uNksG8TIWWUytYGUN6E832cFFkNX9cEvPPFW/UMPqbFxqvaCZRe24vhWaWfyKR/dY8
+        hU4uLONo0VzrhWa6wpFp/C2UU20mUXl/NoYKT1hIVDXcjKHB1nISFQxZSXT26iqGbl3wRjWW
+        mwB9WlpHoKrTbcSOAPHgj0niwaJCTHzROEqJi6s6gNj2VR0l/uQ7GyG+M+UgxEUXTED8Z+PT
+        4ryOAizFe79sm5Rj0zl1GKdIU6ZnKjISmaRUyS6JKC5GGCmMRy8yYQpWziUyu5NTIvdkypzL
+        MWFHWJnOKaWwGg0T/fI2tVKn5cKkSo02keFU6TKVUKiK0rByjU6REZWmlL8kjImJFTkrD8qk
+        3ZOHVKX8o3/dGCKywTxpAHwepF+A7UVf4wbgzfOjrQBOOxaAAfB4AtoXPrT6u2r86Z2wcWqJ
+        crEfzUDzdSPl0aOgY6IOuJikI2Bp75hbD6CT4MhIKeGaidM1JDSX3KU8ZgJYljdFeDgEtpy1
+        uJv5dDgs+sHg5dE3w/u1hbiHA+HNc3PUOv/Rcwp4OAAev92/VuMLx5fb1vSnYE/bAubhj6Fl
+        5G/gCgHpzwC0X3SsGUTDn/Mb3CEE9GuwfnDK3UDQz0LLvb61obudQwfcjNOhsGWuHHcdCu4M
+        am6NdiGkN8JuB7G+VnbDCvV/xmkfmG9/+J9urZhci7YJ1i+bsWKw0fjopI2PeRkfeVUC3ASC
+        OJVGnsFpYlVbH7/bRuB+51tetYKyuYWoLoDxQBeAPJwJEMQFj0n8BOnsB3pOrZSodTJO0wVE
+        zi0/x4MD05TOj6LQSoSi2Li4mHgREsXFIuZJwb5viiR+dAar5d7jOBWnXu/DePzgbCxi+NLe
+        X1njm6cWj+lXA1mt/HxEb9bWynPxOtOdDFvJck/lM4z5yEzZiuHqge7ekdP6JemQOqu2YEgd
+        MrmJent2Kneg9LDSt2929nd7t34xVT89cfJ86IMA/Y6xpvkz+fsPDVMmyeXZps1e49L4eOpo
+        8nNaReH0vuJXbvvcb2sKufZ69fY68zud8rwN35oOt6wm5D+4zOTYW7WE7YYjuuTMhtyPnvfx
+        T+74Aj5RjB2LhTVBCSfKdobf+77/feuHxEqjVTd03CK/lPDlLseS9Jft4EBW58G+6/Xvhtua
+        bEF7r/kvNKRor+QY5ir2THTy7lJe8+0rqfwQqXJgPiKPq30jtI8hNFJWuAVXa9h/AfEup7Vw
+        BAAA
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201219091802epcms2p2c86f7ae2e81aa015702572a8ef180dae
+References: <X934OOlXSf5up8Rd@kroah.com>
+        <20201219091802epcms2p2c86f7ae2e81aa015702572a8ef180dae@epcms2p2>
+        <20201219091847epcms2p7afeebd03c47eed0b65f89375a881233e@epcms2p7>
+        <X93XuJ4lsQbBgnU+@kroah.com>
+        <DM6PR04MB6575AC2A541FCAAB60E581FBFCC20@DM6PR04MB6575.namprd04.prod.outlook.com>
+        <CGME20201219091802epcms2p2c86f7ae2e81aa015702572a8ef180dae@epcms2p1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 8:08 PM Hsin-Hsiung Wang
-<hsin-hsiung.wang@mediatek.com> wrote:
->
-> Add arbiter capability for pwrap driver.
-> The arbiter capability uses new design to judge the priority and latency
-> for multi-channel.
-> This patch is preparing for adding mt6873/8192 pwrap support.
->
-> Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-> ---
->  drivers/soc/mediatek/mtk-pmic-wrap.c | 57 ++++++++++++++++++++++++++++++------
->  1 file changed, 48 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/soc/mediatek/mtk-pmic-wrap.c b/drivers/soc/mediatek/mtk-pmic-wrap.c
-> index c897205..5678f46 100644
-> --- a/drivers/soc/mediatek/mtk-pmic-wrap.c
-> +++ b/drivers/soc/mediatek/mtk-pmic-wrap.c
-> @@ -25,10 +25,12 @@
->
->  /* macro for wrapper status */
->  #define PWRAP_GET_WACS_RDATA(x)                (((x) >> 0) & 0x0000ffff)
-> +#define PWRAP_GET_WACS_ARB_FSM(x)      (((x) >> 1) & 0x00000007)
->  #define PWRAP_GET_WACS_FSM(x)          (((x) >> 16) & 0x00000007)
->  #define PWRAP_GET_WACS_REQ(x)          (((x) >> 19) & 0x00000001)
->  #define PWRAP_STATE_SYNC_IDLE0         BIT(20)
->  #define PWRAP_STATE_INIT_DONE0         BIT(21)
-> +#define PWRAP_STATE_INIT_DONE1         BIT(15)
->
->  /* macro for WACS FSM */
->  #define PWRAP_WACS_FSM_IDLE            0x00
-> @@ -74,6 +76,7 @@
->  #define PWRAP_CAP_DCM          BIT(2)
->  #define PWRAP_CAP_INT1_EN      BIT(3)
->  #define PWRAP_CAP_WDT_SRC1     BIT(4)
-> +#define PWRAP_CAP_ARB          BIT(5)
->
->  /* defines for slave device wrapper registers */
->  enum dew_regs {
-> @@ -340,6 +343,8 @@ enum pwrap_regs {
->         PWRAP_DCM_DBC_PRD,
->         PWRAP_EINT_STA0_ADR,
->         PWRAP_EINT_STA1_ADR,
-> +       PWRAP_SWINF_2_WDATA_31_0,
-> +       PWRAP_SWINF_2_RDATA_31_0,
->
->         /* MT2701 only regs */
->         PWRAP_ADC_CMD_ADDR,
-> @@ -1108,14 +1113,22 @@ static void pwrap_writel(struct pmic_wrapper *wrp, u32 val, enum pwrap_regs reg)
->
->  static bool pwrap_is_fsm_idle(struct pmic_wrapper *wrp)
->  {
-> -       u32 val = pwrap_readl(wrp, PWRAP_WACS2_RDATA);
-> +       u32 val;
-> +
-> +       val = pwrap_readl(wrp, PWRAP_WACS2_RDATA);
-> +       if (HAS_CAP(wrp->master->caps, PWRAP_CAP_ARB))
-> +               return PWRAP_GET_WACS_ARB_FSM(val) == PWRAP_WACS_FSM_IDLE;
->
->         return PWRAP_GET_WACS_FSM(val) == PWRAP_WACS_FSM_IDLE;
->  }
->
->  static bool pwrap_is_fsm_vldclr(struct pmic_wrapper *wrp)
->  {
-> -       u32 val = pwrap_readl(wrp, PWRAP_WACS2_RDATA);
-> +       u32 val;
-> +
-> +       val = pwrap_readl(wrp, PWRAP_WACS2_RDATA);
-> +       if (HAS_CAP(wrp->master->caps, PWRAP_CAP_ARB))
-> +               return PWRAP_GET_WACS_ARB_FSM(val) == PWRAP_WACS_FSM_WFVLDCLR;
+Hi Greg, Avri
 
-This code is now copied twice. Do you think it'd be better to create a
-new function?
+> On Sat, Dec 19, 2020 at 12:48:31PM +0000, Avri Altman wrote:
+> > > 
+> > > 
+> > > On Sat, Dec 19, 2020 at 06:18:47PM +0900, Daejun Park wrote:
+> > > > +static int ufshpb_get_state(struct ufshpb_lu *hpb)
+> > > > +{
+> > > > +     return atomic_read(&hpb->hpb_state);
+> > > > +}
+> > > > +
+> > > > +static void ufshpb_set_state(struct ufshpb_lu *hpb, int state)
+> > > > +{
+> > > > +     atomic_set(&hpb->hpb_state, state);
+> > > > +}
+> > > 
+> > > You have a lock for the state, and yet the state is an atomic variable
+> > > and you do not use the lock here at all.  You don't use the lock at all
+> > > infact...
+> > > 
+> > > So either the lock needs to be dropped, or you need to use the lock and
+> > > make the state a normal variable please.
+> > hpb_state_lock is mainly protecting the list of active regions.
+> > Just grep  lh_lru_rgn in patch 2/3.
+> 
+> Then why is the lock added in this patch if it is not used here?
 
-static u32 pwrap_get_fsm_state(struct pmic_wrapper *wrp) {
-   if (HAS_CAP(wrp->master->caps, PWRAP_CAP_ARB))
-      return PWRAP_GET_WACS_ARB_FSM(val);
-   else
-      return PWRAP_GET_WACS_FSM(val);
-}
+I think it comes from that the name of the lock and related comment is
+different from the actual usage.
+I will modify the name and related comments, and introduce the lock to the
+patch 2/3.
 
->
->         return PWRAP_GET_WACS_FSM(val) == PWRAP_WACS_FSM_WFVLDCLR;
->  }
-> @@ -1165,6 +1178,7 @@ static int pwrap_wait_for_state(struct pmic_wrapper *wrp,
->  static int pwrap_read16(struct pmic_wrapper *wrp, u32 adr, u32 *rdata)
->  {
->         int ret;
-> +       u32 val;
->
->         ret = pwrap_wait_for_state(wrp, pwrap_is_fsm_idle);
->         if (ret) {
-> @@ -1172,13 +1186,21 @@ static int pwrap_read16(struct pmic_wrapper *wrp, u32 adr, u32 *rdata)
->                 return ret;
->         }
->
-> -       pwrap_writel(wrp, (adr >> 1) << 16, PWRAP_WACS2_CMD);
-> +       if (HAS_CAP(wrp->master->caps, PWRAP_CAP_ARB))
-> +               val = adr;
-> +       else
-> +               val = (adr >> 1) << 16;
-> +       pwrap_writel(wrp, val, PWRAP_WACS2_CMD);
->
->         ret = pwrap_wait_for_state(wrp, pwrap_is_fsm_vldclr);
->         if (ret)
->                 return ret;
->
-> -       *rdata = PWRAP_GET_WACS_RDATA(pwrap_readl(wrp, PWRAP_WACS2_RDATA));
-> +       if (HAS_CAP(wrp->master->caps, PWRAP_CAP_ARB))
-> +               val = pwrap_readl(wrp, PWRAP_SWINF_2_RDATA_31_0);
-> +       else
-> +               val = pwrap_readl(wrp, PWRAP_WACS2_RDATA);
-> +       *rdata = PWRAP_GET_WACS_RDATA(val);
->
->         pwrap_writel(wrp, 1, PWRAP_WACS2_VLDCLR);
->
-> @@ -1228,8 +1250,13 @@ static int pwrap_write16(struct pmic_wrapper *wrp, u32 adr, u32 wdata)
->                 return ret;
->         }
->
-> -       pwrap_writel(wrp, (1 << 31) | ((adr >> 1) << 16) | wdata,
-> -                    PWRAP_WACS2_CMD);
-> +       if (HAS_CAP(wrp->master->caps, PWRAP_CAP_ARB)) {
-> +               pwrap_writel(wrp, wdata, PWRAP_SWINF_2_WDATA_31_0);
-> +               pwrap_writel(wrp, BIT(29) | adr, PWRAP_WACS2_CMD);
-> +       } else {
-> +               pwrap_writel(wrp, BIT(31) | ((adr >> 1) << 16) | wdata,
-> +                            PWRAP_WACS2_CMD);
-> +       }
->
->         return 0;
->  }
-> @@ -2022,6 +2049,7 @@ MODULE_DEVICE_TABLE(of, of_pwrap_match_tbl);
->  static int pwrap_probe(struct platform_device *pdev)
->  {
->         int ret, irq;
-> +       u32 mask_done;
->         struct pmic_wrapper *wrp;
->         struct device_node *np = pdev->dev.of_node;
->         const struct of_device_id *of_slave_id = NULL;
-> @@ -2116,14 +2144,21 @@ static int pwrap_probe(struct platform_device *pdev)
->                 }
->         }
->
-> -       if (!(pwrap_readl(wrp, PWRAP_WACS2_RDATA) & PWRAP_STATE_INIT_DONE0)) {
-> +       if (HAS_CAP(wrp->master->caps, PWRAP_CAP_ARB))
-> +               mask_done = PWRAP_STATE_INIT_DONE1;
-> +       else
-> +               mask_done = PWRAP_STATE_INIT_DONE0;
-> +
-> +       if (!(pwrap_readl(wrp, PWRAP_WACS2_RDATA) & mask_done)) {
->                 dev_dbg(wrp->dev, "initialization isn't finished\n");
->                 ret = -ENODEV;
->                 goto err_out2;
->         }
->
->         /* Initialize watchdog, may not be done by the bootloader */
-> -       pwrap_writel(wrp, 0xf, PWRAP_WDT_UNIT);
-> +       if (!HAS_CAP(wrp->master->caps, PWRAP_CAP_ARB))
-> +               pwrap_writel(wrp, 0xf, PWRAP_WDT_UNIT);
-> +
-
-To expand on Matthias' question on v3
-(https://patchwork.kernel.org/project/linux-mediatek/patch/1600686235-27979-3-git-send-email-hsin-hsiung.wang@mediatek.com/):
-is there any PWRAP implementation where a design with an arbiter is
-still able to control the watchdog?
-
-If not, at the very least, it'd be good to expand the comment above
-(e.g. "designs with arbiter support cannot change the watchdog
-timer").
-
->         /*
->          * Since STAUPD was not used on mt8173 platform,
->          * so STAUPD of WDT_SRC which should be turned off
-> @@ -2132,7 +2167,11 @@ static int pwrap_probe(struct platform_device *pdev)
->         if (HAS_CAP(wrp->master->caps, PWRAP_CAP_WDT_SRC1))
->                 pwrap_writel(wrp, wrp->master->wdt_src, PWRAP_WDT_SRC_EN_1);
->
-> -       pwrap_writel(wrp, 0x1, PWRAP_TIMER_EN);
-> +       if (!HAS_CAP(wrp->master->caps, PWRAP_CAP_ARB))
-
-Please invert this if test:
-
-if (HAS_CAP(wrp->master->caps, PWRAP_CAP_ARB))
-   ... 0x3 ...
-else
-   ... 0x1 ...
-
-> +               pwrap_writel(wrp, 0x1, PWRAP_TIMER_EN);
-> +       else
-> +               pwrap_writel(wrp, 0x3, PWRAP_TIMER_EN);
-> +
->         pwrap_writel(wrp, wrp->master->int_en_all, PWRAP_INT_EN);
->         /*
->          * We add INT1 interrupt to handle starvation and request exception
-> --
-> 2.6.4
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+Thanks,
+Daejun
