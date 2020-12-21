@@ -2,451 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B423A2DF98B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 08:40:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 177782DF98D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 08:43:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726615AbgLUHkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 02:40:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726008AbgLUHkg (ORCPT
+        id S1726686AbgLUHnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 02:43:21 -0500
+Received: from alexa-out-tai-02.qualcomm.com ([103.229.16.227]:63454 "EHLO
+        alexa-out-tai-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725908AbgLUHnV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 02:40:36 -0500
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3327EC0613D3;
-        Sun, 20 Dec 2020 23:39:56 -0800 (PST)
-Received: by mail-il1-x130.google.com with SMTP id 2so8037827ilg.9;
-        Sun, 20 Dec 2020 23:39:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RBeFCEzLJBVGNt2csFSch0LLsgPPLk2XLcTa5KpM0yc=;
-        b=O8ObPp95SqEDT+8BEOfGb1fLKjP0WMWJA0nAje/uD2idZXqdWZuBLdHBmdHScualQ4
-         1btUbdD3+WP29GUOU8VBOdOt3uSmH3Nf1qwxVddejVnYYzoSX9PuEDcikxFeoG3J6+lC
-         LYWOc+Ct3JzBomcnb/r67e9a2Jg4QwToThmw4CY8jCAhW0TWEN0CAaIaNQHW7kRDI2vv
-         Ah73oG1wcx+GVCDDlkXXOMw1s8o9AsaO3sMa8rmBLwS4uJAicWfzlPPXFTme3MgZi+jz
-         SBD29g1+QVIRIUSJUY3eqhwuioENjlUAkY9ryLus69nzQyUDRfPbEnyTD0XrrkMSoLyD
-         Lzgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RBeFCEzLJBVGNt2csFSch0LLsgPPLk2XLcTa5KpM0yc=;
-        b=DC3xnTAO9dz32Bd4MlrvNHNd+jRhNuM0ZeGv3FDtnDFH/Z3+Q0kM+aRe5lMxXZwdF0
-         17/uKmYy+EPEcMyNAv9H4tyVnZzYzQlBA4vgjhkagNaFLBuDOKa87z5LoX3N+tC/G0+r
-         waWgHotHS9o8M5604Q6fwG1nKZrcrG+zsKpCbdgoaigploHtwbWwZ9xWyFaLxCfYKf4g
-         KMqqSNqkh0njG91oV9DBVru7QeDkCi1s5L8G+UuBfeufV/d/rWQ+UIeWHer+63ZZgK1b
-         kGISkqprLzF3EgFLI5i260rmSw7f7LbPMdIE+UbiytIBPmgdEqQf3NxFuQm3yg9cAQqL
-         l7kw==
-X-Gm-Message-State: AOAM533d9k9F8bYQ+my8kilhAY+4UZt6A/6wQkM3EE7f5PA+bFTkXI/A
-        d0ItwvTuu/3DrLf0wUTsQvJ5mnexyBDzytQDbF0=
-X-Google-Smtp-Source: ABdhPJxs5VLaFVLTQWLkFzmidD4ktA62o+YbNCBC9Pw192SIjVjMLYoYHP2UrgrX6QRo12ey/LHlOLXGN42f0vbke6Y=
-X-Received: by 2002:a92:8419:: with SMTP id l25mr15179247ild.100.1608536395332;
- Sun, 20 Dec 2020 23:39:55 -0800 (PST)
-MIME-Version: 1.0
-References: <20201203100423.77270-1-alexandru.ardelean@analog.com> <20201205165922.703acb3d@archlinux>
-In-Reply-To: <20201205165922.703acb3d@archlinux>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Mon, 21 Dec 2020 09:39:44 +0200
-Message-ID: <CA+U=DsoNFroQ-wdcNSuv-Zi7Rj4a1CXy=r5=nTAvt+dxdDhsoQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/5] iio: move 'modes' initialization to core
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 21 Dec 2020 02:43:21 -0500
+Received: from ironmsg01-tai.qualcomm.com ([10.249.140.6])
+  by alexa-out-tai-02.qualcomm.com with ESMTP; 21 Dec 2020 15:42:36 +0800
+X-QCInternal: smtphost
+Received: from cbsp-sh-gv.ap.qualcomm.com (HELO cbsp-sh-gv.qualcomm.com) ([10.231.249.68])
+  by ironmsg01-tai.qualcomm.com with ESMTP; 21 Dec 2020 15:42:04 +0800
+Received: by cbsp-sh-gv.qualcomm.com (Postfix, from userid 393357)
+        id 79AEF2991; Mon, 21 Dec 2020 15:42:03 +0800 (CST)
+From:   Ziqi Chen <ziqichen@codeaurora.org>
+To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        cang@codeaurora.org, hongwus@codeaurora.org, rnayak@codeaurora.org,
+        vinholikatti@gmail.com, jejb@linux.vnet.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        ziqichen@codeaurora.org, kwmad.kim@samsung.com,
+        stanley.chu@mediatek.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Satya Tangirala <satyat@google.com>,
+        linux-mediatek@lists.infradead.org (moderated list:UNIVERSAL FLASH
+        STORAGE HOST CONTROLLER DRIVER...),
+        linux-kernel@vger.kernel.org (open list),
+        linux-arm-msm@vger.kernel.org (open list:ARM/QUALCOMM SUPPORT),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support)
+Subject: [PATCH RFC v2 1/1] scsi: ufs: Fix ufs power down/on specs violation
+Date:   Mon, 21 Dec 2020 15:41:37 +0800
+Message-Id: <1608536504-76507-1-git-send-email-ziqichen@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 5, 2020 at 8:42 PM Jonathan Cameron <jic23@kernel.org> wrote:
->
-> On Thu, 3 Dec 2020 12:04:18 +0200
-> Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
->
-> > I stumbled over this, while trying to implement some changes to the IIO
-> > buffer logic.
-> > Seems that most drivers have a INDIO_DIRECT_MODE, and some have
-> > INDIO_BUFFER_SOFTWARE only as a workaround for not having multiple IIO
-> > buffer-support-per-IIO-device (yet).
->
-> Examples of that particular corner case would be good from a discussion
-> point of view.
->
-> It's been a while though and those cases were always 'interesting'
-> so I may have misremembered how it works!
->
-> It is definitely also used to indicate cases where there is no trigger
-> to expose (usually devices doing DMA blocks or using a fifo).
-> That was the original intent IIRC.
->
-> >
-> > Since a lot of drivers seem to only support INDIO_DIRECT_MODE, it begs the
-> > question whether this starts to make sense as a default 'modes'
-> > initialization.
->
-> Hmm. Do we need to set it at all, or can we just make it implicit?
-> I'm not sure if that is semantically worse than having it set by default
-> or not.  Thinking about it I think we do want to set it just for
-> consistency purposes.
->
-> I'm a bit in two minds about this set.  It obviously is a noop from
-> functional point of view, but it's kind of nice to see the modes
-> explicitly called out.  I guess we started walking down this route
-> anyway when we set IIO_TRIGGERED_BUFFER inside those setup routines.
->
-> The bit that bothers me is that it isn't really a 'default' as such
-> it just the most common value.  I wonder if we could be more clever
-> and set it only if there as a channel with _RAW or _PROCESSED
-> though that would involve moving it to the registration rather than
-> creation.
+As per specs, e.g, JESD220E chapter 7.2, while powering
+off/on the ufs device, RST_N signal and REF_CLK signal
+should be between VSS(Ground) and VCCQ/VCCQ2.
 
-I'll try to think about it a bit more as well.
-I stumbled over this while trying to organize the modes a bit with
-triggered-buffer, kfifo and stuff like that.
-And this was a quick draft to start a discussion.
-But, maybe after some IIO devices get merged into a single IIO device
-[with multiple buffers], this would be a little easier to do.
+To flexibly control device reset line, re-name the function
+ufschd_vops_device_reset(sturct ufs_hba *hba) to ufshcd_
+vops_toggle_device_reset(sturct ufs_hba *hba, bool up). The
+new parameter "bool up" is used to separate device reset
+line pulling up from pulling down.
 
+Cc: Kiwoong Kim <kwmad.kim@samsung.com>
+Cc: Stanley Chu <stanley.chu@mediatek.com>
+Signed-off-by: Ziqi Chen <ziqichen@codeaurora.org>
+---
+ drivers/scsi/ufs/ufs-mediatek.c | 27 +++++++++-----------------
+ drivers/scsi/ufs/ufs-qcom.c     | 22 ++++++++++-----------
+ drivers/scsi/ufs/ufshcd.c       | 43 ++++++++++++++++++++++++++++++-----------
+ drivers/scsi/ufs/ufshcd.h       | 10 +++++-----
+ 4 files changed, 56 insertions(+), 46 deletions(-)
 
->
-> Jonathan
->
-> >
-> > It opens up the idea of hiding 'indio_dev->modes' inside IIO core, with
-> > functions like '{devm_}iio_triggered_buffer_setup()' being able to extend
-> > the setup of these 'modes'.
-> > This idea is far from being ready, but I thought I'd try this RFC instead
-> > as a discussion starter in that direction.
-> >
-> > Alexandru Ardelean (5):
-> >   iio: core: initialize 'modes' to INDIO_DIRECT_MODE by default
-> >   iio,counter: remove modes init for INDIO_DIRECT_MODE only drivers
-> >   iio: remove modes init for INDIO_DIRECT_MODE only drivers (manual)
-> >   iio: adc: ad7768-1: remove explicit modes initialization
-> >   iio: magnetometer: rm3100: remove explicit modes initialization
-> >
-> >  drivers/counter/104-quad-8.c                      | 1 -
-> >  drivers/iio/accel/adis16201.c                     | 1 -
-> >  drivers/iio/accel/adis16209.c                     | 1 -
-> >  drivers/iio/accel/adxl345_core.c                  | 1 -
-> >  drivers/iio/accel/bma180.c                        | 1 -
-> >  drivers/iio/accel/bma220_spi.c                    | 1 -
-> >  drivers/iio/accel/bma400_core.c                   | 1 -
-> >  drivers/iio/accel/bmc150-accel-core.c             | 1 -
-> >  drivers/iio/accel/da280.c                         | 1 -
-> >  drivers/iio/accel/da311.c                         | 1 -
-> >  drivers/iio/accel/dmard06.c                       | 1 -
-> >  drivers/iio/accel/dmard09.c                       | 1 -
-> >  drivers/iio/accel/dmard10.c                       | 1 -
-> >  drivers/iio/accel/hid-sensor-accel-3d.c           | 1 -
-> >  drivers/iio/accel/kxcjk-1013.c                    | 1 -
-> >  drivers/iio/accel/kxsd9.c                         | 1 -
-> >  drivers/iio/accel/mc3230.c                        | 1 -
-> >  drivers/iio/accel/mma7455_core.c                  | 1 -
-> >  drivers/iio/accel/mma7660.c                       | 1 -
-> >  drivers/iio/accel/mma8452.c                       | 1 -
-> >  drivers/iio/accel/mma9551.c                       | 1 -
-> >  drivers/iio/accel/mma9553.c                       | 1 -
-> >  drivers/iio/accel/mxc4005.c                       | 1 -
-> >  drivers/iio/accel/mxc6255.c                       | 1 -
-> >  drivers/iio/accel/sca3000.c                       | 1 -
-> >  drivers/iio/accel/st_accel_core.c                 | 1 -
-> >  drivers/iio/accel/stk8312.c                       | 1 -
-> >  drivers/iio/accel/stk8ba50.c                      | 1 -
-> >  drivers/iio/adc/ab8500-gpadc.c                    | 1 -
-> >  drivers/iio/adc/ad7091r-base.c                    | 1 -
-> >  drivers/iio/adc/ad7124.c                          | 1 -
-> >  drivers/iio/adc/ad7192.c                          | 1 -
-> >  drivers/iio/adc/ad7266.c                          | 1 -
-> >  drivers/iio/adc/ad7291.c                          | 1 -
-> >  drivers/iio/adc/ad7292.c                          | 1 -
-> >  drivers/iio/adc/ad7298.c                          | 1 -
-> >  drivers/iio/adc/ad7476.c                          | 1 -
-> >  drivers/iio/adc/ad7606.c                          | 1 -
-> >  drivers/iio/adc/ad7766.c                          | 1 -
-> >  drivers/iio/adc/ad7768-1.c                        | 1 -
-> >  drivers/iio/adc/ad7780.c                          | 1 -
-> >  drivers/iio/adc/ad7791.c                          | 1 -
-> >  drivers/iio/adc/ad7793.c                          | 1 -
-> >  drivers/iio/adc/ad7887.c                          | 1 -
-> >  drivers/iio/adc/ad7923.c                          | 1 -
-> >  drivers/iio/adc/ad7949.c                          | 1 -
-> >  drivers/iio/adc/ad799x.c                          | 1 -
-> >  drivers/iio/adc/adi-axi-adc.c                     | 1 -
-> >  drivers/iio/adc/aspeed_adc.c                      | 1 -
-> >  drivers/iio/adc/at91_adc.c                        | 1 -
-> >  drivers/iio/adc/axp20x_adc.c                      | 1 -
-> >  drivers/iio/adc/axp288_adc.c                      | 1 -
-> >  drivers/iio/adc/bcm_iproc_adc.c                   | 1 -
-> >  drivers/iio/adc/berlin2-adc.c                     | 1 -
-> >  drivers/iio/adc/cc10001_adc.c                     | 1 -
-> >  drivers/iio/adc/da9150-gpadc.c                    | 1 -
-> >  drivers/iio/adc/dln2-adc.c                        | 1 -
-> >  drivers/iio/adc/ep93xx_adc.c                      | 1 -
-> >  drivers/iio/adc/exynos_adc.c                      | 1 -
-> >  drivers/iio/adc/hi8435.c                          | 1 -
-> >  drivers/iio/adc/hx711.c                           | 1 -
-> >  drivers/iio/adc/imx7d_adc.c                       | 1 -
-> >  drivers/iio/adc/intel_mrfld_adc.c                 | 1 -
-> >  drivers/iio/adc/lp8788_adc.c                      | 1 -
-> >  drivers/iio/adc/lpc18xx_adc.c                     | 1 -
-> >  drivers/iio/adc/lpc32xx_adc.c                     | 1 -
-> >  drivers/iio/adc/ltc2471.c                         | 1 -
-> >  drivers/iio/adc/ltc2485.c                         | 1 -
-> >  drivers/iio/adc/ltc2497-core.c                    | 1 -
-> >  drivers/iio/adc/max1027.c                         | 1 -
-> >  drivers/iio/adc/max11100.c                        | 1 -
-> >  drivers/iio/adc/max1118.c                         | 1 -
-> >  drivers/iio/adc/max1241.c                         | 1 -
-> >  drivers/iio/adc/max1363.c                         | 1 -
-> >  drivers/iio/adc/max9611.c                         | 1 -
-> >  drivers/iio/adc/mcp320x.c                         | 1 -
-> >  drivers/iio/adc/mcp3422.c                         | 1 -
-> >  drivers/iio/adc/mcp3911.c                         | 1 -
-> >  drivers/iio/adc/men_z188_adc.c                    | 1 -
-> >  drivers/iio/adc/meson_saradc.c                    | 1 -
-> >  drivers/iio/adc/mp2629_adc.c                      | 1 -
-> >  drivers/iio/adc/mt6360-adc.c                      | 1 -
-> >  drivers/iio/adc/mt6577_auxadc.c                   | 1 -
-> >  drivers/iio/adc/mxs-lradc-adc.c                   | 1 -
-> >  drivers/iio/adc/nau7802.c                         | 1 -
-> >  drivers/iio/adc/npcm_adc.c                        | 1 -
-> >  drivers/iio/adc/palmas_gpadc.c                    | 1 -
-> >  drivers/iio/adc/qcom-pm8xxx-xoadc.c               | 1 -
-> >  drivers/iio/adc/qcom-spmi-adc5.c                  | 1 -
-> >  drivers/iio/adc/qcom-spmi-iadc.c                  | 1 -
-> >  drivers/iio/adc/qcom-spmi-vadc.c                  | 1 -
-> >  drivers/iio/adc/rcar-gyroadc.c                    | 1 -
-> >  drivers/iio/adc/rn5t618-adc.c                     | 1 -
-> >  drivers/iio/adc/rockchip_saradc.c                 | 1 -
-> >  drivers/iio/adc/sc27xx_adc.c                      | 1 -
-> >  drivers/iio/adc/spear_adc.c                       | 1 -
-> >  drivers/iio/adc/stm32-dfsdm-adc.c                 | 1 -
-> >  drivers/iio/adc/stmpe-adc.c                       | 1 -
-> >  drivers/iio/adc/stx104.c                          | 1 -
-> >  drivers/iio/adc/sun4i-gpadc-iio.c                 | 1 -
-> >  drivers/iio/adc/ti-adc081c.c                      | 1 -
-> >  drivers/iio/adc/ti-adc0832.c                      | 1 -
-> >  drivers/iio/adc/ti-adc084s021.c                   | 1 -
-> >  drivers/iio/adc/ti-adc108s102.c                   | 1 -
-> >  drivers/iio/adc/ti-adc12138.c                     | 1 -
-> >  drivers/iio/adc/ti-adc128s052.c                   | 1 -
-> >  drivers/iio/adc/ti-adc161s626.c                   | 1 -
-> >  drivers/iio/adc/ti-ads1015.c                      | 1 -
-> >  drivers/iio/adc/ti-ads124s08.c                    | 1 -
-> >  drivers/iio/adc/ti-ads7950.c                      | 1 -
-> >  drivers/iio/adc/ti-ads8344.c                      | 1 -
-> >  drivers/iio/adc/ti-ads8688.c                      | 1 -
-> >  drivers/iio/adc/ti-tlc4541.c                      | 1 -
-> >  drivers/iio/adc/ti_am335x_adc.c                   | 1 -
-> >  drivers/iio/adc/twl4030-madc.c                    | 1 -
-> >  drivers/iio/adc/twl6030-gpadc.c                   | 1 -
-> >  drivers/iio/adc/vf610_adc.c                       | 1 -
-> >  drivers/iio/adc/viperboard_adc.c                  | 1 -
-> >  drivers/iio/adc/xilinx-xadc-core.c                | 1 -
-> >  drivers/iio/afe/iio-rescale.c                     | 1 -
-> >  drivers/iio/amplifiers/ad8366.c                   | 1 -
-> >  drivers/iio/amplifiers/hmc425a.c                  | 1 -
-> >  drivers/iio/chemical/ams-iaq-core.c               | 1 -
-> >  drivers/iio/chemical/atlas-ezo-sensor.c           | 1 -
-> >  drivers/iio/chemical/bme680_core.c                | 1 -
-> >  drivers/iio/chemical/ccs811.c                     | 1 -
-> >  drivers/iio/chemical/pms7003.c                    | 1 -
-> >  drivers/iio/chemical/scd30_core.c                 | 1 -
-> >  drivers/iio/chemical/sgp30.c                      | 1 -
-> >  drivers/iio/chemical/sps30.c                      | 1 -
-> >  drivers/iio/chemical/vz89x.c                      | 1 -
-> >  drivers/iio/dac/ad5064.c                          | 1 -
-> >  drivers/iio/dac/ad5360.c                          | 1 -
-> >  drivers/iio/dac/ad5380.c                          | 1 -
-> >  drivers/iio/dac/ad5421.c                          | 1 -
-> >  drivers/iio/dac/ad5446.c                          | 1 -
-> >  drivers/iio/dac/ad5449.c                          | 1 -
-> >  drivers/iio/dac/ad5504.c                          | 1 -
-> >  drivers/iio/dac/ad5592r-base.c                    | 1 -
-> >  drivers/iio/dac/ad5624r_spi.c                     | 1 -
-> >  drivers/iio/dac/ad5686.c                          | 1 -
-> >  drivers/iio/dac/ad5755.c                          | 1 -
-> >  drivers/iio/dac/ad5758.c                          | 1 -
-> >  drivers/iio/dac/ad5761.c                          | 1 -
-> >  drivers/iio/dac/ad5764.c                          | 1 -
-> >  drivers/iio/dac/ad5770r.c                         | 1 -
-> >  drivers/iio/dac/ad5791.c                          | 1 -
-> >  drivers/iio/dac/ad7303.c                          | 1 -
-> >  drivers/iio/dac/ad8801.c                          | 1 -
-> >  drivers/iio/dac/cio-dac.c                         | 1 -
-> >  drivers/iio/dac/dpot-dac.c                        | 1 -
-> >  drivers/iio/dac/ds4424.c                          | 1 -
-> >  drivers/iio/dac/lpc18xx_dac.c                     | 1 -
-> >  drivers/iio/dac/ltc1660.c                         | 1 -
-> >  drivers/iio/dac/ltc2632.c                         | 1 -
-> >  drivers/iio/dac/m62332.c                          | 1 -
-> >  drivers/iio/dac/max517.c                          | 1 -
-> >  drivers/iio/dac/max5821.c                         | 1 -
-> >  drivers/iio/dac/mcp4725.c                         | 1 -
-> >  drivers/iio/dac/mcp4922.c                         | 1 -
-> >  drivers/iio/dac/stm32-dac.c                       | 1 -
-> >  drivers/iio/dac/ti-dac082s085.c                   | 1 -
-> >  drivers/iio/dac/ti-dac5571.c                      | 1 -
-> >  drivers/iio/dac/ti-dac7311.c                      | 1 -
-> >  drivers/iio/dac/ti-dac7612.c                      | 1 -
-> >  drivers/iio/dac/vf610_dac.c                       | 1 -
-> >  drivers/iio/dummy/iio_simple_dummy.c              | 3 ---
-> >  drivers/iio/frequency/ad9523.c                    | 1 -
-> >  drivers/iio/frequency/adf4350.c                   | 1 -
-> >  drivers/iio/frequency/adf4371.c                   | 1 -
-> >  drivers/iio/gyro/adis16080.c                      | 1 -
-> >  drivers/iio/gyro/adis16130.c                      | 1 -
-> >  drivers/iio/gyro/adis16136.c                      | 1 -
-> >  drivers/iio/gyro/adis16260.c                      | 1 -
-> >  drivers/iio/gyro/adxrs290.c                       | 1 -
-> >  drivers/iio/gyro/adxrs450.c                       | 1 -
-> >  drivers/iio/gyro/bmg160_core.c                    | 1 -
-> >  drivers/iio/gyro/fxas21002c_core.c                | 1 -
-> >  drivers/iio/gyro/hid-sensor-gyro-3d.c             | 1 -
-> >  drivers/iio/gyro/itg3200_core.c                   | 1 -
-> >  drivers/iio/gyro/mpu3050-core.c                   | 1 -
-> >  drivers/iio/gyro/st_gyro_core.c                   | 1 -
-> >  drivers/iio/health/afe4403.c                      | 1 -
-> >  drivers/iio/health/afe4404.c                      | 1 -
-> >  drivers/iio/humidity/am2315.c                     | 1 -
-> >  drivers/iio/humidity/dht11.c                      | 1 -
-> >  drivers/iio/humidity/hdc100x.c                    | 1 -
-> >  drivers/iio/humidity/hdc2010.c                    | 1 -
-> >  drivers/iio/humidity/hid-sensor-humidity.c        | 1 -
-> >  drivers/iio/humidity/hts221_core.c                | 1 -
-> >  drivers/iio/humidity/htu21.c                      | 1 -
-> >  drivers/iio/humidity/si7005.c                     | 1 -
-> >  drivers/iio/humidity/si7020.c                     | 1 -
-> >  drivers/iio/imu/adis16400.c                       | 1 -
-> >  drivers/iio/imu/adis16460.c                       | 1 -
-> >  drivers/iio/imu/adis16475.c                       | 1 -
-> >  drivers/iio/imu/adis16480.c                       | 1 -
-> >  drivers/iio/imu/bmi160/bmi160_core.c              | 1 -
-> >  drivers/iio/imu/fxos8700_core.c                   | 1 -
-> >  drivers/iio/imu/kmx61.c                           | 1 -
-> >  drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c      | 1 -
-> >  drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_shub.c      | 1 -
-> >  drivers/iio/industrialio-core.c                   | 1 +
-> >  drivers/iio/light/adjd_s311.c                     | 1 -
-> >  drivers/iio/light/adux1020.c                      | 1 -
-> >  drivers/iio/light/al3010.c                        | 1 -
-> >  drivers/iio/light/al3320a.c                       | 1 -
-> >  drivers/iio/light/apds9300.c                      | 1 -
-> >  drivers/iio/light/as73211.c                       | 1 -
-> >  drivers/iio/light/bh1750.c                        | 1 -
-> >  drivers/iio/light/bh1780.c                        | 1 -
-> >  drivers/iio/light/cm32181.c                       | 1 -
-> >  drivers/iio/light/cm3232.c                        | 1 -
-> >  drivers/iio/light/cm3323.c                        | 1 -
-> >  drivers/iio/light/cm3605.c                        | 1 -
-> >  drivers/iio/light/cm36651.c                       | 1 -
-> >  drivers/iio/light/gp2ap002.c                      | 1 -
-> >  drivers/iio/light/gp2ap020a00f.c                  | 1 -
-> >  drivers/iio/light/hid-sensor-als.c                | 1 -
-> >  drivers/iio/light/hid-sensor-prox.c               | 1 -
-> >  drivers/iio/light/iqs621-als.c                    | 1 -
-> >  drivers/iio/light/isl29018.c                      | 1 -
-> >  drivers/iio/light/isl29028.c                      | 1 -
-> >  drivers/iio/light/isl29125.c                      | 1 -
-> >  drivers/iio/light/jsa1212.c                       | 1 -
-> >  drivers/iio/light/lm3533-als.c                    | 1 -
-> >  drivers/iio/light/ltr501.c                        | 1 -
-> >  drivers/iio/light/lv0104cs.c                      | 1 -
-> >  drivers/iio/light/max44009.c                      | 1 -
-> >  drivers/iio/light/noa1305.c                       | 1 -
-> >  drivers/iio/light/opt3001.c                       | 1 -
-> >  drivers/iio/light/pa12203001.c                    | 1 -
-> >  drivers/iio/light/rpr0521.c                       | 1 -
-> >  drivers/iio/light/si1133.c                        | 1 -
-> >  drivers/iio/light/si1145.c                        | 1 -
-> >  drivers/iio/light/st_uvis25_core.c                | 1 -
-> >  drivers/iio/light/stk3310.c                       | 1 -
-> >  drivers/iio/light/tcs3414.c                       | 1 -
-> >  drivers/iio/light/tcs3472.c                       | 1 -
-> >  drivers/iio/light/tsl2563.c                       | 1 -
-> >  drivers/iio/light/tsl2583.c                       | 1 -
-> >  drivers/iio/light/tsl2772.c                       | 1 -
-> >  drivers/iio/light/tsl4531.c                       | 1 -
-> >  drivers/iio/light/us5182d.c                       | 1 -
-> >  drivers/iio/light/vcnl4000.c                      | 1 -
-> >  drivers/iio/light/vcnl4035.c                      | 1 -
-> >  drivers/iio/light/veml6030.c                      | 1 -
-> >  drivers/iio/light/veml6070.c                      | 1 -
-> >  drivers/iio/light/vl6180.c                        | 1 -
-> >  drivers/iio/light/zopt2201.c                      | 1 -
-> >  drivers/iio/magnetometer/ak8974.c                 | 1 -
-> >  drivers/iio/magnetometer/ak8975.c                 | 1 -
-> >  drivers/iio/magnetometer/bmc150_magn.c            | 1 -
-> >  drivers/iio/magnetometer/hid-sensor-magn-3d.c     | 1 -
-> >  drivers/iio/magnetometer/hmc5843_core.c           | 1 -
-> >  drivers/iio/magnetometer/mag3110.c                | 1 -
-> >  drivers/iio/magnetometer/mmc35240.c               | 1 -
-> >  drivers/iio/magnetometer/rm3100-core.c            | 1 -
-> >  drivers/iio/magnetometer/st_magn_core.c           | 1 -
-> >  drivers/iio/multiplexer/iio-mux.c                 | 1 -
-> >  drivers/iio/orientation/hid-sensor-incl-3d.c      | 1 -
-> >  drivers/iio/orientation/hid-sensor-rotation.c     | 1 -
-> >  drivers/iio/position/iqs624-pos.c                 | 1 -
-> >  drivers/iio/potentiometer/max5481.c               | 1 -
-> >  drivers/iio/potentiometer/max5487.c               | 1 -
-> >  drivers/iio/potentiostat/lmp91000.c               | 1 -
-> >  drivers/iio/pressure/abp060mg.c                   | 1 -
-> >  drivers/iio/pressure/bmp280-core.c                | 1 -
-> >  drivers/iio/pressure/dlhl60d.c                    | 1 -
-> >  drivers/iio/pressure/dps310.c                     | 1 -
-> >  drivers/iio/pressure/hid-sensor-press.c           | 1 -
-> >  drivers/iio/pressure/hp03.c                       | 1 -
-> >  drivers/iio/pressure/hp206c.c                     | 1 -
-> >  drivers/iio/pressure/icp10100.c                   | 1 -
-> >  drivers/iio/pressure/mpl115.c                     | 1 -
-> >  drivers/iio/pressure/mpl3115.c                    | 1 -
-> >  drivers/iio/pressure/ms5611_core.c                | 1 -
-> >  drivers/iio/pressure/ms5637.c                     | 1 -
-> >  drivers/iio/pressure/st_pressure_core.c           | 1 -
-> >  drivers/iio/pressure/t5403.c                      | 1 -
-> >  drivers/iio/pressure/zpa2326.c                    | 1 -
-> >  drivers/iio/proximity/as3935.c                    | 1 -
-> >  drivers/iio/proximity/isl29501.c                  | 1 -
-> >  drivers/iio/proximity/mb1232.c                    | 1 -
-> >  drivers/iio/proximity/ping.c                      | 1 -
-> >  drivers/iio/proximity/pulsedlight-lidar-lite-v2.c | 1 -
-> >  drivers/iio/proximity/rfd77402.c                  | 1 -
-> >  drivers/iio/proximity/srf04.c                     | 1 -
-> >  drivers/iio/proximity/srf08.c                     | 1 -
-> >  drivers/iio/proximity/sx9310.c                    | 1 -
-> >  drivers/iio/proximity/sx9500.c                    | 1 -
-> >  drivers/iio/proximity/vcnl3020.c                  | 1 -
-> >  drivers/iio/proximity/vl53l0x-i2c.c               | 1 -
-> >  drivers/iio/resolver/ad2s1200.c                   | 1 -
-> >  drivers/iio/resolver/ad2s90.c                     | 1 -
-> >  drivers/iio/temperature/hid-sensor-temperature.c  | 1 -
-> >  drivers/iio/temperature/iqs620at-temp.c           | 1 -
-> >  drivers/iio/temperature/ltc2983.c                 | 1 -
-> >  drivers/iio/temperature/max31856.c                | 1 -
-> >  drivers/iio/temperature/maxim_thermocouple.c      | 1 -
-> >  drivers/iio/temperature/mlx90614.c                | 1 -
-> >  drivers/iio/temperature/mlx90632.c                | 1 -
-> >  drivers/iio/temperature/tmp006.c                  | 1 -
-> >  drivers/iio/temperature/tmp007.c                  | 1 -
-> >  drivers/iio/temperature/tsys01.c                  | 1 -
-> >  drivers/iio/temperature/tsys02d.c                 | 1 -
-> >  drivers/input/touchscreen/tsc2007_iio.c           | 1 -
-> >  drivers/platform/x86/toshiba_acpi.c               | 1 -
-> >  drivers/staging/iio/accel/adis16203.c             | 1 -
-> >  drivers/staging/iio/accel/adis16240.c             | 1 -
-> >  drivers/staging/iio/adc/ad7280a.c                 | 1 -
-> >  drivers/staging/iio/adc/ad7816.c                  | 1 -
-> >  drivers/staging/iio/addac/adt7316.c               | 1 -
-> >  drivers/staging/iio/cdc/ad7150.c                  | 2 --
-> >  drivers/staging/iio/cdc/ad7746.c                  | 1 -
-> >  drivers/staging/iio/frequency/ad9832.c            | 1 -
-> >  drivers/staging/iio/frequency/ad9834.c            | 1 -
-> >  drivers/staging/iio/meter/ade7854.c               | 1 -
-> >  drivers/staging/iio/resolver/ad2s1210.c           | 1 -
-> >  319 files changed, 1 insertion(+), 321 deletions(-)
-> >
->
+diff --git a/drivers/scsi/ufs/ufs-mediatek.c b/drivers/scsi/ufs/ufs-mediatek.c
+index 80618af..bff2c42 100644
+--- a/drivers/scsi/ufs/ufs-mediatek.c
++++ b/drivers/scsi/ufs/ufs-mediatek.c
+@@ -841,27 +841,18 @@ static int ufs_mtk_link_startup_notify(struct ufs_hba *hba,
+ 	return ret;
+ }
+ 
+-static int ufs_mtk_device_reset(struct ufs_hba *hba)
++static int ufs_mtk_toggle_device_reset(struct ufs_hba *hba, bool down)
+ {
+ 	struct arm_smccc_res res;
+ 
+-	ufs_mtk_device_reset_ctrl(0, res);
+-
+-	/*
+-	 * The reset signal is active low. UFS devices shall detect
+-	 * more than or equal to 1us of positive or negative RST_n
+-	 * pulse width.
+-	 *
+-	 * To be on safe side, keep the reset low for at least 10us.
+-	 */
+-	usleep_range(10, 15);
+-
+-	ufs_mtk_device_reset_ctrl(1, res);
+-
+-	/* Some devices may need time to respond to rst_n */
+-	usleep_range(10000, 15000);
++	if (down) {
++		ufs_mtk_device_reset_ctrl(0, res);
++	} else {
++		ufs_mtk_device_reset_ctrl(1, res);
+ 
+-	dev_info(hba->dev, "device reset done\n");
++		/* Some devices may need time to respond to rst_n */
++		usleep_range(10000, 15000);
++	}
+ 
+ 	return 0;
+ }
+@@ -1052,7 +1043,7 @@ static const struct ufs_hba_variant_ops ufs_hba_mtk_vops = {
+ 	.suspend             = ufs_mtk_suspend,
+ 	.resume              = ufs_mtk_resume,
+ 	.dbg_register_dump   = ufs_mtk_dbg_register_dump,
+-	.device_reset        = ufs_mtk_device_reset,
++	.toggle_device_reset        = ufs_mtk_toggle_device_reset,
+ 	.event_notify        = ufs_mtk_event_notify,
+ };
+ 
+diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
+index 2206b1e..c2ccaa5 100644
+--- a/drivers/scsi/ufs/ufs-qcom.c
++++ b/drivers/scsi/ufs/ufs-qcom.c
+@@ -1404,12 +1404,13 @@ static void ufs_qcom_dump_dbg_regs(struct ufs_hba *hba)
+ }
+ 
+ /**
+- * ufs_qcom_device_reset() - toggle the (optional) device reset line
++ * ufs_qcom_toggle_device_reset() - toggle the (optional) device reset line
+  * @hba: per-adapter instance
++ * @down: pull down or pull up device reset line
+  *
+  * Toggles the (optional) reset line to reset the attached device.
+  */
+-static int ufs_qcom_device_reset(struct ufs_hba *hba)
++static int ufs_qcom_toggle_device_reset(struct ufs_hba *hba, bool down)
+ {
+ 	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+ 
+@@ -1417,15 +1418,12 @@ static int ufs_qcom_device_reset(struct ufs_hba *hba)
+ 	if (!host->device_reset)
+ 		return -EOPNOTSUPP;
+ 
+-	/*
+-	 * The UFS device shall detect reset pulses of 1us, sleep for 10us to
+-	 * be on the safe side.
+-	 */
+-	gpiod_set_value_cansleep(host->device_reset, 1);
+-	usleep_range(10, 15);
+-
+-	gpiod_set_value_cansleep(host->device_reset, 0);
+-	usleep_range(10, 15);
++	if (down) {
++		gpiod_set_value_cansleep(host->device_reset, 1);
++	} else {
++		gpiod_set_value_cansleep(host->device_reset, 0);
++		usleep_range(10, 15);
++	}
+ 
+ 	return 0;
+ }
+@@ -1473,7 +1471,7 @@ static const struct ufs_hba_variant_ops ufs_hba_qcom_vops = {
+ 	.suspend		= ufs_qcom_suspend,
+ 	.resume			= ufs_qcom_resume,
+ 	.dbg_register_dump	= ufs_qcom_dump_dbg_regs,
+-	.device_reset		= ufs_qcom_device_reset,
++	.toggle_device_reset		= ufs_qcom_toggle_device_reset,
+ 	.config_scaling_param = ufs_qcom_config_scaling_param,
+ 	.program_key		= ufs_qcom_ice_program_key,
+ };
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index e221add..2ee905f 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -585,7 +585,20 @@ static void ufshcd_device_reset(struct ufs_hba *hba)
+ {
+ 	int err;
+ 
+-	err = ufshcd_vops_device_reset(hba);
++	err = ufshcd_vops_toggle_device_reset(hba, true);
++	if (err) {
++		dev_err(hba->dev, "device reset pulling down failure: %d\n", err);
++		return;
++	}
++
++	/*
++	 * The reset signal is active low. The UFS device
++	 * shall detect reset pulses of 1us, sleep for at
++	 * least 10us to be on the safe side.
++	 */
++	usleep_range(10, 15);
++
++	err = ufshcd_vops_toggle_device_reset(hba, false);
+ 
+ 	if (!err) {
+ 		ufshcd_set_ufs_dev_active(hba);
+@@ -593,7 +606,11 @@ static void ufshcd_device_reset(struct ufs_hba *hba)
+ 			hba->wb_enabled = false;
+ 			hba->wb_buf_flush_enabled = false;
+ 		}
++		dev_info(hba->dev, "device reset done\n");
++	} else {
++		dev_err(hba->dev, "device reset pulling up failure: %d\n", err);
+ 	}
++
+ 	if (err != -EOPNOTSUPP)
+ 		ufshcd_update_evt_hist(hba, UFS_EVT_DEV_RESET, err);
+ }
+@@ -8686,8 +8703,6 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	if (ret)
+ 		goto set_dev_active;
+ 
+-	ufshcd_vreg_set_lpm(hba);
+-
+ disable_clks:
+ 	/*
+ 	 * Call vendor specific suspend callback. As these callbacks may access
+@@ -8703,6 +8718,9 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	 */
+ 	ufshcd_disable_irq(hba);
+ 
++	if (ufshcd_is_link_off(hba))
++		ufshcd_vops_toggle_device_reset(hba, true);
++
+ 	ufshcd_setup_clocks(hba, false);
+ 
+ 	if (ufshcd_is_clkgating_allowed(hba)) {
+@@ -8711,6 +8729,8 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 					hba->clk_gating.state);
+ 	}
+ 
++	ufshcd_vreg_set_lpm(hba);
++
+ 	/* Put the host controller in low power mode if possible */
+ 	ufshcd_hba_vreg_set_lpm(hba);
+ 	goto out;
+@@ -8778,18 +8798,19 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	old_link_state = hba->uic_link_state;
+ 
+ 	ufshcd_hba_vreg_set_hpm(hba);
++
++	ret = ufshcd_vreg_set_hpm(hba);
++	if (ret)
++		goto out;
++
+ 	/* Make sure clocks are enabled before accessing controller */
+ 	ret = ufshcd_setup_clocks(hba, true);
+ 	if (ret)
+-		goto out;
++		goto disable_vreg;
+ 
+ 	/* enable the host irq as host controller would be active soon */
+ 	ufshcd_enable_irq(hba);
+ 
+-	ret = ufshcd_vreg_set_hpm(hba);
+-	if (ret)
+-		goto disable_irq_and_vops_clks;
+-
+ 	/*
+ 	 * Call vendor specific resume callback. As these callbacks may access
+ 	 * vendor specific host controller register space call them when the
+@@ -8797,7 +8818,7 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	 */
+ 	ret = ufshcd_vops_resume(hba, pm_op);
+ 	if (ret)
+-		goto disable_vreg;
++		goto disable_irq_and_vops_clks;
+ 
+ 	/* For DeepSleep, the only supported option is to have the link off */
+ 	WARN_ON(ufshcd_is_ufs_dev_deepsleep(hba) && !ufshcd_is_link_off(hba));
+@@ -8864,8 +8885,6 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	ufshcd_link_state_transition(hba, old_link_state, 0);
+ vendor_suspend:
+ 	ufshcd_vops_suspend(hba, pm_op);
+-disable_vreg:
+-	ufshcd_vreg_set_lpm(hba);
+ disable_irq_and_vops_clks:
+ 	ufshcd_disable_irq(hba);
+ 	if (hba->clk_scaling.is_allowed)
+@@ -8876,6 +8895,8 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 		trace_ufshcd_clk_gating(dev_name(hba->dev),
+ 					hba->clk_gating.state);
+ 	}
++disable_vreg:
++	ufshcd_vreg_set_lpm(hba);
+ out:
+ 	hba->pm_op_in_progress = 0;
+ 	if (ret)
+diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+index 9bb5f0e..dccc3eb 100644
+--- a/drivers/scsi/ufs/ufshcd.h
++++ b/drivers/scsi/ufs/ufshcd.h
+@@ -319,7 +319,7 @@ struct ufs_pwr_mode_info {
+  * @resume: called during host controller PM callback
+  * @dbg_register_dump: used to dump controller debug information
+  * @phy_initialization: used to initialize phys
+- * @device_reset: called to issue a reset pulse on the UFS device
++ * @toggle_device_reset: called to change logic level of reset gpio on the UFS device
+  * @program_key: program or evict an inline encryption key
+  * @event_notify: called to notify important events
+  */
+@@ -350,7 +350,7 @@ struct ufs_hba_variant_ops {
+ 	int     (*resume)(struct ufs_hba *, enum ufs_pm_op);
+ 	void	(*dbg_register_dump)(struct ufs_hba *hba);
+ 	int	(*phy_initialization)(struct ufs_hba *);
+-	int	(*device_reset)(struct ufs_hba *hba);
++	int	(*toggle_device_reset)(struct ufs_hba *hba, bool down);
+ 	void	(*config_scaling_param)(struct ufs_hba *hba,
+ 					struct devfreq_dev_profile *profile,
+ 					void *data);
+@@ -1216,10 +1216,10 @@ static inline void ufshcd_vops_dbg_register_dump(struct ufs_hba *hba)
+ 		hba->vops->dbg_register_dump(hba);
+ }
+ 
+-static inline int ufshcd_vops_device_reset(struct ufs_hba *hba)
++static inline int ufshcd_vops_toggle_device_reset(struct ufs_hba *hba, bool down)
+ {
+-	if (hba->vops && hba->vops->device_reset)
+-		return hba->vops->device_reset(hba);
++	if (hba->vops && hba->vops->toggle_device_reset)
++		return hba->vops->toggle_device_reset(hba, down);
+ 
+ 	return -EOPNOTSUPP;
+ }
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
