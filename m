@@ -2,151 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8705A2DFA33
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 09:55:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D17952DFAC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 11:08:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728190AbgLUIyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 03:54:51 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:33331 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727401AbgLUIyv (ORCPT
+        id S1726470AbgLUKHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 05:07:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725807AbgLUKHR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 03:54:51 -0500
-Received: by mail-io1-f70.google.com with SMTP id t23so5082719ioh.0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 00:54:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=2ynIvZyu/Mq8I0y4+W/1wGFuqsNw7/hbTUXKut/HCW8=;
-        b=Ax4x3PbDwu1575x7y9Tu5trZMXJUnGCr3vtI9se6SjXNQr99QlyvxgNpttAYu0qATT
-         l/V5k+Iq72YbyUFyBGXujkElh73/pR/cjFqrh0lJ8P+7AFedPuUJt8DkZGp5jc2sjL8S
-         8OfTvaTkzZ75spvRCtHQcK3yW2GS9WM3g4M92Zsc9zhk2tShNYNFJ99OGw2y+Xr8TVPT
-         ikqbSzIUoqAiMy1QugMyjzzd++PU17qsWI/yOZsP4JAhImhhoIBBygOU37dX0usy4WlC
-         q0ZjXiutwlDoh7wRHLs45aV6NkNdkwgl5N5M9g/SQq5X+ycY1SR2kXUO6P8aQb+0a+u+
-         Ku3Q==
-X-Gm-Message-State: AOAM532ZE0cPR9/hUs9XR2ifg1DJ6SOtotm1lD7O1vgWSONszdmhLxPr
-        9hDye83pYC6D8Po07gvSzUtTz+rEAsUecbLZcIKOyy9JKggp
-X-Google-Smtp-Source: ABdhPJzar/byIQ4ZD44/83nGoCtUGavdwhNG9csm/7hV+2D2XX77WIBljGPE7hr4xmu6ih9ykLZDa5bZJHvGhUoR8GDfS0/68JYb
+        Mon, 21 Dec 2020 05:07:17 -0500
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2061d.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e1b::61d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB741C0611CA
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 01:09:54 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WqkxJu+HJKxMDC4hLrnwwNHyItIkkO638C60c6p1Xex0aH9Qk10n3e4WcQzXNPIGDXg6c2Aqb0igGXvfK8UanTPIY20nydTC+jQlYCuuh7HuxRdzWnGHO+Pfwtrv13nSQ7vmvCIkE6u0NEpNRC7C7GMSHCone+B9OGVb8Nc8n8YQynFNDswm2JLI4Yj3UMCSM6f/j7i5QAmMOLr2Z42qq2rg+T+lGEfWB+JEaedmp5r/ORndJxwtOP1nzhGlbEyYd9kc5R25lPDfEDV7ZXvtpmLrX/wCjycM+euIKJ417tkmVzRmZUS9f4JCSGRYBvlFu9G7egs/J+d/ZnqVIHYO1Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EkW7FGuFLxxoTQpyZ+Alyib9nmVWZ1lMzyjJt3AaDdI=;
+ b=KrAv5GZOL1EKC7dG2OCvHIJHLIAPzKCjLUo6S7jgVCgw1tiGv2LoWb3s2dU10s/Tdb0cubLJDHWDLV8i8SewFbi66h6N+Zz3z3H4fMaspIRPVAUSEuFkx9WH/YY8L7Yje2MTuvYiGC5f5YKi/v7uIz9XkoVsFvFL9+DJnSMqAb0tTSqEeBZ1uGajk7bx1YE2hnFNc9Ilr/sCcTxZm75Kp1MyjNXt8qXKypYp+i7omU+ThppF6NkOuCOF7Hni3spgaSdM9Dr6a7dv46h4e4Z5RTv58U6V7BG6rOfTQlvViGWeLBNtQaRqtH1m3XyJ/cWkvs4C5Ac2qu3ejYPcM8svwg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fi.rohmeurope.com; dmarc=pass action=none
+ header.from=fi.rohmeurope.com; dkim=pass header.d=fi.rohmeurope.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rohmsemiconductoreurope.onmicrosoft.com;
+ s=selector1-rohmsemiconductoreurope-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EkW7FGuFLxxoTQpyZ+Alyib9nmVWZ1lMzyjJt3AaDdI=;
+ b=CxGRo9OWKzoLmD8orecdwTY9/hyyQn2oUeA6qSNyQDzXAjI/rlYZADLqzwkxTCXLEZobS3D9WuI5oGHVyUak5WRY581zCF27smcCHJ7hplbU5intycw4xnZBWDqwUZXXNkm5MIGjOarf1GtXrhsjTjhimTXK6KZlIWiEJz6VOXU=
+Received: from HE1PR03MB3162.eurprd03.prod.outlook.com (2603:10a6:7:55::20) by
+ HE1PR03MB3164.eurprd03.prod.outlook.com (2603:10a6:7:5d::21) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3676.25; Mon, 21 Dec 2020 08:58:28 +0000
+Received: from HE1PR03MB3162.eurprd03.prod.outlook.com
+ ([fe80::f1f1:eb1d:2bf5:eb87]) by HE1PR03MB3162.eurprd03.prod.outlook.com
+ ([fe80::f1f1:eb1d:2bf5:eb87%7]) with mapi id 15.20.3676.033; Mon, 21 Dec 2020
+ 08:58:28 +0000
+From:   "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+To:     "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "broonie@kernel.org" <broonie@kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+Subject: Re: [PATCH] lib/linear_ranges: fix repeated words & one typo
+Thread-Topic: [PATCH] lib/linear_ranges: fix repeated words & one typo
+Thread-Index: AQHW106lPZPY+K/AhEKjwF6yLMUSKaoBQEaA
+Date:   Mon, 21 Dec 2020 08:58:27 +0000
+Message-ID: <f931932a47f9617e2179d9dd395a75fbcff9c3a9.camel@fi.rohmeurope.com>
+References: <20201221040610.12809-1-rdunlap@infradead.org>
+In-Reply-To: <20201221040610.12809-1-rdunlap@infradead.org>
+Reply-To: "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+Accept-Language: fi-FI, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none
+ header.from=fi.rohmeurope.com;
+x-originating-ip: [62.78.225.252]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2af7b76a-ad44-47d8-2acb-08d8a58e9546
+x-ms-traffictypediagnostic: HE1PR03MB3164:
+x-microsoft-antispam-prvs: <HE1PR03MB31648475AE86B7ECE186E612ADC00@HE1PR03MB3164.eurprd03.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 9/OG5gfNiWyAsSK80zHjG3AM+oqeYg1peULUxFR/zvnjtV1AVokwzDKCce+uur+8XoFvEIKACS3XgCGyMsIpgjE+Wb+13yyzFs9M+YFnrh1fZh5uKlJYgRISwfW875eyPAWsUB5/JGuQH3HNGRRdKLK0RzGlc/tVpi6nt3uEntgk6oQuv0gdaN88NpW39LD0MtlsbM+Cb64FCzsuLYBC6dkDH8MeoJWiVqIAhOnYSaMSeDP4t/qaYMUJY/5wUWvo6tOzdDKCDSqDfLAchmw2z7CZdZ71yqrFmmmEL0ePhG51lJnVYucK8XNxGlipDJLmKNwsxBPRgUkKOWA7Toa7uOW1dQw1gS70qE7CMp/LTFWDSQ1WxIDYn8kV31e/8IoZP8Asj780IEMt8V4kgFuzNQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR03MB3162.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(366004)(136003)(39840400004)(346002)(76116006)(186003)(66476007)(478600001)(66556008)(66946007)(64756008)(66446008)(8936002)(86362001)(316002)(110136005)(4326008)(54906003)(71200400001)(5660300002)(6512007)(3450700001)(8676002)(2906002)(6486002)(4001150100001)(2616005)(4744005)(26005)(6506007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?SmtRL29keTA0eXlxMGs4SEsrZmFLNHcvYlFXeUxOTHdKSlR5cEZhR2V0NmZw?=
+ =?utf-8?B?MW0rQ2s2T2krZURkcDBBek9zbVhCRWE5SVZDOGtybkNHUWx0azBmZXFwUDB2?=
+ =?utf-8?B?VDB0NUltZkVTbEx0aWFaVS8xdU5rRkdaWC82cWNxZ1R1Ni83Yk0xUG5YQUNQ?=
+ =?utf-8?B?cnVtdEVtVEdnUU5sa2ZtakpmWnkrYWJqU3l1eXByMnpyYW5BRno5anpNaHdC?=
+ =?utf-8?B?dWI0eWYxSEl0NlBReEZqeWVZOEVRN1BrZitCYjh1K1k4TU5jM0tYblUvd2lV?=
+ =?utf-8?B?eDVnckZyUkRNdWVNbWpZSVdibTNzRlc1YXlKMWtHMTBxckNSL2pXUDEvaTMr?=
+ =?utf-8?B?cW5uYkx1dTMzdzUvSTlFbDRnL1YxNWx6My8wVmxiTVhtV2lqY0RQZ3Focnls?=
+ =?utf-8?B?c05sc0NmbTdWREE3YjlqazY0V0wyMkRoamlnZUdmcm1rODB6V0xXOUdtN2pQ?=
+ =?utf-8?B?SzgvUTkrUjQzdTVxZERSbDZaWFRvVTcxb21JQ2NiTFZZNmY0WDNwWUg3cWlw?=
+ =?utf-8?B?SktCT0xYS1FzNXNMdDBUcUltOVlOTGNlUDF5VmtoRWhmbHBabmNOUGNOYjc0?=
+ =?utf-8?B?TmZnVGRMTzVjNndVUVVXVnQvcGlzRWdxai82ekVWQ3VNUFZyOGNha2htOWpq?=
+ =?utf-8?B?NGs2U0ZHdzYvclF6VzhOYS82eStyY0JFK2M0T1gxOWlEcHRCVUtHUldDQ084?=
+ =?utf-8?B?TnJYRjJ4NWxNU0hqU0cwVSt6d1o2UmNzSUJVdWIrcjVBOHZERDE4c090VWh1?=
+ =?utf-8?B?azRsVkhKREdhY3E3WU9PYm4xU2ZETUVTTzZTZHRkek4wWHFEQ1VjNlBSU1cr?=
+ =?utf-8?B?bHRkYlU1M3lnU1RRNHYrOTdkLzNOQTFJbmU0WEUzZWdlQVFRQi9mV0hNdi9I?=
+ =?utf-8?B?TEVacHJHNWxyUkZwdTBmUUhRZXJZdDFtQW5PVVFuaEt0VXluYlhJcURnNCtP?=
+ =?utf-8?B?ek9CZXMvd24vSzZiWDRMZVN2TTRkSkhVNGJ0b1BWcFdHR1FvTkZSRzNTUGcz?=
+ =?utf-8?B?TVNzdmhKWmJMaXBxWkIrUFJFci81RUdmRTFSVWxobEMzVExNTVROTy9VRHZ3?=
+ =?utf-8?B?Sld2R042Q0FpWmVSYkJHNnN4aDJEYnZjMTZONW5QTGIvUzJVcFo5RmpIUlFp?=
+ =?utf-8?B?UjJNbWVjWUNiQjJUSXU5OTBPYUhUdEwzaVdQQXZLMVZUNU8yQkRONHhienpO?=
+ =?utf-8?B?TitUaEdwQytDUE1EQXo0elZ2RjVXTEZVUjNycDYrd1NmcWU0eFcrbmMvUTJO?=
+ =?utf-8?B?WC9rMjV1Q3dVVkpxYW9XS3R6NEVsQTlrTEtoVWZIMVdYSzJKYk5uTTVEQWRn?=
+ =?utf-8?Q?8CWfuX0w717mbNxDGGSUQVstnHobmBcXbc?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <555F6D14D952FC49A6415B57FF00AD46@eurprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:e45:: with SMTP id l5mr15361557ilk.294.1608540849804;
- Mon, 21 Dec 2020 00:54:09 -0800 (PST)
-Date:   Mon, 21 Dec 2020 00:54:09 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f599c005b6f59913@google.com>
-Subject: memory leak in mcba_usb_probe
-From:   syzbot <syzbot+57281c762a3922e14dfe@syzkaller.appspotmail.com>
-To:     a.darwish@linutronix.de, bigeasy@linutronix.de,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, stern@rowland.harvard.edu,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: fi.rohmeurope.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HE1PR03MB3162.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2af7b76a-ad44-47d8-2acb-08d8a58e9546
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Dec 2020 08:58:28.0438
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 94f2c475-a538-4112-b5dd-63f17273d67a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: hiZJfCJY+4KoKoNqSj65XjcH9AmoSgjiLL9cubvVDUweikdVZ73PRYPN58LpS30YySZfZ4YDggfsGKADKvpzt6POzXng0+NJELpVf8/rEsOh+Nfq5e3uqxSRyYGRvSw5
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR03MB3164
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    467f8165 Merge tag 'close-range-cloexec-unshare-v5.11' of ..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15933e0f500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=37c889fb8b2761af
-dashboard link: https://syzkaller.appspot.com/bug?extid=57281c762a3922e14dfe
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14fe2b9b500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13bd2287500000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+57281c762a3922e14dfe@syzkaller.appspotmail.com
-
-BUG: memory leak
-unreferenced object 0xffff88811101c080 (size 64):
-  comm "kworker/0:2", pid 56, jiffies 4294942309 (age 8.240s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e42b7c1c>] kmalloc include/linux/slab.h:557 [inline]
-    [<00000000e42b7c1c>] hcd_buffer_alloc+0x149/0x190 drivers/usb/core/buffer.c:134
-    [<0000000042899d1a>] usb_alloc_coherent+0x42/0x60 drivers/usb/core/usb.c:897
-    [<00000000abbb04b6>] mcba_usb_start drivers/net/can/usb/mcba_usb.c:644 [inline]
-    [<00000000abbb04b6>] mcba_usb_probe+0x27b/0x430 drivers/net/can/usb/mcba_usb.c:846
-    [<00000000b5e48b67>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
-    [<00000000a0416f71>] really_probe+0x159/0x480 drivers/base/dd.c:561
-    [<00000000cce96f4d>] driver_probe_device+0x84/0x100 drivers/base/dd.c:745
-    [<00000000b0116c0e>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:851
-    [<00000000da4bf16e>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
-    [<00000000e826f962>] __device_attach+0x122/0x250 drivers/base/dd.c:919
-    [<00000000fb35d32b>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
-    [<0000000083f168a1>] device_add+0x5be/0xc30 drivers/base/core.c:3091
-    [<000000002b4245b1>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2164
-    [<00000000fa502fa0>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
-    [<000000004e1ab3a9>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
-    [<00000000a0416f71>] really_probe+0x159/0x480 drivers/base/dd.c:561
-    [<00000000cce96f4d>] driver_probe_device+0x84/0x100 drivers/base/dd.c:745
-
-BUG: memory leak
-unreferenced object 0xffff88811101c0c0 (size 64):
-  comm "kworker/0:2", pid 56, jiffies 4294942309 (age 8.240s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e42b7c1c>] kmalloc include/linux/slab.h:557 [inline]
-    [<00000000e42b7c1c>] hcd_buffer_alloc+0x149/0x190 drivers/usb/core/buffer.c:134
-    [<0000000042899d1a>] usb_alloc_coherent+0x42/0x60 drivers/usb/core/usb.c:897
-    [<00000000abbb04b6>] mcba_usb_start drivers/net/can/usb/mcba_usb.c:644 [inline]
-    [<00000000abbb04b6>] mcba_usb_probe+0x27b/0x430 drivers/net/can/usb/mcba_usb.c:846
-    [<00000000b5e48b67>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
-    [<00000000a0416f71>] really_probe+0x159/0x480 drivers/base/dd.c:561
-    [<00000000cce96f4d>] driver_probe_device+0x84/0x100 drivers/base/dd.c:745
-    [<00000000b0116c0e>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:851
-    [<00000000da4bf16e>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
-    [<00000000e826f962>] __device_attach+0x122/0x250 drivers/base/dd.c:919
-    [<00000000fb35d32b>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
-    [<0000000083f168a1>] device_add+0x5be/0xc30 drivers/base/core.c:3091
-    [<000000002b4245b1>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2164
-    [<00000000fa502fa0>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
-    [<000000004e1ab3a9>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
-    [<00000000a0416f71>] really_probe+0x159/0x480 drivers/base/dd.c:561
-    [<00000000cce96f4d>] driver_probe_device+0x84/0x100 drivers/base/dd.c:745
-
-BUG: memory leak
-unreferenced object 0xffff88811101c100 (size 64):
-  comm "kworker/0:2", pid 56, jiffies 4294942309 (age 8.240s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e42b7c1c>] kmalloc include/linux/slab.h:557 [inline]
-    [<00000000e42b7c1c>] hcd_buffer_alloc+0x149/0x190 drivers/usb/core/buffer.c:134
-    [<0000000042899d1a>] usb_alloc_coherent+0x42/0x60 drivers/usb/core/usb.c:897
-    [<00000000abbb04b6>] mcba_usb_start drivers/net/can/usb/mcba_usb.c:644 [inline]
-    [<00000000abbb04b6>] mcba_usb_probe+0x27b/0x430 drivers/net/can/usb/mcba_usb.c:846
-    [<00000000b5e48b67>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
-    [<00000000a0416f71>] really_probe+0x159/0x480 drivers/base/dd.c:561
-    [<00000000cce96f4d>] driver_probe_device+0x84/0x100 drivers/base/dd.c:745
-    [<00000000b0116c0e>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:851
-    [<00000000da4bf16e>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
-    [<00000000e826f962>] __device_attach+0x122/0x250 drivers/base/dd.c:919
-    [<00000000fb35d32b>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
-    [<0000000083f168a1>] device_add+0x5be/0xc30 drivers/base/core.c:3091
-    [<000000002b4245b1>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2164
-    [<00000000fa502fa0>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
-    [<000000004e1ab3a9>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
-    [<00000000a0416f71>] really_probe+0x159/0x480 drivers/base/dd.c:561
-    [<00000000cce96f4d>] driver_probe_device+0x84/0x100 drivers/base/dd.c:745
-
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+VGhhbmtzIGZvciBjb3JyZWN0aW9ucyENCg0KT24gU3VuLCAyMDIwLTEyLTIwIGF0IDIwOjA2IC0w
+ODAwLCBSYW5keSBEdW5sYXAgd3JvdGU6DQo+IENoYW5nZSAid2hpY2ggd2hpY2giIHRvICJmb3Ig
+d2hpY2giIGluIDMgcGxhY2VzLg0KPiBDaGFuZ2UgInJhbmdlcyIgdG8gcG9zc2Vzc2l2ZSAicmFu
+Z2UncyIgaW4gMSBwbGFjZS4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IFJhbmR5IER1bmxhcCA8cmR1
+bmxhcEBpbmZyYWRlYWQub3JnPg0KPiBDYzogQW5kcmV3IE1vcnRvbiA8YWtwbUBsaW51eC1mb3Vu
+ZGF0aW9uLm9yZz4NCj4gQ2M6IE1hcmsgQnJvd24gPGJyb29uaWVAa2VybmVsLm9yZz4NCj4gQ2M6
+IE1hdHRpIFZhaXR0aW5lbiA8bWF0dGkudmFpdHRpbmVuQGZpLnJvaG1ldXJvcGUuY29tPg0KDQpS
+ZXZpZXdlZC1ieTogTWF0dGkgVmFpdHRpbmVuIDxtYXR0aS52YWl0dGluZW5AZmkucm9obWV1cm9w
+ZS5jb20+DQoNCkJlc3QgUmVnYXJkcw0KCU1hdHRpDQo=
