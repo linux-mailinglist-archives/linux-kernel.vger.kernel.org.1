@@ -2,290 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1D152E01A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 21:46:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5BE12E01A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 21:52:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725881AbgLUUpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 15:45:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42332 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725780AbgLUUpz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 15:45:55 -0500
-Date:   Mon, 21 Dec 2020 12:45:13 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608583513;
-        bh=KO3C2klUdTR7bFRLlPhyYk58kqpdIFEr6FjfCmbhvpI=;
-        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=h6rObDlzZ2hXPN5ACxHww4KBJy2HxcU/qMVOkZ+VYp0BWfJETqTc99BiJmobRyFA8
-         iK5O/gecO2HH7mXynVc7LbmBQfGWo1DJKGNv5CI0oiys9baNB/MEMiIux85mN/M7TW
-         lfmKKc7IL8VLQLibHFxbK3t3z656V1O9hHqDgCdZYDEUOpJ45EGzEP3+tnggv2XjAs
-         F48U6z74gxuvqsl07a+Hd7jwoZNuHsGOCu6bxc13InUZQMnBkbl5BlD6zhjJzkLf1X
-         O5q5Hm9jjfdPcBVhMEyqGbo2U6IOvQEki7B0N5uOhQBK38sxd4R9S3Cs3zkEozt9IU
-         iuErKJFAcPOkg==
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 2/2] rcu-tasks: add RCU-tasks self tests
-Message-ID: <20201221204513.GY2657@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201209202732.5896-1-urezki@gmail.com>
- <20201209202732.5896-2-urezki@gmail.com>
- <20201216154959.GA2408@pc638.lan>
- <20201216232955.GO2657@paulmck-ThinkPad-P72>
- <20201221153809.GA24756@pc638.lan>
- <20201221171805.GW2657@paulmck-ThinkPad-P72>
- <20201221184539.GA24895@pc638.lan>
- <20201221192906.GX2657@paulmck-ThinkPad-P72>
- <20201221194848.GA2558@pc638.lan>
+        id S1725913AbgLUUwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 15:52:49 -0500
+Received: from atlmailgw1.ami.com ([63.147.10.40]:45826 "EHLO
+        atlmailgw1.ami.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725780AbgLUUwt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 15:52:49 -0500
+X-AuditID: ac1060b2-a93ff700000017ec-60-5fe10af76df7
+Received: from atlms1.us.megatrends.com (atlms1.us.megatrends.com [172.16.96.144])
+        (using TLS with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by atlmailgw1.ami.com (Symantec Messaging Gateway) with SMTP id E7.8D.06124.7FA01EF5; Mon, 21 Dec 2020 15:52:07 -0500 (EST)
+Received: from ami-us-wk.us.megatrends.com (172.16.98.207) by
+ atlms1.us.megatrends.com (172.16.96.144) with Microsoft SMTP Server (TLS) id
+ 14.3.468.0; Mon, 21 Dec 2020 15:52:06 -0500
+From:   Hongwei Zhang <hongweiz@ami.com>
+To:     <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <openbmc@lists.ozlabs.org>, Jakub Kicinski <kuba@kernel.org>,
+        David S Miller <davem@davemloft.net>
+CC:     Hongwei Zhang <hongweiz@ami.com>, netdev <netdev@vger.kernel.org>,
+        Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>
+Subject: [Aspeed, v1 0/1] net: ftgmac100: Change the order of getting MAC address
+Date:   Mon, 21 Dec 2020 15:51:56 -0500
+Message-ID: <20201221205157.31501-1-hongweiz@ami.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201221194848.GA2558@pc638.lan>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-Originating-IP: [172.16.98.207]
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrPLMWRmVeSWpSXmKPExsWyRiBhgu4ProfxBu/cLHZd5rCYc76FxeL3
+        +b/MFhe29bFaNK8+x2xxedccNotjC8QsTrW8YHHg8LjavovdY8vKm0weFz8eY/bYtKqTzeP8
+        jIWMHp83yQWwRXHZpKTmZJalFunbJXBlbDg4iaVgF3PFovWL2RoYHzB1MXJySAiYSOz58Ja5
+        i5GLQ0hgF5PErY7DMA6jxJTjN1hAqtgE1CT2bp7DBJIQEVjNKNGz4RcjiMMs0MEoMfXFV3aQ
+        KmGBQIkXLd2sXYwcHCwCqhIdzfwgYV4BU4lb334zQqyTl1i94QAzRFxQ4uTMJ2ALmAUkJA6+
+        eAEWFxKQlbh16DHUeYoSD359Z53AyDcLScssJC0LGJlWMQolluTkJmbmpJcb6iXmZuol5+du
+        YoQE6qYdjC0XzQ8xMnEwHmKU4GBWEuE1k7ofL8SbklhZlVqUH19UmpNafIhRmoNFSZx3lfvR
+        eCGB9MSS1OzU1ILUIpgsEwenVAMjH4Oo93OLX67mE+9zhEyc7MDMrOj5U7foTUKEiVKP5tR0
+        s4mrWr5Gn2EQcyptN1+hd7vl5ZlbohaL1nYzGwXdjvlyZFauX9I5h84lUVmrBRaelDloJ8K/
+        4nHjgujU9qMsefn3XmzQVNB631ZoWKV73ki42//z2r5sIe/4KV/3yOYzN3Q85VFiKc5INNRi
+        LipOBADbenNbQgIAAA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 08:48:48PM +0100, Uladzislau Rezki wrote:
-> On Mon, Dec 21, 2020 at 11:29:06AM -0800, Paul E. McKenney wrote:
-> > On Mon, Dec 21, 2020 at 07:45:39PM +0100, Uladzislau Rezki wrote:
-> > > On Mon, Dec 21, 2020 at 09:18:05AM -0800, Paul E. McKenney wrote:
-> > > > On Mon, Dec 21, 2020 at 04:38:09PM +0100, Uladzislau Rezki wrote:
-> > > > > On Wed, Dec 16, 2020 at 03:29:55PM -0800, Paul E. McKenney wrote:
-> > > > > > On Wed, Dec 16, 2020 at 04:49:59PM +0100, Uladzislau Rezki wrote:
-> > > > 
-> > > > [ . . . ]
-> > > > 
-> > > > > > > 2.20.1
-> > > > > > 
-> > > > > > Again, much improved!
-> > > > > > 
-> > > > > See below the v3 version. I hope i fixed all comments :)
-> > > > > 
-> > > > > >From 06f7adfd84cbb1994d0e2693ee9dcdfd272a9bd0 Mon Sep 17 00:00:00 2001
-> > > > > From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-> > > > > Date: Wed, 9 Dec 2020 21:27:32 +0100
-> > > > > Subject: [PATCH v3 1/1] rcu-tasks: Add RCU-tasks self tests
-> > > > > 
-> > > > > This commit adds self tests for early-boot use of RCU-tasks grace periods.
-> > > > > It tests all three variants (Rude, Tasks, and Tasks Trace) and covers
-> > > > > both synchronous (e.g., synchronize_rcu_tasks()) and asynchronous (e.g.,
-> > > > > call_rcu_tasks()) grace-period APIs.
-> > > > > 
-> > > > > Self-tests are run only in kernels built with CONFIG_PROVE_RCU=y.
-> > > > > 
-> > > > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > > 
-> > > > Much better!
-> > > > 
-> > > > I pulled this in, but made one small additional change.  Please let me
-> > > > know if this is problematic.
-> > > > 
-> > > > 							Thanx, Paul
-> > > > 
-> > > > ------------------------------------------------------------------------
-> > > > 
-> > > > commit 93372198b5c9efdfd288aa3b3ee41c1f90866886
-> > > > Author: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > > Date:   Wed Dec 9 21:27:32 2020 +0100
-> > > > 
-> > > >     rcu-tasks: Add RCU-tasks self tests
-> > > >     
-> > > >     This commit adds self tests for early-boot use of RCU-tasks grace periods.
-> > > >     It tests all three variants (Rude, Tasks, and Tasks Trace) and covers
-> > > >     both synchronous (e.g., synchronize_rcu_tasks()) and asynchronous (e.g.,
-> > > >     call_rcu_tasks()) grace-period APIs.
-> > > >     
-> > > >     Self-tests are run only in kernels built with CONFIG_PROVE_RCU=y.
-> > > >     
-> > > >     Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > 
-> > > > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > > > index 3660755..35a2cd5 100644
-> > > > --- a/kernel/rcu/tasks.h
-> > > > +++ b/kernel/rcu/tasks.h
-> > > > @@ -1224,6 +1224,40 @@ void show_rcu_tasks_gp_kthreads(void)
-> > > >  }
-> > > >  #endif /* #ifndef CONFIG_TINY_RCU */
-> > > >  
-> > > > +struct rcu_tasks_test_desc {
-> > > > +	struct rcu_head rh;
-> > > > +	const char *name;
-> > > > +	bool notrun;
-> > > > +};
-> > > > +
-> > > > +static struct rcu_tasks_test_desc tests[] = {
-> > > > +	{
-> > > > +		.name = "call_rcu_tasks()",
-> > > > +		/* If not defined, the test is skipped. */
-> > > > +		.notrun = !IS_ENABLED(CONFIG_TASKS_RCU),
-> > > > +	},
-> > > > +	{
-> > > > +		.name = "call_rcu_tasks_rude()",
-> > > > +		/* If not defined, the test is skipped. */
-> > > > +		.notrun = !IS_ENABLED(CONFIG_TASKS_RUDE_RCU),
-> > > > +	},
-> > > > +	{
-> > > > +		.name = "call_rcu_tasks_trace()",
-> > > > +		/* If not defined, the test is skipped. */
-> > > > +		.notrun = !IS_ENABLED(CONFIG_TASKS_TRACE_RCU)
-> > > > +	}
-> > > > +};
-> > > > +
-> > > > +static void test_rcu_tasks_callback(struct rcu_head *rhp)
-> > > > +{
-> > > > +	struct rcu_tasks_test_desc *rttd =
-> > > > +		container_of(rhp, struct rcu_tasks_test_desc, rh);
-> > > > +
-> > > > +	pr_info("Callback from %s invoked.\n", rttd->name);
-> > > That is fine! We can output the name instead of executed counter.
-> > > Doing so makes it completely clear who triggers the callback.
-> > 
-> > And we also need to make it not trigger when CONFIG_PROVE_RCU=n.
-> > While in the area, we might as well leave anything that is needed only
-> > by CONFIG_PROVE_RCU=y undefined when CONFIG_PROVE_RCU=n.
-> > 
-> > How about the following?
-> > 
-> > 							Thanx, Paul
-> > 
-> > ------------------------------------------------------------------------
-> > 
-> > commit f7a1ac0d3504e0518745da7f98573c1b13587f3e
-> > Author: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > Date:   Wed Dec 9 21:27:32 2020 +0100
-> > 
-> >     rcu-tasks: Add RCU-tasks self tests
-> >     
-> >     This commit adds self tests for early-boot use of RCU-tasks grace periods.
-> >     It tests all three variants (Rude, Tasks, and Tasks Trace) and covers
-> >     both synchronous (e.g., synchronize_rcu_tasks()) and asynchronous (e.g.,
-> >     call_rcu_tasks()) grace-period APIs.
-> >     
-> >     Self-tests are run only in kernels built with CONFIG_PROVE_RCU=y.
-> >     
-> >     Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> >     [ paulmck: Handle CONFIG_PROVE_RCU=n and identify test cases' callbacks. ]
-> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > 
-> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > index 3660755..af7c194 100644
-> > --- a/kernel/rcu/tasks.h
-> > +++ b/kernel/rcu/tasks.h
-> > @@ -1224,6 +1224,82 @@ void show_rcu_tasks_gp_kthreads(void)
-> >  }
-> >  #endif /* #ifndef CONFIG_TINY_RCU */
-> >  
-> > +#ifdef CONFIG_PROVE_RCU
-> > +struct rcu_tasks_test_desc {
-> > +	struct rcu_head rh;
-> > +	const char *name;
-> > +	bool notrun;
-> > +};
-> > +
-> > +static struct rcu_tasks_test_desc tests[] = {
-> > +	{
-> > +		.name = "call_rcu_tasks()",
-> > +		/* If not defined, the test is skipped. */
-> > +		.notrun = !IS_ENABLED(CONFIG_TASKS_RCU),
-> > +	},
-> > +	{
-> > +		.name = "call_rcu_tasks_rude()",
-> > +		/* If not defined, the test is skipped. */
-> > +		.notrun = !IS_ENABLED(CONFIG_TASKS_RUDE_RCU),
-> > +	},
-> > +	{
-> > +		.name = "call_rcu_tasks_trace()",
-> > +		/* If not defined, the test is skipped. */
-> > +		.notrun = !IS_ENABLED(CONFIG_TASKS_TRACE_RCU)
-> > +	}
-> > +};
-> > +
-> > +static void test_rcu_tasks_callback(struct rcu_head *rhp)
-> > +{
-> > +	struct rcu_tasks_test_desc *rttd =
-> > +		container_of(rhp, struct rcu_tasks_test_desc, rh);
-> > +
-> > +	pr_info("Callback from %s invoked.\n", rttd->name);
-> > +
-> > +	rttd->notrun = true;
-> > +}
-> > +
-> > +static void rcu_tasks_initiate_self_tests(void)
-> > +{
-> > +	pr_info("Running RCU-tasks wait API self tests\n");
-> > +#ifdef CONFIG_TASKS_RCU
-> > +	synchronize_rcu_tasks();
-> > +	call_rcu_tasks(&tests[0].rh, test_rcu_tasks_callback);
-> > +#endif
-> > +
-> > +#ifdef CONFIG_TASKS_RUDE_RCU
-> > +	synchronize_rcu_tasks_rude();
-> > +	call_rcu_tasks_rude(&tests[1].rh, test_rcu_tasks_callback);
-> > +#endif
-> > +
-> > +#ifdef CONFIG_TASKS_TRACE_RCU
-> > +	synchronize_rcu_tasks_trace();
-> > +	call_rcu_tasks_trace(&tests[2].rh, test_rcu_tasks_callback);
-> > +#endif
-> > +}
-> > +
-> > +static int rcu_tasks_verify_self_tests(void)
-> > +{
-> > +	int ret = 0;
-> > +	int i;
-> > +
-> > +	for (i = 0; i < ARRAY_SIZE(tests); i++) {
-> > +		if (!tests[i].notrun) {		// still hanging.
-> > +			pr_err("%s has been failed.\n", tests[i].name);
-> > +			ret = -1;
-> > +		}
-> > +	}
-> > +
-> > +	if (ret)
-> > +		WARN_ON(1);
-> > +
-> > +	return ret;
-> > +}
-> > +late_initcall(rcu_tasks_verify_self_tests);
-> > +#else /* #ifdef CONFIG_PROVE_RCU */
-> > +static void rcu_tasks_initiate_self_tests(void) { }
-> > +#endif /* #else #ifdef CONFIG_PROVE_RCU */
-> > +
-> >  void __init rcu_init_tasks_generic(void)
-> >  {
-> >  #ifdef CONFIG_TASKS_RCU
-> > @@ -1237,6 +1313,9 @@ void __init rcu_init_tasks_generic(void)
-> >  #ifdef CONFIG_TASKS_TRACE_RCU
-> >  	rcu_spawn_tasks_trace_kthread();
-> >  #endif
-> > +
-> > +	// Run the self-tests.
-> > +	rcu_tasks_initiate_self_tests();
-> >  }
-> >  
-> >  #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
-> That makes sense to me. I missed that point. There is no
-> reason in wasting of extra cycles which affect a boot up
-> time if built without CONFIG_PROVE_RCU.
+Dear Reviewer,
 
-If CONFIG_PROVE_RCU=n, then rcu_tasks_initiate_self_tests is an empty
-function.  So the compiler should be able to eliminate all runtime
-overhead from rcu_tasks_initiate_self_tests() when CONFIG_PROVE_RCU=n.
+Use native MAC address is preferred over other choices, thus change the order
+of reading MAC address, try to read it from MAC chip first, if it's not
+ availabe, then try to read it from device tree.
 
-Or am I missing your point?
+Hongwei Zhang (1):
+  net: ftgmac100: Change the order of getting MAC address
 
-							Thanx, Paul
+ drivers/net/ethernet/faraday/ftgmac100.c | 22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
+
+-- 
+2.17.1
+
