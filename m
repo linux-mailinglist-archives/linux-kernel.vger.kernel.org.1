@@ -2,115 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A0C2E01F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 22:18:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DFE22E0206
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 22:24:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726671AbgLUVSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 16:18:49 -0500
-Received: from mail-eopbgr30090.outbound.protection.outlook.com ([40.107.3.90]:46378
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725820AbgLUVSr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 16:18:47 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EemHwqQ0tLzH7o2PYfIc4DwZfignc2W9E+uEpOi/7c4RM6C7ekIQESKcpzyuoxlzjJ36X0vbcnJgNTX2PBZHpKPftGSvUCGSuSkp4zFm9vuyOp/8RbWmL5mHw/4paOEnA2gnzsk+FgmAjUgBaDKkGzvkP1M6lJdzXxDYs9LLC4GbymO934QHOSvq0jGHtKOfcqDzHSG7EK8ceynGvodW0tU/Zw2rIVEdMRtZ1ErgxZM+CItRCcq5leVBZ7UXlX9wrG96mhLWJTxzrz0CnBxzyCrkL67OS6E2ETzXV32Jjfe1fUc/3gmrzi0XBg3kb6GUJxdLsTrmLSktrUJJUqlUHg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CpiCvQGqXr5opLn4D2uyDnQSz1q3CzK7oLozJeoVzOU=;
- b=oN/4IbPvKhpOHcrDmyuevHlVJjO0VHQAGUgGJle2AIon1ipqJaQszQ2XLwsssIedB6FsdyIJQ8F4txTgkmiAqF/dYyN9XsKmd4fuDQ1Oc/fc8zEfa5XQ9sbNP26UeErL63aJ6bjVBfgkcr0hISFqFFJbTplHGMrRYqfl+y+BaUNkRV/wlrairQXJFrkUP8mofFNBQRaAG8KxL9k9YwQ7cQ35W+OyyOV7cAGS8ygM+rT7vYVac1gQPg4ZQsTnQLTgAtls6eya5hXhZWr4UBtRxh/8t+oPZAu96h7W+l2Le1UnU1WuKHXw3f3SLyt2G7akutwCyrGzk06w2kUBDl2OQA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
- dkim=pass header.d=prevas.dk; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CpiCvQGqXr5opLn4D2uyDnQSz1q3CzK7oLozJeoVzOU=;
- b=A/HHdJyLmHQJyd0kG9C2lY9LCp8X3Od3mQ5ON7uZmEZD/lntVYqnWxHEyT4c00+PKj61RyWfSn9sDFGHcH9YGM3Ptk9dy9YfC5Gnuu8GIvorUXMiK/evcsz0Yeq7775j/VMekbB5U54tWRZI6ryM98dflF5j72z3uFUpAkbK5F4=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=prevas.dk;
-Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:3f::10)
- by AM0PR10MB2260.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:e4::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.25; Mon, 21 Dec
- 2020 21:17:56 +0000
-Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::9068:c899:48f:a8e3]) by AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::9068:c899:48f:a8e3%6]) with mapi id 15.20.3676.033; Mon, 21 Dec 2020
- 21:17:56 +0000
-Subject: Re: [PATCH] dt-bindings: rtc: pcf2127: update bindings
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201219013418.3474461-1-alexandre.belloni@bootlin.com>
-From:   Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Message-ID: <c5290432-a6b0-2b96-585f-3abc2dcc56f6@prevas.dk>
-Date:   Mon, 21 Dec 2020 22:17:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20201219013418.3474461-1-alexandre.belloni@bootlin.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [5.186.115.188]
-X-ClientProxiedBy: AM6PR0502CA0064.eurprd05.prod.outlook.com
- (2603:10a6:20b:56::41) To AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:3f::10)
+        id S1725955AbgLUVXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 16:23:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725791AbgLUVXo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 16:23:44 -0500
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00373C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 13:23:03 -0800 (PST)
+Received: by mail-qt1-x82b.google.com with SMTP id 7so7674208qtp.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 13:23:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hvt27dTXDiSjMU6MIcLPLG5yEyjYiKStuEJMa1eqpVM=;
+        b=ADjHnaygiDeqRjgU2aRMkXr7J5W/tzZ5K52ugZR6Pas3mXN0y/mRa6WAp/Uqf0cY0i
+         b7fvBrnGBjrt6QmGSTq0nKqwhOt4u6Hv1JSwIYST9Jd1/1Tnnc9+Xgjz8+5xolSVNaTz
+         YEkqIRAnsrI6U+mKUFMVFkLD4Oi8ziAL2bbd2D9zznutIcqsDVZK56VqYFxJ+7ISAHH3
+         fReRQYTq8bEBX27sWsQYytUfGGuZb/TZyJ+hKKoJ5OShy456UU80+S/F82saK65wCp3b
+         /Jxf7V8Q5wnNC69O2UF+NW81ausjfk7T1q1AdY1apZQh2lpSIqm6dtjXeygSEpovSaQi
+         hONQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=hvt27dTXDiSjMU6MIcLPLG5yEyjYiKStuEJMa1eqpVM=;
+        b=tcgMuVA969Gg+UpWmZS+YqJOP53aMQb1iHYT1JChXvz0+dKgrrixHyYxBaZ90gv5Xd
+         hVIHQUCZ+5/4Tmv7JCYeQPgZV6CjnWHM+YoAYR/2EAvWdCmFSIi9MlhlXgjWrz74JPdj
+         PC/jgNXemO3j1fRsVzYcuSY5/FF5nsXzUi11DpE6Z3J5qqqhFS+aQxWmJLsqTHpf7q1K
+         5YI60QNX456uxPaiklf3t/0dc+6qHC0W1D3PGQMkmEc6aIXLjeBnggxldbmKNfkB3kuS
+         jTTCRniz4uQEGtVvXOlL8FrPNH6N5piB9lBQhzDI4UmeWXi47IIukfg+km0e2jB2HCuf
+         dBBg==
+X-Gm-Message-State: AOAM531Vo5vPx5bfpcC5Qeny6rGBBKPOygjYYgSBs2XZcJWCLOVGBS9A
+        AH6pExtycP8B8uyMaFly3uc=
+X-Google-Smtp-Source: ABdhPJx25tQ4SHAkInOq5XlAttX99/xXCC3l8CpjvpnKkVeRfUhVrpgBNF0bgPfyY3yy7XCjRFQb1w==
+X-Received: by 2002:ac8:3a63:: with SMTP id w90mr18297507qte.225.1608585783083;
+        Mon, 21 Dec 2020 13:23:03 -0800 (PST)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id l1sm11461151qtb.42.2020.12.21.13.23.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 13:23:02 -0800 (PST)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Mon, 21 Dec 2020 16:23:00 -0500
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] x86/cmdline: Disable jump tables for cmdline.c
+Message-ID: <X+ESNP6HdYQpd7g3@rani.riverdale.lan>
+References: <20200903023056.3914690-1-nivedita@alum.mit.edu>
+ <CAKwvOdm8qUpueOdO7e-rQotO5UynrgU2TZ9DEe=O4f9eU5EY0g@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.149] (5.186.115.188) by AM6PR0502CA0064.eurprd05.prod.outlook.com (2603:10a6:20b:56::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.30 via Frontend Transport; Mon, 21 Dec 2020 21:17:55 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4972ca45-0dfd-4038-af32-08d8a5f5e2d1
-X-MS-TrafficTypeDiagnostic: AM0PR10MB2260:
-X-Microsoft-Antispam-PRVS: <AM0PR10MB226078299B1CB357B405CDED93C00@AM0PR10MB2260.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:751;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rXghaKMadzN2ma4nZWCS7aWv3RxSiCyWYsCdNfwTsoBKtDHLb8eG1KhXnxc1Q7ME2spo76yLfZVsmeOi6pXd/phBWbfTVv8Y7xldJsCsC26oXNOEp8NDlJ8PWckfA7UEYeZ9BGaq6yZRBWwBvKW5yTgFE1yZsgoGI7fwdIzZtGjRSMi52DkNifoQ1Oug9tNFWR4PtbuqHrwS5+KrOTp/Va2e+3t7sS1dnTlw05Pz7D70Ihto4Kmi+c7V0w/fiMawHgr21uh/6WWC2P1mlaRYKYjRqUSy9UrVlv3Rh+F8O6hF9GqSI5vFy+LUzo18TudgH5o7C9AZtx2tw/CZ90htJm3GTYRpxExK/uxfHVcgGHGJvasvEZYKIhKT9O1cjX5ApPp0WCjqULLGOhT/LVXdHOkok7+rY2p9Lih/ioio1teH/zFRG+8LPxxq8+raFlaLUmYvSIbW+J4vzr1LzFbUqKcSutxPiFtk0JiL+22hV+Q=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(39840400004)(346002)(376002)(136003)(396003)(366004)(16526019)(15650500001)(956004)(110136005)(2906002)(66476007)(5660300002)(44832011)(26005)(8936002)(186003)(66946007)(4326008)(36756003)(16576012)(2616005)(31686004)(4744005)(316002)(8976002)(8676002)(66556008)(86362001)(31696002)(83380400001)(478600001)(52116002)(6486002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?Windows-1252?Q?iUOkUQPAn0Q6U/XCy2aLGVvvInMEfzSFgvUD3MFMrdFTZsxEla999hEJ?=
- =?Windows-1252?Q?T1CqMEZw187oHIteCq+hitlSJ18IdPyq1n7sIq+uiFxMF0Z6iFf7I9a5?=
- =?Windows-1252?Q?0O2b+u08Dx4MTYW7eDZgy0Z8hycS7EKVTBBeXlCvcttNOg7i6Le4vD77?=
- =?Windows-1252?Q?omjhvzEdllvV+vTkQIjmBXdfM2E9q4scrXLUYqLZY2lSBwJc1VjObLdT?=
- =?Windows-1252?Q?QMi2DTggfGyF9VH1ZocTFPspFmNJ0DGAG4FhjQH/ndwm00dCJSy8NbfN?=
- =?Windows-1252?Q?FXmWzUwvRw0GnZ6H0uu9edLc5JfbPFk/khWUq0b4KC+Eu3Vdo6tBUnMr?=
- =?Windows-1252?Q?YyMLcGlt2XkPh8ajYbkCnWL9B+eCRAenJ0GOHH+YI1zJc+HM4g6rP6PZ?=
- =?Windows-1252?Q?iUVYR6xWThclH33v10K7cRFe4ltpjOriwduPXgp1bEZZYPjgtRWgO+C4?=
- =?Windows-1252?Q?fXHU3mFkLAPHSqoHKPfqPKYC6Q1ycl/zRpqY/cUTaFj6XacnpEDFsMDi?=
- =?Windows-1252?Q?AeXEkKVIRAgUJi58yJyGlhD8eIUs4yGcIlqNagTUIi2s3GiUynYDj9T5?=
- =?Windows-1252?Q?QY4wrj+IF4IzQryRzOfK94Wd52sOjDkoPb+udC1QzlnN+nfMuQ8j4Vjd?=
- =?Windows-1252?Q?SGTZ0IyoKyJwKaFaE5JJ4deePyPxQ74eoetso8GDk/R3dg6UWuX5AbJd?=
- =?Windows-1252?Q?vQkfdOYxE6ytNAuneJroAiYmFhJwaTvkkIptzHXn1XcDqkM7K2NzKTCZ?=
- =?Windows-1252?Q?djlY1uw0dFdU20yjWRoF6wlk2y3mchWXhMzE10YZfA7LhP08K8QEc/PI?=
- =?Windows-1252?Q?+GLAUXLb8XfEIyqkyGgBBo4z8rWEgJ6YxnnEstJpUseDvIKkvf6QdPyp?=
- =?Windows-1252?Q?HgaoUNtdIAPFJHbU6/XUMg/ZNZizh0m8GautUoOHsoothfduMSSwrC4u?=
- =?Windows-1252?Q?sabWL9zygXx2xyzWnMpdhMJ3JzuiY/zVhITRFn52/GEMZ2c7/p06ND1F?=
- =?Windows-1252?Q?rapyu3DX1Um+YlJY8ipyyjoqMzyZg3Lbtq9TwSFk7D5OO1KUfNwRocRW?=
- =?Windows-1252?Q?NBrDgHptIlZ2AaeX?=
-X-OriginatorOrg: prevas.dk
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Dec 2020 21:17:56.2689
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4972ca45-0dfd-4038-af32-08d8a5f5e2d1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: huvw2gJ1jHbDXtGs7gEVFgeFxXdhNSP7EgNIdeve13fGeohV2iuLJcfYP/GpNGEH0X16TB2WOQLJinvETha0yjPdgbXKmvFBBQWi+GLDvSY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB2260
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdm8qUpueOdO7e-rQotO5UynrgU2TZ9DEe=O4f9eU5EY0g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/12/2020 02.34, Alexandre Belloni wrote:
-> pcf2127, pcf2129 and pca2129 support start-year and reset-source.
+On Mon, Dec 21, 2020 at 11:14:39AM -0800, Nick Desaulniers wrote:
+> On Wed, Sep 2, 2020 at 7:31 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+> >
+> > When CONFIG_RETPOLINE is disabled, Clang uses a jump table for the
+> > switch statement in cmdline_find_option (jump tables are disabled when
+> > CONFIG_RETPOLINE is enabled). This function is called very early in boot
+> > from sme_enable() if CONFIG_AMD_MEM_ENCRYPT is enabled. At this time,
+> 
+> Hi Arvind, sorry I missed this when you first sent it.  I'm going
+> through and mass deleting my inbox (email bankruptcy) but noticed
+> this.  I couldn't reproduce jump tables in cmdline_find_option with
+> CONFIG_RETPOLINE disabled but CONFIG_AMD_MEM_ENCRYPT on today's
+> linux-next. Can you please confirm that this is still an issue? I will
+> reread the disassembly, but it looks like a bunch of cmp/test+jumps.
 > 
 
-No, the 2129 variant doesn't even have a reset output pin. Not sure if
-there's any way to reflect that, and it probably doesn't matter, since
-nobody's going to add the reset-source property to a 2129 node. But the
-commit message is a bit misleading.
-
-Rasmus
+The patch got merged and is in v5.10 -- are you testing with it reverted
+or just plain linux-next?
