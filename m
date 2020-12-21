@@ -2,149 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF782E017B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 21:22:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9472D2E017C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 21:24:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726025AbgLUUVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 15:21:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42032 "EHLO
+        id S1725975AbgLUUWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 15:22:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725825AbgLUUVw (ORCPT
+        with ESMTP id S1725791AbgLUUWv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 15:21:52 -0500
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C495EC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 12:21:11 -0800 (PST)
-Received: by mail-il1-x12c.google.com with SMTP id r17so9984591ilo.11
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 12:21:11 -0800 (PST)
+        Mon, 21 Dec 2020 15:22:51 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D27FC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 12:22:11 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id n7so6985509pgg.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 12:22:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=39yturDQFY/cvVTZmJmushizui4zmBufjTYAX1ZRVr4=;
-        b=AsNW8sxxEEVT9w5tme1yJxKp9Dl95DhTmg+u63fBnsSTtdk9NJRMhf4ZW9FyvNXDNF
-         c6zk+d9yjb29quTJe78WAH/vR4vrgewSuHtG6UVuM2bTAO57IcV7hqwAw/WelEzPTK9p
-         EWrI8JVYWH33S5IpvS72BL7JfexOp1pLjHVso/vJQVec9ExiDjskynoTD2sxPPTryjh+
-         ht+NtbaQNP7/qs2QmR0PEysPS/FtEEJnqhFm+GxGLmVXSe07QP9WEzIP4B8YKgW/lhP/
-         srzgWHOhT/1PLIvn1fnLAmkNaa66fIVZtMM8TNOrWynt2AN+6uKiySazdlRptjObqMCh
-         nXCg==
+        bh=2i5d/rF9ghqWdmLNxdkBGDo6QlVvN3s6AnXqOUeYid8=;
+        b=cVaoECoIkuXobTWAf62XCYvhfwS4rQv+P+YxwX/xR33bAJOSj2faSEGhR4uq3JWGkh
+         DyrrUGAxbF9oS7bFlko8TXBj5irWAmrnU2w8HbqDwzrS00Xn4nN4tgoOZuRPZ7rMkppJ
+         MvHSnIj6J8wV/JdSMbCxqK7zGp9CBGb8JXuJXwVW4QoGCpZ6QDMyps2wp6DO9AI1lYYF
+         W9fSCvGFaC2HVphlJsrCLmJ5/qrGl1V3EESvKklVvTlU1ymEgIfhMi0dtdakLLdy6NAf
+         vzWvGDyj77TlYHv7TVANdT7wdzIHf8ChzzFIROC8wei22BEpS3Q11f40hsg9Bj1zPt+g
+         ek8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=39yturDQFY/cvVTZmJmushizui4zmBufjTYAX1ZRVr4=;
-        b=KyKd9tUMHNnoZbR7jy25xEppiuYQmMs7cz7KV0WaG9sQ9QMHW7co+ev2VNIjQnesxz
-         LGjEEM4Za/m4Tes6axhTO5w6MDGLmkPCJkb968IZwGwsu9JqZhIOYUzzoMp8Gybalb2D
-         4HV2VTJbkIF1LIXuJcZQlrB/nzot+QpfLU1np1ShOZGMV1BdAtSlRpe496R6zuLMMzQf
-         FyGN4YP4uXMG0BcwDoOiAQ6R/n+wHLvwUpWIjJZr9M5IDIeX0Zqplfh6IZH8Ywa2ioXh
-         gx+EXNCKQBMBmU7J/xBjZQTUqiRmaR5zexH/ytNoJ0kpFaXFt69nZCvGzySyB1isc/xM
-         E+BQ==
-X-Gm-Message-State: AOAM532HyG7gP2RJ8OwrxSkuyPuOLuEO4gnppKlgLJb/Wh3vttiP53el
-        MsLgyKgcPTqypmxxTrf9uV/xnA==
-X-Google-Smtp-Source: ABdhPJxcCE/izSGRkZZ/8WMAn5Fu6c2zGo1sMI3bumbFrTE9aeKshhtCCKIglCHfJBwjFsrgImvP1w==
-X-Received: by 2002:a92:c26c:: with SMTP id h12mr17219261ild.165.1608582070907;
-        Mon, 21 Dec 2020 12:21:10 -0800 (PST)
-Received: from google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
-        by smtp.gmail.com with ESMTPSA id m7sm21272065iow.46.2020.12.21.12.21.09
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=2i5d/rF9ghqWdmLNxdkBGDo6QlVvN3s6AnXqOUeYid8=;
+        b=jgV52HMuXw8B3HjiZTk1ImZ9/owGkVGAVwf18siw1ZbQs1YgAl3R1AhU/VO+57ECMI
+         UdX5UaFSkEtn9a8QXtsVDQCCng2afYwxA/ryA8BqAvYp712ZG2bMG9XDXv9/HRJ4RCeF
+         ZYdAphBiqrfw6XHDopc2ItDNAFojv/260SlwSNMGy2DliU3cwit9+zx6hLqc6ZNyga8K
+         JxANKNeDmdb5c4LhjWdb+wCXKfSbw1dAJczyxexrsKkniuVG8lbVkJGQ6f4AtpQku4VP
+         i+LzMekVBk0uk2Z3ywNTkVNDm575FNFkhUMKyHtCE8QlJp4id+paQqSMM8Ioe3pEA8b/
+         hvuA==
+X-Gm-Message-State: AOAM533m1CqyjwWKX89LBQG4MhhSQ1sETtcoRYNVMQfuXoyPcD5n43s1
+        mW08dcLqgmPYq5iy0fgMQFs=
+X-Google-Smtp-Source: ABdhPJxCLY8So8MauqJ1pVZJ4ctDHxHp7f8JrxOKjZemM1g+2+d4lA2vlISI2tFMPDpEbIl7Hqu11g==
+X-Received: by 2002:a05:6a00:796:b029:1ad:6394:432d with SMTP id g22-20020a056a000796b02901ad6394432dmr8828748pfu.36.1608582130907;
+        Mon, 21 Dec 2020 12:22:10 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
+        by smtp.gmail.com with ESMTPSA id w2sm17621933pfj.110.2020.12.21.12.22.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 12:21:10 -0800 (PST)
-Date:   Mon, 21 Dec 2020 13:21:06 -0700
-From:   Yu Zhao <yuzhao@google.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Peter Xu <peterx@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
+        Mon, 21 Dec 2020 12:22:09 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Mon, 21 Dec 2020 12:22:07 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Vitaly Wool <vitaly.wool@konsulko.com>
+Cc:     Mike Galbraith <efault@gmx.de>,
+        LKML <linux-kernel@vger.kernel.org>,
         linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nadav Amit <nadav.amit@gmail.com>
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-Message-ID: <X+EDslLVp9yRRru6@google.com>
-References: <20201219043006.2206347-1-namit@vmware.com>
- <X95RRZ3hkebEmmaj@redhat.com>
- <EDC00345-B46E-4396-8379-98E943723809@gmail.com>
- <X97pprdcRXusLGnq@google.com>
- <DDA15360-D6D4-46A8-95A4-5EE34107A407@gmail.com>
- <20201221172711.GE6640@xz-x1>
- <76B4F49B-ED61-47EA-9BE4-7F17A26B610D@gmail.com>
- <X+D0hTZCrWS3P5Pi@google.com>
- <CAHk-=wg_UBuo7ro1fpEGkMyFKA1+PxrE85f9J_AhUfr-nJPpLQ@mail.gmail.com>
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        NitinGupta <ngupta@vflare.org>,
+        sergey.senozhatsky.work@gmail.com,
+        Andrew Morton <akpm@linux-foundation.org>, shakeelb@google.com
+Subject: Re: [PATCH] zsmalloc: do not use bit_spin_lock
+Message-ID: <X+ED7yIn89WhbXsq@google.com>
+References: <18669bd607ae9efbf4e00e36532c7aa167d0fa12.camel@gmx.de>
+ <20201220002228.38697-1-vitaly.wool@konsulko.com>
+ <X+DaMSJE22nUC0tl@google.com>
+ <CAM4kBBKnW6K-mbPno4SpvhUBiykP4zeFm_CNzssDkReURbuU7w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wg_UBuo7ro1fpEGkMyFKA1+PxrE85f9J_AhUfr-nJPpLQ@mail.gmail.com>
+In-Reply-To: <CAM4kBBKnW6K-mbPno4SpvhUBiykP4zeFm_CNzssDkReURbuU7w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 11:55:02AM -0800, Linus Torvalds wrote:
-> On Mon, Dec 21, 2020 at 11:16 AM Yu Zhao <yuzhao@google.com> wrote:
+On Mon, Dec 21, 2020 at 08:20:26PM +0100, Vitaly Wool wrote:
+> On Mon, Dec 21, 2020 at 6:24 PM Minchan Kim <minchan@kernel.org> wrote:
 > >
-> > Nadav Amit found memory corruptions when running userfaultfd test above.
-> > It seems to me the problem is related to commit 09854ba94c6a ("mm:
-> > do_wp_page() simplification"). Can you please take a look? Thanks.
+> > On Sun, Dec 20, 2020 at 02:22:28AM +0200, Vitaly Wool wrote:
+> > > zsmalloc takes bit spinlock in its _map() callback and releases it
+> > > only in unmap() which is unsafe and leads to zswap complaining
+> > > about scheduling in atomic context.
+> > >
+> > > To fix that and to improve RT properties of zsmalloc, remove that
+> > > bit spinlock completely and use a bit flag instead.
 > >
-> > TL;DR: it may not safe to make copies of singly mapped (non-COW) pages
-> > when it's locked or has additional ref count because concurrent
-> > clear_soft_dirty or change_pte_range may have removed pte_write but yet
-> > to flush tlb.
+> > I don't want to use such open code for the lock.
+> >
+> > I see from Mike's patch, recent zswap change introduced the lockdep
+> > splat bug and you want to improve zsmalloc to fix the zswap bug and
+> > introduce this patch with allowing preemption enabling.
 > 
-> Hmm. The TLB flush shouldn't actually matter, because anything that
-> changes the writable bit had better be serialized by the page table
-> lock.
+> This understanding is upside down. The code in zswap you are referring
+> to is not buggy.  You may claim that it is suboptimal but there is
+> nothing wrong in taking a mutex.
 
-Well, unfortunately we have places that use optimizations like
+No, it's surely break from zswap since zpool/zsmalloc has worked like
+this and now you are saying "nothing wrong" even though it breaks
+the rule.
 
-  inc_tlb_flush_pending()
-    lock page table
-      pte_wrprotect
-  flush_tlb_range()
-  dec_tlb_flush_pending()
+> 
+> > https://lore.kernel.org/linux-mm/fae85e4440a8ef6f13192476bd33a4826416fc58.camel@gmx.de/
+> >
+> > zs_[un/map]_object is designed to be used in fast path(i.e.,
+> > zs_map_object/4K page copy/zs_unmap_object) so the spinlock is
+> > perfectly fine for API point of view. However, zswap introduced
+> > using the API with mutex_lock/crypto_wait_req where allowing
+> > preemption, which was wrong.
+> 
+> Taking a spinlock in one callback and releasing it in another is
+> unsafe and error prone. What if unmap was called on completion of a
+> DMA-like transfer from another context, like a threaded IRQ handler?
+> In that case this spinlock might never be released.
+> 
+> Anyway I can come up with a zswap patch explicitly stating that
+> zsmalloc is not fully compliant with zswap / zpool API to avoid
+> confusion for the time being. Would that be ok with you?
 
-which complicate things. And usually checking mm_tlb_flush_pending()
-in addition to pte_write() (while holding page table lock) would fix
-the similar problems. But for this one, doing so apparently isn't as
-straightforward or the best solution.
+It's your call since you are maintainer of zswap now and you are
+breaking the rule we have kept for a long time.
 
-> Yes, we often load the page table value without holding the page table
-> lock (in order to know what we are going to do), but then before we
-> finalize the operation, we then re-check - undet the page table lock -
-> that the value we loaded still matches.
+
 > 
-> But I think I see what *MAY* be going on.  The userfaultfd
-> mwriteprotect_range() code takes the mm lock for _reading_. Which
-> means that you can have
+> Best regards,
+>    Vitaly
 > 
-> Thread A     Thread B
-> 
->  - fault starts. Sees write-protected pte, allocates memory, copies data
-> 
->                    - userfaultfd makes the regions writable
-> 
->                    - usefaultfd case writes to the region
-> 
->                    - userfaultfd makes region non-writable
-> 
->  - fault continues, gets the page table lock, sees that the pte is the
-> same, uses old copied data
-> 
-> But if this is what's happening, I think it's a userfaultfd bug. I
-> think the mmap_read_lock(dst_mm) in mwriteprotect_range() needs to be
-> a mmap_write_lock().
-> 
-> mprotect() does this right, it looks like userfaultfd does not. You
-> cannot just change the writability of a page willy-nilly without the
-> correct locking.
-> 
-> Maybe there are other causes, but this one stands out to me as one
-> possible cause.
-> 
-> Comments?
-> 
->               Linus
+> > Furthermore, the zs_map_object already has a few more places where
+> > disablepreemptions(migrate_read_lock, get_cpu_var and kmap_atomic).
+> >
+> > Without making those locks preemptible all at once, zswap will still
+> > see the lockdep warning.
+> >
+> > >
+> > > Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.com>
+> > > ---
+> > >  mm/zsmalloc.c | 13 ++++++++-----
+> > >  1 file changed, 8 insertions(+), 5 deletions(-)
+> > >
+> > > diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
+> > > index 7289f502ffac..ff26546a7fed 100644
+> > > --- a/mm/zsmalloc.c
+> > > +++ b/mm/zsmalloc.c
+> > > @@ -876,22 +876,25 @@ static unsigned long obj_to_head(struct page *page, void *obj)
+> > >
+> > >  static inline int testpin_tag(unsigned long handle)
+> > >  {
+> > > -     return bit_spin_is_locked(HANDLE_PIN_BIT, (unsigned long *)handle);
+> > > +     return test_bit(HANDLE_PIN_BIT, (unsigned long *)handle);
+> > >  }
+> > >
+> > >  static inline int trypin_tag(unsigned long handle)
+> > >  {
+> > > -     return bit_spin_trylock(HANDLE_PIN_BIT, (unsigned long *)handle);
+> > > +     return !test_and_set_bit(HANDLE_PIN_BIT, (unsigned long *)handle);
+> > >  }
+> > >
+> > > -static void pin_tag(unsigned long handle) __acquires(bitlock)
+> > > +static void pin_tag(unsigned long handle)
+> > >  {
+> > > -     bit_spin_lock(HANDLE_PIN_BIT, (unsigned long *)handle);
+> > > +     preempt_disable();
+> > > +     while(test_and_set_bit(HANDLE_PIN_BIT, (unsigned long *)handle))
+> > > +             cpu_relax();
+> > > +     preempt_enable();
+> > >  }
+> > >
+> > >  static void unpin_tag(unsigned long handle) __releases(bitlock)
+> > >  {
+> > > -     bit_spin_unlock(HANDLE_PIN_BIT, (unsigned long *)handle);
+> > > +     clear_bit(HANDLE_PIN_BIT, (unsigned long *)handle);
+> > >  }
+> > >
+> > >  static void reset_page(struct page *page)
+> > > --
+> > > 2.20.1
+> > >
