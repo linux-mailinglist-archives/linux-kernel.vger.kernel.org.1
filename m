@@ -2,70 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FFCE2E0212
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 22:33:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3545E2E0217
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 22:38:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726048AbgLUVdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 16:33:19 -0500
-Received: from mail-oo1-f49.google.com ([209.85.161.49]:42741 "EHLO
-        mail-oo1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725791AbgLUVdS (ORCPT
+        id S1726022AbgLUVhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 16:37:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725780AbgLUVhs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 16:33:18 -0500
-Received: by mail-oo1-f49.google.com with SMTP id x203so2523668ooa.9;
-        Mon, 21 Dec 2020 13:33:03 -0800 (PST)
+        Mon, 21 Dec 2020 16:37:48 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C4ABC0613D3;
+        Mon, 21 Dec 2020 13:37:07 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id i24so10994298edj.8;
+        Mon, 21 Dec 2020 13:37:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=hQggwWPPkn+WMdoPfwbk6PXTqnMay86HYcER0pUuPDU=;
+        b=mme2YD4QrmilHl3rH4PtxXh4y8Phq4UwwyTKfowp7vxflfYKXuGNAwaWvgzd3Wooso
+         Ut9BfVdgSAefeuATpsq7l6HYtzEx1jKyNqaI+8dIUS0oT6B/zUHDXPQSNRDYdUW8Mk2L
+         D2jgh26Sgy/fLFI9ZFJaLzcy4jEo12N9HmYnoAcmlEpO3MWd6mrsjMQWonMFOBpQq4kS
+         kGiuoV8gxQ/toIvEl6axAMzOWQmgD+7wmukKWe75saFipTLNyDv48dP90OspIdeFaB14
+         9/lURxLTxYuKHcPnJoFA5qHKl4etjpd4OonH4l0dP4BZFitewHAYN60CIyKX0QiuSEgV
+         6S0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gWiQD/y1WI/6B6fr8kyAuu2q2JdRHnUgeEHtsHl3YCs=;
-        b=JHWt4YRNtXX2+buu/W3XWHGRKN9oafH2Leov+q5Ru+2mWjIRDDGngfEzi28/tiq+aL
-         rNdNAPL+9UMnbA+PUeW319A+GtOm0L4PyRq1+d7uhmXGEHiv2gSVtZ1QsCjBSLo4cozK
-         IkprQBj/EXlXWE1LZU8D29QPAnxvSIlWXwvSZ4X5Frd4Sxj9+M/QS/BNAubU49q2sMRj
-         Q7zTA/3a/86+NkIboBVHVVNacCbej6pLYTRkJACJ+zdPSnzQ9LU2snGjZxK6dZ3FOHSE
-         w+WKGJWQOik96pxAt8y6LKwB1cjTA2OCMir6/lIa7mALijkXI5EBmKnzGL8/+8ELwcOP
-         D9Eg==
-X-Gm-Message-State: AOAM532Yl9Zkl75zDT4D2BsUlN02M/U3RnuGzjFkBOJbSCWYR1sciG8S
-        fjBeRb+iJGoKiV1gUO0YFw==
-X-Google-Smtp-Source: ABdhPJzbD9fHgs7bCr8ZeZ5A3JPbHIQ3I7jsG5NUKbqdndCmQUWN8vpFNOP3zntRQLVayUS/+AK78w==
-X-Received: by 2002:a4a:d126:: with SMTP id n6mr12760916oor.47.1608586358001;
-        Mon, 21 Dec 2020 13:32:38 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id q18sm3934494ood.35.2020.12.21.13.32.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 13:32:37 -0800 (PST)
-Received: (nullmailer pid 596888 invoked by uid 1000);
-        Mon, 21 Dec 2020 21:32:34 -0000
-Date:   Mon, 21 Dec 2020 14:32:34 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-Cc:     tony@atomide.com, linux-omap@vger.kernel.org,
-        devicetree@vger.kernel.org, santosh.shilimkar@oracle.com,
-        robh+dt@kernel.org, ssantosh@kernel.org, praneeth@ti.com,
-        lee.jones@linaro.org, s-anna@ti.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: soc: ti: Update TI PRUSS bindings about
- schemas to include
-Message-ID: <20201221213234.GA596829@robh.at.kernel.org>
-References: <20201216225027.2681-1-grzegorz.jaszczyk@linaro.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=hQggwWPPkn+WMdoPfwbk6PXTqnMay86HYcER0pUuPDU=;
+        b=R//L0E587e5MfjWcYmMp6rqLm80QqyHDCPXWWwYSBTqbkNtqzacnJY2N/pEa/UZ7dA
+         pWFDWY7Cv44l95zR0NAFNCTCPsBwH56W6a6XAhc+e2TjQKrDIwIrQtYUmGHRPG+DTYoE
+         M9vpEyrEN+KiL99ejQI4wilmiGau+L6vnIJzsnwXUlaPOzuBoPWNCVdQ2F1CSORnkYBQ
+         dCNoX/MHDKh2jMC7VKKtYYtebJoL3KOHC8tg6IwKqYZJkl2TsjVhjEYE1SaENoEaVz0A
+         8evSSVx83IuqbWqbar38yCjj6j7Mmaz0otwS8wvkPZLBYmROvvORXEiMOw4YQwuHBpwE
+         6+Cw==
+X-Gm-Message-State: AOAM530v9/LZGKPoQkOHorKXAD1C6obXFmbGxXfN2BLtM2KfFZzjnJzp
+        pYyxGHigXWhIpvBvnyhJmUgGYG89VLU=
+X-Google-Smtp-Source: ABdhPJyxPsg4QZqk0I6q3W047zja/4kF/0lD+UExgg5XcSg+P4YpCkZo5ten+TN3uXrk85CGMihysQ==
+X-Received: by 2002:a50:8b61:: with SMTP id l88mr17968781edl.250.1608586626276;
+        Mon, 21 Dec 2020 13:37:06 -0800 (PST)
+Received: from ?IPv6:2003:ea:8f06:5500:cd72:cf28:16d9:79dc? (p200300ea8f065500cd72cf2816d979dc.dip0.t-ipconnect.de. [2003:ea:8f06:5500:cd72:cf28:16d9:79dc])
+        by smtp.googlemail.com with ESMTPSA id a6sm29216403edv.74.2020.12.21.13.37.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Dec 2020 13:37:05 -0800 (PST)
+Subject: Re: [Aspeed, v1 1/1] net: ftgmac100: Change the order of getting MAC
+ address
+To:     Hongwei Zhang <hongweiz@ami.com>, linux-aspeed@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        David S Miller <davem@davemloft.net>
+Cc:     netdev <netdev@vger.kernel.org>, Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>
+References: <20201221205157.31501-1-hongweiz@ami.com>
+ <20201221205157.31501-2-hongweiz@ami.com>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <55803a8a-7ec9-5d60-04bd-d1e163174250@gmail.com>
+Date:   Mon, 21 Dec 2020 22:36:59 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201216225027.2681-1-grzegorz.jaszczyk@linaro.org>
+In-Reply-To: <20201221205157.31501-2-hongweiz@ami.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Dec 2020 23:50:27 +0100, Grzegorz Jaszczyk wrote:
-> Now after ti,pruss-intc.yaml and ti,pru-rproc.yaml are merged, include
-> them in proper property and extend the examples section.
+Am 21.12.2020 um 21:51 schrieb Hongwei Zhang:
+> Change the order of reading MAC address, try to read it from MAC chip
+> first, if it's not availabe, then try to read it from device tree.
 > 
-> At the occasion extend the allowed property list about dma-ranges.
-> 
-> Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+This commit message leaves a number of questions. It seems the change
+isn't related at all to the change that it's supposed to fix.
+
+- What is the issue that you're trying to fix?
+- And what is wrong with the original change?
+
+> Fixes: 35c54922dc97 ("ARM: dts: tacoma: Add reserved memory for ramoops")
+> Signed-off-by: Hongwei Zhang <hongweiz@ami.com>
 > ---
->  .../devicetree/bindings/soc/ti/ti,pruss.yaml  | 76 +++++++++++++++++++
->  1 file changed, 76 insertions(+)
+>  drivers/net/ethernet/faraday/ftgmac100.c | 22 +++++++++++++---------
+>  1 file changed, 13 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/faraday/ftgmac100.c b/drivers/net/ethernet/faraday/ftgmac100.c
+> index 65cd25372020..9be69cbdab96 100644
+> --- a/drivers/net/ethernet/faraday/ftgmac100.c
+> +++ b/drivers/net/ethernet/faraday/ftgmac100.c
+> @@ -184,14 +184,7 @@ static void ftgmac100_initial_mac(struct ftgmac100 *priv)
+>  	unsigned int l;
+>  	void *addr;
+>  
+> -	addr = device_get_mac_address(priv->dev, mac, ETH_ALEN);
+> -	if (addr) {
+> -		ether_addr_copy(priv->netdev->dev_addr, mac);
+> -		dev_info(priv->dev, "Read MAC address %pM from device tree\n",
+> -			 mac);
+> -		return;
+> -	}
+> -
+> +	/* Read from Chip if not from chip */
+
+?!?
+
+>  	m = ioread32(priv->base + FTGMAC100_OFFSET_MAC_MADR);
+>  	l = ioread32(priv->base + FTGMAC100_OFFSET_MAC_LADR);
+>  
+> @@ -205,7 +198,18 @@ static void ftgmac100_initial_mac(struct ftgmac100 *priv)
+>  	if (is_valid_ether_addr(mac)) {
+>  		ether_addr_copy(priv->netdev->dev_addr, mac);
+>  		dev_info(priv->dev, "Read MAC address %pM from chip\n", mac);
+> -	} else {
+> +		return;
+> +	}
+> +
+> +	/* Read from Chip if not from device tree */
+
+Isn't this how it works now?
+
+> +	addr = device_get_mac_address(priv->dev, mac, ETH_ALEN);
+> +	if (addr) {
+> +		ether_addr_copy(priv->netdev->dev_addr, mac);
+> +		dev_info(priv->dev, "Read MAC address %pM from device tree\n",
+> +				mac);
+> +		return;
+> +	}
+> +	else {
+>  		eth_hw_addr_random(priv->netdev);
+>  		dev_info(priv->dev, "Generated random MAC address %pM\n",
+>  			 priv->netdev->dev_addr);
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
