@@ -2,206 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEF3A2E016E
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 21:12:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBC6C2E0175
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 21:15:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726066AbgLUULS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 15:11:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725961AbgLUULS (ORCPT
+        id S1725949AbgLUUPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 15:15:08 -0500
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:35094 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725780AbgLUUPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 15:11:18 -0500
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7C53C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 12:10:37 -0800 (PST)
-Received: by mail-qt1-x84a.google.com with SMTP id a11so8628394qto.16
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 12:10:37 -0800 (PST)
+        Mon, 21 Dec 2020 15:15:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1608581706; x=1640117706;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=D5+S5v9EK1QILbYgj0gEuR0YcNH37IwgJRZxhFcMaZw=;
+  b=oZsk4BmVUwgQ3dyhP32HICEz4oDN7RFseu5Xa+Sx5ZLOlvcqL6olE+YH
+   MifeMP1XzeiKsyzXD87daDv3yIcFr5RUn/SnXKoT2XIYhYMmCVGm83uc3
+   DQ5IBRlgYGs2CICxvt9s5uju7c9Q1hthilOK4tXVkfIBvM4DjI8r/OBN3
+   u3Vq3Ut/s2qJWlvLOM41/czNaQftD7XghYkGsesAYGSy1FRt48lWYisyT
+   qfOezy1/xPtY68yQ6bNGGdZnRgUwCvY7RlfeHPrlYG77T7/A8QyJWANoo
+   KZLkhj9gYGzBIlS9RKlRzm9twSX6p23wkIPvDm5Y/G1B4teEX2PYTrTda
+   Q==;
+IronPort-SDR: 0c6TkOU4h/mr3HihAI8iVkbGJZqPQUX67bpGyi1FJA7HqiioxKRLgO1U8tl1aP9j6IFo1N8aJ6
+ Fd2BF23f7ep4ofFdxXN0ZUCvHdqgV4mMUCDasYX3s5n0ueTTrq1ljgHU7aQ4O0rCfCSxdmIkZT
+ HHnl9a6ROyzeflhM0WnoBjqj8ltVlbT1sNgOQ+ubwqhZnsb/FIN7mIwEZiQeUI/7zK2EZq9v/v
+ z4XCrp14EKaBqRh8pgjrFuquxMUkPOpzI5j7P2/S6TNhfhwi5IwlTUp7RC0CppdwiVco2Vr2L2
+ aRM=
+X-IronPort-AV: E=Sophos;i="5.78,437,1599494400"; 
+   d="scan'208";a="160161291"
+Received: from mail-mw2nam12lp2049.outbound.protection.outlook.com (HELO NAM12-MW2-obe.outbound.protection.outlook.com) ([104.47.66.49])
+  by ob1.hgst.iphmx.com with ESMTP; 22 Dec 2020 04:14:00 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JpBco4JPRdnRIJPKRbFEur+ryBRctdMHG2n/0ZVMOOJfvKDIFgx6UnAyOqrCrVQt1m7lT/X9k14CuBwOKBQChlEKADizaJouJSyFsN7sKsjAlrHjlqinL9l2mYEENbDcBx67rGbwur9FBHJahoAT6gjhhnSa3jtVR/+hgQ4JXM/OHn8aVBE47OpUbPVSXcWbT9jJthbqTOlRpFgXYlMSp+ubQMm4DYDPdMGavN9CWS2wH/+cujG7j6oQxUvzhZufEJMeqehYrDpY87OJeus1MQ0uDbI6XC9G2t9S+QDmDveUswG7rUqOxymCXUelsJGPuHgSNO0pTbseh6MDaLMYqw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+aBMWWBFD/Ycp5D2xEIFacYtQcDRP+ycqzqho3LbsIs=;
+ b=lMQ9keBoplQ7IHGABLv+ZPTeMKozFihW1KV3aFfCUybT+Pm/UV19fENOC3SbAzsQCpXIugiq6Mf75c4Umuh7/o0R58aKatAFDz94LhfPU7NH/+m2IZHKcaTJwIO59S1p/IhcfH6BeAJHWkEi3tjKy7nJWdgoOkw0Mj5zUnoUFvlqJE3pqHThxTw8xIoqHtCB9fFzYhPxu7/UbvEh7yTTcbZJd9WDe7tWJRaFdHojVm4/U37UbHwWEWgzSrRe6PlUBmDXNQE6aq+QLmgaZPPXqvKRljtu1yIu0UDhnNzrMTxLFZ/vXUE1S24oZ/+OyFjOjccQNmN6+S3MonQBk+IZFw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=ieaeMyCrk00dcucJz23SXmslO5kX5HWEa7JTBymav94=;
-        b=nG02DRXatEl0T+ObNAeKHpzprM5RZUiynJ3nlSXAgVe7ejHfMmVCfiypzfc/S6+CIR
-         Ag7h8JxZodkMPqbBAg8Ax9ANpTtB6HspKv+7Jv3gSKKC8e5oEBHVirMmhIdEVyJ3N8OB
-         vpGi38KQ8KIaSiVLl8dLKVamqqDr3+lAhNtocQv9tgHQ8DLK+Qh7n21QGXOMntdP+L6B
-         O931aqE2/RCoePDL8HE+s0xEzYDMFpfecJUXvPIgiuHep4g0iiPw6ICdqXkh8BEVeaev
-         lTtsD3hO8CCAkp/KuJFz81MfyfhChuwOAUYBvVL/HiZkIJgZXVCTTV7w0kti99TVOLhQ
-         v9Rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=ieaeMyCrk00dcucJz23SXmslO5kX5HWEa7JTBymav94=;
-        b=fjS2KOBDhg9hrJRDmTWuO1cMQYEq5XEvdy31DCyDREIjqMybvC/3eJQ3L5V0GP2swl
-         jUGUtxhy1XucyXywVRhVCdG/ktXb4Wk0MBADRhz/Jar0fAdss6WgHLlMREOZZYT6llpB
-         ZeqWAOslv/lC4vF1Ujdu3Q9WG5XblooQDvliVVYS3zbsAoqNydfWACf+YdtetY82J28S
-         G1U0IWeriW+AV5WNMaFUPevqPHW+TGPNsHhipWipvI/rhr93xXjd1yLvWb+6hU2KaF32
-         B0Y/CSYUqRclpUSwuKf+9uYBKhxxeGSwo3Emx0rcWAGYP8c+rfsBSnWXtUor5qaa6ELM
-         fNJA==
-X-Gm-Message-State: AOAM533afBhr/8rsHAkMcg+TokMHt9/6vvq1Nl5+RxzoIphRtY24IJpR
-        Fdb1nAaukVa7CeTdpCgHbzp1KNQ=
-X-Google-Smtp-Source: ABdhPJwDi4F39nO8IpSpSY+yD9ueX70Bhb48bu4T3j+rgayrwo628LEqcH2Ohc/hvQ8yzulCsHAmgdc=
-Sender: "lpy via sendgmr" <lpy@lpy-goobuntu.mtv.corp.google.com>
-X-Received: from lpy-goobuntu.mtv.corp.google.com ([2620:15c:211:2:5265:f3ff:fe23:c8be])
- (user=lpy job=sendgmr) by 2002:a0c:f005:: with SMTP id z5mr19352054qvk.9.1608581436781;
- Mon, 21 Dec 2020 12:10:36 -0800 (PST)
-Date:   Mon, 21 Dec 2020 12:10:19 -0800
-In-Reply-To: <20201202123420.g3ivr5le4imcrdsa@DESKTOP-E1NTVVP.localdomain>
-Message-Id: <20201221201019.2897731-1-lpy@google.com>
-Mime-Version: 1.0
-References: <20201202123420.g3ivr5le4imcrdsa@DESKTOP-E1NTVVP.localdomain>
-X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
-Subject: [PATCH v5] Add power/gpu_frequency tracepoint.
-From:   Peiyong Lin <lpy@google.com>
-To:     brian.starkey@arm.com
-Cc:     alexdeucher@gmail.com, android-kernel@google.com,
-        dri-devel@lists.freedesktop.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, lpy@google.com, mingo@redhat.com,
-        nd@arm.com, paul.walmsley@sifive.com, pavel@ucw.cz,
-        prahladk@google.com, rafael.j.wysocki@intel.com,
-        rostedt@goodmis.org, sidaths@google.com, ulf.hansson@linaro.org,
-        yamada.masahiro@socionext.com, zzyiwei@android.com
-Content-Type: text/plain; charset="UTF-8"
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+aBMWWBFD/Ycp5D2xEIFacYtQcDRP+ycqzqho3LbsIs=;
+ b=uRRsvaFbTYd3UTtH2JZcbS7/LAdXYuRn4g4HtgNO5GTAcEYiOt/Bj9RZX6N9ysg8pjdHrC4Qo+y6kWl1B2fOKeLjgkxvBSI+xi4UAmuG0aTJbtnmluPzSakXBxxcmAyzmQan5hGYBkrNPWi00iRB8qwIaSdOdarzDPD7uAYWNzw=
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
+ DM5PR04MB0971.namprd04.prod.outlook.com (2603:10b6:4:43::35) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3676.25; Mon, 21 Dec 2020 20:14:00 +0000
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::a564:c676:b866:34f6]) by DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::a564:c676:b866:34f6%9]) with mapi id 15.20.3676.033; Mon, 21 Dec 2020
+ 20:13:59 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "kernel-team@android.com" <kernel-team@android.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>
+Subject: RE: [PATCH] scsi: ufs: fix livelock of ufshcd_clear_ua_wluns
+Thread-Topic: [PATCH] scsi: ufs: fix livelock of ufshcd_clear_ua_wluns
+Thread-Index: AQHW1O5Lq9Xt0bukCk2VnSNzzSWPAqoAjHbQgAEkMYCAABqVAIAABd2AgAAK2YCAABsmAIAACjhw
+Date:   Mon, 21 Dec 2020 20:13:59 +0000
+Message-ID: <DM6PR04MB65758C12E48BB7FE1D614350FCC00@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20201218033131.2624065-1-jaegeuk@kernel.org>
+ <DM6PR04MB6575B8729A62E6FB9F19930CFCC10@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <X+C9+1p1CbssKRdO@google.com>
+ <DM6PR04MB65753B9D31B3643C757E4E23FCC00@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <X+DZMwSHsskcEgZE@google.com>
+ <DM6PR04MB657558D8353199D53586F654FCC00@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <X+D5EhJ8QzNoeHQw@google.com>
+In-Reply-To: <X+D5EhJ8QzNoeHQw@google.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [77.138.4.172]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 9772b06e-ce9b-4eb3-1583-08d8a5ecf425
+x-ms-traffictypediagnostic: DM5PR04MB0971:
+x-microsoft-antispam-prvs: <DM5PR04MB0971AAD706524657759CD3EFFCC00@DM5PR04MB0971.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Wm38KW02Kos6XeqZv3QEr46XwisAM+4r+twvjGkjfCRuifsXjgNjrd0i7EAXTYx3zRkMWq86zoOAKJglSmiJJN6FILR0Dr9Mfyp1hpPMFtUcal54wv4kdx94tEc10iUOFPyPVmWAWstn5r8KEf0hQotoqaruytKTOhljXNCXTU/PwofNqSRm/IX0conB6gRzsEg12JQa1uXZPU3Kx76LZDxNW2Tya0A2FonN1y/c0XNOseKZSEHDU1HQQFcro8vXvJMMEb/bQA9pO/t52beC37j7SNgYlW8wvVbaZz+pGUhpldGQ4e5E0SNRgO1E8T5gH5Z3DilIzY2z9nUQO3tlT5KIv7LCIeP4VmmGrqRVGD4hAknzNKSPZ9uyue93/wcQQZwe9+aFISIP++WK3dTxmg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(346002)(376002)(396003)(366004)(55016002)(83380400001)(8676002)(9686003)(5660300002)(2906002)(6506007)(7696005)(71200400001)(26005)(4744005)(6916009)(66946007)(64756008)(478600001)(66556008)(186003)(316002)(76116006)(54906003)(86362001)(4326008)(66476007)(33656002)(52536014)(66446008)(8936002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?Y9qq7lrWmLJLqPSrrJAdWkAfzPsaxBzdTqZyB4Vr/nhJhOR94ZMVw1zrSexe?=
+ =?us-ascii?Q?WuYpfSvDCNF8+yleGPFom2KrGJKkSU1BHfmBQyMkIy6xtXw2HPhLHf+9PXHk?=
+ =?us-ascii?Q?Fm/x4mgfJhkckH7szL28896fBCJRAu+FRQjj7xlXSr+cGwE3n/7Uv4xED8zX?=
+ =?us-ascii?Q?XTRV2EsV+qM+qhIq2SfdcwFFmnWywY6VdL/WTr1aHSUz3bK7Gz4w0yQp1hV7?=
+ =?us-ascii?Q?UV8S5xkgh/Yg5q77vcNQgXBmRxe+Uqz/Vxaok0CpgnWsYrtQpKrBt/37eX+w?=
+ =?us-ascii?Q?dJru5TmIDleXTGe26lnOS+gyXQBI6ps0LIZx/QriIGpNrTsFgMagus3Z9QMP?=
+ =?us-ascii?Q?5rac/jytkyBaaVek1oIcTL1gYtKMcqIfeCacS6GYExVQaoyGH/XG++aNvqDG?=
+ =?us-ascii?Q?LSWsJEVMLQJNr1OZ2n/5DlAB5ACckyuJ8UsRXClNpllinz+x/8HxImoM3tDm?=
+ =?us-ascii?Q?klIFxKc0plcQWDKXJK/aShn8LXFgQwwsEXMtgE3wYlrUBSVRAQRX6QXrwipk?=
+ =?us-ascii?Q?YPeexKj7inxVSSTMD0uBukbqmkakc1JwPP69dyhXqTEbN0GsMwiLwwnTb/iN?=
+ =?us-ascii?Q?XNimxi7IjWY1ssKVuVuTOF/Fwm3f9a0I3+Pbs8paoqxqcRaxMVFxvK6pMA/m?=
+ =?us-ascii?Q?cPgVq/cSUME2Mvom4kwCjacNPt9YysZs6BEPYdkZ+yuF5zHM3+VT6e7Ndit7?=
+ =?us-ascii?Q?Bn41G4DMyoO5Jvm0yoQC3QvpyWv1lHdwQsM9gPbsBvV1nsEKacxDaRDmWg0x?=
+ =?us-ascii?Q?w8NzEWLYeJiXJ9aOhPO8uxnw9fXK5Cty3EArh9YZv7tTTegHWoM9oqGUUq8M?=
+ =?us-ascii?Q?+KZbr4xAn0wS4A91sVpHUVeW9bmP4tJO4wBEfdXfc0HNsBSGEEe4DYMHvOFA?=
+ =?us-ascii?Q?6hnoSqpSm8txZfIOEtl0cQBM/MAdbnhky1etoeTcocIoJWkV59DSombXrPOG?=
+ =?us-ascii?Q?Q7Obc5hiJsIG79honTqtMvZ57WkDNxFKemenrkedUNQ=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9772b06e-ce9b-4eb3-1583-08d8a5ecf425
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Dec 2020 20:13:59.8925
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: VeGIzYIllcY1ArLJtMW6HL0c0u/2mKX2V7479cV7hXAEtUt+PmDQVFkIKumHpYo/gPZqrVwCKHrd83TxoQpQcw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR04MB0971
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Historically there is no common trace event for GPU frequency, in
-downstream Android each different hardware vendor implements their own
-way to expose GPU frequency, for example as a debugfs node.  This patch
-standardize it as a common trace event in upstream linux kernel to help
-the ecosystem have a common implementation across hardware vendors.
-Toolings in the Linux ecosystem will benefit from this especially in the
-downstream Android, where this information is critical to graphics
-developers.
+> > > > > > > In order to avoid it, ufshcd_clear_ua_wluns() can be called p=
+er
+> > > recovery
+> > > > > > > flows
+> > > > > > > such as suspend/resume, link_recovery, and error_handler.
+> > > > > > Not sure that suspend/resume are UAC events?
+> > > > >
+> > > > > Could you elaborate a bit? The goal is to clear UAC after UFS res=
+et
+> > > happens.
+> > > > So why calling it on every suspend and resume?
+> > >
+> > > 1. If UAC was cleared, there's no impact.
+> > But the command is still sent.
+>=20
+> No, ufshcd_clear_ua_wluns() will return by hba->wlun_dev_clr_ua.
+>=20
+> >
+> > > 2. ufshcd_link_recovery() can reset UFS directly by ufs_mtk_resume().
+> > > 3. ufshcd_suspend can call ufshcd_host_reset_and_restore() as well.
+> > Seems excessive IMO.
+> > Why not selectively send when indeed required, e.g. on reset?
+>=20
+> I think hba->wlun_dev_clr_ua is the indicator whether there was a reset o=
+r
+> not.
+Ahha - I missed that.  Thanks for clarifying it.
+OK Then.
 
-Signed-off-by: Peiyong Lin <lpy@google.com>
----
-
-Changelog since v4:
- - Explicitly use class id and instance id to identify a GPU instance.
- - Change gpu_id to clock_id to call out its the clock domain in
-   the GPU instance.
-
-Changelog since v3:
- - Correct copyright title.
-
-Changelog since v2:
- - Add more comments to indicate when the event should be emitted.
- - Change state to frequency.
-
-Changelog since v1:
- - Use %u in TP_printk
-
- drivers/gpu/Makefile                    |  1 +
- drivers/gpu/trace/Kconfig               |  3 ++
- drivers/gpu/trace/Makefile              |  1 +
- drivers/gpu/trace/trace_gpu_frequency.c | 13 ++++++++
- include/trace/events/power.h            | 41 +++++++++++++++++++++++++
- 5 files changed, 59 insertions(+)
- create mode 100644 drivers/gpu/trace/trace_gpu_frequency.c
-
-diff --git a/drivers/gpu/Makefile b/drivers/gpu/Makefile
-index 835c88318cec..f289a47eb031 100644
---- a/drivers/gpu/Makefile
-+++ b/drivers/gpu/Makefile
-@@ -6,3 +6,4 @@ obj-$(CONFIG_TEGRA_HOST1X)	+= host1x/
- obj-y			+= drm/ vga/
- obj-$(CONFIG_IMX_IPUV3_CORE)	+= ipu-v3/
- obj-$(CONFIG_TRACE_GPU_MEM)		+= trace/
-+obj-$(CONFIG_TRACE_GPU_FREQUENCY)		+= trace/
-diff --git a/drivers/gpu/trace/Kconfig b/drivers/gpu/trace/Kconfig
-index c24e9edd022e..ac4aec8d5845 100644
---- a/drivers/gpu/trace/Kconfig
-+++ b/drivers/gpu/trace/Kconfig
-@@ -2,3 +2,6 @@
- 
- config TRACE_GPU_MEM
- 	bool
-+
-+config TRACE_GPU_FREQUENCY
-+	bool
-diff --git a/drivers/gpu/trace/Makefile b/drivers/gpu/trace/Makefile
-index b70fbdc5847f..2b7ae69327d6 100644
---- a/drivers/gpu/trace/Makefile
-+++ b/drivers/gpu/trace/Makefile
-@@ -1,3 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0
- 
- obj-$(CONFIG_TRACE_GPU_MEM) += trace_gpu_mem.o
-+obj-$(CONFIG_TRACE_GPU_FREQUENCY) += trace_gpu_frequency.o
-diff --git a/drivers/gpu/trace/trace_gpu_frequency.c b/drivers/gpu/trace/trace_gpu_frequency.c
-new file mode 100644
-index 000000000000..668fabd6b77a
---- /dev/null
-+++ b/drivers/gpu/trace/trace_gpu_frequency.c
-@@ -0,0 +1,13 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * GPU frequency trace points
-+ *
-+ * Copyright (C) 2020 Google LLC
-+ */
-+
-+#include <linux/module.h>
-+
-+#define CREATE_TRACE_POINTS
-+#include <trace/events/power.h>
-+
-+EXPORT_TRACEPOINT_SYMBOL(gpu_frequency);
-diff --git a/include/trace/events/power.h b/include/trace/events/power.h
-index af5018aa9517..590e16169dd1 100644
---- a/include/trace/events/power.h
-+++ b/include/trace/events/power.h
-@@ -500,6 +500,47 @@ DEFINE_EVENT(dev_pm_qos_request, dev_pm_qos_remove_request,
- 
- 	TP_ARGS(name, type, new_value)
- );
-+
-+/**
-+ * gpu_frequency - Reports the GPU frequency in GPU clock domains.
-+ *
-+ * This event should be emitted whenever there's a GPU frequency change happens,
-+ * or a GPU goes from idle state to active state, or vice versa.
-+ *
-+ * When the GPU goes from idle state to active state, this event should report
-+ * the GPU frequency of the active state. When the GPU goes from active state to
-+ * idle state, this event should report a zero frequency value.
-+ *
-+ * @frequency:  New frequency (in KHz)
-+ * @gpu_class_id: Id representing the class of the GPU
-+ * @gpu_instance_id: Id representing the instance of class &gpu_class_id
-+ * @clock_id: Id for the clock domain in &gpu_instance_id running at &frequency
-+ */
-+TRACE_EVENT(gpu_frequency,
-+
-+	TP_PROTO(unsigned int frequency, unsigned int gpu_class_id,
-+		 unsigned int gpu_instance_id, unsigned int clock_id),
-+
-+	TP_ARGS(frequency, gpu_class_id, gpu_instance_id, clock_id),
-+
-+	TP_STRUCT__entry(
-+		__field(unsigned int, frequency)
-+		__field(unsigned int, gpu_class_id)
-+		__field(unsigned int, gpu_instance_id)
-+		__field(unsigned int, clock_id)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->frequency = frequency;
-+		__entry->gpu_class_id = gpu_class_id;
-+		__entry->gpu_instance_id = gpu_instance_id;
-+		__entry->clock_id = clock_id;
-+	),
-+
-+	TP_printk("frequency=%u gpu_class_id=%u gpu_instance_id=%u clock_id=%u",
-+		__entry->frequency, __entry->gpu_class_id,
-+		__entry->gpu_instance_id, __entry->clock_id)
-+);
- #endif /* _TRACE_POWER_H */
- 
- /* This part must be outside protection */
--- 
-2.29.2.684.gfbc64c5ab5-goog
-
+Thanks,
+Avri
