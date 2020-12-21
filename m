@@ -2,238 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B61742DF80F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 04:39:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D63792DF80C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 04:35:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726536AbgLUDiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 22:38:52 -0500
-Received: from mga02.intel.com ([134.134.136.20]:9441 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725308AbgLUDiv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 22:38:51 -0500
-IronPort-SDR: /QZ+yMIHYFMzW8OHwbgXL71rj2bwfuHJS2OmikUOKvECJb3YKOC7Yr+ANpwR/yYqhkUa6HwlRD
- 0PUh/ayw/nvA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9841"; a="162729648"
-X-IronPort-AV: E=Sophos;i="5.78,436,1599548400"; 
-   d="scan'208";a="162729648"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2020 19:38:11 -0800
-IronPort-SDR: 7sVttmY8nnPVY6zZbIUzG7ZGryPNO4JyJYMVMSqPznypG0B4qFG0/MKzm9TIndFr9KLS+bvUYs
- laWEUbsRLeOA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,436,1599548400"; 
-   d="scan'208";a="340478915"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by orsmga003.jf.intel.com with ESMTP; 20 Dec 2020 19:38:09 -0800
-Date:   Mon, 21 Dec 2020 11:33:46 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Tom Rix <trix@redhat.com>
-Cc:     "Wu, Hao" <hao.wu@intel.com>, "mdf@kernel.org" <mdf@kernel.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "lgoncalv@redhat.com" <lgoncalv@redhat.com>
-Subject: Re: [PATCH v3 2/3] fpga: dfl: add the userspace I/O device support
-  for DFL devices
-Message-ID: <20201221033346.GE14854@yilunxu-OptiPlex-7050>
-References: <1608183881-18692-1-git-send-email-yilun.xu@intel.com>
- <1608183881-18692-3-git-send-email-yilun.xu@intel.com>
- <DM6PR11MB381997F5E297408A68BF5F2185C30@DM6PR11MB3819.namprd11.prod.outlook.com>
- <0d3f1f40-9f89-0ec2-96c4-b8b087f31382@redhat.com>
+        id S1726428AbgLUDew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 22:34:52 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:48721 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725308AbgLUDew (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Dec 2020 22:34:52 -0500
+Received: by mail-il1-f199.google.com with SMTP id f4so8248191ilu.15
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 19:34:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=FlEgzUD3QYmF41PuLCVzjuZhfq6vSLPvJuuSLKlwXN0=;
+        b=d/LUEtZe91R68yLuD8NXalQkwPFr3JtHxHevCMwwp/DJ9BQPm6ss6rqTikKG/39oLs
+         oJAJzw5FL0Q+LMZibmupY3u61PqvjW1IcQtQ00BKH6Ww4yrFX1dOTDmoyON1YNMs8cG2
+         Wt2DllSUFU/eZF7PRd9gizUrDTPokieTK/sh3EdOdkZi1oVUXCTDWo0Qi1az/CXCVAZc
+         ZST6BW0K4WK5EB3c5228g1DIeiGztJFsqUILuUpX7TgTFu3ExaHjY3etP1mCdkoul4Pl
+         /ZAssz5hqwKg9KSKyPXcFPQ0AUa5Cro8VskYgaIAM9JyD7aiuxwgerR5tIKlbPEoF8ll
+         8qJg==
+X-Gm-Message-State: AOAM533jUXnWVQOSYkJF/QZ4iOEz77IBlKuXDckpysWlb8Ksv+ZJG+fb
+        7IZ+ilY3MNf+kph6fYkFARpNLXYOcel4GN1yMSKe2hbTv/kv
+X-Google-Smtp-Source: ABdhPJw0Yac3wN6O5CdvHOK+e+SgSb1V6BAzy9fL5+lWZuExRbaMuwzfZFx94DzAFs+2eWwRUa6bM9Wbdkjm+SlBa2tw+c01eSU9
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0d3f1f40-9f89-0ec2-96c4-b8b087f31382@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Received: by 2002:a5d:928d:: with SMTP id s13mr12922242iom.47.1608521650203;
+ Sun, 20 Dec 2020 19:34:10 -0800 (PST)
+Date:   Sun, 20 Dec 2020 19:34:10 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000092f61e05b6f1215b@google.com>
+Subject: memory leak in r8712_init_recv_priv
+From:   syzbot <syzbot+1c46f3771695bccbdb3a@syzkaller.appspotmail.com>
+To:     Larry.Finger@lwfinger.net, devel@driverdev.osuosl.org,
+        florian.c.schilhabel@googlemail.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 05:59:17AM -0800, Tom Rix wrote:
-> 
-> On 12/18/20 12:05 AM, Wu, Hao wrote:
-> >> Subject: [PATCH v3 2/3] fpga: dfl: add the userspace I/O device support for
-> >> DFL devices
-> >>
-> >> This patch supports the DFL drivers be written in userspace. This is
-> >> realized by exposing the userspace I/O device interfaces.
-> >>
-> >> The driver leverages the uio_pdrv_genirq, it adds the uio_pdrv_genirq
-> >> platform device with the DFL device's resources, and let the generic UIO
-> >> platform device driver provide support to userspace access to kernel
-> >> interrupts and memory locations.
-> >>
-> >> The driver matches DFL devices in a different way. It has no device id
-> >> table, instead it matches any DFL device which could not be handled by
-> >> other DFL drivers.
-> > Looks like we want to build UIO driver as the default/generic driver for DFL,
+Hello,
 
-I'm not going to make UIO as the default driver for DFL devs, the driver
-module will not be autoloaded. I want to provide a choice to operate on
-the unhandled devs in userspace. Insmod it if it helps otherwise leave
-it.
+syzbot found the following issue on:
 
-> > it seems fine but my concern is that UIO has its own limitation, if some day,
-> > dfl device is extended, but UIO has limitation, then we may need to select 
-> > another one as the default driver.. or we can just match them using 
+HEAD commit:    467f8165 Merge tag 'close-range-cloexec-unshare-v5.11' of ..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=142b5745500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=37c889fb8b2761af
+dashboard link: https://syzkaller.appspot.com/bug?extid=1c46f3771695bccbdb3a
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1265cb37500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1763527b500000
 
-I think we may not have to select a "default" driver, if we have a
-better way for userspace accessing, we could load that module, leave
-UIO.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1c46f3771695bccbdb3a@syzkaller.appspotmail.com
 
-> > id_table as we know UIO meets the requirement for those DFL devices?
+executing program
+BUG: memory leak
+unreferenced object 0xffff88810ecc26c0 (size 192):
+  comm "kworker/1:1", pid 35, jiffies 4294942461 (age 18.010s)
+  hex dump (first 32 bytes):
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 d8 26 cc 0e 81 88 ff ff  .........&......
+  backtrace:
+    [<000000005aecb941>] kmalloc include/linux/slab.h:557 [inline]
+    [<000000005aecb941>] usb_alloc_urb+0x66/0xe0 drivers/usb/core/urb.c:74
+    [<000000007c4331ea>] r8712_os_recvbuf_resource_alloc+0x1b/0x80 drivers/staging/rtl8712/recv_linux.c:46
+    [<0000000026fac6b7>] r8712_init_recv_priv+0x96/0x210 drivers/staging/rtl8712/rtl8712_recv.c:54
+    [<000000004dbac0de>] _r8712_init_recv_priv+0x134/0x150 drivers/staging/rtl8712/rtl871x_recv.c:78
+    [<000000009f37c02e>] r8712_init_drv_sw+0xa0/0x1d0 drivers/staging/rtl8712/os_intfs.c:312
+    [<00000000439d06d7>] r871xu_drv_init.cold+0x104/0x7d1 drivers/staging/rtl8712/usb_intf.c:391
+    [<00000000a5c43c27>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+    [<00000000106f93f1>] really_probe+0x159/0x480 drivers/base/dd.c:561
+    [<00000000856556bd>] driver_probe_device+0x84/0x100 drivers/base/dd.c:745
+    [<00000000789974b2>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:851
+    [<000000003b6b23b1>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
+    [<00000000d916cd73>] __device_attach+0x122/0x250 drivers/base/dd.c:919
+    [<000000000aa7621e>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
+    [<00000000c2fd5fd8>] device_add+0x5be/0xc30 drivers/base/core.c:3091
+    [<00000000d7a5749a>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2164
+    [<00000000197a0613>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
 
-As we discussed, the drawback is that we should always change the code to
-support a new dfl device for user accessing. But it is OK to me if the
-generic UIO match rule is not considered proper.
+BUG: memory leak
+unreferenced object 0xffff88810ecc2600 (size 192):
+  comm "kworker/1:1", pid 35, jiffies 4294942461 (age 18.010s)
+  hex dump (first 32 bytes):
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 18 26 cc 0e 81 88 ff ff  .........&......
+  backtrace:
+    [<000000005aecb941>] kmalloc include/linux/slab.h:557 [inline]
+    [<000000005aecb941>] usb_alloc_urb+0x66/0xe0 drivers/usb/core/urb.c:74
+    [<000000007c4331ea>] r8712_os_recvbuf_resource_alloc+0x1b/0x80 drivers/staging/rtl8712/recv_linux.c:46
+    [<0000000026fac6b7>] r8712_init_recv_priv+0x96/0x210 drivers/staging/rtl8712/rtl8712_recv.c:54
+    [<000000004dbac0de>] _r8712_init_recv_priv+0x134/0x150 drivers/staging/rtl8712/rtl871x_recv.c:78
+    [<000000009f37c02e>] r8712_init_drv_sw+0xa0/0x1d0 drivers/staging/rtl8712/os_intfs.c:312
+    [<00000000439d06d7>] r871xu_drv_init.cold+0x104/0x7d1 drivers/staging/rtl8712/usb_intf.c:391
+    [<00000000a5c43c27>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+    [<00000000106f93f1>] really_probe+0x159/0x480 drivers/base/dd.c:561
+    [<00000000856556bd>] driver_probe_device+0x84/0x100 drivers/base/dd.c:745
+    [<00000000789974b2>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:851
+    [<000000003b6b23b1>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
+    [<00000000d916cd73>] __device_attach+0x122/0x250 drivers/base/dd.c:919
+    [<000000000aa7621e>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
+    [<00000000c2fd5fd8>] device_add+0x5be/0xc30 drivers/base/core.c:3091
+    [<00000000d7a5749a>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2164
+    [<00000000197a0613>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
 
-> 
-> When we have multiple defaults, could this be handled in the configury ?
+BUG: memory leak
+unreferenced object 0xffff88810ecc2540 (size 192):
+  comm "kworker/1:1", pid 35, jiffies 4294942461 (age 18.010s)
+  hex dump (first 32 bytes):
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 58 25 cc 0e 81 88 ff ff  ........X%......
+  backtrace:
+    [<000000005aecb941>] kmalloc include/linux/slab.h:557 [inline]
+    [<000000005aecb941>] usb_alloc_urb+0x66/0xe0 drivers/usb/core/urb.c:74
+    [<000000007c4331ea>] r8712_os_recvbuf_resource_alloc+0x1b/0x80 drivers/staging/rtl8712/recv_linux.c:46
+    [<0000000026fac6b7>] r8712_init_recv_priv+0x96/0x210 drivers/staging/rtl8712/rtl8712_recv.c:54
+    [<000000004dbac0de>] _r8712_init_recv_priv+0x134/0x150 drivers/staging/rtl8712/rtl871x_recv.c:78
+    [<000000009f37c02e>] r8712_init_drv_sw+0xa0/0x1d0 drivers/staging/rtl8712/os_intfs.c:312
+    [<00000000439d06d7>] r871xu_drv_init.cold+0x104/0x7d1 drivers/staging/rtl8712/usb_intf.c:391
+    [<00000000a5c43c27>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+    [<00000000106f93f1>] really_probe+0x159/0x480 drivers/base/dd.c:561
+    [<00000000856556bd>] driver_probe_device+0x84/0x100 drivers/base/dd.c:745
+    [<00000000789974b2>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:851
+    [<000000003b6b23b1>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
+    [<00000000d916cd73>] __device_attach+0x122/0x250 drivers/base/dd.c:919
+    [<000000000aa7621e>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
+    [<00000000c2fd5fd8>] device_add+0x5be/0xc30 drivers/base/core.c:3091
+    [<00000000d7a5749a>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2164
+    [<00000000197a0613>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
 
-I think we don't have to select a "default".
 
-> 
-> Tom
-> 
-> >
-> >> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> >> ---
-> >> v2: switch to the new matching algorithem. It matches DFL devices which
-> >>      could not be handled by other DFL drivers.
-> >>     refacor the code about device resources filling.
-> >>     fix some comments.
-> >> v3: split the dfl.c changes out of this patch.
-> >>     some minor fixes
-> >> ---
-> >>  drivers/fpga/Kconfig        |  10 ++++
-> >>  drivers/fpga/Makefile       |   1 +
-> >>  drivers/fpga/dfl-uio-pdev.c | 110
-> >> ++++++++++++++++++++++++++++++++++++++++++++
-> >>  3 files changed, 121 insertions(+)
-> >>  create mode 100644 drivers/fpga/dfl-uio-pdev.c
-> >>
-> >> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
-> >> index 5d7f0ae..7a88af9 100644
-> >> --- a/drivers/fpga/Kconfig
-> >> +++ b/drivers/fpga/Kconfig
-> >> @@ -202,6 +202,16 @@ config FPGA_DFL_NIOS_INTEL_PAC_N3000
-> >>  	  the card. It also instantiates the SPI master (spi-altera) for
-> >>  	  the card's BMC (Board Management Controller).
-> >>
-> >> +config FPGA_DFL_UIO_PDEV
-> >> +	tristate "FPGA DFL Driver for Userspace I/O platform devices"
-> >> +	depends on FPGA_DFL && UIO_PDRV_GENIRQ
-> >> +	help
-> >> +	  Enable this to allow some DFL drivers be written in userspace. It
-> >> +	  adds the uio_pdrv_genirq platform device with the DFL feature's
-> >> +	  resources, and lets the generic UIO platform device driver provide
-> >> +	  support for userspace access to kernel interrupts and memory
-> >> +	  locations.
-> > If we consider this as a default driver for everybody in DFL, then we could
-> > consider build it into the core, otherwise it always requires to be loaded
-> > manually, right?
 
-It should be loaded manually. I don't want to make this as default.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-> >
-> >> +
-> >>  config FPGA_DFL_PCI
-> >>  	tristate "FPGA DFL PCIe Device Driver"
-> >>  	depends on PCI && FPGA_DFL
-> >> diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
-> >> index 18dc9885..8847fe0 100644
-> >> --- a/drivers/fpga/Makefile
-> >> +++ b/drivers/fpga/Makefile
-> >> @@ -45,6 +45,7 @@ dfl-afu-objs := dfl-afu-main.o dfl-afu-region.o dfl-afu-
-> >> dma-region.o
-> >>  dfl-afu-objs += dfl-afu-error.o
-> >>
-> >>  obj-$(CONFIG_FPGA_DFL_NIOS_INTEL_PAC_N3000)	+= dfl-n3000-nios.o
-> >> +obj-$(CONFIG_FPGA_DFL_UIO_PDEV)		+= dfl-uio-pdev.o
-> >>
-> >>  # Drivers for FPGAs which implement DFL
-> >>  obj-$(CONFIG_FPGA_DFL_PCI)		+= dfl-pci.o
-> >> diff --git a/drivers/fpga/dfl-uio-pdev.c b/drivers/fpga/dfl-uio-pdev.c
-> >> new file mode 100644
-> >> index 0000000..8c57233
-> >> --- /dev/null
-> >> +++ b/drivers/fpga/dfl-uio-pdev.c
-> >> @@ -0,0 +1,110 @@
-> >> +// SPDX-License-Identifier: GPL-2.0
-> >> +/*
-> >> + * DFL driver for Userspace I/O platform devices
-> >> + *
-> >> + * Copyright (C) 2020 Intel Corporation, Inc.
-> >> + */
-> >> +#include <linux/dfl.h>
-> >> +#include <linux/errno.h>
-> >> +#include <linux/kernel.h>
-> >> +#include <linux/module.h>
-> >> +#include <linux/platform_device.h>
-> >> +#include <linux/slab.h>
-> >> +#include <linux/uio_driver.h>
-> >> +
-> >> +#include "dfl.h"
-> >> +
-> >> +#define DRIVER_NAME "dfl-uio-pdev"
-> >> +
-> >> +static struct dfl_driver dfl_uio_pdev_driver;
-> >> +
-> >> +static int check_for_other_drv_match(struct device_driver *drv, void *data)
-> >> +{
-> >> +	struct dfl_driver *ddrv = to_dfl_drv(drv);
-> >> +	struct dfl_device *ddev = data;
-> >> +
-> >> +	/* skip myself */
-> >> +	if (ddrv == &dfl_uio_pdev_driver)
-> >> +		return 0;
-> >> +
-> >> +	return dfl_match_device(ddev, ddrv);
-> >> +}
-> >> +
-> >> +static int dfl_uio_pdev_match(struct dfl_device *ddev)
-> >> +{
-> >> +	/*
-> >> +	 * If any other driver wants the device, leave the device to this other
-> >> +	 * driver.
-> >> +	 */
-> >> +	if (bus_for_each_drv(&dfl_bus_type, NULL, ddev,
-> >> check_for_other_drv_match))
-> >> +		return 0;
-> >> +
-> >> +	return 1;
-> >> +}
-> >> +
-> >> +static int dfl_uio_pdev_probe(struct dfl_device *ddev)
-> >> +{
-> >> +	struct device *dev = &ddev->dev;
-> >> +	struct platform_device_info pdevinfo = { 0 };
-> >> +	struct uio_info uio_pdata = { 0 };
-> >> +	struct platform_device *uio_pdev;
-> >> +	struct resource *res;
-> >> +	int i;
-> >> +
-> >> +	pdevinfo.name = "uio_pdrv_genirq";
-> >> +
-> >> +	res = kcalloc(ddev->num_irqs + 1, sizeof(*res), GFP_KERNEL);
-> >> +	if (!res)
-> >> +		return -ENOMEM;
-> >> +
-> >> +	res[0].parent = &ddev->mmio_res;
-> >> +	res[0].flags = IORESOURCE_MEM;
-> >> +	res[0].start = ddev->mmio_res.start;
-> >> +	res[0].end = ddev->mmio_res.end;
-> >> +
-> >> +	/* then add irq resource */
-> >> +	for (i = 0; i < ddev->num_irqs; i++) {
-> >> +		res[i + 1].flags = IORESOURCE_IRQ;
-> >> +		res[i + 1].start = ddev->irqs[i];
-> >> +		res[i + 1].end = ddev->irqs[i];
-> >> +	}
-> > How many interrupts UIO could support? or we need some
-> > warning or just even return error here?
-
-Yes, I can add some warning here.
-
-Thanks,
-Yilun
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
