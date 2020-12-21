@@ -2,95 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C57962DFE23
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 17:44:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 074AB2DFE26
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 17:45:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725849AbgLUQoG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Dec 2020 11:44:06 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:54377 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725777AbgLUQoF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 11:44:05 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mtapsc-5-b9x0mQY4PWebkGD87-Qp8A-1; Mon, 21 Dec 2020 16:42:26 +0000
-X-MC-Unique: b9x0mQY4PWebkGD87-Qp8A-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 21 Dec 2020 16:42:23 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 21 Dec 2020 16:42:23 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Segher Boessenkool' <segher@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-CC:     Xiaoming Ni <nixiaoming@huawei.com>,
-        "ravi.bangoria@linux.ibm.com" <ravi.bangoria@linux.ibm.com>,
-        "mikey@neuling.org" <mikey@neuling.org>,
-        "yanaijie@huawei.com" <yanaijie@huawei.com>,
-        "haren@linux.ibm.com" <haren@linux.ibm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "npiggin@gmail.com" <npiggin@gmail.com>,
-        "wangle6@huawei.com" <wangle6@huawei.com>,
-        "paulus@samba.org" <paulus@samba.org>,
-        "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Subject: RE: [PATCH] powerpc:Don't print raw EIP/LR hex values in dump_stack()
- and show_regs()
-Thread-Topic: [PATCH] powerpc:Don't print raw EIP/LR hex values in
- dump_stack() and show_regs()
-Thread-Index: AQHW17dukx+1atuJ10yi7rVw0MWNE6oBwFGw
-Date:   Mon, 21 Dec 2020 16:42:23 +0000
-Message-ID: <ad814ccf34c14c76b45e50b6e7741c3a@AcuMS.aculab.com>
-References: <20201221032758.12143-1-nixiaoming@huawei.com>
- <2279fc96-1f10-0c3f-64d9-734f18758620@csgroup.eu>
- <20201221163130.GZ2672@gate.crashing.org>
-In-Reply-To: <20201221163130.GZ2672@gate.crashing.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1725883AbgLUQpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 11:45:36 -0500
+Received: from ms.lwn.net ([45.79.88.28]:45818 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725790AbgLUQpg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 11:45:36 -0500
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 789DC9B2;
+        Mon, 21 Dec 2020 16:44:53 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 789DC9B2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1608569093; bh=0x4bn3amvPabhwdRTkhgk2jOAl4RQkmRqo6ffszm8fo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=d4pKIq4gWbaUU/f/5dNJ1HZDv9XXaO+JofyEAYCXGAJZI0htgIhnJgT4XSInSmyzv
+         D9HPAAyT8nfsZ2AtZ9OPgHLv34wYN7mELVE+H7BdKEUhAtVozUJ+7mH+tCCYtkebQc
+         h5cAWiFhMOhh1Xahch2xKucc8vmX4qnfl76y/ej2WGEuMzFt6i9heuGv9+VUayKYEa
+         0UZLlhWP8TSCrbfMuiAjWskI0FcMeyBbbJo28+jGiiYbcERNQu+FJBU6k0AojFl7hm
+         Lrl5Aq9l3bZthA30TbRJpWTTl0LtMfmKQ5Zee/uT+mZaUKmQAi1mtk9Mj6sq6qlcFp
+         dwZ9uhpeyprxg==
+Date:   Mon, 21 Dec 2020 09:44:52 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH 1/1] docs: submitting-patches: Trivial - fix grammatical
+ error
+Message-ID: <20201221094452.02851661@lwn.net>
+In-Reply-To: <20201216134654.271508-1-lee.jones@linaro.org>
+References: <20201216134654.271508-1-lee.jones@linaro.org>
+Organization: LWN.net
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Segher Boessenkool
-> Sent: 21 December 2020 16:32
+On Wed, 16 Dec 2020 13:46:54 +0000
+Lee Jones <lee.jones@linaro.org> wrote:
+
+> "it is a used" does not make sense.  Should be "it is used".
 > 
-> On Mon, Dec 21, 2020 at 04:17:21PM +0100, Christophe Leroy wrote:
-> > Le 21/12/2020 à 04:27, Xiaoming Ni a écrit :
-> > >Since the commit 2b0e86cc5de6 ("powerpc/fsl_booke/32: implement KASLR
-> > >infrastructure"), the powerpc system is ready to support KASLR.
-> > >To reduces the risk of invalidating address randomization, don't print the
-> > >EIP/LR hex values in dump_stack() and show_regs().
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: linux-doc@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  Documentation/process/submitting-patches.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> > I think your change is not enough to hide EIP address, see below a dump
-> > with you patch, you get "Faulting instruction address: 0xc03a0c14"
-> 
-> As far as I can see the patch does nothing to the GPR printout.  Often
-> GPRs contain code addresses.  As one example, the LR is moved via a GPR
-> (often GPR0, but not always) for storing on the stack.
-> 
-> So this needs more work.
+> diff --git a/Documentation/process/submitting-patches.rst b/Documentation/process/submitting-patches.rst
+> index fb8261a4be308..2c48a00a436e7 100644
+> --- a/Documentation/process/submitting-patches.rst
+> +++ b/Documentation/process/submitting-patches.rst
+> @@ -446,7 +446,7 @@ patch.  This tag documents that potentially interested parties
+>  have been included in the discussion.
+>  
+>  Co-developed-by: states that the patch was co-created by multiple developers;
+> -it is a used to give attribution to co-authors (in addition to the author
+> +it is used to give attribution to co-authors (in addition to the author
 
-If the dump_stack() is from an oops you need the real EIP value
-on order to stand any chance of making headway.
+Applied, thanks.
 
-Otherwise you might just as well just print 'borked - tough luck'.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+jon
