@@ -2,55 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CA2E2DF85E
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 05:48:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D3B32DF865
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 05:51:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728368AbgLUEp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 23:45:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35456 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727837AbgLUEp4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 23:45:56 -0500
-Subject: Re: [GIT PULL] CIFS/SMB3 Fixes
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608525916;
-        bh=ckurcSdyjQOT39YCaSvKJWDFcA70IHToYtdu4nMTIuc=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=Tnp3hUkGEz6FYP9QOAwPeJJ4jJ24avjO7Y21uEwMKm6KXTht+wkAM2QD/Y+0dfRJ3
-         mH0c/CvBEGHS5wdgKq6QgursccyKBQVHlsxwDIvHeIaeWCNr0HHQcHzcNGLYznI3++
-         RIDjqkqSYsIriHxvQe3wtJT4rIwUHFiId50U/1VQ1XUG6g4wdU0jSEYi29oeSmvzln
-         TNx/oTLiUbz0hqobzFTbNxvZ8nwuk3r6Im9Awyim+H7rWwkHYAkcXbT7t8xfHUdn9J
-         uFrXA1VrUyrzWLmOvBy7ooz9mnsiGaaL8pyYOTbIs46JJAAZkGVYGich6112/N72E1
-         xzfQccTKA/c3w==
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAH2r5muaG6M=S-E5xXvTTVUJ4_gXR7MA_aDQfOqLprcWMbBYLw@mail.gmail.com>
-References: <CAH2r5muaG6M=S-E5xXvTTVUJ4_gXR7MA_aDQfOqLprcWMbBYLw@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-cifs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAH2r5muaG6M=S-E5xXvTTVUJ4_gXR7MA_aDQfOqLprcWMbBYLw@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.samba.org/sfrench/cifs-2.6.git tags/5.11-rc-smb3-part2
-X-PR-Tracked-Commit-Id: 9541b81322e60120b299222919957becd7a13683
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 582888130702b86daa44ff6bfee585e4d4050ba0
-Message-Id: <160852591615.19479.17761001069770171727.pr-tracker-bot@kernel.org>
-Date:   Mon, 21 Dec 2020 04:45:16 +0000
-To:     Steve French <smfrench@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        id S1728282AbgLUEuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 23:50:35 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9543 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727219AbgLUEud (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Dec 2020 23:50:33 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Czn7737k1zhv3g;
+        Mon, 21 Dec 2020 12:49:07 +0800 (CST)
+Received: from [10.174.185.179] (10.174.185.179) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 21 Dec 2020 12:49:40 +0800
+Subject: Re: [PATCH] genirq/msi: Initialize msi_alloc_info to zero for
+ msi_prepare API
+To:     Marc Zyngier <maz@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <tglx@linutronix.de>,
+        <kvm@vger.kernel.org>, <wanghaibin.wang@huawei.com>
+References: <20201218060039.1770-1-yuzenghui@huawei.com>
+ <87v9czqaj9.wl-maz@kernel.org>
+From:   Zenghui Yu <yuzenghui@huawei.com>
+Message-ID: <48a318c3-ed5e-98fa-fcb1-502df088b78c@huawei.com>
+Date:   Mon, 21 Dec 2020 12:49:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <87v9czqaj9.wl-maz@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.185.179]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 20 Dec 2020 13:47:32 -0600:
+Hi Marc,
 
-> git://git.samba.org/sfrench/cifs-2.6.git tags/5.11-rc-smb3-part2
+On 2020/12/19 1:38, Marc Zyngier wrote:
+> Hi Zenghui,
+> 
+> On Fri, 18 Dec 2020 06:00:39 +0000,
+> Zenghui Yu <yuzenghui@huawei.com> wrote:
+>>
+>> Since commit 5fe71d271df8 ("irqchip/gic-v3-its: Tag ITS device as shared if
+>> allocating for a proxy device"), some of the devices are wrongly marked as
+>> "shared" by the ITS driver on systems equipped with the ITS(es). The
+>> problem is that the @info->flags may not be initialized anywhere and we end
+>> up looking at random bits on the stack. That's obviously not good.
+>>
+>> The straightforward fix is to properly initialize msi_alloc_info inside the
+>> .prepare callback of affected MSI domains (its-pci-msi, its-platform-msi,
+>> etc). We can also perform the initialization in IRQ core layer for
+>> msi_domain_prepare_irqs() API and it looks much neater to me.
+>>
+>> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+>> ---
+>>
+>> This was noticed when I was playing with the assigned devices on arm64 and
+>> VFIO failed to enable MSI-X vectors for almost all VFs (CCed kvm list in
+>> case others will hit the same issue). It turned out that these VFs are
+>> marked as "shared" by mistake and have trouble with the following sequence:
+>>
+>> 	pci_alloc_irq_vectors(pdev, 1, 1, flag);
+>> 	pci_free_irq_vectors(pdev);
+>> 	pci_alloc_irq_vectors(pdev, 1, 2, flag); --> we can only get
+>> 						     *one* vector
+>>
+>> But besides VFIO, I guess there are already some devices get into trouble
+>> at probe time and can't work properly.
+>>
+>>   kernel/irq/msi.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/irq/msi.c b/kernel/irq/msi.c
+>> index 2c0c4d6d0f83..dc0e2d7fbdfd 100644
+>> --- a/kernel/irq/msi.c
+>> +++ b/kernel/irq/msi.c
+>> @@ -402,7 +402,7 @@ int __msi_domain_alloc_irqs(struct irq_domain *domain, struct device *dev,
+>>   	struct msi_domain_ops *ops = info->ops;
+>>   	struct irq_data *irq_data;
+>>   	struct msi_desc *desc;
+>> -	msi_alloc_info_t arg;
+>> +	msi_alloc_info_t arg = { };
+>>   	int i, ret, virq;
+>>   	bool can_reserve;
+> 
+> Thanks for having investigated this. I guess my only worry with this
+> is that msi_alloc_info_t is a pretty large structure on x86, and
+> zeroing it isn't totally free.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/582888130702b86daa44ff6bfee585e4d4050ba0
+It seems that x86 will zero the whole msi_alloc_info_t structure at the
+beginning of its .prepare (pci_msi_prepare()/init_irq_alloc_info()). If
+this really affects something, I think we can easily address it with
+some cleanup (on top of this patch).
 
-Thank you!
+> But this definitely looks nicer than
+> some of the alternatives (.prepare isn't a good option, as we do rely
+> on the flag being set in __platform_msi_create_device_domain(), which
+> calls itself .prepare).
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Indeed, thanks for fixing the commit message.
+
+> I'll queue it, and we can always revisit this later if Thomas (or
+> anyone else) has a better idea.
+
+Thanks!
+
+
+Zenghui
