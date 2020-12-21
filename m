@@ -2,132 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A46BC2DFFA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:25:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDF4D2DFFA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:27:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726655AbgLUSYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 13:24:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726268AbgLUSYv (ORCPT
+        id S1726108AbgLUSZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:25:49 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39859 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725782AbgLUSZt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:24:51 -0500
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16922C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:24:06 -0800 (PST)
-Received: by mail-qk1-x743.google.com with SMTP id 186so9643085qkj.3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:24:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mccsd.net; s=google;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=Ftcb1NbvpcJp08KIVoH+u8QLIu+2yrR/7jPCKqAPk6k=;
-        b=JL75FKGs4DCTDWeMpWWXwt+eV1WldBxftUZbhzgmH8Ao/60WZRBIei2RsLQtIQfSop
-         u1XaS/Aw4inRp32jUFDcWCLk+r5C9+wSAoR66SJLIDCfHVflmghN5qxB25Gz8zjUVdla
-         Dg1logdv6satyYUCsB1AHRox2jtjGR8fSSvmwiC4mJcioIgQcMJd+G6/asOr6Ma10awC
-         /URD1o5heBbCHmuAaK/tJJwa1NQJMAEDGcie4gjEM7+QRZrX7QOdIKCxqFVWGPM9nIn9
-         1QtGuoD75CpVZCq5aQHfZodmtDbsA4ws/s3PG63/l2hva9s+YWJVHGMVZLVpgwYnClQ7
-         AL0A==
+        Mon, 21 Dec 2020 13:25:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608575063;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yIHhDp6JjovqIb+IiGQWcQSFYCxr+8xx7FZ95bj2vtE=;
+        b=fRkDKVqhD2JiUbVsZk3DNnP+jyT02/R+xqTQep1X0W+Xly4icBSovwDepLug+WvLje3Ei0
+        L1eFJNCXjX6FGcq6gG/eJBHDXBH87YFlj4xrhTospLz5bMHmK+rDvcHSWHKpkioi3Q7HVN
+        AjFWt6GscEmcrCsbY73LJyi+kFIf//4=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-331-o2FkEwoxORW1wSJgW7MQ7g-1; Mon, 21 Dec 2020 13:24:20 -0500
+X-MC-Unique: o2FkEwoxORW1wSJgW7MQ7g-1
+Received: by mail-ej1-f71.google.com with SMTP id u15so4314337ejg.17
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:24:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=Ftcb1NbvpcJp08KIVoH+u8QLIu+2yrR/7jPCKqAPk6k=;
-        b=DwFLNLFpC+79e32eSlzc0GEtSJ+v2e+m42xjxrRffwo7rFOIl/Xa99x15Jyu5MVz3l
-         DFOUdNGPB/5+DKMdddy9ugjIztmm9xSxYiLcLdFcYjRHbGswhZnpTG/hG9eG62EaTT31
-         ajhp12kc3FaIXMKQzrFm7DawBQNx2MgEHuPxAn/XEythRR8Ug7oiQ5zxeRUAv1vHHJhO
-         POG+AjjMzu64/wWn5LTGpC8A7uoyYxF1gHWxUJo/NISsI+idB3nWed3cwmITzuFlhu/H
-         nCm3Yo3Y7VjG6cDTy1/AhzNzhtKhWauAXsiBlteifeeWCsbUHGxCkML11GeqC+I3zHsk
-         2oTQ==
-X-Gm-Message-State: AOAM531z+/aMV4euMvekcrvGttX6hG9aAVSpiJ3ltPDScesZN8UisXbe
-        SFV+g4Z16SRw/IHZJEgoo1SFFukH/v7mjbY290698Q==
-X-Google-Smtp-Source: ABdhPJyixgVn0eugED0aCDlc+MMhHeTr0ImmQH536w4YFnV8YfH6hTD5SzLWpGB3z4PRFxSBgfxCbC/BxNFZp4RdFus=
-X-Received: by 2002:ae9:e854:: with SMTP id a81mr18083606qkg.77.1608575044766;
- Mon, 21 Dec 2020 10:24:04 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yIHhDp6JjovqIb+IiGQWcQSFYCxr+8xx7FZ95bj2vtE=;
+        b=Gyuc/SwKmhhiJ1Qw3Y9s3SVflKVkepgN3aDBasEehi5x86ECIQDSoDEkT8JlKtkRMC
+         hKz7jsCSLMwzTnRdiJ83e2mggvFZuhevDf5K9qj/Kp+rkO5Pjf2XoGdNfoBszig8Zf7d
+         PDz6ZMVJEigJwPu+Lfvf7RbKE3JvG/uzEGYmbUlXGvRjkCHsO5KjotunVr4jmE25oX07
+         X5TuGzU6XLTiKTMveiNSU1B+4M9uhME1xsX/+9BEewAJQmJ4/3u+eu7PDIb+fsPFArHx
+         romroNhYktq7M0IEDbH5vjtjGCsVmUxN/xL5RPYMTC0dxMB5gUJdVSOw/cr9phaqGL8k
+         8CiA==
+X-Gm-Message-State: AOAM5339kHNlaI829cnGdJob9q2u9J65Pqp81a0+O9lD5Emmc5RX+MP0
+        PMZbAthpkn9cKc71jfVc05M1AQtEeGqlOboNgmRrzYs1Xu3p4f8it5OJkNQbwoImoRdqGZ+w+XC
+        knf0V8GuLimaqXw0t7dFql1zI
+X-Received: by 2002:a17:907:2061:: with SMTP id qp1mr16109767ejb.222.1608575058890;
+        Mon, 21 Dec 2020 10:24:18 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx5tpvy1N5ZQZV/nQ+r7ruRnK//awichKa9+ePVpHGO6xb4OUGHuiMWNdLcjY208ZHmqJtZdw==
+X-Received: by 2002:a17:907:2061:: with SMTP id qp1mr16109751ejb.222.1608575058755;
+        Mon, 21 Dec 2020 10:24:18 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id pv24sm9186118ejb.101.2020.12.21.10.24.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Dec 2020 10:24:17 -0800 (PST)
+Subject: Re: [PATCH 2/4] KVM: x86/mmu: Get root level from walkers when
+ retrieving MMIO SPTE
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
+        Richard Herbert <rherbert@sympatico.ca>
+References: <20201218003139.2167891-1-seanjc@google.com>
+ <20201218003139.2167891-3-seanjc@google.com>
+ <87r1nntr7s.fsf@vitty.brq.redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <493c0252-7aa1-b14d-0172-91bf75cf7553@redhat.com>
+Date:   Mon, 21 Dec 2020 19:24:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Received: by 2002:ac8:4e13:0:0:0:0:0 with HTTP; Mon, 21 Dec 2020 10:24:03
- -0800 (PST)
-Reply-To: abderazackzebdani11@yandex.com
-From:   ABDERAZACK ZEBDANI <jstrong367@mccsd.net>
-Date:   Mon, 21 Dec 2020 10:24:03 -0800
-Message-ID: <CAJqCeNgLDCOj332OUoEUmB1FWzCwVGW7rdy17ikq6EEjs54tuA@mail.gmail.com>
-Subject: Greetings My Dear Friend,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <87r1nntr7s.fsf@vitty.brq.redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings My Dear Friend,
+On 18/12/20 10:10, Vitaly Kuznetsov wrote:
+>> -	int root = vcpu->arch.mmu->shadow_root_level;
+>> -	int leaf;
+>> -	int level;
+>> +	int root, leaf, level;
+>>   	bool reserved = false;
+> Personal taste: I would've renamed 'root' to 'root_level' (to be
+> consistent with get_walk()/kvm_tdp_mmu_get_walk()) and 'level' to
+> e.g. 'l' as it's only being used as an interator ('i' would also do).
 
-Before I introduce myself, I wish to inform you that this letter is
-not a hoax mail and I urge you to treat it serious.This letter must
-come to you as a big surprise, but I believe it is only a day that
-people meet and become great friends and business partners. Please I
-want you to read this letter very carefully and I must apologize for
-barging this message into your mail box without any formal
-introduction due to the urgency and confidentiality of this business
-and I know that this message will come to you as a surprise. Please
-this is not a joke and I will not like you to joke with it ok,With due
-respect to your person and much sincerity of purpose, I make this
-contact with you as I believe that you can be of great assistance to
-me. My name is Mr.Abderazack zebdani, from Burkina Faso, West Africa.
-I work in Bank Of Africa (BOA) as telex manager, please see this as a
-confidential message and do not reveal it to another person and let me
-know whether you can be of assistance regarding my proposal below
-because it is top secret.
+Maybe agree on the former, not really on the latter. :)
 
-I am about to retire from active Banking service to start a new life
-but I am skeptical to reveal this particular secret to a stranger. You
-must assure me that everything will be handled confidentially because
-we are not going to suffer again in life. It has been 10 years now
-that most of the greedy African Politicians used our bank to launder
-money overseas through the help of their Political advisers. Most of
-the funds which they transferred out of the shores of Africa were gold
-and oil money that was supposed to have been used to develop the
-continent. Their Political advisers always inflated the amounts before
-transferring to foreign accounts, so I also used the opportunity to
-divert part of the funds hence I am aware that there is no official
-trace of how much was transferred as all the accounts used for such
-transfers were being closed after transfer. I acted as the Bank
-Officer to most of the politicians and when I discovered that they
-were using me to succeed in their greedy act; I also cleaned some of
-their banking records from the Bank files and no one cared to ask me
-because the money was too much for them to control. They laundered
-over $5billion Dollars during the process.
+Paolo
 
-Before I send this message to you, I have already diverted
-($10.5million Dollars) to an escrow account belonging to no one in the
-bank. The bank is anxious now to know who the beneficiary to the funds
-is because they have made a lot of profits with the funds. It is more
-than Eight years now and most of the politicians are no longer using
-our bank to transfer funds overseas. The ($10.5million Dollars) has
-been laying waste in our bank and I don=E2=80=99t want to retire from the b=
-ank
-without transferring the funds to a foreign account to enable me share
-the proceeds with the receiver (a foreigner). The money will be shared
-60% for me and 40% for you. There is no one coming to ask you about
-the funds because I secured everything. I only want you to assist me
-by providing a reliable bank account where the funds can be
-transferred.
-
-You are not to face any difficulties or legal implications as I am
-going to handle the transfer personally. If you are capable of
-receiving the funds, do let me know immediately to enable me give you
-a detailed information on what to do. For me, I have not stolen the
-money from anyone because the other people that took the whole money
-did not face any problems. This is my chance to grab my own life
-opportunity but you must keep the details of the funds secret to avoid
-any leakages as no one in the bank knows about my plans.Please get
-back to me if you are interested and capable to handle this project, I
-shall intimate you on what to do when I hear from your confirmation
-and acceptance.If you are capable of being my trusted associate, do
-declare your consent to me I am looking forward to hear from you
-immediately for further information, KINDLY REPLY THIS EMAIL
-(abderazackzebdani11@yandex.com)
-Thanks with my best regards.
-Mr.Abderazack zebdani.
-Telex Manager
-Bank Of Africa (BOA)
-Burkina Faso.
