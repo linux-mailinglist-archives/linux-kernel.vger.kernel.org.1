@@ -2,147 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8C662DFEB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 18:04:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69A952DFF6C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:14:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726280AbgLURDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 12:03:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57098 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725909AbgLURDK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 12:03:10 -0500
-X-Gm-Message-State: AOAM533BFc3Gpu1IQyQoe7bRCwtUroWUm/1AwCbCa1KmlgkV6YomoUwL
-        neab5Ozum1v4B7Y8FZApcAcF79o8aT426Y6J9A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608570149;
-        bh=sM2h0j23PeJTO6+PcsYlN9mlNfNiXmH7qyR3e9tb3wM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rOyb/DMq0Hh13z9j0QVStgXnrHF0eq62ty9SgCN1yggfbCmBQBM179JEgVHBuXCc1
-         6heBkKX/VFo5/tCR3+72VGLfX6r9bW9HFPK4JNj5xcmRIshH9IRSwZAN/EvY5c33EF
-         SV9JtIZzDM/eCsQ4FLaokPUNfoOsAGghICnE3onTepoPuKXeQ6UrhEAWnCw2KElr9V
-         lTDLgPQ2eKQ5Cq8z77spGiyzltixVk+ojaSIc+xO8cdRrh1aOdJRTReQyoQCwFlMmX
-         6Wpls3fpzTecfpOgFahmyDtBG/HOeb1whYQ6XupOaVjqitsJL4gmK8xoKzzSA+Fw/z
-         89oHL0A0kNKHA==
-X-Google-Smtp-Source: ABdhPJyqv5o//R7x196Z0J60E9ub+RYHgqamRUaGDALQ1v/tFOUnEqsnw8wdxZIIFVIvQXlwN1g3Xsu6Oag7LC3jWc8=
-X-Received: by 2002:a05:622a:18d:: with SMTP id s13mr17492349qtw.306.1608570148922;
- Mon, 21 Dec 2020 09:02:28 -0800 (PST)
+        id S1726637AbgLUSMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:12:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725898AbgLUSMq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 13:12:46 -0500
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D182C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:12:06 -0800 (PST)
+Received: by mail-il1-x136.google.com with SMTP id u12so9713546ilv.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:12:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yNO8jGDtlS9/+qaDws58cBrDRouOJiQU2gAopS4B8Vk=;
+        b=O5gViP4Il+PXK/jxaMyajx9y3R+wQffH+a0fS4J4ATfsDnWH5gtawwOzYQmikzMgAA
+         sxNYcIUIYBPP7hIJZojc4XEVKFAYhl0MBrmcVz6hka7GEL4AINhnxCDSxOudOySrGoEU
+         FJFMsexJsPqupWC9zRb2obnd/bq7oiVf6eg4svMnL1l5u7NVut0PFdPHFlsJlxcIESg7
+         q/0z0aXSZ2dLNgaTaGPdjLIWe2N4N5I4qo8chOIEdhEJk3Pm0vlYZq6S4GRojmDOWT4r
+         I0zbCVKn+h8n3kOxsPDywSgj+F2Ia/sKMcnollo3wRTLTTqkOw/WqFQxDO78uxfTop/U
+         H0Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yNO8jGDtlS9/+qaDws58cBrDRouOJiQU2gAopS4B8Vk=;
+        b=P3PfxX3iKxxRjQGoMzDANgxvsyRUoAEhddGdSRTajFGienDo9oCvdqjn+azyolVUsR
+         3YqTIsNYdoibpV1MS3b6vPEpviN6h9EWXLu4HLXZh31HXdTDklc4iOP8XEkcWRgcy6Yx
+         4WxeHw/3hxy1zMzevskYE80G2i3T7lXxp/SYbulEIHkc97I1pBRv/JiEAE/CMY2b/+G7
+         Coa43wpEYUYXODYO/WPq1LnZK9KILuf/851NivrAEF900I9EVFqg7gRzJcar9gleESRu
+         c/aNgTQTDJRO44yb7vfKNSme7IxF5YIybK2+G6BoSUOUuLg52VY+RqeRuNRNmjQfgzFX
+         lWgw==
+X-Gm-Message-State: AOAM530iEKU4NXdnYYQ9pyIiKQbDeh7ozqV/9uM9r7l3Gf9upoo+YwsV
+        J3bvZlIs2MnBAPDGJWanxkoxCrrpvdKSew==
+X-Google-Smtp-Source: ABdhPJzwIc6I9BTaZTa+kGOU8pPqqKdAE9u3nMXnJXQ0dAPXewB5flJ6IGkxSWudHvgZDJsiLNTnaQ==
+X-Received: by 2002:a63:dd53:: with SMTP id g19mr15929591pgj.291.1608570311088;
+        Mon, 21 Dec 2020 09:05:11 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id k15sm17662546pfp.115.2020.12.21.09.05.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 09:05:10 -0800 (PST)
+Date:   Mon, 21 Dec 2020 09:05:03 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
+        Richard Herbert <rherbert@sympatico.ca>
+Subject: Re: [PATCH 1/4] KVM: x86/mmu: Use -1 to flag an undefined spte in
+ get_mmio_spte()
+Message-ID: <X+DVv3/KjDn1+Iut@google.com>
+References: <20201218003139.2167891-1-seanjc@google.com>
+ <20201218003139.2167891-2-seanjc@google.com>
+ <87tusjtrqp.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-References: <1608199173-28760-1-git-send-email-victor.liu@nxp.com>
- <1608199173-28760-5-git-send-email-victor.liu@nxp.com> <1608231036.357497.50647.nullmailer@robh.at.kernel.org>
- <e2edc2e37b6905fd19ada4c212338c6978200fa5.camel@nxp.com> <CAL_JsqLcyUJWt_gc3B01C0Y+NC61ucYNA8j1jnxTs8U1kudM=Q@mail.gmail.com>
- <1e0b6178033c064b99546d09b4b3ef9dda3cb1ad.camel@nxp.com>
-In-Reply-To: <1e0b6178033c064b99546d09b4b3ef9dda3cb1ad.camel@nxp.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 21 Dec 2020 10:02:17 -0700
-X-Gmail-Original-Message-ID: <CAL_JsqLCvAWQN=54Rp08bPxLjeXZKo5Pc1a=hoNBFjcGdLGvcg@mail.gmail.com>
-Message-ID: <CAL_JsqLCvAWQN=54Rp08bPxLjeXZKo5Pc1a=hoNBFjcGdLGvcg@mail.gmail.com>
-Subject: Re: [PATCH 04/14] dt-bindings: display: bridge: Add i.MX8qm/qxp pixel
- combiner binding
-To:     Liu Ying <victor.liu@nxp.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Andrzej Hajda <a.hajda@samsung.com>, Vinod <vkoul@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org, Sascha Hauer <kernel@pengutronix.de>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Fabio Estevam <festevam@gmail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87tusjtrqp.fsf@vitty.brq.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 9:15 PM Liu Ying <victor.liu@nxp.com> wrote:
->
-> Hi,
->
-> On Fri, 2020-12-18 at 16:42 -0600, Rob Herring wrote:
-> > On Thu, Dec 17, 2020 at 7:48 PM Liu Ying <victor.liu@nxp.com> wrote:
-> > >
-> > > Hi,
-> > >
-> > > On Thu, 2020-12-17 at 12:50 -0600, Rob Herring wrote:
-> > > > On Thu, 17 Dec 2020 17:59:23 +0800, Liu Ying wrote:
-> > > > > This patch adds bindings for i.MX8qm/qxp pixel combiner.
-> > > > >
-> > > > > Signed-off-by: Liu Ying <victor.liu@nxp.com>
-> > > > > ---
-> > > > >  .../display/bridge/fsl,imx8qxp-pixel-combiner.yaml | 160
-> > > > > +++++++++++++++++++++
-> > > > >  1 file changed, 160 insertions(+)
-> > > > >  create mode 100644
-> > > > > Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-
-> > > > > pixel-combiner.yaml
-> > > > >
-> > > >
-> > > > My bot found errors running 'make dt_binding_check' on your
-> > > > patch:
-> > > >
-> > > > yamllint warnings/errors:
-> > > >
-> > > > dtschema/dtc warnings/errors:
-> > > > Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-
-> > > > pixel-combiner.example.dts:19:18: fatal error: dt-
-> > > > bindings/clock/imx8-lpcg.h: No such file or directory
-> > > >    19 |         #include <dt-bindings/clock/imx8-lpcg.h>
-> > > >       |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > > compilation terminated.
-> > > > make[1]: *** [scripts/Makefile.lib:342:
-> > > > Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-
-> > > > pixel-combiner.example.dt.yaml] Error 1
-> > > > make[1]: *** Waiting for unfinished jobs....
-> > > > make: *** [Makefile:1364: dt_binding_check] Error 2
-> > > >
-> > > > See
-> > > > https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2=
-Fpatchwork.ozlabs.org%2Fpatch%2F1417599&amp;data=3D04%7C01%7Cvictor.liu%40n=
-xp.com%7C96806e0ce6bc40c936fa08d8a3a64551%7C686ea1d3bc2b4c6fa92cd99c5c30163=
-5%7C0%7C0%7C637439281816690986%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAi=
-LCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3DCjyszb0al=
-RE5z2OGKdZZEg5PQpH11U%2BGqVt6couCLGE%3D&amp;reserved=3D0
-> > > >
-> > > > This check can fail if there are any dependencies. The base for a
-> > > > patch
-> > > > series is generally the most recent rc1.
-> > >
-> > > This series can be applied to linux-next/master branch.
+On Fri, Dec 18, 2020, Vitaly Kuznetsov wrote:
+> Sean Christopherson <seanjc@google.com> writes:
+> 
+> > Return -1 from the get_walk() helpers if the shadow walk doesn't fill at
+> > least one spte, which can theoretically happen if the walk hits a
+> > not-present PTPDR.  Returning the root level in such a case will cause
+> 
+> PDPTR
+
+Doh.
+
+> > get_mmio_spte() to return garbage (uninitialized stack data).  In
+> > practice, such a scenario should be impossible as KVM shouldn't get a
+> > reserved-bit page fault with a not-present PDPTR.
 > >
-> > I can't know that to apply and run checks automatically. I guessed
-> > that reviewing this before sending, but I want it abundantly clear
-> > what the result of applying this might be and it wasn't mentioned in
-> > this patch.
+> > Note, using mmu->root_level in get_walk() is wrong for other reasons,
+> > too, but that's now a moot point.
 > >
-> > Plus linux-next is a base no one can apply patches to, so should you
-> > be sending patches based on it? It's also the merge window, so maybe
->
-> I sent this series based on drm-misc-next.  This series is applicable
-> to linux-next/master, and may pass 'make dt_binding_check' there.
+> > Fixes: 95fb5b0258b7 ("kvm: x86/mmu: Support MMIO in the TDP MMU")
+> > Cc: Ben Gardon <bgardon@google.com>
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > ---
+> >  arch/x86/kvm/mmu/mmu.c     | 7 ++++++-
+> >  arch/x86/kvm/mmu/tdp_mmu.c | 2 +-
+> >  2 files changed, 7 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> > index 7a6ae9e90bd7..a48cd12c01d7 100644
+> > --- a/arch/x86/kvm/mmu/mmu.c
+> > +++ b/arch/x86/kvm/mmu/mmu.c
+> > @@ -3488,7 +3488,7 @@ static bool mmio_info_in_cache(struct kvm_vcpu *vcpu, u64 addr, bool direct)
+> >  static int get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes)
+> >  {
+> >  	struct kvm_shadow_walk_iterator iterator;
+> > -	int leaf = vcpu->arch.mmu->root_level;
+> > +	int leaf = -1;
+> >  	u64 spte;
+> >  
+> >  
+> > @@ -3532,6 +3532,11 @@ static bool get_mmio_spte(struct kvm_vcpu *vcpu, u64 addr, u64 *sptep)
+> >  	else
+> >  		leaf = get_walk(vcpu, addr, sptes);
+> >  
+> > +	if (unlikely(leaf < 0)) {
+> > +		*sptep = 0ull;
+> > +		return reserved;
+> > +	}
+> 
+> When SPTE=0 is returned from get_mmio_spte(), handle_mmio_page_fault()
+> will return RET_PF_RETRY -- should it be RET_PF_INVALID instead?
 
-But to be clear, 'make dt_binding_check' would fail on drm-misc-next
-until 5.11-rc1 is merged in. The drm-misc maintainers need to know
-that.
+No, RET_PF_RETRY is the most appropriate.  A pae_root entry will only be zero if
+the corresponding guest PDPTR is !PRESENT, i.e. the page fault is effectively in
+the guest context.  The reason I say it should be an impossible condition is
+because KVM should also reset the MMU whenever it snapshots the guest's PDPTRs,
+i.e. it should be impossible to install a MMIO SPTE if the relevant PDPTR is
+!PRESENT, and all MMIO SPTEs should be wiped out if the PDPTRs are reloaded.
+I suppose by that argument, this should be a WARN_ON_ONCE, but I'm not sure if
+I'm _that_ confident in my analysis :-)
 
+Related side topic, this snippet in get_mmio_spte() is dead code, as the same
+check is performed by its sole caller.  I'll send a patch to remove it (unless
+Paolo wants a v2 of this series, in which case I'll tack it on the end).
 
-> I'll mention dependencies in the future where similar situations
-> appear. Thanks.
->
-> BTW, does it make sense for the bot to additionaly try linux-next if
-> needed?  Maybe, that'll be helpful?
-
-Sure, and when I've got nothing else to do maybe I'll do that. Though
-maintainers still need to know what the dependencies are. The real
-solution here is to make 'base-commit' tags more common or required so
-that neither scripts/bots nor humans have to guess what the base is.
-
-Rob
+	if (!VALID_PAGE(vcpu->arch.mmu->root_hpa)) {
+		*sptep = 0ull;
+		return reserved;
+	}
