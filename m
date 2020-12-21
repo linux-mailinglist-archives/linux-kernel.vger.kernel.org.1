@@ -2,385 +2,351 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D652A2DF764
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 02:03:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97EEB2DF880
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 06:08:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726642AbgLUBC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 20:02:56 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:43017 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726027AbgLUBC4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 20:02:56 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Czh5G0Yglz9sSC;
-        Mon, 21 Dec 2020 12:02:10 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1608512531;
-        bh=lf89HOzqVG12pcrGPAL0ET/UwgB8NtG17av6JvK9QVw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Wr+yDA5ck4E7KQ61WaG+Do8q4OKJD8yvFAiQJQiCqOC4mSigyDHxEmx7Jr1/ukWBi
-         K4zEsgtcZhy29s37N00nzPGvA8BdLKpaF+kpgGynZne7zT3DZ3I0ReTJmk6Hy96Ui9
-         RjkJ8rNMTjGxJvj6EyZbi9I1F8SvQ8sPVBl7u3Mh7KvTj80uj4v+bJPohoH9uVWHje
-         PYK+0p6ONedaxzPiBKzDMDgfDfmtH7qw3qx/7/O3UMClw4GuloprLN1/vKTuRQ7437
-         LocrRO+xO3oNpA5/yaLQDp4n/od+AuG4ETBj++VcOB2nobqvnuSsppkNJFfGdMqtRS
-         1BwXuGBF4sLqQ==
-Date:   Mon, 21 Dec 2020 12:02:09 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: linux-next: manual merge of the notifications tree with Linus' tree
-Message-ID: <20201221120209.5c5cb5d8@canb.auug.org.au>
+        id S1727164AbgLUFGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 00:06:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725497AbgLUFGM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 00:06:12 -0500
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF8B9C061282
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 21:05:31 -0800 (PST)
+Received: by mail-il1-x130.google.com with SMTP id q1so7801212ilt.6
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 21:05:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZADtCwBq6M9MJYNY9IBMCRVuDw8LbYzykrEwsLtCJo0=;
+        b=gU7G3gyfVSUoRT0oth7iQ67yBVY5GPlalaz55R83ntkqho8VymzqsRwyYLRNVdCMr4
+         +yNujUSGddpFwRzilE7oLUCQA0FHYiwjxNyAcgVGtiMXcJ83IpfWrk/LKGERC3QAh3Bj
+         jqjjbWKMBJ/HpzbpycaCMfyEQYJmZSapuOq+U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZADtCwBq6M9MJYNY9IBMCRVuDw8LbYzykrEwsLtCJo0=;
+        b=nh37dXZ9TXVsAcS3X46RcwZ2WAbMJONRhEXxpxzBhmFPWek2ruF4UbMTGyc4eEAVOV
+         1wkXNqR1tn3yDGJ9GX9MocP+xS+NxRbT6wZ2pXnYk0h+M60L5X8q1sFh4Ni34BbA5pXm
+         EMGusVuxboU/bB3JKEadC25kKihPgbH7fyYtEuq1iUl6XY58FfjA01V9hi0rintz9YCC
+         ctQU9FDcNuteKzxnAmq6PIk5VGQh67zEuOa9XiRH24nQAZpQ4fFKjfa6Y5E79TVSmzf1
+         Vde+dy+ookQmrAoRX0JfAWj8a+nnoYxTl4ZfSskBIee/kjlZPckU1kfQ/2V2yijgfknM
+         Df1w==
+X-Gm-Message-State: AOAM531N9zDp+0zQZFTT8nXujTsCG8xiSUls2zM9NXEKvHn3XrjKxGpx
+        FXeUbOC6N3K2lm+A7fYE0Dw+ZHLCt4Pjig==
+X-Google-Smtp-Source: ABdhPJw6Qc5pUIybB506uU4CZVZWmYIMZKa+3ysIP2AbovweGC+BO9w1uF8w4q4T8n5kft8B32Aiew==
+X-Received: by 2002:a92:5802:: with SMTP id m2mr14224319ilb.271.1608513030187;
+        Sun, 20 Dec 2020 17:10:30 -0800 (PST)
+Received: from mail-io1-f49.google.com (mail-io1-f49.google.com. [209.85.166.49])
+        by smtp.gmail.com with ESMTPSA id u24sm12531094ili.47.2020.12.20.17.10.29
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 20 Dec 2020 17:10:29 -0800 (PST)
+Received: by mail-io1-f49.google.com with SMTP id q137so7400001iod.9
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 17:10:29 -0800 (PST)
+X-Received: by 2002:a5e:8e0d:: with SMTP id a13mr12519880ion.1.1608513028953;
+ Sun, 20 Dec 2020 17:10:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/x2tSK=g50YMR/8duWuqmpWD";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20201215154439.69062-1-ribalda@chromium.org> <20201215154439.69062-10-ribalda@chromium.org>
+ <X9+IMF9yIdzPrkgg@pendragon.ideasonboard.com>
+In-Reply-To: <X9+IMF9yIdzPrkgg@pendragon.ideasonboard.com>
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Mon, 21 Dec 2020 02:10:18 +0100
+X-Gmail-Original-Message-ID: <CANiDSCtSuHFnS85xUsfv9KSKFzaT-KLHeadCzr+5bBRRYZ-arQ@mail.gmail.com>
+Message-ID: <CANiDSCtSuHFnS85xUsfv9KSKFzaT-KLHeadCzr+5bBRRYZ-arQ@mail.gmail.com>
+Subject: Re: [PATCH v4 9/9] media: uvcvideo: Implement UVC_QUIRK_PRIVACY_DURING_STREAM
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/x2tSK=g50YMR/8duWuqmpWD
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+HI
 
-Hi all,
+On Sun, Dec 20, 2020 at 6:22 PM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Ricardo,
+>
+> Thank you for the patch.
+>
+> On Tue, Dec 15, 2020 at 04:44:39PM +0100, Ricardo Ribalda wrote:
+> > Some devices, can only read the privacy_pin if the device is
+> > streaming.
+>
+> :-(
+:"-(
 
-Today's linux-next merge of the notifications tree got conflicts in:
 
-  arch/alpha/kernel/syscalls/syscall.tbl
-  arch/arm/tools/syscall.tbl
-  arch/arm64/include/asm/unistd.h
-  arch/arm64/include/asm/unistd32.h
-  arch/ia64/kernel/syscalls/syscall.tbl
-  arch/m68k/kernel/syscalls/syscall.tbl
-  arch/microblaze/kernel/syscalls/syscall.tbl
-  arch/mips/kernel/syscalls/syscall_n32.tbl
-  arch/mips/kernel/syscalls/syscall_n64.tbl
-  arch/mips/kernel/syscalls/syscall_o32.tbl
-  arch/parisc/kernel/syscalls/syscall.tbl
-  arch/powerpc/kernel/syscalls/syscall.tbl
-  arch/s390/kernel/syscalls/syscall.tbl
-  arch/sh/kernel/syscalls/syscall.tbl
-  arch/sparc/kernel/syscalls/syscall.tbl
-  arch/x86/entry/syscalls/syscall_32.tbl
-  arch/x86/entry/syscalls/syscall_64.tbl
-  arch/xtensa/kernel/syscalls/syscall.tbl
-  include/uapi/asm-generic/unistd.h
+>
+> > This patch implement a quirk for such devices, in order to avoid invalid
+> > reads and/or spurious events.
+> >
+> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > ---
+> >  drivers/media/usb/uvc/uvc_driver.c | 97 ++++++++++++++++++++++++++----
+> >  drivers/media/usb/uvc/uvc_queue.c  |  3 +
+> >  drivers/media/usb/uvc/uvcvideo.h   |  6 ++
+> >  3 files changed, 94 insertions(+), 12 deletions(-)
+> >
+> > diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+> > index e49491250e87..61313019e226 100644
+> > --- a/drivers/media/usb/uvc/uvc_driver.c
+> > +++ b/drivers/media/usb/uvc/uvc_driver.c
+> > @@ -7,6 +7,7 @@
+> >   */
+> >
+> >  #include <linux/atomic.h>
+> > +#include <linux/dmi.h>
+> >  #include <linux/gpio/consumer.h>
+> >  #include <linux/kernel.h>
+> >  #include <linux/list.h>
+> > @@ -1471,13 +1472,39 @@ static int uvc_parse_control(struct uvc_device *dev)
+> >       return 0;
+> >  }
+> >
+> > +static bool uvc_ext_gpio_is_streaming(struct uvc_device *dev)
+> > +{
+> > +     struct uvc_streaming *streaming;
+> > +
+> > +     list_for_each_entry(streaming, &dev->streams, list) {
+> > +             if (uvc_queue_streaming(&streaming->queue))
+> > +                     return true;
+> > +     }
+> > +
+> > +     return false;
+> > +}
+> > +
+> > +/* Update the cached value and return true if it has changed */
+> > +static bool uvc_gpio_update_value(struct uvc_entity *unit, u8 *new_val)
+> > +{
+> > +     *new_val = gpiod_get_value(unit->gpio.gpio_privacy);
+> > +
+> > +     return atomic_xchg(&unit->gpio.gpio_privacy_value, *new_val) !=
+> > +                                                                   *new_val;
+>
+> That's a weird indentation. Also, as the left hand side modifies
+> *new_val, does C guarantee the order in which the two operands to != are
+> evaluated ? Could the code be written in an easier to read way ?
+>
+> > +}
+> > +
+> >  static int uvc_gpio_get_cur(struct uvc_device *dev, struct uvc_entity *entity,
+> >                           u8 cs, void *data, u16 size)
+> >  {
+> >       if (cs != UVC_CT_PRIVACY_CONTROL || size < 1)
+> >               return -EINVAL;
+> >
+> > -     *(uint8_t *)data = gpiod_get_value(entity->gpio.gpio_privacy);
+> > +     if ((dev->quirks & UVC_QUIRK_PRIVACY_DURING_STREAM) &&
+> > +         !uvc_ext_gpio_is_streaming(dev))
+> > +             return -EBUSY;
+> > +
+> > +     uvc_gpio_update_value(entity, (uint8_t *)data);
+> > +
+> >       return 0;
+> >  }
+> >
+> > @@ -1491,26 +1518,69 @@ static int uvc_gpio_get_info(struct uvc_device *dev, struct uvc_entity *entity,
+> >       return 0;
+> >  }
+> >
+> > -static irqreturn_t uvc_privacy_gpio_irq(int irq, void *data)
+> > +static struct uvc_entity *uvc_find_ext_gpio_unit(struct uvc_device *dev)
+> >  {
+> > -     struct uvc_device *dev = data;
+> > -     struct uvc_video_chain *chain;
+> >       struct uvc_entity *unit;
+> > -     u8 value;
+> >
+> > -     /* GPIO entities are always on the first chain */
+> > -     chain = list_first_entry(&dev->chains, struct uvc_video_chain, list);
+> >       list_for_each_entry(unit, &dev->entities, list) {
+> > -             if (UVC_ENTITY_TYPE(unit) != UVC_EXT_GPIO_UNIT)
+> > -                     continue;
+> > -             value = gpiod_get_value(unit->gpio.gpio_privacy);
+> > -             uvc_ctrl_status_event(NULL, chain, unit->controls, &value);
+> > -             return IRQ_HANDLED;
+> > +             if (UVC_ENTITY_TYPE(unit) == UVC_EXT_GPIO_UNIT)
+> > +                     return unit;
+> >       }
+> >
+> > +     return unit;
+> > +}
+> > +
+> > +void uvc_privacy_gpio_event(struct uvc_device *dev)
+> > +{
+> > +     struct uvc_entity *unit;
+> > +     struct uvc_video_chain *chain;
+> > +     u8 new_value;
+> > +
+> > +     unit = uvc_find_ext_gpio_unit(dev);
+> > +     if (WARN_ONCE(!unit, "Unable to find entity ext_gpio_unit"))
+> > +             return;
+> > +
+> > +     if (!uvc_gpio_update_value(unit, &new_value))
+> > +             return;
+>
+> If VIDIOC_G_CTRL() is called before the IRQ is processed, this
+> uvc_gpio_update_value() call will return false, and no event will be
+> generated. I don't think that's right, and even should be generated
+> every time the control changes.
+>
+I was almost sure that get_cur had also the events wired.... but no.
 
-between commits:
+> > +
+> > +     /* GPIO entities are always on the first chain */
+> > +     chain = list_first_entry(&dev->chains, struct uvc_video_chain, list);
+> > +     uvc_ctrl_status_event(NULL, chain, unit->controls, &new_value);
+> > +}
+> > +
+> > +static irqreturn_t uvc_privacy_gpio_irq(int irq, void *data)
+> > +{
+> > +     struct uvc_device *dev = data;
+> > +
+> > +     /* Ignore privacy events during streamoff */
+> > +     if (dev->quirks & UVC_QUIRK_PRIVACY_DURING_STREAM)
+> > +             if (!uvc_ext_gpio_is_streaming(dev))
+> > +                     return IRQ_HANDLED;
+>
+>         if (dev->quirks & UVC_QUIRK_PRIVACY_DURING_STREAM) {
+>                 if (!uvc_ext_gpio_is_streaming(dev))
+>                         return IRQ_HANDLED;
+>         }
+>
+> There's a potential race condition with VIDIOC_STREAMON and
+> VIDIOC_STREAMOFF. Could you explain what the device does exactly when
+> not streaming ? As the GPIO isn't tied to the UVC controller, how comes
+> the streaming state influences it ? Any hope the firmware could be fixed
+> instead ?
 
-  b0a0c2615f6f ("epoll: wire up syscall epoll_pwait2")
-  450f68e2425e ("epoll: fix compat syscall wire up of epoll_pwait2")
-  ecb8ac8b1f14 ("mm/madvise: introduce process_madvise() syscall: an extern=
-al memory hinting API")
+In the affected devices, the privacy_pin is an output of the camera
+module instead of an independent pin.
 
-from Linus' tree and commit:
+When the camera is not streaming, the camera does not drive the pin,
+so the system reads whatever pull-up, pull-down the pin is configured
+by default in the firmware/hardware.
 
-  4cd92d064cb0 ("watch_queue: Implement mount topology and attribute change=
- notifications")
+Unfortunately the only way to fix it would be to change the module, or
+the firmware of the module, and neigher things are not feasable :(. So
+we have to use a quirk for them.
+Future models have this fixed.
 
-from the notifications tree.
+Regarding the race condition... The use of the atomic_t was to avoid
+that race, but what I did not realise was that by default get_cur does
+not send an event... So I am working on a new series, which also
+includes a fix for the async_control wq.
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+Thanks for your review!!!
 
-If this is not submitted to Linus during this merge window, please
-either drop it from your linux-next included branch, or at least fix it
-up wrt to the sate of Linus' tree.
---=20
-Cheers,
-Stephen Rothwell
+>
+> > +
+> > +     uvc_privacy_gpio_event(dev);
+> > +
+> >       return IRQ_HANDLED;
+> >  }
+> >
+> > +static const struct dmi_system_id privacy_valid_during_streamon[] = {
+> > +     {
+> > +             .ident = "HP Elite c1030 Chromebook",
+> > +             .matches = {
+> > +                     DMI_MATCH(DMI_SYS_VENDOR, "HP"),
+> > +                     DMI_MATCH(DMI_PRODUCT_NAME, "Jinlon"),
+> > +             },
+> > +     },
+> > +     {
+> > +             .ident = "HP Pro c640 Chromebook",
+> > +             .matches = {
+> > +                     DMI_MATCH(DMI_SYS_VENDOR, "HP"),
+> > +                     DMI_MATCH(DMI_PRODUCT_NAME, "Dratini"),
+> > +             },
+> > +     },
+> > +     { } /* terminate list */
+> > +};
+> > +
+> > +
+> >  static int uvc_parse_gpio(struct uvc_device *dev)
+> >  {
+> >       struct uvc_entity *unit;
+> > @@ -1545,6 +1615,9 @@ static int uvc_parse_gpio(struct uvc_device *dev)
+> >       if (irq == -EPROBE_DEFER)
+> >               return -EPROBE_DEFER;
+> >
+> > +     if (dmi_check_system(privacy_valid_during_streamon))
+> > +             dev->quirks |= UVC_QUIRK_PRIVACY_DURING_STREAM;
+> > +
+> >       if (irq < 0)
+> >               return 0;
+> >
+> > diff --git a/drivers/media/usb/uvc/uvc_queue.c b/drivers/media/usb/uvc/uvc_queue.c
+> > index cd60c6c1749e..e800d491303f 100644
+> > --- a/drivers/media/usb/uvc/uvc_queue.c
+> > +++ b/drivers/media/usb/uvc/uvc_queue.c
+> > @@ -337,9 +337,12 @@ int uvc_dequeue_buffer(struct uvc_video_queue *queue, struct v4l2_buffer *buf,
+> >  int uvc_queue_streamon(struct uvc_video_queue *queue, enum v4l2_buf_type type)
+> >  {
+> >       int ret;
+> > +     struct uvc_streaming *stream = uvc_queue_to_stream(queue);
+> >
+> >       mutex_lock(&queue->mutex);
+> >       ret = vb2_streamon(&queue->queue, type);
+> > +     if (stream->dev->quirks & UVC_QUIRK_PRIVACY_DURING_STREAM)
+> > +             uvc_privacy_gpio_event(stream->dev);
+> >       mutex_unlock(&queue->mutex);
+> >
+> >       return ret;
+> > diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+> > index 2b5ba4b02d3a..2a95b3ed3ea8 100644
+> > --- a/drivers/media/usb/uvc/uvcvideo.h
+> > +++ b/drivers/media/usb/uvc/uvcvideo.h
+> > @@ -6,6 +6,7 @@
+> >  #error "The uvcvideo.h header is deprecated, use linux/uvcvideo.h instead."
+> >  #endif /* __KERNEL__ */
+> >
+> > +#include <linux/atomic.h>
+> >  #include <linux/gpio/consumer.h>
+> >  #include <linux/kernel.h>
+> >  #include <linux/poll.h>
+> > @@ -209,6 +210,7 @@
+> >  #define UVC_QUIRK_RESTORE_CTRLS_ON_INIT      0x00000400
+> >  #define UVC_QUIRK_FORCE_Y8           0x00000800
+> >  #define UVC_QUIRK_FORCE_BPP          0x00001000
+> > +#define UVC_QUIRK_PRIVACY_DURING_STREAM      0x00002000
+> >
+> >  /* Format flags */
+> >  #define UVC_FMT_FLAG_COMPRESSED              0x00000001
+> > @@ -359,6 +361,7 @@ struct uvc_entity {
+> >                       u8  bControlSize;
+> >                       u8  *bmControls;
+> >                       struct gpio_desc *gpio_privacy;
+> > +                     atomic_t  gpio_privacy_value;
+> >               } gpio;
+> >       };
+> >
+> > @@ -815,6 +818,9 @@ extern const struct v4l2_file_operations uvc_fops;
+> >  int uvc_mc_register_entities(struct uvc_video_chain *chain);
+> >  void uvc_mc_cleanup_entity(struct uvc_entity *entity);
+> >
+> > +/* Privacy gpio */
+> > +void uvc_privacy_gpio_event(struct uvc_device *dev);
+> > +
+> >  /* Video */
+> >  int uvc_video_init(struct uvc_streaming *stream);
+> >  int uvc_video_suspend(struct uvc_streaming *stream);
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
 
-diff --cc arch/alpha/kernel/syscalls/syscall.tbl
-index a6617067dbe6,b6cf8403da35..000000000000
---- a/arch/alpha/kernel/syscalls/syscall.tbl
-+++ b/arch/alpha/kernel/syscalls/syscall.tbl
-@@@ -479,5 -478,4 +479,6 @@@
-  547	common	openat2				sys_openat2
-  548	common	pidfd_getfd			sys_pidfd_getfd
-  549	common	faccessat2			sys_faccessat2
- -550	common	watch_mount			sys_watch_mount
- +550	common	process_madvise			sys_process_madvise
- +551	common	epoll_pwait2			sys_epoll_pwait2
-++552	common	watch_mount			sys_watch_mount
-diff --cc arch/arm/tools/syscall.tbl
-index 20e1170e2e0a,27cc1f53f4a0..000000000000
---- a/arch/arm/tools/syscall.tbl
-+++ b/arch/arm/tools/syscall.tbl
-@@@ -453,5 -452,4 +453,6 @@@
-  437	common	openat2				sys_openat2
-  438	common	pidfd_getfd			sys_pidfd_getfd
-  439	common	faccessat2			sys_faccessat2
- -440	common	watch_mount			sys_watch_mount
- +440	common	process_madvise			sys_process_madvise
- +441	common	epoll_pwait2			sys_epoll_pwait2
-++442	common	watch_mount			sys_watch_mount
-diff --cc arch/arm64/include/asm/unistd.h
-index 86a9d7b3eabe,b3b2019f8d16..000000000000
---- a/arch/arm64/include/asm/unistd.h
-+++ b/arch/arm64/include/asm/unistd.h
-@@@ -38,7 -38,7 +38,7 @@@
-  #define __ARM_NR_compat_set_tls		(__ARM_NR_COMPAT_BASE + 5)
-  #define __ARM_NR_COMPAT_END		(__ARM_NR_COMPAT_BASE + 0x800)
- =20
-- #define __NR_compat_syscalls		442
- -#define __NR_compat_syscalls		441
-++#define __NR_compat_syscalls		443
-  #endif
- =20
-  #define __ARCH_WANT_SYS_CLONE
-diff --cc arch/arm64/include/asm/unistd32.h
-index cccfbbefbf95,4f9cf98cdf0f..000000000000
---- a/arch/arm64/include/asm/unistd32.h
-+++ b/arch/arm64/include/asm/unistd32.h
-@@@ -887,10 -885,8 +887,12 @@@ __SYSCALL(__NR_openat2, sys_openat2
-  __SYSCALL(__NR_pidfd_getfd, sys_pidfd_getfd)
-  #define __NR_faccessat2 439
-  __SYSCALL(__NR_faccessat2, sys_faccessat2)
- -#define __NR_watch_mount 440
- +#define __NR_process_madvise 440
- +__SYSCALL(__NR_process_madvise, sys_process_madvise)
- +#define __NR_epoll_pwait2 441
- +__SYSCALL(__NR_epoll_pwait2, compat_sys_epoll_pwait2)
-++#define __NR_watch_mount 442
-+ __SYSCALL(__NR_watch_mount, sys_watch_mount)
- =20
-  /*
-   * Please add new compat syscalls above this comment and update
-diff --cc arch/ia64/kernel/syscalls/syscall.tbl
-index bfc00f2bd437,fc6d87903781..000000000000
---- a/arch/ia64/kernel/syscalls/syscall.tbl
-+++ b/arch/ia64/kernel/syscalls/syscall.tbl
-@@@ -360,5 -359,4 +360,6 @@@
-  437	common	openat2				sys_openat2
-  438	common	pidfd_getfd			sys_pidfd_getfd
-  439	common	faccessat2			sys_faccessat2
- -440	common	watch_mount			sys_watch_mount
- +440	common	process_madvise			sys_process_madvise
- +441	common	epoll_pwait2			sys_epoll_pwait2
-++442	common	watch_mount			sys_watch_mount
-diff --cc arch/m68k/kernel/syscalls/syscall.tbl
-index 7fe4e45c864c,c671aa0e4d25..000000000000
---- a/arch/m68k/kernel/syscalls/syscall.tbl
-+++ b/arch/m68k/kernel/syscalls/syscall.tbl
-@@@ -439,5 -438,4 +439,6 @@@
-  437	common	openat2				sys_openat2
-  438	common	pidfd_getfd			sys_pidfd_getfd
-  439	common	faccessat2			sys_faccessat2
- -440	common	watch_mount			sys_watch_mount
- +440	common	process_madvise			sys_process_madvise
- +441	common	epoll_pwait2			sys_epoll_pwait2
-++442	common	watch_mount			sys_watch_mount
-diff --cc arch/microblaze/kernel/syscalls/syscall.tbl
-index a522adf194ab,65cc53f129ef..000000000000
---- a/arch/microblaze/kernel/syscalls/syscall.tbl
-+++ b/arch/microblaze/kernel/syscalls/syscall.tbl
-@@@ -445,5 -444,4 +445,6 @@@
-  437	common	openat2				sys_openat2
-  438	common	pidfd_getfd			sys_pidfd_getfd
-  439	common	faccessat2			sys_faccessat2
- -440	common	watch_mount			sys_watch_mount
- +440	common	process_madvise			sys_process_madvise
- +441	common	epoll_pwait2			sys_epoll_pwait2
-++442	common	watch_mount			sys_watch_mount
-diff --cc arch/mips/kernel/syscalls/syscall_n32.tbl
-index 0f03ad223f33,7f034a239930..000000000000
---- a/arch/mips/kernel/syscalls/syscall_n32.tbl
-+++ b/arch/mips/kernel/syscalls/syscall_n32.tbl
-@@@ -378,5 -377,4 +378,6 @@@
-  437	n32	openat2				sys_openat2
-  438	n32	pidfd_getfd			sys_pidfd_getfd
-  439	n32	faccessat2			sys_faccessat2
- -440	n32	watch_mount			sys_watch_mount
- +440	n32	process_madvise			sys_process_madvise
- +441	n32	epoll_pwait2			compat_sys_epoll_pwait2
-++442	n32	watch_mount			sys_watch_mount
-diff --cc arch/mips/kernel/syscalls/syscall_n64.tbl
-index 91649690b52f,d39b90de3642..000000000000
---- a/arch/mips/kernel/syscalls/syscall_n64.tbl
-+++ b/arch/mips/kernel/syscalls/syscall_n64.tbl
-@@@ -354,5 -353,4 +354,6 @@@
-  437	n64	openat2				sys_openat2
-  438	n64	pidfd_getfd			sys_pidfd_getfd
-  439	n64	faccessat2			sys_faccessat2
- -440	n64	watch_mount			sys_watch_mount
- +440	n64	process_madvise			sys_process_madvise
- +441	n64	epoll_pwait2			sys_epoll_pwait2
-++442	n64	watch_mount			sys_watch_mount
-diff --cc arch/mips/kernel/syscalls/syscall_o32.tbl
-index 4bad0c40aed6,09f426cb45b1..000000000000
---- a/arch/mips/kernel/syscalls/syscall_o32.tbl
-+++ b/arch/mips/kernel/syscalls/syscall_o32.tbl
-@@@ -427,5 -426,4 +427,6 @@@
-  437	o32	openat2				sys_openat2
-  438	o32	pidfd_getfd			sys_pidfd_getfd
-  439	o32	faccessat2			sys_faccessat2
- -440	o32	watch_mount			sys_watch_mount
- +440	o32	process_madvise			sys_process_madvise
- +441	o32	epoll_pwait2			sys_epoll_pwait2		compat_sys_epoll_pwait2
-++442	o32	watch_mount			sys_watch_mount
-diff --cc arch/parisc/kernel/syscalls/syscall.tbl
-index 6bcc31966b44,52ff3454baa1..000000000000
---- a/arch/parisc/kernel/syscalls/syscall.tbl
-+++ b/arch/parisc/kernel/syscalls/syscall.tbl
-@@@ -437,5 -436,4 +437,6 @@@
-  437	common	openat2				sys_openat2
-  438	common	pidfd_getfd			sys_pidfd_getfd
-  439	common	faccessat2			sys_faccessat2
- -440	common	watch_mount			sys_watch_mount
- +440	common	process_madvise			sys_process_madvise
- +441	common	epoll_pwait2			sys_epoll_pwait2		compat_sys_epoll_pwait2
-++442	common	watch_mount			sys_watch_mount
-diff --cc arch/powerpc/kernel/syscalls/syscall.tbl
-index f744eb5cba88,10b7ed3c7a1b..000000000000
---- a/arch/powerpc/kernel/syscalls/syscall.tbl
-+++ b/arch/powerpc/kernel/syscalls/syscall.tbl
-@@@ -529,5 -528,4 +529,6 @@@
-  437	common	openat2				sys_openat2
-  438	common	pidfd_getfd			sys_pidfd_getfd
-  439	common	faccessat2			sys_faccessat2
- -440	common	watch_mount			sys_watch_mount
- +440	common	process_madvise			sys_process_madvise
- +441	common	epoll_pwait2			sys_epoll_pwait2		compat_sys_epoll_pwait2
-++442	common	watch_mount			sys_watch_mount
-diff --cc arch/s390/kernel/syscalls/syscall.tbl
-index d443423495e5,86f317bf52df..000000000000
---- a/arch/s390/kernel/syscalls/syscall.tbl
-+++ b/arch/s390/kernel/syscalls/syscall.tbl
-@@@ -442,5 -441,4 +442,6 @@@
-  437  common	openat2			sys_openat2			sys_openat2
-  438  common	pidfd_getfd		sys_pidfd_getfd			sys_pidfd_getfd
-  439  common	faccessat2		sys_faccessat2			sys_faccessat2
- -440	common	watch_mount		sys_watch_mount			sys_watch_mount
- +440  common	process_madvise		sys_process_madvise		sys_process_madvise
- +441  common	epoll_pwait2		sys_epoll_pwait2		compat_sys_epoll_pwait2
-++442	common	watch_mount		sys_watch_mount			sys_watch_mount
-diff --cc arch/sh/kernel/syscalls/syscall.tbl
-index 9df40ac0ebc0,0bb0f0b372c7..000000000000
---- a/arch/sh/kernel/syscalls/syscall.tbl
-+++ b/arch/sh/kernel/syscalls/syscall.tbl
-@@@ -442,5 -441,4 +442,6 @@@
-  437	common	openat2				sys_openat2
-  438	common	pidfd_getfd			sys_pidfd_getfd
-  439	common	faccessat2			sys_faccessat2
- -440	common	watch_mount			sys_watch_mount
- +440	common	process_madvise			sys_process_madvise
- +441	common	epoll_pwait2			sys_epoll_pwait2
-++442	common	watch_mount			sys_watch_mount
-diff --cc arch/sparc/kernel/syscalls/syscall.tbl
-index 40d8c7cd8298,369ab65c1e9a..000000000000
---- a/arch/sparc/kernel/syscalls/syscall.tbl
-+++ b/arch/sparc/kernel/syscalls/syscall.tbl
-@@@ -485,5 -484,4 +485,6 @@@
-  437	common	openat2			sys_openat2
-  438	common	pidfd_getfd			sys_pidfd_getfd
-  439	common	faccessat2			sys_faccessat2
- -440	common	watch_mount			sys_watch_mount
- +440	common	process_madvise			sys_process_madvise
- +441	common	epoll_pwait2			sys_epoll_pwait2		compat_sys_epoll_pwait2
-++442	common	watch_mount			sys_watch_mount
-diff --cc arch/x86/entry/syscalls/syscall_32.tbl
-index 874aeacde2dd,e760ba92c58d..000000000000
---- a/arch/x86/entry/syscalls/syscall_32.tbl
-+++ b/arch/x86/entry/syscalls/syscall_32.tbl
-@@@ -444,5 -443,4 +444,6 @@@
-  437	i386	openat2			sys_openat2
-  438	i386	pidfd_getfd		sys_pidfd_getfd
-  439	i386	faccessat2		sys_faccessat2
- -440	i386	watch_mount		sys_watch_mount
- +440	i386	process_madvise		sys_process_madvise
- +441	i386	epoll_pwait2		sys_epoll_pwait2		compat_sys_epoll_pwait2
-++442	i386	watch_mount		sys_watch_mount
-diff --cc arch/x86/entry/syscalls/syscall_64.tbl
-index 78672124d28b,5b58621d4f75..000000000000
---- a/arch/x86/entry/syscalls/syscall_64.tbl
-+++ b/arch/x86/entry/syscalls/syscall_64.tbl
-@@@ -361,14 -360,13 +361,15 @@@
-  437	common	openat2			sys_openat2
-  438	common	pidfd_getfd		sys_pidfd_getfd
-  439	common	faccessat2		sys_faccessat2
- -440	common	watch_mount		sys_watch_mount
- +440	common	process_madvise		sys_process_madvise
- +441	common	epoll_pwait2		sys_epoll_pwait2
-++442	common	watch_mount		sys_watch_mount
- =20
-  #
- -# x32-specific system call numbers start at 512 to avoid cache impact
- -# for native 64-bit operation. The __x32_compat_sys stubs are created
- -# on-the-fly for compat_sys_*() compatibility system calls if X86_X32
- -# is defined.
- +# Due to a historical design error, certain syscalls are numbered differe=
-ntly
- +# in x32 as compared to native x86_64.  These syscalls have numbers 512-5=
-47.
- +# Do not add new syscalls to this range.  Numbers 548 and above are avail=
-able
- +# for non-x32 use.
-  #
-  512	x32	rt_sigaction		compat_sys_rt_sigaction
-  513	x32	rt_sigreturn		compat_sys_x32_rt_sigreturn
-diff --cc arch/xtensa/kernel/syscalls/syscall.tbl
-index 46116a28eeed,5b28ee39f70f..000000000000
---- a/arch/xtensa/kernel/syscalls/syscall.tbl
-+++ b/arch/xtensa/kernel/syscalls/syscall.tbl
-@@@ -410,5 -409,4 +410,6 @@@
-  437	common	openat2				sys_openat2
-  438	common	pidfd_getfd			sys_pidfd_getfd
-  439	common	faccessat2			sys_faccessat2
- -440	common	watch_mount			sys_watch_mount
- +440	common	process_madvise			sys_process_madvise
- +441	common	epoll_pwait2			sys_epoll_pwait2
-++442	common	watch_mount			sys_watch_mount
-diff --cc include/uapi/asm-generic/unistd.h
-index 728752917785,fcdca8c7d30a..000000000000
---- a/include/uapi/asm-generic/unistd.h
-+++ b/include/uapi/asm-generic/unistd.h
-@@@ -857,13 -857,11 +857,15 @@@ __SYSCALL(__NR_openat2, sys_openat2
-  __SYSCALL(__NR_pidfd_getfd, sys_pidfd_getfd)
-  #define __NR_faccessat2 439
-  __SYSCALL(__NR_faccessat2, sys_faccessat2)
- -#define __NR_watch_mount 440
- +#define __NR_process_madvise 440
- +__SYSCALL(__NR_process_madvise, sys_process_madvise)
- +#define __NR_epoll_pwait2 441
- +__SC_COMP(__NR_epoll_pwait2, sys_epoll_pwait2, compat_sys_epoll_pwait2)
-++#define __NR_watch_mount 442
-+ __SYSCALL(__NR_watch_mount, sys_watch_mount)
- =20
-  #undef __NR_syscalls
-- #define __NR_syscalls 442
- -#define __NR_syscalls 441
-++#define __NR_syscalls 443
- =20
-  /*
-   * 32 bit systems traditionally used different
 
---Sig_/x2tSK=g50YMR/8duWuqmpWD
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/f9BEACgkQAVBC80lX
-0GzCZAgAnm1mrdosyaemirts/R8a0po6VGxbH8vFQQ4QNhVab4Rk75aUXe/l6LO4
-3eX3cqyHQQyHi3PjEO18DUQQwWJtGo+2zo0Q/yMxJyoRRL2cR5cJM9iY9M1j2Bqc
-ePp39HJQtav6K+OjtAEXvvLowfzsh6PXR8hPnxAmfG2cXL2isTIcFVP8zeXgpLRS
-XcCMuHzDj4fkUSnRHklTjEQewPUv/OI34/ip9BtkQpEl3eSkTIzm6EkmzUUEABBT
-C5Vx/+1KvBK7jE5yWS9n9dxm1qRktVgeWhUYvKN7XwzCQ10jjcOogmZkKRBN+Vdr
-ni7LCIbebGYnBCugB0Ln8JcsoWzVGA==
-=yaV/
------END PGP SIGNATURE-----
-
---Sig_/x2tSK=g50YMR/8duWuqmpWD--
+--
+Ricardo Ribalda
