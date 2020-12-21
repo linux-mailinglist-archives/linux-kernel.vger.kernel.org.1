@@ -2,115 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1884E2DFAB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 11:02:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23FAC2DFAD5
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 11:11:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726117AbgLUKCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 05:02:13 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:28358 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725895AbgLUKCM (ORCPT
+        id S1726719AbgLUKIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 05:08:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725954AbgLUKId (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 05:02:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1608544931; x=1640080931;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=P5PLkNTxKnTcuBIkt7ohAbLajhx/jYOtM+J9jpjlu3M=;
-  b=NUTXCf5dAoKXNy8wvPWHdVa64EohlFazDxatz+xR24Ml7n1TxmLb0Ywo
-   pOPo9BwQmXMyfxqGYFgIcA7Leu8/Xz5TcQTTR/uK8ionLPZrfpbbq0QzL
-   KuBeJG3pIYt4s6UG9YVF+Xa+yPiUaKL+aOonO51Wtd5zinYn+zM3KpXMO
-   B1z1mSEOweC8FpMXacaX3VNmH5zi0TljxY/3ihXXTPij2mn0PIvI1Ny0A
-   Lvr3X4SYTUoTNtitzxvYevp2HZY9wZkY/3MAFW+5Z3Uwe6b4e69nW5UT2
-   iqZUPO7hCb8iG6/yYWf7GsFFSL6Ww60EgzGnWrGyUtH/IvLexYEZ+lGBb
-   g==;
-IronPort-SDR: v551d5C5GoxU2Cx/ml72RMe8NPhG04HR4z+CBx197HZdVFSIN5pGfKCjRNWV6Ov5yMTLKQ7/E9
- oxxPH00EtCXeUJSeo/lAACkG1R76lzeIlujo7gDMgd9/FAEgcsYeHUzI5smJ24roRq08G+Fh7p
- vGo9j3rnuDi84OnOa+PPkOIsb84CTcpJKd31aiGnuAHBa78Y3MSlBWKpgzyjD62rXiybkIbhQO
- ChhUVYHvRcwww4IVvAFH7KOvprRQT7JC22Gb+fXzu4c/6wPjmLJ6EZkVono6X+D3FLzj1lULPt
- RVA=
-X-IronPort-AV: E=Sophos;i="5.78,436,1599548400"; 
-   d="scan'208";a="103547960"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 Dec 2020 03:00:55 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 21 Dec 2020 03:00:54 -0700
-Received: from tyr.hegelund-hansen.dk (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Mon, 21 Dec 2020 03:00:50 -0700
-Message-ID: <70800b38c931716e985d6614f1c33dd05124ef98.camel@microchip.com>
-Subject: Re: [RFC PATCH v2 1/8] dt-bindings: net: sparx5: Add sparx5-switch
- bindings
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Device Tree List <devicetree@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Russell King <linux@armlinux.org.uk>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        "Bjarni Jonasson" <bjarni.jonasson@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Mark Einon <mark.einon@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        "Arnd Bergmann" <arnd@arndb.de>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Date:   Mon, 21 Dec 2020 11:00:49 +0100
-In-Reply-To: <bd696641-49f1-6411-ef7d-68bf243c8cba@gmail.com>
-References: <20201217075134.919699-1-steen.hegelund@microchip.com>
-         <20201217075134.919699-2-steen.hegelund@microchip.com>
-         <bd696641-49f1-6411-ef7d-68bf243c8cba@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 
+        Mon, 21 Dec 2020 05:08:33 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54AF9C0613D3;
+        Mon, 21 Dec 2020 02:07:52 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id jx16so12596695ejb.10;
+        Mon, 21 Dec 2020 02:07:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=2OyCY7MUawhRtF8zSgGn+tDkG/srtG90JrYQFup8Chk=;
+        b=r232zX9L4pt1bWMcL3zAh5nuTLsxd5quAH0m0mE7Um6SZ0HAHHAmTcCvGIp24oVJks
+         mlTtso9p1uUOo+WQuksmGhR8VGgWBfFiPSO95y8SSccP6AYqeJy03puh8ZF3KkXaMvpY
+         DQsE68Jq22vObIGcXb9dA09vKtnHem/Qg0qGW8WIw9TGRAYTyT3MjC4sN5ycbdtYC/He
+         OL4g5Km7jAGyygO1lSarq/HBaaqkKtHI5Dw8S3T5e3Y9+f08I+eBq1wkalAvN56+8idK
+         mRf6lFdbZU/N4HseUY0+VPsAbJof0kTrU3nzBB0NfgnJJxW46ycVk73iflwX5R4fuNb8
+         lvfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=2OyCY7MUawhRtF8zSgGn+tDkG/srtG90JrYQFup8Chk=;
+        b=m9nFiNXom6wQU3ep89wtHbos5w47v74n/WyNbjV+rbtfoLTSAQhoOg6kUW2az4Ki+H
+         7THv0WftG8FD3JveOjahezMXx3qZHsFHngHnsfBAWAeOr+pfJ2L6dqseS7twtYHwyjDS
+         tdGsDJOSRfHoun0bWoLB3TO2Ni4HafElg5mz4nWHR6JJGFpRUUH0mr+28nedNmKi1tsa
+         9XW0HZqtl0n/2aVh+8m00ve3ur8wra65i3IIGEPAJQIOS9a8/gZTz8zZsAP3zG9/4eJs
+         FhDrBrWjcmKiS/D5CRiL1MiPWt4uAl3Q/DM13fjIPWlWXNQtjBDjYqvIfHuu09bVZtWk
+         VNDQ==
+X-Gm-Message-State: AOAM532lQHiocz3N6b2v7VTf52Hbftl9+1P0EYahuLRq09+Y7MKx6Dpk
+        tIf+FURmq6qohBDehKqMFiPqVgFiD/LcRSbq
+X-Google-Smtp-Source: ABdhPJzHPhFrUHgP7kL2GQAEUaECuiJfhpNAkZ6c1nD3LzX82BD9u6rIoTN+YEiVFx0OZgXhyYUBNg==
+X-Received: by 2002:adf:9d83:: with SMTP id p3mr18118002wre.313.1608544912002;
+        Mon, 21 Dec 2020 02:01:52 -0800 (PST)
+Received: from [192.168.1.211] ([2.31.224.116])
+        by smtp.gmail.com with ESMTPSA id w13sm25525501wrt.52.2020.12.21.02.01.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Dec 2020 02:01:51 -0800 (PST)
+Subject: Re: [PATCH v2 06/12] software_node: Add support for fwnode_graph*()
+ family of functions
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
+        lenb@kernel.org, gregkh@linuxfoundation.org, yong.zhi@intel.com,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
+        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
+        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
+        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
+        linus.walleij@linaro.org, heikki.krogerus@linux.intel.com,
+        kitakar@gmail.com, jorhand@linux.microsoft.com
+References: <20201217234337.1983732-1-djrscally@gmail.com>
+ <20201217234337.1983732-7-djrscally@gmail.com>
+ <20201221093408.GH26370@paasikivi.fi.intel.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <b6228b89-cbc8-9b8a-6a68-a401e2e803fc@gmail.com>
+Date:   Mon, 21 Dec 2020 10:01:50 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201221093408.GH26370@paasikivi.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-12-20 at 16:55 -0800, Florian Fainelli wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you
-> know the content is safe
-> 
-> On 12/16/2020 11:51 PM, Steen Hegelund wrote:
-> > Document the Sparx5 switch device driver bindings
-> > 
-> > Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
-> > Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
-> > ---
-> 
-> [snip]
-> 
-> > +          max-speed:
-> > +            maxItems: 1
-> > +            description: Bandwidth allocated to this port
-> > +
-> > +          phys:
-> > +            description: phandle of a Ethernet Serdes PHY
-> > +
-> > +          phy-handle:
-> > +            description: phandle of a Ethernet PHY
-> > +
-> > +          phy-mode:
-> > +            description: Interface between the serdes and the phy
-> 
-> Can you specify this pertains to the Serdes and Ethernet PHY?
-Hi Florian,
+Hi Sakari - thanks for the reviews in previous emails
 
-Yes: I will clarify that phy-mode is for the optional Ethernet cuPHY.
+On 21/12/2020 09:34, Sakari Ailus wrote:
+> Hi Daniel and Heikki,
+>
+> On Thu, Dec 17, 2020 at 11:43:31PM +0000, Daniel Scally wrote:
+>
+> +static struct fwnode_handle *
+> +software_node_graph_get_port_parent(struct fwnode_handle *fwnode)
+> +{
+> +	struct swnode *swnode = to_swnode(fwnode);
+> +	struct fwnode_handle *parent;
+> +
+> +	if (!strcmp(swnode->parent->node->name, "ports"))
+> +		parent = &swnode->parent->parent->fwnode;
+> +	else
+> +		parent = &swnode->parent->fwnode;
+> If you happen to call this function on a non-port node for whatever reason,
+> you may end up accessing a pointer that's NULL, can't you?
 
-Thanks for your comments
-Steen
+Yes, actually.
 
-> --
-> Florian
-
-
+> Instead I'd do
+> something like:
+>
+> swnode = swnode->parent;
+> if (swnode && !strcmp(swnode->node->name, "ports"))
+> 	swnode = swnode->parent;
+>
+> return swnode ? software_node_get(&swnode->fwnode) : NULL;
+>
+> You can also drop parent as a by-product of this.
+Yes ok, that looks good to me - thanks.
+>> +
+>> +	return software_node_get(parent);
+>> +}
+>> +
+>> +static int
+>> +software_node_graph_parse_endpoint(const struct fwnode_handle *fwnode,
+>> +				   struct fwnode_endpoint *endpoint)
+>> +{
+>> +	struct swnode *swnode = to_swnode(fwnode);
+>> +	int ret;
+>> +
+>> +	ret = kstrtou32(swnode->parent->node->name + 5, 10, &endpoint->port);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	endpoint->id = swnode->id;
+>> +	endpoint->local_fwnode = fwnode;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>  static const struct fwnode_operations software_node_ops = {
+>>  	.get = software_node_get,
+>>  	.put = software_node_put,
+>> @@ -551,7 +655,11 @@ static const struct fwnode_operations software_node_ops = {
+>>  	.get_parent = software_node_get_parent,
+>>  	.get_next_child_node = software_node_get_next_child,
+>>  	.get_named_child_node = software_node_get_named_child_node,
+>> -	.get_reference_args = software_node_get_reference_args
+>> +	.get_reference_args = software_node_get_reference_args,
+>> +	.graph_get_next_endpoint = software_node_graph_get_next_endpoint,
+>> +	.graph_get_remote_endpoint = software_node_graph_get_remote_endpoint,
+>> +	.graph_get_port_parent = software_node_graph_get_port_parent,
+>> +	.graph_parse_endpoint = software_node_graph_parse_endpoint,
+>>  };
+>>  
+>>  /* -------------------------------------------------------------------------- */
