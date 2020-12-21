@@ -2,142 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B553A2DF7F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 04:11:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C33202DF87D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 06:05:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727038AbgLUDLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 22:11:43 -0500
-Received: from mail-eopbgr80042.outbound.protection.outlook.com ([40.107.8.42]:38626
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725497AbgLUDLm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 22:11:42 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A+2XN8SThlJlq+L28Gk+fmR+PD+ptaxJ0AEuOYJt2Jrb+Ib4TcPglSxkBHdJEAQ8ErcKKxJ7F3zYGZFw5QasZZoupNYF8SKNKslM66bubHKt9PRhPgtRS/c1X8mnt9q7XJioDRzVCWP8+VinOheTrPjiXMR5PdSWcdqoxIDFDpFkoF/vnjb3DIVzGHY+znxk7tI8Qb2/thJef3djIJVr5nva3Rdnt09GS3F7ajlmS1DibIL7HPKhjvIdimyvIFlZGoYFohcf7D7ddbADpAXJWB8v+lQQC2cHdijP6BflCvut6AhwYhFS61h2Bv4x1XCMD03Nla4rdQ4gNLHIX9W8dA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=i9G9LwncCURDgA4NamSKA4f0wmHa9bgxL0wio5ajX9M=;
- b=bX98fAmLDqf+Z4oZBJ4B+yL2u1omV+oz/YmIQe4ZvTya2NU9a6KZJliYD9fV9HguCAGLJx1ju6D09PyTTL+CV2KsyecDPcATXVrXlUGHbm3+GQotswb9KFC67J8KR9qQU9eF8UCWdTnSPLZJt2lZdePWCG8IHKUilJMmoOeWkA+u6vWKu8YfHexEvutOnUKLp8jCSCQL4nZr6kaA7sfsj5fr9mIR2dU9T75vPjn77G45If1WbV5hELuxff6oRy3Kv3yqvOr+6GXNxrDjcQE9cPI0ernxI23sZwtZgUgNdQ8J2K6Aml+RXKbm6gxkCrU9pHmEdof4Pny5Wvhcel6unw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=i9G9LwncCURDgA4NamSKA4f0wmHa9bgxL0wio5ajX9M=;
- b=O7+NbSOkqqsKGvOAPRrDhTEft6leBhV6YxIlWOl7MJWQIjTYSgqkzypSKZ3O1MW2zaSe5oT6SRyJGyD1oK/KqncdTJSrlVXQuZUIZPN8lWRsDvn2wjqD/Keg1l919Jq1RJ3F2Tdai5ZkySXKDBz4om+ZJzvMoLHyRiB2rX2jf64=
-Received: from AM6PR04MB6053.eurprd04.prod.outlook.com (2603:10a6:20b:b9::10)
- by AM6PR0402MB3638.eurprd04.prod.outlook.com (2603:10a6:209:23::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.33; Mon, 21 Dec
- 2020 03:10:52 +0000
-Received: from AM6PR04MB6053.eurprd04.prod.outlook.com
- ([fe80::78fe:9b7a:a2ac:9631]) by AM6PR04MB6053.eurprd04.prod.outlook.com
- ([fe80::78fe:9b7a:a2ac:9631%7]) with mapi id 15.20.3676.031; Mon, 21 Dec 2020
- 03:10:52 +0000
-From:   "Alice Guo (OSS)" <alice.guo@oss.nxp.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        "Alice Guo (OSS)" <alice.guo@oss.nxp.com>
-CC:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH v8 3/4] arm64: dts: imx8m: add NVMEM provider and consumer
- to read soc unique ID
-Thread-Topic: [PATCH v8 3/4] arm64: dts: imx8m: add NVMEM provider and
- consumer to read soc unique ID
-Thread-Index: AQHW1RkW1i0niF/JuUmT/2rSyLdybKn+V30AgAKL3iA=
-Date:   Mon, 21 Dec 2020 03:10:52 +0000
-Message-ID: <AM6PR04MB605316DAE14009BB28804AB3E2C00@AM6PR04MB6053.eurprd04.prod.outlook.com>
-References: <20201218083726.16427-1-alice.guo@oss.nxp.com>
- <20201218083726.16427-3-alice.guo@oss.nxp.com>
- <20201219121656.GA13886@kozik-lap>
-In-Reply-To: <20201219121656.GA13886@kozik-lap>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [119.31.174.71]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: b33962b7-32c8-445c-06ae-08d8a55e065c
-x-ms-traffictypediagnostic: AM6PR0402MB3638:
-x-ms-exchange-sharedmailbox-routingagent-processed: True
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM6PR0402MB3638A6880EC949005F8F9378A3C00@AM6PR0402MB3638.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: klaw9izt+nZaZwUIkkIa725uxbmTEl59/XoidISuJ0lxEYX9pywXX5kb9WT7eVGXH9R/yfsliGuIM8lGBEzxgurj+ALV+DKiMdnyLOgUYuYWzH2L6cF7tSNgx/6dSny2CsI4d4087q4cp6CqC7cTnHcZEY8XVEdp7bDhdK4IEkft4QPXgm61V+jz/jjetUEtuDOPfiiSLHiQtOflWDyKQaVdBLXUdeo47XMr4iv2VM22ABZEUO6GI3dWc+KJwhTJRkx9kyuDhVVv8ik4n6qRaO7L/BPLPO/Rsj3qfRFnEcIKWEB6rXcWpz7UCrJCDg6g84CK6qFdi0071906r9YW20wKd0l4htYSvHJnM3PVTFNmugs1UES9H5DP4C7WAqOMcmh+Za691hM0ffeONvgF+w9YUumh6o+jmEEKcsNpR3sdpsELZ+SExDarr7nTOtbd
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB6053.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(39860400002)(376002)(396003)(136003)(55016002)(86362001)(76116006)(8676002)(83380400001)(54906003)(52536014)(4744005)(2906002)(316002)(64756008)(66946007)(66476007)(4326008)(66556008)(110136005)(66446008)(9686003)(186003)(26005)(5660300002)(33656002)(71200400001)(6506007)(7696005)(53546011)(8936002)(478600001)(32563001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?dUtVZXBHTlBmbHROK3dGa2xkQnNsbXBZR1N2T2Y5a1VQZDIvQUNMcHR1ekVP?=
- =?utf-8?B?cm1yejNlN1RZMXQ5ak9vN0xCT2ZxblowYzg4MzRJa3QxVm56c01QNERwb0JU?=
- =?utf-8?B?WFp1OStFbVlJd3NDemhmdnREZ09rTkhoTDFVVUwvcUJmNTROeWFwN2JqeHF1?=
- =?utf-8?B?Z1k2OU4ycmZ1NVpYTFE0YWdBeDJ4eWVOT0FINlA4YWtGQzk1d0JxbXB1ckR3?=
- =?utf-8?B?ZEdTbzYyRXNRMi9CYTNERXB3emUrOS9tcXl6bjh4ZFQ2dC9yT20xQlRMMG1Y?=
- =?utf-8?B?NjUvUnlnMjAwYmdxL2hkb0R2Yk9sN0hpbThYK2VPQ3R0QkYvYmZoMjlob2My?=
- =?utf-8?B?OGRPazlpS2owcC9TTGhKWXFJWEduY1NBVzdxMFhyb0U4N1AwZG8vdzAyS0pE?=
- =?utf-8?B?M29HTjIzK0d5MU1TTm1CeWFXZFN5cEhRRmpVZkUyeUNTSENJSFpSbHFpVUZi?=
- =?utf-8?B?c2lmSkxMZUZRS05hYWdZRDZ4U3FxRTNmQWtYQWE5Mjg4V1hKR0tISTlrRm1r?=
- =?utf-8?B?ay9aQVVWVE9JVi9pZFg1MXNzQTVhcENwaFlIVVM4bllxWC9TSGQ2RVZ4RnVv?=
- =?utf-8?B?YzZCdCt6S0F4ckptQU4yRE9CRitCODlwbHF6R1lHcjB2ZFNOQkQvUm1IVTJX?=
- =?utf-8?B?Y1A4a1FzZmFPbk9QcnF3VkFRTXJLdkpKei9nQmhmNmtDaGdQQzE0dkQvUHgw?=
- =?utf-8?B?SHE2cDdta1E2ZnJBR3lrcDU2NlJ0cUpOKzJoWW5lT1J3S3VxYkMvaUpyMk9S?=
- =?utf-8?B?S1dRRUxXdCtmWHlYaDZqeWs2cmV2UlB5RUVGS2kwTmdYRzhranFFeStQY1U2?=
- =?utf-8?B?dE9NSk5FeHRwamlSeVJzWFI2M2dTeWZxTTNzRDZremYreE9xSlVTcGNWTGhx?=
- =?utf-8?B?MzBqN0lLdWV6dUp2cDFDUXBIUDF3SEFobjJIcnlDVWN0dlRYTXlndDBOZ2F4?=
- =?utf-8?B?RjdnSW44dFhKajR6STlUMmdzbzBHblJ2TmNGVldiZXRTb0RsMEd1eEQ4QnZB?=
- =?utf-8?B?ZWlWUHErZEhWZTFkU3RXYll0MXdPYXNGdDdDZ1ErNXhwZTkwd25Yb1Q4R214?=
- =?utf-8?B?SDduN3orWFpMOXRJUlRhUlREMUlvSW4wREh5WU5NUi9SSUdSU3d4MU0xSWhz?=
- =?utf-8?B?TGYyREVpWHIxY1plTlMxcmRLdE5JbVRLTWhPb3lpRXVWQXAzTHIxWHp6MmRp?=
- =?utf-8?B?NzZqUERKN2FMd1ZIa1E4dFM1ckw3V1RvZ1p5QlEyL0REaTRvTEdWbzd4Ymwr?=
- =?utf-8?B?QnllajBGRFRrTVh1K0FCblJ6OUY5SE1FZXRHZXR2bHg1Z2ZzYkx1d0lwN2Rl?=
- =?utf-8?Q?MzD14AtfWhOqw=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726688AbgLUFD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 00:03:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725984AbgLUFD6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 00:03:58 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B28C061282
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 21:03:17 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id lt17so11683949ejb.3
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 21:03:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JSDBpbAb+/VW+RgOV1OSYF43CooUkraHhPfK0IhMgi4=;
+        b=cf8HHgfeCrEt06Dq61ckFkc/qILM4IrFeIP8bQNnqWyTh/0UhG4cI1FIZ8YaJugCBH
+         0g+Jvedgj1D50OK5h40yKwQsYcV/B5piZQqbmX1DDcwt9mKCOBD26gdGHc3O1SuRfJmL
+         8EYfqbiCUWj/AnIXhmdjmXMKLltgk0mro30O4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JSDBpbAb+/VW+RgOV1OSYF43CooUkraHhPfK0IhMgi4=;
+        b=qA1evGYDF7P7dJ+NFzQwCYPNE4L11t0Z3JgKtCSUwfHCh3LmuB/1GE0U018bBpKx2G
+         wfaa9WgXZP7rgXIOaB4OEF7bO2URgS1Krq0r+Uij5cSjQN/JxjOIkgfnKni92Rho88RG
+         nKriIiu36GM2hWVo4EJhRbi6lTfTbdOuy7A1CPDeY/hf4gKxVc/FivPubAjyS39VXVgV
+         Qby9L1A1FKzemPWP191/C+9Ltnk9/OuRm9D/FMed/9ZPKnM2fx5OptKtTJE8Elw3fsgH
+         gJAP07zOO2lwh1XDDLhaHLLrJ+fDiMVPgOv0gmYhAOFcmgKkydTsQi2PZP37RAX7zpQO
+         MEfQ==
+X-Gm-Message-State: AOAM531wQlY+wAxNNShb+roYLD6nht96hTOFncYbYeEI4mbMsiwyXh+C
+        0Zso5x33KLqowKOOPelMHr8F2QsHGQoVxQ==
+X-Google-Smtp-Source: ABdhPJyPc9ZhQYgr/F+mkUPcYGulFPilVcttalmrzP4mi9zmJzm8z97v1v70k+Ki8shCS30YI0rA/Q==
+X-Received: by 2002:a17:906:5f97:: with SMTP id a23mr13972867eju.128.1608520398009;
+        Sun, 20 Dec 2020 19:13:18 -0800 (PST)
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com. [209.85.128.50])
+        by smtp.gmail.com with ESMTPSA id dg10sm6209951edb.63.2020.12.20.19.13.16
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 20 Dec 2020 19:13:16 -0800 (PST)
+Received: by mail-wm1-f50.google.com with SMTP id e25so9558845wme.0
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 19:13:16 -0800 (PST)
+X-Received: by 2002:a1c:c308:: with SMTP id t8mr14451460wmf.22.1608520395846;
+ Sun, 20 Dec 2020 19:13:15 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB6053.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b33962b7-32c8-445c-06ae-08d8a55e065c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Dec 2020 03:10:52.3939
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: vmx6VwTVAdAx1msZV6uorESEQeLC93UuO/Q+G/GVjlHhyNjhNziWCjEu7E3QlLVAg5PBbtTxOO66+vDAZD/nzg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR0402MB3638
+References: <20200804192939.2251988-1-helen.koike@collabora.com>
+ <20200804192939.2251988-3-helen.koike@collabora.com> <b8a08145-c54e-3d06-dd61-78ce99a812d5@xs4all.nl>
+ <3ac23162-ce59-6cc3-da48-90f26c618345@collabora.com> <CAAFQd5A1F7g=LSJrtqwF+KEUq-QXmi0__-mbebsN27xFA0rQCQ@mail.gmail.com>
+ <b14809a5-e471-73da-efde-1d0d6f54e485@collabora.com> <de781845-7192-df0b-26c4-36b981237735@xs4all.nl>
+ <f565c17a-e6ef-e875-bc01-1122ba59a50a@collabora.com> <CAAFQd5C=+0YYNHrk+B3-zUTLT8rfBg3iC9Jn7nXzFccC0JW79Q@mail.gmail.com>
+ <a41fe519-8835-97a0-ef8a-ad5b5efcb449@collabora.com> <CAAFQd5DKE=xVf9tX6J6RaVR0M4udK9JDnMESdBSa8aKLwQsvfQ@mail.gmail.com>
+ <4fec6e91-a19b-b0be-d4b6-72a333451d9b@collabora.com>
+In-Reply-To: <4fec6e91-a19b-b0be-d4b6-72a333451d9b@collabora.com>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Mon, 21 Dec 2020 12:13:04 +0900
+X-Gmail-Original-Message-ID: <CAAFQd5Ds5DQ0V+c_Oapwg9CQ0ADkjtML6w6H5Ad4hwMz9Rg9YQ@mail.gmail.com>
+Message-ID: <CAAFQd5Ds5DQ0V+c_Oapwg9CQ0ADkjtML6w6H5Ad4hwMz9Rg9YQ@mail.gmail.com>
+Subject: Re: [PATCH v5 2/7] media: v4l2: Add extended buffer operations
+To:     Helen Koike <helen.koike@collabora.com>
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Hirokazu Honda <hiroh@chromium.org>,
+        Nicolas Dufresne <nicolas@ndufresne.ca>,
+        Brian Starkey <Brian.Starkey@arm.com>, kernel@collabora.com,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Maxime Jourdan <mjourdan@baylibre.com>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogS3J6eXN6dG9mIEtvemxv
-d3NraSA8a3J6a0BrZXJuZWwub3JnPg0KPiBTZW50OiAyMDIw5bm0MTLmnIgxOeaXpSAyMDoxNw0K
-PiBUbzogQWxpY2UgR3VvIChPU1MpIDxhbGljZS5ndW9Ab3NzLm54cC5jb20+DQo+IENjOiByb2Jo
-K2R0QGtlcm5lbC5vcmc7IHNoYXduZ3VvQGtlcm5lbC5vcmc7IHMuaGF1ZXJAcGVuZ3V0cm9uaXgu
-ZGU7DQo+IGtlcm5lbEBwZW5ndXRyb25peC5kZTsgZmVzdGV2YW1AZ21haWwuY29tOyBkZXZpY2V0
-cmVlQHZnZXIua2VybmVsLm9yZzsNCj4gbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQu
-b3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBkbC1saW51eC1pbXgNCj4gPGxpbnV4
-LWlteEBueHAuY29tPg0KPiBTdWJqZWN0OiBSZTogW1BBVENIIHY4IDMvNF0gYXJtNjQ6IGR0czog
-aW14OG06IGFkZCBOVk1FTSBwcm92aWRlciBhbmQNCj4gY29uc3VtZXIgdG8gcmVhZCBzb2MgdW5p
-cXVlIElEDQo+IA0KPiBPbiBGcmksIERlYyAxOCwgMjAyMCBhdCAwNDozNzoyNVBNICswODAwLCBB
-bGljZSBHdW8gKE9TUykgd3JvdGU6DQo+ID4gRnJvbTogQWxpY2UgR3VvIDxhbGljZS5ndW9Abnhw
-LmNvbT4NCj4gPg0KPiA+IEluIG9yZGVyIHRvIGJlIGFibGUgdG8gdXNlIE5WTUVNIEFQSXMgdG8g
-cmVhZCBzb2MgdW5pcXVlIElELCBhZGQgdGhlDQo+ID4gbnZtZW0gZGF0YSBjZWxsIGFuZCBuYW1l
-IGZvciBudm1lbS1jZWxscyB0byB0aGUgInNvYyIgbm9kZSwgYW5kIGFkZCBhDQo+ID4gbnZtZW0g
-bm9kZSB3aGljaCBwcm92aWRlcyBzb2MgdW5pcXVlIElEIHRvIGVmdXNlQDMwMzUwMDAwLg0KPiA+
-DQo+ID4gU2lnbmVkLW9mZi1ieTogQWxpY2UgR3VvIDxhbGljZS5ndW9AbnhwLmNvbT4NCj4gPiAt
-LS0NCj4gPiBDaGFuZ2VzIGZvciB2ODoNCj4gPiAgLSBub25lDQo+ID4gQ2hhbmdlcyBmb3Igdjc6
-DQo+ID4gIC0gYWRkIFJldmlld2VkLWJ5DQo+IA0KPiBXaGF0IGhhcHBlbmVkIHdpdGggbXkgcmV2
-aWV3ZWQtYnk/DQo+IA0KPiBCZXN0IHJlZ2FyZHMsDQo+IEtyenlzenRvZg0KDQpIaSwNCkkgZm9y
-Z290IHRvIGFkZCByZXZpZXdlZC1ieS4g4pi5DQoNCkJlc3QgcmVnYXJkcywNCkFsaWNlDQo=
+On Thu, Dec 17, 2020 at 10:20 PM Helen Koike <helen.koike@collabora.com> wrote:
+>
+> Hi Tomasz,
+>
+> Thanks for your comments, I have a few questions below.
+>
+> On 12/16/20 12:13 AM, Tomasz Figa wrote:
+> > On Tue, Dec 15, 2020 at 11:37 PM Helen Koike <helen.koike@collabora.com> wrote:
+> >>
+> >> Hi Tomasz,
+> >>
+> >> On 12/14/20 7:46 AM, Tomasz Figa wrote:
+> >>> On Fri, Dec 4, 2020 at 4:52 AM Helen Koike <helen.koike@collabora.com> wrote:
+> >>>>
+> >>>> Hi,
+> >>>>
+> >>>> Please see my 2 points below (about v4l2_ext_buffer and another about timestamp).
+> >>>>
+> >>>> On 12/3/20 12:11 PM, Hans Verkuil wrote:
+> >>>>> On 23/11/2020 18:40, Helen Koike wrote:
+> >>>>>>
+> >>>>>>
+> >>>>>> On 11/23/20 12:46 PM, Tomasz Figa wrote:
+> >>>>>>> On Tue, Nov 24, 2020 at 12:08 AM Helen Koike <helen.koike@collabora.com> wrote:
+> >>>>>>>>
+> >>>>>>>> Hi Hans,
+> >>>>>>>>
+> >>>>>>>> Thank you for your review.
+> >>>>>>>>
+> >>>>>>>> On 9/9/20 9:27 AM, Hans Verkuil wrote:
+> >>>>>>>>> Hi Helen,
+> >>>>>>>>>
+> >>>>>>>>> Again I'm just reviewing the uAPI.
+> >>>>>>>>>
+> >>>>>>>>> On 04/08/2020 21:29, Helen Koike wrote:
+[snip]
+> >
+> >>
+> >> Output: userspace fills plane information, informing in which memory buffer each
+> >>         plane was placed (Or should this be pre-determined by the driver?)
+> >>
+> >> For MMAP
+> >> -----------------------
+> >> userspace performs EXT_CREATE_BUF ioctl to reserve a buffer "index" range in
+> >> that mode, to be used in EXT_QBUF and EXT_DQBUF
+> >>
+> >> Should the API allow userspace to select how many memory buffers it wants?
+> >> (maybe not)
+> >
+> > I think it does allow that - it accepts the v4l2_ext_format struct.
+>
+> hmmm, I thought v4l2_ext_format would describe color planes, and not memory planes.
+> Should it describe memory planes instead? Since planes are defined by the pixelformat.
+> But is this information relevant to ext_{set/get/try} format?
+>
+
+Good point. I ended up assuming the current convention, where giving
+an M format would imply num_memory_planes == num_color_planes and
+non-M format num_memory_planes == 1. Sounds like we might want
+something like a flags field and that could have bits defined to
+select that. I think it would actually be useful for S_FMT as well,
+because that's what REQBUFS would use.
+
+> >
+> >>
+> >> userspace performs EXT_QUERY_MMAP_BUF to get the mmap offset/cookie and length
+> >> for each memory buffer.
+> >>
+> >> On EXT_QBUF, userspace doesn't need to fill membuf information. Should the
+> >> mmap offset and length be filled by the kernel and returned to userspace here
+> >> as well? I'm leaning towards: no.
+> >
+> > Yeah, based on my comment above, I think the answer should be no.
+> >
+> >>
+> >> If the answer is no, then here is my proposal:
+> >> ----------------------------------------------
+> >>
+> >> /* If MMAP, drivers decide how many memory buffers to allocate */
+> >> int ioctl( int fd, VIDIOC_EXT_CREATE_BUFS, struct v4l2_ext_buffer *argp )
+> >>
+> >> /* Returns -EINVAL if not MMAP */
+> >> int ioctl( int fd, VIDIOC_EXT_MMAP_QUERYBUF, struct v4l2_ext_mmap_querybuf *argp )
+> >>
+> >> /* userspace fills v4l2_ext_buffer.membufs if DMA-fd or Userptr, leave it zero for MMAP
+> >>  * Should userspace also fill v4l2_ext_buffer.planes?
+> >>  */
+> >> int ioctl( int fd, VIDIOC_EXT_QBUF, struct v4l2_ext_buffer *argp )
+> >>
+> >> /* v4l2_ext_buffer.membufs is set to zero by the driver */
+> >> int ioctl( int fd, VIDIOC_EXT_DBUF, struct v4l2_ext_buffer *argp )
+> >>
+> >> (I omitted reserved fields below)
+> >>
+> >> struct v4l2_ext_create_buffers {
+> >>         __u32                           index;
+> >>         __u32                           count;
+> >>         __u32                           memory;
+> >>         __u32                           capabilities;
+> >>         struct v4l2_ext_pix_format      format;
+> >> };
+> >>
+> >> struct v4l2_ext_mmap_membuf {
+> >>         __u32 offset;
+> >>         __u32 length;
+> >> }
+> >>
+> >> struct v4l2_ext_mmap_querybuf {
+> >>         __u32 index;
+> >>         struct v4l2_ext_mmap_membuf membufs[VIDEO_MAX_PLANES];
+> >> }
+> >>
+> >> struct v4l2_ext_membuf {
+> >>         __u32 memory;
+> >>         union {
+> >>                 __u64 userptr;
+> >>                 __s32 dmabuf_fd;
+> >>         } m;
+> >>         // Can't we just remove the union and "memory" field, and the non-zero
+> >>         // is the one we should use?
+> >
+> > I think that would lead to an equivalent result in this case. That
+> > said, I'm not sure if there would be any significant enough benefit to
+> > justify moving away from the current convention. Having the memory
+> > field might also make the structure a bit less error prone, e.g.
+> > resilient to missing memset().
+> >
+> >> };
+> >>
+> >> struct v4l2_ext_plane {
+> >>         __u32 membuf_index;
+> >>         __u32 offset;
+> >>         __u32 bytesused;
+> >> };
+> >>
+> >> struct v4l2_ext_buffer {
+> >>         __u32 index;
+> >>         __u32 type;
+> >>         __u32 field;
+> >>         __u32 sequence;
+> >>         __u64 flags;
+> >>         __u64 timestamp;
+> >>         struct v4l2_ext_membuf membufs[VIDEO_MAX_PLANES];
+> >>         struct v4l2_ext_plane planes[VIDEO_MAX_PLANES];
+> >
+> > Do we actually need this split into membufs and planes here? After
+> > all, all we want to pass to the kernel here is in what buffer the
+> > plane is in.
+>
+> You are right, we don't.
+>
+> >
+> > struct v4l2_ext_plane {
+> >         __u32 memory;
+>
+> Should we design the API to allow a buffer to contain multiple memory planes
+> of different types? Lets say one memplane is DMA-fd, the other is userptr.
+> If the answer is yes, then struct v4l2_ext_create_buffers requires some changes.
+> If not, then there is no need a "memory" field per memory plane in a buffer.
+>
+
+That's a good question. I haven't seen any practical need to do that.
+Moreover, I suspect that the API might be going towards the DMA-buf
+centric model, with DMA-buf heaps getting upstream acceptance, so
+maybe we would be fine moving the memory field to the buffer struct
+indeed.
+
+> >         union {
+> >                 __u32 membuf_index;
+> >                 __u64 userptr;
+> >                 __s32 dmabuf_fd;
+> >         } m;
+> >         __u32 offset;
+> >         __u32 bytesused;
+>
+> We also need userptr_length right?
+
+Is it actually needed? The length of the plane is determined by the
+current format. I can only see as it being an extra sanity check
+before accessing the process memory, but is it necessary? I think I
+want to hear others's opinion on this.
+
+[snip]
+
+Best regards,
+Tomasz
