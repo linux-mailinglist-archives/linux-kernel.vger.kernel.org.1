@@ -2,103 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B07A2DFC92
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 15:11:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 894A82DFC95
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 15:12:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726935AbgLUOKq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Dec 2020 09:10:46 -0500
-Received: from aposti.net ([89.234.176.197]:59550 "EHLO aposti.net"
+        id S1727050AbgLUOLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 09:11:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725807AbgLUOKp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 09:10:45 -0500
-Date:   Mon, 21 Dec 2020 14:09:53 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH] MIPS: zboot: head.S clean up
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-kernel@vger.kernel.org
-Message-Id: <HO0PLQ.1VZP0U76MARY1@crapouillou.net>
-In-Reply-To: <20201221130048.7753-1-jiaxun.yang@flygoat.com>
-References: <20201221130048.7753-1-jiaxun.yang@flygoat.com>
+        id S1726612AbgLUOLa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 09:11:30 -0500
+Date:   Mon, 21 Dec 2020 19:40:45 +0530
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608559850;
+        bh=brYUIuxVH73MITU87zKgoCQnt6Z9UxnkR01Ev5sawdw=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EPARUF5OrYZojT26t2nFFvX7FwB02+0Kdjh5401mULRCBNO6VlV8vBtN3PuBOHjo2
+         sqD55L3WZ2qMqXtevMvddHgKr6pmsSx94RBBxHzS86iqgMSIwiG/iBIE3Cn5KA+v5h
+         XeXdRqog1H9snO/twxfgBbZu1pFA3MooY8KcMerqcS+GeekZV5OLy4HUMBbdV5qBiK
+         8+3qEEy5Aqh4AvgKSkqHKP6PMq1w3RJ5F0aCrrWRjseagQY0ed8Sd+aZ/7aHeosTBD
+         us28ZvpcBSuKA6WwRbffQl61IAam7MZlJId1l/202mNdH7tEeIdhfGiEG2p72DyiAp
+         wQkAGXOGOYJVA==
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Xiaoming Ni <nixiaoming@huawei.com>
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, wangle6@huawei.com
+Subject: Re: [PATCH] dma/qcom/gpi: Fixes a format mismatch
+Message-ID: <20201221141045.GC3323@vkoul-mobl>
+References: <20201218104137.59200-1-nixiaoming@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201218104137.59200-1-nixiaoming@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiaxun,
+On 18-12-20, 18:41, Xiaoming Ni wrote:
+> drivers/dma/qcom/gpi.c:1419:3: warning: format '%lu' expects argument of
+>  type 'long unsigned int', but argument 8 has type 'size_t {aka unsigned
+>  int}' [-Wformat=]
+> drivers/dma/qcom/gpi.c:1427:31: warning: format '%lu' expects argument of
+>  type 'long unsigned int', but argument 3 has type 'size_t {aka unsigned
+>  int}' [-Wformat=]
+> drivers/dma/qcom/gpi.c:1447:3: warning: format '%llx' expects argument of
+>  type 'long long unsigned int', but argument 4 has type 'dma_addr_t {aka
+>  unsigned int}' [-Wformat=]
+> drivers/dma/qcom/gpi.c:1447:3: warning: format '%llx' expects argument of
+>  type 'long long unsigned int', but argument 5 has type 'phys_addr_t {aka
+>  unsigned int}' [-Wformat=]
 
-Le lun. 21 déc. 2020 à 21:00, Jiaxun Yang <jiaxun.yang@flygoat.com> a 
-écrit :
-> .cprestore is removed as we don't except Position Independent
-> zboot ELF.
-> 
-> .noreorder is also removed and rest instructions is massaged
-> to improve readability.
-> 
-> t9 register is used to indirect jump as MIPS ABI requirement.
-> 
-> Reported-by: Paul Cercueil <paul@crapouillou.net>
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> ---
->  arch/mips/boot/compressed/head.S | 17 +++++++----------
->  1 file changed, 7 insertions(+), 10 deletions(-)
-> 
-> diff --git a/arch/mips/boot/compressed/head.S 
-> b/arch/mips/boot/compressed/head.S
-> index 409cb483a9ff..977218c90bc8 100644
-> --- a/arch/mips/boot/compressed/head.S
-> +++ b/arch/mips/boot/compressed/head.S
-> @@ -15,8 +15,6 @@
->  #include <asm/asm.h>
->  #include <asm/regdef.h>
-> 
-> -	.set noreorder
-> -	.cprestore
->  	LEAF(start)
->  start:
+The subsystem is dmaengine: please use right tags (hint git log will
+tell you so)
 
-You can also remove the 'start' label, since it's declared inside the 
-LEAF() macro as well. GNU's assembler won't mind, but LLVM will choke 
-on that.
+I have fixed it up while applying, thanks
 
-Cheers,
--Paul
-
->  	/* Save boot rom start args */
-> @@ -35,21 +33,20 @@ start:
->  	PTR_LA	a0, (.heap)	     /* heap address */
->  	PTR_LA	sp, (.stack + 8192)  /* stack address */
-> 
-> -	PTR_LA	ra, 2f
-> -	PTR_LA	k0, decompress_kernel
-> -	jr	k0
-> -	 nop
-> +	PTR_LA	t9, decompress_kernel
-> +	jalr	t9
-> +
->  2:
->  	move	a0, s0
->  	move	a1, s1
->  	move	a2, s2
->  	move	a3, s3
-> -	PTR_LI	k0, KERNEL_ENTRY
-> -	jr	k0
-> -	 nop
-> +	PTR_LI	t9, KERNEL_ENTRY
-> +	jalr	t9
-> +
->  3:
->  	b	3b
-> -	 nop
-> +
->  	END(start)
-> 
->  	.comm .heap,BOOT_HEAP_SIZE,4
-> --
-> 2.29.2
-> 
-
-
+-- 
+~Vinod
