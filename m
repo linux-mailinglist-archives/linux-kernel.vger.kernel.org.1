@@ -2,101 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D362DFA73
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 10:50:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C1BF2DFA9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 10:57:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728512AbgLUJtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 04:49:32 -0500
-Received: from nautica.notk.org ([91.121.71.147]:52770 "EHLO nautica.notk.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727250AbgLUJt0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 04:49:26 -0500
-Received: by nautica.notk.org (Postfix, from userid 1001)
-        id 7E30CC009; Mon, 21 Dec 2020 10:48:43 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1608544123; bh=yaoe7VEoIsbp6ANgyjvB2rbl6fDDGfIoT92WryR11jA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=l45pzB0m0fqAo09GFPF53/iGtj27iX1hR5cWIsE8auoQyemq/OkWReTXL/7Nrc84p
-         gRprPtw6k2DuST4DT5ZpFDCLPBHleC0ttIDDi/Paq2fHUDaSXOpOMgjyeqP9BcHawC
-         nwJPm4rc/0wlS843TIBX490a/uxhgjOeEQAZvWRdMI5txx2wTiQkLGDoHRoqY3dAXE
-         Q6+rIo+i7Zt6pC+JMvpm947jOTqVk90ESexSVnjS/zTpqqkLOUZ8utoXgJ2+ZiwCDT
-         2zA2cSxY84+KY7DR4iPuLOVspzEr9oNOP2Mb1Ql4XvFKzwYy75XInYJw4v5C3Me+gF
-         rCN9sahac3tKw==
-Date:   Mon, 21 Dec 2020 10:48:28 +0100
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, v9fs-developer@lists.sourceforge.net
-Subject: [GIT PULL] 9p update for 5.11-rc1
-Message-ID: <20201221094828.GA6602@nautica>
+        id S1726554AbgLUJzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 04:55:41 -0500
+Received: from regular1.263xmail.com ([211.150.70.196]:55030 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726486AbgLUJzk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 04:55:40 -0500
+Received: from localhost (unknown [192.168.167.13])
+        by regular1.263xmail.com (Postfix) with ESMTP id 655B21F0E;
+        Mon, 21 Dec 2020 17:49:54 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+Received: from localhost.localdomain (unknown [14.18.236.70])
+        by smtp.263.net (postfix) whith ESMTP id P20470T140379059910400S1608544185429896_;
+        Mon, 21 Dec 2020 17:49:55 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <86eb62f6e5743ac4fd5988dd6125c28f>
+X-RL-SENDER: yili@winhong.com
+X-SENDER: yili@winhong.com
+X-LOGIN-NAME: yili@winhong.com
+X-FST-TO: colyli@suse.de
+X-SENDER-IP: 14.18.236.70
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Yi Li <yili@winhong.com>
+To:     colyli@suse.de
+Cc:     yilikernel@gmail.com, kent.overstreet@gmail.com, hch@lst.de,
+        linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yi Li <yili@winhong.com>
+Subject: [PATCH v4] bcache:remove a superfluous check in register_bcache
+Date:   Mon, 21 Dec 2020 17:49:43 +0800
+Message-Id: <20201221094943.1712589-1-yili@winhong.com>
+X-Mailer: git-send-email 2.25.3
+In-Reply-To: <4891349b-2136-eb8b-758d-f937b558b1c0@suse.de>
+References: <4891349b-2136-eb8b-758d-f937b558b1c0@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+There have no reassign the bdev after check It is IS_ERR.
+the double check !IS_ERR(bdev) is superfluous.
 
-Hi Linus,
+After commit 4e7b5671c6a8 ("block: remove i_bdev"),
+"Switch the block device lookup interfaces to directly work with a dev_t
+so that struct block_device references are only acquired by the
+blkdev_get variants (and the blk-cgroup special case).  This means that
+we now don't need an extra reference in the inode and can generally
+simplify handling of struct block_device to keep the lookups contained
+in the core block layer code."
 
-here's this cycle's update, finally finished on some very old patches
-(originally april 2015!) to allow fixing open-unlink-fgetattr pattern.
+so after lookup_bdev call, there no need to do bdput.
 
-Thanks to Eric, Greg and Jianyong for the bulk of the work, and Dan for
-static analysis fixes on -next.
+remove a superfluous check the bdev & don't call bdput after lookup_bdev.
 
+Fixes: 4e7b5671c6a8("block: remove i_bdev")
+Signed-off-by: Yi Li <yili@winhong.com>
+---
+ drivers/md/bcache/super.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-The following changes since commit 3cea11cd5e3b00d91caf0b4730194039b45c5891:
-
-  Linux 5.10-rc2 (2020-11-01 14:43:51 -0800)
-
-are available in the Git repository at:
-
-  https://github.com/martinetd/linux tags/9p-for-5.11-rc1
-
-for you to fetch changes up to cfd1d0f524a87b7d6d14b41a14fa4cbe522cf8cc:
-
-  9p: Remove unnecessary IS_ERR() check (2020-12-01 08:19:02 +0100)
-
-----------------------------------------------------------------
-9p for 5.11-rc1
-
-- fix long-standing limitation on open-unlink-fop pattern
-- add refcount to p9_fid (fixes the above and will allow for more
-cleanups and simplifications in the future)
-
-----------------------------------------------------------------
-Dan Carpenter (2):
-      9p: Uninitialized variable in v9fs_writeback_fid()
-      9p: Remove unnecessary IS_ERR() check
-
-Dominique Martinet (2):
-      9p: apply review requests for fid refcounting
-      9p: Fix writeback fid incorrectly being attached to dentry
-
-Eric Van Hensbergen (1):
-      fs/9p: fix create-unlink-getattr idiom
-
-Greg Kurz (2):
-      fs/9p: track open fids
-      fs/9p: search open fids first
-
-Jianyong Wu (1):
-      9p: add refcount to p9_fid struct
-
- fs/9p/fid.c             | 65  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----
- fs/9p/fid.h             | 11 ++++++++++-
- fs/9p/vfs_dentry.c      |  2 ++
- fs/9p/vfs_dir.c         |  6 +++++-
- fs/9p/vfs_file.c        |  7 ++++---
- fs/9p/vfs_inode.c       | 47  ++++++++++++++++++++++++++++++++++++++---------
- fs/9p/vfs_inode_dotl.c  | 35 +++++++++++++++++++++++++++++------
- fs/9p/vfs_super.c       |  1 +
- fs/9p/xattr.c           | 16 +++++++++++++---
- include/net/9p/client.h |  7 +++++++
- net/9p/client.c         | 14 +++++++++-----
- 11 files changed, 178 insertions(+), 33 deletions(-)
-
+diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+index 0e06d721cd8e..a4752ac410dc 100644
+--- a/drivers/md/bcache/super.c
++++ b/drivers/md/bcache/super.c
+@@ -2535,8 +2535,6 @@ static ssize_t register_bcache(struct kobject *k, struct kobj_attribute *attr,
+ 			else
+ 				err = "device busy";
+ 			mutex_unlock(&bch_register_lock);
+-			if (!IS_ERR(bdev))
+-				bdput(bdev);
+ 			if (attr == &ksysfs_register_quiet)
+ 				goto done;
+ 		}
 -- 
-Dominique
+2.25.3
+
+
+
