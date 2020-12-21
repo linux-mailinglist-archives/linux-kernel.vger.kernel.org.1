@@ -2,121 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 251D62E013D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 20:51:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 393832E014F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 20:54:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726487AbgLUTvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 14:51:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726161AbgLUTvL (ORCPT
+        id S1726913AbgLUTxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 14:53:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43556 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725902AbgLUTwo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 14:51:11 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEFA4C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 11:50:30 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id h205so26513608lfd.5
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 11:50:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xqmRYxnikPCq9Gg2hYUnPNz7l0TnTiioQ91HmpF8cHA=;
-        b=Lbdw5kBkygrGYB8qOV/e44EUiRWpjNlF0K8JCBtD6ySkL7I6G//EbNDFNDUtCcBXoi
-         K+zWPcc+uyHkHNaNbR8G6Dcg0SBkp/HYRbrV40nT7q4MYjmpiWMlFFOTlImixUfGTUb6
-         8AimKwng3RUWgDPVaqMZnmqhIhiU6RkNlqwyHL7eu12F4zaNgotyJLibOvX3hbgTu0Pj
-         DesLPBAzm2RiT5BM5teRxFH/grBcEm4VCiOBSjGJQHr2GXJ5sXE8bm3XmqgtxnI5IIgY
-         yEA13HmGRIO2VLpQmrySNWxiEEDYidT3ylSG+DvordKln3mkGma0h5ISMCrc0Q7ETCyI
-         38HA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xqmRYxnikPCq9Gg2hYUnPNz7l0TnTiioQ91HmpF8cHA=;
-        b=Il5DHw9D48an+hjkoj3/THh9l6FGEhpdd5PFRmyNyZ1Oo/XX8ohO4IrlTltX4cdccj
-         TSJZa3Vu0Wrf9HqZ71eyyillOsGKmXNsRjJCLJlVyM4TKIU+Y1Hw1Aj7AyGdVUWzKFtL
-         gHpa3ZGIWgSkrYQ75R1NXQzuF4v6lBbj6lHOkbIQeps2z/xOLacX6KF4hCesZy7KegFW
-         o/UXKrhk/l27RovakO/wT10h4CAkzlioGe+HNfjMvRnLGhaRWg/QDp0Y1TnKSeXF5QcX
-         VsQ36JYw8ZWRslkUaLAUQrZ7DP1mczmIC7CbZoOcGo3JRFDaLQBH7Rs6hWch/pZ/vdmd
-         XG0w==
-X-Gm-Message-State: AOAM532PwsI8pKtUN0zvyQZ2FnkIksMdUdDoyPMlezIbBt4mJ55TN9Wp
-        evRQUwiaghrN96wUchfLpbRpq/gjbVgHb+PIEGcGyA==
-X-Google-Smtp-Source: ABdhPJxnHF3lgjv4wK6z/Y0RWoJLdh0bkRjwcQOK4yZ9LuRUu9O/PpGzE3gf+Aib+VErHRK2pcCflmqzHK+vd9aR21I=
-X-Received: by 2002:a2e:850f:: with SMTP id j15mr7797655lji.34.1608580229003;
- Mon, 21 Dec 2020 11:50:29 -0800 (PST)
+        Mon, 21 Dec 2020 14:52:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608580277;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=wMleRDSwz6xsXeUbgRCfLYniffObUPtn4CN9Ykh/eBg=;
+        b=ZZw2fla7fiv1eaOqjWWZgcPcM8q5E0oikEzp4j3YiySodm/tvbfAR2yyCVpu/Gp9ukyLbS
+        qcMf1jo2aG3n13tE84O9o/zTHG3zcQhGcvRwV8qJl1NBdxOfn5ORNfiAXppNC20O2T0kWY
+        /lBPPJx7WmUC4g4r0NDrfCSOipu/7vc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-431-xwgI0t3-P9OopSbByjSh5Q-1; Mon, 21 Dec 2020 14:51:15 -0500
+X-MC-Unique: xwgI0t3-P9OopSbByjSh5Q-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 45062107ACE4;
+        Mon, 21 Dec 2020 19:51:12 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-114-244.rdu2.redhat.com [10.10.114.244])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 93B716F984;
+        Mon, 21 Dec 2020 19:51:11 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 2541E220BCF; Mon, 21 Dec 2020 14:51:11 -0500 (EST)
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org
+Cc:     jlayton@kernel.org, vgoyal@redhat.com, amir73il@gmail.com,
+        sargun@sargun.me, miklos@szeredi.hu, willy@infradead.org,
+        jack@suse.cz, neilb@suse.com, viro@zeniv.linux.org.uk, hch@lst.de
+Subject: [RFC PATCH 0/3][v3] vfs, overlayfs: Fix syncfs() to return correct errors
+Date:   Mon, 21 Dec 2020 14:50:52 -0500
+Message-Id: <20201221195055.35295-1-vgoyal@redhat.com>
 MIME-Version: 1.0
-References: <18669bd607ae9efbf4e00e36532c7aa167d0fa12.camel@gmx.de>
- <20201220002228.38697-1-vitaly.wool@konsulko.com> <X+DaMSJE22nUC0tl@google.com>
- <CAM4kBBKnW6K-mbPno4SpvhUBiykP4zeFm_CNzssDkReURbuU7w@mail.gmail.com>
-In-Reply-To: <CAM4kBBKnW6K-mbPno4SpvhUBiykP4zeFm_CNzssDkReURbuU7w@mail.gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 21 Dec 2020 11:50:17 -0800
-Message-ID: <CALvZod69OtXkdOJPzuY5XfXz_ro0V7OmqW4OY9B_emqwroxW4w@mail.gmail.com>
-Subject: Re: [PATCH] zsmalloc: do not use bit_spin_lock
-To:     Vitaly Wool <vitaly.wool@konsulko.com>
-Cc:     Minchan Kim <minchan@kernel.org>, Mike Galbraith <efault@gmx.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        NitinGupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 11:20 AM Vitaly Wool <vitaly.wool@konsulko.com> wrote:
->
-> On Mon, Dec 21, 2020 at 6:24 PM Minchan Kim <minchan@kernel.org> wrote:
-> >
-> > On Sun, Dec 20, 2020 at 02:22:28AM +0200, Vitaly Wool wrote:
-> > > zsmalloc takes bit spinlock in its _map() callback and releases it
-> > > only in unmap() which is unsafe and leads to zswap complaining
-> > > about scheduling in atomic context.
-> > >
-> > > To fix that and to improve RT properties of zsmalloc, remove that
-> > > bit spinlock completely and use a bit flag instead.
-> >
-> > I don't want to use such open code for the lock.
-> >
-> > I see from Mike's patch, recent zswap change introduced the lockdep
-> > splat bug and you want to improve zsmalloc to fix the zswap bug and
-> > introduce this patch with allowing preemption enabling.
->
-> This understanding is upside down. The code in zswap you are referring
-> to is not buggy.  You may claim that it is suboptimal but there is
-> nothing wrong in taking a mutex.
->
+Hi,
 
-Is this suboptimal for all or just the hardware accelerators? Sorry, I
-am not very familiar with the crypto API. If I select lzo or lz4 as a
-zswap compressor will the [de]compression be async or sync?
+This is v3 of patches which try to fix syncfs() error handling issues
+w.r.t overlayfs and other filesystems.
 
-> > https://lore.kernel.org/linux-mm/fae85e4440a8ef6f13192476bd33a4826416fc58.camel@gmx.de/
-> >
-> > zs_[un/map]_object is designed to be used in fast path(i.e.,
-> > zs_map_object/4K page copy/zs_unmap_object) so the spinlock is
-> > perfectly fine for API point of view. However, zswap introduced
-> > using the API with mutex_lock/crypto_wait_req where allowing
-> > preemption, which was wrong.
->
-> Taking a spinlock in one callback and releasing it in another is
-> unsafe and error prone. What if unmap was called on completion of a
-> DMA-like transfer from another context, like a threaded IRQ handler?
-> In that case this spinlock might never be released.
->
-> Anyway I can come up with a zswap patch explicitly stating that
-> zsmalloc is not fully compliant with zswap / zpool API
+Previous version of patches are here.
+v2: 
+https://lore.kernel.org/linux-fsdevel/20201216233149.39025-1-vgoyal@redhat.com/
+v1:
+https://lore.kernel.org/linux-fsdevel/20201216143802.GA10550@redhat.com/
 
-The documentation of zpool_map_handle() clearly states "This may hold
-locks, disable interrupts, and/or preemption, ...", so how come
-zsmalloc is not fully compliant?
+This series basically is trying to fix two problems.
 
-> to avoid
-> confusion for the time being. Would that be ok with you?
->
-> Best regards,
->    Vitaly
->
+- First problem is that we ignore error code returned by ->sync_fs().
+  overlayfs file system can return error and there are other file
+  systems which can return error in certain cases. So to fix this issue,
+  first patch captures the return code from ->sync_fs and returns to
+  user space.
+
+- Second problem is that current syncfs(), writeback error detection
+  logic does not work for overlayfs. current logic relies on all
+  sb->s_wb_err being update when errors occur but that's not true for
+  overlayfs. Real errors happen on underlyig filessytem and overlayfs
+  has no clue about these. To fix this issue, it has been proposed
+  that for filesystems like overlayfs, this check should be moved into
+  filesystem and then filesystem can check for error w.r.t upper super
+  block.
+
+  There seem to be multiple ways of how this can be done.
+
+  A. Add a "struct file" argument to ->sync_fs() and modify all helpers.
+  B. Add a separate file operation say "f_op->syncfs()" and call that
+     in syncfs().
+  C. Add a separate super block operation to check and advance errors.
+
+Option A involves lot of changes all across the code. Also it is little
+problematic in the sense that for filesystems having a block device,
+looks like we want to check for errors after ___sync_blockdev() has
+returned. But ->sync_fs() is called before that. That means
+__sync_blockdev() will have to be pushed in side filesystem code as
+well. Jeff Layton gave something like this a try here.
+
+https://lore.kernel.org/linux-fsdevel/20180518123415.28181-1-jlayton@kernel.org/
+
+I posted patches for option B in V2. 
+
+https://lore.kernel.org/linux-fsdevel/20201216233149.39025-1-vgoyal@redhat.com/
+
+Now this is V3 of patches which implements option C. I think this is
+simplest in terms of implementation atleast.
+
+These patches are only compile tested. Will do more testing once I get
+a sense which option has a chance to fly.
+
+I think patch 1 should be applied irrespective of what option we end
+up choosing for fixing the writeback error issue.
+
+Thanks
+Vivek
+
+Vivek Goyal (3):
+  vfs: Do not ignore return code from s_op->sync_fs
+  vfs: Add a super block operation to check for writeback errors
+  overlayfs: Report writeback errors on upper
+
+ fs/overlayfs/file.c      |  1 +
+ fs/overlayfs/overlayfs.h |  1 +
+ fs/overlayfs/readdir.c   |  1 +
+ fs/overlayfs/super.c     | 23 +++++++++++++++++++++++
+ fs/overlayfs/util.c      | 13 +++++++++++++
+ fs/sync.c                | 13 ++++++++++---
+ include/linux/fs.h       |  1 +
+ 7 files changed, 50 insertions(+), 3 deletions(-)
+
+-- 
+2.25.4
+
