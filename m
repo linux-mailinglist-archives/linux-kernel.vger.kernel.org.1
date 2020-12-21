@@ -2,145 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 091F22DFFC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:33:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43CB42DFF95
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:22:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726954AbgLUSbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 13:31:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53060 "EHLO
+        id S1726610AbgLUSVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:21:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726713AbgLUSbb (ORCPT
+        with ESMTP id S1725946AbgLUSVW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:31:31 -0500
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C644C061257
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:30:51 -0800 (PST)
-Received: by mail-oi1-x231.google.com with SMTP id x13so12226876oic.5
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:30:51 -0800 (PST)
+        Mon, 21 Dec 2020 13:21:22 -0500
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A082CC0613D3;
+        Mon, 21 Dec 2020 10:21:07 -0800 (PST)
+Received: by mail-qv1-xf2b.google.com with SMTP id bd6so4834102qvb.9;
+        Mon, 21 Dec 2020 10:21:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=40GBo3X0+Lrvzi5cvjSPDdF0U8u9NgzOSx3DdfzINbI=;
-        b=SQEnSB0HBrmaH+UzR0ysajDAvziE8a2bcVt4twrfo+sI8uwNPnXKkZV5VWjAt90+cq
-         Kw2K0XfbwcXwe7Ade3h64UR8qas2ooCyt+jvZzwWUAeNZQU7q43lRlrmqvSnDr3y+kL3
-         /ZV2gHY52ggE6JCTbJzxAXWmXMvz76WKV3T5dyK23g/rXusg9S5gCNbW/8r2sD7DgbWn
-         SCnX9xJsHLoXuHwi5uGC3q2Lg0OLjRwe8cles2Y5nhDhIW0rkBstwzkjfESASimYA2j5
-         DUxpg8gI8ROZpBddYKXwy2fyWjYVgUQzqOP3B3BPpQ3ouP8iuL5foHxP3ISE7omH++zf
-         SVWg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YQyxMOAZavE8xWe7epnSrp7G2ojv5j6Sb/NY3BtEg90=;
+        b=EhkwNlHmCF+mbmZdrC06M89+vsXiApYrR+/qS/L6MPLb/pvSjaFJYYH6awt8PTWae2
+         27kLcdkE1a9okCsXHPMMmOwv89vzgvOLKGPcwcNndBT6ty3MyRjqeONUGfwIaX3j6pPg
+         tTT378bWBdGN+nexdiWHlZX3N6uW7HnFcPmAgWz00rN7X9ocjBiKW7K5dDyxK7wVTksI
+         eK7i1ySXUkklSJDoI8C1kdArK8orMTInF7eZr5G7tSq/AzYCWcWpiHe8i05T/sOQATK/
+         Ext7ImN/q/UEMzSa8/kBGFX2ecNISWKqszhFzH1WnpjqRxu+jysmW4VH/tw3p4yA2tDQ
+         Chww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=40GBo3X0+Lrvzi5cvjSPDdF0U8u9NgzOSx3DdfzINbI=;
-        b=m1g8Jcv/sEULnKnjLhmcRYoticVg/405ezbKia+CSIxS7Wbse0+cihL1T/56tBs48B
-         R45Thu6DcZLFiEcJbDZ984Sj5zf1B5wHIZgGcfus14Slbi3Gzya3hGX42Zl5ShJtB0g9
-         ruis/xn6J9OIHQqEv4x+cxcvl/LX2ug0b6DNcIh0VGLQis/haZSk1VJEh59OKT7IgNnj
-         X+OD9mC7HQo6pXZk7bDtfFUgtcruMlXlzCtJQh3vahpGJUHBTjhe4Ntjzp/LPgLq8x3V
-         h1Ju3uRDN4N2bI27wnV32akhu2VujssDkckrCqHKcIQzgAzIlfs9glHVnIilSK7gfHgr
-         6mBA==
-X-Gm-Message-State: AOAM530JQTSynx8QdT62K7AyfP1pU9wS7JqqpnJ7ogm+ir4G2U5webmL
-        Wg9PTxvdYFdhQ5nZ2IPa9731ILEwg48=
-X-Google-Smtp-Source: ABdhPJwBFLD8FyWMUfLtymfObKqKVKNdEHUvBnxB2nPRxZsdxQR5SM9zYoT63SLgbhbZp0T7wCPvVg==
-X-Received: by 2002:a17:90a:fa8e:: with SMTP id cu14mr18409199pjb.140.1608571444542;
-        Mon, 21 Dec 2020 09:24:04 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id z15sm16555935pfn.34.2020.12.21.09.24.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 09:24:03 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Mon, 21 Dec 2020 09:24:01 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Vitaly Wool <vitaly.wool@konsulko.com>
-Cc:     Mike Galbraith <efault@gmx.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        NitinGupta <ngupta@vflare.org>,
-        sergey.senozhatsky.work@gmail.com, akpm@linux-foundation.org,
-        shakeelb@google.com
-Subject: Re: [PATCH] zsmalloc: do not use bit_spin_lock
-Message-ID: <X+DaMSJE22nUC0tl@google.com>
-References: <18669bd607ae9efbf4e00e36532c7aa167d0fa12.camel@gmx.de>
- <20201220002228.38697-1-vitaly.wool@konsulko.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YQyxMOAZavE8xWe7epnSrp7G2ojv5j6Sb/NY3BtEg90=;
+        b=Xo4qvHJrfLzVTmc0cBIzz71XwJAIkH8ir+CKAUXFUj7mkOg2lMFu6HC6rmcQbZvQu9
+         uf7HLAtnJDjZCYXqcmU/a9SVXDcLp5CyUloMEYKs3Px1+3kLEesdvLpAJgGxT/JIGeRt
+         voTREClL4ojEWKMQwYVxlYMfmtG1TSz8EPbldCbrGGghsINHs7KJ4RyCiPfg896jT2yP
+         kFZRD1YtZbUaPnWMVq2mCMHIP63pnYx6ihUbfkqBmaIVGmQFEu30yCzgz6/DhXwFbrM5
+         9CZO56VUsshw5WloJN2SbKxIo7mvz/N126+cuq2sNZJqfeTacgpb7xGDHpO/hHP9C68Z
+         VuhQ==
+X-Gm-Message-State: AOAM532flmMZbk+0NqXiajMs/7YCrT8/QN9mxYaL4nRifKkg5WFQW7gw
+        Z1An7wQxAc4LB+a/k0U3zyXnfCYfiu4CzFyJdwhKfO/ANjg=
+X-Google-Smtp-Source: ABdhPJx5AWw3ZNb2YvJW/rtqH2L4WLH+VXv1atxRvPxfxaY9gK+sKEVMevoq/0sY9BZzty5UBI4aZ6NX7Oy6hWq0I6k=
+X-Received: by 2002:a17:902:e98c:b029:da:cb88:f11d with SMTP id
+ f12-20020a170902e98cb02900dacb88f11dmr17381890plb.17.1608571434318; Mon, 21
+ Dec 2020 09:23:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201220002228.38697-1-vitaly.wool@konsulko.com>
+References: <20201221141906.48922-1-alexandru.ardelean@analog.com>
+ <20201221141906.48922-2-alexandru.ardelean@analog.com> <CAHp75VfR1eNMry8JwJoFuaU48KZ6rdBWau=yaR1AnsaRSLTC=g@mail.gmail.com>
+ <CAHp75VftBQEK10Z7pkD18fpr8B7ipCXUXVx=1Hnuq-2w=z2hgQ@mail.gmail.com> <CY4PR03MB29666C090DF4E882DFB5AA12F9C00@CY4PR03MB2966.namprd03.prod.outlook.com>
+In-Reply-To: <CY4PR03MB29666C090DF4E882DFB5AA12F9C00@CY4PR03MB2966.namprd03.prod.outlook.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 21 Dec 2020 19:24:42 +0200
+Message-ID: <CAHp75VcVDCL1VnUzmAmcDJ3deveXy-S8C4gaiKJGAts3V8FjSA@mail.gmail.com>
+Subject: Re: [PATCH v5 2/3] spi: Add SPI_NO_TX/RX support
+To:     "Ardelean, Alexandru" <alexandru.Ardelean@analog.com>
+Cc:     linux-spi <linux-spi@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Bogdan, Dragos" <Dragos.Bogdan@analog.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 20, 2020 at 02:22:28AM +0200, Vitaly Wool wrote:
-> zsmalloc takes bit spinlock in its _map() callback and releases it
-> only in unmap() which is unsafe and leads to zswap complaining
-> about scheduling in atomic context.
-> 
-> To fix that and to improve RT properties of zsmalloc, remove that
-> bit spinlock completely and use a bit flag instead.
+On Mon, Dec 21, 2020 at 5:19 PM Ardelean, Alexandru
+<alexandru.Ardelean@analog.com> wrote:
+> > -----Original Message-----
+> > From: Andy Shevchenko <andy.shevchenko@gmail.com>
+> > Sent: Monday, December 21, 2020 4:37 PM
+> > On Mon, Dec 21, 2020 at 4:34 PM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
 
-I don't want to use such open code for the lock.
+...
 
-I see from Mike's patch, recent zswap change introduced the lockdep
-splat bug and you want to improve zsmalloc to fix the zswap bug and
-introduce this patch with allowing preemption enabling.
+> > One nit, though...
+> >
+> > > > -               "setup: can not select dual and quad at the same time\n");
+> > > > +               "setup: can not select any two of dual, quad and no-rx/tx "
+> > > > +               "at the same time\n");
+> >
+> > Can we avoid splitting string literals which are assumed to be on one line when
+> > printed?
+>
+> It ends up at about 96 cols, but it's within limits.
+> The patch may have been written before the new 100 col-width limit.
 
-https://lore.kernel.org/linux-mm/fae85e4440a8ef6f13192476bd33a4826416fc58.camel@gmx.de/
+JFYI: string literals do not have limits (neither 80, nor 100).
+It's a special category.
 
-zs_[un/map]_object is designed to be used in fast path(i.e.,
-zs_map_object/4K page copy/zs_unmap_object) so the spinlock is
-perfectly fine for API point of view. However, zswap introduced
-using the API with mutex_lock/crypto_wait_req where allowing
-preemption, which was wrong.
-
-Furthermore, the zs_map_object already has a few more places where
-disablepreemptions(migrate_read_lock, get_cpu_var and kmap_atomic).
-
-Without making those locks preemptible all at once, zswap will still
-see the lockdep warning.
-
-> 
-> Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.com>
-> ---
->  mm/zsmalloc.c | 13 ++++++++-----
->  1 file changed, 8 insertions(+), 5 deletions(-)
-> 
-> diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
-> index 7289f502ffac..ff26546a7fed 100644
-> --- a/mm/zsmalloc.c
-> +++ b/mm/zsmalloc.c
-> @@ -876,22 +876,25 @@ static unsigned long obj_to_head(struct page *page, void *obj)
->  
->  static inline int testpin_tag(unsigned long handle)
->  {
-> -	return bit_spin_is_locked(HANDLE_PIN_BIT, (unsigned long *)handle);
-> +	return test_bit(HANDLE_PIN_BIT, (unsigned long *)handle);
->  }
->  
->  static inline int trypin_tag(unsigned long handle)
->  {
-> -	return bit_spin_trylock(HANDLE_PIN_BIT, (unsigned long *)handle);
-> +	return !test_and_set_bit(HANDLE_PIN_BIT, (unsigned long *)handle);
->  }
->  
-> -static void pin_tag(unsigned long handle) __acquires(bitlock)
-> +static void pin_tag(unsigned long handle)
->  {
-> -	bit_spin_lock(HANDLE_PIN_BIT, (unsigned long *)handle);
-> +	preempt_disable();
-> +	while(test_and_set_bit(HANDLE_PIN_BIT, (unsigned long *)handle))
-> +		cpu_relax();
-> +	preempt_enable();
->  }
->  
->  static void unpin_tag(unsigned long handle) __releases(bitlock)
->  {
-> -	bit_spin_unlock(HANDLE_PIN_BIT, (unsigned long *)handle);
-> +	clear_bit(HANDLE_PIN_BIT, (unsigned long *)handle);
->  }
->  
->  static void reset_page(struct page *page)
-> -- 
-> 2.20.1
-> 
+-- 
+With Best Regards,
+Andy Shevchenko
