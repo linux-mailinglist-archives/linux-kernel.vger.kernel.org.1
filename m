@@ -2,75 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 505952DF93F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 07:28:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C31B2DF949
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 07:33:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728468AbgLUG1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 01:27:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727224AbgLUG1s (ORCPT
+        id S1728449AbgLUGc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 01:32:58 -0500
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:42495 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727211AbgLUGc6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 01:27:48 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79BE6C0613D3;
-        Sun, 20 Dec 2020 22:27:07 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1krEej-002pGJ-Ob; Mon, 21 Dec 2020 06:26:53 +0000
-Date:   Mon, 21 Dec 2020 06:26:53 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Liangyan <liangyan.peng@linux.alibaba.com>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>, linux-unionfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, joseph.qi@linux.alibaba.com
-Subject: Re: [PATCH v2] ovl: fix  dentry leak in ovl_get_redirect
-Message-ID: <20201221062653.GO3579531@ZenIV.linux.org.uk>
-References: <20201220120927.115232-1-liangyan.peng@linux.alibaba.com>
+        Mon, 21 Dec 2020 01:32:58 -0500
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 0BL6VgSF002651;
+        Mon, 21 Dec 2020 15:31:43 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 0BL6VgSF002651
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1608532303;
+        bh=rOg4QxSAfTkT+BcR9P4hFXzodLlmtw/3pK0eFUW1oi8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=U+xdLu6Qt9wfzw4FdCIV5/yqI7WuNuBB6j1enVCchT7nE2Fll10ylSDWzedhJ+504
+         wzKlJBKmIfbJkdTefNMrVCeU7xa1hwOULUkJFaGaGaRFm4+jSUYNyaIMNpqNkE19O+
+         D3dhz+7IGChs++F8vl6mXJDvwnFKxptM3l9DstrJikytWoaB3wIwGE0q9bvQV/anwF
+         nvd1zLbGNv5WsRvYu//BGwcnjtNpq7mikOs1DURniVuzbbRMD9MCF6cnoOdWGFVOuv
+         BNALUeQ+M/U9LsoBbZHNm7yzMYd2Mo+NegMlAFQR4pCyGAE+z25Vr6BZsq8nRAC3kA
+         RwYlyICLHRgkQ==
+X-Nifty-SrcIP: [209.85.216.47]
+Received: by mail-pj1-f47.google.com with SMTP id f14so5575002pju.4;
+        Sun, 20 Dec 2020 22:31:43 -0800 (PST)
+X-Gm-Message-State: AOAM533VbTxG9emYptq+coAxlfB5fxgbCrkFX2OuHK+s3C3QpVoXggEq
+        Hjs7+S1YtMU07LMWXar3J0sM7qGkvMhzfdrVjF8=
+X-Google-Smtp-Source: ABdhPJwlop1E6Syo0vlC/BnCAMyR5npqc2l4JDOg5C481V+RD/UPDiIMcq7gjql1DQ3c/Qp7NnT8QXBfXaGWTKU5mik=
+X-Received: by 2002:a17:902:9b91:b029:db:f003:c5eb with SMTP id
+ y17-20020a1709029b91b02900dbf003c5ebmr14921530plp.1.1608532302351; Sun, 20
+ Dec 2020 22:31:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201220120927.115232-1-liangyan.peng@linux.alibaba.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+References: <20201117104736.24997-1-olaf@aepfle.de> <CAK7LNATq68FyLEuck34uD6zTOfsOu2UP=yS=TX4Bvq+OR-zoNA@mail.gmail.com>
+In-Reply-To: <CAK7LNATq68FyLEuck34uD6zTOfsOu2UP=yS=TX4Bvq+OR-zoNA@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 21 Dec 2020 15:31:05 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATfmiOvLekU9G=4eGE2kv5RSLFgQr2WzG-DpAoboYWXLQ@mail.gmail.com>
+Message-ID: <CAK7LNATfmiOvLekU9G=4eGE2kv5RSLFgQr2WzG-DpAoboYWXLQ@mail.gmail.com>
+Subject: Re: [PATCH v1] kbuild: enforce -Werror=unused-result
+To:     Olaf Hering <olaf@aepfle.de>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 20, 2020 at 08:09:27PM +0800, Liangyan wrote:
+On Tue, Dec 1, 2020 at 7:42 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> On Tue, Nov 17, 2020 at 7:47 PM Olaf Hering <olaf@aepfle.de> wrote:
+> >
+> > It is a hard error if a return value is ignored.
+> > In case the return value has no meaning, remove the attribute.
+> >
+> > Signed-off-by: Olaf Hering <olaf@aepfle.de>
+>
+> Applied to linux-kbuild.
+> Thanks.
 
-> +++ b/fs/overlayfs/dir.c
-> @@ -973,6 +973,7 @@ static char *ovl_get_redirect(struct dentry *dentry, bool abs_redirect)
->  	for (d = dget(dentry); !IS_ROOT(d);) {
->  		const char *name;
->  		int thislen;
-> +		struct dentry *parent = NULL;
->  
->  		spin_lock(&d->d_lock);
->  		name = ovl_dentry_get_redirect(d);
-> @@ -992,7 +993,22 @@ static char *ovl_get_redirect(struct dentry *dentry, bool abs_redirect)
->  
->  		buflen -= thislen;
->  		memcpy(&buf[buflen], name, thislen);
-> -		tmp = dget_dlock(d->d_parent);
-> +		parent = d->d_parent;
-> +		if (unlikely(!spin_trylock(&parent->d_lock))) {
-> +			rcu_read_lock();
-> +			spin_unlock(&d->d_lock);
-> +again:
-> +			parent = READ_ONCE(d->d_parent);
-> +			spin_lock(&parent->d_lock);
-> +			if (unlikely(parent != d->d_parent)) {
-> +				spin_unlock(&parent->d_lock);
-> +				goto again;
-> +			}
-> +			rcu_read_unlock();
-> +			spin_lock_nested(&d->d_lock, DENTRY_D_LOCK_NESTED);
-> +		}
-> +		tmp = dget_dlock(parent);
-> +		spin_unlock(&parent->d_lock);
->  		spin_unlock(&d->d_lock);
+I will postpone this by the next MW.
 
-Yecchhhh....  What's wrong with just doing
-		spin_unlock(&d->d_lock);
-		parent = dget_parent(d);
-		dput(d);
-		d = parent;
-instead of that?
+Some instances of __must_check violation are still remaining,
+which end up with build breakages.
+
+
+
+
+
+>
+> > ---
+> >  Makefile | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/Makefile b/Makefile
+> > index e2c3f65c4721..c7f9acffad42 100644
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -497,7 +497,7 @@ KBUILD_AFLAGS   := -D__ASSEMBLY__ -fno-PIE
+> >  KBUILD_CFLAGS   := -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs \
+> >                    -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE \
+> >                    -Werror=implicit-function-declaration -Werror=implicit-int \
+> > -                  -Werror=return-type -Wno-format-security \
+> > +                  -Werror=return-type -Werror=unused-result -Wno-format-security \
+> >                    -std=gnu89
+> >  KBUILD_CPPFLAGS := -D__KERNEL__
+> >  KBUILD_AFLAGS_KERNEL :=
+>
+>
+>
+> --
+> Best Regards
+> Masahiro Yamada
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
