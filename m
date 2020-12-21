@@ -2,95 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFB3A2DF805
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 04:29:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57EE12DF806
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 04:29:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727377AbgLUD2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 22:28:31 -0500
-Received: from casper.infradead.org ([90.155.50.34]:38210 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725882AbgLUD2b (ORCPT
+        id S1727486AbgLUD2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 22:28:54 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:9906 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725791AbgLUD2y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 22:28:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=ZJVSch0SZkzI+63yW/zf68R+PNFMBkCVh2UVvuoPHQ0=; b=FvLM4dRm+zGG/JNC13xdRx4IP4
-        Lfd3/YFZN7t+hMGOFd7Ln3sVKCQSSrCkhMcuzkWMLHNQcCHxz/tQCIERYmb0Ra6OHSmScZ/hqz0dO
-        aHl827ZnmMdtFzqMDuvcr8tCIIPn1wNUfcPwdUrKpN/Xx/uRn8N0FfWiz8sBaJQ71H2/XTIuYb/Rs
-        twfmyKCnmEt2qY1YaVnm59DeF93stm6mIP5M4WptQ2OYYNz1srm0d5Z2NIau+FZYVXVE67nQOR8bO
-        L4uJbyZ2f5JZ0MJTno/C85hWI87AGlXoBEJF9dC4API+ECvgGmF/5k+asMZsc1bSFRqYFWKLtz4Sx
-        +/p550gg==;
-Received: from [2601:1c0:6280:3f0::64ea] (helo=smtpauth.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1krBrM-0007GQ-KT; Mon, 21 Dec 2020 03:27:45 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        John Johansen <john.johansen@canonical.com>,
-        apparmor@lists.ubuntu.com, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org,
-        Seth Arnold <seth.arnold@canonical.com>
-Subject: [PATCH v2] security: apparmor: delete repeated words in comments
-Date:   Sun, 20 Dec 2020 19:27:39 -0800
-Message-Id: <20201221032739.11379-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Sun, 20 Dec 2020 22:28:54 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CzlJx58Vhz7HpS;
+        Mon, 21 Dec 2020 11:27:29 +0800 (CST)
+Received: from use12-sp2.huawei.com (10.67.189.174) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 21 Dec 2020 11:28:01 +0800
+From:   Xiaoming Ni <nixiaoming@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <benh@kernel.crashing.org>,
+        <mpe@ellerman.id.au>, <paulus@samba.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <yanaijie@huawei.com>,
+        <npiggin@gmail.com>, <christophe.leroy@csgroup.eu>,
+        <ravi.bangoria@linux.ibm.com>, <mikey@neuling.org>,
+        <aneesh.kumar@linux.ibm.com>, <haren@linux.ibm.com>
+CC:     <nixiaoming@huawei.com>, <wangle6@huawei.com>
+Subject: [PATCH] powerpc:Don't print raw EIP/LR hex values in dump_stack() and show_regs()
+Date:   Mon, 21 Dec 2020 11:27:58 +0800
+Message-ID: <20201221032758.12143-1-nixiaoming@huawei.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.189.174]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop repeated words in comments.
-{a, then, to}
+Since the commit 2b0e86cc5de6 ("powerpc/fsl_booke/32: implement KASLR
+infrastructure"), the powerpc system is ready to support KASLR.
+To reduces the risk of invalidating address randomization, don't print the
+EIP/LR hex values in dump_stack() and show_regs().
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: John Johansen <john.johansen@canonical.com>
-Cc: apparmor@lists.ubuntu.com
-Cc: James Morris <jmorris@namei.org>
-Cc: "Serge E. Hallyn" <serge@hallyn.com>
-Cc: linux-security-module@vger.kernel.org
-Reviewed-By: Seth Arnold <seth.arnold@canonical.com>
+This patch follows x86 and arm64's lead:
+    commit a25ffd3a6302a6 ("arm64: traps: Don't print stack or raw
+     PC/LR values in backtraces")
+    commit bb5e5ce545f203 ("x86/dumpstack: Remove kernel text
+     addresses from stack dump")
+
+Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
 ---
-v2: rebase
+ arch/powerpc/kernel/process.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
- security/apparmor/include/file.h  |    2 +-
- security/apparmor/path.c          |    2 +-
- security/apparmor/policy_unpack.c |    2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
---- linux-next-20201218.orig/security/apparmor/include/file.h
-+++ linux-next-20201218/security/apparmor/include/file.h
-@@ -167,7 +167,7 @@ int aa_audit_file(struct aa_profile *pro
-  * @perms: permission table indexed by the matched state accept entry of @dfa
-  * @trans: transition table for indexed by named x transitions
-  *
-- * File permission are determined by matching a path against @dfa and then
-+ * File permission are determined by matching a path against @dfa and
-  * then using the value of the accept entry for the matching state as
-  * an index into @perms.  If a named exec transition is required it is
-  * looked up in the transition table.
---- linux-next-20201218.orig/security/apparmor/path.c
-+++ linux-next-20201218/security/apparmor/path.c
-@@ -83,7 +83,7 @@ static int disconnect(const struct path
-  *
-  * Returns: %0 else error code if path lookup fails
-  *          When no error the path name is returned in @name which points to
-- *          to a position in @buf
-+ *          a position in @buf
-  */
- static int d_namespace_path(const struct path *path, char *buf, char **name,
- 			    int flags, const char *disconnected)
---- linux-next-20201218.orig/security/apparmor/policy_unpack.c
-+++ linux-next-20201218/security/apparmor/policy_unpack.c
-@@ -39,7 +39,7 @@
+diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
+index a66f435dabbf..913cf1ea702e 100644
+--- a/arch/powerpc/kernel/process.c
++++ b/arch/powerpc/kernel/process.c
+@@ -1455,8 +1455,8 @@ static void __show_regs(struct pt_regs *regs)
+ {
+ 	int i, trap;
  
- /*
-  * The AppArmor interface treats data as a type byte followed by the
-- * actual data.  The interface has the notion of a a named entry
-+ * actual data.  The interface has the notion of a named entry
-  * which has a name (AA_NAME typecode followed by name string) followed by
-  * the entries typecode and data.  Named types allow for optional
-  * elements and extensions to be added and tested for without breaking
+-	printk("NIP:  "REG" LR: "REG" CTR: "REG"\n",
+-	       regs->nip, regs->link, regs->ctr);
++	printk("NIP: %pS LR: %pS CTR: "REG"\n",
++	       (void *)regs->nip, (void *)regs->link, regs->ctr);
+ 	printk("REGS: %px TRAP: %04lx   %s  (%s)\n",
+ 	       regs, regs->trap, print_tainted(), init_utsname()->release);
+ 	printk("MSR:  "REG" ", regs->msr);
+@@ -1493,8 +1493,8 @@ static void __show_regs(struct pt_regs *regs)
+ 	 * above info out without failing
+ 	 */
+ 	if (IS_ENABLED(CONFIG_KALLSYMS)) {
+-		printk("NIP ["REG"] %pS\n", regs->nip, (void *)regs->nip);
+-		printk("LR ["REG"] %pS\n", regs->link, (void *)regs->link);
++		printk("NIP %pS\n", (void *)regs->nip);
++		printk("LR %pS\n", (void *)regs->link);
+ 	}
+ }
+ 
+@@ -2160,8 +2160,8 @@ void show_stack(struct task_struct *tsk, unsigned long *stack,
+ 		newsp = stack[0];
+ 		ip = stack[STACK_FRAME_LR_SAVE];
+ 		if (!firstframe || ip != lr) {
+-			printk("%s["REG"] ["REG"] %pS",
+-				loglvl, sp, ip, (void *)ip);
++			printk("%s ["REG"] %pS",
++				loglvl, sp, (void *)ip);
+ 			ret_addr = ftrace_graph_ret_addr(current,
+ 						&ftrace_idx, ip, stack);
+ 			if (ret_addr != ip)
+-- 
+2.27.0
+
