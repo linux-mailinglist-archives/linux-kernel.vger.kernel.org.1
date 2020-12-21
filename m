@@ -2,92 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 111802DFE0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 17:29:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 163F62DFF34
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:05:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725945AbgLUQ2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 11:28:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30227 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725804AbgLUQ2t (ORCPT
+        id S1726321AbgLUSEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:04:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726015AbgLUSEn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 11:28:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608568043;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=7fZUcPsvm/ONP1AJjS676dOQ+Tew/+ryrHSYFTiFb6Q=;
-        b=PD7ncMWECeme8FAh/HAUMR1WfLWfm1DuilI7KvDxbAMZdHUogTzAblaE9PGNdRVsflhLzH
-        8DRLZgUUSr/BX3Po/HfbNukQRXUtUqRTxIURy2TbofCkOht/IqYZBagHwfCxZs560fsGJQ
-        xaMcsVMxI0nt/sCHsVPvJsJeRN3TWmI=
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
- [209.85.161.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-577-lzIc4HEzNPaTsmLijwIDcA-1; Mon, 21 Dec 2020 11:27:21 -0500
-X-MC-Unique: lzIc4HEzNPaTsmLijwIDcA-1
-Received: by mail-oo1-f70.google.com with SMTP id m1so4016736ooj.23
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 08:27:21 -0800 (PST)
+        Mon, 21 Dec 2020 13:04:43 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DF35C061282
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:04:03 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id g15so1871884pgu.9
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:04:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:mail-followup-to:mime-version
+         :content-disposition:user-agent;
+        bh=yCqvw49/Rmb78qrcQ/V5V54EYYCj1w98X72tRqbM6ug=;
+        b=ISuBRRAJ/22G4sfeIRuMpcpnOaxALlpU4jqnRl3kvDrtgKm3mszXPYIzziMVzphXMH
+         ruF9mJTxXebBWTXxVxxVJrR/0KtJrLr3gAWy3I1zDEMplJnMFY/QdWYLfr0dJk33FAlc
+         TpvLGlUWCSWVVP6nYbFhNPkJPaD5yq3x+EkbVN0Hor468AyTqFaqKEG94wph/WDMy+ds
+         BZc9tnM5gXI8EZD8GsVCQla/qU2TKGqLzvfJCKGNMK1+3sVcppgRivwQv0tpG8qxOhB5
+         xTW6KaPMZOnqtTNFvw+9cwtQ9P9aLpxFu3FYKA8vj0D8s2NEb7i6MZ9AgTB2dwlt6T60
+         p26g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7fZUcPsvm/ONP1AJjS676dOQ+Tew/+ryrHSYFTiFb6Q=;
-        b=mDSN4I8Fs3grfIeV5sxIJhq52/ZVj8+LGdCxdwgnKExYlHttNXl2sR/gmza3pj8GNU
-         I+FVidADadgHtq0tHc5yrhDUC371/DGV8dNP45N159ViNFlQ2rr6PcFKR92j9TFp3V0V
-         8yPIfIq/O7ou4wNOTJC/yk27CZ42yhEhA4qeIRuttyYbV62nrcDJs2zd2FnMpMjDRrOk
-         zf8Du8doU6nM36eUB+ln71Ra09w1DJk2xnjD/45pW6vS5L38V4jMf30IWzN2PxR2Fn7e
-         I95mLlxRXdPdgopaG+Z+lACKOVFrBL2FgUByGevbY14i1bppY/DQUCGzdsjIUplLwMN9
-         iUFA==
-X-Gm-Message-State: AOAM533BjIQca4c9X+u0SAqIDTOtx0Yi5tvxxbbARhwqbnwIBUMTj5KN
-        dxBGyjimrxxb4QDADa/FM+GpdovcKzNF/iHI/EgAdnONdAJOpPpZBJUrfAHzGohwdMPDq9VAzAz
-        CL0uYa44QD4VLOKuuEYs/q3M/
-X-Received: by 2002:a9d:12c:: with SMTP id 41mr12559395otu.77.1608568040848;
-        Mon, 21 Dec 2020 08:27:20 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyIFHQxCwxfTsGuY0Q82c9DuHI9dCiXlcm4VSz7iME2mvcSwHUDQ1APIMr+I8TELxiBhbk58A==
-X-Received: by 2002:a9d:12c:: with SMTP id 41mr12559382otu.77.1608568040671;
-        Mon, 21 Dec 2020 08:27:20 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id r25sm3946516otp.23.2020.12.21.08.27.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 08:27:20 -0800 (PST)
-From:   trix@redhat.com
-To:     rostedt@goodmis.org, mingo@redhat.com
-Cc:     linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] tracing: add printf attribute to log function
-Date:   Mon, 21 Dec 2020 08:27:15 -0800
-Message-Id: <20201221162715.3757291-1-trix@redhat.com>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:from:date:to:cc:subject:message-id
+         :mail-followup-to:mime-version:content-disposition:user-agent;
+        bh=yCqvw49/Rmb78qrcQ/V5V54EYYCj1w98X72tRqbM6ug=;
+        b=ciCrwKd6fH0oxZldWHQZwQi+T7Trwi96CUf4avYDTa7OdzCP8wFm2qvSM71wPyIBH2
+         NfWNQfwFgNZkQt4hcxeIT581CX7LNFfwXrfOgRPsmN0GdijrJKLBH34aYMxS7b8xRtjS
+         Vil7X0hXJdzq+ESxrmy5dX9g/iZxU0Zi3IleTSq/LfcwsSsIRQSbHsZkNTv7jTyD/p1M
+         V46+NEC3qN82jH3C4TXOnQERcqK7MTiIHUIn31wTkm+X56sKaENEBTLQu4eS4w1ST2fv
+         KJweC712WkK7VdwfSumb6oyI537KE8TY9KqhTAPjaiM7/dAOHjpO3Sv5N22cl6461o5R
+         O3jA==
+X-Gm-Message-State: AOAM5337xnJbREcwDI3AmGuHt7VwNIZg5fB0JtyktgY2evMikjGrCc8H
+        RZI/DgMnIfGrD+IV60ktZcVje18gmDk=
+X-Google-Smtp-Source: ABdhPJz3AIrbe7WmvCFNyoUxmGYHG4WGKx8LarPfV1FGev4qvJ72uy0P4T4bxfBZHf2YyXIp2rSmQw==
+X-Received: by 2002:a17:902:aa8b:b029:da:ef22:8675 with SMTP id d11-20020a170902aa8bb02900daef228675mr16841289plr.15.1608568091235;
+        Mon, 21 Dec 2020 08:28:11 -0800 (PST)
+Received: from open-light-1.localdomain (66.98.113.28.16clouds.com. [66.98.113.28])
+        by smtp.gmail.com with ESMTPSA id ev23sm16794186pjb.24.2020.12.21.08.28.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 21 Dec 2020 08:28:11 -0800 (PST)
+From:   Liang Li <liliang.opensource@gmail.com>
+X-Google-Original-From: Liang Li <liliang324@gmail.com>
+Date:   Mon, 21 Dec 2020 11:28:08 -0500
+To:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Liang Li <liliangleo@didiglobal.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: [RFC v2 PATCH 1/4] mm: make page reporing worker works better for
+ low order page
+Message-ID: <20201221162806.GA22524@open-light-1.localdomain>
+Mail-Followup-To: Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>, Michal Hocko <mhocko@suse.com>,
+        Liang Li <liliangleo@didiglobal.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+'page_reporting_cycle' may take the zone lock for too long when scan
+a low order free page list, because the low order page free list may
+have a lot iterms and very few pages without the PG_report flag.
+Current implementation limits the mini reported order to pageblock_order,
+it's ok for most case. If we want to report low order pages, we should
+prevent zone lock from being taken too long by the reporting worker, or it
+may affect system performance, this patch try to make 'page_reporting_cycle'
+work better for low order pages, the zone lock was released periodicly
+and cup was yielded voluntarily if needed.
 
-Attributing the function allows the compiler to more thoroughly
-check the use of the function with -Wformat and similar flags.
+Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Dave Hansen <dave.hansen@intel.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Alex Williamson <alex.williamson@redhat.com>
+Cc: Michael S. Tsirkin <mst@redhat.com>
+Signed-off-by: Liang Li <liliang324@gmail.com>
 
-Signed-off-by: Tom Rix <trix@redhat.com>
 ---
- include/linux/trace.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ mm/page_reporting.c | 35 ++++++++++++++++++++++++++++++++---
+ 1 file changed, 32 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/trace.h b/include/linux/trace.h
-index 886a4ffd9d45..be1e130ed87c 100644
---- a/include/linux/trace.h
-+++ b/include/linux/trace.h
-@@ -34,8 +34,9 @@ int unregister_ftrace_export(struct trace_export *export);
- struct trace_array;
+diff --git a/mm/page_reporting.c b/mm/page_reporting.c
+index cd8e13d41df4..0b22db94ce2a 100644
+--- a/mm/page_reporting.c
++++ b/mm/page_reporting.c
+@@ -6,11 +6,14 @@
+ #include <linux/export.h>
+ #include <linux/delay.h>
+ #include <linux/scatterlist.h>
++#include <linux/sched.h>
  
- void trace_printk_init_buffers(void);
-+__printf(3, 4)
- int trace_array_printk(struct trace_array *tr, unsigned long ip,
--		const char *fmt, ...);
-+		       const char *fmt, ...);
- int trace_array_init_printk(struct trace_array *tr);
- void trace_array_put(struct trace_array *tr);
- struct trace_array *trace_array_get_by_name(const char *name);
+ #include "page_reporting.h"
+ #include "internal.h"
+ 
+ #define PAGE_REPORTING_DELAY	(2 * HZ)
++#define MAX_SCAN_NUM 1024
++
+ static struct page_reporting_dev_info __rcu *pr_dev_info __read_mostly;
+ 
+ enum {
+@@ -115,7 +118,7 @@ page_reporting_cycle(struct page_reporting_dev_info *prdev, struct zone *zone,
+ 	unsigned int page_len = PAGE_SIZE << order;
+ 	struct page *page, *next;
+ 	long budget;
+-	int err = 0;
++	int err = 0, scan_cnt = 0;
+ 
+ 	/*
+ 	 * Perform early check, if free area is empty there is
+@@ -145,8 +148,14 @@ page_reporting_cycle(struct page_reporting_dev_info *prdev, struct zone *zone,
+ 	/* loop through free list adding unreported pages to sg list */
+ 	list_for_each_entry_safe(page, next, list, lru) {
+ 		/* We are going to skip over the reported pages. */
+-		if (PageReported(page))
++		if (PageReported(page)) {
++			if (++scan_cnt >= MAX_SCAN_NUM) {
++				err = scan_cnt;
++				break;
++			}
+ 			continue;
++		}
++
+ 
+ 		/*
+ 		 * If we fully consumed our budget then update our
+@@ -219,6 +228,26 @@ page_reporting_cycle(struct page_reporting_dev_info *prdev, struct zone *zone,
+ 	return err;
+ }
+ 
++static int
++reporting_order_type(struct page_reporting_dev_info *prdev, struct zone *zone,
++		     unsigned int order, unsigned int mt,
++		     struct scatterlist *sgl, unsigned int *offset)
++{
++	int ret = 0;
++	unsigned long total = 0;
++
++	might_sleep();
++	do {
++		cond_resched();
++		ret = page_reporting_cycle(prdev, zone, order, mt,
++					   sgl, offset);
++		if (ret > 0)
++			total += ret;
++	} while (ret > 0 && total < zone->free_area[order].nr_free);
++
++	return ret;
++}
++
+ static int
+ page_reporting_process_zone(struct page_reporting_dev_info *prdev,
+ 			    struct scatterlist *sgl, struct zone *zone)
+@@ -245,7 +274,7 @@ page_reporting_process_zone(struct page_reporting_dev_info *prdev,
+ 			if (is_migrate_isolate(mt))
+ 				continue;
+ 
+-			err = page_reporting_cycle(prdev, zone, order, mt,
++			err = reporting_order_type(prdev, zone, order, mt,
+ 						   sgl, &offset);
+ 			if (err)
+ 				return err;
 -- 
-2.27.0
+2.18.2
 
