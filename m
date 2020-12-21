@@ -2,121 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01C2A2DF92F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 07:19:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FF3E2DF933
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 07:20:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728417AbgLUGSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 01:18:51 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:10417 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725984AbgLUGSu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 01:18:50 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4Czq5g2cWMz9txlJ;
-        Mon, 21 Dec 2020 07:17:59 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id GBQLneuKLPej; Mon, 21 Dec 2020 07:17:59 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4Czq5g0rh1z9txlH;
-        Mon, 21 Dec 2020 07:17:59 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id F35F58B790;
-        Mon, 21 Dec 2020 07:18:03 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 4_zuVwtqaYyp; Mon, 21 Dec 2020 07:18:03 +0100 (CET)
-Received: from localhost.localdomain (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B01418B75B;
-        Mon, 21 Dec 2020 07:18:03 +0100 (CET)
-Received: by localhost.localdomain (Postfix, from userid 0)
-        id 75B4B66935; Mon, 21 Dec 2020 06:18:03 +0000 (UTC)
-Message-Id: <a3d819d5c348cee9783a311d5d3f3ba9b48fd219.1608531452.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/32: Fix vmap stack - Properly set r1 before
- activating MMU on syscall too
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Mon, 21 Dec 2020 06:18:03 +0000 (UTC)
+        id S1728450AbgLUGUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 01:20:32 -0500
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:41324 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726140AbgLUGUb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 01:20:31 -0500
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 0BL6Jbgn024900;
+        Mon, 21 Dec 2020 15:19:37 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 0BL6Jbgn024900
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1608531578;
+        bh=BYlCTuhSzV6TRqa7tXYTcFDqgVKa7TxcGPT3foHwNXs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hyOhPooQuC6c16OkErO/kv5Nd7W/E29yS78DeXcxbDDsqCqepVcUpLsSX6xmZqKMN
+         kFZO1TH4QG1XAYVWaJgjo8t1HWnBSWKb//s1iSE/yFiTW+HXe1Tx11HC60U8rdBNiN
+         8qmYtfe5V1pSJWIhNFPLlgf2Hir0FMN6GRp/u+Dhy7ahlk9rGaE9FGIQF9wfmMDGcU
+         dztpm9zrLJYVh2IoCTVYFOONxslnFij98XwpNdFtwxYmbDPGeGjhvt+MjmKAMSNA7q
+         CcjqLvDpByyGrnVyuc1PuGzRJcmJkTPMuL4K2Pe60ZfzxTjqYtoZwv8UOqLjzdLDc9
+         VcUb9vQ/QHtHw==
+X-Nifty-SrcIP: [209.85.210.181]
+Received: by mail-pf1-f181.google.com with SMTP id v2so5883335pfm.9;
+        Sun, 20 Dec 2020 22:19:37 -0800 (PST)
+X-Gm-Message-State: AOAM5319u3yN+Of6s1LnIP6Aj3EOkwytJmq98U8IxGiZYWLaBk45Ffst
+        Qa6pTUKOm20eC/4AaROis81aB/KM86P6IjvP1Ec=
+X-Google-Smtp-Source: ABdhPJyTGmpFdbbWcUsN7vwbZtf5cf/Z4qlcgRfZbI9ZKyKFX7z9MBplWa/TWblbbnO2J/T7wiw0B8s5pwv5XMbvdJE=
+X-Received: by 2002:a63:3205:: with SMTP id y5mr14082429pgy.47.1608531576913;
+ Sun, 20 Dec 2020 22:19:36 -0800 (PST)
+MIME-Version: 1.0
+References: <20201128193335.219395-1-masahiroy@kernel.org> <20201212161831.GA28098@roeck-us.net>
+ <CANiq72=e9Csgpcu3MdLGB77dL_QBn6PpqoG215YUHZLNCUGP0w@mail.gmail.com>
+ <8f645b94-80e5-529c-7b6a-d9b8d8c9685e@roeck-us.net> <CANiq72kML=UmMLyKcorYwOhp2oqjfz7_+JN=EmPp05AapHbFSg@mail.gmail.com>
+ <X9YwXZvjSWANm4wR@kroah.com> <CANiq72=UzRTkh6bcNSjE-kSgBJYX12+zQUYphZ1GcY-7kNxaLA@mail.gmail.com>
+In-Reply-To: <CANiq72=UzRTkh6bcNSjE-kSgBJYX12+zQUYphZ1GcY-7kNxaLA@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 21 Dec 2020 15:18:59 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARXa1CQSFJjcqN7Y_8dZ1CSGqjoeox3oGAS_3=4QrHs9g@mail.gmail.com>
+Message-ID: <CAK7LNARXa1CQSFJjcqN7Y_8dZ1CSGqjoeox3oGAS_3=4QrHs9g@mail.gmail.com>
+Subject: Re: [PATCH v3] Compiler Attributes: remove CONFIG_ENABLE_MUST_CHECK
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "Jason A . Donenfeld" <Jason@zx2c4.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        wireguard@lists.zx2c4.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We need r1 to be properly set before activating MMU, otherwise any new
-exception taken while saving registers into the stack in syscall
-prologs will use the user stack, which is wrong and will even lockup
-or crash when KUAP is selected.
+On Mon, Dec 14, 2020 at 12:27 AM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
+>
+> On Sun, Dec 13, 2020 at 4:16 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > Because if you get a report of something breaking for your change, you
+> > need to work to resolve it, not argue about it.  Otherwise it needs to
+> > be dropped/reverted.
+>
+> Nobody has argued that. In fact, I explicitly said the opposite: "So I
+> think we can fix them as they come.".
+>
+> I am expecting Masahiro to follow up. It has been less than 24 hours
+> since the report, on a weekend.
+>
+> Cheers,
+> Miguel
 
-Do that by switching the meaning of r11 and r1 until we have saved r1
-to the stack: copy r1 into r11 and setup the new stack pointer in r1.
-To avoid complicating and impacting all generic and specific prolog
-code (and more), copy back r1 into r11 once r11 is save onto
-the stack.
 
-We could get rid of copying r1 back and forth at the cost of rewriting
-everything to use r1 instead of r11 all the way when CONFIG_VMAP_STACK
-is set, but the effort is probably not worth it for now.
+Sorry for the delay.
 
-Fixes: da7bb43ab9da ("powerpc/32: Fix vmap stack - Properly set r1 before activating MMU")
-Cc: stable@vger.kernel.org
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/head_32.h | 25 ++++++++++++++++---------
- 1 file changed, 16 insertions(+), 9 deletions(-)
+Now I sent out the fix for lantiq_etop.c
 
-diff --git a/arch/powerpc/kernel/head_32.h b/arch/powerpc/kernel/head_32.h
-index 541664d95702..a2f72c966baf 100644
---- a/arch/powerpc/kernel/head_32.h
-+++ b/arch/powerpc/kernel/head_32.h
-@@ -121,18 +121,28 @@
- #ifdef CONFIG_VMAP_STACK
- 	mfspr	r11, SPRN_SRR0
- 	mtctr	r11
--#endif
- 	andi.	r11, r9, MSR_PR
--	lwz	r11,TASK_STACK-THREAD(r12)
-+	mr	r11, r1
-+	lwz	r1,TASK_STACK-THREAD(r12)
- 	beq-	99f
--	addi	r11, r11, THREAD_SIZE - INT_FRAME_SIZE
--#ifdef CONFIG_VMAP_STACK
-+	addi	r1, r1, THREAD_SIZE - INT_FRAME_SIZE
- 	li	r10, MSR_KERNEL & ~(MSR_IR | MSR_RI) /* can take DTLB miss */
- 	mtmsr	r10
- 	isync
-+	tovirt(r12, r12)
-+	stw	r11,GPR1(r1)
-+	stw	r11,0(r1)
-+	mr	r11, r1
-+#else
-+	andi.	r11, r9, MSR_PR
-+	lwz	r11,TASK_STACK-THREAD(r12)
-+	beq-	99f
-+	addi	r11, r11, THREAD_SIZE - INT_FRAME_SIZE
-+	tophys(r11, r11)
-+	stw	r1,GPR1(r11)
-+	stw	r1,0(r11)
-+	tovirt(r1, r11)		/* set new kernel sp */
- #endif
--	tovirt_vmstack r12, r12
--	tophys_novmstack r11, r11
- 	mflr	r10
- 	stw	r10, _LINK(r11)
- #ifdef CONFIG_VMAP_STACK
-@@ -140,9 +150,6 @@
- #else
- 	mfspr	r10,SPRN_SRR0
- #endif
--	stw	r1,GPR1(r11)
--	stw	r1,0(r11)
--	tovirt_novmstack r1, r11	/* set new kernel sp */
- 	stw	r10,_NIP(r11)
- 	mfcr	r10
- 	rlwinm	r10,r10,0,4,2	/* Clear SO bit in CR */
+https://lore.kernel.org/patchwork/patch/1355595/
+
+
+The reason of the complication was
+I was trying to merge the following patch in the same development cycle:
+https://patchwork.kernel.org/project/linux-kbuild/patch/20201117104736.24997-1-olaf@aepfle.de/
+
+
+-Werror=return-type gives a bigger impact
+because any instance of __must_check violation
+results in build breakage.
+So, I just dropped it from my tree (and, I will aim for 5.12).
+
+The removal of CONFIG_ENABLE_MUST_CHECK is less impactive,
+because we are still able to build with some warnings.
+
+
+Tomorrow's linux-next should be OK
+and, you can send my patch in this merge window.
+
 -- 
-2.25.0
-
+Best Regards
+Masahiro Yamada
