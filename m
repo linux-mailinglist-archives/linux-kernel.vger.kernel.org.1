@@ -2,86 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1822DFBDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 13:35:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B9482DFBE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 13:35:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726579AbgLUMel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 07:34:41 -0500
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:40291 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725807AbgLUMel (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 07:34:41 -0500
-Received: from [192.168.0.8] (ip5f5aef0c.dynamic.kabel-deutschland.de [95.90.239.12])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726737AbgLUMfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 07:35:03 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:53947 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726614AbgLUMfC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 07:35:02 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608554083; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=tDvl9tDLfGJ7JN2lYUJAQJ9Ss9Zsrq4uuuiex7ki2+Q=;
+ b=mUtq7NQMj8AEZNIvst028U4cleL4eIwccoFkLP3uLv08gDmGrG/QKWjXYfQK6solQ5RGIoj9
+ K0rTepGJjuR8jJL3xWbS2AS+ikFaqxo/1quysxO7OS55MRkkTYc43aFI4gi58guXXgT4Dmpe
+ QJfWFbtqTmdgY7qcWIs7fPRQOyo=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-west-2.postgun.com with SMTP id
+ 5fe09646cfe5dd67dbcda5b6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 21 Dec 2020 12:34:14
+ GMT
+Sender: rojay=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8FFD3C433ED; Mon, 21 Dec 2020 12:34:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: buczek)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 171622064784C;
-        Mon, 21 Dec 2020 13:33:59 +0100 (CET)
-Subject: Re: md_raid: mdX_raid6 looping after sync_action "check" to "idle"
- transition
-From:   Donald Buczek <buczek@molgen.mpg.de>
-To:     Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Song Liu <song@kernel.org>, linux-raid@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        it+raid@molgen.mpg.de
-References: <aa9567fd-38e1-7b9c-b3e1-dc2fdc055da5@molgen.mpg.de>
- <95fbd558-5e46-7a6a-43ac-bcc5ae8581db@cloud.ionos.com>
- <77244d60-1c2d-330e-71e6-4907d4dd65fc@molgen.mpg.de>
- <7c5438c7-2324-cc50-db4d-512587cb0ec9@molgen.mpg.de>
- <b289ae15-ff82-b36e-4be4-a1c8bbdbacd7@cloud.ionos.com>
- <37c158cb-f527-34f5-2482-cae138bc8b07@molgen.mpg.de>
-Message-ID: <efb8d47b-ab9b-bdb9-ee2f-fb1be66343b1@molgen.mpg.de>
-Date:   Mon, 21 Dec 2020 13:33:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        (Authenticated sender: rojay)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4CAD8C433C6;
+        Mon, 21 Dec 2020 12:34:13 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <37c158cb-f527-34f5-2482-cae138bc8b07@molgen.mpg.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Mon, 21 Dec 2020 18:04:13 +0530
+From:   rojay@codeaurora.org
+To:     Akash Asthana <akashast@codeaurora.org>
+Cc:     wsa@kernel.org, swboyd@chromium.org, dianders@chromium.org,
+        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
+        mka@chromium.org, msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
+        vkaur@codeaurora.org, pyarlaga@codeaurora.org,
+        rnayak@codeaurora.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org
+Subject: Re: [RESEND PATCH V6 1/2] i2c: i2c-qcom-geni: Store DMA mapping data
+ in geni_i2c_dev struct
+In-Reply-To: <049c28e9-1211-377f-941d-ba169645dd24@codeaurora.org>
+References: <20201203103156.32595-1-rojay@codeaurora.org>
+ <20201203103156.32595-2-rojay@codeaurora.org>
+ <049c28e9-1211-377f-941d-ba169645dd24@codeaurora.org>
+Message-ID: <585a9b7ab44e3a99eb803536af6334e5@codeaurora.org>
+X-Sender: rojay@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Guoging,
+On 2020-12-09 18:29, Akash Asthana wrote:
+> Hi Roja,
+> 
+> On 12/3/2020 4:01 PM, Roja Rani Yarubandi wrote:
+>> Store DMA mapping data in geni_i2c_dev struct to enhance DMA mapping
+>> data scope. For example during shutdown callback to unmap DMA mapping,
+>> this stored DMA mapping data can be used to call geni_se_tx_dma_unprep
+>> and geni_se_rx_dma_unprep functions.
+>> 
+>> Add two helper functions geni_i2c_rx_msg_cleanup and
+>> geni_i2c_tx_msg_cleanup to unwrap the things after rx/tx FIFO/DMA
+>> transfers, so that the same can be used in geni_i2c_stop_xfer()
+>> function during shutdown callback.
+>> 
+>> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
+>> ---
+>> Changes in V5:
+>>   - As per Stephen's comments separated this patch from shutdown
+>>     callback patch, gi2c->cur = NULL is not removed from
+>>     geni_i2c_abort_xfer(), and made a copy of gi2c->cur and passed
+>>     to cleanup functions.
+>> 
+>> Changes in V6:
+>>   - Added spin_lock/unlock in geni_i2c_rx_msg_cleanup() and
+>>     geni_i2c_tx_msg_cleanup() functions.
+>> 
+>>   drivers/i2c/busses/i2c-qcom-geni.c | 69 
+>> +++++++++++++++++++++++-------
+>>   1 file changed, 53 insertions(+), 16 deletions(-)
+>> 
+>> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c 
+>> b/drivers/i2c/busses/i2c-qcom-geni.c
+>> index dce75b85253c..bfbc80f65006 100644
+>> --- a/drivers/i2c/busses/i2c-qcom-geni.c
+>> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
+>> @@ -86,6 +86,9 @@ struct geni_i2c_dev {
+>>   	u32 clk_freq_out;
+>>   	const struct geni_i2c_clk_fld *clk_fld;
+>>   	int suspended;
+>> +	void *dma_buf;
+>> +	size_t xfer_len;
+>> +	dma_addr_t dma_addr;
+>>   };
+>>     struct geni_i2c_err_log {
+>> @@ -348,14 +351,49 @@ static void geni_i2c_tx_fsm_rst(struct 
+>> geni_i2c_dev *gi2c)
+>>   		dev_err(gi2c->se.dev, "Timeout resetting TX_FSM\n");
+>>   }
+>>   +static void geni_i2c_rx_msg_cleanup(struct geni_i2c_dev *gi2c,
+>> +				     struct i2c_msg *cur)
+>> +{
+>> +	struct geni_se *se = &gi2c->se;
+>> +	unsigned long flags;
+>> +
+>> +	spin_lock_irqsave(&gi2c->lock, flags);
+>> +	gi2c->cur_rd = 0;
+>> +	if (gi2c->dma_buf) {
+>> +		if (gi2c->err)
+>> +			geni_i2c_rx_fsm_rst(gi2c);
+> 
+> Which race we are trying to avoid here by holding spinlock?
+> 
 
-I think now that this is not an issue for md. I've driven a system into that situation again and have clear indication, that this is a problem of the member block device driver.
+Thought that race might occur with "cur" here.
 
-With md0 in the described errornous state (md0_raid6 busy looping, echo idle > .../sync_action blocked, no progress in mdstat) and md1 operating normally:
+> We cannot call any sleeping API by holding spinlock,
+> geni_i2c_rx_fsm_rst calls *wait-for-completion*, which is a sleeping
+> call.
+> 
 
-     root:deadbird:/scratch/local/# for f in /sys/devices/virtual/block/md?/md/rd*/block/inflight;do echo $f: $(cat $f);done
-     /sys/devices/virtual/block/md0/md/rd0/block/inflight: 1 0
-     /sys/devices/virtual/block/md0/md/rd1/block/inflight: 1 0
-     /sys/devices/virtual/block/md0/md/rd10/block/inflight: 1 0
-     /sys/devices/virtual/block/md0/md/rd11/block/inflight: 1 0
-     /sys/devices/virtual/block/md0/md/rd12/block/inflight: 1 0
-     /sys/devices/virtual/block/md0/md/rd13/block/inflight: 1 0
-     /sys/devices/virtual/block/md0/md/rd14/block/inflight: 1 0
-     /sys/devices/virtual/block/md0/md/rd15/block/inflight: 1 0
-     /sys/devices/virtual/block/md0/md/rd2/block/inflight: 1 0
-     /sys/devices/virtual/block/md0/md/rd3/block/inflight: 1 0
-     /sys/devices/virtual/block/md0/md/rd4/block/inflight: 1 0
-     /sys/devices/virtual/block/md0/md/rd5/block/inflight: 1 0
-     /sys/devices/virtual/block/md0/md/rd6/block/inflight: 1 0
-     /sys/devices/virtual/block/md0/md/rd7/block/inflight: 1 0
-     /sys/devices/virtual/block/md0/md/rd8/block/inflight: 1 0
-     /sys/devices/virtual/block/md0/md/rd9/block/inflight: 1 0
-     /sys/devices/virtual/block/md1/md/rd0/block/inflight: 0 0
-     /sys/devices/virtual/block/md1/md/rd1/block/inflight: 0 0
-     /sys/devices/virtual/block/md1/md/rd10/block/inflight: 0 0
-     /sys/devices/virtual/block/md1/md/rd11/block/inflight: 0 0
-     /sys/devices/virtual/block/md1/md/rd12/block/inflight: 0 0
-     /sys/devices/virtual/block/md1/md/rd13/block/inflight: 0 0
-     /sys/devices/virtual/block/md1/md/rd14/block/inflight: 0 0
-     /sys/devices/virtual/block/md1/md/rd15/block/inflight: 0 0
-     /sys/devices/virtual/block/md1/md/rd2/block/inflight: 0 0
-     /sys/devices/virtual/block/md1/md/rd3/block/inflight: 0 0
-     /sys/devices/virtual/block/md1/md/rd4/block/inflight: 0 0
-     /sys/devices/virtual/block/md1/md/rd5/block/inflight: 0 0
-     /sys/devices/virtual/block/md1/md/rd6/block/inflight: 0 0
-     /sys/devices/virtual/block/md1/md/rd7/block/inflight: 0 0
-     /sys/devices/virtual/block/md1/md/rd8/block/inflight: 0 0
-     /sys/devices/virtual/block/md1/md/rd9/block/inflight: 0 0
+Fixed this.
 
-Best
-   Donald
+>> +		geni_se_rx_dma_unprep(se, gi2c->dma_addr, gi2c->xfer_len);
+>> +		i2c_put_dma_safe_msg_buf(gi2c->dma_buf, cur, !gi2c->err);
+>> +	}
+>> +	spin_unlock_irqrestore(&gi2c->lock, flags);
+>> +}
+>> +
+>> +static void geni_i2c_tx_msg_cleanup(struct geni_i2c_dev *gi2c,
+>> +				     struct i2c_msg *cur)
+>> +{
+>> +	struct geni_se *se = &gi2c->se;
+>> +	unsigned long flags;
+>> +
+>> +	spin_lock_irqsave(&gi2c->lock, flags);
+>> +	gi2c->cur_wr = 0;
+>> +	if (gi2c->dma_buf) {
+>> +		if (gi2c->err)
+>> +			geni_i2c_tx_fsm_rst(gi2c);
+> 
+> Same here
+> 
+> Regards,
+> 
+> Akash
+> 
+>> +		geni_se_tx_dma_unprep(se, gi2c->dma_addr, gi2c->xfer_len);
+>> +		i2c_put_dma_safe_msg_buf(gi2c->dma_buf, cur, !gi2c->err);
+>> +	}
+>> +	spin_unlock_irqrestore(&gi2c->lock, flags);
+>> +}
+>> +
+>>   static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct 
+>> i2c_msg *msg,
+>>   				u32 m_param)
+>>   {
+>> -	dma_addr_t rx_dma;
+>> +	dma_addr_t rx_dma = 0;
+>>   	unsigned long time_left;
+>>   	void *dma_buf = NULL;
+>>   	struct geni_se *se = &gi2c->se;
+>>   	size_t len = msg->len;
+>> +	struct i2c_msg *cur;
+>>     	if (!of_machine_is_compatible("lenovo,yoga-c630"))
+>>   		dma_buf = i2c_get_dma_safe_msg_buf(msg, 32);
+>> @@ -372,19 +410,18 @@ static int geni_i2c_rx_one_msg(struct 
+>> geni_i2c_dev *gi2c, struct i2c_msg *msg,
+>>   		geni_se_select_mode(se, GENI_SE_FIFO);
+>>   		i2c_put_dma_safe_msg_buf(dma_buf, msg, false);
+>>   		dma_buf = NULL;
+>> +	} else {
+>> +		gi2c->xfer_len = len;
+>> +		gi2c->dma_addr = rx_dma;
+>> +		gi2c->dma_buf = dma_buf;
+>>   	}
+>>   +	cur = gi2c->cur;
+>>   	time_left = wait_for_completion_timeout(&gi2c->done, XFER_TIMEOUT);
+>>   	if (!time_left)
+>>   		geni_i2c_abort_xfer(gi2c);
+>>   -	gi2c->cur_rd = 0;
+>> -	if (dma_buf) {
+>> -		if (gi2c->err)
+>> -			geni_i2c_rx_fsm_rst(gi2c);
+>> -		geni_se_rx_dma_unprep(se, rx_dma, len);
+>> -		i2c_put_dma_safe_msg_buf(dma_buf, msg, !gi2c->err);
+>> -	}
+>> +	geni_i2c_rx_msg_cleanup(gi2c, cur);
+>>     	return gi2c->err;
+>>   }
+>> @@ -392,11 +429,12 @@ static int geni_i2c_rx_one_msg(struct 
+>> geni_i2c_dev *gi2c, struct i2c_msg *msg,
+>>   static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct 
+>> i2c_msg *msg,
+>>   				u32 m_param)
+>>   {
+>> -	dma_addr_t tx_dma;
+>> +	dma_addr_t tx_dma = 0;
+>>   	unsigned long time_left;
+>>   	void *dma_buf = NULL;
+>>   	struct geni_se *se = &gi2c->se;
+>>   	size_t len = msg->len;
+>> +	struct i2c_msg *cur;
+>>     	if (!of_machine_is_compatible("lenovo,yoga-c630"))
+>>   		dma_buf = i2c_get_dma_safe_msg_buf(msg, 32);
+>> @@ -413,22 +451,21 @@ static int geni_i2c_tx_one_msg(struct 
+>> geni_i2c_dev *gi2c, struct i2c_msg *msg,
+>>   		geni_se_select_mode(se, GENI_SE_FIFO);
+>>   		i2c_put_dma_safe_msg_buf(dma_buf, msg, false);
+>>   		dma_buf = NULL;
+>> +	} else {
+>> +		gi2c->xfer_len = len;
+>> +		gi2c->dma_addr = tx_dma;
+>> +		gi2c->dma_buf = dma_buf;
+>>   	}
+>>     	if (!dma_buf) /* Get FIFO IRQ */
+>>   		writel_relaxed(1, se->base + SE_GENI_TX_WATERMARK_REG);
+>>   +	cur = gi2c->cur;
+>>   	time_left = wait_for_completion_timeout(&gi2c->done, XFER_TIMEOUT);
+>>   	if (!time_left)
+>>   		geni_i2c_abort_xfer(gi2c);
+>>   -	gi2c->cur_wr = 0;
+>> -	if (dma_buf) {
+>> -		if (gi2c->err)
+>> -			geni_i2c_tx_fsm_rst(gi2c);
+>> -		geni_se_tx_dma_unprep(se, tx_dma, len);
+>> -		i2c_put_dma_safe_msg_buf(dma_buf, msg, !gi2c->err);
+>> -	}
+>> +	geni_i2c_tx_msg_cleanup(gi2c, cur);
+>>     	return gi2c->err;
+>>   }
