@@ -2,122 +2,356 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B566D2E02FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 00:47:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D42742E0301
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 00:48:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726166AbgLUXrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 18:47:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgLUXrU (ORCPT
+        id S1726261AbgLUXrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 18:47:45 -0500
+Received: from mail-oi1-f171.google.com ([209.85.167.171]:43343 "EHLO
+        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725780AbgLUXro (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 18:47:20 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC1FBC0613D6;
-        Mon, 21 Dec 2020 15:46:39 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id 11so7381476pfu.4;
-        Mon, 21 Dec 2020 15:46:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=L+0JEMaoTQhD9jy4Rl8XAyjJSgO9j0YTaiOmnYpP02Y=;
-        b=Ps04niOpFbu+NWVSJoYqYU1JpLcgUiedzqB4MZuSPChfBJj/qY2eq2FGHkG0oWY9Nz
-         kPpkJ2l+8Q0ELMgCFzdpXGecfsBG6esd18k6EcrVRxAieSNuoVW0N3R6f8ko9NhtYk0s
-         seX3dpcCiKXmfJnLRc1CC14BG6i+4AagCQAphesrN9ZGpU8ly4JPsq2jNvcvwy+EJNRJ
-         ZhBE16Qhstk0MTTkYXrjueAHTbheqJ1qlnUvG8r0VhM6bQryq9uhC8E/zWBdC1s3LIdQ
-         wygq/eNdZPucwNs/ES9BBRJfDhE6o6SWD9P2SgEo9d1RemPjjPhSB7wUqt4Zta2E8Tox
-         htrw==
+        Mon, 21 Dec 2020 18:47:44 -0500
+Received: by mail-oi1-f171.google.com with SMTP id q25so12997856oij.10;
+        Mon, 21 Dec 2020 15:47:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=L+0JEMaoTQhD9jy4Rl8XAyjJSgO9j0YTaiOmnYpP02Y=;
-        b=tYIDoDlPhsD9Z9xEgfw/ISpprW+N8POieGyPeFCzLTdgFiVXYooBk8x0I21sCfZwW6
-         HnxHZZwjCubNHACNHRyguwJo71YlxA6QLhBUjWGyTKLTCQLv7eiS2kHLIo7MPwAeGhKf
-         qr7lyxn+9Ep6xipsF37K/1y6dvuBnGVuzYe/49L/eaC0AsRWtOHDPBwdXxuI0mPcUpwT
-         55SnDWHLWourpkt2Af1FuxMLzVKD7Na4s/HeZ/dnmAryGq3uT1nRRzu2LJAuqo7Jz9Pv
-         q4Ujb9SIL9gDhwMzGvnbkHbptup9EgNc0nqfAN2PL7gu/UssVXVHtmOkyVfN9rJuUaNf
-         LwFA==
-X-Gm-Message-State: AOAM532n5T7UJ8Vlownz8Q9sYgEqQ6rFC/bkmAMyNdBk/5PI5+/8a4ln
-        SZj0t6qSqE9lWPkFoB5kd4k=
-X-Google-Smtp-Source: ABdhPJyiRX/b5fEsU/ic1PlWfthrlm7MZHAoPC4HSmZNiGOvTuMo4An+knAyb8zfIJ+Mbm+bTMXSBQ==
-X-Received: by 2002:a62:61c5:0:b029:1a9:5a82:4227 with SMTP id v188-20020a6261c50000b02901a95a824227mr17693431pfb.61.1608594399329;
-        Mon, 21 Dec 2020 15:46:39 -0800 (PST)
-Received: from ?IPv6:2601:647:4700:9b2:104c:8d35:de28:b8dc? ([2601:647:4700:9b2:104c:8d35:de28:b8dc])
-        by smtp.gmail.com with ESMTPSA id c62sm17710501pfa.116.2020.12.21.15.46.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 21 Dec 2020 15:46:38 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-From:   Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <CAHk-=wihkGVvXXQL_qSPWF6s4NJYWyEkq+D3CUWQf9H5V1jqtg@mail.gmail.com>
-Date:   Mon, 21 Dec 2020 15:46:33 -0800
-Cc:     Peter Xu <peterx@redhat.com>, Yu Zhao <yuzhao@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <BCB833E2-B5CD-4FE6-B788-43E5925F70DF@gmail.com>
-References: <X97pprdcRXusLGnq@google.com>
- <DDA15360-D6D4-46A8-95A4-5EE34107A407@gmail.com>
- <20201221172711.GE6640@xz-x1>
- <76B4F49B-ED61-47EA-9BE4-7F17A26B610D@gmail.com>
- <X+D0hTZCrWS3P5Pi@google.com>
- <CAHk-=wg_UBuo7ro1fpEGkMyFKA1+PxrE85f9J_AhUfr-nJPpLQ@mail.gmail.com>
- <9E301C7C-882A-4E0F-8D6D-1170E792065A@gmail.com>
- <CAHk-=wg-Y+svNy3CDkJjj0X_CJkSbpERLg64-Vqwq5u7SC4z0g@mail.gmail.com>
- <X+ESkna2z3WjjniN@google.com>
- <1FCC8F93-FF29-44D3-A73A-DF943D056680@gmail.com>
- <20201221223041.GL6640@xz-x1>
- <B8095F3C-81E3-4AF9-A6A5-F597D51264BD@gmail.com>
- <CAHk-=wihkGVvXXQL_qSPWF6s4NJYWyEkq+D3CUWQf9H5V1jqtg@mail.gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VvySv0CeCJTZyFCy7SQ0ADLfiwUPuGcaaIXJOcvnMEk=;
+        b=KOSqErSfv3AWJTIWn60W/QWTiu+2zMofZ3p15UaGqpHUsVmL2kDQBxRIz3X3qZ7zQB
+         Zt5qYbXmapY7TMAUdqwU95/EoPdGsW82z38N354VKyHQBpiotIgH14l3OLIe+IIgUET9
+         //8KyAbIos+6U33P7ajFZsvNEFp37npgMPUtKMMwSSAzwMlIBS1cBvpT8YP+11DTzl5Z
+         cbIbYb5AAo5bkbB9WcgV0PFdtU72r8r8h4rE3Y7/FQbgoqAFOJaBiVGhSAgePxIJ0r14
+         AneVk79vT8VPKAxEt4ayPiB6SetwtVjeBZiMb/r3Xfc50uvmCYcDemB6/6qezwcKkAAh
+         s15g==
+X-Gm-Message-State: AOAM532PR4wy9/eGm6F5xwLvNvWPCRyZdgejTiM2+EqEesNkhG/bZoY1
+        kYS6P2LZy2PI7voFaBeTFi7gOGieAA==
+X-Google-Smtp-Source: ABdhPJyarx985mhH4El9moVWkvIPJ7HV4bVwwLQCH80HeMmIbZj0RWpFySptVkQxMny5xbyKsC62Qg==
+X-Received: by 2002:aca:aa83:: with SMTP id t125mr12352816oie.103.1608594421968;
+        Mon, 21 Dec 2020 15:47:01 -0800 (PST)
+Received: from xps15.herring.priv ([64.188.179.253])
+        by smtp.googlemail.com with ESMTPSA id j126sm3917671oib.13.2020.12.21.15.47.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 15:47:01 -0800 (PST)
+From:   Rob Herring <robh@kernel.org>
+To:     devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-iio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-media@vger.kernel.org
+Subject: [PATCH] dt-bindings: Drop unnecessary *-supply schemas properties
+Date:   Mon, 21 Dec 2020 16:46:59 -0700
+Message-Id: <20201221234659.824881-1-robh@kernel.org>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Dec 21, 2020, at 3:30 PM, Linus Torvalds =
-<torvalds@linux-foundation.org> wrote:
->=20
-> On Mon, Dec 21, 2020 at 2:55 PM Nadav Amit <nadav.amit@gmail.com> =
-wrote:
->> So as an alternative solution, I can do copying under the PTL after
->> flushing, which seems to solve the problem.
->=20
-> ...
-> Note that the "Re-validate under PTL" code in cow_user_page() is *not*
-> the "now we are installing the copy". No, that's actually for the
-> "uhhuh, the copy using the virtual address outside the ptl failed, now
-> we need to do something special=E2=80=9D.
-> ...
-> So are we sure the COW case is so special?
->=20
-> I really think this is clearly just a userfaultfd bug that we hadn't
-> realized until now, and had possibly been hidden by timings or other
-> random stuff before.
+*-supply properties are always a single phandle, so binding schemas
+don't need a type $ref nor 'maxItems'.
 
-Thanks for the detailed explanation. I think I got the COW parts =
-correct,
-but as you said, I am completely not sure that COW is so special.
+A meta-schema check for this is pending once these existing cases are
+fixed.
 
-Seems as if some general per page-table mechanism for detection of stale
-PTEs is needed, so by default anyone that acquires the PTL is guaranteed
-that the PTEs in memory are coherent across all the TLBs.
+Cc: Jonathan Cameron <jic23@kernel.org>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc: Lee Jones <lee.jones@linaro.org>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Maxime Ripard <mripard@kernel.org>
+Cc: dri-devel@lists.freedesktop.org
+Cc: linux-iio@vger.kernel.org
+Cc: linux-input@vger.kernel.org
+Cc: linux-media@vger.kernel.org
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/display/bridge/anx6345.yaml | 2 --
+ .../devicetree/bindings/display/bridge/ite,it6505.yaml        | 2 --
+ .../devicetree/bindings/display/bridge/lvds-codec.yaml        | 3 +--
+ Documentation/devicetree/bindings/display/bridge/ps8640.yaml  | 2 --
+ .../devicetree/bindings/display/bridge/simple-bridge.yaml     | 1 -
+ .../bindings/display/bridge/thine,thc63lvd1024.yaml           | 1 -
+ .../devicetree/bindings/display/bridge/toshiba,tc358775.yaml  | 2 --
+ Documentation/devicetree/bindings/iio/adc/lltc,ltc2496.yaml   | 4 +---
+ .../devicetree/bindings/iio/humidity/ti,hdc2010.yaml          | 3 +--
+ .../devicetree/bindings/input/fsl,mpr121-touchkey.yaml        | 3 +--
+ .../devicetree/bindings/input/touchscreen/edt-ft5x06.yaml     | 3 +--
+ .../devicetree/bindings/media/i2c/maxim,max9286.yaml          | 1 -
+ Documentation/devicetree/bindings/media/i2c/mipi-ccs.yaml     | 3 ---
+ Documentation/devicetree/bindings/media/i2c/sony,imx214.yaml  | 3 ---
+ Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml  | 3 ---
+ Documentation/devicetree/bindings/mfd/st,stmfx.yaml           | 3 +--
+ .../devicetree/bindings/regulator/anatop-regulator.yaml       | 1 -
+ 17 files changed, 6 insertions(+), 34 deletions(-)
 
-But I still did not figure out how to do so without introducing =
-overheads,
-and the question is indeed if people care about mprotect and uffd-wp
-performance.
+diff --git a/Documentation/devicetree/bindings/display/bridge/anx6345.yaml b/Documentation/devicetree/bindings/display/bridge/anx6345.yaml
+index 8c0e4f285fbc..fccd63521a8c 100644
+--- a/Documentation/devicetree/bindings/display/bridge/anx6345.yaml
++++ b/Documentation/devicetree/bindings/display/bridge/anx6345.yaml
+@@ -26,11 +26,9 @@ properties:
+     description: GPIO connected to active low reset
+ 
+   dvdd12-supply:
+-    maxItems: 1
+     description: Regulator for 1.2V digital core power.
+ 
+   dvdd25-supply:
+-    maxItems: 1
+     description: Regulator for 2.5V digital core power.
+ 
+   ports:
+diff --git a/Documentation/devicetree/bindings/display/bridge/ite,it6505.yaml b/Documentation/devicetree/bindings/display/bridge/ite,it6505.yaml
+index efbb3d0117dc..02cfc0a3b550 100644
+--- a/Documentation/devicetree/bindings/display/bridge/ite,it6505.yaml
++++ b/Documentation/devicetree/bindings/display/bridge/ite,it6505.yaml
+@@ -35,11 +35,9 @@ properties:
+     maxItems: 1
+ 
+   ovdd-supply:
+-    maxItems: 1
+     description: I/O voltage
+ 
+   pwr18-supply:
+-    maxItems: 1
+     description: core voltage
+ 
+   interrupts:
+diff --git a/Documentation/devicetree/bindings/display/bridge/lvds-codec.yaml b/Documentation/devicetree/bindings/display/bridge/lvds-codec.yaml
+index e5e3c72630cf..66a14d60ce1d 100644
+--- a/Documentation/devicetree/bindings/display/bridge/lvds-codec.yaml
++++ b/Documentation/devicetree/bindings/display/bridge/lvds-codec.yaml
+@@ -79,8 +79,7 @@ properties:
+       The GPIO used to control the power down line of this device.
+     maxItems: 1
+ 
+-  power-supply:
+-    maxItems: 1
++  power-supply: true
+ 
+ required:
+   - compatible
+diff --git a/Documentation/devicetree/bindings/display/bridge/ps8640.yaml b/Documentation/devicetree/bindings/display/bridge/ps8640.yaml
+index 7e27cfcf770d..763c7909473e 100644
+--- a/Documentation/devicetree/bindings/display/bridge/ps8640.yaml
++++ b/Documentation/devicetree/bindings/display/bridge/ps8640.yaml
+@@ -35,11 +35,9 @@ properties:
+     description: GPIO connected to active low reset.
+ 
+   vdd12-supply:
+-    maxItems: 1
+     description: Regulator for 1.2V digital core power.
+ 
+   vdd33-supply:
+-    maxItems: 1
+     description: Regulator for 3.3V digital core power.
+ 
+   ports:
+diff --git a/Documentation/devicetree/bindings/display/bridge/simple-bridge.yaml b/Documentation/devicetree/bindings/display/bridge/simple-bridge.yaml
+index 3ddb35fcf0a2..64e8a1c24b40 100644
+--- a/Documentation/devicetree/bindings/display/bridge/simple-bridge.yaml
++++ b/Documentation/devicetree/bindings/display/bridge/simple-bridge.yaml
+@@ -60,7 +60,6 @@ properties:
+     description: GPIO controlling bridge enable
+ 
+   vdd-supply:
+-    maxItems: 1
+     description: Power supply for the bridge
+ 
+ required:
+diff --git a/Documentation/devicetree/bindings/display/bridge/thine,thc63lvd1024.yaml b/Documentation/devicetree/bindings/display/bridge/thine,thc63lvd1024.yaml
+index 469ac4a34273..3d5ce08a5792 100644
+--- a/Documentation/devicetree/bindings/display/bridge/thine,thc63lvd1024.yaml
++++ b/Documentation/devicetree/bindings/display/bridge/thine,thc63lvd1024.yaml
+@@ -74,7 +74,6 @@ properties:
+     description: Power down GPIO signal, pin name "/PDWN", active low.
+ 
+   vcc-supply:
+-    maxItems: 1
+     description:
+       Power supply for the TTL output, TTL CLOCKOUT signal, LVDS input, PLL and
+       digital circuitry.
+diff --git a/Documentation/devicetree/bindings/display/bridge/toshiba,tc358775.yaml b/Documentation/devicetree/bindings/display/bridge/toshiba,tc358775.yaml
+index fd3113aa9ccd..b5959cc78b8d 100644
+--- a/Documentation/devicetree/bindings/display/bridge/toshiba,tc358775.yaml
++++ b/Documentation/devicetree/bindings/display/bridge/toshiba,tc358775.yaml
+@@ -28,11 +28,9 @@ properties:
+     description: i2c address of the bridge, 0x0f
+ 
+   vdd-supply:
+-    maxItems: 1
+     description: 1.2V LVDS Power Supply
+ 
+   vddio-supply:
+-    maxItems: 1
+     description: 1.8V IO Power Supply
+ 
+   stby-gpios:
+diff --git a/Documentation/devicetree/bindings/iio/adc/lltc,ltc2496.yaml b/Documentation/devicetree/bindings/iio/adc/lltc,ltc2496.yaml
+index 6a991e9f78e2..f04084fae5e8 100644
+--- a/Documentation/devicetree/bindings/iio/adc/lltc,ltc2496.yaml
++++ b/Documentation/devicetree/bindings/iio/adc/lltc,ltc2496.yaml
+@@ -16,9 +16,7 @@ properties:
+     enum:
+       - lltc,ltc2496
+ 
+-  vref-supply:
+-    description: phandle to an external regulator providing the reference voltage
+-    $ref: /schemas/types.yaml#/definitions/phandle
++  vref-supply: true
+ 
+   reg:
+     description: spi chipselect number according to the usual spi bindings
+diff --git a/Documentation/devicetree/bindings/iio/humidity/ti,hdc2010.yaml b/Documentation/devicetree/bindings/iio/humidity/ti,hdc2010.yaml
+index 7037f82ec753..88384b69f917 100644
+--- a/Documentation/devicetree/bindings/iio/humidity/ti,hdc2010.yaml
++++ b/Documentation/devicetree/bindings/iio/humidity/ti,hdc2010.yaml
+@@ -22,8 +22,7 @@ properties:
+       - ti,hdc2010
+       - ti,hdc2080
+ 
+-  vdd-supply:
+-    maxItems: 1
++  vdd-supply: true
+ 
+   reg:
+     maxItems: 1
+diff --git a/Documentation/devicetree/bindings/input/fsl,mpr121-touchkey.yaml b/Documentation/devicetree/bindings/input/fsl,mpr121-touchkey.yaml
+index 378a85c09d34..878464f128dc 100644
+--- a/Documentation/devicetree/bindings/input/fsl,mpr121-touchkey.yaml
++++ b/Documentation/devicetree/bindings/input/fsl,mpr121-touchkey.yaml
+@@ -31,8 +31,7 @@ properties:
+   interrupts:
+     maxItems: 1
+ 
+-  vdd-supply:
+-    maxItems: 1
++  vdd-supply: true
+ 
+   linux,keycodes:
+     minItems: 1
+diff --git a/Documentation/devicetree/bindings/input/touchscreen/edt-ft5x06.yaml b/Documentation/devicetree/bindings/input/touchscreen/edt-ft5x06.yaml
+index 4ce109476a0e..bfc3a8b5e118 100644
+--- a/Documentation/devicetree/bindings/input/touchscreen/edt-ft5x06.yaml
++++ b/Documentation/devicetree/bindings/input/touchscreen/edt-ft5x06.yaml
+@@ -55,8 +55,7 @@ properties:
+ 
+   wakeup-source: true
+ 
+-  vcc-supply:
+-    maxItems: 1
++  vcc-supply: true
+ 
+   gain:
+     description: Allows setting the sensitivity in the range from 0 to 31.
+diff --git a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+index 9ea827092fdd..68ee8c7d9e79 100644
+--- a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
++++ b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+@@ -40,7 +40,6 @@ properties:
+ 
+   poc-supply:
+     description: Regulator providing Power over Coax to the cameras
+-    maxItems: 1
+ 
+   enable-gpios:
+     description: GPIO connected to the \#PWDN pin with inverted polarity
+diff --git a/Documentation/devicetree/bindings/media/i2c/mipi-ccs.yaml b/Documentation/devicetree/bindings/media/i2c/mipi-ccs.yaml
+index 0df0334d2d0d..bb3528315f20 100644
+--- a/Documentation/devicetree/bindings/media/i2c/mipi-ccs.yaml
++++ b/Documentation/devicetree/bindings/media/i2c/mipi-ccs.yaml
+@@ -39,15 +39,12 @@ properties:
+ 
+   vana-supply:
+     description: Analogue voltage supply (VANA), sensor dependent.
+-    maxItems: 1
+ 
+   vcore-supply:
+     description: Core voltage supply (VCore), sensor dependent.
+-    maxItems: 1
+ 
+   vio-supply:
+     description: I/O voltage supply (VIO), sensor dependent.
+-    maxItems: 1
+ 
+   clocks:
+     description: External clock to the sensor.
+diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx214.yaml b/Documentation/devicetree/bindings/media/i2c/sony,imx214.yaml
+index 1a3590dd0e98..eb12526a462f 100644
+--- a/Documentation/devicetree/bindings/media/i2c/sony,imx214.yaml
++++ b/Documentation/devicetree/bindings/media/i2c/sony,imx214.yaml
+@@ -37,15 +37,12 @@ properties:
+ 
+   vdddo-supply:
+     description: Chip digital IO regulator (1.8V).
+-    maxItems: 1
+ 
+   vdda-supply:
+     description: Chip analog regulator (2.7V).
+-    maxItems: 1
+ 
+   vddd-supply:
+     description: Chip digital core regulator (1.12V).
+-    maxItems: 1
+ 
+   flash-leds:
+     description: See ../video-interfaces.txt
+diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml b/Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml
+index f697e1a20beb..a66acb20d59b 100644
+--- a/Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml
++++ b/Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml
+@@ -33,15 +33,12 @@ properties:
+ 
+   vana-supply:
+     description: Sensor 2.8 V analog supply.
+-    maxItems: 1
+ 
+   vdig-supply:
+     description: Sensor 1.8 V digital core supply.
+-    maxItems: 1
+ 
+   vddl-supply:
+     description: Sensor digital IO 1.2 V supply.
+-    maxItems: 1
+ 
+   port:
+     type: object
+diff --git a/Documentation/devicetree/bindings/mfd/st,stmfx.yaml b/Documentation/devicetree/bindings/mfd/st,stmfx.yaml
+index 888ab4b5df45..19e9afb385ac 100644
+--- a/Documentation/devicetree/bindings/mfd/st,stmfx.yaml
++++ b/Documentation/devicetree/bindings/mfd/st,stmfx.yaml
+@@ -26,8 +26,7 @@ properties:
+ 
+   drive-open-drain: true
+ 
+-  vdd-supply:
+-    maxItems: 1
++  vdd-supply: true
+ 
+   pinctrl:
+     type: object
+diff --git a/Documentation/devicetree/bindings/regulator/anatop-regulator.yaml b/Documentation/devicetree/bindings/regulator/anatop-regulator.yaml
+index e7b3abe30363..0a66338c7e5a 100644
+--- a/Documentation/devicetree/bindings/regulator/anatop-regulator.yaml
++++ b/Documentation/devicetree/bindings/regulator/anatop-regulator.yaml
+@@ -59,7 +59,6 @@ properties:
+     description: u32 value representing regulator enable bit offset.
+ 
+   vin-supply:
+-    $ref: '/schemas/types.yaml#/definitions/phandle'
+     description: input supply phandle.
+ 
+ required:
+-- 
+2.27.0
 
