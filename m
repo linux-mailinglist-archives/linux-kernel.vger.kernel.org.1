@@ -2,70 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BBA62E02A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 23:54:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB6442E02AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 23:54:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726221AbgLUWwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 17:52:43 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54190 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725780AbgLUWwm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 17:52:42 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5B586AC63;
-        Mon, 21 Dec 2020 22:52:01 +0000 (UTC)
-From:   Andreas Schwab <schwab@suse.de>
-To:     linux-riscv@lists.infradead.org
-Subject: [PATCH] riscv: return -ENOSYS for syscall -1
-CC:     linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        David Abdurachmanov <david.abdurachmanov@sifive.com>
-X-Yow:  How do I get HOME?
-Date:   Mon, 21 Dec 2020 23:52:00 +0100
-Message-ID: <mvma6u6vkkv.fsf@suse.de>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S1726303AbgLUWyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 17:54:03 -0500
+Received: from mail-oo1-f41.google.com ([209.85.161.41]:42504 "EHLO
+        mail-oo1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726148AbgLUWyC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 17:54:02 -0500
+Received: by mail-oo1-f41.google.com with SMTP id x203so2564564ooa.9;
+        Mon, 21 Dec 2020 14:53:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PmiFErZsck8Eax6YSpPObi4oYX8shYbW2tl21KlUI5M=;
+        b=gXyRlORkyHi66Llm062zovdcdq/KdIbq5PUDI+TmYhoXIpKso5gfeDUkfHr0jvFjE4
+         2JIzuOHPqgqEC7mE92ToP6LWzLRZJPMYRJmQxoHNKiHFQYBEwp04UutP19/pxZu78xGm
+         EvWYJFY8sBpuao9fX257Wki8nIK84tCOd/iQLXL5b60RqpXqbxJGNq35CDx2vq3tA8LA
+         YaWdwERTZoB2R0JEeALQufP3Dy4vo/zFxMxwtEuZwEMIIbF6Ub25nYHSM9bW4ED/cOSJ
+         7BT8wYTD8g89yhi2bauQCI9ZYBqqxm/37Knd9cNP+hBrdomrI9bDEGmXFYKhLenVm9iv
+         N0NQ==
+X-Gm-Message-State: AOAM532Jk5KndoWb23Mmf3owIOL3WPDPIW1jVAZBOD7DdSfdNPXIPzPe
+        FPEKYCMKBFCflP1zTc/P8J3L1/tfrw==
+X-Google-Smtp-Source: ABdhPJwHk2mKXmiM9Be1g1hPiKx149bS8x31wABVYLXX21+EEEz/R18GHHbZiggzsaUq+ghMjOAzAg==
+X-Received: by 2002:a05:6820:503:: with SMTP id m3mr13176716ooj.83.1608591201539;
+        Mon, 21 Dec 2020 14:53:21 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id e25sm1849939oof.1.2020.12.21.14.53.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 14:53:20 -0800 (PST)
+Received: (nullmailer pid 723454 invoked by uid 1000);
+        Mon, 21 Dec 2020 22:53:16 -0000
+Date:   Mon, 21 Dec 2020 15:53:16 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
+        linux-media@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        devel@driverdev.osuosl.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        devicetree@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Kevin Hilman <khilman@kernel.org>, linux-clk@vger.kernel.org,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v2 01/48] dt-bindings: memory: tegra20: emc: Replace core
+ regulator with power domain
+Message-ID: <20201221225316.GA723398@robh.at.kernel.org>
+References: <20201217180638.22748-1-digetx@gmail.com>
+ <20201217180638.22748-2-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201217180638.22748-2-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Properly return -ENOSYS for syscall -1 instead of leaving the return value
-uninitialized.  This fixes the strace teststuite.
+On Thu, 17 Dec 2020 21:05:51 +0300, Dmitry Osipenko wrote:
+> Power domain fits much better than a voltage regulator in regards to
+> a proper hardware description and from a software perspective as well.
+> Hence replace the core regulator with the power domain. Note that this
+> doesn't affect any existing DTBs because we haven't started to use the
+> regulator yet, and thus, it's okay to change it.
+> 
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  .../bindings/memory-controllers/nvidia,tegra20-emc.txt        | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
 
-Fixes: 5340627e3fe0 ("riscv: add support for SECCOMP and SECCOMP_FILTER")
-Signed-off-by: Andreas Schwab <schwab@suse.de>
----
- arch/riscv/kernel/entry.S | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
-
-diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
-index 524d918f3601..d07763001eb0 100644
---- a/arch/riscv/kernel/entry.S
-+++ b/arch/riscv/kernel/entry.S
-@@ -186,14 +186,7 @@ check_syscall_nr:
- 	 * Syscall number held in a7.
- 	 * If syscall number is above allowed value, redirect to ni_syscall.
- 	 */
--	bge a7, t0, 1f
--	/*
--	 * Check if syscall is rejected by tracer, i.e., a7 == -1.
--	 * If yes, we pretend it was executed.
--	 */
--	li t1, -1
--	beq a7, t1, ret_from_syscall_rejected
--	blt a7, t1, 1f
-+	bgeu a7, t0, 1f
- 	/* Call syscall */
- 	la s0, sys_call_table
- 	slli t0, a7, RISCV_LGPTR
--- 
-2.29.0
-
-
--- 
-Andreas Schwab, SUSE Labs, schwab@suse.de
-GPG Key fingerprint = 0196 BAD8 1CE9 1970 F4BE  1748 E4D4 88E3 0EEA B9D7
-"And now for something completely different."
+Reviewed-by: Rob Herring <robh@kernel.org>
