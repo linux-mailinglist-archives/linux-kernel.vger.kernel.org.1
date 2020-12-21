@@ -2,91 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FA7B2DFAF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 11:20:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE2A2DFA6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 10:50:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726630AbgLUKTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 05:19:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726196AbgLUKTa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 05:19:30 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05660C061793
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 02:18:49 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1krHVH-0000aP-2a; Mon, 21 Dec 2020 10:29:19 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1krHVG-0008QP-P2; Mon, 21 Dec 2020 10:29:18 +0100
-Date:   Mon, 21 Dec 2020 10:29:18 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-pwm@vger.kernel.org, linux-clk@vger.kernel.org,
-        kernel@pengutronix.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] clk: provide new devm helpers for prepared and
- enabled clocks
-Message-ID: <20201221092918.3uuxfe4caseu2d3o@pengutronix.de>
-References: <20201013082132.661993-1-u.kleine-koenig@pengutronix.de>
- <20201013082132.661993-2-u.kleine-koenig@pengutronix.de>
- <20201110202537.fyldrnhqewtppjkw@pengutronix.de>
+        id S1728487AbgLUJtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 04:49:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39322 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727554AbgLUJt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 04:49:28 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A28722CB2;
+        Mon, 21 Dec 2020 09:30:48 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1krHWf-002pqk-T4; Mon, 21 Dec 2020 09:30:45 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="f7qjda3pzpokbatz"
-Content-Disposition: inline
-In-Reply-To: <20201110202537.fyldrnhqewtppjkw@pengutronix.de>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 21 Dec 2020 09:30:45 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Kevin Hilman <khilman@baylibre.com>, kernel-team@android.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] of: property: Add device link support for interrupts
+In-Reply-To: <20201218210750.3455872-1-saravanak@google.com>
+References: <20201218210750.3455872-1-saravanak@google.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <2a6dbcc83d5aca7a3340e0cf4d751cdc@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: saravanak@google.com, gregkh@linuxfoundation.org, robh+dt@kernel.org, frowand.list@gmail.com, khilman@baylibre.com, kernel-team@android.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-12-18 21:07, Saravana Kannan wrote:
+> Add support for creating device links out of interrupts property.
+> 
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Kevin Hilman <khilman@baylibre.com>
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> ---
+> Rob/Greg,
+> 
+> This might need to go into driver-core to avoid conflict
+> due to fw_devlink refactor series that merged there.
+> 
+> Thanks,
+> Saravana
+> 
+> 
+>  drivers/of/property.c | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+> 
+> diff --git a/drivers/of/property.c b/drivers/of/property.c
+> index 5f9eed79a8aa..e56a5eae0a0b 100644
+> --- a/drivers/of/property.c
+> +++ b/drivers/of/property.c
+> @@ -1271,6 +1271,22 @@ static struct device_node
+> *parse_iommu_maps(struct device_node *np,
+>  	return of_parse_phandle(np, prop_name, (index * 4) + 1);
+>  }
+> 
+> +static struct device_node *parse_interrupts(struct device_node *np,
+> +					    const char *prop_name, int index)
+> +{
+> +	struct device_node *sup;
+> +
+> +	if (strcmp(prop_name, "interrupts") || index)
+> +		return NULL;
+> +
+> +	of_node_get(np);
+> +	while (np && !(sup = of_parse_phandle(np, "interrupt-parent", 0)))
+> +		np = of_get_next_parent(np);
+> +	of_node_put(np);
+> +
+> +	return sup;
+> +}
+> +
+>  static const struct supplier_bindings of_supplier_bindings[] = {
+>  	{ .parse_prop = parse_clocks, },
+>  	{ .parse_prop = parse_interconnects, },
+> @@ -1296,6 +1312,7 @@ static const struct supplier_bindings
+> of_supplier_bindings[] = {
+>  	{ .parse_prop = parse_pinctrl6, },
+>  	{ .parse_prop = parse_pinctrl7, },
+>  	{ .parse_prop = parse_pinctrl8, },
+> +	{ .parse_prop = parse_interrupts, },
+>  	{ .parse_prop = parse_regulators, },
+>  	{ .parse_prop = parse_gpio, },
+>  	{ .parse_prop = parse_gpios, },
 
---f7qjda3pzpokbatz
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+You don't really describe what this is for so I'm only guessing
+from the context. If you want to follow the interrupt hierarchy,
+"interrupt-parent" isn't enough. You also need to track
+things like interrupt-map, or anything that carries a phandle
+to an interrupt controller.
 
-Hello,
+Thanks,
 
-On Tue, Nov 10, 2020 at 09:25:37PM +0100, Uwe Kleine-K=F6nig wrote:
-> On Tue, Oct 13, 2020 at 10:21:31AM +0200, Uwe Kleine-K=F6nig wrote:
-> > When a driver keeps a clock prepared (or enabled) during the whole
-> > lifetime of the driver, these helpers allow to simplify the drivers.
->=20
-> I'd really like to make use of these helpers, so it would be great if
-> you could take a look and tell me if you like my approach.
-
-This is still the case but unfortunately I didn't get any feedback since
-October 13. Is this still on your list of things to review?
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---f7qjda3pzpokbatz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/gausACgkQwfwUeK3K
-7AmbUgf/ancR3QmOvPc3gLtPEN5FSE25YO9ceMs2y4JYfMA0T39xWvPkGIXSanD6
-PkNoMEEm3kFg13Ocw3V89ipBNLghrpFlGa+rQD3DNefOuUoxYaqgU+2XC/fYdsXU
-r298zkb0AOTgweKjE62qtYN/TzaCtxaqo7xHspsNdEYAyX9H+HIyKuaYDZ1XnNOF
-rGxmImr/b/3hcJJBLLCHz+ZXaUMTV56iFB2/hYQ/AfoPDwHwsX4q+MfDX+G5QeT4
-gGnZnjFhyA2Odid+CFoafP1goE4jvarztNxtfRGEbc7g78R7uxzpWAFyoXfqdli1
-l2AgNkQyKXtmHhHYBYyHB5w2ykFH3Q==
-=HFHV
------END PGP SIGNATURE-----
-
---f7qjda3pzpokbatz--
+         M.
+-- 
+Jazz is not dead. It just smells funny...
