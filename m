@@ -2,117 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 787772DFFEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:37:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2C982DFDBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 16:54:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727035AbgLUSg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 13:36:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726855AbgLUSg0 (ORCPT
+        id S1725945AbgLUPx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 10:53:57 -0500
+Received: from out28-52.mail.aliyun.com ([115.124.28.52]:43890 "EHLO
+        out28-52.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725790AbgLUPx4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:36:26 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D7FAC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:35:46 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id q137so9692266iod.9
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:35:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YliUtlY76/UIPuQ5v8deFXxZeb8eSvRLcMxme2JxEEk=;
-        b=HDksKqgKauZN6tvbdPBgggj8IeeTS2c7JRuSWMI+pRG1FwKAhMCJxMCv7JOIqk50wv
-         3X1HRLkpEKIsTmGLQK6vIyf/RMl8sqUJoc0+IVGVdkvPNiQkOjCyDbUhahzYluorDnrk
-         1PDsuxVXgwT/JnDR/e8fyiqWr/gjcp4gXGi2ngqD9bS5/EBS76qfZPKMvDBaRcXFxHGt
-         YOSyX7QbQ/Koym0Jms6BgoWpgnw/5heVHu2j7+FeQsRTUWVZEWILea7Byq/nnV5Cq6bO
-         YDDYicvRlZMY5s2D5oa9p6I/4Nwjhwv9qDpErWN/14vrvlkMgsgZNqe/YH2kcc3Fnt+d
-         1eOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YliUtlY76/UIPuQ5v8deFXxZeb8eSvRLcMxme2JxEEk=;
-        b=i3VFtzb7VO4t0kEIemcLnu3ngK3vZTgLOX0YIMe4zCxjQQ4cCGM1e2YlhJAdi+ZMzU
-         ue5gw6gpu5Ar4OgNXWYZSxaqI7fCg/csGtUJvLSd0Gj6kOz7DbqSpF9hVXf7hXoLpL7b
-         zlhVUUtjqKZJsXCd64wdoDxiJdJ79uXdCfWR2010FDn17YrIhIiNnQOor0V5Xl/M6GZR
-         wvx8bw/9MEhElkW4/OqJe+ee6ZItQ/KmCGcSmq6EniP+iyM6J4B+nulUoAh3KTmY2J2r
-         sF1XdXNr+HjFs5DOL/wcaqaWaKQ9v023cZyP88pQc6M/p/zsqSAkPBwTu9bRwoWHpMmL
-         WeJg==
-X-Gm-Message-State: AOAM530UiSYxb/AkvnBO/fnjMTPf75GMVZQw+yfeereIC+vuglpMXkoq
-        UsgKg3LzP76B2FsBO2kGVTUjFFk07vgkgVKAbhzjcqI2qDTu98GF
-X-Google-Smtp-Source: ABdhPJxKT6tC6/ndV2N5i1FwKZxN3yOMknKcMYRbpSq6pVUOWTKpPSP2SnmFD7tg+Np8Z6fWmUqBTLjQBM+VPNs1bYw=
-X-Received: by 2002:a63:480f:: with SMTP id v15mr2249541pga.341.1608565986866;
- Mon, 21 Dec 2020 07:53:06 -0800 (PST)
+        Mon, 21 Dec 2020 10:53:56 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1222173|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0028996-0.000354898-0.996746;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047203;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.J9pVTZZ_1608565975;
+Received: from zhouyanjie-virtual-machine.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.J9pVTZZ_1608565975)
+          by smtp.aliyun-inc.com(10.147.40.2);
+          Mon, 21 Dec 2020 23:53:01 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     sboyd@kernel.org, robh+dt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, mturquette@baylibre.com,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
+        sihui.liu@ingenic.com, sernia.zhou@foxmail.com,
+        paul@crapouillou.net
+Subject: [PATCH v4 0/5] Add new clocks and fix bugs for Ingenic SoCs.
+Date:   Mon, 21 Dec 2020 23:52:46 +0800
+Message-Id: <1608565971-23895-1-git-send-email-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <20201217121303.13386-1-songmuchun@bytedance.com>
- <20201217121303.13386-4-songmuchun@bytedance.com> <20201221091123.GB14343@linux>
- <CAMZfGtVnS=_m4fpGBfDpOpdgzP02QCteUQn-gGiLADWfGiVJ=A@mail.gmail.com> <20201221134345.GA19324@linux>
-In-Reply-To: <20201221134345.GA19324@linux>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 21 Dec 2020 23:52:30 +0800
-Message-ID: <CAMZfGtVTqYXOvTHSay-6WS+gtDSCtcN5ksnkj8hJgrUs_XWoWQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v10 03/11] mm/hugetlb: Free the vmemmap
- pages associated with each HugeTLB page
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>, naoya.horiguchi@nec.com,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 9:44 PM Oscar Salvador <osalvador@suse.de> wrote:
->
-> On Mon, Dec 21, 2020 at 07:25:15PM +0800, Muchun Song wrote:
->
-> > Should we add a BUG_ON in vmemmap_remap_free() for now?
-> >
-> >         BUG_ON(reuse != start + PAGE_SIZE);
->
-> I do not think we have to, plus we would be BUG_ing for some specific use
-> case in "generic" function.
+v1->v2:
+1.Add Paul Cercueil's Reviewed-by for [1/5] & [2/5],
+  add Rob Herring's Acked-by for [2/5].
+2.Add MACPHY and I2S for X1000, add MACPHY for X1830,
+  and fix bugs in MAC clock.
+3.Clean up code, remove unnecessary -1 and commas and
+  tabs from all the xxxx-cgu.c files.
 
-The vmemmap_remap_range() walks page table range [start, end),
-if reuse is equal to (start + PAGE_SIZE), the range can adjust to
-[start - PAGE_SIZE, end). But if not, we need some work to
-implement the "generic" function.
+v2->v3:
+Correct the comment in x1000-cgu.c, change it from
+"Custom (SoC-specific) OTG PHY" to "Custom (SoC-specific)",
+since there is more than just the "OTG PHY" clock.
 
-  - adjust range to [min(start, reuse), end) and call
-    vmemmap_remap_rangeand which skip the hole
-    which is [reuse + PAGE_SIZE, start) or [end, reuse).
-  - call vmemmap_remap_range(reuse, reuse + PAGE_SIZE)
-    to get the reuse page.Then, call vmemmap_remap_range(start, end)
-    again to remap.
+v3->v4:
+1.The -1 used for placeholders on the unused bits of the
+  parents in the custom clock should not be removed.
+2.Move "JZ4780_CLK_CORE1" from the "Gate-only clocks"
+  class to the "Custom (SoC-specific)" class, because
+  it belongs to the custom clock.
 
-Which one do you prefer?
+周琰杰 (Zhou Yanjie) (5):
+  clk: JZ4780: Add function for disable the second core.
+  dt-bindings: clock: Add missing clocks for Ingenic SoCs.
+  clk: Ingenic: Fix problem of MAC clock in Ingenic X1000 and X1830.
+  clk: Ingenic: Add missing clocks for Ingenic SoCs.
+  clk: Ingenic: Clean up and reformat the code.
 
-> Maybe others think different though.
->
-> --
-> Oscar Salvador
-> SUSE L3
+ drivers/clk/ingenic/jz4725b-cgu.c     |  50 ++---
+ drivers/clk/ingenic/jz4740-cgu.c      |  50 ++---
+ drivers/clk/ingenic/jz4770-cgu.c      |  79 ++++----
+ drivers/clk/ingenic/jz4780-cgu.c      | 156 +++++++++-------
+ drivers/clk/ingenic/x1000-cgu.c       | 332 +++++++++++++++++++++++++++------
+ drivers/clk/ingenic/x1830-cgu.c       | 341 +++++++++++++++++++++++++++-------
+ include/dt-bindings/clock/x1000-cgu.h |   5 +
+ include/dt-bindings/clock/x1830-cgu.h |   5 +
+ 8 files changed, 737 insertions(+), 281 deletions(-)
 
+-- 
+2.7.4
 
-
---
-Yours,
-Muchun
