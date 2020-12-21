@@ -2,89 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3AAE2DF99C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 08:53:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC0022DF9A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 08:56:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727162AbgLUHxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 02:53:22 -0500
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:34012 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726200AbgLUHxV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 02:53:21 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UJFraV9_1608537157;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UJFraV9_1608537157)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 21 Dec 2020 15:52:38 +0800
-Subject: Re: [PATCH v2] docs/zh_CN: Improve Cinese transolation quality.
-To:     Ran Wang <gxndwr@outlook.com>, Jonathan Corbet <corbet@lwn.net>
-Cc:     Harry Wei <harryxiyou@gmail.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <AT5PR8401MB096492D31BB7E602E1F45DC9CCCD0@AT5PR8401MB0964.NAMPRD84.PROD.OUTLOOK.COM>
- <20201208080037.40543cdb@lwn.net>
- <AT5PR8401MB096480DF491AAD270CDEDD9CCCC20@AT5PR8401MB0964.NAMPRD84.PROD.OUTLOOK.COM>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <0529bd5e-8305-e5a3-9c85-ec0d1370caf9@linux.alibaba.com>
-Date:   Mon, 21 Dec 2020 15:52:37 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.0; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        id S1727339AbgLUHzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 02:55:53 -0500
+Received: from mga01.intel.com ([192.55.52.88]:49501 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726671AbgLUHzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 02:55:52 -0500
+IronPort-SDR: vs5yyYUrsD9wAIQMZBUiv1V1RP1tk5j+VSMWZ/3pwGGegn/egHtnUDPUYsxDtA8b3dRoUAWQt6
+ 3GAIP8RCLgPQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9841"; a="194118659"
+X-IronPort-AV: E=Sophos;i="5.78,436,1599548400"; 
+   d="scan'208";a="194118659"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2020 23:54:04 -0800
+IronPort-SDR: 3YZFBbHJQgZ0sUp81t+n3fSzD+Roiww3AEymwF3PgrT79xjDhA865R7xHBDXUQQigeTkzhHmoQ
+ eHCHef0dR8bw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,436,1599548400"; 
+   d="scan'208";a="415701255"
+Received: from shwdenpg096.ccr.corp.intel.com (HELO [10.67.104.88]) ([10.67.104.88])
+  by orsmga001.jf.intel.com with ESMTP; 20 Dec 2020 23:53:45 -0800
+Subject: Re: [PATCH v3 3/5] ipmi: kcs: aspeed: Adapt to new LPC DTS layout
+To:     "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
+        lee.jones@linaro.org, robh+dt@kernel.org, joel@jms.id.au,
+        andrew@aj.id.au, linus.walleij@linaro.org, minyard@acm.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org
+Cc:     BMC-SW@aspeedtech.com, cyrilbur@gmail.com, rlippert@google.com
+References: <20201221055623.31463-1-chiawei_wang@aspeedtech.com>
+ <20201221055623.31463-4-chiawei_wang@aspeedtech.com>
+From:   Haiyue Wang <haiyue.wang@linux.intel.com>
+Message-ID: <12d347b6-168b-11d2-b906-18164afb1724@linux.intel.com>
+Date:   Mon, 21 Dec 2020 15:53:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <AT5PR8401MB096480DF491AAD270CDEDD9CCCC20@AT5PR8401MB0964.NAMPRD84.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201221055623.31463-4-chiawei_wang@aspeedtech.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 12/21/2020 13:56, Chia-Wei, Wang wrote:
+> Add check against LPC device v2 compatible string to
+> ensure that the fixed device tree layout is adopted.
+> The LPC register offsets are also fixed accordingly.
+>
+> Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
+> ---
+>   drivers/char/ipmi/kcs_bmc_aspeed.c | 35 ++++++++++++++++++------------
+>   1 file changed, 21 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/char/ipmi/kcs_bmc_aspeed.c b/drivers/char/ipmi/kcs_bmc_aspeed.c
+> index a140203c079b..6283bfef4ea7 100644
+> --- a/drivers/char/ipmi/kcs_bmc_aspeed.c
+> +++ b/drivers/char/ipmi/kcs_bmc_aspeed.c
+> @@ -27,7 +27,6 @@
+>   
+>   #define KCS_CHANNEL_MAX     4
+>   
+> -/* mapped to lpc-bmc@0 IO space */
+>   #define LPC_HICR0            0x000
+>   #define     LPC_HICR0_LPC3E          BIT(7)
+>   #define     LPC_HICR0_LPC2E          BIT(6)
+> @@ -52,15 +51,13 @@
+>   #define LPC_STR1             0x03C
+>   #define LPC_STR2             0x040
+>   #define LPC_STR3             0x044
+> -
+> -/* mapped to lpc-host@80 IO space */
+> -#define LPC_HICRB            0x080
+> +#define LPC_HICRB            0x100
+>   #define     LPC_HICRB_IBFIF4         BIT(1)
+>   #define     LPC_HICRB_LPC4E          BIT(0)
+> -#define LPC_LADR4            0x090
+> -#define LPC_IDR4             0x094
+> -#define LPC_ODR4             0x098
+> -#define LPC_STR4             0x09C
+> +#define LPC_LADR4            0x110
+> +#define LPC_IDR4             0x114
+> +#define LPC_ODR4             0x118
+> +#define LPC_STR4             0x11C
+>   
+>   struct aspeed_kcs_bmc {
+>   	struct regmap *map;
+> @@ -345,15 +342,25 @@ static int aspeed_kcs_probe(struct platform_device *pdev)
+>   {
+>   	struct device *dev = &pdev->dev;
+>   	struct kcs_bmc *kcs_bmc;
+> -	struct device_node *np;
+> +	struct device_node *kcs_np;
+> +	struct device_node *lpc_np;
+>   	int rc;
+>   
+
+I think you can just use 'np' to do LPC compatible checking:
+
+np = pdev->dev.of_node->parent;
+
+if (!of_device_is_compatible(lpc_np, "aspeed,ast2400-lpc-v2") &&
+     !of_device_is_compatible(lpc_np, "aspeed,ast2500-lpc-v2") &&
+     !of_device_is_compatible(lpc_np, "aspeed,ast2600-lpc-v2")) {
+	dev_err(dev, "unsupported LPC device binding\n");
+	return -ENODEV;
+}
 
 
-在 2020/12/19 上午11:42, Ran Wang 写道:
-> Hi Jonathan,
->     
-> On Tuesday, December 8, 2020 11:00 PM Jonathan Corbet wrote:
->  
->> On Tue,  8 Dec 2020 21:16:04 +0800
->> Ran Wang <gxndwr@outlook.com> wrote:
->>
->>> Signed-off-by: Ran Wang <gxndwr@outlook.com>
->>> ---
->>> Change in v2:
->>>    - For 'cn_development_coding' part, change back to >'是关于编码过程的'
->>>
->>>   .../translations/zh_CN/process/1.Intro.rst    | 61 >++++++++++---------
->>>   1 file changed, 32 insertions(+), 29 deletions(-)
->>
->> Thank you for working to improve the documentation!  >Please, though,
->> include a changelog with your patch; what does "improve >translation
->> quality" mean here?
->>
->> Thanks,
->>
->> jon
-> 
-> Sorry I missed your mail.
-> 
-> Actually I feel difficult to list the change log to describe this (after not I am not a language teacher :) ).
-> 
-> I would say the original translation looks like a little bit more by machine: English word to Chinese word directly without considering particular scenarios (such as software development related terms we used in Chinese, a little bit different to normal usage maybe). So I tried to re-tell the story in a way more kind of 'human' to make everything clearer for Chinese reader.
+before:
 
-Hi Ran,
+np = pdev->dev.of_node;
+if (of_device_is_compatible(np, "aspeed,ast2400-kcs-bmc") ||
+     of_device_is_compatible(np, "aspeed,ast2500-kcs-bmc"))
 
-I don't think you describe correctly for your new translation. And you are not 're-tell story'
-for a standard community co-work process, which we don't need. Also the original translation is
-not by machine, it's by myself.
+Then the patch is clear. ;-)
 
-What you did right is polishing the Chinese words, make it more fluency and fit better for Chinese
-custom, although it costs a bit verboseness and a bit precision.
-
-
-Thanks
-Alex
-
-> 
-> Anyway, I am willing to provide you such change log if you could provide me an example for reference (this is my first time to post such patch).
-> 
-> Thanks & Regards,
-> Ran
-> 
+> -	np = pdev->dev.of_node;
+> -	if (of_device_is_compatible(np, "aspeed,ast2400-kcs-bmc") ||
+> -			of_device_is_compatible(np, "aspeed,ast2500-kcs-bmc"))
+> +	kcs_np = dev->of_node;
+> +	lpc_np = kcs_np->parent;
+> +
+> +	if (!of_device_is_compatible(lpc_np, "aspeed,ast2400-lpc-v2") &&
+> +	    !of_device_is_compatible(lpc_np, "aspeed,ast2500-lpc-v2") &&
+> +	    !of_device_is_compatible(lpc_np, "aspeed,ast2600-lpc-v2")) {
+> +		dev_err(dev, "unsupported LPC device binding\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	if (of_device_is_compatible(kcs_np, "aspeed,ast2400-kcs-bmc") ||
+> +			of_device_is_compatible(kcs_np, "aspeed,ast2500-kcs-bmc"))
+>   		kcs_bmc = aspeed_kcs_probe_of_v1(pdev);
+> -	else if (of_device_is_compatible(np, "aspeed,ast2400-kcs-bmc-v2") ||
+> -			of_device_is_compatible(np, "aspeed,ast2500-kcs-bmc-v2"))
+> +	else if (of_device_is_compatible(kcs_np, "aspeed,ast2400-kcs-bmc-v2") ||
+> +			of_device_is_compatible(kcs_np, "aspeed,ast2500-kcs-bmc-v2"))
+>   		kcs_bmc = aspeed_kcs_probe_of_v2(pdev);
+>   	else
+>   		return -EINVAL;
