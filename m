@@ -2,124 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B13302DFF4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:09:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08BB72DFDE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 17:04:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726617AbgLUSG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 13:06:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726239AbgLUSG7 (ORCPT
+        id S1726045AbgLUQEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 11:04:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39997 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725793AbgLUQEh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:06:59 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A568C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:06:18 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id o13so25840296lfr.3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:06:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZQj+lY9Q9qTAn9h/O1jDrfQPMWDKTY6Q2BZuiHff5Iw=;
-        b=M4D2E9qGgwUTj7URXt5FnCh0RdB4oZABXC+0HZNClkcuxBkU9CdQRKlz8YKek9BZHH
-         D77YcPivFf1wXHWK2uURuSSYydhawUwSdWYdi7rbl5BWLT7TxAetQVQH9VgKaoJU7GHi
-         6b/QSaziho4fNBVzAEAOaAFkWtpvXNibJ22YN+9tqA4ITGeT9dmMamDXuBdOeUjbMgbl
-         Pg/ayiieEx96VwFVWbvYJXOtpXhzUeRZj4fvwX3IoCpyNP6P0axAjOsTOo0PvO3YTSSS
-         mTgSExhzUSKZDdymmYUR5SsKy5/fyX0dWB08dffvd1AFU/gLvW/GvnUlfsn6vZfvwXfY
-         im2Q==
+        Mon, 21 Dec 2020 11:04:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608566591;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Vy2TADSbUuu9/F3d6TvrBXR8l6iJyutu/ClaiwDiIeo=;
+        b=MmP9AN9U1nMCYNPeKOAboirC/MzqIc/rqB3i1R0gNChoKg8XCPJfl+rNnkdokZo2TVDXlB
+        58Z3/8cYEOkAijc9ceZqCtJ2/8ULgp2eFQcxRZtI+P/bBrskTZAmCUhOCQz43K1Uwwks5Z
+        8uzXgzhFKHOyghWL7kxntv3Lblzn2tY=
+Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
+ [209.85.167.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-351-IF8FieCiMeqEotF50QsSUQ-1; Mon, 21 Dec 2020 11:03:08 -0500
+X-MC-Unique: IF8FieCiMeqEotF50QsSUQ-1
+Received: by mail-oi1-f197.google.com with SMTP id l9so5637592oih.23
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 08:03:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ZQj+lY9Q9qTAn9h/O1jDrfQPMWDKTY6Q2BZuiHff5Iw=;
-        b=lfNgSpxqHJlUcnSyF6H9X8NNoyS3+Ju5arYjmmelxeWkbDgYVU1MbRkTlRikUvCb3U
-         WHhARg/MTvGO+7kQ+6KZn6Gnr0V4P+QXjO9/u3JLvuVq72Jze/E/9DMoeOTSQbqmHtBf
-         tDDcGszoe9WBtl+A03mUbiPc/7gpJT0DdsQsef9dmfot8dKNeeAsjQkgK6mny+HDuAOO
-         QWv3EdHaBRg9h3IvKmcXwM5ZRX1CMaurCBgEmia7HBmgIhCNczQs4yNDK/ZPyNouO9XT
-         g9X1PZi1BJH1WhlHEVnMeMlExFZWo8tmAi5zTXWERsoZwMkTOiFYayvrppRAW0IBmitD
-         y3SA==
-X-Gm-Message-State: AOAM531g0xI/FSANxflRWgfdQUUf/bSKBUtd/ReD1xLW3NR9q86p0B9M
-        V72Hl+LiY5d4BsjhJeZZcmvJlmFJx+goBpb7
-X-Google-Smtp-Source: ABdhPJyjlK1WG/DEJVU6rq0koBfatPri8F85K0VZBp6e6CGUZPIxaBB5iaiRtPXEUR0komHKBL4gTw==
-X-Received: by 2002:a5d:6884:: with SMTP id h4mr19393526wru.174.1608566516071;
-        Mon, 21 Dec 2020 08:01:56 -0800 (PST)
-Received: from [192.168.0.4] ([84.238.208.204])
-        by smtp.googlemail.com with ESMTPSA id d191sm23176698wmd.24.2020.12.21.08.01.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Dec 2020 08:01:55 -0800 (PST)
-Subject: Re: [PATCH] venus: venc: set IDR period to FW only for H264 & HEVC
-To:     Dikshita Agarwal <dikshita@codeaurora.org>,
-        linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org
-References: <1608102410-23390-1-git-send-email-dikshita@codeaurora.org>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <80ba09a0-d830-4b08-1a76-44b5d7fb38ee@linaro.org>
-Date:   Mon, 21 Dec 2020 18:01:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=Vy2TADSbUuu9/F3d6TvrBXR8l6iJyutu/ClaiwDiIeo=;
+        b=dpME6G8p7f8fYCWSDaF8vL36IVhXsAwf0IzvcW67ko6edIpOKmtSSeX1TiXlJ8XKzY
+         RWznQuPTR9BeCh2ERVA5ZMMAqB/8KVdtrXFE5t61D9l8ug322os5I/xxcHMEyKsTb6KO
+         JrCp+eM6jSredviXi8A/+w/RZV8R6F3Dr4Dv8ALeupnY7IZXKOdCtZZgyFOT4o6ud0NH
+         bGYpgrMN8ZafMoJcxjQ/HNDzCet4bTPboYyfrrbztQ5yYCOSc8j2TxoZ7VqcWMDFRSMn
+         SVmp5LutY/GNNdaP3+2J3nKkHf9/RwFwqf4yHxqIQosAIecCR03UFH83vfF6pBiyIUGY
+         Xywg==
+X-Gm-Message-State: AOAM5309h8WkFM6NfwauM/1XHgub/oWfVglQvq6UIpFAcmIXAwfCnbWB
+        HZGyKtuYUHQYyvcllMsGIFMvZZCvYxSoyErXs0DFcKBVlpJfmDyBL3+k6Tp2EZ1Fh1hBkkALChk
+        CEsd7J3gpsc/Dl8jK4mxDM5H9
+X-Received: by 2002:a54:448f:: with SMTP id v15mr11683557oiv.106.1608566587620;
+        Mon, 21 Dec 2020 08:03:07 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxi/FAKLZdRWZAD+hmgdadkXialWoTax/uzPy2j7itrqWN/sCzu+29sZhmCqHiBE43NH8WDLQ==
+X-Received: by 2002:a54:448f:: with SMTP id v15mr11683550oiv.106.1608566587519;
+        Mon, 21 Dec 2020 08:03:07 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id 126sm1791340oop.30.2020.12.21.08.03.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 08:03:06 -0800 (PST)
+From:   trix@redhat.com
+To:     rafael.j.wysocki@intel.com
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] PNP: add printf attribute to log function
+Date:   Mon, 21 Dec 2020 08:03:02 -0800
+Message-Id: <20201221160302.3752887-1-trix@redhat.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <1608102410-23390-1-git-send-email-dikshita@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Tom Rix <trix@redhat.com>
 
+Attributing the function allows the compiler to more thoroughly
+check the use of the function with -Wformat and similar flags.
 
-On 12/16/20 9:06 AM, Dikshita Agarwal wrote:
-> HFI_PROPERTY_CONFIG_VENC_IDR_PERIOD is supported for only
-> H264 & HEVC codec. There is no need to set it for VP8 since
-> all key frames are treated as IDR frames for VP8.
-> 
-> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
-> ---
->  drivers/media/platform/qcom/venus/venc.c | 23 +++++++++++++----------
->  1 file changed, 13 insertions(+), 10 deletions(-)
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/pnp/interface.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Reviewed-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-
-> 
-> diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
-> index 3a2e449..618cf92 100644
-> --- a/drivers/media/platform/qcom/venus/venc.c
-> +++ b/drivers/media/platform/qcom/venus/venc.c
-> @@ -588,16 +588,19 @@ static int venc_set_properties(struct venus_inst *inst)
->  			return ret;
->  	}
->  
-> -	/* IDR periodicity, n:
-> -	 * n = 0 - only the first I-frame is IDR frame
-> -	 * n = 1 - all I-frames will be IDR frames
-> -	 * n > 1 - every n-th I-frame will be IDR frame
-> -	 */
-> -	ptype = HFI_PROPERTY_CONFIG_VENC_IDR_PERIOD;
-> -	idrp.idr_period = 0;
-> -	ret = hfi_session_set_property(inst, ptype, &idrp);
-> -	if (ret)
-> -		return ret;
-> +	if (inst->fmt_cap->pixfmt == V4L2_PIX_FMT_H264 ||
-> +	    inst->fmt_cap->pixfmt == V4L2_PIX_FMT_HEVC) {
-> +		/* IDR periodicity, n:
-> +		 * n = 0 - only the first I-frame is IDR frame
-> +		 * n = 1 - all I-frames will be IDR frames
-> +		 * n > 1 - every n-th I-frame will be IDR frame
-> +		 */
-> +		ptype = HFI_PROPERTY_CONFIG_VENC_IDR_PERIOD;
-> +		idrp.idr_period = 0;
-> +		ret = hfi_session_set_property(inst, ptype, &idrp);
-> +		if (ret)
-> +			return ret;
-> +	}
->  
->  	if (ctr->num_b_frames) {
->  		u32 max_num_b_frames = NUM_B_FRAMES_MAX;
-> 
-
+diff --git a/drivers/pnp/interface.c b/drivers/pnp/interface.c
+index 187e4a1175b0..602c46893e83 100644
+--- a/drivers/pnp/interface.c
++++ b/drivers/pnp/interface.c
+@@ -33,6 +33,7 @@ struct pnp_info_buffer {
+ 
+ typedef struct pnp_info_buffer pnp_info_buffer_t;
+ 
++__printf(2, 3)
+ static int pnp_printf(pnp_info_buffer_t * buffer, char *fmt, ...)
+ {
+ 	va_list args;
 -- 
-regards,
-Stan
+2.27.0
+
