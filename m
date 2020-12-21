@@ -2,174 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4BF82E02F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 00:43:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B566D2E02FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 00:47:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726156AbgLUXmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 18:42:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44638 "EHLO
+        id S1726166AbgLUXrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 18:47:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgLUXmX (ORCPT
+        with ESMTP id S1725780AbgLUXrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 18:42:23 -0500
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050::465:202])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7992C0613D3;
-        Mon, 21 Dec 2020 15:41:42 -0800 (PST)
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:105:465:1:2:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4D0GFQ12YqzQlRQ;
-        Tue, 22 Dec 2020 00:41:14 +0100 (CET)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hauke-m.de; s=MBO0001;
-        t=1608594072;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+SpruTXWYI7kkzwg63Wix/B+XVjogO4KHpq9u4eVk54=;
-        b=Ybn4OFRR+VInPVGyZV73PMKEPvPapPVC1CzoUAMxyGHCd+9WGv1gzGf+lVS9QrtrhDgWSy
-        nn/ceE4Rfw5TungqySaBY8qZ+OrHKwon8aza7v7pWj1a7BnhGLCht3KJyknv+T66ySY3Ax
-        P0Z1kmQr6tpn5R3w2oGdxbVQZkPcyO6Gfcma2EJPp3BlTSgi2cgNVufffBCGN6HuPwuSXB
-        y+o+Vcj/b8T4SyTwGVdrdrn/pSf4aiImISYyhP7fsTF3/rXpnMRsc0WD4O2dOHZSCy/TV4
-        UTKrQmtFbNPlD2S1BDqdPkDriBYNXITssU9aNkasLxMxE6h35EcKSXwG5ISO4A==
-Received: from smtp2.mailbox.org ([80.241.60.241])
-        by spamfilter04.heinlein-hosting.de (spamfilter04.heinlein-hosting.de [80.241.56.122]) (amavisd-new, port 10030)
-        with ESMTP id qLzPmxt2L1dn; Tue, 22 Dec 2020 00:41:09 +0100 (CET)
-Subject: Re: [PATCH] net: lantiq_etop: check the result of request_irq()
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-References: <20201221054323.247483-1-masahiroy@kernel.org>
- <20201221152645.GH3026679@lunn.ch>
- <CAK7LNAQ9vhB6iYHeGV3xcyo8_iLqmGJeJUYOvbdHqN9Wn0mEJg@mail.gmail.com>
- <20201221180433.GE3107610@lunn.ch>
-From:   Hauke Mehrtens <hauke@hauke-m.de>
-Message-ID: <3197556a-8df8-3959-895b-e4b82de904aa@hauke-m.de>
-Date:   Tue, 22 Dec 2020 00:41:07 +0100
-MIME-Version: 1.0
-In-Reply-To: <20201221180433.GE3107610@lunn.ch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -6.06 / 15.00 / 15.00
-X-Rspamd-Queue-Id: E311F1718
-X-Rspamd-UID: a3b417
+        Mon, 21 Dec 2020 18:47:20 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC1FBC0613D6;
+        Mon, 21 Dec 2020 15:46:39 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id 11so7381476pfu.4;
+        Mon, 21 Dec 2020 15:46:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=L+0JEMaoTQhD9jy4Rl8XAyjJSgO9j0YTaiOmnYpP02Y=;
+        b=Ps04niOpFbu+NWVSJoYqYU1JpLcgUiedzqB4MZuSPChfBJj/qY2eq2FGHkG0oWY9Nz
+         kPpkJ2l+8Q0ELMgCFzdpXGecfsBG6esd18k6EcrVRxAieSNuoVW0N3R6f8ko9NhtYk0s
+         seX3dpcCiKXmfJnLRc1CC14BG6i+4AagCQAphesrN9ZGpU8ly4JPsq2jNvcvwy+EJNRJ
+         ZhBE16Qhstk0MTTkYXrjueAHTbheqJ1qlnUvG8r0VhM6bQryq9uhC8E/zWBdC1s3LIdQ
+         wygq/eNdZPucwNs/ES9BBRJfDhE6o6SWD9P2SgEo9d1RemPjjPhSB7wUqt4Zta2E8Tox
+         htrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=L+0JEMaoTQhD9jy4Rl8XAyjJSgO9j0YTaiOmnYpP02Y=;
+        b=tYIDoDlPhsD9Z9xEgfw/ISpprW+N8POieGyPeFCzLTdgFiVXYooBk8x0I21sCfZwW6
+         HnxHZZwjCubNHACNHRyguwJo71YlxA6QLhBUjWGyTKLTCQLv7eiS2kHLIo7MPwAeGhKf
+         qr7lyxn+9Ep6xipsF37K/1y6dvuBnGVuzYe/49L/eaC0AsRWtOHDPBwdXxuI0mPcUpwT
+         55SnDWHLWourpkt2Af1FuxMLzVKD7Na4s/HeZ/dnmAryGq3uT1nRRzu2LJAuqo7Jz9Pv
+         q4Ujb9SIL9gDhwMzGvnbkHbptup9EgNc0nqfAN2PL7gu/UssVXVHtmOkyVfN9rJuUaNf
+         LwFA==
+X-Gm-Message-State: AOAM532n5T7UJ8Vlownz8Q9sYgEqQ6rFC/bkmAMyNdBk/5PI5+/8a4ln
+        SZj0t6qSqE9lWPkFoB5kd4k=
+X-Google-Smtp-Source: ABdhPJyiRX/b5fEsU/ic1PlWfthrlm7MZHAoPC4HSmZNiGOvTuMo4An+knAyb8zfIJ+Mbm+bTMXSBQ==
+X-Received: by 2002:a62:61c5:0:b029:1a9:5a82:4227 with SMTP id v188-20020a6261c50000b02901a95a824227mr17693431pfb.61.1608594399329;
+        Mon, 21 Dec 2020 15:46:39 -0800 (PST)
+Received: from ?IPv6:2601:647:4700:9b2:104c:8d35:de28:b8dc? ([2601:647:4700:9b2:104c:8d35:de28:b8dc])
+        by smtp.gmail.com with ESMTPSA id c62sm17710501pfa.116.2020.12.21.15.46.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 21 Dec 2020 15:46:38 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <CAHk-=wihkGVvXXQL_qSPWF6s4NJYWyEkq+D3CUWQf9H5V1jqtg@mail.gmail.com>
+Date:   Mon, 21 Dec 2020 15:46:33 -0800
+Cc:     Peter Xu <peterx@redhat.com>, Yu Zhao <yuzhao@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <BCB833E2-B5CD-4FE6-B788-43E5925F70DF@gmail.com>
+References: <X97pprdcRXusLGnq@google.com>
+ <DDA15360-D6D4-46A8-95A4-5EE34107A407@gmail.com>
+ <20201221172711.GE6640@xz-x1>
+ <76B4F49B-ED61-47EA-9BE4-7F17A26B610D@gmail.com>
+ <X+D0hTZCrWS3P5Pi@google.com>
+ <CAHk-=wg_UBuo7ro1fpEGkMyFKA1+PxrE85f9J_AhUfr-nJPpLQ@mail.gmail.com>
+ <9E301C7C-882A-4E0F-8D6D-1170E792065A@gmail.com>
+ <CAHk-=wg-Y+svNy3CDkJjj0X_CJkSbpERLg64-Vqwq5u7SC4z0g@mail.gmail.com>
+ <X+ESkna2z3WjjniN@google.com>
+ <1FCC8F93-FF29-44D3-A73A-DF943D056680@gmail.com>
+ <20201221223041.GL6640@xz-x1>
+ <B8095F3C-81E3-4AF9-A6A5-F597D51264BD@gmail.com>
+ <CAHk-=wihkGVvXXQL_qSPWF6s4NJYWyEkq+D3CUWQf9H5V1jqtg@mail.gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/21/20 7:04 PM, Andrew Lunn wrote:
-> On Tue, Dec 22, 2020 at 12:59:08AM +0900, Masahiro Yamada wrote:
->> On Tue, Dec 22, 2020 at 12:26 AM Andrew Lunn <andrew@lunn.ch> wrote:
->>>
->>> On Mon, Dec 21, 2020 at 02:43:23PM +0900, Masahiro Yamada wrote:
->>>> The declaration of request_irq() in <linux/interrupt.h> is marked as
->>>> __must_check.
->>>>
->>>> Without the return value check, I see the following warnings:
->>>>
->>>> drivers/net/ethernet/lantiq_etop.c: In function 'ltq_etop_hw_init':
->>>> drivers/net/ethernet/lantiq_etop.c:273:4: warning: ignoring return value of 'request_irq', declared with attribute warn_unused_result [-Wunused-result]
->>>>    273 |    request_irq(irq, ltq_etop_dma_irq, 0, "etop_tx", priv);
->>>>        |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>> drivers/net/ethernet/lantiq_etop.c:281:4: warning: ignoring return value of 'request_irq', declared with attribute warn_unused_result [-Wunused-result]
->>>>    281 |    request_irq(irq, ltq_etop_dma_irq, 0, "etop_rx", priv);
->>>>        |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>>
->>>> Reported-by: Miguel Ojeda <ojeda@kernel.org>
->>>> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
->>>> ---
->>>>
->>>>   drivers/net/ethernet/lantiq_etop.c | 13 +++++++++++--
->>>>   1 file changed, 11 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/drivers/net/ethernet/lantiq_etop.c b/drivers/net/ethernet/lantiq_etop.c
->>>> index 2d0c52f7106b..960494f9752b 100644
->>>> --- a/drivers/net/ethernet/lantiq_etop.c
->>>> +++ b/drivers/net/ethernet/lantiq_etop.c
->>>> @@ -264,13 +264,18 @@ ltq_etop_hw_init(struct net_device *dev)
->>>>        for (i = 0; i < MAX_DMA_CHAN; i++) {
->>>>                int irq = LTQ_DMA_CH0_INT + i;
->>>>                struct ltq_etop_chan *ch = &priv->ch[i];
->>>> +             int ret;
->>>>
->>>>                ch->idx = ch->dma.nr = i;
->>>>                ch->dma.dev = &priv->pdev->dev;
->>>>
->>>>                if (IS_TX(i)) {
->>>>                        ltq_dma_alloc_tx(&ch->dma);
->>>> -                     request_irq(irq, ltq_etop_dma_irq, 0, "etop_tx", priv);
->>>> +                     ret = request_irq(irq, ltq_etop_dma_irq, 0, "etop_tx", priv);
->>>> +                     if (ret) {
->>>> +                             netdev_err(dev, "failed to request irq\n");
->>>> +                             return ret;
->>>
->>> You need to cleanup what ltq_dma_alloc_tx() did.
->>
->>
->> Any failure from this function will roll back
->> in the following paths:
->>
->>    ltq_etop_hw_exit()
->>       -> ltq_etop_free_channel()
->>            -> ltq_dma_free()
->>
->>
->> So, dma is freed anyway.
->>
->> One problem I see is,
->> ltq_etop_hw_exit() frees all DMA channels,
->> some of which may not have been allocated yet.
->>
->> If it is a bug, it is an existing bug.
->>
->>
->>>
->>>> +                     }
->>>>                } else if (IS_RX(i)) {
->>>>                        ltq_dma_alloc_rx(&ch->dma);
->>>>                        for (ch->dma.desc = 0; ch->dma.desc < LTQ_DESC_NUM;
->>>> @@ -278,7 +283,11 @@ ltq_etop_hw_init(struct net_device *dev)
->>>>                                if (ltq_etop_alloc_skb(ch))
->>>>                                        return -ENOMEM;
->>
->>
->> This -ENOMEM does not roll back anything here.
->>
->> As stated above, dma_free_coherent() is called.
->> The problem is, ltq_etop_hw_exit() rolls back too much.
->>
->> If your requirement is "this driver is completely wrong. Please rewrite it",
->> sorry, I cannot (unless I am paid to do so).
->>
->> I am just following this driver's roll-back model.
->>
->> Please do not expect more to a person who
->> volunteers to eliminate build warnings.
->>
->> Of course, if somebody volunteers to rewrite this driver correctly,
->> that is appreciated.
-> 
-> Hi Hauke
-> 
-> Do you still have this hardware? Do you have time to take a look at
-> the cleanup code?
-> 
-> Thanks
-> 	Andrew
-> 
+> On Dec 21, 2020, at 3:30 PM, Linus Torvalds =
+<torvalds@linux-foundation.org> wrote:
+>=20
+> On Mon, Dec 21, 2020 at 2:55 PM Nadav Amit <nadav.amit@gmail.com> =
+wrote:
+>> So as an alternative solution, I can do copying under the PTL after
+>> flushing, which seems to solve the problem.
+>=20
+> ...
+> Note that the "Re-validate under PTL" code in cow_user_page() is *not*
+> the "now we are installing the copy". No, that's actually for the
+> "uhhuh, the copy using the virtual address outside the ptl failed, now
+> we need to do something special=E2=80=9D.
+> ...
+> So are we sure the COW case is so special?
+>=20
+> I really think this is clearly just a userfaultfd bug that we hadn't
+> realized until now, and had possibly been hidden by timings or other
+> random stuff before.
 
-Hi Andrew,
+Thanks for the detailed explanation. I think I got the COW parts =
+correct,
+but as you said, I am completely not sure that COW is so special.
 
-I have this hardware somewhere at home, but I never made it work.
-If I find some time I can have a loom at this problem in the next few weeks.
+Seems as if some general per page-table mechanism for detection of stale
+PTEs is needed, so by default anyone that acquires the PTL is guaranteed
+that the PTEs in memory are coherent across all the TLBs.
 
-Hauke
+But I still did not figure out how to do so without introducing =
+overheads,
+and the question is indeed if people care about mprotect and uffd-wp
+performance.
+
