@@ -2,172 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03B302E00D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 20:17:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 460992E00DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 20:21:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726470AbgLUTRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 14:17:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60272 "EHLO
+        id S1726829AbgLUTU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 14:20:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726101AbgLUTRH (ORCPT
+        with ESMTP id S1726121AbgLUTU2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 14:17:07 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F2B0C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 11:16:27 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id d9so9817981iob.6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 11:16:27 -0800 (PST)
+        Mon, 21 Dec 2020 14:20:28 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D11C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 11:19:48 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id l23so6986561pjg.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 11:19:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=L3Gs6WqmH8kL8ZhxKYgFmuIwY0FVCfgjiIRrG/rLCoQ=;
-        b=XR1oBnHY+FNDw8Pofg87UATPJwTQibIHCH0Wtd8KJvWHmSPCZRxXSfyyWDthuOtjpz
-         eUEwuy4LEK+L7MORftyvnd3nSvXZM4VTd15C+RXRfz2XUWlMdOaGDfdHfR1QXaUseVO6
-         gIBis0u7qXKe8TzrNEGpL0BxU2h7AAGZihNGcDMktPLtjZdjlYJNnvs3klod/1dOfcFu
-         wvZd7rZZOO926AziaTBTKvMeVO+b7cG1etMxlCrwvNLpR7qsCUovMewcZtn+4rKqWvOW
-         0Q+LAbozXG3rhB6WbprSCV/ddPOXiHpgoQKrJt+vGt6bjMu0c0Im9Ncl8ob9qQXnFcnq
-         UYwQ==
+         :content-disposition:in-reply-to;
+        bh=WtizPFqIUsbgTk5ZUrZ8KiSKXylfonEzY0kSBt4n3QA=;
+        b=Mt22q0LphIerpJ6ZPHpk+kXQKlq3p1GmAfA+r40ZSGd7rnEuT8VLNOXxtJ9a/omgg/
+         R9T6PxUFmSoFgiDAden/8ODlmo3pKOTmbVWEgtCK/qZ6snnwrB7bL8W3DW76tZtYWj0K
+         ichq0UXkyD9uWbsTWGZLC22/+TxRSSrcxHjWAfk8mMM6Kual/FQY5yfOX4q9LGCtyvv5
+         /DUlf+NCH0B4FRqxulAz/zIh4Ptv4V0i/awZSORItek+ZaO0pcqTRzxPW+XfQ+X+Sn39
+         uqoyh+2GQCthU3kIDA4tPlO1zNd69Sf4ntY6X3hzZs9Vf6+dn+nSYtW/EcWEhLUkKYcK
+         hYPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=L3Gs6WqmH8kL8ZhxKYgFmuIwY0FVCfgjiIRrG/rLCoQ=;
-        b=ptGkSQIgFFSlrdL0inPQvFYXbvJ0J11XjgZQ1S4p4HEluw3NuppqcTYNoy/jqNiPq1
-         MIikoT8IiQtDfrHCahEz9TKzV23Xah+Xb+x0V1IOwU6pXMKciBnqFqYlquAwlwOoWi2/
-         aj2V3D95Jg/AuQ91Yhs1PAb4F83Pjf8eJ/yd9yJvbBWzahb3KZx4QJg7vCo7689TiOn/
-         RLK4DOUM0M7Q+xIHHd6cR3lv/arM606PN1mRaXuzL0tPFx0Igo1UAaSYMcCblh3BVl5w
-         W2692/2A9i3x7eMUMU+gp623yVVdhRERYiWUyF/egpWMik/joTIxLiV9m8rY+qo4coHz
-         LaWw==
-X-Gm-Message-State: AOAM532Kzf7sMwA0HWe4WgQ2flX/F93MNojl4cesXWNy1iexISMw2foJ
-        j/WoNJkatHIj1DA/yJTFD51C+A==
-X-Google-Smtp-Source: ABdhPJwOsREO3Cv01bkG3byoUcuKvOsFEAK5JGQ1eGqIHRODacDApA3vawIoWmAz77JL8ZnCmtxJhA==
-X-Received: by 2002:a5e:9b06:: with SMTP id j6mr15203388iok.171.1608578186432;
-        Mon, 21 Dec 2020 11:16:26 -0800 (PST)
-Received: from google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
-        by smtp.gmail.com with ESMTPSA id o10sm14812859ili.82.2020.12.21.11.16.25
+         :mime-version:content-disposition:in-reply-to;
+        bh=WtizPFqIUsbgTk5ZUrZ8KiSKXylfonEzY0kSBt4n3QA=;
+        b=Y+M32GRmMIQOnci5x+yy6fnZCGCJ48x7Ie7GLsqqdsfZ0Q5DVUlDwRaALVUZf2/PAb
+         458SmSMrddJ1pFLcEpdYD36yHKzrirsC/g01o+HaDpvdOZLlaD2dJ38st4D6KR5SRwSc
+         HdE0pU/Dz3VEnZdtyXEDbzb8OrzjpFv/1ON11Ez89nPTWrfhrfYFYO117ZblJOp3Rlui
+         DOct6YaxHQJLDH9XEQt4uJ6YejAdD303fwt2jKXEbfjFpNGcbK1x1Y9z653HBDEht5uc
+         CezKQbF9b8mBr35XC1PHbHB+stZLrva4b7ug4LJpinphueC3n5rO1IAH0B8fNZBZ05kd
+         Vidw==
+X-Gm-Message-State: AOAM533X7tKg4cY1SOIji1USFJ87ocbM2etqOhiT7WzAzvg8etnxCTRC
+        RA8AI529X+knRusvgjBTVIxD4Q==
+X-Google-Smtp-Source: ABdhPJz0Sv4gY1tNUjJc/rLJljNUCFgw6jCNcjw5sVpEbSnS2EZNzHrVAqkGoC1cfC+satTVKgeOgA==
+X-Received: by 2002:a17:902:854b:b029:db:c725:edcd with SMTP id d11-20020a170902854bb02900dbc725edcdmr17972443plo.64.1608578388081;
+        Mon, 21 Dec 2020 11:19:48 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id cu4sm16848943pjb.18.2020.12.21.11.19.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 11:16:25 -0800 (PST)
-Date:   Mon, 21 Dec 2020 12:16:21 -0700
-From:   Yu Zhao <yuzhao@google.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Peter Xu <peterx@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable@vger.kernel.org, minchan@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nadav Amit <nadav.amit@gmail.com>
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-Message-ID: <X+D0hTZCrWS3P5Pi@google.com>
-References: <20201219043006.2206347-1-namit@vmware.com>
- <X95RRZ3hkebEmmaj@redhat.com>
- <EDC00345-B46E-4396-8379-98E943723809@gmail.com>
- <X97pprdcRXusLGnq@google.com>
- <DDA15360-D6D4-46A8-95A4-5EE34107A407@gmail.com>
- <20201221172711.GE6640@xz-x1>
- <76B4F49B-ED61-47EA-9BE4-7F17A26B610D@gmail.com>
+        Mon, 21 Dec 2020 11:19:47 -0800 (PST)
+Date:   Mon, 21 Dec 2020 11:19:40 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     kvm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>
+Subject: Re: [PATCH v2] KVM/x86: Move definition of __ex to x86.h
+Message-ID: <X+D1TPXRuTggnvHv@google.com>
+References: <20201220211109.129946-1-ubizjak@gmail.com>
+ <X+DnRcYVNdkkgI3j@google.com>
+ <CAFULd4aBWqQmwYNo74_zmP22Lu79jnRJVu5+PrKkOD2Dbp6-FQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <76B4F49B-ED61-47EA-9BE4-7F17A26B610D@gmail.com>
+In-Reply-To: <CAFULd4aBWqQmwYNo74_zmP22Lu79jnRJVu5+PrKkOD2Dbp6-FQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 10:31:57AM -0800, Nadav Amit wrote:
-> > On Dec 21, 2020, at 9:27 AM, Peter Xu <peterx@redhat.com> wrote:
-> > 
-> > Hi, Nadav,
-> > 
-> > On Sun, Dec 20, 2020 at 12:06:38AM -0800, Nadav Amit wrote:
-> > 
-> > [...]
-> > 
-> >> So to correct myself, I think that what I really encountered was actually
-> >> during MM_CP_UFFD_WP_RESOLVE (i.e., when the protection is removed). The
-> >> problem was that in this case the “write”-bit was removed during unprotect.
-> >> Sorry for the strange formatting to fit within 80 columns:
-> > 
-> > I assume I can ignore the race mentioned in the commit message but only refer
-> > to this one below.  However I'm still confused.  Please see below.
-> > 
-> >> [ Start: PTE is writable ]
-> >> 
-> >> cpu0				cpu1			cpu2
-> >> ----				----			----
-> >> 							[ Writable PTE 
-> >> 							  cached in TLB ]
-> > 
-> > Here cpu2 got writable pte in tlb.  But why?
-> > 
-> > If below is an unprotect, it means it must have been protected once by
-> > userfaultfd, right?  If so, the previous change_protection_range() which did
-> > the wr-protect should have done a tlb flush already before it returns (since
-> > pages>0 - we protected one pte at least).  Then I can't see why cpu2 tlb has
-> > stall data.
+On Mon, Dec 21, 2020, Uros Bizjak wrote:
+> On Mon, Dec 21, 2020 at 7:19 PM Sean Christopherson <seanjc@google.com> wrote:
+> >
+> > On Sun, Dec 20, 2020, Uros Bizjak wrote:
+> > > Merge __kvm_handle_fault_on_reboot with its sole user
+> >
+> > There's also a comment in vmx.c above kvm_cpu_vmxoff() that should be updated.
+> > Alternatively, and probably preferably for me, what about keeping the long
+> > __kvm_handle_fault_on_reboot() name for the macro itself and simply moving the
+> > __ex() macro?
+> >
+> > That would also allow keeping kvm_spurious_fault() and
+> > __kvm_handle_fault_on_reboot() where they are (for no reason other than to avoid
+> > code churn).  Though I'm also ok if folks would prefer to move everything to
+> > x86.h.
 > 
-> Thanks, Peter. Just as you can munprotect() a region which was not protected
-> before, you can ufff-unprotect a region that was not protected before. It
-> might be that the user tried to unprotect a large region, which was
-> partially protected and partially unprotected.
+> The new patch is vaguely based on our correspondence on the prototype patch:
 > 
-> The selftest obviously blindly unprotect some regions to check for bugs.
+> --q--
+> Moving this to asm/kvm_host.h is a bit sketchy as __ex() isn't exactly the
+> most unique name.  arch/x86/kvm/x86.h would probably be a better
+> destination as it's "private".  __ex() is only used in vmx.c, nested.c and
+> svm.c, all of which already include x86.h.
+> --/q--
 > 
-> So to your question - it was not write-protected (think about initial copy
-> without write-protecting).
-> 
-> > If I assume cpu2 doesn't have that cached tlb, then "write to old page" won't
-> > happen either, because cpu1/cpu2 will all go through the cow path and pgtable
-> > lock should serialize them.
-> > 
-> >> userfaultfd_writeprotect()				
-> >> [ write-*unprotect* ]
-> >> mwriteprotect_range()
-> >> mmap_read_lock()
-> >> change_protection()
-> >> 
-> >> change_protection_range()
-> >> ...
-> >> change_pte_range()
-> >> [ *clear* “write”-bit ]
-> >> [ defer TLB flushes]
-> >> 				[ page-fault ]
-> >> 				…
-> >> 				wp_page_copy()
-> >> 				 cow_user_page()
-> >> 				  [ copy page ]
-> >> 							[ write to old
-> >> 							  page ]
-> >> 				…
-> >> 				 set_pte_at_notify()
-> >> 
-> >> [ End: cpu2 write not copied form old to new page. ]
-> > 
-> > Could you share how to reproduce the problem?  I would be glad to give it a
-> > shot as well.
-> 
-> You can run the selftests/userfaultfd with my small patch [1]. I ran it with
-> the following parameters: “ ./userfaultfd anon 100 100 “. I think that it is
-> more easily reproducible with “mitigations=off idle=poll” as kernel
-> parameters.
-> 
-> [1] https://lore.kernel.org/patchwork/patch/1346386/
+> where you mentioned that x86.h would be a better destination for
+> __ex().
 
-Hi Linus,
+Ya, thankfully I still agree with my past self on this one :-)
 
-Nadav Amit found memory corruptions when running userfaultfd test above.
-It seems to me the problem is related to commit 09854ba94c6a ("mm:
-do_wp_page() simplification"). Can you please take a look? Thanks.
+> IMO, __kvm_handle_fault_on_reboot also belongs in x86.h, as it
+> deals with a low-level access to the processor, and there is really no
+> reason for this #define to be available for the whole x86 architecture
+> directory. I remember looking for the __kvm_handle_falult_on_reboot,
+> and was surprised to find it in a global x86 include directory.
 
-TL;DR: it may not safe to make copies of singly mapped (non-COW) pages
-when it's locked or has additional ref count because concurrent
-clear_soft_dirty or change_pte_range may have removed pte_write but yet
-to flush tlb.
+Works for me.  If you have a strong preference for moving everything to x86.h,
+then let's do that.
+
+> I tried to keep __ex as a redefine to __kvm_hanlde_fault_on_reboot in
+> x86.h, but it just looked weird, since __ex is the only user and the
+> introductory document explains in detail, what
+> __kvm_hanlde_fault_on_reboot (aka __ex) does.
+
+I like the verbose name because it very quickly reminds what the macro does; I
+somehow manage to forget every few months.  I agree it's a bit superfluous since
+the comment explains exactly what goes on.  And I can see how
+__kvm_handle_fault_on_reboot() would be misleading as it also "handles" faults
+at all other times as well.
+
+What if we add a one-line synopsis in the comment to state the (very) high-level
+purpose of the function?  We could also opportunistically clean up the
+formatting in the existing comment to save a line, e.g.:
+
+/*
+ * Handle a fault on a hardware virtualization (VMX or SVM) instruction.
+ *
+ * Hardware virtualization extension instructions may fault if a reboot turns
+ * off virtualization while processes are running.  Usually after catching the
+ * fault we just panic; during reboot instead the instruction is ignored.
+ */
