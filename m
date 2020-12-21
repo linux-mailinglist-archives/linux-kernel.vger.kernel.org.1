@@ -2,68 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0AE2DFCE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 15:36:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC6E12DFCE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 15:33:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727168AbgLUOfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 09:35:38 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:9907 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726949AbgLUOfh (ORCPT
+        id S1727160AbgLUOdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 09:33:03 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:54437 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726841AbgLUOdD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 09:35:37 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4D026F6PYCz7JFZ;
-        Mon, 21 Dec 2020 22:34:13 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.58) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 21 Dec 2020 22:34:44 +0800
-From:   John Garry <john.garry@huawei.com>
-To:     <gregkh@linuxfoundation.org>, <rafael@kernel.org>,
-        <maz@kernel.org>, <tglx@linutronix.de>
-CC:     <linux-kernel@vger.kernel.org>, <dan.carpenter@oracle.com>,
-        John Garry <john.garry@huawei.com>
-Subject: [PATCH] Driver core: platform: Add extra error check in devm_platform_get_irqs_affinity()
-Date:   Mon, 21 Dec 2020 22:30:55 +0800
-Message-ID: <1608561055-231244-1-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        Mon, 21 Dec 2020 09:33:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1608561182; x=1640097182;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=npsp6D6KpZSySB/81WkWRdNBxbaJJ+zM3AnwuQB/ZWo=;
+  b=KPbRcpvvD385ZlfjLAL98KzNmiUJRhvf+9nPjG3GObC2Klg9mHbaE/Ji
+   bEp85yrlPVYWtxCBucr8SJGIwD7ekjISbJ//oHOiFj5fC0tzNtzuLkR5O
+   3OBioIFxCuyll+JKtM7r28JmzOoQvMmSkvNZYXcKwTw67mN2k6nbng9+i
+   V1R0CRxDsGkk0PCCaR0PZNcc38FJypVcjOMTRfGeyElCRBgQUnKQHNCXj
+   Cz7hhIytpm+pbIHIDjDbqYYpURGOruVZw3LfBzoii6q1RFC3DL5LahXGd
+   DzdlTWWgI7wpyvHsXjoBehanp73J3JcDimVyJ8WE0Y69Ch5ZGOhARAGeh
+   w==;
+IronPort-SDR: V+DIF/vwyUcNooaG7XOAGSSXcXTCJUd5ZRPuzbMPG/UgJRVGbiKDXXVZM8S3FyLXxvxgVNd3I8
+ o0ekHQ1lm23rh0xTXTqhUu6Wi7QgU+HnawQAavujJelZPklbdQ9bqOWXYlfpBkC3NFWqlbbccO
+ fZdLYNvB7YgTuz1KHxw59PNlnIm3xmZALwTwSY1Gfx8WCrlRTDfE4LniJjSbMFrNFpvrXYf5nP
+ k/9tHKrF1ADgqEK6+HwH8Pvc+CO409e8iVGNI9y+yZJug9ryaPIubC4jqwX323ucZ3Kt+8w94Z
+ Tr0=
+X-IronPort-AV: E=Sophos;i="5.78,436,1599548400"; 
+   d="scan'208";a="100587126"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 Dec 2020 07:31:46 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 21 Dec 2020 07:31:46 -0700
+Received: from tyr.hegelund-hansen.dk (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Mon, 21 Dec 2020 07:31:42 -0700
+Message-ID: <1ffe38e1f38766ca38fbc6ee32481067892e3b91.camel@microchip.com>
+Subject: Re: [RFC PATCH v2 0/8] Adding the Sparx5 Switch Driver
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+CC:     Andrew Lunn <andrew@lunn.ch>, Russell King <linux@armlinux.org.uk>,
+        "Lars Povlsen" <lars.povlsen@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Mark Einon <mark.einon@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        "Arnd Bergmann" <arnd@arndb.de>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Date:   Mon, 21 Dec 2020 15:31:42 +0100
+In-Reply-To: <6645f038-7101-67e4-0843-35125f74597a@gmail.com>
+References: <20201217075134.919699-1-steen.hegelund@microchip.com>
+         <6645f038-7101-67e4-0843-35125f74597a@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current check of nvec < minvec for nvec returned from
-platform_irq_count() will not detect a negative error code in nvec.
+Hi Florian,
 
-This is because minvec is unsigned, and, as such, nvec is promoted to
-unsigned in that check, which will make it a huge number (if it contained
--EPROBE_DEFER).
+On Sun, 2020-12-20 at 16:58 -0800, Florian Fainelli wrote:
+> > 
+> > The Sparx5 Switch chip register model can be browsed here:
+> > Link:  
+> > https://microchip-ung.github.io/sparx-5_reginfo/reginfo_sparx-5.html
+> 
+> Out of curiosity, what tool was used to generate the register
+> information page? It looks really neat and well organized.
 
-In practice, an error should not occur in nvec for the only in-tree
-user, but add a check anyway.
+It is an in-house tool that is used in our so-called VML-flow
+(Versatile Markup Language), so it is not out in the open yet.
 
-Fixes: e15f2fa959f2 ("driver core: platform: Add devm_platform_get_irqs_affinity()")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: John Garry <john.garry@huawei.com>
----
-I hope that this can go through either irqchip or driver/core trees, thanks!
+The same model file is used internally in many ways - but exposing it
+to the public is something we have not tried before, and having this
+view is so much nicer that the usual datasheet, I find...
 
-diff --git a/drivers/base/platform.c b/drivers/base/platform.c
-index 95fd1549f87d..8456d8384ac8 100644
---- a/drivers/base/platform.c
-+++ b/drivers/base/platform.c
-@@ -366,6 +366,8 @@ int devm_platform_get_irqs_affinity(struct platform_device *dev,
- 		return -ERANGE;
- 
- 	nvec = platform_irq_count(dev);
-+	if (nvec < 0)
-+		return nvec;
- 
- 	if (nvec < minvec)
- 		return -ENOSPC;
--- 
-2.26.2
+And thanks for the kind words - I passed them on to the author.
+
+BR
+Steen
+> --
+> Florian
+
+
+
 
