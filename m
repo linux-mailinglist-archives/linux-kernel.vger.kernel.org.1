@@ -2,100 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5074B2DFADC
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 11:11:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D275D2DFAEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 11:15:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726555AbgLUKKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 05:10:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726320AbgLUKKl (ORCPT
+        id S1726317AbgLUKPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 05:15:11 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2273 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725804AbgLUKPL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 05:10:41 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6912FC061285
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 02:10:00 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id b26so12775411lff.9
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 02:10:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gTS5XP2jtgHu359mlLvqf93EvN6ykiTeG0K5/al16QI=;
-        b=mjZsJ0+ovrZ4dWIMP+NT0ePEC9xYzfkmqWhZkKvz4yxZd9h384IRplLWesY5RPM1zk
-         RamBZZLwz9j33w2WiW4erYjF0mRGfRzoMjrTA/mBAglwzpAmjJdFm7dxTFZCfCU5lkvP
-         G0rKJPdkhske3+Wou3ZgxJg5itEdSf4SvEWG3N48vDyKtWuDU1sdF9O+AsEHtgvlHMe6
-         pAF8gNNRNDzr3vznIdbut+C6OfwQM9rjVacBKWEhBK1Dp3PSrNIuZW0tc3r4GsKfxiD1
-         wah7fH8BpywxddirD/AQVMTSui5/oL/wJl/KoMqMT6Y/zPo1VW8n/49xN0nJ0U84NzQT
-         EeZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gTS5XP2jtgHu359mlLvqf93EvN6ykiTeG0K5/al16QI=;
-        b=T8u7g7hXNeDrZ9dBz4OMrg35kZyglw7Z5RZNBg+qv8sJ2Q8xV7iYWf5rgdoy/NotwJ
-         +YlyPo2HW73FMq6coZh+LgvWbBMlmzaCmb4TGNreUEvjp7FTQ5IXqoY9l3alJVbJFZbT
-         H24ug5hnQ2MQNbw3CnPi1WJDbRc4sZ10a5fx/nLdILSSUEUvwJPpmy1tdUMt6VusuYfE
-         msXCTKq4H92Bmc6nFTzX6LgQqmvJCni1OwUANKzv8vr1uyN0E8AR8IlmBI1Tt6KCbE6h
-         ozdlIQPw8Qwnqr5lctxu+r6RDNxARca3/MgyRwv1Dgk2RbU5acL7vGxuiGw6L3e+apWC
-         VbDw==
-X-Gm-Message-State: AOAM530o7JbLCMiQAqVwT4CLcgLQ+UhpAJesdSnoaB0jvyUo4r+q9afa
-        h7DHX+QdwtcO4WsArzHNHEcKUQ==
-X-Google-Smtp-Source: ABdhPJyhhhqWSrhwIpu9AoGAFII+/VTrWX273QHhmSjZOThd/9Efaca2cmV3e4dmcg7AQ2lK7fuF+w==
-X-Received: by 2002:ac2:482c:: with SMTP id 12mr4754844lft.37.1608545398952;
-        Mon, 21 Dec 2020 02:09:58 -0800 (PST)
-Received: from localhost.localdomain (host-95-192-94-245.mobileonline.telia.com. [95.192.94.245])
-        by smtp.gmail.com with ESMTPSA id t14sm1980971lfl.216.2020.12.21.02.09.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 02:09:58 -0800 (PST)
-From:   Robert Foss <robert.foss@linaro.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        robert.foss@linaro.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] arm64: dts: qcom: sdm845-db845c: Fix reset-pin of ov8856 node
-Date:   Mon, 21 Dec 2020 11:09:55 +0100
-Message-Id: <20201221100955.148584-1-robert.foss@linaro.org>
-X-Mailer: git-send-email 2.27.0
+        Mon, 21 Dec 2020 05:15:11 -0500
+Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CzwG00mfWz67S8b;
+        Mon, 21 Dec 2020 18:10:32 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 21 Dec 2020 11:14:28 +0100
+Received: from [10.210.168.224] (10.210.168.224) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 21 Dec 2020 10:14:27 +0000
+Subject: Re: [PATCH 00/11] scsi: libsas: Remove in_interrupt() check
+To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Daniel Wagner <dwagner@suse.de>,
+        Jason Yan <yanaijie@huawei.com>,
+        "Artur Paszkiewicz" <artur.paszkiewicz@intel.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>
+CC:     <linux-scsi@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
+        Hannes Reinecke <hare@suse.com>
+References: <20201218204354.586951-1-a.darwish@linutronix.de>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <9674052e-3deb-2a45-6082-4a40a472a219@huawei.com>
+Date:   Mon, 21 Dec 2020 10:13:42 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201218204354.586951-1-a.darwish@linutronix.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.168.224]
+X-ClientProxiedBy: lhreml739-chm.china.huawei.com (10.201.108.189) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch reset pin of ov8856 node from GPIO_ACTIVE_HIGH to GPIO_ACTIVE_LOW,
-this issue prevented the ov8856 from probing properly as it did not respon
-to I2C messages.
+On 18/12/2020 20:43, Ahmed S. Darwish wrote:
+> Folks,
+> 
+> In the discussion about preempt count consistency across kernel
+> configurations:
+> 
+>    https://lkml.kernel.org/r/20200914204209.256266093@linutronix.de
+> 
+> it was concluded that the usage of in_interrupt() and related context
+> checks should be removed from non-core code.
+> 
+> This includes memory allocation mode decisions (GFP_*). In the long run,
+> usage of in_interrupt() and its siblings should be banned from driver
+> code completely.
+> 
+> This series addresses SCSI libsas. Basically, the function:
+> 
+>    => drivers/scsi/libsas/sas_init.c:
+>    struct asd_sas_event *sas_alloc_event(struct asd_sas_phy *phy)
+>    {
+>          ...
+>          gfp_t flags = in_interrupt() ? GFP_ATOMIC : GFP_KERNEL;
+>          event = kmem_cache_zalloc(sas_event_cache, flags);
 
-Fixes: d4919a44564b ("arm64: dts: qcom: sdm845-db845c: Add ov8856 & ov7251
-camera nodes")
+Hi Ahmed,
 
-Signed-off-by: Robert Foss <robert.foss@linaro.org>
----
+Firstly I would say that it would be nice to just remove all the atomic 
+context calls. But that may require significant LLDD rework and 
+participation from driver stakeholders.
 
-Changes since v1:
- - Bjorn: Use define instead of numeral
+However, considering function sas_alloc_event() again:
 
- arch/arm64/boot/dts/qcom/sdm845-db845c.dts | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+	gfp_t flags = in_interrupt() ? GFP_ATOMIC : GFP_KERNEL;
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-index 7cc236575ee2..f749672c5fdc 100644
---- a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-@@ -1112,11 +1112,11 @@ camera@10 {
- 		reg = <0x10>;
- 
- 		// CAM0_RST_N
--		reset-gpios = <&tlmm 9 0>;
-+		reset-gpios = <&tlmm 9 GPIO_ACTIVE_LOW>;
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&cam0_default>;
- 		gpios = <&tlmm 13 0>,
--			<&tlmm 9 0>;
-+			<&tlmm 9 GPIO_ACTIVE_LOW>;
- 
- 		clocks = <&clock_camcc CAM_CC_MCLK0_CLK>;
- 		clock-names = "xvclk";
--- 
-2.27.0
+	...
+
+	event = kmem_cache_zalloc(sas_event_cache, flags);
+	if (!event)
+		return NULL;
+
+	atomic_inc(&phy->event_nr);
+
+	if (atomic_read(&phy->event_nr) > phy->ha->event_thres) {
+		/* Code to shutdown the phy */
+	}
+
+	return event;
+
+
+So default for phy->ha->event_thres is 32, and I can't imagine that 
+anyone has ever reconfigured this via sysfs or even required a value 
+that large. Maybe Jason (cc'ed) knows better. It's an arbitrary value to 
+say that the PHY is malfunctioning. I do note that there is the circular 
+path sas_alloc_event() -> sas_notify_phy_event() -> sas_alloc_event() 
+there also.
+
+Anyway, if the 32x event memories were per-allocated, maybe there is a 
+clean method to manage this memory, which even works in atomic context, 
+so we could avoid this rework (ignoring the context bugs you reported 
+for a moment). I do also note that the sas_event_cache size is not huge.
+
+Anyway, I'll look at the rest of the series.
+
+Thanks,
+John
+
+>          ...
+>    }
+> 
+> is transformed so that callers explicitly pass the gfp_t memory
+> allocation flags. Affected libsas clients are modified accordingly.
+> 
+> The first six patches have "Fixes: " tags and address bugs the were
+> noticed during the context analysis.
+> 
+> Thanks!
+> 
+> 8<--------------
+> 
+> Ahmed S. Darwish (11):
+>    Documentation: scsi: libsas: Remove notify_ha_event()
+>    scsi: libsas: Introduce a _gfp() variant of event notifiers
+>    scsi: mvsas: Pass gfp_t flags to libsas event notifiers
+>    scsi: isci: port: link down: Pass gfp_t flags
+>    scsi: isci: port: link up: Pass gfp_t flags
+>    scsi: isci: port: broadcast change: Pass gfp_t flags
+>    scsi: libsas: Pass gfp_t flags to event notifiers
+>    scsi: pm80xx: Pass gfp_t flags to libsas event notifiers
+>    scsi: aic94xx: Pass gfp_t flags to libsas event notifiers
+>    scsi: hisi_sas: Pass gfp_t flags to libsas event notifiers
+>    scsi: libsas: event notifiers: Remove non _gfp() variants
+> 
+>   Documentation/scsi/libsas.rst          |  5 ++--
+>   drivers/scsi/aic94xx/aic94xx_scb.c     | 18 ++++++------
+>   drivers/scsi/hisi_sas/hisi_sas.h       |  3 +-
+>   drivers/scsi/hisi_sas/hisi_sas_main.c  | 26 ++++++++++--------
+>   drivers/scsi/hisi_sas/hisi_sas_v1_hw.c |  5 ++--
+>   drivers/scsi/hisi_sas/hisi_sas_v2_hw.c |  5 ++--
+>   drivers/scsi/hisi_sas/hisi_sas_v3_hw.c |  5 ++--
+>   drivers/scsi/isci/port.c               | 14 ++++++----
+>   drivers/scsi/libsas/sas_event.c        | 21 ++++++++------
+>   drivers/scsi/libsas/sas_init.c         | 11 ++++----
+>   drivers/scsi/libsas/sas_internal.h     |  4 +--
+>   drivers/scsi/mvsas/mv_sas.c            | 22 +++++++--------
+>   drivers/scsi/pm8001/pm8001_hwi.c       | 38 +++++++++++++-------------
+>   drivers/scsi/pm8001/pm8001_sas.c       |  8 +++---
+>   drivers/scsi/pm8001/pm80xx_hwi.c       | 30 ++++++++++----------
+>   include/scsi/libsas.h                  |  4 +--
+>   16 files changed, 116 insertions(+), 103 deletions(-)
+> 
+> base-commit: 2c85ebc57b3e1817b6ce1a6b703928e113a90442
+> --
+> 2.29.2
+> .
+> 
 
