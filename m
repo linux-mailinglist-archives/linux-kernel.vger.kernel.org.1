@@ -2,99 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D5972DF9AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 09:00:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3BD32DF9B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 09:01:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727476AbgLUH6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 02:58:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727117AbgLUH6q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 02:58:46 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B67DC0613D3;
-        Sun, 20 Dec 2020 23:58:03 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id w1so7463637pjc.0;
-        Sun, 20 Dec 2020 23:58:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vuo/TbErUnOTi/BtCcE2qLWY5PtEW/w4cxfuLrmrRGI=;
-        b=KA1e7AOhJeu3VEaVRv+7iGg3OH8WFzJeus82szeqLp9hHrgBIchmk5Nm6caQn8+l9G
-         Kv8GGimfUO4fBjucCrQPQ55pKti32hbBn3rwJycHm50Yp9lB0Exo3VmPkBN3yPg3DrjS
-         5TOyKcQluDnzcpDm/LT74e05ydbq6NEYXdNtWCT3GYZZ+WwPl0b8OLiF85++FbBie503
-         nhdC8lBTRwAxty9dV3nD6VeiBfMJZS9CMdB9ZMi1qLUM3EFw194DWr4NlF7YKerZsFCB
-         LP5JlTxUPiL0F46Dbpn1UMsmL+qLiRjCoEWiOSx03J1d0eS3bRAh7AjhIjrtMAqAJ3Ae
-         2AQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vuo/TbErUnOTi/BtCcE2qLWY5PtEW/w4cxfuLrmrRGI=;
-        b=toEsVI3/V2TCKuFhyeus8+ALNFxpei97X8N7/mVolJ3Kc50k5C9ZPfmevzbZiiAtKQ
-         HIHqKvj0bb25ImqUsBsn9JK9lFV/ep16mq2im6oQJ0XQVuA3zipxnsPMYYVs8VcQvyPm
-         zoHfI63+0cdFO/tDcy4PQOB4sNi2HCZv5ylpehaUP0rBlcx1ye4EZocQsNhNceDzjlRK
-         7iycqe4hfLk0e3zYXr2gguZKZnbNGkGWUCB3EYf86z5pkA9+3mrC3cSngrnyOh06Yem3
-         Pddp2cyEoiNgQYejTc/xgbEdM4tSaS7pd3dFQsUOiKU+dSAMM2g2dZkQcunMJug/YPqP
-         B1xA==
-X-Gm-Message-State: AOAM531a5IM0tHxXer9VlCpVGFXlc1+DfzsCHu0A1ULk0oQjCIZyHplZ
-        eFyjGJw52gZbrWYlY71CCOY=
-X-Google-Smtp-Source: ABdhPJwJP2qXWVmVIYNVyefaLddDcIwYNgdOALxCjBSSMN53Ed/gxMKUE2QVCKA/8wgUwewEa7qIPg==
-X-Received: by 2002:a17:902:8c84:b029:dc:20bc:2812 with SMTP id t4-20020a1709028c84b02900dc20bc2812mr15299578plo.66.1608537482959;
-        Sun, 20 Dec 2020 23:58:02 -0800 (PST)
-Received: from localhost.localdomain ([103.248.31.152])
-        by smtp.googlemail.com with ESMTPSA id 145sm9979738pge.88.2020.12.20.23.57.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Dec 2020 23:58:02 -0800 (PST)
-From:   Amey Narkhede <ameynarkhede03@gmail.com>
-To:     imitsyanko@quantenna.com, geomatsi@gmail.com
-Cc:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Amey Narkhede <ameynarkhede03@gmail.com>
-Subject: [PATCH] qtnfmac_pcie: Use module_pci_driver
-Date:   Mon, 21 Dec 2020 13:27:35 +0530
-Message-Id: <20201221075735.197255-1-ameynarkhede03@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        id S1727535AbgLUIAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 03:00:53 -0500
+Received: from mga03.intel.com ([134.134.136.65]:42768 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727298AbgLUIAw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 03:00:52 -0500
+IronPort-SDR: eBz9CAAdISS+GOKAQ6NXvZq7rkZOlobkUVleLNrJVHieXiE6cVMDKOtFAls2SnWwCxuq5f/jgH
+ LCuZjPfQEgOQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9841"; a="175792221"
+X-IronPort-AV: E=Sophos;i="5.78,436,1599548400"; 
+   d="scan'208";a="175792221"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2020 23:59:05 -0800
+IronPort-SDR: JxY58Mh/HZqa84ewBgqXe3YA+sXkMeWHw1VaZ+qNG7gxEwTPPainwf7TAeLK1tjlU1K7tysDX8
+ OpcDC9CzAczA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,436,1599548400"; 
+   d="scan'208";a="415702682"
+Received: from shwdenpg096.ccr.corp.intel.com (HELO [10.67.104.88]) ([10.67.104.88])
+  by orsmga001.jf.intel.com with ESMTP; 20 Dec 2020 23:59:01 -0800
+Subject: Re: [PATCH v3 3/5] ipmi: kcs: aspeed: Adapt to new LPC DTS layout
+From:   Haiyue Wang <haiyue.wang@linux.intel.com>
+To:     "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
+        lee.jones@linaro.org, robh+dt@kernel.org, joel@jms.id.au,
+        andrew@aj.id.au, linus.walleij@linaro.org, minyard@acm.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org
+Cc:     BMC-SW@aspeedtech.com, cyrilbur@gmail.com, rlippert@google.com
+References: <20201221055623.31463-1-chiawei_wang@aspeedtech.com>
+ <20201221055623.31463-4-chiawei_wang@aspeedtech.com>
+ <12d347b6-168b-11d2-b906-18164afb1724@linux.intel.com>
+Message-ID: <c1b6e2fe-5b22-ac67-f0eb-159499e06d2b@linux.intel.com>
+Date:   Mon, 21 Dec 2020 15:59:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+In-Reply-To: <12d347b6-168b-11d2-b906-18164afb1724@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use module_pci_driver for drivers whose init and exit functions
-only register and unregister, respectively.
 
-Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
----
- drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+On 12/21/2020 15:53, Haiyue Wang wrote:
+> On 12/21/2020 13:56, Chia-Wei, Wang wrote:
+>> Add check against LPC device v2 compatible string to
+>> ensure that the fixed device tree layout is adopted.
+>> The LPC register offsets are also fixed accordingly.
+>>
+>> Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
+>> ---
+>>   drivers/char/ipmi/kcs_bmc_aspeed.c | 35 ++++++++++++++++++------------
+>>   1 file changed, 21 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/drivers/char/ipmi/kcs_bmc_aspeed.c 
+>> b/drivers/char/ipmi/kcs_bmc_aspeed.c
+>> index a140203c079b..6283bfef4ea7 100644
+>> --- a/drivers/char/ipmi/kcs_bmc_aspeed.c
+>> +++ b/drivers/char/ipmi/kcs_bmc_aspeed.c
+>> @@ -27,7 +27,6 @@
+>>     #define KCS_CHANNEL_MAX     4
+>>   -/* mapped to lpc-bmc@0 IO space */
+>>   #define LPC_HICR0            0x000
+>>   #define     LPC_HICR0_LPC3E          BIT(7)
+>>   #define     LPC_HICR0_LPC2E          BIT(6)
+>> @@ -52,15 +51,13 @@
+>>   #define LPC_STR1             0x03C
+>>   #define LPC_STR2             0x040
+>>   #define LPC_STR3             0x044
+>> -
+>> -/* mapped to lpc-host@80 IO space */
+>> -#define LPC_HICRB            0x080
+>> +#define LPC_HICRB            0x100
+>>   #define     LPC_HICRB_IBFIF4         BIT(1)
+>>   #define     LPC_HICRB_LPC4E          BIT(0)
+>> -#define LPC_LADR4            0x090
+>> -#define LPC_IDR4             0x094
+>> -#define LPC_ODR4             0x098
+>> -#define LPC_STR4             0x09C
+>> +#define LPC_LADR4            0x110
+>> +#define LPC_IDR4             0x114
+>> +#define LPC_ODR4             0x118
+>> +#define LPC_STR4             0x11C
+>>     struct aspeed_kcs_bmc {
+>>       struct regmap *map;
+>> @@ -345,15 +342,25 @@ static int aspeed_kcs_probe(struct 
+>> platform_device *pdev)
+>>   {
+>>       struct device *dev = &pdev->dev;
+>>       struct kcs_bmc *kcs_bmc;
+>> -    struct device_node *np;
+>> +    struct device_node *kcs_np;
+>> +    struct device_node *lpc_np;
+>>       int rc;
+>
+> I think you can just use 'np' to do LPC compatible checking:
+>
+> np = pdev->dev.of_node->parent;
+>
+> if (!of_device_is_compatible(lpc_np, "aspeed,ast2400-lpc-v2") &&
+>     !of_device_is_compatible(lpc_np, "aspeed,ast2500-lpc-v2") &&
+>     !of_device_is_compatible(lpc_np, "aspeed,ast2600-lpc-v2")) {
+>     dev_err(dev, "unsupported LPC device binding\n");
+>     return -ENODEV;
+> }
+>
+Typo:
 
-diff --git a/drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c b/drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c
-index 5337e67092ca..d9d06af9adc6 100644
---- a/drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c
-+++ b/drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c
-@@ -480,18 +480,7 @@ static struct pci_driver qtnf_pcie_drv_data = {
- #endif
- };
+if (!of_device_is_compatible(np, "aspeed,ast2400-lpc-v2") &&
+     !of_device_is_compatible(np, "aspeed,ast2500-lpc-v2") &&
+     !of_device_is_compatible(np, "aspeed,ast2600-lpc-v2")) {
+     dev_err(dev, "unsupported LPC device binding\n");
+     return -ENODEV;
+}
 
--static int __init qtnf_pcie_register(void)
--{
--	return pci_register_driver(&qtnf_pcie_drv_data);
--}
--
--static void __exit qtnf_pcie_exit(void)
--{
--	pci_unregister_driver(&qtnf_pcie_drv_data);
--}
--
--module_init(qtnf_pcie_register);
--module_exit(qtnf_pcie_exit);
-+module_pci_driver(qtnf_pcie_drv_data)
 
- MODULE_AUTHOR("Quantenna Communications");
- MODULE_DESCRIPTION("Quantenna PCIe bus driver for 802.11 wireless LAN.");
---
-2.29.2
+>
+> before:
+>
+> np = pdev->dev.of_node;
+> if (of_device_is_compatible(np, "aspeed,ast2400-kcs-bmc") ||
+>     of_device_is_compatible(np, "aspeed,ast2500-kcs-bmc"))
+>
+> Then the patch is clear. ;-)
+>
+>> -    np = pdev->dev.of_node;
+>> -    if (of_device_is_compatible(np, "aspeed,ast2400-kcs-bmc") ||
+>> -            of_device_is_compatible(np, "aspeed,ast2500-kcs-bmc"))
+>> +    kcs_np = dev->of_node;
+>> +    lpc_np = kcs_np->parent;
+>> +
+>> +    if (!of_device_is_compatible(lpc_np, "aspeed,ast2400-lpc-v2") &&
+>> +        !of_device_is_compatible(lpc_np, "aspeed,ast2500-lpc-v2") &&
+>> +        !of_device_is_compatible(lpc_np, "aspeed,ast2600-lpc-v2")) {
+>> +        dev_err(dev, "unsupported LPC device binding\n");
+>> +        return -ENODEV;
+>> +    }
+>> +
+>> +    if (of_device_is_compatible(kcs_np, "aspeed,ast2400-kcs-bmc") ||
+>> +            of_device_is_compatible(kcs_np, "aspeed,ast2500-kcs-bmc"))
+>>           kcs_bmc = aspeed_kcs_probe_of_v1(pdev);
+>> -    else if (of_device_is_compatible(np, 
+>> "aspeed,ast2400-kcs-bmc-v2") ||
+>> -            of_device_is_compatible(np, "aspeed,ast2500-kcs-bmc-v2"))
+>> +    else if (of_device_is_compatible(kcs_np, 
+>> "aspeed,ast2400-kcs-bmc-v2") ||
+>> +            of_device_is_compatible(kcs_np, 
+>> "aspeed,ast2500-kcs-bmc-v2"))
+>>           kcs_bmc = aspeed_kcs_probe_of_v2(pdev);
+>>       else
+>>           return -EINVAL;
