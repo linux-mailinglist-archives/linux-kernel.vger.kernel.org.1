@@ -2,102 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E4962DF890
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 06:16:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44A332DF899
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 06:19:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727679AbgLUFP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 00:15:57 -0500
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:46646 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726160AbgLUFP4 (ORCPT
+        id S1728328AbgLUFQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 00:16:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727566AbgLUFQy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 00:15:56 -0500
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 0BL5EeSX023952;
-        Mon, 21 Dec 2020 14:14:41 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 0BL5EeSX023952
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1608527681;
-        bh=ec7zDCE2Dssaie5MJIXt/edY86azQA8fYkqB1mvUQRU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=nDVovfx5qMpZt3zefhtaPGUOjQnfOm/YNvgykE0XFWP7RRIV+Cx4efNJKyN54UAvi
-         t1u2VR8CwGBMz3x5kZC5oit5ID+vDaKtohduI82tGn9DfqKhiYdBCVhwr7Gut1Q2Rk
-         ZGYSvENnV3w936KeVwaJy3jl/5hZgkQ/IneWqn0Wcx1URKBDx0O6mRKf5oPBKUtfqx
-         ZnWhy2e0qeGu6tRrscrMkoKduyvLMtehrzx5tUXViOVyMqKzN1TfFQOVyHnDVjNywI
-         zmz9titAC5EWmNR+XbwAe7kpnTC25ldhXKts7bWG0nWMvhOoisIhIeKy62BHnjOc40
-         An9rtoj0xRBUQ==
-X-Nifty-SrcIP: [209.85.210.175]
-Received: by mail-pf1-f175.google.com with SMTP id t22so5821109pfl.3;
-        Sun, 20 Dec 2020 21:14:41 -0800 (PST)
-X-Gm-Message-State: AOAM533z5/ZQadyleJKKaVF/AelF7Q7ucNF+jZZhINOWT72/XUpWKVY8
-        yg/ljoi4+H0L8cNmZ+3mGH2/ETMykDEq6/Z+ewE=
-X-Google-Smtp-Source: ABdhPJwMPKvV6Pfj0mrBv31yEQ/gpjj5UdGwLmSKck4pffiVQMK5iIh27Qu0P+H9ae/P9zjIHaDlnZvrJFHjxgaA2P0=
-X-Received: by 2002:aa7:9501:0:b029:155:3b11:d5c4 with SMTP id
- b1-20020aa795010000b02901553b11d5c4mr13893878pfp.76.1608527680375; Sun, 20
- Dec 2020 21:14:40 -0800 (PST)
+        Mon, 21 Dec 2020 00:16:54 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94280C0613D3;
+        Sun, 20 Dec 2020 21:16:13 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CznkL1D17z9sVj;
+        Mon, 21 Dec 2020 16:16:09 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1608527770;
+        bh=3WYqAmonIO5BuVKKwyGhTsf+OZlydrWxJ2Vjt4cdtwE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=oJvpD+yJWXlJlaej7KEKKQzOe/u2vI6rmJHpYp2N7Dc/OWcKOsN0gou0NLWTWLhvX
+         7YpIdVfIDlbwphnM0gM3pj9PtzkHydq+HL8IguoAsD4Sf7JfztpiMOPcO0FCba5kFU
+         5CnXWL+/pWxdgHq8jIfesJ2vKU617tfSZ5Uyv78WFShpvhavWTTDRZBhllG/SnRoyO
+         1P70zXTKPp3cFWK8Jqxzx/AES9YQQGP83TlBg1lkAe7RUHqzJeq/gYRvBxC4wOofAw
+         4UWrYXhtnD8nh96R5hxs+ttuo5Ke1Fg5x5Z+rvvJUHuwGObpkz0IZ5h59E99Kc+UWI
+         0rmNeZFtAhNhQ==
+Date:   Mon, 21 Dec 2020 16:16:08 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        "kernelci.org bot" <bot@kernelci.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the akpm tree
+Message-ID: <20201221161608.417ea4b5@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20201219162456.19790-1-lukas.bulwahn@gmail.com>
-In-Reply-To: <20201219162456.19790-1-lukas.bulwahn@gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Mon, 21 Dec 2020 14:14:03 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAStP=W5fjO6RMck3+07VKqopBgYgACjryjEwin9kiABWA@mail.gmail.com>
-Message-ID: <CAK7LNAStP=W5fjO6RMck3+07VKqopBgYgACjryjEwin9kiABWA@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: adjust GCC PLUGINS after gcc-plugin.sh removal
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org, Joe Perches <joe@perches.com>,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/P6HCIq4y4T7NZSZP5b99B_G";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 20, 2020 at 1:25 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
->
-> Commit 1e860048c53e ("gcc-plugins: simplify GCC plugin-dev capability test")
-> removed ./scripts/gcc-plugin.sh, but missed to adjust MAINTAINERS.
->
-> Hence, ./scripts/get_maintainers.pl --self-test=patterns warns:
->
->   warning: no file matches    F:    scripts/gcc-plugin.sh
->
-> Adjust entries in GGC PLUGINS section after this file removal.
->
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+--Sig_/P6HCIq4y4T7NZSZP5b99B_G
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-Applied to linux-kbuild. Thanks.
+After merging the akpm tree, today's linux-next build (arm64 allmodconfig)
+failed like this:
 
+./include/uapi/asm-generic/unistd.h:867:27: error: array index in initializ=
+er exceeds array bounds
 
+Caused by commit
 
-> ---
-> applies cleanly on next-20201218
->
-> Masahiro-san, please pick this minor cleanup patch on your -next tree.
->
->  MAINTAINERS | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index f5eafee83bc6..fd3b06636c5b 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -7371,7 +7371,6 @@ L:        linux-hardening@vger.kernel.org
->  S:     Maintained
->  F:     Documentation/kbuild/gcc-plugins.rst
->  F:     scripts/Makefile.gcc-plugins
-> -F:     scripts/gcc-plugin.sh
->  F:     scripts/gcc-plugins/
->
->  GCOV BASED KERNEL PROFILING
-> --
-> 2.17.1
->
+  390e5073c473 ("arch, mm: wire up memfd_secret system call where relevant")
+  d098835811e0 ("arch-mm-wire-up-memfd_secret-system-call-were-relevant-fix=
+")
 
+Reported-by: kernelci.org bot <bot@kernelci.org>
 
--- 
-Best Regards
-Masahiro Yamada
+I will apply the following patch tomorrow:
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Mon, 21 Dec 2020 16:10:40 +1100
+Subject: [PATCH]  arch-mm-wire-up-memfd_secret-system-call-were-relevant-fi=
+x-fix
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ include/uapi/asm-generic/unistd.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/u=
+nistd.h
+index 72b94deb8cf1..26125974a8a2 100644
+--- a/include/uapi/asm-generic/unistd.h
++++ b/include/uapi/asm-generic/unistd.h
+@@ -869,7 +869,7 @@ __SYSCALL(__NR_memfd_secret, sys_memfd_secret)
+ #endif
+=20
+ #undef __NR_syscalls
+-#define __NR_syscalls 443
++#define __NR_syscalls 444
+=20
+ /*
+  * 32 bit systems traditionally used different
+--=20
+2.29.2
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/P6HCIq4y4T7NZSZP5b99B_G
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/gL5gACgkQAVBC80lX
+0GwRfAf+MTITunKAhXM2kkMb0O5F9TCJ9519Lw3QeWyJs8J+b/bO6A+yrEXQzR55
+JHAidylzFv7xK54HORGEHnqx3NekzUyDSqxrVgo2vU2FRAzi0Rd7xacUPdOUYQBN
+tL3RyUBV1RvIFZb7lh3vOq2p40VPNjG9dR47VvEc+pY5FK0Mi3T32XKGDWKfKad6
+pvFJkjK+mr5n9cqIwwgCVh4JYC0cNbF/5POZJTRy1esgsEuJGNGFfC3TCeXG63ER
+ciYTsc0nN7+pmRkMemLGUAtkaIGMU6zzVJfvqfarU2VVE9plqWbsPtsY/ZEp6rk7
+e5fv/MHj4TVwXdF1F2JcHpAGT0rCTA==
+=Tau2
+-----END PGP SIGNATURE-----
+
+--Sig_/P6HCIq4y4T7NZSZP5b99B_G--
