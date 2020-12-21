@@ -2,191 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C1AB2DF9C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 09:10:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6F2E2DF9C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 09:11:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726877AbgLUIJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 03:09:37 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45310 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725878AbgLUIJh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 03:09:37 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EF413AD45;
-        Mon, 21 Dec 2020 08:08:55 +0000 (UTC)
-To:     Dongdong Tao <dongdong.tao@canonical.com>
-Cc:     Gavin Guo <gavin.guo@canonical.com>,
-        Gerald Yang <gerald.yang@canonical.com>,
-        Trent Lloyd <trent.lloyd@canonical.com>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        "open list:BCACHE (BLOCK LAYER CACHE)" <linux-bcache@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Dominique Poulain <dominique.poulain@canonical.com>,
-        Dongsheng Yang <dongsheng.yang@easystack.cn>
-References: <20201103124235.14440-1-tdd21151186@gmail.com>
- <89b83c00-1117-d114-2c23-7b03fc22966e@easystack.cn>
- <CAJS8hV+UmLFQVhuqUin1Ze6kLtAO7paXH95+9gaiZgM19VZe1A@mail.gmail.com>
- <ce04461c-ca5c-781d-7aad-cdad3ebadac2@easystack.cn>
- <CAJS8hVLMUS1mdrwC8ovzvMO+HWf4xtXRCNJEghtbtW0g93Kh_g@mail.gmail.com>
- <35a038d8-fe6b-7954-f2d9-be74eb32dcdd@suse.de>
- <CAJS8hVKMjec1cpe_zoeZAJrfY0Pq9bJ51eO6E+g8pgN9jV3Nmw@mail.gmail.com>
-From:   Coly Li <colyli@suse.de>
-Subject: Re: [PATCH] bcache: consider the fragmentation when update the
- writeback rate
-Message-ID: <c362fbc1-b337-fba9-131e-d4b919cb2c79@suse.de>
-Date:   Mon, 21 Dec 2020 16:08:51 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.1
+        id S1727135AbgLUILA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 03:11:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726260AbgLUIK7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 03:10:59 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED706C061285
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 00:10:19 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id y23so10050376wmi.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 00:10:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=8twWC59nf0hTSYRSk++JzXeEHnzUQgXnLgzo/+5kK6g=;
+        b=ak/30GTUKGf0uURuIBRwK+Z5nJM5LLKw2sFfAb3zHnm6/kGc8thcF/tq1Kdw0YgePc
+         quZBt+/yN0XkBbH/2ISxoXBxFlrf5SW/EIvSLp7LpjmM6y7oCghJ+6XmDxWTJl9qxg7A
+         VzpHTZ8yM97NEExXS00xYG2q8l7LBzVWExi8rJo5SamM2C1AiyixFAeHyWbzaC3Oxecd
+         eQvcC33NzsBe5WsAH1lbD5KtPhsuAvtTZB/NUrsyFXtDYC94GeBeq5bwxYfsxYQqNV0I
+         Qy7fowAljpu7XMO0oFZFeYq644ZHr47XXw/yhWS75H17Jk381f8jC5QBpVkeKsWhle4F
+         guug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=8twWC59nf0hTSYRSk++JzXeEHnzUQgXnLgzo/+5kK6g=;
+        b=Bj/rFaTZoLRocXyh67+sSA3SpQYFXhdnZM14Kt3HkJ3cRUg3z1BpCmOJigvyQrJYMc
+         ot/TfXwO5FgAJw9VpDZAEhT2hc9mJnyVZAn3sRRrqYOoAOsDY2tj6+KOSNKaWA7X3BA7
+         gXCR7798JCsozCecJH8rzsx2HohiyrXJGGUurnYg3Ng3RJR4Dm9GaetOUJrxNjdQ9O0V
+         nhqA5yS8tWGnWGiND1D6K6DXBtcZveWPnxdnlsX0Aj3saTWw0JEfUq79WvJyOYFGBpRF
+         LalmZtoJgbM6/rD9vEeFXXuQMNtAh66JG+sQ77IuXGAhXfVAP82ru7WHgAa1nL0rNhO3
+         PdGg==
+X-Gm-Message-State: AOAM530ZEzdQcvfcH33HRn2+OvgWnDgotk2NAhwwJExQztiu66cCy553
+        LaYCcMx7LamIuW9SNP3yMt+8Kg==
+X-Google-Smtp-Source: ABdhPJyzsu0gxJR0INTrbYFQFjvuiP/hGxunooQWgYOOw8WFVAyYSQeKqMfhChXQwTCsxaVthOHAwA==
+X-Received: by 2002:a1c:a5d8:: with SMTP id o207mr15647996wme.30.1608538218599;
+        Mon, 21 Dec 2020 00:10:18 -0800 (PST)
+Received: from dell ([91.110.221.144])
+        by smtp.gmail.com with ESMTPSA id a62sm26520714wmh.40.2020.12.21.00.10.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 00:10:17 -0800 (PST)
+Date:   Mon, 21 Dec 2020 08:10:15 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v3 3/7] mfd: Add MFD driver for ATC260x PMICs
+Message-ID: <20201221081015.GA4825@dell>
+References: <cover.1607216141.git.cristian.ciocaltea@gmail.com>
+ <f538c21de556c66390614bad778f7dc095222e8c.1607216141.git.cristian.ciocaltea@gmail.com>
+ <20201216101000.GD207743@dell>
+ <20201217231731.GA104305@BV030612LT>
+ <20201218132139.GR207743@dell>
+ <20201218160710.GA134686@BV030612LT>
 MIME-Version: 1.0
-In-Reply-To: <CAJS8hVKMjec1cpe_zoeZAJrfY0Pq9bJ51eO6E+g8pgN9jV3Nmw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201218160710.GA134686@BV030612LT>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/21/20 12:06 PM, Dongdong Tao wrote:
-> Hi Coly,
-> 
-> Thank you so much for your prompt reply!
-> 
-> So, I've performed the same fio testing based on 1TB NVME and 10 TB HDD
-> disk as the backing device.
-> I've run them both for about 4 hours, since it's 1TB nvme device, it
-> will roughly take about 10 days to consume 50 percent dirty buckets
-> I did increase the iops to 500,100, but the dirty buckets only increased
-> to about 30 after 2 days run, and because the read is much limited by
-> the backing hdd deivce, so the actual maximum read iops I can constantly
-> get is only about 200.
+On Fri, 18 Dec 2020, Cristian Ciocaltea wrote:
 
-HI Dongdong,
+> On Fri, Dec 18, 2020 at 01:21:39PM +0000, Lee Jones wrote:
+> > On Fri, 18 Dec 2020, Cristian Ciocaltea wrote:
+> > 
+> > > Hi Lee,
+> > > 
+> > > Thank you for the detailed review!
+> > > 
+> > > I will prepare a new revision, but there are still a couple of open
+> > > points..
+> > 
+> > Could you please snip your replies, leaving only the open points.
+> > 
+> > Scrolling through lots of empty quotes or "done" comments is quite
+> > time consuming.  Thanks.
+> 
+> Sure, I'll take that into account.
+> 
+> > [...]
+> > 
+> > > > > +	ret = regmap_read(atc260x->regmap, atc260x->rev_reg, &chip_rev);
+> > > > > +	if (ret) {
+> > > > > +		dev_err(dev, "Failed to get chip revision\n");
+> > > > > +		return ret;
+> > > > > +	}
+> > > > > +
+> > > > > +	if (chip_rev < 0 || chip_rev > 31) {
+> > > > > +		dev_err(dev, "Unknown chip revision: %d\n", ret);
+> > > > > +		return -EINVAL;
+> > > > > +	}
+> > > > 
+> > > > This still seems limiting.
+> > > 
+> > > This is based on the vendor implementation. Unfortunately I don't have
+> > > access to a data sheet or any other source of information about the
+> > > management of the chip revisions.
+> > 
+> > So which versions does this driver work with?  All 32?
+> 
+> I'm not even sure there are so many revisions, I guess that's just a
+> rough validation for a vendor reserved range.
+> 
+> For the moment, the only place where the functionality is affected
+> by the chip revision is in the regulator driver - there is a special
+> handling for the ATC2603C rev.B chip variant.
+> 
+> I expect some additional handling might be required for new drivers
+> bringing support for the other functions provided by the hardware.
 
-There are two method to make the buckets being filled faster.
-1) use larger non-spinning backing device (e.g. a md raid0 with multiple
-SSDs).
-2) specify larger read block size and small write block size in fio
+The current patch seems to insinuate that 32 versions are currently
+supported.  What is the chip_rev for the ATC2603C rev.B?
 
-Or you may combine them together to fill the cache device faster.
-
-
-> 
-> Though the 4 hours run on 1TB nvme bcache didn't make us hit the 50
-> percent dirty bucket threshold, but I think it's still valuable to prove
-> that 
-> bcache with my patch behaves the same way as expected in terms of the
-> latency when the dirty bucket is under 50 percent. I guess this might be
-> what you wanted to confirm with this run.
-> 
-
-Previous testing on tiny SSD size is much better than this time, I
-cannot provide my opinion before a non-optimized-configuration testing
-finished.
-
-If the latency distribution has no (recognized) difference, it will mean
-your patch does not improve I/O latency. I believe this is only the
-testing is unfinished yet.
-
-The idea to heuristically estimate bucket fragmentation condition is
-cool IMHO, but we need solid performance number to prove this
-optimization. Please continue to finish the benchmark with real hardware
-configuration, and I do hope we can see recoganized positive result for
-your goal (improve I/O latency and throughput for high bucket dirty
-segmentation).
-
-
-Thanks.
-
-
-Coly Li
-
-
-> Here is the result:
-> Master:
-> 
-> fio-master.png
-> 
-> Master + My patch:
-> fio-patch.png
-> As we can see, the latency distributions for the outliers or those
-> majorities are the same between these two runs。 
-> Let's combine those two together, and they are more clear:
-> fio-full.png
-> The test steps are exactly the same for those two runs:
-> 
-> 
-> 1. make-bcache -B <hdd> -C <nvme> --writeback
-> 
-> 2. sudo fio --name=random-writers --filename=/dev/bcache0
-> --ioengine=libaio --iodepth=1 --rw=randrw --bs=16k --direct=1
-> --rate_iops=90,10 --numjobs=1 --write_lat_log=16k --runtime=14000
-> 
-> Thank you so much!
-> Regards,
-> Dongdong
-> 
-> On Tue, Dec 15, 2020 at 1:07 AM Coly Li <colyli@suse.de
-> <mailto:colyli@suse.de>> wrote:
-> 
->     On 12/14/20 11:30 PM, Dongdong Tao wrote:
->     > Hi Coly and Dongsheng,
->     >
->     > I've get the testing result and confirmed that this testing result is
->     > reproducible by repeating it many times.
->     > I ran fio to get the write latency log and parsed the log and then
->     > generated below latency graphs with some visualization tool
->     >
-> 
->     Hi Dongdong,
-> 
->     Thank you so much for the performance number!
-> 
->     [snipped]
->     > So, my code will accelerate the writeback process when the dirty
->     buckets
->     > exceeds 50%( can be tuned), as we can see
->     > the cache_available_percent does increase once it hit 50, so we won't
->     > hit writeback cutoff issue.
->     >
->     > Below are the steps that I used to do the experiment:
->     > 1. make-bcache -B <hdd> -C <nvme> --writeback -- I prepared the nvme
->     > size to 1G, so it can be reproduced faster
->     >
->     > 2. sudo fio --name=random-writers --filename=/dev/bcache0
->     > --ioengine=libaio --iodepth=1 --rw=randrw --bs=16k --direct=1
->     > --rate_iops=90,10 --numjobs=1 --write_lat_log=16k
->     >
->     > 3. For 1 G nvme, running for about 20 minutes is enough get the data.
-> 
->     1GB cache and 20 minutes is quite limited for the performance valuation.
->     Could you please to do similar testing with 1TB SSD and 1 hours for each
->     run of the benchmark ?
-> 
->     >
->     > Using randrw with rate_iops=90,10 is just one way to reproduce this
->     > easily, this can be reproduced as long as we can create a fragmented
->     > situation that quite few dirty data consumed a lot dirty buckets thus
->     > killing the write performance.
->     >
-> 
->     Yes this is a good method to generate dirty data segments.
-> 
->     > This bug nowadays is becoming very critical, as ceph is hitting
->     it, ceph
->     > mostly submitting random small IO.
->     > Please let me know what you need in order to move forward in this
->     > direction, I'm sure this patch can be improved also.
-> 
->     The performance number is quite convinced and the idea in your patch is
->     promising.
-> 
->     I will provide my comments on your patch after we see the performance
->     number for larger cache device and longer run time.
-> 
->     Thanks again for the detailed performance number, which is really
->     desired for performance optimization changes :-)
-> 
->     Coly Li
-> 
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
