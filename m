@@ -2,154 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13FCB2E00A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 20:03:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A10CC2E00A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 20:03:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726923AbgLUTDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 14:03:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23333 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726643AbgLUTDP (ORCPT
+        id S1726617AbgLUTDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 14:03:10 -0500
+Received: from mail-oo1-f49.google.com ([209.85.161.49]:44948 "EHLO
+        mail-oo1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726213AbgLUTDK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 14:03:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608577308;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NZiUcV7BSK7i0CWlurCWLtNY549184RJIWz+r5r7B5E=;
-        b=CLWFTLhh6y635bZCyalJPYjNt7CrcXaQT0xrZIa83OBUtF+Gfydn0CWvZJiI/IEHjkG6xj
-        SwsEnFecV4g7F9uw7GbFDvA9e1Dbty2KSrqYRSFSMeIUwBTfxbOAUL0WPTUh0JJqPbv8+9
-        CJvxI91upwv+s6Z9fDtowoT3bGvWR1g=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-300-w-bhtCYkMYK7ky_-UIxFBA-1; Mon, 21 Dec 2020 14:01:46 -0500
-X-MC-Unique: w-bhtCYkMYK7ky_-UIxFBA-1
-Received: by mail-qt1-f199.google.com with SMTP id v9so8479544qtw.12
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 11:01:45 -0800 (PST)
+        Mon, 21 Dec 2020 14:03:10 -0500
+Received: by mail-oo1-f49.google.com with SMTP id j21so2434610oou.11;
+        Mon, 21 Dec 2020 11:02:54 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=NZiUcV7BSK7i0CWlurCWLtNY549184RJIWz+r5r7B5E=;
-        b=TQGMPgmFNFhLfbWntgKR+rTQ5kJQH0bgYP2ZyRQHHLHJGSJjV0350Z4Gsxg7gPmIdF
-         pRrtrQ2T8Z3wIFWda2wnrU8KNzaK6cgi3Am4UgIXdbHw8ITBYc4U2knb+HFe5tC0Da81
-         wAfpBuDPsGcODKLcmDJLvGXi6zK89aXZsoK36U2MnCDJ767s316lFv64o5CUKe+Yl8K9
-         9emfyj3CBq2y2KoclwWAEWr1abi+r3zKCUaqBgx0i8AFSTPfBD4xBctduWE2cCGbOSNs
-         UDa3aTEVVq/B1xnu9GSRSN5/4K2vK66KdbfyLgebPdyMppCQHT1/cxUvdD/PpIYpfxEf
-         PJBQ==
-X-Gm-Message-State: AOAM531+M7Zu6997xUug3oNGlfNpKWYBJDY4qcT6DbcoyEDHSnqL31R6
-        Srqk2OqKNb7fOv2R94Dm1PSY8YwjxDSlSrd/4qtpDtfG+/3N0HuK6NceN1iowrUEL4c++DJDI2R
-        1Xq0ZzypDBrxc/vX64eqv9esu
-X-Received: by 2002:a05:622a:110:: with SMTP id u16mr17814129qtw.181.1608577305250;
-        Mon, 21 Dec 2020 11:01:45 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwbUgz+dyrK2CDdLmiez7hlLMcNsr37TcWBJHlCy7Hi/1LYq/N8tyN83npjnd8BPX5EUlRlUg==
-X-Received: by 2002:a05:622a:110:: with SMTP id u16mr17814113qtw.181.1608577304992;
-        Mon, 21 Dec 2020 11:01:44 -0800 (PST)
-Received: from xz-x1 ([142.126.83.202])
-        by smtp.gmail.com with ESMTPSA id z20sm11392783qtb.31.2020.12.21.11.01.43
+        bh=2A5Jx5ebri9fUM0pBXdjugZO9tY3imQBK8tvpAAgvQU=;
+        b=gTjHLzUNP3QBvVoZ6vbwQY1lQNMNow3kymXD0w6kgquSY9zytCFrIdDKJzqtfqNZ4w
+         RdPFixe3Z7gdPE/IZoMAr8pH3lss4oke8TpEBWyyOUoT315e8hY2ILkOlYvGv8z3/qoC
+         GjfF7h3XgRVGFepKP90BDnl93oW6/jDFA2OFx66pNTN6jQWsnrsnT8032DWsiAO0U43m
+         DSZ66RFzPPFfo/gUdP93MJ94jaB0VKVyk7gnNLW04GCcsNcUFJSdZRXSOd0yPt1uopNN
+         qkTi1duso0vSHKi0SjQjcqFWw9T06dEcs7CGlvVCYvv14cSe7xVSEAtxf36U+rJVMVGp
+         l+Fg==
+X-Gm-Message-State: AOAM532+U8fxOFpJbKEA72lcY2xc479dYUWI0YwdN78CkGjlpnki7Dtc
+        KSkR/58Iq7H/9GVmFNil4w==
+X-Google-Smtp-Source: ABdhPJxIOUHXL9Zhm7n1ZCZQbPwtYZh4JNeMqAA/H+90t3FAdhgZwpZgAbd9wAX2YvqDelqvYU7/kg==
+X-Received: by 2002:a4a:98e7:: with SMTP id b36mr12461400ooj.3.1608577348973;
+        Mon, 21 Dec 2020 11:02:28 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id h93sm3978329otb.29.2020.12.21.11.02.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 11:01:44 -0800 (PST)
-Date:   Mon, 21 Dec 2020 14:01:42 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Nadav Amit <nadav.amit@gmail.com>, linux-fsdevel@vger.kernel.org,
-        Nadav Amit <namit@vmware.com>, Jens Axboe <axboe@kernel.dk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [RFC PATCH 01/13] fs/userfaultfd: fix wrong error code on WP &
- !VM_MAYWRITE
-Message-ID: <20201221190142.GG6640@xz-x1>
-References: <20201129004548.1619714-1-namit@vmware.com>
- <20201129004548.1619714-2-namit@vmware.com>
- <3af643ec-b392-617c-cd4e-77db0cba24bd@oracle.com>
+        Mon, 21 Dec 2020 11:02:27 -0800 (PST)
+Received: (nullmailer pid 368745 invoked by uid 1000);
+        Mon, 21 Dec 2020 19:02:26 -0000
+Date:   Mon, 21 Dec 2020 12:02:26 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Sia Jee Heng <jee.heng.sia@intel.com>
+Cc:     devicetree@vger.kernel.org, Eugeniy.Paltsev@synopsys.com,
+        linux-kernel@vger.kernel.org, vkoul@kernel.org,
+        andriy.shevchenko@linux.intel.com, dmaengine@vger.kernel.org,
+        robh+dt@kernel.org
+Subject: Re: [PATCH v7 01/16] dt-bindings: dma: Add YAML schemas for
+ dw-axi-dmac
+Message-ID: <20201221190226.GA368699@robh.at.kernel.org>
+References: <20201216021003.26911-1-jee.heng.sia@intel.com>
+ <20201216021003.26911-2-jee.heng.sia@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3af643ec-b392-617c-cd4e-77db0cba24bd@oracle.com>
+In-Reply-To: <20201216021003.26911-2-jee.heng.sia@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 01:22:32PM -0800, Mike Kravetz wrote:
-> On 11/28/20 4:45 PM, Nadav Amit wrote:
-> > From: Nadav Amit <namit@vmware.com>
-> > 
-> > It is possible to get an EINVAL error instead of EPERM if the following
-> > test vm_flags have VM_UFFD_WP but do not have VM_MAYWRITE, as "ret" is
-> > overwritten since commit cab350afcbc9 ("userfaultfd: hugetlbfs: allow
-> > registration of ranges containing huge pages").
-> > 
-> > Fix it.
-> > 
-> > Cc: Mike Kravetz <mike.kravetz@oracle.com>
-> > Cc: Jens Axboe <axboe@kernel.dk>
-> > Cc: Andrea Arcangeli <aarcange@redhat.com>
-> > Cc: Peter Xu <peterx@redhat.com>
-> > Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> > Cc: io-uring@vger.kernel.org
-> > Cc: linux-fsdevel@vger.kernel.org
-> > Cc: linux-kernel@vger.kernel.org
-> > Cc: linux-mm@kvack.org
-> > Fixes: cab350afcbc9 ("userfaultfd: hugetlbfs: allow registration of ranges containing huge pages")
-> > Signed-off-by: Nadav Amit <namit@vmware.com>
-> > ---
-> >  fs/userfaultfd.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-> > index 000b457ad087..c8ed4320370e 100644
-> > --- a/fs/userfaultfd.c
-> > +++ b/fs/userfaultfd.c
-> > @@ -1364,6 +1364,7 @@ static int userfaultfd_register(struct userfaultfd_ctx *ctx,
-> >  			if (end & (vma_hpagesize - 1))
-> >  				goto out_unlock;
-> >  		}
-> > +		ret = -EPERM;
-> >  		if ((vm_flags & VM_UFFD_WP) && !(cur->vm_flags & VM_MAYWRITE))
-> >  			goto out_unlock;
-> >  
+On Wed, 16 Dec 2020 10:09:48 +0800, Sia Jee Heng wrote:
+> YAML schemas Device Tree (DT) binding is the new format for DT to replace
+> the old format. Introduce YAML schemas DT binding for dw-axi-dmac and
+> remove the old version.
 > 
-> Thanks!  We should return EPERM in that case.
+> Signed-off-by: Sia Jee Heng <jee.heng.sia@intel.com>
+> ---
+>  .../bindings/dma/snps,dw-axi-dmac.txt         |  39 ------
+>  .../bindings/dma/snps,dw-axi-dmac.yaml        | 121 ++++++++++++++++++
+>  2 files changed, 121 insertions(+), 39 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.txt
+>  create mode 100644 Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
 > 
-> However, the check for VM_UFFD_WP && !VM_MAYWRITE went in after commit
-> cab350afcbc9.  I think it is more accurate to say that the issue was
-> introduced with commit 63b2d4174c4a ("Introduce the new uffd-wp APIs
-> for userspace.").  The convention in userfaultfd_register() is that the
-> return code is set before testing condition which could cause return.
-> Therefore, when 63b2d4174c4a added the VM_UFFD_WP && !VM_MAYWRITE check,
-> it should have also added the 'ret = -EPERM;' statement.
 
-Right, if there's a "fixes" then it should be the uffd-wp patch.
-
-Though I really think it won't happen... Firstly because hugetlbfs is not yet
-supported for uffd-wp, so the two "if" won't collapse, so no way to trigger it
-imho. More importantly we've got one check ahead of it:
-
-		/*
-		 * UFFDIO_COPY will fill file holes even without
-		 * PROT_WRITE. This check enforces that if this is a
-		 * MAP_SHARED, the process has write permission to the backing
-		 * file. If VM_MAYWRITE is set it also enforces that on a
-		 * MAP_SHARED vma: there is no F_WRITE_SEAL and no further
-		 * F_WRITE_SEAL can be taken until the vma is destroyed.
-		 */
-		ret = -EPERM;
-		if (unlikely(!(cur->vm_flags & VM_MAYWRITE)))
-			goto out_unlock;
-
-AFAICT it will fail there directly when write perm is missing.
-
-My wild guess is that the 1st version of 63b2d4174c4ad1f (2020) came earlier
-than 29ec90660d (2018), however not needed anymore after the 2020 patch.  Hence
-it's probably overlooked by me when I rebased.
-
-Summary: IMHO no bug to fix, but we can directly drop the latter check?
-
-Thanks,
-
--- 
-Peter Xu
-
+Reviewed-by: Rob Herring <robh@kernel.org>
