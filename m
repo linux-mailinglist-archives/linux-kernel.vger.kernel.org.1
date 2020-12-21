@@ -2,71 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0302DFC79
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 14:56:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD8E12DFC83
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 15:01:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727051AbgLUNyn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Dec 2020 08:54:43 -0500
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:57742 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726612AbgLUNym (ORCPT
+        id S1726789AbgLUOAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 09:00:40 -0500
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:39131 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725806AbgLUOAk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 08:54:42 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R831e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=changhuaixin@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0UJJwiKU_1608558831;
-Received: from 192.168.3.8(mailfrom:changhuaixin@linux.alibaba.com fp:SMTPD_---0UJJwiKU_1608558831)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 21 Dec 2020 21:53:52 +0800
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH 1/4] sched/fair: Introduce primitives for CFS bandwidth
- burst
-From:   changhuaixin <changhuaixin@linux.alibaba.com>
-In-Reply-To: <20201217133656.GX3040@hirez.programming.kicks-ass.net>
-Date:   Mon, 21 Dec 2020 21:53:51 +0800
-Cc:     changhuaixin <changhuaixin@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org, bsegall@google.com,
-        dietmar.eggemann@arm.com, juri.lelli@redhat.com, mgorman@suse.de,
-        mingo@redhat.com, pauld@redhead.com, pjt@google.com,
-        rostedt@goodmis.org, vincent.guittot@linaro.org,
-        khlebnikov@yandex-team.ru, xiyou.wangcong@gmail.com,
-        shanpeic@linux.alibaba.com
-Content-Transfer-Encoding: 8BIT
-Message-Id: <F049FFBB-7B70-43EF-A772-C63D270F9122@linux.alibaba.com>
-References: <20201217074620.58338-1-changhuaixin@linux.alibaba.com>
- <20201217074620.58338-2-changhuaixin@linux.alibaba.com>
- <20201217133656.GX3040@hirez.programming.kicks-ass.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-X-Mailer: Apple Mail (2.3445.104.11)
+        Mon, 21 Dec 2020 09:00:40 -0500
+X-Greylist: delayed 14426 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Dec 2020 09:00:39 EST
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1krLhJ-0000oh-1p; Mon, 21 Dec 2020 14:58:01 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1krLhG-0007DV-V1; Mon, 21 Dec 2020 14:57:58 +0100
+Date:   Mon, 21 Dec 2020 14:57:58 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>
+Cc:     linux-pwm@vger.kernel.org, Artur Rojek <contact@artur-rojek.eu>,
+        Mathieu Malaterre <malat@debian.org>,
+        linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        od@zcrc.me, Thierry Reding <thierry.reding@gmail.com>,
+        kernel@pengutronix.de, linux-clk@vger.kernel.org
+Subject: Re: About rounding in the clk framework [Was: Re: [PATCH 4/7] pwm:
+ jz4740: Improve algorithm of clock calculation]
+Message-ID: <20201221135758.edgskzkyyrw4lcx7@pengutronix.de>
+References: <20190813052726.g37upws5rlvrszc4@pengutronix.de>
+ <1565694066.1856.1@crapouillou.net>
+ <20190813123331.m4ttfhcgt6wyrcfi@pengutronix.de>
+ <1565700448.1856.2@crapouillou.net>
+ <20190813140903.rdwy7p3mhwetmlnt@pengutronix.de>
+ <1565799035.1984.0@crapouillou.net>
+ <20190814173218.zhg4se3pppano5m3@pengutronix.de>
+ <1571662077.3.1@crapouillou.net>
+ <20200212072911.nstwj7dgpvceebpy@pengutronix.de>
+ <20200414092412.scsl6sekikc2tsv5@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ghhxmotjruvczaqo"
+Content-Disposition: inline
+In-Reply-To: <20200414092412.scsl6sekikc2tsv5@pengutronix.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--ghhxmotjruvczaqo
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> On Dec 17, 2020, at 9:36 PM, Peter Zijlstra <peterz@infradead.org> wrote:
-> 
-> On Thu, Dec 17, 2020 at 03:46:17PM +0800, Huaixin Chang wrote:
->> In this patch, we introduce the notion of CFS bandwidth burst. Unused
->> "quota" from pervious "periods" might be accumulated and used in the
->> following "periods". The maximum amount of accumulated bandwidth is
->> bounded by "burst". And the maximun amount of CPU a group can consume in
->> a given period is "buffer" which is equivalent to "quota" + "burst in
->> case that this group has done enough accumulation.
-> 
-> Oh man, Juri, wasn't there a paper about statistical bandwidth
-> accounting somewhere? Where, if you replace every utilization by a
-> statistical variable, the end result is still useful?
-> 
-> That is, instead of something like; \Sum u_i <= 1, you get something
-> like: \Sum {avg(u),var(u)}_i <= {1, sqrt(\Sum var_i^2)} and you can
-> still proof bounded tardiness etc.. (assuming a gaussian distribution).
-> 
-> The proposed seems close to that, but not quite, and I'm afraid it's not
-> quite strong enough to still provide any guarantees.
+Hello,
 
-After reading some papers on statistical bandwidth sharing, it occurs to me that statistical bandwidth sharing is about the way bandwidth is shared between competitors. I wonder if the paper you mentioned was "Insensitivity results in statistical bandwidth sharing" or some paper referenced, which showed the end result is insensitive to maybe the distribution or the arrival pattern.
+On Tue, Apr 14, 2020 at 11:24:12AM +0200, Uwe Kleine-K=F6nig wrote:
+> Hello Stephen, hello Michael,
+>=20
+> On Wed, Feb 12, 2020 at 08:29:11AM +0100, Uwe Kleine-K=F6nig wrote:
+> > Can you please explain what is the reason why clk_round_rate_up/down()
+> > is a bad idea? Would it help to create a patch that introduces these
+> > functions to get the discussion going?
+>=20
+> I didn't get any feedback on my mail. Are you to busy working on more
+> important stuff? Is the answer so obvious that you don't consider it
+> worth your time to answer?
+>=20
+> Looking a bit through the code I see there are two callbacks hwclks can
+> provide to implement rounding (determine_rate and round_rate). The docs
+> for both use the term "return the closes rate actually supported". Does
+> that mean "round-closest" is already the official policy and other
+> strategies in lowlevel drivers are a bug?
 
-I am sorry that I cannot prove using statistical bandwidth sharing theory now. However, I wonder if it is more acceptable to put rate-based cfsb after share fairness, because the input stream of cfsb account is the output stream of fairness. And that is in contrast with what statistical bandwidth sharing does, in which fairness is used to share bandwidth upon the output stream of rate-based control. In this way, maybe guarantees can be provided by share fairness, and cfsb may use a larger buffer to allow more jitters.
+Feedback here would be really appreciated. I intend to unify the rounding
+behaviour of PWMs to always round down. If there was a similar
+constraint for clks, some corner cases might be a bit simpler.
 
-A buffer, which is several times of quota, is able to handle large bursts, and throttle threads soon when overloaded. The present cfsb, however, has to be configured several times larger to handle jitters, which is ineffective and does not provide the designed rate-based control.
+Looking forward to read about your thoughts,
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--ghhxmotjruvczaqo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/gqeMACgkQwfwUeK3K
+7AnnlAf8DSLvzEXMd2YTiuND2qxImw4seiPMfTrmw/UXrPQs3+y2Jirvryn9rZOi
+trg/AHx1nFiIK4z38ElvsJDovPU4sahlSZfXkYM2V3ZwOOQ0B6+1+vT79K1u3Vys
+pz1fKj0ohxzAZdGFG9PYMV3fU+QUOeP77OaRthuauSd0oIreitnyJEX8whBk3Eya
+oINBZO8+NL9ZOl95sFCMM+iRWbveg6OTvlIN+tibtr7YkPr2w1RWhVaX4C9ixkvP
+HiQPSOXZk7x7aBW279dt9F1j2IvL2z79PN/tSAt0XZhNA6e1puwVwKUjvJupTRny
+3RoH8OkBsOcsX4P4LNdWD7Jyh12aqg==
+=rnX6
+-----END PGP SIGNATURE-----
+
+--ghhxmotjruvczaqo--
