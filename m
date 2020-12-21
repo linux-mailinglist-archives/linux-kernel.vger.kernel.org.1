@@ -2,75 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BF572DFF0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 18:36:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C63C2DFF1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:01:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725909AbgLURgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 12:36:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35958 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725790AbgLURgq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 12:36:46 -0500
-Date:   Mon, 21 Dec 2020 17:35:50 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608572165;
-        bh=AOjG8iPu1EM33o04NBrFFlDxBK+9tjL4EZ2EZDTIS/c=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XLcLJbdgS8bUvh3NJwaiEDAo/YTcFInTve0P/ImeWGi+MSbnPsKPsN7vdU8+eDxJy
-         /KeD9iuQKVy+PGrhBn5Jyks7GeATaX0NdNXMdP06E93KSb01e9U8c0efQQls0vlvkR
-         uXfj7+18ngGN/m9aGX1iuSorgv0iHVnLIkspEubwo3GW/Sx4CVAnqMtERgEByy68iv
-         BX/TV2FnDFKUV9BJQpcJsOtA0huhAB3LpHEFvvfGKZrI4fuRP1kz1c4rBShV1Bab9T
-         ujoyzJgdRCwQrOIYBqEDBfbcIMdcWST2ln6Le2cQB4BvaOg9eQFnbCK42cDvCguHa3
-         2rSkjbwDSQRYQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
-Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-power@fi.rohmeurope.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] regulators: bd718x7: Add enable times
-Message-ID: <20201221173550.GC4521@sirena.org.uk>
-References: <41fb2ed19f584f138336344e2297ae7301f72b75.1608316658.git.agx@sigxcpu.org>
+        id S1726000AbgLUSA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:00:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725881AbgLUSAz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 13:00:55 -0500
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58BBDC0613D6;
+        Mon, 21 Dec 2020 09:59:40 -0800 (PST)
+Received: by mail-oi1-x231.google.com with SMTP id q205so12052424oig.13;
+        Mon, 21 Dec 2020 09:59:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ui6zW1fAECFc2gEXxsQFOudLu4o+hfhu76Kgy65HxoY=;
+        b=hfnfZnWeAbRa89kvAzfU4bxp+7siuL/T++w7vu3Ku0U3lQZxxT6lBcku6eVoWmxuOI
+         3gx4emQJQI0k80u0iv3IeHID3WyGkuxHYuLSwNXyw0cw/lrMk3HK//v1aJqdFRX3C6P1
+         4QSCvksLXiG0rWfYUblpDBOKN4no0ySG3dJtFGnT19P0Bd7YqgR2+3q+dufz8uZ4y+gL
+         Uwi38udGgqYs3+I0CXPaUZSHhg4WbgPAgkUVLr/VhoMjKywCMwQ5LgB9WY//veND7PYS
+         hHCX0Cc0atgkW5s7jDitfIFRBoNIonlyMClkf085d03zv5F7IuIIBdBooonNPMZTdau1
+         GZTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ui6zW1fAECFc2gEXxsQFOudLu4o+hfhu76Kgy65HxoY=;
+        b=Hyj1osNyhr4UHME8thr6/ss2M9LHXmxTEd2wZDHkS+WU45xxEiJTVMrjGiIM4k7v6k
+         kFLbKAhy8oZur1HAqZJ9gO5Q4jFOjzK0UK+EmEfKfgOla9qiQziGHK9XTBsHHg0K45yN
+         4DI2aHYK0uCuN9MReFEbL4+i0Qvr3/TeUtw4SNIcH9Dy0LkfOSGlK/S7lhBMUicbxQ9Y
+         jdHo2wVF79BfT/ZcXYCB+uafcxw5csbCTHxtpkZvt61JscV7geRkpeDkKajse1MAXHjy
+         33dZQmHUcTfkZ//F/Eo/v96rOlxIxc6wida36u0DCvtAbGwaHs/chRvSik7JXohkOY8O
+         +leQ==
+X-Gm-Message-State: AOAM533YXhFUmQKwnE1kmNSnPCxW2PEfJdTJZRpdvVqWVkx0GsxNsacD
+        UcUeoKvRKGhLJVyTsWv3jX8HrnJePJzHNVuyDOgU6KWXkYs=
+X-Google-Smtp-Source: ABdhPJxT5ASjlLeSdcAjns1ixlfwE9Db42btuJN9lT60t5QwUpywkIS1QWUP00XT8pQBJJKOVI7SGPUuizg32BZrM+I=
+X-Received: by 2002:a17:90b:a17:: with SMTP id gg23mr18502363pjb.129.1608572166918;
+ Mon, 21 Dec 2020 09:36:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="6zdv2QT/q3FMhpsV"
-Content-Disposition: inline
-In-Reply-To: <41fb2ed19f584f138336344e2297ae7301f72b75.1608316658.git.agx@sigxcpu.org>
-X-Cookie: Remember: use logout to logout.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201221151551.52511-1-alexandru.ardelean@analog.com>
+In-Reply-To: <20201221151551.52511-1-alexandru.ardelean@analog.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 21 Dec 2020 19:36:55 +0200
+Message-ID: <CAHp75Ve6GHU50WO3Ygmfz8GU=22jpLi+JeDoA3TiY8bp76T09A@mail.gmail.com>
+Subject: Re: [PATCH v4] iio: Handle enumerated properties with gaps
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Dec 21, 2020 at 5:11 PM Alexandru Ardelean
+<alexandru.ardelean@analog.com> wrote:
+>
+> From: Lars-Peter Clausen <lars@metafoo.de>
+>
+> Some enums might have gaps or reserved values in the middle of their value
+> range. E.g. consider a 2-bit enum where the values 0, 1 and 3 have a
+> meaning, but 2 is a reserved value and can not be used.
+>
+> Add support for such enums to the IIO enum helper functions. A reserved
+> values is marked by setting its entry in the items array to NULL rather
+> than the normal descriptive string value.
 
---6zdv2QT/q3FMhpsV
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+...
 
-On Fri, Dec 18, 2020 at 07:38:07PM +0100, Guido G=FCnther wrote:
-> Use the typical startup times from the data sheet so boards get a
-> reasonable default. Not setting any enable time can lead to board hangs
-> when e.g. clocks are enabled too soon afterwards.
+> I tried a few shots at working with 'lib/string.c', and that went
+> slow. The __sysfs_match_string_with_gaps() approach has stalled.
+> https://lore.kernel.org/linux-iio/20190422140251.8960-1-alexandru.ardelean@analog.com/
 
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
+Hmm... If you are not going to push that forward, perhaps better is to  provide
+iio_sysfs_match_string() and if we need it in the future for other
+users, it would be easier to find and export. Also it will be a matter
+of one line change in the caller.
 
---6zdv2QT/q3FMhpsV
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/g3PUACgkQJNaLcl1U
-h9Bp9wf+PZimP2+eXUWhTz0S990GWuZN5kWVvhEARzlOFIqRiARwRG6keOZd/NZ2
-gB71TwOrCRPzCuK6bLcc0+mkRCQ3Ja10KT1FXwcmu9i/Rs8+EunmMOULBHQlnDiG
-cHsdrigYNEEwc2ZNUF9DVEtwEH9TDEtRs2UNTZy2jDuuk2fwVDgHK4/8D1Nq+zty
-jHhD82MxEv2h7zxJWgTHe/hllMhxz9ui23lAkBzXIx7YowJ2tTQkAx0Wu5yBRRxz
-4KcSuw3tKumbbiaTtCrD3Y8crP83q1SRnTfWx+FHifi73Gxv+kHAF86qlH0ihC9z
-dUY2i1/9VFb+zEVgJ5KU2jeuOY90AA==
-=/CQM
------END PGP SIGNATURE-----
-
---6zdv2QT/q3FMhpsV--
+-- 
+With Best Regards,
+Andy Shevchenko
