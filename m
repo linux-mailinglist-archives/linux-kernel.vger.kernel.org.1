@@ -2,101 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB0BF2DFFD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:33:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22BF12DFFC7
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:33:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727039AbgLUScJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 13:32:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21727 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726766AbgLUScI (ORCPT
+        id S1726925AbgLUSbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:31:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726713AbgLUSba (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:32:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608575442;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=u6aof73yWrybwGG51AadR/+S6Y7ScgNPoSw+eELySBE=;
-        b=K0Kd+FuIqPSL8tQtnfsfwhx+MdJQGwHXRLHG/xtWqdQBP1v5wgWFsNSqSFVy7PsrQEKSi1
-        oPsAYPnhhHbe1Ik7Y+EcoCy2LTyfvW3T1pFc8qjJH+tST+azCUPE0qBRKZuaKKU6dXTT3b
-        c/cVD0HO+2CDt/HMInqV7JVKilfLem4=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-62-F0yh-BjfMGqNjo3T59LPSQ-1; Mon, 21 Dec 2020 13:30:41 -0500
-X-MC-Unique: F0yh-BjfMGqNjo3T59LPSQ-1
-Received: by mail-wm1-f70.google.com with SMTP id r1so8143089wmn.8
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:30:40 -0800 (PST)
+        Mon, 21 Dec 2020 13:31:30 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A73AEC061285
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:30:50 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id b5so6931452pjk.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:30:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9BndlnR8XFV7ufaUUoRBTJ+c5o1iLuwOiCGBoThwMts=;
+        b=Fya1rBbEsbyEQQ+HWesPL7CMy2wvqOkx7OLk8aDsoKZy3PmgBwKNg3vz/LaEam8pMY
+         Yns4sFjlmT4mmwsPsE2vu2J+srX4q6c66fpGm1Yt8ryY8G8OcXzw57KrSi+e+nPa9c9m
+         Q2v5DpqiPly3llZtPexN0PGGooUWox5HJJ8bv/JR7igogjxW47lg69if5f6Fs1fEW3PE
+         BHGs5dLhLdpOaUNZhkZbFW5iQu/fvZqz2A8DKqOTgdnUCMH4emOBUOlU73b3Jn67EEcd
+         b5JuyFRMe37nqNb09homoUH/NRXj9sxnsSZWmAQcVonRa7jptSTG8C2VxJcwMfQJWkNu
+         gseg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=u6aof73yWrybwGG51AadR/+S6Y7ScgNPoSw+eELySBE=;
-        b=pmBfG7C2R55zc1/wAcEzlAzOsZyryvDCNuPF9voeqbNQPKoRQj3dI8UGpCm66t/Tm/
-         SSiYITsz+sadBfAa8Vbvm0UuwHVF6mxiScWqwEg7YzGWIOijsgpgopVQZ1BqcnOUJg5m
-         GLPuallApdTMm5Y0gePYHxzmavfAwwD6G9iR22KJEJjfuSZTQo9VNgBIkCD9dyC2hpRX
-         hBHgGSguiBCku5IIMbp7gjFcMnmoanGo516WJ/Lz29KL68s6gFHMY/PN2w4qoFD8KBSq
-         TLMYcMZv3o5EhRvkZdBlAxX7fv9gjlHeMmt2GcpOAZRpEh9nXVOGn4DOdgR5ZUhG15Q3
-         aV/g==
-X-Gm-Message-State: AOAM5310T1r6JwDsPNpYPeij16VbSQGjlQGFNYiwAzJGinMMmBuamOrR
-        PvGGreq5k2ZrA9atv3sVOulDA817BhFdKGiQTPvK30Wqbfnn7E2xtHLwn1o+ZLSPL1WNhhPh01e
-        7WpFlsn0SLldGveZLk6DZl/FxcmIhU0GWbU75Onr1JKMtHABiHSbGN+zxefguQ9DSkbNOwTDYqM
-        Z0
-X-Received: by 2002:a05:6000:1290:: with SMTP id f16mr20405405wrx.298.1608575439437;
-        Mon, 21 Dec 2020 10:30:39 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwkUMftZ4r7w6EsobFo3hiS67k++nqGU3UWtRZFFfSZL36Z97x51VJVsFQ8GVT4G3fc3H17eg==
-X-Received: by 2002:a05:6000:1290:: with SMTP id f16mr20405384wrx.298.1608575439250;
-        Mon, 21 Dec 2020 10:30:39 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id j59sm28954198wrj.13.2020.12.21.10.30.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Dec 2020 10:30:38 -0800 (PST)
-Subject: Re: [PATCH] KVM: x86: change in pv_eoi_get_pending() to make code
- more readable
-To:     Stephen Zhang <stephenzhangzsd@gmail.com>, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1608277897-1932-1-git-send-email-stephenzhangzsd@gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <a22baa12-7f37-054d-646b-b6ca393e01f7@redhat.com>
-Date:   Mon, 21 Dec 2020 19:30:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9BndlnR8XFV7ufaUUoRBTJ+c5o1iLuwOiCGBoThwMts=;
+        b=JzTdrX0fGDRa6COymrzW1X4pEX4JtJCbur6QumKDuwQtus8TNH9tEauhClr6C9xX/c
+         ncjjLLzs28LRG2mmCaXtHwaJvsKwS4QZlXqD+vel3IzjuAzD5l4gX1wMrcvStbQKWUbu
+         awQc2e1AgbpW6H+gjj3qIEl4MefwgUwLi56RH5i/sjJMJQVen1RAZNdO6VmtkszrWuKY
+         /ROBGDtx9K7OQwlLtH0HJR4czh+6Fs1diVO9peUj/b/LDB8apQXRzc+1X/nsgRezJiOm
+         ImKOltC9NwciEeQ7jWO5SIQhlYbain8YbmB/krLg0fZ9FAePsuopxxbQnqwoFWr3LI39
+         18IQ==
+X-Gm-Message-State: AOAM5329tOQveYJzVDFWP98OwktX4Kwnefc+ZFLdFyxjQvoeUx8VaZWr
+        NKWTWNXYz4EAljXw335dMi7Z0A==
+X-Google-Smtp-Source: ABdhPJzWkvFh2A1UOPl97SQ4AcJKKgP93CoLuXU9vMBQjF4kQHp2OSo8wtjRTXHm1Wf4N8AmEzXXCQ==
+X-Received: by 2002:a17:902:b783:b029:da:6567:f244 with SMTP id e3-20020a170902b783b02900da6567f244mr17115792pls.45.1608575450120;
+        Mon, 21 Dec 2020 10:30:50 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id j16sm17737497pgl.50.2020.12.21.10.30.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 10:30:49 -0800 (PST)
+Date:   Mon, 21 Dec 2020 10:30:42 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
+        Richard Herbert <rherbert@sympatico.ca>
+Subject: Re: [PATCH 2/4] KVM: x86/mmu: Get root level from walkers when
+ retrieving MMIO SPTE
+Message-ID: <X+Dp0kd19twjM0wj@google.com>
+References: <20201218003139.2167891-1-seanjc@google.com>
+ <20201218003139.2167891-3-seanjc@google.com>
+ <87r1nntr7s.fsf@vitty.brq.redhat.com>
+ <493c0252-7aa1-b14d-0172-91bf75cf7553@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <1608277897-1932-1-git-send-email-stephenzhangzsd@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <493c0252-7aa1-b14d-0172-91bf75cf7553@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/12/20 08:51, Stephen Zhang wrote:
-> Signed-off-by: Stephen Zhang <stephenzhangzsd@gmail.com>
-> ---
->   arch/x86/kvm/lapic.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+On Mon, Dec 21, 2020, Paolo Bonzini wrote:
+> On 18/12/20 10:10, Vitaly Kuznetsov wrote:
+> > > -	int root = vcpu->arch.mmu->shadow_root_level;
+> > > -	int leaf;
+> > > -	int level;
+> > > +	int root, leaf, level;
+> > >   	bool reserved = false;
+> > Personal taste: I would've renamed 'root' to 'root_level' (to be
+> > consistent with get_walk()/kvm_tdp_mmu_get_walk()) and 'level' to
+> > e.g. 'l' as it's only being used as an interator ('i' would also do).
 > 
-> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> index 3136e05..7882322 100644
-> --- a/arch/x86/kvm/lapic.c
-> +++ b/arch/x86/kvm/lapic.c
-> @@ -674,7 +674,7 @@ static bool pv_eoi_get_pending(struct kvm_vcpu *vcpu)
->   			   (unsigned long long)vcpu->arch.pv_eoi.msr_val);
->   		return false;
->   	}
-> -	return val & 0x1;
-> +	return val & KVM_PV_EOI_ENABLED;
->   }
->   
->   static void pv_eoi_set_pending(struct kvm_vcpu *vcpu)
-> 
+> Maybe agree on the former, not really on the latter. :)
 
-Queued, thanks.
-
-Paolo
-
+Same here.  I kept 'root' to reduce code churn, even though I'd probably have
+used 'root_level' if I were writing from scratch.
