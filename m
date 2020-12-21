@@ -2,84 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83E242DFE32
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 17:51:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 813822DFE36
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 17:53:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725891AbgLUQvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 11:51:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54086 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725780AbgLUQvt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 11:51:49 -0500
-Date:   Mon, 21 Dec 2020 16:50:53 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608569469;
-        bh=yaViPjdmmsCzAeL0va1vlA3tAOMvU2QaaNbTzhk/M2U=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iWiBh9ZTafNuO4cox7HBuO1CJjjbyRjmEGOPidRxtKWcZCXUr1hFutQORYEO6hPa4
-         r6N/mb174I1cKh8kJvDVb2Ay3q+pKikPwhfWQam6HQVLukKgL9ug9X0yozFgssd5IC
-         qYtbhN//od4WHh/LEkzdIXdugeu/Zyi9hQAefE3iO6hOYx9kHCgErtLeu1h9pKHbtD
-         Nz3kO0hPcUmaW6XdkSIs2erF129lcL8ht1RRIlFbfB6lbO0JuQJJ7wSSToSqlCsVmO
-         LxYLkNfKdFhQL2WRPKvHLNLI6W7lRHVg5Y+uaUQQWh8vOhFeUrhdSP2BLYHIMj7OHN
-         muxd/uwoL8szw==
-From:   Mark Brown <broonie@kernel.org>
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>
-Cc:     Pratyush Yadav <p.yadav@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, robh+dt@kernel.org,
-        lukas@wunner.de, bbrezillon@kernel.org,
-        tudor.ambarus@microchip.com, linux-spi@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 5/9] spi: spi-mem: Mark dummy transfers by setting
- dummy_data bit
-Message-ID: <20201221165053.GA4521@sirena.org.uk>
-References: <1608236927-28701-1-git-send-email-skomatineni@nvidia.com>
- <1608236927-28701-6-git-send-email-skomatineni@nvidia.com>
- <20201218092106.skwej2g6bk3oksbb@ti.com>
- <20201218105759.43789ccf@collabora.com>
- <31c395ee-d7a6-edc5-a790-89fad91a0a27@nvidia.com>
- <20201218191936.hb6sq7zr3zdirar7@ti.com>
- <20201218204102.GF5333@sirena.org.uk>
- <20201218204414.GG5333@sirena.org.uk>
- <c9343475-44b2-c9c4-1790-f6b50ec9c1bd@nvidia.com>
+        id S1725935AbgLUQwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 11:52:12 -0500
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:36830 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725780AbgLUQwM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 11:52:12 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R381e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=liangyan.peng@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UJMguq4_1608569487;
+Received: from LiangyandeMacBook-Pro.local(mailfrom:liangyan.peng@linux.alibaba.com fp:SMTPD_---0UJMguq4_1608569487)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 22 Dec 2020 00:51:28 +0800
+Subject: Re: [PATCH v2] ovl: fix dentry leak in ovl_get_redirect
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>, linux-unionfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201220120927.115232-1-liangyan.peng@linux.alibaba.com>
+ <20201221062653.GO3579531@ZenIV.linux.org.uk>
+ <52a76e73-d46b-d0fd-a75a-76b4a86149b3@linux.alibaba.com>
+ <20201221121148.GP3579531@ZenIV.linux.org.uk>
+From:   Liangyan <liangyan.peng@linux.alibaba.com>
+Message-ID: <b7c5da61-6c17-fe19-957c-4c8b6d6e86fe@linux.alibaba.com>
+Date:   Tue, 22 Dec 2020 00:51:27 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="tThc/1wpZn/ma/RB"
-Content-Disposition: inline
-In-Reply-To: <c9343475-44b2-c9c4-1790-f6b50ec9c1bd@nvidia.com>
-X-Cookie: Remember: use logout to logout.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201221121148.GP3579531@ZenIV.linux.org.uk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is the race scenario based on call trace we captured which cause 
+the dentry leak.
 
---tThc/1wpZn/ma/RB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Fri, Dec 18, 2020 at 02:01:56PM -0800, Sowjanya Komatineni wrote:
+      CPU 0                                CPU 1
+ovl_set_redirect                       lookup_fast
+   ovl_get_redirect                       __d_lookup
+     dget_dlock
+       //no lock protection here            spin_lock(&dentry->d_lock)
+       dentry->d_lockref.count++            dentry->d_lockref.count++
 
-> From quick check, I see HW dummy cycles transfer of 128KB shows 18 Mb/s
-> while SW transfer of bytes shows 17.3 MB/s on average.
 
-OK, it's not going to revolutionize the world or anything but that's
-definitely a speedup.
+If we use dget_parent instead, we may have this race.
 
---tThc/1wpZn/ma/RB
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+      CPU 0                                    CPU 1
+ovl_set_redirect                           lookup_fast
+   ovl_get_redirect                           __d_lookup
+     dget_parent
+       raw_seqcount_begin(&dentry->d_seq)      spin_lock(&dentry->d_lock)
+       lockref_get_not_zero(&ret->d_lockref)   dentry->d_lockref.count++ 
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/g0mkACgkQJNaLcl1U
-h9D/FggAgryOP3kQjSN2Lz4KeSPSrsKO6HHCcgeCbfox61nIVRcJVOBKpJX0nuU+
-dbPP8gBvK3GNt/9J/WKP3k+LYD5NUfyq1lARlDe+WpU7P8VkE9TNpjctDFS2PiyO
-6asDGI7iPahkE0iBmGAPqWyiUngS3X7PdN2/uuv4uSf7Fs45+f98se+GLKGa+ryK
-UUTJg3DPwqmMrFqArDETTmVj7/urqREQo/gYUHtQgc7H8KCOOquuXeeOYa5dres2
-GEiFGR08bDJNX2nJ3xAHtLYRJw6DZnD421m5O+FG6pxNh8AfsHQTDnvEIq2TyA0O
-3D+sPY0zkYYNDEnjixQtJ8ycT5Qgdw==
-=a44r
------END PGP SIGNATURE-----
 
---tThc/1wpZn/ma/RB--
+
+On 20/12/21 下午8:11, Al Viro wrote:
+> On Mon, Dec 21, 2020 at 07:14:44PM +0800, Joseph Qi wrote:
+>> Hi Viro,
+>>
+>> On 12/21/20 2:26 PM, Al Viro wrote:
+>>> On Sun, Dec 20, 2020 at 08:09:27PM +0800, Liangyan wrote:
+>>>
+>>>> +++ b/fs/overlayfs/dir.c
+>>>> @@ -973,6 +973,7 @@ static char *ovl_get_redirect(struct dentry *dentry, bool abs_redirect)
+>>>>   	for (d = dget(dentry); !IS_ROOT(d);) {
+>>>>   		const char *name;
+>>>>   		int thislen;
+>>>> +		struct dentry *parent = NULL;
+>>>>   
+>>>>   		spin_lock(&d->d_lock);
+>>>>   		name = ovl_dentry_get_redirect(d);
+>>>> @@ -992,7 +993,22 @@ static char *ovl_get_redirect(struct dentry *dentry, bool abs_redirect)
+>>>>   
+>>>>   		buflen -= thislen;
+>>>>   		memcpy(&buf[buflen], name, thislen);
+>>>> -		tmp = dget_dlock(d->d_parent);
+>>>> +		parent = d->d_parent;
+>>>> +		if (unlikely(!spin_trylock(&parent->d_lock))) {
+>>>> +			rcu_read_lock();
+>>>> +			spin_unlock(&d->d_lock);
+>>>> +again:
+>>>> +			parent = READ_ONCE(d->d_parent);
+>>>> +			spin_lock(&parent->d_lock);
+>>>> +			if (unlikely(parent != d->d_parent)) {
+>>>> +				spin_unlock(&parent->d_lock);
+>>>> +				goto again;
+>>>> +			}
+>>>> +			rcu_read_unlock();
+>>>> +			spin_lock_nested(&d->d_lock, DENTRY_D_LOCK_NESTED);
+>>>> +		}
+>>>> +		tmp = dget_dlock(parent);
+>>>> +		spin_unlock(&parent->d_lock);
+>>>>   		spin_unlock(&d->d_lock);
+>>>
+>>> Yecchhhh....  What's wrong with just doing
+>>> 		spin_unlock(&d->d_lock);
+>>> 		parent = dget_parent(d);
+>>> 		dput(d);
+>>> 		d = parent;
+>>> instead of that?
+>>>
+>>
+>> Now race happens on non-RCU path in lookup_fast(), I'm afraid d_seq can
+>> not close the race window.
+> 
+> Explain, please.  What exactly are you observing?
+> 
