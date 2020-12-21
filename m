@@ -2,159 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3BD32DF9B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 09:01:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E3CA2DF9BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 09:08:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727535AbgLUIAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 03:00:53 -0500
-Received: from mga03.intel.com ([134.134.136.65]:42768 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727298AbgLUIAw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 03:00:52 -0500
-IronPort-SDR: eBz9CAAdISS+GOKAQ6NXvZq7rkZOlobkUVleLNrJVHieXiE6cVMDKOtFAls2SnWwCxuq5f/jgH
- LCuZjPfQEgOQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9841"; a="175792221"
-X-IronPort-AV: E=Sophos;i="5.78,436,1599548400"; 
-   d="scan'208";a="175792221"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2020 23:59:05 -0800
-IronPort-SDR: JxY58Mh/HZqa84ewBgqXe3YA+sXkMeWHw1VaZ+qNG7gxEwTPPainwf7TAeLK1tjlU1K7tysDX8
- OpcDC9CzAczA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,436,1599548400"; 
-   d="scan'208";a="415702682"
-Received: from shwdenpg096.ccr.corp.intel.com (HELO [10.67.104.88]) ([10.67.104.88])
-  by orsmga001.jf.intel.com with ESMTP; 20 Dec 2020 23:59:01 -0800
-Subject: Re: [PATCH v3 3/5] ipmi: kcs: aspeed: Adapt to new LPC DTS layout
-From:   Haiyue Wang <haiyue.wang@linux.intel.com>
-To:     "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
-        lee.jones@linaro.org, robh+dt@kernel.org, joel@jms.id.au,
-        andrew@aj.id.au, linus.walleij@linaro.org, minyard@acm.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        openbmc@lists.ozlabs.org
-Cc:     BMC-SW@aspeedtech.com, cyrilbur@gmail.com, rlippert@google.com
-References: <20201221055623.31463-1-chiawei_wang@aspeedtech.com>
- <20201221055623.31463-4-chiawei_wang@aspeedtech.com>
- <12d347b6-168b-11d2-b906-18164afb1724@linux.intel.com>
-Message-ID: <c1b6e2fe-5b22-ac67-f0eb-159499e06d2b@linux.intel.com>
-Date:   Mon, 21 Dec 2020 15:59:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1726594AbgLUIIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 03:08:00 -0500
+Received: from mail-ot1-f46.google.com ([209.85.210.46]:33192 "EHLO
+        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725969AbgLUIH7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 03:07:59 -0500
+Received: by mail-ot1-f46.google.com with SMTP id b24so8163502otj.0;
+        Mon, 21 Dec 2020 00:07:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QI8P9CKl3LPKq2RL19LINv5ciOLxW3eYGg5f3b48Bj4=;
+        b=awpEWc6hdzspnQtKi4aSYEcTJppfwk2fPgdI+Uo9TjJefW6OhpAm+2gzSLiTrgVCKC
+         z5VX7VBKgR76PwfWqmHMVsUdrHwT6H+3mnbF6MG1NtegrxOb21K1A45mNNL4wfFsOM36
+         3KOnPZVfObppOWgxiGTV00HX5xSNLPNcMRLLlmJuUDwRwsWD2xIfpNZ7Rz1wEX9kt+iV
+         QHu7IzlMQx3MiWQRi8RwOsfpOF6f89RwIKQnSl6vlhBNEA/HVPuT9wgSjClG6PxetfJN
+         Kc9lR1jkO/2SYCMITjDWE6LQtUOMxAGQitYDZZaPkJcO+XJrBnC8DLyfvYgKG6BuncXh
+         fn9A==
+X-Gm-Message-State: AOAM533vREQo5ywpn/NVjPv4WGmJlKkAOWuQgs7O8dT9nhM4VcDJlrQC
+        W/kKBxwFx/X/nvJtchm9aFHfwN2JZqy9WEoxz+ietbrs
+X-Google-Smtp-Source: ABdhPJwfdrszaIJsvhS0Dwc0w5EkeZgO1qQYgqfN7DuxCsP83bhqkdclHthN8zimUW4GLClUdsviIxUo6ins4/S8ZQs=
+X-Received: by 2002:a9d:2203:: with SMTP id o3mr11197687ota.107.1608538039234;
+ Mon, 21 Dec 2020 00:07:19 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <12d347b6-168b-11d2-b906-18164afb1724@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20201208090555.7159b138@canb.auug.org.au> <CAMuHMdVYoxUOUL0zNAPzTJUSR3vGzcJWMzvtCKK=ZxyM=8hk+A@mail.gmail.com>
+ <160753498332.1580929.15118515893187584689@swboyd.mtv.corp.google.com>
+ <CAMuHMdWAtUK6qDOAXZ3-qy69ZzbfZb_Z=bSvx-0S-42dfUiw9w@mail.gmail.com> <20201221083518.5ef7357c@canb.auug.org.au>
+In-Reply-To: <20201221083518.5ef7357c@canb.auug.org.au>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 21 Dec 2020 09:07:07 +0100
+Message-ID: <CAMuHMdXbeFfGAkbVqA-EY4_2P7UDdh8Civb+M_nAjL4YNmQ17w@mail.gmail.com>
+Subject: Re: linux-next: Fixes tag needs some work in the clk tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Stephen Boyd <sboyd@kernel.org>,
+        Mike Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Stephen,
 
-On 12/21/2020 15:53, Haiyue Wang wrote:
-> On 12/21/2020 13:56, Chia-Wei, Wang wrote:
->> Add check against LPC device v2 compatible string to
->> ensure that the fixed device tree layout is adopted.
->> The LPC register offsets are also fixed accordingly.
->>
->> Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
->> ---
->>   drivers/char/ipmi/kcs_bmc_aspeed.c | 35 ++++++++++++++++++------------
->>   1 file changed, 21 insertions(+), 14 deletions(-)
->>
->> diff --git a/drivers/char/ipmi/kcs_bmc_aspeed.c 
->> b/drivers/char/ipmi/kcs_bmc_aspeed.c
->> index a140203c079b..6283bfef4ea7 100644
->> --- a/drivers/char/ipmi/kcs_bmc_aspeed.c
->> +++ b/drivers/char/ipmi/kcs_bmc_aspeed.c
->> @@ -27,7 +27,6 @@
->>     #define KCS_CHANNEL_MAX     4
->>   -/* mapped to lpc-bmc@0 IO space */
->>   #define LPC_HICR0            0x000
->>   #define     LPC_HICR0_LPC3E          BIT(7)
->>   #define     LPC_HICR0_LPC2E          BIT(6)
->> @@ -52,15 +51,13 @@
->>   #define LPC_STR1             0x03C
->>   #define LPC_STR2             0x040
->>   #define LPC_STR3             0x044
->> -
->> -/* mapped to lpc-host@80 IO space */
->> -#define LPC_HICRB            0x080
->> +#define LPC_HICRB            0x100
->>   #define     LPC_HICRB_IBFIF4         BIT(1)
->>   #define     LPC_HICRB_LPC4E          BIT(0)
->> -#define LPC_LADR4            0x090
->> -#define LPC_IDR4             0x094
->> -#define LPC_ODR4             0x098
->> -#define LPC_STR4             0x09C
->> +#define LPC_LADR4            0x110
->> +#define LPC_IDR4             0x114
->> +#define LPC_ODR4             0x118
->> +#define LPC_STR4             0x11C
->>     struct aspeed_kcs_bmc {
->>       struct regmap *map;
->> @@ -345,15 +342,25 @@ static int aspeed_kcs_probe(struct 
->> platform_device *pdev)
->>   {
->>       struct device *dev = &pdev->dev;
->>       struct kcs_bmc *kcs_bmc;
->> -    struct device_node *np;
->> +    struct device_node *kcs_np;
->> +    struct device_node *lpc_np;
->>       int rc;
+On Sun, Dec 20, 2020 at 10:35 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> On Thu, 10 Dec 2020 08:52:41 +0100 Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > trees can be pulled into linux-next? That would find this earlier.
+> >
+> > That sounds like a great idea, also for pinctrl.
+> > Can you please add the following:
+> >     git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers.git
+> > renesas-clk
+> >     git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers.git
+> > renesas-pinctrl
+> > ?
 >
-> I think you can just use 'np' to do LPC compatible checking:
->
-> np = pdev->dev.of_node->parent;
->
-> if (!of_device_is_compatible(lpc_np, "aspeed,ast2400-lpc-v2") &&
->     !of_device_is_compatible(lpc_np, "aspeed,ast2500-lpc-v2") &&
->     !of_device_is_compatible(lpc_np, "aspeed,ast2600-lpc-v2")) {
->     dev_err(dev, "unsupported LPC device binding\n");
->     return -ENODEV;
-> }
->
-Typo:
+> Added from today.  Called clk-renesas and pinctrl-renesas respectively.
 
-if (!of_device_is_compatible(np, "aspeed,ast2400-lpc-v2") &&
-     !of_device_is_compatible(np, "aspeed,ast2500-lpc-v2") &&
-     !of_device_is_compatible(np, "aspeed,ast2600-lpc-v2")) {
-     dev_err(dev, "unsupported LPC device binding\n");
-     return -ENODEV;
-}
+Thank you, the result looks good.
 
+Gr{oetje,eeting}s,
 
->
-> before:
->
-> np = pdev->dev.of_node;
-> if (of_device_is_compatible(np, "aspeed,ast2400-kcs-bmc") ||
->     of_device_is_compatible(np, "aspeed,ast2500-kcs-bmc"))
->
-> Then the patch is clear. ;-)
->
->> -    np = pdev->dev.of_node;
->> -    if (of_device_is_compatible(np, "aspeed,ast2400-kcs-bmc") ||
->> -            of_device_is_compatible(np, "aspeed,ast2500-kcs-bmc"))
->> +    kcs_np = dev->of_node;
->> +    lpc_np = kcs_np->parent;
->> +
->> +    if (!of_device_is_compatible(lpc_np, "aspeed,ast2400-lpc-v2") &&
->> +        !of_device_is_compatible(lpc_np, "aspeed,ast2500-lpc-v2") &&
->> +        !of_device_is_compatible(lpc_np, "aspeed,ast2600-lpc-v2")) {
->> +        dev_err(dev, "unsupported LPC device binding\n");
->> +        return -ENODEV;
->> +    }
->> +
->> +    if (of_device_is_compatible(kcs_np, "aspeed,ast2400-kcs-bmc") ||
->> +            of_device_is_compatible(kcs_np, "aspeed,ast2500-kcs-bmc"))
->>           kcs_bmc = aspeed_kcs_probe_of_v1(pdev);
->> -    else if (of_device_is_compatible(np, 
->> "aspeed,ast2400-kcs-bmc-v2") ||
->> -            of_device_is_compatible(np, "aspeed,ast2500-kcs-bmc-v2"))
->> +    else if (of_device_is_compatible(kcs_np, 
->> "aspeed,ast2400-kcs-bmc-v2") ||
->> +            of_device_is_compatible(kcs_np, 
->> "aspeed,ast2500-kcs-bmc-v2"))
->>           kcs_bmc = aspeed_kcs_probe_of_v2(pdev);
->>       else
->>           return -EINVAL;
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
