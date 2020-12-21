@@ -2,124 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB4582E00FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 20:29:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 533B62E0104
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 20:31:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgLUT26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 14:28:58 -0500
-Received: from terminus.zytor.com ([198.137.202.136]:35341 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726167AbgLUT25 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 14:28:57 -0500
-Received: from [IPv6:2601:646:8680:a581:e440:f7b7:1011:93f7] ([IPv6:2601:646:8680:a581:e440:f7b7:1011:93f7])
-        (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 0BLJRg103956887
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Mon, 21 Dec 2020 11:27:45 -0800
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 0BLJRg103956887
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2020112401; t=1608578866;
-        bh=UGFdDjO1ECr35fGqPt/QpGBpk76YJYwXYZHdW1oqTfI=;
-        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
-        b=c18Ac7stpi+aErtiz+rL4d7zg4tXPw8clABl0FJCmxq4MeNp4Y3KoyRuP7YDaqhoR
-         2H9gsC6zCzcQ3LDC5LdzQcCFozf6dSNYAmge4QWajnjgLYypP6a2nXdf2FqPtG+EbB
-         Hp8ViX7Kk649fd+An5jQUchRq6/Bg38QOoTi1H5dyTeNAQ07IXGM+ttknJasOpANkf
-         TSij0PgxI+xKbujCsKs3sBvAh2/lbDkymNiOgvUL20SCIPI3+ACFm0O3ah96Tn7DNG
-         bGTLWm8hEelGSrqTIGdFJEFKJ2NXfYp0WKw+ep7xvSV9paHM5AuCF12df9vX3UoxEd
-         YmX3o1xCQo7gw==
-Date:   Mon, 21 Dec 2020 11:27:33 -0800
-User-Agent: K-9 Mail for Android
-In-Reply-To: <345BC725-406B-40C6-88E9-747DBEBE0493@zhaoxin.com>
-References: <1607686144-2604-1-git-send-email-TonyWWang-oc@zhaoxin.com> <X9Ov3RWDpUik7gXo@sol.localdomain> <1f8d17bf-c1d9-6496-d2f8-5773633011fb@zhaoxin.com> <X9fN7mOMdn1Dxn63@sol.localdomain> <a95984ea-7451-78fe-88c5-b81f633fecdf@zhaoxin.com> <X9j43b+JPbUUvCrH@sol.localdomain> <345BC725-406B-40C6-88E9-747DBEBE0493@zhaoxin.com>
+        id S1726969AbgLUTaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 14:30:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37663 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726445AbgLUTaR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 14:30:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608578930;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DqGCALe//LHb1AnlutRHnAB2IrphEkKHBcp1ImnyyF4=;
+        b=RZhTfhttZXpdwaNsdA9atkAMCjhU5SzuLPmldB6xB1BmeljtQa2xoEYsFHU1pU4wRA9DHn
+        0mY4mosMvQ581SJTzPmigVJIpdlAEdDrXxlnOhlNTjnxAaxFxe+0adxHskwiFFfGKpbwsZ
+        LP6d5UizlT//pRD5atllMYKbCQdhsSc=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-506-VY_75L5bPiWq8PSlSCzZtg-1; Mon, 21 Dec 2020 14:28:48 -0500
+X-MC-Unique: VY_75L5bPiWq8PSlSCzZtg-1
+Received: by mail-qv1-f71.google.com with SMTP id l3so8684932qvr.10
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 11:28:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DqGCALe//LHb1AnlutRHnAB2IrphEkKHBcp1ImnyyF4=;
+        b=Sp/Z12BhGNCki/TFeN38g27x5k1JDTTclj3WoPhoru7XoeNOGWI/gw8rM2KV8N49wr
+         GFVcZWemGUZdv58ys35CMGYxS1DCcOGufgnwNiVpzjvXGQl0ewOqXCUKeleZKy6TC1xt
+         hOifiHIE90TkVAUO0i+d95nRwQ3O57DddgDILGsx280SBdchbPBT1ocMEydWuop0lYtl
+         L9MBYzPU+3gddZ9bYQpbnIOZ1wWvfR5rz0/sfh4R/OTEeuQsuK1oZiL7hiNi9geNO/rf
+         ALeRzpsqXbEt55XX0YNikv6tYN3gb5d+AByxRipx5YyHRUHQ+Rjga8GjBqwjyhmzzaDn
+         wAag==
+X-Gm-Message-State: AOAM53259xUM6ph5VBvkWwSWhofUl0qy5tXC0gjwr+yQDgO9g6LC6yJ/
+        RUCZYKxR1RkvXjnDF3LPoUVJxHUNLsI+7Ubpps/kZZChpAyh4MUwx20WlfWf1lvUhCuLp31vmGk
+        i+k6lEwKgwDb6OTmf9+NAfG0+
+X-Received: by 2002:aed:29c2:: with SMTP id o60mr17763188qtd.253.1608578928365;
+        Mon, 21 Dec 2020 11:28:48 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwsn1SLArBtFHb9e3jSB2ALMQZgUo1VQqvjtU1VmAZ7dXXrd9aB6Q7I+oD5sckuDOibu7ebRw==
+X-Received: by 2002:aed:29c2:: with SMTP id o60mr17763169qtd.253.1608578928083;
+        Mon, 21 Dec 2020 11:28:48 -0800 (PST)
+Received: from xz-x1 ([142.126.83.202])
+        by smtp.gmail.com with ESMTPSA id e38sm4967128qtb.30.2020.12.21.11.28.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 11:28:47 -0800 (PST)
+Date:   Mon, 21 Dec 2020 14:28:46 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, Nadav Amit <namit@vmware.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [RFC PATCH 03/13] selftests/vm/userfaultfd: wake after copy
+ failure
+Message-ID: <20201221192846.GH6640@xz-x1>
+References: <20201129004548.1619714-1-namit@vmware.com>
+ <20201129004548.1619714-4-namit@vmware.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] crypto: x86/crc32c-intel - Don't match some Zhaoxin CPUs
-To:     tonywwang-oc@zhaoxin.com, Eric Biggers <ebiggers@kernel.org>
-CC:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        TimGuo-oc@zhaoxin.com, CooperYan@zhaoxin.com,
-        QiyuanWang@zhaoxin.com, HerryYang@zhaoxin.com,
-        CobeChen@zhaoxin.com, SilviaZhao@zhaoxin.com
-From:   hpa@zytor.com
-Message-ID: <AB43DE6C-BF23-4B72-B0C8-09FE0071B2C7@zytor.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201129004548.1619714-4-namit@vmware.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On December 20, 2020 6:46:25 PM PST, tonywwang-oc@zhaoxin=2Ecom wrote:
->On December 16, 2020 1:56:45 AM GMT+08:00, Eric Biggers
-><ebiggers@kernel=2Eorg> wrote:
->>On Tue, Dec 15, 2020 at 10:15:29AM +0800, Tony W Wang-oc wrote:
->>>=20
->>> On 15/12/2020 04:41, Eric Biggers wrote:
->>> > On Mon, Dec 14, 2020 at 10:28:19AM +0800, Tony W Wang-oc wrote:
->>> >> On 12/12/2020 01:43, Eric Biggers wrote:
->>> >>> On Fri, Dec 11, 2020 at 07:29:04PM +0800, Tony W Wang-oc wrote:
->>> >>>> The driver crc32c-intel match CPUs supporting
->>X86_FEATURE_XMM4_2=2E
->>> >>>> On platforms with Zhaoxin CPUs supporting this X86 feature,
->When
->>> >>>> crc32c-intel and crc32c-generic are both registered, system
->will
->>> >>>> use crc32c-intel because its =2Ecra_priority is greater than
->>> >>>> crc32c-generic=2E This case expect to use crc32c-generic driver
->>for
->>> >>>> some Zhaoxin CPUs to get performance gain, So remove these
->>Zhaoxin
->>> >>>> CPUs support from crc32c-intel=2E
->>> >>>>
->>> >>>> Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin=2Ecom>
->>> >>>
->>> >>> Does this mean that the performance of the crc32c instruction on
->>those CPUs is
->>> >>> actually slower than a regular C implementation?  That's very
->>weird=2E
->>> >>>
->>> >>
->>> >> From the lmbench3 Create and Delete file test on those chips, I
->>think yes=2E
->>> >>
->>> >=20
->>> > Did you try measuring the performance of the hashing itself, and
->>not some
->>> > higher-level filesystem operations?
->>> >=20
->>>=20
->>> Yes=2E Was testing on these Zhaoxin CPUs, the result is that with the
->>same
->>> input value the generic C implementation takes fewer time than the
->>> crc32c instruction implementation=2E
->>>=20
->>
->>And that is really "working as intended"?
->
->These CPU's crc32c instruction is not working as intended=2E
->
->  Why do these CPUs even
->>declare that
->>they support the crc32c instruction, when it is so slow?
->>
->
->The presence of crc32c and some other instructions supports are
->enumerated by CPUID=2E01:ECX[SSE4=2E2] =3D 1,  other instructions are ok
->except the crc32c instruction=2E
->
->>Are there any other instruction sets (AES-NI, PCLMUL, SSE, SSE2, AVX,
->>etc=2E) that
->>these CPUs similarly declare support for but they are uselessly slow?
->
->No=2E
->
->Sincerely
->Tonyw
->
->>
->>- Eric
+On Sat, Nov 28, 2020 at 04:45:38PM -0800, Nadav Amit wrote:
+> From: Nadav Amit <namit@vmware.com>
+> 
+> When userfaultfd copy-ioctl fails since the PTE already exists, an
+> -EEXIST error is returned and the faulting thread is not woken. The
+> current userfaultfd test does not wake the faulting thread in such case.
+> The assumption is presumably that another thread set the PTE through
+> copy/wp ioctl and would wake the faulting thread or that alternatively
+> the fault handler would realize there is no need to "must_wait" and
+> continue. This is not necessarily true.
+> 
+> There is an assumption that the "must_wait" tests in handle_userfault()
+> are sufficient to provide definitive answer whether the offending PTE is
+> populated or not. However, userfaultfd_must_wait() test is lockless.
+> Consequently, concurrent calls to ptep_modify_prot_start(), for
+> instance, can clear the PTE and can cause userfaultfd_must_wait()
+> to wrongly assume it is not populated and a wait is needed.
 
-Then the right thing to do is to disable the CPUID bit in the vendor-speci=
-fic startup code=2E
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
+Yes userfaultfd_must_wait() is lockless, however my understanding is that we'll
+enqueue before reading the page table, which seems to me that we'll always get
+notified even the race happens.  Should apply to either UFFDIO_WRITEPROTECT or
+UFFDIO_COPY, iiuc, as long as we follow the order of (1) modify pgtable (2)
+wake sleeping threads.  Then it also means that when must_wait() returned true,
+it should always get waked up when fault resolved.
+
+Taking UFFDIO_COPY as example, even if UFFDIO_COPY happen right before
+must_wait() calls:
+
+       worker thread                       uffd thread
+       -------------                       -----------
+
+   handle_userfault
+    spin_lock(fault_pending_wqh)
+    enqueue()
+    set_current_state(INTERRUPTIBLE)
+    spin_unlock(fault_pending_wqh)
+    must_wait()
+      lockless walk page table
+                                           UFFDIO_COPY
+                                             fill in the hole
+                                             wake up threads
+                                               (this will wake up worker thread too?)
+    schedule()
+      (which may return immediately?)
+
+While here fault_pending_wqh is lock protected. I just feel like there's some
+other reason to cause the thread to stall.  Or did I miss something?
+
+Thanks,
+
+-- 
+Peter Xu
+
