@@ -2,108 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 341662DFAC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 11:08:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B41EA2DFAE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 11:13:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726616AbgLUKHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 05:07:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726363AbgLUKHY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 05:07:24 -0500
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E43C0611CE
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 02:05:57 -0800 (PST)
-Received: by mail-io1-xd29.google.com with SMTP id t8so8311969iov.8
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 02:05:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9oI6PpbsNinrAY/UY/16dtjoAnO4VqhB1tmPSdI/mzw=;
-        b=rhSiOJwy3U4u0Kw1EqHDbBvUoYsSF7bEya7dN9TqYVff8KYrfn4UChVh7IQq/1A9Hl
-         dAjMNaS84HENeb8/nKBjvZN7gmKZ5lgqJI4lpX58TXd2r4oCuqj4CB7BHPmKKSaLaHoc
-         lHMzUSmt9hw8K+yONpy8aFqQ/L4Do1Cwy4ZZR3ZFOnacCdVA1DOo5MzeguNrLwsgsRHo
-         gHIvGZr71szBt0uZE3efY7l8C2RF2iWCb351IPFzUuia9o9b5npWOw8JAXptrZz+dY+h
-         eHA8JHujNp0vf2XAROIjtg0hYg6zm6xieVMPX69Oh7q1hOHDsB+1qvQt/w4VACFcfLJg
-         SL/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9oI6PpbsNinrAY/UY/16dtjoAnO4VqhB1tmPSdI/mzw=;
-        b=RTsTYSpRbOUk+mFGflgPhRkANKJcZiOZx7Gd55npGvxV2be0RqAVWnyQoxEC5ahHMF
-         U6mptsTgb9DcGc/SiPqsV84dJXS8xuMVCEkXweNH4tNSJyQuziBvRRSeAl876Eg6LFRi
-         Z6eLaUC/4HGTLwpOTsQ5/oCWtS+eIyOgojsBGJ76HJ5QFqSXDjBArTwkwpVKzPNCGsNl
-         0e4SP3F4Fh3qBcrdse7AuFIMNRJ1eCItW2eZq/QeDn3NG8HHSCB22nHN8jhTqSp2bi/L
-         A4N4HLyY1yiH3HR8nmpdQuxmvnis4Fp2s3+jm7TMqwC11XLkhMLHZ5O6UlEI5U5kGSiC
-         WUaA==
-X-Gm-Message-State: AOAM531IvQ+84ML2wX0gJEhcKNeHSebewo2E/LBDXiqmmz6UPcvo378R
-        YWrQHtKPfPGPX7hXBojj9OylXVvK9Hhb/s0CZlj9GfkZlYfQMg==
-X-Google-Smtp-Source: ABdhPJy5FiyRxWb1/yg6+OenrVe7Jltn8hbV9VjG+MoGHrsui5ke3eBLjJR+w4cjHgORyzwDp0wmtCT4SrAgqQp2DHs=
-X-Received: by 2002:a63:1f21:: with SMTP id f33mr14505632pgf.31.1608543266172;
- Mon, 21 Dec 2020 01:34:26 -0800 (PST)
+        id S1726419AbgLUKMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 05:12:51 -0500
+Received: from mga03.intel.com ([134.134.136.65]:51000 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726253AbgLUKMu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 05:12:50 -0500
+IronPort-SDR: nrIliuLNqhfsMyYtVDMPPSndcZUtqSWtA0Jfy9pgjbzZPlYNoyt9vfSgulEDmifurbSu9rPB58
+ nimq6g1Ws25g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9841"; a="175802211"
+X-IronPort-AV: E=Sophos;i="5.78,436,1599548400"; 
+   d="scan'208";a="175802211"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2020 01:34:16 -0800
+IronPort-SDR: gAi9DxMfesrQ2zuta4Om6nh7eLitGCnn/H39iJtrOL9wvaorTUC79LwFDBytBfcwjcvCvkf+Xw
+ ZQxxmPgpwrJg==
+X-IronPort-AV: E=Sophos;i="5.78,436,1599548400"; 
+   d="scan'208";a="560120081"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2020 01:34:10 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id 8C5CB205F7; Mon, 21 Dec 2020 11:34:08 +0200 (EET)
+Date:   Mon, 21 Dec 2020 11:34:08 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
+        lenb@kernel.org, gregkh@linuxfoundation.org, yong.zhi@intel.com,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
+        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
+        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
+        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
+        linus.walleij@linaro.org, heikki.krogerus@linux.intel.com,
+        kitakar@gmail.com, jorhand@linux.microsoft.com
+Subject: Re: [PATCH v2 06/12] software_node: Add support for fwnode_graph*()
+ family of functions
+Message-ID: <20201221093408.GH26370@paasikivi.fi.intel.com>
+References: <20201217234337.1983732-1-djrscally@gmail.com>
+ <20201217234337.1983732-7-djrscally@gmail.com>
 MIME-Version: 1.0
-References: <20201217121303.13386-1-songmuchun@bytedance.com>
- <20201217121303.13386-10-songmuchun@bytedance.com> <20201221080414.GA14343@linux>
-In-Reply-To: <20201221080414.GA14343@linux>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 21 Dec 2020 17:33:47 +0800
-Message-ID: <CAMZfGtUr5NhScQDVF+DzsUHxYVD6vEs+2wEz6SOi-Y84+PXK2A@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v10 09/11] mm/hugetlb: Introduce
- nr_free_vmemmap_pages in the struct hstate
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>, naoya.horiguchi@nec.com,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201217234337.1983732-7-djrscally@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 4:17 PM Oscar Salvador <osalvador@suse.de> wrote:
->
-> On Thu, Dec 17, 2020 at 08:13:01PM +0800, Muchun Song wrote:
-> > @@ -182,6 +184,12 @@ bool hugetlb_free_vmemmap_enabled;
-> >
-> >  static int __init early_hugetlb_free_vmemmap_param(char *buf)
-> >  {
-> > +     /* We cannot optimize if a "struct page" crosses page boundaries. */
-> > +     if ((!is_power_of_2(sizeof(struct page)))) {
-> > +             pr_warn("cannot free vmemmap pages because \"struct page\" crosses page boundaries\n");
-> > +             return 0;
-> > +     }
->
-> Unless there is a strong reason behind, I would move this to the previous patch,
-> where early_hugetlb_free_vmemmap_param is introduced.
+Hi Daniel and Heikki,
 
-OK. Will do. Thanks.
+On Thu, Dec 17, 2020 at 11:43:31PM +0000, Daniel Scally wrote:
+> From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> 
+> This implements the remaining .graph_* callbacks in the
+> fwnode operations structure for the software nodes. That makes
+> the fwnode_graph*() functions available in the drivers also
+> when software nodes are used.
+> 
+> The implementation tries to mimic the "OF graph" as much as
+> possible, but there is no support for the "reg" device
+> property. The ports will need to have the index in their
+> name which starts with "port@" (for example "port@0", "port@1",
+> ...) and endpoints will use the index of the software node
+> that is given to them during creation. The port nodes can
+> also be grouped under a specially named "ports" subnode,
+> just like in DT, if necessary.
+> 
+> The remote-endpoints are reference properties under the
+> endpoint nodes that are named "remote-endpoint".
+> 
+> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> Co-developed-by: Daniel Scally <djrscally@gmail.com>
+> Signed-off-by: Daniel Scally <djrscally@gmail.com>
+> ---
+> Changes in v2:
+> 
+> 	- Changed commit to specify port name prefix as port@
+> 	- Accounted for that rename in *parse_endpoint()
+> 
+>  drivers/base/swnode.c | 110 +++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 109 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+> index 2b90d380039b..0d14d5ebe441 100644
+> --- a/drivers/base/swnode.c
+> +++ b/drivers/base/swnode.c
+> @@ -540,6 +540,110 @@ software_node_get_reference_args(const struct fwnode_handle *fwnode,
+>  	return 0;
+>  }
+>  
+> +static struct fwnode_handle *
+> +swnode_graph_find_next_port(const struct fwnode_handle *parent,
+> +			    struct fwnode_handle *port)
+> +{
+> +	struct fwnode_handle *old = port;
+> +
+> +	while ((port = software_node_get_next_child(parent, old))) {
+> +		if (!strncmp(to_swnode(port)->node->name, "port", 4))
+> +			return port;
+> +		old = port;
+> +	}
+> +
+> +	return NULL;
+> +}
+> +
+> +static struct fwnode_handle *
+> +software_node_graph_get_next_endpoint(const struct fwnode_handle *fwnode,
+> +				      struct fwnode_handle *endpoint)
+> +{
+> +	struct swnode *swnode = to_swnode(fwnode);
+> +	struct fwnode_handle *old = endpoint;
+> +	struct fwnode_handle *parent;
+> +	struct fwnode_handle *port;
+> +
+> +	if (!swnode)
+> +		return NULL;
+> +
+> +	if (endpoint) {
+> +		port = software_node_get_parent(endpoint);
+> +		parent = software_node_get_parent(port);
+> +	} else {
+> +		parent = software_node_get_named_child_node(fwnode, "ports");
+> +		if (!parent)
+> +			parent = software_node_get(&swnode->fwnode);
+> +
+> +		port = swnode_graph_find_next_port(parent, NULL);
+> +	}
+> +
+> +	for (; port; port = swnode_graph_find_next_port(parent, port)) {
+> +		endpoint = software_node_get_next_child(port, old);
+> +		if (endpoint) {
+> +			fwnode_handle_put(port);
+> +			break;
+> +		}
+> +
+> +		/* No more endpoints for that port, so stop passing old */
+> +		old = NULL;
+> +	}
+> +
+> +	fwnode_handle_put(parent);
+> +
+> +	return endpoint;
+> +}
+> +
+> +static struct fwnode_handle *
+> +software_node_graph_get_remote_endpoint(const struct fwnode_handle *fwnode)
+> +{
+> +	struct swnode *swnode = to_swnode(fwnode);
+> +	const struct software_node_ref_args *ref;
+> +	const struct property_entry *prop;
+> +
+> +	if (!swnode)
+> +		return NULL;
+> +
+> +	prop = property_entry_get(swnode->node->properties, "remote-endpoint");
+> +	if (!prop || prop->type != DEV_PROP_REF || prop->is_inline)
+> +		return NULL;
+> +
+> +	ref = prop->pointer;
+> +
+> +	return software_node_get(software_node_fwnode(ref[0].node));
+> +}
+> +
+> +static struct fwnode_handle *
+> +software_node_graph_get_port_parent(struct fwnode_handle *fwnode)
+> +{
+> +	struct swnode *swnode = to_swnode(fwnode);
+> +	struct fwnode_handle *parent;
+> +
+> +	if (!strcmp(swnode->parent->node->name, "ports"))
+> +		parent = &swnode->parent->parent->fwnode;
+> +	else
+> +		parent = &swnode->parent->fwnode;
 
->
-> --
-> Oscar Salvador
-> SUSE L3
+If you happen to call this function on a non-port node for whatever reason,
+you may end up accessing a pointer that's NULL, can't you? Instead I'd do
+something like:
 
+swnode = swnode->parent;
+if (swnode && !strcmp(swnode->node->name, "ports"))
+	swnode = swnode->parent;
 
+return swnode ? software_node_get(&swnode->fwnode) : NULL;
+
+You can also drop parent as a by-product of this.
+
+> +
+> +	return software_node_get(parent);
+> +}
+> +
+> +static int
+> +software_node_graph_parse_endpoint(const struct fwnode_handle *fwnode,
+> +				   struct fwnode_endpoint *endpoint)
+> +{
+> +	struct swnode *swnode = to_swnode(fwnode);
+> +	int ret;
+> +
+> +	ret = kstrtou32(swnode->parent->node->name + 5, 10, &endpoint->port);
+> +	if (ret)
+> +		return ret;
+> +
+> +	endpoint->id = swnode->id;
+> +	endpoint->local_fwnode = fwnode;
+> +
+> +	return 0;
+> +}
+> +
+>  static const struct fwnode_operations software_node_ops = {
+>  	.get = software_node_get,
+>  	.put = software_node_put,
+> @@ -551,7 +655,11 @@ static const struct fwnode_operations software_node_ops = {
+>  	.get_parent = software_node_get_parent,
+>  	.get_next_child_node = software_node_get_next_child,
+>  	.get_named_child_node = software_node_get_named_child_node,
+> -	.get_reference_args = software_node_get_reference_args
+> +	.get_reference_args = software_node_get_reference_args,
+> +	.graph_get_next_endpoint = software_node_graph_get_next_endpoint,
+> +	.graph_get_remote_endpoint = software_node_graph_get_remote_endpoint,
+> +	.graph_get_port_parent = software_node_graph_get_port_parent,
+> +	.graph_parse_endpoint = software_node_graph_parse_endpoint,
+>  };
+>  
+>  /* -------------------------------------------------------------------------- */
 
 -- 
-Yours,
-Muchun
+Kind regards,
+
+Sakari Ailus
