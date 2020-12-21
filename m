@@ -2,165 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BBFF2DFBAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 12:58:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A37402DFBB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 13:08:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726246AbgLUL6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 06:58:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725771AbgLUL56 (ORCPT
+        id S1726327AbgLUMIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 07:08:04 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2275 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725942AbgLUMID (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 06:57:58 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CECBC0613D3;
-        Mon, 21 Dec 2020 03:57:18 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id i24so9301825edj.8;
-        Mon, 21 Dec 2020 03:57:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=D1SdyTtuFBbZo+GeEb6UhFf7p1TbonbHMIxr8E0IyNM=;
-        b=Ye5NLzGYUIqjKRdjny1Q712KjVU2opQXzHSiRK0d0idpVzvIMIaKmdUFJx2dJsvLa2
-         TQjyUp+sJIpM9h77oxhfxXA6uhrYix7QwTlwIZRj8MtsAuz8nqWrYyewNRgH+JKp2yaS
-         5WWYcGPBQYwOt1QU6yY8dvQTiQ1BWvsnKW2QqZG4Z9Oqkb+vlRCQHqmIXnmxYUKjWCDQ
-         w83w7fAQj3xD7HtwKhXcky33oQdtsqoXrmVpDi6sBWsAZHK1UC54n1SWZflaTqRsK2Ve
-         zcwm90p3hmnQv6g6MWm85M0MdOEX5NzlDn2ic8G9pjugHZO7y/zLydP9nBZsjZ7+6C8Z
-         jfZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=D1SdyTtuFBbZo+GeEb6UhFf7p1TbonbHMIxr8E0IyNM=;
-        b=KcwmKC1g3CMHoqZPbbXQ4l00ZVdKwU4oESCBCF9PMUzs3zGTe7KgYh1fHoXLGIov1c
-         MW9L3Nq3HAG+lWMluDXN5ScyM3HPOGuRgIGjx63Ify0mPXnkqvrNSOD29y6ve5DN2DJZ
-         WArAbwj8EjIh9cKJ3gptgnp3aJbNk4VXtHhNfNJNgXlMFxmDFj/UNAFvCDarxK4R/Pis
-         /rF1r5jp01LuvF0lbASdcST19QrT4WOGg7Xl9uqVIcO062LjoLT+gSduPY8rwqYFj9yK
-         gG/eAddaNxUzKoQJMLdZ6sb3vcbwFp9h860K7lhOSV/xBs/odrsns81emFykp5Xq6qMo
-         EV+w==
-X-Gm-Message-State: AOAM530//jzVbwVvDfqxWhgj7vFxbfoj8o4zyF8eXY316v+R+uyF8DCE
-        gC+QS0xY8xQxJj/pCskklIY=
-X-Google-Smtp-Source: ABdhPJwWiV8YbhKsl5hEA2wObCWB8satrfPYQBdDBA6Gi5q/nAUN9anac1HYiv1kqBWvRSE/5uLFcQ==
-X-Received: by 2002:a05:6402:8d9:: with SMTP id d25mr15396335edz.278.1608551836837;
-        Mon, 21 Dec 2020 03:57:16 -0800 (PST)
-Received: from BV030612LT ([188.24.159.61])
-        by smtp.gmail.com with ESMTPSA id a20sm29110331edr.70.2020.12.21.03.57.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 03:57:16 -0800 (PST)
-Date:   Mon, 21 Dec 2020 13:57:13 +0200
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v3 3/7] mfd: Add MFD driver for ATC260x PMICs
-Message-ID: <20201221115713.GA155203@BV030612LT>
-References: <cover.1607216141.git.cristian.ciocaltea@gmail.com>
- <f538c21de556c66390614bad778f7dc095222e8c.1607216141.git.cristian.ciocaltea@gmail.com>
- <20201216101000.GD207743@dell>
- <20201217231731.GA104305@BV030612LT>
- <20201218132139.GR207743@dell>
- <20201218160710.GA134686@BV030612LT>
- <20201221081015.GA4825@dell>
+        Mon, 21 Dec 2020 07:08:03 -0500
+Received: from fraeml738-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Czyp12pKHz67Qrw;
+        Mon, 21 Dec 2020 20:04:57 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml738-chm.china.huawei.com (10.206.15.219) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 21 Dec 2020 13:07:21 +0100
+Received: from [10.210.168.224] (10.210.168.224) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 21 Dec 2020 12:07:20 +0000
+Subject: Re: [RFC PATCH v2 2/2] blk-mq: Lockout tagset iter when freeing rqs
+To:     Bart Van Assche <bvanassche@acm.org>, <axboe@kernel.dk>,
+        <ming.lei@redhat.com>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <hch@lst.de>, <hare@suse.de>, <ppvk@codeaurora.org>,
+        <kashyap.desai@broadcom.com>, <linuxarm@huawei.com>
+References: <1608203273-170555-1-git-send-email-john.garry@huawei.com>
+ <1608203273-170555-3-git-send-email-john.garry@huawei.com>
+ <df44b73d-6c42-87ee-3c25-b95a44712e05@acm.org>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <4d2004bb-4444-7a63-7c72-1759e3037cfd@huawei.com>
+Date:   Mon, 21 Dec 2020 12:06:35 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201221081015.GA4825@dell>
+In-Reply-To: <df44b73d-6c42-87ee-3c25-b95a44712e05@acm.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.168.224]
+X-ClientProxiedBy: lhreml739-chm.china.huawei.com (10.201.108.189) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 08:10:15AM +0000, Lee Jones wrote:
-> On Fri, 18 Dec 2020, Cristian Ciocaltea wrote:
+On 18/12/2020 22:43, Bart Van Assche wrote:
+> On 12/17/20 3:07 AM, John Garry wrote:
+>> References to old IO sched requests are currently cleared from the
+>> tagset when freeing those requests; switching elevator or changing
+>> request queue depth is such a scenario in which this occurs.
+>>
+>> However, this does not stop the potentially racy behaviour of freeing
+>> and clearing a request reference between a tagset iterator getting a
+>> reference to a request and actually dereferencing that request.
+>>
+>> Such a use-after-free can be triggered, as follows:
+>>
+>> ==================================================================
+>> BUG: KASAN: use-after-free in bt_iter+0xa0/0x120
+>> Read of size 8 at addr ffff00108d589300 by task fio/3052
+>>
+>> CPU: 32 PID: 3052 Comm: fio Tainted: GW
+>> 5.10.0-rc4-64839-g2dcf1ee5054f #693
+>> Hardware name: Huawei Taishan 2280 /D05, BIOS Hisilicon
+>> D05 IT21 Nemo 2.0 RC0 04/18/2018
+>> Call trace:
+>> dump_backtrace+0x0/0x2d0
+>> show_stack+0x18/0x68
+>> dump_stack+0x100/0x16c
+>> print_address_description.constprop.12+0x6c/0x4e8
+>> kasan_report+0x130/0x200
+>> __asan_load8+0x9c/0xd8
+>> bt_iter+0xa0/0x120
+>> blk_mq_queue_tag_busy_iter+0x2d8/0x540
+>> blk_mq_in_flight+0x80/0xb8
+>> part_stat_show+0xd8/0x238
+>> dev_attr_show+0x44/0x90
+>> sysfs_kf_seq_show+0x128/0x1c8
+>> kernfs_seq_show+0xa0/0xb8
+>> seq_read_iter+0x1ec/0x6a0
+>> seq_read+0x1d0/0x250
+>> kernfs_fop_read+0x70/0x330
+>> vfs_read+0xe4/0x250
+>> ksys_read+0xc8/0x178
+>> __arm64_sys_read+0x44/0x58
+>> el0_svc_common.constprop.2+0xc4/0x1e8
+>> do_el0_svc+0x90/0xa0
+>> el0_sync_handler+0x128/0x178
+>> el0_sync+0x158/0x180
+>>
+>> This is found experimentally by running fio on 2x SCSI disks - 1x disk
+>> holds the root partition. Userspace is constantly triggering the tagset
+>> iter from reading the root (gen)disk partition info. And so if the IO
+>> sched is constantly changed on the other disk, eventually the UAF occurs,
+>> as described above.
 > 
-> > On Fri, Dec 18, 2020 at 01:21:39PM +0000, Lee Jones wrote:
-> > > On Fri, 18 Dec 2020, Cristian Ciocaltea wrote:
-> > > 
-> > > > Hi Lee,
-> > > > 
-> > > > Thank you for the detailed review!
-> > > > 
-> > > > I will prepare a new revision, but there are still a couple of open
-> > > > points..
-> > > 
-> > > Could you please snip your replies, leaving only the open points.
-> > > 
-> > > Scrolling through lots of empty quotes or "done" comments is quite
-> > > time consuming.  Thanks.
-> > 
-> > Sure, I'll take that into account.
-> > 
-> > > [...]
-> > > 
-> > > > > > +	ret = regmap_read(atc260x->regmap, atc260x->rev_reg, &chip_rev);
-> > > > > > +	if (ret) {
-> > > > > > +		dev_err(dev, "Failed to get chip revision\n");
-> > > > > > +		return ret;
-> > > > > > +	}
-> > > > > > +
-> > > > > > +	if (chip_rev < 0 || chip_rev > 31) {
-> > > > > > +		dev_err(dev, "Unknown chip revision: %d\n", ret);
-> > > > > > +		return -EINVAL;
-> > > > > > +	}
-> > > > > 
-> > > > > This still seems limiting.
-> > > > 
-> > > > This is based on the vendor implementation. Unfortunately I don't have
-> > > > access to a data sheet or any other source of information about the
-> > > > management of the chip revisions.
-> > > 
-> > > So which versions does this driver work with?  All 32?
-> > 
-> > I'm not even sure there are so many revisions, I guess that's just a
-> > rough validation for a vendor reserved range.
-> > 
-> > For the moment, the only place where the functionality is affected
-> > by the chip revision is in the regulator driver - there is a special
-> > handling for the ATC2603C rev.B chip variant.
-> > 
-> > I expect some additional handling might be required for new drivers
-> > bringing support for the other functions provided by the hardware.
+> Hi John,
+
+Hi Bart,
+
 > 
-> The current patch seems to insinuate that 32 versions are currently
-> supported.  What is the chip_rev for the ATC2603C rev.B?
+> Something is not clear to me. The above call stack includes
+> blk_mq_queue_tag_busy_iter(). That function starts with
+> percpu_ref_tryget(&q->q_usage_counter) and ends with calling
+> percpu_ref_put(&q->q_usage_counter). So it will only iterate over a tag set
+> if q->q_usage_counter is live. However, both blk_mq_update_nr_requests()
+> and elevator_switch() start with freezing the request queue.
+> blk_mq_freeze_queue() starts with killing q->q_usage_counter and waits
+> until that counter has dropped to zero. In other words,
+> blk_mq_queue_tag_busy_iter() should not iterate over a tag set while a tag
+> set is being freed or reallocated. 
 
-I only own the rev.A for the ATC2603C variant, for which I read '0' from
-the chip rev register.
+Right, this is what I thought, but Ming reminded me 
+"blk_mq_queue_tag_busy_iter() can be run on another request queue just
+between one driver tag is allocated and updating the request map, so one
+extra request reference still can be grabbed."
 
-However what really matters for the driver is not the raw value, but the
-one computed via:
+> Does this mean that we do not yet have
+> a full explanation about why the above call stack can be triggered?
 
-atc260x->ic_ver = __ffs(chip_rev + 1U);
+We understand it, and I'll describe my experiment in detail:
+a. fio runs on 2x disks, sda (root partition disk) and sdb.
+b. for sda, userpace triggers blk_mq_queue_tag_busy_iter(), as in 
+stackframe above. Since its request queue is not frozen, it will iter 
+the busy tags.
+c. on sdb, I continuously change the IO scheduler.
 
-This is basically a translation of the raw value to a chip version
-that is used in the context of the special handling mentioned above:
+So sdb request queue gets frozen as we switch IO sched, but we could 
+have this sequence of events:
+- blk_mq_queue_tag_busy_iter() on sda takes reference to a sdb request
+    - Getting a tag and updating ->rqs[] in tagset is not atomic
+- requests for sdb cleared in tagset and request memory is freed
+- blk_mq_queue_tag_busy_iter() on sda still holds reference to sdb 
+request and dereferences it -> UAF
 
-enum atc260x_ver {
-	ATC260X_A = 0,
-	ATC260X_B,
-	ATC260X_C,
-	ATC260X_D,
-	ATC260X_E,
-	ATC260X_F,
-	ATC260X_G,
-	ATC260X_H,
-};
+Hope it's clear. It is a bit unlikely, I will admit, but it still can 
+happen and UAF is never good. So please let me know if other idea to solve.
 
-So we actually could handle up to 8 chip versions with the current
-management scheme.
-
-> -- 
-> Lee Jones [李琼斯]
-> Senior Technical Lead - Developer Services
-> Linaro.org │ Open source software for Arm SoCs
-> Follow Linaro: Facebook | Twitter | Blog
+Thanks,
+John
