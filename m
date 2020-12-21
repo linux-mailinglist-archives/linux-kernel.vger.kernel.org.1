@@ -2,213 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 613392E016D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 21:09:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF3A2E016E
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 21:12:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726131AbgLUUID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 15:08:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34676 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725820AbgLUUIC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 15:08:02 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3BBBD22AAA;
-        Mon, 21 Dec 2020 20:07:21 +0000 (UTC)
-Date:   Mon, 21 Dec 2020 15:07:19 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <wagi@monom.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-Subject: [ANNOUNCE] 5.4.82-rt46
-Message-ID: <20201221150719.2f017239@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726066AbgLUULS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 15:11:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725961AbgLUULS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 15:11:18 -0500
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7C53C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 12:10:37 -0800 (PST)
+Received: by mail-qt1-x84a.google.com with SMTP id a11so8628394qto.16
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 12:10:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=ieaeMyCrk00dcucJz23SXmslO5kX5HWEa7JTBymav94=;
+        b=nG02DRXatEl0T+ObNAeKHpzprM5RZUiynJ3nlSXAgVe7ejHfMmVCfiypzfc/S6+CIR
+         Ag7h8JxZodkMPqbBAg8Ax9ANpTtB6HspKv+7Jv3gSKKC8e5oEBHVirMmhIdEVyJ3N8OB
+         vpGi38KQ8KIaSiVLl8dLKVamqqDr3+lAhNtocQv9tgHQ8DLK+Qh7n21QGXOMntdP+L6B
+         O931aqE2/RCoePDL8HE+s0xEzYDMFpfecJUXvPIgiuHep4g0iiPw6ICdqXkh8BEVeaev
+         lTtsD3hO8CCAkp/KuJFz81MfyfhChuwOAUYBvVL/HiZkIJgZXVCTTV7w0kti99TVOLhQ
+         v9Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=ieaeMyCrk00dcucJz23SXmslO5kX5HWEa7JTBymav94=;
+        b=fjS2KOBDhg9hrJRDmTWuO1cMQYEq5XEvdy31DCyDREIjqMybvC/3eJQ3L5V0GP2swl
+         jUGUtxhy1XucyXywVRhVCdG/ktXb4Wk0MBADRhz/Jar0fAdss6WgHLlMREOZZYT6llpB
+         ZeqWAOslv/lC4vF1Ujdu3Q9WG5XblooQDvliVVYS3zbsAoqNydfWACf+YdtetY82J28S
+         G1U0IWeriW+AV5WNMaFUPevqPHW+TGPNsHhipWipvI/rhr93xXjd1yLvWb+6hU2KaF32
+         B0Y/CSYUqRclpUSwuKf+9uYBKhxxeGSwo3Emx0rcWAGYP8c+rfsBSnWXtUor5qaa6ELM
+         fNJA==
+X-Gm-Message-State: AOAM533afBhr/8rsHAkMcg+TokMHt9/6vvq1Nl5+RxzoIphRtY24IJpR
+        Fdb1nAaukVa7CeTdpCgHbzp1KNQ=
+X-Google-Smtp-Source: ABdhPJwDi4F39nO8IpSpSY+yD9ueX70Bhb48bu4T3j+rgayrwo628LEqcH2Ohc/hvQ8yzulCsHAmgdc=
+Sender: "lpy via sendgmr" <lpy@lpy-goobuntu.mtv.corp.google.com>
+X-Received: from lpy-goobuntu.mtv.corp.google.com ([2620:15c:211:2:5265:f3ff:fe23:c8be])
+ (user=lpy job=sendgmr) by 2002:a0c:f005:: with SMTP id z5mr19352054qvk.9.1608581436781;
+ Mon, 21 Dec 2020 12:10:36 -0800 (PST)
+Date:   Mon, 21 Dec 2020 12:10:19 -0800
+In-Reply-To: <20201202123420.g3ivr5le4imcrdsa@DESKTOP-E1NTVVP.localdomain>
+Message-Id: <20201221201019.2897731-1-lpy@google.com>
+Mime-Version: 1.0
+References: <20201202123420.g3ivr5le4imcrdsa@DESKTOP-E1NTVVP.localdomain>
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
+Subject: [PATCH v5] Add power/gpu_frequency tracepoint.
+From:   Peiyong Lin <lpy@google.com>
+To:     brian.starkey@arm.com
+Cc:     alexdeucher@gmail.com, android-kernel@google.com,
+        dri-devel@lists.freedesktop.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, lpy@google.com, mingo@redhat.com,
+        nd@arm.com, paul.walmsley@sifive.com, pavel@ucw.cz,
+        prahladk@google.com, rafael.j.wysocki@intel.com,
+        rostedt@goodmis.org, sidaths@google.com, ulf.hansson@linaro.org,
+        yamada.masahiro@socionext.com, zzyiwei@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Historically there is no common trace event for GPU frequency, in
+downstream Android each different hardware vendor implements their own
+way to expose GPU frequency, for example as a debugfs node.  This patch
+standardize it as a common trace event in upstream linux kernel to help
+the ecosystem have a common implementation across hardware vendors.
+Toolings in the Linux ecosystem will benefit from this especially in the
+downstream Android, where this information is critical to graphics
+developers.
 
-Dear RT Folks,
-
-I'm pleased to announce the 5.4.82-rt46 stable release.
-
-
-You can get this release via the git tree at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
-
-  branch: v5.4-rt
-  Head SHA1: 2cb0daa9d528e36f026b0c60e7eb881d2282462a
-
-
-Or to build 5.4.82-rt46 directly, the following patches should be applied:
-
-  http://www.kernel.org/pub/linux/kernel/v5.x/linux-5.4.tar.xz
-
-  http://www.kernel.org/pub/linux/kernel/v5.x/patch-5.4.82.xz
-
-  http://www.kernel.org/pub/linux/kernel/projects/rt/5.4/patch-5.4.82-rt46.patch.xz
-
-
-
-You can also build from 5.4.82-rt45 by applying the incremental patch:
-
-  http://www.kernel.org/pub/linux/kernel/projects/rt/5.4/incr/patch-5.4.82-rt45-rt46.patch.xz
-
-
-
-Enjoy,
-
--- Steve
-
-
-Changes from v5.4.82-rt45:
-
+Signed-off-by: Peiyong Lin <lpy@google.com>
 ---
 
-Sebastian Andrzej Siewior (1):
-      Revert "hrtimer: Allow raw wakeups during boot"
+Changelog since v4:
+ - Explicitly use class id and instance id to identify a GPU instance.
+ - Change gpu_id to clock_id to call out its the clock domain in
+   the GPU instance.
 
-Steven Rostedt (VMware) (2):
-      Revert "net: Properly annotate the try-lock for the seqlock"
-      Linux 5.4.82-rt46
+Changelog since v3:
+ - Correct copyright title.
 
-Thomas Gleixner (1):
-      timers: Move clearing of base::timer_running under base::lock
+Changelog since v2:
+ - Add more comments to indicate when the event should be emitted.
+ - Change state to frequency.
 
-Zanxiong Qiu (1):
-      mm/swap: use local lock in deactivate_page()
+Changelog since v1:
+ - Use %u in TP_printk
 
-----
- include/linux/seqlock.h   |  9 +++++++++
- include/net/sch_generic.h | 10 +---------
- kernel/time/hrtimer.c     |  2 +-
- kernel/time/timer.c       |  6 ++++--
- localversion-rt           |  2 +-
- mm/swap.c                 |  5 +++--
- 6 files changed, 19 insertions(+), 15 deletions(-)
----------------------------
-diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-index f390293974ea..e5207897c33e 100644
---- a/include/linux/seqlock.h
-+++ b/include/linux/seqlock.h
-@@ -489,6 +489,15 @@ static inline void write_seqlock(seqlock_t *sl)
- 	__raw_write_seqcount_begin(&sl->seqcount);
- }
+ drivers/gpu/Makefile                    |  1 +
+ drivers/gpu/trace/Kconfig               |  3 ++
+ drivers/gpu/trace/Makefile              |  1 +
+ drivers/gpu/trace/trace_gpu_frequency.c | 13 ++++++++
+ include/trace/events/power.h            | 41 +++++++++++++++++++++++++
+ 5 files changed, 59 insertions(+)
+ create mode 100644 drivers/gpu/trace/trace_gpu_frequency.c
+
+diff --git a/drivers/gpu/Makefile b/drivers/gpu/Makefile
+index 835c88318cec..f289a47eb031 100644
+--- a/drivers/gpu/Makefile
++++ b/drivers/gpu/Makefile
+@@ -6,3 +6,4 @@ obj-$(CONFIG_TEGRA_HOST1X)	+= host1x/
+ obj-y			+= drm/ vga/
+ obj-$(CONFIG_IMX_IPUV3_CORE)	+= ipu-v3/
+ obj-$(CONFIG_TRACE_GPU_MEM)		+= trace/
++obj-$(CONFIG_TRACE_GPU_FREQUENCY)		+= trace/
+diff --git a/drivers/gpu/trace/Kconfig b/drivers/gpu/trace/Kconfig
+index c24e9edd022e..ac4aec8d5845 100644
+--- a/drivers/gpu/trace/Kconfig
++++ b/drivers/gpu/trace/Kconfig
+@@ -2,3 +2,6 @@
  
-+static inline int try_write_seqlock(seqlock_t *sl)
-+{
-+	if (spin_trylock(&sl->lock)) {
-+		__raw_write_seqcount_begin(&sl->seqcount);
-+		return 1;
-+	}
-+	return 0;
-+}
+ config TRACE_GPU_MEM
+ 	bool
 +
- static inline void write_sequnlock(seqlock_t *sl)
- {
- 	__raw_write_seqcount_end(&sl->seqcount);
-diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-index 112d2dca8b08..e6afb4b9cede 100644
---- a/include/net/sch_generic.h
-+++ b/include/net/sch_generic.h
-@@ -168,16 +168,8 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
- 		return false;
- 	}
- #ifdef CONFIG_PREEMPT_RT
--	if (spin_trylock(&qdisc->running.lock)) {
--		seqcount_t *s = &qdisc->running.seqcount;
--		/*
--		 * Variant of write_seqcount_t_begin() telling lockdep that a
--		 * trylock was attempted.
--		 */
--		__raw_write_seqcount_begin(s);
--		seqcount_acquire(&s->dep_map, 0, 1, _RET_IP_);
-+	if (try_write_seqlock(&qdisc->running))
- 		return true;
--	}
- 	return false;
- #else
- 	/* Variant of write_seqcount_begin() telling lockdep a trylock
-diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-index 41cc1c8530d8..42705a04c808 100644
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -1819,7 +1819,7 @@ static void __hrtimer_init_sleeper(struct hrtimer_sleeper *sl,
- 	 * expiry.
- 	 */
- 	if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
--		if ((task_is_realtime(current) && !(mode & HRTIMER_MODE_SOFT)) || system_state != SYSTEM_RUNNING)
-+		if (task_is_realtime(current) && !(mode & HRTIMER_MODE_SOFT))
- 			mode |= HRTIMER_MODE_HARD;
- 	}
++config TRACE_GPU_FREQUENCY
++	bool
+diff --git a/drivers/gpu/trace/Makefile b/drivers/gpu/trace/Makefile
+index b70fbdc5847f..2b7ae69327d6 100644
+--- a/drivers/gpu/trace/Makefile
++++ b/drivers/gpu/trace/Makefile
+@@ -1,3 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0
  
-diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index 15b838401af8..86bb218d1df5 100644
---- a/kernel/time/timer.c
-+++ b/kernel/time/timer.c
-@@ -1269,8 +1269,10 @@ static inline void timer_base_unlock_expiry(struct timer_base *base)
- static void timer_sync_wait_running(struct timer_base *base)
- {
- 	if (atomic_read(&base->timer_waiters)) {
-+		raw_spin_unlock_irq(&base->lock);
- 		spin_unlock(&base->expiry_lock);
- 		spin_lock(&base->expiry_lock);
-+		raw_spin_lock_irq(&base->lock);
- 	}
- }
+ obj-$(CONFIG_TRACE_GPU_MEM) += trace_gpu_mem.o
++obj-$(CONFIG_TRACE_GPU_FREQUENCY) += trace_gpu_frequency.o
+diff --git a/drivers/gpu/trace/trace_gpu_frequency.c b/drivers/gpu/trace/trace_gpu_frequency.c
+new file mode 100644
+index 000000000000..668fabd6b77a
+--- /dev/null
++++ b/drivers/gpu/trace/trace_gpu_frequency.c
+@@ -0,0 +1,13 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * GPU frequency trace points
++ *
++ * Copyright (C) 2020 Google LLC
++ */
++
++#include <linux/module.h>
++
++#define CREATE_TRACE_POINTS
++#include <trace/events/power.h>
++
++EXPORT_TRACEPOINT_SYMBOL(gpu_frequency);
+diff --git a/include/trace/events/power.h b/include/trace/events/power.h
+index af5018aa9517..590e16169dd1 100644
+--- a/include/trace/events/power.h
++++ b/include/trace/events/power.h
+@@ -500,6 +500,47 @@ DEFINE_EVENT(dev_pm_qos_request, dev_pm_qos_remove_request,
  
-@@ -1461,14 +1463,14 @@ static void expire_timers(struct timer_base *base, struct hlist_head *head)
- 		if (timer->flags & TIMER_IRQSAFE) {
- 			raw_spin_unlock(&base->lock);
- 			call_timer_fn(timer, fn, baseclk);
--			base->running_timer = NULL;
- 			raw_spin_lock(&base->lock);
-+			base->running_timer = NULL;
- 		} else {
- 			raw_spin_unlock_irq(&base->lock);
- 			call_timer_fn(timer, fn, baseclk);
-+			raw_spin_lock_irq(&base->lock);
- 			base->running_timer = NULL;
- 			timer_sync_wait_running(base);
--			raw_spin_lock_irq(&base->lock);
- 		}
- 	}
- }
-diff --git a/localversion-rt b/localversion-rt
-index 38c40b21a885..272158183778 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt45
-+-rt46
-diff --git a/mm/swap.c b/mm/swap.c
-index cdb4f1fa3a48..463cac334fcf 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -666,12 +666,13 @@ void deactivate_file_page(struct page *page)
- void deactivate_page(struct page *page)
- {
- 	if (PageLRU(page) && PageActive(page) && !PageUnevictable(page)) {
--		struct pagevec *pvec = &get_cpu_var(lru_deactivate_pvecs);
-+		struct pagevec *pvec = &get_locked_var(swapvec_lock,
-+							lru_deactivate_pvecs);
+ 	TP_ARGS(name, type, new_value)
+ );
++
++/**
++ * gpu_frequency - Reports the GPU frequency in GPU clock domains.
++ *
++ * This event should be emitted whenever there's a GPU frequency change happens,
++ * or a GPU goes from idle state to active state, or vice versa.
++ *
++ * When the GPU goes from idle state to active state, this event should report
++ * the GPU frequency of the active state. When the GPU goes from active state to
++ * idle state, this event should report a zero frequency value.
++ *
++ * @frequency:  New frequency (in KHz)
++ * @gpu_class_id: Id representing the class of the GPU
++ * @gpu_instance_id: Id representing the instance of class &gpu_class_id
++ * @clock_id: Id for the clock domain in &gpu_instance_id running at &frequency
++ */
++TRACE_EVENT(gpu_frequency,
++
++	TP_PROTO(unsigned int frequency, unsigned int gpu_class_id,
++		 unsigned int gpu_instance_id, unsigned int clock_id),
++
++	TP_ARGS(frequency, gpu_class_id, gpu_instance_id, clock_id),
++
++	TP_STRUCT__entry(
++		__field(unsigned int, frequency)
++		__field(unsigned int, gpu_class_id)
++		__field(unsigned int, gpu_instance_id)
++		__field(unsigned int, clock_id)
++	),
++
++	TP_fast_assign(
++		__entry->frequency = frequency;
++		__entry->gpu_class_id = gpu_class_id;
++		__entry->gpu_instance_id = gpu_instance_id;
++		__entry->clock_id = clock_id;
++	),
++
++	TP_printk("frequency=%u gpu_class_id=%u gpu_instance_id=%u clock_id=%u",
++		__entry->frequency, __entry->gpu_class_id,
++		__entry->gpu_instance_id, __entry->clock_id)
++);
+ #endif /* _TRACE_POWER_H */
  
- 		get_page(page);
- 		if (!pagevec_add(pvec, page) || PageCompound(page))
- 			pagevec_lru_move_fn(pvec, lru_deactivate_fn, NULL);
--		put_cpu_var(lru_deactivate_pvecs);
-+		put_locked_var(swapvec_lock, lru_deactivate_pvecs);
- 	}
- }
- 
+ /* This part must be outside protection */
+-- 
+2.29.2.684.gfbc64c5ab5-goog
+
