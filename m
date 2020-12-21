@@ -2,126 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 737ED2DFACB
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 11:08:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9FE2DFAC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 11:08:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726685AbgLUKIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 05:08:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58248 "EHLO
+        id S1726540AbgLUKHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 05:07:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725804AbgLUKIS (ORCPT
+        with ESMTP id S1726363AbgLUKHS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 05:08:18 -0500
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E6FC061793;
-        Mon, 21 Dec 2020 02:07:38 -0800 (PST)
-Received: by mail-il1-x12e.google.com with SMTP id g1so8376138ilk.7;
-        Mon, 21 Dec 2020 02:07:38 -0800 (PST)
+        Mon, 21 Dec 2020 05:07:18 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEA47C0611CD;
+        Mon, 21 Dec 2020 02:05:53 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id m25so22203950lfc.11;
+        Mon, 21 Dec 2020 02:05:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=qMI1qb6jm5Lag9GLrKzNd8c/nLzIAunUnseb/Ze4wwk=;
-        b=TNketNi86VoSW7yUCz1xJ0TySRbiCNnk6lgZVPNFHRq1Z0hYh2gKvfrjKM7LrvZdfw
-         RQePP3CI0izt8okVH5i0MDqzLe17kJ+gYsfp1t+Ps8IwCEHGQkv7O3PSU8DKD3ZNNffG
-         /JlM0O2eWxUHvRwz8qee/+LJwONqHO0lDu8V6J4W8M+AzN/jgGfMEfd8saM3jRp+ynNl
-         yyNQ52YpnwxSo70pHdjSzvzY1s3U8IilByiBPR9JecD00QG9hEu5BbgRdRErCXzWs2gF
-         45fFo4tr95q3qQ6Y+q0mxPqCFls3IDtt7iuwAPe+p0gTlRoSBsbkFCIhsAdHSkhvZ6+r
-         94Mg==
+        bh=2oG74XAx4XojfZk2a1r/Ra66PREeEQkKGwNuDPYNej4=;
+        b=Fa0t/OrxLJ+8WUTs96s35pXqoLoS5DjIxSg7Wt+rucKCVsupixS2eyf4xqgOwOqM1H
+         KBLfQMjzp5blHW77UAFBRuvLOi2fuchE1GD+3bU6NoxBeTtoCUV13zs8z59DTC465VOW
+         O6DmZ8mMa7deNf03VC+Ho4jzj8d7UzBNKXCQCuIZ+ySWJJKB/Asooy9vZhg6IKEPteN+
+         klx15LkdbC6bxUqTY2Rrxe8IQeI9ZS727enQN/XLcL6p2ZVw7FdDytIrHHnbJT8hqGKN
+         6GK36cV76CyuK+QkvxRRB17P8UR2kXwBpvGVbJOmEYIQHUQ8DNfEPrSPZpO/nStVul9h
+         EyCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qMI1qb6jm5Lag9GLrKzNd8c/nLzIAunUnseb/Ze4wwk=;
-        b=YYKLvGl49Km5hp+Bhy6/FVGJ+0Bs1nfjCqWnTl+18srqAkzbUwoRONQZ8fc0oxqVtK
-         K8zasPDI3EpqyiKJ7JGaqivlENoYT2EvhUaGwIeYGnvBldfIKZ4WQJDbI7dajvUJP+jU
-         I2Z1a/71m7Mmmx+UdTauIar3o5BA8H5IUXbnuH2FBrriA58Guqh/yOAQDj9MElWGkHxV
-         ls07dg3f9eF3pMIaOyGd9BmC0b5E3PzeeCtQoWQA/6vOiNpW6rUKLh15DgZa+/sCOyIs
-         2Gv6B683vv1YoKiiU12qLhDmnX9ZndeEtAZqd3BbVx8/yMcn9MrIxPn7osbk0X//571l
-         Mi3A==
-X-Gm-Message-State: AOAM532IJrq3cD4UeWGwIHg1XDotXF8tOTmhme06aQyNCMZoSIRSLQAl
-        SGAqA2+QLJQk0+1+TKBagaaq0zLivqz8H7DQHrQbPzj51EY=
-X-Google-Smtp-Source: ABdhPJxBtvImbDXQFJZFiuLU9iSSxkb054vusc68KLoVKz7M+YJaEYxx6P2xuo8zwNE89O9MkgEk4eONGxpDIef9SqA=
-X-Received: by 2002:a63:74b:: with SMTP id 72mr14619803pgh.4.1608542798518;
- Mon, 21 Dec 2020 01:26:38 -0800 (PST)
+        bh=2oG74XAx4XojfZk2a1r/Ra66PREeEQkKGwNuDPYNej4=;
+        b=aITstgLJOOC6Zb+kMbDd2vB2TysmYqCuq048vGTxBF8i/cKUatzuPh+FDKfvRSO01T
+         G/BdFnfgUuL3vBJKSo0kbCSFC0oZ9x3Kx9iulwYMObsFf3vKr+WwBHbKz3wu/rBGS0us
+         e5OB6K4FRFOxvZmdLtIOATP1tt63GVAl57GsVR85blUOaDYTbxVjsfsFnJCEyB6plX4s
+         JjPQyZl9K9qo9qFG2bow5rkunqc5CO9f+MIu6qvanT0n08v64DDegs+oGMbHSr8g2PC4
+         5Y2/k9hRlmU72UoRoFfLE8vVpeoy4YktXS9kZ73xHWuBmIcgUVbKCGHIfjvYDAWpxpOr
+         Y3Fw==
+X-Gm-Message-State: AOAM531pKCVH1mRIbonbdwORtyILlF9GdwJaqbDG7rH1Lw9s7FTMbzCY
+        3GQcPx22EnkEFr8o7QlE6trGD8qWjIIAtWpl9QU7MhmLseoJJtsw
+X-Google-Smtp-Source: ABdhPJzu9SoVchnadMFn0iVTzdU0Iqogb+Z4OqLTFi5owtjNA5ED/5h3nSovS/XqdLE1WO8gSqawfGGnk7K4rfaSvzA=
+X-Received: by 2002:a05:6512:320d:: with SMTP id d13mr5888406lfe.376.1608542930206;
+ Mon, 21 Dec 2020 01:28:50 -0800 (PST)
 MIME-Version: 1.0
-References: <20201218143122.19459-1-info@metux.net> <20201218143122.19459-2-info@metux.net>
- <CAHp75VfYz_K2BYOxqmSx0q+1F2F9Lp1eb70RrNYzJHs3FX+quQ@mail.gmail.com> <87ft3zyaqa.fsf@mpe.ellerman.id.au>
-In-Reply-To: <87ft3zyaqa.fsf@mpe.ellerman.id.au>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 21 Dec 2020 11:27:27 +0200
-Message-ID: <CAHp75VeGs-x0-XgpLS0uB2oZmxKZREfUKM1ByUwmRquqFc2FPg@mail.gmail.com>
-Subject: Re: [PATCH 01/23] kernel: irq: irqdescs: warn on spurious IRQ
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, msalter@redhat.com,
-        jacquiot.aurelien@gmail.com, gerg@linux-m68k.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-alpha@vger.kernel.org,
-        linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org,
-        "open list:LINUX FOR POWERPC PA SEMI PWRFICIENT" 
-        <linuxppc-dev@lists.ozlabs.org>, linux-s390@vger.kernel.org,
-        Linux-SH <linux-sh@vger.kernel.org>, sparclinux@vger.kernel.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>
+References: <efb7469c7bad2f6458c9a537b8e3623e7c303c21.camel@themaw.net>
+ <da4f730bbbb20c0920599ca5afc316e2c092b7d8.camel@themaw.net>
+ <CAC2o3DJsvB6kj=S6D3q+_OBjgez9Q9B5s3-_gjUjaKmb2MkTHQ@mail.gmail.com>
+ <c4002127c72c07a00e8ba0fae6b0ebf5ba8e08e7.camel@themaw.net>
+ <a39b73a53778094279522f1665be01ce15fb21f4.camel@themaw.net>
+ <c8a6c9adc3651e64cf694f580a8cb3d87d7cb893.camel@themaw.net>
+ <X9t1xVTZ/ApIvPMg@mtj.duckdns.org> <67a3012a6a215001c8be9344aee1c99897ff8b7e.camel@themaw.net>
+ <X9zDu15MvJP3NU8K@mtj.duckdns.org> <37c339831d4e7f3c6db88fbca80c6c2bd835dff2.camel@themaw.net>
+ <X94pE6IrziQCd4ra@mtj.duckdns.org> <f1c9b0e6699582e69c0fb2e8afb40ddaf17bdf76.camel@themaw.net>
+In-Reply-To: <f1c9b0e6699582e69c0fb2e8afb40ddaf17bdf76.camel@themaw.net>
+From:   Fox Chen <foxhlchen@gmail.com>
+Date:   Mon, 21 Dec 2020 17:28:37 +0800
+Message-ID: <CAC2o3DLUjeJwoFT7sRLJ_LPveHsX55VbLPBdNPCmdqkrqo1ymA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/6] kernfs: proposed locking and concurrency improvement
+To:     Ian Kent <raven@themaw.net>
+Cc:     Tejun Heo <tj@kernel.org>, Greg KH <gregkh@linuxfoundation.org>,
+        akpm@linux-foundation.org, dhowells@redhat.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        miklos@szeredi.hu, ricklind@linux.vnet.ibm.com,
+        sfr@canb.auug.org.au, viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 7:44 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
-> Andy Shevchenko <andy.shevchenko@gmail.com> writes:
-> > On Fri, Dec 18, 2020 at 4:37 PM Enrico Weigelt, metux IT consult
-> > <info@metux.net> wrote:
-> >
-> >> +               if (printk_ratelimit())
-> >> +                       pr_warn("spurious IRQ: irq=%d hwirq=%d nr_irqs=%d\n",
-> >> +                               irq, hwirq, nr_irqs);
-> >
-> > Perhaps you missed pr_warn_ratelimit() macro which is already in the
-> > kernel for a long time.
+On Sun, Dec 20, 2020 at 7:52 AM Ian Kent <raven@themaw.net> wrote:
 >
-> pr_warn_ratelimited() which calls printk_ratelimited().
-
-I stand corrected.
-Right, that's what I had in mind (actually didn't know that there are variants).
-
-Thanks!
-
-> And see the comment above printk_ratelimit():
+> On Sat, 2020-12-19 at 11:23 -0500, Tejun Heo wrote:
+> > Hello,
+> >
+> > On Sat, Dec 19, 2020 at 03:08:13PM +0800, Ian Kent wrote:
+> > > And looking further I see there's a race that kernfs can't do
+> > > anything
+> > > about between kernfs_refresh_inode() and fs/inode.c:update_times().
+> >
+> > Do kernfs files end up calling into that path tho? Doesn't look like
+> > it to
+> > me but if so yeah we'd need to override the update_time for kernfs.
 >
-> /*
->  * Please don't use printk_ratelimit(), because it shares ratelimiting state
->  * with all other unrelated printk_ratelimit() callsites.  Instead use
->  * printk_ratelimited() or plain old __ratelimit().
->  */
+> Sorry, the below was very hastily done and not what I would actually
+> propose.
+>
+> The main point of it was the question
+>
+> +       /* Which kernfs node attributes should be updated from
+> +        * time?
+> +        */
+>
+> but looking at it again this morning I think the node iattr fields
+> that might need to be updated would be atime, ctime and mtime only,
+> maybe not ctime ... not sure.
+>
+> What do you think?
+>
+> Also, if kn->attr == NULL it should fall back to what the VFS
+> currently does.
+>
+> The update_times() function is one of the few places where the
+> VFS updates the inode times.
+>
+> The idea is that the reason kernfs needs to overwrite the inode
+> attributes is to reset what the VFS might have done but if kernfs
+> has this inode operation they won't need to be overwritten since
+> they won't have changed.
+>
+> There may be other places where the attributes (or an attribute)
+> are set by the VFS, I haven't finished checking that yet so my
+> suggestion might not be entirely valid.
+>
+> What I need to do is work out what kernfs node attributes, if any,
+> should be updated by .update_times(). If I go by what
+> kernfs_refresh_inode() does now then that would be none but shouldn't
+> atime at least be updated in the node iattr.
+>
+> > > +static int kernfs_iop_update_time(struct inode *inode, struct
+> > > timespec64 *time, int flags)
+> > >  {
+> > > -   struct inode *inode = d_inode(path->dentry);
+> > >     struct kernfs_node *kn = inode->i_private;
+> > > +   struct kernfs_iattrs *attrs;
+> > >
+> > >     mutex_lock(&kernfs_mutex);
+> > > +   attrs = kernfs_iattrs(kn);
+> > > +   if (!attrs) {
+> > > +           mutex_unlock(&kernfs_mutex);
+> > > +           return -ENOMEM;
+> > > +   }
+> > > +
+> > > +   /* Which kernfs node attributes should be updated from
+> > > +    * time?
+> > > +    */
+> > > +
+> > >     kernfs_refresh_inode(kn, inode);
+> > >     mutex_unlock(&kernfs_mutex);
+> >
+> > I don't see how this would reflect the changes from kernfs_setattr()
+> > into
+> > the attached inode. This would actually make the attr updates
+> > obviously racy
+> > - the userland visible attrs would be stale until the inode gets
+> > reclaimed
+> > and then when it gets reinstantiated it'd show the latest
+> > information.
+>
+> Right, I will have to think about that, but as I say above this
+> isn't really what I would propose.
+>
+> If .update_times() sticks strictly to what kernfs_refresh_inode()
+> does now then it would set the inode attributes from the node iattr
+> only.
+>
+> >
+> > That said, if you wanna take the direction where attr updates are
+> > reflected
+> > to the associated inode when the change occurs, which makes sense,
+> > the right
+> > thing to do would be making kernfs_setattr() update the associated
+> > inode if
+> > existent.
+>
+> Mmm, that's a good point but it looks like the inode isn't available
+> there.
+>
+Is it possible to embed super block somewhere, then we can call
+kernfs_get_inode to get inode in kernfs_setattr???
 
 
--- 
-With Best Regards,
-Andy Shevchenko
+thanks,
+fox
