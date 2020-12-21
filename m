@@ -2,179 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E87F2DFCB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 15:17:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C1AE2DFCB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 15:20:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727196AbgLUORN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 09:17:13 -0500
-Received: from mail-wr1-f54.google.com ([209.85.221.54]:41847 "EHLO
-        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726614AbgLUORM (ORCPT
+        id S1727138AbgLUOUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 09:20:08 -0500
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:51869 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727070AbgLUOUI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 09:17:12 -0500
-Received: by mail-wr1-f54.google.com with SMTP id a12so11209935wrv.8;
-        Mon, 21 Dec 2020 06:16:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mVeWgyliwzskZ+KRlAO9X7tnwzK9E0d61eIl/kpYMOI=;
-        b=f3xsyZj/s0XdWDrv/cPgM6U0CRMvtEXC78nx4dL+lKxGApyELF3Se3aBhAHvqELYcI
-         umx7Uqbmv01lNi45ifDnNfsR7bhFcKgaTcPjC/ytzaa4CCNilWmu4pw+Cx5ZnwCcidWL
-         27uJtODQRTJ9BWF16RKkQjb9A2Z175bsF8o264RbenVECTPTHU3uGIGYSWE5RKJoA7I0
-         J0tCf2Cr0DosURSvohPCeojEND+F6/z8NxYR5vSqbCT70Ya1JZvf0+yZUe+GlLzhvdvy
-         LlPCb5JUHy8zPHc+dSZ2/LkTbPKeVfgZcUSOipcBcqU1YWCRcPvQkglwQLAHnyRJB34o
-         7CJw==
-X-Gm-Message-State: AOAM533qffRmf5pLeNfMpU19T1k9BFJbdWk4uY8hbH71RWuQeFgUeN6k
-        pH8JVLZ+bVyQoFqqwXjPS5U=
-X-Google-Smtp-Source: ABdhPJyPaa8Fyv+Fdc83GXUM3HR1O5kuyDricPO3yf6KVYni22OM6jcByCJMLduSL7j9RAriZRIbuw==
-X-Received: by 2002:adf:ee4d:: with SMTP id w13mr18994130wro.216.1608560190391;
-        Mon, 21 Dec 2020 06:16:30 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id w4sm22637798wmc.13.2020.12.21.06.16.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 06:16:28 -0800 (PST)
-Date:   Mon, 21 Dec 2020 15:16:27 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Timon Baetz <timon.baetz@protonmail.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH v2 2/6] power: supply: max8997_charger: Set CHARGER
- current limit
-Message-ID: <20201221141627.GB33797@kozik-lap>
-References: <20201202203516.43053-1-timon.baetz@protonmail.com>
- <20201221095001.595366-1-timon.baetz@protonmail.com>
- <20201221095001.595366-2-timon.baetz@protonmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201221095001.595366-2-timon.baetz@protonmail.com>
+        Mon, 21 Dec 2020 09:20:08 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id B8C80580515;
+        Mon, 21 Dec 2020 09:19:21 -0500 (EST)
+Received: from imap1 ([10.202.2.51])
+  by compute6.internal (MEProxy); Mon, 21 Dec 2020 09:19:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type:content-transfer-encoding; s=fm1; bh=Ips+4
+        h9qI7oPeVN8j7u2+LFFCTfYFzbZEBk88cu7bKE=; b=NEEHpMesYTCjtW7Lda1re
+        rJkLKa6HOX4SH53vSnEv8BJMueM9MnPEFJaO+DLr7Kf3+k+ATdqcFzb7CzNnT/NF
+        ovameU0lgpppraSrWJTERgsC9dhfSzwf87V1Ngs3Pk1u6uMvr/cL8xoMGtzUmYB0
+        zpJK5Mj70mg4HWLnI06sBAgTvJSRBWkLgLK/UwEedgk04FkVwMJNXi1UywYuZO6v
+        nQfP117SJpdfE1gw0LatwaW9++tWaMuM0ddnQR6t30IFaLO7DrbQHRWQ7N7fvxCf
+        XHtG6WhQv0/PXNuoZVVGPVHyIx6izb+zkj+HrGZouS4MSRSzQl2CHAuHUyG7EdPm
+        w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=Ips+4h9qI7oPeVN8j7u2+LFFCTfYFzbZEBk88cu7b
+        KE=; b=P5OcROwqhwk1w1ojMdedhBmU+4mT4frCPhJWpNPXYAhYG41JdYd6oaPLb
+        ERrTfVwh34Rtj/w46wJ8IP1FqglUuDH2mLb5XR7R7tPzJB+Uh0cVOxxR1JiEPu0w
+        s6H/4gqOZcLzk8EFZnSIdzkwemiAnA72jy/hGM0nxkKTaZo/GLEChqsnfwPRg+6N
+        eGOETb+J0qSXs4vW7rLcM0h5G/MLeV2FZUWI0p5hATmdf3QTVz7JsmlKRRPsJz0e
+        rH7R+uGzycN4tT5vsLOBDNnTfh3LHCm0ZnTcj3tQRH9NxWlcItsDu0jBhwoW35Is
+        ogcw5Poa3ud1wtYrprbmbWUupSpdw==
+X-ME-Sender: <xms:6K7gX_QEyA4OjKg3dRO6-VVrD6xfB4x6zQCPDf5mQhZPMXlRJAtn1Q>
+    <xme:6K7gXwxwg3Bmo6Im1l14LD_T_RDse1Xdg74l9QAVarFWL5NKUPum41GMKL0NQlv3M
+    kDTgtQbVPdfDEODX4I>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvddtvddgieeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgfgsehtqhertderreejnecuhfhrohhmpedflfhi
+    rgiguhhnucgjrghnghdfuceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
+    eqnecuggftrfgrthhtvghrnhepteeltdegleetvdeiffefgeegleehgeegieffveeihfdt
+    iefgheekfefgvdfhieehnecuffhomhgrihhnpehhvggrugdrshgsnecuvehluhhsthgvrh
+    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghes
+    fhhlhihgohgrthdrtghomh
+X-ME-Proxy: <xmx:6K7gX03VEanLXZ2kFU_2JiXZiBzW2LPoT3kbejCfsyycYmlP-vLxxQ>
+    <xmx:6K7gX_BrGrAhbAgqA-2nmFPnQE1SdcvQkj-OINXyAFNVkk5d7ZoH-g>
+    <xmx:6K7gX4hZvZVfzvVDcKfNV5CZERzCQyOQil5s4trDnXTRkaR7NBZrAw>
+    <xmx:6a7gXwJvNa7XEcl21IqMrnJQGTfdcl2CvbcJPjyP1BtkdKNtZUwA76Vuz4I>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 7BBCFC200A5; Mon, 21 Dec 2020 09:19:20 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.3.1-61-gb52c239-fm-20201210.001-gb52c2396
+Mime-Version: 1.0
+Message-Id: <e5de167a-707b-4668-85a0-3174309b9558@www.fastmail.com>
+In-Reply-To: <HO0PLQ.1VZP0U76MARY1@crapouillou.net>
+References: <20201221130048.7753-1-jiaxun.yang@flygoat.com>
+ <HO0PLQ.1VZP0U76MARY1@crapouillou.net>
+Date:   Mon, 21 Dec 2020 22:18:58 +0800
+From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
+To:     "Paul Cercueil" <paul@crapouillou.net>
+Cc:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: zboot: head.S clean up
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 09:53:15AM +0000, Timon Baetz wrote:
-> Register for extcon notification and set charging current depending on
-> the detected cable type. Current values are taken from vendor kernel,
-> where most charger types end up setting 650mA [0].
-> 
-> Also enable and disable the CHARGER regulator based on extcon events.
-> 
-> [0] https://github.com/krzk/linux-vendor-backup/blob/samsung/galaxy-s2-epic-4g-touch-sph-d710-exynos4210-dump/drivers/misc/max8997-muic.c#L1675-L1678
-> 
-> Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
-> ---
->  drivers/mfd/max8997.c                  |  4 +-
->  drivers/power/supply/max8997_charger.c | 94 ++++++++++++++++++++++++++
->  2 files changed, 96 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mfd/max8997.c b/drivers/mfd/max8997.c
-> index 68d8f2b95287..55d3a6f97783 100644
-> --- a/drivers/mfd/max8997.c
-> +++ b/drivers/mfd/max8997.c
-> @@ -29,9 +29,9 @@
->  static const struct mfd_cell max8997_devs[] = {
->  	{ .name = "max8997-pmic", },
->  	{ .name = "max8997-rtc", },
-> -	{ .name = "max8997-battery", },
-> +	{ .name = "max8997-battery", .of_compatible = "maxim,max8997-battery", },
->  	{ .name = "max8997-haptic", },
-> -	{ .name = "max8997-muic", },
-> +	{ .name = "max8997-muic", .of_compatible = "maxim,max8997-muic", },
 
-Undocumented bindings. The checkpatch should complain about it, so I
-assume you did not run it. Please run the checkpatch.
 
->  	{ .name = "max8997-led", .id = 1 },
->  	{ .name = "max8997-led", .id = 2 },
->  };
-> diff --git a/drivers/power/supply/max8997_charger.c b/drivers/power/supply/max8997_charger.c
-> index 1947af25879a..6e8750e455ea 100644
-> --- a/drivers/power/supply/max8997_charger.c
-> +++ b/drivers/power/supply/max8997_charger.c
-> @@ -6,12 +6,14 @@
->  //  MyungJoo Ham <myungjoo.ham@samsung.com>
->  
->  #include <linux/err.h>
-> +#include <linux/extcon.h>
->  #include <linux/module.h>
->  #include <linux/slab.h>
->  #include <linux/platform_device.h>
->  #include <linux/power_supply.h>
->  #include <linux/mfd/max8997.h>
->  #include <linux/mfd/max8997-private.h>
-> +#include <linux/regulator/consumer.h>
->  
->  /* MAX8997_REG_STATUS4 */
->  #define DCINOK_SHIFT		1
-> @@ -31,6 +33,10 @@ struct charger_data {
->  	struct device *dev;
->  	struct max8997_dev *iodev;
->  	struct power_supply *battery;
-> +	struct regulator *reg;
-> +	struct extcon_dev *edev;
-> +	struct notifier_block extcon_nb;
-> +	struct work_struct extcon_work;
->  };
->  
->  static enum power_supply_property max8997_battery_props[] = {
-> @@ -88,6 +94,67 @@ static int max8997_battery_get_property(struct power_supply *psy,
->  	return 0;
->  }
->  
-> +static void max8997_battery_extcon_evt_stop_work(void *data)
-> +{
-> +	struct charger_data *charger = data;
-> +
-> +	cancel_work_sync(&charger->extcon_work);
-> +}
-> +
-> +static void max8997_battery_extcon_evt_worker(struct work_struct *work)
-> +{
-> +	struct charger_data *charger =
-> +	    container_of(work, struct charger_data, extcon_work);
-> +	struct extcon_dev *edev = charger->edev;
-> +	int current_limit, ret;
-> +
-> +	if (extcon_get_state(edev, EXTCON_CHG_USB_SDP) > 0) {
-> +		dev_dbg(charger->dev, "USB SDP charger is connected\n");
-> +		current_limit = 450000;
-> +	} else if (extcon_get_state(edev, EXTCON_CHG_USB_DCP) > 0) {
-> +		dev_dbg(charger->dev, "USB DCP charger is connected\n");
-> +		current_limit = 650000;
-> +	} else if (extcon_get_state(edev, EXTCON_CHG_USB_FAST) > 0) {
-> +		dev_dbg(charger->dev, "USB FAST charger is connected\n");
-> +		current_limit = 650000;
-> +	} else if (extcon_get_state(edev, EXTCON_CHG_USB_SLOW) > 0) {
-> +		dev_dbg(charger->dev, "USB SLOW charger is connected\n");
-> +		current_limit = 650000;
-> +	} else if (extcon_get_state(edev, EXTCON_CHG_USB_CDP) > 0) {
-> +		dev_dbg(charger->dev, "USB CDP charger is connected\n");
-> +		current_limit = 650000;
-> +	} else {
-> +		dev_dbg(charger->dev, "USB charger is diconnected\n");
-> +		current_limit = -1;
-> +	}
-> +
-> +	if (current_limit > 0) {
-> +		ret = regulator_set_current_limit(charger->reg, current_limit, current_limit);
-> +		if (ret) {
-> +			dev_err(charger->dev, "failed to set current limit: %d\n", ret);
-> +			goto regulator_disable;
+On Mon, Dec 21, 2020, at 10:09 PM, Paul Cercueil wrote:
+> Hi Jiaxun,
+>=20
+> Le lun. 21 d=C3=A9c. 2020 =C3=A0 21:00, Jiaxun Yang <jiaxun.yang@flygo=
+at.com> a=20
+> =C3=A9crit :
+> > .cprestore is removed as we don't except Position Independent
+> > zboot ELF.
+> >=20
+> > .noreorder is also removed and rest instructions is massaged
+> > to improve readability.
+> >=20
+> > t9 register is used to indirect jump as MIPS ABI requirement.
+> >=20
+> > Reported-by: Paul Cercueil <paul@crapouillou.net>
+> > Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> > ---
+> >  arch/mips/boot/compressed/head.S | 17 +++++++----------
+> >  1 file changed, 7 insertions(+), 10 deletions(-)
+> >=20
+> > diff --git a/arch/mips/boot/compressed/head.S=20
+> > b/arch/mips/boot/compressed/head.S
+> > index 409cb483a9ff..977218c90bc8 100644
+> > --- a/arch/mips/boot/compressed/head.S
+> > +++ b/arch/mips/boot/compressed/head.S
+> > @@ -15,8 +15,6 @@
+> >  #include <asm/asm.h>
+> >  #include <asm/regdef.h>
+> >=20
+> > -	.set noreorder
+> > -	.cprestore
+> >  	LEAF(start)
+> >  start:
+>=20
+> You can also remove the 'start' label, since it's declared inside the=20=
 
-Unusual error path... if regulator was not enabled before and
-regulator_set_current_limit() failed, you disable the regulator? Why?
-Wasn't it already disabled?
+> LEAF() macro as well. GNU's assembler won't mind, but LLVM will choke=20=
 
-Best regards,
-Krzysztof
+> on that.
 
+Thanks, will do in v2!
+
+I was trying to catch you on IRC but failed every time when it comes to =
+my mind :-(
+
+>=20
+> Cheers,
+> -Paul
+>=20
+
+- Jiaxun
