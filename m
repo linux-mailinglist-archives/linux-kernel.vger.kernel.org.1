@@ -2,111 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A7062DF7BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 03:51:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C5A62DF7C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 03:55:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727335AbgLUCrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 21:47:16 -0500
-Received: from ZXSHCAS1.zhaoxin.com ([203.148.12.81]:39850 "EHLO
-        ZXSHCAS1.zhaoxin.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725497AbgLUCrQ (ORCPT
+        id S1727309AbgLUCzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 21:55:15 -0500
+Received: from relmlor2.renesas.com ([210.160.252.172]:9923 "EHLO
+        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726166AbgLUCzP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 21:47:16 -0500
-Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHCAS1.zhaoxin.com
- (10.28.252.161) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Mon, 21 Dec
- 2020 10:46:28 +0800
-Received: from [192.168.0.102] (113.201.128.11) by zxbjmbx1.zhaoxin.com
- (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Mon, 21 Dec
- 2020 10:46:26 +0800
-Date:   Mon, 21 Dec 2020 10:46:25 +0800
-From:   <tonywwang-oc@zhaoxin.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <x86@kernel.org>, <hpa@zytor.com>, <linux-crypto@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <TimGuo-oc@zhaoxin.com>,
-        <CooperYan@zhaoxin.com>, <QiyuanWang@zhaoxin.com>,
-        <HerryYang@zhaoxin.com>, <CobeChen@zhaoxin.com>,
-        <SilviaZhao@zhaoxin.com>
-Subject: Re: [PATCH] crypto: x86/crc32c-intel - Don't match some Zhaoxin CPUs
-User-Agent: K-9 Mail for Android
-In-Reply-To: <X9j43b+JPbUUvCrH@sol.localdomain>
-References: <1607686144-2604-1-git-send-email-TonyWWang-oc@zhaoxin.com> <X9Ov3RWDpUik7gXo@sol.localdomain> <1f8d17bf-c1d9-6496-d2f8-5773633011fb@zhaoxin.com> <X9fN7mOMdn1Dxn63@sol.localdomain> <a95984ea-7451-78fe-88c5-b81f633fecdf@zhaoxin.com> <X9j43b+JPbUUvCrH@sol.localdomain>
-Message-ID: <345BC725-406B-40C6-88E9-747DBEBE0493@zhaoxin.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [113.201.128.11]
-X-ClientProxiedBy: ZXSHCAS1.zhaoxin.com (10.28.252.161) To
- zxbjmbx1.zhaoxin.com (10.29.252.163)
+        Sun, 20 Dec 2020 21:55:15 -0500
+X-IronPort-AV: E=Sophos;i="5.78,436,1599490800"; 
+   d="scan'208";a="66411289"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+  by relmlie6.idc.renesas.com with ESMTP; 21 Dec 2020 11:54:43 +0900
+Received: from localhost.localdomain (unknown [10.166.252.89])
+        by relmlir6.idc.renesas.com (Postfix) with ESMTP id AA30B41BA02A;
+        Mon, 21 Dec 2020 11:54:43 +0900 (JST)
+From:   Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+To:     marek.vasut+renesas@gmail.com, lee.jones@linaro.org,
+        matti.vaittinen@fi.rohmeurope.com, lgirdwood@gmail.com,
+        broonie@kernel.org, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com
+Cc:     khiem.nguyen.xt@renesas.com, linux-power@fi.rohmeurope.com,
+        linux-gpio@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Subject: [PATCH v4 00/12] treewide: bd9571mwv: Add support for BD9574MWF
+Date:   Mon, 21 Dec 2020 11:54:27 +0900
+Message-Id: <1608519279-13341-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On December 16, 2020 1:56:45 AM GMT+08:00, Eric Biggers <ebiggers@kernel.org> wrote:
->On Tue, Dec 15, 2020 at 10:15:29AM +0800, Tony W Wang-oc wrote:
->> 
->> On 15/12/2020 04:41, Eric Biggers wrote:
->> > On Mon, Dec 14, 2020 at 10:28:19AM +0800, Tony W Wang-oc wrote:
->> >> On 12/12/2020 01:43, Eric Biggers wrote:
->> >>> On Fri, Dec 11, 2020 at 07:29:04PM +0800, Tony W Wang-oc wrote:
->> >>>> The driver crc32c-intel match CPUs supporting
->X86_FEATURE_XMM4_2.
->> >>>> On platforms with Zhaoxin CPUs supporting this X86 feature, When
->> >>>> crc32c-intel and crc32c-generic are both registered, system will
->> >>>> use crc32c-intel because its .cra_priority is greater than
->> >>>> crc32c-generic. This case expect to use crc32c-generic driver
->for
->> >>>> some Zhaoxin CPUs to get performance gain, So remove these
->Zhaoxin
->> >>>> CPUs support from crc32c-intel.
->> >>>>
->> >>>> Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
->> >>>
->> >>> Does this mean that the performance of the crc32c instruction on
->those CPUs is
->> >>> actually slower than a regular C implementation?  That's very
->weird.
->> >>>
->> >>
->> >> From the lmbench3 Create and Delete file test on those chips, I
->think yes.
->> >>
->> > 
->> > Did you try measuring the performance of the hashing itself, and
->not some
->> > higher-level filesystem operations?
->> > 
->> 
->> Yes. Was testing on these Zhaoxin CPUs, the result is that with the
->same
->> input value the generic C implementation takes fewer time than the
->> crc32c instruction implementation.
->> 
->
->And that is really "working as intended"?
+Add BD9574MWF support into bd9571mwv gpio, mfd and regulator drivers.
+Latest Ebisu-4D boards has this chip instead of BD9571MWV so that
+we need this patch series to detect this chip at runtime.
 
-These CPU's crc32c instruction is not working as intended.
+Note that the patch [1/12] is a bug-fix patch for mfd driver.
 
-  Why do these CPUs even
->declare that
->they support the crc32c instruction, when it is so slow?
->
+Changes from v3:
+ - Add "Acked-for-MFD-by" in patch 1, 3, 9 and 10.
+ - Use "Co-developed-by" instead in patch 11.
+ - In patch 11:
+ -- Remove abusing kernel-doc formatting in patch.
+ -- Rename bd957x_data with bd957x_ddata in patch.
+ -- Remove product name printk.
+ -- Rename bd9571mwv_identify() with bd957x_identify().
+ -- Remove argument "part_name" from bd957x_identify().
+ -- Modify dev_err() string.
+ -- Rename BD9571MWV_PRODUCT_CODE_VAL with BD9571MWV_PRODUCT_CODE_BD9571MWV.
+ -- Fix errno from -ENOENT to -ENODEV.
+ - In patch 12:
+ -- Rename "MFD driver" to "core driver".
+ -- Remove unnecessary comments.
+ -- Rename BD9574MWF_PRODUCT_CODE_VAL with BD9571MWV_PRODUCT_CODE_BD9574MWF.
+ https://patchwork.kernel.org/project/linux-renesas-soc/list/?series=402719
 
-The presence of crc32c and some other instructions supports are enumerated by CPUID.01:ECX[SSE4.2] = 1,  other instructions are ok except the crc32c instruction.
+Changes from v2:
+ - Use devm_mfd_add_devices() to remove the mfd device in unload.
+ - Update commit descriptions in patch 4 and 8.
+ - Use regmap_get_device() to simplify in patch 4.
+ - Remove "struct bd9571mwv" and bd9571mwv_remove().
+ - Add Reviewed-by in patch 3 to 9.
+ - Use devm_regmap_add_irq_chip() to simplify in patch 10.
+ https://patchwork.kernel.org/project/linux-renesas-soc/list/?series=400477
 
->Are there any other instruction sets (AES-NI, PCLMUL, SSE, SSE2, AVX,
->etc.) that
->these CPUs similarly declare support for but they are uselessly slow?
+Changes from v1:
+ - Document BD9574MWF on the dt-binding.
+ - Add ROHM_CHIP_TYPE_BD957[14] into rohm-generic.h.
+ - To simplify gpio and regulator drivers, using regmap instead of
+   using struct bd9571mwv.
+ - Remove BD9574MWF definitions to make gpio and regulator driver
+   simple to support for BD9574MWF.
+ - Add BD9574MWF support for gpio and regulator drivers.
+ - Add missing regmap ranges for BD9574MWF.
+ - Rename "part_number" with "part_name".
+ https://patchwork.kernel.org/project/linux-renesas-soc/list/?series=398059
 
-No.
+Khiem Nguyen (2):
+  mfd: bd9571mwv: Make the driver more generic
+  mfd: bd9571mwv: Add support for BD9574MWF
 
-Sincerely
-Tonyw
+Yoshihiro Shimoda (10):
+  mfd: bd9571mwv: Use devm_mfd_add_devices()
+  dt-bindings: mfd: bd9571mwv: Document BD9574MWF
+  mfd: rohm-generic: Add BD9571 and BD9574
+  regulator: bd9571mwv: rid of using struct bd9571mwv
+  regulator: bd9571mwv: Add BD9574MWF support
+  gpio: bd9571mwv: Use the SPDX license identifier
+  gpio: bd9571mwv: rid of using struct bd9571mwv
+  gpio: bd9571mwv: Add BD9574MWF support
+  mfd: bd9571mwv: Use the SPDX license identifier
+  mfd: bd9571mwv: Use devm_regmap_add_irq_chip()
 
->
->- Eric
+ .../devicetree/bindings/mfd/bd9571mwv.txt          |   4 +-
+ drivers/gpio/gpio-bd9571mwv.c                      |  35 ++--
+ drivers/mfd/bd9571mwv.c                            | 197 ++++++++++++++-------
+ drivers/regulator/bd9571mwv-regulator.c            |  59 +++---
+ include/linux/mfd/bd9571mwv.h                      |  45 ++---
+ include/linux/mfd/rohm-generic.h                   |   2 +
+ 6 files changed, 203 insertions(+), 139 deletions(-)
 
+-- 
+2.7.4
 
