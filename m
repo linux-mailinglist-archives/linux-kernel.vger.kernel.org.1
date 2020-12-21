@@ -2,233 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 979642E0247
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 23:02:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0CFB2E024C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 23:05:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726016AbgLUWBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 17:01:50 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:45576 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgLUWBu (ORCPT
+        id S1726022AbgLUWEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 17:04:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725780AbgLUWEn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 17:01:50 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BLM0aZf006003;
-        Mon, 21 Dec 2020 22:01:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=IUDum7Iftk3vCWLh9vZ+ATGTWj3sEfpON7UvtTKL1i8=;
- b=BgAd/k8A0quJzuKj3+ahQOtX99bpAeUfW70OjVJMxqPA8Jqu/a/REGR75CZ7r7+XgF03
- 8DbxK6/5nXs3wAmqvKSsR4g6StcYE4Mm3yHpnPIWGfjnjmHOum1yYnw1unlbK8jrfNcI
- 8m48rgdfPmi6/p+BCl8pe1W9Kj2S9Kgb9oKzXKJw9vedlpFeGReKzFZ9WgA9t5sHy/fG
- SR2w03jBArL4Kw1V42U0+yG7rdzbzSNLsNSCJPxULvrxEZdhsBthE7rfca2oqQ8DgO4+
- UPgAuHVR7mXvBA0ozNyDNh4hTDDIcmcKYGSrV+qtHlMnVKltO/L5WTvX0Oqp28iyiDtL hw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 35k0d88wgc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 21 Dec 2020 22:01:03 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BLLpWvG155381;
-        Mon, 21 Dec 2020 22:01:02 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 35k0e09mfw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 21 Dec 2020 22:01:02 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BLM11qV031167;
-        Mon, 21 Dec 2020 22:01:01 GMT
-Received: from localhost.localdomain (/10.159.138.233)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 21 Dec 2020 14:01:01 -0800
-Subject: Re: [PATCH v3] KVM/x86: Move definition of __ex to x86.h
-To:     Uros Bizjak <ubizjak@gmail.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-References: <20201221194800.46962-1-ubizjak@gmail.com>
-From:   Krish Sadhukhan <krish.sadhukhan@oracle.com>
-Message-ID: <a773afca-7f28-2392-74ad-0895da3f75ca@oracle.com>
-Date:   Mon, 21 Dec 2020 14:00:52 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Mon, 21 Dec 2020 17:04:43 -0500
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3787C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 14:04:02 -0800 (PST)
+Received: by mail-ot1-x32f.google.com with SMTP id 11so10170553oty.9
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 14:04:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=tFoNtn1mxZtEpIyJCM6fuyZ5ldvhyAJ8z+JEBrhpwBE=;
+        b=FcgfYkL8C2xzZZeZt724HXeFYPfBGaJDSzKdZgf+mUZz2FLaQAfADg8QcVwYlMJcI6
+         YyfRDUKr8CwANRDb2X3JkaqiJQyMMNc1wBGlCJK8sIEy/RZeM2+GZ8nlt781fMFenWDc
+         RHOj4I0J1yWWQa+/Yt927Ujz9VkYm9dSDQoLQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=tFoNtn1mxZtEpIyJCM6fuyZ5ldvhyAJ8z+JEBrhpwBE=;
+        b=nU3AoyYKIYdPOwfh6XYPMzVhsnYqT3ZOEsWOOdPkVGQs2CGufR9UQ08d7zN4flIyvq
+         7TvFCvoD4qupi7XFCvFMPWpeKVLnwVNW6ZFGuro93XWpKvpndI27Vjk9TYBfzaZusLSY
+         SVUbNIFCTqoUdQJAplxCl0kH9whlvZwCnwyhDlDCH99ItnzfiRFdMFoYuFQnSxX8mDO3
+         mHeUU00MmAlnwx62XgmiN5hNAa5rpl2hz4iPyfFBHMO9vquUewmic+kZKXaasLfiaC+q
+         hkcF0BqQ5n3KnH0EZqngVv9lsbugZLTUltsUb72moqTyzupvrtFykmtwZjb20ybK3tV+
+         tfSg==
+X-Gm-Message-State: AOAM531mccAqmrKmdk93c9gKfvNcEUZKmKVIdeL0xc8AEfsjFFCPEiV4
+        LBojr/J7Lj/yzQ1EFEv7dMC106TwygabHVQvP1JAJA==
+X-Google-Smtp-Source: ABdhPJyjwY8sHHvZxTszRZSNURVZSRWIrFxn66lY/Ozir0IZkZoCx3fhnHwOnvUFllSRZbF1kyIxXS3i4w+yt6XQJOY=
+X-Received: by 2002:a9d:23ca:: with SMTP id t68mr13903904otb.281.1608588242338;
+ Mon, 21 Dec 2020 14:04:02 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201221194800.46962-1-ubizjak@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9842 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
- malwarescore=0 phishscore=0 mlxscore=0 adultscore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012210146
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9842 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 priorityscore=1501
- impostorscore=0 malwarescore=0 suspectscore=0 mlxlogscore=999 mlxscore=0
- spamscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012210147
+References: <1606898835-40775-1-git-send-email-tiantao6@hisilicon.com>
+ <1606898835-40775-2-git-send-email-tiantao6@hisilicon.com> <f6c14465-53a5-1cd3-df8a-d1895ca20656@suse.de>
+In-Reply-To: <f6c14465-53a5-1cd3-df8a-d1895ca20656@suse.de>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Mon, 21 Dec 2020 23:03:51 +0100
+Message-ID: <CAKMK7uGnotVEuo_MNi0YRuU8bFt5HiJ-ETHmV+ykcrLbjFeuzg@mail.gmail.com>
+Subject: Re: [PATCH drm/hisilicon 1/3] drm/hisilicon: Code refactoring for hibmc_drm_drv
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Tian Tao <tiantao6@hisilicon.com>, Dave Airlie <airlied@linux.ie>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 12/21/20 11:48 AM, Uros Bizjak wrote:
-> Merge __kvm_handle_fault_on_reboot with its sole user
-> and move the definition of __ex to a common include to be
-> shared between VMX and SVM.
+On Wed, Dec 2, 2020 at 10:02 AM Thomas Zimmermann <tzimmermann@suse.de> wro=
+te:
 >
-> v2: Rebase to the latest kvm/queue.
 >
-> v3: Incorporate changes from review comments.
 >
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-> Reviewed-by: Krish Sadhukhan <krish.sadhukhan@oracle.com>
-> ---
->   arch/x86/include/asm/kvm_host.h | 25 -------------------------
->   arch/x86/kvm/svm/sev.c          |  2 --
->   arch/x86/kvm/svm/svm.c          |  2 --
->   arch/x86/kvm/vmx/vmx.c          |  4 +---
->   arch/x86/kvm/vmx/vmx_ops.h      |  4 +---
->   arch/x86/kvm/x86.h              | 24 ++++++++++++++++++++++++
->   6 files changed, 26 insertions(+), 35 deletions(-)
+> Am 02.12.20 um 09:47 schrieb Tian Tao:
+> > Use the devm_drm_dev_alloc provided by the drm framework to alloc
+> > a structure hibmc_drm_private.
+> >
+> > Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
 >
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 39707e72b062..a78e4b1a5d77 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1634,31 +1634,6 @@ enum {
->   #define kvm_arch_vcpu_memslots_id(vcpu) ((vcpu)->arch.hflags & HF_SMM_MASK ? 1 : 0)
->   #define kvm_memslots_for_spte_role(kvm, role) __kvm_memslots(kvm, (role).smm)
->   
-> -asmlinkage void kvm_spurious_fault(void);
-> -
-> -/*
-> - * Hardware virtualization extension instructions may fault if a
-> - * reboot turns off virtualization while processes are running.
-> - * Usually after catching the fault we just panic; during reboot
-> - * instead the instruction is ignored.
-> - */
-> -#define __kvm_handle_fault_on_reboot(insn)				\
-> -	"666: \n\t"							\
-> -	insn "\n\t"							\
-> -	"jmp	668f \n\t"						\
-> -	"667: \n\t"							\
-> -	"1: \n\t"							\
-> -	".pushsection .discard.instr_begin \n\t"			\
-> -	".long 1b - . \n\t"						\
-> -	".popsection \n\t"						\
-> -	"call	kvm_spurious_fault \n\t"				\
-> -	"1: \n\t"							\
-> -	".pushsection .discard.instr_end \n\t"				\
-> -	".long 1b - . \n\t"						\
-> -	".popsection \n\t"						\
-> -	"668: \n\t"							\
-> -	_ASM_EXTABLE(666b, 667b)
-> -
->   #define KVM_ARCH_WANT_MMU_NOTIFIER
->   int kvm_unmap_hva_range(struct kvm *kvm, unsigned long start, unsigned long end,
->   			unsigned flags);
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index e57847ff8bd2..ba492b6d37a0 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -25,8 +25,6 @@
->   #include "cpuid.h"
->   #include "trace.h"
->   
-> -#define __ex(x) __kvm_handle_fault_on_reboot(x)
-> -
->   static u8 sev_enc_bit;
->   static int sev_flush_asids(void);
->   static DECLARE_RWSEM(sev_deactivate_lock);
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 941e5251e13f..733d9f98a121 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -42,8 +42,6 @@
->   
->   #include "svm.h"
->   
-> -#define __ex(x) __kvm_handle_fault_on_reboot(x)
-> -
->   MODULE_AUTHOR("Qumranet");
->   MODULE_LICENSE("GPL");
->   
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 75c9c6a0a3a4..b82f2689f2d7 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -2320,9 +2320,7 @@ static void vmclear_local_loaded_vmcss(void)
->   }
->   
->   
-> -/* Just like cpu_vmxoff(), but with the __kvm_handle_fault_on_reboot()
-> - * tricks.
-> - */
-> +/* Just like cpu_vmxoff(), but with the fault handling. */
->   static void kvm_cpu_vmxoff(void)
->   {
->   	asm volatile (__ex("vmxoff"));
-> diff --git a/arch/x86/kvm/vmx/vmx_ops.h b/arch/x86/kvm/vmx/vmx_ops.h
-> index 692b0c31c9c8..7e3cb53c413f 100644
-> --- a/arch/x86/kvm/vmx/vmx_ops.h
-> +++ b/arch/x86/kvm/vmx/vmx_ops.h
-> @@ -4,13 +4,11 @@
->   
->   #include <linux/nospec.h>
->   
-> -#include <asm/kvm_host.h>
->   #include <asm/vmx.h>
->   
->   #include "evmcs.h"
->   #include "vmcs.h"
-> -
-> -#define __ex(x) __kvm_handle_fault_on_reboot(x)
-> +#include "x86.h"
->   
->   asmlinkage void vmread_error(unsigned long field, bool fault);
->   __attribute__((regparm(0))) void vmread_error_trampoline(unsigned long field,
-> diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-> index c5ee0f5ce0f1..5b16d2b5c3bc 100644
-> --- a/arch/x86/kvm/x86.h
-> +++ b/arch/x86/kvm/x86.h
-> @@ -8,6 +8,30 @@
->   #include "kvm_cache_regs.h"
->   #include "kvm_emulate.h"
->   
-> +asmlinkage void kvm_spurious_fault(void);
-> +
-> +/*
-> + * Handle a fault on a hardware virtualization (VMX or SVM) instruction.
-> + *
-> + * Hardware virtualization extension instructions may fault if a reboot turns
-> + * off virtualization while processes are running.  Usually after catching the
-> + * fault we just panic; during reboot instead the instruction is ignored.
-> + */
-> +#define __ex(insn)							\
+> This looks good now. Thanks for sticking to it.
+>
+> Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+
+For the future: devm_drm_dev_alloc means no more explicit drm_dev_put
+in error and unload paths. This patch didn't remove these, so needs to
+be fixed up with a follow up patch.
+-Daniel
+
+>
+> > ---
+> >   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c   |  2 +-
+> >   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c  | 46 +++++++++++----=
+---------
+> >   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h  |  4 +--
+> >   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c |  2 +-
+> >   drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c      |  8 +++--
+> >   5 files changed, 30 insertions(+), 32 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c b/drivers/g=
+pu/drm/hisilicon/hibmc/hibmc_drm_de.c
+> > index ea962ac..096eea9 100644
+> > --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
+> > +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
+> > @@ -499,7 +499,7 @@ static const struct drm_crtc_helper_funcs hibmc_crt=
+c_helper_funcs =3D {
+> >
+> >   int hibmc_de_init(struct hibmc_drm_private *priv)
+> >   {
+> > -     struct drm_device *dev =3D priv->dev;
+> > +     struct drm_device *dev =3D &priv->dev;
+> >       struct drm_crtc *crtc =3D &priv->crtc;
+> >       struct drm_plane *plane =3D &priv->primary_plane;
+> >       int ret;
+> > diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/=
+gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> > index d845657..13e8a28 100644
+> > --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> > +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> > @@ -79,31 +79,32 @@ static const struct dev_pm_ops hibmc_pm_ops =3D {
+> >
+> >   static int hibmc_kms_init(struct hibmc_drm_private *priv)
+> >   {
+> > +     struct drm_device *dev =3D &priv->dev;
+> >       int ret;
+> >
+> > -     drm_mode_config_init(priv->dev);
+> > +     drm_mode_config_init(dev);
+> >       priv->mode_config_initialized =3D true;
+> >
+> > -     priv->dev->mode_config.min_width =3D 0;
+> > -     priv->dev->mode_config.min_height =3D 0;
+> > -     priv->dev->mode_config.max_width =3D 1920;
+> > -     priv->dev->mode_config.max_height =3D 1200;
+> > +     dev->mode_config.min_width =3D 0;
+> > +     dev->mode_config.min_height =3D 0;
+> > +     dev->mode_config.max_width =3D 1920;
+> > +     dev->mode_config.max_height =3D 1200;
+> >
+> > -     priv->dev->mode_config.fb_base =3D priv->fb_base;
+> > -     priv->dev->mode_config.preferred_depth =3D 32;
+> > -     priv->dev->mode_config.prefer_shadow =3D 1;
+> > +     dev->mode_config.fb_base =3D priv->fb_base;
+> > +     dev->mode_config.preferred_depth =3D 32;
+> > +     dev->mode_config.prefer_shadow =3D 1;
+> >
+> > -     priv->dev->mode_config.funcs =3D (void *)&hibmc_mode_funcs;
+> > +     dev->mode_config.funcs =3D (void *)&hibmc_mode_funcs;
+> >
+> >       ret =3D hibmc_de_init(priv);
+> >       if (ret) {
+> > -             drm_err(priv->dev, "failed to init de: %d\n", ret);
+> > +             drm_err(dev, "failed to init de: %d\n", ret);
+> >               return ret;
+> >       }
+> >
+> >       ret =3D hibmc_vdac_init(priv);
+> >       if (ret) {
+> > -             drm_err(priv->dev, "failed to init vdac: %d\n", ret);
+> > +             drm_err(dev, "failed to init vdac: %d\n", ret);
+> >               return ret;
+> >       }
+> >
+> > @@ -113,7 +114,7 @@ static int hibmc_kms_init(struct hibmc_drm_private =
+*priv)
+> >   static void hibmc_kms_fini(struct hibmc_drm_private *priv)
+> >   {
+> >       if (priv->mode_config_initialized) {
+> > -             drm_mode_config_cleanup(priv->dev);
+> > +             drm_mode_config_cleanup(&priv->dev);
+> >               priv->mode_config_initialized =3D false;
+> >       }
+> >   }
+> > @@ -202,7 +203,7 @@ static void hibmc_hw_config(struct hibmc_drm_privat=
+e *priv)
+> >
+> >   static int hibmc_hw_map(struct hibmc_drm_private *priv)
+> >   {
+> > -     struct drm_device *dev =3D priv->dev;
+> > +     struct drm_device *dev =3D &priv->dev;
+> >       struct pci_dev *pdev =3D dev->pdev;
+> >       resource_size_t addr, size, ioaddr, iosize;
+> >
+> > @@ -258,17 +259,9 @@ static int hibmc_unload(struct drm_device *dev)
+> >
+> >   static int hibmc_load(struct drm_device *dev)
+> >   {
+> > -     struct hibmc_drm_private *priv;
+> > +     struct hibmc_drm_private *priv =3D to_hibmc_drm_private(dev);
+> >       int ret;
+> >
+> > -     priv =3D drmm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> > -     if (!priv) {
+> > -             drm_err(dev, "no memory to allocate for hibmc_drm_private=
+\n");
+> > -             return -ENOMEM;
+> > -     }
+> > -     dev->dev_private =3D priv;
+> > -     priv->dev =3D dev;
+> > -
+> >       ret =3D hibmc_hw_init(priv);
+> >       if (ret)
+> >               goto err;
+> > @@ -310,6 +303,7 @@ static int hibmc_load(struct drm_device *dev)
+> >   static int hibmc_pci_probe(struct pci_dev *pdev,
+> >                          const struct pci_device_id *ent)
+> >   {
+> > +     struct hibmc_drm_private *priv;
+> >       struct drm_device *dev;
+> >       int ret;
+> >
+> > @@ -318,12 +312,14 @@ static int hibmc_pci_probe(struct pci_dev *pdev,
+> >       if (ret)
+> >               return ret;
+> >
+> > -     dev =3D drm_dev_alloc(&hibmc_driver, &pdev->dev);
+> > -     if (IS_ERR(dev)) {
+> > +     priv =3D devm_drm_dev_alloc(&pdev->dev, &hibmc_driver,
+> > +                               struct hibmc_drm_private, dev);
+> > +     if (IS_ERR(priv)) {
+> >               DRM_ERROR("failed to allocate drm_device\n");
+> > -             return PTR_ERR(dev);
+> > +             return PTR_ERR(priv);
+> >       }
+> >
+> > +     dev =3D &priv->dev;
+> >       dev->pdev =3D pdev;
+> >       pci_set_drvdata(pdev, dev);
+> >
+> > diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h b/drivers/=
+gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+> > index f310a83..7e0c756 100644
+> > --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+> > +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+> > @@ -37,7 +37,7 @@ struct hibmc_drm_private {
+> >       resource_size_t  fb_size;
+> >
+> >       /* drm */
+> > -     struct drm_device  *dev;
+> > +     struct drm_device dev;
+> >       struct drm_plane primary_plane;
+> >       struct drm_crtc crtc;
+> >       struct drm_encoder encoder;
+> > @@ -52,7 +52,7 @@ static inline struct hibmc_connector *to_hibmc_connec=
+tor(struct drm_connector *c
+> >
+> >   static inline struct hibmc_drm_private *to_hibmc_drm_private(struct d=
+rm_device *dev)
+> >   {
+> > -     return dev->dev_private;
+> > +     return container_of(dev, struct hibmc_drm_private, dev);
+> >   }
+> >
+> >   void hibmc_set_power_mode(struct hibmc_drm_private *priv,
+> > diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c b/drivers=
+/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+> > index 74e26c2..d35548d 100644
+> > --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+> > +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+> > @@ -96,7 +96,7 @@ static const struct drm_encoder_funcs hibmc_encoder_f=
+uncs =3D {
+> >
+> >   int hibmc_vdac_init(struct hibmc_drm_private *priv)
+> >   {
+> > -     struct drm_device *dev =3D priv->dev;
+> > +     struct drm_device *dev =3D &priv->dev;
+> >       struct hibmc_connector *hibmc_connector =3D &priv->connector;
+> >       struct drm_encoder *encoder =3D &priv->encoder;
+> >       struct drm_connector *connector =3D &hibmc_connector->base;
+> > diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c b/drivers/gpu/=
+drm/hisilicon/hibmc/hibmc_ttm.c
+> > index 602ece1..e84fb81 100644
+> > --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
+> > +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
+> > @@ -25,7 +25,7 @@ int hibmc_mm_init(struct hibmc_drm_private *hibmc)
+> >   {
+> >       struct drm_vram_mm *vmm;
+> >       int ret;
+> > -     struct drm_device *dev =3D hibmc->dev;
+> > +     struct drm_device *dev =3D &hibmc->dev;
+> >
+> >       vmm =3D drm_vram_helper_alloc_mm(dev,
+> >                                      pci_resource_start(dev->pdev, 0),
+> > @@ -41,10 +41,12 @@ int hibmc_mm_init(struct hibmc_drm_private *hibmc)
+> >
+> >   void hibmc_mm_fini(struct hibmc_drm_private *hibmc)
+> >   {
+> > -     if (!hibmc->dev->vram_mm)
+> > +     struct drm_device *dev =3D &hibmc->dev;
+> > +
+> > +     if (!dev->vram_mm)
+> >               return;
+> >
+> > -     drm_vram_helper_release_mm(hibmc->dev);
+> > +     drm_vram_helper_release_mm(dev);
+> >   }
+> >
+> >   int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
+> >
+>
+> --
+> Thomas Zimmermann
+> Graphics Driver Developer
+> SUSE Software Solutions Germany GmbH
+> Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+> (HRB 36809, AG N=C3=BCrnberg)
+> Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+>
 
 
-While the previous name was too elaborate, this new name is very 
-cryptic.  Unless we are saving for space, it's better to give a somewhat 
-descriptive name.
-
-> +	"666:	" insn "\n"						\
-> +	"	jmp 669f\n"						\
-> +	"667:\n"							\
-> +	"	.pushsection .discard.instr_begin\n"			\
-> +	"	.long 667b - .\n"					\
-> +	"	.popsection\n"						\
-> +	"	call kvm_spurious_fault\n"				\
-> +	"668:\n"							\
-> +	"	.pushsection .discard.instr_end\n"			\
-> +	"	.long 668b - .\n"					\
-> +	"	.popsection\n"						\
-> +	"669:\n"							\
-> +	_ASM_EXTABLE(666b, 667b)
-> +
->   #define KVM_DEFAULT_PLE_GAP		128
->   #define KVM_VMX_DEFAULT_PLE_WINDOW	4096
->   #define KVM_DEFAULT_PLE_WINDOW_GROW	2
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
