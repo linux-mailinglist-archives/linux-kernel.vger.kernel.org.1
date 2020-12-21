@@ -2,197 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D972DFEEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 18:20:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD472DFEEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 18:29:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726500AbgLURSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 12:18:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60026 "EHLO mail.kernel.org"
+        id S1726218AbgLURUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 12:20:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60422 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725930AbgLURSr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 12:18:47 -0500
-Date:   Mon, 21 Dec 2020 09:18:05 -0800
+        id S1725833AbgLURU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 12:20:29 -0500
+Date:   Mon, 21 Dec 2020 09:19:47 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608571086;
-        bh=hRwqD0VhUV7p15cXHAo2g5jrugv7tZUYeRciom14PMk=;
-        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ODePjfM8X9V8+1wVOx9kMQogydBWyRw995wPS0/pi3UXMWLJktWZrwFwFS1PU6QIL
-         MJMPLRH/ly0qx+dPhk80ZB/CMytMJoYx42IrzJU2ouWnIVE8nQPrfH91p2O7hU3HfW
-         6WpaylgNa6zD5kscGTQBtSVUJQkxh69YKGYqWuAwQ/28/bc6h2ulyP3XDska429QOR
-         Z5yQ2KMWk11pBIIQn2iImmDsgzO+YG5BzTMbNMUK5CAHPix7K9l1w4Mt9HDt9QJt+/
-         JrPtPSROyE0wfh46Bgx7u3JF9YPDiQ0+dzSyIcwcSKcn2GH3eg8FwH0LatQjktNOU1
-         VpjvRgEdMrAAg==
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 2/2] rcu-tasks: add RCU-tasks self tests
-Message-ID: <20201221171805.GW2657@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201209202732.5896-1-urezki@gmail.com>
- <20201209202732.5896-2-urezki@gmail.com>
- <20201216154959.GA2408@pc638.lan>
- <20201216232955.GO2657@paulmck-ThinkPad-P72>
- <20201221153809.GA24756@pc638.lan>
+        s=k20201202; t=1608571189;
+        bh=wPj0xjQToUwmlmERjSRgyfHiQl2REANx9BVSI/YNQuc=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oeF8bzI3NpfW3FgxfVfdNpMS0A969fYXYj7RSORAwoNRum1QXQEliaIr3qJt08GsD
+         /olvm77hJJIEvSRnWIXtQ5AKTYhAchQZvus/s1NXO0oknybC6K3qco0mIiINFXFecc
+         rerbnlajLZY22Q5/n2RHifh4Nu86QpWwmqXUfOfp5KQzCR/E+0lhyljikPwS/XEsmc
+         UPIvpCHeAzW0AlMkHahI7670I/DsgsLti2ynanW8XrZsniuzG2s/pjGX38z++vBgZ5
+         /SWsKeYZya68gOFZKpLu3caN2m/I1LIuc1cEFvgpSTRql6Dl4jiY1yZ5UkyVxFr6M7
+         1iIgWsZHFVQ4A==
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Avri Altman <Avri.Altman@wdc.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "kernel-team@android.com" <kernel-team@android.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>
+Subject: Re: [PATCH] scsi: ufs: fix livelock of ufshcd_clear_ua_wluns
+Message-ID: <X+DZMwSHsskcEgZE@google.com>
+References: <20201218033131.2624065-1-jaegeuk@kernel.org>
+ <DM6PR04MB6575B8729A62E6FB9F19930CFCC10@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <X+C9+1p1CbssKRdO@google.com>
+ <DM6PR04MB65753B9D31B3643C757E4E23FCC00@DM6PR04MB6575.namprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201221153809.GA24756@pc638.lan>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <DM6PR04MB65753B9D31B3643C757E4E23FCC00@DM6PR04MB6575.namprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 04:38:09PM +0100, Uladzislau Rezki wrote:
-> On Wed, Dec 16, 2020 at 03:29:55PM -0800, Paul E. McKenney wrote:
-> > On Wed, Dec 16, 2020 at 04:49:59PM +0100, Uladzislau Rezki wrote:
-
-[ . . . ]
-
-> > > 2.20.1
+On 12/21, Avri Altman wrote:
+> > > > When gate_work/ungate_work gets an error during hibern8_enter or
+> > exit,
+> > > >  ufshcd_err_handler()
+> > > >    ufshcd_scsi_block_requests()
+> > > >    ufshcd_reset_and_restore()
+> > > >      ufshcd_clear_ua_wluns() -> stuck
+> > > >    ufshcd_scsi_unblock_requests()
+> > > >
+> > > > In order to avoid it, ufshcd_clear_ua_wluns() can be called per recovery
+> > > > flows
+> > > > such as suspend/resume, link_recovery, and error_handler.
+> > > Not sure that suspend/resume are UAC events?
 > > 
-> > Again, much improved!
+> > Could you elaborate a bit? The goal is to clear UAC after UFS reset happens.
+> So why calling it on every suspend and resume?
+
+1. If UAC was cleared, there's no impact. 
+2. ufshcd_link_recovery() can reset UFS directly by ufs_mtk_resume().
+3. ufshcd_suspend can call ufshcd_host_reset_and_restore() as well.
+
+> 
 > > 
-> See below the v3 version. I hope i fixed all comments :)
-> 
-> >From 06f7adfd84cbb1994d0e2693ee9dcdfd272a9bd0 Mon Sep 17 00:00:00 2001
-> From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-> Date: Wed, 9 Dec 2020 21:27:32 +0100
-> Subject: [PATCH v3 1/1] rcu-tasks: Add RCU-tasks self tests
-> 
-> This commit adds self tests for early-boot use of RCU-tasks grace periods.
-> It tests all three variants (Rude, Tasks, and Tasks Trace) and covers
-> both synchronous (e.g., synchronize_rcu_tasks()) and asynchronous (e.g.,
-> call_rcu_tasks()) grace-period APIs.
-> 
-> Self-tests are run only in kernels built with CONFIG_PROVE_RCU=y.
-> 
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-
-Much better!
-
-I pulled this in, but made one small additional change.  Please let me
-know if this is problematic.
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit 93372198b5c9efdfd288aa3b3ee41c1f90866886
-Author: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Date:   Wed Dec 9 21:27:32 2020 +0100
-
-    rcu-tasks: Add RCU-tasks self tests
-    
-    This commit adds self tests for early-boot use of RCU-tasks grace periods.
-    It tests all three variants (Rude, Tasks, and Tasks Trace) and covers
-    both synchronous (e.g., synchronize_rcu_tasks()) and asynchronous (e.g.,
-    call_rcu_tasks()) grace-period APIs.
-    
-    Self-tests are run only in kernels built with CONFIG_PROVE_RCU=y.
-    
-    Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 3660755..35a2cd5 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -1224,6 +1224,40 @@ void show_rcu_tasks_gp_kthreads(void)
- }
- #endif /* #ifndef CONFIG_TINY_RCU */
- 
-+struct rcu_tasks_test_desc {
-+	struct rcu_head rh;
-+	const char *name;
-+	bool notrun;
-+};
-+
-+static struct rcu_tasks_test_desc tests[] = {
-+	{
-+		.name = "call_rcu_tasks()",
-+		/* If not defined, the test is skipped. */
-+		.notrun = !IS_ENABLED(CONFIG_TASKS_RCU),
-+	},
-+	{
-+		.name = "call_rcu_tasks_rude()",
-+		/* If not defined, the test is skipped. */
-+		.notrun = !IS_ENABLED(CONFIG_TASKS_RUDE_RCU),
-+	},
-+	{
-+		.name = "call_rcu_tasks_trace()",
-+		/* If not defined, the test is skipped. */
-+		.notrun = !IS_ENABLED(CONFIG_TASKS_TRACE_RCU)
-+	}
-+};
-+
-+static void test_rcu_tasks_callback(struct rcu_head *rhp)
-+{
-+	struct rcu_tasks_test_desc *rttd =
-+		container_of(rhp, struct rcu_tasks_test_desc, rh);
-+
-+	pr_info("Callback from %s invoked.\n", rttd->name);
-+
-+	rttd->notrun = true;
-+}
-+
- void __init rcu_init_tasks_generic(void)
- {
- #ifdef CONFIG_TASKS_RCU
-@@ -1237,7 +1271,45 @@ void __init rcu_init_tasks_generic(void)
- #ifdef CONFIG_TASKS_TRACE_RCU
- 	rcu_spawn_tasks_trace_kthread();
- #endif
-+
-+	// Run the self-tests.
-+	if (IS_ENABLED(CONFIG_PROVE_RCU)) {
-+		pr_info("Running RCU-tasks wait API self tests\n");
-+#ifdef CONFIG_TASKS_RCU
-+		synchronize_rcu_tasks();
-+		call_rcu_tasks(&tests[0].rh, test_rcu_tasks_callback);
-+#endif
-+
-+#ifdef CONFIG_TASKS_RUDE_RCU
-+		synchronize_rcu_tasks_rude();
-+		call_rcu_tasks_rude(&tests[1].rh, test_rcu_tasks_callback);
-+#endif
-+
-+#ifdef CONFIG_TASKS_TRACE_RCU
-+		synchronize_rcu_tasks_trace();
-+		call_rcu_tasks_trace(&tests[2].rh, test_rcu_tasks_callback);
-+#endif
-+	}
-+}
-+
-+static int rcu_tasks_verify_self_tests(void)
-+{
-+	int ret = 0;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(tests); i++) {
-+		if (!tests[i].notrun) {		// still hanging.
-+			pr_err("%s has been failed.\n", tests[i].name);
-+			ret = -1;
-+		}
-+	}
-+
-+	if (ret)
-+		WARN_ON(1);
-+
-+	return ret;
- }
-+late_initcall(rcu_tasks_verify_self_tests);
- 
- #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
- static inline void rcu_tasks_bootup_oddness(void) {}
+> > >
+> > > Also the 'fixes' tag is missing.
+> > 
+> > Added. Thanks,
+> > 
+> > >
+> > > Thanks,
+> > > Avri
