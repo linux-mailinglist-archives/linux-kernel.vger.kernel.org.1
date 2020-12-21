@@ -2,128 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D058F2DF88D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 06:16:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4962DF890
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 06:16:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727926AbgLUFOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 00:14:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727340AbgLUFOJ (ORCPT
+        id S1727679AbgLUFP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 00:15:57 -0500
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:46646 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726160AbgLUFP4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 00:14:09 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CE50C0613D3;
-        Sun, 20 Dec 2020 21:13:29 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id x22so8712516wmc.5;
-        Sun, 20 Dec 2020 21:13:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=lLDJBIJ2YYNuh2CnTnkqFja+9uBc8NH5OZ465zjG1e0=;
-        b=kPNDbFnpD7iBvL8GXzD68h40CmDNoKVu8BoXOP80o6fMKA/DKJvljX7bNE9nq9da0o
-         gNWuBK0whcPuN26S4JlpDQUslAw5VTRF3bwqqLA7tqfj/NLaFncpkUjQunj/lETzyLT6
-         VgfkWOYLDBFuviCrmoMu7VYQLaJ8guzVe+NaiD7j5xSNrLar0EmgnKDNfANz7x8J01AI
-         ef4FZBmwnZGS3XbfyetlnY1H7bq5qyvrpAe2641+rJKevlco5V4JqzGoJuXA72XClgJR
-         0yVTaW/GgMBV59+5IIg/xDZ26mVo29onoMDgDNAf70xHZ3WdWnEiudAc7feObqq4IrBB
-         FyUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=lLDJBIJ2YYNuh2CnTnkqFja+9uBc8NH5OZ465zjG1e0=;
-        b=IxH3oKEExiKzolG3f43pSqpPwdrWnC9urw3PSV/H3aaFMVFmFlTwIUYA6PeXayzmrL
-         Fx4Hr5QsFOF5NBPVQhyWTfnbbUUUNPUmlbF2azSBsHw8N1RBadMqzx2IR7uiN0W4HADt
-         iwClh56F2lLySfTlr8SE4eJ5VVrfhpuEDCNvSPMQ/ANA1YhJBnUK7SFKZQl9h5d32eF4
-         A8yNG9u39/FSFpaFVja4DTKex7XZJbX3HB3KD1UFfJ0yuoIxnutuQ7Cz4kRFGhG/FB44
-         fo0TP2JW0IUVIlTQUfiU9Vw1idEB7ABFkTmUqZAjhTEkglGqaO6lnyxP/2sIHtKJPH8P
-         PcAA==
-X-Gm-Message-State: AOAM533UUFgjX3YmA6VAgdUsusfWCQLxA/5jsP6PUgExjhArAG5jF/BC
-        k5V5b5jF4FvLmR5lNelyZNA=
-X-Google-Smtp-Source: ABdhPJxilLxWAa1GB0cvaXvue0KuVY/Q1aXIWqgyYMiKucCJaNaWS7R/N3pkOeVwn/QfOzZBDCJiIg==
-X-Received: by 2002:a7b:cb54:: with SMTP id v20mr8483618wmj.148.1608527608118;
-        Sun, 20 Dec 2020 21:13:28 -0800 (PST)
-Received: from felia.fritz.box ([2001:16b8:2dcc:3600:8456:e09e:aa48:2c57])
-        by smtp.gmail.com with ESMTPSA id p8sm21341535wru.50.2020.12.20.21.13.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Dec 2020 21:13:27 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        linux-pm@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, Tom Rix <trix@redhat.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] cpufreq: intel_pstate: remove obsolete functions
-Date:   Mon, 21 Dec 2020 06:13:20 +0100
-Message-Id: <20201221051320.18391-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 21 Dec 2020 00:15:56 -0500
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 0BL5EeSX023952;
+        Mon, 21 Dec 2020 14:14:41 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 0BL5EeSX023952
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1608527681;
+        bh=ec7zDCE2Dssaie5MJIXt/edY86azQA8fYkqB1mvUQRU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=nDVovfx5qMpZt3zefhtaPGUOjQnfOm/YNvgykE0XFWP7RRIV+Cx4efNJKyN54UAvi
+         t1u2VR8CwGBMz3x5kZC5oit5ID+vDaKtohduI82tGn9DfqKhiYdBCVhwr7Gut1Q2Rk
+         ZGYSvENnV3w936KeVwaJy3jl/5hZgkQ/IneWqn0Wcx1URKBDx0O6mRKf5oPBKUtfqx
+         ZnWhy2e0qeGu6tRrscrMkoKduyvLMtehrzx5tUXViOVyMqKzN1TfFQOVyHnDVjNywI
+         zmz9titAC5EWmNR+XbwAe7kpnTC25ldhXKts7bWG0nWMvhOoisIhIeKy62BHnjOc40
+         An9rtoj0xRBUQ==
+X-Nifty-SrcIP: [209.85.210.175]
+Received: by mail-pf1-f175.google.com with SMTP id t22so5821109pfl.3;
+        Sun, 20 Dec 2020 21:14:41 -0800 (PST)
+X-Gm-Message-State: AOAM533z5/ZQadyleJKKaVF/AelF7Q7ucNF+jZZhINOWT72/XUpWKVY8
+        yg/ljoi4+H0L8cNmZ+3mGH2/ETMykDEq6/Z+ewE=
+X-Google-Smtp-Source: ABdhPJwMPKvV6Pfj0mrBv31yEQ/gpjj5UdGwLmSKck4pffiVQMK5iIh27Qu0P+H9ae/P9zjIHaDlnZvrJFHjxgaA2P0=
+X-Received: by 2002:aa7:9501:0:b029:155:3b11:d5c4 with SMTP id
+ b1-20020aa795010000b02901553b11d5c4mr13893878pfp.76.1608527680375; Sun, 20
+ Dec 2020 21:14:40 -0800 (PST)
+MIME-Version: 1.0
+References: <20201219162456.19790-1-lukas.bulwahn@gmail.com>
+In-Reply-To: <20201219162456.19790-1-lukas.bulwahn@gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 21 Dec 2020 14:14:03 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAStP=W5fjO6RMck3+07VKqopBgYgACjryjEwin9kiABWA@mail.gmail.com>
+Message-ID: <CAK7LNAStP=W5fjO6RMck3+07VKqopBgYgACjryjEwin9kiABWA@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: adjust GCC PLUGINS after gcc-plugin.sh removal
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org, Joe Perches <joe@perches.com>,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-percent_fp() was used in intel_pstate_pid_reset(), which was removed in
-commit 9d0ef7af1f2d ("cpufreq: intel_pstate: Do not use PID-based P-state
-selection") and hence, percent_fp() is unused since then.
+On Sun, Dec 20, 2020 at 1:25 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+>
+> Commit 1e860048c53e ("gcc-plugins: simplify GCC plugin-dev capability test")
+> removed ./scripts/gcc-plugin.sh, but missed to adjust MAINTAINERS.
+>
+> Hence, ./scripts/get_maintainers.pl --self-test=patterns warns:
+>
+>   warning: no file matches    F:    scripts/gcc-plugin.sh
+>
+> Adjust entries in GGC PLUGINS section after this file removal.
+>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-percent_ext_fp() was last used in intel_pstate_update_perf_limits(), which
-was refactored in commit 1a4fe38add8b ("cpufreq: intel_pstate: Remove
-max/min fractions to limit performance"), and hence, percent_ext_fp() is
-unused since then.
 
-make CC=clang W=1 points us those unused functions:
+Applied to linux-kbuild. Thanks.
 
-drivers/cpufreq/intel_pstate.c:79:23: warning: unused function 'percent_fp' [-Wunused-function]
-static inline int32_t percent_fp(int percent)
-                      ^
 
-drivers/cpufreq/intel_pstate.c:94:23: warning: unused function 'percent_ext_fp' [-Wunused-function]
-static inline int32_t percent_ext_fp(int percent)
-                      ^
 
-Remove those obsolete functions.
+> ---
+> applies cleanly on next-20201218
+>
+> Masahiro-san, please pick this minor cleanup patch on your -next tree.
+>
+>  MAINTAINERS | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index f5eafee83bc6..fd3b06636c5b 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -7371,7 +7371,6 @@ L:        linux-hardening@vger.kernel.org
+>  S:     Maintained
+>  F:     Documentation/kbuild/gcc-plugins.rst
+>  F:     scripts/Makefile.gcc-plugins
+> -F:     scripts/gcc-plugin.sh
+>  F:     scripts/gcc-plugins/
+>
+>  GCOV BASED KERNEL PROFILING
+> --
+> 2.17.1
+>
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on current master and next-20201221
 
-Srinivas, Len, Rafael, Viresh, please pick this minor non-urgent cleanup patch.
-
- drivers/cpufreq/intel_pstate.c | 10 ----------
- 1 file changed, 10 deletions(-)
-
-diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-index 2a4db856222f..0e35dd247986 100644
---- a/drivers/cpufreq/intel_pstate.c
-+++ b/drivers/cpufreq/intel_pstate.c
-@@ -76,11 +76,6 @@ static inline int ceiling_fp(int32_t x)
- 	return ret;
- }
- 
--static inline int32_t percent_fp(int percent)
--{
--	return div_fp(percent, 100);
--}
--
- static inline u64 mul_ext_fp(u64 x, u64 y)
- {
- 	return (x * y) >> EXT_FRAC_BITS;
-@@ -91,11 +86,6 @@ static inline u64 div_ext_fp(u64 x, u64 y)
- 	return div64_u64(x << EXT_FRAC_BITS, y);
- }
- 
--static inline int32_t percent_ext_fp(int percent)
--{
--	return div_ext_fp(percent, 100);
--}
--
- /**
-  * struct sample -	Store performance sample
-  * @core_avg_perf:	Ratio of APERF/MPERF which is the actual average
 -- 
-2.17.1
-
+Best Regards
+Masahiro Yamada
