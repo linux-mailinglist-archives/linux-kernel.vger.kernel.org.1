@@ -2,60 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 894A82DFC95
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 15:12:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B25F2DFC99
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 15:12:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727050AbgLUOLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 09:11:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48342 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726612AbgLUOLa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 09:11:30 -0500
-Date:   Mon, 21 Dec 2020 19:40:45 +0530
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608559850;
-        bh=brYUIuxVH73MITU87zKgoCQnt6Z9UxnkR01Ev5sawdw=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EPARUF5OrYZojT26t2nFFvX7FwB02+0Kdjh5401mULRCBNO6VlV8vBtN3PuBOHjo2
-         sqD55L3WZ2qMqXtevMvddHgKr6pmsSx94RBBxHzS86iqgMSIwiG/iBIE3Cn5KA+v5h
-         XeXdRqog1H9snO/twxfgBbZu1pFA3MooY8KcMerqcS+GeekZV5OLy4HUMBbdV5qBiK
-         8+3qEEy5Aqh4AvgKSkqHKP6PMq1w3RJ5F0aCrrWRjseagQY0ed8Sd+aZ/7aHeosTBD
-         us28ZvpcBSuKA6WwRbffQl61IAam7MZlJId1l/202mNdH7tEeIdhfGiEG2p72DyiAp
-         wQkAGXOGOYJVA==
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Xiaoming Ni <nixiaoming@huawei.com>
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, wangle6@huawei.com
-Subject: Re: [PATCH] dma/qcom/gpi: Fixes a format mismatch
-Message-ID: <20201221141045.GC3323@vkoul-mobl>
-References: <20201218104137.59200-1-nixiaoming@huawei.com>
+        id S1727091AbgLUOLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 09:11:54 -0500
+Received: from mail-wr1-f48.google.com ([209.85.221.48]:36688 "EHLO
+        mail-wr1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726499AbgLUOLy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 09:11:54 -0500
+Received: by mail-wr1-f48.google.com with SMTP id t16so11216170wra.3;
+        Mon, 21 Dec 2020 06:11:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dRfOKrfA9+95u+JXeBdqaPk9bb6AjAjfiGZH9/kyq2c=;
+        b=M0QOpyz/8oKG+z7q63bM+70j1zVSh03FIt3UYxATetsdhc/ijqoJ1llBLjQPrRyHYu
+         0J8nGlLvzrCVjHMe/7r+jHoqz7wL1jsP7duS97Iwqy5B5lPPMRG0E1jI2XGhkcT4AZB+
+         wZPEW94Ib1XfK7O2l7vj+1RmJJUVjvtSb3bGhrFlsohZ9YiDA0VtubyqIA1FgDkPBSDt
+         6mG77HrK2Yd1R7wraBAkD6QVqKxxQMUAiYBHzMtswzXnBIBt48sOT0fzqUEB390Hbo7g
+         UuKgn48275vlSJDsq3HHx9q6n6L4LRz23PjKfMLObe5pHWSl/GiXsbpAvJ9FsOQLTVs2
+         W+JA==
+X-Gm-Message-State: AOAM533yB8cxrXxTQ81vn08BZfPk/GOHK8eOnR4zr4ow8hENdblN3wuX
+        IHeidVPZEWcaNsFd0yx8bhc=
+X-Google-Smtp-Source: ABdhPJyFLbp2yFuolPYyYG9a3FRmCo6x2YzonajYXCyggm4h4pdL5U1JaFWZ8VXC5yerC0BwjDtKoQ==
+X-Received: by 2002:adf:ee90:: with SMTP id b16mr18953642wro.221.1608559871621;
+        Mon, 21 Dec 2020 06:11:11 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id j59sm28021679wrj.13.2020.12.21.06.11.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 06:11:10 -0800 (PST)
+Date:   Mon, 21 Dec 2020 15:11:09 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Timon Baetz <timon.baetz@protonmail.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH v2 1/6] extcon: max8997: Add CHGINS and CHGRM interrupt
+ handling
+Message-ID: <20201221141109.GA33797@kozik-lap>
+References: <20201202203516.43053-1-timon.baetz@protonmail.com>
+ <20201221095001.595366-1-timon.baetz@protonmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201218104137.59200-1-nixiaoming@huawei.com>
+In-Reply-To: <20201221095001.595366-1-timon.baetz@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18-12-20, 18:41, Xiaoming Ni wrote:
-> drivers/dma/qcom/gpi.c:1419:3: warning: format '%lu' expects argument of
->  type 'long unsigned int', but argument 8 has type 'size_t {aka unsigned
->  int}' [-Wformat=]
-> drivers/dma/qcom/gpi.c:1427:31: warning: format '%lu' expects argument of
->  type 'long unsigned int', but argument 3 has type 'size_t {aka unsigned
->  int}' [-Wformat=]
-> drivers/dma/qcom/gpi.c:1447:3: warning: format '%llx' expects argument of
->  type 'long long unsigned int', but argument 4 has type 'dma_addr_t {aka
->  unsigned int}' [-Wformat=]
-> drivers/dma/qcom/gpi.c:1447:3: warning: format '%llx' expects argument of
->  type 'long long unsigned int', but argument 5 has type 'phys_addr_t {aka
->  unsigned int}' [-Wformat=]
+On Mon, Dec 21, 2020 at 09:53:08AM +0000, Timon Baetz wrote:
+> This allows the MAX8997 charger to set the current limit depending on
+> the detected extcon charger type.
+> 
+> Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
 
-The subsystem is dmaengine: please use right tags (hint git log will
-tell you so)
+Don't do this:
+	In-Reply-To: <20201202203516.43053-1-timon.baetz@protonmail.com>
 
-I have fixed it up while applying, thanks
+It's a v2, so new thread. If you want to reference previous work, paste
+a link from lore.kernel.org.
 
--- 
-~Vinod
+Best regards,
+Krzysztof
