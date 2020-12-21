@@ -2,339 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 311582E0306
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 00:50:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEA9D2E031B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 00:58:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726374AbgLUXuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 18:50:06 -0500
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:55513 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726167AbgLUXuF (ORCPT
+        id S1726131AbgLUX60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 18:58:26 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:51382 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725780AbgLUX6Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 18:50:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1608594604; x=1640130604;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=5hpJgveG0Y1mYrTDdA3KI9kZI6i3QmF7kA18wwegHHU=;
-  b=fBzJajhc26hVpoqaQAIAynASl9pWIFCJHJ6H+bCTAMJOUC5YrhCUhNcF
-   gayyi8EUrSzVbcn6fdH2JDS1GRicyGoh2QAdjlKnEd8oCofmhwMFNCkhS
-   Tfx6+Hjy+KLU0hBdZFNFG5UGnpnWZoa59sCbx7+xetrOk51ns87ets5bH
-   w=;
-X-IronPort-AV: E=Sophos;i="5.78,437,1599523200"; 
-   d="scan'208";a="98110149"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-57e1d233.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 21 Dec 2020 23:49:23 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1e-57e1d233.us-east-1.amazon.com (Postfix) with ESMTPS id 83363140009;
-        Mon, 21 Dec 2020 23:49:22 +0000 (UTC)
-Received: from EX13D13UWB002.ant.amazon.com (10.43.161.21) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 21 Dec 2020 23:49:21 +0000
-Received: from EX13MTAUWA001.ant.amazon.com (10.43.160.58) by
- EX13D13UWB002.ant.amazon.com (10.43.161.21) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 21 Dec 2020 23:49:21 +0000
-Received: from dev-dsk-fllinden-2c-c1893d73.us-west-2.amazon.com
- (172.23.141.97) by mail-relay.amazon.com (10.43.160.118) with Microsoft SMTP
- Server id 15.0.1497.2 via Frontend Transport; Mon, 21 Dec 2020 23:49:21 +0000
-Received: by dev-dsk-fllinden-2c-c1893d73.us-west-2.amazon.com (Postfix, from userid 6262777)
-        id A7A61C13AC; Mon, 21 Dec 2020 23:49:21 +0000 (UTC)
-From:   Frank van der Linden <fllinden@amazon.com>
-To:     <jeyu@kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Frank van der Linden <fllinden@amazon.com>
-Subject: [PATCH] module: harden ELF info handling
-Date:   Mon, 21 Dec 2020 23:49:21 +0000
-Message-ID: <20201221234921.31129-1-fllinden@amazon.com>
-X-Mailer: git-send-email 2.16.6
+        Mon, 21 Dec 2020 18:58:25 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BLNs6eb009813;
+        Mon, 21 Dec 2020 23:56:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=5vrSBOew8HABg1K7IIt0ecbCATAXnyNZ7u+UzhkFBR0=;
+ b=RScpOCwb8erjM6f6Yh8H7A+5i5rpno35AKLHVaUYfwBBedIBduOkGrTdOFeJBHP4Pnqv
+ kfb4fUTI3+R1h+2aAMCWo5FBIEKyQ+OZ/euL/yz0hDYjV+r4ydHtDWVWhcblLNsUNFPD
+ BIDsafP8N7o7REZ94jP++tI7Tafi8XkX84AKhfF9BALiQGvZL+Fr01RJRTBthzDPW8mE
+ hduoxvxBcfiRBpaQB0c1m6FlXD3WcvyvEDO+aPGIH13hWg1fz5cvWq30uTsccLU4S2nE
+ S/dt5eaGAf8puz1LJsXSg1xAi5DmoQoA01zNHjizZXfcmqi/Oe7ZQx8pvo4y1173OpIm hQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 35k0d116ee-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 21 Dec 2020 23:56:49 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BLNtWgt015074;
+        Mon, 21 Dec 2020 23:56:49 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 35k0e7sdf1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 21 Dec 2020 23:56:49 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0BLNuT7t023088;
+        Mon, 21 Dec 2020 23:56:29 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 21 Dec 2020 15:56:29 -0800
+Subject: Re: [PATCH v10 02/11] mm/hugetlb: Introduce a new config
+ HUGETLB_PAGE_FREE_VMEMMAP
+To:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, viro@zeniv.linux.org.uk,
+        akpm@linux-foundation.org, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
+        jroedel@suse.de, almasrymina@google.com, rientjes@google.com,
+        willy@infradead.org, osalvador@suse.de, mhocko@suse.com,
+        song.bao.hua@hisilicon.com, david@redhat.com,
+        naoya.horiguchi@nec.com
+Cc:     duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+References: <20201217121303.13386-1-songmuchun@bytedance.com>
+ <20201217121303.13386-3-songmuchun@bytedance.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <2c0fb4d7-e25b-a5d3-c397-f20398a84732@oracle.com>
+Date:   Mon, 21 Dec 2020 15:56:26 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20201217121303.13386-3-songmuchun@bytedance.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9842 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 bulkscore=0
+ mlxlogscore=999 phishscore=0 mlxscore=0 spamscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012210162
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9842 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=0
+ adultscore=0 bulkscore=0 priorityscore=1501 mlxscore=0 clxscore=1011
+ phishscore=0 mlxlogscore=999 spamscore=0 impostorscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012210162
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-5fdc7db644 ("module: setup load info before module_sig_check()")
-moved the ELF setup, so that it was done before the signature
-check. This made the module name available to signature error
-messages.
+On 12/17/20 4:12 AM, Muchun Song wrote:
+> The HUGETLB_PAGE_FREE_VMEMMAP option is used to enable the freeing
+> of unnecessary vmemmap associated with HugeTLB pages. The config
+> option is introduced early so that supporting code can be written
+> to depend on the option. The initial version of the code only
+> provides support for x86-64.
+> 
+> Like other code which frees vmemmap, this config option depends on
+> HAVE_BOOTMEM_INFO_NODE. The routine register_page_bootmem_info() is
+> used to register bootmem info. Therefore, make sure
+> register_page_bootmem_info is enabled if HUGETLB_PAGE_FREE_VMEMMAP
+> is defined.
+> 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  arch/x86/mm/init_64.c |  2 +-
+>  fs/Kconfig            | 18 ++++++++++++++++++
+>  2 files changed, 19 insertions(+), 1 deletion(-)
 
-However, the checks for ELF correctness in setup_load_info
-are not sufficient to prevent bad memory references due to
-corrupted offset fields, indices, etc.
+Thanks for updating,
 
-So, there's a regression in behavior here: a corrupt and unsigned
-(or badly signed) module, which might previously have been rejected
-immediately, can now cause an oops/crash.
+Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
 
-Harden ELF handling for module loading by doing the following:
-
-- Move the signature check back up so that it comes before ELF
-  initialization. It's best to do the signature check to see
-  if we can trust the module, before using the ELF structures
-  inside it. This also makes checks against info->len
-  more accurate again, as this field will be reduced by the
-  length of the signature in mod_check_sig().
-
-  The module name is now once again not available for error
-  messages during the signature check, but that seems like
-  a fair tradeoff.
-
-- Check if sections have offset / size fields that at least don't
-  exceed the length of the module.
-
-- Check if sections have section name offsets that don't fall
-  outside the section name table.
-
-- Add a few other sanity checks against invalid section indices,
-  etc.
-
-This is not an exhaustive consistency check, but the idea is to
-at least get through the signature and blacklist checks without
-crashing because of corrupted ELF info, and to error out gracefully
-for most issues that would have caused problems later on.
-
-Fixes: 5fdc7db644 ("module: setup load info before module_sig_check()")
-Signed-off-by: Frank van der Linden <fllinden@amazon.com>
----
- kernel/module.c           | 143 +++++++++++++++++++++++++++++++++-----
- kernel/module_signature.c |   2 +-
- kernel/module_signing.c   |   2 +-
- 3 files changed, 126 insertions(+), 21 deletions(-)
-
-diff --git a/kernel/module.c b/kernel/module.c
-index 4bf30e4b3eaa..ef7681a22a1a 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -2964,7 +2964,7 @@ static int module_sig_check(struct load_info *info, int flags)
- 	}
- 
- 	if (is_module_sig_enforced()) {
--		pr_notice("%s: loading of %s is rejected\n", info->name, reason);
-+		pr_notice("loading of %s is rejected\n", reason);
- 		return -EKEYREJECTED;
- 	}
- 
-@@ -2977,9 +2977,33 @@ static int module_sig_check(struct load_info *info, int flags)
- }
- #endif /* !CONFIG_MODULE_SIG */
- 
--/* Sanity checks against invalid binaries, wrong arch, weird elf version. */
--static int elf_header_check(struct load_info *info)
-+static int validate_section_offset(struct load_info *info, Elf_Shdr *shdr)
- {
-+	unsigned long secend;
-+
-+	/*
-+	 * Check for both overflow and offset/size being
-+	 * too large.
-+	 */
-+	secend = shdr->sh_offset + shdr->sh_size;
-+	if (secend < shdr->sh_offset || secend >= info->len)
-+		return -ENOEXEC;
-+
-+	return 0;
-+}
-+
-+/*
-+ * Sanity checks against invalid binaries, wrong arch, weird elf version.
-+ *
-+ * Also do basic validity checks against section offsets and sizes, the
-+ * section name string table, and the indices used for it (sh_name).
-+ */
-+static int elf_validity_check(struct load_info *info)
-+{
-+	unsigned int i;
-+	Elf_Shdr *shdr, *strhdr;
-+	int err;
-+
- 	if (info->len < sizeof(*(info->hdr)))
- 		return -ENOEXEC;
- 
-@@ -2989,11 +3013,78 @@ static int elf_header_check(struct load_info *info)
- 	    || info->hdr->e_shentsize != sizeof(Elf_Shdr))
- 		return -ENOEXEC;
- 
-+	/*
-+	 * e_shnum is 16 bits, and sizeof(Elf_Shdr) is
-+	 * known and small. So e_shnum * sizeof(Elf_Shdr)
-+	 * will not overflow unsigned long on any platform.
-+	 */
- 	if (info->hdr->e_shoff >= info->len
- 	    || (info->hdr->e_shnum * sizeof(Elf_Shdr) >
- 		info->len - info->hdr->e_shoff))
- 		return -ENOEXEC;
- 
-+	info->sechdrs = (void *)info->hdr + info->hdr->e_shoff;
-+
-+	/*
-+	 * Verify if the section name table index is valid.
-+	 */
-+	if (info->hdr->e_shstrndx == SHN_UNDEF
-+	    || info->hdr->e_shstrndx >= info->hdr->e_shnum)
-+		return -ENOEXEC;
-+
-+	strhdr = &info->sechdrs[info->hdr->e_shstrndx];
-+	err = validate_section_offset(info, strhdr);
-+	if (err < 0)
-+		return err;
-+
-+	/*
-+	 * The section name table must be NUL-terminated, as required
-+	 * by the spec. This makes strcmp and pr_* calls that access
-+	 * strings in the section safe.
-+	 */
-+	info->secstrings = (void *)info->hdr + strhdr->sh_offset;
-+	if (info->secstrings[strhdr->sh_size - 1] != '\0')
-+		return -ENOEXEC;
-+
-+	/*
-+	 * The code assumes that section 0 has a length of zero and
-+	 * an addr of zero, so check for it.
-+	 */
-+	if (info->sechdrs[0].sh_type != SHT_NULL
-+	    || info->sechdrs[0].sh_size != 0
-+	    || info->sechdrs[0].sh_addr != 0)
-+		return -ENOEXEC;
-+
-+	for (i = 1; i < info->hdr->e_shnum; i++) {
-+		shdr = &info->sechdrs[i];
-+		switch (shdr->sh_type) {
-+		case SHT_NULL:
-+		case SHT_NOBITS:
-+			continue;
-+		case SHT_SYMTAB:
-+			if (shdr->sh_link == SHN_UNDEF
-+			    || shdr->sh_link >= info->hdr->e_shnum)
-+				return -ENOEXEC;
-+			fallthrough;
-+		default:
-+			err = validate_section_offset(info, shdr);
-+			if (err < 0) {
-+				pr_err("invalid ELF section in module num %u type %u\n",
-+					i, shdr->sh_type);
-+				return err;
-+			}
-+
-+			if (shdr->sh_flags & SHF_ALLOC) {
-+				if (shdr->sh_name >= strhdr->sh_size) {
-+					pr_err("invalid ELF section name in module num %u type %u\n",
-+					       i, shdr->sh_type);
-+					return -ENOEXEC;
-+				}
-+			}
-+			break;
-+		}
-+	}
-+
- 	return 0;
- }
- 
-@@ -3095,11 +3186,6 @@ static int rewrite_section_headers(struct load_info *info, int flags)
- 
- 	for (i = 1; i < info->hdr->e_shnum; i++) {
- 		Elf_Shdr *shdr = &info->sechdrs[i];
--		if (shdr->sh_type != SHT_NOBITS
--		    && info->len < shdr->sh_offset + shdr->sh_size) {
--			pr_err("Module len %lu truncated\n", info->len);
--			return -ENOEXEC;
--		}
- 
- 		/*
- 		 * Mark all sections sh_addr with their address in the
-@@ -3133,11 +3219,6 @@ static int setup_load_info(struct load_info *info, int flags)
- {
- 	unsigned int i;
- 
--	/* Set up the convenience variables */
--	info->sechdrs = (void *)info->hdr + info->hdr->e_shoff;
--	info->secstrings = (void *)info->hdr
--		+ info->sechdrs[info->hdr->e_shstrndx].sh_offset;
--
- 	/* Try to find a name early so we can log errors with a module name */
- 	info->index.info = find_sec(info, ".modinfo");
- 	if (info->index.info)
-@@ -3894,26 +3975,50 @@ static int load_module(struct load_info *info, const char __user *uargs,
- 	long err = 0;
- 	char *after_dashes;
- 
--	err = elf_header_check(info);
-+	/*
-+	 * Do the signature check (if any) first. All that
-+	 * the signature check needs is info->len, it does
-+	 * not need any of the section info. That can be
-+	 * set up later. This will minimize the chances
-+	 * of a corrupt module causing problems before
-+	 * we even get to the signature check.
-+	 *
-+	 * The check will also adjust info->len by stripping
-+	 * off the sig length at the end of the module, making
-+	 * checks against info->len more correct.
-+	 */
-+	err = module_sig_check(info, flags);
-+	if (err)
-+		goto free_copy;
-+
-+	/*
-+	 * Do basic sanity checks against the ELF header and
-+	 * sections.
-+	 */
-+	err = elf_validity_check(info);
- 	if (err) {
--		pr_err("Module has invalid ELF header\n");
-+		pr_err("Module has invalid ELF structures\n");
- 		goto free_copy;
- 	}
- 
-+	/*
-+	 * Everything checks out, so set up the section info
-+	 * in the info structure.
-+	 */
- 	err = setup_load_info(info, flags);
- 	if (err)
- 		goto free_copy;
- 
-+	/*
-+	 * Now that we know we have the correct module name, check
-+	 * if it's blacklisted.
-+	 */
- 	if (blacklisted(info->name)) {
- 		err = -EPERM;
- 		pr_err("Module %s is blacklisted\n", info->name);
- 		goto free_copy;
- 	}
- 
--	err = module_sig_check(info, flags);
--	if (err)
--		goto free_copy;
--
- 	err = rewrite_section_headers(info, flags);
- 	if (err)
- 		goto free_copy;
-diff --git a/kernel/module_signature.c b/kernel/module_signature.c
-index 4224a1086b7d..00132d12487c 100644
---- a/kernel/module_signature.c
-+++ b/kernel/module_signature.c
-@@ -25,7 +25,7 @@ int mod_check_sig(const struct module_signature *ms, size_t file_len,
- 		return -EBADMSG;
- 
- 	if (ms->id_type != PKEY_ID_PKCS7) {
--		pr_err("%s: Module is not signed with expected PKCS#7 message\n",
-+		pr_err("%s: not signed with expected PKCS#7 message\n",
- 		       name);
- 		return -ENOPKG;
- 	}
-diff --git a/kernel/module_signing.c b/kernel/module_signing.c
-index 9d9fc678c91d..9a057c5d1d4d 100644
---- a/kernel/module_signing.c
-+++ b/kernel/module_signing.c
-@@ -30,7 +30,7 @@ int mod_verify_sig(const void *mod, struct load_info *info)
- 
- 	memcpy(&ms, mod + (modlen - sizeof(ms)), sizeof(ms));
- 
--	ret = mod_check_sig(&ms, modlen, info->name);
-+	ret = mod_check_sig(&ms, modlen, info->name ?: "module");
- 	if (ret)
- 		return ret;
- 
 -- 
-2.23.3
-
+Mike Kravetz
