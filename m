@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E03DD2DFFAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:27:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 838432E0008
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:40:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726626AbgLUS0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 13:26:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52220 "EHLO
+        id S1726956AbgLUSjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:39:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725785AbgLUS0Y (ORCPT
+        with ESMTP id S1726335AbgLUSjr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:26:24 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CCF0C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:25:43 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id 190so10766699wmz.0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:25:43 -0800 (PST)
+        Mon, 21 Dec 2020 13:39:47 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B4BCC061282
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:39:06 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id q75so11938128wme.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:39:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=C/fCz+ZBoSHS5SlHs6JCakf/TmcPwilk8kMtlWo97qo=;
-        b=Yx/8lnR3YJEPedRdD4WXM1N4zDjp7wCJXAncjrg5mCb+/lgXSpzGIK6Vs001/yYtyS
-         Z9VPPh9Lrof/xY+p5Yq92by9DtsDnj3mITJSnP54geGELxtA8mSVjreFMLvZbgRqOT7Q
-         YdaHGXGbQxlXlP2ZV22NDmM4d9zRYH+olA55E=
+        bh=80KPby0xcz+iK59YkSpKMwmYMBDDjMUhltAQvUYuGYI=;
+        b=PBUhAqFugSrK7CSnPkt/nRSA79ntpcvblfiGq0PCFSBHK4jYX9ZYrQjD2tDDQM+hK4
+         vRXmKb5Vtzz6ervNwhcR6anPJGRNeJSRyB00KlORr2rUhygnNSh+nujwQde6jcoeAhPd
+         ymmQpV1YZFOh+qGkiFbpAbe9QybGw763WvKv4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=C/fCz+ZBoSHS5SlHs6JCakf/TmcPwilk8kMtlWo97qo=;
-        b=O8Mrfgdd0lUEcTQCxQLX4wy6F8srOFgpPhTsAt53bbF6Z+IShJZqYF28krc4ZlRUOI
-         V99MO5DWMqWLWpL38xiVB0KuhL+vp1aUZZvrayXkPyf56yyA7Ikp1DzmoMG8ui1uxCX7
-         mlL84x6nCW5wd2LPo+k0pNO1HLRRXWciQ+APEzxL0Zv/TOiNWhyq48oKkpg6DY+4omDV
-         EY8nJ2GAbwijruJeUsREUldzrFHVid6d2fc3eZsq/XYuRm3+8XIhQgNLXn1QKy/WYbGS
-         55qa16GodrSJ5SowKu6BhIRfdVf5txOQ3v8QJJDJhhAK9rd23OdSibZ0odOs+w03DzKn
-         DtYw==
-X-Gm-Message-State: AOAM530fMoiW/Fb4R9mqWhLoyDR8NMw82/2Z41xdMBOhJTpxXhPqymUZ
-        qTGPltRRKIIvSkNRzlnPLPbXI97CtiOBRiobHyg=
-X-Google-Smtp-Source: ABdhPJwXa9XbLaOrRa6Tqd+Zxgqg4IJ134jEXJs5XnKRWVszI8I1lh+68ZJw2lzxCA9TfAnFpmk+hw==
-X-Received: by 2002:a1c:186:: with SMTP id 128mr17543418wmb.176.1608569305103;
+        bh=80KPby0xcz+iK59YkSpKMwmYMBDDjMUhltAQvUYuGYI=;
+        b=At885QZVWNVqInah2OnSgb471W+zxT/baOeVV3jfJ7hgN9arMxK/sj5eswDryYK1uH
+         /jNBDiiLAsmF1TCaoiUdcpfc62M0fcU17sMuMXVp32GBGaTPwYOo/fLuHFxABxIcqD0C
+         H21iSurzt+VO0x9+in7ZroumDzu2lHGF1NWzwjpGxf/JWbTrpVS6rrTZcj8ISDsSLq15
+         QA8fCsEOp+9HYWs2ViwzbTm7j6FyStetVXbb+d/F+A0KC1SErCYeZTthmxPiE7EfK1W4
+         npGvczntLt0JT8Bf/XSPKGgCd6e7aFzbTn1Y+zdGnnxuakyDBkakb+UD6pTSZaZ6ekss
+         jASA==
+X-Gm-Message-State: AOAM531gAi0W5lZQ+D5htf/5spiMan31nAcHSgZldZGohhMrlk9madlW
+        Ustc+dOBkIJ/5diKVszQuI+R4KTfdcMrEO+/zPk=
+X-Google-Smtp-Source: ABdhPJyTadWVI5YU5Jq8O4Budepa0tJFPD1wnTSdIcik689xVi5MtgGunTRsHnBgB4BEI8pFrC/8xw==
+X-Received: by 2002:a1c:4e0a:: with SMTP id g10mr17324701wmh.88.1608569305892;
         Mon, 21 Dec 2020 08:48:25 -0800 (PST)
 Received: from alco.lan ([80.71.134.83])
-        by smtp.gmail.com with ESMTPSA id o125sm24581109wmo.30.2020.12.21.08.48.24
+        by smtp.gmail.com with ESMTPSA id o125sm24581109wmo.30.2020.12.21.08.48.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 08:48:24 -0800 (PST)
+        Mon, 21 Dec 2020 08:48:25 -0800 (PST)
 From:   Ricardo Ribalda <ribalda@chromium.org>
 To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
         linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH v5 04/12] media: uvcvideo: Allow extra entities
-Date:   Mon, 21 Dec 2020 17:48:11 +0100
-Message-Id: <20201221164819.792019-5-ribalda@chromium.org>
+Subject: [PATCH v5 05/12] media: uvcvideo: Allow entities with no pads
+Date:   Mon, 21 Dec 2020 17:48:12 +0100
+Message-Id: <20201221164819.792019-6-ribalda@chromium.org>
 X-Mailer: git-send-email 2.29.2.684.gfbc64c5ab5-goog
 In-Reply-To: <20201221164819.792019-1-ribalda@chromium.org>
 References: <20201221164819.792019-1-ribalda@chromium.org>
@@ -62,51 +62,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Increase the size of the id, to avoid collisions with entities
-implemented by the driver that are not part of the UVC device.
-
-Entities exposed by the UVC device use IDs 0-255, extra entities
-implemented by the driver (such as the GPIO entity) use IDs 256 and
-up.
+Avoid an underflow while calculating the number of inputs for entities
+with zero pads.
 
 Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- drivers/media/usb/uvc/uvc_driver.c | 2 +-
- drivers/media/usb/uvc/uvcvideo.h   | 7 ++++++-
- 2 files changed, 7 insertions(+), 2 deletions(-)
+ drivers/media/usb/uvc/uvc_driver.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-index bfbc5a4d4ca6..82cdd1bb28dc 100644
+index 82cdd1bb28dc..c0c5f75ade40 100644
 --- a/drivers/media/usb/uvc/uvc_driver.c
 +++ b/drivers/media/usb/uvc/uvc_driver.c
-@@ -1024,7 +1024,7 @@ static const u8 uvc_media_transport_input_guid[16] =
- 	UVC_GUID_UVC_MEDIA_TRANSPORT_INPUT;
- static const u8 uvc_processing_guid[16] = UVC_GUID_UVC_PROCESSING;
+@@ -1033,7 +1033,10 @@ static struct uvc_entity *uvc_alloc_entity(u16 type, u16 id,
+ 	unsigned int i;
  
--static struct uvc_entity *uvc_alloc_entity(u16 type, u8 id,
-+static struct uvc_entity *uvc_alloc_entity(u16 type, u16 id,
- 		unsigned int num_pads, unsigned int extra_size)
- {
- 	struct uvc_entity *entity;
-diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-index 0a3404091665..5d4da54dfd13 100644
---- a/drivers/media/usb/uvc/uvcvideo.h
-+++ b/drivers/media/usb/uvc/uvcvideo.h
-@@ -301,7 +301,12 @@ struct uvc_entity {
- 					 * chain. */
- 	unsigned int flags;
+ 	extra_size = roundup(extra_size, sizeof(*entity->pads));
+-	num_inputs = (type & UVC_TERM_OUTPUT) ? num_pads : num_pads - 1;
++	if (num_pads)
++		num_inputs = type & UVC_TERM_OUTPUT ? num_pads : num_pads - 1;
++	else
++		num_inputs = 0;
+ 	size = sizeof(*entity) + extra_size + sizeof(*entity->pads) * num_pads
+ 	     + num_inputs;
+ 	entity = kzalloc(size, GFP_KERNEL);
+@@ -1065,7 +1068,7 @@ static struct uvc_entity *uvc_alloc_entity(u16 type, u16 id,
  
--	u8 id;
-+	/*
-+         * Entities exposed by the UVC device use IDs 0-255, extra entities
-+         * implemented by the driver (such as the GPIO entity) use IDs 256 and
-+         * up.
-+        */
-+	u16 id;
- 	u16 type;
- 	char name[64];
- 	u8 guid[16];
+ 	for (i = 0; i < num_inputs; ++i)
+ 		entity->pads[i].flags = MEDIA_PAD_FL_SINK;
+-	if (!UVC_ENTITY_IS_OTERM(entity))
++	if (!UVC_ENTITY_IS_OTERM(entity) && num_pads)
+ 		entity->pads[num_pads-1].flags = MEDIA_PAD_FL_SOURCE;
+ 
+ 	entity->bNrInPins = num_inputs;
 -- 
 2.29.2.684.gfbc64c5ab5-goog
 
