@@ -2,161 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7D22DF837
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 05:29:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CABFF2DF7B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 03:46:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727378AbgLUE0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Dec 2020 23:26:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725785AbgLUE0k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Dec 2020 23:26:40 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D26C1C0613D3
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 20:25:59 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id g15so692119pgu.9
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Dec 2020 20:25:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=42aU/0QkvhPwE8g58QyrNOHFOkDcHhgODUw0Rs5b/Uw=;
-        b=ea9CItxiILeaNwCUkQP2JS5JQFW1QWbk3+Nx8tKIMMx0H7EmkWqaJl0PgSxzs2WEzQ
-         o1YKd2wX8ELgdqJ71XFRE3d7/Zby7W6O+NrguV2DlduUkuVvZFLp0gQwJUKvA7ucuq+8
-         bxVaftTqHXPqOu9cLbNSxxuqTUYYsq1X8HxRA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=42aU/0QkvhPwE8g58QyrNOHFOkDcHhgODUw0Rs5b/Uw=;
-        b=sgaPVQgQfRIcX4DkGgVMr2jdv7GsdaMTh8urBX5GXjVDAVdL4KQINiqN+TtwGYW66X
-         F8RpopvW9e1o4XQItqL0zhsGKIDx6kNwCiG5xMngi5jB/aj7T6TeOmlbIIkC7kFc0hvv
-         9vhfH0O0HhA9dZpIgfpfJDxqJiz5hydAKTlnyIlBjUuDi9uMpLTzOurgeiG4LQIiXCTi
-         cwLVmuC3F/O9/8vR/wKtAhBw0jj2Eo6QZkyzB5QZhe9JGvJkuCT/WM58WmaBz3llD7pb
-         /bDEVk/otXlREBagffKS3AEEkCNuPL9VS8xH2bXhFoHOOTzHF0mehaUU4NfjmliG8JO+
-         C4NQ==
-X-Gm-Message-State: AOAM530rbUsvQrF3u+hPSCU3JcqjFraNGofKsjG/kAm9Y289ZPKna42b
-        JttfVmPI3n2Vw+GppveSg8YaX+mRS+XsuV/4DqFgA2eOJtGULQ==
-X-Google-Smtp-Source: ABdhPJxyuTf71XGSFnxCVk3D2pXZTKGLrWsD632V9VKnQKt8wROKwl2TJ3anpFzlIkMTXAqcjAKmszVvdq2V6TBsP2Y=
-X-Received: by 2002:a67:6b46:: with SMTP id g67mr11079180vsc.60.1608518533535;
- Sun, 20 Dec 2020 18:42:13 -0800 (PST)
+        id S1727029AbgLUCpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Dec 2020 21:45:47 -0500
+Received: from mga07.intel.com ([134.134.136.100]:11438 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725497AbgLUCpq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Dec 2020 21:45:46 -0500
+IronPort-SDR: Py71TY7MlboVXUvAeAPXLf55hAwCVpoNx1YeiAxsXWQ/uf4fTON3EVkPs57hbDA+qsVBDSE9vk
+ jpy4CbOFzSEg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9841"; a="239758217"
+X-IronPort-AV: E=Sophos;i="5.78,436,1599548400"; 
+   d="scan'208";a="239758217"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2020 18:45:04 -0800
+IronPort-SDR: xU+HjV6XKATRs9WPGxsDdoEbSR6gVwtPi1H5uC4veHnK8x64PbFP5mCvBRyk58jXZGPecbToh8
+ EHcY9vUCWZtw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,436,1599548400"; 
+   d="scan'208";a="455787890"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga001.fm.intel.com with ESMTP; 20 Dec 2020 18:45:03 -0800
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Sun, 20 Dec 2020 18:45:03 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Sun, 20 Dec 2020 18:45:03 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.43) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Sun, 20 Dec 2020 18:45:02 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L+5Ks88psd+szG4cIjcq3PayH6ArszprVAIrrhjfDui3XQnqQ6ToSC2cxVjCI4tLledvv2H9+tC+hqIKaSY7fVKG1A1Hl0jJDgK+5WtfZYkEfWvBxteCPLqvFb/CoLLIx7lwrYHqaS7YGJiR1Nuxsgku4euMKVlNFGCkHB/xQOS+0Gmm2MtrhAGFFQb30BBbbVED+Gca99mK+qjbIoWvg6DGSDn+asIJy0+GveF50ZO41WNFZ+QcExr6tlVOSFRWJn0PkmIwM2AGPwd0UwbNL+hxqmBMeQCAmxXOrrNh0enZQONiH/DXKf/ytxo0YLJehePv1A9GQtocPNvHzcvcrg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ufVv7RVrsZSGG+zUO5OewjXgg1fTNsRtPBdNoCGvbJc=;
+ b=ZGm+bK9eo4A8HRJum/IIwvKUsDF05XAjR30QW0KsqWNfnulolVCv/75kc3kRArhh1bJzLkr6SpmkKpKoO2yVDJjzTO+WOTdwQyUryeZ0rAeCoJ1duw/SvYqc4EXrfol+A8i5mZsZIKGvHKOkCVdJ+FIDEDk+tM73wGyker4rYOXHVSUnDAYsHM501MQ975dRcX4zD2V9HqbtpzEERkjVScwxGKzkuq/R6ZAK4I85XN3+rE6LVfUSe7gilvFPhm6HGMOJ391SWDmGsf0DJY5e3H2EUdacXZDRvuVrgFcJPGCct9uB6e6BacJVsu2ows7f/fvnPgssBgoicuFl+mCwug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ufVv7RVrsZSGG+zUO5OewjXgg1fTNsRtPBdNoCGvbJc=;
+ b=RbacTxIJSGv8UYq4AKrlN5CH53NH9ewadWMzDDgsEqpCsTrXrtzcBrcERr9RWN/Qt355cv2zTFWlihuDNthCEQZaPtWgnztWw0AbZH84nH4u8VpLDS2fcjjF/buAM8Br5tfOB+mkU53kgMKoxgHLJjOG7gGToCOsHOh8BbZT0x0=
+Received: from DM6PR11MB3819.namprd11.prod.outlook.com (2603:10b6:5:13f::31)
+ by DM6PR11MB3817.namprd11.prod.outlook.com (2603:10b6:5:13a::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.25; Mon, 21 Dec
+ 2020 02:44:59 +0000
+Received: from DM6PR11MB3819.namprd11.prod.outlook.com
+ ([fe80::a52f:f4c:3a9d:28a5]) by DM6PR11MB3819.namprd11.prod.outlook.com
+ ([fe80::a52f:f4c:3a9d:28a5%4]) with mapi id 15.20.3676.033; Mon, 21 Dec 2020
+ 02:44:58 +0000
+From:   "Wu, Hao" <hao.wu@intel.com>
+To:     Tom Rix <trix@redhat.com>, "Xu, Yilun" <yilun.xu@intel.com>,
+        "mdf@kernel.org" <mdf@kernel.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "lgoncalv@redhat.com" <lgoncalv@redhat.com>
+Subject: RE: [PATCH v3 2/3] fpga: dfl: add the userspace I/O device support
+ for DFL devices
+Thread-Topic: [PATCH v3 2/3] fpga: dfl: add the userspace I/O device support
+ for DFL devices
+Thread-Index: AQHW1DhiFXQvRNubJU6hP8U7m1i7W6n8ewGggABogYCAA/gPMA==
+Date:   Mon, 21 Dec 2020 02:44:58 +0000
+Message-ID: <DM6PR11MB38194D88C20FDFC33CC5BDDB85C00@DM6PR11MB3819.namprd11.prod.outlook.com>
+References: <1608183881-18692-1-git-send-email-yilun.xu@intel.com>
+ <1608183881-18692-3-git-send-email-yilun.xu@intel.com>
+ <DM6PR11MB381997F5E297408A68BF5F2185C30@DM6PR11MB3819.namprd11.prod.outlook.com>
+ <0d3f1f40-9f89-0ec2-96c4-b8b087f31382@redhat.com>
+In-Reply-To: <0d3f1f40-9f89-0ec2-96c4-b8b087f31382@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.198.147.192]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 743636b0-91c1-4c62-dce9-08d8a55a6853
+x-ms-traffictypediagnostic: DM6PR11MB3817:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR11MB381716BD9C7383A0BCAD260785C00@DM6PR11MB3817.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: wdcgO/+XYLYcA/VEXM1s1JumhK0pkNusAx2tPQEqK/tcEanq4LKaboH/QSCPkP589l/zJqHkEEzi5GbV+HEYQOrlo1nVqaSm4R41sgjuKsr9ZueUfha6QYAeLfZQc6JNiNBi9GTzI5UT2qXZwRuxXfl9tiGHHM86+cqHbylmHv+R+WoR6ephtwY3mJYkh8RNdWlsz9GCYJI9PuBiBeT+A1hOZmaYVTGuiQD3GoYJI9p8Hl1bHmxniZCrvDJe92cKiM3HI3B/5uYMwRhrA49YrxNxJrtGxPw3V9/64gau/Y+UdXK3XswuqzSqdRjbLP5izy0NQ77Q0u3exJ18tTqZk8wjWJGNim3fjvmOgRPIxobvqU5Mew8EYzjXs8mbIrIo8BP7EDCBxpNbuJYkrETwYw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3819.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(376002)(396003)(39860400002)(346002)(33656002)(316002)(76116006)(8936002)(2906002)(52536014)(83380400001)(53546011)(478600001)(110136005)(5660300002)(54906003)(6506007)(71200400001)(7696005)(86362001)(8676002)(9686003)(26005)(4326008)(186003)(66446008)(66476007)(66556008)(64756008)(55016002)(66946007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?cEJNQ2xzbGY1ZmR6MjhBK1FtaG5ZWFBVVzg2L0kxVllzM21qa09wcHdBV1ZG?=
+ =?utf-8?B?OFV0SnZsVjdvdUovd1lKTVZGTmlpbUZBSXlOQzViUHB4bG1HY3k1ZGpEdWRm?=
+ =?utf-8?B?S3hVWmNsMUgwalFQQ2ZuMkZSM3p0WkhwS2RjMDRQL0FEb2FBcGQ5dVZzeUF6?=
+ =?utf-8?B?Y0NRMUZHOStqdFMwL01UakFHTGY0WWlHUThGdTZNVkdFenplVWE3MGp0MDdE?=
+ =?utf-8?B?WUhGTGxub2pocEtydWtkT1RmSWJZQ3o2VU50NFVlUWQzb25Fem5OdGZveE9C?=
+ =?utf-8?B?VW53bUhRTHRYS0p4NFAxamx6SkRobSt1TFYzcEU5amJIR1pQMldGQXVGUDhH?=
+ =?utf-8?B?N3pqSm5EcXdjZTJOS0h3S2NRMlpxQVhCOFB0ZGZySkZtWWRVcUxLOXI0bFNG?=
+ =?utf-8?B?RWVvTm5RWncwT3BKZWtxUzlDalJxbTgxblJ2dnVOL04yQUJHTFdYZ3IxRDho?=
+ =?utf-8?B?dHQrb1hqVGFIUTJKTjc1WFRjeHZQUlZwWWFnZzdlRWRVRUtwL3JFZG8yNWd2?=
+ =?utf-8?B?MDlPKzJIRUlGSXdVaUVjMEtpQkVaSVRZZmUzOHRHbmRLSThyU1dvazVlZnlQ?=
+ =?utf-8?B?cU53Z2JFcWx1UmhRdWYwOElzY3JzN1ZPd0ZyM21mUncvQ0FaQlh5V0k1ZVV0?=
+ =?utf-8?B?ZlFoMjRVSEdPS3MxQlVqYUdsQ2M5azJKRC9pTFlnOThhcFBHOUljUGt0ZGZV?=
+ =?utf-8?B?SGZyYUEzTGYxK0JpV2pZTjRodFRDSnpndXFISnRCWlc5ajJUeVovU1FPWVpu?=
+ =?utf-8?B?UThZbHI3QWhmVnlDYU9hZWxUcVlQWHY4RWJEa0JsWmZXczJLdllvc2kwcVdn?=
+ =?utf-8?B?YzhMSGw4dEgrdjlFMzdrNk9VQ1JaYi9ycHBrRDlpa25vbTVDSmtockFHQVZV?=
+ =?utf-8?B?Q2w3OUFNMzc3a2hwOGRtT2FNTThqbTllYXFRdDNWR09xTzVjSENBVzdaK2Uw?=
+ =?utf-8?B?amxjS3JYSWZmMmxmK2FWNGp0aHphTllIcVk4M0lsa0J5VUxKRGU2cW1MblJC?=
+ =?utf-8?B?TDZQNzlWaXdjYUkrclNpM3lqQjRFaHkzWTZpdGU1M0YvTjcyQmJBOHF2SzRX?=
+ =?utf-8?B?NFV2UmlEWVk5ZElBRjBNc2k1S1V0NGNvWU0zNkx0dEoyWWFSUHYzRE9vRWt5?=
+ =?utf-8?B?a0EzYUZiSXF0bXNnbnlnMjZlaHBqSG5HemxlNmNobGpZWjZMZlp4MTVOY2ll?=
+ =?utf-8?B?QTJPYzQ4cUJCMW9qVUtMZ3Q0SlFJd1UwbUNFWEpXNk5qYWlSUlMvWWpaYktH?=
+ =?utf-8?B?U1gvaURvaCs4KzJha0Vqc0dhOWFRQ0Mzck0rV3UwNVo5cldtcUdVcktScUJS?=
+ =?utf-8?Q?cnBTwBY0NAlBE=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <1605700894-32699-1-git-send-email-hsin-hsiung.wang@mediatek.com> <1605700894-32699-5-git-send-email-hsin-hsiung.wang@mediatek.com>
-In-Reply-To: <1605700894-32699-5-git-send-email-hsin-hsiung.wang@mediatek.com>
-From:   Nicolas Boichat <drinkcat@chromium.org>
-Date:   Mon, 21 Dec 2020 10:42:02 +0800
-Message-ID: <CANMq1KBXKQOj=qUMULeJsqy8bvsJLgRniuF2kqzhxpKTWCVq1w@mail.gmail.com>
-Subject: Re: [PATCH v4 4/5] soc: mediatek: pwrap: add pwrap driver for
- MT6873/8192 SoCs
-To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Fei Shao <fshao@chromium.org>,
-        Argus Lin <argus.lin@mediatek.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3819.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 743636b0-91c1-4c62-dce9-08d8a55a6853
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Dec 2020 02:44:58.7572
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Spg7n5r4O5VVN4ZeTbHTGaZgE2TDyy7KVJhvyoLsjN2U7dEcT6pAO2LnInegOnPOM1Be/V0S2nM6F98HUBPlRQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3817
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 8:08 PM Hsin-Hsiung Wang
-<hsin-hsiung.wang@mediatek.com> wrote:
->
-> MT6873/8192 are highly integrated SoCs and use PMIC_MT6359 for
-> power management. This patch adds pwrap master driver to
-> access PMIC_MT6359.
->
-> Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-> ---
->  drivers/soc/mediatek/mtk-pmic-wrap.c | 29 +++++++++++++++++++++++++++++
->  1 file changed, 29 insertions(+)
->
-> diff --git a/drivers/soc/mediatek/mtk-pmic-wrap.c b/drivers/soc/mediatek/mtk-pmic-wrap.c
-> index 5678f46..d1cd050 100644
-> --- a/drivers/soc/mediatek/mtk-pmic-wrap.c
-> +++ b/drivers/soc/mediatek/mtk-pmic-wrap.c
-> @@ -632,6 +632,17 @@ static int mt6797_regs[] = {
->         [PWRAP_DCM_DBC_PRD] =           0x1D4,
->  };
->
-> +static int mt6873_regs[] = {
-> +       [PWRAP_INIT_DONE2] =            0x0,
-
-I don't have the datasheet for the PWRAP interface, is this register
-at offset 0x0 real?
-
-If so, I'm concerned that mt6873_regs only defines very few registers
-offsets, so the init code will do a _lot_ writes at register address
-0x0 (e.g. for all the undefined values in this array: PWRAP_WACS0_EN,
-PWRAP_WACS1_EN, PWRAP_WACS2_EN, etc, etc.)
-
-> +       [PWRAP_TIMER_EN] =              0x3E0,
-> +       [PWRAP_INT_EN] =                0x448,
-> +       [PWRAP_WACS2_CMD] =             0xC80,
-> +       [PWRAP_SWINF_2_WDATA_31_0] =    0xC84,
-> +       [PWRAP_SWINF_2_RDATA_31_0] =    0xC94,
-> +       [PWRAP_WACS2_VLDCLR] =          0xCA4,
-> +       [PWRAP_WACS2_RDATA] =           0xCA8,
-> +};
-> +
->  static int mt7622_regs[] = {
->         [PWRAP_MUX_SEL] =               0x0,
->         [PWRAP_WRAP_EN] =               0x4,
-> @@ -1050,6 +1061,7 @@ enum pwrap_type {
->         PWRAP_MT6765,
->         PWRAP_MT6779,
->         PWRAP_MT6797,
-> +       PWRAP_MT6873,
->         PWRAP_MT7622,
->         PWRAP_MT8135,
->         PWRAP_MT8173,
-> @@ -1512,6 +1524,7 @@ static int pwrap_init_cipher(struct pmic_wrapper *wrp)
->         case PWRAP_MT7622:
->                 pwrap_writel(wrp, 0, PWRAP_CIPHER_EN);
->                 break;
-> +       case PWRAP_MT6873:
->         case PWRAP_MT8183:
->                 break;
->         }
-> @@ -1948,6 +1961,19 @@ static const struct pmic_wrapper_type pwrap_mt6797 = {
->         .init_soc_specific = NULL,
->  };
->
-> +static const struct pmic_wrapper_type pwrap_mt6873 = {
-> +       .regs = mt6873_regs,
-> +       .type = PWRAP_MT6873,
-> +       .arb_en_all = 0x777f,
-> +       .int_en_all = BIT(4) | BIT(5),
-> +       .int1_en_all = 0,
-> +       .spi_w = PWRAP_MAN_CMD_SPI_WRITE,
-> +       .wdt_src = PWRAP_WDT_SRC_MASK_ALL,
-> +       .caps = PWRAP_CAP_ARB,
-> +       .init_reg_clock = pwrap_common_init_reg_clock,
-> +       .init_soc_specific = NULL,
-> +};
-> +
->  static const struct pmic_wrapper_type pwrap_mt7622 = {
->         .regs = mt7622_regs,
->         .type = PWRAP_MT7622,
-> @@ -2026,6 +2052,9 @@ static const struct of_device_id of_pwrap_match_tbl[] = {
->                 .compatible = "mediatek,mt6797-pwrap",
->                 .data = &pwrap_mt6797,
->         }, {
-> +               .compatible = "mediatek,mt6873-pwrap",
-> +               .data = &pwrap_mt6873,
-> +       }, {
->                 .compatible = "mediatek,mt7622-pwrap",
->                 .data = &pwrap_mt7622,
->         }, {
-> --
-> 2.6.4
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjMgMi8zXSBmcGdhOiBkZmw6IGFkZCB0aGUgdXNlcnNw
+YWNlIEkvTyBkZXZpY2Ugc3VwcG9ydA0KPiBmb3IgREZMIGRldmljZXMNCj4gDQo+IE9uIDEyLzE4
+LzIwIDEyOjA1IEFNLCBXdSwgSGFvIHdyb3RlOg0KPiA+PiBTdWJqZWN0OiBbUEFUQ0ggdjMgMi8z
+XSBmcGdhOiBkZmw6IGFkZCB0aGUgdXNlcnNwYWNlIEkvTyBkZXZpY2Ugc3VwcG9ydA0KPiBmb3IN
+Cj4gPj4gREZMIGRldmljZXMNCj4gPj4NCj4gPj4gVGhpcyBwYXRjaCBzdXBwb3J0cyB0aGUgREZM
+IGRyaXZlcnMgYmUgd3JpdHRlbiBpbiB1c2Vyc3BhY2UuIFRoaXMgaXMNCj4gPj4gcmVhbGl6ZWQg
+YnkgZXhwb3NpbmcgdGhlIHVzZXJzcGFjZSBJL08gZGV2aWNlIGludGVyZmFjZXMuDQo+ID4+DQo+
+ID4+IFRoZSBkcml2ZXIgbGV2ZXJhZ2VzIHRoZSB1aW9fcGRydl9nZW5pcnEsIGl0IGFkZHMgdGhl
+IHVpb19wZHJ2X2dlbmlycQ0KPiA+PiBwbGF0Zm9ybSBkZXZpY2Ugd2l0aCB0aGUgREZMIGRldmlj
+ZSdzIHJlc291cmNlcywgYW5kIGxldCB0aGUgZ2VuZXJpYyBVSU8NCj4gPj4gcGxhdGZvcm0gZGV2
+aWNlIGRyaXZlciBwcm92aWRlIHN1cHBvcnQgdG8gdXNlcnNwYWNlIGFjY2VzcyB0byBrZXJuZWwN
+Cj4gPj4gaW50ZXJydXB0cyBhbmQgbWVtb3J5IGxvY2F0aW9ucy4NCj4gPj4NCj4gPj4gVGhlIGRy
+aXZlciBtYXRjaGVzIERGTCBkZXZpY2VzIGluIGEgZGlmZmVyZW50IHdheS4gSXQgaGFzIG5vIGRl
+dmljZSBpZA0KPiA+PiB0YWJsZSwgaW5zdGVhZCBpdCBtYXRjaGVzIGFueSBERkwgZGV2aWNlIHdo
+aWNoIGNvdWxkIG5vdCBiZSBoYW5kbGVkIGJ5DQo+ID4+IG90aGVyIERGTCBkcml2ZXJzLg0KPiA+
+IExvb2tzIGxpa2Ugd2Ugd2FudCB0byBidWlsZCBVSU8gZHJpdmVyIGFzIHRoZSBkZWZhdWx0L2dl
+bmVyaWMgZHJpdmVyIGZvciBERkwsDQo+ID4gaXQgc2VlbXMgZmluZSBidXQgbXkgY29uY2VybiBp
+cyB0aGF0IFVJTyBoYXMgaXRzIG93biBsaW1pdGF0aW9uLCBpZiBzb21lIGRheSwNCj4gPiBkZmwg
+ZGV2aWNlIGlzIGV4dGVuZGVkLCBidXQgVUlPIGhhcyBsaW1pdGF0aW9uLCB0aGVuIHdlIG1heSBu
+ZWVkIHRvIHNlbGVjdA0KPiA+IGFub3RoZXIgb25lIGFzIHRoZSBkZWZhdWx0IGRyaXZlci4uIG9y
+IHdlIGNhbiBqdXN0IG1hdGNoIHRoZW0gdXNpbmcNCj4gPiBpZF90YWJsZSBhcyB3ZSBrbm93IFVJ
+TyBtZWV0cyB0aGUgcmVxdWlyZW1lbnQgZm9yIHRob3NlIERGTCBkZXZpY2VzPw0KPiANCj4gV2hl
+biB3ZSBoYXZlIG11bHRpcGxlIGRlZmF1bHRzLCBjb3VsZCB0aGlzIGJlIGhhbmRsZWQgaW4gdGhl
+IGNvbmZpZ3VyeSA/DQoNCkRvIHlvdSBtZWFuIHNlbGVjdCBpdCB1c2luZyBjb25maWd1cmF0aW9u
+IG9wdGlvbnM/IEJ1dCBpZiBwZW9wbGUgaGF2ZSBhbHJlYWR5DQpjcmVhdGVkIHRoZSBzb2Z0d2Fy
+ZSBzdGFjayBvbiB0aGUgb2xkIG9uZSwgdGhlbiBpdCdzIGEgdmFsaWQgcmVxdWlyZW1lbnQgdGhh
+dA0Kd2UgbmVlZCBib3RoIG9sZCBhbmQgbmV3IGRlZmF1bHRzIHdvcmtpbmcgYXQgdGhlIHNhbWUg
+dGltZS4uLiBpdCdzIGhhcmQgdG8NCmFzayBldmVyeWJvZHkgdG8gc3dpdGNoIHRvIHRoZSBuZXcg
+b25lLg0KDQpIYW8NCg0KPiANCj4gVG9tDQo+IA0K
