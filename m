@@ -2,144 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1A32E0182
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 21:26:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2695B2E0185
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 21:26:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726131AbgLUUZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 15:25:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42520 "EHLO
+        id S1726156AbgLUU0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 15:26:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725807AbgLUUZE (ORCPT
+        with ESMTP id S1725782AbgLUU0J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 15:25:04 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4181C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 12:24:23 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id o13so26743783lfr.3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 12:24:23 -0800 (PST)
+        Mon, 21 Dec 2020 15:26:09 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADFFAC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 12:25:28 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id o19so26802017lfo.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 12:25:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Uo62cfbGwqBQ1vi9h4r6gnV/BJOfoFEQHUI1QVrChw8=;
-        b=TIu4KLVS+9Rm0KlbAYuebGgAAEETKA/S4ozhFubA1CGQ3UHtjkr9UIThiEcppTHkOv
-         3hy6J9dPdGLcWVK39btAeBmlFwTQKfPEyPnLcBGU8uvjjdd5QNHSZ4VN9jpu8cqS9aTI
-         GC6uVjtFbHkZrizklm74Bh85+NSpWQp7mGMiGF2ETFAl9Qy1mbCr6ErhOvcl3rHrNhqY
-         PP8BjuqW+5Vs58FaTIs9eB2IP82hjchyPkPrNHXP1oufzKfd5NBkUkmUkw3d0l7YTRln
-         ic6W8HxOlXZhSMXJv8z2oyVs6ngSRkGJcf/NiUWy1/39R1v8DujTPqn5Pc1aSGNpnWdr
-         9wdQ==
+        bh=k5zaXo4wHvh1dW+KqsesRxK7xiAm0BCunbjnJYxvhz8=;
+        b=Ms5Xy1U+4jhVMIkNDhKzne/rZJlQEFuV7hucbckZy+YFqWk5mcJQ96C3W1K+G8i09y
+         8J9WxZMu8pqcOCErRRebf2lG7lky5KbqBcvfLLdaBfCIvva4S386rnAsqChHlbUnSFYf
+         pJY2/7Xoxilz9bukgW9iDxfnFQILnhL6fjU2E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Uo62cfbGwqBQ1vi9h4r6gnV/BJOfoFEQHUI1QVrChw8=;
-        b=WVY6rtSt5TMxtrk+jdnxySrc2mQ+IuULHQMwB/rcD38eQaX2TrqbiGWYyXECgZexUO
-         Oo9nDytUIcRNkm/nKmR+Mf92EJ5FaTo/LAX3cEFPkZ7CccIVjwK2lPsHTQOGkxvyQfe/
-         fFTJjYhJpswc9jmjXqiVX4VjGGyxHtSttBA0L2FVC0ncwmOYtQmqrObpRC5vGQLNNaJv
-         4qmZkCXBe06i/uR9YeMSq4gDT1dqk3TytToPi/UV4GLyN+47Am4vfrpSCWvTIpTru+yG
-         nRZ9q5+Fp3gTbuCTjva3gBfdQubB8KbkOoDITyE4qYuCM4xTRn7xlcGlgwlSLFBCIYCm
-         MIJg==
-X-Gm-Message-State: AOAM531b3QAcVDmUwiAbrJZMDJpx97G6oAUzTCEjkYeThclWAHuQCzoj
-        wD+kSNY0wogF1BFtBsSXacjHmy+XFdU6hgq48BKrQg==
-X-Google-Smtp-Source: ABdhPJxXidtKbU89ufDpI4Z3AewOMzKtB9PhbwEssgW9oSBIrG1zlpmXWFD85rLEvdIbkoXQLXJPxhqPwlsBgOgYO0E=
-X-Received: by 2002:a05:651c:286:: with SMTP id b6mr8260337ljo.232.1608582262430;
- Mon, 21 Dec 2020 12:24:22 -0800 (PST)
+        bh=k5zaXo4wHvh1dW+KqsesRxK7xiAm0BCunbjnJYxvhz8=;
+        b=GhVaHeJXY64gSG2aQuVKd+OlX0EvfMT9hPfA5jaTEbWbUwnjBPz3qZg3wRjf21jn2y
+         2/vWuELU0n1tiJINWxcwzM9VA+QdmgE4mHklwBtMKv7jSvamoV5MN8iyBPZuB5WUEplb
+         wtRnbIPCdwPl7fsvKhRBOhH/+ieCaK8WTZnUEQ2LOpcMjuloQvJ77bm/+THA81i7t6eX
+         pVSg35iLMPvFckJv2ENu7lF3p59GjD9hYAmvjrJRyFMgRTAsgtDhM0Uk/PiuqSUP1E+f
+         jse/OgUscGGqd96yCIWsLNSRATt1RQlACz7yw2Bp0ml/Vdu14Ro7Jx8g1IQf1Es3An03
+         hUEw==
+X-Gm-Message-State: AOAM533aCIT4RV05VHyy1LoTYg7EXS280eWyBZyVc4yNZl2jcH9WAtrn
+        mYIzGi63nP/8w0JM5UxFONileZ0TNsjmfQ==
+X-Google-Smtp-Source: ABdhPJyLIwth/M5ZfZ9141CVFMNzt8gJZyuwqqFsTbSRIYFQ8qNeczZLUIPeXrhKUbVyH9BcZUBAWA==
+X-Received: by 2002:ac2:4a65:: with SMTP id q5mr7488366lfp.320.1608582325618;
+        Mon, 21 Dec 2020 12:25:25 -0800 (PST)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id l9sm2345443lji.104.2020.12.21.12.25.24
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Dec 2020 12:25:24 -0800 (PST)
+Received: by mail-lf1-f47.google.com with SMTP id b26so17213512lff.9
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 12:25:24 -0800 (PST)
+X-Received: by 2002:a2e:8995:: with SMTP id c21mr7868338lji.251.1608582323808;
+ Mon, 21 Dec 2020 12:25:23 -0800 (PST)
 MIME-Version: 1.0
-References: <20201111091552.15593-1-Sergey.Semin@baikalelectronics.ru>
- <20201111091552.15593-17-Sergey.Semin@baikalelectronics.ru>
- <CALAqxLWGujgR7p8Vb5S_RimRVYxwm5XF-c4NkKgMH-43wEBaWg@mail.gmail.com> <20201219110603.GA8061@kozik-lap>
-In-Reply-To: <20201219110603.GA8061@kozik-lap>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Mon, 21 Dec 2020 12:24:11 -0800
-Message-ID: <CALAqxLWAFs+8VKKuMMg2gyfGXgQSjaWv9H5ayuohEK9m6OS3TA@mail.gmail.com>
-Subject: Re: [PATCH v2 16/18] arm64: dts: hi3660: Harmonize DWC USB3 DT nodes name
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Felipe Balbi <balbi@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
+References: <20201219043006.2206347-1-namit@vmware.com> <X95RRZ3hkebEmmaj@redhat.com>
+ <EDC00345-B46E-4396-8379-98E943723809@gmail.com> <X97pprdcRXusLGnq@google.com>
+ <DDA15360-D6D4-46A8-95A4-5EE34107A407@gmail.com> <20201221172711.GE6640@xz-x1>
+ <76B4F49B-ED61-47EA-9BE4-7F17A26B610D@gmail.com> <X+D0hTZCrWS3P5Pi@google.com>
+ <CAHk-=wg_UBuo7ro1fpEGkMyFKA1+PxrE85f9J_AhUfr-nJPpLQ@mail.gmail.com> <X+EDslLVp9yRRru6@google.com>
+In-Reply-To: <X+EDslLVp9yRRru6@google.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 21 Dec 2020 12:25:07 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjUST1qd9Q668rwSzwOLQxTaAC1oUd7pPQBSj2s6PkqAw@mail.gmail.com>
+Message-ID: <CAHk-=wjUST1qd9Q668rwSzwOLQxTaAC1oUd7pPQBSj2s6PkqAw@mail.gmail.com>
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        linux-mm <linux-mm@kvack.org>,
         lkml <linux-kernel@vger.kernel.org>,
-        YongQin Liu <yongqin.liu@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        Todd Kjos <tkjos@google.com>
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nadav Amit <nadav.amit@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 19, 2020 at 3:06 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> On Fri, Dec 18, 2020 at 09:11:42PM -0800, John Stultz wrote:
-> > On Wed, Nov 11, 2020 at 1:22 AM Serge Semin
-> > <Sergey.Semin@baikalelectronics.ru> wrote:
-> > >
-> > > In accordance with the DWC USB3 bindings the corresponding node
-> > > name is suppose to comply with the Generic USB HCD DT schema, which
-> > > requires the USB nodes to have the name acceptable by the regexp:
-> > > "^usb(@.*)?" . Make sure the "snps,dwc3"-compatible nodes are correctly
-> > > named.
-> > >
-> > > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > > Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > > ---
-> > >  arch/arm64/boot/dts/hisilicon/hi3660.dtsi | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-> > > index d25aac5e0bf8..aea3800029b5 100644
-> > > --- a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-> > > +++ b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-> > > @@ -1166,7 +1166,7 @@ usb_phy: usb-phy {
-> > >                         };
-> > >                 };
-> > >
-> > > -               dwc3: dwc3@ff100000 {
-> > > +               dwc3: usb@ff100000 {
-> > >                         compatible = "snps,dwc3";
-> > >                         reg = <0x0 0xff100000 0x0 0x100000>;
-> >
-> >
-> > Oof. So this patch is breaking the usb gadget functionality on HiKey960 w/ AOSP.
-> >
-> > In order to choose the right controller for gadget mode with AOSP, one
-> > sets the "sys.usb.controller" property, which until now for HiKey960
-> > has been "ff100000.dwc3".
-> > After this patch, the controller isn't found and we would have to
-> > change userland to use "ff100000.usb", which would then break booting
-> > on older kernels (testing various LTS releases on AOSP is one of the
-> > key uses of the HiKey960).
-> >
-> > So while I understand the desire to unify the schema, as HiKey960
-> > really isn't likely to be used outside of AOSP, I wonder if reverting
-> > this one change is in the best interest of not breaking existing
-> > userland?
+On Mon, Dec 21, 2020 at 12:21 PM Yu Zhao <yuzhao@google.com> wrote:
 >
-> The node names are not part of an ABI, are they? I expect only
-> compatibles and properties to be stable. If user-space looks for
-> something by name, it's a user-space's mistake.  Not mentioning that you
-> also look for specific address... Imagine remapping of addresses with
-> ranges (for whatever reason) - AOSP also would be broken? Addresses are
-> definitely not an ABI.
+> Well, unfortunately we have places that use optimizations like
+>
+>   inc_tlb_flush_pending()
+>     lock page table
+>       pte_wrprotect
+>   flush_tlb_range()
+>   dec_tlb_flush_pending()
+>
+> which complicate things.
 
-Though that is how it's exported through sysfs.
+My point is, none of that  matters.
 
-In AOSP it is then used to setup the configfs gadget by writing that
-value into /config/usb_gadget/g1/UDC.
+Because the software side that does the actual page table
+modifications do not depend on the TLB at all.
 
-Given there may be multiple controllers on a device, or even if its
-just one and the dummy hcd driver is enabled, I'm not sure how folks
-reference the "right" one without the node name?
+They depend on the page table lock, and the pte in memory.
 
-I understand the fuzziness with sysfs ABI, and I get that having
-consistent naming is important, but like the eth0 -> enp3s0 changes,
-it seems like this is going to break things.
+So the "pending flush" simply shoudln't be an issue. It's about the
+actual hardware usage.
 
-Greg? Is there some better way AOSP should be doing this?
+But what DOES matter for the software accesses is that you can't
+modify protections without holding the proper lock.
 
-thanks
--john
+And userfaultfd seems to do exactly that, breaking the whole "load pte
+early, then check that it didn't change".
+
+(Which we do in other places too, not just COW - it's basically _the_
+pattern for page table updates).
+
+               Linus
