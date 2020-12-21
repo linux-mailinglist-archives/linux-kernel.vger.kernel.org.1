@@ -2,121 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC4E2E013E
+	by mail.lfdr.de (Postfix) with ESMTP id 251D62E013D
 	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 20:51:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726317AbgLUTvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 14:51:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37300 "EHLO
+        id S1726487AbgLUTvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 14:51:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726161AbgLUTvI (ORCPT
+        with ESMTP id S1726161AbgLUTvL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 14:51:08 -0500
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 994D8C0613D3;
-        Mon, 21 Dec 2020 11:50:28 -0800 (PST)
-Received: by mail-oi1-x22b.google.com with SMTP id l207so12450097oib.4;
-        Mon, 21 Dec 2020 11:50:28 -0800 (PST)
+        Mon, 21 Dec 2020 14:51:11 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEFA4C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 11:50:30 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id h205so26513608lfd.5
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 11:50:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=EKHYKYvJjr3SdNV5NJTpZB/AVd6o6kMyWNYzPfDbcJc=;
-        b=YnXqy4eXAFUfb3hjUiHXsYInF3Oc2mtZnO/TB8nfwAaTHeA37m/d6ewTHREipO8DV7
-         Hh7p4CfD3gHI7eMtGXxeOQqxb0sLu4BSSjT/qMZBuEU5ucUzX74/tb1ckPOEyxsk8Lmf
-         Jl7d8+KNZ/KPwq3hNvuK8HsnneueBecghDuCixOWKMWKXduVPPfm7C7sYEIvg4lzQpTI
-         Ufe1LmNSMDPB3asTurRECDfSaMLCWCvpm6GvDYkbDIwney/WkQqT3lCUab4KloXfVGD/
-         37eNollIh5mENPH6JICo0VdKF3jw/+roj1BwC9SUBc3TKkcsUwyEDNzfQ+S2zvzjUQx7
-         FwSQ==
+        bh=xqmRYxnikPCq9Gg2hYUnPNz7l0TnTiioQ91HmpF8cHA=;
+        b=Lbdw5kBkygrGYB8qOV/e44EUiRWpjNlF0K8JCBtD6ySkL7I6G//EbNDFNDUtCcBXoi
+         K+zWPcc+uyHkHNaNbR8G6Dcg0SBkp/HYRbrV40nT7q4MYjmpiWMlFFOTlImixUfGTUb6
+         8AimKwng3RUWgDPVaqMZnmqhIhiU6RkNlqwyHL7eu12F4zaNgotyJLibOvX3hbgTu0Pj
+         DesLPBAzm2RiT5BM5teRxFH/grBcEm4VCiOBSjGJQHr2GXJ5sXE8bm3XmqgtxnI5IIgY
+         yEA13HmGRIO2VLpQmrySNWxiEEDYidT3ylSG+DvordKln3mkGma0h5ISMCrc0Q7ETCyI
+         38HA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=EKHYKYvJjr3SdNV5NJTpZB/AVd6o6kMyWNYzPfDbcJc=;
-        b=WMcilFwJeIBcNqyNpL/GzpbEPC7nnv2g8FAX+SWahLRTTMnrK+PIMgS0lkXSu0iU8w
-         /dqFMWVhWO6ZsjYi8fRJlMsdz65gD+lePT3Tv+aRwSmGbTEJGPYwMM7JpqrwJCEkwtpg
-         Y/Jiu0zmt1y1jUpS+S9OgWWeoNklkRPsd9FDsVhjXkl8/PefT2YeaTKx5uPpE10+JvpE
-         eaV3PMk8u4tQAqTQR4b4XQGu6c6b7lZGxEdHulSkzD7fOI1WGkgW24uJWmKdN2B/OzLU
-         2E09+ln0IN/fSapwSFl1lDSLtx/bFfja3YunRP8kadicpTy4JwK5LBwG+I1zgNhhglIW
-         ZOfg==
-X-Gm-Message-State: AOAM5327lvRhy1JuscwoE0rPUbqp5mLvIYIzUey319onGBTroGX+FNxF
-        Wa68zvEeZV8E8VhvjZPS83uLmVj4iKcPmIYh43o=
-X-Google-Smtp-Source: ABdhPJyTF8Ofb7lnfU1nNVBGH3z83jxGYZHPN6muNzO3z236Fn3gpYFV724Nul736pJL7mdxpOixxpXuNOkl2dee1oA=
-X-Received: by 2002:aca:3306:: with SMTP id z6mr1799369oiz.141.1608580228062;
- Mon, 21 Dec 2020 11:50:28 -0800 (PST)
+        bh=xqmRYxnikPCq9Gg2hYUnPNz7l0TnTiioQ91HmpF8cHA=;
+        b=Il5DHw9D48an+hjkoj3/THh9l6FGEhpdd5PFRmyNyZ1Oo/XX8ohO4IrlTltX4cdccj
+         TSJZa3Vu0Wrf9HqZ71eyyillOsGKmXNsRjJCLJlVyM4TKIU+Y1Hw1Aj7AyGdVUWzKFtL
+         gHpa3ZGIWgSkrYQ75R1NXQzuF4v6lBbj6lHOkbIQeps2z/xOLacX6KF4hCesZy7KegFW
+         o/UXKrhk/l27RovakO/wT10h4CAkzlioGe+HNfjMvRnLGhaRWg/QDp0Y1TnKSeXF5QcX
+         VsQ36JYw8ZWRslkUaLAUQrZ7DP1mczmIC7CbZoOcGo3JRFDaLQBH7Rs6hWch/pZ/vdmd
+         XG0w==
+X-Gm-Message-State: AOAM532PwsI8pKtUN0zvyQZ2FnkIksMdUdDoyPMlezIbBt4mJ55TN9Wp
+        evRQUwiaghrN96wUchfLpbRpq/gjbVgHb+PIEGcGyA==
+X-Google-Smtp-Source: ABdhPJxnHF3lgjv4wK6z/Y0RWoJLdh0bkRjwcQOK4yZ9LuRUu9O/PpGzE3gf+Aib+VErHRK2pcCflmqzHK+vd9aR21I=
+X-Received: by 2002:a2e:850f:: with SMTP id j15mr7797655lji.34.1608580229003;
+ Mon, 21 Dec 2020 11:50:29 -0800 (PST)
 MIME-Version: 1.0
-References: <20201219135036.3216017-1-martin.blumenstingl@googlemail.com>
-In-Reply-To: <20201219135036.3216017-1-martin.blumenstingl@googlemail.com>
-From:   Thomas Graichen <thomas.graichen@googlemail.com>
-Date:   Mon, 21 Dec 2020 20:50:14 +0100
-Message-ID: <CAOUEw12Ldi9Kv2Gd=OCEgeVa+jv_FM1HqGRQBiEYCo==8PcrWA@mail.gmail.com>
-Subject: Re: [PATCH] net: stmmac: dwmac-meson8b: ignore the second clock input
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     netdev@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        davem@davemloft.net, kuba@kernel.org, khilman@baylibre.com,
-        jbrunet@baylibre.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
+References: <18669bd607ae9efbf4e00e36532c7aa167d0fa12.camel@gmx.de>
+ <20201220002228.38697-1-vitaly.wool@konsulko.com> <X+DaMSJE22nUC0tl@google.com>
+ <CAM4kBBKnW6K-mbPno4SpvhUBiykP4zeFm_CNzssDkReURbuU7w@mail.gmail.com>
+In-Reply-To: <CAM4kBBKnW6K-mbPno4SpvhUBiykP4zeFm_CNzssDkReURbuU7w@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 21 Dec 2020 11:50:17 -0800
+Message-ID: <CALvZod69OtXkdOJPzuY5XfXz_ro0V7OmqW4OY9B_emqwroxW4w@mail.gmail.com>
+Subject: Re: [PATCH] zsmalloc: do not use bit_spin_lock
+To:     Vitaly Wool <vitaly.wool@konsulko.com>
+Cc:     Minchan Kim <minchan@kernel.org>, Mike Galbraith <efault@gmx.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        NitinGupta <ngupta@vflare.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 19, 2020 at 2:52 PM Martin Blumenstingl
-<martin.blumenstingl@googlemail.com> wrote:
+On Mon, Dec 21, 2020 at 11:20 AM Vitaly Wool <vitaly.wool@konsulko.com> wrote:
 >
-> The dwmac glue registers on Amlogic Meson8b and newer SoCs has two clock
-> inputs:
-> - Meson8b and Meson8m2: MPLL2 and MPLL2 (the same parent is wired to
->   both inputs)
-> - GXBB, GXL, GXM, AXG, G12A, G12B, SM1: FCLK_DIV2 and MPLL2
+> On Mon, Dec 21, 2020 at 6:24 PM Minchan Kim <minchan@kernel.org> wrote:
+> >
+> > On Sun, Dec 20, 2020 at 02:22:28AM +0200, Vitaly Wool wrote:
+> > > zsmalloc takes bit spinlock in its _map() callback and releases it
+> > > only in unmap() which is unsafe and leads to zswap complaining
+> > > about scheduling in atomic context.
+> > >
+> > > To fix that and to improve RT properties of zsmalloc, remove that
+> > > bit spinlock completely and use a bit flag instead.
+> >
+> > I don't want to use such open code for the lock.
+> >
+> > I see from Mike's patch, recent zswap change introduced the lockdep
+> > splat bug and you want to improve zsmalloc to fix the zswap bug and
+> > introduce this patch with allowing preemption enabling.
 >
-> All known vendor kernels and u-boots are using the first input only. We
-> let the common clock framework automatically choose the "right" parent.
-> For some boards this causes a problem though, specificially with G12A and
-> newer SoCs. The clock input is used for generating the 125MHz RGMII TX
-> clock. For the two input clocks this means on G12A:
-> - FCLK_DIV2: 999999985Hz / 8 = 124999998.125Hz
-> - MPLL2: 499999993Hz / 4 = 124999998.25Hz
+> This understanding is upside down. The code in zswap you are referring
+> to is not buggy.  You may claim that it is suboptimal but there is
+> nothing wrong in taking a mutex.
 >
-> In theory MPLL2 is the "better" clock input because it's gets us 0.125Hz
-> closer to the requested frequency than FCLK_DIV2. In reality however
-> there is a resource conflict because MPLL2 is needed to generate some of
-> the audio clocks. dwmac-meson8b probes first and sets up the clock tree
-> with MPLL2. This works fine until the audio driver comes and "steals"
-> the MPLL2 clocks and configures it with it's own rate (294909637Hz). The
-> common clock framework happily changes the MPLL2 rate but does not
-> reconfigure our RGMII TX clock tree, which then ends up at 73727409Hz,
-> which is more than 40% off the requested 125MHz.
->
-> Don't use the second clock input for now to force the common clock
-> framework to always select the first parent. This mimics the behavior
-> from the vendor driver and fixes the clock resource conflict with the
-> audio driver on G12A boards. Once the common clock framework can handle
-> this situation this change can be reverted again.
->
-> Fixes: 566e8251625304 ("net: stmmac: add a glue driver for the Amlogic Meson 8b / GXBB DWMAC")
-> Reported-by: Thomas Graichen <thomas.graichen@gmail.com>
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-Tested-by: thomas graichen <thomas.graichen@gmail.com>
+Is this suboptimal for all or just the hardware accelerators? Sorry, I
+am not very familiar with the crypto API. If I select lzo or lz4 as a
+zswap compressor will the [de]compression be async or sync?
 
-> ---
->  drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> > https://lore.kernel.org/linux-mm/fae85e4440a8ef6f13192476bd33a4826416fc58.camel@gmx.de/
+> >
+> > zs_[un/map]_object is designed to be used in fast path(i.e.,
+> > zs_map_object/4K page copy/zs_unmap_object) so the spinlock is
+> > perfectly fine for API point of view. However, zswap introduced
+> > using the API with mutex_lock/crypto_wait_req where allowing
+> > preemption, which was wrong.
 >
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
-> index 459ae715b33d..f184b00f5116 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
-> @@ -135,7 +135,7 @@ static int meson8b_init_rgmii_tx_clk(struct meson8b_dwmac *dwmac)
->         struct device *dev = dwmac->dev;
->         static const struct clk_parent_data mux_parents[] = {
->                 { .fw_name = "clkin0", },
-> -               { .fw_name = "clkin1", },
-> +               { .index = -1, },
->         };
->         static const struct clk_div_table div_table[] = {
->                 { .div = 2, .val = 2, },
-> --
-> 2.29.2
+> Taking a spinlock in one callback and releasing it in another is
+> unsafe and error prone. What if unmap was called on completion of a
+> DMA-like transfer from another context, like a threaded IRQ handler?
+> In that case this spinlock might never be released.
+>
+> Anyway I can come up with a zswap patch explicitly stating that
+> zsmalloc is not fully compliant with zswap / zpool API
+
+The documentation of zpool_map_handle() clearly states "This may hold
+locks, disable interrupts, and/or preemption, ...", so how come
+zsmalloc is not fully compliant?
+
+> to avoid
+> confusion for the time being. Would that be ok with you?
+>
+> Best regards,
+>    Vitaly
 >
