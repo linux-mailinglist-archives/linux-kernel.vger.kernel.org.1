@@ -2,122 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C30292E010C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 20:33:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 297972DFF97
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:22:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726891AbgLUTd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 14:33:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34568 "EHLO
+        id S1726644AbgLUSV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:21:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726531AbgLUTdZ (ORCPT
+        with ESMTP id S1725782AbgLUSV2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 14:33:25 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ECB7C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 11:32:45 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id d13so12233342wrc.13
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 11:32:44 -0800 (PST)
+        Mon, 21 Dec 2020 13:21:28 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2FF1C061793
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:20:47 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id m12so25920696lfo.7
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 10:20:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9O4weIMpjztcb7QBDFAfSfq/pXNgDRI/CV9lYT9BdMc=;
-        b=lQ5aTHPnBJCpasqOpW05NjZYuxCFWKZ489cCbn6odOR4cGnK8QJcwQMfbfVJf5DtPn
-         oYG9MId8RtXM9PJ7iNrg3Ih30/OODINXDbzaSygtvd/FCQ654CPBdUP/23RYbId0aXtP
-         HzE9mIW4c9sAOYSKvG8DDhAxc8Tutvx9+GacY=
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PWkuqGttRqaAWl7rLMPpmQ8BaJ8J691WwUxkaIeGvJo=;
+        b=Pw3Y/B1bOAivORcFJlAOiE/TgmnVI0I1sU9H5ia7NuFe4VXUTfiApqcVow14tFqldX
+         OGbFlIRh7PQA3vo8JnOyrl7+IDEzOeokd7ThHFiJuZkN8EHu75ngLXvY+tdPooVNRG9x
+         sQcN8CjmYDLuspof92kxN6UIlh8Hly6xH9nHx7Jf/NBuNwip1HNTG9c/Bwcsc+uOI74r
+         tGEAHrT0q7D9VJyPJgGxflmhGFzlmPRMXYsh11LEuUyMcWHvmFFou53APCj7JTMwHk2a
+         E/zQoi0zgnhefzFfrJ1q064KIl+0WGIYByP3zR4JN4Woh8kebctrUblLjtSKL86qioDI
+         UYDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9O4weIMpjztcb7QBDFAfSfq/pXNgDRI/CV9lYT9BdMc=;
-        b=aQpqIbC38kUt6F1DIfoWfgea4cDXIV26D19LsMbuHVS19IIG1f8zpmyNumbwmri4Uh
-         AvpMjh1RO74s2vNYqvcriFZJOkkcRY2ahd8ZmmNZdvPSa0O+kVkep26t9Odl53iNbAie
-         a0oYAVzlllFS98uOY44Sdfks0BLChmwsnuL7+lYSiuZC9rfULztGkKtLrmefgnWtOd6M
-         pYSufp5/M8cBcKdt1+2SbEvBHqixPYlDrqvQmKuR9Kq8xIA03pBoMMiK6cdTTB2Grr32
-         dSX9rqS2TsLBU1F9CzGu22QJv3djNdQ4UZezUDkmwZQPUrw6K0BHRwae11D5VBFZlV91
-         3LyA==
-X-Gm-Message-State: AOAM532J6EPS4QkEjCwdJEk9WWVNahIa3FxhfmuCfe/VNzbcEPNln0Pk
-        0sdVm2u4/xetrvoeXGymmTu1PrhaDjWGzJUZ2aEy/F4pAZj+7cGy
-X-Google-Smtp-Source: ABdhPJz11UO9Mqv4yMPgNehhtC/hj3Y4jjgczoKo5b7dFLVBfoL3gr78HYG6lOupKS2OZ8EYe1PMB6OfJIUl8ccqinY=
-X-Received: by 2002:a17:906:c254:: with SMTP id bl20mr15313695ejb.336.1608559173756;
- Mon, 21 Dec 2020 05:59:33 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PWkuqGttRqaAWl7rLMPpmQ8BaJ8J691WwUxkaIeGvJo=;
+        b=e2FG6mEh78QD8TPbtfXYz9DoZkWMo6E+3foc3Ow2r5QwrBE9kMaHjDfcFK+1ETcka+
+         alWOO0mTHArJlTDq9NWb8ClzFfImhObgvbC1svj4Qvvfva7iCgxLw9/PsUIaq/r8jghs
+         4euiK5FTYq21+rfeN3op7mglWeuy/QYcQb4IWz1HQTZJrO5N/UsWFDBFM1t0n+qaHlOa
+         CV6IZgPGjewwc+IYVz+g9Me6gW4+Bj2Y+sgYodx0Vzsgp1futOg1MQRiE4Gdlo6Cvy3F
+         Sa8VuGP8pbuVs5WSYqQ532hmMuguPsgfBJRbrJ3lJRpp3WaRUKJPzjZWZaCIlEoaMWHd
+         R+0w==
+X-Gm-Message-State: AOAM531XS6aFLWMOMet847PblGfj0f0NUHqTSSu9uMDYT5K5gQB5Am3+
+        na0Dj/+ZTxMjRaHJ6kCDrb/NMVUZS46pgw==
+X-Google-Smtp-Source: ABdhPJxmfWLb890lhymXiKGMR1EgHfj3V6RlHNfL0ZjOQ+DewACWtK30ZB6q0lhoORVLIINzQgCzIw==
+X-Received: by 2002:a50:955b:: with SMTP id v27mr15811429eda.324.1608559167996;
+        Mon, 21 Dec 2020 05:59:27 -0800 (PST)
+Received: from [192.168.0.41] (lns-bzn-59-82-252-148-164.adsl.proxad.net. [82.252.148.164])
+        by smtp.googlemail.com with ESMTPSA id a6sm28826279edv.74.2020.12.21.05.59.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Dec 2020 05:59:27 -0800 (PST)
+Subject: Re: [PATCH 1/2] thermal: int340x: Add critical callback to override
+ default shutdown behavior
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>, rui.zhang@intel.com,
+        amitk@kernel.org
+Cc:     andrzej.p@collabora.com, mjg59@google.com,
+        srinivas.pandruvada@linux.intel.com,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Peter Kaestle <peter@piie.net>,
+        Gayatri Kammela <gayatri.kammela@intel.com>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20201221135206.17671-1-kai.heng.feng@canonical.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <20e74dc1-1f1d-6dee-19a7-e9a975b66606@linaro.org>
+Date:   Mon, 21 Dec 2020 14:59:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201221113151.94515-1-jagan@amarulasolutions.com>
- <20201221113151.94515-3-jagan@amarulasolutions.com> <20201221134625.GB31176@kozik-lap>
-In-Reply-To: <20201221134625.GB31176@kozik-lap>
-From:   Jagan Teki <jagan@amarulasolutions.com>
-Date:   Mon, 21 Dec 2020 19:29:22 +0530
-Message-ID: <CAMty3ZAi0B=fSRfpQG4bgE+Jt6GVhzRb_FZjCL3VQXp9vn-FEw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/6] dt-bindings: arm: fsl: Add Engicam i.Core MX8M
- Mini C.TOUCH 2.0
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Li Yang <leoyang.li@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-amarula <linux-amarula@amarulasolutions.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201221135206.17671-1-kai.heng.feng@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 7:16 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
->
-> On Mon, Dec 21, 2020 at 05:01:47PM +0530, Jagan Teki wrote:
-> > i.Core MX8M Mini is an EDIMM SoM based on NXP i.MX8M Mini from Engicam.
-> >
-> > C.TOUCH 2.0 is a general purpose carrier board with capacitive
-> > touch interface support.
-> >
-> > i.Core MX8M Mini needs to mount on top of this Carrier board for
-> > creating complete i.Core MX8M Mini C.TOUCH 2.0 board.
-> >
-> > Add bindings for it.
-> >
-> > Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> > ---
-> > Changes for v2:
-> > - updated commit message
-> >
-> >  Documentation/devicetree/bindings/arm/fsl.yaml | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-> > index 67980dcef66d..e653e0a43016 100644
-> > --- a/Documentation/devicetree/bindings/arm/fsl.yaml
-> > +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-> > @@ -667,6 +667,8 @@ properties:
-> >          items:
-> >            - enum:
-> >                - beacon,imx8mm-beacon-kit  # i.MX8MM Beacon Development Kit
-> > +              - engicam,icore-mx8mm               # i.MX8MM Engicam i.Core MX8M Mini SOM
-> > +              - engicam,icore-mx8mm-ctouch2       # i.MX8MM Engicam i.Core MX8M Mini C.TOUCH 2.0
->
-> Please test your DTS against new schema with dtbs_check. This won't
-> match.
+On 21/12/2020 14:52, Kai-Heng Feng wrote:
+> We are seeing thermal shutdown on Intel based mobile workstations, the
+> shutdown happens during the first trip handle in
+> thermal_zone_device_register():
+> kernel: thermal thermal_zone15: critical temperature reached (101 C), shutting down
+> 
+> However, we shouldn't do a thermal shutdown here, since
+> 1) We may want to use a dedicated daemon, Intel's thermald in this case,
+> to handle thermal shutdown.
+> 
+> 2) For ACPI based system, _CRT doesn't mean shutdown unless it's inside
+> ThermalZone namespace. ACPI Spec, 11.4.4 _CRT (Critical Temperature):
+> "... If this object it present under a device, the device’s driver
+> evaluates this object to determine the device’s critical cooling
+> temperature trip point. This value may then be used by the device’s
+> driver to program an internal device temperature sensor trip point."
+> 
+> So a "critical trip" here merely means we should take a more aggressive
+> cooling method.
+> 
+> As int340x device isn't present under ACPI ThermalZone, override the
+> default .critical callback to prevent surprising thermal shutdown.
+> 
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-Sorry, not sure I understand clearly here.
+I'll submit those changes for v5.11-rc1 and change the subject by:
 
-This the dts file ie used matched compatible.
-compatible = "engicam,icore-mx8mm-ctouch2", "engicam,icore-mx8mm",
-                     "fsl,imx8mm";
+thermal: int340x: Fix unexpected shutdown at critical temperature
+thermal: pch: Fix unexpected shutdown at critical temperature
 
-I did build the dtbs_check without showing any issues like,
+Sounds good ?
 
-$ make ARCH=arm64 dtbs_check
-...
+> ---
+>  drivers/thermal/intel/int340x_thermal/int3400_thermal.c     | 6 ++++++
+>  .../thermal/intel/int340x_thermal/int340x_thermal_zone.c    | 6 ++++++
+>  2 files changed, 12 insertions(+)
+> 
+> diff --git a/drivers/thermal/intel/int340x_thermal/int3400_thermal.c b/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
+> index 823354a1a91a..9778a6dba939 100644
+> --- a/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
+> +++ b/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
+> @@ -431,9 +431,15 @@ static int int3400_thermal_change_mode(struct thermal_zone_device *thermal,
+>  	return result;
+>  }
+>  
+> +static void int3400_thermal_critical(struct thermal_zone_device *thermal)
+> +{
+> +	dev_dbg(&thermal->device, "%s: critical temperature reached\n", thermal->type);
+> +}
+> +
+>  static struct thermal_zone_device_ops int3400_thermal_ops = {
+>  	.get_temp = int3400_thermal_get_temp,
+>  	.change_mode = int3400_thermal_change_mode,
+> +	.critical = int3400_thermal_critical,
+>  };
+>  
+>  static struct thermal_zone_params int3400_thermal_params = {
+> diff --git a/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c b/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
+> index 6e479deff76b..d1248ba943a4 100644
+> --- a/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
+> +++ b/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
+> @@ -146,12 +146,18 @@ static int int340x_thermal_get_trip_hyst(struct thermal_zone_device *zone,
+>  	return 0;
+>  }
+>  
+> +static void int340x_thermal_critical(struct thermal_zone_device *zone)
+> +{
+> +	dev_dbg(&zone->device, "%s: critical temperature reached\n", zone->type);
+> +}
+> +
+>  static struct thermal_zone_device_ops int340x_thermal_zone_ops = {
+>  	.get_temp       = int340x_thermal_get_zone_temp,
+>  	.get_trip_temp	= int340x_thermal_get_trip_temp,
+>  	.get_trip_type	= int340x_thermal_get_trip_type,
+>  	.set_trip_temp	= int340x_thermal_set_trip_temp,
+>  	.get_trip_hyst =  int340x_thermal_get_trip_hyst,
+> +	.critical	= int340x_thermal_critical,
+>  };
+>  
+>  static int int340x_thermal_get_trip_config(acpi_handle handle, char *name,
+> 
 
-    From schema: /w/dt-schema/dt-schema/dtschema/schemas/property-units.yaml
-  DTC     arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm-ctouch2.dtb
-  DTC     arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm-ctouch2-of10.dtb
-  DTC     arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm-edimm2.2.dtb
-..
 
-Can you let me know what I missed here?
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-Jagan.
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
