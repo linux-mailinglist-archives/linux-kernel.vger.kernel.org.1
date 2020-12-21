@@ -2,126 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CBF72E0289
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 23:33:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 556EE2E028B
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 23:33:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726204AbgLUWcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 17:32:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56699 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726140AbgLUWcM (ORCPT
+        id S1726259AbgLUWcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 17:32:25 -0500
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:33178 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726146AbgLUWcY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 17:32:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608589846;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/0nOtRjyRXqUdfVgnLEJZJLZpSyfauPx9TpoxNOMLQc=;
-        b=BcN7z3wbg0KXkZy++I+KLqknDQm3BxmfKknuq2jou0uD5WxuUGN9BmhnV+hiyxwqyGFQFm
-        ++oFzoJEukxIyoMw9Y0o/DlJIwF+ugPg8K3UXnTnyKEO6ZvM2mNtX2IIKF8TUY3OVcyNRI
-        LYyUnUqedIWKlARbBCWKQdghitunS+c=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-90-O61_H6zyMbSiO5VREQKyjg-1; Mon, 21 Dec 2020 17:30:44 -0500
-X-MC-Unique: O61_H6zyMbSiO5VREQKyjg-1
-Received: by mail-qt1-f197.google.com with SMTP id b8so2547928qtr.18
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 14:30:44 -0800 (PST)
+        Mon, 21 Dec 2020 17:32:24 -0500
+Received: by mail-oi1-f174.google.com with SMTP id d203so12890022oia.0;
+        Mon, 21 Dec 2020 14:32:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=/0nOtRjyRXqUdfVgnLEJZJLZpSyfauPx9TpoxNOMLQc=;
-        b=lD/OQWJfQjojgxFdTdlUCj4yn3RCpFF5zhUFXVK6KQLvjMTdhTDt33QXnt3+7RGTaM
-         OgTirF4fB/jOEgsT2VpmLYShlCOAHrBqq2YyFithY3W8mAZ92l1rfqABto2juxgqQi5I
-         w6LrqkrI5H7M3QrfdhTPSXmfxzZ0DiK/OHHzMNpPI58QXXHiylGEohVREzZdkxqEiVMx
-         f4soyw+oZEcNb73O7XUiVxpxsro4XyJdquk9o4qDENnyTl98ybQQrPEnH46G5PwPAbPv
-         xAf1lJMkzhvA3729DccQVhdEd8MolGEKKbOyIICxPnRm0bsen2qMLS8maLOz7TESQDwo
-         hQZg==
-X-Gm-Message-State: AOAM530zJn0D6l5hugV0yOiDd5zmtUfu6moY3pmmsPJaSm4Z05NwEfyB
-        OMFeGZNhiNr/JE1kZpwQ5RYq4i3gCAIJKZKkntc5VIzyMivwW3vdqd3DkHkoXdw6xawjVoElGyD
-        fyUK7AV9inrBsseRqI4Y/xpme
-X-Received: by 2002:a0c:f850:: with SMTP id g16mr19255294qvo.14.1608589844019;
-        Mon, 21 Dec 2020 14:30:44 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwsyvGQ+Zlz+F4Ln7DFyojEIAwfAH7eIeF2+0g/BLBE8jYg9DoCNA01RbxX54HEjqCZPSWhnQ==
-X-Received: by 2002:a0c:f850:: with SMTP id g16mr19255269qvo.14.1608589843776;
-        Mon, 21 Dec 2020 14:30:43 -0800 (PST)
-Received: from xz-x1 ([142.126.83.202])
-        by smtp.gmail.com with ESMTPSA id a35sm12063468qtk.82.2020.12.21.14.30.42
+        bh=CrCNdD9kKFd0w/18HL8sM1tY8e07PfB1FWqVN+teSm0=;
+        b=I3n/+8R+XR25EX5m5WyWOOhse+mYR1ZtY6ZRQZBWjwCNN4/3zCC+Q3tXlCRak9GlGX
+         S5iMGnhVOsQtVkSRFovFQ5H3gKvtrfe9Iln/oR73UEf4I+xkeR3XBb1HKiUQsc6dPmca
+         o64B3lLaSNmork/Rp5LbWCo+P2sUI2bgVX9l1AkUU1eg5RBc0nmOeMryBwKZo+d/8sZ6
+         ZrtsmiNrb95YrisVLASWwAfU1/YkIU9EBlB/LBrBmrUqyU9vfsWe5W4TAWFv0eXI9vUb
+         cu0snsyqFphy7c0Ju45IAyA3UoUArxZyYOquUPH+k3C0ANgb4KpTL/9BWquQFZczRx9g
+         6LZg==
+X-Gm-Message-State: AOAM532W2JZqi+aDc+pTcyjpkG0E3yfuN51maWK48EFrWQ2mHJciNxF+
+        /8jBQ9sxjS9d2TjjQOQuug==
+X-Google-Smtp-Source: ABdhPJwd3rb480++WHPVL+OW+GohWnneE/ypMwzopQAGGGNcpsFcZLA+a1WpJRtC7opt6UMNNivAAQ==
+X-Received: by 2002:aca:6202:: with SMTP id w2mr4690067oib.5.1608589903376;
+        Mon, 21 Dec 2020 14:31:43 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id z6sm3980286ooz.17.2020.12.21.14.31.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 14:30:42 -0800 (PST)
-Date:   Mon, 21 Dec 2020 17:30:41 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     Yu Zhao <yuzhao@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-Message-ID: <20201221223041.GL6640@xz-x1>
-References: <X97pprdcRXusLGnq@google.com>
- <DDA15360-D6D4-46A8-95A4-5EE34107A407@gmail.com>
- <20201221172711.GE6640@xz-x1>
- <76B4F49B-ED61-47EA-9BE4-7F17A26B610D@gmail.com>
- <X+D0hTZCrWS3P5Pi@google.com>
- <CAHk-=wg_UBuo7ro1fpEGkMyFKA1+PxrE85f9J_AhUfr-nJPpLQ@mail.gmail.com>
- <9E301C7C-882A-4E0F-8D6D-1170E792065A@gmail.com>
- <CAHk-=wg-Y+svNy3CDkJjj0X_CJkSbpERLg64-Vqwq5u7SC4z0g@mail.gmail.com>
- <X+ESkna2z3WjjniN@google.com>
- <1FCC8F93-FF29-44D3-A73A-DF943D056680@gmail.com>
+        Mon, 21 Dec 2020 14:31:42 -0800 (PST)
+Received: (nullmailer pid 689847 invoked by uid 1000);
+        Mon, 21 Dec 2020 22:31:40 -0000
+Date:   Mon, 21 Dec 2020 15:31:40 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Liu Ying <victor.liu@nxp.com>
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, airlied@linux.ie, daniel@ffwll.ch,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, mchehab@kernel.org,
+        a.hajda@samsung.com, narmstrong@baylibre.com,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@siol.net, kishon@ti.com, vkoul@kernel.org
+Subject: Re: [PATCH 06/14] dt-bindings: display: bridge: Add i.MX8qm/qxp
+ display pixel link binding
+Message-ID: <20201221223140.GA687317@robh.at.kernel.org>
+References: <1608199173-28760-1-git-send-email-victor.liu@nxp.com>
+ <1608199173-28760-7-git-send-email-victor.liu@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1FCC8F93-FF29-44D3-A73A-DF943D056680@gmail.com>
+In-Reply-To: <1608199173-28760-7-git-send-email-victor.liu@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 01:49:55PM -0800, Nadav Amit wrote:
-> BTW: In general, I think that you are right, and that changing of PTEs
-> should not require taking mmap_lock for write. However, I am not sure
-> cow_user_page() is not the only one that poses a problem and whether a more
-> systematic solution is needed. If cow_user_pages() is the only problem, do
-> you think it is possible to do the copying while holding the PTL? It works
-> for normal-pages, but I am not sure whether special-pages pose special
-> problems.
+On Thu, Dec 17, 2020 at 05:59:25PM +0800, Liu Ying wrote:
+> This patch adds bindings for i.MX8qm/qxp display pixel link.
 > 
-> Anyhow, this is an enhancement that we can try later.
+> Signed-off-by: Liu Ying <victor.liu@nxp.com>
+> ---
+>  .../display/bridge/fsl,imx8qxp-pixel-link.yaml     | 128 +++++++++++++++++++++
+>  1 file changed, 128 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-link.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-link.yaml b/Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-link.yaml
+> new file mode 100644
+> index 00000000..fd24a0e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-link.yaml
+> @@ -0,0 +1,128 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/bridge/fsl,imx8qxp-pixel-link.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Freescale i.MX8qm/qxp Display Pixel Link
+> +
+> +maintainers:
+> +  - Liu Ying <victor.liu@nxp.com>
+> +
+> +description: |
+> +  The Freescale i.MX8qm/qxp Display Pixel Link(DPL) forms a standard
+> +  asynchronous linkage between pixel sources(display controller or
+> +  camera module) and pixel consumers(imaging or displays).
+> +  It consists of two distinct functions, a pixel transfer function and a
+> +  control interface.  Multiple pixel channels can exist per one control channel.
+> +  This binding documentation is only for pixel links whose pixel sources are
+> +  display controllers.
 
-AFAIU mprotect() is the only one who modifies the pte using the mmap write
-lock.  NUMA balancing is also using read mmap lock when changing pte
-protections, while my understanding is mprotect() used write lock only because
-it manipulates the address space itself (aka. vma layout) rather than modifying
-the ptes, so it needs to.
+Perhaps some information about how this 'device' is accessed because you 
+have no control interface.
 
-At the pte level, it seems always to be the pgtable lock that serializes things.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - fsl,imx8qm-dc-pixel-link
+> +      - fsl,imx8qxp-dc-pixel-link
+> +
+> +  ports:
+> +    type: object
+> +    description: |
+> +      A node containing pixel link input & output port nodes with endpoint
+> +      definitions as documented in
+> +      Documentation/devicetree/bindings/media/video-interfaces.txt
+> +      Documentation/devicetree/bindings/graph.txt
+> +
+> +    properties:
+> +      '#address-cells':
+> +        const: 1
+> +
+> +      '#size-cells':
+> +        const: 0
+> +
+> +      port@0:
+> +        type: object
+> +        description: The pixel link input port node from upstream video source.
+> +
+> +        properties:
+> +          reg:
+> +            const: 0
+> +
+> +        required:
+> +          - reg
 
-So it's perfectly legal to me for e.g. a driver to modify ptes with the read
-lock of mmap_sem, unless I'm severely mistaken.. as long as the pgtable lock is
-taken when doing so.
+You can drop 'reg' parts.
 
-If there's a driver that manipulated the ptes, changed the content of the page,
-recover the ptes to origin, and all these happen right after wp_page_copy()
-unlocked the pgtable lock but before wp_page_copy() retakes the same lock
-again, we may face the same issue finding that the page got copied contains
-corrupted data at last.  While I don't know what to blame on the driver either
-because it seems to be exactly following the rules.
-
-I believe changing into write lock would solve the race here because tlb
-flushing would be guaranteed along the way, but I'm just a bit worried it's not
-the best way to go..
-
-Thanks,
-
--- 
-Peter Xu
-
+> +
+> +    patternProperties:
+> +      "^port@[1-4]$":
+> +        type: object
+> +        description: The pixel link output port node to downstream bridge.
+> +
+> +        properties:
+> +          reg:
+> +            enum: [ 1, 2, 3, 4 ]
+> +
+> +        required:
+> +          - reg
+> +
+> +    required:
+> +      - "#address-cells"
+> +      - "#size-cells"
+> +      - port@0
+> +
+> +    anyOf:
+> +      - required:
+> +          - port@1
+> +      - required:
+> +          - port@2
+> +      - required:
+> +          - port@3
+> +      - required:
+> +          - port@4
+> +
+> +    additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - ports
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    dc0-pixel-link0 {
+> +        compatible = "fsl,imx8qxp-dc-pixel-link";
+> +
+> +        ports {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            /* from dc0 pixel combiner channel0 */
+> +            port@0 {
+> +                reg = <0>;
+> +
+> +                dc0_pixel_link0_dc0_pixel_combiner_ch0: endpoint {
+> +                    remote-endpoint = <&dc0_pixel_combiner_ch0_dc0_pixel_link0>;
+> +                };
+> +            };
+> +
+> +            /* to PXL2DPIs in MIPI/LVDS combo subsystems */
+> +            port@1 {
+> +                #address-cells = <1>;
+> +                #size-cells = <0>;
+> +                reg = <1>;
+> +
+> +                dc0_pixel_link0_mipi_lvds_0_pxl2dpi: endpoint@0 {
+> +                    reg = <0>;
+> +                    remote-endpoint = <&mipi_lvds_0_pxl2dpi_dc0_pixel_link0>;
+> +                };
+> +
+> +                dc0_pixel_link0_mipi_lvds_1_pxl2dpi: endpoint@1 {
+> +                    reg = <1>;
+> +                    remote-endpoint = <&mipi_lvds_1_pxl2dpi_dc0_pixel_link0>;
+> +                };
+> +            };
+> +
+> +            /* to imaging subsystem */
+> +            port@4 {
+> +                reg = <4>;
+> +            };
+> +        };
+> +    };
+> -- 
+> 2.7.4
+> 
