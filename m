@@ -2,105 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B5572DFC63
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 14:47:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03CA32DFF57
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:09:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726955AbgLUNrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 08:47:10 -0500
-Received: from mail-wr1-f45.google.com ([209.85.221.45]:44945 "EHLO
-        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726507AbgLUNrK (ORCPT
+        id S1726419AbgLUSJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:09:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725924AbgLUSJF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 08:47:10 -0500
-Received: by mail-wr1-f45.google.com with SMTP id w5so11099607wrm.11;
-        Mon, 21 Dec 2020 05:46:53 -0800 (PST)
+        Mon, 21 Dec 2020 13:09:05 -0500
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3601EC0613D3;
+        Mon, 21 Dec 2020 10:08:25 -0800 (PST)
+Received: by mail-ot1-x335.google.com with SMTP id b24so9628917otj.0;
+        Mon, 21 Dec 2020 10:08:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mHgLaGHkyXcabO8xIkwlWJDr0MLBnIf8/qlkiv3QkXo=;
+        b=F1s3IZItQhZW8oKY8yQAFhMb+5YpQSaWkdzriG2F1JWsUb8om7K0UcjMwvEToL3a8X
+         vPB/icFWCy3T7WJ2+UaDJlBHkeU8xx3cwO/ZQdZ+XhfiGCcRjnlwavdFlACH+szE6Xdr
+         2J/YXkVXHD1ghNJm7VBM0OZf+4J6O4Scu5uPRxvV4hzEiD8fKqP7E1hidDSO8MMpn5jX
+         GhZhDq0dYQcIjJOjXs1eSktSFHugLxz9zJM3KlIupNe2UY1m6L5AErmaW1KaWIaVv+dP
+         oFfmbitNFCQ1KQH0muFAqoRKjTt35L5jRMwlLBMv3emwPuhHmwmHgUgGx7sB5IvW3uz1
+         xHvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SSC69sqSTAtXz3ORBoKJ4J9VIQbqZBX9JkA4+Zy5GlY=;
-        b=kETRLj17iJhI7wJAM0FVPHS+rkDzUXdi8HgSpfRzLtDFOu750kVx5SnZI2R6tEvwSo
-         zj9vEkz57q2Fi4qAkFFp9/z1e5MR0o7l53NzTFWYwjitvBupS7HYCqKgqaPlMu5mtR93
-         96OoEMATiMeJciImlL0fg1CoGkHDlhusa2U949iBvJrs3mZE+vdUdILmSHisoRiHZnbw
-         SgqCxwuYk1TyHacM7TzowAVOmRfdRfyrHAGO+Ch9QkEdAjS29wKMOS7ihvz4UcyMWmxI
-         Zn/4GDneYKRAPujIVnh3O/MNaCg/rvAqGyelYifvmbexKSbyadc5JYLglvuMFD5BX3dQ
-         yjXA==
-X-Gm-Message-State: AOAM533gqdtvQYBPDTsDSy/QnPSapNOAX7l/5oqETXGnpCqJftyAzJx7
-        cMX60ZoOUTx1GxoQcnDRL0U=
-X-Google-Smtp-Source: ABdhPJza3lVI0zWGWhX0jF0YW5IGMbac9DO0I+4ghGPltDS708DNOoXxrmVj8SI6Kpds8XcHkv2dyw==
-X-Received: by 2002:adf:c14d:: with SMTP id w13mr18456141wre.383.1608558388333;
-        Mon, 21 Dec 2020 05:46:28 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id g78sm23111818wme.33.2020.12.21.05.46.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 05:46:27 -0800 (PST)
-Date:   Mon, 21 Dec 2020 14:46:25 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Li Yang <leoyang.li@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-amarula@amarulasolutions.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v2 2/6] dt-bindings: arm: fsl: Add Engicam i.Core MX8M
- Mini C.TOUCH 2.0
-Message-ID: <20201221134625.GB31176@kozik-lap>
-References: <20201221113151.94515-1-jagan@amarulasolutions.com>
- <20201221113151.94515-3-jagan@amarulasolutions.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mHgLaGHkyXcabO8xIkwlWJDr0MLBnIf8/qlkiv3QkXo=;
+        b=Bu3MOtwdYJz4E0locNmI5M2A8RaDNR7Op6pCiLoFe2umTReBX9lXtLy6xeRoR6PdrV
+         i979fmNQ4edfQOBn28zmwMsNcQazBv/bVoYCp7ZGOaanBU5Aou+7RZshXUPT0wx9VOov
+         ecxbV2wTvcJBRi+I5KI02/7eGMLL6y6gMYtySRF1810Bjc7ph0vsp9OrUBUMMJIwEQ3C
+         EY6IAkinKqS7Ytk8mUqQ/ClTf+x43LwWuZFVoZq9YC1xfVNG4E07cvgzoledBHVtbeiF
+         BZZwuXC6xIJB4BVVYS4NtEk23b+V2d6O0Tau7yfPkP49dCqvSPwMtr14ihPAreFZ+mFk
+         DAJg==
+X-Gm-Message-State: AOAM53211WRgRAblV/9e+SZOkUpzLIOsrCYZQ9YZJvONpp9QMuR2D3ND
+        AFCbfnv0akNSfN/mKLdhCxlgj84blBfaBIft/d8qPFjN
+X-Google-Smtp-Source: ABdhPJyHPXD2WoRee0gLQTCh8E0/Ceo8vhSHe7ZKLTkLXezBU+vPi6psE0EHYE1zYhtBw5l7l2aL3OvVEYweBA+zdHM=
+X-Received: by 2002:a25:40d:: with SMTP id 13mr23258507ybe.422.1608558675780;
+ Mon, 21 Dec 2020 05:51:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201221113151.94515-3-jagan@amarulasolutions.com>
+References: <20201128193335.219395-1-masahiroy@kernel.org> <20201212161831.GA28098@roeck-us.net>
+ <CANiq72=e9Csgpcu3MdLGB77dL_QBn6PpqoG215YUHZLNCUGP0w@mail.gmail.com>
+ <8f645b94-80e5-529c-7b6a-d9b8d8c9685e@roeck-us.net> <CANiq72kML=UmMLyKcorYwOhp2oqjfz7_+JN=EmPp05AapHbFSg@mail.gmail.com>
+ <X9YwXZvjSWANm4wR@kroah.com> <CANiq72=UzRTkh6bcNSjE-kSgBJYX12+zQUYphZ1GcY-7kNxaLA@mail.gmail.com>
+ <CAK7LNARXa1CQSFJjcqN7Y_8dZ1CSGqjoeox3oGAS_3=4QrHs9g@mail.gmail.com>
+In-Reply-To: <CAK7LNARXa1CQSFJjcqN7Y_8dZ1CSGqjoeox3oGAS_3=4QrHs9g@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Mon, 21 Dec 2020 14:51:05 +0100
+Message-ID: <CANiq72m5_mc=Cq1gkMtO6UTo+x91aE7+UBDYJQLazmTh4RbntA@mail.gmail.com>
+Subject: Re: [PATCH v3] Compiler Attributes: remove CONFIG_ENABLE_MUST_CHECK
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "Jason A . Donenfeld" <Jason@zx2c4.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        wireguard@lists.zx2c4.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 05:01:47PM +0530, Jagan Teki wrote:
-> i.Core MX8M Mini is an EDIMM SoM based on NXP i.MX8M Mini from Engicam.
-> 
-> C.TOUCH 2.0 is a general purpose carrier board with capacitive
-> touch interface support.
-> 
-> i.Core MX8M Mini needs to mount on top of this Carrier board for
-> creating complete i.Core MX8M Mini C.TOUCH 2.0 board.
-> 
-> Add bindings for it.
-> 
-> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> ---
-> Changes for v2:
-> - updated commit message
-> 
->  Documentation/devicetree/bindings/arm/fsl.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-> index 67980dcef66d..e653e0a43016 100644
-> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
-> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-> @@ -667,6 +667,8 @@ properties:
->          items:
->            - enum:
->                - beacon,imx8mm-beacon-kit  # i.MX8MM Beacon Development Kit
-> +              - engicam,icore-mx8mm               # i.MX8MM Engicam i.Core MX8M Mini SOM
-> +              - engicam,icore-mx8mm-ctouch2       # i.MX8MM Engicam i.Core MX8M Mini C.TOUCH 2.0
+On Mon, Dec 21, 2020 at 7:20 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> Sorry for the delay.
 
-Please test your DTS against new schema with dtbs_check. This won't
-match.
+No problem!
 
-Submitting bindings and DTS which fail on day 0 is the same as sending
-code which does not compile.
+> Now I sent out the fix for lantiq_etop.c
+>
+> https://lore.kernel.org/patchwork/patch/1355595/
 
-Best regards,
-Krzysztof
+I saw it, thanks for the Cc!
 
+> The reason of the complication was
+> I was trying to merge the following patch in the same development cycle:
+> https://patchwork.kernel.org/project/linux-kbuild/patch/20201117104736.24997-1-olaf@aepfle.de/
 
->                - fsl,imx8mm-ddr4-evk       # i.MX8MM DDR4 EVK Board
->                - fsl,imx8mm-evk            # i.MX8MM EVK Board
->                - kontron,imx8mm-n801x-som  # i.MX8MM Kontron SL (N801X) SOM
-> -- 
-> 2.25.1
-> 
+Ah, then that explains why Guenter's had an error instead of a warning.
+
+> Tomorrow's linux-next should be OK
+> and, you can send my patch in this merge window.
+
+Thanks!
+
+Cheers,
+Miguel
