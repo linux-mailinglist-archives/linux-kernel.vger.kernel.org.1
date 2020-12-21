@@ -2,146 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE352DFD4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 16:13:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF352DFD58
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 16:17:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725985AbgLUPMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 10:12:38 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:49024 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725857AbgLUPMh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 10:12:37 -0500
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BLF0Qj8026470;
-        Mon, 21 Dec 2020 10:11:43 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 35hc8bdpxb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Dec 2020 10:11:43 -0500
-Received: from SCSQMBX11.ad.analog.com (SCSQMBX11.ad.analog.com [10.77.17.10])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 0BLFBfhL051814
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Mon, 21 Dec 2020 10:11:41 -0500
-Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
- SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Mon, 21 Dec 2020 07:11:40 -0800
-Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Mon, 21 Dec 2020 07:11:40 -0800
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0BLFBbKm001107;
-        Mon, 21 Dec 2020 10:11:38 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <jic23@kernel.org>, <lars@metafoo.de>, <andy.shevchenko@gmail.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH v4] iio: Handle enumerated properties with gaps
-Date:   Mon, 21 Dec 2020 17:15:51 +0200
-Message-ID: <20201221151551.52511-1-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726190AbgLUPQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 10:16:49 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50790 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725969AbgLUPQs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 10:16:48 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1608563762; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Vl0A2Nint1NzK8Ep4g4vvF4ZXCHhT/8ljndmCtaD508=;
+        b=YWccyOC1BccLfrfZAfSFjO6uE2vqdZbeseyR99Ekcmec1CYK8hOA9mxJ8p2PCmnNIeO56z
+        kppQfsWsz1axzdjaZuEIEaeRJ+aRMdpYIPHxQdSuS9E57euQkMNRoDYK4TXH3fFUEgQcTI
+        SWX7nE5rUlgrWezZch1AnghnYup+5Sw=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 10F91AD4D;
+        Mon, 21 Dec 2020 15:16:02 +0000 (UTC)
+Date:   Mon, 21 Dec 2020 16:16:01 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
+        shuah@kernel.org, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Stanislaw Gruszka <stf_xl@wp.pl>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v3 1/4] lib: vsprintf: scanf: Negative number must have
+ field width > 1
+Message-ID: <X+C8MeYHX0/FsPwS@alley>
+References: <20201217180057.23786-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-21_08:2020-12-21,2020-12-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- priorityscore=1501 suspectscore=0 adultscore=0 mlxlogscore=860 spamscore=0
- lowpriorityscore=0 mlxscore=0 bulkscore=0 clxscore=1015 phishscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012210107
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201217180057.23786-1-rf@opensource.cirrus.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lars-Peter Clausen <lars@metafoo.de>
+On Thu 2020-12-17 18:00:54, Richard Fitzgerald wrote:
+> If a signed number field starts with a '-' the field width must be > 1,
+> or unlimited, to allow at least one digit after the '-'.
+> 
+> This patch adds a check for this. If a signed field starts with '-'
+> and field_width == 1 the scanf will quit.
+> 
+> It is ok for a signed number field to have a field width of 1 if it
+> starts with a digit. In that case the single digit can be converted.
 
-Some enums might have gaps or reserved values in the middle of their value
-range. E.g. consider a 2-bit enum where the values 0, 1 and 3 have a
-meaning, but 2 is a reserved value and can not be used.
+The change makes perfect sense. vsscanf() should always process only one
+character when the field width is 1.
 
-Add support for such enums to the IIO enum helper functions. A reserved
-values is marked by setting its entry in the items array to NULL rather
-than the normal descriptive string value.
+Well, it has a potential to break existing users that rely on the
+broken behavior. Fortunately, there seems be only one:
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
+	drivers/net/wireless/intel/iwlegacy/3945-mac.c: if (sscanf(buf, "%1i", &ant) != 1) {
 
-Nearly 1 year and a half since I last touched this:
-https://lore.kernel.org/linux-iio/20190508111913.7276-3-alexandru.ardelean@analog.com/
+It is used to set a device parameter: il3945_mod_params.antenna.
+There are three valid values:
 
-I tried a few shots at working with 'lib/string.c', and that went
-slow. The __sysfs_match_string_with_gaps() approach has stalled.
-https://lore.kernel.org/linux-iio/20190422140251.8960-1-alexandru.ardelean@analog.com/
+	enum il3945_antenna {
+		IL_ANTENNA_DIVERSITY,
+		IL_ANTENNA_MAIN,
+		IL_ANTENNA_AUX
+	};
 
-I also tried to update the __sysfs_match_string() implementation based
-on what the docstring said,
-https://lore.kernel.org/lkml/20200212144723.21884-1-alexandru.ardelean@analog.com/
+So, we should be on the safe side.
 
-but then I just fixed the docstring to match
-what the behavior does:
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next-history.git/commit/lib/string.c?id=c11d3fa0116a6bc832a9e387427caa16f8de5ef2
+Anyway, adding people from
+get_maintainer.pl drivers/net/wireless/intel/iwlegacy/3945-mac.c
+so that they are aware of this.
 
-In the end, for this patch, it means expanding the
-__sysfs_match_string() helper.
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 
- drivers/iio/industrialio-core.c | 20 ++++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-index e9ee9363fed0..a88494066811 100644
---- a/drivers/iio/industrialio-core.c
-+++ b/drivers/iio/industrialio-core.c
-@@ -470,8 +470,11 @@ ssize_t iio_enum_available_read(struct iio_dev *indio_dev,
- 	if (!e->num_items)
- 		return 0;
- 
--	for (i = 0; i < e->num_items; ++i)
-+	for (i = 0; i < e->num_items; ++i) {
-+		if (!e->items[i])
-+			continue;
- 		len += scnprintf(buf + len, PAGE_SIZE - len, "%s ", e->items[i]);
-+	}
- 
- 	/* replace last space with a newline */
- 	buf[len - 1] = '\n';
-@@ -492,7 +495,7 @@ ssize_t iio_enum_read(struct iio_dev *indio_dev,
- 	i = e->get(indio_dev, chan);
- 	if (i < 0)
- 		return i;
--	else if (i >= e->num_items)
-+	else if (i >= e->num_items || !e->items[i])
- 		return -EINVAL;
- 
- 	return snprintf(buf, PAGE_SIZE, "%s\n", e->items[i]);
-@@ -504,16 +507,21 @@ ssize_t iio_enum_write(struct iio_dev *indio_dev,
- 	size_t len)
- {
- 	const struct iio_enum *e = (const struct iio_enum *)priv;
-+	unsigned int i;
- 	int ret;
- 
- 	if (!e->set)
- 		return -EINVAL;
- 
--	ret = __sysfs_match_string(e->items, e->num_items, buf);
--	if (ret < 0)
--		return ret;
-+	for (i = 0; i < e->num_items; i++) {
-+		if (e->items[i] && sysfs_streq(buf, e->items[i]))
-+			break;
-+	}
-+
-+	if (i == e->num_items)
-+		return -EINVAL;
- 
--	ret = e->set(indio_dev, chan, ret);
-+	ret = e->set(indio_dev, chan, i);
- 	return ret ? ret : len;
- }
- EXPORT_SYMBOL_GPL(iio_enum_write);
--- 
-2.17.1
+Best Regards,
+Petr
 
+> ---
+>  lib/vsprintf.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+> index 14c9a6af1b23..8954ff94a53c 100644
+> --- a/lib/vsprintf.c
+> +++ b/lib/vsprintf.c
+> @@ -3433,8 +3433,12 @@ int vsscanf(const char *buf, const char *fmt, va_list args)
+>  		str = skip_spaces(str);
+>  
+>  		digit = *str;
+> -		if (is_sign && digit == '-')
+> +		if (is_sign && digit == '-') {
+> +			if (field_width == 1)
+> +				break;
+> +
+>  			digit = *(str + 1);
+> +		}
+>  
+>  		if (!digit
+>  		    || (base == 16 && !isxdigit(digit))
+> -- 
+> 2.20.1
