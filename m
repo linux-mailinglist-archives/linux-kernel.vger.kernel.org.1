@@ -2,1890 +2,347 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B65832DFDCA
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 16:55:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5E842DFFD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:33:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726039AbgLUPzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 10:55:00 -0500
-Received: from out28-196.mail.aliyun.com ([115.124.28.196]:40181 "EHLO
-        out28-196.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725852AbgLUPzA (ORCPT
+        id S1727050AbgLUSc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:32:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726160AbgLUSc1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 10:55:00 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436282|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0400243-0.000690097-0.959286;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047204;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.J9pVTZZ_1608565975;
-Received: from zhouyanjie-virtual-machine.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.J9pVTZZ_1608565975)
-          by smtp.aliyun-inc.com(10.147.40.2);
-          Mon, 21 Dec 2020 23:53:06 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     sboyd@kernel.org, robh+dt@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, mturquette@baylibre.com,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
-        sihui.liu@ingenic.com, sernia.zhou@foxmail.com,
-        paul@crapouillou.net
-Subject: [PATCH v4 5/5] clk: Ingenic: Clean up and reformat the code.
-Date:   Mon, 21 Dec 2020 23:52:51 +0800
-Message-Id: <1608565971-23895-6-git-send-email-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1608565971-23895-1-git-send-email-zhouyanjie@wanyeetech.com>
-References: <1608565971-23895-1-git-send-email-zhouyanjie@wanyeetech.com>
+        Mon, 21 Dec 2020 13:32:27 -0500
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75B1AC0613D3;
+        Mon, 21 Dec 2020 10:31:47 -0800 (PST)
+Received: by mail-qt1-x82d.google.com with SMTP id j26so7252962qtq.8;
+        Mon, 21 Dec 2020 10:31:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7teZZuS4GilXjYfFVVa9UdfFNY2RDZFfLh3Z9ofGucw=;
+        b=MAvy12AqSM2zXTcVlLO/oTenwjLy90zcuSjqYBG/IQdhNyqn97o5AjKBVnVdhMYpmd
+         s2N1c37R6nYsIwOPNUTIIj/bsJJLvTr4XjJ6JN/gfXeNpY3xP4QOlC9RBW3o2tZdO7Rz
+         MVGHvoNpnil0TmhUakyE9+fj+1w5uX5xS+7eUdC6bpg9N0SeOavGXC1x5KatQeZFCYmK
+         mXWmWuJ7kO15l+XugSA5TcsZ/WzUbFUv56tXv3/6RIgOvJjUpwBB3RfCFPIeNzGyFtJM
+         14s+TK2JTqn82QC1jKcWvhXmm6kaMKLMrTbM75G+bwV92/6me55iQIwJ6w45lMyivYzi
+         p4dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7teZZuS4GilXjYfFVVa9UdfFNY2RDZFfLh3Z9ofGucw=;
+        b=EdVGBHbrPvft7giBpUsLSMdg0EM6giQiuET736+oxzpH+sIvAEE68YPGYrHvCD79/F
+         TMur3YhjEUFkcqvFFzmelnEF+sk4Km1zlfPQk4EqmPhvnuuaPFAMCbigco03UO20+s81
+         BZX0NT55LQAeXuuK6Nrgh4crdUi05kx49W2jI2YkxDXEJggusbBIBHdtnxc3G8ZngQl+
+         MuyIfpjTj4m4RquqjQAnN5kg9RfYZJOk1Li6pEdIt0khvblFy8cAIVM0UsXs0AMWmIJ2
+         VfJq4D6ZC/lpz4xYZhk5PkmTEBRtjA0EQ7byhH/GQIxIdtCKN9EXCuGZQ++kctkVata3
+         SgTA==
+X-Gm-Message-State: AOAM533pIKRiZir6tNWJJhJuaW3c23pTlqqTAcqHQOuJ8hN/yDIedHTB
+        xpKwemz85kkgNXj4XRyxrpsrcETSCt58Bw==
+X-Google-Smtp-Source: ABdhPJyTIvIkIMqZTe3ddtIJ2MkeFRD9viWm5NW8IwezIJ9YE2YdY2ss9+aCpxoXW3RV2lbAgJbclA==
+X-Received: by 2002:a37:7d44:: with SMTP id y65mr17770578qkc.367.1608566184028;
+        Mon, 21 Dec 2020 07:56:24 -0800 (PST)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id w34sm4258459qtd.89.2020.12.21.07.56.22
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 21 Dec 2020 07:56:23 -0800 (PST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 57C1A27C0069;
+        Mon, 21 Dec 2020 10:56:11 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Mon, 21 Dec 2020 10:56:11 -0500
+X-ME-Sender: <xms:mMXgXy2qtvuLlfHs7NHpBDolNSfaYkwcEUBCJmVLjgUpFk7ZpZ21qg>
+    <xme:mMXgX1BknJndcyUnN9OeCfoFAbP7O0Py8vZnfqJxcaZC3xRVyBddG5k_xDQwJOU12
+    tfCSp7OhT8mnDIAvQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvddtvddgkeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    goufhushhpvggtthffohhmrghinhculdegledmnecujfgurhepfffhvffukfhfgggtuggj
+    sehttdertddttddvnecuhfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrdhfvg
+    hnghesghhmrghilhdrtghomheqnecuggftrfgrthhtvghrnhepudefkeeuueffleeluddu
+    geekffdvgeeghfeuheetleejgeeiheduhfekieejgffhnecuffhomhgrihhnpehshiiikh
+    grlhhlvghrrdgrphhpshhpohhtrdgtohhmpdhqvghmuhdrohhrghdpsghoohhtlhhinhdr
+    tghomhdpghhoohdrghhlpdhffhiflhhlrdgthhdpghhoohhglhgvrdgtohhmnecukfhppe
+    duieejrddvvddtrddvrdduvdeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
+    pehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlih
+    hthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhm
+    rghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:mMXgX3yLm2QZJWQ8xPnIoOW-L1RkDox5dhbyj_Pg6Oa4RqVQJ2hu5g>
+    <xmx:mMXgX7m4hnX4OIiGzm6AMM8qhHcklcskshd9gjzAtOQ4WCufV7Re8A>
+    <xmx:mMXgX0Hm3ds5BNo1WCdCcE89IDJovwysEaVJESG1XJ_J4xTUSGE7qw>
+    <xmx:m8XgX4LS-0sxhkvCPhrkYpogZjRXbSxSEYiB2z8XNGTnrtRLfDkGImqz688>
+Received: from localhost (unknown [167.220.2.126])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 36ADC24005B;
+        Mon, 21 Dec 2020 10:56:08 -0500 (EST)
+Date:   Mon, 21 Dec 2020 23:55:39 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        syzbot <syzbot+972b924c988834e868b2@syzkaller.appspotmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Peter Rosin <peda@axentia.se>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: WARNING: suspicious RCU usage in modeset_lock
+Message-ID: <X+DFe20DVdzEAq6o@boqun-archlinux>
+References: <000000000000cb6db205b68a971c@google.com>
+ <CAKMK7uEiS5SrBYv-2w2wWL=9G4ByoHvtiWVsPqekswZzOGmzjg@mail.gmail.com>
+ <20201216161621.GH2657@paulmck-ThinkPad-P72>
+ <CAKMK7uH1agVS=e245b=25Lv9Q+u5c7=KL-_NF8Hte10nKTqAXw@mail.gmail.com>
+ <20201217152118.GR2657@paulmck-ThinkPad-P72>
+ <X9wGBcCnhxr36WF4@boqun-archlinux>
+ <CACT4Y+bABW7OP0RDm-Qnq2M6kKVTc=e7Tmt5Uc1+zWyD2roqrA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+bABW7OP0RDm-Qnq2M6kKVTc=e7Tmt5Uc1+zWyD2roqrA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1.When the clock does not have "CGU_CLK_MUX", the 2/3/4 bits in
-  parents do not need to be filled with -1. When the clock have
-  a "CGU_CLK_MUX" has only one bit, the 3/4 bits of parents do
-  not need to be filled with -1. Clean up these unnecessary -1
-  from all the xxxx-cgu.c files.
-2.Reformat code, add missing blank lines, remove unnecessary
-  commas and tabs, and align code.
+Hi Dmitry,
 
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
----
+On Fri, Dec 18, 2020 at 12:27:04PM +0100, Dmitry Vyukov wrote:
+> On Fri, Dec 18, 2020 at 2:30 AM Boqun Feng <boqun.feng@gmail.com> wrote:
+> >
+> > On Thu, Dec 17, 2020 at 07:21:18AM -0800, Paul E. McKenney wrote:
+> > > On Thu, Dec 17, 2020 at 11:03:20AM +0100, Daniel Vetter wrote:
+> > > > On Wed, Dec 16, 2020 at 5:16 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > > >
+> > > > > On Wed, Dec 16, 2020 at 10:52:06AM +0100, Daniel Vetter wrote:
+> > > > > > On Wed, Dec 16, 2020 at 2:14 AM syzbot
+> > > > > > <syzbot+972b924c988834e868b2@syzkaller.appspotmail.com> wrote:
+> > > > > > >
+> > > > > > > Hello,
+> > > > > > >
+> > > > > > > syzbot found the following issue on:
+> > > > > > >
+> > > > > > > HEAD commit:    94801e5c Merge tag 'pinctrl-v5.10-3' of git://git.kernel.o..
+> > > > > > > git tree:       upstream
+> > > > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=130558c5500000
+> > > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=ee8a1012a5314210
+> > > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=972b924c988834e868b2
+> > > > > > > compiler:       gcc (GCC) 10.1.0-syz 20200507
+> > > > > > > userspace arch: i386
+> > > > > > >
+> > > > > > > Unfortunately, I don't have any reproducer for this issue yet.
+> > > > > > >
+> > > > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > > > > > Reported-by: syzbot+972b924c988834e868b2@syzkaller.appspotmail.com
+> > > > > > >
+> > > > > > > =============================
+> > > > > > > WARNING: suspicious RCU usage
+> > > > > > > 5.10.0-rc7-syzkaller #0 Not tainted
+> > > > > > > -----------------------------
+> > > > > > > kernel/sched/core.c:7270 Illegal context switch in RCU-sched read-side critical section!
+> > > > > > >
+> > > > > > > other info that might help us debug this:
+> > > > > > >
+> > > > > > >
+> > > > > > > rcu_scheduler_active = 2, debug_locks = 0
+> > > > > > > 7 locks held by syz-executor.1/9232:
+> > > > > > >  #0: ffffffff8b328c60 (console_lock){+.+.}-{0:0}, at: do_fb_ioctl+0x2e4/0x690 drivers/video/fbdev/core/fbmem.c:1106
+> > > > > > >  #1: ffff888041bd4078 (&fb_info->lock){+.+.}-{3:3}, at: lock_fb_info include/linux/fb.h:636 [inline]
+> > > > > > >  #1: ffff888041bd4078 (&fb_info->lock){+.+.}-{3:3}, at: do_fb_ioctl+0x2ee/0x690 drivers/video/fbdev/core/fbmem.c:1107
+> > > > > > >  #2: ffff888041adca78 (&helper->lock){+.+.}-{3:3}, at: drm_fb_helper_pan_display+0xce/0x970 drivers/gpu/drm/drm_fb_helper.c:1448
+> > > > > > >  #3: ffff8880159f01b8 (&dev->master_mutex){+.+.}-{3:3}, at: drm_master_internal_acquire+0x1d/0x70 drivers/gpu/drm/drm_auth.c:407
+> > > > > > >  #4: ffff888041adc898 (&client->modeset_mutex){+.+.}-{3:3}, at: drm_client_modeset_commit_locked+0x44/0x580 drivers/gpu/drm/drm_client_modeset.c:1143
+> > > > > > >  #5: ffffc90001c07730 (crtc_ww_class_acquire){+.+.}-{0:0}, at: drm_client_modeset_commit_atomic+0xb7/0x7c0 drivers/gpu/drm/drm_client_modeset.c:981
+> > > > > > >  #6: ffff888015986108 (crtc_ww_class_mutex){+.+.}-{3:3}, at: ww_mutex_lock_slow include/linux/ww_mutex.h:287 [inline]
+> > > > > > >  #6: ffff888015986108 (crtc_ww_class_mutex){+.+.}-{3:3}, at: modeset_lock+0x31c/0x650 drivers/gpu/drm/drm_modeset_lock.c:260
+> > > > > >
+> > > > > > Given that we managed to take all these locks without upsetting anyone
+> > > > > > the rcu section is very deep down. And looking at the backtrace below
+> > > > > > I just couldn't find anything.
+> > > > > >
+> > > > > > Best I can think of is that an interrupt of some sort leaked an rcu
+> > > > > > section, and we got shot here. But I'd assume the rcu debugging would
+> > > > > > catch this? Backtrace of the start of that rcu read side section would
+> > > > > > be really useful here, but I'm not seeing that in the logs. There's
+> > > > > > more stuff there, but it's just the usual "everything falls apart"
+> > > > > > stuff of little value to understanding how we got there.
+> > > > >
+> > > > > In my experience, lockdep will indeed complain if an interrupt handler
+> > > > > returns while in an RCU read-side critical section.
+> > > > >
+> > > > > > Adding some rcu people for more insights on what could have gone wrong here.
+> > > > > > -Daniel
+> > > > > >
+> > > > > > > stack backtrace:
+> > > > > > > CPU: 1 PID: 9232 Comm: syz-executor.1 Not tainted 5.10.0-rc7-syzkaller #0
+> > > > > > > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> > > > > > > Call Trace:
+> > > > > > >  __dump_stack lib/dump_stack.c:77 [inline]
+> > > > > > >  dump_stack+0x107/0x163 lib/dump_stack.c:118
+> > > > > > >  ___might_sleep+0x25d/0x2b0 kernel/sched/core.c:7270
+> > > > > > >  __mutex_lock_common kernel/locking/mutex.c:935 [inline]
+> > > > > > >  __ww_mutex_lock.constprop.0+0xa9/0x2cc0 kernel/locking/mutex.c:1111
+> > > > > > >  ww_mutex_lock+0x3d/0x170 kernel/locking/mutex.c:1190
+> > > > >
+> > > > > Acquiring a mutex while under the influence of rcu_read_lock() will
+> > > > > definitely get you this lockdep complaint, and rightfully so.
+> > > > >
+> > > > > If you need to acquire a mutex with RCU-like protection, one approach
+> > > > > is to use SRCU.  But usually this indicates (as you suspected) that
+> > > > > someone forgot to invoke rcu_read_unlock().
+> > > > >
+> > > > > One way to locate this is to enlist the aid of lockdep.  You can do this
+> > > > > by putting something like this in the callers:
+> > > > >
+> > > > >         RCU_LOCKDEP_WARN(lock_is_held(&rcu_bh_lock_map) ||
+> > > > >                          lock_is_held(&rcu_lock_map) ||
+> > > > >                          lock_is_held(&rcu_sched_lock_map),
+> > > > >                          "We are in an RCU read-side critical section");
+> > > > >
+> > > > > This will get you a lockdep complaint much like the one above if the
+> > > > > caller is in any sort of RCU read-side critical section.  You can push
+> > > > > this up the call stack one level at a time or just sprinkle it up the
+> > > > > stack in one go.
+> > > > >
+> > > > > The complaint is specifically about RCU-sched, so you could focus on
+> > > > > that using this instead:
+> > > > >
+> > > > >         RCU_LOCKDEP_WARN(lock_is_held(&rcu_sched_lock_map),
+> > > > >                          "We are in an RCU-sched read-side critical section");
+> > > > >
+> > > > > This of course assumes that this is reproducible.  :-/
+> > > > >
+> > > > > But even if it isn't reproducible, for example, if the mutex is only
+> > > > > acquired occasionally, these RCU_LOCKDEP_WARN() calls can be used to
+> > > > > check assumptions about state.
+> > > >
+> > > > I think we're tripping over the might_sleep() all the mutexes have,
+> > > > and that's not as good as yours, but good enough to catch a missing
+> > > > rcu_read_unlock(). That's kinda why I'm baffled, since like almost
+> > > > every 2nd function in the backtrace grabbed a mutex and it was all
+> > > > fine until the very last.
+> > > >
+> > > > I think it would be really nice if the rcu checks could retain (in
+> > > > debugging only) the backtrace of the outermost rcu_read_lock, so we
+> > > > could print that when something goes wrong in cases where it's leaked.
+> > > > For normal locks lockdep does that already (well not full backtrace I
+> > > > think, just the function that acquired the lock, but that's often
+> > > > enough). I guess that doesn't exist yet?
+> > >
+> > > I thought that lockdep kept those traces in order to print them in
+> > > deadlock reports.  Adding Boqun for his perspective.
+> > >
+> >
+> > I'm afraid it's not the same as you expect. So yes, lockdep will keep
+> > traces, however, lockdep only keep one trace entry for one usage
+> > *class*, for example, if you have two function foo() and bar():
+> >
+> >         void foo(void)
+> >         {
+> >                 rcu_read_lock();
+> >                 ...
+> >         }
+> >
+> >         void bar(void)
+> >         {
+> >                 rcu_read_lock();
+> >                 ...
+> >         }
+> >
+> > , and during runtime, both are called in thread contexts with irq
+> > enabled. There will be only one trace (the first one that lockdep see)
+> > getting recorded ;-(
+> >
+> > That said, from the held lock status for this splat, I don't see a
+> > rcu_read_lock_sched() is held, so I guess that the RCU read-side
+> > critical section is introduced by a preempt_disable() rather than a
+> > explicit rcu_read_lock_sched(), if that's the case, lockdep cannot help
+> > either, because after all preempt_disable() is not a lock, lockdep won't
+> > keep a trace for it.
+> >
+> > Maybe preemption tracing can help here?
+> 
+> Hi Boqun,
+> 
+> Lockdep can print similar info for hard/softirqs disable in
+> print_irqtrace_events:
+> https://elixir.bootlin.com/linux/latest/source/kernel/locking/lockdep.c#L3896
+> This looks somewhat similar to what would help for preempt_disable.
+> Would it be reasonable for lockdep to record and print the last
+> disable PC to provide a more complete execution context picture?
+> 
 
-Notes:
-    v1->v2:
-    Remove unnecessary -1 and commas.
-    
-    v2->v3:
-    No change.
-    
-    v3->v4:
-    1.The -1 used for placeholders on the unused bits of the
-      parents in the custom clock should not be removed.
-    2.Move "JZ4780_CLK_CORE1" from the "Gate-only clocks"
-      class to the "Custom (SoC-specific)" class, because
-      it belongs to the custom clock.
+Make sense, let me see what I can do.
 
- drivers/clk/ingenic/jz4725b-cgu.c |  50 +++++++-------
- drivers/clk/ingenic/jz4740-cgu.c  |  50 +++++++-------
- drivers/clk/ingenic/jz4770-cgu.c  |  79 +++++++++++-----------
- drivers/clk/ingenic/jz4780-cgu.c  | 135 +++++++++++++++++++-------------------
- drivers/clk/ingenic/x1000-cgu.c   | 120 ++++++++++++++++-----------------
- drivers/clk/ingenic/x1830-cgu.c   | 133 ++++++++++++++++++-------------------
- 6 files changed, 286 insertions(+), 281 deletions(-)
+Regards,
+Boqun
 
-diff --git a/drivers/clk/ingenic/jz4725b-cgu.c b/drivers/clk/ingenic/jz4725b-cgu.c
-index 8c38e72..f41cd76 100644
---- a/drivers/clk/ingenic/jz4725b-cgu.c
-+++ b/drivers/clk/ingenic/jz4725b-cgu.c
-@@ -17,7 +17,7 @@
- 
- /* CGU register offsets */
- #define CGU_REG_CPCCR		0x00
--#define CGU_REG_LCR		0x04
-+#define CGU_REG_LCR			0x04
- #define CGU_REG_CPPCR		0x10
- #define CGU_REG_CLKGR		0x20
- #define CGU_REG_OPCR		0x24
-@@ -28,7 +28,7 @@
- #define CGU_REG_CIMCDR		0x78
- 
- /* bits within the LCR register */
--#define LCR_SLEEP		BIT(0)
-+#define LCR_SLEEP			BIT(0)
- 
- static struct ingenic_cgu *cgu;
- 
-@@ -53,7 +53,7 @@ static const struct ingenic_cgu_clk_info jz4725b_cgu_clocks[] = {
- 
- 	[JZ4725B_CLK_PLL] = {
- 		"pll", CGU_CLK_PLL,
--		.parents = { JZ4725B_CLK_EXT, -1, -1, -1 },
-+		.parents = { JZ4725B_CLK_EXT },
- 		.pll = {
- 			.reg = CGU_REG_CPPCR,
- 			.rate_multiplier = 1,
-@@ -78,7 +78,7 @@ static const struct ingenic_cgu_clk_info jz4725b_cgu_clocks[] = {
- 
- 	[JZ4725B_CLK_PLL_HALF] = {
- 		"pll half", CGU_CLK_DIV,
--		.parents = { JZ4725B_CLK_PLL, -1, -1, -1 },
-+		.parents = { JZ4725B_CLK_PLL },
- 		.div = {
- 			CGU_REG_CPCCR, 21, 1, 1, -1, -1, -1,
- 			jz4725b_cgu_pll_half_div_table,
-@@ -87,7 +87,7 @@ static const struct ingenic_cgu_clk_info jz4725b_cgu_clocks[] = {
- 
- 	[JZ4725B_CLK_CCLK] = {
- 		"cclk", CGU_CLK_DIV,
--		.parents = { JZ4725B_CLK_PLL, -1, -1, -1 },
-+		.parents = { JZ4725B_CLK_PLL },
- 		.div = {
- 			CGU_REG_CPCCR, 0, 1, 4, 22, -1, -1,
- 			jz4725b_cgu_cpccr_div_table,
-@@ -96,7 +96,7 @@ static const struct ingenic_cgu_clk_info jz4725b_cgu_clocks[] = {
- 
- 	[JZ4725B_CLK_HCLK] = {
- 		"hclk", CGU_CLK_DIV,
--		.parents = { JZ4725B_CLK_PLL, -1, -1, -1 },
-+		.parents = { JZ4725B_CLK_PLL },
- 		.div = {
- 			CGU_REG_CPCCR, 4, 1, 4, 22, -1, -1,
- 			jz4725b_cgu_cpccr_div_table,
-@@ -105,7 +105,7 @@ static const struct ingenic_cgu_clk_info jz4725b_cgu_clocks[] = {
- 
- 	[JZ4725B_CLK_PCLK] = {
- 		"pclk", CGU_CLK_DIV,
--		.parents = { JZ4725B_CLK_PLL, -1, -1, -1 },
-+		.parents = { JZ4725B_CLK_PLL },
- 		.div = {
- 			CGU_REG_CPCCR, 8, 1, 4, 22, -1, -1,
- 			jz4725b_cgu_cpccr_div_table,
-@@ -114,7 +114,7 @@ static const struct ingenic_cgu_clk_info jz4725b_cgu_clocks[] = {
- 
- 	[JZ4725B_CLK_MCLK] = {
- 		"mclk", CGU_CLK_DIV,
--		.parents = { JZ4725B_CLK_PLL, -1, -1, -1 },
-+		.parents = { JZ4725B_CLK_PLL },
- 		.div = {
- 			CGU_REG_CPCCR, 12, 1, 4, 22, -1, -1,
- 			jz4725b_cgu_cpccr_div_table,
-@@ -123,7 +123,7 @@ static const struct ingenic_cgu_clk_info jz4725b_cgu_clocks[] = {
- 
- 	[JZ4725B_CLK_IPU] = {
- 		"ipu", CGU_CLK_DIV | CGU_CLK_GATE,
--		.parents = { JZ4725B_CLK_PLL, -1, -1, -1 },
-+		.parents = { JZ4725B_CLK_PLL },
- 		.div = {
- 			CGU_REG_CPCCR, 16, 1, 4, 22, -1, -1,
- 			jz4725b_cgu_cpccr_div_table,
-@@ -133,14 +133,14 @@ static const struct ingenic_cgu_clk_info jz4725b_cgu_clocks[] = {
- 
- 	[JZ4725B_CLK_LCD] = {
- 		"lcd", CGU_CLK_DIV | CGU_CLK_GATE,
--		.parents = { JZ4725B_CLK_PLL_HALF, -1, -1, -1 },
-+		.parents = { JZ4725B_CLK_PLL_HALF },
- 		.div = { CGU_REG_LPCDR, 0, 1, 11, -1, -1, -1 },
- 		.gate = { CGU_REG_CLKGR, 9 },
- 	},
- 
- 	[JZ4725B_CLK_I2S] = {
- 		"i2s", CGU_CLK_MUX | CGU_CLK_DIV | CGU_CLK_GATE,
--		.parents = { JZ4725B_CLK_EXT, JZ4725B_CLK_PLL_HALF, -1, -1 },
-+		.parents = { JZ4725B_CLK_EXT, JZ4725B_CLK_PLL_HALF },
- 		.mux = { CGU_REG_CPCCR, 31, 1 },
- 		.div = { CGU_REG_I2SCDR, 0, 1, 9, -1, -1, -1 },
- 		.gate = { CGU_REG_CLKGR, 6 },
-@@ -148,7 +148,7 @@ static const struct ingenic_cgu_clk_info jz4725b_cgu_clocks[] = {
- 
- 	[JZ4725B_CLK_SPI] = {
- 		"spi", CGU_CLK_MUX | CGU_CLK_DIV | CGU_CLK_GATE,
--		.parents = { JZ4725B_CLK_EXT, JZ4725B_CLK_PLL, -1, -1 },
-+		.parents = { JZ4725B_CLK_EXT, JZ4725B_CLK_PLL },
- 		.mux = { CGU_REG_SSICDR, 31, 1 },
- 		.div = { CGU_REG_SSICDR, 0, 1, 4, -1, -1, -1 },
- 		.gate = { CGU_REG_CLKGR, 4 },
-@@ -156,13 +156,13 @@ static const struct ingenic_cgu_clk_info jz4725b_cgu_clocks[] = {
- 
- 	[JZ4725B_CLK_MMC_MUX] = {
- 		"mmc_mux", CGU_CLK_DIV,
--		.parents = { JZ4725B_CLK_PLL_HALF, -1, -1, -1 },
-+		.parents = { JZ4725B_CLK_PLL_HALF },
- 		.div = { CGU_REG_MSCCDR, 0, 1, 5, -1, -1, -1 },
- 	},
- 
- 	[JZ4725B_CLK_UDC] = {
- 		"udc", CGU_CLK_MUX | CGU_CLK_DIV,
--		.parents = { JZ4725B_CLK_EXT, JZ4725B_CLK_PLL_HALF, -1, -1 },
-+		.parents = { JZ4725B_CLK_EXT, JZ4725B_CLK_PLL_HALF },
- 		.mux = { CGU_REG_CPCCR, 29, 1 },
- 		.div = { CGU_REG_CPCCR, 23, 1, 6, -1, -1, -1 },
- 	},
-@@ -171,55 +171,55 @@ static const struct ingenic_cgu_clk_info jz4725b_cgu_clocks[] = {
- 
- 	[JZ4725B_CLK_UART] = {
- 		"uart", CGU_CLK_GATE,
--		.parents = { JZ4725B_CLK_EXT, -1, -1, -1 },
-+		.parents = { JZ4725B_CLK_EXT },
- 		.gate = { CGU_REG_CLKGR, 0 },
- 	},
- 
- 	[JZ4725B_CLK_DMA] = {
- 		"dma", CGU_CLK_GATE,
--		.parents = { JZ4725B_CLK_PCLK, -1, -1, -1 },
-+		.parents = { JZ4725B_CLK_PCLK },
- 		.gate = { CGU_REG_CLKGR, 12 },
- 	},
- 
- 	[JZ4725B_CLK_ADC] = {
- 		"adc", CGU_CLK_GATE,
--		.parents = { JZ4725B_CLK_EXT, -1, -1, -1 },
-+		.parents = { JZ4725B_CLK_EXT },
- 		.gate = { CGU_REG_CLKGR, 7 },
- 	},
- 
- 	[JZ4725B_CLK_I2C] = {
- 		"i2c", CGU_CLK_GATE,
--		.parents = { JZ4725B_CLK_EXT, -1, -1, -1 },
-+		.parents = { JZ4725B_CLK_EXT },
- 		.gate = { CGU_REG_CLKGR, 3 },
- 	},
- 
- 	[JZ4725B_CLK_AIC] = {
- 		"aic", CGU_CLK_GATE,
--		.parents = { JZ4725B_CLK_EXT, -1, -1, -1 },
-+		.parents = { JZ4725B_CLK_EXT },
- 		.gate = { CGU_REG_CLKGR, 5 },
- 	},
- 
- 	[JZ4725B_CLK_MMC0] = {
- 		"mmc0", CGU_CLK_GATE,
--		.parents = { JZ4725B_CLK_MMC_MUX, -1, -1, -1 },
-+		.parents = { JZ4725B_CLK_MMC_MUX },
- 		.gate = { CGU_REG_CLKGR, 6 },
- 	},
- 
- 	[JZ4725B_CLK_MMC1] = {
- 		"mmc1", CGU_CLK_GATE,
--		.parents = { JZ4725B_CLK_MMC_MUX, -1, -1, -1 },
-+		.parents = { JZ4725B_CLK_MMC_MUX },
- 		.gate = { CGU_REG_CLKGR, 16 },
- 	},
- 
- 	[JZ4725B_CLK_BCH] = {
- 		"bch", CGU_CLK_GATE,
--		.parents = { JZ4725B_CLK_MCLK/* not sure */, -1, -1, -1 },
-+		.parents = { JZ4725B_CLK_MCLK/* not sure */ },
- 		.gate = { CGU_REG_CLKGR, 11 },
- 	},
- 
- 	[JZ4725B_CLK_TCU] = {
- 		"tcu", CGU_CLK_GATE,
--		.parents = { JZ4725B_CLK_EXT/* not sure */, -1, -1, -1 },
-+		.parents = { JZ4725B_CLK_EXT/* not sure */ },
- 		.gate = { CGU_REG_CLKGR, 1 },
- 	},
- 
-@@ -233,13 +233,13 @@ static const struct ingenic_cgu_clk_info jz4725b_cgu_clocks[] = {
- 
- 	[JZ4725B_CLK_RTC] = {
- 		"rtc", CGU_CLK_MUX,
--		.parents = { JZ4725B_CLK_EXT512, JZ4725B_CLK_OSC32K, -1, -1 },
-+		.parents = { JZ4725B_CLK_EXT512, JZ4725B_CLK_OSC32K },
- 		.mux = { CGU_REG_OPCR, 2, 1},
- 	},
- 
- 	[JZ4725B_CLK_UDC_PHY] = {
- 		"udc_phy", CGU_CLK_GATE,
--		.parents = { JZ4725B_CLK_EXT, -1, -1, -1 },
-+		.parents = { JZ4725B_CLK_EXT },
- 		.gate = { CGU_REG_OPCR, 6, true },
- 	},
- };
-diff --git a/drivers/clk/ingenic/jz4740-cgu.c b/drivers/clk/ingenic/jz4740-cgu.c
-index c0ac919..0fd3751 100644
---- a/drivers/clk/ingenic/jz4740-cgu.c
-+++ b/drivers/clk/ingenic/jz4740-cgu.c
-@@ -18,10 +18,10 @@
- 
- /* CGU register offsets */
- #define CGU_REG_CPCCR		0x00
--#define CGU_REG_LCR		0x04
-+#define CGU_REG_LCR			0x04
- #define CGU_REG_CPPCR		0x10
- #define CGU_REG_CLKGR		0x20
--#define CGU_REG_SCR		0x24
-+#define CGU_REG_SCR			0x24
- #define CGU_REG_I2SCDR		0x60
- #define CGU_REG_LPCDR		0x64
- #define CGU_REG_MSCCDR		0x68
-@@ -40,10 +40,10 @@
- #define PLLCTL_ENABLE		(1 << 8)
- 
- /* bits within the LCR register */
--#define LCR_SLEEP		(1 << 0)
-+#define LCR_SLEEP			(1 << 0)
- 
- /* bits within the CLKGR register */
--#define CLKGR_UDC		(1 << 11)
-+#define CLKGR_UDC			(1 << 11)
- 
- static struct ingenic_cgu *cgu;
- 
-@@ -68,7 +68,7 @@ static const struct ingenic_cgu_clk_info jz4740_cgu_clocks[] = {
- 
- 	[JZ4740_CLK_PLL] = {
- 		"pll", CGU_CLK_PLL,
--		.parents = { JZ4740_CLK_EXT, -1, -1, -1 },
-+		.parents = { JZ4740_CLK_EXT },
- 		.pll = {
- 			.reg = CGU_REG_CPPCR,
- 			.rate_multiplier = 1,
-@@ -93,7 +93,7 @@ static const struct ingenic_cgu_clk_info jz4740_cgu_clocks[] = {
- 
- 	[JZ4740_CLK_PLL_HALF] = {
- 		"pll half", CGU_CLK_DIV,
--		.parents = { JZ4740_CLK_PLL, -1, -1, -1 },
-+		.parents = { JZ4740_CLK_PLL },
- 		.div = {
- 			CGU_REG_CPCCR, 21, 1, 1, -1, -1, -1,
- 			jz4740_cgu_pll_half_div_table,
-@@ -102,7 +102,7 @@ static const struct ingenic_cgu_clk_info jz4740_cgu_clocks[] = {
- 
- 	[JZ4740_CLK_CCLK] = {
- 		"cclk", CGU_CLK_DIV,
--		.parents = { JZ4740_CLK_PLL, -1, -1, -1 },
-+		.parents = { JZ4740_CLK_PLL },
- 		.div = {
- 			CGU_REG_CPCCR, 0, 1, 4, 22, -1, -1,
- 			jz4740_cgu_cpccr_div_table,
-@@ -111,7 +111,7 @@ static const struct ingenic_cgu_clk_info jz4740_cgu_clocks[] = {
- 
- 	[JZ4740_CLK_HCLK] = {
- 		"hclk", CGU_CLK_DIV,
--		.parents = { JZ4740_CLK_PLL, -1, -1, -1 },
-+		.parents = { JZ4740_CLK_PLL },
- 		.div = {
- 			CGU_REG_CPCCR, 4, 1, 4, 22, -1, -1,
- 			jz4740_cgu_cpccr_div_table,
-@@ -120,7 +120,7 @@ static const struct ingenic_cgu_clk_info jz4740_cgu_clocks[] = {
- 
- 	[JZ4740_CLK_PCLK] = {
- 		"pclk", CGU_CLK_DIV,
--		.parents = { JZ4740_CLK_PLL, -1, -1, -1 },
-+		.parents = { JZ4740_CLK_PLL },
- 		.div = {
- 			CGU_REG_CPCCR, 8, 1, 4, 22, -1, -1,
- 			jz4740_cgu_cpccr_div_table,
-@@ -129,7 +129,7 @@ static const struct ingenic_cgu_clk_info jz4740_cgu_clocks[] = {
- 
- 	[JZ4740_CLK_MCLK] = {
- 		"mclk", CGU_CLK_DIV,
--		.parents = { JZ4740_CLK_PLL, -1, -1, -1 },
-+		.parents = { JZ4740_CLK_PLL },
- 		.div = {
- 			CGU_REG_CPCCR, 12, 1, 4, 22, -1, -1,
- 			jz4740_cgu_cpccr_div_table,
-@@ -138,7 +138,7 @@ static const struct ingenic_cgu_clk_info jz4740_cgu_clocks[] = {
- 
- 	[JZ4740_CLK_LCD] = {
- 		"lcd", CGU_CLK_DIV | CGU_CLK_GATE,
--		.parents = { JZ4740_CLK_PLL_HALF, -1, -1, -1 },
-+		.parents = { JZ4740_CLK_PLL_HALF },
- 		.div = {
- 			CGU_REG_CPCCR, 16, 1, 5, 22, -1, -1,
- 			jz4740_cgu_cpccr_div_table,
-@@ -148,13 +148,13 @@ static const struct ingenic_cgu_clk_info jz4740_cgu_clocks[] = {
- 
- 	[JZ4740_CLK_LCD_PCLK] = {
- 		"lcd_pclk", CGU_CLK_DIV,
--		.parents = { JZ4740_CLK_PLL_HALF, -1, -1, -1 },
-+		.parents = { JZ4740_CLK_PLL_HALF },
- 		.div = { CGU_REG_LPCDR, 0, 1, 11, -1, -1, -1 },
- 	},
- 
- 	[JZ4740_CLK_I2S] = {
- 		"i2s", CGU_CLK_MUX | CGU_CLK_DIV | CGU_CLK_GATE,
--		.parents = { JZ4740_CLK_EXT, JZ4740_CLK_PLL_HALF, -1, -1 },
-+		.parents = { JZ4740_CLK_EXT, JZ4740_CLK_PLL_HALF },
- 		.mux = { CGU_REG_CPCCR, 31, 1 },
- 		.div = { CGU_REG_I2SCDR, 0, 1, 9, -1, -1, -1 },
- 		.gate = { CGU_REG_CLKGR, 6 },
-@@ -162,7 +162,7 @@ static const struct ingenic_cgu_clk_info jz4740_cgu_clocks[] = {
- 
- 	[JZ4740_CLK_SPI] = {
- 		"spi", CGU_CLK_MUX | CGU_CLK_DIV | CGU_CLK_GATE,
--		.parents = { JZ4740_CLK_EXT, JZ4740_CLK_PLL, -1, -1 },
-+		.parents = { JZ4740_CLK_EXT, JZ4740_CLK_PLL },
- 		.mux = { CGU_REG_SSICDR, 31, 1 },
- 		.div = { CGU_REG_SSICDR, 0, 1, 4, -1, -1, -1 },
- 		.gate = { CGU_REG_CLKGR, 4 },
-@@ -170,21 +170,21 @@ static const struct ingenic_cgu_clk_info jz4740_cgu_clocks[] = {
- 
- 	[JZ4740_CLK_MMC] = {
- 		"mmc", CGU_CLK_DIV | CGU_CLK_GATE,
--		.parents = { JZ4740_CLK_PLL_HALF, -1, -1, -1 },
-+		.parents = { JZ4740_CLK_PLL_HALF },
- 		.div = { CGU_REG_MSCCDR, 0, 1, 5, -1, -1, -1 },
- 		.gate = { CGU_REG_CLKGR, 7 },
- 	},
- 
- 	[JZ4740_CLK_UHC] = {
- 		"uhc", CGU_CLK_DIV | CGU_CLK_GATE,
--		.parents = { JZ4740_CLK_PLL_HALF, -1, -1, -1 },
-+		.parents = { JZ4740_CLK_PLL_HALF },
- 		.div = { CGU_REG_UHCCDR, 0, 1, 4, -1, -1, -1 },
- 		.gate = { CGU_REG_CLKGR, 14 },
- 	},
- 
- 	[JZ4740_CLK_UDC] = {
- 		"udc", CGU_CLK_MUX | CGU_CLK_DIV | CGU_CLK_GATE,
--		.parents = { JZ4740_CLK_EXT, JZ4740_CLK_PLL_HALF, -1, -1 },
-+		.parents = { JZ4740_CLK_EXT, JZ4740_CLK_PLL_HALF },
- 		.mux = { CGU_REG_CPCCR, 29, 1 },
- 		.div = { CGU_REG_CPCCR, 23, 1, 6, -1, -1, -1 },
- 		.gate = { CGU_REG_SCR, 6, true },
-@@ -194,49 +194,49 @@ static const struct ingenic_cgu_clk_info jz4740_cgu_clocks[] = {
- 
- 	[JZ4740_CLK_UART0] = {
- 		"uart0", CGU_CLK_GATE,
--		.parents = { JZ4740_CLK_EXT, -1, -1, -1 },
-+		.parents = { JZ4740_CLK_EXT },
- 		.gate = { CGU_REG_CLKGR, 0 },
- 	},
- 
- 	[JZ4740_CLK_UART1] = {
- 		"uart1", CGU_CLK_GATE,
--		.parents = { JZ4740_CLK_EXT, -1, -1, -1 },
-+		.parents = { JZ4740_CLK_EXT },
- 		.gate = { CGU_REG_CLKGR, 15 },
- 	},
- 
- 	[JZ4740_CLK_DMA] = {
- 		"dma", CGU_CLK_GATE,
--		.parents = { JZ4740_CLK_PCLK, -1, -1, -1 },
-+		.parents = { JZ4740_CLK_PCLK },
- 		.gate = { CGU_REG_CLKGR, 12 },
- 	},
- 
- 	[JZ4740_CLK_IPU] = {
- 		"ipu", CGU_CLK_GATE,
--		.parents = { JZ4740_CLK_PCLK, -1, -1, -1 },
-+		.parents = { JZ4740_CLK_PCLK },
- 		.gate = { CGU_REG_CLKGR, 13 },
- 	},
- 
- 	[JZ4740_CLK_ADC] = {
- 		"adc", CGU_CLK_GATE,
--		.parents = { JZ4740_CLK_EXT, -1, -1, -1 },
-+		.parents = { JZ4740_CLK_EXT },
- 		.gate = { CGU_REG_CLKGR, 8 },
- 	},
- 
- 	[JZ4740_CLK_I2C] = {
- 		"i2c", CGU_CLK_GATE,
--		.parents = { JZ4740_CLK_EXT, -1, -1, -1 },
-+		.parents = { JZ4740_CLK_EXT },
- 		.gate = { CGU_REG_CLKGR, 3 },
- 	},
- 
- 	[JZ4740_CLK_AIC] = {
- 		"aic", CGU_CLK_GATE,
--		.parents = { JZ4740_CLK_EXT, -1, -1, -1 },
-+		.parents = { JZ4740_CLK_EXT },
- 		.gate = { CGU_REG_CLKGR, 5 },
- 	},
- 
- 	[JZ4740_CLK_TCU] = {
- 		"tcu", CGU_CLK_GATE,
--		.parents = { JZ4740_CLK_EXT, -1, -1, -1 },
-+		.parents = { JZ4740_CLK_EXT },
- 		.gate = { CGU_REG_CLKGR, 1 },
- 	},
- };
-diff --git a/drivers/clk/ingenic/jz4770-cgu.c b/drivers/clk/ingenic/jz4770-cgu.c
-index 9ea4490..a907208 100644
---- a/drivers/clk/ingenic/jz4770-cgu.c
-+++ b/drivers/clk/ingenic/jz4770-cgu.c
-@@ -19,7 +19,7 @@
-  * CPM registers offset address definition
-  */
- #define CGU_REG_CPCCR		0x00
--#define CGU_REG_LCR		0x04
-+#define CGU_REG_LCR			0x04
- #define CGU_REG_CPPCR0		0x10
- #define CGU_REG_CLKGR0		0x20
- #define CGU_REG_OPCR		0x24
-@@ -41,7 +41,7 @@
- #define CGU_REG_BCHCDR		0xAC
- 
- /* bits within the OPCR register */
--#define OPCR_SPENDH		BIT(5)		/* UHC PHY suspend */
-+#define OPCR_SPENDH			BIT(5)		/* UHC PHY suspend */
- 
- /* bits within the USBPCR1 register */
- #define USBPCR1_UHC_POWER	BIT(5)		/* UHC PHY power down */
-@@ -55,6 +55,7 @@ static int jz4770_uhc_phy_enable(struct clk_hw *hw)
- 
- 	writel(readl(reg_opcr) & ~OPCR_SPENDH, reg_opcr);
- 	writel(readl(reg_usbpcr1) | USBPCR1_UHC_POWER, reg_usbpcr1);
-+
- 	return 0;
- }
- 
-@@ -150,7 +151,7 @@ static const struct ingenic_cgu_clk_info jz4770_cgu_clocks[] = {
- 
- 	[JZ4770_CLK_CCLK] = {
- 		"cclk", CGU_CLK_DIV,
--		.parents = { JZ4770_CLK_PLL0, },
-+		.parents = { JZ4770_CLK_PLL0 },
- 		.div = {
- 			CGU_REG_CPCCR, 0, 1, 4, 22, -1, -1,
- 			jz4770_cgu_cpccr_div_table,
-@@ -158,7 +159,7 @@ static const struct ingenic_cgu_clk_info jz4770_cgu_clocks[] = {
- 	},
- 	[JZ4770_CLK_H0CLK] = {
- 		"h0clk", CGU_CLK_DIV,
--		.parents = { JZ4770_CLK_PLL0, },
-+		.parents = { JZ4770_CLK_PLL0 },
- 		.div = {
- 			CGU_REG_CPCCR, 4, 1, 4, 22, -1, -1,
- 			jz4770_cgu_cpccr_div_table,
-@@ -166,7 +167,7 @@ static const struct ingenic_cgu_clk_info jz4770_cgu_clocks[] = {
- 	},
- 	[JZ4770_CLK_H1CLK] = {
- 		"h1clk", CGU_CLK_DIV | CGU_CLK_GATE,
--		.parents = { JZ4770_CLK_PLL0, },
-+		.parents = { JZ4770_CLK_PLL0 },
- 		.div = {
- 			CGU_REG_CPCCR, 24, 1, 4, 22, -1, -1,
- 			jz4770_cgu_cpccr_div_table,
-@@ -175,7 +176,7 @@ static const struct ingenic_cgu_clk_info jz4770_cgu_clocks[] = {
- 	},
- 	[JZ4770_CLK_H2CLK] = {
- 		"h2clk", CGU_CLK_DIV,
--		.parents = { JZ4770_CLK_PLL0, },
-+		.parents = { JZ4770_CLK_PLL0 },
- 		.div = {
- 			CGU_REG_CPCCR, 16, 1, 4, 22, -1, -1,
- 			jz4770_cgu_cpccr_div_table,
-@@ -183,7 +184,7 @@ static const struct ingenic_cgu_clk_info jz4770_cgu_clocks[] = {
- 	},
- 	[JZ4770_CLK_C1CLK] = {
- 		"c1clk", CGU_CLK_DIV | CGU_CLK_GATE,
--		.parents = { JZ4770_CLK_PLL0, },
-+		.parents = { JZ4770_CLK_PLL0 },
- 		.div = {
- 			CGU_REG_CPCCR, 12, 1, 4, 22, -1, -1,
- 			jz4770_cgu_cpccr_div_table,
-@@ -192,7 +193,7 @@ static const struct ingenic_cgu_clk_info jz4770_cgu_clocks[] = {
- 	},
- 	[JZ4770_CLK_PCLK] = {
- 		"pclk", CGU_CLK_DIV,
--		.parents = { JZ4770_CLK_PLL0, },
-+		.parents = { JZ4770_CLK_PLL0 },
- 		.div = {
- 			CGU_REG_CPCCR, 8, 1, 4, 22, -1, -1,
- 			jz4770_cgu_cpccr_div_table,
-@@ -203,63 +204,63 @@ static const struct ingenic_cgu_clk_info jz4770_cgu_clocks[] = {
- 
- 	[JZ4770_CLK_MMC0_MUX] = {
- 		"mmc0_mux", CGU_CLK_DIV | CGU_CLK_GATE | CGU_CLK_MUX,
--		.parents = { JZ4770_CLK_PLL0, JZ4770_CLK_PLL1, },
-+		.parents = { JZ4770_CLK_PLL0, JZ4770_CLK_PLL1 },
- 		.mux = { CGU_REG_MSC0CDR, 30, 1 },
- 		.div = { CGU_REG_MSC0CDR, 0, 1, 7, -1, -1, 31 },
- 		.gate = { CGU_REG_MSC0CDR, 31 },
- 	},
- 	[JZ4770_CLK_MMC1_MUX] = {
- 		"mmc1_mux", CGU_CLK_DIV | CGU_CLK_GATE | CGU_CLK_MUX,
--		.parents = { JZ4770_CLK_PLL0, JZ4770_CLK_PLL1, },
-+		.parents = { JZ4770_CLK_PLL0, JZ4770_CLK_PLL1 },
- 		.mux = { CGU_REG_MSC1CDR, 30, 1 },
- 		.div = { CGU_REG_MSC1CDR, 0, 1, 7, -1, -1, 31 },
- 		.gate = { CGU_REG_MSC1CDR, 31 },
- 	},
- 	[JZ4770_CLK_MMC2_MUX] = {
- 		"mmc2_mux", CGU_CLK_DIV | CGU_CLK_GATE | CGU_CLK_MUX,
--		.parents = { JZ4770_CLK_PLL0, JZ4770_CLK_PLL1, },
-+		.parents = { JZ4770_CLK_PLL0, JZ4770_CLK_PLL1 },
- 		.mux = { CGU_REG_MSC2CDR, 30, 1 },
- 		.div = { CGU_REG_MSC2CDR, 0, 1, 7, -1, -1, 31 },
- 		.gate = { CGU_REG_MSC2CDR, 31 },
- 	},
- 	[JZ4770_CLK_CIM] = {
- 		"cim", CGU_CLK_DIV | CGU_CLK_GATE | CGU_CLK_MUX,
--		.parents = { JZ4770_CLK_PLL0, JZ4770_CLK_PLL1, },
-+		.parents = { JZ4770_CLK_PLL0, JZ4770_CLK_PLL1 },
- 		.mux = { CGU_REG_CIMCDR, 31, 1 },
- 		.div = { CGU_REG_CIMCDR, 0, 1, 8, -1, -1, -1 },
- 		.gate = { CGU_REG_CLKGR0, 26 },
- 	},
- 	[JZ4770_CLK_UHC] = {
- 		"uhc", CGU_CLK_DIV | CGU_CLK_GATE | CGU_CLK_MUX,
--		.parents = { JZ4770_CLK_PLL0, JZ4770_CLK_PLL1, },
-+		.parents = { JZ4770_CLK_PLL0, JZ4770_CLK_PLL1 },
- 		.mux = { CGU_REG_UHCCDR, 29, 1 },
- 		.div = { CGU_REG_UHCCDR, 0, 1, 4, -1, -1, -1 },
- 		.gate = { CGU_REG_CLKGR0, 24 },
- 	},
- 	[JZ4770_CLK_GPU] = {
- 		"gpu", CGU_CLK_DIV | CGU_CLK_GATE | CGU_CLK_MUX,
--		.parents = { JZ4770_CLK_PLL0, JZ4770_CLK_PLL1, -1 },
-+		.parents = { JZ4770_CLK_PLL0, JZ4770_CLK_PLL1 },
- 		.mux = { CGU_REG_GPUCDR, 31, 1 },
- 		.div = { CGU_REG_GPUCDR, 0, 1, 3, -1, -1, -1 },
- 		.gate = { CGU_REG_CLKGR1, 9 },
- 	},
- 	[JZ4770_CLK_BCH] = {
- 		"bch", CGU_CLK_DIV | CGU_CLK_GATE | CGU_CLK_MUX,
--		.parents = { JZ4770_CLK_PLL0, JZ4770_CLK_PLL1, },
-+		.parents = { JZ4770_CLK_PLL0, JZ4770_CLK_PLL1 },
- 		.mux = { CGU_REG_BCHCDR, 31, 1 },
- 		.div = { CGU_REG_BCHCDR, 0, 1, 3, -1, -1, -1 },
- 		.gate = { CGU_REG_CLKGR0, 1 },
- 	},
- 	[JZ4770_CLK_LPCLK_MUX] = {
- 		"lpclk", CGU_CLK_DIV | CGU_CLK_GATE | CGU_CLK_MUX,
--		.parents = { JZ4770_CLK_PLL0, JZ4770_CLK_PLL1, },
-+		.parents = { JZ4770_CLK_PLL0, JZ4770_CLK_PLL1 },
- 		.mux = { CGU_REG_LPCDR, 29, 1 },
- 		.div = { CGU_REG_LPCDR, 0, 1, 11, -1, -1, -1 },
- 		.gate = { CGU_REG_CLKGR0, 28 },
- 	},
- 	[JZ4770_CLK_GPS] = {
- 		"gps", CGU_CLK_DIV | CGU_CLK_GATE | CGU_CLK_MUX,
--		.parents = { JZ4770_CLK_PLL0, JZ4770_CLK_PLL1, },
-+		.parents = { JZ4770_CLK_PLL0, JZ4770_CLK_PLL1 },
- 		.mux = { CGU_REG_GPSCDR, 31, 1 },
- 		.div = { CGU_REG_GPSCDR, 0, 1, 4, -1, -1, -1 },
- 		.gate = { CGU_REG_CLKGR0, 22 },
-@@ -302,107 +303,107 @@ static const struct ingenic_cgu_clk_info jz4770_cgu_clocks[] = {
- 
- 	[JZ4770_CLK_SSI0] = {
- 		"ssi0", CGU_CLK_GATE,
--		.parents = { JZ4770_CLK_SSI_MUX, },
-+		.parents = { JZ4770_CLK_SSI_MUX },
- 		.gate = { CGU_REG_CLKGR0, 4 },
- 	},
- 	[JZ4770_CLK_SSI1] = {
- 		"ssi1", CGU_CLK_GATE,
--		.parents = { JZ4770_CLK_SSI_MUX, },
-+		.parents = { JZ4770_CLK_SSI_MUX },
- 		.gate = { CGU_REG_CLKGR0, 19 },
- 	},
- 	[JZ4770_CLK_SSI2] = {
- 		"ssi2", CGU_CLK_GATE,
--		.parents = { JZ4770_CLK_SSI_MUX, },
-+		.parents = { JZ4770_CLK_SSI_MUX },
- 		.gate = { CGU_REG_CLKGR0, 20 },
- 	},
- 	[JZ4770_CLK_PCM0] = {
- 		"pcm0", CGU_CLK_GATE,
--		.parents = { JZ4770_CLK_PCM_MUX, },
-+		.parents = { JZ4770_CLK_PCM_MUX },
- 		.gate = { CGU_REG_CLKGR1, 8 },
- 	},
- 	[JZ4770_CLK_PCM1] = {
- 		"pcm1", CGU_CLK_GATE,
--		.parents = { JZ4770_CLK_PCM_MUX, },
-+		.parents = { JZ4770_CLK_PCM_MUX },
- 		.gate = { CGU_REG_CLKGR1, 10 },
- 	},
- 	[JZ4770_CLK_DMA] = {
- 		"dma", CGU_CLK_GATE,
--		.parents = { JZ4770_CLK_H2CLK, },
-+		.parents = { JZ4770_CLK_H2CLK },
- 		.gate = { CGU_REG_CLKGR0, 21 },
- 	},
- 	[JZ4770_CLK_I2C0] = {
- 		"i2c0", CGU_CLK_GATE,
--		.parents = { JZ4770_CLK_EXT, },
-+		.parents = { JZ4770_CLK_EXT },
- 		.gate = { CGU_REG_CLKGR0, 5 },
- 	},
- 	[JZ4770_CLK_I2C1] = {
- 		"i2c1", CGU_CLK_GATE,
--		.parents = { JZ4770_CLK_EXT, },
-+		.parents = { JZ4770_CLK_EXT },
- 		.gate = { CGU_REG_CLKGR0, 6 },
- 	},
- 	[JZ4770_CLK_I2C2] = {
- 		"i2c2", CGU_CLK_GATE,
--		.parents = { JZ4770_CLK_EXT, },
-+		.parents = { JZ4770_CLK_EXT },
- 		.gate = { CGU_REG_CLKGR1, 15 },
- 	},
- 	[JZ4770_CLK_UART0] = {
- 		"uart0", CGU_CLK_GATE,
--		.parents = { JZ4770_CLK_EXT, },
-+		.parents = { JZ4770_CLK_EXT },
- 		.gate = { CGU_REG_CLKGR0, 15 },
- 	},
- 	[JZ4770_CLK_UART1] = {
- 		"uart1", CGU_CLK_GATE,
--		.parents = { JZ4770_CLK_EXT, },
-+		.parents = { JZ4770_CLK_EXT },
- 		.gate = { CGU_REG_CLKGR0, 16 },
- 	},
- 	[JZ4770_CLK_UART2] = {
- 		"uart2", CGU_CLK_GATE,
--		.parents = { JZ4770_CLK_EXT, },
-+		.parents = { JZ4770_CLK_EXT },
- 		.gate = { CGU_REG_CLKGR0, 17 },
- 	},
- 	[JZ4770_CLK_UART3] = {
- 		"uart3", CGU_CLK_GATE,
--		.parents = { JZ4770_CLK_EXT, },
-+		.parents = { JZ4770_CLK_EXT },
- 		.gate = { CGU_REG_CLKGR0, 18 },
- 	},
- 	[JZ4770_CLK_IPU] = {
- 		"ipu", CGU_CLK_GATE,
--		.parents = { JZ4770_CLK_H0CLK, },
-+		.parents = { JZ4770_CLK_H0CLK },
- 		.gate = { CGU_REG_CLKGR0, 29 },
- 	},
- 	[JZ4770_CLK_ADC] = {
- 		"adc", CGU_CLK_GATE,
--		.parents = { JZ4770_CLK_EXT, },
-+		.parents = { JZ4770_CLK_EXT },
- 		.gate = { CGU_REG_CLKGR0, 14 },
- 	},
- 	[JZ4770_CLK_AIC] = {
- 		"aic", CGU_CLK_GATE,
--		.parents = { JZ4770_CLK_EXT, },
-+		.parents = { JZ4770_CLK_EXT },
- 		.gate = { CGU_REG_CLKGR0, 8 },
- 	},
- 	[JZ4770_CLK_AUX] = {
- 		"aux", CGU_CLK_GATE,
--		.parents = { JZ4770_CLK_C1CLK, },
-+		.parents = { JZ4770_CLK_C1CLK },
- 		.gate = { CGU_REG_CLKGR1, 14 },
- 	},
- 	[JZ4770_CLK_VPU] = {
- 		"vpu", CGU_CLK_GATE,
--		.parents = { JZ4770_CLK_H1CLK, },
-+		.parents = { JZ4770_CLK_H1CLK },
- 		.gate = { CGU_REG_LCR, 30, false, 150 },
- 	},
- 	[JZ4770_CLK_MMC0] = {
- 		"mmc0", CGU_CLK_GATE,
--		.parents = { JZ4770_CLK_MMC0_MUX, },
-+		.parents = { JZ4770_CLK_MMC0_MUX },
- 		.gate = { CGU_REG_CLKGR0, 3 },
- 	},
- 	[JZ4770_CLK_MMC1] = {
- 		"mmc1", CGU_CLK_GATE,
--		.parents = { JZ4770_CLK_MMC1_MUX, },
-+		.parents = { JZ4770_CLK_MMC1_MUX },
- 		.gate = { CGU_REG_CLKGR0, 11 },
- 	},
- 	[JZ4770_CLK_MMC2] = {
- 		"mmc2", CGU_CLK_GATE,
--		.parents = { JZ4770_CLK_MMC2_MUX, },
-+		.parents = { JZ4770_CLK_MMC2_MUX },
- 		.gate = { CGU_REG_CLKGR0, 12 },
- 	},
- 	[JZ4770_CLK_OTG_PHY] = {
-@@ -427,7 +428,7 @@ static const struct ingenic_cgu_clk_info jz4770_cgu_clocks[] = {
- 
- 	[JZ4770_CLK_RTC] = {
- 		"rtc", CGU_CLK_MUX,
--		.parents = { JZ4770_CLK_EXT512, JZ4770_CLK_OSC32K, },
-+		.parents = { JZ4770_CLK_EXT512, JZ4770_CLK_OSC32K },
- 		.mux = { CGU_REG_OPCR, 2, 1},
- 	},
- };
-diff --git a/drivers/clk/ingenic/jz4780-cgu.c b/drivers/clk/ingenic/jz4780-cgu.c
-index dcca74e..6c6f22c 100644
---- a/drivers/clk/ingenic/jz4780-cgu.c
-+++ b/drivers/clk/ingenic/jz4780-cgu.c
-@@ -178,6 +178,7 @@ static int jz4780_otg_phy_set_rate(struct clk_hw *hw, unsigned long req_rate,
- 	writel(usbpcr1, cgu->base + CGU_REG_USBPCR1);
- 
- 	spin_unlock_irqrestore(&cgu->lock, flags);
-+
- 	return 0;
- }
- 
-@@ -188,6 +189,7 @@ static int jz4780_otg_phy_enable(struct clk_hw *hw)
- 
- 	writel(readl(reg_opcr) | OPCR_SPENDN0, reg_opcr);
- 	writel(readl(reg_usbpcr) & ~USBPCR_OTG_DISABLE & ~USBPCR_SIDDQ, reg_usbpcr);
-+
- 	return 0;
- }
- 
-@@ -215,9 +217,9 @@ static const struct clk_ops jz4780_otg_phy_ops = {
- 	.round_rate = jz4780_otg_phy_round_rate,
- 	.set_rate = jz4780_otg_phy_set_rate,
- 
--	.enable		= jz4780_otg_phy_enable,
--	.disable	= jz4780_otg_phy_disable,
--	.is_enabled	= jz4780_otg_phy_is_enabled,
-+	.enable = jz4780_otg_phy_enable,
-+	.disable = jz4780_otg_phy_disable,
-+	.is_enabled = jz4780_otg_phy_is_enabled,
- };
- 
- static int jz4780_core1_enable(struct clk_hw *hw)
-@@ -312,35 +314,41 @@ static const struct ingenic_cgu_clk_info jz4780_cgu_clocks[] = {
- 
- 	[JZ4780_CLK_APLL] = {
- 		"apll", CGU_CLK_PLL,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.pll = DEF_PLL(APLL),
- 	},
- 
- 	[JZ4780_CLK_MPLL] = {
- 		"mpll", CGU_CLK_PLL,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.pll = DEF_PLL(MPLL),
- 	},
- 
- 	[JZ4780_CLK_EPLL] = {
- 		"epll", CGU_CLK_PLL,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.pll = DEF_PLL(EPLL),
- 	},
- 
- 	[JZ4780_CLK_VPLL] = {
- 		"vpll", CGU_CLK_PLL,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.pll = DEF_PLL(VPLL),
- 	},
- 
- #undef DEF_PLL
- 
--	/* Custom (SoC-specific) OTG PHY */
-+	/* Custom (SoC-specific) */
-+
-+	[JZ4780_CLK_CORE1] = {
-+		"core1", CGU_CLK_CUSTOM,
-+		.parents = { JZ4780_CLK_CPU, -1, -1, -1 },
-+		.custom = { &jz4780_core1_ops },
-+	},
- 
- 	[JZ4780_CLK_OTGPHY] = {
- 		"otg_phy", CGU_CLK_CUSTOM,
--		.parents = { -1, -1, JZ4780_CLK_EXCLK, -1 },
-+		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
- 		.custom = { &jz4780_otg_phy_ops },
- 	},
- 
-@@ -362,13 +370,13 @@ static const struct ingenic_cgu_clk_info jz4780_cgu_clocks[] = {
- 
- 	[JZ4780_CLK_CPU] = {
- 		"cpu", CGU_CLK_DIV,
--		.parents = { JZ4780_CLK_CPUMUX, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_CPUMUX },
- 		.div = { CGU_REG_CLOCKCONTROL, 0, 1, 4, 22, -1, -1 },
- 	},
- 
- 	[JZ4780_CLK_L2CACHE] = {
- 		"l2cache", CGU_CLK_DIV,
--		.parents = { JZ4780_CLK_CPUMUX, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_CPUMUX },
- 		.div = { CGU_REG_CLOCKCONTROL, 4, 1, 4, -1, -1, -1 },
- 	},
- 
-@@ -389,13 +397,13 @@ static const struct ingenic_cgu_clk_info jz4780_cgu_clocks[] = {
- 
- 	[JZ4780_CLK_AHB2] = {
- 		"ahb2", CGU_CLK_DIV,
--		.parents = { JZ4780_CLK_AHB2PMUX, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_AHB2PMUX },
- 		.div = { CGU_REG_CLOCKCONTROL, 12, 1, 4, 20, -1, -1 },
- 	},
- 
- 	[JZ4780_CLK_PCLK] = {
- 		"pclk", CGU_CLK_DIV,
--		.parents = { JZ4780_CLK_AHB2PMUX, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_AHB2PMUX },
- 		.div = { CGU_REG_CLOCKCONTROL, 16, 1, 4, 20, -1, -1 },
- 	},
- 
-@@ -417,14 +425,14 @@ static const struct ingenic_cgu_clk_info jz4780_cgu_clocks[] = {
- 
- 	[JZ4780_CLK_I2SPLL] = {
- 		"i2s_pll", CGU_CLK_MUX | CGU_CLK_DIV,
--		.parents = { JZ4780_CLK_SCLKA, JZ4780_CLK_EPLL, -1, -1 },
-+		.parents = { JZ4780_CLK_SCLKA, JZ4780_CLK_EPLL },
- 		.mux = { CGU_REG_I2SCDR, 30, 1 },
- 		.div = { CGU_REG_I2SCDR, 0, 1, 8, 29, 28, 27 },
- 	},
- 
- 	[JZ4780_CLK_I2S] = {
- 		"i2s", CGU_CLK_MUX,
--		.parents = { JZ4780_CLK_EXCLK, JZ4780_CLK_I2SPLL, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK, JZ4780_CLK_I2SPLL },
- 		.mux = { CGU_REG_I2SCDR, 31, 1 },
- 	},
- 
-@@ -452,21 +460,21 @@ static const struct ingenic_cgu_clk_info jz4780_cgu_clocks[] = {
- 
- 	[JZ4780_CLK_MSC0] = {
- 		"msc0", CGU_CLK_DIV | CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_MSCMUX, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_MSCMUX },
- 		.div = { CGU_REG_MSC0CDR, 0, 2, 8, 29, 28, 27 },
- 		.gate = { CGU_REG_CLKGR0, 3 },
- 	},
- 
- 	[JZ4780_CLK_MSC1] = {
- 		"msc1", CGU_CLK_DIV | CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_MSCMUX, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_MSCMUX },
- 		.div = { CGU_REG_MSC1CDR, 0, 2, 8, 29, 28, 27 },
- 		.gate = { CGU_REG_CLKGR0, 11 },
- 	},
- 
- 	[JZ4780_CLK_MSC2] = {
- 		"msc2", CGU_CLK_DIV | CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_MSCMUX, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_MSCMUX },
- 		.div = { CGU_REG_MSC2CDR, 0, 2, 8, 29, 28, 27 },
- 		.gate = { CGU_REG_CLKGR0, 12 },
- 	},
-@@ -482,20 +490,20 @@ static const struct ingenic_cgu_clk_info jz4780_cgu_clocks[] = {
- 
- 	[JZ4780_CLK_SSIPLL] = {
- 		"ssi_pll", CGU_CLK_MUX | CGU_CLK_DIV,
--		.parents = { JZ4780_CLK_SCLKA, JZ4780_CLK_MPLL, -1, -1 },
-+		.parents = { JZ4780_CLK_SCLKA, JZ4780_CLK_MPLL },
- 		.mux = { CGU_REG_SSICDR, 30, 1 },
- 		.div = { CGU_REG_SSICDR, 0, 1, 8, 29, 28, 27 },
- 	},
- 
- 	[JZ4780_CLK_SSI] = {
- 		"ssi", CGU_CLK_MUX,
--		.parents = { JZ4780_CLK_EXCLK, JZ4780_CLK_SSIPLL, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK, JZ4780_CLK_SSIPLL },
- 		.mux = { CGU_REG_SSICDR, 31, 1 },
- 	},
- 
- 	[JZ4780_CLK_CIMMCLK] = {
- 		"cim_mclk", CGU_CLK_MUX | CGU_CLK_DIV,
--		.parents = { JZ4780_CLK_SCLKA, JZ4780_CLK_MPLL, -1, -1 },
-+		.parents = { JZ4780_CLK_SCLKA, JZ4780_CLK_MPLL },
- 		.mux = { CGU_REG_CIMCDR, 31, 1 },
- 		.div = { CGU_REG_CIMCDR, 0, 1, 8, 30, 29, 28 },
- 	},
-@@ -510,7 +518,7 @@ static const struct ingenic_cgu_clk_info jz4780_cgu_clocks[] = {
- 
- 	[JZ4780_CLK_PCM] = {
- 		"pcm", CGU_CLK_MUX | CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_EXCLK, JZ4780_CLK_PCMPLL, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK, JZ4780_CLK_PCMPLL },
- 		.mux = { CGU_REG_PCMCDR, 31, 1 },
- 		.gate = { CGU_REG_CLKGR1, 3 },
- 	},
-@@ -558,238 +566,231 @@ static const struct ingenic_cgu_clk_info jz4780_cgu_clocks[] = {
- 
- 	[JZ4780_CLK_NEMC] = {
- 		"nemc", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_AHB2, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_AHB2 },
- 		.gate = { CGU_REG_CLKGR0, 0 },
- 	},
- 
- 	[JZ4780_CLK_OTG0] = {
- 		"otg0", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR0, 2 },
- 	},
- 
- 	[JZ4780_CLK_SSI0] = {
- 		"ssi0", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_SSI, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_SSI },
- 		.gate = { CGU_REG_CLKGR0, 4 },
- 	},
- 
- 	[JZ4780_CLK_SMB0] = {
- 		"smb0", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_PCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_PCLK },
- 		.gate = { CGU_REG_CLKGR0, 5 },
- 	},
- 
- 	[JZ4780_CLK_SMB1] = {
- 		"smb1", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_PCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_PCLK },
- 		.gate = { CGU_REG_CLKGR0, 6 },
- 	},
- 
- 	[JZ4780_CLK_SCC] = {
- 		"scc", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR0, 7 },
- 	},
- 
- 	[JZ4780_CLK_AIC] = {
- 		"aic", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR0, 8 },
- 	},
- 
- 	[JZ4780_CLK_TSSI0] = {
- 		"tssi0", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR0, 9 },
- 	},
- 
- 	[JZ4780_CLK_OWI] = {
- 		"owi", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR0, 10 },
- 	},
- 
- 	[JZ4780_CLK_KBC] = {
- 		"kbc", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR0, 13 },
- 	},
- 
- 	[JZ4780_CLK_SADC] = {
- 		"sadc", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR0, 14 },
- 	},
- 
- 	[JZ4780_CLK_UART0] = {
- 		"uart0", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR0, 15 },
- 	},
- 
- 	[JZ4780_CLK_UART1] = {
- 		"uart1", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR0, 16 },
- 	},
- 
- 	[JZ4780_CLK_UART2] = {
- 		"uart2", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR0, 17 },
- 	},
- 
- 	[JZ4780_CLK_UART3] = {
- 		"uart3", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR0, 18 },
- 	},
- 
- 	[JZ4780_CLK_SSI1] = {
- 		"ssi1", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_SSI, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_SSI },
- 		.gate = { CGU_REG_CLKGR0, 19 },
- 	},
- 
- 	[JZ4780_CLK_SSI2] = {
- 		"ssi2", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_SSI, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_SSI },
- 		.gate = { CGU_REG_CLKGR0, 20 },
- 	},
- 
- 	[JZ4780_CLK_PDMA] = {
- 		"pdma", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR0, 21 },
- 	},
- 
- 	[JZ4780_CLK_GPS] = {
- 		"gps", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR0, 22 },
- 	},
- 
- 	[JZ4780_CLK_MAC] = {
- 		"mac", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR0, 23 },
- 	},
- 
- 	[JZ4780_CLK_SMB2] = {
- 		"smb2", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_PCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_PCLK },
- 		.gate = { CGU_REG_CLKGR0, 24 },
- 	},
- 
- 	[JZ4780_CLK_CIM] = {
- 		"cim", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR0, 26 },
- 	},
- 
- 	[JZ4780_CLK_LCD] = {
- 		"lcd", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR0, 28 },
- 	},
- 
- 	[JZ4780_CLK_TVE] = {
- 		"tve", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_LCD, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_LCD },
- 		.gate = { CGU_REG_CLKGR0, 27 },
- 	},
- 
- 	[JZ4780_CLK_IPU] = {
- 		"ipu", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR0, 29 },
- 	},
- 
- 	[JZ4780_CLK_DDR0] = {
- 		"ddr0", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_DDR, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_DDR },
- 		.gate = { CGU_REG_CLKGR0, 30 },
- 	},
- 
- 	[JZ4780_CLK_DDR1] = {
- 		"ddr1", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_DDR, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_DDR },
- 		.gate = { CGU_REG_CLKGR0, 31 },
- 	},
- 
- 	[JZ4780_CLK_SMB3] = {
- 		"smb3", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_PCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_PCLK },
- 		.gate = { CGU_REG_CLKGR1, 0 },
- 	},
- 
- 	[JZ4780_CLK_TSSI1] = {
- 		"tssi1", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR1, 1 },
- 	},
- 
- 	[JZ4780_CLK_COMPRESS] = {
- 		"compress", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR1, 5 },
- 	},
- 
- 	[JZ4780_CLK_AIC1] = {
- 		"aic1", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR1, 6 },
- 	},
- 
- 	[JZ4780_CLK_GPVLC] = {
- 		"gpvlc", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR1, 7 },
- 	},
- 
- 	[JZ4780_CLK_OTG1] = {
- 		"otg1", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR1, 8 },
- 	},
- 
- 	[JZ4780_CLK_UART4] = {
- 		"uart4", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR1, 10 },
- 	},
- 
- 	[JZ4780_CLK_AHBMON] = {
- 		"ahb_mon", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR1, 11 },
- 	},
- 
- 	[JZ4780_CLK_SMB4] = {
- 		"smb4", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_PCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_PCLK },
- 		.gate = { CGU_REG_CLKGR1, 12 },
- 	},
- 
- 	[JZ4780_CLK_DES] = {
- 		"des", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR1, 13 },
- 	},
- 
- 	[JZ4780_CLK_X2D] = {
- 		"x2d", CGU_CLK_GATE,
--		.parents = { JZ4780_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { JZ4780_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR1, 14 },
- 	},
--
--	[JZ4780_CLK_CORE1] = {
--		"core1", CGU_CLK_CUSTOM,
--		.parents = { JZ4780_CLK_CPU, -1, -1, -1 },
--		.custom = { &jz4780_core1_ops },
--	},
--
- };
- 
- static void __init jz4780_cgu_init(struct device_node *np)
-diff --git a/drivers/clk/ingenic/x1000-cgu.c b/drivers/clk/ingenic/x1000-cgu.c
-index f03dd47..8d9a1c2 100644
---- a/drivers/clk/ingenic/x1000-cgu.c
-+++ b/drivers/clk/ingenic/x1000-cgu.c
-@@ -15,38 +15,38 @@
- #include "pm.h"
- 
- /* CGU register offsets */
--#define CGU_REG_CPCCR		0x00
--#define CGU_REG_APLL		0x10
--#define CGU_REG_MPLL		0x14
--#define CGU_REG_CLKGR		0x20
--#define CGU_REG_OPCR		0x24
--#define CGU_REG_DDRCDR		0x2c
--#define CGU_REG_USBPCR		0x3c
--#define CGU_REG_USBPCR1		0x48
--#define CGU_REG_USBCDR		0x50
--#define CGU_REG_MACCDR		0x54
--#define CGU_REG_I2SCDR		0x60
--#define CGU_REG_LPCDR		0x64
--#define CGU_REG_MSC0CDR		0x68
--#define CGU_REG_I2SCDR1		0x70
--#define CGU_REG_SSICDR		0x74
--#define CGU_REG_CIMCDR		0x7c
--#define CGU_REG_PCMCDR		0x84
--#define CGU_REG_MSC1CDR		0xa4
--#define CGU_REG_CMP_INTR	0xb0
--#define CGU_REG_CMP_INTRE	0xb4
--#define CGU_REG_DRCG		0xd0
--#define CGU_REG_CPCSR		0xd4
--#define CGU_REG_PCMCDR1		0xe0
--#define CGU_REG_MACPHYC		0xe8
-+#define CGU_REG_CPCCR			0x00
-+#define CGU_REG_APLL			0x10
-+#define CGU_REG_MPLL			0x14
-+#define CGU_REG_CLKGR			0x20
-+#define CGU_REG_OPCR			0x24
-+#define CGU_REG_DDRCDR			0x2c
-+#define CGU_REG_USBPCR			0x3c
-+#define CGU_REG_USBPCR1			0x48
-+#define CGU_REG_USBCDR			0x50
-+#define CGU_REG_MACCDR			0x54
-+#define CGU_REG_I2SCDR			0x60
-+#define CGU_REG_LPCDR			0x64
-+#define CGU_REG_MSC0CDR			0x68
-+#define CGU_REG_I2SCDR1			0x70
-+#define CGU_REG_SSICDR			0x74
-+#define CGU_REG_CIMCDR			0x7c
-+#define CGU_REG_PCMCDR			0x84
-+#define CGU_REG_MSC1CDR			0xa4
-+#define CGU_REG_CMP_INTR		0xb0
-+#define CGU_REG_CMP_INTRE		0xb4
-+#define CGU_REG_DRCG			0xd0
-+#define CGU_REG_CPCSR			0xd4
-+#define CGU_REG_PCMCDR1			0xe0
-+#define CGU_REG_MACPHYC			0xe8
- 
- /* bits within the OPCR register */
--#define OPCR_SPENDN0		BIT(7)
--#define OPCR_SPENDN1		BIT(6)
-+#define OPCR_SPENDN0			BIT(7)
-+#define OPCR_SPENDN1			BIT(6)
- 
- /* bits within the USBPCR register */
--#define USBPCR_SIDDQ		BIT(21)
--#define USBPCR_OTG_DISABLE	BIT(20)
-+#define USBPCR_SIDDQ			BIT(21)
-+#define USBPCR_OTG_DISABLE		BIT(20)
- 
- /* bits within the USBPCR1 register */
- #define USBPCR1_REFCLKSEL_SHIFT	26
-@@ -137,6 +137,7 @@ static int x1000_otg_phy_set_rate(struct clk_hw *hw, unsigned long req_rate,
- 	writel(usbpcr1, cgu->base + CGU_REG_USBPCR1);
- 
- 	spin_unlock_irqrestore(&cgu->lock, flags);
-+
- 	return 0;
- }
- 
-@@ -147,6 +148,7 @@ static int x1000_usb_phy_enable(struct clk_hw *hw)
- 
- 	writel(readl(reg_opcr) | OPCR_SPENDN0, reg_opcr);
- 	writel(readl(reg_usbpcr) & ~USBPCR_OTG_DISABLE & ~USBPCR_SIDDQ, reg_usbpcr);
-+
- 	return 0;
- }
- 
-@@ -174,9 +176,9 @@ static const struct clk_ops x1000_otg_phy_ops = {
- 	.round_rate = x1000_otg_phy_round_rate,
- 	.set_rate = x1000_otg_phy_set_rate,
- 
--	.enable		= x1000_usb_phy_enable,
--	.disable	= x1000_usb_phy_disable,
--	.is_enabled	= x1000_usb_phy_is_enabled,
-+	.enable = x1000_usb_phy_enable,
-+	.disable = x1000_usb_phy_disable,
-+	.is_enabled = x1000_usb_phy_is_enabled,
- };
- 
- static u8 x1000_i2s_get_parent(struct clk_hw *hw)
-@@ -363,7 +365,7 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 
- 	[X1000_CLK_APLL] = {
- 		"apll", CGU_CLK_PLL,
--		.parents = { X1000_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { X1000_CLK_EXCLK },
- 		.pll = {
- 			.reg = CGU_REG_APLL,
- 			.rate_multiplier = 1,
-@@ -386,7 +388,7 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 
- 	[X1000_CLK_MPLL] = {
- 		"mpll", CGU_CLK_PLL,
--		.parents = { X1000_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { X1000_CLK_EXCLK },
- 		.pll = {
- 			.reg = CGU_REG_MPLL,
- 			.rate_multiplier = 1,
-@@ -411,7 +413,7 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 
- 	[X1000_CLK_OTGPHY] = {
- 		"otg_phy", CGU_CLK_CUSTOM,
--		.parents = { -1, -1, X1000_CLK_EXCLK, -1 },
-+		.parents = { X1000_CLK_EXCLK, -1, -1, -1 },
- 		.custom = { &x1000_otg_phy_ops },
- 	},
- 
-@@ -437,14 +439,14 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 
- 	[X1000_CLK_CPU] = {
- 		"cpu", CGU_CLK_DIV | CGU_CLK_GATE,
--		.parents = { X1000_CLK_CPUMUX, -1, -1, -1 },
-+		.parents = { X1000_CLK_CPUMUX },
- 		.div = { CGU_REG_CPCCR, 0, 1, 4, 22, -1, -1 },
- 		.gate = { CGU_REG_CLKGR, 30 },
- 	},
- 
- 	[X1000_CLK_L2CACHE] = {
- 		"l2cache", CGU_CLK_DIV,
--		.parents = { X1000_CLK_CPUMUX, -1, -1, -1 },
-+		.parents = { X1000_CLK_CPUMUX },
- 		.div = { CGU_REG_CPCCR, 4, 1, 4, 22, -1, -1 },
- 	},
- 
-@@ -463,13 +465,13 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 
- 	[X1000_CLK_AHB2] = {
- 		"ahb2", CGU_CLK_DIV,
--		.parents = { X1000_CLK_AHB2PMUX, -1, -1, -1 },
-+		.parents = { X1000_CLK_AHB2PMUX },
- 		.div = { CGU_REG_CPCCR, 12, 1, 4, 20, -1, -1 },
- 	},
- 
- 	[X1000_CLK_PCLK] = {
- 		"pclk", CGU_CLK_DIV | CGU_CLK_GATE,
--		.parents = { X1000_CLK_AHB2PMUX, -1, -1, -1 },
-+		.parents = { X1000_CLK_AHB2PMUX },
- 		.div = { CGU_REG_CPCCR, 16, 1, 4, 20, -1, -1 },
- 		.gate = { CGU_REG_CLKGR, 28 },
- 	},
-@@ -499,20 +501,20 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 
- 	[X1000_CLK_MSCMUX] = {
- 		"msc_mux", CGU_CLK_MUX,
--		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL},
-+		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL },
- 		.mux = { CGU_REG_MSC0CDR, 31, 1 },
- 	},
- 
- 	[X1000_CLK_MSC0] = {
- 		"msc0", CGU_CLK_DIV | CGU_CLK_GATE,
--		.parents = { X1000_CLK_MSCMUX, -1, -1, -1 },
-+		.parents = { X1000_CLK_MSCMUX },
- 		.div = { CGU_REG_MSC0CDR, 0, 2, 8, 29, 28, 27 },
- 		.gate = { CGU_REG_CLKGR, 4 },
- 	},
- 
- 	[X1000_CLK_MSC1] = {
- 		"msc1", CGU_CLK_DIV | CGU_CLK_GATE,
--		.parents = { X1000_CLK_MSCMUX, -1, -1, -1 },
-+		.parents = { X1000_CLK_MSCMUX },
- 		.div = { CGU_REG_MSC1CDR, 0, 2, 8, 29, 28, 27 },
- 		.gate = { CGU_REG_CLKGR, 5 },
- 	},
-@@ -528,7 +530,7 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 
- 	[X1000_CLK_SSIPLL] = {
- 		"ssi_pll", CGU_CLK_MUX | CGU_CLK_DIV,
--		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL, -1, -1 },
-+		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL },
- 		.mux = { CGU_REG_SSICDR, 31, 1 },
- 		.div = { CGU_REG_SSICDR, 0, 1, 8, 29, 28, 27 },
- 	},
-@@ -541,13 +543,13 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 
- 	[X1000_CLK_SSIMUX] = {
- 		"ssi_mux", CGU_CLK_MUX,
--		.parents = { X1000_CLK_EXCLK, X1000_CLK_SSIPLL_DIV2, -1, -1 },
-+		.parents = { X1000_CLK_EXCLK, X1000_CLK_SSIPLL_DIV2 },
- 		.mux = { CGU_REG_SSICDR, 30, 1 },
- 	},
- 
- 	[X1000_CLK_CIM] = {
- 		"cim", CGU_CLK_MUX | CGU_CLK_DIV,
--		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL, -1, -1 },
-+		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL },
- 		.mux = { CGU_REG_CIMCDR, 31, 1 },
- 		.div = { CGU_REG_CIMCDR, 0, 1, 8, 29, 28, 27 },
- 	},
-@@ -569,91 +571,91 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 
- 	[X1000_CLK_EMC] = {
- 		"emc", CGU_CLK_GATE,
--		.parents = { X1000_CLK_AHB2, -1, -1, -1 },
-+		.parents = { X1000_CLK_AHB2 },
- 		.gate = { CGU_REG_CLKGR, 0 },
- 	},
- 
- 	[X1000_CLK_EFUSE] = {
- 		"efuse", CGU_CLK_GATE,
--		.parents = { X1000_CLK_AHB2, -1, -1, -1 },
-+		.parents = { X1000_CLK_AHB2 },
- 		.gate = { CGU_REG_CLKGR, 1 },
- 	},
- 
- 	[X1000_CLK_SFC] = {
- 		"sfc", CGU_CLK_GATE,
--		.parents = { X1000_CLK_SSIPLL, -1, -1, -1 },
-+		.parents = { X1000_CLK_SSIPLL },
- 		.gate = { CGU_REG_CLKGR, 2 },
- 	},
- 
- 	[X1000_CLK_I2C0] = {
- 		"i2c0", CGU_CLK_GATE,
--		.parents = { X1000_CLK_PCLK, -1, -1, -1 },
-+		.parents = { X1000_CLK_PCLK },
- 		.gate = { CGU_REG_CLKGR, 7 },
- 	},
- 
- 	[X1000_CLK_I2C1] = {
- 		"i2c1", CGU_CLK_GATE,
--		.parents = { X1000_CLK_PCLK, -1, -1, -1 },
-+		.parents = { X1000_CLK_PCLK },
- 		.gate = { CGU_REG_CLKGR, 8 },
- 	},
- 
- 	[X1000_CLK_I2C2] = {
- 		"i2c2", CGU_CLK_GATE,
--		.parents = { X1000_CLK_PCLK, -1, -1, -1 },
-+		.parents = { X1000_CLK_PCLK },
- 		.gate = { CGU_REG_CLKGR, 9 },
- 	},
- 
- 	[X1000_CLK_AIC] = {
- 		"aic", CGU_CLK_GATE,
--		.parents = { X1000_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { X1000_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR, 11 },
- 	},
- 
- 	[X1000_CLK_UART0] = {
- 		"uart0", CGU_CLK_GATE,
--		.parents = { X1000_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { X1000_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR, 14 },
- 	},
- 
- 	[X1000_CLK_UART1] = {
- 		"uart1", CGU_CLK_GATE,
--		.parents = { X1000_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { X1000_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR, 15 },
- 	},
- 
- 	[X1000_CLK_UART2] = {
- 		"uart2", CGU_CLK_GATE,
--		.parents = { X1000_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { X1000_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR, 16 },
- 	},
- 
- 	[X1000_CLK_DMIC] = {
- 		"dmic", CGU_CLK_GATE,
--		.parents = { X1000_CLK_PCLK, -1, -1, -1 },
-+		.parents = { X1000_CLK_PCLK },
- 		.gate = { CGU_REG_CLKGR, 17 },
- 	},
- 
- 	[X1000_CLK_TCU] = {
- 		"tcu", CGU_CLK_GATE,
--		.parents = { X1000_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { X1000_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR, 18 },
- 	},
- 
- 	[X1000_CLK_SSI] = {
- 		"ssi", CGU_CLK_GATE,
--		.parents = { X1000_CLK_SSIMUX, -1, -1, -1 },
-+		.parents = { X1000_CLK_SSIMUX },
- 		.gate = { CGU_REG_CLKGR, 19 },
- 	},
- 
- 	[X1000_CLK_OST] = {
- 		"ost", CGU_CLK_GATE,
--		.parents = { X1000_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { X1000_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR, 20 },
- 	},
- 
- 	[X1000_CLK_PDMA] = {
- 		"pdma", CGU_CLK_GATE,
--		.parents = { X1000_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { X1000_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR, 21 },
- 	},
- 
-diff --git a/drivers/clk/ingenic/x1830-cgu.c b/drivers/clk/ingenic/x1830-cgu.c
-index d93cefa..bf08084 100644
---- a/drivers/clk/ingenic/x1830-cgu.c
-+++ b/drivers/clk/ingenic/x1830-cgu.c
-@@ -15,51 +15,51 @@
- #include "pm.h"
- 
- /* CGU register offsets */
--#define CGU_REG_CPCCR		0x00
--#define CGU_REG_CPPCR		0x0c
--#define CGU_REG_APLL		0x10
--#define CGU_REG_MPLL		0x14
--#define CGU_REG_CLKGR0		0x20
--#define CGU_REG_OPCR		0x24
--#define CGU_REG_CLKGR1		0x28
--#define CGU_REG_DDRCDR		0x2c
--#define CGU_REG_USBPCR		0x3c
--#define CGU_REG_USBRDT		0x40
--#define CGU_REG_USBVBFIL	0x44
--#define CGU_REG_USBPCR1		0x48
--#define CGU_REG_MACCDR		0x54
--#define CGU_REG_EPLL		0x58
--#define CGU_REG_I2SCDR		0x60
--#define CGU_REG_LPCDR		0x64
--#define CGU_REG_MSC0CDR		0x68
--#define CGU_REG_I2SCDR1		0x70
--#define CGU_REG_SSICDR		0x74
--#define CGU_REG_CIMCDR		0x7c
--#define CGU_REG_MSC1CDR		0xa4
--#define CGU_REG_CMP_INTR	0xb0
--#define CGU_REG_CMP_INTRE	0xb4
--#define CGU_REG_DRCG		0xd0
--#define CGU_REG_CPCSR		0xd4
--#define CGU_REG_VPLL		0xe0
--#define CGU_REG_MACPHYC		0xe8
-+#define CGU_REG_CPCCR			0x00
-+#define CGU_REG_CPPCR			0x0c
-+#define CGU_REG_APLL			0x10
-+#define CGU_REG_MPLL			0x14
-+#define CGU_REG_CLKGR0			0x20
-+#define CGU_REG_OPCR			0x24
-+#define CGU_REG_CLKGR1			0x28
-+#define CGU_REG_DDRCDR			0x2c
-+#define CGU_REG_USBPCR			0x3c
-+#define CGU_REG_USBRDT			0x40
-+#define CGU_REG_USBVBFIL		0x44
-+#define CGU_REG_USBPCR1			0x48
-+#define CGU_REG_MACCDR			0x54
-+#define CGU_REG_EPLL			0x58
-+#define CGU_REG_I2SCDR			0x60
-+#define CGU_REG_LPCDR			0x64
-+#define CGU_REG_MSC0CDR			0x68
-+#define CGU_REG_I2SCDR1			0x70
-+#define CGU_REG_SSICDR			0x74
-+#define CGU_REG_CIMCDR			0x7c
-+#define CGU_REG_MSC1CDR			0xa4
-+#define CGU_REG_CMP_INTR		0xb0
-+#define CGU_REG_CMP_INTRE		0xb4
-+#define CGU_REG_DRCG			0xd0
-+#define CGU_REG_CPCSR			0xd4
-+#define CGU_REG_VPLL			0xe0
-+#define CGU_REG_MACPHYC			0xe8
- 
- /* bits within the OPCR register */
--#define OPCR_GATE_USBPHYCLK	BIT(23)
--#define OPCR_SPENDN0		BIT(7)
--#define OPCR_SPENDN1		BIT(6)
-+#define OPCR_GATE_USBPHYCLK		BIT(23)
-+#define OPCR_SPENDN0			BIT(7)
-+#define OPCR_SPENDN1			BIT(6)
- 
- /* bits within the USBPCR register */
--#define USBPCR_SIDDQ		BIT(21)
--#define USBPCR_OTG_DISABLE	BIT(20)
-+#define USBPCR_SIDDQ			BIT(21)
-+#define USBPCR_OTG_DISABLE		BIT(20)
- 
- /* bits within the I2SCDR register */
--#define I2SCDR_I2PCS_SHIFT	30
--#define I2SCDR_I2PCS_MASK	(0x3 << I2SCDR_I2PCS_SHIFT)
-+#define I2SCDR_I2PCS_SHIFT		30
-+#define I2SCDR_I2PCS_MASK		(0x3 << I2SCDR_I2PCS_SHIFT)
- #define I2SCDR_I2SDIV_M_SHIFT	20
- #define I2SCDR_I2SDIV_M_MASK	(0x1ff << I2SCDR_I2SDIV_M_SHIFT)
- #define I2SCDR_I2SDIV_N_SHIFT	0
- #define I2SCDR_I2SDIV_N_MASK	(0xfffff << I2SCDR_I2SDIV_N_SHIFT)
--#define I2SCDR_CE_I2S		BIT(29)
-+#define I2SCDR_CE_I2S			BIT(29)
- 
- static struct ingenic_cgu *cgu;
- 
-@@ -70,6 +70,7 @@ static int x1830_usb_phy_enable(struct clk_hw *hw)
- 
- 	writel((readl(reg_opcr) | OPCR_SPENDN0) & ~OPCR_GATE_USBPHYCLK, reg_opcr);
- 	writel(readl(reg_usbpcr) & ~USBPCR_OTG_DISABLE & ~USBPCR_SIDDQ, reg_usbpcr);
-+
- 	return 0;
- }
- 
-@@ -93,9 +94,9 @@ static int x1830_usb_phy_is_enabled(struct clk_hw *hw)
- }
- 
- static const struct clk_ops x1830_otg_phy_ops = {
--	.enable		= x1830_usb_phy_enable,
--	.disable	= x1830_usb_phy_disable,
--	.is_enabled	= x1830_usb_phy_is_enabled,
-+	.enable = x1830_usb_phy_enable,
-+	.disable = x1830_usb_phy_disable,
-+	.is_enabled = x1830_usb_phy_is_enabled,
- };
- 
- static u8 x1830_i2s_get_parent(struct clk_hw *hw)
-@@ -289,7 +290,7 @@ static const struct ingenic_cgu_clk_info x1830_cgu_clocks[] = {
- 
- 	[X1830_CLK_APLL] = {
- 		"apll", CGU_CLK_PLL,
--		.parents = { X1830_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { X1830_CLK_EXCLK },
- 		.pll = {
- 			.reg = CGU_REG_APLL,
- 			.rate_multiplier = 2,
-@@ -312,7 +313,7 @@ static const struct ingenic_cgu_clk_info x1830_cgu_clocks[] = {
- 
- 	[X1830_CLK_MPLL] = {
- 		"mpll", CGU_CLK_PLL,
--		.parents = { X1830_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { X1830_CLK_EXCLK },
- 		.pll = {
- 			.reg = CGU_REG_MPLL,
- 			.rate_multiplier = 2,
-@@ -335,7 +336,7 @@ static const struct ingenic_cgu_clk_info x1830_cgu_clocks[] = {
- 
- 	[X1830_CLK_EPLL] = {
- 		"epll", CGU_CLK_PLL,
--		.parents = { X1830_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { X1830_CLK_EXCLK },
- 		.pll = {
- 			.reg = CGU_REG_EPLL,
- 			.rate_multiplier = 2,
-@@ -358,7 +359,7 @@ static const struct ingenic_cgu_clk_info x1830_cgu_clocks[] = {
- 
- 	[X1830_CLK_VPLL] = {
- 		"vpll", CGU_CLK_PLL,
--		.parents = { X1830_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { X1830_CLK_EXCLK },
- 		.pll = {
- 			.reg = CGU_REG_VPLL,
- 			.rate_multiplier = 2,
-@@ -410,14 +411,14 @@ static const struct ingenic_cgu_clk_info x1830_cgu_clocks[] = {
- 
- 	[X1830_CLK_CPU] = {
- 		"cpu", CGU_CLK_DIV | CGU_CLK_GATE,
--		.parents = { X1830_CLK_CPUMUX, -1, -1, -1 },
-+		.parents = { X1830_CLK_CPUMUX },
- 		.div = { CGU_REG_CPCCR, 0, 1, 4, 22, -1, -1 },
- 		.gate = { CGU_REG_CLKGR1, 15 },
- 	},
- 
- 	[X1830_CLK_L2CACHE] = {
- 		"l2cache", CGU_CLK_DIV,
--		.parents = { X1830_CLK_CPUMUX, -1, -1, -1 },
-+		.parents = { X1830_CLK_CPUMUX },
- 		.div = { CGU_REG_CPCCR, 4, 1, 4, 22, -1, -1 },
- 	},
- 
-@@ -436,13 +437,13 @@ static const struct ingenic_cgu_clk_info x1830_cgu_clocks[] = {
- 
- 	[X1830_CLK_AHB2] = {
- 		"ahb2", CGU_CLK_DIV,
--		.parents = { X1830_CLK_AHB2PMUX, -1, -1, -1 },
-+		.parents = { X1830_CLK_AHB2PMUX },
- 		.div = { CGU_REG_CPCCR, 12, 1, 4, 20, -1, -1 },
- 	},
- 
- 	[X1830_CLK_PCLK] = {
- 		"pclk", CGU_CLK_DIV | CGU_CLK_GATE,
--		.parents = { X1830_CLK_AHB2PMUX, -1, -1, -1 },
-+		.parents = { X1830_CLK_AHB2PMUX },
- 		.div = { CGU_REG_CPCCR, 16, 1, 4, 20, -1, -1 },
- 		.gate = { CGU_REG_CLKGR1, 14 },
- 	},
-@@ -481,14 +482,14 @@ static const struct ingenic_cgu_clk_info x1830_cgu_clocks[] = {
- 
- 	[X1830_CLK_MSC0] = {
- 		"msc0", CGU_CLK_DIV | CGU_CLK_GATE,
--		.parents = { X1830_CLK_MSCMUX, -1, -1, -1 },
-+		.parents = { X1830_CLK_MSCMUX },
- 		.div = { CGU_REG_MSC0CDR, 0, 2, 8, 29, 28, 27 },
- 		.gate = { CGU_REG_CLKGR0, 4 },
- 	},
- 
- 	[X1830_CLK_MSC1] = {
- 		"msc1", CGU_CLK_DIV | CGU_CLK_GATE,
--		.parents = { X1830_CLK_MSCMUX, -1, -1, -1 },
-+		.parents = { X1830_CLK_MSCMUX },
- 		.div = { CGU_REG_MSC1CDR, 0, 2, 8, 29, 28, 27 },
- 		.gate = { CGU_REG_CLKGR0, 5 },
- 	},
-@@ -509,7 +510,7 @@ static const struct ingenic_cgu_clk_info x1830_cgu_clocks[] = {
- 
- 	[X1830_CLK_SSIMUX] = {
- 		"ssi_mux", CGU_CLK_MUX,
--		.parents = { X1830_CLK_EXCLK, X1830_CLK_SSIPLL_DIV2, -1, -1 },
-+		.parents = { X1830_CLK_EXCLK, X1830_CLK_SSIPLL_DIV2 },
- 		.mux = { CGU_REG_SSICDR, 29, 1 },
- 	},
- 
-@@ -538,97 +539,97 @@ static const struct ingenic_cgu_clk_info x1830_cgu_clocks[] = {
- 
- 	[X1830_CLK_EMC] = {
- 		"emc", CGU_CLK_GATE,
--		.parents = { X1830_CLK_AHB2, -1, -1, -1 },
-+		.parents = { X1830_CLK_AHB2 },
- 		.gate = { CGU_REG_CLKGR0, 0 },
- 	},
- 
- 	[X1830_CLK_EFUSE] = {
- 		"efuse", CGU_CLK_GATE,
--		.parents = { X1830_CLK_AHB2, -1, -1, -1 },
-+		.parents = { X1830_CLK_AHB2 },
- 		.gate = { CGU_REG_CLKGR0, 1 },
- 	},
- 
- 	[X1830_CLK_OTG] = {
- 		"otg", CGU_CLK_GATE,
--		.parents = { X1830_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { X1830_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR0, 3 },
- 	},
- 
- 	[X1830_CLK_SSI0] = {
- 		"ssi0", CGU_CLK_GATE,
--		.parents = { X1830_CLK_SSIMUX, -1, -1, -1 },
-+		.parents = { X1830_CLK_SSIMUX },
- 		.gate = { CGU_REG_CLKGR0, 6 },
- 	},
- 
- 	[X1830_CLK_SMB0] = {
- 		"smb0", CGU_CLK_GATE,
--		.parents = { X1830_CLK_PCLK, -1, -1, -1 },
-+		.parents = { X1830_CLK_PCLK },
- 		.gate = { CGU_REG_CLKGR0, 7 },
- 	},
- 
- 	[X1830_CLK_SMB1] = {
- 		"smb1", CGU_CLK_GATE,
--		.parents = { X1830_CLK_PCLK, -1, -1, -1 },
-+		.parents = { X1830_CLK_PCLK },
- 		.gate = { CGU_REG_CLKGR0, 8 },
- 	},
- 
- 	[X1830_CLK_SMB2] = {
- 		"smb2", CGU_CLK_GATE,
--		.parents = { X1830_CLK_PCLK, -1, -1, -1 },
-+		.parents = { X1830_CLK_PCLK },
- 		.gate = { CGU_REG_CLKGR0, 9 },
- 	},
- 
- 	[X1830_CLK_AIC] = {
- 		"aic", CGU_CLK_GATE,
--		.parents = { X1830_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { X1830_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR0, 11 },
- 	},
- 
- 	[X1830_CLK_DMIC] = {
- 		"dmic", CGU_CLK_GATE,
--		.parents = { X1830_CLK_PCLK, -1, -1, -1 },
-+		.parents = { X1830_CLK_PCLK },
- 		.gate = { CGU_REG_CLKGR0, 12 },
- 	},
- 
- 	[X1830_CLK_UART0] = {
- 		"uart0", CGU_CLK_GATE,
--		.parents = { X1830_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { X1830_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR0, 14 },
- 	},
- 
- 	[X1830_CLK_UART1] = {
- 		"uart1", CGU_CLK_GATE,
--		.parents = { X1830_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { X1830_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR0, 15 },
- 	},
- 
- 	[X1830_CLK_SSI1] = {
- 		"ssi1", CGU_CLK_GATE,
--		.parents = { X1830_CLK_SSIMUX, -1, -1, -1 },
-+		.parents = { X1830_CLK_SSIMUX },
- 		.gate = { CGU_REG_CLKGR0, 19 },
- 	},
- 
- 	[X1830_CLK_SFC] = {
- 		"sfc", CGU_CLK_GATE,
--		.parents = { X1830_CLK_SSIPLL, -1, -1, -1 },
-+		.parents = { X1830_CLK_SSIPLL },
- 		.gate = { CGU_REG_CLKGR0, 20 },
- 	},
- 
- 	[X1830_CLK_PDMA] = {
- 		"pdma", CGU_CLK_GATE,
--		.parents = { X1830_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { X1830_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR0, 21 },
- 	},
- 
- 	[X1830_CLK_TCU] = {
- 		"tcu", CGU_CLK_GATE,
--		.parents = { X1830_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { X1830_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR0, 30 },
- 	},
- 
- 	[X1830_CLK_DTRNG] = {
- 		"dtrng", CGU_CLK_GATE,
--		.parents = { X1830_CLK_PCLK, -1, -1, -1 },
-+		.parents = { X1830_CLK_PCLK },
- 		.gate = { CGU_REG_CLKGR1, 1 },
- 	},
- 
-@@ -640,7 +641,7 @@ static const struct ingenic_cgu_clk_info x1830_cgu_clocks[] = {
- 
- 	[X1830_CLK_OST] = {
- 		"ost", CGU_CLK_GATE,
--		.parents = { X1830_CLK_EXCLK, -1, -1, -1 },
-+		.parents = { X1830_CLK_EXCLK },
- 		.gate = { CGU_REG_CLKGR1, 11 },
- 	},
- };
--- 
-2.7.4
-
+> 
+> > >                                                       Thanx, Paul
+> > >
+> > > > Also yes without reproducer this is kinda tough nut to crack.
+> > > > -Daniel
+> > > >
+> > > > >
+> > > > >                                                         Thanx, Paul
+> > > > >
+> > > > > > >  modeset_lock+0x392/0x650 drivers/gpu/drm/drm_modeset_lock.c:263
+> > > > > > >  drm_modeset_lock drivers/gpu/drm/drm_modeset_lock.c:342 [inline]
+> > > > > > >  drm_modeset_lock+0x50/0x90 drivers/gpu/drm/drm_modeset_lock.c:338
+> > > > > > >  drm_atomic_get_plane_state+0x19d/0x510 drivers/gpu/drm/drm_atomic.c:481
+> > > > > > >  drm_client_modeset_commit_atomic+0x225/0x7c0 drivers/gpu/drm/drm_client_modeset.c:994
+> > > > > > >  drm_client_modeset_commit_locked+0x145/0x580 drivers/gpu/drm/drm_client_modeset.c:1145
+> > > > > > >  pan_display_atomic drivers/gpu/drm/drm_fb_helper.c:1395 [inline]
+> > > > > > >  drm_fb_helper_pan_display+0x28b/0x970 drivers/gpu/drm/drm_fb_helper.c:1455
+> > > > > > >  fb_pan_display+0x2f7/0x6c0 drivers/video/fbdev/core/fbmem.c:925
+> > > > > > >  fb_set_var+0x57f/0xda0 drivers/video/fbdev/core/fbmem.c:1043
+> > > > > > >  do_fb_ioctl+0x2f9/0x690 drivers/video/fbdev/core/fbmem.c:1108
+> > > > > > >  fb_compat_ioctl+0x17c/0xaf0 drivers/video/fbdev/core/fbmem.c:1315
+> > > > > > >  __do_compat_sys_ioctl+0x1d3/0x230 fs/ioctl.c:842
+> > > > > > >  do_syscall_32_irqs_on arch/x86/entry/common.c:78 [inline]
+> > > > > > >  __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:137
+> > > > > > >  do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:160
+> > > > > > >  entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+> > > > > > > RIP: 0023:0xf7fd8549
+> > > > > > > Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
+> > > > > > > RSP: 002b:00000000f55d20bc EFLAGS: 00000296 ORIG_RAX: 0000000000000036
+> > > > > > > RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000004601
+> > > > > > > RDX: 0000000020000240 RSI: 0000000000000000 RDI: 0000000000000000
+> > > > > > > RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+> > > > > > > R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+> > > > > > > R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> > > > > > > detected fb_set_par error, error code: -16
+> > > > > > >
+> > > > > > >
+> > > > > > > ---
+> > > > > > > This report is generated by a bot. It may contain errors.
+> > > > > > > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > > > > > > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> > > > > > >
+> > > > > > > syzbot will keep track of this issue. See:
+> > > > > > > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> > > > > >
+> > > > > >
+> > > > > >
+> > > > > > --
+> > > > > > Daniel Vetter
+> > > > > > Software Engineer, Intel Corporation
+> > > > > > http://blog.ffwll.ch
+> > > >
+> > > >
+> > > >
+> > > > --
+> > > > Daniel Vetter
+> > > > Software Engineer, Intel Corporation
+> > > > http://blog.ffwll.ch
+> >
+> > --
+> > You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> > To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> > To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/X9wGBcCnhxr36WF4%40boqun-archlinux.
