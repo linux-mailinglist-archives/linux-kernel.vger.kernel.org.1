@@ -2,121 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E3B2DFD8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 16:28:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F4732DFD8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 16:28:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726319AbgLUP1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 10:27:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37730 "EHLO mail.kernel.org"
+        id S1726428AbgLUP13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 10:27:29 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:35716 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725497AbgLUP1I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 10:27:08 -0500
-Date:   Mon, 21 Dec 2020 07:26:26 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608564387;
-        bh=LV+j6LH9cEGVQGrj5ole2ULK2AGRXA9YiKHBTKba6+8=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UOKiqZfT+rtNdhtlLXqIZmZ4pLEPr77hdOhTVsz7Tb+B8Ip59/i/DjiUP2/r/GzUt
-         5Of14DfbBbcJkAhtKZnWr6dka3O5c5VhpOTvyH9fWbQ6ZFO57Z4ac0ICgdjioVBm40
-         N/J7Z0yZgy3j1d3sAEy24Bof+W3nVP6VDEIJ8TDAPyOtvXrE1X5fUCVqUg0oEKp+kW
-         WsXSW8zI3Lz475HPz5JMvdCCeY9LXieB7tj1j19FgTzhadoM4z6FmStaet7RakeAnR
-         Sj259to+e9X4g6qbCwlBIKFOvt5siUWPKTvJkJXBqv/XIR1fy6MRr7+M9XOmHsYXk4
-         fX5ki50YgQ46w==
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com
-Cc:     cang@codeaurora.org, alim.akhtar@samsung.com, avri.altman@wdc.com,
-        bvanassche@acm.org, martin.petersen@oracle.com,
-        stanley.chu@mediatek.com
-Subject: Re: [PATCH v2] scsi: ufs: fix livelock of ufshcd_clear_ua_wluns
-Message-ID: <X+C+oqegC7EI6zDv@google.com>
-References: <20201218033131.2624065-1-jaegeuk@kernel.org>
+        id S1725497AbgLUP12 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 10:27:28 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1krN5B-00D9ko-LI; Mon, 21 Dec 2020 16:26:45 +0100
+Date:   Mon, 21 Dec 2020 16:26:45 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: [PATCH] net: lantiq_etop: check the result of request_irq()
+Message-ID: <20201221152645.GH3026679@lunn.ch>
+References: <20201221054323.247483-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20201218033131.2624065-1-jaegeuk@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201221054323.247483-1-masahiroy@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When gate_work/ungate_work gets an error during hibern8_enter or exit,
- ufshcd_err_handler()
-   ufshcd_scsi_block_requests()
-   ufshcd_reset_and_restore()
-     ufshcd_clear_ua_wluns() -> stuck
-   ufshcd_scsi_unblock_requests()
+On Mon, Dec 21, 2020 at 02:43:23PM +0900, Masahiro Yamada wrote:
+> The declaration of request_irq() in <linux/interrupt.h> is marked as
+> __must_check.
+> 
+> Without the return value check, I see the following warnings:
+> 
+> drivers/net/ethernet/lantiq_etop.c: In function 'ltq_etop_hw_init':
+> drivers/net/ethernet/lantiq_etop.c:273:4: warning: ignoring return value of 'request_irq', declared with attribute warn_unused_result [-Wunused-result]
+>   273 |    request_irq(irq, ltq_etop_dma_irq, 0, "etop_tx", priv);
+>       |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/net/ethernet/lantiq_etop.c:281:4: warning: ignoring return value of 'request_irq', declared with attribute warn_unused_result [-Wunused-result]
+>   281 |    request_irq(irq, ltq_etop_dma_irq, 0, "etop_rx", priv);
+>       |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> Reported-by: Miguel Ojeda <ojeda@kernel.org>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+>  drivers/net/ethernet/lantiq_etop.c | 13 +++++++++++--
+>  1 file changed, 11 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/lantiq_etop.c b/drivers/net/ethernet/lantiq_etop.c
+> index 2d0c52f7106b..960494f9752b 100644
+> --- a/drivers/net/ethernet/lantiq_etop.c
+> +++ b/drivers/net/ethernet/lantiq_etop.c
+> @@ -264,13 +264,18 @@ ltq_etop_hw_init(struct net_device *dev)
+>  	for (i = 0; i < MAX_DMA_CHAN; i++) {
+>  		int irq = LTQ_DMA_CH0_INT + i;
+>  		struct ltq_etop_chan *ch = &priv->ch[i];
+> +		int ret;
+>  
+>  		ch->idx = ch->dma.nr = i;
+>  		ch->dma.dev = &priv->pdev->dev;
+>  
+>  		if (IS_TX(i)) {
+>  			ltq_dma_alloc_tx(&ch->dma);
+> -			request_irq(irq, ltq_etop_dma_irq, 0, "etop_tx", priv);
+> +			ret = request_irq(irq, ltq_etop_dma_irq, 0, "etop_tx", priv);
+> +			if (ret) {
+> +				netdev_err(dev, "failed to request irq\n");
+> +				return ret;
 
-In order to avoid it, ufshcd_clear_ua_wluns() can be called per recovery flows
-such as suspend/resume, link_recovery, and error_handler.
+You need to cleanup what ltq_dma_alloc_tx() did.
 
-Fixes: 1918651f2d7e ("scsi: ufs: Clear UAC for RPMB after ufshcd resets")
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
----
+> +			}
+>  		} else if (IS_RX(i)) {
+>  			ltq_dma_alloc_rx(&ch->dma);
+>  			for (ch->dma.desc = 0; ch->dma.desc < LTQ_DESC_NUM;
+> @@ -278,7 +283,11 @@ ltq_etop_hw_init(struct net_device *dev)
+>  				if (ltq_etop_alloc_skb(ch))
+>  					return -ENOMEM;
+>  			ch->dma.desc = 0;
+> -			request_irq(irq, ltq_etop_dma_irq, 0, "etop_rx", priv);
+> +			ret = request_irq(irq, ltq_etop_dma_irq, 0, "etop_rx", priv);
+> +			if (ret) {
+> +				netdev_err(dev, "failed to request irq\n");
+> +				return ret;
 
- Change log from v1:
-  - add condition check to call
-  - add Fixes tag
+And here you need to cleanup ltq_dma_alloc_rx().
 
- drivers/scsi/ufs/ufshcd.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index e221add25a7e..29a62552f6f1 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -3963,6 +3963,8 @@ int ufshcd_link_recovery(struct ufs_hba *hba)
- 	if (ret)
- 		dev_err(hba->dev, "%s: link recovery failed, err %d",
- 			__func__, ret);
-+	else
-+		ufshcd_clear_ua_wluns(hba);
- 
- 	return ret;
- }
-@@ -5968,6 +5970,9 @@ static void ufshcd_err_handler(struct work_struct *work)
- 	ufshcd_scsi_unblock_requests(hba);
- 	ufshcd_err_handling_unprepare(hba);
- 	up(&hba->eh_sem);
-+
-+	if (!err && needs_reset)
-+		ufshcd_clear_ua_wluns(hba);
- }
- 
- /**
-@@ -6908,14 +6913,11 @@ static int ufshcd_host_reset_and_restore(struct ufs_hba *hba)
- 	ufshcd_set_clk_freq(hba, true);
- 
- 	err = ufshcd_hba_enable(hba);
--	if (err)
--		goto out;
- 
- 	/* Establish the link again and restore the device */
--	err = ufshcd_probe_hba(hba, false);
- 	if (!err)
--		ufshcd_clear_ua_wluns(hba);
--out:
-+		err = ufshcd_probe_hba(hba, false);
-+
- 	if (err)
- 		dev_err(hba->dev, "%s: Host init failed %d\n", __func__, err);
- 	ufshcd_update_evt_hist(hba, UFS_EVT_HOST_RESET, (u32)err);
-@@ -8745,6 +8747,7 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 		ufshcd_resume_clkscaling(hba);
- 	hba->clk_gating.is_suspended = false;
- 	hba->dev_info.b_rpm_dev_flush_capable = false;
-+	ufshcd_clear_ua_wluns(hba);
- 	ufshcd_release(hba);
- out:
- 	if (hba->dev_info.b_rpm_dev_flush_capable) {
-@@ -8855,6 +8858,8 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 		cancel_delayed_work(&hba->rpm_dev_flush_recheck_work);
- 	}
- 
-+	ufshcd_clear_ua_wluns(hba);
-+
- 	/* Schedule clock gating in case of no access to UFS device yet */
- 	ufshcd_release(hba);
- 
--- 
-2.29.2.729.g45daf8777d-goog
-
+    Andrew
