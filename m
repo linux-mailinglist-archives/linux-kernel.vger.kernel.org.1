@@ -2,105 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 465B92DFF9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:22:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 732512DFD7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 16:26:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726356AbgLUSWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 13:22:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726057AbgLUSWB (ORCPT
+        id S1725927AbgLUP0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 10:26:15 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:5954 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725793AbgLUP0O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:22:01 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9833C0613D6;
-        Mon, 21 Dec 2020 10:21:20 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id s26so25880887lfc.8;
-        Mon, 21 Dec 2020 10:21:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sWyYMYoogTI0qEcPT7ewbmd4Di2kxWT27aivbJmhx28=;
-        b=c8IRniwyiglKPVZFlpYSUzsKnpyYHZUumx0BgM9yzOuWuh/xrwae2gFez/R6GkI4T2
-         Gk2dN+mCH5LKqsnlmg53XF6BKZTCYvssMmXchhIb2I1pWNWhuMMU32wxNZkI56NRLR8n
-         rN185Qyp+QL7SFnNV1zfBvGedZq5jjF0pbxRYx+TCd5bGdr3H9guwM1EdVS7GeiZhDwL
-         vUj2GwTwqAj242pHOCeS3LoVckq0l8MnXm73bPMIWTWsAqlUQTyl9QuQnG0pDMBMX/Op
-         I0m+SX7i/ABxCA1L2er3Kr1vKQvKnFqqiV0tt5ufh/7onCwGkoDn6IMt74Yoc0EFhH54
-         UiFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sWyYMYoogTI0qEcPT7ewbmd4Di2kxWT27aivbJmhx28=;
-        b=jQ5J9NzILOP2ruarW/u2dJ5duPvTvmKxugyuwH9Xz1I5BM+cKDX7hNTQDxHh38fSyB
-         2la7paFUWki2/nDt8J1ln05Uv6lByeFfnyVORDukI3onWAUU0mGb6zAjKYGGpJK+M8IT
-         A44+WkOMMWGcuPFNepuYjvU8HDp8gmg7SKVPiUucOJYq14AUCVE+zdOy8TtlnHfrMbb1
-         J2nHkBigxJripd1lI2xo9cKpHe6WkHfOMJC8Vuva9iskBJFgRmKNUOV8n8GKPnRDnVG2
-         S1V6rB2RRiA9NWWW22OHntCsu3KEMEmeINyExKQwQ3Fmd4V+wo4qwcZ2w4eNS4yMHfp1
-         RoJw==
-X-Gm-Message-State: AOAM533jgeMPe+brDq2E6YBcJKSOf60RpOJRzZsE5xSalTb1pZRptOC0
-        DmrAXIpOt+CzirK1GS7IUvM6Oi7Ev3mQwbeimWkqJoqbEaI=
-X-Google-Smtp-Source: ABdhPJxU8ZS9Uqf73qEiCIFLa3Wey/Dnx2XDW3bpW4IPhdA/deXrAGBCmmPpxsiN47g/sORvF4vuVoBnwSS1EL7P3wE=
-X-Received: by 2002:a17:906:6c8b:: with SMTP id s11mr15761117ejr.187.1608564530691;
- Mon, 21 Dec 2020 07:28:50 -0800 (PST)
+        Mon, 21 Dec 2020 10:26:14 -0500
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BLFKsFe011865;
+        Mon, 21 Dec 2020 10:25:32 -0500
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 35hfa9wc7f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Dec 2020 10:25:32 -0500
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 0BLFPVas034386
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 21 Dec 2020 10:25:31 -0500
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2; Mon, 21 Dec 2020
+ 10:25:30 -0500
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.2.721.2 via Frontend Transport;
+ Mon, 21 Dec 2020 10:25:30 -0500
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0BLFPRHK001932;
+        Mon, 21 Dec 2020 10:25:28 -0500
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <dragos.bogdan@analog.com>, <broonie@kernel.org>,
+        <robh+dt@kernel.org>, <andy.shevchenko@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v6 1/3] spi: uapi: unify SPI modes into a single spi.h header
+Date:   Mon, 21 Dec 2020 17:29:34 +0200
+Message-ID: <20201221152936.53873-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20201004162908.3216898-1-martin.blumenstingl@googlemail.com>
- <20201004162908.3216898-4-martin.blumenstingl@googlemail.com>
- <CACRpkdZo-U_cAhbKb4E+d+p+5FenXkGYW0RXxyk4M5uyEPCpzw@mail.gmail.com> <CAFBinCCLubmDvxfabQHx2-ucgAsm1NArMUrtPx-UA2nX5xoFFA@mail.gmail.com>
-In-Reply-To: <CAFBinCCLubmDvxfabQHx2-ucgAsm1NArMUrtPx-UA2nX5xoFFA@mail.gmail.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Mon, 21 Dec 2020 16:28:39 +0100
-Message-ID: <CAFBinCAZXJ2=fTQuAUyW1hNeJDHY3_pxo4UhxUaOZC=i1bpFxw@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/3] gpio: ej1x8: Add GPIO driver for Etron Tech Inc. EJ168/EJ188/EJ198
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     linux-usb <linux-usb@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-21_08:2020-12-21,2020-12-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
+ bulkscore=0 lowpriorityscore=0 adultscore=0 phishscore=0 suspectscore=0
+ priorityscore=1501 mlxlogscore=999 malwarescore=0 mlxscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012210109
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+This change moves all the SPI mode bits into a separate 'spi.h' header in
+uAPI. This is meant to re-use these definitions inside the kernel as well
+as export them to userspace (via uAPI).
 
-On Wed, Oct 7, 2020 at 9:44 PM Martin Blumenstingl
-<martin.blumenstingl@googlemail.com> wrote:
-[...]
-> > As noted on the earlier patches I think this should be folded into the
-> > existing XHCI USB driver in drivers/usb/host/xhci-pci.c or, if that
-> > gets messy, as a separate bolt-on, something like
-> > xhci-pci-gpio.[c|h] in the drivers/usb/host/* directory.
-> > You can use a Kconfig symbol for the GPIO portions or not.
-> OK, I will do that if there are no objections from other developers
-> I am intending to place the relevant code in xhci-pci-etron.c, similar
-> to what we already have with xhci-pci-renesas.c
-I tried this and unfortunately there's a catch.
-the nice thing about having a separate GPIO driver means that the
-xhci-pci driver doesn't need to know about it.
+The SPI mode definitions have usually been duplicated between between
+'include/linux/spi/spi.h' and 'include/uapi/linux/spi/spidev.h', so
+whenever adding a new entry, this would need to be put in both headers.
 
-I implemented xhci-pci-etron.c and gave it a Kconfig option.
-xhci-pci is then calling into xhci-pci-etron (through some
-etron_xhci_pci_probe function).
-unfortunately this means that xhci-pci now depends on xhci-pci-etron.
-for xhci-pci-renesas this is fine (I think) because that part of the
-code is needed to get the xHCI controller going
-but for xhci-pci-etron this is a different story: the GPIO controller
-is entirely optional and only used on few devices
+They've been moved from 'include/linux/spi/spi.h', since that seems a bit
+more complete; the bits have descriptions and there is the SPI_MODE_X_MASK.
 
-my goal is (at some point in the future) to have the GPIO driver in OpenWrt.
-I am not sure if they would accept a patch where xhci-pci would then
-pull in the dependencies for that Etron controller, even though most
-boards don't need it.
+This change also does a conversion of these bitfields to _BITUL() macro.
 
-Please let me know if you have any idea on how to solve this.
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
 
+Changelog v5 -> v6:
+* https://patchwork.kernel.org/project/spi-devel-general/patch/20201221141906.48922-1-alexandru.ardelean@analog.com/
+* no change
 
-Best regards,
-Martin
+ include/linux/spi/spi.h         | 23 ++---------------------
+ include/uapi/linux/spi/spi.h    | 31 +++++++++++++++++++++++++++++++
+ include/uapi/linux/spi/spidev.h | 30 +-----------------------------
+ 3 files changed, 34 insertions(+), 50 deletions(-)
+ create mode 100644 include/uapi/linux/spi/spi.h
+
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index aa09fdc8042d..a08c3f37e202 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -15,6 +15,8 @@
+ #include <linux/gpio/consumer.h>
+ #include <linux/ptp_clock_kernel.h>
+ 
++#include <uapi/linux/spi/spi.h>
++
+ struct dma_chan;
+ struct property_entry;
+ struct spi_controller;
+@@ -165,27 +167,6 @@ struct spi_device {
+ 	u8			bits_per_word;
+ 	bool			rt;
+ 	u32			mode;
+-#define	SPI_CPHA	0x01			/* clock phase */
+-#define	SPI_CPOL	0x02			/* clock polarity */
+-#define	SPI_MODE_0	(0|0)			/* (original MicroWire) */
+-#define	SPI_MODE_1	(0|SPI_CPHA)
+-#define	SPI_MODE_2	(SPI_CPOL|0)
+-#define	SPI_MODE_3	(SPI_CPOL|SPI_CPHA)
+-#define	SPI_MODE_X_MASK	(SPI_CPOL|SPI_CPHA)
+-#define	SPI_CS_HIGH	0x04			/* chipselect active high? */
+-#define	SPI_LSB_FIRST	0x08			/* per-word bits-on-wire */
+-#define	SPI_3WIRE	0x10			/* SI/SO signals shared */
+-#define	SPI_LOOP	0x20			/* loopback mode */
+-#define	SPI_NO_CS	0x40			/* 1 dev/bus, no chipselect */
+-#define	SPI_READY	0x80			/* slave pulls low to pause */
+-#define	SPI_TX_DUAL	0x100			/* transmit with 2 wires */
+-#define	SPI_TX_QUAD	0x200			/* transmit with 4 wires */
+-#define	SPI_RX_DUAL	0x400			/* receive with 2 wires */
+-#define	SPI_RX_QUAD	0x800			/* receive with 4 wires */
+-#define	SPI_CS_WORD	0x1000			/* toggle cs after each word */
+-#define	SPI_TX_OCTAL	0x2000			/* transmit with 8 wires */
+-#define	SPI_RX_OCTAL	0x4000			/* receive with 8 wires */
+-#define	SPI_3WIRE_HIZ	0x8000			/* high impedance turnaround */
+ 	int			irq;
+ 	void			*controller_state;
+ 	void			*controller_data;
+diff --git a/include/uapi/linux/spi/spi.h b/include/uapi/linux/spi/spi.h
+new file mode 100644
+index 000000000000..703b586f35df
+--- /dev/null
++++ b/include/uapi/linux/spi/spi.h
+@@ -0,0 +1,31 @@
++/* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
++#ifndef _UAPI_SPI_H
++#define _UAPI_SPI_H
++
++#include <linux/const.h>
++
++#define	SPI_CPHA		_BITUL(0)	/* clock phase */
++#define	SPI_CPOL		_BITUL(1)	/* clock polarity */
++
++#define	SPI_MODE_0		(0|0)		/* (original MicroWire) */
++#define	SPI_MODE_1		(0|SPI_CPHA)
++#define	SPI_MODE_2		(SPI_CPOL|0)
++#define	SPI_MODE_3		(SPI_CPOL|SPI_CPHA)
++#define	SPI_MODE_X_MASK		(SPI_CPOL|SPI_CPHA)
++
++#define	SPI_CS_HIGH		_BITUL(2)	/* chipselect active high? */
++#define	SPI_LSB_FIRST		_BITUL(3)	/* per-word bits-on-wire */
++#define	SPI_3WIRE		_BITUL(4)	/* SI/SO signals shared */
++#define	SPI_LOOP		_BITUL(5)	/* loopback mode */
++#define	SPI_NO_CS		_BITUL(6)	/* 1 dev/bus, no chipselect */
++#define	SPI_READY		_BITUL(7)	/* slave pulls low to pause */
++#define	SPI_TX_DUAL		_BITUL(8)	/* transmit with 2 wires */
++#define	SPI_TX_QUAD		_BITUL(9)	/* transmit with 4 wires */
++#define	SPI_RX_DUAL		_BITUL(10)	/* receive with 2 wires */
++#define	SPI_RX_QUAD		_BITUL(11)	/* receive with 4 wires */
++#define	SPI_CS_WORD		_BITUL(12)	/* toggle cs after each word */
++#define	SPI_TX_OCTAL		_BITUL(13)	/* transmit with 8 wires */
++#define	SPI_RX_OCTAL		_BITUL(14)	/* receive with 8 wires */
++#define	SPI_3WIRE_HIZ		_BITUL(15)	/* high impedance turnaround */
++
++#endif /* _UAPI_SPI_H */
+diff --git a/include/uapi/linux/spi/spidev.h b/include/uapi/linux/spi/spidev.h
+index d56427c0b3e0..0c3da08f2aff 100644
+--- a/include/uapi/linux/spi/spidev.h
++++ b/include/uapi/linux/spi/spidev.h
+@@ -25,35 +25,7 @@
+ 
+ #include <linux/types.h>
+ #include <linux/ioctl.h>
+-
+-/* User space versions of kernel symbols for SPI clocking modes,
+- * matching <linux/spi/spi.h>
+- */
+-
+-#define SPI_CPHA		0x01
+-#define SPI_CPOL		0x02
+-
+-#define SPI_MODE_0		(0|0)
+-#define SPI_MODE_1		(0|SPI_CPHA)
+-#define SPI_MODE_2		(SPI_CPOL|0)
+-#define SPI_MODE_3		(SPI_CPOL|SPI_CPHA)
+-
+-#define SPI_CS_HIGH		0x04
+-#define SPI_LSB_FIRST		0x08
+-#define SPI_3WIRE		0x10
+-#define SPI_LOOP		0x20
+-#define SPI_NO_CS		0x40
+-#define SPI_READY		0x80
+-#define SPI_TX_DUAL		0x100
+-#define SPI_TX_QUAD		0x200
+-#define SPI_RX_DUAL		0x400
+-#define SPI_RX_QUAD		0x800
+-#define SPI_CS_WORD		0x1000
+-#define SPI_TX_OCTAL		0x2000
+-#define SPI_RX_OCTAL		0x4000
+-#define SPI_3WIRE_HIZ		0x8000
+-
+-/*---------------------------------------------------------------------------*/
++#include <linux/spi/spi.h>
+ 
+ /* IOCTL commands */
+ 
+-- 
+2.17.1
+
