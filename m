@@ -2,102 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E4EE2E0064
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:48:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 429F12E006D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:50:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727698AbgLUSrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 13:47:53 -0500
-Received: from mail-oo1-f53.google.com ([209.85.161.53]:38575 "EHLO
-        mail-oo1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727055AbgLUSrv (ORCPT
+        id S1727000AbgLUSsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:48:54 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2277 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726890AbgLUSsx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:47:51 -0500
-Received: by mail-oo1-f53.google.com with SMTP id i18so2441935ooh.5;
-        Mon, 21 Dec 2020 10:47:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9c4Z1cR0okEDOva6ZJZicR2jBIUZ+5XrWMqkg7M3kpw=;
-        b=hz3KlOPy99wyUWikmU8eY5avjkr6YqZ/MHNscLb8qTxnR5ow5mZQfkEp1BQhK9yvDD
-         QkvcBmjUMi1/Yd+yP+tGSDbHIGoAnTFW27ANdXx3mMbDS9ZYatSOFtQGKbnrsmvjW+K2
-         /dT870LPVAWhfhuDQEsiobUPs5+cuxn+1DViJZMhGjbBolk5+UJmlN2bkikgU22OTGhZ
-         4K9O8X7+l0yzF5d0s+mv1Xmy5d8gKGrooib30gPj42QqB2s3Vqb8ObvT9oPrLazGUg+x
-         aZCAnyWBnwY7KWt/vbq6CexJOUSZeN0646BBLp5MDT+2HuZH9qiP+eqjr3MdTaMxJMLE
-         rNcw==
-X-Gm-Message-State: AOAM5319kvPhdn1bD84KFShpOD53RplkYw4wKjIF+sSAW9e6/6kPqGCf
-        fLMjmbf1FU3L+7hCdBfblQ==
-X-Google-Smtp-Source: ABdhPJxHtxtQavMpTMYOeQXfbwlNAzcd18hUq1nv29288DdMCrjnzy/vnMDlD21MGqurHNxrq5tuvg==
-X-Received: by 2002:a4a:8353:: with SMTP id q19mr7538448oog.40.1608576430556;
-        Mon, 21 Dec 2020 10:47:10 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id t72sm3697688oie.47.2020.12.21.10.47.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 10:47:09 -0800 (PST)
-Received: (nullmailer pid 344465 invoked by uid 1000);
-        Mon, 21 Dec 2020 18:47:07 -0000
-Date:   Mon, 21 Dec 2020 11:47:07 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        devicetree@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-kernel@vger.kernel.org, Sebastian Reichel <sre@kernel.org>,
-        Matheus Castello <matheus@castello.eng.br>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>,
-        Iskren Chernev <iskren.chernev@gmail.com>,
-        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Angus Ainslie <angus@akkea.ca>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-pm@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [RFC 17/18] mfd: max14577: Do not enforce (incorrect) interrupt
- trigger type
-Message-ID: <20201221184707.GA344409@robh.at.kernel.org>
-References: <20201210212534.216197-1-krzk@kernel.org>
- <20201210212534.216197-17-krzk@kernel.org>
+        Mon, 21 Dec 2020 13:48:53 -0500
+Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4D07hW0cyTz67ShL;
+        Tue, 22 Dec 2020 02:45:47 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 21 Dec 2020 19:48:11 +0100
+Received: from [10.210.168.224] (10.210.168.224) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 21 Dec 2020 18:48:10 +0000
+Subject: Re: [RFC PATCH v2 2/2] blk-mq: Lockout tagset iter when freeing rqs
+To:     Bart Van Assche <bvanassche@acm.org>, <axboe@kernel.dk>,
+        <ming.lei@redhat.com>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <hch@lst.de>, <hare@suse.de>, <ppvk@codeaurora.org>,
+        <kashyap.desai@broadcom.com>, <linuxarm@huawei.com>
+References: <1608203273-170555-1-git-send-email-john.garry@huawei.com>
+ <1608203273-170555-3-git-send-email-john.garry@huawei.com>
+ <df44b73d-6c42-87ee-3c25-b95a44712e05@acm.org>
+ <4d2004bb-4444-7a63-7c72-1759e3037cfd@huawei.com>
+ <31de2806-bbc1-dcc3-b9eb-ce9257420432@acm.org>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <b2edab2b-8af7-816d-9da2-4720d19b96f8@huawei.com>
+Date:   Mon, 21 Dec 2020 18:47:24 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201210212534.216197-17-krzk@kernel.org>
+In-Reply-To: <31de2806-bbc1-dcc3-b9eb-ce9257420432@acm.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.210.168.224]
+X-ClientProxiedBy: lhreml739-chm.china.huawei.com (10.201.108.189) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Dec 2020 22:25:33 +0100, Krzysztof Kozlowski wrote:
-> Interrupt line can be configured on different hardware in different way,
-> even inverted.  Therefore driver should not enforce specific trigger
-> type - edge falling - but instead rely on Devicetree to configure it.
+On 21/12/2020 18:09, Bart Van Assche wrote:
+> On 12/21/20 4:06 AM, John Garry wrote:
+>> On 18/12/2020 22:43, Bart Van Assche wrote:
+>>> Does this mean that we do not yet have
+>>> a full explanation about why the above call stack can be triggered?
+>>
+>> We understand it, and I'll describe my experiment in detail:
+>> a. fio runs on 2x disks, sda (root partition disk) and sdb.
+>> b. for sda, userpace triggers blk_mq_queue_tag_busy_iter(), as in
+>> stackframe above. Since its request queue is not frozen, it will iter
+>> the busy tags.
+>> c. on sdb, I continuously change the IO scheduler.
+>>
+>> So sdb request queue gets frozen as we switch IO sched, but we could
+>> have this sequence of events:
+>> - blk_mq_queue_tag_busy_iter() on sda takes reference to a sdb request
+>>     - Getting a tag and updating ->rqs[] in tagset is not atomic
+>> - requests for sdb cleared in tagset and request memory is freed
+>> - blk_mq_queue_tag_busy_iter() on sda still holds reference to sdb
+>> request and dereferences it -> UAF
+>>
+>> Hope it's clear. It is a bit unlikely, I will admit, but it still can
+>> happen and UAF is never good. So please let me know if other idea to solve.
 > 
-> The Maxim 14577/77836 datasheets describe the interrupt line as active
-> low with a requirement of acknowledge from the CPU therefore the edge
-> falling is not correct.
+> Hi John,
 > 
-> The interrupt line is shared between PMIC and charger driver, so using
-> level sensitive interrupt is here especially important to avoid races.
-> With an edge configuration in case if first PMIC signals interrupt
-> followed shortly after by the RTC, the interrupt might not be yet
-> cleared/acked thus the second one would not be noticed.
+> Do you agree that all partitions (struct block_device) of a disk share a
+> request queue (block_device.bd_disk->queue)? I'm asking this because it
+> seems like in the above explanation it has been assumed that different
+> partitions use different request queues.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Thanks,
 > 
-> ---
-> 
-> This patch should wait till DTS changes are merged, as it relies on
-> proper Devicetree.
-> ---
->  Documentation/devicetree/bindings/mfd/max14577.txt | 4 ++--
->  drivers/mfd/max14577.c                             | 6 +++---
->  2 files changed, 5 insertions(+), 5 deletions(-)
+> Bart.
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+Hi Bart,
+
+Yes, I agree, and I'm not sure what I wrote to give that impression.
+
+About "root partition", above, I'm just saying that / is mounted on a 
+sda partition:
+
+root@ubuntu:/home/john# mount | grep sda
+/dev/sda2 on / type ext4 (rw,relatime,errors=remount-ro,stripe=32)
+/dev/sda1 on /boot/efi type vfat 
+(rw,relatime,fmask=0077,dmask=0077,codepage=437,iocharset=iso8859-1,shortname=mixed,errors=remount-ro)
+
+Thanks,
+John
+
