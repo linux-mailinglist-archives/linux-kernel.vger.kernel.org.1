@@ -2,55 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B36722E005E
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:48:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E4EE2E0064
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:48:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727665AbgLUSrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 13:47:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51384 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726757AbgLUSrd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:47:33 -0500
-Subject: Re: [GIT PULL] 9p update for 5.11-rc1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608576413;
-        bh=GZp12ScXFCCTVwNhVTlEl9e0JeMtP67k7DWE6IGoEak=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=Qn8mRZeLPj0mrKPbw2BX+N/6FILbEFj/mrbv0i+jWLtcu2kxQ1feSsXiGjufVsnWw
-         gR9J17+eTUenLiotZatdPKyIVXuRuge01I84qkdSBunzOf25lcuPJBiCyV8/j7Uwk3
-         e79ilddNQvUY0ah7KUt2zAvnxpmkxuSpnIvYYZ2odgMo0RRQKktLwxMfN3Mj/PsB2y
-         vbG217ovQZqO4jWXcUXJgV2XKpKohVfk8kvdYSQTo55g72uIfXuBuKUg+owgh2LOt4
-         UodJhpirwXpOMCL3UWxVQILd9KNLvvOOyYuIEs3Vw2rqLasJbfdvwcdXYhrwR8oMrf
-         b8T6jJ8M0EasA==
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201221094828.GA6602@nautica>
-References: <20201221094828.GA6602@nautica>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201221094828.GA6602@nautica>
-X-PR-Tracked-Remote: https://github.com/martinetd/linux tags/9p-for-5.11-rc1
-X-PR-Tracked-Commit-Id: cfd1d0f524a87b7d6d14b41a14fa4cbe522cf8cc
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 70990afa34fbac03ade78e2ad0ccd418acecfc04
-Message-Id: <160857641312.14812.13290415369966565613.pr-tracker-bot@kernel.org>
-Date:   Mon, 21 Dec 2020 18:46:53 +0000
-To:     Dominique Martinet <asmadeus@codewreck.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, v9fs-developer@lists.sourceforge.net
+        id S1727698AbgLUSrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:47:53 -0500
+Received: from mail-oo1-f53.google.com ([209.85.161.53]:38575 "EHLO
+        mail-oo1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727055AbgLUSrv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 13:47:51 -0500
+Received: by mail-oo1-f53.google.com with SMTP id i18so2441935ooh.5;
+        Mon, 21 Dec 2020 10:47:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9c4Z1cR0okEDOva6ZJZicR2jBIUZ+5XrWMqkg7M3kpw=;
+        b=hz3KlOPy99wyUWikmU8eY5avjkr6YqZ/MHNscLb8qTxnR5ow5mZQfkEp1BQhK9yvDD
+         QkvcBmjUMi1/Yd+yP+tGSDbHIGoAnTFW27ANdXx3mMbDS9ZYatSOFtQGKbnrsmvjW+K2
+         /dT870LPVAWhfhuDQEsiobUPs5+cuxn+1DViJZMhGjbBolk5+UJmlN2bkikgU22OTGhZ
+         4K9O8X7+l0yzF5d0s+mv1Xmy5d8gKGrooib30gPj42QqB2s3Vqb8ObvT9oPrLazGUg+x
+         aZCAnyWBnwY7KWt/vbq6CexJOUSZeN0646BBLp5MDT+2HuZH9qiP+eqjr3MdTaMxJMLE
+         rNcw==
+X-Gm-Message-State: AOAM5319kvPhdn1bD84KFShpOD53RplkYw4wKjIF+sSAW9e6/6kPqGCf
+        fLMjmbf1FU3L+7hCdBfblQ==
+X-Google-Smtp-Source: ABdhPJxHtxtQavMpTMYOeQXfbwlNAzcd18hUq1nv29288DdMCrjnzy/vnMDlD21MGqurHNxrq5tuvg==
+X-Received: by 2002:a4a:8353:: with SMTP id q19mr7538448oog.40.1608576430556;
+        Mon, 21 Dec 2020 10:47:10 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id t72sm3697688oie.47.2020.12.21.10.47.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 10:47:09 -0800 (PST)
+Received: (nullmailer pid 344465 invoked by uid 1000);
+        Mon, 21 Dec 2020 18:47:07 -0000
+Date:   Mon, 21 Dec 2020 11:47:07 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        devicetree@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-kernel@vger.kernel.org, Sebastian Reichel <sre@kernel.org>,
+        Matheus Castello <matheus@castello.eng.br>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>,
+        Iskren Chernev <iskren.chernev@gmail.com>,
+        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Angus Ainslie <angus@akkea.ca>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-pm@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [RFC 17/18] mfd: max14577: Do not enforce (incorrect) interrupt
+ trigger type
+Message-ID: <20201221184707.GA344409@robh.at.kernel.org>
+References: <20201210212534.216197-1-krzk@kernel.org>
+ <20201210212534.216197-17-krzk@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201210212534.216197-17-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 21 Dec 2020 10:48:28 +0100:
+On Thu, 10 Dec 2020 22:25:33 +0100, Krzysztof Kozlowski wrote:
+> Interrupt line can be configured on different hardware in different way,
+> even inverted.  Therefore driver should not enforce specific trigger
+> type - edge falling - but instead rely on Devicetree to configure it.
+> 
+> The Maxim 14577/77836 datasheets describe the interrupt line as active
+> low with a requirement of acknowledge from the CPU therefore the edge
+> falling is not correct.
+> 
+> The interrupt line is shared between PMIC and charger driver, so using
+> level sensitive interrupt is here especially important to avoid races.
+> With an edge configuration in case if first PMIC signals interrupt
+> followed shortly after by the RTC, the interrupt might not be yet
+> cleared/acked thus the second one would not be noticed.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> 
+> ---
+> 
+> This patch should wait till DTS changes are merged, as it relies on
+> proper Devicetree.
+> ---
+>  Documentation/devicetree/bindings/mfd/max14577.txt | 4 ++--
+>  drivers/mfd/max14577.c                             | 6 +++---
+>  2 files changed, 5 insertions(+), 5 deletions(-)
+> 
 
-> https://github.com/martinetd/linux tags/9p-for-5.11-rc1
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/70990afa34fbac03ade78e2ad0ccd418acecfc04
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Acked-by: Rob Herring <robh@kernel.org>
