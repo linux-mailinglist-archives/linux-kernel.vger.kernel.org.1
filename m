@@ -2,183 +2,428 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B03BD2DFD9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 16:36:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C32FA2E0072
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:50:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725870AbgLUPf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 10:35:59 -0500
-Received: from mail2.protonmail.ch ([185.70.40.22]:49429 "EHLO
-        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725785AbgLUPf6 (ORCPT
+        id S1727266AbgLUSt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:49:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727220AbgLUSt5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 10:35:58 -0500
-Date:   Mon, 21 Dec 2020 15:35:07 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1608564914;
-        bh=QlvYjnjuTAtkMuwvMNdku+ZoqZhVDZ+Fm2DxZu8MGUs=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=xgYRsrC+ZlmB1pEaPNW9V9voN7GmhNjvXm2i9mFT+hH0CYvPqUsO3QemYdsPS7f+M
-         bB6pO64IRpZ/V8MuytTlKiGNknX8MnqpsGA54FYCK/ecBJuqTSo3wx71F/pmxtWm+j
-         ks55MUJs8MnwS8K72sCOwfaw3t/TzEMmgPgpfpsM=
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-From:   Timon Baetz <timon.baetz@protonmail.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Reply-To: Timon Baetz <timon.baetz@protonmail.com>
-Subject: Re: [PATCH v2 2/6] power: supply: max8997_charger: Set CHARGER current limit
-Message-ID: <20201221163455.2c3f095d.timon.baetz@protonmail.com>
-In-Reply-To: <20201221141627.GB33797@kozik-lap>
-References: <20201202203516.43053-1-timon.baetz@protonmail.com> <20201221095001.595366-1-timon.baetz@protonmail.com> <20201221095001.595366-2-timon.baetz@protonmail.com> <20201221141627.GB33797@kozik-lap>
+        Mon, 21 Dec 2020 13:49:57 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA50C0613D3;
+        Mon, 21 Dec 2020 10:49:16 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id a12so26122006lfl.6;
+        Mon, 21 Dec 2020 10:49:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=F2t+A6qu5O/ftcIcNCxbUDss9pwC6Y6gAl6Ea/8MQSI=;
+        b=IrWp1WrMJ/OWeHdJYdJFjoJiQm4NKhdCHN4idcNqTkPQEPTc4UzRYTIAqSt+x35so8
+         7Y1E9oQ/jL60iBOJkWvK7ojOkDvIPE6pK01jZKDczHNSc0pj1MrvILgFgYA64YSUm5xE
+         GRgiSxqb+fzVxx0v+2N3OXZHFbR+2lwVPDcz/47q9gnXYRoJJvhsFAg3S4TmcNIJQ6EG
+         84vie7Ek4n43Jm2zAnKp9KS7lYWJUyM9LSA7e9g16nyZhoC6ZShWGAcX1FW7Z6t/KTyV
+         fymGpbU2zyYCTHLLBSzkMiezWMqy++uA0cjSoj8qkZ0BduQFBSk70kjJxl23plbwwixO
+         /hpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=F2t+A6qu5O/ftcIcNCxbUDss9pwC6Y6gAl6Ea/8MQSI=;
+        b=q2cWnly68qvVrrSLbG/Wm1lMSUikCl8AVDCgUB3UwEcNMAcR0d4vBDlKymXQ6RP3Zv
+         C5NZyoW+eMj4cl1vgwbW0h2KfC02ebtwhY8VxGCrl2jB35VY+w4yCl+BaqHTM6AHlZTm
+         i9AAYOy6CnyqLiWfn6eFyBYyTUowD3wjO3quShZe4p86fK9aofB+FAdyi78Gd99rZD++
+         u4aoJ+ywzZ/5vWIBOXSc6HrJOWZ1Gohq50RQF4cuY+LMxDWqYdkXTENK4J0ngP40GM0X
+         5gqRG0klF/TW2rMgA5Cnw4YdlhgwUvstQg8/2ePGiGF+Uv61VYTRZKISq5CPbKNFYuSe
+         u8Pg==
+X-Gm-Message-State: AOAM531MbHbrodzLdpkJc6N+gKA7Xhel8vETTnSFQQiiajbO4Psj4hjX
+        6JwBuvwpeOF5aXTnPPR818ct7F82aOk=
+X-Google-Smtp-Source: ABdhPJyNHG0yc/f1GAURsq/z1rMvHgvKiQB1+p6a7uyPqqaKez0A9k/Cvoun/6LplZkrVIur1ooHig==
+X-Received: by 2002:a2e:8608:: with SMTP id a8mr7894776lji.89.1608565092406;
+        Mon, 21 Dec 2020 07:38:12 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id f15sm2135704lfc.10.2020.12.21.07.38.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 07:38:11 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Mon, 21 Dec 2020 16:38:09 +0100
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 2/2] rcu-tasks: add RCU-tasks self tests
+Message-ID: <20201221153809.GA24756@pc638.lan>
+References: <20201209202732.5896-1-urezki@gmail.com>
+ <20201209202732.5896-2-urezki@gmail.com>
+ <20201216154959.GA2408@pc638.lan>
+ <20201216232955.GO2657@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201216232955.GO2657@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Dec 2020 15:16:27 +0100, Krzysztof Kozlowski wrote:
-> On Mon, Dec 21, 2020 at 09:53:15AM +0000, Timon Baetz wrote:
-> > Register for extcon notification and set charging current depending on
-> > the detected cable type. Current values are taken from vendor kernel,
-> > where most charger types end up setting 650mA [0].
-> >
-> > Also enable and disable the CHARGER regulator based on extcon events.
-> >
-> > [0] https://github.com/krzk/linux-vendor-backup/blob/samsung/galaxy-s2-=
-epic-4g-touch-sph-d710-exynos4210-dump/drivers/misc/max8997-muic.c#L1675-L1=
-678
-> >
-> > Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
+On Wed, Dec 16, 2020 at 03:29:55PM -0800, Paul E. McKenney wrote:
+> On Wed, Dec 16, 2020 at 04:49:59PM +0100, Uladzislau Rezki wrote:
+> > > Add self tests for checking of RCU-tasks API functionality.
+> > > It covers:
+> > >     - wait API functions;
+> > >     - invoking/completion call_rcu_tasks*().
+> > > 
+> > > Self-tests are run when CONFIG_PROVE_RCU kernel parameter is set.
+> > > 
+> > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > ---
+> > >  kernel/rcu/tasks.h | 44 ++++++++++++++++++++++++++++++++++++++++++++
+> > >  1 file changed, 44 insertions(+)
+> > > 
+> > > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> > > index 67a162949763..9407772780c1 100644
+> > > --- a/kernel/rcu/tasks.h
+> > > +++ b/kernel/rcu/tasks.h
+> > > @@ -1225,6 +1225,16 @@ void show_rcu_tasks_gp_kthreads(void)
+> > >  }
+> > >  #endif /* #ifndef CONFIG_TINY_RCU */
+> > >  
+> > > +static struct rcu_head rhp;
+> > > +static int rcu_execurted_test_counter;
+> > > +static int rcu_run_test_counter;
+> > > +
+> > > +static void test_rcu_tasks_callback(struct rcu_head *r)
+> > > +{
+> > > +	pr_info("RCU-tasks test callback executed %d\n",
+> > > +		++rcu_execurted_test_counter);
+> > > +}
+> > > +
+> > >  void __init rcu_init_tasks_generic(void)
+> > >  {
+> > >  #ifdef CONFIG_TASKS_RCU
+> > > @@ -1238,7 +1248,41 @@ void __init rcu_init_tasks_generic(void)
+> > >  #ifdef CONFIG_TASKS_TRACE_RCU
+> > >  	rcu_spawn_tasks_trace_kthread();
+> > >  #endif
+> > > +
+> > > +	if (IS_ENABLED(CONFIG_PROVE_RCU)) {
+> > > +		pr_info("Running RCU-tasks wait API self tests\n");
+> > > +#ifdef CONFIG_TASKS_RCU
+> > > +		rcu_run_test_counter++;
+> > > +		call_rcu_tasks(&rhp, test_rcu_tasks_callback);
+> > > +		synchronize_rcu_tasks();
+> > > +#endif
+> > > +
+> > > +#ifdef CONFIG_TASKS_RUDE_RCU
+> > > +		rcu_run_test_counter++;
+> > > +		call_rcu_tasks_trace(&rhp, test_rcu_tasks_callback);
+> > > +		synchronize_rcu_tasks_rude();
+> > > +#endif
+> > > +
+> > > +#ifdef CONFIG_TASKS_TRACE_RCU
+> > > +		rcu_run_test_counter++;
+> > > +		call_rcu_tasks_trace(&rhp, test_rcu_tasks_callback);
+> > > +		synchronize_rcu_tasks_trace();
+> > > +#endif
+> > > +	}
+> > > +}
+> > > +
+> > > +static int rcu_tasks_verify_self_tests(void)
+> > > +{
+> > > +	int ret = 0;
+> > > +
+> > > +	if (rcu_run_test_counter != rcu_execurted_test_counter) {
+> > > +		WARN_ON(1);
+> > > +		ret = -1;
+> > > +	}
+> > > +
+> > > +	return ret;
+> > >  }
+> > > +late_initcall(rcu_tasks_verify_self_tests);
+> > >  
+> > >  #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
+> > >  static inline void rcu_tasks_bootup_oddness(void) {}
+> > Please find a v2 of the patch that is in question. First version
+> > uses the same rhp for all RCU flavors what is wrong. Initially
+> > i had three different one per one flavor. But for some reason
+> > end up with only one.
+> > 
+> > 
+> > >From e7c6096af5a7916f29c0b4b05e1644b3b3a6c589 Mon Sep 17 00:00:00 2001
+> > From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+> > Date: Wed, 9 Dec 2020 21:27:32 +0100
+> > Subject: [PATCH v2 1/1] rcu-tasks: Add RCU-tasks self tests
+> > 
+> > This commit adds self tests for early-boot use of RCU-tasks grace periods.
+> > It tests all three variants (Rude, Tasks, and Tasks Trace) and covers
+> > both synchronous (e.g., synchronize_rcu_tasks()) and asynchronous (e.g.,
+> > call_rcu_tasks()) grace-period APIs.
+> > 
+> > Self-tests are run only in kernels built with CONFIG_PROVE_RCU=y.
+> > 
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> 
+> Much improved, thank you!  A few more comments below.
+> 
 > > ---
-> >  drivers/mfd/max8997.c                  |  4 +-
-> >  drivers/power/supply/max8997_charger.c | 94 ++++++++++++++++++++++++++
-> >  2 files changed, 96 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/mfd/max8997.c b/drivers/mfd/max8997.c
-> > index 68d8f2b95287..55d3a6f97783 100644
-> > --- a/drivers/mfd/max8997.c
-> > +++ b/drivers/mfd/max8997.c
-> > @@ -29,9 +29,9 @@
-> >  static const struct mfd_cell max8997_devs[] =3D {
-> >  =09{ .name =3D "max8997-pmic", },
-> >  =09{ .name =3D "max8997-rtc", },
-> > -=09{ .name =3D "max8997-battery", },
-> > +=09{ .name =3D "max8997-battery", .of_compatible =3D "maxim,max8997-ba=
-ttery", },
-> >  =09{ .name =3D "max8997-haptic", },
-> > -=09{ .name =3D "max8997-muic", },
-> > +=09{ .name =3D "max8997-muic", .of_compatible =3D "maxim,max8997-muic"=
-, }, =20
->=20
-> Undocumented bindings. The checkpatch should complain about it, so I
-> assume you did not run it. Please run the checkpatch.
->=20
-> >  =09{ .name =3D "max8997-led", .id =3D 1 },
-> >  =09{ .name =3D "max8997-led", .id =3D 2 },
-> >  };
-> > diff --git a/drivers/power/supply/max8997_charger.c b/drivers/power/sup=
-ply/max8997_charger.c
-> > index 1947af25879a..6e8750e455ea 100644
-> > --- a/drivers/power/supply/max8997_charger.c
-> > +++ b/drivers/power/supply/max8997_charger.c
-> > @@ -6,12 +6,14 @@
-> >  //  MyungJoo Ham <myungjoo.ham@samsung.com>
-> >
-> >  #include <linux/err.h>
-> > +#include <linux/extcon.h>
-> >  #include <linux/module.h>
-> >  #include <linux/slab.h>
-> >  #include <linux/platform_device.h>
-> >  #include <linux/power_supply.h>
-> >  #include <linux/mfd/max8997.h>
-> >  #include <linux/mfd/max8997-private.h>
-> > +#include <linux/regulator/consumer.h>
-> >
-> >  /* MAX8997_REG_STATUS4 */
-> >  #define DCINOK_SHIFT=09=091
-> > @@ -31,6 +33,10 @@ struct charger_data {
-> >  =09struct device *dev;
-> >  =09struct max8997_dev *iodev;
-> >  =09struct power_supply *battery;
-> > +=09struct regulator *reg;
-> > +=09struct extcon_dev *edev;
-> > +=09struct notifier_block extcon_nb;
-> > +=09struct work_struct extcon_work;
-> >  };
-> >
-> >  static enum power_supply_property max8997_battery_props[] =3D {
-> > @@ -88,6 +94,67 @@ static int max8997_battery_get_property(struct power=
-_supply *psy,
-> >  =09return 0;
+> >  kernel/rcu/tasks.h | 69 ++++++++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 69 insertions(+)
+> > 
+> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> > index 36607551f966..7478d912734a 100644
+> > --- a/kernel/rcu/tasks.h
+> > +++ b/kernel/rcu/tasks.h
+> > @@ -1224,6 +1224,35 @@ void show_rcu_tasks_gp_kthreads(void)
 > >  }
-> >
-> > +static void max8997_battery_extcon_evt_stop_work(void *data)
-> > +{
-> > +=09struct charger_data *charger =3D data;
+> >  #endif /* #ifndef CONFIG_TINY_RCU */
+> > 
+> > +struct test_desc {
+> 
+> Please use something like "struct rcu_tasks_test_desc" to help the poor
+> people who might need to grep for this.  Feel free to shorten it, but
+> please make it descriptive and thus more likely to stay unique.
+> 
+> > +       struct rcu_head rh;
+> > +       const char *name;
+> > +       bool run;
+> 
+> If you make this "bool notrun" you don't need to initialize.
+> 
+> > +};
 > > +
-> > +=09cancel_work_sync(&charger->extcon_work);
+> > +static struct test_desc tests[] = {
+> > +       { .name = "call_rcu_tasks()" },
+> > +       { .name = "call_rcu_rude()"  },
+> > +       { .name = "call_rcu_trace()" },
+> > +};
+> > +
+> > +static int rcu_executed_test_counter;
+> > +
+> > +static void test_rcu_tasks_callback(struct rcu_head *rhp)
+> > +{
+> 
+> 	struct rcu_tasks_test_desc *rttdp;
+> 
+> > +       int i;
+> > +
+> > +       pr_info("RCU-tasks test callback executed %d\n",
+> > +               ++rcu_executed_test_counter);
+> 
+> 	rttdp = container_of(rhp, rh, struct rcu_tasks_test_desc);
+> 	rttdp->notrun = true;
+> 
+> Or I suppose:
+> 
+> 	container_of(rhp, rh, struct rcu_tasks_test_desc)->notrun = true;
+> 
+> Then the loop below can go away.
+> 
+> > +
+> > +       for (i = 0; i < ARRAY_SIZE(tests); i++) {
+> > +               if (rhp == &tests[i].rh) {
+> > +                       tests[i].run = false;
+> > +                       break;
+> > +               }
+> > +       }
 > > +}
 > > +
-> > +static void max8997_battery_extcon_evt_worker(struct work_struct *work=
-)
+> >  void __init rcu_init_tasks_generic(void)
+> >  {
+> >  #ifdef CONFIG_TASKS_RCU
+> > @@ -1237,7 +1266,47 @@ void __init rcu_init_tasks_generic(void)
+> >  #ifdef CONFIG_TASKS_TRACE_RCU
+> >         rcu_spawn_tasks_trace_kthread();
+> >  #endif
+> > +
+> > +       // Run the self-tests.
+> > +       if (IS_ENABLED(CONFIG_PROVE_RCU)) {
+> > +               pr_info("Running RCU-tasks wait API self tests\n");
+> > +#ifdef CONFIG_TASKS_RCU
+> > +               tests[0].run = true;
+> 
+> The s/run/notrun/ allows the three initializations of .run to go away.
+> 
+> > +               call_rcu_tasks(&tests[0].rh, test_rcu_tasks_callback);
+> > +               synchronize_rcu_tasks();
+> 
+> Why not reverse the order of these two statements?  That would test
+> call_rcu_tasks*()'s ability to do a grace period on their own, without
+> help from the corresponding synchronize_rcu_tasks*().
+> 
+> > +#endif
+> > +
+> > +#ifdef CONFIG_TASKS_RUDE_RCU
+> > +               tests[1].run = true;
+> > +               call_rcu_tasks_rude(&tests[1].rh, test_rcu_tasks_callback);
+> > +               synchronize_rcu_tasks_rude();
+> > +#endif
+> > +
+> > +#ifdef CONFIG_TASKS_TRACE_RCU
+> > +               tests[2].run = true;
+> > +               call_rcu_tasks_trace(&tests[2].rh, test_rcu_tasks_callback);
+> > +               synchronize_rcu_tasks_trace();
+> > +#endif
+> > +       }
+> > +}
+> > +
+> > +static int rcu_tasks_verify_self_tests(void)
 > > +{
-> > +=09struct charger_data *charger =3D
-> > +=09    container_of(work, struct charger_data, extcon_work);
-> > +=09struct extcon_dev *edev =3D charger->edev;
-> > +=09int current_limit, ret;
+> > +       int ret, i;
+> 
+> Why not initialize "ret" in the declaration?
+> 
 > > +
-> > +=09if (extcon_get_state(edev, EXTCON_CHG_USB_SDP) > 0) {
-> > +=09=09dev_dbg(charger->dev, "USB SDP charger is connected\n");
-> > +=09=09current_limit =3D 450000;
-> > +=09} else if (extcon_get_state(edev, EXTCON_CHG_USB_DCP) > 0) {
-> > +=09=09dev_dbg(charger->dev, "USB DCP charger is connected\n");
-> > +=09=09current_limit =3D 650000;
-> > +=09} else if (extcon_get_state(edev, EXTCON_CHG_USB_FAST) > 0) {
-> > +=09=09dev_dbg(charger->dev, "USB FAST charger is connected\n");
-> > +=09=09current_limit =3D 650000;
-> > +=09} else if (extcon_get_state(edev, EXTCON_CHG_USB_SLOW) > 0) {
-> > +=09=09dev_dbg(charger->dev, "USB SLOW charger is connected\n");
-> > +=09=09current_limit =3D 650000;
-> > +=09} else if (extcon_get_state(edev, EXTCON_CHG_USB_CDP) > 0) {
-> > +=09=09dev_dbg(charger->dev, "USB CDP charger is connected\n");
-> > +=09=09current_limit =3D 650000;
-> > +=09} else {
-> > +=09=09dev_dbg(charger->dev, "USB charger is diconnected\n");
-> > +=09=09current_limit =3D -1;
-> > +=09}
+> > +       for (i = 0, ret = 0; i < ARRAY_SIZE(tests); i++) {
+> > +               if (tests[i].run) {             // still hanging.
+> > +                       pr_err("%s has been failed.\n", tests[i].name);
+> > +                       ret = -1;
+> > +               }
+> > +       }
 > > +
-> > +=09if (current_limit > 0) {
-> > +=09=09ret =3D regulator_set_current_limit(charger->reg, current_limit,=
- current_limit);
-> > +=09=09if (ret) {
-> > +=09=09=09dev_err(charger->dev, "failed to set current limit: %d\n", re=
-t);
-> > +=09=09=09goto regulator_disable; =20
->=20
-> Unusual error path... if regulator was not enabled before and
-> regulator_set_current_limit() failed, you disable the regulator? Why?
-> Wasn't it already disabled?
+> > +       if (ret)
+> > +               WARN_ON(1);
+> > +
+> > +       return ret;
+> >  }
+> > +late_initcall(rcu_tasks_verify_self_tests);
+> > 
+> >  #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
+> >  static inline void rcu_tasks_bootup_oddness(void) {}
+> > -- 
+> > 2.20.1
+> 
+> Again, much improved!
+> 
+See below the v3 version. I hope i fixed all comments :)
 
-Because I thought you asked me to in v1 of this patch:
-> Failure of setting the current should rather disable the charging.
+From 06f7adfd84cbb1994d0e2693ee9dcdfd272a9bd0 Mon Sep 17 00:00:00 2001
+From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Date: Wed, 9 Dec 2020 21:27:32 +0100
+Subject: [PATCH v3 1/1] rcu-tasks: Add RCU-tasks self tests
 
-I probably misunderstood you comment then. So I guess it should just
-return?
+This commit adds self tests for early-boot use of RCU-tasks grace periods.
+It tests all three variants (Rude, Tasks, and Tasks Trace) and covers
+both synchronous (e.g., synchronize_rcu_tasks()) and asynchronous (e.g.,
+call_rcu_tasks()) grace-period APIs.
 
-Thanks for reviewing,
-Timon
+Self-tests are run only in kernels built with CONFIG_PROVE_RCU=y.
 
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+---
+ kernel/rcu/tasks.h | 75 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 75 insertions(+)
+
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 36607551f966..670212ed9648 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -1224,6 +1224,43 @@ void show_rcu_tasks_gp_kthreads(void)
+ }
+ #endif /* #ifndef CONFIG_TINY_RCU */
+ 
++struct rcu_tasks_test_desc {
++	struct rcu_head rh;
++	const char *name;
++	bool notrun;
++};
++
++static struct rcu_tasks_test_desc tests[] = {
++	{
++		.name = "call_rcu_tasks()",
++		/* If not defined, the test is skipped. */
++		.notrun = !IS_ENABLED(CONFIG_TASKS_RCU),
++	},
++	{
++		.name = "call_rcu_tasks_rude()",
++		/* If not defined, the test is skipped. */
++		.notrun = !IS_ENABLED(CONFIG_TASKS_RUDE_RCU),
++	},
++	{
++		.name = "call_rcu_tasks_trace()",
++		/* If not defined, the test is skipped. */
++		.notrun = !IS_ENABLED(CONFIG_TASKS_TRACE_RCU)
++	}
++};
++
++static int rcu_executed_test_counter;
++
++static void test_rcu_tasks_callback(struct rcu_head *rhp)
++{
++	struct rcu_tasks_test_desc *rttd =
++		container_of(rhp, struct rcu_tasks_test_desc, rh);
++
++	pr_info("RCU-tasks test callback executed %d\n",
++		++rcu_executed_test_counter);
++
++	rttd->notrun = true;
++}
++
+ void __init rcu_init_tasks_generic(void)
+ {
+ #ifdef CONFIG_TASKS_RCU
+@@ -1237,7 +1274,45 @@ void __init rcu_init_tasks_generic(void)
+ #ifdef CONFIG_TASKS_TRACE_RCU
+ 	rcu_spawn_tasks_trace_kthread();
+ #endif
++
++	// Run the self-tests.
++	if (IS_ENABLED(CONFIG_PROVE_RCU)) {
++		pr_info("Running RCU-tasks wait API self tests\n");
++#ifdef CONFIG_TASKS_RCU
++		synchronize_rcu_tasks();
++		call_rcu_tasks(&tests[0].rh, test_rcu_tasks_callback);
++#endif
++
++#ifdef CONFIG_TASKS_RUDE_RCU
++		synchronize_rcu_tasks_rude();
++		call_rcu_tasks_rude(&tests[1].rh, test_rcu_tasks_callback);
++#endif
++
++#ifdef CONFIG_TASKS_TRACE_RCU
++		synchronize_rcu_tasks_trace();
++		call_rcu_tasks_trace(&tests[2].rh, test_rcu_tasks_callback);
++#endif
++	}
++}
++
++static int rcu_tasks_verify_self_tests(void)
++{
++	int ret = 0;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(tests); i++) {
++		if (!tests[i].notrun) {		// still hanging.
++			pr_err("%s has been failed.\n", tests[i].name);
++			ret = -1;
++		}
++	}
++
++	if (ret)
++		WARN_ON(1);
++
++	return ret;
+ }
++late_initcall(rcu_tasks_verify_self_tests);
+ 
+ #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
+ static inline void rcu_tasks_bootup_oddness(void) {}
+-- 
+2.20.1
+
+--
+Vlad Rezki
