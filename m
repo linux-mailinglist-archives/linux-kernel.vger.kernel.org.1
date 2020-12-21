@@ -2,97 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D084B2E0178
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 21:18:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF782E017B
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 21:22:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725953AbgLUUSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 15:18:21 -0500
-Received: from mail-oo1-f47.google.com ([209.85.161.47]:36737 "EHLO
-        mail-oo1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgLUUSV (ORCPT
+        id S1726025AbgLUUVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 15:21:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725825AbgLUUVw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 15:18:21 -0500
-Received: by mail-oo1-f47.google.com with SMTP id j8so2495436oon.3;
-        Mon, 21 Dec 2020 12:18:05 -0800 (PST)
+        Mon, 21 Dec 2020 15:21:52 -0500
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C495EC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 12:21:11 -0800 (PST)
+Received: by mail-il1-x12c.google.com with SMTP id r17so9984591ilo.11
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 12:21:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=39yturDQFY/cvVTZmJmushizui4zmBufjTYAX1ZRVr4=;
+        b=AsNW8sxxEEVT9w5tme1yJxKp9Dl95DhTmg+u63fBnsSTtdk9NJRMhf4ZW9FyvNXDNF
+         c6zk+d9yjb29quTJe78WAH/vR4vrgewSuHtG6UVuM2bTAO57IcV7hqwAw/WelEzPTK9p
+         EWrI8JVYWH33S5IpvS72BL7JfexOp1pLjHVso/vJQVec9ExiDjskynoTD2sxPPTryjh+
+         ht+NtbaQNP7/qs2QmR0PEysPS/FtEEJnqhFm+GxGLmVXSe07QP9WEzIP4B8YKgW/lhP/
+         srzgWHOhT/1PLIvn1fnLAmkNaa66fIVZtMM8TNOrWynt2AN+6uKiySazdlRptjObqMCh
+         nXCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=1VBFeKX6QPZo7kjxsbDjx2WtBpAZOKJDM3ozSLJzv0s=;
-        b=pQHnRIXV6dvwlOgkyrnxgcF8G+ObBUweJHHxORo9Tmq7SH/FJcLV751vvBE8J0emfh
-         LXprtrto9VbI0/+jNkbfFH61EqogUPU8fgUKivJbKDbSvNJPYNLkYY/ViT8koPjntVtr
-         0yFGj2xhanha5KN71/EEJEDbmlLq9jeEiNS4c9A7oWBk/rXZNjz+0LF/QlFypJX12nZb
-         bBKdCL6y/G8+WSY/PPAX5oJ40EuND58zRANBhIIJmDQGMQakK9xUskJEXoUehFNnveiq
-         ijiSrPch1x+dqEbJIwMVC6drzW6iDHWbrKpVLqUFFBIjQVeoEI1lnxPl1SQCKt8UtQbG
-         LtUg==
-X-Gm-Message-State: AOAM533JkAKMrkP+hO/Hyw/tYHPiFqhUBj1ebaTxZ9BExedKZqkk6g1a
-        IVmtgFDBtup1nGSewr+erPd+eisGpw==
-X-Google-Smtp-Source: ABdhPJxcog/s6WXnkBAxv6eoEp3z29bPS/QlHG7BeEqmJYYAu1XICPb6cln5rhvlgdNefbmgh+yBqA==
-X-Received: by 2002:a4a:9873:: with SMTP id z48mr12747207ooi.44.1608581860043;
-        Mon, 21 Dec 2020 12:17:40 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id o21sm4025126otj.1.2020.12.21.12.17.37
+        bh=39yturDQFY/cvVTZmJmushizui4zmBufjTYAX1ZRVr4=;
+        b=KyKd9tUMHNnoZbR7jy25xEppiuYQmMs7cz7KV0WaG9sQ9QMHW7co+ev2VNIjQnesxz
+         LGjEEM4Za/m4Tes6axhTO5w6MDGLmkPCJkb968IZwGwsu9JqZhIOYUzzoMp8Gybalb2D
+         4HV2VTJbkIF1LIXuJcZQlrB/nzot+QpfLU1np1ShOZGMV1BdAtSlRpe496R6zuLMMzQf
+         FyGN4YP4uXMG0BcwDoOiAQ6R/n+wHLvwUpWIjJZr9M5IDIeX0Zqplfh6IZH8Ywa2ioXh
+         gx+EXNCKQBMBmU7J/xBjZQTUqiRmaR5zexH/ytNoJ0kpFaXFt69nZCvGzySyB1isc/xM
+         E+BQ==
+X-Gm-Message-State: AOAM532HyG7gP2RJ8OwrxSkuyPuOLuEO4gnppKlgLJb/Wh3vttiP53el
+        MsLgyKgcPTqypmxxTrf9uV/xnA==
+X-Google-Smtp-Source: ABdhPJxcCE/izSGRkZZ/8WMAn5Fu6c2zGo1sMI3bumbFrTE9aeKshhtCCKIglCHfJBwjFsrgImvP1w==
+X-Received: by 2002:a92:c26c:: with SMTP id h12mr17219261ild.165.1608582070907;
+        Mon, 21 Dec 2020 12:21:10 -0800 (PST)
+Received: from google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
+        by smtp.gmail.com with ESMTPSA id m7sm21272065iow.46.2020.12.21.12.21.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 12:17:38 -0800 (PST)
-Received: (nullmailer pid 483803 invoked by uid 1000);
-        Mon, 21 Dec 2020 20:17:37 -0000
-Date:   Mon, 21 Dec 2020 13:17:37 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Jim Quinlan <jim2101024@gmail.com>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 1/2] dt-bindings: arm: Add optional interrupt to
- smc/hvc SCMI transport
-Message-ID: <20201221201737.GA481116@robh.at.kernel.org>
-References: <20201216205805.4221-1-james.quinlan@broadcom.com>
- <20201216205805.4221-2-james.quinlan@broadcom.com>
+        Mon, 21 Dec 2020 12:21:10 -0800 (PST)
+Date:   Mon, 21 Dec 2020 13:21:06 -0700
+From:   Yu Zhao <yuzhao@google.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nadav Amit <nadav.amit@gmail.com>
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+Message-ID: <X+EDslLVp9yRRru6@google.com>
+References: <20201219043006.2206347-1-namit@vmware.com>
+ <X95RRZ3hkebEmmaj@redhat.com>
+ <EDC00345-B46E-4396-8379-98E943723809@gmail.com>
+ <X97pprdcRXusLGnq@google.com>
+ <DDA15360-D6D4-46A8-95A4-5EE34107A407@gmail.com>
+ <20201221172711.GE6640@xz-x1>
+ <76B4F49B-ED61-47EA-9BE4-7F17A26B610D@gmail.com>
+ <X+D0hTZCrWS3P5Pi@google.com>
+ <CAHk-=wg_UBuo7ro1fpEGkMyFKA1+PxrE85f9J_AhUfr-nJPpLQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201216205805.4221-2-james.quinlan@broadcom.com>
+In-Reply-To: <CAHk-=wg_UBuo7ro1fpEGkMyFKA1+PxrE85f9J_AhUfr-nJPpLQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 03:58:01PM -0500, Jim Quinlan wrote:
-> In normal use of smc/hvc transport in SCMI the message completion is
-> indicated by the return of the SMC call.  This commit provides for an
-> optional interrupt named "message-serviced" which is used instead to
-
-s/message-serviced/a2p/
-
-> indicate the completion of a message.
+On Mon, Dec 21, 2020 at 11:55:02AM -0800, Linus Torvalds wrote:
+> On Mon, Dec 21, 2020 at 11:16 AM Yu Zhao <yuzhao@google.com> wrote:
+> >
+> > Nadav Amit found memory corruptions when running userfaultfd test above.
+> > It seems to me the problem is related to commit 09854ba94c6a ("mm:
+> > do_wp_page() simplification"). Can you please take a look? Thanks.
+> >
+> > TL;DR: it may not safe to make copies of singly mapped (non-COW) pages
+> > when it's locked or has additional ref count because concurrent
+> > clear_soft_dirty or change_pte_range may have removed pte_write but yet
+> > to flush tlb.
 > 
-> Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
+> Hmm. The TLB flush shouldn't actually matter, because anything that
+> changes the writable bit had better be serialized by the page table
+> lock.
 
-checkpatch.pl reports your author and Sob emails don't match.
+Well, unfortunately we have places that use optimizations like
 
-> ---
->  Documentation/devicetree/bindings/arm/arm,scmi.txt | 8 ++++++++
->  1 file changed, 8 insertions(+)
+  inc_tlb_flush_pending()
+    lock page table
+      pte_wrprotect
+  flush_tlb_range()
+  dec_tlb_flush_pending()
+
+which complicate things. And usually checking mm_tlb_flush_pending()
+in addition to pte_write() (while holding page table lock) would fix
+the similar problems. But for this one, doing so apparently isn't as
+straightforward or the best solution.
+
+> Yes, we often load the page table value without holding the page table
+> lock (in order to know what we are going to do), but then before we
+> finalize the operation, we then re-check - undet the page table lock -
+> that the value we loaded still matches.
 > 
-> diff --git a/Documentation/devicetree/bindings/arm/arm,scmi.txt b/Documentation/devicetree/bindings/arm/arm,scmi.txt
-> index b5ce5b39bb9c..667d58e0a659 100644
-> --- a/Documentation/devicetree/bindings/arm/arm,scmi.txt
-> +++ b/Documentation/devicetree/bindings/arm/arm,scmi.txt
-> @@ -31,6 +31,14 @@ Optional properties:
->  
->  - mbox-names: shall be "tx" or "rx" depending on mboxes entries.
->  
-> +- interrupts : when using smc or hvc transports, this optional
-> +	 property indicates that msg completion by the platform is indicated
-> +	 by an interrupt rather than by the return of the smc call. This
-> +	 should not be used except when the platform requires such behavior.
-> +
-> +- interrupt-names : if "interrupts" is present, interrupt-names must also
-> +	 be present and have the value "a2p".
-> +
->  See Documentation/devicetree/bindings/mailbox/mailbox.txt for more details
->  about the generic mailbox controller and client driver bindings.
->  
-> -- 
-> 2.17.1
+> But I think I see what *MAY* be going on.  The userfaultfd
+> mwriteprotect_range() code takes the mm lock for _reading_. Which
+> means that you can have
 > 
+> Thread A     Thread B
+> 
+>  - fault starts. Sees write-protected pte, allocates memory, copies data
+> 
+>                    - userfaultfd makes the regions writable
+> 
+>                    - usefaultfd case writes to the region
+> 
+>                    - userfaultfd makes region non-writable
+> 
+>  - fault continues, gets the page table lock, sees that the pte is the
+> same, uses old copied data
+> 
+> But if this is what's happening, I think it's a userfaultfd bug. I
+> think the mmap_read_lock(dst_mm) in mwriteprotect_range() needs to be
+> a mmap_write_lock().
+> 
+> mprotect() does this right, it looks like userfaultfd does not. You
+> cannot just change the writability of a page willy-nilly without the
+> correct locking.
+> 
+> Maybe there are other causes, but this one stands out to me as one
+> possible cause.
+> 
+> Comments?
+> 
+>               Linus
