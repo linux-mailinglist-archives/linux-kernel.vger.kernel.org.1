@@ -2,126 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F8872E02A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 23:52:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D88912E02A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 23:54:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726146AbgLUWvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 17:51:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725833AbgLUWvu (ORCPT
+        id S1726173AbgLUWw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 17:52:27 -0500
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:40875 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725780AbgLUWw1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 17:51:50 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB9CC0613D6;
-        Mon, 21 Dec 2020 14:51:10 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4D0F7R5FLFz9sWH;
-        Tue, 22 Dec 2020 09:50:58 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1608591066;
-        bh=6xPzRAQXdDApEOJWr3T6xV88/sXEE5EXW2eSYvyhSr4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=JJJGmdgorOPNL+N3HDq5TKD1NbH1HbEO9MN0N9QUzx1fn3AEz17VlmkVXQRrE2Rpz
-         hZ0ABjYX53atoYqKeCas/6n3Wwp2tA+xFSciL9RDu6BzGEFAkvN9tVkH9pKMBjO1H0
-         z++F+FgUdeUvI8m4cKW95+5I7GNspUfH/PVY77EjT1YDZnPO4zkMGnT9PFUT3nkJQ0
-         pBmTK04mQ1RsnluFOWCklmv7ivFTGW9emJLLblT928sql/vIssXvK04kDCFeklZ41R
-         vFAvNDLJzUjZjLYSyBSBs7t3bBYCcoUSrE6TRxs+cD4oqVpdS1bShJ5WXcURPdxrDU
-         /Zd8OHWBiJTwA==
-Date:   Tue, 22 Dec 2020 09:50:56 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alasdair G Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
-        Jens Axboe <axboe@kernel.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the device-mapper tree with Linus' tree
-Message-ID: <20201222095056.7a5ac0a0@canb.auug.org.au>
+        Mon, 21 Dec 2020 17:52:27 -0500
+Received: by mail-ot1-f49.google.com with SMTP id j12so10280484ota.7;
+        Mon, 21 Dec 2020 14:52:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xGMhjs6ip+VhnoHGisVBlYY5haZY44B4LgsaGJIElNA=;
+        b=XTh3Xm+PO2QrF7etPF6zDag4i+AFVWgMrK5f1MK/flO0z0KHFr3lT4DGUbl86vsa1f
+         OpdAi0wZf+wd704rMd2waorkxyhb9rCs8qmXsrxbQTjcHNrkqdOC3vlwZgu/NcbLTBDG
+         rPXoQfFbLWy0ObqJpNnUwYWSpikx+AyLAc4igrwi6HXs4P2+LyjngyP2zo2+/tkRDIBH
+         7pA07QyVkhXzgBwVJjW1J7AKIeNVI4I2XZqf7XHYYZDJ8einiEzFC/dGm6sJc91KsLbX
+         2MBuw4jL8mSZq3B62SVyo7bN4xaG/sYV0aLoiVf68VDON1u+uuf+yLJTtmBpiCLoZAiF
+         AFHA==
+X-Gm-Message-State: AOAM533yHFiC4cYOIzpF59A7PovnL9MbRON+jnqaBDCukZb3LyfOwQ2c
+        wAO4QNhAc2aNqBOBgtbJJxLBsFMC0w==
+X-Google-Smtp-Source: ABdhPJyEneAcqgapuClLy3QG+WNloZI+QjG5a9eKSxP6BzvpzXcDR/RnINhSm96dHxDrcRZGlePjkA==
+X-Received: by 2002:a05:6830:1d71:: with SMTP id l17mr13816820oti.269.1608591106625;
+        Mon, 21 Dec 2020 14:51:46 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id w138sm3856739oie.44.2020.12.21.14.51.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 14:51:45 -0800 (PST)
+Received: (nullmailer pid 720870 invoked by uid 1000);
+        Mon, 21 Dec 2020 22:51:42 -0000
+Date:   Mon, 21 Dec 2020 15:51:42 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        aford@beaconembedded.com,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH] ASoC: wm8962: Add optional mclk device tree binding
+Message-ID: <20201221225142.GA720812@robh.at.kernel.org>
+References: <20201217162740.1452000-1-aford173@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/1hjKq4_sqX5jOYA24bkoski";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201217162740.1452000-1-aford173@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/1hjKq4_sqX5jOYA24bkoski
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, 17 Dec 2020 10:27:40 -0600, Adam Ford wrote:
+> The driver can request an optional clock for mclk.
+> Update the txt file to reflect this.
+> 
+> Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> 
 
-Hi all,
-
-Today's linux-next merge of the device-mapper tree got a conflict in:
-
-  drivers/md/dm-table.c
-
-between commit:
-
-  4e7b5671c6a8 ("block: remove i_bdev")
-
-from Linus' tree and commit:
-
-  05a876e9a2a8 ("dm table: avoid filesystem lookup in dm_get_dev_t()")
-
-from the device-mapper tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/md/dm-table.c
-index 188f41287f18,299a256fb409..000000000000
---- a/drivers/md/dm-table.c
-+++ b/drivers/md/dm-table.c
-@@@ -347,9 -347,22 +347,15 @@@ static int upgrade_mode(struct dm_dev_i
-  dev_t dm_get_dev_t(const char *path)
-  {
-  	dev_t dev;
- -	struct block_device *bdev;
-+ 	unsigned int maj, min;
- =20
-+ 	if (sscanf(path, "%u:%u", &maj, &min) =3D=3D 2) {
-+ 		dev =3D MKDEV(maj, min);
-+ 		if (maj =3D=3D MAJOR(dev) && min =3D=3D MINOR(dev))
-+ 			return dev;
-+ 	}
- -	bdev =3D lookup_bdev(path);
- -	if (IS_ERR(bdev))
- +	if (lookup_bdev(path, &dev))
-  		dev =3D name_to_dev_t(path);
- -	else {
- -		dev =3D bdev->bd_dev;
- -		bdput(bdev);
- -	}
- -
-  	return dev;
-  }
-  EXPORT_SYMBOL_GPL(dm_get_dev_t);
-
---Sig_/1hjKq4_sqX5jOYA24bkoski
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/hJtAACgkQAVBC80lX
-0GzmUwf/e9aBL8Ro43OYacVWsrwjwnkPbUnJjVUypj52UU+F9PdTQcVjl+WcU4Nn
-fdBzTcQ0/C94lKIbqfZ2kF/Uz7ENsOF6VQct4Bwjp5ESLBknvPg3QhVTZ0SgBZ5l
-3mDsDcr2RmRwENXeveAET33AEmxnhVEPBZUr7PF+Xodqurxo+xxN+sWfQqTasDiP
-Wz+Qr5SuF7q21iZsj0x5v1VcugkIzKZHiBUH6ASHuZKmnhoGs/fvwBsyidxHq2pT
-HntCZOPVJeO7NWHcJFM5E/Og/aywsNmDJkq8xushyBWF8RKEWFLY+a2ZG6aI1NR/
-WQdmaNm+bZaSmBoAQx2bUdc7kGrCBw==
-=bvMi
------END PGP SIGNATURE-----
-
---Sig_/1hjKq4_sqX5jOYA24bkoski--
+Acked-by: Rob Herring <robh@kernel.org>
