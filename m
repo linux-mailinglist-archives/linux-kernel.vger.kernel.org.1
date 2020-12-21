@@ -2,189 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE252E029D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 23:48:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F8872E02A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 23:52:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726112AbgLUWrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 17:47:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36150 "EHLO
+        id S1726146AbgLUWvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 17:51:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgLUWrV (ORCPT
+        with ESMTP id S1725833AbgLUWvu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 17:47:21 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 518D3C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 14:46:41 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id m12so27499768lfo.7
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 14:46:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/AfJEBowGBxkRxnhlgm7nBxEgLEWRyN9OfwXe/9fsqg=;
-        b=fSqzTZQR7v+u7E0vrT63yT2Uu6EXrJkep0j3q3iTpEF/SORenchmn8wZQ2piH6XJFE
-         +DxRUN5ycoozdYXA7q58X6YdpYMlPJ/yQLpHw18SedCpwGVJayAdmjWrLcfu2RCTQBNA
-         nTwC/kmbZYoyoO3JnvUfer+IvcXzPNfcNVpwjLRh2Jskq35VroqKlM8cJG7GA9diiLfm
-         gAFh4Cl5nRGAoHwmpTDr5fLFzt8KqaW74SL6s8CdWiZk2Tqqn/XJg9DT13ClzZll+8Zl
-         ANtyM64orMq4KddP+We1MWIvwZ0wDC7ICgw9OwI8j4ypYjU+RbWu0eGDDPMby4Gk8XaM
-         rc2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/AfJEBowGBxkRxnhlgm7nBxEgLEWRyN9OfwXe/9fsqg=;
-        b=ZIoyo7i+8SVcdVXSqqI7mRtYkZnWCiRg5W5pPgk6zMmhx9oNyvEaIxRq8BUPtAxR04
-         8f168usKvnUSQ6zgk+jxkqWOuGitESxlvQgI/aK3hOvoBq3iqNqkQIYUurBZgJ5SPyQA
-         bhjT0VVNZEgITlzTkDFjEoZgZ4/eSFAU7yBNaHqwHDhVwBARDFACXI7lr2FcKUOXslHK
-         x1v0QRFwifrXB4Vwev3oA9ccsZv8sM7cYnCVKMdmQ8XsBLob6W1JEXIX+Yf9Yk/lXbF6
-         PpblfdF6ckCB8FZ4aBPddWfb038e2h/JTzsFdJg8+SA3r+q5xdRrccDfPHG4eX4BVxfE
-         ndkQ==
-X-Gm-Message-State: AOAM53064G3B9zjlK0HeHPlWOvfeiqhYAg/QmnoONz9wZo5bS4AjY0e8
-        A9ua2CzdZLdJxtSN0argxYttMMSwi00nNXOnsao0Jg==
-X-Google-Smtp-Source: ABdhPJxslHGZHNL6K3MgA1b/ZHjKA5S69wU62qy3fUKVAYHBIwuW6YdDMPZqQ6G9LnJ83GHZdt9gtbUYZmJLeij83yc=
-X-Received: by 2002:a05:651c:234:: with SMTP id z20mr8044530ljn.456.1608590799507;
- Mon, 21 Dec 2020 14:46:39 -0800 (PST)
+        Mon, 21 Dec 2020 17:51:50 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB9CC0613D6;
+        Mon, 21 Dec 2020 14:51:10 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4D0F7R5FLFz9sWH;
+        Tue, 22 Dec 2020 09:50:58 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1608591066;
+        bh=6xPzRAQXdDApEOJWr3T6xV88/sXEE5EXW2eSYvyhSr4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=JJJGmdgorOPNL+N3HDq5TKD1NbH1HbEO9MN0N9QUzx1fn3AEz17VlmkVXQRrE2Rpz
+         hZ0ABjYX53atoYqKeCas/6n3Wwp2tA+xFSciL9RDu6BzGEFAkvN9tVkH9pKMBjO1H0
+         z++F+FgUdeUvI8m4cKW95+5I7GNspUfH/PVY77EjT1YDZnPO4zkMGnT9PFUT3nkJQ0
+         pBmTK04mQ1RsnluFOWCklmv7ivFTGW9emJLLblT928sql/vIssXvK04kDCFeklZ41R
+         vFAvNDLJzUjZjLYSyBSBs7t3bBYCcoUSrE6TRxs+cD4oqVpdS1bShJ5WXcURPdxrDU
+         /Zd8OHWBiJTwA==
+Date:   Tue, 22 Dec 2020 09:50:56 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alasdair G Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
+        Jens Axboe <axboe@kernel.dk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the device-mapper tree with Linus' tree
+Message-ID: <20201222095056.7a5ac0a0@canb.auug.org.au>
 MIME-Version: 1.0
-References: <18669bd607ae9efbf4e00e36532c7aa167d0fa12.camel@gmx.de>
- <20201220002228.38697-1-vitaly.wool@konsulko.com> <X+DaMSJE22nUC0tl@google.com>
- <CAM4kBBKnW6K-mbPno4SpvhUBiykP4zeFm_CNzssDkReURbuU7w@mail.gmail.com>
- <CALvZod69OtXkdOJPzuY5XfXz_ro0V7OmqW4OY9B_emqwroxW4w@mail.gmail.com>
- <e5cd8a0a5df84081a11359ede6e746bc@hisilicon.com> <CALvZod7EZnEWb_65FjSNdx+-S_4pLHyS5rYiU-D3hFLRMXS6Lw@mail.gmail.com>
- <8cc0e01fd03245a4994f2e0f54b264fa@hisilicon.com>
-In-Reply-To: <8cc0e01fd03245a4994f2e0f54b264fa@hisilicon.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 21 Dec 2020 14:46:28 -0800
-Message-ID: <CALvZod7rj4X3M5o5agCzzSKkuLhb8z0Q+41sqNN2bcJLa=z5vA@mail.gmail.com>
-Subject: Re: [PATCH] zsmalloc: do not use bit_spin_lock
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-Cc:     Vitaly Wool <vitaly.wool@konsulko.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Mike Galbraith <efault@gmx.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        NitinGupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/1hjKq4_sqX5jOYA24bkoski";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 1:30 PM Song Bao Hua (Barry Song)
-<song.bao.hua@hisilicon.com> wrote:
->
->
->
-> > -----Original Message-----
-> > From: Shakeel Butt [mailto:shakeelb@google.com]
-> > Sent: Tuesday, December 22, 2020 10:03 AM
-> > To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> > Cc: Vitaly Wool <vitaly.wool@konsulko.com>; Minchan Kim <minchan@kernel.org>;
-> > Mike Galbraith <efault@gmx.de>; LKML <linux-kernel@vger.kernel.org>; linux-mm
-> > <linux-mm@kvack.org>; Sebastian Andrzej Siewior <bigeasy@linutronix.de>;
-> > NitinGupta <ngupta@vflare.org>; Sergey Senozhatsky
-> > <sergey.senozhatsky.work@gmail.com>; Andrew Morton
-> > <akpm@linux-foundation.org>
-> > Subject: Re: [PATCH] zsmalloc: do not use bit_spin_lock
-> >
-> > On Mon, Dec 21, 2020 at 12:06 PM Song Bao Hua (Barry Song)
-> > <song.bao.hua@hisilicon.com> wrote:
-> > >
-> > >
-> > >
-> > > > -----Original Message-----
-> > > > From: Shakeel Butt [mailto:shakeelb@google.com]
-> > > > Sent: Tuesday, December 22, 2020 8:50 AM
-> > > > To: Vitaly Wool <vitaly.wool@konsulko.com>
-> > > > Cc: Minchan Kim <minchan@kernel.org>; Mike Galbraith <efault@gmx.de>; LKML
-> > > > <linux-kernel@vger.kernel.org>; linux-mm <linux-mm@kvack.org>; Song Bao
-> > Hua
-> > > > (Barry Song) <song.bao.hua@hisilicon.com>; Sebastian Andrzej Siewior
-> > > > <bigeasy@linutronix.de>; NitinGupta <ngupta@vflare.org>; Sergey
-> > Senozhatsky
-> > > > <sergey.senozhatsky.work@gmail.com>; Andrew Morton
-> > > > <akpm@linux-foundation.org>
-> > > > Subject: Re: [PATCH] zsmalloc: do not use bit_spin_lock
-> > > >
-> > > > On Mon, Dec 21, 2020 at 11:20 AM Vitaly Wool <vitaly.wool@konsulko.com>
-> > wrote:
-> > > > >
-> > > > > On Mon, Dec 21, 2020 at 6:24 PM Minchan Kim <minchan@kernel.org> wrote:
-> > > > > >
-> > > > > > On Sun, Dec 20, 2020 at 02:22:28AM +0200, Vitaly Wool wrote:
-> > > > > > > zsmalloc takes bit spinlock in its _map() callback and releases it
-> > > > > > > only in unmap() which is unsafe and leads to zswap complaining
-> > > > > > > about scheduling in atomic context.
-> > > > > > >
-> > > > > > > To fix that and to improve RT properties of zsmalloc, remove that
-> > > > > > > bit spinlock completely and use a bit flag instead.
-> > > > > >
-> > > > > > I don't want to use such open code for the lock.
-> > > > > >
-> > > > > > I see from Mike's patch, recent zswap change introduced the lockdep
-> > > > > > splat bug and you want to improve zsmalloc to fix the zswap bug and
-> > > > > > introduce this patch with allowing preemption enabling.
-> > > > >
-> > > > > This understanding is upside down. The code in zswap you are referring
-> > > > > to is not buggy.  You may claim that it is suboptimal but there is
-> > > > > nothing wrong in taking a mutex.
-> > > > >
-> > > >
-> > > > Is this suboptimal for all or just the hardware accelerators? Sorry, I
-> > > > am not very familiar with the crypto API. If I select lzo or lz4 as a
-> > > > zswap compressor will the [de]compression be async or sync?
-> > >
-> > > Right now, in crypto subsystem, new drivers are required to write based on
-> > > async APIs. The old sync API can't work in new accelerator drivers as they
-> > > are not supported at all.
-> > >
-> > > Old drivers are used to sync, but they've got async wrappers to support async
-> > > APIs. Eg.
-> > > crypto: acomp - add support for lz4 via scomp
-> > >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/
-> > crypto/lz4.c?id=8cd9330e0a615c931037d4def98b5ce0d540f08d
-> > >
-> > > crypto: acomp - add support for lzo via scomp
-> > >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/
-> > crypto/lzo.c?id=ac9d2c4b39e022d2c61486bfc33b730cfd02898e
-> > >
-> > > so they are supporting async APIs but they are still working in sync mode
-> > as
-> > > those old drivers don't sleep.
-> > >
-> >
-> > Good to know that those are sync because I want them to be sync.
-> > Please note that zswap is a cache in front of a real swap and the load
-> > operation is latency sensitive as it comes in the page fault path and
-> > directly impacts the applications. I doubt decompressing synchronously
-> > a 4k page on a cpu will be costlier than asynchronously decompressing
-> > the same page from hardware accelerators.
->
-> If you read the old paper:
-> https://www.ibm.com/support/pages/new-linux-zswap-compression-functionality
-> Because the hardware accelerator speeds up compression, looking at the zswap
-> metrics we observed that there were more store and load requests in a given
-> amount of time, which filled up the zswap pool faster than a software
-> compression run. Because of this behavior, we set the max_pool_percent
-> parameter to 30 for the hardware compression runs - this means that zswap
-> can use up to 30% of the 10GB of total memory.
->
-> So using hardware accelerators, we get a chance to speed up compression
-> while decreasing cpu utilization.
->
+--Sig_/1hjKq4_sqX5jOYA24bkoski
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I don't care much about the compression. It's the decompression or
-more specifically the latency of decompression I really care about.
+Hi all,
 
-Compression happens on reclaim, so latency is not really an issue.
-Reclaim can be pressure-based or proactive. I think async batched
-compression by accelerators makes a lot of sense. Though I doubt zswap
-is the right layer for that. To me adding "async batched compression
-support by accelerators" in zram looks more natural as the kernel
-already has async block I/O support.
+Today's linux-next merge of the device-mapper tree got a conflict in:
 
-For decompression, I would like as low latency as possible which I
-think is only possible by doing decompression on a cpu synchronously.
+  drivers/md/dm-table.c
+
+between commit:
+
+  4e7b5671c6a8 ("block: remove i_bdev")
+
+from Linus' tree and commit:
+
+  05a876e9a2a8 ("dm table: avoid filesystem lookup in dm_get_dev_t()")
+
+from the device-mapper tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/md/dm-table.c
+index 188f41287f18,299a256fb409..000000000000
+--- a/drivers/md/dm-table.c
++++ b/drivers/md/dm-table.c
+@@@ -347,9 -347,22 +347,15 @@@ static int upgrade_mode(struct dm_dev_i
+  dev_t dm_get_dev_t(const char *path)
+  {
+  	dev_t dev;
+ -	struct block_device *bdev;
++ 	unsigned int maj, min;
+ =20
++ 	if (sscanf(path, "%u:%u", &maj, &min) =3D=3D 2) {
++ 		dev =3D MKDEV(maj, min);
++ 		if (maj =3D=3D MAJOR(dev) && min =3D=3D MINOR(dev))
++ 			return dev;
++ 	}
+ -	bdev =3D lookup_bdev(path);
+ -	if (IS_ERR(bdev))
+ +	if (lookup_bdev(path, &dev))
+  		dev =3D name_to_dev_t(path);
+ -	else {
+ -		dev =3D bdev->bd_dev;
+ -		bdput(bdev);
+ -	}
+ -
+  	return dev;
+  }
+  EXPORT_SYMBOL_GPL(dm_get_dev_t);
+
+--Sig_/1hjKq4_sqX5jOYA24bkoski
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/hJtAACgkQAVBC80lX
+0GzmUwf/e9aBL8Ro43OYacVWsrwjwnkPbUnJjVUypj52UU+F9PdTQcVjl+WcU4Nn
+fdBzTcQ0/C94lKIbqfZ2kF/Uz7ENsOF6VQct4Bwjp5ESLBknvPg3QhVTZ0SgBZ5l
+3mDsDcr2RmRwENXeveAET33AEmxnhVEPBZUr7PF+Xodqurxo+xxN+sWfQqTasDiP
+Wz+Qr5SuF7q21iZsj0x5v1VcugkIzKZHiBUH6ASHuZKmnhoGs/fvwBsyidxHq2pT
+HntCZOPVJeO7NWHcJFM5E/Og/aywsNmDJkq8xushyBWF8RKEWFLY+a2ZG6aI1NR/
+WQdmaNm+bZaSmBoAQx2bUdc7kGrCBw==
+=bvMi
+-----END PGP SIGNATURE-----
+
+--Sig_/1hjKq4_sqX5jOYA24bkoski--
