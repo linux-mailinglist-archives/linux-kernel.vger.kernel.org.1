@@ -2,187 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F13E72E02D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 00:09:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B7DB2E02CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 00:06:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726214AbgLUXIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 18:08:31 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2342 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726016AbgLUXIa (ORCPT
+        id S1726095AbgLUXF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 18:05:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725780AbgLUXF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 18:08:30 -0500
-Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4D0FTT5Lnzz13WdF;
-        Tue, 22 Dec 2020 07:06:37 +0800 (CST)
-Received: from dggemi709-chm.china.huawei.com (10.3.20.108) by
- DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Tue, 22 Dec 2020 07:02:06 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemi709-chm.china.huawei.com (10.3.20.108) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Tue, 22 Dec 2020 07:02:06 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.002;
- Tue, 22 Dec 2020 07:02:06 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Shakeel Butt <shakeelb@google.com>
-CC:     Vitaly Wool <vitaly.wool@konsulko.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Mike Galbraith <efault@gmx.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        NitinGupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: RE: [PATCH] zsmalloc: do not use bit_spin_lock
-Thread-Topic: [PATCH] zsmalloc: do not use bit_spin_lock
-Thread-Index: AQHW1mZAeBjE5clI7UKUuMSOCQsyuqoBSTyAgAAghwCAAAhXgIAAhndA//+NyICAAIW5IP//l0EAgACHqyA=
-Date:   Mon, 21 Dec 2020 23:02:06 +0000
-Message-ID: <8f17abe06057498dba9413f706b86207@hisilicon.com>
-References: <18669bd607ae9efbf4e00e36532c7aa167d0fa12.camel@gmx.de>
- <20201220002228.38697-1-vitaly.wool@konsulko.com>
- <X+DaMSJE22nUC0tl@google.com>
- <CAM4kBBKnW6K-mbPno4SpvhUBiykP4zeFm_CNzssDkReURbuU7w@mail.gmail.com>
- <CALvZod69OtXkdOJPzuY5XfXz_ro0V7OmqW4OY9B_emqwroxW4w@mail.gmail.com>
- <e5cd8a0a5df84081a11359ede6e746bc@hisilicon.com>
- <CALvZod7EZnEWb_65FjSNdx+-S_4pLHyS5rYiU-D3hFLRMXS6Lw@mail.gmail.com>
- <8cc0e01fd03245a4994f2e0f54b264fa@hisilicon.com>
- <CALvZod7rj4X3M5o5agCzzSKkuLhb8z0Q+41sqNN2bcJLa=z5vA@mail.gmail.com>
-In-Reply-To: <CALvZod7rj4X3M5o5agCzzSKkuLhb8z0Q+41sqNN2bcJLa=z5vA@mail.gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.200.103]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Mon, 21 Dec 2020 18:05:58 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D5BEC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 15:05:16 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id j1so6422280pld.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 15:05:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=LeoeYnCQ4DjHLLXlMxxQJshzAfmMhw5UEdcS2SRtSy4=;
+        b=Ftr369q9NwaPNhLcUHiuHQkp7Le7NZyiC2K8bG8lqMkcSxIRbREQK8cxCw70jEIuk8
+         fpp3rw8vRTQdVoVnGfKISRtuIiESfmbNppyrNt8ynyBTm/fFNSZWNe9NKKFHw73j2EOi
+         MciYSOFxYWYGeua+iAl+sW7GAK8JrXbknG6J5fSWd/+uKj4puUY2R/kqJLt5B7gat645
+         mFkkWbw+S99Am+DWBg9bzDUErbsm1cfqhI3LHqFmbGfFfpBgiYecSmBxz9y9acucMYSW
+         kC9nVAF30TWUs4Z64IX6kLG10PsWpyV8VfQsp48dJmOXPKl2O54EjArdzjDyf6ZTztJJ
+         Nl9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=LeoeYnCQ4DjHLLXlMxxQJshzAfmMhw5UEdcS2SRtSy4=;
+        b=JJR+40tgwVHhn/PczdCB5Tq6lvxt6/1XX0cRKHMmX7PWa7qqMryt5fGecBfgryRa6t
+         r2Mdkh0PCl/jxuUL8jcAKhet0F63sWn/NEIEf89GgiamIumoesw0p93BcrC9dI09PsRB
+         5hzEAUh7tlGx2tXrjsbCbuCVtsbwqNiYzS7fhLlamao/AErAw5Ro8UBpJOPXyAXd1iUk
+         7zU1C02QbWE85mu8p/OrFOLE1A+WLWYXgOeZqEFcZwusOBhGsl8kW7gjhW3UWOHONLho
+         CAV2HsMKAtTL/1AXYhIDXsTlYKmkMPjjIza4rPn68dCLR3K30+/Cxkf5s3TCqiRRPkQu
+         WDBQ==
+X-Gm-Message-State: AOAM531mJCDnMloD8h9b7ooAW2poK04XC3sodx/hNqj0MNMrU6oa/Bbw
+        OkWhN0sOWpOBhfZJjHqo9BzQJg==
+X-Google-Smtp-Source: ABdhPJymkZ99e3soMAm7qGBFf5xuPRNrUkIcWAxP77eBmgNUrWJtwOrB/MUJpfwVsDfW1PLtlQ4oKw==
+X-Received: by 2002:a17:902:9b91:b029:db:f003:c5eb with SMTP id y17-20020a1709029b91b02900dbf003c5ebmr18176770plp.1.1608591915873;
+        Mon, 21 Dec 2020 15:05:15 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id w27sm14034183pfq.104.2020.12.21.15.05.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 15:05:15 -0800 (PST)
+Date:   Mon, 21 Dec 2020 15:05:08 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Krish Sadhukhan <krish.sadhukhan@oracle.com>
+Cc:     Uros Bizjak <ubizjak@gmail.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v3] KVM/x86: Move definition of __ex to x86.h
+Message-ID: <X+EqJB/k1kxSWE7m@google.com>
+References: <20201221194800.46962-1-ubizjak@gmail.com>
+ <a773afca-7f28-2392-74ad-0895da3f75ca@oracle.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a773afca-7f28-2392-74ad-0895da3f75ca@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogU2hha2VlbCBCdXR0IFtt
-YWlsdG86c2hha2VlbGJAZ29vZ2xlLmNvbV0NCj4gU2VudDogVHVlc2RheSwgRGVjZW1iZXIgMjIs
-IDIwMjAgMTE6NDYgQU0NCj4gVG86IFNvbmcgQmFvIEh1YSAoQmFycnkgU29uZykgPHNvbmcuYmFv
-Lmh1YUBoaXNpbGljb24uY29tPg0KPiBDYzogVml0YWx5IFdvb2wgPHZpdGFseS53b29sQGtvbnN1
-bGtvLmNvbT47IE1pbmNoYW4gS2ltIDxtaW5jaGFuQGtlcm5lbC5vcmc+Ow0KPiBNaWtlIEdhbGJy
-YWl0aCA8ZWZhdWx0QGdteC5kZT47IExLTUwgPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+
-OyBsaW51eC1tbQ0KPiA8bGludXgtbW1Aa3ZhY2sub3JnPjsgU2ViYXN0aWFuIEFuZHJ6ZWogU2ll
-d2lvciA8YmlnZWFzeUBsaW51dHJvbml4LmRlPjsNCj4gTml0aW5HdXB0YSA8bmd1cHRhQHZmbGFy
-ZS5vcmc+OyBTZXJnZXkgU2Vub3poYXRza3kNCj4gPHNlcmdleS5zZW5vemhhdHNreS53b3JrQGdt
-YWlsLmNvbT47IEFuZHJldyBNb3J0b24NCj4gPGFrcG1AbGludXgtZm91bmRhdGlvbi5vcmc+DQo+
-IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIHpzbWFsbG9jOiBkbyBub3QgdXNlIGJpdF9zcGluX2xvY2sN
-Cj4gDQo+IE9uIE1vbiwgRGVjIDIxLCAyMDIwIGF0IDE6MzAgUE0gU29uZyBCYW8gSHVhIChCYXJy
-eSBTb25nKQ0KPiA8c29uZy5iYW8uaHVhQGhpc2lsaWNvbi5jb20+IHdyb3RlOg0KPiA+DQo+ID4N
-Cj4gPg0KPiA+ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPiA+IEZyb206IFNoYWtl
-ZWwgQnV0dCBbbWFpbHRvOnNoYWtlZWxiQGdvb2dsZS5jb21dDQo+ID4gPiBTZW50OiBUdWVzZGF5
-LCBEZWNlbWJlciAyMiwgMjAyMCAxMDowMyBBTQ0KPiA+ID4gVG86IFNvbmcgQmFvIEh1YSAoQmFy
-cnkgU29uZykgPHNvbmcuYmFvLmh1YUBoaXNpbGljb24uY29tPg0KPiA+ID4gQ2M6IFZpdGFseSBX
-b29sIDx2aXRhbHkud29vbEBrb25zdWxrby5jb20+OyBNaW5jaGFuIEtpbQ0KPiA8bWluY2hhbkBr
-ZXJuZWwub3JnPjsNCj4gPiA+IE1pa2UgR2FsYnJhaXRoIDxlZmF1bHRAZ214LmRlPjsgTEtNTCA8
-bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZz47DQo+IGxpbnV4LW1tDQo+ID4gPiA8bGludXgt
-bW1Aa3ZhY2sub3JnPjsgU2ViYXN0aWFuIEFuZHJ6ZWogU2lld2lvciA8YmlnZWFzeUBsaW51dHJv
-bml4LmRlPjsNCj4gPiA+IE5pdGluR3VwdGEgPG5ndXB0YUB2ZmxhcmUub3JnPjsgU2VyZ2V5IFNl
-bm96aGF0c2t5DQo+ID4gPiA8c2VyZ2V5LnNlbm96aGF0c2t5LndvcmtAZ21haWwuY29tPjsgQW5k
-cmV3IE1vcnRvbg0KPiA+ID4gPGFrcG1AbGludXgtZm91bmRhdGlvbi5vcmc+DQo+ID4gPiBTdWJq
-ZWN0OiBSZTogW1BBVENIXSB6c21hbGxvYzogZG8gbm90IHVzZSBiaXRfc3Bpbl9sb2NrDQo+ID4g
-Pg0KPiA+ID4gT24gTW9uLCBEZWMgMjEsIDIwMjAgYXQgMTI6MDYgUE0gU29uZyBCYW8gSHVhIChC
-YXJyeSBTb25nKQ0KPiA+ID4gPHNvbmcuYmFvLmh1YUBoaXNpbGljb24uY29tPiB3cm90ZToNCj4g
-PiA+ID4NCj4gPiA+ID4NCj4gPiA+ID4NCj4gPiA+ID4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2Ut
-LS0tLQ0KPiA+ID4gPiA+IEZyb206IFNoYWtlZWwgQnV0dCBbbWFpbHRvOnNoYWtlZWxiQGdvb2ds
-ZS5jb21dDQo+ID4gPiA+ID4gU2VudDogVHVlc2RheSwgRGVjZW1iZXIgMjIsIDIwMjAgODo1MCBB
-TQ0KPiA+ID4gPiA+IFRvOiBWaXRhbHkgV29vbCA8dml0YWx5Lndvb2xAa29uc3Vsa28uY29tPg0K
-PiA+ID4gPiA+IENjOiBNaW5jaGFuIEtpbSA8bWluY2hhbkBrZXJuZWwub3JnPjsgTWlrZSBHYWxi
-cmFpdGggPGVmYXVsdEBnbXguZGU+Ow0KPiBMS01MDQo+ID4gPiA+ID4gPGxpbnV4LWtlcm5lbEB2
-Z2VyLmtlcm5lbC5vcmc+OyBsaW51eC1tbSA8bGludXgtbW1Aa3ZhY2sub3JnPjsgU29uZw0KPiBC
-YW8NCj4gPiA+IEh1YQ0KPiA+ID4gPiA+IChCYXJyeSBTb25nKSA8c29uZy5iYW8uaHVhQGhpc2ls
-aWNvbi5jb20+OyBTZWJhc3RpYW4gQW5kcnplaiBTaWV3aW9yDQo+ID4gPiA+ID4gPGJpZ2Vhc3lA
-bGludXRyb25peC5kZT47IE5pdGluR3VwdGEgPG5ndXB0YUB2ZmxhcmUub3JnPjsgU2VyZ2V5DQo+
-ID4gPiBTZW5vemhhdHNreQ0KPiA+ID4gPiA+IDxzZXJnZXkuc2Vub3poYXRza3kud29ya0BnbWFp
-bC5jb20+OyBBbmRyZXcgTW9ydG9uDQo+ID4gPiA+ID4gPGFrcG1AbGludXgtZm91bmRhdGlvbi5v
-cmc+DQo+ID4gPiA+ID4gU3ViamVjdDogUmU6IFtQQVRDSF0genNtYWxsb2M6IGRvIG5vdCB1c2Ug
-Yml0X3NwaW5fbG9jaw0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gT24gTW9uLCBEZWMgMjEsIDIwMjAg
-YXQgMTE6MjAgQU0gVml0YWx5IFdvb2wgPHZpdGFseS53b29sQGtvbnN1bGtvLmNvbT4NCj4gPiA+
-IHdyb3RlOg0KPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+IE9uIE1vbiwgRGVjIDIxLCAyMDIwIGF0
-IDY6MjQgUE0gTWluY2hhbiBLaW0gPG1pbmNoYW5Aa2VybmVsLm9yZz4gd3JvdGU6DQo+ID4gPiA+
-ID4gPiA+DQo+ID4gPiA+ID4gPiA+IE9uIFN1biwgRGVjIDIwLCAyMDIwIGF0IDAyOjIyOjI4QU0g
-KzAyMDAsIFZpdGFseSBXb29sIHdyb3RlOg0KPiA+ID4gPiA+ID4gPiA+IHpzbWFsbG9jIHRha2Vz
-IGJpdCBzcGlubG9jayBpbiBpdHMgX21hcCgpIGNhbGxiYWNrIGFuZCByZWxlYXNlcw0KPiBpdA0K
-PiA+ID4gPiA+ID4gPiA+IG9ubHkgaW4gdW5tYXAoKSB3aGljaCBpcyB1bnNhZmUgYW5kIGxlYWRz
-IHRvIHpzd2FwIGNvbXBsYWluaW5nDQo+ID4gPiA+ID4gPiA+ID4gYWJvdXQgc2NoZWR1bGluZyBp
-biBhdG9taWMgY29udGV4dC4NCj4gPiA+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gPiA+IFRvIGZp
-eCB0aGF0IGFuZCB0byBpbXByb3ZlIFJUIHByb3BlcnRpZXMgb2YgenNtYWxsb2MsIHJlbW92ZSB0
-aGF0DQo+ID4gPiA+ID4gPiA+ID4gYml0IHNwaW5sb2NrIGNvbXBsZXRlbHkgYW5kIHVzZSBhIGJp
-dCBmbGFnIGluc3RlYWQuDQo+ID4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiA+IEkgZG9uJ3Qgd2Fu
-dCB0byB1c2Ugc3VjaCBvcGVuIGNvZGUgZm9yIHRoZSBsb2NrLg0KPiA+ID4gPiA+ID4gPg0KPiA+
-ID4gPiA+ID4gPiBJIHNlZSBmcm9tIE1pa2UncyBwYXRjaCwgcmVjZW50IHpzd2FwIGNoYW5nZSBp
-bnRyb2R1Y2VkIHRoZSBsb2NrZGVwDQo+ID4gPiA+ID4gPiA+IHNwbGF0IGJ1ZyBhbmQgeW91IHdh
-bnQgdG8gaW1wcm92ZSB6c21hbGxvYyB0byBmaXggdGhlIHpzd2FwIGJ1Zw0KPiBhbmQNCj4gPiA+
-ID4gPiA+ID4gaW50cm9kdWNlIHRoaXMgcGF0Y2ggd2l0aCBhbGxvd2luZyBwcmVlbXB0aW9uIGVu
-YWJsaW5nLg0KPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+IFRoaXMgdW5kZXJzdGFuZGluZyBpcyB1
-cHNpZGUgZG93bi4gVGhlIGNvZGUgaW4genN3YXAgeW91IGFyZSByZWZlcnJpbmcNCj4gPiA+ID4g
-PiA+IHRvIGlzIG5vdCBidWdneS4gIFlvdSBtYXkgY2xhaW0gdGhhdCBpdCBpcyBzdWJvcHRpbWFs
-IGJ1dCB0aGVyZSBpcw0KPiA+ID4gPiA+ID4gbm90aGluZyB3cm9uZyBpbiB0YWtpbmcgYSBtdXRl
-eC4NCj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4NCj4gPiA+ID4gPiBJcyB0aGlzIHN1Ym9wdGltYWwg
-Zm9yIGFsbCBvciBqdXN0IHRoZSBoYXJkd2FyZSBhY2NlbGVyYXRvcnM/IFNvcnJ5LA0KPiBJDQo+
-ID4gPiA+ID4gYW0gbm90IHZlcnkgZmFtaWxpYXIgd2l0aCB0aGUgY3J5cHRvIEFQSS4gSWYgSSBz
-ZWxlY3QgbHpvIG9yIGx6NCBhcw0KPiBhDQo+ID4gPiA+ID4genN3YXAgY29tcHJlc3NvciB3aWxs
-IHRoZSBbZGVdY29tcHJlc3Npb24gYmUgYXN5bmMgb3Igc3luYz8NCj4gPiA+ID4NCj4gPiA+ID4g
-UmlnaHQgbm93LCBpbiBjcnlwdG8gc3Vic3lzdGVtLCBuZXcgZHJpdmVycyBhcmUgcmVxdWlyZWQg
-dG8gd3JpdGUgYmFzZWQNCj4gb24NCj4gPiA+ID4gYXN5bmMgQVBJcy4gVGhlIG9sZCBzeW5jIEFQ
-SSBjYW4ndCB3b3JrIGluIG5ldyBhY2NlbGVyYXRvciBkcml2ZXJzIGFzDQo+IHRoZXkNCj4gPiA+
-ID4gYXJlIG5vdCBzdXBwb3J0ZWQgYXQgYWxsLg0KPiA+ID4gPg0KPiA+ID4gPiBPbGQgZHJpdmVy
-cyBhcmUgdXNlZCB0byBzeW5jLCBidXQgdGhleSd2ZSBnb3QgYXN5bmMgd3JhcHBlcnMgdG8gc3Vw
-cG9ydA0KPiBhc3luYw0KPiA+ID4gPiBBUElzLiBFZy4NCj4gPiA+ID4gY3J5cHRvOiBhY29tcCAt
-IGFkZCBzdXBwb3J0IGZvciBsejQgdmlhIHNjb21wDQo+ID4gPiA+DQo+ID4gPg0KPiBodHRwczov
-L2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90b3J2YWxkcy9saW51eC5n
-aXQvY29tbWl0Lw0KPiA+ID4gY3J5cHRvL2x6NC5jP2lkPThjZDkzMzBlMGE2MTVjOTMxMDM3ZDRk
-ZWY5OGI1Y2UwZDU0MGYwOGQNCj4gPiA+ID4NCj4gPiA+ID4gY3J5cHRvOiBhY29tcCAtIGFkZCBz
-dXBwb3J0IGZvciBsem8gdmlhIHNjb21wDQo+ID4gPiA+DQo+ID4gPg0KPiBodHRwczovL2dpdC5r
-ZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90b3J2YWxkcy9saW51eC5naXQvY29t
-bWl0Lw0KPiA+ID4gY3J5cHRvL2x6by5jP2lkPWFjOWQyYzRiMzllMDIyZDJjNjE0ODZiZmMzM2I3
-MzBjZmQwMjg5OGUNCj4gPiA+ID4NCj4gPiA+ID4gc28gdGhleSBhcmUgc3VwcG9ydGluZyBhc3lu
-YyBBUElzIGJ1dCB0aGV5IGFyZSBzdGlsbCB3b3JraW5nIGluIHN5bmMgbW9kZQ0KPiA+ID4gYXMN
-Cj4gPiA+ID4gdGhvc2Ugb2xkIGRyaXZlcnMgZG9uJ3Qgc2xlZXAuDQo+ID4gPiA+DQo+ID4gPg0K
-PiA+ID4gR29vZCB0byBrbm93IHRoYXQgdGhvc2UgYXJlIHN5bmMgYmVjYXVzZSBJIHdhbnQgdGhl
-bSB0byBiZSBzeW5jLg0KPiA+ID4gUGxlYXNlIG5vdGUgdGhhdCB6c3dhcCBpcyBhIGNhY2hlIGlu
-IGZyb250IG9mIGEgcmVhbCBzd2FwIGFuZCB0aGUgbG9hZA0KPiA+ID4gb3BlcmF0aW9uIGlzIGxh
-dGVuY3kgc2Vuc2l0aXZlIGFzIGl0IGNvbWVzIGluIHRoZSBwYWdlIGZhdWx0IHBhdGggYW5kDQo+
-ID4gPiBkaXJlY3RseSBpbXBhY3RzIHRoZSBhcHBsaWNhdGlvbnMuIEkgZG91YnQgZGVjb21wcmVz
-c2luZyBzeW5jaHJvbm91c2x5DQo+ID4gPiBhIDRrIHBhZ2Ugb24gYSBjcHUgd2lsbCBiZSBjb3N0
-bGllciB0aGFuIGFzeW5jaHJvbm91c2x5IGRlY29tcHJlc3NpbmcNCj4gPiA+IHRoZSBzYW1lIHBh
-Z2UgZnJvbSBoYXJkd2FyZSBhY2NlbGVyYXRvcnMuDQo+ID4NCj4gPiBJZiB5b3UgcmVhZCB0aGUg
-b2xkIHBhcGVyOg0KPiA+DQo+IGh0dHBzOi8vd3d3LmlibS5jb20vc3VwcG9ydC9wYWdlcy9uZXct
-bGludXgtenN3YXAtY29tcHJlc3Npb24tZnVuY3Rpb25hbGl0DQo+IHkNCj4gPiBCZWNhdXNlIHRo
-ZSBoYXJkd2FyZSBhY2NlbGVyYXRvciBzcGVlZHMgdXAgY29tcHJlc3Npb24sIGxvb2tpbmcgYXQg
-dGhlIHpzd2FwDQo+ID4gbWV0cmljcyB3ZSBvYnNlcnZlZCB0aGF0IHRoZXJlIHdlcmUgbW9yZSBz
-dG9yZSBhbmQgbG9hZCByZXF1ZXN0cyBpbiBhIGdpdmVuDQo+ID4gYW1vdW50IG9mIHRpbWUsIHdo
-aWNoIGZpbGxlZCB1cCB0aGUgenN3YXAgcG9vbCBmYXN0ZXIgdGhhbiBhIHNvZnR3YXJlDQo+ID4g
-Y29tcHJlc3Npb24gcnVuLiBCZWNhdXNlIG9mIHRoaXMgYmVoYXZpb3IsIHdlIHNldCB0aGUgbWF4
-X3Bvb2xfcGVyY2VudA0KPiA+IHBhcmFtZXRlciB0byAzMCBmb3IgdGhlIGhhcmR3YXJlIGNvbXBy
-ZXNzaW9uIHJ1bnMgLSB0aGlzIG1lYW5zIHRoYXQgenN3YXANCj4gPiBjYW4gdXNlIHVwIHRvIDMw
-JSBvZiB0aGUgMTBHQiBvZiB0b3RhbCBtZW1vcnkuDQo+ID4NCj4gPiBTbyB1c2luZyBoYXJkd2Fy
-ZSBhY2NlbGVyYXRvcnMsIHdlIGdldCBhIGNoYW5jZSB0byBzcGVlZCB1cCBjb21wcmVzc2lvbg0K
-PiA+IHdoaWxlIGRlY3JlYXNpbmcgY3B1IHV0aWxpemF0aW9uLg0KPiA+DQo+IA0KPiBJIGRvbid0
-IGNhcmUgbXVjaCBhYm91dCB0aGUgY29tcHJlc3Npb24uIEl0J3MgdGhlIGRlY29tcHJlc3Npb24g
-b3INCj4gbW9yZSBzcGVjaWZpY2FsbHkgdGhlIGxhdGVuY3kgb2YgZGVjb21wcmVzc2lvbiBJIHJl
-YWxseSBjYXJlIGFib3V0Lg0KPiANCj4gQ29tcHJlc3Npb24gaGFwcGVucyBvbiByZWNsYWltLCBz
-byBsYXRlbmN5IGlzIG5vdCByZWFsbHkgYW4gaXNzdWUuDQo+IFJlY2xhaW0gY2FuIGJlIHByZXNz
-dXJlLWJhc2VkIG9yIHByb2FjdGl2ZS4gSSB0aGluayBhc3luYyBiYXRjaGVkDQo+IGNvbXByZXNz
-aW9uIGJ5IGFjY2VsZXJhdG9ycyBtYWtlcyBhIGxvdCBvZiBzZW5zZS4gVGhvdWdoIEkgZG91YnQg
-enN3YXANCj4gaXMgdGhlIHJpZ2h0IGxheWVyIGZvciB0aGF0LiBUbyBtZSBhZGRpbmcgImFzeW5j
-IGJhdGNoZWQgY29tcHJlc3Npb24NCj4gc3VwcG9ydCBieSBhY2NlbGVyYXRvcnMiIGluIHpyYW0g
-bG9va3MgbW9yZSBuYXR1cmFsIGFzIHRoZSBrZXJuZWwNCj4gYWxyZWFkeSBoYXMgYXN5bmMgYmxv
-Y2sgSS9PIHN1cHBvcnQuDQoNClllcC4NCnpyYW0gaXMgb25lIG9mIHRoZSB0YXJnZXRzIEkgaGF2
-ZSB0aG91Z2h0IGFib3V0IHRvIHN1cHBvcnQgYWNvbXAuDQoNCj4gDQo+IEZvciBkZWNvbXByZXNz
-aW9uLCBJIHdvdWxkIGxpa2UgYXMgbG93IGxhdGVuY3kgYXMgcG9zc2libGUgd2hpY2ggSQ0KPiB0
-aGluayBpcyBvbmx5IHBvc3NpYmxlIGJ5IGRvaW5nIGRlY29tcHJlc3Npb24gb24gYSBjcHUgc3lu
-Y2hyb25vdXNseS4NCg0KT25lIHBvc3NpYmlsaXR5IGlzIHRoYXQgd2UgY2hhbmdlIEhXIGFjY2Vs
-ZXJhdG9yIGRyaXZlciB0byBiZSBzeW5jDQpwb2xsaW5nIGZvciBkZWNvbXByZXNzaW9uLiBCdXQg
-dGhpcyBzdGlsbCBkZXBlbmRzIG9uIGFzeW5jIGFwaSBhcw0KdGhpcyBpcyB0aGUgZnJhbWV3b3Jr
-IG5vd2FkYXlzLCB0aGUgZGlmZmVyZW5jZSB3b3VsZCBiZSB0aGUgZHJpdmVyDQp3b24ndCByZWFs
-bHkgYmxvY2suIGNyeXB0b193YWl0X3JlcSgpIHdpbGwgcmV0dXJuIHdpdGhvdXQgYWN0dWFsDQpz
-bGVlcC4NCg0KVGhhbmtzDQpCYXJyeQ0KDQo=
+On Mon, Dec 21, 2020, Krish Sadhukhan wrote:
+> 
+> On 12/21/20 11:48 AM, Uros Bizjak wrote:
+> > diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
+> > index c5ee0f5ce0f1..5b16d2b5c3bc 100644
+> > --- a/arch/x86/kvm/x86.h
+> > +++ b/arch/x86/kvm/x86.h
+> > @@ -8,6 +8,30 @@
+> >   #include "kvm_cache_regs.h"
+> >   #include "kvm_emulate.h"
+> > +asmlinkage void kvm_spurious_fault(void);
+> > +
+> > +/*
+> > + * Handle a fault on a hardware virtualization (VMX or SVM) instruction.
+> > + *
+> > + * Hardware virtualization extension instructions may fault if a reboot turns
+> > + * off virtualization while processes are running.  Usually after catching the
+> > + * fault we just panic; during reboot instead the instruction is ignored.
+> > + */
+> > +#define __ex(insn)							\
+> 
+> 
+> While the previous name was too elaborate, this new name is very cryptic. 
+> Unless we are saving for space,it's better to give a somewhat descriptive
+> name.
+
+We are saving for space in a way.  Not so much to actually save lines of code,
+but to avoid stealing the focus from the code that matters.  __ex() is cryptic
+for the completely unfamiliar, but I'm worried that anything more verbose will
+harm the readability of the code where it is used, which is usually what's more
+important in the long run.  
+
+__ex() does have some meaning, as it's connected to the various ex_handler_*()
+helpers.  ex_handle() is the best semi-verbose alternative that I can think of,
+but even that is too long for my liking when reading the inline asm flows.  And
+it's not like ex_handle() tells the whole story; the reader still has to go to
+the definition to understand what it does, or worse, will make incorrect
+assumptions about how exceptions are handled.
+
+E.g. with the short version, my eyes gravitate toward vmxoff/vmsave without
+getting stuck on the verbose wrapper.
+
+	asm volatile (__ex("vmxoff"));
+
+	asm volatile(__ex("vmsave") : : "a" (__sme_page_pa(sd->save_area)) : "memory");
+
+vs.
+
+	asm volatile (ex_handle("vmxoff"));
+
+	asm volatile(ex_handle("vmsave") : : "a" (__sme_page_pa(sd->save_area)) : "memory");
