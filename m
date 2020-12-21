@@ -2,85 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 390F02DFF0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 18:44:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4510B2DFF2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 19:05:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725946AbgLURi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 12:38:57 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:39586 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725782AbgLURi5 (ORCPT
+        id S1726243AbgLUSEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 13:04:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725962AbgLUSEM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 12:38:57 -0500
-Date:   Mon, 21 Dec 2020 18:38:13 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1608572295;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9DGEQ/Nq5WGoytqa9TEYBJawqU4/VXX/wUM7atOpeIw=;
-        b=uSga2Ux/ThDWWwvI09CkWbMDPxnJGrWL30sofE3QaBPrP8QcNnvX/rqZPE8zwlA8nykRaU
-        alDudvNV+6GSLCNDWOaDmCpS/T9ec/OstpGobfEI2X5PoFUKNH4aJ0exrDp54kbgZAPXH8
-        d0AvBNGUY2TXd8HFZBuBzvJfYaDaR4r8L6J/DBZsh9BQbioah/zi3vXAMhcwfPhmJZrjt8
-        LKFKWPsKM6qQN9mGWPm+YvNBD90P4eL9vXJrbanl/UhTIjYRNNZyU2vnc9/Owk4lpshhaz
-        VK87zQusxPVC5Z+ieqd2kY+wIm9jFApGvHAnv7HvOjabs7Asw0xlbctSM05tsw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1608572295;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9DGEQ/Nq5WGoytqa9TEYBJawqU4/VXX/wUM7atOpeIw=;
-        b=AJy18+8Y2jmDN5xTd9eUKxhplOrk6gQMJ0wP8v+sRNke6xShZ5daUG3fHREp1k1fQp856L
-        Ytu1JmTtBepvmzBw==
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
-To:     John Garry <john.garry@huawei.com>
-Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        Jason Yan <yanaijie@huawei.com>,
-        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        linux-scsi@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>
-Subject: Re: [PATCH 11/11] scsi: libsas: event notifiers: Remove non _gfp()
- variants
-Message-ID: <20201221173812.GA2165279@debian-buster-darwi.lab.linutronix.de>
-References: <20201218204354.586951-1-a.darwish@linutronix.de>
- <20201218204354.586951-12-a.darwish@linutronix.de>
- <68957d37-c789-0f0e-f5d1-85fef7f39f4f@huawei.com>
+        Mon, 21 Dec 2020 13:04:12 -0500
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 902FEC0613D3;
+        Mon, 21 Dec 2020 10:03:57 -0800 (PST)
+Received: by mail-ot1-x32d.google.com with SMTP id d20so9615889otl.3;
+        Mon, 21 Dec 2020 10:03:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SkxBBTqvX4ksMLPbsVxLzAgxNErI17TvQLy+XCkjQ4U=;
+        b=rKK1bRvswKV6f5n4xZcxx7uwJ3QCAuJ8bOVcURcp5u6x1mE1r1Xlc4qMTXGf1fvSF9
+         8ojWeiput+LiHGPiLzH1LJLM/pZwPIjYgpwIS/hdcW0lmT+AuU6MrPFS/fsg2rmStXR4
+         jOyymKbXtw1N3zxuDqzX8AuTcoUB8Ml/WMzCEYNv0w3lLGx3NrTcMHH7nJQ2pmTS/vPs
+         oykLrgpK8SNojYVEpUIQsvCLnb8gejsyXUGAzkXZZSVBW+lzVASURdwuZ0j23YEQ5q1H
+         rwvvfYaRWhEJatdWrOYzOyLJct/oAVPkTl8jurgW6RuVGXk4n27OmTN3v2JiPdjUgPBM
+         O/1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SkxBBTqvX4ksMLPbsVxLzAgxNErI17TvQLy+XCkjQ4U=;
+        b=PmzVlOFjnRBItHoIOkfHY0BkfIQtELOMKmmHYJEs6brR4OaK+In8whrV2ordunfMvu
+         iqyMrL76LW75RGgVJt+G1aoDNNGjGFc+NMXxyoLAdD5f6qTcCPMQemZd+Vx1pGK2OFoH
+         VOHGYTOxU64/dwRPvlfdFbDO6spf12XWfgPbch/3g46Rl0GsBQm5f5AgzUjAN19d4rT5
+         uImmr1JsyymcqIPG0gy6QRC6DCn1eV3+uezVI9P/MLXUuYg9gXelNsOsxIo3dNrkSfI7
+         FxfpxRNzIlqoRLvhUPjBgucG2EF9IJnfRscGwAarm2AR4IttMepOp7aPxeb4fbISkY9h
+         8D3Q==
+X-Gm-Message-State: AOAM5330y5QX+QNvBrmRnOjiLgDEk5cg0SYbUIKX91ajCGqWML9NfIzZ
+        UVlxj/XgbO8EIRW93tlWuf0ML8FgopBmTL+m4R66JDIn
+X-Google-Smtp-Source: ABdhPJzBtR03XJh7zMK5RDu4h7BGWT7TvlxQ7Pub29mtDa6MIdOrtHSbkQtmcuua3/pj4Vsf14WjKK/DGWTqwpD5m+4=
+X-Received: by 2002:a25:284:: with SMTP id 126mr22949367ybc.22.1608572323828;
+ Mon, 21 Dec 2020 09:38:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <68957d37-c789-0f0e-f5d1-85fef7f39f4f@huawei.com>
+References: <20201221054323.247483-1-masahiroy@kernel.org> <20201221152645.GH3026679@lunn.ch>
+ <CAK7LNAQ9vhB6iYHeGV3xcyo8_iLqmGJeJUYOvbdHqN9Wn0mEJg@mail.gmail.com> <20201221170141.GI3026679@lunn.ch>
+In-Reply-To: <20201221170141.GI3026679@lunn.ch>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Mon, 21 Dec 2020 18:38:32 +0100
+Message-ID: <CANiq72=-vdUd-mkhAcNJoWe-QQEyF2uLt1iVnaXYUPPL+1Bk0g@mail.gmail.com>
+Subject: Re: [PATCH] net: lantiq_etop: check the result of request_irq()
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 05:17:13PM +0000, John Garry wrote:
-> On 18/12/2020 20:43, Ahmed S. Darwish wrote:
-> > All call-sites of below libsas APIs:
-> >
-> >    - sas_alloc_event()
-> >    - sas_ha_struct::notify_port_event()
-> >    - sas_ha_struct::notify_phy_event()
-> >
-> > have been converted to use the new _gfp()-suffixed version.
-> >
+On Mon, Dec 21, 2020 at 6:01 PM Andrew Lunn <andrew@lunn.ch> wrote:
 >
-> nit: Is it possible to have non- _gfp()-suffixed symbols at the end, i.e.
-> have same as original?
->
+> So please leave the warning in place, and maybe somebody else will
+> fully fix it.
 
-Yes, of course. I just did not want to double-fold the patch series size
-from first submission ;-)
+For context: the plan is to enable the warning unconditionally
+starting with 5.11. After that, the idea is making it an error as soon
+as reasonable (e.g. 5.12 if no warnings remain by then).
 
-If the overall outlook of this series is OK, in v2 I'll append patches
-#12 => #20 restoring call sites to the original names without _gfp(),
-then keep only the original libsas names.
+However, if there is nobody planning to fix a given warning, then I'd
+say documenting the problem with a `FIXME` comment (plus a change like
+this or simply ignoring the return value) would be the best approach.
 
-Thanks,
-
---
-Ahmed S. Darwish
-Linutronix GmbH
+Cheers,
+Miguel
