@@ -2,90 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B1712DFAC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 11:08:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42E5C2DFB05
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Dec 2020 11:27:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726656AbgLUKHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 05:07:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58148 "EHLO
+        id S1726605AbgLUK0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 05:26:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725955AbgLUKHn (ORCPT
+        with ESMTP id S1725898AbgLUK0Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 05:07:43 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E2BC0611CF
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 02:06:10 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id c7so9000066edv.6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 02:06:10 -0800 (PST)
+        Mon, 21 Dec 2020 05:26:24 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7804C061793
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 02:25:43 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id 190so9387791wmz.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 02:25:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=U8dIwUpOcM3a85wJXVVTJLuQjf8sprpVk53MYVi4/fg=;
-        b=SEinuPXcvuPCdvW0MRn13fwCWRVS8mO4UxgqBsLX5e46XSnK0CooK8WOIgDm6o0onN
-         EWzNTifuBApc+G8kCehTcxsGQOL8gVRIVOWDNDXpf+lNk6Iib9EdWAtBtbfpsExC6A5/
-         dQhV5pFnOIwnVPz+bhE2SRGZMEFgIhFgrAgkIqqsypM7tIBdbzEqkZWxQwEbgD2M54do
-         VMoSkAlQfGnDPQMsSyhUYJW4gNfjC1JFJvYsCdpIWz4NpRJp30ovrv1wQn1SyUlHu9zh
-         +dIeLO8iCtEFEC7p5tOlM8KbO+U3322ZPSUtlRcLU0EtUJn4u3sI2ANAzgVoRGBUNNFQ
-         Do2Q==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=0Vv2JbmBAjngC3pMRGSx1cPuMWHtt6tiXQKcY+Kelgw=;
+        b=TLglt5AQvjZgZmdtnh/EyevOANMYsHXzcV/JGMkqoYtFMBAB4kYQ/FqDpNBbyLj48D
+         YFxH24jMq6+64MYkJlnI6seNq47sfrXEI+5MhdutCJwZVSkm48VuGXPf1v1VNOJsdxlv
+         iHthvFWR/wkc83nv1NiMeo2ZqObxpNRmpONRObi9+XxrKHLCmAkJ/phEI4ldc2oInkdo
+         JUHNZwIT9NV6u4DS+PMxv7l3sd8oxRa1+zUHbr+0w0Qmq4tLYEe2EE/qyUhhFL/1NBbX
+         Ay/tfe9NA/6jbseLr44dJdVM/Q9g5/cYjg5ReXw9X+mdgjkMjyKP0GxowkASkcKWE3Ii
+         DiIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=U8dIwUpOcM3a85wJXVVTJLuQjf8sprpVk53MYVi4/fg=;
-        b=XRHwhBXFEf+hZxrkYXifSErGRl7fNyM5bjoLavRENYrMA2XExauhtZZ14/ukPYtqaw
-         X3K398DjRcUXPVD/WKyl54MK95pSXWfn+T5x1pz81uLcedqzctbnTEIQedsH+cPK9lz4
-         5rVBNxISaHVUcyk7OLXQzUmXYIQbj1i714s5fheSUSqGQnebEDYPLHGyaI43dF0fBVhA
-         MswunTCiKHW9YZ84Rx+TnSzR0xbvKL97z4rZKIFO+JlW2ZdfcjeUL0X0y5+by0fttlvk
-         orWrdpCE0u7GrP4huC1ZW3ujsdzlT8dQMphP+lQ9DzD85mqfJmGYpmU+wiKooGvJOs2O
-         dICQ==
-X-Gm-Message-State: AOAM533Fsub+lSDEu5xaTNoB2VADTEjEZL3R1hNV3qp3TJFKw+j6OZVE
-        Ke4iuLmDiVENfPD9YtFPQm7QtSU06JbGEPnX
-X-Google-Smtp-Source: ABdhPJyNz19N0RdiboEsDTGOmv6wgD2nlAcSqq3mfy/nTIjy7fwLPjYOlQ5FcWOL8Sg/XZLoeIFDiw==
-X-Received: by 2002:a50:bac4:: with SMTP id x62mr14940862ede.59.1608544719284;
-        Mon, 21 Dec 2020 01:58:39 -0800 (PST)
-Received: from localhost.localdomain (hst-221-55.medicom.bg. [84.238.221.55])
-        by smtp.gmail.com with ESMTPSA id e21sm28118581edv.96.2020.12.21.01.58.38
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=0Vv2JbmBAjngC3pMRGSx1cPuMWHtt6tiXQKcY+Kelgw=;
+        b=plcRdJKl4DR51qq9zLFo2blOHLHVt28xhzFxHAiLwDsNNj5w13z6zooF0lWh3mpREw
+         nJPqjF5hZ6NlS6lJLnDQDSSc0rh5Ax1DplA8eqE65lEBUcDl5LaBca212cQMZlAh5260
+         yDPRezYZOgzZ2Zl4GTf1eNBQ218zwnoEmFd7X8qw0uO0EgQcxNbuKRiusCLiDYyEj2NX
+         y8j6RO37zISdvXPgdLsYBjIsObkHIpLKyNlYNwfNYg9PgPT2rWxK/fdMjt4IjjaDRyRf
+         rHuO70gY0bAv9ehkk7pcghpBirqtDUNI7FoKVDRhdvOdg0/boGR1Hf7w5zK8Ayxi3C8S
+         SKDA==
+X-Gm-Message-State: AOAM531Z0xPI/OT7LzXA7hGScMDP1x/qbDo4JHE+RMZ9wbGDhobtJsEE
+        2jLFlJ6IuEOOzP/Xkgr7Y+UJLFnsCW735d2V
+X-Google-Smtp-Source: ABdhPJwV1UaD4rwmRRKU3eYSK2VySTMJPM9TCAXi8auRr8LxcUXt/74B0bP1dkXBIbzejKLTyh/UWg==
+X-Received: by 2002:a1c:7d58:: with SMTP id y85mr5910588wmc.50.1608544757077;
+        Mon, 21 Dec 2020 01:59:17 -0800 (PST)
+Received: from dell ([91.110.221.144])
+        by smtp.gmail.com with ESMTPSA id e16sm27858733wra.94.2020.12.21.01.59.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 01:58:38 -0800 (PST)
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-To:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Shawn Guo <shawn.guo@linaro.org>, vgarodia@codeaurora.org,
-        Mansur Alisha Shaik <mansur@codeaurora.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH] venus: core: Fix platform driver shutdown
-Date:   Mon, 21 Dec 2020 11:58:20 +0200
-Message-Id: <20201221095820.27192-1-stanimir.varbanov@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        Mon, 21 Dec 2020 01:59:16 -0800 (PST)
+Date:   Mon, 21 Dec 2020 09:59:12 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Timon Baetz <timon.baetz@protonmail.com>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH v2 2/6] power: supply: max8997_charger: Set CHARGER
+ current limit
+Message-ID: <20201221095912.GB53991@dell>
+References: <20201202203516.43053-1-timon.baetz@protonmail.com>
+ <20201221095001.595366-1-timon.baetz@protonmail.com>
+ <20201221095001.595366-2-timon.baetz@protonmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201221095001.595366-2-timon.baetz@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With TZ system reboot cannot finish successfully. To fix that
-enable core clocks by runtime pm before TZ calls and disable
-clocks after that.
+On Mon, 21 Dec 2020, Timon Baetz wrote:
 
-Fixes: 7399139be6b2 ("media: venus: core: add shutdown callback for venus")
-Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
----
- drivers/media/platform/qcom/venus/core.c | 2 ++
- 1 file changed, 2 insertions(+)
+> Register for extcon notification and set charging current depending on
+> the detected cable type. Current values are taken from vendor kernel,
+> where most charger types end up setting 650mA [0].
+> 
+> Also enable and disable the CHARGER regulator based on extcon events.
+> 
+> [0] https://github.com/krzk/linux-vendor-backup/blob/samsung/galaxy-s2-epic-4g-touch-sph-d710-exynos4210-dump/drivers/misc/max8997-muic.c#L1675-L1678
+> 
+> Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
+> ---
+>  drivers/mfd/max8997.c                  |  4 +-
 
-diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
-index bdd293faaad0..7233a7311757 100644
---- a/drivers/media/platform/qcom/venus/core.c
-+++ b/drivers/media/platform/qcom/venus/core.c
-@@ -349,8 +349,10 @@ static void venus_core_shutdown(struct platform_device *pdev)
- {
- 	struct venus_core *core = platform_get_drvdata(pdev);
- 
-+	pm_runtime_get_sync(core->dev);
- 	venus_shutdown(core);
- 	venus_firmware_deinit(core);
-+	pm_runtime_put_sync(core->dev);
- }
- 
- static __maybe_unused int venus_runtime_suspend(struct device *dev)
+Please split this out into a separate patch.
+
+>  drivers/power/supply/max8997_charger.c | 94 ++++++++++++++++++++++++++
+>  2 files changed, 96 insertions(+), 2 deletions(-)
+
 -- 
-2.17.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
