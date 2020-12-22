@@ -2,114 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C943F2E0F85
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 21:56:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B94B22E0F87
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 21:56:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727669AbgLVUxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 15:53:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42288 "EHLO
+        id S1727727AbgLVUyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 15:54:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726289AbgLVUxl (ORCPT
+        with ESMTP id S1726340AbgLVUyx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 15:53:41 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43E3EC061793
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 12:53:01 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id w18so13229821iot.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 12:53:01 -0800 (PST)
+        Tue, 22 Dec 2020 15:54:53 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFF4EC0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 12:54:12 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id m203so19340774ybf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 12:54:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oSFSCu/3Al5lp+zO9UYGs39Tx645YSp48rg99RlI4+M=;
-        b=F80PhSdtn+/+FG7JYRhi5K7qtpoZDpbmjahsp4k1NcmszQi/3RIYjdxFQq1FIyrZik
-         PtvaxiPDQ64Tn6OvdxQpavQfrRlyGPuk/n2iW9H+2rVs9biNBISY1hoYNN4phfa63erm
-         v2/Lh7WvK9StfpKmywXpwLH1gm3BYBkWCyLb4=
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=/9QkJtGrDHYGlOeTvRf6aI/jOSpy3JILOtXVR8pD5Bg=;
+        b=OdfKo0GyVnWedvMBm0zf561kxeucBXA18KqGvJwTxhnAVORS5IoBE/fCt5/BOUkzJx
+         UTeEuaLfNgVW4XJXeduSaoPgr1Mw6zzqTJz4/XRaTqpHea0+ATsSFsurQ9Dqb2IJjqLN
+         wGJ9MruXqUFOiQtI6nagP+VUFEPKLZ4FGKJJzX0137FlB172LXVRqQvrALDXEsSWkibl
+         egQ9tbdyh5uh1E1/HK82+wbSm6f4f2afcWCK6T0FOxUeODHCSwup4BvU8PgVeAqkFtst
+         Se+tdQeqfOHb9xPM54QctQKo4XNRvuEpaZEXWKgqUk4cStc/xJPXphYiME0eFayGvN8l
+         0kQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oSFSCu/3Al5lp+zO9UYGs39Tx645YSp48rg99RlI4+M=;
-        b=Fw/OOaQ3t9ccD79gID3gSpDCgjx7TZfaIqeDuH+Qj/uUKQk0J94kvg9vRUE16l/cSk
-         s4shKN9jIsiRozziN2zHe5YV0R4motQZhx57jkQd9aJYtqt5P5bXNMZZwUXHlZxyKo7J
-         OoaGrg54DONAzootWo7v5I5g+QOh8BD0oIHB+dBW+ObecExEBg0Kzdh+fyQgzAcAgENa
-         KyoTQ6F3lH6DRfHzrA/ofXUxCPcOTyCzdGL7rdOlK+DFCH7m8BQFyn7ONHk8TnL1ZD19
-         aMQAh5hBFisleCFJdbH6b+bfU2UyEcLdjWhNdmi53wphlRsBjRezpch0Kbmhp4XUsENs
-         T3Qg==
-X-Gm-Message-State: AOAM533fr7UkMb6ec63HM4ok1GwmWgzmBNpfWUHzt//shiMMq99q3ZMu
-        NWlCE4Sn6NJIGnvVyozs73ls3RCglQyXY2def13RiQ==
-X-Google-Smtp-Source: ABdhPJwUqtn1nVeh8VywzsuWE/X+W+Y1UqKUyImxjltZg7lSkMwZrzviL3JWLIMRnjCRMoehIYHyn/Ngb3/anEcge28=
-X-Received: by 2002:a6b:8b88:: with SMTP id n130mr19156455iod.122.1608670380554;
- Tue, 22 Dec 2020 12:53:00 -0800 (PST)
-MIME-Version: 1.0
-References: <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com> <CACYkzJ7T4y7in1AsCvJ2izA3yiAke8vE9SRFRCyTPeqMnDHoyQ@mail.gmail.com>
- <e8b03cbc-c120-43d5-168c-cde5b6a97af8@fb.com> <CAEf4BzYz9Yf9abPBtP+swCuqvvhL0cbbbF1x-3stg9mp=a6+-A@mail.gmail.com>
- <194b5a6e6e30574a035a3e3baa98d7fde7f91f1c.camel@chromium.org>
- <CAADnVQK6GjmL19zQykYbh=THM9ktQUzfnwF_FfhUKimCxDnnkQ@mail.gmail.com>
- <CABRcYm+zjC-WH2gxtfEX5S6mZj-5_ByAzVd5zi3aRmQv-asYqg@mail.gmail.com>
- <221fb873-80fc-5407-965e-b075c964fa13@fb.com> <CABRcYmLL=SUsPS6qWVgTyYJ26r-QtECfeTZXkXSp7iRBDZRbZA@mail.gmail.com>
- <d29c2ed6-d99c-9d28-e6ea-d79ffd4d7e65@fb.com> <20201218032009.ycmyqn2kjs3ynfbp@ast-mbp>
-In-Reply-To: <20201218032009.ycmyqn2kjs3ynfbp@ast-mbp>
-From:   Florent Revest <revest@chromium.org>
-Date:   Tue, 22 Dec 2020 21:52:49 +0100
-Message-ID: <CABRcYmKSio1gD0h2suZ96jGnMsXpQ9V151-1k+ZkRMxop+GR5w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@google.com>,
-        open list <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=/9QkJtGrDHYGlOeTvRf6aI/jOSpy3JILOtXVR8pD5Bg=;
+        b=HIqPF++tbmc6QbK6WlWsVEH1BUJxcbKL9ieRBHVSu5JR5i1AtlmnShQnxZP2zQDD4t
+         C6KpdGWhhx++tm/xslkSgDTIwe0fV91422z3wSrwIF6uS+LF/b8FxgfXaBi9SrMClB5q
+         ZmBv4t3WLWMrIWcgMu98TCU0zYhiBjg5JdIKBCDwtC3u6dxXS3lMvTHfetkvMWQxS9yS
+         LEF6uLiUU6Nn+gibgQ85sZfkz8oHNzREwSKrSjKZlYkEHD11cbpbk8hPrzW4M2AxxMl8
+         h5IRwoCSNMevLkoYc6Lx3XZjb20alH/vZ0whCGggCeQw6tdGW6Wx82QTKZ/SiYRJbvoy
+         WAPQ==
+X-Gm-Message-State: AOAM533QTNuCKmBwN+vgcI0TJPcGg3QRFzdauoXbIf90cJSUvCgvailN
+        I/qYtT5JKUqvXPAMXLWqNckYGCQJHpoxLcykvR4=
+X-Google-Smtp-Source: ABdhPJyGzD8kYhSUj1EYwgmEauHr5nDb/sLbvusrTMRh3O6TYPvjVAfr82coan1uHwx9Q+puKngANzZ1nSavTD9pjrE=
+Sender: "ndesaulniers via sendgmr" 
+        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
+ (user=ndesaulniers job=sendgmr) by 2002:a25:73c3:: with SMTP id
+ o186mr31889461ybc.182.1608670452024; Tue, 22 Dec 2020 12:54:12 -0800 (PST)
+Date:   Tue, 22 Dec 2020 12:54:01 -0800
+In-Reply-To: <20201212161831.GA28098@roeck-us.net>
+Message-Id: <20201222205402.2269377-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+References: <20201212161831.GA28098@roeck-us.net>
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
+Subject: [PATCH] sh: check return code of request_irq
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Paul Mundt <lethal@linux-sh.org>,
+        Guenter Roeck <linux@roeck-us.net>, linux-sh@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 4:20 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
-> As far as 6 arg issue:
-> long bpf_snprintf(const char *out, u32 out_size,
->                   const char *fmt, u32 fmt_size,
->                   const void *data, u32 data_len);
-> Yeah. It won't work as-is, but fmt_size is unnecessary nowadays.
-> The verifier understands read-only data.
-> Hence the helper can be:
-> long bpf_snprintf(const char *out, u32 out_size,
->                   const char *fmt,
->                   const void *data, u32 data_len);
-> The 3rd arg cannot be ARG_PTR_TO_MEM.
-> Instead we can introduce ARG_PTR_TO_CONST_STR in the verifier.
-> See check_mem_access() where it's doing bpf_map_direct_read().
-> That 'fmt' string will be accessed through the same bpf_map_direct_read().
-> The verifier would need to check that it's NUL-terminated valid string.
+request_irq is marked __must_check, but the call in shx3_prepare_cpus
+has a void return type, so it can't propagate failure to the caller.
+Follow cues from hexagon and just print an error.
 
-Ok, this works for me.
+Fixes: c7936b9abcf5 ("sh: smp: Hook in to the generic IPI handler for SH-X3 SMP.")
+Cc: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc: Paul Mundt <lethal@linux-sh.org>
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+ arch/sh/kernel/cpu/sh4a/smp-shx3.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-> It should probably do % specifier checks at the same time.
+diff --git a/arch/sh/kernel/cpu/sh4a/smp-shx3.c b/arch/sh/kernel/cpu/sh4a/smp-shx3.c
+index f8a2bec0f260..1261dc7b84e8 100644
+--- a/arch/sh/kernel/cpu/sh4a/smp-shx3.c
++++ b/arch/sh/kernel/cpu/sh4a/smp-shx3.c
+@@ -73,8 +73,9 @@ static void shx3_prepare_cpus(unsigned int max_cpus)
+ 	BUILD_BUG_ON(SMP_MSG_NR >= 8);
+ 
+ 	for (i = 0; i < SMP_MSG_NR; i++)
+-		request_irq(104 + i, ipi_interrupt_handler,
+-			    IRQF_PERCPU, "IPI", (void *)(long)i);
++		if (request_irq(104 + i, ipi_interrupt_handler,
++			    IRQF_PERCPU, "IPI", (void *)(long)i))
++			pr_err("Failed to request irq %d\n", i);
+ 
+ 	for (i = 0; i < max_cpus; i++)
+ 		set_cpu_present(i, true);
+-- 
+2.29.2.729.g45daf8777d-goog
 
-However, I'm still not sure whether that would work. Did you maybe
-miss my comment in a previous email? Let me put it back here:
-
-> The iteration that bpf_trace_printk does over the format string
-> argument is not only used for validation. It is also used to remember
-> what extra operations need to be done based on the modifier types. For
-> example, it remembers whether an arg should be interpreted as 32bits or
-> 64bits. In the case of string printing, it also remembers whether it is
-> a kernel-space or user-space pointer so that bpf_trace_copy_string can
-> be called with the right arg. If we were to run the iteration over the format
-> string in the verifier, how would you recommend that we
-> "remember" the modifier type until the helper gets called ?
-
-The best solution I can think of would be to iterate over the format
-string in the helper. In that case, the format string verification in
-the verifier would be redundant and the format string wouldn't have to
-be constant. Do you have any suggestions ?
-
-> At the end bpf_snprintf() will have 5 args and when wrapped with
-> BPF_SNPRINTF() macro it will accept arbitrary number of arguments to print.
-> It also will be generally useful to do all other kinds of pretty printing.
-
-Yep this macro is a good idea, I like that. :)
