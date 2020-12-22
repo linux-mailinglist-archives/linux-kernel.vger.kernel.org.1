@@ -2,126 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4819A2E093E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 12:00:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A28852E0941
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 12:00:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726929AbgLVK7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 05:59:02 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:10140 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726719AbgLVK65 (ORCPT
+        id S1726317AbgLVK7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 05:59:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45186 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726719AbgLVK7H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 05:58:57 -0500
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BMAwBBe013253;
-        Tue, 22 Dec 2020 11:58:11 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=GnrvcVYo8oknBArAITI8FeTCO3KM0M394BJS3J15Epo=;
- b=BHrc2VHic7TUD5dltTYTaZbMQF7jV1XKLn2r2nODsU5u4R3MrqogouJSdh53H1yUDImt
- 3pqZ7M7XHRB5f2TqlZloMyouONCkXdAEzdg5wHXq2RF/dhQDHgeA0sdT+wuUVe7Go5o6
- hCVgA80S18nGpAfCG92bx3WOhqI0kC8yEA14mro4r3Dd6j4aor/DG6YaY8vteqbOIsGl
- 61vcs1qUUw1ux2nxkQe5kRHpo7snOy65zYW2jksgbswe76yngFBDw7MQ2aR2Ie0IkN7T
- 70FF1XcKFM2VhChS+0sVmDFN7OG+6TWv2kJVOjg0u81fG6iKoZiVxSuBj8kgslaw+kQB yQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 35k0eb3xca-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Dec 2020 11:58:11 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5308710002A;
-        Tue, 22 Dec 2020 11:58:11 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 457F222ECBD;
-        Tue, 22 Dec 2020 11:58:11 +0100 (CET)
-Received: from localhost (10.75.127.49) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 22 Dec 2020 11:58:10
- +0100
-From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Andy Gross <agross@kernel.org>
-CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-msm@vger.kernel.org>, <arnaud.pouliquen@foss.st.com>
-Subject: [PATCH v2 16/16] rpmsg: replace rpmsg_chrdev_register_device use
-Date:   Tue, 22 Dec 2020 11:57:26 +0100
-Message-ID: <20201222105726.16906-17-arnaud.pouliquen@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201222105726.16906-1-arnaud.pouliquen@foss.st.com>
-References: <20201222105726.16906-1-arnaud.pouliquen@foss.st.com>
+        Tue, 22 Dec 2020 05:59:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608634660;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HUqZxqa8Hto+LIciCh/MDtUD1YZexx2bkHHuabHifwA=;
+        b=NQEHb3yVvZjdZv2JWgnUWnHAGnZggSngM+BOaL5LKlLwPuvHjp7uwQ8o4/Jf/1YQQFryjE
+        u59pvdd1nI/zeqsZv8lg6ViXVS6Dydgsf9zFwtFMZ21r5d8VWReJJ94tMH5/x0MicKIBjM
+        S9MNmCAb8dZFtMYx/rqAn1AAcE4t41g=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-16-xBrEE9qlO4mfjo23JrN9cA-1; Tue, 22 Dec 2020 05:57:39 -0500
+X-MC-Unique: xBrEE9qlO4mfjo23JrN9cA-1
+Received: by mail-wr1-f72.google.com with SMTP id y5so11026487wrs.15
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 02:57:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=HUqZxqa8Hto+LIciCh/MDtUD1YZexx2bkHHuabHifwA=;
+        b=O+gHXF8X7tnfuKhs9BGIAD++INIlZNFHrIrfU7sHzlimdE/fmZBxc2KJ/WknAhJ+2f
+         FBTlxWOPnAV5YU55v/tPWiZ1dCtZ7d69BpXHnLYNS21IV6dFdCgM3dCX4P2o1yAFO8Cr
+         CvW4tkLeOKPPwb1dhrF8XH2tCaGnc3ND5Tza8Ohtw0SDfWVUjEfKbW7H9t/aWuEviQ5X
+         Ecdii3UKCEgjQWjEGfe8SwNZJOkXrfPBE48/qDPskmMbPzdROGEQYw/FWJjEwqvLr7bK
+         Mz49YCrwZ3L3G6rM3l4WaP5kL8VrMCxQ/JgOpRmabfSRmrieVZgQ7gITSP7VPNpInvmk
+         Teew==
+X-Gm-Message-State: AOAM532ZmmAmr5yFaTIzT9x27Tj4Pog8qdKAmu7qjFuR8SEx20y3yJ5C
+        +6Ms8LEdWAIMa5VFgjHfuMsBExJcLXMBsR6QzmzC5uW91YZH8HyleMX/huIk5fVb+Ly/BYhMgRi
+        rdvwSzk33UUkEH6A4+xwQ5Jhs
+X-Received: by 2002:a1c:4684:: with SMTP id t126mr21204126wma.165.1608634657599;
+        Tue, 22 Dec 2020 02:57:37 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxnZK58B0WG9HQAYkhmv2Ni3xwkfZ+ilVxWV+8a3a96JzWjI13O3HYHbD/TbNH2vg1Rhw94SQ==
+X-Received: by 2002:a1c:4684:: with SMTP id t126mr21204104wma.165.1608634657357;
+        Tue, 22 Dec 2020 02:57:37 -0800 (PST)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id z22sm25892487wml.1.2020.12.22.02.57.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Dec 2020 02:57:36 -0800 (PST)
+Date:   Tue, 22 Dec 2020 11:57:33 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Laurent Vivier <lvivier@redhat.com>,
+        linux-kernel@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+Subject: Re: [PATCH RFC 00/12] vdpa: generalize vdpa simulator and add block
+ device
+Message-ID: <20201222105733.4f6oou7lshi35qvc@steredhat>
+References: <20201113134712.69744-1-sgarzare@redhat.com>
+ <93f207c0-61e6-3696-f218-e7d7ea9a7c93@redhat.com>
+ <20201218113816.zcyeyqipux4ao4cp@steredhat>
+ <7dd3ed02-36c3-fcfd-0a1d-9c31af6f473e@redhat.com>
+ <20201221111423.sestfroiw2dgpluc@steredhat>
+ <856d53c2-82e2-e408-76e6-24c92010f973@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-22_04:2020-12-21,2020-12-22 signatures=0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <856d53c2-82e2-e408-76e6-24c92010f973@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace rpmsg_chrdev_register_device by the new helper
-rpmsg_ctl_register_device to probe the new IOCTL interface.
+On Tue, Dec 22, 2020 at 10:44:48AM +0800, Jason Wang wrote:
+>
+>On 2020/12/21 下午7:14, Stefano Garzarella wrote:
+>>On Mon, Dec 21, 2020 at 11:16:54AM +0800, Jason Wang wrote:
+>>>
+>>>On 2020/12/18 下午7:38, Stefano Garzarella wrote:
+>>>>On Mon, Nov 16, 2020 at 11:37:48AM +0800, Jason Wang wrote:
+>>>>>
+>>>>>On 2020/11/13 下午9:47, Stefano Garzarella wrote:
+>>>>>>Thanks to Max that started this work!
+>>>>>>I took his patches, and extended the block simulator a bit.
+>>>>>>
+>>>>>>This series moves the network device simulator in a new module
+>>>>>>(vdpa_sim_net) and leaves the generic functions in the vdpa_sim core
+>>>>>>module, allowing the possibility to add new vDPA device simulators.
+>>>>>>Then we added a new vdpa_sim_blk module to simulate a block device.
+>>>>>>
+>>>>>>I'm not sure about patch 11 ("vringh: allow vringh_iov_xfer() to skip
+>>>>>>bytes when ptr is NULL"), maybe we can add a new functions instead of
+>>>>>>modify vringh_iov_xfer().
+>>>>>>
+>>>>>>As Max reported, I'm also seeing errors with vdpa_sim_blk related to
+>>>>>>iotlb and vringh when there is high load, these are some of the error
+>>>>>>messages I can see randomly:
+>>>>>>
+>>>>>>  vringh: Failed to access avail idx at 00000000e8deb2cc
+>>>>>>  vringh: Failed to read head: idx 6289 address 00000000e1ad1d50
+>>>>>>  vringh: Failed to get flags at 000000006635d7a3
+>>>>>>
+>>>>>>  virtio_vdpa vdpa0: vringh_iov_push_iotlb() error: -14 
+>>>>>>offset:   0x2840000 len: 0x20000
+>>>>>>  virtio_vdpa vdpa0: vringh_iov_pull_iotlb() error: -14 
+>>>>>>offset:   0x58ee000 len: 0x3000
+>>>>>>
+>>>>>>These errors should all be related to the fact that iotlb_translate()
+>>>>>>fails with -EINVAL, so it seems that we miss some mapping.
+>>>>>
+>>>>>
+>>>>>Is this only reproducible when there's multiple co-current 
+>>>>>accessing of IOTLB? If yes, it's probably a hint that some 
+>>>>>kind of synchronization is still missed somewhere.
+>>>>>
+>>>>>It might be useful to log the dma_map/unmp in both virtio_ring 
+>>>>>and vringh to see who is missing the map.
+>>>>>
+>>>>
+>>>>Just an update about these issues with vdpa-sim-blk.
+>>>>I've been focusing a little bit on these failures over the last 
+>>>>few days and have found two issues related to the IOTLB/IOMMU:
+>>>>
+>>>>1. Some requests coming from the block layer fills the SG list 
+>>>>with multiple buffers that had the same physical address. This 
+>>>>happens for example while using 'mkfs', at some points multiple 
+>>>>sectors are zeroed so multiple SG elements point to the same 
+>>>>physical page that is zeroed.
+>>>>Since we are using vhost_iotlb_del_range() in the 
+>>>>vdpasim_unmap_page(), this removes all the overlapped ranges. I 
+>>>>fixed removing a single map in vdpasim_unmap_page(), but has an 
+>>>>alternative we can implement some kind of reference counts.
+>>>
+>>>
+>>>I think we need to do what hardware do. So using refcount is 
+>>>probably not a good ida.
+>>
+>>Okay, so since we are using for simplicity an identical mapping, we 
+>>are assigning the same dma_addr to multiple pages.
+>
+>
+>I think I get you now. That's the root cause for the failure.
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
----
- drivers/rpmsg/qcom_glink_native.c |  2 +-
- drivers/rpmsg/qcom_smd.c          |  2 +-
- drivers/rpmsg/rpmsg_internal.h    | 14 --------------
- 3 files changed, 2 insertions(+), 16 deletions(-)
+Yes, sorry, I didn't explain well previously.
 
-diff --git a/drivers/rpmsg/qcom_glink_native.c b/drivers/rpmsg/qcom_glink_native.c
-index d74c338de077..6c7bb84f7da9 100644
---- a/drivers/rpmsg/qcom_glink_native.c
-+++ b/drivers/rpmsg/qcom_glink_native.c
-@@ -1681,7 +1681,7 @@ static int qcom_glink_create_chrdev(struct qcom_glink *glink)
- 	rpdev->dev.parent = glink->dev;
- 	rpdev->dev.release = qcom_glink_device_release;
- 
--	return rpmsg_chrdev_register_device(rpdev);
-+	return rpmsg_ctl_register_device(rpdev);
- }
- 
- struct qcom_glink *qcom_glink_native_probe(struct device *dev,
-diff --git a/drivers/rpmsg/qcom_smd.c b/drivers/rpmsg/qcom_smd.c
-index 40853702f54f..a39457c57705 100644
---- a/drivers/rpmsg/qcom_smd.c
-+++ b/drivers/rpmsg/qcom_smd.c
-@@ -1138,7 +1138,7 @@ static int qcom_smd_create_chrdev(struct qcom_smd_edge *edge)
- 	qsdev->rpdev.dev.parent = &edge->dev;
- 	qsdev->rpdev.dev.release = qcom_smd_release_device;
- 
--	return rpmsg_chrdev_register_device(&qsdev->rpdev);
-+	return rpmsg_ctl_register_device(&qsdev->rpdev);
- }
- 
- /*
-diff --git a/drivers/rpmsg/rpmsg_internal.h b/drivers/rpmsg/rpmsg_internal.h
-index a76c344253bf..c81dfb374b64 100644
---- a/drivers/rpmsg/rpmsg_internal.h
-+++ b/drivers/rpmsg/rpmsg_internal.h
-@@ -81,19 +81,5 @@ struct rpmsg_device *rpmsg_create_channel(struct rpmsg_device *rpdev,
- 					  struct rpmsg_channel_info *chinfo);
- int rpmsg_release_channel(struct rpmsg_device *rpdev,
- 			  struct rpmsg_channel_info *chinfo);
--/**
-- * rpmsg_chrdev_register_device() - register chrdev device based on rpdev
-- * @rpdev:	prepared rpdev to be used for creating endpoints
-- *
-- * This function wraps rpmsg_register_device() preparing the rpdev for use as
-- * basis for the rpmsg chrdev.
-- */
--static inline int rpmsg_chrdev_register_device(struct rpmsg_device *rpdev)
--{
--	strcpy(rpdev->id.name, "rpmsg_chrdev");
--	rpdev->driver_override = "rpmsg_chrdev";
--
--	return rpmsg_register_device(rpdev);
--}
- 
- #endif
--- 
-2.17.1
+>
+>Then I think we need an simple iova allocator for vdpa simulator, and 
+>it might be useful for VDUSE as well.
+
+Okay, I'll work on it.
+If you have an example to follow or some pointers, they are welcome :-)
+
+Thanks,
+Stefano
 
