@@ -2,75 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60C0E2E0F62
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 21:30:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D5202E0F64
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 21:33:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727676AbgLVUa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 15:30:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38716 "EHLO
+        id S1727206AbgLVUcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 15:32:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726319AbgLVUa2 (ORCPT
+        with ESMTP id S1726128AbgLVUcU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 15:30:28 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2FFDC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 12:29:48 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id v3so7984249plz.13
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 12:29:48 -0800 (PST)
+        Tue, 22 Dec 2020 15:32:20 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7474C06179C
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 12:31:40 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id t6so8020633plq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 12:31:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=1uYO5gb8l22kkJBNYBKF4BpoBbkwVbyfFkGg5GIkRf8=;
-        b=tNmThOcEL3wKkZ/mser/opC9H2K0uIdWblQmaWHo8rNKGuNVPu8tXaPsuRFzmdKCrF
-         a+izjHmcd+U1nb/pimozzgs5HERTz7g6Wr/7SUbQeJyOkXfuSOb4sDDSbfQ9UcjoOqN0
-         7R+ohRlSK+d313ZwjIOUC2VIW8TPuzP2T57c3WSSs0VfoiZ6/U9dHiB5ok9SwAFQDsnM
-         lJ31iul44tafXtXpPAZ8Hwo81i7r5EclBr4kOnRfCLeDQToIdU6uRFvLT5K+Rs6f6MC2
-         WIalUN5TLkuC+QGy998xOucT0sMwnTYOyyU1Y2lxVHZRlIWP5dzO5Z8xfL+TaLZ3O+YG
-         fDqQ==
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K3t0gQbM6vz2TJwWgefdmZ2h7DY9X/bWdXKHVBct5Bo=;
+        b=xIcXQn7R4olfb6NcIyMf0NYfvpPgw6QMgzZqfGR/vN1YUULDWUjonzB1u1/ySq/1+2
+         LxpwMMHsEwVO8g1rS3R3TIZjoli5f69LDfyF5ZNNXGfOU+tHVbnyiyN+Y+zWKr1/JZL5
+         S+uqgfDwY2RRWm2ZHdTC0BJLvhQzV0y417kxiPUtc2/qhs2GQA6POOqa+KU+OdEfXMoA
+         A+6e3BNovWaPuA16HnA874KhkukNH+vohj9uEjGTi1uBHlJlZCvOBUoJ1T1oL8MmpH71
+         t0tFwT2gvcsPX5zjaFyLTscOoRU9spDL3/Lu9+cRSLHINPBTUkaFuLh2mAlsqZtI20q4
+         WB5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=1uYO5gb8l22kkJBNYBKF4BpoBbkwVbyfFkGg5GIkRf8=;
-        b=ZgDZpAsNJXhmv4neP2aemnMkpEsnMVi1YXjpmvFVw/4qXbsKjRFnxHPdMUTRDhIfRH
-         MihFBjfiggz3TI+9bDa6lmNl5HcLph6Qf8eeeNegt3CplMNd7wkYChdyl9T8bLFdtym6
-         yKtmiFIKHCo90GQNStbZQIY6Pa1uYU5EfDNZQxGrgpnR9HdDeVydhpS8U3pt7Lfea0VN
-         6v1Qecs8mzwcZ19wZkGKJdtMOMCigeSu3yzxIeYAXN2XGEycpjdvpEclgD54lbmNi4Z3
-         V3Ync6UqqX0cHraUth5U2CoSH5GtQMn4tv69kzlm/pWXGU38AVqMLjKcXAd3j8VJC9ZD
-         dWzg==
-X-Gm-Message-State: AOAM5300OB6oBcwhPfguERj/NhxaSi2OoCAevRznu7sIb51lZmv83gP8
-        3O7ClEGlR4+UzTGHf30rJ03embQe0cqezeiHNTFx2w==
-X-Google-Smtp-Source: ABdhPJz9swd7VzUDCz8TW/NXCMcoXhe/xUMJYDX4nWy7LSE9Qfj3Td/x1Z2lL6L9RlJEcG+cRmpmGWG0OutDg8kxofo=
-X-Received: by 2002:a17:902:26a:b029:da:af47:77c7 with SMTP id
- 97-20020a170902026ab02900daaf4777c7mr22812796plc.10.1608668988122; Tue, 22
- Dec 2020 12:29:48 -0800 (PST)
-MIME-Version: 1.0
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 22 Dec 2020 12:29:37 -0800
-Message-ID: <CAKwvOdmnhsPU0UA9uEd1HTQ_yoBO8h741+sKrtebcPsXpXn8_g@mail.gmail.com>
-Subject: building csky with CC=clang
-To:     Guo Ren <guoren@kernel.org>
-Cc:     linux-csky@vger.kernel.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=K3t0gQbM6vz2TJwWgefdmZ2h7DY9X/bWdXKHVBct5Bo=;
+        b=jHy9bD8TbFR7jhsMHkhwQ8mLMLImN1mtJUuDSK3/V3ODsF9DE3vFEaaBHMiVViMOF7
+         LVA3KVesQgfzfWZQhqvYRWmM+/1NiYn0SPkBXVIZqCDFCpEg+lPpsh9KQH8PJDwXtVKe
+         jxXmdsJQDJvdwm5sslbDLHDMuPKboo0dK1apzXBWteSOb8braRCcDYq9ze5b8hBEh9jw
+         gW44axNhOUqB+s0pmYSNZ0gF6k5I2P869wYLzGx08EMDHJfcUqNR7hCELTJkj5bo3drV
+         gTh4ZXPWBuIbQp43BwyGN6WswsafBdKT/mP2JMvbC1DF5VPA6quUrEVacLyjSs8Z6yUR
+         +3AA==
+X-Gm-Message-State: AOAM5302ZrVr5lw4Gbvp/n4xrgC+vpIdwx05U7atE16BdqqFic7VbVGU
+        RNthXptfoweVjDItk5tkLRdbuQ==
+X-Google-Smtp-Source: ABdhPJxmDWHlPtP4ZhkG5oNkIvaR9bXeCaw5WhU7AWPPpJheCeEpfLo0O3inkKuWstj+VTyDNxvnQw==
+X-Received: by 2002:a17:90a:e005:: with SMTP id u5mr23339455pjy.64.1608669100205;
+        Tue, 22 Dec 2020 12:31:40 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id w27sm17486740pfq.104.2020.12.22.12.31.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Dec 2020 12:31:39 -0800 (PST)
+Date:   Tue, 22 Dec 2020 12:31:39 -0800 (PST)
+X-Google-Original-Date: Tue, 22 Dec 2020 12:31:37 PST (-0800)
+Subject:     Re: [dm-devel] [PATCH v1 0/5] dm: dm-user: New target that proxies BIOs to userspace
+In-Reply-To: <20201222133246.GA5099@infradead.org>
+CC:     josef@toxicpanda.com, bvanassche@acm.org,
+        Christoph Hellwig <hch@infradead.org>, snitzer@redhat.com,
+        corbet@lwn.net, kernel-team@android.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
+        song@kernel.org, dm-devel@redhat.com,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org, agk@redhat.com,
+        michael.christie@oracle.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Message-ID: <mhng-843a42fb-63aa-4626-a60d-6e4d28a7bb73@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
-I was playing with some of LLVM's experimental backends (m68k) and saw
-there was a CSKY backend. I rebuilt LLVM to support CSKY, but I ran
-into trouble building the kernel before even getting to the compiler
-invocation:
+On Tue, 22 Dec 2020 05:32:46 PST (-0800), Christoph Hellwig wrote:
+> On Mon, Dec 14, 2020 at 07:00:57PM -0800, Palmer Dabbelt wrote:
+>> I haven't gotten a whole lot of feedback, so I'm inclined to at least have some
+>> reasonable performance numbers before bothering with a v2.
+>
+> FYI, my other main worry beside duplicating nbd is that device mapper
+> really is a stacked interface that sits on top of other block device.
+> Turning this into something else that just pipes data to userspace
+> seems very strange.
 
-$ ARCH=csky CROSS_COMPILE=csky-linux-gnu- make CC=clang -j71 defconfig
-...
-scripts/Kconfig.include:40: linker 'csky-linux-gnu-ld' not found
+Agreed.  It certainly doesn't fit the DM model.  We'd considered doing a non-DM
+version of this (maybe "ubd"), but decided to stick with dm-user because we
+didn't want to duplicate all the device creation stuff that DM provides.  A
+simple version of that wouldn't be that hard to do, but the DM version has a
+lot of features and we get that all for free.  We essentially decided to run
+with DM until it gets in the way, and the only sticking point we ended up with
+was that REQUEUE stuff (though not sure how that would show up with a bare
+block device) and that scheduler question.
 
-My distro doesn't package binutils-csky-linux-gnu, is there
-documentation on how to build the kernel targeting CSKY, starting with
-building GNU binutils configured with CSKY emulation?
--- 
-Thanks,
-~Nick Desaulniers
+I'm going to stick with DM for now, unless it gets in the way, to avoid coming
+up with a device creation scheme myself.  In the long term it's probably best
+to have this be a standalone thing, but I don't want to dump a bunch of time
+into putting that stuff together only to find that this isn't interesting
+enough from a performance perspective to stick around.
