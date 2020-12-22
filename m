@@ -2,112 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F4C82E0E74
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 19:55:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEA4F2E0E7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 19:56:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbgLVSyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 13:54:19 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:38580 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726356AbgLVSyT (ORCPT
+        id S1726951AbgLVSzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 13:55:42 -0500
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:42686 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726161AbgLVSzk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 13:54:19 -0500
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id C490C20B83DE;
-        Tue, 22 Dec 2020 10:53:37 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C490C20B83DE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1608663218;
-        bh=//PxRnptZMzVjXYlyIzWx/0zydVkwQDoYcP2NBeyDZ8=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Hb9HWHUZ+LQw+0OkX+tP5HdR/Q7wQOGoBlOskRnaFQ9kuqceUyz0iOqmuPLV+VsI6
-         V1Jtbm11qxpVrmrWUGgcl9d8+EW5IESynwTuFoKFmuHwK2PM/gmJU17L5+D/ZXVouc
-         gy+KEEVaVTjiZoJHevX/cRW3Nc/dI01qh7Y6625M=
-Subject: Re: [PATCH v13 2/6] powerpc: Move arch independent ima kexec
- functions to drivers/of/kexec.c
-To:     Mimi Zohar <zohar@linux.ibm.com>, bauerman@linux.ibm.com,
-        robh@kernel.org, takahiro.akashi@linaro.org,
-        gregkh@linuxfoundation.org, will@kernel.org,
-        catalin.marinas@arm.com, mpe@ellerman.id.au
-Cc:     james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
-        paulus@samba.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
-        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-References: <20201219175713.18888-1-nramas@linux.microsoft.com>
- <20201219175713.18888-3-nramas@linux.microsoft.com>
- <a1a4526c0759eb3b5d70fb8edc89360718376def.camel@linux.ibm.com>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <e0d9398b-1b46-8115-7bf0-28e9826fcd6b@linux.microsoft.com>
-Date:   Tue, 22 Dec 2020 10:53:37 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 22 Dec 2020 13:55:40 -0500
+Received: by mail-oi1-f169.google.com with SMTP id l200so15746325oig.9;
+        Tue, 22 Dec 2020 10:55:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=la43jOzGT8cpDZH0lHbZ8yczIDIlNNAQ1oOndJF72r4=;
+        b=AtCcSb0o7lY006L2GZrR5UPwPilzq/kC67NLyMjTZtASTReROhfjHPSy0RutWkOlKG
+         RqbP27tGmReskQxNo0K1qfHhQcg6BAW8uhUbqOHdmm5hEmtBJFuenLd5NptgWQUOCKDz
+         kjBCjoZCLZnH3k1wGg9YY432uIFwhpY+r6MsQXLuVC5Lukiq3687e0tzgaR02AiCPgSA
+         hUQ6TnjAbNzY2zv/Q8ZK4fhOAFRbv50TPGQ5gIf6Z0+69bzjLuL3yZL4SdU0w7FOj1Nr
+         53m1eQRxRsaWSphjOgaFwTgtkYz5JW6aTdzGIVgfIfPX0m1eiIDBLzh63umJaoDlvgAe
+         kNQA==
+X-Gm-Message-State: AOAM533zU2Uk2Mcr8ixJ0xDbGVLBXHLupoRPMNp6erY+S1JCHptXTjXn
+        D0tMUPgu9lUdRtq9T2gSPgh66ssty+unEomxCjk=
+X-Google-Smtp-Source: ABdhPJy5EVY7T6HE7RxxJ9AoKr5usE9gCbUG5HZ1gWiHgPXdK9RZjFwARYSd7qSwoUdfSw0ANGyqV1mRCh80XLruDv8=
+X-Received: by 2002:aca:3cc5:: with SMTP id j188mr14009921oia.54.1608663299046;
+ Tue, 22 Dec 2020 10:54:59 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <a1a4526c0759eb3b5d70fb8edc89360718376def.camel@linux.ibm.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201222184510.19415-1-info@metux.net>
+In-Reply-To: <20201222184510.19415-1-info@metux.net>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 22 Dec 2020 19:54:48 +0100
+Message-ID: <CAMuHMdVze3oaWmzvzn8ROjpP6h6Tsv2SFLiV7T1Cnej36X445g@mail.gmail.com>
+Subject: Re: [PATCH] arch: consolidate pm_power_off callback
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Salter <msalter@redhat.com>,
+        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Christian Brauner <christian@brauner.io>,
+        alpha <linux-alpha@vger.kernel.org>,
+        arcml <linux-snps-arc@lists.infradead.org>,
+        linux-c6x-dev@linux-c6x.org, linux-csky@vger.kernel.org,
+        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Openrisc <openrisc@lists.librecores.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        Linux PM list <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/22/20 6:26 AM, Mimi Zohar wrote:
+Hi Enrico,
 
-Hi Mimi,
+On Tue, Dec 22, 2020 at 7:46 PM Enrico Weigelt, metux IT consult
+<info@metux.net> wrote:
+> Move the pm_power_off callback into one global place and also add an
+> function for conditionally calling it (when not NULL), in order to remove
+> code duplication in all individual archs.
+>
+> Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
 
-> 
-> On Sat, 2020-12-19 at 09:57 -0800, Lakshmi Ramasubramanian wrote:
->>
->> diff --git a/arch/powerpc/kexec/Makefile b/arch/powerpc/kexec/Makefile
->> index 4aff6846c772..b6c52608cb49 100644
->> --- a/arch/powerpc/kexec/Makefile
->> +++ b/arch/powerpc/kexec/Makefile
->> @@ -9,13 +9,6 @@ obj-$(CONFIG_PPC32)		+= relocate_32.o
->>   
->>   obj-$(CONFIG_KEXEC_FILE)	+= file_load.o ranges.o file_load_$(BITS).o elf_$(BITS).o
->>   
->> -ifdef CONFIG_HAVE_IMA_KEXEC
->> -ifdef CONFIG_IMA
->> -obj-y				+= ima.o
->> -endif
->> -endif
-> 
-> Notice how "kexec/ima.o" is only included if the architecture supports
-> it and IMA is configured.  In addition only if CONFIG_IMA_KEXEC is
-> configured, is the IMA measurement list carried across kexec.  After
-> moving the rest of ima.c to drivers/of/kexec.c, this changes.   Notice
-> how drivers/of/Kconfig includes kexec.o:
-> 
-> obj-$(CONFIG_KEXEC_FILE) += kexec.o
-> 
-> It is not dependent on CONFIG_HAVE_IMA_KEXEC.  Shouldn't all of the
-> functions defined in ima.c being moved to kexec.o be defined within a
-> CONFIG_HAVE_IMA_KEXEC ifdef?
-> 
+Thanks for your patch!
 
-Thanks for reviewing the changes.
+> --- a/arch/alpha/kernel/process.c
+> +++ b/arch/alpha/kernel/process.c
+> @@ -43,12 +43,6 @@
+>  #include "proto.h"
+>  #include "pci_impl.h"
+>
+> -/*
+> - * Power off function, if any
+> - */
+> -void (*pm_power_off)(void) = machine_power_off;
 
-In "drivers/of/kexec.c" the function remove_ima_buffer() is defined 
-under "#ifdef CONFIG_HAVE_IMA_KEXEC"
+Assignments like these are lost in the conversion.
 
-setup_ima_buffer() is defined under "#ifdef CONFIG_IMA_KEXEC" - the same 
-way it was defined in "arch/powerpc/kexec/ima.c".
+> -EXPORT_SYMBOL(pm_power_off);
 
-As you know, CONFIG_IMA_KEXEC depends on CONFIG_HAVE_IMA_KEXEC (as 
-defined in "security/integrity/ima/Kconfig").
+Gr{oetje,eeting}s,
 
-ima_get_kexec_buffer() and ima_free_kexec_buffer() are unconditionally 
-defined in "drivers/of/kexec.c" even though they are called only when 
-CONFIG_HAVE_IMA_KEXEC is enabled. I will update these two functions to 
-be moved under "#ifdef CONFIG_HAVE_IMA_KEXEC"
+                        Geert
 
-Rob/Mimi/Thiago - Please let me know if you have other comments in the 
-v13 patches. Will address those as well and post v14.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-thanks,
-  -lakshmi
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
