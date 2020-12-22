@@ -2,73 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB98C2E08B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 11:23:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB0E72E08B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 11:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726371AbgLVKXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 05:23:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41206 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726218AbgLVKXF (ORCPT
+        id S1726263AbgLVKZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 05:25:00 -0500
+Received: from mail-io1-f69.google.com ([209.85.166.69]:57007 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725847AbgLVKY7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 05:23:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608632499;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=+N230ZQEwlU/fhfKeKl8xLReA8ul9G84WY/PYPF4Snw=;
-        b=gyaqIUXN05rUGWlRUPrwrfCu2waEEcG0bJ1/rvtxcDax3liKeXVxQ0aGHSuA3JUWS/IsDC
-        WkOMG2NyQmdRL5HipMtxRaG6ffuzQmCRy5YNtmKXRBN+SytWQTi/5CO142R2031TzpXACR
-        W5GrczWGgadqzfRDQuS0dqlIs0ONZns=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-440-i7jEHEeuPp2GfpaDgC8mRw-1; Tue, 22 Dec 2020 05:21:34 -0500
-X-MC-Unique: i7jEHEeuPp2GfpaDgC8mRw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CC218800D55;
-        Tue, 22 Dec 2020 10:21:33 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5CC717A5CE;
-        Tue, 22 Dec 2020 10:21:33 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     syzbot+e87846c48bf72bc85311@syzkaller.appspotmail.com
-Subject: [PATCH] KVM: x86: fix shift out of bounds reported by UBSAN
-Date:   Tue, 22 Dec 2020 05:21:32 -0500
-Message-Id: <20201222102132.1920018-1-pbonzini@redhat.com>
+        Tue, 22 Dec 2020 05:24:59 -0500
+Received: by mail-io1-f69.google.com with SMTP id e14so7084876iow.23
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 02:24:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=upVlXtx35BODx+iT3R6qP2UHaYjqHVnqudOn+NqPxDI=;
+        b=lwxlg1cX8iRBnjI0vfHaN8gMBe8Yz0XZJe045u4tsC75J/ubyr8klB8ipZnRaoAaU8
+         NTrhVyArHkvbSDaTFN8AKfCNl8Ub4g4Jqa0E9DNPGbXw22MBvLzaJznTnJ/xJsBScSQd
+         6xzoIqKb6EZjveBt5LojeiPR2hjM2Ht++SQcI3DOa1ZCRdcncKBs8FJ8ts7ueT9QXPaG
+         YlC4EkIEUsVwjnrXcxol1+JrkhorlUpxniKv9QIWdTjNMh7NDp7fMt3a4r0Nog8H3bOv
+         GHzezgeklY98/QWWfbMtjbBXwLEnzT31kdPwZdZMrh9GD6irnVD3Fb6U/tD7lqmOmoHY
+         ruPg==
+X-Gm-Message-State: AOAM5334ozlhznbVvmeyUSpvunUfauoqSoxyC3EqlOH7Dd+7867aO52i
+        +yZRkT4+s9x7ldcg/pRh83YXF+HGSpuFcJaDKxuAMBwvppNf
+X-Google-Smtp-Source: ABdhPJwZRCkNPa8yUn/y5TF98qIVZyj652xFtrTfG9ZMYqEuFszOR4DhfjDQSDeipu+QZ/TSH539AR37tqGqUio8hFjMSdUQKfYm
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Received: by 2002:a02:3541:: with SMTP id y1mr18003702jae.66.1608632658296;
+ Tue, 22 Dec 2020 02:24:18 -0800 (PST)
+Date:   Tue, 22 Dec 2020 02:24:18 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002c029c05b70afacd@google.com>
+Subject: memory leak in v2_read_file_info
+From:   syzbot <syzbot+77779c9b52ab78154b08@syzkaller.appspotmail.com>
+To:     jack@suse.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since we know that e >= s, we can reassociate the left shift,
-changing the shifted number from 1 to 2 in exchange for
-decreasing the right hand side by 1.
+Hello,
 
-Reported-by: syzbot+e87846c48bf72bc85311@syzkaller.appspotmail.com
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+syzbot found the following issue on:
+
+HEAD commit:    8653b778 Merge tag 'clk-for-linus' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=153fc4db500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=faf2996955887e91
+dashboard link: https://syzkaller.appspot.com/bug?extid=77779c9b52ab78154b08
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11c44960d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13bc8c0b500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+77779c9b52ab78154b08@syzkaller.appspotmail.com
+
+BUG: memory leak
+unreferenced object 0xffff888110974f00 (size 64):
+  comm "syz-executor849", pid 8516, jiffies 4294942501 (age 13.960s)
+  hex dump (first 32 bytes):
+    00 30 ee 0d 81 88 ff ff 00 00 00 00 00 00 00 00  .0..............
+    00 00 00 00 00 00 00 00 0a 00 00 00 48 00 00 00  ............H...
+  backtrace:
+    [<0000000018aa1939>] kmalloc include/linux/slab.h:552 [inline]
+    [<0000000018aa1939>] v2_read_file_info+0x1ae/0x430 fs/quota/quota_v2.c:122
+    [<000000001061252b>] dquot_load_quota_sb+0x351/0x650 fs/quota/dquot.c:2387
+    [<000000006c1f70f9>] dquot_load_quota_inode fs/quota/dquot.c:2423 [inline]
+    [<000000006c1f70f9>] dquot_load_quota_inode+0xda/0x160 fs/quota/dquot.c:2415
+    [<00000000abace495>] ext4_quota_enable fs/ext4/super.c:6362 [inline]
+    [<00000000abace495>] ext4_enable_quotas+0x1b2/0x2f0 fs/ext4/super.c:6388
+    [<00000000b6d6a975>] ext4_fill_super+0x3bc5/0x5ac0 fs/ext4/super.c:5046
+    [<0000000003a869bd>] mount_bdev+0x223/0x260 fs/super.c:1366
+    [<000000002138e18c>] legacy_get_tree+0x2b/0x90 fs/fs_context.c:592
+    [<0000000096e90d3d>] vfs_get_tree+0x28/0x100 fs/super.c:1496
+    [<00000000eddeeb8e>] do_new_mount fs/namespace.c:2875 [inline]
+    [<00000000eddeeb8e>] path_mount+0xc5e/0x1170 fs/namespace.c:3205
+    [<00000000c52e2f18>] do_mount fs/namespace.c:3218 [inline]
+    [<00000000c52e2f18>] __do_sys_mount fs/namespace.c:3426 [inline]
+    [<00000000c52e2f18>] __se_sys_mount fs/namespace.c:3403 [inline]
+    [<00000000c52e2f18>] __x64_sys_mount+0x18e/0x1d0 fs/namespace.c:3403
+    [<00000000e70a31f4>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<000000007f651b8c>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+
+
 ---
- arch/x86/kvm/mmu.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-index 9c4a9c8e43d9..581925e476d6 100644
---- a/arch/x86/kvm/mmu.h
-+++ b/arch/x86/kvm/mmu.h
-@@ -49,7 +49,7 @@ static inline u64 rsvd_bits(int s, int e)
- 	if (e < s)
- 		return 0;
- 
--	return ((1ULL << (e - s + 1)) - 1) << s;
-+	return ((2ULL << (e - s)) - 1) << s;
- }
- 
- void kvm_mmu_set_mmio_spte_mask(u64 mmio_value, u64 access_mask);
--- 
-2.26.2
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
