@@ -2,161 +2,444 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 066682E1000
+	by mail.lfdr.de (Postfix) with ESMTP id 72B872E1001
 	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 23:08:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727665AbgLVWEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 17:04:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43961 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726685AbgLVWEM (ORCPT
+        id S1726569AbgLVWFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 17:05:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726072AbgLVWFc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 17:04:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608674565;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=urX6b7Ar6vf2kG6DWZuX4Gwil4+VQz0Wx+qVJUk6lNk=;
-        b=CpTMyTP8Ypzqz/lF66NWyQie0EmIrbmkGn6ydR7TvGk1sUcUxHbmWkd88Kner6ZlupnaG3
-        nqsDuiYWkg/fanlSdj9LAo08zZ8zgJPaNDcsk+q2lb62gRCEMkwQrcPelz8aQEidp2YOvC
-        0CeHauo5EKWt2Qjitfk9p4FOklA2SRw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-263-bjp8P9mIOo6Shx9mSuMVew-1; Tue, 22 Dec 2020 17:02:43 -0500
-X-MC-Unique: bjp8P9mIOo6Shx9mSuMVew-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C5502801817;
-        Tue, 22 Dec 2020 22:02:41 +0000 (UTC)
-Received: from mail (ovpn-112-5.rdu2.redhat.com [10.10.112.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7C97D60C66;
-        Tue, 22 Dec 2020 22:02:38 +0000 (UTC)
-Date:   Tue, 22 Dec 2020 17:02:37 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-Message-ID: <X+Js/dFbC5P7C3oO@redhat.com>
-References: <CAHk-=wg_UBuo7ro1fpEGkMyFKA1+PxrE85f9J_AhUfr-nJPpLQ@mail.gmail.com>
- <9E301C7C-882A-4E0F-8D6D-1170E792065A@gmail.com>
- <CAHk-=wg-Y+svNy3CDkJjj0X_CJkSbpERLg64-Vqwq5u7SC4z0g@mail.gmail.com>
- <X+ESkna2z3WjjniN@google.com>
- <1FCC8F93-FF29-44D3-A73A-DF943D056680@gmail.com>
- <20201221223041.GL6640@xz-x1>
- <CAHk-=wh-bG4thjXUekLtrCg8FRrdWjtT40ibXXLSm_hzQG8eOw@mail.gmail.com>
- <CALCETrV=8tY7h=aaudWBEn-MJnNkm2wz5qjH49SYqwkjYTpOaA@mail.gmail.com>
- <X+JJqK91plkBVisG@redhat.com>
- <X+JhwVX3s5mU9ZNx@google.com>
+        Tue, 22 Dec 2020 17:05:32 -0500
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CDC3C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 14:04:52 -0800 (PST)
+Received: by mail-qk1-x735.google.com with SMTP id 22so13332906qkf.9
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 14:04:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=U7tr99rdG2wCwNMofGKsE5kJTVdLy0LV/f8vlmxtxnA=;
+        b=gCS/bCrDLi9H+2g1tRd6VrJqid4foNv969yqaMq83Vb4d5x3lGHakfTPrm0yPf+yG1
+         A122HQM9NE6l0olY1FaOL/GxjZ7Z8dSeGrwPiOYhWApEhmw9gvNDADzj8fAyTVw/cyZE
+         PuhVj1T4WZFj7LwqXRsLw8be9Or0K34YSg0s3pvoxuaNVRTHaEbBKuhYN4YcFUxFl+xT
+         wPOXQqRm9T24/8kgMAw+Z4MJTs/9gY5n8PlM+Wp2CIRz5goNw+0LpjUEW7n+aKKBLpSd
+         OhmCkFql/qwxrwlRonxMyXZQ071Z3C2MMIE+a1e/ssMuXkU9rLtSnrf6AEyZx+wMo/+w
+         lDEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=U7tr99rdG2wCwNMofGKsE5kJTVdLy0LV/f8vlmxtxnA=;
+        b=K7DQ3alejSsnefkz18rgSGZVvWFZrFuiyjQw5oXv2/XiL7/dvadpFgj+6ghq5GYgpy
+         aKzqHpa1vIZ4ASyDLDFS1c/TDYmjn1l+YhP5a6TQqEdOdXKiySaBiwNT7uNMSADp3X85
+         7vb+U+7RztK3UG/z6+kTsBjvB8g7QEoBKdYfND//0NNFsdMX1ag18dkKoGqICImtJutv
+         OOsfXZX+WNsLVOiHuj0NTyl5TLESRbjY94Lb8nTNKYk0rh5fOIVeFiprRL9OdHKqEZkS
+         d34tOZ4sr2W+pIaIaX4sQHGWm/FuxzMVv0v05AV6+TiEyKr16B2b0Va4dFjGzO4mo6gv
+         cI+g==
+X-Gm-Message-State: AOAM532DCWuI1vzOvpxfvb8DBKdcMn+xBT4Tckz/SuuNLXj9vqFN0FAD
+        rcY/kdOBqiSfekL2nRmOVrc=
+X-Google-Smtp-Source: ABdhPJyPXKg45FJdhKgMCW1LNHBOObPM4+ghareV+mmepSZ8bw7j1XmxabW0AeJ0oHLD17eeK4Awbw==
+X-Received: by 2002:a05:620a:4047:: with SMTP id i7mr23860051qko.3.1608674691577;
+        Tue, 22 Dec 2020 14:04:51 -0800 (PST)
+Received: from glsvmlin.ini.cmu.edu (GLSVMLIN.INI.CMU.EDU. [128.2.16.9])
+        by smtp.gmail.com with ESMTPSA id p13sm1589442qkg.80.2020.12.22.14.04.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Dec 2020 14:04:50 -0800 (PST)
+From:   Gabriel Somlo <gsomlo@gmail.com>
+To:     shorne@gmail.com, mholenko@antmicro.com, kgugala@antmicro.com
+Cc:     linux-kernel@vger.kernel.org, pczarnecki@internships.antmicro.com,
+        f.kermarrec@gmail.com, gregkh@linuxfoundation.org, gsomlo@gmail.com
+Subject: [PATCH v2] drivers/soc/litex: support 32-bit subregisters, 64-bit CPUs
+Date:   Tue, 22 Dec 2020 17:04:46 -0500
+Message-Id: <20201222220446.1827126-1-gsomlo@gmail.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20201222144826.1775064-1-gsomlo@gmail.com>
+References: <20201222144826.1775064-1-gsomlo@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X+JhwVX3s5mU9ZNx@google.com>
-User-Agent: Mutt/2.0.3 (2020-12-04)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 02:14:41PM -0700, Yu Zhao wrote:
-> This works but I don't prefer this option because 1) this is new
-> way of making pte_wrprotect safe and 2) it's specific to ufd and
-> can't be applied to clear_soft_dirty() which has no "catcher". No
+The upstream LiteX project now defaults to using 32-bit subregisters
+(see https://github.com/enjoy-digital/litex/commit/a2b71fde).
 
-I didn't look into clear_soft_dirty issue, I can look into that.
+This patch expands on commit 22447a99c97e, adding support for handling
+both 8 and 32 bit LiteX CSR (MMIO) subregisters, as controlled by the
+LITEX_SUBREG_SIZE Kconfig option.
 
-To avoid having to deal with a 3rd solution it will have to use one of
-the two:
+Signed-off-by: Gabriel Somlo <gsomlo@gmail.com>
+---
 
-1) avoid deferring tlb flush and enforce a sync flush before dropping
-  the PT lock even if mm_mm_tlb_flush_pending is true ->
-  write_protect_page in KSM
+Notes v2:
+	- fix typo (s/u32/u64/) in litex_read64().
 
-2) add its own new catcher for its own specific marker (for UFFD-WP
-   the marker is _PAGE_UFFD_WP, for change_prot_numa is PROT_NONE on a
-   vma->vm_pgprot not PROT_NONE, for soft dirty it could be
-   _PAGE_SOFT_DIRTY) to send the page fault to a dead end before the
-   pte value is interpreted.
+Notes v1:
+        - LITEX_SUBREG_SIZE now provided by Kconfig.
+        - it's not LITEX_REG_SIZE, but rather LITEX_SUBREG_ALIGN!
+        - move litex_[get|set]_reg() to include/linux/litex.h and mark
+          them as "static inline";
+        - redo litex_[read|write][8|16|32|64]() using litex_[get|set]_reg()
+          (compiler should produce code as efficient as hardcoded shifts,
+           but also automatically matching LITEX_SUBREG_SIZE).
 
-> matter how good the documentation about this new way is now, it
-> will be out of date, speaking from my personal experience.
+ drivers/soc/litex/Kconfig          |  12 ++
+ drivers/soc/litex/litex_soc_ctrl.c |  76 +-----------
+ include/linux/litex.h              | 179 +++++++++++++++++++++--------
+ 3 files changed, 143 insertions(+), 124 deletions(-)
 
-A common catcher for all 3 is not possible because each catcher
-depends on whatever marker and whatever pte value they set that may
-lead to a different deterministic path where to put the catcher or
-multiple paths even. do_numa_page requires a catcher in a different
-place already.
-
-Or well, a common catcher for all 3 is technically possible but it'd
-perform slower requiring to check things twice.
-
-But perhaps the soft_dirty can use the same catcher of uffd-wp given
-the similarity?
-
-> I'd go with what Nadav has -- the memory corruption problem has been
-> there for a while and nobody has complained except Nadav. This makes
-> me think people is less likely to notice any performance issues from
-> holding mmap_lock for write in his patch either.
-
-uffd-wp is a fairly new feature, the current users are irrelevant,
-keeping it optimal is just for the future potential.
-
-> But I can't say I have zero concern with the potential performance
-> impact given that I have been expecting the fix to go to stable,
-> which I care most. So the next option on my list is to have a
-
-Actually stable would be very fine to go with Nadav patch and use the
-mmap_lock_write unconditionally. The optimal fix is only relevant for
-the future potential, so it's only relevant for Linus's tree.
-
-However the feature is recent enough that it won't require a deep
-backport so the optimal fix is likely fine for stable as well,
-generally stable prefers the same fix as in the upstream when there's
-no major backport rejection issue.
-
-The alternative solution for uffd is to do the deferred flush under
-mmap_lock_write if len is > HPAGE_PMD_SIZE, or to tell
-change_protection not to defer the flush and to take the
-mmap_lock_read for <= HPAGE_PMD_SIZE. That will avoid depending on the
-catcher and then userfaultfd_writeprotect(mode_wp=true)
-userfaultfd_writeprotect(mode_wp=false) can even run in parallel at
-all times. The cons is large userfaultfd_writeprotect will block for
-I/O and those would happen at least in the postcopy live snapshotting
-use case.
-
-The main cons is that it'd require modification to change_protection
-so it actually looks more intrusive, not less.
-
-Overall anything that allows to wrprotect 1 pte with only the
-mmap_lock_read exactly like KSM write_protect_page, would be enough for
-uffd-wp.
-
-What isn't ok in terms of future potential is unconditional
-mmap_lock_write as in the original suggested patch in my view. It
-doesn't mean we can take mmap_lock_write when the operation is large
-and there is actually more benefit from deferring the flush.
-
-> common "catcher" in do_wp_page() which singles out pages that have
-> page_mapcount equal to one and reuse them instead of trying to
-
-I don't think the page_mapcount matters here. If the wp page reuse was
-more accurate (as it was before) we wouldn't notice this issue, but it
-still would be a bug that there were stale TLB entries. It worked by
-luck.
-
-Thanks,
-Andrea
+diff --git a/drivers/soc/litex/Kconfig b/drivers/soc/litex/Kconfig
+index 7c6b009b6f6c..973f8d2fe1a7 100644
+--- a/drivers/soc/litex/Kconfig
++++ b/drivers/soc/litex/Kconfig
+@@ -16,4 +16,16 @@ config LITEX_SOC_CONTROLLER
+ 	  All drivers that use functions from litex.h must depend on
+ 	  LITEX.
+ 
++config LITEX_SUBREG_SIZE
++	int "Size of a LiteX CSR subregister, in bytes"
++	depends on LITEX
++	range 1 4
++	default 4
++	help
++	LiteX MMIO registers (referred to as Configuration and Status
++	registers, or CSRs) are spread across adjacent 8- or 32-bit
++	subregisters, located at 32-bit aligned MMIO addresses. Use
++	this to select the appropriate size (1 or 4 bytes) matching
++	your particular LiteX build.
++
+ endmenu
+diff --git a/drivers/soc/litex/litex_soc_ctrl.c b/drivers/soc/litex/litex_soc_ctrl.c
+index 1217cafdfd4d..da17ba56b795 100644
+--- a/drivers/soc/litex/litex_soc_ctrl.c
++++ b/drivers/soc/litex/litex_soc_ctrl.c
+@@ -16,79 +16,6 @@
+ #include <linux/errno.h>
+ #include <linux/io.h>
+ 
+-/*
+- * LiteX SoC Generator, depending on the configuration, can split a single
+- * logical CSR (Control&Status Register) into a series of consecutive physical
+- * registers.
+- *
+- * For example, in the configuration with 8-bit CSR Bus, 32-bit aligned (the
+- * default one for 32-bit CPUs) a 32-bit logical CSR will be generated as four
+- * 32-bit physical registers, each one containing one byte of meaningful data.
+- *
+- * For details see: https://github.com/enjoy-digital/litex/wiki/CSR-Bus
+- *
+- * The purpose of `litex_set_reg`/`litex_get_reg` is to implement the logic
+- * of writing to/reading from the LiteX CSR in a single place that can be
+- * then reused by all LiteX drivers.
+- */
+-
+-/**
+- * litex_set_reg() - Writes the value to the LiteX CSR (Control&Status Register)
+- * @reg: Address of the CSR
+- * @reg_size: The width of the CSR expressed in the number of bytes
+- * @val: Value to be written to the CSR
+- *
+- * In the currently supported LiteX configuration (8-bit CSR Bus, 32-bit aligned),
+- * a 32-bit LiteX CSR is generated as 4 consecutive 32-bit physical registers,
+- * each one containing one byte of meaningful data.
+- *
+- * This function splits a single possibly multi-byte write into a series of
+- * single-byte writes with a proper offset.
+- */
+-void litex_set_reg(void __iomem *reg, unsigned long reg_size,
+-		    unsigned long val)
+-{
+-	unsigned long shifted_data, shift, i;
+-
+-	for (i = 0; i < reg_size; ++i) {
+-		shift = ((reg_size - i - 1) * LITEX_SUBREG_SIZE_BIT);
+-		shifted_data = val >> shift;
+-
+-		WRITE_LITEX_SUBREGISTER(shifted_data, reg, i);
+-	}
+-}
+-EXPORT_SYMBOL_GPL(litex_set_reg);
+-
+-/**
+- * litex_get_reg() - Reads the value of the LiteX CSR (Control&Status Register)
+- * @reg: Address of the CSR
+- * @reg_size: The width of the CSR expressed in the number of bytes
+- *
+- * Return: Value read from the CSR
+- *
+- * In the currently supported LiteX configuration (8-bit CSR Bus, 32-bit aligned),
+- * a 32-bit LiteX CSR is generated as 4 consecutive 32-bit physical registers,
+- * each one containing one byte of meaningful data.
+- *
+- * This function generates a series of single-byte reads with a proper offset
+- * and joins their results into a single multi-byte value.
+- */
+-unsigned long litex_get_reg(void __iomem *reg, unsigned long reg_size)
+-{
+-	unsigned long shifted_data, shift, i;
+-	unsigned long result = 0;
+-
+-	for (i = 0; i < reg_size; ++i) {
+-		shifted_data = READ_LITEX_SUBREGISTER(reg, i);
+-
+-		shift = ((reg_size - i - 1) * LITEX_SUBREG_SIZE_BIT);
+-		result |= (shifted_data << shift);
+-	}
+-
+-	return result;
+-}
+-EXPORT_SYMBOL_GPL(litex_get_reg);
+-
+ #define SCRATCH_REG_OFF         0x04
+ #define SCRATCH_REG_VALUE       0x12345678
+ #define SCRATCH_TEST_VALUE      0xdeadbeef
+@@ -131,7 +58,8 @@ static int litex_check_csr_access(void __iomem *reg_addr)
+ 	/* restore original value of the SCRATCH register */
+ 	litex_write32(reg_addr + SCRATCH_REG_OFF, SCRATCH_REG_VALUE);
+ 
+-	pr_info("LiteX SoC Controller driver initialized");
++	pr_info("LiteX SoC Controller driver initialized: subreg:%d, align:%d",
++		LITEX_SUBREG_SIZE, LITEX_SUBREG_ALIGN);
+ 
+ 	return 0;
+ }
+diff --git a/include/linux/litex.h b/include/linux/litex.h
+index 40f5be503593..71f8110ed98d 100644
+--- a/include/linux/litex.h
++++ b/include/linux/litex.h
+@@ -3,9 +3,6 @@
+  * Common LiteX header providing
+  * helper functions for accessing CSRs.
+  *
+- * Implementation of the functions is provided by
+- * the LiteX SoC Controller driver.
+- *
+  * Copyright (C) 2019-2020 Antmicro <www.antmicro.com>
+  */
+ 
+@@ -13,90 +10,172 @@
+ #define _LINUX_LITEX_H
+ 
+ #include <linux/io.h>
+-#include <linux/types.h>
+-#include <linux/compiler_types.h>
+ 
+-/*
+- * The parameters below are true for LiteX SoCs configured for 8-bit CSR Bus,
+- * 32-bit aligned.
+- *
+- * Supporting other configurations will require extending the logic in this
+- * header and in the LiteX SoC controller driver.
+- */
+-#define LITEX_REG_SIZE	  0x4
+-#define LITEX_SUBREG_SIZE	0x1
++/* LiteX SoCs support 8- or 32-bit CSR Bus data width (i.e., subreg. size) */
++#if defined(CONFIG_LITEX_SUBREG_SIZE) && \
++	(CONFIG_LITEX_SUBREG_SIZE == 1 || CONFIG_LITEX_SUBREG_SIZE == 4)
++#define LITEX_SUBREG_SIZE      CONFIG_LITEX_SUBREG_SIZE
++#else
++#error LiteX subregister size (LITEX_SUBREG_SIZE) must be 4 or 1!
++#endif
+ #define LITEX_SUBREG_SIZE_BIT	 (LITEX_SUBREG_SIZE * 8)
+ 
+-#define WRITE_LITEX_SUBREGISTER(val, base_offset, subreg_id) \
+-	writel((u32 __force)cpu_to_le32(val), base_offset + (LITEX_REG_SIZE * subreg_id))
++/* LiteX subregisters of any width are always aligned on a 4-byte boundary */
++#define LITEX_SUBREG_ALIGN	  0x4
+ 
+-#define READ_LITEX_SUBREGISTER(base_offset, subreg_id) \
+-	le32_to_cpu((__le32 __force)readl(base_offset + (LITEX_REG_SIZE * subreg_id)))
++static inline void _write_litex_subregister(u32 val, void __iomem *addr)
++{
++	writel((u32 __force)cpu_to_le32(val), addr);
++}
+ 
+-void litex_set_reg(void __iomem *reg, unsigned long reg_sz, unsigned long val);
++static inline u32 _read_litex_subregister(void __iomem *addr)
++{
++	return le32_to_cpu((__le32 __force)readl(addr));
++}
+ 
+-unsigned long litex_get_reg(void __iomem *reg, unsigned long reg_sz);
++#define _WRITE_LITEX_SUBREGISTER(val, base_offset, subreg_id) \
++	_write_litex_subregister(val, (base_offset) + \
++					LITEX_SUBREG_ALIGN * (subreg_id))
++
++#define _READ_LITEX_SUBREGISTER(base_offset, subreg_id) \
++	_read_litex_subregister((base_offset) + \
++					LITEX_SUBREG_ALIGN * (subreg_id))
++
++/*
++ * LiteX SoC Generator, depending on the configuration, can split a single
++ * logical CSR (Control&Status Register) into a series of consecutive physical
++ * registers.
++ *
++ * For example, in the configuration with 8-bit CSR Bus, 32-bit aligned
++ * a 32-bit logical CSR will be generated as four 32-bit physical registers,
++ * each one containing one byte of meaningful data.
++ *
++ * For details see: https://github.com/enjoy-digital/litex/wiki/CSR-Bus
++ */
++
++/* number of LiteX subregisters needed to store a register of given reg_size */
++#define _litex_num_subregs(reg_size) \
++	(((reg_size) - 1) / LITEX_SUBREG_SIZE + 1)
++
++/* since the number of 4-byte aligned subregisters required to store a single
++ * LiteX CSR (MMIO) register varies with LITEX_SUBREG_SIZE, the offset of the
++ * next adjacent LiteX CSR register w.r.t. the offset of the current one also
++ * depends on how many subregisters the latter is spread across
++ */
++#define _next_reg_off(off, size) \
++	((off) + _litex_num_subregs(size) * LITEX_SUBREG_ALIGN)
++
++/*
++ * The purpose of `litex_set_reg`/`litex_get_reg` is to implement the logic
++ * of writing to/reading from the LiteX CSR in a single place that can be
++ * then reused by all LiteX drivers.
++ */
++
++/**
++ * litex_set_reg() - Writes the value to the LiteX CSR (Control&Status Register)
++ * @reg: Address of the CSR
++ * @reg_size: The width of the CSR expressed in the number of bytes
++ * @val: Value to be written to the CSR
++ *
++ * This function splits a single (possibly multi-byte) LiteX CSR write into
++ * a series of subregister writes with a proper offset.
++ */
++static inline void litex_set_reg(void __iomem *reg, ulong reg_size, ulong val)
++{
++	u8 ns, shift, i;
++
++	ns = _litex_num_subregs(reg_size);
++	for (i = 0; i < ns; i++) {
++		shift = LITEX_SUBREG_SIZE_BIT * (ns - 1 - i);
++		_write_litex_subregister(val >> shift, reg);
++		reg += LITEX_SUBREG_ALIGN;
++	}
++}
++
++/**
++ * litex_get_reg() - Reads the value of the LiteX CSR (Control&Status Register)
++ * @reg: Address of the CSR
++ * @reg_size: The width of the CSR expressed in the number of bytes
++ *
++ * Return: Value read from the CSR
++ *
++ * This function generates a series of subregister reads with a proper offset
++ * and joins their results into a single (possibly multi-byte) LiteX CSR value.
++ */
++static inline ulong litex_get_reg(void __iomem *reg, ulong reg_size)
++{
++	ulong r;
++	u8 i;
++
++	r = _read_litex_subregister(reg);
++	for (i = 1; i < _litex_num_subregs(reg_size); i++) {
++		r <<= LITEX_SUBREG_SIZE_BIT;
++		reg += LITEX_SUBREG_ALIGN;
++		r |= _read_litex_subregister(reg);
++	}
++	return r;
++}
+ 
+ static inline void litex_write8(void __iomem *reg, u8 val)
+ {
+-	WRITE_LITEX_SUBREGISTER(val, reg, 0);
++	litex_set_reg(reg, sizeof(u8), val);
+ }
+ 
+ static inline void litex_write16(void __iomem *reg, u16 val)
+ {
+-	WRITE_LITEX_SUBREGISTER(val >> 8, reg, 0);
+-	WRITE_LITEX_SUBREGISTER(val, reg, 1);
++	litex_set_reg(reg, sizeof(u16), val);
+ }
+ 
+ static inline void litex_write32(void __iomem *reg, u32 val)
+ {
+-	WRITE_LITEX_SUBREGISTER(val >> 24, reg, 0);
+-	WRITE_LITEX_SUBREGISTER(val >> 16, reg, 1);
+-	WRITE_LITEX_SUBREGISTER(val >> 8, reg, 2);
+-	WRITE_LITEX_SUBREGISTER(val, reg, 3);
++	litex_set_reg(reg, sizeof(u32), val);
+ }
+ 
+ static inline void litex_write64(void __iomem *reg, u64 val)
+ {
+-	WRITE_LITEX_SUBREGISTER(val >> 56, reg, 0);
+-	WRITE_LITEX_SUBREGISTER(val >> 48, reg, 1);
+-	WRITE_LITEX_SUBREGISTER(val >> 40, reg, 2);
+-	WRITE_LITEX_SUBREGISTER(val >> 32, reg, 3);
+-	WRITE_LITEX_SUBREGISTER(val >> 24, reg, 4);
+-	WRITE_LITEX_SUBREGISTER(val >> 16, reg, 5);
+-	WRITE_LITEX_SUBREGISTER(val >> 8, reg, 6);
+-	WRITE_LITEX_SUBREGISTER(val, reg, 7);
++#ifdef CONFIG_64BIT
++	litex_set_reg(reg, sizeof(u64), val);
++#else
++	_WRITE_LITEX_SUBREGISTER(val >> 56, reg, 0);
++	_WRITE_LITEX_SUBREGISTER(val >> 48, reg, 1);
++	_WRITE_LITEX_SUBREGISTER(val >> 40, reg, 2);
++	_WRITE_LITEX_SUBREGISTER(val >> 32, reg, 3);
++	_WRITE_LITEX_SUBREGISTER(val >> 24, reg, 4);
++	_WRITE_LITEX_SUBREGISTER(val >> 16, reg, 5);
++	_WRITE_LITEX_SUBREGISTER(val >> 8, reg, 6);
++	_WRITE_LITEX_SUBREGISTER(val, reg, 7);
++#endif
+ }
+ 
+ static inline u8 litex_read8(void __iomem *reg)
+ {
+-	return READ_LITEX_SUBREGISTER(reg, 0);
++	return litex_get_reg(reg, sizeof(u8));
+ }
+ 
+ static inline u16 litex_read16(void __iomem *reg)
+ {
+-	return (READ_LITEX_SUBREGISTER(reg, 0) << 8)
+-		| (READ_LITEX_SUBREGISTER(reg, 1));
++	return litex_get_reg(reg, sizeof(u16));
+ }
+ 
+ static inline u32 litex_read32(void __iomem *reg)
+ {
+-	return (READ_LITEX_SUBREGISTER(reg, 0) << 24)
+-		| (READ_LITEX_SUBREGISTER(reg, 1) << 16)
+-		| (READ_LITEX_SUBREGISTER(reg, 2) << 8)
+-		| (READ_LITEX_SUBREGISTER(reg, 3));
++	return litex_get_reg(reg, sizeof(u32));
+ }
+ 
+ static inline u64 litex_read64(void __iomem *reg)
+ {
+-	return ((u64)READ_LITEX_SUBREGISTER(reg, 0) << 56)
+-		| ((u64)READ_LITEX_SUBREGISTER(reg, 1) << 48)
+-		| ((u64)READ_LITEX_SUBREGISTER(reg, 2) << 40)
+-		| ((u64)READ_LITEX_SUBREGISTER(reg, 3) << 32)
+-		| ((u64)READ_LITEX_SUBREGISTER(reg, 4) << 24)
+-		| ((u64)READ_LITEX_SUBREGISTER(reg, 5) << 16)
+-		| ((u64)READ_LITEX_SUBREGISTER(reg, 6) << 8)
+-		| ((u64)READ_LITEX_SUBREGISTER(reg, 7));
++#ifdef CONFIG_64BIT
++	return litex_get_reg(reg, sizeof(u64));
++#else
++	return ((u64)_READ_LITEX_SUBREGISTER(reg, 0) << 56)
++		| ((u64)_READ_LITEX_SUBREGISTER(reg, 1) << 48)
++		| ((u64)_READ_LITEX_SUBREGISTER(reg, 2) << 40)
++		| ((u64)_READ_LITEX_SUBREGISTER(reg, 3) << 32)
++		| ((u64)_READ_LITEX_SUBREGISTER(reg, 4) << 24)
++		| ((u64)_READ_LITEX_SUBREGISTER(reg, 5) << 16)
++		| ((u64)_READ_LITEX_SUBREGISTER(reg, 6) << 8)
++		| ((u64)_READ_LITEX_SUBREGISTER(reg, 7));
++#endif
+ }
+ 
+ #endif /* _LINUX_LITEX_H */
+-- 
+2.26.2
 
