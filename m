@@ -2,163 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E71C2E0454
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 03:21:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AA3D2E045C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 03:27:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726075AbgLVCVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 21:21:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40794 "EHLO
+        id S1725954AbgLVC1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 21:27:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725938AbgLVCVQ (ORCPT
+        with ESMTP id S1725807AbgLVC1S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 21:21:16 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B84BC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 18:20:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=cumY0C/7RrE9B2iDBTJyykxU8Ern4IPZHNeTPe9IW4c=; b=0qtIDI1w4Q2WU0lP1BGKI73E/c
-        2KkjnHVMpUSgWnA5bDtL+7mMmNhA1cst0Ij4IN9SxyWLg/SV5+bMLUipRpxnQRVHciCbF58PLoAZu
-        xACDyfLCylhQ8H0hvT56JTLn2xgtdkuWNYg4fEMK28kYfTb4tQLiZHFyjuPc8IWr2BTNsi3ddDWTi
-        2/Z1qeeSNpj3e74z2E/CpliL4sEj+OrzjRS5zTtI1Gl5NtoLb89D3yUj+Hb8V2IzhqbF/ZIaEtGMv
-        NkNCiAij6wTV55YDk2epJPBpJIYp28KqEAZD80J6EXWe5PMREltw3gtlCG9aqT8R0AlIzqrDoCqL5
-        sksn7JTQ==;
-Received: from [2601:1c0:6280:3f0::64ea]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1krXHm-0006Rh-Lp; Tue, 22 Dec 2020 02:20:28 +0000
-Subject: Re: BUG: unable to handle kernel paging request in
- squashfs_decompress
-To:     Palash Oswal <oswalpalash@gmail.com>, linux-kernel@vger.kernel.org,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        squashfs-devel@lists.sourceforge.net
-References: <CAGyP=7fZB71X_Qo-V54pyPXy8bLRLHP52+kvzpHS9_uE1bkoTg@mail.gmail.com>
- <CAGyP=7ddSXLc-CjE3TU=k0SGGg+LjgWdADXTnjNDdsM+06k-XQ@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <5b10d317-21df-59a8-fd45-c29ae1876d2e@infradead.org>
-Date:   Mon, 21 Dec 2020 18:20:22 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Mon, 21 Dec 2020 21:27:18 -0500
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3776EC0613D3;
+        Mon, 21 Dec 2020 18:26:38 -0800 (PST)
+Received: by mail-qt1-x829.google.com with SMTP id g24so8084403qtq.12;
+        Mon, 21 Dec 2020 18:26:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Aa+IvQkdl3mH7p3cqCA6yyl0vf5PDrQXGE5A+/Y+ABg=;
+        b=P6MASFHFpHgisvCiEOOTFT8p7oFaacE7DqQoeEjzP0Xzw9S9mPkWPqrRM1tw+zpODd
+         HTIwbN3O6U75aAoeXuCcKPDYwaBTZSJwm7gFqFQf+thhxhbq0MVAjbFdAmw3BR66iG7h
+         eXQdiUjdyDN8tV2uj3QgCUT1s+QaijuJo6iFE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Aa+IvQkdl3mH7p3cqCA6yyl0vf5PDrQXGE5A+/Y+ABg=;
+        b=dVgeLqr+C1gYybS7HBGX7FemBCdAG0Df6ppHtSqfJslgu8AT30XzBqZ68KhpmK9mVd
+         E38nm06IC9J2nNy8cbuFZywu9J10GYUxLpiIH9xBMILh6gp1us+Y/hL9iVl3JNJuy4X8
+         Lb7NEiylq0X7eLKOFc288kVNn48OiX21zy4wtc9VLwaMbKYgkIrso8JQEftixNRrDMpx
+         4/GlS27nLbHM0fKHorU2XMqQsPiK1EzneKtiirwWmb1URCO1Gqa/Tl1+Zudk+OWTUclT
+         gyzosV41IziKhZzLqqCCCdqudLVHghyyAJGe6VSlRz8uMnVmeJXnhMHBn0px/GqB7cOd
+         RBlA==
+X-Gm-Message-State: AOAM5328NOeo3KW5kJU5L2FGG2IJPyDIHVAYj34u+2zSoY0273WjejOn
+        uvnaxMNxcM/0J1bVIyTNa8s9PGO+Bxpd9KzSMXY=
+X-Google-Smtp-Source: ABdhPJwGR2vgLN7ROSkmHZPeIAhNHAr7DPrUSxxLCNmQt5gYuzcx/x+eKJdJqgk/KG2Oz3Gx3EYqX3V4Rj9uV5yoiPg=
+X-Received: by 2002:ac8:4d4d:: with SMTP id x13mr19211754qtv.385.1608603997385;
+ Mon, 21 Dec 2020 18:26:37 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAGyP=7ddSXLc-CjE3TU=k0SGGg+LjgWdADXTnjNDdsM+06k-XQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: base64
+References: <20201215192323.24359-1-hongweiz@ami.com> <20201221170048.29821-1-hongweiz@ami.com>
+In-Reply-To: <20201221170048.29821-1-hongweiz@ami.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Tue, 22 Dec 2020 02:26:25 +0000
+Message-ID: <CACPK8Xe8_S6jgs-DxpB0Veu=25JXftTLeK7nGhLJ51GghSeVHw@mail.gmail.com>
+Subject: Re: [Aspeed,ncsi-rx, v1 0/1] net: ftgmac100: Fix AST2600EVB NCSI RX issue
+To:     Hongwei Zhang <hongweiz@ami.com>,
+        Ryan Chen <ryan_chen@aspeedtech.com>
+Cc:     linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David S Miller <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>, Andrew Jeffery <andrew@aj.id.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-W2FkZGluZyBzcXVhc2hmcy4uLl0NCg0KT24gMTIvMTYvMjAgMjoyMiBBTSwgUGFsYXNoIE9z
-d2FsIHdyb3RlOg0KPiBTeXprYWxsZXIgaGl0ICdCVUc6IHVuYWJsZSB0byBoYW5kbGUga2Vy
-bmVsIHBhZ2luZyByZXF1ZXN0IGluDQo+IHNxdWFzaGZzX2RlY29tcHJlc3MnIGJ1Zy4NCj4g
-DQo+IEhlYWQgQ29tbWl0IDogODQxZmNhNWEzMmNjIHRhZzogdjUuMTAuMQ0KPiBnaXQgdHJl
-ZSA6IHN0YWJsZQ0KPiANCj4ga2VybmVsIGNvbmZpZyA6ICBBdHRhY2hlZCBjb25maWcudHh0
-DQo+IA0KPiBjb25zb2xlIG91dHB1dCA6DQo+IEJVRzogdW5hYmxlIHRvIGhhbmRsZSBwYWdl
-IGZhdWx0IGZvciBhZGRyZXNzOiBmZmZmYzkwMDAwMTRiMDAwDQo+ICNQRjogc3VwZXJ2aXNv
-ciB3cml0ZSBhY2Nlc3MgaW4ga2VybmVsIG1vZGUNCj4gI1BGOiBlcnJvcl9jb2RlKDB4MDAw
-MikgLSBub3QtcHJlc2VudCBwYWdlDQo+IFBHRCAzYzAwMDY3IFA0RCAzYzAwMDY3IFBVRCAz
-ZGNlMDY3IFBNRCAzZGNmMDY3IFBURSAwDQo+IE9vcHM6IDAwMDIgWyMxXSBTTVAgUFRJDQo+
-IENQVTogMCBQSUQ6IDMxOCBDb21tOiBzeXotZXhlY3V0b3IxODYgTm90IHRhaW50ZWQgNS4x
-MC4xICM1DQo+IEhhcmR3YXJlIG5hbWU6IFFFTVUgU3RhbmRhcmQgUEMgKGk0NDBGWCArIFBJ
-SVgsIDE5OTYpLCBCSU9TIDEuMTQuMC0xIDA0LzAxLzIwMTQNCj4gUklQOiAwMDEwOm1lbWNw
-eV9lcm1zKzB4Ni8weDEwIGFyY2gveDg2L2xpYi9tZW1jcHlfNjQuUzo1NQ0KPiBDb2RlOiBj
-YyBjYyBjYyBjYyBlYiAxZSAwZiAxZiAwMCA0OCA4OSBmOCA0OCA4OSBkMSA0OCBjMSBlOSAw
-MyA4MyBlMg0KPiAwNyBmMyA0OCBhNSA4OSBkMSBmMyBhNCBjMyA2NiAwZiAxZiA0NCAwMCAw
-MCA0OCA4OSBmOCA0OCA4OSBkMSA8ZjM+IGE0DQo+IGMzIDBmIDFmIDgwIDAwIDAwIDAwIDAw
-IDQ4IDg5IGY4IDQ4IDgzIGZhIDIwIDcyIDdlIDQwIDM4IGZlDQo+IFJTUDogMDAxODpmZmZm
-YzkwMDAwODlmODQwIEVGTEFHUzogMDAwMTAyNDYNCj4gUkFYOiBmZmZmYzkwMDAwMTRhZmZl
-IFJCWDogMDAwMDAwMDAwMDAwMTAwMCBSQ1g6IDAwMDAwMDAwMDAwMDBmZmUNCj4gUkRYOiAw
-MDAwMDAwMDAwMDAxMDAwIFJTSTogZmZmZjg4ODAwNWEzNDAwMiBSREk6IGZmZmZjOTAwMDAx
-NGIwMDANCj4gUkJQOiBmZmZmYzkwMDAwODlmOGI4IFIwODogMDAwMDAwMDAwMDAwNzM2OCBS
-MDk6IGZmZmY4ODgwMDVjYTEyNDANCj4gUjEwOiBmZmZmZmZmZjgxNTdlNzYwIFIxMTogMDAw
-MDAwMDAwMDAwMDAwMCBSMTI6IDAwMDAwMDAwMDAwMDAwMDANCj4gUjEzOiBmZmZmYzkwMDAw
-MTRhZmZlIFIxNDogMDAwMDAwMDAwMDAwMDAwMCBSMTU6IDAwMDAwMDAwMDAwMDIzNmENCj4g
-RlM6ICAwMDAwMDAwMDAxOWY3MzgwKDAwMDApIEdTOmZmZmY4ODgwM2VjMDAwMDAoMDAwMCkg
-a25sR1M6MDAwMDAwMDAwMDAwMDAwMA0KPiBDUzogIDAwMTAgRFM6IDAwMDAgRVM6IDAwMDAg
-Q1IwOiAwMDAwMDAwMDgwMDUwMDMzDQo+IENSMjogZmZmZmM5MDAwMDE0YjAwMCBDUjM6IDAw
-MDAwMDAwMDVhZGEwMDYgQ1I0OiAwMDAwMDAwMDAwMzcwZWYwDQo+IENhbGwgVHJhY2U6DQo+
-ICBzcXVhc2hmc19kZWNvbXByZXNzKzB4NjIvMHg5MCBmcy9zcXVhc2hmcy9kZWNvbXByZXNz
-b3Jfc2luZ2xlLmM6NzANCj4gIHNxdWFzaGZzX3JlYWRfZGF0YSsweDExMS8weDcxMCBmcy9z
-cXVhc2hmcy9ibG9jay5jOjIxNA0KPiAgc3F1YXNoZnNfY2FjaGVfZ2V0KzB4MTk4LzB4NDYw
-IGZzL3NxdWFzaGZzL2NhY2hlLmM6MTEwDQo+ICBzcXVhc2hmc19yZWFkX21ldGFkYXRhKzB4
-ZWIvMHgxYjAgZnMvc3F1YXNoZnMvY2FjaGUuYzozNDQNCj4gIHNxdWFzaGZzX3hhdHRyX2xv
-b2t1cCsweDc2LzB4ZDAgZnMvc3F1YXNoZnMveGF0dHJfaWQuYzozOA0KPiAgc3F1YXNoZnNf
-cmVhZF9pbm9kZSsweDYzZC8weGFlMCBmcy9zcXVhc2hmcy9pbm9kZS5jOjM5NQ0KPiAgc3F1
-YXNoZnNfaWdldCsweGE4LzB4ZjAgZnMvc3F1YXNoZnMvaW5vZGUuYzo4NQ0KPiAgc3F1YXNo
-ZnNfbG9va3VwKzB4NDJkLzB4NTAwIGZzL3NxdWFzaGZzL25hbWVpLmM6MjEyDQo+ICBsb29r
-dXBfb3BlbiBmcy9uYW1laS5jOjMwODMgW2lubGluZV0NCj4gIG9wZW5fbGFzdF9sb29rdXBz
-IGZzL25hbWVpLmM6MzE3OCBbaW5saW5lXQ0KPiAgcGF0aF9vcGVuYXQrMHg2ZWUvMHgxNGEw
-IGZzL25hbWVpLmM6MzM2Ng0KPiAgZG9fZmlscF9vcGVuKzB4YTcvMHgxOTAgZnMvbmFtZWku
-YzozMzk2DQo+ICBkb19zeXNfb3BlbmF0MisweGNjLzB4MWUwIGZzL29wZW4uYzoxMTY4DQo+
-ICBkb19zeXNfb3BlbiBmcy9vcGVuLmM6MTE4NCBbaW5saW5lXQ0KPiAgX19kb19zeXNfb3Bl
-bmF0IGZzL29wZW4uYzoxMjAwIFtpbmxpbmVdDQo+ICBfX3NlX3N5c19vcGVuYXQgZnMvb3Bl
-bi5jOjExOTUgW2lubGluZV0NCj4gIF9feDY0X3N5c19vcGVuYXQrMHg4MC8weGUwIGZzL29w
-ZW4uYzoxMTk1DQo+ICBkb19zeXNjYWxsXzY0KzB4MzgvMHg5MCBhcmNoL3g4Ni9lbnRyeS9j
-b21tb24uYzo0Ng0KPiAgZW50cnlfU1lTQ0FMTF82NF9hZnRlcl9od2ZyYW1lKzB4NDQvMHhh
-OQ0KPiBSSVA6IDAwMzM6MHg0NDg5ZmQNCj4gQ29kZTogMDIgYjggZmYgZmYgZmYgZmYgYzMg
-NjYgMGYgMWYgNDQgMDAgMDAgZjMgMGYgMWUgZmEgNDggODkgZjggNDgNCj4gODkgZjcgNDgg
-ODkgZDYgNDggODkgY2EgNGQgODkgYzIgNGQgODkgYzggNGMgOGIgNGMgMjQgMDggMGYgMDUg
-PDQ4PiAzZA0KPiAwMSBmMCBmZiBmZiA3MyAwMSBjMyA0OCBjNyBjMSBjMCBmZiBmZiBmZiBm
-NyBkOCA2NCA4OSAwMSA0OA0KPiBSU1A6IDAwMmI6MDAwMDdmZmZlYTdlMTQ5OCBFRkxBR1M6
-IDAwMDAwMjQ2IE9SSUdfUkFYOiAwMDAwMDAwMDAwMDAwMTAxDQo+IFJBWDogZmZmZmZmZmZm
-ZmZmZmZkYSBSQlg6IDAwMDAwMDAwMDA0MDA1MzAgUkNYOiAwMDAwMDAwMDAwNDQ4OWZkDQo+
-IFJEWDogMDAwMDAwMDAwMDA4MDAwMCBSU0k6IDAwMDAwMDAwMjAwMDAwNDAgUkRJOiAwMDAw
-MDAwMDAwMDAwMDA1DQo+IFJCUDogMDAwMDAwMDAwMDQwM2U1MCBSMDg6IDAwMDAwMDAwMDAw
-MDAwMDAgUjA5OiAwMDAwMDAwMDAwNDAwNTMwDQo+IFIxMDogMDAwMDAwMDAwMDAwMDAwMCBS
-MTE6IDAwMDAwMDAwMDAwMDAyNDYgUjEyOiAwMDAwMDAwMDAwNDAzZWYwDQo+IFIxMzogMDAw
-MDAwMDAwMDAwMDAwMCBSMTQ6IDAwMDAwMDAwMDA0YmYwMTggUjE1OiAwMDAwMDAwMDAwNDAw
-NTMwDQo+IE1vZHVsZXMgbGlua2VkIGluOg0KPiBEdW1waW5nIGZ0cmFjZSBidWZmZXI6DQo+
-ICAgIChmdHJhY2UgYnVmZmVyIGVtcHR5KQ0KPiBDUjI6IGZmZmZjOTAwMDAxNGIwMDANCj4g
-LS0tWyBlbmQgdHJhY2UgZWY2NjQ3NzhiM2FkZDU2MCBdLS0tDQo+IFJJUDogMDAxMDptZW1j
-cHlfZXJtcysweDYvMHgxMCBhcmNoL3g4Ni9saWIvbWVtY3B5XzY0LlM6NTUNCj4gQ29kZTog
-Y2MgY2MgY2MgY2MgZWIgMWUgMGYgMWYgMDAgNDggODkgZjggNDggODkgZDEgNDggYzEgZTkg
-MDMgODMgZTINCj4gMDcgZjMgNDggYTUgODkgZDEgZjMgYTQgYzMgNjYgMGYgMWYgNDQgMDAg
-MDAgNDggODkgZjggNDggODkgZDEgPGYzPiBhNA0KPiBjMyAwZiAxZiA4MCAwMCAwMCAwMCAw
-MCA0OCA4OSBmOCA0OCA4MyBmYSAyMCA3MiA3ZSA0MCAzOCBmZQ0KPiBSU1A6IDAwMTg6ZmZm
-ZmM5MDAwMDg5Zjg0MCBFRkxBR1M6IDAwMDEwMjQ2DQo+IFJBWDogZmZmZmM5MDAwMDE0YWZm
-ZSBSQlg6IDAwMDAwMDAwMDAwMDEwMDAgUkNYOiAwMDAwMDAwMDAwMDAwZmZlDQo+IFJEWDog
-MDAwMDAwMDAwMDAwMTAwMCBSU0k6IGZmZmY4ODgwMDVhMzQwMDIgUkRJOiBmZmZmYzkwMDAw
-MTRiMDAwDQo+IFJCUDogZmZmZmM5MDAwMDg5ZjhiOCBSMDg6IDAwMDAwMDAwMDAwMDczNjgg
-UjA5OiBmZmZmODg4MDA1Y2ExMjQwDQo+IFIxMDogZmZmZmZmZmY4MTU3ZTc2MCBSMTE6IDAw
-MDAwMDAwMDAwMDAwMDAgUjEyOiAwMDAwMDAwMDAwMDAwMDAwDQo+IFIxMzogZmZmZmM5MDAw
-MDE0YWZmZSBSMTQ6IDAwMDAwMDAwMDAwMDAwMDAgUjE1OiAwMDAwMDAwMDAwMDAyMzZhDQo+
-IEZTOiAgMDAwMDAwMDAwMTlmNzM4MCgwMDAwKSBHUzpmZmZmODg4MDNlYzAwMDAwKDAwMDAp
-IGtubEdTOjAwMDAwMDAwMDAwMDAwMDANCj4gQ1M6ICAwMDEwIERTOiAwMDAwIEVTOiAwMDAw
-IENSMDogMDAwMDAwMDA4MDA1MDAzMw0KPiBDUjI6IGZmZmZjOTAwMDAxNGIwMDAgQ1IzOiAw
-MDAwMDAwMDA1YWRhMDA2IENSNDogMDAwMDAwMDAwMDM3MGVmMA0KPiANCj4gDQo+IGMgcmVw
-cm9kdWNlciA6IEF0dGFjaGVkIHJlcHJvZHVlci5jDQo+IA0KPiBzeXprYWxsZXIgcmVwcm9k
-dWNlciA6DQo+ICMge1RocmVhZGVkOmZhbHNlIENvbGxpZGU6ZmFsc2UgUmVwZWF0OmZhbHNl
-IFJlcGVhdFRpbWVzOjAgUHJvY3M6MQ0KPiBTYW5kYm94OiBGYXVsdDpmYWxzZSBGYXVsdENh
-bGw6LTEgRmF1bHROdGg6MCBMZWFrOmZhbHNlDQo+IE5ldEluamVjdGlvbjpmYWxzZSBOZXRE
-ZXZpY2VzOmZhbHNlIE5ldFJlc2V0OmZhbHNlIENncm91cHM6ZmFsc2UNCj4gQmluZm10TWlz
-YzpmYWxzZSBDbG9zZUZEczpmYWxzZSBLQ1NBTjpmYWxzZSBEZXZsaW5rUENJOmZhbHNlIFVT
-QjpmYWxzZQ0KPiBWaGNpSW5qZWN0aW9uOmZhbHNlIFdpZmk6ZmFsc2UgU3lzY3RsOmZhbHNl
-IFVzZVRtcERpcjpmYWxzZQ0KPiBIYW5kbGVTZWd2OmZhbHNlIFJlcHJvOmZhbHNlIFRyYWNl
-OmZhbHNlfQ0KPiByMCA9IHN5el9tb3VudF9pbWFnZSRzcXVhc2hmcygmKDB4N2YwMDAwMDAw
-MDAwKT0nc3F1YXNoZnNceDAwJywNCj4gJigweDdmMDAwMDAwMDEwMCk9Jy4vZmlsZTBceDAw
-JywgMHg3ZmZmZmZmZiwgMHgxLA0KPiAmKDB4N2YwMDAwMDAwMjAwKT1beyYoMHg3ZjAwMDAw
-MTAwMDApPSI2ODczNzE3MzA3MDAwMDAwOTExZDY3NWYwMDQwMDAwMDAxMDAwMDAwMDMwMDBl
-MDBlMDAwMDIwMDA0MDAwMDAwMTIwMTAwMDAwMDAwMDAwMGY4MDEwMDAwMDAwMDAwMDBhYzAx
-MDAwMDAwMDAwMDAwZTAwMTAwMDAwMDAwMDAwMDdmMDAwMDAwMDAwMDAwMDAxZjAxMDAwMDAw
-MDAwMDAwNzYwMTAwMDAwMDAwMDAwMDlhMDEwMDAwMDAwMDAwMDAxYTczNzk3YTZiNjE2YzZj
-NjU3MjIwM2EyMDAwMjA0MzhjMDEyMDAwMDAwMDk4MjAwMDI4MzgwMDExMDAwMDllMDAxZDAy
-MDBlZDAxMDAwMDAxMDA5MTFkNjc1ZjQwMDEyYjAxMDA2NDRjMDAyYTdkMDAwMzJkNmUwMDFh
-MDQwZjAwMDMwMGZmMjc3YzAwNTkwMTAwNmQwODI2NGMwMDAwMGUyZjc0NmQ3MDJmNzM3OTdh
-MmQ2OTZkNjE2NzY1Njc2NTZlMzQzMTM5MzczNzM2MzMzOTMyMmY2NjY5NmM2NTMwYjUwMDAx
-Mjk3NTAxMDJjNDBiN2QwMDI5NGQwMDA3NGQwMDA5Mjk3ZDAwMDUyOWY1MDEwYTJkYTQwMmU2
-MTc3ZTA0YmMwMDJhZGQwMDA2NWQwMTYwZGUwMzI4MjMyY2RjMDA2ZDBkZmY0MTAwMDAyOTFm
-MDAwMTAwYzAyN2VkMDAwN2RjMDQ2NTFmNTQ1ZDFhMDg1YzAwMTEwMDAwNDgwMDEzMDEwMGEx
-MDAwMzRkMDAyMDRjMDAwOTAyMDAwNDAwNjY2OTZjNjUzMDQwMDAwMTUwMDJiMjAxMzEwNGQ0
-MDRmNzA1MDIwMDA4ODAwMzAzMmU2MzZmNmM2NDdlNTkwMjAxZjkwNjllNDAwMWVjMDgwMTMx
-ZDYwMDA1MjczMTAwMzIyYTMxMDAzMzExMDAwMDBiMDAxMzYwMDBhMTAwMWZkYzAwMTEwMDAw
-NjkwMTAwMDAwMDAwMDAwMDFhMDAxMjAwYzEwMDdlZGQwMDIwZGQwMDQwZGQwMDllZGQwMGQ2
-ZGUwMDEyMDFiYzAwMTEwMDAwN2UwMTAwMDAwMDAwMDAwMDA4ODA1Y2Y5MDEwMDUzNWYwMTAw
-YTIwMTAwMDAwMDAwMDAwMDFiMDAxZTAwMDAwNjAwNzg2MTc0NzQ3MjMxMDYwMDAwYzQwMTI3
-NGQwMDMyMjc0ZDAwMzIxMTAwMDAwZDAwMTIwMGMxMDAwMjRkMDAyNDRjMDAxMTAwMDBiNDAx
-MDAwMDAwMDAwMDAwMDEiLA0KPiAweDFlOX1dLCAweDAsICYoMHg3ZjAwMDAwMTAyMDApPUFO
-WT1bXSkNCj4gb3BlbmF0KHIwLCAmKDB4N2YwMDAwMDAwMDQwKT0nLi9maWxlMVx4MDAnLCAw
-eDgwMDAwLCAweDApDQo+IA0KPiBJIGhhdmVuJ3Qgc2VlbiB0aGlzIGVudHJ5IG9uIHRoZSBz
-eXprYWxsZXIgZGFzaGJvYXJkIHlldDsgc3l6Ym90DQo+IHRyYWNrZXIgLSBodHRwczovL2dy
-b3Vwcy5nb29nbGUuY29tL2cvc3l6a2FsbGVyLWJ1Z3MvYy9Xcmp5U2JFQUYzcyAuDQo+IA0K
-PiBQYWxhc2gNCg0KDQotLSANCn5SYW5keQ0K
+On Mon, 21 Dec 2020 at 17:01, Hongwei Zhang <hongweiz@ami.com> wrote:
+>
+> Dear Reviewer,
+>
+> When FTGMAC100 driver is used on other NCSI Ethernet controllers, few
+> controllers have compatible issue. One example is Intel I210 Ethernet
+> controller on AST2600 BMC, with FTGMAC100 driver, it always trigger
+> RXDES0_RX_ERR error, cause NCSI initialization failure, removing
+> FTGMAC100_RXDES0_RX_ERR bit from RXDES0_ANY_ERROR fix the issue.
+
+I work with a few systems that use the i210 on the 2600. We haven't
+seen this issue in our testing.
+
+Is there something specific about the setup that you use to trigger this?
+
+Ryan, is this an issue that Aspeed is aware of?
+
+Cheers,
+
+Joel
+
+>
+> Here are part of the debug logs:
+> ......
+> [   35.075552] ftgmac100_hard_start_xmit TXDESO=b000003c
+> [   35.080843] ftgmac100 1e660000.ethernet eth0: tx_complete_packet 55
+> [   35.087141] ftgmac100 1e660000.ethernet eth0: rx_packet_error RXDES0=0xb0070040
+> [   35.094448] ftgmac100_rx_packet RXDES0=b0070040 RXDES1=f0800000 RXDES2=88f8
+> [   35.101498] ftgmac100 1e660000.ethernet eth0: rx_packet_error 0xb0070040
+> [   35.108205] ftgmac100 1e660000.ethernet eth0: [ISR] = 0xb0070040: RX_ERR
+> [   35.287808] i2c i2c-1: new_device: Instantiated device slave-mqueue at 0x12
+> [   35.428379] ftgmac100_hard_start_xmit TXDESO=b000003c
+> [   35.433624] ftgmac100 1e660000.ethernet eth0: tx_complete_packet 56
+> [   35.439915] ftgmac100 1e660000.ethernet eth0: rx_packet_error RXDES0=0xb0070040
+> [   35.447225] ftgmac100_rx_packet RXDES0=b0070040 RXDES1=f0800000 RXDES2=88f8
+> [   35.454273] ftgmac100 1e660000.ethernet eth0: rx_packet_error 0xb0070040
+> [   35.460972] ftgmac100 1e660000.ethernet eth0: [ISR] = 0xb0070040: RX_ERR
+> [   35.797825] ftgmac100_hard_start_xmit TXDESO=b000003c
+> [   35.803241] ftgmac100 1e660000.ethernet eth0: tx_complete_packet 57
+> [   35.809541] ftgmac100 1e660000.ethernet eth0: rx_packet_error RXDES0=0xb0070040
+> [   35.816848] ftgmac100_rx_packet RXDES0=b0070040 RXDES1=f0800000 RXDES2=88f8
+> [   35.823899] ftgmac100 1e660000.ethernet eth0: rx_packet_error 0xb0070040
+> [   35.830597] ftgmac100 1e660000.ethernet eth0: [ISR] = 0xb0070040: RX_ERR
+> [   36.179914] ftgmac100_hard_start_xmit TXDESO=b000003c
+> [   36.185160] ftgmac100 1e660000.ethernet eth0: tx_complete_packet 58
+> [   36.191454] ftgmac100 1e660000.ethernet eth0: rx_packet_error RXDES0=0xb0070040
+> [   36.198761] ftgmac100_rx_packet RXDES0=b0070040 RXDES1=f0800000 RXDES2=88f8
+> [   36.205813] ftgmac100 1e660000.ethernet eth0: rx_packet_error 0xb0070040
+> [   36.212513] ftgmac100 1e660000.ethernet eth0: [ISR] = 0xb0070040: RX_ERR
+> [   36.593688] ftgmac100_hard_start_xmit TXDESO=b000003c
+> [   36.602937] ftgmac100 1e660000.ethernet eth0: tx_complete_packet 59
+> [   36.609244] ftgmac100 1e660000.ethernet eth0: rx_packet_error RXDES0=0xb0070040
+> [   36.616558] ftgmac100_rx_packet RXDES0=b0070040 RXDES1=f0800000 RXDES2=88f8
+> [   36.623608] ftgmac100 1e660000.ethernet eth0: rx_packet_error 0xb0070040
+> [   36.630315] ftgmac100 1e660000.ethernet eth0: [ISR] = 0xb0070040: RX_ERR
+> [   37.031524] IPv6: ADDRCONF(NETDEV_UP): eth0: link is not ready
+> [   37.067831] IPv6: ADDRCONF(NETDEV_UP): eth1: link is not ready
+> ............
+>
+> This patch add a configurable flag, FTGMAC100_RXDES0_RX_ERR_CHK, in FTGMAC100
+>  driver, it is YES by default, so keep the orignal define of
+> RXDES0_ANY_ERROR. If it is needed, user can set the flag to NO to remove
+> the RXDES0_RX_ERR bit, to fix the issue.
+>
+> Hongwei Zhang (1):
+>   net: ftgmac100: Fix AST2600 EVB NCSI RX issue
+>
+>  drivers/net/ethernet/faraday/Kconfig     | 9 +++++++++
+>  drivers/net/ethernet/faraday/ftgmac100.h | 8 ++++++++
+>  2 files changed, 17 insertions(+)
+>
+> --
+> 2.17.1
+>
