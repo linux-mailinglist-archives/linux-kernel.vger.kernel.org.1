@@ -2,84 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DCB92E0F4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 21:19:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1162E0F52
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 21:21:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727908AbgLVUSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 15:18:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726756AbgLVUSe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 15:18:34 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 776CEC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 12:17:54 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id p187so13123083iod.4
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 12:17:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/zLJLP7tCAUwtOH7bnIcDYFQtzmD3kgV+pxzg546b1k=;
-        b=XC6Br8D+89r1c0JcPMrO3nO6KaRrr8ocyrLF47pEfYQUJe3E1u/P6NZigHGMMumbIK
-         HCdQ77TvBkYou2+v7emwbJdr7rc4fVDh2qnGN/1YRKfbuGAcnhh3b9sBd3fOg/TW/8B5
-         k1YCh2Gzk/m/wddzgZnfSjui9OSQhIdclFkY0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/zLJLP7tCAUwtOH7bnIcDYFQtzmD3kgV+pxzg546b1k=;
-        b=TLYDJcKMnl0BC4PdV7lOvs0A97CdYzWFViEEBOYnMoLkNctNcXLEp1k0SokWi1cHeX
-         usDCB/Px+mebAsMcY4mDyI672WR0Yb6vh0Z2XK3XxGEkuWaFRBYJMbkSuk4RCBiyx7QS
-         1myZBaHVwqFlF6cjmqjxmuEwutDonl7sOfhhbveB4fNw0GwmnErk87C86N4bTviHzfqy
-         uDXe9/WdHRXF4zg81P4ZK2xRL3ln8SJa1Me/6iOqD0KmCISM6Hi/aKojptBGA44ZGWmW
-         LY4MljsgLaR/fkZAQX4euKHpyXHMs3Qty8DuE2BAlDkYCGRecygAfXRRc7OIK0MyKctI
-         i+eA==
-X-Gm-Message-State: AOAM532TdqWBvzOD+IB5qcK+51T5VWOPsUEIVoaHA+E9CHuehko8jMCt
-        EItK+lsqYJXqapmGldyJF+pviWx/UOEr2P+G+bZDBA==
-X-Google-Smtp-Source: ABdhPJxodNAzCORMWfMCbsvvW5DAgOp02Nbq+NPpU5r0VLJ57U4m1OtSsaDEzp4qiIHerc0HSaKfUi6EmT4jhIFkZU8=
-X-Received: by 2002:a6b:8b88:: with SMTP id n130mr19051497iod.122.1608668273230;
- Tue, 22 Dec 2020 12:17:53 -0800 (PST)
+        id S1726567AbgLVUUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 15:20:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52586 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725913AbgLVUUG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 15:20:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59BD422B2D
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 20:19:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608668365;
+        bh=mXrauKSE9SR6fvVV4uNsc75DoOCwPZAdIHnBX7if57M=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=aEwxO/bFWk3IH/MxTKqrjzFlAnchKQNCXcXVz5B529HTN4x2fmzTXjf8xJjN/uldl
+         fc6EX/84JFTXxFGnzli6OAL5KavuHZl4veW5AfmtlXBezn+bKB3HHxXuXFkBULbvoo
+         lx1pw4beDG9SeRmTML1dMDFWKYKFeiBSsYldq7oDaqgSP7zW3V9TlmsfwnizhkbF2f
+         eNvQAc0HQ5U8YQ7xd7N7MmPa9FKBZ27KEWNYTc5vxqm/iJq+wyhTHjeSIkS8RE9JGo
+         itH9HPZONETy9Ntd6nUgZFl3qeQIALwVfTFef6C4QzYKPwo2PnFqUKV7vvPlttK09t
+         t9JSRb6eGVYOQ==
+Received: by mail-wr1-f44.google.com with SMTP id t16so15863582wra.3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 12:19:25 -0800 (PST)
+X-Gm-Message-State: AOAM531gJxEbdL5r5jW1IXqseLQKcL62ZIFRdXg/5ogtZrpm/oGchrgu
+        iHsZZf+G1f5jvqS5k5MdfPebRn20bdeB/LmLCaFk4w==
+X-Google-Smtp-Source: ABdhPJz6jcNMaCJEbA/qYO2R4S8Dxtkj7kmxvWhr/9NQt2mGn5LTdId4WdOeqrSgFEr9UzhLFIEXP10x0wfqWAT6xLI=
+X-Received: by 2002:adf:e64b:: with SMTP id b11mr25822587wrn.257.1608668363950;
+ Tue, 22 Dec 2020 12:19:23 -0800 (PST)
 MIME-Version: 1.0
-References: <20201126165748.1748417-1-revest@google.com> <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com>
- <CACYkzJ7T4y7in1AsCvJ2izA3yiAke8vE9SRFRCyTPeqMnDHoyQ@mail.gmail.com>
- <e8b03cbc-c120-43d5-168c-cde5b6a97af8@fb.com> <CAEf4BzYz9Yf9abPBtP+swCuqvvhL0cbbbF1x-3stg9mp=a6+-A@mail.gmail.com>
- <194b5a6e6e30574a035a3e3baa98d7fde7f91f1c.camel@chromium.org>
- <CAADnVQK6GjmL19zQykYbh=THM9ktQUzfnwF_FfhUKimCxDnnkQ@mail.gmail.com>
- <CABRcYm+zjC-WH2gxtfEX5S6mZj-5_ByAzVd5zi3aRmQv-asYqg@mail.gmail.com>
- <221fb873-80fc-5407-965e-b075c964fa13@fb.com> <20201222141818.GA17056@infradead.org>
-In-Reply-To: <20201222141818.GA17056@infradead.org>
-From:   Florent Revest <revest@chromium.org>
-Date:   Tue, 22 Dec 2020 21:17:41 +0100
-Message-ID: <CABRcYmKBgQYHezKVaLCVwUvksFaVuU7RHW8VVjM6auOC_GOr+w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@google.com>,
-        open list <linux-kernel@vger.kernel.org>
+References: <X97pprdcRXusLGnq@google.com> <DDA15360-D6D4-46A8-95A4-5EE34107A407@gmail.com>
+ <20201221172711.GE6640@xz-x1> <76B4F49B-ED61-47EA-9BE4-7F17A26B610D@gmail.com>
+ <X+D0hTZCrWS3P5Pi@google.com> <CAHk-=wg_UBuo7ro1fpEGkMyFKA1+PxrE85f9J_AhUfr-nJPpLQ@mail.gmail.com>
+ <9E301C7C-882A-4E0F-8D6D-1170E792065A@gmail.com> <CAHk-=wg-Y+svNy3CDkJjj0X_CJkSbpERLg64-Vqwq5u7SC4z0g@mail.gmail.com>
+ <X+ESkna2z3WjjniN@google.com> <1FCC8F93-FF29-44D3-A73A-DF943D056680@gmail.com>
+ <20201221223041.GL6640@xz-x1> <CAHk-=wh-bG4thjXUekLtrCg8FRrdWjtT40ibXXLSm_hzQG8eOw@mail.gmail.com>
+ <CALCETrV=8tY7h=aaudWBEn-MJnNkm2wz5qjH49SYqwkjYTpOaA@mail.gmail.com> <CAHk-=wj=CcOHQpG0cUGfoMCt2=Uaifpqq-p-mMOmW8XmrBn4fQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wj=CcOHQpG0cUGfoMCt2=Uaifpqq-p-mMOmW8XmrBn4fQ@mail.gmail.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Tue, 22 Dec 2020 12:19:11 -0800
+X-Gmail-Original-Message-ID: <CALCETrVdT4jSa3UKU8rQ2KO8CE1Jq2r23ZwuqmynAo6kYUwA=Q@mail.gmail.com>
+Message-ID: <CALCETrVdT4jSa3UKU8rQ2KO8CE1Jq2r23ZwuqmynAo6kYUwA=Q@mail.gmail.com>
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andy Lutomirski <luto@kernel.org>, Peter Xu <peterx@redhat.com>,
+        Nadav Amit <nadav.amit@gmail.com>, Yu Zhao <yuzhao@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 3:18 PM Christoph Hellwig <hch@infradead.org> wrote:
+On Mon, Dec 21, 2020 at 8:16 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> FYI, there is a reason why kallsyms_lookup is not exported any more.
-> I don't think adding that back through a backdoor is a good idea.
+> On Mon, Dec 21, 2020 at 7:19 PM Andy Lutomirski <luto@kernel.org> wrote:
+> >
+> > Ugh, this is unpleasantly complicated.
+>
+> What I *should* have said is that *because* userfaultfd is changing
+> the VM layout, it should always act as if it had to take the mmap_sem
+> for writing, and that the RW->RO change is an example of when
+> downgrading that write-lock to a read lock is simply not valid -
+> because it basically breaks the rules about what a lookup (ie a read)
+> can do.
+>
+> A lookup can never turn a writable page non-writable. A lookup -
+> through COW - _can_ turn a read-only page writable. So that's why
+> "RO->RW" can be ok under the read lock, but RW->RO is not.
+>
+> Does that clarify the situation when I phrase it that way instead?
 
-Did you maybe mean kallsyms_lookup_name (the one that looks an address
-up based on a symbol name) ? It used to be exported but isn't anymore
-indeed.
-However, this is not what we're trying to do. As far as I can tell,
-kallsyms_lookup (the one that looks a symbol name up based on an
-address) has never been exported but its close cousins sprint_symbol
-and sprint_symbol_no_offset (which only call kallsyms_lookup and
-pretty print the result) are still exported, they are also used by
-vsprintf. Is this an issue ?
+It's certainly more clear, but I'm still not thrilled with a bunch of
+functions in different files maintained by different people that
+cooperate using an undocumented lockless protocol.  It makes me
+nervous from a maintainability standpoint even if the code is, in
+fact, entirely correct.
+
+But I didn't make my question clear either: when I asked about
+mark_screen_rdonly(), I wasn't asking about locking or races at all.
+mark_screen_rdonly() will happily mark *any* PTE readonly.  I can
+easily believe that writable mappings of non-shared mappings all
+follow the same CoW rules in the kernel and that, assuming all the
+locking is correct, marking them readonly is conceptually okay.  But
+shared mappings are a whole different story.  Is it actually the case
+that all, or even most, drivers and other sources of shared mappings
+will function correctly if one of their PTEs becomes readonly behind
+their back?  Or maybe there are less bizarre ways for this to happen
+without vm86 shenanigans and this is completely safe after all.
+
+P.S. This whole mess reminds me that I need to take a closer look at
+the upcoming SHSTK code.  Shadow stack pages violate all common sense
+about how the various PTE bits work.
