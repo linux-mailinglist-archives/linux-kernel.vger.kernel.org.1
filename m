@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 501612E08C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 11:28:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2614A2E08CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 11:28:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726699AbgLVK2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 05:28:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59126 "EHLO
+        id S1726744AbgLVK2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 05:28:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725854AbgLVK2D (ORCPT
+        with ESMTP id S1726012AbgLVK2N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 05:28:03 -0500
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4EB5C0611CC
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 02:26:53 -0800 (PST)
-Received: by mail-qt1-x84a.google.com with SMTP id z43so10308464qtb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 02:26:53 -0800 (PST)
+        Tue, 22 Dec 2020 05:28:13 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76005C0611CF
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 02:26:57 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id j1so17382049ybj.11
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 02:26:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=t0QDGZ4RnAJnUWRRyU9abg4X7726TpGoTxSFt9qp7yo=;
-        b=YT/9mQ5YjEMDnb9Q+WAthF6nlaOM6O7CobFCJKlj8kn2HI0eogsYslcIwvQXj/neqX
-         RT3i3ygz6SCICco7fb4PYeeQCeOrtWFL1Jvs3jCKzMV3hWYvfoMahhsi9aUduII03oKC
-         Vq7ZbrdTZ6SWwyQ/jDbIpqto5ngTwV9McvNeJ0YS4SQP+DS8kh/47JvJtQkdeNqInd0R
-         FalCgD5Pot76Whgfxw821OKBrGi0ln2dTPG1NcV1m286jPP1Tg0YapNX9ieBvyoyQfcB
-         saheMcqYLfUY9Qve76XWnTtcG9Bv5RZcY8+hx6CHfggzMlpKd8yxXLk6zZRXk3+IiEYR
-         9iLw==
+        bh=rc5GeV91m/6eoUZATdYOYr9FoqLYV4Rzhs9/leORJUE=;
+        b=LA6pWjdBbVrTeX93aahQViGe09ABY/+upZrDgScTTBRcnh1fOgZj4QgkmUP3yTmJHF
+         q55hBBeMwwfzs8mBLkXWxvrRM7Rb5Km6aWL52D7opfF1/K7XL7LxAHsqXqaaC2jzRJLY
+         pHqCUhN9WjbwzwkDmNBXYRvyg4z2eMV0QncybVUZl9+57KsIQuG2BeKJ/uIJMg2pegeI
+         n9sz1b16b5DSpouxMQkGoRiEezvGunPZJHUi/6bNHqkO2gqhfNbT7cMg85+JJ0dHaq40
+         lPFuc7Oq57Ddp4Tqh522PZ/1ujDWDTO60gOsugRo9n61id5S+5Oke5YC9Yn/wjZ4f5Y4
+         efsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=t0QDGZ4RnAJnUWRRyU9abg4X7726TpGoTxSFt9qp7yo=;
-        b=fUKl2FlpyK12vp3xvyJsJz04yxUI9baQwO6dkUNM8TJssk47NCwlIVqvBUEraajPkF
-         mONtFvgFz4bgoaKX/c3Ti+Y/LUxd8ChH0N+4pnyyhvzKaSuw9wNgVJY8xggoNOUe/IB5
-         WRLDNkuzyHK5rXQ5CTjOOMYza1LsFZDjooG8ybVf8TC85UBOvh6O90daVhzDtp2rOrBr
-         Zau3fsHi7/fliuNYp+YsrFD6Zm/443pwszKT5RWPdN+7Q6StKmxwnLj1+0XAWVR2vsbK
-         g30/wH7ZjlXGtSHNgNi8ywzH0dtxzF92CIGUoTPVvIDbApUGDvp8+5VvhhaAqBthJLDu
-         tFnQ==
-X-Gm-Message-State: AOAM531GI1b4namnv4uMB25LCv5dXOc0niYvP9FnbQCyL6XhxvtC8APC
-        g6JMSmnGA1YVcDoahUlKEpDQ7TbOjjlb
-X-Google-Smtp-Source: ABdhPJzzYkMdd7AUThnj4tDQ1lbcQ+Y+lkJuhAPBlmf5AEuA4txxKpb/3eAxTsTaB5Rq6URMSo2Ct48iX/ly
+        bh=rc5GeV91m/6eoUZATdYOYr9FoqLYV4Rzhs9/leORJUE=;
+        b=pH/rjxCl0Tb91hyWouxS9jBVMflg4r8f1Kb8wOgs5OGUpkoL9beRqxa0jGBZzkWCpq
+         64DkoxqmYmmrc9PjkDFEg7eyEOZK9gzh1HE6XTUQ/ELPPBXN4Rnlj7KBPyP8EL3hCeHb
+         07kumasXHpfLuFLds6jkT1ocPVVyAqH13MBo5cK9EeZZrdV0FkzshCcQVxi9JVKx30fb
+         hoExZpFZfrfP4fQmoWUwaMJg2pAsy8a0j7O1796RXCHGRrvcO8jaBOUq7sGiNV+rjDc3
+         IjrUup9vxDhOxxK6rA4UXqoOa1YtvCsei9FKgKPEb1nAAQv6RroGKw1OvEACLP+0wX1K
+         PAGQ==
+X-Gm-Message-State: AOAM5322k5WiRisYm25PvZwXhs7Z9rzWS+6JL4a8nwQM1rHdji1x6DEr
+        M3OvIFl3r2ERMonDx5lCYrdEDYH5Gueg
+X-Google-Smtp-Source: ABdhPJyNvl6CoK33XU907foYZnffLBb6MRCj5jj7ztBx0EP6lQt9t9KpMPVr9wi7EePLbRF17poL8BEFJObB
 Sender: "apusaka via sendgmr" <apusaka@apusaka-p920.tpe.corp.google.com>
 X-Received: from apusaka-p920.tpe.corp.google.com ([172.30.210.44])
- (user=apusaka job=sendgmr) by 2002:a0c:dc13:: with SMTP id
- s19mr21479184qvk.26.1608632813082; Tue, 22 Dec 2020 02:26:53 -0800 (PST)
-Date:   Tue, 22 Dec 2020 18:26:28 +0800
+ (user=apusaka job=sendgmr) by 2002:a25:b195:: with SMTP id
+ h21mr29501513ybj.406.1608632816709; Tue, 22 Dec 2020 02:26:56 -0800 (PST)
+Date:   Tue, 22 Dec 2020 18:26:29 +0800
 In-Reply-To: <20201222102629.1335742-1-apusaka@google.com>
-Message-Id: <20201222182553.v5.4.I215b0904cb68d68ac780a0c75c06f7d12e6147b7@changeid>
+Message-Id: <20201222182553.v5.5.I96e97067afe1635dbda036b881ba2a01f37cd343@changeid>
 Mime-Version: 1.0
 References: <20201222102629.1335742-1-apusaka@google.com>
 X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
-Subject: [PATCH v5 4/5] Bluetooth: advmon offload MSFT handle controller reset
+Subject: [PATCH v5 5/5] Bluetooth: advmon offload MSFT handle filter enablement
 From:   Archie Pusaka <apusaka@google.com>
 To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
         Marcel Holtmann <marcel@holtmann.org>
@@ -72,9 +72,14 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Archie Pusaka <apusaka@chromium.org>
 
-When the controller is powered off, the registered advertising monitor
-is removed from the controller. This patch handles the re-registration
-of those monitors when the power is on.
+Implements the feature to disable/enable the filter used for
+advertising monitor on MSFT controller, effectively have the same
+effect as "remove all monitors" and "add all previously removed
+monitors".
+
+This feature would be needed when suspending, where we would not want
+to get packets from anything outside the allowlist. Note that the
+integration with the suspending part is not included in this patch.
 
 Signed-off-by: Archie Pusaka <apusaka@chromium.org>
 Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
@@ -82,165 +87,137 @@ Reviewed-by: Yun-Hao Chung <howardchung@google.com>
 
 ---
 
-Changes in v5:
-* Discard struct flags on msft_data and use it's members directly
+(no changes since v1)
 
- net/bluetooth/msft.c | 76 +++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 71 insertions(+), 5 deletions(-)
+ net/bluetooth/msft.c | 67 ++++++++++++++++++++++++++++++++++++++++++++
+ net/bluetooth/msft.h |  6 ++++
+ 2 files changed, 73 insertions(+)
 
 diff --git a/net/bluetooth/msft.c b/net/bluetooth/msft.c
-index f5aa0e3b1b9b..d25c6936daa4 100644
+index d25c6936daa4..b2ef654b1d3d 100644
 --- a/net/bluetooth/msft.c
 +++ b/net/bluetooth/msft.c
-@@ -82,8 +82,12 @@ struct msft_data {
- 	struct list_head handle_map;
+@@ -69,6 +69,17 @@ struct msft_rp_le_cancel_monitor_advertisement {
+ 	__u8 sub_opcode;
+ } __packed;
+ 
++#define MSFT_OP_LE_SET_ADVERTISEMENT_FILTER_ENABLE	0x05
++struct msft_cp_le_set_advertisement_filter_enable {
++	__u8 sub_opcode;
++	__u8 enable;
++} __packed;
++
++struct msft_rp_le_set_advertisement_filter_enable {
++	__u8 status;
++	__u8 sub_opcode;
++} __packed;
++
+ struct msft_monitor_advertisement_handle_data {
+ 	__u8  msft_handle;
+ 	__u16 mgmt_handle;
+@@ -83,6 +94,7 @@ struct msft_data {
  	__u16 pending_add_handle;
  	__u16 pending_remove_handle;
-+	__u8 reregistering;
+ 	__u8 reregistering;
++	__u8 filter_enabled;
  };
  
-+static int __msft_add_monitor_pattern(struct hci_dev *hdev,
-+				      struct adv_monitor *monitor);
-+
- bool msft_monitor_supported(struct hci_dev *hdev)
- {
- 	return !!(msft_get_features(hdev) & MSFT_FEATURE_MASK_LE_ADV_MONITOR);
-@@ -134,6 +138,35 @@ static bool read_supported_features(struct hci_dev *hdev,
- 	return false;
+ static int __msft_add_monitor_pattern(struct hci_dev *hdev,
+@@ -190,6 +202,7 @@ void msft_do_open(struct hci_dev *hdev)
+ 
+ 	if (msft_monitor_supported(hdev)) {
+ 		msft->reregistering = true;
++		msft_set_filter_enable(hdev, true);
+ 		reregister_monitor_on_restart(hdev, 0);
+ 	}
+ }
+@@ -395,6 +408,40 @@ static void msft_le_cancel_monitor_advertisement_cb(struct hci_dev *hdev,
+ 	hci_remove_adv_monitor_complete(hdev, status);
  }
  
-+/* This function requires the caller holds hdev->lock */
-+static void reregister_monitor_on_restart(struct hci_dev *hdev, int handle)
++static void msft_le_set_advertisement_filter_enable_cb(struct hci_dev *hdev,
++						       u8 status, u16 opcode,
++						       struct sk_buff *skb)
 +{
-+	struct adv_monitor *monitor;
++	struct msft_cp_le_set_advertisement_filter_enable *cp;
++	struct msft_rp_le_set_advertisement_filter_enable *rp;
 +	struct msft_data *msft = hdev->msft_data;
-+	int err;
 +
-+	while (1) {
-+		monitor = idr_get_next(&hdev->adv_monitors_idr, &handle);
-+		if (!monitor) {
-+			/* All monitors have been reregistered */
-+			msft->reregistering = false;
-+			hci_update_background_scan(hdev);
-+			return;
-+		}
++	rp = (struct msft_rp_le_set_advertisement_filter_enable *)skb->data;
++	if (skb->len < sizeof(*rp))
++		return;
 +
-+		msft->pending_add_handle = (u16)handle;
-+		err = __msft_add_monitor_pattern(hdev, monitor);
++	/* Error 0x0C would be returned if the filter enabled status is
++	 * already set to whatever we were trying to set.
++	 * Although the default state should be disabled, some controller set
++	 * the initial value to enabled. Because there is no way to know the
++	 * actual initial value before sending this command, here we also treat
++	 * error 0x0C as success.
++	 */
++	if (status != 0x00 && status != 0x0C)
++		return;
 +
-+		/* If success, we return and wait for monitor added callback */
-+		if (!err)
-+			return;
++	hci_dev_lock(hdev);
 +
-+		/* Otherwise remove the monitor and keep registering */
-+		hci_free_adv_monitor(hdev, monitor);
-+		handle++;
-+	}
++	cp = hci_sent_cmd_data(hdev, hdev->msft_opcode);
++	msft->filter_enabled = cp->enable;
++
++	if (status == 0x0C)
++		bt_dev_warn(hdev, "MSFT filter_enable is already %s",
++			    cp->enable ? "on" : "off");
++
++	hci_dev_unlock(hdev);
 +}
 +
- void msft_do_open(struct hci_dev *hdev)
+ static bool msft_monitor_rssi_valid(struct adv_monitor *monitor)
  {
- 	struct msft_data *msft;
-@@ -154,12 +187,18 @@ void msft_do_open(struct hci_dev *hdev)
+ 	struct adv_rssi_thresholds *r = &monitor->rssi;
+@@ -531,3 +578,23 @@ int msft_remove_monitor(struct hci_dev *hdev, struct adv_monitor *monitor,
  
- 	INIT_LIST_HEAD(&msft->handle_map);
- 	hdev->msft_data = msft;
-+
-+	if (msft_monitor_supported(hdev)) {
-+		msft->reregistering = true;
-+		reregister_monitor_on_restart(hdev, 0);
-+	}
- }
- 
- void msft_do_close(struct hci_dev *hdev)
- {
- 	struct msft_data *msft = hdev->msft_data;
- 	struct msft_monitor_advertisement_handle_data *handle_data, *tmp;
-+	struct adv_monitor *monitor;
- 
- 	if (!msft)
- 		return;
-@@ -169,6 +208,12 @@ void msft_do_close(struct hci_dev *hdev)
- 	hdev->msft_data = NULL;
- 
- 	list_for_each_entry_safe(handle_data, tmp, &msft->handle_map, list) {
-+		monitor = idr_find(&hdev->adv_monitors_idr,
-+				   handle_data->mgmt_handle);
-+
-+		if (monitor && monitor->state == ADV_MONITOR_STATE_OFFLOADED)
-+			monitor->state = ADV_MONITOR_STATE_REGISTERED;
-+
- 		list_del(&handle_data->list);
- 		kfree(handle_data);
- 	}
-@@ -282,9 +327,15 @@ static void msft_le_monitor_advertisement_cb(struct hci_dev *hdev,
- 	if (status && monitor)
- 		hci_free_adv_monitor(hdev, monitor);
- 
-+	/* If in restart/reregister sequence, keep registering. */
-+	if (msft->reregistering)
-+		reregister_monitor_on_restart(hdev,
-+					      msft->pending_add_handle + 1);
-+
- 	hci_dev_unlock(hdev);
- 
--	hci_add_adv_patterns_monitor_complete(hdev, status);
-+	if (!msft->reregistering)
-+		hci_add_adv_patterns_monitor_complete(hdev, status);
- }
- 
- static void msft_le_cancel_monitor_advertisement_cb(struct hci_dev *hdev,
-@@ -374,7 +425,8 @@ static bool msft_monitor_pattern_valid(struct adv_monitor *monitor)
- }
- 
- /* This function requires the caller holds hdev->lock */
--int msft_add_monitor_pattern(struct hci_dev *hdev, struct adv_monitor *monitor)
-+static int __msft_add_monitor_pattern(struct hci_dev *hdev,
-+				      struct adv_monitor *monitor)
- {
- 	struct msft_cp_le_monitor_advertisement *cp;
- 	struct msft_le_monitor_advertisement_pattern_data *pattern_data;
-@@ -387,9 +439,6 @@ int msft_add_monitor_pattern(struct hci_dev *hdev, struct adv_monitor *monitor)
- 	u8 pattern_count = 0;
- 	int err = 0;
- 
--	if (!msft)
--		return -EOPNOTSUPP;
--
- 	if (!msft_monitor_pattern_valid(monitor))
- 		return -EINVAL;
- 
-@@ -434,6 +483,20 @@ int msft_add_monitor_pattern(struct hci_dev *hdev, struct adv_monitor *monitor)
  	return err;
  }
- 
-+/* This function requires the caller holds hdev->lock */
-+int msft_add_monitor_pattern(struct hci_dev *hdev, struct adv_monitor *monitor)
++
++int msft_set_filter_enable(struct hci_dev *hdev, bool enable)
 +{
++	struct msft_cp_le_set_advertisement_filter_enable cp;
++	struct hci_request req;
 +	struct msft_data *msft = hdev->msft_data;
++	int err;
 +
 +	if (!msft)
 +		return -EOPNOTSUPP;
 +
-+	if (msft->reregistering)
-+		return -EBUSY;
++	cp.sub_opcode = MSFT_OP_LE_SET_ADVERTISEMENT_FILTER_ENABLE;
++	cp.enable = enable;
 +
-+	return __msft_add_monitor_pattern(hdev, monitor);
++	hci_req_init(&req, hdev);
++	hci_req_add(&req, hdev->msft_opcode, sizeof(cp), &cp);
++	err = hci_req_run_skb(&req, msft_le_set_advertisement_filter_enable_cb);
++
++	return err;
++}
+diff --git a/net/bluetooth/msft.h b/net/bluetooth/msft.h
+index 6f126a1f1688..f8e4d3a6d641 100644
+--- a/net/bluetooth/msft.h
++++ b/net/bluetooth/msft.h
+@@ -20,6 +20,7 @@ __u64 msft_get_features(struct hci_dev *hdev);
+ int msft_add_monitor_pattern(struct hci_dev *hdev, struct adv_monitor *monitor);
+ int msft_remove_monitor(struct hci_dev *hdev, struct adv_monitor *monitor,
+ 			u16 handle);
++int msft_set_filter_enable(struct hci_dev *hdev, bool enable);
+ 
+ #else
+ 
+@@ -45,4 +46,9 @@ static inline int msft_remove_monitor(struct hci_dev *hdev,
+ 	return -EOPNOTSUPP;
+ }
+ 
++static inline int msft_set_filter_enable(struct hci_dev *hdev, bool enable)
++{
++	return -EOPNOTSUPP;
 +}
 +
- /* This function requires the caller holds hdev->lock */
- int msft_remove_monitor(struct hci_dev *hdev, struct adv_monitor *monitor,
- 			u16 handle)
-@@ -447,6 +510,9 @@ int msft_remove_monitor(struct hci_dev *hdev, struct adv_monitor *monitor,
- 	if (!msft)
- 		return -EOPNOTSUPP;
- 
-+	if (msft->reregistering)
-+		return -EBUSY;
-+
- 	handle_data = msft_find_handle_data(hdev, monitor->handle, true);
- 
- 	/* If no matched handle, just remove without telling controller */
+ #endif
 -- 
 2.29.2.729.g45daf8777d-goog
 
