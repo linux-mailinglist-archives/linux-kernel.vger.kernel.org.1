@@ -2,113 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB77A2E0FE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 22:44:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EAA52E0FE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 22:44:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727922AbgLVVny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 16:43:54 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:10458 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727691AbgLVVny (ORCPT
+        id S1728028AbgLVVoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 16:44:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726534AbgLVVoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 16:43:54 -0500
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BMLWFjs009803;
-        Tue, 22 Dec 2020 16:42:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
- cc : subject : in-reply-to : date : message-id : mime-version :
- content-type; s=pp1; bh=R7AU34tNfE0Ufx8iMqWSvclFjcXLGDL0cBWvu+QX9Hk=;
- b=O3bMEIg/1UBrc8niWJJ/PGGYTnZjWypnNsIHGm52Eltj5YlsxTBfgTV2brm53NU0VI8W
- OH4TOiqbORYzdynjjJ9hH9toMtRWqAPqefiDrGuQLbkqAGDsAi4IUnd9tVrbMJyTxqFo
- 4YDWSJyeEwutZN0SoDT/zltX+Isk2Z7zQl3+fkWw/2UV8HqxW9CyMMaMQ7JnNd0xJGSv
- JMuvNCOrPaUzv+NdeV58PHyo++GpqPc5tmKkinKppczSiQKkZT/lnI12KYOmlP2tixMW
- +54/wtP4kNzjuA5fk3xop5XAUGMifSJ5D96TVqPhLsrZXXH/yH9hgXRLv/uJFY1pV+7W Ig== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35kqaxt91g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Dec 2020 16:42:32 -0500
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BMLbTR6029051;
-        Tue, 22 Dec 2020 16:42:31 -0500
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35kqaxt917-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Dec 2020 16:42:31 -0500
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BMLajgI010111;
-        Tue, 22 Dec 2020 21:42:30 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma01dal.us.ibm.com with ESMTP id 35kejb4rc3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Dec 2020 21:42:30 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BMLgTCh11993416
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 22 Dec 2020 21:42:30 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E3FC7112061;
-        Tue, 22 Dec 2020 21:42:29 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 31DC5112062;
-        Tue, 22 Dec 2020 21:42:23 +0000 (GMT)
-Received: from manicouagan.localdomain (unknown [9.80.219.136])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTPS;
-        Tue, 22 Dec 2020 21:42:22 +0000 (GMT)
-References: <20201211221006.1052453-1-robh@kernel.org>
- <20201211221006.1052453-2-robh@kernel.org>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        takahiro.akashi@linaro.org, will@kernel.org,
-        catalin.marinas@arm.com, mpe@ellerman.id.au, zohar@linux.ibm.com,
-        james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
-        paulus@samba.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
-        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com
-Subject: Re: [RFC PATCH 1/4] powerpc: Rename kexec elfcorehdr_addr to
- elf_headers_mem
-In-reply-to: <20201211221006.1052453-2-robh@kernel.org>
-Date:   Tue, 22 Dec 2020 18:42:21 -0300
-Message-ID: <87pn31ldqa.fsf@manicouagan.localdomain>
+        Tue, 22 Dec 2020 16:44:07 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFE72C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 13:43:27 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id r4so8075565pls.11
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 13:43:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=V18RJFVoSD2HfPTrMybJhWRx+16Y//JP10XUyAiF9C0=;
+        b=MoFoz97ipfgL0tskYxv3eUZrXs1Gtf4S6AIT48y4RoUx4gTy/pyHeDU0ASRe4+CTGV
+         6EQPpsfEG8ojet/F+BqJP7osfq2axER1b9OdQ5I7dbdF8eIZ5zNdTK9moJab2eBpN90w
+         Vqz2Kherc3CmoKwR9ICk4/+1KBetvtuXSFh+kNpzebgvZW1e10DodKAND41hjcHoL7O1
+         aPBdL2Cp6KXghjcUF5GrxhFp4g+00u7vCveST0JC+7XDzWJjhpp47uHFhFbzr8/ZqfKw
+         O4BIlbC80rAzXV+Cw98wRd4KHOlJJ73+yFwfcfXmpcLWmwDJ8GtjtZWcE5k59g3GypE5
+         qpPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=V18RJFVoSD2HfPTrMybJhWRx+16Y//JP10XUyAiF9C0=;
+        b=WAwTlepQBeY9pOIpu3CII6wHjluuKHN+ISVcMDarT5f2LhD2op804qOVTQDCBrNTe6
+         /4jfjco2GjcQTpbzoFid1C0BK0zIMzllmL9KhcXxdigf/zjYHvPThzVa0oMbA4uAkqal
+         gl/PFJLpXKm1rZMQsKv9uwQ3bPqq6yiM63ItgzXphgHTGFxM48bumDEGkXuzF7yqAKLe
+         f1dinLa5Abt+S2BylB95MzpTXJp13OEpz2Ligs5XvFD4Nv5H1G4ntpzgJhudWF92xcmL
+         SwRwR9MRwxbHCZ7nBW0o1wZcKGpKqooVYpt9fpvb8Ny9b6H3CvSoXgRsrPatD++KveDJ
+         WvJQ==
+X-Gm-Message-State: AOAM531K845FNSkld6yFveq9zr+HdhsOgH57tVLL8IECMVOGqAq5ifuT
+        ssPtT4R0WbdBMsN85nS+nl3kXA==
+X-Google-Smtp-Source: ABdhPJynPZBPU88MgcEl5WcwU0cdYjZC20/3FRJRStClymFa4iKtg9+XkPvnpAcMdwtKD+bNajR6Jw==
+X-Received: by 2002:a17:90a:fc83:: with SMTP id ci3mr24052182pjb.145.1608673407151;
+        Tue, 22 Dec 2020 13:43:27 -0800 (PST)
+Received: from google.com ([2620:15c:2ce:0:a6ae:11ff:fe11:4abb])
+        by smtp.gmail.com with ESMTPSA id s29sm22665086pgn.65.2020.12.22.13.43.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Dec 2020 13:43:26 -0800 (PST)
+Date:   Tue, 22 Dec 2020 13:43:23 -0800
+From:   Fangrui Song <maskray@google.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Guo Ren <guoren@kernel.org>, linux-csky@vger.kernel.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: building csky with CC=clang
+Message-ID: <20201222214323.655tjdqdvxhw3722@google.com>
+References: <CAKwvOdmnhsPU0UA9uEd1HTQ_yoBO8h741+sKrtebcPsXpXn8_g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-22_11:2020-12-21,2020-12-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 mlxscore=0 malwarescore=0 clxscore=1015 bulkscore=0
- suspectscore=0 spamscore=0 phishscore=0 mlxlogscore=999 impostorscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012220153
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdmnhsPU0UA9uEd1HTQ_yoBO8h741+sKrtebcPsXpXn8_g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hello Rob,
-
-Thank you for making this series.
-
-Rob Herring <robh@kernel.org> writes:
-
-> Align with arm64 name so common code can use it.
+On 2020-12-22, 'Nick Desaulniers' via Clang Built Linux wrote:
+>Hello!
+>I was playing with some of LLVM's experimental backends (m68k) and saw
+>there was a CSKY backend. I rebuilt LLVM to support CSKY, but I ran
+>into trouble building the kernel before even getting to the compiler
+>invocation:
 >
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  arch/powerpc/include/asm/kexec.h  | 2 +-
->  arch/powerpc/kexec/file_load.c    | 4 ++--
->  arch/powerpc/kexec/file_load_64.c | 4 ++--
->  3 files changed, 5 insertions(+), 5 deletions(-)
+>$ ARCH=csky CROSS_COMPILE=csky-linux-gnu- make CC=clang -j71 defconfig
+>...
+>scripts/Kconfig.include:40: linker 'csky-linux-gnu-ld' not found
+>
+>My distro doesn't package binutils-csky-linux-gnu, is there
+>documentation on how to build the kernel targeting CSKY, starting with
+>building GNU binutils configured with CSKY emulation?
 
-Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+Note also that the llvm/lib/Target/CSKY has not been fully upstreamed
+yet. It is a WIP https://lists.llvm.org/pipermail/llvm-dev/2020-August/144481.html
+I will not expect clang csky to work currently.
+(The latest committed LLVM patch is https://reviews.llvm.org/D93372
+Normally committing an important piece of a large patch series like this should take
+a bit longer time longer after someone in the community accepted it
+https://llvm.org/docs/CodeReview.html#can-code-be-reviewed-after-it-is-committed )
 
--- 
-Thiago Jung Bauermann
-IBM Linux Technology Center
+I do want to raise the recent LLVM M68k target. Its patches ([M67k] (Patch */8))
+are very organized and the main proposer shares updates to llvm-dev regularly.
+There is a lot from the process where the C-SKY target can learn from.
