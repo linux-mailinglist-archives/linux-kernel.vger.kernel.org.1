@@ -2,97 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82FA32E1063
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 23:51:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A2BD2E1068
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 23:57:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727926AbgLVWut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 17:50:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32955 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726072AbgLVWus (ORCPT
+        id S1727863AbgLVWym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 17:54:42 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:19746 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727559AbgLVWyl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 17:50:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608677362;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=n+qbneJ2jh3fYPKfa/u50B7CIQ8X0Uo7bpQgn3QfrgA=;
-        b=h6PiD3kzTM0XpWojxgCNY15cNefn7ZuMPa1j1EgOcEIpJhzPBR0POaMSc8T07fg7+PKHbf
-        4Fezi4/lfz5JKwX8zCDSvkS4AkdXcjwLaoVou1wiBhwTAxS3dTblxnE2MgSgjOWotS7Ce+
-        ZUUW54yiHA7UUvrEPUXj8iZKnnmG8BU=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-528-h5dnPpw1PCaG00N1lGjH_g-1; Tue, 22 Dec 2020 17:49:18 -0500
-X-MC-Unique: h5dnPpw1PCaG00N1lGjH_g-1
-Received: by mail-wr1-f69.google.com with SMTP id j5so11902654wro.12
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 14:49:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=n+qbneJ2jh3fYPKfa/u50B7CIQ8X0Uo7bpQgn3QfrgA=;
-        b=Eh1CpBZaf/KC9NxCR6T3KSbh4Irp8uxeJqAuNEbNwhKjPkOvKTG/ImY+U7CN51hPf1
-         acERdWQoSFV0p9jIP9lTiYtjCJZi60KPySiW8EJlhqoa40d8pzwD0t2Y5FEV4fcJ3JiI
-         naBft/9qAYoWpuU9AmuhsefpjZuPRE8hO9UguP2MhDyG4c1vUf7geHjigkr4r1uzXk5B
-         GoJxMOx5hG8Zh4qVvuvncTMu88hwXRN7pz+tCGW6jg/UCGGT1w0vON1yyCQyyUMgxvo1
-         df7pLB7WB+bLkaQKuddsLnyUTzKTX0QOQGVHFmgxGX2dFcmRiSxVDB0JCpscKzhzWhOS
-         I3Yw==
-X-Gm-Message-State: AOAM5302DLUFzgWUR20GFC56YwiJTWs3VWHgl6WxJLDsFuxaJas81DE3
-        +XtI+WMKplmMfoawIB1Vz5nhQehBg26BONrXWwUGcRNhnSqRiXZbIiH8FC0NrLaS790q9f0uERT
-        fXw9AKP/G7cXYPTbNy80oJk6S
-X-Received: by 2002:a1c:7d94:: with SMTP id y142mr24010965wmc.105.1608677357436;
-        Tue, 22 Dec 2020 14:49:17 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwS2fZRfRZ1tqO6mhPhZptW872NTdNoTC5rXieW8+2cgXm7VZ25VmkNgChwkfEp+tpsEJX+BQ==
-X-Received: by 2002:a1c:7d94:: with SMTP id y142mr24010957wmc.105.1608677357295;
-        Tue, 22 Dec 2020 14:49:17 -0800 (PST)
-Received: from [192.168.1.124] ([93.56.170.5])
-        by smtp.gmail.com with ESMTPSA id z6sm27359812wmi.15.2020.12.22.14.49.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Dec 2020 14:49:16 -0800 (PST)
-Subject: Re: [PATCH] KVM: x86: fix shift out of bounds reported by UBSAN
-To:     David Laight <David.Laight@ACULAB.COM>,
-        'Sean Christopherson' <seanjc@google.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "syzbot+e87846c48bf72bc85311@syzkaller.appspotmail.com" 
-        <syzbot+e87846c48bf72bc85311@syzkaller.appspotmail.com>
-References: <20201222102132.1920018-1-pbonzini@redhat.com>
- <X+I3SFzLGhEZIzEa@google.com>
- <01b7c21e3a864c0cb89fd036ebe03ccf@AcuMS.aculab.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <64932096-22a8-27dd-a8d6-1e40f3119db4@redhat.com>
-Date:   Tue, 22 Dec 2020 23:49:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Tue, 22 Dec 2020 17:54:41 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BMMWE1W196591;
+        Tue, 22 Dec 2020 17:53:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
+ cc : subject : in-reply-to : date : message-id : mime-version :
+ content-type; s=pp1; bh=8jk/M5PwVWO5wCBRpi9U2tfKxLuehNr5+6fPogwpGkI=;
+ b=crM0xizDekFtIHO00jVdxL37gyE/toBUdwbyhNICzkCR9cQ5Hp6Q0XkClF7aHcXk7jDG
+ wg7bVc5B/cSIEsYnAQPH15LbxFwn3Gii0TCw7LuO9M/3c8VdMyMKAa5GMTZYu0DOPMvJ
+ y0pSETEVSjIsqYTHGQxGkSitKKD0W5nzO0Tn4lL+Mwd1UdpIZWqOntpfHyjjhC5+yi5W
+ 0f68UYxIdlKe75rgqx/IoEQkEUHi2UAazEUGKwm7xqf30dkl7Wds53xFQJyGlfoUF+I3
+ 60fK5uP1rLtkzJwp5CoPY6cjYMVEu+z0pPCwd7z6UI2zjHT4i9OsfvgKmPNakG2AUc8G Kg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35kr71j8xs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Dec 2020 17:53:23 -0500
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BMMrMKu086583;
+        Tue, 22 Dec 2020 17:53:22 -0500
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35kr71j8xg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Dec 2020 17:53:22 -0500
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BMMrAKW006408;
+        Tue, 22 Dec 2020 22:53:21 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma02dal.us.ibm.com with ESMTP id 35kj7queyv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Dec 2020 22:53:21 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BMMrKgW23396644
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 22 Dec 2020 22:53:20 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3357EC6055;
+        Tue, 22 Dec 2020 22:53:20 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 23184C605B;
+        Tue, 22 Dec 2020 22:53:13 +0000 (GMT)
+Received: from manicouagan.localdomain (unknown [9.80.219.136])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTPS;
+        Tue, 22 Dec 2020 22:53:12 +0000 (GMT)
+References: <20201219175713.18888-1-nramas@linux.microsoft.com>
+ <20201219175713.18888-2-nramas@linux.microsoft.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, robh@kernel.org, takahiro.akashi@linaro.org,
+        gregkh@linuxfoundation.org, will@kernel.org,
+        catalin.marinas@arm.com, mpe@ellerman.id.au, james.morse@arm.com,
+        sashal@kernel.org, benh@kernel.crashing.org, paulus@samba.org,
+        frowand.list@gmail.com, vincenzo.frascino@arm.com,
+        mark.rutland@arm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
+        serge@hallyn.com, pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
+        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v13 1/6] ima: Move arch_ima_add_kexec_buffer() to ima
+In-reply-to: <20201219175713.18888-2-nramas@linux.microsoft.com>
+Date:   Tue, 22 Dec 2020 19:53:10 -0300
+Message-ID: <87eejhlag9.fsf@manicouagan.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <01b7c21e3a864c0cb89fd036ebe03ccf@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-22_11:2020-12-21,2020-12-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
+ clxscore=1015 impostorscore=0 lowpriorityscore=0 mlxscore=0 suspectscore=0
+ mlxlogscore=999 spamscore=0 adultscore=0 bulkscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012220159
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/12/20 19:31, David Laight wrote:
->> 	/*
->> 	 * Use 2ULL to incorporate the necessary +1 in the shift; adding +1 in
->> 	 * the shift count will overflow SHL's max shift of 63 if s=0 and e=63.
->> 	 */
-> A comment of the desired output value would be more use.
-> I think it is:
-> 	return 'e-s' ones followed by 's' zeros without shifting by 64.
-> 
 
-What about a mix of the two:
+Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
 
-	/*
-	 * Return 'e-s' ones followed by 's' zeros.  Note that the
-	 * apparently obvious 1ULL << (e - s + 1) can shift by 64 if
-	 * s=0 and e=63, which is undefined behavior.
-	 */
+> arch_ima_add_kexec_buffer() defined in "arch/powerpc/kexec/ima.c"
+> sets up the address and size of the IMA measurement list in
+> the architecture specific fields in kimage struct. This function does not
+> have architecture specific code, but is currently limited to powerpc.
+>
+> Move arch_ima_add_kexec_buffer() to ima.
+>
+> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> ---
+>  arch/powerpc/include/asm/ima.h     |  3 ---
+>  arch/powerpc/kexec/ima.c           | 17 -----------------
+>  security/integrity/ima/ima_kexec.c | 22 ++++++++++++++++++++++
+>  3 files changed, 22 insertions(+), 20 deletions(-)
 
-Paolo
+Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
 
+Just one nit below.
+
+Also, I just noticed that this patch series hasn't been cc'd to the linuxppc-dev
+mailing list. You should do that, since it affects powerpc code. The
+powerpc maintainers are being copied so at least they've been made aware
+of it, but that isn't enough.
+
+> diff --git a/security/integrity/ima/ima_kexec.c b/security/integrity/ima/ima_kexec.c
+> index 121de3e04af2..38bcd7543e27 100644
+> --- a/security/integrity/ima/ima_kexec.c
+> +++ b/security/integrity/ima/ima_kexec.c
+> @@ -10,6 +10,7 @@
+>  #include <linux/seq_file.h>
+>  #include <linux/vmalloc.h>
+>  #include <linux/kexec.h>
+> +#include <linux/ima.h>
+>  #include "ima.h"
+>  
+>  #ifdef CONFIG_IMA_KEXEC
+
+There's no need to add this include.
+
+-- 
+Thiago Jung Bauermann
+IBM Linux Technology Center
