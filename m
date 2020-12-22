@@ -2,113 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7C9A2E0F8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 22:01:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 481EA2E0F8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 22:01:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727781AbgLVU54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 15:57:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42982 "EHLO
+        id S1727341AbgLVU7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 15:59:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727590AbgLVU5z (ORCPT
+        with ESMTP id S1725850AbgLVU7B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 15:57:55 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B75C0613D3;
-        Tue, 22 Dec 2020 12:57:15 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id qw4so19981127ejb.12;
-        Tue, 22 Dec 2020 12:57:15 -0800 (PST)
+        Tue, 22 Dec 2020 15:59:01 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6088DC0613D3;
+        Tue, 22 Dec 2020 12:58:21 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id j13so2003103pjz.3;
+        Tue, 22 Dec 2020 12:58:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zUWKl7dvt8OlTSLdq8E8E3SrHTkmLLGK9+sNIq8RkLU=;
-        b=G/FjNgjV8WDYYnE5GWldP59qbvJszG4VYfMK20v/u9megbPD7nOLcjQyWiPaligPzN
-         DtOaaWNWN1nRYPMo9JGu2Fu+REwrF/DlQsmodGPFdfg3FglxIbMUHEj2rRQX5zSYnCiw
-         KYBPUFsVO8DGeKKKmWiIwUMKp2EcOskGT0nk69/YloGvFJ349SrKi+qiUozwipdUxkZb
-         IHo5DpAlcw5aNuOs+fP2NG13ZjkPY9YzrEWNAUg8i5NMA9toRI2/rsQJd+me9Butbjih
-         R7Ho1B2x2w0l2mJUGDgbm4j+XqqYxNzPs3AZOBTFY0qO6uP1fZm2UEUUj3KPLsu33GFy
-         fr4w==
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=hFSc9FSGfXt5RJ/U1wrUckzp9K5oSW3F5ZWFwEZmzz4=;
+        b=EZ9+2eTOIuphksIUHGK4Bd+RgU5J1ftLLzRO1FURanj77kxWwUT3/WDxpSPNs3Pt6E
+         D2YuqBw8Q5mYQH+n9xIMfYZPeKsfp8oI2pUW4CpBGH2+n4i4MmbLRhI8KQUhXcqtSSy0
+         mwlS915LvFAYmy8p5FaHyMNM5dToIx8aGssmSK1y7jBadSfaGiRt6MJBl9unaq9ACxcZ
+         fu29VOlqGACOPVjbUvOPHHKxWVWgv8HGU9h3+Nw0JfGEaUUgqMzFEmgDXfHKFEsHZw8J
+         GiGSy5sbuamuZsYCUBnjYWMmXwf017HZ83ZipjNsKYzHTx4B8Gsimz6NA5sxzD9ZuLmV
+         2y7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zUWKl7dvt8OlTSLdq8E8E3SrHTkmLLGK9+sNIq8RkLU=;
-        b=lWet8imSZk5I+Og7BUnvmk8nOpb0WcJ0pqJT06Okl9HxGC0q3LvJBv+3AIC6M20yrW
-         W9dt8M97GsQ2Hqi8B8MzzMKDs201o4rQqneoP1Xk7N67OgYKpBz1KgtqwWJDu+3sUtZ+
-         reYggEz0871aoIOEMKruc3tQ1ea0rsKlGhuTFWs9vEsg5I5iRHesEg4o9XX/oHZO99lk
-         lHFfJXUh3l0h0ZZCQGMj3RXj7mdZOro/0pP8ukfo5uc8Fp3r7K8+LlmRd6JPRWHFPPw8
-         EJGaTXFTi6H/jdlxBmI44Y+uk4pavkZHvN/lhHCrpAmhH3IFVFxstQu9JOBLAHb3Rfay
-         7h4g==
-X-Gm-Message-State: AOAM531AIYk/lfpAdP9SUMbfL7X7s5Q7tdPfqb/PTVAqggOGQnNZJP2a
-        cUnMUxdI1ni14YD1ITpuhESITD1KteZgtw==
-X-Google-Smtp-Source: ABdhPJzLLuq/35dh7eBlVk7/nQ+Hd+ys73cY/rwHx3B80440wYfIF18YAVH/nzGL0oRGnjLv/bbW3g==
-X-Received: by 2002:a17:907:a8a:: with SMTP id by10mr21163548ejc.423.1608670633938;
-        Tue, 22 Dec 2020 12:57:13 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
-        by smtp.googlemail.com with ESMTPSA id v18sm10669550ejw.18.2020.12.22.12.57.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 22 Dec 2020 12:57:13 -0800 (PST)
-Message-ID: <eb4cd8f151c43e5754bb7725bce3e8ee34a49b51.camel@gmail.com>
-Subject: Re: [PATCH v5 1/7] scsi: ufs: Add "wb_on" sysfs node to control WB
- on/off
-From:   Bean Huo <huobean@gmail.com>
-To:     Can Guo <cang@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>
-Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, beanhuo@micron.com, bvanassche@acm.org,
-        tomas.winkler@intel.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 22 Dec 2020 21:57:12 +0100
-In-Reply-To: <a01cdd4ff6afd2a9166741caed3c2b3d@codeaurora.org>
-References: <20201215230519.15158-1-huobean@gmail.com>
-         <20201215230519.15158-2-huobean@gmail.com>
-         <1608617307.14045.3.camel@mtkswgap22>
-         <a01cdd4ff6afd2a9166741caed3c2b3d@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=hFSc9FSGfXt5RJ/U1wrUckzp9K5oSW3F5ZWFwEZmzz4=;
+        b=OuNdcFSgedexAAeQU8SlZroYIpu8MKVAjcvUAkaJKUr+NXjnQRVOGKQWLc1s27BJgp
+         WidDdpu/zCpAijTtp3iSB837EIELDmpZgqNzcRQOlaER38in0lTVLfJTO/Bhio54QJry
+         ZUZl2mvKvZqZaNnP4K2ZuqAzr03N1vmiMzo5j7Y/1VCYik1YQ7Qbn9+7kk1sS05H+NI+
+         bpI45cZUelIHM61kWiTgo/L8U/E+G4RONyVD02nLm6zyym1hsJ/iAtjT6Nxs5OLaTMbg
+         HyU7WLY0lPj3YOQiEjn/MNmuyra4LxfF4c2EDPu0yBG0nHQyrBr1KMW81X6ytG5B0xAI
+         TwRA==
+X-Gm-Message-State: AOAM532h6owd6WiU8wgHOZl2GBB/Zw3TmXYzGsY/JwqJNfwSE2QgAJ/P
+        c9yyhGU65/NhqGeHzar4L6A=
+X-Google-Smtp-Source: ABdhPJxtWe0H6ZwfwtolSaz++yJc8Ub6des8zIFUZYieKDj2Z3Jd+LIpa+8rO/POkVF5Jh57KKSklg==
+X-Received: by 2002:a17:902:bf4a:b029:da:d0b8:6489 with SMTP id u10-20020a170902bf4ab02900dad0b86489mr22482160pls.58.1608670700762;
+        Tue, 22 Dec 2020 12:58:20 -0800 (PST)
+Received: from ?IPv6:2601:647:4700:9b2:9423:6a08:cbd0:8220? ([2601:647:4700:9b2:9423:6a08:cbd0:8220])
+        by smtp.gmail.com with ESMTPSA id a29sm21727154pfr.73.2020.12.22.12.58.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 22 Dec 2020 12:58:19 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <CALCETrXLH7vPep-h4fBFSft1YEkyZQo_7W2uh017rHKYT=Occw@mail.gmail.com>
+Date:   Tue, 22 Dec 2020 12:58:18 -0800
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        linux-mm <linux-mm@kvack.org>, Peter Xu <peterx@redhat.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <719DF2CD-A0BC-4B67-9FBA-A9E0A98AA45E@gmail.com>
+References: <20201219043006.2206347-1-namit@vmware.com>
+ <X95RRZ3hkebEmmaj@redhat.com>
+ <EDC00345-B46E-4396-8379-98E943723809@gmail.com>
+ <DD367393-D1B3-4A84-AF92-9C6BAEAB40DC@gmail.com>
+ <CALCETrXLH7vPep-h4fBFSft1YEkyZQo_7W2uh017rHKYT=Occw@mail.gmail.com>
+To:     Andy Lutomirski <luto@kernel.org>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-12-22 at 14:12 +0800, Can Guo wrote:
-> > > +            return -EOPNOTSUPP;
-> > > +
-> > > +    if (kstrtouint(buf, 0, &wb_enable))
-> > > +            return -EINVAL;
-> > > +
-> > > +    if (wb_enable != 0 && wb_enable != 1)
-> > > +            return -EINVAL;
-> > > +
-> > > +    pm_runtime_get_sync(hba->dev);
-> > > +    res = ufshcd_wb_ctrl(hba, wb_enable);
-> > 
-> > May this operation race with UFS shutdown flow?
-> > 
-> > To be more clear, ufshcd_wb_ctrl() here may be executed after host 
-> > clock
-> > is disabled by shutdown flow?
-> > 
-> > If yes, we need to avoid it.
-> 
-> I have the same doubt - can user still access sysfs nodes after
-> system
-> starts to run shutdown routines? If yes, then we need to remove all
-> UFS
-> sysfs nodes in ufshcd_shutdown().
-> 
+> On Dec 22, 2020, at 12:34 PM, Andy Lutomirski <luto@kernel.org> wrote:
+>=20
+> On Sat, Dec 19, 2020 at 2:06 PM Nadav Amit <nadav.amit@gmail.com> =
+wrote:
+>>> [ I have in mind another solution, such as keeping in each =
+page-table a
+>>> =E2=80=9Ctable-generation=E2=80=9D which is the mm-generation at the =
+time of the change,
+>>> and only flush if =E2=80=9Ctable-generation=E2=80=9D=3D=3D=E2=80=9Cmm-=
+generation=E2=80=9D, but it requires
+>>> some thought on how to avoid adding new memory barriers. ]
+>>>=20
+>>> IOW: I think the change that you suggest is insufficient, and a =
+proper
+>>> solution is too intrusive for =E2=80=9Cstable".
+>>>=20
+>>> As for performance, I can add another patch later to remove the TLB =
+flush
+>>> that is unnecessarily performed during change_protection_range() =
+that does
+>>> permission promotion. I know that your concern is about the =
+=E2=80=9Cprotect=E2=80=9D case
+>>> but I cannot think of a good immediate solution that avoids taking =
+mmap_lock
+>>> for write.
+>>>=20
+>>> Thoughts?
+>>=20
+>> On a second thought (i.e., I don=E2=80=99t know what I was thinking), =
+doing so =E2=80=94
+>> checking mm_tlb_flush_pending() on every PTE read which is =
+potentially
+>> dangerous and flushing if needed - can lead to huge amount of TLB =
+flushes
+>> and shootodowns as the counter might be elevated for considerable =
+amount of
+>> time.
+>=20
+> I've lost track as to whether we still think that this particular
+> problem is really a problem,
 
-No, we shouldn't do in this way, user space complains this. I think
-the nodes in the sysfs can be shileded write, but the nodes shouldn't
-be flash of its presence frequently.
+If you mean =E2=80=9Cproblem=E2=80=9D as to whether there is a =
+correctness issue with
+userfaultfd and soft-dirty deferred flushes under mmap_read_lock() - yes
+there is a problem and I produced these failures on upstream.
 
-Thanks,
-Bean 
+If you mean =E2=80=9Cproblem=E2=80=9D as to performance - I do not know.
 
+> but could we perhaps make the
+> tlb_flush_pending field be per-ptl instead of per-mm?  Depending on
+> how it gets used, it could plausibly be done without atomics or
+> expensive barriers by using PTL to protect the field.
+>=20
+> FWIW, x86 has a mm generation counter, and I don't think it would be
+> totally crazy to find a way to expose an mm generation to core code.
+> I don't think we'd want to expose the specific data structures that
+> x86 uses to track it -- they're very tailored to the oddities of x86
+> TLB management.  x86 also doesn't currently have any global concept of
+> which mm generation is guaranteed to have been propagated to all CPUs
+> -- we track the generation in the pagetables and, per cpu, the
+> generation that we know that CPU has seen.  x86 could offer a function
+> "ensure that all CPUs catch up to mm generation G and don't return
+> until this happens" and its relative "have all CPUs caught up to mm
+> generation G", but these would need to look at data from multiple CPUs
+> and would probably be too expensive on very large systems to use in
+> normal page faults unless we were to cache the results somewhere.
+> Making a nice cache for this is surely doable, but maybe more
+> complexity than we'd want.
 
-> Thanks,
-> 
-> Can Guo.
+I had somewhat similar ideas - saving in each page-struct the =
+generation,
+which would allow to: (1) extend pte_same() to detect interim changes
+that were reverted (RO->RW->RO) and (2) per-PTE pending flushes.
+
+Obviously, I cannot do it as part of this fix. But moreover, it seems to =
+me
+that it would require a memory barrier after updating the PTEs and =
+before
+reading the current generation (that would be saved per page-table). I
+try to think about schemes that would use the per-CPU generation =
+instead,
+but still could not and did not have the time to figure it out.
 
