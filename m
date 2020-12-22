@@ -2,159 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 163CD2E0770
+	by mail.lfdr.de (Postfix) with ESMTP id 83DCE2E0771
 	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 09:52:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726210AbgLVIvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 03:51:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20110 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725782AbgLVIva (ORCPT
+        id S1726277AbgLVIvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 03:51:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725913AbgLVIvs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 03:51:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608627003;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uMHSD2oK/hpBE1SWjefvZVCPS8CnbnjDm/tKLudlcaA=;
-        b=YhqkGeADvSL7wEETJ17C6mHYpG/If2yUi89GWGffPCYQ32LkPAn1f0O93WXzstScUvF6mO
-        lP9ySxez6beRwRd7sMl3PudIKmulQ+CJpiTnjLY1VoIsUe8E/u6336X36M6aWZHF7z59tM
-        o5ps6jYKISiz++2aiY1S88sZf1DE17k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-261-_ixAoxX4N3C5tAyWFegXGQ-1; Tue, 22 Dec 2020 03:49:59 -0500
-X-MC-Unique: _ixAoxX4N3C5tAyWFegXGQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4F120180A08A;
-        Tue, 22 Dec 2020 08:49:57 +0000 (UTC)
-Received: from [10.36.113.220] (ovpn-113-220.ams2.redhat.com [10.36.113.220])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E001D5B6A8;
-        Tue, 22 Dec 2020 08:49:50 +0000 (UTC)
-Subject: Re: [RFC PATCH 3/3] mm: support free hugepage pre zero out
-From:   David Hildenbrand <david@redhat.com>
-To:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Liang Li <liliangleo@didiglobal.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Liang Li <liliang324@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, qemu-devel@nongnu.org
-References: <20201222074910.GA30051@open-light-1.localdomain>
- <585791f4-4b41-5e73-296e-691d5478a915@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <a0bee19a-0703-54b1-2903-60383ab7da64@redhat.com>
-Date:   Tue, 22 Dec 2020 09:49:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Tue, 22 Dec 2020 03:51:48 -0500
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E917DC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 00:51:07 -0800 (PST)
+Received: by mail-qk1-x72a.google.com with SMTP id z11so11264560qkj.7
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 00:51:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Jw7pAvMhTMzCdwMwDUYDkty+J1oyK3sGi3/Q3qZzhI4=;
+        b=M7rKzFAvnf1eVok6BR2BkWW8L3u6lT17e0MCu4a7zRxzT1SFl2ADqVVldn9Vs1J8ZK
+         cVN8iYFnRfq2Hna8rrb/BzeVVqTvA3vltkdkcj7hnu+PcOsS0hpvRhj8hlJZwygFm4m9
+         t5Hz9EHUlAUFFiPYn2caTRqRc6VwgN+WAq6OE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Jw7pAvMhTMzCdwMwDUYDkty+J1oyK3sGi3/Q3qZzhI4=;
+        b=AfCyf+fJYXj1dQ5nEdM8kNv5ZgcPxXbsLLWmAvntciD8iDHjkrFftHAHFh3dj5Q036
+         wACRi3LYtQff+BXa5KSfNemw6kMKVGiljZ2+c8DWcpJDv8FLgqzkt4W5kKgtrS2k/rwy
+         5Yw/CSXXQJ9U+tZPNDj8RUwDrDladEvXu+f0njV7fELZq3aJ8iulUI68r90bkeAG62jB
+         +z1jyvNAWzoSCXmgIxNynQ4MdcC8Ee9b3A4AeIFd7CnCxzQBziSTKdXxtxW0uJ3V+nbj
+         eQJR+IaK/7HWcZJbUl8VdNG9XSQoaTDHVom4lUed37RRF232otC4GjIJ2OY8Ah5aTWgX
+         qJGA==
+X-Gm-Message-State: AOAM531L+ejb0L8vd3P8+L3qB/PHoGnkVVLHDR3op6jeB+8CC1fZC4tF
+        +rcTYCUeKMt3pgxmpJMPyhURq+O74uSsfG7i3hynxw==
+X-Google-Smtp-Source: ABdhPJx8RkliIALcQxSbRGxUhy8aMdeHkw9BI0+O7yz/6tnxHqaYrBeFbmioRudR3PD6pX7lsQYQ0xyzp7n61rjUTiQ=
+X-Received: by 2002:a37:a1d6:: with SMTP id k205mr21033434qke.384.1608627067021;
+ Tue, 22 Dec 2020 00:51:07 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <585791f4-4b41-5e73-296e-691d5478a915@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20201221113151.94515-1-jagan@amarulasolutions.com>
+ <20201221113151.94515-7-jagan@amarulasolutions.com> <20201221140642.GF31176@kozik-lap>
+ <CAMty3ZDWoorJ6y2zATAyd10TqbOAcjMdAkdini5tKt1euY0_7Q@mail.gmail.com> <20201221210601.GB2504@kozik-lap>
+In-Reply-To: <20201221210601.GB2504@kozik-lap>
+From:   Jagan Teki <jagan@amarulasolutions.com>
+Date:   Tue, 22 Dec 2020 14:20:55 +0530
+Message-ID: <CAMty3ZDbSdv9k+SK=tEs-jNNDvGAASt-0zQjo0i3KseTLixSVQ@mail.gmail.com>
+Subject: Re: [PATCH v2 6/6] arm64: dts: imx8mm: Add Engicam i.Core MX8M Mini
+ EDIMM2.2 Starter Kit
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Li Yang <leoyang.li@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-amarula <linux-amarula@amarulasolutions.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Matteo Lisi <matteo.lisi@engicam.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.12.20 09:31, David Hildenbrand wrote:
-> On 22.12.20 08:49, Liang Li wrote:
->> This patch add support of pre zero out free hugepage, we can use
->> this feature to speed up page population and page fault handing.
->>
->> Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
->> Cc: Mel Gorman <mgorman@techsingularity.net>
->> Cc: Andrea Arcangeli <aarcange@redhat.com>
->> Cc: Dan Williams <dan.j.williams@intel.com>
->> Cc: Dave Hansen <dave.hansen@intel.com>
->> Cc: David Hildenbrand <david@redhat.com>  
->> Cc: Michal Hocko <mhocko@suse.com> 
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> Cc: Alex Williamson <alex.williamson@redhat.com>
->> Cc: Michael S. Tsirkin <mst@redhat.com>
->> Cc: Jason Wang <jasowang@redhat.com>
->> Cc: Mike Kravetz <mike.kravetz@oracle.com>
->> Cc: Liang Li <liliang324@gmail.com>
->> Signed-off-by: Liang Li <liliangleo@didiglobal.com>
->> ---
->>  mm/page_prezero.c | 17 +++++++++++++++++
->>  1 file changed, 17 insertions(+)
->>
->> diff --git a/mm/page_prezero.c b/mm/page_prezero.c
->> index c8ce720bfc54..dff4e0adf402 100644
->> --- a/mm/page_prezero.c
->> +++ b/mm/page_prezero.c
->> @@ -26,6 +26,7 @@ static unsigned long delay_millisecs = 1000;
->>  static unsigned long zeropage_enable __read_mostly;
->>  static DEFINE_MUTEX(kzeropaged_mutex);
->>  static struct page_reporting_dev_info zero_page_dev_info;
->> +static struct page_reporting_dev_info zero_hugepage_dev_info;
->>  
->>  inline void clear_zero_page_flag(struct page *page, int order)
->>  {
->> @@ -69,9 +70,17 @@ static int start_kzeropaged(void)
->>  		zero_page_dev_info.delay_jiffies = msecs_to_jiffies(delay_millisecs);
->>  
->>  		err = page_reporting_register(&zero_page_dev_info);
->> +
->> +		zero_hugepage_dev_info.report = zero_free_pages;
->> +		zero_hugepage_dev_info.mini_order = mini_page_order;
->> +		zero_hugepage_dev_info.batch_size = batch_size;
->> +		zero_hugepage_dev_info.delay_jiffies = msecs_to_jiffies(delay_millisecs);
->> +
->> +		err |= hugepage_reporting_register(&zero_hugepage_dev_info);
->>  		pr_info("Zero page enabled\n");
->>  	} else {
->>  		page_reporting_unregister(&zero_page_dev_info);
->> +		hugepage_reporting_unregister(&zero_hugepage_dev_info);
->>  		pr_info("Zero page disabled\n");
->>  	}
->>  
->> @@ -90,7 +99,15 @@ static int restart_kzeropaged(void)
->>  		zero_page_dev_info.batch_size = batch_size;
->>  		zero_page_dev_info.delay_jiffies = msecs_to_jiffies(delay_millisecs);
->>  
->> +		hugepage_reporting_unregister(&zero_hugepage_dev_info);
->> +
->> +		zero_hugepage_dev_info.report = zero_free_pages;
->> +		zero_hugepage_dev_info.mini_order = mini_page_order;
->> +		zero_hugepage_dev_info.batch_size = batch_size;
->> +		zero_hugepage_dev_info.delay_jiffies = msecs_to_jiffies(delay_millisecs);
->> +
->>  		err = page_reporting_register(&zero_page_dev_info);
->> +		err |= hugepage_reporting_register(&zero_hugepage_dev_info);
->>  		pr_info("Zero page enabled\n");
->>  	}
->>  
->>
-> 
-> Free page reporting in virtio-balloon doesn't give you any guarantees
-> regarding zeroing of pages. Take a look at the QEMU implementation -
-> e.g., with vfio all reports are simply ignored.
-> 
-> Also, I am not sure if mangling such details ("zeroing of pages") into
-> the page reporting infrastructure is a good idea.
-> 
+On Tue, Dec 22, 2020 at 2:36 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> On Tue, Dec 22, 2020 at 01:03:07AM +0530, Jagan Teki wrote:
+> > On Mon, Dec 21, 2020 at 7:36 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> > >
+> > > On Mon, Dec 21, 2020 at 05:01:51PM +0530, Jagan Teki wrote:
+> > > > Engicam EDIMM2.2 Starter Kit is an EDIMM 2.2 Form Factor Capacitive
+> > > > Evaluation Board.
+> > > >
+> > > > Genaral features:
+> > > > - LCD 7" C.Touch
+> > > > - microSD slot
+> > > > - Ethernet 1Gb
+> > > > - Wifi/BT
+> > > > - 2x LVDS Full HD interfaces
+> > > > - 3x USB 2.0
+> > > > - 1x USB 3.0
+> > > > - HDMI Out
+> > > > - Mini PCIe
+> > > > - MIPI CSI
+> > > > - 2x CAN
+> > > > - Audio Out
+> > > >
+> > > > i.Core MX8M Mini is an EDIMM SoM based on NXP i.MX8M Mini from Engicam.
+> > > >
+> > > > i.Core MX8M Mini needs to mount on top of this Evaluation board for
+> > > > creating complete i.Core MX8M Mini EDIMM2.2 Starter Kit.
+> > > >
+> > > > PCIe, DSI, CSI nodes will add it into imx8mm-engicam-edimm2.2.dtsi once
+> > > > Mainline Linux supported.
+> > > >
+> > > > Add support for it.
+> > > >
+> > > > Signed-off-by: Matteo Lisi <matteo.lisi@engicam.com>
+> > > > Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+> > > > ---
+> > > > Changes for v2:
+> > > > - updated commit message
+> > > > - dropped engicam from filename since it aligned with imx6 engicam
+> > > >   dts files naming conventions.
+> > > >
+> > > >  arch/arm64/boot/dts/freescale/Makefile        |  1 +
+> > > >  .../freescale/imx8mm-engicam-edimm2.2.dtsi    |  7 +++++++
+> > > >  .../freescale/imx8mm-icore-mx8mm-edimm2.2.dts | 21 +++++++++++++++++++
+> > > >  3 files changed, 29 insertions(+)
+> > > >  create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-engicam-edimm2.2.dtsi
+> > > >  create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm-edimm2.2.dts
+> > > >
+> > > > diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+> > > > index 8d49a2c74604..43783076f856 100644
+> > > > --- a/arch/arm64/boot/dts/freescale/Makefile
+> > > > +++ b/arch/arm64/boot/dts/freescale/Makefile
+> > > > @@ -33,6 +33,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mm-beacon-kit.dtb
+> > > >  dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk.dtb
+> > > >  dtb-$(CONFIG_ARCH_MXC) += imx8mm-ddr4-evk.dtb
+> > > >  dtb-$(CONFIG_ARCH_MXC) += imx8mm-icore-mx8mm-ctouch2.dtb
+> > > > +dtb-$(CONFIG_ARCH_MXC) += imx8mm-icore-mx8mm-edimm2.2.dtb
+> > > >  dtb-$(CONFIG_ARCH_MXC) += imx8mm-kontron-n801x-s.dtb
+> > > >  dtb-$(CONFIG_ARCH_MXC) += imx8mm-var-som-symphony.dtb
+> > > >  dtb-$(CONFIG_ARCH_MXC) += imx8mn-evk.dtb
+> > > > diff --git a/arch/arm64/boot/dts/freescale/imx8mm-engicam-edimm2.2.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-engicam-edimm2.2.dtsi
+> > > > new file mode 100644
+> > > > index 000000000000..294df07289a2
+> > > > --- /dev/null
+> > > > +++ b/arch/arm64/boot/dts/freescale/imx8mm-engicam-edimm2.2.dtsi
+> > > > @@ -0,0 +1,7 @@
+> > > > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> > > > +/*
+> > > > + * Copyright (c) 2020 Engicam srl
+> > > > + * Copyright (c) 2020 Amarula Solutions(India)
+> > > > + */
+> > > > +
+> > > > +#include "imx8mm-engicam-common.dtsi"
+> > >
+> > > It seems you ignored my comments from previous email. That's not how we
+> > > go with the process.
+> > >
+> > > Don't create confusing or overcomplicated hierarchy of includes. Don't
+> > > create files which do nothing.
+> >
+> > Idea is to move common nodes in separate dtsi instead of adding
+> > redundant nodes into respective areas. let me know if it still
+> > confusing.
+>
+> A file which *only* includes another file does not fulfill this idea of
+> moving common nodes to a separate DTSI file. Or if I still miss
+> something, please point me, what common nodes are stored in
+> imx8mm-engicam-edimm2.2.dtsi?
 
-Oh, now I get what you are doing here, you rely on zero_free_pages of
-your other patch series and are not relying on virtio-balloon free page
-reporting to do the zeroing.
+imx8mm-engicam-edimm2.2.dtsi for EDIMM2.2 Carrier
+imx8mm-engicam-ctouch2.dtsi for C.TOUCH2 Carrier
+imx8mm-engicam-common.dtsi for common nodes for above 2 carrier boards.
 
-You really should have mentioned that this patch series relies on the
-other one and in which way.
+Yes, imx8mm-engicam-edimm2.2.dtsi is empty now but nodes like PCIe,
+CSI, DSI will support once the respective drivers are part of Mainline
+but those are not supported in C.TOUCH2 carrier board dtsi. There are
+some GPIO pins differences between EDIMM2.2 and C.TOUCH2 carriers on
+WiFi/BT so those will be part of the respective carrier dtsi.
 
--- 
-Thanks,
+Hope this would clear.
 
-David / dhildenb
-
+Jagan.
