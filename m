@@ -2,121 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E09422E054F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 05:21:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E03122E0560
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 05:34:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725907AbgLVEV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 23:21:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57446 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725820AbgLVEV2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 23:21:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5363722ADC;
-        Tue, 22 Dec 2020 04:20:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608610847;
-        bh=6WW6bchu/hFRXl913wHiGV8Ial4KKNDAr7VAEGblU1k=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=isn+vkb2O2t1irCOzkUOYOdSMqy+yOtuxF87CSzxlAvcWAcwNi54j0JcfGXKRt6zc
-         a4SaC9U98fX9aQ+wLOtvw9DS2wD3Qi37ZWqvjHkGc5/fJ+bPGor6kU4LdyBv03Bdap
-         9cn21kZyAEAXB/F+fOhH2UJrIjp0Vaxs674CeiZLXVGFElT8naGhToaaOs0NOZMcmb
-         NdilQ8w/aQD0WtDzuPG9qwTG6TMbT0Qm9Pjm1bu7QBgV/2suoW557rM8bR1vFFhnn+
-         G0JXefyQdtqGzduDWA0dHjQKhrXI6ISrXpLxqiEjb6cO8p3LGl48jcZ1mL/BfjYDYC
-         oOcpiTzOZn/Wg==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 16D8C352275F; Mon, 21 Dec 2020 20:20:47 -0800 (PST)
-Date:   Mon, 21 Dec 2020 20:20:47 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>, stable@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Len Brown <lenb@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH 1/4] sched/idle: Fix missing need_resched() check after
- rcu_idle_enter()
-Message-ID: <20201222042047.GZ2657@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201222013712.15056-1-frederic@kernel.org>
- <20201222013712.15056-2-frederic@kernel.org>
+        id S1725870AbgLVEeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 23:34:04 -0500
+Received: from mail-bn8nam12on2076.outbound.protection.outlook.com ([40.107.237.76]:29185
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725780AbgLVEeE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 23:34:04 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GZqo7jtbzfJ9y2ulAOdIw85QpDcEGTgnF7cTmWdUJW24fC8EoYVIW54dbc0xXV99uwUTJYUgLIIYd6teSkjJIe4O9C27JDq+yoBc5kpOIZXXs6sdawPJsgRiS80NWPR2V3izvF9EYcEVQ0JvzqP4YmKGtpwwp3KJKyLg24U8i3cDPkSLQ4yqjgwBRjWgyKCniD0GBjTfYsWIOA6/Eq/loE3I5sihfp1rR9GiI7UIVgC/CsVV7joKZf9IdIofjvNsglU0+WePGPTxdfjjLpL+kA2foIozSRI/+i4Q6JGE2dnjhNUVu4FhPv/PuGujQcs15MTQB/6bi3iTMaE9VGseZQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q+AVPYqlmH4iHunbesCPUJTd5wPPyZ1VK/Z64vtwnaI=;
+ b=hBoYPRLFtszjRFw9eAhNPAsemPdt4FldOgwKlEn34/vKXlxshINS/8U5qrp7ZDEcZNpjHGhjeTkBTuJ8OqHD5G34M9WlQZO4XLG+6+f7T4jVl5c5XptuyrCav1Ov35Xgs7DbR5NdbDkqwfmh6o8Ogjdt2GS+/mpBFZsDhuJhXVXceeRwO0O4J+u1FODnahfX3I967lFQULQPBwGpDBsOlHYTxUvjQ+T/EaWjhpzhJtNbsCjYdR/99FG/lJJ19UOhHFwExzn3KGWUYE63lci6Qc3QK6i08620dapgwXQ2qi/UTPZU+4noDLxZ65drIBppPHPRXZFvBppS1DCdKWU3hQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q+AVPYqlmH4iHunbesCPUJTd5wPPyZ1VK/Z64vtwnaI=;
+ b=tuyBHepSfl5EpBj64Zf8cGM+4ozUXHY7h5r30YgGKo8RQIVfXO6M2k0GcaXjsNkYKcXc6+cRUM6E3Cbde0W70c698zXwZkoYvDnf3dcI2DhHmRXotOd7gLdfHQuUskswSMMqPgQrSmh0wpUfz6jLSMhGQi3Nc2HcWWfBjVVm5+M=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from CY4PR12MB1494.namprd12.prod.outlook.com (2603:10b6:910:f::22)
+ by CY4PR12MB1350.namprd12.prod.outlook.com (2603:10b6:903:41::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.29; Tue, 22 Dec
+ 2020 04:33:10 +0000
+Received: from CY4PR12MB1494.namprd12.prod.outlook.com
+ ([fe80::d0ac:8fdb:1968:2818]) by CY4PR12MB1494.namprd12.prod.outlook.com
+ ([fe80::d0ac:8fdb:1968:2818%6]) with mapi id 15.20.3676.033; Tue, 22 Dec 2020
+ 04:33:10 +0000
+Subject: Re: k10temp: ZEN3 readings are broken
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Gabriel C <nix.or.die@googlemail.com>
+Cc:     linux-hwmon@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+References: <CAEJqkgiiU7miC13iT6DufjFAsHkNZk6rBAw=KRRnHe47kTZDnw@mail.gmail.com>
+ <9d621d34-e5ce-301a-1b89-92c0791fe348@roeck-us.net>
+From:   Wei Huang <wei.huang2@amd.com>
+Message-ID: <9d551bb4-0bd8-937c-f1c1-f6a86a24898f@amd.com>
+Date:   Mon, 21 Dec 2020 22:33:07 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+In-Reply-To: <9d621d34-e5ce-301a-1b89-92c0791fe348@roeck-us.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [165.204.77.11]
+X-ClientProxiedBy: DM6PR01CA0022.prod.exchangelabs.com (2603:10b6:5:296::27)
+ To CY4PR12MB1494.namprd12.prod.outlook.com (2603:10b6:910:f::22)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201222013712.15056-2-frederic@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.252.20.186] (165.204.77.11) by DM6PR01CA0022.prod.exchangelabs.com (2603:10b6:5:296::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.29 via Frontend Transport; Tue, 22 Dec 2020 04:33:09 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: e4f18020-667d-4b42-409a-08d8a632afde
+X-MS-TrafficTypeDiagnostic: CY4PR12MB1350:
+X-Microsoft-Antispam-PRVS: <CY4PR12MB13508644AE762FB4D17CDF53CFDF0@CY4PR12MB1350.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BxVweaUbYM2BNe/WGfElC9Ib1HP29D4zVkc0slBqxMwDT15Fy5hw6ts3hxSevleTE+4vUon80hL28w9AoofrMxX2Af8Ffy5ZQwlFRrUkDpWDlDGfrlWoMAsSpqdrrgNfTpfMP1J6z7Xp+LrtOH4jwnudlslnrWp7797+PTdXAs4SCTQTOCO/ql2puDHlO5d5C9yU1BVakPa00G4bUfTJ1IatC7EPY9t7IlRVnDxBIX2JteOrxi4MAInAKgoUoVMprGE4DEYO5NpDKt5C9avAB/JWBXuY8t4YRuD4Kc3yiKGoWRIlCNDZf0HrjwKXh+ByUEHIk6f3m3jq6fR174WE363lun386cPjYhZ9D8MBAly1EPbRqetMbtMP3FReXf1lCUpQk+QqrSyK7K0STj5ObadknJ2u2KGY4WD6QaRwQ8IRoBWcCL6adLhY80Vk09sYptpWsQc4mJ4YGkxRONb9srFJcQDm6MLcIIsY0yv9O6lCJgtQnvQSFS1D/+SNSCdid0VL6I6wWrmQ313vH4FN0Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR12MB1494.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(366004)(396003)(376002)(136003)(16526019)(956004)(2616005)(31686004)(66946007)(26005)(66556008)(66476007)(2906002)(36756003)(186003)(8676002)(86362001)(53546011)(4326008)(6486002)(5660300002)(16576012)(83380400001)(52116002)(966005)(110136005)(316002)(478600001)(31696002)(8936002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cFlOM3dTeGR4dmRpSFVQZGVrNEUxUENQR3Jjci9JQUdobk5telRsWm9sNG44?=
+ =?utf-8?B?UFpIcko5TDNVa0c0dFN1NmR1ZG81VGFXTFRaVmdBdCt3QVhtaHJ2RnE2MXRp?=
+ =?utf-8?B?YVVBRWtUZUtURnhiYVhYV1g0c3dIaE54akY3VmQ4U2FsYjV0Yzc5S3c5Rmkz?=
+ =?utf-8?B?aThwWlJyS1hteXBoVzJPYmNDN2daSXJzejRnRm9YUmJSRVhVUzNvN0FRVmRJ?=
+ =?utf-8?B?RmVkNmMwY2l4a0JQS053RXFydDJPdXBBSWthaFFONkZmNkIweDlnempMKzZp?=
+ =?utf-8?B?TUd2Mzd3bTJ2V2RHeC9WWGlKRGpuN0F0dG10WC9LU29pL2NxbHg4UG5Fdno2?=
+ =?utf-8?B?SXNqYUhEb09QbUhhbGNRMHJuUldYK1k3SlpFNlFNUnlxeFIxdWlpWnowY1Y0?=
+ =?utf-8?B?QkdRR1I0R2gzQnZHbFZ0T1BlYkEvRlZENi8ybjliT21FWlpaVnUzQ25vZS9F?=
+ =?utf-8?B?NVpEakVJRURlTkhYa0d3dGR4NnhKK1l4MWVkV1d1aC9Ob3Jibm9uR2lSa2RM?=
+ =?utf-8?B?Z2dheFF3a0dUaXJEdjhSMXRrTE4wOHNLYTd0SnRkSWhmZFJyKzlGSkNUMHc2?=
+ =?utf-8?B?MDZHdSsvb3BLdHdsTjY0aHhXUnFEZzJSSkVkelBzNnJVOXp5WUEzSS8vSzYy?=
+ =?utf-8?B?aEhES2dvaFBzMUlsaGNHSHJDa1MwdFBZSjJpVDBRQzZ6OXlZdGt1Z1lQTU5H?=
+ =?utf-8?B?WFQxaFRKZ3ZaeXZ0cXpWMWI0UUIxSWwwRCtsYmFvSFhWWDJaU3ZtUnpNaDUz?=
+ =?utf-8?B?d3c2bzJjdDc3bVRubmt5ZEQ2Y1NSMzNzNmxadGJaZUw5M0pLN1BaN0FOU1Mr?=
+ =?utf-8?B?SEk4cm1ndTRwZVd6My80U2NMUzMveGFjSmNUOGl2NEwyNjk0bFpMam1WeCty?=
+ =?utf-8?B?WldEL0xNUWkxdUtsTldOdFBvYjVYQ2RRbGQxODBTMCtIQnBnVWxOcTI5UDJP?=
+ =?utf-8?B?YkhGcWpaSzNyYlFIRmduejNNckUwOTFoUDRSMUZvSFV4cmsvRXp6dXB0dXVZ?=
+ =?utf-8?B?QWNwUXEyNW54eXdFM0drNXd4WFlhSUpTV3VaMWgxR0g4dHhJbTM5aW9CRmlp?=
+ =?utf-8?B?V1htVHhYM1BXTEdRMUdTV1dQS1dOaWViMTFOTk9ueGhuMUNIeVJON3dENWtu?=
+ =?utf-8?B?TnMzUU84ZFNBaHJIVXYxTmNMRi8rWmcxaEtTVkhPQldkdmNxSE1PanNNZDlG?=
+ =?utf-8?B?TzFTWE5IVkJzajZKY1o0VjlhbUVtNGlJQkxQalEveXdKb1Z2N0FvMEdGbnBn?=
+ =?utf-8?B?S1VqQ1NVYks3Qm14aXMrRmh4ZS8xOVVHL3BzVjlHTEdrRzBBa2NPcDNXS2p1?=
+ =?utf-8?Q?IMeL3P3l58EojFlHC24ZXg9xTDPdgME2wF?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR12MB1494.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Dec 2020 04:33:10.0879
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Network-Message-Id: e4f18020-667d-4b42-409a-08d8a632afde
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: r8d6a3mg+SKHW/r6WlQzDRrakAVOSsXiDXQUUjhVMysAwMok05zi12kSbEc9uu+Z
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1350
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 02:37:09AM +0100, Frederic Weisbecker wrote:
-> Entering RCU idle mode may cause a deferred wake up of an RCU NOCB_GP
-> kthread (rcuog) to be serviced.
-> 
-> Usually a wake up happening while running the idle task is spotted in
-> one of the need_resched() checks carefully placed within the idle loop
-> that can break to the scheduler.
-> 
-> Unfortunately in default_idle_call(), the call to rcu_idle_enter() is
-> already beyond the last need_resched() check and we may halt the CPU
-> with a resched request unhandled, leaving the task hanging.
-> 
-> Fix this with performing a last minute need_resched() check after
-> calling rcu_idle_enter().
-> 
-> Reported-by: Paul E. McKenney <paulmck@kernel.org>
-> Fixes: 96d3fd0d315a (rcu: Break call_rcu() deadlock involving scheduler and perf)
-> Cc: stable@vger.kernel.org
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar<mingo@kernel.org>
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 
-Tested-by: Paul E. McKenney <paulmck@kernel.org>
 
-> ---
->  kernel/sched/idle.c | 18 ++++++++++++------
->  1 file changed, 12 insertions(+), 6 deletions(-)
+On 12/21/20 9:58 PM, Guenter Roeck wrote:
+> Hi,
 > 
-> diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-> index 305727ea0677..1af60dc50beb 100644
-> --- a/kernel/sched/idle.c
-> +++ b/kernel/sched/idle.c
-> @@ -109,15 +109,21 @@ void __cpuidle default_idle_call(void)
->  		rcu_idle_enter();
->  		lockdep_hardirqs_on(_THIS_IP_);
->  
-> -		arch_cpu_idle();
-> +		/*
-> +		 * Last need_resched() check must come after rcu_idle_enter()
-> +		 * which may wake up RCU internal tasks.
-> +		 */
-> +		if (!need_resched()) {
-> +			arch_cpu_idle();
-> +			raw_local_irq_disable();
-> +		}
->  
->  		/*
-> -		 * OK, so IRQs are enabled here, but RCU needs them disabled to
-> -		 * turn itself back on.. funny thing is that disabling IRQs
-> -		 * will cause tracing, which needs RCU. Jump through hoops to
-> -		 * make it 'work'.
-> +		 * OK, so IRQs are enabled after arch_cpu_idle(), but RCU needs
-> +		 * them disabled to turn itself back on.. funny thing is that
-> +		 * disabling IRQs will cause tracing, which needs RCU. Jump through
-> +		 * hoops to make it 'work'.
->  		 */
-> -		raw_local_irq_disable();
->  		lockdep_hardirqs_off(_THIS_IP_);
->  		rcu_idle_exit();
->  		lockdep_hardirqs_on(_THIS_IP_);
-> -- 
-> 2.25.1
+> On 12/21/20 5:45 PM, Gabriel C wrote:
+>> Hello Guenter,
+>>
+>> while trying to add ZEN3 support for zenpower out of tree modules, I find out
+>> the in-kernel k10temp driver is broken with ZEN3 ( and partially ZEN2 even ).
+>>
+>> commit 55163a1c00fcb526e2aa9f7f952fb38d3543da5e added:
+>>
+>> case 0x0 ... 0x1:       /* Zen3 */
+>>
+>> however, this is wrong, we look for a model which is 0x21 for ZEN3,
+>> these seem to
+>> be steppings?
+
+These are model numbers for server CPUs. I believe 0x21 is for desktop 
+CPUs. In other words, current upstream code doesn't support your CPUs. 
+You are welcomed to add support for 0x21, but it is wrong to remove 
+support for 0x00/0x01.
+
+>>
+>> Also, PLANE0/1 are wrong too, Icore has zero readouts even when fixing
+>> the model.
+>>
+>> Looking at these ( there is something missing for 0x71 ZEN2 Ryzens
+>> also ) that should be:
+>>
+>> PLANE0  (ZEN_SVI_BASE + 0x10)
+>> PLANE1  (ZEN_SVI_BASE + 0xc)
+
+Same problem here with model 0x71. 0x31 is for server CPUs.
+
+>>
+>> Which is the same as for ZEN2 >= 0x71. Since this is not really
+>> documented and I have some
+>> confirmations of these numbers from *somewhere* :-) I created a demo patch only.
+>>
+>> I would like AMD people to really have a look at the driver and
+>> confirm the changes, since
+>> getting information from *somewhere*,  dosen't mean they are 100%
+>> correct. However, the driver
+>> is working with these changes.
+>>
+>> In any way the model needs changing to 0x21 even if we let the other
+>> readings broken.
+>>
+>> There is my demo patch:
+>>
+>> https://crazy.dev.frugalware.org/fix-ZEN2-ZEN3-test1.patch
+
+For family 19h, the patch should look like. But this might not matter 
+anymore as suggested by Guenter below.
+
+  /* F19h thermal registers through SMN */
+#define F19H_M01_SVI_TEL_PLANE0			(ZEN_SVI_BASE + 0x14)
+#define F19H_M01_SVI_TEL_PLANE1			(ZEN_SVI_BASE + 0x10)
++/* Zen3 Ryzen */
++#define F19H_M21H_SVI_TEL_PLANE0		(ZEN_SVI_BASE + 0x10)
++#define F19H_M21H_SVI_TEL_PLANE1		(ZEN_SVI_BASE + 0xc)
+
+Then add the following change:
+
+  		switch (boot_cpu_data.x86_model) {
+		case 0x0 ... 0x1:	/* Zen3 */
+  			data->show_current = true;
+			data->svi_addr[0] = F19H_M01_SVI_TEL_PLANE0;
+			data->svi_addr[1] = F19H_M01_SVI_TEL_PLANE1;
+  			data->cfactor[0] = F19H_M01H_CFACTOR_ICORE;
+  			data->cfactor[1] = F19H_M01H_CFACTOR_ISOC;
+  			k10temp_get_ccd_support(pdev, data, 8);
++		case 0x21:	/* Zen3 */
++ 			data->show_current = true;
++			data->svi_addr[0] = F19H_M21H_SVI_TEL_PLANE0;
++			data->svi_addr[1] = F19H_M21H_SVI_TEL_PLANE1;
++ 			data->cfactor[0] = F19H_M01H_CFACTOR_ICORE;
++ 			data->cfactor[1] = F19H_M01H_CFACTOR_ISOC;
++ 			k10temp_get_ccd_support(pdev, data, 8);
+
+>>
+>> Also, there is some discuss and testing for both drivers:
+>>
+>> https://github.com/ocerman/zenpower/issues/39
+>>
+> 
+> Thanks for the information. However, since I do not have time to actively maintain
+> the driver, since each chip variant seems to use different addresses and scales,
+> and since the information about voltages and currents is unpublished by AMD,
+> I'll remove support for voltage/current readings from the upstream driver.
+> I plan to send the patch doing that to Linus shortly after the commit window
+> closes (or even before that).
+
+I believe Guenter is talking about 
+https://www.spinics.net/lists/linux-hwmon/msg10252.html.
+
+> 
+> Thanks,
+> Guenter
 > 
