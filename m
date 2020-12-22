@@ -2,138 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8A752E0F0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 20:47:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE9F2E0F10
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 20:47:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726918AbgLVTpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 14:45:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26645 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726321AbgLVTpo (ORCPT
+        id S1727224AbgLVTqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 14:46:33 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:10494 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726289AbgLVTqd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 14:45:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608666257;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tI9RK4cFAHT2wID3U52x1nikQbt8aqU7ArNiStfO7ZQ=;
-        b=VxPepqfPH7KJCeZ5h1Z8xXNz/+aSvSqtHXiM18gepV5NTEjY4B9eW4ygNBTrLYty3ATrGT
-        bv5DlQbPc1wOGEG7uv1zNiOpscDkdjl9Zu0BTL9PtAoUMJx/wqAqEpx9TUThgdX12JHJhX
-        zS7j544gE54KcB43sdJOZivBFYmMxbI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-396-hC779z6sNvil__MY8cjkwg-1; Tue, 22 Dec 2020 14:44:14 -0500
-X-MC-Unique: hC779z6sNvil__MY8cjkwg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 596A0801817;
-        Tue, 22 Dec 2020 19:44:12 +0000 (UTC)
-Received: from mail (ovpn-112-5.rdu2.redhat.com [10.10.112.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C13D460BF1;
-        Tue, 22 Dec 2020 19:44:08 +0000 (UTC)
-Date:   Tue, 22 Dec 2020 14:44:08 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     Peter Xu <peterx@redhat.com>, Yu Zhao <yuzhao@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-Message-ID: <X+JMiHv+EktzyZgr@redhat.com>
-References: <20201221172711.GE6640@xz-x1>
- <76B4F49B-ED61-47EA-9BE4-7F17A26B610D@gmail.com>
- <X+D0hTZCrWS3P5Pi@google.com>
- <CAHk-=wg_UBuo7ro1fpEGkMyFKA1+PxrE85f9J_AhUfr-nJPpLQ@mail.gmail.com>
- <9E301C7C-882A-4E0F-8D6D-1170E792065A@gmail.com>
- <CAHk-=wg-Y+svNy3CDkJjj0X_CJkSbpERLg64-Vqwq5u7SC4z0g@mail.gmail.com>
- <X+ESkna2z3WjjniN@google.com>
- <1FCC8F93-FF29-44D3-A73A-DF943D056680@gmail.com>
- <20201221223041.GL6640@xz-x1>
- <B8095F3C-81E3-4AF9-A6A5-F597D51264BD@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <B8095F3C-81E3-4AF9-A6A5-F597D51264BD@gmail.com>
-User-Agent: Mutt/2.0.3 (2020-12-04)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        Tue, 22 Dec 2020 14:46:33 -0500
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BMJVni1083551;
+        Tue, 22 Dec 2020 14:45:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=WjWJp3AIQDryqKRLNFaJp2pECH69G2IqGHqR79KvEbc=;
+ b=FTzBjeQfUBVJlL0tLCUMdFNUkKef5XjZrUcQatIb/gXq4l1UEeEUDr+6P+09+GzLtR+B
+ 7dDdkpAj+rGI19o+ojyccouiH6aX8rhERWxJqwB2awEWUQw3NxwVEG/etjeaZmMYWyrI
+ YY2fV8su9X9CvL4WtE+JY+DOWeYG4S18loWP4F1Mviwn9eUOPuOZ7SoQxdOe6ltIx6rP
+ FBbSMYjs75OEgJbCt6D4UCaGqiWP4XXtt1aQPsfl4bk7+ydo9EpYg/m5cmGqgewf2Io7
+ YMr1tkU8HwqwqV6GiGKU0RxcpCQRWLHbxjLD7rjZqgeVk0/7I79sY+mSjF7PltfRt1gF kg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35kq008bv6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Dec 2020 14:45:18 -0500
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BMJYrsg094719;
+        Tue, 22 Dec 2020 14:45:18 -0500
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35kq008bub-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Dec 2020 14:45:17 -0500
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BMJjFmn032299;
+        Tue, 22 Dec 2020 19:45:15 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06fra.de.ibm.com with ESMTP id 35kefjg7hg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Dec 2020 19:45:15 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BMJjCL625952760
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 22 Dec 2020 19:45:12 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 948BDA4067;
+        Tue, 22 Dec 2020 19:45:12 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3F0C3A4060;
+        Tue, 22 Dec 2020 19:45:06 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.81.142])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 22 Dec 2020 19:45:06 +0000 (GMT)
+Message-ID: <7a347c8f2a76fc80551a3dfcb66b0eec9b024a90.camel@linux.ibm.com>
+Subject: Re: [PATCH v13 2/6] powerpc: Move arch independent ima kexec
+ functions to drivers/of/kexec.c
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        bauerman@linux.ibm.com, robh@kernel.org,
+        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
+        will@kernel.org, catalin.marinas@arm.com, mpe@ellerman.id.au
+Cc:     james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
+        paulus@samba.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
+        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+Date:   Tue, 22 Dec 2020 14:45:05 -0500
+In-Reply-To: <e0d9398b-1b46-8115-7bf0-28e9826fcd6b@linux.microsoft.com>
+References: <20201219175713.18888-1-nramas@linux.microsoft.com>
+         <20201219175713.18888-3-nramas@linux.microsoft.com>
+         <a1a4526c0759eb3b5d70fb8edc89360718376def.camel@linux.ibm.com>
+         <e0d9398b-1b46-8115-7bf0-28e9826fcd6b@linux.microsoft.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-22_09:2020-12-21,2020-12-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 phishscore=0 impostorscore=0 mlxlogscore=999
+ suspectscore=0 mlxscore=0 malwarescore=0 clxscore=1015 spamscore=0
+ lowpriorityscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2012220138
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 02:55:12PM -0800, Nadav Amit wrote:
-> wouldn’t mmap_write_downgrade() be executed before mprotect_fixup() (so
+On Tue, 2020-12-22 at 10:53 -0800, Lakshmi Ramasubramanian wrote:
+> On 12/22/20 6:26 AM, Mimi Zohar wrote:
+> 
+> Hi Mimi,
+> 
+> > 
+> > On Sat, 2020-12-19 at 09:57 -0800, Lakshmi Ramasubramanian wrote:
+> >>
+> >> diff --git a/arch/powerpc/kexec/Makefile b/arch/powerpc/kexec/Makefile
+> >> index 4aff6846c772..b6c52608cb49 100644
+> >> --- a/arch/powerpc/kexec/Makefile
+> >> +++ b/arch/powerpc/kexec/Makefile
+> >> @@ -9,13 +9,6 @@ obj-$(CONFIG_PPC32)		+= relocate_32.o
+> >>   
+> >>   obj-$(CONFIG_KEXEC_FILE)	+= file_load.o ranges.o file_load_$(BITS).o elf_$(BITS).o
+> >>   
+> >> -ifdef CONFIG_HAVE_IMA_KEXEC
+> >> -ifdef CONFIG_IMA
+> >> -obj-y				+= ima.o
+> >> -endif
+> >> -endif
+> > 
+> > Notice how "kexec/ima.o" is only included if the architecture supports
+> > it and IMA is configured.  In addition only if CONFIG_IMA_KEXEC is
+> > configured, is the IMA measurement list carried across kexec.  After
+> > moving the rest of ima.c to drivers/of/kexec.c, this changes.   Notice
+> > how drivers/of/Kconfig includes kexec.o:
+> > 
+> > obj-$(CONFIG_KEXEC_FILE) += kexec.o
+> > 
+> > It is not dependent on CONFIG_HAVE_IMA_KEXEC.  Shouldn't all of the
+> > functions defined in ima.c being moved to kexec.o be defined within a
+> > CONFIG_HAVE_IMA_KEXEC ifdef?
+> > 
+> 
+> Thanks for reviewing the changes.
+> 
+> In "drivers/of/kexec.c" the function remove_ima_buffer() is defined 
+> under "#ifdef CONFIG_HAVE_IMA_KEXEC"
+> 
+> setup_ima_buffer() is defined under "#ifdef CONFIG_IMA_KEXEC" - the same 
+> way it was defined in "arch/powerpc/kexec/ima.c".
+> 
+> As you know, CONFIG_IMA_KEXEC depends on CONFIG_HAVE_IMA_KEXEC (as 
+> defined in "security/integrity/ima/Kconfig").
+> 
+> ima_get_kexec_buffer() and ima_free_kexec_buffer() are unconditionally 
+> defined in "drivers/of/kexec.c" even though they are called only when 
+> CONFIG_HAVE_IMA_KEXEC is enabled. I will update these two functions to 
+> be moved under "#ifdef CONFIG_HAVE_IMA_KEXEC"
 
-I assume you mean "in" mprotect_fixup, after change_protection.
+The issue is the reverse.  CONFIG_HAVE_IMA_KEXEC may be enabled without
+CONFIG_IMA_KEXEC being enabled.  This allows the architecture to
+support carrying the measurement list across kexec, but requires
+enabling it at build time.
 
-If you would downgrade the mmap_lock to read there, then it'd severely
-slowdown the non contention case, if there's more than vma that needs
-change_protection.
+Only if CONFIG_HAVE_IMA_KEXEC is enabled should any of these functions
+be compiled at build.  This allows restoring the previous IMA
+measurement list, even if CONFIG_IMA_KEXEC is not enabled.
 
-You'd need to throw away the prev->vm_next info and you'd need to do a
-new find_vma after droping the mmap_lock for reading and re-taking the
-mmap_lock for writing at every iteration of the loop.
+Only if CONFIG_IMA_KEXEC is enabled, should carrying the measurement
+list across kexec be enabled.  See how arch_ima_add_kexec_buffer,
+write_number, setup_ima_buffer are ifdef'ed in
+arch/powerpc/kexec/ima.c.
 
-To do less harm to the non-contention case you could perhaps walk
-vma->vm_next and check if it's outside the mprotect range and only
-downgrade in such case. So let's assume we intend to optimize with
-mmap_write_downgrade only the last vma.
-
-The problem is once you had to take mmap_lock for writing, you already
-stalled for I/O and waited all concurrent page faults and blocked them
-as well for the vma allocations in split_vma, so that extra boost in
-SMP scalability you get is lost in the noise there at best.
-
-And the risk is that at worst that extra locked op of
-mmap_write_downgrade() will hurt SMP scalability because it would
-increase the locked ops of mprotect on the hottest false-shared
-cacheline by 50% and that may outweight the benefit from unblocking
-the page faults half a usec sooner on large systems.
-
-But the ultimate reason why mprotect cannot do mmap_write_downgrade()
-while userfaultfd_writeprotect can do mmap_read_lock and avoid the
-mmap_write_lock altogether, is that mprotect leaves no mark in the
-pte/hugepmd that allows to detect when the TLB is stale in order to
-redirect the page fault in a dead end (handle_userfault() or
-do_numa_page) until after the TLB has been flushed as it happens in
-the the 4 cases below:
-
-	/*
-	 * STALE_TLB_WARNING: while the uffd_wp bit is set, the TLB
-	 * can be stale. We cannot allow do_wp_page to proceed or
-	 * it'll wrongly assume that nobody can still be writing to
-	 * the page if !pte_write.
-	 */
-	if (userfaultfd_pte_wp(vma, *vmf->pte)) {
-		/*
-		 * STALE_TLB_WARNING: while the uffd_wp bit is set,
-		 * the TLB can be stale. We cannot allow wp_huge_pmd()
-		 * to proceed or it'll wrongly assume that nobody can
-		 * still be writing to the page if !pmd_write.
-		 */
-		if (userfaultfd_huge_pmd_wp(vmf->vma, orig_pmd))
-	/*
-	 * STALE_TLB_WARNING: if the pte is NUMA protnone the TLB can
-	 * be stale.
-	 */
-	if (pte_protnone(vmf->orig_pte) && vma_is_accessible(vmf->vma))
-			/*
-			 * STALE_TLB_WARNING: if the pmd is NUMA
-			 * protnone the TLB can be stale.
-			 */
-			if (pmd_protnone(orig_pmd) && vma_is_accessible(vma))
-
-Thanks,
-Andrea
+Mimi
 
