@@ -2,259 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299AA2E05FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 07:17:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BD0D2E05FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 07:17:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726137AbgLVGPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 01:15:21 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:14823 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725870AbgLVGPU (ORCPT
+        id S1726159AbgLVGRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 01:17:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725783AbgLVGRN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 01:15:20 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1608617695; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=0V+Cu3IuR1wCCobiWDWzsRADyySL0im47csfUoulkMo=;
- b=oO3CGENt0pLe8Yi9AdOkyB6BqrEd3DORCWG7ct8sX8gEzPq6+o7d65LI2wBKrqoAiyDzqML1
- N4KgbEaa5qFpL77sAeex0IzbTiXaVcf2KaPgMyJkN7Ioi5q4lPsPNhVJ/ibrVdSTRUe/0TUd
- equwIzouaW+1nPUJ+Jw1LKjIZ5A=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
- 5fe18ed93ac69bd6b81f9e6c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Dec 2020 06:14:49
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 99958C43465; Tue, 22 Dec 2020 06:14:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id ECEC5C433C6;
-        Tue, 22 Dec 2020 06:14:46 +0000 (UTC)
+        Tue, 22 Dec 2020 01:17:13 -0500
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51732C0613D6;
+        Mon, 21 Dec 2020 22:16:33 -0800 (PST)
+Received: by mail-oi1-x22b.google.com with SMTP id 15so13755373oix.8;
+        Mon, 21 Dec 2020 22:16:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=GsJ9t2DQksVa84TtSFlyEhbEZGFOhW7YiKQ7R1UqKy8=;
+        b=bHxHTKPRZbhOdCdGWAjyXLPdWWNJtJ3xlHnWeiegAPHf/DOSq2CKeoKhiGig3UYKSz
+         t3+9AJq8ZK1VoAu8r5spoVYSE0JbK1T3j4h/Q3X5FiRKcLaNBo8pBo3sRXHH8FGldihw
+         1IWAUSfSyJ54++5bVrgW9Fhs0jvGcwSvCTOVMI+1L7XHSgpyqvRa5FXsJWnP1SRsntS6
+         6utXuVGbLV5CY+rydHvsLFer3WN/XDCLtK30ISGmLObYDlP8tJiCQkVbYe2o8/ORsc7W
+         oCQqNyyY6QdHiAKiJSGQOw2TWBhZL9zzTp7yo284oDd3vpY4aoehZwkgoCDFh5EwilMx
+         QXwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=GsJ9t2DQksVa84TtSFlyEhbEZGFOhW7YiKQ7R1UqKy8=;
+        b=Dgs3RwK3ikyEkfLg+SkPWBcPgH83pQ3Hwcd/2Txa1iBFUa7RxhhgY8Z+XAz2d3m0T0
+         GiVzjmNWgQRLGt7HU+h2tD3paKsQhtUqwtjlpsXwA/p62aP/XO8z1Kjjn/WYiOJT9fLm
+         XzWh8KPpzqD8U+S+Rl2jm2E9qzx26SuixDU5HSh1Cj4TQufaTPsxRyNCfhrabwmjoUV/
+         pZCve+LjhynKWpIIpV09P1a8Gl1Gab9EuwCyIWIIQJVuuWYChQwOgOj1BoOcjY9HPP+6
+         rV3Wh4GiDiPA7muStf3UCwnTJcehSbaiX/I5RtgYxyxzOMVvUyg4ufks9VD00f8GIh7y
+         yUOw==
+X-Gm-Message-State: AOAM533BMhuCVd6oEiarGeJo+nxx0D2NUSSigrUof0YExfmVb3XWQKRk
+        Gj7CE8MReXgoTkTuMG5RnUNWEljloDE=
+X-Google-Smtp-Source: ABdhPJycVllZh0KDGzUfdrd7FjSu0ARgUDiD6w3Gzg+UGjD150HFquaX1LYcFY5C5ktqV//WX202Sw==
+X-Received: by 2002:aca:af4d:: with SMTP id y74mr12893615oie.105.1608617792738;
+        Mon, 21 Dec 2020 22:16:32 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id f67sm4305127otb.60.2020.12.21.22.16.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 21 Dec 2020 22:16:31 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 21 Dec 2020 22:16:30 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Gabriel C <nix.or.die@googlemail.com>
+Cc:     linux-hwmon@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Wei Huang <wei.huang2@amd.com>
+Subject: Re: k10temp: ZEN3 readings are broken
+Message-ID: <20201222061630.GB76917@roeck-us.net>
+References: <CAEJqkgiiU7miC13iT6DufjFAsHkNZk6rBAw=KRRnHe47kTZDnw@mail.gmail.com>
+ <9d621d34-e5ce-301a-1b89-92c0791fe348@roeck-us.net>
+ <CAEJqkgjFVBEDxCVB+P3CjirRkCZW1_6s18AgOKpe+6er3VShpA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 22 Dec 2020 14:14:46 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bean Huo <huobean@gmail.com>
-Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 5/7] scsi: ufs: Group UFS WB related flags to struct
- ufs_dev_info
-In-Reply-To: <20201215230519.15158-6-huobean@gmail.com>
-References: <20201215230519.15158-1-huobean@gmail.com>
- <20201215230519.15158-6-huobean@gmail.com>
-Message-ID: <12d605355add6c4d55697f69737292eb@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEJqkgjFVBEDxCVB+P3CjirRkCZW1_6s18AgOKpe+6er3VShpA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-16 07:05, Bean Huo wrote:
-> From: Bean Huo <beanhuo@micron.com>
-> 
-> UFS device-related flags should be grouped in ufs_dev_info. Take
-> wb_enabled and wb_buf_flush_enabled out from the struct ufs_hba,
-> group them to struct ufs_dev_info, and align the names of the structure
-> members vertically.
-> 
+On Tue, Dec 22, 2020 at 05:33:17AM +0100, Gabriel C wrote:
+[ ... ]
+> At least is what the weird amd_energy driver added and since is only supporting
+> fam 17h model 0x31 which is TR 3000 & SP3 Rome, I guess fam 19h 0x1 is
+> TR/SP3 ZEN3.
 
-Reviewed-by: Can Guo <cang@codeaurora.org>
+The limited model support is because people nowadays are not willing to
+accept that reported values may not always be perfect ... and the reported
+energy for non-server parts is known to be not always perfect. Kind of an
+odd situation: If we support non-server parts, we have people complain
+that values are not perfect. If we only support server parts, we have
+people complain that only server parts are supported. For us, that is
+a lose-lose situation. I used to think that is is better to report
+_something_, but the (sometimes loud) complaints about lack of perfection
+teached me a lesson. So now my reaction is to drop support if I get
+complaints about lack of perfection.
 
-> Signed-off-by: Bean Huo <beanhuo@micron.com>
-> ---
->  drivers/scsi/ufs/ufs-sysfs.c |  2 +-
->  drivers/scsi/ufs/ufs.h       | 27 ++++++++++++++++-----------
->  drivers/scsi/ufs/ufshcd.c    | 21 ++++++++++-----------
->  drivers/scsi/ufs/ufshcd.h    |  4 +---
->  4 files changed, 28 insertions(+), 26 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufs-sysfs.c 
-> b/drivers/scsi/ufs/ufs-sysfs.c
-> index f3ca3d6b82c4..9a9acc722a37 100644
-> --- a/drivers/scsi/ufs/ufs-sysfs.c
-> +++ b/drivers/scsi/ufs/ufs-sysfs.c
-> @@ -194,7 +194,7 @@ static ssize_t wb_on_show(struct device *dev,
-> struct device_attribute *attr,
->  {
->  	struct ufs_hba *hba = dev_get_drvdata(dev);
-> 
-> -	return sysfs_emit(buf, "%d\n", hba->wb_enabled);
-> +	return sysfs_emit(buf, "%d\n", hba->dev_info.wb_enabled);
->  }
-> 
->  static ssize_t wb_on_store(struct device *dev, struct device_attribute 
-> *attr,
-> diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
-> index a789e074ae3f..ec74cf360b1f 100644
-> --- a/drivers/scsi/ufs/ufs.h
-> +++ b/drivers/scsi/ufs/ufs.h
-> @@ -527,20 +527,25 @@ struct ufs_vreg_info {
->  };
-> 
->  struct ufs_dev_info {
-> -	bool f_power_on_wp_en;
-> +	bool	f_power_on_wp_en;
->  	/* Keeps information if any of the LU is power on write protected */
-> -	bool is_lu_power_on_wp;
-> +	bool	is_lu_power_on_wp;
->  	/* Maximum number of general LU supported by the UFS device */
-> -	u8 max_lu_supported;
-> -	u8 wb_dedicated_lu;
-> -	u16 wmanufacturerid;
-> +	u8	max_lu_supported;
-> +	u16	wmanufacturerid;
->  	/*UFS device Product Name */
-> -	u8 *model;
-> -	u16 wspecversion;
-> -	u32 clk_gating_wait_us;
-> -	u8 b_wb_buffer_type;
-> -	bool b_rpm_dev_flush_capable;
-> -	u8 b_presrv_uspc_en;
-> +	u8	*model;
-> +	u16	wspecversion;
-> +	u32	clk_gating_wait_us;
-> +
-> +	/* UFS WB related flags */
-> +	bool    wb_enabled;
-> +	bool    wb_buf_flush_enabled;
-> +	u8	wb_dedicated_lu;
-> +	u8      wb_buffer_type;
-> +
-> +	bool	b_rpm_dev_flush_capable;
-> +	u8	b_presrv_uspc_en;
->  };
-> 
->  /**
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 5f08f4a59a17..466a85051d54 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -589,8 +589,8 @@ static void ufshcd_device_reset(struct ufs_hba 
-> *hba)
->  	if (!err) {
->  		ufshcd_set_ufs_dev_active(hba);
->  		if (ufshcd_is_wb_allowed(hba)) {
-> -			hba->wb_enabled = false;
-> -			hba->wb_buf_flush_enabled = false;
-> +			hba->dev_info.wb_enabled = false;
-> +			hba->dev_info.wb_buf_flush_enabled = false;
->  		}
->  	}
->  	if (err != -EOPNOTSUPP)
-> @@ -5359,7 +5359,7 @@ int ufshcd_wb_ctrl(struct ufs_hba *hba, bool 
-> enable)
->  	if (!ufshcd_is_wb_allowed(hba))
->  		return 0;
-> 
-> -	if (!(enable ^ hba->wb_enabled))
-> +	if (!(enable ^ hba->dev_info.wb_enabled))
->  		return 0;
->  	if (enable)
->  		opcode = UPIU_QUERY_OPCODE_SET_FLAG;
-> @@ -5375,7 +5375,7 @@ int ufshcd_wb_ctrl(struct ufs_hba *hba, bool 
-> enable)
->  		return ret;
->  	}
-> 
-> -	hba->wb_enabled = enable;
-> +	hba->dev_info.wb_enabled = enable;
->  	dev_dbg(hba->dev, "%s write booster %s %d\n",
->  			__func__, enable ? "enable" : "disable", ret);
-> 
-> @@ -5415,7 +5415,7 @@ static int ufshcd_wb_buf_flush_enable(struct 
-> ufs_hba *hba)
->  	int ret;
->  	u8 index;
-> 
-> -	if (!ufshcd_is_wb_allowed(hba) || hba->wb_buf_flush_enabled)
-> +	if (!ufshcd_is_wb_allowed(hba) || hba->dev_info.wb_buf_flush_enabled)
->  		return 0;
-> 
->  	index = ufshcd_wb_get_query_index(hba);
-> @@ -5426,7 +5426,7 @@ static int ufshcd_wb_buf_flush_enable(struct 
-> ufs_hba *hba)
->  		dev_err(hba->dev, "%s WB - buf flush enable failed %d\n",
->  			__func__, ret);
->  	else
-> -		hba->wb_buf_flush_enabled = true;
-> +		hba->dev_info.wb_buf_flush_enabled = true;
-> 
->  	dev_dbg(hba->dev, "WB - Flush enabled: %d\n", ret);
->  	return ret;
-> @@ -5437,7 +5437,7 @@ static int ufshcd_wb_buf_flush_disable(struct
-> ufs_hba *hba)
->  	int ret;
->  	u8 index;
-> 
-> -	if (!ufshcd_is_wb_allowed(hba) || !hba->wb_buf_flush_enabled)
-> +	if (!ufshcd_is_wb_allowed(hba) || 
-> !hba->dev_info.wb_buf_flush_enabled)
->  		return 0;
-> 
->  	index = ufshcd_wb_get_query_index(hba);
-> @@ -5448,7 +5448,7 @@ static int ufshcd_wb_buf_flush_disable(struct
-> ufs_hba *hba)
->  		dev_warn(hba->dev, "%s: WB - buf flush disable failed %d\n",
->  			 __func__, ret);
->  	} else {
-> -		hba->wb_buf_flush_enabled = false;
-> +		hba->dev_info.wb_buf_flush_enabled = false;
->  		dev_dbg(hba->dev, "WB - Flush disabled: %d\n", ret);
->  	}
-> 
-> @@ -7236,13 +7236,12 @@ static void ufshcd_wb_probe(struct ufs_hba
-> *hba, u8 *desc_buf)
->  	 * says, in dedicated wb buffer mode, a max of 1 lun would have wb
->  	 * buffer configured.
->  	 */
-> -	dev_info->b_wb_buffer_type =
-> -		desc_buf[DEVICE_DESC_PARAM_WB_TYPE];
-> +	dev_info->wb_buffer_type = desc_buf[DEVICE_DESC_PARAM_WB_TYPE];
-> 
->  	dev_info->b_presrv_uspc_en =
->  		desc_buf[DEVICE_DESC_PARAM_WB_PRESRV_USRSPC_EN];
-> 
-> -	if (dev_info->b_wb_buffer_type == WB_BUF_MODE_SHARED) {
-> +	if (dev_info->wb_buffer_type == WB_BUF_MODE_SHARED) {
->  		if (!get_unaligned_be32(desc_buf +
->  				   DEVICE_DESC_PARAM_WB_SHARED_ALLOC_UNITS))
->  			goto wb_disabled;
-> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-> index 2a97006a2c93..ee97068158e2 100644
-> --- a/drivers/scsi/ufs/ufshcd.h
-> +++ b/drivers/scsi/ufs/ufshcd.h
-> @@ -805,8 +805,6 @@ struct ufs_hba {
-> 
->  	struct device		bsg_dev;
->  	struct request_queue	*bsg_queue;
-> -	bool wb_buf_flush_enabled;
-> -	bool wb_enabled;
->  	struct delayed_work rpm_dev_flush_recheck_work;
-> 
->  #ifdef CONFIG_SCSI_UFS_CRYPTO
-> @@ -946,7 +944,7 @@ static inline bool
-> ufshcd_keep_autobkops_enabled_except_suspend(
-> 
->  static inline u8 ufshcd_wb_get_query_index(struct ufs_hba *hba)
->  {
-> -	if (hba->dev_info.b_wb_buffer_type == WB_BUF_MODE_LU_DEDICATED)
-> +	if (hba->dev_info.wb_buffer_type == WB_BUF_MODE_LU_DEDICATED)
->  		return hba->dev_info.wb_dedicated_lu;
->  	return 0;
->  }
+Guenter
