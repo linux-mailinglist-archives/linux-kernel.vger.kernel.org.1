@@ -2,116 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A282E0498
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 04:07:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 122CF2E049E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 04:11:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725924AbgLVDHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 22:07:30 -0500
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:51439 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725780AbgLVDH3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 22:07:29 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R711e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=liangyan.peng@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UJOaEn8_1608606387;
-Received: from localhost(mailfrom:liangyan.peng@linux.alibaba.com fp:SMTPD_---0UJOaEn8_1608606387)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 22 Dec 2020 11:06:35 +0800
-From:   Liangyan <liangyan.peng@linux.alibaba.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        joseph.qi@linux.alibaba.com, liangyan.peng@linux.alibaba.com
-Cc:     stable@vger.kernel.org
-Subject: [PATCH v4] ovl: fix  dentry leak in ovl_get_redirect
-Date:   Tue, 22 Dec 2020 11:06:26 +0800
-Message-Id: <20201222030626.181165-1-liangyan.peng@linux.alibaba.com>
-X-Mailer: git-send-email 2.14.4.44.g2045bb6
+        id S1726071AbgLVDKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 22:10:49 -0500
+Received: from mail-eopbgr70072.outbound.protection.outlook.com ([40.107.7.72]:57568
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725780AbgLVDKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 22:10:48 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eh5eHFiq24clN2YkOpNV+IBm6AegTdzsqvLZ++PpIK/hPvq4vWLVno1/h3w5fGnTuEy5dR5J5O+ltJCs0x6veBxjm5gZr+vSyqucHB/RuN3h7TyauXfAQlTl+HMG4gjOvVqww9Pl+IaaQV+7TPbn0qMZaG1ceRvfaMtACvCSkGBTuDlZoP6iFwxsJE4Xk+73qGLece/Wy1Bj9IetOcO5Z8U4dI8dHPPfHSFgI9f7rRvp4tuvNRKrM9kA/A1uYNrvfK1gElhOWqJavDu4e4tog3TYz1Cx/5pfKbgyCEcuhKdVOI/wbvT8KL8Scu2eP740PjuZEnfiPipC4p7aRZk1Lw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Fvi3zyxbAFRqpB0ykgtWFL9tFmNGVUJzGRb6TCh/x+E=;
+ b=GJFOBJ3df6qGfnCmDePBvqnsC/oWgihvWt0nutEPTcXpB2nkFJxelRNszDGPR4QYmXCGH4kTrI6eg6bnOdQLYEa9xJwn2hdy1AAreQG0KHI2GYxTUEcOSLop2GOtjub80m53E+nfF0SneyzPByb3cOSG+wrkLiLrHDsYPxt3y4OUFYiNlgKrg7MRLgdfHGhc/VduGIdG01RmLin7c1o9+ziAj4X80lxBGZ/tvuOSEsYU0/uPu2+4hdToNq+y/lIsdx0tzxIF2aWXXqRGNT4Fz7/TagMeIeA0ozzAJxtMkuDeGP5i1p8OgwtLDjf/+FYJe3rGDbGiTMe1zFxK2V7XSA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Fvi3zyxbAFRqpB0ykgtWFL9tFmNGVUJzGRb6TCh/x+E=;
+ b=SMgnyvCBcoe9nw1zYqKopA8TRYgJI8ESDtG49UEyM6utczdFCGZi6qmkx/NnV+V9eZ+bO3f5RJ7Jdzw56giF/BTewR6VThNmls9Bu6S+y9JXLRbhH5MEtf3YpokM8NOQw60r+7qVsgfDJNLDnM64uvf+NfdM8nItVEtBOuRJHUI=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
+ by VI1PR04MB6813.eurprd04.prod.outlook.com (2603:10a6:803:13c::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.25; Tue, 22 Dec
+ 2020 03:09:57 +0000
+Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
+ ([fe80::dcb7:6117:3def:2685]) by VI1PR04MB3983.eurprd04.prod.outlook.com
+ ([fe80::dcb7:6117:3def:2685%7]) with mapi id 15.20.3676.033; Tue, 22 Dec 2020
+ 03:09:57 +0000
+Message-ID: <7e808e05b79b4730b99da868c9255c3b76608f3a.camel@nxp.com>
+Subject: Re: [PATCH 06/14] dt-bindings: display: bridge: Add i.MX8qm/qxp
+ display pixel link binding
+From:   Liu Ying <victor.liu@nxp.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, airlied@linux.ie, daniel@ffwll.ch,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, mchehab@kernel.org,
+        a.hajda@samsung.com, narmstrong@baylibre.com,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@siol.net, kishon@ti.com, vkoul@kernel.org
+Date:   Tue, 22 Dec 2020 11:08:06 +0800
+In-Reply-To: <20201221223140.GA687317@robh.at.kernel.org>
+References: <1608199173-28760-1-git-send-email-victor.liu@nxp.com>
+         <1608199173-28760-7-git-send-email-victor.liu@nxp.com>
+         <20201221223140.GA687317@robh.at.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [119.31.174.66]
+X-ClientProxiedBy: SG2PR06CA0090.apcprd06.prod.outlook.com
+ (2603:1096:3:14::16) To VI1PR04MB3983.eurprd04.prod.outlook.com
+ (2603:10a6:803:4c::16)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from blueberry.ap.freescale.net (119.31.174.66) by SG2PR06CA0090.apcprd06.prod.outlook.com (2603:1096:3:14::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.29 via Frontend Transport; Tue, 22 Dec 2020 03:09:51 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 6b704294-e95a-4a16-7093-08d8a6270fee
+X-MS-TrafficTypeDiagnostic: VI1PR04MB6813:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB6813132527A65966AA75EA3098DF0@VI1PR04MB6813.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ZzhSLNBet+/PVjlG1mVuR0w3H3RKT/H0S8qcb9f1D4r4gGKXJxaw5AU53NGOyEoKfezez+GE/R8pM//jjLC0Bi/hrJPKbhTvBYVkigj8k5FZ5RH/GYqmMh2Q8tA9wnyMdgyVlV/0XaxBq8fXvhwmN9T9irbcNHlC227FM5s+k0TUu1yWGH0kEjnPe2HX8rblEyLbVhIBhhUeezvuEenqadHC+AZaX4xfYwpz31X8uUYpY7KfWPMDMSxW8KnzW/fAIOWKQacCAT4jgn8FQIAO7Pxng/aL91VxLXregqBvAQ9bUvhXORvERh+vrDQNA3v8qux1lmdRh/MNCI5P1w32/t5J0N0FGbIGHOVPJ7GRygTRSNrcsXU8RZ1OAo/UEFDOk3YcKAqgj8tnNpATj89/c09EvjH4aww7ioxl4B6Q39aIkPqFoDh6I1yBqPEbVeXFkYixTz9tW1F8kIV9MMpGWQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(366004)(346002)(396003)(136003)(8936002)(956004)(26005)(5660300002)(6512007)(66556008)(66476007)(6916009)(2616005)(6506007)(66946007)(4326008)(45080400002)(83380400001)(7416002)(316002)(478600001)(52116002)(8676002)(6486002)(4001150100001)(86362001)(36756003)(16526019)(6666004)(186003)(2906002)(966005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?TVN5VFdnaExDdnZRbXZjdDZ4NXRDWCt2TVVrS0JHTzVHL1UyZWZmMm1ic1dO?=
+ =?utf-8?B?QVNkeTRxVWZyaDArM09Sc0w5cnUzWC9KZDJLcDN6RmpKdWczMno3bWppR2tu?=
+ =?utf-8?B?RTdERGNPK3QyTXpZV2xmckdUSXB3RzJqejRhbCtmK2VDQmxQRU1nbmZvSEJT?=
+ =?utf-8?B?SXB1ak1kMmxTbXc3OVZGOXpwWU5aN2NPMGZ6WWJjK3h5VzFtWDFlbWpCKzV3?=
+ =?utf-8?B?VjhlK2Nlaml6RzZLZ2R2dVo1M2J3WHlheUpDSmt1OGZXMmZ0dWtVWVVXTklB?=
+ =?utf-8?B?ZTlRZHdPK1NoTGFCZTBzWFk5aVBhcm9RT0NNOTIwU3QzMGV5bm1ZK2tudXBQ?=
+ =?utf-8?B?cHFzS0J3TzF1dDFqWUZOUkhwc0V5ejVrbktZY3ZpOFg2Q0lISU5pNWxJMGgy?=
+ =?utf-8?B?YjBXUkszekhOZGw2ZG13T2k1S2hYakhNQWlhVEY1KzJvd2pXUHdrb1VIb1lL?=
+ =?utf-8?B?REc4OHBjbWZKc0VYSE0zMEIybzVzdThtWHk2Z3BTbEU4azRaaU9yRSt2NkFC?=
+ =?utf-8?B?Q3FRMjR1WENUaVovZEM2UHF0cUEza1JpZCtyZzBxR0xreGdORE5SZCtzTStH?=
+ =?utf-8?B?RG5TeHZ2Umk3NWRWWVY2NnY5d1Y4cVUvSEJZNUpnaDdGbmZndjRPdnk5OWR6?=
+ =?utf-8?B?Yk5CNDZBbkRITkJ3aWJDeHJPRkorUDZ2UmFUeWwvcGozVzBDNWxQRC9VRmZh?=
+ =?utf-8?B?MnJQNnFxSGFvekVVZytKalZMdVJpN29DNnlXUmdXTUlkaGYyL29uc2I4K0d6?=
+ =?utf-8?B?V0hXOWExVkJ2a2tNRmFHeXh0L0VxZkt6RWFIdkpKczVSRGZJQm9OTUs3TExn?=
+ =?utf-8?B?Zk5KelhudUN1c0liUkVIOGMydVhpRHZVNm5peSsyMWo1eDIzWUlyZTRwTFJq?=
+ =?utf-8?B?S2IwdE5hSDMxZTRlS1Nxc1paekhLbXBERE9jYnBTMmo4YVVRQkJnRXhLK1hF?=
+ =?utf-8?B?QmhYbVBjN2RocWRlMDZqSmJmR0VuTUw4RXZPd0RIZVZNcXoyMjQ2OWZpWHJF?=
+ =?utf-8?B?Wm9oRGxCRUhUazhwM3E5SDYwZlh6c1NrVHU0OCtsNFdCMmdOa2RvYWpNSTZH?=
+ =?utf-8?B?Zys1Nkw0VDA5eVQvdzJXSDNlK3QxL2xCTzJsS3RId0grRDcyeGM4TEpQWEJz?=
+ =?utf-8?B?aVRMTXk2d1l1Y0pZUlZIYWx4aE92djhVUFZLWTlDMFpETkEzVUliNGVrc00w?=
+ =?utf-8?B?cnplNUk3WkxqVWtVYkNOdllFUHFEN0g3UXNBSm0va0xFRE5rTnhxYndkY1R0?=
+ =?utf-8?B?WWhsUDVIcFhjajNUcVAyOTFpNEphbGFXRXp6dDhOMmx4MENNdmFtS3E1QVo5?=
+ =?utf-8?Q?B/haSzvNYHcW9c9Bw3OuHOr2EuKjZxoLa8?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Dec 2020 03:09:57.3535
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6b704294-e95a-4a16-7093-08d8a6270fee
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4Qoe2GX5gWcc+ABZVJprwfZ8a11D7M9gTcbXwvAeMllqVOz3G/r8l4o+xHgPMSmwjcRbXVfFMULg+gubvZdTXQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6813
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We need to lock d_parent->d_lock before dget_dlock, or this may
-have d_lockref updated parallelly like calltrace below which will
-cause dentry->d_lockref leak and risk a crash.
+On Mon, 2020-12-21 at 15:31 -0700, Rob Herring wrote:
+> On Thu, Dec 17, 2020 at 05:59:25PM +0800, Liu Ying wrote:
+> > This patch adds bindings for i.MX8qm/qxp display pixel link.
+> > 
+> > Signed-off-by: Liu Ying <victor.liu@nxp.com>
+> > ---
+> >  .../display/bridge/fsl,imx8qxp-pixel-link.yaml     | 128 +++++++++++++++++++++
+> >  1 file changed, 128 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-link.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-link.yaml b/Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-link.yaml
+> > new file mode 100644
+> > index 00000000..fd24a0e
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-link.yaml
+> > @@ -0,0 +1,128 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: https://eur01.safelinks.protection.outlook.com/?url=http%3A%2F%2Fdevicetree.org%2Fschemas%2Fdisplay%2Fbridge%2Ffsl%2Cimx8qxp-pixel-link.yaml%23&amp;data=04%7C01%7Cvictor.liu%40nxp.com%7C2c8f001f28de46450bba08d8a60032d5%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637441867070310997%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=Qg5M4UJqHKJy5W4%2FB2hOpeEu8mHtp8rXcyN35TCUukw%3D&amp;reserved=0
+> > +$schema: https://eur01.safelinks.protection.outlook.com/?url=http%3A%2F%2Fdevicetree.org%2Fmeta-schemas%2Fcore.yaml%23&amp;data=04%7C01%7Cvictor.liu%40nxp.com%7C2c8f001f28de46450bba08d8a60032d5%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637441867070310997%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=Zjvx9NBDFvqBxXqJItSP6smPdWsQUFYssJpNyVr48uE%3D&amp;reserved=0
+> > +
+> > +title: Freescale i.MX8qm/qxp Display Pixel Link
+> > +
+> > +maintainers:
+> > +  - Liu Ying <victor.liu@nxp.com>
+> > +
+> > +description: |
+> > +  The Freescale i.MX8qm/qxp Display Pixel Link(DPL) forms a standard
+> > +  asynchronous linkage between pixel sources(display controller or
+> > +  camera module) and pixel consumers(imaging or displays).
+> > +  It consists of two distinct functions, a pixel transfer function and a
+> > +  control interface.  Multiple pixel channels can exist per one control channel.
+> > +  This binding documentation is only for pixel links whose pixel sources are
+> > +  display controllers.
+> 
+> Perhaps some information about how this 'device' is accessed because you 
+> have no control interface.
 
-     CPU 0                                CPU 1
-ovl_set_redirect                       lookup_fast
-  ovl_get_redirect                       __d_lookup
-    dget_dlock
-      //no lock protection here            spin_lock(&dentry->d_lock)
-      dentry->d_lockref.count++            dentry->d_lockref.count++
+The i.MX8qm/qxp Display Pixel Link is controlled by SCU firmare.
+Will add the information.
 
-[   49.799059] PGD 800000061fed7067 P4D 800000061fed7067 PUD 61fec5067 PMD 0
-[   49.799689] Oops: 0002 [#1] SMP PTI
-[   49.800019] CPU: 2 PID: 2332 Comm: node Not tainted 4.19.24-7.20.al7.x86_64 #1
-[   49.800678] Hardware name: Alibaba Cloud Alibaba Cloud ECS, BIOS 8a46cfe 04/01/2014
-[   49.801380] RIP: 0010:_raw_spin_lock+0xc/0x20
-[   49.803470] RSP: 0018:ffffac6fc5417e98 EFLAGS: 00010246
-[   49.803949] RAX: 0000000000000000 RBX: ffff93b8da3446c0 RCX: 0000000a00000000
-[   49.804600] RDX: 0000000000000001 RSI: 000000000000000a RDI: 0000000000000088
-[   49.805252] RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff993cf040
-[   49.805898] R10: ffff93b92292e580 R11: ffffd27f188a4b80 R12: 0000000000000000
-[   49.806548] R13: 00000000ffffff9c R14: 00000000fffffffe R15: ffff93b8da3446c0
-[   49.807200] FS:  00007ffbedffb700(0000) GS:ffff93b927880000(0000) knlGS:0000000000000000
-[   49.807935] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   49.808461] CR2: 0000000000000088 CR3: 00000005e3f74006 CR4: 00000000003606a0
-[   49.809113] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[   49.809758] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[   49.810410] Call Trace:
-[   49.810653]  d_delete+0x2c/0xb0
-[   49.810951]  vfs_rmdir+0xfd/0x120
-[   49.811264]  do_rmdir+0x14f/0x1a0
-[   49.811573]  do_syscall_64+0x5b/0x190
-[   49.811917]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[   49.812385] RIP: 0033:0x7ffbf505ffd7
-[   49.814404] RSP: 002b:00007ffbedffada8 EFLAGS: 00000297 ORIG_RAX: 0000000000000054
-[   49.815098] RAX: ffffffffffffffda RBX: 00007ffbedffb640 RCX: 00007ffbf505ffd7
-[   49.815744] RDX: 0000000004449700 RSI: 0000000000000000 RDI: 0000000006c8cd50
-[   49.816394] RBP: 00007ffbedffaea0 R08: 0000000000000000 R09: 0000000000017d0b
-[   49.817038] R10: 0000000000000000 R11: 0000000000000297 R12: 0000000000000012
-[   49.817687] R13: 00000000072823d8 R14: 00007ffbedffb700 R15: 00000000072823d8
-[   49.818338] Modules linked in: pvpanic cirrusfb button qemu_fw_cfg atkbd libps2 i8042
-[   49.819052] CR2: 0000000000000088
-[   49.819368] ---[ end trace 4e652b8aa299aa2d ]---
-[   49.819796] RIP: 0010:_raw_spin_lock+0xc/0x20
-[   49.821880] RSP: 0018:ffffac6fc5417e98 EFLAGS: 00010246
-[   49.822363] RAX: 0000000000000000 RBX: ffff93b8da3446c0 RCX: 0000000a00000000
-[   49.823008] RDX: 0000000000000001 RSI: 000000000000000a RDI: 0000000000000088
-[   49.823658] RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff993cf040
-[   49.825404] R10: ffff93b92292e580 R11: ffffd27f188a4b80 R12: 0000000000000000
-[   49.827147] R13: 00000000ffffff9c R14: 00000000fffffffe R15: ffff93b8da3446c0
-[   49.828890] FS:  00007ffbedffb700(0000) GS:ffff93b927880000(0000) knlGS:0000000000000000
-[   49.830725] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   49.832359] CR2: 0000000000000088 CR3: 00000005e3f74006 CR4: 00000000003606a0
-[   49.834085] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[   49.835792] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> 
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - fsl,imx8qm-dc-pixel-link
+> > +      - fsl,imx8qxp-dc-pixel-link
+> > +
+> > +  ports:
+> > +    type: object
+> > +    description: |
+> > +      A node containing pixel link input & output port nodes with endpoint
+> > +      definitions as documented in
+> > +      Documentation/devicetree/bindings/media/video-interfaces.txt
+> > +      Documentation/devicetree/bindings/graph.txt
+> > +
+> > +    properties:
+> > +      '#address-cells':
+> > +        const: 1
+> > +
+> > +      '#size-cells':
+> > +        const: 0
+> > +
+> > +      port@0:
+> > +        type: object
+> > +        description: The pixel link input port node from upstream video source.
+> > +
+> > +        properties:
+> > +          reg:
+> > +            const: 0
+> > +
+> > +        required:
+> > +          - reg
+> 
+> You can drop 'reg' parts.
 
-Cc: <stable@vger.kernel.org>
-Fixes: a6c606551141 ("ovl: redirect on rename-dir")
-Signed-off-by: Liangyan <liangyan.peng@linux.alibaba.com>
-Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
----
- fs/overlayfs/dir.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Will drop the 'required' parts for 'reg'.
+Also, will drop the '#address-cells' and '#size-cells' parts if no
+objections.
 
-diff --git a/fs/overlayfs/dir.c b/fs/overlayfs/dir.c
-index 28a075b5f5b2..d1efa3a5a503 100644
---- a/fs/overlayfs/dir.c
-+++ b/fs/overlayfs/dir.c
-@@ -992,8 +992,8 @@ static char *ovl_get_redirect(struct dentry *dentry, bool abs_redirect)
- 
- 		buflen -= thislen;
- 		memcpy(&buf[buflen], name, thislen);
--		tmp = dget_dlock(d->d_parent);
- 		spin_unlock(&d->d_lock);
-+		tmp = dget_parent(d);
- 
- 		dput(d);
- 		d = tmp;
--- 
-2.14.4.44.g2045bb6
+Thanks,
+Liu Ying
+
+> 
+> > +
+> > +    patternProperties:
+> > +      "^port@[1-4]$":
+> > +        type: object
+> > +        description: The pixel link output port node to downstream bridge.
+> > +
+> > +        properties:
+> > +          reg:
+> > +            enum: [ 1, 2, 3, 4 ]
+> > +
+> > +        required:
+> > +          - reg
+> > +
+> > +    required:
+> > +      - "#address-cells"
+> > +      - "#size-cells"
+> > +      - port@0
+> > +
+> > +    anyOf:
+> > +      - required:
+> > +          - port@1
+> > +      - required:
+> > +          - port@2
+> > +      - required:
+> > +          - port@3
+> > +      - required:
+> > +          - port@4
+> > +
+> > +    additionalProperties: false
+> > +
+> > +required:
+> > +  - compatible
+> > +  - ports
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    dc0-pixel-link0 {
+> > +        compatible = "fsl,imx8qxp-dc-pixel-link";
+> > +
+> > +        ports {
+> > +            #address-cells = <1>;
+> > +            #size-cells = <0>;
+> > +
+> > +            /* from dc0 pixel combiner channel0 */
+> > +            port@0 {
+> > +                reg = <0>;
+> > +
+> > +                dc0_pixel_link0_dc0_pixel_combiner_ch0: endpoint {
+> > +                    remote-endpoint = <&dc0_pixel_combiner_ch0_dc0_pixel_link0>;
+> > +                };
+> > +            };
+> > +
+> > +            /* to PXL2DPIs in MIPI/LVDS combo subsystems */
+> > +            port@1 {
+> > +                #address-cells = <1>;
+> > +                #size-cells = <0>;
+> > +                reg = <1>;
+> > +
+> > +                dc0_pixel_link0_mipi_lvds_0_pxl2dpi: endpoint@0 {
+> > +                    reg = <0>;
+> > +                    remote-endpoint = <&mipi_lvds_0_pxl2dpi_dc0_pixel_link0>;
+> > +                };
+> > +
+> > +                dc0_pixel_link0_mipi_lvds_1_pxl2dpi: endpoint@1 {
+> > +                    reg = <1>;
+> > +                    remote-endpoint = <&mipi_lvds_1_pxl2dpi_dc0_pixel_link0>;
+> > +                };
+> > +            };
+> > +
+> > +            /* to imaging subsystem */
+> > +            port@4 {
+> > +                reg = <4>;
+> > +            };
+> > +        };
+> > +    };
+> > -- 
+> > 2.7.4
+> > 
 
