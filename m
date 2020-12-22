@@ -2,91 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD8F32E0CBC
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 16:28:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1CC52E0CB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 16:28:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728105AbgLVP2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 10:28:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47151 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727803AbgLVP2H (ORCPT
+        id S1728031AbgLVP1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 10:27:39 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:15490 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727019AbgLVP1i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 10:28:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608650800;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=M34ihcQIgl2uBvdtI2eLaQPEje/5BH6xiNgzRU0ua+I=;
-        b=BmxRRQ+szp+8wfAbhPrfLM66f/a7edr6wc9an9/OvZqUySGiijgzS7C7YKpTS5V7UUSyvz
-        f+quJ62V2QuaLRsbuGxX9Beg9f9nTRR4NI1i1OgVyRAWH+BDUyGbKUXIpQj6ODpXgM2kF6
-        mXaNndS2zYnOvJRNSbdh9dQXy9DVMjE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-537-VA1_zpJrM-isDBU9vNciDw-1; Tue, 22 Dec 2020 10:26:36 -0500
-X-MC-Unique: VA1_zpJrM-isDBU9vNciDw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1D613802B40;
-        Tue, 22 Dec 2020 15:26:35 +0000 (UTC)
-Received: from sirius.home.kraxel.org (ovpn-112-94.ams2.redhat.com [10.36.112.94])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2E28F10016F4;
-        Tue, 22 Dec 2020 15:26:33 +0000 (UTC)
-Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
-        id F2A0311AB8; Tue, 22 Dec 2020 16:26:32 +0100 (CET)
-Date:   Tue, 22 Dec 2020 16:26:32 +0100
-From:   Gerd Hoffmann <kraxel@redhat.com>
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     linux-kernel@vger.kernel.org, airlied@linux.ie, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH] drivers: gpu: drm: virtio: fix dependency of
- DRM_VIRTIO_GPU on VIRTIO
-Message-ID: <20201222152632.eiyi5a46ekdafhyc@sirius.home.kraxel.org>
-References: <20201204131221.2827-1-info@metux.net>
+        Tue, 22 Dec 2020 10:27:38 -0500
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BMF2B6Q191006;
+        Tue, 22 Dec 2020 10:26:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=GSUOkVavLqmMr4kIEXjy9VN3CQpH+tPgx6drE9F5Gz0=;
+ b=QesyxSOFRZT0cZmU4qznjrqsRpu4n1/2RkKDpw64ggACZ9WpWvpA7hnTHMl4XZSpQIYw
+ eQN25TVkYGx1blFUupG9xOU8Z8BUN4VpmcU1YG3kOOEVOK9cXmx3XNghT8HcHO1jxYyX
+ xOB4Uztcd2zPL5SG4vHIsBADnEoutw5XVCAQCv4hOxF/w289VaeoqKBKGW3V3VOJNUVP
+ Dgm4+NnOmoXv5M9LSEASHlFDJimABSihylkuySR3UbKS8OrXdj4IZqU8QSHe0wGfbY0d
+ kt91bnX8ClfMo8qPtsdIJ0wi77XHJvKFB6WJF8w0CGnwUEFfb49aWw5369UFZBGNhTMN Yg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 35kjc2sy85-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Dec 2020 10:26:43 -0500
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BMFQC6Z096081;
+        Tue, 22 Dec 2020 10:26:42 -0500
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 35kjc2sy7v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Dec 2020 10:26:42 -0500
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BMFHAm0018453;
+        Tue, 22 Dec 2020 15:26:42 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma03dal.us.ibm.com with ESMTP id 35k02erdpx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Dec 2020 15:26:42 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BMFQeHA20840888
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 22 Dec 2020 15:26:40 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C6100BE053;
+        Tue, 22 Dec 2020 15:26:40 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6D9DBBE04F;
+        Tue, 22 Dec 2020 15:26:40 +0000 (GMT)
+Received: from v0005c16.aus.stglabs.ibm.com (unknown [9.211.57.15])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 22 Dec 2020 15:26:40 +0000 (GMT)
+From:   Eddie James <eajames@linux.ibm.com>
+To:     linux-hwmon@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, jdelvare@suse.com,
+        linux@roeck-us.net, eajames@linux.ibm.com, bjwyman@gmail.com
+Subject: [PATCH v2 0/2] hwmon: (pmbus) Add the PMBUS_NO_CAPABILITY flag
+Date:   Tue, 22 Dec 2020 09:26:38 -0600
+Message-Id: <20201222152640.27749-1-eajames@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201204131221.2827-1-info@metux.net>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-22_07:2020-12-21,2020-12-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
+ lowpriorityscore=0 suspectscore=0 mlxlogscore=843 impostorscore=0
+ mlxscore=0 spamscore=0 bulkscore=0 clxscore=1015 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012220107
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 02:12:21PM +0100, Enrico Weigelt, metux IT consult wrote:
-> VIRTIO itself has no dependencies and therefore can easily be just
-> select'ed, instead of depending on it. The current depends on causes
-> any others trying to select VIRTIO to fail like this:
-> 
->    drivers/gpu/drm/Kconfig:74:error: recursive dependency detected!
->    drivers/gpu/drm/Kconfig:74:	symbol DRM_KMS_HELPER is selected by DRM_VIRTIO_GPU
->    drivers/gpu/drm/virtio/Kconfig:2:	symbol DRM_VIRTIO_GPU depends on VIRTIO
->    drivers/virtio/Kconfig:2:	symbol VIRTIO is selected by GPIO_VIRTIO
->    drivers/gpio/Kconfig:1618:	symbol GPIO_VIRTIO depends on GPIOLIB
->    drivers/gpio/Kconfig:14:	symbol GPIOLIB is selected by I2C_MUX_LTC4306
->    drivers/i2c/muxes/Kconfig:47:	symbol I2C_MUX_LTC4306 depends on I2C
->    drivers/i2c/Kconfig:8:	symbol I2C is selected by FB_DDC
->    drivers/video/fbdev/Kconfig:63:	symbol FB_DDC depends on FB
->    drivers/video/fbdev/Kconfig:12:	symbol FB is selected by DRM_KMS_FB_HELPER
->    drivers/gpu/drm/Kconfig:80:	symbol DRM_KMS_FB_HELPER depends on DRM_KMS_HELPER
-> 
-> It seems that having both 'depends on' as well as 'select' on the same symbol
-> sends us into big trouble, and Kconfig can't break up the circular dependency
-> (note that in the tested configuration, neither I2C, FB or DRM are enabled at
-> all). Perhaps we could consider this a bug in Kconfig, but the trouble can
-> easily be circumvented by changing 'depends on' into 'select'.
-> 
-> DRM_VIRTIO_GPU also depends on VIRTIO_MENU, so even after this change, that
-> option will only show up if the user already enabled virtio in the config.
-> 
-> This change didn't cause any changes in the .config after menuconfig run,
-> so we should be completely safe here.
-> 
-> Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+Some PMBus chips, like some power supplies supported by the cffps driver,
+don't respond with valid data when reading the CAPABILITY register. Add a
+platform data flag that device drivers can set to tell the PMBus core
+driver that it shouldn't use the CAPABILITY register. The second patch
+sets this flag for the cffps driver.
 
-Pushed to drm-misc-next.
+Changes since v1:
+ - Rename the flag to PMBUS_NO_CAPABILITY and adjust the associated
+   comment accordingly.
 
-thanks,
-  Gerd
+Eddie James (2):
+  hwmon: (pmbus) Add a PMBUS_NO_CAPABILITY platform data flag
+  hwmon: (pmbus/ibm-cffps) Set the PMBUS_NO_CAPABILITY flag
+
+ drivers/hwmon/pmbus/ibm-cffps.c  | 2 +-
+ drivers/hwmon/pmbus/pmbus_core.c | 8 +++++---
+ include/linux/pmbus.h            | 9 +++++++++
+ 3 files changed, 15 insertions(+), 4 deletions(-)
+
+-- 
+2.27.0
 
