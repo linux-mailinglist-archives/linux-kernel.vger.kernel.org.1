@@ -2,77 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F7C2E077D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 09:54:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DD272E0785
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 09:56:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgLVIyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 03:54:19 -0500
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:43867 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725811AbgLVIyR (ORCPT
+        id S1726336AbgLVIy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 03:54:57 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:53178 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726194AbgLVIy4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 03:54:17 -0500
-X-Originating-IP: 2.224.242.101
-Received: from uno.localdomain (2-224-242-101.ip172.fastwebnet.it [2.224.242.101])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 9973BFF805;
-        Tue, 22 Dec 2020 08:53:32 +0000 (UTC)
-Date:   Tue, 22 Dec 2020 09:53:44 +0100
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        kieran.bingham+renesas@ideasonboard.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        devicetree@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hyun Kwon <hyunk@xilinx.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        sergei.shtylyov@gmail.com
-Subject: Re: [PATCH v6 2/5] dt-bindings: media: max9286: Document
- 'maxim,reverse-channel-microvolt'
-Message-ID: <20201222085344.gb7nqhbenn65yaux@uno.localdomain>
-References: <20201215170957.92761-1-jacopo+renesas@jmondi.org>
- <20201215170957.92761-3-jacopo+renesas@jmondi.org>
- <X9o+XT3z1sVlh73x@pendragon.ideasonboard.com>
- <X9pBEe+da/8Y34Qv@pendragon.ideasonboard.com>
- <20201221185827.GA359098@robh.at.kernel.org>
+        Tue, 22 Dec 2020 03:54:56 -0500
+Received: by mail-io1-f71.google.com with SMTP id b136so7006202iof.19
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 00:54:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=0rhtpZGCeqTji2dyuV97MK4dbm12jQx4Z2+0a5I3EOM=;
+        b=hSd6G+0MMatrYbk2lD40JOW3FpSHA0Qa+S9L11MgBBHHMuZWa+OVKIyHDxqtXxMvF9
+         EBM7t+exd7nn4kyGFKRFHyatResEfWnQ7d2WoQEo8RBqS0hsQAQhpN8bEmn5u3mExQHX
+         ETx4Y6c7k65g0f7bveAvEd95rdShcfJOr7rSw+HYCyi93In5CwBU6X3z8GCzuFk9cs77
+         daX+uqRiQsbr8JiTb1DU4oJYTeSyEc/TydKI6BOMLOAfU6l5BsxBFAmHgUc5SkcZO02Y
+         LRSs8RlK6ElCpr3tQ7eNFu2eKUttgddpvFcVuCuhDQtkvWmJyXKyR3mwWDCypBISZ0I0
+         V5IQ==
+X-Gm-Message-State: AOAM532J03S5cTNpURmOIpj8I3Nr+PDrYTYbnGS/LbvHAex0d++2IdGE
+        X90GAIkCWRcFrgeC5hwpRsELJ2ci25di5BjREcDACQhDUfIc
+X-Google-Smtp-Source: ABdhPJyVVjcKkjRgLhzupAUnJLeUMVAcVsV9mDp4V/rlUpljQmKnUXUnevZ9gXUyPv7n//oRroo2HHvLXw2vTV3eI0XhFJGwiIKe
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201221185827.GA359098@robh.at.kernel.org>
+X-Received: by 2002:a92:cc03:: with SMTP id s3mr20709296ilp.146.1608627255224;
+ Tue, 22 Dec 2020 00:54:15 -0800 (PST)
+Date:   Tue, 22 Dec 2020 00:54:15 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001faff305b709b8ad@google.com>
+Subject: general protection fault in ext4_commit_super
+From:   syzbot <syzbot+9043030c040ce1849a60@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, clang-built-linux@googlegroups.com,
+        jack@suse.cz, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, natechancellor@gmail.com,
+        ndesaulniers@google.com, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob, Laurent,
+Hello,
 
-On Mon, Dec 21, 2020 at 11:58:27AM -0700, Rob Herring wrote:
-> On Wed, Dec 16, 2020 at 07:17:05PM +0200, Laurent Pinchart wrote:
-> > > > @@ -221,6 +241,7 @@ required:
-> > > >    - ports
-> > > >    - i2c-mux
-> > > >    - gpio-controller
-> > > > +  - maxim,reverse-channel-microvolt
-> >
-> > One comment though: You specify a default value above, which isn't very
-> > useful when the property is required. Should we either drop the default
-> > value, or make the property optional ?
->
-> And generally added properties can't be required unless for some reason
-> DT's without the property are broken.
+syzbot found the following issue on:
 
-My thinking was to make it required for new DTS and specify a default
-for the old ones that do not have the property. I'll drop required and
-keep the default value in next version.
+HEAD commit:    0d52778b Add linux-next specific files for 20201218
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=15b4aecb500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5c81cc44aa25b5b3
+dashboard link: https://syzkaller.appspot.com/bug?extid=9043030c040ce1849a60
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17983487500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10c02937500000
 
-Thanks
-  j
+The issue was bisected to:
 
->
-> With required dropped,
->
-> Reviewed-by: Rob Herring <robh@kernel.org>
->
-> Rob
+commit e810c942a325cf749e859d7aa3a43dc219cea299
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Dec 16 10:18:40 2020 +0000
+
+    ext4: save error info to sb through journal if available
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1282f137500000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1182f137500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1682f137500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9043030c040ce1849a60@syzkaller.appspotmail.com
+Fixes: e810c942a325 ("ext4: save error info to sb through journal if available")
+
+general protection fault, probably for non-canonical address 0xdffffc000000000c: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000060-0x0000000000000067]
+CPU: 0 PID: 7 Comm: kworker/0:1 Not tainted 5.10.0-next-20201218-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events flush_stashed_error_work
+RIP: 0010:ext4_commit_super+0x52/0x510 fs/ext4/super.c:5548
+Code: 48 c1 ea 03 80 3c 02 00 0f 85 21 04 00 00 48 8b 9d 78 06 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d 7b 60 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 f1 03 00 00 48 8b 5b 60 48 85 db 0f 84 13 01 00
+RSP: 0018:ffffc90000cc7cb8 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 000000000000000c RSI: ffffffff8217a0db RDI: 0000000000000060
+RBP: ffff88802441c000 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff8217a7fa R11: 0000000000000000 R12: ffff88802441c000
+R13: ffff88802441c678 R14: ffff8880109a5a00 R15: ffff8880b9c34440
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000400200 CR3: 0000000014038000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ flush_stashed_error_work+0x1c9/0x2a0 fs/ext4/super.c:727
+ process_one_work+0x98d/0x1630 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+Modules linked in:
+---[ end trace dca7dc492b64f0a6 ]---
+RIP: 0010:ext4_commit_super+0x52/0x510 fs/ext4/super.c:5548
+Code: 48 c1 ea 03 80 3c 02 00 0f 85 21 04 00 00 48 8b 9d 78 06 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d 7b 60 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 f1 03 00 00 48 8b 5b 60 48 85 db 0f 84 13 01 00
+RSP: 0018:ffffc90000cc7cb8 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 000000000000000c RSI: ffffffff8217a0db RDI: 0000000000000060
+RBP: ffff88802441c000 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff8217a7fa R11: 0000000000000000 R12: ffff88802441c000
+R13: ffff88802441c678 R14: ffff8880109a5a00 R15: ffff8880b9c34440
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000400200 CR3: 0000000025563000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
