@@ -2,113 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B080E2E0D37
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 17:23:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95FE92E0D39
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 17:23:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727964AbgLVQUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 11:20:41 -0500
-Received: from mga02.intel.com ([134.134.136.20]:53139 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727387AbgLVQUk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 11:20:40 -0500
-IronPort-SDR: wJ3qN26PD/dNR4HkCZVWga8B/kNYAl/K99WjNWd5MyjxrDrtkilx/yEKvdVHy9ph/Mq7VZ/yu0
- wWpX5p4cYBgw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9842"; a="162944845"
-X-IronPort-AV: E=Sophos;i="5.78,439,1599548400"; 
-   d="scan'208";a="162944845"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2020 08:19:58 -0800
-IronPort-SDR: 12rptsdCJSkXnNELEo6p7KKDIZMPPCuDrn4JQ5o5p0l7PODcnORGkAM8Vx9HwFeJbacaokFhYf
- curmvMTQegVg==
-X-IronPort-AV: E=Sophos;i="5.78,439,1599548400"; 
-   d="scan'208";a="344269264"
-Received: from rjwysock-mobl1.ger.corp.intel.com (HELO [10.249.132.204]) ([10.249.132.204])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2020 08:19:53 -0800
-Subject: Re: [PATCH 0/4] sched/idle: Fix missing need_resched() checks after
- rcu_idle_enter()
-To:     Frederic Weisbecker <frederic@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>, stable@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Linux PM <linux-pm@vger.kernel.org>
-References: <20201222013712.15056-1-frederic@kernel.org>
-From:   "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Organization: Intel Technology Poland Sp. z o. o., KRS 101882, ul. Slowackiego
- 173, 80-298 Gdansk
-Message-ID: <4de33f1a-890b-4d29-20e8-a1163b9c1bf7@intel.com>
-Date:   Tue, 22 Dec 2020 17:19:51 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1727423AbgLVQVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 11:21:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726991AbgLVQVI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 11:21:08 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5CCFC0613D3;
+        Tue, 22 Dec 2020 08:20:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bmiJUuE3elrojnPzvTQfgWJNXDypdX6aMf0bUhQi8/I=; b=vojOpjv8r5W2anVf+CyXq2Ke33
+        q0Zf+ZdtH/ednPVUbwj8AGfXtJqX2ZSVSDDq30I2vUg82lSOag8TWFVml1+gIUzoydHyys+89+bhq
+        15tgsYSFCoI6B+woT6nshIH/58kTzu60v0KLcu8Mmyd4Xg+V2uLLj0PpuzU6tYYDenL3QGQu+G0v+
+        S63xO0su3T1e1n2XnTur8v8Q9PSTGr2sAozvfe2KwcdoQdd9ZTjF5a/5Wyfu+4ndMPVoM8a08PyPk
+        5f/Ej1OF29j+NgXpLjKFRTPX5vS78ve1nfvY/m5mTxGSFv20oTgQtRucQ3GF+T9MuSdZ7TkirmCUC
+        TXA+ZLAg==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1krkOh-0004ed-AE; Tue, 22 Dec 2020 16:20:27 +0000
+Date:   Tue, 22 Dec 2020 16:20:27 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, jlayton@kernel.org,
+        amir73il@gmail.com, sargun@sargun.me, miklos@szeredi.hu,
+        jack@suse.cz, neilb@suse.com, viro@zeniv.linux.org.uk, hch@lst.de
+Subject: Re: [PATCH 3/3] overlayfs: Report writeback errors on upper
+Message-ID: <20201222162027.GJ874@casper.infradead.org>
+References: <20201221195055.35295-1-vgoyal@redhat.com>
+ <20201221195055.35295-4-vgoyal@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201222013712.15056-1-frederic@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201221195055.35295-4-vgoyal@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/22/2020 2:37 AM, Frederic Weisbecker wrote:
-> With Paul, we've been thinking that the idle loop wasn't twisted enough
-> yet to deserve 2020.
->
-> rcutorture, after some recent parameter changes, has been complaining
-> about a hung task.
->
-> It appears that rcu_idle_enter() may wake up a NOCB kthread but this
-> happens after the last generic need_resched() check. Some cpuidle drivers
-> fix it by chance but many others don't.
->
-> Here is a proposed bunch of fixes. I will need to also fix the
-> rcu_user_enter() case, likely using irq_work, since nohz_full requires
-> irq work to support self IPI.
->
-> Also more generally, this raise the question of local task wake_up()
-> under disabled interrupts. When a wake up occurs in a preempt disabled
-> section, it gets handled by the outer preempt_enable() call. There is no
-> similar mechanism when a wake up occurs with interrupts disabled. I guess
-> it is assumed to be handled, at worst, in the next tick. But a local irq
-> work would provide instant preemption once IRQs are re-enabled. Of course
-> this would only make sense in CONFIG_PREEMPTION, and when the tick is
-> disabled...
->
-> git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
-> 	sched/idle
->
-> HEAD: f2fa6e4a070c1535b9edc9ee097167fd2b15d235
->
-> Thanks,
-> 	Frederic
-> ---
->
-> Frederic Weisbecker (4):
->        sched/idle: Fix missing need_resched() check after rcu_idle_enter()
->        cpuidle: Fix missing need_resched() check after rcu_idle_enter()
->        ARM: imx6q: Fix missing need_resched() check after rcu_idle_enter()
->        ACPI: processor: Fix missing need_resched() check after rcu_idle_enter()
->
->
->   arch/arm/mach-imx/cpuidle-imx6q.c |  7 ++++++-
->   drivers/acpi/processor_idle.c     | 10 ++++++++--
->   drivers/cpuidle/cpuidle.c         | 33 +++++++++++++++++++++++++--------
->   kernel/sched/idle.c               | 18 ++++++++++++------
->   4 files changed, 51 insertions(+), 17 deletions(-)
+On Mon, Dec 21, 2020 at 02:50:55PM -0500, Vivek Goyal wrote:
+> +static int ovl_errseq_check_advance(struct super_block *sb, struct file *file)
+> +{
+> +	struct ovl_fs *ofs = sb->s_fs_info;
+> +	struct super_block *upper_sb;
+> +	int ret;
+> +
+> +	if (!ovl_upper_mnt(ofs))
+> +		return 0;
+> +
+> +	upper_sb = ovl_upper_mnt(ofs)->mnt_sb;
+> +
+> +	if (!errseq_check(&upper_sb->s_wb_err, file->f_sb_err))
+> +		return 0;
+> +
+> +	/* Something changed, must use slow path */
+> +	spin_lock(&file->f_lock);
+> +	ret = errseq_check_and_advance(&upper_sb->s_wb_err, &file->f_sb_err);
+> +	spin_unlock(&file->f_lock);
 
-Please feel free to add
-
-Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-
-to all patches in the series.
-
-Thanks!
-
-
+Why are you microoptimising syncfs()?  Are there really applications which
+call syncfs() in a massively parallel manner on the same file descriptor?
