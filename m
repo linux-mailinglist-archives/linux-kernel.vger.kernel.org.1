@@ -2,83 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D68892E0BE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 15:38:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB692E0BEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 15:40:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727717AbgLVOhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 09:37:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52923 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727654AbgLVOhw (ORCPT
+        id S1727348AbgLVOkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 09:40:04 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:65284 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727019AbgLVOkD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 09:37:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608647785;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VOk6E6hPe7usXLD5bNCDmNIcAC8JFXb+4t0X8eR9cr4=;
-        b=SJrIVV5eVXvMCpxds2FaAP370gHMJTsymQkasmhElVk1sVj0xk9jEYt07EdPohBfgTrugi
-        WoEXSt8aJUhBq+f5U7KQjrsoZuz0MqTcV7yryV/OEnivShpepOIAgDYDhNo2XFmB7WnQuH
-        qkD0OcMtZQCvbiX/JrUKPLdvtgWGie8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-456-6XDxApNmPNKJ09t1PSBSsQ-1; Tue, 22 Dec 2020 09:36:22 -0500
-X-MC-Unique: 6XDxApNmPNKJ09t1PSBSsQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B74E910054FF;
-        Tue, 22 Dec 2020 14:36:20 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 24A0D6F977;
-        Tue, 22 Dec 2020 14:36:17 +0000 (UTC)
-Date:   Tue, 22 Dec 2020 09:36:16 -0500
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>, josef@toxicpanda.com,
-        bvanassche@acm.org, corbet@lwn.net, kernel-team@android.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-raid@vger.kernel.org, song@kernel.org, dm-devel@redhat.com,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org, agk@redhat.com,
-        michael.christie@oracle.com
-Subject: Re: [PATCH v1 0/5] dm: dm-user: New target that proxies BIOs to
- userspace
-Message-ID: <20201222143616.GB12885@redhat.com>
-References: <30d39293-80a4-9ef5-92bb-6b6dec464be3@toxicpanda.com>
- <mhng-2da5b1a2-20f9-4b0e-9ffd-7f60a161ebf0@palmerdabbelt-glaptop>
- <20201222133246.GA5099@infradead.org>
+        Tue, 22 Dec 2020 09:40:03 -0500
+Received: from fsav105.sakura.ne.jp (fsav105.sakura.ne.jp [27.133.134.232])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 0BMEd8CK006238;
+        Tue, 22 Dec 2020 23:39:08 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav105.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav105.sakura.ne.jp);
+ Tue, 22 Dec 2020 23:39:08 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav105.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 0BMEd7o5006232
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Tue, 22 Dec 2020 23:39:08 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        Kees Cook <keescook@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Subject: Does uaccess_kernel() work for detecting kernel thread?
+Message-ID: <0bcc0c63-31a3-26fd-bccb-b28af0375c34@i-love.sakura.ne.jp>
+Date:   Tue, 22 Dec 2020 23:39:08 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201222133246.GA5099@infradead.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22 2020 at  8:32am -0500,
-Christoph Hellwig <hch@infradead.org> wrote:
+Commit db68ce10c4f0a27c ("new helper: uaccess_kernel()") replaced segment_eq(get_fs(), KERNEL_DS)
+with uaccess_kernel(). But uaccess_kernel() became an unconditional "false" for some architectures
+due to commit 5e6e9852d6f76e01 ("uaccess: add infrastructure for kernel builds with set_fs()") and
+follow up changes in Linux 5.10. As a result, I guess that uaccess_kernel() can no longer be used
+as a condition for checking whether current thread is a kernel thread or not.
 
-> On Mon, Dec 14, 2020 at 07:00:57PM -0800, Palmer Dabbelt wrote:
-> > I haven't gotten a whole lot of feedback, so I'm inclined to at least have some
-> > reasonable performance numbers before bothering with a v2.
-> 
-> FYI, my other main worry beside duplicating nbd is that device mapper
-> really is a stacked interface that sits on top of other block device.
-> Turning this into something else that just pipes data to userspace
-> seems very strange.
+For example, if uaccess_kernel() is "false" due to CONFIG_SET_FS=n,
+isn't sg_check_file_access() failing to detect kernel context?
 
-I agree.  Only way I'd be interested is if it somehow tackled enabling
-much more efficient IO.  Earlier discussion in this thread mentioned
-that zero-copy and low overhead wasn't a priority (because it is hard,
-etc).  But the hard work has already been done with io_uring.  If
-dm-user had a prereq of leaning heavily on io_uring and also enabled IO
-polling for bio-based then there may be a win to supporting it.
+static int sg_check_file_access(struct file *filp, const char *caller)
+{
+	if (filp->f_cred != current_real_cred()) {
+		pr_err_once("%s: process %d (%s) changed security contexts after opening file descriptor, this is not allowed.\n",
+			caller, task_tgid_vnr(current), current->comm);
+		return -EPERM;
+	}
+	if (uaccess_kernel()) {
+		pr_err_once("%s: process %d (%s) called from kernel context, this is not allowed.\n",
+			caller, task_tgid_vnr(current), current->comm);
+		return -EACCES;
+	}
+	return 0;
+}
 
-But unless lower latency (or some other more significant win) is made
-possible I just don't care to prop up an unnatural DM bolt-on.
+For another example, if uaccess_kernel() is "false" due to CONFIG_SET_FS=n,
+isn't TOMOYO unexpectedly checking permissions for socket operations?
 
-Mike
+static bool tomoyo_kernel_service(void)
+{
+	/* Nothing to do if I am a kernel service. */
+	return uaccess_kernel();
+}
 
+static u8 tomoyo_sock_family(struct sock *sk)
+{
+	u8 family;
+
+	if (tomoyo_kernel_service())
+		return 0;
+	family = sk->sk_family;
+	switch (family) {
+	case PF_INET:
+	case PF_INET6:
+	case PF_UNIX:
+		return family;
+	default:
+		return 0;
+	}
+}
+
+Don't we need to replace such usage with something like (current->flags & PF_KTHREAD) ?
+I don't know about io_uring, but according to
+https://lkml.kernel.org/r/dacfb329-de66-d0cf-dcf9-f030ea1370de@schaufler-ca.com ,
+should (current->flags & (PF_KTHREAD | PF_IO_WORKER)) == PF_KTHREAD be used instead?
