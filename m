@@ -2,86 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA2762E0DF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 18:48:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 991F22E0DFC
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 18:49:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728076AbgLVRrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 12:47:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41932 "EHLO
+        id S1728102AbgLVRtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 12:49:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727960AbgLVRrU (ORCPT
+        with ESMTP id S1727962AbgLVRtf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 12:47:20 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CF20C0613D3;
-        Tue, 22 Dec 2020 09:46:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=IHzuUPUbSW1sV9U94ACf/su1/lnf5rfvzD9sEkmvo6k=; b=Kzrm3AjSIcsfm+HUTeW6ZWBp+H
-        yaUq8R061U2X0bv0GJfMuUP0Caqme+utXHF1nEGJG6+G7PowW/UBlaYbMY8sRM2x8XNbBm5CfJyCJ
-        Ebq4o+gO4GrykA7KWNWe0KuXaNcDgVqc8nPQ4VkCLTZYAHo2ddpp15mxNXBOE12nRB528DkJbI7hw
-        WjWrY074CdM2/s7rAFOo3vdyNeX6C9CkErlpJGr8A7hw2N7DTdHbVgyPXm4LGnNsChAP8G+xRH8yh
-        XcrUldBorBcqPF1ZG70QTOmATKRcJ9FIYeSbIIsh2j7pmtMih6QNCV9/pVWodIAFtvL+5HnNok1B/
-        v47GyDoA==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1krlk5-00027N-Je; Tue, 22 Dec 2020 17:46:37 +0000
-Date:   Tue, 22 Dec 2020 17:46:37 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, jlayton@kernel.org,
-        amir73il@gmail.com, sargun@sargun.me, miklos@szeredi.hu,
-        jack@suse.cz, neilb@suse.com, viro@zeniv.linux.org.uk, hch@lst.de
-Subject: Re: [PATCH 3/3] overlayfs: Report writeback errors on upper
-Message-ID: <20201222174637.GK874@casper.infradead.org>
-References: <20201221195055.35295-1-vgoyal@redhat.com>
- <20201221195055.35295-4-vgoyal@redhat.com>
- <20201222162027.GJ874@casper.infradead.org>
- <20201222162925.GC3248@redhat.com>
+        Tue, 22 Dec 2020 12:49:35 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77344C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 09:48:55 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id e25so2960287wme.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 09:48:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gZ3Mpnz+y+y40eMwZF/PF9p0ykrXNof+TnqSLHPYMc4=;
+        b=fJurTTnF+Va0FHUdyTWNlS1cGpvh5djyhWHIz8cfeXiEfOyaHauqRQAM7CWWF/HB4r
+         XIFtvR6qpYy5MgmX/TledRqo+t3vH2fcKr7e38xsmzAyKFWgAU8vhI2ZUIFIAYsEkZ8p
+         a1YloLSV7hKc5+Gwt6KP7k500IbltONvgsDcSeGi9zSpQg8zA7YgsqoHX5zOYwp5BF/e
+         iW/jP7UOFR0ATiu/JRaMsx7mEMPFpD1OoYVYpfMH/SAtbBGfvYXc6oIG88gZL0BbXR1o
+         FAp5U+WxGka2LA/evqmWwrzWueuV0cQwOyeE9XZRiQIJnFQm1w0/OvkqpZyWL+tQoCmU
+         sZBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gZ3Mpnz+y+y40eMwZF/PF9p0ykrXNof+TnqSLHPYMc4=;
+        b=L5vlK9vrmlP63ZcgITfwJjnl7GVUb0vMne8fIEg3ZqQp1FhtMF6aEyViRRViJH+Jfp
+         PALS55PlrnyO6Wcqo6Y76hnrmWKt6hBp37FbovlS+U6FobvWYKqwtjrKrNgYqtd7Nhru
+         0XJngKJtQ5qfONqHFOc/Ig8BoAOtyw9UzTPgm23sCg0bOOZ3jI029877GFKZYUPhhNMZ
+         u2BTgSQeexV5AIyH5NMgfd+RdHmDYvxk9YO1F74sGK8D9mekc6ChoDwVn2XbuGtTqlKX
+         uRlqBzOOaZgTZX+lVdfMFyb1nBdj39EozJ7XZebJZZ26tGzfnXHlSLPG7zJw4eiL4d2T
+         r6gA==
+X-Gm-Message-State: AOAM532ZrxWx3MAYEFAq7yJHYIhZVCOjz9AD5kNAqR47jAeP4okQltdN
+        2uS0+jXWdFQELq5QOQ95RaEBV8MO4PrD32VTZaFt4w==
+X-Google-Smtp-Source: ABdhPJx8xdo+vZEMkO7jQEED2nsivqCj2PRiduHKYZoEitQJoXN17y7RtUWzBp4kXUmTBuo5w4edqoIkhNfbujhKVnY=
+X-Received: by 2002:a1c:4e0a:: with SMTP id g10mr22732565wmh.88.1608659333913;
+ Tue, 22 Dec 2020 09:48:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201222162925.GC3248@redhat.com>
+References: <20201124053943.1684874-1-surenb@google.com> <20201124053943.1684874-2-surenb@google.com>
+ <20201125231322.GF1484898@google.com> <CAG48ez0UKYCdgyW91SmOcT52vbLFz9RjLpaucWpj6bTrgQCwnA@mail.gmail.com>
+ <20201222134438.GA7170@infradead.org>
+In-Reply-To: <20201222134438.GA7170@infradead.org>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Tue, 22 Dec 2020 09:48:43 -0800
+Message-ID: <CAJuCfpGiVS69kznSrAdosxnRd-zgXPJd8MXou=gd8K8j7xLMjA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm/madvise: allow process_madvise operations on
+ entire memory range
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jann Horn <jannh@google.com>, Minchan Kim <minchan@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Christian Brauner <christian@brauner.io>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 11:29:25AM -0500, Vivek Goyal wrote:
-> On Tue, Dec 22, 2020 at 04:20:27PM +0000, Matthew Wilcox wrote:
-> > On Mon, Dec 21, 2020 at 02:50:55PM -0500, Vivek Goyal wrote:
-> > > +static int ovl_errseq_check_advance(struct super_block *sb, struct file *file)
-> > > +{
-> > > +	struct ovl_fs *ofs = sb->s_fs_info;
-> > > +	struct super_block *upper_sb;
-> > > +	int ret;
-> > > +
-> > > +	if (!ovl_upper_mnt(ofs))
-> > > +		return 0;
-> > > +
-> > > +	upper_sb = ovl_upper_mnt(ofs)->mnt_sb;
-> > > +
-> > > +	if (!errseq_check(&upper_sb->s_wb_err, file->f_sb_err))
-> > > +		return 0;
-> > > +
-> > > +	/* Something changed, must use slow path */
-> > > +	spin_lock(&file->f_lock);
-> > > +	ret = errseq_check_and_advance(&upper_sb->s_wb_err, &file->f_sb_err);
-> > > +	spin_unlock(&file->f_lock);
-> > 
-> > Why are you microoptimising syncfs()?  Are there really applications which
-> > call syncfs() in a massively parallel manner on the same file descriptor?
-> 
-> This is atleast theoritical race. I am not aware which application can
-> trigger this race. So to me it makes sense to fix the race.
-> 
-> Jeff Layton also posted a fix for syncfs().
-> 
-> https://lore.kernel.org/linux-fsdevel/20201219134804.20034-1-jlayton@kernel.org/
-> 
-> To me it makes sense to fix the race irrespective of the fact if somebody
-> hit it or not. People end up copying code in other parts of kernel and
-> and they will atleast copy race free code.
+On Tue, Dec 22, 2020 at 5:44 AM Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Fri, Dec 11, 2020 at 09:27:46PM +0100, Jann Horn wrote:
+> > > Can we just use one element in iovec to indicate entire address rather
+> > > than using up the reserved flags?
+> > >
+> > >         struct iovec {
+> > >                 .iov_base = NULL,
+> > >                 .iov_len = (~(size_t)0),
+> > >         };
+> >
+> > In addition to Suren's objections, I think it's also worth considering
+> > how this looks in terms of compat API. If a compat process does
+> > process_madvise() on another compat process, it would be specifying
+> > the maximum 32-bit number, rather than the maximum 64-bit number, so
+> > you'd need special code to catch that case, which would be ugly.
+> >
+> > And when a compat process uses this API on a non-compat process, it
+> > semantically gets really weird: The actual address range covered would
+> > be larger than the address range specified.
+> >
+> > And if we want different access checks for the two flavors in the
+> > future, gating that different behavior on special values in the iovec
+> > would feel too magical to me.
+> >
+> > And the length value SIZE_MAX doesn't really make sense anyway because
+> > the length of the whole address space would be SIZE_MAX+1, which you
+> > can't express.
+> >
+> > So I'm in favor of a new flag, and strongly against using SIZE_MAX as
+> > a magic number here.
+>
+> Yes, using SIZE_MAX is a horrible interface in this case.  I'm not
+> a huge fan of a flag either.  What is the use case for the madvise
+> to all of a processes address space anyway?
 
-Let me try again.  "Why are you trying to avoid taking the spinlock?"
+Thanks for the feedback! The use case is userspace memory reaping
+similar to oom-reaper. Detailed justification is here:
+https://lore.kernel.org/linux-mm/20201124053943.1684874-1-surenb@google.com
