@@ -2,58 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81BC52E0963
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 12:14:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D7D2E0960
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 12:12:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726669AbgLVLM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 06:12:57 -0500
-Received: from smtp.hosts.co.uk ([85.233.160.19]:44108 "EHLO smtp.hosts.co.uk"
+        id S1726628AbgLVLLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 06:11:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726095AbgLVLM5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 06:12:57 -0500
-Received: from host86-149-69-253.range86-149.btcentralplus.com ([86.149.69.253] helo=[192.168.1.65])
-        by smtp.hosts.co.uk with esmtpa (Exim)
-        (envelope-from <antlists@youngman.org.uk>)
-        id 1krfaQ-000BhF-5h; Tue, 22 Dec 2020 11:12:14 +0000
-Subject: Re: [RFC PATCH] badblocks: Improvement badblocks_set() for handling
- multiple ranges
-To:     Coly Li <colyli@suse.de>, axboe@kernel.dk,
-        dan.j.williams@intel.com, vishal.l.verma@intel.com
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-nvdimm@lists.01.org
-References: <20201203171535.67715-1-colyli@suse.de>
- <3f4bf4c4-1f1f-b1a6-5d91-2dbe02f61e67@youngman.org.uk>
- <c50e7c65-d7bf-e957-d8eb-efed6c24f089@suse.de>
-From:   antlists <antlists@youngman.org.uk>
-Message-ID: <3233b821-4674-b45a-cad4-4943401eff3d@youngman.org.uk>
-Date:   Tue, 22 Dec 2020 11:12:14 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1726095AbgLVLLv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 06:11:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7393722516;
+        Tue, 22 Dec 2020 11:11:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1608635470;
+        bh=Q1euM+YOvuQwr69t7zFVYW1zAzkMWO7kDxvDMc9dnsg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Od9CKyEvTeGsf0XvRzL/O85XlE9fnPXq/6T2OJSSuTZcWBkf0YqDNfsjtFyMkEn5r
+         vMa+RPKkCGIbeXH3KA3oWCG0tVzQ5jOEQDOIkhwdER8GSiFm3em6Fx7ntKhZZ+OebE
+         f4713+QEDVSyToHkKAuwvH+Ce0y/29ZvAqfgKDDM=
+Date:   Tue, 22 Dec 2020 12:12:24 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jic23@kernel.org, lars@metafoo.de, akpm@linux-foundation.org,
+        andy.shevchenko@gmail.com
+Subject: Re: [PATCH v5 1/2] lib/string.c: add
+ __sysfs_match_string_with_gaps() helper
+Message-ID: <X+HUmERYPLyM+oz5@kroah.com>
+References: <20201222095210.61897-1-alexandru.ardelean@analog.com>
 MIME-Version: 1.0
-In-Reply-To: <c50e7c65-d7bf-e957-d8eb-efed6c24f089@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201222095210.61897-1-alexandru.ardelean@analog.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/12/2020 09:46, Coly Li wrote:
-> Currently blocks/badblocks.c is used by md raid and nvdimm code, and the
-> badblocks table is irrelevant to any of these two subsystems.
-
-Good to know.
+On Tue, Dec 22, 2020 at 11:52:09AM +0200, Alexandru Ardelean wrote:
+> The original docstring of the __sysfs_match_string() and match_string()
+> helper, implied that -1 could be used to search through NULL terminated
+> arrays, and positive 'n' can be used to go through arrays that may have
+> NULL elements in the middle of the array.
 > 
-> If there will be better code for similar or better functionality, it
-> should be cool. For me, if the reporting bug is fixed, no difference in
-> my view:-)
-> 
-Hopefully that will improve the badblocks handling in md. Sounds like 
-that could in part be the problems we've been seeing.
+> This isn't true. Regardless of the value of 'n', the first NULL element in
+> the array.
 
-If I integrate dm-integrity into md, badblocks should be mutually 
-exclusive with it, but because dm-integrity is both a performance and 
-disk-space hit, people might well not want to enable it.
+I can not parse this last sentence, is it missing something?
 
-Cheers,
-Wol
+thanks,
+
+greg k-h
