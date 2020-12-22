@@ -2,102 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D942E0C61
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 16:07:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16EDF2E0C65
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 16:07:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727989AbgLVPFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 10:05:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727635AbgLVPFt (ORCPT
+        id S1728037AbgLVPGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 10:06:15 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:29766 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728016AbgLVPGO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 10:05:49 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39BBAC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 07:05:09 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id x1so2938928pgh.12
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 07:05:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7Hrgc2vErdduBB9qM7RbOF/nuu0syt0R9KKjGGJCpoc=;
-        b=EqRZ/gRPWI+a3OaYV+YvH80ky5fZtAnCqzWOHvrGTYHYUqe9/QKO7dz0T5yrWbIWLS
-         Z0hn/fe/f8Hi1isP0zvWIzHjfFOP/96EaZ1REeAfypGnHGFcqUA1Gx5Opw2chy/BTlBg
-         ALJpyv7ya0FAvYQD1a+szxZ/vaiuOVN0a/VxXYU1mWIwk3lsmFyXVNmQXdQXgCpOteJh
-         mRWzHRI94UgUom2tHJRsqxcBSlpbhGjmqmRmrHo/96lOKtI5873x+DZw66kgdlU3c64A
-         cMhno0qLS06NpfkneAyGWwXGNCyCltXrCl7CB+c6uKw8+u8ExVlTwOBNZF2nvzDw8z2i
-         bzfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7Hrgc2vErdduBB9qM7RbOF/nuu0syt0R9KKjGGJCpoc=;
-        b=KhBIwucM1kwiQTchnKwVjwha+qW4tJUbhb3T92H528qPL1VZG5DTGfWeBtnkvd2xY8
-         pyy/W4NYp3cxJjf7K1F2vftQrmu8/C4XrnxPOmdoVCqreCVM0zcXSF06Ev3Bv1MLp6C3
-         nA0zpNRCcMgfBwe4+Gp0m+vlD+4lL65KXXdDTj+/KOsXkGv5I060K1Jbw6gwq4R004xl
-         KNQqKnBeqaypUp6bmV12VVX8XAEzn/KxzeNOYwhfiwoKvU1/CMFNxV7ZFQKmisau/bg1
-         EbXmx3qEhbrPdTYIJjJyFEBUuRL2MThPhbZ+LEhDr+lUL/hiNzsC3XlgdLnzDg4bE39v
-         YBUw==
-X-Gm-Message-State: AOAM531BLGD9Xz4/E20H0pm6Tm1Sks4Ujj8rpm6Qx1ubFLEP6h9Jb2FU
-        dktn9gAC98aiKKXbaCfsJcoi9Q==
-X-Google-Smtp-Source: ABdhPJx//2nSKhHTG8gyFHAn9MT2fZxkt0i1lk3RChMj03CHREE0oJTSOQ7Wbcrh7D+i0dOzhq6CqQ==
-X-Received: by 2002:a63:4f64:: with SMTP id p36mr12935334pgl.374.1608649508742;
-        Tue, 22 Dec 2020 07:05:08 -0800 (PST)
-Received: from localhost.localdomain (2001-b011-3814-dae9-4a2f-9772-47bc-5b94.dynamic-ip6.hinet.net. [2001:b011:3814:dae9:4a2f:9772:47bc:5b94])
-        by smtp.googlemail.com with ESMTPSA id u14sm19000202pfk.111.2020.12.22.07.05.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Dec 2020 07:05:08 -0800 (PST)
-From:   Chris Chiu <chiu@endlessos.org>
-To:     tiwai@suse.com, kailang@realtek.com
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linux@endlessos.org, Chris Chiu <chiu@endlessos.org>,
-        Jian-Hong Pan <jhp@endlessos.org>
-Subject: [PATCH 2/2] ALSA/hda: apply jack fixup for the Acer Veriton N4640G/N6640G/N2510G
-Date:   Tue, 22 Dec 2020 23:04:59 +0800
-Message-Id: <20201222150459.9545-2-chiu@endlessos.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201222150459.9545-1-chiu@endlessos.org>
-References: <20201222150459.9545-1-chiu@endlessos.org>
+        Tue, 22 Dec 2020 10:06:14 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608649551; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
+ To: From: Sender; bh=nBdti4p145SybWnCMKjk232I8BcskhOJcfGH3EeiP68=; b=lEMk/hrmvaRDAQ8TU15Sm0luc5VsvuXbzCjwxOapP16GjBuEkGQjhLNh/QWJlxP+2sA9qZsl
+ 6Jjq65kk6NZ4qRY/HnMUtqyn7q2hEuuc9HGgkEl2nB+WUoPSIes1dj6eNeAUVClcpFxGw4Lx
+ 9ky762BSa3pGMcg1I+99Pn9yGlM=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
+ 5fe20b4b7bc801dc4f99888b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Dec 2020 15:05:47
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 206A6C43461; Tue, 22 Dec 2020 15:05:47 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from x230.qca.qualcomm.com (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 94631C433C6;
+        Tue, 22 Dec 2020 15:05:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 94631C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-mmc@vger.kernel.org,
+        Pali =?utf-8?Q?Roh?= =?utf-8?Q?=C3=A1r?= <pali@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [PATCH v3 03/24] wfx: add Makefile/Kconfig
+References: <20201104155207.128076-1-Jerome.Pouiller@silabs.com>
+        <20201104155207.128076-4-Jerome.Pouiller@silabs.com>
+Date:   Tue, 22 Dec 2020 17:05:41 +0200
+In-Reply-To: <20201104155207.128076-4-Jerome.Pouiller@silabs.com> (Jerome
+        Pouiller's message of "Wed, 4 Nov 2020 16:51:46 +0100")
+Message-ID: <87tusd98ze.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This Acer Veriton N4640G/N6640G/N2510G desktops have 2 headphone
-jacks(front and rear), and a separate Mic In jack.
+Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
 
-The rear headphone jack is actually a line out jack but always silent
-while playing audio. The front 'Mic In' also fails the jack sensing.
-Apply the ALC269_FIXUP_LIFEBOOK to have all audio jacks to work as
-expected.
+> From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+>
+> Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+> ---
+>  drivers/net/wireless/silabs/wfx/Kconfig  |  8 ++++++++
+>  drivers/net/wireless/silabs/wfx/Makefile | 25 ++++++++++++++++++++++++
+>  2 files changed, 33 insertions(+)
+>  create mode 100644 drivers/net/wireless/silabs/wfx/Kconfig
+>  create mode 100644 drivers/net/wireless/silabs/wfx/Makefile
+>
+> diff --git a/drivers/net/wireless/silabs/wfx/Kconfig
+> b/drivers/net/wireless/silabs/wfx/Kconfig
+> new file mode 100644
+> index 000000000000..83ee4d0ca8c6
+> --- /dev/null
+> +++ b/drivers/net/wireless/silabs/wfx/Kconfig
+> @@ -0,0 +1,8 @@
+> +config WFX
+> +	tristate "Silicon Labs wireless chips WF200 and further"
+> +	depends on MAC80211
+> +	depends on MMC || !MMC # do not allow WFX=3Dy if MMC=3Dm
+> +	depends on (SPI || MMC)
+> +	help
+> +	  This is a driver for Silicons Labs WFxxx series (WF200 and further)
+> +	  chipsets. This chip can be found on SPI or SDIO buses.
 
-Signed-off-by: Chris Chiu <chiu@endlessos.org>
-Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
----
- sound/pci/hda/patch_realtek.c | 3 +++
- 1 file changed, 3 insertions(+)
+Kconfig should mention about the SDIO id snafu and that Device Tree is
+required.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index bb1010d78717..9eb43d827bda 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -7803,11 +7803,14 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1025, 0x0762, "Acer Aspire E1-472", ALC271_FIXUP_HP_GATE_MIC_JACK_E1_572),
- 	SND_PCI_QUIRK(0x1025, 0x0775, "Acer Aspire E1-572", ALC271_FIXUP_HP_GATE_MIC_JACK_E1_572),
- 	SND_PCI_QUIRK(0x1025, 0x079b, "Acer Aspire V5-573G", ALC282_FIXUP_ASPIRE_V5_PINS),
-+	SND_PCI_QUIRK(0x1025, 0x101c, "Acer Veriton N2510G", ALC269_FIXUP_LIFEBOOK),
- 	SND_PCI_QUIRK(0x1025, 0x102b, "Acer Aspire C24-860", ALC286_FIXUP_ACER_AIO_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1025, 0x1065, "Acer Aspire C20-820", ALC269VC_FIXUP_ACER_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1025, 0x106d, "Acer Cloudbook 14", ALC283_FIXUP_CHROME_BOOK),
- 	SND_PCI_QUIRK(0x1025, 0x1099, "Acer Aspire E5-523G", ALC255_FIXUP_ACER_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1025, 0x110e, "Acer Aspire ES1-432", ALC255_FIXUP_ACER_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1025, 0x1166, "Acer Veriton N4640G", ALC269_FIXUP_LIFEBOOK),
-+	SND_PCI_QUIRK(0x1025, 0x1167, "Acer Veriton N6640G", ALC269_FIXUP_LIFEBOOK),
- 	SND_PCI_QUIRK(0x1025, 0x1246, "Acer Predator Helios 500", ALC299_FIXUP_PREDATOR_SPK),
- 	SND_PCI_QUIRK(0x1025, 0x1247, "Acer vCopperbox", ALC269VC_FIXUP_ACER_VCOPPERBOX_PINS),
- 	SND_PCI_QUIRK(0x1025, 0x1248, "Acer Veriton N4660G", ALC269VC_FIXUP_ACER_MIC_NO_PRESENCE),
--- 
-2.20.1
+--=20
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
