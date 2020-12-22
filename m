@@ -2,107 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7274F2E0F82
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 21:56:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C943F2E0F85
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 21:56:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727628AbgLVUve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 15:51:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41958 "EHLO
+        id S1727669AbgLVUxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 15:53:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726039AbgLVUve (ORCPT
+        with ESMTP id S1726289AbgLVUxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 15:51:34 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A898DC0613D3;
-        Tue, 22 Dec 2020 12:50:53 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id g24so14190518edw.9;
-        Tue, 22 Dec 2020 12:50:53 -0800 (PST)
+        Tue, 22 Dec 2020 15:53:41 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43E3EC061793
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 12:53:01 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id w18so13229821iot.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 12:53:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=13jUuvMm5qEL9dKeZ0BBLqDpiDnKuuirEu90KIY/1jM=;
-        b=tAhhMvW2t3knmkTjo+nQ83QlOnFidKfhVLH8x8facNR8zi6vsY5vTo4mPUVWAssA6R
-         +2kKGTNyXPYxKSyvFbLKGnJo6HPMLKwaGcC1+3ToJwmxJJ20kANU8k37Z2tqZA/ZsgYo
-         XmbkIt+uN+I+BWqHRKj22mTtiQSROB2XpM1A617MF6A2BM4FLBu8XDN+7FADSHvG//vh
-         yN3YWEaQvk4RaE/qBMoyMUwNY1BL/aUFQ4gPkg5ci+h3XgE4HVhSTAOe8SrkmYfT1g4F
-         SycGl27saEs9HkdQUtOJl4U5aqW7DXwBMRiE4tcL4Ws4FsHhnBbHDm1eSSurPpzW7fOD
-         9aVA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oSFSCu/3Al5lp+zO9UYGs39Tx645YSp48rg99RlI4+M=;
+        b=F80PhSdtn+/+FG7JYRhi5K7qtpoZDpbmjahsp4k1NcmszQi/3RIYjdxFQq1FIyrZik
+         PtvaxiPDQ64Tn6OvdxQpavQfrRlyGPuk/n2iW9H+2rVs9biNBISY1hoYNN4phfa63erm
+         v2/Lh7WvK9StfpKmywXpwLH1gm3BYBkWCyLb4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=13jUuvMm5qEL9dKeZ0BBLqDpiDnKuuirEu90KIY/1jM=;
-        b=XWx63Xq/FV/PwWbVy+6UEnTNZYpYAlu/1+ONbdWNSrRynKuLPjIjWhiFSR09Z0jz1P
-         NfyLzxi7WtwtydcDYDGXaFzLEvhPlcrsu8i5iMyMtPIVaprRaQoCvfIP5n1TMP8AW2hr
-         Tf+29C/iBCY5qI4ybJqbTKksbhMvqzAWdFqPCDo42BIF7SQESD4O5cNt/fyRQYl+ujG/
-         YQ1o9DSdPPK0iUY/R0bVJ7RR2JEBvPh1KYaWbxj8QSaKpJ6SEnuJnCkRFxCjWui925GY
-         gTA56L7V9+hAjSrUpNhskPdCVztVkHwyouBkQiKARTfjx9EXnckFe0qrjrK+c15OTQ5s
-         kP8w==
-X-Gm-Message-State: AOAM530PkRc3X2zJfyDxnQjnV2R+WVkwexrhM+dN5oqwRBqLWnO77Pfi
-        0Z34a/hSQWieaQ1Tm41y1uE=
-X-Google-Smtp-Source: ABdhPJxGWuPTiQPSbe/NYoEamwNjTR+C4RDectzRAsxK6LsPIGecGvgaNNRPgkAmcjKV5f8LJY8wWA==
-X-Received: by 2002:aa7:d999:: with SMTP id u25mr21693026eds.297.1608670252413;
-        Tue, 22 Dec 2020 12:50:52 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
-        by smtp.googlemail.com with ESMTPSA id n8sm10810329eju.33.2020.12.22.12.50.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 22 Dec 2020 12:50:51 -0800 (PST)
-Message-ID: <4c15956660bd7305b0c095603bfa0e30c7f1610e.camel@gmail.com>
-Subject: Re: [PATCH v5 1/7] scsi: ufs: Add "wb_on" sysfs node to control WB
- on/off
-From:   Bean Huo <huobean@gmail.com>
-To:     Stanley Chu <stanley.chu@mediatek.com>
-Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, beanhuo@micron.com, bvanassche@acm.org,
-        tomas.winkler@intel.com, cang@codeaurora.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 22 Dec 2020 21:50:49 +0100
-In-Reply-To: <1608617307.14045.3.camel@mtkswgap22>
-References: <20201215230519.15158-1-huobean@gmail.com>
-         <20201215230519.15158-2-huobean@gmail.com>
-         <1608617307.14045.3.camel@mtkswgap22>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oSFSCu/3Al5lp+zO9UYGs39Tx645YSp48rg99RlI4+M=;
+        b=Fw/OOaQ3t9ccD79gID3gSpDCgjx7TZfaIqeDuH+Qj/uUKQk0J94kvg9vRUE16l/cSk
+         s4shKN9jIsiRozziN2zHe5YV0R4motQZhx57jkQd9aJYtqt5P5bXNMZZwUXHlZxyKo7J
+         OoaGrg54DONAzootWo7v5I5g+QOh8BD0oIHB+dBW+ObecExEBg0Kzdh+fyQgzAcAgENa
+         KyoTQ6F3lH6DRfHzrA/ofXUxCPcOTyCzdGL7rdOlK+DFCH7m8BQFyn7ONHk8TnL1ZD19
+         aMQAh5hBFisleCFJdbH6b+bfU2UyEcLdjWhNdmi53wphlRsBjRezpch0Kbmhp4XUsENs
+         T3Qg==
+X-Gm-Message-State: AOAM533fr7UkMb6ec63HM4ok1GwmWgzmBNpfWUHzt//shiMMq99q3ZMu
+        NWlCE4Sn6NJIGnvVyozs73ls3RCglQyXY2def13RiQ==
+X-Google-Smtp-Source: ABdhPJwUqtn1nVeh8VywzsuWE/X+W+Y1UqKUyImxjltZg7lSkMwZrzviL3JWLIMRnjCRMoehIYHyn/Ngb3/anEcge28=
+X-Received: by 2002:a6b:8b88:: with SMTP id n130mr19156455iod.122.1608670380554;
+ Tue, 22 Dec 2020 12:53:00 -0800 (PST)
+MIME-Version: 1.0
+References: <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com> <CACYkzJ7T4y7in1AsCvJ2izA3yiAke8vE9SRFRCyTPeqMnDHoyQ@mail.gmail.com>
+ <e8b03cbc-c120-43d5-168c-cde5b6a97af8@fb.com> <CAEf4BzYz9Yf9abPBtP+swCuqvvhL0cbbbF1x-3stg9mp=a6+-A@mail.gmail.com>
+ <194b5a6e6e30574a035a3e3baa98d7fde7f91f1c.camel@chromium.org>
+ <CAADnVQK6GjmL19zQykYbh=THM9ktQUzfnwF_FfhUKimCxDnnkQ@mail.gmail.com>
+ <CABRcYm+zjC-WH2gxtfEX5S6mZj-5_ByAzVd5zi3aRmQv-asYqg@mail.gmail.com>
+ <221fb873-80fc-5407-965e-b075c964fa13@fb.com> <CABRcYmLL=SUsPS6qWVgTyYJ26r-QtECfeTZXkXSp7iRBDZRbZA@mail.gmail.com>
+ <d29c2ed6-d99c-9d28-e6ea-d79ffd4d7e65@fb.com> <20201218032009.ycmyqn2kjs3ynfbp@ast-mbp>
+In-Reply-To: <20201218032009.ycmyqn2kjs3ynfbp@ast-mbp>
+From:   Florent Revest <revest@chromium.org>
+Date:   Tue, 22 Dec 2020 21:52:49 +0100
+Message-ID: <CABRcYmKSio1gD0h2suZ96jGnMsXpQ9V151-1k+ZkRMxop+GR5w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Florent Revest <revest@google.com>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-12-22 at 14:08 +0800, Stanley Chu wrote:
-> > +     if (kstrtouint(buf, 0, &wb_enable))
-> > +             return -EINVAL;
-> > +
-> > +     if (wb_enable != 0 && wb_enable != 1)
-> > +             return -EINVAL;
-> > +
-> > +     pm_runtime_get_sync(hba->dev);
-> > +     res = ufshcd_wb_ctrl(hba, wb_enable);
-> 
-> May this operation race with UFS shutdown flow?
-> 
-> To be more clear, ufshcd_wb_ctrl() here may be executed after host
-> clock
-> is disabled by shutdown flow?
-> 
-> If yes, we need to avoid it.
-> 
-> Thanks,
-> Stanley Chu
+On Fri, Dec 18, 2020 at 4:20 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+> As far as 6 arg issue:
+> long bpf_snprintf(const char *out, u32 out_size,
+>                   const char *fmt, u32 fmt_size,
+>                   const void *data, u32 data_len);
+> Yeah. It won't work as-is, but fmt_size is unnecessary nowadays.
+> The verifier understands read-only data.
+> Hence the helper can be:
+> long bpf_snprintf(const char *out, u32 out_size,
+>                   const char *fmt,
+>                   const void *data, u32 data_len);
+> The 3rd arg cannot be ARG_PTR_TO_MEM.
+> Instead we can introduce ARG_PTR_TO_CONST_STR in the verifier.
+> See check_mem_access() where it's doing bpf_map_direct_read().
+> That 'fmt' string will be accessed through the same bpf_map_direct_read().
+> The verifier would need to check that it's NUL-terminated valid string.
 
-Yes, it is quite possible, but who will mess up this on purpose?
+Ok, this works for me.
 
-ok, to counterbalance our concerns, I can add checkup:
+> It should probably do % specifier checks at the same time.
 
+However, I'm still not sure whether that would work. Did you maybe
+miss my comment in a previous email? Let me put it back here:
 
-/* UFS device & link must be active before we change WB status */
-if (!ufshcd_is_ufs_dev_active(hba) || !ufshcd_is_link_active(hba))
-	return -EINVAL;
+> The iteration that bpf_trace_printk does over the format string
+> argument is not only used for validation. It is also used to remember
+> what extra operations need to be done based on the modifier types. For
+> example, it remembers whether an arg should be interpreted as 32bits or
+> 64bits. In the case of string printing, it also remembers whether it is
+> a kernel-space or user-space pointer so that bpf_trace_copy_string can
+> be called with the right arg. If we were to run the iteration over the format
+> string in the verifier, how would you recommend that we
+> "remember" the modifier type until the helper gets called ?
 
+The best solution I can think of would be to iterate over the format
+string in the helper. In that case, the format string verification in
+the verifier would be redundant and the format string wouldn't have to
+be constant. Do you have any suggestions ?
 
-how do you think about?
+> At the end bpf_snprintf() will have 5 args and when wrapped with
+> BPF_SNPRINTF() macro it will accept arbitrary number of arguments to print.
+> It also will be generally useful to do all other kinds of pretty printing.
 
-Bean
-
+Yep this macro is a good idea, I like that. :)
