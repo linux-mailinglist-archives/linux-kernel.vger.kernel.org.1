@@ -2,163 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE9F2E0F10
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 20:47:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D39F42E0F1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 20:52:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727224AbgLVTqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 14:46:33 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:10494 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726289AbgLVTqd (ORCPT
+        id S1726703AbgLVTvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 14:51:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725850AbgLVTvi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 14:46:33 -0500
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BMJVni1083551;
-        Tue, 22 Dec 2020 14:45:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=WjWJp3AIQDryqKRLNFaJp2pECH69G2IqGHqR79KvEbc=;
- b=FTzBjeQfUBVJlL0tLCUMdFNUkKef5XjZrUcQatIb/gXq4l1UEeEUDr+6P+09+GzLtR+B
- 7dDdkpAj+rGI19o+ojyccouiH6aX8rhERWxJqwB2awEWUQw3NxwVEG/etjeaZmMYWyrI
- YY2fV8su9X9CvL4WtE+JY+DOWeYG4S18loWP4F1Mviwn9eUOPuOZ7SoQxdOe6ltIx6rP
- FBbSMYjs75OEgJbCt6D4UCaGqiWP4XXtt1aQPsfl4bk7+ydo9EpYg/m5cmGqgewf2Io7
- YMr1tkU8HwqwqV6GiGKU0RxcpCQRWLHbxjLD7rjZqgeVk0/7I79sY+mSjF7PltfRt1gF kg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35kq008bv6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Dec 2020 14:45:18 -0500
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BMJYrsg094719;
-        Tue, 22 Dec 2020 14:45:18 -0500
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35kq008bub-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Dec 2020 14:45:17 -0500
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BMJjFmn032299;
-        Tue, 22 Dec 2020 19:45:15 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06fra.de.ibm.com with ESMTP id 35kefjg7hg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Dec 2020 19:45:15 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BMJjCL625952760
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 22 Dec 2020 19:45:12 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 948BDA4067;
-        Tue, 22 Dec 2020 19:45:12 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3F0C3A4060;
-        Tue, 22 Dec 2020 19:45:06 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.81.142])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 22 Dec 2020 19:45:06 +0000 (GMT)
-Message-ID: <7a347c8f2a76fc80551a3dfcb66b0eec9b024a90.camel@linux.ibm.com>
-Subject: Re: [PATCH v13 2/6] powerpc: Move arch independent ima kexec
- functions to drivers/of/kexec.c
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        bauerman@linux.ibm.com, robh@kernel.org,
-        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
-        will@kernel.org, catalin.marinas@arm.com, mpe@ellerman.id.au
-Cc:     james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
-        paulus@samba.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
-        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-Date:   Tue, 22 Dec 2020 14:45:05 -0500
-In-Reply-To: <e0d9398b-1b46-8115-7bf0-28e9826fcd6b@linux.microsoft.com>
-References: <20201219175713.18888-1-nramas@linux.microsoft.com>
-         <20201219175713.18888-3-nramas@linux.microsoft.com>
-         <a1a4526c0759eb3b5d70fb8edc89360718376def.camel@linux.ibm.com>
-         <e0d9398b-1b46-8115-7bf0-28e9826fcd6b@linux.microsoft.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-22_09:2020-12-21,2020-12-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- priorityscore=1501 phishscore=0 impostorscore=0 mlxlogscore=999
- suspectscore=0 mlxscore=0 malwarescore=0 clxscore=1015 spamscore=0
- lowpriorityscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2012220138
+        Tue, 22 Dec 2020 14:51:38 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79E5DC0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 11:50:58 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id j1so7964547pld.3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 11:50:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=platinasystems-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gnrWzcZcKCPPQwHRjj320KhXxSg0ErADEbe3H1rw//0=;
+        b=gGUrUFMiw4JWsWifL0TXf2jyogF2W8pHnJa+hyI4msW+Mh9cnxp6FXcKIxFRNMD4Jj
+         DH8BAGHgXF6wc4ZqBJzj2PVQzGyaZdAPRPBr77Ibt2uPXm6Wmgjl0i8G5MQt+jXDGHx1
+         EJRJN+g0KIrsQZP02GadFsj42H1BN/PBaNLuph4my0rmWq/xt3GF0AhQjCbK1Ght+hNT
+         uAfsziMBPy9G4q/NfE0dknSHClk1pSZZjZLF+yCa/scL2yFYMfH1gtTYyLjTlfGfg89a
+         n1jHUIsvZp9tXlP6b7HhmVQCzgUPXfv2OQlVzFEXYBSttDt6/XkQmYyOB4TaQ2BPLgeF
+         PMZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gnrWzcZcKCPPQwHRjj320KhXxSg0ErADEbe3H1rw//0=;
+        b=XYVDfbXoqhTwwJ/ixfN4L5mWbJ7LKPMxT74ihD1WBP2RVbJ6p4VXBMIhq2+15d9O7H
+         MGh080FHiKjU7YeiT+vvBueWKUnH+03gtA3YRyFw7oSA3eCso5MGFteRFpk2H0EpjPeC
+         X5vkqxBjjHB/f5QYCmF4bQm7gerrctDFwU8PTMm8Sfih29jzTN1fZz1+KFxHcZvaLmo/
+         +YuXlyd5nqn0MlBCb8x/1dJ8CTFXO703vAeg/qNkcRjG/QvwKGeQ5rKMqOk3fbj8jXee
+         9x6xTfxjuVXraFVrGRIUWXoLCjtfY5xtvS+tWDu8CFwhrsuy6d/ZR/gK8Bn+yVo5xtXc
+         mEbw==
+X-Gm-Message-State: AOAM531Q6K8ntN/4vrS59Gq2QWiyVJMk90SVpd2gXEh1Khzsh5cpOjgw
+        Hgf+H1kbz9u6Qo3tWCqVKxhRbQ==
+X-Google-Smtp-Source: ABdhPJwcc+tKiFWFDEimn0YEP31KJTEdUFiu3Aj7QQrs+YsH75VI7hSfoHDyKmNPOdLKF1L/tN9FdQ==
+X-Received: by 2002:a17:90a:8985:: with SMTP id v5mr22935126pjn.27.1608666657981;
+        Tue, 22 Dec 2020 11:50:57 -0800 (PST)
+Received: from localhost.localdomain ([207.53.255.56])
+        by smtp.gmail.com with ESMTPSA id b72sm20770253pfb.129.2020.12.22.11.50.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Dec 2020 11:50:57 -0800 (PST)
+From:   Kevin Paul Herbert <kph@platinasystems.com>
+To:     biwen.li@nxp.com, leoyang.li@nxp.com, linux@rempel-privat.de,
+        kernel@pengutronix.de, wsa@the-dreams.de, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, festevam@gmail.com, aisheng.dong@nxp.com,
+        xiaoning.wang@nxp.com, o.rempel@pengutronix.de,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jiafei.pan@nxp.com, xiaobo.xie@nxp.com,
+        linux-arm-kernel@lists.infradead.org, biwen.li@oss.nxp.com,
+        kph@platinasystems.com
+Subject: [PATCH] i2c-imx.c: Synthesize end of transaction events without idle interrupts
+Date:   Tue, 22 Dec 2020 11:48:50 -0800
+Message-Id: <20201222194850.2274527-1-kph@platinasystems.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-12-22 at 10:53 -0800, Lakshmi Ramasubramanian wrote:
-> On 12/22/20 6:26 AM, Mimi Zohar wrote:
-> 
-> Hi Mimi,
-> 
-> > 
-> > On Sat, 2020-12-19 at 09:57 -0800, Lakshmi Ramasubramanian wrote:
-> >>
-> >> diff --git a/arch/powerpc/kexec/Makefile b/arch/powerpc/kexec/Makefile
-> >> index 4aff6846c772..b6c52608cb49 100644
-> >> --- a/arch/powerpc/kexec/Makefile
-> >> +++ b/arch/powerpc/kexec/Makefile
-> >> @@ -9,13 +9,6 @@ obj-$(CONFIG_PPC32)		+= relocate_32.o
-> >>   
-> >>   obj-$(CONFIG_KEXEC_FILE)	+= file_load.o ranges.o file_load_$(BITS).o elf_$(BITS).o
-> >>   
-> >> -ifdef CONFIG_HAVE_IMA_KEXEC
-> >> -ifdef CONFIG_IMA
-> >> -obj-y				+= ima.o
-> >> -endif
-> >> -endif
-> > 
-> > Notice how "kexec/ima.o" is only included if the architecture supports
-> > it and IMA is configured.  In addition only if CONFIG_IMA_KEXEC is
-> > configured, is the IMA measurement list carried across kexec.  After
-> > moving the rest of ima.c to drivers/of/kexec.c, this changes.   Notice
-> > how drivers/of/Kconfig includes kexec.o:
-> > 
-> > obj-$(CONFIG_KEXEC_FILE) += kexec.o
-> > 
-> > It is not dependent on CONFIG_HAVE_IMA_KEXEC.  Shouldn't all of the
-> > functions defined in ima.c being moved to kexec.o be defined within a
-> > CONFIG_HAVE_IMA_KEXEC ifdef?
-> > 
-> 
-> Thanks for reviewing the changes.
-> 
-> In "drivers/of/kexec.c" the function remove_ima_buffer() is defined 
-> under "#ifdef CONFIG_HAVE_IMA_KEXEC"
-> 
-> setup_ima_buffer() is defined under "#ifdef CONFIG_IMA_KEXEC" - the same 
-> way it was defined in "arch/powerpc/kexec/ima.c".
-> 
-> As you know, CONFIG_IMA_KEXEC depends on CONFIG_HAVE_IMA_KEXEC (as 
-> defined in "security/integrity/ima/Kconfig").
-> 
-> ima_get_kexec_buffer() and ima_free_kexec_buffer() are unconditionally 
-> defined in "drivers/of/kexec.c" even though they are called only when 
-> CONFIG_HAVE_IMA_KEXEC is enabled. I will update these two functions to 
-> be moved under "#ifdef CONFIG_HAVE_IMA_KEXEC"
+Only the Layerscape SoCs have interrupts on bus idle, which facilitate
+sending events which complete slave bus transactions.
 
-The issue is the reverse.  CONFIG_HAVE_IMA_KEXEC may be enabled without
-CONFIG_IMA_KEXEC being enabled.  This allows the architecture to
-support carrying the measurement list across kexec, but requires
-enabling it at build time.
+Add support for synthesizing missing events. If we see a master request,
+or a newly addressed slave request, if the last event sent to the backend
+was I2C_SLAVE_READ_REQUESTED, send the backend a I2C_SLAVE_READ_PROCESSED
+followed by I2C_SLAVE_STOP. For all other events, send an I2C_SLAVE_STOP.
 
-Only if CONFIG_HAVE_IMA_KEXEC is enabled should any of these functions
-be compiled at build.  This allows restoring the previous IMA
-measurement list, even if CONFIG_IMA_KEXEC is not enabled.
+Signed-off-by: Kevin Paul Herbert <kph@platinasystems.com>
+---
+ drivers/i2c/busses/i2c-imx.c | 59 +++++++++++++++++++++++++++++++-----
+ 1 file changed, 52 insertions(+), 7 deletions(-)
 
-Only if CONFIG_IMA_KEXEC is enabled, should carrying the measurement
-list across kexec be enabled.  See how arch_ima_add_kexec_buffer,
-write_number, setup_ima_buffer are ifdef'ed in
-arch/powerpc/kexec/ima.c.
-
-Mimi
+diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
+index b444fbf1a262..b3e2a6a7fc19 100644
+--- a/drivers/i2c/busses/i2c-imx.c
++++ b/drivers/i2c/busses/i2c-imx.c
+@@ -209,6 +209,7 @@ struct imx_i2c_struct {
+ 
+ 	struct imx_i2c_dma	*dma;
+ 	struct i2c_client	*slave;
++	enum i2c_slave_event last_slave_event;
+ };
+ 
+ static const struct imx_i2c_hwdata imx1_i2c_hwdata = {
+@@ -662,6 +663,36 @@ static void i2c_imx_enable_bus_idle(struct imx_i2c_struct *i2c_imx)
+ 	}
+ }
+ 
++static void i2c_imx_slave_event(struct imx_i2c_struct *i2c_imx,
++				enum i2c_slave_event event, u8 *val)
++{
++	i2c_slave_event(i2c_imx->slave, event, val);
++	i2c_imx->last_slave_event = event;
++}
++
++static void i2c_imx_slave_finish_op(struct imx_i2c_struct *i2c_imx)
++{
++	u8 val;
++
++	while (i2c_imx->last_slave_event != I2C_SLAVE_STOP) {
++		switch (i2c_imx->last_slave_event) {
++		case I2C_SLAVE_READ_REQUESTED:
++			i2c_imx_slave_event(i2c_imx, I2C_SLAVE_READ_PROCESSED,
++					    &val);
++			break;
++
++		case I2C_SLAVE_WRITE_REQUESTED:
++		case I2C_SLAVE_READ_PROCESSED:
++		case I2C_SLAVE_WRITE_RECEIVED:
++			i2c_imx_slave_event(i2c_imx, I2C_SLAVE_STOP, &val);
++			break;
++
++		case I2C_SLAVE_STOP:
++			break;
++		}
++	}
++}
++
+ static irqreturn_t i2c_imx_slave_isr(struct imx_i2c_struct *i2c_imx,
+ 				     unsigned int status, unsigned int ctl)
+ {
+@@ -674,9 +705,11 @@ static irqreturn_t i2c_imx_slave_isr(struct imx_i2c_struct *i2c_imx,
+ 	}
+ 
+ 	if (status & I2SR_IAAS) { /* Addressed as a slave */
++		i2c_imx_slave_finish_op(i2c_imx);
+ 		if (status & I2SR_SRW) { /* Master wants to read from us*/
+ 			dev_dbg(&i2c_imx->adapter.dev, "read requested");
+-			i2c_slave_event(i2c_imx->slave, I2C_SLAVE_READ_REQUESTED, &value);
++			i2c_imx_slave_event(i2c_imx,
++					    I2C_SLAVE_READ_REQUESTED, &value);
+ 
+ 			/* Slave transmit */
+ 			ctl |= I2CR_MTX;
+@@ -686,7 +719,8 @@ static irqreturn_t i2c_imx_slave_isr(struct imx_i2c_struct *i2c_imx,
+ 			imx_i2c_write_reg(value, i2c_imx, IMX_I2C_I2DR);
+ 		} else { /* Master wants to write to us */
+ 			dev_dbg(&i2c_imx->adapter.dev, "write requested");
+-			i2c_slave_event(i2c_imx->slave,	I2C_SLAVE_WRITE_REQUESTED, &value);
++			i2c_imx_slave_event(i2c_imx,
++					    I2C_SLAVE_WRITE_REQUESTED, &value);
+ 
+ 			/* Slave receive */
+ 			ctl &= ~I2CR_MTX;
+@@ -697,17 +731,20 @@ static irqreturn_t i2c_imx_slave_isr(struct imx_i2c_struct *i2c_imx,
+ 	} else if (!(ctl & I2CR_MTX)) { /* Receive mode */
+ 		if (status & I2SR_IBB) { /* No STOP signal detected */
+ 			value = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2DR);
+-			i2c_slave_event(i2c_imx->slave,	I2C_SLAVE_WRITE_RECEIVED, &value);
++			i2c_imx_slave_event(i2c_imx,
++					    I2C_SLAVE_WRITE_RECEIVED, &value);
+ 		} else { /* STOP signal is detected */
+ 			dev_dbg(&i2c_imx->adapter.dev,
+ 				"STOP signal detected");
+-			i2c_slave_event(i2c_imx->slave, I2C_SLAVE_STOP, &value);
++			i2c_imx_slave_event(i2c_imx,
++					    I2C_SLAVE_STOP, &value);
+ 		}
+ 	} else if (!(status & I2SR_RXAK)) { /* Transmit mode received ACK */
+ 		ctl |= I2CR_MTX;
+ 		imx_i2c_write_reg(ctl, i2c_imx, IMX_I2C_I2CR);
+ 
+-		i2c_slave_event(i2c_imx->slave,	I2C_SLAVE_READ_PROCESSED, &value);
++		i2c_imx_slave_event(i2c_imx,
++				    I2C_SLAVE_READ_PROCESSED, &value);
+ 
+ 		imx_i2c_write_reg(value, i2c_imx, IMX_I2C_I2DR);
+ 	} else { /* Transmit mode received NAK */
+@@ -748,6 +785,7 @@ static int i2c_imx_reg_slave(struct i2c_client *client)
+ 		return -EBUSY;
+ 
+ 	i2c_imx->slave = client;
++	i2c_imx->last_slave_event = I2C_SLAVE_STOP;
+ 
+ 	/* Resume */
+ 	ret = pm_runtime_get_sync(i2c_imx->adapter.dev.parent);
+@@ -800,10 +838,17 @@ static irqreturn_t i2c_imx_isr(int irq, void *dev_id)
+ 
+ 	status = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2SR);
+ 	ctl = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
++
+ 	if (status & I2SR_IIF) {
+ 		i2c_imx_clear_irq(i2c_imx, I2SR_IIF);
+-		if (i2c_imx->slave && !(ctl & I2CR_MSTA))
+-			return i2c_imx_slave_isr(i2c_imx, status, ctl);
++		if (i2c_imx->slave) {
++			if (!(ctl & I2CR_MSTA)) {
++				return i2c_imx_slave_isr(i2c_imx, status, ctl);
++			} else if (i2c_imx->last_slave_event !=
++				   I2C_SLAVE_STOP) {
++				i2c_imx_slave_finish_op(i2c_imx);
++			}
++		}
+ 		return i2c_imx_master_isr(i2c_imx, status);
+ 	}
+ 
+-- 
+2.25.1
 
