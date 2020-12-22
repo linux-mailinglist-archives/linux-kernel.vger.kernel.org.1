@@ -2,74 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF0932E0B7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 15:11:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 738482E0B7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 15:13:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727380AbgLVOLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 09:11:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36822 "EHLO
+        id S1727531AbgLVOL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 09:11:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727235AbgLVOLj (ORCPT
+        with ESMTP id S1726979AbgLVOL4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 09:11:39 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98E4AC0613D3;
-        Tue, 22 Dec 2020 06:10:58 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id s26so32211846lfc.8;
-        Tue, 22 Dec 2020 06:10:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y1lU1YgL6+E1+qOuXe7lokwiGciBRY0e4F95lRdLuOQ=;
-        b=nDqp6cFt1MP+0v648JrkyGlAzQVj2jltRB7/qmuFLNi7Llooj3rgD2FDVBaS0VwWxe
-         vS54tcRB5i2QKKd/5vKYdE7t0T2zE0DwZEvRn6gnxPd/v6Uy1ggeRENAXTIalyl20ob8
-         ZdqtXOpK0NdHFAZVayf+qRarbssOLB/x2tTghKeqRpujYNHvoIml2/RMiDTU0ykqHCAM
-         5739KtmoxLiY8udnybC0fSunTBQikkMM41/jkEoQRJPs7A1bl1jv8ap9WEJmp+nkCq0N
-         LxdgmbwqopZC4NFnRGzaFaAZCCMeOq0Ut1t//8gZtxYv2Bx3ERLkNdSl6dhNEiQe18HL
-         93Rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y1lU1YgL6+E1+qOuXe7lokwiGciBRY0e4F95lRdLuOQ=;
-        b=InFoblKHBJw+YVdQo8sJyCu90ACN4kBHy6FSnOe333WWyOvWoxiSJXKEKNp+FlsDi5
-         1xT9DqUl53gN7+CHrwDfqZUQ3DfP6KS8oliT+TMNcUxBZZJr0nsOhbE8griw5sW3BuLu
-         eI/4oAkmFEymR25ANTRlCbj8LCrTj80ASQCJ0aYGODho2FwuZORZN14TmRStAXwI8AN3
-         wHF0v2PbvE+nGuzQf14vwC7/bUusMSSqvqyf5bmaWP9WNxPLB4LwoXiyYxWb/rxRsq4r
-         nhDOlzBvZmrCSoARBZNQWO/wfFzk1+7LPHtQUPxs5NeNGiC01dIjZlamMPE4f/sC95nT
-         SKzg==
-X-Gm-Message-State: AOAM533kZbtu4KSqL1q9oHsXeRvLIXiENoSgZ37rpyIuiWXu7ZNZ4UdM
-        LbGhtJ4+6B8IBVMpMMHowXHLMApaZs6CaicUk3s=
-X-Google-Smtp-Source: ABdhPJxDpoQvqLY5lh6Q0fQYa8MdsPD2XILo42dE2cCD88li8Zdwh5BSJeYyZIfOmq8coUS15pvxrgb9r7xtIikk27c=
-X-Received: by 2002:a19:e20a:: with SMTP id z10mr2080146lfg.295.1608646257078;
- Tue, 22 Dec 2020 06:10:57 -0800 (PST)
+        Tue, 22 Dec 2020 09:11:56 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D93C0613D6;
+        Tue, 22 Dec 2020 06:11:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=T+iXOP0M1Q96GjQwN7A0jbcvtdBz8ylHUEIBZyFxI8I=; b=PeK+jxcEN9Ejy/YT3iuu9bqQFV
+        7MYpiQ6MVIDoC07jo6Sb1KyxsiLNp/bafk92FKVYRNJk2pwjwrZ9Flk6GSvkhS7h+O3IfD9Ei2thK
+        B98TTdovOFeDCsH6r0ocT67368f7x0o+JIL0zp1TBG8JY+IzqJQBgN2xUx7a1wVQK7BZNnnDibsCd
+        Qg98YScZ5H1Gl5f8SF8aD4kVU8TGakW14RHIJCiQ4jhS8/xMI15DOpnymEbhFkIje4sxCcWRbsKO9
+        z33BDSDf6kKnTtAqGIJKVE/ZYH4s/x/W7vkbPvN9389IvWQikHwQNG9zv+6ujEMaJC7vxtwuhmsbm
+        5PoND+Qg==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kriNc-00048z-VF; Tue, 22 Dec 2020 14:11:13 +0000
+Date:   Tue, 22 Dec 2020 14:11:12 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Ming Lei <ming.lei@redhat.com>, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v1 0/6] no-copy bvec
+Message-ID: <20201222141112.GE13079@infradead.org>
+References: <cover.1607976425.git.asml.silence@gmail.com>
+ <20201215014114.GA1777020@T590>
+ <103235c1-e7d0-0b55-65d0-013d1a09304e@gmail.com>
+ <20201215120357.GA1798021@T590>
+ <e755fec3-4181-1414-0603-02e1a1f4e9eb@gmail.com>
 MIME-Version: 1.0
-References: <20201222133131.19525-1-zhengyongjun3@huawei.com>
-In-Reply-To: <20201222133131.19525-1-zhengyongjun3@huawei.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Tue, 22 Dec 2020 11:10:45 -0300
-Message-ID: <CAOMZO5CkNBsOdHxqh=2eTDh7AWMke=bPocg0n3mLh=VU5T43EA@mail.gmail.com>
-Subject: Re: [PATCH -next] i2c: busses: use DIV_ROUND_UP macro to do calculation
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     Oleksij Rempel <linux@rempel-privat.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e755fec3-4181-1414-0603-02e1a1f4e9eb@gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zheng,
+On Tue, Dec 15, 2020 at 02:05:35PM +0000, Pavel Begunkov wrote:
+> > You may find clue from the following link:
+> > 
+> > https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2262077.html
+> 
+> Thanks for the link!
+> 
+> Al, you mentioned "Zero-length segments are not disallowed", do you have
+> a strong opinion on that? Apart from already diverged behaviour from the
+> block layer and getting in the way of this series, without it we'd also be
+> able to remove some extra ifs, e.g. in iterate_bvec()
 
-On Tue, Dec 22, 2020 at 10:31 AM Zheng Yongjun <zhengyongjun3@huawei.com> wrote:
->
-> Don't open-code DIV_ROUND_UP() kernel macro.
->
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
+I'd prefer not to support zero-length ITER_BVEC and catching them
+early, as the block layer can't deal with them either.  From a quick
+look at iter_file_splice_write it should be pretty trivial to fix there,
+although we'll need to audit other callers as well (even if I don't
+expect them to submit this degenerate case).
