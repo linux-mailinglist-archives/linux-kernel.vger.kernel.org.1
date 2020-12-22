@@ -2,141 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55BE22E07A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 10:02:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E5BC2E07AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 10:04:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725955AbgLVJCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 04:02:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725882AbgLVJCW (ORCPT
+        id S1726185AbgLVJEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 04:04:07 -0500
+Received: from mail-oi1-f171.google.com ([209.85.167.171]:42673 "EHLO
+        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725870AbgLVJEF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 04:02:22 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A05BC061793
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 01:01:42 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id e2so7976258pgi.5
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 01:01:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3q7nnCnJmd4O4D32PC0P8xH1+bdbk1CdNF9NmfMW4t0=;
-        b=Sw8hWqsmWEV28OZ97FyOgXyFgk5shKHWAxZzHcRzRhaM/6+T4brrF3/aXanmbfPjRw
-         /A9CHWFxY/26ovZDBEoLzvrVEQgYuX/8xBOFFAOh2S++/KtpIaGJfhKZuA8vaiEUG6N5
-         RDqNcxOViH+za8EEfeOTF4OJ0FgNLYkqGyciyEF6yFonDS/ytj6QebompmK2qd5iwMxT
-         f60gJWZOOaEE42z2GFxRM7tJMnnNTqxHJqeFzNzO5GVHLT7/VnICWMEMwFNfUuNd7lT8
-         CMqaiMF7EhSgACQ9J+vlj6sz3hYK3bX6+CzSrtrtNmrSTvIrdM+em0PwSBTuQL1T2brh
-         GG/A==
+        Tue, 22 Dec 2020 04:04:05 -0500
+Received: by mail-oi1-f171.google.com with SMTP id l200so14061196oig.9;
+        Tue, 22 Dec 2020 01:03:49 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3q7nnCnJmd4O4D32PC0P8xH1+bdbk1CdNF9NmfMW4t0=;
-        b=HvtIgRK9RpS25XwVtpyAl2+jkbO6TudPVR4SRxd8lx0zjpZ1lYdZhttAY12PetAmGd
-         vyXgZkvIUses1OHnQe3fY0JDw6w9gawEtG1YP3sRXpcNuHcpjfCF1odELvFq2WBVb4L2
-         wc+FOViTYuNuHElcI14N15CX9g3xGHOaZe/Vms+9btAR8FqDR1cMXsAhFSFyI+OQ251V
-         BQlrPAHYqe7dzA6IaGn7WZoSvgKhaDRCBXqrsCqH9NusGxA8bBGVPI8I7jX+mzRxCzCd
-         AhNgAOy+fCRg1cSBe2hV6uDIbLAmZmYdoQHbi1JVLexB/ztji1s3eG9/3ZfXUYf+UtlZ
-         +/iw==
-X-Gm-Message-State: AOAM532wYnsogpuMZhOHBNyQDslDsahTiD+uFCxMqNlKZg7ogQgT76cR
-        bUI/xxYrKF7pTRY15QtWUVyBOQ==
-X-Google-Smtp-Source: ABdhPJzpaUuhCwigtZPkt7tXXBF91xrRM3nJ/y/UBldoNdmIzxgqD3l3BVqGdS+DNg3W0X8ggHASsA==
-X-Received: by 2002:a62:864e:0:b029:1ab:e82c:d724 with SMTP id x75-20020a62864e0000b02901abe82cd724mr15830943pfd.9.1608627701598;
-        Tue, 22 Dec 2020 01:01:41 -0800 (PST)
-Received: from localhost ([122.172.20.109])
-        by smtp.gmail.com with ESMTPSA id o14sm14548124pgr.44.2020.12.22.01.01.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 22 Dec 2020 01:01:40 -0800 (PST)
-Date:   Tue, 22 Dec 2020 14:31:39 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Subject: Re: [PATCH v2 15/48] opp: Support set_opp() customization without
- requiring to use regulators
-Message-ID: <20201222090139.vopgc2ju72kr4ujy@vireshk-i7>
-References: <20201217180638.22748-1-digetx@gmail.com>
- <20201217180638.22748-16-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IM9/dhD3GzWky8/GULGxs63avPzuEQHstit06zOVxXE=;
+        b=JcrQ2XbctOOL8K2hGqM4BgvHPrZ1hURTYoKs++w6ZVVj0aVUAM+QK8+i4lXllVSlvC
+         BZOte0dtVlindFNn2SzoASyBo/qYzRw95HaeizCpn5b6XJ/ZSH2eWKp3pjSjcdTUfh5M
+         snL6u27hbaEo0VGHbppUuS/vqy1pVkfj/r95ZCvkwiPuKjCIJaD5AOYATkMGsBTzvsKk
+         Cqm+kxEwJy7xfEPakre1+3sMJRIUlV0pX36WqmaX9VrxUapK8Oh4qsjNvR1w1pIWFLDp
+         vlW3oCgTIt5VCbVZ0k5r7EdzpVr+SZ3jv88t9IfHddzfIf6q0Mah12o6JHJ2edt0L+FT
+         FIAw==
+X-Gm-Message-State: AOAM530+c9D5lVspNVBoJjEMiGLAKgi8Y/Wlnb+VpNgQO5su9sWyhSF1
+        tWVSLyizH6HHwWiqF/IbdCVC2P/X6s/57lKmLBkBMnI1
+X-Google-Smtp-Source: ABdhPJx5L6i7Nacz16E6/htfB9EgCyjmVGYB4K8oNEEI8OKyphaSspA06IuroIIxfFJDekxczCq7W0/xgEaJwHhLpSs=
+X-Received: by 2002:aca:3cc5:: with SMTP id j188mr12391030oia.54.1608627804614;
+ Tue, 22 Dec 2020 01:03:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201217180638.22748-16-digetx@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <20201218173731.12839-1-wsa+renesas@sang-engineering.com> <20201218173731.12839-3-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20201218173731.12839-3-wsa+renesas@sang-engineering.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 22 Dec 2020 10:03:13 +0100
+Message-ID: <CAMuHMdUjghZYcMx+A6OB7q91ZzGJJdqJCw2E=dnZUXECzoj=Jg@mail.gmail.com>
+Subject: Re: [PATCH 2/5] clk: renesas: r8a779a0: Add RWDT clocks
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17-12-20, 21:06, Dmitry Osipenko wrote:
-> Support set_opp() customization without requiring to use regulators. This
-> is needed by drivers which want to use dev_pm_opp_set_rate() for changing
-> rates of a multiple clocks and don't need to touch regulator.
-> 
-> One example is NVIDIA Tegra30/114 SoCs which have two sibling 3D hardware
-> units which should be use to the same clock rate, meanwhile voltage
-> scaling is done using a power domain. In this case OPP table doesn't have
-> a regulator, causing a NULL dereference in _set_opp_custom().
-> 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/opp/core.c | 16 ++++++++++++----
->  1 file changed, 12 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-> index 3d02fe33630b..625dae7a5ecb 100644
-> --- a/drivers/opp/core.c
-> +++ b/drivers/opp/core.c
-> @@ -828,17 +828,25 @@ static int _set_opp_custom(const struct opp_table *opp_table,
->  			   struct dev_pm_opp_supply *old_supply,
->  			   struct dev_pm_opp_supply *new_supply)
->  {
-> -	struct dev_pm_set_opp_data *data;
-> +	struct dev_pm_set_opp_data *data, tmp_data;
-> +	unsigned int regulator_count;
->  	int size;
->  
-> -	data = opp_table->set_opp_data;
-> +	if (opp_table->set_opp_data) {
-> +		data = opp_table->set_opp_data;
-> +		regulator_count = opp_table->regulator_count;
-> +	} else {
-> +		data = &tmp_data;
-> +		regulator_count = 0;
-> +	}
-> +
->  	data->regulators = opp_table->regulators;
-> -	data->regulator_count = opp_table->regulator_count;
-> +	data->regulator_count = regulator_count;
->  	data->clk = opp_table->clk;
->  	data->dev = dev;
->  
->  	data->old_opp.rate = old_freq;
-> -	size = sizeof(*old_supply) * opp_table->regulator_count;
-> +	size = sizeof(*old_supply) * regulator_count;
->  	if (!old_supply)
->  		memset(data->old_opp.supplies, 0, size);
->  	else
+On Fri, Dec 18, 2020 at 6:37 PM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+> And introduce critical clocks, too, because RWDT is one.
+>
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-I don't see you making use of this in this patchset. How did you get this to
-crash ?
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-clk-for-v5.12.
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-viresh
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
