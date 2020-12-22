@@ -2,127 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DD272E0785
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 09:56:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D0F02E0787
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 09:56:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726336AbgLVIy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 03:54:57 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:53178 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726194AbgLVIy4 (ORCPT
+        id S1726386AbgLVIzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 03:55:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726161AbgLVIzu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 03:54:56 -0500
-Received: by mail-io1-f71.google.com with SMTP id b136so7006202iof.19
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 00:54:40 -0800 (PST)
+        Tue, 22 Dec 2020 03:55:50 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E7F9C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 00:55:10 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id z5so11300832iob.11
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 00:55:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=cL6fs/TC+AbTrexoVx8lc3glF76LL/64P3jqDOubqOU=;
+        b=p3FaLdyA6wmA6mGKW1iwHZA4ndWfgjKfkiFbsqbgmkPhf9kbrHDYXaUXj/UHpqPOXz
+         xKvfDKYwnoHivFcCrjy/OsKQhIrWrVnfMZVD6aSEQc0iJYvWZlMaPbWXZPBVRUo1DguN
+         tc8H5RUL8YwPJScAZ40XpjLRF5kZpCZq+0CojwWmHcmYzopiuoqFZCJSM7Q7U1mwXHd0
+         LbS0KzUzfZei7GmSL5fm7eUWiQXN6yn7oR1igzb7mwSXXLeEcbJlyR2iRSEPCVdsZ0+N
+         en5MqOLGoU2PuBx0e0BxXUFOLDWc6ahV/suAGeElCchCVDSApjHIw8VunNtIQVlphsGI
+         5XEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=0rhtpZGCeqTji2dyuV97MK4dbm12jQx4Z2+0a5I3EOM=;
-        b=hSd6G+0MMatrYbk2lD40JOW3FpSHA0Qa+S9L11MgBBHHMuZWa+OVKIyHDxqtXxMvF9
-         EBM7t+exd7nn4kyGFKRFHyatResEfWnQ7d2WoQEo8RBqS0hsQAQhpN8bEmn5u3mExQHX
-         ETx4Y6c7k65g0f7bveAvEd95rdShcfJOr7rSw+HYCyi93In5CwBU6X3z8GCzuFk9cs77
-         daX+uqRiQsbr8JiTb1DU4oJYTeSyEc/TydKI6BOMLOAfU6l5BsxBFAmHgUc5SkcZO02Y
-         LRSs8RlK6ElCpr3tQ7eNFu2eKUttgddpvFcVuCuhDQtkvWmJyXKyR3mwWDCypBISZ0I0
-         V5IQ==
-X-Gm-Message-State: AOAM532J03S5cTNpURmOIpj8I3Nr+PDrYTYbnGS/LbvHAex0d++2IdGE
-        X90GAIkCWRcFrgeC5hwpRsELJ2ci25di5BjREcDACQhDUfIc
-X-Google-Smtp-Source: ABdhPJyVVjcKkjRgLhzupAUnJLeUMVAcVsV9mDp4V/rlUpljQmKnUXUnevZ9gXUyPv7n//oRroo2HHvLXw2vTV3eI0XhFJGwiIKe
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=cL6fs/TC+AbTrexoVx8lc3glF76LL/64P3jqDOubqOU=;
+        b=rUALBDKmA7Ax47VKMS/ulBlMjABJnQZVlt+f3Rfr47Nk0OU7c2OdR5nJdyVRwrY21n
+         ZEqrK9B9rV9RzMjXNr5U5MIWHodscEAmdY+znWaAnJpomycGczJJ0hh6UC7ifJpSx/eG
+         qQPkRD0Bbv5nib+ltHkpfEi5cQIoqPS16Zm1l1JMWgffYrICW7FwxDfW0ySZfxOlmdU4
+         qZYSN4IXengr/5f4izlta/mc4IsqjvV1j5nE526sdkL8m/e04mwU4OhtAtVYljhaPoYu
+         9N/s/7VrQtdEPLwWyoNkHtx2ikzMYPBpK/XyFexCVnfFYLCGwrETWF6Av2HoGTGJvnj9
+         vfKw==
+X-Gm-Message-State: AOAM533trLxjXH2Ir/jZR5ndA5MgGSRex3uGPZj27WJ9YXq4yH33aQiM
+        OC4dwxBhEqAFLig7BUUULYuBVolmDHJi7wIf58qDzg==
+X-Google-Smtp-Source: ABdhPJwuNazpKAOATKE0nNMW3rBUfq40/YWGzdym8cpzWqRYRMeOtvTbqo19OaXgrOTKauto0Mlknyht6Q0bCPx/Xog=
+X-Received: by 2002:a6b:1454:: with SMTP id 81mr17362520iou.96.1608627309948;
+ Tue, 22 Dec 2020 00:55:09 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a92:cc03:: with SMTP id s3mr20709296ilp.146.1608627255224;
- Tue, 22 Dec 2020 00:54:15 -0800 (PST)
-Date:   Tue, 22 Dec 2020 00:54:15 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001faff305b709b8ad@google.com>
-Subject: general protection fault in ext4_commit_super
-From:   syzbot <syzbot+9043030c040ce1849a60@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, clang-built-linux@googlegroups.com,
-        jack@suse.cz, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, natechancellor@gmail.com,
-        ndesaulniers@google.com, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
+References: <6fa54ce6-d5ae-d04f-7c77-b62c148d92b7@gmail.com>
+ <20201106061513.uyys7njcqcdlah67@vireshk-i7> <a6926456-8bce-a438-bfaa-be334208f004@gmail.com>
+ <CAEExFWsp0DWw1yO84e3vzr_YZkqkd+pyPfQQR3J2W6n3wTX4Jw@mail.gmail.com>
+ <20201109050010.g47zojh6wafvwqva@vireshk-i7> <c584b301-e052-7f01-335d-8f9160865198@gmail.com>
+ <20201109051014.oa6bt4g3ctm2hnuy@vireshk-i7> <4476fed9-a356-b7f1-32ee-935343e23038@gmail.com>
+ <20201109053546.xupmmsx5qccn46tr@vireshk-i7> <33a7ad95-a8cf-7b88-0f78-09086c1a4adf@gmail.com>
+ <20201109055320.5y5gf2whwast2mi4@vireshk-i7> <CAEExFWuF82B3bPn8T8_vkHODNwP89MDrNOqu-MhObzqTfiYODw@mail.gmail.com>
+In-Reply-To: <CAEExFWuF82B3bPn8T8_vkHODNwP89MDrNOqu-MhObzqTfiYODw@mail.gmail.com>
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+Date:   Tue, 22 Dec 2020 14:24:59 +0530
+Message-ID: <CAKohpokBHcv34Qh1csHOF5w7utSNy8F_umMzv--pFuPTP9D4wg@mail.gmail.com>
+Subject: Re: [PATCH v1 17/30] mmc: sdhci-tegra: Support OPP and core voltage scaling
+To:     Frank Lee <tiny.windzz@gmail.com>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        driver-dev <devel@driverdev.osuosl.org>,
+        linux-pwm@vger.kernel.org,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
+        <linux-usb@vger.kernel.org>,
+        "open list:SECURE DIGITAL HO..." <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, 9 Nov 2020 at 16:51, Frank Lee <tiny.windzz@gmail.com> wrote:
+> On Mon, Nov 9, 2020 at 1:53 PM Viresh Kumar <viresh.kumar@linaro.org> wro=
+te:
 
-syzbot found the following issue on:
+> > > devm_pm_opp_set_supported_hw()
+> > > devm_pm_opp_set_regulators() [if we won't use GENPD]
+> > > devm_pm_opp_set_clkname()
+> > > devm_pm_opp_of_add_table()
+> >
+> > I tried to look earlier for the stuff already merged in and didn't
+> > find a lot of stuff where the devm_* could be used, maybe I missed
+> > some of it.
+> >
+> > Frank, would you like to refresh your series based on suggestions from
+> > Dmitry and make other drivers adapt to the new APIs ?
+>
+> I am glad to do this.=EF=BC=9A=EF=BC=89
 
-HEAD commit:    0d52778b Add linux-next specific files for 20201218
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=15b4aecb500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5c81cc44aa25b5b3
-dashboard link: https://syzkaller.appspot.com/bug?extid=9043030c040ce1849a60
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17983487500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10c02937500000
+Frank,
 
-The issue was bisected to:
+Dmitry has submitted a series with a patch that does stuff like this since =
+you
+never resent your patches.
 
-commit e810c942a325cf749e859d7aa3a43dc219cea299
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Dec 16 10:18:40 2020 +0000
+http://lore.kernel.org/lkml/20201217180638.22748-14-digetx@gmail.com
 
-    ext4: save error info to sb through journal if available
+Since you were the first one to get to this, I would still like to
+give you a chance
+to get these patches merged under your authorship, otherwise I would be goi=
+ng
+to pick patches from Dmitry.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1282f137500000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1182f137500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1682f137500000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9043030c040ce1849a60@syzkaller.appspotmail.com
-Fixes: e810c942a325 ("ext4: save error info to sb through journal if available")
-
-general protection fault, probably for non-canonical address 0xdffffc000000000c: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000060-0x0000000000000067]
-CPU: 0 PID: 7 Comm: kworker/0:1 Not tainted 5.10.0-next-20201218-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events flush_stashed_error_work
-RIP: 0010:ext4_commit_super+0x52/0x510 fs/ext4/super.c:5548
-Code: 48 c1 ea 03 80 3c 02 00 0f 85 21 04 00 00 48 8b 9d 78 06 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d 7b 60 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 f1 03 00 00 48 8b 5b 60 48 85 db 0f 84 13 01 00
-RSP: 0018:ffffc90000cc7cb8 EFLAGS: 00010206
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 000000000000000c RSI: ffffffff8217a0db RDI: 0000000000000060
-RBP: ffff88802441c000 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff8217a7fa R11: 0000000000000000 R12: ffff88802441c000
-R13: ffff88802441c678 R14: ffff8880109a5a00 R15: ffff8880b9c34440
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000400200 CR3: 0000000014038000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- flush_stashed_error_work+0x1c9/0x2a0 fs/ext4/super.c:727
- process_one_work+0x98d/0x1630 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-Modules linked in:
----[ end trace dca7dc492b64f0a6 ]---
-RIP: 0010:ext4_commit_super+0x52/0x510 fs/ext4/super.c:5548
-Code: 48 c1 ea 03 80 3c 02 00 0f 85 21 04 00 00 48 8b 9d 78 06 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d 7b 60 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 f1 03 00 00 48 8b 5b 60 48 85 db 0f 84 13 01 00
-RSP: 0018:ffffc90000cc7cb8 EFLAGS: 00010206
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 000000000000000c RSI: ffffffff8217a0db RDI: 0000000000000060
-RBP: ffff88802441c000 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff8217a7fa R11: 0000000000000000 R12: ffff88802441c000
-R13: ffff88802441c678 R14: ffff8880109a5a00 R15: ffff8880b9c34440
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000400200 CR3: 0000000025563000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+--
+viresh
