@@ -2,93 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0125C2E08DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 11:33:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBC4D2E08DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 11:34:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726604AbgLVKcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 05:32:33 -0500
-Received: from smtprelay0236.hostedemail.com ([216.40.44.236]:57638 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725985AbgLVKcc (ORCPT
+        id S1726689AbgLVKdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 05:33:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726194AbgLVKdw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 05:32:32 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 98DC7182CF665;
-        Tue, 22 Dec 2020 10:31:51 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:800:960:966:968:973:988:989:1260:1277:1311:1313:1314:1345:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2196:2199:2393:2553:2559:2562:2828:2896:2899:3138:3139:3140:3141:3142:3352:3865:3867:3868:3871:4250:4321:4385:5007:6119:10004:10400:10848:11026:11232:11658:11914:12043:12296:12297:12438:12555:12760:13069:13095:13161:13229:13311:13357:13439:14181:14394:14659:14721:21080:21433:21451:21611:21627:21740:21990:30054:30090,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: limit40_2008c822745f
-X-Filterd-Recvd-Size: 2725
-Received: from XPS-9350.home (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf18.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 22 Dec 2020 10:31:50 +0000 (UTC)
-Message-ID: <45b260bfe6a3d3c11c48e76dd5de7fa40665154c.camel@perches.com>
-Subject: [PATCH] Bluetooth: btusb: Remove duplicate newlines from logging
-From:   Joe Perches <joe@perches.com>
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc:     linux-bluetooth@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Tue, 22 Dec 2020 02:31:49 -0800
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Tue, 22 Dec 2020 05:33:52 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71D6AC0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 02:33:12 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id x1so2526195pgh.12
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 02:33:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=tKvj/bgBxxRfTrzQHkXMUBOh8hAoOnZqz+jw3Vt0T14=;
+        b=nNPjFRIU5VfWu2eZMPupGYHVwbbiSWJ5G5SKF/W3DAmbSP6HN0+5C0/SctOdG8rwMC
+         WZfZQQxPxbeBqDxHMcNM9G5bHCiTqaj4vAICZvFNUBocn+i3F1WyXlA3l1YRd4IeiL6P
+         E/uT90uBqjA6XCB2k1hOBCNY19x5xxNRkZDH+aolxHlpzGXTf8H+2w26mp/Cx+Oqw8sn
+         qFhZAkfl/7zXNZbYzts6wlWMtgzZGmLTD50htIz2ZBchIjH5IH16cHIW3FhR/EeWtTsU
+         Rcc2LGwaUT4N3dczOM8w1VDhMIFdrnBQ9yz/BcB307XbFP/Dpf7lbfqNGyRNZRBT2U6y
+         dxow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=tKvj/bgBxxRfTrzQHkXMUBOh8hAoOnZqz+jw3Vt0T14=;
+        b=H8hpat9a3fpmHlUbHEEYdH3/mW2xSysleVbOsaQxeLfHM+lz9yAS1oVaDHCyQOrx/r
+         21wPoeTfl0K5hWljddiMPnMuMh9NqEL5vRLWiFQQcgddmEGWDHg6gm684ec2H9pQZNIl
+         5ovqemPAoxzoxGeeMZy1DHyt/3Ck23LUB09caT8ekic7l3vNbSwselgYUKMptcxTsptY
+         sibsELNrLglMa4OTAfw3xLLgFPNtH7by5QOxytvStmkW8A8dXqC8TG5IvncYklFyvgnF
+         yda0g3fOfvO0qIRHmj5OXWcJfOdp73ACU/YQMiclIvtMBLEFiHv82I8eh9lRszjPw30p
+         /Aow==
+X-Gm-Message-State: AOAM532DgAWcpgbJGLkMl0P+DgdnryN1Fj5cRhg6D4b0aHj2/kpJW7GL
+        w4H6IGWK3sYQ86K1l7+jQL1Y4958LYCz5w==
+X-Google-Smtp-Source: ABdhPJx8ERswps1fe+Wik010yphFdC7kHeZeeIx5Vrx53MSD1x2XRETDZmkQx10N1+t+ojyJC9+Ijg==
+X-Received: by 2002:a63:ea01:: with SMTP id c1mr18979021pgi.138.1608633191960;
+        Tue, 22 Dec 2020 02:33:11 -0800 (PST)
+Received: from AHUANG12-1LT7M0.lenovo.com (220-142-211-188.dynamic-ip.hinet.net. [220.142.211.188])
+        by smtp.gmail.com with ESMTPSA id b189sm19854229pfb.194.2020.12.22.02.33.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Dec 2020 02:33:11 -0800 (PST)
+From:   Adrian Huang <adrianhuang0701@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Adrian Huang <adrianhuang0701@gmail.com>,
+        Adrian Huang <ahuang12@lenovo.com>
+Subject: [PATCH 1/1] mm: mmap: Remove unnecessary local variable
+Date:   Tue, 22 Dec 2020 18:32:49 +0800
+Message-Id: <20201222103249.30683-1-adrianhuang0701@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The bt_dev_<level> macros already append a newline.
+From: Adrian Huang <ahuang12@lenovo.com>
 
-Signed-off-by: Joe Perches <joe@perches.com>
+The local variable 'retval' is assigned just for once in __do_sys_brk(),
+and the function returns the value of the local variable right after
+the assignment. Remove unnecessary assignment and local variable
+declaration.
+
+Signed-off-by: Adrian Huang <ahuang12@lenovo.com>
 ---
+ mm/mmap.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-The "No memory" message could be removed as bt_skb_alloc already does
-a dump_stack() on allocation failure.
-
- drivers/bluetooth/btusb.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index b630a1d54c02..9ff920de8d26 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -1899,7 +1899,7 @@ static int btusb_setup_csr(struct hci_dev *hdev)
- 		    le16_to_cpu(rp->lmp_subver) == 0x1012 &&
- 		    le16_to_cpu(rp->hci_rev) == 0x0810 &&
- 		    le16_to_cpu(rp->hci_ver) == BLUETOOTH_VER_4_0) {
--			bt_dev_warn(hdev, "CSR: detected a fake CSR dongle using a Barrot 8041a02 chip, this chip is very buggy and may have issues\n");
-+			bt_dev_warn(hdev, "CSR: detected a fake CSR dongle using a Barrot 8041a02 chip, this chip is very buggy and may have issues");
+diff --git a/mm/mmap.c b/mm/mmap.c
+index dc7206032387..482c0c0bbe06 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -189,7 +189,6 @@ static int do_brk_flags(unsigned long addr, unsigned long request, unsigned long
+ 		struct list_head *uf);
+ SYSCALL_DEFINE1(brk, unsigned long, brk)
+ {
+-	unsigned long retval;
+ 	unsigned long newbrk, oldbrk, origbrk;
+ 	struct mm_struct *mm = current->mm;
+ 	struct vm_area_struct *next;
+@@ -281,9 +280,8 @@ SYSCALL_DEFINE1(brk, unsigned long, brk)
+ 	return brk;
  
- 			pm_runtime_allow(&data->udev->dev);
+ out:
+-	retval = origbrk;
+ 	mmap_write_unlock(mm);
+-	return retval;
++	return origbrk;
+ }
  
-@@ -1907,7 +1907,7 @@ static int btusb_setup_csr(struct hci_dev *hdev)
- 			if (ret >= 0)
- 				msleep(200);
- 			else
--				bt_dev_err(hdev, "Failed to suspend the device for Barrot 8041a02 receive-issue workaround\n");
-+				bt_dev_err(hdev, "Failed to suspend the device for Barrot 8041a02 receive-issue workaround");
- 
- 			pm_runtime_forbid(&data->udev->dev);
- 
-@@ -3724,7 +3724,7 @@ static int marvell_config_oob_wake(struct hci_dev *hdev)
- 
- 	skb = bt_skb_alloc(sizeof(cmd), GFP_KERNEL);
- 	if (!skb) {
--		bt_dev_err(hdev, "%s: No memory\n", __func__);
-+		bt_dev_err(hdev, "%s: No memory", __func__);
- 		return -ENOMEM;
- 	}
- 
-@@ -3733,7 +3733,7 @@ static int marvell_config_oob_wake(struct hci_dev *hdev)
- 
- 	ret = btusb_send_frame(hdev, skb);
- 	if (ret) {
--		bt_dev_err(hdev, "%s: configuration failed\n", __func__);
-+		bt_dev_err(hdev, "%s: configuration failed", __func__);
- 		kfree_skb(skb);
- 		return ret;
- 	}
+ static inline unsigned long vma_compute_gap(struct vm_area_struct *vma)
+-- 
+2.17.1
 
