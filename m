@@ -2,111 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F4672E0E03
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 18:57:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B0822E0E08
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 18:59:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727962AbgLVR4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 12:56:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39093 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726889AbgLVR4w (ORCPT
+        id S1728026AbgLVR7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 12:59:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727094AbgLVR7U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 12:56:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608659725;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=r2se/Af1BmxrHuTv790CtQ4dQJwj2Jydor4De9zLCdc=;
-        b=NrhJX8exodjAftIAeAd1FzE/H0vi6Zp2laVhuapVbSg5CtnVp2nRdfj6h7EzVmsjqpxMKF
-        9di82Jwj9UyVZpOEnXqheQW3FYCro9RPfiBiH/sDt3P6LINFJDizMblcSglROtvFXhehUJ
-        kn/AxgRvs/z+w7C3bVGfjhz4E0633FA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-560-J7FzT1AtNgu2cjBN8etUiA-1; Tue, 22 Dec 2020 12:55:21 -0500
-X-MC-Unique: J7FzT1AtNgu2cjBN8etUiA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 20E9A1005D4C;
-        Tue, 22 Dec 2020 17:55:19 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-114-207.rdu2.redhat.com [10.10.114.207])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DFBBE5D705;
-        Tue, 22 Dec 2020 17:55:18 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 701D3220BCF; Tue, 22 Dec 2020 12:55:18 -0500 (EST)
-Date:   Tue, 22 Dec 2020 12:55:18 -0500
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, jlayton@kernel.org,
-        amir73il@gmail.com, sargun@sargun.me, miklos@szeredi.hu,
-        jack@suse.cz, neilb@suse.com, viro@zeniv.linux.org.uk, hch@lst.de
-Subject: Re: [PATCH 3/3] overlayfs: Report writeback errors on upper
-Message-ID: <20201222175518.GD3248@redhat.com>
-References: <20201221195055.35295-1-vgoyal@redhat.com>
- <20201221195055.35295-4-vgoyal@redhat.com>
- <20201222162027.GJ874@casper.infradead.org>
- <20201222162925.GC3248@redhat.com>
- <20201222174637.GK874@casper.infradead.org>
+        Tue, 22 Dec 2020 12:59:20 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E7FC0613D3;
+        Tue, 22 Dec 2020 09:58:40 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id m12so33994417lfo.7;
+        Tue, 22 Dec 2020 09:58:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PfXAXQ8kBE2vb/nUDtD4To0JchlXyJ1Qy383TUCdL5w=;
+        b=bUt7/Ewoudd8Ppjf+R80lF3XO9mPK8pM3OhJPkyh7wcro70W1s2ps19o+kAMZu9Bo5
+         IamxHUDH1WQg7+353HzRyVnc84N3pGo1MkoWpdqQq2S/gGSvvU+VBQDQ1ZWH6IS9yvJx
+         uCPKZLZSOVX8lWdf3X4efSbHJb0LTFWLs69HHKjITTfrzqi/CSI38LH4wOt9kG8S9ldD
+         oqfc84awKOYe35uJWz33WRhGOv7p/UHi4pqaho4F7vvfb899441quA9DJVWo+Zjt8uCT
+         duCf3wDNI03Me+YoKe3sx4tBTiIH7N9py30uqYdRqCRgbknlP+0gaXWoUUgunOAx/lsp
+         CRLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PfXAXQ8kBE2vb/nUDtD4To0JchlXyJ1Qy383TUCdL5w=;
+        b=mGW4l+PVCnKf00cxvaYfXz9wZLi9G2HkDGuWBZnXhWw3PVeEKiWTm6lJ/blYYY12Ap
+         sn4q5qMD5yibY4jTayRFWapiuKop7I+uoXKoPmmB/ER+P/mhh4dBp/N90Jt+BrJru4VG
+         2BWCNjitydHIDXLx567Ms/WxoZOi/Y1FWcRdmkLqDzUJMu1/kij9557MrBbIMX7CrY2y
+         6ayJ5WBx/YoEFc6KDM9QP+qAPQZujHImcizpiJoHTLshxqWQ7HGYpDVVceaZwjXI2RBK
+         lOZLmMeF+6ArL8pQxH1S2U7mzUqPzGSh2GFfuPq4q1mji4v20RA0iduvdKc9V/8XOX4F
+         xbPA==
+X-Gm-Message-State: AOAM532e/E159kwNofEmlyrSDptMYDLKtLlMaYmG+31X0SodvkYrO43U
+        tgbc+JHgJlLNanwCYb/hfJhWq/7bxLGRolzydAlAcibmSjs=
+X-Google-Smtp-Source: ABdhPJxiMPW/bFl10CagAVMyf3CW3+lHjSBLbEcXhJeid36YohxQ09gShY8vDKRMIFXxt/2lq/4zLFC9vZRuRgXvJWw=
+X-Received: by 2002:ac2:4431:: with SMTP id w17mr8772863lfl.223.1608659918710;
+ Tue, 22 Dec 2020 09:58:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201222174637.GK874@casper.infradead.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20201125161815.2361-1-lukma@denx.de> <20201125161815.2361-3-lukma@denx.de>
+In-Reply-To: <20201125161815.2361-3-lukma@denx.de>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Tue, 22 Dec 2020 14:58:27 -0300
+Message-ID: <CAOMZO5AkSZf3p7n1UdE9HXPcVciBATH1k5mZLCoNKZ6o2M8maQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] ARM: dts: imx28: Add DTS description of imx28 based
+ XEA board
+To:     Lukasz Majewski <lukma@denx.de>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 05:46:37PM +0000, Matthew Wilcox wrote:
-> On Tue, Dec 22, 2020 at 11:29:25AM -0500, Vivek Goyal wrote:
-> > On Tue, Dec 22, 2020 at 04:20:27PM +0000, Matthew Wilcox wrote:
-> > > On Mon, Dec 21, 2020 at 02:50:55PM -0500, Vivek Goyal wrote:
-> > > > +static int ovl_errseq_check_advance(struct super_block *sb, struct file *file)
-> > > > +{
-> > > > +	struct ovl_fs *ofs = sb->s_fs_info;
-> > > > +	struct super_block *upper_sb;
-> > > > +	int ret;
-> > > > +
-> > > > +	if (!ovl_upper_mnt(ofs))
-> > > > +		return 0;
-> > > > +
-> > > > +	upper_sb = ovl_upper_mnt(ofs)->mnt_sb;
-> > > > +
-> > > > +	if (!errseq_check(&upper_sb->s_wb_err, file->f_sb_err))
-> > > > +		return 0;
-> > > > +
-> > > > +	/* Something changed, must use slow path */
-> > > > +	spin_lock(&file->f_lock);
-> > > > +	ret = errseq_check_and_advance(&upper_sb->s_wb_err, &file->f_sb_err);
-> > > > +	spin_unlock(&file->f_lock);
-> > > 
-> > > Why are you microoptimising syncfs()?  Are there really applications which
-> > > call syncfs() in a massively parallel manner on the same file descriptor?
-> > 
-> > This is atleast theoritical race. I am not aware which application can
-> > trigger this race. So to me it makes sense to fix the race.
-> > 
-> > Jeff Layton also posted a fix for syncfs().
-> > 
-> > https://lore.kernel.org/linux-fsdevel/20201219134804.20034-1-jlayton@kernel.org/
-> > 
-> > To me it makes sense to fix the race irrespective of the fact if somebody
-> > hit it or not. People end up copying code in other parts of kernel and
-> > and they will atleast copy race free code.
-> 
-> Let me try again.  "Why are you trying to avoid taking the spinlock?"
+Hi Lukasz,
 
-Aha.., sorry, I misunderstood your question. I don't have a good answer.
-I just copied the code from Jeff Layton's patch.
+On Wed, Nov 25, 2020 at 1:19 PM Lukasz Majewski <lukma@denx.de> wrote:
 
-Agreed that cost of taking spin lock will not be significant until
-syncfs() is called at high frequency. Having said that, most of the
-time taking spin lock will not be needed, so avoiding it with
-a simple call to errseq_check() sounds reasonable too.
+> diff --git a/arch/arm/boot/dts/imx28-lwe.dtsi b/arch/arm/boot/dts/imx28-lwe.dtsi
+> new file mode 100644
+> index 000000000000..cb2eb4377d9c
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/imx28-lwe.dtsi
+> @@ -0,0 +1,185 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+> +/*
+> + * Copyright 2020
+> + * Lukasz Majewski, DENX Software Engineering, lukma@denx.de
+> + */
+> +
+> +/dts-v1/;
+> +#include "imx28.dtsi"
+> +
+> +/ {
+> +       compatible = "fsl,imx28";
 
-I don't have any strong opinions here. I am fine with any of the
-implementation people like.
+You can drop this one.
 
-Vivek
+> +
+> +       aliases {
+> +               spi2 = &ssp3;
+> +       };
+> +
+> +       chosen {
+> +               bootargs = "root=/dev/mmcblk0p2 rootfstype=ext4 ro rootwait console=ttyAMA0,115200 panic=1";
 
+You could remove bootargs and let the bootloader pass it.
+
+We usually don't pass bootargs in the i.MX dts files.
+
+> +       };
+> +
+> +       memory {
+
+memory@40000000
+
+otherwise you will get dtc build warnings with W=1.
+
+> +               reg = <0x40000000 0x08000000>;
+> +       };
+> +
+> +       regulators {
+> +               compatible = "simple-bus";
+> +               #address-cells = <1>;
+> +               #size-cells = <0>;
+
+No need for this 'regulators' container.
+
+> +
+> +               reg_3v3: regulator@0 {
+
+reg_3v3: regulator-reg-3v3 {
+
+> +                       compatible = "regulator-fixed";
+> +                       reg = <0>;
+
+Remove the reg = <0>
+
+Same applies to other regulators.
+
+> +               reg_usb_5v: regulator@1 {
+> +                       compatible = "regulator-fixed";
+> +                       reg = <1>;
+> +                       regulator-name = "usb_vbus";
+> +                       regulator-min-microvolt = <5000000>;
+> +                       regulator-max-microvolt = <5000000>;
+> +                       enable-active-high;
+
+Why passing 'enable-active-high' when this is not gpio controlled?
+
+> +               };
+> +
+> +               reg_fec_3v3: regulator@2 {
+> +                       compatible = "regulator-fixed";
+> +                       reg = <2>;
+> +                       regulator-name = "fec-phy";
+> +                       regulator-min-microvolt = <3300000>;
+> +                       regulator-max-microvolt = <3300000>;
+> +                       enable-active-high;
+
+Same here.
+
+> +&ssp3 {
+> +       compatible = "fsl,imx28-spi";
+> +       pinctrl-names = "default";
+> +       pinctrl-0 = <&spi3_pins_a>;
+> +       status = "okay";
+> +
+> +       flash0: s25fl256s0@0 {
+
+Node names should be generic
+
+flash@0
+> +
+> +/dts-v1/;
+> +#include "imx28-lwe.dtsi"
+> +
+> +/ {
+> +       model = "XEA";
+
+compatible = "xea,imx20-lwe", "fsl,imx28";
+
+You should add xea to the vendor prefix in a separate patch.
+
+You also need to add thie board to
+Documentation/devicetree/bindings/arm/fsl.yaml
