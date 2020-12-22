@@ -2,179 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23B612E0CD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 16:38:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B865D2E0CE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 16:46:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727801AbgLVPhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 10:37:48 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:35242 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727224AbgLVPhs (ORCPT
+        id S1727786AbgLVPpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 10:45:04 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:39439 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727373AbgLVPpE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 10:37:48 -0500
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BMFXThA053438;
-        Tue, 22 Dec 2020 10:37:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=oqxOgppJ0v2QYv80hbQ7WCuvAaXCbnFr+L7o8WmZtrw=;
- b=SQzCjDULH57W5wzk9XScAiHcjMCHkIFiMdJVuCAeeQ/NiIxBgz+LAf/ne3D2OoC732h4
- aYc4uyMk5F7k7HRNszL42M6ypusSNamDAL8B6++05+i8/cqs1fg60CzkokO+haAVHczl
- 0gYSIQMs7KnA71Si/he6aSbUzvWQwo3DBMwIpUd+zpcOwJeCcMGmbHL6SqF29kcaQKip
- Nj+jQLILvInMQ4VwWwQARY/OdEPWwAeKEOC08ThDk2Ryjhq0LXtpcaolG0UVv4gNGB/Y
- HFEBg6yrQ3DdEOLcie7JjcjbgrY01x4NT+7eUlzL10rdHkJnCyDyNWX76juiWcKXwQnQ 3A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35kh4scj1b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Dec 2020 10:37:06 -0500
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BMFXT9Z053412;
-        Tue, 22 Dec 2020 10:37:06 -0500
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35kh4scj0h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Dec 2020 10:37:06 -0500
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BMFR8fc028871;
-        Tue, 22 Dec 2020 15:37:05 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma03dal.us.ibm.com with ESMTP id 35k02erfrb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Dec 2020 15:37:05 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BMFb3a012059370
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 22 Dec 2020 15:37:03 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 60A53BE04F;
-        Tue, 22 Dec 2020 15:37:03 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 27EA0BE059;
-        Tue, 22 Dec 2020 15:37:02 +0000 (GMT)
-Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.193.150])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 22 Dec 2020 15:37:01 +0000 (GMT)
-Subject: Re: [PATCH v4] s390/vfio-ap: clean up vfio_ap resources when KVM
- pointer invalidated
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, stable@vger.kernel.org,
-        borntraeger@de.ibm.com, cohuck@redhat.com, kwankhede@nvidia.com,
-        pbonzini@redhat.com, alex.williamson@redhat.com,
-        pasic@linux.vnet.ibm.com
-References: <20201221185625.24914-1-akrowiak@linux.ibm.com>
- <20201222050521.46af2bf1.pasic@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <853da84f-092b-6b94-62d5-628f440abc40@linux.ibm.com>
-Date:   Tue, 22 Dec 2020 10:37:01 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Tue, 22 Dec 2020 10:45:04 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608651880; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=V3is/KP9X3iODvQMYSfeCfbe4PwUmMc4FyAr6uEgGbc=; b=rYwX2QVCsBhZgg2K4ovCC9pAzCIT8OxGcYh5lQxVaD0zkqCCmsf0Z2YmpE/HI5xvUGIP/sMh
+ pC/g5ZzLGt2j/b7+tligsQPXtqW93D+xb3jIJGbpzywG6rDSyKa7bJFq+jd4ivOQ/69mAWLO
+ lxP81y9ukJS/WsVkPsSkbSgryg4=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5fe2144cb00c0d7ad4391cac (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Dec 2020 15:44:12
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 88A61C43466; Tue, 22 Dec 2020 15:44:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from x230.qca.qualcomm.com (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DEE1FC433C6;
+        Tue, 22 Dec 2020 15:44:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DEE1FC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-mmc@vger.kernel.org,
+        Pali =?utf-8?Q?Roh?= =?utf-8?Q?=C3=A1r?= <pali@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [PATCH v3 05/24] wfx: add main.c/main.h
+References: <20201104155207.128076-1-Jerome.Pouiller@silabs.com>
+        <20201104155207.128076-6-Jerome.Pouiller@silabs.com>
+Date:   Tue, 22 Dec 2020 17:44:05 +0200
+In-Reply-To: <20201104155207.128076-6-Jerome.Pouiller@silabs.com> (Jerome
+        Pouiller's message of "Wed, 4 Nov 2020 16:51:48 +0100")
+Message-ID: <87a6u57smy.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20201222050521.46af2bf1.pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-22_07:2020-12-21,2020-12-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 adultscore=0
- malwarescore=0 clxscore=1015 impostorscore=0 spamscore=0
- priorityscore=1501 bulkscore=0 lowpriorityscore=0 suspectscore=0
- phishscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012220115
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
 
+> +/* NOTE: wfx_send_pds() destroy buf */
+> +int wfx_send_pds(struct wfx_dev *wdev, u8 *buf, size_t len)
+> +{
+> +	int ret;
+> +	int start, brace_level, i;
+> +
+> +	start = 0;
+> +	brace_level = 0;
+> +	if (buf[0] != '{') {
+> + dev_err(wdev->dev, "valid PDS start with '{'. Did you forget to
+> compress it?\n");
+> +		return -EINVAL;
+> +	}
+> +	for (i = 1; i < len - 1; i++) {
+> +		if (buf[i] == '{')
+> +			brace_level++;
+> +		if (buf[i] == '}')
+> +			brace_level--;
+> +		if (buf[i] == '}' && !brace_level) {
+> +			i++;
+> +			if (i - start + 1 > WFX_PDS_MAX_SIZE)
+> +				return -EFBIG;
+> +			buf[start] = '{';
+> +			buf[i] = 0;
+> +			dev_dbg(wdev->dev, "send PDS '%s}'\n", buf + start);
+> +			buf[i] = '}';
+> +			ret = hif_configuration(wdev, buf + start,
+> +						i - start + 1);
+> +			if (ret > 0) {
+> + dev_err(wdev->dev, "PDS bytes %d to %d: invalid data (unsupported
+> options?)\n",
+> +					start, i);
+> +				return -EINVAL;
+> +			}
+> +			if (ret == -ETIMEDOUT) {
+> + dev_err(wdev->dev, "PDS bytes %d to %d: chip didn't reply (corrupted
+> file?)\n",
+> +					start, i);
+> +				return ret;
+> +			}
+> +			if (ret) {
+> + dev_err(wdev->dev, "PDS bytes %d to %d: chip returned an unknown
+> error\n",
+> +					start, i);
+> +				return -EIO;
+> +			}
+> +			buf[i] = ',';
+> +			start = i;
+> +		}
+> +	}
+> +	return 0;
+> +}
 
-On 12/21/20 11:05 PM, Halil Pasic wrote:
-> On Mon, 21 Dec 2020 13:56:25 -0500
-> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
->
->> The vfio_ap device driver registers a group notifier with VFIO when the
->> file descriptor for a VFIO mediated device for a KVM guest is opened to
->> receive notification that the KVM pointer is set (VFIO_GROUP_NOTIFY_SET_KVM
->> event). When the KVM pointer is set, the vfio_ap driver takes the
->> following actions:
->> 1. Stashes the KVM pointer in the vfio_ap_mdev struct that holds the state
->>     of the mediated device.
->> 2. Calls the kvm_get_kvm() function to increment its reference counter.
->> 3. Sets the function pointer to the function that handles interception of
->>     the instruction that enables/disables interrupt processing.
->> 4. Sets the masks in the KVM guest's CRYCB to pass AP resources through to
->>     the guest.
->>
->> In order to avoid memory leaks, when the notifier is called to receive
->> notification that the KVM pointer has been set to NULL, the vfio_ap device
->> driver should reverse the actions taken when the KVM pointer was set.
->>
->> Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
->> Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
->> Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-> [..]
->
->>   static int vfio_ap_mdev_group_notifier(struct notifier_block *nb,
->>   				       unsigned long action, void *data)
->>   {
->> -	int ret;
->> +	int ret, notify_rc = NOTIFY_DONE;
->>   	struct ap_matrix_mdev *matrix_mdev;
->>   
->>   	if (action != VFIO_GROUP_NOTIFY_SET_KVM)
->>   		return NOTIFY_OK;
->>   
->>   	matrix_mdev = container_of(nb, struct ap_matrix_mdev, group_notifier);
->> +	mutex_lock(&matrix_dev->lock);
->>   
->>   	if (!data) {
->> -		matrix_mdev->kvm = NULL;
->> -		return NOTIFY_OK;
->> +		if (matrix_mdev->kvm)
->> +			vfio_ap_mdev_unset_kvm(matrix_mdev);
->> +		notify_rc = NOTIFY_OK;
->> +		goto notify_done;
->>   	}
->>   
->>   	ret = vfio_ap_mdev_set_kvm(matrix_mdev, data);
->>   	if (ret)
->> -		return NOTIFY_DONE;
->> +		goto notify_done;
->>   
->>   	/* If there is no CRYCB pointer, then we can't copy the masks */
->>   	if (!matrix_mdev->kvm->arch.crypto.crycbd)
->> -		return NOTIFY_DONE;
->> +		goto notify_done;
->>   
->>   	kvm_arch_crypto_set_masks(matrix_mdev->kvm, matrix_mdev->matrix.apm,
->>   				  matrix_mdev->matrix.aqm,
->>   				  matrix_mdev->matrix.adm);
->>   
->> -	return NOTIFY_OK;
-> Shouldn't there be an
->   +	notify_rc = NOTIFY_OK;
-> here? I mean you initialize notify_rc to NOTIFY_DONE, in the !data branch
-> on success you set notify_rc to NOTIFY_OK, but in the !!data branch it
-> just stays NOTIFY_DONE. Or am I missing something?
+What does this function do? Looks very strange.
 
-I don't think it matters much since NOTIFY_OK and NOTIFY_DONE have
-no further effect on processing of the notification queue, but I believe
-you are correct, this is a change from what we originally had. I can
-restore the original return values if you'd prefer.
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
->
-> Otherwise LGTM!
->
-> Regards,
-> Halil
->
->> +notify_done:
->> +	mutex_unlock(&matrix_dev->lock);
->> +	return notify_rc;
->>   }
->>
-> [..]
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
