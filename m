@@ -2,75 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 567E92E0F6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 21:35:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E4C2E0F6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 21:36:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727694AbgLVUeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 15:34:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725913AbgLVUeJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 15:34:09 -0500
-Received: from yawp.biot.com (yawp.biot.com [IPv6:2a01:4f8:10a:8e::fce2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08C31C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 12:33:29 -0800 (PST)
-Received: from debian-spamd by yawp.biot.com with sa-checked (Exim 4.93)
-        (envelope-from <bert@biot.com>)
-        id 1kroLX-009H7d-BO
-        for linux-kernel@vger.kernel.org; Tue, 22 Dec 2020 21:33:27 +0100
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on yawp
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.4
-Received: from [2a02:578:460c:1:ae1f:6bff:fed1:9ca8] (helo=sumner.biot.com)
-        by yawp.biot.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <bert@biot.com>)
-        id 1kroL3-009H6j-J2; Tue, 22 Dec 2020 21:32:57 +0100
-Received: from bert by sumner.biot.com with local (Exim 4.93)
-        (envelope-from <bert@biot.com>)
-        id 1kroL3-006FNb-34; Tue, 22 Dec 2020 21:32:57 +0100
-From:   Bert Vermeulen <bert@biot.com>
-To:     Paul Burton <paulburton@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org (open list:MIPS GENERIC PLATFORM),
-        linux-kernel@vger.kernel.org (open list)
-Cc:     Bert Vermeulen <bert@biot.com>
-Subject: [PATCH] arch: mips: Remove unused BOARD_INGENIC Kconfig option
-Date:   Tue, 22 Dec 2020 21:32:39 +0100
-Message-Id: <20201222203239.1489040-1-bert@biot.com>
-X-Mailer: git-send-email 2.25.1
+        id S1727522AbgLVUfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 15:35:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57872 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726030AbgLVUfd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 15:35:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2E2E22AAE
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 20:34:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608669292;
+        bh=p6xKICnqooK/rn2BF9K9yaO+3IBNYsaVfdCpfQPveGU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=SLKXP6jrkz/rqEjR50YozmGriXfGRnR3X8pWmdzGRL4xrqf0CgvW0SEv4e+UYJ8Vt
+         mqWWztiFWl9oqLT9EwcQl5K/BYtEcauJ382MV5Ew7Ajtt38YjOCGQkffUYQTCxvp+Y
+         6tKdgjoHKK0ZcUtt3wxn+5pW1pxRBchufAOxarwtuWqk+jGmI/LlZFyMxxTFV0ZjZf
+         m6sVGdFSWTTjJgRUF2Zr6mioXLy/xo03f19tplhp9NvZhmF7Njhqh6m8uwyeuotF9c
+         EXGEOPiwBSFliAHbbYuMCvxDeJoTBvQL+R/Lz+4mtVJURQqTSs/WnXqD+W+UW39EKa
+         5VVGKwdkYBekg==
+Received: by mail-wr1-f44.google.com with SMTP id y17so15962934wrr.10
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 12:34:51 -0800 (PST)
+X-Gm-Message-State: AOAM53255vYLsvQEStA27xpFnaz7eecSOz1gK7t1bPNm6J52TssPaQ6h
+        8EDN+oZlOLM0DL1AqUcWJ7M88Ne8u66OALPDe5CjUQ==
+X-Google-Smtp-Source: ABdhPJwO+xzWqh2HS90TjCvmcwzK37BMFuVHXXj/xQOQL2gX5GxNaX+rXIJ8+69OQJax3KDvljpQFskv6YHY3ZzT1Zs=
+X-Received: by 2002:a5d:43c3:: with SMTP id v3mr25514235wrr.184.1608669290441;
+ Tue, 22 Dec 2020 12:34:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201219043006.2206347-1-namit@vmware.com> <X95RRZ3hkebEmmaj@redhat.com>
+ <EDC00345-B46E-4396-8379-98E943723809@gmail.com> <DD367393-D1B3-4A84-AF92-9C6BAEAB40DC@gmail.com>
+In-Reply-To: <DD367393-D1B3-4A84-AF92-9C6BAEAB40DC@gmail.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Tue, 22 Dec 2020 12:34:38 -0800
+X-Gmail-Original-Message-ID: <CALCETrXLH7vPep-h4fBFSft1YEkyZQo_7W2uh017rHKYT=Occw@mail.gmail.com>
+Message-ID: <CALCETrXLH7vPep-h4fBFSft1YEkyZQo_7W2uh017rHKYT=Occw@mail.gmail.com>
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        linux-mm <linux-mm@kvack.org>, Peter Xu <peterx@redhat.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Board support depends on MACH_INGENIC, not BOARD_INGENIC.
+On Sat, Dec 19, 2020 at 2:06 PM Nadav Amit <nadav.amit@gmail.com> wrote:
+> > [ I have in mind another solution, such as keeping in each page-table a
+> > =E2=80=9Ctable-generation=E2=80=9D which is the mm-generation at the ti=
+me of the change,
+> > and only flush if =E2=80=9Ctable-generation=E2=80=9D=3D=3D=E2=80=9Cmm-g=
+eneration=E2=80=9D, but it requires
+> > some thought on how to avoid adding new memory barriers. ]
+> >
+> > IOW: I think the change that you suggest is insufficient, and a proper
+> > solution is too intrusive for =E2=80=9Cstable".
+> >
+> > As for performance, I can add another patch later to remove the TLB flu=
+sh
+> > that is unnecessarily performed during change_protection_range() that d=
+oes
+> > permission promotion. I know that your concern is about the =E2=80=9Cpr=
+otect=E2=80=9D case
+> > but I cannot think of a good immediate solution that avoids taking mmap=
+_lock
+> > for write.
+> >
+> > Thoughts?
+>
+> On a second thought (i.e., I don=E2=80=99t know what I was thinking), doi=
+ng so =E2=80=94
+> checking mm_tlb_flush_pending() on every PTE read which is potentially
+> dangerous and flushing if needed - can lead to huge amount of TLB flushes
+> and shootodowns as the counter might be elevated for considerable amount =
+of
+> time.
 
-Signed-off-by: Bert Vermeulen <bert@biot.com>
----
- arch/mips/generic/Kconfig | 6 ------
- 1 file changed, 6 deletions(-)
+I've lost track as to whether we still think that this particular
+problem is really a problem, but could we perhaps make the
+tlb_flush_pending field be per-ptl instead of per-mm?  Depending on
+how it gets used, it could plausibly be done without atomics or
+expensive barriers by using PTL to protect the field.
 
-diff --git a/arch/mips/generic/Kconfig b/arch/mips/generic/Kconfig
-index 55d9aed7ced9..5216c850b7e2 100644
---- a/arch/mips/generic/Kconfig
-+++ b/arch/mips/generic/Kconfig
-@@ -73,12 +73,6 @@ config FIT_IMAGE_FDT_OCELOT
- 	  from Microsemi in the FIT kernel image.
- 	  This requires u-boot on the platform.
- 
--config BOARD_INGENIC
--	bool "Support boards based on Ingenic SoCs"
--	select MACH_INGENIC_GENERIC
--	help
--	  Enable support for boards based on Ingenic SoCs.
--
- config VIRT_BOARD_RANCHU
- 	bool "Support Ranchu platform for Android emulator"
- 	help
--- 
-2.25.1
+FWIW, x86 has a mm generation counter, and I don't think it would be
+totally crazy to find a way to expose an mm generation to core code.
+I don't think we'd want to expose the specific data structures that
+x86 uses to track it -- they're very tailored to the oddities of x86
+TLB management.  x86 also doesn't currently have any global concept of
+which mm generation is guaranteed to have been propagated to all CPUs
+-- we track the generation in the pagetables and, per cpu, the
+generation that we know that CPU has seen.  x86 could offer a function
+"ensure that all CPUs catch up to mm generation G and don't return
+until this happens" and its relative "have all CPUs caught up to mm
+generation G", but these would need to look at data from multiple CPUs
+and would probably be too expensive on very large systems to use in
+normal page faults unless we were to cache the results somewhere.
+Making a nice cache for this is surely doable, but maybe more
+complexity than we'd want.
 
+--Andy
