@@ -2,103 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B6DC2E0C5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 16:06:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D14582E0C60
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 16:07:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727864AbgLVPFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 10:05:35 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:44042 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727562AbgLVPFe (ORCPT
+        id S1727961AbgLVPFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 10:05:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727635AbgLVPFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 10:05:34 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1608649510; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
- To: From: Sender; bh=vcMEeUoT3Z3kdKnMW2V1gjPTTxkC2TxawohiRxsx5k8=; b=E8jqBQJtMrkh555XQv3aEyN0XNIgDVDTqHymlCE6yiFx+wd6kIIkrNV9vtCu+rfr8M+jL4eh
- H3f7e7+KzzLsTqWoZIfGJte6gFe/pGFdq+0uNk6hSgIzPfkYbqea0jr4uREiNrlIUwj1hNUt
- AQlzkL5cY+zgahaNnOsp6sWiIOA=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5fe20b0a7036173f4f828202 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Dec 2020 15:04:42
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D884BC433ED; Tue, 22 Dec 2020 15:04:41 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from x230.qca.qualcomm.com (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1A3F9C433CA;
-        Tue, 22 Dec 2020 15:04:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1A3F9C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-mmc@vger.kernel.org,
-        Pali =?utf-8?Q?Roh?= =?utf-8?Q?=C3=A1r?= <pali@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH v3 01/24] mmc: sdio: add SDIO IDs for Silabs WF200 chip
-References: <20201104155207.128076-1-Jerome.Pouiller@silabs.com>
-        <20201104155207.128076-2-Jerome.Pouiller@silabs.com>
-Date:   Tue, 22 Dec 2020 17:04:35 +0200
-In-Reply-To: <20201104155207.128076-2-Jerome.Pouiller@silabs.com> (Jerome
-        Pouiller's message of "Wed, 4 Nov 2020 16:51:44 +0100")
-Message-ID: <87y2hp9918.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        Tue, 22 Dec 2020 10:05:46 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D72EC0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 07:05:06 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id c22so8500539pgg.13
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 07:05:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=endlessos.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+mDMj1VhS1g9ZAydEXjYxo+LFu7baJkisWPTmeHryq4=;
+        b=HkRAe48kmhhdtqn526nFfNaVz5YDjvAHem15pAA1tH2xPajKeNawB4hMOddDcGBvRs
+         n9Ahdraj8di2Bw+ju2Qhj+uFiFf02l853SnlzIqJSIrXe7hrNcubbWXOvY62xmgyp4/a
+         aVB4C/sPqQC9Iy3WiI/60pUJFq3PI96QMes5e3euokL0gJ90o9OkzhEqt/+XCpwvBm+G
+         Axji+O5gqnBF7RRy6ZNlM0mAUKN/avuS/ijjROTjesFj8xoKdTjVWtUPqh2VhHOcPQqk
+         nvFRLv+USeuK9J7XeYi8JAzGwGmj6TvN/Bg4uwvLZXAVSlQlRR5cKxEVeLw6Bt6sxi2e
+         2cQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+mDMj1VhS1g9ZAydEXjYxo+LFu7baJkisWPTmeHryq4=;
+        b=f11cQx1hgcruHxmCEtiIUCiF9M3/kAFWPPhQW/o8Ls3VrhuFBY6Y8NfWyZkYinUPTg
+         xN/Yl5uuMjl2wX6NBPwSNbaQCYIo2t9kdIXvoOAaPbiBLUHnNwjKLkxB5irrX2cvxz2d
+         Vu/BUV3dADQOWPeclY2YmL8yY3/zeKE3TKt4fvQP0T+jq5dclxZnj5KBmyhX5qOzFZyE
+         GWyiByEyaUu2QAA/HOK8gL+my/elqf1Q9Z6PNhFj4FI4R8wEcPQp6P+g2RrvOu2wWCef
+         LsDvNa2teWsrU0YWnlDL2bqyN/w5albh4E0nX7R9SX1V1tSOneoqB21wE7Wm6OiZMnRZ
+         439A==
+X-Gm-Message-State: AOAM532Ndzf5r0ZLPpIZYnXIP0G+3SyGhFpwsLf1DWRmjEsQSRgBGgx3
+        rudVNTe1+3QhZrYHn7zknYtScW+DVfkK9w==
+X-Google-Smtp-Source: ABdhPJxFVIxjenBWQ4dL+giI/9f1UeSo9v0t064Em0SPBDUGBx4YI6ZLA3x6/jbmTJB3ErbMoty2mQ==
+X-Received: by 2002:a63:470b:: with SMTP id u11mr20100411pga.436.1608649506157;
+        Tue, 22 Dec 2020 07:05:06 -0800 (PST)
+Received: from localhost.localdomain (2001-b011-3814-dae9-4a2f-9772-47bc-5b94.dynamic-ip6.hinet.net. [2001:b011:3814:dae9:4a2f:9772:47bc:5b94])
+        by smtp.googlemail.com with ESMTPSA id u14sm19000202pfk.111.2020.12.22.07.05.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Dec 2020 07:05:05 -0800 (PST)
+From:   Chris Chiu <chiu@endlessos.org>
+To:     tiwai@suse.com, kailang@realtek.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        linux@endlessos.org, Chris Chiu <chiu@endlessos.org>
+Subject: [PATCH 1/2] ALSA: hda/realtek: Apply jack fixup for Quanta NL3
+Date:   Tue, 22 Dec 2020 23:04:58 +0800
+Message-Id: <20201222150459.9545-1-chiu@endlessos.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
+The Quanta NL3 laptop has both a headphone output jack and a headset
+jack, on the right edge of the chassis.
 
-> From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
->
-> Add Silabs SDIO ID to sdio_ids.h.
->
-> Note that the values used by Silabs are uncommon. A driver cannot fully
-> rely on the SDIO PnP. It should also check if the device is declared in
-> the DT.
->
-> Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
-> ---
->  include/linux/mmc/sdio_ids.h | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/include/linux/mmc/sdio_ids.h b/include/linux/mmc/sdio_ids.h
-> index 12036619346c..20a48162f7fc 100644
-> --- a/include/linux/mmc/sdio_ids.h
-> +++ b/include/linux/mmc/sdio_ids.h
-> @@ -25,6 +25,11 @@
->   * Vendors and devices.  Sort key: vendor first, device next.
->   */
->=20=20
-> +// Silabs does not use a reliable vendor ID. To avoid conflicts, the dri=
-ver
-> +// won't probe the device if it is not also declared in the DT.
+The pin information suggests that both of these are at the Front.
+The PulseAudio is confused to differentiate them so one of the jack
+can neither get the jack sense working nor the audio output.
 
-C++ comments?
+The ALC269_FIXUP_LIFEBOOK chained with ALC269_FIXUP_QUANTA_MUTE can
+help to differentiate 2 jacks and get the 'Auto-Mute Mode' working
+correctly.
 
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
+Signed-off-by: Chris Chiu <chiu@endlessos.org>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 8616c5624870..bb1010d78717 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8013,6 +8013,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1458, 0xfa53, "Gigabyte BXBT-2807", ALC283_FIXUP_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1462, 0xb120, "MSI Cubi MS-B120", ALC283_FIXUP_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1462, 0xb171, "Cubi N 8GL (MS-B171)", ALC283_FIXUP_HEADSET_MIC),
++	SND_PCI_QUIRK(0x152d, 0x1082, "Quanta NL3", ALC269_FIXUP_LIFEBOOK),
+ 	SND_PCI_QUIRK(0x1558, 0x1323, "Clevo N130ZU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x1325, "System76 Darter Pro (darp5)", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x1401, "Clevo L140[CZ]U", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+-- 
+2.20.1
+
