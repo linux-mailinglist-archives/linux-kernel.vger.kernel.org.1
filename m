@@ -2,115 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 893F82E099F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 12:24:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA332E0991
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 12:24:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727150AbgLVLXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 06:23:50 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2279 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725985AbgLVLXt (ORCPT
+        id S1727018AbgLVLXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 06:23:19 -0500
+Received: from relmlor1.renesas.com ([210.160.252.171]:50878 "EHLO
+        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726779AbgLVLXA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 06:23:49 -0500
-Received: from fraeml742-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4D0Ykg1pttz67Qjn;
-        Tue, 22 Dec 2020 19:19:07 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml742-chm.china.huawei.com (10.206.15.223) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 22 Dec 2020 12:23:07 +0100
-Received: from [10.47.1.120] (10.47.1.120) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 22 Dec
- 2020 11:23:05 +0000
-Subject: Re: [RFC PATCH v2 2/2] blk-mq: Lockout tagset iter when freeing rqs
-To:     Bart Van Assche <bvanassche@acm.org>, <axboe@kernel.dk>,
-        <ming.lei@redhat.com>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <hch@lst.de>, <hare@suse.de>, <kashyap.desai@broadcom.com>,
-        <linuxarm@huawei.com>
-References: <1608203273-170555-1-git-send-email-john.garry@huawei.com>
- <1608203273-170555-3-git-send-email-john.garry@huawei.com>
- <df44b73d-6c42-87ee-3c25-b95a44712e05@acm.org>
- <4d2004bb-4444-7a63-7c72-1759e3037cfd@huawei.com>
- <31de2806-bbc1-dcc3-b9eb-ce9257420432@acm.org>
- <b2edab2b-8af7-816d-9da2-4720d19b96f8@huawei.com>
- <e97a0603-f9e3-1b00-4a09-c569d4f73d7b@acm.org>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <2d985fbd-7a22-6399-e214-8052604a2a65@huawei.com>
-Date:   Tue, 22 Dec 2020 11:22:19 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
-MIME-Version: 1.0
-In-Reply-To: <e97a0603-f9e3-1b00-4a09-c569d4f73d7b@acm.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.1.120]
-X-ClientProxiedBy: lhreml716-chm.china.huawei.com (10.201.108.67) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+        Tue, 22 Dec 2020 06:23:00 -0500
+X-IronPort-AV: E=Sophos;i="5.78,438,1599490800"; 
+   d="scan'208";a="66811363"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie5.idc.renesas.com with ESMTP; 22 Dec 2020 20:22:27 +0900
+Received: from localhost.localdomain (unknown [10.166.252.89])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 163B6400C73C;
+        Tue, 22 Dec 2020 20:22:27 +0900 (JST)
+From:   Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+To:     marek.vasut+renesas@gmail.com, lee.jones@linaro.org,
+        matti.vaittinen@fi.rohmeurope.com, lgirdwood@gmail.com,
+        broonie@kernel.org, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com
+Cc:     khiem.nguyen.xt@renesas.com, linux-power@fi.rohmeurope.com,
+        linux-gpio@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Subject: [PATCH v5 12/12] mfd: bd9571mwv: Add support for BD9574MWF
+Date:   Tue, 22 Dec 2020 20:22:19 +0900
+Message-Id: <1608636139-564-13-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1608636139-564-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+References: <1608636139-564-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Resend without ppvk@codeaurora.org, which bounces for me
+From: Khiem Nguyen <khiem.nguyen.xt@renesas.com>
 
-On 22/12/2020 02:13, Bart Van Assche wrote:
- > On 12/21/20 10:47 AM, John Garry wrote:
- >> Yes, I agree, and I'm not sure what I wrote to give that impression.
- >>
- >> About "root partition", above, I'm just saying that / is mounted on a
- >> sda partition:
- >>
- >> root@ubuntu:/home/john# mount | grep sda
- >> /dev/sda2 on / type ext4 (rw,relatime,errors=remount-ro,stripe=32)
- >> /dev/sda1 on /boot/efi type vfat
- >> 
-(rw,relatime,fmask=0077,dmask=0077,codepage=437,iocharset=iso8859-1,shortname=mixed,errors=remount-ro)
- > Hi John,
- >
+The new PMIC BD9574MWF inherits features from BD9571MWV.
+Add the support of new PMIC to existing bd9571mwv driver.
 
-Hi Bart, Ming,
+Signed-off-by: Khiem Nguyen <khiem.nguyen.xt@renesas.com>
+Co-developed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Reviewed-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+---
+ drivers/mfd/bd9571mwv.c       | 80 ++++++++++++++++++++++++++++++++++++++++++-
+ include/linux/mfd/bd9571mwv.h | 17 +++++++--
+ 2 files changed, 93 insertions(+), 4 deletions(-)
 
- > Thanks for the clarification. I want to take back my suggestion about
- > adding rcu_read_lock() / rcu_read_unlock() in blk_mq_tagset_busy_iter()
- > since it is not allowed to sleep inside an RCU read-side critical
- > section, since blk_mq_tagset_busy_iter() is used in request timeout
- > handling and since there may be blk_mq_ops.timeout implementations that
- > sleep.
-
-Yes, that's why I was going with atomic, rather than some 
-synchronization primitive which may sleep.
-
- >
- > Ming's suggestion to serialize blk_mq_tagset_busy_iter() and
- > blk_mq_free_rqs() looks interesting to me.
- >
-
-So then we could have something like this:
-
----8<---
-
-  -435,9 +444,13 @@ void blk_mq_queue_tag_busy_iter(struct request_queue 
-*q, busy_iter_fn *fn,
-     if (!blk_mq_hw_queue_mapped(hctx))
-             continue;
-
-+    while (!atomic_inc_not_zero(&tags->iter_usage_counter));
+diff --git a/drivers/mfd/bd9571mwv.c b/drivers/mfd/bd9571mwv.c
+index c905ab4..b1e7ae9 100644
+--- a/drivers/mfd/bd9571mwv.c
++++ b/drivers/mfd/bd9571mwv.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /*
+- * ROHM BD9571MWV-M MFD driver
++ * ROHM BD9571MWV-M and BD9574MVF-M core driver
+  *
+  * Copyright (C) 2017 Marek Vasut <marek.vasut+renesas@gmail.com>
+  * Copyright (C) 2020 Renesas Electronics Corporation
+@@ -11,6 +11,7 @@
+ #include <linux/i2c.h>
+ #include <linux/interrupt.h>
+ #include <linux/mfd/core.h>
++#include <linux/mfd/rohm-generic.h>
+ #include <linux/module.h>
+ 
+ #include <linux/mfd/bd9571mwv.h>
+@@ -118,6 +119,79 @@ static const struct bd957x_ddata bd9571mwv_ddata = {
+ 	.num_cells = ARRAY_SIZE(bd9571mwv_cells),
+ };
+ 
++static const struct mfd_cell bd9574mwf_cells[] = {
++	{ .name = "bd9574mwf-regulator", },
++	{ .name = "bd9574mwf-gpio", },
++};
 +
-     if (tags->nr_reserved_tags)
-         bt_for_each(hctx, tags->breserved_tags, fn, priv, true);
-     bt_for_each(hctx, tags->bitmap_tags, fn, priv, false);
++static const struct regmap_range bd9574mwf_readable_yes_ranges[] = {
++	regmap_reg_range(BD9571MWV_VENDOR_CODE, BD9571MWV_PRODUCT_REVISION),
++	regmap_reg_range(BD9571MWV_BKUP_MODE_CNT, BD9571MWV_BKUP_MODE_CNT),
++	regmap_reg_range(BD9571MWV_DVFS_VINIT, BD9571MWV_DVFS_SETVMAX),
++	regmap_reg_range(BD9571MWV_DVFS_SETVID, BD9571MWV_DVFS_MONIVDAC),
++	regmap_reg_range(BD9571MWV_GPIO_IN, BD9571MWV_GPIO_IN),
++	regmap_reg_range(BD9571MWV_GPIO_INT, BD9571MWV_GPIO_INTMASK),
++	regmap_reg_range(BD9571MWV_INT_INTREQ, BD9571MWV_INT_INTMASK),
++};
++
++static const struct regmap_access_table bd9574mwf_readable_table = {
++	.yes_ranges	= bd9574mwf_readable_yes_ranges,
++	.n_yes_ranges	= ARRAY_SIZE(bd9574mwf_readable_yes_ranges),
++};
++
++static const struct regmap_range bd9574mwf_writable_yes_ranges[] = {
++	regmap_reg_range(BD9571MWV_BKUP_MODE_CNT, BD9571MWV_BKUP_MODE_CNT),
++	regmap_reg_range(BD9571MWV_DVFS_SETVID, BD9571MWV_DVFS_SETVID),
++	regmap_reg_range(BD9571MWV_GPIO_DIR, BD9571MWV_GPIO_OUT),
++	regmap_reg_range(BD9571MWV_GPIO_INT_SET, BD9571MWV_GPIO_INTMASK),
++	regmap_reg_range(BD9571MWV_INT_INTREQ, BD9571MWV_INT_INTMASK),
++};
++
++static const struct regmap_access_table bd9574mwf_writable_table = {
++	.yes_ranges	= bd9574mwf_writable_yes_ranges,
++	.n_yes_ranges	= ARRAY_SIZE(bd9574mwf_writable_yes_ranges),
++};
++
++static const struct regmap_range bd9574mwf_volatile_yes_ranges[] = {
++	regmap_reg_range(BD9571MWV_DVFS_MONIVDAC, BD9571MWV_DVFS_MONIVDAC),
++	regmap_reg_range(BD9571MWV_GPIO_IN, BD9571MWV_GPIO_IN),
++	regmap_reg_range(BD9571MWV_GPIO_INT, BD9571MWV_GPIO_INT),
++	regmap_reg_range(BD9571MWV_INT_INTREQ, BD9571MWV_INT_INTREQ),
++};
++
++static const struct regmap_access_table bd9574mwf_volatile_table = {
++	.yes_ranges	= bd9574mwf_volatile_yes_ranges,
++	.n_yes_ranges	= ARRAY_SIZE(bd9574mwf_volatile_yes_ranges),
++};
++
++static const struct regmap_config bd9574mwf_regmap_config = {
++	.reg_bits	= 8,
++	.val_bits	= 8,
++	.cache_type	= REGCACHE_RBTREE,
++	.rd_table	= &bd9574mwf_readable_table,
++	.wr_table	= &bd9574mwf_writable_table,
++	.volatile_table	= &bd9574mwf_volatile_table,
++	.max_register	= 0xff,
++};
++
++static struct regmap_irq_chip bd9574mwf_irq_chip = {
++	.name		= "bd9574mwf",
++	.status_base	= BD9571MWV_INT_INTREQ,
++	.mask_base	= BD9571MWV_INT_INTMASK,
++	.ack_base	= BD9571MWV_INT_INTREQ,
++	.init_ack_masked = true,
++	.num_regs	= 1,
++	.irqs		= bd9571mwv_irqs,
++	.num_irqs	= ARRAY_SIZE(bd9571mwv_irqs),
++};
++
++static const struct bd957x_ddata bd9574mwf_ddata = {
++	.regmap_config = &bd9574mwf_regmap_config,
++	.irq_chip = &bd9574mwf_irq_chip,
++	.cells = bd9574mwf_cells,
++	.num_cells = ARRAY_SIZE(bd9574mwf_cells),
++};
++
+ static int bd957x_identify(struct device *dev, struct regmap *regmap)
+ {
+ 	unsigned int value;
+@@ -171,6 +245,9 @@ static int bd9571mwv_probe(struct i2c_client *client,
+ 	case BD9571MWV_PRODUCT_CODE_BD9571MWV:
+ 		ddata = &bd9571mwv_ddata;
+ 		break;
++	case BD9571MWV_PRODUCT_CODE_BD9574MWF:
++		ddata = &bd9574mwf_ddata;
++		break;
+ 	default:
+ 		dev_err(dev, "Unsupported device 0x%x\n", ret);
+ 		return -ENODEV;
+@@ -200,6 +277,7 @@ static int bd9571mwv_probe(struct i2c_client *client,
+ 
+ static const struct of_device_id bd9571mwv_of_match_table[] = {
+ 	{ .compatible = "rohm,bd9571mwv", },
++	{ .compatible = "rohm,bd9574mwf", },
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, bd9571mwv_of_match_table);
+diff --git a/include/linux/mfd/bd9571mwv.h b/include/linux/mfd/bd9571mwv.h
+index e1716ec..8efd99d 100644
+--- a/include/linux/mfd/bd9571mwv.h
++++ b/include/linux/mfd/bd9571mwv.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+- * ROHM BD9571MWV-M driver
++ * ROHM BD9571MWV-M and BD9574MWF-M driver
+  *
+  * Copyright (C) 2017 Marek Vasut <marek.vasut+renesas@gmail.com>
+  * Copyright (C) 2020 Renesas Electronics Corporation
+@@ -14,11 +14,12 @@
+ #include <linux/device.h>
+ #include <linux/regmap.h>
+ 
+-/* List of registers for BD9571MWV */
++/* List of registers for BD9571MWV and BD9574MWF */
+ #define BD9571MWV_VENDOR_CODE			0x00
+ #define BD9571MWV_VENDOR_CODE_VAL		0xdb
+ #define BD9571MWV_PRODUCT_CODE			0x01
+ #define BD9571MWV_PRODUCT_CODE_BD9571MWV	0x60
++#define BD9571MWV_PRODUCT_CODE_BD9574MWF	0x74
+ #define BD9571MWV_PRODUCT_REVISION		0x02
+ 
+ #define BD9571MWV_I2C_FUSA_MODE			0x10
+@@ -48,6 +49,7 @@
+ #define BD9571MWV_VD33_VID			0x44
+ 
+ #define BD9571MWV_DVFS_VINIT			0x50
++#define BD9574MWF_VD09_VINIT			0x51
+ #define BD9571MWV_DVFS_SETVMAX			0x52
+ #define BD9571MWV_DVFS_BOOSTVID			0x53
+ #define BD9571MWV_DVFS_SETVID			0x54
+@@ -61,6 +63,7 @@
+ #define BD9571MWV_GPIO_INT_SET			0x64
+ #define BD9571MWV_GPIO_INT			0x65
+ #define BD9571MWV_GPIO_INTMASK			0x66
++#define BD9574MWF_GPIO_MUX			0x67
+ 
+ #define BD9571MWV_REG_KEEP(n)			(0x70 + (n))
+ 
+@@ -70,6 +73,8 @@
+ #define BD9571MWV_PROT_ERROR_STATUS2		0x83
+ #define BD9571MWV_PROT_ERROR_STATUS3		0x84
+ #define BD9571MWV_PROT_ERROR_STATUS4		0x85
++#define BD9574MWF_PROT_ERROR_STATUS5		0x86
++#define BD9574MWF_SYSTEM_ERROR_STATUS		0x87
+ 
+ #define BD9571MWV_INT_INTREQ			0x90
+ #define BD9571MWV_INT_INTREQ_MD1_INT		BIT(0)
+@@ -82,6 +87,12 @@
+ #define BD9571MWV_INT_INTREQ_BKUP_TRG_INT	BIT(7)
+ #define BD9571MWV_INT_INTMASK			0x91
+ 
++#define BD9574MWF_SSCG_CNT			0xA0
++#define BD9574MWF_POFFB_MRB			0xA1
++#define BD9574MWF_SMRB_WR_PROT			0xA2
++#define BD9574MWF_SMRB_ASSERT			0xA3
++#define BD9574MWF_SMRB_STATUS			0xA4
++
+ #define BD9571MWV_ACCESS_KEY			0xff
+ 
+ /* Define the BD9571MWV IRQ numbers */
+@@ -91,7 +102,7 @@ enum bd9571mwv_irqs {
+ 	BD9571MWV_IRQ_MD2_E2,
+ 	BD9571MWV_IRQ_PROT_ERR,
+ 	BD9571MWV_IRQ_GP,
+-	BD9571MWV_IRQ_128H_OF,
++	BD9571MWV_IRQ_128H_OF,	/* BKUP_HOLD on BD9574MWF */
+ 	BD9571MWV_IRQ_WDT_OF,
+ 	BD9571MWV_IRQ_BKUP_TRG,
+ };
+-- 
+2.7.4
 
-+    atomic_dec(&tags->iter_usage_counter);
-}
-
-blk_queue_exit(q);
-
---->8---
-
-And similar for blk_mq_tagset_busy_iter(). How about it?
-
-Thanks,
-John
