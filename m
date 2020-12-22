@@ -2,198 +2,474 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05E5F2E05DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 06:58:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F8022E05E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 07:02:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725847AbgLVF44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 00:56:56 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:57089 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725300AbgLVF4z (ORCPT
+        id S1725931AbgLVGBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 01:01:42 -0500
+Received: from mailout1.samsung.com ([203.254.224.24]:49645 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725841AbgLVGBk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 00:56:55 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1608616589; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=1thyFUC//ehpP0yAbCIk5YNRG3RLSn2U56velYq8ZPo=; b=KUmSVqEDY7mOqAt2hkfFknAL8nu36JXLtzL4oqzVNdEnBEv0qX/YlJO1/agSSwvKDCq8OSVU
- Ckj0wHdjATPHgB0qwiz9g2cxGJ5URpiKzVTK2iHDFbJx9g4LWwEtUGOexpfhQQH9Db8PxhOu
- thQ4xZkNVCzVJxAth6WfOcoiv3k=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5fe18a65b00c0d7ad48cc43f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Dec 2020 05:55:49
- GMT
-Sender: vjitta=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7ACDDC43466; Tue, 22 Dec 2020 05:55:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.4 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.0
-Received: from [192.168.43.216] (unknown [106.76.209.12])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: vjitta)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3A59FC433CA;
-        Tue, 22 Dec 2020 05:55:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3A59FC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vjitta@codeaurora.org
-Subject: Re: [PATCH v3] lib: stackdepot: Add support to configure
- STACK_HASH_SIZE
-To:     Minchan Kim <minchan@kernel.org>,
-        Alexander Potapenko <glider@google.com>
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        dan.j.williams@intel.com, broonie@kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Konovalov <andreyknvl@google.com>, qcai@redhat.com,
-        ylal@codeaurora.org, vinmenon@codeaurora.org,
-        kasan-dev <kasan-dev@googlegroups.com>
-References: <CAG_fn=UjJQP_gfDm3eJTPY371QTwyDJKXBCN2gs4DvnLP2pbyQ@mail.gmail.com>
- <7f2e171f-fa44-ef96-6cc6-14e615e3e457@codeaurora.org>
- <CAG_fn=VihkHLx7nHRrzQRuHeL-UYRezcyGLDQMJY+d1O5AkJfA@mail.gmail.com>
- <601d4b1a-8526-f7ad-d0f3-305894682109@codeaurora.org>
- <CAG_fn=V8e8y1fbOaYUD5SfDSQ9+Tc3r7w6ZSoJ-ZNFJvvq-Aeg@mail.gmail.com>
- <9e0d2c07-af1f-a1d3-fb0d-dbf2ae669f96@codeaurora.org>
- <CAG_fn=UXQUGiDqmChqD-xX-yF5Jp+7K+oHwKPrO9DZL-zW_4KQ@mail.gmail.com>
- <48df48fe-dc36-83a4-1c11-e9d0cf230372@codeaurora.org>
- <6110a26b-dc87-b6f9-e679-aa60917403de@codeaurora.org>
- <CAG_fn=VjejHtY8=cuuFkixpXd6A6q1C==6RAaUC3Vb5_4hZkcg@mail.gmail.com>
- <X+EFmQz6JKfpdswG@google.com>
-From:   Vijayanand Jitta <vjitta@codeaurora.org>
-Message-ID: <d769a7b1-89a2-aabe-f274-db132f7229d1@codeaurora.org>
-Date:   Tue, 22 Dec 2020 11:25:34 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 22 Dec 2020 01:01:40 -0500
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20201222060055epoutp01d8e2e5f198e26b90b094c1d394e69d96~S9IHlZWpS3169431694epoutp01J
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 06:00:55 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20201222060055epoutp01d8e2e5f198e26b90b094c1d394e69d96~S9IHlZWpS3169431694epoutp01J
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1608616855;
+        bh=XqRmRlAQlC72ecn4ix7/ysv8X8EoEWWWhcN1os2w1ic=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=nyQeZNOA92CcIb6AlLpKahnJdqZ1v0cdFp56umftagfiwAq+Sx3hgJyvU0Igd0BGP
+         KZTqYqTvuumX6tDIX3XRdnLbqvFZaRrULn1aUDNG1JDU3d5wtVdGTT80HtncvsjYxz
+         kJ1A3fN20LwAQnu+SneRsCusmfHUuk8zniekgleg=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20201222060051epcas2p152462a5018971e90d5d1270be03bfdf9~S9IEFn_NB0605406054epcas2p11;
+        Tue, 22 Dec 2020 06:00:51 +0000 (GMT)
+Received: from epsmges2p2.samsung.com (unknown [182.195.40.189]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4D0QgP5WcYz4x9Py; Tue, 22 Dec
+        2020 06:00:49 +0000 (GMT)
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        BE.0F.56312.19B81EF5; Tue, 22 Dec 2020 15:00:49 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
+        20201222060044epcas2p1b207a5cd8ad30855ac297c287bd6b091~S9H8xP6Df0093900939epcas2p1H;
+        Tue, 22 Dec 2020 06:00:44 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201222060043epsmtrp2b74c7c793f49fd72ec5d04e915f2de14~S9H8su1CS1610016100epsmtrp2g;
+        Tue, 22 Dec 2020 06:00:43 +0000 (GMT)
+X-AuditID: b6c32a46-1d9ff7000000dbf8-3f-5fe18b91b7df
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        22.79.13470.B8B81EF5; Tue, 22 Dec 2020 15:00:43 +0900 (KST)
+Received: from KORCO011456 (unknown [12.36.185.54]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20201222060043epsmtip1834e1d58b75638184ee0f893f3ed3301~S9H8Wl-dF2032920329epsmtip1U;
+        Tue, 22 Dec 2020 06:00:43 +0000 (GMT)
+From:   "Kiwoong Kim" <kwmad.kim@samsung.com>
+To:     <ziqichen@codeaurora.org>
+Cc:     <asutoshd@codeaurora.org>, <nguyenb@codeaurora.org>,
+        <cang@codeaurora.org>, <hongwus@codeaurora.org>,
+        <rnayak@codeaurora.org>, <vinholikatti@gmail.com>,
+        <jejb@linux.vnet.ibm.com>, <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>, <kernel-team@android.com>,
+        <saravanak@google.com>, <salyzyn@google.com>,
+        "'Alim Akhtar'" <alim.akhtar@samsung.com>,
+        "'Avri Altman'" <avri.altman@wdc.com>,
+        "'James E.J. Bottomley'" <jejb@linux.ibm.com>,
+        "'Andy Gross'" <agross@kernel.org>,
+        "'Bjorn Andersson'" <bjorn.andersson@linaro.org>,
+        "'Matthias Brugger'" <matthias.bgg@gmail.com>,
+        "'Bean Huo'" <beanhuo@micron.com>,
+        "'Bart Van Assche'" <bvanassche@acm.org>,
+        "'Adrian Hunter'" <adrian.hunter@intel.com>,
+        "'Satya Tangirala'" <satyat@google.com>,
+        "'moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER...'" 
+        <linux-mediatek@lists.infradead.org>,
+        "'open list'" <linux-kernel@vger.kernel.org>,
+        "'open list:ARM/QUALCOMM SUPPORT'" <linux-arm-msm@vger.kernel.org>,
+        "'moderated list:ARM/Mediatek SoC support'" 
+        <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <ddaf73587964e543e916368db036f536@codeaurora.org>
+Subject: RE: [PATCH RFC v3 1/1] scsi: ufs: Fix ufs power down/on specs
+ violation
+Date:   Tue, 22 Dec 2020 15:00:43 +0900
+Message-ID: <000801d6d827$c8c89100$5a59b300$@samsung.com>
 MIME-Version: 1.0
-In-Reply-To: <X+EFmQz6JKfpdswG@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+Content-Type: text/plain; charset="Windows-1252"
 Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQMYnlYW9RPy0rxW7i+kRjBOSmAq5wKVdWQhAW5/fNgCKCtQSadNsVVA
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Te0xTVxzHPbftvUXCcq3oziBoLZpNDdgCxYMT4nyQy2AbsmXJprFr6B0Q
+        Stv0gjJiBjKHtIg8RJQWkDJgCRN0PCrI00J4jIlR8IUiICBoBvIIKBB1hVsT/vv8zvl+z+/3
+        PSeHzxFcI5z4EapoWquSK0X4Wq65ZTtyy0gZkonNuZ+izpErOOoeXuKiwXwzjhqSOgj0YuEe
+        jm4O6bioq2mSi7KnFjho5moJD3U9nyRQ4UMzhkozVKjmuiOqGL7PQxlNtwjUcyMXRz2/3QEo
+        5UENjv5sf4ehxNOeaFpvBKikt5KHik9ZG+gtb3GU9lc/jmpMcaj40Rixz5nq6Q2kzHVmHtVz
+        LhWjag39BFVQEUP9Uf8CoypKdTj15H49TqUXNgNq0FLJpSqL4qnXV5Nxanq0j0udqyoF1GzF
+        JupMcwoWTP6o3BtOyxW0VkirQtWKCFWYryjwW9kBmdRbLHGT+KDdIqFKHkX7ig4GBbv5Ryit
+        VyMSHpcrY6xLwXKGEe3y26tVx0TTwnA1E+0rojUKpUYi0bgz8igmRhXmHqqO2iMRiz2kVuVP
+        yvDE8hs8zeLR2BFjI5YA8gL0wI4PSS9YW/AM6MFavoCsAdCk7yPYYgbA9+V5GFvMA1hd2Ag+
+        WNpfddtUDQAu3XnPYYtxAA2tz4hlFU7uhNlDdbxldiRdYEZ5PW9ZxCEr+TB19j/u8oYd6Qev
+        TJpXjl1PhsDxgf4V5pLbYH75GL7MDqQPtEwYeSyvg505IyteDimGr7ovc1jeDK9P5HLY8YRw
+        YbTE1tgf9j9NB6zGERp1SSuTQnLGDl56PI+xhoOwuDjLlm09fNleRbDsBGcnG3CW42HjhQQe
+        az4L4GjjO5vBExqen7Ey38qusLXPNtxHMLnlLcEuO8DkJAGrdoWLmedtzk9gzqMnRDoQGVZF
+        M6yKZlgVzbAqQgHgloKNtIaJCqMZD43H6gevACtfZ4d/DciamHK3AIwPLADyOSJHB2+nAZnA
+        QSH/JY7WqmXaGCXNWIDUetsZHKcNoWrr31NFyyRSD29vsY8USb09kOhjB0Y8KBOQYfJoOpKm
+        NbT2gw/j2zklYPyt84qqm1uKfg+J23byhPPfxag6UL3GPvsYIhOZ7xbL7KpOpHbsn+aljcP0
+        yVvO2eaCLfjt7XP3TLrp6s1H1+lb91zs1TwOGnM7UvC60JKJKQRj3DZwMaBI4nb31wMXBvLG
+        /DLfHA72qvsyxGU+JJ932fllrNF0ZP+bS5J2l63KtofNluqAXYPBzU0RCcaSkbAHi3Pxiaad
+        Ezma732Pc6O6InUbN4gDj21q0Hs6Kcrc03I6Fft8dKdK8oZPYh1Tpe61P9vXLv0TGXH78Oex
+        8tNBVU9/iDH9a2Tuttgf+ubQ3GeuWfzp8x11wpyvRssnJs/5tmm/uFZWRawp64qf/5o+u9tL
+        xGXC5ZIdHC0j/x8rY4nCwwQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprBKsWRmVeSWpSXmKPExsWy7bCSnG5398N4gzVTTCxOPlnDZnHu8W8W
+        iwfztrFZ7G07wW7x8udVNouDDztZLE7vf8diMe3DT2aLT+uXsVqcfvaO3WLRjW1MFqsm5lns
+        2C5isenxNVaLifvPsltc3jWHzeJy80VGi+7rO9gslh//x2TR1GJs8bFrNqPFsiubWS2WNgIt
+        6Dr0l82if/VdNosdC6sslt58zu4g7XH5irfHtt3bWD0u9/UyeeycdZfdY8GmUo/Fe14yeWxa
+        1cnmcefaHjaPCYsOMHo8OLSZxWPzknqP7+s72Dw+Pr3F4tG3ZRWjx+dNch7tB7qZAgSiuGxS
+        UnMyy1KL9O0SuDKa1u1iLfgVU/Fk9j6mBsa5nl2MnBwSAiYSx9+fY+9i5OIQEtjNKNF44wUT
+        REJS4sTO54wQtrDE/ZYjrBBFzxglzk9oZwNJsAloS0x7uJsVxBYRkJWYuG4PWBGzwHEOiW0N
+        /5hBEkICPxklJt4vBLE5Bewk1rzbBjZVWCBA4sDO22CDWARUJeatew5m8wpYShx6O5sVwhaU
+        ODnzCQuIzSxgJHHu0H42CFteYvvbOcwQ1ylI/Hy6DOoIN4m79yYwQtSISMzubGOewCg8C8mo
+        WUhGzUIyahaSlgWMLKsYJVMLinPTc4sNCwzzUsv1ihNzi0vz0vWS83M3MYITj5bmDsbtqz7o
+        HWJk4mA8xCjBwawkwmsmdT9eiDclsbIqtSg/vqg0J7X4EKM0B4uSOO+FrpPxQgLpiSWp2amp
+        BalFMFkmDk6pBqagHS+Of9UL2LJ4JssuH1Y/wzfHxTk3mfLXf9SZ7qp46fhU7X2P9PY9SHTb
+        mq1Rsnnz922M3Utfp6v7f9SdfLvPYTHTCb2i6lcbXP9ZrVuTsndlcPA8Vb+Nq3V/n/3wfaGJ
+        p45DdM+UbR4b3+V/n+Hr++xy7LnZgV37jza838VqsuzQwtjg4t+t3HtbDWtudN/mymKtaDh8
+        SO/zTa/5vKsrHh++Zr6ZWUCGbWYY42wnR9fczufn2T9l6TBxT5p7e+ELt4NrmatLn1aLis44
+        9jFM6fF7MT5en9eaOsvkX/w0Xld6udu5yW9hir5Edshh+zOn39xb+FrxgG6nEl8b4zdGToP9
+        jlZ8TPNU4o3U5vYqsRRnJBpqMRcVJwIAtkmP9KsDAAA=
+X-CMS-MailID: 20201222060044epcas2p1b207a5cd8ad30855ac297c287bd6b091
+X-Msg-Generator: CA
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201221075209epcas2p489ef5a304a7227ae1ef20e581c08c043
+References: <CGME20201221075209epcas2p489ef5a304a7227ae1ef20e581c08c043@epcas2p4.samsung.com>
+        <1608537091-78575-1-git-send-email-ziqichen@codeaurora.org>
+        <009001d6d806$bbac1a30$33044e90$@samsung.com>
+        <ddaf73587964e543e916368db036f536@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/22/2020 1:59 AM, Minchan Kim wrote:
-> On Mon, Dec 21, 2020 at 04:04:09PM +0100, Alexander Potapenko wrote:
->> On Mon, Dec 21, 2020 at 12:15 PM Vijayanand Jitta <vjitta@codeaurora.org> wrote:
->>>
->>>
->>>
->>> On 12/18/2020 2:10 PM, Vijayanand Jitta wrote:
->>>>
->>>>
->>>> On 12/17/2020 4:24 PM, Alexander Potapenko wrote:
->>>>>>> Can you provide an example of a use case in which the user wants to
->>>>>>> use the stack depot of a smaller size without disabling it completely,
->>>>>>> and that size cannot be configured statically?
->>>>>>> As far as I understand, for the page owner example you gave it's
->>>>>>> sufficient to provide a switch that can disable the stack depot if
->>>>>>> page_owner=off.
->>>>>>>
->>>>>> There are two use cases here,
->>>>>>
->>>>>> 1. We don't want to consume memory when page_owner=off ,boolean flag
->>>>>> would work here.
->>>>>>
->>>>>> 2. We would want to enable page_owner on low ram devices but we don't
->>>>>> want stack depot to consume 8 MB of memory, so for this case we would
->>>>>> need a configurable stack_hash_size so that we can still use page_owner
->>>>>> with lower memory consumption.
->>>>>>
->>>>>> So, a configurable stack_hash_size would work for both these use cases,
->>>>>> we can set it to '0' for first case and set the required size for the
->>>>>> second case.
->>>>>
->>>>> Will a combined solution with a boolean boot-time flag and a static
->>>>> CONFIG_STACKDEPOT_HASH_SIZE work for these cases?
->>>>> I suppose low-memory devices have a separate kernel config anyway?
->>>>>
->>>>
->>>> Yes, the combined solution will also work but i think having a single
->>>> run time config is simpler instead of having two things to configure.
->>>>
->>>
->>> To add to it we started of with a CONFIG first, after the comments from
->>> Minchan (https://lkml.org/lkml/2020/11/3/2121) we decided to switch to
->>> run time param.
->>>
->>> Quoting Minchan's comments below:
->>>
->>> "
->>> 1. When we don't use page_owner, we don't want to waste any memory for
->>> stackdepot hash array.
->>> 2. When we use page_owner, we want to have reasonable stackdeport hash array
->>>
->>> With this configuration, it couldn't meet since we always need to
->>> reserve a reasonable size for the array.
->>> Can't we make the hash size as a kernel parameter?
->>> With it, we could use it like this.
->>>
->>> 1. page_owner=off, stackdepot_stack_hash=0 -> no more wasted memory
->>> when we don't use page_owner
->>> 2. page_owner=on, stackdepot_stack_hash=8M -> reasonable hash size
->>> when we use page_owner.
->>> "
->>
->> Minchan, what do you think about making the hash size itself a static
->> parameter, while letting the user disable stackdepot completely at
->> runtime?
->> As noted before, I am concerned that moving a low-level configuration
->> bit (which essentially means "save 8Mb - (1 << stackdepot_stack_hash)
->> of static memory") to the boot parameters will be unused by most
->> admins and may actually trick them into thinking they reduce the
->> overall stackdepot memory consumption noticeably.
->> I also suppose device vendors may prefer setting a fixed (maybe
->> non-default) hash size for low-memory devices rather than letting the
->> admins increase it.
+> On 2020-12-22 10:04, Kiwoong Kim wrote:
+> >> As per specs, e.g, JESD220E chapter 7.2, while powering off/on the
+> >> ufs device, RST_N signal and REF_CLK signal should be between
+> >> VSS(Ground) and VCCQ/VCCQ2.
+> >>
+> >> To flexibly control device reset line, re-name the function
+> >> ufschd_vops_device_reset(sturct ufs_hba *hba) to ufshcd_
+> >> vops_toggle_device_reset(sturct ufs_hba *hba, bool down). The new
+> >> parameter "bool down" is used to separate device reset line pulling
+> >> down from pulling up.
+> >>
+> >> Cc: Kiwoong Kim <kwmad.kim@samsung.com>
+> >> Cc: Stanley Chu <stanley.chu@mediatek.com>
+> >> Signed-off-by: Ziqi Chen <ziqichen@codeaurora.org>
+> >> ---
+> >>  drivers/scsi/ufs/ufs-mediatek.c | 27 +++++++++-----------------
+> >>  drivers/scsi/ufs/ufs-qcom.c     | 22 ++++++++++-----------
+> >>  drivers/scsi/ufs/ufshcd.c       | 43
+> >> ++++++++++++++++++++++++++++++------
+> > --
+> >> ---
+> >>  drivers/scsi/ufs/ufshcd.h       | 10 +++++-----
+> >>  4 files changed, 56 insertions(+), 46 deletions(-)
+> >>
+> >> diff --git a/drivers/scsi/ufs/ufs-mediatek.c b/drivers/scsi/ufs/ufs-
+> >> mediatek.c index 80618af..bff2c42 100644
+> >> --- a/drivers/scsi/ufs/ufs-mediatek.c
+> >> +++ b/drivers/scsi/ufs/ufs-mediatek.c
+> >> @@ -841,27 +841,18 @@ static int ufs_mtk_link_startup_notify(struct
+> >> ufs_hba *hba,
+> >>  	return ret;
+> >>  }
+> >>
+> >> -static int ufs_mtk_device_reset(struct ufs_hba *hba)
+> >> +static int ufs_mtk_toggle_device_reset(struct ufs_hba *hba, bool
+> >> down)
+> >>  {
+> >>  	struct arm_smccc_res res;
+> >>
+> >> -	ufs_mtk_device_reset_ctrl(0, res);
+> >> -
+> >> -	/*
+> >> -	 * The reset signal is active low. UFS devices shall detect
+> >> -	 * more than or equal to 1us of positive or negative RST_n
+> >> -	 * pulse width.
+> >> -	 *
+> >> -	 * To be on safe side, keep the reset low for at least 10us.
+> >> -	 */
+> >> -	usleep_range(10, 15);
+> >> -
+> >> -	ufs_mtk_device_reset_ctrl(1, res);
+> >> -
+> >> -	/* Some devices may need time to respond to rst_n */
+> >> -	usleep_range(10000, 15000);
+> >> +	if (down) {
+> >> +		ufs_mtk_device_reset_ctrl(0, res);
+> >> +	} else {
+> >> +		ufs_mtk_device_reset_ctrl(1, res);
+> >>
+> >> -	dev_info(hba->dev, "device reset done\n");
+> >> +		/* Some devices may need time to respond to rst_n */
+> >> +		usleep_range(10000, 15000);
+> >> +	}
+> >>
+> >>  	return 0;
+> >>  }
+> >> @@ -1052,7 +1043,7 @@ static const struct ufs_hba_variant_ops
+> >> ufs_hba_mtk_vops = {
+> >>  	.suspend             = ufs_mtk_suspend,
+> >>  	.resume              = ufs_mtk_resume,
+> >>  	.dbg_register_dump   = ufs_mtk_dbg_register_dump,
+> >> -	.device_reset        = ufs_mtk_device_reset,
+> >> +	.toggle_device_reset        = ufs_mtk_toggle_device_reset,
+> >>  	.event_notify        = ufs_mtk_event_notify,
+> >>  };
+> >>
+> >> diff --git a/drivers/scsi/ufs/ufs-qcom.c
+> >> b/drivers/scsi/ufs/ufs-qcom.c index 2206b1e..c2ccaa5 100644
+> >> --- a/drivers/scsi/ufs/ufs-qcom.c
+> >> +++ b/drivers/scsi/ufs/ufs-qcom.c
+> >> @@ -1404,12 +1404,13 @@ static void ufs_qcom_dump_dbg_regs(struct
+> >> ufs_hba
+> >> *hba)  }
+> >>
+> >>  /**
+> >> - * ufs_qcom_device_reset() - toggle the (optional) device reset line
+> >> + * ufs_qcom_toggle_device_reset() - toggle the (optional) device
+> >> reset
+> >> + line
+> >>   * @hba: per-adapter instance
+> >> + * @down: pull down or pull up device reset line
+> >>   *
+> >>   * Toggles the (optional) reset line to reset the attached device.
+> >>   */
+> >> -static int ufs_qcom_device_reset(struct ufs_hba *hba)
+> >> +static int ufs_qcom_toggle_device_reset(struct ufs_hba *hba, bool
+> >> down)
+> >>  {
+> >>  	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+> >>
+> >> @@ -1417,15 +1418,12 @@ static int ufs_qcom_device_reset(struct
+> >> ufs_hba
+> >> *hba)
+> >>  	if (!host->device_reset)
+> >>  		return -EOPNOTSUPP;
+> >>
+> >> -	/*
+> >> -	 * The UFS device shall detect reset pulses of 1us, sleep for 10us
+> >> to
+> >> -	 * be on the safe side.
+> >> -	 */
+> >> -	gpiod_set_value_cansleep(host->device_reset, 1);
+> >> -	usleep_range(10, 15);
+> >> -
+> >> -	gpiod_set_value_cansleep(host->device_reset, 0);
+> >> -	usleep_range(10, 15);
+> >> +	if (down) {
+> >> +		gpiod_set_value_cansleep(host->device_reset, 1);
+> >> +	} else {
+> >> +		gpiod_set_value_cansleep(host->device_reset, 0);
+> >> +		usleep_range(10, 15);
+> >> +	}
+> >>
+> >>  	return 0;
+> >>  }
+> >> @@ -1473,7 +1471,7 @@ static const struct ufs_hba_variant_ops
+> >> ufs_hba_qcom_vops = {
+> >>  	.suspend		= ufs_qcom_suspend,
+> >>  	.resume			= ufs_qcom_resume,
+> >>  	.dbg_register_dump	= ufs_qcom_dump_dbg_regs,
+> >> -	.device_reset		= ufs_qcom_device_reset,
+> >> +	.toggle_device_reset		= ufs_qcom_toggle_device_reset,
+> >>  	.config_scaling_param = ufs_qcom_config_scaling_param,
+> >>  	.program_key		= ufs_qcom_ice_program_key,
+> >>  };
+> >> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> >> index e221add..2ee905f 100644
+> >> --- a/drivers/scsi/ufs/ufshcd.c
+> >> +++ b/drivers/scsi/ufs/ufshcd.c
+> >> @@ -585,7 +585,20 @@ static void ufshcd_device_reset(struct ufs_hba
+> >> *hba)
+> >> {
+> >>  	int err;
+> >>
+> >> -	err = ufshcd_vops_device_reset(hba);
+> >> +	err = ufshcd_vops_toggle_device_reset(hba, true);
+> >> +	if (err) {
+> >> +		dev_err(hba->dev, "device reset pulling down failure: %d\n",
+> >> err);
+> >> +		return;
+> >> +	}
+> >> +
+> >> +	/*
+> >> +	 * The reset signal is active low. The UFS device
+> >> +	 * shall detect reset pulses of 1us, sleep for at
+> >> +	 * least 10us to be on the safe side.
+> >> +	 */
+> >> +	usleep_range(10, 15);
+> >
+> > Is there any point where UFS specification tells this explicitly?
+> > I think this should be moved only if the number, i.e. 10 and 15  just
+> > relies on hardware conditions.
+> >
+> >
+> > Thanks.
+> > Kiwoong Kim
 > 
-> I am totally fine if we could save the static memory alloation when
-> the page_owner is not used.
+> Hi Kiwoong,
 > 
-> IOW, page_owner=disable, stackdepot=disable will not consume the 8M
-> memory.
-> When we want to use page_owner, we could just do like this
+> Thanks for your comment. JESD220E Line 610~611 "The UFS device shall
+> detect more than or equal to 1us of positive or negative RST_n pulse".
+> Both QCOM and Mediatek use 10~15us. What number do you think more
+> appropriate?
 > 
-> 	page_owner=enable, stackdepot=enable
+> Best Regards,
+> Ziqi
+
+With yours, all the SoC vendors should wait for around 10us unconditionally
+even if there will be a possibility that some can use shorter period.
+I see this as a sort of optimization point.
+
+
+Thanks.
+Kiwoong Kim
 > 
-> (Maybe we need something to make warning if stackdepot is disabled
-> but someone want to use it, for example, KASAN?)
-> 
-> Vijayanand, If we could work this this, should we still need the
-> config option, then? 
-> 
+> >
+> >> +	err = ufshcd_vops_toggle_device_reset(hba, false);
+> >>
+> >>  	if (!err) {
+> >>  		ufshcd_set_ufs_dev_active(hba);
+> >> @@ -593,7 +606,11 @@ static void ufshcd_device_reset(struct ufs_hba
+> >> *hba)
+> >>  			hba->wb_enabled = false;
+> >>  			hba->wb_buf_flush_enabled = false;
+> >>  		}
+> >> +		dev_info(hba->dev, "device reset done\n");
+> >> +	} else {
+> >> +		dev_err(hba->dev, "device reset pulling up failure: %d\n",
+> >> err);
+> >>  	}
+> >> +
+> >>  	if (err != -EOPNOTSUPP)
+> >>  		ufshcd_update_evt_hist(hba, UFS_EVT_DEV_RESET, err);  } @@ -
+> >> 8686,8 +8703,6 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum
+> >> ufs_pm_op pm_op)
+> >>  	if (ret)
+> >>  		goto set_dev_active;
+> >>
+> >> -	ufshcd_vreg_set_lpm(hba);
+> >> -
+> >>  disable_clks:
+> >>  	/*
+> >>  	 * Call vendor specific suspend callback. As these callbacks may
+> >> access @@ -8703,6 +8718,9 @@ static int ufshcd_suspend(struct ufs_hba
+> >> *hba, enum ufs_pm_op pm_op)
+> >>  	 */
+> >>  	ufshcd_disable_irq(hba);
+> >>
+> >> +	if (ufshcd_is_link_off(hba))
+> >> +		ufshcd_vops_toggle_device_reset(hba, true);
+> >> +
+> >>  	ufshcd_setup_clocks(hba, false);
+> >>
+> >>  	if (ufshcd_is_clkgating_allowed(hba)) { @@ -8711,6 +8729,8 @@
+> >> static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+> >>  					hba->clk_gating.state);
+> >>  	}
+> >>
+> >> +	ufshcd_vreg_set_lpm(hba);
+> >> +
+> >>  	/* Put the host controller in low power mode if possible */
+> >>  	ufshcd_hba_vreg_set_lpm(hba);
+> >>  	goto out;
+> >> @@ -8778,18 +8798,19 @@ static int ufshcd_resume(struct ufs_hba *hba,
+> >> enum ufs_pm_op pm_op)
+> >>  	old_link_state = hba->uic_link_state;
+> >>
+> >>  	ufshcd_hba_vreg_set_hpm(hba);
+> >> +
+> >> +	ret = ufshcd_vreg_set_hpm(hba);
+> >> +	if (ret)
+> >> +		goto out;
+> >> +
+> >>  	/* Make sure clocks are enabled before accessing controller */
+> >>  	ret = ufshcd_setup_clocks(hba, true);
+> >>  	if (ret)
+> >> -		goto out;
+> >> +		goto disable_vreg;
+> >>
+> >>  	/* enable the host irq as host controller would be active soon */
+> >>  	ufshcd_enable_irq(hba);
+> >>
+> >> -	ret = ufshcd_vreg_set_hpm(hba);
+> >> -	if (ret)
+> >> -		goto disable_irq_and_vops_clks;
+> >> -
+> >>  	/*
+> >>  	 * Call vendor specific resume callback. As these callbacks may
+> >> access
+> >>  	 * vendor specific host controller register space call them when
+> >> the @@ -8797,7 +8818,7 @@ static int ufshcd_resume(struct ufs_hba
+> >> *hba, enum ufs_pm_op pm_op)
+> >>  	 */
+> >>  	ret = ufshcd_vops_resume(hba, pm_op);
+> >>  	if (ret)
+> >> -		goto disable_vreg;
+> >> +		goto disable_irq_and_vops_clks;
+> >>
+> >>  	/* For DeepSleep, the only supported option is to have the link off
+> >> */
+> >>  	WARN_ON(ufshcd_is_ufs_dev_deepsleep(hba)
+> >> && !ufshcd_is_link_off(hba)); @@ -8864,8 +8885,6 @@ static int
+> >> ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+> >>  	ufshcd_link_state_transition(hba, old_link_state, 0);
+> >>  vendor_suspend:
+> >>  	ufshcd_vops_suspend(hba, pm_op);
+> >> -disable_vreg:
+> >> -	ufshcd_vreg_set_lpm(hba);
+> >>  disable_irq_and_vops_clks:
+> >>  	ufshcd_disable_irq(hba);
+> >>  	if (hba->clk_scaling.is_allowed)
+> >> @@ -8876,6 +8895,8 @@ static int ufshcd_resume(struct ufs_hba *hba,
+> >> enum ufs_pm_op pm_op)
+> >>  		trace_ufshcd_clk_gating(dev_name(hba->dev),
+> >>  					hba->clk_gating.state);
+> >>  	}
+> >> +disable_vreg:
+> >> +	ufshcd_vreg_set_lpm(hba);
+> >>  out:
+> >>  	hba->pm_op_in_progress = 0;
+> >>  	if (ret)
+> >> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+> >> index 9bb5f0e..dccc3eb 100644
+> >> --- a/drivers/scsi/ufs/ufshcd.h
+> >> +++ b/drivers/scsi/ufs/ufshcd.h
+> >> @@ -319,7 +319,7 @@ struct ufs_pwr_mode_info {
+> >>   * @resume: called during host controller PM callback
+> >>   * @dbg_register_dump: used to dump controller debug information
+> >>   * @phy_initialization: used to initialize phys
+> >> - * @device_reset: called to issue a reset pulse on the UFS device
+> >> + * @toggle_device_reset: called to change logic level of reset gpio
+> >> on
+> >> + the UFS device
+> >>   * @program_key: program or evict an inline encryption key
+> >>   * @event_notify: called to notify important events
+> >>   */
+> >> @@ -350,7 +350,7 @@ struct ufs_hba_variant_ops {
+> >>  	int     (*resume)(struct ufs_hba *, enum ufs_pm_op);
+> >>  	void	(*dbg_register_dump)(struct ufs_hba *hba);
+> >>  	int	(*phy_initialization)(struct ufs_hba *);
+> >> -	int	(*device_reset)(struct ufs_hba *hba);
+> >> +	int	(*toggle_device_reset)(struct ufs_hba *hba, bool down);
+> >>  	void	(*config_scaling_param)(struct ufs_hba *hba,
+> >>  					struct devfreq_dev_profile *profile,
+> >>  					void *data);
+> >> @@ -1216,10 +1216,10 @@ static inline void
+> >> ufshcd_vops_dbg_register_dump(struct ufs_hba *hba)
+> >>  		hba->vops->dbg_register_dump(hba);
+> >>  }
+> >>
+> >> -static inline int ufshcd_vops_device_reset(struct ufs_hba *hba)
+> >> +static inline int ufshcd_vops_toggle_device_reset(struct ufs_hba
+> >> *hba,
+> >> +bool down)
+> >>  {
+> >> -	if (hba->vops && hba->vops->device_reset)
+> >> -		return hba->vops->device_reset(hba);
+> >> +	if (hba->vops && hba->vops->toggle_device_reset)
+> >> +		return hba->vops->toggle_device_reset(hba, down);
+> >>
+> >>  	return -EOPNOTSUPP;
+> >>  }
+> >> --
+> >> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
+> >> Forum, a Linux Foundation Collaborative Project
 
-Michan, We would still need config option so that we can reduce the
-memory consumption on low ram devices using config.
-
-Alex, On this,
-"I also suppose device vendors may prefer setting a fixed (maybe
-non-default) hash size for low-memory devices rather than letting the
-admins increase it."
-I see kernel param swiotlb does similar thing i.e; '0' to disable and
-set a value to configure size.
-
-I am fine with either of the approaches,
-
-1. I can split this patch into two
-   i)  A bool variable to enable/disable stack depot.
-   ii) A config for the size.
-
-(or)
-
-2. A run time param - '0' to disable and set a valid size to enable.
-
-Let me know your comments.
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of Code Aurora Forum, hosted by The Linux Foundation
