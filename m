@@ -2,80 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BFD42E06A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 08:12:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3932E06A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 08:13:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726072AbgLVHMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 02:12:02 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:56006 "EHLO pegase1.c-s.fr"
+        id S1726160AbgLVHNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 02:13:09 -0500
+Received: from foss.arm.com ([217.140.110.172]:60728 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726025AbgLVHMB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 02:12:01 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4D0SDk6DQcz9tx3y;
-        Tue, 22 Dec 2020 08:11:18 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id WKpCFi-AX3-2; Tue, 22 Dec 2020 08:11:18 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4D0SDk4CqMz9tx3x;
-        Tue, 22 Dec 2020 08:11:18 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 614998B7DC;
-        Tue, 22 Dec 2020 08:11:19 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id Fq3QTDTMuInt; Tue, 22 Dec 2020 08:11:19 +0100 (CET)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 049928B75E;
-        Tue, 22 Dec 2020 08:11:19 +0100 (CET)
-Received: by localhost.localdomain (Postfix, from userid 0)
-        id C22E366969; Tue, 22 Dec 2020 07:11:18 +0000 (UTC)
-Message-Id: <bc77d61d1c18940e456a2dee464f1e2eda65a3f0.1608621048.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/32s: Fix RTAS machine check with VMAP stack
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Tue, 22 Dec 2020 07:11:18 +0000 (UTC)
+        id S1726111AbgLVHNJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 02:13:09 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C4FB130E;
+        Mon, 21 Dec 2020 23:12:23 -0800 (PST)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.86.150])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 2CBCE3F718;
+        Mon, 21 Dec 2020 23:12:19 -0800 (PST)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     catalin.marinas@arm.com, will@kernel.org, ardb@kernel.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: [RFC 0/2] arm64/mm: Fix pfn_valid() for ZONE_DEVIE based memory
+Date:   Tue, 22 Dec 2020 12:42:22 +0530
+Message-Id: <1608621144-4001-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we have VMAP stack, exception prolog 1 sets r1, not r11.
+This series fixes pfn_valid() for ZONE_DEVICE based memory and also improves
+its performance for normal hotplug memory. While here, it also reorganizes
+pfn_valid() on CONFIG_SPARSEMEM. This series has been slightly tested on the
+current mainline tree.
 
-Fixes: da7bb43ab9da ("powerpc/32: Fix vmap stack - Properly set r1 before activating MMU")
-Fixes: d2e006036082 ("powerpc/32: Use SPRN_SPRG_SCRATCH2 in exception prologs")
-Cc: stable@vger.kernel.org
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/head_book3s_32.S | 7 +++++++
- 1 file changed, 7 insertions(+)
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: James Morse <james.morse@arm.com>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Jérôme Glisse <jglisse@redhat.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
 
-diff --git a/arch/powerpc/kernel/head_book3s_32.S b/arch/powerpc/kernel/head_book3s_32.S
-index 349bf3f0c3af..fbc48a500846 100644
---- a/arch/powerpc/kernel/head_book3s_32.S
-+++ b/arch/powerpc/kernel/head_book3s_32.S
-@@ -260,9 +260,16 @@ __secondary_hold_acknowledge:
- MachineCheck:
- 	EXCEPTION_PROLOG_0
- #ifdef CONFIG_PPC_CHRP
-+#ifdef CONFIG_VMAP_STACK
-+	mtspr	SPRN_SPRG_SCRATCH2,r1
-+	mfspr	r1, SPRN_SPRG_THREAD
-+	lwz	r1, RTAS_SP(r1)
-+	cmpwi	cr1, r1, 0
-+#else
- 	mfspr	r11, SPRN_SPRG_THREAD
- 	lwz	r11, RTAS_SP(r11)
- 	cmpwi	cr1, r11, 0
-+#endif
- 	bne	cr1, 7f
- #endif /* CONFIG_PPC_CHRP */
- 	EXCEPTION_PROLOG_1 for_rtas=1
+Anshuman Khandual (2):
+  arm64/mm: Fix pfn_valid() for ZONE_DEVICE based memory
+  arm64/mm: Reorganize pfn_valid()
+
+ arch/arm64/mm/init.c | 46 +++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 41 insertions(+), 5 deletions(-)
+
 -- 
-2.25.0
+2.20.1
 
