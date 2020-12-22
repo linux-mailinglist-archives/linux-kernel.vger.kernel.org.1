@@ -2,109 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF472E0823
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 10:34:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8DCA2E082E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 10:37:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725909AbgLVJdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 04:33:06 -0500
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:38080 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725782AbgLVJdF (ORCPT
+        id S1726281AbgLVJgQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Dec 2020 04:36:16 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:26234 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726239AbgLVJgP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 04:33:05 -0500
-Received: by mail-ot1-f43.google.com with SMTP id j20so11360944otq.5;
-        Tue, 22 Dec 2020 01:32:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=38MtaZHIDmudmqIZ8gHcMo45fVQIBHSmoA9LJPMdAO4=;
-        b=rWM4gABgGtacr2N5/Tati8HS/0Eo0Ri4IliyLJMgbgCGHvVtMIxaTWO5SLSRqXnWDc
-         VCJSj2zSKD2tUDlLZaNYrM4hmeLkuOxzlfF+iXAlj9xvvPdlp6Jf1oXo/XNtim+0OBVs
-         OHW3thBmxq34j/fdzCx1sMnbU2Wdl2TT7B015NQ3Rsi5ifutHVfwB3FhK7DlJt09/Ji0
-         hd74tpY1jd9D1h3N3wGph9bHUzwR3grBx2kLmYWeBeq49RhW/T6+OTiryn1OyvtGoL6e
-         2d6tKCsCFVW4P4tpqXgkZBFv6f05//1Ps0IgSRb10pc6Ns1OP4LHoZagk3R1c1bE2GyJ
-         Icig==
-X-Gm-Message-State: AOAM531DW6T0RBigb2FAXqEuTFXB0jdBNfbytiQBT0Pp8CsgPFvt89a8
-        ArQMcd0/7/svTCLsuNhHJ7BRCjZbx//gR+mCp/4=
-X-Google-Smtp-Source: ABdhPJydRDEvLH99mFgwELsiqtHRp/UzEEDf0IQthSZGw5hLHZcYYzMAJ6AXeYJJ3hPE4jmiQecVVNsuJ9yFxL/rui0=
-X-Received: by 2002:a05:6830:1f5a:: with SMTP id u26mr15083149oth.250.1608629544422;
- Tue, 22 Dec 2020 01:32:24 -0800 (PST)
+        Tue, 22 Dec 2020 04:36:15 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-196-qd9Zl8UVMnGI_v8OB6DO1A-1; Tue, 22 Dec 2020 09:34:36 +0000
+X-MC-Unique: qd9Zl8UVMnGI_v8OB6DO1A-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Tue, 22 Dec 2020 09:34:35 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Tue, 22 Dec 2020 09:34:35 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Palmer Dabbelt' <palmer@dabbelt.com>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>
+CC:     "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-team@android.com" <kernel-team@android.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        "kernel test robot" <lkp@intel.com>
+Subject: RE: [PATCH] clocksource: clint: Avoid remove __iomem in
+ get_cycles_hi()
+Thread-Topic: [PATCH] clocksource: clint: Avoid remove __iomem in
+ get_cycles_hi()
+Thread-Index: AQHW2CRMsP4vu/w5w0ydjz0Xpj6lf6oC2pkg
+Date:   Tue, 22 Dec 2020 09:34:35 +0000
+Message-ID: <ccc783075aac4ee2b0b43c4644cc992f@AcuMS.aculab.com>
+References: <20201222053230.3229427-1-palmer@dabbelt.com>
+In-Reply-To: <20201222053230.3229427-1-palmer@dabbelt.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <1608519279-13341-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
- <1608519279-13341-13-git-send-email-yoshihiro.shimoda.uh@renesas.com>
- <CAMuHMdXkRUbjQk=1mqn0b7PeGX0ir=s4UwbCHfw_2mWaVEVPTg@mail.gmail.com> <TY2PR01MB36920B85DFCE969BF8AF229CD8DF0@TY2PR01MB3692.jpnprd01.prod.outlook.com>
-In-Reply-To: <TY2PR01MB36920B85DFCE969BF8AF229CD8DF0@TY2PR01MB3692.jpnprd01.prod.outlook.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 22 Dec 2020 10:32:13 +0100
-Message-ID: <CAMuHMdU_6hWx21hTr2qguC5dKBJBKGxAiq24MN2vKOpUvghp=A@mail.gmail.com>
-Subject: Re: [PATCH v4 12/12] mfd: bd9571mwv: Add support for BD9574MWF
-To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Cc:     Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Khiem Nguyen <khiem.nguyen.xt@renesas.com>,
-        linux-power <linux-power@fi.rohmeurope.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shimoda-san,
+From: Palmer Dabbelt
+> Sent: 22 December 2020 05:33
+> 
+> From: Palmer Dabbelt <palmerdabbelt@google.com>
+> 
+> This cast loses the __iomem qualifier from clint_timer_val, which
+> triggers an sparse warning.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+> ---
+>  drivers/clocksource/timer-clint.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/clocksource/timer-clint.c b/drivers/clocksource/timer-clint.c
+> index 6cfe2ab73eb0..83a8b38d46f6 100644
+> --- a/drivers/clocksource/timer-clint.c
+> +++ b/drivers/clocksource/timer-clint.c
+> @@ -63,7 +63,7 @@ static struct riscv_ipi_ops clint_ipi_ops = {
+>  #define clint_get_cycles()	readq_relaxed(clint_timer_val)
+>  #else
+>  #define clint_get_cycles()	readl_relaxed(clint_timer_val)
+> -#define clint_get_cycles_hi()	readl_relaxed(((u32 *)clint_timer_val) + 1)
+> +#define clint_get_cycles_hi()	readl_relaxed(((u32 __iomem *)clint_timer_val) + 1)
+>  #endif
 
-On Tue, Dec 22, 2020 at 10:23 AM Yoshihiro Shimoda
-<yoshihiro.shimoda.uh@renesas.com> wrote:
-> > From: Geert Uytterhoeven, Sent: Tuesday, December 22, 2020 5:53 PM
-> > On Mon, Dec 21, 2020 at 3:56 AM Yoshihiro Shimoda
-> > <yoshihiro.shimoda.uh@renesas.com> wrote:
-> <snip>
-> > > --- a/drivers/mfd/bd9571mwv.c
-> > > +++ b/drivers/mfd/bd9571mwv.c
-> >
-> > > @@ -200,12 +277,14 @@ static int bd9571mwv_probe(struct i2c_client *client,
-> > >
-> > >  static const struct of_device_id bd9571mwv_of_match_table[] = {
-> > >         { .compatible = "rohm,bd9571mwv", },
-> > > +       { .compatible = "rohm,bd9574mwf", },
-> > >         { /* sentinel */ }
-> > >  };
-> > >  MODULE_DEVICE_TABLE(of, bd9571mwv_of_match_table);
-> > >
-> > >  static const struct i2c_device_id bd9571mwv_id_table[] = {
-> > > -       { "bd9571mwv", 0 },
-> > > +       { "bd9571mwv", ROHM_CHIP_TYPE_BD9571 },
-> > > +       { "bd9574mwf", ROHM_CHIP_TYPE_BD9574 },
-> >
-> > Why add the chip types?  These are unused, and the driver uses
-> > autodetection of the chip variant anyway.
->
-> I just added the chip types in the future use. As you said,
-> these are unused and we should not add a future use in general.
-> So, I'll remove this change.
+The correct fix is (probably) to define clint_timer_val as u32 on 32bit systems.
 
-OK.
+Oh - and get rid of those #defines, they are only used in the
+functions just below them.
 
-> Also, I think I should remove the following patch.
->
-> [PATCH v4 08/12] gpio: bd9571mwv: Add BD9574MWF support
+	David
 
-You mean removing the chip types from bd9571mwv_gpio_id_table[]?
-You still need the "bd9574mwf-gpio" entry, don't you?
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
